@@ -1,0 +1,14 @@
+/.cvsignore/1.1/Fri Jan  7 03:29:12 2005//
+/Makefile.am/1.1.1.1/Tue Jan  4 01:23:10 2005//
+/conicalgradient.cpp/1.1.1.1/Tue Jan  4 01:23:10 2005//
+/conicalgradient.h/1.1.1.1/Tue Jan  4 01:23:10 2005//
+/curvegradient.cpp/1.2/Thu Jan 13 06:48:39 2005//
+/curvegradient.h/1.1.1.1/Tue Jan  4 01:23:10 2005//
+/lineargradient.cpp/1.1.1.1/Tue Jan  4 01:23:10 2005//
+/lineargradient.h/1.1.1.1/Tue Jan  4 01:23:10 2005//
+/main.cpp/1.1.1.1/Tue Jan  4 01:23:10 2005//
+/radialgradient.cpp/1.1.1.1/Tue Jan  4 01:23:10 2005//
+/radialgradient.h/1.1.1.1/Tue Jan  4 01:23:10 2005//
+/spiralgradient.cpp/1.1.1.1/Tue Jan  4 01:23:11 2005//
+/spiralgradient.h/1.1.1.1/Tue Jan  4 01:23:11 2005//
+D

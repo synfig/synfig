@@ -1,0 +1,262 @@
+/* === S I N F G =========================================================== */
+/*!	\file trgt_bmp.cpp
+**	\brief Bitmap Target
+**
+**	$Id: trgt_bmp.cpp,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $
+**
+**	\legal
+**	Copyright (c) 2002 Robert B. Quattlebaum Jr.
+**
+**	This software and associated documentation
+**	are CONFIDENTIAL and PROPRIETARY property of
+**	the above-mentioned copyright holder.
+**
+**	You may not copy, print, publish, or in any
+**	other way distribute this software without
+**	a prior written agreement with
+**	the copyright holder.
+**	\endlegal
+*/
+/* ========================================================================= */
+
+/* === H E A D E R S ======================================================= */
+
+#define SINFG_NO_ANGLE
+
+#ifdef USING_PCH
+#	include "pch.h"
+#else
+#ifdef HAVE_CONFIG_H
+#	include <config.h>
+#endif
+
+#include "trgt_bmp.h"
+#include <sinfg/general.h>
+
+#include <cstdio>
+#include <algorithm>
+#include <functional>
+#endif
+
+/* === U S I N G =========================================================== */
+
+using namespace sinfg;
+using namespace std;
+using namespace etl;
+
+/* === I N F O ============================================================= */
+
+SINFG_TARGET_INIT(bmp);
+SINFG_TARGET_SET_NAME(bmp,"bmp");
+SINFG_TARGET_SET_EXT(bmp,"bmp");
+SINFG_TARGET_SET_VERSION(bmp,"0.1");
+SINFG_TARGET_SET_CVS_ID(bmp,"$Id: trgt_bmp.cpp,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $");
+
+/* === C L A S S E S & S T R U C T S ======================================= */
+
+struct BITMAPFILEHEADER
+{
+	unsigned char	bfType[2];
+	unsigned long	bfSize;
+	unsigned short	bfReserved1;
+	unsigned short	bfReserved2;
+	unsigned long	bfOffsetBits;
+};
+
+struct BITMAPINFOHEADER
+{
+	unsigned long	biSize;
+	long			biWidth;
+	long			biHeight;
+	unsigned short	biPlanes;
+	unsigned short	biBitCount;
+	unsigned long	biCompression;
+	unsigned long	biSizeImage;
+	long			biXPelsPerMeter;
+	long			biYPelsPerMeter;
+	unsigned long	biClrUsed;
+	unsigned long	biClrImportant;
+};
+
+/* === M E T H O D S ======================================================= */
+
+#ifdef WORDS_BIGENDIAN
+inline long little_endian(const long &x)
+{
+	long ret;
+	char *big_e=(char *)&ret;
+	char *lit_e=(char *)&x;
+	big_e[0]=lit_e[3];
+	big_e[1]=lit_e[2];
+	big_e[2]=lit_e[1];
+	big_e[3]=lit_e[0];
+	return ret;
+}
+inline short little_endian_short(const short &x)
+{
+	short ret;
+	char *big_e=(char *)&ret;
+	char *lit_e=(char *)&x;
+	big_e[0]=lit_e[1];
+	big_e[1]=lit_e[0];
+	return ret;
+}
+#else
+#define little_endian(x)	(x)
+#define little_endian_short(x)	(x)
+#endif
+
+bmp::bmp(const char *Filename)
+{
+	file=NULL;
+	filename=Filename;
+	multi_image=false;
+	buffer=0;
+	color_buffer=0;
+}
+
+bmp::~bmp()
+{
+	if(file)
+		fclose(file);
+	file=NULL;
+	delete [] buffer;
+	delete [] color_buffer;
+}
+
+bool
+bmp::set_rend_desc(RendDesc *given_desc)
+{
+	pf=PF_BGR;
+	
+	// Flip the image upside down,
+	// because bitmaps are upside down.
+	Point tl=given_desc->get_tl();
+	Point br=given_desc->get_br();
+	Point::value_type tmp;
+	tmp=tl[1];
+	tl[1]=br[1];
+	br[1]=tmp;
+	given_desc->set_tl(tl);
+	given_desc->set_br(br);
+	
+	desc=*given_desc;
+	if(desc.get_frame_end()-desc.get_frame_start()>0)
+	{
+		multi_image=true;
+		imagecount=desc.get_frame_start();
+	}
+	else
+		multi_image=false;
+
+	return true;
+}
+
+void
+bmp::end_frame()
+{
+	if(file)
+		fclose(file);
+	delete [] color_buffer;
+	color_buffer=0;
+	file=NULL;
+	imagecount++;
+}
+
+bool
+bmp::start_frame(sinfg::ProgressCallback *callback)
+{
+	int w=desc.get_w(),h=desc.get_h();
+	
+	rowspan=4*((w*(channels(pf)*8)+31)/32);
+	
+	if(multi_image)
+	{
+		String
+			newfilename(filename),
+			ext(find(filename.begin(),filename.end(),'.'),filename.end());
+		newfilename.erase(find(newfilename.begin(),newfilename.end(),'.'),newfilename.end());
+		
+		newfilename+=etl::strprintf("%04d",imagecount)+ext;
+		file=fopen(newfilename.c_str(),"wb");
+		if(callback)callback->task(newfilename+_(" (animated)"));
+	}
+	else
+	{
+		file=fopen(filename.c_str(),"wb");
+		if(callback)callback->task(filename);
+	}
+	
+	if(!file)
+	{
+		if(callback)callback->error(_("Unable to open file"));
+		else sinfg::error(_("Unable to open file"));
+		return false;
+	}
+	
+	BITMAPFILEHEADER fileheader;
+	BITMAPINFOHEADER infoheader;
+	
+	fileheader.bfType[0]='B';
+	fileheader.bfType[1]='M';
+	fileheader.bfSize=little_endian(sizeof(BITMAPFILEHEADER)+sizeof(BITMAPINFOHEADER)+rowspan*h);
+	fileheader.bfReserved1=0;	
+	fileheader.bfReserved2=0;	
+	fileheader.bfOffsetBits=little_endian(sizeof(BITMAPFILEHEADER)+sizeof(BITMAPINFOHEADER)-2);	
+	
+	infoheader.biSize=little_endian(40);
+	infoheader.biWidth=little_endian(w);
+	infoheader.biHeight=little_endian(h);
+	infoheader.biPlanes=little_endian_short((short)1);
+	infoheader.biBitCount=little_endian_short((short)(channels(pf)*8));
+	infoheader.biCompression=little_endian(0);
+	infoheader.biSizeImage=little_endian(0);
+	infoheader.biXPelsPerMeter=little_endian((int)rend_desc().get_x_res());
+	infoheader.biYPelsPerMeter=little_endian((int)rend_desc().get_y_res()); // pels per meter...?
+	infoheader.biClrUsed=little_endian(0);
+	infoheader.biClrImportant=little_endian(0);
+	
+	fprintf(file,"BM");
+	
+	if(!fwrite(&fileheader.bfSize,sizeof(BITMAPFILEHEADER)-4,1,file))
+	{
+		if(callback)callback->error(_("Unable to write file header to file"));
+		else sinfg::error(_("Unable to write file header to file"));
+		return false;
+	}
+
+	if(!fwrite(&infoheader,sizeof(BITMAPINFOHEADER),1,file))
+	{
+		if(callback)callback->error(_("Unable to write info header"));
+		else sinfg::error(_("Unable to write info header"));
+		return false;
+	}
+
+	delete [] buffer;
+	buffer=new unsigned char[rowspan];
+	
+	delete [] color_buffer;
+	color_buffer=new Color[desc.get_w()];
+
+	return true;
+}
+
+Color *
+bmp::start_scanline(int scanline)
+{
+	return color_buffer;
+}
+
+bool
+bmp::end_scanline()
+{
+	if(!file)
+		return false;
+	
+	convert_color_format(buffer, color_buffer, desc.get_w(), pf, gamma());
+	
+	if(!fwrite(buffer,1,rowspan,file))
+		return false;
+
+	return true;
+}

@@ -1,0 +1,13 @@
+/cputest.c/1.1.1.1/Tue Jan  4 01:23:13 2005//
+/dsputil_mmx.c/1.1.1.1/Tue Jan  4 01:23:13 2005//
+/dsputil_mmx_avg.h/1.1.1.1/Tue Jan  4 01:23:13 2005//
+/dsputil_mmx_rnd.h/1.1.1.1/Tue Jan  4 01:23:13 2005//
+/fdct_mmx.c/1.1.1.1/Tue Jan  4 01:23:13 2005//
+/fft_sse.c/1.1.1.1/Tue Jan  4 01:23:13 2005//
+/idct_mmx.c/1.1.1.1/Tue Jan  4 01:23:13 2005//
+/mmx.h/1.1.1.1/Tue Jan  4 01:23:13 2005//
+/motion_est_mmx.c/1.1.1.1/Tue Jan  4 01:23:13 2005//
+/mpegvideo_mmx.c/1.1.1.1/Tue Jan  4 01:23:13 2005//
+/mpegvideo_mmx_template.c/1.1.1.1/Tue Jan  4 01:23:13 2005//
+/simple_idct_mmx.c/1.1.1.1/Tue Jan  4 01:23:13 2005//
+D
