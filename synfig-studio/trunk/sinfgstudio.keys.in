@@ -1,0 +1,23 @@
+
+image/sif:
+	open=@prefix@/bin/sinfgstudio %f
+	view=@prefix@/bin/sinfgstudio %f
+	icon-filename=@prefix@/share/pixmaps/sif_icon.@imageext@
+	description=SINFG Composition
+	default_action_type=application
+	short_list_application_ids_for_novice_user_level=sinfgstudio
+	short_list_application_ids_for_intermediate_user_level=sinfgstudio
+	short_list_application_ids_for_advanced_user_level=sinfgstudio
+#    category=Images
+                                                                                
+
+image/sifz:
+	open=@prefix@/bin/sinfgstudio %f
+	view=@prefix@/bin/sinfgstudio %f
+	icon-filename=@prefix@/share/pixmaps/sif_icon.@imageext@
+	description=Compressed SINFG Composition
+	default_action_type=application
+	short_list_application_ids_for_novice_user_level=sinfgstudio
+	short_list_application_ids_for_intermediate_user_level=sinfgstudio
+	short_list_application_ids_for_advanced_user_level=sinfgstudio
+#   category=Images

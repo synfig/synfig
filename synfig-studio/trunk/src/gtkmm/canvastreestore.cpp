@@ -1,0 +1,617 @@
+/* === S I N F G =========================================================== */
+/*!	\file canvastreestore.cpp
+**	\brief Template File
+**
+**	$Id: canvastreestore.cpp,v 1.1.1.1 2005/01/07 03:34:35 darco Exp $
+**
+**	\legal
+**	Copyright (c) 2002 Robert B. Quattlebaum Jr.
+**
+**	This software and associated documentation
+**	are CONFIDENTIAL and PROPRIETARY property of
+**	the above-mentioned copyright holder.
+**
+**	You may not copy, print, publish, or in any
+**	other way distribute this software without
+**	a prior written agreement with
+**	the copyright holder.
+**	\endlegal
+*/
+/* ========================================================================= */
+
+/* === H E A D E R S ======================================================= */
+
+#ifdef USING_PCH
+#	include "pch.h"
+#else
+#ifdef HAVE_CONFIG_H
+#	include <config.h>
+#endif
+
+#include "canvastreestore.h"
+#include <sinfg/valuenode.h>
+#include "iconcontroler.h"
+#include <sinfg/valuenode_timedswap.h>
+#include <sinfg/valuenode_animated.h>
+#include <gtkmm/button.h>
+#include <sinfgapp/instance.h>
+#include "cellrenderer_value.h"
+#include "cellrenderer_timetrack.h"
+#include <ETL/clock>
+
+#endif
+
+/* === U S I N G =========================================================== */
+
+using namespace std;
+using namespace etl;
+using namespace sinfg;
+using namespace studio;
+
+/* === M A C R O S ========================================================= */
+
+/* === G L O B A L S ======================================================= */
+
+/* === P R O C E D U R E S ================================================= */
+
+/* === M E T H O D S ======================================================= */
+
+static CanvasTreeStore::Model& ModelHack()
+{
+	static CanvasTreeStore::Model* model(0);
+	if(!model)model=new CanvasTreeStore::Model;
+	return *model;
+}
+
+CanvasTreeStore::CanvasTreeStore(etl::loose_handle<sinfgapp::CanvasInterface> canvas_interface_):
+	Gtk::TreeStore(ModelHack()),
+	canvas_interface_		(canvas_interface_)
+{
+}
+
+CanvasTreeStore::~CanvasTreeStore()
+{
+}
+
+void
+CanvasTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& iter, int column, Glib::ValueBase& value)const
+{
+	if(column==model.value.index())
+	{
+		sinfgapp::ValueDesc value_desc((*iter)[model.value_desc]);
+
+		Glib::Value<sinfg::ValueBase> x;
+		g_value_init(x.gobj(),x.value_type());
+
+		if(!value_desc)
+		{
+			x.set(ValueBase());
+		}
+		else
+		if(value_desc.is_const())
+			x.set(value_desc.get_value());
+		else
+		if(value_desc.is_value_node())
+			x.set((*value_desc.get_value_node())(canvas_interface()->get_time()));
+		else
+		{
+			sinfg::error(__FILE__":%d: Unable to figure out value",__LINE__);
+			return;
+		}
+		
+		g_value_init(value.gobj(),x.value_type());
+		g_value_copy(x.gobj(),value.gobj());
+	}
+	else
+	if(column==model.is_value_node.index())
+	{
+		sinfgapp::ValueDesc value_desc((*iter)[model.value_desc]);
+
+		Glib::Value<bool> x;
+		g_value_init(x.gobj(),x.value_type());
+
+		x.set(value_desc && value_desc.is_value_node());
+		
+		g_value_init(value.gobj(),x.value_type());
+		g_value_copy(x.gobj(),value.gobj());
+	}
+	else
+	if(column==model.is_shared.index())
+	{
+		sinfgapp::ValueDesc value_desc((*iter)[model.value_desc]);
+
+		Glib::Value<bool> x;
+		g_value_init(x.gobj(),x.value_type());
+
+		x.set(value_desc.is_value_node() && value_desc.get_value_node()->rcount()>1);
+		
+		g_value_init(value.gobj(),x.value_type());
+		g_value_copy(x.gobj(),value.gobj());
+	}
+	else
+	if(column==model.is_exported.index())
+	{
+		sinfgapp::ValueDesc value_desc((*iter)[model.value_desc]);
+
+		Glib::Value<bool> x;
+		g_value_init(x.gobj(),x.value_type());
+
+		x.set(value_desc.is_value_node() && value_desc.get_value_node()->is_exported());
+		
+		g_value_init(value.gobj(),x.value_type());
+		g_value_copy(x.gobj(),value.gobj());
+	}
+	else
+	if(column==model.is_canvas.index())
+	{
+		sinfgapp::ValueDesc value_desc((*iter)[model.value_desc]);
+
+		Glib::Value<bool> x;
+		g_value_init(x.gobj(),x.value_type());
+
+		x.set(!value_desc && (Canvas::Handle)(*iter)[model.canvas]);
+		
+		g_value_init(value.gobj(),x.value_type());
+		g_value_copy(x.gobj(),value.gobj());
+	}
+	else
+	if(column==model.id.index())
+	{
+		sinfgapp::ValueDesc value_desc((*iter)[model.value_desc]);
+
+		Glib::Value<Glib::ustring> x;
+		g_value_init(x.gobj(),x.value_type());
+
+		if(value_desc && value_desc.is_value_node())
+			x.set(value_desc.get_value_node()->get_id());
+		else if(!value_desc && Canvas::Handle((*iter)[model.canvas]))
+			x.set(Canvas::Handle((*iter)[model.canvas])->get_id());
+		else
+			return Gtk::TreeStore::get_value_vfunc(iter,column,value);	
+		
+		g_value_init(value.gobj(),x.value_type());
+		g_value_copy(x.gobj(),value.gobj());
+	}
+	else
+	if(column==model.is_editable.index())
+	{
+		sinfgapp::ValueDesc value_desc((*iter)[model.value_desc]);
+
+		Glib::Value<bool> x;
+		g_value_init(x.gobj(),x.value_type());
+
+		x.set(!value_desc.is_value_node() || sinfgapp::is_editable(value_desc.get_value_node()));
+		
+		g_value_init(value.gobj(),x.value_type());
+		g_value_copy(x.gobj(),value.gobj());
+	}
+	else
+	if(column==model.type.index())
+	{
+		sinfgapp::ValueDesc value_desc((*iter)[model.value_desc]);
+
+		Glib::Value<Glib::ustring> x;
+		g_value_init(x.gobj(),x.value_type());
+
+		// Set the type
+		if(!value_desc)
+		{
+			if((*iter)[model.is_canvas])
+				x.set(_("Canvas"));
+		}
+		else
+		{
+			if(!value_desc.is_value_node() || value_desc.get_value_node()->get_name()=="constant")
+			{
+				x.set(ValueBase::type_name(value_desc.get_value_type()));
+			}
+			else
+			{
+				x.set(value_desc.get_value_node()->get_local_name());
+			}
+		}
+		
+		g_value_init(value.gobj(),x.value_type());
+		g_value_copy(x.gobj(),value.gobj());
+	}
+	else
+	if(column==model.label.index())
+	{
+		sinfgapp::ValueDesc value_desc((*iter)[model.value_desc]);
+
+		Glib::Value<Glib::ustring> x;
+		g_value_init(x.gobj(),x.value_type());
+
+		// Set the type
+		if(!value_desc)
+		{
+			Canvas::Handle canvas((*iter)[model.canvas]);
+			if(canvas)
+			{
+				if(!canvas->get_id().empty())
+					x.set(canvas->get_id());
+				else
+				if(!canvas->get_name().empty())
+					x.set(canvas->get_name());	
+				else
+					x.set(_("[Unnamed]"));		
+				x.set(_("Canvas"));
+			}
+			return Gtk::TreeStore::get_value_vfunc(iter,column,value);
+		}
+		else
+		{
+			ValueNode::Handle value_node=value_desc.get_value_node();
+			
+			// Setup the row's label
+			if(value_node->get_id().empty())
+				x.set(Glib::ustring((*iter)[model.name]));	
+			else if(Glib::ustring((*iter)[model.name]).empty())
+				x.set(value_node->get_id());
+			else
+				x.set(Glib::ustring((*iter)[model.name])+" ("+value_node->get_id()+')');			
+		}
+		
+		g_value_init(value.gobj(),x.value_type());
+		g_value_copy(x.gobj(),value.gobj());
+	}
+	else
+	if(column==model.icon.index())
+	{
+		sinfgapp::ValueDesc value_desc((*iter)[model.value_desc]);
+		if(!value_desc)
+			return Gtk::TreeStore::get_value_vfunc(iter,column,value);
+
+		Glib::Value<Glib::RefPtr<Gdk::Pixbuf> > x;
+		g_value_init(x.gobj(),x.value_type());
+		
+		x.set(get_tree_pixbuf(value_desc.get_value_type()));
+
+		g_value_init(value.gobj(),x.value_type());
+		g_value_copy(x.gobj(),value.gobj());
+	}
+	else
+		Gtk::TreeStore::get_value_vfunc(iter,column,value);
+}
+
+bool
+CanvasTreeStore::find_first_value_desc(const sinfgapp::ValueDesc& value_desc, Gtk::TreeIter& iter)
+{
+	iter=children().begin();
+	while(iter && value_desc!=(*iter)[model.value_desc])
+	{
+		if(!iter->children().empty())
+		{
+			Gtk::TreeIter iter2(iter->children().begin());
+			if(iter2 && value_desc==(*iter2)[model.value_desc] || find_next_value_desc(value_desc, iter2))
+			{
+				iter=iter2;
+				return true;
+			}
+		}
+		Gtk::TreeIter iter2(++iter);
+		if(!iter2)
+			iter==iter->parent();
+		else
+			iter=iter2;
+	}
+	return (bool)iter && value_desc==(*iter)[model.value_desc];
+}
+
+bool
+CanvasTreeStore::find_next_value_desc(const sinfgapp::ValueDesc& value_desc, Gtk::TreeIter& iter)
+{
+	if(!iter) return find_first_value_desc(value_desc,iter);
+		
+	if(iter) do {
+		if(!iter->children().empty())
+		{
+			Gtk::TreeIter iter2(iter->children().begin());
+			if(iter2 && value_desc==(*iter2)[model.value_desc] || find_next_value_desc(value_desc, iter2))
+			{
+				iter=iter2;
+				return true;
+			}
+		}
+		Gtk::TreeIter iter2(++iter);
+		if(!iter2)
+		{
+			iter==iter->parent();
+			if(iter)++iter;
+		}
+		else
+			iter=iter2;
+	} while(iter && value_desc!=(*iter)[model.value_desc]);
+	return (bool)iter && value_desc==(*iter)[model.value_desc];
+}
+
+
+
+
+
+
+bool
+CanvasTreeStore::find_first_value_node(const ValueNode::Handle& value_node, Gtk::TreeIter& iter)
+{
+	iter=children().begin();
+	while(iter && value_node!=(ValueNode::Handle)(*iter)[model.value_node])
+	{
+		if(!iter->children().empty())
+		{
+			Gtk::TreeIter iter2(iter->children().begin());
+			if(iter2 && value_node==(ValueNode::Handle)(*iter2)[model.value_node] || find_next_value_node(value_node, iter2))
+			{
+				iter=iter2;
+				return true;
+			}
+		}
+		Gtk::TreeIter iter2(++iter);
+		if(!iter2)
+			iter==iter->parent();
+		else
+			iter=iter2;
+	}
+	return (bool)iter && value_node==(ValueNode::Handle)(*iter)[model.value_node];
+}
+
+bool
+CanvasTreeStore::find_next_value_node(const ValueNode::Handle& value_node, Gtk::TreeIter& iter)
+{
+	if(!iter) return find_first_value_node(value_node,iter);
+		
+	if(iter) do {
+		if(!iter->children().empty())
+		{
+			Gtk::TreeIter iter2(iter->children().begin());
+			if(iter2 && value_node==(ValueNode::Handle)(*iter2)[model.value_node] || find_next_value_node(value_node, iter2))
+			{
+				iter=iter2;
+				return true;
+			}
+		}
+		Gtk::TreeIter iter2(++iter);
+		if(!iter2)
+		{
+			iter==iter->parent();
+			if(iter)++iter;
+		}
+		else
+			iter=iter2;
+	} while(iter && value_node!=(ValueNode::Handle)(*iter)[model.value_node]);
+	return (bool)iter && value_node==(ValueNode::Handle)(*iter)[model.value_node];
+}
+
+void
+CanvasTreeStore::set_row(Gtk::TreeRow row,sinfgapp::ValueDesc value_desc, bool do_children)
+{
+	Gtk::TreeModel::Children children = row.children();
+	while(!children.empty() && erase(children.begin()));
+
+	row[model.value_desc]=value_desc;
+	try
+	{
+		//row[model.icon] = get_tree_pixbuf(value_desc.get_value_type());
+		
+		if(value_desc.is_value_node())
+		{
+			ValueNode::Handle value_node=value_desc.get_value_node();
+
+			assert(value_node);
+
+			row[model.value_node] = value_node;
+			//row[model.is_canvas] = false;
+			//row[model.is_value_node] = true;
+			//row[model.is_editable] = sinfgapp::is_editable(value_node);
+			//row[model.id]=value_node->get_id();
+			
+			// Set the canvas
+			if(value_desc.parent_is_canvas())
+				row[model.canvas]=value_desc.get_canvas();
+			else
+				row[model.canvas]=canvas_interface()->get_canvas();
+				
+			LinkableValueNode::Handle linkable;
+			linkable=LinkableValueNode::Handle::cast_dynamic(value_node);
+	
+			if(linkable && do_children)
+			{
+				row[model.link_count] = linkable->link_count();
+				for(int i=0;i<linkable->link_count();i++)
+				{
+					Gtk::TreeRow child_row=*(append(row.children()));
+					child_row[model.link_id] = i;
+					child_row[model.canvas] = static_cast<Canvas::Handle>(row[model.canvas]);
+					child_row[model.name] = linkable->link_local_name(i);
+					set_row(child_row,sinfgapp::ValueDesc(linkable,i));
+				}
+			}
+			return;
+		}
+		else
+		{
+			//row[model.is_value_node] = false;
+			//row[model.is_editable] = true;
+			//row[model.label] = Glib::ustring(row[model.name]);
+			return;
+		}
+	}
+	catch(sinfg::Exception::IDNotFound x)
+	{
+		sinfg::error(__FILE__":%d: IDNotFound thrown",__LINE__);
+		erase(row);
+		return;
+	}
+	
+	// We should never get to this point
+	assert(0);
+}
+
+void
+CanvasTreeStore::refresh_row(Gtk::TreeModel::Row &row, bool do_children)
+{
+	sinfgapp::ValueDesc value_desc=row[model.value_desc];
+
+	if(value_desc)
+	{
+		if((bool)row[model.is_value_node] != value_desc.is_value_node() ||
+			(!bool(row[model.is_value_node]) && row[model.link_count]!=0))
+		{
+			set_row(row,value_desc,do_children);
+			return;				
+		}
+		
+		if(row[model.is_value_node])
+		{
+			ValueNode::Handle value_node(value_desc.get_value_node());
+	
+			if(ValueNode::Handle(row[model.value_node])!=value_node)
+			{
+				rebuild_row(row,do_children);
+				return;
+			}
+	
+			//row[model.id]=value_node->get_id();
+	
+			// Setup the row's label
+			/*
+			if(value_node->get_id().empty())
+				row[model.label] = Glib::ustring(row[model.name]);					
+			else if(Glib::ustring(row[model.name]).empty())
+				row[model.label] = value_node->get_id();
+			else
+				row[model.label] = Glib::ustring(row[model.name])+" ("+value_node->get_id()+')';			
+			*/
+			
+			LinkableValueNode::Handle linkable;
+			linkable=LinkableValueNode::Handle::cast_dynamic(value_node);
+			if(do_children && linkable && ((int)row[model.link_count] != linkable->link_count()))
+			{
+	//			Gtk::TreeModel::Children children = row.children();
+	//			while(!children.empty() && erase(children.begin()));
+				
+				set_row(row,value_desc);
+				return;				
+			}
+		}
+		else
+		{
+			//row[model.label] = Glib::ustring(row[model.name]);					
+			//row[model.is_value_node] = false;
+			//row[model.is_editable] = true;
+		}
+	}
+	if(!do_children)
+		return; 
+	
+	Gtk::TreeModel::Children children = row.children();
+	Gtk::TreeModel::Children::iterator iter;
+
+	if(!children.empty())
+	for(iter = children.begin(); iter != children.end(); ++iter)
+	{
+		Gtk::TreeRow row=*iter;
+		refresh_row(row);
+	}
+}
+
+void
+CanvasTreeStore::rebuild_row(Gtk::TreeModel::Row &row, bool do_children)
+{
+	sinfgapp::ValueDesc value_desc=(sinfgapp::ValueDesc)row[model.value_desc];
+
+	if(value_desc && value_desc.get_value_node())
+	{
+		ValueNode::Handle value_node;
+		value_node=value_desc.get_value_node();
+
+		assert(value_node);if(!value_node)return;
+		
+		if(value_node && value_node!=(ValueNode::Handle)row[model.value_node])
+		{
+//			Gtk::TreeModel::Children children = row.children();
+//			while(!children.empty() && erase(children.begin()));
+				
+			set_row(row,value_desc,do_children);
+			return;				
+		}
+
+		LinkableValueNode::Handle linkable;
+		linkable=LinkableValueNode::Handle::cast_dynamic(value_node);
+
+		if( do_children && linkable && (int)row[model.link_count] != linkable->link_count())
+		{
+//			Gtk::TreeModel::Children children = row.children();
+//			while(!children.empty() && erase(children.begin()));
+			
+			set_row(row,value_desc);
+			return;				
+		}
+			
+		//if(!value_node)
+		//	value_node=row[model.value_node];
+		
+		row[model.id]=value_node->get_id();
+
+		// Setup the row's label
+		if(value_node->get_id().empty())
+			row[model.label] = Glib::ustring(row[model.name]);					
+		else if(Glib::ustring(row[model.name]).empty())
+			row[model.label] = value_node->get_id();
+		else
+			row[model.label] = Glib::ustring(row[model.name])+" ("+value_node->get_id()+')';			
+	}
+	else
+	{
+		row[model.label] = Glib::ustring(row[model.name]);					
+		row[model.is_value_node] = false;
+		row[model.is_editable] = true;
+		Gtk::TreeModel::Children children = row.children();
+		while(!children.empty() && erase(children.begin()));
+	}
+	if(!do_children)
+		return; 
+
+	Gtk::TreeModel::Children children = row.children();
+	Gtk::TreeModel::Children::iterator iter;
+	if(!children.empty())
+	for(iter = children.begin(); iter != children.end(); ++iter)
+	{
+		Gtk::TreeRow row=*iter;
+		rebuild_row(row);
+	}
+}
+
+CellRenderer_ValueBase*
+CanvasTreeStore::add_cell_renderer_value(Gtk::TreeView::Column* column)
+{
+	const CanvasTreeStore::Model model;
+	
+	CellRenderer_ValueBase* ret;
+	
+	ret=Gtk::manage( new CellRenderer_ValueBase() );
+
+	column->pack_start(*ret,true);
+	column->add_attribute(ret->property_value(), model.value);
+	column->add_attribute(ret->property_editable(), model.is_editable);
+	column->add_attribute(ret->property_canvas(), model.canvas);
+
+	return ret;
+}
+
+CellRenderer_TimeTrack*
+CanvasTreeStore::add_cell_renderer_value_node(Gtk::TreeView::Column* column)
+{
+	const CanvasTreeStore::Model model;
+	
+	CellRenderer_TimeTrack* ret;
+	
+	ret = Gtk::manage( new CellRenderer_TimeTrack() );
+	
+	column->pack_start(*ret,true);
+	//column->add_attribute(ret->property_visible(), model.is_value_node);
+	column->add_attribute(ret->property_value_desc(), model.value_desc);
+	column->add_attribute(ret->property_canvas(), model.canvas);
+	
+	
+	return ret;
+}
