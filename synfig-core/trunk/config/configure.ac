@@ -1,4 +1,4 @@
-i# $Header: /opt/voria/cvs/sinfg/config/configure.ac,v 1.9 2005/01/23 04:03:21 darco Exp $
+i# $Header: /opt/voria/cvs/sinfg/config/configure.ac,v 1.10 2005/03/24 21:07:24 darco Exp $
 
 # -- I N I T --------------------------------------------------
 
@@ -224,11 +224,16 @@ AC_ARG_WITH(freetype,[
 
 
 if test $with_freetype != "no" ; then {
-	AC_CHECK_FT2(,[
+	PKG_CHECK_MODULES(FREETYPE, freetype2,[
 		with_freetype="yes"
 	],[
 		with_freetype="no"
-	])	
+	])
+#	AC_CHECK_FT2(,[
+#		with_freetype="yes"
+#	],[
+#		with_freetype="no"
+#	])	
 } ; fi
 
 if test $with_freetype = "no" ; then {

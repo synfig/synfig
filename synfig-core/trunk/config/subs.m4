@@ -193,6 +193,7 @@ AC_DEFUN([AC_ARG_LICENSE_KEY],
 		AC_DEFINE(LICENSE_KEY_REQUIRED,, [ Enables license key checks ] )
 	],
 	[
+		license_key=no
 	])
 ])
 

@@ -48,7 +48,7 @@ InstallDirRegKey HKLM "Software\Voria_@PACKAGE_TARNAME@" "Install_Dir"
 ;CustomGuiInit
 
 !insertmacro MUI_PAGE_WELCOME
-!insertmacro MUI_PAGE_LICENSE "alphalicense.txt"
+!insertmacro MUI_PAGE_LICENSE "@srcdir@\alphalicense.txt"
 ;Page custom PageReinstall ; PageLeaveReinstall
 !insertmacro MUI_PAGE_COMPONENTS
 !insertmacro MUI_PAGE_DIRECTORY
@@ -76,7 +76,7 @@ Section ""
   ; Put file there
 ;  File "sinfg_modules.conf"
   
-	ExecShell "mkdir" "$INSTDIR\etc"
+  CreateDirectory "$INSTDIR\etc"
   Delete $INSTDIR\etc\sinfg_modules.conf
 	
   ; Write the installation path into the registry
@@ -131,12 +131,12 @@ Section "Uninstall"
 
 SectionEnd
 
-!include src\sinfg\sinfg.nsh
-!include src\tool\tool.nsh
+!include @srcdir@\src\sinfg\sinfg.nsh
+!include @srcdir@\src\tool\tool.nsh
 
 Section "Examples"
 	SetOutPath $INSTDIR\examples
-	File "examples\*.sif"
+	File "@srcdir@\examples\*.sif"
 	CreateDirectory "$SMPROGRAMS\Voria"
 	CreateShortCut "$SMPROGRAMS\Voria\Examples.lnk" "$INSTDIR\examples" "" "$INSTDIR\examples" 0
 SectionEnd
@@ -149,48 +149,48 @@ SectionEnd
 
 SubSection "PlugIns"
 SubSection "Layers"
-!include "src\modules\lyr_std\lyr_std.nsh"
-!include "src\modules\lyr_freetype\lyr_freetype.nsh"
-!include "src\modules\mod_filter\mod_filter.nsh"
-!include "src\modules\mod_gradient\mod_gradient.nsh"
-!include "src\modules\mod_noise\mod_noise.nsh"
-!include "src\modules\mod_particle\mod_particle.nsh"
-!include "src\modules\mod_geometry\mod_geometry.nsh"
+!include "@srcdir@\src\modules\lyr_std\lyr_std.nsh"
+!include "@srcdir@\src\modules\mod_filter\mod_filter.nsh"
+!include "@srcdir@\src\modules\mod_gradient\mod_gradient.nsh"
+!include "@srcdir@\src\modules\mod_noise\mod_noise.nsh"
+!include "@srcdir@\src\modules\mod_particle\mod_particle.nsh"
+!include "@srcdir@\src\modules\mod_geometry\mod_geometry.nsh"
+!include "@srcdir@\src\modules\lyr_freetype\lyr_freetype.nsh"
 SubSectionEnd
 SubSection "Render Targets"
-!include "src\modules\mod_bmp\mod_bmp.nsh"
-;!include "src\modules\mod_dv\mod_dv.nsh"
-;!include "src\modules\mod_ffmpeg\mod_ffmpeg.nsh"
-;!include "src\modules\mod_gif\mod_gif.nsh"
-;!include "src\modules\mod_imagemagick\mod_imagemagick.nsh"
-!include "src\modules\mod_jpeg\mod_jpeg.nsh"
-!include "src\modules\mod_png\mod_png.nsh"
-!include "src\modules\mod_ppm\mod_ppm.nsh"
-!include "src\modules\mod_yuv420p\mod_yuv420p.nsh"
+!include "@srcdir@\src\modules\mod_bmp\mod_bmp.nsh"
+;!include "@srcdir@\src\modules\mod_dv\mod_dv.nsh"
+;!include "@srcdir@\src\modules\mod_ffmpeg\mod_ffmpeg.nsh"
+;!include "@srcdir@\src\modules\mod_gif\mod_gif.nsh"
+;!include "@srcdir@\src\modules\mod_imagemagick\mod_imagemagick.nsh"
+!include "@srcdir@\src\modules\mod_jpeg\mod_jpeg.nsh"
+!include "@srcdir@\src\modules\mod_png\mod_png.nsh"
+!include "@srcdir@\src\modules\mod_ppm\mod_ppm.nsh"
+!include "@srcdir@\src\modules\mod_yuv420p\mod_yuv420p.nsh"
 SubSectionEnd
 SubSectionEnd
 
 
 SubSection "un.PlugIns"
 SubSection "un.Layers"
-!include "src\modules\lyr_std\unlyr_std.nsh"
-!include "src\modules\lyr_freetype\unlyr_freetype.nsh"
-!include "src\modules\mod_filter\unmod_filter.nsh"
-!include "src\modules\mod_gradient\unmod_gradient.nsh"
-!include "src\modules\mod_noise\unmod_noise.nsh"
-!include "src\modules\mod_particle\unmod_particle.nsh"
-!include "src\modules\mod_geometry\unmod_geometry.nsh"
+!include "@srcdir@\src\modules\lyr_std\unlyr_std.nsh"
+!include "@srcdir@\src\modules\lyr_freetype\unlyr_freetype.nsh"
+!include "@srcdir@\src\modules\mod_filter\unmod_filter.nsh"
+!include "@srcdir@\src\modules\mod_gradient\unmod_gradient.nsh"
+!include "@srcdir@\src\modules\mod_noise\unmod_noise.nsh"
+!include "@srcdir@\src\modules\mod_particle\unmod_particle.nsh"
+!include "@srcdir@\src\modules\mod_geometry\unmod_geometry.nsh"
 SubSectionEnd
 SubSection "un.Render Targets"
-!include "src\modules\mod_bmp\unmod_bmp.nsh"
-;!include "src\modules\mod_dv\unmod_dv.nsh"
-;!include "src\modules\mod_ffmpeg\unmod_ffmpeg.nsh"
-;!include "src\modules\mod_gif\unmod_gif.nsh"
-;!include "src\modules\mod_imagemagick\unmod_imagemagick.nsh"
-!include "src\modules\mod_jpeg\unmod_jpeg.nsh"
-!include "src\modules\mod_png\unmod_png.nsh"
-!include "src\modules\mod_ppm\unmod_ppm.nsh"
-!include "src\modules\mod_yuv420p\unmod_yuv420p.nsh"
+!include "@srcdir@\src\modules\mod_bmp\unmod_bmp.nsh"
+;!include "@srcdir@\src\modules\mod_dv\unmod_dv.nsh"
+;!include "@srcdir@\src\modules\mod_ffmpeg\unmod_ffmpeg.nsh"
+;!include "@srcdir@\src\modules\mod_gif\unmod_gif.nsh"
+;!include "@srcdir@\src\modules\mod_imagemagick\unmod_imagemagick.nsh"
+!include "@srcdir@\src\modules\mod_jpeg\unmod_jpeg.nsh"
+!include "@srcdir@\src\modules\mod_png\unmod_png.nsh"
+!include "@srcdir@\src\modules\mod_ppm\unmod_ppm.nsh"
+!include "@srcdir@\src\modules\mod_yuv420p\unmod_yuv420p.nsh"
 SubSectionEnd
 SubSectionEnd
 

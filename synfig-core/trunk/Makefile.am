@@ -1,4 +1,4 @@
-# $Header: /opt/voria/cvs/sinfg/Makefile.am,v 1.4 2005/01/16 22:44:03 darco Exp $
+# $Header: /opt/voria/cvs/sinfg/Makefile.am,v 1.5 2005/03/24 21:07:24 darco Exp $
 
 #AUTOMAKE_OPTIONS=dist-zip dist-shar dist-bzip2
 AUTOMAKE_OPTIONS=dist-zip dist-shar
@@ -80,7 +80,7 @@ listwritemes:
 install-bin:
 	make -C src/sinfg install-libLTLIBRARIES
 
-win32inst.nsi: win32inst.nsi.in
+win32inst.nsi: $(srcdir)/win32inst.nsi.in
 	./config.status win32inst.nsi
 	
 installer: all win32inst.nsi
@@ -94,6 +94,9 @@ $(srcdir)/configure:  $(srcdir)/configure.in $(ACLOCAL_M4) $(CONFIGURE_DEPENDENC
 .doc_stamp: doxygen.cfg
 	$(DOXYGEN) doxygen.cfg
 	touch .doc_stamp
+
+benchmark:
+	sinfg -b -t null -q --time 0 $(srcdir)/examples/*.sif
 
 html: .doc_stamp
 
