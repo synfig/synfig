@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=@PACKAGE_NAME@
+Comment=A Powerful 2D Animation and Composition Package
+Exec=@prefix@/bin/sinfgstudio
+Terminal=1
+Type=Application
+Icon=@prefix@/share/pixmaps/sinfg_icon.@imageext@
+Categories=Application;Graphics;
+StartupNotify=true
+Encoding=UTF-8
+MimeType=image/sif

@@ -1,0 +1,195 @@
+/* === S I N F G =========================================================== */
+/*!	\file dock_params.cpp
+**	\brief Template File
+**
+**	$Id: dock_curves.cpp,v 1.1.1.1 2005/01/07 03:34:36 darco Exp $
+**
+**	\legal
+**	Copyright (c) 2002 Robert B. Quattlebaum Jr.
+**
+**	This software and associated documentation
+**	are CONFIDENTIAL and PROPRIETARY property of
+**	the above-mentioned copyright holder.
+**
+**	You may not copy, print, publish, or in any
+**	other way distribute this software without
+**	a prior written agreement with
+**	the copyright holder.
+**	\endlegal
+*/
+/* ========================================================================= */
+
+/* === H E A D E R S ======================================================= */
+
+#ifdef USING_PCH
+#	include "pch.h"
+#else
+#ifdef HAVE_CONFIG_H
+#	include <config.h>
+#endif
+
+#include "dock_curves.h"
+#include "app.h"
+
+#include <gtkmm/scrolledwindow.h>
+#include <cassert>
+#include "instance.h"
+#include <sigc++/signal.h>
+#include <sigc++/hide.h>
+#include <sigc++/slot.h>
+#include "canvasview.h"
+#include "layerparamtreestore.h"
+#include "workarea.h"
+#include "widget_curves.h"
+#include "layerparamtreestore.h"
+#include <gtkmm/table.h>
+#include <gtkmm/scrollbar.h>
+#include "widget_timeslider.h"
+
+#endif
+
+/* === U S I N G =========================================================== */
+
+using namespace std;
+using namespace etl;
+using namespace sinfg;
+using namespace studio;
+
+/* === M A C R O S ========================================================= */
+
+/* === G L O B A L S ======================================================= */
+
+/* === P R O C E D U R E S ================================================= */
+
+/* === M E T H O D S ======================================================= */
+
+Dock_Curves::Dock_Curves():
+	Dock_CanvasSpecific("curves",_("Curves"),Gtk::StockID("sinfg-curves"))
+{
+	last_widget_curves_=0;
+	table_=0;
+	
+	hscrollbar_=new Gtk::HScrollbar();
+	vscrollbar_=new Gtk::VScrollbar();
+	widget_timeslider_= new Widget_Timeslider();
+}
+
+Dock_Curves::~Dock_Curves()
+{
+	if(table_)delete table_;
+	delete hscrollbar_;
+	delete vscrollbar_;
+	delete widget_timeslider_;
+}
+
+static void
+_curve_selection_changed(Gtk::TreeView* param_tree_view,Widget_Curves* curves)
+{
+	LayerParamTreeStore::Model model;
+	Gtk::TreeIter iter;
+	if(!param_tree_view->get_selection()->count_selected_rows())
+	{
+		curves->clear();
+		return;
+	}
+	
+	std::list<sinfgapp::ValueDesc> value_descs;
+
+	//std::list<Gtk::TreePath> path_list(
+	//param_tree_view->get_selection()->selected_foreach_iter(tmp);
+	iter=param_tree_view->get_selection()->get_selected();
+	
+	value_descs.push_back((*iter)[model.value_desc]);
+	curves->set_value_descs(value_descs);
+	
+	//curves->set_value_descs(tmp.value_descs);	
+}
+
+void
+Dock_Curves::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
+{
+	Widget_Curves* curves(new Widget_Curves());
+	curves->set_time_adjustment(canvas_view->time_adjustment());
+	
+	Gtk::TreeView* param_tree_view(
+		static_cast<Gtk::TreeView*>(canvas_view->get_ext_widget("params"))
+	);
+	
+	param_tree_view->get_selection()->signal_changed().connect(
+		sigc::bind(
+			sigc::bind(
+				sigc::ptr_fun(
+					_curve_selection_changed
+				),curves
+			),param_tree_view
+		)
+	);
+	
+	canvas_view->set_ext_widget(get_name(),curves);
+}
+
+void
+Dock_Curves::refresh_selected_param()
+{
+/*	Gtk::TreeView* tree_view(
+		static_cast<Gtk::TreeView*>(get_canvas_view()->get_ext_widget(get_name()))
+	);
+	Gtk::TreeModel::iterator iter(tree_view->get_selection()->get_selected());
+	
+	if(iter)
+	{
+		LayerParamTreeStore::Model model;
+		get_canvas_view()->work_area->set_selected_value_node(
+			(sinfg::ValueNode::Handle)(*iter)[model.value_node]
+		);
+	}
+	else
+	{
+		get_canvas_view()->work_area->set_selected_value_node(0);
+	}
+*/
+}
+
+void
+Dock_Curves::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
+{
+	if(table_)
+	{
+		table_->hide();
+		delete table_;
+		hscrollbar_->unset_adjustment();
+		vscrollbar_->unset_adjustment();
+		//widget_timeslider_->unset_adjustment();
+		table_=0;
+	}
+
+	
+	if(canvas_view)
+	{
+		last_widget_curves_=dynamic_cast<Widget_Curves*>(
+			canvas_view->get_ext_widget(get_name())
+		);
+
+		vscrollbar_->set_adjustment(last_widget_curves_->get_range_adjustment());
+		hscrollbar_->set_adjustment(canvas_view->time_window_adjustment());
+		widget_timeslider_->set_time_adjustment(&canvas_view->time_adjustment());
+		widget_timeslider_->set_bounds_adjustment(&canvas_view->time_window_adjustment());
+		widget_timeslider_->set_global_fps(canvas_view->get_canvas()->rend_desc().get_frame_rate());
+
+		table_=new Gtk::Table(2,2);
+		table_->attach(*widget_timeslider_, 0, 1, 0, 1, Gtk::FILL|Gtk::EXPAND, Gtk::FILL|Gtk::SHRINK);
+		table_->attach(*last_widget_curves_, 0, 1, 1, 2, Gtk::FILL|Gtk::EXPAND, Gtk::FILL|Gtk::EXPAND);
+		table_->attach(*hscrollbar_, 0, 1, 2, 3, Gtk::FILL|Gtk::EXPAND, Gtk::FILL|Gtk::SHRINK);
+		table_->attach(*vscrollbar_, 1, 2, 0, 2, Gtk::FILL|Gtk::SHRINK, Gtk::FILL|Gtk::EXPAND);
+		add(*table_);
+		
+		//add(*last_widget_curves_);
+		last_widget_curves_->show();
+		table_->show_all();
+		show_all();
+	}
+	else
+	{
+		//clear_previous();
+	}
+}
