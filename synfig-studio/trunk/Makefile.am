@@ -1,4 +1,4 @@
-# $Header: /opt/voria/cvs/studio/Makefile.am,v 1.2 2005/01/17 06:25:42 darco Exp $
+# $Header: /opt/voria/cvs/studio/Makefile.am,v 1.3 2005/03/24 21:40:05 darco Exp $
 
 AUTOMAKE_OPTIONS=dist-zip dist-shar dist-bzip2
 
@@ -70,7 +70,7 @@ $(srcdir)/configure:  $(srcdir)/configure.in $(ACLOCAL_M4) $(CONFIGURE_DEPENDENC
 	$(DOXYGEN) doxygen.cfg
 	touch .doc_stamp
 
-win32inst.nsi: win32inst.nsi.in
+win32inst.nsi: $(srcdir)/win32inst.nsi.in
 	./config.status win32inst.nsi
 
 installer: all win32inst.nsi

@@ -21,13 +21,13 @@ SUFFIXES=.sif .tif .png
 PNGTOICO=pngtoico
 CONVERT=convert
 
-sif_icon.ico:
-	$(SINFG) sif_icon.sif -w 16 -h 16 -o sif_icon_16.gif sif_icon.sif -w 32 -h 32 -o sif_icon_32.gif sif_icon.sif -w 64 -h 64 -o sif_icon_64.gif
+sif_icon.ico: $(srcdir)/sif_icon.sif
+	$(SINFG) $< -w 16 -h 16 -o sif_icon_16.gif sif_icon.sif -w 32 -h 32 -o sif_icon_32.gif sif_icon.sif -w 64 -h 64 -o sif_icon_64.gif
 	$(CONVERT) sif_icon_16.gif sif_icon_16.png
 	$(CONVERT) sif_icon_32.gif sif_icon_32.png
 	$(CONVERT) sif_icon_64.gif sif_icon_64.png
-	$(PNGTOICO) sif_icon_64.png > sif_icon.ico
-#	$(PNGTOICO) sif_icon_16.png sif_icon_32.png sif_icon_64.png > sif_icon.ico
+	$(PNGTOICO) sif_icon_64.png > $@
+#	$(PNGTOICO) sif_icon_16.png sif_icon_32.png sif_icon_64.png > $@
 
 clean:
 	$(RM) $(CLEANFILES)
@@ -38,16 +38,16 @@ clean:
 .sif.$(EXT):
 	$(SINFG) -q $< -o $@ --time 0
 
-keyframe_lock_all.$(EXT): keyframe_lock_icon.sif
+keyframe_lock_all.$(EXT): $(srcdir)/keyframe_lock_icon.sif
 	$(SINFG) -q $< -o $@ --time 0
 
-keyframe_lock_past.$(EXT): keyframe_lock_icon.sif
+keyframe_lock_past.$(EXT): $(srcdir)/keyframe_lock_icon.sif
 	$(SINFG) -q $< -o $@ --time 0 -c PastOnly
 
-keyframe_lock_future.$(EXT): keyframe_lock_icon.sif
+keyframe_lock_future.$(EXT): $(srcdir)/keyframe_lock_icon.sif
 	$(SINFG) -q $< -o $@ --time 0 -c FutureOnly
 
-keyframe_lock_none.$(EXT): keyframe_lock_icon.sif
+keyframe_lock_none.$(EXT): $(srcdir)/keyframe_lock_icon.sif
 	$(SINFG) -q $< -o $@ --time 0 -c Disabled
 
 #.sif.png:

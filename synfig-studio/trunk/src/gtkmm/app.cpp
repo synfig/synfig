@@ -2,7 +2,7 @@
 /*!	\file app.cpp
 **	\brief writeme
 **
-**	$Id: app.cpp,v 1.10 2005/01/17 06:31:12 darco Exp $
+**	$Id: app.cpp,v 1.11 2005/03/24 21:47:28 darco Exp $
 **
 **	\legal
 **	Copyright (c) 2002 Robert B. Quattlebaum Jr.
@@ -371,7 +371,14 @@ static inline U32 hash_U32(U32 i)
 	return i;
 }
 
-inline int v_unwind_key(V_KeyUnwound* unwound, const char* key)
+#ifdef BIG_ENDIAN
+static const int endian_fix_table[8] = { 3, 2, 1, 0, 7, 6, 5, 4 } ;
+#define endian_fix(x) (endian_fix_table[x])
+#else
+#define endian_fix(x) (x)
+#endif
+
+int v_unwind_key(V_KeyUnwound* unwound, const char* key)
 {
 	int i;
 	unwound->element.serial=0;
@@ -408,7 +415,7 @@ inline int v_unwind_key(V_KeyUnwound* unwound, const char* key)
 	return 1;
 }
 
-inline int v_key_check(const char* key, U32* serial, U32 appid)
+int v_key_check(const char* key, U32* serial, U32 appid)
 {
 	V_KeyUnwound unwound_key;
 	U32 appid_mask_a=hash_U32(appid);
@@ -423,12 +430,12 @@ inline int v_key_check(const char* key, U32* serial, U32 appid)
 
 	// Undo obfuscation pass
 	{
-		U32 next=hash_U32(unwound_key.raw[7]);
+		U32 next=hash_U32(unwound_key.raw[endian_fix(7)]);
 		int i;
 		for(i=0;i<7;i++)
 		{
 			next=hash_U32(next);
-			unwound_key.raw[i]^=(next>>24);
+			unwound_key.raw[endian_fix(i)]^=(next>>24);
 		}
 	}
 	
