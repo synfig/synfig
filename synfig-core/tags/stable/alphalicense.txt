@@ -1,0 +1,17 @@
+Alpha Test License Agreement - Synfig Core and Synfig Studio
+Last Changed: 1-14-2004
+
+* By continuing to install this software, you agree to be bound by the terms of this agreement. READ IT CAREFULLY.
+
+* This software is owned by Voria Software, hereafter known as "the Company"
+
+* This software is a part of a closed alpha test, and is licensed for use only to those who are participating in the alpha test (Hereafter referred to as "testers"). Use of this software by anyone who is not a tester is strictly prohibited.
+
+* At the end of the alpha test, testers must cease the use and discard of all copies of this software and associated materials (ie: software documentation)
+
+* The tester maintains full ownership of any still images and/or animations that has been created by the tester with this software.
+
+* Copies of the software, screenshots of the software, and all documentation associated with this software and this alpha test should be considered confidential. Do not distribute any of these materials to anyone not participating in this alpha test without written authorization.
+
+* DISCLAIMER: THIS SOFTWARE COMES WITH NO WARRANTY OF ANY KIND. THE TESTER AGREES THAT THE COMPANY WILL NOT BE HELD LIABLE FOR ANY DAMAGES, DIRECT OR INDIRECT, RESULTING FROM THE USE, MISUSE, OR MALFUNCTION OF THIS SOFTWARE.
+

@@ -1,0 +1,107 @@
+# $Header: /opt/voria/cvs/sinfg/Makefile.am,v 1.5 2005/03/24 21:07:24 darco Exp $
+
+#AUTOMAKE_OPTIONS=dist-zip dist-shar dist-bzip2
+AUTOMAKE_OPTIONS=dist-zip dist-shar
+
+MAINTAINERCLEANFILES=config/config.guess config/config.sub config/ltmain.sh config/install-sh config/mkinstalldirs config/aclocal.m4 config/missing config/texinfo.tex config/depcomp aclocal.m4 config.h.in configure stamp-h.in Makefile.in config.log config.status .doc_stamp .DS_Store @PACKAGE_TARNAME@-@VERSION@.spec include/etl_profile.h.in libltdl/COPYING.LIB  libltdl/Makefile.in  libltdl/acinclude.m4  libltdl/config-h.in  libltdl/configure.in  libltdl/ltdl.h libltdl/Makefile.am  libltdl/README       libltdl/aclocal.m4    libltdl/configure    libltdl/ltdl.c        libltdl/stamp-h.in
+
+
+SUBDIRS=libltdl src
+
+# Install the pkg-config file:
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = @PACKAGE_TARNAME@.pc
+
+bin_SCRIPTS=sinfg-config
+
+EXTRA_DIST=bootstrap config/depcomp config/sinfg.m4 config/cxx_macros.m4 sinfg.pbproj/config.h sinfg.pbproj/project.pbxproj @PACKAGE_TARNAME@-@VERSION@.spec config/project.spec.in config/build.cfg sinfg.kdevprj sinfg-config.in config/ETL.m4 config/doxygen.cfg.in doxygen.cfg config/pkgconfig.pc.in config/pkgconfig.m4 config/libxml++.m4 @PACKAGE_TARNAME@.pc.in
+
+CVS=cvs
+
+GREP=grep
+
+PRINTF=printf
+
+SH=sh
+
+DOXYGEN=doxygen
+
+stats:
+	-@echo
+	-@echo  -- Stats
+	-@echo
+	-@$(PRINTF) "Total lines: "
+	-@wc -l $(shell find $(top_srcdir)/src -name '*.[ch]*') | $(GREP) total
+	-@$(PRINTF) "Total size: "
+	-@du -hcs $(shell find $(top_srcdir)/src -name '*.[ch]*') | $(GREP) total
+	-@echo 
+
+tagstable:
+	$(CVS) tag -F stable
+
+tagrelease:
+	$(CVS) tag -F @PACKAGE_TARNAME@_@VERSION_MAJ@_@VERSION_MIN@_@VERSION_REV@
+
+listfixmes:
+	-@echo
+	-@echo  -- List of pending FIXMEs
+	-@echo
+	-@$(GREP) -e FIXME -e "\\fixme" -n $(shell find $(top_srcdir) -name '*.[ch]*')
+	-@echo
+
+listhacks:
+	-@echo
+	-@echo  -- List of pending HACKs
+	-@echo
+	-@$(GREP) -e HACK -e "\\hack" -n $(shell find $(top_srcdir) -name '*.[ch]*')
+	-@echo
+
+listtodos:
+	-@echo
+	-@echo  -- List of pending TODOs
+	-@echo
+	-@$(GREP) -e TODO -e "\\todo" -n $(shell find $(top_srcdir) -name '*.[ch]*')
+	-@echo
+
+listoptimizes:
+	-@echo
+	-@echo  -- List of pending optimizations
+	-@echo
+	-@$(GREP) -e OPTIMIZE -e "\\optimize" -n $(shell find $(top_srcdir) -name '*.[ch]*')
+	-@echo
+
+listwritemes:
+	-@echo
+	-@echo  -- List of pending WRITEMEs
+	-@echo
+	-@$(GREP) -e WRITEME -e "\\writeme" -n $(shell find $(top_srcdir) -name '*.[ch]*')
+	-@echo
+
+install-bin:
+	make -C src/sinfg install-libLTLIBRARIES
+
+win32inst.nsi: $(srcdir)/win32inst.nsi.in
+	./config.status win32inst.nsi
+	
+installer: all win32inst.nsi
+	makensis win32inst.nsi
+
+run: check
+
+$(srcdir)/configure:  $(srcdir)/configure.in $(ACLOCAL_M4) $(CONFIGURE_DEPENDENCIES)
+	$(srcdir)/bootstrap
+
+.doc_stamp: doxygen.cfg
+	$(DOXYGEN) doxygen.cfg
+	touch .doc_stamp
+
+benchmark:
+	sinfg -b -t null -q --time 0 $(srcdir)/examples/*.sif
+
+html: .doc_stamp
+
+rtf: .doc_stamp
+
+docs: html
+
+.PHONY: stats tagstable tagrelease listfixmes listhacks check docs pdf html rtf
