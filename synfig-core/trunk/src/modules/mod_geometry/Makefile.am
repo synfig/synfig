@@ -4,6 +4,10 @@
 MAINTAINERCLEANFILES=Makefile.in
 INCLUDES = -I$(top_srcdir)/src
 
+# GCC on MacOS X does not take kindly to the -ffastmath optimization
+# in this module for some reason.
+CXXFLAGS=`echo @CXXFLAGS@ | sed s/-ffast-math//g`
+
 moduledir=@MODULE_DIR@
 
 module_LTLIBRARIES = libmod_geometry.la

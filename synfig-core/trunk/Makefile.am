@@ -3,7 +3,7 @@
 #AUTOMAKE_OPTIONS=dist-zip dist-shar dist-bzip2
 AUTOMAKE_OPTIONS=dist-zip dist-shar
 
-MAINTAINERCLEANFILES=config/config.guess config/config.sub config/ltmain.sh config/install-sh config/mkinstalldirs config/aclocal.m4 config/missing config/texinfo.tex config/depcomp aclocal.m4 config.h.in configure stamp-h.in Makefile.in config.log config.status .doc_stamp .DS_Store @PACKAGE_TARNAME@-@VERSION@.spec include/etl_profile.h.in libltdl/COPYING.LIB  libltdl/Makefile.in  libltdl/acinclude.m4  libltdl/config-h.in  libltdl/configure.in  libltdl/ltdl.h libltdl/Makefile.am  libltdl/README       libltdl/aclocal.m4    libltdl/configure    libltdl/ltdl.c        libltdl/stamp-h.in
+MAINTAINERCLEANFILES=config/package config/config.guess config/config.sub config/ltmain.sh config/install-sh config/mkinstalldirs config/aclocal.m4 config/missing config/texinfo.tex config/depcomp aclocal.m4 config.h.in configure stamp-h.in Makefile.in config.log config.status .doc_stamp .DS_Store @PACKAGE_TARNAME@-@VERSION@.spec include/etl_profile.h.in libltdl/COPYING.LIB  libltdl/Makefile.in  libltdl/acinclude.m4  libltdl/config-h.in  libltdl/configure.in  libltdl/ltdl.h libltdl/Makefile.am  libltdl/README       libltdl/aclocal.m4    libltdl/configure    libltdl/ltdl.c        libltdl/stamp-h.in
 
 
 SUBDIRS=libltdl src
@@ -82,9 +82,23 @@ install-bin:
 
 win32inst.nsi: $(srcdir)/win32inst.nsi.in
 	./config.status win32inst.nsi
-	
-installer: all win32inst.nsi
+
+pkg-info/macosx/synfig-core.info: $(srcdir)/pkg-info/macosx/synfig-core.info.in
+	./config.status pkg-info/macosx/synfig-core.info
+
+RMDIR=rm -fr
+
+if WIN32_PKG	
+package: all win32inst.nsi
 	makensis win32inst.nsi
+else
+if MACOSX_PKG
+package: all pkg-info/macosx/synfig-core.info
+	[ -d pkg_root ] && $(RMDIR) pkg_root || true
+	make install prefix="`pwd`/pkg_root"
+	$(srcdir)/config/package pkg_root pkg-info/macosx/synfig-core.info -r $(srcdir)/pkg-info/macosx/core-resources
+endif
+endif
 
 run: check
 

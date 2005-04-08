@@ -359,7 +359,7 @@ dnl ])
 
 
 
-MODULE_DIR=$libdir/sinfg/modules
+MODULE_DIR='${libdir}/sinfg/modules'
 moduledir=$libdir/sinfg/modules
 AC_SUBST(MODULE_DIR)
 SINFGLIB_DIR=$libdir/sinfg
@@ -372,6 +372,24 @@ AC_SUBST(SINFGLIB_DIR)
 CXXFLAGS="$CXXFLAGS -fpermissive"
 
 AC_CHECK_HEADERS(signal.h termios.h)
+
+
+case "$host" in
+	*mingw* | *cygwin*)
+		AM_CONDITIONAL(WIN32_PKG, true)
+		AM_CONDITIONAL(MACOSX_PKG, false)
+	;;
+	*darwin*)
+		AM_CONDITIONAL(WIN32_PKG, false)
+		AM_CONDITIONAL(MACOSX_PKG, true)
+	;;
+	*)
+		AM_CONDITIONAL(WIN32_PKG, false)
+		AM_CONDITIONAL(MACOSX_PKG, false)
+	;;
+esac
+		
+		
 
 # -- H E A D E R S --------------------------------------------
 
@@ -498,6 +516,7 @@ src/modules/mod_particle/Makefile
 src/tool/Makefile
 src/modules/sinfg_modules.cfg
 win32inst.nsi
+pkg-info/macosx/synfig-core.info
 dnl src/modules/trgt_mpg/Makefile
 dnl src/modules/mptr_mplayer/Makefile
 )
