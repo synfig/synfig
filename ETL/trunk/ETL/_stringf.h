@@ -197,7 +197,7 @@ inline bool
 is_absolute_path(const std::string &path)
 {
 #ifdef WIN32
-	if(path.size()>=3 && path[1]==':' && path[2]=='\\')
+	if(path.size()>=3 && path[1]==':' && (path[2]=='\\' || path[2]=='/'))
 		return true;
 	return false;
 #else
@@ -248,7 +248,7 @@ get_root_from_path(std::string path)
 			break;
 		ret+=*iter;
 	}
-	if(iter!=path.end())
+	//if(iter!=path.end())
 		ret+=ETL_DIRECTORY_SEPERATOR;
 	return ret;
 }
@@ -289,6 +289,7 @@ cleanup_path(std::string path)
 		path=remove_root_from_path(path);
 	}
 	
+	// Remove any trailing directory seperators
 	if(ret.size() && ret[ret.size()-1]==ETL_DIRECTORY_SEPERATOR)
 	{
 		ret.erase(ret.begin()+ret.size()-1);
@@ -323,6 +324,20 @@ relative_path(std::string curr_path,std::string dest_path)
 		curr_path=absolute_path(curr_path);
 	else
 		curr_path=cleanup_path(curr_path);
+
+#ifdef WIN32
+	// If we are on windows and the dest path is on a different drive,
+	// then there is no way to make a relative path to it.
+	if(dest_path.size()>=3 && dest_path[1]==':' && dest_path[0]!=curr_path[0])
+	{
+		return dest_path;
+	}
+#endif
+
+	if(curr_path==dirname(dest_path))
+	{
+		return basename(dest_path);
+	}
 	
 	while(!dest_path.empty() && !curr_path.empty() && get_root_from_path(dest_path)==get_root_from_path(curr_path))
 	{

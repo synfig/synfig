@@ -109,7 +109,26 @@ int relative_path_test()
 	if(relative_path(curr_path,dest_path)!=unix_to_local_path("../../share"))
 		cerr<<"Bad relative path"<<endl,ret++;
 
+	cout<<endl;
+
+	curr_path=unix_to_local_path("/home/darco/projects/voria");
+	dest_path=unix_to_local_path("/home/darco/projects/voria/myfile.txt");
+	cout<<"curr_path="<<curr_path<<" dest_path="<<dest_path<<endl;
+	cout<<"relative_path="<<relative_path(curr_path,dest_path)<<endl;
+	if(relative_path(curr_path,dest_path)!=unix_to_local_path("myfile.txt"))
+		cerr<<"Bad relative path"<<endl,ret++;
 	
+	cout<<endl;
+
+	curr_path=unix_to_local_path("/home/darco/projects/voria");
+	dest_path=unix_to_local_path("/home/darco/projects/voria/files/myfile.txt");
+	cout<<"curr_path="<<curr_path<<" dest_path="<<dest_path<<endl;
+	cout<<"relative_path="<<relative_path(curr_path,dest_path)<<endl;
+	if(relative_path(curr_path,dest_path)!=unix_to_local_path("files/myfile.txt"))
+		cerr<<"Bad relative path"<<endl,ret++;
+	
+	cout<<endl;
+
 	curr_path=unix_to_local_path("/usr/local/../include/sys/../linux/linux.h");
 	cout<<"dirty_path="<<curr_path<<endl;
 	cout<<"clean_path="<<cleanup_path(curr_path)<<endl;

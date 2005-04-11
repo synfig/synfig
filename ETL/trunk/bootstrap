@@ -54,7 +54,7 @@ output Prepairing build environment for $PACKAGE-$VERSION...
 
 # Look for the CVS directory. If we don't find it, we need to
 # ask the user if they know what they are doing.
-test -d CVS ||
+( test -d CVS || test -d .svn ) ||
 {
 	echo "
 $BOOTSTRAP_NAME: warning: This shell script is intended for those
