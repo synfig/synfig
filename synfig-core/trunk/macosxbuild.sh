@@ -13,7 +13,7 @@ BUILDDIR=macosxbuild
 
 [ -e configure ] || ./bootstrap || exit 1
 
-# [ -d $BUILDDIR ] && rm -fr $BUILDDIR
+[ -d $BUILDDIR ] && rm -fr $BUILDDIR
 
 mkdir $BUILDDIR
 

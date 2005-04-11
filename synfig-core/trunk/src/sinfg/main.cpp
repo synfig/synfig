@@ -279,6 +279,33 @@ sinfg::Main::Main(const sinfg::String& basepath,ProgressCallback *cb):
 	
 	// Load up the modules	
 	std::list<String> modules_to_load;
+	std::vector<String> locations;
+	
+	if(!getenv("SYNFIG_MODULE_LIST"))
+	{
+		locations.push_back("standard");
+		locations.push_back("./"MODULE_LIST_FILENAME);	//1
+		locations.push_back("../etc/"MODULE_LIST_FILENAME);	//1
+		locations.push_back("~/.sinfg/"MODULE_LIST_FILENAME); //2
+		locations.push_back(prefix+"/etc/"+MODULE_LIST_FILENAME); //3
+		locations.push_back("/usr/local/etc/"MODULE_LIST_FILENAME);
+	#ifdef SYSCONFDIR
+		locations.push_back(SYSCONFDIR"/"MODULE_LIST_FILENAME);
+	#endif
+	#ifdef __APPLE__
+		locations.push_back("/Library/Frameworks/synfig.framework/Resources/"MODULE_LIST_FILENAME);
+		locations.push_back("/Library/Synfig/"MODULE_LIST_FILENAME);
+		locations.push_back("~/Library/Synfig/"MODULE_LIST_FILENAME);
+	#endif
+	#ifdef WIN32
+		locations.push_back("C:\\Program Files\\Synfig\\etc\\"MODULE_LIST_FILENAME);
+	#endif
+	}
+	else
+	{
+		locations.push_back(getenv("SYNFIG_MODULE_LIST"));
+	}
+/*	
 	const char *locations[]=
 	{
 		"standard",	//0
@@ -299,12 +326,11 @@ sinfg::Main::Main(const sinfg::String& basepath,ProgressCallback *cb):
 		"C:\\Program Files\\SINFG\\etc\\"MODULE_LIST_FILENAME,
 #endif
 	};
-	String module_path=prefix+"/etc/"+MODULE_LIST_FILENAME;
-	locations[3]=module_path.c_str();
+*/
 	
-	for(i=0;i<(signed)(sizeof(locations)/sizeof(char*));i++)
+	for(i=0;i<locations.size();i++)
 		if(retrieve_modules_to_load(locations[i],modules_to_load))
-			if(cb)cb->task(strprintf(_("Loading modules from %s"),locations[i]));
+			if(cb)cb->task(strprintf(_("Loading modules from %s"),locations[i].c_str()));
 	
 	std::list<String>::iterator iter;
 	
