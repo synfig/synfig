@@ -1,0 +1,101 @@
+/* === S I N F G =========================================================== */
+/*!	\file nodebase.h
+**	\brief Template Header
+**
+**	$Id: template.h,v 1.1.1.1 2005/01/04 01:23:09 darco Exp $
+**
+**	\legal
+**	Copyright (c) 2002 Robert B. Quattlebaum Jr.
+**
+**	This software and associated documentation
+**	are CONFIDENTIAL and PROPRIETARY property of
+**	the above-mentioned copyright holder.
+**
+**	You may not copy, print, publish, or in any
+**	other way distribute this software without
+**	a prior written agreement with
+**	the copyright holder.
+**	\endlegal
+*/
+/* ========================================================================= */
+
+/* === S T A R T =========================================================== */
+
+#ifndef __SINFG_NODEBASE_H
+#define __SINFG_NODEBASE_H
+
+/* === H E A D E R S ======================================================= */
+
+#include "../protocol.h"
+#include "../string.h"
+#include "../guid.h"
+#include <sigc++/slot.h>
+
+/* === M A C R O S ========================================================= */
+
+/*
+
+#define DEFINE_SIMPLE_FUNC(func_name, ret_type) \
+	private: sigc::slot<ret_type> slot_##func_name; \
+	public: ret_type func_name() { return slot_##func_name(); }
+
+#define DEFINE_SIMPLE_FUNC_CONST(func_name, ret_type) \
+	private: sigc::slot<ret_type> slotconst_##func_name; \
+	public: ret_type func_name()const { return slotconst_##func_name(); }
+
+#define DECLARE_FUNC(func_name, ret_type, ...) \
+	private: sigc::slot<ret_type, __VA_ARGS__> slot_##func_name; 
+//	public: ret_type func_name(__VA_ARGS__)
+
+#define DECLARE_FUNC_CONST(func_name, ret_type, ...) \
+	private: sigc::slot<ret_type, __VA_ARGS__> slotconst_##func_name; 
+
+//	public: ret_type func_name(__VA_ARGS__)const
+		
+#define DEFINE_FUNC(func_name, ret_type, arg_list, ...) \
+	public: ret_type func_name(__VA_ARGS__) { return slot_##func_name arg_list; }
+
+#define DEFINE_FUNC_CONST(func_name, ret_type, arg_list, ...) \
+	public: ret_type func_name(__VA_ARGS__)const { return slotconst_##func_name arg_list; }
+
+#define DEFINE_DATA(data_name, data_type) \
+	DEFINE_SIMPLE_FUNC_CONST(get_ ## data_name, data_type); \
+	DECLARE_FUNC(set_ ## data_name, void, data_type); \
+	DEFINE_FUNC(set_ ## data_name, void, (x), data_type x)
+*/
+
+/* === T Y P E D E F S ===================================================== */
+
+/* === C L A S S E S & S T R U C T S ======================================= */
+
+namespace sinfg {
+namespace Proto {
+
+class NodeBase : public Protocol
+{
+public:
+
+	PX_DEFINE_DATA(guid, GUID)
+
+	PX_DEFINE_FUNC(func_test, float, int, int)
+
+	PX_DEFINE_DATA(id, String)
+
+	PX_DEFINE_DATA(root, NodeHandle)
+
+	PX_DEFINE_FUNC(signal_changed, sigc::signal<void>)
+	PX_DEFINE_FUNC(signal_deleted, sigc::signal<void>)
+		
+	PX_DEFINE_FUNC_CONST(get_parents, const NodeList)
+	PX_DEFINE_FUNC_CONST(get_children, const NodeList)
+
+	PX_DEFINE_FUNC(query_children, NodeList, Query)
+
+}; // END of class Proto::NodeBase
+
+}; // END of namespace Proto
+}; // END of namespace sinfg
+
+/* === E N D =============================================================== */
+
+#endif
