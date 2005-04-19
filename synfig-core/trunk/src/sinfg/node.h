@@ -234,6 +234,8 @@ guid_cast(const sinfg::GUID& guid)
 	return etl::handle<T>::cast_dynamic(sinfg::find_node(guid));
 }
 
+typedef etl::handle<Node> NodeHandle;
+
 }; // END of namespace sinfg
 
 /* === E N D =============================================================== */

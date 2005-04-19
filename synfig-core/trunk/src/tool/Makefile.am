@@ -4,10 +4,11 @@ MAINTAINERCLEANFILES=Makefile.in
 
 INCLUDES=-I$(top_srcdir)/src
 
-bin_PROGRAMS	=	sinfg
-sinfg_SOURCES = main.cpp
-sinfg_LDADD = -L../sinfg -lsinfg @SINFG_LIBS@
-sinfg_CXXFLAGS = -lsinfg @SINFG_CFLAGS@
-#sinfg_LDFLAGS=-export-dynamic  -dlopen self
+bin_PROGRAMS	=	synfig
+
+synfig_SOURCES = main.cpp
+synfig_LDADD = -L../sinfg -lsinfg @SINFG_LIBS@
+synfig_CXXFLAGS = -lsinfg @SINFG_CFLAGS@
+#synfig_LDFLAGS=-export-dynamic  -dlopen self
 #-dlopen ../modules/example/libexample.la
 

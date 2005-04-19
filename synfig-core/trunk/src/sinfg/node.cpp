@@ -31,6 +31,7 @@
 #endif
 
 #include "node.h"
+#include "proto/nodebase.h"
 
 #ifdef HASH_MAP_H
 #include HASH_MAP_H

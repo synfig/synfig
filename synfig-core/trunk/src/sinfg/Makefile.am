@@ -1,5 +1,7 @@
 # $Header: /opt/voria/cvs/sinfg/src/sinfg/Makefile.am,v 1.3 2005/01/21 19:29:10 darco Exp $
 
+# SUBDIRS=proto
+
 MAINTAINERCLEANFILES=Makefile.in
 INCLUDES = -I$(top_srcdir)/src -I$(top_srcdir)/libltdl
 

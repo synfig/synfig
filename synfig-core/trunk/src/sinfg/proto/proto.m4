@@ -16,17 +16,17 @@ ifelse($#,1,,`v$1`'ifelse($#,2,,`, _PRINT_ARGS2(incr($1), shift(shift($@)))')')d
 
 dnl PX_DEFINE_FUNC(func_name, ret_type, args...)
 define(`PX_DEFINE_FUNC',`
-	private: sigc::slot< $2`'ifelse($#,2,,`, shift(shift($@))') > slot_$1;
-	public: $2 $1(ifelse($#,2,,`_PRINT_ARGS(1,shift(shift($@)))')) {
-		return slot_$1(ifelse($#,2,,`_PRINT_ARGS2(1,shift(shift($@)))'));
+	sigc::slot< $2`'ifelse($#,2,,`, shift(shift($@))') > _slot_$1;
+	$2 $1(ifelse($#,2,,`_PRINT_ARGS(1,shift(shift($@)))')) {
+		return _slot_$1(ifelse($#,2,,`_PRINT_ARGS2(1,shift(shift($@)))'));
 	}
 ')dnl
 
 dnl PX_DEFINE_FUNC_CONST(func_name, ret_type, args...)
 define(`PX_DEFINE_FUNC_CONST',`
-	private: sigc::slot< $2`'ifelse($#,2,,`, shift(shift($@))') > slotconst_$1;
-	public: $2 $1(ifelse($#,2,,`_PRINT_ARGS(1,shift(shift($@)))'))const {
-		return slotconst_$1(ifelse($#,2,,`_PRINT_ARGS2(1,shift(shift($@)))'));
+	sigc::slot< $2`'ifelse($#,2,,`, shift(shift($@))') > _slot_$1_const;
+	$2 $1(ifelse($#,2,,`_PRINT_ARGS(1,shift(shift($@)))'))const {
+		return _slot_$1_const(ifelse($#,2,,`_PRINT_ARGS2(1,shift(shift($@)))'));
 	}
 ')dnl
 

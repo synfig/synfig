@@ -1,5 +1,5 @@
 /* === S I N F G =========================================================== */
-/*!	\file nodebase.h
+/*!	\file protocol.h
 **	\brief Template Header
 **
 **	$Id: template.h,v 1.1.1.1 2005/01/04 01:23:09 darco Exp $
@@ -21,15 +21,12 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_NODEBASE_H
-#define __SINFG_NODEBASE_H
+#ifndef __SINFG_PROTOCOL_H
+#define __SINFG_PROTOCOL_H
 
 /* === H E A D E R S ======================================================= */
 
-#include "../protocol.h"
-#include "../string.h"
-#include "../guid.h"
-#include <sigc++/slot.h>
+#include <sigc++/signal.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -38,34 +35,29 @@
 /* === C L A S S E S & S T R U C T S ======================================= */
 
 namespace sinfg {
-namespace Proto {
 
-typedef int Query;
-typedef int NodeList;
-
-class NodeBase : public Protocol
+class Object
 {
 public:
-
-	PX_DEFINE_DATA(guid, GUID)
-
-	PX_DEFINE_FUNC(func_test, float, int, int)
-
-	PX_DEFINE_DATA(id, String)
-
-	PX_DEFINE_DATA(root, NodeHandle)
-
-	PX_DEFINE_FUNC(signal_changed, sigc::signal<void>)
-	PX_DEFINE_FUNC(signal_deleted, sigc::signal<void>)
+	
+	sigc::signal_
+	bool find_protocol(Protocol& proto)
+	{
 		
-	PX_DEFINE_FUNC_CONST(get_parents, const NodeList)
-	PX_DEFINE_FUNC_CONST(get_children, const NodeList)
+	}
+};
 
-	PX_DEFINE_FUNC(query_children, NodeList, Query)
+class Protocol
+{
+public:
+	class Type;
+	
+}; // END of class Protocol
 
-}; // END of class Proto::NodeBase
+class Protocol::Type
+{
+}; // END of class Protocol::Type
 
-}; // END of namespace Proto
 }; // END of namespace sinfg
 
 /* === E N D =============================================================== */
