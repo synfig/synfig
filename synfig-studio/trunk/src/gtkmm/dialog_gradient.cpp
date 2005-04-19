@@ -63,7 +63,12 @@ Dialog_Gradient::Dialog_Gradient():
 	dialog_settings(this,"gradient"),
 	adjustment_pos(0,0.0,1.0,0.001,0.001,0.001)
 {
-	set_type_hint(Gdk::WINDOW_TYPE_HINT_UTILITY);
+	set_type_hint(Gdk::WINDOW_TYPE_HINT_DIALOG);
+	set_keep_below(true);
+	set_keep_above(false);
+
+	set_role("gradient_editor");
+	
 	// Setup the buttons
 	Gtk::Button *grab_button(manage(new class Gtk::Button(Gtk::StockID("Grab"))));
 	grab_button->show();

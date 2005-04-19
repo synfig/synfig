@@ -157,6 +157,7 @@ src/gtkmm/Makefile
 src/sinfgapp/Makefile
 images/Makefile
 win32inst.nsi
+pkg-info/macosx/synfig-studio.info
 )
 
 # -- S U M M A R Y --------------------------------------------

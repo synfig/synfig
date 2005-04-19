@@ -84,11 +84,13 @@ using namespace SigC;
 
 /* === M A C R O S ========================================================= */
 
-#define GRAB_HINT_DATA(y)	{ \
+#define GRAB_HINT_DATA(y,default)	{ \
 		String x; \
 		if(sinfgapp::Main::settings().get_value(String("pref.")+y+"_hints",x)) \
 		{ \
-			set_type_hint((Gdk::WindowTypeHint)atoi(x.c_str())); \
+			set_type_hint((Gdk::WindowTypeHint)atoi(x.c_str()));	\
+		} else {\
+			set_type_hint(default); \
 		} \
 	}
 
@@ -188,6 +190,20 @@ Toolbox::Toolbox():
 	Gtk::Window(Gtk::WINDOW_TOPLEVEL),
 	dialog_settings(this,"toolbox")
 {
+	GRAB_HINT_DATA(
+		"toolbox",
+#ifdef __APPLE__
+		Gdk::WINDOW_TYPE_HINT_NORMAL
+#else
+		Gdk::WINDOW_TYPE_HINT_UTILITY
+#endif
+	);
+	set_keep_below(true);
+	set_keep_above(false);
+	set_role("toolbox");
+
+
+
 	recent_files_menu= manage(new class Gtk::Menu());
 	
 	Gtk::Menu	*filemenu	=manage(new class Gtk::Menu());
@@ -357,7 +373,7 @@ Toolbox::Toolbox():
 	
 	changing_state_=false;
 	
-	GRAB_HINT_DATA("toolbox");
+
 	add_accel_group(App::ui_manager()->get_accel_group());
 	
 	App::signal_present_all().connect(sigc::mem_fun(*this,&Toolbox::present));

@@ -58,11 +58,13 @@ using namespace studio;
 
 /* === M A C R O S ========================================================= */
 
-#define GRAB_HINT_DATA(y)	{ \
+#define GRAB_HINT_DATA(y,default)	{ \
 		String x; \
 		if(sinfgapp::Main::settings().get_value(String("pref.")+y+"_hints",x)) \
 		{ \
 			set_type_hint((Gdk::WindowTypeHint)atoi(x.c_str()));	\
+		} else {\
+			set_type_hint(default); \
 		} \
 	}
 
@@ -86,10 +88,21 @@ DockDialog::DockDialog():
 	// Give ourselves an ID that is most likely unique
 	set_id(sinfg::UniqueID().get_uid()^reinterpret_cast<int>(this));
 	
+	set_role(strprintf("dock_dialog_%d",get_id()));
+	GRAB_HINT_DATA(
+		"dock_dialog",
+#ifdef __APPLE__
+		Gdk::WINDOW_TYPE_HINT_NORMAL
+#else
+		Gdk::WINDOW_TYPE_HINT_UTILITY
+#endif
+	);
+	set_keep_below(true);
+	set_keep_above(false);
+	
 	// Set up the window
 	//set_type_hint(Gdk::WINDOW_TYPE_HINT_UTILITY);
 	set_title("Dock Dialog");
-	GRAB_HINT_DATA("dock_dialog");
 	
 	// Register with the dock manager
 	App::dock_manager->dock_dialog_list_.push_back(this);
@@ -115,6 +128,7 @@ DockDialog::DockDialog():
 
 	add_accel_group(App::ui_manager()->get_accel_group());
 	App::signal_present_all().connect(sigc::mem_fun(*this,&DockDialog::present));
+
 }
 
 DockDialog::~DockDialog()
