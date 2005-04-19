@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file value_node.cpp
 **	\brief Template File
 **
@@ -21,7 +21,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#define SINFG_NO_ANGLE
+#define SYNFIG_NO_ANGLE
 
 //#define HAS_HASH_MAP 1
 
@@ -61,7 +61,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 
@@ -73,7 +73,7 @@ static LinkableValueNode::Book *book_;
 
 
 ValueNode::LooseHandle
-sinfg::find_value_node(const GUID& guid)
+synfig::find_value_node(const GUID& guid)
 {
 	return guid_cast<ValueNode>(guid);
 }
@@ -117,23 +117,23 @@ ValueNode::subsys_stop()
 /*	if(global_value_node_map.size() || value_node_count)
 	{
 		if(value_node_count)
-			sinfg::error("%d ValueNodes haven't been destroyed yet!",value_node_count);
+			synfig::error("%d ValueNodes haven't been destroyed yet!",value_node_count);
 
 		if(global_value_node_map.size()!=value_node_count)
-			sinfg::error("value node count mismatch! map.size()!=value_node_count (%d!=%d)",global_value_node_map.size(),value_node_count);
+			synfig::error("value node count mismatch! map.size()!=value_node_count (%d!=%d)",global_value_node_map.size(),value_node_count);
 		
 		GlobalValueNodeMap::iterator iter;		
 		for(iter=global_value_node_map.begin();iter!=global_value_node_map.end();++iter)
 		{
 			if(!iter->second->is_exported())
-				sinfg::info("%s: count:%d name:%s type:%s",
+				synfig::info("%s: count:%d name:%s type:%s",
 					iter->first.get_string().c_str(),
 					iter->second->count(),
 					iter->second->get_name().c_str(),
 					ValueBase::type_name(iter->second->get_type()).c_str()
 				);
 			else
-				sinfg::info("%s: id:%s count:%d name:%s type:%s",
+				synfig::info("%s: id:%s count:%d name:%s type:%s",
 					iter->first.get_string().c_str(),
 					iter->second->get_id().c_str(),
 					iter->second->count(),

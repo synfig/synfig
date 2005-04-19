@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file noise.cpp
 **	\brief blehh
 **
@@ -30,31 +30,31 @@
 
 #include "noise.h"
 
-#include <sinfg/string.h>
-#include <sinfg/time.h>
-#include <sinfg/context.h>
-#include <sinfg/paramdesc.h>
-#include <sinfg/renddesc.h>
-#include <sinfg/surface.h>
-#include <sinfg/value.h>
-#include <sinfg/valuenode.h>
+#include <synfig/string.h>
+#include <synfig/time.h>
+#include <synfig/context.h>
+#include <synfig/paramdesc.h>
+#include <synfig/renddesc.h>
+#include <synfig/surface.h>
+#include <synfig/value.h>
+#include <synfig/valuenode.h>
 
 #endif
 
 /* === M A C R O S ========================================================= */
 
-using namespace sinfg;
+using namespace synfig;
 using namespace std;
 using namespace etl;
 
 /* === G L O B A L S ======================================================= */
 
-SINFG_LAYER_INIT(Noise);
-SINFG_LAYER_SET_NAME(Noise,"noise");
-SINFG_LAYER_SET_LOCAL_NAME(Noise,_("Noise Gradient"));
-SINFG_LAYER_SET_CATEGORY(Noise,_("Gradients"));
-SINFG_LAYER_SET_VERSION(Noise,"0.0");
-SINFG_LAYER_SET_CVS_ID(Noise,"$Id: noise.cpp,v 1.2 2005/01/13 06:48:39 darco Exp $");
+SYNFIG_LAYER_INIT(Noise);
+SYNFIG_LAYER_SET_NAME(Noise,"noise");
+SYNFIG_LAYER_SET_LOCAL_NAME(Noise,_("Noise Gradient"));
+SYNFIG_LAYER_SET_CATEGORY(Noise,_("Gradients"));
+SYNFIG_LAYER_SET_VERSION(Noise,"0.0");
+SYNFIG_LAYER_SET_CVS_ID(Noise,"$Id: noise.cpp,v 1.2 2005/01/13 06:48:39 darco Exp $");
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -168,27 +168,27 @@ Noise::color_func(const Point &point, float pixel_size,Context context)const
 }
 
 inline float
-Noise::calc_supersample(const sinfg::Point &x, float pw,float ph)const
+Noise::calc_supersample(const synfig::Point &x, float pw,float ph)const
 {
 	return 0.0f;
 }
 
 void
-Noise::set_time(sinfg::Context context, sinfg::Time t)const
+Noise::set_time(synfig::Context context, synfig::Time t)const
 {
 	curr_time=t;
 	context.set_time(t);
 }
 
 void
-Noise::set_time(sinfg::Context context, sinfg::Time t, const sinfg::Point &point)const
+Noise::set_time(synfig::Context context, synfig::Time t, const synfig::Point &point)const
 {
 	curr_time=t;
 	context.set_time(t,point);
 }
 
-sinfg::Layer::Handle
-Noise::hit_check(sinfg::Context context, const sinfg::Point &point)const
+synfig::Layer::Handle
+Noise::hit_check(synfig::Context context, const synfig::Point &point)const
 {
 	if(get_blend_method()==Color::BLEND_STRAIGHT && get_amount()>=0.5)
 		return const_cast<Noise*>(this);

@@ -1,6 +1,6 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file main.cpp
-**	\brief SINFG Tool
+**	\brief SYNFIG Tool
 **
 **	$Id: main.cpp,v 1.9 2005/01/23 04:41:10 darco Exp $
 **
@@ -34,44 +34,44 @@
 #include <ETL/clock>
 #include <algorithm>
 
-#include <sinfg/loadcanvas.h>
-#include <sinfg/savecanvas.h>
-#include <sinfg/target_scanline.h>
-#include <sinfg/module.h>
-#include <sinfg/importer.h>
-#include <sinfg/layer.h>
-#include <sinfg/canvas.h>
-#include <sinfg/target.h>
-#include <sinfg/time.h>
-#include <sinfg/string.h>
-#include <sinfg/paramdesc.h>
-#include <sinfg/main.h>
-#include <sinfg/guid.h>
+#include <synfig/loadcanvas.h>
+#include <synfig/savecanvas.h>
+#include <synfig/target_scanline.h>
+#include <synfig/module.h>
+#include <synfig/importer.h>
+#include <synfig/layer.h>
+#include <synfig/canvas.h>
+#include <synfig/target.h>
+#include <synfig/time.h>
+#include <synfig/string.h>
+#include <synfig/paramdesc.h>
+#include <synfig/main.h>
+#include <synfig/guid.h>
 #endif
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 
 enum exit_code
 {
-	SINFGTOOL_OK				=0,
-	SINFGTOOL_FILENOTFOUND		=1,
-	SINFGTOOL_BORRED			=2,
-	SINFGTOOL_HELP				=3,
-	SINFGTOOL_UNKNOWNARGUMENT	=4,	
-	SINFGTOOL_UNKNOWNERROR		=5,	
-	SINFGTOOL_INVALIDTARGET		=6,	
-	SINFGTOOL_RENDERFAILURE		=7,	
-	SINFGTOOL_BLANK				=8,
-	SINFGTOOL_BADVERSION		=9
+	SYNFIGTOOL_OK				=0,
+	SYNFIGTOOL_FILENOTFOUND		=1,
+	SYNFIGTOOL_BORRED			=2,
+	SYNFIGTOOL_HELP				=3,
+	SYNFIGTOOL_UNKNOWNARGUMENT	=4,	
+	SYNFIGTOOL_UNKNOWNERROR		=5,	
+	SYNFIGTOOL_INVALIDTARGET		=6,	
+	SYNFIGTOOL_RENDERFAILURE		=7,	
+	SYNFIGTOOL_BLANK				=8,
+	SYNFIGTOOL_BADVERSION		=9
 };
 
 #ifndef VERSION
 #define VERSION "unknown"
-#define PACKAGE "sinfg-tool"
+#define PACKAGE "synfig-tool"
 #endif
 
 #ifdef DEFAULT_QUALITY
@@ -90,7 +90,7 @@ bool print_benchmarks=false;
 
 /* === M E T H O D S ======================================================= */
 
-class Progress : public sinfg::ProgressCallback
+class Progress : public synfig::ProgressCallback
 {
 	const char *program;
 	
@@ -126,7 +126,7 @@ public:
 	}
 };
 
-class RenderProgress : public sinfg::ProgressCallback
+class RenderProgress : public synfig::ProgressCallback
 {
 	string taskname;
 	
@@ -256,7 +256,7 @@ void guid_test()
 	cout<<"GUID Test"<<endl;
 	for(int i=20;i;i--)
 	{
-		cout<<sinfg::GUID().get_string()<<' '<<sinfg::GUID().get_string()<<endl;
+		cout<<synfig::GUID().get_string()<<' '<<synfig::GUID().get_string()<<endl;
 	}
 }
 
@@ -350,18 +350,18 @@ int process_global_flags(arg_list_t &arg_list)
 	for(next=arg_list.begin(),iter=next++;iter!=arg_list.end();iter=next++)
 	{
 		if(*iter == "--")
-			return SINFGTOOL_OK;
+			return SYNFIGTOOL_OK;
 
 		if(*iter == "--signal-test")
 		{
 			signal_test();
-			return SINFGTOOL_HELP;
+			return SYNFIGTOOL_HELP;
 		}
 		
 		if(*iter == "--guid-test")
 		{
 			guid_test();
-			return SINFGTOOL_HELP;
+			return SYNFIGTOOL_HELP;
 		}
 
 		
@@ -369,7 +369,7 @@ int process_global_flags(arg_list_t &arg_list)
 		{
 			display_help(1);
 
-			return SINFGTOOL_HELP;
+			return SYNFIGTOOL_HELP;
 		}
 
 		if(*iter == "--info")
@@ -386,28 +386,28 @@ int process_global_flags(arg_list_t &arg_list)
 			cout<<" with Borland Turbo C++ "<<(__TCPLUSPLUS__>>8)<<'.'<<((__TCPLUSPLUS__&255)>>4)<<'.'<<(__TCPLUSPLUS__&15);
 #endif
 
-			cout<<endl<<SINFG_COPYRIGHT<<endl;
+			cout<<endl<<SYNFIG_COPYRIGHT<<endl;
 			cout<<endl;
-			return SINFGTOOL_HELP;
+			return SYNFIGTOOL_HELP;
 		}
 
 		if(*iter == "--layers")
 		{
 			Progress p(PACKAGE);
-			sinfg::Main sinfg_main(dirname(progname),&p);
-			sinfg::Layer::Book::iterator iter=sinfg::Layer::book().begin();
-			for(;iter!=sinfg::Layer::book().end();iter++)
+			synfig::Main synfig_main(dirname(progname),&p);
+			synfig::Layer::Book::iterator iter=synfig::Layer::book().begin();
+			for(;iter!=synfig::Layer::book().end();iter++)
 				cout<<iter->first<<endl;
 
-			return SINFGTOOL_HELP;
+			return SYNFIGTOOL_HELP;
 		}
 
 		if(*iter == "--layer-info")
 		{
 			Progress p(PACKAGE);
-			sinfg::Main sinfg_main(dirname(progname),&p);
+			synfig::Main synfig_main(dirname(progname),&p);
 			iter=next++;
-			Layer::Handle layer=sinfg::Layer::create(*iter);
+			Layer::Handle layer=synfig::Layer::create(*iter);
 			cout<<"Layer Name: "<<layer->get_name()<<endl;
 			cout<<"Localized Layer Name: "<<layer->get_local_name()<<endl;
 			cout<<"Version: "<<layer->get_version()<<endl;
@@ -424,50 +424,50 @@ int process_global_flags(arg_list_t &arg_list)
 					cout<<"\tHint: "<<vocab.front().get_hint()<<endl;
 			}
 
-			return SINFGTOOL_HELP;
+			return SYNFIGTOOL_HELP;
 		}
 
 		if(*iter == "--modules")
 		{
 			Progress p(PACKAGE);
-			sinfg::Main sinfg_main(dirname(progname),&p);
-			sinfg::Module::Book::iterator iter=sinfg::Module::book().begin();
-			for(;iter!=sinfg::Module::book().end();iter++)
+			synfig::Main synfig_main(dirname(progname),&p);
+			synfig::Module::Book::iterator iter=synfig::Module::book().begin();
+			for(;iter!=synfig::Module::book().end();iter++)
 				cout<<iter->first<<endl;
-			return SINFGTOOL_HELP;
+			return SYNFIGTOOL_HELP;
 		}
 
 		if(*iter == "--targets")
 		{
 			Progress p(PACKAGE);
-			sinfg::Main sinfg_main(dirname(progname),&p);
-			sinfg::Target::Book::iterator iter=sinfg::Target::book().begin();
-			for(;iter!=sinfg::Target::book().end();iter++)
+			synfig::Main synfig_main(dirname(progname),&p);
+			synfig::Target::Book::iterator iter=synfig::Target::book().begin();
+			for(;iter!=synfig::Target::book().end();iter++)
 				cout<<iter->first<<endl;
 				
-			return SINFGTOOL_HELP;
+			return SYNFIGTOOL_HELP;
 		}
 
 		if(*iter == "--valuenodes")
 		{
 			Progress p(PACKAGE);
-			sinfg::Main sinfg_main(dirname(progname),&p);
-			sinfg::LinkableValueNode::Book::iterator iter=sinfg::LinkableValueNode::book().begin();
-			for(;iter!=sinfg::LinkableValueNode::book().end();iter++)
+			synfig::Main synfig_main(dirname(progname),&p);
+			synfig::LinkableValueNode::Book::iterator iter=synfig::LinkableValueNode::book().begin();
+			for(;iter!=synfig::LinkableValueNode::book().end();iter++)
 				cout<<iter->first<<endl;
 				
-			return SINFGTOOL_HELP;
+			return SYNFIGTOOL_HELP;
 		}
 
 		if(*iter == "--importers")
 		{
 			Progress p(PACKAGE);
-			sinfg::Main sinfg_main(dirname(progname),&p);
-			sinfg::Importer::Book::iterator iter=sinfg::Importer::book().begin();
-			for(;iter!=sinfg::Importer::book().end();iter++)
+			synfig::Main synfig_main(dirname(progname),&p);
+			synfig::Importer::Book::iterator iter=synfig::Importer::book().begin();
+			for(;iter!=synfig::Importer::book().end();iter++)
 				cout<<iter->first<<endl;
 				
-			return SINFGTOOL_HELP;
+			return SYNFIGTOOL_HELP;
 		}
 
 		if(*iter == "--version")
@@ -476,13 +476,13 @@ int process_global_flags(arg_list_t &arg_list)
 		
 			arg_list.erase(iter);
 			
-			return SINFGTOOL_HELP;
+			return SYNFIGTOOL_HELP;
 		}
 
 		if(*iter == "--license")
 		{
 			cerr<<PACKAGE<<" "<<VERSION<<endl;
-			cout<<SINFG_COPYRIGHT<<endl<<endl;
+			cout<<SYNFIG_COPYRIGHT<<endl<<endl;
 			cerr<<"\
 **	This software and associated documentation\n\
 **	are CONFIDENTIAL and PROPRIETARY property of\n\
@@ -494,7 +494,7 @@ int process_global_flags(arg_list_t &arg_list)
 **	copyright holder. " << endl << endl;	
 			arg_list.erase(iter);
 			
-			return SINFGTOOL_HELP;
+			return SYNFIGTOOL_HELP;
 		}
 
 		if(*iter == "-v")
@@ -524,7 +524,7 @@ int process_global_flags(arg_list_t &arg_list)
 		}
 	}
 	
-	return SINFGTOOL_OK;
+	return SYNFIGTOOL_OK;
 }
 
 int extract_arg_cluster(arg_list_t &arg_list,arg_list_t &cluster)
@@ -536,7 +536,7 @@ int extract_arg_cluster(arg_list_t &arg_list,arg_list_t &cluster)
 		if(*iter->begin() != '-')
 		{
 			//cerr<<*iter->begin()<<"-----------"<<endl;
-			return SINFGTOOL_OK;
+			return SYNFIGTOOL_OK;
 		}
 
 		if(
@@ -572,7 +572,7 @@ int extract_arg_cluster(arg_list_t &arg_list,arg_list_t &cluster)
 		arg_list.erase(iter);
 	}
 	
-	return SINFGTOOL_OK;
+	return SYNFIGTOOL_OK;
 }
 
 int extract_RendDesc(arg_list_t &arg_list,RendDesc &desc)
@@ -677,7 +677,7 @@ int extract_RendDesc(arg_list_t &arg_list,RendDesc &desc)
 		}
 		if(*iter=="-g")
 		{
-			sinfg::warning("Gamma argument is currently ignored");
+			synfig::warning("Gamma argument is currently ignored");
 			//arg_list.erase(iter);
 			//iter=next++;
 			//desc.set_gamma(Gamma(atof(iter->c_str())));
@@ -704,7 +704,7 @@ int extract_RendDesc(arg_list_t &arg_list,RendDesc &desc)
 	}
 	if(span)
 		desc.set_span(span);
-	return SINFGTOOL_OK;
+	return SYNFIGTOOL_OK;
 }
 
 int extract_quality(arg_list_t &arg_list,int &quality)
@@ -722,7 +722,7 @@ int extract_quality(arg_list_t &arg_list,int &quality)
 		}
 	}
 	
-	return SINFGTOOL_OK;
+	return SYNFIGTOOL_OK;
 }
 
 int extract_threads(arg_list_t &arg_list,int &threads)
@@ -740,7 +740,7 @@ int extract_threads(arg_list_t &arg_list,int &threads)
 		}
 	}
 	
-	return SINFGTOOL_OK;
+	return SYNFIGTOOL_OK;
 }
 
 int extract_target(arg_list_t &arg_list,string &type)
@@ -759,7 +759,7 @@ int extract_target(arg_list_t &arg_list,string &type)
 		}
 	}
 
-	return SINFGTOOL_OK;
+	return SYNFIGTOOL_OK;
 }
 
 int extract_append(arg_list_t &arg_list,string &filename)
@@ -778,13 +778,13 @@ int extract_append(arg_list_t &arg_list,string &filename)
 		}
 	}
 
-	return SINFGTOOL_OK;
+	return SYNFIGTOOL_OK;
 }
 
 int extract_outfile(arg_list_t &arg_list,string &outfile)
 {
 	arg_list_t::iterator iter, next;
-	int ret=SINFGTOOL_FILENOTFOUND;
+	int ret=SYNFIGTOOL_FILENOTFOUND;
 	outfile.clear();
 	
 	for(next=arg_list.begin(),iter=next++;iter!=arg_list.end();iter=next++)
@@ -795,7 +795,7 @@ int extract_outfile(arg_list_t &arg_list,string &outfile)
 			iter=next++;
 			outfile=*iter;
 			arg_list.erase(iter);
-			ret=SINFGTOOL_OK;
+			ret=SYNFIGTOOL_OK;
 		}
 	}
 
@@ -818,7 +818,7 @@ int extract_canvasid(arg_list_t &arg_list,string &canvasid)
 		}
 	}
 
-	return SINFGTOOL_OK;
+	return SYNFIGTOOL_OK;
 }
 
 /* === M E T H O D S ======================================================= */
@@ -834,15 +834,15 @@ int main(int argc, char *argv[])
 	progname=argv[0];
 	Progress p(argv[0]);
 	
-	if(!SINFG_CHECK_VERSION())
+	if(!SYNFIG_CHECK_VERSION())
 	{
-		cerr<<_("FATAL: Sinfg Version Mismatch")<<endl;
-		return SINFGTOOL_BADVERSION;
+		cerr<<_("FATAL: Synfig Version Mismatch")<<endl;
+		return SYNFIGTOOL_BADVERSION;
 	}
 	if(argc==1)
 	{
 		display_help(0);
-		return SINFGTOOL_BLANK;
+		return SYNFIGTOOL_BLANK;
 	}
 
 	for(i=1;i<argc;i++)
@@ -852,7 +852,7 @@ int main(int argc, char *argv[])
 		return i;
 
 	VERBOSE_OUT(1)<<_("verbosity set to ")<<verbosity<<endl;
-	sinfg::Main sinfg_main(dirname(progname),&p);
+	synfig::Main synfig_main(dirname(progname),&p);
 	
 	{
 		arg_list_t defaults, imageargs;
@@ -959,7 +959,7 @@ int main(int argc, char *argv[])
 			}
 			catch(std::length_error)
 			{
-				sinfg::warning("Length error caught when attempting to figure out target name");
+				synfig::warning("Length error caught when attempting to figure out target name");
 			}
 
 			// If the target type is STILL not yet defined, then
@@ -988,7 +988,7 @@ int main(int argc, char *argv[])
 			VERBOSE_OUT(4)<<"outfile_name="<<job_list.front().outfilename<<endl;
 			
 			VERBOSE_OUT(4)<<_("Creating the target...")<<endl;
-			job_list.front().target=sinfg::Target::create(target_name,job_list.front().outfilename);
+			job_list.front().target=synfig::Target::create(target_name,job_list.front().outfilename);
 			
 			if(target_name=="sif")
 			{
@@ -1042,13 +1042,13 @@ int main(int argc, char *argv[])
 		for(;arg_list.size();arg_list.pop_front())
 			cerr<<' '<<arg_list.front();
 		cerr<<endl;
-		return SINFGTOOL_UNKNOWNARGUMENT;
+		return SYNFIGTOOL_UNKNOWNARGUMENT;
 	}
 	
 	if(!job_list.size())
 	{
 		cerr<<_("Nothing to do!")<<endl;
-		return SINFGTOOL_BORRED;
+		return SYNFIGTOOL_BORRED;
 	}
 	
 	for(;job_list.size();job_list.pop_front())
@@ -1079,7 +1079,7 @@ int main(int argc, char *argv[])
 			if(!job_list.front().target->render(&p))
 			{
 				cerr<<"Render Failure."<<endl;
-				return SINFGTOOL_RENDERFAILURE;
+				return SYNFIGTOOL_RENDERFAILURE;
 			}
 			if(print_benchmarks)
 			{
@@ -1091,7 +1091,7 @@ int main(int argc, char *argv[])
 			if(!save_canvas(job_list.front().outfilename,job_list.front().canvas))
 			{
 				cerr<<"Render Failure."<<endl;
-				return SINFGTOOL_RENDERFAILURE;
+				return SYNFIGTOOL_RENDERFAILURE;
 			}
 		}
 	}
@@ -1100,5 +1100,5 @@ int main(int argc, char *argv[])
 	
 	VERBOSE_OUT(1)<<_("Done.")<<endl;
 	
-	return SINFGTOOL_OK;
+	return SYNFIGTOOL_OK;
 }

@@ -1,5 +1,5 @@
 /*! ========================================================================
-** Sinfg
+** Synfig
 ** Template File
 ** $Id: region.cpp,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $
 **
@@ -32,16 +32,16 @@
 #include <ETL/bezier>
 #include <ETL/hermite>
 
-#include <sinfg/string.h>
-#include <sinfg/time.h>
-#include <sinfg/context.h>
-#include <sinfg/paramdesc.h>
-#include <sinfg/renddesc.h>
-#include <sinfg/surface.h>
-#include <sinfg/value.h>
-#include <sinfg/valuenode.h>
-#include <sinfg/segment.h>
-#include <sinfg/valuenode_bline.h>
+#include <synfig/string.h>
+#include <synfig/time.h>
+#include <synfig/context.h>
+#include <synfig/paramdesc.h>
+#include <synfig/renddesc.h>
+#include <synfig/surface.h>
+#include <synfig/value.h>
+#include <synfig/valuenode.h>
+#include <synfig/segment.h>
+#include <synfig/valuenode_bline.h>
 
 #endif
 
@@ -53,12 +53,12 @@ using namespace etl;
 
 /* === G L O B A L S ======================================================= */
 
-SINFG_LAYER_INIT(Region);
-SINFG_LAYER_SET_NAME(Region,"region");
-SINFG_LAYER_SET_LOCAL_NAME(Region,_("Region"));
-SINFG_LAYER_SET_CATEGORY(Region,_("Geometry"));
-SINFG_LAYER_SET_VERSION(Region,"0.1");
-SINFG_LAYER_SET_CVS_ID(Region,"$Id: region.cpp,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $");
+SYNFIG_LAYER_INIT(Region);
+SYNFIG_LAYER_SET_NAME(Region,"region");
+SYNFIG_LAYER_SET_LOCAL_NAME(Region,_("Region"));
+SYNFIG_LAYER_SET_CATEGORY(Region,_("Geometry"));
+SYNFIG_LAYER_SET_VERSION(Region,"0.1");
+SYNFIG_LAYER_SET_CVS_ID(Region,"$Id: region.cpp,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $");
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -94,14 +94,14 @@ Region::sync()
 	}
 	else
 	{
-		sinfg::warning("Region: incorrect type on bline, layer disabled");
+		synfig::warning("Region: incorrect type on bline, layer disabled");
 		clear();
 		return;
 	}
 
 	if(segment_list.empty())
 	{
-		sinfg::warning("Region: segment_list is empty, layer disabled");
+		synfig::warning("Region: segment_list is empty, layer disabled");
 		clear();
 		return;
 	}
@@ -175,10 +175,10 @@ Region::set_param(const String & param, const ValueBase &value)
 		{
 			connect_dynamic_param("bline",dynamic_param_list().find("segment_list")->second);
 			disconnect_dynamic_param("segment_list");
-			sinfg::warning("Region::set_param(): Updated valuenode connection to use the new \"bline\" parameter.");
+			synfig::warning("Region::set_param(): Updated valuenode connection to use the new \"bline\" parameter.");
 		}
 		else
-			sinfg::warning("Region::set_param(): The parameter \"segment_list\" is deprecated. Use \"bline\" instead.");
+			synfig::warning("Region::set_param(): The parameter \"segment_list\" is deprecated. Use \"bline\" instead.");
 	}
 	
 	if(	(param=="segment_list" || param=="bline") && value.get_type()==ValueBase::TYPE_LIST)

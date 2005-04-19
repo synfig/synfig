@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file blur.h
 **	\brief Template Header
 **
@@ -21,38 +21,38 @@
 
 /* === H E A D E R S ======================================================= */
 
-#ifndef __SINFG_LAYER_BLUR_H__
-#define __SINFG_LAYER_BLUR_H__
+#ifndef __SYNFIG_LAYER_BLUR_H__
+#define __SYNFIG_LAYER_BLUR_H__
 
 /* -- H E A D E R S --------------------------------------------------------- */
 
-#include <sinfg/layer_composite.h>
-#include <sinfg/color.h>
-#include <sinfg/vector.h>
-#include <sinfg/blur.h>
+#include <synfig/layer_composite.h>
+#include <synfig/color.h>
+#include <synfig/vector.h>
+#include <synfig/blur.h>
 
-using namespace sinfg;
+using namespace synfig;
 using namespace std;
 using namespace etl;
 
-class Blur_Layer : public sinfg::Layer_Composite
+class Blur_Layer : public synfig::Layer_Composite
 {
-	SINFG_LAYER_MODULE_EXT
+	SYNFIG_LAYER_MODULE_EXT
 private:
-	sinfg::Point 	size;
+	synfig::Point 	size;
 	int				type;
 
 public:
 	Blur_Layer();
 	
-	virtual bool set_param(const String & param, const sinfg::ValueBase &value);
+	virtual bool set_param(const String & param, const synfig::ValueBase &value);
 
 	virtual ValueBase get_param(const String & param)const;
 
 	virtual Color get_color(Context context, const Point &pos)const;
 
 	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
-	virtual sinfg::Rect get_full_bounding_rect(Context context)const;
+	virtual synfig::Rect get_full_bounding_rect(Context context)const;
 
 	virtual Vocab get_param_vocab()const;
 }; // END of class Blur

@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file mutex.h
 **	\brief Template Header
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_MUTEX_H
-#define __SINFG_MUTEX_H
+#ifndef __SYNFIG_MUTEX_H
+#define __SYNFIG_MUTEX_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -32,7 +32,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace sinfg {
+namespace synfig {
 
 class RecMutex;
 
@@ -110,7 +110,7 @@ public:
 	bool writer_trylock();
 };
 
-}; // END of namespace sinfg
+}; // END of namespace synfig
 
 /* === E N D =============================================================== */
 

@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file import.h
 **	\brief Template Header
 **
@@ -21,15 +21,15 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_IMPORT_H
-#define __SINFG_IMPORT_H
+#ifndef __SYNFIG_IMPORT_H
+#define __SYNFIG_IMPORT_H
 
 /* === H E A D E R S ======================================================= */
 
-#include <sinfg/layer_bitmap.h>
-#include <sinfg/color.h>
-#include <sinfg/vector.h>
-#include <sinfg/importer.h>
+#include <synfig/layer_bitmap.h>
+#include <synfig/color.h>
+#include <synfig/vector.h>
+#include <synfig/importer.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -37,15 +37,15 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-class Import : public sinfg::Layer_Bitmap
+class Import : public synfig::Layer_Bitmap
 {
-	SINFG_LAYER_MODULE_EXT
+	SYNFIG_LAYER_MODULE_EXT
 
 private:
-	sinfg::String filename;
-	sinfg::String abs_filename;
-	sinfg::Importer::Handle importer;
-	sinfg::Time time_offset;
+	synfig::String filename;
+	synfig::String abs_filename;
+	synfig::Importer::Handle importer;
+	synfig::Time time_offset;
 
 protected:
 	Import();
@@ -53,17 +53,17 @@ protected:
 public:
 	~Import();
 	
-	virtual bool set_param(const sinfg::String & param, const sinfg::ValueBase &value);
+	virtual bool set_param(const synfig::String & param, const synfig::ValueBase &value);
 
-	virtual sinfg::ValueBase get_param(const sinfg::String & param)const;	
+	virtual synfig::ValueBase get_param(const synfig::String & param)const;	
 
 	virtual Vocab get_param_vocab()const;
 
 	virtual void on_canvas_set();
 
-	virtual void set_time(sinfg::Context context, sinfg::Time time)const;
+	virtual void set_time(synfig::Context context, synfig::Time time)const;
 
-	virtual void set_time(sinfg::Context context, sinfg::Time time, const sinfg::Point &pos)const;
+	virtual void set_time(synfig::Context context, synfig::Time time, const synfig::Point &pos)const;
 };
 
 /* === E N D =============================================================== */

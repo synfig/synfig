@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file layer_bitmap.h
 **	\brief Template Header
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_LAYER_BITMAP_H
-#define __SINFG_LAYER_BITMAP_H
+#ifndef __SYNFIG_LAYER_BITMAP_H
+#define __SYNFIG_LAYER_BITMAP_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -35,7 +35,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace sinfg {
+namespace synfig {
 
 /*!	\class Layer_Bitmap
 **	\todo writeme
@@ -67,10 +67,10 @@ public:
 
 	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &rend_desc, ProgressCallback *callback)const;
 
-	virtual sinfg::Layer::Handle hit_check(sinfg::Context context, const sinfg::Point &point)const;
+	virtual synfig::Layer::Handle hit_check(synfig::Context context, const synfig::Point &point)const;
 }; // END of class Layer_Bitmap
 
-}; // END of namespace sinfg
+}; // END of namespace synfig
 
 /* === E N D =============================================================== */
 

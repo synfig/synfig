@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file gamma.h
 **	\brief Template Header
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_GAMMA_H
-#define __SINFG_GAMMA_H
+#ifndef __SYNFIG_GAMMA_H
+#define __SYNFIG_GAMMA_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -34,7 +34,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace sinfg {
+namespace synfig {
 
 /*!	\class Gamma
 **	\brief This class performs color correction on Color classes.
@@ -100,7 +100,7 @@ public:
 	float b_F32_to_F32(float x)const { return static_cast<float>(pow(x,gamma_b)*(1.0f-black_level)+black_level); }
 }; // END of class Gamma
 	
-}; // END of namespace sinfg
+}; // END of namespace synfig
 
 /* === E N D =============================================================== */
 

@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file template.cpp
 **	\brief Template File
 **
@@ -40,7 +40,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 
@@ -52,7 +52,7 @@ using namespace sinfg;
 
 //! \writeme
 int
-sinfg::waypoint_collect(set<Waypoint, std::less<UniqueID> >& waypoint_set,const Time& time, const etl::handle<Node>& node)
+synfig::waypoint_collect(set<Waypoint, std::less<UniqueID> >& waypoint_set,const Time& time, const etl::handle<Node>& node)
 {	
 	const TimePointSet& timepoint_set(node->get_times());
 
@@ -133,7 +133,7 @@ sinfg::waypoint_collect(set<Waypoint, std::less<UniqueID> >& waypoint_set,const 
 
 //! \writeme
 int
-sinfg::activepoint_collect(set<Activepoint, std::less<UniqueID> >& activepoint_set,const Time& time, const etl::handle<Node>& node)
+synfig::activepoint_collect(set<Activepoint, std::less<UniqueID> >& activepoint_set,const Time& time, const etl::handle<Node>& node)
 {
 	const TimePointSet& timepoint_set(node->get_times());
 

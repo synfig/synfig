@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file layer_bitmap.cpp
 **	\brief Template Header
 **
@@ -21,7 +21,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#define SINFG_NO_ANGLE
+#define SYNFIG_NO_ANGLE
 
 #ifdef USING_PCH
 #	include "pch.h"
@@ -51,7 +51,7 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace sinfg;
+using namespace synfig;
 using namespace std;
 using namespace etl;
 
@@ -61,7 +61,7 @@ using namespace etl;
 
 /* === M E T H O D S ======================================================= */
 
-sinfg::Layer_Bitmap::Layer_Bitmap():
+synfig::Layer_Bitmap::Layer_Bitmap():
     Layer_Composite	(1.0,Color::BLEND_COMPOSITE),
 	tl				(-0.5,0.5),
 	br				(0.5,-0.5),
@@ -72,7 +72,7 @@ sinfg::Layer_Bitmap::Layer_Bitmap():
 }
 	
 bool
-sinfg::Layer_Bitmap::set_param(const String & param, ValueBase value)
+synfig::Layer_Bitmap::set_param(const String & param, ValueBase value)
 {
 	IMPORT(tl);
 	IMPORT(br);
@@ -88,7 +88,7 @@ sinfg::Layer_Bitmap::set_param(const String & param, ValueBase value)
 }
 
 ValueBase
-sinfg::Layer_Bitmap::get_param(const String & param)const
+synfig::Layer_Bitmap::get_param(const String & param)const
 {
 	EXPORT(tl);
 	EXPORT(br);
@@ -140,8 +140,8 @@ Layer_Bitmap::get_param_vocab()const
 	return ret;
 }
 
-sinfg::Layer::Handle
-Layer_Bitmap::hit_check(sinfg::Context context, const sinfg::Point &pos)const
+synfig::Layer::Handle
+Layer_Bitmap::hit_check(synfig::Context context, const synfig::Point &pos)const
 {
 	Point surface_pos;
 	surface_pos=pos-tl;
@@ -161,7 +161,7 @@ Layer_Bitmap::hit_check(sinfg::Context context, const sinfg::Point &pos)const
 
 inline
 const Color&
-sinfg::Layer_Bitmap::filter(const Color& c)const
+synfig::Layer_Bitmap::filter(const Color& c)const
 {
 	if(gamma_adjust==1.0)
 		return c;
@@ -175,7 +175,7 @@ sinfg::Layer_Bitmap::filter(const Color& c)const
 }
 
 Color
-sinfg::Layer_Bitmap::get_color(Context context, const Point &pos)const
+synfig::Layer_Bitmap::get_color(Context context, const Point &pos)const
 {
 	Point surface_pos;
 
@@ -335,7 +335,7 @@ Layer_Bitmap::accelerated_render(Context context,Surface *out_surface,int qualit
 	//perhaps use a DDA algorithm... if faster... 
 	//   will still want pixel fractions to be floating point since colors are
 
-	//sinfg::info("xstart:%d ystart:%d xend:%d yend:%d",x_start,y_start,x_end,y_end);
+	//synfig::info("xstart:%d ystart:%d xend:%d yend:%d",x_start,y_start,x_end,y_end);
 	
 	//start drawing at the start of the bitmap (either origin or corner of input...)
 	//and get other info
@@ -353,7 +353,7 @@ Layer_Bitmap::accelerated_render(Context context,Surface *out_surface,int qualit
 		
 		if(indx > 1.7 || indy > 1.7)
 		{
-			/*sinfg::info("Decided to downsample? ratios - (%f,%f) -> (%d,%d)", 
+			/*synfig::info("Decided to downsample? ratios - (%f,%f) -> (%d,%d)", 
 						indx, indy, multw, multh);	*/		
 			
 			//use sample rect here...
@@ -375,7 +375,7 @@ Layer_Bitmap::accelerated_render(Context context,Surface *out_surface,int qualit
 			}
 			
 			//Color c = (*out_surface)[0][0];
-			//sinfg::info("ValueBase of first pixel = (%f,%f,%f,%f)",c.get_r(),c.get_g(),c.get_b(),c.get_a());
+			//synfig::info("ValueBase of first pixel = (%f,%f,%f,%f)",c.get_r(),c.get_g(),c.get_b(),c.get_a());
 			
 			return true;
 		}
@@ -384,7 +384,7 @@ Layer_Bitmap::accelerated_render(Context context,Surface *out_surface,int qualit
 	//perform normal interpolation
 	if(interp==0)
 	{	
-		//sinfg::info("Decided to do nearest neighbor");
+		//synfig::info("Decided to do nearest neighbor");
 		float iny, inx;
 		int x,y;
 		

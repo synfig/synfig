@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file valuenode_dynamiclist.cpp
 **	\brief Template File
 **
@@ -44,7 +44,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 
@@ -76,7 +76,7 @@ ValueNode_DynamicList::ListEntry::ListEntry(const ValueNode::Handle &value_node,
 ValueNode_DynamicList::ListEntry::ActivepointList::iterator
 ValueNode_DynamicList::ListEntry::add(Time time, bool status, int priority)
 {
-	typedef sinfg::ValueNode_DynamicList::ListEntry::ActivepointList::iterator iterator;
+	typedef synfig::ValueNode_DynamicList::ListEntry::ActivepointList::iterator iterator;
 	
 	//! \optimize
 	Activepoint ap(time,status,priority);
@@ -92,7 +92,7 @@ ValueNode_DynamicList::ListEntry::add(Time time, bool status, int priority)
 ValueNode_DynamicList::ListEntry::ActivepointList::iterator
 ValueNode_DynamicList::ListEntry::add(const Activepoint &x)
 {
-	typedef sinfg::ValueNode_DynamicList::ListEntry::ActivepointList::iterator iterator;
+	typedef synfig::ValueNode_DynamicList::ListEntry::ActivepointList::iterator iterator;
 	
 	//! \optimize
 	Activepoint ap(x);
@@ -137,7 +137,7 @@ ValueNode_DynamicList::create_list_entry(int index, Time time, Real origin)
 	ValueNode_DynamicList::ListEntry ret;
 	
 	
-	sinfg::ValueBase prev,next;
+	synfig::ValueBase prev,next;
 
 	index=index%link_count();
 
@@ -223,7 +223,7 @@ ValueNode_DynamicList::ListEntry::erase(const UniqueID& x)
 ValueNode_DynamicList::ListEntry::ActivepointList::iterator
 ValueNode_DynamicList::ListEntry::find(const Time& x)
 {
-	typedef sinfg::ValueNode_DynamicList::ListEntry::ActivepointList ActivepointList;
+	typedef synfig::ValueNode_DynamicList::ListEntry::ActivepointList ActivepointList;
 	
 	ActivepointList::iterator iter;
 
@@ -237,7 +237,7 @@ ValueNode_DynamicList::ListEntry::find(const Time& x)
 ValueNode_DynamicList::ListEntry::ActivepointList::const_iterator
 ValueNode_DynamicList::ListEntry::find(const Time& x)const
 {
-	typedef sinfg::ValueNode_DynamicList::ListEntry::ActivepointList ActivepointList;
+	typedef synfig::ValueNode_DynamicList::ListEntry::ActivepointList ActivepointList;
 	
 	ActivepointList::const_iterator iter;
 
@@ -251,7 +251,7 @@ ValueNode_DynamicList::ListEntry::find(const Time& x)const
 ValueNode_DynamicList::ListEntry::ActivepointList::iterator
 ValueNode_DynamicList::ListEntry::find_next(const Time& x)
 {
-	typedef sinfg::ValueNode_DynamicList::ListEntry::ActivepointList ActivepointList;
+	typedef synfig::ValueNode_DynamicList::ListEntry::ActivepointList ActivepointList;
 	
 	ActivepointList::iterator iter;
 
@@ -265,7 +265,7 @@ ValueNode_DynamicList::ListEntry::find_next(const Time& x)
 ValueNode_DynamicList::ListEntry::ActivepointList::const_iterator
 ValueNode_DynamicList::ListEntry::find_next(const Time& x)const
 {
-	typedef sinfg::ValueNode_DynamicList::ListEntry::ActivepointList ActivepointList;
+	typedef synfig::ValueNode_DynamicList::ListEntry::ActivepointList ActivepointList;
 	
 	ActivepointList::const_iterator iter;
 
@@ -279,7 +279,7 @@ ValueNode_DynamicList::ListEntry::find_next(const Time& x)const
 ValueNode_DynamicList::ListEntry::ActivepointList::iterator
 ValueNode_DynamicList::ListEntry::find_prev(const Time& x)
 {
-	typedef sinfg::ValueNode_DynamicList::ListEntry::ActivepointList ActivepointList;
+	typedef synfig::ValueNode_DynamicList::ListEntry::ActivepointList ActivepointList;
 	
 	ActivepointList::iterator iter;
 	iter=timing_info.end();
@@ -297,7 +297,7 @@ ValueNode_DynamicList::ListEntry::find_prev(const Time& x)
 ValueNode_DynamicList::ListEntry::ActivepointList::const_iterator
 ValueNode_DynamicList::ListEntry::find_prev(const Time& x)const
 {
-	typedef sinfg::ValueNode_DynamicList::ListEntry::ActivepointList ActivepointList;
+	typedef synfig::ValueNode_DynamicList::ListEntry::ActivepointList ActivepointList;
 	
 	ActivepointList::const_iterator iter;
 	iter=timing_info.end();
@@ -349,8 +349,8 @@ ValueNode_DynamicList::ListEntry::find(const Time& begin,const Time& end,std::ve
 float
 ValueNode_DynamicList::ListEntry::amount_at_time(const Time &t,bool *rising)const
 {
-	typedef sinfg::ValueNode_DynamicList::ListEntry::Activepoint Activepoint;
-	typedef sinfg::ValueNode_DynamicList::ListEntry::ActivepointList ActivepointList;
+	typedef synfig::ValueNode_DynamicList::ListEntry::Activepoint Activepoint;
+	typedef synfig::ValueNode_DynamicList::ListEntry::ActivepointList ActivepointList;
 	
 	if(timing_info.empty())
 		return 1.0f;
@@ -397,8 +397,8 @@ ValueNode_DynamicList::ListEntry::new_activepoint_at_time(const Time& time)const
 bool
 ValueNode_DynamicList::ListEntry::status_at_time(const Time &t)const
 {
-	typedef sinfg::ValueNode_DynamicList::ListEntry::Activepoint Activepoint;
-	typedef sinfg::ValueNode_DynamicList::ListEntry::ActivepointList ActivepointList;
+	typedef synfig::ValueNode_DynamicList::ListEntry::Activepoint Activepoint;
+	typedef synfig::ValueNode_DynamicList::ListEntry::ActivepointList ActivepointList;
 	
 	ActivepointList::const_iterator entry_iter;
 	ActivepointList::const_iterator prev_iter;
@@ -594,16 +594,16 @@ ValueNode_DynamicList::operator()(Time t)const
 				ret_list.push_back((*iter->value_node)(t));
 			else
 			{
-				sinfg::warning(string("ValueNode_DynamicList::operator()():")+_("List type/item type mismatch, throwing away mismatch"));
+				synfig::warning(string("ValueNode_DynamicList::operator()():")+_("List type/item type mismatch, throwing away mismatch"));
 			}
 		}
 	}
 	
 	if(list.empty())
-		sinfg::warning(string("ValueNode_DynamicList::operator()():")+_("No entries in list"));
+		synfig::warning(string("ValueNode_DynamicList::operator()():")+_("No entries in list"));
 	else
 	if(ret_list.empty())
-		sinfg::warning(string("ValueNode_DynamicList::operator()():")+_("No entries in ret_list"));
+		synfig::warning(string("ValueNode_DynamicList::operator()():")+_("No entries in ret_list"));
 
 	return ret_list;
 }
@@ -749,9 +749,9 @@ ValueNode_DynamicList::find_prev_valid_entry(int orig_item, Time t)const
 	return curr_item;
 }
 
-const sinfg::Node::time_set	& ValueNode_DynamicList::ListEntry::get_times() const
+const synfig::Node::time_set	& ValueNode_DynamicList::ListEntry::get_times() const
 {
-	sinfg::ActivepointList::const_iterator 	j = timing_info.begin(),
+	synfig::ActivepointList::const_iterator 	j = timing_info.begin(),
 											end = timing_info.end();
 		
 	//must remerge with all the other values because we don't know if we've changed...

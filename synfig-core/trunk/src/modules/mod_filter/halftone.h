@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file halftone.h
 **	\brief Template Header
 **
@@ -21,13 +21,13 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_HALFTONE_H
-#define __SINFG_HALFTONE_H
+#ifndef __SYNFIG_HALFTONE_H
+#define __SYNFIG_HALFTONE_H
 
 /* === H E A D E R S ======================================================= */
 
-#include <sinfg/vector.h>
-#include <sinfg/angle.h>
+#include <synfig/vector.h>
+#include <synfig/angle.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -46,13 +46,13 @@ class Halftone
 public:
 
 	int type;
-	sinfg::Point offset;
-	sinfg::Vector size;
-	sinfg::Angle angle;
+	synfig::Point offset;
+	synfig::Vector size;
+	synfig::Angle angle;
 
-	float mask(sinfg::Point point)const;
+	float mask(synfig::Point point)const;
 	
-	float operator()(const sinfg::Point &point, const float& intensity, float supersample=0)const;
+	float operator()(const synfig::Point &point, const float& intensity, float supersample=0)const;
 };
 
 /* === E N D =============================================================== */

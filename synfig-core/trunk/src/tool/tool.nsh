@@ -7,12 +7,12 @@ Section "Synfig Tool"
   SetOutPath "$INSTDIR\bin"
   
   ; Put file there
-  File "src\tool\.libs\sinfg.exe"
+  File "src\tool\.libs\synfig.exe"
 
 SectionEnd
 
 Section "un.Synfig Tool Uninstall"
-	Delete "$INSTDIR\bin\sinfg.exe"
+	Delete "$INSTDIR\bin\synfig.exe"
 	RMDir "$INSTDIR"
 SectionEnd
 

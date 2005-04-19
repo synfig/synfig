@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file node.cpp
 **	\brief Template File
 **
@@ -46,7 +46,7 @@ using namespace __gnu_cxx;
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 
@@ -98,8 +98,8 @@ static GlobalNodeMap& global_node_map()
 
 /* === P R O C E D U R E S ================================================= */
 
-sinfg::Node*
-sinfg::find_node(const GUID& guid)
+synfig::Node*
+synfig::find_node(const GUID& guid)
 {
 	if(global_node_map().count(guid)==0)
 		return 0;
@@ -107,7 +107,7 @@ sinfg::find_node(const GUID& guid)
 }
 
 static void
-refresh_node(sinfg::Node* node, GUID old_guid)
+refresh_node(synfig::Node* node, GUID old_guid)
 {
 	assert(global_node_map().count(old_guid));
 	global_node_map().erase(old_guid);

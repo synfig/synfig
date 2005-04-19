@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file general.h
 **	\brief General macros, classes, and prodecure declarations
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_GENERAL_H
-#define __SINFG_GENERAL_H
+#ifndef __SYNFIG_GENERAL_H
+#define __SYNFIG_GENERAL_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -39,16 +39,16 @@
 //#define gettext(x)	(x)
 #endif
 
-#define SINFG_COPYRIGHT "Copyright (c) 2001-2004 Voria Software, LLC"
+#define SYNFIG_COPYRIGHT "Copyright (c) 2001-2004 Voria Software, LLC"
 
 
 #ifdef _DEBUG
 #ifdef __FUNC__
-#define DEBUGPOINT()	sinfg::warning(etl::strprintf(__FILE__":"__FUNC__":%d DEBUGPOINT",__LINE__))
-#define DEBUGINFO(x)	sinfg::warning(etl::strprintf(__FILE__":"__FUNC__":%d:DEBUGINFO:",__LINE__)+x)
+#define DEBUGPOINT()	synfig::warning(etl::strprintf(__FILE__":"__FUNC__":%d DEBUGPOINT",__LINE__))
+#define DEBUGINFO(x)	synfig::warning(etl::strprintf(__FILE__":"__FUNC__":%d:DEBUGINFO:",__LINE__)+x)
 #else
-#define DEBUGPOINT()	sinfg::warning(etl::strprintf(__FILE__":%d DEBUGPOINT",__LINE__))
-#define DEBUGINFO(x)	sinfg::warning(etl::strprintf(__FILE__":%d:DEBUGINFO:",__LINE__)+x)
+#define DEBUGPOINT()	synfig::warning(etl::strprintf(__FILE__":%d DEBUGPOINT",__LINE__))
+#define DEBUGINFO(x)	synfig::warning(etl::strprintf(__FILE__":%d:DEBUGINFO:",__LINE__)+x)
 #endif
 
 #else
@@ -58,7 +58,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace sinfg {
+namespace synfig {
 
 /*!	\class ProgressCallback
 **	\todo writeme
@@ -123,7 +123,7 @@ extern bool add_to_module_search_path(const std:string &path);
 extern bool add_to_config_search_path(const std:string &path);
 */
 
-//! Shutdown the sinfg environment
+//! Shutdown the synfig environment
 extern void shutdown();
 
 //! Reports an error
@@ -141,7 +141,7 @@ extern void warning(const String &str);
 extern void info(const char *format,...);
 extern void info(const String &str);
 
-}; // END of namespace sinfg
+}; // END of namespace synfig
 
 /* === E N D =============================================================== */
 

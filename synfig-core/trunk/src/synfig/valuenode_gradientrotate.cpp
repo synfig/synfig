@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file valuenode_gradientrotate.cpp
 **	\brief Template File
 **
@@ -40,7 +40,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 
@@ -50,8 +50,8 @@ using namespace sinfg;
 
 /* === M E T H O D S ======================================================= */
 
-sinfg::ValueNode_GradientRotate::ValueNode_GradientRotate():
-	LinkableValueNode(sinfg::ValueBase::TYPE_GRADIENT)
+synfig::ValueNode_GradientRotate::ValueNode_GradientRotate():
+	LinkableValueNode(synfig::ValueBase::TYPE_GRADIENT)
 {
 	set_link("gradient",ValueNode_Const::create(Gradient()));
 	set_link("offset",ValueNode_Const::create(Real(0)));
@@ -71,7 +71,7 @@ ValueNode_GradientRotate::create(const ValueBase& x)
 	if(id!=ValueBase::TYPE_GRADIENT)
 	{
 		assert(0);
-		throw runtime_error("sinfg::ValueNode_GradientRotate:Bad type "+ValueBase::type_name(id));			
+		throw runtime_error("synfig::ValueNode_GradientRotate:Bad type "+ValueBase::type_name(id));			
 	}		
 
 	ValueNode_GradientRotate* value_node=new ValueNode_GradientRotate();
@@ -82,13 +82,13 @@ ValueNode_GradientRotate::create(const ValueBase& x)
 	return value_node;
 }
 
-sinfg::ValueNode_GradientRotate::~ValueNode_GradientRotate()
+synfig::ValueNode_GradientRotate::~ValueNode_GradientRotate()
 {
 	unlink_all();
 }
 
 bool
-sinfg::ValueNode_GradientRotate::set_gradient(ValueNode::Handle a)
+synfig::ValueNode_GradientRotate::set_gradient(ValueNode::Handle a)
 {
 	if(a->get_type()!=ValueBase::TYPE_GRADIENT&& !PlaceholderValueNode::Handle::cast_dynamic(a))
 		return false;
@@ -99,7 +99,7 @@ sinfg::ValueNode_GradientRotate::set_gradient(ValueNode::Handle a)
 }
 
 bool
-sinfg::ValueNode_GradientRotate::set_offset(ValueNode::Handle b)
+synfig::ValueNode_GradientRotate::set_offset(ValueNode::Handle b)
 {
 	if(b->get_type()!=ValueBase::TYPE_REAL&& !PlaceholderValueNode::Handle::cast_dynamic(b))
 		return false;
@@ -107,8 +107,8 @@ sinfg::ValueNode_GradientRotate::set_offset(ValueNode::Handle b)
 	return true;
 }
 
-sinfg::ValueBase
-sinfg::ValueNode_GradientRotate::operator()(Time t)const
+synfig::ValueBase
+synfig::ValueNode_GradientRotate::operator()(Time t)const
 {
 	Gradient gradient;
 	gradient=(*ref_gradient)(t).get(gradient);

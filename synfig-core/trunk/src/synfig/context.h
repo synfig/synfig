@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file context.h
 **	\brief Template Header
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_CONTEXT_H
-#define __SINFG_CONTEXT_H
+#ifndef __SYNFIG_CONTEXT_H
+#define __SYNFIG_CONTEXT_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -35,7 +35,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace sinfg {
+namespace synfig {
 
 class Vector;
 typedef Vector Point;
@@ -79,7 +79,7 @@ public:
 
 }; // END of class Context
 	
-}; // END of namespace sinfg
+}; // END of namespace synfig
 	
 /* === E N D =============================================================== */
 

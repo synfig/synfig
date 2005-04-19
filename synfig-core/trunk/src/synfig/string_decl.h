@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file string_decl.h
 **	\brief Template Header
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_STRING_DECL_H
-#define __SINFG_STRING_DECL_H
+#ifndef __SYNFIG_STRING_DECL_H
+#define __SYNFIG_STRING_DECL_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -42,7 +42,7 @@ typedef basic_string<char,char_traits<char>,allocator<char> >    string;
 
 }; // END of namespace std
 
-namespace sinfg
+namespace synfig
 {
 
 /*!	\typedef String
@@ -50,7 +50,7 @@ namespace sinfg
 */
 typedef std::string String;
 
-}; // END of namespace sinfg
+}; // END of namespace synfig
 
 /* === E N D =============================================================== */
 

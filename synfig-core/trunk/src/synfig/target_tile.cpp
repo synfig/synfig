@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file target_tile.cpp
 **	\brief Template File
 **
@@ -43,15 +43,15 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 const unsigned int	DEF_TILE_WIDTH = 64;
 const unsigned int	DEF_TILE_HEIGHT= 64;
 
-#define SINFG_OPTIMIZE_LAYER_TREE 	1
+#define SYNFIG_OPTIMIZE_LAYER_TREE 	1
 #ifdef _DEBUG
-#define SINFG_DISPLAY_EFFICIENCY	1
+#define SYNFIG_DISPLAY_EFFICIENCY	1
 #endif
 
 /* === G L O B A L S ======================================================= */
@@ -103,12 +103,12 @@ Target_Tile::next_frame(Time& time)
 	time=(time_end-time_start)*curr_frame_/total_frames+time_start;
 	curr_frame_++;
 
-/*	sinfg::info("curr_frame_: %d",curr_frame_);
-	sinfg::info("total_frames: %d",total_frames);
-	sinfg::info("time_end: %s",time_end.get_string().c_str());
-	sinfg::info("time_start: %s",time_start.get_string().c_str());
+/*	synfig::info("curr_frame_: %d",curr_frame_);
+	synfig::info("total_frames: %d",total_frames);
+	synfig::info("time_end: %s",time_end.get_string().c_str());
+	synfig::info("time_start: %s",time_start.get_string().c_str());
 */
-//	sinfg::info("time: %s",time.get_string().c_str());
+//	synfig::info("time: %s",time.get_string().c_str());
 
 	return total_frames- curr_frame_+1;
 }
@@ -132,7 +132,7 @@ Target_Tile::next_tile(int& x, int& y)
 }
 
 bool
-sinfg::Target_Tile::render_frame_(Context context,ProgressCallback *cb)
+synfig::Target_Tile::render_frame_(Context context,ProgressCallback *cb)
 {
 	if(tile_w_<=0||tile_h_<=0)
 	{
@@ -280,16 +280,16 @@ sinfg::Target_Tile::render_frame_(Context context,ProgressCallback *cb)
 	if(cb && !cb->amount_complete(total_tiles,total_tiles))
 		return false;
 	
-#if SINFG_DISPLAY_EFFICIENCY==1
-	sinfg::info(">>>>>> Render Time: %fsec, Find Tile Time: %fsec, Add Tile Time: %fsec, Total Time: %fsec",work_time,find_tile_time,add_tile_time,total_time());
-	sinfg::info(">>>>>> FRAME EFICIENCY: %f%%",(100.0f*work_time/total_time()));
+#if SYNFIG_DISPLAY_EFFICIENCY==1
+	synfig::info(">>>>>> Render Time: %fsec, Find Tile Time: %fsec, Add Tile Time: %fsec, Total Time: %fsec",work_time,find_tile_time,add_tile_time,total_time());
+	synfig::info(">>>>>> FRAME EFICIENCY: %f%%",(100.0f*work_time/total_time()));
 #endif
 #undef total_tiles
 	return true;
 }
 
 bool
-sinfg::Target_Tile::render(ProgressCallback *cb)
+synfig::Target_Tile::render(ProgressCallback *cb)
 {
 	SuperCallback super_cb;
 	int
@@ -326,7 +326,7 @@ sinfg::Target_Tile::render(ProgressCallback *cb)
 		// Grab the time
 		i=next_frame(t);
 		
-		//sinfg::info("1time_set_to %s",t.get_string().c_str());
+		//synfig::info("1time_set_to %s",t.get_string().c_str());
 		
 		if(i>=1)
 		{
@@ -348,7 +348,7 @@ sinfg::Target_Tile::render(ProgressCallback *cb)
 			
 			Context context;
 			
-			#ifdef SINFG_OPTIMIZE_LAYER_TREE
+			#ifdef SYNFIG_OPTIMIZE_LAYER_TREE
 			Canvas::Handle op_canvas(Canvas::create());
 			optimize_layers(canvas->get_context(), op_canvas);
 			context=op_canvas->get_context();
@@ -357,7 +357,7 @@ sinfg::Target_Tile::render(ProgressCallback *cb)
 			#endif
 			
 /*
-			#ifdef SINFG_OPTIMIZE_LAYER_TREE
+			#ifdef SYNFIG_OPTIMIZE_LAYER_TREE
 			Context context;
 			Canvas::Handle op_canvas(Canvas::create());
 			// Set the time that we wish to render
@@ -376,7 +376,7 @@ sinfg::Target_Tile::render(ProgressCallback *cb)
 				return false;
 			end_frame();
 		}while((i=next_frame(t)));
-		//sinfg::info("tilerenderer: i=%d, t=%s",i,t.get_string().c_str());
+		//synfig::info("tilerenderer: i=%d, t=%s",i,t.get_string().c_str());
 		}
 		else
 		{
@@ -389,11 +389,11 @@ sinfg::Target_Tile::render(ProgressCallback *cb)
 //			if(!get_avoid_time_sync() || canvas->get_time()!=t)
 				canvas->set_time(t);
 
-			//sinfg::info("2time_set_to %s",t.get_string().c_str());
+			//synfig::info("2time_set_to %s",t.get_string().c_str());
 
 			Context context;
 			
-			#ifdef SINFG_OPTIMIZE_LAYER_TREE
+			#ifdef SYNFIG_OPTIMIZE_LAYER_TREE
 			Canvas::Handle op_canvas(Canvas::create());
 			optimize_layers(canvas->get_context(), op_canvas);
 			context=op_canvas->get_context();

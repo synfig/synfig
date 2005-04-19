@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file importer.h
 **	\brief writeme
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_IMPORTER_H
-#define __SINFG_IMPORTER_H
+#ifndef __SYNFIG_IMPORTER_H
+#define __SYNFIG_IMPORTER_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -39,28 +39,28 @@
 /* === M A C R O S ========================================================= */
 
 //! \writeme
-#define SINFG_IMPORTER_MODULE_EXT public: static const char name__[], version__[], ext__[],cvs_id__[]; static Importer *create(const char *filename);
+#define SYNFIG_IMPORTER_MODULE_EXT public: static const char name__[], version__[], ext__[],cvs_id__[]; static Importer *create(const char *filename);
 
 //! Sets the name of the importer
-#define SINFG_IMPORTER_SET_NAME(class,x) const char class::name__[]=x
+#define SYNFIG_IMPORTER_SET_NAME(class,x) const char class::name__[]=x
 
 //! \writeme
-#define SINFG_IMPORTER_SET_EXT(class,x) const char class::ext__[]=x
+#define SYNFIG_IMPORTER_SET_EXT(class,x) const char class::ext__[]=x
 
 //! Sets the version of the importer
-#define SINFG_IMPORTER_SET_VERSION(class,x) const char class::version__[]=x
+#define SYNFIG_IMPORTER_SET_VERSION(class,x) const char class::version__[]=x
 
 //! Sets the CVS ID of the importer
-#define SINFG_IMPORTER_SET_CVS_ID(class,x) const char class::cvs_id__[]=x
+#define SYNFIG_IMPORTER_SET_CVS_ID(class,x) const char class::cvs_id__[]=x
 
 //! \writeme
-#define SINFG_IMPORTER_INIT(class) sinfg::Importer* class::create(const char *filename) { return new class(filename); }
+#define SYNFIG_IMPORTER_INIT(class) synfig::Importer* class::create(const char *filename) { return new class(filename); }
 
 /* === T Y P E D E F S ===================================================== */
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace sinfg {
+namespace synfig {
 
 class Surface;
 class ProgressCallback;
@@ -115,7 +115,7 @@ public:
 	static Handle open(const String &filename);
 };
 
-}; // END of namespace sinfg
+}; // END of namespace synfig
 
 /* === E N D =============================================================== */
 

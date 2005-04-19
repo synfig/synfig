@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file gradient.cpp
 **	\brief Color Gradient Class Member Definitions
 **
@@ -40,7 +40,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 
@@ -50,13 +50,13 @@ using namespace sinfg;
 
 /* === M E T H O D S ======================================================= */
 
-sinfg::Gradient::Gradient(const Color &c1, const Color &c2)
+synfig::Gradient::Gradient(const Color &c1, const Color &c2)
 {
 	push_back(CPoint(0.0,c1));
 	push_back(CPoint(1.0,c2));
 }
 
-sinfg::Gradient::Gradient(const Color &c1, const Color &c2, const Color &c3)
+synfig::Gradient::Gradient(const Color &c1, const Color &c2, const Color &c3)
 {
 	push_back(CPoint(0.0,c1));
 	push_back(CPoint(0.5,c2));
@@ -69,7 +69,7 @@ sinfg::Gradient::Gradient(const Color &c1, const Color &c2, const Color &c3)
 // This algorithm will sort a nearly-sorted list at ~O(N), and
 // it will sort an inverse sorted list at ~O(N*N).
 void
-sinfg::Gradient::sort()
+synfig::Gradient::sort()
 {	
 	stable_sort(begin(),end());
 	/*
@@ -95,8 +95,8 @@ sinfg::Gradient::sort()
 	*/
 }
 
-static sinfg::ColorAccumulator
-supersample_helper(const sinfg::Gradient::CPoint &color1, const sinfg::Gradient::CPoint &color2, float begin, float end, float &weight)
+static synfig::ColorAccumulator
+supersample_helper(const synfig::Gradient::CPoint &color1, const synfig::Gradient::CPoint &color2, float begin, float end, float &weight)
 {
 	if(color1.pos==color2.pos || color1.pos>=end || color2.pos<=begin)
 	{
@@ -136,10 +136,10 @@ supersample_helper(const sinfg::Gradient::CPoint &color1, const sinfg::Gradient:
 		ret.set_b(ret.get_b()*ret.get_a());
 		return ret*weight;
 	}
-	sinfg::error("color1.pos=%f",color1.pos);
-	sinfg::error("color2.pos=%f",color2.pos);
-	sinfg::error("begin=%f",begin);
-	sinfg::error("end=%f",end);
+	synfig::error("color1.pos=%f",color1.pos);
+	synfig::error("color2.pos=%f",color2.pos);
+	synfig::error("begin=%f",begin);
+	synfig::error("end=%f",end);
 
 	weight=0;
 	return Color::alpha();
@@ -148,7 +148,7 @@ supersample_helper(const sinfg::Gradient::CPoint &color1, const sinfg::Gradient:
 }
 	
 Color
-sinfg::Gradient::operator()(const Real &x,float supersample)const
+synfig::Gradient::operator()(const Real &x,float supersample)const
 {
 	if(empty())
 		return Color(0,0,0,0);
@@ -345,13 +345,13 @@ sinfg::Gradient::operator()(const Real &x,float supersample)const
 
 	// We should never get to this point.
 
-	sinfg::error("sinfg::Gradient::operator()(): Logic Error (x=%f)",x);
+	synfig::error("synfig::Gradient::operator()(): Logic Error (x=%f)",x);
 	assert(0);
-	throw std::logic_error(strprintf("sinfg::Gradient::operator()(): Logic Error (x=%f)",x));
+	throw std::logic_error(strprintf("synfig::Gradient::operator()(): Logic Error (x=%f)",x));
 }
 
-sinfg::Gradient::iterator
-sinfg::Gradient::proximity(const Real &x)
+synfig::Gradient::iterator
+synfig::Gradient::proximity(const Real &x)
 {
 	iterator iter;
 	float dist(100000000);
@@ -378,8 +378,8 @@ sinfg::Gradient::proximity(const Real &x)
 	return iter;
 }
 
-sinfg::Gradient::const_iterator
-sinfg::Gradient::proximity(const Real &x)const
+synfig::Gradient::const_iterator
+synfig::Gradient::proximity(const Real &x)const
 {
 	return const_cast<Gradient*>(this)->proximity(x);
 	/*
@@ -402,8 +402,8 @@ sinfg::Gradient::proximity(const Real &x)const
 	*/
 }
 
-sinfg::Gradient::iterator
-sinfg::Gradient::find(const UniqueID &id)
+synfig::Gradient::iterator
+synfig::Gradient::find(const UniqueID &id)
 {
 	iterator iter;
 	
@@ -413,11 +413,11 @@ sinfg::Gradient::find(const UniqueID &id)
 			return iter;
 	}
 	
-	throw Exception::NotFound("sinfg::Gradient::find(): Unable to find UniqueID in gradient");
+	throw Exception::NotFound("synfig::Gradient::find(): Unable to find UniqueID in gradient");
 }
 	
-sinfg::Gradient::const_iterator
-sinfg::Gradient::find(const UniqueID &id)const
+synfig::Gradient::const_iterator
+synfig::Gradient::find(const UniqueID &id)const
 {
 	const_iterator iter;
 	
@@ -427,5 +427,5 @@ sinfg::Gradient::find(const UniqueID &id)const
 			return iter;
 	}
 	
-	throw Exception::NotFound("sinfg::Gradient::find()const: Unable to find UniqueID in gradient");
+	throw Exception::NotFound("synfig::Gradient::find()const: Unable to find UniqueID in gradient");
 }

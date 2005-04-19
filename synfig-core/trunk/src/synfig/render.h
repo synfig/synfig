@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file render.h
 **	\brief Template Header
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_RENDER_H
-#define __SINFG_RENDER_H
+#ifndef __SYNFIG_RENDER_H
+#define __SYNFIG_RENDER_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -41,7 +41,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace sinfg {
+namespace synfig {
 
 //! Renders starting at \a context to \a target
 /*! \warning \a Target::set_rend_desc() must have
@@ -58,7 +58,7 @@ extern bool render_threaded(	Context context,
 	ProgressCallback *callback,
 	int threads);
 
-}; /* end namespace sinfg */
+}; /* end namespace synfig */
 
 /* -- E N D ----------------------------------------------------------------- */
 

@@ -1,5 +1,5 @@
 /*! ========================================================================
-** Sinfg
+** Synfig
 ** Template Header File
 ** $Id: lyr_freetype.h,v 1.3 2005/01/24 03:08:17 darco Exp $
 **
@@ -20,15 +20,15 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_LYR_FREETYPE_H
-#define __SINFG_LYR_FREETYPE_H
+#ifndef __SYNFIG_LYR_FREETYPE_H
+#define __SYNFIG_LYR_FREETYPE_H
 
 /* === H E A D E R S ======================================================= */
 
-#include <sinfg/layer_composite.h>
-#include <sinfg/vector.h>
-#include <sinfg/color.h>
-#include <sinfg/string.h>
+#include <synfig/layer_composite.h>
+#include <synfig/vector.h>
+#include <synfig/color.h>
+#include <synfig/string.h>
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
@@ -41,7 +41,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-using namespace sinfg;
+using namespace synfig;
 using namespace std;
 using namespace etl;
 
@@ -80,21 +80,21 @@ struct TextLine
 };
 
 
-class lyr_freetype : public sinfg::Layer_Composite, public sinfg::Layer_NoDeform
+class lyr_freetype : public synfig::Layer_Composite, public synfig::Layer_NoDeform
 {
-	SINFG_LAYER_MODULE_EXT
+	SYNFIG_LAYER_MODULE_EXT
 private:
 
 	FT_Face face;
-	sinfg::String font;
-	sinfg::String family;
-	sinfg::String text;
-	sinfg::Vector size;
-	sinfg::Vector orient;
-	sinfg::Color color;
-	sinfg::Point pos;
-	sinfg::Real compress;
-	sinfg::Real vcompress;
+	synfig::String font;
+	synfig::String family;
+	synfig::String text;
+	synfig::Vector size;
+	synfig::Vector orient;
+	synfig::Color color;
+	synfig::Point pos;
+	synfig::Real compress;
+	synfig::Real vcompress;
 
 	int style;
 	int weight;
@@ -107,13 +107,13 @@ private:
 
 	void sync();
 	
-	mutable sinfg::Mutex mutex;
+	mutable synfig::Mutex mutex;
 	
 public:
 	lyr_freetype();
 	virtual ~lyr_freetype();
 
-	virtual bool set_param(const String & param, const sinfg::ValueBase &value);
+	virtual bool set_param(const String & param, const synfig::ValueBase &value);
 	virtual ValueBase get_param(const String & param)const;
 	virtual Color get_color(Context context, const Point &pos)const;
 	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
@@ -123,12 +123,12 @@ public:
 	virtual bool set_version(const String &ver){if(ver=="0.1")old_version=true;return true;}
 	virtual void reset_version(){old_version=false;}
 
-	virtual sinfg::Rect get_bounding_rect()const;
+	virtual synfig::Rect get_bounding_rect()const;
 
 private:
-	void new_font(const sinfg::String &family, int style=0, int weight=400);
-	bool new_font_(const sinfg::String &family, int style=0, int weight=400);
-	bool new_face(const sinfg::String &newfont);
+	void new_font(const synfig::String &family, int style=0, int weight=400);
+	bool new_font_(const synfig::String &family, int style=0, int weight=400);
+	bool new_face(const synfig::String &newfont);
 };
 
 extern FT_Library ft_library;

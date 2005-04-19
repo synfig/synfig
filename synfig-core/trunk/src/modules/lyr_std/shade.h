@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file shade.h
 **	\brief Template Header
 **
@@ -21,34 +21,34 @@
 
 /* === H E A D E R S ======================================================= */
 
-#ifndef __SINFG_LAYER_SHADE_H__
-#define __SINFG_LAYER_SHADE_H__
+#ifndef __SYNFIG_LAYER_SHADE_H__
+#define __SYNFIG_LAYER_SHADE_H__
 
 /* -- H E A D E R S --------------------------------------------------------- */
 
-#include <sinfg/layer_composite.h>
-#include <sinfg/color.h>
-#include <sinfg/vector.h>
-#include <sinfg/blur.h>
+#include <synfig/layer_composite.h>
+#include <synfig/color.h>
+#include <synfig/vector.h>
+#include <synfig/blur.h>
 
-using namespace sinfg;
+using namespace synfig;
 using namespace std;
 using namespace etl;
 
-class Layer_Shade : public sinfg::Layer_Composite
+class Layer_Shade : public synfig::Layer_Composite
 {
-	SINFG_LAYER_MODULE_EXT
+	SYNFIG_LAYER_MODULE_EXT
 private:
-	sinfg::Vector 	size;
+	synfig::Vector 	size;
 	int				type;
-	sinfg::Color	color;
-	sinfg::Vector	offset;
+	synfig::Color	color;
+	synfig::Vector	offset;
 	bool invert;
 
 public:
 	Layer_Shade();
 	
-	virtual bool set_param(const String & param, const sinfg::ValueBase &value);
+	virtual bool set_param(const String & param, const synfig::ValueBase &value);
 
 	virtual ValueBase get_param(const String & param)const;
 

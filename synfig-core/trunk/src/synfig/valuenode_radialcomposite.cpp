@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file valuenode_radialcomposite.cpp
 **	\brief Template File
 **
@@ -39,7 +39,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 
@@ -49,7 +49,7 @@ using namespace sinfg;
 
 /* === M E T H O D S ======================================================= */
 
-sinfg::ValueNode_RadialComposite::ValueNode_RadialComposite(const ValueBase &value):
+synfig::ValueNode_RadialComposite::ValueNode_RadialComposite(const ValueBase &value):
 	LinkableValueNode(value.get_type())
 {
 	switch(get_type())
@@ -91,7 +91,7 @@ ValueNode_RadialComposite::create_new()const
 }
 
 ValueBase
-sinfg::ValueNode_RadialComposite::operator()(Time t)const
+synfig::ValueNode_RadialComposite::operator()(Time t)const
 {
 	switch(get_type())
 	{
@@ -115,7 +115,7 @@ sinfg::ValueNode_RadialComposite::operator()(Time t)const
 			);
 		}
 		default:
-			sinfg::error(string("ValueNode_RadialComposite::operator():")+_("Bad type for radialcomposite"));
+			synfig::error(string("ValueNode_RadialComposite::operator():")+_("Bad type for radialcomposite"));
 			assert(components[0]);
 			return (*components[0])(t);
 	}
@@ -131,7 +131,7 @@ ValueNode_RadialComposite::link_count()const
 	case ValueBase::TYPE_COLOR:
 		return 4;
 	default:
-		sinfg::warning(string("ValueNode_RadialComposite::component_count():")+_("Bad type for radialcomposite"));
+		synfig::warning(string("ValueNode_RadialComposite::component_count():")+_("Bad type for radialcomposite"));
 		return 1;
 	}
 }

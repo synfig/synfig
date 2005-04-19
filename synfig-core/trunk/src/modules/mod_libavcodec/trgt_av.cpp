@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file trgt.cpp
 **	\brief \writeme
 **
@@ -21,7 +21,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#define SINFG_NO_ANGLE
+#define SYNFIG_NO_ANGLE
 
 #ifdef USING_PCH
 #	include "pch.h"
@@ -37,7 +37,7 @@ extern "C"
 #include "libavformat/avformat.h"
 }
 
-#include <sinfg/general.h>
+#include <synfig/general.h>
 
 #include <cstdio>
 #include <algorithm>
@@ -50,17 +50,17 @@ extern "C"
 
 /* === U S I N G =========================================================== */
 
-using namespace sinfg;
+using namespace synfig;
 using namespace std;
 using namespace etl;
 
 /* === I N F O ============================================================= */
 
-SINFG_TARGET_INIT(Target_LibAVCodec);
-SINFG_TARGET_SET_NAME(Target_LibAVCodec,"libav");
-SINFG_TARGET_SET_EXT(Target_LibAVCodec,"avi");
-SINFG_TARGET_SET_VERSION(Target_LibAVCodec,"0.1");
-SINFG_TARGET_SET_CVS_ID(Target_LibAVCodec,"$Id: trgt_av.cpp,v 1.1.1.1 2005/01/04 01:23:11 darco Exp $");
+SYNFIG_TARGET_INIT(Target_LibAVCodec);
+SYNFIG_TARGET_SET_NAME(Target_LibAVCodec,"libav");
+SYNFIG_TARGET_SET_EXT(Target_LibAVCodec,"avi");
+SYNFIG_TARGET_SET_VERSION(Target_LibAVCodec,"0.1");
+SYNFIG_TARGET_SET_CVS_ID(Target_LibAVCodec,"$Id: trgt_av.cpp,v 1.1.1.1 2005/01/04 01:23:11 darco Exp $");
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
@@ -197,14 +197,14 @@ public:
 		codec = avcodec_find_encoder(context->codec_id);
 		if(!codec)
 		{
-			sinfg::warning("audio-open: could not find codec");
+			synfig::warning("audio-open: could not find codec");
 			return 0;
 		}
 	
 		//open the codec
 		if(avcodec_open(context, codec) < 0)
 		{
-			sinfg::warning("audio-open: could not open codec");
+			synfig::warning("audio-open: could not open codec");
 			return 0;
 		}
 	
@@ -259,7 +259,7 @@ public:
 		//write the compressed audio to a file
 		if(av_write_frame(formatc, stream->index, &audiobuffer[0], size) != 0)
 		{
-			sinfg::warning("audio-write_frame: unable to write the entire audio frame");
+			synfig::warning("audio-write_frame: unable to write the entire audio frame");
 			return 0;
 		}
 		
@@ -297,7 +297,7 @@ public:
 	{
 		if(!formatc || !stream)
 		{
-			sinfg::warning("Attempt to open a video codec with a bad format or stream");
+			synfig::warning("Attempt to open a video codec with a bad format or stream");
 			return false;
 		}
 		
@@ -312,14 +312,14 @@ public:
 		codec = avcodec_find_encoder(context->codec_id);
 		if(!codec)
 		{
-			sinfg::warning("Open_video: could not find desired codec");
+			synfig::warning("Open_video: could not find desired codec");
 			return 0;
 		}
 	
 		//try to open the codec
 		if(avcodec_open(context, codec) < 0) 
 		{
-			sinfg::warning("open_video: could not open desired codec");
+			synfig::warning("open_video: could not open desired codec");
 			return 0;
 		}
 	
@@ -334,7 +334,7 @@ public:
 		/*picture = alloc_picture(PIX_FMT_RGBA32, context->width, context->height);
 		if(!picture)
 		{
-			sinfg::warning("open_video: could not allocate the picture to be encoded");
+			synfig::warning("open_video: could not allocate the picture to be encoded");
 			return 0;
 		}*/
 	
@@ -354,7 +354,7 @@ public:
 			encodable = alloc_picture(context->pix_fmt, context->width, context->height);
 			if(!encodable) 
 			{
-				sinfg::warning("open_video: could not allocate encodable picture");
+				synfig::warning("open_video: could not allocate encodable picture");
 				return 0;
 			}
 		}
@@ -367,7 +367,7 @@ public:
 	{
 		if(!formatc || !stream)
 		{
-			sinfg::warning("Attempt to open a video codec with a bad format or stream");
+			synfig::warning("Attempt to open a video codec with a bad format or stream");
 			return false;
 		}
 		
@@ -413,7 +413,7 @@ public:
 				//error detect - possibly throw later...
 				if(ret != 0)
 				{
-					sinfg::warning("write_frame: error while writing video frame");
+					synfig::warning("write_frame: error while writing video frame");
 					return false;					
 				}
 			}
@@ -519,13 +519,13 @@ public:
 		
 		if(!format)
 		{
-			sinfg::warning("Unable to Guess the output, defaulting to mpeg");
+			synfig::warning("Unable to Guess the output, defaulting to mpeg");
 			format = guess_format("mpeg", NULL, NULL);
 		}
 		
 		if(!format) 
 		{
-			sinfg::warning("Unable to find output format");
+			synfig::warning("Unable to find output format");
 			return 0;
 		}
 		
@@ -533,7 +533,7 @@ public:
 		formatc = (AVFormatContext *)av_mallocz(sizeof(AVFormatContext));
 		if(!formatc)
 		{
-			sinfg::warning("Memory error\n");
+			synfig::warning("Memory error\n");
 			return 0;
 		}
 		//set the output format to the one we found
@@ -574,7 +574,7 @@ public:
 		
 		if(av_set_parameters(formatc, ap) < 0)
 		{
-			sinfg::warning("Invalid output formatting parameters");
+			synfig::warning("Invalid output formatting parameters");
 			return 0;
 		}
 	
@@ -586,7 +586,7 @@ public:
 		{
 			if(!vid.open(formatc, video_st))
 			{
-				sinfg::warning("Could not open video encoder");
+				synfig::warning("Could not open video encoder");
 				return 0;
 			}
 		}
@@ -594,7 +594,7 @@ public:
 		{
 			if(!aud.open(formatc, audio_st))
 			{
-				sinfg::warning("Could not open audio encoder");
+				synfig::warning("Could not open audio encoder");
 				return 0;
 			}			
 		}*/
@@ -605,7 +605,7 @@ public:
 			//use libav's file open function (what does it do differently????)
 			if(url_fopen(&formatc->pb, filename, URL_WRONLY) < 0)
 			{
-				sinfg::warning("Unable to open file: %s", filename);
+				synfig::warning("Unable to open file: %s", filename);
 				return 0;
 			}
 		}
@@ -615,7 +615,7 @@ public:
 		picture = alloc_picture(PIX_FMT_RGB24,vInfo.w,vInfo.h);//video_st->codec.width, video_st->codec.height);
 		if(!picture)
 		{
-			sinfg::warning("Unable to allocate the temporary AVFrame surface");
+			synfig::warning("Unable to allocate the temporary AVFrame surface");
 			return 0;
 		}
 		
@@ -695,7 +695,7 @@ public:
 		st = av_new_stream(formatc, 0);
 		if(!st)
 		{
-			sinfg::warning("video-add_stream: Unable to allocate stream");
+			synfig::warning("video-add_stream: Unable to allocate stream");
 			return 0;
 		}
 		
@@ -741,7 +741,7 @@ public:
 		stream = av_new_stream(formatc, 1);
 		if(!stream)
 		{
-			sinfg::warning("could not alloc stream");
+			synfig::warning("could not alloc stream");
 			return 0;
 		}
 	
@@ -874,7 +874,7 @@ Target_LibAVCodec::end_frame()
 	//encode the frame and write it to the file
 	if(!data->vid.write_frame(formatc,video_st,data->picture))
 	{
-		sinfg::warning("Unable to write a frame");
+		synfig::warning("Unable to write a frame");
 	}
 	
 	data->frame_count++;
@@ -893,7 +893,7 @@ Target_LibAVCodec::end_frame()
 }
 
 bool
-Target_LibAVCodec::start_frame(sinfg::ProgressCallback *callback)
+Target_LibAVCodec::start_frame(synfig::ProgressCallback *callback)
 {	
 	//prepare all the color buffer stuff, etc.
 	
@@ -920,7 +920,7 @@ bool Target_LibAVCodec::init()
 	//hardcode test for mpeg
 	if(!data->Initialize(filename.c_str(),NULL))
 	{
-		sinfg::warning("Unable to Initialize the audio video encoders");
+		synfig::warning("Unable to Initialize the audio video encoders");
 		return 0;
 	}
 	

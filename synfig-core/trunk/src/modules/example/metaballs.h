@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file metaballs.h
 **	\brief Declares information for defining Metaballs.
 **
@@ -21,15 +21,15 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_METABALLS_H
-#define __SINFG_METABALLS_H
+#ifndef __SYNFIG_METABALLS_H
+#define __SYNFIG_METABALLS_H
 
 /* === H E A D E R S ======================================================= */
 
-#include <sinfg/layer_composite.h>
-#include <sinfg/color.h>
-#include <sinfg/vector.h>
-#include <sinfg/value.h>
+#include <synfig/layer_composite.h>
+#include <synfig/color.h>
+#include <synfig/vector.h>
+#include <synfig/value.h>
 #include <vector>
 
 /* === M A C R O S ========================================================= */
@@ -37,34 +37,34 @@
 /* === T Y P E D E F S ===================================================== */
 
 /* === C L A S S E S & S T R U C T S ======================================= */
-class Metaballs : public sinfg::Layer_Composite
+class Metaballs : public synfig::Layer_Composite
 {
-	SINFG_LAYER_MODULE_EXT
+	SYNFIG_LAYER_MODULE_EXT
 	
 private:
 
-	sinfg::Color color;
+	synfig::Color color;
 
-	std::vector<sinfg::Point>	centers;
-	std::vector<sinfg::Real>	radii;
-	std::vector<sinfg::Real>	weights;
+	std::vector<synfig::Point>	centers;
+	std::vector<synfig::Real>	radii;
+	std::vector<synfig::Real>	weights;
 
-	sinfg::Real	threshold;
+	synfig::Real	threshold;
 	//Real	threshold2;
 	
-	sinfg::Real totaldensity(const sinfg::Point &pos)const;
+	synfig::Real totaldensity(const synfig::Point &pos)const;
 
 public:
 	
 	Metaballs();
 	
-	virtual bool set_param(const sinfg::String & param, const sinfg::ValueBase &value);
+	virtual bool set_param(const synfig::String & param, const synfig::ValueBase &value);
 
-	virtual sinfg::ValueBase get_param(const sinfg::String & param)const;
+	virtual synfig::ValueBase get_param(const synfig::String & param)const;
 
-	virtual sinfg::Color get_color(sinfg::Context context, const sinfg::Point &pos)const;
+	virtual synfig::Color get_color(synfig::Context context, const synfig::Point &pos)const;
 	
-	virtual bool accelerated_render(sinfg::Context context,sinfg::Surface *surface,int quality, const sinfg::RendDesc &renddesc, sinfg::ProgressCallback *cb)const;
+	virtual bool accelerated_render(synfig::Context context,synfig::Surface *surface,int quality, const synfig::RendDesc &renddesc, synfig::ProgressCallback *cb)const;
 	
 	virtual Vocab get_param_vocab()const;
 }; // END of class Metaballs

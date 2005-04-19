@@ -1,5 +1,5 @@
 /*! ========================================================================
-** Sinfg
+** Synfig
 ** Template File
 ** $Id: lineargradient.cpp,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $
 **
@@ -29,14 +29,14 @@
 
 #include "lineargradient.h"
 
-#include <sinfg/string.h>
-#include <sinfg/time.h>
-#include <sinfg/context.h>
-#include <sinfg/paramdesc.h>
-#include <sinfg/renddesc.h>
-#include <sinfg/surface.h>
-#include <sinfg/value.h>
-#include <sinfg/valuenode.h>
+#include <synfig/string.h>
+#include <synfig/time.h>
+#include <synfig/context.h>
+#include <synfig/paramdesc.h>
+#include <synfig/renddesc.h>
+#include <synfig/surface.h>
+#include <synfig/value.h>
+#include <synfig/valuenode.h>
 
 #endif
 
@@ -44,12 +44,12 @@
 
 /* === G L O B A L S ======================================================= */
 
-SINFG_LAYER_INIT(LinearGradient);
-SINFG_LAYER_SET_NAME(LinearGradient,"linear_gradient");
-SINFG_LAYER_SET_LOCAL_NAME(LinearGradient,_("Linear Gradient"));
-SINFG_LAYER_SET_CATEGORY(LinearGradient,_("Gradients"));
-SINFG_LAYER_SET_VERSION(LinearGradient,"0.0");
-SINFG_LAYER_SET_CVS_ID(LinearGradient,"$Id: lineargradient.cpp,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $");
+SYNFIG_LAYER_INIT(LinearGradient);
+SYNFIG_LAYER_SET_NAME(LinearGradient,"linear_gradient");
+SYNFIG_LAYER_SET_LOCAL_NAME(LinearGradient,_("Linear Gradient"));
+SYNFIG_LAYER_SET_CATEGORY(LinearGradient,_("Gradients"));
+SYNFIG_LAYER_SET_VERSION(LinearGradient,"0.0");
+SYNFIG_LAYER_SET_CVS_ID(LinearGradient,"$Id: lineargradient.cpp,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $");
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -108,13 +108,13 @@ LinearGradient::color_func(const Point &point, float supersample)const
 }
 
 float
-LinearGradient::calc_supersample(const sinfg::Point &x, float pw,float ph)const
+LinearGradient::calc_supersample(const synfig::Point &x, float pw,float ph)const
 {
 	return pw/(p2-p1).mag();
 }
 
-sinfg::Layer::Handle
-LinearGradient::hit_check(sinfg::Context context, const sinfg::Point &point)const
+synfig::Layer::Handle
+LinearGradient::hit_check(synfig::Context context, const synfig::Point &point)const
 {
 	if(get_blend_method()==Color::BLEND_STRAIGHT && get_amount()>=0.5)
 		return const_cast<LinearGradient*>(this);

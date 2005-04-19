@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file savecanvas.h
 **	\brief writeme
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_SAVECANVAS_H
-#define __SINFG_SAVECANVAS_H
+#ifndef __SYNFIG_SAVECANVAS_H
+#define __SYNFIG_SAVECANVAS_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -35,7 +35,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace sinfg {
+namespace synfig {
 
 /* === E X T E R N S ======================================================= */
 
@@ -46,7 +46,7 @@ bool save_canvas(const String &filename, Canvas::ConstHandle canvas);
 //! Stores a Canvas in a string in XML format
 String canvas_to_string(Canvas::ConstHandle canvas);
 
-}; // END of namespace sinfg
+}; // END of namespace synfig
 
 /* === E N D =============================================================== */
 

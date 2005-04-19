@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file valuenode_subtract.cpp
 **	\brief Template File
 **
@@ -41,7 +41,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 
@@ -51,7 +51,7 @@ using namespace sinfg;
 
 /* === M E T H O D S ======================================================= */
 
-sinfg::ValueNode_Stripes::ValueNode_Stripes():LinkableValueNode(sinfg::ValueBase::TYPE_GRADIENT)
+synfig::ValueNode_Stripes::ValueNode_Stripes():LinkableValueNode(synfig::ValueBase::TYPE_GRADIENT)
 {
 	set_link("color1",ValueNode_Const::create(Color::alpha()));
 	set_link("color2",ValueNode_Const::create(Color::black()));
@@ -73,7 +73,7 @@ ValueNode_Stripes::create(const ValueBase& x)
 	if(id!=ValueBase::TYPE_GRADIENT)
 	{
 		assert(0);
-		throw runtime_error("sinfg::ValueNode_Stripes:Bad type "+ValueBase::type_name(id));			
+		throw runtime_error("synfig::ValueNode_Stripes:Bad type "+ValueBase::type_name(id));			
 	}		
 
 	ValueNode_Stripes* value_node=new ValueNode_Stripes();
@@ -83,13 +83,13 @@ ValueNode_Stripes::create(const ValueBase& x)
 	return value_node;
 }
 
-sinfg::ValueNode_Stripes::~ValueNode_Stripes()
+synfig::ValueNode_Stripes::~ValueNode_Stripes()
 {
 	unlink_all();
 }
 
 bool
-sinfg::ValueNode_Stripes::set_color1(ValueNode::Handle a)
+synfig::ValueNode_Stripes::set_color1(ValueNode::Handle a)
 {
 	if(a->get_type()!=ValueBase::TYPE_COLOR)
 		return false;
@@ -100,7 +100,7 @@ sinfg::ValueNode_Stripes::set_color1(ValueNode::Handle a)
 }
 
 bool
-sinfg::ValueNode_Stripes::set_color2(ValueNode::Handle a)
+synfig::ValueNode_Stripes::set_color2(ValueNode::Handle a)
 {
 	if(a->get_type()!=ValueBase::TYPE_COLOR)
 		return false;
@@ -111,7 +111,7 @@ sinfg::ValueNode_Stripes::set_color2(ValueNode::Handle a)
 }
 
 bool
-sinfg::ValueNode_Stripes::set_width(ValueNode::Handle x)
+synfig::ValueNode_Stripes::set_width(ValueNode::Handle x)
 {
 	if(x->get_type()!=ValueBase::TYPE_REAL)
 		return false;
@@ -122,7 +122,7 @@ sinfg::ValueNode_Stripes::set_width(ValueNode::Handle x)
 }
 
 bool
-sinfg::ValueNode_Stripes::set_stripes(ValueNode::Handle b)
+synfig::ValueNode_Stripes::set_stripes(ValueNode::Handle b)
 {
 	if(b->get_type()!=ValueBase::TYPE_INTEGER)
 		return false;
@@ -130,8 +130,8 @@ sinfg::ValueNode_Stripes::set_stripes(ValueNode::Handle b)
 	return true;
 }
 
-sinfg::ValueBase
-sinfg::ValueNode_Stripes::operator()(Time t)const
+synfig::ValueBase
+synfig::ValueNode_Stripes::operator()(Time t)const
 {
 	const int total((*stripes_)(t).get(int()));		
 	int i;

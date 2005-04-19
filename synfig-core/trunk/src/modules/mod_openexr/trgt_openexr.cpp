@@ -1,5 +1,5 @@
 /*! ========================================================================
-** Sinfg
+** Synfig
 ** exr_trgt Target Module
 ** $Id: trgt_openexr.cpp,v 1.1.1.1 2005/01/04 01:23:14 darco Exp $
 **
@@ -20,7 +20,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#define SINFG_TARGET
+#define SYNFIG_TARGET
 
 #ifdef USING_PCH
 #	include "pch.h"
@@ -30,7 +30,7 @@
 #endif
 
 #include "trgt_openexr.h"
-#include <sinfg/sinfg.h>
+#include <synfig/synfig.h>
 #include <ETL/stringf>
 #include <cstdio>
 #include <algorithm>
@@ -39,17 +39,17 @@
 
 /* === M A C R O S ========================================================= */
 
-using namespace sinfg;
+using namespace synfig;
 using namespace std;
 using namespace etl;
 
 /* === G L O B A L S ======================================================= */
 
-SINFG_TARGET_INIT(exr_trgt);
-SINFG_TARGET_SET_NAME(exr_trgt,"exr_trgt");
-SINFG_TARGET_SET_EXT(exr_trgt,"exr");
-SINFG_TARGET_SET_VERSION(exr_trgt,"1.0.4");
-SINFG_TARGET_SET_CVS_ID(exr_trgt,"$Id: trgt_openexr.cpp,v 1.1.1.1 2005/01/04 01:23:14 darco Exp $");
+SYNFIG_TARGET_INIT(exr_trgt);
+SYNFIG_TARGET_SET_NAME(exr_trgt,"exr_trgt");
+SYNFIG_TARGET_SET_EXT(exr_trgt,"exr");
+SYNFIG_TARGET_SET_VERSION(exr_trgt,"1.0.4");
+SYNFIG_TARGET_SET_CVS_ID(exr_trgt,"$Id: trgt_openexr.cpp,v 1.1.1.1 2005/01/04 01:23:14 darco Exp $");
 
 /* === M E T H O D S ======================================================= */
 
@@ -99,7 +99,7 @@ exr_trgt::set_rend_desc(RendDesc *given_desc)
 }
 
 bool
-exr_trgt::start_frame(sinfg::ProgressCallback *cb)
+exr_trgt::start_frame(synfig::ProgressCallback *cb)
 {
 	int w=desc.get_w(),h=desc.get_h();
 	

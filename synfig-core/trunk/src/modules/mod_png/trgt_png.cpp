@@ -1,5 +1,5 @@
 /*! ========================================================================
-** Sinfg
+** Synfig
 ** png_trgt Target Module
 ** $Id: trgt_png.cpp,v 1.1.1.1 2005/01/04 01:23:14 darco Exp $
 **
@@ -20,7 +20,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#define SINFG_TARGET
+#define SYNFIG_TARGET
 
 #ifdef USING_PCH
 #	include "pch.h"
@@ -41,17 +41,17 @@
 
 /* === M A C R O S ========================================================= */
 
-using namespace sinfg;
+using namespace synfig;
 using namespace std;
 using namespace etl;
 
 /* === G L O B A L S ======================================================= */
 
-SINFG_TARGET_INIT(png_trgt);
-SINFG_TARGET_SET_NAME(png_trgt,"png");
-SINFG_TARGET_SET_EXT(png_trgt,"png");
-SINFG_TARGET_SET_VERSION(png_trgt,"0.1");
-SINFG_TARGET_SET_CVS_ID(png_trgt,"$Id: trgt_png.cpp,v 1.1.1.1 2005/01/04 01:23:14 darco Exp $");
+SYNFIG_TARGET_INIT(png_trgt);
+SYNFIG_TARGET_SET_NAME(png_trgt,"png");
+SYNFIG_TARGET_SET_EXT(png_trgt,"png");
+SYNFIG_TARGET_SET_VERSION(png_trgt,"0.1");
+SYNFIG_TARGET_SET_CVS_ID(png_trgt,"$Id: trgt_png.cpp,v 1.1.1.1 2005/01/04 01:23:14 darco Exp $");
 
 /* === M E T H O D S ======================================================= */
 
@@ -59,7 +59,7 @@ void
 png_trgt::png_out_error(png_struct *png_data,const char *msg)
 {
 	png_trgt *me=(png_trgt*)png_data->error_ptr;
-	sinfg::error(strprintf("png_trgt: error: %s",msg));
+	synfig::error(strprintf("png_trgt: error: %s",msg));
 	me->ready=false;
 }
 
@@ -67,7 +67,7 @@ void
 png_trgt::png_out_warning(png_struct *png_data,const char *msg)
 {
 	png_trgt *me=(png_trgt*)png_data->error_ptr;
-	sinfg::warning(strprintf("png_trgt: warning: %s",msg));
+	synfig::warning(strprintf("png_trgt: warning: %s",msg));
 	me->ready=false;
 }
 
@@ -122,7 +122,7 @@ png_trgt::end_frame()
 }
 
 bool
-png_trgt::start_frame(sinfg::ProgressCallback *callback)
+png_trgt::start_frame(synfig::ProgressCallback *callback)
 {
 	int w=desc.get_w(),h=desc.get_h();
 	
@@ -162,7 +162,7 @@ png_trgt::start_frame(sinfg::ProgressCallback *callback)
 	png_ptr=png_create_write_struct(PNG_LIBPNG_VER_STRING, (png_voidp)this,png_out_error, png_out_warning);
 	if (!png_ptr)
 	{
-		sinfg::error("Unable to setup PNG struct");
+		synfig::error("Unable to setup PNG struct");
 		fclose(file);
 		return false;
 	}
@@ -170,7 +170,7 @@ png_trgt::start_frame(sinfg::ProgressCallback *callback)
 	info_ptr= png_create_info_struct(png_ptr);
 	if (!info_ptr)
 	{
-		sinfg::error("Unable to setup PNG info struct");
+		synfig::error("Unable to setup PNG info struct");
 		fclose(file);
 		png_destroy_write_struct(&png_ptr,(png_infopp)NULL);
 		return false;
@@ -178,7 +178,7 @@ png_trgt::start_frame(sinfg::ProgressCallback *callback)
 	
 	if (setjmp(png_jmpbuf(png_ptr)))
 	{
-		sinfg::error("Unable to setup longjump");
+		synfig::error("Unable to setup longjump");
 		png_destroy_write_struct(&png_ptr, &info_ptr);
 		fclose(file);
 		return false;
@@ -202,7 +202,7 @@ png_trgt::start_frame(sinfg::ProgressCallback *callback)
 		{ PNG_TEXT_COMPRESSION_NONE, "Title", const_cast<char *>(get_canvas()->get_name().c_str()) },
 		{ PNG_TEXT_COMPRESSION_NONE, "Description", const_cast<char *>(get_canvas()->get_description().c_str()) },
 		{ PNG_TEXT_COMPRESSION_NONE, "Copyright", "(c) 2004 Voria Studios, LLC" },
-		{ PNG_TEXT_COMPRESSION_NONE, "Software", "SINFG" },
+		{ PNG_TEXT_COMPRESSION_NONE, "Software", "SYNFIG" },
 	};
 	png_set_text(png_ptr,info_ptr,comments,sizeof(comments)/sizeof(png_text));
 	

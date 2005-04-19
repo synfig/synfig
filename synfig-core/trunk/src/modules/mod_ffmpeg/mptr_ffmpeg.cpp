@@ -1,5 +1,5 @@
 /*! ========================================================================
-** Sinfg
+** Synfig
 ** ppm Target Module
 ** $Id: mptr_ffmpeg.cpp,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $
 **
@@ -38,17 +38,17 @@
 
 /* === M A C R O S ========================================================= */
 
-using namespace sinfg;
+using namespace synfig;
 using namespace std;
 using namespace etl;
 
 /* === G L O B A L S ======================================================= */
 
-SINFG_IMPORTER_INIT(ffmpeg_mptr);
-SINFG_IMPORTER_SET_NAME(ffmpeg_mptr,"ffmpeg");
-SINFG_IMPORTER_SET_EXT(ffmpeg_mptr,"avi");
-SINFG_IMPORTER_SET_VERSION(ffmpeg_mptr,"0.1");
-SINFG_IMPORTER_SET_CVS_ID(ffmpeg_mptr,"$Id: mptr_ffmpeg.cpp,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $");
+SYNFIG_IMPORTER_INIT(ffmpeg_mptr);
+SYNFIG_IMPORTER_SET_NAME(ffmpeg_mptr,"ffmpeg");
+SYNFIG_IMPORTER_SET_EXT(ffmpeg_mptr,"avi");
+SYNFIG_IMPORTER_SET_VERSION(ffmpeg_mptr,"0.1");
+SYNFIG_IMPORTER_SET_CVS_ID(ffmpeg_mptr,"$Id: mptr_ffmpeg.cpp,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $");
 
 /* === M E T H O D S ======================================================= */
 
@@ -163,7 +163,7 @@ ffmpeg_mptr::~ffmpeg_mptr()
 }
 
 bool
-ffmpeg_mptr::get_frame(sinfg::Surface &surface,Time time, sinfg::ProgressCallback *)
+ffmpeg_mptr::get_frame(synfig::Surface &surface,Time time, synfig::ProgressCallback *)
 {
 	int i=(int)(time*fps);
 	if(i!=cur_frame)

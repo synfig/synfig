@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file layer_pastecanvas.h
 **	\brief Template Header
 **
@@ -45,14 +45,14 @@
 
 using namespace etl;
 using namespace std;
-using namespace sinfg;
+using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 
 #define MAX_DEPTH 10
 
 //#ifdef __APPLE__
-//#define SINFG_NO_CLIP
+//#define SYNFIG_NO_CLIP
 //#endif
 
 /* === C L A S S E S ======================================================= */
@@ -67,12 +67,12 @@ public:
 
 /* === G L O B A L S ======================================================= */
 
-SINFG_LAYER_INIT(Layer_PasteCanvas);
-SINFG_LAYER_SET_NAME(Layer_PasteCanvas,"PasteCanvas");
-SINFG_LAYER_SET_LOCAL_NAME(Layer_PasteCanvas,_("Paste Canvas"));
-SINFG_LAYER_SET_CATEGORY(Layer_PasteCanvas,_("Default"));
-SINFG_LAYER_SET_VERSION(Layer_PasteCanvas,"0.1");
-SINFG_LAYER_SET_CVS_ID(Layer_PasteCanvas,"$Id: layer_pastecanvas.cpp,v 1.3 2005/01/24 03:08:18 darco Exp $");
+SYNFIG_LAYER_INIT(Layer_PasteCanvas);
+SYNFIG_LAYER_SET_NAME(Layer_PasteCanvas,"PasteCanvas");
+SYNFIG_LAYER_SET_LOCAL_NAME(Layer_PasteCanvas,_("Paste Canvas"));
+SYNFIG_LAYER_SET_CATEGORY(Layer_PasteCanvas,_("Default"));
+SYNFIG_LAYER_SET_VERSION(Layer_PasteCanvas,"0.1");
+SYNFIG_LAYER_SET_CVS_ID(Layer_PasteCanvas,"$Id: layer_pastecanvas.cpp,v 1.3 2005/01/24 03:08:18 darco Exp $");
 
 /* === M E T H O D S ======================================================= */
 
@@ -159,7 +159,7 @@ Layer_PasteCanvas::set_param(const String & param, const ValueBase &value)
 }
 
 void
-Layer_PasteCanvas::set_sub_canvas(etl::handle<sinfg::Canvas> x)
+Layer_PasteCanvas::set_sub_canvas(etl::handle<synfig::Canvas> x)
 {
 	if(canvas && !do_not_muck_with_time_)
 		remove_child(canvas.get());
@@ -196,13 +196,13 @@ Layer_PasteCanvas::set_sub_canvas(etl::handle<sinfg::Canvas> x)
 void
 Layer_PasteCanvas::on_canvas_set()
 {
-	//sinfg::info("before count()=%d",count());
+	//synfig::info("before count()=%d",count());
 	if(get_canvas() && canvas && canvas->is_inline() && canvas->parent()!=get_canvas())
 	{
-		//sinfg::info("during count()=%d",count());
+		//synfig::info("during count()=%d",count());
 		canvas->set_inline(get_canvas());
 	}
-	//sinfg::info("after count()=%d",count());
+	//synfig::info("after count()=%d",count());
 }
 
 ValueBase
@@ -237,8 +237,8 @@ Layer_PasteCanvas::set_time(Context context, Time time)const
 		bounds=Rect::zero();
 }
 
-sinfg::Layer::Handle
-Layer_PasteCanvas::hit_check(sinfg::Context context, const sinfg::Point &pos)const
+synfig::Layer::Handle
+Layer_PasteCanvas::hit_check(synfig::Context context, const synfig::Point &pos)const
 {
 	if(depth==MAX_DEPTH)return 0;depth_counter counter(depth);
 
@@ -332,9 +332,9 @@ Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quali
 			blend_method=Color::BLEND_STRAIGHT;
 	}
 	
-#ifndef SINFG_NO_CLIP
+#ifndef SYNFIG_NO_CLIP
 	{
-		//sinfg::info("PasteCanv Clip");
+		//synfig::info("PasteCanv Clip");
 		Rect area(desc.get_rect()&full_bounding_rect);
 				
 		Point min(area.get_min());

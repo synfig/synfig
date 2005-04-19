@@ -1,5 +1,5 @@
 /*! ========================================================================
-** Sinfg
+** Synfig
 ** Template File
 ** $Id: rotate.cpp,v 1.2 2005/01/24 05:00:18 darco Exp $
 **
@@ -28,15 +28,15 @@
 #endif
 
 #include "rotate.h"
-#include <sinfg/string.h>
-#include <sinfg/time.h>
-#include <sinfg/context.h>
-#include <sinfg/paramdesc.h>
-#include <sinfg/renddesc.h>
-#include <sinfg/surface.h>
-#include <sinfg/value.h>
-#include <sinfg/valuenode.h>
-#include <sinfg/transform.h>
+#include <synfig/string.h>
+#include <synfig/time.h>
+#include <synfig/context.h>
+#include <synfig/paramdesc.h>
+#include <synfig/renddesc.h>
+#include <synfig/surface.h>
+#include <synfig/value.h>
+#include <synfig/valuenode.h>
+#include <synfig/transform.h>
 #include <ETL/misc>
 
 #endif
@@ -45,12 +45,12 @@
 
 /* === G L O B A L S ======================================================= */
 
-SINFG_LAYER_INIT(Rotate);
-SINFG_LAYER_SET_NAME(Rotate,"rotate");
-SINFG_LAYER_SET_LOCAL_NAME(Rotate,_("Rotate"));
-SINFG_LAYER_SET_CATEGORY(Rotate,_("Transform"));
-SINFG_LAYER_SET_VERSION(Rotate,"0.1");
-SINFG_LAYER_SET_CVS_ID(Rotate,"$Id: rotate.cpp,v 1.2 2005/01/24 05:00:18 darco Exp $");
+SYNFIG_LAYER_INIT(Rotate);
+SYNFIG_LAYER_SET_NAME(Rotate,"rotate");
+SYNFIG_LAYER_SET_LOCAL_NAME(Rotate,_("Rotate"));
+SYNFIG_LAYER_SET_CATEGORY(Rotate,_("Transform"));
+SYNFIG_LAYER_SET_VERSION(Rotate,"0.1");
+SYNFIG_LAYER_SET_CVS_ID(Rotate,"$Id: rotate.cpp,v 1.2 2005/01/24 05:00:18 darco Exp $");
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -123,13 +123,13 @@ class Rotate_Trans : public Transform
 public:
 	Rotate_Trans(const Rotate* x):Transform(x->get_guid()),layer(x) { }
 	
-	sinfg::Vector perform(const sinfg::Vector& x)const
+	synfig::Vector perform(const synfig::Vector& x)const
 	{
 		Point pos(x-layer->origin);
 		return Point(layer->cos_val*pos[0]-layer->sin_val*pos[1],layer->sin_val*pos[0]+layer->cos_val*pos[1])+layer->origin;
 	}
 	
-	sinfg::Vector unperform(const sinfg::Vector& x)const
+	synfig::Vector unperform(const synfig::Vector& x)const
 	{
 		Point pos(x-layer->origin);
 		return Point(layer->cos_val*pos[0]+layer->sin_val*pos[1],-layer->sin_val*pos[0]+layer->cos_val*pos[1])+layer->origin;
@@ -141,8 +141,8 @@ Rotate::get_transform()const
 	return new Rotate_Trans(this);
 }
 
-sinfg::Layer::Handle
-Rotate::hit_check(sinfg::Context context, const sinfg::Point &p)const
+synfig::Layer::Handle
+Rotate::hit_check(synfig::Context context, const synfig::Point &p)const
 {
 	Point pos(p-origin);
 	Point newpos(cos_val*pos[0]+sin_val*pos[1],-sin_val*pos[0]+cos_val*pos[1]);
@@ -227,8 +227,8 @@ Rotate::accelerated_render(Context context,Surface *surface,int quality, const R
 	desc.set_br(br);
 	desc.set_wh(round_to_int(pw*(br[0]-tl[0])),round_to_int(ph*(br[1]-tl[1])));
 
-	//sinfg::warning("given window: [%f,%f]-[%f,%f] %dx%d",renddesc.get_tl()[0],renddesc.get_tl()[1],renddesc.get_br()[0],renddesc.get_br()[1],renddesc.get_w(),renddesc.get_h());
-	//sinfg::warning("surface to render: [%f,%f]-[%f,%f] %dx%d",desc.get_tl()[0],desc.get_tl()[1],desc.get_br()[0],desc.get_br()[1],desc.get_w(),desc.get_h());
+	//synfig::warning("given window: [%f,%f]-[%f,%f] %dx%d",renddesc.get_tl()[0],renddesc.get_tl()[1],renddesc.get_br()[0],renddesc.get_br()[1],renddesc.get_w(),renddesc.get_h());
+	//synfig::warning("surface to render: [%f,%f]-[%f,%f] %dx%d",desc.get_tl()[0],desc.get_tl()[1],desc.get_br()[0],desc.get_br()[1],desc.get_w(),desc.get_h());
 		
 	Surface source;
 	source.set_wh(desc.get_w(),desc.get_h());

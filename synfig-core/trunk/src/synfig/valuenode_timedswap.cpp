@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file valuenode_timedswap.cpp
 **	\brief Template File
 **
@@ -40,7 +40,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 
@@ -75,7 +75,7 @@ ValueNode_TimedSwap::create_new()const
 }
 
 
-sinfg::ValueNode_TimedSwap::~ValueNode_TimedSwap()
+synfig::ValueNode_TimedSwap::~ValueNode_TimedSwap()
 {
 	unlink_all();
 }
@@ -171,8 +171,8 @@ ValueNode_TimedSwap::get_swap_length()const
 
 
 
-sinfg::ValueBase
-sinfg::ValueNode_TimedSwap::operator()(Time t)const
+synfig::ValueBase
+synfig::ValueNode_TimedSwap::operator()(Time t)const
 {
 	Time swptime=(*swap_time)(t).get(Time());
 	Time swplength=(*swap_length)(t).get(Time());

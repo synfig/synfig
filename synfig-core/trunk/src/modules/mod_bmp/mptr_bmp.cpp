@@ -1,5 +1,5 @@
 /*! ========================================================================
-** Sinfg
+** Synfig
 ** bmp Target Module
 ** $Id: mptr_bmp.cpp,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $
 **
@@ -20,7 +20,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#define SINFG_NO_ANGLE
+#define SYNFIG_NO_ANGLE
 
 #ifdef USING_PCH
 #	include "pch.h"
@@ -30,8 +30,8 @@
 #endif
 
 #include "mptr_bmp.h"
-#include <sinfg/general.h>
-#include <sinfg/surface.h>
+#include <synfig/general.h>
+#include <synfig/surface.h>
 
 #include <algorithm>
 #include <functional>
@@ -39,17 +39,17 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace sinfg;
+using namespace synfig;
 using namespace std;
 using namespace etl;
 
 /* === G L O B A L S ======================================================= */
 
-SINFG_IMPORTER_INIT(bmp_mptr);
-SINFG_IMPORTER_SET_NAME(bmp_mptr,"bmp_mptr");
-SINFG_IMPORTER_SET_EXT(bmp_mptr,"bmp");
-SINFG_IMPORTER_SET_VERSION(bmp_mptr,"0.1");
-SINFG_IMPORTER_SET_CVS_ID(bmp_mptr,"$Id: mptr_bmp.cpp,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $");
+SYNFIG_IMPORTER_INIT(bmp_mptr);
+SYNFIG_IMPORTER_SET_NAME(bmp_mptr,"bmp_mptr");
+SYNFIG_IMPORTER_SET_EXT(bmp_mptr,"bmp");
+SYNFIG_IMPORTER_SET_VERSION(bmp_mptr,"0.1");
+SYNFIG_IMPORTER_SET_CVS_ID(bmp_mptr,"$Id: mptr_bmp.cpp,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $");
 
 /* === M E T H O D S ======================================================= */
 
@@ -118,13 +118,13 @@ bmp_mptr::~bmp_mptr()
 }
 
 bool
-bmp_mptr::get_frame(sinfg::Surface &surface,Time, sinfg::ProgressCallback *cb)
+bmp_mptr::get_frame(synfig::Surface &surface,Time, synfig::ProgressCallback *cb)
 {
 	FILE *file=fopen(filename.c_str(),"rb");
 	if(!file)
 	{
 		if(cb)cb->error("bmp_mptr::GetFrame(): "+strprintf(_("Unable to open %s"),filename.c_str())); 
-		else sinfg::error("bmp_mptr::GetFrame(): "+strprintf(_("Unable to open %s"),filename.c_str()));
+		else synfig::error("bmp_mptr::GetFrame(): "+strprintf(_("Unable to open %s"),filename.c_str()));
 		return false;
 	}
 
@@ -136,7 +136,7 @@ bmp_mptr::get_frame(sinfg::Surface &surface,Time, sinfg::ProgressCallback *cb)
 	if(b_char!='B' || m_char!='M')
 	{
 		if(cb)cb->error("bmp_mptr::GetFrame(): "+strprintf(_("%s is not in BMP format"),filename.c_str())); 
-		else sinfg::error("bmp_mptr::GetFrame(): "+strprintf(_("%s is not in BMP format"),filename.c_str()));
+		else synfig::error("bmp_mptr::GetFrame(): "+strprintf(_("%s is not in BMP format"),filename.c_str()));
 		return false;
 	}
 		
@@ -144,7 +144,7 @@ bmp_mptr::get_frame(sinfg::Surface &surface,Time, sinfg::ProgressCallback *cb)
 	{
 		String str("bmp_mptr::get_frame(): "+strprintf(_("Failure while reading BITMAPFILEHEADER from %s"),filename.c_str())); 
 		if(cb)cb->error(str); 
-		else sinfg::error(str);
+		else synfig::error(str);
 		return false;
 	}
 		
@@ -152,7 +152,7 @@ bmp_mptr::get_frame(sinfg::Surface &surface,Time, sinfg::ProgressCallback *cb)
 	{
 		String str("bmp_mptr::get_frame(): "+strprintf(_("Failure while reading BITMAPINFOHEADER from %s"),filename.c_str())); 
 		if(cb)cb->error(str); 
-		else sinfg::error(str);
+		else synfig::error(str);
 		return false;
 	}
 	
@@ -162,7 +162,7 @@ bmp_mptr::get_frame(sinfg::Surface &surface,Time, sinfg::ProgressCallback *cb)
 	{
 		String str("bmp_mptr::get_frame(): "+strprintf(_("Bad BITMAPFILEHEADER in %s. (bfOffsetBits=%d, should be %d)"),filename.c_str(),offset,sizeof(BITMAPFILEHEADER)+sizeof(BITMAPINFOHEADER)-2)); 
 		if(cb)cb->error(str); 
-		else sinfg::error(str);
+		else synfig::error(str);
 		return false;
 	}
 
@@ -170,7 +170,7 @@ bmp_mptr::get_frame(sinfg::Surface &surface,Time, sinfg::ProgressCallback *cb)
 	{
 		String str("bmp_mptr::get_frame(): "+strprintf(_("Bad BITMAPINFOHEADER in %s. (biSize=%d, should be 40)"),filename.c_str(),little_endian(infoheader.biSize))); 
 		if(cb)cb->error(str); 
-		else sinfg::error(str);
+		else synfig::error(str);
 		return false;
 	}
 	
@@ -180,21 +180,21 @@ bmp_mptr::get_frame(sinfg::Surface &surface,Time, sinfg::ProgressCallback *cb)
 	h=little_endian(infoheader.biHeight);
 	bit_count=little_endian_short(infoheader.biBitCount);
 	
-	sinfg::warning("w:%d\n",w);
-	sinfg::warning("h:%d\n",h);
-	sinfg::warning("bit_count:%d\n",bit_count);
+	synfig::warning("w:%d\n",w);
+	synfig::warning("h:%d\n",h);
+	synfig::warning("bit_count:%d\n",bit_count);
 	
 	if(little_endian(infoheader.biCompression))
 	{
 		if(cb)cb->error("bmp_mptr::GetFrame(): "+string(_("Reading compressed bitmaps is not supported"))); 
-		else sinfg::error("bmp_mptr::GetFrame(): "+string(_("Reading compressed bitmaps is not supported")));
+		else synfig::error("bmp_mptr::GetFrame(): "+string(_("Reading compressed bitmaps is not supported")));
 		return false;
 	}
 
 	if(bit_count!=24 && bit_count!=32)
 	{
 		if(cb)cb->error("bmp_mptr::GetFrame(): "+strprintf(_("Unsupported bit depth (bit_count=%d, should be 24 or 32)"),bit_count)); 
-		else sinfg::error("bmp_mptr::GetFrame(): "+strprintf(_("Unsupported bit depth (bit_count=%d, should be 24 or 32)"),bit_count));
+		else synfig::error("bmp_mptr::GetFrame(): "+strprintf(_("Unsupported bit depth (bit_count=%d, should be 24 or 32)"),bit_count));
 		return false;
 	}
 	

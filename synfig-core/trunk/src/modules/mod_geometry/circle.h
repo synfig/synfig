@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file circle.h
 **	\brief Template Header
 **
@@ -21,16 +21,16 @@
 
 /* === H E A D E R S ======================================================= */
 
-#ifndef __SINFG_LAYER_CIRCLE_H__
-#define __SINFG_LAYER_CIRCLE_H__
+#ifndef __SYNFIG_LAYER_CIRCLE_H__
+#define __SYNFIG_LAYER_CIRCLE_H__
 
 /* -- H E A D E R S --------------------------------------------------------- */
 
-#include <sinfg/layer_composite.h>
-#include <sinfg/color.h>
-#include <sinfg/vector.h>
+#include <synfig/layer_composite.h>
+#include <synfig/color.h>
+#include <synfig/vector.h>
 
-using namespace sinfg;
+using namespace synfig;
 using namespace std;
 using namespace etl;
 
@@ -40,14 +40,14 @@ using namespace etl;
 
 /* -- S T R U C T S & C L A S S E S ----------------------------------------- */
 
-class Circle : public sinfg::Layer_Composite, public sinfg::Layer_NoDeform
+class Circle : public synfig::Layer_Composite, public synfig::Layer_NoDeform
 {
-	SINFG_LAYER_MODULE_EXT
+	SYNFIG_LAYER_MODULE_EXT
 private:
-	sinfg::Color color;
-	sinfg::Point pos;
-	sinfg::Real radius;
-	sinfg::Real feather;
+	synfig::Color color;
+	synfig::Point pos;
+	synfig::Real radius;
+	synfig::Real feather;
 	bool invert;
 	int falloff;
 
@@ -106,10 +106,10 @@ public:
 	
 	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 
-	virtual sinfg::Rect get_full_bounding_rect(sinfg::Context context)const;
-	virtual sinfg::Rect get_bounding_rect()const;
+	virtual synfig::Rect get_full_bounding_rect(synfig::Context context)const;
+	virtual synfig::Rect get_bounding_rect()const;
 
-	sinfg::Layer::Handle hit_check(sinfg::Context context, const sinfg::Point &point)const;	
+	synfig::Layer::Handle hit_check(synfig::Context context, const synfig::Point &point)const;	
 	
 	virtual Vocab get_param_vocab()const;
 };

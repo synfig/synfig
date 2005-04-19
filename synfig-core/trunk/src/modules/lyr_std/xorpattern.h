@@ -1,5 +1,5 @@
 /*! ========================================================================
-** Sinfg
+** Synfig
 ** Template Header File
 ** $Id: xorpattern.h,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $
 **
@@ -20,15 +20,15 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_XORPATTERN_H
-#define __SINFG_XORPATTERN_H
+#ifndef __SYNFIG_XORPATTERN_H
+#define __SYNFIG_XORPATTERN_H
 
 /* === H E A D E R S ======================================================= */
 
-#include <sinfg/layer.h>
-#include <sinfg/color.h>
-#include <sinfg/context.h>
-#include <sinfg/vector.h>
+#include <synfig/layer.h>
+#include <synfig/color.h>
+#include <synfig/context.h>
+#include <synfig/vector.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -36,13 +36,13 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-using namespace sinfg;
+using namespace synfig;
 using namespace std;
 using namespace etl;
 
 class XORPattern : public Layer
 {
-	SINFG_LAYER_MODULE_EXT
+	SYNFIG_LAYER_MODULE_EXT
 
 private:
 

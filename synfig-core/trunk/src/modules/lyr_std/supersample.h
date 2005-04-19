@@ -1,5 +1,5 @@
 /*! ========================================================================
-** Sinfg
+** Synfig
 ** Template Header File
 ** $Id: supersample.h,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $
 **
@@ -20,12 +20,12 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_SUPERSAMPLE_H
-#define __SINFG_SUPERSAMPLE_H
+#ifndef __SYNFIG_SUPERSAMPLE_H
+#define __SYNFIG_SUPERSAMPLE_H
 
 /* === H E A D E R S ======================================================= */
 
-#include <sinfg/layer.h>
+#include <synfig/layer.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -33,13 +33,13 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-using namespace sinfg;
+using namespace synfig;
 using namespace std;
 using namespace etl;
 
-class SuperSample : public sinfg::Layer
+class SuperSample : public synfig::Layer
 {
-	SINFG_LAYER_MODULE_EXT
+	SYNFIG_LAYER_MODULE_EXT
 
 private:
 	int width, height;
@@ -47,12 +47,12 @@ private:
 public:
 	SuperSample();
 	
-	virtual bool set_param(const String & param, const sinfg::ValueBase &value);
+	virtual bool set_param(const String & param, const synfig::ValueBase &value);
 
 	virtual ValueBase get_param(const String & param)const;
 
 	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
-	virtual sinfg::Rect get_bounding_rect(Context context)const;
+	virtual synfig::Rect get_bounding_rect(Context context)const;
 
 	virtual Vocab get_param_vocab()const;
 };

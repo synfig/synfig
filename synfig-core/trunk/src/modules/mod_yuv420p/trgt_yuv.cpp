@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file trgt_yuv.cpp
 **	\brief Template File
 **
@@ -21,7 +21,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#define SINFG_TARGET
+#define SYNFIG_TARGET
 
 #ifdef USING_PCH
 #	include "pch.h"
@@ -37,7 +37,7 @@
 #include <functional>
 #endif
 
-using namespace sinfg;
+using namespace synfig;
 using namespace std;
 using namespace etl;
 
@@ -53,11 +53,11 @@ using namespace etl;
 
 /* === G L O B A L S ======================================================= */
 
-SINFG_TARGET_INIT(yuv);
-SINFG_TARGET_SET_NAME(yuv,"yuv420p");
-SINFG_TARGET_SET_EXT(yuv,"yuv");
-SINFG_TARGET_SET_VERSION(yuv,"0.1");
-SINFG_TARGET_SET_CVS_ID(yuv,"$Id: trgt_yuv.cpp,v 1.1.1.1 2005/01/04 01:23:14 darco Exp $");
+SYNFIG_TARGET_INIT(yuv);
+SYNFIG_TARGET_SET_NAME(yuv,"yuv420p");
+SYNFIG_TARGET_SET_EXT(yuv,"yuv");
+SYNFIG_TARGET_SET_VERSION(yuv,"0.1");
+SYNFIG_TARGET_SET_CVS_ID(yuv,"$Id: trgt_yuv.cpp,v 1.1.1.1 2005/01/04 01:23:14 darco Exp $");
 
 /* === M E T H O D S ======================================================= */
 
@@ -92,7 +92,7 @@ yuv::set_rend_desc(RendDesc *given_desc)
 }
 
 bool
-yuv::start_frame(sinfg::ProgressCallback *callback)
+yuv::start_frame(synfig::ProgressCallback *callback)
 {
 	return static_cast<bool>(file);
 }

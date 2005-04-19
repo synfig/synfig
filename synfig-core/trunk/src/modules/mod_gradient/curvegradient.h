@@ -1,5 +1,5 @@
 /*! ========================================================================
-** Sinfg
+** Synfig
 ** Template Header File
 ** $Id: curvegradient.h,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $
 **
@@ -20,15 +20,15 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_CURVEGRADIENT_H
-#define __SINFG_CURVEGRADIENT_H
+#ifndef __SYNFIG_CURVEGRADIENT_H
+#define __SYNFIG_CURVEGRADIENT_H
 
 /* === H E A D E R S ======================================================= */
 
-#include <sinfg/vector.h>
-#include <sinfg/layer_composite.h>
-#include <sinfg/gradient.h>
-#include <sinfg/blinepoint.h>
+#include <synfig/vector.h>
+#include <synfig/layer_composite.h>
+#include <synfig/gradient.h>
+#include <synfig/blinepoint.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -36,16 +36,16 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-using namespace sinfg;
+using namespace synfig;
 using namespace std;
 using namespace etl;
 
 class CurveGradient : public Layer_Composite, public Layer_NoDeform
 {
-	SINFG_LAYER_MODULE_EXT
+	SYNFIG_LAYER_MODULE_EXT
 
 private:
-	std::vector<sinfg::BLinePoint> bline;
+	std::vector<synfig::BLinePoint> bline;
 
 	Point p1,p2;
 	Point offset;
@@ -61,9 +61,9 @@ private:
 
 	void sync();
 
-	sinfg::Color color_func(const sinfg::Point &x, int quality=10, float supersample=0)const;
+	synfig::Color color_func(const synfig::Point &x, int quality=10, float supersample=0)const;
 
-	float calc_supersample(const sinfg::Point &x, float pw,float ph)const;
+	float calc_supersample(const synfig::Point &x, float pw,float ph)const;
 
 public:
 	CurveGradient();
@@ -72,7 +72,7 @@ public:
 	virtual ValueBase get_param(const String &param)const;
 	virtual Color get_color(Context context, const Point &pos)const;
 	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
-	sinfg::Layer::Handle hit_check(sinfg::Context context, const sinfg::Point &point)const;	
+	synfig::Layer::Handle hit_check(synfig::Context context, const synfig::Point &point)const;	
 
 	virtual Vocab get_param_vocab()const;
 };

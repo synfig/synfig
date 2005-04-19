@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file node.h
 **	\brief Template Header
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_PARENTNODE_H
-#define __SINFG_PARENTNODE_H
+#ifndef __SYNFIG_PARENTNODE_H
+#define __SYNFIG_PARENTNODE_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -40,7 +40,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace sinfg {
+namespace synfig {
 
 class TimePoint
 {
@@ -226,17 +226,17 @@ protected:
 	virtual void get_times_vfunc(time_set &set) const = 0;
 };	
 
-sinfg::Node* sinfg::find_node(const sinfg::GUID& guid);
+synfig::Node* synfig::find_node(const synfig::GUID& guid);
 
 template<typename T> etl::handle<T>
-guid_cast(const sinfg::GUID& guid)
+guid_cast(const synfig::GUID& guid)
 {
-	return etl::handle<T>::cast_dynamic(sinfg::find_node(guid));
+	return etl::handle<T>::cast_dynamic(synfig::find_node(guid));
 }
 
 typedef etl::handle<Node> NodeHandle;
 
-}; // END of namespace sinfg
+}; // END of namespace synfig
 
 /* === E N D =============================================================== */
 

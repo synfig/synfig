@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file canvas.cpp
 **	\brief Canvas Class Member Definitions
 **
@@ -21,7 +21,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#define SINFG_NO_ANGLE
+#define SYNFIG_NO_ANGLE
 
 #ifdef USING_PCH
 #	include "pch.h"
@@ -41,11 +41,11 @@
 
 #endif
 
-using namespace sinfg;
+using namespace synfig;
 using namespace etl;
 using namespace std;
 
-namespace sinfg { extern Canvas::Handle open_canvas(const String &filename); };
+namespace synfig { extern Canvas::Handle open_canvas(const String &filename); };
 
 /* === M A C R O S ========================================================= */
 
@@ -55,7 +55,7 @@ struct _CanvasCounter
 	~_CanvasCounter()
 	{
 		if(counter)
-			sinfg::error("%d canvases not yet deleted!",counter);
+			synfig::error("%d canvases not yet deleted!",counter);
 	}
 } _canvas_counter;
 
@@ -130,10 +130,10 @@ Canvas::clear()
 	while(!empty())
 	{
 		Layer::Handle layer(front());
-		//if(layer->count()>2)sinfg::info("before layer->count()=%d",layer->count());
+		//if(layer->count()>2)synfig::info("before layer->count()=%d",layer->count());
 				
 		erase(begin());
-		//if(layer->count()>1)sinfg::info("after layer->count()=%d",layer->count());
+		//if(layer->count()>1)synfig::info("after layer->count()=%d",layer->count());
 	}
 	//CanvasBase::clear();
 
@@ -261,9 +261,9 @@ Canvas::set_time(Time t)const
 #if 0
 		if(is_root())
 		{
-			sinfg::info("is_dirty_=%d",is_dirty_);
-			sinfg::info("get_time()=%f",(float)get_time());
-			sinfg::info("t=%f",(float)t);
+			synfig::info("is_dirty_=%d",is_dirty_);
+			synfig::info("get_time()=%f",(float)get_time());
+			synfig::info("t=%f",(float)t);
 		}
 #endif
 
@@ -279,7 +279,7 @@ Canvas::set_time(Time t)const
 Canvas::LooseHandle
 Canvas::get_root()const
 {
-	return parent_?parent_->get_root().get():const_cast<sinfg::Canvas *>(this);
+	return parent_?parent_->get_root().get():const_cast<synfig::Canvas *>(this);
 }
 
 int
@@ -375,8 +375,8 @@ Canvas::find_value_node(const String &id)const
 	String value_node_id(id,id.rfind(':')+1);
 	if(canvas_id.empty())
 		canvas_id=':';
-	//sinfg::warning("constfind:value_node_id: "+value_node_id);
-	//sinfg::warning("constfind:canvas_id: "+canvas_id);
+	//synfig::warning("constfind:value_node_id: "+value_node_id);
+	//synfig::warning("constfind:canvas_id: "+canvas_id);
 
 	return find_canvas(canvas_id)->value_node_list_.find(value_node_id);
 }
@@ -438,7 +438,7 @@ Canvas::add_value_node(ValueNode::Handle x, const String &id)
 	
 		if(!value_node_list_.add(x))
 		{
-			sinfg::error("Unable to add ValueNode");
+			synfig::error("Unable to add ValueNode");
 			throw std::runtime_error("Unable to add ValueNode");
 		}
 		//DEBUGPOINT();
@@ -546,7 +546,7 @@ Canvas::surefind_canvas(const String &id)
 				return *iter;
 			
 		// Create a new canvas and return it
-		//sinfg::warning("Implicitly creating canvas named "+id);
+		//synfig::warning("Implicitly creating canvas named "+id);
 		return new_child_canvas(id);
 	}
 	
@@ -660,7 +660,7 @@ Canvas::push_back(etl::handle<Layer> x)
 //	DEBUGPOINT();
 //	int i(x->count());
 	insert(end(),x);
-	//if(x->count()!=i+1)sinfg::info("push_back before %d, after %d",i,x->count());
+	//if(x->count()!=i+1)synfig::info("push_back before %d, after %d",i,x->count());
 }
 
 void
@@ -669,7 +669,7 @@ Canvas::push_front(etl::handle<Layer> x)
 //	DEBUGPOINT();
 //	int i(x->count());
 	insert(begin(),x);
-	//if(x->count()!=i+1)sinfg::error("push_front before %d, after %d",i,x->count());
+	//if(x->count()!=i+1)synfig::error("push_front before %d, after %d",i,x->count());
 }
 
 void
@@ -680,7 +680,7 @@ Canvas::insert(iterator iter,etl::handle<Layer> x)
 
 	/*if(x->count()!=i+1)
 	{
-		sinfg::error(__FILE__":%d: Canvas::insert(): ***FAILURE*** before %d, after %d",__LINE__,i,x->count());
+		synfig::error(__FILE__":%d: Canvas::insert(): ***FAILURE*** before %d, after %d",__LINE__,i,x->count());
 		return;
 		//throw runtime_error("Canvas Insertion Failed");
 	}*/
@@ -756,7 +756,7 @@ Canvas::erase(Canvas::iterator iter)
 Canvas::Handle
 Canvas::clone(const GUID& deriv_guid)const
 {
-	sinfg::String name;
+	synfig::String name;
 	if(is_inline())
 		name="inline";
 	else
@@ -788,17 +788,17 @@ Canvas::clone(const GUID& deriv_guid)const
 			canvas->push_back(layer);
 			if(!(layer.count()>1))
 			{
-				sinfg::error("Canvas::clone(): Cloned layer insertion failure!");
-				sinfg::error("Canvas::clone(): \tlayer.count()=%d",layer.count());
-				sinfg::error("Canvas::clone(): \tlayer->get_name()=%s",layer->get_name().c_str());
-				sinfg::error("Canvas::clone(): \tbefore size()=%d",presize);
-				sinfg::error("Canvas::clone(): \tafter size()=%d",size());
+				synfig::error("Canvas::clone(): Cloned layer insertion failure!");
+				synfig::error("Canvas::clone(): \tlayer.count()=%d",layer.count());
+				synfig::error("Canvas::clone(): \tlayer->get_name()=%s",layer->get_name().c_str());
+				synfig::error("Canvas::clone(): \tbefore size()=%d",presize);
+				synfig::error("Canvas::clone(): \tafter size()=%d",size());
 			}
 			assert(layer.count()>1);
 		}
 		else
 		{
-			sinfg::error("Unable to clone layer");
+			synfig::error("Unable to clone layer");
 		}
 	}
 
@@ -881,7 +881,7 @@ Canvas::new_child_canvas(const String &id)
 }
 
 Canvas::Handle
-Canvas::add_child_canvas(Canvas::Handle child_canvas, const sinfg::String& id)
+Canvas::add_child_canvas(Canvas::Handle child_canvas, const synfig::String& id)
 {
 	if(is_inline() && parent_)
 		return parent_->add_child_canvas(child_canvas,id);
@@ -1008,7 +1008,7 @@ Canvas::get_meta_data_keys()const
 }
 
 void
-sinfg::optimize_layers(Context context, Canvas::Handle op_canvas)
+synfig::optimize_layers(Context context, Canvas::Handle op_canvas)
 {
 	Context iter;
 
@@ -1035,9 +1035,9 @@ sinfg::optimize_layers(Context context, Canvas::Handle op_canvas)
 		{
 			Canvas::Handle sub_canvas(Canvas::create_inline(op_canvas));
 			optimize_layers(paste_canvas->get_sub_canvas()->get_context(),sub_canvas);
-//#define SINFG_OPTIMIZE_PASTE_CANVAS 1
+//#define SYNFIG_OPTIMIZE_PASTE_CANVAS 1
 
-#ifdef SINFG_OPTIMIZE_PASTE_CANVAS			
+#ifdef SYNFIG_OPTIMIZE_PASTE_CANVAS			
 			Canvas::iterator sub_iter;
 			// Determine if we can just remove the paste canvas
 			// altogether			

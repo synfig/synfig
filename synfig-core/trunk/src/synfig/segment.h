@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file segment.h
 **	\brief Template Header
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_SEGMENT_H
-#define __SINFG_SEGMENT_H
+#ifndef __SYNFIG_SEGMENT_H
+#define __SYNFIG_SEGMENT_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -34,7 +34,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace sinfg {
+namespace synfig {
 	
 /*!	\struct Segment
 **	\todo writeme
@@ -59,7 +59,7 @@ struct Segment
 	{ }
 }; // END of struct Segment
 
-}; // END of namespace sinfg
+}; // END of namespace synfig
 
 /* === E N D =============================================================== */
 

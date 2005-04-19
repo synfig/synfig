@@ -1,5 +1,5 @@
 /*! ========================================================================
-** Sinfg
+** Synfig
 ** Template File
 ** $Id: xorpattern.cpp,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $
 **
@@ -29,14 +29,14 @@
 
 #include "xorpattern.h"
 
-#include <sinfg/string.h>
-#include <sinfg/time.h>
-#include <sinfg/context.h>
-#include <sinfg/paramdesc.h>
-#include <sinfg/renddesc.h>
-#include <sinfg/surface.h>
-#include <sinfg/value.h>
-#include <sinfg/valuenode.h>
+#include <synfig/string.h>
+#include <synfig/time.h>
+#include <synfig/context.h>
+#include <synfig/paramdesc.h>
+#include <synfig/renddesc.h>
+#include <synfig/surface.h>
+#include <synfig/value.h>
+#include <synfig/valuenode.h>
 
 #endif
 
@@ -44,12 +44,12 @@
 
 /* === G L O B A L S ======================================================= */
 
-SINFG_LAYER_INIT(XORPattern);
-SINFG_LAYER_SET_NAME(XORPattern,"XORPattern");
-SINFG_LAYER_SET_LOCAL_NAME(XORPattern,_("XOR Pattern"));
-SINFG_LAYER_SET_CATEGORY(XORPattern,_("Other"));
-SINFG_LAYER_SET_VERSION(XORPattern,"0.1");
-SINFG_LAYER_SET_CVS_ID(XORPattern,"$Id: xorpattern.cpp,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $");
+SYNFIG_LAYER_INIT(XORPattern);
+SYNFIG_LAYER_SET_NAME(XORPattern,"XORPattern");
+SYNFIG_LAYER_SET_LOCAL_NAME(XORPattern,_("XOR Pattern"));
+SYNFIG_LAYER_SET_CATEGORY(XORPattern,_("Other"));
+SYNFIG_LAYER_SET_VERSION(XORPattern,"0.1");
+SYNFIG_LAYER_SET_CVS_ID(XORPattern,"$Id: xorpattern.cpp,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $");
 
 /* === P R O C E D U R E S ================================================= */
 

@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file guid.h
 **	\brief Template Header
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_GUID_H
-#define __SINFG_GUID_H
+#ifndef __SYNFIG_GUID_H
+#define __SYNFIG_GUID_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -36,7 +36,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace sinfg {
+namespace synfig {
 	
 class GUID
 {

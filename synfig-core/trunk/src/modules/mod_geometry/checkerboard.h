@@ -1,5 +1,5 @@
 /*! ========================================================================
-** Sinfg
+** Synfig
 ** Checkerboard Layer
 ** $Id: checkerboard.h,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $
 **
@@ -20,14 +20,14 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_CHECKERBOARD_H
-#define __SINFG_CHECKERBOARD_H
+#ifndef __SYNFIG_CHECKERBOARD_H
+#define __SYNFIG_CHECKERBOARD_H
 
 /* === H E A D E R S ======================================================= */
 
-#include <sinfg/layer_composite.h>
-#include <sinfg/color.h>
-#include <sinfg/vector.h>
+#include <synfig/layer_composite.h>
+#include <synfig/color.h>
+#include <synfig/vector.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -35,30 +35,30 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-class CheckerBoard : public sinfg::Layer_Composite, public sinfg::Layer_NoDeform
+class CheckerBoard : public synfig::Layer_Composite, public synfig::Layer_NoDeform
 {
-	SINFG_LAYER_MODULE_EXT
+	SYNFIG_LAYER_MODULE_EXT
 private:
-	sinfg::Color color;
-	sinfg::Point pos;
-	sinfg::Point size;
+	synfig::Color color;
+	synfig::Point pos;
+	synfig::Point size;
 
-	bool point_test(const sinfg::Point& x)const;
+	bool point_test(const synfig::Point& x)const;
 
 public:
 	CheckerBoard();
 	
-	virtual bool set_param(const sinfg::String & param, const sinfg::ValueBase &value);
+	virtual bool set_param(const synfig::String & param, const synfig::ValueBase &value);
 
-	virtual sinfg::ValueBase get_param(const sinfg::String & param)const;
+	virtual synfig::ValueBase get_param(const synfig::String & param)const;
 
-	virtual sinfg::Color get_color(sinfg::Context context, const sinfg::Point &pos)const;
+	virtual synfig::Color get_color(synfig::Context context, const synfig::Point &pos)const;
 	
 	virtual Vocab get_param_vocab()const;
 
-	sinfg::Layer::Handle hit_check(sinfg::Context context, const sinfg::Point &point)const;
+	synfig::Layer::Handle hit_check(synfig::Context context, const synfig::Point &point)const;
 
-	virtual bool accelerated_render(sinfg::Context context,sinfg::Surface *surface,int quality, const sinfg::RendDesc &renddesc, sinfg::ProgressCallback *cb)const;
+	virtual bool accelerated_render(synfig::Context context,synfig::Surface *surface,int quality, const synfig::RendDesc &renddesc, synfig::ProgressCallback *cb)const;
 };
 
 /* === E N D =============================================================== */

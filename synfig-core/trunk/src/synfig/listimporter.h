@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file listimporter.h
 **	\brief Template Header
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_LISTIMPORTER_H
-#define __SINFG_LISTIMPORTER_H
+#ifndef __SYNFIG_LISTIMPORTER_H
+#define __SYNFIG_LISTIMPORTER_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -40,7 +40,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace sinfg {
+namespace synfig {
 
 /*!	\class ListImporter
 **	\todo Write more detailed description
@@ -64,7 +64,7 @@ public:
 	static Importer* create(const char *filename);
 };
 	
-}; // END of namespace sinfg
+}; // END of namespace synfig
 
 /* === E N D =============================================================== */
 

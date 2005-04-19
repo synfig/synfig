@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file curve_helper.cpp
 **	\brief Curve Helper File
 **
@@ -39,7 +39,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 #define ERR	1e-11
@@ -53,7 +53,7 @@ const Real ERROR = 1e-11;
 
 /* === E N T R Y P O I N T ================================================= */
 
-Real sinfg::find_closest(const etl::bezier<Point> &curve, const Point &point, 
+Real synfig::find_closest(const etl::bezier<Point> &curve, const Point &point, 
 				float step, Real *dout, float *tout)
 {
 #if 0
@@ -261,7 +261,7 @@ void BezHull::Bound(const etl::bezier<Point> &b)
 
 //Line Intersection
 int 
-sinfg::intersect(const Point &p1, const Vector &v1, float &t1, 
+synfig::intersect(const Point &p1, const Vector &v1, float &t1, 
 					const Point &p2, const Vector &v2, float &t2)
 {
 	/* Parametric intersection:
@@ -341,7 +341,7 @@ int intersect(const Rect &r, const Point &p, const Vector &v)
 	return (int)(t[0] <= t[3] && t[1] >= t[2]);
 }
 
-int sinfg::intersect(const Rect &r, const Point &p)
+int synfig::intersect(const Rect &r, const Point &p)
 {
 	return (p[1] < r.maxy && p[1] > r.miny) && p[0] > r.minx;
 }
@@ -695,7 +695,7 @@ int intersect_scurve(const CIntersect::SCurve &b, const Point &p)
 	return	intersect_scurve(l,p) + intersect_scurve(r,p);
 }
 
-int sinfg::intersect(const bezier<Point> &b, const Point &p)
+int synfig::intersect(const bezier<Point> &b, const Point &p)
 {
 	CIntersect::SCurve	c(b,0,1);
 	

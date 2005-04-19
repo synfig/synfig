@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file valuenode_const.h
 **	\brief Template Header
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_VALUENODE_CONST_H
-#define __SINFG_VALUENODE_CONST_H
+#ifndef __SYNFIG_VALUENODE_CONST_H
+#define __SYNFIG_VALUENODE_CONST_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -32,7 +32,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace sinfg {
+namespace synfig {
 
 class ValueNode_Const : public ValueNode
 {
@@ -68,7 +68,7 @@ protected:
 	virtual void get_times_vfunc(Node::time_set &set) const;
 };
 
-}; // END of namespace sinfg
+}; // END of namespace synfig
 
 /* === E N D =============================================================== */
 

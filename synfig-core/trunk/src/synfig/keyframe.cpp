@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file keyframe.cpp
 **	\brief Template File
 **
@@ -43,7 +43,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 
@@ -72,22 +72,22 @@ KeyframeList::dump()const
 {
 	const_iterator iter;
 	int i;
-	sinfg::info(">>>>>>>>BEGIN KEYFRAME DUMP");
+	synfig::info(">>>>>>>>BEGIN KEYFRAME DUMP");
 	for(iter=begin(),i=0;iter!=end();++iter,i++)
 	{
-		sinfg::info("#%d, time: %s, desc: %s",i,iter->get_time().get_string().c_str(),iter->get_description().c_str());
+		synfig::info("#%d, time: %s, desc: %s",i,iter->get_time().get_string().c_str(),iter->get_description().c_str());
 	}
-	sinfg::info("<<<<<<<<END KEYFRAME DUMP");
+	synfig::info("<<<<<<<<END KEYFRAME DUMP");
 }
 
 void
 KeyframeList::sync()
 {
 	//DEBUGPOINT();
-	//sinfg::info("PRE-SORT:");
+	//synfig::info("PRE-SORT:");
 	//dump();	
 	sort(begin(),end());
-	//sinfg::info("POST-SORT:");
+	//synfig::info("POST-SORT:");
 	//dump();
 	//DEBUGPOINT();
 }
@@ -220,7 +220,7 @@ KeyframeList::find_prev_next(const Time& time, Time &prev, Time &next)const
 void
 KeyframeList::insert_time(const Time& location, const Time& delta)
 {
-//	sinfg::info("KeyframeList::insert_time(): loc=%s, delta=%s",location.get_string().c_str(),delta.get_string().c_str());
+//	synfig::info("KeyframeList::insert_time(): loc=%s, delta=%s",location.get_string().c_str(),delta.get_string().c_str());
 	if(!delta)
 		return;
 	try

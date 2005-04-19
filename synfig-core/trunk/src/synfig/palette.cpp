@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file template.cpp
 **	\brief Template File
 **
@@ -40,11 +40,11 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 
-#define PALETTE_FILE_COOKIE	"SINFGPAL1.0"
+#define PALETTE_FILE_COOKIE	"SYNFIGPAL1.0"
 
 /* === G L O B A L S ======================================================= */
 
@@ -251,7 +251,7 @@ Palette::grayscale(int steps)
 }
 
 void
-Palette::save_to_file(const sinfg::String& filename)const
+Palette::save_to_file(const synfig::String& filename)const
 {
 	const_iterator iter;
 
@@ -275,7 +275,7 @@ Palette::save_to_file(const sinfg::String& filename)const
 }
 
 Palette
-Palette::load_from_file(const sinfg::String& filename)
+Palette::load_from_file(const synfig::String& filename)
 {
 	std::ifstream file(filename.c_str());
 	

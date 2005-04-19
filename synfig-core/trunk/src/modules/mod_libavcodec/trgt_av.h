@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file trgt.h
 **	\brief Template Header
 **
@@ -21,15 +21,15 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_TRGT_H
-#define __SINFG_TRGT_H
+#ifndef __SYNFIG_TRGT_H
+#define __SYNFIG_TRGT_H
 
 /* === H E A D E R S ======================================================= */
 
-#include <sinfg/target_scanline.h>
-#include <sinfg/string.h>
+#include <synfig/target_scanline.h>
+#include <synfig/string.h>
 #include <cstdio>
-#include "sinfg/surface.h"
+#include "synfig/surface.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -37,18 +37,18 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-class Target_LibAVCodec : public sinfg::Target_Scanline
+class Target_LibAVCodec : public synfig::Target_Scanline
 {
-	SINFG_TARGET_MODULE_EXT
+	SYNFIG_TARGET_MODULE_EXT
 private:
-	sinfg::String filename;
+	synfig::String filename;
 
 	class LibAVEncoder;
 	LibAVEncoder	*data;
 	
 	static bool registered;
 	
-	sinfg::Surface	surface;
+	synfig::Surface	surface;
 
 public:
 	Target_LibAVCodec(const char *filename);
@@ -56,10 +56,10 @@ public:
 
 	virtual bool init();
 
-	virtual bool set_rend_desc(sinfg::RendDesc *desc);
-	virtual bool start_frame(sinfg::ProgressCallback *cb);
+	virtual bool set_rend_desc(synfig::RendDesc *desc);
+	virtual bool start_frame(synfig::ProgressCallback *cb);
 	virtual void end_frame();
-	virtual sinfg::Color * start_scanline(int scanline);
+	virtual synfig::Color * start_scanline(int scanline);
 	virtual bool end_scanline();
 };
 

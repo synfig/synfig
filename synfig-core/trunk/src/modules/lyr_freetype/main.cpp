@@ -1,5 +1,5 @@
 /*! ========================================================================
-** Sinfg
+** Synfig
 ** bleh
 ** $Id: main.cpp,v 1.1.1.1 2005/01/04 01:23:09 darco Exp $
 **
@@ -20,7 +20,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#define SINFG_MODULE
+#define SYNFIG_MODULE
 
 #ifdef USING_PCH
 #	include "pch.h"
@@ -30,7 +30,7 @@
 #endif
 
 #include <string.h>
-#include <sinfg/module.h>
+#include <synfig/module.h>
 #include "lyr_freetype.h"
 #include <iostream>
 #include <ETL/stringf>
@@ -42,13 +42,13 @@
 
 using namespace etl;
 using namespace std;
-using namespace sinfg;
+using namespace synfig;
 
 FT_Library  ft_library;
 
 /* === E N T R Y P O I N T ================================================= */
 
-bool freetype_constructor(sinfg::ProgressCallback *cb)
+bool freetype_constructor(synfig::ProgressCallback *cb)
 {
 	int error;
 	if(cb)cb->task("Initializing FreeType...");
@@ -72,7 +72,7 @@ MODULE_DESC_BEGIN(liblyr_freetype)
 	MODULE_DESCRIPTION("Provides a font rendering layer via FreeType")
 	MODULE_AUTHOR("Robert B. Quattlebaum")
 	MODULE_VERSION("1.0")
-	MODULE_COPYRIGHT(SINFG_COPYRIGHT)
+	MODULE_COPYRIGHT(SYNFIG_COPYRIGHT)
 
 	MODULE_CONSTRUCTOR(freetype_constructor)
 	MODULE_DESTRUCTOR(freetype_destructor)

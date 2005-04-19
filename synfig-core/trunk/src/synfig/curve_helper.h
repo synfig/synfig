@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file curve_helper.h
 **	\brief Curve Helper Header
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_CURVE_HELPER_H
-#define __SINFG_CURVE_HELPER_H
+#ifndef __SYNFIG_CURVE_HELPER_H
+#define __SYNFIG_CURVE_HELPER_H
 
 /* === H E A D E R S ======================================================= */
 #include <ETL/bezier>
@@ -39,7 +39,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace sinfg {
+namespace synfig {
 
 //line helper functions
 inline Real line_point_distsq(const Point &p1, const Point &p2, 

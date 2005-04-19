@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file blinepoint.cpp
 **	\brief Template File
 **
@@ -35,7 +35,7 @@
 /* === U S I N G =========================================================== */
 
 using namespace std;
-using namespace sinfg;
+using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 
@@ -46,7 +46,7 @@ using namespace sinfg;
 /* === M E T H O D S ======================================================= */
 
 void
-sinfg::BLinePoint::reverse()
+synfig::BLinePoint::reverse()
 {
 	if(split_tangent_)
 	{

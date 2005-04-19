@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file time.h
 **	\brief Template Header
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_TIME_H
-#define __SINFG_TIME_H
+#ifndef __SYNFIG_TIME_H
+#define __SYNFIG_TIME_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -34,7 +34,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace sinfg {
+namespace synfig {
 
 /*!	\class Time
 **	\todo writeme
@@ -82,16 +82,16 @@ public:
 	Time(const String &string, float fps=0);
 
 	//! Marks the exclusive negative boundary of time
-	static const Time begin() { return static_cast<sinfg::Time>(-32767.0f*512.0f); }
+	static const Time begin() { return static_cast<synfig::Time>(-32767.0f*512.0f); }
 	
 	//! Marks the exclusive positive boundary of time
-	static const Time end() { return static_cast<sinfg::Time>(32767.0f*512.0f); }
+	static const Time end() { return static_cast<synfig::Time>(32767.0f*512.0f); }
 
 	//! Marks zero time
-	static const Time zero() { return static_cast<sinfg::Time>(0); }
+	static const Time zero() { return static_cast<synfig::Time>(0); }
 	
 	//! The amount of allowable error in calculations
-	static const Time epsilon() { return static_cast<sinfg::Time>(epsilon_()); }
+	static const Time epsilon() { return static_cast<synfig::Time>(epsilon_()); }
 	
 	//! Returns a string describing the current time value
 	/*!	\see Format */
@@ -157,7 +157,7 @@ inline Time::Format operator|(Time::Format lhs, Time::Format rhs)
 inline bool operator<=(Time::Format lhs, Time::Format rhs)
 { return (static_cast<int>(lhs) & static_cast<int>(rhs))==static_cast<int>(rhs); }
 
-}; // END of namespace sinfg
+}; // END of namespace synfig
 	
 /* === E N D =============================================================== */
 

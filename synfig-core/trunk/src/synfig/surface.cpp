@@ -1,5 +1,5 @@
 /* ========================================================================
-** Sinfg
+** Synfig
 ** Template File
 ** $Id: surface.cpp,v 1.1.1.1 2005/01/04 01:23:14 darco Exp $
 **
@@ -20,7 +20,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#define SINFG_NO_ANGLE
+#define SYNFIG_NO_ANGLE
 
 #ifdef USING_PCH
 #	include "pch.h"
@@ -40,7 +40,7 @@
 
 #endif
 
-using namespace sinfg;
+using namespace synfig;
 using namespace std;
 using namespace etl;
 
@@ -48,7 +48,7 @@ using namespace etl;
 
 /* === G L O B A L S ======================================================= */
 
-class target2surface : public sinfg::Target_Scanline
+class target2surface : public synfig::Target_Scanline
 {
 public:
 	Surface *surface;
@@ -57,9 +57,9 @@ public:
 	target2surface(Surface *surface);
 	virtual ~target2surface();
 
-	virtual bool set_rend_desc(sinfg::RendDesc *newdesc);
+	virtual bool set_rend_desc(synfig::RendDesc *newdesc);
 	
-	virtual bool start_frame(sinfg::ProgressCallback *cb);
+	virtual bool start_frame(synfig::ProgressCallback *cb);
 	
 	virtual void end_frame();
 
@@ -77,16 +77,16 @@ target2surface::~target2surface()
 }
 
 bool
-target2surface::set_rend_desc(sinfg::RendDesc *newdesc)
+target2surface::set_rend_desc(synfig::RendDesc *newdesc)
 {
 	assert(newdesc);
 	assert(surface);
 	desc=*newdesc;
-	return sinfg::Target_Scanline::set_rend_desc(newdesc);
+	return synfig::Target_Scanline::set_rend_desc(newdesc);
 }
 	
 bool
-target2surface::start_frame(sinfg::ProgressCallback *cb) 
+target2surface::start_frame(synfig::ProgressCallback *cb) 
 { 
 	if(surface->get_w() != desc.get_w() || surface->get_h() != desc.get_h())
 	{
@@ -118,13 +118,13 @@ target2surface::end_scanline()
 /* === M E T H O D S ======================================================= */
 
 Target_Scanline::Handle
-sinfg::surface_target(Surface *surface)
+synfig::surface_target(Surface *surface)
 {
 	return Target_Scanline::Handle(new target2surface(surface));
 }
 
 void
-sinfg::Surface::clear()
+synfig::Surface::clear()
 {
 #ifdef HAS_VIMAGE
 	fill(Color(0.5,0.5,0.5,0.0000001));
@@ -134,7 +134,7 @@ sinfg::Surface::clear()
 }
 
 void
-sinfg::Surface::blit_to(alpha_pen& pen, int x, int y, int w, int h)
+synfig::Surface::blit_to(alpha_pen& pen, int x, int y, int w, int h)
 {
 	static const float epsilon(0.00001);
 	const float alpha(pen.get_alpha());

@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file colorcorrect.cpp
 **	\brief Template Header
 **
@@ -29,14 +29,14 @@
 #endif
 
 #include "colorcorrect.h"
-#include <sinfg/string.h>
-#include <sinfg/time.h>
-#include <sinfg/context.h>
-#include <sinfg/paramdesc.h>
-#include <sinfg/renddesc.h>
-#include <sinfg/surface.h>
-#include <sinfg/value.h>
-#include <sinfg/valuenode.h>
+#include <synfig/string.h>
+#include <synfig/time.h>
+#include <synfig/context.h>
+#include <synfig/paramdesc.h>
+#include <synfig/renddesc.h>
+#include <synfig/surface.h>
+#include <synfig/value.h>
+#include <synfig/valuenode.h>
 
 #endif
 
@@ -44,16 +44,16 @@
 
 using namespace etl;
 using namespace std;
-using namespace sinfg;
+using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
-SINFG_LAYER_INIT(Layer_ColorCorrect);
-SINFG_LAYER_SET_NAME(Layer_ColorCorrect,"colorcorrect");
-SINFG_LAYER_SET_LOCAL_NAME(Layer_ColorCorrect,_("Color Correct"));
-SINFG_LAYER_SET_CATEGORY(Layer_ColorCorrect,_("Filters"));
-SINFG_LAYER_SET_VERSION(Layer_ColorCorrect,"0.1");
-SINFG_LAYER_SET_CVS_ID(Layer_ColorCorrect,"$Id: colorcorrect.cpp,v 1.3 2005/01/24 05:00:18 darco Exp $");
+SYNFIG_LAYER_INIT(Layer_ColorCorrect);
+SYNFIG_LAYER_SET_NAME(Layer_ColorCorrect,"colorcorrect");
+SYNFIG_LAYER_SET_LOCAL_NAME(Layer_ColorCorrect,_("Color Correct"));
+SYNFIG_LAYER_SET_CATEGORY(Layer_ColorCorrect,_("Filters"));
+SYNFIG_LAYER_SET_VERSION(Layer_ColorCorrect,"0.1");
+SYNFIG_LAYER_SET_CVS_ID(Layer_ColorCorrect,"$Id: colorcorrect.cpp,v 1.3 2005/01/24 05:00:18 darco Exp $");
 
 /* === P R O C E D U R E S ================================================= */
 

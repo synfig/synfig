@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file plant.h
 **	\brief Template Header
 **
@@ -21,21 +21,21 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_PLANT_H
-#define __SINFG_PLANT_H
+#ifndef __SYNFIG_PLANT_H
+#define __SYNFIG_PLANT_H
 
 /* === H E A D E R S ======================================================= */
 
 #include <list>
 #include <vector>
-#include <sinfg/layer_composite.h>
-#include <sinfg/segment.h>
-#include <sinfg/blinepoint.h>
-#include <sinfg/value.h>
-#include <sinfg/gradient.h>
-#include <sinfg/angle.h>
+#include <synfig/layer_composite.h>
+#include <synfig/segment.h>
+#include <synfig/blinepoint.h>
+#include <synfig/value.h>
+#include <synfig/gradient.h>
+#include <synfig/angle.h>
 #include "random.h"
-#include <sinfg/rect.h>
+#include <synfig/rect.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -43,48 +43,48 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-using namespace sinfg;
+using namespace synfig;
 using namespace std;
 using namespace etl;
 
-class Plant : public sinfg::Layer_Composite
+class Plant : public synfig::Layer_Composite
 {
-	SINFG_LAYER_MODULE_EXT
+	SYNFIG_LAYER_MODULE_EXT
 private:
 
-	std::vector<sinfg::BLinePoint> bline;
+	std::vector<synfig::BLinePoint> bline;
 	bool bline_loop;
 
-	sinfg::Gradient gradient;
+	synfig::Gradient gradient;
 
 	struct Particle
 	{
-		sinfg::Point point;
-		sinfg::Color color;
+		synfig::Point point;
+		synfig::Color color;
 		
-		Particle(const sinfg::Point &point,const sinfg::Color& color):
+		Particle(const synfig::Point &point,const synfig::Color& color):
 			point(point),color(color) { }
 	};
 
 	mutable std::vector<Particle> particle_list;
-	mutable sinfg::Rect	bounding_rect;
-	sinfg::Angle split_angle;
-	sinfg::Vector gravity;
-	sinfg::Real velocity;
-	sinfg::Real step;
-	sinfg::Real mass;
-	sinfg::Real drag;
-	sinfg::Real size;
+	mutable synfig::Rect	bounding_rect;
+	synfig::Angle split_angle;
+	synfig::Vector gravity;
+	synfig::Real velocity;
+	synfig::Real step;
+	synfig::Real mass;
+	synfig::Real drag;
+	synfig::Real size;
 	int splits;
 	int sprouts;
-	sinfg::Real random_factor;
+	synfig::Real random_factor;
 	Random random;
 	
 	bool size_as_alpha;
 	mutable bool needs_sync_;
 	
 
-	void branch(int n, int depth,float t, float stunt_growth, sinfg::Point position,sinfg::Vector velocity)const;
+	void branch(int n, int depth,float t, float stunt_growth, synfig::Point position,synfig::Vector velocity)const;
 
 public:
 
@@ -94,15 +94,15 @@ public:
 
 	void calc_bounding_rect()const;
 
-	virtual bool set_param(const String & param, const sinfg::ValueBase &value);
+	virtual bool set_param(const String & param, const synfig::ValueBase &value);
 
 	virtual ValueBase get_param(const String & param)const;
 
 	virtual Vocab get_param_vocab()const;
 
-	virtual bool accelerated_render(sinfg::Context context,sinfg::Surface *surface,int quality, const sinfg::RendDesc &renddesc, sinfg::ProgressCallback *cb)const;\
+	virtual bool accelerated_render(synfig::Context context,synfig::Surface *surface,int quality, const synfig::RendDesc &renddesc, synfig::ProgressCallback *cb)const;\
 
-	virtual sinfg::Rect get_bounding_rect(sinfg::Context context)const;
+	virtual synfig::Rect get_bounding_rect(synfig::Context context)const;
 };
 
 /* === E N D =============================================================== */

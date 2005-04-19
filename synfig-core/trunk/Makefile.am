@@ -1,4 +1,4 @@
-# $Header: /opt/voria/cvs/sinfg/Makefile.am,v 1.5 2005/03/24 21:07:24 darco Exp $
+# $Header: /opt/voria/cvs/synfig/Makefile.am,v 1.5 2005/03/24 21:07:24 darco Exp $
 
 #AUTOMAKE_OPTIONS=dist-zip dist-shar dist-bzip2
 AUTOMAKE_OPTIONS=dist-zip dist-shar
@@ -12,9 +12,9 @@ SUBDIRS=libltdl src
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = @PACKAGE_TARNAME@.pc
 
-bin_SCRIPTS=sinfg-config
+bin_SCRIPTS=synfig-config
 
-EXTRA_DIST=bootstrap config/depcomp config/sinfg.m4 config/cxx_macros.m4 sinfg.pbproj/config.h sinfg.pbproj/project.pbxproj @PACKAGE_TARNAME@-@VERSION@.spec config/project.spec.in config/build.cfg sinfg.kdevprj sinfg-config.in config/ETL.m4 config/doxygen.cfg.in doxygen.cfg config/pkgconfig.pc.in config/pkgconfig.m4 config/libxml++.m4 @PACKAGE_TARNAME@.pc.in
+EXTRA_DIST=bootstrap config/depcomp config/synfig.m4 config/cxx_macros.m4 synfig.pbproj/config.h synfig.pbproj/project.pbxproj @PACKAGE_TARNAME@-@VERSION@.spec config/project.spec.in config/build.cfg synfig.kdevprj synfig-config.in config/ETL.m4 config/doxygen.cfg.in doxygen.cfg config/pkgconfig.pc.in config/pkgconfig.m4 config/libxml++.m4 @PACKAGE_TARNAME@.pc.in
 
 CVS=cvs
 
@@ -78,7 +78,7 @@ listwritemes:
 	-@echo
 
 install-bin:
-	make -C src/sinfg install-libLTLIBRARIES
+	make -C src/synfig install-libLTLIBRARIES
 
 win32inst.nsi: $(srcdir)/win32inst.nsi.in
 	./config.status win32inst.nsi
@@ -110,7 +110,7 @@ $(srcdir)/configure:  $(srcdir)/configure.in $(ACLOCAL_M4) $(CONFIGURE_DEPENDENC
 	touch .doc_stamp
 
 benchmark:
-	sinfg -b -t null -q --time 0 $(srcdir)/examples/*.sif
+	synfig -b -t null -q --time 0 $(srcdir)/examples/*.sif
 
 html: .doc_stamp
 

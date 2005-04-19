@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file guidset.h
 **	\brief Template Header
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_GUIDSET_H
-#define __SINFG_GUIDSET_H
+#ifndef __SYNFIG_GUIDSET_H
+#define __SYNFIG_GUIDSET_H
 
 #define HASH_SET_H <ext/hash_set>
 
@@ -42,13 +42,13 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace sinfg {
+namespace synfig {
 	
 class GUIDSet : public
 #ifdef HASH_SET_H
-std::set<sinfg::GUID>
+std::set<synfig::GUID>
 #else
-std::hash_set<sinfg::GUID,sinfg::GUIDHash>
+std::hash_set<synfig::GUID,synfig::GUIDHash>
 #endif
 {
 }; // END of class GUIDSet

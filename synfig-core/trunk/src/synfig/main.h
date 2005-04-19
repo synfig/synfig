@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file main.h
 **	\brief Template Header
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_MAIN_H
-#define __SINFG_MAIN_H
+#ifndef __SYNFIG_MAIN_H
+#define __SYNFIG_MAIN_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -35,9 +35,9 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace sinfg {
+namespace synfig {
 	
-/*!	\class sinfg::Main
+/*!	\class synfig::Main
 **	\brief \writeme
 **
 **	\writeme
@@ -46,7 +46,7 @@ class Main
 {
 	etl::reference_counter ref_count_;
 public:
-	Main(const sinfg::String& basepath,ProgressCallback *cb=0);
+	Main(const synfig::String& basepath,ProgressCallback *cb=0);
 	~Main();
 
 	static void load_modules(ProgressCallback *cb=0);
@@ -54,7 +54,7 @@ public:
 	const etl::reference_counter& ref_count()const { return ref_count_; }
 }; // END of class Main
 
-}; // END if namespace sinfg
+}; // END if namespace synfig
 
 /* === E N D =============================================================== */
 

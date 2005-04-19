@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file bline.h
 **	\brief Template Header
 **
@@ -21,16 +21,16 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_OUTLINE_H
-#define __SINFG_OUTLINE_H
+#ifndef __SYNFIG_OUTLINE_H
+#define __SYNFIG_OUTLINE_H
 
 /* === H E A D E R S ======================================================= */
 
 #include <list>
 #include <vector>
-#include <sinfg/layer_polygon.h>
-#include <sinfg/segment.h>
-#include <sinfg/value.h>
+#include <synfig/layer_polygon.h>
+#include <synfig/segment.h>
+#include <synfig/value.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -38,19 +38,19 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-using namespace sinfg;
+using namespace synfig;
 using namespace std;
 using namespace etl;
 
-class Outline : public sinfg::Layer_Polygon
+class Outline : public synfig::Layer_Polygon
 {
-	SINFG_LAYER_MODULE_EXT
+	SYNFIG_LAYER_MODULE_EXT
 private:
 
-	sinfg::ValueBase bline;
+	synfig::ValueBase bline;
 
-	std::vector<sinfg::Segment> segment_list;
-	std::vector<sinfg::Real> width_list;
+	std::vector<synfig::Segment> segment_list;
+	std::vector<synfig::Real> width_list;
 	
 	bool round_tip[2];
 	
@@ -58,9 +58,9 @@ private:
 	
 	bool loop_;
 
-	sinfg::Real width;
+	synfig::Real width;
 
-	sinfg::Real expand;
+	synfig::Real expand;
 
 	Real loopyness;
 	bool old_version;
@@ -76,7 +76,7 @@ public:
 	//! Updates the polygon data to match the parameters.
 	void sync();
 	
-	virtual bool set_param(const String & param, const sinfg::ValueBase &value);
+	virtual bool set_param(const String & param, const synfig::ValueBase &value);
 
 	virtual ValueBase get_param(const String & param)const;
 

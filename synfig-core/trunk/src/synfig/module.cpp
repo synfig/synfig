@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file module.cpp
 **	\brief writeme
 **
@@ -21,7 +21,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#define SINFG_NO_ANGLE
+#define SYNFIG_NO_ANGLE
 
 #ifdef USING_PCH
 #	include "pch.h"
@@ -42,16 +42,16 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 
-Module::Book *sinfg::Module::book_;
+Module::Book *synfig::Module::book_;
 
 /* === P R O C E D U R E S ================================================= */
 
 bool
 Module::subsys_init(const String &prefix)
 {
-	#ifndef SINFG_LTDL_NO_STATIC
+	#ifndef SYNFIG_LTDL_NO_STATIC
 	//LTDL_SET_PRELOADED_SYMBOLS();
 	#endif
 	
@@ -63,15 +63,15 @@ Module::subsys_init(const String &prefix)
 	}
 
 	lt_dladdsearchdir(".");
-	lt_dladdsearchdir("~/.sinfg/modules");
-	lt_dladdsearchdir((prefix+"/lib/sinfg/modules").c_str());
+	lt_dladdsearchdir("~/.synfig/modules");
+	lt_dladdsearchdir((prefix+"/lib/synfig/modules").c_str());
 #ifdef LIBDIR
-	lt_dladdsearchdir(LIBDIR"/sinfg/modules");
+	lt_dladdsearchdir(LIBDIR"/synfig/modules");
 #endif
 #ifdef __APPLE__
-	lt_dladdsearchdir("/Library/Frameworks/sinfg.framework/Resources/modules");
+	lt_dladdsearchdir("/Library/Frameworks/synfig.framework/Resources/modules");
 #endif
-	lt_dladdsearchdir("/usr/local/lib/sinfg/modules");
+	lt_dladdsearchdir("/usr/local/lib/synfig/modules");
 	lt_dladdsearchdir(".");
 	
 	book_=new Book;
@@ -100,13 +100,13 @@ Module::book()
 }
 
 void
-sinfg::Module::Register(Module::Handle mod)
+synfig::Module::Register(Module::Handle mod)
 {
 	book()[mod->Name()]=mod;
 }
 
 bool
-sinfg::Module::Register(const String &module_name, ProgressCallback *callback)
+synfig::Module::Register(const String &module_name, ProgressCallback *callback)
 {
 	lt_dlhandle module;
 

@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file importer.cpp
 **	\brief writeme
 **
@@ -21,7 +21,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#define SINFG_NO_ANGLE
+#define SYNFIG_NO_ANGLE
 
 #ifdef USING_PCH
 #	include "pch.h"
@@ -47,9 +47,9 @@
 
 using namespace etl;
 using namespace std;
-using namespace sinfg;
+using namespace synfig;
 
-Importer::Book* sinfg::Importer::book_;
+Importer::Book* synfig::Importer::book_;
 
 map<String,Importer::LooseHandle> *__open_importers;
 
@@ -84,7 +84,7 @@ Importer::open(const String &filename)
 {
 	if(filename.empty())
 	{
-		sinfg::error(_("Importer::open(): Cannot open empty filename"));
+		synfig::error(_("Importer::open(): Cannot open empty filename"));
 		return 0;
 	}
 	
@@ -92,13 +92,13 @@ Importer::open(const String &filename)
 	// then use it instead.
 	if(__open_importers->count(filename))
 	{
-		//sinfg::info("Found importer already open, using it...");
+		//synfig::info("Found importer already open, using it...");
 		return (*__open_importers)[filename];
 	}
 	
 	if(find(filename.begin(),filename.end(),'.')==filename.end())
 	{
-		sinfg::error(_("Importer::open(): Couldn't find extension"));
+		synfig::error(_("Importer::open(): Couldn't find extension"));
 		return 0;
 	}
 		
@@ -108,7 +108,7 @@ Importer::open(const String &filename)
 	
 	if(!Importer::book().count(ext))
 	{
-		sinfg::error(_("Importer::open(): Unknown file type -- ")+ext);
+		synfig::error(_("Importer::open(): Unknown file type -- ")+ext);
 		return 0;
 	}
 	
@@ -120,7 +120,7 @@ Importer::open(const String &filename)
 	}
 	catch (String str)
 	{
-		sinfg::error(str);
+		synfig::error(str);
 	}
 	return 0;
 }

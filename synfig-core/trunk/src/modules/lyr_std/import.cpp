@@ -1,5 +1,5 @@
 /*! ========================================================================
-** Sinfg
+** Synfig
 ** Image Import Layer Implementation
 ** $Id: import.cpp,v 1.2 2005/03/19 04:26:42 darco Exp $
 **
@@ -28,19 +28,19 @@
 #endif
 
 #include "import.h"
-#include <sinfg/string.h>
-#include <sinfg/time.h>
-#include <sinfg/context.h>
-#include <sinfg/paramdesc.h>
-#include <sinfg/renddesc.h>
-#include <sinfg/surface.h>
-#include <sinfg/value.h>
-#include <sinfg/valuenode.h>
-#include <sinfg/canvas.h>
+#include <synfig/string.h>
+#include <synfig/time.h>
+#include <synfig/context.h>
+#include <synfig/paramdesc.h>
+#include <synfig/renddesc.h>
+#include <synfig/surface.h>
+#include <synfig/value.h>
+#include <synfig/valuenode.h>
+#include <synfig/canvas.h>
 
 #endif
 
-using namespace sinfg;
+using namespace synfig;
 using namespace std;
 using namespace etl;
 
@@ -48,12 +48,12 @@ using namespace etl;
 
 /* === G L O B A L S ======================================================= */
 
-SINFG_LAYER_INIT(Import);
-SINFG_LAYER_SET_NAME(Import,"import");
-SINFG_LAYER_SET_LOCAL_NAME(Import,_("Import"));
-SINFG_LAYER_SET_CATEGORY(Import,_("Other"));
-SINFG_LAYER_SET_VERSION(Import,"0.1");
-SINFG_LAYER_SET_CVS_ID(Import,"$Id: import.cpp,v 1.2 2005/03/19 04:26:42 darco Exp $");
+SYNFIG_LAYER_INIT(Import);
+SYNFIG_LAYER_SET_NAME(Import,"import");
+SYNFIG_LAYER_SET_LOCAL_NAME(Import,_("Import"));
+SYNFIG_LAYER_SET_CATEGORY(Import,_("Other"));
+SYNFIG_LAYER_SET_VERSION(Import,"0.1");
+SYNFIG_LAYER_SET_CVS_ID(Import,"$Id: import.cpp,v 1.2 2005/03/19 04:26:42 darco Exp $");
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -101,7 +101,7 @@ Import::set_param(const String & param, const ValueBase &value)
 		
 		//if(get_canvas()->get_file_path()==dirname(newfilename))
 		//{
-		//	sinfg::info("Image seems to be in local directory. Adjusting path...");
+		//	synfig::info("Image seems to be in local directory. Adjusting path...");
 		//	newfilename=basename(newfilename);
 		//}
 		
@@ -112,7 +112,7 @@ Import::set_param(const String & param, const ValueBase &value)
 			while(basename(curpath)==".")curpath=dirname(curpath);
 				
 			newfilename=relative_path(curpath,newfilename);
-			sinfg::info("basename(curpath)=%s, Path adjusted to %s",basename(curpath).c_str(),newfilename.c_str());
+			synfig::info("basename(curpath)=%s, Path adjusted to %s",basename(curpath).c_str(),newfilename.c_str());
 		}
 #endif
 
@@ -130,7 +130,7 @@ Import::set_param(const String & param, const ValueBase &value)
 		// If we are already loaded, don't reload
 		if(filename==newfilename && importer)
 		{
-			sinfg::warning(strprintf(_("Filename seems to already be set to \"%s\" (%s)"),filename.c_str(),newfilename.c_str()));
+			synfig::warning(strprintf(_("Filename seems to already be set to \"%s\" (%s)"),filename.c_str(),newfilename.c_str()));
 			return true;
 		}
 		
@@ -150,7 +150,7 @@ Import::set_param(const String & param, const ValueBase &value)
 			newimporter=Importer::open(get_canvas()->get_file_path()+ETL_DIRECTORY_SEPERATOR+basename(newfilename));
 			if(!newimporter)
 			{
-				sinfg::error(strprintf("Unable to create an importer object with file \"%s\"",filename_with_path.c_str()));
+				synfig::error(strprintf("Unable to create an importer object with file \"%s\"",filename_with_path.c_str()));
 				surface.clear();
 				return false;
 			}
@@ -159,7 +159,7 @@ Import::set_param(const String & param, const ValueBase &value)
 		surface.clear();
 		if(!newimporter->get_frame(surface,Time(0)))
 		{
-			sinfg::warning(strprintf("Unable to get frame from \"%s\"",filename_with_path.c_str()));
+			synfig::warning(strprintf("Unable to get frame from \"%s\"",filename_with_path.c_str()));
 		}
 
 		importer=newimporter;

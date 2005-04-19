@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file protocol.h
 **	\brief Template Header
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_PROTOCOL_H
-#define __SINFG_PROTOCOL_H
+#ifndef __SYNFIG_PROTOCOL_H
+#define __SYNFIG_PROTOCOL_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -34,9 +34,10 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace sinfg {
+namespace synfig {
 
-class Object
+/*
+ * class Object
 {
 public:
 	
@@ -46,6 +47,7 @@ public:
 		
 	}
 };
+*/
 
 class Protocol
 {
@@ -58,7 +60,7 @@ class Protocol::Type
 {
 }; // END of class Protocol::Type
 
-}; // END of namespace sinfg
+}; // END of namespace synfig
 
 /* === E N D =============================================================== */
 

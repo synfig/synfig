@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file colorcorrect.h
 **	\brief Template Header
 **
@@ -21,13 +21,13 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_LAYER_STRETCH_H
-#define __SINFG_LAYER_STRETCH_H
+#ifndef __SYNFIG_LAYER_STRETCH_H
+#define __SYNFIG_LAYER_STRETCH_H
 
 /* === H E A D E R S ======================================================= */
 
-#include <sinfg/layer.h>
-#include <sinfg/vector.h>
+#include <synfig/layer.h>
+#include <synfig/vector.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -36,11 +36,11 @@
 /* === C L A S S E S & S T R U C T S ======================================= */
 
 class Stretch_Trans;
-namespace sinfg {
+namespace synfig {
 
 class Layer_Stretch : public Layer
 {
-	SINFG_LAYER_MODULE_EXT
+	SYNFIG_LAYER_MODULE_EXT
 	friend class Stretch_Trans;
 	
 private:
@@ -52,20 +52,20 @@ public:
 	
 	Layer_Stretch();
 		
-	virtual bool set_param(const String & param, const sinfg::ValueBase &value);
+	virtual bool set_param(const String & param, const synfig::ValueBase &value);
 
 	virtual ValueBase get_param(const String & param)const;
 
 	virtual Color get_color(Context context, const Point &pos)const;
 	
 	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
-	sinfg::Layer::Handle hit_check(sinfg::Context context, const sinfg::Point &point)const;	
+	synfig::Layer::Handle hit_check(synfig::Context context, const synfig::Point &point)const;	
 	
 	virtual Vocab get_param_vocab()const;
-	virtual etl::handle<sinfg::Transform> get_transform()const;
+	virtual etl::handle<synfig::Transform> get_transform()const;
 }; // END of class Layer_Stretch
 
-}; // END of namespace sinfg
+}; // END of namespace synfig
 
 /* === E N D =============================================================== */
 

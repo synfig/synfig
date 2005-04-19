@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file valuenode_animated.h
 **	\brief Template Header
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_VALUENODE_ANIMATED_H
-#define __SINFG_VALUENODE_ANIMATED_H
+#ifndef __SYNFIG_VALUENODE_ANIMATED_H
+#define __SYNFIG_VALUENODE_ANIMATED_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -36,7 +36,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace sinfg {
+namespace synfig {
 
 struct ValueNode_Animated : public ValueNode
 {
@@ -44,8 +44,8 @@ public:
 	typedef etl::handle<ValueNode_Animated> Handle;
 	typedef etl::handle<const ValueNode_Animated> ConstHandle;
 
-	typedef sinfg::Waypoint Waypoint;
-	typedef sinfg::WaypointList WaypointList;
+	typedef synfig::Waypoint Waypoint;
+	typedef synfig::WaypointList WaypointList;
 	
 	typedef	std::pair<WaypointList::iterator,bool>	findresult;
 	typedef	std::pair<WaypointList::const_iterator,bool>	const_findresult;
@@ -109,7 +109,7 @@ public:
 	DCAST_HACK_ID(4);
 };
 
-}; // END of namespace sinfg
+}; // END of namespace synfig
 
 /* === E N D =============================================================== */
 

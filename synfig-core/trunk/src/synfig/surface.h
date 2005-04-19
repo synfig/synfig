@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file surface.h
 **	\brief Surface and Pen Definitions
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_SURFACE_H
-#define __SINFG_SURFACE_H
+#ifndef __SYNFIG_SURFACE_H
+#define __SYNFIG_SURFACE_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -38,7 +38,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace sinfg {
+namespace synfig {
 
 class Target;
 class Target_Scanline;
@@ -151,7 +151,7 @@ public:
 //! Creates a target that will render to \a surface
 etl::handle<Target_Scanline> surface_target(Surface *surface);
 
-}; // END of namespace sinfg
+}; // END of namespace synfig
 
 /* === E N D =============================================================== */
 

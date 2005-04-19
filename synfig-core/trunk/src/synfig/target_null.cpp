@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file target_null.cpp
 **	\brief Template File
 **
@@ -36,7 +36,7 @@
 
 //using namespace std;
 //using namespace etl;
-//using namespace sinfg;
+//using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 

@@ -74,10 +74,10 @@ Section ""
   File "C:\GTK\bin\libfreetype-6.dll"
   
   ; Put file there
-;  File "sinfg_modules.conf"
+;  File "synfig_modules.conf"
   
   CreateDirectory "$INSTDIR\etc"
-  Delete $INSTDIR\etc\sinfg_modules.conf
+  Delete $INSTDIR\etc\synfig_modules.conf
 	
   ; Write the installation path into the registry
   ; WriteRegStr HKLM "Software\Voria_@PACKAGE_TARNAME@" "Install_Dir" "$INSTDIR"
@@ -117,9 +117,9 @@ Section "Uninstall"
   ; DeleteRegKey HKLM "Software\Voria_@PACKAGE_TARNAME@"
 
   ; Remove files and uninstaller
-  ;Delete $INSTDIR\sinfg.exe
+  ;Delete $INSTDIR\synfig.exe
   Delete $INSTDIR\uninstall-@PACKAGE_TARNAME@.exe
-  Delete $INSTDIR\etc\sinfg_modules.conf
+  Delete $INSTDIR\etc\synfig_modules.conf
   RMDir $INSTDIR\bin
   RMDir $INSTDIR\etc
 
@@ -131,7 +131,7 @@ Section "Uninstall"
 
 SectionEnd
 
-!include @srcdir@\src\sinfg\sinfg.nsh
+!include @srcdir@\src\synfig\synfig.nsh
 !include @srcdir@\src\tool\tool.nsh
 
 Section "Examples"

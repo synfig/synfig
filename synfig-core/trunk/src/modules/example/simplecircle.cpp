@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file layer_solidcolor.cpp
 **	\brief Template Header
 **
@@ -28,14 +28,14 @@
 #	include <config.h>
 #endif
 
-#include <sinfg/string.h>
-#include <sinfg/time.h>
-#include <sinfg/context.h>
-#include <sinfg/paramdesc.h>
-#include <sinfg/renddesc.h>
-#include <sinfg/surface.h>
-#include <sinfg/value.h>
-#include <sinfg/valuenode.h>
+#include <synfig/string.h>
+#include <synfig/time.h>
+#include <synfig/context.h>
+#include <synfig/paramdesc.h>
+#include <synfig/renddesc.h>
+#include <synfig/surface.h>
+#include <synfig/value.h>
+#include <synfig/valuenode.h>
 
 #include "simplecircle.h"
 
@@ -45,16 +45,16 @@
 
 using namespace etl;
 using namespace std;
-using namespace sinfg;
+using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
-SINFG_LAYER_INIT(SimpleCircle);
-SINFG_LAYER_SET_NAME(SimpleCircle,"simple_circle");
-SINFG_LAYER_SET_LOCAL_NAME(SimpleCircle,_("Simple Circle"));
-SINFG_LAYER_SET_CATEGORY(SimpleCircle,_("Do Not Use"));
-SINFG_LAYER_SET_VERSION(SimpleCircle,"0.1");
-SINFG_LAYER_SET_CVS_ID(SimpleCircle,"$Id: simplecircle.cpp,v 1.1.1.1 2005/01/04 01:23:09 darco Exp $");
+SYNFIG_LAYER_INIT(SimpleCircle);
+SYNFIG_LAYER_SET_NAME(SimpleCircle,"simple_circle");
+SYNFIG_LAYER_SET_LOCAL_NAME(SimpleCircle,_("Simple Circle"));
+SYNFIG_LAYER_SET_CATEGORY(SimpleCircle,_("Do Not Use"));
+SYNFIG_LAYER_SET_VERSION(SimpleCircle,"0.1");
+SYNFIG_LAYER_SET_CVS_ID(SimpleCircle,"$Id: simplecircle.cpp,v 1.1.1.1 2005/01/04 01:23:09 darco Exp $");
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -130,8 +130,8 @@ SimpleCircle::get_color(Context context, const Point &pos)const
 		return context.get_color(pos);
 }
 
-sinfg::Layer::Handle
-SimpleCircle::hit_check(sinfg::Context context, const sinfg::Point &pos)const
+synfig::Layer::Handle
+SimpleCircle::hit_check(synfig::Context context, const synfig::Point &pos)const
 {
 	if((pos-center).mag()<radius)
 		return const_cast<SimpleCircle*>(this);

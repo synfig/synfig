@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file target_scanline.cpp
 **	\brief Template File
 **
@@ -41,11 +41,11 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 
-#define SINFG_OPTIMIZE_LAYER_TREE 1
+#define SYNFIG_OPTIMIZE_LAYER_TREE 1
 
 #define PIXEL_RENDERING_LIMIT 1500000
 
@@ -96,17 +96,17 @@ Target_Scanline::next_frame(Time& time)
 	time=(time_end-time_start)*curr_frame_/total_frames+time_start;
 	curr_frame_++;
 
-/*	sinfg::info("curr_frame_: %d",curr_frame_);
-	sinfg::info("total_frames: %d",total_frames);
-	sinfg::info("time_end: %s",time_end.get_string().c_str());
-	sinfg::info("time_start: %s",time_start.get_string().c_str());
+/*	synfig::info("curr_frame_: %d",curr_frame_);
+	synfig::info("total_frames: %d",total_frames);
+	synfig::info("time_end: %s",time_end.get_string().c_str());
+	synfig::info("time_start: %s",time_start.get_string().c_str());
 */
-//	sinfg::info("time: %s",time.get_string().c_str());
+//	synfig::info("time: %s",time.get_string().c_str());
 
 	return total_frames- curr_frame_+1;
 }
 bool
-sinfg::Target_Scanline::render(ProgressCallback *cb)
+synfig::Target_Scanline::render(ProgressCallback *cb)
 {
 	SuperCallback super_cb;
 	int
@@ -146,7 +146,7 @@ sinfg::Target_Scanline::render(ProgressCallback *cb)
 	// Grab the time
 	int i=next_frame(t);
 	
-	//sinfg::info("1time_set_to %s",t.get_string().c_str());
+	//synfig::info("1time_set_to %s",t.get_string().c_str());
 	
 	if(i>1)
 	do{
@@ -167,7 +167,7 @@ sinfg::Target_Scanline::render(ProgressCallback *cb)
 		
 		Context context;
 		
-		#ifdef SINFG_OPTIMIZE_LAYER_TREE
+		#ifdef SYNFIG_OPTIMIZE_LAYER_TREE
 		Canvas::Handle op_canvas(Canvas::create());
 		optimize_layers(canvas->get_context(), op_canvas);
 		context=op_canvas->get_context();
@@ -181,12 +181,12 @@ sinfg::Target_Scanline::render(ProgressCallback *cb)
 		{
 			if(threads_<=0)
 			{
-				if(!sinfg::render(context,this,desc,0))
+				if(!synfig::render(context,this,desc,0))
 					return false;
 			}
 			else
 			{
-				if(!sinfg::render_threaded(context,this,desc,0,threads_))
+				if(!synfig::render_threaded(context,this,desc,0,threads_))
 					return false;
 			}
 		}
@@ -195,7 +195,7 @@ sinfg::Target_Scanline::render(ProgressCallback *cb)
 			#if USE_PIXELRENDERING_LIMIT
 			if(desc.get_w()*desc.get_h() > PIXEL_RENDERING_LIMIT)
 			{					
-				sinfg::info("Render BROKEN UP! (%d pixels)", desc.get_w()*desc.get_h());
+				synfig::info("Render BROKEN UP! (%d pixels)", desc.get_w()*desc.get_h());
 								
 				Surface surface;				
 				int rowheight = PIXEL_RENDERING_LIMIT/desc.get_w();
@@ -204,7 +204,7 @@ sinfg::Target_Scanline::render(ProgressCallback *cb)
 				
 				rows++;
 				
-				sinfg::info("\t blockh=%d,remh=%d,totrows=%d", rowheight,lastrowheight,rows);				
+				synfig::info("\t blockh=%d,remh=%d,totrows=%d", rowheight,lastrowheight,rows);				
 				
 				// loop through all the full rows
 				if(!start_frame())
@@ -301,7 +301,7 @@ sinfg::Target_Scanline::render(ProgressCallback *cb)
 			canvas->set_time(t);
 		Context context;
 		
-		#ifdef SINFG_OPTIMIZE_LAYER_TREE
+		#ifdef SYNFIG_OPTIMIZE_LAYER_TREE
 		Canvas::Handle op_canvas(Canvas::create());
 		optimize_layers(canvas->get_context(), op_canvas);
 		context=op_canvas->get_context();
@@ -315,12 +315,12 @@ sinfg::Target_Scanline::render(ProgressCallback *cb)
 		{
 			if(threads_<=0)
 			{
-				if(!sinfg::render(context,this,desc,cb))
+				if(!synfig::render(context,this,desc,cb))
 					return false;
 			}
 			else
 			{
-				if(!sinfg::render_threaded(context,this,desc,cb,threads_))
+				if(!synfig::render_threaded(context,this,desc,cb,threads_))
 					return false;
 			}
 		}
@@ -329,7 +329,7 @@ sinfg::Target_Scanline::render(ProgressCallback *cb)
 			#if USE_PIXELRENDERING_LIMIT
 			if(desc.get_w()*desc.get_h() > PIXEL_RENDERING_LIMIT)
 			{
-				sinfg::info("Render BROKEN UP! (%d pixels)", desc.get_w()*desc.get_h());
+				synfig::info("Render BROKEN UP! (%d pixels)", desc.get_w()*desc.get_h());
 				
 				Surface surface;				
 				int totalheight = desc.get_h();				
@@ -339,7 +339,7 @@ sinfg::Target_Scanline::render(ProgressCallback *cb)
 				
 				rows++;
 				
-				sinfg::info("\t blockh=%d,remh=%d,totrows=%d", rowheight,lastrowheight,rows);				
+				synfig::info("\t blockh=%d,remh=%d,totrows=%d", rowheight,lastrowheight,rows);				
 				
 				// loop through all the full rows
 				if(!start_frame())

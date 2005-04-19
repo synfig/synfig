@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file layer_polygon.h
 **	\brief Template Header
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_LAYER_POLYGON_H
-#define __SINFG_LAYER_POLYGON_H
+#ifndef __SYNFIG_LAYER_POLYGON_H
+#define __SYNFIG_LAYER_POLYGON_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -38,14 +38,14 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace sinfg {
+namespace synfig {
 	
 /*!	\class Layer_Polygon
 **	\beief writeme
 **	\todo This layer needs to support multiple polygons */
 class Layer_Polygon : public Layer_Shape
 {
-	SINFG_LAYER_MODULE_EXT
+	SYNFIG_LAYER_MODULE_EXT
 	
 private:
 		
@@ -78,7 +78,7 @@ public:
 	//! Updates EdgeTable so it will reflect the parameter data
 	void sync();
 	
-	virtual bool set_param(const String & param, const sinfg::ValueBase &value);
+	virtual bool set_param(const String & param, const synfig::ValueBase &value);
 
 	virtual ValueBase get_param(const String & param)const;
 	
@@ -89,7 +89,7 @@ private:
 	bool render_polyspan(Surface *surface,PolySpan &polyspan)const;
 }; // END of Layer_Polygon
 
-}; // END of namespace sinfg
+}; // END of namespace synfig
 /* === E N D =============================================================== */
 
 #endif

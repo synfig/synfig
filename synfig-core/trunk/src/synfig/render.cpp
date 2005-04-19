@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file render.cpp
 **	\brief Renderer
 **
@@ -21,7 +21,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#define SINFG_NO_ANGLE
+#define SYNFIG_NO_ANGLE
 
 #ifdef USING_PCH
 #	include "pch.h"
@@ -47,7 +47,7 @@
 #endif
 
 using namespace std;
-using namespace sinfg;
+using namespace synfig;
 using namespace etl;
 
 /* === M A C R O S ========================================================= */
@@ -55,7 +55,7 @@ using namespace etl;
 /* === P R O C E D U R E S ================================================= */
 
 bool
-sinfg::parametric_render(
+synfig::parametric_render(
 	Context context,
 	Surface &surface,
 	const RendDesc &desc,
@@ -175,7 +175,7 @@ sinfg::parametric_render(
 }
 
 bool
-sinfg::render(
+synfig::render(
 	Context context,
 	Target_Scanline::Handle target,
 	const RendDesc &desc,
@@ -318,7 +318,7 @@ sinfg::render(
 }
 
 bool
-sinfg::render_threaded(
+synfig::render_threaded(
 	Context context,
 	Target_Scanline::Handle target,
 	const RendDesc &desc,

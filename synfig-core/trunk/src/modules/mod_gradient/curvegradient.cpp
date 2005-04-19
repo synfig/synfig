@@ -1,5 +1,5 @@
 /*! ========================================================================
-** Sinfg
+** Synfig
 ** Template File
 ** $Id: curvegradient.cpp,v 1.2 2005/01/13 06:48:39 darco Exp $
 **
@@ -29,14 +29,14 @@
 
 #include "curvegradient.h"
 
-#include <sinfg/string.h>
-#include <sinfg/time.h>
-#include <sinfg/context.h>
-#include <sinfg/paramdesc.h>
-#include <sinfg/renddesc.h>
-#include <sinfg/surface.h>
-#include <sinfg/value.h>
-#include <sinfg/valuenode.h>
+#include <synfig/string.h>
+#include <synfig/time.h>
+#include <synfig/context.h>
+#include <synfig/paramdesc.h>
+#include <synfig/renddesc.h>
+#include <synfig/surface.h>
+#include <synfig/value.h>
+#include <synfig/valuenode.h>
 #include <ETL/bezier>
 #include <ETL/hermite>
 #include <ETL/calculus>
@@ -47,16 +47,16 @@
 
 /* === G L O B A L S ======================================================= */
 
-SINFG_LAYER_INIT(CurveGradient);
-SINFG_LAYER_SET_NAME(CurveGradient,"curve_gradient");
-SINFG_LAYER_SET_LOCAL_NAME(CurveGradient,_("Curve Gradient"));
-SINFG_LAYER_SET_CATEGORY(CurveGradient,_("Gradients"));
-SINFG_LAYER_SET_VERSION(CurveGradient,"0.0");
-SINFG_LAYER_SET_CVS_ID(CurveGradient,"$Id: curvegradient.cpp,v 1.2 2005/01/13 06:48:39 darco Exp $");
+SYNFIG_LAYER_INIT(CurveGradient);
+SYNFIG_LAYER_SET_NAME(CurveGradient,"curve_gradient");
+SYNFIG_LAYER_SET_LOCAL_NAME(CurveGradient,_("Curve Gradient"));
+SYNFIG_LAYER_SET_CATEGORY(CurveGradient,_("Gradients"));
+SYNFIG_LAYER_SET_VERSION(CurveGradient,"0.0");
+SYNFIG_LAYER_SET_CVS_ID(CurveGradient,"$Id: curvegradient.cpp,v 1.2 2005/01/13 06:48:39 darco Exp $");
 
 /* === P R O C E D U R E S ================================================= */
 
-inline float calculate_distance(const sinfg::BLinePoint& a,const sinfg::BLinePoint& b)
+inline float calculate_distance(const synfig::BLinePoint& a,const synfig::BLinePoint& b)
 {
 #if 1
 	const Point& c1(a.get_vertex());
@@ -68,10 +68,10 @@ inline float calculate_distance(const sinfg::BLinePoint& a,const sinfg::BLinePoi
 #endif
 }
 
-inline float calculate_distance(const std::vector<sinfg::BLinePoint>& bline)
+inline float calculate_distance(const std::vector<synfig::BLinePoint>& bline)
 {
-	std::vector<sinfg::BLinePoint>::const_iterator iter,next,ret;
-	std::vector<sinfg::BLinePoint>::const_iterator end(bline.end());
+	std::vector<synfig::BLinePoint>::const_iterator iter,next,ret;
+	std::vector<synfig::BLinePoint>::const_iterator end(bline.end());
 	
 	float dist(0);
 	
@@ -99,11 +99,11 @@ inline float calculate_distance(const std::vector<sinfg::BLinePoint>& bline)
 	return dist;
 }
 
-std::vector<sinfg::BLinePoint>::const_iterator
-find_closest(const std::vector<sinfg::BLinePoint>& bline,const Point& p,bool loop=false,float *bline_dist_ret=0)
+std::vector<synfig::BLinePoint>::const_iterator
+find_closest(const std::vector<synfig::BLinePoint>& bline,const Point& p,bool loop=false,float *bline_dist_ret=0)
 {
-	std::vector<sinfg::BLinePoint>::const_iterator iter,next,ret;
-	std::vector<sinfg::BLinePoint>::const_iterator end(bline.end());
+	std::vector<synfig::BLinePoint>::const_iterator iter,next,ret;
+	std::vector<synfig::BLinePoint>::const_iterator end(bline.end());
 	
 	ret=bline.end();
 	float dist(100000000000.0);
@@ -230,7 +230,7 @@ CurveGradient::color_func(const Point &point_, int quality, float supersample)co
 	{
 		Point point(point_-offset);
 		
-		std::vector<sinfg::BLinePoint>::const_iterator iter,next;
+		std::vector<synfig::BLinePoint>::const_iterator iter,next;
 		
 		// Figure out the BLinePoints we will be using,
 		// Taking into account looping.
@@ -358,14 +358,14 @@ CurveGradient::color_func(const Point &point_, int quality, float supersample)co
 }
 
 float
-CurveGradient::calc_supersample(const sinfg::Point &x, float pw,float ph)const
+CurveGradient::calc_supersample(const synfig::Point &x, float pw,float ph)const
 {
 //	return pw/(p2-p1).mag();
 	return pw;
 }
 
-sinfg::Layer::Handle
-CurveGradient::hit_check(sinfg::Context context, const sinfg::Point &point)const
+synfig::Layer::Handle
+CurveGradient::hit_check(synfig::Context context, const synfig::Point &point)const
 {
 	if(get_blend_method()==Color::BLEND_STRAIGHT && get_amount()>=0.5)
 		return const_cast<CurveGradient*>(this);

@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file target.cpp
 **	\brief Target Class Implementation
 **
@@ -21,7 +21,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#define SINFG_NO_ANGLE
+#define SYNFIG_NO_ANGLE
 
 #ifdef HAVE_CONFIG_H
 # include <config.h>
@@ -33,29 +33,29 @@
 #include "target_null.h"
 #include "target_null_tile.h"
 
-using namespace sinfg;
+using namespace synfig;
 using namespace etl;
 using namespace std;
 
-sinfg::Target::Book* sinfg::Target::book_;
-sinfg::Target::ExtBook* sinfg::Target::ext_book_;
+synfig::Target::Book* synfig::Target::book_;
+synfig::Target::ExtBook* synfig::Target::ext_book_;
 
-static sinfg::Gamma* default_gamma_;
+static synfig::Gamma* default_gamma_;
 
 /* === P R O C E D U R E S ================================================= */
 
 bool
 Target::subsys_init()
 {
-	book_=new sinfg::Target::Book();
-	ext_book_=new sinfg::Target::ExtBook();
+	book_=new synfig::Target::Book();
+	ext_book_=new synfig::Target::ExtBook();
 	
-	default_gamma_=new sinfg::Gamma(1.0/2.2);
+	default_gamma_=new synfig::Gamma(1.0/2.2);
 	//default_gamma_->set_black_level(0.05); // Default to 5% black level.
 	
-	book()["null"]=std::pair<sinfg::Target::Factory,String>(Target_Null::create,"null");
+	book()["null"]=std::pair<synfig::Target::Factory,String>(Target_Null::create,"null");
 	ext_book()["null"]="null";
-	book()["null-tile"]=std::pair<sinfg::Target::Factory,String>(Target_Null_Tile::create,"null-tile");
+	book()["null-tile"]=std::pair<synfig::Target::Factory,String>(Target_Null_Tile::create,"null-tile");
 	ext_book()["null-tile"]="null-tile";
 
 	return true;
@@ -93,7 +93,7 @@ Target::Target():
 }
 
 void
-sinfg::Target::set_canvas(Canvas::Handle c)
+synfig::Target::set_canvas(Canvas::Handle c)
 {
 	canvas=c;
 	RendDesc desc=canvas->rend_desc();

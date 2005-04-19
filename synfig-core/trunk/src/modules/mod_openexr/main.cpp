@@ -1,5 +1,5 @@
 /*! ========================================================================
-** Sinfg
+** Synfig
 ** bleh
 ** $Id: main.cpp,v 1.1.1.1 2005/01/04 01:23:14 darco Exp $
 **
@@ -20,7 +20,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#define SINFG_MODULE
+#define SYNFIG_MODULE
 
 #ifdef USING_PCH
 #	include "pch.h"
@@ -31,7 +31,7 @@
 #warning HAVE_CONFIG_H not defined!
 #endif
 
-#include <sinfg/module.h>
+#include <synfig/module.h>
 #include "trgt_openexr.h"
 #include "mptr_openexr.h"
 #endif

@@ -1,5 +1,5 @@
 /*! ========================================================================
-** Sinfg
+** Synfig
 ** Template Header File
 ** $Id: trgt_mpg.h,v 1.1.1.1 2005/01/04 01:23:14 darco Exp $
 **
@@ -20,12 +20,12 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_TRGT_MPG_H
-#define __SINFG_TRGT_MPG_H
+#ifndef __SYNFIG_TRGT_MPG_H
+#define __SYNFIG_TRGT_MPG_H
 
 /* === H E A D E R S ======================================================= */
 
-#include <sinfg/sinfg.h>
+#include <synfig/synfig.h>
 #include <stdio.h>
 #include "trgt_ppm.h"
 
@@ -36,19 +36,19 @@
 /* === C L A S S E S & S T R U C T S ======================================= */
 
 
-class bsd_mpeg1 : public sinfg::Target
+class bsd_mpeg1 : public synfig::Target
 {
 public:
 private:
-// 	sinfg::RendDesc desc;
- 	sinfg::Target *passthru;
+// 	synfig::RendDesc desc;
+ 	synfig::Target *passthru;
  	String filename;
 	FILE *paramfile;
 public:
 	bsd_mpeg1(const char *filename);
 
-	virtual bool set_rend_desc(sinfg::RendDesc *desc);
-	virtual bool start_frame(sinfg::ProgressCallback *cb);
+	virtual bool set_rend_desc(synfig::RendDesc *desc);
+	virtual bool start_frame(synfig::ProgressCallback *cb);
 	virtual void end_frame();
 
 	virtual ~bsd_mpeg1();
@@ -57,7 +57,7 @@ public:
 	virtual unsigned char * start_scanline(int scanline);
 	virtual bool end_scanline(void);
 
-	static sinfg::Target *New(const char *filename);
+	static synfig::Target *New(const char *filename);
 
 	static const char Name[];
 	static const char Ext[];

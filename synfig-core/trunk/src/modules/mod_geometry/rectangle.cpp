@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file rectangle.cpp
 **	\point2ief Template Header
 **
@@ -28,14 +28,14 @@
 #	include <config.h>
 #endif
 
-#include <sinfg/string.h>
-#include <sinfg/time.h>
-#include <sinfg/context.h>
-#include <sinfg/paramdesc.h>
-#include <sinfg/renddesc.h>
-#include <sinfg/surface.h>
-#include <sinfg/value.h>
-#include <sinfg/valuenode.h>
+#include <synfig/string.h>
+#include <synfig/time.h>
+#include <synfig/context.h>
+#include <synfig/paramdesc.h>
+#include <synfig/renddesc.h>
+#include <synfig/surface.h>
+#include <synfig/value.h>
+#include <synfig/valuenode.h>
 #include <ETL/pen>
 #include <ETL/misc>
 
@@ -47,16 +47,16 @@
 
 using namespace etl;
 using namespace std;
-using namespace sinfg;
+using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
-SINFG_LAYER_INIT(Rectangle);
-SINFG_LAYER_SET_NAME(Rectangle,"rectangle");
-SINFG_LAYER_SET_LOCAL_NAME(Rectangle,_("Rectangle"));
-SINFG_LAYER_SET_CATEGORY(Rectangle,_("Geometry"));
-SINFG_LAYER_SET_VERSION(Rectangle,"0.2");
-SINFG_LAYER_SET_CVS_ID(Rectangle,"$Id: rectangle.cpp,v 1.2 2005/01/24 03:08:17 darco Exp $");
+SYNFIG_LAYER_INIT(Rectangle);
+SYNFIG_LAYER_SET_NAME(Rectangle,"rectangle");
+SYNFIG_LAYER_SET_LOCAL_NAME(Rectangle,_("Rectangle"));
+SYNFIG_LAYER_SET_CATEGORY(Rectangle,_("Geometry"));
+SYNFIG_LAYER_SET_VERSION(Rectangle,"0.2");
+SYNFIG_LAYER_SET_CVS_ID(Rectangle,"$Id: rectangle.cpp,v 1.2 2005/01/24 03:08:17 darco Exp $");
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -139,8 +139,8 @@ Rectangle::get_param_vocab()const
 	return ret;
 }
 
-sinfg::Layer::Handle
-Rectangle::hit_check(sinfg::Context context, const sinfg::Point &pos)const
+synfig::Layer::Handle
+Rectangle::hit_check(synfig::Context context, const synfig::Point &pos)const
 {
 	if(is_disabled())
 		return context.hit_check(pos);
@@ -165,7 +165,7 @@ Rectangle::hit_check(sinfg::Context context, const sinfg::Point &pos)const
 	
 	if(intersect)
 	{
-		sinfg::Layer::Handle tmp;
+		synfig::Layer::Handle tmp;
 		if(get_blend_method()==Color::BLEND_BEHIND && (tmp=context.hit_check(pos)))
 			return tmp;
 		if(Color::is_onto(get_blend_method()) && !(tmp=context.hit_check(pos)))

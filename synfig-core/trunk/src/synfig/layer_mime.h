@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file layer_mime.h
 **	\brief Template Header
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_LAYER_MIME_H
-#define __SINFG_LAYER_MIME_H
+#ifndef __SYNFIG_LAYER_MIME_H
+#define __SYNFIG_LAYER_MIME_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -36,7 +36,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace sinfg {
+namespace synfig {
 
 /*!	\class Layer_Mime
 **	The mime layer is a layer that is used when an unknown
@@ -67,7 +67,7 @@ public:
 
 };
 
-}; // END of namespace sinfg
+}; // END of namespace synfig
 
 /* === E N D =============================================================== */
 

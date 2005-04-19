@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file layer.cpp
 **	\brief Layer class implementation
 **
@@ -21,7 +21,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#define SINFG_NO_ANGLE
+#define SYNFIG_NO_ANGLE
 
 #ifdef USING_PCH
 #	include "pch.h"
@@ -57,7 +57,7 @@
 
 using namespace etl;
 using namespace std;
-using namespace sinfg;
+using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
@@ -69,7 +69,7 @@ struct _LayerCounter
 	~_LayerCounter()
 	{
 		if(counter)
-			sinfg::error("%d layers not yet deleted!",counter);
+			synfig::error("%d layers not yet deleted!",counter);
 	}
 } _layer_counter;
 
@@ -94,8 +94,8 @@ Layer::subsys_init()
 {
 	_layer_book=new Book();
 
-#define INCLUDE_LAYER(class)  	sinfg::Layer::book()[sinfg::String(class::name__)]=BookEntry(class::create,class::name__,class::local_name__,class::category__,class::cvs_id__,class::version__)
-#define LAYER_ALIAS(class,alias)  	sinfg::Layer::book()[sinfg::String(alias)]=sinfg::Layer::BookEntry(class::create,alias,alias,_("Do Not Use"),class::cvs_id__,class::version__);
+#define INCLUDE_LAYER(class)  	synfig::Layer::book()[synfig::String(class::name__)]=BookEntry(class::create,class::name__,class::local_name__,class::category__,class::cvs_id__,class::version__)
+#define LAYER_ALIAS(class,alias)  	synfig::Layer::book()[synfig::String(alias)]=synfig::Layer::BookEntry(class::create,alias,alias,_("Do Not Use"),class::cvs_id__,class::version__);
 
 	INCLUDE_LAYER(Layer_SolidColor);
 	INCLUDE_LAYER(Layer_PasteCanvas);
@@ -126,7 +126,7 @@ Layer::Layer():
 }
 
 Layer::LooseHandle
-sinfg::Layer::create(const String &name)
+synfig::Layer::create(const String &name)
 {
 	if(!book().count(name))
 	{
@@ -137,7 +137,7 @@ sinfg::Layer::create(const String &name)
 	return Layer::LooseHandle(layer);
 }
 
-sinfg::Layer::~Layer()
+synfig::Layer::~Layer()
 {
 	_LayerCounter::counter--;
 	while(!dynamic_param_list_.empty())
@@ -153,7 +153,7 @@ sinfg::Layer::~Layer()
 }
 
 void
-sinfg::Layer::set_canvas(etl::loose_handle<sinfg::Canvas> x)
+synfig::Layer::set_canvas(etl::loose_handle<synfig::Canvas> x)
 {
 	if(canvas_!=x)
 	{
@@ -167,7 +167,7 @@ sinfg::Layer::set_canvas(etl::loose_handle<sinfg::Canvas> x)
 						*this,
 						&Layer::set_canvas
 					),
-					etl::loose_handle<sinfg::Canvas>(0)
+					etl::loose_handle<synfig::Canvas>(0)
 				)
 			);
 		}
@@ -176,12 +176,12 @@ sinfg::Layer::set_canvas(etl::loose_handle<sinfg::Canvas> x)
 }
 
 void
-sinfg::Layer::on_canvas_set()
+synfig::Layer::on_canvas_set()
 {
 }
 
-etl::loose_handle<sinfg::Canvas>
-sinfg::Layer::get_canvas()const
+etl::loose_handle<synfig::Canvas>
+synfig::Layer::get_canvas()const
 {
 	return canvas_;
 }
@@ -191,7 +191,7 @@ Layer::get_depth()const
 {
 	if(!get_canvas())
 		return -1;
-	return get_canvas()->get_depth(const_cast<sinfg::Layer*>(this));
+	return get_canvas()->get_depth(const_cast<synfig::Layer*>(this));
 }
 
 void
@@ -280,7 +280,7 @@ Layer::get_transform()const
 }
 
 float
-Layer::get_z_depth(const sinfg::Time& t)const
+Layer::get_z_depth(const synfig::Time& t)const
 {
 	if(!dynamic_param_list().count("z_depth"))
 		return z_depth_;
@@ -456,8 +456,8 @@ Layer::get_color(Context context, const Point &pos)const
 	return context.get_color(pos);
 }
 
-sinfg::Layer::Handle
-Layer::hit_check(sinfg::Context context, const sinfg::Point &pos)const
+synfig::Layer::Handle
+Layer::hit_check(synfig::Context context, const synfig::Point &pos)const
 {
 	return context.hit_check(pos);
 }

@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file curveset.cpp
 **	\brief Curve Set Implementation File
 **
@@ -42,7 +42,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 
@@ -474,7 +474,7 @@ int CurveSet::intersect(const Point &p) const
 			b[0] = curve[j].p; b[3] = curve[i].p;
 			b[1] = b[0] + curve[j].r/3; b[2] = b[3] - curve[i].l/3;
 			
-			inter += sinfg::intersect(b,p);
+			inter += synfig::intersect(b,p);
 		}
 	}
 	

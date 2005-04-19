@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file main.cpp
 **	\brief writeme
 **
@@ -21,7 +21,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#define SINFG_NO_ANGLE
+#define SYNFIG_NO_ANGLE
 
 #ifdef USING_PCH
 #	include "pch.h"
@@ -30,8 +30,8 @@
 #	include <config.h>
 #endif
 
-#include <sinfg/module.h>
-#include <sinfg/layer.h>
+#include <synfig/module.h>
+#include <synfig/layer.h>
 
 //#include "mptr.h"
 #include "trgt_av.h" 
@@ -45,7 +45,7 @@ MODULE_DESC_BEGIN(mod_libavcodec)
 	MODULE_DESCRIPTION("Provides import/export ability for AVI, MPG, ASF, and a variety of other formats.")
 	MODULE_AUTHOR("Adrian Bentley")
 	MODULE_VERSION("0.0")
-	MODULE_COPYRIGHT(SINFG_COPYRIGHT)
+	MODULE_COPYRIGHT(SYNFIG_COPYRIGHT)
 MODULE_DESC_END
 
 MODULE_INVENTORY_BEGIN(mod_libavcodec)

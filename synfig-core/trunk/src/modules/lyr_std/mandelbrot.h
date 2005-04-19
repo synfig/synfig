@@ -1,5 +1,5 @@
 /*! ========================================================================
-** Sinfg
+** Synfig
 ** Template Header File
 ** $Id: mandelbrot.h,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $
 **
@@ -20,15 +20,15 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_MANDELBROT_H
-#define __SINFG_MANDELBROT_H
+#ifndef __SYNFIG_MANDELBROT_H
+#define __SYNFIG_MANDELBROT_H
 
 /* === H E A D E R S ======================================================= */
 
-#include <sinfg/layer.h>
-#include <sinfg/color.h>
-#include <sinfg/angle.h>
-#include <sinfg/gradient.h>
+#include <synfig/layer.h>
+#include <synfig/color.h>
+#include <synfig/angle.h>
+#include <synfig/gradient.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -36,13 +36,13 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-using namespace sinfg;
+using namespace synfig;
 using namespace std;
 using namespace etl;
 
 class Mandelbrot : public Layer
 {
-	SINFG_LAYER_MODULE_EXT
+	SYNFIG_LAYER_MODULE_EXT
 
 private:
 

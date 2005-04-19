@@ -1,5 +1,5 @@
 /*! ========================================================================
-** Sinfg
+** Synfig
 ** Template Header File
 ** $Id: warp.h,v 1.2 2005/01/24 05:00:18 darco Exp $
 **
@@ -20,15 +20,15 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_WARP_H
-#define __SINFG_WARP_H
+#ifndef __SYNFIG_WARP_H
+#define __SYNFIG_WARP_H
 
 /* === H E A D E R S ======================================================= */
 
-#include <sinfg/vector.h>
-#include <sinfg/angle.h>
-#include <sinfg/layer.h>
-#include <sinfg/rect.h>
+#include <synfig/vector.h>
+#include <synfig/angle.h>
+#include <synfig/layer.h>
+#include <synfig/rect.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -36,14 +36,14 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-using namespace sinfg;
+using namespace synfig;
 using namespace std;
 using namespace etl;
 class Warp_Trans;
 
 class Warp : public Layer
 {
-	SINFG_LAYER_MODULE_EXT
+	SYNFIG_LAYER_MODULE_EXT
 	friend class Warp_Trans;
 private:
 
@@ -70,16 +70,16 @@ public:
 	Warp();
 	~Warp();
 	
-	virtual sinfg::Rect get_full_bounding_rect(sinfg::Context context)const;
-	virtual sinfg::Rect get_bounding_rect()const;
+	virtual synfig::Rect get_full_bounding_rect(synfig::Context context)const;
+	virtual synfig::Rect get_bounding_rect()const;
 	
-	virtual bool set_param(const sinfg::String & param, const sinfg::ValueBase &value);
-	virtual ValueBase get_param(const sinfg::String & param)const;
+	virtual bool set_param(const synfig::String & param, const synfig::ValueBase &value);
+	virtual ValueBase get_param(const synfig::String & param)const;
 	virtual Color get_color(Context context, const Point &pos)const;
 	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
-	sinfg::Layer::Handle hit_check(sinfg::Context context, const sinfg::Point &point)const;	
+	synfig::Layer::Handle hit_check(synfig::Context context, const synfig::Point &point)const;	
 	virtual Vocab get_param_vocab()const;	
-	virtual etl::handle<sinfg::Transform> get_transform()const;
+	virtual etl::handle<synfig::Transform> get_transform()const;
 };
 
 /* === E N D =============================================================== */

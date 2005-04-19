@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file target_null_tile.h
 **	\brief Template Header
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_TARGET_NULL_TILE_H
-#define __SINFG_TARGET_NULL_TILE_H
+#ifndef __SYNFIG_TARGET_NULL_TILE_H
+#define __SYNFIG_TARGET_NULL_TILE_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -35,7 +35,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace sinfg {
+namespace synfig {
 
 /*!	\class Target_Null_Tile
 **	\brief A target which renders to nothing using tiles. Useful for benchmarks and other tests.
@@ -48,7 +48,7 @@ class Target_Null_Tile : public Target_Tile
 public:
 
 	~Target_Null_Tile() {  } 
-	virtual bool add_tile(const sinfg::Surface &surface, int x, int y) { return true; }
+	virtual bool add_tile(const synfig::Surface &surface, int x, int y) { return true; }
 
 	virtual bool start_frame(ProgressCallback *cb=NULL)
 		{ return true; }
@@ -58,7 +58,7 @@ public:
 	static Target* create(const char *filename=0) { return new Target_Null_Tile(); }
 }; // END of class Target_Null_Tile
 
-}; // END of namespace sinfg
+}; // END of namespace synfig
 
 /* === E N D =============================================================== */
 

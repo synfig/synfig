@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file smartfile.h
 **	\brief Template Header
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_SMARTFILE_H
-#define __SINFG_SMARTFILE_H
+#ifndef __SYNFIG_SMARTFILE_H
+#define __SYNFIG_SMARTFILE_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -35,7 +35,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace sinfg {
+namespace synfig {
 
 struct _FILE_deleter
 {
@@ -44,7 +44,7 @@ struct _FILE_deleter
 	
 typedef etl::smart_ptr<FILE,_FILE_deleter> SmartFILE;
 	
-}; // END of namespace sinfg
+}; // END of namespace synfig
 
 /* === E N D =============================================================== */
 

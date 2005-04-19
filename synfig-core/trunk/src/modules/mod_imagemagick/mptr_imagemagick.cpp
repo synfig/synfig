@@ -1,5 +1,5 @@
 /*! ========================================================================
-** Sinfg
+** Synfig
 ** ppm Target Module
 ** $Id: mptr_imagemagick.cpp,v 1.1.1.1 2005/01/04 01:23:11 darco Exp $
 **
@@ -33,23 +33,23 @@
 #include <algorithm>
 #include <functional>
 #include <ETL/stringf>
-#include <sinfg/general.h>
+#include <synfig/general.h>
 
 #endif
 
 /* === M A C R O S ========================================================= */
 
-using namespace sinfg;
+using namespace synfig;
 using namespace std;
 using namespace etl;
 
 /* === G L O B A L S ======================================================= */
 
-SINFG_IMPORTER_INIT(imagemagick_mptr);
-SINFG_IMPORTER_SET_NAME(imagemagick_mptr,"imagemagick");
-SINFG_IMPORTER_SET_EXT(imagemagick_mptr,"miff");
-SINFG_IMPORTER_SET_VERSION(imagemagick_mptr,"0.1");
-SINFG_IMPORTER_SET_CVS_ID(imagemagick_mptr,"$Id: mptr_imagemagick.cpp,v 1.1.1.1 2005/01/04 01:23:11 darco Exp $");
+SYNFIG_IMPORTER_INIT(imagemagick_mptr);
+SYNFIG_IMPORTER_SET_NAME(imagemagick_mptr,"imagemagick");
+SYNFIG_IMPORTER_SET_EXT(imagemagick_mptr,"miff");
+SYNFIG_IMPORTER_SET_VERSION(imagemagick_mptr,"0.1");
+SYNFIG_IMPORTER_SET_CVS_ID(imagemagick_mptr,"$Id: mptr_imagemagick.cpp,v 1.1.1.1 2005/01/04 01:23:11 darco Exp $");
 
 /* === M E T H O D S ======================================================= */
 
@@ -68,7 +68,7 @@ imagemagick_mptr::~imagemagick_mptr()
 }
 
 bool
-imagemagick_mptr::get_frame(sinfg::Surface &surface,Time time, sinfg::ProgressCallback *cb)
+imagemagick_mptr::get_frame(synfig::Surface &surface,Time time, synfig::ProgressCallback *cb)
 {
 //#define HAS_LIBPNG 1
 
@@ -81,7 +81,7 @@ imagemagick_mptr::get_frame(sinfg::Surface &surface,Time time, sinfg::ProgressCa
 	if(filename.empty())
 	{
 		if(cb)cb->error(_("No file to load"));
-		else sinfg::error(_("No file to load"));
+		else synfig::error(_("No file to load"));
 		return false;
 	}
 	string temp_file="/tmp/deleteme.png";
@@ -91,7 +91,7 @@ imagemagick_mptr::get_frame(sinfg::Surface &surface,Time time, sinfg::ProgressCa
 	else
 		command=strprintf("convert \"%s\" \"png32:%s\"\n",filename.c_str(),temp_file.c_str());
 	
-	sinfg::info("command=%s",command.c_str());
+	synfig::info("command=%s",command.c_str());
 	
 	if(system(command.c_str())!=0)
 		return false;
@@ -103,7 +103,7 @@ imagemagick_mptr::get_frame(sinfg::Surface &surface,Time time, sinfg::ProgressCa
 	if(!importer)
 	{
 		if(cb)cb->error(_("Unable to open ")+temp_file);
-		else sinfg::error(_("Unable to open ")+temp_file);
+		else synfig::error(_("Unable to open ")+temp_file);
 		return false;
 	}
 	
@@ -112,14 +112,14 @@ imagemagick_mptr::get_frame(sinfg::Surface &surface,Time time, sinfg::ProgressCa
 	if(!importer->get_frame(surface,0,cb))
 	{
 		if(cb)cb->error(_("Unable to get frame from ")+temp_file);
-		else sinfg::error(_("Unable to get frame from ")+temp_file);
+		else synfig::error(_("Unable to get frame from ")+temp_file);
 		return false;
 	}
 	
 	if(!surface)
 	{
 		if(cb)cb->error(_("Bad surface from ")+temp_file);
-		else sinfg::error(_("Bad surface from ")+temp_file);
+		else synfig::error(_("Bad surface from ")+temp_file);
 		return false;		
 	}
 
@@ -163,7 +163,7 @@ imagemagick_mptr::get_frame(sinfg::Surface &surface,Time time, sinfg::ProgressCa
 	if(filename.empty())
 	{
 		if(cb)cb->error(_("No file to load"));
-		else sinfg::error(_("No file to load"));
+		else synfig::error(_("No file to load"));
 		return false;
 	}
 
@@ -174,7 +174,7 @@ imagemagick_mptr::get_frame(sinfg::Surface &surface,Time time, sinfg::ProgressCa
 	if(!file)
 	{
 		if(cb)cb->error(_("Unable to open pipe to imagemagick"));
-		else sinfg::error(_("Unable to open pipe to imagemagick"));
+		else synfig::error(_("Unable to open pipe to imagemagick"));
 		return false;
 	}
 	int w,h;
@@ -186,7 +186,7 @@ imagemagick_mptr::get_frame(sinfg::Surface &surface,Time time, sinfg::ProgressCa
 	if(feof(file))
 	{
 		if(cb)cb->error(_("Reached end of stream without finding PPM header"));
-		else sinfg::error(_("Reached end of stream without finding PPM header"));
+		else synfig::error(_("Reached end of stream without finding PPM header"));
 		return false;
 	}
 
@@ -195,7 +195,7 @@ imagemagick_mptr::get_frame(sinfg::Surface &surface,Time time, sinfg::ProgressCa
 	if(cookie[0]!='P' || cookie[1]!='6')
 	{
 		if(cb)cb->error(string(_("stream not in PPM format"))+" \""+cookie[0]+cookie[1]+'"');
-		else sinfg::error(string(_("stream not in PPM format"))+" \""+cookie[0]+cookie[1]+'"');
+		else synfig::error(string(_("stream not in PPM format"))+" \""+cookie[0]+cookie[1]+'"');
 		return false;
 	}
 
@@ -207,7 +207,7 @@ imagemagick_mptr::get_frame(sinfg::Surface &surface,Time time, sinfg::ProgressCa
 	if(feof(file))
 	{
 		if(cb)cb->error(_("Premature end of file (after header)"));
-		else sinfg::error(_("Premature end of file (after header)"));
+		else synfig::error(_("Premature end of file (after header)"));
 		return false;
 	}
 
@@ -220,7 +220,7 @@ imagemagick_mptr::get_frame(sinfg::Surface &surface,Time time, sinfg::ProgressCa
 			if(feof(file))
 			{
 				if(cb)cb->error(_("Premature end of file"));
-				else sinfg::error(_("Premature end of file"));
+				else synfig::error(_("Premature end of file"));
 				return false;
 			}
 			float b=gamma().r_U8_to_F32((unsigned char)fgetc(file));

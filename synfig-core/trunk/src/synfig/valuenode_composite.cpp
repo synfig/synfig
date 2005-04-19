@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file valuenode_composite.cpp
 **	\brief Template File
 **
@@ -43,7 +43,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 
@@ -53,7 +53,7 @@ using namespace sinfg;
 
 /* === M E T H O D S ======================================================= */
 
-sinfg::ValueNode_Composite::ValueNode_Composite(const ValueBase &value):
+synfig::ValueNode_Composite::ValueNode_Composite(const ValueBase &value):
 	LinkableValueNode(value.get_type())
 {
 	switch(get_type())
@@ -109,7 +109,7 @@ ValueNode_Composite::create_new()const
 }
 
 ValueBase
-sinfg::ValueNode_Composite::operator()(Time t)const
+synfig::ValueNode_Composite::operator()(Time t)const
 {
 	switch(get_type())
 	{
@@ -155,7 +155,7 @@ sinfg::ValueNode_Composite::operator()(Time t)const
 			return ret;
 		}
 		default:
-			sinfg::error(string("ValueNode_Composite::operator():")+_("Bad type for composite"));
+			synfig::error(string("ValueNode_Composite::operator():")+_("Bad type for composite"));
 			assert(components[0]);
 			return (*components[0])(t);
 	}
@@ -175,7 +175,7 @@ ValueNode_Composite::link_count()const
 	case ValueBase::TYPE_BLINEPOINT:
 		return 6;
 	default:
-		sinfg::warning(string("ValueNode_Composite::component_count():")+_("Bad type for composite"));
+		synfig::warning(string("ValueNode_Composite::component_count():")+_("Bad type for composite"));
 		return 1;
 	}
 }

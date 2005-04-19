@@ -1,5 +1,5 @@
 /*! ========================================================================
-** Sinfg
+** Synfig
 ** Template Header File
 ** $Id: trgt_jpeg.h,v 1.1.1.1 2005/01/04 01:23:11 darco Exp $
 **
@@ -20,14 +20,14 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_TRGT_JPEG_H
-#define __SINFG_TRGT_JPEG_H
+#ifndef __SYNFIG_TRGT_JPEG_H
+#define __SYNFIG_TRGT_JPEG_H
 
 /* === H E A D E R S ======================================================= */
 
 #define NOMINMAX
-#include <sinfg/target_scanline.h>
-#include <sinfg/string.h>
+#include <synfig/target_scanline.h>
+#include <synfig/string.h>
 #include <cstdio>
 _ETL_BEGIN_CDECLS
 #include <jpeglib.h>
@@ -40,9 +40,9 @@ _ETL_END_CDECLS
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-class jpeg_trgt : public sinfg::Target_Scanline
+class jpeg_trgt : public synfig::Target_Scanline
 {
-	SINFG_TARGET_MODULE_EXT
+	SYNFIG_TARGET_MODULE_EXT
 private:
 	FILE *file;
 	int w,h,quality;
@@ -52,18 +52,18 @@ private:
 	
 	bool multi_image,ready;
 	int imagecount;
-	sinfg::String filename;
+	synfig::String filename;
 	unsigned char *buffer;
-	sinfg::Color *color_buffer;
+	synfig::Color *color_buffer;
 public:
 	jpeg_trgt(const char *filename);
 	virtual ~jpeg_trgt();
 
-	virtual bool set_rend_desc(sinfg::RendDesc *desc);
-	virtual bool start_frame(sinfg::ProgressCallback *cb);
+	virtual bool set_rend_desc(synfig::RendDesc *desc);
+	virtual bool start_frame(synfig::ProgressCallback *cb);
 	virtual void end_frame();
 
-	virtual sinfg::Color * start_scanline(int scanline);
+	virtual synfig::Color * start_scanline(int scanline);
 	virtual bool end_scanline();
 };
 

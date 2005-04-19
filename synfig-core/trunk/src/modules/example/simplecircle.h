@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file simplecircle.h
 **	\brief Template Header
 **
@@ -21,16 +21,16 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_SIMPLECIRCLE_H
-#define __SINFG_SIMPLECIRCLE_H
+#ifndef __SYNFIG_SIMPLECIRCLE_H
+#define __SYNFIG_SIMPLECIRCLE_H
 
 /* === H E A D E R S ======================================================= */
 
-#include <sinfg/layer_composite.h>
-#include <sinfg/color.h>
-#include <sinfg/vector.h>
-#include <sinfg/layer_composite.h>
-#include <sinfg/value.h>
+#include <synfig/layer_composite.h>
+#include <synfig/color.h>
+#include <synfig/vector.h>
+#include <synfig/layer_composite.h>
+#include <synfig/value.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -38,31 +38,31 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-class SimpleCircle : public sinfg::Layer_Composite
+class SimpleCircle : public synfig::Layer_Composite
 {
-	SINFG_LAYER_MODULE_EXT
+	SYNFIG_LAYER_MODULE_EXT
 	
 private:
 
-	sinfg::Color color;
+	synfig::Color color;
 
-	sinfg::Point center;
+	synfig::Point center;
 
-	sinfg::Real radius;
+	synfig::Real radius;
 
 public:
 	
 	SimpleCircle();
 	
-	virtual bool set_param(const sinfg::String & param, const sinfg::ValueBase &value);
+	virtual bool set_param(const synfig::String & param, const synfig::ValueBase &value);
 
-	virtual sinfg::ValueBase get_param(const sinfg::String & param)const;
+	virtual synfig::ValueBase get_param(const synfig::String & param)const;
 
-	virtual sinfg::Color get_color(sinfg::Context context, const sinfg::Point &pos)const;
+	virtual synfig::Color get_color(synfig::Context context, const synfig::Point &pos)const;
 	
-	//virtual bool accelerated_render(sinfg::Context context,sinfg::Surface *surface,int quality, const sinfg::RendDesc &renddesc, sinfg::ProgressCallback *cb)const;
+	//virtual bool accelerated_render(synfig::Context context,synfig::Surface *surface,int quality, const synfig::RendDesc &renddesc, synfig::ProgressCallback *cb)const;
 	
-	sinfg::Layer::Handle hit_check(sinfg::Context context, const sinfg::Point &point)const;	
+	synfig::Layer::Handle hit_check(synfig::Context context, const synfig::Point &point)const;	
 
 	virtual Vocab get_param_vocab()const;
 }; // END of class SimpleCircle

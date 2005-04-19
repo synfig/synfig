@@ -1,5 +1,5 @@
 /*! ========================================================================
-** Sinfg
+** Synfig
 ** ppm Target Module
 ** $Id: mptr_jpeg.cpp,v 1.1.1.1 2005/01/04 01:23:11 darco Exp $
 **
@@ -34,9 +34,9 @@
 #endif
 
 #include "mptr_jpeg.h"
-#include <sinfg/importer.h>
-#include <sinfg/time.h>
-#include <sinfg/general.h>
+#include <synfig/importer.h>
+#include <synfig/time.h>
+#include <synfig/general.h>
 
 
 #include <cstdio>
@@ -46,7 +46,7 @@
 
 /* === M A C R O S ========================================================= */
 
-using namespace sinfg;
+using namespace synfig;
 using namespace std;
 using namespace etl;
 
@@ -54,11 +54,11 @@ using namespace etl;
 
 /* === G L O B A L S ======================================================= */
 
-SINFG_IMPORTER_INIT(jpeg_mptr);
-SINFG_IMPORTER_SET_NAME(jpeg_mptr,"jpeg_mptr");
-SINFG_IMPORTER_SET_EXT(jpeg_mptr,"jpg");
-SINFG_IMPORTER_SET_VERSION(jpeg_mptr,"0.1");
-SINFG_IMPORTER_SET_CVS_ID(jpeg_mptr,"$Id: mptr_jpeg.cpp,v 1.1.1.1 2005/01/04 01:23:11 darco Exp $");
+SYNFIG_IMPORTER_INIT(jpeg_mptr);
+SYNFIG_IMPORTER_SET_NAME(jpeg_mptr,"jpeg_mptr");
+SYNFIG_IMPORTER_SET_EXT(jpeg_mptr,"jpg");
+SYNFIG_IMPORTER_SET_VERSION(jpeg_mptr,"0.1");
+SYNFIG_IMPORTER_SET_CVS_ID(jpeg_mptr,"$Id: mptr_jpeg.cpp,v 1.1.1.1 2005/01/04 01:23:11 darco Exp $");
 
 /* === M E T H O D S ======================================================= */
 
@@ -157,7 +157,7 @@ jpeg_mptr::jpeg_mptr(const char *file_name)
 
 	if(!buffer)
 	{
-		sinfg::error("jpeg_mptr: error: alloc of \"buffer\" failed (bug?)");
+		synfig::error("jpeg_mptr: error: alloc of \"buffer\" failed (bug?)");
 		throw String("alloc of \"buffer\" failed (bug?)");
 	}
 		
@@ -214,7 +214,7 @@ jpeg_mptr::jpeg_mptr(const char *file_name)
 		break;
 
 	default:
-		sinfg::error("jpeg_mptr: error: Unsupported color type");
+		synfig::error("jpeg_mptr: error: Unsupported color type");
         //! \todo THROW SOMETHING
 		throw String("error on importer construction, *WRITEME*6");
 		return;
@@ -245,7 +245,7 @@ jpeg_mptr::~jpeg_mptr()
 }
 
 bool
-jpeg_mptr::get_frame(sinfg::Surface &surface,Time, sinfg::ProgressCallback *cb)
+jpeg_mptr::get_frame(synfig::Surface &surface,Time, synfig::ProgressCallback *cb)
 {
 	surface.mirror(surface_buffer);
 	return true;

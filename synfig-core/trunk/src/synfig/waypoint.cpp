@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file waypoint.cpp
 **	\brief Template File
 **
@@ -37,7 +37,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 
@@ -147,7 +147,7 @@ Waypoint::get_value()const { return (*value_node)(0); }
 ValueBase
 Waypoint::get_value(const Time &t)const { return (*value_node)(t); }
 
-sinfg::GUID
+synfig::GUID
 Waypoint::get_guid()const
 {
 	return GUID::hasher(get_uid());

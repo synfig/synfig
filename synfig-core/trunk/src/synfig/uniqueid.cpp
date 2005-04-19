@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file uniqueid.cpp
 **	\brief Template File
 **
@@ -35,7 +35,7 @@
 /* === U S I N G =========================================================== */
 
 using namespace std;
-using namespace sinfg;
+using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
@@ -44,7 +44,7 @@ static int uniqueid_pool_(0);
 /* === M E T H O D S ======================================================= */
 
 int
-sinfg::UniqueID::next_id()
+synfig::UniqueID::next_id()
 {
 	return ++uniqueid_pool_;
 }

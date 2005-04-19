@@ -1,8 +1,8 @@
-/* === S I N F G =========================================================== */
-/*!	\file sinfg.h
-**	\brief Primary Header for Sinfg
+/* === S Y N F I G ========================================================= */
+/*!	\file synfig.h
+**	\brief Primary Header for Synfig
 **
-**	$Id: sinfg.h,v 1.1.1.1 2005/01/04 01:23:14 darco Exp $
+**	$Id: synfig.h,v 1.1.1.1 2005/01/04 01:23:14 darco Exp $
 **
 **	\legal
 **	Copyright (c) 2002 Robert B. Quattlebaum Jr.
@@ -21,73 +21,73 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG__
-#define __SINFG__
+#ifndef __SYNFIG__
+#define __SYNFIG__
 
 #ifndef __cplusplus
-#error Sorry, Sinfg only supports C++ at this time. See README for details.
+#error Sorry, Synfig only supports C++ at this time. See README for details.
 #endif
 
 #warning The use of this header is deprecated. Please use the individual header files.
 
 /* === M A C R O S ========================================================= */
 
-/*! \def SINFG_LEAN
+/*! \def SYNFIG_LEAN
 **	\brief Define this to remove unused features, speeding up compile time.
 **
-**	Define SINFG_LEAN if your plug-in
-**	or program doesn't use the sinfg::Angle class
+**	Define SYNFIG_LEAN if your plug-in
+**	or program doesn't use the synfig::Angle class
 **	or the rendering subsystem. This can speed up
 **	compiles. You may also wish to individualy
-**	use the macros SINFG_NO_ANGLE and
-**	SINFG_NO_RENDER.
-**	\see SINFG_NO_ANGLE, SINFG_NO_RENDER
+**	use the macros SYNFIG_NO_ANGLE and
+**	SYNFIG_NO_RENDER.
+**	\see SYNFIG_NO_ANGLE, SYNFIG_NO_RENDER
 */
-#ifdef SINFG_LEAN
-# ifndef SINFG_NO_ANGLE
-#  define SINFG_NO_ANGLE
+#ifdef SYNFIG_LEAN
+# ifndef SYNFIG_NO_ANGLE
+#  define SYNFIG_NO_ANGLE
 # endif
-# ifndef SINFG_NO_RENDER
-#  define SINFG_NO_RENDER
+# ifndef SYNFIG_NO_RENDER
+#  define SYNFIG_NO_RENDER
 # endif
 #endif
 
-/*!	\def SINFG_LAYER
-**	The SINFG_LAYER macro is useful for when you
+/*!	\def SYNFIG_LAYER
+**	The SYNFIG_LAYER macro is useful for when you
 **	are compiling layers, and can help to improve
 **	build time.
 */
-#ifdef SINFG_LAYER
-# ifndef SINFG_NO_RENDER
-#  define SINFG_NO_RENDER
+#ifdef SYNFIG_LAYER
+# ifndef SYNFIG_NO_RENDER
+#  define SYNFIG_NO_RENDER
 # endif
-# define SINFG_NO_LOADSAVE
+# define SYNFIG_NO_LOADSAVE
 #endif
 
-/*!	\def SINFG_TARGET
-**	The SINFG_TARGET macro is useful for when you
+/*!	\def SYNFIG_TARGET
+**	The SYNFIG_TARGET macro is useful for when you
 **	are compiling render targets, and can help to
 **	improve build time.
 */
-#ifdef SINFG_TARGET
-# ifdef SINFG_NO_RENDER
-#  error You defined SINFG_TARGET, but also SINFG_NO_RENDER. This doesnt make sense.
+#ifdef SYNFIG_TARGET
+# ifdef SYNFIG_NO_RENDER
+#  error You defined SYNFIG_TARGET, but also SYNFIG_NO_RENDER. This doesnt make sense.
 # endif
-# ifndef SINFG_NO_ANGLE
-#  define SINFG_NO_ANGLE
+# ifndef SYNFIG_NO_ANGLE
+#  define SYNFIG_NO_ANGLE
 # endif
-# define SINFG_NO_LOADSAVE
+# define SYNFIG_NO_LOADSAVE
 #endif
 
-/*!	\def SINFG_MODULE
+/*!	\def SYNFIG_MODULE
 **	\todo Writeme
 */
-#ifdef SINFG_MODULE
-# define SINFG_NO_LOADSAVE
+#ifdef SYNFIG_MODULE
+# define SYNFIG_NO_LOADSAVE
 #endif
 
-/*! \namespace sinfg
-**	\brief Where every function and class of the sinfg library can be found
+/*! \namespace synfig
+**	\brief Where every function and class of the synfig library can be found
 **	\todo Writeme
 */
 
@@ -103,11 +103,11 @@
 #include "types.h"
 #include "segment.h"
 
-#ifndef SINFG_NO_RENDER
+#ifndef SYNFIG_NO_RENDER
 # include "render.h"
 #endif
 
-#ifndef SINFG_LAYER
+#ifndef SYNFIG_LAYER
 #include "target.h"
 #endif
 
@@ -120,7 +120,7 @@
 #include "valuenode_dynamiclist.h"
 #include "valuenode_reference.h"
 
-#ifndef SINFG_NO_LOADSAVE
+#ifndef SYNFIG_NO_LOADSAVE
 # include "savecanvas.h"
 # include "loadcanvas.h"
 #endif

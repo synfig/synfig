@@ -1,5 +1,5 @@
 /*! ========================================================================
-** Sinfg
+** Synfig
 ** ppm Target Module
 ** $Id: mptr_mplayer.cpp,v 1.1.1.1 2005/01/04 01:23:14 darco Exp $
 **
@@ -27,7 +27,7 @@
 #	include <config.h>
 #endif
 
-#include <sinfg/sinfg.h>
+#include <synfig/synfig.h>
 #include <ETL/stringf>
 #include "mptr_mplayer.h"
 #include <stdio.h>
@@ -39,7 +39,7 @@
 
 /* === M A C R O S ========================================================= */
 
-using namespace sinfg;
+using namespace synfig;
 using namespace std;
 using namespace etl;
 
@@ -66,11 +66,11 @@ mplayer_mptr::~mplayer_mptr()
 }
 
 bool
-mplayer_mptr::GetFrame(Time time, sinfg::Surface &surface, sinfg::ProgressCallback *)
+mplayer_mptr::GetFrame(Time time, synfig::Surface &surface, synfig::ProgressCallback *)
 {
 	int ret;
 	ret=system(
-		strprintf("/usr/local/bin/mencoder \"%s\" -ovc rawrgb -ss %f -endpos 0 -nosound -o /tmp/tmp.sinfg.rgbdata | grep \"VIDEO\" > /tmp/tmp.sinfg.size",
+		strprintf("/usr/local/bin/mencoder \"%s\" -ovc rawrgb -ss %f -endpos 0 -nosound -o /tmp/tmp.synfig.rgbdata | grep \"VIDEO\" > /tmp/tmp.synfig.size",
 			filename.c_str(),
 			time
 		).c_str()
@@ -82,16 +82,16 @@ mplayer_mptr::GetFrame(Time time, sinfg::Surface &surface, sinfg::ProgressCallba
 		return false;
 	}
 */
-	FILE *sizefile=fopen("/tmp/tmp.sinfg.size","rt");
-	FILE *rgbfile=fopen("/tmp/tmp.sinfg.rgbdata","rb");
+	FILE *sizefile=fopen("/tmp/tmp.synfig.size","rt");
+	FILE *rgbfile=fopen("/tmp/tmp.synfig.rgbdata","rb");
 	if(!rgbfile)
 	{
-		cerr<<"unable to open /tmp/tmp.sinfg.rgbdata"<<endl;
+		cerr<<"unable to open /tmp/tmp.synfig.rgbdata"<<endl;
 		return false;
 	}
 	if(!sizefile)
 	{
-		cerr<<"unable to open /tmp/tmp.sinfg.size"<<endl;
+		cerr<<"unable to open /tmp/tmp.synfig.size"<<endl;
 		return false;
 	}
 	

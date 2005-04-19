@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file bline.cpp
 **	\brief Template
 **
@@ -31,21 +31,21 @@
 #endif
 
 #include "outline.h"
-#include <sinfg/string.h>
-#include <sinfg/time.h>
-#include <sinfg/context.h>
-#include <sinfg/paramdesc.h>
-#include <sinfg/renddesc.h>
-#include <sinfg/surface.h>
-#include <sinfg/value.h>
-#include <sinfg/valuenode.h>
+#include <synfig/string.h>
+#include <synfig/time.h>
+#include <synfig/context.h>
+#include <synfig/paramdesc.h>
+#include <synfig/renddesc.h>
+#include <synfig/surface.h>
+#include <synfig/value.h>
+#include <synfig/valuenode.h>
 
 #include <ETL/calculus>
 #include <ETL/bezier>
 #include <ETL/hermite>
 #include <vector>
 
-#include <sinfg/valuenode_bline.h>
+#include <synfig/valuenode_bline.h>
 
 #endif
 
@@ -57,18 +57,18 @@ using namespace etl;
 #define ROUND_END_FACTOR	(4)
 #define CUSP_THRESHOLD		(0.40)
 #define SPIKE_AMOUNT		(4)
-#define NO_LOOP_COOKIE		sinfg::Vector(84951305,7836658)
+#define NO_LOOP_COOKIE		synfig::Vector(84951305,7836658)
 #define EPSILON				(0.000000001)
 #define CUSP_TANGENT_ADJUST	(0.025)
 
 /* === G L O B A L S ======================================================= */
 
-SINFG_LAYER_INIT(Outline);
-SINFG_LAYER_SET_NAME(Outline,"outline");
-SINFG_LAYER_SET_LOCAL_NAME(Outline,_("Outline"));
-SINFG_LAYER_SET_CATEGORY(Outline,_("Geometry"));
-SINFG_LAYER_SET_VERSION(Outline,"0.2");
-SINFG_LAYER_SET_CVS_ID(Outline,"$Id: outline.cpp,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $");
+SYNFIG_LAYER_INIT(Outline);
+SYNFIG_LAYER_SET_NAME(Outline,"outline");
+SYNFIG_LAYER_SET_LOCAL_NAME(Outline,_("Outline"));
+SYNFIG_LAYER_SET_CATEGORY(Outline,_("Geometry"));
+SYNFIG_LAYER_SET_VERSION(Outline,"0.2");
+SYNFIG_LAYER_SET_CVS_ID(Outline,"$Id: outline.cpp,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $");
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -174,7 +174,7 @@ Outline::sync()
 #if 1
 	
 	const bool loop(bline.get_loop());
-	const vector<sinfg::BLinePoint> bline_(bline.get_list().begin(),bline.get_list().end());
+	const vector<synfig::BLinePoint> bline_(bline.get_list().begin(),bline.get_list().end());
 #define bline bline_
 	
 	vector<BLinePoint>::const_iterator
@@ -388,7 +388,7 @@ Outline::sync()
 
 	if(segment_list.empty())
 	{
-		sinfg::warning("Outline: segment_list is empty, layer disabled");
+		synfig::warning("Outline: segment_list is empty, layer disabled");
 		clear();
 		return;
 	}
@@ -618,9 +618,9 @@ Outline::sync()
 		for(iter=vector_list.begin();iter!=vector_list.end();++iter)
 			if(!iter->is_valid())
 			{
-				sinfg::error("Outline::sync(): Bad point in vector_list!");
+				synfig::error("Outline::sync(): Bad point in vector_list!");
 			}
-		//sinfg::info("BLEHH__________--- x:%f, y:%f",vector_list.front()[0],vector_list.front()[1]);
+		//synfig::info("BLEHH__________--- x:%f, y:%f",vector_list.front()[0],vector_list.front()[1]);
 	}
 #endif
 	
@@ -628,7 +628,7 @@ Outline::sync()
 
 
 #endif
-	} catch (...) { sinfg::error("Outline::sync(): Exception thrown"); throw; }
+	} catch (...) { synfig::error("Outline::sync(): Exception thrown"); throw; }
 }
 
 #undef bline
@@ -642,10 +642,10 @@ Outline::set_param(const String & param, const ValueBase &value)
 		{
 			connect_dynamic_param("bline",dynamic_param_list().find("segment_list")->second);
 			disconnect_dynamic_param("segment_list");
-			sinfg::warning("Outline::set_param(): Updated valuenode connection to use the new \"bline\" parameter.");
+			synfig::warning("Outline::set_param(): Updated valuenode connection to use the new \"bline\" parameter.");
 		}
 		else
-			sinfg::warning("Outline::set_param(): The parameter \"segment_list\" is deprecated. Use \"bline\" instead.");
+			synfig::warning("Outline::set_param(): The parameter \"segment_list\" is deprecated. Use \"bline\" instead.");
 	}
 
 	if(	(param=="segment_list" || param=="bline") && value.get_type()==ValueBase::TYPE_LIST)

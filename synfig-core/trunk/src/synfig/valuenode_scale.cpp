@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file valuenode_scale.cpp
 **	\brief Template File
 **
@@ -44,7 +44,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 
@@ -54,7 +54,7 @@ using namespace sinfg;
 
 /* === M E T H O D S ======================================================= */
 
-ValueNode_Scale::ValueNode_Scale():LinkableValueNode(sinfg::ValueBase::TYPE_NIL)
+ValueNode_Scale::ValueNode_Scale():LinkableValueNode(synfig::ValueBase::TYPE_NIL)
 {
 	set_scalar(1.0);
 }
@@ -78,7 +78,7 @@ ValueNode_Scale::create(const ValueBase& x)
 		break;
 	default:
 		assert(0);
-		throw runtime_error("sinfg::ValueNode_Scale:Bad type "+ValueBase::type_name(x.get_type()));			
+		throw runtime_error("synfig::ValueNode_Scale:Bad type "+ValueBase::type_name(x.get_type()));			
 	}
 	assert(value_node);
 	assert(value_node->get_type()==x.get_type());
@@ -92,7 +92,7 @@ ValueNode_Scale::create_new()const
 	return new ValueNode_Scale();
 }
 
-sinfg::ValueNode_Scale::~ValueNode_Scale()
+synfig::ValueNode_Scale::~ValueNode_Scale()
 {
 	unlink_all();
 }
@@ -150,8 +150,8 @@ ValueNode_Scale::get_value_node()const
 }
 
 
-sinfg::ValueBase
-sinfg::ValueNode_Scale::operator()(Time t)const
+synfig::ValueBase
+synfig::ValueNode_Scale::operator()(Time t)const
 {
 	if(!value_node || !scalar)
 		throw runtime_error(strprintf("ValueNode_Scale: %s",_("One or both of my parameters aren't set!")));

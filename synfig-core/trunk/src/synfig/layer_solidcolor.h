@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file layer_solidcolor.h
 **	\brief Template Header
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_LAYER_SOLIDCOLOR_H
-#define __SINFG_LAYER_SOLIDCOLOR_H
+#ifndef __SYNFIG_LAYER_SOLIDCOLOR_H
+#define __SYNFIG_LAYER_SOLIDCOLOR_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -35,11 +35,11 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace sinfg {
+namespace synfig {
 
 class Layer_SolidColor : public Layer_Composite, public Layer_NoDeform
 {
-	SINFG_LAYER_MODULE_EXT
+	SYNFIG_LAYER_MODULE_EXT
 	
 private:
 
@@ -49,7 +49,7 @@ public:
 	
 	Layer_SolidColor();
 	
-	virtual bool set_param(const String & param, const sinfg::ValueBase &value);
+	virtual bool set_param(const String & param, const synfig::ValueBase &value);
 
 	virtual ValueBase get_param(const String & param)const;
 
@@ -59,11 +59,11 @@ public:
 	
 	virtual Vocab get_param_vocab()const;
 
-	virtual sinfg::Layer::Handle hit_check(sinfg::Context context, const sinfg::Point &point)const;
+	virtual synfig::Layer::Handle hit_check(synfig::Context context, const synfig::Point &point)const;
 
 }; // END of class Layer_SolidColor
 
-}; // END of namespace sinfg
+}; // END of namespace synfig
 
 /* === E N D =============================================================== */
 

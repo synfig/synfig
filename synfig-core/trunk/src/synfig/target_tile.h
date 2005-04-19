@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file target_tile.h
 **	\brief Template Header
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_TARGET_TILE_H
-#define __SINFG_TARGET_TILE_H
+#ifndef __SYNFIG_TARGET_TILE_H
+#define __SYNFIG_TARGET_TILE_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -34,7 +34,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace sinfg {
+namespace synfig {
 
 /*!	\class Target_Tile
 **	\brief Render-target
@@ -70,7 +70,7 @@ public:
 	virtual int next_frame(Time& time);
 
 	//! Adds the tile at \a x , \a y contained in \a surface 
-	virtual bool add_tile(const sinfg::Surface &surface, int x, int y)=0;
+	virtual bool add_tile(const synfig::Surface &surface, int x, int y)=0;
 
 	virtual int total_tiles()const
 	{
@@ -113,7 +113,7 @@ private:
 	
 }; // END of class Target_Tile
 
-}; // END of namespace sinfg
+}; // END of namespace synfig
 
 /* === E N D =============================================================== */
 

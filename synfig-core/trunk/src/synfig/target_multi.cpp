@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file target_multi.cpp
 **	\brief Template File
 **
@@ -40,7 +40,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 
@@ -84,7 +84,7 @@ Target_Multi::init()
 }
 
 bool
-Target_Multi::add_frame(const sinfg::Surface *surface)
+Target_Multi::add_frame(const synfig::Surface *surface)
 {
 	return a->add_frame(surface) && b->add_frame(surface);
 }

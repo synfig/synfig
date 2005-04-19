@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file valuenode_sine.h
 **	\brief Template Header
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_VALUENODE_SINE_H
-#define __SINFG_VALUENODE_SINE_H
+#ifndef __SYNFIG_VALUENODE_SINE_H
+#define __SYNFIG_VALUENODE_SINE_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -32,7 +32,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace sinfg {
+namespace synfig {
 
 class ValueNode_Sine : public LinkableValueNode
 {
@@ -67,14 +67,14 @@ protected:
 	virtual bool set_link_vfunc(int i,ValueNode::Handle x);
 
 public:
-	using sinfg::LinkableValueNode::get_link_vfunc;
+	using synfig::LinkableValueNode::get_link_vfunc;
 
-	using sinfg::LinkableValueNode::set_link_vfunc;
+	using synfig::LinkableValueNode::set_link_vfunc;
 	static bool check_type(ValueBase::Type type);
 	static ValueNode_Sine* create(const ValueBase &x);
 }; // END of class ValueNode_Sine
 
-}; // END of namespace sinfg
+}; // END of namespace synfig
 
 /* === E N D =============================================================== */
 

@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file distance.h
 **	\brief Template Header
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_DISTANCE_H
-#define __SINFG_DISTANCE_H
+#ifndef __SYNFIG_DISTANCE_H
+#define __SYNFIG_DISTANCE_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -35,7 +35,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace sinfg {
+namespace synfig {
 
 class RendDesc;
 
@@ -70,15 +70,15 @@ public:
 
 	Distance(){ }
 	Distance(const value_type& value, System system):value_(value),system_(system) { }
-	explicit Distance(const sinfg::String& string);
+	explicit Distance(const synfig::String& string);
 	
 	operator Real()const { return value_; }
 
 	Distance& operator=(const Real& rhs) { value_=rhs; return *this; }
 
-	Distance& operator=(const sinfg::String& rhs);
+	Distance& operator=(const synfig::String& rhs);
 
-	sinfg::String get_string(int digits=4)const;
+	synfig::String get_string(int digits=4)const;
 	
 	const System& get_system()const { return system_; }
 
@@ -93,9 +93,9 @@ public:
 	Real units(const RendDesc& rend_desc)const;
 	
 	static Real meters_to_system(Real x, System target_system);
-	static System ident_system(const sinfg::String& str);
-	static sinfg::String system_name(System system);
-	static sinfg::String system_local_name(System system);
+	static System ident_system(const synfig::String& str);
+	static synfig::String system_name(System system);
+	static synfig::String system_local_name(System system);
 
 	const Distance& operator+=(const Distance &rhs) { value_+=meters_to_system(rhs.meters(),system_); return *this; }
 	const Distance& operator-=(const Distance &rhs) { value_-=meters_to_system(rhs.meters(),system_); return *this; }
@@ -120,7 +120,7 @@ public:
 */
 }; // END of class Distance
 	
-}; // END of namespace sinfg
+}; // END of namespace synfig
 
 /* === E N D =============================================================== */
 

@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file halftone3.cpp
 **	\brief blehh
 **
@@ -31,31 +31,31 @@
 #include "halftone3.h"
 #include "halftone.h"
 
-#include <sinfg/string.h>
-#include <sinfg/time.h>
-#include <sinfg/context.h>
-#include <sinfg/paramdesc.h>
-#include <sinfg/renddesc.h>
-#include <sinfg/surface.h>
-#include <sinfg/value.h>
-#include <sinfg/valuenode.h>
+#include <synfig/string.h>
+#include <synfig/time.h>
+#include <synfig/context.h>
+#include <synfig/paramdesc.h>
+#include <synfig/renddesc.h>
+#include <synfig/surface.h>
+#include <synfig/value.h>
+#include <synfig/valuenode.h>
 
 #endif
 
 /* === M A C R O S ========================================================= */
 
-using namespace sinfg;
+using namespace synfig;
 using namespace std;
 using namespace etl;
 
 /* === G L O B A L S ======================================================= */
 
-SINFG_LAYER_INIT(Halftone3);
-SINFG_LAYER_SET_NAME(Halftone3,"halftone3");
-SINFG_LAYER_SET_LOCAL_NAME(Halftone3,_("Halftone3"));
-SINFG_LAYER_SET_CATEGORY(Halftone3,_("Filters"));
-SINFG_LAYER_SET_VERSION(Halftone3,"0.0");
-SINFG_LAYER_SET_CVS_ID(Halftone3,"$Id: halftone3.cpp,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $");
+SYNFIG_LAYER_INIT(Halftone3);
+SYNFIG_LAYER_SET_NAME(Halftone3,"halftone3");
+SYNFIG_LAYER_SET_LOCAL_NAME(Halftone3,_("Halftone3"));
+SYNFIG_LAYER_SET_CATEGORY(Halftone3,_("Filters"));
+SYNFIG_LAYER_SET_VERSION(Halftone3,"0.0");
+SYNFIG_LAYER_SET_CVS_ID(Halftone3,"$Id: halftone3.cpp,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $");
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -66,14 +66,14 @@ SINFG_LAYER_SET_CVS_ID(Halftone3,"$Id: halftone3.cpp,v 1.1.1.1 2005/01/04 01:23:
 
 Halftone3::Halftone3()
 {
-	size=(sinfg::Vector(0.25,0.25));
+	size=(synfig::Vector(0.25,0.25));
 	type=TYPE_SYMMETRIC;
 
 	for(int i=0;i<3;i++)
 	{
 		tone[i].size=size;
 		tone[i].type=type;
-		tone[i].offset=(sinfg::Point(0,0));
+		tone[i].offset=(synfig::Point(0,0));
 		tone[i].angle=Angle::deg(30.0)*(float)i;
 	}
 
@@ -228,13 +228,13 @@ Halftone3::color_func(const Point &point, float supersample,const Color& in_colo
 }
 
 inline float
-Halftone3::calc_supersample(const sinfg::Point &x, float pw,float ph)const
+Halftone3::calc_supersample(const synfig::Point &x, float pw,float ph)const
 {
 	return abs(pw/(tone[0].size).mag());
 }
 
-sinfg::Layer::Handle
-Halftone3::hit_check(sinfg::Context context, const sinfg::Point &point)const
+synfig::Layer::Handle
+Halftone3::hit_check(synfig::Context context, const synfig::Point &point)const
 {
 	return const_cast<Halftone3*>(this);
 }

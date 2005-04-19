@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file colorcorrect.h
 **	\brief Template Header
 **
@@ -21,15 +21,15 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_LAYER_COLORCORRECT_H
-#define __SINFG_LAYER_COLORCORRECT_H
+#ifndef __SYNFIG_LAYER_COLORCORRECT_H
+#define __SYNFIG_LAYER_COLORCORRECT_H
 
 /* === H E A D E R S ======================================================= */
 
-#include <sinfg/layer.h>
-#include <sinfg/angle.h>
-#include <sinfg/gamma.h>
-#include <sinfg/rect.h>
+#include <synfig/layer.h>
+#include <synfig/angle.h>
+#include <synfig/gamma.h>
+#include <synfig/rect.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -37,11 +37,11 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace sinfg {
+namespace synfig {
 
 class Layer_ColorCorrect : public Layer
 {
-	SINFG_LAYER_MODULE_EXT
+	SYNFIG_LAYER_MODULE_EXT
 	
 private:
 
@@ -58,7 +58,7 @@ public:
 	
 	Layer_ColorCorrect();
 		
-	virtual bool set_param(const String & param, const sinfg::ValueBase &value);
+	virtual bool set_param(const String & param, const synfig::ValueBase &value);
 
 	virtual ValueBase get_param(const String & param)const;
 
@@ -71,7 +71,7 @@ public:
 	virtual Vocab get_param_vocab()const;
 }; // END of class Layer_ColorCorrect
 
-}; // END of namespace sinfg
+}; // END of namespace synfig
 
 /* === E N D =============================================================== */
 

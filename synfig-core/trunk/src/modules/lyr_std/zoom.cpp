@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file zoom.cpp
 **	\brief writeme
 **
@@ -29,15 +29,15 @@
 #endif
 
 #include "zoom.h"
-#include <sinfg/string.h>
-#include <sinfg/time.h>
-#include <sinfg/context.h>
-#include <sinfg/paramdesc.h>
-#include <sinfg/renddesc.h>
-#include <sinfg/surface.h>
-#include <sinfg/value.h>
-#include <sinfg/valuenode.h>
-#include <sinfg/transform.h>
+#include <synfig/string.h>
+#include <synfig/time.h>
+#include <synfig/context.h>
+#include <synfig/paramdesc.h>
+#include <synfig/renddesc.h>
+#include <synfig/surface.h>
+#include <synfig/value.h>
+#include <synfig/valuenode.h>
+#include <synfig/transform.h>
 
 #endif
 
@@ -45,12 +45,12 @@
 
 /* === G L O B A L S ======================================================= */
 
-SINFG_LAYER_INIT(Zoom);
-SINFG_LAYER_SET_NAME(Zoom,"zoom");
-SINFG_LAYER_SET_LOCAL_NAME(Zoom,_("Zoom"));
-SINFG_LAYER_SET_CATEGORY(Zoom,_("Transform"));
-SINFG_LAYER_SET_VERSION(Zoom,"0.1");
-SINFG_LAYER_SET_CVS_ID(Zoom,"$Id: zoom.cpp,v 1.2 2005/01/24 03:08:17 darco Exp $");
+SYNFIG_LAYER_INIT(Zoom);
+SYNFIG_LAYER_SET_NAME(Zoom,"zoom");
+SYNFIG_LAYER_SET_LOCAL_NAME(Zoom,_("Zoom"));
+SYNFIG_LAYER_SET_CATEGORY(Zoom,_("Transform"));
+SYNFIG_LAYER_SET_VERSION(Zoom,"0.1");
+SYNFIG_LAYER_SET_CVS_ID(Zoom,"$Id: zoom.cpp,v 1.2 2005/01/24 03:08:17 darco Exp $");
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -104,8 +104,8 @@ Zoom::get_param_vocab()const
 	return ret;
 }
 
-sinfg::Layer::Handle
-Zoom::hit_check(sinfg::Context context, const sinfg::Point &pos)const
+synfig::Layer::Handle
+Zoom::hit_check(synfig::Context context, const synfig::Point &pos)const
 {
 	return context.hit_check((pos-center)/exp(amount)+center);
 }
@@ -122,12 +122,12 @@ class Zoom_Trans : public Transform
 public:
 	Zoom_Trans(const Zoom* x):Transform(x->get_guid()),layer(x) { }
 	
-	sinfg::Vector perform(const sinfg::Vector& x)const
+	synfig::Vector perform(const synfig::Vector& x)const
 	{
 		return (x-layer->center)*exp(layer->amount)+layer->center;
 	}
 	
-	sinfg::Vector unperform(const sinfg::Vector& x)const
+	synfig::Vector unperform(const synfig::Vector& x)const
 	{
 		return (x-layer->center)/exp(layer->amount)+layer->center;
 	}
@@ -154,8 +154,8 @@ Zoom::accelerated_render(Context context,Surface *surface,int quality, const Ren
 	return context.accelerated_render(surface,quality,desc,cb);
 }
 
-sinfg::Rect
-Zoom::get_full_bounding_rect(sinfg::Context context)const
+synfig::Rect
+Zoom::get_full_bounding_rect(synfig::Context context)const
 {
 	return context.get_full_bounding_rect();
 }

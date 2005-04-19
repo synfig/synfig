@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file keyframe.h
 **	\brief Template Header
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_KEYFRAME_H
-#define __SINFG_KEYFRAME_H
+#ifndef __SYNFIG_KEYFRAME_H
+#define __SYNFIG_KEYFRAME_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -39,7 +39,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace sinfg {
+namespace synfig {
 
 //! \writeme
 class Keyframe :  public UniqueID
@@ -120,7 +120,7 @@ public:
 
 //typedef std::list<Keyframe> KeyframeList;
 
-}; // END of namespace sinfg
+}; // END of namespace synfig
 
 /* === E N D =============================================================== */
 

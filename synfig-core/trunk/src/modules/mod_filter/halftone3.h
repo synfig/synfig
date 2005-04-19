@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file halftone3.h
 **	\brief Template Header
 **
@@ -21,16 +21,16 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_HALFTONE3_H
-#define __SINFG_HALFTONE3_H
+#ifndef __SYNFIG_HALFTONE3_H
+#define __SYNFIG_HALFTONE3_H
 
 /* === H E A D E R S ======================================================= */
 
-#include <sinfg/vector.h>
-#include <sinfg/valuenode.h>
-#include <sinfg/layer_composite.h>
-#include <sinfg/time.h>
-#include <sinfg/angle.h>
+#include <synfig/vector.h>
+#include <synfig/valuenode.h>
+#include <synfig/layer_composite.h>
+#include <synfig/time.h>
+#include <synfig/angle.h>
 #include "halftone.h"
 
 /* === M A C R O S ========================================================= */
@@ -39,35 +39,35 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-class Halftone3 : public sinfg::Layer_Composite
+class Halftone3 : public synfig::Layer_Composite
 {
-	SINFG_LAYER_MODULE_EXT
+	SYNFIG_LAYER_MODULE_EXT
 
 private:
 
-	sinfg::Vector size;
+	synfig::Vector size;
 	int type;
 	Halftone tone[3];
-	sinfg::Color	color[3];
+	synfig::Color	color[3];
 	float inverse_matrix[3][3];
 	bool subtractive;
 
-	sinfg::Color color_func(const sinfg::Point &x, float supersample,const sinfg::Color &under_color)const;
+	synfig::Color color_func(const synfig::Point &x, float supersample,const synfig::Color &under_color)const;
 
-	float calc_supersample(const sinfg::Point &x, float pw,float ph)const;
+	float calc_supersample(const synfig::Point &x, float pw,float ph)const;
 
-	//float halftone_func(sinfg::Point x)const;
+	//float halftone_func(synfig::Point x)const;
 	
 	void sync();
 
 public:
 	Halftone3();
 	
-	virtual bool set_param(const sinfg::String &param, const sinfg::ValueBase &value);
-	virtual sinfg::ValueBase get_param(const sinfg::String &param)const;
-	virtual sinfg::Color get_color(sinfg::Context context, const sinfg::Point &pos)const;
-	virtual bool accelerated_render(sinfg::Context context,sinfg::Surface *surface,int quality, const sinfg::RendDesc &renddesc, sinfg::ProgressCallback *cb)const;
-	sinfg::Layer::Handle hit_check(sinfg::Context context, const sinfg::Point &point)const;	
+	virtual bool set_param(const synfig::String &param, const synfig::ValueBase &value);
+	virtual synfig::ValueBase get_param(const synfig::String &param)const;
+	virtual synfig::Color get_color(synfig::Context context, const synfig::Point &pos)const;
+	virtual bool accelerated_render(synfig::Context context,synfig::Surface *surface,int quality, const synfig::RendDesc &renddesc, synfig::ProgressCallback *cb)const;
+	synfig::Layer::Handle hit_check(synfig::Context context, const synfig::Point &point)const;	
 
 	virtual Vocab get_param_vocab()const;
 };

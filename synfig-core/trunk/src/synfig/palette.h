@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file Palette.h
 **	\brief Template Header
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_PALETTE_H
-#define __SINFG_PALETTE_H
+#ifndef __SYNFIG_PALETTE_H
+#define __SYNFIG_PALETTE_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -36,7 +36,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace sinfg {
+namespace synfig {
 
 class Surface;
 	
@@ -81,12 +81,12 @@ public:
 
 	static Palette grayscale(int steps=16);
 
-	void save_to_file(const sinfg::String& filename)const;
+	void save_to_file(const synfig::String& filename)const;
 
-	static Palette load_from_file(const sinfg::String& filename);
+	static Palette load_from_file(const synfig::String& filename);
 }; // END of class Palette
 
-}; // END of namespace sinfg
+}; // END of namespace synfig
 
 /* === E N D =============================================================== */
 

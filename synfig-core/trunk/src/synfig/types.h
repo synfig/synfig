@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file types.h
 **	\brief Template Header
 **
@@ -21,14 +21,14 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_TYPES_H
-#define __SINFG_TYPES_H
+#ifndef __SYNFIG_TYPES_H
+#define __SYNFIG_TYPES_H
 
 /* === H E A D E R S ======================================================= */
 
 #include <cmath>
 
-#ifndef SINFG_NO_ANGLE
+#ifndef SYNFIG_NO_ANGLE
 #include "angle.h"
 #endif
 

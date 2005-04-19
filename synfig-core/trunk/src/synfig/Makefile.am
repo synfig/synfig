@@ -1,4 +1,4 @@
-# $Header: /opt/voria/cvs/sinfg/src/sinfg/Makefile.am,v 1.3 2005/01/21 19:29:10 darco Exp $
+# $Header: /opt/voria/cvs/synfig/src/synfig/Makefile.am,v 1.3 2005/01/21 19:29:10 darco Exp $
 
 # SUBDIRS=proto
 
@@ -20,14 +20,14 @@ VALUENODESOURCES=valuenode_sine.cpp valuenode_radialcomposite.cpp valuenode_blin
 VALUEHEADERS=blinepoint.h gradient.h value.h
 VALUESOURCES=blinepoint.cpp gradient.cpp value.cpp
 
-SINFGHEADERS=surfacenew.h mutex.h timepointcollect.h interpolation.h guidset.h guid.h rect.h node.h smartfile.h distance.h palette.h main.h waypoint.h activepoint.h gamma.h uniqueid.h canvasbase.h context.h real.h paramdesc.h string_decl.h angle.h keyframe.h sinfg.h renddesc.h general.h importer.h surface.h module.h layer.h vector.h color.h canvas.h render.h target.h loadcanvas.h savecanvas.h valuenode.h version.h segment.h types.h exception.h string.h time.h blur.h transform.h curve_helper.h polynomial_root.h curveset.h
-SINFGSOURCES=mutex.cpp timepointcollect.cpp rect.cpp node.cpp guid.cpp loadcanvas.cpp distance.cpp palette.cpp paramdesc.cpp waypoint.cpp activepoint.cpp gamma.cpp uniqueid.cpp context.cpp renddesc.cpp time.cpp exception.cpp keyframe.cpp main.cpp surface.cpp module.cpp importer.cpp layer.cpp color.cpp canvas.cpp render.cpp target.cpp savecanvas.cpp valuenode.cpp blur.cpp curve_helper.cpp polynomial_root.cpp transform.cpp curveset.cpp
+SYNFIGHEADERS=surfacenew.h mutex.h timepointcollect.h interpolation.h guidset.h guid.h rect.h node.h smartfile.h distance.h palette.h main.h waypoint.h activepoint.h gamma.h uniqueid.h canvasbase.h context.h real.h paramdesc.h string_decl.h angle.h keyframe.h synfig.h renddesc.h general.h importer.h surface.h module.h layer.h vector.h color.h canvas.h render.h target.h loadcanvas.h savecanvas.h valuenode.h version.h segment.h types.h exception.h string.h time.h blur.h transform.h curve_helper.h polynomial_root.h curveset.h
+SYNFIGSOURCES=mutex.cpp timepointcollect.cpp rect.cpp node.cpp guid.cpp loadcanvas.cpp distance.cpp palette.cpp paramdesc.cpp waypoint.cpp activepoint.cpp gamma.cpp uniqueid.cpp context.cpp renddesc.cpp time.cpp exception.cpp keyframe.cpp main.cpp surface.cpp module.cpp importer.cpp layer.cpp color.cpp canvas.cpp render.cpp target.cpp savecanvas.cpp valuenode.cpp blur.cpp curve_helper.cpp polynomial_root.cpp transform.cpp curveset.cpp
 
-lib_LTLIBRARIES = libsinfg.la
-libsinfg_la_SOURCES = $(VALUEHEADERS) $(VALUESOURCES) $(LAYERSOURCES) $(LAYERHEADERS) $(TARGETHEADERS) $(TARGETSOURCES) $(VALUENODEHEADERS) $(VALUENODESOURCES) $(SINFGHEADERS) $(SINFGSOURCES) $(IMPORTERHEADERS) $(IMPORTERSOURCES)
-libsinfg_la_LIBADD = @LIBLTDL@ @SINFG_LIBS@ @LIBADD_DL@
-libsinfg_la_CXXFLAGS = @SINFG_CFLAGS@ -DLIBDIR="\"@libdir@\"" -DSYSCONFDIR="\"@sysconfdir@\""
-libsinfg_la_LDFLAGS = -export-dynamic -no-undefined -version-info 0:0:0
+lib_LTLIBRARIES = libsynfig.la
+libsynfig_la_SOURCES = $(VALUEHEADERS) $(VALUESOURCES) $(LAYERSOURCES) $(LAYERHEADERS) $(TARGETHEADERS) $(TARGETSOURCES) $(VALUENODEHEADERS) $(VALUENODESOURCES) $(SYNFIGHEADERS) $(SYNFIGSOURCES) $(IMPORTERHEADERS) $(IMPORTERSOURCES)
+libsynfig_la_LIBADD = @LIBLTDL@ @SYNFIG_LIBS@ @LIBADD_DL@
+libsynfig_la_CXXFLAGS = @SYNFIG_CFLAGS@ -DLIBDIR="\"@libdir@\"" -DSYSCONFDIR="\"@sysconfdir@\""
+libsynfig_la_LDFLAGS = -export-dynamic -no-undefined -version-info 0:0:0
 
-include_sinfgdir=@sinfgincludedir@/sinfg
-include_sinfg_HEADERS = $(SINFGHEADERS) $(LAYERHEADERS) $(TARGETHEADERS) $(VALUENODEHEADERS) $(IMPORTERHEADERS) $(VALUEHEADERS)
+include_synfigdir=@synfigincludedir@/synfig
+include_synfig_HEADERS = $(SYNFIGHEADERS) $(LAYERHEADERS) $(TARGETHEADERS) $(VALUENODEHEADERS) $(IMPORTERHEADERS) $(VALUEHEADERS)

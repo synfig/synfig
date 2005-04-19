@@ -6,7 +6,7 @@
 #define PROJECT_BUILDER 1
 
 /* Define to the full name of this package. */
-#define PACKAGE "sinfg"
+#define PACKAGE "synfig"
 
 /* Define to the version of this package. */
 #define VERSION "0.60.05-mac"
@@ -21,7 +21,7 @@
 /* Define as __inline if that's what the C compiler calls it.  */
 /* #undef inline */
 
-#define SINFG_LTDL_NO_STATIC
+#define SYNFIG_LTDL_NO_STATIC
 
 /* Define if you have the ANSI C header files.  */
 #define STDC_HEADERS 1

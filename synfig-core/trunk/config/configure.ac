@@ -1,4 +1,4 @@
-i# $Header: /opt/voria/cvs/sinfg/config/configure.ac,v 1.10 2005/03/24 21:07:24 darco Exp $
+i# $Header: /opt/voria/cvs/synfig/config/configure.ac,v 1.10 2005/03/24 21:07:24 darco Exp $
 
 # -- I N I T --------------------------------------------------
 
@@ -129,7 +129,7 @@ AC_ARG_ENABLE(layer-profiling,[
 	use_layerprofiling="no"
 ])
 if test $use_layerprofiling = "yes" ; then {
-	AC_DEFINE(SINFG_PROFILE_LAYERS,[1],[enable layer profiling])	
+	AC_DEFINE(SYNFIG_PROFILE_LAYERS,[1],[enable layer profiling])	
 } ; fi
 
 
@@ -359,11 +359,11 @@ dnl ])
 
 
 
-MODULE_DIR='${libdir}/sinfg/modules'
-moduledir=$libdir/sinfg/modules
+MODULE_DIR='${libdir}/synfig/modules'
+moduledir=$libdir/synfig/modules
 AC_SUBST(MODULE_DIR)
-SINFGLIB_DIR=$libdir/sinfg
-AC_SUBST(SINFGLIB_DIR)
+SYNFIGLIB_DIR=$libdir/synfig
+AC_SUBST(SYNFIGLIB_DIR)
 
 
 
@@ -453,28 +453,28 @@ AC_SUBST(VERSION_REV)
 
 dnl AC_CONFIG_SUBDIRS(libltdl)
 
-CONFIG_LIBS="-lsinfg"
+CONFIG_LIBS="-lsynfig"
 CONFIG_CFLAGS="$CONFIG_CFLAGS"
 AC_SUBST(CONFIG_LIBS)
 AC_SUBST(CONFIG_CFLAGS)
 AC_SUBST(CONFIG_DEPS)
 AC_SUBST(ETL_CFLAGS)
 
-SINFG_LIBS="$VIMAGE_LIBS $LIBXMLPP_LIBS $ETL_LIBS $OPENEXR_LIBS $LIBSIGC_LIBS"
-SINFG_CFLAGS="$LIBXMLPP_CFLAGS $ETL_CFLAGS $OPENEXR_CFLAGS $LIBSIGC_CFLAGS $CONFIG_CFLAGS -DSINFG_NO_DEPRECATED"
+SYNFIG_LIBS="$VIMAGE_LIBS $LIBXMLPP_LIBS $ETL_LIBS $OPENEXR_LIBS $LIBSIGC_LIBS"
+SYNFIG_CFLAGS="$LIBXMLPP_CFLAGS $ETL_CFLAGS $OPENEXR_CFLAGS $LIBSIGC_CFLAGS $CONFIG_CFLAGS -DSYNFIG_NO_DEPRECATED"
 
 CONFIG_CFLAGS="`echo $CONFIG_CFLAGS | sed s/-mno-cygwin//g | sed s/-mwindows//g`"
-SINFG_CFLAGS="`echo $SINFG_CFLAGS | sed s/-mno-cygwin//g | sed s/-mwindows//g`"
-SINFG_LIBS="`echo $SINFG_LIBS | sed s/-mno-cygwin//g | sed s/-mwindows//g`"
+SYNFIG_CFLAGS="`echo $SYNFIG_CFLAGS | sed s/-mno-cygwin//g | sed s/-mwindows//g`"
+SYNFIG_LIBS="`echo $SYNFIG_LIBS | sed s/-mno-cygwin//g | sed s/-mwindows//g`"
 
 AC_SUBST(LIBADD_DL)
 
-AC_SUBST(SINFG_LIBS)
-AC_SUBST(SINFG_CFLAGS)
+AC_SUBST(SYNFIG_LIBS)
+AC_SUBST(SYNFIG_CFLAGS)
 AC_SUBST(API_VERSION)
 
-sinfgincludedir=$includedir/sinfg-@API_VERSION@
-AC_SUBST(sinfgincludedir)
+synfigincludedir=$includedir/synfig-@API_VERSION@
+AC_SUBST(synfigincludedir)
 
 [(
 	[ -d libltdl ] || mkdir libltdl;
@@ -488,11 +488,11 @@ AC_SUBST(sinfgincludedir)
 )]
 
 AC_OUTPUT(
-sinfg-config
+synfig-config
 @PACKAGE_TARNAME@.pc
 Makefile
 src/Makefile
-src/sinfg/Makefile
+src/synfig/Makefile
 src/modules/Makefile
 src/modules/example/Makefile
 src/modules/mod_filter/Makefile
@@ -514,7 +514,7 @@ src/modules/mod_libavcodec/Makefile
 src/modules/mod_yuv420p/Makefile
 src/modules/mod_particle/Makefile
 src/tool/Makefile
-src/modules/sinfg_modules.cfg
+src/modules/synfig_modules.cfg
 win32inst.nsi
 pkg-info/macosx/synfig-core.info
 dnl src/modules/trgt_mpg/Makefile
@@ -553,10 +553,10 @@ Using OpenEXR's \"half\" type ------> $use_openexr_half
 
 "'$'"CXX ------------------------------> '$CXX'
 "'$'"CXXFLAGS -------------------------> '$CXXFLAGS'
-"'$'"SINFG_LIBS -----------------------> '$SINFG_LIBS'
+"'$'"SYNFIG_LIBS -----------------------> '$SYNFIG_LIBS'
 "'$'"LIBXMLPP_LIBS --------------------> '$LIBXMLPP_LIBS'
 "'$'"ETL_LIBS -------------------------> '$ETL_LIBS'
 "'$'"LIBSIGC_LIBS ---------------------> '$LIBSIGC_LIBS'
-"'$'"SINFG_CFLAGS ---------------------> '$SINFG_CFLAGS'
+"'$'"SYNFIG_CFLAGS ---------------------> '$SYNFIG_CFLAGS'
 "'$'"LIBADD_DL ------------------------> '$LIBADD_DL'
 "

@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file value.cpp
 **	\brief Template Header
 **
@@ -43,7 +43,7 @@
 
 #endif
 
-using namespace sinfg;
+using namespace synfig;
 using namespace std;
 using namespace etl;
 
@@ -321,7 +321,7 @@ ValueBase::type_name(Type id)
 	default:
 		break;
 	}
-	sinfg::warning("Encountered unknown ValueBase with an Type of %d",id);
+	synfig::warning("Encountered unknown ValueBase with an Type of %d",id);
 //	assert(0);
 	return "UNKNOWN";
 }

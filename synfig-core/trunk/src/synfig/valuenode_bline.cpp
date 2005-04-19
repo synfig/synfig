@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file valuenode_bline.cpp
 **	\brief Template File
 **
@@ -47,7 +47,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 
@@ -74,7 +74,7 @@ radial_interpolation(const Vector& a, const Vector& b, float c)
 
 
 ValueBase
-sinfg::convert_bline_to_segment_list(const ValueBase& bline)
+synfig::convert_bline_to_segment_list(const ValueBase& bline)
 {
 	std::vector<Segment> ret;
 	
@@ -117,7 +117,7 @@ sinfg::convert_bline_to_segment_list(const ValueBase& bline)
 }
 
 ValueBase
-sinfg::convert_bline_to_width_list(const ValueBase& bline)
+synfig::convert_bline_to_width_list(const ValueBase& bline)
 {
 	std::vector<Real> ret;
 //	std::vector<BLinePoint> list(bline.operator std::vector<BLinePoint>());
@@ -266,7 +266,7 @@ ValueNode_BLine::create_list_entry(int index, Time time, Real origin)
 	ValueNode_BLine::ListEntry ret;
 
 	
-	sinfg::BLinePoint prev,next;
+	synfig::BLinePoint prev,next;
 
 	int prev_i,next_i;
 
@@ -282,7 +282,7 @@ ValueNode_BLine::create_list_entry(int index, Time time, Real origin)
 		next_i=index;
 	prev_i=find_prev_valid_entry(index,time);
 	
-	sinfg::info("index=%d, next_i=%d, prev_i=%d",index,next_i,prev_i);
+	synfig::info("index=%d, next_i=%d, prev_i=%d",index,next_i,prev_i);
 	
 	next=(*list[next_i].value_node)(time);
 	prev=(*list[prev_i].value_node)(time);
@@ -290,7 +290,7 @@ ValueNode_BLine::create_list_entry(int index, Time time, Real origin)
 	etl::hermite<Vector> curve(prev.get_vertex(),next.get_vertex(),prev.get_tangent2(),next.get_tangent1());
 	etl::derivative< etl::hermite<Vector> > deriv(curve);
 
-	sinfg::BLinePoint bline_point;
+	synfig::BLinePoint bline_point;
 	bline_point.set_vertex(curve(origin));
 	bline_point.set_width((next.get_width()-prev.get_width())*origin+prev.get_width());
 	bline_point.set_tangent1(deriv(origin)*min(1.0-origin,origin));
@@ -482,8 +482,8 @@ ValueNode_BLine::operator()(Time t)const
 			float prev_tangent_scalar(1.0f);
 			float next_tangent_scalar(1.0f);
 			
-			//sinfg::info("index_%d:dist_from_begin=%d",index,dist_from_begin);
-			//sinfg::info("index_%d:dist_from_end=%d",index,dist_from_end);
+			//synfig::info("index_%d:dist_from_begin=%d",index,dist_from_begin);
+			//synfig::info("index_%d:dist_from_end=%d",index,dist_from_end);
 			
 			// If we are the next to the begin
 			if(begin_iter==--std::vector<ListEntry>::const_iterator(iter) || dist_from_begin==1)
@@ -729,10 +729,10 @@ ValueNode_BLine::operator()(Time t)const
 */
 	
 	if(list.empty())
-		sinfg::warning(string("ValueNode_BLine::operator()():")+_("No entries in list"));
+		synfig::warning(string("ValueNode_BLine::operator()():")+_("No entries in list"));
 	else
 	if(ret_list.empty())
-		sinfg::warning(string("ValueNode_BLine::operator()():")+_("No entries in ret_list"));
+		synfig::warning(string("ValueNode_BLine::operator()():")+_("No entries in ret_list"));
 
 	return ValueBase(ret_list,get_loop());
 }

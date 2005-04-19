@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file blur.cpp
 **	\brief Template Header
 **
@@ -30,22 +30,22 @@
 
 #include "blur.h"
 
-#include <sinfg/string.h>
-#include <sinfg/time.h>
-#include <sinfg/context.h>
-#include <sinfg/paramdesc.h>
-#include <sinfg/renddesc.h>
-#include <sinfg/surface.h>
-#include <sinfg/value.h>
-#include <sinfg/valuenode.h>
-#include <sinfg/segment.h>
+#include <synfig/string.h>
+#include <synfig/time.h>
+#include <synfig/context.h>
+#include <synfig/paramdesc.h>
+#include <synfig/renddesc.h>
+#include <synfig/surface.h>
+#include <synfig/value.h>
+#include <synfig/valuenode.h>
+#include <synfig/segment.h>
 
 #include <cstring>
 #include <ETL/pen>
 
 #endif
 
-using namespace sinfg;
+using namespace synfig;
 using namespace etl;
 using namespace std;
 
@@ -60,16 +60,16 @@ using namespace std;
 
 /* -- G L O B A L S --------------------------------------------------------- */
 
-SINFG_LAYER_INIT(Blur_Layer);
-SINFG_LAYER_SET_NAME(Blur_Layer,"blur");
-SINFG_LAYER_SET_LOCAL_NAME(Blur_Layer,_("Blur"));
-SINFG_LAYER_SET_CATEGORY(Blur_Layer,_("Blurs"));
-SINFG_LAYER_SET_VERSION(Blur_Layer,"0.2");
-SINFG_LAYER_SET_CVS_ID(Blur_Layer,"$Id: blur.cpp,v 1.2 2005/01/24 03:08:17 darco Exp $");
+SYNFIG_LAYER_INIT(Blur_Layer);
+SYNFIG_LAYER_SET_NAME(Blur_Layer,"blur");
+SYNFIG_LAYER_SET_LOCAL_NAME(Blur_Layer,_("Blur"));
+SYNFIG_LAYER_SET_CATEGORY(Blur_Layer,_("Blurs"));
+SYNFIG_LAYER_SET_VERSION(Blur_Layer,"0.2");
+SYNFIG_LAYER_SET_CVS_ID(Blur_Layer,"$Id: blur.cpp,v 1.2 2005/01/24 03:08:17 darco Exp $");
 
 /* -- F U N C T I O N S ----------------------------------------------------- */
 
-inline void clamp(sinfg::Vector &v)
+inline void clamp(synfig::Vector &v)
 {
 	if(v[0]<0.0)v[0]=0.0;
 	if(v[1]<0.0)v[1]=0.0;

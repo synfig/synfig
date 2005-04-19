@@ -1,5 +1,5 @@
 /*! ========================================================================
-** Sinfg
+** Synfig
 ** ppm Target Module
 ** $Id: trgt_imagemagick.cpp,v 1.1.1.1 2005/01/04 01:23:11 darco Exp $
 **
@@ -20,7 +20,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#define SINFG_TARGET
+#define SYNFIG_TARGET
 
 #ifdef USING_PCH
 #	include "pch.h"
@@ -41,17 +41,17 @@
 
 /* === M A C R O S ========================================================= */
 
-using namespace sinfg;
+using namespace synfig;
 using namespace std;
 using namespace etl;
 
 /* === G L O B A L S ======================================================= */
 
-SINFG_TARGET_INIT(imagemagick_trgt);
-SINFG_TARGET_SET_NAME(imagemagick_trgt,"imagemagick");
-SINFG_TARGET_SET_EXT(imagemagick_trgt,"miff");
-SINFG_TARGET_SET_VERSION(imagemagick_trgt,"0.1");
-SINFG_TARGET_SET_CVS_ID(imagemagick_trgt,"$Id: trgt_imagemagick.cpp,v 1.1.1.1 2005/01/04 01:23:11 darco Exp $");
+SYNFIG_TARGET_INIT(imagemagick_trgt);
+SYNFIG_TARGET_SET_NAME(imagemagick_trgt,"imagemagick");
+SYNFIG_TARGET_SET_EXT(imagemagick_trgt,"miff");
+SYNFIG_TARGET_SET_VERSION(imagemagick_trgt,"0.1");
+SYNFIG_TARGET_SET_CVS_ID(imagemagick_trgt,"$Id: trgt_imagemagick.cpp,v 1.1.1.1 2005/01/04 01:23:11 darco Exp $");
 
 /* === M E T H O D S ======================================================= */
 
@@ -113,7 +113,7 @@ imagemagick_trgt::end_frame()
 }
 
 bool
-imagemagick_trgt::start_frame(sinfg::ProgressCallback *cb)
+imagemagick_trgt::start_frame(synfig::ProgressCallback *cb)
 {
 	string command;
 
@@ -128,7 +128,7 @@ imagemagick_trgt::start_frame(sinfg::ProgressCallback *cb)
 	{
 		const char *msg=_("Unable to open pipe to imagemagick's convert utility");
 		if(cb)cb->error(N_(msg));
-		else sinfg::error(N_(msg));
+		else synfig::error(N_(msg));
 		return false;
 	}
 

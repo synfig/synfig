@@ -1,5 +1,5 @@
 /*! ========================================================================
-** Sinfg
+** Synfig
 ** ppm Target Module
 ** $Id: trgt_ffmpeg.cpp,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $
 **
@@ -20,7 +20,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#define SINFG_TARGET
+#define SYNFIG_TARGET
 
 #ifdef USING_PCH
 #	include "pch.h"
@@ -40,17 +40,17 @@
 
 /* === M A C R O S ========================================================= */
 
-using namespace sinfg;
+using namespace synfig;
 using namespace std;
 using namespace etl;
 
 /* === G L O B A L S ======================================================= */
 
-SINFG_TARGET_INIT(ffmpeg_trgt);
-SINFG_TARGET_SET_NAME(ffmpeg_trgt,"ffmpeg");
-SINFG_TARGET_SET_EXT(ffmpeg_trgt,"mpg");
-SINFG_TARGET_SET_VERSION(ffmpeg_trgt,"0.1");
-SINFG_TARGET_SET_CVS_ID(ffmpeg_trgt,"$Id: trgt_ffmpeg.cpp,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $");
+SYNFIG_TARGET_INIT(ffmpeg_trgt);
+SYNFIG_TARGET_SET_NAME(ffmpeg_trgt,"ffmpeg");
+SYNFIG_TARGET_SET_EXT(ffmpeg_trgt,"mpg");
+SYNFIG_TARGET_SET_VERSION(ffmpeg_trgt,"0.1");
+SYNFIG_TARGET_SET_CVS_ID(ffmpeg_trgt,"$Id: trgt_ffmpeg.cpp,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $");
 
 /* === M E T H O D S ======================================================= */
 
@@ -130,7 +130,7 @@ ffmpeg_trgt::init()
 	
 	if(!file)
 	{
-		sinfg::error(_("Unable to open pipe to ffmpeg"));
+		synfig::error(_("Unable to open pipe to ffmpeg"));
 		return false;
 	}
 			
@@ -146,7 +146,7 @@ ffmpeg_trgt::end_frame()
 }
 
 bool
-ffmpeg_trgt::start_frame(sinfg::ProgressCallback *callback)
+ffmpeg_trgt::start_frame(synfig::ProgressCallback *callback)
 {
 	int w=desc.get_w(),h=desc.get_h();
 		

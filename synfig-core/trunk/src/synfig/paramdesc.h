@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file paramdesc.h
 **	\brief ParamDesc Class Implementation
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_PARAMDESC_H
-#define __SINFG_PARAMDESC_H
+#ifndef __SYNFIG_PARAMDESC_H
+#define __SYNFIG_PARAMDESC_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -37,7 +37,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace sinfg {
+namespace synfig {
 
 class ValueBase;
 	
@@ -104,7 +104,7 @@ public:
 
    	ParamDesc(const ValueBase&, const String &a);
 
-   	ParamDesc(sinfg::Color::BlendMethod, const String &a);
+   	ParamDesc(synfig::Color::BlendMethod, const String &a);
 
 
 	/*
@@ -219,7 +219,7 @@ class ParamVocab : public std::list< ParamDesc >
 {
 };
 
-}; // END of namespace sinfg
+}; // END of namespace synfig
 
 /* === E N D =============================================================== */
 

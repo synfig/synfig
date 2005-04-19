@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file template.cpp
 **	\brief Template File
 **
@@ -43,16 +43,16 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 
-//#define SINFG_PROFILE_LAYERS
-//#define SINFG_DEBUG_LAYERS
+//#define SYNFIG_PROFILE_LAYERS
+//#define SYNFIG_DEBUG_LAYERS
 
 /* === G L O B A L S ======================================================= */
 
-#ifdef SINFG_PROFILE_LAYERS
+#ifdef SYNFIG_PROFILE_LAYERS
 #include <ETL/clock>
 static int depth(0);
 static std::map<String,float> time_table;
@@ -62,7 +62,7 @@ static String curr_layer;
 static void
 _print_profile_report()
 {
-	sinfg::info(">>>> Profile Report: (Times are in msecs)");
+	synfig::info(">>>> Profile Report: (Times are in msecs)");
 	std::map<String,float>::iterator iter;
 	float total_time(0);
 	for(iter=time_table.begin();iter!=time_table.end();++iter)
@@ -71,10 +71,10 @@ _print_profile_report()
 		float time(iter->second);
 		int runs(run_table[layer]);
 		total_time+=time;
-		sinfg::info(" Layer \"%s\",\tExecs: %03d, Avg Time: %05.1f, Total Time: %05.1f",layer.c_str(),runs,time/runs*1000,time*1000);
+		synfig::info(" Layer \"%s\",\tExecs: %03d, Avg Time: %05.1f, Total Time: %05.1f",layer.c_str(),runs,time/runs*1000,time*1000);
 	}
-	sinfg::info("Total Time: %f seconds", total_time);
-	sinfg::info("<<<< End of Profile Report");
+	synfig::info("Total Time: %f seconds", total_time);
+	synfig::info("<<<< End of Profile Report");
 }
 
 #endif
@@ -164,7 +164,7 @@ Context::get_full_bounding_rect()const
 bool
 Context::accelerated_render(Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb) const
 {
-	#ifdef SINFG_PROFILE_LAYERS
+	#ifdef SYNFIG_PROFILE_LAYERS
 	String layer_name(curr_layer);
 	
 	//sum the pre-work done by layer above us... (curr_layer is layer above us...)
@@ -205,25 +205,25 @@ Context::accelerated_render(Surface *surface,int quality, const RendDesc &rendde
 	// If this layer isn't defined, return alpha
 	if((context)->empty())
 	{
-#ifdef SINFG_DEBUG_LAYERS
-		sinfg::info("Context::accelerated_render(): Hit end of list");
+#ifdef SYNFIG_DEBUG_LAYERS
+		synfig::info("Context::accelerated_render(): Hit end of list");
 #endif
 		surface->set_wh(renddesc.get_w(),renddesc.get_h());
 		surface->clear();
-		#ifdef SINFG_PROFILE_LAYERS
+		#ifdef SYNFIG_PROFILE_LAYERS
 		profile_timer.reset();	
 		#endif
 		return true;
 	}
 
-#ifdef SINFG_DEBUG_LAYERS
-	sinfg::info("Context::accelerated_render(): Descending into %s",(*context)->get_name().c_str());
+#ifdef SYNFIG_DEBUG_LAYERS
+	synfig::info("Context::accelerated_render(): Descending into %s",(*context)->get_name().c_str());
 #endif
 
 	try {
 		RWLock::ReaderLock lock((*context)->get_rw_lock());
 		
-	#ifdef SINFG_PROFILE_LAYERS
+	#ifdef SYNFIG_PROFILE_LAYERS
 	
 	//go down one layer :P
 	depth++;
@@ -250,7 +250,7 @@ Context::accelerated_render(Surface *surface,int quality, const RendDesc &rendde
 	}
 	catch(std::bad_alloc)
 	{
-		sinfg::error("Context::accelerated_render(): Layer \"%s\" threw a bad_alloc exception!",(*context)->get_name().c_str());
+		synfig::error("Context::accelerated_render(): Layer \"%s\" threw a bad_alloc exception!",(*context)->get_name().c_str());
 #ifdef _DEBUG
 		return false;
 #else
@@ -260,7 +260,7 @@ Context::accelerated_render(Surface *surface,int quality, const RendDesc &rendde
 	}
 	catch(...)
 	{
-		sinfg::error("Context::accelerated_render(): Layer \"%s\" threw an exception, rethrowing...",(*context)->get_name().c_str());
+		synfig::error("Context::accelerated_render(): Layer \"%s\" threw an exception, rethrowing...",(*context)->get_name().c_str());
 		throw;		
 	}
 }
@@ -288,8 +288,8 @@ Context::set_time(Time time)const
 	// Set up a wrter lock
 	RWLock::WriterLock lock((*context)->get_rw_lock());
 
-	//sinfg::info("%s: dirty_time=%f",(*context)->get_name().c_str(),(float)(*context)->dirty_time_);
-	//sinfg::info("%s: time=%f",(*context)->get_name().c_str(),(float)time);
+	//synfig::info("%s: dirty_time=%f",(*context)->get_name().c_str(),(float)(*context)->dirty_time_);
+	//synfig::info("%s: time=%f",(*context)->get_name().c_str(),(float)time);
 
 	{
 		Layer::ParamList params;

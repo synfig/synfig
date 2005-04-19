@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file main.cpp
 **	\brief \writeme
 **
@@ -21,7 +21,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-//#define SINFG_NO_ANGLE
+//#define SYNFIG_NO_ANGLE
 
 #ifdef USING_PCH
 #	include "pch.h"
@@ -65,15 +65,15 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 
-#define MODULE_LIST_FILENAME	"sinfg_modules.cfg"
+#define MODULE_LIST_FILENAME	"synfig_modules.cfg"
 
 /* === S T A T I C S ======================================================= */
 
-static etl::reference_counter sinfg_ref_count_(0);
+static etl::reference_counter synfig_ref_count_(0);
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -87,7 +87,7 @@ static etl::reference_counter sinfg_ref_count_(0);
 
 
 const char *
-sinfg::get_version()
+synfig::get_version()
 {
 #ifdef VERSION
 	return VERSION;
@@ -97,13 +97,13 @@ sinfg::get_version()
 }
 
 const char *
-sinfg::get_build_date()
+synfig::get_build_date()
 {
 	return __DATE__;
 }
 
 const char *
-sinfg::get_build_time()
+synfig::get_build_time()
 {
 	return __TIME__;
 }
@@ -111,35 +111,35 @@ sinfg::get_build_time()
 extern const char *get_build_time();
 
 bool
-sinfg::check_version_(int version,int vec_size, int color_size,int canvas_size,int layer_size)
+synfig::check_version_(int version,int vec_size, int color_size,int canvas_size,int layer_size)
 {
 	bool ret=true;
 
 	CHECK_EXPIRE_TIME();
 	
-	if(version!=SINFG_LIBRARY_VERSION)
+	if(version!=SYNFIG_LIBRARY_VERSION)
 	{
-		sinfg::error(_("API Version mismatch (LIB:%d, PROG:%d)"),SINFG_LIBRARY_VERSION,version);
+		synfig::error(_("API Version mismatch (LIB:%d, PROG:%d)"),SYNFIG_LIBRARY_VERSION,version);
 		ret=false;
 	}
 	if(vec_size!=sizeof(Vector))
 	{
-		sinfg::error(_("Size of Vector mismatch (app:%d, lib:%d)"),vec_size,sizeof(Vector));
+		synfig::error(_("Size of Vector mismatch (app:%d, lib:%d)"),vec_size,sizeof(Vector));
 		ret=false;
 	}
 	if(color_size!=sizeof(Color))
 	{
-		sinfg::error(_("Size of Color mismatch (app:%d, lib:%d)"),color_size,sizeof(Color));
+		synfig::error(_("Size of Color mismatch (app:%d, lib:%d)"),color_size,sizeof(Color));
 		ret=false;
 	}
 	if(canvas_size!=sizeof(Canvas))
 	{
-		sinfg::error(_("Size of Canvas mismatch (app:%d, lib:%d)"),canvas_size,sizeof(Canvas));
+		synfig::error(_("Size of Canvas mismatch (app:%d, lib:%d)"),canvas_size,sizeof(Canvas));
 		ret=false;
 	}
 	if(layer_size!=sizeof(Layer))
 	{
-		sinfg::error(_("Size of Layer mismatch (app:%d, lib:%d)"),layer_size,sizeof(Layer));
+		synfig::error(_("Size of Layer mismatch (app:%d, lib:%d)"),layer_size,sizeof(Layer));
 		ret=false;
 	}
 	
@@ -147,7 +147,7 @@ sinfg::check_version_(int version,int vec_size, int color_size,int canvas_size,i
 }
 
 static void broken_pipe_signal (int sig)  {
-	sinfg::warning("Broken Pipe...");
+	synfig::warning("Broken Pipe...");
 }
 
 bool retrieve_modules_to_load(String filename,std::list<String> &modules_to_load)
@@ -206,14 +206,14 @@ bool retrieve_modules_to_load(String filename,std::list<String> &modules_to_load
 
 
 
-sinfg::Main::Main(const sinfg::String& basepath,ProgressCallback *cb):
-	ref_count_(sinfg_ref_count_)
+synfig::Main::Main(const synfig::String& basepath,ProgressCallback *cb):
+	ref_count_(synfig_ref_count_)
 {
 	if(ref_count_.count())
 		return;
 
-	sinfg_ref_count_.reset();
-	ref_count_=sinfg_ref_count_;
+	synfig_ref_count_.reset();
+	ref_count_=synfig_ref_count_;
 	
 	// Add initialization after this point
 
@@ -286,7 +286,7 @@ sinfg::Main::Main(const sinfg::String& basepath,ProgressCallback *cb):
 		locations.push_back("standard");
 		locations.push_back("./"MODULE_LIST_FILENAME);	//1
 		locations.push_back("../etc/"MODULE_LIST_FILENAME);	//1
-		locations.push_back("~/.sinfg/"MODULE_LIST_FILENAME); //2
+		locations.push_back("~/.synfig/"MODULE_LIST_FILENAME); //2
 		locations.push_back(prefix+"/etc/"+MODULE_LIST_FILENAME); //3
 		locations.push_back("/usr/local/etc/"MODULE_LIST_FILENAME);
 	#ifdef SYSCONFDIR
@@ -311,19 +311,19 @@ sinfg::Main::Main(const sinfg::String& basepath,ProgressCallback *cb):
 		"standard",	//0
 		"./"MODULE_LIST_FILENAME,	//1
 		"../etc/"MODULE_LIST_FILENAME,	//1
-		"~/.sinfg/"MODULE_LIST_FILENAME, //2
-		"/usr/local/lib/sinfg/modules/"MODULE_LIST_FILENAME, //3
+		"~/.synfig/"MODULE_LIST_FILENAME, //2
+		"/usr/local/lib/synfig/modules/"MODULE_LIST_FILENAME, //3
 		"/usr/local/etc/"MODULE_LIST_FILENAME,
 #ifdef SYSCONFDIR
 		SYSCONFDIR"/"MODULE_LIST_FILENAME,
 #endif
 #ifdef __APPLE__
-		"/Library/Frameworks/sinfg.framework/Resources/"MODULE_LIST_FILENAME,
-		"/Library/SINFG/"MODULE_LIST_FILENAME,
-		"~/Library/SINFG/"MODULE_LIST_FILENAME,
+		"/Library/Frameworks/synfig.framework/Resources/"MODULE_LIST_FILENAME,
+		"/Library/SYNFIG/"MODULE_LIST_FILENAME,
+		"~/Library/SYNFIG/"MODULE_LIST_FILENAME,
 #endif
 #ifdef WIN32
-		"C:\\Program Files\\SINFG\\etc\\"MODULE_LIST_FILENAME,
+		"C:\\Program Files\\SYNFIG\\etc\\"MODULE_LIST_FILENAME,
 #endif
 	};
 */
@@ -349,22 +349,22 @@ sinfg::Main::Main(const sinfg::String& basepath,ProgressCallback *cb):
 	if(cb)cb->task(_("DONE"));
 }
 
-sinfg::Main::~Main()
+synfig::Main::~Main()
 {
 	ref_count_.detach();
-	if(!sinfg_ref_count_.unique())
+	if(!synfig_ref_count_.unique())
 		return;
-	sinfg_ref_count_.detach();
+	synfig_ref_count_.detach();
 
 	// Add deinitialization after this point
 
 	if(get_open_canvas_map().size())
 	{
-		sinfg::warning("Canvases still open!");
-		std::map<sinfg::String, etl::loose_handle<Canvas> >::iterator iter;
+		synfig::warning("Canvases still open!");
+		std::map<synfig::String, etl::loose_handle<Canvas> >::iterator iter;
 		for(iter=get_open_canvas_map().begin();iter!=get_open_canvas_map().end();++iter)
 		{
-			sinfg::warning("%s: count()=%d",iter->first.c_str(), iter->second.count());
+			synfig::warning("%s: count()=%d",iter->first.c_str(), iter->second.count());
 		}
 	}
 		
@@ -392,7 +392,7 @@ sinfg::Main::~Main()
 
 
 void
-sinfg::error(const char *format,...)
+synfig::error(const char *format,...)
 {
 	va_list args;
 	va_start(args,format);
@@ -400,14 +400,14 @@ sinfg::error(const char *format,...)
 }
 
 void
-sinfg::error(const String &str)
+synfig::error(const String &str)
 {
 	static Mutex mutex; Mutex::Lock lock(mutex);
-	cerr<<"sinfg("<<getpid()<<"): "<<_("error")<<": "+str<<endl;
+	cerr<<"synfig("<<getpid()<<"): "<<_("error")<<": "+str<<endl;
 }
 
 void
-sinfg::warning(const char *format,...)
+synfig::warning(const char *format,...)
 {
 	va_list args;
 	va_start(args,format);
@@ -415,14 +415,14 @@ sinfg::warning(const char *format,...)
 }
 
 void
-sinfg::warning(const String &str)
+synfig::warning(const String &str)
 {
 	static Mutex mutex; Mutex::Lock lock(mutex);
-	cerr<<"sinfg("<<getpid()<<"): "<<_("warning")<<": "+str<<endl;
+	cerr<<"synfig("<<getpid()<<"): "<<_("warning")<<": "+str<<endl;
 }
 
 void
-sinfg::info(const char *format,...)
+synfig::info(const char *format,...)
 {
 	va_list args;
 	va_start(args,format);
@@ -430,8 +430,8 @@ sinfg::info(const char *format,...)
 }
 
 void
-sinfg::info(const String &str)
+synfig::info(const String &str)
 {
 	static Mutex mutex; Mutex::Lock lock(mutex);
-	cerr<<"sinfg("<<getpid()<<"): "<<_("info")<<": "+str<<endl;
+	cerr<<"synfig("<<getpid()<<"): "<<_("info")<<": "+str<<endl;
 }

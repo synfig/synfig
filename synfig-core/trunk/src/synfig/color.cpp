@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file color.h
 **	\brief Color Class
 **
@@ -34,7 +34,7 @@
 
 #endif
 
-using namespace sinfg;
+using namespace synfig;
 using namespace etl;
 using namespace std;
 

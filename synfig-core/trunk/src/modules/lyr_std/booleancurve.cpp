@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file boolean_curve.cpp
 **	\brief Boolean Curve Implementation File
 **
@@ -30,14 +30,14 @@
 
 #include "booleancurve.h"
 
-#include <sinfg/string.h>
-#include <sinfg/time.h>
-#include <sinfg/context.h>
-#include <sinfg/paramdesc.h>
-#include <sinfg/renddesc.h>
-#include <sinfg/surface.h>
-#include <sinfg/value.h>
-#include <sinfg/valuenode.h>
+#include <synfig/string.h>
+#include <synfig/time.h>
+#include <synfig/context.h>
+#include <synfig/paramdesc.h>
+#include <synfig/renddesc.h>
+#include <synfig/surface.h>
+#include <synfig/value.h>
+#include <synfig/valuenode.h>
 
 #endif
 
@@ -45,7 +45,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 
@@ -65,7 +65,7 @@ BooleanCurve::~BooleanCurve()
 {
 }
 
-bool BooleanCurve::set_param(const String & param, const sinfg::ValueBase &value)
+bool BooleanCurve::set_param(const String & param, const synfig::ValueBase &value)
 {	
 	if(param=="regions" && value.same_as(regions)) 
 	{

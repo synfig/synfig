@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file checkerboard.cpp
 **	\brief Template Header
 **
@@ -30,19 +30,19 @@
 
 #include "lumakey.h"
 
-#include <sinfg/string.h>
-#include <sinfg/time.h>
-#include <sinfg/context.h>
-#include <sinfg/paramdesc.h>
-#include <sinfg/renddesc.h>
-#include <sinfg/surface.h>
-#include <sinfg/value.h>
-#include <sinfg/valuenode.h>
-#include <sinfg/segment.h>
+#include <synfig/string.h>
+#include <synfig/time.h>
+#include <synfig/context.h>
+#include <synfig/paramdesc.h>
+#include <synfig/renddesc.h>
+#include <synfig/surface.h>
+#include <synfig/value.h>
+#include <synfig/valuenode.h>
+#include <synfig/segment.h>
 
 #endif
 
-using namespace sinfg;
+using namespace synfig;
 using namespace std;
 using namespace etl;
 
@@ -50,12 +50,12 @@ using namespace etl;
 
 /* === G L O B A L S ======================================================= */
 
-SINFG_LAYER_INIT(LumaKey);
-SINFG_LAYER_SET_NAME(LumaKey,"lumakey");
-SINFG_LAYER_SET_LOCAL_NAME(LumaKey,_("LumaKey"));
-SINFG_LAYER_SET_CATEGORY(LumaKey,_("Filters"));
-SINFG_LAYER_SET_VERSION(LumaKey,"0.1");
-SINFG_LAYER_SET_CVS_ID(LumaKey,"$Id: lumakey.cpp,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $");
+SYNFIG_LAYER_INIT(LumaKey);
+SYNFIG_LAYER_SET_NAME(LumaKey,"lumakey");
+SYNFIG_LAYER_SET_LOCAL_NAME(LumaKey,_("LumaKey"));
+SYNFIG_LAYER_SET_CATEGORY(LumaKey,_("Filters"));
+SYNFIG_LAYER_SET_VERSION(LumaKey,"0.1");
+SYNFIG_LAYER_SET_CVS_ID(LumaKey,"$Id: lumakey.cpp,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $");
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -104,8 +104,8 @@ LumaKey::get_param_vocab()const
 	return ret;
 }
 
-sinfg::Layer::Handle
-LumaKey::hit_check(sinfg::Context context, const sinfg::Point &getpos)const
+synfig::Layer::Handle
+LumaKey::hit_check(synfig::Context context, const synfig::Point &getpos)const
 {
 	return context.hit_check(getpos);
 }

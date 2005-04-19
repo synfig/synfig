@@ -1,5 +1,5 @@
 /*! ========================================================================
-** Sinfg
+** Synfig
 ** Template File
 ** $Id: translate.cpp,v 1.2 2005/01/24 03:08:17 darco Exp $
 **
@@ -28,16 +28,16 @@
 #endif
 
 #include "translate.h"
-#include <sinfg/string.h>
-#include <sinfg/time.h>
-#include <sinfg/context.h>
-#include <sinfg/paramdesc.h>
-#include <sinfg/renddesc.h>
-#include <sinfg/surface.h>
-#include <sinfg/value.h>
-#include <sinfg/valuenode.h>
-#include <sinfg/canvas.h>
-#include <sinfg/transform.h>
+#include <synfig/string.h>
+#include <synfig/time.h>
+#include <synfig/context.h>
+#include <synfig/paramdesc.h>
+#include <synfig/renddesc.h>
+#include <synfig/surface.h>
+#include <synfig/value.h>
+#include <synfig/valuenode.h>
+#include <synfig/canvas.h>
+#include <synfig/transform.h>
 
 #endif
 
@@ -45,12 +45,12 @@
 
 /* === G L O B A L S ======================================================= */
 
-SINFG_LAYER_INIT(Translate);
-SINFG_LAYER_SET_NAME(Translate,"translate");
-SINFG_LAYER_SET_LOCAL_NAME(Translate,_("Translate"));
-SINFG_LAYER_SET_CATEGORY(Translate,_("Transform"));
-SINFG_LAYER_SET_VERSION(Translate,"0.1");
-SINFG_LAYER_SET_CVS_ID(Translate,"$Id: translate.cpp,v 1.2 2005/01/24 03:08:17 darco Exp $");
+SYNFIG_LAYER_INIT(Translate);
+SYNFIG_LAYER_SET_NAME(Translate,"translate");
+SYNFIG_LAYER_SET_LOCAL_NAME(Translate,_("Translate"));
+SYNFIG_LAYER_SET_CATEGORY(Translate,_("Transform"));
+SYNFIG_LAYER_SET_VERSION(Translate,"0.1");
+SYNFIG_LAYER_SET_CVS_ID(Translate,"$Id: translate.cpp,v 1.2 2005/01/24 03:08:17 darco Exp $");
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -97,8 +97,8 @@ Translate::get_param_vocab()const
 	return ret;
 }
 
-sinfg::Layer::Handle
-Translate::hit_check(sinfg::Context context, const sinfg::Point &pos)const
+synfig::Layer::Handle
+Translate::hit_check(synfig::Context context, const synfig::Point &pos)const
 {
 	return context.hit_check(pos-origin);
 }
@@ -115,12 +115,12 @@ class Translate_Trans : public Transform
 public:
 	Translate_Trans(const Translate* x):Transform(x->get_guid()),layer(x) { }
 	
-	sinfg::Vector perform(const sinfg::Vector& x)const
+	synfig::Vector perform(const synfig::Vector& x)const
 	{
 		return x+layer->origin;
 	}
 	
-	sinfg::Vector unperform(const sinfg::Vector& x)const
+	synfig::Vector unperform(const synfig::Vector& x)const
 	{
 		return x-layer->origin;
 	}

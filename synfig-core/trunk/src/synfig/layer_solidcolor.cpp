@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file layer_solidcolor.cpp
 **	\brief Template Header
 **
@@ -44,16 +44,16 @@
 
 using namespace etl;
 using namespace std;
-using namespace sinfg;
+using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
-SINFG_LAYER_INIT(Layer_SolidColor);
-SINFG_LAYER_SET_NAME(Layer_SolidColor,"SolidColor");
-SINFG_LAYER_SET_LOCAL_NAME(Layer_SolidColor,_("Solid Color"));
-SINFG_LAYER_SET_CATEGORY(Layer_SolidColor,_("Geometry"));
-SINFG_LAYER_SET_VERSION(Layer_SolidColor,"0.1");
-SINFG_LAYER_SET_CVS_ID(Layer_SolidColor,"$Id: layer_solidcolor.cpp,v 1.1.1.1 2005/01/04 01:23:14 darco Exp $");
+SYNFIG_LAYER_INIT(Layer_SolidColor);
+SYNFIG_LAYER_SET_NAME(Layer_SolidColor,"SolidColor");
+SYNFIG_LAYER_SET_LOCAL_NAME(Layer_SolidColor,_("Solid Color"));
+SYNFIG_LAYER_SET_CATEGORY(Layer_SolidColor,_("Geometry"));
+SYNFIG_LAYER_SET_VERSION(Layer_SolidColor,"0.1");
+SYNFIG_LAYER_SET_CVS_ID(Layer_SolidColor,"$Id: layer_solidcolor.cpp,v 1.1.1.1 2005/01/04 01:23:14 darco Exp $");
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -98,8 +98,8 @@ Layer_SolidColor::get_param_vocab()const
 	return ret;
 }
 
-sinfg::Layer::Handle
-Layer_SolidColor::hit_check(sinfg::Context context, const sinfg::Point &point)const
+synfig::Layer::Handle
+Layer_SolidColor::hit_check(synfig::Context context, const synfig::Point &point)const
 {
 	if(get_blend_method()==Color::BLEND_STRAIGHT && get_amount()>=0.5)
 		return const_cast<Layer_SolidColor*>(this);

@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file time.cpp
 **	\brief Template File
 **
@@ -59,7 +59,7 @@ extern "C" { int _isnan(double x); }
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 
 #define tolower ::tolower
 
@@ -104,7 +104,7 @@ Time::Time(const String &str_, float fps):
 			// to warn about units if the value is zero
 			// it is the only case where units are irrelevant.
 			if(amount!=0)
-				sinfg::warning("Time(): No unit provided in time code, assuming SECONDS (\"%s\")",str.c_str());
+				synfig::warning("Time(): No unit provided in time code, assuming SECONDS (\"%s\")",str.c_str());
 			value_+=amount;
 			return;
 		}
@@ -127,7 +127,7 @@ Time::Time(const String &str_, float fps):
 				if(fps)
 					value_+=amount/fps;
 				else
-					sinfg::warning("Time(): Individual frames referenced, but frame rate is unknown");
+					synfig::warning("Time(): Individual frames referenced, but frame rate is unknown");
 				break;
 			case ':':
 				// try to read it in as a traditional time format
@@ -146,12 +146,12 @@ Time::Time(const String &str_, float fps):
 						return;
 					}
 				}
-				sinfg::warning("Time(): Bad time format");
+				synfig::warning("Time(): Bad time format");
 				break;
 
 			default:
 				value_+=amount;
-				sinfg::warning("Time(): Unexpected character '%c' when parsing time string \"%s\"",str[pos],str.c_str());
+				synfig::warning("Time(): Unexpected character '%c' when parsing time string \"%s\"",str[pos],str.c_str());
 				break;
 		}
 		pos++;

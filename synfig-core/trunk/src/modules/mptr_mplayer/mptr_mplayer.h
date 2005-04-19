@@ -1,5 +1,5 @@
 /*! ========================================================================
-** Sinfg
+** Synfig
 ** Template Header File
 ** $Id: mptr_mplayer.h,v 1.1.1.1 2005/01/04 01:23:14 darco Exp $
 **
@@ -20,12 +20,12 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_MPTR_MPLAYER_H
-#define __SINFG_MPTR_MPLAYER_H
+#ifndef __SYNFIG_MPTR_MPLAYER_H
+#define __SYNFIG_MPTR_MPLAYER_H
 
 /* === H E A D E R S ======================================================= */
 
-#include <sinfg/sinfg.h>
+#include <synfig/synfig.h>
 #include <stdio.h>
 #include "string.h"
 
@@ -35,7 +35,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-class mplayer_mptr : public sinfg::Importer
+class mplayer_mptr : public synfig::Importer
 {
 public:
 private:
@@ -49,9 +49,9 @@ public:
 	static const char Name[];
 	static const char Ext[];
 
-	virtual bool GetFrame(sinfg::Time time, sinfg::Surface &, sinfg::ProgressCallback *);
+	virtual bool GetFrame(synfig::Time time, synfig::Surface &, synfig::ProgressCallback *);
 
-	static sinfg::Importer *New(const char *filename);
+	static synfig::Importer *New(const char *filename);
 };
 
 /* === E N D =============================================================== */

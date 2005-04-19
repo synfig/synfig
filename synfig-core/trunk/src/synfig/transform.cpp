@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file template.cpp
 **	\brief Template File
 **
@@ -37,7 +37,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 
@@ -47,7 +47,7 @@ using namespace sinfg;
 
 /* === M E T H O D S ======================================================= */
 
-sinfg::GUID
+synfig::GUID
 TransformStack::get_guid()const
 {
 	GUID ret(0);
@@ -57,10 +57,10 @@ TransformStack::get_guid()const
 	return ret;
 }
 
-sinfg::Vector
-TransformStack::perform(const sinfg::Vector& x)const
+synfig::Vector
+TransformStack::perform(const synfig::Vector& x)const
 {
-	sinfg::Vector ret(x);
+	synfig::Vector ret(x);
 	
 	for(const_reverse_iterator iter(rbegin());iter!=rend();++iter)
 		ret=(*iter)->perform(ret);
@@ -68,10 +68,10 @@ TransformStack::perform(const sinfg::Vector& x)const
 	return ret;
 }
 
-sinfg::Vector
-TransformStack::unperform(const sinfg::Vector& x)const
+synfig::Vector
+TransformStack::unperform(const synfig::Vector& x)const
 {
-	sinfg::Vector ret(x);
+	synfig::Vector ret(x);
 	
 	for(const_iterator iter(begin());iter!=end();++iter)
 		ret=(*iter)->unperform(ret);
@@ -79,8 +79,8 @@ TransformStack::unperform(const sinfg::Vector& x)const
 	return ret;
 }
 
-sinfg::Rect
-TransformStack::perform(const sinfg::Rect& x)const
+synfig::Rect
+TransformStack::perform(const synfig::Rect& x)const
 {
 	Point min(x.get_min());
 	Point max(x.get_max());
@@ -94,8 +94,8 @@ TransformStack::perform(const sinfg::Rect& x)const
 	return ret;
 }
 
-sinfg::Rect
-TransformStack::unperform(const sinfg::Rect& x)const
+synfig::Rect
+TransformStack::unperform(const synfig::Rect& x)const
 {
 	Point min(x.get_min());
 	Point max(x.get_max());
@@ -109,8 +109,8 @@ TransformStack::unperform(const sinfg::Rect& x)const
 	return ret;
 }
 
-sinfg::Rect
-Transform::perform(const sinfg::Rect& x)const
+synfig::Rect
+Transform::perform(const synfig::Rect& x)const
 {
 	if(x.area()>1000000000000.0)
 		return Rect::full_plane();
@@ -128,8 +128,8 @@ Transform::perform(const sinfg::Rect& x)const
 	return ret;
 }
 
-sinfg::Rect
-Transform::unperform(const sinfg::Rect& x)const
+synfig::Rect
+Transform::unperform(const synfig::Rect& x)const
 {
 	if(x.area()>1000000000000.0)
 		return Rect::full_plane();

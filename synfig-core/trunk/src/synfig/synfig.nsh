@@ -7,12 +7,12 @@ Section "Synfig Core"
   SetOutPath "$INSTDIR\bin"
   
   ; Put file there
-  File "src\sinfg\.libs\libsinfg-0.dll"
+  File "src\synfig\.libs\libsynfig-0.dll"
 
 SectionEnd
 
 Section "un.Synfig Core"
-	Delete "$INSTDIR\bin\libsinfg-0.dll"
+	Delete "$INSTDIR\bin\libsynfig-0.dll"
 	RMDir "$INSTDIR"
 SectionEnd
 

@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file noise.cpp
 **	\brief blehh
 **
@@ -30,31 +30,31 @@
 
 #include "distort.h"
 
-#include <sinfg/string.h>
-#include <sinfg/time.h>
-#include <sinfg/context.h>
-#include <sinfg/paramdesc.h>
-#include <sinfg/renddesc.h>
-#include <sinfg/surface.h>
-#include <sinfg/value.h>
-#include <sinfg/valuenode.h>
+#include <synfig/string.h>
+#include <synfig/time.h>
+#include <synfig/context.h>
+#include <synfig/paramdesc.h>
+#include <synfig/renddesc.h>
+#include <synfig/surface.h>
+#include <synfig/value.h>
+#include <synfig/valuenode.h>
 
 #endif
 
 /* === M A C R O S ========================================================= */
 
-using namespace sinfg;
+using namespace synfig;
 using namespace std;
 using namespace etl;
 
 /* === G L O B A L S ======================================================= */
 
-SINFG_LAYER_INIT(NoiseDistort);
-SINFG_LAYER_SET_NAME(NoiseDistort,"noise_distort");
-SINFG_LAYER_SET_LOCAL_NAME(NoiseDistort,_("Noise Distort"));
-SINFG_LAYER_SET_CATEGORY(NoiseDistort,_("Distortions"));
-SINFG_LAYER_SET_VERSION(NoiseDistort,"0.0");
-SINFG_LAYER_SET_CVS_ID(NoiseDistort,"$Id: distort.cpp,v 1.1.1.1 2005/01/04 01:23:14 darco Exp $");
+SYNFIG_LAYER_INIT(NoiseDistort);
+SYNFIG_LAYER_SET_NAME(NoiseDistort,"noise_distort");
+SYNFIG_LAYER_SET_LOCAL_NAME(NoiseDistort,_("Noise Distort"));
+SYNFIG_LAYER_SET_CATEGORY(NoiseDistort,_("Distortions"));
+SYNFIG_LAYER_SET_VERSION(NoiseDistort,"0.0");
+SYNFIG_LAYER_SET_CVS_ID(NoiseDistort,"$Id: distort.cpp,v 1.1.1.1 2005/01/04 01:23:14 darco Exp $");
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -119,27 +119,27 @@ NoiseDistort::color_func(const Point &point, float supersample,Context context)c
 }
 
 inline float
-NoiseDistort::calc_supersample(const sinfg::Point &x, float pw,float ph)const
+NoiseDistort::calc_supersample(const synfig::Point &x, float pw,float ph)const
 {
 	return 0.0f;
 }
 
 void
-NoiseDistort::set_time(sinfg::Context context, sinfg::Time t)const
+NoiseDistort::set_time(synfig::Context context, synfig::Time t)const
 {
 	curr_time=t;
 	context.set_time(t);
 }
 
 void
-NoiseDistort::set_time(sinfg::Context context, sinfg::Time t, const sinfg::Point &point)const
+NoiseDistort::set_time(synfig::Context context, synfig::Time t, const synfig::Point &point)const
 {
 	curr_time=t;
 	context.set_time(t,point);
 }
 
-sinfg::Layer::Handle
-NoiseDistort::hit_check(sinfg::Context context, const sinfg::Point &point)const
+synfig::Layer::Handle
+NoiseDistort::hit_check(synfig::Context context, const synfig::Point &point)const
 {
 	if(get_blend_method()==Color::BLEND_STRAIGHT && get_amount()>=0.5)
 		return const_cast<NoiseDistort*>(this);

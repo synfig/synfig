@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file bline.cpp
 **	\brief Template
 **
@@ -28,23 +28,23 @@
 #	include <config.h>
 #endif
 
-#include <sinfg/angle.h>
+#include <synfig/angle.h>
 #include "plant.h"
-#include <sinfg/string.h>
-#include <sinfg/time.h>
-#include <sinfg/context.h>
-#include <sinfg/paramdesc.h>
-#include <sinfg/renddesc.h>
-#include <sinfg/surface.h>
-#include <sinfg/value.h>
-#include <sinfg/valuenode.h>
+#include <synfig/string.h>
+#include <synfig/time.h>
+#include <synfig/context.h>
+#include <synfig/paramdesc.h>
+#include <synfig/renddesc.h>
+#include <synfig/surface.h>
+#include <synfig/value.h>
+#include <synfig/valuenode.h>
 
 #include <ETL/calculus>
 #include <ETL/bezier>
 #include <ETL/hermite>
 #include <vector>
 
-#include <sinfg/valuenode_bline.h>
+#include <synfig/valuenode_bline.h>
 
 #endif
 
@@ -55,18 +55,18 @@ using namespace etl;
 #define SAMPLES		300
 #define ROUND_END_FACTOR	(4)
 #define CUSP_THRESHOLD		(0.15)
-#define NO_LOOP_COOKIE		sinfg::Vector(84951305,7836658)
+#define NO_LOOP_COOKIE		synfig::Vector(84951305,7836658)
 #define EPSILON				(0.000000001)
 #define CUSP_TANGENT_ADJUST	(0.025)
 
 /* === G L O B A L S ======================================================= */
 
-SINFG_LAYER_INIT(Plant);
-SINFG_LAYER_SET_NAME(Plant,"plant");
-SINFG_LAYER_SET_LOCAL_NAME(Plant,_("Plant"));
-SINFG_LAYER_SET_CATEGORY(Plant,_("Particle Systems"));
-SINFG_LAYER_SET_VERSION(Plant,"0.1");
-SINFG_LAYER_SET_CVS_ID(Plant,"$Id: plant.cpp,v 1.2 2005/01/13 06:48:39 darco Exp $");
+SYNFIG_LAYER_INIT(Plant);
+SYNFIG_LAYER_SET_NAME(Plant,"plant");
+SYNFIG_LAYER_SET_LOCAL_NAME(Plant,_("Plant"));
+SYNFIG_LAYER_SET_CATEGORY(Plant,_("Particle Systems"));
+SYNFIG_LAYER_SET_VERSION(Plant,"0.1");
+SYNFIG_LAYER_SET_CVS_ID(Plant,"$Id: plant.cpp,v 1.2 2005/01/13 06:48:39 darco Exp $");
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -106,7 +106,7 @@ Plant::Plant():
 }
 
 void
-Plant::branch(int n,int depth,float t, float stunt_growth, sinfg::Point position,sinfg::Vector vel)const
+Plant::branch(int n,int depth,float t, float stunt_growth, synfig::Point position,synfig::Vector vel)const
 {
 	float next_split((1.0-t)/(splits-depth)+t/*+random_factor*random(40+depth,t*splits,0,0)/splits*/);
 	for(;t<next_split;t+=step)
@@ -126,11 +126,11 @@ Plant::branch(int n,int depth,float t, float stunt_growth, sinfg::Point position
 	
 	if(t>=1.0-stunt_growth)return;
 
-	sinfg::Real sin_v=sinfg::Angle::cos(split_angle).get();
-	sinfg::Real cos_v=sinfg::Angle::sin(split_angle).get();
+	synfig::Real sin_v=synfig::Angle::cos(split_angle).get();
+	synfig::Real cos_v=synfig::Angle::sin(split_angle).get();
 	
-	sinfg::Vector velocity1(vel[0]*sin_v-vel[1]*cos_v+random_factor*random(2,30+n+depth,t*splits,0.0f,0.0f),vel[0]*cos_v+vel[1]*sin_v+random_factor*random(2,32+n+depth,t*splits,0.0f,0.0f));
-	sinfg::Vector velocity2(vel[0]*sin_v+vel[1]*cos_v+random_factor*random(2,31+n+depth,t*splits,0.0f,0.0f),-vel[0]*cos_v+vel[1]*sin_v+random_factor*random(2,33+n+depth,t*splits,0.0f,0.0f));
+	synfig::Vector velocity1(vel[0]*sin_v-vel[1]*cos_v+random_factor*random(2,30+n+depth,t*splits,0.0f,0.0f),vel[0]*cos_v+vel[1]*sin_v+random_factor*random(2,32+n+depth,t*splits,0.0f,0.0f));
+	synfig::Vector velocity2(vel[0]*sin_v+vel[1]*cos_v+random_factor*random(2,31+n+depth,t*splits,0.0f,0.0f),-vel[0]*cos_v+vel[1]*sin_v+random_factor*random(2,33+n+depth,t*splits,0.0f,0.0f));
 	
 	Plant::branch(n,depth+1,t,stunt_growth,position,velocity1);
 	Plant::branch(n,depth+1,t,stunt_growth,position,velocity2);
@@ -139,7 +139,7 @@ Plant::branch(int n,int depth,float t, float stunt_growth, sinfg::Point position
 void
 Plant::calc_bounding_rect()const
 {
-	std::vector<sinfg::BLinePoint>::const_iterator iter,next;
+	std::vector<synfig::BLinePoint>::const_iterator iter,next;
 
 	bounding_rect=Rect::zero();
 
@@ -179,7 +179,7 @@ Plant::sync()const
 	if(bline.size()<=2)
 		return;
 	
-	std::vector<sinfg::BLinePoint>::const_iterator iter,next;
+	std::vector<synfig::BLinePoint>::const_iterator iter,next;
 
 	etl::hermite<Vector> curve;
 	

@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file blur.cpp
 **	\brief Blur Implementation File
 **
@@ -28,8 +28,8 @@
 #	include <config.h>
 #endif
 
-#include <sinfg/general.h>
-#include <sinfg/surface.h>
+#include <synfig/general.h>
+#include <synfig/surface.h>
 
 #include "blur.h"
 
@@ -46,7 +46,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 
@@ -113,7 +113,7 @@ Point Blur::operator ()(const Point &pos) const
 	return blurpos;
 }
 
-Point Blur::operator ()(sinfg::Real x, sinfg::Real y) const
+Point Blur::operator ()(synfig::Real x, synfig::Real y) const
 {
 	return (*this)(Point(x,y));
 }
@@ -469,7 +469,7 @@ bool Blur::operator ()(const Surface &surface,
 	
 	Surface worksurface(w,h);
 	
-	//sinfg::info("Blur: check surface = %s", surface_valid(surface)?"true":"false");
+	//synfig::info("Blur: check surface = %s", surface_valid(surface)?"true":"false");
 	
 	// Premultiply the alpha
 	for(y=0;y<h;y++)
@@ -555,7 +555,7 @@ bool Blur::operator ()(const Surface &surface,
 	case Blur::BOX: // B O X -------------------------------------------------------
 		{
 			//horizontal part
-			//sinfg::info("Blur: Starting Box blur (surface valid %d)", (int)surface_valid(worksurface));
+			//synfig::info("Blur: Starting Box blur (surface valid %d)", (int)surface_valid(worksurface));
 			
 			Surface temp_surface;
 			temp_surface.set_wh(w,h);
@@ -565,11 +565,11 @@ bool Blur::operator ()(const Surface &surface,
 				int length = halfsizex;
 				length=std::max(1,length);
 				
-				//sinfg::info("Blur: hbox blur work -> temp %d", length);
+				//synfig::info("Blur: hbox blur work -> temp %d", length);
 				etl::hbox_blur(worksurface.begin(),worksurface.end(),length,temp_surface.begin());
 			}
 			else temp_surface = worksurface;
-			//sinfg::info("Blur: hbox finished");
+			//synfig::info("Blur: hbox finished");
 			
 			//vertical part
 			//Surface temp_surface2;
@@ -580,11 +580,11 @@ bool Blur::operator ()(const Surface &surface,
 				int length = halfsizey;
 				length = std::max(1,length);
 				
-				//sinfg::info("Blur: vbox blur temp -> work %d",length);
+				//synfig::info("Blur: vbox blur temp -> work %d",length);
 				etl::vbox_blur(temp_surface.begin(),temp_surface.end(),length,worksurface.begin());
 			}
 			else worksurface = temp_surface;
-			//sinfg::info("Blur: vbox finished");
+			//synfig::info("Blur: vbox finished");
 			
 			//blend with the original surface
 			/*int x,y;
@@ -702,7 +702,7 @@ bool Blur::operator ()(const Surface &surface,
 			Surface temp_surface;
 			Surface *gauss_surface;
 			
-			//sinfg::warning("Didn't crash yet b1");
+			//synfig::warning("Didn't crash yet b1");
 			
 			//if(get_amount()==1.0 && get_blend_method()==Color::BLEND_STRAIGHT)
 				gauss_surface = &worksurface;
@@ -736,7 +736,7 @@ bool Blur::operator ()(const Surface &surface,
 			memset(SC0,0,(w+2)*sizeof(Color));
 			memset(SC0,0,(w+2)*sizeof(Color));
 
-			//sinfg::warning("Didn't crash yet b2");
+			//synfig::warning("Didn't crash yet b2");
 			//int i = 0;
 			
 			while(bw&&bh)
@@ -761,7 +761,7 @@ bool Blur::operator ()(const Surface &surface,
 					bw--,bh--;
 				}
 				
-				//sinfg::warning("Didn't crash yet bi - %d",i++);
+				//synfig::warning("Didn't crash yet bi - %d",i++);
 			}
 			while(bw)
 			{
@@ -777,7 +777,7 @@ bool Blur::operator ()(const Surface &surface,
 					GuassianBlur_2x1(*gauss_surface);
 					bw--;
 				}
-				//sinfg::warning("Didn't crash yet bi - %d",i++);
+				//synfig::warning("Didn't crash yet bi - %d",i++);
 			}
 			while(bh)
 			{
@@ -793,7 +793,7 @@ bool Blur::operator ()(const Surface &surface,
 					GuassianBlur_1x2(*gauss_surface);
 					bh--;
 				}
-				//sinfg::warning("Didn't crash yet bi - %d",i++);
+				//synfig::warning("Didn't crash yet bi - %d",i++);
 			}
 
 			delete [] SC0;
@@ -808,7 +808,7 @@ bool Blur::operator ()(const Surface &surface,
 					for(x=0;x<renddesc.get_w();x++)
 						worksurface[y][x]=Color::blend(temp_surface[y][x],worksurface[y][x],get_amount(),get_blend_method());
 			}*/
-			//sinfg::warning("Didn't crash yet b end",i++);
+			//synfig::warning("Didn't crash yet b end",i++);
 		}
 		break;
 

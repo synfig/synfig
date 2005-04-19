@@ -302,7 +302,7 @@ WARN_LOGFILE           =
 # directories like "/usr/src/myproject". Separate the files or directories 
 # with spaces.
 
-INPUT                  = src/sinfg
+INPUT                  = src/synfig
 
 # If the value of the INPUT tag contains directories, you can use the 
 # FILE_PATTERNS tag to specify one or more wildcard pattern (like *.cpp 
@@ -723,7 +723,7 @@ INCLUDE_FILE_PATTERNS  =
 # or name=definition (no spaces). If the definition and the = are 
 # omitted =1 is assumed.
 
-PREDEFINED             = SINFG_NO_DEPRECATED DOXYGEN_SKIP
+PREDEFINED             = SYNFIG_NO_DEPRECATED DOXYGEN_SKIP
 
 # If the MACRO_EXPANSION and EXPAND_PREDEF_ONLY tags are set to YES then 
 # this tag can be used to specify a list of macro names that should be expanded. 

@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file valuenode_animated.cpp
 **	\brief Template File
 **
@@ -56,7 +56,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 
@@ -173,7 +173,7 @@ struct is_angle_type<Angle>
 /* === C L A S S E S ======================================================= */
 
 template<typename T>
-class _Hermite : public sinfg::ValueNode_Animated
+class _Hermite : public synfig::ValueNode_Animated
 {
 public:
 	typedef T value_type;
@@ -394,7 +394,7 @@ public:
 						//value_type vect=(value_type)(Pn-Pc);
 
 						// Debugging stuff
-						//sinfg::info("%d:t1: %s",i,tangent_info(Pp,Pn,vect).c_str());
+						//synfig::info("%d:t1: %s",i,tangent_info(Pp,Pn,vect).c_str());
 	
 						// Adjust for time
 						//vect=value_type(vect*(curve.second.get_dt()*2.0)/(curve.second.get_dt()+curve_list.back().second.get_dt()));
@@ -436,7 +436,7 @@ public:
 						//value_type vect=(value_type)(Pc-Pp);
 
 						// Debugging stuff
-						//sinfg::info("%d:t2: %s",i,tangent_info(Pp,Pn,vect).c_str());
+						//synfig::info("%d:t2: %s",i,tangent_info(Pp,Pn,vect).c_str());
 
 						// Adjust for time
 						//vect=value_type(vect*(curve.second.get_dt()*2.0)/(curve.second.get_dt()+(after_next->get_time()-next->get_time())));
@@ -507,7 +507,7 @@ public:
 
 
 template<typename T>
-class _Constant : public sinfg::ValueNode_Animated
+class _Constant : public synfig::ValueNode_Animated
 {
 public:
 	typedef T value_type;
@@ -605,7 +605,7 @@ public:
 	}
 };
 
-class _AnimBool : public sinfg::ValueNode_Animated
+class _AnimBool : public synfig::ValueNode_Animated
 {
 public:
 	typedef bool value_type;
@@ -855,8 +855,8 @@ ValueNode_Animated::new_waypoint_at_time(const Time& time)const
 	}
 	waypoint.set_time(time);
 	waypoint.set_parent_value_node(const_cast<ValueNode_Animated*>(this));
-//	sinfg::info("waypoint.get_after()=set to %d",waypoint.get_after());
-//	sinfg::info("waypoint.get_before()=set to %d",waypoint.get_before());
+//	synfig::info("waypoint.get_after()=set to %d",waypoint.get_after());
+//	synfig::info("waypoint.get_before()=set to %d",waypoint.get_before());
 	
 	return waypoint;
 }
@@ -1006,7 +1006,7 @@ ValueNode_Animated::set_type(ValueBase::Type t)
 }
 
 ValueNode_Animated::Handle
-sinfg::ValueNode_Animated::create(ValueBase::Type type)
+synfig::ValueNode_Animated::create(ValueBase::Type type)
 {
 	switch(type)
 	{
@@ -1033,7 +1033,7 @@ sinfg::ValueNode_Animated::create(ValueBase::Type type)
 			return ValueNode_Animated::Handle(new _Constant<Canvas::LooseHandle>);
 		default:
 			throw
-				Exception::BadType(strprintf(_("%s: You cannot use a %s in an animated ValueNode"),"sinfg::ValueNode_Animated::create()",
+				Exception::BadType(strprintf(_("%s: You cannot use a %s in an animated ValueNode"),"synfig::ValueNode_Animated::create()",
 					ValueBase::type_name(type).c_str())
 				);
 			break;

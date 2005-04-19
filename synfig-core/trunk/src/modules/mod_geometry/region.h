@@ -1,5 +1,5 @@
 /*! ========================================================================
-** Sinfg
+** Synfig
 ** Template Header File
 ** $Id: region.h,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $
 **
@@ -20,15 +20,15 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_REGION_H
-#define __SINFG_REGION_H
+#ifndef __SYNFIG_REGION_H
+#define __SYNFIG_REGION_H
 
 /* === H E A D E R S ======================================================= */
 
-#include <sinfg/layer_polygon.h>
+#include <synfig/layer_polygon.h>
 #include <list>
 #include <vector>
-#include <sinfg/value.h>
+#include <synfig/value.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -36,25 +36,25 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace sinfg { class Segment; }
+namespace synfig { class Segment; }
 
-using namespace sinfg;
+using namespace synfig;
 using namespace std;
 using namespace etl;
 
-class Region : protected sinfg::Layer_Polygon//Shape
+class Region : protected synfig::Layer_Polygon//Shape
 {
-	SINFG_LAYER_MODULE_EXT
+	SYNFIG_LAYER_MODULE_EXT
 private:
-	sinfg::ValueBase bline;
-	std::vector<sinfg::Segment> segment_list;
+	synfig::ValueBase bline;
+	std::vector<synfig::Segment> segment_list;
 public:
 	Region();
 
 	//! Updates the polygon data to match the parameters.
 	void sync();
 
-	virtual bool set_param(const String & param, const sinfg::ValueBase &value);
+	virtual bool set_param(const String & param, const synfig::ValueBase &value);
 
 	virtual ValueBase get_param(const String & param)const;
 

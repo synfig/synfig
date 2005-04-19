@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file surfacenew.h
 **	\brief Template Header
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_SURFACENEW_H
-#define __SINFG_SURFACENEW_H
+#ifndef __SYNFIG_SURFACENEW_H
+#define __SYNFIG_SURFACENEW_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -38,7 +38,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace sinfg {
+namespace synfig {
 
 class Surface;
 class SurfaceChannelLock;
@@ -392,7 +392,7 @@ public:
 }; // END of class ChannelLock
 
 
-}; // END of namespace sinfg
+}; // END of namespace synfig
 
 /* === E N D =============================================================== */
 

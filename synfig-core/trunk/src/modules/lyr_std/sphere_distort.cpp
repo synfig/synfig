@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file sphere_distort.cpp
 **	\brief Sphere Distort File
 **
@@ -29,17 +29,17 @@
 #endif
 
 #include "sphere_distort.h"
-#include <sinfg/string.h>
-#include <sinfg/time.h>
-#include <sinfg/context.h>
-#include <sinfg/paramdesc.h>
-#include <sinfg/renddesc.h>
-#include <sinfg/surface.h>
-#include <sinfg/value.h>
-#include <sinfg/valuenode.h>
-#include <sinfg/transform.h>
+#include <synfig/string.h>
+#include <synfig/time.h>
+#include <synfig/context.h>
+#include <synfig/paramdesc.h>
+#include <synfig/renddesc.h>
+#include <synfig/surface.h>
+#include <synfig/value.h>
+#include <synfig/valuenode.h>
+#include <synfig/transform.h>
 
-#include <sinfg/curve_helper.h>
+#include <synfig/curve_helper.h>
 
 #endif
 
@@ -47,7 +47,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 
@@ -65,12 +65,12 @@ enum
 
 /* === G L O B A L S ======================================================= */
 
-SINFG_LAYER_INIT(Layer_SphereDistort);
-SINFG_LAYER_SET_NAME(Layer_SphereDistort,"spherize");
-SINFG_LAYER_SET_LOCAL_NAME(Layer_SphereDistort,_("Spherize"));
-SINFG_LAYER_SET_CATEGORY(Layer_SphereDistort,_("Distortions"));
-SINFG_LAYER_SET_VERSION(Layer_SphereDistort,"0.2");
-SINFG_LAYER_SET_CVS_ID(Layer_SphereDistort,"$Id: sphere_distort.cpp,v 1.2 2005/01/24 05:00:18 darco Exp $");
+SYNFIG_LAYER_INIT(Layer_SphereDistort);
+SYNFIG_LAYER_SET_NAME(Layer_SphereDistort,"spherize");
+SYNFIG_LAYER_SET_LOCAL_NAME(Layer_SphereDistort,_("Spherize"));
+SYNFIG_LAYER_SET_CATEGORY(Layer_SphereDistort,_("Distortions"));
+SYNFIG_LAYER_SET_VERSION(Layer_SphereDistort,"0.2");
+SYNFIG_LAYER_SET_CVS_ID(Layer_SphereDistort,"$Id: sphere_distort.cpp,v 1.2 2005/01/24 05:00:18 darco Exp $");
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -104,10 +104,10 @@ Layer_SphereDistort::set_param(const String & param, const ValueBase &value)
 		{
 			connect_dynamic_param("amount",dynamic_param_list().find("percent")->second);
 			disconnect_dynamic_param("percent");
-			sinfg::warning("Layer_SphereDistort::::set_param(): Updated valuenode connection to use the new \"amount\" parameter.");
+			synfig::warning("Layer_SphereDistort::::set_param(): Updated valuenode connection to use the new \"amount\" parameter.");
 		}
 		else
-			sinfg::warning("Layer_SphereDistort::::set_param(): The parameter \"segment_list\" is deprecated. Use \"bline\" instead.");
+			synfig::warning("Layer_SphereDistort::::set_param(): The parameter \"segment_list\" is deprecated. Use \"bline\" instead.");
 	}
 	
 	return false;	
@@ -295,8 +295,8 @@ inline Point sphtrans(const Point &p, const Point &center, const Real &radius,
 	return sphtrans(p, center, radius, percent, type, tmp);
 }
 
-sinfg::Layer::Handle
-Layer_SphereDistort::hit_check(sinfg::Context context, const sinfg::Point &pos)const
+synfig::Layer::Handle
+Layer_SphereDistort::hit_check(synfig::Context context, const synfig::Point &pos)const
 {
 	bool clipped;
 	Point point(sphtrans(pos,center,radius,percent,type,clipped));
@@ -347,11 +347,11 @@ bool Layer_SphereDistort::accelerated_render(Context context,Surface *surface,in
 			(type == TYPE_DISTH && (sphr.minx >= windr.maxx || windr.minx >= sphr.maxx)) ||
 			(type == TYPE_DISTV && (sphr.miny >= windr.maxy || windr.miny >= sphr.maxy)) )
 		{
-			//sinfg::warning("Spherize: Bounding box reject");
+			//synfig::warning("Spherize: Bounding box reject");
 			return context.accelerated_render(surface,quality,renddesc,cb);
 		}
 		
-		//sinfg::warning("Spherize: Bounding box accept");
+		//synfig::warning("Spherize: Bounding box accept");
 	}
 	
 	//Ok, so we overlap some... now expand the window for rendering
@@ -380,10 +380,10 @@ bool Layer_SphereDistort::accelerated_render(Context context,Surface *surface,in
 		//expandr.set_point(tl[0],tl[1]);
 		//expandr.expand(br[0],br[1]);
 
-		//sinfg::warning("Spherize: Loop through lines and stuff");					   
+		//synfig::warning("Spherize: Loop through lines and stuff");					   
 		for(int i=0; i<4; ++i)
 		{
-			//sinfg::warning("Spherize: 	%d", i);
+			//synfig::warning("Spherize: 	%d", i);
 			Vector p_o = center-origin[i];
 			
 			//project onto left line
@@ -403,13 +403,13 @@ bool Layer_SphereDistort::accelerated_render(Context context,Surface *surface,in
 			expandr.expand(p[0],p[1]);
 		}
 		
-		/*sinfg::warning("Spherize: Bounding box (%f,%f)-(%f,%f)",
+		/*synfig::warning("Spherize: Bounding box (%f,%f)-(%f,%f)",
 							expandr.minx,expandr.miny,expandr.maxx,expandr.maxy);*/
 		
 		//now that we have the bouding rectangle of ALL the pixels (should be...)
 		//order it so that it's in the same orientation as the tl,br pair
 
-		//sinfg::warning("Spherize: Organize like tl,br");
+		//synfig::warning("Spherize: Organize like tl,br");
 		Point ntl(0,0),nbr(0,0);
 		
 		//sort x
@@ -450,7 +450,7 @@ bool Layer_SphereDistort::accelerated_render(Context context,Surface *surface,in
 		nw = renddesc.get_w() + nr - nl;
 		nh = renddesc.get_h() + nb - nt;
 		
-		//sinfg::warning("Spherize: Setting subwindow (%d,%d) (%d,%d) (%d,%d)",nl,nt,nr,nb,nw,nh);		
+		//synfig::warning("Spherize: Setting subwindow (%d,%d) (%d,%d) (%d,%d)",nl,nt,nr,nb,nw,nh);		
 		r.set_subwindow(nl,nt,nw,nh);
 		
 		/*r = renddesc;
@@ -458,10 +458,10 @@ bool Layer_SphereDistort::accelerated_render(Context context,Surface *surface,in
 		nl = 0, nt = 0;*/
 	}
 	
-	//sinfg::warning("Spherize: render background");
+	//synfig::warning("Spherize: render background");
 	if(!context.accelerated_render(&background,quality,r,cb))
 	{
-		sinfg::warning("SphereDistort: Layer below failed");
+		synfig::warning("SphereDistort: Layer below failed");
 		return false;
 	}
 	
@@ -477,7 +477,7 @@ bool Layer_SphereDistort::accelerated_render(Context context,Surface *surface,in
 	
 	Point rtl = r.get_tl();
 	
-	//sinfg::warning("Spherize: About to transform");
+	//synfig::warning("Spherize: About to transform");
 	
 	for(y = 0; y < h; ++y, sample[1] += ph, p.inc_y())
 	{
@@ -497,7 +497,7 @@ bool Layer_SphereDistort::accelerated_render(Context context,Surface *surface,in
 			
 			if(!(xs >= 0 && xs < nw && ys >= 0 && ys < nh))
 			{
-				//sinfg::warning("Spherize: we failed to account for %f,%f",xs,ys);
+				//synfig::warning("Spherize: we failed to account for %f,%f",xs,ys);
 				p.put_value(context.get_color(trans));//Color::alpha());
 				continue;
 			}
@@ -530,12 +530,12 @@ class  Spherize_Trans : public Transform
 public:
 	Spherize_Trans(const Layer_SphereDistort* x):Transform(x->get_guid()),layer(x) { }
 	
-	sinfg::Vector perform(const sinfg::Vector& x)const
+	synfig::Vector perform(const synfig::Vector& x)const
 	{
 		return sphtrans(x,layer->center,layer->radius,-layer->percent,layer->type);
 	}
 	
-	sinfg::Vector unperform(const sinfg::Vector& x)const
+	synfig::Vector unperform(const synfig::Vector& x)const
 	{
 		return sphtrans(x,layer->center,layer->radius,layer->percent,layer->type);
 	}

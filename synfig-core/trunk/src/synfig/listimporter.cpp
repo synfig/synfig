@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file listimporter.cpp
 **	\brief Template File
 **
@@ -38,7 +38,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 
@@ -58,7 +58,7 @@ ListImporter::ListImporter(const String &filename)
 
 	if(!stream)
 	{
-		sinfg::error("Unable to open "+filename);
+		synfig::error("Unable to open "+filename);
 		return;
 	}
 	String line;
@@ -72,7 +72,7 @@ ListImporter::ListImporter(const String &filename)
 		if(line.find(String("FPS "))==0)
 		{
 			fps=atof(String(line.begin()+4,line.end()).c_str());
-			//sinfg::warning("FPS=%f",fps);
+			//synfig::warning("FPS=%f",fps);
 			if(!fps)
 				fps=15;
 			continue;
@@ -101,7 +101,7 @@ ListImporter::get_frame(Surface &surface,Time time, ProgressCallback *cb)
 	if(!filename_list.size())
 	{
 		if(cb)cb->error(_("No images in list"));
-		else sinfg::error(_("No images in list"));
+		else synfig::error(_("No images in list"));
 		return false;
 	}
 	
@@ -129,7 +129,7 @@ ListImporter::get_frame(Surface &surface,Time time, ProgressCallback *cb)
 	if(!importer)
 	{
 		if(cb)cb->error(_("Unable to open ")+filename_list[frame]);
-		else sinfg::error(_("Unable to open ")+filename_list[frame]);
+		else synfig::error(_("Unable to open ")+filename_list[frame]);
 		return false;
 	}
 	
@@ -138,7 +138,7 @@ ListImporter::get_frame(Surface &surface,Time time, ProgressCallback *cb)
 	if(!importer->get_frame(surface,0,cb))
 	{
 		if(cb)cb->error(_("Unable to get frame from ")+filename_list[frame]);
-		else sinfg::error(_("Unable to get frame from ")+filename_list[frame]);
+		else synfig::error(_("Unable to get frame from ")+filename_list[frame]);
 		return false;
 	}
 		

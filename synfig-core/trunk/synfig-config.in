@@ -14,7 +14,7 @@ infodir=@infodir@
 mandir=@mandir@
 includedir=@includedir@
 
-LIBS="@SINFG_LIBS@"
+LIBS="@SYNFIG_LIBS@"
 
 VERSION=@VERSION@
 PACKAGE=@PACKAGE@
@@ -24,10 +24,10 @@ CFLAGS="@CONFIG_CFLAGS@"
 usage()
 {
 	cat <<EOF
-Usage: sinfg-config [OPTION]...
+Usage: synfig-config [OPTION]...
 
 Generic options
-  --version	print installed version of sinfg.
+  --version	print installed version of synfig.
   --help        display this help and exit.
 
 Compilation support options

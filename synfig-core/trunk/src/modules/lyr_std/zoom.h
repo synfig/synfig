@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file zoom.h
 **	\brief writeme
 **
@@ -21,13 +21,13 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_ZOOM_H
-#define __SINFG_ZOOM_H
+#ifndef __SYNFIG_ZOOM_H
+#define __SYNFIG_ZOOM_H
 
 /* === H E A D E R S ======================================================= */
 
-#include <sinfg/layer.h>
-#include <sinfg/vector.h>
+#include <synfig/layer.h>
+#include <synfig/vector.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -35,7 +35,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-using namespace sinfg;
+using namespace synfig;
 using namespace std;
 using namespace etl;
 
@@ -43,7 +43,7 @@ class Zoom_Trans;
 
 class Zoom : public Layer
 {
-	SINFG_LAYER_MODULE_EXT
+	SYNFIG_LAYER_MODULE_EXT
 	friend class Zoom_Trans;
 private:
 	Vector center;
@@ -51,14 +51,14 @@ private:
 public:
 	Zoom();
 	
-	virtual bool set_param(const String & param, const sinfg::ValueBase &value);
+	virtual bool set_param(const String & param, const synfig::ValueBase &value);
 	virtual ValueBase get_param(const String & param)const;
 	virtual Color get_color(Context context, const Point &pos)const;
 	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
-	sinfg::Layer::Handle hit_check(sinfg::Context context, const sinfg::Point &point)const;	
+	synfig::Layer::Handle hit_check(synfig::Context context, const synfig::Point &point)const;	
 	virtual Vocab get_param_vocab()const;
-	virtual sinfg::Rect get_full_bounding_rect(sinfg::Context context)const;
-	virtual etl::handle<sinfg::Transform> get_transform()const;
+	virtual synfig::Rect get_full_bounding_rect(synfig::Context context)const;
+	virtual etl::handle<synfig::Transform> get_transform()const;
 
 };
 

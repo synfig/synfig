@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file circle.cpp
 **	\brief Template Header
 **
@@ -29,31 +29,31 @@
 #endif
 
 #include "circle.h"
-#include <sinfg/string.h>
-#include <sinfg/time.h>
-#include <sinfg/context.h>
-#include <sinfg/paramdesc.h>
-#include <sinfg/renddesc.h>
-#include <sinfg/surface.h>
-#include <sinfg/value.h>
-#include <sinfg/valuenode.h>
+#include <synfig/string.h>
+#include <synfig/time.h>
+#include <synfig/context.h>
+#include <synfig/paramdesc.h>
+#include <synfig/renddesc.h>
+#include <synfig/surface.h>
+#include <synfig/value.h>
+#include <synfig/valuenode.h>
 
 #include <cmath>
 
 #endif
 
-using namespace sinfg;
+using namespace synfig;
 using namespace std;
 using namespace etl;
 
 /* -- G L O B A L S --------------------------------------------------------- */
 
-SINFG_LAYER_INIT(Circle);
-SINFG_LAYER_SET_NAME(Circle,"circle");
-SINFG_LAYER_SET_LOCAL_NAME(Circle,_("Circle"));
-SINFG_LAYER_SET_CATEGORY(Circle,_("Geometry"));
-SINFG_LAYER_SET_VERSION(Circle,"0.1");
-SINFG_LAYER_SET_CVS_ID(Circle,"$Id: circle.cpp,v 1.2 2005/01/24 03:08:17 darco Exp $");
+SYNFIG_LAYER_INIT(Circle);
+SYNFIG_LAYER_SET_NAME(Circle,"circle");
+SYNFIG_LAYER_SET_LOCAL_NAME(Circle,_("Circle"));
+SYNFIG_LAYER_SET_CATEGORY(Circle,_("Geometry"));
+SYNFIG_LAYER_SET_VERSION(Circle,"0.1");
+SYNFIG_LAYER_SET_CVS_ID(Circle,"$Id: circle.cpp,v 1.2 2005/01/24 03:08:17 darco Exp $");
 
 /* -- F U N C T I O N S ----------------------------------------------------- */
 
@@ -149,8 +149,8 @@ Circle::get_param_vocab()const
 	return ret;
 }
 
-sinfg::Layer::Handle
-Circle::hit_check(sinfg::Context context, const sinfg::Point &point)const
+synfig::Layer::Handle
+Circle::hit_check(synfig::Context context, const synfig::Point &point)const
 {
 	Point temp=pos-point;
 
@@ -173,7 +173,7 @@ Circle::hit_check(sinfg::Context context, const sinfg::Point &point)const
 			
 	if(in_circle)
 	{
-		sinfg::Layer::Handle tmp;
+		synfig::Layer::Handle tmp;
 		if(get_blend_method()==Color::BLEND_BEHIND && (tmp=context.hit_check(point)))
 			return tmp;
 		if(Color::is_onto(get_blend_method()) && !(tmp=context.hit_check(point)))

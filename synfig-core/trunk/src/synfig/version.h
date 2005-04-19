@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file version.h
 **	\brief Template Header
 **
@@ -21,45 +21,45 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_VERSION_H
-#define __SINFG_VERSION_H
+#ifndef __SYNFIG_VERSION_H
+#define __SYNFIG_VERSION_H
 
 /* === H E A D E R S ======================================================= */
 
 /* === M A C R O S ========================================================= */
 
-/*! \def SINFG_VERSION
-**	\brief Sinfg API Version
+/*! \def SYNFIG_VERSION
+**	\brief Synfig API Version
 **
-**	The macro SINFG_VERSION can be set to ensure
+**	The macro SYNFIG_VERSION can be set to ensure
 **	compile-time compatibility with future versions
-**	of Sinfg. The first two digits are the major
+**	of Synfig. The first two digits are the major
 **	version, the second two digits are the minor
 **	version, and the last two digits are the
 **	revision release.
 */
-#ifndef SINFG_VERSION
-#define SINFG_VERSION (006000)
+#ifndef SYNFIG_VERSION
+#define SYNFIG_VERSION (006000)
 #endif
 
 /*!	Increment this value whenever
 **	the library changes in a way
 **	that breaks library compatibility
 */
-#define SINFG_LIBRARY_VERSION	47
+#define SYNFIG_LIBRARY_VERSION	47
 
 /*! \writeme */
-#define SINFG_CHECK_VERSION()	sinfg::check_version_(SINFG_LIBRARY_VERSION,sizeof(sinfg::Vector),sizeof(sinfg::Color),sizeof(sinfg::Canvas),sizeof(sinfg::Layer))
+#define SYNFIG_CHECK_VERSION()	synfig::check_version_(SYNFIG_LIBRARY_VERSION,sizeof(synfig::Vector),sizeof(synfig::Color),sizeof(synfig::Canvas),sizeof(synfig::Layer))
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace sinfg {
+namespace synfig {
 
 //! Version checker \internal
 /*! Checks to make sure that the library
 **	version matches with what the program
 **	was compiled against.
-**	\see SINFG_CHECK_VERSION()
+**	\see SYNFIG_CHECK_VERSION()
 */
 extern bool check_version_(int v,int vec_size, int color_size,int canvas_size,int layer_size);
 
@@ -69,7 +69,7 @@ extern const char *get_build_date();
 
 extern const char *get_build_time();
 
-}; // END of namespace sinfg
+}; // END of namespace synfig
 
 /* === E N D =============================================================== */
 

@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file target_scanline.h
 **	\brief Template Header
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_TARGET_SCANLINE_H
-#define __SINFG_TARGET_SCANLINE_H
+#ifndef __SYNFIG_TARGET_SCANLINE_H
+#define __SYNFIG_TARGET_SCANLINE_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -34,7 +34,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace sinfg {
+namespace synfig {
 
 /*!	\class Target_Scanline
 **	\brief Render-target
@@ -88,11 +88,11 @@ public:
 
 	int get_threads()const { return threads_; }
 
-	bool add_frame(const sinfg::Surface *surface);
+	bool add_frame(const synfig::Surface *surface);
 private:
 }; // END of class Target_Scanline
 
-}; // END of namespace sinfg
+}; // END of namespace synfig
 
 /* === E N D =============================================================== */
 

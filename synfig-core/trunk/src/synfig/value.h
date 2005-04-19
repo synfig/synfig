@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file value.h
 **	\brief Template Header
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_VALUE_H
-#define __SINFG_VALUE_H
+#ifndef __SYNFIG_VALUE_H
+#define __SYNFIG_VALUE_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -40,7 +40,7 @@
 #include "blinepoint.h"
 #include "exception.h"
 
-#ifndef SINFG_NO_ANGLE
+#ifndef SYNFIG_NO_ANGLE
 #include "angle.h"
 #endif
 
@@ -52,7 +52,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace sinfg {
+namespace synfig {
 
 class Canvas;
 class Vector;
@@ -337,7 +337,7 @@ public:
 	operator half()const { return get(Real()); }
 #endif
 	
-#ifndef SINFG_NO_ANGLE
+#ifndef SYNFIG_NO_ANGLE
 	operator const Angle&()const { return get(Angle()); }
 	static const Type get_type(const Angle&) { return TYPE_ANGLE; }
 #endif
@@ -447,7 +447,7 @@ public:
 }; // END of class Value
 */
 
-}; // END of namespace sinfg
+}; // END of namespace synfig
 
 /* === E N D =============================================================== */
 

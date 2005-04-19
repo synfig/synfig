@@ -1,5 +1,5 @@
 /*! ========================================================================
-** Sinfg
+** Synfig
 ** Template File
 ** $Id: star.cpp,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $
 **
@@ -32,15 +32,15 @@
 #include <ETL/bezier>
 #include <ETL/hermite>
 
-#include <sinfg/string.h>
-#include <sinfg/time.h>
-#include <sinfg/context.h>
-#include <sinfg/paramdesc.h>
-#include <sinfg/renddesc.h>
-#include <sinfg/surface.h>
-#include <sinfg/value.h>
-#include <sinfg/valuenode.h>
-#include <sinfg/segment.h>
+#include <synfig/string.h>
+#include <synfig/time.h>
+#include <synfig/context.h>
+#include <synfig/paramdesc.h>
+#include <synfig/renddesc.h>
+#include <synfig/surface.h>
+#include <synfig/value.h>
+#include <synfig/valuenode.h>
+#include <synfig/segment.h>
 
 #endif
 
@@ -52,12 +52,12 @@ using namespace etl;
 
 /* === G L O B A L S ======================================================= */
 
-SINFG_LAYER_INIT(Star);
-SINFG_LAYER_SET_NAME(Star,"star");
-SINFG_LAYER_SET_LOCAL_NAME(Star,_("Star"));
-SINFG_LAYER_SET_CATEGORY(Star,_("Geometry"));
-SINFG_LAYER_SET_VERSION(Star,"0.1");
-SINFG_LAYER_SET_CVS_ID(Star,"$Id: star.cpp,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $");
+SYNFIG_LAYER_INIT(Star);
+SYNFIG_LAYER_SET_NAME(Star,"star");
+SYNFIG_LAYER_SET_LOCAL_NAME(Star,_("Star"));
+SYNFIG_LAYER_SET_CATEGORY(Star,_("Geometry"));
+SYNFIG_LAYER_SET_VERSION(Star,"0.1");
+SYNFIG_LAYER_SET_CVS_ID(Star,"$Id: star.cpp,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $");
 
 /* === P R O C E D U R E S ================================================= */
 

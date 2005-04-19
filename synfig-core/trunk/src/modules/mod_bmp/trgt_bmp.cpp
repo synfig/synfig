@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file trgt_bmp.cpp
 **	\brief Bitmap Target
 **
@@ -21,7 +21,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#define SINFG_NO_ANGLE
+#define SYNFIG_NO_ANGLE
 
 #ifdef USING_PCH
 #	include "pch.h"
@@ -31,7 +31,7 @@
 #endif
 
 #include "trgt_bmp.h"
-#include <sinfg/general.h>
+#include <synfig/general.h>
 
 #include <cstdio>
 #include <algorithm>
@@ -40,17 +40,17 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace sinfg;
+using namespace synfig;
 using namespace std;
 using namespace etl;
 
 /* === I N F O ============================================================= */
 
-SINFG_TARGET_INIT(bmp);
-SINFG_TARGET_SET_NAME(bmp,"bmp");
-SINFG_TARGET_SET_EXT(bmp,"bmp");
-SINFG_TARGET_SET_VERSION(bmp,"0.1");
-SINFG_TARGET_SET_CVS_ID(bmp,"$Id: trgt_bmp.cpp,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $");
+SYNFIG_TARGET_INIT(bmp);
+SYNFIG_TARGET_SET_NAME(bmp,"bmp");
+SYNFIG_TARGET_SET_EXT(bmp,"bmp");
+SYNFIG_TARGET_SET_VERSION(bmp,"0.1");
+SYNFIG_TARGET_SET_CVS_ID(bmp,"$Id: trgt_bmp.cpp,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $");
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
@@ -164,7 +164,7 @@ bmp::end_frame()
 }
 
 bool
-bmp::start_frame(sinfg::ProgressCallback *callback)
+bmp::start_frame(synfig::ProgressCallback *callback)
 {
 	int w=desc.get_w(),h=desc.get_h();
 	
@@ -190,7 +190,7 @@ bmp::start_frame(sinfg::ProgressCallback *callback)
 	if(!file)
 	{
 		if(callback)callback->error(_("Unable to open file"));
-		else sinfg::error(_("Unable to open file"));
+		else synfig::error(_("Unable to open file"));
 		return false;
 	}
 	
@@ -221,14 +221,14 @@ bmp::start_frame(sinfg::ProgressCallback *callback)
 	if(!fwrite(&fileheader.bfSize,sizeof(BITMAPFILEHEADER)-4,1,file))
 	{
 		if(callback)callback->error(_("Unable to write file header to file"));
-		else sinfg::error(_("Unable to write file header to file"));
+		else synfig::error(_("Unable to write file header to file"));
 		return false;
 	}
 
 	if(!fwrite(&infoheader,sizeof(BITMAPINFOHEADER),1,file))
 	{
 		if(callback)callback->error(_("Unable to write info header"));
-		else sinfg::error(_("Unable to write info header"));
+		else synfig::error(_("Unable to write info header"));
 		return false;
 	}
 

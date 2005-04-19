@@ -1,5 +1,5 @@
 /*! ========================================================================
-** Sinfg
+** Synfig
 ** ppm Target Module
 ** $Id: mptr_png.cpp,v 1.1.1.1 2005/01/04 01:23:14 darco Exp $
 **
@@ -34,9 +34,9 @@
 #endif
 
 #include "mptr_png.h"
-#include <sinfg/importer.h>
-#include <sinfg/time.h>
-#include <sinfg/general.h>
+#include <synfig/importer.h>
+#include <synfig/time.h>
+#include <synfig/general.h>
 
 
 #include <cstdio>
@@ -46,7 +46,7 @@
 
 /* === M A C R O S ========================================================= */
 
-using namespace sinfg;
+using namespace synfig;
 using namespace std;
 using namespace etl;
 
@@ -54,11 +54,11 @@ using namespace etl;
 
 /* === G L O B A L S ======================================================= */
 
-SINFG_IMPORTER_INIT(png_mptr);
-SINFG_IMPORTER_SET_NAME(png_mptr,"png_mptr");
-SINFG_IMPORTER_SET_EXT(png_mptr,"png");
-SINFG_IMPORTER_SET_VERSION(png_mptr,"0.1");
-SINFG_IMPORTER_SET_CVS_ID(png_mptr,"$Id: mptr_png.cpp,v 1.1.1.1 2005/01/04 01:23:14 darco Exp $");
+SYNFIG_IMPORTER_INIT(png_mptr);
+SYNFIG_IMPORTER_SET_NAME(png_mptr,"png_mptr");
+SYNFIG_IMPORTER_SET_EXT(png_mptr,"png");
+SYNFIG_IMPORTER_SET_VERSION(png_mptr,"0.1");
+SYNFIG_IMPORTER_SET_CVS_ID(png_mptr,"$Id: mptr_png.cpp,v 1.1.1.1 2005/01/04 01:23:14 darco Exp $");
 
 /* === M E T H O D S ======================================================= */
 
@@ -66,7 +66,7 @@ void
 png_mptr::png_out_error(png_struct *png_data,const char *msg)
 {
 	//png_mptr *me=(png_mptr*)png_data->error_ptr;
-	sinfg::error(strprintf("png_mptr: error: %s",msg));
+	synfig::error(strprintf("png_mptr: error: %s",msg));
 	//me->ready=false;
 }
 
@@ -74,7 +74,7 @@ void
 png_mptr::png_out_warning(png_struct *png_data,const char *msg)
 {
 	//png_mptr *me=(png_mptr*)png_data->error_ptr;
-	sinfg::warning(strprintf("png_mptr: warning: %s",msg));
+	synfig::warning(strprintf("png_mptr: warning: %s",msg));
 	//me->ready=false;
 }
 
@@ -161,7 +161,7 @@ png_mptr::png_mptr(const char *file_name)
 	double fgamma;
 	if (png_get_gAMA(png_ptr, info_ptr, &fgamma))
 	{
-		sinfg::info("PNG: Image gamma is %f",fgamma);
+		synfig::info("PNG: Image gamma is %f",fgamma);
 		png_set_gamma(png_ptr, gamma().get_gamma(), fgamma);
 	}
 	
@@ -169,7 +169,7 @@ png_mptr::png_mptr(const char *file_name)
 	/*
 	if (setjmp(png_jmpbuf(png_ptr)))
 	{
-		sinfg::error("Unable to setup longjump");
+		synfig::error("Unable to setup longjump");
 		png_destroy_read_struct(&png_ptr, &info_ptr, &end_info);
 		fclose(file);
         //! \todo THROW SOMETHING
@@ -279,7 +279,7 @@ png_mptr::png_mptr(const char *file_name)
 		break;
 
 	case PNG_COLOR_TYPE_PALETTE:
-		sinfg::warning("png_mptr: Paletted PNGs aren't yet fully supported.");
+		synfig::warning("png_mptr: Paletted PNGs aren't yet fully supported.");
 		for(y=0;y<surface_buffer.get_h();y++)
 			for(x=0;x<surface_buffer.get_w();x++)
 			{
@@ -295,7 +295,7 @@ png_mptr::png_mptr(const char *file_name)
 			}
 		break;
 	default:
-		sinfg::error("png_mptr: error: Unsupported color type");
+		synfig::error("png_mptr: error: Unsupported color type");
         //! \todo THROW SOMETHING
 		throw String("error on importer construction, *WRITEME*6");
 		return;
@@ -322,7 +322,7 @@ png_mptr::~png_mptr()
 }
 
 bool
-png_mptr::get_frame(sinfg::Surface &surface,Time, sinfg::ProgressCallback *cb)
+png_mptr::get_frame(synfig::Surface &surface,Time, synfig::ProgressCallback *cb)
 {
 	surface.mirror(surface_buffer);
 //	surface=surface_buffer;

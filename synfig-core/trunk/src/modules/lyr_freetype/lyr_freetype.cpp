@@ -1,5 +1,5 @@
 /*! ========================================================================
-** Sinfg
+** Synfig
 ** Template File
 ** $Id: lyr_freetype.cpp,v 1.5 2005/01/24 05:00:18 darco Exp $
 **
@@ -20,7 +20,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#define SINFG_LAYER
+#define SYNFIG_LAYER
 
 #ifdef USING_PCH
 #	include "pch.h"
@@ -31,15 +31,15 @@
 
 #include "lyr_freetype.h"
 
-#include <sinfg/string.h>
-#include <sinfg/time.h>
-#include <sinfg/context.h>
-#include <sinfg/paramdesc.h>
-#include <sinfg/renddesc.h>
-#include <sinfg/surface.h>
-#include <sinfg/value.h>
-#include <sinfg/valuenode.h>
-#include <sinfg/canvas.h>
+#include <synfig/string.h>
+#include <synfig/time.h>
+#include <synfig/context.h>
+#include <synfig/paramdesc.h>
+#include <synfig/renddesc.h>
+#include <synfig/surface.h>
+#include <synfig/value.h>
+#include <synfig/valuenode.h>
+#include <synfig/canvas.h>
 
 #include <ETL/misc>
 
@@ -47,7 +47,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 
@@ -63,12 +63,12 @@ using namespace sinfg;
 
 /* === G L O B A L S ======================================================= */
 
-SINFG_LAYER_INIT(lyr_freetype);
-SINFG_LAYER_SET_NAME(lyr_freetype,"text");
-SINFG_LAYER_SET_LOCAL_NAME(lyr_freetype,_("Simple Text"));
-SINFG_LAYER_SET_CATEGORY(lyr_freetype,_("Typography"));
-SINFG_LAYER_SET_VERSION(lyr_freetype,"0.2");
-SINFG_LAYER_SET_CVS_ID(lyr_freetype,"$Id: lyr_freetype.cpp,v 1.5 2005/01/24 05:00:18 darco Exp $");
+SYNFIG_LAYER_INIT(lyr_freetype);
+SYNFIG_LAYER_SET_NAME(lyr_freetype,"text");
+SYNFIG_LAYER_SET_LOCAL_NAME(lyr_freetype,_("Simple Text"));
+SYNFIG_LAYER_SET_CATEGORY(lyr_freetype,_("Typography"));
+SYNFIG_LAYER_SET_VERSION(lyr_freetype,"0.2");
+SYNFIG_LAYER_SET_CVS_ID(lyr_freetype,"$Id: lyr_freetype.cpp,v 1.5 2005/01/24 05:00:18 darco Exp $");
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -123,7 +123,7 @@ lyr_freetype::~lyr_freetype()
 }
 
 void
-lyr_freetype::new_font(const sinfg::String &family, int style, int weight)
+lyr_freetype::new_font(const synfig::String &family, int style, int weight)
 {		
 	if(
 		!new_font_(family,style,weight) &&
@@ -138,9 +138,9 @@ lyr_freetype::new_font(const sinfg::String &family, int style, int weight)
 }
 
 bool
-lyr_freetype::new_font_(const sinfg::String &family_, int style, int weight)
+lyr_freetype::new_font_(const synfig::String &family_, int style, int weight)
 {
-	sinfg::String family(family_);
+	synfig::String family(family_);
 	
 	//start evil hack
 	for(int i=0;i<family.size();i++)family[i]=tolower(family[i]);
@@ -341,7 +341,7 @@ lyr_freetype::new_face(const String &newfont)
 #endif
 	if(error)
 	{
-		//sinfg::error(strprintf("lyr_freetype:%s (err=%d)",_("Unable to open face."),error));
+		//synfig::error(strprintf("lyr_freetype:%s (err=%d)",_("Unable to open face."),error));
 		return false;
 	}
 
@@ -517,7 +517,7 @@ lyr_freetype::get_color(Context context, const Point &pos)const
 bool
 lyr_freetype::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
-	static sinfg::RecMutex freetype_mutex;
+	static synfig::RecMutex freetype_mutex;
 
 	if(needs_sync_)
 		const_cast<lyr_freetype*>(this)->sync();
@@ -567,7 +567,7 @@ lyr_freetype::accelerated_render(Context context,Surface *surface,int quality, c
 		return true;
 	}
 
-	sinfg::RecMutex::Lock lock(freetype_mutex);
+	synfig::RecMutex::Lock lock(freetype_mutex);
 
 #define CHAR_RESOLUTION		(64)
 	error = FT_Set_Char_Size(
@@ -581,7 +581,7 @@ lyr_freetype::accelerated_render(Context context,Surface *surface,int quality, c
 	// error in freetype's rendering engine.
 	const float xerror(abs(size[0]*pw)/(float)face->size->metrics.x_ppem/1.13f/0.996);
 	const float yerror(abs(size[1]*ph)/(float)face->size->metrics.y_ppem/1.13f/0.996);
-	//sinfg::info("xerror=%f, yerror=%f",xerror,yerror);
+	//synfig::info("xerror=%f, yerror=%f",xerror,yerror);
 	const float compress(lyr_freetype::compress*xerror);
 	const float vcompress(lyr_freetype::vcompress*yerror);
 
@@ -695,8 +695,8 @@ lyr_freetype::accelerated_render(Context context,Surface *surface,int quality, c
 
 	int	string_height;
 	string_height=round_to_int(((lines.size()-1)*line_height+lines.back().actual_height()));
-	//sinfg::info("string_height=%d",string_height);
-	//sinfg::info("line_height=%f",line_height);
+	//synfig::info("string_height=%d",string_height);
+	//synfig::info("line_height=%f",line_height);
 	
 	/*
  --	** -- RENDER THE GLYPHS ---------------------------------------------------
@@ -725,7 +725,7 @@ lyr_freetype::accelerated_render(Context context,Surface *surface,int quality, c
 		bx=round_to_int((pos[0]-renddesc.get_tl()[0])*pw*CHAR_RESOLUTION-orient[0]*iter->width);
 		by=round_to_int((pos[1]-renddesc.get_tl()[1])*ph*CHAR_RESOLUTION+(1.0-orient[1])*string_height-line_height*curr_line);
 		//by=round_to_int(vcompress*((pos[1]-renddesc.get_tl()[1])*ph*64+(1.0-orient[1])*string_height-face->size->metrics.height*curr_line));
-		//sinfg::info("curr_line=%d, bx=%d, by=%d",curr_line,bx,by);
+		//synfig::info("curr_line=%d, bx=%d, by=%d",curr_line,bx,by);
 		
 		std::vector<Glyph>::iterator iter2;
 		for(iter2=iter->glyph_table.begin();iter2!=iter->glyph_table.end();++iter2)
@@ -737,7 +737,7 @@ lyr_freetype::accelerated_render(Context context,Surface *surface,int quality, c
 			pen.x = bx + iter2->pos.x;
 			pen.y = by + iter2->pos.y;
 			
-			//sinfg::info("GLYPH: pen.x=%d, pen,y=%d",curr_line,(pen.x+32)>>6,(pen.y+32)>>6);
+			//synfig::info("GLYPH: pen.x=%d, pen,y=%d",curr_line,(pen.x+32)>>6,(pen.y+32)>>6);
 		
 			error = FT_Glyph_To_Bitmap( &image, ft_render_mode_normal,0/*&pen*/, 1 );
 			if(error) { FT_Done_Glyph( image ); continue; }
@@ -771,7 +771,7 @@ lyr_freetype::accelerated_render(Context context,Surface *surface,int quality, c
 	return true;
 }
 
-sinfg::Rect
+synfig::Rect
 lyr_freetype::get_bounding_rect()const
 {
 	if(needs_sync_)

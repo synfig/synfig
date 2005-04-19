@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file loadcanvas.h
 **	\brief writeme
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_LOADCANVAS_H
-#define __SINFG_LOADCANVAS_H
+#ifndef __SYNFIG_LOADCANVAS_H
+#define __SYNFIG_LOADCANVAS_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -50,7 +50,7 @@
 
 namespace xmlpp { class Node; class Element; };
 
-namespace sinfg {
+namespace synfig {
 
 /*!	\class CanvasParser
 **	\todo writeme
@@ -111,9 +111,9 @@ public:
 	//! Returns the number of warnings in the last parse
 	int warning_count()const { return total_warnings_; }
 
-	void set_path(const sinfg::String& x) { path=x; }
+	void set_path(const synfig::String& x) { path=x; }
 
-	const sinfg::String& get_path()const { return path; }
+	const synfig::String& get_path()const { return path; }
 	
 	//! \todo writeme
 	Canvas::Handle parse_from_file(const String &filename);
@@ -179,9 +179,9 @@ extern Canvas::Handle open_canvas_as(const String &filename,const String &as);
 //! Retrieves a Canvas from a string in XML format
 extern Canvas::Handle string_to_canvas(const String &data);
 
-std::map<sinfg::String, etl::loose_handle<Canvas> >& get_open_canvas_map();
+std::map<synfig::String, etl::loose_handle<Canvas> >& get_open_canvas_map();
 
-}; // END of namespace sinfg
+}; // END of namespace synfig
 
 /* === E N D =============================================================== */
 

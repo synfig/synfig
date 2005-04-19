@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file guid.cpp
 **	\brief Template File
 **
@@ -63,7 +63,7 @@ using namespace __gnu_cxx;
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 
@@ -133,7 +133,7 @@ static void (*get_rand_long_long)(uint64_t&)=_set_up_rand_long_long;
 static void _set_up_rand_long_long(uint64_t &x)
 {
 #ifdef _DEBUG
-	sinfg::info("Starting up GUID system...");
+	synfig::info("Starting up GUID system...");
 #endif
 	_a=GUID_RNG(time(0)+clock());
 	_b=GUID_RNG(clock());
@@ -171,7 +171,7 @@ static void (*get_rand_long_long)(uint64_t&)=_set_up_rand_long_long;
 static void _set_up_rand_long_long(uint64_t &x)
 {
 #ifdef _DEBUG
-	sinfg::info("Starting up GUID system...");
+	synfig::info("Starting up GUID system...");
 #endif
 	rand_fd=open("/dev/urandom",O_RDONLY);
 	get_rand_long_long=_get_rand_long_long;
@@ -186,14 +186,14 @@ static void _get_rand_long_long(uint64_t &x){	read(rand_fd,&x,sizeof(x));}
 
 
 void
-sinfg::GUID::make_unique()
+synfig::GUID::make_unique()
 {
 	get_rand_long_long(data.u_64.a);
 	get_rand_long_long(data.u_64.b);
 }
 
-sinfg::GUID
-sinfg::GUID::hasher(const String& str)
+synfig::GUID
+synfig::GUID::hasher(const String& str)
 {	
 #ifdef HASH_MAP_H
 	hash<const char*> string_hash_;
@@ -220,8 +220,8 @@ sinfg::GUID::hasher(const String& str)
 	return ret;
 }
 
-sinfg::GUID
-sinfg::GUID::hasher(int i)
+synfig::GUID
+synfig::GUID::hasher(int i)
 {
 	GUID ret(0);
 	GUID_RNG random(i);
@@ -233,12 +233,12 @@ sinfg::GUID::hasher(int i)
 }
 
 String
-sinfg::GUID::get_string()const
+synfig::GUID::get_string()const
 {
 	return strprintf("%08X%08X%08X%08X",data.u_32.a,data.u_32.b,data.u_32.c,data.u_32.d);
 }
 
-sinfg::GUID::GUID(const String &str)
+synfig::GUID::GUID(const String &str)
 {
 	strscanf(str,"%08X%08X%08X%08X",&data.u_32.a,&data.u_32.b,&data.u_32.c,&data.u_32.d);
 }

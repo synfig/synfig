@@ -1,5 +1,5 @@
 /*! ========================================================================
-** Sinfg
+** Synfig
 ** Template Header File
 ** $Id: mptr_jpeg.h,v 1.1.1.1 2005/01/04 01:23:11 darco Exp $
 **
@@ -20,15 +20,15 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_MPTR_JPEG_H
-#define __SINFG_MPTR_JPEG_H
+#ifndef __SYNFIG_MPTR_JPEG_H
+#define __SYNFIG_MPTR_JPEG_H
 
 /* === H E A D E R S ======================================================= */
 
 #define NOMINMAX
-#include <sinfg/importer.h>
-#include <sinfg/string.h>
-#include <sinfg/surface.h>
+#include <synfig/importer.h>
+#include <synfig/string.h>
+#include <synfig/surface.h>
 _ETL_BEGIN_CDECLS
 #include <jpeglib.h>
 _ETL_END_CDECLS
@@ -40,12 +40,12 @@ _ETL_END_CDECLS
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-class jpeg_mptr : public sinfg::Importer
+class jpeg_mptr : public synfig::Importer
 {
-	SINFG_IMPORTER_MODULE_EXT
+	SYNFIG_IMPORTER_MODULE_EXT
 private:
-	sinfg::String filename;
-	sinfg::Surface surface_buffer;
+	synfig::String filename;
+	synfig::Surface surface_buffer;
 
 	struct jpeg_decompress_struct cinfo;
 
@@ -55,7 +55,7 @@ public:
 	jpeg_mptr(const char *filename);
 	~jpeg_mptr();
 
-	virtual bool get_frame(sinfg::Surface &,sinfg::Time, sinfg::ProgressCallback *);
+	virtual bool get_frame(synfig::Surface &,synfig::Time, synfig::ProgressCallback *);
 };
 
 /* === E N D =============================================================== */

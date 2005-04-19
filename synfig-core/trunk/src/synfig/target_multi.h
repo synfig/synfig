@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file target_multi.h
 **	\brief Template Header
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_TARGET_MULTI_H
-#define __SINFG_TARGET_MULTI_H
+#ifndef __SYNFIG_TARGET_MULTI_H
+#define __SYNFIG_TARGET_MULTI_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -34,7 +34,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace sinfg {
+namespace synfig {
 
 /*!	\class Target_Multi
 **	\brief Render-target
@@ -49,7 +49,7 @@ public:
 
 	Target_Multi(Target_Scanline::Handle a,Target_Scanline::Handle b);
 	virtual ~Target_Multi();
-	virtual bool add_frame(const sinfg::Surface *surface);
+	virtual bool add_frame(const synfig::Surface *surface);
 	virtual bool start_frame(ProgressCallback *cb=NULL);
 	virtual void end_frame();
 	virtual Color * start_scanline(int scanline);
@@ -60,7 +60,7 @@ public:
 	virtual bool init();
 }; // END of class Target_Multi
 
-}; // END of namespace sinfg
+}; // END of namespace synfig
 
 /* === E N D =============================================================== */
 

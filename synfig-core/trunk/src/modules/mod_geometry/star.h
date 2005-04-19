@@ -1,5 +1,5 @@
 /*! ========================================================================
-** Sinfg
+** Synfig
 ** Template Header File
 ** $Id: star.h,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $
 **
@@ -20,12 +20,12 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_STAR_H
-#define __SINFG_STAR_H
+#ifndef __SYNFIG_STAR_H
+#define __SYNFIG_STAR_H
 
 /* === H E A D E R S ======================================================= */
 
-#include <sinfg/layer_polygon.h>
+#include <synfig/layer_polygon.h>
 #include <list>
 #include <vector>
 
@@ -35,13 +35,13 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-using namespace sinfg;
+using namespace synfig;
 using namespace std;
 using namespace etl;
 
-class Star : protected sinfg::Layer_Polygon
+class Star : protected synfig::Layer_Polygon
 {
-	SINFG_LAYER_MODULE_EXT
+	SYNFIG_LAYER_MODULE_EXT
 private:
 
 	Real radius1;
@@ -54,7 +54,7 @@ public:
 	//! Updates the polygon data to match the parameters.
 	void sync();
 
-	virtual bool set_param(const String & param, const sinfg::ValueBase &value);
+	virtual bool set_param(const String & param, const synfig::ValueBase &value);
 
 	virtual ValueBase get_param(const String & param)const;
 

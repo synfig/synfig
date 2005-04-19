@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file waypoint.h
 **	\brief Template Header
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_WAYPOINT_H
-#define __SINFG_WAYPOINT_H
+#ifndef __SYNFIG_WAYPOINT_H
+#define __SYNFIG_WAYPOINT_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -41,7 +41,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace sinfg { 
+namespace synfig { 
 
 class ValueNode;
 class GUID;
@@ -58,7 +58,7 @@ class Waypoint : public UniqueID
 
 public:
 
-	typedef sinfg::Interpolation Interpolation;
+	typedef synfig::Interpolation Interpolation;
 
 	class Model
 	{
@@ -248,7 +248,7 @@ public:
 
 typedef std::vector< Waypoint > WaypointList;
 
-}; // END of namespace sinfg
+}; // END of namespace synfig
 
 /* === E N D =============================================================== */
 

@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file valuenode_bline.h
 **	\brief Template Header
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_VALUENODE_BLINE_H
-#define __SINFG_VALUENODE_BLINE_H
+#ifndef __SYNFIG_VALUENODE_BLINE_H
+#define __SYNFIG_VALUENODE_BLINE_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -39,7 +39,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace sinfg {
+namespace synfig {
 
 
 //! Converts a list of bline points into a list of segments
@@ -83,14 +83,14 @@ protected:
 	LinkableValueNode* create_new()const;
 
 public:
-	//using sinfg::LinkableValueNode::set_link_vfunc;
+	//using synfig::LinkableValueNode::set_link_vfunc;
 	static bool check_type(ValueBase::Type type);
 	static ValueNode_BLine* create(const ValueBase &x=ValueBase::TYPE_LIST);
 }; // END of class ValueNode_BLine
 
 typedef ValueNode_BLine::ListEntry::ActivepointList ActivepointList;
 
-}; // END of namespace sinfg
+}; // END of namespace synfig
 
 /* === E N D =============================================================== */
 

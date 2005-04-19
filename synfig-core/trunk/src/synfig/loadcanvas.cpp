@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file loadcanvas.cpp
 **	\brief writeme
 **
@@ -69,15 +69,15 @@
 /* === U S I N G =========================================================== */
 
 using namespace std;
-using namespace sinfg;
+using namespace synfig;
 using namespace etl;
 
 /*
 class test_class {
 static int bleh;
 public:
-	test_class() { assert(!bleh); bleh++; sinfg::info("test_class: initi: %d",bleh); }
-	~test_class() { assert(bleh); sinfg::info("test_class: uninit: %d",bleh); bleh--; }
+	test_class() { assert(!bleh); bleh++; synfig::info("test_class: initi: %d",bleh); }
+	~test_class() { assert(bleh); synfig::info("test_class: uninit: %d",bleh); bleh--; }
 };
 int test_class::bleh(0);
 
@@ -92,7 +92,7 @@ inline bool is_whitespace(char x) { return ((x)=='\n' || (x)=='\t' || (x)==' ');
 
 static std::map<String, Canvas::LooseHandle>* open_canvas_map_(0);
 
-std::map<sinfg::String, etl::loose_handle<Canvas> >& sinfg::get_open_canvas_map()
+std::map<synfig::String, etl::loose_handle<Canvas> >& synfig::get_open_canvas_map()
 {
 	if(!open_canvas_map_)
 		open_canvas_map_=new std::map<String, Canvas::LooseHandle>;
@@ -103,7 +103,7 @@ static void _remove_from_open_canvas_map(Canvas *x) { get_open_canvas_map().eras
 
 static void _canvas_file_name_changed(Canvas *x)
 {
-	std::map<sinfg::String, etl::loose_handle<Canvas> >::iterator iter;
+	std::map<synfig::String, etl::loose_handle<Canvas> >::iterator iter;
 	
 	for(iter=get_open_canvas_map().begin();iter!=get_open_canvas_map().end();++iter)
 		if(iter->second==x)
@@ -117,7 +117,7 @@ static void _canvas_file_name_changed(Canvas *x)
 }
 
 Canvas::Handle
-sinfg::open_canvas(const String &filename)
+synfig::open_canvas(const String &filename)
 {
 	CanvasParser parser;
 
@@ -132,7 +132,7 @@ sinfg::open_canvas(const String &filename)
 }
 
 Canvas::Handle
-sinfg::open_canvas_as(const String &filename,const String &as)
+synfig::open_canvas_as(const String &filename,const String &as)
 {
 	CanvasParser parser;
 
@@ -147,7 +147,7 @@ sinfg::open_canvas_as(const String &filename,const String &as)
 }
 
 Canvas::Handle
-sinfg::string_to_canvas(const String &data)
+synfig::string_to_canvas(const String &data)
 {
 	CanvasParser parser;
 
@@ -179,7 +179,7 @@ void
 CanvasParser::warning(xmlpp::Node *element, const String &text)
 {
 	string str=strprintf("%s:<%s>:%d: warning: ",filename.c_str(),element->get_name().c_str(),element->get_line())+text;
-	//sinfg::warning(str);
+	//synfig::warning(str);
 	cerr<<str<<endl;
 	total_warnings_++;
 	if(total_warnings_>=max_warnings_)
@@ -194,7 +194,7 @@ CanvasParser::error(xmlpp::Node *element, const String &text)
 	if(!allow_errors_)
 		throw runtime_error(str);
 	cerr<<str<<endl;
-	//	sinfg::error(str);
+	//	synfig::error(str);
 }
 
 void
@@ -412,7 +412,7 @@ CanvasParser::parse_color(xmlpp::Element *element,Canvas::Handle canvas)
 	return color;
 }
 
-sinfg::String
+synfig::String
 CanvasParser::parse_string(xmlpp::Element *element,Canvas::Handle canvas)
 {
 	assert(element->get_name()=="string");
@@ -420,13 +420,13 @@ CanvasParser::parse_string(xmlpp::Element *element,Canvas::Handle canvas)
 	if(element->get_children().empty())
 	{
 		warning(element, "Undefined value in <string>");
-		return sinfg::String();
+		return synfig::String();
 	}
 	
 	if(element->get_child_text()->get_content().empty())
 	{
 		warning(element, "Content element of <string> appears to be empty");
-		return sinfg::String();
+		return synfig::String();
 	}
 	
 	return element->get_child_text()->get_content();
@@ -975,22 +975,22 @@ CanvasParser::parse_animated(xmlpp::Element *element,Canvas::Handle canvas)
 
 			if(child->get_attribute("tension"))
 			{
-				sinfg::String str(child->get_attribute("tension")->get_value());
+				synfig::String str(child->get_attribute("tension")->get_value());
 				waypoint->set_tension(atof(str.c_str()));
 			}
 			if(child->get_attribute("temporal-tension"))
 			{
-				sinfg::String str(child->get_attribute("temporal-tension")->get_value());
+				synfig::String str(child->get_attribute("temporal-tension")->get_value());
 				waypoint->set_time_tension(atof(str.c_str()));
 			}
 			if(child->get_attribute("continuity"))
 			{
-				sinfg::String str(child->get_attribute("continuity")->get_value());
+				synfig::String str(child->get_attribute("continuity")->get_value());
 				waypoint->set_continuity(atof(str.c_str()));
 			}
 			if(child->get_attribute("bias"))
 			{
-				sinfg::String str(child->get_attribute("bias")->get_value());
+				synfig::String str(child->get_attribute("bias")->get_value());
 				waypoint->set_bias(atof(str.c_str()));
 			}
 
@@ -1581,8 +1581,8 @@ CanvasParser::parse_dynamic_list(xmlpp::Element *element,Canvas::Handle canvas)
 			
 			// Parse begin/end waypoints
 			{
-				typedef sinfg::ValueNode_DynamicList::ListEntry::Activepoint Activepoint;
-				typedef sinfg::ValueNode_DynamicList::ListEntry::ActivepointList ActivepointList;
+				typedef synfig::ValueNode_DynamicList::ListEntry::Activepoint Activepoint;
+				typedef synfig::ValueNode_DynamicList::ListEntry::ActivepointList ActivepointList;
 
 				String begin_sequence;
 				String end_sequence;
@@ -1621,7 +1621,7 @@ CanvasParser::parse_dynamic_list(xmlpp::Element *element,Canvas::Handle canvas)
 						int space=timecode.find_first_of(' ');
 						priority=atoi(String(timecode,1,space-1).c_str());
 						timecode=String(timecode.begin()+space+1,timecode.end());
-						//sinfg::info("priority: %d      timecode: %s",priority,timecode.c_str());
+						//synfig::info("priority: %d      timecode: %s",priority,timecode.c_str());
 					}
 					
 					timing_info.push_back(
@@ -1657,7 +1657,7 @@ CanvasParser::parse_dynamic_list(xmlpp::Element *element,Canvas::Handle canvas)
 						int space=timecode.find_first_of(' ');
 						priority=atoi(String(timecode,1,space-1).c_str());
 						timecode=String(timecode.begin()+space+1,timecode.end());
-						//sinfg::info("priority: %d      timecode: %s",priority,timecode.c_str());
+						//synfig::info("priority: %d      timecode: %s",priority,timecode.c_str());
 					}
 				
 					timing_info.push_back(
@@ -2291,20 +2291,20 @@ CanvasParser::parse_from_file_as(const String &file,const String &as)
 			return canvas;
 		}
 	}
-	catch(Exception::BadLinkName) { sinfg::error("BadLinkName Thrown"); }
-	catch(Exception::BadType) { sinfg::error("BadType Thrown"); }
-	catch(Exception::FileNotFound) { sinfg::error("FileNotFound Thrown"); }
-	catch(Exception::IDNotFound) { sinfg::error("IDNotFound Thrown"); }
-	catch(Exception::IDAlreadyExists) { sinfg::error("IDAlreadyExists Thrown"); }
+	catch(Exception::BadLinkName) { synfig::error("BadLinkName Thrown"); }
+	catch(Exception::BadType) { synfig::error("BadType Thrown"); }
+	catch(Exception::FileNotFound) { synfig::error("FileNotFound Thrown"); }
+	catch(Exception::IDNotFound) { synfig::error("IDNotFound Thrown"); }
+	catch(Exception::IDAlreadyExists) { synfig::error("IDAlreadyExists Thrown"); }
 	catch(const std::exception& ex)
 	{
-		sinfg::error("Standard Exception: "+String(ex.what()));
+		synfig::error("Standard Exception: "+String(ex.what()));
 		return Canvas::Handle();
 	}
 	catch(const String& str)
 	{
 		cerr<<str<<endl;
-		//	sinfg::error(str);
+		//	synfig::error(str);
 		return Canvas::Handle();
 	}
 	return Canvas::Handle();
@@ -2344,20 +2344,20 @@ CanvasParser::parse_from_string(const String &data)
 			return canvas;
 		}
 	}
-	catch(Exception::BadLinkName) { sinfg::error("BadLinkName Thrown"); }
-	catch(Exception::BadType) { sinfg::error("BadType Thrown"); }
-	catch(Exception::FileNotFound) { sinfg::error("FileNotFound Thrown"); }
-	catch(Exception::IDNotFound) { sinfg::error("IDNotFound Thrown"); }
-	catch(Exception::IDAlreadyExists) { sinfg::error("IDAlreadyExists Thrown"); }
+	catch(Exception::BadLinkName) { synfig::error("BadLinkName Thrown"); }
+	catch(Exception::BadType) { synfig::error("BadType Thrown"); }
+	catch(Exception::FileNotFound) { synfig::error("FileNotFound Thrown"); }
+	catch(Exception::IDNotFound) { synfig::error("IDNotFound Thrown"); }
+	catch(Exception::IDAlreadyExists) { synfig::error("IDAlreadyExists Thrown"); }
 	catch(const std::exception& ex)
 	{
-		sinfg::error("Standard Exception: "+String(ex.what()));
+		synfig::error("Standard Exception: "+String(ex.what()));
 		return Canvas::Handle();
 	}
 	catch(const String& str)
 	{
 		cerr<<str<<endl;
-		//	sinfg::error(str);
+		//	synfig::error(str);
 		return Canvas::Handle();
 	}
 	return Canvas::Handle();

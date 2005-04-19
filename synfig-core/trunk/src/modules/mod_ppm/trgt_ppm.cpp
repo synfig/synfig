@@ -1,5 +1,5 @@
 /*! ========================================================================
-** Sinfg
+** Synfig
 ** ppm Target Module
 ** $Id: trgt_ppm.cpp,v 1.1.1.1 2005/01/04 01:23:14 darco Exp $
 **
@@ -20,7 +20,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#define SINFG_TARGET
+#define SYNFIG_TARGET
 
 #ifdef USING_PCH
 #	include "pch.h"
@@ -30,7 +30,7 @@
 #endif
 
 #include "trgt_ppm.h"
-#include <sinfg/sinfg.h>
+#include <synfig/synfig.h>
 #include <ETL/stringf>
 #include <cstdio>
 #include <algorithm>
@@ -39,17 +39,17 @@
 
 /* === M A C R O S ========================================================= */
 
-using namespace sinfg;
+using namespace synfig;
 using namespace std;
 using namespace etl;
 
 /* === G L O B A L S ======================================================= */
 
-SINFG_TARGET_INIT(ppm);
-SINFG_TARGET_SET_NAME(ppm,"ppm");
-SINFG_TARGET_SET_EXT(ppm,"ppm");
-SINFG_TARGET_SET_VERSION(ppm,"0.1");
-SINFG_TARGET_SET_CVS_ID(ppm,"$Id: trgt_ppm.cpp,v 1.1.1.1 2005/01/04 01:23:14 darco Exp $");
+SYNFIG_TARGET_INIT(ppm);
+SYNFIG_TARGET_SET_NAME(ppm,"ppm");
+SYNFIG_TARGET_SET_EXT(ppm,"ppm");
+SYNFIG_TARGET_SET_VERSION(ppm,"0.1");
+SYNFIG_TARGET_SET_CVS_ID(ppm,"$Id: trgt_ppm.cpp,v 1.1.1.1 2005/01/04 01:23:14 darco Exp $");
 
 /* === M E T H O D S ======================================================= */
 
@@ -88,7 +88,7 @@ ppm::end_frame()
 }
 
 bool
-ppm::start_frame(sinfg::ProgressCallback *callback)
+ppm::start_frame(synfig::ProgressCallback *callback)
 {
 	int w=desc.get_w(),h=desc.get_h();
 	

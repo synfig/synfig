@@ -1,6 +1,6 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file real.h
-**	\brief Provides the sinfg::Real typedef
+**	\brief Provides the synfig::Real typedef
 **
 **	$Id: real.h,v 1.1.1.1 2005/01/04 01:23:14 darco Exp $
 **
@@ -21,19 +21,19 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_REAL_H
-#define __SINFG_REAL_H
+#ifndef __SYNFIG_REAL_H
+#define __SYNFIG_REAL_H
 
 /* === T Y P E D E F S ===================================================== */
 
-namespace sinfg {
+namespace synfig {
 
 /*!	\typedef Real
 **	\todo writeme
 */
 typedef double Real;
 
-}; // END of namespace sinfg
+}; // END of namespace synfig
 
 /* === E N D =============================================================== */
 

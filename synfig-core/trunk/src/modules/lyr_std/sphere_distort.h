@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file sphere_distort.h
 **	\brief Sphere Distort Header
 **
@@ -21,14 +21,14 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_SPHERE_DISTORT_H
-#define __SINFG_SPHERE_DISTORT_H
+#ifndef __SYNFIG_SPHERE_DISTORT_H
+#define __SYNFIG_SPHERE_DISTORT_H
 
 /* === H E A D E R S ======================================================= */
 
-#include <sinfg/layer_composite.h>
-#include <sinfg/vector.h>
-#include <sinfg/rect.h>
+#include <synfig/layer_composite.h>
+#include <synfig/vector.h>
+#include <synfig/rect.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -36,12 +36,12 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 class Spherize_Trans;
-namespace sinfg 
+namespace synfig 
 {
 
 class Layer_SphereDistort : public Layer_Composite
 {
-	SINFG_LAYER_MODULE_EXT
+	SYNFIG_LAYER_MODULE_EXT
 	friend class Spherize_Trans;
 	
 private:
@@ -60,7 +60,7 @@ private:
 
 	bool clip;
 
-	sinfg::Rect bounds;
+	synfig::Rect bounds;
 
 	void sync();
 
@@ -68,19 +68,19 @@ public:
 	
 	Layer_SphereDistort();
 		
-	virtual bool set_param(const String & param, const sinfg::ValueBase &value);
+	virtual bool set_param(const String & param, const synfig::ValueBase &value);
 
 	virtual ValueBase get_param(const String & param)const;
 
 	virtual Color get_color(Context context, const Point &pos)const;
 	
 	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
-	sinfg::Layer::Handle hit_check(sinfg::Context context, const sinfg::Point &point)const;	
+	synfig::Layer::Handle hit_check(synfig::Context context, const synfig::Point &point)const;	
 
 	virtual Rect get_bounding_rect()const;
 	
 	virtual Vocab get_param_vocab()const;
-	virtual etl::handle<sinfg::Transform> get_transform()const;
+	virtual etl::handle<synfig::Transform> get_transform()const;
 }; // END of class Layer_SphereDistort
 
 }

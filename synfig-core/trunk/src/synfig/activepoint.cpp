@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file activepoint.cpp
 **	\brief Template File
 **
@@ -37,7 +37,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 
@@ -47,7 +47,7 @@ using namespace sinfg;
 
 /* === M E T H O D S ======================================================= */
 
-sinfg::GUID
+synfig::GUID
 Activepoint::get_guid()const
 {
 	return GUID::hasher(get_uid());

@@ -1,5 +1,5 @@
 /*! ========================================================================
-** Sinfg
+** Synfig
 ** ppm Target Module
 ** $Id: mptr_openexr.cpp,v 1.1.1.1 2005/01/04 01:23:14 darco Exp $
 **
@@ -28,7 +28,7 @@
 #endif
 
 #include "mptr_openexr.h"
-#include <sinfg/sinfg.h>
+#include <synfig/synfig.h>
 #include <ETL/stringf>
 #include <cstdio>
 #include <algorithm>
@@ -42,17 +42,17 @@
 
 /* === M A C R O S ========================================================= */
 
-using namespace sinfg;
+using namespace synfig;
 using namespace std;
 using namespace etl;
 
 /* === G L O B A L S ======================================================= */
 
-SINFG_IMPORTER_INIT(exr_mptr);
-SINFG_IMPORTER_SET_NAME(exr_mptr,"exr_mptr");
-SINFG_IMPORTER_SET_EXT(exr_mptr,"exr");
-SINFG_IMPORTER_SET_VERSION(exr_mptr,"0.1");
-SINFG_IMPORTER_SET_CVS_ID(exr_mptr,"$Id: mptr_openexr.cpp,v 1.1.1.1 2005/01/04 01:23:14 darco Exp $");
+SYNFIG_IMPORTER_INIT(exr_mptr);
+SYNFIG_IMPORTER_SET_NAME(exr_mptr,"exr_mptr");
+SYNFIG_IMPORTER_SET_EXT(exr_mptr,"exr");
+SYNFIG_IMPORTER_SET_VERSION(exr_mptr,"0.1");
+SYNFIG_IMPORTER_SET_CVS_ID(exr_mptr,"$Id: mptr_openexr.cpp,v 1.1.1.1 2005/01/04 01:23:14 darco Exp $");
 
 /* === M E T H O D S ======================================================= */
 
@@ -66,7 +66,7 @@ exr_mptr::~exr_mptr()
 }
 
 bool
-exr_mptr::get_frame(sinfg::Surface &out_surface,Time, sinfg::ProgressCallback *cb)
+exr_mptr::get_frame(synfig::Surface &out_surface,Time, synfig::ProgressCallback *cb)
 {
     try
     {
@@ -109,7 +109,7 @@ exr_mptr::get_frame(sinfg::Surface &out_surface,Time, sinfg::ProgressCallback *c
 	catch (const std::exception &e)
     {
 		if(cb)cb->error(e.what());
-		else sinfg::error(e.what());
+		else synfig::error(e.what());
 		return false;
     }
 

@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file valuenode_subtract.cpp
 **	\brief Template File
 **
@@ -41,7 +41,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 
@@ -51,7 +51,7 @@ using namespace sinfg;
 
 /* === M E T H O D S ======================================================= */
 
-sinfg::ValueNode_TwoTone::ValueNode_TwoTone():LinkableValueNode(sinfg::ValueBase::TYPE_GRADIENT)
+synfig::ValueNode_TwoTone::ValueNode_TwoTone():LinkableValueNode(synfig::ValueBase::TYPE_GRADIENT)
 {
 	set_link("color1",ValueNode_Const::create(Color::black()));
 	set_link("color2",ValueNode_Const::create(Color::white()));
@@ -71,7 +71,7 @@ ValueNode_TwoTone::create(const ValueBase& x)
 	if(id!=ValueBase::TYPE_GRADIENT)
 	{
 		assert(0);
-		throw runtime_error("sinfg::ValueNode_TwoTone:Bad type "+ValueBase::type_name(id));			
+		throw runtime_error("synfig::ValueNode_TwoTone:Bad type "+ValueBase::type_name(id));			
 	}		
 
 	ValueNode_TwoTone* value_node=new ValueNode_TwoTone();
@@ -81,13 +81,13 @@ ValueNode_TwoTone::create(const ValueBase& x)
 	return value_node;
 }
 
-sinfg::ValueNode_TwoTone::~ValueNode_TwoTone()
+synfig::ValueNode_TwoTone::~ValueNode_TwoTone()
 {
 	unlink_all();
 }
 
 bool
-sinfg::ValueNode_TwoTone::set_lhs(ValueNode::Handle a)
+synfig::ValueNode_TwoTone::set_lhs(ValueNode::Handle a)
 {
 	if(a->get_type()!=ValueBase::TYPE_COLOR)
 		return false;
@@ -98,7 +98,7 @@ sinfg::ValueNode_TwoTone::set_lhs(ValueNode::Handle a)
 }
 
 bool
-sinfg::ValueNode_TwoTone::set_rhs(ValueNode::Handle b)
+synfig::ValueNode_TwoTone::set_rhs(ValueNode::Handle b)
 {
 	if(b->get_type()!=ValueBase::TYPE_COLOR)
 		return false;
@@ -106,8 +106,8 @@ sinfg::ValueNode_TwoTone::set_rhs(ValueNode::Handle b)
 	return true;
 }
 
-sinfg::ValueBase
-sinfg::ValueNode_TwoTone::operator()(Time t)const
+synfig::ValueBase
+synfig::ValueNode_TwoTone::operator()(Time t)const
 {
 	return Gradient((*ref_a)(t).get(Color()),(*ref_b)(t).get(Color()));
 }

@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file color.h
 **	\brief Color Class Implementation
 **
@@ -21,12 +21,12 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_COLOR_H
-#define __SINFG_COLOR_H
+#ifndef __SYNFIG_COLOR_H
+#define __SYNFIG_COLOR_H
 
 /* === H E A D E R S ======================================================= */
 
-#ifndef SINFG_NO_ANGLE
+#ifndef SYNFIG_NO_ANGLE
 # include "angle.h"
 #endif
 
@@ -58,7 +58,7 @@ extern "C" { int _isnan(double x); }
 
 #endif
 
-namespace sinfg {
+namespace synfig {
 
 #ifdef USE_HALF_TYPE
 typedef half ColorReal;
@@ -357,7 +357,7 @@ public:
 	static Color YUV(const float& y, const float& u, const float& v, const value_type& a=1)
 		{ return Color().set_yuv(y,u,v).set_a(a); }
 
-#ifndef SINFG_NO_ANGLE
+#ifndef SYNFIG_NO_ANGLE
 	//! Returns the hue of the chromanance
 	/*!	This is the angle of the U and V components.
 	**	\see set_hue() */
@@ -854,7 +854,7 @@ PixelFormat2Color(Color &color, const PixelFormat &pf,const unsigned char *out)
 
 
 
-}; // END of namespace sinfg
+}; // END of namespace synfig
 
 /* === E N D =============================================================== */
 

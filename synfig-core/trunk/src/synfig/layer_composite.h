@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file layer_composite.h
 **	\brief Composite Layer Class Implementation
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_LAYER_COMPOSITE_H
-#define __SINFG_LAYER_COMPOSITE_H
+#ifndef __SYNFIG_LAYER_COMPOSITE_H
+#define __SYNFIG_LAYER_COMPOSITE_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -35,7 +35,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace sinfg {
+namespace synfig {
 
 class Layer_NoDeform {};
 
@@ -86,7 +86,7 @@ public:
 	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 }; // END of class Layer_Composite
 
-}; // END of namespace sinfg
+}; // END of namespace synfig
 
 /* === E N D =============================================================== */
 

@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file valuenode_subtract.cpp
 **	\brief Template File
 **
@@ -43,7 +43,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 
@@ -53,7 +53,7 @@ using namespace sinfg;
 
 /* === M E T H O D S ======================================================= */
 
-sinfg::ValueNode_Subtract::ValueNode_Subtract():LinkableValueNode(sinfg::ValueBase::TYPE_NIL)
+synfig::ValueNode_Subtract::ValueNode_Subtract():LinkableValueNode(synfig::ValueBase::TYPE_NIL)
 {
 	set_scalar(1.0);
 }
@@ -85,14 +85,14 @@ ValueNode_Subtract::create(const ValueBase& x)
 		break;
 	default:
 		assert(0);
-		throw runtime_error("sinfg::ValueNode_Subtract:Bad type "+ValueBase::type_name(id));			
+		throw runtime_error("synfig::ValueNode_Subtract:Bad type "+ValueBase::type_name(id));			
 	}
 	assert(value_node->get_type()==id);
 	
 	return value_node;
 }
 
-sinfg::ValueNode_Subtract::~ValueNode_Subtract()
+synfig::ValueNode_Subtract::~ValueNode_Subtract()
 {
 	unlink_all();
 }
@@ -104,7 +104,7 @@ ValueNode_Subtract::set_scalar(Real x)
 }
 
 bool
-sinfg::ValueNode_Subtract::set_scalar(ValueNode::Handle x)
+synfig::ValueNode_Subtract::set_scalar(ValueNode::Handle x)
 {
 	if(x->get_type()!=ValueBase::TYPE_REAL&& !PlaceholderValueNode::Handle::cast_dynamic(x))
 		return false;
@@ -113,7 +113,7 @@ sinfg::ValueNode_Subtract::set_scalar(ValueNode::Handle x)
 }
 
 bool
-sinfg::ValueNode_Subtract::set_lhs(ValueNode::Handle a)
+synfig::ValueNode_Subtract::set_lhs(ValueNode::Handle a)
 {
 	ref_a=a;
 	
@@ -139,7 +139,7 @@ sinfg::ValueNode_Subtract::set_lhs(ValueNode::Handle a)
 		set_type(ValueBase::TYPE_COLOR);
 	else
 	{
-		sinfg::warning(get_id()+":(set_a):"+strprintf(_("Types seem to be off for ValueNodes %s and %s"),ref_a->get_id().c_str(),ref_b->get_id().c_str()));
+		synfig::warning(get_id()+":(set_a):"+strprintf(_("Types seem to be off for ValueNodes %s and %s"),ref_a->get_id().c_str(),ref_b->get_id().c_str()));
 		set_type(ValueBase::TYPE_NIL);
 	}
 
@@ -147,7 +147,7 @@ sinfg::ValueNode_Subtract::set_lhs(ValueNode::Handle a)
 }
 
 bool
-sinfg::ValueNode_Subtract::set_rhs(ValueNode::Handle b)
+synfig::ValueNode_Subtract::set_rhs(ValueNode::Handle b)
 {
 	ref_b=b;
 
@@ -173,15 +173,15 @@ sinfg::ValueNode_Subtract::set_rhs(ValueNode::Handle b)
 		set_type(ValueBase::TYPE_COLOR);
 	else
 	{
-		sinfg::warning(get_id()+":(set_b):"+strprintf(_("Types seem to be off for ValueNodes %s and %s"),ref_a->get_id().c_str(),ref_b->get_id().c_str()));
+		synfig::warning(get_id()+":(set_b):"+strprintf(_("Types seem to be off for ValueNodes %s and %s"),ref_a->get_id().c_str(),ref_b->get_id().c_str()));
 		set_type(ValueBase::TYPE_NIL);
 	}
 
 	return true;
 }
 
-sinfg::ValueBase
-sinfg::ValueNode_Subtract::operator()(Time t)const
+synfig::ValueBase
+synfig::ValueNode_Subtract::operator()(Time t)const
 {
 	if(!ref_a || !ref_b)
 		throw runtime_error(strprintf("ValueNode_Subtract: %s",_("One or both of my parameters aren't set!")));
@@ -201,7 +201,7 @@ sinfg::ValueNode_Subtract::operator()(Time t)const
 	if(get_type()==ValueBase::TYPE_COLOR)
 		return ((*ref_a)(t).get(Color())-(*ref_b)(t).get(Color()))*(*scalar)(t).get(Real());
 
-	sinfg::error(get_id()+':'+strprintf(_("Cannot subtract types of %s and %s"),ValueBase::type_name(ref_a->get_type()).c_str(),ValueBase::type_name(ref_b->get_type()).c_str()));
+	synfig::error(get_id()+':'+strprintf(_("Cannot subtract types of %s and %s"),ValueBase::type_name(ref_a->get_type()).c_str(),ValueBase::type_name(ref_b->get_type()).c_str()));
 	return ValueBase();
 }
 

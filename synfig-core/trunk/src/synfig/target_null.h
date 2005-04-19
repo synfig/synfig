@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file target_null.h
 **	\brief Template Header
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_TARGET_NULL_H
-#define __SINFG_TARGET_NULL_H
+#ifndef __SYNFIG_TARGET_NULL_H
+#define __SYNFIG_TARGET_NULL_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -35,7 +35,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace sinfg {
+namespace synfig {
 
 /*!	\class Target_Null
 **	\brief A target which renders to nothing. Useful for benchmarks and other tests.
@@ -63,7 +63,7 @@ public:
 	static Target* create(const char *filename=0) { return new Target_Null(); }
 }; // END of class Target_Null
 
-}; // END of namespace sinfg
+}; // END of namespace synfig
 
 /* === E N D =============================================================== */
 

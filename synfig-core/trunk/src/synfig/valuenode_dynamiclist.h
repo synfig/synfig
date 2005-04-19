@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file valuenode_dynamiclist.h
 **	\brief Template Header
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_VALUENODE_DYNAMICLIST_H
-#define __SINFG_VALUENODE_DYNAMICLIST_H
+#ifndef __SYNFIG_VALUENODE_DYNAMICLIST_H
+#define __SYNFIG_VALUENODE_DYNAMICLIST_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -38,7 +38,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace sinfg {
+namespace synfig {
 class ValueNode_BLine;
 	
 /*! \class ValueNode_DynamicList
@@ -52,7 +52,7 @@ class ValueNode_BLine;
 **	However, it does have it's problems.
 **
 **	The problems arrise when we introduce the concept of a
-**	Keyframe. Keyframes can be manipulated via the Sinfg
+**	Keyframe. Keyframes can be manipulated via the Synfig
 **	Application Library. They allow the user to quickly
 **	and "automagickly" rearange an animation by moving
 **	the associated keyframes. With they old way that the
@@ -88,7 +88,7 @@ public:
 		friend class ValueNode_DynamicList;
 		friend class ValueNode_BLine;
 	public:
-		typedef sinfg::Activepoint Activepoint;
+		typedef synfig::Activepoint Activepoint;
 		
 		typedef std::list<Activepoint> ActivepointList;
 	
@@ -144,7 +144,7 @@ public:
 		
 		int find(const Time& begin,const Time& end,std::vector<Activepoint*>& list);
 			
-		const sinfg::Node::time_set	&get_times() const;
+		const synfig::Node::time_set	&get_times() const;
 
 		const etl::loose_handle<ValueNode> &get_parent_value_node()const { return parent_; }
 
@@ -228,8 +228,8 @@ public:
 	**	(which is ValueBase::TYPE_LIST)
 	*/
 	static Handle create(ValueBase::Type id=ValueBase::TYPE_NIL);
-	using sinfg::LinkableValueNode::get_link_vfunc;
-	using sinfg::LinkableValueNode::set_link_vfunc;
+	using synfig::LinkableValueNode::get_link_vfunc;
+	using synfig::LinkableValueNode::set_link_vfunc;
 	static bool check_type(ValueBase::Type type);
 	static ValueNode_DynamicList* create_from(const ValueBase &x=ValueBase::TYPE_GRADIENT);
 }; // END of class ValueNode_DynamicList
@@ -237,7 +237,7 @@ public:
 typedef ValueNode_DynamicList::ListEntry::Activepoint Activepoint;
 typedef ValueNode_DynamicList::ListEntry::ActivepointList ActivepointList;
 
-}; // END of namespace sinfg
+}; // END of namespace synfig
 
 /* === E N D =============================================================== */
 

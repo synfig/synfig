@@ -1,5 +1,5 @@
 /*! ========================================================================
-** Sinfg
+** Synfig
 ** bsd_mpeg1 Target Module
 ** $Id: trgt_mpg.cpp,v 1.1.1.1 2005/01/04 01:23:14 darco Exp $
 **
@@ -20,7 +20,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#define SINFG_TARGET
+#define SYNFIG_TARGET
 
 #ifdef USING_PCH
 #	include "pch.h"
@@ -39,7 +39,7 @@
 
 /* === M A C R O S ========================================================= */
 
-using namespace sinfg;
+using namespace synfig;
 using namespace std;
 using namespace etl;
 
@@ -191,7 +191,7 @@ bsd_mpeg1::end_frame()
 }
 
 bool
-bsd_mpeg1::start_frame(sinfg::ProgressCallback *callback)
+bsd_mpeg1::start_frame(synfig::ProgressCallback *callback)
 {
 	return passthru->start_frame(callback);
 }

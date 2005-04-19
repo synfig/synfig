@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file noise.h
 **	\brief Template Header
 **
@@ -21,16 +21,16 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_NOISE_DISTORT_H
-#define __SINFG_NOISE_DISTORT_H
+#ifndef __SYNFIG_NOISE_DISTORT_H
+#define __SYNFIG_NOISE_DISTORT_H
 
 /* === H E A D E R S ======================================================= */
 
-#include <sinfg/vector.h>
-#include <sinfg/valuenode.h>
-#include <sinfg/layer_composite.h>
-#include <sinfg/gradient.h>
-#include <sinfg/time.h>
+#include <synfig/vector.h>
+#include <synfig/valuenode.h>
+#include <synfig/layer_composite.h>
+#include <synfig/gradient.h>
+#include <synfig/time.h>
 #include "random.h"
 
 /* === M A C R O S ========================================================= */
@@ -39,39 +39,39 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-class NoiseDistort : public sinfg::Layer_Composite
+class NoiseDistort : public synfig::Layer_Composite
 {
-	SINFG_LAYER_MODULE_EXT
+	SYNFIG_LAYER_MODULE_EXT
 
 private:
 
-	sinfg::Vector size;
+	synfig::Vector size;
 
 	Random random;
 	int smooth;
 	int detail;
-	sinfg::Real speed;
+	synfig::Real speed;
 	bool turbulent;
-	sinfg::Vector displacement;
+	synfig::Vector displacement;
 
 	//void sync();
-	mutable sinfg::Time curr_time;
+	mutable synfig::Time curr_time;
 
-	sinfg::Color color_func(const sinfg::Point &x, float supersample,sinfg::Context context)const;
+	synfig::Color color_func(const synfig::Point &x, float supersample,synfig::Context context)const;
 
-	float calc_supersample(const sinfg::Point &x, float pw,float ph)const;
+	float calc_supersample(const synfig::Point &x, float pw,float ph)const;
 
 public:
 	NoiseDistort();
 	
-	virtual bool set_param(const sinfg::String &param, const sinfg::ValueBase &value);
-	virtual sinfg::ValueBase get_param(const sinfg::String &param)const;
-	virtual sinfg::Color get_color(sinfg::Context context, const sinfg::Point &pos)const;
-	//virtual bool accelerated_render(sinfg::Context context,sinfg::Surface *surface,int quality, const sinfg::RendDesc &renddesc, sinfg::ProgressCallback *cb)const;
-	sinfg::Layer::Handle hit_check(sinfg::Context context, const sinfg::Point &point)const;	
-	virtual void set_time(sinfg::Context context, sinfg::Time time)const;
-	virtual void set_time(sinfg::Context context, sinfg::Time time, const sinfg::Point &point)const;
-	virtual sinfg::Rect get_bounding_rect(sinfg::Context context)const;
+	virtual bool set_param(const synfig::String &param, const synfig::ValueBase &value);
+	virtual synfig::ValueBase get_param(const synfig::String &param)const;
+	virtual synfig::Color get_color(synfig::Context context, const synfig::Point &pos)const;
+	//virtual bool accelerated_render(synfig::Context context,synfig::Surface *surface,int quality, const synfig::RendDesc &renddesc, synfig::ProgressCallback *cb)const;
+	synfig::Layer::Handle hit_check(synfig::Context context, const synfig::Point &point)const;	
+	virtual void set_time(synfig::Context context, synfig::Time time)const;
+	virtual void set_time(synfig::Context context, synfig::Time time, const synfig::Point &point)const;
+	virtual synfig::Rect get_bounding_rect(synfig::Context context)const;
 
 	virtual Vocab get_param_vocab()const;
 };

@@ -1,5 +1,5 @@
 /*! ========================================================================
-** Sinfg
+** Synfig
 ** Template Header File
 ** $Id: mptr_openexr.h,v 1.1.1.1 2005/01/04 01:23:14 darco Exp $
 **
@@ -20,14 +20,14 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_MPTR_OPENEXR_H
-#define __SINFG_MPTR_OPENEXR_H
+#ifndef __SYNFIG_MPTR_OPENEXR_H
+#define __SYNFIG_MPTR_OPENEXR_H
 
 /* === H E A D E R S ======================================================= */
 
-#include <sinfg/importer.h>
+#include <synfig/importer.h>
 #include <stdio.h>
-#include <sinfg/string.h>
+#include <synfig/string.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -35,19 +35,19 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-class exr_mptr : public sinfg::Importer
+class exr_mptr : public synfig::Importer
 {
-	SINFG_IMPORTER_MODULE_EXT
+	SYNFIG_IMPORTER_MODULE_EXT
 
 private:
-	sinfg::String filename;
+	synfig::String filename;
 public:
 	exr_mptr(const char *filename);
 	~exr_mptr();
 
 
 
-	virtual bool get_frame(sinfg::Surface &,sinfg::Time, sinfg::ProgressCallback *);
+	virtual bool get_frame(synfig::Surface &,synfig::Time, synfig::ProgressCallback *);
 
 };
 

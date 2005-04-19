@@ -1,5 +1,5 @@
 /*! ========================================================================
-** Sinfg
+** Synfig
 ** Template File
 ** $Id: main.cpp,v 1.1.1.1 2005/01/04 01:23:09 darco Exp $
 **
@@ -20,7 +20,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#define SINFG_MODULE
+#define SYNFIG_MODULE
 
 #ifdef USING_PCH
 #	include "pch.h"
@@ -29,9 +29,9 @@
 #	include <config.h>
 #endif
 
-#include <sinfg/module.h>
-#include <sinfg/canvas.h>
-#include <sinfg/string.h>
+#include <synfig/module.h>
+#include <synfig/canvas.h>
+#include <synfig/string.h>
 #include "simplecircle.h"
 #include "filledrect.h"
 #include "metaballs.h"
@@ -45,7 +45,7 @@ MODULE_DESC_BEGIN(example)
 	MODULE_DESCRIPTION("A dummy module that serves as a starting point for writing other modules.")
 	MODULE_AUTHOR("Robert B. Quattlebaum")
 	MODULE_VERSION("1.0")
-	MODULE_COPYRIGHT(SINFG_COPYRIGHT)
+	MODULE_COPYRIGHT(SYNFIG_COPYRIGHT)
 MODULE_DESC_END
 
 MODULE_INVENTORY_BEGIN(example)

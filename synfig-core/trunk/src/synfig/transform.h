@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file transform.h
 **	\brief Template Header
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_TRANSFORM_H
-#define __SINFG_TRANSFORM_H
+#ifndef __SYNFIG_TRANSFORM_H
+#define __SYNFIG_TRANSFORM_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -38,7 +38,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace sinfg {
+namespace synfig {
 
 class Transform : public etl::shared_object
 {
@@ -55,11 +55,11 @@ public:
 	const GUID& get_guid()const { return guid_; }
 
 	virtual ~Transform() { }
-	virtual sinfg::Vector perform(const sinfg::Vector& x)const=0;
-	virtual sinfg::Vector unperform(const sinfg::Vector& x)const=0;
+	virtual synfig::Vector perform(const synfig::Vector& x)const=0;
+	virtual synfig::Vector unperform(const synfig::Vector& x)const=0;
 
-	virtual sinfg::Rect perform(const sinfg::Rect& x)const;
-	virtual sinfg::Rect unperform(const sinfg::Rect& x)const;
+	virtual synfig::Rect perform(const synfig::Rect& x)const;
+	virtual synfig::Rect unperform(const synfig::Rect& x)const;
 
 }; // END of class Transform
 
@@ -68,17 +68,17 @@ class TransformStack : public std::list<Transform::Handle>
 public:
 	GUID get_guid()const;
 
-	sinfg::Vector perform(const sinfg::Vector& x)const;
-	sinfg::Vector unperform(const sinfg::Vector& x)const;
+	synfig::Vector perform(const synfig::Vector& x)const;
+	synfig::Vector unperform(const synfig::Vector& x)const;
 	
-	sinfg::Rect perform(const sinfg::Rect& x)const;
-	sinfg::Rect unperform(const sinfg::Rect& x)const;
+	synfig::Rect perform(const synfig::Rect& x)const;
+	synfig::Rect unperform(const synfig::Rect& x)const;
 	
 	void push(const Transform::Handle& x) { if(x)push_back(x); }
 	void pop() { pop_back(); }
 }; // END of class TransformStack
 
-}; // END of namespace sinfg
+}; // END of namespace synfig
 
 /* === E N D =============================================================== */
 

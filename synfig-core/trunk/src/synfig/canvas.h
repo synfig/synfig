@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file canvas.h
 **	\brief Canvas Class Implementation
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_CANVAS_H
-#define __SINFG_CANVAS_H
+#ifndef __SYNFIG_CANVAS_H
+#define __SYNFIG_CANVAS_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -46,7 +46,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace sinfg {
+namespace synfig {
 
 class Context;
 class GUID;
@@ -67,7 +67,7 @@ public:
 
 	typedef std::list<Handle> Children;
 
-	friend void sinfg::optimize_layers(Context, Canvas::Handle);
+	friend void synfig::optimize_layers(Context, Canvas::Handle);
 
 	/*
  --	** -- D A T A -------------------------------------------------------------
@@ -155,8 +155,8 @@ private:
 	//! Group Changed
 	sigc::signal<void,String> signal_group_changed_;	
 
-	sigc::signal<void,String,etl::handle<sinfg::Layer> > signal_group_pair_added_;
-	sigc::signal<void,String,etl::handle<sinfg::Layer> > signal_group_pair_removed_;
+	sigc::signal<void,String,etl::handle<synfig::Layer> > signal_group_pair_added_;
+	sigc::signal<void,String,etl::handle<synfig::Layer> > signal_group_pair_removed_;
 
 	//!	Layers Reordered
 	sigc::signal<void,int*> signal_layers_reordered_;	
@@ -193,8 +193,8 @@ private:
 
 public:
 
-	sigc::signal<void,String,etl::handle<sinfg::Layer> >& signal_group_pair_added() { return signal_group_pair_added_; }
-	sigc::signal<void,String,etl::handle<sinfg::Layer> >& signal_group_pair_removed() { return signal_group_pair_removed_; }
+	sigc::signal<void,String,etl::handle<synfig::Layer> >& signal_group_pair_added() { return signal_group_pair_added_; }
+	sigc::signal<void,String,etl::handle<synfig::Layer> >& signal_group_pair_removed() { return signal_group_pair_removed_; }
 
 	//!	Group Added
 	sigc::signal<void,String>& signal_group_added() { return signal_group_added_; }
@@ -477,7 +477,7 @@ protected:
 void optimize_layers(Context context, Canvas::Handle op_canvas);
 
 
-}; // END of namespace sinfg
+}; // END of namespace synfig
 
 /* === E N D =============================================================== */
 

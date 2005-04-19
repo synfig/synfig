@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file trgt_bmp.h
 **	\brief Template Header
 **
@@ -21,13 +21,13 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_TRGT_BMP_H
-#define __SINFG_TRGT_BMP_H
+#ifndef __SYNFIG_TRGT_BMP_H
+#define __SYNFIG_TRGT_BMP_H
 
 /* === H E A D E R S ======================================================= */
 
-#include <sinfg/target_scanline.h>
-#include <sinfg/string.h>
+#include <synfig/target_scanline.h>
+#include <synfig/string.h>
 #include <cstdio>
 
 /* === M A C R O S ========================================================= */
@@ -36,27 +36,27 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-class bmp : public sinfg::Target_Scanline
+class bmp : public synfig::Target_Scanline
 {
-	SINFG_TARGET_MODULE_EXT
+	SYNFIG_TARGET_MODULE_EXT
 private:
 	int rowspan;
 	int imagecount;
 	bool multi_image;
 	FILE *file;
-	sinfg::String filename;
+	synfig::String filename;
 	unsigned char *buffer;
-	sinfg::Color *color_buffer;
-	sinfg::PixelFormat pf;
+	synfig::Color *color_buffer;
+	synfig::PixelFormat pf;
 
 public:
 	bmp(const char *filename);
 	virtual ~bmp();
 
-	virtual bool set_rend_desc(sinfg::RendDesc *desc);
-	virtual bool start_frame(sinfg::ProgressCallback *cb);
+	virtual bool set_rend_desc(synfig::RendDesc *desc);
+	virtual bool start_frame(synfig::ProgressCallback *cb);
 	virtual void end_frame();
-	virtual sinfg::Color * start_scanline(int scanline);
+	virtual synfig::Color * start_scanline(int scanline);
 	virtual bool end_scanline();
 
 };

@@ -1,5 +1,5 @@
 /*! ========================================================================
-** Sinfg
+** Synfig
 ** Template Header File
 ** $Id: trgt_gif.h,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $
 **
@@ -20,17 +20,17 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_TRGT_GIF_H
-#define __SINFG_TRGT_GIF_H
+#ifndef __SYNFIG_TRGT_GIF_H
+#define __SYNFIG_TRGT_GIF_H
 
 /* === H E A D E R S ======================================================= */
 
-#include <sinfg/target_scanline.h>
-#include <sinfg/string.h>
-#include <sinfg/smartfile.h>
+#include <synfig/target_scanline.h>
+#include <synfig/string.h>
+#include <synfig/smartfile.h>
 #include <cstdio>
-#include <sinfg/surface.h>
-#include <sinfg/palette.h>
+#include <synfig/surface.h>
+#include <synfig/palette.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -38,19 +38,19 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-class gif : public sinfg::Target_Scanline
+class gif : public synfig::Target_Scanline
 {
-	SINFG_TARGET_MODULE_EXT
+	SYNFIG_TARGET_MODULE_EXT
 private:
 	// Class for abstracting the
 	// output of the codes
 	struct bitstream
 	{
-		sinfg::SmartFILE file;
+		synfig::SmartFILE file;
 		unsigned char pool;
 		char curr_bit;
 		bitstream():pool(0),curr_bit(0),curr_pos(0) {}
-		bitstream(sinfg::SmartFILE file):file(file),pool(0),curr_bit(0),curr_pos(0) {}
+		bitstream(synfig::SmartFILE file):file(file),pool(0),curr_bit(0),curr_pos(0) {}
 		unsigned char buffer[256];
 		int curr_pos;
 		
@@ -159,8 +159,8 @@ private:
 
 private:
 	bitstream bs;
-	sinfg::String filename;
-	sinfg::SmartFILE file;
+	synfig::String filename;
+	synfig::SmartFILE file;
 	int 
 		i,			// General-purpose index
 		codesize,	// Current code size
@@ -168,7 +168,7 @@ private:
 		nextcode;	// Next code to use
 	lzwcode *table,*next,*node;
 	
-	sinfg::Surface curr_surface;
+	synfig::Surface curr_surface;
 	etl::surface<unsigned char> curr_frame;
 	etl::surface<unsigned char> prev_frame;
 
@@ -185,21 +185,21 @@ private:
 	int loop_count;
 	bool local_palette;
 	
-	sinfg::Palette curr_palette;
+	synfig::Palette curr_palette;
 	
 	void output_curr_palette();
 	
 public:
 	gif(const char *filename);
 
-	virtual bool set_rend_desc(sinfg::RendDesc *desc);
+	virtual bool set_rend_desc(synfig::RendDesc *desc);
 	virtual bool init();
-	virtual bool start_frame(sinfg::ProgressCallback *cb);
+	virtual bool start_frame(synfig::ProgressCallback *cb);
 	virtual void end_frame();
 
 	virtual ~gif();
 	
-	virtual sinfg::Color * start_scanline(int scanline);
+	virtual synfig::Color * start_scanline(int scanline);
 	virtual bool end_scanline(void);
 
 };

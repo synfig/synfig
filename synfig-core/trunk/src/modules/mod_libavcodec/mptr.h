@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file mptr.h
 **	\brief writeme
 **
@@ -21,14 +21,14 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_MPTR_H
-#define __SINFG_MPTR_H
+#ifndef __SYNFIG_MPTR_H
+#define __SYNFIG_MPTR_H
 
 /* === H E A D E R S ======================================================= */
 
-#include <sinfg/importer.h>
-#include <sinfg/string.h>
-#include <sinfg/time.h>
+#include <synfig/importer.h>
+#include <synfig/string.h>
+#include <synfig/time.h>
 #include <cstdio>
 
 /* === M A C R O S ========================================================= */
@@ -37,18 +37,18 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-class Importer_LibAVCodec : public sinfg::Importer
+class Importer_LibAVCodec : public synfig::Importer
 {
-SINFG_IMPORTER_MODULE_EXT
+SYNFIG_IMPORTER_MODULE_EXT
 
 private:
-	sinfg::String filename;
+	synfig::String filename;
 
 public:
 	Importer_LibAVCodec(const char *filename);
 	~Importer_LibAVCodec();
 
-	virtual bool get_frame(sinfg::Surface &,sinfg::Time, sinfg::ProgressCallback *);
+	virtual bool get_frame(synfig::Surface &,synfig::Time, synfig::ProgressCallback *);
 };
 
 /* === E N D =============================================================== */

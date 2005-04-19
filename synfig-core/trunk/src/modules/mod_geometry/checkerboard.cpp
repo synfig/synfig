@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file checkerboard.cpp
 **	\brief Template Header
 **
@@ -30,19 +30,19 @@
 
 #include "checkerboard.h"
 
-#include <sinfg/string.h>
-#include <sinfg/time.h>
-#include <sinfg/context.h>
-#include <sinfg/paramdesc.h>
-#include <sinfg/renddesc.h>
-#include <sinfg/surface.h>
-#include <sinfg/value.h>
-#include <sinfg/valuenode.h>
-#include <sinfg/segment.h>
+#include <synfig/string.h>
+#include <synfig/time.h>
+#include <synfig/context.h>
+#include <synfig/paramdesc.h>
+#include <synfig/renddesc.h>
+#include <synfig/surface.h>
+#include <synfig/value.h>
+#include <synfig/valuenode.h>
+#include <synfig/segment.h>
 
 #endif
 
-using namespace sinfg;
+using namespace synfig;
 using namespace std;
 using namespace etl;
 
@@ -50,12 +50,12 @@ using namespace etl;
 
 /* === G L O B A L S ======================================================= */
 
-SINFG_LAYER_INIT(CheckerBoard);
-SINFG_LAYER_SET_NAME(CheckerBoard,"checker_board");
-SINFG_LAYER_SET_LOCAL_NAME(CheckerBoard,_("CheckerBoard"));
-SINFG_LAYER_SET_CATEGORY(CheckerBoard,_("Geometry"));
-SINFG_LAYER_SET_VERSION(CheckerBoard,"0.1");
-SINFG_LAYER_SET_CVS_ID(CheckerBoard,"$Id: checkerboard.cpp,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $");
+SYNFIG_LAYER_INIT(CheckerBoard);
+SYNFIG_LAYER_SET_NAME(CheckerBoard,"checker_board");
+SYNFIG_LAYER_SET_LOCAL_NAME(CheckerBoard,_("CheckerBoard"));
+SYNFIG_LAYER_SET_CATEGORY(CheckerBoard,_("Geometry"));
+SYNFIG_LAYER_SET_VERSION(CheckerBoard,"0.1");
+SYNFIG_LAYER_SET_CVS_ID(CheckerBoard,"$Id: checkerboard.cpp,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $");
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -72,7 +72,7 @@ CheckerBoard::CheckerBoard():
 }
 
 inline bool
-CheckerBoard::point_test(const sinfg::Point& getpos)const
+CheckerBoard::point_test(const synfig::Point& getpos)const
 {
 	int val=((int)((getpos[0]-pos[0])/size[0])+(int)((getpos[1]-pos[1])/size[1]));
 	if(getpos[0]-pos[0] < 0.0)
@@ -129,12 +129,12 @@ CheckerBoard::get_param_vocab()const
 	return ret;
 }
 
-sinfg::Layer::Handle
-CheckerBoard::hit_check(sinfg::Context context, const sinfg::Point &getpos)const
+synfig::Layer::Handle
+CheckerBoard::hit_check(synfig::Context context, const synfig::Point &getpos)const
 {
 	if(get_amount()!=0.0 && point_test(getpos))
 	{
-		sinfg::Layer::Handle tmp;
+		synfig::Layer::Handle tmp;
 		if(get_blend_method()==Color::BLEND_BEHIND && (tmp=context.hit_check(getpos)))
 			return tmp;
 		if(Color::is_onto(get_blend_method()) && !(tmp=context.hit_check(getpos)))

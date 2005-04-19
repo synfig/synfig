@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file activepoint.h
 **	\brief Template Header
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_ACTIVEPOINT_H
-#define __SINFG_ACTIVEPOINT_H
+#ifndef __SYNFIG_ACTIVEPOINT_H
+#define __SYNFIG_ACTIVEPOINT_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -36,7 +36,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace sinfg {
+namespace synfig {
 class GUID;
 class ValueNode;
 	
@@ -80,7 +80,7 @@ public:
 	GUID get_guid()const;
 }; // END of struct ValueNode_BLine::Activepoint
 
-}; // END of namespace sinfg
+}; // END of namespace synfig
 
 /* === E N D =============================================================== */
 

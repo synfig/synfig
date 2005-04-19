@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file stretch.cpp
 **	\brief Template Header
 **
@@ -21,7 +21,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#define SINFG_NO_ANGLE
+#define SYNFIG_NO_ANGLE
 
 #ifdef USING_PCH
 #	include "pch.h"
@@ -31,15 +31,15 @@
 #endif
 
 #include "stretch.h"
-#include <sinfg/string.h>
-#include <sinfg/time.h>
-#include <sinfg/context.h>
-#include <sinfg/paramdesc.h>
-#include <sinfg/renddesc.h>
-#include <sinfg/surface.h>
-#include <sinfg/value.h>
-#include <sinfg/valuenode.h>
-#include <sinfg/transform.h>
+#include <synfig/string.h>
+#include <synfig/time.h>
+#include <synfig/context.h>
+#include <synfig/paramdesc.h>
+#include <synfig/renddesc.h>
+#include <synfig/surface.h>
+#include <synfig/value.h>
+#include <synfig/valuenode.h>
+#include <synfig/transform.h>
 
 #endif
 
@@ -47,16 +47,16 @@
 
 using namespace etl;
 using namespace std;
-using namespace sinfg;
+using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
-SINFG_LAYER_INIT(Layer_Stretch);
-SINFG_LAYER_SET_NAME(Layer_Stretch,"stretch");
-SINFG_LAYER_SET_LOCAL_NAME(Layer_Stretch,_("Stretch"));
-SINFG_LAYER_SET_CATEGORY(Layer_Stretch,_("Distortions"));
-SINFG_LAYER_SET_VERSION(Layer_Stretch,"0.1");
-SINFG_LAYER_SET_CVS_ID(Layer_Stretch,"$Id: stretch.cpp,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $");
+SYNFIG_LAYER_INIT(Layer_Stretch);
+SYNFIG_LAYER_SET_NAME(Layer_Stretch,"stretch");
+SYNFIG_LAYER_SET_LOCAL_NAME(Layer_Stretch,_("Stretch"));
+SYNFIG_LAYER_SET_CATEGORY(Layer_Stretch,_("Distortions"));
+SYNFIG_LAYER_SET_VERSION(Layer_Stretch,"0.1");
+SYNFIG_LAYER_SET_CVS_ID(Layer_Stretch,"$Id: stretch.cpp,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $");
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -108,8 +108,8 @@ Layer_Stretch::get_param_vocab()const
 	return ret;
 }
 
-sinfg::Layer::Handle
-Layer_Stretch::hit_check(sinfg::Context context, const sinfg::Point &pos)const
+synfig::Layer::Handle
+Layer_Stretch::hit_check(synfig::Context context, const synfig::Point &pos)const
 {
 	Point npos(pos);
 	npos[0]=(npos[0]-center[0])/amount[0]+center[0];
@@ -132,12 +132,12 @@ class  Stretch_Trans : public Transform
 public:
 	Stretch_Trans(const Layer_Stretch* x):Transform(x->get_guid()),layer(x) { }
 	
-	sinfg::Vector perform(const sinfg::Vector& x)const
+	synfig::Vector perform(const synfig::Vector& x)const
 	{
 		return Vector((x[0]-layer->center[0])*layer->amount[0]+layer->center[0],(x[1]-layer->center[1])*layer->amount[1]+layer->center[1]);
 	}
 	
-	sinfg::Vector unperform(const sinfg::Vector& x)const
+	synfig::Vector unperform(const synfig::Vector& x)const
 	{
 		return Vector((x[0]-layer->center[0])/layer->amount[0]+layer->center[0],(x[1]-layer->center[1])/layer->amount[1]+layer->center[1]);
 	}

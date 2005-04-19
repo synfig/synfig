@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file curveset.h
 **	\brief Curve Set Header
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_CURVESET_H
-#define __SINFG_CURVESET_H
+#ifndef __SYNFIG_CURVESET_H
+#define __SYNFIG_CURVESET_H
 
 /* === H E A D E R S ======================================================= */
 #include "blinepoint.h"
@@ -33,7 +33,7 @@
 /* === T Y P E D E F S ===================================================== */
 
 /* === C L A S S E S & S T R U C T S ======================================= */
-namespace sinfg
+namespace synfig
 {
 
 class BLinePoint;

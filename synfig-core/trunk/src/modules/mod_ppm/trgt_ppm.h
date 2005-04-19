@@ -1,5 +1,5 @@
 /*! ========================================================================
-** Sinfg
+** Synfig
 ** Template Header File
 ** $Id: trgt_ppm.h,v 1.1.1.1 2005/01/04 01:23:14 darco Exp $
 **
@@ -20,14 +20,14 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_TRGT_PPM_H
-#define __SINFG_TRGT_PPM_H
+#ifndef __SYNFIG_TRGT_PPM_H
+#define __SYNFIG_TRGT_PPM_H
 
 /* === H E A D E R S ======================================================= */
 
-#include <sinfg/target_scanline.h>
-#include <sinfg/string.h>
-#include <sinfg/smartfile.h>
+#include <synfig/target_scanline.h>
+#include <synfig/string.h>
+#include <synfig/smartfile.h>
 #include <cstdio>
 
 /* === M A C R O S ========================================================= */
@@ -36,26 +36,26 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-class ppm : public sinfg::Target_Scanline
+class ppm : public synfig::Target_Scanline
 {
-	SINFG_TARGET_MODULE_EXT
+	SYNFIG_TARGET_MODULE_EXT
 
 private:
 	int imagecount;
 	bool multi_image;
-	sinfg::SmartFILE file;
-	sinfg::String filename;
-	sinfg::Color *color_buffer;
+	synfig::SmartFILE file;
+	synfig::String filename;
+	synfig::Color *color_buffer;
 	unsigned char *buffer;
 public:
 	ppm(const char *filename);
 	virtual ~ppm();
 
-	virtual bool set_rend_desc(sinfg::RendDesc *desc);
-	virtual bool start_frame(sinfg::ProgressCallback *cb);
+	virtual bool set_rend_desc(synfig::RendDesc *desc);
+	virtual bool start_frame(synfig::ProgressCallback *cb);
 	virtual void end_frame();
 
-	virtual sinfg::Color * start_scanline(int scanline);
+	virtual synfig::Color * start_scanline(int scanline);
 	virtual bool end_scanline();
 };
 

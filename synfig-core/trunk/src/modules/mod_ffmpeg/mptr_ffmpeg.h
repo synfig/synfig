@@ -1,5 +1,5 @@
 /*! ========================================================================
-** Sinfg
+** Synfig
 ** Template Header File
 ** $Id: mptr_ffmpeg.h,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $
 **
@@ -20,12 +20,12 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_MPTR_FFMPEG_H
-#define __SINFG_MPTR_FFMPEG_H
+#ifndef __SYNFIG_MPTR_FFMPEG_H
+#define __SYNFIG_MPTR_FFMPEG_H
 
 /* === H E A D E R S ======================================================= */
 
-#include <sinfg/importer.h>
+#include <synfig/importer.h>
 #include <stdio.h>
 #include "string.h"
 #ifdef HAVE_TERMIOS_H
@@ -33,22 +33,22 @@
 
 #endif
 
-#include <sinfg/surface.h>
+#include <synfig/surface.h>
 /* === M A C R O S ========================================================= */
 
 /* === T Y P E D E F S ===================================================== */
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-class ffmpeg_mptr : public sinfg::Importer
+class ffmpeg_mptr : public synfig::Importer
 {
-	SINFG_IMPORTER_MODULE_EXT
+	SYNFIG_IMPORTER_MODULE_EXT
 public:
 private:
-	sinfg::String filename;
+	synfig::String filename;
 	FILE *file;
 	int cur_frame;
-	sinfg::Surface frame;
+	synfig::Surface frame;
 	float fps;
 #ifdef HAVE_TERMIOS_H
 	struct termios oldtty;
@@ -62,7 +62,7 @@ public:
 	~ffmpeg_mptr();
 
 
-	virtual bool get_frame(sinfg::Surface &,sinfg::Time, sinfg::ProgressCallback *);
+	virtual bool get_frame(synfig::Surface &,synfig::Time, synfig::ProgressCallback *);
 };
 
 /* === E N D =============================================================== */

@@ -1,5 +1,5 @@
 /*! ========================================================================
-** Sinfg
+** Synfig
 ** Template File
 ** $Id: warp.cpp,v 1.2 2005/01/24 05:00:18 darco Exp $
 **
@@ -28,15 +28,15 @@
 #endif
 
 #include "warp.h"
-#include <sinfg/string.h>
-#include <sinfg/time.h>
-#include <sinfg/context.h>
-#include <sinfg/paramdesc.h>
-#include <sinfg/renddesc.h>
-#include <sinfg/surface.h>
-#include <sinfg/value.h>
-#include <sinfg/valuenode.h>
-#include <sinfg/transform.h>
+#include <synfig/string.h>
+#include <synfig/time.h>
+#include <synfig/context.h>
+#include <synfig/paramdesc.h>
+#include <synfig/renddesc.h>
+#include <synfig/surface.h>
+#include <synfig/value.h>
+#include <synfig/valuenode.h>
+#include <synfig/transform.h>
 #include <ETL/misc>
 
 #endif
@@ -45,12 +45,12 @@
 
 /* === G L O B A L S ======================================================= */
 
-SINFG_LAYER_INIT(Warp);
-SINFG_LAYER_SET_NAME(Warp,"warp");
-SINFG_LAYER_SET_LOCAL_NAME(Warp,_("Warp"));
-SINFG_LAYER_SET_CATEGORY(Warp,_("Distortions"));
-SINFG_LAYER_SET_VERSION(Warp,"0.1");
-SINFG_LAYER_SET_CVS_ID(Warp,"$Id: warp.cpp,v 1.2 2005/01/24 05:00:18 darco Exp $");
+SYNFIG_LAYER_INIT(Warp);
+SYNFIG_LAYER_SET_NAME(Warp,"warp");
+SYNFIG_LAYER_SET_LOCAL_NAME(Warp,_("Warp"));
+SYNFIG_LAYER_SET_CATEGORY(Warp,_("Distortions"));
+SYNFIG_LAYER_SET_VERSION(Warp,"0.1");
+SYNFIG_LAYER_SET_CVS_ID(Warp,"$Id: warp.cpp,v 1.2 2005/01/24 05:00:18 darco Exp $");
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -409,14 +409,14 @@ class Warp_Trans : public Transform
 public:
 	Warp_Trans(const Warp* x):Transform(x->get_guid()),layer(x) { }
 	
-	sinfg::Vector perform(const sinfg::Vector& x)const
+	synfig::Vector perform(const synfig::Vector& x)const
 	{
 		return layer->transform_backward(x);
 		//Point pos(x-layer->origin);
 		//return Point(layer->cos_val*pos[0]-layer->sin_val*pos[1],layer->sin_val*pos[0]+layer->cos_val*pos[1])+layer->origin;
 	}
 	
-	sinfg::Vector unperform(const sinfg::Vector& x)const
+	synfig::Vector unperform(const synfig::Vector& x)const
 	{
 
 		return layer->transform_forward(x);
@@ -430,8 +430,8 @@ Warp::get_transform()const
 	return new Warp_Trans(this);
 }
 
-sinfg::Layer::Handle
-Warp::hit_check(sinfg::Context context, const sinfg::Point &p)const
+synfig::Layer::Handle
+Warp::hit_check(synfig::Context context, const synfig::Point &p)const
 {
 	Point newpos(transform_forward(p));
 
@@ -588,8 +588,8 @@ Warp::accelerated_render(Context context,Surface *surface,int quality, const Ren
 	;
 	swap(tl[1],br[1]);*/
 	
-	//sinfg::warning("given window: [%f,%f]-[%f,%f] %dx%d",tl[0],tl[1],br[0],br[1],renddesc.get_w(),renddesc.get_h());
-	//sinfg::warning("Projected: [%f,%f]-[%f,%f]",bounding_rect.get_min()[0],bounding_rect.get_min()[1],bounding_rect.get_max()[0],bounding_rect.get_max()[1]);
+	//synfig::warning("given window: [%f,%f]-[%f,%f] %dx%d",tl[0],tl[1],br[0],br[1],renddesc.get_w(),renddesc.get_h());
+	//synfig::warning("Projected: [%f,%f]-[%f,%f]",bounding_rect.get_min()[0],bounding_rect.get_min()[1],bounding_rect.get_max()[0],bounding_rect.get_max()[1]);
 
 	// If we are clipping, then go ahead and clip to the
 	// source rectangle
@@ -641,7 +641,7 @@ Warp::accelerated_render(Context context,Surface *surface,int quality, const Ren
 	desc.set_br(br);
 	desc.set_wh(ceil_to_int(src_pw*(br[0]-tl[0])),ceil_to_int(src_ph*(br[1]-tl[1])));
 
-	//sinfg::warning("surface to render: [%f,%f]-[%f,%f] %dx%d",desc.get_tl()[0],desc.get_tl()[1],desc.get_br()[0],desc.get_br()[1],desc.get_w(),desc.get_h());
+	//synfig::warning("surface to render: [%f,%f]-[%f,%f] %dx%d",desc.get_tl()[0],desc.get_tl()[1],desc.get_br()[0],desc.get_br()[1],desc.get_w(),desc.get_h());
 	if(desc.get_w()==0 && desc.get_h()==0)
 	{
 		surface->set_wh(renddesc.get_w(),renddesc.get_h());
@@ -786,13 +786,13 @@ Warp::accelerated_render(Context context,Surface *surface,int quality, const Ren
 	return true;
 }
 
-sinfg::Rect
+synfig::Rect
 Warp::get_bounding_rect()const
 {	
 	return Rect::full_plane();
 }
 
-sinfg::Rect
+synfig::Rect
 Warp::get_full_bounding_rect(Context context)const
 {
 //	return Rect::full_plane();

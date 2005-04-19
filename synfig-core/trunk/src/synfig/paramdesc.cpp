@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file paramdesc.cpp
 **	\brief Template File
 **
@@ -37,7 +37,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 
@@ -47,7 +47,7 @@ using namespace sinfg;
 
 /* === M E T H O D S ======================================================= */
 
-ParamDesc::ParamDesc(sinfg::Color::BlendMethod, const String &a):
+ParamDesc::ParamDesc(synfig::Color::BlendMethod, const String &a):
 	name_			(a),
 	local_name_		(a),
 	scalar_			(1.0),

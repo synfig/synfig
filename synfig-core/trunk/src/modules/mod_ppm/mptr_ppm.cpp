@@ -1,5 +1,5 @@
 /*! ========================================================================
-** Sinfg
+** Synfig
 ** ppm Target Module
 ** $Id: mptr_ppm.cpp,v 1.1.1.1 2005/01/04 01:23:14 darco Exp $
 **
@@ -28,11 +28,11 @@
 #endif
 
 #include "mptr_ppm.h"
-#include <sinfg/importer.h>
-#include <sinfg/time.h>
-#include <sinfg/surface.h>
-#include <sinfg/general.h>
-#include <sinfg/smartfile.h>
+#include <synfig/importer.h>
+#include <synfig/time.h>
+#include <synfig/surface.h>
+#include <synfig/general.h>
+#include <synfig/smartfile.h>
 
 #include <cstdio>
 #include <algorithm>
@@ -42,17 +42,17 @@
 
 /* === M A C R O S ========================================================= */
 
-using namespace sinfg;
+using namespace synfig;
 using namespace std;
 using namespace etl;
 
 /* === G L O B A L S ======================================================= */
 
-SINFG_IMPORTER_INIT(ppm_mptr);
-SINFG_IMPORTER_SET_NAME(ppm_mptr,"ppm_mptr");
-SINFG_IMPORTER_SET_EXT(ppm_mptr,"ppm");
-SINFG_IMPORTER_SET_VERSION(ppm_mptr,"0.1");
-SINFG_IMPORTER_SET_CVS_ID(ppm_mptr,"$Id: mptr_ppm.cpp,v 1.1.1.1 2005/01/04 01:23:14 darco Exp $");
+SYNFIG_IMPORTER_INIT(ppm_mptr);
+SYNFIG_IMPORTER_SET_NAME(ppm_mptr,"ppm_mptr");
+SYNFIG_IMPORTER_SET_EXT(ppm_mptr,"ppm");
+SYNFIG_IMPORTER_SET_VERSION(ppm_mptr,"0.1");
+SYNFIG_IMPORTER_SET_CVS_ID(ppm_mptr,"$Id: mptr_ppm.cpp,v 1.1.1.1 2005/01/04 01:23:14 darco Exp $");
 
 /* === M E T H O D S ======================================================= */
 
@@ -66,7 +66,7 @@ ppm_mptr::~ppm_mptr()
 }
 
 bool
-ppm_mptr::get_frame(sinfg::Surface &surface,Time, sinfg::ProgressCallback *cb)
+ppm_mptr::get_frame(synfig::Surface &surface,Time, synfig::ProgressCallback *cb)
 {
 	SmartFILE file(fopen(filename.c_str(),"rb"));
 	if(!file)

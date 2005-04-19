@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file layer_pastecanvas.h
 **	\brief Template Header
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_LAYER_PASTEIMAGE_H
-#define __SINFG_LAYER_PASTEIMAGE_H
+#ifndef __SYNFIG_LAYER_PASTEIMAGE_H
+#define __SYNFIG_LAYER_PASTEIMAGE_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -41,16 +41,16 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace sinfg {
+namespace synfig {
 	
 class Layer_PasteCanvas : public Layer_Composite, public Layer_NoDeform
 {
-	SINFG_LAYER_MODULE_EXT
+	SYNFIG_LAYER_MODULE_EXT
 private:
 
 	Vector origin;
 
-	etl::loose_handle<sinfg::Canvas> canvas;
+	etl::loose_handle<synfig::Canvas> canvas;
 
 	//! Recursion depth counter
 	mutable int depth;
@@ -61,7 +61,7 @@ private:
 
 	mutable Time curr_time;
 
-	bool optimize_layers(sinfg::Context context,sinfg::CanvasBase&)const;
+	bool optimize_layers(synfig::Context context,synfig::CanvasBase&)const;
 
 	bool do_not_muck_with_time_;
 	
@@ -76,8 +76,8 @@ public:
 
 	void set_do_not_muck_with_time(bool x=true) { do_not_muck_with_time_=true; }
 
-	etl::handle<sinfg::Canvas> get_sub_canvas()const { return canvas; }
-	void set_sub_canvas(etl::handle<sinfg::Canvas> x);
+	etl::handle<synfig::Canvas> get_sub_canvas()const { return canvas; }
+	void set_sub_canvas(etl::handle<synfig::Canvas> x);
 	
 	Real get_zoom()const { return zoom; }
 
@@ -90,7 +90,7 @@ public:
 
 	virtual String get_local_name()const;
 	
-	virtual bool set_param(const String & param, const sinfg::ValueBase &value);
+	virtual bool set_param(const String & param, const synfig::ValueBase &value);
 
 	virtual ValueBase get_param(const String & param)const;
 
@@ -102,16 +102,16 @@ public:
 
 	virtual Vocab get_param_vocab()const;
 
-	virtual sinfg::Rect get_bounding_rect()const;
+	virtual synfig::Rect get_bounding_rect()const;
 
-	virtual sinfg::Layer::Handle hit_check(sinfg::Context context, const sinfg::Point &point)const;
+	virtual synfig::Layer::Handle hit_check(synfig::Context context, const synfig::Point &point)const;
 	
 protected:
 	virtual void get_times_vfunc(Node::time_set &set) const;	
 
 }; // END of class Layer_PasteCanvas
 
-}; // END of namespace sinfg
+}; // END of namespace synfig
 
 /* === E N D =============================================================== */
 

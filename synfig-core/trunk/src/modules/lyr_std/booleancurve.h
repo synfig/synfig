@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file boolean_curve.h
 **	\brief Boolean Curve Header
 **
@@ -21,12 +21,12 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_BOOLEAN_CURVE_H
-#define __SINFG_BOOLEAN_CURVE_H
+#ifndef __SYNFIG_BOOLEAN_CURVE_H
+#define __SYNFIG_BOOLEAN_CURVE_H
 
 /* === H E A D E R S ======================================================= */
-#include <sinfg/layer_shape.h>
-#include <sinfg/blinepoint.h>
+#include <synfig/layer_shape.h>
+#include <synfig/blinepoint.h>
 
 #include <vector>
 
@@ -35,7 +35,7 @@
 /* === T Y P E D E F S ===================================================== */
 
 /* === C L A S S E S & S T R U C T S ======================================= */
-namespace sinfg
+namespace synfig
 {
 	
 class BooleanCurve : public Layer_Shape
@@ -59,7 +59,7 @@ public:
 	BooleanCurve();
 	~BooleanCurve();
 		
-	virtual bool set_param(const String & param, const sinfg::ValueBase &value);
+	virtual bool set_param(const String & param, const synfig::ValueBase &value);
 	virtual ValueBase get_param(const String & param)const;
 	
 	virtual Vocab get_param_vocab()const;
@@ -68,7 +68,7 @@ public:
 	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;		
 };
 
-} //end of namespace sinfg
+} //end of namespace synfig
 /* === E N D =============================================================== */
 
 #endif

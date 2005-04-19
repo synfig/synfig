@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file layer_composite.cpp
 **	\brief Template File
 **
@@ -48,7 +48,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 
@@ -102,7 +102,7 @@ Layer_Composite::accelerated_render(Context context,Surface *surface,int quality
 	surfacelayer->br=renddesc.get_br();
 	surfacelayer->set_blend_method(Color::BLEND_STRAIGHT);
 
-	image.push_front(const_cast<sinfg::Layer_Composite*>(this));
+	image.push_front(const_cast<synfig::Layer_Composite*>(this));
 
 	// Set up a surface target
 	Target::Handle target(surface_target(surface));

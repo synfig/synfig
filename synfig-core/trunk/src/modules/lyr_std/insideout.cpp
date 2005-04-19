@@ -1,5 +1,5 @@
 /*! ========================================================================
-** Sinfg
+** Synfig
 ** Template File
 ** $Id: insideout.cpp,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $
 **
@@ -29,15 +29,15 @@
 
 #include "insideout.h"
 
-#include <sinfg/string.h>
-#include <sinfg/time.h>
-#include <sinfg/context.h>
-#include <sinfg/paramdesc.h>
-#include <sinfg/renddesc.h>
-#include <sinfg/surface.h>
-#include <sinfg/value.h>
-#include <sinfg/valuenode.h>
-#include <sinfg/transform.h>
+#include <synfig/string.h>
+#include <synfig/time.h>
+#include <synfig/context.h>
+#include <synfig/paramdesc.h>
+#include <synfig/renddesc.h>
+#include <synfig/surface.h>
+#include <synfig/value.h>
+#include <synfig/valuenode.h>
+#include <synfig/transform.h>
 
 #endif
 
@@ -45,12 +45,12 @@
 
 /* === G L O B A L S ======================================================= */
 
-SINFG_LAYER_INIT(InsideOut);
-SINFG_LAYER_SET_NAME(InsideOut,"inside_out");
-SINFG_LAYER_SET_LOCAL_NAME(InsideOut,_("InsideOut"));
-SINFG_LAYER_SET_CATEGORY(InsideOut,_("Distortions"));
-SINFG_LAYER_SET_VERSION(InsideOut,"0.1");
-SINFG_LAYER_SET_CVS_ID(InsideOut,"$Id: insideout.cpp,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $");
+SYNFIG_LAYER_INIT(InsideOut);
+SYNFIG_LAYER_SET_NAME(InsideOut,"inside_out");
+SYNFIG_LAYER_SET_LOCAL_NAME(InsideOut,_("InsideOut"));
+SYNFIG_LAYER_SET_CATEGORY(InsideOut,_("Distortions"));
+SYNFIG_LAYER_SET_VERSION(InsideOut,"0.1");
+SYNFIG_LAYER_SET_CVS_ID(InsideOut,"$Id: insideout.cpp,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $");
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -79,8 +79,8 @@ InsideOut::get_param(const String & param)const
 	return ValueBase();	
 }
 
-sinfg::Layer::Handle
-InsideOut::hit_check(sinfg::Context context, const sinfg::Point &p)const
+synfig::Layer::Handle
+InsideOut::hit_check(synfig::Context context, const synfig::Point &p)const
 {
 	Point pos(p-origin);
 	Real inv_mag=pos.inv_mag();
@@ -103,7 +103,7 @@ class InsideOut_Trans : public Transform
 public:
 	InsideOut_Trans(const InsideOut* x):layer(x) { }
 	
-	sinfg::Vector perform(const sinfg::Vector& x)const
+	synfig::Vector perform(const synfig::Vector& x)const
 	{
 		Point pos(x-layer->origin);
 		Real inv_mag=pos.inv_mag();
@@ -112,7 +112,7 @@ public:
 		return x;
 	}
 	
-	sinfg::Vector unperform(const sinfg::Vector& x)const
+	synfig::Vector unperform(const synfig::Vector& x)const
 	{
 		Point pos(x-layer->origin);
 		Real inv_mag=pos.inv_mag();

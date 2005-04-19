@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file layer_shape.cpp
 **	\brief Template Header
 **
@@ -50,18 +50,18 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace sinfg;
+using namespace synfig;
 using namespace std;
 using namespace etl;
 
 /* === G L O B A L S ======================================================= */
 
-SINFG_LAYER_INIT(Layer_Shape);
-SINFG_LAYER_SET_NAME(Layer_Shape,"shape");
-SINFG_LAYER_SET_LOCAL_NAME(Layer_Shape,_("Shape"));
-SINFG_LAYER_SET_CATEGORY(Layer_Shape,_("Internal"));
-SINFG_LAYER_SET_VERSION(Layer_Shape,"0.1");
-SINFG_LAYER_SET_CVS_ID(Layer_Shape,"$Id: layer_shape.cpp,v 1.2 2005/01/24 03:08:18 darco Exp $");
+SYNFIG_LAYER_INIT(Layer_Shape);
+SYNFIG_LAYER_SET_NAME(Layer_Shape,"shape");
+SYNFIG_LAYER_SET_LOCAL_NAME(Layer_Shape,_("Shape"));
+SYNFIG_LAYER_SET_CATEGORY(Layer_Shape,_("Internal"));
+SYNFIG_LAYER_SET_VERSION(Layer_Shape,"0.1");
+SYNFIG_LAYER_SET_CVS_ID(Layer_Shape,"$Id: layer_shape.cpp,v 1.2 2005/01/24 03:08:18 darco Exp $");
 
 #define EPSILON	1e-12
 
@@ -453,7 +453,7 @@ struct CurveArray
 			
 			if(dp == 0)
 			{
-				sinfg::warning("polish_cubicroot: Derivative should not vanish!!!");
+				synfig::warning("polish_cubicroot: Derivative should not vanish!!!");
 				return t;
 			}
 
@@ -1198,8 +1198,8 @@ Layer_Shape::get_param_vocab()const
 	return ret;
 }
 
-sinfg::Layer::Handle
-Layer_Shape::hit_check(sinfg::Context context, const sinfg::Point &p)const
+synfig::Layer::Handle
+Layer_Shape::hit_check(synfig::Context context, const synfig::Point &p)const
 {
 	Point pos(p-offset);
 		
@@ -1216,7 +1216,7 @@ Layer_Shape::hit_check(sinfg::Context context, const sinfg::Point &p)const
 
 	if(intersect)
 	{
-		sinfg::Layer::Handle tmp;
+		synfig::Layer::Handle tmp;
 		if(get_blend_method()==Color::BLEND_BEHIND && (tmp=context.hit_check(p)))
 			return tmp;
 		if(Color::is_onto(get_blend_method()))
@@ -1226,11 +1226,11 @@ Layer_Shape::hit_check(sinfg::Context context, const sinfg::Point &p)const
 				return const_cast<Layer_Shape*>(this);
 		}else if(get_blend_method() == Color::BLEND_ALPHA_OVER)
 		{
-			sinfg::info("layer_shape::hit_check - we've got alphaover");
+			synfig::info("layer_shape::hit_check - we've got alphaover");
 			//if there's something in the lower layer then we're set...
 			if(color.get_a() < 0.1 && get_amount() > .9)
 			{
-				sinfg::info("layer_shape::hit_check - can see through us... so nothing");
+				synfig::info("layer_shape::hit_check - can see through us... so nothing");
 				return Handle();
 			}else return context.hit_check(p);
 		}else
@@ -1435,7 +1435,7 @@ void Layer_Shape::PolySpan::line_to(Real x, Real y)
 			cur_y = yin;
 		}
 	}
-	} catch(...) { sinfg::error("line_to: cur_x=%f, cur_y=%f, x=%f, y=%f", cur_x, cur_y, x, y); throw; }
+	} catch(...) { synfig::error("line_to: cur_x=%f, cur_y=%f, x=%f, y=%f", cur_x, cur_y, x, y); throw; }
 
 	flags |= NotClosed|NotSorted;
 }
@@ -2579,7 +2579,7 @@ Layer_Shape::accelerated_render(Context context,Surface *surface,int quality, co
 		//we are done
 		if(cb && !cb->amount_complete(100,100))
 		{
-			sinfg::warning("Layer_Shape: could not set amount complete");
+			synfig::warning("Layer_Shape: could not set amount complete");
 			return false;
 		}
 		
@@ -2683,7 +2683,7 @@ Layer_Shape::render_shape(Surface *surface,bool useblend,int quality,
 			return false;
 		}
 
-		} catch(...) { sinfg::error("Layer_Shape::render_shape()1: Caught an exception after %d loops, rethrowing...", tmp); throw; }
+		} catch(...) { synfig::error("Layer_Shape::render_shape()1: Caught an exception after %d loops, rethrowing...", tmp); throw; }
 
 		//transfer all the data - RLE optimized
 		for(curnum=0; curnum < number;)

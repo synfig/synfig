@@ -1,5 +1,5 @@
 /*! ========================================================================
-** Sinfg
+** Synfig
 ** ppm Target Module
 ** $Id: trgt_dv.cpp,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $
 **
@@ -20,7 +20,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#define SINFG_TARGET
+#define SYNFIG_TARGET
 
 #ifdef USING_PCH
 #	include "pch.h"
@@ -40,17 +40,17 @@
 
 /* === M A C R O S ========================================================= */
 
-using namespace sinfg;
+using namespace synfig;
 using namespace std;
 using namespace etl;
 
 /* === G L O B A L S ======================================================= */
 
-SINFG_TARGET_INIT(dv_trgt);
-SINFG_TARGET_SET_NAME(dv_trgt,"dv");
-SINFG_TARGET_SET_EXT(dv_trgt,"dv");
-SINFG_TARGET_SET_VERSION(dv_trgt,"0.1");
-SINFG_TARGET_SET_CVS_ID(dv_trgt,"$Id: trgt_dv.cpp,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $");
+SYNFIG_TARGET_INIT(dv_trgt);
+SYNFIG_TARGET_SET_NAME(dv_trgt,"dv");
+SYNFIG_TARGET_SET_EXT(dv_trgt,"dv");
+SYNFIG_TARGET_SET_VERSION(dv_trgt,"0.1");
+SYNFIG_TARGET_SET_CVS_ID(dv_trgt,"$Id: trgt_dv.cpp,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $");
 
 /* === M E T H O D S ======================================================= */
 
@@ -128,7 +128,7 @@ dv_trgt::init()
 	
 	if(!file)
 	{
-		sinfg::error(_("Unable to open pipe to encodedv"));
+		synfig::error(_("Unable to open pipe to encodedv"));
 		return false;
 	}
 
@@ -147,7 +147,7 @@ dv_trgt::end_frame()
 }
 
 bool
-dv_trgt::start_frame(sinfg::ProgressCallback *callback)
+dv_trgt::start_frame(synfig::ProgressCallback *callback)
 {
 	int w=desc.get_w(),h=desc.get_h();
 		

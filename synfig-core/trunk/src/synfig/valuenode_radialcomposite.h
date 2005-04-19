@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file valuenode_radialcomposite.h
 **	\brief Template Header
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_VALUENODE_RADIALCOMPOSITE_H
-#define __SINFG_VALUENODE_RADIALCOMPOSITE_H
+#ifndef __SYNFIG_VALUENODE_RADIALCOMPOSITE_H
+#define __SYNFIG_VALUENODE_RADIALCOMPOSITE_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -32,7 +32,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace sinfg {
+namespace synfig {
 
 class ValueNode_RadialComposite : public LinkableValueNode
 {
@@ -63,13 +63,13 @@ protected:
 	LinkableValueNode* create_new()const;
 
 public:
-	using sinfg::LinkableValueNode::set_link_vfunc;
-	using sinfg::LinkableValueNode::get_link_vfunc;
+	using synfig::LinkableValueNode::set_link_vfunc;
+	using synfig::LinkableValueNode::get_link_vfunc;
 	static bool check_type(ValueBase::Type type);
 	static ValueNode_RadialComposite* create(const ValueBase &x);
 }; // END of class ValueNode_RadialComposite
 
-}; // END of namespace sinfg
+}; // END of namespace synfig
 
 /* === E N D =============================================================== */
 

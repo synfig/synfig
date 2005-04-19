@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file valuenode.h
 **	\brief Template Header
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_VALUENODE_H
-#define __SINFG_VALUENODE_H
+#ifndef __SYNFIG_VALUENODE_H
+#define __SYNFIG_VALUENODE_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -36,7 +36,7 @@
 #include <sigc++/signal.h>
 #include "guid.h"
 
-#ifndef SINFG_NO_ANGLE
+#ifndef SYNFIG_NO_ANGLE
 #include <ETL/angle>
 #endif
 
@@ -62,7 +62,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace sinfg {
+namespace synfig {
 
 class Canvas;
 class LinkableValueNode;
@@ -71,7 +71,7 @@ class Layer;
 /*!	\class ValueNode
 **	\todo writeme
 */
-class ValueNode : public sinfg::Node
+class ValueNode : public synfig::Node
 {
 	friend class Layer;
 	friend class LinkableValueNode;
@@ -379,7 +379,7 @@ public:
 
 ValueNode::LooseHandle find_value_node(const GUID& guid);
 
-}; // END of namespace sinfg
+}; // END of namespace synfig
 
 /* === E N D =============================================================== */
 

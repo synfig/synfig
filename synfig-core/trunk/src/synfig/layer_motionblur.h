@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file layer_motionblur.h
 **	\brief Template Header
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_LAYER_MOTIONBLUR_H__
-#define __SINFG_LAYER_MOTIONBLUR_H__
+#ifndef __SYNFIG_LAYER_MOTIONBLUR_H__
+#define __SYNFIG_LAYER_MOTIONBLUR_H__
 
 /* === H E A D E R S ======================================================= */
 
@@ -31,11 +31,11 @@
 
 /* === S T R U C T S & C L A S S E S ======================================= */
 
-namespace sinfg {
+namespace synfig {
 	
-class Layer_MotionBlur : public sinfg::Layer_Composite
+class Layer_MotionBlur : public synfig::Layer_Composite
 {
-	SINFG_LAYER_MODULE_EXT
+	SYNFIG_LAYER_MODULE_EXT
 
 private:
 
@@ -47,7 +47,7 @@ public:
 
 	Layer_MotionBlur();
 	
-	virtual bool set_param(const String & param, const sinfg::ValueBase &value);
+	virtual bool set_param(const String & param, const synfig::ValueBase &value);
 	
 	virtual ValueBase get_param(const String & param)const;
 
@@ -63,7 +63,7 @@ public:
 
 }; // END of class Layer_MotionBlur
 
-}; // END of namespace sinfg
+}; // END of namespace synfig
 
 /* === E N D =============================================================== */
 

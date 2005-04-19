@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file clamp.h
 **	\brief Template Header
 **
@@ -21,12 +21,12 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_LAYER_SOLIDCOLOR_H
-#define __SINFG_LAYER_SOLIDCOLOR_H
+#ifndef __SYNFIG_LAYER_SOLIDCOLOR_H
+#define __SYNFIG_LAYER_SOLIDCOLOR_H
 
 /* === H E A D E R S ======================================================= */
 
-#include <sinfg/layer.h>
+#include <synfig/layer.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -34,11 +34,11 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace sinfg {
+namespace synfig {
 
 class Layer_Clamp : public Layer
 {
-	SINFG_LAYER_MODULE_EXT
+	SYNFIG_LAYER_MODULE_EXT
 	
 private:
 
@@ -54,7 +54,7 @@ public:
 	
 	Layer_Clamp();
 		
-	virtual bool set_param(const String & param, const sinfg::ValueBase &value);
+	virtual bool set_param(const String & param, const synfig::ValueBase &value);
 
 	virtual ValueBase get_param(const String & param)const;
 
@@ -67,7 +67,7 @@ public:
 	virtual Vocab get_param_vocab()const;
 }; // END of class Layer_Clamp
 
-}; // END of namespace sinfg
+}; // END of namespace synfig
 
 /* === E N D =============================================================== */
 

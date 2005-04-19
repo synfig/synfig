@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file timepointcollect.h
 **	\brief Template Header
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_TIMEPOINTCOLLECT_H
-#define __SINFG_TIMEPOINTCOLLECT_H
+#ifndef __SYNFIG_TIMEPOINTCOLLECT_H
+#define __SYNFIG_TIMEPOINTCOLLECT_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -38,7 +38,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace sinfg {
+namespace synfig {
 
 //! \writeme
 int waypoint_collect(std::set<Waypoint, std::less<UniqueID> >& waypoint_set,const Time& time, const etl::handle<Node>& node);
@@ -46,7 +46,7 @@ int waypoint_collect(std::set<Waypoint, std::less<UniqueID> >& waypoint_set,cons
 //! \writeme
 int activepoint_collect(std::set<Activepoint, std::less<UniqueID> >& activepoint_set,const Time& time, const etl::handle<Node>& node);
 	
-}; // END of namespace sinfg
+}; // END of namespace synfig
 
 /* === E N D =============================================================== */
 

@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file layer_solidcolor.cpp
 **	\brief Template Header
 **
@@ -28,14 +28,14 @@
 #	include <config.h>
 #endif
 
-#include <sinfg/string.h>
-#include <sinfg/time.h>
-#include <sinfg/context.h>
-#include <sinfg/paramdesc.h>
-#include <sinfg/renddesc.h>
-#include <sinfg/surface.h>
-#include <sinfg/value.h>
-#include <sinfg/valuenode.h>
+#include <synfig/string.h>
+#include <synfig/time.h>
+#include <synfig/context.h>
+#include <synfig/paramdesc.h>
+#include <synfig/renddesc.h>
+#include <synfig/surface.h>
+#include <synfig/value.h>
+#include <synfig/valuenode.h>
 
 #include "radialgradient.h"
 
@@ -45,16 +45,16 @@
 
 using namespace etl;
 using namespace std;
-using namespace sinfg;
+using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
-SINFG_LAYER_INIT(RadialGradient);
-SINFG_LAYER_SET_NAME(RadialGradient,"radial_gradient");
-SINFG_LAYER_SET_LOCAL_NAME(RadialGradient,_("Radial Gradient"));
-SINFG_LAYER_SET_CATEGORY(RadialGradient,_("Gradients"));
-SINFG_LAYER_SET_VERSION(RadialGradient,"0.1");
-SINFG_LAYER_SET_CVS_ID(RadialGradient,"$Id: radialgradient.cpp,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $");
+SYNFIG_LAYER_INIT(RadialGradient);
+SYNFIG_LAYER_SET_NAME(RadialGradient,"radial_gradient");
+SYNFIG_LAYER_SET_LOCAL_NAME(RadialGradient,_("Radial Gradient"));
+SYNFIG_LAYER_SET_CATEGORY(RadialGradient,_("Gradients"));
+SYNFIG_LAYER_SET_VERSION(RadialGradient,"0.1");
+SYNFIG_LAYER_SET_CVS_ID(RadialGradient,"$Id: radialgradient.cpp,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $");
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -165,14 +165,14 @@ RadialGradient::color_func(const Point &point, float supersample)const
 
 
 float
-RadialGradient::calc_supersample(const sinfg::Point &x, float pw,float ph)const
+RadialGradient::calc_supersample(const synfig::Point &x, float pw,float ph)const
 {
 //	return sqrt(pw*pw+ph*ph)/radius;
 	return 1.2*pw/radius;
 }
 
-sinfg::Layer::Handle
-RadialGradient::hit_check(sinfg::Context context, const sinfg::Point &point)const
+synfig::Layer::Handle
+RadialGradient::hit_check(synfig::Context context, const synfig::Point &point)const
 {
 	if(get_blend_method()==Color::BLEND_STRAIGHT && get_amount()>=0.5)
 		return const_cast<RadialGradient*>(this);

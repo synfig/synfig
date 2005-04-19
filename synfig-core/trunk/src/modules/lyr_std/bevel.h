@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file shade.h
 **	\brief Template Header
 **
@@ -21,36 +21,36 @@
 
 /* === H E A D E R S ======================================================= */
 
-#ifndef __SINFG_LAYER_BEVEL_H__
-#define __SINFG_LAYER_BEVEL_H__
+#ifndef __SYNFIG_LAYER_BEVEL_H__
+#define __SYNFIG_LAYER_BEVEL_H__
 
 /* -- H E A D E R S --------------------------------------------------------- */
 
-#include <sinfg/layer_composite.h>
-#include <sinfg/color.h>
-#include <sinfg/vector.h>
-#include <sinfg/blur.h>
-#include <sinfg/angle.h>
+#include <synfig/layer_composite.h>
+#include <synfig/color.h>
+#include <synfig/vector.h>
+#include <synfig/blur.h>
+#include <synfig/angle.h>
 
-using namespace sinfg;
+using namespace synfig;
 using namespace std;
 using namespace etl;
 
-class Layer_Bevel : public sinfg::Layer_Composite
+class Layer_Bevel : public synfig::Layer_Composite
 {
-	SINFG_LAYER_MODULE_EXT
+	SYNFIG_LAYER_MODULE_EXT
 private:
-	sinfg::Real 	softness;
+	synfig::Real 	softness;
 	int				type;
 
-	sinfg::Color	color1;
-	sinfg::Color	color2;
+	synfig::Color	color1;
+	synfig::Color	color2;
 	
-	sinfg::Angle	angle;
-	sinfg::Real		depth;
+	synfig::Angle	angle;
+	synfig::Real		depth;
 
-	sinfg::Vector	offset;
-	sinfg::Vector	offset45;
+	synfig::Vector	offset;
+	synfig::Vector	offset45;
 	
 	bool use_luma;
 	bool solid;
@@ -59,7 +59,7 @@ private:
 public:
 	Layer_Bevel();
 	
-	virtual bool set_param(const String & param, const sinfg::ValueBase &value);
+	virtual bool set_param(const String & param, const synfig::ValueBase &value);
 
 	virtual ValueBase get_param(const String & param)const;
 
@@ -67,7 +67,7 @@ public:
 
 	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 
-	virtual sinfg::Rect get_full_bounding_rect(Context context)const;
+	virtual synfig::Rect get_full_bounding_rect(Context context)const;
 	virtual Vocab get_param_vocab()const;
 }; // END of class Blur
 

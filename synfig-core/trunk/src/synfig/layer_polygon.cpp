@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file layer_polygon.cpp
 **	\brief Template Header
 **
@@ -47,18 +47,18 @@ using std::deque;
 
 /* === U S I N G =========================================================== */
 
-using namespace sinfg;
+using namespace synfig;
 using namespace std;
 using namespace etl;
 
 /* === G L O B A L S ======================================================= */
 
-SINFG_LAYER_INIT(Layer_Polygon);
-SINFG_LAYER_SET_NAME(Layer_Polygon,"polygon");
-SINFG_LAYER_SET_LOCAL_NAME(Layer_Polygon,_("Polygon"));
-SINFG_LAYER_SET_CATEGORY(Layer_Polygon,_("Geometry"));
-SINFG_LAYER_SET_VERSION(Layer_Polygon,"0.1");
-SINFG_LAYER_SET_CVS_ID(Layer_Polygon,"$Id: layer_polygon.cpp,v 1.1.1.1 2005/01/04 01:23:14 darco Exp $");
+SYNFIG_LAYER_INIT(Layer_Polygon);
+SYNFIG_LAYER_SET_NAME(Layer_Polygon,"polygon");
+SYNFIG_LAYER_SET_LOCAL_NAME(Layer_Polygon,_("Polygon"));
+SYNFIG_LAYER_SET_CATEGORY(Layer_Polygon,_("Geometry"));
+SYNFIG_LAYER_SET_VERSION(Layer_Polygon,"0.1");
+SYNFIG_LAYER_SET_CVS_ID(Layer_Polygon,"$Id: layer_polygon.cpp,v 1.1.1.1 2005/01/04 01:23:14 darco Exp $");
 
 /* === C L A S S E S ======================================================= */
 

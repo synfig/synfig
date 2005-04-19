@@ -1,5 +1,5 @@
 /*! ========================================================================
-** Sinfg
+** Synfig
 ** bleh
 ** $Id: main.cpp,v 1.1.1.1 2005/01/04 01:23:14 darco Exp $
 **
@@ -20,7 +20,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#define SINFG_MODULE
+#define SYNFIG_MODULE
 
 #ifdef USING_PCH
 #	include "pch.h"
@@ -29,7 +29,7 @@
 #	include <config.h>
 #endif
 
-#include <sinfg/module.h>
+#include <synfig/module.h>
 #include "trgt_ppm.h"
 #include "mptr_ppm.h"
 #endif
@@ -41,7 +41,7 @@ MODULE_DESC_BEGIN(mod_ppm)
 	MODULE_DESCRIPTION("Provides a PPM target")
 	MODULE_AUTHOR("Robert B. Quattlebaum")
 	MODULE_VERSION("1.0")
-	MODULE_COPYRIGHT(SINFG_COPYRIGHT)
+	MODULE_COPYRIGHT(SYNFIG_COPYRIGHT)
 MODULE_DESC_END
 
 MODULE_INVENTORY_BEGIN(mod_ppm)

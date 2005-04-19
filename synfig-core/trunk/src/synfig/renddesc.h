@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file renddesc.h
 **	\brief Template Header
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_RENDERDESC_H
-#define __SINFG_RENDERDESC_H
+#ifndef __SYNFIG_RENDERDESC_H
+#define __SYNFIG_RENDERDESC_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -43,7 +43,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace sinfg {
+namespace synfig {
 
 /*!	\class RendDesc
 **	\todo writeme
@@ -312,7 +312,7 @@ inline bool operator<=(RendDesc::Lock lhs, RendDesc::Lock rhs)
 }
 
 
-}; /* end namespace sinfg */
+}; /* end namespace synfig */
 
 /* === E N D =============================================================== */
 

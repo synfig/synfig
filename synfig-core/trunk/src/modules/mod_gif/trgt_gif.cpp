@@ -1,5 +1,5 @@
 /*! ========================================================================
-** Sinfg
+** Synfig
 ** BMP Target Module
 ** $Id: trgt_gif.cpp,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $
 **
@@ -20,7 +20,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#define SINFG_TARGET
+#define SYNFIG_TARGET
 
 #ifdef USING_PCH
 #	include "pch.h"
@@ -36,7 +36,7 @@
 
 /* === M A C R O S ========================================================= */
 
-using namespace sinfg;
+using namespace synfig;
 using namespace std;
 using namespace etl;
 
@@ -44,11 +44,11 @@ using namespace etl;
 
 /* === G L O B A L S ======================================================= */
 
-SINFG_TARGET_INIT(gif);
-SINFG_TARGET_SET_NAME(gif,"gif");
-SINFG_TARGET_SET_EXT(gif,"gif");
-SINFG_TARGET_SET_VERSION(gif,"0.1");
-SINFG_TARGET_SET_CVS_ID(gif,"$Id: trgt_gif.cpp,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $");
+SYNFIG_TARGET_INIT(gif);
+SYNFIG_TARGET_SET_NAME(gif,"gif");
+SYNFIG_TARGET_SET_EXT(gif,"gif");
+SYNFIG_TARGET_SET_VERSION(gif,"0.1");
+SYNFIG_TARGET_SET_CVS_ID(gif,"$Id: trgt_gif.cpp,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $");
 
 /* === M E T H O D S ======================================================= */
 
@@ -99,7 +99,7 @@ gif::init()
 		
 	if(!file)
 	{
-		sinfg::error(strprintf(_("Unable to open \"%s\" for write access!"),filename.c_str()));
+		synfig::error(strprintf(_("Unable to open \"%s\" for write access!"),filename.c_str()));
 		return false;
 	}
 	
@@ -185,7 +185,7 @@ gif::output_curr_palette()
 }
 
 bool
-gif::start_frame(sinfg::ProgressCallback *callback)
+gif::start_frame(synfig::ProgressCallback *callback)
 {
 //	int
 //		w=desc.get_w(),
@@ -238,7 +238,7 @@ gif::end_frame()
 	if(local_palette)
 	{
 		curr_palette=Palette(curr_surface,256/(1<<(8-rootsize))-build_off_previous-1);
-		sinfg::info("curr_palette.size()=%d",curr_palette.size());
+		synfig::info("curr_palette.size()=%d",curr_palette.size());
 	}
 	
 	int transparent_index(curr_palette.find_closest(Color(1,0,1,0))-curr_palette.begin());
@@ -436,7 +436,7 @@ gif::end_frame()
 	imagecount++;
 }
 
-sinfg::Color*
+synfig::Color*
 gif::start_scanline(int scanline)
 {
 	cur_scanline=scanline;

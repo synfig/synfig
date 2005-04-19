@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file vector.h
 **	\brief Various discreet type definitions
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_VECTOR_H
-#define __SINFG_VECTOR_H
+#ifndef __SYNFIG_VECTOR_H
+#define __SYNFIG_VECTOR_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -51,7 +51,7 @@ extern "C" { int _isnan(double x); }
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace sinfg {
+namespace synfig {
 
 /*!	\class Vector
 **	\todo writeme
@@ -180,12 +180,12 @@ typedef Vector Point;
 
 
 
-}; // END of namespace sinfg
+}; // END of namespace synfig
 
 namespace std {
 
-inline sinfg::Vector::value_type
-abs(const sinfg::Vector &rhs)
+inline synfig::Vector::value_type
+abs(const synfig::Vector &rhs)
 	{ return rhs.mag(); }
 
 }; // END of namespace std
@@ -195,14 +195,14 @@ abs(const sinfg::Vector &rhs)
 _ETL_BEGIN_NAMESPACE
 
 template <>
-class bezier_base<sinfg::Vector,float> : public std::unary_function<float,sinfg::Vector>
+class bezier_base<synfig::Vector,float> : public std::unary_function<float,synfig::Vector>
 {
 public:
-	typedef sinfg::Vector value_type;
+	typedef synfig::Vector value_type;
 	typedef float time_type;
 private:
 
-	bezier_base<sinfg::Vector::value_type,time_type> bezier_x,bezier_y;
+	bezier_base<synfig::Vector::value_type,time_type> bezier_x,bezier_y;
 
 	value_type a,b,c,d;
 
@@ -229,7 +229,7 @@ public:
 	value_type
 	operator()(time_type t)const
 	{
-		return sinfg::Vector(bezier_x(t),bezier_y(t));
+		return synfig::Vector(bezier_x(t),bezier_y(t));
 	}
 	
 	void evaluate(time_type t, value_type &f, value_type &df) const

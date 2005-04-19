@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file distance.cpp
 **	\brief Template File
 **
@@ -38,7 +38,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 
@@ -52,53 +52,53 @@ using namespace sinfg;
 
 /* === M E T H O D S ======================================================= */
 
-Distance::Distance(const sinfg::String& str)
+Distance::Distance(const synfig::String& str)
 {
 	(*this)=str;
 /*	int i(0);
 	float val;
 	int ret(strscanf(str,"%f%n",&val,&i));
-	sinfg::info("Distance::Distance(): ret=%d, val=%f",ret,val);
+	synfig::info("Distance::Distance(): ret=%d, val=%f",ret,val);
 	
 	if(ret<=0)
 	{
 		// Error
-		sinfg::error("Distance::Distance(): Bad value \"%s\"",str.c_str());
+		synfig::error("Distance::Distance(): Bad value \"%s\"",str.c_str());
 		value_=0;
 	}
 	else
 		value_=val;
 	
-	sinfg::info("Distance::Distance(): system=\"%s\"",String(str.begin()+i,str.end()).c_str());
+	synfig::info("Distance::Distance(): system=\"%s\"",String(str.begin()+i,str.end()).c_str());
 	system_=ident_system(String(str.begin()+i,str.end()));
 */
 }
 
 Distance&
-Distance::operator=(const sinfg::String& str)
+Distance::operator=(const synfig::String& str)
 {
 	int i(0);
 	float val;
 	int ret(strscanf(str,"%f%n",&val,&i));
-	sinfg::info("Distance::Distance(): ret=%d, val=%f",ret,val);
+	synfig::info("Distance::Distance(): ret=%d, val=%f",ret,val);
 	
 	if(ret<=0)
 	{
 		// Error
-		sinfg::error("Distance::Distance(): Bad value \"%s\"",str.c_str());
+		synfig::error("Distance::Distance(): Bad value \"%s\"",str.c_str());
 		return *this;
 	}
 	else
 		value_=val;
 
-	sinfg::String sys(str.begin()+i,str.end());
+	synfig::String sys(str.begin()+i,str.end());
 
 	if(sys.size())
 		system_=ident_system(sys);
 	return *this;
 }
 
-sinfg::String
+synfig::String
 Distance::get_string(int digits)const
 {
 	digits=min(9,max(0,digits));
@@ -183,16 +183,16 @@ Distance::meters_to_system(Real x,System target_system)
 }
 
 Distance::System // (static)
-Distance::ident_system(const sinfg::String& x)
+Distance::ident_system(const synfig::String& x)
 {
-	sinfg::String str;
+	synfig::String str;
 
 	// Make it all upper case, and remove white space
 	for(unsigned int i=0;i<x.size();i++)if(x[i]!=' ' && x[i]!='\t')str+=toupper(x[i]);
 
 	// If it is plural, make it singular
 	if(str[str.size()-1]=='S')
-		str=sinfg::String(str.begin(),str.end()-1);
+		str=synfig::String(str.begin(),str.end()-1);
 	
 	if(str.empty() || str=="U" || str=="UNIT")
 		return SYSTEM_UNITS;
@@ -209,12 +209,12 @@ Distance::ident_system(const sinfg::String& x)
 	if(str=="MM" || str=="MILLIMETER")
 		return SYSTEM_MILLIMETERS;
 	
-	sinfg::warning("Distance::ident_system(): Unknown distance system \"%s\"",x.c_str());
+	synfig::warning("Distance::ident_system(): Unknown distance system \"%s\"",x.c_str());
 	
 	return SYSTEM_UNITS;
 }
 
-sinfg::String  // (static)
+synfig::String  // (static)
 Distance::system_name(Distance::System system)
 {
 	switch(system)
@@ -229,10 +229,10 @@ Distance::system_name(Distance::System system)
 	
 		default:				throw BadSystem();
 	}
-	return sinfg::String();
+	return synfig::String();
 }
 
-sinfg::String  // (static)
+synfig::String  // (static)
 Distance::system_local_name(Distance::System system)
 {
 	switch(system)
@@ -247,5 +247,5 @@ Distance::system_local_name(Distance::System system)
 	
 		default:				throw BadSystem();
 	}
-	return sinfg::String();
+	return synfig::String();
 }

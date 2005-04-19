@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file savecanvas.cpp
 **	\brief Writeme
 **
@@ -57,7 +57,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 
@@ -233,11 +233,11 @@ xmlpp::Element* encode_value(xmlpp::Element* root,const ValueBase &data,Canvas::
 	case ValueBase::TYPE_CANVAS:
 		return encode_canvas(root,data.get(Canvas::Handle()).get());
 	case ValueBase::TYPE_NIL:
-		sinfg::error("Encountered NIL ValueBase");
+		synfig::error("Encountered NIL ValueBase");
 		root->set_name("nil");
 		return root;
 	default:
-		sinfg::error(strprintf("Unknown value(%s), cannot create XML representation!",ValueBase::type_name(data.get_type()).c_str()));
+		synfig::error(strprintf("Unknown value(%s), cannot create XML representation!",ValueBase::type_name(data.get_type()).c_str()));
 		root->set_name("nil");
 		return root;
 	}
@@ -413,8 +413,8 @@ xmlpp::Element* encode_dynamic_list(xmlpp::Element* root,ValueNode_DynamicList::
 
 		// process waypoints
 		{
-			typedef sinfg::ValueNode_DynamicList::ListEntry::Activepoint Activepoint;
-			typedef sinfg::ValueNode_DynamicList::ListEntry::ActivepointList ActivepointList;
+			typedef synfig::ValueNode_DynamicList::ListEntry::Activepoint Activepoint;
+			typedef synfig::ValueNode_DynamicList::ListEntry::ActivepointList ActivepointList;
 			String begin_sequence;
 			String end_sequence;
 
@@ -703,9 +703,9 @@ xmlpp::Element* encode_canvas(xmlpp::Element* root,Canvas::ConstHandle canvas)
 }
 
 bool
-sinfg::save_canvas(const String &filename, Canvas::ConstHandle canvas)
+synfig::save_canvas(const String &filename, Canvas::ConstHandle canvas)
 {
-	sinfg::String tmp_filename(filename+".TMP");
+	synfig::String tmp_filename(filename+".TMP");
 
 	try
 	{
@@ -716,7 +716,7 @@ sinfg::save_canvas(const String &filename, Canvas::ConstHandle canvas)
 	
 		document.write_to_file_formatted(tmp_filename);
 	}
-	catch(...) { sinfg::error("sinfg::save_canvas(): Caught unknown exception"); return false; }
+	catch(...) { synfig::error("synfig::save_canvas(): Caught unknown exception"); return false; }
 	
 	
 #ifdef _WIN32
@@ -727,14 +727,14 @@ sinfg::save_canvas(const String &filename, Canvas::ConstHandle canvas)
 	if(rename(tmp_filename.c_str(),filename.c_str())!=0)
 	{
 		rename(old_file,tmp_filename.c_str());
-		sinfg::error("sinfg::save_canvas(): Unable to rename file to correct filename, errno=%d",errno);
+		synfig::error("synfig::save_canvas(): Unable to rename file to correct filename, errno=%d",errno);
 		return false;
 	}
 	remove(old_file);
 #else
 	if(rename(tmp_filename.c_str(),filename.c_str())!=0)
 	{
-		sinfg::error("sinfg::save_canvas(): Unable to rename file to correct filename, errno=%d",errno);
+		synfig::error("synfig::save_canvas(): Unable to rename file to correct filename, errno=%d",errno);
 		return false;
 	}
 #endif
@@ -743,7 +743,7 @@ sinfg::save_canvas(const String &filename, Canvas::ConstHandle canvas)
 }
 
 String
-sinfg::canvas_to_string(Canvas::ConstHandle canvas)
+synfig::canvas_to_string(Canvas::ConstHandle canvas)
 {
 	assert(canvas);
 

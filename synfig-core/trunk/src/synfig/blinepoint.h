@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file blinepoint.h
 **	\brief Template Header
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_BLINEPOINT_H
-#define __SINFG_BLINEPOINT_H
+#ifndef __SYNFIG_BLINEPOINT_H
+#define __SYNFIG_BLINEPOINT_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -36,7 +36,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace sinfg {
+namespace synfig {
 
 class BLinePoint : public UniqueID
 {
@@ -84,7 +84,7 @@ public:
 	
 }; // END of class BLinePoint
 	
-}; // END of namespace sinfg
+}; // END of namespace synfig
 
 /* === E N D =============================================================== */
 

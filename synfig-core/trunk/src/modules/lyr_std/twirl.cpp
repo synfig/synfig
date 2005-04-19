@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file spiralgradient.cpp
 **	\brief Template Header
 **
@@ -28,15 +28,15 @@
 #	include <config.h>
 #endif
 
-#include <sinfg/string.h>
-#include <sinfg/time.h>
-#include <sinfg/context.h>
-#include <sinfg/paramdesc.h>
-#include <sinfg/renddesc.h>
-#include <sinfg/surface.h>
-#include <sinfg/value.h>
-#include <sinfg/valuenode.h>
-#include <sinfg/transform.h>
+#include <synfig/string.h>
+#include <synfig/time.h>
+#include <synfig/context.h>
+#include <synfig/paramdesc.h>
+#include <synfig/renddesc.h>
+#include <synfig/surface.h>
+#include <synfig/value.h>
+#include <synfig/valuenode.h>
+#include <synfig/transform.h>
 #include "twirl.h"
 
 #endif
@@ -45,16 +45,16 @@
 
 using namespace etl;
 using namespace std;
-using namespace sinfg;
+using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
-SINFG_LAYER_INIT(Twirl);
-SINFG_LAYER_SET_NAME(Twirl,"twirl");
-SINFG_LAYER_SET_LOCAL_NAME(Twirl,_("Twirl"));
-SINFG_LAYER_SET_CATEGORY(Twirl,_("Distortions"));
-SINFG_LAYER_SET_VERSION(Twirl,"0.1");
-SINFG_LAYER_SET_CVS_ID(Twirl,"$Id: twirl.cpp,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $");
+SYNFIG_LAYER_INIT(Twirl);
+SYNFIG_LAYER_SET_NAME(Twirl,"twirl");
+SYNFIG_LAYER_SET_LOCAL_NAME(Twirl,_("Twirl"));
+SYNFIG_LAYER_SET_CATEGORY(Twirl,_("Distortions"));
+SYNFIG_LAYER_SET_VERSION(Twirl,"0.1");
+SYNFIG_LAYER_SET_CVS_ID(Twirl,"$Id: twirl.cpp,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $");
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -131,8 +131,8 @@ Twirl::get_param_vocab()const
 	return ret;
 }
 
-sinfg::Point
-Twirl::distort(const sinfg::Point &pos,bool reverse)const
+synfig::Point
+Twirl::distort(const synfig::Point &pos,bool reverse)const
 {
 	Point centered(pos-center);
 	Real mag(centered.mag());
@@ -156,8 +156,8 @@ Twirl::distort(const sinfg::Point &pos,bool reverse)const
 	return twirled+center;
 }
 
-sinfg::Layer::Handle
-Twirl::hit_check(sinfg::Context context, const sinfg::Point &pos)const
+synfig::Layer::Handle
+Twirl::hit_check(synfig::Context context, const synfig::Point &pos)const
 {
 	return context.hit_check(distort(pos));
 }
@@ -174,12 +174,12 @@ class Twirl_Trans : public Transform
 public:
 	Twirl_Trans(const Twirl* x):Transform(x->get_guid()),layer(x) { }
 	
-	sinfg::Vector perform(const sinfg::Vector& x)const
+	synfig::Vector perform(const synfig::Vector& x)const
 	{
 		return layer->distort(x,true);
 	}
 	
-	sinfg::Vector unperform(const sinfg::Vector& x)const
+	synfig::Vector unperform(const synfig::Vector& x)const
 	{
 		return layer->distort(x,false);
 	}

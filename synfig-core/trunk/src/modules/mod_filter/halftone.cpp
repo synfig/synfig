@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file halftone.cpp
 **	\brief blehh
 **
@@ -34,7 +34,7 @@
 
 /* === M A C R O S ========================================================= */
 
-using namespace sinfg;
+using namespace synfig;
 using namespace std;
 using namespace etl;
 
@@ -82,7 +82,7 @@ Halftone::operator()(const Point &point, const float& luma, float supersample)co
 }
 
 float
-Halftone::mask(sinfg::Point point)const
+Halftone::mask(synfig::Point point)const
 {
 	float radius1;
 	float radius2;

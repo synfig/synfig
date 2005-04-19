@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file filledrect.cpp
 **	\brief Template Header
 **
@@ -28,14 +28,14 @@
 #	include <config.h>
 #endif
 
-#include <sinfg/string.h>
-#include <sinfg/time.h>
-#include <sinfg/context.h>
-#include <sinfg/paramdesc.h>
-#include <sinfg/renddesc.h>
-#include <sinfg/surface.h>
-#include <sinfg/value.h>
-#include <sinfg/valuenode.h>
+#include <synfig/string.h>
+#include <synfig/time.h>
+#include <synfig/context.h>
+#include <synfig/paramdesc.h>
+#include <synfig/renddesc.h>
+#include <synfig/surface.h>
+#include <synfig/value.h>
+#include <synfig/valuenode.h>
 #include <ETL/pen>
 
 #include "filledrect.h"
@@ -46,16 +46,16 @@
 
 using namespace etl;
 using namespace std;
-using namespace sinfg;
+using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
-SINFG_LAYER_INIT(FilledRect);
-SINFG_LAYER_SET_NAME(FilledRect,"rectangle");
-SINFG_LAYER_SET_LOCAL_NAME(FilledRect,_("Rectangle"));
-SINFG_LAYER_SET_CATEGORY(FilledRect,_("Geometry"));
-SINFG_LAYER_SET_VERSION(FilledRect,"0.1");
-SINFG_LAYER_SET_CVS_ID(FilledRect,"$Id: filledrect.cpp,v 1.1.1.1 2005/01/04 01:23:09 darco Exp $");
+SYNFIG_LAYER_INIT(FilledRect);
+SYNFIG_LAYER_SET_NAME(FilledRect,"rectangle");
+SYNFIG_LAYER_SET_LOCAL_NAME(FilledRect,_("Rectangle"));
+SYNFIG_LAYER_SET_CATEGORY(FilledRect,_("Geometry"));
+SYNFIG_LAYER_SET_VERSION(FilledRect,"0.1");
+SYNFIG_LAYER_SET_CVS_ID(FilledRect,"$Id: filledrect.cpp,v 1.1.1.1 2005/01/04 01:23:09 darco Exp $");
 
 /* === P R O C E D U R E S ================================================= */
 

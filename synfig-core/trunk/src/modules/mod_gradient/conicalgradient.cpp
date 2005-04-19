@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file conicalgradient.cpp
 **	\brief Template Header
 **
@@ -28,15 +28,15 @@
 #	include <config.h>
 #endif
 
-#include <sinfg/string.h>
-#include <sinfg/time.h>
-#include <sinfg/context.h>
-#include <sinfg/paramdesc.h>
-#include <sinfg/renddesc.h>
-#include <sinfg/surface.h>
-#include <sinfg/value.h>
-#include <sinfg/valuenode.h>
-#include <sinfg/angle.h>
+#include <synfig/string.h>
+#include <synfig/time.h>
+#include <synfig/context.h>
+#include <synfig/paramdesc.h>
+#include <synfig/renddesc.h>
+#include <synfig/surface.h>
+#include <synfig/value.h>
+#include <synfig/valuenode.h>
+#include <synfig/angle.h>
 
 #include "conicalgradient.h"
 
@@ -46,16 +46,16 @@
 
 using namespace etl;
 using namespace std;
-using namespace sinfg;
+using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
-SINFG_LAYER_INIT(ConicalGradient);
-SINFG_LAYER_SET_NAME(ConicalGradient,"conical_gradient");
-SINFG_LAYER_SET_LOCAL_NAME(ConicalGradient,_("Conical Gradient"));
-SINFG_LAYER_SET_CATEGORY(ConicalGradient,_("Gradients"));
-SINFG_LAYER_SET_VERSION(ConicalGradient,"0.1");
-SINFG_LAYER_SET_CVS_ID(ConicalGradient,"$Id: conicalgradient.cpp,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $");
+SYNFIG_LAYER_INIT(ConicalGradient);
+SYNFIG_LAYER_SET_NAME(ConicalGradient,"conical_gradient");
+SYNFIG_LAYER_SET_LOCAL_NAME(ConicalGradient,_("Conical Gradient"));
+SYNFIG_LAYER_SET_CATEGORY(ConicalGradient,_("Gradients"));
+SYNFIG_LAYER_SET_VERSION(ConicalGradient,"0.1");
+SYNFIG_LAYER_SET_CVS_ID(ConicalGradient,"$Id: conicalgradient.cpp,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $");
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -182,7 +182,7 @@ ConicalGradient::color_func(const Point &pos, float supersample)const
 }
 
 float
-ConicalGradient::calc_supersample(const sinfg::Point &x, float pw,float ph)const
+ConicalGradient::calc_supersample(const synfig::Point &x, float pw,float ph)const
 {
 	Point adj(x-center);
 	if(abs(adj[0])<abs(pw*0.5) && abs(adj[1])<abs(ph*0.5))
@@ -190,8 +190,8 @@ ConicalGradient::calc_supersample(const sinfg::Point &x, float pw,float ph)const
 	return (pw/Point(x-center).mag())/(PI*2);
 }
 
-sinfg::Layer::Handle
-ConicalGradient::hit_check(sinfg::Context context, const sinfg::Point &point)const
+synfig::Layer::Handle
+ConicalGradient::hit_check(synfig::Context context, const synfig::Point &point)const
 {
 	if(get_blend_method()==Color::BLEND_STRAIGHT && get_amount()>=0.5)
 		return const_cast<ConicalGradient*>(this);

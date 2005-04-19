@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file exception.h
 **	\brief Exceptions
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_EXCEPTION_H
-#define __SINFG_EXCEPTION_H
+#ifndef __SYNFIG_EXCEPTION_H
+#define __SYNFIG_EXCEPTION_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -35,7 +35,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace sinfg {
+namespace synfig {
 	
 namespace Exception {
 
@@ -89,7 +89,7 @@ public:
 
 }; // END of namespace Exception
 
-}; // END of namespace sinfg
+}; // END of namespace synfig
 
 /* === E N D =============================================================== */
 

@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file layer.h
 **	\brief Layer Class Header
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_LAYER_H
-#define __SINFG_LAYER_H
+#ifndef __SYNFIG_LAYER_H
+#define __SYNFIG_LAYER_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -40,25 +40,25 @@
 /* === M A C R O S ========================================================= */
 
 //! \writeme
-#define SINFG_LAYER_MODULE_EXT public: static const char name__[], version__[], cvs_id__[], local_name__[], category__[]; static Layer *create();
+#define SYNFIG_LAYER_MODULE_EXT public: static const char name__[], version__[], cvs_id__[], local_name__[], category__[]; static Layer *create();
 
 //! Sets the name of the layer
-#define SINFG_LAYER_SET_NAME(class,x) const char class::name__[]=x
+#define SYNFIG_LAYER_SET_NAME(class,x) const char class::name__[]=x
 
 //! Sets the local name of the layer
-#define SINFG_LAYER_SET_LOCAL_NAME(class,x) const char class::local_name__[]=x;
+#define SYNFIG_LAYER_SET_LOCAL_NAME(class,x) const char class::local_name__[]=x;
 
 //! Sets the categpru of the layer
-#define SINFG_LAYER_SET_CATEGORY(class,x) const char class::category__[]=x
+#define SYNFIG_LAYER_SET_CATEGORY(class,x) const char class::category__[]=x
 
 //! Sets the version string for the layer
-#define SINFG_LAYER_SET_VERSION(class,x) const char class::version__[]=x
+#define SYNFIG_LAYER_SET_VERSION(class,x) const char class::version__[]=x
 
 //! Sets the CVS ID string for the layer
-#define SINFG_LAYER_SET_CVS_ID(class,x) const char class::cvs_id__[]=x
+#define SYNFIG_LAYER_SET_CVS_ID(class,x) const char class::cvs_id__[]=x
 
 //! \writeme
-#define SINFG_LAYER_INIT(class) sinfg::Layer* class::create() { return new class(); }
+#define SYNFIG_LAYER_INIT(class) synfig::Layer* class::create() { return new class(); }
 
 //! \writeme
 #define IMPORT_PLUS(x,y) if(param==#x && value.same_as(x)) { value.put(&x);{y;}return true;}
@@ -85,7 +85,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace sinfg {
+namespace synfig {
 
 class Canvas;
 class Vector;
@@ -300,7 +300,7 @@ public:
 	float get_z_depth()const { return z_depth_; }
 
 	//! \writeme
-	float get_z_depth(const sinfg::Time& t)const;
+	float get_z_depth(const synfig::Time& t)const;
 
 	//! \writeme
 	void set_z_depth(float x) { z_depth_=x; }
@@ -445,7 +445,7 @@ public:
 
 }; // END of class Layer
 
-}; // END of namespace sinfg
+}; // END of namespace synfig
 
 
 /* === E N D =============================================================== */
