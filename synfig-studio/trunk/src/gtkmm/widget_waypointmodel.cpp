@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file dialog_waypointmodel.cpp
 **	\brief Template Header
 **
@@ -39,7 +39,7 @@
 #include "widget_waypointmodel.h"
 #endif
 
-using namespace sinfg;
+using namespace synfig;
 using namespace std;
 using namespace etl;
 using namespace studio;
@@ -161,7 +161,7 @@ Widget_WaypointModel::on_change()
 }
 
 void
-Widget_WaypointModel::set_waypoint_model(sinfg::Waypoint::Model &x)
+Widget_WaypointModel::set_waypoint_model(synfig::Waypoint::Model &x)
 {
 	waypoint_model=x;
 	updating=true;

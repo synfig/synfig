@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file template.h
 **	\brief Template Header
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_STUDIO_ICONCONTROLER_H
-#define __SINFG_STUDIO_ICONCONTROLER_H
+#ifndef __SYNFIG_STUDIO_ICONCONTROLER_H
+#define __SYNFIG_STUDIO_ICONCONTROLER_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -31,7 +31,7 @@
 #include <gtkmm/iconset.h>
 #include <gdkmm/cursor.h>
 
-#include <sinfg/value.h>
+#include <synfig/value.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -39,9 +39,9 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace sinfg { class ValueNode; class Layer; }
+namespace synfig { class ValueNode; class Layer; }
 
-namespace sinfgapp { namespace Action { class BookEntry; };};
+namespace synfigapp { namespace Action { class BookEntry; };};
 
 namespace studio {
 
@@ -50,20 +50,20 @@ class IconControler
 {
 	Glib::RefPtr<Gtk::IconFactory> icon_factory;
 public:
-	IconControler(const sinfg::String& basepath);
+	IconControler(const synfig::String& basepath);
 	~IconControler();
 
 	static Gdk::Cursor get_normal_cursor();
 	static Gdk::Cursor get_tool_cursor(const Glib::ustring& name,const Glib::RefPtr<Gdk::Window>& window);
 };
 
-Gtk::StockID layer_icon(const sinfg::String &layer);
-Glib::RefPtr<Gdk::Pixbuf> get_tree_pixbuf_layer(const sinfg::String &layer);
+Gtk::StockID layer_icon(const synfig::String &layer);
+Glib::RefPtr<Gdk::Pixbuf> get_tree_pixbuf_layer(const synfig::String &layer);
 
-Gtk::StockID value_icon(sinfg::ValueBase::Type type);
-Gtk::StockID valuenode_icon(etl::handle<sinfg::ValueNode> value_node);
-Glib::RefPtr<Gdk::Pixbuf> get_tree_pixbuf(sinfg::ValueBase::Type type);
-Gtk::StockID get_action_stock_id(const sinfgapp::Action::BookEntry& action);
+Gtk::StockID value_icon(synfig::ValueBase::Type type);
+Gtk::StockID valuenode_icon(etl::handle<synfig::ValueNode> value_node);
+Glib::RefPtr<Gdk::Pixbuf> get_tree_pixbuf(synfig::ValueBase::Type type);
+Gtk::StockID get_action_stock_id(const synfigapp::Action::BookEntry& action);
 
 }; // END of namespace studio
 

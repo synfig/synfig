@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file dialog_tooloptions.h
 **	\brief Template Header
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_STUDIO_DIALOG_TOOLOPTIONS_H
-#define __SINFG_STUDIO_DIALOG_TOOLOPTIONS_H
+#ifndef __SYNFIG_STUDIO_DIALOG_TOOLOPTIONS_H
+#define __SYNFIG_STUDIO_DIALOG_TOOLOPTIONS_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -49,7 +49,7 @@ public:
 		
 	void clear();
 	void set_widget(Gtk::Widget&);
-	void set_name(const sinfg::String& name);
+	void set_name(const synfig::String& name);
 
 	Dialog_ToolOptions();
 	~Dialog_ToolOptions();

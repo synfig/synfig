@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file childrentree.cpp
 **	\brief Template File
 **
@@ -31,8 +31,8 @@
 #include "childrentree.h"
 #include "cellrenderer_value.h"
 #include "cellrenderer_timetrack.h"
-#include <sinfgapp/action.h>
-#include <sinfgapp/instance.h>
+#include <synfigapp/action.h>
+#include <synfigapp/instance.h>
 #include <gtkmm/scrolledwindow.h>
 
 #endif
@@ -41,7 +41,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
@@ -121,7 +121,7 @@ ChildrenTree::ChildrenTree()
 		// Set up the value cell-renderer
 		cellrenderer_value=ChildrenTreeStore::add_cell_renderer_value(column);
 		cellrenderer_value->signal_edited().connect(sigc::mem_fun(*this, &studio::ChildrenTree::on_edited_value));
-		cellrenderer_value->property_value()=sinfg::ValueBase();
+		cellrenderer_value->property_value()=synfig::ValueBase();
 
 		// Finish setting up the column
 		tree_view.append_column(*column);
@@ -180,12 +180,12 @@ ChildrenTree::ChildrenTree()
 	
 /*
 	Gtk::Image *icon;
-	//Gtk::IconSize iconsize(Gtk::IconSize::from_name("sinfg-small_icon"));
+	//Gtk::IconSize iconsize(Gtk::IconSize::from_name("synfig-small_icon"));
 	Gtk::IconSize iconsize(Gtk::ICON_SIZE_SMALL_TOOLBAR);
 
 	SMALL_BUTTON(button_raise,"gtk-go-up","Raise");
 	SMALL_BUTTON(button_lower,"gtk-go-down","Lower");
-	SMALL_BUTTON(button_duplicate,"sinfg-duplicate","Duplicate");
+	SMALL_BUTTON(button_duplicate,"synfig-duplicate","Duplicate");
 	SMALL_BUTTON(button_delete,"gtk-delete","Delete");
 	
 	hbox->pack_start(*button_raise,Gtk::PACK_SHRINK);
@@ -264,7 +264,7 @@ ChildrenTree::on_selection_changed()
 
 
 void
-ChildrenTree::on_edited_value(const Glib::ustring&path_string,sinfg::ValueBase value)
+ChildrenTree::on_edited_value(const Glib::ustring&path_string,synfig::ValueBase value)
 {
 	Gtk::TreePath path(path_string);
 	
@@ -275,13 +275,13 @@ ChildrenTree::on_edited_value(const Glib::ustring&path_string,sinfg::ValueBase v
 }
 
 void
-ChildrenTree::on_waypoint_clicked(const Glib::ustring &path_string, sinfg::Waypoint waypoint,int button)
+ChildrenTree::on_waypoint_clicked(const Glib::ustring &path_string, synfig::Waypoint waypoint,int button)
 {
 	Gtk::TreePath path(path_string);
 	
 	const Gtk::TreeRow row = *(tree_view.get_model()->get_iter(path));
 	
-	signal_waypoint_clicked()(static_cast<sinfgapp::ValueDesc>(row[model.value_desc]),waypoint,button);
+	signal_waypoint_clicked()(static_cast<synfigapp::ValueDesc>(row[model.value_desc]),waypoint,button);
 }
 
 bool

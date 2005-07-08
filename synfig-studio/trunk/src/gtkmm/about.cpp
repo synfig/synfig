@@ -1,5 +1,5 @@
 /*! ========================================================================
-** Sinfg
+** Synfig
 ** Template File
 ** $Id: about.cpp,v 1.2 2005/01/13 21:11:16 darco Exp $
 **
@@ -38,7 +38,7 @@
 #include <gtkmm/label.h>
 #include <gtkmm/fixed.h>
 
-#include <sinfg/general.h>
+#include <synfig/general.h>
 
 #include "about.h"
 #include "app.h"
@@ -53,7 +53,7 @@ using namespace studio;
 
 #ifndef VERSION
 #define VERSION	"unknown"
-#define PACKAGE	"sinfgstudio"
+#define PACKAGE	"synfigstudio"
 #endif
 
 #ifdef WIN32
@@ -80,7 +80,7 @@ extern      const guint gtk_interface_age;
 
 /* === P R O C E D U R E S ================================================= */
 
-class studio::AboutProgress : public sinfg::ProgressCallback
+class studio::AboutProgress : public synfig::ProgressCallback
 {
 	About &about;
 	
@@ -176,7 +176,7 @@ About::About():
 	Logo->set_padding(0,0);
 	
 	// Create the Copyright Label
-	Gtk::Label *CopyrightLabel = manage(new class Gtk::Label(SINFG_COPYRIGHT));
+	Gtk::Label *CopyrightLabel = manage(new class Gtk::Label(SYNFIG_COPYRIGHT));
 	CopyrightLabel->set_size_request(image_w,24);
 	CopyrightLabel->set_alignment(0.5,0.5);
 	CopyrightLabel->set_padding(0,0);
@@ -195,8 +195,8 @@ About::About():
 	// Set the version label to contain the correct information
 	string ver;
 	ver+="Version "VERSION" ("__DATE__" "__TIME__")\n";
-	ver+="Using SINFG ";
-	ver+=sinfg::get_version();
+	ver+="Using SYNFIG ";
+	ver+=synfig::get_version();
 	#ifdef __GNUC__
 		ver+=strprintf(" and GNU G++ %d.%d.%d",__GNUC__,__GNUC_MINOR__,__GNUC_PATCHLEVEL__);
 	#endif
@@ -240,7 +240,7 @@ About::About():
 	fixed1->put(*tasklabel, 0, image_h);
 
 	// Set up the parameters for this pop-up window
-	set_title("Sinfg Studio "VERSION);
+	set_title("Synfig Studio "VERSION);
 	set_modal(false);
 	property_window_position().set_value(Gtk::WIN_POS_CENTER);
 	set_resizable(false);
@@ -282,7 +282,7 @@ About::set_can_self_destruct(bool x)
 		CloseButton->hide();		
 }
 
-sinfg::ProgressCallback *
+synfig::ProgressCallback *
 About::get_callback()
 {
 	return cb;

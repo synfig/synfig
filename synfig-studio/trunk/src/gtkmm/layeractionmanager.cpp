@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file template.cpp
 **	\brief Template File
 **
@@ -30,9 +30,9 @@
 
 #include "layeractionmanager.h"
 #include "layertree.h"
-#include <sinfgapp/action_param.h>
+#include <synfigapp/action_param.h>
 #include "instance.h"
-#include <sinfgapp/selectionmanager.h>
+#include <synfigapp/selectionmanager.h>
 
 #endif
 
@@ -40,7 +40,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 using namespace studio;
 
 static const guint no_prev_popup((guint)-1);
@@ -158,7 +158,7 @@ LayerActionManager::set_layer_tree(LayerTree* x)
 }
 
 void
-LayerActionManager::set_canvas_interface(const etl::handle<sinfgapp::CanvasInterface> &x)
+LayerActionManager::set_canvas_interface(const etl::handle<synfigapp::CanvasInterface> &x)
 {
 	canvas_interface_=x;
 }
@@ -222,7 +222,7 @@ LayerActionManager::refresh()
 	// Make sure we are ready
 	if(!ui_manager_ || !layer_tree_ || !canvas_interface_)
 	{
-		sinfg::error("LayerActionManager::refresh(): Not ready!");
+		synfig::error("LayerActionManager::refresh(): Not ready!");
 		return;
 	}
 	
@@ -239,12 +239,12 @@ LayerActionManager::refresh()
 		
 		{
 			bool canvas_set(false);
-			sinfgapp::Action::ParamList param_list;
+			synfigapp::Action::ParamList param_list;
 			param_list.add("time",get_canvas_interface()->get_time());
 			param_list.add("canvas_interface",get_canvas_interface());
 			{
-				sinfgapp::SelectionManager::LayerList layer_list(layer_tree_->get_selected_layers());
-				sinfgapp::SelectionManager::LayerList::iterator iter;
+				synfigapp::SelectionManager::LayerList layer_list(layer_tree_->get_selected_layers());
+				synfigapp::SelectionManager::LayerList::iterator iter;
 				action_copy_->set_sensitive(!layer_list.empty());
 				action_cut_->set_sensitive(!layer_list.empty());
 				action_group_->add(action_copy_);
@@ -296,7 +296,7 @@ LayerActionManager::refresh()
 				ui_info+="<menuitem action='select-all-child-layers'/>";
 			}
 			handle<studio::Instance>::cast_static(get_canvas_interface()->get_instance())->
-				add_actions_to_group(action_group_, ui_info,   param_list, sinfgapp::Action::CATEGORY_LAYER);
+				add_actions_to_group(action_group_, ui_info,   param_list, synfigapp::Action::CATEGORY_LAYER);
 		}
 	}
 	
@@ -320,9 +320,9 @@ LayerActionManager::cut()
 void
 LayerActionManager::copy()
 {
-	sinfgapp::SelectionManager::LayerList layer_list(layer_tree_->get_selected_layers());
+	synfigapp::SelectionManager::LayerList layer_list(layer_tree_->get_selected_layers());
 	clipboard_.clear();
-	sinfg::GUID guid;
+	synfig::GUID guid;
 	
 	while(!layer_list.empty())
 	{
@@ -338,10 +338,10 @@ LayerActionManager::copy()
 void
 LayerActionManager::paste()
 {
-	sinfg::GUID guid;
+	synfig::GUID guid;
 
 	// Create the action group
-	sinfgapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Paste"));
+	synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Paste"));
 
 	Canvas::Handle canvas(get_canvas_interface()->get_canvas());
 	int depth(0);
@@ -354,20 +354,20 @@ LayerActionManager::paste()
 		canvas=layer->get_canvas();
 	}
 	
-	sinfgapp::SelectionManager::LayerList layer_selection;
+	synfigapp::SelectionManager::LayerList layer_selection;
 	
-	for(std::list<sinfg::Layer::Handle>::iterator iter=clipboard_.begin();iter!=clipboard_.end();++iter)
+	for(std::list<synfig::Layer::Handle>::iterator iter=clipboard_.begin();iter!=clipboard_.end();++iter)
 	{
 		layer=(*iter)->clone(guid);
 		layer_selection.push_back(layer);
-		sinfgapp::Action::Handle 	action(sinfgapp::Action::create("layer_add"));
+		synfigapp::Action::Handle 	action(synfigapp::Action::create("layer_add"));
 	
 		assert(action);
 		if(!action)
 			return;
 		
 		action->set_param("canvas",canvas);
-		action->set_param("canvas_interface",etl::loose_handle<sinfgapp::CanvasInterface>(get_canvas_interface()));
+		action->set_param("canvas_interface",etl::loose_handle<synfigapp::CanvasInterface>(get_canvas_interface()));
 		action->set_param("new",layer);
 		
 		if(!action->is_ready())
@@ -380,18 +380,18 @@ LayerActionManager::paste()
 			return;
 		}
 	
-		sinfg::info("DEPTH=%d",depth);
+		synfig::info("DEPTH=%d",depth);
 		// Action to move the layer (if necessary)
 		if(depth>0)
 		{
-			sinfgapp::Action::Handle 	action(sinfgapp::Action::create("layer_move"));
+			synfigapp::Action::Handle 	action(synfigapp::Action::create("layer_move"));
 		
 			assert(action);
 			if(!action)
 				return;
 			
 			action->set_param("canvas",canvas);
-			action->set_param("canvas_interface",etl::loose_handle<sinfgapp::CanvasInterface>(get_canvas_interface()));
+			action->set_param("canvas_interface",etl::loose_handle<synfigapp::CanvasInterface>(get_canvas_interface()));
 			action->set_param("layer",layer);
 			action->set_param("new_index",depth);
 			
@@ -421,19 +421,19 @@ LayerActionManager::amount_inc()
 	float adjust(0.1);
 	
 	// Create the action group
-	sinfgapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Decrease Amount"));
+	synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Decrease Amount"));
 	
 	if(adjust>0)
 		group.set_name(_("Increase Amount"));
 
-	sinfgapp::SelectionManager::LayerList layer_list(layer_tree_->get_selected_layers());
+	synfigapp::SelectionManager::LayerList layer_list(layer_tree_->get_selected_layers());
 
 	while(!layer_list.empty())
 	{
 		ValueBase value(layer_list.front()->get_param("amount"));
 		if(value.same_as(Real()))
 		{
-			get_canvas_interface()->change_value(sinfgapp::ValueDesc(layer_list.front(),"amount"),value.get(Real())+adjust);
+			get_canvas_interface()->change_value(synfigapp::ValueDesc(layer_list.front(),"amount"),value.get(Real())+adjust);
 		}
 		layer_list.pop_front();
 	}
@@ -445,19 +445,19 @@ LayerActionManager::amount_dec()
 	float adjust(-0.1);
 	
 	// Create the action group
-	sinfgapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Decrease Amount"));
+	synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Decrease Amount"));
 	
 	if(adjust>0)
 		group.set_name(_("Increase Amount"));
 
-	sinfgapp::SelectionManager::LayerList layer_list(layer_tree_->get_selected_layers());
+	synfigapp::SelectionManager::LayerList layer_list(layer_tree_->get_selected_layers());
 
 	while(!layer_list.empty())
 	{
 		ValueBase value(layer_list.front()->get_param("amount"));
 		if(value.same_as(Real()))
 		{
-			get_canvas_interface()->change_value(sinfgapp::ValueDesc(layer_list.front(),"amount"),value.get(Real())+adjust);
+			get_canvas_interface()->change_value(synfigapp::ValueDesc(layer_list.front(),"amount"),value.get(Real())+adjust);
 		}
 		layer_list.pop_front();
 	}

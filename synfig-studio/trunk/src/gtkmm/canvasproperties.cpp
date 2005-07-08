@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file canvasproperties.cpp
 **	\brief Template File
 **
@@ -33,7 +33,7 @@
 #include <gtkmm/table.h>
 #include <gtkmm/label.h>
 #include <gtkmm/notebook.h>
-#include <sinfgapp/canvasinterface.h>
+#include <synfigapp/canvasinterface.h>
 #include "metadatatreestore.h"
 #include <gtkmm/treeview.h>
 #include <gtkmm/scrolledwindow.h>
@@ -45,7 +45,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
@@ -56,7 +56,7 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
-CanvasProperties::CanvasProperties(Gtk::Window& parent,handle<sinfgapp::CanvasInterface> canvas_interface):
+CanvasProperties::CanvasProperties(Gtk::Window& parent,handle<synfigapp::CanvasInterface> canvas_interface):
 	Gtk::Dialog(_("Canvas Properties"),parent,false,true),
 	canvas_interface_(canvas_interface)
 {
@@ -157,7 +157,7 @@ CanvasProperties::create_meta_data_view()
 void
 CanvasProperties::on_button_meta_data_add()
 {
-	sinfg::String key;
+	synfig::String key;
 	if(App::dialog_entry("New MetaData Entry", "Please enter the name of the key",key) && !key.empty())
 	{
 		canvas_interface_->set_meta_data(key," ");

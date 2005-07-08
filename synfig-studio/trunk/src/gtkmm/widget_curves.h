@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file widget_curves.h
 **	\brief Template Header
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_STUDIO_WIDGET_CURVES_H
-#define __SINFG_STUDIO_WIDGET_CURVES_H
+#ifndef __SYNFIG_STUDIO_WIDGET_CURVES_H
+#define __SYNFIG_STUDIO_WIDGET_CURVES_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -32,8 +32,8 @@
 #include <gtkmm/adjustment.h>
 #include <gtkmm/drawingarea.h>
 #include <gtkmm/layout.h>
-#include <sinfg/color.h>
-#include <sinfgapp/value_desc.h>
+#include <synfig/color.h>
+#include <synfigapp/value_desc.h>
 #include <list>
 
 /* === M A C R O S ========================================================= */
@@ -59,7 +59,7 @@ public:
 	Widget_Curves();
 	~Widget_Curves();
 
-	void set_value_descs(std::list<sinfgapp::ValueDesc> value_descs);
+	void set_value_descs(std::list<synfigapp::ValueDesc> value_descs);
 	void clear();
 	void refresh();
 

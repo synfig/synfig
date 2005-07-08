@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file duck.cpp
 **	\brief Template File
 **
@@ -36,7 +36,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
@@ -51,7 +51,7 @@ struct _DuckCounter
 	~_DuckCounter()
 	{
 		if(counter)
-			sinfg::error("%d ducks not yet deleted!",counter);
+			synfig::error("%d ducks not yet deleted!",counter);
 	}
 } _duck_counter;
 
@@ -70,7 +70,7 @@ Duck::Duck():
 	tangent_(false)
 { duck_count++; _DuckCounter::counter++; }
 
-Duck::Duck(const sinfg::Point &point):
+Duck::Duck(const synfig::Point &point):
 	type_(TYPE_NONE),
 	point(point),
 	origin(0,0),
@@ -81,7 +81,7 @@ Duck::Duck(const sinfg::Point &point):
 	tangent_(false)
 { duck_count++; _DuckCounter::counter++;}
 
-Duck::Duck(const sinfg::Point &point,const sinfg::Point &origin):
+Duck::Duck(const synfig::Point &point,const synfig::Point &origin):
 	point(point),
 	origin(origin),
 	scalar(1),
@@ -93,7 +93,7 @@ Duck::Duck(const sinfg::Point &point,const sinfg::Point &origin):
 
 Duck::~Duck() { duck_count--; _DuckCounter::counter--;}
 
-sinfg::GUID
+synfig::GUID
 Duck::get_data_guid()const
 {
 	if(value_desc_.is_value_node())
@@ -102,7 +102,7 @@ Duck::get_data_guid()const
 }
 
 void
-Duck::set_name(const sinfg::String &x)
+Duck::set_name(const synfig::String &x)
 {
 	name=x;
 	if(guid_==GUID::zero())
@@ -127,21 +127,21 @@ Duck::operator==(const Duck &rhs)const
 		//(shared_point?*shared_point==*rhs.shared_point:point==rhs.point) ;
 }
 
-sinfg::Point
+synfig::Point
 Duck::get_trans_point()const
 {
 	return transform_stack_.perform(get_sub_trans_point());
 }
 	
 void
-Duck::set_trans_point(const sinfg::Point &x)
+Duck::set_trans_point(const synfig::Point &x)
 {
 	set_sub_trans_point(transform_stack_.unperform(x));
 }
 
 //! Sets the origin point.
 void
-Duck::set_origin(const sinfg::Point &x)
+Duck::set_origin(const synfig::Point &x)
 {
 	origin=x; origin_duck=0;
 }
@@ -154,7 +154,7 @@ Duck::set_origin(const etl::handle<Duck> &x)
 }
 
 //! Retrieves the origin location
-sinfg::Point
+synfig::Point
 Duck::get_origin()const
 {
 	return origin_duck?origin_duck->get_point():origin;
@@ -168,25 +168,25 @@ Duck::get_origin_duck() const
 }
 
 //! Retrieves the origin location
-sinfg::Point
+synfig::Point
 Duck::get_trans_origin()const
 {
 	return transform_stack_.perform(get_sub_trans_origin());
 }
 
-sinfg::Point
+synfig::Point
 Duck::get_sub_trans_point()const
 {
 	return get_point()*get_scalar()+get_sub_trans_origin();
 }
 
 void
-Duck::set_sub_trans_point(const sinfg::Point &x)
+Duck::set_sub_trans_point(const synfig::Point &x)
 {
 	set_point((x-get_sub_trans_origin())/get_scalar());
 }
 
-sinfg::Point
+synfig::Point
 Duck::get_sub_trans_origin()const
 {
 	return origin_duck?origin_duck->get_sub_trans_point():origin;

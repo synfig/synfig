@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file keyframetree.cpp
 **	\brief Template File
 **
@@ -39,7 +39,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
@@ -140,7 +140,7 @@ KeyframeTree::KeyframeTree()
 
 KeyframeTree::~KeyframeTree()
 {
-	sinfg::info("KeyframeTree::~KeyframeTree(): deleted");
+	synfig::info("KeyframeTree::~KeyframeTree(): deleted");
 }
 
 void
@@ -197,13 +197,13 @@ KeyframeTree::set_editable(bool x)
 }
 
 void
-KeyframeTree::on_edited_time(const Glib::ustring&path_string,sinfg::Time time)
+KeyframeTree::on_edited_time(const Glib::ustring&path_string,synfig::Time time)
 {
 	Gtk::TreePath path(path_string);
 	
 	const Gtk::TreeRow row(*(get_model()->get_iter(path)));
 	
-	sinfg::Keyframe keyframe(row[model.keyframe]);
+	synfig::Keyframe keyframe(row[model.keyframe]);
 	if(time!=keyframe.get_time())
 	{
 		row[model.time]=time;
@@ -214,7 +214,7 @@ KeyframeTree::on_edited_time(const Glib::ustring&path_string,sinfg::Time time)
 }
 
 void
-KeyframeTree::on_edited_time_delta(const Glib::ustring&path_string,sinfg::Time time)
+KeyframeTree::on_edited_time_delta(const Glib::ustring&path_string,synfig::Time time)
 {
 	Gtk::TreePath path(path_string);
 	
@@ -230,8 +230,8 @@ KeyframeTree::on_edited_description(const Glib::ustring&path_string,const Glib::
 	
 	const Gtk::TreeRow row = *(get_model()->get_iter(path));
 	
-	const sinfg::String description(desc);
-	sinfg::Keyframe keyframe(row[model.keyframe]);
+	const synfig::String description(desc);
+	synfig::Keyframe keyframe(row[model.keyframe]);
 	if(description!=keyframe.get_description())
 	{
 		row[model.description]=desc;

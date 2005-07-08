@@ -1,5 +1,5 @@
 /*! ========================================================================
-** Sinfg
+** Synfig
 ** Template Header File
 ** $Id: about.h,v 1.1.1.1 2005/01/07 03:34:35 darco Exp $
 **
@@ -20,8 +20,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_GTKMM_ABOUT_H
-#define __SINFG_GTKMM_ABOUT_H
+#ifndef __SYNFIG_GTKMM_ABOUT_H
+#define __SYNFIG_GTKMM_ABOUT_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -38,7 +38,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace sinfg { class ProgressCallback; };
+namespace synfig { class ProgressCallback; };
 
 namespace studio {
 
@@ -62,7 +62,7 @@ class About : public Gtk::Window
 	
 public:
 	
-	sinfg::ProgressCallback *get_callback();	
+	synfig::ProgressCallback *get_callback();	
 
 	void set_can_self_destruct(bool x);
 

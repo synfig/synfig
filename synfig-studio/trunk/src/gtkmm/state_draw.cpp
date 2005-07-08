@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file rotoscope_bline.cpp
 **	\brief Template File
 **
@@ -31,15 +31,15 @@
 #include <gtkmm/dialog.h>
 #include <gtkmm/entry.h>
 
-#include <sinfg/valuenode_dynamiclist.h>
+#include <synfig/valuenode_dynamiclist.h>
 
 #include "state_draw.h"
 #include "state_stroke.h"
 #include "canvasview.h"
 #include "workarea.h"
 #include "app.h"
-#include <sinfg/valuenode_bline.h>
-#include <sinfg/valuenode_composite.h>
+#include <synfig/valuenode_bline.h>
+#include <synfig/valuenode_composite.h>
 #include <ETL/hermite>
 #include <ETL/calculus>
 #include <utility>
@@ -47,8 +47,8 @@
 #include "event_layerclick.h"
 #include "toolbox.h"
 
-#include <sinfgapp/blineconvert.h>
-#include <sinfgapp/main.h>
+#include <synfigapp/blineconvert.h>
+#include <synfigapp/main.h>
 
 #include <ETL/gaussian>
 #include "dialog_tooloptions.h"
@@ -66,7 +66,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
@@ -79,8 +79,8 @@ StateDraw studio::state_draw;
 
 class studio::StateDraw_Context : public sigc::trackable
 {
-	typedef etl::smart_ptr<std::list<sinfg::Point> > StrokeData;
-	typedef etl::smart_ptr<std::list<sinfg::Real> > WidthData;
+	typedef etl::smart_ptr<std::list<synfig::Point> > StrokeData;
+	typedef etl::smart_ptr<std::list<synfig::Real> > WidthData;
 	
 	typedef list< pair<StrokeData,WidthData> > StrokeQueue;
 	
@@ -103,7 +103,7 @@ class studio::StateDraw_Context : public sigc::trackable
 
 	//Duckmatic::Push duckmatic_push;
 	
-	std::list< etl::smart_ptr<std::list<sinfg::Point> > > stroke_list;
+	std::list< etl::smart_ptr<std::list<synfig::Point> > > stroke_list;
 
 	void refresh_ducks();
 	
@@ -111,15 +111,15 @@ class studio::StateDraw_Context : public sigc::trackable
 
 	void fill_last_stroke();
 	
-	Smach::event_result new_bline(std::list<sinfg::BLinePoint> bline,bool loop_bline_flag,float radius);
+	Smach::event_result new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline_flag,float radius);
 
-	Smach::event_result new_region(std::list<sinfg::BLinePoint> bline,sinfg::Real radius);
+	Smach::event_result new_region(std::list<synfig::BLinePoint> bline,synfig::Real radius);
 
-	Smach::event_result extend_bline_from_begin(ValueNode_BLine::Handle value_node,std::list<sinfg::BLinePoint> bline);
-	Smach::event_result extend_bline_from_end(ValueNode_BLine::Handle value_node,std::list<sinfg::BLinePoint> bline);
-	void reverse_bline(std::list<sinfg::BLinePoint> &bline);
+	Smach::event_result extend_bline_from_begin(ValueNode_BLine::Handle value_node,std::list<synfig::BLinePoint> bline);
+	Smach::event_result extend_bline_from_end(ValueNode_BLine::Handle value_node,std::list<synfig::BLinePoint> bline);
+	void reverse_bline(std::list<synfig::BLinePoint> &bline);
 
-	sinfgapp::Settings& settings;
+	synfigapp::Settings& settings;
 
 	Gtk::Table options_table;
 	Gtk::CheckButton checkbutton_pressure_width;
@@ -145,7 +145,7 @@ class studio::StateDraw_Context : public sigc::trackable
 	void UpdateErrorBox();	//switches the stuff if need be :)
 
 	//Added by Adrian - data drive HOOOOO
-	sinfgapp::BLineConverter blineconv;
+	synfigapp::BLineConverter blineconv;
 
 public:
 	bool get_pressure_width_flag()const { return checkbutton_pressure_width.get_active(); }
@@ -201,12 +201,12 @@ public:
 	~StateDraw_Context();
 
 	const etl::handle<CanvasView>& get_canvas_view()const{return canvas_view_;}
-	etl::handle<sinfgapp::CanvasInterface> get_canvas_interface()const{return canvas_view_->canvas_interface();}
-	sinfg::Time get_time()const { return get_canvas_interface()->get_time(); }
-	sinfg::Canvas::Handle get_canvas()const{return canvas_view_->get_canvas();}
+	etl::handle<synfigapp::CanvasInterface> get_canvas_interface()const{return canvas_view_->canvas_interface();}
+	synfig::Time get_time()const { return get_canvas_interface()->get_time(); }
+	synfig::Canvas::Handle get_canvas()const{return canvas_view_->get_canvas();}
 	WorkArea * get_work_area()const{return canvas_view_->get_work_area();}
 	
-	//void on_user_click(sinfg::Point point);
+	//void on_user_click(synfig::Point point);
 
 //	bool run();
 };	// END of class StateDraw_Context
@@ -311,7 +311,7 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	is_working(*canvas_view),
 	loop_(false),
 	prev_workarea_layer_status_(get_work_area()->allow_layer_clicks),
-	settings(sinfgapp::Main::get_selected_input_device()->settings()),
+	settings(synfigapp::Main::get_selected_input_device()->settings()),
 	checkbutton_pressure_width(_("Pressure Width")),
 	checkbutton_auto_loop(_("Auto Loop")),
 	checkbutton_auto_connect(_("Auto Connect")),
@@ -328,7 +328,7 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	check_localerror(_("LocalError"))
 	
 {
-	sinfg::info("STATE SKETCH: entering state");
+	synfig::info("STATE SKETCH: entering state");
 
 	nested=0;
 	load_settings();
@@ -421,7 +421,7 @@ StateDraw_Context::refresh_tool_options()
 	App::dialog_tool_options->set_name("draw");
 	
 	App::dialog_tool_options->add_button(
-		Gtk::StockID("sinfg-fill"),
+		Gtk::StockID("synfig-fill"),
 		_("Fill Last Stroke")
 	)->signal_clicked().connect(
 		sigc::mem_fun(
@@ -506,14 +506,14 @@ StateDraw_Context::event_mouse_down_handler(const Smach::event& x)
 
 struct debugclass
 {
-	sinfg::String x;
-	debugclass(const sinfg::String &x):x(x)
+	synfig::String x;
+	debugclass(const synfig::String &x):x(x)
 	{
-//		sinfg::warning(">>>>>>>>>>>>>>>>>>> "+x);
+//		synfig::warning(">>>>>>>>>>>>>>>>>>> "+x);
 	}
 	~debugclass()
 	{
-//		sinfg::warning("<<<<<<<<<<<<<<<<<<< "+x);
+//		synfig::warning("<<<<<<<<<<<<<<<<<<< "+x);
 	}
 };
 
@@ -533,7 +533,7 @@ StateDraw_Context::event_stroke(const Smach::event& x)
 
 	assert(event.stroke_data);
 
-	get_work_area()->add_stroke(event.stroke_data,sinfgapp::Main::get_foreground_color());
+	get_work_area()->add_stroke(event.stroke_data,synfigapp::Main::get_foreground_color());
 	
 	if(nested==0)
 	{
@@ -571,30 +571,30 @@ StateDraw_Context::process_stroke(StrokeData stroke_data, WidthData width_data, 
 //	debugclass debugger("StateDraw_Context::process_stroke");
 	DepthCounter depth_counter(nested);
 	
-	const float radius(sinfgapp::Main::get_bline_width().units(get_canvas()->rend_desc())+(abs(get_work_area()->get_pw())+abs(get_work_area()->get_ph()))*5);
+	const float radius(synfigapp::Main::get_bline_width().units(get_canvas()->rend_desc())+(abs(get_work_area()->get_pw())+abs(get_work_area()->get_ph()))*5);
 
 
 	// If we aren't using pressure width,
 	// then set all the width to 1
 	if(!get_pressure_width_flag())
 	{
-		std::list<sinfg::Real>::iterator iter;
+		std::list<synfig::Real>::iterator iter;
 		for(iter=width_data->begin();iter!=width_data->end();++iter)
 		{
 			*iter=1.0;
 		}
 	}
 	
-	//get_work_area()->add_stroke(event.stroke_data,sinfgapp::Main::get_foreground_color());
+	//get_work_area()->add_stroke(event.stroke_data,synfigapp::Main::get_foreground_color());
 	//stroke_list.push_back(event.stroke_data);
 	//refresh_ducks();
 		
-	std::list<sinfg::BLinePoint> bline;
+	std::list<synfig::BLinePoint> bline;
 	bool loop_bline_flag(false);
 	
 	//Changed by Adrian - use resident class :)
-	//sinfgapp::convert_stroke_to_bline(bline, *event.stroke_data,*event.width_data, sinfgapp::Main::get_bline_width());
-	blineconv.width = sinfgapp::Main::get_bline_width().units(get_canvas()->rend_desc());
+	//synfigapp::convert_stroke_to_bline(bline, *event.stroke_data,*event.width_data, synfigapp::Main::get_bline_width());
+	blineconv.width = synfigapp::Main::get_bline_width().units(get_canvas()->rend_desc());
 	
 	if(get_local_error_flag())
 	{
@@ -614,7 +614,7 @@ StateDraw_Context::process_stroke(StrokeData stroke_data, WidthData width_data, 
 	//Postprocess to require minimum pressure
 	if(get_min_pressure_flag())
 	{
-		sinfgapp::BLineConverter::EnforceMinWidth(bline,get_min_pressure());
+		synfigapp::BLineConverter::EnforceMinWidth(bline,get_min_pressure());
 	}
 	
 	// If the start and end points are similar, then make then the same point
@@ -665,18 +665,18 @@ StateDraw_Context::process_stroke(StrokeData stroke_data, WidthData width_data, 
 }
 
 Smach::event_result
-StateDraw_Context::new_bline(std::list<sinfg::BLinePoint> bline,bool loop_bline_flag,float radius)
+StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline_flag,float radius)
 {
 	// Create the action group
-	sinfgapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Sketch BLine"));
+	synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Sketch BLine"));
 
-	//ValueNode_BLine::Handle value_node(ValueNode_BLine::create(sinfg::ValueBase(bline,loop_bline_flag)));
+	//ValueNode_BLine::Handle value_node(ValueNode_BLine::create(synfig::ValueBase(bline,loop_bline_flag)));
 	ValueNode_BLine::Handle value_node;
 
 	{
-		std::list<sinfg::BLinePoint> trans_bline;
-		std::list<sinfg::BLinePoint>::iterator iter;
-		const sinfg::TransformStack& transform(get_canvas_view()->get_curr_transform_stack());
+		std::list<synfig::BLinePoint> trans_bline;
+		std::list<synfig::BLinePoint>::iterator iter;
+		const synfig::TransformStack& transform(get_canvas_view()->get_curr_transform_stack());
 		
 		for(iter=bline.begin();iter!=bline.end();++iter)
 		{
@@ -699,7 +699,7 @@ StateDraw_Context::new_bline(std::list<sinfg::BLinePoint> bline,bool loop_bline_
 			
 			trans_bline.push_back(bline_point);
 		}
-		value_node=ValueNode_BLine::create(sinfg::ValueBase(trans_bline,loop_bline_flag));
+		value_node=ValueNode_BLine::create(synfig::ValueBase(trans_bline,loop_bline_flag));
 	}
 
 	// Find any ducks at the start or end that we might attach to
@@ -712,7 +712,7 @@ StateDraw_Context::new_bline(std::list<sinfg::BLinePoint> bline,bool loop_bline_
 		
 		if(start_duck)do
 		{
-			sinfgapp::ValueDesc value_desc(start_duck->get_value_desc());
+			synfigapp::ValueDesc value_desc(start_duck->get_value_desc());
 			if(!value_desc)
 			{
 				break;
@@ -744,13 +744,13 @@ StateDraw_Context::new_bline(std::list<sinfg::BLinePoint> bline,bool loop_bline_
 
 			switch(value_desc.get_value_type())
 			{
-			case sinfg::ValueBase::TYPE_BLINEPOINT:
+			case synfig::ValueBase::TYPE_BLINEPOINT:
 				//get_canvas_interface()->auto_export(value_desc);
 				//value_node->list.front().value_node=value_desc.get_value_node();
 				
-				value_desc=sinfgapp::ValueDesc(LinkableValueNode::Handle::cast_dynamic(value_desc.get_value_node()),0);
+				value_desc=synfigapp::ValueDesc(LinkableValueNode::Handle::cast_dynamic(value_desc.get_value_node()),0);
 				//break;
-			case sinfg::ValueBase::TYPE_VECTOR:
+			case synfig::ValueBase::TYPE_VECTOR:
 				get_canvas_interface()->auto_export(value_desc);
 				LinkableValueNode::Handle::cast_dynamic(value_node->list.front().value_node)->set_link(0,value_desc.get_value_node());
 				break;
@@ -761,7 +761,7 @@ StateDraw_Context::new_bline(std::list<sinfg::BLinePoint> bline,bool loop_bline_
 		
 		if(finish_duck)do
 		{
-			sinfgapp::ValueDesc value_desc(finish_duck->get_value_desc());
+			synfigapp::ValueDesc value_desc(finish_duck->get_value_desc());
 			if(!value_desc)
 			{
 				break;
@@ -791,13 +791,13 @@ StateDraw_Context::new_bline(std::list<sinfg::BLinePoint> bline,bool loop_bline_
 
 			switch(value_desc.get_value_type())
 			{
-			case sinfg::ValueBase::TYPE_BLINEPOINT:
+			case synfig::ValueBase::TYPE_BLINEPOINT:
 				//get_canvas_interface()->auto_export(value_desc);
 				//value_node->list.back().value_node=value_desc.get_value_node();
 
-				value_desc=sinfgapp::ValueDesc(LinkableValueNode::Handle::cast_dynamic(value_desc.get_value_node()),0);
+				value_desc=synfigapp::ValueDesc(LinkableValueNode::Handle::cast_dynamic(value_desc.get_value_node()),0);
 				//break;
-			case sinfg::ValueBase::TYPE_VECTOR:
+			case synfig::ValueBase::TYPE_VECTOR:
 				get_canvas_interface()->auto_export(value_desc);
 				LinkableValueNode::Handle::cast_dynamic(value_node->list.back().value_node)->set_link(0,value_desc.get_value_node());
 				break;
@@ -822,9 +822,9 @@ StateDraw_Context::new_bline(std::list<sinfg::BLinePoint> bline,bool loop_bline_
 			canvas=layer->get_canvas();
 		}
 		
-		//int number(sinfg::UniqueID().get_uid());
+		//int number(synfig::UniqueID().get_uid());
 		
-		sinfgapp::PushMode push_mode(get_canvas_interface(),sinfgapp::MODE_NORMAL);
+		synfigapp::PushMode push_mode(get_canvas_interface(),synfigapp::MODE_NORMAL);
 		
 		if(get_region_only_flag())
 			layer=get_canvas_interface()->add_layer_to("region",canvas,depth);
@@ -842,7 +842,7 @@ StateDraw_Context::new_bline(std::list<sinfg::BLinePoint> bline,bool loop_bline_
 		
 		
 		
-		sinfgapp::Action::Handle action(sinfgapp::Action::create("layer_param_connect"));
+		synfigapp::Action::Handle action(synfigapp::Action::create("layer_param_connect"));
 		
 		assert(action);
 		
@@ -850,9 +850,9 @@ StateDraw_Context::new_bline(std::list<sinfg::BLinePoint> bline,bool loop_bline_
 		action->set_param("canvas_interface",get_canvas_interface());			
 		action->set_param("layer",layer);			
 		if(!action->set_param("param",String("bline")))
-			sinfg::error("LayerParamConnect didn't like \"param\"");
+			synfig::error("LayerParamConnect didn't like \"param\"");
 		if(!action->set_param("value_node",ValueNode::Handle(value_node)))
-			sinfg::error("LayerParamConnect didn't like \"value_node\"");
+			synfig::error("LayerParamConnect didn't like \"value_node\"");
 		
 		if(!get_canvas_interface()->get_instance()->perform_action(action))
 		{
@@ -870,42 +870,42 @@ StateDraw_Context::new_bline(std::list<sinfg::BLinePoint> bline,bool loop_bline_
 }
 
 Smach::event_result
-StateDraw_Context::new_region(std::list<sinfg::BLinePoint> bline, sinfg::Real radius)
+StateDraw_Context::new_region(std::list<synfig::BLinePoint> bline, synfig::Real radius)
 {
 	// Create the action group
-	sinfgapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Define Region"));
+	synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Define Region"));
 	
-	std::list<sinfgapp::ValueDesc> vertex_list;
+	std::list<synfigapp::ValueDesc> vertex_list;
 	
 	// First we need to come up with a rough list of
 	// BLinePoints that we are going to be using to
 	// define our region. 
 	{
-		std::list<sinfg::BLinePoint>::iterator iter;
+		std::list<synfig::BLinePoint>::iterator iter;
 		for(iter=bline.begin();iter!=bline.end();++iter)
 		{
 			etl::handle<Duck> duck(get_work_area()->find_duck(iter->get_vertex(),0,Duck::TYPE_VERTEX));
 			
 			if(!duck)
 			{
-				sinfg::info(__FILE__":%d: Nothing to enclose!",__LINE__);				
+				synfig::info(__FILE__":%d: Nothing to enclose!",__LINE__);				
 				return Smach::RESULT_OK;		
 			}
 			
 			
 			assert(duck->get_type()==Duck::TYPE_VERTEX);
 			
-			sinfgapp::ValueDesc value_desc(duck->get_value_desc());
+			synfigapp::ValueDesc value_desc(duck->get_value_desc());
 			
 			if(!value_desc)
 			{
-				sinfg::info(__FILE__":%d: Got a hit, but no ValueDesc on this duck",__LINE__);				
+				synfig::info(__FILE__":%d: Got a hit, but no ValueDesc on this duck",__LINE__);				
 				continue;
 			}
 			
 			switch(value_desc.get_value_type())
 			{
-			case sinfg::ValueBase::TYPE_BLINEPOINT:
+			case synfig::ValueBase::TYPE_BLINEPOINT:
 				//if(vertex_list.empty() || value_desc!=vertex_list.back())
 				vertex_list.push_back(value_desc);
 				assert(vertex_list.back().is_valid());
@@ -919,7 +919,7 @@ StateDraw_Context::new_region(std::list<sinfg::BLinePoint> bline, sinfg::Real ra
 	
 	if(vertex_list.size()<=2)
 	{
-		sinfg::info(__FILE__":%d: Vertex list too small to make region.",__LINE__);
+		synfig::info(__FILE__":%d: Vertex list too small to make region.",__LINE__);
 		return Smach::RESULT_OK;		
 	}
 
@@ -941,25 +941,25 @@ StateDraw_Context::new_region(std::list<sinfg::BLinePoint> bline, sinfg::Real ra
 		// change it back to false.
 		done=true;
 		
-		std::list<sinfgapp::ValueDesc>::iterator prev,iter,next;
+		std::list<synfigapp::ValueDesc>::iterator prev,iter,next;
 		prev=vertex_list.end();prev--;	// Set prev to the last ValueDesc
 		next=vertex_list.begin();
 		iter=next++; // Set iter to the first value desc, and next to the second
 		
 		for(;iter!=vertex_list.end();prev=iter,iter=next++)
 		{
-			sinfgapp::ValueDesc value_prev(*prev);
-			sinfgapp::ValueDesc value_desc(*iter);
-			sinfgapp::ValueDesc value_next((next==vertex_list.end())?vertex_list.front():*next);
+			synfigapp::ValueDesc value_prev(*prev);
+			synfigapp::ValueDesc value_desc(*iter);
+			synfigapp::ValueDesc value_next((next==vertex_list.end())?vertex_list.front():*next);
 			
 			assert(value_desc.is_valid());
 			assert(value_next.is_valid());
 			assert(value_prev.is_valid());
 			
-			//sinfg::info("-------");
-			//sinfg::info(__FILE__":%d: value_prev 0x%08X:%d",__LINE__,value_prev.get_parent_value_node().get(),value_prev.get_index());
-			//sinfg::info(__FILE__":%d: value_desc 0x%08X:%d",__LINE__,value_desc.get_parent_value_node().get(),value_desc.get_index());
-			//sinfg::info(__FILE__":%d: value_next 0x%08X:%d",__LINE__,value_next.get_parent_value_node().get(),value_next.get_index());
+			//synfig::info("-------");
+			//synfig::info(__FILE__":%d: value_prev 0x%08X:%d",__LINE__,value_prev.get_parent_value_node().get(),value_prev.get_index());
+			//synfig::info(__FILE__":%d: value_desc 0x%08X:%d",__LINE__,value_desc.get_parent_value_node().get(),value_desc.get_index());
+			//synfig::info(__FILE__":%d: value_next 0x%08X:%d",__LINE__,value_next.get_parent_value_node().get(),value_next.get_index());
 
 			/*
 			if(value_prev.parent_is_value_node() && value_desc.parent_is_value_node() && value_next.parent_is_value_node())
@@ -1000,14 +1000,14 @@ StateDraw_Context::new_region(std::list<sinfg::BLinePoint> bline, sinfg::Real ra
 				if(value_desc.get_index()<value_next.get_index()-1)
 				{
 					DEBUGPOINT();
-					vertex_list.insert(next,sinfgapp::ValueDesc(value_desc.get_parent_value_node(),value_desc.get_index()+1));
+					vertex_list.insert(next,synfigapp::ValueDesc(value_desc.get_parent_value_node(),value_desc.get_index()+1));
 					done=false;
 					break;
 				}
 				if(value_next.get_index()<value_desc.get_index()-1)
 				{
 					DEBUGPOINT();
-					vertex_list.insert(next,sinfgapp::ValueDesc(value_desc.get_parent_value_node(),value_next.get_index()+1));
+					vertex_list.insert(next,synfigapp::ValueDesc(value_desc.get_parent_value_node(),value_next.get_index()+1));
 					done=false;
 					break;
 				}
@@ -1023,9 +1023,9 @@ StateDraw_Context::new_region(std::list<sinfg::BLinePoint> bline, sinfg::Real ra
 				BLinePoint vertex(value_desc.get_value(get_time()).get(BLinePoint()));
 				BLinePoint vertex_next(value_next.get_value(get_time()).get(BLinePoint()));
 
-				//sinfg::info("--------");
-				//sinfg::info(__FILE__":%d: vertex: [%f, %f]",__LINE__,vertex.get_vertex()[0],vertex.get_vertex()[1]);
-				//sinfg::info(__FILE__":%d: vertex_next: [%f, %f]",__LINE__,vertex_next.get_vertex()[0],vertex_next.get_vertex()[1]);
+				//synfig::info("--------");
+				//synfig::info(__FILE__":%d: vertex: [%f, %f]",__LINE__,vertex.get_vertex()[0],vertex.get_vertex()[1]);
+				//synfig::info(__FILE__":%d: vertex_next: [%f, %f]",__LINE__,vertex_next.get_vertex()[0],vertex_next.get_vertex()[1]);
 				
 				if((vertex.get_vertex()-vertex_next.get_vertex()).mag_squared()<radius*radius)
 				{
@@ -1036,7 +1036,7 @@ StateDraw_Context::new_region(std::list<sinfg::BLinePoint> bline, sinfg::Real ra
 					value_node_next=ValueNode_Composite::Handle::cast_dynamic(value_next.get_value_node().clone());
 					if(!value_node || !value_node_next)
 					{
-						sinfg::info(__FILE__":%d: Unable to properly connect blines.",__LINE__);
+						synfig::info(__FILE__":%d: Unable to properly connect blines.",__LINE__);
 						continue;
 					}
 					DEBUGPOINT();
@@ -1045,7 +1045,7 @@ StateDraw_Context::new_region(std::list<sinfg::BLinePoint> bline, sinfg::Real ra
 
 					get_canvas_interface()->auto_export(value_node);
 					assert(value_node->is_exported());
-					*iter=sinfgapp::ValueDesc(get_canvas(),value_node->get_id());
+					*iter=synfigapp::ValueDesc(get_canvas(),value_node->get_id());
 					vertex_list.erase(next);
 					done=false;
 					break;					
@@ -1058,14 +1058,14 @@ StateDraw_Context::new_region(std::list<sinfg::BLinePoint> bline, sinfg::Real ra
 					if(!positive_trend && value_desc.get_index()>0)
 					{
 						DEBUGPOINT();
-						vertex_list.insert(next,sinfgapp::ValueDesc(value_desc.get_parent_value_node(),value_desc.get_index()-1));
+						vertex_list.insert(next,synfigapp::ValueDesc(value_desc.get_parent_value_node(),value_desc.get_index()-1));
 						done=false;
 						break;					
 					}
 					if(positive_trend && value_desc.get_index()<LinkableValueNode::Handle::cast_static(value_desc.get_value_node())->link_count()-1)
 					{
 						DEBUGPOINT();
-						vertex_list.insert(next,sinfgapp::ValueDesc(value_desc.get_parent_value_node(),value_desc.get_index()+1));
+						vertex_list.insert(next,synfigapp::ValueDesc(value_desc.get_parent_value_node(),value_desc.get_index()+1));
 						done=false;
 						break;					
 					}
@@ -1077,7 +1077,7 @@ StateDraw_Context::new_region(std::list<sinfg::BLinePoint> bline, sinfg::Real ra
 
 	if(vertex_list.size()<=2)
 	{
-		sinfg::info(__FILE__":%d: Vertex list too small to make region.",__LINE__);
+		synfig::info(__FILE__":%d: Vertex list too small to make region.",__LINE__);
 		return Smach::RESULT_OK;		
 	}
 	
@@ -1093,7 +1093,7 @@ StateDraw_Context::new_region(std::list<sinfg::BLinePoint> bline, sinfg::Real ra
 		
 		trivial_case_value_node=vertex_list.front().get_parent_value_node();
 		
-		std::list<sinfgapp::ValueDesc>::iterator iter;
+		std::list<synfigapp::ValueDesc>::iterator iter;
 		for(iter=vertex_list.begin();iter!=vertex_list.end();++iter)
 		{
 			if(trivial_case_value_node!=iter->get_parent_value_node())
@@ -1113,7 +1113,7 @@ StateDraw_Context::new_region(std::list<sinfg::BLinePoint> bline, sinfg::Real ra
 	{
 		value_node_bline=ValueNode_BLine::create();
 
-		std::list<sinfgapp::ValueDesc>::iterator iter;		
+		std::list<synfigapp::ValueDesc>::iterator iter;		
 		for(iter=vertex_list.begin();iter!=vertex_list.end();++iter)
 		{
 			// Ensure that the vertex is exported.
@@ -1143,11 +1143,11 @@ StateDraw_Context::new_region(std::list<sinfg::BLinePoint> bline, sinfg::Real ra
 			canvas=layer->get_canvas();
 		}
 		
-		sinfgapp::PushMode push_mode(get_canvas_interface(),sinfgapp::MODE_NORMAL);
+		synfigapp::PushMode push_mode(get_canvas_interface(),synfigapp::MODE_NORMAL);
 		
 		layer=get_canvas_interface()->add_layer_to("region",canvas,depth);
 		assert(layer);
-		layer->set_param("color",sinfgapp::Main::get_background_color());
+		layer->set_param("color",synfigapp::Main::get_background_color());
 		if(get_feather())
 		{
 			layer->set_param("feather",get_feather());
@@ -1155,7 +1155,7 @@ StateDraw_Context::new_region(std::list<sinfg::BLinePoint> bline, sinfg::Real ra
 		}
 		get_canvas_interface()->signal_layer_param_changed()(layer,"color");
 
-		sinfgapp::Action::Handle action(sinfgapp::Action::create("layer_param_connect"));
+		synfigapp::Action::Handle action(synfigapp::Action::create("layer_param_connect"));
 		
 		assert(action);
 		
@@ -1163,9 +1163,9 @@ StateDraw_Context::new_region(std::list<sinfg::BLinePoint> bline, sinfg::Real ra
 		action->set_param("canvas_interface",get_canvas_interface());			
 		action->set_param("layer",layer);			
 		if(!action->set_param("param",String("bline")))
-			sinfg::error("LayerParamConnect didn't like \"param\"");
+			synfig::error("LayerParamConnect didn't like \"param\"");
 		if(!action->set_param("value_node",ValueNode::Handle(value_node_bline)))
-			sinfg::error("LayerParamConnect didn't like \"value_node\"");
+			synfig::error("LayerParamConnect didn't like \"value_node\"");
 		
 		if(!get_canvas_interface()->get_instance()->perform_action(action))
 		{
@@ -1187,7 +1187,7 @@ StateDraw_Context::refresh_ducks()
 	get_work_area()->clear_ducks();
 	
 	
-	std::list< etl::smart_ptr<std::list<sinfg::Point> > >::iterator iter;
+	std::list< etl::smart_ptr<std::list<synfig::Point> > >::iterator iter;
 	
 	for(iter=stroke_list.begin();iter!=stroke_list.end();++iter)
 	{
@@ -1200,28 +1200,28 @@ StateDraw_Context::refresh_ducks()
 
 
 Smach::event_result
-StateDraw_Context::extend_bline_from_begin(ValueNode_BLine::Handle value_node,std::list<sinfg::BLinePoint> bline)
+StateDraw_Context::extend_bline_from_begin(ValueNode_BLine::Handle value_node,std::list<synfig::BLinePoint> bline)
 {
 	// Create the action group
-	sinfgapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Extend BLine"));
+	synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Extend BLine"));
 	
-	std::list<sinfg::BLinePoint>::reverse_iterator iter;
+	std::list<synfig::BLinePoint>::reverse_iterator iter;
 	iter=bline.rbegin();
 	for(;!(iter==bline.rend());++iter)
 	{
 		//iter->reverse();
 		ValueNode_Composite::Handle composite(ValueNode_Composite::create(*iter));
 
-		sinfgapp::Action::Handle action(sinfgapp::Action::create("value_node_dynamic_list_insert"));
+		synfigapp::Action::Handle action(synfigapp::Action::create("value_node_dynamic_list_insert"));
 		
 		assert(action);
-		sinfgapp::ValueDesc value_desc(value_node,0);
+		synfigapp::ValueDesc value_desc(value_node,0);
 		
 		action->set_param("canvas",get_canvas());			
 		action->set_param("canvas_interface",get_canvas_interface());			
 		action->set_param("value_desc",value_desc);
 		if(!action->set_param("item",ValueNode::Handle(composite)))
-			sinfg::error("ACTION didn't like \"item\"");
+			synfig::error("ACTION didn't like \"item\"");
 		
 		if(!get_canvas_interface()->get_instance()->perform_action(action))
 		{
@@ -1236,27 +1236,27 @@ StateDraw_Context::extend_bline_from_begin(ValueNode_BLine::Handle value_node,st
 }
 
 Smach::event_result
-StateDraw_Context::extend_bline_from_end(ValueNode_BLine::Handle value_node,std::list<sinfg::BLinePoint> bline)
+StateDraw_Context::extend_bline_from_end(ValueNode_BLine::Handle value_node,std::list<synfig::BLinePoint> bline)
 {
 	// Create the action group
-	sinfgapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Extend BLine"));
+	synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Extend BLine"));
 
-	std::list<sinfg::BLinePoint>::iterator iter;
+	std::list<synfig::BLinePoint>::iterator iter;
 	iter=bline.begin();
 	for(;iter!=bline.end();++iter)
 	{
 		ValueNode_Composite::Handle composite(ValueNode_Composite::create(*iter));
 
-		sinfgapp::Action::Handle action(sinfgapp::Action::create("value_node_dynamic_list_insert"));
+		synfigapp::Action::Handle action(synfigapp::Action::create("value_node_dynamic_list_insert"));
 		
 		assert(action);
-		sinfgapp::ValueDesc value_desc(value_node,value_node->link_count());
+		synfigapp::ValueDesc value_desc(value_node,value_node->link_count());
 		
 		action->set_param("canvas",get_canvas());			
 		action->set_param("canvas_interface",get_canvas_interface());			
 		action->set_param("value_desc",value_desc);
 		if(!action->set_param("item",ValueNode::Handle(composite)))
-			sinfg::error("ACTION didn't like \"item\"");
+			synfig::error("ACTION didn't like \"item\"");
 		
 		if(!get_canvas_interface()->get_instance()->perform_action(action))
 		{
@@ -1271,11 +1271,11 @@ StateDraw_Context::extend_bline_from_end(ValueNode_BLine::Handle value_node,std:
 }
 
 void
-StateDraw_Context::reverse_bline(std::list<sinfg::BLinePoint> &bline)
+StateDraw_Context::reverse_bline(std::list<synfig::BLinePoint> &bline)
 {
 	int i;
 	
-	std::list<sinfg::BLinePoint>::iterator iter,eiter;
+	std::list<synfig::BLinePoint>::iterator iter,eiter;
 	iter=bline.begin();
 	eiter=bline.end();
 	eiter--;
@@ -1293,19 +1293,19 @@ StateDraw_Context::fill_last_stroke()
 	if(!last_stroke)
 		return;
 	
-	sinfgapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Fill Stroke"));
+	synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Fill Stroke"));
 
 	Layer::Handle layer;
 	
 	get_canvas_interface()->auto_export(last_stroke);			
 
-	sinfgapp::PushMode push_mode(get_canvas_interface(),sinfgapp::MODE_NORMAL);
+	synfigapp::PushMode push_mode(get_canvas_interface(),synfigapp::MODE_NORMAL);
 	
 	layer=get_canvas_interface()->add_layer("region");
 	assert(layer);
-	layer->set_param("color",sinfgapp::Main::get_background_color());
+	layer->set_param("color",synfigapp::Main::get_background_color());
 
-	sinfgapp::Action::Handle action(sinfgapp::Action::create("layer_param_connect"));
+	synfigapp::Action::Handle action(synfigapp::Action::create("layer_param_connect"));
 	
 	assert(action);
 	
@@ -1313,9 +1313,9 @@ StateDraw_Context::fill_last_stroke()
 	action->set_param("canvas_interface",get_canvas_interface());			
 	action->set_param("layer",layer);			
 	if(!action->set_param("param",String("segment_list")))
-		sinfg::error("LayerParamConnect didn't like \"param\"");
+		synfig::error("LayerParamConnect didn't like \"param\"");
 	if(!action->set_param("value_node",ValueNode::Handle(last_stroke)))
-		sinfg::error("LayerParamConnect didn't like \"value_node\"");
+		synfig::error("LayerParamConnect didn't like \"value_node\"");
 	
 	if(!get_canvas_interface()->get_instance()->perform_action(action))
 	{

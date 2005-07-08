@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file autorecover.h
 **	\brief Template Header
 **
@@ -21,13 +21,13 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_AUTORECOVER_H
-#define __SINFG_AUTORECOVER_H
+#ifndef __SYNFIG_AUTORECOVER_H
+#define __SYNFIG_AUTORECOVER_H
 
 /* === H E A D E R S ======================================================= */
 
-#include <sinfg/string.h>
-#include <sinfg/canvas.h>
+#include <synfig/string.h>
+#include <synfig/canvas.h>
 #include <sigc++/connection.h>
 
 /* === M A C R O S ========================================================= */
@@ -47,7 +47,7 @@ public:
 	~AutoRecover();
 
 	static int pid();
-	static sinfg::String get_shadow_file_name(const sinfg::String& filename);
+	static synfig::String get_shadow_file_name(const synfig::String& filename);
 
 	static bool auto_backup();
 
@@ -56,14 +56,14 @@ public:
 	void set_timeout(int milliseconds);
 	int get_timeout()const { return timeout; }
 	
-	static sinfg::String get_shadow_directory();
+	static synfig::String get_shadow_directory();
 	
 	bool recovery_needed()const;
 	bool recover();
 	
 	void normal_shutdown();
 	
-	void clear_backup(sinfg::Canvas::Handle canvas);
+	void clear_backup(synfig::Canvas::Handle canvas);
 }; // END of class AutoRecover
 
 }; // END of namespace studio

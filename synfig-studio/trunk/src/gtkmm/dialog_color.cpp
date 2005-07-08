@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file dialog_gradient.cpp
 **	\brief Template File
 **
@@ -33,12 +33,12 @@
 #include <gtkmm/frame.h>
 #include <gtkmm/table.h>
 #include <gtkmm/label.h>
-#include <sinfg/general.h>
-#include <sinfgapp/canvasinterface.h>
-#include <sinfgapp/value_desc.h>
+#include <synfig/general.h>
+#include <synfigapp/canvasinterface.h>
+#include <synfigapp/value_desc.h>
 #include "widget_color.h"
 #include <gtkmm/spinbutton.h>
-#include <sinfgapp/main.h>
+#include <synfigapp/main.h>
 #include <sigc++/retype_return.h>
 #include <sigc++/retype.h>
 #include <sigc++/hide.h>
@@ -50,7 +50,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */

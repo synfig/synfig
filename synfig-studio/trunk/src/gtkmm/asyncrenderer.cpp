@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file asyncrenderer.cpp
 **	\brief Template File
 **
@@ -48,7 +48,7 @@
 #include <signal.h>
 #endif
 
-#include <sinfg/general.h>
+#include <synfig/general.h>
 #include <ETL/clock>
 
 #endif
@@ -57,7 +57,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 using namespace studio;
 
 #define BOREDOM_TIMEOUT		50
@@ -70,10 +70,10 @@ using namespace studio;
 
 /* === C L A S S E S ======================================================= */
 
-class AsyncTarget_Tile : public sinfg::Target_Tile
+class AsyncTarget_Tile : public synfig::Target_Tile
 {
 public:
-	etl::handle<sinfg::Target_Tile> warm_target;
+	etl::handle<synfig::Target_Tile> warm_target;
 	
 	struct tile_t
 	{
@@ -97,7 +97,7 @@ public:
 	sigc::connection ready_connection;
 	
 public:
-	AsyncTarget_Tile(etl::handle<sinfg::Target_Tile> warm_target):
+	AsyncTarget_Tile(etl::handle<synfig::Target_Tile> warm_target):
 		warm_target(warm_target)
 	{
 		set_avoid_time_sync(warm_target->get_avoid_time_sync());
@@ -145,14 +145,14 @@ public:
 		return warm_target->next_frame(time);
 	}
 	
-	virtual bool start_frame(sinfg::ProgressCallback *cb=0)
+	virtual bool start_frame(synfig::ProgressCallback *cb=0)
 	{
 		if(!alive_flag)
 			return false;
 		return warm_target->start_frame(cb);
 	}
 	
-	virtual bool add_tile(const sinfg::Surface &surface, int gx, int gy)
+	virtual bool add_tile(const synfig::Surface &surface, int gx, int gy)
 	{
 		assert(surface);
 		if(!alive_flag)
@@ -219,10 +219,10 @@ public:
 
 
 
-class AsyncTarget_Scanline : public sinfg::Target_Scanline
+class AsyncTarget_Scanline : public synfig::Target_Scanline
 {
 public:
-	etl::handle<sinfg::Target_Scanline> warm_target;
+	etl::handle<synfig::Target_Scanline> warm_target;
 	
 	int scanline_;
 	Surface surface;
@@ -239,7 +239,7 @@ public:
 
 
 public:
-	AsyncTarget_Scanline(etl::handle<sinfg::Target_Scanline> warm_target):
+	AsyncTarget_Scanline(etl::handle<synfig::Target_Scanline> warm_target):
 		warm_target(warm_target)
 	{
 		set_avoid_time_sync(warm_target->get_avoid_time_sync());
@@ -274,7 +274,7 @@ public:
 		alive_flag=false;
 	}
 	
-	virtual bool start_frame(sinfg::ProgressCallback *cb=0)
+	virtual bool start_frame(synfig::ProgressCallback *cb=0)
 	{		
 		return alive_flag;
 	}
@@ -338,27 +338,27 @@ public:
 
 /* === M E T H O D S ======================================================= */
 
-AsyncRenderer::AsyncRenderer(etl::handle<sinfg::Target> target_,sinfg::ProgressCallback *cb):
+AsyncRenderer::AsyncRenderer(etl::handle<synfig::Target> target_,synfig::ProgressCallback *cb):
 	error(false),
 	success(false),
 	cb(cb)
 {
 	render_thread=0;
-	if(etl::handle<sinfg::Target_Tile>::cast_dynamic(target_))
+	if(etl::handle<synfig::Target_Tile>::cast_dynamic(target_))
 	{
 		etl::handle<AsyncTarget_Tile> wrap_target(
-			new AsyncTarget_Tile(etl::handle<sinfg::Target_Tile>::cast_dynamic(target_))
+			new AsyncTarget_Tile(etl::handle<synfig::Target_Tile>::cast_dynamic(target_))
 		);
 		
 		signal_stop_.connect(sigc::mem_fun(*wrap_target,&AsyncTarget_Tile::set_dead));
 		
 		target=wrap_target;
 	}
-	else if(etl::handle<sinfg::Target_Scanline>::cast_dynamic(target_))
+	else if(etl::handle<synfig::Target_Scanline>::cast_dynamic(target_))
 	{
 		etl::handle<AsyncTarget_Scanline> wrap_target(
 			new AsyncTarget_Scanline(
-				etl::handle<sinfg::Target_Scanline>::cast_dynamic(target_)
+				etl::handle<synfig::Target_Scanline>::cast_dynamic(target_)
 			)
 		);
 	

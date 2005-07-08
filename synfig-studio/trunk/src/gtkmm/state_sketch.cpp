@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file state_sketch.cpp
 **	\brief Template File
 **
@@ -31,14 +31,14 @@
 #include <gtkmm/dialog.h>
 #include <gtkmm/entry.h>
 
-#include <sinfg/valuenode_dynamiclist.h>
+#include <synfig/valuenode_dynamiclist.h>
 
 #include "state_sketch.h"
 #include "state_stroke.h"
 #include "canvasview.h"
 #include "workarea.h"
 #include "app.h"
-#include <sinfg/valuenode_bline.h>
+#include <synfig/valuenode_bline.h>
 #include <ETL/hermite>
 #include <ETL/calculus>
 #include <utility>
@@ -46,8 +46,8 @@
 #include "event_layerclick.h"
 #include "toolbox.h"
 
-#include <sinfgapp/blineconvert.h>
-#include <sinfgapp/main.h>
+#include <synfigapp/blineconvert.h>
+#include <synfigapp/main.h>
 
 #include <ETL/gaussian>
 
@@ -65,7 +65,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
@@ -120,9 +120,9 @@ public:
 	~StateSketch_Context();
 
 	const etl::handle<CanvasView>& get_canvas_view()const{return canvas_view_;}
-	etl::handle<sinfgapp::CanvasInterface> get_canvas_interface()const{return canvas_view_->canvas_interface();}
-	sinfg::Time get_time()const { return get_canvas_interface()->get_time(); }
-	sinfg::Canvas::Handle get_canvas()const{return canvas_view_->get_canvas();}
+	etl::handle<synfigapp::CanvasInterface> get_canvas_interface()const{return canvas_view_->canvas_interface();}
+	synfig::Time get_time()const { return get_canvas_interface()->get_time(); }
+	synfig::Canvas::Handle get_canvas()const{return canvas_view_->get_canvas();}
 	WorkArea * get_work_area()const{return canvas_view_->get_work_area();}
 	
 };	// END of class StateSketch_Context
@@ -149,7 +149,7 @@ StateSketch::~StateSketch()
 void
 StateSketch_Context::save_sketch()
 {
-	sinfg::String filename(basename(get_canvas()->get_file_name())+".sketch");
+	synfig::String filename(basename(get_canvas()->get_file_name())+".sketch");
 	
 	while(App::dialog_save_file(_("Save Sketch"), filename))
 	{
@@ -168,7 +168,7 @@ StateSketch_Context::save_sketch()
 void
 StateSketch_Context::load_sketch()
 {
-	sinfg::String filename(basename(get_canvas()->get_file_name())+".sketch");
+	synfig::String filename(basename(get_canvas()->get_file_name())+".sketch");
 	
 	while(App::dialog_open_file(_("Load Sketch"), filename))
 	{
@@ -485,7 +485,7 @@ StateSketch_Context::event_stroke(const Smach::event& x)
 
 	assert(event.stroke_data);
 		
-	get_work_area()->add_persistant_stroke(event.stroke_data,sinfgapp::Main::get_foreground_color());
+	get_work_area()->add_persistant_stroke(event.stroke_data,synfigapp::Main::get_foreground_color());
 
 	return Smach::RESULT_ACCEPT;
 }

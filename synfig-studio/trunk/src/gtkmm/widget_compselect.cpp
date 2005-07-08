@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file widget_compselect.cpp
 **	\brief Template File
 **
@@ -31,7 +31,7 @@
 #include <gtkmm/menu.h>
 #include "widget_compselect.h"
 #include <ETL/stringf>
-#include <sinfg/valuenode.h>
+#include <synfig/valuenode.h>
 #include "instance.h"
 
 #endif
@@ -40,7 +40,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
@@ -117,8 +117,8 @@ Widget_CompSelect::new_instance(etl::handle<studio::Instance> instance)
 	
 	etl::loose_handle<studio::Instance> loose_instance(instance);
 	
-	instance->sinfgapp::Instance::signal_filename_changed().connect(sigc::mem_fun(*this,&Widget_CompSelect::refresh));
-	instance->sinfgapp::Instance::signal_filename_changed().connect(
+	instance->synfigapp::Instance::signal_filename_changed().connect(sigc::mem_fun(*this,&Widget_CompSelect::refresh));
+	instance->synfigapp::Instance::signal_filename_changed().connect(
 		sigc::bind<etl::loose_handle<studio::Instance> >(
 			sigc::mem_fun(*this,&Widget_CompSelect::set_selected_instance),
 			loose_instance

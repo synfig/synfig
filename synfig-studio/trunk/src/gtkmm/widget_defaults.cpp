@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file widget_defaults.cpp
 **	\brief Template File
 **
@@ -36,8 +36,8 @@
 #include "app.h"
 #include <gtkmm/menu.h>
 #include <gtkmm/scale.h>
-#include <sinfg/exception.h>
-#include <sinfgapp/main.h>
+#include <synfig/exception.h>
+#include <synfigapp/main.h>
 #include "canvasview.h"
 #include "widget_distance.h"
 #include "widget_enum.h"
@@ -48,14 +48,14 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
 
 #define GRADIENT_HEIGHT		16
 #define DEFAULT_INCREMENT	(0.25)
-#define DEFAULT_WIDTH		(sinfg::Distance(3,sinfg::Distance::SYSTEM_POINTS))
+#define DEFAULT_WIDTH		(synfig::Distance(3,synfig::Distance::SYSTEM_POINTS))
 
 /* === G L O B A L S ======================================================= */
 
@@ -70,9 +70,9 @@ public:
 		add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK);
 		add_events(Gdk::BUTTON1_MOTION_MASK);
 
-		sinfgapp::Main::signal_foreground_color_changed().connect(sigc::mem_fun(*this,&studio::Widget_Brush::queue_draw));
-		sinfgapp::Main::signal_background_color_changed().connect(sigc::mem_fun(*this,&studio::Widget_Brush::queue_draw));
-		sinfgapp::Main::signal_bline_width_changed().connect(sigc::mem_fun(*this,&studio::Widget_Brush::queue_draw));
+		synfigapp::Main::signal_foreground_color_changed().connect(sigc::mem_fun(*this,&studio::Widget_Brush::queue_draw));
+		synfigapp::Main::signal_background_color_changed().connect(sigc::mem_fun(*this,&studio::Widget_Brush::queue_draw));
+		synfigapp::Main::signal_bline_width_changed().connect(sigc::mem_fun(*this,&studio::Widget_Brush::queue_draw));
 		studio::App::signal_instance_selected().connect(sigc::hide(sigc::mem_fun(*this,&studio::Widget_Brush::queue_draw)));
 	}
 	
@@ -88,18 +88,18 @@ public:
 		if(App::get_selected_canvas_view())
 		{
 			const RendDesc& rend_desc(App::get_selected_canvas_view()->get_canvas()->rend_desc());
-			pixelsize=sinfgapp::Main::get_bline_width().get(Distance::SYSTEM_PIXELS,rend_desc);
+			pixelsize=synfigapp::Main::get_bline_width().get(Distance::SYSTEM_PIXELS,rend_desc);
 		}
 		else 
 		{
 			RendDesc rend_desc;
-			pixelsize=sinfgapp::Main::get_bline_width().get(Distance::SYSTEM_PIXELS,rend_desc);
+			pixelsize=synfigapp::Main::get_bline_width().get(Distance::SYSTEM_PIXELS,rend_desc);
 		}
 		// Fill in the background color
-		render_color_to_window(get_window(),Gdk::Rectangle(0,0,w,h),sinfgapp::Main::get_background_color());
+		render_color_to_window(get_window(),Gdk::Rectangle(0,0,w,h),synfigapp::Main::get_background_color());
 
 /*
-		gc->set_rgb_fg_color(colorconv_sinfg2gdk(sinfgapp::Main::get_background_color()));
+		gc->set_rgb_fg_color(colorconv_synfig2gdk(synfigapp::Main::get_background_color()));
 		gc->set_line_attributes(1,Gdk::LINE_SOLID,Gdk::CAP_BUTT,Gdk::JOIN_MITER);	
 		get_window()->draw_rectangle(
 			gc,
@@ -110,7 +110,7 @@ public:
 */
 		
 		// Draw in the circle
-		gc->set_rgb_fg_color(colorconv_sinfg2gdk(sinfgapp::Main::get_foreground_color()));
+		gc->set_rgb_fg_color(colorconv_synfig2gdk(synfigapp::Main::get_foreground_color()));
 		gc->set_function(Gdk::COPY);
 		gc->set_line_attributes(1,Gdk::LINE_SOLID,Gdk::CAP_BUTT,Gdk::JOIN_MITER);
 		get_window()->draw_arc(
@@ -143,7 +143,7 @@ public:
 			case GDK_BUTTON_RELEASE:
 				if(event->button.button==1) // Left click
 				{
-					Distance dist(sinfgapp::Main::get_bline_width());
+					Distance dist(synfigapp::Main::get_bline_width());
 					
 					if(y<h/2) // increase BLine size
 					{
@@ -153,19 +153,19 @@ public:
 					{
 						dist-=DEFAULT_INCREMENT;
 					}
-					sinfgapp::Main::set_bline_width(dist);
+					synfigapp::Main::set_bline_width(dist);
 					return true;
 				}
 				if(event->button.button==3)
 				{
 					// right click on bline width
-					sinfgapp::Main::set_bline_width(DEFAULT_WIDTH);
+					synfigapp::Main::set_bline_width(DEFAULT_WIDTH);
 					return true;
 				}
 				break;
 			case GDK_SCROLL:
 				{
-					Distance dist(sinfgapp::Main::get_bline_width());
+					Distance dist(synfigapp::Main::get_bline_width());
 					
 					if(event->scroll.direction==GDK_SCROLL_UP)
 					{
@@ -175,7 +175,7 @@ public:
 					{
 						dist-=DEFAULT_INCREMENT;
 					}
-					sinfgapp::Main::set_bline_width(dist);
+					synfigapp::Main::set_bline_width(dist);
 					return true;
 				}
 			default:
@@ -222,7 +222,7 @@ Widget_Defaults::Widget_Defaults()
 		button_swap->show();
 		button_swap->set_relief(Gtk::RELIEF_NONE);
 		button_swap->set_border_width(0);
-		icon=manage(new Gtk::Image(Gtk::StockID("sinfg-swap_colors"),Gtk::IconSize(1)));
+		icon=manage(new Gtk::Image(Gtk::StockID("synfig-swap_colors"),Gtk::IconSize(1)));
 		icon->show();
 		button_swap->add(*icon);
 		//button_swap->get_child()->set_size_request(16/3,16/3);
@@ -302,13 +302,13 @@ Widget_Defaults::Widget_Defaults()
 
 
 	// Signals
-	sinfgapp::Main::signal_opacity_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::opacity_refresh));
-	sinfgapp::Main::signal_bline_width_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::bline_width_refresh));
-	sinfgapp::Main::signal_foreground_color_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::fg_color_refresh));
-	sinfgapp::Main::signal_background_color_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::bg_color_refresh));
-	sinfgapp::Main::signal_gradient_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::gradient_refresh));
-	sinfgapp::Main::signal_blend_method_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::blend_method_refresh));
-	sinfgapp::Main::signal_interpolation_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::interpolation_refresh));
+	synfigapp::Main::signal_opacity_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::opacity_refresh));
+	synfigapp::Main::signal_bline_width_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::bline_width_refresh));
+	synfigapp::Main::signal_foreground_color_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::fg_color_refresh));
+	synfigapp::Main::signal_background_color_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::bg_color_refresh));
+	synfigapp::Main::signal_gradient_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::gradient_refresh));
+	synfigapp::Main::signal_blend_method_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::blend_method_refresh));
+	synfigapp::Main::signal_interpolation_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::interpolation_refresh));
 
 	fg_color_refresh();
 	bg_color_refresh();
@@ -323,23 +323,23 @@ Widget_Defaults::Widget_Defaults()
 	add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK);
 	add_events(Gdk::BUTTON1_MOTION_MASK);
 
-	sinfgapp::Main::signal_foreground_color_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::queue_draw));
-	sinfgapp::Main::signal_background_color_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::queue_draw));
-	sinfgapp::Main::signal_gradient_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::queue_draw));
-	sinfgapp::Main::signal_bline_width_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::queue_draw));
+	synfigapp::Main::signal_foreground_color_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::queue_draw));
+	synfigapp::Main::signal_background_color_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::queue_draw));
+	synfigapp::Main::signal_gradient_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::queue_draw));
+	synfigapp::Main::signal_bline_width_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::queue_draw));
 
 	if(App::dialog_gradient)
 	{
-		App::dialog_gradient->set_gradient(sinfgapp::Main::get_gradient());
+		App::dialog_gradient->set_gradient(synfigapp::Main::get_gradient());
 		App::dialog_gradient->reset();
-		App::dialog_gradient->signal_edited().connect(sigc::mem_fun(sinfgapp::Main::set_gradient));
+		App::dialog_gradient->signal_edited().connect(sigc::mem_fun(synfigapp::Main::set_gradient));
 	}
 	
 	if(App::dialog_color)
 	{
-		App::dialog_color->set_color(sinfgapp::Main::get_foreground_color());
+		App::dialog_color->set_color(synfigapp::Main::get_foreground_color());
 		App::dialog_color->reset();
-		App::dialog_color->signal_edited().connect(sigc::mem_fun(sinfgapp::Main::set_foreground_color));
+		App::dialog_color->signal_edited().connect(sigc::mem_fun(synfigapp::Main::set_foreground_color));
 	}
 */
 }
@@ -351,76 +351,76 @@ Widget_Defaults::~Widget_Defaults()
 void
 Widget_Defaults::fg_color_refresh()
 {
-	widget_fg_color->set_value(sinfgapp::Main::get_foreground_color());
+	widget_fg_color->set_value(synfigapp::Main::get_foreground_color());
 }
 
 void
 Widget_Defaults::bg_color_refresh()
 {
-	widget_bg_color->set_value(sinfgapp::Main::get_background_color());
+	widget_bg_color->set_value(synfigapp::Main::get_background_color());
 }
 
 void
 Widget_Defaults::gradient_refresh()
 {
-	widget_gradient->set_value(sinfgapp::Main::get_gradient());
+	widget_gradient->set_value(synfigapp::Main::get_gradient());
 }
 
 void
 Widget_Defaults::bline_width_refresh()
 {
-	widget_bline_width->set_value(sinfgapp::Main::get_bline_width());
+	widget_bline_width->set_value(synfigapp::Main::get_bline_width());
 }
 
 void
 Widget_Defaults::blend_method_refresh()
 {
-	widget_blend_method->set_value(sinfgapp::Main::get_blend_method());
+	widget_blend_method->set_value(synfigapp::Main::get_blend_method());
 }
 
 void
 Widget_Defaults::interpolation_refresh()
 {
-	widget_interpolation->set_value(sinfgapp::Main::get_interpolation());
+	widget_interpolation->set_value(synfigapp::Main::get_interpolation());
 }
 
 void
 Widget_Defaults::opacity_refresh()
 {
-	widget_opacity->set_value(sinfgapp::Main::get_opacity());
+	widget_opacity->set_value(synfigapp::Main::get_opacity());
 }
 
 void
 Widget_Defaults::on_opacity_changed()
 {
-	sinfgapp::Main::set_opacity(widget_opacity->get_value());
+	synfigapp::Main::set_opacity(widget_opacity->get_value());
 }
 
 void
 Widget_Defaults::on_blend_method_changed()
 {
-	sinfgapp::Main::set_blend_method(Color::BlendMethod(widget_blend_method->get_value()));
+	synfigapp::Main::set_blend_method(Color::BlendMethod(widget_blend_method->get_value()));
 }
 
 void
 Widget_Defaults::on_interpolation_changed()
 {
-	sinfgapp::Main::set_interpolation(Waypoint::Interpolation(widget_interpolation->get_value()));
+	synfigapp::Main::set_interpolation(Waypoint::Interpolation(widget_interpolation->get_value()));
 }
 
 void
 Widget_Defaults::on_bline_width_changed()
 {
-	sinfgapp::Main::set_bline_width(widget_bline_width->get_value());
+	synfigapp::Main::set_bline_width(widget_bline_width->get_value());
 }
 
 void
 Widget_Defaults::on_fg_color_clicked()
 {
 	// Left click on foreground
-	App::dialog_color->set_color(sinfgapp::Main::get_foreground_color());
+	App::dialog_color->set_color(synfigapp::Main::get_foreground_color());
 	App::dialog_color->reset();
-	App::dialog_color->signal_edited().connect(sigc::ptr_fun(sinfgapp::Main::set_foreground_color));
+	App::dialog_color->signal_edited().connect(sigc::ptr_fun(synfigapp::Main::set_foreground_color));
 	App::dialog_color->present();
 }
 
@@ -428,31 +428,31 @@ void
 Widget_Defaults::on_bg_color_clicked()
 {
 	// Left click on background
-	App::dialog_color->set_color(sinfgapp::Main::get_background_color());
+	App::dialog_color->set_color(synfigapp::Main::get_background_color());
 	App::dialog_color->reset();
-	App::dialog_color->signal_edited().connect(sigc::ptr_fun(sinfgapp::Main::set_background_color));
+	App::dialog_color->signal_edited().connect(sigc::ptr_fun(synfigapp::Main::set_background_color));
 	App::dialog_color->present();
 }
 
 void
 Widget_Defaults::on_swap_color_clicked()
 {
-	sinfgapp::Main::color_swap();
+	synfigapp::Main::color_swap();
 }
 
 void
 Widget_Defaults::on_reset_color_clicked()
 {
-	sinfgapp::Main::set_background_color(Color::white());
-	sinfgapp::Main::set_foreground_color(Color::black());
+	synfigapp::Main::set_background_color(Color::white());
+	synfigapp::Main::set_foreground_color(Color::black());
 }
 
 void
 Widget_Defaults::on_gradient_clicked()
 {
-	App::dialog_gradient->set_gradient(sinfgapp::Main::get_gradient());
+	App::dialog_gradient->set_gradient(synfigapp::Main::get_gradient());
 	App::dialog_gradient->reset();
-	App::dialog_gradient->signal_edited().connect(sigc::ptr_fun(sinfgapp::Main::set_gradient));
+	App::dialog_gradient->signal_edited().connect(sigc::ptr_fun(synfigapp::Main::set_gradient));
 	App::dialog_gradient->present();
 }
 
@@ -466,9 +466,9 @@ Widget_Defaults::redraw(GdkEventExpose*bleh)
 	const int w(get_width());	
 	const int size=std::min(h-GRADIENT_HEIGHT,w);
 	
-	render_color_to_window(get_window(),Gdk::Rectangle(size/4,size/4,size/4*3-1,size/4*3-1),sinfgapp::Main::get_background_color());
-	render_color_to_window(get_window(),Gdk::Rectangle(0,0,size/4*3-1,size/4*3-1),sinfgapp::Main::get_foreground_color());
-	render_gradient_to_window(get_window(),Gdk::Rectangle(0,h-GRADIENT_HEIGHT,w,GRADIENT_HEIGHT-1),sinfgapp::Main::get_gradient());
+	render_color_to_window(get_window(),Gdk::Rectangle(size/4,size/4,size/4*3-1,size/4*3-1),synfigapp::Main::get_background_color());
+	render_color_to_window(get_window(),Gdk::Rectangle(0,0,size/4*3-1,size/4*3-1),synfigapp::Main::get_foreground_color());
+	render_gradient_to_window(get_window(),Gdk::Rectangle(0,h-GRADIENT_HEIGHT,w,GRADIENT_HEIGHT-1),synfigapp::Main::get_gradient());
 
 	
 
@@ -477,7 +477,7 @@ Widget_Defaults::redraw(GdkEventExpose*bleh)
 	Glib::RefPtr<Pango::Layout> layout(Pango::Layout::create(get_pango_context()));
 	
 	gc->set_rgb_fg_color(Gdk::Color("#FF0000"));
-	layout->set_text(sinfgapp::Main::get_bline_width().get_string(2));		
+	layout->set_text(synfigapp::Main::get_bline_width().get_string(2));		
 	layout->set_alignment(Pango::ALIGN_CENTER);
 	layout->set_width(w/2);
 	get_window()->draw_layout(gc, w*3/4, (h-GRADIENT_HEIGHT)-16, layout);
@@ -508,9 +508,9 @@ Widget_Defaults::on_event(GdkEvent *event)
 			if(y>size)
 			{
 				// Left click on gradient
-				App::dialog_gradient->set_gradient(sinfgapp::Main::get_gradient());
+				App::dialog_gradient->set_gradient(synfigapp::Main::get_gradient());
 				App::dialog_gradient->reset();
-				App::dialog_gradient->signal_edited().connect(sigc::mem_fun(sinfgapp::Main::set_gradient));
+				App::dialog_gradient->signal_edited().connect(sigc::mem_fun(synfigapp::Main::set_gradient));
 				App::dialog_gradient->present();
 				return true;
 			}
@@ -519,25 +519,25 @@ Widget_Defaults::on_event(GdkEvent *event)
 				if(x<size*3/4 && y<size*3/4)
 				{
 					// Left click on foreground
-					App::dialog_color->set_color(sinfgapp::Main::get_foreground_color());
+					App::dialog_color->set_color(synfigapp::Main::get_foreground_color());
 					App::dialog_color->reset();
-					App::dialog_color->signal_edited().connect(sigc::mem_fun(sinfgapp::Main::set_foreground_color));
+					App::dialog_color->signal_edited().connect(sigc::mem_fun(synfigapp::Main::set_foreground_color));
 					App::dialog_color->present();
 					return true;
 				}
 				if(x>size*3/4 && y>size/4)
 				{
 					// Left click on background
-					App::dialog_color->set_color(sinfgapp::Main::get_background_color());
+					App::dialog_color->set_color(synfigapp::Main::get_background_color());
 					App::dialog_color->reset();
-					App::dialog_color->signal_edited().connect(sigc::mem_fun(sinfgapp::Main::set_background_color));
+					App::dialog_color->signal_edited().connect(sigc::mem_fun(synfigapp::Main::set_background_color));
 					App::dialog_color->present();
 					return true;
 				}
 			}
 			if(x>size) // Left click on BLine Width
 			{
-				Distance dist(sinfgapp::Main::get_bline_width());
+				Distance dist(synfigapp::Main::get_bline_width());
 				
 				if(y<size/2) // increase BLine size
 				{
@@ -547,7 +547,7 @@ Widget_Defaults::on_event(GdkEvent *event)
 				{
 					dist-=DEFAULT_INCREMENT;
 				}
-				sinfgapp::Main::set_bline_width(dist);
+				synfigapp::Main::set_bline_width(dist);
 			}
 		}
 		if(event->button.button==3)
@@ -555,7 +555,7 @@ Widget_Defaults::on_event(GdkEvent *event)
 			if(y>size)
 			{
 				// right click on gradient
-				sinfgapp::Main::set_gradient_default_colors();
+				synfigapp::Main::set_gradient_default_colors();
 				return true;
 			}
 			else
@@ -563,14 +563,14 @@ Widget_Defaults::on_event(GdkEvent *event)
 				if(x<size)
 				{
 					// right click on colors
-					sinfgapp::Main::color_swap();
+					synfigapp::Main::color_swap();
 					return true;
 				}
 				
 				if(x>w/2)
 				{
 					// right click on bline width
-					sinfgapp::Main::set_bline_width(DEFAULT_WIDTH);
+					synfigapp::Main::set_bline_width(DEFAULT_WIDTH);
 				}
 				
 			}
@@ -578,7 +578,7 @@ Widget_Defaults::on_event(GdkEvent *event)
 		break;
 	case GDK_SCROLL:
 		{
-			Distance dist(sinfgapp::Main::get_bline_width());
+			Distance dist(synfigapp::Main::get_bline_width());
 			
 			if(event->scroll.direction==GDK_SCROLL_UP)
 			{
@@ -588,7 +588,7 @@ Widget_Defaults::on_event(GdkEvent *event)
 			{
 				dist-=DEFAULT_INCREMENT;
 			}
-			sinfgapp::Main::set_bline_width(dist);
+			synfigapp::Main::set_bline_width(dist);
 		}
 	default:
 		break;

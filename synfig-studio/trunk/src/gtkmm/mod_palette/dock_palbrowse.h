@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file dialog_palette.h
 **	\brief Template Header
 **
@@ -21,13 +21,13 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_STUDIO_DOCK_PAL_BROWSE_H
-#define __SINFG_STUDIO_DOCK_PAL_BROWSE_H
+#ifndef __SYNFIG_STUDIO_DOCK_PAL_BROWSE_H
+#define __SYNFIG_STUDIO_DOCK_PAL_BROWSE_H
 
 /* === H E A D E R S ======================================================= */
 
 #include "../dockable.h"
-#include <sinfg/palette.h>
+#include <synfig/palette.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -35,7 +35,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace sinfgapp {
+namespace synfigapp {
 class CanvasInterface;
 };
 

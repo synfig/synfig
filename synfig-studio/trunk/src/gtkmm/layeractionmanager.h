@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file template.h
 **	\brief Template Header
 **
@@ -21,14 +21,14 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_LAYER_ACTION_MANAGER_H
-#define __SINFG_LAYER_ACTION_MANAGER_H
+#ifndef __SYNFIG_LAYER_ACTION_MANAGER_H
+#define __SYNFIG_LAYER_ACTION_MANAGER_H
 
 /* === H E A D E R S ======================================================= */
 
 #include <gtkmm/uimanager.h>
 #include <gtkmm/treeview.h>
-#include <sinfgapp/canvasinterface.h>
+#include <synfigapp/canvasinterface.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -45,7 +45,7 @@ class LayerActionManager
 	Glib::RefPtr<Gtk::UIManager> ui_manager_;
 	//Glib::RefPtr<Gtk::TreeSelection> tree_selection_;
 	LayerTree* layer_tree_;
-	etl::handle<sinfgapp::CanvasInterface> canvas_interface_;
+	etl::handle<synfigapp::CanvasInterface> canvas_interface_;
 
 	Glib::RefPtr<Gtk::ActionGroup>	action_group_;
 	Gtk::UIManager::ui_merge_id 	popup_id_;
@@ -62,7 +62,7 @@ class LayerActionManager
 	Glib::RefPtr<Gtk::Action>	action_amount_;
 
 
-	std::list<sinfg::Layer::Handle> clipboard_;
+	std::list<synfig::Layer::Handle> clipboard_;
 
 	
 	sigc::connection selection_changed_connection;
@@ -91,10 +91,10 @@ public:
 	void set_layer_tree(LayerTree* x);
 	LayerTree* get_layer_tree()const { return layer_tree_; }
 
-	void set_canvas_interface(const etl::handle<sinfgapp::CanvasInterface> &x);
-	etl::handle<sinfgapp::CanvasInterface> get_canvas_interface()const { return canvas_interface_; }
+	void set_canvas_interface(const etl::handle<synfigapp::CanvasInterface> &x);
+	etl::handle<synfigapp::CanvasInterface> get_canvas_interface()const { return canvas_interface_; }
 
-	etl::loose_handle<sinfgapp::Instance> get_instance()const { return canvas_interface_->get_instance(); }
+	etl::loose_handle<synfigapp::Instance> get_instance()const { return canvas_interface_->get_instance(); }
 
 	void refresh();
 	void clear();

@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file dock_params.cpp
 **	\brief Template File
 **
@@ -52,7 +52,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
@@ -64,7 +64,7 @@ using namespace studio;
 /* === M E T H O D S ======================================================= */
 
 Dock_Curves::Dock_Curves():
-	Dock_CanvasSpecific("curves",_("Curves"),Gtk::StockID("sinfg-curves"))
+	Dock_CanvasSpecific("curves",_("Curves"),Gtk::StockID("synfig-curves"))
 {
 	last_widget_curves_=0;
 	table_=0;
@@ -93,7 +93,7 @@ _curve_selection_changed(Gtk::TreeView* param_tree_view,Widget_Curves* curves)
 		return;
 	}
 	
-	std::list<sinfgapp::ValueDesc> value_descs;
+	std::list<synfigapp::ValueDesc> value_descs;
 
 	//std::list<Gtk::TreePath> path_list(
 	//param_tree_view->get_selection()->selected_foreach_iter(tmp);
@@ -140,7 +140,7 @@ Dock_Curves::refresh_selected_param()
 	{
 		LayerParamTreeStore::Model model;
 		get_canvas_view()->work_area->set_selected_value_node(
-			(sinfg::ValueNode::Handle)(*iter)[model.value_node]
+			(synfig::ValueNode::Handle)(*iter)[model.value_node]
 		);
 	}
 	else

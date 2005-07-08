@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file dock_info.cpp
 **	\brief Dock Info File
 **
@@ -32,8 +32,8 @@
 #include "canvasview.h"
 #include "workarea.h"
 
-#include <sinfg/canvas.h>
-#include <sinfg/context.h>
+#include <synfig/canvas.h>
+#include <synfig/context.h>
 
 #include <gtkmm/separator.h>
 #include <gtkmm/invisible.h>
@@ -44,7 +44,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 #define use_colorspace_gamma()	App::use_colorspace_gamma
@@ -92,7 +92,7 @@ void studio::Dock_Info::on_mouse_move()
 }
 
 studio::Dock_Info::Dock_Info()
-:Dock_CanvasSpecific("info",_("Info"),Gtk::StockID("sinfg-info"))
+:Dock_CanvasSpecific("info",_("Info"),Gtk::StockID("synfig-info"))
 {
 	set_use_scrolled(false);
 	

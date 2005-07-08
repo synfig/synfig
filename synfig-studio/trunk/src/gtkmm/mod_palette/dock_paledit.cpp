@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file dialog_palette.cpp
 **	\brief Template File
 **
@@ -33,13 +33,13 @@
 #include <gtkmm/frame.h>
 #include <gtkmm/table.h>
 #include <gtkmm/label.h>
-#include <sinfg/general.h>
-#include <sinfgapp/canvasinterface.h>
-#include <sinfgapp/value_desc.h>
+#include <synfig/general.h>
+#include <synfigapp/canvasinterface.h>
+#include <synfigapp/value_desc.h>
 #include "../widget_color.h"
 #include <gtkmm/spinbutton.h>
 #include <gtkmm/menu.h>
-#include <sinfgapp/main.h>
+#include <synfigapp/main.h>
 #include "../app.h"
 #include "../dialog_color.h"
 
@@ -49,19 +49,19 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
 
 /* === G L O B A L S ======================================================= */
 /*
-class studio::PaletteSettings : public sinfgapp::Settings
+class studio::PaletteSettings : public synfigapp::Settings
 {
 	Dock_PalEdit* dialog_palette;
-	sinfg::String name;
+	synfig::String name;
 public:
-	PaletteSettings(Dock_PalEdit* window,const sinfg::String& name):
+	PaletteSettings(Dock_PalEdit* window,const synfig::String& name):
 		dialog_palette(window),
 		name(name)
 	{
@@ -73,7 +73,7 @@ public:
 		dialog_palette->dialog_settings.remove_domain(name);
 	}
 
-	virtual bool get_value(const sinfg::String& key, sinfg::String& value)const
+	virtual bool get_value(const synfig::String& key, synfig::String& value)const
 	{
 		int i(atoi(key.c_str()));
 		if(i<0 || i>=dialog_palette->size())
@@ -83,7 +83,7 @@ public:
 		return true;
 	}
 	
-	virtual bool set_value(const sinfg::String& key,const sinfg::String& value)
+	virtual bool set_value(const synfig::String& key,const synfig::String& value)
 	{
 		int i(atoi(key.c_str()));
 		if(i<0)
@@ -99,7 +99,7 @@ public:
 	
 	virtual KeyList get_key_list()const
 	{
-		sinfgapp::Settings::KeyList ret(sinfgapp::Settings::get_key_list());
+		synfigapp::Settings::KeyList ret(synfigapp::Settings::get_key_list());
 	
 		int i;
 		for(i=0;i<dialog_palette->size();i++)
@@ -171,7 +171,7 @@ Dock_PalEdit::~Dock_PalEdit()
 }
 
 void
-Dock_PalEdit::set_palette(const sinfg::Palette& x)
+Dock_PalEdit::set_palette(const synfig::Palette& x)
 {
 	palette_=x;
 	refresh();
@@ -180,7 +180,7 @@ Dock_PalEdit::set_palette(const sinfg::Palette& x)
 void
 Dock_PalEdit::on_add_pressed()
 {
-	add_color(sinfgapp::Main::get_foreground_color());
+	add_color(synfigapp::Main::get_foreground_color());
 }
 
 void
@@ -212,7 +212,7 @@ Dock_PalEdit::show_menu(int i)
 }
 
 int
-Dock_PalEdit::add_color(const sinfg::Color& x)
+Dock_PalEdit::add_color(const synfig::Color& x)
 {
 	palette_.push_back(x);
 	signal_changed()();
@@ -221,7 +221,7 @@ Dock_PalEdit::add_color(const sinfg::Color& x)
 }
 
 void
-Dock_PalEdit::set_color(sinfg::Color x, int i)
+Dock_PalEdit::set_color(synfig::Color x, int i)
 {
 	palette_[i].color=x;
 	signal_changed()();
@@ -292,7 +292,7 @@ Dock_PalEdit::edit_color(int i)
 void
 Dock_PalEdit::select_color(int i)
 {
-	sinfgapp::Main::set_foreground_color(get_color(i));
+	synfigapp::Main::set_foreground_color(get_color(i));
 }
 		
 void

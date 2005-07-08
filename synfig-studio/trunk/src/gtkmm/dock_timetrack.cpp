@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file dock_timetrack.cpp
 **	\brief Template File
 **
@@ -48,7 +48,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
@@ -64,7 +64,7 @@ class TimeTrackView : public Gtk::TreeView
 	Gtk::TreeView *mimic_tree_view; 
 public:
 
-	sigc::signal<void,sinfgapp::ValueDesc,sinfg::Waypoint,int> signal_waypoint_clicked;
+	sigc::signal<void,synfigapp::ValueDesc,synfig::Waypoint,int> signal_waypoint_clicked;
 
 	LayerParamTreeStore::Model model;
 
@@ -173,17 +173,17 @@ public:
 						LayerList layer_list(get_selected_layers());
 						if(layer_list.size()<=1)
 						{
-							sinfgapp::ValueDesc value_desc(row[model.value_desc]);
+							synfigapp::ValueDesc value_desc(row[model.value_desc]);
 							Gtk::Menu* menu(manage(new Gtk::Menu()));					
 							App::get_instance(param_tree_store_->canvas_interface()->get_canvas())->make_param_menu(menu,param_tree_store_->canvas_interface()->get_canvas(),value_desc,0.5f);
 							menu->popup(event->button.button,gtk_get_current_event_time());
 							return true;
 						}
 						Gtk::Menu* menu(manage(new Gtk::Menu()));					
-						std::list<sinfgapp::ValueDesc> value_desc_list;
+						std::list<synfigapp::ValueDesc> value_desc_list;
 						ParamDesc param_desc(row[model.param_desc]);
 						for(;!layer_list.empty();layer_list.pop_back())
-							value_desc_list.push_back(sinfgapp::ValueDesc(layer_list.back(),param_desc.get_name()));
+							value_desc_list.push_back(synfigapp::ValueDesc(layer_list.back(),param_desc.get_name()));
 						App::get_instance(param_tree_store_->canvas_interface()->get_canvas())->make_param_menu(menu,param_tree_store_->canvas_interface()->get_canvas(),value_desc_list);
 						menu->popup(event->button.button,gtk_get_current_event_time());
 						return true;
@@ -286,7 +286,7 @@ public:
 	void
 	queue_draw_msg()
 	{
-		sinfg::info("*************QUEUE_DRAW***************** (time track view)");
+		synfig::info("*************QUEUE_DRAW***************** (time track view)");
 		Widget::queue_draw();
 	}
 	void set_model(Glib::RefPtr<LayerParamTreeStore> store)
@@ -298,9 +298,9 @@ public:
 	}
 	
 	void
-	on_waypoint_changed( sinfg::Waypoint waypoint , sinfg::ValueNode::Handle value_node)
+	on_waypoint_changed( synfig::Waypoint waypoint , synfig::ValueNode::Handle value_node)
 	{
-		sinfgapp::Action::ParamList param_list;
+		synfigapp::Action::ParamList param_list;
 		param_list.add("canvas",param_tree_store_->canvas_interface()->get_canvas());
 		param_list.add("canvas_interface",param_tree_store_->canvas_interface());
 		param_list.add("value_node",value_node);
@@ -353,7 +353,7 @@ public:
 	}
 	
 	void
-	on_waypoint_clicked(const Glib::ustring &path_string, sinfg::Waypoint waypoint,int button)
+	on_waypoint_clicked(const Glib::ustring &path_string, synfig::Waypoint waypoint,int button)
 	{
 /*
 		Gtk::TreePath path(path_string);
@@ -369,14 +369,14 @@ public:
 		Gtk::TreeRow row;
 		if(!param_tree_store_->find_first_value_node(value_node, row))
 		{
-			sinfg::error(__FILE__":%d: Unable to find the valuenode",__LINE__);
+			synfig::error(__FILE__":%d: Unable to find the valuenode",__LINE__);
 			return;
 		}
 		
 		if(!row)
 			return;
 		
-		sinfgapp::ValueDesc value_desc(static_cast<sinfgapp::ValueDesc>(row[model.value_desc]));
+		synfigapp::ValueDesc value_desc(static_cast<synfigapp::ValueDesc>(row[model.value_desc]));
 
 		signal_waypoint_clicked(value_desc,waypoint,button);
 	}
@@ -389,7 +389,7 @@ public:
 /* === M E T H O D S ======================================================= */
 
 Dock_Timetrack::Dock_Timetrack():
-	Dock_CanvasSpecific("timetrack",_("Timetrack"),Gtk::StockID("sinfg-timetrack"))
+	Dock_CanvasSpecific("timetrack",_("Timetrack"),Gtk::StockID("synfig-timetrack"))
 {
 	table_=0;
 	widget_timeslider_= new Widget_Timeslider();
@@ -444,7 +444,7 @@ Dock_Timetrack::refresh_selected_param()
 	{
 		LayerParamTreeStore::Model model;
 		get_canvas_view()->work_area->set_selected_value_node(
-			(sinfg::ValueNode::Handle)(*iter)[model.value_node]
+			(synfig::ValueNode::Handle)(*iter)[model.value_node]
 		);
 	}
 	else

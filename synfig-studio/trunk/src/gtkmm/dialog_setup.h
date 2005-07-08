@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file dialog_setup.h
 **	\brief Template Header
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_STUDIO_DIALOG_SETUP_H
-#define __SINFG_STUDIO_DIALOG_SETUP_H
+#ifndef __SYNFIG_STUDIO_DIALOG_SETUP_H
+#define __SYNFIG_STUDIO_DIALOG_SETUP_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -35,8 +35,8 @@
 #include <gtkmm/optionmenu.h>
 #include <gtkmm/checkbutton.h>
 
-#include <sinfg/gamma.h>
-#include <sinfg/time.h>
+#include <synfig/gamma.h>
+#include <synfig/time.h>
 #include <algorithm>
 
 /* === M A C R O S ========================================================= */
@@ -162,15 +162,15 @@ class Dialog_Setup : public Gtk::Dialog
 
 	Gtk::CheckButton toggle_use_colorspace_gamma;
 
-	sinfg::Time::Format time_format;
+	synfig::Time::Format time_format;
 	
 	Gtk::Menu *timestamp_menu;
 	Widget_Enum *widget_enum;
 public:
 
-	void set_time_format(sinfg::Time::Format time_format);
+	void set_time_format(synfig::Time::Format time_format);
 
-	const sinfg::Time::Format& get_time_format()const { return time_format; }
+	const synfig::Time::Format& get_time_format()const { return time_format; }
 	
 	Dialog_Setup();
 	~Dialog_Setup();

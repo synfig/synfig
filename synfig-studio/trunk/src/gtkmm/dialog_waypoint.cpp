@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file dialog_waypoint.cpp
 **	\brief Template Header
 **
@@ -43,7 +43,7 @@
 
 #endif
 
-using namespace sinfg;
+using namespace synfig;
 using namespace std;
 using namespace etl;
 using namespace studio;
@@ -56,7 +56,7 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
-Dialog_Waypoint::Dialog_Waypoint(Gtk::Window& parent,etl::handle<sinfg::Canvas> canvas):
+Dialog_Waypoint::Dialog_Waypoint(Gtk::Window& parent,etl::handle<synfig::Canvas> canvas):
 	Dialog(_("Waypoint Editor"),parent,false,true),
 	canvas(canvas)
 {
@@ -113,19 +113,19 @@ Dialog_Waypoint::on_delete_pressed()
 }
 
 void
-Dialog_Waypoint::set_waypoint(sinfg::ValueNode_Animated::Waypoint x)
+Dialog_Waypoint::set_waypoint(synfig::ValueNode_Animated::Waypoint x)
 {
 	waypointwidget->set_waypoint(x);
 }
 
-const sinfg::ValueNode_Animated::Waypoint &
+const synfig::ValueNode_Animated::Waypoint &
 Dialog_Waypoint::get_waypoint()const
 {
 	return waypointwidget->get_waypoint();
 }
 
 void
-Dialog_Waypoint::set_value_desc(sinfgapp::ValueDesc value_desc)
+Dialog_Waypoint::set_value_desc(synfigapp::ValueDesc value_desc)
 {
 	value_desc_=value_desc;
 	if(value_desc.get_value_node() && value_desc.get_value_node()->get_parent_canvas())

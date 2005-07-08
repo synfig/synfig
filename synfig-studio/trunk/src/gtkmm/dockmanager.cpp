@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file dockmanager.cpp
 **	\brief Template File
 **
@@ -32,8 +32,8 @@
 #include <stdexcept>
 #include "dockable.h"
 #include "dockdialog.h"
-#include <sinfgapp/settings.h>
-#include <sinfgapp/main.h>
+#include <synfigapp/settings.h>
+#include <synfigapp/main.h>
 #include <gdkmm/general.h>
 
 #endif
@@ -42,39 +42,39 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
 
 /* === P R O C E D U R E S ================================================= */
 
-class studio::DockSettings : public sinfgapp::Settings
+class studio::DockSettings : public synfigapp::Settings
 {
 	DockManager* dock_manager;
 	
 public:
 	DockSettings(DockManager* dock_manager):dock_manager(dock_manager)
 	{
-		sinfgapp::Main::settings().add_domain(this,"dock");
+		synfigapp::Main::settings().add_domain(this,"dock");
 	}
 	
 	virtual ~DockSettings()
 	{
-		sinfgapp::Main::settings().remove_domain("dock");
+		synfigapp::Main::settings().remove_domain("dock");
 	}
 #define SCALE_FACTOR	(1280)
-	virtual bool get_value(const sinfg::String& key_, sinfg::String& value)const
+	virtual bool get_value(const synfig::String& key_, synfig::String& value)const
 	{
 		int screen_w(Gdk::screen_width());
 		int screen_h(Gdk::screen_height());
 		
 		if(key_.size()>6 && String(key_.begin(),key_.begin()+6)=="dialog")try
 		{
-			sinfg::String key(key_.begin()+7,key_.end());
+			synfig::String key(key_.begin()+7,key_.end());
 			int separator=key.find_first_of('.');
-			int id(atoi(sinfg::String(key.begin(),key.begin()+separator).c_str()));
-			key=sinfg::String(key.begin()+separator+1,key.end());
+			int id(atoi(synfig::String(key.begin(),key.begin()+separator).c_str()));
+			key=synfig::String(key.begin()+separator+1,key.end());
 			
 			DockDialog& dock_dialog(dock_manager->find_dock_dialog(id));
 			
@@ -111,20 +111,20 @@ public:
 				return true;
 			}
 		}catch (...) { return false; }
-		return sinfgapp::Settings::get_value(key_,value);
+		return synfigapp::Settings::get_value(key_,value);
 	}
 
-	virtual bool set_value(const sinfg::String& key_,const sinfg::String& value)
+	virtual bool set_value(const synfig::String& key_,const synfig::String& value)
 	{
 		int screen_w(Gdk::screen_width());
 		int screen_h(Gdk::screen_height());
 
 		if(key_.size()>6 && String(key_.begin(),key_.begin()+6)=="dialog")
 		{
-			sinfg::String key(key_.begin()+7,key_.end());
+			synfig::String key(key_.begin()+7,key_.end());
 			int separator=key.find_first_of('.');
-			int id(atoi(sinfg::String(key.begin(),key.begin()+separator).c_str()));
-			key=sinfg::String(key.begin()+separator+1,key.end());
+			int id(atoi(synfig::String(key.begin(),key.begin()+separator).c_str()));
+			key=synfig::String(key.begin()+separator+1,key.end());
 			
 			DockDialog& dock_dialog(dock_manager->find_dock_dialog(id));
 
@@ -152,7 +152,7 @@ public:
 				}
 				catch(...)
 				{
-					sinfg::error("Exception caught!!!");
+					synfig::error("Exception caught!!!");
 					return false;
 				}
 				return true;
@@ -192,12 +192,12 @@ public:
 				return true;
 			}
 		}
-		return sinfgapp::Settings::set_value(key_,value);
+		return synfigapp::Settings::set_value(key_,value);
 	}
 	
 	virtual KeyList get_key_list()const
 	{
-		sinfgapp::Settings::KeyList ret(sinfgapp::Settings::get_key_list());
+		synfigapp::Settings::KeyList ret(synfigapp::Settings::get_key_list());
 
 		std::list<DockDialog*>::const_iterator iter;
 		for(iter=dock_manager->dock_dialog_list_.begin();iter!=dock_manager->dock_dialog_list_.end();++iter)
@@ -228,7 +228,7 @@ DockManager::~DockManager()
 	while(!dockable_list_.empty())
 	{
 		Dockable* dockable(dockable_list_.back());
-		sinfg::info("DockManager::~DockManager(): Deleting dockable \"%s\"",dockable->get_name().c_str());
+		synfig::info("DockManager::~DockManager(): Deleting dockable \"%s\"",dockable->get_name().c_str());
 		dockable_list_.pop_back();		
 		delete dockable;
 	}
@@ -238,7 +238,7 @@ void
 DockManager::register_dockable(Dockable& x)
 {
 	dockable_list_.push_back(&x);
-	sinfg::info("DockManager::register_dockable(): Registered dockable \"%s\"",dockable_list_.back()->get_name().c_str());
+	synfig::info("DockManager::register_dockable(): Registered dockable \"%s\"",dockable_list_.back()->get_name().c_str());
 	signal_dockable_registered()(&x);
 }
 
@@ -252,7 +252,7 @@ DockManager::unregister_dockable(Dockable& x)
 		{
 			x.detach();
 			dockable_list_.erase(iter);
-			sinfg::info("DockManager::unregister_dockable(): \"%s\" has been Unregistered",x.get_name().c_str());
+			synfig::info("DockManager::unregister_dockable(): \"%s\" has been Unregistered",x.get_name().c_str());
 			return true;
 		}
 	}
@@ -260,7 +260,7 @@ DockManager::unregister_dockable(Dockable& x)
 }
 
 Dockable&
-DockManager::find_dockable(const sinfg::String& x)
+DockManager::find_dockable(const synfig::String& x)
 {
 	std::list<Dockable*>::iterator iter;
 	for(iter=dockable_list_.begin();iter!=dockable_list_.end();++iter)
@@ -271,7 +271,7 @@ DockManager::find_dockable(const sinfg::String& x)
 }
 
 void
-DockManager::present(sinfg::String x)
+DockManager::present(synfig::String x)
 {
 	try
 	{

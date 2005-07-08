@@ -1,5 +1,5 @@
 /*! ========================================================================
-** Sinfg
+** Synfig
 ** Template Header File
 ** $Id: renddesc.h,v 1.1.1.1 2005/01/07 03:34:36 darco Exp $
 **
@@ -20,14 +20,14 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_GTKMM_RENDDESC_H
-#define __SINFG_GTKMM_RENDDESC_H
+#ifndef __SYNFIG_GTKMM_RENDDESC_H
+#define __SYNFIG_GTKMM_RENDDESC_H
 
 /* === H E A D E R S ======================================================= */
 
 #include <gtkmm/table.h>
 #include <gtkmm/frame.h>
-#include <sinfg/renddesc.h>
+#include <synfig/renddesc.h>
 #include <gtkmm/spinbutton.h>
 #include <gtkmm/adjustment.h>
 #include <gtkmm/checkbutton.h>
@@ -44,7 +44,7 @@ namespace studio {
 
 class Widget_RendDesc : public Gtk::Table
 {
-	sinfg::RendDesc rend_desc_;
+	synfig::RendDesc rend_desc_;
 	sigc::signal<void> signal_changed_;
 
 	Gtk::Adjustment adjustment_width;
@@ -110,13 +110,13 @@ public:
 	~Widget_RendDesc();
 	
 	//! Sets the RendDesc
-	void set_rend_desc(const sinfg::RendDesc &rend_desc);
+	void set_rend_desc(const synfig::RendDesc &rend_desc);
 
 	//! Applies the given RendDesc to the current RendDesc
-	void apply_rend_desc(const sinfg::RendDesc &rend_desc);
+	void apply_rend_desc(const synfig::RendDesc &rend_desc);
 
 	//! Retrieves the current RendDesc
-	const sinfg::RendDesc &get_rend_desc();
+	const synfig::RendDesc &get_rend_desc();
 
 	void disable_time_section();
 	

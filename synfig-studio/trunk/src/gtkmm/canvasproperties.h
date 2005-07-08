@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file canvasproperties.h
 **	\brief Template Header
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_GTKMM_CANVASPROPERTIES_H
-#define __SINFG_GTKMM_CANVASPROPERTIES_H
+#ifndef __SYNFIG_GTKMM_CANVASPROPERTIES_H
+#define __SYNFIG_GTKMM_CANVASPROPERTIES_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -43,7 +43,7 @@
 /* === C L A S S E S & S T R U C T S ======================================= */
 
 namespace Gtk { class TreeView; };
-namespace sinfgapp { class CanvasInterface; };
+namespace synfigapp { class CanvasInterface; };
 
 namespace studio
 {	
@@ -51,7 +51,7 @@ class CanvasProperties  :  public Gtk::Dialog
 {
 	Gtk::Tooltips tooltips;
 
-	etl::handle<sinfgapp::CanvasInterface> canvas_interface_;
+	etl::handle<synfigapp::CanvasInterface> canvas_interface_;
 	Widget_RendDesc widget_rend_desc;
 	Gtk::Entry entry_id;
 	Gtk::Entry entry_name;
@@ -64,7 +64,7 @@ class CanvasProperties  :  public Gtk::Dialog
 	void on_button_meta_data_delete();
 	
 public:
-	CanvasProperties(Gtk::Window& parent,etl::handle<sinfgapp::CanvasInterface> canvas_interface);
+	CanvasProperties(Gtk::Window& parent,etl::handle<synfigapp::CanvasInterface> canvas_interface);
 	~CanvasProperties();
 
 	void refresh();

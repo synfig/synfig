@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file childrentreestore.cpp
 **	\brief Template File
 **
@@ -31,7 +31,7 @@
 #include "childrentreestore.h"
 #include "iconcontroler.h"
 #include <gtkmm/button.h>
-#include <sinfg/paramdesc.h>
+#include <synfig/paramdesc.h>
 #include <ETL/clock>
 
 class Profiler : private etl::clock
@@ -39,7 +39,7 @@ class Profiler : private etl::clock
 	const std::string name;
 public:
 	Profiler(const std::string& name):name(name) { reset(); }
-	~Profiler() { float time(operator()()); sinfg::info("%s: took %f msec",name.c_str(),time*1000); }
+	~Profiler() { float time(operator()()); synfig::info("%s: took %f msec",name.c_str(),time*1000); }
 };
 
 #endif
@@ -48,7 +48,7 @@ public:
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
@@ -66,7 +66,7 @@ static ChildrenTreeStore::Model& ModelHack()
 	return *model;
 }
 
-ChildrenTreeStore::ChildrenTreeStore(etl::loose_handle<sinfgapp::CanvasInterface> canvas_interface_):
+ChildrenTreeStore::ChildrenTreeStore(etl::loose_handle<synfigapp::CanvasInterface> canvas_interface_):
 	Gtk::TreeStore			(ModelHack()),
 	CanvasTreeStore			(canvas_interface_)
 {
@@ -96,7 +96,7 @@ ChildrenTreeStore::~ChildrenTreeStore()
 }
 
 Glib::RefPtr<ChildrenTreeStore>
-ChildrenTreeStore::create(etl::loose_handle<sinfgapp::CanvasInterface> canvas_interface_)
+ChildrenTreeStore::create(etl::loose_handle<synfigapp::CanvasInterface> canvas_interface_)
 {
 	return Glib::RefPtr<ChildrenTreeStore>(new ChildrenTreeStore(canvas_interface_));
 }
@@ -184,7 +184,7 @@ ChildrenTreeStore::on_canvas_added(Canvas::Handle canvas)
 {
 	Gtk::TreeRow row = *(prepend(canvas_row.children()));
 
-	row[model.icon] = Gtk::Button().render_icon(Gtk::StockID("sinfg-canvas"),Gtk::ICON_SIZE_SMALL_TOOLBAR);	
+	row[model.icon] = Gtk::Button().render_icon(Gtk::StockID("synfig-canvas"),Gtk::ICON_SIZE_SMALL_TOOLBAR);	
 	row[model.id] = canvas->get_id();
 	row[model.name] = canvas->get_name();
 	
@@ -216,7 +216,7 @@ ChildrenTreeStore::on_value_node_added(ValueNode::Handle value_node)
 
 	Gtk::TreeRow row = *prepend(value_node_row.children());
 	
-	set_row(row,sinfgapp::ValueDesc(canvas_interface()->get_canvas(),value_node->get_id()),false);
+	set_row(row,synfigapp::ValueDesc(canvas_interface()->get_canvas(),value_node->get_id()),false);
 }
 
 void
@@ -328,7 +328,7 @@ ChildrenTreeStore::on_value_node_changed(etl::handle<ValueNode> value_node)
 }
 
 void
-ChildrenTreeStore::on_value_node_replaced(sinfg::ValueNode::Handle replaced_value_node,sinfg::ValueNode::Handle new_value_node)
+ChildrenTreeStore::on_value_node_replaced(synfig::ValueNode::Handle replaced_value_node,synfig::ValueNode::Handle new_value_node)
 {
 	changed_connection.disconnect();
 	//if(!execute_changed_queued())
@@ -357,11 +357,11 @@ ChildrenTreeStore::set_value_impl(const Gtk::TreeModel::iterator& iter, int colu
 	{
 		if(column==model.value.index())
 		{
-			Glib::Value<sinfg::ValueBase> x;
+			Glib::Value<synfig::ValueBase> x;
 			g_value_init(x.gobj(),model.value.type());
 			g_value_copy(value.gobj(),x.gobj());
 
-			sinfgapp::ValueDesc value_desc((*iter)[model.value_desc]);
+			synfigapp::ValueDesc value_desc((*iter)[model.value_desc]);
 			if(value_desc)
 			{
 				canvas_interface()->change_value(value_desc,x.get());

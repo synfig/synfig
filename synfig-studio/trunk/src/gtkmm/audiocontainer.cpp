@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file audiocontainer.cpp
 **	\brief Audio Container implementation File
 **
@@ -36,7 +36,7 @@
 //#include <ETL/thread>
 #include <glibmm/thread.h>
 
-#include <sinfg/general.h>
+#include <synfig/general.h>
 
 #include <glibmm/main.h>
 
@@ -59,7 +59,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 #ifdef __WIN32
@@ -89,7 +89,7 @@ bool build_profile(FSOUND_SAMPLE *sample, double &samplerate, std::vector<char> 
 	//trivial rejection...
 	if(!sample || sps < 1)
 	{
-		sinfg::warning("build_profile: Sample rate was too low or sample was invalid");
+		synfig::warning("build_profile: Sample rate was too low or sample was invalid");
 		return false;
 	}
 	
@@ -116,7 +116,7 @@ bool build_profile(FSOUND_SAMPLE *sample, double &samplerate, std::vector<char> 
 	
 	if(sizeall <= 0)
 	{
-		sinfg::warning("ProfileAudio: Sample buffer cannot be size smaller than 1 (%X)",FSOUND_GetError());
+		synfig::warning("ProfileAudio: Sample buffer cannot be size smaller than 1 (%X)",FSOUND_GetError());
 		return false;
 	}
 	
@@ -126,7 +126,7 @@ bool build_profile(FSOUND_SAMPLE *sample, double &samplerate, std::vector<char> 
 	float stride = allsamplerate/(float)sps;
 	
 	//down sampling to 8 bit min/max values	
-	sinfg::warning("About to downsample from %d Hz to %.1f Hz, sample stride: %f", allsamplerate, sps, stride);
+	synfig::warning("About to downsample from %d Hz to %.1f Hz, sample stride: %f", allsamplerate, sps, stride);
 	
 	char *sampledata=0,*useless = 0;
 	unsigned int len1,len2;
@@ -134,10 +134,10 @@ bool build_profile(FSOUND_SAMPLE *sample, double &samplerate, std::vector<char> 
 	{
 		if(!FSOUND_Sample_Lock(sample,0,sizeall,(void**)&sampledata,(void**)&useless,&len1,&len2))
 		{
-			sinfg::warning("ProfileAudio: Unable to lock the sound buffer... (%X)",FSOUND_GetError());
+			synfig::warning("ProfileAudio: Unable to lock the sound buffer... (%X)",FSOUND_GetError());
 			return false;
 		}
-		sinfg::warning("Locked: %X: %d bytes, %X: %d bytes",sampledata,len1,useless,len2);
+		synfig::warning("Locked: %X: %d bytes, %X: %d bytes",sampledata,len1,useless,len2);
 		
 		if(channelsize == 1)
 		{
@@ -154,7 +154,7 @@ bool build_profile(FSOUND_SAMPLE *sample, double &samplerate, std::vector<char> 
 			int i = 0;
 			
 			//HACK - to prevent if statement inside inner loop
-			//sinfg::warning("wo baby wo baby, inc: %d, stride: %f, size: %d", inc, stride, sizeall);
+			//synfig::warning("wo baby wo baby, inc: %d, stride: %f, size: %d", inc, stride, sizeall);
 			while(iter < end)
 			{
 				int maxs = 0, mins = 0;
@@ -189,7 +189,7 @@ bool build_profile(FSOUND_SAMPLE *sample, double &samplerate, std::vector<char> 
 			int i = 0;
 			
 			//HACK - to prevent if statement inside inner loop
-			//sinfg::warning("wo baby wo baby, inc: %d, stride: %f, size: %d", inc, stride, sizeall);
+			//synfig::warning("wo baby wo baby, inc: %d, stride: %f, size: %d", inc, stride, sizeall);
 			while(iter < end)
 			{
 				int maxs = 0, mins = 0;
@@ -212,12 +212,12 @@ bool build_profile(FSOUND_SAMPLE *sample, double &samplerate, std::vector<char> 
 		}
 	}
 	
-	sinfg::warning("Stats: %f seconds with %d bytes now %d bytes", (samples.size()/2)/sps, sizeall, samples.size());
-	sinfg::warning("		%f seconds before", numsamples/(float)allsamplerate);
+	synfig::warning("Stats: %f seconds with %d bytes now %d bytes", (samples.size()/2)/sps, sizeall, samples.size());
+	synfig::warning("		%f seconds before", numsamples/(float)allsamplerate);
 	
 	//we're done yay!, unlock
 	FSOUND_Sample_Unlock(sample,sampledata,useless,len1,len2);
-	sinfg::info("Unlocked");
+	synfig::info("Unlocked");
 	
 	//FSOUND_PlaySound(FSOUND_FREE,sound); //test
 	
@@ -433,7 +433,7 @@ struct scrubinfo
 			FSOUND_SetPaused(channel,true);
 		}else
 		{
-			//sinfg::info("DSP f = %d Hz", freq);
+			//synfig::info("DSP f = %d Hz", freq);
 			FSOUND_SetPaused(channel,false);
 			if(!FSOUND_SetFrequency(channel,freq))
 			{
@@ -515,7 +515,7 @@ void * scrubdspwrap(void *originalbuffer, void *newbuffer, int length, void *use
 		}
 	}
 	
-	//sinfg::info(dsp);
+	//synfig::info(dsp);
 
 	return newbuffer;
 }
@@ -539,21 +539,21 @@ public:
 		if(!loaded)
 		{
 			#ifdef WITH_FMOD
-			sinfg::info("Initializing FMOD on demand...");
+			synfig::info("Initializing FMOD on demand...");
 			
 			{
 				FSOUND_SetOutput(AUDIO_OUTPUT);
 				
 				/*int numdrivers = FSOUND_GetNumDrivers();
-				sinfg::info("Num FMOD drivers = %d",numdrivers);
-				sinfg::info("Current Driver is #%d", FSOUND_GetDriver());
+				synfig::info("Num FMOD drivers = %d",numdrivers);
+				synfig::info("Current Driver is #%d", FSOUND_GetDriver());
 				
 				for(int i = 0; i < numdrivers; ++i)
 				{
 					unsigned int caps = 0;
 					FSOUND_GetDriverCaps(i,&caps);
 					
-					sinfg::info("   Caps for driver %d (%s) = %x",i,FSOUND_GetDriverName(i),caps);
+					synfig::info("   Caps for driver %d (%s) = %x",i,FSOUND_GetDriverName(i),caps);
 				}
 				
 				FSOUND_SetDriver(0);*/
@@ -563,7 +563,7 @@ public:
 				
 				if(!FSOUND_Init(44100, 32, 0))
 				{
-					sinfg::warning("Unable to load FMOD");
+					synfig::warning("Unable to load FMOD");
 				}else
 				{
 					loaded = true;
@@ -580,18 +580,18 @@ public:
 		
 		//add to the refcount
 		++refcount;
-		//sinfg::info("Audio: increment fmod refcount %d", refcount);
+		//synfig::info("Audio: increment fmod refcount %d", refcount);
 	}
 	
 	void decref()
 	{
 		if(refcount <= 0)
 		{
-			sinfg::warning("FMOD refcount is already 0...");
+			synfig::warning("FMOD refcount is already 0...");
 		}else
 		{
 			--refcount;
-			//sinfg::info("Audio: decrement fmod refcount %d", refcount);
+			//synfig::info("Audio: decrement fmod refcount %d", refcount);
 			
 			//NOTE: UNCOMMENT THIS IF YOU WANT FMOD TO UNLOAD ITSELF WHEN IT ISN'T NEEDED ANYMORE...
 			flush();
@@ -611,7 +611,7 @@ public:
 		if(loaded && refcount <= 0)
 		{
 			#ifdef WITH_FMOD
-			sinfg::info("Unloading FMOD");
+			synfig::info("Unloading FMOD");
 			if(scrubdspunit) FSOUND_DSP_Free(scrubdspunit);
 			FSOUND_Close();			
 			#endif
@@ -706,7 +706,7 @@ struct studio::AudioContainer::AudioImp
 				channel = FSOUND_PlaySoundEx(FSOUND_FREE,sample,0,true);
 				if(channel < 0 || FSOUND_GetError() != FMOD_ERR_NONE)
 				{
-					sinfg::warning("Could not play the sample...");
+					synfig::warning("Could not play the sample...");
 					return false;
 				}
 			}
@@ -856,11 +856,11 @@ handle<studio::AudioProfile> studio::AudioContainer::get_profile(float samplerat
 	//if we already have done our work, then we're good
 	if(profilevalid && prof)
 	{
-		//sinfg::info("Using already built profile");
+		//synfig::info("Using already built profile");
 		return prof;
 	}
 	
-	//sinfg::info("Before profile");
+	//synfig::info("Before profile");
 	//make a new profile at current sample rate
 	
 	//NOTE: We might want to reuse the structure already there...	
@@ -869,18 +869,18 @@ handle<studio::AudioProfile> studio::AudioContainer::get_profile(float samplerat
 	
 	if(!prof)
 	{
-		sinfg::warning("Couldn't allocate audioprofile...");
+		synfig::warning("Couldn't allocate audioprofile...");
 		return handle<studio::AudioProfile>();
 	}
 	
 	//setting the info for the sample rate
-	//sinfg::info("Setting info...");
+	//synfig::info("Setting info...");
 	
-	sinfg::info("Building Profile...");
+	synfig::info("Building Profile...");
 	prof->samplerate = samplerate;
 	if(build_profile(imp->sample,prof->samplerate,prof->samples))
 	{
-		sinfg::info("	Success!");
+		synfig::info("	Success!");
 		profilevalid = true;
 		return prof;
 	}else
@@ -1001,22 +1001,22 @@ bool studio::AudioContainer::AudioImp::load(const std::string &filename,
 	if(!is_absolute_path(file))
 	{
 		file=filedirectory+filename;
-		sinfg::warning("Not absolute hoooray");
+		synfig::warning("Not absolute hoooray");
 	}
-	sinfg::info("Loading Audio file: %s", file.c_str());
+	synfig::info("Loading Audio file: %s", file.c_str());
 	
 	//check to see if file exists
 	{
 		struct stat	s;
 		if(stat(file.c_str(),&s) == -1 && errno == ENOENT)
 		{
-			sinfg::info("There was no audio file...");			
+			synfig::info("There was no audio file...");			
 			return false;
 		}
 	}
 	
 	//load fmod if we can...
-	//sinfg::warning("I'm compiled with FMOD!");
+	//synfig::warning("I'm compiled with FMOD!");
 	fmodinit.addref();
 	
 	//load the stream
@@ -1025,15 +1025,15 @@ bool studio::AudioContainer::AudioImp::load(const std::string &filename,
 	
 	if(!sm)
 	{
-		sinfg::warning("Could not open the audio file as a sample: %s",file.c_str());
+		synfig::warning("Could not open the audio file as a sample: %s",file.c_str());
 		goto error;
 	}
 	
-	//sinfg::warning("Opened a file as a sample! :)");
+	//synfig::warning("Opened a file as a sample! :)");
 	
 	/*{
 		int bufferlen = FSOUND_DSP_GetBufferLength();
-		sinfg::info("Buffer length = %d samples, %.3lf s",bufferlen, bufferlen / (double)FSOUND_GetOutputRate());
+		synfig::info("Buffer length = %d samples, %.3lf s",bufferlen, bufferlen / (double)FSOUND_GetOutputRate());
 	}*/
 	
 	//set all the variables since everything has worked out...
@@ -1045,12 +1045,12 @@ bool studio::AudioContainer::AudioImp::load(const std::string &filename,
 		FSOUND_Sample_GetDefaults(sm,&sfreq,&volume,0,0);
 		
 		//double len = length / (double)sfreq;		
-		//sinfg::info("Sound info: %.2lf s long, %d Hz, %d Vol",(double)length,sfreq,volume);
+		//synfig::info("Sound info: %.2lf s long, %d Hz, %d Vol",(double)length,sfreq,volume);
 	}
 	
-	//sinfg::warning("Got all info, and setting up everything, %.2f sec.", length);
-	//sinfg::warning("	BigSample: composed of %d samples", FSOUND_Sample_GetLength(sm));
-	sinfg::info("Successfully opened %s as a sample and initialized it.",file.c_str());
+	//synfig::warning("Got all info, and setting up everything, %.2f sec.", length);
+	//synfig::warning("	BigSample: composed of %d samples", FSOUND_Sample_GetLength(sm));
+	synfig::info("Successfully opened %s as a sample and initialized it.",file.c_str());
 	
 	//set up the playable info
 	sample = sm;
@@ -1088,7 +1088,7 @@ void studio::AudioContainer::AudioImp::play(double t)
 	if(t < 0)
 	{
 		unsigned int timeout = (int)floor(-t * 1000 + 0.5);
-		//sinfg::info("Playing audio delayed by %d ms",timeout);
+		//synfig::info("Playing audio delayed by %d ms",timeout);
 		//delay for t seconds...
 		delaycon = Glib::signal_timeout().connect(
 						sigc::mem_fun(*this,&studio::AudioContainer::AudioImp::start_playing_now),timeout);		
@@ -1103,7 +1103,7 @@ void studio::AudioContainer::AudioImp::play(double t)
 	
 	if(position >= FSOUND_Sample_GetLength(sample))
 	{
-		sinfg::warning("Can't play audio when past length...");
+		synfig::warning("Can't play audio when past length...");
 		return;
 	}
 	
@@ -1112,7 +1112,7 @@ void studio::AudioContainer::AudioImp::play(double t)
 	FSOUND_SetCurrentPosition(channel,position);
 	FSOUND_SetPaused(channel,false);
 	
-	//sinfg::info("Playing audio with position %d samples",position);
+	//synfig::info("Playing audio with position %d samples",position);
 	
 	#endif		
 }
@@ -1162,7 +1162,7 @@ void studio::AudioContainer::AudioImp::clear()
 
 void AudioContainer::AudioImp::start_scrubbing(double t)
 {
-	//sinfg::info("Start scrubbing: %lf", t);
+	//synfig::info("Start scrubbing: %lf", t);
 	if(playing) stop();
 			
 	set_scrubbing(true);
@@ -1199,21 +1199,21 @@ void AudioContainer::AudioImp::start_scrubbing(double t)
 		scrinfo.pos = curscrubpos;
 		scrinfo.delaystart = delay_factor*buffer_length_sec;
 				
-		//sinfg::info("\tStarting at %d samps, with %d p %.3f delay",
+		//synfig::info("\tStarting at %d samps, with %d p %.3f delay",
 		//				FSOUND_GetCurrentPosition(channel), (int)scrinfo.pos, scrinfo.delaystart);
 	}
 	
 	
 	
 	//enable the dsp...
-	//sinfg::info("\tActivating DSP");
+	//synfig::info("\tActivating DSP");
 	FSOUND_DSP_SetActive(scrubdspunit,true);
 	#endif
 }
 
 void AudioContainer::AudioImp::stop_scrubbing()
 {
-	//sinfg::info("Stop scrubbing");
+	//synfig::info("Stop scrubbing");
 	
 	if(is_scrubbing())
 	{
@@ -1223,7 +1223,7 @@ void AudioContainer::AudioImp::stop_scrubbing()
 		g_scrubdata.scrub = 0;
 	
 		//stop the dsp...
-		//sinfg::info("\tDeactivating DSP");
+		//synfig::info("\tDeactivating DSP");
 		FSOUND_DSP_SetActive(scrubdspunit,false);
 		if(FSOUND_IsPlaying(channel)) FSOUND_SetPaused(channel,true);
 		#endif
@@ -1235,7 +1235,7 @@ void AudioContainer::AudioImp::stop_scrubbing()
 void AudioContainer::AudioImp::scrub(double t)
 {
 	#ifdef WITH_FMOD
-	//sinfg::info("Scrub to %lf",t);
+	//synfig::info("Scrub to %lf",t);
 	if(is_scrubbing())
 	{		
 		//What should we do?
@@ -1256,7 +1256,7 @@ void AudioContainer::AudioImp::scrub(double t)
 			//Outside so completely stopped...
 			if(newpos < 0 || oldpos >= length)
 			{
-				//sinfg::info("\tOut +");
+				//synfig::info("\tOut +");
 				if(FSOUND_IsPlaying(channel))
 				{
 					FSOUND_SetPaused(channel,true);
@@ -1278,7 +1278,7 @@ void AudioContainer::AudioImp::scrub(double t)
 				init_play();
 				FSOUND_SetCurrentPosition(channel,0);
 				
-				sinfg::info("\tIn + %d", FSOUND_GetCurrentPosition(channel));
+				synfig::info("\tIn + %d", FSOUND_GetCurrentPosition(channel));
 				
 				scrinfo.Lock();
 				scrinfo.pos = 0;
@@ -1297,7 +1297,7 @@ void AudioContainer::AudioImp::scrub(double t)
 				//should we restart the delay cycle... (is it done?)				
 				if(!isRunning() || (scrinfo.delaystart <= 0 && scrinfo.deltatime <= 0 && isPaused()))
 				{
-					//sinfg::info("Starting + at %d",(int)newpos);
+					//synfig::info("Starting + at %d",(int)newpos);
 					scrinfo.deltatime = 0;
 					scrinfo.delaystart = delay_factor*buffer_length_sec;
 					scrinfo.Unlock();
@@ -1326,7 +1326,7 @@ void AudioContainer::AudioImp::scrub(double t)
 			//completely stopped...
 			if(newpos >= length || oldpos < 0)
 			{
-				//sinfg::info("Out -");
+				//synfig::info("Out -");
 				if(FSOUND_IsPlaying(channel))
 				{
 					FSOUND_SetPaused(channel,true);
@@ -1342,7 +1342,7 @@ void AudioContainer::AudioImp::scrub(double t)
 			//going in? - start going backwards at the end...
 			/*else if(oldpos >= length)
 			{
-				sinfg::info("In -");
+				synfig::info("In -");
 				//Set up the sound to be playing paused at the start...
 				init_play();
 				FSOUND_SetCurrentPosition(channel,length-1);				
@@ -1364,7 +1364,7 @@ void AudioContainer::AudioImp::scrub(double t)
 				//should we restart the delay cycle... (is it done?)				
 				if(!isRunning() ||(scrinfo.delaystart <= 0 && scrinfo.deltatime <= 0 && isPaused()))
 				{
-					//sinfg::info("Starting - at %d",(int)newpos);
+					//synfig::info("Starting - at %d",(int)newpos);
 					scrinfo.deltatime = 0;
 					scrinfo.delaystart = delay_factor*buffer_length_sec;
 					scrinfo.Unlock();

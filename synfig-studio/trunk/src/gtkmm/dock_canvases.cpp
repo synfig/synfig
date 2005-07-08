@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file dialog_history.cpp
 **	\brief Template File
 **
@@ -37,7 +37,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
@@ -49,7 +49,7 @@ using namespace studio;
 /* === M E T H O D S ======================================================= */
 
 Dock_Canvases::Dock_Canvases():
-	Dockable("canvases",_("Canvas Browser"),Gtk::StockID("sinfg-canvas"))
+	Dockable("canvases",_("Canvas Browser"),Gtk::StockID("synfig-canvas"))
 {
 
 	App::signal_instance_created().connect(sigc::mem_fun(*this,&studio::Dock_Canvases::new_instance));
@@ -61,7 +61,7 @@ Dock_Canvases::Dock_Canvases():
 
 /*
 	add_button(
-		Gtk::StockID("sinfg-canvas_new"),
+		Gtk::StockID("synfig-canvas_new"),
 		_("Insert a new canvas")
 	)->signal_clicked().connect(
 		sigc::mem_fun(
@@ -81,7 +81,7 @@ Dock_Canvases::Dock_Canvases():
 	);
 
 	add_button(
-		Gtk::StockID("sinfg-rename"),
+		Gtk::StockID("synfig-rename"),
 		_("Rename selected canvas")
 	)->signal_clicked().connect(
 		sigc::mem_fun(
@@ -139,7 +139,7 @@ Dock_Canvases::get_selected_canvas_view()
 	return get_selected_instance()->find_canvas_view(get_selected_canvas());
 }
 
-etl::loose_handle<sinfg::Canvas>
+etl::loose_handle<synfig::Canvas>
 Dock_Canvases::get_selected_canvas()
 {
 	Glib::RefPtr<Gtk::TreeSelection> selection=canvas_tree->get_selection();
@@ -149,7 +149,7 @@ Dock_Canvases::get_selected_canvas()
 
 	studio::Instance::CanvasTreeModel canvas_tree_model;
 
-	return static_cast<etl::handle<sinfg::Canvas> >((*selection->get_selected())[canvas_tree_model.canvas]);
+	return static_cast<etl::handle<synfig::Canvas> >((*selection->get_selected())[canvas_tree_model.canvas]);
 }
 
 
@@ -202,8 +202,8 @@ Dock_Canvases::new_instance(etl::handle<studio::Instance> instance)
 	
 	etl::loose_handle<studio::Instance> loose_instance(instance);
 	
-	instance->sinfgapp::Instance::signal_filename_changed().connect(sigc::mem_fun(*this,&Dock_Canvases::refresh_instances));
-	instance->sinfgapp::Instance::signal_filename_changed().connect(
+	instance->synfigapp::Instance::signal_filename_changed().connect(sigc::mem_fun(*this,&Dock_Canvases::refresh_instances));
+	instance->synfigapp::Instance::signal_filename_changed().connect(
 		sigc::bind<etl::loose_handle<studio::Instance> >(
 			sigc::mem_fun(*this,&Dock_Canvases::set_selected_instance),
 			loose_instance

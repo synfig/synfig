@@ -1,5 +1,5 @@
 /*! ========================================================================
-** Sinfg
+** Synfig
 ** Template Header File
 ** $Id: compview.h,v 1.1.1.1 2005/01/07 03:34:36 darco Exp $
 **
@@ -20,8 +20,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_COMPVIEW_H
-#define __SINFG_COMPVIEW_H
+#ifndef __SYNFIG_COMPVIEW_H
+#define __SYNFIG_COMPVIEW_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -46,7 +46,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace sinfg { class Canvas; };
+namespace synfig { class Canvas; };
 
 namespace studio {
 
@@ -81,7 +81,7 @@ public:
 
 	etl::loose_handle<studio::Instance> get_selected_instance() { return selected_instance; }
 
-	etl::loose_handle<sinfg::Canvas> get_selected_canvas();
+	etl::loose_handle<synfig::Canvas> get_selected_canvas();
 
 	etl::loose_handle<studio::CanvasView> get_selected_canvas_view();
 

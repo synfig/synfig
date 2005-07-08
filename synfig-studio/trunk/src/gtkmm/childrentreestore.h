@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file childrentreestore.h
 **	\brief Template Header
 **
@@ -21,16 +21,16 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_STUDIO_CHILDRENTREESTORE_H
-#define __SINFG_STUDIO_CHILDRENTREESTORE_H
+#ifndef __SYNFIG_STUDIO_CHILDRENTREESTORE_H
+#define __SYNFIG_STUDIO_CHILDRENTREESTORE_H
 
 /* === H E A D E R S ======================================================= */
 
 #include <gtkmm/treestore.h>
-#include <sinfgapp/canvasinterface.h>
+#include <synfigapp/canvasinterface.h>
 #include "canvastreestore.h"
-#include <sinfg/value.h>
-#include <sinfg/valuenode.h>
+#include <synfig/value.h>
+#include <synfig/valuenode.h>
 #include <set>
 
 /* === M A C R O S ========================================================= */
@@ -67,9 +67,9 @@ private:
 	Gtk::TreeModel::Row value_node_row;
 	Gtk::TreeModel::Row canvas_row;
 	
-	std::set<sinfg::ValueNode::Handle> changed_set_;
+	std::set<synfig::ValueNode::Handle> changed_set_;
 
-	std::set<sinfg::ValueNode::Handle> replaced_set_;
+	std::set<synfig::ValueNode::Handle> replaced_set_;
 	
 	/*
  -- ** -- P R I V A T E   M E T H O D S ---------------------------------------
@@ -88,12 +88,12 @@ private:
 
 private:
 
-	void on_value_node_added(sinfg::ValueNode::Handle value_node);
-	void on_value_node_deleted(sinfg::ValueNode::Handle value_node);
-	void on_value_node_changed(sinfg::ValueNode::Handle value_node);
-	void on_value_node_replaced(sinfg::ValueNode::Handle replaced_value_node,sinfg::ValueNode::Handle new_value_node);
-	void on_canvas_added(sinfg::Canvas::Handle canvas);
-	void on_canvas_removed(sinfg::Canvas::Handle canvas);
+	void on_value_node_added(synfig::ValueNode::Handle value_node);
+	void on_value_node_deleted(synfig::ValueNode::Handle value_node);
+	void on_value_node_changed(synfig::ValueNode::Handle value_node);
+	void on_value_node_replaced(synfig::ValueNode::Handle replaced_value_node,synfig::ValueNode::Handle new_value_node);
+	void on_canvas_added(synfig::Canvas::Handle canvas);
+	void on_canvas_removed(synfig::Canvas::Handle canvas);
 
 	void set_value_impl(const Gtk::TreeModel::iterator& iter, int column, const Glib::ValueBase& value);
 
@@ -103,7 +103,7 @@ private:
 
 public:
 	
-	ChildrenTreeStore(etl::loose_handle<sinfgapp::CanvasInterface> canvas_interface_);
+	ChildrenTreeStore(etl::loose_handle<synfigapp::CanvasInterface> canvas_interface_);
 	~ChildrenTreeStore();
 
 	void rebuild();
@@ -130,7 +130,7 @@ public:
 
 public:
 	
-	static Glib::RefPtr<ChildrenTreeStore> create(etl::loose_handle<sinfgapp::CanvasInterface> canvas_interface_);
+	static Glib::RefPtr<ChildrenTreeStore> create(etl::loose_handle<synfigapp::CanvasInterface> canvas_interface_);
 }; // END of class ChildrenTreeStore
 
 }; // END of namespace studio

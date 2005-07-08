@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file instance.cpp
 **	\brief writeme
 **
@@ -45,7 +45,7 @@
 #include <sigc++/retype_return.h>
 #include <sigc++/retype.h>
 //#include <sigc++/hide.h>
-#include <sinfg/valuenode_composite.h>
+#include <synfig/valuenode_composite.h>
 #include "widget_waypointmodel.h"
 #include <gtkmm/actiongroup.h>
 #include "iconcontroler.h"
@@ -54,7 +54,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 using namespace studio;
 using namespace SigC;
 
@@ -69,7 +69,7 @@ int studio::Instance::instance_count_=0;
 /* === M E T H O D S ======================================================= */
 
 Instance::Instance(Canvas::Handle canvas):
-	sinfgapp::Instance		(canvas),
+	synfigapp::Instance		(canvas),
 //	canvas_tree_store_		(Gtk::TreeStore::create(CanvasTreeModel())),
 //	canvas_tree_store_		(Gtk::TreeStore::create()),
 	history_tree_store_		(HistoryTreeStore::create(this)),
@@ -125,7 +125,7 @@ Instance::create(Canvas::Handle canvas)
 	App::instance_list.push_back(instance);
 	
 	// Set up the instance with the default UI manager
-	instance->sinfgapp::Instance::set_ui_interface(App::get_ui_interface());
+	instance->synfigapp::Instance::set_ui_interface(App::get_ui_interface());
 	
 	// Signal the new instance
 	App::signal_instance_created()(instance);
@@ -182,9 +182,9 @@ Instance::set_redo_status(bool x)
 }
 
 bool
-studio::Instance::save_as(const sinfg::String &file_name)const
+studio::Instance::save_as(const synfig::String &file_name)const
 {
-	if(sinfgapp::Instance::save_as(file_name))
+	if(synfigapp::Instance::save_as(file_name))
 	{
 		App::add_recent_file(file_name);
 		return true;
@@ -193,9 +193,9 @@ studio::Instance::save_as(const sinfg::String &file_name)const
 }
 
 bool
-studio::Instance::save_as(const sinfg::String &file_name)
+studio::Instance::save_as(const synfig::String &file_name)
 {
-	if(sinfgapp::Instance::save_as(file_name))
+	if(synfigapp::Instance::save_as(file_name))
 	{
 		App::add_recent_file(file_name);
 		return true;
@@ -212,7 +212,7 @@ studio::Instance::save()
 		return true;
 	}
 
-	return sinfgapp::Instance::save();
+	return synfigapp::Instance::save();
 	
 }
 
@@ -228,7 +228,7 @@ studio::Instance::dialog_save_as()
 		std::set<Node*>::iterator iter;
 		for(iter=canvas->parent_set.begin();iter!=canvas->parent_set.end();++iter)
 		{
-			sinfg::Node* node(*iter);
+			synfig::Node* node(*iter);
 			for(;!node->parent_set.empty();node=*node->parent_set.begin())
 			{
 				Layer::Handle parent_layer(dynamic_cast<Layer*>(node));
@@ -342,7 +342,7 @@ Instance::insert_canvas(Gtk::TreeRow row,Canvas::Handle canvas)
 	CanvasTreeModel canvas_tree_model;
 	assert(canvas);
 
-	row[canvas_tree_model.icon] = Gtk::Button().render_icon(Gtk::StockID("sinfg-canvas"),Gtk::ICON_SIZE_SMALL_TOOLBAR);	
+	row[canvas_tree_model.icon] = Gtk::Button().render_icon(Gtk::StockID("synfig-canvas"),Gtk::ICON_SIZE_SMALL_TOOLBAR);	
 	row[canvas_tree_model.id] = canvas->get_id();
 	row[canvas_tree_model.name] = canvas->get_name();
 	if(canvas->is_root())
@@ -361,8 +361,8 @@ Instance::insert_canvas(Gtk::TreeRow row,Canvas::Handle canvas)
 	row[canvas_tree_model.is_value_node] = false;
 
 	{
-		sinfg::Canvas::Children::iterator iter;
-		sinfg::Canvas::Children &children(canvas->children());
+		synfig::Canvas::Children::iterator iter;
+		synfig::Canvas::Children &children(canvas->children());
 	
 		for(iter=children.begin();iter!=children.end();iter++)
 			insert_canvas(*(canvas_tree_store()->append(row.children())),*iter);
@@ -378,8 +378,8 @@ Instance::insert_canvas(Gtk::TreeRow row,Canvas::Handle canvas)
 		valuenode_row[canvas_tree_model.is_canvas] = false;
 		valuenode_row[canvas_tree_model.is_value_node] = false;
 
-		sinfg::ValueNodeList::iterator iter;
-		sinfg::ValueNodeList &value_node_list(canvas->value_node_list());
+		synfig::ValueNodeList::iterator iter;
+		synfig::ValueNodeList &value_node_list(canvas->value_node_list());
 
 		for(iter=value_node_list.begin();iter!=value_node_list.end();iter++)
 			insert_value_node(*(canvas_tree_store()->append(valuenode_row.children())),canvas,*iter);
@@ -390,7 +390,7 @@ Instance::insert_canvas(Gtk::TreeRow row,Canvas::Handle canvas)
 
 /*
 void
-Instance::insert_value_node(Gtk::TreeRow row,Canvas::Handle canvas,etl::handle<sinfg::ValueNode> value_node)
+Instance::insert_value_node(Gtk::TreeRow row,Canvas::Handle canvas,etl::handle<synfig::ValueNode> value_node)
 {
 	CanvasTreeModel canvas_tree_model;
 	assert(value_node);
@@ -428,7 +428,7 @@ Instance::dialog_cvs_commit()
 	{
 		string message;
 
-		if(sinfgapp::Instance::get_action_count())
+		if(synfigapp::Instance::get_action_count())
 		{
 			if(!App::dialog_yes_no(_("CVS Commit"), _("This will save any changes you have made. Are you sure?")))
 				return;
@@ -497,7 +497,7 @@ Instance::dialog_cvs_update()
 	try
 	{
 		String filename(get_file_name());
-		if(sinfgapp::Instance::get_action_count())
+		if(synfigapp::Instance::get_action_count())
 		{
 			if(!App::dialog_yes_no(_("CVS Update"), _("This will save any changes you have made. Are you sure?")))
 				return;
@@ -570,7 +570,7 @@ Instance::_revert(Instance *instance)
 	if(canvas->count()!=1)
 	{
 		one_moment.hide();
-		App::dialog_error_blocking(_("Error: Revert Failed"),_("The revert operation has failed. This can be due to it being\nreferenced by another composition that is already open, or\nbecause of an internal error in SINFG Studio. Try closing any\ncompositions that might reference this composition and try\nagain, or restart SINFG studio."));
+		App::dialog_error_blocking(_("Error: Revert Failed"),_("The revert operation has failed. This can be due to it being\nreferenced by another composition that is already open, or\nbecause of an internal error in SYNFIG Studio. Try closing any\ncompositions that might reference this composition and try\nagain, or restart SYNFIG studio."));
 		one_moment.show();
 	}
 	canvas=0;
@@ -597,7 +597,7 @@ Instance::revert()
 bool
 Instance::safe_revert()
 {
-	if(sinfgapp::Instance::get_action_count())
+	if(synfigapp::Instance::get_action_count())
 		if(!App::dialog_yes_no(_("Revert to saved"), _("You will loose any changes you have made since your last save.\nAre you sure?")))
 			return false;
 	revert();
@@ -607,27 +607,27 @@ Instance::safe_revert()
 bool
 Instance::safe_close()
 {
-	handle<sinfgapp::UIInterface> uim;
+	handle<synfigapp::UIInterface> uim;
 	uim=find_canvas_view(get_canvas())->get_ui_interface();
 
 	if(get_action_count())
 	{
 		string str=strprintf(_("Would you like to save your changes to %s?"),basename(get_file_name()).c_str() );
-		int answer=uim->yes_no_cancel(get_canvas()->get_name(),str,sinfgapp::UIInterface::RESPONSE_YES);
-		if(answer==sinfgapp::UIInterface::RESPONSE_YES)
+		int answer=uim->yes_no_cancel(get_canvas()->get_name(),str,synfigapp::UIInterface::RESPONSE_YES);
+		if(answer==synfigapp::UIInterface::RESPONSE_YES)
 			save();
-		if(answer==sinfgapp::UIInterface::RESPONSE_CANCEL)
+		if(answer==synfigapp::UIInterface::RESPONSE_CANCEL)
 			return false;
 	}
 
 	if(is_modified())
 	{
 		string str=strprintf(_("%s has changes not yet on the CVS repository.\nWould you like to commit these changes?"),basename(get_file_name()).c_str());
-		int answer=uim->yes_no_cancel(get_canvas()->get_name(),str,sinfgapp::UIInterface::RESPONSE_YES);
+		int answer=uim->yes_no_cancel(get_canvas()->get_name(),str,synfigapp::UIInterface::RESPONSE_YES);
 
-		if(answer==sinfgapp::UIInterface::RESPONSE_YES)
+		if(answer==synfigapp::UIInterface::RESPONSE_YES)
 			dialog_cvs_commit();
-		if(answer==sinfgapp::UIInterface::RESPONSE_CANCEL)
+		if(answer==synfigapp::UIInterface::RESPONSE_CANCEL)
 			return false;
 	}
 	
@@ -640,23 +640,23 @@ Instance::safe_close()
 
 
 void
-Instance::add_actions_to_group(const Glib::RefPtr<Gtk::ActionGroup>& action_group, sinfg::String& ui_info,   const sinfgapp::Action::ParamList &param_list, sinfgapp::Action::Category category)const
+Instance::add_actions_to_group(const Glib::RefPtr<Gtk::ActionGroup>& action_group, synfig::String& ui_info,   const synfigapp::Action::ParamList &param_list, synfigapp::Action::Category category)const
 {
-	sinfgapp::Action::CanidateList canidate_list;
-	sinfgapp::Action::CanidateList::iterator iter;
+	synfigapp::Action::CanidateList canidate_list;
+	synfigapp::Action::CanidateList::iterator iter;
 	
 	canidate_list=compile_canidate_list(param_list,category);
 	
 	canidate_list.sort();
 
 	if(canidate_list.empty())
-		sinfg::warning("Action CanidateList is empty!");
+		synfig::warning("Action CanidateList is empty!");
 	
 	for(iter=canidate_list.begin();iter!=canidate_list.end();++iter)
 	{
 		Gtk::StockID stock_id(get_action_stock_id(*iter));
 		
-		if(!(iter->category&sinfgapp::Action::CATEGORY_HIDDEN))
+		if(!(iter->category&synfigapp::Action::CATEGORY_HIDDEN))
 		{
 			action_group->add(Gtk::Action::create(
 				"action-"+iter->name,
@@ -680,21 +680,21 @@ Instance::add_actions_to_group(const Glib::RefPtr<Gtk::ActionGroup>& action_grou
 }
 
 void
-Instance::add_actions_to_menu(Gtk::Menu *menu, const sinfgapp::Action::ParamList &param_list,sinfgapp::Action::Category category)const
+Instance::add_actions_to_menu(Gtk::Menu *menu, const synfigapp::Action::ParamList &param_list,synfigapp::Action::Category category)const
 {
-	sinfgapp::Action::CanidateList canidate_list;
-	sinfgapp::Action::CanidateList::iterator iter;
+	synfigapp::Action::CanidateList canidate_list;
+	synfigapp::Action::CanidateList::iterator iter;
 	
 	canidate_list=compile_canidate_list(param_list,category);
 	
 	canidate_list.sort();
 
 	if(canidate_list.empty())
-		sinfg::warning("Action CanidateList is empty!");
+		synfig::warning("Action CanidateList is empty!");
 	
 	for(iter=canidate_list.begin();iter!=canidate_list.end();++iter)
 	{
-		if(!(iter->category&sinfgapp::Action::CATEGORY_HIDDEN))
+		if(!(iter->category&synfigapp::Action::CATEGORY_HIDDEN))
 		{
 			Gtk::Image* image(manage(new Gtk::Image()));
 			Gtk::Stock::lookup(get_action_stock_id(*iter),Gtk::ICON_SIZE_MENU,*image);
@@ -720,9 +720,9 @@ Instance::add_actions_to_menu(Gtk::Menu *menu, const sinfgapp::Action::ParamList
 				Gtk::Stock::lookup(Gtk::Stock::DELETE,Gtk::ICON_SIZE_MENU,*image);
 			else
 			{
-				Gtk::Stock::lookup(Gtk::StockID("sinfg-"+iter->name),Gtk::ICON_SIZE_MENU,*image) ||
+				Gtk::Stock::lookup(Gtk::StockID("synfig-"+iter->name),Gtk::ICON_SIZE_MENU,*image) ||
 				Gtk::Stock::lookup(Gtk::StockID("gtk-"+iter->task),Gtk::ICON_SIZE_MENU,*image) ||
-				Gtk::Stock::lookup(Gtk::StockID("sinfg-"+iter->task),Gtk::ICON_SIZE_MENU,*image);
+				Gtk::Stock::lookup(Gtk::StockID("synfig-"+iter->task),Gtk::ICON_SIZE_MENU,*image);
 			}
 			*/
 			menu->items().push_back(
@@ -746,12 +746,12 @@ Instance::add_actions_to_menu(Gtk::Menu *menu, const sinfgapp::Action::ParamList
 }
 
 void
-Instance::add_actions_to_menu(Gtk::Menu *menu, const sinfgapp::Action::ParamList &param_list,const sinfgapp::Action::ParamList &param_list2,sinfgapp::Action::Category category)const
+Instance::add_actions_to_menu(Gtk::Menu *menu, const synfigapp::Action::ParamList &param_list,const synfigapp::Action::ParamList &param_list2,synfigapp::Action::Category category)const
 {
-	sinfgapp::Action::CanidateList canidate_list;
-	sinfgapp::Action::CanidateList canidate_list2;
+	synfigapp::Action::CanidateList canidate_list;
+	synfigapp::Action::CanidateList canidate_list2;
 	
-	sinfgapp::Action::CanidateList::iterator iter;
+	synfigapp::Action::CanidateList::iterator iter;
 	
 	canidate_list=compile_canidate_list(param_list,category);
 	canidate_list2=compile_canidate_list(param_list2,category);
@@ -759,21 +759,21 @@ Instance::add_actions_to_menu(Gtk::Menu *menu, const sinfgapp::Action::ParamList
 	canidate_list.sort();
 
 	if(canidate_list.empty())
-		sinfg::warning("Action CanidateList is empty!");
+		synfig::warning("Action CanidateList is empty!");
 	if(canidate_list2.empty())
-		sinfg::warning("Action CanidateList2 is empty!");
+		synfig::warning("Action CanidateList2 is empty!");
 
 	// Seperate out the canidate lists so that there are no conflicts
 	for(iter=canidate_list.begin();iter!=canidate_list.end();++iter)
 	{
-		sinfgapp::Action::CanidateList::iterator iter2(canidate_list2.find(iter->name));
+		synfigapp::Action::CanidateList::iterator iter2(canidate_list2.find(iter->name));
 		if(iter2!=canidate_list2.end())
 			canidate_list2.erase(iter2);
 	}
 		
 	for(iter=canidate_list2.begin();iter!=canidate_list2.end();++iter)
 	{
-		if(!(iter->category&sinfgapp::Action::CATEGORY_HIDDEN))
+		if(!(iter->category&synfigapp::Action::CATEGORY_HIDDEN))
 		{
 			Gtk::Image* image(manage(new Gtk::Image()));
 			Gtk::Stock::lookup(get_action_stock_id(*iter),Gtk::ICON_SIZE_MENU,*image);
@@ -798,9 +798,9 @@ Instance::add_actions_to_menu(Gtk::Menu *menu, const sinfgapp::Action::ParamList
 				Gtk::Stock::lookup(Gtk::Stock::DELETE,Gtk::ICON_SIZE_MENU,*image);
 			else
 			{
-				Gtk::Stock::lookup(Gtk::StockID("sinfg-"+iter->name),Gtk::ICON_SIZE_MENU,*image) ||
+				Gtk::Stock::lookup(Gtk::StockID("synfig-"+iter->name),Gtk::ICON_SIZE_MENU,*image) ||
 				Gtk::Stock::lookup(Gtk::StockID("gtk-"+iter->task),Gtk::ICON_SIZE_MENU,*image) ||
-				Gtk::Stock::lookup(Gtk::StockID("sinfg-"+iter->task),Gtk::ICON_SIZE_MENU,*image);
+				Gtk::Stock::lookup(Gtk::StockID("synfig-"+iter->task),Gtk::ICON_SIZE_MENU,*image);
 			}
 */
 			menu->items().push_back(
@@ -824,7 +824,7 @@ Instance::add_actions_to_menu(Gtk::Menu *menu, const sinfgapp::Action::ParamList
 
 	for(iter=canidate_list.begin();iter!=canidate_list.end();++iter)
 	{
-		if(!(iter->category&sinfgapp::Action::CATEGORY_HIDDEN))
+		if(!(iter->category&synfigapp::Action::CATEGORY_HIDDEN))
 		{
 			Gtk::Image* image(manage(new Gtk::Image()));
 			Gtk::Stock::lookup(get_action_stock_id(*iter),Gtk::ICON_SIZE_MENU,*image);
@@ -848,9 +848,9 @@ Instance::add_actions_to_menu(Gtk::Menu *menu, const sinfgapp::Action::ParamList
 				Gtk::Stock::lookup(Gtk::Stock::DELETE,Gtk::ICON_SIZE_MENU,*image);
 			else
 			{
-				Gtk::Stock::lookup(Gtk::StockID("sinfg-"+iter->name),Gtk::ICON_SIZE_MENU,*image) ||
+				Gtk::Stock::lookup(Gtk::StockID("synfig-"+iter->name),Gtk::ICON_SIZE_MENU,*image) ||
 				Gtk::Stock::lookup(Gtk::StockID("gtk-"+iter->task),Gtk::ICON_SIZE_MENU,*image) ||
-				Gtk::Stock::lookup(Gtk::StockID("sinfg-"+iter->task),Gtk::ICON_SIZE_MENU,*image);
+				Gtk::Stock::lookup(Gtk::StockID("synfig-"+iter->task),Gtk::ICON_SIZE_MENU,*image);
 			}
 */
 			menu->items().push_back(
@@ -874,24 +874,24 @@ Instance::add_actions_to_menu(Gtk::Menu *menu, const sinfgapp::Action::ParamList
 }
 
 void
-Instance::process_action(String name, sinfgapp::Action::ParamList param_list)
+Instance::process_action(String name, synfigapp::Action::ParamList param_list)
 {
-	assert(sinfgapp::Action::book().count(name));
+	assert(synfigapp::Action::book().count(name));
 
-	sinfgapp::Action::BookEntry entry(sinfgapp::Action::book().find(name)->second);
+	synfigapp::Action::BookEntry entry(synfigapp::Action::book().find(name)->second);
 	
-	sinfgapp::Action::Handle action(entry.factory());
+	synfigapp::Action::Handle action(entry.factory());
 
 	if(!action)
 	{
-		sinfg::error("Bad Action");
+		synfig::error("Bad Action");
 		return;
 	}
 	
 	action->set_param_list(param_list);
 
-	sinfgapp::Action::ParamVocab param_vocab(entry.get_param_vocab());
-	sinfgapp::Action::ParamVocab::const_iterator iter;
+	synfigapp::Action::ParamVocab param_vocab(entry.get_param_vocab());
+	synfigapp::Action::ParamVocab::const_iterator iter;
 	
 	for(iter=param_vocab.begin();iter!=param_vocab.end();++iter)
 	{
@@ -906,7 +906,7 @@ Instance::process_action(String name, sinfgapp::Action::ParamList param_list)
 		{
 			switch(iter->get_type())
 			{
-			case sinfgapp::Action::Param::TYPE_STRING:
+			case synfigapp::Action::Param::TYPE_STRING:
 			{
 				String str;
 				if(!studio::App::dialog_entry(entry.local_name, iter->get_local_name()+":"+iter->get_desc(),str))
@@ -915,7 +915,7 @@ Instance::process_action(String name, sinfgapp::Action::ParamList param_list)
 				break;
 			}
 			default:
-				sinfg::error("Unsupported user-supplied action parameter");
+				synfig::error("Unsupported user-supplied action parameter");
 				return;
 				break;
 			}
@@ -924,7 +924,7 @@ Instance::process_action(String name, sinfgapp::Action::ParamList param_list)
 		
 	if(!action->is_ready())
 	{
-		sinfg::error("Action not ready");
+		synfig::error("Action not ready");
 		return;
 	}
 
@@ -932,23 +932,23 @@ Instance::process_action(String name, sinfgapp::Action::ParamList param_list)
 }
 
 void
-Instance::make_param_menu(Gtk::Menu *menu,sinfg::Canvas::Handle canvas, sinfgapp::ValueDesc value_desc, float location)
+Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfigapp::ValueDesc value_desc, float location)
 {
 	Gtk::Menu& parammenu(*menu);
 	
-	etl::handle<sinfgapp::CanvasInterface> canvas_interface(find_canvas_interface(canvas));
+	etl::handle<synfigapp::CanvasInterface> canvas_interface(find_canvas_interface(canvas));
 	
 	if(!canvas_interface)
 		return;
 	
-	sinfgapp::Action::ParamList param_list,param_list2;
+	synfigapp::Action::ParamList param_list,param_list2;
 	param_list=canvas_interface->generate_param_list(value_desc);
 	param_list.add("origin",location);
 
 	if(value_desc.get_value_type()==ValueBase::TYPE_BLINEPOINT && value_desc.is_value_node() && ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node()))
 	{
 		param_list2=canvas_interface->generate_param_list(
-			sinfgapp::ValueDesc(
+			synfigapp::ValueDesc(
 				ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node())
 				,0
 			)
@@ -971,7 +971,7 @@ Instance::make_param_menu(Gtk::Menu *menu,sinfg::Canvas::Handle canvas, sinfgapp
 					sigc::hide_return(
 						sigc::bind(
 							sigc::bind(
-								sigc::mem_fun(*canvas_interface.get(),&sinfgapp::CanvasInterface::convert),
+								sigc::mem_fun(*canvas_interface.get(),&synfigapp::CanvasInterface::convert),
 								iter->first
 							),
 							value_desc
@@ -985,13 +985,13 @@ Instance::make_param_menu(Gtk::Menu *menu,sinfg::Canvas::Handle canvas, sinfgapp
 	}
 
 	if(param_list2.empty())
-		add_actions_to_menu(&parammenu, param_list,sinfgapp::Action::CATEGORY_VALUEDESC|sinfgapp::Action::CATEGORY_VALUENODE);
+		add_actions_to_menu(&parammenu, param_list,synfigapp::Action::CATEGORY_VALUEDESC|synfigapp::Action::CATEGORY_VALUENODE);
 	else
-		add_actions_to_menu(&parammenu, param_list2,param_list,sinfgapp::Action::CATEGORY_VALUEDESC|sinfgapp::Action::CATEGORY_VALUENODE);
+		add_actions_to_menu(&parammenu, param_list2,param_list,synfigapp::Action::CATEGORY_VALUEDESC|synfigapp::Action::CATEGORY_VALUENODE);
 
 	if(value_desc.get_value_type()==ValueBase::TYPE_BLINEPOINT && value_desc.is_value_node() && ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node()))
 	{
-		value_desc=sinfgapp::ValueDesc(ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node()),0);
+		value_desc=synfigapp::ValueDesc(ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node()),0);
 	}
 
 	if(value_desc.is_value_node() && ValueNode_Animated::Handle::cast_dynamic(value_desc.get_value_node()))
@@ -1021,9 +1021,9 @@ Instance::make_param_menu(Gtk::Menu *menu,sinfg::Canvas::Handle canvas, sinfgapp
 }
 
 void
-edit_several_waypoints(etl::handle<CanvasView> canvas_view, std::list<sinfgapp::ValueDesc> value_desc_list)
+edit_several_waypoints(etl::handle<CanvasView> canvas_view, std::list<synfigapp::ValueDesc> value_desc_list)
 {
-	etl::handle<sinfgapp::CanvasInterface> canvas_interface(canvas_view->canvas_interface());
+	etl::handle<synfigapp::CanvasInterface> canvas_interface(canvas_view->canvas_interface());
 
 	Gtk::Dialog dialog(
 		"Edit Multiple Waypoints",		// Title
@@ -1045,12 +1045,12 @@ edit_several_waypoints(etl::handle<CanvasView> canvas_view, std::list<sinfgapp::
 	if(dialog.run()==0 || widget_waypoint_model.get_waypoint_model().is_trivial())
 		return;
 	DEBUGPOINT();
-	sinfgapp::Action::PassiveGrouper group(canvas_interface->get_instance().get(),_("Set Waypoints"));
+	synfigapp::Action::PassiveGrouper group(canvas_interface->get_instance().get(),_("Set Waypoints"));
 
-	std::list<sinfgapp::ValueDesc>::iterator iter;
+	std::list<synfigapp::ValueDesc>::iterator iter;
 	for(iter=value_desc_list.begin();iter!=value_desc_list.end();++iter)
 	{
-		sinfgapp::ValueDesc value_desc(*iter);
+		synfigapp::ValueDesc value_desc(*iter);
 		
 		if(!value_desc.is_valid())
 			continue;
@@ -1070,17 +1070,17 @@ edit_several_waypoints(etl::handle<CanvasView> canvas_view, std::list<sinfgapp::
 			
 			value_node=ValueNode_Animated::create(value,canvas_interface->get_time());
 			
-			sinfgapp::Action::Handle action;
+			synfigapp::Action::Handle action;
 			
 			if(!value_desc.is_value_node())
 			{
-				action=sinfgapp::Action::create("value_desc_connect");
+				action=synfigapp::Action::create("value_desc_connect");
 				action->set_param("dest",value_desc);
 				action->set_param("src",ValueNode::Handle(value_node));
 			}
 			else
 			{
-				action=sinfgapp::Action::create("value_node_replace");
+				action=synfigapp::Action::create("value_node_replace");
 				action->set_param("dest",value_desc.get_value_node());
 				action->set_param("src",ValueNode::Handle(value_node));
 			}
@@ -1106,7 +1106,7 @@ edit_several_waypoints(etl::handle<CanvasView> canvas_view, std::list<sinfgapp::
 		if(value_node)
 		{
 			
-			sinfgapp::Action::Handle action(sinfgapp::Action::create("waypoint_set_smart"));
+			synfigapp::Action::Handle action(synfigapp::Action::create("waypoint_set_smart"));
 
 			if(!action)
 			{
@@ -1140,14 +1140,14 @@ edit_several_waypoints(etl::handle<CanvasView> canvas_view, std::list<sinfgapp::
 }
 
 void
-Instance::make_param_menu(Gtk::Menu *menu,sinfg::Canvas::Handle canvas,const std::list<sinfgapp::ValueDesc>& value_desc_list)
+Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas,const std::list<synfigapp::ValueDesc>& value_desc_list)
 {
-	etl::handle<sinfgapp::CanvasInterface> canvas_interface(find_canvas_interface(canvas));
+	etl::handle<synfigapp::CanvasInterface> canvas_interface(find_canvas_interface(canvas));
 
-	sinfgapp::Action::ParamList param_list;
+	synfigapp::Action::ParamList param_list;
 	param_list=canvas_interface->generate_param_list(value_desc_list);
 
-	add_actions_to_menu(menu, param_list,sinfgapp::Action::CATEGORY_VALUEDESC|sinfgapp::Action::CATEGORY_VALUENODE);
+	add_actions_to_menu(menu, param_list,synfigapp::Action::CATEGORY_VALUEDESC|synfigapp::Action::CATEGORY_VALUENODE);
 
 	// Add the edit waypoints option if that might be useful
 	if(canvas->rend_desc().get_time_end()-Time::epsilon()>canvas->rend_desc().get_time_start())

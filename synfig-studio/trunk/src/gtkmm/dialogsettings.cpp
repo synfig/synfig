@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file dialogsettings.cpp
 **	\brief Template File
 **
@@ -29,7 +29,7 @@
 #endif
 
 #include "dialogsettings.h"
-#include <sinfgapp/main.h>
+#include <synfigapp/main.h>
 
 #endif
 
@@ -37,7 +37,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
@@ -48,20 +48,20 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
-DialogSettings::DialogSettings(Gtk::Window* window,const sinfg::String& name):
+DialogSettings::DialogSettings(Gtk::Window* window,const synfig::String& name):
 	window(window),
 	name(name)
 {
-	sinfgapp::Main::settings().add_domain(this,"window."+name);
+	synfigapp::Main::settings().add_domain(this,"window."+name);
 }
 
 DialogSettings::~DialogSettings()
 {
-	sinfgapp::Main::settings().remove_domain("window."+name);
+	synfigapp::Main::settings().remove_domain("window."+name);
 }
 
 bool
-DialogSettings::get_value(const sinfg::String& key, sinfg::String& value)const
+DialogSettings::get_value(const synfig::String& key, synfig::String& value)const
 {
 	if(key=="pos")
 	{
@@ -107,11 +107,11 @@ DialogSettings::get_value(const sinfg::String& key, sinfg::String& value)const
 		return true;
 	}
 
-	return sinfgapp::Settings::get_value(key,value);
+	return synfigapp::Settings::get_value(key,value);
 }
 
 bool
-DialogSettings::set_value(const sinfg::String& key,const sinfg::String& value)
+DialogSettings::set_value(const synfig::String& key,const synfig::String& value)
 {
 	if(value.empty())
 		return false;
@@ -169,13 +169,13 @@ DialogSettings::set_value(const sinfg::String& key,const sinfg::String& value)
 		return true;
 	}
 
-	return sinfgapp::Settings::set_value(key,value);
+	return synfigapp::Settings::set_value(key,value);
 }
 
-sinfgapp::Settings::KeyList
+synfigapp::Settings::KeyList
 DialogSettings::get_key_list()const
 {
-	sinfgapp::Settings::KeyList ret(sinfgapp::Settings::get_key_list());
+	synfigapp::Settings::KeyList ret(synfigapp::Settings::get_key_list());
 	
 	ret.push_back("size");
 	ret.push_back("pos");

@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file dock_metadata.cpp
 **	\brief Template File
 **
@@ -46,7 +46,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
@@ -58,7 +58,7 @@ using namespace studio;
 /* === M E T H O D S ======================================================= */
 
 Dock_MetaData::Dock_MetaData():
-	Dock_CanvasSpecific("meta_data",_("Canvas MetaData"),Gtk::StockID("sinfg-meta_data")),
+	Dock_CanvasSpecific("meta_data",_("Canvas MetaData"),Gtk::StockID("synfig-meta_data")),
 	tree_view(manage(new Gtk::TreeView()))
 {
 	MetaDataTreeStore::Model model;
@@ -127,7 +127,7 @@ Dock_MetaData::on_add_pressed()
 {
 	if(get_canvas_interface())
 	{
-		sinfg::String key;
+		synfig::String key;
 		if(App::dialog_entry("New MetaData Entry", "Please enter the name of the key",key) && !key.empty())
 		{
 			get_canvas_interface()->set_meta_data(key," ");

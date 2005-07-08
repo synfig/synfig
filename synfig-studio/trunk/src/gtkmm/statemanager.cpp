@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file template.cpp
 **	\brief Template File
 **
@@ -31,7 +31,7 @@
 #include "statemanager.h"
 #include <gtkmm/actiongroup.h>
 #include <gtkmm/action.h>
-#include <sinfg/string.h>
+#include <synfig/string.h>
 #include "app.h"
 #include "toolbox.h"
 
@@ -41,7 +41,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
@@ -81,7 +81,7 @@ StateManager::add_state(const Smach::state_base *state)
 	Glib::RefPtr<Gtk::Action> action(
 		Gtk::Action::create(
 			"state-"+name,
-			Gtk::StockID("sinfg-"+name),
+			Gtk::StockID("synfig-"+name),
 			name,
 			name
 		)

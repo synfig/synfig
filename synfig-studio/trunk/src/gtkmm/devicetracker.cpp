@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file devicetracker.cpp
 **	\brief Template File
 **
@@ -30,7 +30,7 @@
 
 #include "devicetracker.h"
 #include <gdkmm/device.h>
-#include <sinfgapp/main.h>
+#include <synfigapp/main.h>
 
 #endif
 
@@ -38,7 +38,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
@@ -63,10 +63,10 @@ DeviceTracker::DeviceTracker()
 			GdkDevice* device=reinterpret_cast<GdkDevice*>(iter->data);
 			gdk_device_set_mode(device,GDK_MODE_SCREEN);
 			
-			sinfgapp::InputDevice::Handle input_device;
-			input_device=sinfgapp::Main::add_input_device(device->name,sinfgapp::InputDevice::Type(device->source));
-			if(input_device->get_type()==sinfgapp::InputDevice::TYPE_MOUSE)
-				sinfgapp::Main::select_input_device(input_device);
+			synfigapp::InputDevice::Handle input_device;
+			input_device=synfigapp::Main::add_input_device(device->name,synfigapp::InputDevice::Type(device->source));
+			if(input_device->get_type()==synfigapp::InputDevice::TYPE_MOUSE)
+				synfigapp::Main::select_input_device(input_device);
 		}		
 	}
 }

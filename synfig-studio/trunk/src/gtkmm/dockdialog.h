@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file dockdialog.h
 **	\brief Template Header
 **
@@ -21,15 +21,15 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_STUDIO_DOCK_DIALOG_H
-#define __SINFG_STUDIO_DOCK_DIALOG_H
+#ifndef __SYNFIG_STUDIO_DOCK_DIALOG_H
+#define __SYNFIG_STUDIO_DOCK_DIALOG_H
 
 /* === H E A D E R S ======================================================= */
 
 #include <gtkmm/stockid.h>
 #include <gtkmm/button.h>
 #include "dialogsettings.h"
-#include <sinfg/string.h>
+#include <synfig/string.h>
 #include <gtkmm/dialog.h>
 #include <gtkmm/tooltips.h>
 #include <gtkmm/label.h>
@@ -116,8 +116,8 @@ public:
 	DockBook& get_dock_book();
 	const DockBook& get_dock_book()const;
 
-	sinfg::String get_contents()const;
-	void set_contents(const sinfg::String& x);
+	synfig::String get_contents()const;
+	void set_contents(const synfig::String& x);
 }; // END of studio::DockDialog
 
 }; // END of namespace studio

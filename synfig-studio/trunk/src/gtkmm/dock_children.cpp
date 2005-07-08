@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file dock_children.cpp
 **	\brief Template File
 **
@@ -48,7 +48,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
@@ -60,14 +60,14 @@ using namespace studio;
 /* === M E T H O D S ======================================================= */
 
 Dock_Children::Dock_Children():
-	Dock_CanvasSpecific("children",_("Children"),Gtk::StockID("sinfg-children"))
+	Dock_CanvasSpecific("children",_("Children"),Gtk::StockID("synfig-children"))
 {
 	set_use_scrolled(false);
 /*
 	add(*create_action_tree());
 
 	add_button(
-		Gtk::StockID("sinfg-clear_redo"),
+		Gtk::StockID("synfig-clear_redo"),
 		_("Clear the REDO Stack")
 	)->signal_clicked().connect(
 		sigc::mem_fun(

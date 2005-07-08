@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file app.cpp
 **	\brief writeme
 **
@@ -43,7 +43,7 @@
 
 #include <gtk/gtk.h>
 
-#include <sinfg/loadcanvas.h>
+#include <synfig/loadcanvas.h>
 
 #include "app.h"
 #include "about.h"
@@ -79,7 +79,7 @@
 
 #include "autorecover.h"
 
-#include <sinfgapp/settings.h>
+#include <synfigapp/settings.h>
 #include "dock_history.h"
 #include "dock_canvases.h"
 #include "dock_keyframes.h"
@@ -119,7 +119,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
@@ -144,7 +144,7 @@ using namespace studio;
 #	define IMAGE_EXT	"tif"
 #endif
 
-#include <sinfgapp/main.h>
+#include <synfigapp/main.h>
 
 /* === S I G N A L S ======================================================= */
 
@@ -180,11 +180,11 @@ const std::list<std::string>& App::get_recent_files() { return recent_files; }
 int	App::Busy::count;
 bool App::shutdown_in_progress;
 
-sinfg::Gamma App::gamma;
+synfig::Gamma App::gamma;
 
 Glib::RefPtr<studio::UIManager>	App::ui_manager_;
 
-sinfg::Distance::System App::distance_system;
+synfig::Distance::System App::distance_system;
 
 studio::Dialog_Setup* App::dialog_setup;
 
@@ -193,8 +193,8 @@ etl::handle< studio::ModPalette > mod_palette_;
 
 std::list<etl::handle<Instance> > App::instance_list;
 
-static etl::handle<sinfgapp::UIInterface> ui_interface_;
-const etl::handle<sinfgapp::UIInterface>& App::get_ui_interface() { return ui_interface_; }
+static etl::handle<synfigapp::UIInterface> ui_interface_;
+const etl::handle<synfigapp::UIInterface>& App::get_ui_interface() { return ui_interface_; }
 
 etl::handle<Instance> App::selected_instance;
 etl::handle<CanvasView> App::selected_canvas_view;
@@ -238,7 +238,7 @@ static int max_recent_files_=25;
 int studio::App::get_max_recent_files() { return max_recent_files_; }
 void studio::App::set_max_recent_files(int x) { max_recent_files_=x; }
 
-static sinfg::String app_base_path_;
+static synfig::String app_base_path_;
 
 namespace studio {
 }; // END of namespace studio
@@ -247,7 +247,7 @@ studio::StateManager* state_manager;
 
 
 
-class GlobalUIInterface : public sinfgapp::UIInterface
+class GlobalUIInterface : public synfigapp::UIInterface
 {
 public:
 
@@ -484,9 +484,9 @@ int check_license(String basedir)
 			fclose(file);
 		}
 		else
-			sinfg::error("Unable to save license key!");
+			synfig::error("Unable to save license key!");
 	}
-	sinfg::info("License Authenticated -- Serial #%05d",serial);
+	synfig::info("License Authenticated -- Serial #%05d",serial);
 	return serial;
 }
 
@@ -509,7 +509,7 @@ studio::UIManager::remove_action_group (const Glib::RefPtr<Gtk::ActionGroup>& ac
 			Gtk::UIManager::remove_action_group(action_group);
 			return;
 		}
-	sinfg::error("Unable to find action group");
+	synfig::error("Unable to find action group");
 }
 
 void
@@ -527,7 +527,7 @@ studio::add_action_group_to_top(Glib::RefPtr<studio::UIManager> ui_manager, Glib
 		DEBUGPOINT();
 		if(*iter && (*iter)->get_name()!="menus")
 		{
-			sinfg::info("Removing action group "+(*iter)->get_name());
+			synfig::info("Removing action group "+(*iter)->get_name());
 			ui_manager->remove_action_group(*iter);
 		}
 	}
@@ -543,10 +543,10 @@ studio::add_action_group_to_top(Glib::RefPtr<studio::UIManager> ui_manager, Glib
 	DEBUGPOINT();
 }
 */
-class Preferences : public sinfgapp::Settings
+class Preferences : public synfigapp::Settings
 {
 public:
-	virtual bool get_value(const sinfg::String& key, sinfg::String& value)const
+	virtual bool get_value(const synfig::String& key, synfig::String& value)const
 	{
 		if(key=="gamma")
 		{
@@ -584,10 +584,10 @@ public:
 			return true;
 		}
 		
-		return sinfgapp::Settings::get_value(key,value);
+		return synfigapp::Settings::get_value(key,value);
 	}
 	
-	virtual bool set_value(const sinfg::String& key,const sinfg::String& value)
+	virtual bool set_value(const synfig::String& key,const synfig::String& value)
 	{
 		if(key=="gamma")
 		{
@@ -607,7 +607,7 @@ public:
 		if(key=="time_format")
 		{
 			int i(atoi(value.c_str()));
-			App::set_time_format(static_cast<sinfg::Time::Format>(i));
+			App::set_time_format(static_cast<synfig::Time::Format>(i));
 			return true;
 		}
 		if(key=="auto_recover_backup_interval")
@@ -634,12 +634,12 @@ public:
 			return true;
 		}
 		
-		return sinfgapp::Settings::set_value(key,value);
+		return synfigapp::Settings::set_value(key,value);
 	}
 	
 	virtual KeyList get_key_list()const
 	{
-		KeyList ret(sinfgapp::Settings::get_key_list());
+		KeyList ret(synfigapp::Settings::get_key_list());
 		ret.push_back("gamma");
 		ret.push_back("time_format");
 		ret.push_back("distance_system");
@@ -674,9 +674,9 @@ init_ui_manager()
 	menus_action_group->add( Gtk::Action::create("menu-state", "State") );
 	menus_action_group->add( Gtk::Action::create("menu-toolbox", "Toolbox") );
 
-	// Add the sinfgapp actions...
-	sinfgapp::Action::Book::iterator iter;
-	for(iter=sinfgapp::Action::book().begin();iter!=sinfgapp::Action::book().end();++iter)
+	// Add the synfigapp actions...
+	synfigapp::Action::Book::iterator iter;
+	for(iter=synfigapp::Action::book().begin();iter!=synfigapp::Action::book().end();++iter)
 	{
 		actions_action_group->add(Gtk::Action::create(
 			"action-"+iter->second.name,
@@ -690,15 +690,15 @@ init_ui_manager()
 #define DEFINE_ACTION_SIG(group,x,stock,sig) { Glib::RefPtr<Gtk::Action> action( Gtk::Action::create(x, stock) ); /*action->set_sensitive(false);*/ group->add(action,sig); }
 
 	DEFINE_ACTION2("keyframe-properties", Gtk::StockID("gtk-properties"), _("Keyframe Properties"));
-	DEFINE_ACTION("about", Gtk::StockID("sinfg-about"));
+	DEFINE_ACTION("about", Gtk::StockID("synfig-about"));
 	DEFINE_ACTION("open", Gtk::Stock::OPEN);
 	DEFINE_ACTION("save", Gtk::Stock::SAVE);
 	DEFINE_ACTION("save-as", Gtk::Stock::SAVE_AS);
 	DEFINE_ACTION("revert", Gtk::Stock::REVERT_TO_SAVED);
-	DEFINE_ACTION("cvs-add", Gtk::StockID("sinfg-cvs_add"));
-	DEFINE_ACTION("cvs-update", Gtk::StockID("sinfg-cvs_update"));
-	DEFINE_ACTION("cvs-commit", Gtk::StockID("sinfg-cvs_commit"));
-	DEFINE_ACTION("cvs-revert", Gtk::StockID("sinfg-cvs_revert"));
+	DEFINE_ACTION("cvs-add", Gtk::StockID("synfig-cvs_add"));
+	DEFINE_ACTION("cvs-update", Gtk::StockID("synfig-cvs_update"));
+	DEFINE_ACTION("cvs-commit", Gtk::StockID("synfig-cvs_commit"));
+	DEFINE_ACTION("cvs-revert", Gtk::StockID("synfig-cvs_revert"));
 	DEFINE_ACTION("import", _("Import"));
 	DEFINE_ACTION("render", _("Render"));
 	DEFINE_ACTION("preview", _("Preview"));
@@ -767,15 +767,15 @@ init_ui_manager()
 #undef DEFINE_ACTION
 
 
-// Set up sinfgapp actions
+// Set up synfigapp actions
 	/*{
-		sinfgapp::Action::Book::iterator iter;
+		synfigapp::Action::Book::iterator iter;
 	
-		for(iter=sinfgapp::Action::book().begin();iter!=sinfgapp::Action::book().end();++iter)
+		for(iter=synfigapp::Action::book().begin();iter!=synfigapp::Action::book().end();++iter)
 		{
 			Gtk::StockID stock_id;
 			
-			if(!(iter->second.category&sinfgapp::Action::CATEGORY_HIDDEN))
+			if(!(iter->second.category&synfigapp::Action::CATEGORY_HIDDEN))
 			{
 				//Gtk::Image* image(manage(new Gtk::Image()));
 				if(iter->second.task=="raise")			stock_id=Gtk::Stock::GO_UP;
@@ -787,7 +787,7 @@ init_ui_manager()
 				else if(iter->second.task=="set_off")	stock_id=Gtk::Stock::NO;
 				//else if(iter->second.task=="duplicate")	stock_id=Gtk::Stock::COPY;
 				else if(iter->second.task=="remove")	stock_id=Gtk::Stock::DELETE;
-				else									stock_id=Gtk::StockID("sinfg-"+iter->second.task);
+				else									stock_id=Gtk::StockID("synfig-"+iter->second.task);
 	
 				actions_action_group->add(Gtk::Action::create(
 					"action-"+iter->second.name,
@@ -946,7 +946,7 @@ init_ui_manager()
 	}
 	catch(const Glib::Error& ex)
 	{
-		sinfg::error("building menus and toolbars failed: " + ex.what());
+		synfig::error("building menus and toolbars failed: " + ex.what());
 	}
 
 	// Add default keyboard accelerators
@@ -1051,11 +1051,11 @@ App::App(int *argc, char ***argv):
 	if(mkdir(get_user_app_directory().c_str(),ACCESSPERMS)<0)
 	{
 		if(errno!=EEXIST)
-			sinfg::error("UNABLE TO CREATE \"%s\"",get_user_app_directory().c_str());
+			synfig::error("UNABLE TO CREATE \"%s\"",get_user_app_directory().c_str());
 	}
 	else
 	{
-		sinfg::info("Created directory \"%s\"",get_user_app_directory().c_str());
+		synfig::info("Created directory \"%s\"",get_user_app_directory().c_str());
 	}
 	
 	
@@ -1063,50 +1063,50 @@ App::App(int *argc, char ***argv):
 	
 	try
 	{
-		if(!SINFG_CHECK_VERSION())
+		if(!SYNFIG_CHECK_VERSION())
 		{
-		cerr<<"FATAL: Sinfg Version Mismatch"<<endl;
-		dialog_error_blocking("SINFG Studio",
-			"This copy of SINFG Studio was compiled against a\n"
-			"different version of libsinfg than what is currently\n"
-			"installed. Sinfg Studio will now abort. Try downloading\n"
-			"the latest version from the SINFG Development Website at\n"
-			"http://dev.sinfg.com/ "
+		cerr<<"FATAL: Synfig Version Mismatch"<<endl;
+		dialog_error_blocking("SYNFIG Studio",
+			"This copy of SYNFIG Studio was compiled against a\n"
+			"different version of libsynfig than what is currently\n"
+			"installed. Synfig Studio will now abort. Try downloading\n"
+			"the latest version from the SYNFIG Development Website at\n"
+			"http://dev.synfig.com/ "
 		);
 		throw 40;
 		}
 	}
-	catch(sinfg::SoftwareExpired)
+	catch(synfig::SoftwareExpired)
 	{
 		cerr<<"FATAL: Software Expired"<<endl;
-		dialog_error_blocking("SINFG Studio",
-			"This copy of SINFG Studio has expired.\n"
+		dialog_error_blocking("SYNFIG Studio",
+			"This copy of SYNFIG Studio has expired.\n"
 			"Please erase this copy, or download and\n"
-			"install the latest copy from the SINFG\n"
-			"Development Website at http://dev.sinfg.com/ ."
+			"install the latest copy from the SYNFIG\n"
+			"Development Website at http://dev.synfig.com/ ."
 		);
 		throw 39;
 	}
-	Glib::set_application_name(_("SINFG Studio"));
+	Glib::set_application_name(_("SYNFIG Studio"));
 	
 	About about_window;
 	about_window.set_can_self_destruct(false);
 	about_window.show();
 
 	shutdown_in_progress=false;
-	SuperCallback sinfg_init_cb(about_window.get_callback(),0,9000,10000);
+	SuperCallback synfig_init_cb(about_window.get_callback(),0,9000,10000);
 	SuperCallback studio_init_cb(about_window.get_callback(),9000,10000,10000);
 	
-	// Initialize the Sinfg library
-	try { sinfgapp_main=etl::smart_ptr<sinfgapp::Main>(new sinfgapp::Main(etl::dirname((*argv)[0]),&sinfg_init_cb)); }
+	// Initialize the Synfig library
+	try { synfigapp_main=etl::smart_ptr<synfigapp::Main>(new synfigapp::Main(etl::dirname((*argv)[0]),&synfig_init_cb)); }
 	catch(...)
 	{
-		get_ui_interface()->error("Failed to initialize sinfg!");
+		get_ui_interface()->error("Failed to initialize synfig!");
 		throw;
 	}
 
 	// add the preferences to the settings
-	sinfgapp::Main::settings().add_domain(&_preferences,"pref");
+	synfigapp::Main::settings().add_domain(&_preferences,"pref");
 	
 	try
 	{
@@ -1236,11 +1236,11 @@ App::App(int *argc, char ***argv):
 			if(
 				get_ui_interface()->yes_no(
 					"Auto Recovery",
-					"SINFG Studio seems to have crashed\n"
+					"SYNFIG Studio seems to have crashed\n"
 					"before you could save all your files.\n"
 					"Would you like to re-open those files\n"
 					"and recover your unsaved changes?"
-				)==sinfgapp::UIInterface::RESPONSE_YES
+				)==synfigapp::UIInterface::RESPONSE_YES
 			)
 			{
 				if(!auto_recover->recover())
@@ -1249,7 +1249,7 @@ App::App(int *argc, char ***argv):
 				}
 				else
 				get_ui_interface()->error(
-					_("SINFG Studio has attempted to recover\n"
+					_("SYNFIG Studio has attempted to recover\n"
 					"from a previous crash. The files that it has\n"
 					"recovered are NOT YET SAVED. It would be a good\n"
 					"idea to review them and save them now.")
@@ -1288,7 +1288,7 @@ App::~App()
 
 	save_settings();
 
-	sinfgapp::Main::settings().remove_domain("pref");
+	synfigapp::Main::settings().remove_domain("pref");
 	
 	selected_instance=0;
 
@@ -1329,11 +1329,15 @@ App::~App()
 String
 App::get_user_app_directory()
 {
-	return Glib::build_filename(Glib::get_home_dir(),"sinfg");
+#ifdef __APPLE__
+	return Glib::build_filename(Glib::get_home_dir(),"Library/Synfig");
+#else
+	return Glib::build_filename(Glib::get_home_dir(),"Synfig");
+#endif
 }
 
-sinfg::String
-App::get_config_file(const sinfg::String& file)
+synfig::String
+App::get_config_file(const synfig::String& file)
 {
 	return Glib::build_filename(get_user_app_directory(),file);
 }
@@ -1388,7 +1392,7 @@ App::get_time_format()
 }
 
 void
-App::set_time_format(sinfg::Time::Format x)
+App::set_time_format(synfig::Time::Format x)
 {
 	_App_time_format=x;
 }
@@ -1410,7 +1414,7 @@ App::save_settings()
 		
 			if(!file)
 			{
-				sinfg::warning("Unable to save %s",filename.c_str());
+				synfig::warning("Unable to save %s",filename.c_str());
 				break;
 			}
 		
@@ -1421,11 +1425,11 @@ App::save_settings()
 		}while(0);
 
 		std::string filename=get_config_file("settings");
-		sinfgapp::Main::settings().save_to_file(filename);
+		synfigapp::Main::settings().save_to_file(filename);
 	}
 	catch(...)
 	{
-		sinfg::warning("Caught exception when attempting to save settings.");
+		synfig::warning("Caught exception when attempting to save settings.");
 	}
 }
 
@@ -1452,32 +1456,32 @@ App::load_settings()
 			}
 		}
 		std::string filename=get_config_file("settings");
-		if(!sinfgapp::Main::settings().load_from_file(filename))
+		if(!synfigapp::Main::settings().load_from_file(filename))
 		{
-			//std::string filename=Glib::build_filename(Glib::get_home_dir(),".sinfgrc");
-			//if(!sinfgapp::Main::settings().load_from_file(filename))
+			//std::string filename=Glib::build_filename(Glib::get_home_dir(),".synfigrc");
+			//if(!synfigapp::Main::settings().load_from_file(filename))
 			{
 				gamma.set_gamma(1.0/2.2);
-				sinfgapp::Main::settings().set_value("dock.dialog.1.comp_selector","1");
-				sinfgapp::Main::settings().set_value("dock.dialog.1.contents","navigator - info pal_edit pal_browse - tool_options history canvases - layers groups");
-				sinfgapp::Main::settings().set_value("dock.dialog.1.contents_size","225 167 207");
-				sinfgapp::Main::settings().set_value("dock.dialog.1.pos","1057 32");
-				sinfgapp::Main::settings().set_value("dock.dialog.1.size","208 1174");
-				sinfgapp::Main::settings().set_value("dock.dialog.2.comp_selector","0");
-				sinfgapp::Main::settings().set_value("dock.dialog.2.contents","params children keyframes | timetrack curves meta_data");
-				sinfgapp::Main::settings().set_value("dock.dialog.2.contents_size","263");
-				sinfgapp::Main::settings().set_value("dock.dialog.2.pos","0 973");
-				sinfgapp::Main::settings().set_value("dock.dialog.2.size","1045 235");
-				sinfgapp::Main::settings().set_value("pref.distance_system","pt");
-				sinfgapp::Main::settings().set_value("pref.use_colorspace_gamma","1");
-				sinfgapp::Main::settings().set_value("window.toolbox.pos","4 4");
+				synfigapp::Main::settings().set_value("dock.dialog.1.comp_selector","1");
+				synfigapp::Main::settings().set_value("dock.dialog.1.contents","navigator - info pal_edit pal_browse - tool_options history canvases - layers groups");
+				synfigapp::Main::settings().set_value("dock.dialog.1.contents_size","225 167 207");
+				synfigapp::Main::settings().set_value("dock.dialog.1.pos","1057 32");
+				synfigapp::Main::settings().set_value("dock.dialog.1.size","208 1174");
+				synfigapp::Main::settings().set_value("dock.dialog.2.comp_selector","0");
+				synfigapp::Main::settings().set_value("dock.dialog.2.contents","params children keyframes | timetrack curves meta_data");
+				synfigapp::Main::settings().set_value("dock.dialog.2.contents_size","263");
+				synfigapp::Main::settings().set_value("dock.dialog.2.pos","0 973");
+				synfigapp::Main::settings().set_value("dock.dialog.2.size","1045 235");
+				synfigapp::Main::settings().set_value("pref.distance_system","pt");
+				synfigapp::Main::settings().set_value("pref.use_colorspace_gamma","1");
+				synfigapp::Main::settings().set_value("window.toolbox.pos","4 4");
 			}
 		}
 		
 	}
 	catch(...)
 	{
-		sinfg::warning("Caught exception when attempting to load settings.");
+		synfig::warning("Caught exception when attempting to load settings.");
 	}
 }
 
@@ -1509,20 +1513,20 @@ App::quit()
 			return;
 
 /*
-		if((*iter)->sinfgapp::Instance::get_action_count())
+		if((*iter)->synfigapp::Instance::get_action_count())
 		{
-			handle<sinfgapp::UIInterface> uim;
+			handle<synfigapp::UIInterface> uim;
 			uim=(*iter)->find_canvas_view((*iter)->get_canvas())->get_ui_interface();
 			assert(uim);
 			string str=strprintf(_("Would you like to save your changes to %s?"),(*iter)->get_file_name().c_str() );
-			switch(uim->yes_no_cancel((*iter)->get_canvas()->get_name(),str,sinfgapp::UIInterface::RESPONSE_YES))
+			switch(uim->yes_no_cancel((*iter)->get_canvas()->get_name(),str,synfigapp::UIInterface::RESPONSE_YES))
 			{
-				case sinfgapp::UIInterface::RESPONSE_NO:
+				case synfigapp::UIInterface::RESPONSE_NO:
 					break;
-				case sinfgapp::UIInterface::RESPONSE_YES:
+				case synfigapp::UIInterface::RESPONSE_YES:
 					(*iter)->save();
 					break;
-				case sinfgapp::UIInterface::RESPONSE_CANCEL:
+				case synfigapp::UIInterface::RESPONSE_CANCEL:
 					return;
 				default:
 					assert(0);
@@ -1531,20 +1535,20 @@ App::quit()
 		}
 
 
-		if((*iter)->sinfgapp::Instance::is_modified())
+		if((*iter)->synfigapp::Instance::is_modified())
 		{
-			handle<sinfgapp::UIInterface> uim;
+			handle<synfigapp::UIInterface> uim;
 			uim=(*iter)->find_canvas_view((*iter)->get_canvas())->get_ui_interface();
 			assert(uim);
 			string str=strprintf(_("%s has changes not yet on the CVS repository.\nWould you like to commit these changes?"),(*iter)->get_file_name().c_str() );
-			switch(uim->yes_no_cancel((*iter)->get_canvas()->get_name(),str,sinfgapp::UIInterface::RESPONSE_YES))
+			switch(uim->yes_no_cancel((*iter)->get_canvas()->get_name(),str,synfigapp::UIInterface::RESPONSE_YES))
 			{
-				case sinfgapp::UIInterface::RESPONSE_NO:
+				case synfigapp::UIInterface::RESPONSE_NO:
 					break;
-				case sinfgapp::UIInterface::RESPONSE_YES:
+				case synfigapp::UIInterface::RESPONSE_YES:
 					(*iter)->dialog_cvs_commit();
 					break;
-				case sinfgapp::UIInterface::RESPONSE_CANCEL:
+				case synfigapp::UIInterface::RESPONSE_CANCEL:
 					return;
 				default:
 					assert(0);
@@ -1637,7 +1641,7 @@ App::dialog_open_file(const std::string &title, std::string &filename)
 	return false;
 	
 #else
-	sinfg::String prev_path;
+	synfig::String prev_path;
 	if(!_preferences.get_value("curr_path",prev_path))
 		prev_path=".";
 	
@@ -1919,7 +1923,7 @@ App::open_as(std::string filename,std::string as)
 	{
 		OneMoment one_moment;
 	
-		etl::handle<sinfg::Canvas> canvas(open_canvas_as(filename,as));
+		etl::handle<synfig::Canvas> canvas(open_canvas_as(filename,as));
 		if(canvas && get_instance(canvas))
 		{
 			get_instance(canvas)->find_canvas_view(canvas)->present();
@@ -1960,7 +1964,7 @@ App::open_as(std::string filename,std::string as)
 void
 App::new_instance()
 {
-	handle<sinfg::Canvas> canvas=sinfg::Canvas::create();
+	handle<synfig::Canvas> canvas=synfig::Canvas::create();
 	canvas->set_name(strprintf("Untitled%d",Instance::get_count()));
 
 	String file_name(strprintf("untitled%d.sif",Instance::get_count()));
@@ -2084,7 +2088,7 @@ studio::App::redo()
 		selected_instance->redo();
 }
 
-sinfg::String
+synfig::String
 studio::App::get_base_path()
 {
 	return app_base_path_;

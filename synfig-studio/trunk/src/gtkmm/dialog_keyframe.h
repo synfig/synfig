@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file dialog_keyframe.h
 **	\brief Template Header
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_STUDIO_DIALOG_KEYFRAME_H
-#define __SINFG_STUDIO_DIALOG_KEYFRAME_H
+#ifndef __SYNFIG_STUDIO_DIALOG_KEYFRAME_H
+#define __SYNFIG_STUDIO_DIALOG_KEYFRAME_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -32,7 +32,7 @@
 #include <gtkmm/table.h>
 #include <gtkmm/entry.h>
 
-#include <sinfgapp/canvasinterface.h>
+#include <synfigapp/canvasinterface.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -48,9 +48,9 @@ class Widget_WaypointModel;
 class Dialog_Keyframe : public Gtk::Dialog
 {
 	Gtk::Tooltips tooltips_;
-	etl::handle<sinfgapp::CanvasInterface> canvas_interface;
+	etl::handle<synfigapp::CanvasInterface> canvas_interface;
 	
-	sinfg::Keyframe keyframe_;
+	synfig::Keyframe keyframe_;
 
 	Gtk::Entry entry_description;
 	
@@ -61,11 +61,11 @@ class Dialog_Keyframe : public Gtk::Dialog
 	void on_delete_pressed();
 
 public:
-	Dialog_Keyframe(Gtk::Window& parent,etl::handle<sinfgapp::CanvasInterface> canvas_interface);
+	Dialog_Keyframe(Gtk::Window& parent,etl::handle<synfigapp::CanvasInterface> canvas_interface);
 	~Dialog_Keyframe();
 
-	const sinfg::Keyframe& get_keyframe()const;
-	void set_keyframe(const sinfg::Keyframe& x);
+	const synfig::Keyframe& get_keyframe()const;
+	void set_keyframe(const synfig::Keyframe& x);
 
 private:
 

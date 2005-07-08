@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file event_mouse.h
 **	\brief Template Header
 **
@@ -21,12 +21,12 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_EVENT_MOUSE_H
-#define __SINFG_EVENT_MOUSE_H
+#ifndef __SYNFIG_EVENT_MOUSE_H
+#define __SYNFIG_EVENT_MOUSE_H
 
 /* === H E A D E R S ======================================================= */
 
-#include <sinfg/vector.h>
+#include <synfig/vector.h>
 #include "smach.h"
 #include <gdkmm/types.h>
 
@@ -52,12 +52,12 @@ enum MouseButton
 
 struct EventMouse : public Smach::event
 {
-	sinfg::Point pos;
+	synfig::Point pos;
 	MouseButton button;
 	float pressure;
 	Gdk::ModifierType modifier;
 	
-	EventMouse(EventKey id, MouseButton button, const sinfg::Point& pos, Gdk::ModifierType modifier=Gdk::ModifierType(0)):
+	EventMouse(EventKey id, MouseButton button, const synfig::Point& pos, Gdk::ModifierType modifier=Gdk::ModifierType(0)):
 		Smach::event(id),
 		pos(pos),
 		button(button),
@@ -65,7 +65,7 @@ struct EventMouse : public Smach::event
 		modifier(modifier)
 	{ }
 
-	EventMouse(EventKey id, MouseButton button, const sinfg::Point& pos, float pressure, Gdk::ModifierType modifier=Gdk::ModifierType(0)):
+	EventMouse(EventKey id, MouseButton button, const synfig::Point& pos, float pressure, Gdk::ModifierType modifier=Gdk::ModifierType(0)):
 		Smach::event(id),
 		pos(pos),
 		button(button),
@@ -76,11 +76,11 @@ struct EventMouse : public Smach::event
 
 struct EventBox : public Smach::event
 {
-	sinfg::Point p1,p2;
+	synfig::Point p1,p2;
 	MouseButton button;
 	Gdk::ModifierType modifier;
 	
-	EventBox(EventKey id, const sinfg::Point& p1,const sinfg::Point& p2,MouseButton button=BUTTON_NONE, Gdk::ModifierType modifier=Gdk::ModifierType(0)):
+	EventBox(EventKey id, const synfig::Point& p1,const synfig::Point& p2,MouseButton button=BUTTON_NONE, Gdk::ModifierType modifier=Gdk::ModifierType(0)):
 		Smach::event(id),
 		p1(p1),
 		p2(p2),
@@ -88,7 +88,7 @@ struct EventBox : public Smach::event
 		modifier(modifier)
 	{ }
 
-	EventBox(const sinfg::Point& p1,const sinfg::Point& p2,MouseButton button=BUTTON_NONE, Gdk::ModifierType modifier=Gdk::ModifierType(0)):
+	EventBox(const synfig::Point& p1,const synfig::Point& p2,MouseButton button=BUTTON_NONE, Gdk::ModifierType modifier=Gdk::ModifierType(0)):
 		Smach::event(EVENT_WORKAREA_BOX),
 		p1(p1),
 		p2(p2),

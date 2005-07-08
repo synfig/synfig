@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file dialog_palette.h
 **	\brief Template Header
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_STUDIO_DOCK_PAL_EDIT_H
-#define __SINFG_STUDIO_DOCK_PAL_EDIT_H
+#ifndef __SYNFIG_STUDIO_DOCK_PAL_EDIT_H
+#define __SYNFIG_STUDIO_DOCK_PAL_EDIT_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -35,19 +35,19 @@
 #include <gtkmm/optionmenu.h>
 #include <gtkmm/checkbutton.h>
 
-#include <sinfg/gamma.h>
-#include <sinfg/time.h>
+#include <synfig/gamma.h>
+#include <synfig/time.h>
 
 #include "../widget_coloredit.h"
 
-#include <sinfgapp/value_desc.h>
-#include <sinfg/time.h>
+#include <synfigapp/value_desc.h>
+#include <synfig/time.h>
 
 #include "../dockable.h"
 #include <vector>
 #include <gtkmm/actiongroup.h>
 
-#include <sinfg/palette.h>
+#include <synfig/palette.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -55,7 +55,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace sinfgapp {
+namespace synfigapp {
 class CanvasInterface;
 };
 
@@ -70,7 +70,7 @@ class Dock_PalEdit : public Dockable
 
 	Glib::RefPtr<Gtk::ActionGroup> action_group;
 
-	sinfg::Palette palette_;
+	synfig::Palette palette_;
 	
 	Gtk::Table table;
 	
@@ -82,16 +82,16 @@ class Dock_PalEdit : public Dockable
 
 
 private:
-	int add_color(const sinfg::Color& x);
-	void set_color(sinfg::Color x, int i);
+	int add_color(const synfig::Color& x);
+	void set_color(synfig::Color x, int i);
 	void erase_color(int i);
 
 	void select_color(int i);
-	sinfg::Color get_color(int i)const;
+	synfig::Color get_color(int i)const;
 	void edit_color(int i);
 public:
-	void set_palette(const sinfg::Palette& x);
-	const sinfg::Palette& get_palette()const { return palette_; }
+	void set_palette(const synfig::Palette& x);
+	const synfig::Palette& get_palette()const { return palette_; }
 
 	int size()const;
 

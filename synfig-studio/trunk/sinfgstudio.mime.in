@@ -1,7 +1,0 @@
-# mime types for sinfg studio
-
-image/sif
-	ext: sif SIF
-
-image/sifz
-	ext: sifZ SIFZ sif.gz SIF.GZ SIF.gz

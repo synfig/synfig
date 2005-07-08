@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file dock_params.cpp
 **	\brief Template File
 **
@@ -47,7 +47,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
@@ -59,7 +59,7 @@ using namespace studio;
 /* === M E T H O D S ======================================================= */
 
 Dock_Params::Dock_Params():
-	Dock_CanvasSpecific("params",_("Params"),Gtk::Stock::INDEX/*Gtk::StockID("sinfg-params")*/),
+	Dock_CanvasSpecific("params",_("Params"),Gtk::Stock::INDEX/*Gtk::StockID("synfig-params")*/),
 	action_group(Gtk::ActionGroup::create())
 {
 /*
@@ -114,7 +114,7 @@ Dock_Params::refresh_selected_param()
 	{
 		LayerParamTreeStore::Model model;
 		get_canvas_view()->work_area->set_selected_value_node(
-			(sinfg::ValueNode::Handle)(*iter)[model.value_node]
+			(synfig::ValueNode::Handle)(*iter)[model.value_node]
 		);
 	}
 	else

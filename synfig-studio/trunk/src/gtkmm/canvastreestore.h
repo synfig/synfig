@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file canvastreestore.h
 **	\brief Template Header
 **
@@ -21,15 +21,15 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_STUDIO_CANVASTREESTORE_H
-#define __SINFG_STUDIO_CANVASTREESTORE_H
+#ifndef __SYNFIG_STUDIO_CANVASTREESTORE_H
+#define __SYNFIG_STUDIO_CANVASTREESTORE_H
 
 /* === H E A D E R S ======================================================= */
 
 #include <gtkmm/treestore.h>
-#include <sinfgapp/canvasinterface.h>
+#include <synfigapp/canvasinterface.h>
 #include <gdkmm/pixbuf.h>
-#include <sinfgapp/value_desc.h>
+#include <synfigapp/value_desc.h>
 #include <gtkmm/treeview.h>
 
 /* === M A C R O S ========================================================= */
@@ -70,12 +70,12 @@ public:
 		Gtk::TreeModelColumn<Glib::ustring> name;
 		Gtk::TreeModelColumn<Glib::ustring> id;
 
-		Gtk::TreeModelColumn<sinfg::Canvas::Handle> canvas;
+		Gtk::TreeModelColumn<synfig::Canvas::Handle> canvas;
 		Gtk::TreeModelColumn<bool> is_canvas;
 
-		Gtk::TreeModelColumn<sinfg::ValueNode::Handle> value_node;
+		Gtk::TreeModelColumn<synfig::ValueNode::Handle> value_node;
 		Gtk::TreeModelColumn<bool> is_value_node;
-		Gtk::TreeModelColumn<sinfg::ValueBase> value;
+		Gtk::TreeModelColumn<synfig::ValueBase> value;
 		Gtk::TreeModelColumn<Glib::ustring> type;
 		Gtk::TreeModelColumn<int> link_id;
 		Gtk::TreeModelColumn<int> link_count;
@@ -85,7 +85,7 @@ public:
 		Gtk::TreeModelColumn<bool> is_shared;
 		Gtk::TreeModelColumn<bool> is_exported;
 	
-		Gtk::TreeModelColumn<sinfgapp::ValueDesc> value_desc;
+		Gtk::TreeModelColumn<synfigapp::ValueDesc> value_desc;
 	
 		Gtk::TreeModelColumn<Glib::ustring> tooltip;
 
@@ -129,7 +129,7 @@ public:
 
 private:
 
-	etl::loose_handle<sinfgapp::CanvasInterface> canvas_interface_;
+	etl::loose_handle<synfigapp::CanvasInterface> canvas_interface_;
 
 	/*
  -- ** -- P R I V A T E   M E T H O D S ---------------------------------------
@@ -152,32 +152,32 @@ private:
 
 public:
 	
-	CanvasTreeStore(etl::loose_handle<sinfgapp::CanvasInterface> canvas_interface_);
+	CanvasTreeStore(etl::loose_handle<synfigapp::CanvasInterface> canvas_interface_);
 	~CanvasTreeStore();
 
-	etl::loose_handle<sinfgapp::CanvasInterface> canvas_interface() { return canvas_interface_; }
-	etl::loose_handle<const sinfgapp::CanvasInterface> canvas_interface()const { return canvas_interface_; }
+	etl::loose_handle<synfigapp::CanvasInterface> canvas_interface() { return canvas_interface_; }
+	etl::loose_handle<const synfigapp::CanvasInterface> canvas_interface()const { return canvas_interface_; }
 
 	virtual void rebuild_row(Gtk::TreeModel::Row &row, bool do_children=true);
 
 	virtual void refresh_row(Gtk::TreeModel::Row &row, bool do_children=true);
 
-	virtual void set_row(Gtk::TreeRow row,sinfgapp::ValueDesc value_desc, bool do_children=true);
+	virtual void set_row(Gtk::TreeRow row,synfigapp::ValueDesc value_desc, bool do_children=true);
 
-	bool find_first_value_desc(const sinfgapp::ValueDesc& value_desc, Gtk::TreeIter& iter);
-	bool find_next_value_desc(const sinfgapp::ValueDesc& value_desc, Gtk::TreeIter& iter);
+	bool find_first_value_desc(const synfigapp::ValueDesc& value_desc, Gtk::TreeIter& iter);
+	bool find_next_value_desc(const synfigapp::ValueDesc& value_desc, Gtk::TreeIter& iter);
 
-	bool find_first_value_node(const sinfg::ValueNode::Handle& value_node, Gtk::TreeIter& iter);
-	bool find_next_value_node(const sinfg::ValueNode::Handle& value_node, Gtk::TreeIter& iter);
+	bool find_first_value_node(const synfig::ValueNode::Handle& value_node, Gtk::TreeIter& iter);
+	bool find_next_value_node(const synfig::ValueNode::Handle& value_node, Gtk::TreeIter& iter);
 	
 	
 	static CellRenderer_ValueBase* add_cell_renderer_value(Gtk::TreeView::Column* column);
 
 	static CellRenderer_TimeTrack* add_cell_renderer_value_node(Gtk::TreeView::Column* column);
 
-	etl::loose_handle<sinfgapp::CanvasInterface> get_canvas_interface()const { return canvas_interface_; }
+	etl::loose_handle<synfigapp::CanvasInterface> get_canvas_interface()const { return canvas_interface_; }
 
-	virtual void on_value_node_changed(sinfg::ValueNode::Handle value_node)=0;
+	virtual void on_value_node_changed(synfig::ValueNode::Handle value_node)=0;
 
 	/*
  -- ** -- P R O T E C T E D   M E T H O D S -----------------------------------

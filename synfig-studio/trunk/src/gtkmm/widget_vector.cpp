@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file widget_vector.cpp
 **	\brief Template File
 **
@@ -38,7 +38,7 @@
 /* === U S I N G =========================================================== */
 
 using namespace std;
-using namespace sinfg;
+using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
@@ -144,7 +144,7 @@ Widget_Vector::set_digits(int x)
 }
 
 void
-Widget_Vector::set_value(const sinfg::Vector &data)
+Widget_Vector::set_value(const synfig::Vector &data)
 {
 	vector=data;
 
@@ -157,7 +157,7 @@ Widget_Vector::set_value(const sinfg::Vector &data)
 		distance_y->set_value(disty);
 		spinbutton_x->hide();
 		spinbutton_y->hide();
-	}catch(...) { sinfg::error("Widget_Vector::set_value(): Caught something that was thrown"); }}
+	}catch(...) { synfig::error("Widget_Vector::set_value(): Caught something that was thrown"); }}
 	else
 	{
 		spinbutton_x->set_value(vector[0]);
@@ -167,7 +167,7 @@ Widget_Vector::set_value(const sinfg::Vector &data)
 	}
 }
 
-const sinfg::Vector &
+const synfig::Vector &
 Widget_Vector::get_value()
 {
 	if(!canvas_ && spinbutton_x)
@@ -183,7 +183,7 @@ Widget_Vector::get_value()
 		vector[1]=distance_y->get_value().units(canvas_->rend_desc());
 		spinbutton_x->hide();
 		spinbutton_y->hide();
-	}catch(...) { sinfg::error("Widget_Vector::set_value(): Caught something that was thrown"); }
+	}catch(...) { synfig::error("Widget_Vector::set_value(): Caught something that was thrown"); }
 	return vector;
 }
 

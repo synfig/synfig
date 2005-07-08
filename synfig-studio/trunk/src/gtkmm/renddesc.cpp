@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file renddesc.cpp
 **	\brief Template File
 **
@@ -32,7 +32,7 @@
 #include <gtkmm/label.h>
 #include <gtkmm/frame.h>
 #include <ETL/misc>
-#include <sinfg/general.h>
+#include <synfig/general.h>
 //#include <gtkmm/seperator.h>
 
 #endif
@@ -41,17 +41,17 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
 
-#ifndef SINFG_MAX_PIXEL_WIDTH
-#define SINFG_MAX_PIXEL_WIDTH	(~(1<<31))
+#ifndef SYNFIG_MAX_PIXEL_WIDTH
+#define SYNFIG_MAX_PIXEL_WIDTH	(~(1<<31))
 #endif
 
-#ifndef SINFG_MAX_PIXEL_HEIGHT
-#define SINFG_MAX_PIXEL_HEIGHT	(~(1<<31))
+#ifndef SYNFIG_MAX_PIXEL_HEIGHT
+#define SYNFIG_MAX_PIXEL_HEIGHT	(~(1<<31))
 #endif
 
 #if ! defined(_)
@@ -76,8 +76,8 @@ using namespace studio;
 
 Widget_RendDesc::Widget_RendDesc():
 	Gtk::Table(1,2,false),
-	adjustment_width(1,1,SINFG_MAX_PIXEL_WIDTH),
-	adjustment_height(1,1,SINFG_MAX_PIXEL_HEIGHT),
+	adjustment_width(1,1,SYNFIG_MAX_PIXEL_WIDTH),
+	adjustment_height(1,1,SYNFIG_MAX_PIXEL_HEIGHT),
 	adjustment_xres(0,0,10000000),
 	adjustment_yres(0,0,10000000),
 	adjustment_phy_width(0,0,10000000),
@@ -221,7 +221,7 @@ Widget_RendDesc::~Widget_RendDesc()
 {
 }
 
-void Widget_RendDesc::set_rend_desc(const sinfg::RendDesc &rend_desc)
+void Widget_RendDesc::set_rend_desc(const synfig::RendDesc &rend_desc)
 {
 	if(update_lock)return;
 	
@@ -260,12 +260,12 @@ Widget_RendDesc::refresh()
 	toggle_im_span->set_active((bool)(rend_desc_.get_flags()&RendDesc::IM_SPAN));	
 }
 
-void Widget_RendDesc::apply_rend_desc(const sinfg::RendDesc &rend_desc)
+void Widget_RendDesc::apply_rend_desc(const synfig::RendDesc &rend_desc)
 {
 	set_rend_desc(rend_desc);
 }
 
-const sinfg::RendDesc &
+const synfig::RendDesc &
 Widget_RendDesc::get_rend_desc()
 {
 	return rend_desc_;

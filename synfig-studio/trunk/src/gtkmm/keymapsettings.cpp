@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file keymapsettings.cpp
 **	\brief Contains Info for Key Map settings
 **
@@ -40,7 +40,7 @@
 
 using namespace std;
 //using namespace etl;
-//using namespace sinfg;
+//using namespace synfig;
 using namespace studio;
 
 using namespace Gtk;

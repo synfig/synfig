@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file dock_canvasspecific.h
 **	\brief Template Header
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_STUDIO_DOCK_CANVASSPECIFIC_H
-#define __SINFG_STUDIO_DOCK_CANVASSPECIFIC_H
+#ifndef __SYNFIG_STUDIO_DOCK_CANVASSPECIFIC_H
+#define __SYNFIG_STUDIO_DOCK_CANVASSPECIFIC_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -59,9 +59,9 @@ private:
 public:
 
 	etl::loose_handle<studio::CanvasView> get_canvas_view();
-	etl::loose_handle<sinfgapp::CanvasInterface> get_canvas_interface();
+	etl::loose_handle<synfigapp::CanvasInterface> get_canvas_interface();
 
-	Dock_CanvasSpecific(const sinfg::String& name,const sinfg::String& local_name,Gtk::StockID stock_id_=Gtk::StockID(" "));
+	Dock_CanvasSpecific(const synfig::String& name,const synfig::String& local_name,Gtk::StockID stock_id_=Gtk::StockID(" "));
 	virtual ~Dock_CanvasSpecific();
 }; // END of Dock_CanvasSpecific
 

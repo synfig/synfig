@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file preview.h
 **	\brief Previews an animation
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_PREVIEW_H
-#define __SINFG_PREVIEW_H
+#ifndef __SYNFIG_PREVIEW_H
+#define __SYNFIG_PREVIEW_H
 
 /* === H E A D E R S ======================================================= */
 #include <gtkmm/drawingarea.h>
@@ -35,11 +35,11 @@
 #include <gtkmm/checkbutton.h>
 #include <gtkmm/canvasview.h>
 
-#include <sinfg/time.h>
-#include <sinfg/vector.h>
-#include <sinfg/general.h>
-#include <sinfg/renddesc.h>
-#include <sinfg/canvas.h>
+#include <synfig/time.h>
+#include <synfig/vector.h>
+#include <synfig/general.h>
+#include <synfig/renddesc.h>
+#include <synfig/canvas.h>
 
 #include "widget_sound.h"
 
@@ -77,7 +77,7 @@ private:
 	
 	studio::CanvasView::LooseHandle	canvasview;
 
-	//sinfg::RendDesc		description; //for rendering the preview...
+	//synfig::RendDesc		description; //for rendering the preview...
 	float	zoom,fps;
 	float	begintime,endtime;
 	bool 	overbegin,overend;
@@ -136,14 +136,14 @@ public:
 	int		get_quality() const {return quality;}
 	void	set_quality(int i)	{quality = i;}
 	
-	sinfg::Canvas::Handle	get_canvas() const {return canvasview->get_canvas();}
+	synfig::Canvas::Handle	get_canvas() const {return canvasview->get_canvas();}
 	studio::CanvasView::Handle	get_canvasview() const {return canvasview;}
 	
 	void set_canvasview(const studio::CanvasView::LooseHandle &h);
 	
 	//signal interface
 	sigc::signal<void, Preview *> &	signal_destroyed() { return signal_destroyed_; }
-	//sigc::signal<void, const sinfg::RendDesc &>	&signal_desc_change() {return signal_desc_change_;}
+	//sigc::signal<void, const synfig::RendDesc &>	&signal_desc_change() {return signal_desc_change_;}
 	
 	//functions for exposing iterators through the preview
 	FlipBook::iterator	begin() 	{return frames.begin();}

@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file layertreestore.h
 **	\brief Template Header
 **
@@ -21,15 +21,15 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_STUDIO_LAYERGROUPTREESTORE_H
-#define __SINFG_STUDIO_LAYERGROUPTREESTORE_H
+#ifndef __SYNFIG_STUDIO_LAYERGROUPTREESTORE_H
+#define __SYNFIG_STUDIO_LAYERGROUPTREESTORE_H
 
 /* === H E A D E R S ======================================================= */
 
 #include <gtkmm/treestore.h>
-#include <sinfgapp/canvasinterface.h>
-#include <sinfg/value.h>
-#include <sinfg/valuenode.h>
+#include <synfigapp/canvasinterface.h>
+#include <synfig/value.h>
+#include <synfig/valuenode.h>
 #include <gtkmm/treeview.h>
 
 /* === M A C R O S ========================================================= */
@@ -47,7 +47,7 @@ class LayerGroupTreeStore :  public Gtk::TreeStore
 	*/
 
 public:
-	typedef std::list<sinfg::Layer::Handle> LayerList;
+	typedef std::list<synfig::Layer::Handle> LayerList;
 
 	class Model : public Gtk::TreeModel::ColumnRecord
 	{
@@ -59,12 +59,12 @@ public:
 		Gtk::TreeModelColumn<Glib::ustring> group_name;
 		Gtk::TreeModelColumn<Glib::ustring> parent_group_name;
 
-		Gtk::TreeModelColumn<sinfg::Canvas::Handle> canvas;
+		Gtk::TreeModelColumn<synfig::Canvas::Handle> canvas;
 
 		Gtk::TreeModelColumn<bool>						active;
 		Gtk::TreeModelColumn<bool>						is_layer;
 		Gtk::TreeModelColumn<bool>						is_group;
-		Gtk::TreeModelColumn<sinfg::Layer::Handle>		layer;
+		Gtk::TreeModelColumn<synfig::Layer::Handle>		layer;
 		
 		Gtk::TreeModelColumn<LayerList>		all_layers;
 		Gtk::TreeModelColumn<LayerList>		child_layers;
@@ -103,7 +103,7 @@ public:
 
 private:
 
-	etl::loose_handle<sinfgapp::CanvasInterface> canvas_interface_;
+	etl::loose_handle<synfigapp::CanvasInterface> canvas_interface_;
 
 	Glib::RefPtr<Gdk::Pixbuf> layer_icon;
 	Glib::RefPtr<Gdk::Pixbuf> group_icon;
@@ -130,8 +130,8 @@ private:
 	virtual bool  row_drop_possible_vfunc (const TreeModel::Path& dest, const Gtk::SelectionData& selection_data)const;
 
 
-	void on_group_pair_added(sinfg::String group, etl::handle<sinfg::Layer> layer);
-	void on_group_pair_removed(sinfg::String group, etl::handle<sinfg::Layer> layer);
+	void on_group_pair_added(synfig::String group, etl::handle<synfig::Layer> layer);
+	void on_group_pair_removed(synfig::String group, etl::handle<synfig::Layer> layer);
 
 	void on_activity();
 
@@ -143,16 +143,16 @@ private:
 
 	bool on_layer_tree_event(GdkEvent *event);
 
-	void on_layer_new_description(sinfg::Layer::Handle handle,sinfg::String desc);
+	void on_layer_new_description(synfig::Layer::Handle handle,synfig::String desc);
 
-	void on_layer_status_changed(sinfg::Layer::Handle handle,bool);
+	void on_layer_status_changed(synfig::Layer::Handle handle,bool);
 
-	bool find_layer_row_(const sinfg::Layer::Handle &handle, sinfg::Canvas::Handle canvas, Gtk::TreeModel::Children layers, Gtk::TreeModel::Children::iterator &iter, Gtk::TreeModel::Children::iterator &prev);
+	bool find_layer_row_(const synfig::Layer::Handle &handle, synfig::Canvas::Handle canvas, Gtk::TreeModel::Children layers, Gtk::TreeModel::Children::iterator &iter, Gtk::TreeModel::Children::iterator &prev);
 
-	bool find_group_row_(const sinfg::String &group, Gtk::TreeModel::Children layers, Gtk::TreeModel::Children::iterator &iter, Gtk::TreeModel::Children::iterator &prev);
+	bool find_group_row_(const synfig::String &group, Gtk::TreeModel::Children layers, Gtk::TreeModel::Children::iterator &iter, Gtk::TreeModel::Children::iterator &prev);
 
-	bool on_group_removed(sinfg::String group);
-	bool on_group_changed(sinfg::String group);
+	bool on_group_removed(synfig::String group);
+	bool on_group_changed(synfig::String group);
 
 	/*
  -- ** -- P U B L I C   M E T H O D S -----------------------------------------
@@ -160,19 +160,19 @@ private:
 
 public:
 	
-	LayerGroupTreeStore(etl::loose_handle<sinfgapp::CanvasInterface> canvas_interface_);
+	LayerGroupTreeStore(etl::loose_handle<synfigapp::CanvasInterface> canvas_interface_);
 	~LayerGroupTreeStore();
 
-	Gtk::TreeRow on_group_added(sinfg::String group);
-	etl::loose_handle<sinfgapp::CanvasInterface> canvas_interface() { return canvas_interface_; }
-	etl::loose_handle<const sinfgapp::CanvasInterface> canvas_interface()const { return canvas_interface_; }
-	etl::loose_handle<sinfgapp::CanvasInterface> get_canvas_interface()const { return canvas_interface_; }
+	Gtk::TreeRow on_group_added(synfig::String group);
+	etl::loose_handle<synfigapp::CanvasInterface> canvas_interface() { return canvas_interface_; }
+	etl::loose_handle<const synfigapp::CanvasInterface> canvas_interface()const { return canvas_interface_; }
+	etl::loose_handle<synfigapp::CanvasInterface> get_canvas_interface()const { return canvas_interface_; }
 
-	bool find_layer_row(const sinfg::Layer::Handle &handle, Gtk::TreeModel::Children::iterator &iter);
+	bool find_layer_row(const synfig::Layer::Handle &handle, Gtk::TreeModel::Children::iterator &iter);
 
-	bool find_group_row(const sinfg::String &group, Gtk::TreeModel::Children::iterator &iter);
+	bool find_group_row(const synfig::String &group, Gtk::TreeModel::Children::iterator &iter);
 
-	bool find_prev_layer_row(const sinfg::Layer::Handle &handle, Gtk::TreeModel::Children::iterator &iter);
+	bool find_prev_layer_row(const synfig::Layer::Handle &handle, Gtk::TreeModel::Children::iterator &iter);
 
 	void rebuild();
 
@@ -180,7 +180,7 @@ public:
 
 	void refresh_row(Gtk::TreeModel::Row &row);
 
-	void set_row_layer(Gtk::TreeRow &row,sinfg::Layer::Handle &handle);
+	void set_row_layer(Gtk::TreeRow &row,synfig::Layer::Handle &handle);
 
 	static bool search_func(const Glib::RefPtr<TreeModel>&,int,const Glib::ustring&,const TreeModel::iterator&);
 
@@ -190,7 +190,7 @@ public:
 
 public:
 	
-	static Glib::RefPtr<LayerGroupTreeStore> create(etl::loose_handle<sinfgapp::CanvasInterface> canvas_interface_);
+	static Glib::RefPtr<LayerGroupTreeStore> create(etl::loose_handle<synfigapp::CanvasInterface> canvas_interface_);
 
 }; // END of class LayerGroupTreeStore
 

@@ -1,6 +1,6 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file main.cpp
-**	\brief Sinfg Studio Entrypoint
+**	\brief Synfig Studio Entrypoint
 **
 **	$Id: main.cpp,v 1.2 2005/01/13 18:37:30 darco Exp $
 **
@@ -39,7 +39,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
@@ -84,7 +84,7 @@ int main(int argc, char **argv)
 
 		app.run();
 	}
-	catch(sinfg::SoftwareExpired)
+	catch(synfig::SoftwareExpired)
 	{
 		cerr<<"FATAL: Software Expired"<<endl;
 		return 39;

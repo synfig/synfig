@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file widget_timeslider.h
 **	\brief Time Slider Widget Header
 **
@@ -21,14 +21,14 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_WIDGET_TIMESLIDER_H
-#define __SINFG_WIDGET_TIMESLIDER_H
+#ifndef __SYNFIG_WIDGET_TIMESLIDER_H
+#define __SYNFIG_WIDGET_TIMESLIDER_H
 
 /* === H E A D E R S ======================================================= */
 #include <gtkmm/drawingarea.h>
 #include <gtkmm/adjustment.h>
 
-#include <sinfg/time.h>
+#include <synfig/time.h>
 #include "canvasview.h"
 
 /* === M A C R O S ========================================================= */
@@ -39,7 +39,7 @@
 
 namespace studio {
 
-void render_time_point_to_window(const Glib::RefPtr<Gdk::Drawable>& window,const Gdk::Rectangle& ca,const sinfg::TimePoint &tp,bool selected=false);
+void render_time_point_to_window(const Glib::RefPtr<Gdk::Drawable>& window,const Gdk::Rectangle& ca,const synfig::TimePoint &tp,bool selected=false);
 
 	
 /* Design for the timeslider...

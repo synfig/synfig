@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file widget_coloredit.cpp
 **	\brief Template File
 **
@@ -44,7 +44,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
@@ -456,7 +456,7 @@ Widget_ColorEdit::set_digits(int x)
 }
 
 void
-Widget_ColorEdit::set_value(const sinfg::Color &data)
+Widget_ColorEdit::set_value(const synfig::Color &data)
 {
 	assert(data.is_valid());
 	hold_signals=true;
@@ -492,7 +492,7 @@ Widget_ColorEdit::set_value(const sinfg::Color &data)
 	hold_signals=false;
 }
 
-sinfg::Color
+synfig::Color
 Widget_ColorEdit::get_value_raw()
 {
 	Color color;
@@ -516,7 +516,7 @@ Widget_ColorEdit::get_value_raw()
 	return color;
 }
 
-const sinfg::Color &
+const synfig::Color &
 Widget_ColorEdit::get_value()
 {
 	if(use_colorspace_gamma())

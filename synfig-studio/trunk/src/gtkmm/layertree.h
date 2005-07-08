@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file layertree.h
 **	\brief Template Header
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_STUDIO_LAYERTREE_H
-#define __SINFG_STUDIO_LAYERTREE_H
+#ifndef __SYNFIG_STUDIO_LAYERTREE_H
+#define __SYNFIG_STUDIO_LAYERTREE_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -35,11 +35,11 @@
 #include <gtkmm/scale.h>
 #include <gtkmm/button.h>
 
-#include <sinfgapp/canvasinterface.h>
-#include <sinfgapp/value_desc.h>
+#include <synfigapp/canvasinterface.h>
+#include <synfigapp/value_desc.h>
 #include "layertreestore.h"
 #include "layerparamtreestore.h"
-#include <sinfg/valuenode_animated.h>
+#include <synfig/valuenode_animated.h>
 
 #include "widget_value.h"
 
@@ -74,7 +74,7 @@ public:
 		COLUMNID_END			//!< \internal
 	};
 */
-	typedef std::list<sinfg::Layer::Handle> LayerList;
+	typedef std::list<synfig::Layer::Handle> LayerList;
 	
 	/*
  -- ** -- P U B L I C  D A T A ------------------------------------------------
@@ -87,7 +87,7 @@ public:
 	LayerTreeStore::Model layer_model;
 	LayerParamTreeStore::Model param_model;
 
-	sinfg::Layer::Handle last_top_selected_layer;
+	synfig::Layer::Handle last_top_selected_layer;
 	Gtk::TreePath last_top_selected_path;
 
 	/*
@@ -113,7 +113,7 @@ private:
 
 	Gtk::HScale *layer_amount_hscale;
 
-	sinfg::Layer::Handle quick_layer;
+	synfig::Layer::Handle quick_layer;
 
 	Glib::RefPtr<LayerTreeStore> layer_tree_store_;
 
@@ -129,15 +129,15 @@ private:
 
 	CellRenderer_ValueBase *cellrenderer_value;
 
-	sigc::signal<void,sinfg::Layer::Handle> signal_layer_toggle_;
+	sigc::signal<void,synfig::Layer::Handle> signal_layer_toggle_;
 
-	sigc::signal<void,sinfgapp::ValueDesc,sinfg::ValueBase> signal_edited_value_;
+	sigc::signal<void,synfigapp::ValueDesc,synfig::ValueBase> signal_edited_value_;
 
 	sigc::signal<bool, int, Gtk::TreeRow, ColumnID> signal_layer_user_click_;
 
 	sigc::signal<bool, int, Gtk::TreeRow, ColumnID> signal_param_user_click_;
 
-	sigc::signal<void,sinfgapp::ValueDesc,sinfg::Waypoint,int> signal_waypoint_clicked_;
+	sigc::signal<void,synfigapp::ValueDesc,synfig::Waypoint,int> signal_waypoint_clicked_;
 
 	bool disable_amount_changed_signal;
 
@@ -163,13 +163,13 @@ private:
 
 private:
 
-	void on_edited_value(const Glib::ustring&path_string,sinfg::ValueBase value);
+	void on_edited_value(const Glib::ustring&path_string,synfig::ValueBase value);
 
 	void on_layer_toggle(const Glib::ustring& path_string);
 
-	void on_waypoint_clicked(const Glib::ustring &, sinfg::Waypoint, int button);
+	void on_waypoint_clicked(const Glib::ustring &, synfig::Waypoint, int button);
 
-	void on_waypoint_changed( sinfg::Waypoint waypoint , sinfg::ValueNode::Handle value_node);
+	void on_waypoint_changed( synfig::Waypoint waypoint , synfig::ValueNode::Handle value_node);
 
 	bool on_layer_tree_event(GdkEvent *event);
 
@@ -222,27 +222,27 @@ public:
 	void set_show_timetrack(bool x=true);
 
 	//! Signal called when layer is toggled.
-	sigc::signal<void,sinfg::Layer::Handle>& signal_layer_toggle() { return signal_layer_toggle_; }
+	sigc::signal<void,synfig::Layer::Handle>& signal_layer_toggle() { return signal_layer_toggle_; }
 
 	//! Signal called with a value has been edited.
-	sigc::signal<void,sinfgapp::ValueDesc,sinfg::ValueBase>& signal_edited_value() { return signal_edited_value_; }
+	sigc::signal<void,synfigapp::ValueDesc,synfig::ValueBase>& signal_edited_value() { return signal_edited_value_; }
 
 	sigc::signal<bool,int, Gtk::TreeRow, ColumnID>& signal_layer_user_click() { return signal_layer_user_click_; }
 
 	sigc::signal<bool,int, Gtk::TreeRow, ColumnID>& signal_param_user_click() { return signal_param_user_click_; }
 
-	sigc::signal<void,sinfgapp::ValueDesc,sinfg::Waypoint,int>& signal_waypoint_clicked() { return signal_waypoint_clicked_; }
+	sigc::signal<void,synfigapp::ValueDesc,synfig::Waypoint,int>& signal_waypoint_clicked() { return signal_waypoint_clicked_; }
 
-	etl::handle<sinfgapp::SelectionManager> get_selection_manager() { return layer_tree_store_->canvas_interface()->get_selection_manager(); }
+	etl::handle<synfigapp::SelectionManager> get_selection_manager() { return layer_tree_store_->canvas_interface()->get_selection_manager(); }
 	
 	
 	
-	void select_layer(sinfg::Layer::Handle layer);
+	void select_layer(synfig::Layer::Handle layer);
 	void select_layers(const LayerList& layer_list);
-	void select_all_children_layers(sinfg::Layer::Handle layer);
+	void select_all_children_layers(synfig::Layer::Handle layer);
 	void select_all_children(Gtk::TreeModel::Children::iterator iter);
 	LayerList get_selected_layers()const;
-	sinfg::Layer::Handle get_selected_layer()const;
+	synfig::Layer::Handle get_selected_layer()const;
 	void clear_selected_layers();
 
 }; // END of LayerTree

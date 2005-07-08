@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file audiocontainer.h
 **	\brief Sound info header
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_AUDIOCONTAINER_H
-#define __SINFG_AUDIOCONTAINER_H
+#ifndef __SYNFIG_AUDIOCONTAINER_H
+#define __SYNFIG_AUDIOCONTAINER_H
 
 /* === H E A D E R S ======================================================= */
 #include <sigc++/signal.h>
@@ -32,7 +32,7 @@
 #include <vector>
 #include <string>
 
-#include <sinfg/time.h>
+#include <synfig/time.h>
 
 /* === M A C R O S ========================================================= */
 const float DEF_DISPLAYSAMPLERATE = 400;

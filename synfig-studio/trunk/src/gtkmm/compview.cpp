@@ -1,5 +1,5 @@
 /*! ========================================================================
-** Sinfg
+** Synfig
 ** Template File
 ** $Id: compview.cpp,v 1.1.1.1 2005/01/07 03:34:36 darco Exp $
 **
@@ -37,7 +37,7 @@
 #include <sigc++/hide.h>
 #include <sigc++/slot.h>
 #include "canvasview.h"
-#include <sinfgapp/action.h>
+#include <synfigapp/action.h>
 
 #endif
 
@@ -51,7 +51,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 using namespace studio;
 
 #define COLUMNID_JUMP		(787584)
@@ -341,15 +341,15 @@ void
 CompView::init_menu()
 {
 	menu.items().push_back(Gtk::Menu_Helpers::SeparatorElem());
-	menu.items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::StockID("sinfg-canvas_new"),
+	menu.items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::StockID("synfig-canvas_new"),
 		sigc::mem_fun(*this,&CompView::menu_new_canvas)));
 	menu.items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::StockID("gtk-delete"),
 		sigc::mem_fun(*this,&CompView::menu_delete)));
-	menu.items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::StockID("sinfg-rename"),
+	menu.items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::StockID("synfig-rename"),
 		sigc::mem_fun(*this,&CompView::menu_rename)));
 }
 
-etl::loose_handle<sinfg::Canvas>
+etl::loose_handle<synfig::Canvas>
 CompView::get_selected_canvas()
 {
 	Glib::RefPtr<Gtk::TreeSelection> selection=canvas_tree->get_selection();
@@ -359,7 +359,7 @@ CompView::get_selected_canvas()
 
 	studio::Instance::CanvasTreeModel canvas_tree_model;
 
-	return static_cast<etl::handle<sinfg::Canvas> >((*selection->get_selected())[canvas_tree_model.canvas]);
+	return static_cast<etl::handle<synfig::Canvas> >((*selection->get_selected())[canvas_tree_model.canvas]);
 }
 
 void
@@ -449,8 +449,8 @@ CompView::new_instance(etl::handle<studio::Instance> instance)
 	
 	etl::loose_handle<studio::Instance> loose_instance(instance);
 	
-	instance->sinfgapp::Instance::signal_filename_changed().connect(sigc::mem_fun(*this,&CompView::refresh_instances));
-	instance->sinfgapp::Instance::signal_filename_changed().connect(
+	instance->synfigapp::Instance::signal_filename_changed().connect(sigc::mem_fun(*this,&CompView::refresh_instances));
+	instance->synfigapp::Instance::signal_filename_changed().connect(
 		sigc::bind<etl::loose_handle<studio::Instance> >(
 			sigc::mem_fun(*this,&CompView::set_selected_instance),
 			loose_instance
@@ -536,7 +536,7 @@ CompView::on_action_event(GdkEvent *event)
 			//signal_user_click()(event->button.button,row,(ColumnID)column->get_sort_column_id());
 			if((ColumnID)column->get_sort_column_id()==COLUMNID_JUMP)
 			{
-				etl::handle<sinfgapp::Action::Undoable> action(row[model.action]);
+				etl::handle<synfigapp::Action::Undoable> action(row[model.action]);
 				if((bool)row[model.is_undo])
 				{
 					while(get_selected_instance()->undo_action_stack().size() && get_selected_instance()->undo_action_stack().front()!=action)
@@ -571,10 +571,10 @@ CompView::on_tree_event(GdkEvent *event)
 		{
 			menu.items().clear();
 
-			sinfgapp::Action::ParamList param_list;
-			param_list.add("canvas",sinfg::Canvas::Handle(get_selected_canvas()));
+			synfigapp::Action::ParamList param_list;
+			param_list.add("canvas",synfig::Canvas::Handle(get_selected_canvas()));
 			param_list.add("canvas_interface",get_selected_instance()->find_canvas_interface(get_selected_canvas()));
-			get_selected_instance()->find_canvas_view(get_selected_canvas())->add_actions_to_menu(&menu, param_list,sinfgapp::Action::CATEGORY_CANVAS);					
+			get_selected_instance()->find_canvas_view(get_selected_canvas())->add_actions_to_menu(&menu, param_list,synfigapp::Action::CATEGORY_CANVAS);					
 			menu.popup(0,0);
 			menu.show();
 			break;
@@ -602,7 +602,7 @@ CompView::on_action_toggle(const Glib::ustring& path_string)
 	
 	const Gtk::TreeRow row = *(selected_instance->history_tree_store()->get_iter(path));
 
-	handle<sinfgapp::Action::Undoable> action=row[history_tree_model.action];
+	handle<synfigapp::Action::Undoable> action=row[history_tree_model.action];
 	
-	selected_instance->sinfgapp::Instance::set_action_status(action,!action->is_active());
+	selected_instance->synfigapp::Instance::set_action_status(action,!action->is_active());
 }

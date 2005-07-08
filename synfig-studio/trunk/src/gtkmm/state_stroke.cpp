@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file state_stroke.cpp
 **	\brief Template File
 **
@@ -31,20 +31,20 @@
 #include <gtkmm/dialog.h>
 #include <gtkmm/entry.h>
 
-#include <sinfg/valuenode_dynamiclist.h>
+#include <synfig/valuenode_dynamiclist.h>
 
 #include "state_stroke.h"
 #include "canvasview.h"
 #include "workarea.h"
 #include "app.h"
-#include <sinfg/valuenode_bline.h>
+#include <synfig/valuenode_bline.h>
 #include <ETL/hermite>
 #include <ETL/calculus>
 #include <utility>
 #include "event_mouse.h"
 #include "event_layerclick.h"
 #include "toolbox.h"
-#include <sinfgapp/main.h>
+#include <synfigapp/main.h>
 
 #endif
 
@@ -52,7 +52,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
@@ -70,9 +70,9 @@ class studio::StateStroke_Context : public sigc::trackable
 	
 	Duckmatic::Push duckmatic_push;
 	
-	etl::smart_ptr<std::list<sinfg::Point> > stroke_data;
+	etl::smart_ptr<std::list<synfig::Point> > stroke_data;
 
-	etl::smart_ptr<std::list<sinfg::Real> > width_data;
+	etl::smart_ptr<std::list<synfig::Real> > width_data;
 
 	Gdk::ModifierType modifier;
 
@@ -92,8 +92,8 @@ public:
 	~StateStroke_Context();
 
 	const etl::handle<CanvasView>& get_canvas_view()const{return canvas_view_;}
-	etl::handle<sinfgapp::CanvasInterface> get_canvas_interface()const{return canvas_view_->canvas_interface();}
-	sinfg::Canvas::Handle get_canvas()const{return canvas_view_->get_canvas();}
+	etl::handle<synfigapp::CanvasInterface> get_canvas_interface()const{return canvas_view_->canvas_interface();}
+	synfig::Canvas::Handle get_canvas()const{return canvas_view_->get_canvas();}
 	WorkArea * get_work_area()const{return canvas_view_->get_work_area();}
 	
 };	// END of class StateStroke_Context
@@ -125,9 +125,9 @@ StateStroke_Context::StateStroke_Context(CanvasView* canvas_view):
 	width_data.spawn();
 	stroke_data.spawn();
 
-	get_work_area()->add_stroke(stroke_data, sinfgapp::Main::get_foreground_color());
+	get_work_area()->add_stroke(stroke_data, synfigapp::Main::get_foreground_color());
 
-	sinfg::info("Now Scribbling...");	
+	synfig::info("Now Scribbling...");	
 }
 
 StateStroke_Context::~StateStroke_Context()
@@ -135,7 +135,7 @@ StateStroke_Context::~StateStroke_Context()
 	duckmatic_push.restore();
 	
 	App::toolbox->refresh();
-	sinfg::info("No longer scribbling");	
+	synfig::info("No longer scribbling");	
 
 	// Send the stroke data to whatever previously called this state.
 	if(stroke_data->size()>=2)

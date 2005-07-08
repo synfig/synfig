@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file dock_layergroups.cpp
 **	\brief Template File
 **
@@ -50,7 +50,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
@@ -62,7 +62,7 @@ using namespace studio;
 /* === M E T H O D S ======================================================= */
 
 Dock_LayerGroups::Dock_LayerGroups():
-	Dock_CanvasSpecific("groups",_("Groups"),Gtk::StockID("sinfg-group")),
+	Dock_CanvasSpecific("groups",_("Groups"),Gtk::StockID("synfig-group")),
 	action_group_group_ops(Gtk::ActionGroup::create()),
 	group_action_manager(new GroupActionManager)
 {	

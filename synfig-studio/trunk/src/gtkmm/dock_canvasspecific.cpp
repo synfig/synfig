@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file dock_canvasspecific.cpp
 **	\brief Template File
 **
@@ -48,7 +48,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
@@ -59,7 +59,7 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
-Dock_CanvasSpecific::Dock_CanvasSpecific(const sinfg::String& name,const sinfg::String& local_name,Gtk::StockID stock_id_):
+Dock_CanvasSpecific::Dock_CanvasSpecific(const synfig::String& name,const synfig::String& local_name,Gtk::StockID stock_id_):
 	Dockable(name,local_name,stock_id_)
 {
 	App::signal_instance_created().connect(sigc::mem_fun(*this,&Dock_CanvasSpecific::init_instance));
@@ -75,7 +75,7 @@ Dock_CanvasSpecific::get_canvas_view()
 	return App::get_selected_canvas_view();
 }
 
-etl::loose_handle<sinfgapp::CanvasInterface>
+etl::loose_handle<synfigapp::CanvasInterface>
 Dock_CanvasSpecific::get_canvas_interface()
 {
 	if(get_canvas_view())
@@ -104,7 +104,7 @@ Dock_CanvasSpecific::init_instance(etl::handle<Instance> instance)
 	etl::clock timer;timer.reset();
 	instance->signal_canvas_view_created().connect(sigc::mem_fun(*this,&Dock_CanvasSpecific::init_canvas_view));
 	init_instance_vfunc(instance);
-	sinfg::info("%s init_instance() took %f seconds",get_local_name().c_str(),float(timer()));
+	synfig::info("%s init_instance() took %f seconds",get_local_name().c_str(),float(timer()));
 }
 
 void
@@ -129,7 +129,7 @@ Dock_CanvasSpecific::init_canvas_view(CanvasView* canvas_view)
 		)	
 	);
 	*/
-	sinfg::info("%s init_canvas_view() Starting init...",get_local_name().c_str());
+	synfig::info("%s init_canvas_view() Starting init...",get_local_name().c_str());
 	etl::clock timer;timer.reset();
 	App::signal_canvas_view_focus().connect(
 		sigc::hide(
@@ -140,7 +140,7 @@ Dock_CanvasSpecific::init_canvas_view(CanvasView* canvas_view)
 		)
 	);
 	init_canvas_view_vfunc(canvas_view);
-	sinfg::info("%s init_canvas_view() took %f seconds",get_local_name().c_str(),float(timer()));
+	synfig::info("%s init_canvas_view() took %f seconds",get_local_name().c_str(),float(timer()));
 }
 
 void
@@ -163,10 +163,10 @@ Dock_CanvasSpecific::canvas_view_changed()
 */
 	
 #ifdef _DEBUG
-	sinfg::info("%s canvas_view_changed: start",get_local_name().c_str());
+	synfig::info("%s canvas_view_changed: start",get_local_name().c_str());
 #endif
 	changed_canvas_view_vfunc(canvas_view);
 #ifdef _DEBUG
-	sinfg::info("%s canvas_view_changed: end",get_local_name().c_str());
+	synfig::info("%s canvas_view_changed: end",get_local_name().c_str());
 #endif
 }

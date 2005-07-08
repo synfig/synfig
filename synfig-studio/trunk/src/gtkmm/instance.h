@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file instance.h
 **	\brief writeme
 **
@@ -21,19 +21,19 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_STUDIO_INSTANCE_H
-#define __SINFG_STUDIO_INSTANCE_H
+#ifndef __SYNFIG_STUDIO_INSTANCE_H
+#define __SYNFIG_STUDIO_INSTANCE_H
 
 /* === H E A D E R S ======================================================= */
 
 #include <ETL/handle>
 #include <gtkmm/treeview.h>
 #include <gtkmm/treestore.h>
-#include <sinfgapp/instance.h>
+#include <synfigapp/instance.h>
 #include <sigc++/object.h>
-#include <sinfgapp/value_desc.h>
+#include <synfigapp/value_desc.h>
 #include "historytreestore.h"
-#include <sinfg/canvas.h>
+#include <synfig/canvas.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -48,7 +48,7 @@ namespace studio {
 class CanvasView;
 	
 
-class Instance : public sinfgapp::Instance
+class Instance : public synfigapp::Instance
 {
 public:
 	typedef std::list< etl::handle<CanvasView> > CanvasViewList;
@@ -61,19 +61,19 @@ public:
 		Gtk::TreeModelColumn<Glib::ustring> name;
 		Gtk::TreeModelColumn<Glib::ustring> id;
 
-		Gtk::TreeModelColumn<sinfg::Canvas::Handle> canvas;
+		Gtk::TreeModelColumn<synfig::Canvas::Handle> canvas;
 		Gtk::TreeModelColumn<bool> is_canvas;
 
-		Gtk::TreeModelColumn<sinfg::ValueNode::Handle> value_node;
+		Gtk::TreeModelColumn<synfig::ValueNode::Handle> value_node;
 		Gtk::TreeModelColumn<bool> is_value_node;
-		Gtk::TreeModelColumn<sinfg::ValueBase> value;
+		Gtk::TreeModelColumn<synfig::ValueBase> value;
 		Gtk::TreeModelColumn<Glib::ustring> type;
 		Gtk::TreeModelColumn<int> link_id;
 		Gtk::TreeModelColumn<int> link_count;
 
 		Gtk::TreeModelColumn<bool> is_editable;
 
-		Gtk::TreeModelColumn<sinfgapp::ValueDesc> value_desc;
+		Gtk::TreeModelColumn<synfigapp::ValueDesc> value_desc;
 	
 		CanvasTreeModel()
 		{
@@ -127,7 +127,7 @@ private:
 
 protected:
 
-	Instance(sinfg::Canvas::Handle);
+	Instance(synfig::Canvas::Handle);
 
 public:
 
@@ -155,20 +155,20 @@ public:
 	//! Returns the number of instances that are currently open in the program
 	static int get_count() { return instance_count_; }
 
-	//etl::handle<sinfg::Canvas> get_canvas()const { return sinfgapp::Instance::get_canvas(); }
+	//etl::handle<synfig::Canvas> get_canvas()const { return synfigapp::Instance::get_canvas(); }
 	
-	etl::handle<CanvasView>	find_canvas_view(etl::handle<sinfg::Canvas> canvas);
+	etl::handle<CanvasView>	find_canvas_view(etl::handle<synfig::Canvas> canvas);
 
 	//! Sets the focus to a specific canvas
-	void focus(etl::handle<sinfg::Canvas> canvas);
+	void focus(etl::handle<synfig::Canvas> canvas);
 
 	CanvasViewList & canvas_view_list() { return canvas_view_list_; }
 	
 	const CanvasViewList & canvas_view_list()const { return canvas_view_list_; }
 
-	bool save_as(const sinfg::String &filename)const;
+	bool save_as(const synfig::String &filename)const;
 
-	bool save_as(const sinfg::String &filename);
+	bool save_as(const synfig::String &filename);
 
 	//! Opens a "Save As" dialog, and then saves the composition to that file
 	void dialog_save_as();
@@ -195,25 +195,25 @@ public:
 	bool safe_revert();
 	bool safe_close();
 
-	void add_actions_to_menu(Gtk::Menu *menu,   const sinfgapp::Action::ParamList &param_list, sinfgapp::Action::Category category=sinfgapp::Action::CATEGORY_ALL)const;
-	void add_actions_to_menu(Gtk::Menu *menu, const sinfgapp::Action::ParamList &param_list1,const sinfgapp::Action::ParamList &param_list2, sinfgapp::Action::Category category=sinfgapp::Action::CATEGORY_ALL)const;
+	void add_actions_to_menu(Gtk::Menu *menu,   const synfigapp::Action::ParamList &param_list, synfigapp::Action::Category category=synfigapp::Action::CATEGORY_ALL)const;
+	void add_actions_to_menu(Gtk::Menu *menu, const synfigapp::Action::ParamList &param_list1,const synfigapp::Action::ParamList &param_list2, synfigapp::Action::Category category=synfigapp::Action::CATEGORY_ALL)const;
 
-	void add_actions_to_group(const Glib::RefPtr<Gtk::ActionGroup>& action_group, sinfg::String& ui_info,   const sinfgapp::Action::ParamList &param_list, sinfgapp::Action::Category category=sinfgapp::Action::CATEGORY_ALL)const;
+	void add_actions_to_group(const Glib::RefPtr<Gtk::ActionGroup>& action_group, synfig::String& ui_info,   const synfigapp::Action::ParamList &param_list, synfigapp::Action::Category category=synfigapp::Action::CATEGORY_ALL)const;
 
-	void process_action(sinfg::String name, sinfgapp::Action::ParamList param_list);
+	void process_action(synfig::String name, synfigapp::Action::ParamList param_list);
 
-	void make_param_menu(Gtk::Menu *menu,sinfg::Canvas::Handle canvas, sinfgapp::ValueDesc value_desc, float location=0.5f);
+	void make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfigapp::ValueDesc value_desc, float location=0.5f);
 
-	void make_param_menu(Gtk::Menu *menu,sinfg::Canvas::Handle canvas,const std::list<sinfgapp::ValueDesc>& value_desc_list);
+	void make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas,const std::list<synfigapp::ValueDesc>& value_desc_list);
 
 
-	static void edit_waypoint(sinfgapp::ValueDesc value_desc,sinfg::Waypoint waypoint);
+	static void edit_waypoint(synfigapp::ValueDesc value_desc,synfig::Waypoint waypoint);
 
 private:
-	void insert_canvas(Gtk::TreeRow row,sinfg::Canvas::Handle canvas);
+	void insert_canvas(Gtk::TreeRow row,synfig::Canvas::Handle canvas);
 
 public:
-	static etl::handle<Instance> create(sinfg::Canvas::Handle canvas);
+	static etl::handle<Instance> create(synfig::Canvas::Handle canvas);
 }; // END class Instance
 
 }; // END namespace studio

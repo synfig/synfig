@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file dialog_history.cpp
 **	\brief Template File
 **
@@ -39,7 +39,7 @@
 #include <sigc++/signal.h>
 #include <sigc++/hide.h>
 #include <sigc++/slot.h>
-#include <sinfgapp/action.h>
+#include <synfigapp/action.h>
 #include "historytreestore.h"
 
 #endif
@@ -48,7 +48,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
@@ -70,7 +70,7 @@ Dock_History::Dock_History():
 	
 	action_group->add(Gtk::Action::create(
 		"clear-undo",
-		Gtk::StockID("sinfg-clear_undo"),
+		Gtk::StockID("synfig-clear_undo"),
 		_("Clear the UNDO Stack"),
 		_("Clear the UNDO Stack")
 	),
@@ -81,7 +81,7 @@ Dock_History::Dock_History():
 	);
 	action_group->add(Gtk::Action::create(
 		"clear-redo",
-		Gtk::StockID("sinfg-clear_redo"),
+		Gtk::StockID("synfig-clear_redo"),
 		_("Clear the REDO Stack"),
 		_("Clear the REDO Stack")
 	),
@@ -130,7 +130,7 @@ Dock_History::Dock_History():
 	
 	/*
 	add_button(
-		Gtk::StockID("sinfg-clear_undo"),
+		Gtk::StockID("synfig-clear_undo"),
 		_("Clear the UNDO Stack")
 	)->signal_clicked().connect(
 		sigc::mem_fun(
@@ -139,7 +139,7 @@ Dock_History::Dock_History():
 		)
 	);
 	add_button(
-		Gtk::StockID("sinfg-clear_redo"),
+		Gtk::StockID("synfig-clear_redo"),
 		_("Clear the REDO Stack")
 	)->signal_clicked().connect(
 		sigc::mem_fun(
@@ -360,7 +360,7 @@ Dock_History::on_action_event(GdkEvent *event)
 			//signal_user_click()(event->button.button,row,(ColumnID)column->get_sort_column_id());
 			if((ColumnID)column->get_sort_column_id()==COLUMNID_JUMP)
 			{
-				etl::handle<sinfgapp::Action::Undoable> action(row[model.action]);
+				etl::handle<synfigapp::Action::Undoable> action(row[model.action]);
 				try{
 				if((bool)row[model.is_undo])
 				{
@@ -399,7 +399,7 @@ Dock_History::on_action_toggle(const Glib::ustring& path_string)
 	
 	const Gtk::TreeRow row = *(selected_instance->history_tree_store()->get_iter(path));
 
-	handle<sinfgapp::Action::Undoable> action=row[history_tree_model.action];
+	handle<synfigapp::Action::Undoable> action=row[history_tree_model.action];
 	
-	selected_instance->sinfgapp::Instance::set_action_status(action,!action->is_active());
+	selected_instance->synfigapp::Instance::set_action_status(action,!action->is_active());
 }

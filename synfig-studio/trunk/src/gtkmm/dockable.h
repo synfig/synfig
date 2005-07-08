@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file dockable.h
 **	\brief Template Header
 **
@@ -21,15 +21,15 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_STUDIO_DOCKABLE_H
-#define __SINFG_STUDIO_DOCKABLE_H
+#ifndef __SYNFIG_STUDIO_DOCKABLE_H
+#define __SYNFIG_STUDIO_DOCKABLE_H
 
 /* === H E A D E R S ======================================================= */
 
 #include <gtkmm/stockid.h>
 #include <gtkmm/button.h>
 #include "dialogsettings.h"
-#include <sinfg/string.h>
+#include <synfig/string.h>
 #include <gtkmm/table.h>
 #include <gtkmm/tooltips.h>
 #include <gtkmm/label.h>
@@ -68,8 +68,8 @@ private:
 
 	Gtk::Toolbar *toolbar_;
 
-	sinfg::String name_;
-	sinfg::String local_name_;
+	synfig::String name_;
+	synfig::String local_name_;
 	Gtk::Tooltips tooltips_;
 	Gtk::Frame frame_;
 	Gtk::Label title_label_;
@@ -96,18 +96,18 @@ public:
 
 	void set_use_scrolled(bool x) { use_scrolled_=x; }
 	
-	Dockable(const sinfg::String& name,const sinfg::String& local_name,Gtk::StockID stock_id_=Gtk::StockID(" "));
+	Dockable(const synfig::String& name,const synfig::String& local_name,Gtk::StockID stock_id_=Gtk::StockID(" "));
 	~Dockable();
 
 	sigc::signal<void>& signal_stock_id_changed() { return signal_stock_id_changed_; }
 
-	const sinfg::String& get_name()const { return name_; }
-	const sinfg::String& get_local_name()const { return local_name_; }
+	const synfig::String& get_name()const { return name_; }
+	const synfig::String& get_local_name()const { return local_name_; }
 
 	const Gtk::StockID& get_stock_id()const { return stock_id_; }
 	void set_stock_id(Gtk::StockID x) { stock_id_=x; signal_stock_id_changed()(); }
 	
-	void set_local_name(const sinfg::String&);
+	void set_local_name(const synfig::String&);
 
 	void clear();
 	
@@ -118,7 +118,7 @@ public:
 	
 	void add(Gtk::Widget& x);
 	
-	Gtk::ToolButton* add_button(const Gtk::StockID& stock_id, const sinfg::String& tooltip=sinfg::String());	
+	Gtk::ToolButton* add_button(const Gtk::StockID& stock_id, const synfig::String& tooltip=synfig::String());	
 	
 	void detach();
 

@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file ipc.h
 **	\brief Template Header
 **
@@ -21,14 +21,14 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_IPC_H
-#define __SINFG_IPC_H
+#ifndef __SYNFIG_IPC_H
+#define __SYNFIG_IPC_H
 
 /* === H E A D E R S ======================================================= */
 
-#include <sinfg/smartfile.h>
+#include <synfig/smartfile.h>
 #include <glibmm/main.h>
-#include <sinfg/string.h>
+#include <synfig/string.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -43,7 +43,7 @@ class IPC
 private:
 
 	int fd;
-	sinfg::SmartFILE file;
+	synfig::SmartFILE file;
 
 	bool fifo_activity(Glib::IOCondition cond);
 
@@ -51,10 +51,10 @@ public:
 	IPC();
 	~IPC();
 
-	static sinfg::String fifo_path();
-	static sinfg::SmartFILE make_connection();
+	static synfig::String fifo_path();
+	static synfig::SmartFILE make_connection();
 
-	static bool process_command(const sinfg::String& cmd);
+	static bool process_command(const synfig::String& cmd);
 }; // END of class IPC
 	
 }; // END of namespace studio

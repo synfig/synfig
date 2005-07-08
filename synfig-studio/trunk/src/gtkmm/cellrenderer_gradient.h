@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file cellrenderer_gradient.h
 **	\brief Template Header
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_STUDIO_CELLRENDERER_GRADIENT_H
-#define __SINFG_STUDIO_CELLRENDERER_GRADIENT_H
+#ifndef __SYNFIG_STUDIO_CELLRENDERER_GRADIENT_H
+#define __SYNFIG_STUDIO_CELLRENDERER_GRADIENT_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -32,7 +32,7 @@
 #include <sigc++/signal.h>
 #include <sigc++/slot.h>
 
-#include <sinfg/gradient.h>
+#include <synfig/gradient.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -47,15 +47,15 @@ namespace studio {
 class CellRenderer_Gradient : public Gtk::CellRendererText
 {
 	sigc::signal<void, const Glib::ustring&> signal_secondary_click_;
-	sigc::signal<void, const Glib::ustring&, sinfg::Gradient> signal_edited_;
+	sigc::signal<void, const Glib::ustring&, synfig::Gradient> signal_edited_;
 
-	Glib::Property<sinfg::Gradient> property_gradient_;
+	Glib::Property<synfig::Gradient> property_gradient_;
 
 public:
-	sigc::signal<void, const Glib::ustring&, sinfg::Gradient> &signal_edited()
+	sigc::signal<void, const Glib::ustring&, synfig::Gradient> &signal_edited()
 	{return signal_edited_; }
 
-	Glib::PropertyProxy<sinfg::Gradient> property_gradient() { return property_gradient_.get_proxy();}
+	Glib::PropertyProxy<synfig::Gradient> property_gradient() { return property_gradient_.get_proxy();}
 	
 	CellRenderer_Gradient();
 	~CellRenderer_Gradient();

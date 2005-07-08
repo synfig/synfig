@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file rotoscope_polygon.cpp
 **	\brief Template File
 **
@@ -31,20 +31,20 @@
 #include <gtkmm/dialog.h>
 #include <gtkmm/entry.h>
 
-#include <sinfg/valuenode_dynamiclist.h>
-#include <sinfgapp/action_system.h>
+#include <synfig/valuenode_dynamiclist.h>
+#include <synfigapp/action_system.h>
 
 #include "state_polygon.h"
 #include "canvasview.h"
 #include "workarea.h"
 #include "app.h"
 
-#include <sinfgapp/action.h>
+#include <synfigapp/action.h>
 #include "event_mouse.h"
 #include "event_layerclick.h"
 #include "toolbox.h"
 #include "dialog_tooloptions.h"
-#include <sinfgapp/main.h>
+#include <synfigapp/main.h>
 
 #endif
 
@@ -52,7 +52,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
@@ -75,14 +75,14 @@ class studio::StatePolygon_Context : public sigc::trackable
 
 	Duckmatic::Push duckmatic_push;
 	
-	std::list<sinfg::Point> polygon_point_list;
-	sinfgapp::Settings& settings;
+	std::list<synfig::Point> polygon_point_list;
+	synfigapp::Settings& settings;
 
 	
-	bool on_polygon_duck_change(const sinfg::Point &point, std::list<sinfg::Point>::iterator iter);
+	bool on_polygon_duck_change(const synfig::Point &point, std::list<synfig::Point>::iterator iter);
 
 
-	void popup_handle_menu(sinfgapp::ValueDesc value_desc);
+	void popup_handle_menu(synfigapp::ValueDesc value_desc);
 
 
 	void refresh_ducks();
@@ -92,8 +92,8 @@ class studio::StatePolygon_Context : public sigc::trackable
 	Gtk::Button button_make;
 
 public:
-	sinfg::String get_id()const { return entry_id.get_text(); }
-	void set_id(const sinfg::String& x) { return entry_id.set_text(x); }
+	synfig::String get_id()const { return entry_id.get_text(); }
+	void set_id(const synfig::String& x) { return entry_id.set_text(x); }
 
 	Smach::event_result event_stop_handler(const Smach::event& x);
 
@@ -108,11 +108,11 @@ public:
 	~StatePolygon_Context();
 
 	const etl::handle<CanvasView>& get_canvas_view()const{return canvas_view_;}
-	etl::handle<sinfgapp::CanvasInterface> get_canvas_interface()const{return canvas_view_->canvas_interface();}
-	sinfg::Canvas::Handle get_canvas()const{return canvas_view_->get_canvas();}
+	etl::handle<synfigapp::CanvasInterface> get_canvas_interface()const{return canvas_view_->canvas_interface();}
+	synfig::Canvas::Handle get_canvas()const{return canvas_view_->get_canvas();}
 	WorkArea * get_work_area()const{return canvas_view_->get_work_area();}
 	
-	//void on_user_click(sinfg::Point point);
+	//void on_user_click(synfig::Point point);
 	void load_settings();
 	void save_settings();
 	void reset();
@@ -216,7 +216,7 @@ StatePolygon_Context::StatePolygon_Context(CanvasView* canvas_view):
 	is_working(*canvas_view),
 	prev_workarea_layer_status_(get_work_area()->allow_layer_clicks),
 	duckmatic_push(get_work_area()),
-	settings(sinfgapp::Main::get_selected_input_device()->settings()),
+	settings(synfigapp::Main::get_selected_input_device()->settings()),
 	entry_id(),
 	button_make(_("Make"))
 {
@@ -322,7 +322,7 @@ StatePolygon_Context::~StatePolygon_Context()
 Smach::event_result
 StatePolygon_Context::event_stop_handler(const Smach::event& x)
 {
-	sinfg::info("STATE RotoPolygon: Received Stop Event");
+	synfig::info("STATE RotoPolygon: Received Stop Event");
 	//throw Smach::egress_exception();
 	reset();
 	return Smach::RESULT_ACCEPT;
@@ -332,7 +332,7 @@ StatePolygon_Context::event_stop_handler(const Smach::event& x)
 Smach::event_result
 StatePolygon_Context::event_refresh_handler(const Smach::event& x)
 {
-	sinfg::info("STATE RotoPolygon: Received Refresh Event");
+	synfig::info("STATE RotoPolygon: Received Refresh Event");
 	refresh_ducks();
 	return Smach::RESULT_ACCEPT;
 }
@@ -361,8 +361,8 @@ StatePolygon_Context::run()
 		}
 
 		{
-			sinfgapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("New Polygon"));
-			sinfgapp::PushMode push_mode(get_canvas_interface(),sinfgapp::MODE_NORMAL);
+			synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("New Polygon"));
+			synfigapp::PushMode push_mode(get_canvas_interface(),synfigapp::MODE_NORMAL);
 	
 			Layer::Handle layer(get_canvas_interface()->add_layer_to("polygon",canvas,depth));
 			layer->set_description(get_id());
@@ -377,8 +377,8 @@ StatePolygon_Context::run()
 			}
 			
 			{
-				sinfgapp::Action::Handle action(sinfgapp::Action::create("value_desc_convert"));
-				sinfgapp::ValueDesc value_desc(layer,"vector_list");
+				synfigapp::Action::Handle action(synfigapp::Action::create("value_desc_convert"));
+				synfigapp::ValueDesc value_desc(layer,"vector_list");
 				action->set_param("canvas",get_canvas());			
 				action->set_param("canvas_interface",get_canvas_interface());			
 				action->set_param("value_desc",value_desc);			
@@ -413,7 +413,7 @@ StatePolygon_Context::run()
 Smach::event_result
 StatePolygon_Context::event_mouse_click_handler(const Smach::event& x)
 {
-	sinfg::info("STATE ROTOPOLYGON: Received mouse button down Event");
+	synfig::info("STATE ROTOPOLYGON: Received mouse button down Event");
 	const EventMouse& event(*reinterpret_cast<const EventMouse*>(&x));
 	switch(event.button)
 	{
@@ -438,7 +438,7 @@ StatePolygon_Context::refresh_ducks()
 	
 	if(polygon_point_list.empty()) return;
 
-	std::list<sinfg::Point>::iterator iter=polygon_point_list.begin();
+	std::list<synfig::Point>::iterator iter=polygon_point_list.begin();
 	
 	etl::handle<WorkArea::Duck> duck;
 	duck=new WorkArea::Duck(*iter);
@@ -472,7 +472,7 @@ StatePolygon_Context::refresh_ducks()
 
 
 bool
-StatePolygon_Context::on_polygon_duck_change(const sinfg::Point &point, std::list<sinfg::Point>::iterator iter)
+StatePolygon_Context::on_polygon_duck_change(const synfig::Point &point, std::list<synfig::Point>::iterator iter)
 {
 	*iter=point;
 	return true;

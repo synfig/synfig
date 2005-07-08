@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file widget_time.cpp
 **	\brief Template File
 **
@@ -39,7 +39,7 @@
 
 using namespace std;
 //using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
@@ -74,13 +74,13 @@ Widget_Time::refresh_text()
 
 
 void
-Widget_Time::set_value(const sinfg::Time &data)
+Widget_Time::set_value(const synfig::Time &data)
 {
 	time_=data;
 	refresh_text();
 }
 
-sinfg::Time
+synfig::Time
 Widget_Time::get_value() const
 {
 	return time_;

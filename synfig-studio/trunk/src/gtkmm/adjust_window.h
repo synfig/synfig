@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file adjust_window.h
 **	\brief Adjustment Window Header
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_TEMPLATE_H
-#define __SINFG_TEMPLATE_H
+#ifndef __SYNFIG_TEMPLATE_H
+#define __SYNFIG_TEMPLATE_H
 
 /* === H E A D E R S ======================================================= */
 #include <gtkmm/adjustment.h>

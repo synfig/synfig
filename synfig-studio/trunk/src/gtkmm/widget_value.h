@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file widget_value.cpp
 **	\brief Template File
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_GTKMM_VALUE_H
-#define __SINFG_GTKMM_VALUE_H
+#ifndef __SYNFIG_GTKMM_VALUE_H
+#define __SYNFIG_GTKMM_VALUE_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -50,10 +50,10 @@
 //#include <gtkmm/colorselection.h>
 #include <gtkmm/optionmenu.h>
 
-//#include <sinfg/sinfg.h>
-#include <sinfg/paramdesc.h>
-#include <sinfg/value.h>
-#include <sinfg/canvas.h>
+//#include <synfig/synfig.h>
+#include <synfig/paramdesc.h>
+#include <synfig/value.h>
+#include <synfig/canvas.h>
 
 
 /* === M A C R O S ========================================================= */
@@ -76,7 +76,7 @@ class Widget_Distance;
 class Widget_ValueBase : public Gtk::HBox
 {
 	Gtk::Label *label;
-	sinfg::ValueBase value;
+	synfig::ValueBase value;
 
 	Widget_Vector *vector_widget;
 	Gtk::SpinButton *real_widget;
@@ -98,8 +98,8 @@ class Widget_ValueBase : public Gtk::HBox
 	
 //	std::string hint;
 	
-	sinfg::ParamDesc param_desc;
-	etl::handle<sinfg::Canvas> canvas;
+	synfig::ParamDesc param_desc;
+	etl::handle<synfig::Canvas> canvas;
 	sigc::signal<void> signal_value_changed_;
 	sigc::signal<void> signal_activate_;
 
@@ -110,20 +110,20 @@ public:
 	
 	sigc::signal<void>& signal_activate() { return signal_activate_; }
 
-	void set_value(const sinfg::ValueBase &data);
-	const sinfg::ValueBase &get_value();
+	void set_value(const synfig::ValueBase &data);
+	const synfig::ValueBase &get_value();
 
 	void on_grab_focus();
 	
-	void set_param_desc(const sinfg::ParamDesc &x) { param_desc=x; }
-	const sinfg::ParamDesc &get_param_desc() { return param_desc; }
+	void set_param_desc(const synfig::ParamDesc &x) { param_desc=x; }
+	const synfig::ParamDesc &get_param_desc() { return param_desc; }
 
 	void set_sensitive(bool x);
 	
 	//void set_hint(std::string x) { hint=x; }
 //	std::string get_hint() { return hint; }
 
-	void set_canvas(etl::handle<sinfg::Canvas> x) { canvas=x; assert(canvas); }
+	void set_canvas(etl::handle<synfig::Canvas> x) { canvas=x; assert(canvas); }
 	void inside_cellrenderer();
 	Widget_ValueBase();
 	~Widget_ValueBase();

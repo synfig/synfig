@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file valuelink.h
 **	\brief ValueBase Link Header
 **
@@ -21,11 +21,11 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_VALUELINK_H
-#define __SINFG_VALUELINK_H
+#ifndef __SYNFIG_VALUELINK_H
+#define __SYNFIG_VALUELINK_H
 
 /* === H E A D E R S ======================================================= */
-#include <sinfg/valuenode.h>
+#include <synfig/valuenode.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -37,40 +37,40 @@ namespace studio {
 
 /* NOTE: DO NOT USE THE INDEX BASED INTERFACE... THINGS WILL CHANGE
 */
-class ValueBaseLink : public sinfg::LinkableValueNode
+class ValueBaseLink : public synfig::LinkableValueNode
 {
 	typedef std::vector<ValueNode::Handle> list_type;
 	list_type	list;
 
 protected:
 	//stuff I don't want
-	virtual bool set_link_vfunc(int i,sinfg::ValueNode::Handle x) {return false;}
+	virtual bool set_link_vfunc(int i,synfig::ValueNode::Handle x) {return false;}
 	virtual LinkableValueNode* create_new()const {return 0;}
 	
 	//new stuff I need
-	list_type::const_iterator findlink(sinfg::ValueNode::Handle x) const;
-	list_type::iterator findlink(sinfg::ValueNode::Handle x);
+	list_type::const_iterator findlink(synfig::ValueNode::Handle x) const;
+	list_type::iterator findlink(synfig::ValueNode::Handle x);
 	
 public: //linkable interface
 	
 	//stuff I do want	
-	virtual sinfg::ValueNode::LooseHandle get_link_vfunc(int i)const;
+	virtual synfig::ValueNode::LooseHandle get_link_vfunc(int i)const;
 	virtual int link_count()const;
 	
 	//I have to support the thing because it's too much work otherwise
-	virtual sinfg::String link_local_name(int i)const;
-	virtual sinfg::String link_name(int i)const;
+	virtual synfig::String link_local_name(int i)const;
+	virtual synfig::String link_name(int i)const;
 
 public:
 	ValueBaseLink();
 	virtual ~ValueBaseLink();
 
 	//don't want
-	virtual int get_link_index_from_name(const sinfg::String &name)const;
+	virtual int get_link_index_from_name(const synfig::String &name)const;
 
 	//new add and subtract stuff
-	virtual void add(sinfg::ValueNode::Handle v);
-	virtual void remove(sinfg::ValueNode::Handle v);
+	virtual void add(synfig::ValueNode::Handle v);
+	virtual void remove(synfig::ValueNode::Handle v);
 
 };
 	

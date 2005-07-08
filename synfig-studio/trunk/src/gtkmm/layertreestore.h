@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file layertreestore.h
 **	\brief Template Header
 **
@@ -21,15 +21,15 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_STUDIO_LAYERTREESTORE_H
-#define __SINFG_STUDIO_LAYERTREESTORE_H
+#ifndef __SYNFIG_STUDIO_LAYERTREESTORE_H
+#define __SYNFIG_STUDIO_LAYERTREESTORE_H
 
 /* === H E A D E R S ======================================================= */
 
 #include <gtkmm/treestore.h>
-#include <sinfgapp/canvasinterface.h>
-#include <sinfg/value.h>
-#include <sinfg/valuenode.h>
+#include <synfigapp/canvasinterface.h>
+#include <synfig/value.h>
+#include <synfig/valuenode.h>
 #include <gtkmm/treeview.h>
 
 /* === M A C R O S ========================================================= */
@@ -56,14 +56,14 @@ public:
 		Gtk::TreeModelColumn<Glib::ustring> name;
 		Gtk::TreeModelColumn<Glib::ustring> id;
 
-		Gtk::TreeModelColumn<sinfg::Canvas::Handle> canvas;
+		Gtk::TreeModelColumn<synfig::Canvas::Handle> canvas;
 
 		Gtk::TreeModelColumn<Glib::ustring> tooltip;
 
 
 		Gtk::TreeModelColumn<bool>						active;
-		Gtk::TreeModelColumn<sinfg::Layer::Handle>		layer;
-		Gtk::TreeModelColumn<sinfg::Canvas::Handle> 			contained_canvas;
+		Gtk::TreeModelColumn<synfig::Layer::Handle>		layer;
+		Gtk::TreeModelColumn<synfig::Canvas::Handle> 			contained_canvas;
 
 		Gtk::TreeModelColumn<bool>						children_lock;
 
@@ -102,7 +102,7 @@ public:
 
 private:
 
-	etl::loose_handle<sinfgapp::CanvasInterface> canvas_interface_;
+	etl::loose_handle<synfigapp::CanvasInterface> canvas_interface_;
 
 	Glib::RefPtr<Gdk::Pixbuf> layer_icon;
 
@@ -135,35 +135,35 @@ private:
 
 	bool on_layer_tree_event(GdkEvent *event);
 
-	void on_layer_new_description(sinfg::Layer::Handle handle,sinfg::String desc);
+	void on_layer_new_description(synfig::Layer::Handle handle,synfig::String desc);
 
-	void on_layer_added(sinfg::Layer::Handle handle);
+	void on_layer_added(synfig::Layer::Handle handle);
 
-	void on_layer_removed(sinfg::Layer::Handle handle);
+	void on_layer_removed(synfig::Layer::Handle handle);
 
-	void on_layer_inserted(sinfg::Layer::Handle handle,int depth);
+	void on_layer_inserted(synfig::Layer::Handle handle,int depth);
 
-	void on_layer_moved(sinfg::Layer::Handle handle,int depth, sinfg::Canvas::Handle canvas);
+	void on_layer_moved(synfig::Layer::Handle handle,int depth, synfig::Canvas::Handle canvas);
 
-	void on_layer_status_changed(sinfg::Layer::Handle handle,bool);
+	void on_layer_status_changed(synfig::Layer::Handle handle,bool);
 
-	void on_layer_lowered(sinfg::Layer::Handle handle);
+	void on_layer_lowered(synfig::Layer::Handle handle);
 
-	void on_layer_raised(sinfg::Layer::Handle handle);
+	void on_layer_raised(synfig::Layer::Handle handle);
 
-	void on_layer_param_changed(sinfg::Layer::Handle handle,sinfg::String param_name);
+	void on_layer_param_changed(synfig::Layer::Handle handle,synfig::String param_name);
 
-	//void on_value_node_added(sinfg::ValueNode::Handle value_node);
+	//void on_value_node_added(synfig::ValueNode::Handle value_node);
 
-	//void on_value_node_deleted(sinfg::ValueNode::Handle value_node);
+	//void on_value_node_deleted(synfig::ValueNode::Handle value_node);
 
-	//void on_value_node_changed(sinfg::ValueNode::Handle value_node);
+	//void on_value_node_changed(synfig::ValueNode::Handle value_node);
 
-	//void on_value_node_replaced(sinfg::ValueNode::Handle replaced_value_node,sinfg::ValueNode::Handle new_value_node);
+	//void on_value_node_replaced(synfig::ValueNode::Handle replaced_value_node,synfig::ValueNode::Handle new_value_node);
 
-	bool find_layer_row_(const sinfg::Layer::Handle &handle, sinfg::Canvas::Handle canvas, Gtk::TreeModel::Children layers, Gtk::TreeModel::Children::iterator &iter, Gtk::TreeModel::Children::iterator &prev);
+	bool find_layer_row_(const synfig::Layer::Handle &handle, synfig::Canvas::Handle canvas, Gtk::TreeModel::Children layers, Gtk::TreeModel::Children::iterator &iter, Gtk::TreeModel::Children::iterator &prev);
 
-	bool find_canvas_row_(sinfg::Canvas::Handle canvas, sinfg::Canvas::Handle parent, Gtk::TreeModel::Children layers, Gtk::TreeModel::Children::iterator &iter);
+	bool find_canvas_row_(synfig::Canvas::Handle canvas, synfig::Canvas::Handle parent, Gtk::TreeModel::Children layers, Gtk::TreeModel::Children::iterator &iter);
 
 	/*
  -- ** -- P U B L I C   M E T H O D S -----------------------------------------
@@ -171,18 +171,18 @@ private:
 
 public:
 	
-	LayerTreeStore(etl::loose_handle<sinfgapp::CanvasInterface> canvas_interface_);
+	LayerTreeStore(etl::loose_handle<synfigapp::CanvasInterface> canvas_interface_);
 	~LayerTreeStore();
 
-	etl::loose_handle<sinfgapp::CanvasInterface> canvas_interface() { return canvas_interface_; }
-	etl::loose_handle<const sinfgapp::CanvasInterface> canvas_interface()const { return canvas_interface_; }
-	etl::loose_handle<sinfgapp::CanvasInterface> get_canvas_interface()const { return canvas_interface_; }
+	etl::loose_handle<synfigapp::CanvasInterface> canvas_interface() { return canvas_interface_; }
+	etl::loose_handle<const synfigapp::CanvasInterface> canvas_interface()const { return canvas_interface_; }
+	etl::loose_handle<synfigapp::CanvasInterface> get_canvas_interface()const { return canvas_interface_; }
 
-	bool find_canvas_row(sinfg::Canvas::Handle canvas, Gtk::TreeModel::Children::iterator &iter);
+	bool find_canvas_row(synfig::Canvas::Handle canvas, Gtk::TreeModel::Children::iterator &iter);
 
-	bool find_layer_row(const sinfg::Layer::Handle &handle, Gtk::TreeModel::Children::iterator &iter);
+	bool find_layer_row(const synfig::Layer::Handle &handle, Gtk::TreeModel::Children::iterator &iter);
 
-	bool find_prev_layer_row(const sinfg::Layer::Handle &handle, Gtk::TreeModel::Children::iterator &iter);
+	bool find_prev_layer_row(const synfig::Layer::Handle &handle, Gtk::TreeModel::Children::iterator &iter);
 
 	void rebuild();
 
@@ -190,14 +190,14 @@ public:
 
 	void refresh_row(Gtk::TreeModel::Row &row);
 
-	void set_row_layer(Gtk::TreeRow &row,sinfg::Layer::Handle &handle);
+	void set_row_layer(Gtk::TreeRow &row,synfig::Layer::Handle &handle);
 
 	static int z_sorter(const Gtk::TreeModel::iterator &rhs,const Gtk::TreeModel::iterator &lhs);
 	static int index_sorter(const Gtk::TreeModel::iterator &rhs,const Gtk::TreeModel::iterator &lhs);
 
-	//void set_row_param(Gtk::TreeRow &row,sinfg::Layer::Handle &handle,const std::string& name, const std::string& local_name, const sinfg::ValueBase &value, etl::handle<sinfg::ValueNode> value_node,sinfg::ParamDesc *param_desc);
+	//void set_row_param(Gtk::TreeRow &row,synfig::Layer::Handle &handle,const std::string& name, const std::string& local_name, const synfig::ValueBase &value, etl::handle<synfig::ValueNode> value_node,synfig::ParamDesc *param_desc);
 
-	//virtual void set_row(Gtk::TreeRow row,sinfgapp::ValueDesc value_desc);
+	//virtual void set_row(Gtk::TreeRow row,synfigapp::ValueDesc value_desc);
 	static bool search_func(const Glib::RefPtr<TreeModel>&,int,const Glib::ustring&,const TreeModel::iterator&);
 
 	/*
@@ -206,7 +206,7 @@ public:
 
 public:
 	
-	static Glib::RefPtr<LayerTreeStore> create(etl::loose_handle<sinfgapp::CanvasInterface> canvas_interface_);
+	static Glib::RefPtr<LayerTreeStore> create(etl::loose_handle<synfigapp::CanvasInterface> canvas_interface_);
 
 
 }; // END of class LayerTreeStore

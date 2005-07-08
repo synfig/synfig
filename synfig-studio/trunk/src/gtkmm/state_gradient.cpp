@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file state_gradient.cpp
 **	\brief Template File
 **
@@ -31,15 +31,15 @@
 #include <gtkmm/dialog.h>
 #include <gtkmm/entry.h>
 
-#include <sinfg/valuenode_dynamiclist.h>
-#include <sinfgapp/action_system.h>
+#include <synfig/valuenode_dynamiclist.h>
+#include <synfigapp/action_system.h>
 
 #include "state_gradient.h"
 #include "canvasview.h"
 #include "workarea.h"
 #include "app.h"
 
-#include <sinfgapp/action.h>
+#include <synfigapp/action.h>
 #include "event_mouse.h"
 #include "event_layerclick.h"
 #include "toolbox.h"
@@ -48,7 +48,7 @@
 #include "duck.h"
 
 #include "widget_enum.h"
-#include <sinfgapp/main.h>
+#include <synfigapp/main.h>
 
 #endif
 
@@ -56,7 +56,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
@@ -82,7 +82,7 @@ class studio::StateGradient_Context : public sigc::trackable
 	
 	Duckmatic::Push duckmatic_push;
 	
-	sinfgapp::Settings& settings;
+	synfigapp::Settings& settings;
 
 	Point point_holder;
 	
@@ -98,8 +98,8 @@ class studio::StateGradient_Context : public sigc::trackable
 	Widget_Enum	enum_blend;
 	
 public:
-	sinfg::String get_id()const { return entry_id.get_text(); }
-	void set_id(const sinfg::String& x) { return entry_id.set_text(x); }
+	synfig::String get_id()const { return entry_id.get_text(); }
+	void set_id(const synfig::String& x) { return entry_id.set_text(x); }
 
 	int get_type()const { return enum_type.get_value(); }
 	void set_type(int x) { return enum_type.set_value(x); }
@@ -121,11 +121,11 @@ public:
 	~StateGradient_Context();
 
 	const etl::handle<CanvasView>& get_canvas_view()const{return canvas_view_;}
-	etl::handle<sinfgapp::CanvasInterface> get_canvas_interface()const{return canvas_view_->canvas_interface();}
-	sinfg::Canvas::Handle get_canvas()const{return canvas_view_->get_canvas();}
+	etl::handle<synfigapp::CanvasInterface> get_canvas_interface()const{return canvas_view_->canvas_interface();}
+	synfig::Canvas::Handle get_canvas()const{return canvas_view_->get_canvas();}
 	WorkArea * get_work_area()const{return canvas_view_->get_work_area();}
 	
-	//void on_user_click(sinfg::Point point);
+	//void on_user_click(synfig::Point point);
 	void load_settings();
 	void save_settings();
 	void reset();
@@ -243,7 +243,7 @@ StateGradient_Context::StateGradient_Context(CanvasView* canvas_view):
 	canvas_view_(canvas_view),
 	is_working(*canvas_view),
 	duckmatic_push(get_work_area()),
-	settings(sinfgapp::Main::get_selected_input_device()->settings()),
+	settings(synfigapp::Main::get_selected_input_device()->settings()),
 	prev_workarea_layer_status_(get_work_area()->allow_layer_clicks),
 	entry_id()
 {
@@ -360,8 +360,8 @@ StateGradient_Context::event_refresh_handler(const Smach::event& x)
 void
 StateGradient_Context::make_gradient(const Point& _p1, const Point& _p2)
 {
-	sinfgapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("New Gradient"));
-	sinfgapp::PushMode push_mode(get_canvas_interface(),sinfgapp::MODE_NORMAL);
+	synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("New Gradient"));
+	synfigapp::PushMode push_mode(get_canvas_interface(),synfigapp::MODE_NORMAL);
 
 	Layer::Handle layer;
 	
@@ -375,7 +375,7 @@ StateGradient_Context::make_gradient(const Point& _p1, const Point& _p2)
 		depth=layer->get_depth();
 		canvas=layer->get_canvas();
 	}
-	const sinfg::TransformStack& transform(get_canvas_view()->get_curr_transform_stack());
+	const synfig::TransformStack& transform(get_canvas_view()->get_curr_transform_stack());
 	const Point p1(transform.unperform(_p1));
 	const Point p2(transform.unperform(_p2));
 

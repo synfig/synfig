@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file metadatatreestore.cpp
 **	\brief Template File
 **
@@ -29,7 +29,7 @@
 #endif
 
 #include "metadatatreestore.h"
-#include <sinfgapp/canvasinterface.h>
+#include <synfigapp/canvasinterface.h>
 
 #endif
 
@@ -37,7 +37,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
@@ -55,7 +55,7 @@ static MetaDataTreeStore::Model& ModelHack()
 	return *model;
 }
 
-MetaDataTreeStore::MetaDataTreeStore(etl::loose_handle<sinfgapp::CanvasInterface> canvas_interface_):
+MetaDataTreeStore::MetaDataTreeStore(etl::loose_handle<synfigapp::CanvasInterface> canvas_interface_):
 	Gtk::TreeStore	(ModelHack()),
 	canvas_interface_		(canvas_interface_)
 {
@@ -67,18 +67,18 @@ MetaDataTreeStore::MetaDataTreeStore(etl::loose_handle<sinfgapp::CanvasInterface
 
 MetaDataTreeStore::~MetaDataTreeStore()
 {
-	sinfg::info("MetaDataTreeStore::~MetaDataTreeStore(): Deleted");
+	synfig::info("MetaDataTreeStore::~MetaDataTreeStore(): Deleted");
 
 }
 
 Glib::RefPtr<MetaDataTreeStore>
-MetaDataTreeStore::create(etl::loose_handle<sinfgapp::CanvasInterface> canvas_interface_)
+MetaDataTreeStore::create(etl::loose_handle<synfigapp::CanvasInterface> canvas_interface_)
 {
 	return Glib::RefPtr<MetaDataTreeStore>(new MetaDataTreeStore(canvas_interface_));
 }
 
 void
-MetaDataTreeStore::meta_data_changed(sinfg::String key)
+MetaDataTreeStore::meta_data_changed(synfig::String key)
 {
 	rebuild();
 }
@@ -108,7 +108,7 @@ MetaDataTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& iter, int co
 
 	if(column==model.data.index())
 	{
-		sinfg::String key((Glib::ustring)(*iter)[model.key]);
+		synfig::String key((Glib::ustring)(*iter)[model.key]);
 		g_value_init(value.gobj(),G_TYPE_STRING);
 		g_value_set_string(value.gobj(),get_canvas()->get_meta_data(key).c_str());
 		return;
@@ -138,8 +138,8 @@ MetaDataTreeStore::set_value_impl(const Gtk::TreeModel::iterator& iter, int colu
 		g_value_init(x.gobj(),model.data.type());
 		g_value_copy(value.gobj(),x.gobj());
 		
-		sinfg::String key((Glib::ustring)(*iter)[model.key]);
-		sinfg::String new_data(x.get());
+		synfig::String key((Glib::ustring)(*iter)[model.key]);
+		synfig::String new_data(x.get());
 		
 		get_canvas_interface()->set_meta_data(key,new_data);
 	}

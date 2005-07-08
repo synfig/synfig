@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file valuelink.cpp
 **	\brief ValueBase Link Implementation File
 **
@@ -36,7 +36,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 
 using studio::ValueBaseLink;
 

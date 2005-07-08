@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file keyframetree.h
 **	\brief Template Header
 **
@@ -21,17 +21,17 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_STUDIO_KEYFRAMETREE_H
-#define __SINFG_STUDIO_KEYFRAMETREE_H
+#ifndef __SYNFIG_STUDIO_KEYFRAMETREE_H
+#define __SYNFIG_STUDIO_KEYFRAMETREE_H
 
 /* === H E A D E R S ======================================================= */
 
 #include <gtkmm/treeview.h>
 #include <gtkmm/treestore.h>
-#include <sinfgapp/canvasinterface.h>
-#include <sinfgapp/value_desc.h>
+#include <synfigapp/canvasinterface.h>
+#include <synfigapp/value_desc.h>
 #include "keyframetreestore.h"
-#include <sinfg/keyframe.h>
+#include <synfig/keyframe.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -82,11 +82,11 @@ private:
 
 	Gtk::CellRendererText *cell_renderer_description;
 
-	sigc::signal<void,sinfg::Keyframe> signal_edited_;
+	sigc::signal<void,synfig::Keyframe> signal_edited_;
 
-	sigc::signal<void,sinfg::Keyframe,sinfg::Time> signal_edited_time_;
+	sigc::signal<void,synfig::Keyframe,synfig::Time> signal_edited_time_;
 
-	sigc::signal<void,sinfg::Keyframe,sinfg::String> signal_edited_description_;
+	sigc::signal<void,synfig::Keyframe,synfig::String> signal_edited_description_;
 
 	sigc::signal<void, int, Gtk::TreeRow, ColumnID> signal_user_click_;
 
@@ -104,9 +104,9 @@ private:
 
 private:
 
-	void on_edited_time(const Glib::ustring&path_string,sinfg::Time time);
+	void on_edited_time(const Glib::ustring&path_string,synfig::Time time);
 
-	void on_edited_time_delta(const Glib::ustring&path_string,sinfg::Time time);
+	void on_edited_time_delta(const Glib::ustring&path_string,synfig::Time time);
 
 	void on_edited_description(const Glib::ustring&path_string,const Glib::ustring &description);
 
@@ -130,13 +130,13 @@ public:
 	bool get_editable()const { return editable_; }
 
 	//! Signal called when a keyframe has been edited in any way
-	sigc::signal<void,sinfg::Keyframe>& signal_edited() { return signal_edited_; }
+	sigc::signal<void,synfig::Keyframe>& signal_edited() { return signal_edited_; }
 	
 	//! Signal called when a time has been edited.
-	sigc::signal<void,sinfg::Keyframe,sinfg::Time>& signal_edited_time() { return signal_edited_time_; }
+	sigc::signal<void,synfig::Keyframe,synfig::Time>& signal_edited_time() { return signal_edited_time_; }
 
 	//! Signal called when a description has been edited.
-	sigc::signal<void,sinfg::Keyframe,sinfg::String>& signal_edited_description() { return signal_edited_description_; }
+	sigc::signal<void,synfig::Keyframe,synfig::String>& signal_edited_description() { return signal_edited_description_; }
 
 	sigc::signal<void,int, Gtk::TreeRow, ColumnID>& signal_user_click() { return signal_user_click_; }
 }; // END of KeyframeTree

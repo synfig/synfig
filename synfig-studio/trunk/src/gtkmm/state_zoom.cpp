@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file state_zoom.cpp
 **	\brief Zoom Toole Implementation File
 **
@@ -32,7 +32,7 @@
 #include <sigc++/object.h>
 
 #include <ETL/handle>
-#include <sinfg/vector.h>
+#include <synfig/vector.h>
 
 
 #include "state_zoom.h"
@@ -42,7 +42,7 @@
 #include "app.h"
 #include "dialog_tooloptions.h"
 #include "toolbox.h"
-#include <sinfgapp/main.h>
+#include <synfigapp/main.h>
 
 #endif
 
@@ -50,7 +50,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
@@ -72,7 +72,7 @@ class studio::StateZoom_Context : public sigc::trackable
 	bool prev_workarea_layer_status_;
 		
 	//Toolbox settings
-	sinfgapp::Settings& settings;
+	synfigapp::Settings& settings;
 	
 	//Toolbox display
 	Gtk::Table options_table;
@@ -93,8 +93,8 @@ public:
 
 	//Canvas interaction
 	const etl::handle<CanvasView>& get_canvas_view()const{return canvas_view_;}
-	etl::handle<sinfgapp::CanvasInterface> get_canvas_interface()const{return canvas_view_->canvas_interface();}
-	sinfg::Canvas::Handle get_canvas()const{return canvas_view_->get_canvas();}
+	etl::handle<synfigapp::CanvasInterface> get_canvas_interface()const{return canvas_view_->canvas_interface();}
+	synfig::Canvas::Handle get_canvas()const{return canvas_view_->get_canvas();}
 	WorkArea * get_work_area()const{return canvas_view_->get_work_area();}
 	
 	//Modifying settings etc.
@@ -153,7 +153,7 @@ StateZoom_Context::StateZoom_Context(CanvasView* canvas_view):
 	canvas_view_(canvas_view),
 	is_working(*canvas_view),
 	prev_workarea_layer_status_(get_work_area()->allow_layer_clicks),
-	settings(sinfgapp::Main::get_selected_input_device()->settings())
+	settings(synfigapp::Main::get_selected_input_device()->settings())
 {
 	// Set up the tool options dialog
 	//options_table.attach(*manage(new Gtk::Label(_("Zoom Tool"))), 0, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);	

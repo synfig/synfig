@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file state_gradient.cpp
 **	\brief Template File
 **
@@ -33,15 +33,15 @@
 
 #include <ETL/bezier>
 
-#include <sinfg/valuenode_dynamiclist.h>
-#include <sinfgapp/action_system.h>
+#include <synfig/valuenode_dynamiclist.h>
+#include <synfigapp/action_system.h>
 
 #include "state_width.h"
 #include "canvasview.h"
 #include "workarea.h"
 #include "app.h"
 
-#include <sinfgapp/action.h>
+#include <synfigapp/action.h>
 #include "event_mouse.h"
 #include "event_layerclick.h"
 #include "toolbox.h"
@@ -49,8 +49,8 @@
 #include <gtkmm/optionmenu.h>
 #include "duck.h"
 
-//#include <sinfgapp/value_desc.h>
-#include <sinfgapp/main.h>
+//#include <synfigapp/value_desc.h>
+#include <synfigapp/main.h>
 
 #include <ETL/clock>
 
@@ -60,8 +60,8 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
-using namespace sinfgapp;
+using namespace synfig;
+using namespace synfigapp;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
@@ -97,7 +97,7 @@ class studio::StateWidth_Context : public sigc::trackable
 	Duckmatic::Type old_duckmask;
 		
 	//Toolbox settings
-	sinfgapp::Settings& settings;
+	synfigapp::Settings& settings;
 	
 	//Toolbox display
 	Gtk::Table options_table;
@@ -139,8 +139,8 @@ public:
 
 	//Canvas interaction
 	const etl::handle<CanvasView>& get_canvas_view()const{return canvas_view_;}
-	etl::handle<sinfgapp::CanvasInterface> get_canvas_interface()const{return canvas_view_->canvas_interface();}
-	sinfg::Canvas::Handle get_canvas()const{return canvas_view_->get_canvas();}
+	etl::handle<synfigapp::CanvasInterface> get_canvas_interface()const{return canvas_view_->canvas_interface();}
+	synfig::Canvas::Handle get_canvas()const{return canvas_view_->get_canvas();}
 	WorkArea * get_work_area()const{return canvas_view_->get_work_area();}
 	
 	//Modifying settings etc.
@@ -211,7 +211,7 @@ StateWidth_Context::StateWidth_Context(CanvasView* canvas_view):
 	prev_workarea_duck_clicking(get_work_area()->allow_duck_clicks),
 	old_duckmask(get_work_area()->get_type_mask()),
 
-	settings(sinfgapp::Main::get_selected_input_device()->settings()),
+	settings(synfigapp::Main::get_selected_input_device()->settings()),
 	
 	adj_delta(6,0,1,0.001,0.01),
 	spin_delta(adj_delta,0.01,3),
@@ -557,7 +557,7 @@ StateWidth_Context::event_mouse_handler(const Smach::event& x)
 		//Affect the width changes here...
 		map<handle<Duck>,Real>::iterator i = changetable.begin();
 
-		sinfgapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Sketch Width")); 
+		synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Sketch Width")); 
 		for(; i != changetable.end(); ++i)
 		{
 			//for each duck modify IT!!!
@@ -578,7 +578,7 @@ StateWidth_Context::event_mouse_handler(const Smach::event& x)
 				if(!action->is_ready() || !get_canvas_view()->get_instance()->perform_action(action))
 				{
 					group.cancel();
-					sinfg::warning("Changing the width action has failed");
+					synfig::warning("Changing the width action has failed");
 					return Smach::RESULT_ERROR;
 				}
 			}

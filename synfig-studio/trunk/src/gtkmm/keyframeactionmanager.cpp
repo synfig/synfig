@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file keyframeactionmanager.cpp
 **	\brief Template File
 **
@@ -30,7 +30,7 @@
 
 #include "keyframeactionmanager.h"
 #include "keyframetree.h"
-#include <sinfgapp/action_param.h>
+#include <synfigapp/action_param.h>
 #include "instance.h"
 
 #endif
@@ -39,7 +39,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 using namespace studio;
 
 static const guint no_prev_popup((guint)-1);
@@ -93,7 +93,7 @@ KeyframeActionManager::set_keyframe_tree(KeyframeTree* x)
 }
 
 void
-KeyframeActionManager::set_canvas_interface(const etl::handle<sinfgapp::CanvasInterface> &x)
+KeyframeActionManager::set_canvas_interface(const etl::handle<synfigapp::CanvasInterface> &x)
 {
 	time_changed_connection.disconnect();
 	canvas_interface_=x;
@@ -151,7 +151,7 @@ KeyframeActionManager::on_keyframe_properties()
 void
 KeyframeActionManager::on_add_keyframe()
 {
-	sinfgapp::Action::Handle action(sinfgapp::Action::create("keyframe_add"));
+	synfigapp::Action::Handle action(synfigapp::Action::create("keyframe_add"));
 
 	if(!action)
 		return;
@@ -180,14 +180,14 @@ KeyframeActionManager::refresh()
 	// Make sure we are ready
 	if(!ui_manager_ || !keyframe_tree_ || !canvas_interface_)
 	{
-		sinfg::error("KeyframeActionManager::refresh(): Not ready!");
+		synfig::error("KeyframeActionManager::refresh(): Not ready!");
 		return;
 	}
 		
 	String ui_info;
 	
 	{
-		sinfgapp::Action::ParamList param_list;
+		synfigapp::Action::ParamList param_list;
 		param_list.add("time",get_canvas_interface()->get_time());
 		param_list.add("canvas",get_canvas_interface()->get_canvas());
 		param_list.add("canvas_interface",get_canvas_interface());
@@ -203,7 +203,7 @@ KeyframeActionManager::refresh()
 			action_group_,
 			ui_info,
 			param_list,
-			sinfgapp::Action::CATEGORY_KEYFRAME
+			synfigapp::Action::CATEGORY_KEYFRAME
 		);
 	}
 	if(action_group_->get_action("action-keyframe_add"))

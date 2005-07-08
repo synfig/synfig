@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file keyframetreestore.cpp
 **	\brief Template File
 **
@@ -29,20 +29,20 @@
 #endif
 
 #include "keyframetreestore.h"
-#include <sinfg/valuenode.h>
+#include <synfig/valuenode.h>
 #include "iconcontroler.h"
-#include <sinfg/valuenode_timedswap.h>
+#include <synfig/valuenode_timedswap.h>
 #include <gtkmm/button.h>
 #include <gtkmm/treerowreference.h>
-#include <sinfg/canvas.h>
-#include <sinfg/keyframe.h>
+#include <synfig/canvas.h>
+#include <synfig/keyframe.h>
 #include <time.h>
 #include <cstdlib>
 #include <ETL/smart_ptr>
-#include <sinfgapp/action.h>
-#include <sinfgapp/instance.h>
+#include <synfigapp/action.h>
+#include <synfigapp/instance.h>
 #include "onemoment.h"
-#include <sinfg/exception.h>
+#include <synfig/exception.h>
 
 #endif
 
@@ -50,7 +50,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
@@ -63,13 +63,13 @@ KeyframeTreeStore_Class KeyframeTreeStore::keyframe_tree_store_class_;
 
 struct _keyframe_iterator
 {
-	sinfg::KeyframeList::iterator iter;
+	synfig::KeyframeList::iterator iter;
 	int ref_count;
 	int index;
 };
 
 /*
-Gtk::TreeModel::iterator keyframe_iter_2_model_iter(sinfg::KeyframeList::iterator iter,int index)
+Gtk::TreeModel::iterator keyframe_iter_2_model_iter(synfig::KeyframeList::iterator iter,int index)
 {
 	Gtk::TreeModel::iterator ret;
 	
@@ -83,7 +83,7 @@ Gtk::TreeModel::iterator keyframe_iter_2_model_iter(sinfg::KeyframeList::iterato
 }
 */
 
-sinfg::KeyframeList::iterator model_iter_2_keyframe_iter(Gtk::TreeModel::iterator iter)
+synfig::KeyframeList::iterator model_iter_2_keyframe_iter(Gtk::TreeModel::iterator iter)
 {
 	_keyframe_iterator* data(static_cast<_keyframe_iterator*>(iter->gobj()->user_data));
 	if(!data)
@@ -192,7 +192,7 @@ KeyframeTreeStore_Class::class_init_function(gpointer g_class, gpointer class_da
 	// ???
 }
 
-KeyframeTreeStore::KeyframeTreeStore(etl::loose_handle<sinfgapp::CanvasInterface> canvas_interface_):
+KeyframeTreeStore::KeyframeTreeStore(etl::loose_handle<synfigapp::CanvasInterface> canvas_interface_):
 	Glib::ObjectBase	("KeyframeTreeStore"),
 	Glib::Object		(Glib::ConstructParams(keyframe_tree_store_class_.init(), (char*) 0)),
 	canvas_interface_	(canvas_interface_)
@@ -207,11 +207,11 @@ KeyframeTreeStore::KeyframeTreeStore(etl::loose_handle<sinfgapp::CanvasInterface
 
 KeyframeTreeStore::~KeyframeTreeStore()
 {
-	sinfg::info("KeyframeTreeStore::~KeyframeTreeStore(): Deleted");
+	synfig::info("KeyframeTreeStore::~KeyframeTreeStore(): Deleted");
 }
 
 Glib::RefPtr<KeyframeTreeStore>
-KeyframeTreeStore::create(etl::loose_handle<sinfgapp::CanvasInterface> canvas_interface_)
+KeyframeTreeStore::create(etl::loose_handle<synfigapp::CanvasInterface> canvas_interface_)
 {
 	KeyframeTreeStore *store(new KeyframeTreeStore(canvas_interface_));
 	Glib::RefPtr<KeyframeTreeStore> ret(store);
@@ -327,7 +327,7 @@ KeyframeTreeStore::set_value_impl(const Gtk::TreeModel::iterator& row, int colum
 	{
 		if(column==model.time_delta.index())
 		{			
-			Glib::Value<sinfg::Time> x;
+			Glib::Value<synfig::Time> x;
 			g_value_init(x.gobj(),model.time.type());
 			g_value_copy(value.gobj(),x.gobj());
 			
@@ -359,7 +359,7 @@ KeyframeTreeStore::set_value_impl(const Gtk::TreeModel::iterator& row, int colum
 			// New Method
 			{
 				Keyframe keyframe((*row)[model.keyframe]);
-				sinfgapp::Action::Handle action(sinfgapp::Action::create("keyframe_set_delta"));
+				synfigapp::Action::Handle action(synfigapp::Action::create("keyframe_set_delta"));
 	
 				if(!action)return;
 				
@@ -377,24 +377,24 @@ KeyframeTreeStore::set_value_impl(const Gtk::TreeModel::iterator& row, int colum
 				OneMoment one_moment;
 				
 				// Create the action group
-				sinfgapp::Action::PassiveGrouper group(canvas_interface()->get_instance().get(),_("Adjust Time"));
-				sinfgapp::PushMode push_mode(canvas_interface(), sinfgapp::MODE_NORMAL);
+				synfigapp::Action::PassiveGrouper group(canvas_interface()->get_instance().get(),_("Adjust Time"));
+				synfigapp::PushMode push_mode(canvas_interface(), synfigapp::MODE_NORMAL);
 				
 				Gtk::TreeModel::iterator iter(row);
 				if(change_delta<0)
 				{
 					//DEBUGPOINT();
 					KeyframeList keyframe_list(get_canvas()->keyframe_list());
-					sinfg::KeyframeList::iterator iter(keyframe_list.find((*row)[model.keyframe]));
+					synfig::KeyframeList::iterator iter(keyframe_list.find((*row)[model.keyframe]));
 					//DEBUGPOINT();
 					for(;iter!=keyframe_list.end();++iter)
 					{
 					//DEBUGPOINT();
-						sinfg::Keyframe keyframe(*iter);
+						synfig::Keyframe keyframe(*iter);
 
 						keyframe.set_time(keyframe.get_time()+change_delta);
 			
-						sinfgapp::Action::Handle action(sinfgapp::Action::create("keyframe_set"));
+						synfigapp::Action::Handle action(synfigapp::Action::create("keyframe_set"));
 			
 						if(!action)return;
 						
@@ -409,18 +409,18 @@ KeyframeTreeStore::set_value_impl(const Gtk::TreeModel::iterator& row, int colum
 				{
 					//DEBUGPOINT();
 					KeyframeList keyframe_list(get_canvas()->keyframe_list());
-					sinfg::KeyframeList::reverse_iterator end(keyframe_list.find((*row)[model.keyframe]));
-					sinfg::KeyframeList::reverse_iterator iter(keyframe_list.rbegin());
+					synfig::KeyframeList::reverse_iterator end(keyframe_list.find((*row)[model.keyframe]));
+					synfig::KeyframeList::reverse_iterator iter(keyframe_list.rbegin());
 					//end++;
 					//DEBUGPOINT();
 					for(;iter!=end;++iter)
 					{
 					//DEBUGPOINT();
-						sinfg::Keyframe keyframe(*iter);
+						synfig::Keyframe keyframe(*iter);
 
 						keyframe.set_time(keyframe.get_time()+change_delta);
 			
-						sinfgapp::Action::Handle action(sinfgapp::Action::create("keyframe_set"));
+						synfigapp::Action::Handle action(synfigapp::Action::create("keyframe_set"));
 			
 						if(!action)return;
 						
@@ -440,16 +440,16 @@ KeyframeTreeStore::set_value_impl(const Gtk::TreeModel::iterator& row, int colum
 		{
 			OneMoment one_moment;
 
-			Glib::Value<sinfg::Time> x;
+			Glib::Value<synfig::Time> x;
 			g_value_init(x.gobj(),model.time.type());
 			g_value_copy(value.gobj(),x.gobj());
-			sinfg::Keyframe keyframe(*iter->iter);
+			synfig::Keyframe keyframe(*iter->iter);
 
-			sinfg::info("KeyframeTreeStore::set_value_impl():old_time=%s",keyframe.get_time().get_string().c_str());
+			synfig::info("KeyframeTreeStore::set_value_impl():old_time=%s",keyframe.get_time().get_string().c_str());
 			keyframe.set_time(x.get());
-			sinfg::info("KeyframeTreeStore::set_value_impl():new_time=%s",keyframe.get_time().get_string().c_str());
+			synfig::info("KeyframeTreeStore::set_value_impl():new_time=%s",keyframe.get_time().get_string().c_str());
 			
-			sinfgapp::Action::Handle action(sinfgapp::Action::create("keyframe_set"));
+			synfigapp::Action::Handle action(synfigapp::Action::create("keyframe_set"));
 			
 			if(!action)
 				return;
@@ -465,10 +465,10 @@ KeyframeTreeStore::set_value_impl(const Gtk::TreeModel::iterator& row, int colum
 			Glib::Value<Glib::ustring> x;
 			g_value_init(x.gobj(),model.description.type());
 			g_value_copy(value.gobj(),x.gobj());
-			sinfg::Keyframe keyframe(*iter->iter);
+			synfig::Keyframe keyframe(*iter->iter);
 			keyframe.set_description(x.get());
 
-			sinfgapp::Action::Handle action(sinfgapp::Action::create("keyframe_set"));
+			synfigapp::Action::Handle action(synfigapp::Action::create("keyframe_set"));
 			
 			if(!action)
 				return;
@@ -771,7 +771,7 @@ KeyframeTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& gtk_iter, in
 	{
 	case 0:		// Time
 	{
-		Glib::Value<sinfg::Time> x;
+		Glib::Value<synfig::Time> x;
 		g_value_init(x.gobj(),x.value_type());
 		x.set(iter->iter->get_time());
 		g_value_init(value.gobj(),x.value_type());
@@ -780,11 +780,11 @@ KeyframeTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& gtk_iter, in
 	}
 	case 3:		// Time Delta
 	{
-		Glib::Value<sinfg::Time> x;
+		Glib::Value<synfig::Time> x;
 		g_value_init(x.gobj(),x.value_type());
 		
-		sinfg::Keyframe prev_keyframe(*iter->iter);
-		sinfg::Keyframe keyframe;
+		synfig::Keyframe prev_keyframe(*iter->iter);
+		synfig::Keyframe keyframe;
 		{
 			KeyframeList::iterator tmp(iter->iter);
 			tmp++;
@@ -815,7 +815,7 @@ KeyframeTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& gtk_iter, in
 	}
 	case 2:		// Keyframe
 	{
-		Glib::Value<sinfg::Keyframe> x;
+		Glib::Value<synfig::Keyframe> x;
 		g_value_init(x.gobj(),x.value_type());
 		x.set(*iter->iter);
 		g_value_init(value.gobj(),x.value_type());
@@ -828,7 +828,7 @@ KeyframeTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& gtk_iter, in
 }
 
 Gtk::TreeModel::Row
-KeyframeTreeStore::find_row(const sinfg::Keyframe &keyframe)
+KeyframeTreeStore::find_row(const synfig::Keyframe &keyframe)
 {
 	Gtk::TreeModel::Row row(*(children().begin()));
 	dump_iterator(row,"find_row,begin");
@@ -838,7 +838,7 @@ KeyframeTreeStore::find_row(const sinfg::Keyframe &keyframe)
 		
 	_keyframe_iterator *iter(static_cast<_keyframe_iterator*>(gtk_iter->user_data));
 	
-	sinfg::KeyframeList &keyframe_list(canvas_interface()->get_canvas()->keyframe_list());
+	synfig::KeyframeList &keyframe_list(canvas_interface()->get_canvas()->keyframe_list());
 	if(keyframe_list.empty())
 		throw std::runtime_error(_("There are no keyframes n this canvas"));
 
@@ -909,7 +909,7 @@ KeyframeTreeStore::change_keyframe(Keyframe keyframe)
 
 		unsigned int new_index(get_index_from_model_iter(row));
 		unsigned int old_index(0);
-		sinfg::KeyframeList::iterator iter;
+		synfig::KeyframeList::iterator iter;
 		for(old_index=0,iter=old_keyframe_list.begin();iter!=old_keyframe_list.end() && (UniqueID)*iter!=(UniqueID)keyframe;++iter,old_index++);
 		
 		if(iter!=old_keyframe_list.end() && new_index!=old_index)

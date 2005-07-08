@@ -1,5 +1,5 @@
 /*! ========================================================================
-** Sinfg
+** Synfig
 ** Template Header File
 ** $Id: toolbox.h,v 1.1.1.1 2005/01/07 03:34:37 darco Exp $
 **
@@ -20,8 +20,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_GTKMM_TOOLBOX_H
-#define __SINFG_GTKMM_TOOLBOX_H
+#ifndef __SYNFIG_GTKMM_TOOLBOX_H
+#define __SYNFIG_GTKMM_TOOLBOX_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -31,7 +31,7 @@
 #include <gtkmm/togglebutton.h>
 #include <gtkmm/menu.h>
 #include <gtkmm/table.h>
-#include <sinfg/string.h>
+#include <synfig/string.h>
 #include "smach.h"
 #include <map>
 #include "dialogsettings.h"
@@ -64,7 +64,7 @@ class Toolbox : public Gtk::Window
 	
 	Gtk::Table *tool_table;
 
-	std::map<sinfg::String,Gtk::ToggleButton *> state_button_map;
+	std::map<synfig::String,Gtk::ToggleButton *> state_button_map;
 	
 	Gtk::Menu	*recent_files_menu;
 
@@ -79,13 +79,13 @@ class Toolbox : public Gtk::Window
 	
 public:
 
-	void change_state(const sinfg::String& statename);
+	void change_state(const synfig::String& statename);
 
 	void update_undo_redo();
 
 	void refresh() { update_undo_redo(); }
 
-	void set_active_state(const sinfg::String& statename);
+	void set_active_state(const synfig::String& statename);
 
 	void add_state(const Smach::state_base *state);
 

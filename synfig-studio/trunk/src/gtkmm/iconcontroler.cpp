@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file template.cpp
 **	\brief Template File
 **
@@ -29,10 +29,10 @@
 #endif
 
 #include "iconcontroler.h"
-#include <sinfg/valuenode_const.h>
+#include <synfig/valuenode_const.h>
 #include <gtkmm/button.h>
 #include <gtkmm/window.h>
-#include <sinfgapp/action.h>
+#include <synfigapp/action.h>
 
 #endif
 
@@ -41,7 +41,7 @@
 using namespace etl;
 using namespace std;
 using namespace studio;
-using namespace sinfg;
+using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 
@@ -69,9 +69,9 @@ using namespace sinfg;
 
 /* === M E T H O D S ======================================================= */
 
-static Glib::RefPtr<Gdk::Pixbuf> _tree_pixbuf_table_value_type[(int)sinfg::ValueBase::TYPE_END];
+static Glib::RefPtr<Gdk::Pixbuf> _tree_pixbuf_table_value_type[(int)synfig::ValueBase::TYPE_END];
 
-IconControler::IconControler(const sinfg::String& basepath)
+IconControler::IconControler(const synfig::String& basepath)
 {
 	Gtk::IconSource icon_source;
 	icon_source.set_direction_wildcarded();
@@ -88,22 +88,22 @@ IconControler::IconControler(const sinfg::String& basepath)
 	path_to_icons+=ETL_DIRECTORY_SEPERATOR;
 
 	try{
-	Gtk::Window::set_default_icon_from_file(path_to_icons+"sinfg_icon."+IMAGE_EXT);
+	Gtk::Window::set_default_icon_from_file(path_to_icons+"synfig_icon."+IMAGE_EXT);
 	} catch(...)
 	{
-		sinfg::warning("Unable to open "+path_to_icons+"sinfg_icon."+IMAGE_EXT);
+		synfig::warning("Unable to open "+path_to_icons+"synfig_icon."+IMAGE_EXT);
 	}
 	
 /*
 #define INIT_STOCK_ICON(name,iconfile,desc)							\
-	stock_##name=Gtk::StockItem(Gtk::StockID("sinfg-" #name),desc);   			\
+	stock_##name=Gtk::StockItem(Gtk::StockID("synfig-" #name),desc);   			\
 	Gtk::Stock::add(stock_##name);								\
 	icon_source.set_filename(path_to_icons+iconfile);							\
 	icon_##name.add_source(icon_source);						\
 	icon_factory->add(stock_##name.get_stock_id(),icon_##name)
 */
 #define INIT_STOCK_ICON(name,iconfile,desc){							\
-	Gtk::StockItem stockitem(Gtk::StockID("sinfg-" #name),desc); \
+	Gtk::StockItem stockitem(Gtk::StockID("synfig-" #name),desc); \
 	Gtk::Stock::add(stockitem);								\
 	Gtk::IconSet icon_set;									\
 	icon_source.set_filename(path_to_icons+iconfile);							\
@@ -112,7 +112,7 @@ IconControler::IconControler(const sinfg::String& basepath)
 	}
 
 #define INIT_STOCK_ICON_CLONE(name,stockid,desc){							\
-	Gtk::StockItem stockitem(Gtk::StockID("sinfg-" #name),desc); \
+	Gtk::StockItem stockitem(Gtk::StockID("synfig-" #name),desc); \
 	Gtk::Stock::add(stockitem);								\
 	Gtk::IconSet icon_set;									\
 	if(Gtk::Stock::lookup(stockitem.get_stock_id(),icon_set))	\
@@ -120,7 +120,7 @@ IconControler::IconControler(const sinfg::String& basepath)
 	}
 
 #define INIT_STOCK_ITEM(name,desc)							\
-	stock_##name=Gtk::StockItem(Gtk::StockID("sinfg-" #name),desc);   			\
+	stock_##name=Gtk::StockItem(Gtk::StockID("synfig-" #name),desc);   			\
 	Gtk::Stock::add(stock_##name);								
 
 	INIT_STOCK_ICON(swap_colors,"swap_colors_icon."IMAGE_EXT,_("Swap Colors"));
@@ -190,7 +190,7 @@ IconControler::IconControler(const sinfg::String& basepath)
 
 	icon_factory->add_default();
 	
-	Gtk::IconSize::register_new("sinfg-small_icon",12,12);
+	Gtk::IconSize::register_new("synfig-small_icon",12,12);
 	for(int i(0);i<(int)ValueBase::TYPE_END;i++)
 		_tree_pixbuf_table_value_type[i]=Gtk::Button().render_icon(value_icon(ValueBase::Type(i)),Gtk::ICON_SIZE_SMALL_TOOLBAR);
 
@@ -222,7 +222,7 @@ IconControler::get_tool_cursor(const Glib::ustring& name,const Glib::RefPtr<Gdk:
 	DEBUGPOINT();
 	Glib::RefPtr<Gdk::Pixbuf> pixbuf;
 	DEBUGPOINT();
-	pixbuf=Gtk::Button().render_icon(Gtk::StockID("sinfg-"+name),Gtk::ICON_SIZE_SMALL_TOOLBAR);
+	pixbuf=Gtk::Button().render_icon(Gtk::StockID("synfig-"+name),Gtk::ICON_SIZE_SMALL_TOOLBAR);
 	DEBUGPOINT();
 
 	pixbuf->render_to_drawable_alpha(
@@ -256,55 +256,55 @@ IconControler::get_tool_cursor(const Glib::ustring& name,const Glib::RefPtr<Gdk:
 }
 
 Gtk::StockID
-studio::value_icon(sinfg::ValueBase::Type type)
+studio::value_icon(synfig::ValueBase::Type type)
 {
 		switch(type)
 		{
 		case ValueBase::TYPE_REAL:
-			return Gtk::StockID("sinfg-real");
+			return Gtk::StockID("synfig-real");
 			break;
 		case ValueBase::TYPE_INTEGER:
-			return Gtk::StockID("sinfg-integer");
+			return Gtk::StockID("synfig-integer");
 			break;
 		case ValueBase::TYPE_BOOL:
-			return Gtk::StockID("sinfg-bool");
+			return Gtk::StockID("synfig-bool");
 			break;
 		case ValueBase::TYPE_ANGLE:
-			return Gtk::StockID("sinfg-angle");
+			return Gtk::StockID("synfig-angle");
 			break;
 		case ValueBase::TYPE_VECTOR:
-			return Gtk::StockID("sinfg-vector");
+			return Gtk::StockID("synfig-vector");
 			break;
 		case ValueBase::TYPE_COLOR:
-			return Gtk::StockID("sinfg-color");
+			return Gtk::StockID("synfig-color");
 			break;
 		case ValueBase::TYPE_STRING:
-			return Gtk::StockID("sinfg-string");
+			return Gtk::StockID("synfig-string");
 			break;
 		case ValueBase::TYPE_CANVAS:
-			return Gtk::StockID("sinfg-canvas_pointer");
+			return Gtk::StockID("synfig-canvas_pointer");
 			break;
 		case ValueBase::TYPE_LIST:
-			return Gtk::StockID("sinfg-list");
+			return Gtk::StockID("synfig-list");
 			break;
 		case ValueBase::TYPE_SEGMENT:
-			return Gtk::StockID("sinfg-segment");
+			return Gtk::StockID("synfig-segment");
 			break;
 		case ValueBase::TYPE_GRADIENT:
-			return Gtk::StockID("sinfg-gradient");
+			return Gtk::StockID("synfig-gradient");
 			break;
 		case ValueBase::TYPE_BLINEPOINT:
-			return Gtk::StockID("sinfg-blinepoint");
+			return Gtk::StockID("synfig-blinepoint");
 			break;
 		case ValueBase::TYPE_NIL:
 		default:
-			return Gtk::StockID("sinfg-unknown");
+			return Gtk::StockID("synfig-unknown");
 			break;
 		}
 }
 
 Gtk::StockID
-studio::valuenode_icon(etl::handle<sinfg::ValueNode> value_node)
+studio::valuenode_icon(etl::handle<synfig::ValueNode> value_node)
 {
 	if(handle<ValueNode_Const>::cast_dynamic(value_node))
 	{
@@ -312,19 +312,19 @@ studio::valuenode_icon(etl::handle<sinfg::ValueNode> value_node)
 	}
 	else
 	{
-		return Gtk::StockID("sinfg-value_node");		
+		return Gtk::StockID("synfig-value_node");		
 	}
 }
 
 Glib::RefPtr<Gdk::Pixbuf>
-studio::get_tree_pixbuf(sinfg::ValueBase::Type type)
+studio::get_tree_pixbuf(synfig::ValueBase::Type type)
 {
 	//return Gtk::Button().render_icon(value_icon(type),Gtk::ICON_SIZE_SMALL_TOOLBAR);
 	return _tree_pixbuf_table_value_type[int(type)];
 }
 
 Gtk::StockID
-studio::get_action_stock_id(const sinfgapp::Action::BookEntry& action)
+studio::get_action_stock_id(const synfigapp::Action::BookEntry& action)
 {
 	Gtk::StockID stock_id;
 	if(action.task=="raise")			stock_id=Gtk::Stock::GO_UP;
@@ -337,38 +337,38 @@ studio::get_action_stock_id(const sinfgapp::Action::BookEntry& action)
 	else if(action.task=="set_on")		stock_id=Gtk::Stock::YES;
 	else if(action.task=="set_off")		stock_id=Gtk::Stock::NO;
 	else if(action.task=="remove")		stock_id=Gtk::Stock::DELETE;
-	else								stock_id=Gtk::StockID("sinfg-"+action.task);
+	else								stock_id=Gtk::StockID("synfig-"+action.task);
 	
 	return stock_id;
 }
 
 Gtk::StockID
-studio::layer_icon(const sinfg::String &layer)
+studio::layer_icon(const synfig::String &layer)
 {
 	if(layer=="PasteCanvas" || layer=="pastecanvas")
-		return Gtk::StockID("sinfg-layer_pastecanvas");
+		return Gtk::StockID("synfig-layer_pastecanvas");
 	else if(layer=="rotate")
-		return Gtk::StockID("sinfg-rotate");
+		return Gtk::StockID("synfig-rotate");
 	else if(layer=="zoom")
-		return Gtk::StockID("sinfg-zoom");
+		return Gtk::StockID("synfig-zoom");
 	else if(layer=="region")
-		return Gtk::StockID("sinfg-bline");
+		return Gtk::StockID("synfig-bline");
 	else if(layer=="polygon")
-		return Gtk::StockID("sinfg-polygon");
+		return Gtk::StockID("synfig-polygon");
 	else if(layer=="outline")
-		return Gtk::StockID("sinfg-width");
+		return Gtk::StockID("synfig-width");
 	else if(layer=="circle")
-		return Gtk::StockID("sinfg-circle");
+		return Gtk::StockID("synfig-circle");
 	else if(layer=="rectangle")
-		return Gtk::StockID("sinfg-rectangle");
+		return Gtk::StockID("synfig-rectangle");
 	else if(layer.find("gradient")!=String::npos)
-		return Gtk::StockID("sinfg-gradient");
+		return Gtk::StockID("synfig-gradient");
 	else
-		return Gtk::StockID("sinfg-layer");
+		return Gtk::StockID("synfig-layer");
 }
 
 Glib::RefPtr<Gdk::Pixbuf>
-studio::get_tree_pixbuf_layer(const sinfg::String &layer)
+studio::get_tree_pixbuf_layer(const synfig::String &layer)
 {
 	return Gtk::Button().render_icon(layer_icon(layer),Gtk::ICON_SIZE_SMALL_TOOLBAR);
 }

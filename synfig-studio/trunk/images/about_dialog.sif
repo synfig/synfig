@@ -1096,7 +1096,7 @@
               <y>1.2500000000</y>
             </vector>
           </param>
-          <param name="canvas" use="../images/logo.sif#"/>
+          <param name="canvas" use="logo.sif#"/>
           <param name="zoom">
             <real value="-0.2999999925"/>
           </param>
@@ -1255,7 +1255,7 @@
             </color>
           </param>
           <param name="family">
-            <string>times</string>
+            <string guid="ADD7C86FF44B7A2A37637C9E3C8F4315">Times New Roman</string>
           </param>
           <param name="style">
             <integer value="0"/>
@@ -1397,7 +1397,7 @@
             </color>
           </param>
           <param name="family">
-            <string>times</string>
+            <string guid="ADD7C86FF44B7A2A37637C9E3C8F4315">Times New Roman</string>
           </param>
           <param name="style">
             <integer value="0"/>
@@ -1498,7 +1498,7 @@
             </color>
           </param>
           <param name="family">
-            <string>arialbd</string>
+            <string>Arial</string>
           </param>
           <param name="style">
             <integer value="0"/>

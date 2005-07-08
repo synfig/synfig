@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file autorecover.cpp
 **	\brief Template File
 **
@@ -32,8 +32,8 @@
 
 //#include <unistd.h>
 #include "app.h"
-#include <sinfg/savecanvas.h>
-#include <sinfg/loadcanvas.h>
+#include <synfig/savecanvas.h>
+#include <synfig/loadcanvas.h>
 #include <fstream>
 #include <iostream>
 #include "instance.h"
@@ -64,7 +64,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
@@ -87,11 +87,11 @@ AutoRecover::AutoRecover()
 	if(mkdir(get_shadow_directory().c_str(),ACCESSPERMS)<0)
 	{
 		if(errno!=EEXIST)
-			sinfg::error("UNABLE TO CREATE \"%s\"",get_shadow_directory().c_str());
+			synfig::error("UNABLE TO CREATE \"%s\"",get_shadow_directory().c_str());
 	}
 	else
 	{
-		sinfg::info("Created directory \"%s\"",get_shadow_directory().c_str());
+		synfig::info("Created directory \"%s\"",get_shadow_directory().c_str());
 	}
 }
 
@@ -99,7 +99,7 @@ AutoRecover::~AutoRecover()
 {
 }
 
-sinfg::String
+synfig::String
 AutoRecover::get_shadow_directory()
 {
 	return Glib::build_filename(App::get_user_app_directory(),"tmp");
@@ -122,8 +122,8 @@ AutoRecover::set_timeout(int milliseconds)
 //		auto_backup_connect=App::main.get_context()->signal_timeout().connect(sigc::mem_fun(&AutoRecover::auto_backup),timeout);
 }
 
-sinfg::String
-AutoRecover::get_shadow_file_name(const sinfg::String& filename)
+synfig::String
+AutoRecover::get_shadow_file_name(const synfig::String& filename)
 {
 	unsigned int hash1(0xdeadbeef);
 	unsigned int hash2(0x83502529);
@@ -165,15 +165,15 @@ AutoRecover::cleanup_pid(int pid)
 	int status=0;
 	if(waitpid(pid,&status,WNOHANG)==-1)
 	{
-		sinfg::info("PID %d isn't a zombie yet",pid);
+		synfig::info("PID %d isn't a zombie yet",pid);
 		return true;
 	}
 	if(WEXITSTATUS(status)!=0)
 	{
-		sinfg::error("Autobackup seems to have failed! (PID=%d)",pid);
+		synfig::error("Autobackup seems to have failed! (PID=%d)",pid);
 	}
 	else
-		sinfg::info("PID=%d has been cleaned up",pid);
+		synfig::info("PID=%d has been cleaned up",pid);
 #endif
 	return false;
 }
@@ -219,12 +219,12 @@ AutoRecover::auto_backup()
 			}
 			
 			if(savecount)
-				sinfg::info("AutoRecover::auto_backup(): %d Files backed up.",savecount);
+				synfig::info("AutoRecover::auto_backup(): %d Files backed up.",savecount);
 		}
 		catch(...)
 		{
-			sinfg::error("AutoRecover::auto_backup(): UNKNOWN EXCEPTION THROWN.");
-			sinfg::error("AutoRecover::auto_backup(): FILES NOT BACKED UP.");
+			synfig::error("AutoRecover::auto_backup(): UNKNOWN EXCEPTION THROWN.");
+			synfig::error("AutoRecover::auto_backup(): FILES NOT BACKED UP.");
 		}
 		
 #ifdef HAVE_FORK
@@ -313,7 +313,7 @@ AutoRecover::normal_shutdown()
 }
 
 void
-AutoRecover::clear_backup(sinfg::Canvas::Handle canvas)
+AutoRecover::clear_backup(synfig::Canvas::Handle canvas)
 {
 	if(canvas)
 		remove(get_shadow_file_name(canvas->get_file_name()).c_str());

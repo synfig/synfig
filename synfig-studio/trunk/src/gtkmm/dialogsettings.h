@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file dialogsettings.h
 **	\brief Template Header
 **
@@ -21,12 +21,12 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_DIALOGSETTINGS_H
-#define __SINFG_DIALOGSETTINGS_H
+#ifndef __SYNFIG_DIALOGSETTINGS_H
+#define __SYNFIG_DIALOGSETTINGS_H
 
 /* === H E A D E R S ======================================================= */
 
-#include <sinfgapp/settings.h>
+#include <synfigapp/settings.h>
 #include <gtkmm/window.h>
 
 /* === M A C R O S ========================================================= */
@@ -37,16 +37,16 @@
 
 namespace studio {
 
-class DialogSettings : public sinfgapp::Settings
+class DialogSettings : public synfigapp::Settings
 {
 	Gtk::Window* window;
-	sinfg::String name;
+	synfig::String name;
 public:
-	DialogSettings(Gtk::Window* window,const sinfg::String& name);
+	DialogSettings(Gtk::Window* window,const synfig::String& name);
 	virtual ~DialogSettings();
 
-	virtual bool get_value(const sinfg::String& key, sinfg::String& value)const;
-	virtual bool set_value(const sinfg::String& key,const sinfg::String& value);
+	virtual bool get_value(const synfig::String& key, synfig::String& value)const;
+	virtual bool set_value(const synfig::String& key,const synfig::String& value);
 	virtual KeyList get_key_list()const;
 };
 

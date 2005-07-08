@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file template.h
 **	\brief Template Header
 **
@@ -21,15 +21,15 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_WORKAREARENDERER_H
-#define __SINFG_WORKAREARENDERER_H
+#ifndef __SYNFIG_WORKAREARENDERER_H
+#define __SYNFIG_WORKAREARENDERER_H
 
 /* === H E A D E R S ======================================================= */
 
 #include <ETL/handle>
 #include <sigc++/signal.h>
 #include <sigc++/object.h>
-#include <sinfg/vector.h>
+#include <synfig/vector.h>
 #include <gdkmm/drawable.h>
 #include <gdkmm/rectangle.h>
 
@@ -68,10 +68,10 @@ public:
 	float get_ph()const;
 
 	//! Converts screen coords (ie: pixels) to composition coordinates
-	sinfg::Point screen_to_comp_coords(sinfg::Point pos)const;
+	synfig::Point screen_to_comp_coords(synfig::Point pos)const;
 
 	//! Converts composition coordinates to screen coords (ie: pixels)
-	sinfg::Point comp_to_screen_coords(sinfg::Point pos)const;
+	synfig::Point comp_to_screen_coords(synfig::Point pos)const;
 
 	WorkAreaRenderer();
 	virtual ~WorkAreaRenderer();

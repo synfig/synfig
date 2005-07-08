@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file historytreestore.h
 **	\brief Template Header
 **
@@ -21,15 +21,15 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_STUDIO_HISTORYTREESTORE_H
-#define __SINFG_STUDIO_HISTORYTREESTORE_H
+#ifndef __SYNFIG_STUDIO_HISTORYTREESTORE_H
+#define __SYNFIG_STUDIO_HISTORYTREESTORE_H
 
 /* === H E A D E R S ======================================================= */
 
 #include <gtkmm/treestore.h>
-#include <sinfgapp/canvasinterface.h>
+#include <synfigapp/canvasinterface.h>
 #include <gdkmm/pixbuf.h>
-#include <sinfgapp/action.h>
+#include <synfigapp/action.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -53,7 +53,7 @@ public:
 	{
 	public:
 	public:
-		Gtk::TreeModelColumn<etl::handle<sinfgapp::Action::Undoable> > action;
+		Gtk::TreeModelColumn<etl::handle<synfigapp::Action::Undoable> > action;
 		Gtk::TreeModelColumn<Glib::ustring> name;
 		Gtk::TreeModelColumn<Glib::RefPtr<Gdk::Pixbuf> > icon;
 		Gtk::TreeModelColumn<bool> is_active;
@@ -61,7 +61,7 @@ public:
 		Gtk::TreeModelColumn<bool> is_redo;
 
 		Gtk::TreeModelColumn<Glib::ustring> canvas_id;
-		Gtk::TreeModelColumn<sinfg::Canvas::Handle> canvas;
+		Gtk::TreeModelColumn<synfig::Canvas::Handle> canvas;
 
 		Model()
 		{
@@ -113,9 +113,9 @@ private:
 	
 	void on_redo_stack_cleared();
 	
-	void on_new_action(etl::handle<sinfgapp::Action::Undoable> action);
+	void on_new_action(etl::handle<synfigapp::Action::Undoable> action);
 
-	void on_action_status_changed(etl::handle<sinfgapp::Action::Undoable> action);
+	void on_action_status_changed(etl::handle<synfigapp::Action::Undoable> action);
 
 	/*
  -- ** -- P U B L I C   M E T H O D S -----------------------------------------
@@ -133,7 +133,7 @@ public:
 
 	void refresh() { rebuild(); }
 
-	void insert_action(Gtk::TreeRow row,etl::handle<sinfgapp::Action::Undoable> action, bool is_active=true, bool is_undo=true, bool is_redo=false);
+	void insert_action(Gtk::TreeRow row,etl::handle<synfigapp::Action::Undoable> action, bool is_active=true, bool is_undo=true, bool is_redo=false);
 
 	/*
  -- ** -- P R O T E C T E D   M E T H O D S -----------------------------------

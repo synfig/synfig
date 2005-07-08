@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file widget_coloredit.h
 **	\brief Template Header
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_STUDIO_WIDGET_COLOREDIT_H
-#define __SINFG_STUDIO_WIDGET_COLOREDIT_H
+#ifndef __SYNFIG_STUDIO_WIDGET_COLOREDIT_H
+#define __SYNFIG_STUDIO_WIDGET_COLOREDIT_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -31,7 +31,7 @@
 #include <gtkmm/spinbutton.h>
 #include <gtkmm/adjustment.h>
 #include <gtkmm/drawingarea.h>
-#include <sinfg/color.h>
+#include <synfig/color.h>
 #include "widget_color.h"
 
 /* === M A C R O S ========================================================= */
@@ -70,7 +70,7 @@ private:
 	sigc::signal<void> signal_activated_;
 
 	Type type;
-	sinfg::Color color_;
+	synfig::Color color_;
 
 public:
 
@@ -80,7 +80,7 @@ public:
 	Type
 	get_type()const { return type; }
 
-	const sinfg::Color&
+	const synfig::Color&
 	get_color()const { return color_; }
 
 
@@ -90,22 +90,22 @@ public:
 	set_type(Type x);
 
 	void
-	set_color(sinfg::Color x);
+	set_color(synfig::Color x);
 
-	static void adjust_color(Type type, sinfg::Color &color, float amount);
+	static void adjust_color(Type type, synfig::Color &color, float amount);
 
 private:
-	typedef void (*slider_color_func)(sinfg::Color &,float);
+	typedef void (*slider_color_func)(synfig::Color &,float);
 
-	static void slider_color_TYPE_R(sinfg::Color &color, float amount);
-	static void slider_color_TYPE_G(sinfg::Color &color, float amount);
-	static void slider_color_TYPE_B(sinfg::Color &color, float amount);
-	static void slider_color_TYPE_Y(sinfg::Color &color, float amount);
-	static void slider_color_TYPE_U(sinfg::Color &color, float amount);
-	static void slider_color_TYPE_V(sinfg::Color &color, float amount);
-	static void slider_color_TYPE_HUE(sinfg::Color &color, float amount);
-	static void slider_color_TYPE_SAT(sinfg::Color &color, float amount);
-	static void slider_color_TYPE_A(sinfg::Color &color, float amount);
+	static void slider_color_TYPE_R(synfig::Color &color, float amount);
+	static void slider_color_TYPE_G(synfig::Color &color, float amount);
+	static void slider_color_TYPE_B(synfig::Color &color, float amount);
+	static void slider_color_TYPE_Y(synfig::Color &color, float amount);
+	static void slider_color_TYPE_U(synfig::Color &color, float amount);
+	static void slider_color_TYPE_V(synfig::Color &color, float amount);
+	static void slider_color_TYPE_HUE(synfig::Color &color, float amount);
+	static void slider_color_TYPE_SAT(synfig::Color &color, float amount);
+	static void slider_color_TYPE_A(synfig::Color &color, float amount);
 	
 
 	bool
@@ -145,7 +145,7 @@ class Widget_ColorEdit : public Gtk::Table
 	Gtk::Adjustment B_adjustment;
 	Gtk::Adjustment A_adjustment;
 	
-	sinfg::Color color;
+	synfig::Color color;
 
 	Gtk::Notebook* notebook;
 
@@ -167,9 +167,9 @@ public:
 	
 	void activated() { signal_activated_(); }
 	void activate() { signal_activated_(); }
-	void set_value(const sinfg::Color &data);
-	const sinfg::Color &get_value();
-	sinfg::Color get_value_raw();
+	void set_value(const synfig::Color &data);
+	const synfig::Color &get_value();
+	synfig::Color get_value_raw();
 	void set_has_frame(bool x);
 	void set_digits(int x);
 	Widget_ColorEdit();

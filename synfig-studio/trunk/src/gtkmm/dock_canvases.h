@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file dialog_canvases.h
 **	\brief Template Header
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_STUDIO_DIALOG_CANVASES_H
-#define __SINFG_STUDIO_DIALOG_CANVASES_H
+#ifndef __SYNFIG_STUDIO_DIALOG_CANVASES_H
+#define __SYNFIG_STUDIO_DIALOG_CANVASES_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -50,7 +50,7 @@ private:
 
 	etl::loose_handle<studio::Instance> get_selected_instance() { return selected_instance; }
 
-	etl::loose_handle<sinfg::Canvas> get_selected_canvas();
+	etl::loose_handle<synfig::Canvas> get_selected_canvas();
 
 	etl::loose_handle<studio::CanvasView> get_selected_canvas_view();
 

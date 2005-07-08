@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file dockable.cpp
 **	\brief Template File
 **
@@ -35,7 +35,7 @@
 #include "dockmanager.h"
 #include "dockbook.h"
 #include "dockdialog.h"
-#include <sinfg/general.h>
+#include <synfig/general.h>
 #include <gtkmm/table.h>
 #include <gtk/gtk.h>
 
@@ -45,7 +45,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
@@ -71,7 +71,7 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
-Dockable::Dockable(const sinfg::String& name,const sinfg::String& local_name,Gtk::StockID stock_id_):
+Dockable::Dockable(const synfig::String& name,const synfig::String& local_name,Gtk::StockID stock_id_):
 //	Gtk::Window(Gtk::WINDOW_TOPLEVEL),
 	name_(name),
 	local_name_(local_name),
@@ -225,7 +225,7 @@ Dockable::on_drag_data_get(const Glib::RefPtr<Gdk::DragContext>&, Gtk::Selection
 }
 
 void
-Dockable::set_local_name(const sinfg::String& local_name)
+Dockable::set_local_name(const synfig::String& local_name)
 {
 	//set_title(local_name);
 	title_label_.set_text(local_name);
@@ -311,13 +311,13 @@ Dockable::add(Gtk::Widget& x)
 }
 
 Gtk::ToolButton*
-Dockable::add_button(const Gtk::StockID& stock_id, const sinfg::String& tooltip)
+Dockable::add_button(const Gtk::StockID& stock_id, const synfig::String& tooltip)
 {
 	if(!toolbar_)
 		set_toolbar(*manage(new Gtk::Toolbar));
 
 	//Gtk::IconSize iconsize(4);
-	//Gtk::IconSize iconsize(Gtk::IconSize::from_name("sinfg-small_icon"));
+	//Gtk::IconSize iconsize(Gtk::IconSize::from_name("synfig-small_icon"));
 
 	Gtk::ToolButton* ret(manage(new Gtk::ToolButton(stock_id)));
 	//Gtk::Image* icon(manage(new Gtk::Image(stock_id,iconsize)));

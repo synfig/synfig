@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file dialog_tooloptions.cpp
 **	\brief Template File
 **
@@ -30,7 +30,7 @@
 
 #include <gtkmm/label.h>
 #include <gtkmm/scrolledwindow.h>
-#include <sinfg/general.h>
+#include <synfig/general.h>
 #include "dialog_tooloptions.h"
 #endif
 
@@ -38,7 +38,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
@@ -50,7 +50,7 @@ using namespace studio;
 /* === M E T H O D S ======================================================= */
 
 Dialog_ToolOptions::Dialog_ToolOptions():
-	Dockable("tool_options",_("Tool Options"),Gtk::StockID("sinfg-normal")),
+	Dockable("tool_options",_("Tool Options"),Gtk::StockID("synfig-normal")),
 	empty_label(_("This tool has no options"))
 {
 	//scrolled_.add(sub_vbox_);
@@ -77,7 +77,7 @@ Dialog_ToolOptions::clear()
 	set_widget(empty_label);
 	empty_label.show();
 
-	set_stock_id(Gtk::StockID("sinfg-normal"));
+	set_stock_id(Gtk::StockID("synfig-normal"));
 }
 
 void
@@ -92,7 +92,7 @@ Dialog_ToolOptions::set_widget(Gtk::Widget&x)
 }
 
 void
-Dialog_ToolOptions::set_name(const sinfg::String& name)
+Dialog_ToolOptions::set_name(const synfig::String& name)
 {
-	set_stock_id(Gtk::StockID("sinfg-"+name));
+	set_stock_id(Gtk::StockID("synfig-"+name));
 }

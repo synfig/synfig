@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file dialog_waypointmodel.h
 **	\brief Template Header
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_GTKMM_WIDGET_WAYPOINTMODEL_H
-#define __SINFG_GTKMM_WIDGET_WAYPOINTMODEL_H
+#ifndef __SYNFIG_GTKMM_WIDGET_WAYPOINTMODEL_H
+#define __SYNFIG_GTKMM_WIDGET_WAYPOINTMODEL_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -44,9 +44,9 @@
 #include <gtkmm/checkbutton.h>
 
 
-#include <sinfg/waypoint.h>
-#include <sinfg/string.h>
-#include <sinfg/time.h>
+#include <synfig/waypoint.h>
+#include <synfig/string.h>
+#include <synfig/time.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -62,7 +62,7 @@ class Widget_WaypointModel;
 
 class Widget_WaypointModel : public Gtk::Table
 {	
-	sinfg::Waypoint::Model waypoint_model;
+	synfig::Waypoint::Model waypoint_model;
 	
 	bool updating;
 	
@@ -84,8 +84,8 @@ class Widget_WaypointModel : public Gtk::Table
 	
 public:
 	Widget_WaypointModel();
-	void set_waypoint_model(sinfg::Waypoint::Model &x);
-	const sinfg::Waypoint::Model &get_waypoint_model()const { return waypoint_model; }
+	void set_waypoint_model(synfig::Waypoint::Model &x);
+	const synfig::Waypoint::Model &get_waypoint_model()const { return waypoint_model; }
 }; // END of class Widget_WaypointModel
 
 }; // END of namespace studio

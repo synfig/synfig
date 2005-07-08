@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file dialog_waypoint.h
 **	\brief Template Header
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_GTKMM_WIDGET_WAYPOINT_H
-#define __SINFG_GTKMM_WIDGET_WAYPOINT_H
+#ifndef __SYNFIG_GTKMM_WIDGET_WAYPOINT_H
+#define __SYNFIG_GTKMM_WIDGET_WAYPOINT_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -45,11 +45,11 @@
 #include <gtkmm/spinbutton.h>
 
 
-#include <sinfgapp/value_desc.h>
-#include <sinfg/waypoint.h>
-//#include <sinfg/valuenode_dynamiclist.h>
-#include <sinfg/string.h>
-#include <sinfg/time.h>
+#include <synfigapp/value_desc.h>
+#include <synfig/waypoint.h>
+//#include <synfig/valuenode_dynamiclist.h>
+#include <synfig/string.h>
+#include <synfig/time.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -70,8 +70,8 @@ class Widget_Waypoint : public Gtk::Table
 	Gtk::Label *value_node_label;
 	Gtk::Label *label;
 	Widget_Time *time_widget;
-	mutable sinfg::Waypoint waypoint;
-	sinfg::Canvas::Handle canvas;
+	mutable synfig::Waypoint waypoint;
+	synfig::Canvas::Handle canvas;
 	//Gtk::Adjustment time_adjustment;
 
 	Gtk::Combo *in,*out;
@@ -83,10 +83,10 @@ class Widget_Waypoint : public Gtk::Table
 //	Gtk::ComboDropDownItem item;
 
 public:
-	Widget_Waypoint(etl::handle<sinfg::Canvas> canvas);
-	void set_canvas(sinfg::Canvas::Handle x);
-	void set_waypoint(sinfg::Waypoint &x);
-	const sinfg::Waypoint &get_waypoint()const;
+	Widget_Waypoint(etl::handle<synfig::Canvas> canvas);
+	void set_canvas(synfig::Canvas::Handle x);
+	void set_waypoint(synfig::Waypoint &x);
+	const synfig::Waypoint &get_waypoint()const;
 }; // END of class Widget_Waypoint
 
 }; // END of namespace studio

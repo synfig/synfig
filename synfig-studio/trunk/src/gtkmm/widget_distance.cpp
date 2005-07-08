@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file widget_time.cpp
 **	\brief Template File
 **
@@ -39,7 +39,7 @@
 
 using namespace std;
 //using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
@@ -70,7 +70,7 @@ Widget_Distance::~Widget_Distance()
 int
 Widget_Distance::on_input(double* new_value)
 {
-	distance_=sinfg::String(get_text());
+	distance_=synfig::String(get_text());
 	*new_value=distance_.get();
 	return 1;
 }
@@ -81,18 +81,18 @@ Widget_Distance::on_output()
 	try{
 	distance_=get_adjustment()->get_value();
 	set_text(distance_.get_string(get_digits()));
-	} catch (...) { /* sinfg::error("Widget_Distance::on_output(): Caught something..."); */ }
+	} catch (...) { /* synfig::error("Widget_Distance::on_output(): Caught something..."); */ }
 	return true;
 }
 
 void
-Widget_Distance::set_value(const sinfg::Distance &data)
+Widget_Distance::set_value(const synfig::Distance &data)
 {
 	distance_=data;
 	get_adjustment()->set_value(distance_.get());
 }
 
-sinfg::Distance
+synfig::Distance
 Widget_Distance::get_value() const
 {
 	distance_=get_adjustment()->get_value();

@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file keyframetreestore.h
 **	\brief Template Header
 **
@@ -21,15 +21,15 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_STUDIO_KEYFRAMETREESTORE_H
-#define __SINFG_STUDIO_KEYFRAMETREESTORE_H
+#ifndef __SYNFIG_STUDIO_KEYFRAMETREESTORE_H
+#define __SYNFIG_STUDIO_KEYFRAMETREESTORE_H
 
 /* === H E A D E R S ======================================================= */
 
 #include <gtkmm/liststore.h>
-#include <sinfgapp/canvasinterface.h>
+#include <synfigapp/canvasinterface.h>
 #include <gdkmm/pixbuf.h>
-#include <sinfg/keyframe.h>
+#include <synfig/keyframe.h>
 #include <map>
 
 /* === M A C R O S ========================================================= */
@@ -60,10 +60,10 @@ public:
 	class Model : public Gtk::TreeModel::ColumnRecord
 	{
 	public:
-		Gtk::TreeModelColumn<sinfg::Time> time;
+		Gtk::TreeModelColumn<synfig::Time> time;
 		Gtk::TreeModelColumn<Glib::ustring> description;
-		Gtk::TreeModelColumn<sinfg::Keyframe> keyframe;
-		Gtk::TreeModelColumn<sinfg::Time> time_delta;
+		Gtk::TreeModelColumn<synfig::Keyframe> keyframe;
+		Gtk::TreeModelColumn<synfig::Time> time_delta;
 	
 		Model()
 		{
@@ -88,16 +88,16 @@ public:
 
 private:
 
-	etl::loose_handle<sinfgapp::CanvasInterface> canvas_interface_;
+	etl::loose_handle<synfigapp::CanvasInterface> canvas_interface_;
 
 	//! Unique stamp for this TreeModel.
 	int stamp_;
 	
 	static KeyframeTreeStore_Class keyframe_tree_store_class_;
 
-	//std::map<sinfg::Keyframe,TreeRowReferenceHack> path_table_;
+	//std::map<synfig::Keyframe,TreeRowReferenceHack> path_table_;
 
-	sinfg::KeyframeList old_keyframe_list;
+	synfig::KeyframeList old_keyframe_list;
 
 	/*
  -- ** -- P R I V A T E   M E T H O D S ---------------------------------------
@@ -105,11 +105,11 @@ private:
 
 private:
 
-	void add_keyframe(sinfg::Keyframe);
+	void add_keyframe(synfig::Keyframe);
 
-	void remove_keyframe(sinfg::Keyframe);
+	void remove_keyframe(synfig::Keyframe);
 
-	void change_keyframe(sinfg::Keyframe);
+	void change_keyframe(synfig::Keyframe);
 
 	static int sorter(const Gtk::TreeModel::iterator &,const Gtk::TreeModel::iterator &);
 
@@ -175,16 +175,16 @@ private:
 
 public:
 	
-	KeyframeTreeStore(etl::loose_handle<sinfgapp::CanvasInterface> canvas_interface_);
+	KeyframeTreeStore(etl::loose_handle<synfigapp::CanvasInterface> canvas_interface_);
 	~KeyframeTreeStore();
 
-	etl::loose_handle<sinfgapp::CanvasInterface> canvas_interface() { return canvas_interface_; }
-	etl::loose_handle<const sinfgapp::CanvasInterface> canvas_interface()const { return canvas_interface_; }
+	etl::loose_handle<synfigapp::CanvasInterface> canvas_interface() { return canvas_interface_; }
+	etl::loose_handle<const synfigapp::CanvasInterface> canvas_interface()const { return canvas_interface_; }
 	
-	sinfg::Canvas::Handle get_canvas() { return canvas_interface()->get_canvas(); }
-	sinfg::Canvas::Handle get_canvas()const { return canvas_interface()->get_canvas(); }
+	synfig::Canvas::Handle get_canvas() { return canvas_interface()->get_canvas(); }
+	synfig::Canvas::Handle get_canvas()const { return canvas_interface()->get_canvas(); }
 
-	Gtk::TreeModel::Row find_row(const sinfg::Keyframe &keyframe);
+	Gtk::TreeModel::Row find_row(const synfig::Keyframe &keyframe);
 
 	/*
  -- ** -- S T A T I C  M E T H O D S ------------------------------------------
@@ -192,7 +192,7 @@ public:
 
 public:
 
-	static Glib::RefPtr<KeyframeTreeStore> create(etl::loose_handle<sinfgapp::CanvasInterface> canvas_interface_);
+	static Glib::RefPtr<KeyframeTreeStore> create(etl::loose_handle<synfigapp::CanvasInterface> canvas_interface_);
 
 	static int time_sorter(const Gtk::TreeModel::iterator &rhs,const Gtk::TreeModel::iterator &lhs);
 

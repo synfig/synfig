@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file widget_sound.h
 **	\brief Widget Sound Header
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_WIDGET_SOUND_H
-#define __SINFG_WIDGET_SOUND_H
+#ifndef __SYNFIG_WIDGET_SOUND_H
+#define __SYNFIG_WIDGET_SOUND_H
 
 /* === H E A D E R S ======================================================= */
 #include <ETL/handle>

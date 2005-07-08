@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file childrentreestore.cpp
 **	\brief Template File
 **
@@ -31,10 +31,10 @@
 #include "layerparamtreestore.h"
 #include "iconcontroler.h"
 #include <gtkmm/button.h>
-#include <sinfg/paramdesc.h>
+#include <synfig/paramdesc.h>
 #include "layertree.h"
-#include <sinfgapp/action_system.h>
-#include <sinfgapp/instance.h>
+#include <synfigapp/action_system.h>
+#include <synfigapp/instance.h>
 #include "app.h"
 #include <ETL/clock>
 
@@ -44,7 +44,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
@@ -54,7 +54,7 @@ class Profiler : private etl::clock
 	const std::string name;
 public:
 	Profiler(const std::string& name):name(name) { reset(); }
-	~Profiler() { float time(operator()()); sinfg::info("%s: took %f msec",name.c_str(),time*1000); }
+	~Profiler() { float time(operator()()); synfig::info("%s: took %f msec",name.c_str(),time*1000); }
 };
 
 /* === G L O B A L S ======================================================= */
@@ -70,7 +70,7 @@ static LayerParamTreeStore::Model& ModelHack()
 	return *model;
 }
 
-LayerParamTreeStore::LayerParamTreeStore(etl::loose_handle<sinfgapp::CanvasInterface> canvas_interface_,LayerTree* layer_tree):
+LayerParamTreeStore::LayerParamTreeStore(etl::loose_handle<synfigapp::CanvasInterface> canvas_interface_,LayerTree* layer_tree):
 	Gtk::TreeStore			(ModelHack()),
 	CanvasTreeStore			(canvas_interface_),
 	layer_tree				(layer_tree)
@@ -100,11 +100,11 @@ LayerParamTreeStore::~LayerParamTreeStore()
 		changed_connection_list.back().disconnect();
 		changed_connection_list.pop_back();
 	}
-	sinfg::info("LayerParamTreeStore::~LayerParamTreeStore(): Deleted");
+	synfig::info("LayerParamTreeStore::~LayerParamTreeStore(): Deleted");
 }
 
 Glib::RefPtr<LayerParamTreeStore>
-LayerParamTreeStore::create(etl::loose_handle<sinfgapp::CanvasInterface> canvas_interface_, LayerTree*layer_tree)
+LayerParamTreeStore::create(etl::loose_handle<synfigapp::CanvasInterface> canvas_interface_, LayerTree*layer_tree)
 {
 	return Glib::RefPtr<LayerParamTreeStore>(new LayerParamTreeStore(canvas_interface_,layer_tree));
 }
@@ -116,13 +116,13 @@ LayerParamTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& iter, int 
 {
 	if(column<0)
 	{
-		sinfg::error("LayerParamTreeStore::get_value_vfunc(): Bad column!");
+		synfig::error("LayerParamTreeStore::get_value_vfunc(): Bad column!");
 		return;
 	}
 	
 /*	if(column==model.label.index())
 	{
-		sinfg::Layer::Handle layer((*iter)[model.layer]);
+		synfig::Layer::Handle layer((*iter)[model.layer]);
 
 		if(!layer)return;
 
@@ -142,12 +142,12 @@ LayerParamTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& iter, int 
 */
 	if(column==model.label.index())
 	{
-		sinfgapp::ValueDesc value_desc((*iter)[model.value_desc]);
+		synfigapp::ValueDesc value_desc((*iter)[model.value_desc]);
 		Glib::ustring label;
 		
 		if(!(*iter)[model.is_toplevel])
 			return CanvasTreeStore::get_value_vfunc(iter,column,value);
-		sinfg::ParamDesc param_desc((*iter)[model.param_desc]);
+		synfig::ParamDesc param_desc((*iter)[model.param_desc]);
 		label=param_desc.get_local_name();
 		
 		if(!(*iter)[model.is_inconsistent])
@@ -222,21 +222,21 @@ LayerParamTreeStore::set_value_impl(const Gtk::TreeModel::iterator& iter, int co
 	{
 		if(column==model.value.index())
 		{
-			Glib::Value<sinfg::ValueBase> x;
+			Glib::Value<synfig::ValueBase> x;
 			g_value_init(x.gobj(),model.value.type());
 			g_value_copy(value.gobj(),x.gobj());
 			
 			if((bool)(*iter)[model.is_toplevel])
 			{
-				sinfgapp::Action::PassiveGrouper group(canvas_interface()->get_instance().get(),_("Set Layer Params"));
+				synfigapp::Action::PassiveGrouper group(canvas_interface()->get_instance().get(),_("Set Layer Params"));
 
-				sinfg::ParamDesc param_desc((*iter)[model.param_desc]);
+				synfig::ParamDesc param_desc((*iter)[model.param_desc]);
 
 				LayerList::iterator iter2(layer_list.begin());
 				
 				for(;iter2!=layer_list.end();++iter2)
 				{
-					if(!canvas_interface()->change_value(sinfgapp::ValueDesc(*iter2,param_desc.get_name()),x.get()))
+					if(!canvas_interface()->change_value(synfigapp::ValueDesc(*iter2,param_desc.get_name()),x.get()))
 					{
 						// ERROR!
 						group.cancel();
@@ -256,7 +256,7 @@ LayerParamTreeStore::set_value_impl(const Gtk::TreeModel::iterator& iter, int co
 /*
 		if(column==model.active.index())
 		{
-			sinfg::Layer::Handle layer((*iter)[model.layer]);
+			synfig::Layer::Handle layer((*iter)[model.layer]);
 			
 			if(!layer)return;
 
@@ -264,7 +264,7 @@ LayerParamTreeStore::set_value_impl(const Gtk::TreeModel::iterator& iter, int co
 			g_value_init(x.gobj(),model.active.type());
 			g_value_copy(value.gobj(),x.gobj());
 			
-			sinfgapp::Action::Handle action(sinfgapp::Action::create("layer_activate"));
+			synfigapp::Action::Handle action(synfigapp::Action::create("layer_activate"));
 			
 			if(!action)
 				return;
@@ -320,7 +320,7 @@ LayerParamTreeStore::rebuild()
 	{
 		ParamVocab vocab;
 
-		static ParamVocab::iterator find_param_desc(ParamVocab& vocab, const sinfg::String& x)
+		static ParamVocab::iterator find_param_desc(ParamVocab& vocab, const synfig::String& x)
 		{
 			ParamVocab::iterator iter;
 	
@@ -384,7 +384,7 @@ LayerParamTreeStore::rebuild()
 		}
 		*/
 		Gtk::TreeRow row(*(append()));
-		sinfgapp::ValueDesc value_desc(layer_list.front(),iter->get_name());
+		synfigapp::ValueDesc value_desc(layer_list.front(),iter->get_name());
 		CanvasTreeStore::set_row(row,value_desc);
 		if(value_desc.is_value_node())
 		{
@@ -508,7 +508,7 @@ LayerParamTreeStore::refresh_row(Gtk::TreeModel::Row &row)
 }
 
 void
-LayerParamTreeStore::set_row(Gtk::TreeRow row,sinfgapp::ValueDesc value_desc)
+LayerParamTreeStore::set_row(Gtk::TreeRow row,synfigapp::ValueDesc value_desc)
 {
 	Gtk::TreeModel::Children children = row.children();
 	while(!children.empty() && erase(children.begin()));
@@ -529,13 +529,13 @@ LayerParamTreeStore::on_value_node_deleted(etl::handle<ValueNode> value_node)
 }
 
 void
-LayerParamTreeStore::on_value_node_child_added(sinfg::ValueNode::Handle value_node,sinfg::ValueNode::Handle child)
+LayerParamTreeStore::on_value_node_child_added(synfig::ValueNode::Handle value_node,synfig::ValueNode::Handle child)
 {
 	queue_rebuild();
 }
 
 void
-LayerParamTreeStore::on_value_node_child_removed(sinfg::ValueNode::Handle value_node,sinfg::ValueNode::Handle child)
+LayerParamTreeStore::on_value_node_child_removed(synfig::ValueNode::Handle value_node,synfig::ValueNode::Handle child)
 {
 	queue_rebuild();
 }
@@ -547,13 +547,13 @@ LayerParamTreeStore::on_value_node_changed(etl::handle<ValueNode> value_node)
 }
 
 void
-LayerParamTreeStore::on_value_node_replaced(sinfg::ValueNode::Handle replaced_value_node,sinfg::ValueNode::Handle new_value_node)
+LayerParamTreeStore::on_value_node_replaced(synfig::ValueNode::Handle replaced_value_node,synfig::ValueNode::Handle new_value_node)
 {
 	queue_rebuild();
 }
 
 void
-LayerParamTreeStore::on_layer_param_changed(sinfg::Layer::Handle handle,sinfg::String param_name)
+LayerParamTreeStore::on_layer_param_changed(synfig::Layer::Handle handle,synfig::String param_name)
 {
 	queue_refresh();
 }

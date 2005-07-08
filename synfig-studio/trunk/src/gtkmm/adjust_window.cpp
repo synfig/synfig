@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file adjust_window.cpp
 **	\brief Adjustment Window Implementation File
 **
@@ -37,7 +37,7 @@
 
 using namespace std;
 //using namespace etl;
-//using namespace sinfg;
+//using namespace synfig;
 
 using studio::Adjust_Window;
 
@@ -83,7 +83,7 @@ void Adjust_Window::set_child_adjustment(Gtk::Adjustment *child)
 	
 	adj_child = child;
 	
-	sinfg::info("Adjust: connecting to child signals");
+	synfig::info("Adjust: connecting to child signals");
 	if(child)
 	{
 		childchanged = child->signal_changed().connect(sigc::mem_fun(*this,&Adjust_Window::update_fromchild));

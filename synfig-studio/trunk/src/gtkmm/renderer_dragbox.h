@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file template.h
 **	\brief Template Header
 **
@@ -21,14 +21,14 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_RENDERER_DRAGBOX_H
-#define __SINFG_RENDERER_DRAGBOX_H
+#ifndef __SYNFIG_RENDERER_DRAGBOX_H
+#define __SYNFIG_RENDERER_DRAGBOX_H
 
 /* === H E A D E R S ======================================================= */
 
 #include "workarearenderer.h"
 #include <vector>
-#include <sinfg/vector.h>
+#include <synfig/vector.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -46,8 +46,8 @@ public:
 	
 	void render_vfunc(const Glib::RefPtr<Gdk::Drawable>& drawable,const Gdk::Rectangle& expose_area	);
 
-	const sinfg::Point& get_drag_point()const;
-	const sinfg::Point& get_curr_point()const;
+	const synfig::Point& get_drag_point()const;
+	const synfig::Point& get_curr_point()const;
 
 protected:
 	bool get_enabled_vfunc()const;

@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file workarea.h
 **	\brief Template Header
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_GTKMM_WORKAREA_H
-#define __SINFG_GTKMM_WORKAREA_H
+#ifndef __SYNFIG_GTKMM_WORKAREA_H
+#define __SYNFIG_GTKMM_WORKAREA_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -42,11 +42,11 @@
 #include <gdkmm/cursor.h>
 #include <gdkmm/device.h>
 
-#include <sinfg/time.h>
-#include <sinfg/vector.h>
-#include <sinfg/general.h>
-#include <sinfg/renddesc.h>
-#include <sinfg/canvas.h>
+#include <synfig/time.h>
+#include <synfig/vector.h>
+#include <synfig/general.h>
+#include <synfig/renddesc.h>
+#include <synfig/canvas.h>
 
 #include "zoomdial.h"
 #include "duckmatic.h"
@@ -75,9 +75,9 @@ public:
 
 class WorkAreaTarget;
 class WorkAreaTarget_Full;
-namespace sinfgapp { class CanvasInterface; };
+namespace synfigapp { class CanvasInterface; };
 
-namespace sinfg { class Layer; };
+namespace synfig { class Layer; };
 namespace Gtk { class Frame; };
 
 namespace studio
@@ -135,8 +135,8 @@ private:
 	etl::handle<studio::AsyncRenderer> async_renderer;
 
 
-	etl::loose_handle<sinfgapp::CanvasInterface> canvas_interface;
-	etl::handle<sinfg::Canvas> canvas;
+	etl::loose_handle<synfigapp::CanvasInterface> canvas_interface;
+	etl::handle<synfig::Canvas> canvas;
 	etl::loose_handle<studio::Instance> instance;
 	etl::loose_handle<studio::CanvasView> canvas_view;
 
@@ -154,14 +154,14 @@ private:
 	// Bleh!
 	int	w;						//!< Width of the image (in pixels)
 	int	h;						//!< Height of the image (in pixels)
-	sinfg::Real	canvaswidth;	//!< Width of the canvas
-	sinfg::Real	canvasheight;	//!< Height of the canvas
-	sinfg::Real	pw;				//!< The width of a pixel
-	sinfg::Real	ph;				//!< The height of a pixel
+	synfig::Real	canvaswidth;	//!< Width of the canvas
+	synfig::Real	canvasheight;	//!< Height of the canvas
+	synfig::Real	pw;				//!< The width of a pixel
+	synfig::Real	ph;				//!< The height of a pixel
 	float zoom;					//!< Zoom factor
 	float prev_zoom;			//!< Previous Zoom factor
-	sinfg::Point window_tl;		//!< The (theoretical) top-left corner of the view window
-	sinfg::Point window_br;		//!< The (theoretical) bottom-right corner of the view window
+	synfig::Point window_tl;		//!< The (theoretical) top-left corner of the view window
+	synfig::Point window_br;		//!< The (theoretical) bottom-right corner of the view window
 
 	guint32 last_event_time;
 
@@ -169,10 +169,10 @@ private:
 	//unsigned char *buffer;
 	
 	//! ???
-	sinfg::ProgressCallback *progresscallback;
+	synfig::ProgressCallback *progresscallback;
 
 	//! ???
-	sinfg::RendDesc desc;
+	synfig::RendDesc desc;
 	
 	//! This flag is set if the user is dragging the video window
 	/*! \see drag_point */
@@ -182,12 +182,12 @@ private:
 	etl::handle<Duckmatic::Duck> hover_duck;
 
 	//! When dragging the viewport, this is set to the origin of the drag
-	sinfg::Point drag_point;
+	synfig::Point drag_point;
 
-	sinfg::Point curr_point;
+	synfig::Point curr_point;
 
 	//! ???
-	sinfg::Point previous_focus;
+	synfig::Point previous_focus;
 
 	//! This flag is set if the grid should be drawn
 	bool show_grid;
@@ -218,7 +218,7 @@ private:
 	gint render_idle_func_id;
 
 	//! The coordinates of the focus the last time a part of the screen was refreshed
-	sinfg::Point last_focus_point;
+	synfig::Point last_focus_point;
 
 	bool canceled_;
 	
@@ -231,7 +231,7 @@ private:
 	
 	bool onion_skin;
 		
-	etl::loose_handle<sinfg::ValueNode> selected_value_node_;
+	etl::loose_handle<synfig::ValueNode> selected_value_node_;
 
 
 	/*
@@ -240,8 +240,8 @@ private:
 
 public:
 
-	const etl::loose_handle<sinfg::ValueNode>& get_selected_value_node() { return  selected_value_node_; }
-	const sinfg::Point& get_drag_point()const { return drag_point; }
+	const etl::loose_handle<synfig::ValueNode>& get_selected_value_node() { return  selected_value_node_; }
+	const synfig::Point& get_drag_point()const { return drag_point; }
 	std::vector< std::pair<Glib::RefPtr<Gdk::Pixbuf>,int> >& get_tile_book(){ return tile_book; }
 	int get_refreshes()const { return refreshes; }
 	bool get_canceled()const { return canceled_; }
@@ -286,7 +286,7 @@ private:
 	sigc::signal<void,GdkDevice* > signal_input_device_changed_;
 
 	//! One signal per button
-	sigc::signal<void,sinfg::Point> signal_user_click_[5];
+	sigc::signal<void,synfig::Point> signal_user_click_[5];
 
 	sigc::signal<void> signal_popup_menu_;
 
@@ -296,7 +296,7 @@ private:
 	sigc::signal<void> signal_onion_skin_changed_;
 
 	//! Signal for when the user clicks on a layer
-	sigc::signal<void, etl::handle<sinfg::Layer> > signal_layer_selected_;
+	sigc::signal<void, etl::handle<synfig::Layer> > signal_layer_selected_;
 
 	sigc::signal<void> signal_view_window_changed_;
 
@@ -316,9 +316,9 @@ public:
 	sigc::signal<void> &signal_popup_menu() { return signal_popup_menu_; }
 
 	//! One signal per button (5 buttons)
-	sigc::signal<void,sinfg::Point> &signal_user_click(int button=0){ return signal_user_click_[button]; }
+	sigc::signal<void,synfig::Point> &signal_user_click(int button=0){ return signal_user_click_[button]; }
 
-	sigc::signal<void, etl::handle<sinfg::Layer> >& signal_layer_selected() { return signal_layer_selected_; }
+	sigc::signal<void, etl::handle<synfig::Layer> >& signal_layer_selected() { return signal_layer_selected_; }
 
 	/*
  -- ** -- P U B L I C   M E T H O D S -----------------------------------------
@@ -329,19 +329,19 @@ public:
 	bool get_onion_skin()const;
 	void toggle_onion_skin() { set_onion_skin(!get_onion_skin()); }
 
-	void set_selected_value_node(etl::loose_handle<sinfg::ValueNode> x);
+	void set_selected_value_node(etl::loose_handle<synfig::ValueNode> x);
 
 	bool is_dragging() { return dragging!=DRAG_NONE; }
 
 	DragMode get_dragging_mode() { return dragging; }
 
-	WorkArea(etl::loose_handle<sinfgapp::CanvasInterface> canvas_interface);
+	WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interface);
 	virtual ~WorkArea();
 
 	void set_cursor(const Gdk::Cursor& x);
 	void set_cursor(Gdk::CursorType x);
 
-	const sinfg::Point& get_cursor_pos()const { return curr_point; }
+	const synfig::Point& get_cursor_pos()const { return curr_point; }
 
 	Gtk::Adjustment *get_scrollx_adjustment() { return &scrollx_adjustment; }
 	Gtk::Adjustment *get_scrolly_adjustment() { return &scrolly_adjustment; }
@@ -349,9 +349,9 @@ public:
 	const Gtk::Adjustment *get_scrolly_adjustment()const { return &scrolly_adjustment; }
 
 	void set_instance(etl::loose_handle<studio::Instance> x) { instance=x; }
-	void set_canvas(etl::handle<sinfg::Canvas> x) { canvas=x; }
+	void set_canvas(etl::handle<synfig::Canvas> x) { canvas=x; }
 	void set_canvas_view(etl::loose_handle<studio::CanvasView> x) { canvas_view=x; }
-	etl::handle<sinfg::Canvas> get_canvas()const { return canvas; }
+	etl::handle<synfig::Canvas> get_canvas()const { return canvas; }
 	etl::handle<studio::Instance> get_instance()const { return instance; }
 	etl::loose_handle<studio::CanvasView> get_canvas_view()const { return canvas_view; }
 
@@ -383,7 +383,7 @@ public:
 	void queue_scroll();
 	
 	//! Sets the size of the grid
-	void set_grid_size(const sinfg::Vector &s);
+	void set_grid_size(const synfig::Vector &s);
 		
 	//! ??
 	void popup_menu();
@@ -398,31 +398,31 @@ public:
 	int get_bpp()const { return bpp; }
 
 	//! ??
-	const sinfg::RendDesc &get_rend_desc()const { return desc; }
+	const synfig::RendDesc &get_rend_desc()const { return desc; }
 	
 	//! ??
-	void set_rend_desc(const sinfg::RendDesc &x) { desc=x; }
+	void set_rend_desc(const synfig::RendDesc &x) { desc=x; }
 	
 	//! Converts screen coords (ie: pixels) to composition coordinates
-	sinfg::Point screen_to_comp_coords(sinfg::Point pos)const;
+	synfig::Point screen_to_comp_coords(synfig::Point pos)const;
 
 	//! Converts composition coordinates to screen coords (ie: pixels)
-	sinfg::Point comp_to_screen_coords(sinfg::Point pos)const;
+	synfig::Point comp_to_screen_coords(synfig::Point pos)const;
 
 	float get_pw()const { return pw; }
 	float get_ph()const { return ph; }
 	
-	const sinfg::Point &get_window_tl()const { return window_tl; }
-	const sinfg::Point &get_window_br()const { return window_br; }
+	const synfig::Point &get_window_tl()const { return window_tl; }
+	const synfig::Point &get_window_br()const { return window_br; }
 
 
 	bool async_update_preview();
 	void async_update_finished();
-	void async_render_preview(sinfg::Time time);
+	void async_render_preview(synfig::Time time);
 	void async_render_preview();
 	
 	bool sync_update_preview();
-	bool sync_render_preview(sinfg::Time time);
+	bool sync_render_preview(synfig::Time time);
 	bool sync_render_preview();
 	void sync_render_preview_hook();
 
@@ -440,12 +440,12 @@ public:
 	void set_zoom(float z);
 
 
-	void set_progress_callback(sinfg::ProgressCallback *x)	{ progresscallback=x; }
-	sinfg::ProgressCallback *get_progress_callback() { return progresscallback; }
+	void set_progress_callback(synfig::ProgressCallback *x)	{ progresscallback=x; }
+	synfig::ProgressCallback *get_progress_callback() { return progresscallback; }
 
-	void set_focus_point(const sinfg::Point &x);
+	void set_focus_point(const synfig::Point &x);
 
-	sinfg::Point get_focus_point()const;
+	synfig::Point get_focus_point()const;
 
 	void done_rendering();
 	

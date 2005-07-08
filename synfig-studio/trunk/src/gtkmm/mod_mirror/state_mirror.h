@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file state_mirror.h
 **	\brief Template Header
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_STUDIO_STATE_MIRROR_H
-#define __SINFG_STUDIO_STATE_MIRROR_H
+#ifndef __SYNFIG_STUDIO_STATE_MIRROR_H
+#define __SYNFIG_STUDIO_STATE_MIRROR_H
 
 /* === H E A D E R S ======================================================= */
 

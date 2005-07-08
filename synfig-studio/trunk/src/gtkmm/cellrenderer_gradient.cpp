@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file cellrenderer_gradient.cpp
 **	\brief Template File
 **
@@ -40,7 +40,7 @@
 
 using namespace std;
 //using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
@@ -58,7 +58,7 @@ using namespace studio;
 CellRenderer_Gradient::CellRenderer_Gradient():
 	Glib::ObjectBase	(typeid(CellRenderer_Gradient)),
 	Gtk::CellRendererText	(),
-	property_gradient_(*this,"gradient",sinfg::Gradient())
+	property_gradient_(*this,"gradient",synfig::Gradient())
 {
 	//CellRendererText::signal_edited().connect(sigc::mem_fun(*this,&studio::CellRenderer_Gradient::string_edited_));
 }

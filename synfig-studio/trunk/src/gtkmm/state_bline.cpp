@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file rotoscope_bline.cpp
 **	\brief Template File
 **
@@ -31,13 +31,13 @@
 #include <gtkmm/dialog.h>
 #include <gtkmm/entry.h>
 
-#include <sinfg/valuenode_dynamiclist.h>
+#include <synfig/valuenode_dynamiclist.h>
 
 #include "state_bline.h"
 #include "canvasview.h"
 #include "workarea.h"
 #include "app.h"
-#include <sinfg/valuenode_bline.h>
+#include <synfig/valuenode_bline.h>
 #include <ETL/hermite>
 #include <ETL/calculus>
 #include <utility>
@@ -46,8 +46,8 @@
 #include "toolbox.h"
 #include "dialog_tooloptions.h"
 #include <gtkmm/spinbutton.h>
-#include <sinfg/transform.h>
-#include <sinfgapp/main.h>
+#include <synfig/transform.h>
+#include <synfigapp/main.h>
 
 #endif
 
@@ -55,7 +55,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
@@ -86,22 +86,22 @@ class studio::StateBLine_Context : public sigc::trackable
 
 	etl::handle<Duck> next_duck;
 	
-	std::list<sinfg::ValueNode_Const::Handle> bline_point_list;
-	sinfgapp::Settings& settings;
+	std::list<synfig::ValueNode_Const::Handle> bline_point_list;
+	synfigapp::Settings& settings;
 	
-	bool on_vertex_change(const sinfg::Point &point, sinfg::ValueNode_Const::Handle value_node);
-	bool on_tangent1_change(const sinfg::Point &point, sinfg::ValueNode_Const::Handle value_node);
-	bool on_tangent2_change(const sinfg::Point &point, sinfg::ValueNode_Const::Handle value_node);
+	bool on_vertex_change(const synfig::Point &point, synfig::ValueNode_Const::Handle value_node);
+	bool on_tangent1_change(const synfig::Point &point, synfig::ValueNode_Const::Handle value_node);
+	bool on_tangent2_change(const synfig::Point &point, synfig::ValueNode_Const::Handle value_node);
 
 
-	void popup_handle_menu(sinfg::ValueNode_Const::Handle value_node);
-	void popup_vertex_menu(sinfg::ValueNode_Const::Handle value_node);
-	void popup_bezier_menu(float location, sinfg::ValueNode_Const::Handle value_node);
+	void popup_handle_menu(synfig::ValueNode_Const::Handle value_node);
+	void popup_vertex_menu(synfig::ValueNode_Const::Handle value_node);
+	void popup_bezier_menu(float location, synfig::ValueNode_Const::Handle value_node);
 
-	void bline_detach_handle(sinfg::ValueNode_Const::Handle value_node);
-	void bline_attach_handle(sinfg::ValueNode_Const::Handle value_node);
-	void bline_delete_vertex(sinfg::ValueNode_Const::Handle value_node);
-	void bline_insert_vertex(sinfg::ValueNode_Const::Handle value_node,float origin=0.5);
+	void bline_detach_handle(synfig::ValueNode_Const::Handle value_node);
+	void bline_attach_handle(synfig::ValueNode_Const::Handle value_node);
+	void bline_delete_vertex(synfig::ValueNode_Const::Handle value_node);
+	void bline_insert_vertex(synfig::ValueNode_Const::Handle value_node,float origin=0.5);
 	void loop_bline();
 
 	void refresh_ducks(bool x=true);
@@ -149,8 +149,8 @@ public:
 
 	Real get_feather() const { return adj_feather.get_value(); }
 	void set_feather(Real x) { return adj_feather.set_value(x); }
-	sinfg::String get_id()const { return entry_id.get_text(); }
-	void set_id(const sinfg::String& x) { return entry_id.set_text(x); }
+	synfig::String get_id()const { return entry_id.get_text(); }
+	void set_id(const synfig::String& x) { return entry_id.set_text(x); }
 
 	Smach::event_result event_stop_handler(const Smach::event& x);
 
@@ -170,16 +170,16 @@ public:
 	~StateBLine_Context();
 
 	const etl::handle<CanvasView>& get_canvas_view()const{return canvas_view_;}
-	etl::handle<sinfgapp::CanvasInterface> get_canvas_interface()const{return canvas_view_->canvas_interface();}
-	sinfg::Canvas::Handle get_canvas()const{return canvas_view_->get_canvas();}
+	etl::handle<synfigapp::CanvasInterface> get_canvas_interface()const{return canvas_view_->canvas_interface();}
+	synfig::Canvas::Handle get_canvas()const{return canvas_view_->get_canvas();}
 	WorkArea * get_work_area()const{return canvas_view_->get_work_area();}
-	const sinfg::TransformStack& get_transform_stack()const { return canvas_view_->get_curr_transform_stack(); }
+	const synfig::TransformStack& get_transform_stack()const { return canvas_view_->get_curr_transform_stack(); }
 	
 	void load_settings();
 	void save_settings();
 	void reset();
 	void increment_id();
-	//void on_user_click(sinfg::Point point);
+	//void on_user_click(synfig::Point point);
 
 	bool run_();
 	bool run();
@@ -295,7 +295,7 @@ StateBLine_Context::increment_id()
 		String str_number;
 		str_number=String(id,id.size()-digits,id.size());
 		id=String(id,0,id.size()-digits);
-		sinfg::info("---------------- \"%s\"",str_number.c_str());
+		synfig::info("---------------- \"%s\"",str_number.c_str());
 		
 		number=atoi(str_number.c_str());
 	}
@@ -324,7 +324,7 @@ StateBLine_Context::StateBLine_Context(CanvasView* canvas_view):
 	loop_(false),
 	prev_workarea_layer_status_(get_work_area()->allow_layer_clicks),
 	duckmatic_push(get_work_area()),
-	settings(sinfgapp::Main::get_selected_input_device()->settings()),
+	settings(synfigapp::Main::get_selected_input_device()->settings()),
 	entry_id(),
 	checkbutton_layer_region(_("Fill")),
 	checkbutton_layer_bline(_("Outline")),
@@ -443,7 +443,7 @@ StateBLine_Context::~StateBLine_Context()
 Smach::event_result
 StateBLine_Context::event_stop_handler(const Smach::event& x)
 {
-	sinfg::info("STATE RotoBLine: Received Stop Event");
+	synfig::info("STATE RotoBLine: Received Stop Event");
 //	run();
 	reset();
 //	throw Smach::egress_exception();
@@ -454,7 +454,7 @@ StateBLine_Context::event_stop_handler(const Smach::event& x)
 Smach::event_result
 StateBLine_Context::event_refresh_handler(const Smach::event& x)
 {
-	sinfg::info("STATE RotoBLine: Received Refresh Event");
+	synfig::info("STATE RotoBLine: Received Refresh Event");
 	refresh_ducks();
 	return Smach::RESULT_ACCEPT;
 }
@@ -503,11 +503,11 @@ StateBLine_Context::run_()
 	{			
 		
 		// Create the action group
-		sinfgapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("New BLine"));
+		synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("New BLine"));
 
 		std::vector<BLinePoint> new_list;
-		std::list<sinfg::ValueNode_Const::Handle>::iterator iter;
-		const sinfg::TransformStack& transform(get_transform_stack());
+		std::list<synfig::ValueNode_Const::Handle>::iterator iter;
+		const synfig::TransformStack& transform(get_transform_stack());
 		
 		for(iter=bline_point_list.begin();iter!=bline_point_list.end();++iter)
 		{
@@ -566,12 +566,12 @@ StateBLine_Context::run_()
 		if(!canvas)
 			canvas=get_canvas_view()->get_canvas();
 
-		sinfgapp::SelectionManager::LayerList layer_selection;
+		synfigapp::SelectionManager::LayerList layer_selection;
 		
 		// If we were asked to create a region layer, go ahead and do so
 		if(get_layer_region_flag())
 		{
-			sinfgapp::PushMode push_mode(get_canvas_interface(),sinfgapp::MODE_NORMAL);
+			synfigapp::PushMode push_mode(get_canvas_interface(),synfigapp::MODE_NORMAL);
 
 			Layer::Handle layer(get_canvas_interface()->add_layer_to("region",canvas,depth));
 			layer_selection.push_back(layer);
@@ -586,9 +586,9 @@ StateBLine_Context::run_()
 			}
 			
 			if(get_layer_bline_flag())
-				layer->set_param("color",sinfgapp::Main::get_background_color());
+				layer->set_param("color",synfigapp::Main::get_background_color());
 			
-			sinfgapp::Action::Handle action(sinfgapp::Action::create("layer_param_connect"));
+			synfigapp::Action::Handle action(synfigapp::Action::create("layer_param_connect"));
 			
 			assert(action);
 			
@@ -596,9 +596,9 @@ StateBLine_Context::run_()
 			action->set_param("canvas_interface",get_canvas_interface());			
 			action->set_param("layer",layer);
 			if(!action->set_param("param",String("bline")))
-				sinfg::error("LayerParamConnect didn't like \"param\"");
+				synfig::error("LayerParamConnect didn't like \"param\"");
 			if(!action->set_param("value_node",ValueNode::Handle(value_node_bline)))
-				sinfg::error("LayerParamConnect didn't like \"value_node\"");
+				synfig::error("LayerParamConnect didn't like \"value_node\"");
 
 			if(!get_canvas_interface()->get_instance()->perform_action(action))
 			{
@@ -612,7 +612,7 @@ StateBLine_Context::run_()
 		// If we were asked to create a BLine layer, go ahead and do so
 		if(get_layer_bline_flag())
 		{
-			sinfgapp::PushMode push_mode(get_canvas_interface(),sinfgapp::MODE_NORMAL);
+			synfigapp::PushMode push_mode(get_canvas_interface(),synfigapp::MODE_NORMAL);
 
 			Layer::Handle layer(get_canvas_interface()->add_layer_to("outline",canvas,depth));
 			layer_selection.push_back(layer);
@@ -627,7 +627,7 @@ StateBLine_Context::run_()
 			assert(layer);
 
 
-			sinfgapp::Action::Handle action(sinfgapp::Action::create("layer_param_connect"));
+			synfigapp::Action::Handle action(synfigapp::Action::create("layer_param_connect"));
 
 			assert(action);
 			
@@ -635,9 +635,9 @@ StateBLine_Context::run_()
 			action->set_param("canvas_interface",get_canvas_interface());			
 			action->set_param("layer",layer);			
 			if(!action->set_param("param",String("bline")))
-				sinfg::error("LayerParamConnect didn't like \"param\"");
+				synfig::error("LayerParamConnect didn't like \"param\"");
 			if(!action->set_param("value_node",ValueNode::Handle(value_node_bline)))
-				sinfg::error("LayerParamConnect didn't like \"value_node\"");
+				synfig::error("LayerParamConnect didn't like \"value_node\"");
 
 			if(!get_canvas_interface()->get_instance()->perform_action(action))
 			{
@@ -649,7 +649,7 @@ StateBLine_Context::run_()
 
 			/*if(get_layer_region_flag() && !get_auto_export_flag())
 			{
-				get_canvas_interface()->auto_export(sinfgapp::ValueDesc(layer,"bline"));
+				get_canvas_interface()->auto_export(synfigapp::ValueDesc(layer,"bline"));
 			}*/
 		}
 
@@ -658,7 +658,7 @@ StateBLine_Context::run_()
 		// If we were asked to create a CurveGradient layer, go ahead and do so
 		if(get_layer_curve_gradient_flag())
 		{
-			sinfgapp::PushMode push_mode(get_canvas_interface(),sinfgapp::MODE_NORMAL);
+			synfigapp::PushMode push_mode(get_canvas_interface(),synfigapp::MODE_NORMAL);
 
 			Layer::Handle layer(get_canvas_interface()->add_layer_to("curve_gradient",canvas,depth));
 			layer_selection.push_back(layer);
@@ -668,7 +668,7 @@ StateBLine_Context::run_()
 			assert(layer);
 
 
-			sinfgapp::Action::Handle action(sinfgapp::Action::create("layer_param_connect"));
+			synfigapp::Action::Handle action(synfigapp::Action::create("layer_param_connect"));
 
 			assert(action);
 			
@@ -676,9 +676,9 @@ StateBLine_Context::run_()
 			action->set_param("canvas_interface",get_canvas_interface());			
 			action->set_param("layer",layer);			
 			if(!action->set_param("param",String("bline")))
-				sinfg::error("LayerParamConnect didn't like \"param\"");
+				synfig::error("LayerParamConnect didn't like \"param\"");
 			if(!action->set_param("value_node",ValueNode::Handle(value_node_bline)))
-				sinfg::error("LayerParamConnect didn't like \"value_node\"");
+				synfig::error("LayerParamConnect didn't like \"value_node\"");
 
 			if(!get_canvas_interface()->get_instance()->perform_action(action))
 			{
@@ -690,7 +690,7 @@ StateBLine_Context::run_()
 
 			/*if(get_layer_region_flag() && !get_auto_export_flag())
 			{
-				get_canvas_interface()->auto_export(sinfgapp::ValueDesc(layer,"bline"));
+				get_canvas_interface()->auto_export(synfigapp::ValueDesc(layer,"bline"));
 			}*/
 		}
 
@@ -716,7 +716,7 @@ StateBLine_Context::event_mouse_motion_handler(const Smach::event& x)
 	
 	if(curr_duck)
 	{
-		//sinfg::info("Moved Duck");
+		//synfig::info("Moved Duck");
 		Point p(get_work_area()->snap_point_to_grid(event.pos));
 		curr_duck->set_trans_point(p);
 		if(next_duck)
@@ -733,11 +733,11 @@ StateBLine_Context::event_mouse_release_handler(const Smach::event& x)
 {
 	if(curr_duck)
 	{
-		//sinfg::info("Released current duck");
+		//synfig::info("Released current duck");
 		curr_duck->signal_edited()(curr_duck->get_point());
 		if(next_duck)
 		{
-			//sinfg::info("grabbing next duck");
+			//synfig::info("grabbing next duck");
 			curr_duck=next_duck;
 			next_duck=0;
 		}
@@ -749,7 +749,7 @@ StateBLine_Context::event_mouse_release_handler(const Smach::event& x)
 Smach::event_result
 StateBLine_Context::event_mouse_click_handler(const Smach::event& x)
 {
-	sinfg::info("STATE BLINE: Received mouse button down Event");
+	synfig::info("STATE BLINE: Received mouse button down Event");
 	const EventMouse& event(*reinterpret_cast<const EventMouse*>(&x));
 	switch(event.button)
 	{
@@ -762,7 +762,7 @@ StateBLine_Context::event_mouse_click_handler(const Smach::event& x)
 			BLinePoint bline_point;
 			
 			bline_point.set_vertex(get_work_area()->snap_point_to_grid(event.pos));
-			//bline_point.set_width(sinfgapp::Main::get_bline_width());
+			//bline_point.set_width(synfigapp::Main::get_bline_width());
 			bline_point.set_width(1.0f);
 			bline_point.set_origin(0.5f);
 			bline_point.set_split_tangent_flag(false);
@@ -782,7 +782,7 @@ StateBLine_Context::event_mouse_click_handler(const Smach::event& x)
 			
 			if(bline_point_list.size()>1)
 			{
-				std::list<sinfg::ValueNode_Const::Handle>::iterator iter;
+				std::list<synfig::ValueNode_Const::Handle>::iterator iter;
 				iter=bline_point_list.end();
 				iter--;iter--;
 				BLinePoint prev(bline_point_list.back()->get_value().get(BLinePoint()));
@@ -1016,7 +1016,7 @@ StateBLine_Context::refresh_ducks(bool button_down)
 
 
 bool
-StateBLine_Context::on_vertex_change(const sinfg::Point &point, sinfg::ValueNode_Const::Handle value_node)
+StateBLine_Context::on_vertex_change(const synfig::Point &point, synfig::ValueNode_Const::Handle value_node)
 {
 	BLinePoint bline_point(value_node->get_value().get(BLinePoint()));
 	bline_point.set_vertex(point);
@@ -1026,7 +1026,7 @@ StateBLine_Context::on_vertex_change(const sinfg::Point &point, sinfg::ValueNode
 }
 
 bool
-StateBLine_Context::on_tangent1_change(const sinfg::Point &point, sinfg::ValueNode_Const::Handle value_node)
+StateBLine_Context::on_tangent1_change(const synfig::Point &point, synfig::ValueNode_Const::Handle value_node)
 {
 	BLinePoint bline_point(value_node->get_value().get(BLinePoint()));
 	bline_point.set_tangent1(point);
@@ -1036,7 +1036,7 @@ StateBLine_Context::on_tangent1_change(const sinfg::Point &point, sinfg::ValueNo
 }
 
 bool
-StateBLine_Context::on_tangent2_change(const sinfg::Point &point, sinfg::ValueNode_Const::Handle value_node)
+StateBLine_Context::on_tangent2_change(const synfig::Point &point, synfig::ValueNode_Const::Handle value_node)
 {
 	BLinePoint bline_point(value_node->get_value().get(BLinePoint()));
 	bline_point.set_tangent2(point);
@@ -1054,7 +1054,7 @@ StateBLine_Context::loop_bline()
 }
 
 void
-StateBLine_Context::popup_vertex_menu(sinfg::ValueNode_Const::Handle value_node)
+StateBLine_Context::popup_vertex_menu(synfig::ValueNode_Const::Handle value_node)
 {
 	menu.items().clear();
 
@@ -1076,7 +1076,7 @@ StateBLine_Context::popup_vertex_menu(sinfg::ValueNode_Const::Handle value_node)
 }
 
 void
-StateBLine_Context::popup_bezier_menu(float location, sinfg::ValueNode_Const::Handle value_node)
+StateBLine_Context::popup_bezier_menu(float location, synfig::ValueNode_Const::Handle value_node)
 {
 	menu.items().clear();
 
@@ -1094,7 +1094,7 @@ StateBLine_Context::popup_bezier_menu(float location, sinfg::ValueNode_Const::Ha
 }
 
 void
-StateBLine_Context::bline_insert_vertex(sinfg::ValueNode_Const::Handle value_node, float origin)
+StateBLine_Context::bline_insert_vertex(synfig::ValueNode_Const::Handle value_node, float origin)
 {
 	list<ValueNode_Const::Handle>::iterator iter;
 	
@@ -1156,7 +1156,7 @@ StateBLine_Context::bline_insert_vertex(sinfg::ValueNode_Const::Handle value_nod
 }
 
 void
-StateBLine_Context::bline_delete_vertex(sinfg::ValueNode_Const::Handle value_node)
+StateBLine_Context::bline_delete_vertex(synfig::ValueNode_Const::Handle value_node)
 {
 	list<ValueNode_Const::Handle>::iterator iter;
 	
@@ -1175,7 +1175,7 @@ StateBLine_Context::bline_delete_vertex(sinfg::ValueNode_Const::Handle value_nod
 }
 
 void
-StateBLine_Context::popup_handle_menu(sinfg::ValueNode_Const::Handle value_node)
+StateBLine_Context::popup_handle_menu(synfig::ValueNode_Const::Handle value_node)
 {
 	menu.items().clear();
 
@@ -1200,7 +1200,7 @@ StateBLine_Context::popup_handle_menu(sinfg::ValueNode_Const::Handle value_node)
 }
 
 void
-StateBLine_Context::bline_detach_handle(sinfg::ValueNode_Const::Handle value_node)
+StateBLine_Context::bline_detach_handle(synfig::ValueNode_Const::Handle value_node)
 {
 	BLinePoint bline_point(value_node->get_value().get(BLinePoint()));
 	bline_point.set_split_tangent_flag(true);
@@ -1210,7 +1210,7 @@ StateBLine_Context::bline_detach_handle(sinfg::ValueNode_Const::Handle value_nod
 }
 
 void
-StateBLine_Context::bline_attach_handle(sinfg::ValueNode_Const::Handle value_node)
+StateBLine_Context::bline_attach_handle(synfig::ValueNode_Const::Handle value_node)
 {
 	BLinePoint bline_point(value_node->get_value().get(BLinePoint()));
 	bline_point.set_tangent1((bline_point.get_tangent1()+bline_point.get_tangent2())*0.5);

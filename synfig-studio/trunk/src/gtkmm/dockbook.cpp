@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file dockbook.cpp
 **	\brief Template File
 **
@@ -43,7 +43,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
@@ -172,10 +172,10 @@ DockBook::present()
 	show();
 }
 
-sinfg::String
+synfig::String
 DockBook::get_local_contents()const
 {
-	sinfg::String ret;
+	synfig::String ret;
 	
 	for(int i(0);i!=const_cast<DockBook*>(this)->get_n_pages();i++)
 	{
@@ -189,10 +189,10 @@ DockBook::get_local_contents()const
 	return ret;
 }
 
-sinfg::String
+synfig::String
 DockBook::get_contents()const
 {
-	sinfg::String ret;
+	synfig::String ret;
 	
 	for(int i(0);i!=const_cast<DockBook*>(this)->get_n_pages();i++)
 	{
@@ -207,14 +207,14 @@ DockBook::get_contents()const
 }
 
 void
-DockBook::set_contents(const sinfg::String& x)
+DockBook::set_contents(const synfig::String& x)
 {
-	sinfg::String str(x);
+	synfig::String str(x);
 	while(!str.empty())
 	{
 		unsigned int separator=str.find_first_of(' ');
-		sinfg::String dock;
-		if(separator==sinfg::String::npos)
+		synfig::String dock;
+		if(separator==synfig::String::npos)
 		{
 			dock=str;
 			str.clear();

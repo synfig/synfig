@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file template.cpp
 **	\brief Template File
 **
@@ -34,7 +34,7 @@
 #include <ETL/bezier>
 #include <ETL/misc>
 #include "widget_color.h"
-#include <sinfg/distance.h>
+#include <synfig/distance.h>
 #include "app.h"
 
 #endif
@@ -43,7 +43,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
@@ -68,7 +68,7 @@ Renderer_Ducks::get_enabled_vfunc()const
 
 struct ScreenDuck
 {
-	sinfg::Point pos;
+	synfig::Point pos;
 	Gdk::Color color;
 	bool selected;
 	bool hover;
@@ -87,7 +87,7 @@ Renderer_Ducks::render_vfunc(
 	if(!get_work_area())
 		return;
 	
-	const sinfg::Vector focus_point(get_work_area()->get_focus_point());
+	const synfig::Vector focus_point(get_work_area()->get_focus_point());
 
 	
 	int drawable_w,drawable_h;
@@ -96,8 +96,8 @@ Renderer_Ducks::render_vfunc(
 	Glib::RefPtr<Gdk::GC> gc(Gdk::GC::create(drawable));
 	
 
-	const sinfg::Vector::value_type window_startx(get_work_area()->get_window_tl()[0]);
-	const sinfg::Vector::value_type window_starty(get_work_area()->get_window_tl()[1]);
+	const synfig::Vector::value_type window_startx(get_work_area()->get_window_tl()[0]);
+	const synfig::Vector::value_type window_starty(get_work_area()->get_window_tl()[1]);
 
 	const float pw(get_pw()),ph(get_ph());
 
@@ -113,7 +113,7 @@ Renderer_Ducks::render_vfunc(
 	{
 		Point window_start(window_startx,window_starty);
 		vector<Gdk::Point> points;
-		std::list<sinfg::Point>::iterator iter2;
+		std::list<synfig::Point>::iterator iter2;
 		Point holder;
 		
 		for(iter2=(*iter)->stroke_data->begin();iter2!=(*iter)->stroke_data->end();++iter2)
@@ -123,7 +123,7 @@ Renderer_Ducks::render_vfunc(
 			points.push_back(Gdk::Point(round_to_int(holder[0]),round_to_int(holder[1])));
 		}
 		
-		gc->set_rgb_fg_color(colorconv_sinfg2gdk((*iter)->color));
+		gc->set_rgb_fg_color(colorconv_synfig2gdk((*iter)->color));
 		gc->set_function(Gdk::COPY);
 		gc->set_line_attributes(1,Gdk::LINE_SOLID,Gdk::CAP_BUTT,Gdk::JOIN_MITER);
 
@@ -233,7 +233,7 @@ Renderer_Ducks::render_vfunc(
 						
 		if(get_work_area()->get_selected_value_node())
 		{
-			sinfgapp::ValueDesc value_desc((*iter)->get_value_desc());
+			synfigapp::ValueDesc value_desc((*iter)->get_value_desc());
 			if(value_desc.is_valid() && value_desc.is_value_node() && get_work_area()->get_selected_value_node()==value_desc.get_value_node())
 			{
 				gc->set_function(Gdk::COPY);

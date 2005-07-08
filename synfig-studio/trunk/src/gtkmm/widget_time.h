@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file widget_time.h
 **	\brief Template Header
 **
@@ -21,15 +21,15 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_STUDIO_WIDGET_TIME_H
-#define __SINFG_STUDIO_WIDGET_TIME_H
+#ifndef __SYNFIG_STUDIO_WIDGET_TIME_H
+#define __SYNFIG_STUDIO_WIDGET_TIME_H
 
 /* === H E A D E R S ======================================================= */
 
 #include <sigc++/signal.h>
 #include <sigc++/slot.h>
 #include <gtkmm/entry.h>
-#include <sinfg/time.h>
+#include <synfig/time.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -49,7 +49,7 @@ class Widget_Time : public Gtk::Entry
 	
 	float fps_;
 	
-	sinfg::Time time_;
+	synfig::Time time_;
 	
 protected:
 	bool on_focus_out_event(GdkEventFocus* event);
@@ -69,8 +69,8 @@ public:
 
 
 	
-	void set_value(const sinfg::Time &data);
-	sinfg::Time get_value()const;
+	void set_value(const synfig::Time &data);
+	synfig::Time get_value()const;
 	void set_fps(float x);
 	Widget_Time();
 	~Widget_Time();

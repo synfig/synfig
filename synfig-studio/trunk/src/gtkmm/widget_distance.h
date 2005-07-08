@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file widget_distance.h
 **	\brief Template Header
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_STUDIO_WIDGET_DISTANCE_H
-#define __SINFG_STUDIO_WIDGET_DISTANCE_H
+#ifndef __SYNFIG_STUDIO_WIDGET_DISTANCE_H
+#define __SYNFIG_STUDIO_WIDGET_DISTANCE_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -30,7 +30,7 @@
 #include <sigc++/slot.h>
 #include <gtkmm/spinbutton.h>
 #include <gtkmm/adjustment.h>
-#include <sinfg/distance.h>
+#include <synfig/distance.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -46,7 +46,7 @@ class Widget_Distance : public Gtk::SpinButton
 {
 	//sigc::signal<void> signal_value_changed_;
 	
-	mutable sinfg::Distance distance_;
+	mutable synfig::Distance distance_;
 
 	Gtk::Adjustment adjustment;
 	
@@ -58,8 +58,8 @@ protected:
 public:
 	//sigc::signal<void> &signal_value_changed() { return signal_value_changed_; }
 	
-	void set_value(const sinfg::Distance &data);
-	sinfg::Distance get_value()const;
+	void set_value(const synfig::Distance &data);
+	synfig::Distance get_value()const;
 	Widget_Distance();
 	~Widget_Distance();
 }; // END of class Widget_Distance

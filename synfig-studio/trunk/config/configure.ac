@@ -69,11 +69,11 @@ PKG_CHECK_MODULES(GTKMM, gtkmm-2.4 gthread-2.0,[],[
 AC_SUBST(GTKMM_CFLAGS)
 AC_SUBST(GTKMM_LIBS)
 
-PKG_CHECK_MODULES(SINFG, synfig ETL sigc++-2.0,,[
+PKG_CHECK_MODULES(SYNFIG, synfig ETL sigc++-2.0,,[
 	AC_MSG_ERROR([ ** Unable to set up dependent libraries])
 ])
-AC_SUBST(SINFG_CFLAGS)
-AC_SUBST(SINFG_LIBS)
+AC_SUBST(SYNFIG_CFLAGS)
+AC_SUBST(SYNFIG_LIBS)
 
 windowsys="gtkmm"
 AC_DEFINE(STUDIO_WINSYS_H,"gtkmm/winsys.h",[blah])
@@ -149,12 +149,12 @@ AC_DEFINE_UNQUOTED(IMAGE_DIR,"`echo echo $imagedir | sh`", [ Describes where the
 
 AC_OUTPUT(
 Makefile
-sinfgstudio.desktop
-sinfgstudio.mime
-sinfgstudio.keys
+synfigstudio.desktop
+synfigstudio.mime
+synfigstudio.keys
 src/Makefile
 src/gtkmm/Makefile
-src/sinfgapp/Makefile
+src/synfigapp/Makefile
 images/Makefile
 win32inst.nsi
 pkg-info/macosx/synfig-studio.info
@@ -180,8 +180,8 @@ FMOD Enabled ---------------------> $with_libfmod
 "'$'"CXX ------------------------------> '$CXX'
 "'$'"CXXFLAGS -------------------------> '$CXXFLAGS'
 "'$'"LDFLAGS --------------------------> '$LDFLAGS'
-"'$'"SINFG_CFLAGS ---------------------> '$SINFG_CFLAGS'
-"'$'"SINFG_LIBS -----------------------> '$SINFG_LIBS'
+"'$'"SYNFIG_CFLAGS ---------------------> '$SYNFIG_CFLAGS'
+"'$'"SYNFIG_LIBS -----------------------> '$SYNFIG_LIBS'
 "'$'"GTKMM_CFLAGS ---------------------> '$GTKMM_CFLAGS'
 "'$'"GTKMM_LIBS -----------------------> '$GTKMM_LIBS'
 "

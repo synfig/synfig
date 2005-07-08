@@ -1,5 +1,5 @@
 /*! ========================================================================
-** Sinfg
+** Synfig
 ** Template File
 ** $Id: toolbox.cpp,v 1.3 2005/01/13 20:23:01 darco Exp $
 **
@@ -72,13 +72,13 @@
 
 #include "widget_defaults.h"
 
-#include <sinfgapp/main.h>
+#include <synfigapp/main.h>
 
 #endif
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 using namespace studio;
 using namespace SigC;
 
@@ -86,7 +86,7 @@ using namespace SigC;
 
 #define GRAB_HINT_DATA(y,default)	{ \
 		String x; \
-		if(sinfgapp::Main::settings().get_value(String("pref.")+y+"_hints",x)) \
+		if(synfigapp::Main::settings().get_value(String("pref.")+y+"_hints",x)) \
 		{ \
 			set_type_hint((Gdk::WindowTypeHint)atoi(x.c_str()));	\
 		} else {\
@@ -222,7 +222,7 @@ Toolbox::Toolbox():
 
 	filemenu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Open Recent"),*recent_files_menu));
 	
-	filemenu->items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::StockID("sinfg-saveall"),
+	filemenu->items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::StockID("synfig-saveall"),
 		sigc::ptr_fun(&studio::App::dialog_not_implemented)));
 	filemenu->items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::Stock::CLOSE,
 		sigc::ptr_fun(close_selected_instance)));
@@ -252,7 +252,7 @@ Toolbox::Toolbox():
 	helpmenu->items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::Stock::HELP,
 		sigc::ptr_fun(studio::App::dialog_not_implemented)));	
 	helpmenu->items().push_back(Gtk::Menu_Helpers::SeparatorElem());	
-	helpmenu->items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::StockID("sinfg-about"),
+	helpmenu->items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::StockID("synfig-about"),
 		sigc::ptr_fun(studio::App::dialog_about)));	
 	
 	Gtk::MenuBar *menubar1 = manage(new class Gtk::MenuBar());
@@ -268,16 +268,16 @@ Toolbox::Toolbox():
 	ADD_TOOLBOX_BUTTON(button_open,"gtk-open","Open");
 	ADD_TOOLBOX_BUTTON(button_save,"gtk-save","Save");
 	ADD_TOOLBOX_BUTTON(button_saveas,"gtk-save-as","SaveAs");
-	ADD_TOOLBOX_BUTTON(button_save_all,"sinfg-saveall","Save All");
+	ADD_TOOLBOX_BUTTON(button_save_all,"synfig-saveall","Save All");
 	TOOLBOX_BUTTON(button_undo,"gtk-undo","Undo");
 	TOOLBOX_BUTTON(button_redo,"gtk-redo","Redo");
-	ADD_TOOLBOX_BUTTON(button_about,"sinfg-about","About Sinfg Studio");
-	ADD_TOOLBOX_BUTTON(button_color,"sinfg-color","Color Dialog");
+	ADD_TOOLBOX_BUTTON(button_about,"synfig-about","About Synfig Studio");
+	ADD_TOOLBOX_BUTTON(button_color,"synfig-color","Color Dialog");
 	
-	TOOLBOX_BUTTON(button_rotoscope_bline,"sinfg-rotoscope_bline",_("Old Rotoscope BLine"));
-	TOOLBOX_BUTTON(button_rotoscope_polygon,"sinfg-rotoscope_polygon",_("Rotoscope Polygon"));
-	TOOLBOX_BUTTON(button_eyedrop,"sinfg-eyedrop",_("Eyedrop Tool"));
-	TOOLBOX_BUTTON(button_rotoscope,"sinfg-rotoscope_bline",_("Rotoscope 2"));
+	TOOLBOX_BUTTON(button_rotoscope_bline,"synfig-rotoscope_bline",_("Old Rotoscope BLine"));
+	TOOLBOX_BUTTON(button_rotoscope_polygon,"synfig-rotoscope_polygon",_("Rotoscope Polygon"));
+	TOOLBOX_BUTTON(button_eyedrop,"synfig-eyedrop",_("Eyedrop Tool"));
+	TOOLBOX_BUTTON(button_rotoscope,"synfig-rotoscope_bline",_("Rotoscope 2"));
 	
 
 
@@ -393,11 +393,11 @@ Toolbox::~Toolbox()
 void
 Toolbox::set_active_state(const String& statename)
 {
-	std::map<sinfg::String,Gtk::ToggleButton *>::iterator iter;
+	std::map<synfig::String,Gtk::ToggleButton *>::iterator iter;
 
 	changing_state_=true;
 	
-	sinfgapp::Main::set_state(statename);
+	synfigapp::Main::set_state(statename);
 	
 	try
 	{
@@ -425,7 +425,7 @@ Toolbox::set_active_state(const String& statename)
 }
 
 void
-Toolbox::change_state(const sinfg::String& statename)
+Toolbox::change_state(const synfig::String& statename)
 {
 	etl::handle<studio::CanvasView> canvas_view(studio::App::get_selected_canvas_view());
 	if(canvas_view)
@@ -441,7 +441,7 @@ Toolbox::change_state(const sinfg::String& statename)
 		}
 		else
 		{
-			sinfg::error("Unknown state \"%s\"",statename.c_str());
+			synfig::error("Unknown state \"%s\"",statename.c_str());
 		}
 	}
 }
@@ -491,7 +491,7 @@ Toolbox::add_state(const Smach::state_base *state)
 	Gtk::ToggleButton* button;
 	button=manage(new class Gtk::ToggleButton());
 
-	icon=manage(new Gtk::Image(Gtk::StockID("sinfg-"+name),Gtk::IconSize(4)));
+	icon=manage(new Gtk::Image(Gtk::StockID("synfig-"+name),Gtk::IconSize(4)));
 	button->add(*icon);
 	tooltips.set_tip(*button,name);
 	icon->show();
@@ -535,14 +535,14 @@ Toolbox::update_undo_redo()
 	// so that they are only clickable when they should be.
 	if(instance && App::get_selected_canvas_view())
 	{
-		std::map<sinfg::String,Gtk::ToggleButton *>::iterator iter;
+		std::map<synfig::String,Gtk::ToggleButton *>::iterator iter;
 		
 		for(iter=state_button_map.begin();iter!=state_button_map.end();++iter)
 			iter->second->set_sensitive(true);
 	}
 	else
 	{
-		std::map<sinfg::String,Gtk::ToggleButton *>::iterator iter;
+		std::map<synfig::String,Gtk::ToggleButton *>::iterator iter;
 		
 		for(iter=state_button_map.begin();iter!=state_button_map.end();++iter)
 			iter->second->set_sensitive(false);
@@ -584,19 +584,19 @@ Toolbox::on_drop_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& contex
 	
 	if ((selection_data_.get_length() >= 0) && (selection_data_.get_format() == 8))
 	{
-		sinfg::String selection_data((gchar *)(selection_data_.get_data()));
+		synfig::String selection_data((gchar *)(selection_data_.get_data()));
 
 		// For some reason, GTK hands us a list of URL's seperated
 		// by not only Carrage-Returns, but also Line-Feeds.
 		// Line-Feeds will mess us up. Remove all the line-feeds.
-		while(selection_data.find_first_of('\r')!=sinfg::String::npos)
+		while(selection_data.find_first_of('\r')!=synfig::String::npos)
 			selection_data.erase(selection_data.begin()+selection_data.find_first_of('\r'));
 
 		std::stringstream stream(selection_data);
 
 		while(stream)
 		{
-			sinfg::String filename,URI;
+			synfig::String filename,URI;
 			getline(stream,filename);
 			
 			// If we don't have a filename, move on.
@@ -607,22 +607,22 @@ Toolbox::on_drop_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& contex
 			URI=String(filename.begin(),filename.begin()+sizeof("file://")-1);
 			if(URI!="file://")
 			{
-				sinfg::warning("Unknown URI (%s) in \"%s\"",URI.c_str(),filename.c_str());
+				synfig::warning("Unknown URI (%s) in \"%s\"",URI.c_str(),filename.c_str());
 				continue;
 			}
 			
 			// Strip the "file://" part from the filename
-			filename=sinfg::String(filename.begin()+sizeof("file://")-1,filename.end());
+			filename=synfig::String(filename.begin()+sizeof("file://")-1,filename.end());
 		
-			sinfg::info("Attempting to open "+filename);		
+			synfig::info("Attempting to open "+filename);		
 			if(App::open(filename))
 				success=true;
 			else
-				sinfg::error("Drop failed: Unable to open "+filename);
+				synfig::error("Drop failed: Unable to open "+filename);
 		}
 	}
 	else
-		sinfg::error("Drop failed: bad selection data");
+		synfig::error("Drop failed: bad selection data");
 
 	// Finish the drag
 	context->drag_finish(success, false, time);

@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file event_layerclick.h
 **	\brief Template Header
 **
@@ -21,14 +21,14 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_EVENT_LAYERCLICK_H
-#define __SINFG_EVENT_LAYERCLICK_H
+#ifndef __SYNFIG_EVENT_LAYERCLICK_H
+#define __SYNFIG_EVENT_LAYERCLICK_H
 
 /* === H E A D E R S ======================================================= */
 
-#include <sinfg/vector.h>
+#include <synfig/vector.h>
 #include "event_mouse.h"
-#include <sinfg/layer.h>
+#include <synfig/layer.h>
 #include "smach.h"
 #include <gdkmm/types.h>
 
@@ -42,12 +42,12 @@ namespace studio {
 	
 struct EventLayerClick : public Smach::event
 {
-	sinfg::Point pos;
+	synfig::Point pos;
 	MouseButton button;
-	etl::loose_handle<sinfg::Layer> layer;
+	etl::loose_handle<synfig::Layer> layer;
 	Gdk::ModifierType modifier;
 	
-	EventLayerClick(etl::loose_handle<sinfg::Layer> layer, MouseButton button, const sinfg::Point& pos, Gdk::ModifierType modifier=Gdk::ModifierType(0)):
+	EventLayerClick(etl::loose_handle<synfig::Layer> layer, MouseButton button, const synfig::Point& pos, Gdk::ModifierType modifier=Gdk::ModifierType(0)):
 		Smach::event(EVENT_WORKAREA_LAYER_CLICKED),
 		pos(pos),
 		button(button),

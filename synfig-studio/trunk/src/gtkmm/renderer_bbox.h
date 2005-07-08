@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file renderer_bbox.h
 **	\brief Template Header
 **
@@ -21,15 +21,15 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_RENDERER_BBOX_H
-#define __SINFG_RENDERER_BBOX_H
+#ifndef __SYNFIG_RENDERER_BBOX_H
+#define __SYNFIG_RENDERER_BBOX_H
 
 /* === H E A D E R S ======================================================= */
 
 #include "workarearenderer.h"
 #include <vector>
-#include <sinfg/vector.h>
-#include <sinfg/rect.h>
+#include <synfig/vector.h>
+#include <synfig/rect.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -41,13 +41,13 @@ namespace studio {
 
 class Renderer_BBox : public studio::WorkAreaRenderer
 {
-	sinfg::Rect bbox;
+	synfig::Rect bbox;
 	
 public:
 	Renderer_BBox();
 	~Renderer_BBox();
 
-	const sinfg::Rect& get_bbox();
+	const synfig::Rect& get_bbox();
 
 	void render_vfunc(const Glib::RefPtr<Gdk::Drawable>& drawable,const Gdk::Rectangle& expose_area	);
 

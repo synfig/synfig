@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file preview.cpp
 **	\brief Preview implementation file
 **
@@ -34,8 +34,8 @@
 #include <gtkmm/stock.h>
 #include <gtkmm/separator.h>
 
-#include <sinfg/target_scanline.h>
-#include <sinfg/surface.h>
+#include <synfig/target_scanline.h>
+#include <synfig/surface.h>
 
 #include <algorithm>
 #include "asyncrenderer.h"
@@ -45,7 +45,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
@@ -86,7 +86,7 @@ public:
 	{
 		if(Target_Scanline::set_rend_desc(r))
 		{
-			/*sinfg::warning("Succeeded in setting the desc to new one: %d x %d, %.2f fps [%.2f,%.2f]",
+			/*synfig::warning("Succeeded in setting the desc to new one: %d x %d, %.2f fps [%.2f,%.2f]",
 							desc.get_w(),desc.get_h(),desc.get_frame_rate(),
 					(float)desc.get_time_start(),(float)desc.get_time_end());*/
 			
@@ -113,7 +113,7 @@ public:
 		//ok... notify our subscribers...
 		signal_frame_done_(this);
 		curframe += 1;
-		//sinfg::warning("Finished the frame stuff, and changed time to %.3f",t);
+		//synfig::warning("Finished the frame stuff, and changed time to %.3f",t);
 	}
 	
 	virtual Color * start_scanline(int scanline)
@@ -172,11 +172,11 @@ void studio::Preview::render()
 		etl::handle<Preview_Target>	target = new Preview_Target;
 		
 		//connect our information to his...
-		//sinfg::warning("Connecting to the end frame function...");
+		//synfig::warning("Connecting to the end frame function...");
 		target->signal_frame_done().connect(sigc::mem_fun(*this,&Preview::frame_finish));
 		
 		//set the options
-		//sinfg::warning("Setting Canvas");
+		//synfig::warning("Setting Canvas");
 		target->set_canvas(get_canvas());
 		target->set_quality(quality);
 		
@@ -192,7 +192,7 @@ void studio::Preview::render()
 			newh = (int)floor(desc.get_h()*zoom+0.5);
 		float newfps = fps;
 		
-		/*sinfg::warning("Setting the render description: %d x %d, %f fps, [%f,%f]",
+		/*synfig::warning("Setting the render description: %d x %d, %f fps, [%f,%f]",
 						neww,newh,newfps, overbegin?begintime:(float)desc.get_time_start(),
 						overend?endtime:(float)desc.get_time_end());*/
 		
@@ -203,12 +203,12 @@ void studio::Preview::render()
 		if(overbegin)
 		{
 			desc.set_time_start(std::max(begintime,(float)desc.get_time_start()));
-			//sinfg::warning("Set start time to %.2f...",(float)desc.get_time_start());
+			//synfig::warning("Set start time to %.2f...",(float)desc.get_time_start());
 		}
 		if(overend)
 		{
 			desc.set_time_end(std::min(endtime,(float)desc.get_time_end()));
-			//sinfg::warning("Set end time to %.2f...",(float)desc.get_time_end());
+			//synfig::warning("Set end time to %.2f...",(float)desc.get_time_end());
 		}
 			
 		//setting the description
@@ -222,7 +222,7 @@ void studio::Preview::render()
 		frames.resize(0);
 		
 		//now tell it to go... with inherited prog. reporting...
-		//sinfg::info("Rendering Asynchronously...");
+		//synfig::info("Rendering Asynchronously...");
 		if(renderer) renderer->stop();
 		renderer = new AsyncRenderer(target);
 		renderer->start();
@@ -242,26 +242,26 @@ void studio::Preview::frame_finish(const Preview_Target *targ)
 	const Surface &surf = targ->get_surface();
 	const RendDesc& r = targ->get_rend_desc();
 	
-	//sinfg::warning("Finished a frame at %f s",time);
+	//synfig::warning("Finished a frame at %f s",time);
 	
 	//copy EVERYTHING!
 	PixelFormat pf(PF_RGB);
-	const int total_bytes(r.get_w()*r.get_h()*sinfg::channels(pf));
+	const int total_bytes(r.get_w()*r.get_h()*synfig::channels(pf));
 	
-	//sinfg::warning("Creating a buffer");
+	//synfig::warning("Creating a buffer");
 	unsigned char *buffer((unsigned char*)malloc(total_bytes));
 
 	if(!buffer)
 		return;
 
 	//convert all the pixles to the pixbuf... buffer... thing...
-	//sinfg::warning("Converting...");	
+	//synfig::warning("Converting...");	
 	convert_color_format(buffer, surf[0], surf.get_w()*surf.get_h(), pf, App::gamma);
 	
 	//load time
 	fe.t = time;	
 	//uses and manages the memory for the buffer...
-	//sinfg::warning("Create a pixmap...");
+	//synfig::warning("Create a pixmap...");
 	fe.buf = 
 	Gdk::Pixbuf::create_from_data(
 		buffer,	// pointer to the data
@@ -270,12 +270,12 @@ void studio::Preview::frame_finish(const Preview_Target *targ)
 		8, // bits per sample
 		surf.get_w(),	// width
 		surf.get_h(),	// height
-		surf.get_w()*sinfg::channels(pf), // stride (pitch)
+		surf.get_w()*synfig::channels(pf), // stride (pitch)
 		sigc::ptr_fun(free_guint8)
 	);
 	
 	//add the flipbook element to the list (assume time is correct)
-	//sinfg::info("Prev: Adding %f s to the list", time);
+	//synfig::info("Prev: Adding %f s to the list", time);
 	frames.push_back(fe);
 	
 	signal_changed()();
@@ -420,7 +420,7 @@ void studio::Widget_Preview::update()
 	//find the frame and display it...
 	if(preview)
 	{
-		//sinfg::warning("Updating at %.3f s",time);		
+		//synfig::warning("Updating at %.3f s",time);		
 		
 		//use time to find closest frame...
 		studio::Preview::FlipBook::const_iterator 	beg = preview->begin(),end = preview->end();
@@ -439,15 +439,15 @@ void studio::Widget_Preview::update()
 		{			
 			//don't bother with binary search it will just be slower...
 			
-			//sinfg::info("Search for time %f",time);
+			//synfig::info("Search for time %f",time);
 			
 			//incrementally go in either direction 
 			//(bias downward towards beg, because that's what we want)
 			for(;i != end;++i)
 			{
-				//sinfg::info("Look at %f",i->t);
+				//synfig::info("Look at %f",i->t);
 				if(i->t > time) break;
-				//sinfg::info("Go past...");
+				//synfig::info("Go past...");
 			}
 			
 			//if(i!=beg)--i; 
@@ -456,9 +456,9 @@ void studio::Widget_Preview::update()
 			for(;i != beg;)
 			{
 				--i;
-				//sinfg::info("Look at %f",i->t);
+				//synfig::info("Look at %f",i->t);
 				if(i->t <= time) break;
-				//sinfg::info("Go past...");
+				//synfig::info("Go past...");
 			}
 			
 			/*i = preview->begin(); end = preview->end();
@@ -475,7 +475,7 @@ void studio::Widget_Preview::update()
 			//don't get the closest, round down... (if we can)
 			if(i == end)
 			{
-				sinfg::error("i == end....");
+				synfig::error("i == end....");
 				//assert(0);
 				currentbuf.clear();
 				currentindex = 0;
@@ -487,9 +487,9 @@ void studio::Widget_Preview::update()
 				if(timedisp != i->t)
 				{
 					timedisp = i->t;
-					//sinfg::warning("Update at: %f seconds (%f s)",time,timedisp);
+					//synfig::warning("Update at: %f seconds (%f s)",time,timedisp);
 					preview_draw();
-					//sinfg::warning("success!");			
+					//synfig::warning("success!");			
 				}
 			}
 		}
@@ -526,7 +526,7 @@ bool studio::Widget_Preview::redraw(GdkEventExpose *heh)
 	sx = draw_area.get_width() / (float)px->get_width();
 	sy = draw_area.get_height() / (float)px->get_height();
 	
-	//sinfg::info("widget_preview redraw: now to scale the bitmap: %.3f x %.3f",sx,sy);
+	//synfig::info("widget_preview redraw: now to scale the bitmap: %.3f x %.3f",sx,sy);
 	
 	//round to smallest scale (fit entire thing in window without distortion)
 	if(sx > sy) sx = sy;
@@ -540,7 +540,7 @@ bool studio::Widget_Preview::redraw(GdkEventExpose *heh)
 		
 	pxnew = px->scale_simple(nw,nh,Gdk::INTERP_NEAREST);
 		
-	//sinfg::info("Now to draw to the window...");
+	//synfig::info("Now to draw to the window...");
 	//copy to window
 	Glib::RefPtr<Gdk::Window>	wind = draw_area.get_window();
 	Glib::RefPtr<Gdk::Drawable> surf = Glib::RefPtr<Gdk::Drawable>::cast_static(wind);
@@ -551,8 +551,8 @@ bool studio::Widget_Preview::redraw(GdkEventExpose *heh)
 		draw_area.get_window()->begin_paint_rect(r);
 	}
 
-	if(!wind) sinfg::warning("The destination window is broken...");
-	if(!surf) sinfg::warning("The destination is not drawable...");
+	if(!wind) synfig::warning("The destination window is broken...");
+	if(!surf) synfig::warning("The destination is not drawable...");
 	
 	if(surf)
 	{
@@ -583,7 +583,7 @@ bool studio::Widget_Preview::redraw(GdkEventExpose *heh)
 			Glib::ustring timecode(Time((double)timedisp).round(preview->get_global_fps())
 															.get_string(preview->get_global_fps(),
 																			App::get_time_format()));
-			//sinfg::info("Time for preview draw is: %s for time %g", timecode.c_str(), adj_time_scrub.get_value());
+			//synfig::info("Time for preview draw is: %s for time %g", timecode.c_str(), adj_time_scrub.get_value());
 																		
 			gc->set_rgb_fg_color(Gdk::Color("#FF0000"));
 			layout->set_text(timecode);
@@ -593,7 +593,7 @@ bool studio::Widget_Preview::redraw(GdkEventExpose *heh)
 
 	draw_area.get_window()->end_paint();
 	
-	//sinfg::warning("Refresh the draw area");
+	//synfig::warning("Refresh the draw area");
 	//make sure the widget refreshes
 	
 	return false;
@@ -602,7 +602,7 @@ bool studio::Widget_Preview::redraw(GdkEventExpose *heh)
 bool studio::Widget_Preview::play_update()
 {
 	float diff = timer.pop_time();
-	//sinfg::info("Play update: diff = %.2f",diff);
+	//synfig::info("Play update: diff = %.2f",diff);
 	
 	if(playing)
 	{
@@ -616,7 +616,7 @@ bool studio::Widget_Preview::play_update()
 				
 			if(newtime != audiotime)
 			{
-				//sinfg::info("Adjusted time from %.3lf to %.3lf", time,newtime);
+				//synfig::info("Adjusted time from %.3lf to %.3lf", time,newtime);
 				time = audiotime = newtime;
 			}
 		}
@@ -635,7 +635,7 @@ bool studio::Widget_Preview::play_update()
 				play_stop();
 				update();
 				
-				//sinfg::info("Play Stopped: time set to %f",adj_time_scrub.get_value());
+				//synfig::info("Play Stopped: time set to %f",adj_time_scrub.get_value());
 				return false;
 			}
 		}
@@ -646,7 +646,7 @@ bool studio::Widget_Preview::play_update()
 		
 		//update the window to the correct image we might want to do this later...
 		//update();
-		//sinfg::warning("Did update pu");
+		//synfig::warning("Did update pu");
 	}
 	return true;
 }
@@ -656,7 +656,7 @@ void studio::Widget_Preview::slider_move()
 	//if(!playing)
 	{
 		update();
-		//sinfg::warning("Did update sm");
+		//synfig::warning("Did update sm");
 	}
 }
 
@@ -675,7 +675,7 @@ void studio::Widget_Preview::scrub_updated(double t)
 		}
 	}
 	
-	//sinfg::info("Scrubbing to %.3f, setting adj to %.3f",oldt,t);
+	//synfig::info("Scrubbing to %.3f, setting adj to %.3f",oldt,t);
 			
 	if(adj_time_scrub.get_value() != t)
 	{
@@ -697,7 +697,7 @@ void studio::Widget_Preview::set_preview(handle<Preview>	prev)
 {
 	preview = prev;
 	
-	sinfg::info("Setting preview");
+	synfig::info("Setting preview");
 	
 	//stop playing the mini animation...
 	stop();
@@ -706,7 +706,7 @@ void studio::Widget_Preview::set_preview(handle<Preview>	prev)
 	{
 		//set the internal values
 		float rate = preview->get_fps();
-		sinfg::info("	FPS = %f",rate);
+		synfig::info("	FPS = %f",rate);
 		if(rate)
 		{
 			float start = preview->get_begintime();
@@ -736,7 +736,7 @@ void studio::Widget_Preview::set_preview(handle<Preview>	prev)
 		prevchanged = prev->signal_changed().connect(sigc::mem_fun(*this,&Widget_Preview::whenupdated));
 		prev->signal_destroyed().connect(sigc::mem_fun(*this,&Widget_Preview::disconnect_preview));
 		update();
-		//sinfg::warning("Did update sp");
+		//synfig::warning("Did update sp");
 		queue_draw();
 	}
 }
@@ -759,19 +759,19 @@ void studio::Widget_Preview::play()
 {
 	if(preview && !playing)
 	{
-		//sinfg::info("Playing at %lf",adj_time_scrub.get_value());
+		//synfig::info("Playing at %lf",adj_time_scrub.get_value());
 		//audiotime = adj_time_scrub.get_value();
 		playing = true;
 
 		//adj_time_scrub.set_value(adj_time_scrub.get_lower());		
 		update(); //we don't want to call play update because that will try to advance the timer
-		//sinfg::warning("Did update p");
+		//synfig::warning("Did update p");
 		
 		//approximate length of time in seconds, right?
 		double rate = /*std::min(*/adj_time_scrub.get_step_increment()/*,1/30.0)*/;
 		int timeout = (int)floor(1000*rate);
 		
-		//sinfg::info("	rate = %.3lfs = %d ms",rate,timeout);
+		//synfig::info("	rate = %.3lfs = %d ms",rate,timeout);
 		
 		signal_play_(adj_time_scrub.get_value());
 		
@@ -789,12 +789,12 @@ void studio::Widget_Preview::play_stop()
 	playing = false;
 	signal_stop()();
 	if(audio) audio->stop(); //!< stop the audio
-	//sinfg::info("Stopping...");
+	//synfig::info("Stopping...");
 }
 
 void studio::Widget_Preview::stop()
 {
-	//sinfg::warning("stopping");
+	//synfig::warning("stopping");
 	play_stop();
 	timecon.disconnect();
 }

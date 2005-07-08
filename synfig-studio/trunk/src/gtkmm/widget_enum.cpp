@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file widget_enum.cpp
 **	\brief Template File
 **
@@ -31,7 +31,7 @@
 #include <gtkmm/menu.h>
 #include "widget_enum.h"
 #include <ETL/stringf>
-#include <sinfg/valuenode.h>
+#include <synfig/valuenode.h>
 
 #endif
 
@@ -39,7 +39,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
@@ -59,7 +59,7 @@ Widget_Enum::~Widget_Enum()
 }
 
 void
-Widget_Enum::set_param_desc(const sinfg::ParamDesc &x)
+Widget_Enum::set_param_desc(const synfig::ParamDesc &x)
 {
 	param_desc=x;
 	//refresh();
@@ -77,8 +77,8 @@ Widget_Enum::refresh()
 {
 	enum_menu = manage(new class Gtk::Menu());
 
-	std::list<sinfg::ParamDesc::EnumData> enum_list=param_desc.get_enum_list();
-	std::list<sinfg::ParamDesc::EnumData>::iterator iter;
+	std::list<synfig::ParamDesc::EnumData> enum_list=param_desc.get_enum_list();
+	std::list<synfig::ParamDesc::EnumData>::iterator iter;
 	
 	String name=strprintf("(%d)",value);
 	

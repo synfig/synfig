@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file template.cpp
 **	\brief Template File
 **
@@ -37,7 +37,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 
@@ -49,7 +49,7 @@ using namespace sinfg;
 
 /* === E N T R Y P O I N T ================================================= */
 
-studio::Dialog_SoundSelect::Dialog_SoundSelect(Gtk::Window &parent, etl::handle<sinfgapp::CanvasInterface> ci)
+studio::Dialog_SoundSelect::Dialog_SoundSelect(Gtk::Window &parent, etl::handle<synfigapp::CanvasInterface> ci)
 :Dialog(_("Sound Select")),
 okbutton(_("Ok")),
 canvas_interface(ci)

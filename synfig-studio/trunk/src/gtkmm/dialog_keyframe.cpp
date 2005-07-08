@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file dialog_keyframe.cpp
 **	\brief Template File
 **
@@ -32,8 +32,8 @@
 #include <gtkmm/scrolledwindow.h>
 #include <gtkmm/button.h>
 #include "widget_waypointmodel.h"
-#include <sinfgapp/action.h>
-#include <sinfgapp/instance.h>
+#include <synfigapp/action.h>
+#include <synfigapp/instance.h>
 
 #endif
 
@@ -41,7 +41,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
@@ -52,7 +52,7 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
-Dialog_Keyframe::Dialog_Keyframe(Gtk::Window& parent,handle<sinfgapp::CanvasInterface> canvas_interface):
+Dialog_Keyframe::Dialog_Keyframe(Gtk::Window& parent,handle<synfigapp::CanvasInterface> canvas_interface):
 	Gtk::Dialog(_("Keyframe Dialog"),parent,false,true),
 	canvas_interface(canvas_interface)
 {
@@ -100,14 +100,14 @@ Dialog_Keyframe::~Dialog_Keyframe()
 {
 }
 
-const sinfg::Keyframe&
+const synfig::Keyframe&
 Dialog_Keyframe::get_keyframe()const
 {
 	return keyframe_;
 }
 
 void
-Dialog_Keyframe::set_keyframe(const sinfg::Keyframe& x)
+Dialog_Keyframe::set_keyframe(const synfig::Keyframe& x)
 {
 	keyframe_=x;
 }
@@ -118,7 +118,7 @@ Dialog_Keyframe::on_ok_pressed()
 	if(widget_waypoint_model->get_waypoint_model().is_trivial())
 		return;
 	
-	sinfgapp::Action::Handle action(sinfgapp::Action::create("keyframe_waypoint_set"));
+	synfigapp::Action::Handle action(synfigapp::Action::create("keyframe_waypoint_set"));
 	
 	assert(action);
 	

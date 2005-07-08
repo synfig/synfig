@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file dock_info.h
 **	\brief Info Dock Header
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_DOCK_INFO_H
-#define __SINFG_DOCK_INFO_H
+#ifndef __SYNFIG_DOCK_INFO_H
+#define __SYNFIG_DOCK_INFO_H
 
 /* === H E A D E R S ======================================================= */
 #include "dock_canvasspecific.h"
@@ -41,7 +41,7 @@ namespace studio {
 class Dock_Info : public Dock_CanvasSpecific
 {
 	//bool			valid;
-	//sinfg::Point	pos;
+	//synfig::Point	pos;
 	
 	Gtk::Label  r,g,b,a;
 	Gtk::Label	x,y;

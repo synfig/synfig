@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file widget_canvaschooser.h
 **	\brief Template Header
 **
@@ -21,12 +21,12 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_STUDIO_WIDGET_CANVASCHOOSER_H
-#define __SINFG_STUDIO_WIDGET_CANVASCHOOSER_H
+#ifndef __SYNFIG_STUDIO_WIDGET_CANVASCHOOSER_H
+#define __SYNFIG_STUDIO_WIDGET_CANVASCHOOSER_H
 
 /* === H E A D E R S ======================================================= */
 
-#include <sinfg/canvas.h>
+#include <synfig/canvas.h>
 #include <gtkmm/optionmenu.h>
 
 
@@ -43,18 +43,18 @@ namespace studio {
 class Widget_CanvasChooser : public Gtk::OptionMenu
 {
 	Gtk::Menu *canvas_menu;
-	sinfg::Canvas::Handle parent_canvas;
+	synfig::Canvas::Handle parent_canvas;
 
-	sinfg::Canvas::Handle canvas;
-	void set_value_(sinfg::Canvas::Handle data);
+	synfig::Canvas::Handle canvas;
+	void set_value_(synfig::Canvas::Handle data);
 public:
 
 	Widget_CanvasChooser();
 	~Widget_CanvasChooser();
 	
-	void set_parent_canvas(sinfg::Canvas::Handle x);
-	void set_value(sinfg::Canvas::Handle data);
-	const sinfg::Canvas::Handle &get_value();
+	void set_parent_canvas(synfig::Canvas::Handle x);
+	void set_value(synfig::Canvas::Handle data);
+	const synfig::Canvas::Handle &get_value();
 private:
 	void chooser_menu();
 }; // END of class Widget_CanvasChooser

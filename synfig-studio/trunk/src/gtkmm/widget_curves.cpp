@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file widget_curves.cpp
 **	\brief Template File
 **
@@ -43,7 +43,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
@@ -54,7 +54,7 @@ using namespace studio;
 
 /*
 void
-studio::render_color_to_window(const Glib::RefPtr<Gdk::Drawable>& window,const Gdk::Rectangle& ca,const sinfg::Color &color)
+studio::render_color_to_window(const Glib::RefPtr<Gdk::Drawable>& window,const Gdk::Rectangle& ca,const synfig::Color &color)
 {
 	const int height(ca.get_height());
 	const int width(ca.get_width());
@@ -70,8 +70,8 @@ studio::render_color_to_window(const Glib::RefPtr<Gdk::Drawable>& window,const G
 		const Color bg1(Color::blend(color,Color(0.75, 0.75, 0.75),1.0).clamped());
 		const Color bg2(Color::blend(color,Color(0.5, 0.5, 0.5),1.0).clamped());
 	
-		Gdk::Color gdk_c1(colorconv_sinfg2gdk(bg1));
-		Gdk::Color gdk_c2(colorconv_sinfg2gdk(bg2));
+		Gdk::Color gdk_c1(colorconv_synfig2gdk(bg1));
+		Gdk::Color gdk_c2(colorconv_synfig2gdk(bg2));
 
 		bool toggle(false);
 		for(int i=0;i<width;i+=square_size)
@@ -101,7 +101,7 @@ studio::render_color_to_window(const Glib::RefPtr<Gdk::Drawable>& window,const G
 	else
 	{
 		// In this case we have a solid color to use
-		Gdk::Color gdk_c1(colorconv_sinfg2gdk(color));
+		Gdk::Color gdk_c1(colorconv_synfig2gdk(color));
 
 		gc->set_rgb_fg_color(gdk_c1);	
 		window->draw_rectangle(gc, true, ca.get_x(), ca.get_y(), width-1, height-1);
@@ -119,17 +119,17 @@ studio::render_color_to_window(const Glib::RefPtr<Gdk::Drawable>& window,const G
 
 struct studio::Widget_Curves::Channel
 {
-	sinfg::String name;
+	synfig::String name;
 	Gdk::Color color;
-	std::map<sinfg::Real,sinfg::Real> values;
+	std::map<synfig::Real,synfig::Real> values;
 };
 
 struct studio::Widget_Curves::CurveStruct : sigc::trackable
 {
-	sinfgapp::ValueDesc value_desc;
+	synfigapp::ValueDesc value_desc;
 	std::vector<Channel> channels;
 
-	CurveStruct(const sinfgapp::ValueDesc& x):
+	CurveStruct(const synfigapp::ValueDesc& x):
 		value_desc(x)
 	{
 		switch(value_desc.get_value_type())
@@ -216,7 +216,7 @@ struct studio::Widget_Curves::CurveStruct : sigc::trackable
 				channels.back().color=Gdk::Color("#7f7f00");
 				break;
 			default:
-				throw sinfg::Exception::BadType("Bad type for curves");
+				throw synfig::Exception::BadType("Bad type for curves");
 		}
 	}
 	
@@ -228,9 +228,9 @@ struct studio::Widget_Curves::CurveStruct : sigc::trackable
 			iter->values.clear();
 	}
 	
-	sinfg::Real get_value(int chan, sinfg::Real time, sinfg::Real tolerance)
+	synfig::Real get_value(int chan, synfig::Real time, synfig::Real tolerance)
 	{
-		std::map<sinfg::Real,sinfg::Real>::iterator iter;
+		std::map<synfig::Real,synfig::Real>::iterator iter;
 		
 		// First check to see if we have a value
 		// that is "close enough" to the time
@@ -356,11 +356,11 @@ Widget_Curves::refresh()
 }
 
 void
-Widget_Curves::set_value_descs(std::list<sinfgapp::ValueDesc> value_descs)
+Widget_Curves::set_value_descs(std::list<synfigapp::ValueDesc> value_descs)
 {
 	curve_list_.clear();
 	
-	std::list<sinfgapp::ValueDesc>::iterator iter;
+	std::list<synfigapp::ValueDesc>::iterator iter;
 	for(iter=value_descs.begin();iter!=value_descs.end();++iter)
 	{
 		try {
@@ -395,7 +395,7 @@ Widget_Curves::set_value_descs(std::list<sinfgapp::ValueDesc> value_descs)
 					)
 				);
 			}
-		}catch(sinfg::Exception::BadType)
+		}catch(synfig::Exception::BadType)
 		{
 			continue;
 		}

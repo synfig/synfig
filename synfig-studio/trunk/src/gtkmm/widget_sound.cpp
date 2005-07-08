@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file widget_sound.cpp
 **	\brief Widget Sound Implementation File
 **
@@ -30,7 +30,7 @@
 
 #include <gtkmm/adjustment.h>
 
-#include <sinfg/general.h>
+#include <synfig/general.h>
 #include <ETL/clock>
 
 #include "widget_sound.h"
@@ -42,7 +42,7 @@
 
 using namespace std;
 using namespace etl;
-//using namespace sinfg;
+//using namespace synfig;
 
 using studio::AudioProfile;
 
@@ -66,7 +66,7 @@ studio::Widget_Sound::~Widget_Sound()
 
 void studio::Widget_Sound::set_position(double t)
 {
-	//sinfg::info("Setting position to %.2lf s", t);
+	//synfig::info("Setting position to %.2lf s", t);
 	if(adj_timescale && t != adj_timescale->get_value())
 	{
 		float upper = adj_timescale->get_upper();
@@ -166,7 +166,7 @@ bool studio::Widget_Sound::on_expose_event(GdkEventExpose *heh)
 	
 	//redraw all the samples from begin to end, but only if we have samples to draw (or there is no space to draw)
 	
-	//sinfg::warning("Ok rendered everything, now must render actual sound wave");
+	//synfig::warning("Ok rendered everything, now must render actual sound wave");
 	if(!audioprof || !adj_timescale || !w) 
 	{
 		get_window()->end_paint();
@@ -210,7 +210,7 @@ bool studio::Widget_Sound::on_expose_event(GdkEventExpose *heh)
 		
 		delta = (end - begin)/(float)w; //samples per pixel
 		
-		/*sinfg::warning("Rendering a framesize of %f secs from [%d,%d) samples to %d samples, took %f sec", 
+		/*synfig::warning("Rendering a framesize of %f secs from [%d,%d) samples to %d samples, took %f sec", 
 						framesize, begin, end, w, check());*/
 		
 		cur = begin;
@@ -237,7 +237,7 @@ bool studio::Widget_Sound::on_expose_event(GdkEventExpose *heh)
 			}
 		}
 		
-		//sinfg::warning("Drawing audio line");
+		//synfig::warning("Drawing audio line");
 		c.set_rgb_p(1,0,0);
 		gc->set_rgb_fg_color(c);
 		get_window()->draw_line(gc,posi,0,posi,get_height());

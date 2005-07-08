@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file state_scale.cpp
 **	\brief Template File
 **
@@ -31,22 +31,22 @@
 #include <gtkmm/dialog.h>
 #include <gtkmm/entry.h>
 
-#include <sinfg/valuenode_dynamiclist.h>
-#include <sinfgapp/action_system.h>
+#include <synfig/valuenode_dynamiclist.h>
+#include <synfigapp/action_system.h>
 
 #include "state_scale.h"
 #include "canvasview.h"
 #include "workarea.h"
 #include "app.h"
 
-#include <sinfgapp/action.h>
+#include <synfigapp/action.h>
 #include "event_mouse.h"
 #include "event_layerclick.h"
 #include "toolbox.h"
 #include "dialog_tooloptions.h"
 #include <gtkmm/optionmenu.h>
 #include "duck.h"
-#include <sinfgapp/main.h>
+#include <synfigapp/main.h>
 
 #endif
 
@@ -54,7 +54,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
@@ -68,12 +68,12 @@ StateScale studio::state_scale;
 class DuckDrag_Scale : public DuckDrag_Base
 {
 
-	sinfg::Vector last_scale;
-	sinfg::Vector drag_offset;
-	sinfg::Vector center;
-	sinfg::Vector snap;
+	synfig::Vector last_scale;
+	synfig::Vector drag_offset;
+	synfig::Vector center;
+	synfig::Vector snap;
 
-	std::vector<sinfg::Vector> positions;
+	std::vector<synfig::Vector> positions;
 
 	bool move_only;
 	
@@ -81,9 +81,9 @@ class DuckDrag_Scale : public DuckDrag_Base
 public:
 	bool lock_aspect;
 	DuckDrag_Scale();
-	void begin_duck_drag(Duckmatic* duckmatic, const sinfg::Vector& begin);
+	void begin_duck_drag(Duckmatic* duckmatic, const synfig::Vector& begin);
 	bool end_duck_drag(Duckmatic* duckmatic);
-	void duck_drag(Duckmatic* duckmatic, const sinfg::Vector& vector);
+	void duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector);
 };
 
 
@@ -91,7 +91,7 @@ class studio::StateScale_Context : public sigc::trackable
 {
 	etl::handle<CanvasView> canvas_view_;
 		
-	sinfgapp::Settings& settings;
+	synfigapp::Settings& settings;
 
 	etl::handle<DuckDrag_Scale> duck_dragger_;
 
@@ -116,8 +116,8 @@ public:
 	~StateScale_Context();
 
 	const etl::handle<CanvasView>& get_canvas_view()const{return canvas_view_;}
-	etl::handle<sinfgapp::CanvasInterface> get_canvas_interface()const{return canvas_view_->canvas_interface();}
-	sinfg::Canvas::Handle get_canvas()const{return canvas_view_->get_canvas();}
+	etl::handle<synfigapp::CanvasInterface> get_canvas_interface()const{return canvas_view_->canvas_interface();}
+	synfig::Canvas::Handle get_canvas()const{return canvas_view_->get_canvas();}
 	WorkArea * get_work_area()const{return canvas_view_->get_work_area();}
 	
 	void load_settings();
@@ -155,7 +155,7 @@ StateScale_Context::save_settings()
 
 StateScale_Context::StateScale_Context(CanvasView* canvas_view):
 	canvas_view_(canvas_view),
-	settings(sinfgapp::Main::get_selected_input_device()->settings()),
+	settings(synfigapp::Main::get_selected_input_device()->settings()),
 	duck_dragger_(new DuckDrag_Scale()),
 	checkbutton_aspect_lock(_("Lock Aspect Ratio"))
 {	
@@ -222,7 +222,7 @@ DuckDrag_Scale::DuckDrag_Scale():
 #endif
 
 void
-DuckDrag_Scale::begin_duck_drag(Duckmatic* duckmatic, const sinfg::Vector& offset)
+DuckDrag_Scale::begin_duck_drag(Duckmatic* duckmatic, const synfig::Vector& offset)
 {
 	last_scale=Vector(1,1);
 	const DuckList selected_ducks(duckmatic->get_selected_ducks());
@@ -266,7 +266,7 @@ DuckDrag_Scale::begin_duck_drag(Duckmatic* duckmatic, const sinfg::Vector& offse
 
 
 void
-DuckDrag_Scale::duck_drag(Duckmatic* duckmatic, const sinfg::Vector& vector)
+DuckDrag_Scale::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector)
 {
 	const DuckList selected_ducks(duckmatic->get_selected_ducks());
 	DuckList::const_iterator iter;
@@ -275,7 +275,7 @@ DuckDrag_Scale::duck_drag(Duckmatic* duckmatic, const sinfg::Vector& vector)
 		return;
 	
 	//std::set<etl::handle<Duck> >::iterator iter;
-	sinfg::Vector vect(duckmatic->snap_point_to_grid(vector)-center);
+	synfig::Vector vect(duckmatic->snap_point_to_grid(vector)-center);
 	last_scale=vect;
 
 	if(move_only)

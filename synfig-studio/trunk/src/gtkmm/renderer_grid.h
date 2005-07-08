@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file template.h
 **	\brief Template Header
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_RENDERER_GRID_H
-#define __SINFG_RENDERER_GRID_H
+#ifndef __SYNFIG_RENDERER_GRID_H
+#define __SYNFIG_RENDERER_GRID_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -43,7 +43,7 @@ class Renderer_Grid : public studio::WorkAreaRenderer
 public:
 	~Renderer_Grid();
 	
-	sinfg::Vector get_grid_size()const;
+	synfig::Vector get_grid_size()const;
 
 	void render_vfunc(const Glib::RefPtr<Gdk::Drawable>& drawable,const Gdk::Rectangle& expose_area	);
 

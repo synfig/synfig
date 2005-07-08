@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file layertreestore.cpp
 **	\brief Template File
 **
@@ -31,13 +31,13 @@
 #include "layertreestore.h"
 #include "iconcontroler.h"
 #include <gtkmm/button.h>
-#include <sinfg/paramdesc.h>
-#include <sinfgapp/action.h>
-#include <sinfgapp/instance.h>
+#include <synfig/paramdesc.h>
+#include <synfigapp/action.h>
+#include <synfigapp/instance.h>
 #include "app.h"
 #include "instance.h"
 #include "iconcontroler.h"
-#include <sinfgapp/action_system.h>
+#include <synfigapp/action_system.h>
 
 #include <gtk/gtkversion.h>
 #include <ETL/clock>
@@ -47,7 +47,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
@@ -65,11 +65,11 @@ static LayerTreeStore::Model& ModelHack()
 	return *model;
 }
 
-LayerTreeStore::LayerTreeStore(etl::loose_handle<sinfgapp::CanvasInterface> canvas_interface_):
+LayerTreeStore::LayerTreeStore(etl::loose_handle<synfigapp::CanvasInterface> canvas_interface_):
 	Gtk::TreeStore			(ModelHack()),
 	canvas_interface_		(canvas_interface_)
 {
-	layer_icon=Gtk::Button().render_icon(Gtk::StockID("sinfg-layer"),Gtk::ICON_SIZE_SMALL_TOOLBAR);
+	layer_icon=Gtk::Button().render_icon(Gtk::StockID("synfig-layer"),Gtk::ICON_SIZE_SMALL_TOOLBAR);
 
 	// Connect Signals to Terminals
 	canvas_interface()->signal_layer_status_changed().connect(sigc::mem_fun(*this,&studio::LayerTreeStore::on_layer_status_changed));
@@ -95,7 +95,7 @@ LayerTreeStore::LayerTreeStore(etl::loose_handle<sinfgapp::CanvasInterface> canv
 
 LayerTreeStore::~LayerTreeStore()
 {
-	sinfg::info("LayerTreeStore::~LayerTreeStore()q: Deleted");
+	synfig::info("LayerTreeStore::~LayerTreeStore()q: Deleted");
 
 }
 
@@ -135,7 +135,7 @@ LayerTreeStore::search_func(const Glib::RefPtr<TreeModel>&,int,const Glib::ustri
 
 
 Glib::RefPtr<LayerTreeStore>
-LayerTreeStore::create(etl::loose_handle<sinfgapp::CanvasInterface> canvas_interface_)
+LayerTreeStore::create(etl::loose_handle<synfigapp::CanvasInterface> canvas_interface_)
 {
 	return Glib::RefPtr<LayerTreeStore>(new LayerTreeStore(canvas_interface_));
 }
@@ -145,7 +145,7 @@ LayerTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& iter, int colum
 {
 	if(column==model.index.index())
 	{
-		sinfg::Layer::Handle layer((*iter)[model.layer]);
+		synfig::Layer::Handle layer((*iter)[model.layer]);
 
 		if(!layer)return;
 
@@ -160,7 +160,7 @@ LayerTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& iter, int colum
 	else
 	if(column==model.z_depth.index())
 	{
-		sinfg::Layer::Handle layer((*iter)[model.layer]);
+		synfig::Layer::Handle layer((*iter)[model.layer]);
 
 		if(!layer)return;
 
@@ -175,7 +175,7 @@ LayerTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& iter, int colum
 	else
 	if(column==model.children_lock.index())
 	{
-		sinfg::Layer::Handle layer((*iter)[model.layer]);
+		synfig::Layer::Handle layer((*iter)[model.layer]);
 
 		if(!layer)return;
 
@@ -193,7 +193,7 @@ LayerTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& iter, int colum
 	else
 	if(column==model.label.index())
 	{
-		sinfg::Layer::Handle layer((*iter)[model.layer]);
+		synfig::Layer::Handle layer((*iter)[model.layer]);
 
 		if(!layer)return;
 
@@ -213,7 +213,7 @@ LayerTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& iter, int colum
 	else
 	if(column==model.tooltip.index())
 	{
-		sinfg::Layer::Handle layer((*iter)[model.layer]);
+		synfig::Layer::Handle layer((*iter)[model.layer]);
 
 		if(!layer)return;
 
@@ -230,7 +230,7 @@ LayerTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& iter, int colum
 	else
 	if(column==model.canvas.index())
 	{
-		sinfg::Layer::Handle layer((*iter)[model.layer]);
+		synfig::Layer::Handle layer((*iter)[model.layer]);
 
 		if(!layer)return;
 
@@ -247,7 +247,7 @@ LayerTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& iter, int colum
 	else
 	if(column==model.active.index())
 	{
-		sinfg::Layer::Handle layer((*iter)[model.layer]);
+		synfig::Layer::Handle layer((*iter)[model.layer]);
 
 		if(!layer)return;
 
@@ -262,7 +262,7 @@ LayerTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& iter, int colum
 	else
 	if(column==model.icon.index())
 	{
-		sinfg::Layer::Handle layer((*iter)[model.layer]);
+		synfig::Layer::Handle layer((*iter)[model.layer]);
 		if(!layer)return;
 
 		Glib::Value<Glib::RefPtr<Gdk::Pixbuf> > x;
@@ -304,18 +304,18 @@ LayerTreeStore::set_value_impl(const Gtk::TreeModel::iterator& iter, int column,
 			g_value_init(x.gobj(),model.label.type());
 			g_value_copy(value.gobj(),x.gobj());
 			
-			sinfg::Layer::Handle layer((*iter)[model.layer]);
+			synfig::Layer::Handle layer((*iter)[model.layer]);
 			if(!layer)
 				return;
-			sinfg::String new_desc(x.get());
+			synfig::String new_desc(x.get());
 			
 			if(new_desc==layer->get_local_name())
-				new_desc=sinfg::String();
+				new_desc=synfig::String();
 
 			if(new_desc==layer->get_description())
 				return;
 			
-			sinfgapp::Action::Handle action(sinfgapp::Action::create("layer_set_desc"));
+			synfigapp::Action::Handle action(synfigapp::Action::create("layer_set_desc"));
 			
 			if(!action)
 				return;
@@ -323,7 +323,7 @@ LayerTreeStore::set_value_impl(const Gtk::TreeModel::iterator& iter, int column,
 			action->set_param("canvas",canvas_interface()->get_canvas());
 			action->set_param("canvas_interface",canvas_interface());
 			action->set_param("layer",layer);
-			action->set_param("new_description",sinfg::String(x.get()));
+			action->set_param("new_description",synfig::String(x.get()));
 			
 			canvas_interface()->get_instance()->perform_action(action);
 			return;
@@ -331,7 +331,7 @@ LayerTreeStore::set_value_impl(const Gtk::TreeModel::iterator& iter, int column,
 		else
 		if(column==model.active.index())
 		{
-			sinfg::Layer::Handle layer((*iter)[model.layer]);
+			synfig::Layer::Handle layer((*iter)[model.layer]);
 			
 			if(!layer)return;
 
@@ -339,7 +339,7 @@ LayerTreeStore::set_value_impl(const Gtk::TreeModel::iterator& iter, int column,
 			g_value_init(x.gobj(),model.active.type());
 			g_value_copy(value.gobj(),x.gobj());
 			
-			sinfgapp::Action::Handle action(sinfgapp::Action::create("layer_activate"));
+			synfigapp::Action::Handle action(synfigapp::Action::create("layer_activate"));
 			
 			if(!action)
 				return;
@@ -379,9 +379,9 @@ bool
 LayerTreeStore::drag_data_get_vfunc (const TreeModel::Path& path, Gtk::SelectionData& selection_data)const
 {
 	if(!const_cast<LayerTreeStore*>(this)->get_iter(path)) return false;
-	//sinfg::info("Dragged data of type \"%s\"",selection_data.get_data_type());
-	//sinfg::info("Dragged data of target \"%s\"",gdk_atom_name(selection_data->target));
-	//sinfg::info("Dragged selection=\"%s\"",gdk_atom_name(selection_data->selection));
+	//synfig::info("Dragged data of type \"%s\"",selection_data.get_data_type());
+	//synfig::info("Dragged data of target \"%s\"",gdk_atom_name(selection_data->target));
+	//synfig::info("Dragged selection=\"%s\"",gdk_atom_name(selection_data->selection));
 
 	Gtk::TreeModel::Row row(*const_cast<LayerTreeStore*>(this)->get_iter(path));
 
@@ -396,7 +396,7 @@ LayerTreeStore::drag_data_get_vfunc (const TreeModel::Path& path, Gtk::Selection
 		std::vector<Layer*> layers;
 		// The following is a hack for multiple row DND
 		{
-			sinfgapp::SelectionManager::LayerList bleh(get_canvas_interface()->get_selection_manager()->get_selected_layers());
+			synfigapp::SelectionManager::LayerList bleh(get_canvas_interface()->get_selection_manager()->get_selected_layers());
 			if(bleh.empty())
 			{
 				selection_data.set("LAYER", 8, reinterpret_cast<const guchar*>(&layer), sizeof(layer));
@@ -430,13 +430,13 @@ LayerTreeStore::row_drop_possible_vfunc (const TreeModel::Path& dest, const Gtk:
 {
 	//if(!const_cast<LayerTreeStore*>(this)->get_iter(dest)) return false;
 
-	//sinfg::info("possible_drop -- data of type \"%s\"",selection_data.get_data_type());
-	//sinfg::info("possible_drop -- data of target \"%s\"",gdk_atom_name(selection_data->target));
-	//sinfg::info("possible_drop -- selection=\"%s\"",gdk_atom_name(selection_data->selection));
+	//synfig::info("possible_drop -- data of type \"%s\"",selection_data.get_data_type());
+	//synfig::info("possible_drop -- data of target \"%s\"",gdk_atom_name(selection_data->target));
+	//synfig::info("possible_drop -- selection=\"%s\"",gdk_atom_name(selection_data->selection));
 	
 	//Gtk::TreeModel::Row row(*get_iter(dest));
 
-	if(sinfg::String(selection_data.get_data_type())=="LAYER" && (bool)true)
+	if(synfig::String(selection_data.get_data_type())=="LAYER" && (bool)true)
 	{
 		//Layer::Handle src(reinterpret_cast<Layer**>(const_cast<guint8*>(selection_data.get_data()))[i]);
 		//assert(src);
@@ -470,13 +470,13 @@ LayerTreeStore::drag_data_received_vfunc (const TreeModel::Path& dest, const Gtk
 	int i(0);
 	
 
-	//sinfg::info("Dropped data of type \"%s\"",selection_data.get_data_type());
-	//sinfg::info("Dropped data of target \"%s\"",gdk_atom_name(selection_data->target));
-	//sinfg::info("Dropped selection=\"%s\"",gdk_atom_name(selection_data->selection));
-	sinfgapp::Action::PassiveGrouper passive_grouper(canvas_interface()->get_instance().get(),_("Move Layers"));
+	//synfig::info("Dropped data of type \"%s\"",selection_data.get_data_type());
+	//synfig::info("Dropped data of target \"%s\"",gdk_atom_name(selection_data->target));
+	//synfig::info("Dropped selection=\"%s\"",gdk_atom_name(selection_data->selection));
+	synfigapp::Action::PassiveGrouper passive_grouper(canvas_interface()->get_instance().get(),_("Move Layers"));
 	
 	// Save the selection data
-	sinfgapp::SelectionManager::LayerList selected_layer_list=canvas_interface()->get_selection_manager()->get_selected_layers();
+	synfigapp::SelectionManager::LayerList selected_layer_list=canvas_interface()->get_selection_manager()->get_selected_layers();
 
 	if ((selection_data.get_length() >= 0) && (selection_data.get_format() == 8))
 	{
@@ -510,9 +510,9 @@ LayerTreeStore::drag_data_received_vfunc (const TreeModel::Path& dest, const Gtk
 		
 		Layer::Handle dest_layer(row[model.layer]);
 
-		if(sinfg::String(selection_data.get_data_type())=="LAYER")for(unsigned int i=0;i<selection_data.get_length()/sizeof(void*);i++)
+		if(synfig::String(selection_data.get_data_type())=="LAYER")for(unsigned int i=0;i<selection_data.get_length()/sizeof(void*);i++)
 		{
-			//sinfg::info("dest_layer_depth=%d",dest_layer_depth);
+			//synfig::info("dest_layer_depth=%d",dest_layer_depth);
 			
 			Layer::Handle src(reinterpret_cast<Layer**>(const_cast<guint8*>(selection_data.get_data()))[i]);
 			assert(src);
@@ -532,7 +532,7 @@ LayerTreeStore::drag_data_received_vfunc (const TreeModel::Path& dest, const Gtk
 				if(dest_canvas==src->get_canvas() && dest_layer_depth==src->get_depth())
 					continue;
 				
-				sinfgapp::Action::Handle action(sinfgapp::Action::create("layer_move"));
+				synfigapp::Action::Handle action(synfigapp::Action::create("layer_move"));
 				action->set_param("canvas",dest_canvas);
 				action->set_param("canvas_interface",canvas_interface());
 				action->set_param("layer",src);
@@ -554,8 +554,8 @@ LayerTreeStore::drag_data_received_vfunc (const TreeModel::Path& dest, const Gtk
 			/*else // In this case we need to remove and then add
 			{				
 				
-				sinfgapp::Action::Handle action;
-				action=sinfgapp::Action::create("layer_remove");
+				synfigapp::Action::Handle action;
+				action=synfigapp::Action::create("layer_remove");
 				action->set_param("canvas",Canvas::Handle(src->get_canvas()));
 				if(!action->set_param("canvas_interface",App::get_instance(src->get_canvas())->find_canvas_interface(src->get_canvas())))
 					action->set_param("canvas_interface",canvas_interface());
@@ -567,7 +567,7 @@ LayerTreeStore::drag_data_received_vfunc (const TreeModel::Path& dest, const Gtk
 					return false;
 				}
 
-				action=sinfgapp::Action::create("layer_add");
+				action=synfigapp::Action::create("layer_add");
 				action->set_param("canvas",dest_canvas);
 				action->set_param("canvas_interface",canvas_interface());
 				action->set_param("new",src);
@@ -580,7 +580,7 @@ LayerTreeStore::drag_data_received_vfunc (const TreeModel::Path& dest, const Gtk
 
 				if(dest_layer_depth!=0)
 				{
-					action=sinfgapp::Action::create("layer_move");
+					action=synfigapp::Action::create("layer_move");
 					action->set_param("canvas",dest_canvas);
 					action->set_param("canvas_interface",canvas_interface());
 					action->set_param("layer",src);
@@ -597,7 +597,7 @@ LayerTreeStore::drag_data_received_vfunc (const TreeModel::Path& dest, const Gtk
 			*/
 		}
 	}
-	sinfg::info("I suposidly moved %d layers",i);
+	synfig::info("I suposidly moved %d layers",i);
 
 	// Reselect the previously selected layers
 	canvas_interface()->get_selection_manager()->set_selected_layers(selected_layer_list);
@@ -616,9 +616,9 @@ LayerTreeStore::rebuild()
 {
 	//etl::clock timer;timer.reset();
 
-	//sinfg::warning("---------rebuilding layer table---------");
+	//synfig::warning("---------rebuilding layer table---------");
 	// Save the selection data
-	sinfgapp::SelectionManager::LayerList layer_list=canvas_interface()->get_selection_manager()->get_selected_layers();
+	synfigapp::SelectionManager::LayerList layer_list=canvas_interface()->get_selection_manager()->get_selected_layers();
 
 	// Clear out the current list
 	clear();
@@ -633,7 +633,7 @@ LayerTreeStore::rebuild()
 	if(!layer_list.empty())
 		canvas_interface()->get_selection_manager()->set_selected_layers(layer_list);
 
-	//sinfg::info("LayerTreeStore::rebuild() took %f seconds",float(timer()));
+	//synfig::info("LayerTreeStore::rebuild() took %f seconds",float(timer()));
 }
 
 void
@@ -651,7 +651,7 @@ LayerTreeStore::refresh()
 			Gtk::TreeRow row=*iter;
 			refresh_row(row);
 		}
-	//sinfg::info("LayerTreeStore::refresh() took %f seconds",float(timer()));
+	//synfig::info("LayerTreeStore::refresh() took %f seconds",float(timer()));
 }
 
 void
@@ -691,7 +691,7 @@ LayerTreeStore::refresh_row(Gtk::TreeModel::Row &row)
 
 
 void
-LayerTreeStore::set_row_layer(Gtk::TreeRow &row,sinfg::Layer::Handle &handle)
+LayerTreeStore::set_row_layer(Gtk::TreeRow &row,synfig::Layer::Handle &handle)
 {
 	//row[model.id] = handle->get_name();
 	//row[model.name] = handle->get_local_name();	
@@ -711,10 +711,10 @@ LayerTreeStore::set_row_layer(Gtk::TreeRow &row,sinfg::Layer::Handle &handle)
 	//row[model.canvas] = handle->get_canvas();
 	//row[model.icon] = layer_icon;	
 
-	sinfg::Layer::ParamList paramlist=handle->get_param_list();
+	synfig::Layer::ParamList paramlist=handle->get_param_list();
 
-	sinfg::Layer::Vocab vocab=handle->get_param_vocab();
-	sinfg::Layer::Vocab::iterator iter;
+	synfig::Layer::Vocab vocab=handle->get_param_vocab();
+	synfig::Layer::Vocab::iterator iter;
 	
 	for(iter=vocab.begin();iter!=vocab.end();++iter)
 	{
@@ -761,7 +761,7 @@ LayerTreeStore::set_row_layer(Gtk::TreeRow &row,sinfg::Layer::Handle &handle)
 }
 
 void
-LayerTreeStore::on_layer_added(sinfg::Layer::Handle layer)
+LayerTreeStore::on_layer_added(synfig::Layer::Handle layer)
 {
 	assert(layer);
 	Gtk::TreeRow row;
@@ -783,20 +783,20 @@ LayerTreeStore::on_layer_added(sinfg::Layer::Handle layer)
 }
 
 void
-LayerTreeStore::on_layer_removed(sinfg::Layer::Handle handle)
+LayerTreeStore::on_layer_removed(synfig::Layer::Handle handle)
 {
 	Gtk::TreeModel::Children::iterator iter;
 	if(find_layer_row(handle,iter))
 		erase(iter);
 	else
 	{
-		sinfg::error("LayerTreeStore::on_layer_removed():Unable to find layer to be removed, forced to rebuild...");
+		synfig::error("LayerTreeStore::on_layer_removed():Unable to find layer to be removed, forced to rebuild...");
 		rebuild();
 	}
 }
 
 void
-LayerTreeStore::on_layer_inserted(sinfg::Layer::Handle handle,int depth)
+LayerTreeStore::on_layer_inserted(synfig::Layer::Handle handle,int depth)
 {		
 	if(depth==0)
 	{
@@ -811,7 +811,7 @@ LayerTreeStore::on_layer_inserted(sinfg::Layer::Handle handle,int depth)
 		Gtk::TreeModel::Children::iterator iter;
 		if(!find_canvas_row(handle->get_canvas(),iter))
 		{
-			sinfg::error("LayerTreeStore::on_layer_inserted():Unable to find canvas row, forced to rebuild...");
+			synfig::error("LayerTreeStore::on_layer_inserted():Unable to find canvas row, forced to rebuild...");
 			rebuild();
 			return;
 		}
@@ -824,7 +824,7 @@ LayerTreeStore::on_layer_inserted(sinfg::Layer::Handle handle,int depth)
 		++iter;
 		if(!iter || iter==children_.end())
 		{
-			sinfg::error("LayerTreeStore::on_layer_inserted():Unable to achieve desired depth, forced to rebuild...");
+			synfig::error("LayerTreeStore::on_layer_inserted():Unable to achieve desired depth, forced to rebuild...");
 			rebuild();
 			return;
 		}
@@ -836,26 +836,26 @@ LayerTreeStore::on_layer_inserted(sinfg::Layer::Handle handle,int depth)
 }
 
 void
-LayerTreeStore::on_layer_status_changed(sinfg::Layer::Handle handle,bool x)
+LayerTreeStore::on_layer_status_changed(synfig::Layer::Handle handle,bool x)
 {
 	Gtk::TreeModel::Children::iterator iter;
 	if(find_layer_row(handle,iter))
 		(*iter)[model.layer]=handle;
 	else
 	{
-		sinfg::warning("Couldn't find layer to be activated in layer list. Rebuilding index...");
+		synfig::warning("Couldn't find layer to be activated in layer list. Rebuilding index...");
 		rebuild();
 	}
 }
 
 void
-LayerTreeStore::on_layer_lowered(sinfg::Layer::Handle layer)
+LayerTreeStore::on_layer_lowered(synfig::Layer::Handle layer)
 {	
 	Gtk::TreeModel::Children::iterator iter, iter2;
 	if(find_layer_row(layer,iter))
 	{
 		// Save the selection data
-		//sinfgapp::SelectionManager::LayerList layer_list=canvas_interface()->get_selection_manager()->get_selected_layers();
+		//synfigapp::SelectionManager::LayerList layer_list=canvas_interface()->get_selection_manager()->get_selected_layers();
 		iter2=iter;
 		iter2++;
 		if(!iter2)
@@ -866,7 +866,7 @@ LayerTreeStore::on_layer_lowered(sinfg::Layer::Handle layer)
 		
 		//Gtk::TreeModel::Row row(*iter);
 		Gtk::TreeModel::Row row2 = *iter2;
-		sinfg::Layer::Handle layer2=row2[model.layer];
+		synfig::Layer::Handle layer2=row2[model.layer];
 		
 		erase(iter2);
 		row2=*insert(iter);
@@ -878,7 +878,7 @@ LayerTreeStore::on_layer_lowered(sinfg::Layer::Handle layer)
 }
 
 void
-LayerTreeStore::on_layer_raised(sinfg::Layer::Handle layer)
+LayerTreeStore::on_layer_raised(synfig::Layer::Handle layer)
 {
 	Gtk::TreeModel::Children::iterator iter, iter2;
 
@@ -890,7 +890,7 @@ LayerTreeStore::on_layer_raised(sinfg::Layer::Handle layer)
 		{	
 			//Gtk::TreeModel::Row row = *iter;
 			Gtk::TreeModel::Row row2 = *iter2;
-			sinfg::Layer::Handle layer2=row2[model.layer];
+			synfig::Layer::Handle layer2=row2[model.layer];
 		
 			erase(iter2);
 			iter++;
@@ -905,14 +905,14 @@ LayerTreeStore::on_layer_raised(sinfg::Layer::Handle layer)
 }
 
 void
-LayerTreeStore::on_layer_moved(sinfg::Layer::Handle layer,int depth, sinfg::Canvas::Handle canvas)
+LayerTreeStore::on_layer_moved(synfig::Layer::Handle layer,int depth, synfig::Canvas::Handle canvas)
 {
 	on_layer_removed(layer);
 	on_layer_inserted(layer,depth);
 }
 
 void
-LayerTreeStore::on_layer_param_changed(sinfg::Layer::Handle handle,sinfg::String param_name)
+LayerTreeStore::on_layer_param_changed(synfig::Layer::Handle handle,synfig::String param_name)
 {
 	if(param_name=="z_depth")
 	{
@@ -948,7 +948,7 @@ LayerTreeStore::on_layer_param_changed(sinfg::Layer::Handle handle,sinfg::String
 }
 
 void
-LayerTreeStore::on_layer_new_description(sinfg::Layer::Handle handle,sinfg::String desc)
+LayerTreeStore::on_layer_new_description(synfig::Layer::Handle handle,synfig::String desc)
 {
 	Gtk::TreeModel::Children::iterator iter;
 	if(find_layer_row(handle,iter))
@@ -973,7 +973,7 @@ LayerTreeStore::on_layer_new_description(sinfg::Layer::Handle handle,sinfg::Stri
 }
 
 bool
-LayerTreeStore::find_canvas_row_(sinfg::Canvas::Handle canvas, sinfg::Canvas::Handle parent, Gtk::TreeModel::Children layers, Gtk::TreeModel::Children::iterator &iter)
+LayerTreeStore::find_canvas_row_(synfig::Canvas::Handle canvas, synfig::Canvas::Handle parent, Gtk::TreeModel::Children layers, Gtk::TreeModel::Children::iterator &iter)
 {	
 	if(canvas==parent)
 		return false;
@@ -982,7 +982,7 @@ LayerTreeStore::find_canvas_row_(sinfg::Canvas::Handle canvas, sinfg::Canvas::Ha
 		for(iter=layers.begin(); iter && iter != layers.end(); ++iter)
 		{
 			Gtk::TreeModel::Row row = *iter;
-			if(canvas==(sinfg::Canvas::Handle)row[model.contained_canvas])
+			if(canvas==(synfig::Canvas::Handle)row[model.contained_canvas])
 				return true;
 		}
 		
@@ -1014,14 +1014,14 @@ LayerTreeStore::find_canvas_row_(sinfg::Canvas::Handle canvas, sinfg::Canvas::Ha
 }
 
 bool
-LayerTreeStore::find_canvas_row(sinfg::Canvas::Handle canvas, Gtk::TreeModel::Children::iterator &iter)
+LayerTreeStore::find_canvas_row(synfig::Canvas::Handle canvas, Gtk::TreeModel::Children::iterator &iter)
 {
 	return find_canvas_row_(canvas,canvas_interface()->get_canvas(),children(),iter);
 }
 
 
 bool
-LayerTreeStore::find_layer_row_(const sinfg::Layer::Handle &layer, sinfg::Canvas::Handle canvas, Gtk::TreeModel::Children layers, Gtk::TreeModel::Children::iterator &iter, Gtk::TreeModel::Children::iterator &prev)
+LayerTreeStore::find_layer_row_(const synfig::Layer::Handle &layer, synfig::Canvas::Handle canvas, Gtk::TreeModel::Children layers, Gtk::TreeModel::Children::iterator &iter, Gtk::TreeModel::Children::iterator &prev)
 {
 	assert(layer);
 	
@@ -1030,7 +1030,7 @@ LayerTreeStore::find_layer_row_(const sinfg::Layer::Handle &layer, sinfg::Canvas
 		for(iter=prev=layers.begin(); iter && iter != layers.end(); prev=iter++)
 		{
 			Gtk::TreeModel::Row row = *iter;
-			if(layer==(sinfg::Layer::Handle)row[model.layer])
+			if(layer==(synfig::Layer::Handle)row[model.layer])
 				return true;
 		}
 		
@@ -1062,14 +1062,14 @@ LayerTreeStore::find_layer_row_(const sinfg::Layer::Handle &layer, sinfg::Canvas
 }
 
 bool
-LayerTreeStore::find_layer_row(const sinfg::Layer::Handle &layer, Gtk::TreeModel::Children::iterator &iter)
+LayerTreeStore::find_layer_row(const synfig::Layer::Handle &layer, Gtk::TreeModel::Children::iterator &iter)
 {
 	Gtk::TreeModel::Children::iterator prev;
 	return find_layer_row_(layer,canvas_interface()->get_canvas(),children(),iter,prev);
 }
 
 bool
-LayerTreeStore::find_prev_layer_row(const sinfg::Layer::Handle &layer, Gtk::TreeModel::Children::iterator &prev)
+LayerTreeStore::find_prev_layer_row(const synfig::Layer::Handle &layer, Gtk::TreeModel::Children::iterator &prev)
 {
 	Gtk::TreeModel::Children::iterator iter;
 	if(!find_layer_row_(layer,canvas_interface()->get_canvas(),children(),iter,prev))

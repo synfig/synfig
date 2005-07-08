@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file canvastreestore.cpp
 **	\brief Template File
 **
@@ -29,12 +29,12 @@
 #endif
 
 #include "canvastreestore.h"
-#include <sinfg/valuenode.h>
+#include <synfig/valuenode.h>
 #include "iconcontroler.h"
-#include <sinfg/valuenode_timedswap.h>
-#include <sinfg/valuenode_animated.h>
+#include <synfig/valuenode_timedswap.h>
+#include <synfig/valuenode_animated.h>
 #include <gtkmm/button.h>
-#include <sinfgapp/instance.h>
+#include <synfigapp/instance.h>
 #include "cellrenderer_value.h"
 #include "cellrenderer_timetrack.h"
 #include <ETL/clock>
@@ -45,7 +45,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
@@ -63,7 +63,7 @@ static CanvasTreeStore::Model& ModelHack()
 	return *model;
 }
 
-CanvasTreeStore::CanvasTreeStore(etl::loose_handle<sinfgapp::CanvasInterface> canvas_interface_):
+CanvasTreeStore::CanvasTreeStore(etl::loose_handle<synfigapp::CanvasInterface> canvas_interface_):
 	Gtk::TreeStore(ModelHack()),
 	canvas_interface_		(canvas_interface_)
 {
@@ -78,9 +78,9 @@ CanvasTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& iter, int colu
 {
 	if(column==model.value.index())
 	{
-		sinfgapp::ValueDesc value_desc((*iter)[model.value_desc]);
+		synfigapp::ValueDesc value_desc((*iter)[model.value_desc]);
 
-		Glib::Value<sinfg::ValueBase> x;
+		Glib::Value<synfig::ValueBase> x;
 		g_value_init(x.gobj(),x.value_type());
 
 		if(!value_desc)
@@ -95,7 +95,7 @@ CanvasTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& iter, int colu
 			x.set((*value_desc.get_value_node())(canvas_interface()->get_time()));
 		else
 		{
-			sinfg::error(__FILE__":%d: Unable to figure out value",__LINE__);
+			synfig::error(__FILE__":%d: Unable to figure out value",__LINE__);
 			return;
 		}
 		
@@ -105,7 +105,7 @@ CanvasTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& iter, int colu
 	else
 	if(column==model.is_value_node.index())
 	{
-		sinfgapp::ValueDesc value_desc((*iter)[model.value_desc]);
+		synfigapp::ValueDesc value_desc((*iter)[model.value_desc]);
 
 		Glib::Value<bool> x;
 		g_value_init(x.gobj(),x.value_type());
@@ -118,7 +118,7 @@ CanvasTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& iter, int colu
 	else
 	if(column==model.is_shared.index())
 	{
-		sinfgapp::ValueDesc value_desc((*iter)[model.value_desc]);
+		synfigapp::ValueDesc value_desc((*iter)[model.value_desc]);
 
 		Glib::Value<bool> x;
 		g_value_init(x.gobj(),x.value_type());
@@ -131,7 +131,7 @@ CanvasTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& iter, int colu
 	else
 	if(column==model.is_exported.index())
 	{
-		sinfgapp::ValueDesc value_desc((*iter)[model.value_desc]);
+		synfigapp::ValueDesc value_desc((*iter)[model.value_desc]);
 
 		Glib::Value<bool> x;
 		g_value_init(x.gobj(),x.value_type());
@@ -144,7 +144,7 @@ CanvasTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& iter, int colu
 	else
 	if(column==model.is_canvas.index())
 	{
-		sinfgapp::ValueDesc value_desc((*iter)[model.value_desc]);
+		synfigapp::ValueDesc value_desc((*iter)[model.value_desc]);
 
 		Glib::Value<bool> x;
 		g_value_init(x.gobj(),x.value_type());
@@ -157,7 +157,7 @@ CanvasTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& iter, int colu
 	else
 	if(column==model.id.index())
 	{
-		sinfgapp::ValueDesc value_desc((*iter)[model.value_desc]);
+		synfigapp::ValueDesc value_desc((*iter)[model.value_desc]);
 
 		Glib::Value<Glib::ustring> x;
 		g_value_init(x.gobj(),x.value_type());
@@ -175,12 +175,12 @@ CanvasTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& iter, int colu
 	else
 	if(column==model.is_editable.index())
 	{
-		sinfgapp::ValueDesc value_desc((*iter)[model.value_desc]);
+		synfigapp::ValueDesc value_desc((*iter)[model.value_desc]);
 
 		Glib::Value<bool> x;
 		g_value_init(x.gobj(),x.value_type());
 
-		x.set(!value_desc.is_value_node() || sinfgapp::is_editable(value_desc.get_value_node()));
+		x.set(!value_desc.is_value_node() || synfigapp::is_editable(value_desc.get_value_node()));
 		
 		g_value_init(value.gobj(),x.value_type());
 		g_value_copy(x.gobj(),value.gobj());
@@ -188,7 +188,7 @@ CanvasTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& iter, int colu
 	else
 	if(column==model.type.index())
 	{
-		sinfgapp::ValueDesc value_desc((*iter)[model.value_desc]);
+		synfigapp::ValueDesc value_desc((*iter)[model.value_desc]);
 
 		Glib::Value<Glib::ustring> x;
 		g_value_init(x.gobj(),x.value_type());
@@ -217,7 +217,7 @@ CanvasTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& iter, int colu
 	else
 	if(column==model.label.index())
 	{
-		sinfgapp::ValueDesc value_desc((*iter)[model.value_desc]);
+		synfigapp::ValueDesc value_desc((*iter)[model.value_desc]);
 
 		Glib::Value<Glib::ustring> x;
 		g_value_init(x.gobj(),x.value_type());
@@ -258,7 +258,7 @@ CanvasTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& iter, int colu
 	else
 	if(column==model.icon.index())
 	{
-		sinfgapp::ValueDesc value_desc((*iter)[model.value_desc]);
+		synfigapp::ValueDesc value_desc((*iter)[model.value_desc]);
 		if(!value_desc)
 			return Gtk::TreeStore::get_value_vfunc(iter,column,value);
 
@@ -275,7 +275,7 @@ CanvasTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& iter, int colu
 }
 
 bool
-CanvasTreeStore::find_first_value_desc(const sinfgapp::ValueDesc& value_desc, Gtk::TreeIter& iter)
+CanvasTreeStore::find_first_value_desc(const synfigapp::ValueDesc& value_desc, Gtk::TreeIter& iter)
 {
 	iter=children().begin();
 	while(iter && value_desc!=(*iter)[model.value_desc])
@@ -299,7 +299,7 @@ CanvasTreeStore::find_first_value_desc(const sinfgapp::ValueDesc& value_desc, Gt
 }
 
 bool
-CanvasTreeStore::find_next_value_desc(const sinfgapp::ValueDesc& value_desc, Gtk::TreeIter& iter)
+CanvasTreeStore::find_next_value_desc(const synfigapp::ValueDesc& value_desc, Gtk::TreeIter& iter)
 {
 	if(!iter) return find_first_value_desc(value_desc,iter);
 		
@@ -382,7 +382,7 @@ CanvasTreeStore::find_next_value_node(const ValueNode::Handle& value_node, Gtk::
 }
 
 void
-CanvasTreeStore::set_row(Gtk::TreeRow row,sinfgapp::ValueDesc value_desc, bool do_children)
+CanvasTreeStore::set_row(Gtk::TreeRow row,synfigapp::ValueDesc value_desc, bool do_children)
 {
 	Gtk::TreeModel::Children children = row.children();
 	while(!children.empty() && erase(children.begin()));
@@ -401,7 +401,7 @@ CanvasTreeStore::set_row(Gtk::TreeRow row,sinfgapp::ValueDesc value_desc, bool d
 			row[model.value_node] = value_node;
 			//row[model.is_canvas] = false;
 			//row[model.is_value_node] = true;
-			//row[model.is_editable] = sinfgapp::is_editable(value_node);
+			//row[model.is_editable] = synfigapp::is_editable(value_node);
 			//row[model.id]=value_node->get_id();
 			
 			// Set the canvas
@@ -422,7 +422,7 @@ CanvasTreeStore::set_row(Gtk::TreeRow row,sinfgapp::ValueDesc value_desc, bool d
 					child_row[model.link_id] = i;
 					child_row[model.canvas] = static_cast<Canvas::Handle>(row[model.canvas]);
 					child_row[model.name] = linkable->link_local_name(i);
-					set_row(child_row,sinfgapp::ValueDesc(linkable,i));
+					set_row(child_row,synfigapp::ValueDesc(linkable,i));
 				}
 			}
 			return;
@@ -435,9 +435,9 @@ CanvasTreeStore::set_row(Gtk::TreeRow row,sinfgapp::ValueDesc value_desc, bool d
 			return;
 		}
 	}
-	catch(sinfg::Exception::IDNotFound x)
+	catch(synfig::Exception::IDNotFound x)
 	{
-		sinfg::error(__FILE__":%d: IDNotFound thrown",__LINE__);
+		synfig::error(__FILE__":%d: IDNotFound thrown",__LINE__);
 		erase(row);
 		return;
 	}
@@ -449,7 +449,7 @@ CanvasTreeStore::set_row(Gtk::TreeRow row,sinfgapp::ValueDesc value_desc, bool d
 void
 CanvasTreeStore::refresh_row(Gtk::TreeModel::Row &row, bool do_children)
 {
-	sinfgapp::ValueDesc value_desc=row[model.value_desc];
+	synfigapp::ValueDesc value_desc=row[model.value_desc];
 
 	if(value_desc)
 	{
@@ -517,7 +517,7 @@ CanvasTreeStore::refresh_row(Gtk::TreeModel::Row &row, bool do_children)
 void
 CanvasTreeStore::rebuild_row(Gtk::TreeModel::Row &row, bool do_children)
 {
-	sinfgapp::ValueDesc value_desc=(sinfgapp::ValueDesc)row[model.value_desc];
+	synfigapp::ValueDesc value_desc=(synfigapp::ValueDesc)row[model.value_desc];
 
 	if(value_desc && value_desc.get_value_node())
 	{

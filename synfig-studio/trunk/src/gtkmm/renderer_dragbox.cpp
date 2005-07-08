@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file template.cpp
 **	\brief Template File
 **
@@ -38,7 +38,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
@@ -53,13 +53,13 @@ Renderer_Dragbox::~Renderer_Dragbox()
 {
 }
 
-const sinfg::Point&
+const synfig::Point&
 Renderer_Dragbox::get_drag_point()const
 {
 	return get_work_area()->get_drag_point();
 }
 
-const sinfg::Point&
+const synfig::Point&
 Renderer_Dragbox::get_curr_point()const
 {
 	return get_work_area()->get_cursor_pos();
@@ -82,9 +82,9 @@ Renderer_Dragbox::render_vfunc(
 	if(!get_work_area())
 		return;
 	
-	const sinfg::RendDesc &rend_desc(get_work_area()->get_canvas()->rend_desc());
+	const synfig::RendDesc &rend_desc(get_work_area()->get_canvas()->rend_desc());
 	
-	const sinfg::Vector focus_point(get_work_area()->get_focus_point());
+	const synfig::Vector focus_point(get_work_area()->get_focus_point());
 
 //	std::vector< std::pair<Glib::RefPtr<Gdk::Pixbuf>,int> >& tile_book(get_tile_book());
 	
@@ -93,14 +93,14 @@ Renderer_Dragbox::render_vfunc(
 	
 	// Calculate the window coordinates of the top-left
 	// corner of the canvas.
-	const sinfg::Vector::value_type
+	const synfig::Vector::value_type
 		x(focus_point[0]/get_pw()+drawable_w/2-get_w()/2),
 		y(focus_point[1]/get_ph()+drawable_h/2-get_h()/2);
 
-	/*const sinfg::Vector::value_type window_startx(window_tl[0]);
-	const sinfg::Vector::value_type window_endx(window_br[0]);
-	const sinfg::Vector::value_type window_starty(window_tl[1]);
-	const sinfg::Vector::value_type window_endy(window_br[1]);
+	/*const synfig::Vector::value_type window_startx(window_tl[0]);
+	const synfig::Vector::value_type window_endx(window_br[0]);
+	const synfig::Vector::value_type window_starty(window_tl[1]);
+	const synfig::Vector::value_type window_endy(window_br[1]);
 	*/
 	const int
 		tile_w(get_work_area()->get_tile_w()),
@@ -112,16 +112,16 @@ Renderer_Dragbox::render_vfunc(
 	
 	Glib::RefPtr<Gdk::GC> gc(Gdk::GC::create(drawable));
 	
-	//const sinfg::Vector grid_size(get_grid_size());
+	//const synfig::Vector grid_size(get_grid_size());
 
-	const sinfg::Vector::value_type window_startx(get_work_area()->get_window_tl()[0]);
-	const sinfg::Vector::value_type window_endx(get_work_area()->get_window_br()[0]);
-	const sinfg::Vector::value_type window_starty(get_work_area()->get_window_tl()[1]);
-	const sinfg::Vector::value_type window_endy(get_work_area()->get_window_br()[1]);
+	const synfig::Vector::value_type window_startx(get_work_area()->get_window_tl()[0]);
+	const synfig::Vector::value_type window_endx(get_work_area()->get_window_br()[0]);
+	const synfig::Vector::value_type window_starty(get_work_area()->get_window_tl()[1]);
+	const synfig::Vector::value_type window_endy(get_work_area()->get_window_br()[1]);
 	const float pw(get_pw()),ph(get_ph());
 	
-	const sinfg::Point& curr_point(get_curr_point());
-	const sinfg::Point& drag_point(get_drag_point());
+	const synfig::Point& curr_point(get_curr_point());
+	const synfig::Point& drag_point(get_drag_point());
 	
 	{
 		gc->set_function(Gdk::COPY);

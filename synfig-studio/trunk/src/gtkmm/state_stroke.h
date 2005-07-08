@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file state_stroke.h
 **	\brief Template Header
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_STUDIO_STATE_STROKE_H
-#define __SINFG_STUDIO_STATE_STROKE_H
+#ifndef __SYNFIG_STUDIO_STATE_STROKE_H
+#define __SYNFIG_STUDIO_STATE_STROKE_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -30,7 +30,7 @@
 #include "workarea.h"
 #include <sigc++/object.h>
 #include "duckmatic.h"
-#include <sinfg/blinepoint.h>
+#include <synfig/blinepoint.h>
 #include <list>
 #include <ETL/smart_ptr>
 #include "eventkey.h"
@@ -57,12 +57,12 @@ extern StateStroke state_stroke;
 
 struct EventStroke : public Smach::event
 {
-	etl::smart_ptr<std::list<sinfg::Point> > stroke_data;
-	etl::smart_ptr<std::list<sinfg::Real> > width_data;
+	etl::smart_ptr<std::list<synfig::Point> > stroke_data;
+	etl::smart_ptr<std::list<synfig::Real> > width_data;
 	Gdk::ModifierType modifier;
 	
-	EventStroke(etl::smart_ptr<std::list<sinfg::Point> > stroke_data,
-			etl::smart_ptr<std::list<sinfg::Real> > width_data,
+	EventStroke(etl::smart_ptr<std::list<synfig::Point> > stroke_data,
+			etl::smart_ptr<std::list<synfig::Real> > width_data,
 			Gdk::ModifierType modifier=Gdk::ModifierType(0)
 	):
 		Smach::event(EVENT_WORKAREA_STROKE),

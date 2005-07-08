@@ -1,5 +1,5 @@
 /*! ========================================================================
-** Sinfg
+** Synfig
 ** Template File
 ** $Id: onemoment.cpp,v 1.1.1.1 2005/01/07 03:34:36 darco Exp $
 **
@@ -38,7 +38,7 @@
 #include <gtkmm/label.h>
 #include <gtkmm/fixed.h>
 
-#include <sinfg/general.h>
+#include <synfig/general.h>
 
 #include "onemoment.h"
 #include "app.h"
@@ -53,7 +53,7 @@ using namespace studio;
 
 #ifndef VERSION
 #define VERSION	"unknown"
-#define PACKAGE	"sinfgstudio"
+#define PACKAGE	"synfigstudio"
 #endif
 
 #ifdef WIN32

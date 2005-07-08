@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file cellrenderer_time.cpp
 **	\brief Template File
 **
@@ -40,7 +40,7 @@
 
 using namespace std;
 //using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
@@ -58,7 +58,7 @@ using namespace studio;
 CellRenderer_Time::CellRenderer_Time():
 	Glib::ObjectBase	(typeid(CellRenderer_Time)),
 	Gtk::CellRendererText	(),
-	property_time_(*this,"time",sinfg::Time(0)),
+	property_time_(*this,"time",synfig::Time(0)),
 	property_fps_(*this,"fps", float(0))
 {
 	CellRendererText::signal_edited().connect(sigc::mem_fun(*this,&studio::CellRenderer_Time::string_edited_));
@@ -66,7 +66,7 @@ CellRenderer_Time::CellRenderer_Time():
 
 CellRenderer_Time::~CellRenderer_Time()
 {
-	sinfg::info("CellRenderer_Time::~CellRenderer_Time(): deleted");
+	synfig::info("CellRenderer_Time::~CellRenderer_Time(): deleted");
 }
 
 void

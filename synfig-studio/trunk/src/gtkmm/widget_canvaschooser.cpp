@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file widget_canvaschooser.cpp
 **	\brief Template File
 **
@@ -38,7 +38,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
@@ -58,29 +58,29 @@ Widget_CanvasChooser::~Widget_CanvasChooser()
 }
 
 void
-Widget_CanvasChooser::set_parent_canvas(etl::handle<sinfg::Canvas> x)
+Widget_CanvasChooser::set_parent_canvas(etl::handle<synfig::Canvas> x)
 {
 	assert(x);
 	parent_canvas=x;
 }
 
 void
-Widget_CanvasChooser::set_value_(etl::handle<sinfg::Canvas> data)
+Widget_CanvasChooser::set_value_(etl::handle<synfig::Canvas> data)
 {
 	set_value(data);
 	activate();
 }
 
 void
-Widget_CanvasChooser::set_value(etl::handle<sinfg::Canvas> data)
+Widget_CanvasChooser::set_value(etl::handle<synfig::Canvas> data)
 {
 	assert(parent_canvas);
 	canvas=data;
 
 	canvas_menu=manage(new class Gtk::Menu());
 
-	sinfg::Canvas::Children::iterator iter;
-	sinfg::Canvas::Children &children(parent_canvas->children());
+	synfig::Canvas::Children::iterator iter;
+	synfig::Canvas::Children &children(parent_canvas->children());
 	String label;
 	
 	if(canvas)
@@ -118,7 +118,7 @@ Widget_CanvasChooser::set_value(etl::handle<sinfg::Canvas> data)
 		set_history(0);
 }
 
-const etl::handle<sinfg::Canvas> &
+const etl::handle<synfig::Canvas> &
 Widget_CanvasChooser::get_value()
 {
 	return canvas;

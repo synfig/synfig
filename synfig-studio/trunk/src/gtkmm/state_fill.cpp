@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file state_fill.cpp
 **	\brief Template File
 **
@@ -30,14 +30,14 @@
 
 #include "state_fill.h"
 #include "workarea.h"
-#include <sinfg/context.h>
+#include <synfig/context.h>
 #include "app.h"
 #include "dialog_color.h"
 #include "event_mouse.h"
 #include "event_layerclick.h"
 #include "toolbox.h"
 #include "canvasview.h"
-#include <sinfgapp/main.h>
+#include <synfigapp/main.h>
 
 #endif
 
@@ -45,7 +45,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
@@ -69,8 +69,8 @@ public:
 
 
 	etl::handle<CanvasView> get_canvas_view()const{return canvas_view;}
-	etl::handle<sinfgapp::CanvasInterface> get_canvas_interface()const{return canvas_view->canvas_interface();}
-	sinfg::Canvas::Handle get_canvas()const{return canvas_view->get_canvas();}
+	etl::handle<synfigapp::CanvasInterface> get_canvas_interface()const{return canvas_view->canvas_interface();}
+	synfig::Canvas::Handle get_canvas()const{return canvas_view->get_canvas();}
 	WorkArea * get_work_area()const{return canvas_view->get_work_area();}
 
 
@@ -101,7 +101,7 @@ StateFill_Context::StateFill_Context(CanvasView *canvas_view):
 	canvas_view(canvas_view),
 	is_working(*canvas_view)
 {
-	sinfg::info("Enterted Fill State");
+	synfig::info("Enterted Fill State");
 	canvas_view->work_area->set_cursor(Gdk::CROSSHAIR);
 	
 	App::toolbox->refresh();
@@ -109,7 +109,7 @@ StateFill_Context::StateFill_Context(CanvasView *canvas_view):
 
 StateFill_Context::~StateFill_Context()
 {
-	sinfg::info("Left Fill State");
+	synfig::info("Left Fill State");
 	canvas_view->work_area->reset_cursor();
 	App::toolbox->refresh();
 }
@@ -117,7 +117,7 @@ StateFill_Context::~StateFill_Context()
 Smach::event_result
 StateFill_Context::event_stop_handler(const Smach::event& x)
 {
-	sinfg::info("STATE FILL: Received Stop Event");
+	synfig::info("STATE FILL: Received Stop Event");
 	throw Smach::egress_exception();
 //	canvas_view->get_smach().pop_state();
 //	return Smach::RESULT_ACCEPT;
@@ -126,7 +126,7 @@ StateFill_Context::event_stop_handler(const Smach::event& x)
 Smach::event_result
 StateFill_Context::event_refresh_handler(const Smach::event& x)
 {
-	sinfg::info("STATE FILL: Received Refresh Event");
+	synfig::info("STATE FILL: Received Refresh Event");
 	canvas_view->work_area->queue_render_preview();
 	return Smach::RESULT_ACCEPT;
 }
@@ -134,7 +134,7 @@ StateFill_Context::event_refresh_handler(const Smach::event& x)
 Smach::event_result
 StateFill_Context::event_workarea_layer_clicked_handler(const Smach::event& x)
 {
-	sinfg::info("STATE FILL: Received layer clicked Event");
+	synfig::info("STATE FILL: Received layer clicked Event");
 	const EventLayerClick& event(*reinterpret_cast<const EventLayerClick*>(&x));
 
 	if(!event.layer)
@@ -144,10 +144,10 @@ StateFill_Context::event_workarea_layer_clicked_handler(const Smach::event& x)
 	}
 
 	
-	//sinfgapp::Action::Handle action(sinfgapp::Action::create("value_desc_set"));
-	sinfgapp::ValueDesc value_desc(event.layer,"color");
+	//synfigapp::Action::Handle action(synfigapp::Action::create("value_desc_set"));
+	synfigapp::ValueDesc value_desc(event.layer,"color");
 
-	if(!get_canvas_interface()->change_value(value_desc,ValueBase(sinfgapp::Main::get_foreground_color())))
+	if(!get_canvas_interface()->change_value(value_desc,ValueBase(synfigapp::Main::get_foreground_color())))
 	{
 		get_canvas_view()->get_ui_interface()->warning(_("Unable to set layer color"));
 		return Smach::RESULT_ERROR;
@@ -161,9 +161,9 @@ StateFill_Context::event_workarea_layer_clicked_handler(const Smach::event& x)
 	action->set_param("time",get_canvas_interface()->get_time());
 	//action->set_param("layer",event.layer);			
 	//if(!action->set_param("param",String("color")))
-	//	sinfg::error("LayerParamConnect didn't like \"param\"");
-	if(!action->set_param("new_value",ValueBase(sinfgapp::Main::get_foreground_color())))
-		sinfg::error("LayerParamConnect didn't like \"foreground_color\"");
+	//	synfig::error("LayerParamConnect didn't like \"param\"");
+	if(!action->set_param("new_value",ValueBase(synfigapp::Main::get_foreground_color())))
+		synfig::error("LayerParamConnect didn't like \"foreground_color\"");
 	
 	if(!get_canvas_interface()->get_instance()->perform_action(action))
 	{

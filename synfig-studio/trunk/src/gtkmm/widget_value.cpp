@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file widget_value.cpp
 **	\brief Template File
 **
@@ -50,7 +50,7 @@
 
 #endif
 
-using namespace sinfg;
+using namespace synfig;
 using namespace etl;
 using namespace std;
 using namespace studio;
@@ -193,7 +193,7 @@ Widget_ValueBase::set_sensitive(bool x)
 }
 
 void
-Widget_ValueBase::set_value(const sinfg::ValueBase &data)
+Widget_ValueBase::set_value(const synfig::ValueBase &data)
 {
 	label->hide();
 	vector_widget->hide();
@@ -257,7 +257,7 @@ Widget_ValueBase::set_value(const sinfg::ValueBase &data)
 	case ValueBase::TYPE_CANVAS:
 		assert(canvas);
 		canvas_widget->set_parent_canvas(canvas);
-		canvas_widget->set_value(value.get(etl::loose_handle<sinfg::Canvas>()));
+		canvas_widget->set_value(value.get(etl::loose_handle<synfig::Canvas>()));
 		canvas_widget->show();
 		break;
 	case ValueBase::TYPE_BOOL:
@@ -278,11 +278,11 @@ Widget_ValueBase::set_value(const sinfg::ValueBase &data)
 		break;
 	case ValueBase::TYPE_COLOR:
         {
-		color_widget->set_value(value.get(sinfg::Color()));
+		color_widget->set_value(value.get(synfig::Color()));
 		color_widget->show();
 /*
 			Gdk::Color gdkcolor;
-			sinfg::Color color=value.get(sinfg::Color());
+			synfig::Color color=value.get(synfig::Color());
 			gdkcolor.set_rgb_p(color.get_r(),color.get_g(),color.get_b());
 			color_widget->set_current_color(gdkcolor);
 			color_widget->set_has_opacity_control(true);
@@ -295,10 +295,10 @@ Widget_ValueBase::set_value(const sinfg::ValueBase &data)
 		label->show();
 		break;
 	}
-	}catch(...) { sinfg::error(__FILE__":%d: Caught something that was thrown",__LINE__); }
+	}catch(...) { synfig::error(__FILE__":%d: Caught something that was thrown",__LINE__); }
 }
 
-const sinfg::ValueBase &
+const synfig::ValueBase &
 Widget_ValueBase::get_value()
 {
 	switch(value.get_type())
@@ -350,7 +350,7 @@ Widget_ValueBase::get_value()
 			value=color_widget->get_value();
 /*
 			Gdk::Color gdkcolor;
-			sinfg::Color color;
+			synfig::Color color;
 			gdkcolor=color_widget->get_current_color();
 			color.set_r(gdkcolor.get_red_p());
             color.set_g(gdkcolor.get_green_p());

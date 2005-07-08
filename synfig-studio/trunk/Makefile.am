@@ -6,23 +6,23 @@ MAINTAINERCLEANFILES=config/package config/ltmain.sh config/config.guess config/
 
 SUBDIRS=images src
 
-EXTRA_DIST=bootstrap config/depcomp config/cxx_macros.m4 @PACKAGE_TARNAME@-@VERSION@.spec config/project.spec.in config/build.cfg sinfg.kdevprj config/ETL.m4
+EXTRA_DIST=bootstrap config/depcomp config/cxx_macros.m4 @PACKAGE_TARNAME@-@VERSION@.spec config/project.spec.in config/build.cfg synfig.kdevprj config/ETL.m4
 
 # Desktop entry
 #desktopdir              = $(datadir)/gnome/apps/Graphics
 desktopdir              = $(prefix)/share/applications
-desktop_DATA            = sinfgstudio.desktop
-#desktop_in_files        = sinfgstudio.desktop.in
+desktop_DATA            = synfigstudio.desktop
+#desktop_in_files        = synfigstudio.desktop.in
 #desktop_DATA            = $(desktop_in_files:.desktop.in=.desktop)
 
 # @INTLTOOL_DESKTOP_RULE@
 
 mimedir              = $(prefix)/share/mime-info
-mime_DATA            = sinfgstudio.keys sinfgstudio.mime
+mime_DATA            = synfigstudio.keys synfigstudio.mime
 
 # Icon
 icondir                 = $(datadir)/pixmaps
-icon_DATA               = images/sinfg_icon.png images/sif_icon.png
+icon_DATA               = images/synfig_icon.png images/sif_icon.png
 
 
 CVS=cvs

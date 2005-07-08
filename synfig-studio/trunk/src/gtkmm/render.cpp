@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file render.cpp
 **	\brief Template File
 **
@@ -31,8 +31,8 @@
 #include "render.h"
 #include "app.h"
 #include <gtkmm/frame.h>
-#include <sinfg/target_scanline.h>
-#include <sinfg/canvas.h>
+#include <synfig/target_scanline.h>
+#include <synfig/canvas.h>
 #include "asyncrenderer.h"
 
 #endif
@@ -41,7 +41,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
@@ -52,7 +52,7 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
-RenderSettings::RenderSettings(Gtk::Window& parent,handle<sinfgapp::CanvasInterface> canvas_interface):
+RenderSettings::RenderSettings(Gtk::Window& parent,handle<synfigapp::CanvasInterface> canvas_interface):
 	Gtk::Dialog(_("Render Settings"),parent,false,true),
 	canvas_interface_(canvas_interface),
 	adjustment_quality(3,0,9),
@@ -73,8 +73,8 @@ RenderSettings::RenderSettings(Gtk::Window& parent,handle<sinfgapp::CanvasInterf
 			sigc::bind(sigc::mem_fun(*this,&RenderSettings::set_target),String())
 		));
 
-	sinfg::Target::Book::iterator iter;
-	sinfg::Target::Book book(sinfg::Target::book());
+	synfig::Target::Book::iterator iter;
+	synfig::Target::Book book(synfig::Target::book());
 	
 	for(iter=book.begin();iter!=book.end();iter++)
 	{
@@ -148,7 +148,7 @@ RenderSettings::RenderSettings(Gtk::Window& parent,handle<sinfgapp::CanvasInterf
 	}
 	catch(...)
 	{
-		sinfg::warning("Averted crash!");
+		synfig::warning("Averted crash!");
 		entry_filename.set_text("output.png");
 	}
 	
@@ -166,7 +166,7 @@ RenderSettings::on_rend_desc_changed()
 }
 
 void
-RenderSettings::set_target(sinfg::String name)
+RenderSettings::set_target(synfig::String name)
 {
 	target_name=name;
 }

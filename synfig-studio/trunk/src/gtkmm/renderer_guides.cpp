@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file template.cpp
 **	\brief Template File
 **
@@ -38,7 +38,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
@@ -80,7 +80,7 @@ Renderer_Guides::get_guide_list_y()
 bool
 Renderer_Guides::event_vfunc(GdkEvent* event)
 {
-	sinfg::Point mouse_pos;
+	synfig::Point mouse_pos;
     float bezier_click_pos;
 	const float radius((abs(get_pw())+abs(get_ph()))*4);
 	int button_pressed(0);
@@ -132,7 +132,7 @@ Renderer_Guides::event_vfunc(GdkEvent* event)
 		// and the buttons
 		if(!event->button.axes)
 		{
-			mouse_pos=sinfg::Point(screen_to_comp_coords(sinfg::Point(event->button.x,event->button.y)));
+			mouse_pos=synfig::Point(screen_to_comp_coords(synfig::Point(event->button.x,event->button.y)));
 			button_pressed=event->button.button;
 			pressure=1.0f;
 			is_mouse=true;
@@ -147,14 +147,14 @@ Renderer_Guides::event_vfunc(GdkEvent* event)
 				return false;
 
 			pressure=event->button.axes[2];
-			//sinfg::info("pressure=%f",pressure);
+			//synfig::info("pressure=%f",pressure);
 			pressure-=0.04f;
 			pressure/=1.0f-0.04f;
 			
 			
 			assert(!isnan(pressure));
 			
-			mouse_pos=sinfg::Point(screen_to_comp_coords(sinfg::Point(x,y)));
+			mouse_pos=synfig::Point(screen_to_comp_coords(synfig::Point(x,y)));
 			
 			button_pressed=event->button.button;
 			
@@ -164,7 +164,7 @@ Renderer_Guides::event_vfunc(GdkEvent* event)
 				pressure=0;
 
 			//if(event->any.type==GDK_BUTTON_PRESS && button_pressed)
-			//	sinfg::info("Button pressed on input device = %d",event->button.button);
+			//	synfig::info("Button pressed on input device = %d",event->button.button);
 			
 			//if(event->button.axes[2]>0.1)
 			//	button_pressed=1;
@@ -197,9 +197,9 @@ Renderer_Guides::render_vfunc(
 	if(!get_work_area())
 		return;
 	
-	const sinfg::RendDesc &rend_desc(get_work_area()->get_canvas()->rend_desc());
+	const synfig::RendDesc &rend_desc(get_work_area()->get_canvas()->rend_desc());
 	
-	const sinfg::Vector focus_point(get_work_area()->get_focus_point());
+	const synfig::Vector focus_point(get_work_area()->get_focus_point());
 
 	//std::vector< std::pair<Glib::RefPtr<Gdk::Pixbuf>,int> >& tile_book(get_tile_book());
 	
@@ -208,14 +208,14 @@ Renderer_Guides::render_vfunc(
 	
 	// Calculate the window coordinates of the top-left
 	// corner of the canvas.
-	const sinfg::Vector::value_type
+	const synfig::Vector::value_type
 		x(focus_point[0]/get_pw()+drawable_w/2-get_w()/2),
 		y(focus_point[1]/get_ph()+drawable_h/2-get_h()/2);
 
-	/*const sinfg::Vector::value_type window_startx(window_tl[0]);
-	const sinfg::Vector::value_type window_endx(window_br[0]);
-	const sinfg::Vector::value_type window_starty(window_tl[1]);
-	const sinfg::Vector::value_type window_endy(window_br[1]);
+	/*const synfig::Vector::value_type window_startx(window_tl[0]);
+	const synfig::Vector::value_type window_endx(window_br[0]);
+	const synfig::Vector::value_type window_starty(window_tl[1]);
+	const synfig::Vector::value_type window_endy(window_br[1]);
 	*/
 	const int
 		tile_w(get_work_area()->get_tile_w()),
@@ -227,12 +227,12 @@ Renderer_Guides::render_vfunc(
 	
 	Glib::RefPtr<Gdk::GC> gc(Gdk::GC::create(drawable));
 	
-	//const sinfg::Vector grid_size(get_grid_size());
+	//const synfig::Vector grid_size(get_grid_size());
 
-	const sinfg::Vector::value_type window_startx(get_work_area()->get_window_tl()[0]);
-	const sinfg::Vector::value_type window_endx(get_work_area()->get_window_br()[0]);
-	const sinfg::Vector::value_type window_starty(get_work_area()->get_window_tl()[1]);
-	const sinfg::Vector::value_type window_endy(get_work_area()->get_window_br()[1]);
+	const synfig::Vector::value_type window_startx(get_work_area()->get_window_tl()[0]);
+	const synfig::Vector::value_type window_endx(get_work_area()->get_window_br()[0]);
+	const synfig::Vector::value_type window_starty(get_work_area()->get_window_tl()[1]);
+	const synfig::Vector::value_type window_endy(get_work_area()->get_window_br()[1]);
 	const float pw(get_pw()),ph(get_ph());
 
 	// Draw out the guides

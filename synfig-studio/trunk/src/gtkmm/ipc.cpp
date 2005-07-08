@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file ipc.cpp
 **	\brief Template File
 **
@@ -38,7 +38,7 @@
 #include <sys/stat.h>
 #endif
 
-#include <sinfg/main.h>
+#include <synfig/main.h>
 #include "app.h"
 
 #ifdef HAVE_UNISTD_H
@@ -57,8 +57,8 @@
 
 #include "toolbox.h"
 #include <glibmm/dispatcher.h>
-#include <sinfg/mutex.h>
-#include <sinfg/string.h>
+#include <synfig/mutex.h>
+#include <synfig/string.h>
 #include <glibmm/thread.h>
 
 #endif
@@ -67,7 +67,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
@@ -76,8 +76,8 @@ using namespace studio;
 
 #ifdef _WIN32
 #define WIN32_PIPE_PATH "\\\\.\\pipe\\SynfigStudio.Cmd"
-static sinfg::Mutex cmd_mutex;
-static std::list<sinfg::String> cmd_queue;
+static synfig::Mutex cmd_mutex;
+static std::list<synfig::String> cmd_queue;
 static Glib::Dispatcher* cmd_dispatcher;
 static void
 pipe_listen_thread()
@@ -97,7 +97,7 @@ pipe_listen_thread()
 		);
 		if(pipe_handle==INVALID_HANDLE_VALUE)
 		{
-			sinfg::error("IPC(): Call to CreateNamedPipe failed. Ignore next error. GetLastError=%d",GetLastError());
+			synfig::error("IPC(): Call to CreateNamedPipe failed. Ignore next error. GetLastError=%d",GetLastError());
 			return;
 		}
 		
@@ -124,7 +124,7 @@ pipe_listen_thread()
 				if(success && read_bytes==1 && c!='\n')
 					data+=c;
 			}while(c!='\n');
-			sinfg::Mutex::Lock lock(cmd_mutex);
+			synfig::Mutex::Lock lock(cmd_mutex);
 			cmd_queue.push_back(data);
 			cmd_dispatcher->emit();
 		} while(success && read_bytes);
@@ -136,7 +136,7 @@ pipe_listen_thread()
 static void
 empty_cmd_queue()
 {
-	sinfg::Mutex::Lock lock(cmd_mutex);
+	synfig::Mutex::Lock lock(cmd_mutex);
 	while(!cmd_queue.empty())
 	{
 		IPC::process_command(cmd_queue.front());
@@ -169,7 +169,7 @@ IPC::IPC()
 	
 	if(mkfifo(fifo_path().c_str(), S_IRWXU)!=0)
 	{
-		sinfg::error("IPC(): mkfifo failed for "+fifo_path());
+		synfig::error("IPC(): mkfifo failed for "+fifo_path());
 	}
 	
 	{
@@ -178,7 +178,7 @@ IPC::IPC()
 
 		if(fd<0)
 		{
-			sinfg::error("IPC(): Failed to open fifo \"%s\". (errno=%d)",fifo_path().c_str(),errno);
+			synfig::error("IPC(): Failed to open fifo \"%s\". (errno=%d)",fifo_path().c_str(),errno);
 		}
 		else
 		{
@@ -205,7 +205,7 @@ IPC::~IPC()
 	//	close(fd);
 }
 
-sinfg::String
+synfig::String
 IPC::fifo_path()
 {
 #ifdef _WIN32
@@ -218,19 +218,19 @@ IPC::fifo_path()
 bool
 IPC::fifo_activity(Glib::IOCondition cond)
 {
-	sinfg::info(__FILE__":%d: fifo activity",__LINE__);
+	synfig::info(__FILE__":%d: fifo activity",__LINE__);
 	
 	if(cond&(Glib::IO_ERR|Glib::IO_HUP|Glib::IO_NVAL))
 	{
 		if(cond&(Glib::IO_ERR))
-			sinfg::error("IPC::fifo_activity(): IO_ERR");
+			synfig::error("IPC::fifo_activity(): IO_ERR");
 		if(cond&(Glib::IO_HUP))
-			sinfg::error("IPC::fifo_activity(): IO_HUP");
+			synfig::error("IPC::fifo_activity(): IO_HUP");
 		if(cond&(Glib::IO_NVAL))
-			sinfg::error("IPC::fifo_activity(): IO_NVAL");
+			synfig::error("IPC::fifo_activity(): IO_NVAL");
 		return false;
 	}
-	sinfg::info(__FILE__":%d: fifo activity",__LINE__);
+	synfig::info(__FILE__":%d: fifo activity",__LINE__);
 
 	String command;
 	{
@@ -248,7 +248,7 @@ IPC::fifo_activity(Glib::IOCondition cond)
 }
 
 bool
-IPC::process_command(const sinfg::String& command_line)
+IPC::process_command(const synfig::String& command_line)
 {
 	if(command_line.empty())
 		return false;
@@ -277,14 +277,14 @@ IPC::process_command(const sinfg::String& command_line)
 			App::quit();
 			break;
 		default:
-			sinfg::warning("Received unknown command '%c' with arg '%s'",cmd,args.c_str());
+			synfig::warning("Received unknown command '%c' with arg '%s'",cmd,args.c_str());
 			break;
 	}
 	
 	return true;
 }
 
-sinfg::SmartFILE
+synfig::SmartFILE
 IPC::make_connection()
 {
 	SmartFILE ret;
@@ -301,7 +301,7 @@ IPC::make_connection()
 	);
 	if(pipe_handle==INVALID_HANDLE_VALUE)
 	{
-		sinfg::warning("IPC::make_connection(): Unable to connect to previous instance. GetLastError=%d",GetLastError());
+		synfig::warning("IPC::make_connection(): Unable to connect to previous instance. GetLastError=%d",GetLastError());
 	}
 	int fd=_open_osfhandle(reinterpret_cast<long int>(pipe_handle),_O_APPEND|O_WRONLY);
 #else
@@ -318,7 +318,7 @@ IPC::make_connection()
 	if(fd>=0)
 		ret=SmartFILE(fdopen(fd,"w"));
 
-	sinfg::info("uplink fd=%d",fd);
+	synfig::info("uplink fd=%d",fd);
 
 	return ret;
 }

@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file dialog_waypoint.h
 **	\brief Template Header
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_GTKMM_DIALOG_WAYPOINT_H
-#define __SINFG_GTKMM_DIALOG_WAYPOINT_H
+#ifndef __SYNFIG_GTKMM_DIALOG_WAYPOINT_H
+#define __SYNFIG_GTKMM_DIALOG_WAYPOINT_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -51,11 +51,11 @@
 #include <gtkmm/menu.h>
 
 
-#include <sinfgapp/value_desc.h>
-#include <sinfg/valuenode_animated.h>
-#include <sinfg/valuenode_dynamiclist.h>
-#include <sinfg/string.h>
-#include <sinfg/time.h>
+#include <synfigapp/value_desc.h>
+#include <synfig/valuenode_animated.h>
+#include <synfig/valuenode_dynamiclist.h>
+#include <synfig/string.h>
+#include <synfig/time.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -72,9 +72,9 @@ class Widget_Waypoint;
 class Dialog_Waypoint : public Gtk::Dialog
 {
 	Widget_Waypoint *waypointwidget;
-	etl::handle<sinfg::Canvas> canvas;
-	sinfg::ValueNode_Animated::WaypointList::iterator waypoint;
-	sinfgapp::ValueDesc value_desc_;
+	etl::handle<synfig::Canvas> canvas;
+	synfig::ValueNode_Animated::WaypointList::iterator waypoint;
+	synfigapp::ValueDesc value_desc_;
 		
 	sigc::signal<void> signal_changed_;
 
@@ -84,16 +84,16 @@ class Dialog_Waypoint : public Gtk::Dialog
 	void on_delete_pressed();
 
 public:
-	Dialog_Waypoint(Gtk::Window& parent,etl::handle<sinfg::Canvas> canvas);
+	Dialog_Waypoint(Gtk::Window& parent,etl::handle<synfig::Canvas> canvas);
 	~Dialog_Waypoint();
 
     void reset();
 
-	void set_value_desc(sinfgapp::ValueDesc value_desc);
-	sinfgapp::ValueDesc get_value_desc()const { return value_desc_; }
+	void set_value_desc(synfigapp::ValueDesc value_desc);
+	synfigapp::ValueDesc get_value_desc()const { return value_desc_; }
 
-	void set_waypoint(sinfg::ValueNode_Animated::Waypoint x);
-	const sinfg::ValueNode_Animated::Waypoint &get_waypoint()const;
+	void set_waypoint(synfig::ValueNode_Animated::Waypoint x);
+	const synfig::ValueNode_Animated::Waypoint &get_waypoint()const;
 
 	sigc::signal<void> &signal_changed()
 	{return signal_changed_; }

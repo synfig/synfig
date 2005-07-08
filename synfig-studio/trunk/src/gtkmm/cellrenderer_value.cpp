@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file cellrenderer_value.cpp
 **	\brief Template File
 **
@@ -55,7 +55,7 @@
 
 #endif
 
-using namespace sinfg;
+using namespace synfig;
 using namespace etl;
 using namespace std;
 using namespace studio;
@@ -142,7 +142,7 @@ public:
 		}
 		else
 		{
-			sinfg::error("on_editing_done(): Called twice!");
+			synfig::error("on_editing_done(): Called twice!");
 		}
 	}
 	void set_parent(Gtk::Widget*x) { parent=x; }
@@ -181,29 +181,29 @@ public:
 	{
 		path=p;
 	}
-	void set_value(const sinfg::ValueBase &data)
+	void set_value(const synfig::ValueBase &data)
 	{
 		if(valuewidget)
 			valuewidget->set_value(data);
 		//valuewidget->grab_focus();
 	}
-	void set_canvas(const etl::handle<sinfg::Canvas> &data)
+	void set_canvas(const etl::handle<synfig::Canvas> &data)
 	{
 		assert(data);
 		if(valuewidget)
 			valuewidget->set_canvas(data);
 	}
-	void set_param_desc(const sinfg::ParamDesc &data)
+	void set_param_desc(const synfig::ParamDesc &data)
 	{
 		if(valuewidget)
 			valuewidget->set_param_desc(data);
 	}
 	
-	const sinfg::ValueBase &get_value()
+	const synfig::ValueBase &get_value()
 	{
 		if(valuewidget)
 			return valuewidget->get_value();
-		return sinfg::ValueBase();
+		return synfig::ValueBase();
 	}
 	const Glib::ustring &get_path()
 	{
@@ -214,7 +214,7 @@ public:
 
 /* === P R O C E D U R E S ================================================= */
 
-bool get_paragraph(sinfg::String& text)
+bool get_paragraph(synfig::String& text)
 {
 	Gtk::Dialog dialog(
 		_("Paragraph"),		// Title
@@ -262,9 +262,9 @@ bool get_paragraph(sinfg::String& text)
 CellRenderer_ValueBase::CellRenderer_ValueBase():
 	Glib::ObjectBase	(typeid(CellRenderer_ValueBase)),
 	Gtk::CellRendererText	(),
-	property_value_	(*this,"value",sinfg::ValueBase()),
-	property_canvas_(*this,"canvas",etl::handle<sinfg::Canvas>()),
-	property_param_desc_(*this,"param_desc",sinfg::ParamDesc())
+	property_value_	(*this,"value",synfig::ValueBase()),
+	property_canvas_(*this,"canvas",etl::handle<synfig::Canvas>()),
+	property_param_desc_(*this,"param_desc",synfig::ParamDesc())
 {
 	CellRendererText::signal_edited().connect(sigc::mem_fun(*this,&CellRenderer_ValueBase::string_edited_));
 	value_entry=new ValueBase_Entry();
@@ -285,7 +285,7 @@ CellRenderer_ValueBase::CellRenderer_ValueBase():
 
 CellRenderer_ValueBase::~CellRenderer_ValueBase()
 {
-//	sinfg::info("CellRenderer_ValueBase::~CellRenderer_ValueBase(): deleted");
+//	synfig::info("CellRenderer_ValueBase::~CellRenderer_ValueBase(): deleted");
 }
 
 void
@@ -341,7 +341,7 @@ CellRenderer_ValueBase::render_vfunc(
 	switch(data.get_type())
 	{
 	case ValueBase::TYPE_REAL:
-		if(((sinfg::ParamDesc)property_param_desc_).get_is_distance())
+		if(((synfig::ParamDesc)property_param_desc_).get_is_distance())
 		{
 			Distance x(data.get(Real()),Distance::SYSTEM_UNITS);
 			x.convert(App::distance_system,get_canvas()->rend_desc());
@@ -357,15 +357,15 @@ CellRenderer_ValueBase::render_vfunc(
 		property_text()=(Glib::ustring)strprintf("%.2f DEG",(Real)Angle::deg(data.get(Angle())).get());
 		break;
 	case ValueBase::TYPE_INTEGER:
-		if(((sinfg::ParamDesc)property_param_desc_).get_hint()!="enum")
+		if(((synfig::ParamDesc)property_param_desc_).get_hint()!="enum")
 		{
 			property_text()=(Glib::ustring)strprintf("%i",data.get(int()));
 		}
 		else
 		{
 			property_text()=(Glib::ustring)strprintf("(%i)",data.get(int()));
-			std::list<sinfg::ParamDesc::EnumData> enum_list=((sinfg::ParamDesc)property_param_desc_).get_enum_list();
-			std::list<sinfg::ParamDesc::EnumData>::iterator iter;
+			std::list<synfig::ParamDesc::EnumData> enum_list=((synfig::ParamDesc)property_param_desc_).get_enum_list();
+			std::list<synfig::ParamDesc::EnumData>::iterator iter;
 						
 			for(iter=enum_list.begin();iter!=enum_list.end();iter++)
 				if(iter->value==data.get(int()))
@@ -390,19 +390,19 @@ CellRenderer_ValueBase::render_vfunc(
 	
 		if(data.get_type()==ValueBase::TYPE_STRING)
 		{
-			if(!data.get(sinfg::String()).empty())
-				property_text()=static_cast<Glib::ustring>(data.get(sinfg::String()));
+			if(!data.get(synfig::String()).empty())
+				property_text()=static_cast<Glib::ustring>(data.get(synfig::String()));
 			else
 				property_text()=Glib::ustring("<empty>");
 		}
 		break;
 	case ValueBase::TYPE_CANVAS:
-		if(data.get(etl::handle<sinfg::Canvas>()))
+		if(data.get(etl::handle<synfig::Canvas>()))
 		{
-			if(data.get(etl::handle<sinfg::Canvas>())->is_inline())
+			if(data.get(etl::handle<synfig::Canvas>())->is_inline())
 				property_text()="<Inline Canvas>";
 			else
-				property_text()=(Glib::ustring)data.get(etl::handle<sinfg::Canvas>())->get_id();
+				property_text()=(Glib::ustring)data.get(etl::handle<synfig::Canvas>())->get_id();
 		}
 		else
 			property_text()="<No Image Selected>";
@@ -475,7 +475,7 @@ CellRenderer_ValueBase::activate_vfunc(	GdkEvent* event,
 */
 
 void
-CellRenderer_ValueBase::gradient_edited(sinfg::Gradient gradient, Glib::ustring path)
+CellRenderer_ValueBase::gradient_edited(synfig::Gradient gradient, Glib::ustring path)
 {
 	ValueBase old_value(property_value_.get_value());
 	ValueBase value(gradient);
@@ -484,7 +484,7 @@ CellRenderer_ValueBase::gradient_edited(sinfg::Gradient gradient, Glib::ustring 
 }
 
 void
-CellRenderer_ValueBase::color_edited(sinfg::Color color, Glib::ustring path)
+CellRenderer_ValueBase::color_edited(synfig::Color color, Glib::ustring path)
 {
 	ValueBase old_value(property_value_.get_value());
 	ValueBase value(color);
@@ -544,7 +544,7 @@ CellRenderer_ValueBase::start_editing_vfunc(
 	case ValueBase::TYPE_STRING:
 		if(get_param_desc().get_hint()=="paragraph")
 		{
-			sinfg::String string;
+			synfig::String string;
 			string=data.get(string);
 			if(get_paragraph(string))
 			{

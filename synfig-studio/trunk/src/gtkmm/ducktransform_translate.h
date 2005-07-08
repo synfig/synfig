@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file template.h
 **	\brief Template Header
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_STUDIO_DUCK_TRANSFORM_TRANSLATE_H
-#define __SINFG_STUDIO_DUCK_TRANSFORM_TRANSLATE_H
+#ifndef __SYNFIG_STUDIO_DUCK_TRANSFORM_TRANSLATE_H
+#define __SYNFIG_STUDIO_DUCK_TRANSFORM_TRANSLATE_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -36,17 +36,17 @@
 
 namespace studio {
 	
-class Transform_Translate : public sinfg::Transform
+class Transform_Translate : public synfig::Transform
 {
 private:
-	sinfg::Vector origin;
-	std::vector<sinfg::Vector> positions;
+	synfig::Vector origin;
+	std::vector<synfig::Vector> positions;
 
 public:
-	Transform_Translate(const sinfg::Vector& origin): origin(origin) { }
-	sinfg::Vector perform(const sinfg::Vector& x)const { return x+origin; }
-	sinfg::Vector unperform(const sinfg::Vector& x)const { return x-origin; }
-}; // END of class sinfg::Transform_Translate
+	Transform_Translate(const synfig::Vector& origin): origin(origin) { }
+	synfig::Vector perform(const synfig::Vector& x)const { return x+origin; }
+	synfig::Vector unperform(const synfig::Vector& x)const { return x-origin; }
+}; // END of class synfig::Transform_Translate
 
 }; // END of namespace studio
 /* === E N D =============================================================== */

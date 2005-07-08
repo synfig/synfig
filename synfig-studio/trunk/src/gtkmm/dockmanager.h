@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file dockmanager.h
 **	\brief Template Header
 **
@@ -21,14 +21,14 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_DOCKMANAGER_H
-#define __SINFG_DOCKMANAGER_H
+#ifndef __SYNFIG_DOCKMANAGER_H
+#define __SYNFIG_DOCKMANAGER_H
 
 /* === H E A D E R S ======================================================= */
 
 #include <vector>
 #include <list>
-#include <sinfg/string.h>
+#include <synfig/string.h>
 #include <sigc++/signal.h>
 #include <sigc++/object.h>
 #include <ETL/smart_ptr>
@@ -69,8 +69,8 @@ public:
 
 	void register_dockable(Dockable& x);
 	bool unregister_dockable(Dockable& x);
-	Dockable& find_dockable(const sinfg::String& x);
-	void present(sinfg::String x);
+	Dockable& find_dockable(const synfig::String& x);
+	void present(synfig::String x);
 	
 }; // END of class DockManager
 

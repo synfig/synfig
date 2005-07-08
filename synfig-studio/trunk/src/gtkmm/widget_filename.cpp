@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file widget_filename.cpp
 **	\brief Template File
 **
@@ -39,7 +39,7 @@
 
 using namespace std;
 //using namespace etl;
-//using namespace sinfg;
+//using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */

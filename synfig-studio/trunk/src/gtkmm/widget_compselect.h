@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file widget_compselect.h
 **	\brief Template Header
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_STUDIO_WIDGET_COMPSELECT_H
-#define __SINFG_STUDIO_WIDGET_COMPSELECT_H
+#ifndef __SYNFIG_STUDIO_WIDGET_COMPSELECT_H
+#define __SYNFIG_STUDIO_WIDGET_COMPSELECT_H
 
 /* === H E A D E R S ======================================================= */
 

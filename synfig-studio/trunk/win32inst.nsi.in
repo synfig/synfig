@@ -62,8 +62,8 @@ Section "Synfig Studio"
   File "images\*.ico"
 
   SetOutPath "$INSTDIR\bin"
-  File "src\sinfgapp\.libs\libsinfgapp-0.dll"
-  File "src\gtkmm\.libs\sinfgstudio.exe"
+  File "src\synfigapp\.libs\libsynfigapp-0.dll"
+  File "src\gtkmm\.libs\synfigstudio.exe"
 
 	FileOpen $0 $PROFILE\.gtkrc-2.0 a
 	FileSeek $0 0 END
@@ -95,9 +95,9 @@ Section "Synfig Studio"
 	WriteRegStr HKCR ".sif.gz" "PerceivedType" "image"
 
 	WriteRegStr HKCR "Synfig.Composition" "" "Synfig Composition File"
-	WriteRegStr HKCR "Synfig.Composition\DefaultIcon" "" "$INSTDIR\bin\sinfgstudio.exe;1"
+	WriteRegStr HKCR "Synfig.Composition\DefaultIcon" "" "$INSTDIR\bin\synfigstudio.exe;1"
 	WriteRegStr HKCR "Synfig.Composition\shell" "" "open"
-	WriteRegStr HKCR "Synfig.Composition\shell\open\command" "" '$INSTDIR\bin\sinfgstudio.exe "%1"'
+	WriteRegStr HKCR "Synfig.Composition\shell\open\command" "" '$INSTDIR\bin\synfigstudio.exe "%1"'
 	
 	System::Call 'Shell32::SHChangeNotify(i ${SHCNE_ASSOCCHANGED}, i ${SHCNF_IDLIST}, i 0, i 0)'
   WriteUninstaller "${PRODUCT_UNINSTALL_EXE}"
@@ -109,7 +109,7 @@ Section "Start Menu Shortcuts"
 
   CreateDirectory "$SMPROGRAMS\Voria"
   CreateShortCut "$SMPROGRAMS\Voria\Uninstall Synfig Studio.lnk" "$INSTDIR\uninstall-@PACKAGE_TARNAME@.exe" "" "$INSTDIR\uninstall-@PACKAGE_TARNAME@.exe" 0
-  CreateShortCut "$SMPROGRAMS\Voria\Synfig Studio.lnk" "$INSTDIR\bin\sinfgstudio.exe" "" "$INSTDIR\bin\sinfgstudio.exe" 0
+  CreateShortCut "$SMPROGRAMS\Voria\Synfig Studio.lnk" "$INSTDIR\bin\synfigstudio.exe" "" "$INSTDIR\bin\synfigstudio.exe" 0
   
 SectionEnd
 
@@ -132,8 +132,8 @@ Section "Uninstall"
 
   ; Remove files and uninstaller
 	Delete "$INSTDIR\${PRODUCT_UNINSTALL_EXE}"
-  Delete $INSTDIR\bin\sinfgstudio.exe
-  Delete $INSTDIR\bin\libsinfgapp-0.dll
+  Delete $INSTDIR\bin\synfigstudio.exe
+  Delete $INSTDIR\bin\libsynfigapp-0.dll
   RMDir $INSTDIR\bin
 
   ; Remove shortcuts, if any

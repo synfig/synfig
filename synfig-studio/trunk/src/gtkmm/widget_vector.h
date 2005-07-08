@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file widget_vector.h
 **	\brief Template Header
 **
@@ -21,16 +21,16 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_STUDIO_WIDGET_VECTOR_H
-#define __SINFG_STUDIO_WIDGET_VECTOR_H
+#ifndef __SYNFIG_STUDIO_WIDGET_VECTOR_H
+#define __SYNFIG_STUDIO_WIDGET_VECTOR_H
 
 /* === H E A D E R S ======================================================= */
 
 #include <gtkmm/box.h>
 #include <gtkmm/adjustment.h>
-#include <sinfg/vector.h>
-#include <sinfg/distance.h>
-#include <sinfg/canvas.h>
+#include <synfig/vector.h>
+#include <synfig/distance.h>
+#include <synfig/canvas.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -55,20 +55,20 @@ class Widget_Vector : public Gtk::HBox
 	Gtk::Adjustment x_adjustment;
 	Gtk::Adjustment y_adjustment;
 
-	sinfg::Vector vector;
+	synfig::Vector vector;
 
 	sigc::signal<void> signal_value_changed_;
 
 	sigc::signal<void> signal_activate_;
 	
-	sinfg::Canvas::LooseHandle canvas_;
+	synfig::Canvas::LooseHandle canvas_;
 
 public:
 	
 	void activate() { signal_activate_(); }
 	
-	void set_canvas(sinfg::Canvas::LooseHandle);
-	sinfg::Canvas::LooseHandle get_canvas()const { return canvas_; }
+	void set_canvas(synfig::Canvas::LooseHandle);
+	synfig::Canvas::LooseHandle get_canvas()const { return canvas_; }
 	
 	sigc::signal<void>& signal_value_changed() { return signal_value_changed_; }
 
@@ -77,8 +77,8 @@ public:
 	void on_value_changed();
 	void on_grab_focus();
 
-	void set_value(const sinfg::Vector &data);
-	const sinfg::Vector &get_value();
+	void set_value(const synfig::Vector &data);
+	const synfig::Vector &get_value();
 	void set_has_frame(bool x);
 	void set_digits(int x);
 	Widget_Vector();

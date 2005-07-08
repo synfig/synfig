@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file app.h
 **	\brief writeme
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_STUDIO_APP_H
-#define __SINFG_STUDIO_APP_H
+#ifndef __SYNFIG_STUDIO_APP_H
+#define __SYNFIG_STUDIO_APP_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -35,13 +35,13 @@
 
 #include <ETL/smart_ptr>
 
-#include <sinfg/distance.h>
-#include <sinfg/string.h>
-#include <sinfg/time.h>
+#include <synfig/distance.h>
+#include <synfig/string.h>
+#include <synfig/time.h>
 
 #include <gtkmm/uimanager.h>
 
-#include <sinfgapp/instance.h>
+#include <synfigapp/instance.h>
 #include "iconcontroler.h"
 
 /* === M A C R O S ========================================================= */
@@ -57,7 +57,7 @@ namespace Gtk
 	class ActionGroup;
 };
 
-namespace sinfgapp
+namespace synfigapp
 {
 	class UIInterface;
 	class Main;
@@ -123,7 +123,7 @@ public:
 	*/
 
 private:
-	//static etl::handle<sinfgapp::UIInterface> ui_interface_;
+	//static etl::handle<synfigapp::UIInterface> ui_interface_;
 	//static int max_recent_files;
 
 /*
@@ -141,7 +141,7 @@ private:
 	static IPC *ipc;
 */
 
-	etl::smart_ptr<sinfgapp::Main> sinfgapp_main;
+	etl::smart_ptr<synfigapp::Main> synfigapp_main;
 
 
 	static etl::handle<Instance> selected_instance;
@@ -170,9 +170,9 @@ public:
 //	static Dialog_Palette* dialog_palette;
 	static Dialog_ToolOptions *dialog_tool_options;
 
-	static sinfg::Distance::System distance_system;
+	static synfig::Distance::System distance_system;
 
-	static sinfg::Gamma gamma;
+	static synfig::Gamma gamma;
 
 	static Toolbox *toolbox;
 
@@ -258,19 +258,19 @@ public:
 
 	static void add_recent_file(const std::string &filename);
 
-	static sinfg::String get_base_path();
+	static synfig::String get_base_path();
 	static void save_settings();
 	static void load_settings();
 
 	static const std::list<std::string>& get_recent_files();
 
-	static const etl::handle<sinfgapp::UIInterface>& get_ui_interface();
+	static const etl::handle<synfigapp::UIInterface>& get_ui_interface();
 
 
 	static void set_selected_instance(etl::loose_handle<Instance> instance);
 	static void set_selected_canvas_view(etl::loose_handle<CanvasView>);
 
-	static etl::loose_handle<Instance> get_instance(etl::handle<sinfg::Canvas> canvas);
+	static etl::loose_handle<Instance> get_instance(etl::handle<synfig::Canvas> canvas);
 
 	static etl::loose_handle<Instance> get_selected_instance() { return selected_instance; }
 	static etl::loose_handle<CanvasView> get_selected_canvas_view() { return selected_canvas_view; }
@@ -296,8 +296,8 @@ public:
 	static void set_max_recent_files(int x);
 
 
-	static sinfg::Time::Format get_time_format();
-	static void set_time_format(sinfg::Time::Format x);
+	static synfig::Time::Format get_time_format();
+	static void set_time_format(synfig::Time::Format x);
 
 	static bool shutdown_request(GdkEventAny*bleh=NULL);
 	
@@ -319,8 +319,8 @@ public:
 	
 	static void dialog_not_implemented();
 
-	static sinfg::String get_user_app_directory();
-	static sinfg::String get_config_file(const sinfg::String& file);
+	static synfig::String get_user_app_directory();
+	static synfig::String get_config_file(const synfig::String& file);
 }; // END of class App
 
 }; // END namespace studio

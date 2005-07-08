@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file childrentree.h
 **	\brief Template Header
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_STUDIO_CHILDRENTREE_H
-#define __SINFG_STUDIO_CHILDRENTREE_H
+#ifndef __SYNFIG_STUDIO_CHILDRENTREE_H
+#define __SYNFIG_STUDIO_CHILDRENTREE_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -35,10 +35,10 @@
 #include <gtkmm/scale.h>
 #include <gtkmm/button.h>
 
-#include <sinfgapp/canvasinterface.h>
-#include <sinfgapp/value_desc.h>
+#include <synfigapp/canvasinterface.h>
+#include <synfigapp/value_desc.h>
 #include "childrentreestore.h"
-#include <sinfg/valuenode_animated.h>
+#include <synfig/valuenode_animated.h>
 
 #include "widget_value.h"
 
@@ -93,11 +93,11 @@ private:
 
 	CellRenderer_ValueBase *cellrenderer_value;
 
-	sigc::signal<void,sinfgapp::ValueDesc,sinfg::ValueBase> signal_edited_value_;
+	sigc::signal<void,synfigapp::ValueDesc,synfig::ValueBase> signal_edited_value_;
 
 	sigc::signal<bool, int, Gtk::TreeRow, ColumnID> signal_user_click_;
 
-	sigc::signal<void,sinfgapp::ValueDesc,sinfg::Waypoint, int> signal_waypoint_clicked_;
+	sigc::signal<void,synfigapp::ValueDesc,synfig::Waypoint, int> signal_waypoint_clicked_;
 
 	Gtk::Button *button_raise;
 	Gtk::Button *button_lower;
@@ -118,9 +118,9 @@ private:
 
 private:
 
-	void on_edited_value(const Glib::ustring&path_string,sinfg::ValueBase value);
+	void on_edited_value(const Glib::ustring&path_string,synfig::ValueBase value);
 
-	void on_waypoint_clicked(const Glib::ustring &, sinfg::Waypoint,int button);
+	void on_waypoint_clicked(const Glib::ustring &, synfig::Waypoint,int button);
 
 	bool on_tree_event(GdkEvent *event);
 
@@ -159,13 +159,13 @@ public:
 	void set_show_timetrack(bool x=true);
 
 	//! Signal called with a value has been edited.
-	sigc::signal<void,sinfgapp::ValueDesc,sinfg::ValueBase>& signal_edited_value() { return signal_edited_value_; }
+	sigc::signal<void,synfigapp::ValueDesc,synfig::ValueBase>& signal_edited_value() { return signal_edited_value_; }
 
 	sigc::signal<bool,int, Gtk::TreeRow, ColumnID>& signal_user_click() { return signal_user_click_; }
 
-	sigc::signal<void,sinfgapp::ValueDesc,sinfg::Waypoint, int>& signal_waypoint_clicked() { return signal_waypoint_clicked_; }
+	sigc::signal<void,synfigapp::ValueDesc,synfig::Waypoint, int>& signal_waypoint_clicked() { return signal_waypoint_clicked_; }
 
-	etl::handle<sinfgapp::SelectionManager> get_selection_manager() { return children_tree_store_->canvas_interface()->get_selection_manager(); }
+	etl::handle<synfigapp::SelectionManager> get_selection_manager() { return children_tree_store_->canvas_interface()->get_selection_manager(); }
 
 }; // END of ChildrenTree
 

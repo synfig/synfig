@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file asyncrenderer.h
 **	\brief Template Header
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_ASYNCRENDERER_H
-#define __SINFG_ASYNCRENDERER_H
+#ifndef __SYNFIG_ASYNCRENDERER_H
+#define __SYNFIG_ASYNCRENDERER_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -31,9 +31,9 @@
 #include <sigc++/trackable.h>
 #include <sigc++/connection.h>
 
-#include <sinfg/target_scanline.h>
-#include <sinfg/target_tile.h>
-#include <sinfg/surface.h>
+#include <synfig/target_scanline.h>
+#include <synfig/target_tile.h>
+#include <synfig/surface.h>
 #include <glibmm/main.h>
 #include <ETL/ref_count>
 #include <glibmm/thread.h>
@@ -54,14 +54,14 @@ class AsyncRenderer : public etl::shared_object, public sigc::trackable
 
 	std::list<sigc::connection> activity_connection_list;
 	
-	//etl::handle<sinfg::Target_Scanline> target_scanline;
-	//etl::handle<sinfg::Target_Tile> target_tile;
-	etl::handle<sinfg::Target> target;
+	//etl::handle<synfig::Target_Scanline> target_scanline;
+	//etl::handle<synfig::Target_Tile> target_tile;
+	etl::handle<synfig::Target> target;
 
 	bool error;
 	bool success;
 	
-	sinfg::ProgressCallback *cb;
+	synfig::ProgressCallback *cb;
 	
 	sigc::signal<void> signal_stop_;
 
@@ -75,7 +75,7 @@ class AsyncRenderer : public etl::shared_object, public sigc::trackable
 	*/
 public:
 
-	AsyncRenderer(etl::handle<sinfg::Target> target,sinfg::ProgressCallback *cb=0);
+	AsyncRenderer(etl::handle<synfig::Target> target,synfig::ProgressCallback *cb=0);
 	virtual ~AsyncRenderer();
 
 	void start();

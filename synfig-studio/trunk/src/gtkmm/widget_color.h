@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file widget_color.h
 **	\brief Template Header
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_STUDIO_WIDGET_COLOR_H
-#define __SINFG_STUDIO_WIDGET_COLOR_H
+#ifndef __SYNFIG_STUDIO_WIDGET_COLOR_H
+#define __SYNFIG_STUDIO_WIDGET_COLOR_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -31,7 +31,7 @@
 #include <gtkmm/spinbutton.h>
 #include <gtkmm/adjustment.h>
 #include <gtkmm/drawingarea.h>
-#include <sinfg/color.h>
+#include <synfig/color.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -42,13 +42,13 @@
 namespace studio {
 
 
-Gdk::Color colorconv_sinfg2gdk(const sinfg::Color &c);
+Gdk::Color colorconv_synfig2gdk(const synfig::Color &c);
 	
-void render_color_to_window(const Glib::RefPtr<Gdk::Drawable>& window,const Gdk::Rectangle& ca,const sinfg::Color &color);
+void render_color_to_window(const Glib::RefPtr<Gdk::Drawable>& window,const Gdk::Rectangle& ca,const synfig::Color &color);
 
 class Widget_Color : public Gtk::DrawingArea
 {
-	sinfg::Color color;
+	synfig::Color color;
 	
 	sigc::signal<void> signal_activate_;
 	sigc::signal<void> signal_secondary_;
@@ -60,8 +60,8 @@ public:
 	sigc::signal<void>& signal_clicked() { return signal_activate_; }
 	sigc::signal<void>& signal_secondary() { return signal_secondary_; }
 	
-	void set_value(const sinfg::Color &data);
-	const sinfg::Color &get_value();
+	void set_value(const synfig::Color &data);
+	const synfig::Color &get_value();
 	Widget_Color();
 	~Widget_Color();
 private:

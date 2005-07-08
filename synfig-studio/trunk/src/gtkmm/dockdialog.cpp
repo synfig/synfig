@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file dockdialog.cpp
 **	\brief Template File
 **
@@ -35,8 +35,8 @@
 #include "dockbook.h"
 #include "dockmanager.h"
 #include "widget_compselect.h"
-#include <sinfg/general.h>
-#include <sinfg/uniqueid.h>
+#include <synfig/general.h>
+#include <synfig/uniqueid.h>
 #include <gtkmm/table.h>
 #include <sigc++/hide.h>
 #include <sigc++/slot.h>
@@ -45,7 +45,7 @@
 #include "canvasview.h"
 #include <gtkmm/paned.h>
 #include <gtkmm/box.h>
-#include <sinfgapp/main.h>
+#include <synfigapp/main.h>
 
 #endif
 
@@ -53,14 +53,14 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
 
 #define GRAB_HINT_DATA(y,default)	{ \
 		String x; \
-		if(sinfgapp::Main::settings().get_value(String("pref.")+y+"_hints",x)) \
+		if(synfigapp::Main::settings().get_value(String("pref.")+y+"_hints",x)) \
 		{ \
 			set_type_hint((Gdk::WindowTypeHint)atoi(x.c_str()));	\
 		} else {\
@@ -86,7 +86,7 @@ DockDialog::DockDialog():
 	widget_comp_select=new Widget_CompSelect();
 	
 	// Give ourselves an ID that is most likely unique
-	set_id(sinfg::UniqueID().get_uid()^reinterpret_cast<int>(this));
+	set_id(synfig::UniqueID().get_uid()^reinterpret_cast<int>(this));
 	
 	set_role(strprintf("dock_dialog_%d",get_id()));
 	GRAB_HINT_DATA(
@@ -169,7 +169,7 @@ DockDialog::~DockDialog()
 	}
 	catch(...)
 	{
-		sinfg::warning("DockDialog::~DockDialog(): Exception thrown when trying to remove from dock manager...?");
+		synfig::warning("DockDialog::~DockDialog(): Exception thrown when trying to remove from dock manager...?");
 	}
 
 	delete widget_comp_select;
@@ -292,7 +292,7 @@ DockDialog::erase_dock_book(DockBook* dock_book)
 void
 DockDialog::refresh()
 {
-	sinfg::info("dock_book_list.size()=%d",dock_book_list.size());
+	synfig::info("dock_book_list.size()=%d",dock_book_list.size());
 	//remove();
 
 	if(dock_book_list.empty())
@@ -432,7 +432,7 @@ DockDialog::refresh_accel_group()
 bool
 DockDialog::close()
 {
-	sinfg::info("DockDialog::close(): DELETED!");
+	synfig::info("DockDialog::close(): DELETED!");
 	empty_sig.disconnect();
 	//get_dock_book().clear();
 	delete this;	
@@ -454,10 +454,10 @@ DockDialog::get_dock_book()const
 }
 
 
-sinfg::String
+synfig::String
 DockDialog::get_contents()const
 {
-	sinfg::String ret;
+	synfig::String ret;
 
 	std::list<DockBook*>::const_iterator iter;
 	for(iter=dock_book_list.begin();iter!=dock_book_list.end();++iter)
@@ -472,20 +472,20 @@ DockDialog::get_contents()const
 }
 
 void
-DockDialog::set_contents(const sinfg::String& z)
+DockDialog::set_contents(const synfig::String& z)
 {
 	int x,y;
 	get_size(x,y);
 
-	sinfg::String str(z);
+	synfig::String str(z);
 	while(!str.empty())
 	{
 		unsigned int separator=str.find_first_of('-');
 		{
 			unsigned int sep2=str.find_first_of('|');
-			if(separator!=sinfg::String::npos || sep2!=sinfg::String::npos)
+			if(separator!=synfig::String::npos || sep2!=synfig::String::npos)
 			{
-				if((separator==sinfg::String::npos || sep2<separator) && sep2!=sinfg::String::npos)
+				if((separator==synfig::String::npos || sep2<separator) && sep2!=synfig::String::npos)
 				{
 					separator=sep2;
 					is_horizontal=true;
@@ -495,8 +495,8 @@ DockDialog::set_contents(const sinfg::String& z)
 			}
 		}
 		
-		sinfg::String book_contents;
-		if(separator==sinfg::String::npos)
+		synfig::String book_contents;
+		if(separator==synfig::String::npos)
 		{
 			book_contents=str;
 			str.clear();
@@ -534,7 +534,7 @@ DockDialog::refresh_title()
 	if(is_deleting)return;
 	if(dock_book_list.size())
 	{
-		sinfg::String title;
+		synfig::String title;
 
 		std::list<DockBook*>::const_iterator iter;
 		for(iter=dock_book_list.begin();iter!=dock_book_list.end();++iter)

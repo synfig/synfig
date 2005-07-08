@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file dialog_setup.cpp
 **	\brief Template File
 **
@@ -45,7 +45,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
@@ -57,7 +57,7 @@ using namespace studio;
 /* === M E T H O D S ======================================================= */
 
 Dialog_Setup::Dialog_Setup():
-	Dialog(_("SINFG Studio Setup"),false,true),
+	Dialog(_("SYNFIG Studio Setup"),false,true),
 	adj_gamma_r(2.2,0.1,3.0,0.025,0.025,0.025),
 	adj_gamma_g(2.2,0.1,3.0,0.025,0.025,0.025),
 	adj_gamma_b(2.2,0.1,3.0,0.025,0.025,0.025),

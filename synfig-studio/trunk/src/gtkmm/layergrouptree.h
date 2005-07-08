@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file layergrouptree.h
 **	\brief Template Header
 **
@@ -21,15 +21,15 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_STUDIO_LAYERGROUPTREE_H
-#define __SINFG_STUDIO_LAYERGROUPTREE_H
+#ifndef __SYNFIG_STUDIO_LAYERGROUPTREE_H
+#define __SYNFIG_STUDIO_LAYERGROUPTREE_H
 
 /* === H E A D E R S ======================================================= */
 
 #include <gtkmm/treeview.h>
 #include <gtkmm/treestore.h>
-#include <sinfgapp/canvasinterface.h>
-#include <sinfgapp/value_desc.h>
+#include <synfigapp/canvasinterface.h>
+#include <synfigapp/value_desc.h>
 #include "layergrouptreestore.h"
 
 /* === M A C R O S ========================================================= */
@@ -38,7 +38,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace sinfg { class Layer; }
+namespace synfig { class Layer; }
 
 namespace studio {
 
@@ -50,7 +50,7 @@ class LayerGroupTree : public Gtk::TreeView
 
 public:
 
-	typedef std::list<sinfg::Layer::Handle> LayerList;
+	typedef std::list<synfig::Layer::Handle> LayerList;
 
 	/*
  -- ** -- P U B L I C  D A T A ------------------------------------------------
@@ -73,7 +73,7 @@ private:
 	bool editable_;
 
 
-	sigc::signal<void,etl::handle<sinfg::Layer> > signal_popup_layer_menu_;
+	sigc::signal<void,etl::handle<synfig::Layer> > signal_popup_layer_menu_;
 
 //	sigc::signal<void,LayerList> signal_select_layers_;
 	Gtk::TreeView::Column* label_column;
@@ -104,7 +104,7 @@ public:
 
 	Glib::RefPtr<LayerGroupTreeStore> get_model() { return layer_group_tree_store_; }
 
-	sigc::signal<void,etl::handle<sinfg::Layer> >& signal_popup_layer_menu() { return signal_popup_layer_menu_; }
+	sigc::signal<void,etl::handle<synfig::Layer> >& signal_popup_layer_menu() { return signal_popup_layer_menu_; }
 
 //	sigc::signal<void,LayerList>& signal_select_layers() { return signal_select_layers_; }
 
@@ -114,7 +114,7 @@ public:
 	
 	bool get_editable()const { return editable_; }
 	
-	std::list<sinfg::String> get_selected_groups()const;
+	std::list<synfig::String> get_selected_groups()const;
 
 	LayerList get_selected_layers()const;	
 }; // END of LayerGroupTree

@@ -1,5 +1,5 @@
 /*! ========================================================================
-** Sinfg
+** Synfig
 ** Template Header File
 ** $Id: onemoment.h,v 1.1.1.1 2005/01/07 03:34:36 darco Exp $
 **
@@ -20,8 +20,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_GTKMM_ONEMOMENT_H
-#define __SINFG_GTKMM_ONEMOMENT_H
+#ifndef __SYNFIG_GTKMM_ONEMOMENT_H
+#define __SYNFIG_GTKMM_ONEMOMENT_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -33,7 +33,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace sinfg { class ProgressCallback; };
+namespace synfig { class ProgressCallback; };
 
 namespace studio {
 

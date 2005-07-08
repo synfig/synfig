@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file widget_defaults.h
 **	\brief Template Header
 **
@@ -21,14 +21,14 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_STUDIO_WIDGET_DEFAULTS_H
-#define __SINFG_STUDIO_WIDGET_DEFAULTS_H
+#ifndef __SYNFIG_STUDIO_WIDGET_DEFAULTS_H
+#define __SYNFIG_STUDIO_WIDGET_DEFAULTS_H
 
 /* === H E A D E R S ======================================================= */
 
 #include <gtkmm/drawingarea.h>
 #include <gtkmm/table.h>
-#include <sinfg/gradient.h>
+#include <synfig/gradient.h>
 #include "widget_gradient.h"
 #include <gtkmm/tooltips.h>
 

@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file cellrenderer_timetrack.h
 **	\brief Template Header
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_GTKMM_CELLRENDERER_TIMETRACK_H
-#define __SINFG_GTKMM_CELLRENDERER_TIMETRACK_H
+#ifndef __SYNFIG_GTKMM_CELLRENDERER_TIMETRACK_H
+#define __SYNFIG_GTKMM_CELLRENDERER_TIMETRACK_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -51,12 +51,12 @@
 #include <gtkmm/menu.h>
 
 
-#include <sinfgapp/canvasinterface.h>
-#include <sinfgapp/value_desc.h>
-#include <sinfg/valuenode_animated.h>
-#include <sinfg/valuenode_dynamiclist.h>
-#include <sinfg/string.h>
-#include <sinfg/time.h>
+#include <synfigapp/canvasinterface.h>
+#include <synfigapp/value_desc.h>
+#include <synfig/valuenode_animated.h>
+#include <synfig/valuenode_dynamiclist.h>
+#include <synfig/string.h>
+#include <synfig/time.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -90,25 +90,25 @@ private:
 	Gtk::Adjustment adjustment_;
 	
 	//! Signal for when the user clicks on a waypoint
-	sigc::signal<void, const Glib::ustring&,sinfg::Waypoint, int> signal_waypoint_clicked_;
+	sigc::signal<void, const Glib::ustring&,synfig::Waypoint, int> signal_waypoint_clicked_;
 
-	sigc::signal<void, sinfg::Waypoint, sinfg::ValueNode::Handle> signal_waypoint_changed_;
+	sigc::signal<void, synfig::Waypoint, synfig::ValueNode::Handle> signal_waypoint_changed_;
 
 	//! Iterator for selected waypoint. (Should this be an UniqueID instead?)
-	sinfg::ValueNode_Animated::WaypointList::iterator selected_waypoint;
+	synfig::ValueNode_Animated::WaypointList::iterator selected_waypoint;
 	
-	sinfg::UniqueID selected;
+	synfig::UniqueID selected;
 
 	//! selected information for time... (will work for way points etc...)
 	//TODO: make multiple... on both time and value select...
-	std::set<sinfg::Time>	sel_times;
-	sinfgapp::ValueDesc		sel_value;
-	sinfg::Time				actual_time;
-	sinfg::Time				actual_dragtime;
+	std::set<synfig::Time>	sel_times;
+	synfigapp::ValueDesc		sel_value;
+	synfig::Time				actual_time;
+	synfig::Time				actual_dragtime;
 	int						mode;
 
 	//! ???
-	sinfg::Time selected_time;
+	synfig::Time selected_time;
     
 	//! The path to the current item in the tree model
 	Glib::ustring path;
@@ -118,9 +118,9 @@ private:
 
 	bool dragging;
 
-	sinfg::Time drag_time;
+	synfig::Time drag_time;
 	
-	etl::loose_handle<sinfgapp::CanvasInterface>	canvas_interface_;
+	etl::loose_handle<synfigapp::CanvasInterface>	canvas_interface_;
 
 	/*
  --	** -- P R O P E R T I E S -------------------------------------------------
@@ -129,10 +129,10 @@ private:
 private:
 	
 	//! ValueBase Desc
-	Glib::Property<sinfgapp::ValueDesc> property_valuedesc_;
+	Glib::Property<synfigapp::ValueDesc> property_valuedesc_;
 
 	//! Canvas
-	Glib::Property<sinfg::Canvas::Handle> property_canvas_;
+	Glib::Property<synfig::Canvas::Handle> property_canvas_;
 
 	//! ??? \see adjustment_
 	Glib::Property<Gtk::Adjustment* > property_adjustment_;
@@ -146,9 +146,9 @@ private:
 
 public:
 
-	Glib::PropertyProxy<sinfgapp::ValueDesc> property_value_desc();
+	Glib::PropertyProxy<synfigapp::ValueDesc> property_value_desc();
 
-	Glib::PropertyProxy<sinfg::Canvas::Handle> property_canvas();
+	Glib::PropertyProxy<synfig::Canvas::Handle> property_canvas();
 
 	Glib::PropertyProxy<Gtk::Adjustment* > property_adjustment();
 
@@ -158,10 +158,10 @@ public:
 
 public:
 
-	sigc::signal<void, const Glib::ustring&,sinfg::Waypoint,int> &signal_waypoint_clicked()
+	sigc::signal<void, const Glib::ustring&,synfig::Waypoint,int> &signal_waypoint_clicked()
 	{return signal_waypoint_clicked_; }
 
-	sigc::signal<void, sinfg::Waypoint, sinfg::ValueNode::Handle> &signal_waypoint_changed()
+	sigc::signal<void, synfig::Waypoint, synfig::ValueNode::Handle> &signal_waypoint_changed()
 	{return signal_waypoint_changed_; }
 
 	/*
@@ -173,20 +173,20 @@ public:
 	CellRenderer_TimeTrack();
     ~CellRenderer_TimeTrack();
 	
-	void show_timepoint_menu(const etl::handle<sinfg::Node>& node, const sinfg::Time& time, Side side=SIDE_RIGHT);
+	void show_timepoint_menu(const etl::handle<synfig::Node>& node, const synfig::Time& time, Side side=SIDE_RIGHT);
 
 	void set_adjustment(Gtk::Adjustment &x);
 	Gtk::Adjustment *get_adjustment();
 	const Gtk::Adjustment *get_adjustment()const;
 
-	etl::loose_handle<sinfgapp::CanvasInterface>	canvas_interface()const {return canvas_interface_;}
-	void set_canvas_interface(etl::loose_handle<sinfgapp::CanvasInterface> h); //this should only be called by smart people
+	etl::loose_handle<synfigapp::CanvasInterface>	canvas_interface()const {return canvas_interface_;}
+	void set_canvas_interface(etl::loose_handle<synfigapp::CanvasInterface> h); //this should only be called by smart people
 	
-	sinfg::Canvas::Handle get_canvas()const;
+	synfig::Canvas::Handle get_canvas()const;
 	
-	bool is_selected(const sinfg::Waypoint& waypoint)const;
+	bool is_selected(const synfig::Waypoint& waypoint)const;
 
-	sinfg::ValueNode_Animated::WaypointList::iterator find_waypoint(const sinfg::Time& t, const sinfg::Time& scope=sinfg::Time::end());
+	synfig::ValueNode_Animated::WaypointList::iterator find_waypoint(const synfig::Time& t, const synfig::Time& scope=synfig::Time::end());
 
 	virtual void
 	render_vfunc(

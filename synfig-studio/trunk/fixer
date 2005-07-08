@@ -2,9 +2,22 @@
 
 TEMPFILENAME=~/deleteme.tmp
 
-for filename in `find . -name '*.[ch]*'` ; do {
-	sed '
-s/SigC::Signal./sigc::signal/g;
+SEDSCRIPT='
+s/sinfg/synfig/g;
+s/SINFG/SYNFIG/g;
+s/= S I N F G ===/= S Y N F I G =/g;
+s/Sinfg/Synfig/g;
+';
 
-' < $filename > $TEMPFILENAME && ( diff -q $TEMPFILENAME $filename || cp $TEMPFILENAME $filename )
+for filename in `find . -name "*sinfg*" -a ! -name '*svn*'` ; do {
+	newfilename=`echo $filename | sed "$SEDSCRIPT"`;
+	echo $filename '=>' $newfilename;
+	svn rename $filename  $newfilename || exit 2;
+} ; done
+
+
+#exit 0;
+
+for filename in `find . -name '*.[ch]*' -o -name '*.am' -o -name '*.px' -o -name '*.ac' -o -name '*.nsh' -o -name '*.in' | grep -v .svn` ; do {
+	sed "$SEDSCRIPT" < $filename > $TEMPFILENAME && ( diff -q $TEMPFILENAME $filename || cp $TEMPFILENAME $filename )
 } ; done

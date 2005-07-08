@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file template.cpp
 **	\brief Template File
 **
@@ -37,7 +37,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
@@ -118,14 +118,14 @@ float
 WorkAreaRenderer::get_ph()const
 { return get_work_area()->get_ph(); }
 
-sinfg::Point
-WorkAreaRenderer::screen_to_comp_coords(sinfg::Point pos)const
+synfig::Point
+WorkAreaRenderer::screen_to_comp_coords(synfig::Point pos)const
 {
 	return get_work_area()->screen_to_comp_coords(pos);
 }
 
-sinfg::Point
-WorkAreaRenderer::comp_to_screen_coords(sinfg::Point pos)const
+synfig::Point
+WorkAreaRenderer::comp_to_screen_coords(synfig::Point pos)const
 {
 	return get_work_area()->comp_to_screen_coords(pos);
 }

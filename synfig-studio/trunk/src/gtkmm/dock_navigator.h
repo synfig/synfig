@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file dock_navigator.h
 **	\brief Navigator Dock Header
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_DOCK_NAVIGATOR_H
-#define __SINFG_DOCK_NAVIGATOR_H
+#ifndef __SYNFIG_DOCK_NAVIGATOR_H
+#define __SYNFIG_DOCK_NAVIGATOR_H
 
 /* === H E A D E R S ======================================================= */
 #include "sigc++/signal.h"
@@ -32,7 +32,7 @@
 #include <gtkmm/adjustment.h>
 #include <gtkmm/label.h>
 
-#include <sinfg/renddesc.h>
+#include <synfig/renddesc.h>
 
 #include "canvasview.h"
 #include "dock_canvasspecific.h"
@@ -69,7 +69,7 @@ class Widget_NavView : public Gtk::Table
 	
 	//asyncronous rendering stuff
 	etl::handle<AsyncRenderer>	renderer;
-	etl::smart_ptr<sinfg::Surface> surface;
+	etl::smart_ptr<synfig::Surface> surface;
 	bool						rendering;
 	
 	//drawing functionality

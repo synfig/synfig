@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file cellrenderer_value.cpp
 **	\brief Template File
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_GTKMM_CELLRENDERER_VALUE_H
-#define __SINFG_GTKMM_CELLRENDERER_VALUE_H
+#ifndef __SYNFIG_GTKMM_CELLRENDERER_VALUE_H
+#define __SYNFIG_GTKMM_CELLRENDERER_VALUE_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -51,9 +51,9 @@
 #include <gtkmm/colorselection.h>
 #include <gtkmm/optionmenu.h>
 
-//#include <sinfg/sinfg.h>
-#include <sinfg/paramdesc.h>
-#include <sinfg/value.h>
+//#include <synfig/synfig.h>
+#include <synfig/paramdesc.h>
+#include <synfig/value.h>
 
 
 /* === M A C R O S ========================================================= */
@@ -76,31 +76,31 @@ class ValueBase_Entry;
 class CellRenderer_ValueBase : public Gtk::CellRendererText
 {
 	sigc::signal<void, const Glib::ustring&> signal_secondary_click_;
-	sigc::signal<void, const Glib::ustring&, sinfg::ValueBase> signal_edited_;
+	sigc::signal<void, const Glib::ustring&, synfig::ValueBase> signal_edited_;
 
-	Glib::Property<sinfg::ValueBase> property_value_;
-	Glib::Property<etl::handle<sinfg::Canvas> > property_canvas_;
-	Glib::Property<sinfg::ParamDesc> property_param_desc_;
+	Glib::Property<synfig::ValueBase> property_value_;
+	Glib::Property<etl::handle<synfig::Canvas> > property_canvas_;
+	Glib::Property<synfig::ParamDesc> property_param_desc_;
 
 	void string_edited_(const Glib::ustring&,const Glib::ustring&);
 
-	void gradient_edited(sinfg::Gradient gradient, Glib::ustring path);
-	void color_edited(sinfg::Color color, Glib::ustring path);
+	void gradient_edited(synfig::Gradient gradient, Glib::ustring path);
+	void color_edited(synfig::Color color, Glib::ustring path);
 	
 public:
 	sigc::signal<void, const Glib::ustring&> &signal_secondary_click()
 	{return signal_secondary_click_; }
 
-	sigc::signal<void, const Glib::ustring&, sinfg::ValueBase> &signal_edited()
+	sigc::signal<void, const Glib::ustring&, synfig::ValueBase> &signal_edited()
 	{return signal_edited_; }
 
-	Glib::PropertyProxy<sinfg::ValueBase> property_value() { return property_value_.get_proxy();}
-	Glib::PropertyProxy<etl::handle<sinfg::Canvas> > property_canvas() { return property_canvas_.get_proxy();}
-	Glib::PropertyProxy<sinfg::ParamDesc> property_param_desc() { return property_param_desc_.get_proxy(); }
+	Glib::PropertyProxy<synfig::ValueBase> property_value() { return property_value_.get_proxy();}
+	Glib::PropertyProxy<etl::handle<synfig::Canvas> > property_canvas() { return property_canvas_.get_proxy();}
+	Glib::PropertyProxy<synfig::ParamDesc> property_param_desc() { return property_param_desc_.get_proxy(); }
 	Glib::PropertyProxy<bool> property_inconsistant() { return property_foreground_set(); }
 
-	etl::handle<sinfg::Canvas> get_canvas()const { return property_canvas_; }
-	sinfg::ParamDesc get_param_desc()const { return property_param_desc_; }
+	etl::handle<synfig::Canvas> get_canvas()const { return property_canvas_; }
+	synfig::ParamDesc get_param_desc()const { return property_param_desc_; }
 	
 	CellRenderer_ValueBase();
 	~CellRenderer_ValueBase();

@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file layerparamtreestore.h
 **	\brief Template Header
 **
@@ -21,17 +21,17 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_STUDIO_LAYERPARAMTREESTORE_H
-#define __SINFG_STUDIO_LAYERPARAMTREESTORE_H
+#ifndef __SYNFIG_STUDIO_LAYERPARAMTREESTORE_H
+#define __SYNFIG_STUDIO_LAYERPARAMTREESTORE_H
 
 /* === H E A D E R S ======================================================= */
 
 #include <gtkmm/treestore.h>
-#include <sinfgapp/canvasinterface.h>
+#include <synfigapp/canvasinterface.h>
 #include "canvastreestore.h"
-#include <sinfg/value.h>
-#include <sinfg/valuenode.h>
-#include <sinfg/paramdesc.h>
+#include <synfig/value.h>
+#include <synfig/valuenode.h>
+#include <synfig/paramdesc.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -50,7 +50,7 @@ class LayerParamTreeStore : public CanvasTreeStore
 	*/
 
 public:
-	typedef std::list<sinfg::Layer::Handle> LayerList;
+	typedef std::list<synfig::Layer::Handle> LayerList;
 
 	/*
  -- ** -- P U B L I C  D A T A ------------------------------------------------
@@ -63,7 +63,7 @@ public:
 	{
 	public:
 
-		Gtk::TreeModelColumn<sinfg::ParamDesc>	param_desc;
+		Gtk::TreeModelColumn<synfig::ParamDesc>	param_desc;
 
 		Gtk::TreeModelColumn<bool>	is_inconsistent;
 		Gtk::TreeModelColumn<bool>	is_toplevel;
@@ -106,7 +106,7 @@ private:
 protected:
 	virtual void  get_value_vfunc (const Gtk::TreeModel::iterator& iter, int column, Glib::ValueBase& value)const;
 	virtual void set_value_impl (const Gtk::TreeModel::iterator& row, int column, const Glib::ValueBase& value);
-	virtual void set_row(Gtk::TreeRow row,sinfgapp::ValueDesc value_desc);
+	virtual void set_row(Gtk::TreeRow row,synfigapp::ValueDesc value_desc);
 
 	/*
  -- ** -- S I G N A L   T E R M I N A L S -------------------------------------
@@ -114,14 +114,14 @@ protected:
 
 private:
 
-	void on_value_node_child_added(sinfg::ValueNode::Handle value_node,sinfg::ValueNode::Handle child);
-	void on_value_node_child_removed(sinfg::ValueNode::Handle value_node,sinfg::ValueNode::Handle child);
+	void on_value_node_child_added(synfig::ValueNode::Handle value_node,synfig::ValueNode::Handle child);
+	void on_value_node_child_removed(synfig::ValueNode::Handle value_node,synfig::ValueNode::Handle child);
 
-	void on_value_node_added(sinfg::ValueNode::Handle value_node);
-	void on_value_node_deleted(sinfg::ValueNode::Handle value_node);
-	virtual void on_value_node_changed(sinfg::ValueNode::Handle value_node);
-	void on_value_node_replaced(sinfg::ValueNode::Handle replaced_value_node,sinfg::ValueNode::Handle new_value_node);
-	void on_layer_param_changed(sinfg::Layer::Handle handle,sinfg::String param_name);
+	void on_value_node_added(synfig::ValueNode::Handle value_node);
+	void on_value_node_deleted(synfig::ValueNode::Handle value_node);
+	virtual void on_value_node_changed(synfig::ValueNode::Handle value_node);
+	void on_value_node_replaced(synfig::ValueNode::Handle replaced_value_node,synfig::ValueNode::Handle new_value_node);
+	void on_layer_param_changed(synfig::Layer::Handle handle,synfig::String param_name);
 
 	/*
  -- ** -- P U B L I C   M E T H O D S -----------------------------------------
@@ -129,7 +129,7 @@ private:
 
 public:
 	
-	LayerParamTreeStore(etl::loose_handle<sinfgapp::CanvasInterface> canvas_interface_,
+	LayerParamTreeStore(etl::loose_handle<synfigapp::CanvasInterface> canvas_interface_,
 		LayerTree* layer_tree);
 	~LayerParamTreeStore();
 
@@ -153,7 +153,7 @@ public:
 
 public:
 	
-	static Glib::RefPtr<LayerParamTreeStore> create(etl::loose_handle<sinfgapp::CanvasInterface> canvas_interface_, LayerTree*layer_tree);
+	static Glib::RefPtr<LayerParamTreeStore> create(etl::loose_handle<synfigapp::CanvasInterface> canvas_interface_, LayerTree*layer_tree);
 }; // END of class LayerParamTreeStore
 
 }; // END of namespace studio

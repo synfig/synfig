@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file historytreestore.cpp
 **	\brief Template File
 **
@@ -29,11 +29,11 @@
 #endif
 
 #include "historytreestore.h"
-#include <sinfg/valuenode.h>
+#include <synfig/valuenode.h>
 #include "iconcontroler.h"
-#include <sinfg/valuenode_timedswap.h>
+#include <synfig/valuenode_timedswap.h>
 #include <gtkmm/button.h>
-#include <sinfgapp/action.h>
+#include <synfigapp/action.h>
 #include "instance.h"
 
 #endif
@@ -42,7 +42,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
@@ -74,7 +74,7 @@ HistoryTreeStore::HistoryTreeStore(etl::loose_handle<studio::Instance> instance_
 
 HistoryTreeStore::~HistoryTreeStore()
 {
-	sinfg::info("HistoryTreeStore::~HistoryTreeStore(): Deleted");
+	synfig::info("HistoryTreeStore::~HistoryTreeStore(): Deleted");
 }
 
 Glib::RefPtr<HistoryTreeStore>
@@ -86,7 +86,7 @@ HistoryTreeStore::create(etl::loose_handle<studio::Instance> instance_)
 void
 HistoryTreeStore::rebuild()
 {
-	sinfgapp::Action::Stack::const_iterator iter;
+	synfigapp::Action::Stack::const_iterator iter;
 	
 	clear();
 	
@@ -102,7 +102,7 @@ HistoryTreeStore::rebuild()
 }
 
 void
-HistoryTreeStore::insert_action(Gtk::TreeRow row,etl::handle<sinfgapp::Action::Undoable> action, bool is_active, bool is_undo, bool is_redo)
+HistoryTreeStore::insert_action(Gtk::TreeRow row,etl::handle<synfigapp::Action::Undoable> action, bool is_active, bool is_undo, bool is_redo)
 {
 	assert(action);
 
@@ -112,19 +112,19 @@ HistoryTreeStore::insert_action(Gtk::TreeRow row,etl::handle<sinfgapp::Action::U
 	row[model.is_undo] = is_undo;
 	row[model.is_redo] = is_redo;
 	
-	sinfgapp::Action::CanvasSpecific *specific_action;
-	specific_action=dynamic_cast<sinfgapp::Action::CanvasSpecific*>(action.get());
+	synfigapp::Action::CanvasSpecific *specific_action;
+	specific_action=dynamic_cast<synfigapp::Action::CanvasSpecific*>(action.get());
 	if(specific_action)
 	{
 		row[model.canvas] = specific_action->get_canvas();
 		row[model.canvas_id] = specific_action->get_canvas()->get_id();		
 	}
 
-	etl::handle<sinfgapp::Action::Group> group;
-	group=etl::handle<sinfgapp::Action::Group>::cast_dynamic(action);
+	etl::handle<synfigapp::Action::Group> group;
+	group=etl::handle<synfigapp::Action::Group>::cast_dynamic(action);
 	if(group)
 	{
-		sinfgapp::Action::ActionList::const_iterator iter;
+		synfigapp::Action::ActionList::const_iterator iter;
 		for(iter=group->action_list().begin();iter!=group->action_list().end();++iter)
 		{
 			Gtk::TreeRow child_row = *(append(row.children()));
@@ -132,7 +132,7 @@ HistoryTreeStore::insert_action(Gtk::TreeRow row,etl::handle<sinfgapp::Action::U
 		}
 	}
 	
-	//row[model.icon] = Gtk::Button().render_icon(Gtk::StockID("sinfg-canvas"),Gtk::ICON_SIZE_SMALL_TOOLBAR);	
+	//row[model.icon] = Gtk::Button().render_icon(Gtk::StockID("synfig-canvas"),Gtk::ICON_SIZE_SMALL_TOOLBAR);	
 }
 
 
@@ -177,7 +177,7 @@ HistoryTreeStore::on_redo_stack_cleared()
 }
 
 void
-HistoryTreeStore::on_new_action(etl::handle<sinfgapp::Action::Undoable> action)
+HistoryTreeStore::on_new_action(etl::handle<synfigapp::Action::Undoable> action)
 {
 //	Gtk::TreeRow row = *(append());
 	Gtk::TreeRow row;
@@ -197,7 +197,7 @@ HistoryTreeStore::on_new_action(etl::handle<sinfgapp::Action::Undoable> action)
 }
 
 void
-HistoryTreeStore::on_action_status_changed(etl::handle<sinfgapp::Action::Undoable> action)
+HistoryTreeStore::on_action_status_changed(etl::handle<synfigapp::Action::Undoable> action)
 {
 	Gtk::TreeModel::Children::iterator iter;
 	Gtk::TreeModel::Children children_(children());
@@ -205,7 +205,7 @@ HistoryTreeStore::on_action_status_changed(etl::handle<sinfgapp::Action::Undoabl
 	for(iter=children_.begin(); iter != children_.end(); ++iter)
 	{
 		Gtk::TreeModel::Row row = *iter;
-		if(action == (etl::handle<sinfgapp::Action::Undoable>)row[model.action])
+		if(action == (etl::handle<synfigapp::Action::Undoable>)row[model.action])
 		{
 			row[model.is_active]=action->is_active();
 			return;

@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file widget_timeslider.cpp
 **	\brief Time Slider Widget Implementation File
 **
@@ -40,7 +40,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 
 using studio::Widget_Timeslider;
 
@@ -52,7 +52,7 @@ const double zoomoutfactor = 1/zoominfactor;
 
 /* === P R O C E D U R E S ================================================= */
 
-Gdk::Color get_interp_color(sinfg::Interpolation x)
+Gdk::Color get_interp_color(synfig::Interpolation x)
 {
 	switch(x)
 	{
@@ -98,7 +98,7 @@ void
 studio::render_time_point_to_window(
 	const Glib::RefPtr<Gdk::Drawable>& window,
 	const Gdk::Rectangle& area,
-	const sinfg::TimePoint &tp,
+	const synfig::TimePoint &tp,
 	bool selected
 )
 {
@@ -406,7 +406,7 @@ bool Widget_Timeslider::redraw(bool doublebuffer)
 	Glib::RefPtr<Gdk::GC>	gc = Gdk::GC::create(window);	
 	if(!gc) return false;
 	
-	//sinfg::info("Drawing Timeslider");
+	//synfig::info("Drawing Timeslider");
 	//clear	and update to current values
 	//invalidated = false;
 	//update_times();	
@@ -431,7 +431,7 @@ bool Widget_Timeslider::redraw(bool doublebuffer)
 	
 	if(end-start < EPSILON) return true;
 	
-	//sinfg::info("Drawing Lines");
+	//synfig::info("Drawing Lines");
 	
 	//draw all the time stuff
 	double dtdp = (end - start)/get_width();
@@ -484,7 +484,7 @@ bool Widget_Timeslider::redraw(bool doublebuffer)
 			scale = *after;
 	}
 		
-	//sinfg::info("Range found: (l %.2lf,u %.2lf - m %.2lf) -> %.2lf",lowerrange,upperrange,midrange,scale);	
+	//synfig::info("Range found: (l %.2lf,u %.2lf - m %.2lf) -> %.2lf",lowerrange,upperrange,midrange,scale);	
 	
 	//search around this area to get the right one		
 	
@@ -509,10 +509,10 @@ bool Widget_Timeslider::redraw(bool doublebuffer)
 		//sdindex = (int)floor(t + 0.5); //get how far through the range it is...
 		sdindex = round_to_int(t); //get how far through the range it is...
 		
-		//sinfg::info("Extracted fr %.2lf -> %d", t, sdindex);
+		//synfig::info("Extracted fr %.2lf -> %d", t, sdindex);
 	}
 	
-	//sinfg::info("Initial values: %.4lf t, %.1lf pixels, %d i", time,pixel,sdindex);
+	//synfig::info("Initial values: %.4lf t, %.1lf pixels, %d i", time,pixel,sdindex);
 	
 	//loop to draw
 	const int heightbig = 12;
@@ -618,7 +618,7 @@ bool Widget_Timeslider::on_motion_notify_event(GdkEventMotion* event) //for drag
 				}
 			}		
 			
-			//sinfg::info("Scrolling timerange to (%.4f,%.4f)",start,end);
+			//synfig::info("Scrolling timerange to (%.4f,%.4f)",start,end);
 			
 			adj_timescale->set_lower(start);
 			adj_timescale->set_upper(end);
@@ -721,7 +721,7 @@ void Widget_Timeslider::zoom_in(bool centerontime)
 	end = focuspoint + (end-focuspoint)*zoominfactor;
 	start = focuspoint + (start-focuspoint)*zoominfactor;
 	
-	//sinfg::info("Zooming in timerange to (%.4f,%.4f)",start,end);
+	//synfig::info("Zooming in timerange to (%.4f,%.4f)",start,end);
 	if(adj_bounds)
 	{
 		if(start < adj_bounds->get_lower())
@@ -757,7 +757,7 @@ void Widget_Timeslider::zoom_out(bool centerontime)
 	end = focuspoint + (end-focuspoint)*zoomoutfactor;
 	start = focuspoint + (start-focuspoint)*zoomoutfactor;
 	
-	//sinfg::info("Zooming out timerange to (%.4f,%.4f)",start,end);
+	//synfig::info("Zooming out timerange to (%.4f,%.4f)",start,end);
 	if(adj_bounds)
 	{
 		if(start < adj_bounds->get_lower())
@@ -795,7 +795,7 @@ bool Widget_Timeslider::on_button_press_event(GdkEventButton *event) //for click
 			
 			t = floor(t*fps + 0.5)/fps;
 			
-			/*sinfg::info("Clicking time from %.3lf to %.3lf [(%.2lf,%.2lf) %.2lf / %.2lf ... %.2lf", 
+			/*synfig::info("Clicking time from %.3lf to %.3lf [(%.2lf,%.2lf) %.2lf / %.2lf ... %.2lf", 
 						current, vt, start, end, event->x, w, fps);*/
 			
 			if(t != current)

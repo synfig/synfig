@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file render.h
 **	\brief Template Header
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_STUDIO_GTKMM_RENDER_H
-#define __SINFG_STUDIO_GTKMM_RENDER_H
+#ifndef __SYNFIG_STUDIO_GTKMM_RENDER_H
+#define __SYNFIG_STUDIO_GTKMM_RENDER_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -36,9 +36,9 @@
 #include <gtkmm/tooltips.h>
 #include <gtkmm/optionmenu.h>
 
-#include <sinfg/string.h>
+#include <synfig/string.h>
 
-#include <sinfgapp/canvasinterface.h>
+#include <synfigapp/canvasinterface.h>
 
 #include "renddesc.h"
 
@@ -56,7 +56,7 @@ class RenderSettings : public Gtk::Dialog
 {
 	Gtk::Tooltips tooltips;
 
-	etl::handle<sinfgapp::CanvasInterface> canvas_interface_;
+	etl::handle<synfigapp::CanvasInterface> canvas_interface_;
 	Widget_RendDesc widget_rend_desc;
 
 	Gtk::Entry entry_filename;
@@ -72,14 +72,14 @@ class RenderSettings : public Gtk::Dialog
 	Gtk::OptionMenu optionmenu_target;
 	Gtk::Menu *menu_target;
 
-	sinfg::String target_name;
+	synfig::String target_name;
 	
-	void set_target(sinfg::String name);
+	void set_target(synfig::String name);
 
 	etl::handle<AsyncRenderer> async_renderer;
 
 public:
-	RenderSettings(Gtk::Window& parent,etl::handle<sinfgapp::CanvasInterface> canvas_interface);
+	RenderSettings(Gtk::Window& parent,etl::handle<synfigapp::CanvasInterface> canvas_interface);
 	~RenderSettings();
 
 private:

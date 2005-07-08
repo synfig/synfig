@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file dialog_gradient.cpp
 **	\brief Template File
 **
@@ -33,10 +33,10 @@
 #include <gtkmm/frame.h>
 #include <gtkmm/table.h>
 #include <gtkmm/label.h>
-#include <sinfg/general.h>
-#include <sinfgapp/canvasinterface.h>
-#include <sinfgapp/value_desc.h>
-#include <sinfgapp/main.h>
+#include <synfig/general.h>
+#include <synfigapp/canvasinterface.h>
+#include <synfigapp/value_desc.h>
+#include <synfigapp/main.h>
 #include "widget_color.h"
 #include <gtkmm/spinbutton.h>
 #include "app.h"
@@ -47,7 +47,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
@@ -121,7 +121,7 @@ Dialog_Gradient::~Dialog_Gradient()
 }
 
 void
-Dialog_Gradient::set_gradient(const sinfg::Gradient& x)
+Dialog_Gradient::set_gradient(const synfig::Gradient& x)
 {
 	widget_gradient->set_value(x);
 }
@@ -136,7 +136,7 @@ Dialog_Gradient::reset()
 void
 Dialog_Gradient::on_grab_pressed()
 {
-	sinfgapp::Main::set_gradient(get_gradient());
+	synfigapp::Main::set_gradient(get_gradient());
 //	signal_edited_(get_gradient());
 //	reset();
 //	hide();
@@ -155,7 +155,7 @@ Dialog_Gradient::on_changed()
 }
 
 void
-Dialog_Gradient::on_cpoint_selected(sinfg::Gradient::CPoint x)
+Dialog_Gradient::on_cpoint_selected(synfig::Gradient::CPoint x)
 {
 	widget_color->set_value(x.color);
 	adjustment_pos.set_value(x.pos);
@@ -164,20 +164,20 @@ Dialog_Gradient::on_cpoint_selected(sinfg::Gradient::CPoint x)
 void
 Dialog_Gradient::on_values_adjusted()
 {
-	sinfg::Gradient::CPoint x(widget_gradient->get_selected_cpoint());
+	synfig::Gradient::CPoint x(widget_gradient->get_selected_cpoint());
 	x.color=widget_color->get_value();
 	x.pos=adjustment_pos.get_value();
 	widget_gradient->update_cpoint(x);
 }
 
 static void
-dialog_gradient_value_desc_edit(sinfg::Gradient g,sinfgapp::ValueDesc x,handle<sinfgapp::CanvasInterface> canvas_interface)
+dialog_gradient_value_desc_edit(synfig::Gradient g,synfigapp::ValueDesc x,handle<synfigapp::CanvasInterface> canvas_interface)
 {
 //	canvas_interface->connect_value(x,ValueBase(g));
 }
 
 void
-Dialog_Gradient::edit(const sinfgapp::ValueDesc &x, etl::handle<sinfgapp::CanvasInterface> canvas_interface, sinfg::Time time)
+Dialog_Gradient::edit(const synfigapp::ValueDesc &x, etl::handle<synfigapp::CanvasInterface> canvas_interface, synfig::Time time)
 {
 	reset();
 	if(x.is_const())

@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file widget_gradient.h
 **	\brief Template Header
 **
@@ -21,13 +21,13 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_STUDIO_WIDGET_GRADIENT_H
-#define __SINFG_STUDIO_WIDGET_GRADIENT_H
+#ifndef __SYNFIG_STUDIO_WIDGET_GRADIENT_H
+#define __SYNFIG_STUDIO_WIDGET_GRADIENT_H
 
 /* === H E A D E R S ======================================================= */
 
 #include <gtkmm/drawingarea.h>
-#include <sinfg/gradient.h>
+#include <synfig/gradient.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -37,22 +37,22 @@
 
 namespace studio {
 
-void render_gradient_to_window(const Glib::RefPtr<Gdk::Drawable>& window,const Gdk::Rectangle& ca,const sinfg::Gradient &gradient);
+void render_gradient_to_window(const Glib::RefPtr<Gdk::Drawable>& window,const Gdk::Rectangle& ca,const synfig::Gradient &gradient);
 
 class Widget_Gradient : public Gtk::DrawingArea
 {
 	sigc::signal<void> signal_value_changed_;
 	sigc::signal<void> signal_clicked_;
 
-	sigc::signal<void,sinfg::Gradient::CPoint> signal_cpoint_selected_;
+	sigc::signal<void,synfig::Gradient::CPoint> signal_cpoint_selected_;
 
-	sinfg::Gradient gradient_;
+	synfig::Gradient gradient_;
 	
 	bool editable_;
 	
 	bool changed_;
 	
-	sinfg::Gradient::CPoint	selected_cpoint;
+	synfig::Gradient::CPoint	selected_cpoint;
 
 	void popup_menu(float x);	
 
@@ -69,11 +69,11 @@ public:
 	sigc::signal<void>& signal_value_changed() { return signal_value_changed_; }
 	sigc::signal<void>& signal_clicked() { return signal_clicked_; }
 
-	sigc::signal<void,sinfg::Gradient::CPoint>& signal_cpoint_selected() { return signal_cpoint_selected_; }
+	sigc::signal<void,synfig::Gradient::CPoint>& signal_cpoint_selected() { return signal_cpoint_selected_; }
 	
-	void set_value(const sinfg::Gradient& x);
+	void set_value(const synfig::Gradient& x);
 
-	const sinfg::Gradient& get_value()const { return gradient_; }	
+	const synfig::Gradient& get_value()const { return gradient_; }	
 	
 	void set_editable(bool x=true) { editable_=x; }
 	
@@ -81,11 +81,11 @@ public:
 
 
 	
-	void set_selected_cpoint(const sinfg::Gradient::CPoint &x);
+	void set_selected_cpoint(const synfig::Gradient::CPoint &x);
 
-	const sinfg::Gradient::CPoint& get_selected_cpoint() { return selected_cpoint; }
+	const synfig::Gradient::CPoint& get_selected_cpoint() { return selected_cpoint; }
 
-	void update_cpoint(const sinfg::Gradient::CPoint &x);
+	void update_cpoint(const synfig::Gradient::CPoint &x);
 	
 
 

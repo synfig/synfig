@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file dialog_preview.h
 **	\brief Preview dialog Header
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_GTKMM_DIALOG_PREVIEW_H
-#define __SINFG_GTKMM_DIALOG_PREVIEW_H
+#ifndef __SYNFIG_GTKMM_DIALOG_PREVIEW_H
+#define __SYNFIG_GTKMM_DIALOG_PREVIEW_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -55,7 +55,7 @@ class Dialog_Preview : public Gtk::Dialog
 	Widget_Preview 	preview;
 	DialogSettings	settings;
 	
-	//etl::handle<sinfg::Canvas> canvas;
+	//etl::handle<synfig::Canvas> canvas;
 			
 public:
 	Dialog_Preview();
@@ -108,11 +108,11 @@ public:
 	float get_global_fps() const { return globalfps; }
 	void set_global_fps(float f);
 	
-	sinfg::Time get_begintime() const { return time_begin.get_value(); }
-	void set_begintime(const sinfg::Time &t) { time_begin.set_value(t); }
+	synfig::Time get_begintime() const { return time_begin.get_value(); }
+	void set_begintime(const synfig::Time &t) { time_begin.set_value(t); }
 	
-	sinfg::Time get_endtime() const { return time_end.get_value(); }
-	void set_endtime(const sinfg::Time &t) { time_end.set_value(t); }
+	synfig::Time get_endtime() const { return time_end.get_value(); }
+	void set_endtime(const synfig::Time &t) { time_end.set_value(t); }
 	
 	bool get_begin_override() const { return check_overbegin.get_active(); }
 	void set_begin_override(bool o) { check_overbegin.set_active(o); }

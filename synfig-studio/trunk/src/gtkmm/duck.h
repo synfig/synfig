@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file duck.h
 **	\brief Template Header
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_DUCKMATIC_DUCK_H
-#define __SINFG_DUCKMATIC_DUCK_H
+#ifndef __SYNFIG_DUCKMATIC_DUCK_H
+#define __SYNFIG_DUCKMATIC_DUCK_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -31,15 +31,15 @@
 #include <ETL/smart_ptr>
 #include <ETL/handle>
 
-#include <sinfg/vector.h>
-#include <sinfg/string.h>
-#include <sinfg/real.h>
+#include <synfig/vector.h>
+#include <synfig/string.h>
+#include <synfig/real.h>
 #include <sigc++/signal.h>
 #include <sigc++/object.h>
-#include <sinfg/time.h>
+#include <synfig/time.h>
 #include <ETL/smart_ptr>
-#include <sinfgapp/value_desc.h>
-#include <sinfg/transform.h>
+#include <synfigapp/value_desc.h>
+#include <synfig/transform.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -54,7 +54,7 @@ class StringHash
 {
 	__gnu_cxx::hash<const char*> hasher_;
 public:
-	size_t operator()(const sinfg::String& x)const
+	size_t operator()(const synfig::String& x)const
 	{
 		return hasher_(x.c_str());
 	}
@@ -100,49 +100,49 @@ public:
 	
 private:
 
-	sigc::signal<bool,const sinfg::Point &> signal_edited_;
+	sigc::signal<bool,const synfig::Point &> signal_edited_;
 	sigc::signal<void> signal_user_click_[5];
 	
 	Type type_;
 
-	sinfg::Point point;
+	synfig::Point point;
 
-	etl::smart_ptr<sinfg::Point> shared_point;
+	etl::smart_ptr<synfig::Point> shared_point;
 	
-	sinfg::Point origin;
-	sinfg::String name;
-	sinfg::Real scalar;
+	synfig::Point origin;
+	synfig::String name;
+	synfig::Real scalar;
 
 	etl::handle<Duck> origin_duck;
 
 	etl::handle<Duck> connect_duck;
 	etl::handle<Duck> box_duck;
 
-	sinfg::GUID guid_;	
+	synfig::GUID guid_;	
 
 	// Flags
 	bool editable;
 	bool radius_;
 	bool tangent_;
 	
-	sinfg::TransformStack transform_stack_;
+	synfig::TransformStack transform_stack_;
 
-	sinfgapp::ValueDesc value_desc_;
+	synfigapp::ValueDesc value_desc_;
 
 	static int duck_count;
 public:
 	Duck();
-	Duck(const sinfg::Point &point);
-	Duck(const sinfg::Point &point,const sinfg::Point &origin);
+	Duck(const synfig::Point &point);
+	Duck(const synfig::Point &point,const synfig::Point &origin);
 	~Duck();
 		
-	sigc::signal<bool,const sinfg::Point &> &signal_edited() { return signal_edited_; }
+	sigc::signal<bool,const synfig::Point &> &signal_edited() { return signal_edited_; }
 	sigc::signal<void> &signal_user_click(int i=0) { assert(i>=0); assert(i<5); return signal_user_click_[i]; }
 
-	void set_guid(const sinfg::GUID& x) { guid_=x; }
-	const sinfg::GUID& get_guid()const { return guid_; }
+	void set_guid(const synfig::GUID& x) { guid_=x; }
+	const synfig::GUID& get_guid()const { return guid_; }
 
-	sinfg::GUID get_data_guid()const;
+	synfig::GUID get_data_guid()const;
 
 	//! Changes the editable flag. If set, the duck will not be able to be moved.
 	void set_editable(bool x) { editable=x; }
@@ -162,13 +162,13 @@ public:
 	const etl::handle<Duck>& get_connect_duck()const { return connect_duck; }
 	const etl::handle<Duck>& get_box_duck()const { return box_duck; }
 
-	void set_value_desc(sinfgapp::ValueDesc x) { value_desc_=x; }
+	void set_value_desc(synfigapp::ValueDesc x) { value_desc_=x; }
 
-	sinfgapp::ValueDesc& get_value_desc() { return value_desc_; }
+	synfigapp::ValueDesc& get_value_desc() { return value_desc_; }
 
-	void set_transform_stack(const sinfg::TransformStack& x) { transform_stack_=x; }
+	void set_transform_stack(const synfig::TransformStack& x) { transform_stack_=x; }
 
-	const sinfg::TransformStack& get_transform_stack()const { return transform_stack_; }
+	const synfig::TransformStack& get_transform_stack()const { return transform_stack_; }
 	
 	//! \writeme
 	void set_type(Type x) { type_=x; }
@@ -177,50 +177,50 @@ public:
 	Type get_type()const { return type_; }
 
 	//! Sets the scalar multiplier for the duck with respect to the origin
-	void set_scalar(sinfg::Vector::value_type n) { scalar=n; }
+	void set_scalar(synfig::Vector::value_type n) { scalar=n; }
 
 	//! Retrieves the scalar value
-	sinfg::Vector::value_type get_scalar()const { return scalar; }
+	synfig::Vector::value_type get_scalar()const { return scalar; }
 
-	void set_shared_point(const etl::smart_ptr<sinfg::Point>&x) { shared_point=x; }
+	void set_shared_point(const etl::smart_ptr<synfig::Point>&x) { shared_point=x; }
 
 	//! Sets the location of the duck with respect to the origin
-	void set_point(const sinfg::Point &x) { (shared_point?*shared_point:point)=x; }
+	void set_point(const synfig::Point &x) { (shared_point?*shared_point:point)=x; }
 		
 	//! Returns the location of the duck
-	sinfg::Point get_point()const { return shared_point?*shared_point:point; }
+	synfig::Point get_point()const { return shared_point?*shared_point:point; }
 	
-	sinfg::Point get_trans_point()const;
+	synfig::Point get_trans_point()const;
 	
-	void set_trans_point(const sinfg::Point &x);
+	void set_trans_point(const synfig::Point &x);
 
-	sinfg::Point get_sub_trans_point()const;
-	void set_sub_trans_point(const sinfg::Point &x);
-	sinfg::Point get_sub_trans_origin()const;
+	synfig::Point get_sub_trans_point()const;
+	void set_sub_trans_point(const synfig::Point &x);
+	synfig::Point get_sub_trans_origin()const;
 
 	//! Sets the origin point.
-	void set_origin(const sinfg::Point &x);
+	void set_origin(const synfig::Point &x);
 
 	//! Sets the origin point as another duck
 	void set_origin(const etl::handle<Duck> &x);
 
 	//! Retrieves the origin location
-	sinfg::Point get_origin()const;
+	synfig::Point get_origin()const;
 	
 	//! Retrieves the origin duck
 	const etl::handle<Duck> & get_origin_duck() const;	
 
 	//! Retrieves the origin location
-	sinfg::Point get_trans_origin()const;
+	synfig::Point get_trans_origin()const;
 
 	void set_radius(bool r) { radius_=r; }
 	bool is_radius()const { return radius_; }
 	
 	//! Sets the name of the duck
-	void set_name(const sinfg::String &x);
+	void set_name(const synfig::String &x);
 
 	//! Retrieves the name of the duck
-	sinfg::String get_name()const { return name; }
+	synfig::String get_name()const { return name; }
 	
 	bool operator==(const Duck &rhs)const;
 }; // END of class Duck
@@ -245,13 +245,13 @@ operator&(const Duck::Type lhs, const Duck::Type rhs)
 
 class DuckMap : public
 #ifdef HASH_MAP_H
-__gnu_cxx::hash_map<sinfg::GUID,etl::handle<studio::Duck>,sinfg::GUIDHash>
+__gnu_cxx::hash_map<synfig::GUID,etl::handle<studio::Duck>,synfig::GUIDHash>
 {
-	typedef __gnu_cxx::hash_map<sinfg::GUID,etl::handle<studio::Duck>,sinfg::GUIDHash> PARENT_TYPE;
+	typedef __gnu_cxx::hash_map<synfig::GUID,etl::handle<studio::Duck>,synfig::GUIDHash> PARENT_TYPE;
 #else
-std::map<sinfg::GUID,etl::handle<studio::Duck> >
+std::map<synfig::GUID,etl::handle<studio::Duck> >
 {
-	typedef std::map<sinfg::GUID,etl::handle<studio::Duck> > PARENT_TYPE;
+	typedef std::map<synfig::GUID,etl::handle<studio::Duck> > PARENT_TYPE;
 #endif
 public:
 	void insert(const Duck::Handle& x) { operator[](x->get_guid())=x;  }

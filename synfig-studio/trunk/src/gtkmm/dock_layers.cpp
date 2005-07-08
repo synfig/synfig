@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file dock_layers.cpp
 **	\brief Template File
 **
@@ -50,7 +50,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
@@ -61,13 +61,13 @@ using namespace studio;
 
 /*static void do_nothing(reference_counter x)
 {
-	sinfg::info(__FILE__":%d:ref_count.count()=%d",__LINE__,x.count());
+	synfig::info(__FILE__":%d:ref_count.count()=%d",__LINE__,x.count());
 }*/
 
 /* === M E T H O D S ======================================================= */
 
 Dock_Layers::Dock_Layers():
-	Dock_CanvasSpecific("layers",_("Layers"),Gtk::StockID("sinfg-layer")),
+	Dock_CanvasSpecific("layers",_("Layers"),Gtk::StockID("synfig-layer")),
 //	layer_action_manager(0)
 	layer_action_manager(new LayerActionManager)
 {
@@ -76,13 +76,13 @@ Dock_Layers::Dock_Layers():
 	action_group_new_layers=Gtk::ActionGroup::create();
 	action_group_layer_ops=Gtk::ActionGroup::create();
 	
-	std::map<sinfg::String,sinfg::String> category_map;
+	std::map<synfig::String,synfig::String> category_map;
 
 	// Build layer creation actions
-	sinfg::Layer::Book::iterator iter;
-	for(iter=sinfg::Layer::book().begin();iter!=sinfg::Layer::book().end();++iter)
+	synfig::Layer::Book::iterator iter;
+	for(iter=synfig::Layer::book().begin();iter!=synfig::Layer::book().end();++iter)
 	{
-		sinfg::Layer::Book::value_type lyr(*iter);
+		synfig::Layer::Book::value_type lyr(*iter);
 		
 		if(lyr.second.category==_("Do Not Use"))
 			continue;
@@ -108,11 +108,11 @@ Dock_Layers::Dock_Layers():
 	
 	{
 		Glib::RefPtr<Gtk::ActionGroup> action_group_categories(Gtk::ActionGroup::create("layer-category"));
-		sinfg::String layer_ui_info;
+		synfig::String layer_ui_info;
 		
 		layer_ui_info+="<ui><menubar action='menu-main'><menu action='menu-layer'><menu action='menu-layer-new'>";
 
-		std::map<sinfg::String,sinfg::String>::iterator iter;
+		std::map<synfig::String,synfig::String>::iterator iter;
 		for(iter=category_map.begin();iter!=category_map.end();++iter)
 		{
 			layer_ui_info+=strprintf("<menu action='%s'>%s</menu>",iter->first.c_str(),iter->second.c_str());
@@ -157,7 +157,7 @@ Dock_Layers::Dock_Layers():
 
 	/*
 	reference_counter ref_count;
-	sinfg::info(__FILE__":%d:ref_count.count()=%d",__LINE__,ref_count.count());
+	synfig::info(__FILE__":%d:ref_count.count()=%d",__LINE__,ref_count.count());
 
 	{
 		sigc::signal<void> tmp_signal;
@@ -169,24 +169,24 @@ Dock_Layers::Dock_Layers():
 			)
 		);
 		
-	sinfg::info(__FILE__":%d:ref_count.count()=%d",__LINE__,ref_count.count());
+	synfig::info(__FILE__":%d:ref_count.count()=%d",__LINE__,ref_count.count());
 		tmp_signal();
-	sinfg::info(__FILE__":%d:ref_count.count()=%d",__LINE__,ref_count.count());
+	synfig::info(__FILE__":%d:ref_count.count()=%d",__LINE__,ref_count.count());
 		
 		tmp_signal.clear();
-	sinfg::info(__FILE__":%d:ref_count.count()=%d",__LINE__,ref_count.count());
+	synfig::info(__FILE__":%d:ref_count.count()=%d",__LINE__,ref_count.count());
 		
 		tmp_signal();
-	sinfg::info(__FILE__":%d:ref_count.count()=%d",__LINE__,ref_count.count());
+	synfig::info(__FILE__":%d:ref_count.count()=%d",__LINE__,ref_count.count());
 		tmp_signal.connect(
 			sigc::bind(
 				sigc::ptr_fun(do_nothing),
 				ref_count
 			)
 		);
-	sinfg::info(__FILE__":%d:ref_count.count()=%d",__LINE__,ref_count.count());
+	synfig::info(__FILE__":%d:ref_count.count()=%d",__LINE__,ref_count.count());
 	}
-	sinfg::info(__FILE__":%d:ref_count.count()=%d",__LINE__,ref_count.count());
+	synfig::info(__FILE__":%d:ref_count.count()=%d",__LINE__,ref_count.count());
 	assert(ref_count.count()==1);	
 	*/
 }
@@ -211,7 +211,7 @@ Dock_Layers::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
 
 	layer_tree->signal_edited_value().connect(
 		sigc::hide_return(
-			sigc::mem_fun(*canvas_view->canvas_interface(), &sinfgapp::CanvasInterface::change_value)
+			sigc::mem_fun(*canvas_view->canvas_interface(), &synfigapp::CanvasInterface::change_value)
 		)
 	);
 
@@ -265,7 +265,7 @@ Dock_Layers::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view
 }
 
 void
-Dock_Layers::add_layer(sinfg::String id)
+Dock_Layers::add_layer(synfig::String id)
 {
 	etl::loose_handle<CanvasView> canvas_view(get_canvas_view());
 	if(canvas_view)

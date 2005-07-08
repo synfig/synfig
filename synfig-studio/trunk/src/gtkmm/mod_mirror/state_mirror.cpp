@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file state_mirror.cpp
 **	\brief Template File
 **
@@ -31,22 +31,22 @@
 #include <gtkmm/dialog.h>
 #include <gtkmm/entry.h>
 
-#include <sinfg/valuenode_dynamiclist.h>
-#include <sinfgapp/action_system.h>
+#include <synfig/valuenode_dynamiclist.h>
+#include <synfigapp/action_system.h>
 
 #include "state_mirror.h"
 #include "../canvasview.h"
 #include "../workarea.h"
 #include "../app.h"
 
-#include <sinfgapp/action.h>
+#include <synfigapp/action.h>
 #include "../event_mouse.h"
 #include "../event_layerclick.h"
 #include "../toolbox.h"
 #include "../dialog_tooloptions.h"
 #include <gtkmm/optionmenu.h>
 #include "../duck.h"
-#include <sinfgapp/main.h>
+#include <synfigapp/main.h>
 
 #endif
 
@@ -54,7 +54,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
@@ -72,18 +72,18 @@ StateMirror studio::state_mirror;
 
 class DuckDrag_Mirror : public DuckDrag_Base
 {
-	sinfg::Vector center;
+	synfig::Vector center;
 
-	std::vector<sinfg::Vector> positions;
+	std::vector<synfig::Vector> positions;
 	
 	
 public:
 	Axis axis;
 
 	DuckDrag_Mirror();
-	void begin_duck_drag(Duckmatic* duckmatic, const sinfg::Vector& begin);
+	void begin_duck_drag(Duckmatic* duckmatic, const synfig::Vector& begin);
 	bool end_duck_drag(Duckmatic* duckmatic);
-	void duck_drag(Duckmatic* duckmatic, const sinfg::Vector& vector);
+	void duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector);
 };
 
 
@@ -91,7 +91,7 @@ class studio::StateMirror_Context : public sigc::trackable
 {
 	etl::handle<CanvasView> canvas_view_;
 		
-	sinfgapp::Settings& settings;
+	synfigapp::Settings& settings;
 
 	etl::handle<DuckDrag_Mirror> duck_dragger_;
 
@@ -139,8 +139,8 @@ public:
 	~StateMirror_Context();
 
 	const etl::handle<CanvasView>& get_canvas_view()const{return canvas_view_;}
-	etl::handle<sinfgapp::CanvasInterface> get_canvas_interface()const{return canvas_view_->canvas_interface();}
-	sinfg::Canvas::Handle get_canvas()const{return canvas_view_->get_canvas();}
+	etl::handle<synfigapp::CanvasInterface> get_canvas_interface()const{return canvas_view_->canvas_interface();}
+	synfig::Canvas::Handle get_canvas()const{return canvas_view_->get_canvas();}
 	WorkArea * get_work_area()const{return canvas_view_->get_work_area();}
 	
 	void load_settings();
@@ -176,7 +176,7 @@ StateMirror_Context::save_settings()
 
 StateMirror_Context::StateMirror_Context(CanvasView* canvas_view):
 	canvas_view_(canvas_view),
-	settings(sinfgapp::Main::get_selected_input_device()->settings()),
+	settings(synfigapp::Main::get_selected_input_device()->settings()),
 	duck_dragger_(new DuckDrag_Mirror()),
 	checkbutton_axis_x(_("Horizontal")),
 	checkbutton_axis_y(_("Vertical"))
@@ -246,7 +246,7 @@ DuckDrag_Mirror::DuckDrag_Mirror():
 #endif
 
 void
-DuckDrag_Mirror::begin_duck_drag(Duckmatic* duckmatic, const sinfg::Vector& offset)
+DuckDrag_Mirror::begin_duck_drag(Duckmatic* duckmatic, const synfig::Vector& offset)
 {
 
 
@@ -265,7 +265,7 @@ DuckDrag_Mirror::begin_duck_drag(Duckmatic* duckmatic, const sinfg::Vector& offs
 
 
 void
-DuckDrag_Mirror::duck_drag(Duckmatic* duckmatic, const sinfg::Vector& vector)
+DuckDrag_Mirror::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector)
 {
 	center=vector;
 	int i;

@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file layertree.cpp
 **	\brief Template File
 **
@@ -32,8 +32,8 @@
 #include "layerparamtreestore.h"
 #include "cellrenderer_value.h"
 #include "cellrenderer_timetrack.h"
-#include <sinfgapp/action.h>
-#include <sinfgapp/instance.h>
+#include <synfigapp/action.h>
+#include <synfigapp/instance.h>
 #include <gtkmm/scrolledwindow.h>
 #include <gtkmm/paned.h>
 #include "app.h"
@@ -46,7 +46,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
@@ -119,12 +119,12 @@ LayerTree::LayerTree():
 	
 	
 	Gtk::Image *icon;
-	//Gtk::IconSize iconsize(Gtk::IconSize::from_name("sinfg-small_icon"));
+	//Gtk::IconSize iconsize(Gtk::IconSize::from_name("synfig-small_icon"));
 	Gtk::IconSize iconsize(Gtk::ICON_SIZE_SMALL_TOOLBAR);
 
 	SMALL_BUTTON(button_raise,"gtk-go-up","Raise");
 	SMALL_BUTTON(button_lower,"gtk-go-down","Lower");
-	SMALL_BUTTON(button_duplicate,"sinfg-duplicate","Duplicate");
+	SMALL_BUTTON(button_duplicate,"synfig-duplicate","Duplicate");
 	SMALL_BUTTON(button_delete,"gtk-delete","Delete");
 	
 	hbox->pack_start(*button_raise,Gtk::PACK_SHRINK);
@@ -177,7 +177,7 @@ LayerTree::LayerTree():
 
 LayerTree::~LayerTree()
 {
-	sinfg::info("LayerTree::~LayerTree(): Deleted");
+	synfig::info("LayerTree::~LayerTree(): Deleted");
 }
 
 Gtk::Widget*
@@ -344,7 +344,7 @@ LayerTree::create_param_tree()
 		// Set up the value-node icon cell-renderer to be on the far right
 		Gtk::CellRendererPixbuf* valuenode_icon_cellrenderer = Gtk::manage( new Gtk::CellRendererPixbuf() );
 		column->pack_end(*valuenode_icon_cellrenderer,false);
-		valuenode_icon_cellrenderer->property_pixbuf()=Gtk::Button().render_icon(Gtk::StockID("sinfg-value_node"),icon_size);
+		valuenode_icon_cellrenderer->property_pixbuf()=Gtk::Button().render_icon(Gtk::StockID("synfig-value_node"),icon_size);
 		column->add_attribute(valuenode_icon_cellrenderer->property_visible(), param_model.is_shared);
 
 		// Finish setting up the column		
@@ -360,7 +360,7 @@ LayerTree::create_param_tree()
 		// Set up the value cell-renderer
 		cellrenderer_value=LayerParamTreeStore::add_cell_renderer_value(column);
 		cellrenderer_value->signal_edited().connect(sigc::mem_fun(*this, &studio::LayerTree::on_edited_value));
-		cellrenderer_value->property_value()=sinfg::ValueBase();
+		cellrenderer_value->property_value()=synfig::ValueBase();
 		column->add_attribute(cellrenderer_value->property_param_desc(), param_model.param_desc);
 		column->add_attribute(cellrenderer_value->property_inconsistant(),param_model.is_inconsistent);
 		//cellrenderer_value->property_canvas()=canvas_interface->get_canvas(); // Is this line necessary?
@@ -420,9 +420,9 @@ LayerTree::create_param_tree()
 }
 
 void
-LayerTree::on_waypoint_changed( sinfg::Waypoint waypoint , sinfg::ValueNode::Handle value_node)
+LayerTree::on_waypoint_changed( synfig::Waypoint waypoint , synfig::ValueNode::Handle value_node)
 {
-	sinfgapp::Action::ParamList param_list;
+	synfigapp::Action::ParamList param_list;
 	param_list.add("canvas",layer_tree_store_->canvas_interface()->get_canvas());
 	param_list.add("canvas_interface",layer_tree_store_->canvas_interface());
 	param_list.add("value_node",value_node);
@@ -468,7 +468,7 @@ LayerTree::select_all_children(Gtk::TreeModel::Children::iterator iter)
 }
 
 void
-LayerTree::select_all_children_layers(sinfg::Layer::Handle layer)
+LayerTree::select_all_children_layers(synfig::Layer::Handle layer)
 {
 	Gtk::TreeModel::Children::iterator iter;
 	if(layer_tree_store_->find_layer_row(layer,iter))
@@ -511,7 +511,7 @@ LayerTree::get_selected_layers()const
 	return ret;
 }
 
-sinfg::Layer::Handle
+synfig::Layer::Handle
 LayerTree::get_selected_layer()const
 {
 	LayerList layers(get_selected_layers());
@@ -623,7 +623,7 @@ LayerTree::on_dirty_preview()
 void
 LayerTree::on_selection_changed()
 {
-	sinfgapp::SelectionManager::LayerList layer_list(get_selection_manager()->get_selected_layers());
+	synfigapp::SelectionManager::LayerList layer_list(get_selection_manager()->get_selected_layers());
 	
 	Gtk::TreeIter iter;
 	if(last_top_selected_layer && !layer_tree_store_->find_layer_row(last_top_selected_layer,iter))
@@ -708,7 +708,7 @@ LayerTree::on_blend_method_changed()
 	if(quick_layer->get_param("blend_method").is_valid())
 	{
 		disable_amount_changed_signal=true;
-		signal_edited_value()(sinfgapp::ValueDesc(quick_layer,"blend_method"),blend_method_widget.get_value());
+		signal_edited_value()(synfigapp::ValueDesc(quick_layer,"blend_method"),blend_method_widget.get_value());
 		disable_amount_changed_signal=false;
 	}
 }
@@ -722,13 +722,13 @@ LayerTree::on_amount_value_changed()
 		return;
 	
 	disable_amount_changed_signal=true;
-	signal_edited_value()(sinfgapp::ValueDesc(quick_layer,"amount"),sinfg::ValueBase(layer_amount_adjustment_.get_value()));
+	signal_edited_value()(synfigapp::ValueDesc(quick_layer,"amount"),synfig::ValueBase(layer_amount_adjustment_.get_value()));
 	disable_amount_changed_signal=false;
 }
 
 
 void
-LayerTree::on_edited_value(const Glib::ustring&path_string,sinfg::ValueBase value)
+LayerTree::on_edited_value(const Glib::ustring&path_string,synfig::ValueBase value)
 {
 	Gtk::TreePath path(path_string);
 	
@@ -752,7 +752,7 @@ LayerTree::on_layer_toggle(const Glib::ustring& path_string)
 */
 
 void
-LayerTree::on_waypoint_clicked(const Glib::ustring &path_string, sinfg::Waypoint waypoint,int button)
+LayerTree::on_waypoint_clicked(const Glib::ustring &path_string, synfig::Waypoint waypoint,int button)
 {
 	Gtk::TreePath path(path_string);
 	
@@ -760,7 +760,7 @@ LayerTree::on_waypoint_clicked(const Glib::ustring &path_string, sinfg::Waypoint
 	if(!row)
 		return;
 	
-	signal_waypoint_clicked()(static_cast<sinfgapp::ValueDesc>(row[param_model.value_desc]),waypoint,button);
+	signal_waypoint_clicked()(static_cast<synfigapp::ValueDesc>(row[param_model.value_desc]),waypoint,button);
 }
 
 bool
@@ -878,17 +878,17 @@ LayerTree::on_param_tree_event(GdkEvent *event)
 					LayerList layer_list(get_selected_layers());
 					if(layer_list.size()<=1)
 					{
-						sinfgapp::ValueDesc value_desc(row[param_model.value_desc]);
+						synfigapp::ValueDesc value_desc(row[param_model.value_desc]);
 						Gtk::Menu* menu(manage(new Gtk::Menu()));					
 						App::get_instance(param_tree_store_->canvas_interface()->get_canvas())->make_param_menu(menu,param_tree_store_->canvas_interface()->get_canvas(),value_desc,0.5f);
 						menu->popup(event->button.button,gtk_get_current_event_time());
 						return true;
 					}
 					Gtk::Menu* menu(manage(new Gtk::Menu()));					
-					std::list<sinfgapp::ValueDesc> value_desc_list;
+					std::list<synfigapp::ValueDesc> value_desc_list;
 					ParamDesc param_desc(row[param_model.param_desc]);
 					for(;!layer_list.empty();layer_list.pop_back())
-						value_desc_list.push_back(sinfgapp::ValueDesc(layer_list.back(),param_desc.get_name()));
+						value_desc_list.push_back(synfigapp::ValueDesc(layer_list.back(),param_desc.get_name()));
 					App::get_instance(param_tree_store_->canvas_interface()->get_canvas())->make_param_menu(menu,param_tree_store_->canvas_interface()->get_canvas(),value_desc_list);
 					menu->popup(event->button.button,gtk_get_current_event_time());
 					return true;
@@ -989,19 +989,19 @@ LayerTree::on_param_tree_event(GdkEvent *event)
 void
 LayerTree::on_raise_pressed()
 {
-	sinfgapp::Action::ParamList param_list;
+	synfigapp::Action::ParamList param_list;
 	param_list.add("time",layer_tree_store_->canvas_interface()->get_time());
 	param_list.add("canvas",layer_tree_store_->canvas_interface()->get_canvas());
 	param_list.add("canvas_interface",layer_tree_store_->canvas_interface());
 	
 	{
-		sinfgapp::SelectionManager::LayerList layer_list(get_selection_manager()->get_selected_layers());
-		sinfgapp::SelectionManager::LayerList::iterator iter;
+		synfigapp::SelectionManager::LayerList layer_list(get_selection_manager()->get_selected_layers());
+		synfigapp::SelectionManager::LayerList::iterator iter;
 	
 		for(iter=layer_list.begin();iter!=layer_list.end();++iter)
 			param_list.add("layer",Layer::Handle(*iter));
 	}
-	sinfgapp::Action::Handle action(sinfgapp::Action::create("layer_raise"));
+	synfigapp::Action::Handle action(synfigapp::Action::create("layer_raise"));
 	action->set_param_list(param_list);
 	layer_tree_store_->canvas_interface()->get_instance()->perform_action(action);
 }
@@ -1009,20 +1009,20 @@ LayerTree::on_raise_pressed()
 void
 LayerTree::on_lower_pressed()
 {
-	sinfgapp::Action::ParamList param_list;
+	synfigapp::Action::ParamList param_list;
 	param_list.add("time",layer_tree_store_->canvas_interface()->get_time());
 	param_list.add("canvas",layer_tree_store_->canvas_interface()->get_canvas());
 	param_list.add("canvas_interface",layer_tree_store_->canvas_interface());
 	
 	{
-		sinfgapp::SelectionManager::LayerList layer_list(get_selection_manager()->get_selected_layers());
-		sinfgapp::SelectionManager::LayerList::iterator iter;
+		synfigapp::SelectionManager::LayerList layer_list(get_selection_manager()->get_selected_layers());
+		synfigapp::SelectionManager::LayerList::iterator iter;
 	
 		for(iter=layer_list.begin();iter!=layer_list.end();++iter)
 			param_list.add("layer",Layer::Handle(*iter));
 	}
 	
-	sinfgapp::Action::Handle action(sinfgapp::Action::create("layer_lower"));
+	synfigapp::Action::Handle action(synfigapp::Action::create("layer_lower"));
 	action->set_param_list(param_list);
 	layer_tree_store_->canvas_interface()->get_instance()->perform_action(action);
 }
@@ -1030,20 +1030,20 @@ LayerTree::on_lower_pressed()
 void
 LayerTree::on_duplicate_pressed()
 {
-	sinfgapp::Action::ParamList param_list;
+	synfigapp::Action::ParamList param_list;
 	param_list.add("time",layer_tree_store_->canvas_interface()->get_time());
 	param_list.add("canvas",layer_tree_store_->canvas_interface()->get_canvas());
 	param_list.add("canvas_interface",layer_tree_store_->canvas_interface());
 	
 	{
-		sinfgapp::SelectionManager::LayerList layer_list(get_selection_manager()->get_selected_layers());
-		sinfgapp::SelectionManager::LayerList::iterator iter;
+		synfigapp::SelectionManager::LayerList layer_list(get_selection_manager()->get_selected_layers());
+		synfigapp::SelectionManager::LayerList::iterator iter;
 	
 		for(iter=layer_list.begin();iter!=layer_list.end();++iter)
 			param_list.add("layer",Layer::Handle(*iter));
 	}
 	
-	sinfgapp::Action::Handle action(sinfgapp::Action::create("layer_duplicate"));
+	synfigapp::Action::Handle action(synfigapp::Action::create("layer_duplicate"));
 	action->set_param_list(param_list);
 	layer_tree_store_->canvas_interface()->get_instance()->perform_action(action);
 }
@@ -1051,20 +1051,20 @@ LayerTree::on_duplicate_pressed()
 void
 LayerTree::on_delete_pressed()
 {
-	sinfgapp::Action::ParamList param_list;
+	synfigapp::Action::ParamList param_list;
 	param_list.add("time",layer_tree_store_->canvas_interface()->get_time());
 	param_list.add("canvas",layer_tree_store_->canvas_interface()->get_canvas());
 	param_list.add("canvas_interface",layer_tree_store_->canvas_interface());
 	
 	{
-		sinfgapp::SelectionManager::LayerList layer_list(get_selection_manager()->get_selected_layers());
-		sinfgapp::SelectionManager::LayerList::iterator iter;
+		synfigapp::SelectionManager::LayerList layer_list(get_selection_manager()->get_selected_layers());
+		synfigapp::SelectionManager::LayerList::iterator iter;
 	
 		for(iter=layer_list.begin();iter!=layer_list.end();++iter)
 			param_list.add("layer",Layer::Handle(*iter));
 	}
 	
-	sinfgapp::Action::Handle action(sinfgapp::Action::create("layer_remove"));
+	synfigapp::Action::Handle action(synfigapp::Action::create("layer_remove"));
 	action->set_param_list(param_list);
 	layer_tree_store_->canvas_interface()->get_instance()->perform_action(action);
 }
@@ -1092,9 +1092,9 @@ LayerTree::on_delete_pressed()
 void
 LayerTree::on_drag_data_get(const Glib::RefPtr<Gdk::DragContext>&context, Gtk::SelectionData& selection_data, guint info, guint time)
 {
-	sinfg::info("Dragged data of type \"%s\"",selection_data.get_data_type());
-	sinfg::info("Dragged data of target \"%s\"",gdk_atom_name(selection_data->target));
-	sinfg::info("Dragged selection=\"%s\"",gdk_atom_name(selection_data->selection));
+	synfig::info("Dragged data of type \"%s\"",selection_data.get_data_type());
+	synfig::info("Dragged data of target \"%s\"",gdk_atom_name(selection_data->target));
+	synfig::info("Dragged selection=\"%s\"",gdk_atom_name(selection_data->selection));
 
 	DEBUGPOINT();
 
@@ -1105,7 +1105,7 @@ LayerTree::on_drag_data_get(const Glib::RefPtr<Gdk::DragContext>&context, Gtk::S
 	Gtk::TreeRow row = *(get_selection()->get_selected());
 	DEBUGPOINT();
 
-	if(sinfg::String(gdk_atom_name(selection_data->target))=="LAYER" && (bool)row[model.is_layer])
+	if(synfig::String(gdk_atom_name(selection_data->target))=="LAYER" && (bool)row[model.is_layer])
 	{
 		DEBUGPOINT();
 		Layer* layer(((Layer::Handle)row[model.layer]).get());
@@ -1119,10 +1119,10 @@ LayerTree::on_drag_data_get(const Glib::RefPtr<Gdk::DragContext>&context, Gtk::S
 void
 LayerTree::on_drop_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, Gtk::SelectionData& selection_data, guint info, guint time)
 {
-	sinfg::info("Dropped data of type \"%s\"",selection_data.get_data_type());
-	sinfg::info("Dropped data of target \"%s\"",gdk_atom_name(selection_data->target));
-	sinfg::info("Dropped selection=\"%s\"",gdk_atom_name(selection_data->selection));
-	sinfg::info("Dropped x=%d, y=%d",x,y);
+	synfig::info("Dropped data of type \"%s\"",selection_data.get_data_type());
+	synfig::info("Dropped data of target \"%s\"",gdk_atom_name(selection_data->target));
+	synfig::info("Dropped selection=\"%s\"",gdk_atom_name(selection_data->selection));
+	synfig::info("Dropped x=%d, y=%d",x,y);
 	bool success=false;
 	bool dropped_on_specific_row=false;
 	
@@ -1147,7 +1147,7 @@ LayerTree::on_drop_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& cont
 	
 	if ((selection_data.get_length() >= 0) && (selection_data.get_format() == 8))
 	{
-		if(sinfg::String(selection_data.get_data_type())=="LAYER")do
+		if(synfig::String(selection_data.get_data_type())=="LAYER")do
 		{
 			Layer::Handle src(*reinterpret_cast<Layer**>(selection_data.get_data()));
 			assert(src);
@@ -1170,7 +1170,7 @@ LayerTree::on_drop_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& cont
 				if(!dest_layer || dest_layer==src)
 					break;
 				
-				sinfgapp::Action::Handle action(sinfgapp::Action::create("layer_move"));
+				synfigapp::Action::Handle action(synfigapp::Action::create("layer_move"));
 				action->set_param("canvas",dest_canvas);
 				action->set_param("canvas_interface",layer_tree_store_->canvas_interface());
 				action->set_param("layer",src);

@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file dialog_color.h
 **	\brief Template Header
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_STUDIO_DIALOG_COLOR_H
-#define __SINFG_STUDIO_DIALOG_COLOR_H
+#ifndef __SYNFIG_STUDIO_DIALOG_COLOR_H
+#define __SYNFIG_STUDIO_DIALOG_COLOR_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -35,13 +35,13 @@
 #include <gtkmm/optionmenu.h>
 #include <gtkmm/checkbutton.h>
 
-#include <sinfg/gamma.h>
-#include <sinfg/time.h>
+#include <synfig/gamma.h>
+#include <synfig/time.h>
 
 #include "widget_coloredit.h"
 
-#include <sinfgapp/value_desc.h>
-#include <sinfg/time.h>
+#include <synfigapp/value_desc.h>
+#include <synfig/time.h>
 
 #include "dialogsettings.h"
 
@@ -53,7 +53,7 @@
 
 namespace Gtk { class Menu; class SpinButton; class Adjustment; };
 
-namespace sinfgapp {
+namespace synfigapp {
 class CanvasInterface;
 };
 
@@ -65,8 +65,8 @@ class Dialog_Color : public Gtk::Dialog
 {
 	DialogSettings dialog_settings;
 	
-	sigc::signal<void,sinfg::Color> signal_edited_;
-	//sigc::signal<void,sinfg::Color> signal_apply_;
+	sigc::signal<void,synfig::Color> signal_edited_;
+	//sigc::signal<void,synfig::Color> signal_apply_;
 
 	bool on_close_pressed();
 	void on_apply_pressed();
@@ -79,13 +79,13 @@ class Dialog_Color : public Gtk::Dialog
 public:
 	bool busy()const { return busy_; }
 	
-	sigc::signal<void,sinfg::Color>& signal_edited() { return signal_edited_; }
+	sigc::signal<void,synfig::Color>& signal_edited() { return signal_edited_; }
 	
-	//sigc::signal<void,sinfg::Color>& signal_apply() { return signal_apply_; }
+	//sigc::signal<void,synfig::Color>& signal_apply() { return signal_apply_; }
 	
-	void set_color(const sinfg::Color& x) { widget_color->set_value(x); }
+	void set_color(const synfig::Color& x) { widget_color->set_value(x); }
 
-	sinfg::Color get_color()const { return widget_color->get_value(); }
+	synfig::Color get_color()const { return widget_color->get_value(); }
 		
 	void reset();
 
@@ -93,7 +93,7 @@ public:
 	Dialog_Color();
 	~Dialog_Color();
 
-//	void edit(const sinfgapp::ValueDesc &x, etl::handle<sinfgapp::CanvasInterface> canvas_interface, sinfg::Time x=0);
+//	void edit(const synfigapp::ValueDesc &x, etl::handle<synfigapp::CanvasInterface> canvas_interface, synfig::Time x=0);
 }; // END of Dialog_Color
 
 }; // END of namespace studio

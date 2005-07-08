@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file duckmatic.h
 **	\brief Template Header
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_STUDIO_DUCKMATIC_H
-#define __SINFG_STUDIO_DUCKMATIC_H
+#ifndef __SYNFIG_STUDIO_DUCKMATIC_H
+#define __SYNFIG_STUDIO_DUCKMATIC_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -33,18 +33,18 @@
 #include <ETL/smart_ptr>
 #include <ETL/handle>
 
-#include <sinfg/vector.h>
-#include <sinfg/string.h>
-#include <sinfg/real.h>
+#include <synfig/vector.h>
+#include <synfig/string.h>
+#include <synfig/real.h>
 #include <sigc++/signal.h>
 #include <sigc++/object.h>
-#include <sinfg/time.h>
-#include <sinfg/color.h>
+#include <synfig/time.h>
+#include <synfig/color.h>
 #include <ETL/smart_ptr>
 
 #include "duck.h"
-#include <sinfg/color.h>
-#include <sinfg/guidset.h>
+#include <synfig/color.h>
+#include <synfig/guidset.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -58,7 +58,7 @@ class StringHash
 {
 	__gnu_cxx::hash<const char*> hasher_;
 public:
-	size_t operator()(const sinfg::String& x)const
+	size_t operator()(const synfig::String& x)const
 	{
 		return hasher_(x.c_str());
 	}
@@ -72,8 +72,8 @@ public:
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace sinfgapp { class ValueDesc; }
-namespace sinfg { class ParamDesc; }
+namespace synfigapp { class ValueDesc; }
+namespace synfig { class ParamDesc; }
 
 namespace studio
 {
@@ -84,22 +84,22 @@ class Duckmatic;
 class DuckDrag_Base : public etl::shared_object
 {
 public:
-	virtual void begin_duck_drag(Duckmatic* duckmatic, const sinfg::Vector& begin)=0;
+	virtual void begin_duck_drag(Duckmatic* duckmatic, const synfig::Vector& begin)=0;
 	virtual bool end_duck_drag(Duckmatic* duckmatic)=0;
-	virtual void duck_drag(Duckmatic* duckmatic, const sinfg::Vector& vector)=0;
+	virtual void duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector)=0;
 };
 
 class DuckDrag_Translate : public DuckDrag_Base
 {
-	sinfg::Vector last_translate_;
-	sinfg::Vector drag_offset_;
-	sinfg::Vector snap;
-	std::vector<sinfg::Vector> positions;
+	synfig::Vector last_translate_;
+	synfig::Vector drag_offset_;
+	synfig::Vector snap;
+	std::vector<synfig::Vector> positions;
 
 public:
-	void begin_duck_drag(Duckmatic* duckmatic, const sinfg::Vector& begin);
+	void begin_duck_drag(Duckmatic* duckmatic, const synfig::Vector& begin);
 	bool end_duck_drag(Duckmatic* duckmatic);
-	void duck_drag(Duckmatic* duckmatic, const sinfg::Vector& vector);
+	void duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector);
 };
 
 /*! \class Duckmatic
@@ -122,9 +122,9 @@ class Duckmatic
 public:
 
 #ifdef HASH_MAP_H
-typedef __gnu_cxx::hash_map<sinfg::GUID,etl::smart_ptr<sinfg::Point>,sinfg::GUIDHash> DuckDataMap;
+typedef __gnu_cxx::hash_map<synfig::GUID,etl::smart_ptr<synfig::Point>,synfig::GUIDHash> DuckDataMap;
 #else
-typedef std::map<sinfg::GUID,etl::smart_ptr<sinfg::Point> > DuckDataMap;
+typedef std::map<synfig::GUID,etl::smart_ptr<synfig::Point> > DuckDataMap;
 #endif
 
 	typedef studio::DuckMap DuckMap;
@@ -159,14 +159,14 @@ private:
 
 	std::list<etl::handle<Stroke> > persistant_stroke_list_;
 
-	sinfg::GUIDSet selected_ducks;
+	synfig::GUIDSet selected_ducks;
 
-	sinfg::GUID last_duck_guid;
+	synfig::GUID last_duck_guid;
 
 	std::list<etl::handle<Bezier> > bezier_list_;	
 
 	//! I cannot recall what this is for
-	//sinfg::Vector snap;
+	//synfig::Vector snap;
 
 	etl::handle<DuckDrag_Base> duck_dragger_;
 
@@ -181,7 +181,7 @@ private:
 	GuideList guide_list_x_;
 	GuideList guide_list_y_;
 
-	mutable sinfg::String sketch_filename_;
+	mutable synfig::String sketch_filename_;
 	
 	/*
  -- ** -- P R O T E C T E D   D A T A -----------------------------------------
@@ -191,7 +191,7 @@ protected:
 
 	etl::handle<Bezier> selected_bezier;
 
-	sinfg::Time cur_time;
+	synfig::Time cur_time;
 
 	//! This flag is set if operations should snap to the grid
 	/*! \todo perhaps there should be two of these flags, one for each axis?
@@ -202,7 +202,7 @@ protected:
 
 	//! This vector describes the grid size.
 	/*! \see grid_snap, show_grid */
-	sinfg::Vector grid_size;
+	synfig::Vector grid_size;
 
 	bool show_persistant_strokes;
 
@@ -214,8 +214,8 @@ protected:
 
 private:
 	
-	sinfg::Vector last_translate_;
-	sinfg::Vector drag_offset_;
+	synfig::Vector last_translate_;
+	synfig::Vector drag_offset_;
 	
 	//etl::handle<Duck> selected_duck;
 
@@ -255,24 +255,24 @@ public:
 
 	void toggle_grid_snap() { set_grid_snap(!grid_snap); }
 
-	sinfg::Point snap_point_to_grid(const sinfg::Point& x, float radius=0.1)const;
+	synfig::Point snap_point_to_grid(const synfig::Point& x, float radius=0.1)const;
 	
 	bool get_show_persistant_strokes()const { return show_persistant_strokes; }
 	void set_show_persistant_strokes(bool x);
 
 	//! Sets the size of the grid
-	void set_grid_size(const sinfg::Vector &s);
+	void set_grid_size(const synfig::Vector &s);
 	
 	//! Returns the size of the grid
-	const sinfg::Vector &get_grid_size()const { return grid_size; }
+	const synfig::Vector &get_grid_size()const { return grid_size; }
 	
 	
-	const sinfg::Time &get_time()const { return cur_time; }
+	const synfig::Time &get_time()const { return cur_time; }
 
 	bool get_axis_lock()const { return axis_lock; }
 	void set_axis_lock(bool x) { axis_lock=x; }
 	
-	void set_time(sinfg::Time x) { cur_time=x; }
+	void set_time(synfig::Time x) { cur_time=x; }
 
 	bool is_duck_group_selectable(const etl::handle<Duck>& x)const;
 	
@@ -306,12 +306,12 @@ public:
 
 	void select_duck(const etl::handle<Duck> &duck);
 	
-	void select_ducks_in_box(const sinfg::Vector& tl,const sinfg::Vector& br);
+	void select_ducks_in_box(const synfig::Vector& tl,const synfig::Vector& br);
 
 	void unselect_duck(const etl::handle<Duck> &duck);
 
-	void start_duck_drag(const sinfg::Vector& offset);
-	void translate_selected_ducks(const sinfg::Vector& vector);	
+	void start_duck_drag(const synfig::Vector& offset);
+	void translate_selected_ducks(const synfig::Vector& vector);	
 	bool end_duck_drag();
 
 	void signal_edited_selected_ducks();	
@@ -322,9 +322,9 @@ public:
 	etl::handle<Duck> find_similar_duck(etl::handle<Duck> duck);
 	etl::handle<Duck> add_similar_duck(etl::handle<Duck> duck);
 	
-	void add_stroke(etl::smart_ptr<std::list<sinfg::Point> > stroke_point_list, const sinfg::Color& color=sinfg::Color(0,0,0));
+	void add_stroke(etl::smart_ptr<std::list<synfig::Point> > stroke_point_list, const synfig::Color& color=synfig::Color(0,0,0));
 
-	void add_persistant_stroke(etl::smart_ptr<std::list<sinfg::Point> > stroke_point_list, const sinfg::Color& color=sinfg::Color(0,0,0));
+	void add_persistant_stroke(etl::smart_ptr<std::list<synfig::Point> > stroke_point_list, const synfig::Color& color=synfig::Color(0,0,0));
 
 	void clear_persistant_strokes();
 
@@ -343,24 +343,24 @@ public:
 	
 	//! \note parameter is in canvas coordinates
 	/*!	A radius of "zero" will have an unlimited radius */
-	etl::handle<Duck> find_duck(sinfg::Point pos, sinfg::Real radius=0, Duck::Type type=Duck::TYPE_DEFAULT);
+	etl::handle<Duck> find_duck(synfig::Point pos, synfig::Real radius=0, Duck::Type type=Duck::TYPE_DEFAULT);
 
-	GuideList::iterator find_guide_x(sinfg::Point pos, float radius=0.1);
-	GuideList::iterator find_guide_y(sinfg::Point pos, float radius=0.1);
-	GuideList::const_iterator find_guide_x(sinfg::Point pos, float radius=0.1)const { return const_cast<Duckmatic*>(this)->find_guide_x(pos,radius); }
-	GuideList::const_iterator find_guide_y(sinfg::Point pos, float radius=0.1)const { return const_cast<Duckmatic*>(this)->find_guide_y(pos,radius); }
+	GuideList::iterator find_guide_x(synfig::Point pos, float radius=0.1);
+	GuideList::iterator find_guide_y(synfig::Point pos, float radius=0.1);
+	GuideList::const_iterator find_guide_x(synfig::Point pos, float radius=0.1)const { return const_cast<Duckmatic*>(this)->find_guide_x(pos,radius); }
+	GuideList::const_iterator find_guide_y(synfig::Point pos, float radius=0.1)const { return const_cast<Duckmatic*>(this)->find_guide_y(pos,radius); }
 	
 	//! \note parameter is in canvas coordinates
 	/*!	A radius of "zero" will have an unlimited radius */
-	//etl::handle<Bezier> find_bezier(sinfg::Point pos, sinfg::Real radius=0);
+	//etl::handle<Bezier> find_bezier(synfig::Point pos, synfig::Real radius=0);
 
 	//! \note parameter is in canvas coordinates
 	/*!	A radius of "zero" will have an unlimited radius */
-	etl::handle<Bezier> find_bezier(sinfg::Point pos, sinfg::Real radius=0, float* location=0);
+	etl::handle<Bezier> find_bezier(synfig::Point pos, synfig::Real radius=0, float* location=0);
 	
-	etl::handle<Bezier> find_bezier(sinfg::Point pos, sinfg::Real scale, sinfg::Real radius, float* location=0);
+	etl::handle<Bezier> find_bezier(synfig::Point pos, synfig::Real scale, synfig::Real radius, float* location=0);
 	
-	bool add_to_ducks(const sinfgapp::ValueDesc& value_desc,etl::handle<CanvasView> canvas_view, const sinfg::TransformStack& transform_stack_, sinfg::ParamDesc *param_desc=0, int multiple=0);
+	bool add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<CanvasView> canvas_view, const synfig::TransformStack& transform_stack_, synfig::ParamDesc *param_desc=0, int multiple=0);
 
 	//! \writeme
 	void set_type_mask(Type x) { type_mask=x; }
@@ -372,9 +372,9 @@ public:
 
 	void clear_ducks();
 	
-	bool save_sketch(const sinfg::String& filename)const;
-	bool load_sketch(const sinfg::String& filename);
-	const sinfg::String& get_sketch_filename()const { return sketch_filename_; }
+	bool save_sketch(const synfig::String& filename)const;
+	bool load_sketch(const synfig::String& filename);
+	const synfig::String& get_sketch_filename()const { return sketch_filename_; }
 
 	void set_duck_dragger(etl::handle<DuckDrag_Base> x) { duck_dragger_=x; }
 	etl::handle<DuckDrag_Base> get_duck_dragger()const { return duck_dragger_; }
@@ -423,9 +423,9 @@ private:
 	sigc::signal<void,float> signal_user_click_[5];
 public:
 	
-	etl::smart_ptr<std::list<sinfg::Point> > stroke_data;
+	etl::smart_ptr<std::list<synfig::Point> > stroke_data;
 
-	sinfg::Color color;
+	synfig::Color color;
 
 	bool is_valid()const { return (bool)stroke_data; }
 

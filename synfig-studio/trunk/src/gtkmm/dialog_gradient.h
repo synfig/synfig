@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file dialog_gradient.h
 **	\brief Template Header
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_STUDIO_DIALOG_GRADIENT_H
-#define __SINFG_STUDIO_DIALOG_GRADIENT_H
+#ifndef __SYNFIG_STUDIO_DIALOG_GRADIENT_H
+#define __SYNFIG_STUDIO_DIALOG_GRADIENT_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -35,14 +35,14 @@
 #include <gtkmm/optionmenu.h>
 #include <gtkmm/checkbutton.h>
 
-#include <sinfg/gamma.h>
-#include <sinfg/time.h>
+#include <synfig/gamma.h>
+#include <synfig/time.h>
 
 #include "widget_gradient.h"
 #include "widget_coloredit.h"
 
-#include <sinfgapp/value_desc.h>
-#include <sinfg/time.h>
+#include <synfigapp/value_desc.h>
+#include <synfig/time.h>
 
 #include "dialogsettings.h"
 
@@ -54,7 +54,7 @@
 
 namespace Gtk { class Menu; class SpinButton; class Adjustment; };
 
-namespace sinfgapp {
+namespace synfigapp {
 class CanvasInterface;
 };
 
@@ -72,7 +72,7 @@ class Dialog_Gradient : public Gtk::Dialog
 	Gtk::Adjustment adjustment_pos;
 
 
-	sigc::signal<void,sinfg::Gradient> signal_edited_;
+	sigc::signal<void,synfig::Gradient> signal_edited_;
 
 	sigc::connection value_changed_connection;
 	
@@ -80,7 +80,7 @@ class Dialog_Gradient : public Gtk::Dialog
 	void on_apply_pressed();
 	void on_grab_pressed();
 	
-	void on_cpoint_selected(sinfg::Gradient::CPoint x);
+	void on_cpoint_selected(synfig::Gradient::CPoint x);
 	void on_values_adjusted();
 
 	Widget_Gradient* widget_gradient;
@@ -90,11 +90,11 @@ class Dialog_Gradient : public Gtk::Dialog
 	
 public:
 
-	sigc::signal<void,sinfg::Gradient>& signal_edited() { return signal_edited_; }
+	sigc::signal<void,synfig::Gradient>& signal_edited() { return signal_edited_; }
 	
-	void set_gradient(const sinfg::Gradient& x);
+	void set_gradient(const synfig::Gradient& x);
 
-	const sinfg::Gradient& get_gradient()const { return widget_gradient->get_value(); }
+	const synfig::Gradient& get_gradient()const { return widget_gradient->get_value(); }
 		
 	void reset();
 
@@ -102,7 +102,7 @@ public:
 	Dialog_Gradient();
 	~Dialog_Gradient();
 
-	void edit(const sinfgapp::ValueDesc &x, etl::handle<sinfgapp::CanvasInterface> canvas_interface, sinfg::Time x=0);
+	void edit(const synfigapp::ValueDesc &x, etl::handle<synfigapp::CanvasInterface> canvas_interface, synfig::Time x=0);
 }; // END of Dialog_Gradient
 
 }; // END of namespace studio

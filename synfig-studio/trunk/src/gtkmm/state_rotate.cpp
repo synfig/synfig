@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file state_rotate.cpp
 **	\brief Template File
 **
@@ -31,23 +31,23 @@
 #include <gtkmm/dialog.h>
 #include <gtkmm/entry.h>
 
-#include <sinfg/valuenode_dynamiclist.h>
-#include <sinfgapp/action_system.h>
+#include <synfig/valuenode_dynamiclist.h>
+#include <synfigapp/action_system.h>
 
 #include "state_rotate.h"
 #include "canvasview.h"
 #include "workarea.h"
 #include "app.h"
 
-#include <sinfgapp/action.h>
+#include <synfigapp/action.h>
 #include "event_mouse.h"
 #include "event_layerclick.h"
 #include "toolbox.h"
 #include "dialog_tooloptions.h"
 #include <gtkmm/optionmenu.h>
 #include "duck.h"
-#include <sinfg/angle.h>
-#include <sinfgapp/main.h>
+#include <synfig/angle.h>
+#include <synfigapp/main.h>
 
 #endif
 
@@ -55,7 +55,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
@@ -73,15 +73,15 @@ StateRotate studio::state_rotate;
 class DuckDrag_Rotate : public DuckDrag_Base
 {
 
-	sinfg::Vector last_rotate;
-	sinfg::Vector drag_offset;
-	sinfg::Vector center;
-	sinfg::Vector snap;
+	synfig::Vector last_rotate;
+	synfig::Vector drag_offset;
+	synfig::Vector center;
+	synfig::Vector snap;
 
 	Angle original_angle;
 	Real original_mag;
 
-	std::vector<sinfg::Vector> positions;
+	std::vector<synfig::Vector> positions;
 	
 	
 	bool bad_drag;
@@ -91,11 +91,11 @@ public:
 	etl::handle<CanvasView> canvas_view_;
 	bool use_magnitude;
 	DuckDrag_Rotate();
-	void begin_duck_drag(Duckmatic* duckmatic, const sinfg::Vector& begin);
+	void begin_duck_drag(Duckmatic* duckmatic, const synfig::Vector& begin);
 	bool end_duck_drag(Duckmatic* duckmatic);
-	void duck_drag(Duckmatic* duckmatic, const sinfg::Vector& vector);
+	void duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector);
 
-	etl::handle<sinfgapp::CanvasInterface> get_canvas_interface()const{return canvas_view_->canvas_interface();}
+	etl::handle<synfigapp::CanvasInterface> get_canvas_interface()const{return canvas_view_->canvas_interface();}
 };
 
 
@@ -103,7 +103,7 @@ class studio::StateRotate_Context : public sigc::trackable
 {
 	etl::handle<CanvasView> canvas_view_;
 		
-	sinfgapp::Settings& settings;
+	synfigapp::Settings& settings;
 
 	etl::handle<DuckDrag_Rotate> duck_dragger_;
 
@@ -128,8 +128,8 @@ public:
 	~StateRotate_Context();
 
 	const etl::handle<CanvasView>& get_canvas_view()const{return canvas_view_;}
-	etl::handle<sinfgapp::CanvasInterface> get_canvas_interface()const{return canvas_view_->canvas_interface();}
-	sinfg::Canvas::Handle get_canvas()const{return canvas_view_->get_canvas();}
+	etl::handle<synfigapp::CanvasInterface> get_canvas_interface()const{return canvas_view_->canvas_interface();}
+	synfig::Canvas::Handle get_canvas()const{return canvas_view_->get_canvas();}
 	WorkArea * get_work_area()const{return canvas_view_->get_work_area();}
 	
 	void load_settings();
@@ -167,7 +167,7 @@ StateRotate_Context::save_settings()
 
 StateRotate_Context::StateRotate_Context(CanvasView* canvas_view):
 	canvas_view_(canvas_view),
-	settings(sinfgapp::Main::get_selected_input_device()->settings()),
+	settings(synfigapp::Main::get_selected_input_device()->settings()),
 	duck_dragger_(new DuckDrag_Rotate()),
 	checkbutton_scale(_("Allow Scale"))
 {	
@@ -233,7 +233,7 @@ DuckDrag_Rotate::DuckDrag_Rotate()
 }
 
 void
-DuckDrag_Rotate::begin_duck_drag(Duckmatic* duckmatic, const sinfg::Vector& offset)
+DuckDrag_Rotate::begin_duck_drag(Duckmatic* duckmatic, const synfig::Vector& offset)
 {
 	last_rotate=Vector(1,1);
 
@@ -277,20 +277,20 @@ DuckDrag_Rotate::begin_duck_drag(Duckmatic* duckmatic, const sinfg::Vector& offs
 		move_only=false;
 
 	
-	sinfg::Vector vect(offset-center);
+	synfig::Vector vect(offset-center);
 	original_angle=Angle::tan(vect[1],vect[0]);
 	original_mag=vect.mag();
 }
 
 
 void
-DuckDrag_Rotate::duck_drag(Duckmatic* duckmatic, const sinfg::Vector& vector)
+DuckDrag_Rotate::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector)
 {
 	if(bad_drag)
 		return;
 	
 	//std::set<etl::handle<Duck> >::iterator iter;
-	sinfg::Vector vect(duckmatic->snap_point_to_grid(vector)-center+snap);
+	synfig::Vector vect(duckmatic->snap_point_to_grid(vector)-center+snap);
 
 	const DuckList selected_ducks(duckmatic->get_selected_ducks());
 	DuckList::const_iterator iter;
@@ -363,12 +363,12 @@ DuckDrag_Rotate::end_duck_drag(Duckmatic* duckmatic)
 	if(bad_drag)return false;
 	if(move_only)
 	{
-		sinfgapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Move Duck"));
+		synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Move Duck"));
 		duckmatic->signal_edited_selected_ducks();
 		return true;
 	}
 	
-	sinfgapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Rotate Ducks"));
+	synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Rotate Ducks"));
 		
 	if((last_rotate-Vector(1,1)).mag()>0.0001)
 	{

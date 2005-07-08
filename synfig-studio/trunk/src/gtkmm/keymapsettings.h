@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file keymapsettings.h
 **	\brief Defines the structures for managing key map settings
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_KEYMAPSETTINGS_H
-#define __SINFG_KEYMAPSETTINGS_H
+#ifndef __SYNFIG_KEYMAPSETTINGS_H
+#define __SYNFIG_KEYMAPSETTINGS_H
 
 /* === H E A D E R S ======================================================= */
 #include <gtkmm/dialog.h>

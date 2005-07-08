@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file metadatatreestore.h
 **	\brief Template Header
 **
@@ -21,15 +21,15 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_STUDIO_METADATATREESTORE_H
-#define __SINFG_STUDIO_METADATATREESTORE_H
+#ifndef __SYNFIG_STUDIO_METADATATREESTORE_H
+#define __SYNFIG_STUDIO_METADATATREESTORE_H
 
 /* === H E A D E R S ======================================================= */
 
 #include <gtkmm/treestore.h>
-#include <sinfgapp/canvasinterface.h>
+#include <synfigapp/canvasinterface.h>
 #include <gdkmm/pixbuf.h>
-#include <sinfgapp/action.h>
+#include <synfigapp/action.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -37,7 +37,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace sinfgapp { class CanvasInterface; }
+namespace synfigapp { class CanvasInterface; }
 
 namespace studio {
 	
@@ -77,7 +77,7 @@ public:
 
 private:
 
-	etl::loose_handle<sinfgapp::CanvasInterface> canvas_interface_;
+	etl::loose_handle<synfigapp::CanvasInterface> canvas_interface_;
 
 	/*
  -- ** -- P R I V A T E   M E T H O D S ---------------------------------------
@@ -91,7 +91,7 @@ private:
 
 private:
 
-	void meta_data_changed(sinfg::String key);
+	void meta_data_changed(synfig::String key);
 
 	/*
  -- ** -- P U B L I C   M E T H O D S -----------------------------------------
@@ -101,10 +101,10 @@ public:
 	
 	~MetaDataTreeStore();
 
-	etl::loose_handle<sinfgapp::CanvasInterface> get_canvas_interface() { return canvas_interface_; }
-	etl::loose_handle<const sinfgapp::CanvasInterface> get_canvas_interface()const { return canvas_interface_; }
-	sinfg::Canvas::Handle get_canvas()const { return canvas_interface_->get_canvas(); }
-	sinfg::Canvas::Handle get_canvas() { return canvas_interface_->get_canvas(); }
+	etl::loose_handle<synfigapp::CanvasInterface> get_canvas_interface() { return canvas_interface_; }
+	etl::loose_handle<const synfigapp::CanvasInterface> get_canvas_interface()const { return canvas_interface_; }
+	synfig::Canvas::Handle get_canvas()const { return canvas_interface_->get_canvas(); }
+	synfig::Canvas::Handle get_canvas() { return canvas_interface_->get_canvas(); }
 
 	void rebuild();
 
@@ -115,13 +115,13 @@ public:
 	*/
 
 protected:
-	MetaDataTreeStore(etl::loose_handle<sinfgapp::CanvasInterface>);
+	MetaDataTreeStore(etl::loose_handle<synfigapp::CanvasInterface>);
 	void get_value_vfunc (const Gtk::TreeModel::iterator& iter, int column, Glib::ValueBase& value)const;
 	void set_value_impl(const Gtk::TreeModel::iterator& iter, int column, const Glib::ValueBase& value);
 
 public:
 
-	static Glib::RefPtr<MetaDataTreeStore> create(etl::loose_handle<sinfgapp::CanvasInterface>);
+	static Glib::RefPtr<MetaDataTreeStore> create(etl::loose_handle<synfigapp::CanvasInterface>);
 	
 }; // END of class MetaDataTreeStore
 

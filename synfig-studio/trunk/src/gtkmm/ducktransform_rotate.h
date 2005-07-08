@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file template.h
 **	\brief Template Header
 **
@@ -21,13 +21,13 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_STUDIO_DUCK_TRANSFORM_ROTATE_H
-#define __SINFG_STUDIO_DUCK_TRANSFORM_ROTATE_H
+#ifndef __SYNFIG_STUDIO_DUCK_TRANSFORM_ROTATE_H
+#define __SYNFIG_STUDIO_DUCK_TRANSFORM_ROTATE_H
 
 /* === H E A D E R S ======================================================= */
 
 #include "duckmatic.h"
-#include <sinfg/angle.h>
+#include <synfig/angle.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -37,32 +37,32 @@
 
 namespace studio {
 
-class Transform_Rotate : public sinfg::Transform
+class Transform_Rotate : public synfig::Transform
 {
 private:
-	sinfg::Angle angle;
-	sinfg::Vector origin;
-	sinfg::Real sin_val;
-	sinfg::Real cos_val;
+	synfig::Angle angle;
+	synfig::Vector origin;
+	synfig::Real sin_val;
+	synfig::Real cos_val;
 
 public:
-	Transform_Rotate(const sinfg::Angle& angle,const sinfg::Vector& origin=sinfg::Vector(0,0)):
+	Transform_Rotate(const synfig::Angle& angle,const synfig::Vector& origin=synfig::Vector(0,0)):
 		angle(angle),
 		origin(origin),
-		sin_val(sinfg::Angle::sin(angle).get()),
-		cos_val(sinfg::Angle::cos(angle).get())
+		sin_val(synfig::Angle::sin(angle).get()),
+		cos_val(synfig::Angle::cos(angle).get())
 	{
 	}
 	
-	sinfg::Vector perform(const sinfg::Vector& x)const
+	synfig::Vector perform(const synfig::Vector& x)const
 	{
-		sinfg::Point pos(x-origin);
-		return sinfg::Point(cos_val*pos[0]-sin_val*pos[1],sin_val*pos[0]+cos_val*pos[1])+origin;
+		synfig::Point pos(x-origin);
+		return synfig::Point(cos_val*pos[0]-sin_val*pos[1],sin_val*pos[0]+cos_val*pos[1])+origin;
 	}
-	sinfg::Vector unperform(const sinfg::Vector& x)const
+	synfig::Vector unperform(const synfig::Vector& x)const
 	{
-		sinfg::Point pos(x-origin);
-		return sinfg::Point(cos_val*pos[0]+sin_val*pos[1],-sin_val*pos[0]+cos_val*pos[1])+origin;
+		synfig::Point pos(x-origin);
+		return synfig::Point(cos_val*pos[0]+sin_val*pos[1],-sin_val*pos[0]+cos_val*pos[1])+origin;
 	}
 };
 

@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file dockbook.h
 **	\brief Template Header
 **
@@ -21,13 +21,13 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_STUDIO_DOCKBOOK_H
-#define __SINFG_STUDIO_DOCKBOOK_H
+#ifndef __SYNFIG_STUDIO_DOCKBOOK_H
+#define __SYNFIG_STUDIO_DOCKBOOK_H
 
 /* === H E A D E R S ======================================================= */
 
 #include <gtkmm/notebook.h>
-#include <sinfg/string.h>
+#include <synfig/string.h>
 #include <gtkmm/tooltips.h>
 
 /* === M A C R O S ========================================================= */
@@ -68,10 +68,10 @@ public:
 
 	void clear();
 
-	sinfg::String get_local_contents()const;
+	synfig::String get_local_contents()const;
 	
-	sinfg::String get_contents()const;
-	void set_contents(const sinfg::String& x);
+	synfig::String get_contents()const;
+	void set_contents(const synfig::String& x);
 
 	void refresh_tabs_headers();
 	

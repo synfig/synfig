@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file template.cpp
 **	\brief Template File
 **
@@ -30,7 +30,7 @@
 
 #include "groupactionmanager.h"
 #include "layergrouptree.h"
-#include <sinfgapp/action_param.h>
+#include <synfigapp/action_param.h>
 #include "instance.h"
 #include <gtkmm/stock.h>
 
@@ -40,7 +40,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 using namespace studio;
 
 static const guint no_prev_popup((guint)-1);
@@ -94,7 +94,7 @@ GroupActionManager::set_group_tree(LayerGroupTree* x)
 }
 
 void
-GroupActionManager::set_canvas_interface(const etl::handle<sinfgapp::CanvasInterface> &x)
+GroupActionManager::set_canvas_interface(const etl::handle<synfigapp::CanvasInterface> &x)
 {
 	canvas_interface_=x;
 }
@@ -154,7 +154,7 @@ GroupActionManager::refresh()
 	// Make sure we are ready
 	if(!ui_manager_ || !group_tree_ || !canvas_interface_)
 	{
-		sinfg::error("GroupActionManager::refresh(): Not ready!");
+		synfig::error("GroupActionManager::refresh(): Not ready!");
 		return;
 	}
 	
@@ -182,14 +182,14 @@ GroupActionManager::refresh()
 
 //		bool multiple_selected(group_tree_->get_selection()->count_selected_rows()>1);
 		LayerGroupTree::LayerList selected_layers(group_tree_->get_selected_layers());
-		std::list<sinfg::String> selected_groups(group_tree_->get_selected_groups());
+		std::list<synfig::String> selected_groups(group_tree_->get_selected_groups());
 		
-		sinfg::info("selected_layers.size()=%d",selected_layers.size());
-		sinfg::info("selected_groups.size()=%d",selected_groups.size());
+		synfig::info("selected_layers.size()=%d",selected_layers.size());
+		synfig::info("selected_groups.size()=%d",selected_groups.size());
 		
 		{
 			bool canvas_set(false);
-			sinfgapp::Action::ParamList param_list;
+			synfigapp::Action::ParamList param_list;
 			param_list.add("time",get_canvas_interface()->get_time());
 			param_list.add("canvas_interface",get_canvas_interface());
 			
@@ -208,11 +208,11 @@ GroupActionManager::refresh()
 			}
 
 			{
-				std::list<sinfg::String>::iterator iter;
+				std::list<synfig::String>::iterator iter;
 			
 				for(iter=selected_groups.begin();iter!=selected_groups.end();++iter)
 				{
-					param_list.add("group",(sinfg::String)*iter);
+					param_list.add("group",(synfig::String)*iter);
 				}
 			}
 
@@ -223,7 +223,7 @@ GroupActionManager::refresh()
 			}
 			
 			handle<studio::Instance>::cast_static(get_canvas_interface()->get_instance())->
-				add_actions_to_group(action_group_, ui_info,   param_list, sinfgapp::Action::CATEGORY_GROUP);
+				add_actions_to_group(action_group_, ui_info,   param_list, synfigapp::Action::CATEGORY_GROUP);
 			}
 	}
 	

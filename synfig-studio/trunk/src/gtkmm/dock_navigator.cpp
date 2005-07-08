@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file dock_navigator.cpp
 **	\brief Dock Nagivator File
 **
@@ -33,10 +33,10 @@
 #include "workarea.h"
 
 #include <cassert>
-#include <sinfg/canvas.h>
-#include <sinfg/context.h>
-#include <sinfg/target_scanline.h>
-#include <sinfg/surface.h>
+#include <synfig/canvas.h>
+#include <synfig/context.h>
+#include <synfig/target_scanline.h>
+#include <synfig/surface.h>
 
 #include <gtkmm/separator.h>
 
@@ -48,7 +48,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 
@@ -64,7 +64,7 @@ const double log_10_2 = log(2.0);
 studio::Widget_NavView::Widget_NavView(CanvasView::LooseHandle cv)
 :canvview(cv),
 adj_zoom(0,-4,4,1,2),
-surface(new sinfg::Surface)
+surface(new synfig::Surface)
 {
 	attach(drawto,0,4,0,1);
 	
@@ -123,15 +123,15 @@ void studio::Widget_NavView::on_start_render()
 {
 	if(dirty)
 	{
-		//sinfg::warning("Nav: Starting render");
-		//sinfg::warning("Nav: Rendering canvas");
+		//synfig::warning("Nav: Starting render");
+		//synfig::warning("Nav: Rendering canvas");
 		etl::handle<Target_Scanline>	targ = surface_target(surface.get());
 		
 		targ->set_canvas(get_canvas_view()->get_canvas());
 		targ->set_remove_alpha();
 		targ->set_avoid_time_sync();
 		targ->set_quality(get_canvas_view()->get_work_area()->get_quality());
-		//sinfg::info("Set the quality level to: %d", get_canvas_view()->get_work_area()->get_quality());
+		//synfig::info("Set the quality level to: %d", get_canvas_view()->get_work_area()->get_quality());
 		
 		//this should set it to render a single frame
 		RendDesc	r = get_canvas_view()->get_canvas()->rend_desc();
@@ -140,13 +140,13 @@ void studio::Widget_NavView::on_start_render()
 		//this changes the size of the canvas to the closest thing we can find
 		int sw = r.get_w(), sh = r.get_h();
 		
-		//sinfg::warning("Nav: source image is %d x %d", sw,sh);
+		//synfig::warning("Nav: source image is %d x %d", sw,sh);
 		
 		//resize so largest dimension is 128
 		int dw = sw > sh ? 128 : sw*128/sh,
 			dh = sh > sw ? 128 : sh*128/sw;
 		
-		//sinfg::warning("Nav: dest image is %d x %d", dw,dh);
+		//synfig::warning("Nav: dest image is %d x %d", dw,dh);
 		
 		r.set_w(dw);
 		r.set_h(dh);
@@ -155,12 +155,12 @@ void studio::Widget_NavView::on_start_render()
 		//float pw = r.get_pw();
 		//float ph = r.get_ph();
 		
-		//sinfg::warning("Nav: pixel size is %f x %f", pw,ph);
+		//synfig::warning("Nav: pixel size is %f x %f", pw,ph);
 		
 		//this renders that single frame
 		targ->set_rend_desc(&r);
 		
-		//sinfg::warning("Nav: Building async renderer and starting it...");
+		//synfig::warning("Nav: Building async renderer and starting it...");
 		
 		renderer = new AsyncRenderer(targ);
 		renderer->signal_success().connect(sigc::mem_fun(*this,&Widget_NavView::on_finish_render));
@@ -174,14 +174,14 @@ void studio::Widget_NavView::on_finish_render()
 	//convert it into our pixmap
 	PixelFormat pf(PF_RGB);
 	
-	//sinfg::warning("Nav: It hath succeeded!!!");
+	//synfig::warning("Nav: It hath succeeded!!!");
 	
 	//assert(renderer && renderer->has_success());
 	DEBUGPOINT();
-	//sinfg::warning("Nav: now we know it really succeeded");
+	//synfig::warning("Nav: now we know it really succeeded");
 	if(!*surface)
 	{
-		sinfg::warning("dock_navigator: Bad surface");
+		synfig::warning("dock_navigator: Bad surface");
 		return;
 	}
 	
@@ -197,15 +197,15 @@ void studio::Widget_NavView::on_finish_render()
 	
 	if(w != dw || h != dh || !prev)
 	{
-		const int total_bytes(dw*dh*sinfg::channels(pf));
+		const int total_bytes(dw*dh*synfig::channels(pf));
 		
-		//sinfg::warning("Nav: Updating the pixbuf to be the right size, etc. (%d bytes)", total_bytes);
+		//synfig::warning("Nav: Updating the pixbuf to be the right size, etc. (%d bytes)", total_bytes);
 		
 		prev.clear();
 		guint8 *bytes = new guint8[total_bytes]; //24 bits per pixel
 		
 		//convert into our buffered dataS
-		//sinfg::warning("Nav: converting color format into buffer");
+		//synfig::warning("Nav: converting color format into buffer");
 		convert_color_format((unsigned char *)bytes, (*surface)[0], dw*dh, pf, App::gamma);
 		
 		prev = 
@@ -216,15 +216,15 @@ void studio::Widget_NavView::on_finish_render()
 			8, // bits per sample
 			dw,	// width
 			dh,	// height
-			dw*sinfg::channels(pf), // stride (pitch)
+			dw*synfig::channels(pf), // stride (pitch)
 			SigC::slot(freegu8)
 		);
 	}
 	else
 	{
-		//sinfg::warning("Nav: Don't need to resize");
+		//synfig::warning("Nav: Don't need to resize");
 		//convert into our buffered dataS
-		//sinfg::warning("Nav: converting color format into buffer");
+		//synfig::warning("Nav: converting color format into buffer");
 		if(prev) //just in case we're stupid
 		{
 			convert_color_format((unsigned char *)prev->get_pixels(), (*surface)[0], dw*dh, pf, App::gamma);
@@ -287,7 +287,7 @@ bool studio::Widget_NavView::on_expose_draw(GdkEventExpose *exp)
 		sx = drawto.get_width() / (float)w;
 		sy = drawto.get_height() / (float)h;
 		
-		//sinfg::warning("Nav redraw: now to scale the bitmap: %.3f x %.3f",sx,sy);
+		//synfig::warning("Nav redraw: now to scale the bitmap: %.3f x %.3f",sx,sy);
 		
 		//round to smallest scale (fit entire thing in window without distortion)
 		if(sx > sy) sx = sy;
@@ -315,10 +315,10 @@ bool studio::Widget_NavView::on_expose_draw(GdkEventExpose *exp)
 		//draw to drawing area
 		Glib::RefPtr<Gdk::GC>	gc = Gdk::GC::create(drawto.get_window());
 		
-		//sinfg::warning("Nav: Scaling pixmap to off (%d,%d) with size (%d,%d)", offx,offy,nw, nh);
+		//synfig::warning("Nav: Scaling pixmap to off (%d,%d) with size (%d,%d)", offx,offy,nw, nh);
 		Glib::RefPtr<Gdk::Pixbuf> scalepx = prev->scale_simple(nw,nh,Gdk::INTERP_NEAREST);
 		
-		//sinfg::warning("Nav: Drawing scaled bitmap");
+		//synfig::warning("Nav: Drawing scaled bitmap");
 		drawto.get_window()->draw_pixbuf(
 			gc, //GC
 			scalepx, //pixbuf
@@ -351,9 +351,9 @@ bool studio::Widget_NavView::on_expose_draw(GdkEventExpose *exp)
 		//coord system:
 		// tl : (offx,offy)
 		// axis multipliers = xaxis,yaxis
-		//sinfg::warning("Nav: tl (%f,%f), br (%f,%f)", wtl[0],wtl[1],wbr[0],wbr[1]);
-		//sinfg::warning("Nav: tl (%f,%f), br (%f,%f)", wtl[0],wtl[1],wbr[0],wbr[1]);
-		//sinfg::warning("Nav: Drawing Rectangle (%d,%d) with dim (%d,%d)", l,t,rw,rh);
+		//synfig::warning("Nav: tl (%f,%f), br (%f,%f)", wtl[0],wtl[1],wbr[0],wbr[1]);
+		//synfig::warning("Nav: tl (%f,%f), br (%f,%f)", wtl[0],wtl[1],wbr[0],wbr[1]);
+		//synfig::warning("Nav: Drawing Rectangle (%d,%d) with dim (%d,%d)", l,t,rw,rh);
 		drawto.get_window()->draw_rectangle(gc,false,l,t,rw,rh);
 	}
 	
@@ -408,7 +408,7 @@ void studio::Widget_NavView::on_number_modify()
 {
 	double z = unit_to_zoom(adj_zoom.get_value());
 	zoom_print.set_text(strprintf("%.1f%%",z*100.0));	
-	//sinfg::warning("Updating zoom to %f",adj_zoom.get_value());
+	//synfig::warning("Updating zoom to %f",adj_zoom.get_value());
 	
 	if(get_canvas_view() && z != get_canvas_view()->get_work_area()->get_zoom())
 	{
@@ -423,7 +423,7 @@ void studio::Widget_NavView::on_workarea_view_change()
 	double wz = get_canvas_view()->get_work_area()->get_zoom();
 	double z = zoom_to_unit(wz);
 
-	//sinfg::warning("Updating zoom to %f -> %f",wz,z);
+	//synfig::warning("Updating zoom to %f -> %f",wz,z);
 	if(!scrolling && z != adj_zoom.get_value())
 	{
 		adj_zoom.set_value(z);
@@ -482,7 +482,7 @@ bool studio::Widget_NavView::on_mouse_event(GdkEvent * e)
 //Navigator Dock Definitions
 
 studio::Dock_Navigator::Dock_Navigator()
-:Dock_CanvasSpecific("navigator",_("Navigator"),Gtk::StockID("sinfg-navigator"))
+:Dock_CanvasSpecific("navigator",_("Navigator"),Gtk::StockID("synfig-navigator"))
 {
 	add(dummy);
 }

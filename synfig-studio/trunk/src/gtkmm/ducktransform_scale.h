@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file template.h
 **	\brief Template Header
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_STUDIO_DUCK_TRANSFORM_SCALE_H
-#define __SINFG_STUDIO_DUCK_TRANSFORM_SCALE_H
+#ifndef __SYNFIG_STUDIO_DUCK_TRANSFORM_SCALE_H
+#define __SYNFIG_STUDIO_DUCK_TRANSFORM_SCALE_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -36,15 +36,15 @@
 
 namespace studio {
 
-class Transform_Scale : public sinfg::Transform
+class Transform_Scale : public synfig::Transform
 {
 private:
-	sinfg::Vector scale;
-	sinfg::Vector origin;
+	synfig::Vector scale;
+	synfig::Vector origin;
 public:
-	Transform_Scale(const sinfg::Vector& scale,const sinfg::Vector& origin=sinfg::Vector(0,0)):scale(scale),origin(origin) { }
-	sinfg::Vector perform(const sinfg::Vector& x)const { return sinfg::Vector((x[0]-origin[0])*scale[0]+origin[0],(x[1]-origin[1])*scale[1]+origin[1]); }
-	sinfg::Vector unperform(const sinfg::Vector& x)const { return sinfg::Vector((x[0]-origin[0])/scale[0]+origin[0],(x[1]-origin[1])/scale[1]+origin[1]); }
+	Transform_Scale(const synfig::Vector& scale,const synfig::Vector& origin=synfig::Vector(0,0)):scale(scale),origin(origin) { }
+	synfig::Vector perform(const synfig::Vector& x)const { return synfig::Vector((x[0]-origin[0])*scale[0]+origin[0],(x[1]-origin[1])*scale[1]+origin[1]); }
+	synfig::Vector unperform(const synfig::Vector& x)const { return synfig::Vector((x[0]-origin[0])/scale[0]+origin[0],(x[1]-origin[1])/scale[1]+origin[1]); }
 };
 
 };

@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file widget_enum.h
 **	\brief Template Header
 **
@@ -21,14 +21,14 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_STUDIO_WIDGET_ENUM_H
-#define __SINFG_STUDIO_WIDGET_ENUM_H
+#ifndef __SYNFIG_STUDIO_WIDGET_ENUM_H
+#define __SYNFIG_STUDIO_WIDGET_ENUM_H
 
 /* === H E A D E R S ======================================================= */
 
-#include <sinfg/layer.h>
+#include <synfig/layer.h>
 #include <gtkmm/optionmenu.h>
-#include <sinfg/paramdesc.h>
+#include <synfig/paramdesc.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -43,7 +43,7 @@ namespace studio {
 class Widget_Enum : public Gtk::OptionMenu
 {
 	Gtk::Menu *enum_menu;
-	sinfg::ParamDesc param_desc;
+	synfig::ParamDesc param_desc;
 	
 	int value;
 	void set_value_(int data);
@@ -52,7 +52,7 @@ public:
 	Widget_Enum();
 	~Widget_Enum();
 	
-	void set_param_desc(const sinfg::ParamDesc &x);
+	void set_param_desc(const synfig::ParamDesc &x);
 	void refresh();
 
 	void set_value(int data);

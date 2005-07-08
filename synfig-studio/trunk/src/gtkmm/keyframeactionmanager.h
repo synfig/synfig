@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file keyframeactionmanager.h
 **	\brief Template Header
 **
@@ -21,14 +21,14 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_KEYFRAME_ACTION_MANAGER_H
-#define __SINFG_KEYFRAME_ACTION_MANAGER_H
+#ifndef __SYNFIG_KEYFRAME_ACTION_MANAGER_H
+#define __SYNFIG_KEYFRAME_ACTION_MANAGER_H
 
 /* === H E A D E R S ======================================================= */
 
 #include <gtkmm/uimanager.h>
 #include <gtkmm/treeview.h>
-#include <sinfgapp/canvasinterface.h>
+#include <synfigapp/canvasinterface.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -47,7 +47,7 @@ class KeyframeActionManager
 	Glib::RefPtr<Gtk::UIManager> ui_manager_;
 	//Glib::RefPtr<Gtk::TreeSelection> tree_selection_;
 	KeyframeTree* keyframe_tree_;
-	etl::handle<sinfgapp::CanvasInterface> canvas_interface_;
+	etl::handle<synfigapp::CanvasInterface> canvas_interface_;
 
 	Glib::RefPtr<Gtk::ActionGroup>	action_group_;
 	Gtk::UIManager::ui_merge_id 	popup_id_;
@@ -76,8 +76,8 @@ public:
 	void set_keyframe_tree(KeyframeTree* x);
 	KeyframeTree* get_keyframe_tree()const { return keyframe_tree_; }
 
-	void set_canvas_interface(const etl::handle<sinfgapp::CanvasInterface> &x);
-	etl::handle<sinfgapp::CanvasInterface> get_canvas_interface()const { return canvas_interface_; }
+	void set_canvas_interface(const etl::handle<synfigapp::CanvasInterface> &x);
+	etl::handle<synfigapp::CanvasInterface> get_canvas_interface()const { return canvas_interface_; }
 
 	void refresh();
 	void clear();

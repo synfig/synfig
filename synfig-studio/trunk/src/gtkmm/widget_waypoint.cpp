@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file dialog_waypoint.cpp
 **	\brief Template Header
 **
@@ -42,7 +42,7 @@
 #include "widget_waypoint.h"
 #endif
 
-using namespace sinfg;
+using namespace synfig;
 using namespace std;
 using namespace etl;
 using namespace studio;
@@ -55,9 +55,9 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
-Widget_Waypoint::Widget_Waypoint(etl::handle<sinfg::Canvas> canvas):
+Widget_Waypoint::Widget_Waypoint(etl::handle<synfig::Canvas> canvas):
 	Gtk::Table(4,3,false),
-	waypoint(sinfg::ValueBase(),0),
+	waypoint(synfig::ValueBase(),0),
 	adj_tension(0.0,-20,20,0.1,1),
 	adj_continuity(0.0,-20,20,0.1,1),
 	adj_bias(0.0,-20,20,0.1,1),
@@ -139,7 +139,7 @@ Widget_Waypoint::Widget_Waypoint(etl::handle<sinfg::Canvas> canvas):
 }
 
 void
-Widget_Waypoint::set_canvas(sinfg::Canvas::Handle x)
+Widget_Waypoint::set_canvas(synfig::Canvas::Handle x)
 {
 	canvas=x;
 	assert(canvas);
@@ -149,7 +149,7 @@ Widget_Waypoint::set_canvas(sinfg::Canvas::Handle x)
 }
 
 void
-Widget_Waypoint::set_waypoint(sinfg::Waypoint &x)
+Widget_Waypoint::set_waypoint(synfig::Waypoint &x)
 {
 	time_widget->set_fps(canvas->rend_desc().get_frame_rate());
 
@@ -179,7 +179,7 @@ Widget_Waypoint::set_waypoint(sinfg::Waypoint &x)
 	adj_temporal_tension.set_value(waypoint.get_temporal_tension());
 	
 }
-const sinfg::Waypoint &
+const synfig::Waypoint &
 Widget_Waypoint::get_waypoint()const
 {
 #warning This too!
@@ -187,8 +187,8 @@ Widget_Waypoint::get_waypoint()const
 	waypoint.set_value(value_widget->get_value());
 	//int i;
 
-	waypoint.set_before((sinfg::Waypoint::Interpolation)before->get_history());
-	waypoint.set_after((sinfg::Waypoint::Interpolation)after->get_history());
+	waypoint.set_before((synfig::Waypoint::Interpolation)before->get_history());
+	waypoint.set_after((synfig::Waypoint::Interpolation)after->get_history());
 
 	waypoint.set_tension(adj_tension.get_value());
 	waypoint.set_continuity(adj_continuity.get_value());

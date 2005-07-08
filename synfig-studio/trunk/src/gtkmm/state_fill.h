@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file state_fill.h
 **	\brief Template Header
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_STATE_FILL_H
-#define __SINFG_STATE_FILL_H
+#ifndef __SYNFIG_STATE_FILL_H
+#define __SYNFIG_STATE_FILL_H
 
 /* === H E A D E R S ======================================================= */
 

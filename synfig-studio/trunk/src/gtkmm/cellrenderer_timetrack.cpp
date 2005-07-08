@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file cellrenderer_timetrack.cpp
 **	\brief Template Header
 **
@@ -41,14 +41,14 @@
 #include "widget_time.h"
 #include "widget_timeslider.h"
 
-#include <sinfgapp/canvasinterface.h>
+#include <synfigapp/canvasinterface.h>
 #include "instance.h"
 
-#include <sinfg/timepointcollect.h>
+#include <synfig/timepointcollect.h>
 
 #endif
 
-using namespace sinfg;
+using namespace synfig;
 using namespace std;
 using namespace etl;
 using namespace studio;
@@ -77,8 +77,8 @@ CellRenderer_TimeTrack::CellRenderer_TimeTrack():
 	Gtk::CellRenderer	(),
 	adjustment_			(10,10,20,0,0,0),
 	
-	property_valuedesc_	(*this,"value_desc",sinfgapp::ValueDesc()),
-	property_canvas_	(*this,"canvas",sinfg::Canvas::Handle()),
+	property_valuedesc_	(*this,"value_desc",synfigapp::ValueDesc()),
+	property_canvas_	(*this,"canvas",synfig::Canvas::Handle()),
 	property_adjustment_(*this,"adjustment",&adjustment_),
 	property_enable_timing_info_(*this,"enable-timing-info", false)
 {
@@ -88,7 +88,7 @@ CellRenderer_TimeTrack::CellRenderer_TimeTrack():
 
 CellRenderer_TimeTrack::~CellRenderer_TimeTrack()
 {
-	sinfg::info("CellRenderer_TimeTrack::~CellRenderer_TimeTrack(): deleted");
+	synfig::info("CellRenderer_TimeTrack::~CellRenderer_TimeTrack(): deleted");
 }
 
 void
@@ -98,7 +98,7 @@ CellRenderer_TimeTrack::set_adjustment(Gtk::Adjustment &x)
 //	x.signal_value_changed().connect(sigc::mem_fun(*this,&Gtk::Widget::queue_draw));
 }
 
-sinfg::Canvas::Handle
+synfig::Canvas::Handle
 CellRenderer_TimeTrack::get_canvas()const
 {
 	return const_cast<CellRenderer_TimeTrack*>(this)->property_canvas().get_value();
@@ -123,11 +123,11 @@ CellRenderer_TimeTrack::is_selected(const Waypoint& waypoint)const
 }
 
 //kind of a hack... pointer is ugly
-const sinfg::Node::time_set *get_times_from_vdesc(const sinfgapp::ValueDesc &v)
+const synfig::Node::time_set *get_times_from_vdesc(const synfigapp::ValueDesc &v)
 {
-	if(v.get_value_type() == sinfg::ValueBase::TYPE_CANVAS)
+	if(v.get_value_type() == synfig::ValueBase::TYPE_CANVAS)
 	{
-		sinfg::Canvas::Handle canvasparam = v.get_value().get(Canvas::Handle());
+		synfig::Canvas::Handle canvasparam = v.get_value().get(Canvas::Handle());
 	
 		if(canvasparam)
 		{
@@ -153,7 +153,7 @@ const sinfg::Node::time_set *get_times_from_vdesc(const sinfgapp::ValueDesc &v)
 	return 0;
 }
 
-bool get_closest_time(const sinfg::Node::time_set &tset, const Time &t, const Time &range, Time &out)
+bool get_closest_time(const synfig::Node::time_set &tset, const Time &t, const Time &range, Time &out)
 {
 	Node::time_set::const_iterator	i,j,end = tset.end();
 	
@@ -217,21 +217,21 @@ CellRenderer_TimeTrack::render_vfunc(
 	inactive_gc->set_stipple(Gdk::Bitmap::create(stipple_xpm,2,2));
 	inactive_gc->set_fill(Gdk::STIPPLED);
 	
-	sinfg::Canvas::Handle canvas(property_canvas().get_value());
+	synfig::Canvas::Handle canvas(property_canvas().get_value());
 	
-	sinfgapp::ValueDesc value_desc = property_value_desc().get_value();
-	sinfg::ValueNode *base_value = value_desc.get_value_node().get();
-	sinfg::ValueNode_Animated *value_node=dynamic_cast<sinfg::ValueNode_Animated*>(base_value);
+	synfigapp::ValueDesc value_desc = property_value_desc().get_value();
+	synfig::ValueNode *base_value = value_desc.get_value_node().get();
+	synfig::ValueNode_Animated *value_node=dynamic_cast<synfig::ValueNode_Animated*>(base_value);
 
-	sinfg::ValueNode_DynamicList *parent_value_node(0);
+	synfig::ValueNode_DynamicList *parent_value_node(0);
 	if(property_value_desc().get_value().parent_is_value_node())
-		parent_value_node=dynamic_cast<sinfg::ValueNode_DynamicList*>(property_value_desc().get_value().get_parent_value_node().get());
+		parent_value_node=dynamic_cast<synfig::ValueNode_DynamicList*>(property_value_desc().get_value().get_parent_value_node().get());
 
 	// If the canvas is defined, then load up the keyframes
 	if(canvas)
 	{
-		const sinfg::KeyframeList& keyframe_list(canvas->keyframe_list());
-		sinfg::KeyframeList::const_iterator iter;
+		const synfig::KeyframeList& keyframe_list(canvas->keyframe_list());
+		synfig::KeyframeList::const_iterator iter;
 		
 		for(iter=keyframe_list.begin();iter!=keyframe_list.end();++iter)
 		{
@@ -249,11 +249,11 @@ CellRenderer_TimeTrack::render_vfunc(
 	
 	//render all the time points that exist
 	{
-		const sinfg::Node::time_set *tset = get_times_from_vdesc(value_desc);
+		const synfig::Node::time_set *tset = get_times_from_vdesc(value_desc);
 		
 		if(tset)
 		{
-			sinfg::Node::time_set::const_iterator	i = tset->begin(), end = tset->end();
+			synfig::Node::time_set::const_iterator	i = tset->begin(), end = tset->end();
 			
 			float 	lower = adjustment->get_lower(),
 					upper = adjustment->get_upper();
@@ -314,7 +314,7 @@ CellRenderer_TimeTrack::render_vfunc(
 					gc->set_rgb_fg_color(Gdk::Color("#00EEEE"));
 				}
 				
-				//sinfg::info("Displaying time: %.3f s",(float)t);
+				//synfig::info("Displaying time: %.3f s",(float)t);
 				const int x = (int)((t-lower)*area.get_width()/(upper-lower));
 				
 				//should draw me a grey filled circle...
@@ -349,7 +349,7 @@ CellRenderer_TimeTrack::render_vfunc(
 					if(!t.is_valid())
 						continue;
 														
-					//sinfg::info("Displaying time: %.3f s",(float)t);
+					//synfig::info("Displaying time: %.3f s",(float)t);
 					const int x = (int)((t-lower)*area.get_width()/(upper-lower));
 					
 					//should draw me a grey filled circle...
@@ -383,7 +383,7 @@ CellRenderer_TimeTrack::render_vfunc(
 	if(value_node)
 	{				
 		//now render the actual waypoints
-		sinfg::ValueNode_Animated::WaypointList::iterator iter;
+		synfig::ValueNode_Animated::WaypointList::iterator iter;
 		for(
 			iter=value_node->waypoint_list().begin();
 			iter!=value_node->waypoint_list().end();
@@ -435,9 +435,9 @@ CellRenderer_TimeTrack::render_vfunc(
 	if(parent_value_node)
 	{
 		const int index(property_value_desc().get_value().get_index());
-		const sinfg::ValueNode_DynamicList::ListEntry& list_entry(parent_value_node->list[index]);
-		const sinfg::ValueNode_DynamicList::ListEntry::ActivepointList& activepoint_list(list_entry.timing_info);
-		sinfg::ValueNode_DynamicList::ListEntry::ActivepointList::const_iterator iter,next;
+		const synfig::ValueNode_DynamicList::ListEntry& list_entry(parent_value_node->list[index]);
+		const synfig::ValueNode_DynamicList::ListEntry::ActivepointList& activepoint_list(list_entry.timing_info);
+		synfig::ValueNode_DynamicList::ListEntry::ActivepointList::const_iterator iter,next;
 
 		bool is_off(false);
 		if(!activepoint_list.empty())
@@ -519,14 +519,14 @@ CellRenderer_TimeTrack::render_vfunc(
 	}
 }
 
-sinfg::ValueNode_Animated::WaypointList::iterator
-CellRenderer_TimeTrack::find_waypoint(const sinfg::Time& t,const sinfg::Time& scope)
+synfig::ValueNode_Animated::WaypointList::iterator
+CellRenderer_TimeTrack::find_waypoint(const synfig::Time& t,const synfig::Time& scope)
 {
-	sinfg::ValueNode_Animated *value_node=dynamic_cast<sinfg::ValueNode_Animated*>(property_value_desc().get_value().get_value_node().get());
+	synfig::ValueNode_Animated *value_node=dynamic_cast<synfig::ValueNode_Animated*>(property_value_desc().get_value().get_value_node().get());
 
     Time nearest(Time::end());
 
-	sinfg::ValueNode_Animated::WaypointList::iterator iter,ret;
+	synfig::ValueNode_Animated::WaypointList::iterator iter,ret;
 
 	if(value_node)
 	{
@@ -562,17 +562,17 @@ CellRenderer_TimeTrack::activate_vfunc(
 	Gtk::CellRendererState flags)
 {
 	path=treepath;
-	sinfg::ValueNode_Animated::WaypointList::iterator iter;
+	synfig::ValueNode_Animated::WaypointList::iterator iter;
     Time nearest=1000000000;
 	Gtk::Adjustment *adjustment=get_adjustment();
 
-	sinfg::ValueNode_Animated *value_node=dynamic_cast<sinfg::ValueNode_Animated*>(property_value_desc().get_value().get_value_node().get());
+	synfig::ValueNode_Animated *value_node=dynamic_cast<synfig::ValueNode_Animated*>(property_value_desc().get_value().get_value_node().get());
 
-	sinfg::Canvas::Handle canvas(get_canvas());
+	synfig::Canvas::Handle canvas(get_canvas());
 
-	sinfg::ValueNode_DynamicList *parent_value_node(0);
+	synfig::ValueNode_DynamicList *parent_value_node(0);
 	if(property_value_desc().get_value().parent_is_value_node())
-		parent_value_node=dynamic_cast<sinfg::ValueNode_DynamicList*>(property_value_desc().get_value().get_parent_value_node().get());
+		parent_value_node=dynamic_cast<synfig::ValueNode_DynamicList*>(property_value_desc().get_value().get_parent_value_node().get());
 
 	Time deltatime = 0;
 	Time curr_time;
@@ -629,7 +629,7 @@ CellRenderer_TimeTrack::activate_vfunc(
 					will remove it from the the set if it is included.
 			*/
 						
-			sinfgapp::ValueDesc valdesc = property_value_desc().get_value();
+			synfigapp::ValueDesc valdesc = property_value_desc().get_value();
 			const Node::time_set *tset = get_times_from_vdesc(valdesc);
 			
 			bool clickfound = tset && get_closest_time(*tset,actual_time,pixel_width*cell_area.get_height(),stime);
@@ -676,7 +676,7 @@ CellRenderer_TimeTrack::activate_vfunc(
 		catch(int)
 		{
 			selection=false;
-			selected=sinfg::UniqueID::nil();
+			selected=synfig::UniqueID::nil();
 		}
 		
 		if((!sel_times.empty() || selection) && event->button.button==1)
@@ -692,8 +692,8 @@ CellRenderer_TimeTrack::activate_vfunc(
 		if(parent_value_node)
 		{
 			const int index(property_value_desc().get_value().get_index());
-			const sinfg::ValueNode_DynamicList::ListEntry::ActivepointList& activepoint_list(parent_value_node->list[index].timing_info);
-			sinfg::ValueNode_DynamicList::ListEntry::ActivepointList::const_iterator iter;
+			const synfig::ValueNode_DynamicList::ListEntry::ActivepointList& activepoint_list(parent_value_node->list[index].timing_info);
+			synfig::ValueNode_DynamicList::ListEntry::ActivepointList::const_iterator iter;
 	
 			for(iter=activepoint_list.begin();iter!=activepoint_list.end();++iter)
 			{
@@ -711,12 +711,12 @@ CellRenderer_TimeTrack::activate_vfunc(
 			if(event->button.button==3)
 			{
 				Time stime;
-				sinfgapp::ValueDesc valdesc = property_value_desc().get_value();
+				synfigapp::ValueDesc valdesc = property_value_desc().get_value();
 				const Node::time_set *tset = get_times_from_vdesc(valdesc);
 				
 				bool clickfound = tset && get_closest_time(*tset,actual_time,pixel_width*cell_area.get_height(),stime);
 				
-				etl::handle<sinfg::Node> node;
+				etl::handle<synfig::Node> node;
 				if(valdesc.get_value(stime).get_type()==ValueBase::TYPE_CANVAS)
 				{
 					node=Canvas::Handle(valdesc.get_value(stime).get(Canvas::Handle()));
@@ -761,11 +761,11 @@ CellRenderer_TimeTrack::activate_vfunc(
 				deltatime = actual_time - actual_dragtime;
 				if(sel_times.size() != 0 && (delmode || !deltatime.is_equal(Time(0))))
 				{
-					sinfgapp::Action::ParamList param_list;
+					synfigapp::Action::ParamList param_list;
 					param_list.add("canvas",canvas_interface()->get_canvas());
 					param_list.add("canvas_interface",canvas_interface());
 					
-					if(sel_value.get_value_type() == sinfg::ValueBase::TYPE_CANVAS)
+					if(sel_value.get_value_type() == synfig::ValueBase::TYPE_CANVAS)
 					{
 						param_list.add("addcanvas",sel_value.get_value().get(Canvas::Handle()));
 					}else
@@ -774,7 +774,7 @@ CellRenderer_TimeTrack::activate_vfunc(
 					}
 					
 					set<Time>	newset;
-					std::set<sinfg::Time>::iterator i = sel_times.begin(), end = sel_times.end();
+					std::set<synfig::Time>::iterator i = sel_times.begin(), end = sel_times.end();
 					for(; i != end; ++i)
 					{
 						param_list.add("addtime",*i);
@@ -814,7 +814,7 @@ CellRenderer_TimeTrack::activate_vfunc(
 				else
 				if(event->button.button==1)
 				{
-					sinfg::Waypoint waypoint(*selected_waypoint);
+					synfig::Waypoint waypoint(*selected_waypoint);
 					Time newtime((waypoint.get_time()+(selected_time-drag_time)).round(canvas->rend_desc().get_frame_rate()));
 					if(waypoint.get_time()!=newtime)
 					{
@@ -842,16 +842,16 @@ CellRenderer_TimeTrack::activate_vfunc(
 
 
 
-Glib::PropertyProxy<sinfgapp::ValueDesc>
+Glib::PropertyProxy<synfigapp::ValueDesc>
 CellRenderer_TimeTrack::property_value_desc()
 {
-	return Glib::PropertyProxy<sinfgapp::ValueDesc>(this,"value_desc");
+	return Glib::PropertyProxy<synfigapp::ValueDesc>(this,"value_desc");
 }
 
-Glib::PropertyProxy<sinfg::Canvas::Handle>
+Glib::PropertyProxy<synfig::Canvas::Handle>
 CellRenderer_TimeTrack::property_canvas()
 {
-	return Glib::PropertyProxy<sinfg::Canvas::Handle>(this,"canvas");
+	return Glib::PropertyProxy<synfig::Canvas::Handle>(this,"canvas");
 }
 
 Glib::PropertyProxy<Gtk::Adjustment* >
@@ -861,24 +861,24 @@ CellRenderer_TimeTrack::property_adjustment()
 }
 
 void
-CellRenderer_TimeTrack::set_canvas_interface(etl::loose_handle<sinfgapp::CanvasInterface>	h)
+CellRenderer_TimeTrack::set_canvas_interface(etl::loose_handle<synfigapp::CanvasInterface>	h)
 {
 	canvas_interface_ = h;
 }
 
 static void
-set_waypoint_model(std::set<sinfg::Waypoint, std::less<UniqueID> > waypoints, Waypoint::Model model, etl::loose_handle<sinfgapp::CanvasInterface> canvas_interface)
+set_waypoint_model(std::set<synfig::Waypoint, std::less<UniqueID> > waypoints, Waypoint::Model model, etl::loose_handle<synfigapp::CanvasInterface> canvas_interface)
 {
 	// Create the action group
-	sinfgapp::Action::PassiveGrouper group(canvas_interface->get_instance().get(),_("Change Waypoint Group"));
+	synfigapp::Action::PassiveGrouper group(canvas_interface->get_instance().get(),_("Change Waypoint Group"));
 
-	std::set<sinfg::Waypoint, std::less<UniqueID> >::const_iterator iter;
+	std::set<synfig::Waypoint, std::less<UniqueID> >::const_iterator iter;
 	for(iter=waypoints.begin();iter!=waypoints.end();++iter)
 	{
 		Waypoint waypoint(*iter);
 		waypoint.apply_model(model);
 		
-		sinfgapp::Action::Handle action(sinfgapp::Action::create("waypoint_set"));
+		synfigapp::Action::Handle action(synfigapp::Action::create("waypoint_set"));
 		
 		assert(action);
 		
@@ -897,11 +897,11 @@ set_waypoint_model(std::set<sinfg::Waypoint, std::less<UniqueID> > waypoints, Wa
 }
 
 void
-CellRenderer_TimeTrack::show_timepoint_menu(const etl::handle<sinfg::Node>& node, const sinfg::Time& time, Side side)
+CellRenderer_TimeTrack::show_timepoint_menu(const etl::handle<synfig::Node>& node, const synfig::Time& time, Side side)
 {
-	std::set<sinfg::Waypoint, std::less<UniqueID> > waypoint_set;
+	std::set<synfig::Waypoint, std::less<UniqueID> > waypoint_set;
 	int n;
-	n=sinfg::waypoint_collect(waypoint_set,time,node);
+	n=synfig::waypoint_collect(waypoint_set,time,node);
 
 	Gtk::Menu* menu(manage(new Gtk::Menu()));
 
@@ -968,7 +968,7 @@ CellRenderer_TimeTrack::show_timepoint_menu(const etl::handle<sinfg::Node>& node
 		sigc::bind(
 			sigc::mem_fun(
 				*canvas_interface(),
-				&sinfgapp::CanvasInterface::set_time
+				&synfigapp::CanvasInterface::set_time
 			),
 			time
 		)
@@ -984,10 +984,10 @@ CellRenderer_TimeTrack::show_timepoint_menu(const etl::handle<sinfg::Node>& node
 			return;
 		}
 		else
-			sinfg::info("Too many waypoints under me");
+			synfig::info("Too many waypoints under me");
 	}
 	else
-		sinfg::info("ZERO waypoints under me");
+		synfig::info("ZERO waypoints under me");
 
 	if(menu)menu->popup(3,gtk_get_current_event_time());
 }

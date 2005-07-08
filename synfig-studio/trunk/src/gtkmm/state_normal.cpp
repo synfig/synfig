@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file template.cpp
 **	\brief Template File
 **
@@ -36,9 +36,9 @@
 #include "dialog_tooloptions.h"
 #include <gtkmm/dialog.h>
 #include "widget_waypointmodel.h"
-#include <sinfg/valuenode_animated.h>
-#include <sinfg/valuenode_composite.h>
-#include <sinfg/valuenode_const.h>
+#include <synfig/valuenode_animated.h>
+#include <synfig/valuenode_composite.h>
+#include <synfig/valuenode_const.h>
 #include "canvasview.h"
 #endif
 
@@ -46,7 +46,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
@@ -60,7 +60,7 @@ class studio::StateNormal_Context : public sigc::trackable
 	CanvasView* get_canvas_view() { return canvas_view; }
 	Canvas::Handle get_canvas() { return canvas_view->get_canvas(); }
 	WorkArea* get_work_area() { return canvas_view->get_work_area(); }
-	etl::handle<sinfgapp::CanvasInterface> get_canvas_interface() { return canvas_view->canvas_interface(); }
+	etl::handle<synfigapp::CanvasInterface> get_canvas_interface() { return canvas_view->canvas_interface(); }
 	
 public:
 	StateNormal_Context(CanvasView *canvas_view);
@@ -84,7 +84,7 @@ public:
 
 	Smach::event_result event_layer_click(const Smach::event& x);
 
-	void edit_several_waypoints(std::list<sinfgapp::ValueDesc> value_desc_list);
+	void edit_several_waypoints(std::list<synfigapp::ValueDesc> value_desc_list);
 
 	void refresh_tool_options();
 }; // END of class StateNormal_Context
@@ -118,12 +118,12 @@ StateNormal::~StateNormal()
 StateNormal_Context::StateNormal_Context(CanvasView *canvas_view):
 	canvas_view(canvas_view)
 {
-	sinfg::info("Enterted Normal State");
+	synfig::info("Enterted Normal State");
 }
 
 StateNormal_Context::~StateNormal_Context()
 {
-	sinfg::info("Left Normal State");
+	synfig::info("Left Normal State");
 }
 
 void
@@ -143,7 +143,7 @@ StateNormal_Context::event_refresh_tool_options(const Smach::event& x)
 Smach::event_result
 StateNormal_Context::event_stop_handler(const Smach::event& x)
 {
-	sinfg::info("STATE NORMAL: Received Stop Event");
+	synfig::info("STATE NORMAL: Received Stop Event");
 	canvas_view->stop();
 	return Smach::RESULT_ACCEPT;
 }
@@ -151,7 +151,7 @@ StateNormal_Context::event_stop_handler(const Smach::event& x)
 Smach::event_result
 StateNormal_Context::event_refresh_handler(const Smach::event& x)
 {
-	sinfg::info("STATE NORMAL: Received Refresh Event");
+	synfig::info("STATE NORMAL: Received Refresh Event");
 	canvas_view->rebuild_tables();
 	canvas_view->work_area->queue_render_preview();
 	return Smach::RESULT_ACCEPT;
@@ -160,7 +160,7 @@ StateNormal_Context::event_refresh_handler(const Smach::event& x)
 Smach::event_result
 StateNormal_Context::event_refresh_ducks_handler(const Smach::event& x)
 {
-	sinfg::info("STATE NORMAL: Received Refresh Ducks");
+	synfig::info("STATE NORMAL: Received Refresh Ducks");
 	canvas_view->queue_rebuild_ducks();
 	return Smach::RESULT_ACCEPT;
 }
@@ -168,7 +168,7 @@ StateNormal_Context::event_refresh_ducks_handler(const Smach::event& x)
 Smach::event_result
 StateNormal_Context::event_undo_handler(const Smach::event& x)
 {
-	sinfg::info("STATE NORMAL: Received Undo Event");
+	synfig::info("STATE NORMAL: Received Undo Event");
 	canvas_view->get_instance()->undo();
 	return Smach::RESULT_ACCEPT;
 }
@@ -176,7 +176,7 @@ StateNormal_Context::event_undo_handler(const Smach::event& x)
 Smach::event_result
 StateNormal_Context::event_redo_handler(const Smach::event& x)
 {
-	sinfg::info("STATE NORMAL: Received Redo Event");
+	synfig::info("STATE NORMAL: Received Redo Event");
 	canvas_view->get_instance()->redo();
 	return Smach::RESULT_ACCEPT;
 }
@@ -184,7 +184,7 @@ StateNormal_Context::event_redo_handler(const Smach::event& x)
 Smach::event_result
 StateNormal_Context::event_mouse_button_down_handler(const Smach::event& x)
 {
-	sinfg::info("STATE NORMAL: Received mouse button down Event");
+	synfig::info("STATE NORMAL: Received mouse button down Event");
 
 	const EventMouse& event(*reinterpret_cast<const EventMouse*>(&x));
 
@@ -205,11 +205,11 @@ StateNormal_Context::event_layer_click(const Smach::event& x)
 	
 	if(event.layer)
 	{
-		sinfg::info("STATE NORMAL: Received layer click Event, \"%s\"",event.layer->get_name().c_str());
+		synfig::info("STATE NORMAL: Received layer click Event, \"%s\"",event.layer->get_name().c_str());
 	}
 	else
 	{
-		sinfg::info("STATE NORMAL: Received layer click Event with an empty layer.");
+		synfig::info("STATE NORMAL: Received layer click Event with an empty layer.");
 	}
 	
 	switch(event.button)
@@ -244,7 +244,7 @@ StateNormal_Context::event_layer_click(const Smach::event& x)
 
 /*
 void
-StateNormal_Context::edit_several_waypoints(std::list<sinfgapp::ValueDesc> value_desc_list)
+StateNormal_Context::edit_several_waypoints(std::list<synfigapp::ValueDesc> value_desc_list)
 {
 	Gtk::Dialog dialog(
 		"Edit Multiple Waypoints",		// Title
@@ -266,12 +266,12 @@ StateNormal_Context::edit_several_waypoints(std::list<sinfgapp::ValueDesc> value
 	if(dialog.run()==0)
 		return;
 	DEBUGPOINT();
-	sinfgapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Set Waypoints"));
+	synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Set Waypoints"));
 
-	std::list<sinfgapp::ValueDesc>::iterator iter;
+	std::list<synfigapp::ValueDesc>::iterator iter;
 	for(iter=value_desc_list.begin();iter!=value_desc_list.end();++iter)
 	{
-		sinfgapp::ValueDesc value_desc(*iter);
+		synfigapp::ValueDesc value_desc(*iter);
 		
 		if(!value_desc.is_valid())
 			continue;
@@ -291,17 +291,17 @@ StateNormal_Context::edit_several_waypoints(std::list<sinfgapp::ValueDesc> value
 			
 			value_node=ValueNode_Animated::create(value,get_canvas()->get_time());
 			
-			sinfgapp::Action::Handle action;
+			synfigapp::Action::Handle action;
 			
 			if(!value_desc.is_value_node())
 			{
-				action=sinfgapp::Action::create("value_desc_connect");
+				action=synfigapp::Action::create("value_desc_connect");
 				action->set_param("dest",value_desc);
 				action->set_param("src",ValueNode::Handle(value_node));
 			}
 			else
 			{
-				action=sinfgapp::Action::create("value_node_replace");
+				action=synfigapp::Action::create("value_node_replace");
 				action->set_param("dest",value_desc.get_value_node());
 				action->set_param("src",ValueNode::Handle(value_node));
 			}
@@ -327,7 +327,7 @@ StateNormal_Context::edit_several_waypoints(std::list<sinfgapp::ValueDesc> value
 		if(value_node)
 		{
 			
-			sinfgapp::Action::Handle action(sinfgapp::Action::create("waypoint_set_smart"));
+			synfigapp::Action::Handle action(synfigapp::Action::create("waypoint_set_smart"));
 
 			if(!action)
 			{
@@ -364,18 +364,18 @@ StateNormal_Context::edit_several_waypoints(std::list<sinfgapp::ValueDesc> value
 Smach::event_result
 StateNormal_Context::event_multiple_ducks_clicked_handler(const Smach::event& x)
 {
-	sinfg::info("STATE NORMAL: Received multiple duck click event");
+	synfig::info("STATE NORMAL: Received multiple duck click event");
 
 	//const EventMouse& event(*reinterpret_cast<const EventMouse*>(&x));
 
-	std::list<sinfgapp::ValueDesc> value_desc_list;
+	std::list<synfigapp::ValueDesc> value_desc_list;
 	
 	// Create a list of value_descs associated with selection
 	const DuckList selected_ducks(get_work_area()->get_selected_ducks());
 	DuckList::const_iterator iter;
 	for(iter=selected_ducks.begin();iter!=selected_ducks.end();++iter)
 	{
-		sinfgapp::ValueDesc value_desc((*iter)->get_value_desc());
+		synfigapp::ValueDesc value_desc((*iter)->get_value_desc());
 		
 		if(!value_desc.is_valid())
 			continue;
@@ -383,7 +383,7 @@ StateNormal_Context::event_multiple_ducks_clicked_handler(const Smach::event& x)
 		if(value_desc.get_value_type()==ValueBase::TYPE_BLINEPOINT && value_desc.is_value_node() && ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node()))
 		{
 			value_desc_list.push_back(
-				sinfgapp::ValueDesc(
+				synfigapp::ValueDesc(
 					ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node())
 					,0
 				)
@@ -398,10 +398,10 @@ StateNormal_Context::event_multiple_ducks_clicked_handler(const Smach::event& x)
 	canvas_view->get_instance()->make_param_menu(menu,canvas_view->get_canvas(),value_desc_list);
 	
 	/*
-	sinfgapp::Action::ParamList param_list;
+	synfigapp::Action::ParamList param_list;
 	param_list=get_canvas_interface()->generate_param_list(value_desc_list);
 
-	canvas_view->add_actions_to_menu(menu, param_list,sinfgapp::Action::CATEGORY_VALUEDESC|sinfgapp::Action::CATEGORY_VALUENODE);
+	canvas_view->add_actions_to_menu(menu, param_list,synfigapp::Action::CATEGORY_VALUEDESC|synfigapp::Action::CATEGORY_VALUENODE);
 
 	menu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Edit Waypoints"),
 		sigc::bind(

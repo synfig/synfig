@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file widget_color.cpp
 **	\brief Template File
 **
@@ -39,7 +39,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
@@ -54,9 +54,9 @@ using namespace studio;
 /* === P R O C E D U R E S ================================================= */
 
 Gdk::Color
-studio::colorconv_sinfg2gdk(const sinfg::Color &c_)
+studio::colorconv_synfig2gdk(const synfig::Color &c_)
 {
-	const sinfg::Color c(c_.clamped());
+	const synfig::Color c(c_.clamped());
 	Gdk::Color ret;
 	ret.set_rgb(
 			256*App::gamma.r_F32_to_U8(c.get_r()),
@@ -67,7 +67,7 @@ studio::colorconv_sinfg2gdk(const sinfg::Color &c_)
 }
 
 void
-studio::render_color_to_window(const Glib::RefPtr<Gdk::Drawable>& window,const Gdk::Rectangle& ca,const sinfg::Color &color)
+studio::render_color_to_window(const Glib::RefPtr<Gdk::Drawable>& window,const Gdk::Rectangle& ca,const synfig::Color &color)
 {
 	const int height(ca.get_height());
 	const int width(ca.get_width());
@@ -83,8 +83,8 @@ studio::render_color_to_window(const Glib::RefPtr<Gdk::Drawable>& window,const G
 		const Color bg1(Color::blend(color,Color(0.75, 0.75, 0.75),1.0).clamped());
 		const Color bg2(Color::blend(color,Color(0.5, 0.5, 0.5),1.0).clamped());
 	
-		Gdk::Color gdk_c1(colorconv_sinfg2gdk(bg1));
-		Gdk::Color gdk_c2(colorconv_sinfg2gdk(bg2));
+		Gdk::Color gdk_c1(colorconv_synfig2gdk(bg1));
+		Gdk::Color gdk_c2(colorconv_synfig2gdk(bg2));
 
 		bool toggle(false);
 		for(int i=0;i<width;i+=square_size)
@@ -114,7 +114,7 @@ studio::render_color_to_window(const Glib::RefPtr<Gdk::Drawable>& window,const G
 	else
 	{
 		// In this case we have a solid color to use
-		Gdk::Color gdk_c1(colorconv_sinfg2gdk(color));
+		Gdk::Color gdk_c1(colorconv_synfig2gdk(color));
 
 		gc->set_rgb_fg_color(gdk_c1);	
 		window->draw_rectangle(gc, true, ca.get_x(), ca.get_y(), width-1, height-1);
@@ -145,14 +145,14 @@ Widget_Color::~Widget_Color()
 }
 
 void
-Widget_Color::set_value(const sinfg::Color &data)
+Widget_Color::set_value(const synfig::Color &data)
 {
 	assert(data.is_valid());
 	color=data;
 	queue_draw();
 }
 
-const sinfg::Color &
+const synfig::Color &
 Widget_Color::get_value()
 {
 	assert(color.is_valid());

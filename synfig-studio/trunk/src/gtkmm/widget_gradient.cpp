@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file widget_gradient.cpp
 **	\brief Template File
 **
@@ -31,7 +31,7 @@
 #include "widget_gradient.h"
 #include "app.h"
 #include <gtkmm/menu.h>
-#include <sinfg/exception.h>
+#include <synfig/exception.h>
 #include <ETL/misc>
 
 #endif
@@ -40,7 +40,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
@@ -50,7 +50,7 @@ using namespace studio;
 /* === P R O C E D U R E S ================================================= */
 
 void
-studio::render_gradient_to_window(const Glib::RefPtr<Gdk::Drawable>& window,const Gdk::Rectangle& ca,const sinfg::Gradient &gradient)
+studio::render_gradient_to_window(const Glib::RefPtr<Gdk::Drawable>& window,const Gdk::Rectangle& ca,const synfig::Gradient &gradient)
 {
 	int	height = ca.get_height();
 	int	width = ca.get_width()-4;
@@ -239,7 +239,7 @@ Widget_Gradient::popup_menu(float x)
 }
 
 void
-Widget_Gradient::set_value(const sinfg::Gradient& x)
+Widget_Gradient::set_value(const synfig::Gradient& x)
 {
 	gradient_=x;
 	if(gradient_.size())
@@ -248,7 +248,7 @@ Widget_Gradient::set_value(const sinfg::Gradient& x)
 }
 
 void
-Widget_Gradient::set_selected_cpoint(const sinfg::Gradient::CPoint &x)
+Widget_Gradient::set_selected_cpoint(const synfig::Gradient::CPoint &x)
 {
 	selected_cpoint=x;
 	signal_cpoint_selected_(selected_cpoint);
@@ -256,7 +256,7 @@ Widget_Gradient::set_selected_cpoint(const sinfg::Gradient::CPoint &x)
 }
 
 void
-Widget_Gradient::update_cpoint(const sinfg::Gradient::CPoint &x)
+Widget_Gradient::update_cpoint(const synfig::Gradient::CPoint &x)
 {
 	try
 	{
@@ -266,7 +266,7 @@ Widget_Gradient::update_cpoint(const sinfg::Gradient::CPoint &x)
 		gradient_.sort();
 		queue_draw();
 	}
-	catch(sinfg::Exception::NotFound)
+	catch(synfig::Exception::NotFound)
 	{
 		// Yotta...
 	}

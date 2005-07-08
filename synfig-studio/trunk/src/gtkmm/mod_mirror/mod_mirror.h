@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file mod_mirror.h
 **	\brief Template Header
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_MOD_MIRROR_H
-#define __SINFG_MOD_MIRROR_H
+#ifndef __SYNFIG_MOD_MIRROR_H
+#define __SYNFIG_MOD_MIRROR_H
 
 /* === H E A D E R S ======================================================= */
 

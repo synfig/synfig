@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file cellrenderer_time.h
 **	\brief Template Header
 **
@@ -21,8 +21,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SINFG_STUDIO_CELLRENDERER_TIME_H
-#define __SINFG_STUDIO_CELLRENDERER_TIME_H
+#ifndef __SYNFIG_STUDIO_CELLRENDERER_TIME_H
+#define __SYNFIG_STUDIO_CELLRENDERER_TIME_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -32,7 +32,7 @@
 #include <sigc++/signal.h>
 #include <sigc++/slot.h>
 
-#include <sinfg/time.h>
+#include <synfig/time.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -47,21 +47,21 @@ namespace studio {
 class CellRenderer_Time : public Gtk::CellRendererText
 {
 	sigc::signal<void, const Glib::ustring&> signal_secondary_click_;
-	sigc::signal<void, const Glib::ustring&, sinfg::Time> signal_edited_;
+	sigc::signal<void, const Glib::ustring&, synfig::Time> signal_edited_;
 
-	Glib::Property<sinfg::Time> property_time_;
-	Glib::Property<sinfg::Time> property_fps_;
+	Glib::Property<synfig::Time> property_time_;
+	Glib::Property<synfig::Time> property_fps_;
 
 	void string_edited_(const Glib::ustring&,const Glib::ustring&);
 
 	void on_value_editing_done();
 
 public:
-	sigc::signal<void, const Glib::ustring&, sinfg::Time> &signal_edited()
+	sigc::signal<void, const Glib::ustring&, synfig::Time> &signal_edited()
 	{return signal_edited_; }
 
-	Glib::PropertyProxy<sinfg::Time> property_time() { return property_time_.get_proxy();}
-	Glib::PropertyProxy<sinfg::Time> property_fps() { return property_fps_.get_proxy();}
+	Glib::PropertyProxy<synfig::Time> property_time() { return property_time_.get_proxy();}
+	Glib::PropertyProxy<synfig::Time> property_fps() { return property_fps_.get_proxy();}
 	
 	CellRenderer_Time();
 	~CellRenderer_Time();

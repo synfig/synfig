@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file dock_keyframes.cpp
 **	\brief Template File
 **
@@ -48,7 +48,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
@@ -60,7 +60,7 @@ using namespace studio;
 /* === M E T H O D S ======================================================= */
 
 Dock_Keyframes::Dock_Keyframes():
-	Dock_CanvasSpecific("keyframes",_("Keyframes"),Gtk::StockID("sinfg-keyframes")),
+	Dock_CanvasSpecific("keyframes",_("Keyframes"),Gtk::StockID("synfig-keyframes")),
 	action_group(Gtk::ActionGroup::create()),
 	keyframe_action_manager(new KeyframeActionManager)
 {
@@ -79,7 +79,7 @@ Dock_Keyframes::Dock_Keyframes():
 	);
 
 	add_button(
-		Gtk::StockID("sinfg-duplicate"),
+		Gtk::StockID("synfig-duplicate"),
 		_("Duplicates the selected keyframe at the current time")
 	)->signal_clicked().connect(
 		sigc::mem_fun(

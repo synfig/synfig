@@ -1,4 +1,4 @@
-/* === S I N F G =========================================================== */
+/* === S Y N F I G ========================================================= */
 /*!	\file layergrouptree.cpp
 **	\brief Template File
 **
@@ -28,7 +28,7 @@
 #	include <config.h>
 #endif
 
-#include <sinfg/layer.h>
+#include <synfig/layer.h>
 #include "layergrouptree.h"
 #include <gtkmm/treemodelsort.h>
 #include <ETL/misc>
@@ -39,7 +39,7 @@
 
 using namespace std;
 using namespace etl;
-using namespace sinfg;
+using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
@@ -107,7 +107,7 @@ LayerGroupTree::LayerGroupTree()
 
 LayerGroupTree::~LayerGroupTree()
 {
-	sinfg::info("LayerGroupTree::~LayerGroupTree(): deleted");
+	synfig::info("LayerGroupTree::~LayerGroupTree(): deleted");
 }
 
 void
@@ -150,13 +150,13 @@ LayerGroupTree::set_editable(bool x)
 }
 /*
 void
-LayerGroupTree::on_edited_time(const Glib::ustring&path_string,sinfg::Time time)
+LayerGroupTree::on_edited_time(const Glib::ustring&path_string,synfig::Time time)
 {
 	Gtk::TreePath path(path_string);
 	
 	const Gtk::TreeRow row(*(get_model()->get_iter(path)));
 	
-	sinfg::Keyframe keyframe(row[model.keyframe]);
+	synfig::Keyframe keyframe(row[model.keyframe]);
 	if(time!=keyframe.get_time())
 	{
 		row[model.time]=time;
@@ -167,7 +167,7 @@ LayerGroupTree::on_edited_time(const Glib::ustring&path_string,sinfg::Time time)
 }
 
 void
-LayerGroupTree::on_edited_time_delta(const Glib::ustring&path_string,sinfg::Time time)
+LayerGroupTree::on_edited_time_delta(const Glib::ustring&path_string,synfig::Time time)
 {
 	Gtk::TreePath path(path_string);
 	
@@ -183,8 +183,8 @@ LayerGroupTree::on_edited_description(const Glib::ustring&path_string,const Glib
 	
 	const Gtk::TreeRow row = *(get_model()->get_iter(path));
 	
-	const sinfg::String description(desc);
-	sinfg::Keyframe keyframe(row[model.keyframe]);
+	const synfig::String description(desc);
+	synfig::Keyframe keyframe(row[model.keyframe]);
 	if(description!=keyframe.get_description())
 	{
 		row[model.description]=desc;
@@ -264,22 +264,22 @@ LayerGroupTree::on_event(GdkEvent *event)
 	//return false;
 }
 
-static inline void __group_grabber(const Gtk::TreeModel::iterator& iter, std::list<sinfg::String>* ret)
+static inline void __group_grabber(const Gtk::TreeModel::iterator& iter, std::list<synfig::String>* ret)
 {
 	const LayerGroupTreeStore::Model model;
 	if((bool)(*iter)[model.is_group])
 		ret->push_back((Glib::ustring)(*iter)[model.group_name]);
 }
 
-std::list<sinfg::String>
+std::list<synfig::String>
 LayerGroupTree::get_selected_groups()const
 {
 	Glib::RefPtr<Gtk::TreeSelection> selection=const_cast<LayerGroupTree&>(*this).get_selection();
 
 	if(!selection)
-		return std::list<sinfg::String>();
+		return std::list<synfig::String>();
 
-	std::list<sinfg::String> ret;
+	std::list<synfig::String> ret;
 
 	selection->selected_foreach_iter(
 		sigc::bind(
