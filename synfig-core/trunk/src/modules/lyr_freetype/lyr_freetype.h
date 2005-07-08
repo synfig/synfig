@@ -25,6 +25,10 @@
 
 /* === H E A D E R S ======================================================= */
 
+//#ifdef __APPLE__
+//#define USE_MAC_FT_FUNCS	(1)
+//#endif
+
 #include <synfig/layer_composite.h>
 #include <synfig/vector.h>
 #include <synfig/color.h>
@@ -34,6 +38,24 @@
 #include FT_FREETYPE_H
 #include FT_GLYPH_H
 #include <vector>
+
+#include <synfig/string.h>
+#include <synfig/time.h>
+#include <synfig/context.h>
+#include <synfig/paramdesc.h>
+#include <synfig/renddesc.h>
+#include <synfig/surface.h>
+#include <synfig/value.h>
+#include <synfig/valuenode.h>
+#include <synfig/canvas.h>
+
+
+#include <ETL/misc>
+
+#ifdef USE_MAC_FT_FUNCS
+	#include <CoreServices/CoreServices.h>
+	#include FT_MAC_H
+#endif
 
 /* === M A C R O S ========================================================= */
 
@@ -115,7 +137,7 @@ public:
 
 	virtual bool set_param(const String & param, const synfig::ValueBase &value);
 	virtual ValueBase get_param(const String & param)const;
-	virtual Color get_color(Context context, const Point &pos)const;
+	virtual Color get_color(Context context, const synfig::Point &pos)const;
 	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 	
 	virtual Vocab get_param_vocab()const;

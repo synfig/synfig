@@ -224,10 +224,14 @@ AC_ARG_WITH(freetype,[
 
 
 if test $with_freetype != "no" ; then {
-	PKG_CHECK_MODULES(FREETYPE, freetype2,[
+	PKG_CHECK_MODULES(FREETYPE, xft fontconfig,[
 		with_freetype="yes"
 	],[
-		with_freetype="no"
+		PKG_CHECK_MODULES(FREETYPE, freetype2 fontconfig,[
+			with_freetype="yes"
+		],[
+			with_freetype="no"
+		])
 	])
 #	AC_CHECK_FT2(,[
 #		with_freetype="yes"

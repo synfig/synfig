@@ -31,17 +31,6 @@
 
 #include "lyr_freetype.h"
 
-#include <synfig/string.h>
-#include <synfig/time.h>
-#include <synfig/context.h>
-#include <synfig/paramdesc.h>
-#include <synfig/renddesc.h>
-#include <synfig/surface.h>
-#include <synfig/value.h>
-#include <synfig/valuenode.h>
-#include <synfig/canvas.h>
-
-#include <ETL/misc>
 
 #endif
 
@@ -138,23 +127,26 @@ lyr_freetype::new_font(const synfig::String &family, int style, int weight)
 }
 
 bool
-lyr_freetype::new_font_(const synfig::String &family_, int style, int weight)
+lyr_freetype::new_font_(const synfig::String &font_fam_, int style, int weight)
 {
-	synfig::String family(family_);
+	synfig::String font_fam(font_fam_);
+
+	if(new_face(font_fam_))
+		return true;
 	
 	//start evil hack
-	for(int i=0;i<family.size();i++)family[i]=tolower(family[i]);
+	for(unsigned int i=0;i<font_fam.size();i++)font_fam[i]=tolower(font_fam[i]);
 	//end evil hack
 
-	if(family=="arial black")
+	if(font_fam=="arial black")
 #ifndef __APPLE__
 	if(new_face("ariblk"))
 			return true;
 		else
 #endif
-		family="sans serif";
+		font_fam="sans serif";
 	
-	if(family=="sans serif" || family=="arial")
+	if(font_fam=="sans serif" || font_fam=="arial")
 	{
 		String arial("arial");
 		if(weight>WEIGHT_NORMAL)
@@ -166,9 +158,13 @@ lyr_freetype::new_font_(const synfig::String &family_, int style, int weight)
 
 		if(new_face(arial))
 			return true;
+#ifdef __APPLE__
+		if(new_face("Helvetica RO"))
+			return true;
+#endif
 	}
 
-	if(family=="comic" || family=="comic sans")
+	if(font_fam=="comic" || font_fam=="comic sans")
 	{
 		String filename("comic");
 		if(weight>WEIGHT_NORMAL)
@@ -181,7 +177,7 @@ lyr_freetype::new_font_(const synfig::String &family_, int style, int weight)
 			return true;
 	}
 
-	if(family=="courier" || family=="courier new")
+	if(font_fam=="courier" || font_fam=="courier new")
 	{
 		String filename("cour");
 		if(weight>WEIGHT_NORMAL)
@@ -194,7 +190,7 @@ lyr_freetype::new_font_(const synfig::String &family_, int style, int weight)
 			return true;
 	}
 
-	if(family=="serif" || family=="times" || family=="times new roman")
+	if(font_fam=="serif" || font_fam=="times" || font_fam=="times new roman")
 	{
 		String filename("times");
 		if(weight>WEIGHT_NORMAL)
@@ -207,7 +203,7 @@ lyr_freetype::new_font_(const synfig::String &family_, int style, int weight)
 			return true;
 	}
 	
-	if(family=="trebuchet")
+	if(font_fam=="trebuchet")
 	{
 		String filename("trebuc");
 		if(weight>WEIGHT_NORMAL)
@@ -224,7 +220,7 @@ lyr_freetype::new_font_(const synfig::String &family_, int style, int weight)
 	}
 		
 	
-	if(family=="sans serif" || family=="luxi sans")
+	if(font_fam=="sans serif" || font_fam=="luxi sans")
 	{
 		{
 			String luxi("luxis");
@@ -244,7 +240,7 @@ lyr_freetype::new_font_(const synfig::String &family_, int style, int weight)
 		if(new_face("Arial"))
 			return true;
 	}
-	if(family=="serif" || family=="times" || family=="times new roman" || family=="luxi serif")
+	if(font_fam=="serif" || font_fam=="times" || font_fam=="times new roman" || font_fam=="luxi serif")
 	{
 		{
 			String luxi("luxir");
@@ -263,7 +259,7 @@ lyr_freetype::new_font_(const synfig::String &family_, int style, int weight)
 		if(new_face("Times"))
 			return true;
 	}
-	if(family=="luxi")
+	if(font_fam=="luxi")
 	{
 		{
 			String luxi("luxim");
@@ -284,16 +280,47 @@ lyr_freetype::new_font_(const synfig::String &family_, int style, int weight)
 			return true;
 	}
 	
-	return new_face(family_) || new_face(family);
+	return new_face(font_fam_) || new_face(font_fam);
 	
 	return false;
 }
+
+#ifdef USE_MAC_FT_FUNCS
+void fss2path(char *path, FSSpec *fss)
+{
+  int l;             //fss->name contains name of last item in path
+  for(l=0; l<(fss->name[0]); l++) path[l] = fss->name[l + 1]; 
+  path[l] = 0;
+
+  if(fss->parID != fsRtParID) //path is more than just a volume name
+  { 
+    int i, len;
+    CInfoPBRec pb;
+    
+    pb.dirInfo.ioNamePtr = fss->name;
+    pb.dirInfo.ioVRefNum = fss->vRefNum;
+    pb.dirInfo.ioDrParID = fss->parID;
+    do
+    {
+      pb.dirInfo.ioFDirIndex = -1;  //get parent directory name
+      pb.dirInfo.ioDrDirID = pb.dirInfo.ioDrParID;   
+      if(PBGetCatInfoSync(&pb) != noErr) break;
+
+      len = fss->name[0] + 1;
+      for(i=l; i>=0;  i--) path[i + len] = path[i];
+      for(i=1; i<len; i++) path[i - 1] = fss->name[i]; //add to start of path
+      path[i - 1] = ':';
+      l += len;
+} while(pb.dirInfo.ioDrDirID != fsRtDirID); //while more directory levels
+  }
+}
+#endif
 
 bool
 lyr_freetype::new_face(const String &newfont)
 {
 	int error;
-	int face_index=0;
+	FT_Long face_index=0;
 
 	// If we are already loaded, don't bother reloading.
 	if(face && font==newfont)
@@ -314,10 +341,48 @@ lyr_freetype::new_face(const String &newfont)
 		if(error)error=FT_New_Face(ft_library,(get_canvas()->get_file_path()+ETL_DIRECTORY_SEPERATOR+newfont+".ttf").c_str(),face_index,&face);
 	}
 
+#ifdef USE_MAC_FT_FUNCS
+	if(error)
+	{
+		FSSpec fs_spec;
+		error=FT_GetFile_From_Mac_Name(newfont.c_str(),&fs_spec,&face_index);
+		if(!error)
+		{
+			char filename[512];
+			fss2path(filename,&fs_spec);
+			//FSSpecToNativePathName(fs_spec,filename,sizeof(filename)-1, 0);
+			
+			error=FT_New_Face(ft_library, filename, face_index,&face);
+			//error=FT_New_Face_From_FSSpec(ft_library, &fs_spec, face_index,&face);
+			synfig::info(__FILE__":%d: \"%s\" (%s) -- ft_error=%d",__LINE__,newfont.c_str(),filename,error);
+		}
+		else
+		{
+			synfig::info(__FILE__":%d: \"%s\" -- ft_error=%d",__LINE__,newfont.c_str(),error);
+			// Unable to generate fs_spec
+		}
+		  
+	}
+#endif
+
 #ifdef WIN32
 	if(error)error=FT_New_Face(ft_library,("C:\\WINDOWS\\FONTS\\"+newfont).c_str(),face_index,&face);
 	if(error)error=FT_New_Face(ft_library,("C:\\WINDOWS\\FONTS\\"+newfont+".ttf").c_str(),face_index,&face);
 #else
+
+#ifdef __APPLE__
+	if(error)error=FT_New_Face(ft_library,("~/Library/Fonts/"+newfont).c_str(),face_index,&face);
+	if(error)error=FT_New_Face(ft_library,("~/Library/Fonts/"+newfont+".ttf").c_str(),face_index,&face);
+	if(error)error=FT_New_Face(ft_library,("~/Library/Fonts/"+newfont+".dfont").c_str(),face_index,&face);
+
+	if(error)error=FT_New_Face(ft_library,("/Library/Fonts/"+newfont).c_str(),face_index,&face);
+	if(error)error=FT_New_Face(ft_library,("/Library/Fonts/"+newfont+".ttf").c_str(),face_index,&face);
+	if(error)error=FT_New_Face(ft_library,("/Library/Fonts/"+newfont+".dfont").c_str(),face_index,&face);
+#endif
+
+	if(error)error=FT_New_Face(ft_library,("/usr/X11R6/lib/X11/fonts/type1/"+newfont).c_str(),face_index,&face);
+	if(error)error=FT_New_Face(ft_library,("/usr/X11R6/lib/X11/fonts/type1/"+newfont+".ttf").c_str(),face_index,&face);
+
 	if(error)error=FT_New_Face(ft_library,("/usr/share/fonts/truetype/"+newfont).c_str(),face_index,&face);
 	if(error)error=FT_New_Face(ft_library,("/usr/share/fonts/truetype/"+newfont+".ttf").c_str(),face_index,&face);
 
@@ -326,17 +391,6 @@ lyr_freetype::new_face(const String &newfont)
 
 	if(error)error=FT_New_Face(ft_library,("/usr/X11R6/lib/X11/fonts/truetype/"+newfont).c_str(),face_index,&face);
 	if(error)error=FT_New_Face(ft_library,("/usr/X11R6/lib/X11/fonts/truetype/"+newfont+".ttf").c_str(),face_index,&face);
-
-	if(error)error=FT_New_Face(ft_library,("/usr/X11R6/lib/X11/fonts/type1/"+newfont).c_str(),face_index,&face);
-	if(error)error=FT_New_Face(ft_library,("/usr/X11R6/lib/X11/fonts/type1/"+newfont+".ttf").c_str(),face_index,&face);
-
-#ifdef __APPLE__
-	if(error)error=FT_New_Face(ft_library,("~/Library/Fonts/"+newfont).c_str(),face_index,&face);
-	if(error)error=FT_New_Face(ft_library,("~/Library/Fonts/"+newfont+".ttf").c_str(),face_index,&face);
-
-	if(error)error=FT_New_Face(ft_library,("/Library/Fonts/"+newfont).c_str(),face_index,&face);
-	if(error)error=FT_New_Face(ft_library,("/Library/Fonts/"+newfont+".ttf").c_str(),face_index,&face);
-#endif
 
 #endif
 	if(error)
@@ -355,12 +409,14 @@ bool
 lyr_freetype::set_param(const String & param, const ValueBase &value)
 {
 	Mutex::Lock lock(mutex);
+/*
 	if(param=="font" && value.same_as(font))
 	{
 		new_font(etl::basename(value.get(font)),style,weight);
 		family=etl::basename(value.get(font));
 		return true;
 	}
+*/
 	IMPORT_PLUS(family,new_font(family,style,weight));
 	IMPORT_PLUS(weight,new_font(family,style,weight));
 	IMPORT_PLUS(style,new_font(family,style,weight));
@@ -504,7 +560,7 @@ lyr_freetype::sync()
 }
 
 Color
-lyr_freetype::get_color(Context context, const Point &pos)const
+lyr_freetype::get_color(Context context, const synfig::Point &pos)const
 {
 	if(needs_sync_)
 		const_cast<lyr_freetype*>(this)->sync();
@@ -777,5 +833,5 @@ lyr_freetype::get_bounding_rect()const
 	if(needs_sync_)
 		const_cast<lyr_freetype*>(this)->sync();
 //	if(!is_disabled())
-		return Rect::full_plane();
+		return synfig::Rect::full_plane();
 }
