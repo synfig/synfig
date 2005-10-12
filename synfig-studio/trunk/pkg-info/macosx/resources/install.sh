@@ -1,9 +1,9 @@
 #!/bin/sh
 # finish up the installation
 # this script should be executed using the sudo command
-# this file is copied to sinfg-devel.post_install and sinfg-devel.post_upgrade
+# this file is copied to synfig-devel.post_install and synfig-devel.post_upgrade
 # inside the .pkg bundle
-LOGFILE="/sinfg_install.log"
+LOGFILE="~/synfig-core_install.log"
 
 exit 0
 
@@ -15,7 +15,7 @@ PREFIX=/usr/local
 
 cd $RESOURCE_DIR
 
-echo "Creating sinfg-config script"
+echo "Creating synfig-config script"
 [ -d $PREFIX ] || mkdir $PREFIX
 [ -d $PREFIX/bin ] || mkdir $PREFIX/bin
 [ -d $PREFIX/include ] || mkdir $PREFIX/include
@@ -23,8 +23,8 @@ echo "Creating sinfg-config script"
 [ -d $PREFIX/sbin ] || mkdir $PREFIX/sbin
 
 echo "Cleaning up any previous installation"
-[ -d $PREFIX/include/sinfg ] && rm -fr $PREFIX/include/sinfg
-ln -s /Library/Frameworks/sinfg.framework/Headers $PREFIX/include/sinfg
+[ -d $PREFIX/include/synfig ] && rm -fr $PREFIX/include/synfig
+ln -s /Library/Frameworks/synfig.framework/Headers $PREFIX/include/synfig
 
 sed '
 s:@exec_prefix@:/usr/local:g;
@@ -37,17 +37,17 @@ s:@PACKAGE@:@_PACKAGE_@:g;
 s:@LIBS@::g;
 s:@VERSION@:@_VERSION_@:;
 s:@PACKAGE@:@_PACKAGE_@:;
-s:@CONFIG_LIBS@:-F/Library/Frameworks/sinfg.framework:;
-s:@SINFG_LIBS@:-F/Library/Frameworks/sinfg.framework:;
-s:@CONFIG_CFLAGS@:-framework sinfg:;
-' < $RESOURCE_DIR/sinfg-config.in > $PREFIX/bin/sinfg-config
-chmod 775 $PREFIX/bin/sinfg-config
+s:@CONFIG_LIBS@:-F/Library/Frameworks/synfig.framework:;
+s:@synfig_LIBS@:-F/Library/Frameworks/synfig.framework:;
+s:@CONFIG_CFLAGS@:-framework synfig:;
+' < $RESOURCE_DIR/synfig-config.in > $PREFIX/bin/synfig-config
+chmod 775 $PREFIX/bin/synfig-config
 
 echo "Precompiling Headers"
-#/usr/bin/c++ -precomp /Library/Frameworks/sinfg.framework/Headers/sinfg.h -o /Library/Frameworks/sinfg.framework/Headers/sinfg.p
+#/usr/bin/c++ -precomp /Library/Frameworks/synfig.framework/Headers/synfig.h -o /Library/Frameworks/synfig.framework/Headers/synfig.p
 
-echo "Moving sinfg tool"
-cp $RESOURCE_DIR/sinfg $PREFIX/bin || exit 1
+echo "Moving synfig tool"
+cp $RESOURCE_DIR/synfig $PREFIX/bin || exit 1
 
 echo "Done with shell script"
 
