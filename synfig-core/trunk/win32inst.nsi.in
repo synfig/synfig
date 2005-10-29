@@ -12,7 +12,7 @@
 ; The name of the installer
 Name "@PACKAGE_NAME@ @PACKAGE_VERSION@"
 
-!define PRODUCT_WEB_SITE "http://deepdarc.dnsalias.net/~darco/"
+!define PRODUCT_WEB_SITE "http://voria.com/synfig/"
 
 ; The file to write
 OutFile "@PACKAGE_TARNAME@-@PACKAGE_VERSION@.exe"
