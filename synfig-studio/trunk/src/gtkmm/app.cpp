@@ -450,6 +450,7 @@ int v_key_check(const char* key, U32* serial, U32 appid)
 
 int check_license(String basedir)
 {
+#ifdef LICENSE_KEY_REQUIRED
 	String key;
 	String license_file;
 
@@ -488,6 +489,9 @@ int check_license(String basedir)
 	}
 	synfig::info("License Authenticated -- Serial #%05d",serial);
 	return serial;
+#else
+	return 1;
+#endif	
 }
 
 /*
