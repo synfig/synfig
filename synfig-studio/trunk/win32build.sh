@@ -1,14 +1,16 @@
 #!/bin/sh
 
-#OPT_FLAGS="--disable-optimization --disable-debug --enable-license-key"
-OPTIONS="--disable-optimization --disable-debug"
+OPTIONS=""
+OPTIONS="$OPTIONS --disable-optimization"
+OPTIONS="$OPTIONS --disable-debug"
+OPTIONS="$OPTIONS --enable-license-key"
 
 
 BUILDDIR=win32build
 
 [ -e configure ] || ./bootstrap || exit 1
 
- [ -d $BUILDDIR ] && rm -fr $BUILDDIR
+[ -d $BUILDDIR ] && rm -fr $BUILDDIR
 
 mkdir $BUILDDIR
 
