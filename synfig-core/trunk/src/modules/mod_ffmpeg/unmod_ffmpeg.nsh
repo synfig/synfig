@@ -1,5 +1,5 @@
 Section "un.mod_ffmpeg"
-	Delete "$INSTDIR\lib\sinfg\modules\mod_ffmpeg.dll"
+	Delete "$INSTDIR\lib\synfig\modules\mod_ffmpeg.dll"
 	RMDir "$INSTDIR"
 SectionEnd
 

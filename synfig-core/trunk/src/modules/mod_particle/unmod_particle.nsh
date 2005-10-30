@@ -1,5 +1,5 @@
 Section "un.mod_particle"
-	Delete "$INSTDIR\lib\sinfg\modules\mod_particle.dll"
+	Delete "$INSTDIR\lib\synfig\modules\mod_particle.dll"
 	RMDir "$INSTDIR"
 SectionEnd
 

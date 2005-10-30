@@ -1,5 +1,5 @@
 Section "un.@MODNAME@"
-	Delete "$INSTDIR\lib\sinfg\modules\@MODNAME@.dll"
+	Delete "$INSTDIR\lib\synfig\modules\@MODNAME@.dll"
 	RMDir "$INSTDIR"
 SectionEnd
 

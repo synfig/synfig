@@ -1,5 +1,5 @@
 Section "un.mod_dv"
-	Delete "$INSTDIR\lib\sinfg\modules\mod_dv.dll"
+	Delete "$INSTDIR\lib\synfig\modules\mod_dv.dll"
 	RMDir "$INSTDIR"
 SectionEnd
 

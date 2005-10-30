@@ -4,7 +4,7 @@ Section "mod_noise" Sec_mod_noise
 ;  SectionIn RO
   
   ; Set output path to the installation directory.
-  SetOutPath "$INSTDIR\lib\sinfg\modules"
+  SetOutPath "$INSTDIR\lib\synfig\modules"
   
   ; Put file there
   File /oname=mod_noise.dll "src\modules\mod_noise\.libs\libmod_noise-0.dll"

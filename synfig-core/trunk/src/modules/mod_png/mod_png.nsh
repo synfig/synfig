@@ -4,7 +4,7 @@ Section "mod_png" Sec_mod_png
 ;  SectionIn RO
   
   ; Set output path to the installation directory.
-  SetOutPath "$INSTDIR\lib\sinfg\modules"
+  SetOutPath "$INSTDIR\lib\synfig\modules"
   
   ; Put file there
   File /oname=mod_png.dll "src\modules\mod_png\.libs\libmod_png-0.dll"

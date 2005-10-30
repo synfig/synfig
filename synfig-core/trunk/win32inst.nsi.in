@@ -72,6 +72,7 @@ Section ""
 
   File "C:\mingw\bin\mingwm10.dll"
   File "C:\GTK\bin\libfreetype-6.dll"
+  File "C:\GTK\bin\libxml2.dll"
   
   ; Put file there
 ;  File "synfig_modules.conf"

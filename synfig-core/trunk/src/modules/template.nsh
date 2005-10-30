@@ -4,7 +4,7 @@ Section "@MODNAME@" Sec_@MODNAME@
 ;  SectionIn RO
   
   ; Set output path to the installation directory.
-  SetOutPath "$INSTDIR\lib\sinfg\modules"
+  SetOutPath "$INSTDIR\lib\synfig\modules"
   
   ; Put file there
   File /oname=@MODNAME@.dll "src\modules\@MODNAME@\.libs\lib@MODNAME@-0.dll"

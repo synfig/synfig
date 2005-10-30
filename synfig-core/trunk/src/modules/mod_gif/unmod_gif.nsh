@@ -1,5 +1,5 @@
 Section "un.mod_gif"
-	Delete "$INSTDIR\lib\sinfg\modules\mod_gif.dll"
+	Delete "$INSTDIR\lib\synfig\modules\mod_gif.dll"
 	RMDir "$INSTDIR"
 SectionEnd
 

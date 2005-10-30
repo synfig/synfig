@@ -4,7 +4,7 @@ Section "mod_gif" Sec_mod_gif
 ;  SectionIn RO
   
   ; Set output path to the installation directory.
-  SetOutPath "$INSTDIR\lib\sinfg\modules"
+  SetOutPath "$INSTDIR\lib\synfig\modules"
   
   ; Put file there
   File /oname=mod_gif.dll "src\modules\mod_gif\.libs\libmod_gif-0.dll"

@@ -4,7 +4,7 @@ Section "mod_openexr" Sec_mod_openexr
 ;  SectionIn RO
   
   ; Set output path to the installation directory.
-  SetOutPath "$INSTDIR\lib\sinfg\modules"
+  SetOutPath "$INSTDIR\lib\synfig\modules"
   
   ; Put file there
   File /oname=mod_openexr.dll "src\modules\mod_openexr\.libs\libmod_openexr-0.dll"

@@ -4,7 +4,7 @@ Section "mod_ffmpeg" Sec_mod_ffmpeg
 ;  SectionIn RO
   
   ; Set output path to the installation directory.
-  SetOutPath "$INSTDIR\lib\sinfg\modules"
+  SetOutPath "$INSTDIR\lib\synfig\modules"
   
   ; Put file there
   File /oname=mod_ffmpeg.dll "src\modules\mod_ffmpeg\.libs\libmod_ffmpeg-0.dll"

@@ -4,7 +4,7 @@ Section "mod_gradient" Sec_mod_gradient
 ;  SectionIn RO
   
   ; Set output path to the installation directory.
-  SetOutPath "$INSTDIR\lib\sinfg\modules"
+  SetOutPath "$INSTDIR\lib\synfig\modules"
   
   ; Put file there
   File /oname=mod_gradient.dll "src\modules\mod_gradient\.libs\libmod_gradient-0.dll"

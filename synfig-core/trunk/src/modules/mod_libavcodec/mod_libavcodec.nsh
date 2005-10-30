@@ -4,7 +4,7 @@ Section "mod_libavcodec" Sec_mod_libavcodec
 ;  SectionIn RO
   
   ; Set output path to the installation directory.
-  SetOutPath "$INSTDIR\lib\sinfg\modules"
+  SetOutPath "$INSTDIR\lib\synfig\modules"
   
   ; Put file there
   File /oname=mod_libavcodec.dll "src\modules\mod_libavcodec\.libs\libmod_libavcodec-0.dll"

@@ -4,7 +4,7 @@ Section "mod_jpeg" Sec_mod_jpeg
 ;  SectionIn RO
   
   ; Set output path to the installation directory.
-  SetOutPath "$INSTDIR\lib\sinfg\modules"
+  SetOutPath "$INSTDIR\lib\synfig\modules"
   
   ; Put file there
   File /oname=mod_jpeg.dll "src\modules\mod_jpeg\.libs\libmod_jpeg-0.dll"
