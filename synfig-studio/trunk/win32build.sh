@@ -1,11 +1,23 @@
 #!/bin/sh
 
 #OPT_FLAGS="--disable-optimization --disable-debug --enable-license-key"
-OPT_FLAGS="--disable-optimization --disable-debug --disable-license-key"
+OPTIONS="--disable-optimization --disable-debug"
 
-./configure --host=mingw32 --prefix=C:/PROGRA~1/Synfig $OPT_FLAGS
 
-make clean
+BUILDDIR=win32build
+
+[ -e configure ] || ./bootstrap || exit 1
+
+ [ -d $BUILDDIR ] && rm -fr $BUILDDIR
+
+mkdir $BUILDDIR
+
+cd $BUILDDIR
+
+../configure $OPTIONS || exit 1
+
+make -j2
+#make package
 
 make installer
 

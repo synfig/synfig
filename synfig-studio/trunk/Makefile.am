@@ -74,7 +74,7 @@ win32inst.nsi: $(srcdir)/win32inst.nsi.in
 	./config.status win32inst.nsi
 
 installer: all win32inst.nsi
-	convert images/about_dialog.png images/about_dialog.bmp
+#	convert images/about_dialog.png images/about_dialog.bmp
 	make -C images sif_icon.ico
 	makensis win32inst.nsi
 
