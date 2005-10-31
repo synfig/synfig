@@ -106,6 +106,15 @@ SectionEnd
   
 ;SectionEnd
 
+; Optional section (can be disabled by the user)
+Section "Start Menu Shortcuts"
+
+  CreateDirectory "$SMPROGRAMS\Voria"
+  CreateShortCut "$SMPROGRAMS\Voria\Uninstall Synfig Core.lnk" "$INSTDIR\uninstall-@PACKAGE_TARNAME@.exe" "" "$INSTDIR\uninstall-@PACKAGE_TARNAME@.exe" 0
+  
+SectionEnd
+
+
 ;--------------------------------
 
 ; Uninstaller
@@ -126,6 +135,7 @@ Section "Uninstall"
 
   ; Remove shortcuts, if any
 
+  Delete "$SMPROGRAMS\Voria\Uninstall Synfig Core.lnk"
   ; Remove directories used
   ;RMDir "$SMPROGRAMS\Example2"
   RMDir "$INSTDIR"

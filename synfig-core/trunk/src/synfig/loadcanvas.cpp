@@ -2254,11 +2254,14 @@ CanvasParser::parse_from_file(const String &file)
 }
 
 Canvas::Handle
-CanvasParser::parse_from_file_as(const String &file,const String &as)
+CanvasParser::parse_from_file_as(const String &file_,const String &as_)
 {
 	CHECK_EXPIRE_TIME();
 	try
 	{
+		String file(unix_to_local_path(file_));
+		String as(unix_to_local_path(as_));
+
 		if(get_open_canvas_map().count(etl::absolute_path(as)))
 			return get_open_canvas_map()[etl::absolute_path(as)];
 

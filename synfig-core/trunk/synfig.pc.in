@@ -6,6 +6,6 @@ includedir=@synfigincludedir@
 Name: synfig
 Description: Synfig Core
 Requires: @CONFIG_DEPS@
-Version: 0.61.00-28
+Version: 0.61.00-29
 Libs: -L${libdir} @CONFIG_LIBS@
 Cflags: @CONFIG_CFLAGS@ -I@synfigincludedir@

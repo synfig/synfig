@@ -512,6 +512,8 @@ Canvas::surefind_canvas(const String &id)
 		//! \todo This needs alot more optimization
 		String file_name(id,0,id.find_first_of('#'));
 		String external_id(id,id.find_first_of('#')+1);
+
+		file_name=unix_to_local_path(file_name);
 		
 		Canvas::Handle external_canvas;
 		
@@ -523,7 +525,7 @@ Canvas::surefind_canvas(const String &id)
 			if(is_absolute_path(file_name))
 				external_canvas=open_canvas(file_name);
 			else
-				external_canvas=open_canvas(get_file_path()+'/'+file_name);
+				external_canvas=open_canvas(get_file_path()+ETL_DIRECTORY_SEPERATOR+file_name);
 
 			if(!external_canvas)
 				throw Exception::FileNotFound(file_name);
@@ -596,6 +598,8 @@ Canvas::find_canvas(const String &id)const
 		String file_name(id,0,id.find_first_of('#'));
 		String external_id(id,id.find_first_of('#')+1);
 		
+		file_name=unix_to_local_path(file_name);
+		
 		Canvas::Handle external_canvas;
 		
 		// If the composition is already open, then use it.
@@ -606,7 +610,7 @@ Canvas::find_canvas(const String &id)const
 			if(is_absolute_path(file_name))
 				external_canvas=open_canvas(file_name);
 			else
-				external_canvas=open_canvas(get_file_path()+'/'+file_name);
+				external_canvas=open_canvas(get_file_path()+ETL_DIRECTORY_SEPERATOR+file_name);
 
 			if(!external_canvas)
 				throw Exception::FileNotFound(file_name);
