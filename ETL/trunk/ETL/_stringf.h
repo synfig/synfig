@@ -199,12 +199,10 @@ is_absolute_path(const std::string &path)
 #ifdef WIN32
 	if(path.size()>=3 && path[1]==':' && (path[2]=='\\' || path[2]=='/'))
 		return true;
-	return false;
-#else
+#endif	
 	if(!path.empty() && path[0]==ETL_DIRECTORY_SEPERATOR)
 		return true;
 	return false;
-#endif	
 }
 
 inline std::string
@@ -278,11 +276,11 @@ cleanup_path(std::string path)
 	while(!path.empty())
 	{
 		std::string dir(get_root_from_path(path));
-		if(dir=="../" && ret.size())
+		if((dir=="../" || dir=="..\\") && ret.size())
 		{
 			ret=dirname(ret)+ETL_DIRECTORY_SEPERATOR;
 		}
-		else if(dir!="./" && dir!=".")
+		else if((dir!="./" && dir!=".\\") && dir!=".")
 		{
 			ret+=dir;
 		}
@@ -347,7 +345,7 @@ relative_path(std::string curr_path,std::string dest_path)
 
 	while(!curr_path.empty())
 	{
-		dest_path="../"+dest_path;
+		dest_path=std::string("..")+ETL_DIRECTORY_SEPERATOR+dest_path;
 		curr_path=remove_root_from_path(curr_path);
 	}
 	
