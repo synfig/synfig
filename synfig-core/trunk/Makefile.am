@@ -14,7 +14,7 @@ pkgconfig_DATA = @PACKAGE_TARNAME@.pc
 
 bin_SCRIPTS=synfig-config
 
-EXTRA_DIST=bootstrap doc/hw-gfx-mapping.txt win32build.sh macosxbuild.sh win32inst.nsi.in COPYING config/depcomp config/synfig.m4 config/cxx_macros.m4 synfig.pbproj/config.h synfig.pbproj/project.pbxproj @PACKAGE_TARNAME@-@VERSION@.spec config/project.spec.in config/build.cfg synfig.kdevprj synfig-config.in config/ETL.m4 config/doxygen.cfg.in doxygen.cfg config/pkgconfig.pc.in config/pkgconfig.m4 config/libxml++.m4 @PACKAGE_TARNAME@.pc.in pkg-info/macosx/core-resources/ReadMe.txt pkg-info/macosx/core-resources/Welcome.txt pkg-info/macosx/core-resources/install.sh
+EXTRA_DIST=bootstrap config/package doc/hw-gfx-mapping.txt win32build.sh macosxbuild.sh win32inst.nsi.in COPYING config/depcomp config/synfig.m4 config/cxx_macros.m4 synfig.pbproj/config.h synfig.pbproj/project.pbxproj @PACKAGE_TARNAME@-@VERSION@.spec config/project.spec.in config/build.cfg synfig.kdevprj synfig-config.in config/ETL.m4 config/doxygen.cfg.in doxygen.cfg config/pkgconfig.pc.in config/pkgconfig.m4 config/libxml++.m4 @PACKAGE_TARNAME@.pc.in pkg-info/macosx/core-resources/ReadMe.txt pkg-info/macosx/core-resources/Welcome.txt pkg-info/macosx/core-resources/install.sh
 
 CVS=cvs
 

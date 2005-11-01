@@ -518,6 +518,7 @@ src/modules/mod_yuv420p/Makefile
 src/modules/mod_particle/Makefile
 src/tool/Makefile
 src/modules/synfig_modules.cfg
+examples/Makefile
 win32inst.nsi
 pkg-info/macosx/synfig-core.info
 dnl src/modules/trgt_mpg/Makefile
