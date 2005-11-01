@@ -498,7 +498,6 @@ Makefile
 src/Makefile
 src/synfig/Makefile
 src/modules/Makefile
-src/modules/example/Makefile
 src/modules/mod_filter/Makefile
 src/modules/mod_bmp/Makefile
 src/modules/mod_gif/Makefile
