@@ -16,3 +16,4 @@ else
 endif
 
 
+EXTRA_DIST= mod_ffmpeg.nsh unmod_ffmpeg.nsh

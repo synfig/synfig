@@ -14,3 +14,4 @@ libmod_png_la_CXXFLAGS = @SYNFIG_CFLAGS@
 libmod_png_la_LIBADD = -L../../synfig -lsynfig @SYNFIG_LIBS@
 else
 endif
+EXTRA_DIST= mod_png.nsh unmod_png.nsh

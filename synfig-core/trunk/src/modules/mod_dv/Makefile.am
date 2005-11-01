@@ -14,3 +14,4 @@ libmod_dv_la_CXXFLAGS = @SYNFIG_CFLAGS@
 libmod_dv_la_LIBADD = -L../../synfig -lsynfig @SYNFIG_LIBS@
 else
 endif
+EXTRA_DIST= mod_dv.nsh unmod_dv.nsh

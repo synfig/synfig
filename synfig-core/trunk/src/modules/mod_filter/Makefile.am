@@ -11,3 +11,4 @@ libmod_filter_la_SOURCES = blur.cpp blur.h colorcorrect.cpp colorcorrect.h halft
 libmod_filter_la_CXXFLAGS = @SYNFIG_CFLAGS@
 libmod_filter_la_LIBADD = -L../../synfig -lsynfig @SYNFIG_LIBS@
 libmod_filter_la_LDFLAGS = -module -no-undefined
+EXTRA_DIST= mod_filter.nsh unmod_filter.nsh

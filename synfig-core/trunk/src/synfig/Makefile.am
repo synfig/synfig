@@ -5,6 +5,8 @@
 MAINTAINERCLEANFILES=Makefile.in
 INCLUDES = -I$(top_srcdir)/src -I$(top_srcdir)/libltdl
 
+EXTRA_DIST=proto/Makefile nodebase.h proto/nodebase.px proto/proto.m4 synfig.nsh
+
 LAYERHEADERS=layer_motionblur.h layer_pastecanvas.h layer_solidcolor.h layer_polygon.h layer_composite.h layer_bitmap.h layer_mime.h layer_shape.h
 LAYERSOURCES=layer_motionblur.cpp layer_pastecanvas.cpp layer_solidcolor.cpp layer_polygon.cpp layer_composite.cpp layer_bitmap.cpp layer_mime.cpp layer_shape.cpp
 

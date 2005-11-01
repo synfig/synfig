@@ -16,3 +16,4 @@ else
 endif
 
 
+EXTRA_DIST= mod_imagemagick.nsh unmod_imagemagick.nsh

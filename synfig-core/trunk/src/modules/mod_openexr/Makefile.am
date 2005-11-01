@@ -16,3 +16,4 @@ else
 endif
 
 
+EXTRA_DIST= mod_openexr.nsh unmod_openexr.nsh

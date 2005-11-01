@@ -11,3 +11,4 @@ libmod_noise_la_SOURCES = random.cpp random.h distort.cpp distort.h noise.cpp no
 libmod_noise_la_CXXFLAGS = @SYNFIG_CFLAGS@
 libmod_noise_la_LIBADD = -L../../synfig -lsynfig @SYNFIG_LIBS@
 libmod_noise_la_LDFLAGS = -module -no-undefined
+EXTRA_DIST= mod_noise.nsh unmod_noise.nsh

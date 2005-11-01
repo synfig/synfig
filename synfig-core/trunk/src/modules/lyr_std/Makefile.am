@@ -11,3 +11,4 @@ liblyr_std_la_SOURCES = main.cpp timeloop.cpp timeloop.h warp.cpp warp.h xorpatt
 liblyr_std_la_CXXFLAGS = @SYNFIG_CFLAGS@
 liblyr_std_la_LIBADD = -L../../synfig -lsynfig @SYNFIG_LIBS@
 liblyr_std_la_LDFLAGS = -module -no-undefined
+EXTRA_DIST= lyr_std.nsh unlyr_std.nsh

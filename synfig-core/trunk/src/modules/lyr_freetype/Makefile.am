@@ -16,3 +16,4 @@ else
 endif
 
 
+EXTRA_DIST= lyr_freetype.nsh unlyr_freetype.nsh

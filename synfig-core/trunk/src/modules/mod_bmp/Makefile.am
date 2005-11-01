@@ -11,3 +11,4 @@ libmod_bmp_la_SOURCES = main.cpp trgt_bmp.cpp trgt_bmp.h mptr_bmp.cpp mptr_bmp.h
 libmod_bmp_la_LDFLAGS = -module -no-undefined
 libmod_bmp_la_CXXFLAGS = @SYNFIG_CFLAGS@
 libmod_bmp_la_LIBADD = -L../../synfig -lsynfig @SYNFIG_LIBS@
+EXTRA_DIST= mod_bmp.nsh unmod_bmp.nsh

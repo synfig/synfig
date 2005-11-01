@@ -15,3 +15,4 @@ libmod_geometry_la_SOURCES = rectangle.cpp rectangle.h star.h star.cpp checkerbo
 libmod_geometry_la_CXXFLAGS = @SYNFIG_CFLAGS@
 libmod_geometry_la_LIBADD = -L../../synfig -lsynfig @SYNFIG_LIBS@
 libmod_geometry_la_LDFLAGS = -module -no-undefined
+EXTRA_DIST= mod_geometry.nsh unmod_geometry.nsh

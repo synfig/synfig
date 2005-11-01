@@ -17,3 +17,4 @@ libmod_libavcodec_la_CXXFLAGS = @SYNFIG_CFLAGS@
 libmod_libavcodec_la_LIBADD = -L../../synfig -lsynfig @SYNFIG_LIBS@
 else
 endif
+EXTRA_DIST= mod_libavcodec.nsh unmod_libavcodec.nsh
