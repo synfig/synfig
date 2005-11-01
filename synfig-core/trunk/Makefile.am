@@ -95,7 +95,7 @@ else
 if MACOSX_PKG
 package: all pkg-info/macosx/synfig-core.info
 	[ -d pkg_root ] && $(RMDIR) pkg_root || true
-	make install prefix="`pwd`/pkg_root"
+	make install-strip prefix="`pwd`/pkg_root"
 	$(srcdir)/config/package pkg_root pkg-info/macosx/synfig-core.info -r $(srcdir)/pkg-info/macosx/core-resources
 endif
 endif

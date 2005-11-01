@@ -201,10 +201,10 @@ Node::get_guid()const
 #ifdef BE_FRUGAL_WITH_GUIDS
 	if(!guid_)
 	{
-		guid_.make_unique();
+		const_cast<GUID&>(guid_).make_unique();
 		assert(guid_);
 		assert(!global_node_map().count(guid_));
-		global_node_map()[guid_]=this;	
+		global_node_map()[guid_]=const_cast<Node*>(this);	
 	}
 #endif
 	

@@ -219,9 +219,7 @@ set +x
 output Patching libtool...
 patch config/ltmain.sh config/ltmain.patch
 ) || true
-
-false &&
-{
+false && {
 	# Something went wrong...
 	set +x
 	output Failure.

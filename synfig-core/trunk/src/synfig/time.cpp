@@ -48,7 +48,7 @@ extern "C" { int _isnan(double x); }
 #endif
 
 #ifdef __APPLE__
-#define isnan __isnan
+#define isnan __isnanf
 #endif
 
 #endif
