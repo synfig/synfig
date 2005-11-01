@@ -4,9 +4,9 @@ AUTOMAKE_OPTIONS=dist-zip dist-shar dist-bzip2
 
 MAINTAINERCLEANFILES=config/package config/ltmain.sh config/config.guess config/config.sub config/ltmain.sh config/install-sh config/mkinstalldirs config/aclocal.m4 config/missing config/texinfo.tex config/depcomp aclocal.m4 config.h.in configure stamp-h.in Makefile.in config.log config.status .doc_stamp .DS_Store @PACKAGE_TARNAME@-@VERSION@.spec
 
-SUBDIRS=images src
+SUBDIRS=src images
 
-EXTRA_DIST=bootstrap config/depcomp config/cxx_macros.m4 @PACKAGE_TARNAME@-@VERSION@.spec config/project.spec.in config/build.cfg synfig.kdevprj config/ETL.m4
+EXTRA_DIST=COPYING macosxbuild.sh win32build.sh win32inst.nsi.in bootstrap config/package config/depcomp config/cxx_macros.m4 @PACKAGE_TARNAME@-@VERSION@.spec config/project.spec.in config/build.cfg config/ETL.m4
 
 # Desktop entry
 #desktopdir              = $(datadir)/gnome/apps/Graphics
@@ -51,14 +51,14 @@ listfixmes:
 	-@echo
 	-@echo  -- List of pending FIXMEs
 	-@echo
-	-@$(GREP) FIXME -n $(shell find $(top_srcdir) -name '*.[ch]*')
+	-@$(GREP) FIXME -n $(shell find $(top_srcdir) -name '*.[ch]*' | grep -v svn)
 	-@echo
 
 listhacks:
 	-@echo
 	-@echo  -- List of pending HACKs
 	-@echo
-	-@$(GREP) HACK -n $(shell find $(top_srcdir) -name '*.[ch]*')
+	-@$(GREP) HACK -n $(shell find $(top_srcdir) -name '*.[ch]*' | grep -v svn)
 	-@echo
 
 run: check
@@ -77,6 +77,17 @@ installer: all win32inst.nsi
 #	convert images/about_dialog.png images/about_dialog.bmp
 	make -C images sif_icon.ico
 	makensis win32inst.nsi
+
+#if WIN32_PKG	
+#package: installer
+#else
+#if MACOSX_PKG
+package: all pkg-info/macosx/synfig-studio.info
+	[ -d pkg_root ] && $(RMDIR) pkg_root || true
+	make install prefix="`pwd`/pkg_root"
+	$(srcdir)/config/package pkg_root pkg-info/macosx/synfig-studio.info -r $(srcdir)/pkg-info/macosx/studio-resources
+#endif
+#endif
 
 html: .doc_stamp
 

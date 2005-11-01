@@ -5,6 +5,9 @@
 # inside the .pkg bundle
 LOGFILE="~/synfig-core_install.log"
 
+/usr/X11R6/bin/fc-cache
+/usr/X11R6/bin/fc-list
+
 exit 0
 
 

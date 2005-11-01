@@ -33,7 +33,7 @@ GROUP_ACTION_CC=actions/groupaddlayers.cpp actions/groupremovelayers.cpp actions
 OTHER_ACTION_HH=actions/colorset.h actions/editmodeset.h actions/blinepointtangentmerge.h actions/blinepointtangentsplit.h actions/gradientset.h
 OTHER_ACTION_CC=actions/colorset.cpp actions/editmodeset.cpp actions/blinepointtangentmerge.cpp actions/blinepointtangentsplit.cpp actions/gradientset.cpp
 
-ACTIONHH=$(GROUP_ACTION_HH) $(LAYER_ACTION_HH) $(VALUEDSEC_ACTION_HH) $(VALUENODE_ACTION_HH) $(WAYPOINT_ACTION_HH) $(KEYFRAME_ACTION_HH) $(OTHER_ACTION_HH) $(CANVAS_ACTION_HH) $(ACTIVEPOINT_ACTION_HH) $(TIMEPOINT_ACTION_HH)
+ACTIONHH=$(GROUP_ACTION_HH) $(LAYER_ACTION_HH) $(VALUEDESC_ACTION_HH) $(VALUENODE_ACTION_HH) $(WAYPOINT_ACTION_HH) $(KEYFRAME_ACTION_HH) $(OTHER_ACTION_HH) $(CANVAS_ACTION_HH) $(ACTIVEPOINT_ACTION_HH) $(TIMEPOINT_ACTION_HH)
 ACTIONCC=$(GROUP_ACTION_CC) $(LAYER_ACTION_CC) $(VALUEDESC_ACTION_CC) $(VALUENODE_ACTION_CC) $(WAYPOINT_ACTION_CC) $(KEYFRAME_ACTION_CC) $(OTHER_ACTION_CC) $(CANVAS_ACTION_CC) $(ACTIVEPOINT_ACTION_CC) $(TIMEPOINT_ACTION_CC)
 
 SYNFIGAPPHH=$(ACTIONHH) blineconvert.h cvs.h editmode.h action.h action_param.h action_system.h canvasinterface.h instance.h selectionmanager.h uimanager.h value_desc.h main.h inputdevice.h settings.h

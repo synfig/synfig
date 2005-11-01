@@ -611,7 +611,7 @@
             </color>
           </param>
           <param name="family">
-            <string>Arial Black</string>
+            <string>ariblk.ttf</string>
           </param>
           <param name="style">
             <integer value="0"/>
