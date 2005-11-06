@@ -7,14 +7,15 @@
 **	\legal
 **	Copyright (c) 2004 Adrian Bentley
 **
-**	This software and associated documentation
-**	are CONFIDENTIAL and PROPRIETARY property of
-**	the above-mentioned copyright holder.
+**	This package is free software; you can redistribute it and/or
+**	modify it under the terms of the GNU General Public License as
+**	published by the Free Software Foundation; either version 2 of
+**	the License, or (at your option) any later version.
 **
-**	You may not copy, print, publish, or in any
-**	other way distribute this software without
-**	a prior written agreement with
-**	the copyright holder.
+**	This package is distributed in the hope that it will be useful,
+**	but WITHOUT ANY WARRANTY; without even the implied warranty of
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+**	General Public License for more details.
 **	\endlegal
 */
 /* ========================================================================= */

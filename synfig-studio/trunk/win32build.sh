@@ -3,7 +3,7 @@
 OPTIONS=""
 OPTIONS="$OPTIONS --disable-optimization"
 OPTIONS="$OPTIONS --disable-debug"
-OPTIONS="$OPTIONS --enable-license-key"
+#OPTIONS="$OPTIONS --enable-license-key"
 
 
 BUILDDIR=win32build
@@ -18,8 +18,6 @@ cd $BUILDDIR
 
 ../configure $OPTIONS || exit 1
 
-make -j2
-#make package
+make package
 
-make installer
 

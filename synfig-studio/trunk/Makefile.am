@@ -2,11 +2,11 @@
 
 AUTOMAKE_OPTIONS=dist-zip dist-shar dist-bzip2
 
-MAINTAINERCLEANFILES=config/package config/ltmain.sh config/config.guess config/config.sub config/ltmain.sh config/install-sh config/mkinstalldirs config/aclocal.m4 config/missing config/texinfo.tex config/depcomp aclocal.m4 config.h.in configure stamp-h.in Makefile.in config.log config.status .doc_stamp .DS_Store @PACKAGE_TARNAME@-@VERSION@.spec
+MAINTAINERCLEANFILES=config/ltmain.sh config/config.guess config/config.sub config/ltmain.sh config/install-sh config/mkinstalldirs config/aclocal.m4 config/missing config/texinfo.tex config/depcomp aclocal.m4 config.h.in configure stamp-h.in Makefile.in config.log config.status .doc_stamp .DS_Store @PACKAGE_TARNAME@-@VERSION@.spec
 
 SUBDIRS=src images
 
-EXTRA_DIST=COPYING macosxbuild.sh win32build.sh win32inst.nsi.in bootstrap config/package config/depcomp config/cxx_macros.m4 @PACKAGE_TARNAME@-@VERSION@.spec config/project.spec.in config/build.cfg config/ETL.m4
+EXTRA_DIST=COPYING TODO macosxbuild.sh win32build.sh win32inst.nsi.in bootstrap config/package config/depcomp config/cxx_macros.m4 @PACKAGE_TARNAME@-@VERSION@.spec config/project.spec.in config/build.cfg config/ETL.m4
 
 # Desktop entry
 #desktopdir              = $(datadir)/gnome/apps/Graphics
@@ -73,13 +73,12 @@ $(srcdir)/configure:  $(srcdir)/configure.in $(ACLOCAL_M4) $(CONFIGURE_DEPENDENC
 win32inst.nsi: $(srcdir)/win32inst.nsi.in
 	./config.status win32inst.nsi
 
-installer: all win32inst.nsi
+
+#if WIN32_PKG	
+package: all win32inst.nsi
 #	convert images/about_dialog.png images/about_dialog.bmp
 	make -C images sif_icon.ico
 	makensis win32inst.nsi
-
-#if WIN32_PKG	
-#package: installer
 #else
 #if MACOSX_PKG
 package: all pkg-info/macosx/synfig-studio.info
