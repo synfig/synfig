@@ -5,16 +5,17 @@
 **	$Id: value.cpp,v 1.1.1.1 2005/01/04 01:23:15 darco Exp $
 **
 **	\legal
-**	Copyright (c) 2002 Robert B. Quattlebaum Jr.
+**	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **
-**	This software and associated documentation
-**	are CONFIDENTIAL and PROPRIETARY property of
-**	the above-mentioned copyright holder.
+**	This package is free software; you can redistribute it and/or
+**	modify it under the terms of the GNU General Public License as
+**	published by the Free Software Foundation; either version 2 of
+**	the License, or (at your option) any later version.
 **
-**	You may not copy, print, publish, or in any
-**	other way distribute this software without
-**	a prior written agreement with
-**	the copyright holder.
+**	This package is distributed in the hope that it will be useful,
+**	but WITHOUT ANY WARRANTY; without even the implied warranty of
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+**	General Public License for more details.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -68,43 +69,43 @@ ValueBase::ValueBase(Type x):
 	switch(type)
 	{
 	case TYPE_BOOL:
-		static_cast<bool*>(data)=new bool();
+		data=static_cast<void*>(new bool());
 		break;
 	case TYPE_INTEGER:
-		static_cast<int*>(data)=new int();
+		data=static_cast<void*>(new int());
 		break;
 	case TYPE_ANGLE:
-		static_cast<Angle*>(data)=new Angle();
+		data=static_cast<void*>(new Angle());
 		break;
 	case TYPE_VECTOR:
-		static_cast<Vector*>(data)=new Vector();
+		data=static_cast<void*>(new Vector());
 		break;
 	case TYPE_TIME:
-		static_cast<Time*>(data)=new Time();
+		data=static_cast<void*>(new Time());
 		break;
 	case TYPE_REAL:
-		static_cast<Real*>(data)=new Real();
+		data=static_cast<void*>(new Real());
 		break;
 	case TYPE_COLOR:
-		static_cast<Color*>(data)=new Color();
+		data=static_cast<void*>(new Color());
 		break;
 	case TYPE_SEGMENT:
-		static_cast<Segment*>(data)=new Segment();
+		data=static_cast<void*>(new Segment());
 		break;
 	case TYPE_BLINEPOINT:
-		static_cast<BLinePoint*>(data)=new BLinePoint();
+		data=static_cast<void*>(new BLinePoint());
 		break;
 	case TYPE_LIST:
-		static_cast<list_type*>(data)=new list_type();
+		data=static_cast<void*>(new list_type());
 		break;
 	case TYPE_STRING:
-		static_cast<String*>(data)=new String();
+		data=static_cast<void*>(new String());
 		break;
 	case TYPE_GRADIENT:
-		static_cast<Gradient*>(data)=new Gradient();
+		data=static_cast<void*>(new Gradient());
 		break;
 	case TYPE_CANVAS:
-		static_cast<etl::handle<Canvas>*>(data)=new etl::handle<Canvas>();
+		data=static_cast<void*>(new etl::handle<Canvas>());
 		break;
 	default:
 		break;

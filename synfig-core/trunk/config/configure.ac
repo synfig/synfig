@@ -375,7 +375,7 @@ AC_SUBST(SYNFIGLIB_DIR)
 
 CXXFLAGS="$CXXFLAGS -fpermissive"
 
-AC_CHECK_HEADERS(signal.h termios.h)
+AC_CHECK_HEADERS(signal.h termios.h sys/errno.h)
 
 
 case "$host" in

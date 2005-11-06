@@ -1,0 +1,8 @@
+2005-11-03	Robert Quattlebaum	<darco@deepdarc.com>
+	* src/synfig/savecanvas.cpp: added #include <sys/errorno.h>
+	* src/synfig/value.cpp: Various GCC 4.0 fixes
+	* src/modules/mod_bmp/trgt_bmp.cpp: The BMP target was broken. It's now fixed.
+	* examples: Removed SFAutomaton font due to licensing issues.
+	* All: Updated copyright notice to reflect new license
+
+

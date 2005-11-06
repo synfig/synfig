@@ -5,16 +5,17 @@
 **	$Id: value.h,v 1.1.1.1 2005/01/04 01:23:15 darco Exp $
 **
 **	\legal
-**	Copyright (c) 2002 Robert B. Quattlebaum Jr.
+**	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **
-**	This software and associated documentation
-**	are CONFIDENTIAL and PROPRIETARY property of
-**	the above-mentioned copyright holder.
+**	This package is free software; you can redistribute it and/or
+**	modify it under the terms of the GNU General Public License as
+**	published by the Free Software Foundation; either version 2 of
+**	the License, or (at your option) any later version.
 **
-**	You may not copy, print, publish, or in any
-**	other way distribute this software without
-**	a prior written agreement with
-**	the copyright holder.
+**	This package is distributed in the hope that it will be useful,
+**	but WITHOUT ANY WARRANTY; without even the implied warranty of
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+**	General Public License for more details.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -297,20 +298,6 @@ public:
 
 public:
 
-	template <class T>
-	operator std::list<T>()const
-	{
-		assert(type==TYPE_LIST);
-		std::list<T> ret(get_list().begin(),get_list().end());
-		return ret;
-	}
-	template <class T>
-	operator std::vector<T>()const
-	{
-		assert(type==TYPE_LIST);
-		std::vector<T> ret(get_list().begin(),get_list().end());
-		return ret;
-	}
 	operator const list_type&()const { return get_list(); }
 	//operator const Color&()const { return get(Color()); }
 	//operator const Real&()const { return get(Real()); }
@@ -322,6 +309,7 @@ public:
 	//operator const String&()const {  return get(String()); }
 	//operator const char *()const {  return get(String()).c_str(); }
 	operator const Segment&()const { return get(Segment()); }
+
 
 	/*
  --	** -- O T H E R -----------------------------------------------------------
@@ -341,6 +329,21 @@ public:
 	operator const Angle&()const { return get(Angle()); }
 	static const Type get_type(const Angle&) { return TYPE_ANGLE; }
 #endif
+
+	template <class T>
+	operator std::list<T>()const
+	{
+		assert(type==TYPE_LIST);
+		std::list<T> ret(get_list().begin(),get_list().end());
+		return ret;
+	}
+	template <class T>
+	operator std::vector<T>()const
+	{
+		assert(type==TYPE_LIST);
+		std::vector<T> ret(get_list().begin(),get_list().end());
+		return ret;
+	}
 
 	
 private:

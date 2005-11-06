@@ -5,16 +5,17 @@
 **	$Id: trgt_bmp.cpp,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $
 **
 **	\legal
-**	Copyright (c) 2002 Robert B. Quattlebaum Jr.
+**	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **
-**	This software and associated documentation
-**	are CONFIDENTIAL and PROPRIETARY property of
-**	the above-mentioned copyright holder.
+**	This package is free software; you can redistribute it and/or
+**	modify it under the terms of the GNU General Public License as
+**	published by the Free Software Foundation; either version 2 of
+**	the License, or (at your option) any later version.
 **
-**	You may not copy, print, publish, or in any
-**	other way distribute this software without
-**	a prior written agreement with
-**	the copyright holder.
+**	This package is distributed in the hope that it will be useful,
+**	but WITHOUT ANY WARRANTY; without even the implied warranty of
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+**	General Public License for more details.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -113,6 +114,8 @@ bmp::bmp(const char *Filename)
 	multi_image=false;
 	buffer=0;
 	color_buffer=0;
+	set_remove_alpha();
+
 }
 
 bmp::~bmp()
@@ -129,8 +132,9 @@ bmp::set_rend_desc(RendDesc *given_desc)
 {
 	pf=PF_BGR;
 	
-	// Flip the image upside down,
+    // Flip the image upside down,
 	// because bitmaps are upside down.
+    given_desc->set_flags(0);
 	Point tl=given_desc->get_tl();
 	Point br=given_desc->get_br();
 	Point::value_type tmp;
@@ -139,7 +143,7 @@ bmp::set_rend_desc(RendDesc *given_desc)
 	br[1]=tmp;
 	given_desc->set_tl(tl);
 	given_desc->set_br(br);
-	
+    
 	desc=*given_desc;
 	if(desc.get_frame_end()-desc.get_frame_start()>0)
 	{
@@ -148,8 +152,8 @@ bmp::set_rend_desc(RendDesc *given_desc)
 	}
 	else
 		multi_image=false;
-
-	return true;
+	
+    return true;
 }
 
 void
@@ -169,7 +173,6 @@ bmp::start_frame(synfig::ProgressCallback *callback)
 	int w=desc.get_w(),h=desc.get_h();
 	
 	rowspan=4*((w*(channels(pf)*8)+31)/32);
-	
 	if(multi_image)
 	{
 		String

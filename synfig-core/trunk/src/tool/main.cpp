@@ -5,16 +5,17 @@
 **	$Id: main.cpp,v 1.9 2005/01/23 04:41:10 darco Exp $
 **
 **	\legal
-**	Copyright (c) 2002 Robert B. Quattlebaum Jr.
+**	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **
-**	This software and associated documentation
-**	are CONFIDENTIAL and PROPRIETARY property of
-**	the above-mentioned copyright holder.
+**	This package is free software; you can redistribute it and/or
+**	modify it under the terms of the GNU General Public License as
+**	published by the Free Software Foundation; either version 2 of
+**	the License, or (at your option) any later version.
 **
-**	You may not copy, print, publish, or in any
-**	other way distribute this software without
-**	a prior written agreement with
-**	the copyright holder.
+**	This package is distributed in the hope that it will be useful,
+**	but WITHOUT ANY WARRANTY; without even the implied warranty of
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+**	General Public License for more details.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -484,14 +485,12 @@ int process_global_flags(arg_list_t &arg_list)
 			cerr<<PACKAGE<<" "<<VERSION<<endl;
 			cout<<SYNFIG_COPYRIGHT<<endl<<endl;
 			cerr<<"\
-**	This software and associated documentation\n\
-**	are CONFIDENTIAL and PROPRIETARY property of\n\
-**	the above-mentioned copyright holder.\n\
+**	This package is free software; you can redistribute it and/or\n\
+**	modify it under the terms of the GNU General Public License as\n\
+**	published by the Free Software Foundation; either version 2 of\n\
+**	the License, or (at your option) any later version.\n\
 **\n\
-**	You may not use, copy, print, publish, or in\n\
-**	any other way distribute or exploit this software\n\
-**	without a prior written agreement with the\n\
-**	copyright holder. " << endl << endl;	
+**	" << endl << endl;	
 			arg_list.erase(iter);
 			
 			return SYNFIGTOOL_HELP;

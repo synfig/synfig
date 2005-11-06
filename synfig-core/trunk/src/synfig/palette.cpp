@@ -5,16 +5,17 @@
 **	$Id: palette.cpp,v 1.1.1.1 2005/01/04 01:23:14 darco Exp $
 **
 **	\legal
-**	Copyright (c) 2002 Robert B. Quattlebaum Jr.
+**	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **
-**	This software and associated documentation
-**	are CONFIDENTIAL and PROPRIETARY property of
-**	the above-mentioned copyright holder.
+**	This package is free software; you can redistribute it and/or
+**	modify it under the terms of the GNU General Public License as
+**	published by the Free Software Foundation; either version 2 of
+**	the License, or (at your option) any later version.
 **
-**	You may not copy, print, publish, or in any
-**	other way distribute this software without
-**	a prior written agreement with
-**	the copyright holder.
+**	This package is distributed in the hope that it will be useful,
+**	but WITHOUT ANY WARRANTY; without even the implied warranty of
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+**	General Public License for more details.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -88,9 +89,10 @@ Palette::Palette(const Surface& surface, int max_colors):
 	name_(_("Surface Palette"))
 {	
 	max_colors-=2;
-	for(int y=0;y<surface.get_h();y++)
-		for(int x=0;x<surface.get_w();x++)
-		{
+	for(int i=0;(signed)size()<(max_colors-1) && i<max_colors*16;++i) {
+        int x=rand()%surface.get_w();
+        int y=rand()%surface.get_h();
+
 			float dist;
 			Color color(surface[y][x]);
 						
@@ -126,6 +128,41 @@ Palette::Palette(const Surface& surface, int max_colors):
 			
 			push_back(color);
 			continue;			
+    }
+
+/*
+
+	max_colors-=2;
+	for(int y=0;y<surface.get_h();y++)
+		for(int x=0;x<surface.get_w();x++)
+		{
+			float dist;
+			Color color(surface[y][x]);
+						
+			if(empty())
+			{
+				push_back(color);
+				continue;
+			}
+
+			if(color.get_a()==0)
+			{
+				if(front().color.get_a()!=0)
+					insert(begin(),Color(1,0,1,0));
+				front().weight+=400;
+				continue;
+			}
+
+			iterator iter(find_closest(color,&dist));
+			if(sqrt(dist)<0.005)
+			{
+				iter->add(color);
+				continue;
+			}
+			
+			
+			push_back(color);
+			continue;			
 		}
 	sort(rbegin(),rend());
 
@@ -138,6 +175,7 @@ Palette::Palette(const Surface& surface, int max_colors):
 		pop_back();
 		find_closest(item.color)->add(item.color,item.weight);
 	}
+*/
 	push_back(Color::black());
 	push_back(Color::white());
 

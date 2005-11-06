@@ -5,16 +5,17 @@
 **	$Id: node.h,v 1.3 2005/01/10 07:40:26 darco Exp $
 **
 **	\legal
-**	Copyright (c) 2002 Robert B. Quattlebaum Jr.
+**	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **
-**	This software and associated documentation
-**	are CONFIDENTIAL and PROPRIETARY property of
-**	the above-mentioned copyright holder.
+**	This package is free software; you can redistribute it and/or
+**	modify it under the terms of the GNU General Public License as
+**	published by the Free Software Foundation; either version 2 of
+**	the License, or (at your option) any later version.
 **
-**	You may not copy, print, publish, or in any
-**	other way distribute this software without
-**	a prior written agreement with
-**	the copyright holder.
+**	This package is distributed in the hope that it will be useful,
+**	but WITHOUT ANY WARRANTY; without even the implied warranty of
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+**	General Public License for more details.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -226,7 +227,7 @@ protected:
 	virtual void get_times_vfunc(time_set &set) const = 0;
 };	
 
-synfig::Node* synfig::find_node(const synfig::GUID& guid);
+synfig::Node* find_node(const synfig::GUID& guid);
 
 template<typename T> etl::handle<T>
 guid_cast(const synfig::GUID& guid)
