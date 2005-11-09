@@ -61,6 +61,20 @@ AC_LIBTOOL_PATCH
 
 dnl AC_PROG_INTLTOOL(0.11)
 
+case "$host" in
+	*mingw* | *cygwin*)
+		AM_CONDITIONAL(WIN32_PKG, true)
+		AM_CONDITIONAL(MACOSX_PKG, false)
+	;;
+	*darwin*)
+		AM_CONDITIONAL(WIN32_PKG, false)
+		AM_CONDITIONAL(MACOSX_PKG, true)
+	;;
+	*)
+		AM_CONDITIONAL(WIN32_PKG, false)
+		AM_CONDITIONAL(MACOSX_PKG, false)
+	;;
+esac
 # -- L I B R A R I E S ----------------------------------------
 
 PKG_CHECK_MODULES(GTKMM, gtkmm-2.4 gthread-2.0,[],[

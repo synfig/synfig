@@ -31,6 +31,9 @@
 
 #include "autorecover.h"
 
+#ifdef HAVE_SYS_ERRNO_H
+#include <sys/errno.h>
+#endif
 //#include <unistd.h>
 #include "app.h"
 #include <synfig/savecanvas.h>
