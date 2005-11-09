@@ -9,14 +9,20 @@
 #
 
 # Grab the current directory and move to our own
-CURR_DIR=$(pwd)
-cd $(dirname $0)
+CURR_DIR="$(pwd)"
+cd "$(dirname $0)"
 
 # Environment Variables
-BOOTSTRAP_NAME=$(basename $0)
-CONFIG_DIR=$(pwd)/config
+BOOTSTRAP_NAME="$(basename $0)"
 
-. $CONFIG_DIR/build.cfg
+CONFIG_DIR="$(pwd)/config"
+
+[ -x /bin/cygpath ] && CONFIG_DIR="`cygpath -m -s "$CONFIG_DIR"`"
+[ -x /bin/cygpath ] && CONFIG_DIR="`cygpath -u "$CONFIG_DIR"`"
+[ -x /bin/cygpath ] && CURR_DIR="`cygpath -m -s "$CURR_DIR"`"
+[ -x /bin/cygpath ] && CURR_DIR="`cygpath -u "$CURR_DIR"`"
+
+. "$CONFIG_DIR/build.cfg"
 
 SED_SCRIPT="
 s/@PACKAGE@/$PACKAGE/g;
@@ -109,7 +115,7 @@ $BOOTSTRAP_NAME: warning: *** Bootstrap process may fail!"
 
 for FILENAME in doxygen.cfg pkgconfig.pc project.spec ; do {
 output Creating $FILENAME...
-sed "$SED_SCRIPT" < $CONFIG_DIR/$FILENAME.in > $FILENAME;
+sed "$SED_SCRIPT" < "$CONFIG_DIR/$FILENAME.in" > $FILENAME;
 } ; done
 
 output Renaming pkgconfig.pc to $PACKAGE_TARNAME.pc.in...
@@ -123,7 +129,7 @@ echo %changelog >> "$PACKAGE-$VERSION.spec"
 cat ChangeLog >> "$PACKAGE-$VERSION.spec"
 
 output Creating configure.in from configure.ac...
-sed "$SED_SCRIPT" < $CONFIG_DIR/configure.ac > configure.in;
+sed "$SED_SCRIPT" < "$CONFIG_DIR/configure.ac" > configure.in;
 
 output Setting up build environment...
 
@@ -132,7 +138,7 @@ set -x
 
 # Create all of the build environment files
 (
-	aclocal -I $CONFIG_DIR $ACLOCAL_FLAGS &&
+	aclocal -I "$CONFIG_DIR" $ACLOCAL_FLAGS &&
 	autoheader &&
 	autoconf -o configure &&
 	automake --foreign --add-missing --copy --include-deps 
