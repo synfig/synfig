@@ -183,7 +183,8 @@ IPC::IPC()
 
 		if(fd<0)
 		{
-			synfig::error("IPC(): Failed to open fifo \"%s\". (errno=%d)",fifo_path().c_str(),::errno);
+			synfig::error("IPC(): Failed to open fifo \"%s\". (errno=?)",fifo_path().c_str());
+			//synfig::error("IPC(): Failed to open fifo \"%s\". (errno=%d)",fifo_path().c_str(),::errno);
 		}
 		else
 		{

@@ -32,6 +32,9 @@
 #include <fstream>
 #include <iostream>
 
+#ifdef HAVE_SYS_ERRNO_H
+#include <sys/errno.h>
+#endif
 #include <gtkmm/fileselection.h>
 #include <gtkmm/dialog.h>
 #include <gtkmm/label.h>
