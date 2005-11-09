@@ -306,3 +306,5 @@ cleanup;
 
 # Move back to the current directory
 cd $CURR_DIR
+
+make -C src/synfig/proto
