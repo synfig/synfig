@@ -238,7 +238,10 @@ CVSInfo::get_current_timestamp()const
 		synfig::error("Unable to get file stats");
 		return false;
 	}
-	return st.st_mtime+timezone+(daylight-1)*3600;
+	time_t ret((daylight-1)*3600);
+	//ret+=timezone;
+	ret+=st.st_mtime;
+	return ret;
 }
 
 synfig::String

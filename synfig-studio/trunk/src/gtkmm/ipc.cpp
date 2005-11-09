@@ -39,6 +39,10 @@
 #include <sys/stat.h>
 #endif
 
+#ifdef HAVE_SYS_ERRNO_H
+#include <sys/errno.h>
+#endif
+
 #include <synfig/main.h>
 #include "app.h"
 
@@ -179,7 +183,7 @@ IPC::IPC()
 
 		if(fd<0)
 		{
-			synfig::error("IPC(): Failed to open fifo \"%s\". (errno=%d)",fifo_path().c_str(),errno);
+			synfig::error("IPC(): Failed to open fifo \"%s\". (errno=%d)",fifo_path().c_str(),::errno);
 		}
 		else
 		{
