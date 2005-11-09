@@ -42,7 +42,7 @@ namespace synfig {
 class Layer_Stretch : public Layer
 {
 	SYNFIG_LAYER_MODULE_EXT
-	friend class Stretch_Trans;
+	friend class ::Stretch_Trans;
 	
 private:
 

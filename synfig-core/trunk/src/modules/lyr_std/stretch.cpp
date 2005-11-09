@@ -127,7 +127,7 @@ Layer_Stretch::get_color(Context context, const Point &pos)const
 	return context.get_color(npos);
 }
 
-class  Stretch_Trans : public Transform
+class ::Stretch_Trans : public Transform
 {
 	etl::handle<const Layer_Stretch> layer;
 public:
