@@ -73,20 +73,22 @@ $(srcdir)/configure:  $(srcdir)/configure.in $(ACLOCAL_M4) $(CONFIGURE_DEPENDENC
 win32inst.nsi: $(srcdir)/win32inst.nsi.in
 	./config.status win32inst.nsi
 
-
-#if WIN32_PKG	
-package: all win32inst.nsi
+package-win32: all win32inst.nsi
 #	convert images/about_dialog.png images/about_dialog.bmp
 	make -C images sif_icon.ico
 	makensis win32inst.nsi
-#else
-#if MACOSX_PKG
-package: all pkg-info/macosx/synfig-studio.info
+
+package-osx: all pkg-info/macosx/synfig-studio.info
 	[ -d pkg_root ] && $(RMDIR) pkg_root || true
 	make install prefix="`pwd`/pkg_root"
 	$(srcdir)/config/package pkg_root pkg-info/macosx/synfig-studio.info -r $(srcdir)/pkg-info/macosx/studio-resources
-#endif
-#endif
+if WIN32_PKG	
+package: package-win32
+else
+if MACOSX_PKG
+package: package-osx
+endif
+endif
 
 html: .doc_stamp
 
