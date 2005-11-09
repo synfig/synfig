@@ -22,7 +22,7 @@ PNGTOICO=pngtoico
 CONVERT=convert
 
 sif_icon.ico: $(srcdir)/sif_icon.sif
-	$(SYNFIG) $< -w 16 -h 16 -o sif_icon_16.gif sif_icon.sif -w 32 -h 32 -o sif_icon_32.gif sif_icon.sif -w 64 -h 64 -o sif_icon_64.gif
+	-$(SYNFIG) $< -w 16 -h 16 -o sif_icon_16.gif $< -w 32 -h 32 -o sif_icon_32.gif $< -w 64 -h 64 -o sif_icon_64.gif
 	$(CONVERT) sif_icon_16.gif sif_icon_16.png
 	$(CONVERT) sif_icon_32.gif sif_icon_32.png
 	$(CONVERT) sif_icon_64.gif sif_icon_64.png
