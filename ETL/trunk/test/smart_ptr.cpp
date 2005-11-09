@@ -86,8 +86,8 @@ typedef list< other_obj_smart_ptr > other_obj_list;
 
 int smart_ptr_basic_test(void)
 {
-	printf("smart_ptr: Size of a smart_ptr: %d\n",sizeof(obj_smart_ptr));
-	printf("smart_ptr: Size of a reference_counter: %d\n",sizeof(etl::reference_counter));
+	printf("smart_ptr: Size of a smart_ptr: %u\n",(unsigned int)sizeof(obj_smart_ptr));
+	printf("smart_ptr: Size of a reference_counter: %u\n",(unsigned int)sizeof(etl::reference_counter));
 
 
 	printf("smart_ptr: Basic test: ");

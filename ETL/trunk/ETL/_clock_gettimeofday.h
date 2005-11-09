@@ -87,7 +87,7 @@ protected:
 			return ret;
 		}
 
-		inline timestamp &operator+(timestamp rhs)const
+		inline timestamp operator+(timestamp rhs)const
 		{
 			rhs.tv_usec+=tv_usec;
 			

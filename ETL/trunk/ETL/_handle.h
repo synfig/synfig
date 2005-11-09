@@ -257,13 +257,13 @@ public:
 	operator->()const
 		{ assert(obj); return obj; }
 
-	//! static_cast<> overload -- Useful for implicit casts
-	template <class U>
-	operator handle<U>()const
-	{ return handle<U>(static_cast<U*>(obj)); }
+	//! More explicit bool cast
+	operator bool()const
+		{ return obj!=NULL; }
 
 	operator handle<const value_type>()const
 	{ return handle<const value_type>(static_cast<const_pointer>(obj)); }
+
 
 	//! <tt> static_cast\<\> </tt> wrapper
 	template <class U> static
@@ -303,13 +303,14 @@ public:
 	//! Returns pointer to the object that is being wrapped
 	pointer get()const { return obj; }
 
-	//! More explicit bool cast
-	operator bool()const
-		{ return obj!=NULL; }
-
 	bool
 	operator!()const
 		{ return !obj; }
+
+	//! static_cast<> overload -- Useful for implicit casts
+	template <class U>
+	operator handle<U>()const
+	{ return handle<U>(static_cast<U*>(obj)); }
 }; // END of template class handle
 
 // ========================================================================

@@ -85,11 +85,11 @@ typedef list< robj_handle > robj_list;
 
 int handle_basic_test()
 {
-	printf("handle: Size of a handle: %d\n",sizeof(etl::handle<int>));
-	printf("handle: Size of a loose_handle: %d\n",sizeof(etl::loose_handle<int>));
-	printf("handle: Size of a rhandle: %d\n",sizeof(etl::rhandle<int>));
-	printf("handle: Size of a shared_object: %d\n",sizeof(etl::shared_object));
-	printf("handle: Size of a rshared_object: %d\n",sizeof(etl::rshared_object));
+	printf("handle: Size of a handle: %u\n",(unsigned int)sizeof(etl::handle<int>));
+	printf("handle: Size of a loose_handle: %u\n",(unsigned int)sizeof(etl::loose_handle<int>));
+	printf("handle: Size of a rhandle: %u\n",(unsigned int)sizeof(etl::rhandle<int>));
+	printf("handle: Size of a shared_object: %u\n",(unsigned int)sizeof(etl::shared_object));
+	printf("handle: Size of a rshared_object: %u\n",(unsigned int)sizeof(etl::rshared_object));
 
 	printf("handle: Basic test: ");
 	my_test_obj::instance_count=0;

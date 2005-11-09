@@ -178,19 +178,6 @@ public:
 
 	pointer	operator->()const { assert(obj); return obj; }
 
-	//! Overloaded cast operator -- useful for implicit casts
-	template <class U>
-	operator smart_ptr<U>()
-	{
-		// This next line should provide a syntax check
-		// to make sure that this cast makes sense.
-		// If it doesn't, this should have a compiler error.
-		// Otherwise, it should get optimized right out
-		// of the code.
-		//(U*)obj;
-
-		return *reinterpret_cast<smart_ptr<U>*>(this);
-	}
 
 	operator smart_ptr<const value_type>()const
 	{ return smart_ptr<const value_type>(static_cast<const_pointer>(obj)); }
@@ -216,6 +203,20 @@ public:
 	operator bool()const { return obj!=0; }
 
 	bool operator!()const { return !obj; }
+
+	//! Overloaded cast operator -- useful for implicit casts
+	template <class U>
+	operator smart_ptr<U>()
+	{
+		// This next line should provide a syntax check
+		// to make sure that this cast makes sense.
+		// If it doesn't, this should have a compiler error.
+		// Otherwise, it should get optimized right out
+		// of the code.
+		//(U*)obj;
+
+		return *reinterpret_cast<smart_ptr<U>*>(this);
+	}
 
 }; // END of template class smart_ptr
 

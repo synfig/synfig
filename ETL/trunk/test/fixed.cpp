@@ -100,7 +100,7 @@ struct speed_test
 		a=value_type(0.25);
 		b=value_type(2);
 		c=value_type(4.5);
-		const value_type half(0.5);
+		const value_type half(static_cast<value_type>(0.5));
 		int i;
 		etl::clock MyTimer;
 		MyTimer.reset();

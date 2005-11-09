@@ -43,7 +43,7 @@ struct affine_combo
 
 	T reverse(const T &x, const T &b, const K &t)const
 	{
-		return T( (x-b*t)*(static_cast<K>(1)/(static_cast<K>(1)-t)) );
+		return T( (x-t*b)*(static_cast<K>(1)/(static_cast<K>(1)-t)) );
 	}	
 };
 

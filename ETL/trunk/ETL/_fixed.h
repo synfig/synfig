@@ -111,12 +111,12 @@ private:
 	class raw { };
 public:
 	fixed_base()ETL_ATTRIB_INLINE;
-	fixed_base(const _fixed &x)ETL_ATTRIB_INLINE;
 	fixed_base(const float &f)ETL_ATTRIB_INLINE;
 	fixed_base(const double &f)ETL_ATTRIB_INLINE;
 	fixed_base(const long double &f)ETL_ATTRIB_INLINE;
 	fixed_base(const int &i)ETL_ATTRIB_INLINE;
 	fixed_base(const int &n,const int &d)ETL_ATTRIB_INLINE; //!< Fraction constructor
+	fixed_base(const _fixed &x)ETL_ATTRIB_INLINE;
 	fixed_base(value_type x,raw)ETL_ATTRIB_INLINE;
 
 	T &data() ETL_ATTRIB_PURE ETL_ATTRIB_INLINE;	
@@ -142,6 +142,8 @@ public:
 	_fixed operator/(const _fixed &rhs)const ETL_ATTRIB_INLINE;
 	_fixed operator*(const int &rhs)const ETL_ATTRIB_INLINE;
 	_fixed operator/(const int &rhs)const ETL_ATTRIB_INLINE;
+	_fixed operator*(const float &rhs)const ETL_ATTRIB_INLINE;
+	_fixed operator*(const double &rhs)const ETL_ATTRIB_INLINE;
 	
 	// Negation Operator
 	_fixed operator-()const ETL_ATTRIB_INLINE;
@@ -175,15 +177,15 @@ fixed_base<T,FIXED_BITS>::fixed_base(const _fixed &x):_data(x._data)
 {}
 
 template <class T,unsigned int FIXED_BITS>
-fixed_base<T,FIXED_BITS>::fixed_base(const float &f):_data(static_cast<value_type>(f*_ONE()+0.5f))
+fixed_base<T,FIXED_BITS>::fixed_base(const float &f):_data(static_cast<value_type>(f*_ONE()/*+0.5f*/))
 {}
 
 template <class T,unsigned int FIXED_BITS>
-fixed_base<T,FIXED_BITS>::fixed_base(const double &f):_data(static_cast<value_type>(f*_ONE()+0.5))
+fixed_base<T,FIXED_BITS>::fixed_base(const double &f):_data(static_cast<value_type>(f*_ONE()/*+0.5*/))
 {}
 
 template <class T,unsigned int FIXED_BITS>
-fixed_base<T,FIXED_BITS>::fixed_base(const long double &f):_data(static_cast<value_type>(f*_ONE()+0.5))
+fixed_base<T,FIXED_BITS>::fixed_base(const long double &f):_data(static_cast<value_type>(f*_ONE()/*+0.5*/))
 {}
 
 template <class T,unsigned int FIXED_BITS>
@@ -394,6 +396,21 @@ fixed_base<T,FIXED_BITS>::operator*(const int &rhs)const
 	//return reinterpret_cast<_fixed>(_data*rhs);
 }
 
+//! fixed * float
+template <class T,unsigned int FIXED_BITS>fixed_base<T,FIXED_BITS>
+fixed_base<T,FIXED_BITS>::operator*(const float &rhs)const 
+{
+    return (*this)*_fixed(rhs);
+}
+
+//! fixed * double
+template <class T,unsigned int FIXED_BITS>fixed_base<T,FIXED_BITS>
+fixed_base<T,FIXED_BITS>::operator*(const double &rhs)const 
+{
+    return (*this)*_fixed(rhs);
+}
+
+
 //! fixed / int
 template <class T,unsigned int FIXED_BITS>fixed_base<T,FIXED_BITS>
 fixed_base<T,FIXED_BITS>::operator/(const int &rhs)const 
@@ -404,7 +421,19 @@ fixed_base<T,FIXED_BITS>::operator/(const int &rhs)const
 	//return reinterpret_cast<_fixed>(_data/rhs);
 }
 
+//! float * fixed
+template <class T,unsigned int FIXED_BITS>fixed_base<T,FIXED_BITS>
+operator*(const float& lhs, const fixed_base<T,FIXED_BITS> &rhs) 
+{
+    return rhs*lhs;
+}
 
+//! double * fixed
+template <class T,unsigned int FIXED_BITS>fixed_base<T,FIXED_BITS>
+operator*(const double& lhs, const fixed_base<T,FIXED_BITS> &rhs) 
+{
+    return rhs*lhs;
+}
 
 
 
