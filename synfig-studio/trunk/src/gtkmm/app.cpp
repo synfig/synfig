@@ -1927,6 +1927,12 @@ App::open(std::string filename)
 bool
 App::open_as(std::string filename,std::string as)
 {
+#ifdef WIN32
+    char long_name[1024];
+    if(GetLongPathName(as.c_str(),long_name,sizeof(long_name)));
+    as=long_name;
+#endif
+
 	try
 	{
 		OneMoment one_moment;
