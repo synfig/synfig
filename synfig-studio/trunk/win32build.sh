@@ -16,7 +16,7 @@ mkdir $BUILDDIR
 
 cd $BUILDDIR
 
-../configure $OPTIONS || exit 1
+../configure --host=mingw32 --prefix=C:/PROGRA~1/Synfig $OPTIONS || exit 1
 
 make package
 
