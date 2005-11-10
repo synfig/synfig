@@ -116,6 +116,8 @@
 #include <windows.h>
 #endif
 #include <gtkmm/accelmap.h>
+#include <gtkmm/filechooser.h>
+#include <gtkmm/filechooserdialog.h>
 
 #endif
 
@@ -1653,6 +1655,21 @@ App::dialog_open_file(const std::string &title, std::string &filename)
 	if(!_preferences.get_value("curr_path",prev_path))
 		prev_path=".";
 	
+    Gtk::FileChooserDialog *dialog=new Gtk::FileChooserDialog(title,Gtk::FILE_CHOOSER_ACTION_OPEN);
+    dialog->set_current_folder(prev_path);
+    dialog->add_button(Gtk::StockID("gtk-ok"),GTK_RESPONSE_ACCEPT);
+    dialog->add_button(Gtk::StockID("gtk-cancel"),GTK_RESPONSE_CANCEL);
+    if(!filename.empty())
+        dialog->set_filename(filename);
+    if(dialog->run()==GTK_RESPONSE_ACCEPT) {
+        filename=dialog->get_filename();
+        delete dialog;
+        return true;
+    }
+    delete dialog;
+    return false;
+    /*
+    
 	GtkWidget *ok;
 	GtkWidget *cancel;
 	int val=0;
@@ -1694,6 +1711,7 @@ App::dialog_open_file(const std::string &title, std::string &filename)
 	}
 	gtk_widget_destroy(fileselection);
 	return true;
+    */
 #endif
 }
 
@@ -1742,7 +1760,24 @@ App::dialog_save_file(const std::string &title, std::string &filename)
 	}
 	return false;
 #else
-	return dialog_open_file(title, filename);
+	synfig::String prev_path;
+	if(!_preferences.get_value("curr_path",prev_path))
+		prev_path=".";
+	
+    Gtk::FileChooserDialog *dialog=new Gtk::FileChooserDialog(title,Gtk::FILE_CHOOSER_ACTION_SAVE);
+    dialog->set_current_folder(prev_path);
+    dialog->add_button(Gtk::StockID("gtk-ok"),GTK_RESPONSE_ACCEPT);
+    dialog->add_button(Gtk::StockID("gtk-cancel"),GTK_RESPONSE_CANCEL);
+    if(!filename.empty())
+        dialog->set_filename(filename);
+    if(dialog->run()==GTK_RESPONSE_ACCEPT) {
+        filename=dialog->get_filename();
+        delete dialog;
+        return true;
+    }
+    delete dialog;
+    return false;
+//	return dialog_open_file(title, filename);
 #endif
 }
 
@@ -1791,7 +1826,24 @@ App::dialog_saveas_file(const std::string &title, std::string &filename)
 	}
 	return false;
 #else
-	return dialog_open_file(title, filename);
+	synfig::String prev_path;
+	if(!_preferences.get_value("curr_path",prev_path))
+		prev_path=".";
+	
+    Gtk::FileChooserDialog *dialog=new Gtk::FileChooserDialog(title,Gtk::FILE_CHOOSER_ACTION_SAVE);
+    dialog->set_current_folder(prev_path);
+    dialog->add_button(Gtk::StockID("gtk-ok"),GTK_RESPONSE_ACCEPT);
+    dialog->add_button(Gtk::StockID("gtk-cancel"),GTK_RESPONSE_CANCEL);
+    if(!filename.empty())
+        dialog->set_filename(filename);
+    if(dialog->run()==GTK_RESPONSE_ACCEPT) {
+        filename=dialog->get_filename();
+        delete dialog;
+        return true;
+    }
+    delete dialog;
+    return false;
+//	return dialog_open_file(title, filename);
 #endif
 }
 
