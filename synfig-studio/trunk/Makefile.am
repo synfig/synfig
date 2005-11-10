@@ -6,7 +6,7 @@ MAINTAINERCLEANFILES=config/ltmain.sh config/config.guess config/config.sub conf
 
 SUBDIRS=src images
 
-EXTRA_DIST=COPYING TODO config/subs.m4 macosxbuild.sh win32build.sh win32inst.nsi.in bootstrap config/package config/depcomp config/cxx_macros.m4 @PACKAGE_TARNAME@-@VERSION@.spec config/project.spec.in config/build.cfg config/ETL.m4
+EXTRA_DIST=COPYING TODO pkg-info/macosx/studio-resources/InstallationCheck config/subs.m4 macosxbuild.sh win32build.sh win32inst.nsi.in bootstrap config/package config/depcomp config/cxx_macros.m4 @PACKAGE_TARNAME@-@VERSION@.spec config/project.spec.in config/build.cfg config/ETL.m4
 
 # Desktop entry
 #desktopdir              = $(datadir)/gnome/apps/Graphics
@@ -80,6 +80,7 @@ package-win32: all win32inst.nsi
 
 package-osx: all pkg-info/macosx/synfig-studio.info
 	[ -d pkg_root ] && $(RMDIR) pkg_root || true
+	convert images/installer_logo_osx.png $(srcdir)/pkg-info/macosx/studio-resources/background.tif
 	make install prefix="`pwd`/pkg_root"
 	$(srcdir)/config/package pkg_root pkg-info/macosx/synfig-studio.info -r $(srcdir)/pkg-info/macosx/studio-resources
 if WIN32_PKG	

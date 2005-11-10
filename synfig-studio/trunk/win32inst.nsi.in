@@ -33,7 +33,7 @@ InstallDirRegKey HKLM "Software\Voria_@PACKAGE_TARNAME@" "Install_Dir"
 
 ;--------------------------------
 
-!define MUI_WELCOMEFINISHPAGE_BITMAP "images\installer_logo.bmp"
+!define MUI_WELCOMEFINISHPAGE_BITMAP ".\images\installer_logo.bmp"
 
 ; Pages
 
