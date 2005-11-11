@@ -9,13 +9,17 @@
 #
 
 # Grab the current directory and move to our own
-CURR_DIR=$(pwd)
-cd $(dirname $0)
+CURR_DIR="$(pwd)"
+cd "$(dirname $0)"
 
 # Environment Variables
-BOOTSTRAP_NAME=$(basename $0)
-CONFIG_DIR=$(pwd)/config
+BOOTSTRAP_NAME="$(basename $0)"
+CONFIG_DIR="$(pwd)/config"
 
+[ -x /bin/cygpath ] && CONFIG_DIR="`cygpath -m -s "$CONFIG_DIR"`"
+[ -x /bin/cygpath ] && CONFIG_DIR="`cygpath -u "$CONFIG_DIR"`"
+[ -x /bin/cygpath ] && CURR_DIR="`cygpath -m -s "$CURR_DIR"`"
+[ -x /bin/cygpath ] && CURR_DIR="`cygpath -u "$CURR_DIR"`"
 # Automake,Autoconf, and Libtool versions that we require
 #AUTOCONF_VERSION=2.5
 #AUTOMAKE_VERSION=1.6
