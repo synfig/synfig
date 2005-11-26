@@ -489,15 +489,15 @@ LayerTreeStore::drag_data_received_vfunc (const TreeModel::Path& dest, const Gtk
 		TreeModel::Path dest_parent(dest);
 		if(!dest_parent.up() || !get_iter(dest_parent))
 		{
-			TreeModel::Path dest(dest);
-			if(!get_iter(dest))
-				dest.prev();
+			TreeModel::Path dest_(dest);
+			if(!get_iter(dest_))
+				dest_.prev();
 
-			if(!get_iter(dest))
+			if(!get_iter(dest_))
 				return false;
 
 			{
-				row=(*get_iter(dest));
+				row=(*get_iter(dest_));
 				dest_canvas=(Canvas::Handle)(row[model.canvas]);
 			}
 		}

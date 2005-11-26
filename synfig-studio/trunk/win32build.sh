@@ -2,7 +2,8 @@
 
 OPTIONS=""
 OPTIONS="$OPTIONS --disable-optimization"
-OPTIONS="$OPTIONS --disable-debug"
+#OPTIONS="$OPTIONS --disable-debug"
+OPTIONS="$OPTIONS --enable-debug"
 #OPTIONS="$OPTIONS --enable-license-key"
 
 
