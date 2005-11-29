@@ -92,7 +92,7 @@ using namespace studio;
 
 /* === C L A S S E S ======================================================= */
 
-class WorkAreaTarget : public synfig::Target_Tile
+class studio::WorkAreaTarget : public synfig::Target_Tile
 {
 public:
 	WorkArea *workarea;

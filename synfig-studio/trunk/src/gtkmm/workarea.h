@@ -74,8 +74,6 @@ public:
 };
 */
 
-class WorkAreaTarget;
-class WorkAreaTarget_Full;
 namespace synfigapp { class CanvasInterface; };
 
 namespace synfig { class Layer; };
@@ -83,6 +81,9 @@ namespace Gtk { class Frame; };
 
 namespace studio
 {
+class WorkAreaTarget;
+class WorkAreaTarget_Full;
+
 class Instance;
 class CanvasView;
 class WorkArea;
