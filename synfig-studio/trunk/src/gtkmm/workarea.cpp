@@ -381,7 +381,7 @@ public:
 };
 
 
-class WorkAreaTarget_Full : public synfig::Target_Scanline
+class studio::WorkAreaTarget_Full : public synfig::Target_Scanline
 {
 public:
 	WorkArea *workarea;
