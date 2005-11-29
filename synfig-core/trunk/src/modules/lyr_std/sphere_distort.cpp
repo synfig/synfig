@@ -83,7 +83,7 @@ Layer_SphereDistort::Layer_SphereDistort()
 :Layer_Composite(1.0,Color::BLEND_STRAIGHT),
 center(0,0),
 radius(1),
-percent(1,1),
+percent(1.0),
 type(TYPE_NORMAL),
 clip(false)
 {
@@ -525,7 +525,7 @@ bool Layer_SphereDistort::accelerated_render(Context context,Surface *surface,in
 }
 #endif
 
-class  Spherize_Trans : public Transform
+class synfig::Spherize_Trans : public synfig::Transform
 {
 	etl::handle<const Layer_SphereDistort> layer;
 public:

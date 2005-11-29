@@ -36,9 +36,9 @@
 /* === T Y P E D E F S ===================================================== */
 
 /* === C L A S S E S & S T R U C T S ======================================= */
-class Spherize_Trans;
 namespace synfig 
 {
+class Spherize_Trans;
 
 class Layer_SphereDistort : public Layer_Composite
 {
