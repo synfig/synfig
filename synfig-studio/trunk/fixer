@@ -3,20 +3,21 @@
 TEMPFILENAME=~/deleteme.tmp
 
 SEDSCRIPT='
-s/\*\*	Copyright (c) 2002 Robert B\. Quattlebaum Jr\./**	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley/;
-s/\*\*	This software and associated documentation/**	This package is free software; you can redistribute it and\/or/;
-s/\*\*	are CONFIDENTIAL and PROPRIETARY property of/**	modify it under the terms of the GNU General Public License as/;
-s/\*\*	the above-mentioned copyright holder./**	published by the Free Software Foundation; either version 2 of\
+s/bigfoot/deepdarc/;
+
+s/\*\* Copyright (c) 2002 Robert B\. Quattlebaum Jr\./**	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley/;
+s/\*\* This software and associated documentation/**	This package is free software; you can redistribute it and\/or/;
+s/\*\* are CONFIDENTIAL and PROPRIETARY property of/**	modify it under the terms of the GNU General Public License as/;
+s/\*\* the above-mentioned copyright holder./**	published by the Free Software Foundation; either version 2 of\
 **	the License, or (at your option) any later version./;
 
-s/\*\*	You may not copy, print, publish, or in any/**	This package is distributed in the hope that it will be useful,/;
-s/\*\*	other way distribute this software without/**	but WITHOUT ANY WARRANTY; without even the implied warranty of/;
-s/\*\*	a prior written agreement with/**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU/;
-s/\*\*	the copyright holder\./**	General Public License for more details./;
+s/\*\* You may not copy, print, publish, or in any/**	This package is distributed in the hope that it will be useful,/;
+s/\*\* other way distribute this software without/**	but WITHOUT ANY WARRANTY; without even the implied warranty of/;
+s/\*\* a prior written agreement with/**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU/;
+s/\*\* the copyright holder\./**	General Public License for more details./;
 
-s/n\*\*	/\
+s/n\*\* /\
 **	/;
-
 ';
 
 #for filename in `find . -name "*sinfg*" -a ! -name '*svn*'` ; do {
