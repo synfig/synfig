@@ -5,7 +5,7 @@ Version: @VERSION_MAJ@.@VERSION_MIN@.@VERSION_REV@
 Release: @VERSION_REL@
 Copyright: free (see license), see /usr/share/doc/%{name}-%{version}/license.html
 URL: http://www.voria.com/
-Packager: Robert B. Quattlebaum Jr. <darco@bigfoot.com>
+Packager: Robert B. Quattlebaum Jr. <darco@deepdarc.com>
 Group: Development/Languages
 Icon: config/logo.gif
 #Source0: http://www.stlport.org/archive/%{name}-%{version}.tar.gz
