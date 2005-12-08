@@ -1,0 +1,234 @@
+/*! ========================================================================
+** Synfig
+** png_trgt Target Module
+** $Id: trgt_png.cpp,v 1.1.1.1 2005/01/04 01:23:14 darco Exp $
+**
+**	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
+**
+**	This package is free software; you can redistribute it and/or
+**	modify it under the terms of the GNU General Public License as
+**	published by the Free Software Foundation; either version 2 of
+**	the License, or (at your option) any later version.
+**
+**	This package is distributed in the hope that it will be useful,
+**	but WITHOUT ANY WARRANTY; without even the implied warranty of
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+**	General Public License for more details.
+**
+** === N O T E S ===========================================================
+**
+** ========================================================================= */
+
+/* === H E A D E R S ======================================================= */
+
+#define SYNFIG_TARGET
+
+#ifdef USING_PCH
+#	include "pch.h"
+#else
+#ifdef HAVE_CONFIG_H
+#	include <config.h>
+#endif
+
+#include "trgt_png.h"
+#include <png.h>
+#include <ETL/stringf>
+#include <cstdio>
+#include <algorithm>
+#include <functional>
+#include <ETL/misc>
+
+#endif
+
+/* === M A C R O S ========================================================= */
+
+using namespace synfig;
+using namespace std;
+using namespace etl;
+
+/* === G L O B A L S ======================================================= */
+
+SYNFIG_TARGET_INIT(png_trgt);
+SYNFIG_TARGET_SET_NAME(png_trgt,"png");
+SYNFIG_TARGET_SET_EXT(png_trgt,"png");
+SYNFIG_TARGET_SET_VERSION(png_trgt,"0.1");
+SYNFIG_TARGET_SET_CVS_ID(png_trgt,"$Id: trgt_png.cpp,v 1.1.1.1 2005/01/04 01:23:14 darco Exp $");
+
+/* === M E T H O D S ======================================================= */
+
+void
+png_trgt::png_out_error(png_struct *png_data,const char *msg)
+{
+	png_trgt *me=(png_trgt*)png_data->error_ptr;
+	synfig::error(strprintf("png_trgt: error: %s",msg));
+	me->ready=false;
+}
+
+void
+png_trgt::png_out_warning(png_struct *png_data,const char *msg)
+{
+	png_trgt *me=(png_trgt*)png_data->error_ptr;
+	synfig::warning(strprintf("png_trgt: warning: %s",msg));
+	me->ready=false;
+}
+
+
+//Target *png_trgt::New(const char *filename){	return new png_trgt(filename);}
+
+png_trgt::png_trgt(const char *Filename)
+{
+	file=NULL;
+	filename=Filename;
+	buffer=NULL;
+	ready=false;
+	color_buffer=0;	
+}
+
+png_trgt::~png_trgt()
+{
+	if(file)
+		fclose(file);
+	file=NULL;
+	delete [] buffer;
+	delete [] color_buffer;
+}
+
+bool
+png_trgt::set_rend_desc(RendDesc *given_desc)
+{
+	//given_desc->set_pixel_format(PixelFormat((int)PF_RGB|(int)PF_A));
+	desc=*given_desc;
+	imagecount=desc.get_frame_start();
+	if(desc.get_frame_end()-desc.get_frame_start()>0)
+		multi_image=true;
+	else
+		multi_image=false;
+	return true;
+}
+
+void
+png_trgt::end_frame()
+{
+	if(ready && file)
+	{
+		png_write_end(png_ptr,info_ptr);
+		png_destroy_write_struct(&png_ptr, &info_ptr);
+	}
+
+	if(file && file!=stdout)
+		fclose(file);
+	file=NULL;
+	imagecount++;
+	ready=false;
+}
+
+bool
+png_trgt::start_frame(synfig::ProgressCallback *callback)
+{
+	int w=desc.get_w(),h=desc.get_h();
+	
+	if(file && file!=stdout)
+		fclose(file);
+	if(filename=="-")
+	{
+		if(callback)callback->task(strprintf("(stdout) %d",imagecount).c_str());
+		file=stdout;
+	}
+	else if(multi_image)
+	{
+		String
+			newfilename(filename),
+			ext(find(filename.begin(),filename.end(),'.'),filename.end());
+		newfilename.erase(find(newfilename.begin(),newfilename.end(),'.'),newfilename.end());
+		
+		newfilename+=etl::strprintf("%04d",imagecount)+ext;
+		file=fopen(newfilename.c_str(),"wb");
+		if(callback)callback->task(newfilename);
+	}
+	else
+	{
+		file=fopen(filename.c_str(),"wb");
+		if(callback)callback->task(filename);
+	}
+	
+	if(!file)
+		return false;
+		
+	delete [] buffer;
+	buffer=new unsigned char[4*w];
+
+	delete [] color_buffer;
+	color_buffer=new Color[w];
+
+	png_ptr=png_create_write_struct(PNG_LIBPNG_VER_STRING, (png_voidp)this,png_out_error, png_out_warning);
+	if (!png_ptr)
+	{
+		synfig::error("Unable to setup PNG struct");
+		fclose(file);
+		return false;
+	}
+	
+	info_ptr= png_create_info_struct(png_ptr);
+	if (!info_ptr)
+	{
+		synfig::error("Unable to setup PNG info struct");
+		fclose(file);
+		png_destroy_write_struct(&png_ptr,(png_infopp)NULL);
+		return false;
+	}
+	
+	if (setjmp(png_jmpbuf(png_ptr)))
+	{
+		synfig::error("Unable to setup longjump");
+		png_destroy_write_struct(&png_ptr, &info_ptr);
+		fclose(file);
+		return false;
+	}
+	png_init_io(png_ptr,file);
+	png_set_filter(png_ptr,0,PNG_FILTER_NONE);
+
+	setjmp(png_jmpbuf(png_ptr));
+	png_set_IHDR(png_ptr,info_ptr,w,h,8,PNG_COLOR_TYPE_RGBA,PNG_INTERLACE_NONE,PNG_COMPRESSION_TYPE_DEFAULT,PNG_FILTER_TYPE_DEFAULT);
+
+	// Write the gamma
+	//png_set_gAMA(png_ptr, info_ptr,1.0/gamma().get_gamma());
+	png_set_gAMA(png_ptr, info_ptr,gamma().get_gamma());
+	
+	// Write the physical size
+	png_set_pHYs(png_ptr,info_ptr,round_to_int(desc.get_x_res()),round_to_int(desc.get_y_res()),PNG_RESOLUTION_METER);
+	
+	// Output any text info along with the file
+	png_text comments[]=
+	{
+		{ PNG_TEXT_COMPRESSION_NONE, "Title", const_cast<char *>(get_canvas()->get_name().c_str()) },
+		{ PNG_TEXT_COMPRESSION_NONE, "Description", const_cast<char *>(get_canvas()->get_description().c_str()) },
+		{ PNG_TEXT_COMPRESSION_NONE, "Copyright", "(c) 2004 Voria Studios, LLC" },
+		{ PNG_TEXT_COMPRESSION_NONE, "Software", "SYNFIG" },
+	};
+	png_set_text(png_ptr,info_ptr,comments,sizeof(comments)/sizeof(png_text));
+	
+	png_write_info_before_PLTE(png_ptr, info_ptr);
+	png_write_info(png_ptr, info_ptr);
+	ready=true;
+	return true;
+}
+
+Color *
+png_trgt::start_scanline(int scanline)
+{
+	return color_buffer;
+}
+
+bool
+png_trgt::end_scanline()
+{
+	if(!file || !ready)
+		return false;
+
+	convert_color_format(buffer, color_buffer, desc.get_w(), PF_RGB|PF_A, gamma());
+
+	setjmp(png_jmpbuf(png_ptr));
+	png_write_row(png_ptr,buffer);
+
+	return true;
+}
