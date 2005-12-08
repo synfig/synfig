@@ -29,6 +29,8 @@ AC_DEFINE(LT_SCOPE,[extern],[LibLTDL is linked staticly])
 
 # -- V A R I A B L E S ----------------------------------------
 
+SVN_REPOSITORY=@SVN_REPOSITORY@
+AC_SUBST(SVN_REPOSITORY)
 
 # -- P R O G R A M S ------------------------------------------
 
