@@ -1,0 +1,82 @@
+#!/bin/sh
+
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+
+bindir=@bindir@
+libexecdir=@libexecdir@
+datadir=@datadir@
+sysconfdir=@sysconfdir@
+sharedstatedir=@sharedstatedir@
+localstatedir=@localstatedir@
+libdir=@libdir@
+infodir=@infodir@
+mandir=@mandir@
+includedir=@includedir@
+
+LIBS="@SYNFIG_LIBS@"
+
+VERSION=@VERSION@
+PACKAGE=@PACKAGE@
+
+CFLAGS="@CONFIG_CFLAGS@"
+
+usage()
+{
+	cat <<EOF
+Usage: synfig-config [OPTION]...
+
+Generic options
+  --version	print installed version of synfig.
+  --help        display this help and exit.
+
+Compilation support options
+  --cflags      print pre-processor and compiler flags
+  --libs        print library linking information
+  
+Install directories
+  --prefix --exec-prefix --bindir --libexecdir --datadir
+  --sysconfdir --sharedstatedir --localstatedir --libdir --infodir
+  --mandir --includedir
+
+EOF
+	
+	exit 1
+}
+
+if test $# -eq 0; then
+	usage 1
+fi
+
+case $1 in
+--version)
+	echo $PACKAGE $VERSION
+	exit 0
+	;;
+--exec-prefix)
+	echo $exec_prefix
+	exit 0
+	;;
+--prefix)
+	echo $prefix
+	exit 0
+	;;
+--help)
+	usage 0
+	;;
+--cflags)
+	echo $CFLAGS
+	exit 0
+	;;
+--cxxflags)
+	echo $CFLAGS
+	exit 0
+	;;
+--libs)
+	echo $LIBS
+	exit 0
+	;;
+esac
+
+echo Unknown option "$1"
+exit 4

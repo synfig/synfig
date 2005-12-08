@@ -1,0 +1,1012 @@
+<?xml version="1.0"?>
+<canvas version="0.1" width="400" height="300" xres="2952.755900" yres="2952.755900" view-box="-2.400000 1.800000 2.400000 -1.800000" antialias="1" fps="30.000" begin-time="0f" end-time="10s 0f" bgcolor="0.500000 0.500000 0.500000 1.000000">
+  <name>Untitled0</name>
+  <keyframe time="0f"/>
+  <keyframe time="2s 15f"/>
+  <keyframe time="5s 0f"/>
+  <keyframe time="7s 15f"/>
+  <keyframe time="10s 0f"/>
+  <layer type="SolidColor" active="true" version="0.1">
+    <param name="z_depth">
+      <real value="0.0000000000"/>
+    </param>
+    <param name="amount">
+      <real value="1.0000000000"/>
+    </param>
+    <param name="blend_method">
+      <integer value="1"/>
+    </param>
+    <param name="color">
+      <color>
+        <r>1.000000</r>
+        <g>1.000000</g>
+        <b>1.000000</b>
+        <a>1.000000</a>
+      </color>
+    </param>
+  </layer>
+  <layer type="circle" active="true" version="0.1">
+    <param name="z_depth">
+      <real value="0.0000000000"/>
+    </param>
+    <param name="amount">
+      <real value="1.0000000000"/>
+    </param>
+    <param name="blend_method">
+      <integer value="1"/>
+    </param>
+    <param name="color">
+      <color>
+        <r>0.000000</r>
+        <g>0.000000</g>
+        <b>0.000000</b>
+        <a>1.000000</a>
+      </color>
+    </param>
+    <param name="radius">
+      <real value="0.5000000000"/>
+    </param>
+    <param name="feather">
+      <real value="0.5000000000"/>
+    </param>
+    <param name="pos">
+      <vector>
+        <x>0.0000000000</x>
+        <y>0.0000000000</y>
+      </vector>
+    </param>
+    <param name="invert">
+      <bool value="false"/>
+    </param>
+    <param name="falloff">
+      <integer value="1" guid="24311A9C4E3CBFBF872BBDDBE0854ACA"/>
+    </param>
+  </layer>
+  <layer type="circle" active="true" version="0.1">
+    <param name="z_depth">
+      <real value="0.0000000000"/>
+    </param>
+    <param name="amount">
+      <real value="1.0000000000"/>
+    </param>
+    <param name="blend_method">
+      <integer value="3"/>
+    </param>
+    <param name="color">
+      <color>
+        <r>0.000000</r>
+        <g>0.000000</g>
+        <b>0.000000</b>
+        <a>1.000000</a>
+      </color>
+    </param>
+    <param name="radius">
+      <real value="0.5000000000"/>
+    </param>
+    <param name="feather">
+      <real value="0.5000000000"/>
+    </param>
+    <param name="pos">
+      <vector>
+        <x>-1.7000000477</x>
+        <y>1.1200000048</y>
+      </vector>
+    </param>
+    <param name="invert">
+      <bool value="false"/>
+    </param>
+    <param name="falloff">
+      <integer value="1" guid="24311A9C4E3CBFBF872BBDDBE0854ACA"/>
+    </param>
+  </layer>
+  <layer type="circle" active="true" version="0.1">
+    <param name="z_depth">
+      <real value="0.0000000000"/>
+    </param>
+    <param name="amount">
+      <real value="1.0000000000"/>
+    </param>
+    <param name="blend_method">
+      <integer value="3"/>
+    </param>
+    <param name="color">
+      <color>
+        <r>0.000000</r>
+        <g>0.000000</g>
+        <b>0.000000</b>
+        <a>1.000000</a>
+      </color>
+    </param>
+    <param name="radius">
+      <real value="0.5000000000"/>
+    </param>
+    <param name="feather">
+      <real value="0.5000000000"/>
+    </param>
+    <param name="pos">
+      <vector>
+        <x>-1.8999999762</x>
+        <y>0.3400000036</y>
+      </vector>
+    </param>
+    <param name="invert">
+      <bool value="false"/>
+    </param>
+    <param name="falloff">
+      <integer value="1" guid="24311A9C4E3CBFBF872BBDDBE0854ACA"/>
+    </param>
+  </layer>
+  <layer type="circle" active="true" version="0.1">
+    <param name="z_depth">
+      <real value="0.0000000000"/>
+    </param>
+    <param name="amount">
+      <real value="1.0000000000"/>
+    </param>
+    <param name="blend_method">
+      <integer value="3"/>
+    </param>
+    <param name="color">
+      <color>
+        <r>0.000000</r>
+        <g>0.000000</g>
+        <b>0.000000</b>
+        <a>1.000000</a>
+      </color>
+    </param>
+    <param name="radius">
+      <real value="0.5000000000"/>
+    </param>
+    <param name="feather">
+      <real value="0.5000000000"/>
+    </param>
+    <param name="pos">
+      <vector>
+        <x>-1.2699999809</x>
+        <y>-1.3400000334</y>
+      </vector>
+    </param>
+    <param name="invert">
+      <bool value="false"/>
+    </param>
+    <param name="falloff">
+      <integer value="1" guid="24311A9C4E3CBFBF872BBDDBE0854ACA"/>
+    </param>
+  </layer>
+  <layer type="circle" active="true" version="0.1">
+    <param name="z_depth">
+      <real value="0.0000000000"/>
+    </param>
+    <param name="amount">
+      <real value="1.0000000000"/>
+    </param>
+    <param name="blend_method">
+      <integer value="3"/>
+    </param>
+    <param name="color">
+      <color>
+        <r>0.000000</r>
+        <g>0.000000</g>
+        <b>0.000000</b>
+        <a>1.000000</a>
+      </color>
+    </param>
+    <param name="radius">
+      <real value="0.5000000000"/>
+    </param>
+    <param name="feather">
+      <real value="0.5000000000"/>
+    </param>
+    <param name="pos">
+      <vector>
+        <x>-0.5799999833</x>
+        <y>-1.2699999809</y>
+      </vector>
+    </param>
+    <param name="invert">
+      <bool value="false"/>
+    </param>
+    <param name="falloff">
+      <integer value="1" guid="24311A9C4E3CBFBF872BBDDBE0854ACA"/>
+    </param>
+  </layer>
+  <layer type="circle" active="true" version="0.1">
+    <param name="z_depth">
+      <real value="0.0000000000"/>
+    </param>
+    <param name="amount">
+      <real value="1.0000000000"/>
+    </param>
+    <param name="blend_method">
+      <integer value="3"/>
+    </param>
+    <param name="color">
+      <color>
+        <r>0.000000</r>
+        <g>0.000000</g>
+        <b>0.000000</b>
+        <a>1.000000</a>
+      </color>
+    </param>
+    <param name="radius">
+      <real value="0.5000000000"/>
+    </param>
+    <param name="feather">
+      <real value="0.5000000000"/>
+    </param>
+    <param name="pos">
+      <vector>
+        <x>1.6000000238</x>
+        <y>-0.7500000000</y>
+      </vector>
+    </param>
+    <param name="invert">
+      <bool value="false"/>
+    </param>
+    <param name="falloff">
+      <integer value="1" guid="24311A9C4E3CBFBF872BBDDBE0854ACA"/>
+    </param>
+  </layer>
+  <layer type="circle" active="true" version="0.1">
+    <param name="z_depth">
+      <real value="0.0000000000"/>
+    </param>
+    <param name="amount">
+      <real value="1.0000000000"/>
+    </param>
+    <param name="blend_method">
+      <integer value="3"/>
+    </param>
+    <param name="color">
+      <color>
+        <r>0.000000</r>
+        <g>0.000000</g>
+        <b>0.000000</b>
+        <a>1.000000</a>
+      </color>
+    </param>
+    <param name="radius">
+      <real value="0.5000000000"/>
+    </param>
+    <param name="feather">
+      <real value="0.5000000000"/>
+    </param>
+    <param name="pos">
+      <vector>
+        <x>1.6100000143</x>
+        <y>1.1699999571</y>
+      </vector>
+    </param>
+    <param name="invert">
+      <bool value="false"/>
+    </param>
+    <param name="falloff">
+      <integer value="1" guid="24311A9C4E3CBFBF872BBDDBE0854ACA"/>
+    </param>
+  </layer>
+  <layer type="circle" active="true" version="0.1">
+    <param name="z_depth">
+      <real value="0.0000000000"/>
+    </param>
+    <param name="amount">
+      <real value="1.0000000000"/>
+    </param>
+    <param name="blend_method">
+      <integer value="3"/>
+    </param>
+    <param name="color">
+      <color>
+        <r>0.000000</r>
+        <g>0.000000</g>
+        <b>0.000000</b>
+        <a>1.000000</a>
+      </color>
+    </param>
+    <param name="radius">
+      <real value="0.5000000000"/>
+    </param>
+    <param name="feather">
+      <real value="0.5000000000"/>
+    </param>
+    <param name="pos">
+      <vector>
+        <x>0.4399999976</x>
+        <y>1.3400000334</y>
+      </vector>
+    </param>
+    <param name="invert">
+      <bool value="false"/>
+    </param>
+    <param name="falloff">
+      <integer value="1" guid="24311A9C4E3CBFBF872BBDDBE0854ACA"/>
+    </param>
+  </layer>
+  <layer type="circle" active="true" version="0.1">
+    <param name="z_depth">
+      <real value="0.0000000000"/>
+    </param>
+    <param name="amount">
+      <real value="1.0000000000"/>
+    </param>
+    <param name="blend_method">
+      <integer value="3"/>
+    </param>
+    <param name="color">
+      <color>
+        <r>0.000000</r>
+        <g>0.000000</g>
+        <b>0.000000</b>
+        <a>1.000000</a>
+      </color>
+    </param>
+    <param name="radius">
+      <real value="0.5000000000"/>
+    </param>
+    <param name="feather">
+      <real value="0.5000000000"/>
+    </param>
+    <param name="pos">
+      <vector>
+        <x>1.3799999952</x>
+        <y>0.2599999905</y>
+      </vector>
+    </param>
+    <param name="invert">
+      <bool value="false"/>
+    </param>
+    <param name="falloff">
+      <integer value="1" guid="24311A9C4E3CBFBF872BBDDBE0854ACA"/>
+    </param>
+  </layer>
+  <layer type="circle" active="true" version="0.1">
+    <param name="z_depth">
+      <real value="0.0000000000"/>
+    </param>
+    <param name="amount">
+      <real value="1.0000000000"/>
+    </param>
+    <param name="blend_method">
+      <integer value="3"/>
+    </param>
+    <param name="color">
+      <color>
+        <r>0.000000</r>
+        <g>0.000000</g>
+        <b>0.000000</b>
+        <a>1.000000</a>
+      </color>
+    </param>
+    <param name="radius">
+      <real value="0.5000000000"/>
+    </param>
+    <param name="feather">
+      <real value="0.5000000000"/>
+    </param>
+    <param name="pos">
+      <vector>
+        <x>0.6000000238</x>
+        <y>-0.9100000262</y>
+      </vector>
+    </param>
+    <param name="invert">
+      <bool value="false"/>
+    </param>
+    <param name="falloff">
+      <integer value="1" guid="24311A9C4E3CBFBF872BBDDBE0854ACA"/>
+    </param>
+  </layer>
+  <layer type="circle" active="true" version="0.1">
+    <param name="z_depth">
+      <real value="0.0000000000"/>
+    </param>
+    <param name="amount">
+      <real value="1.0000000000"/>
+    </param>
+    <param name="blend_method">
+      <integer value="3"/>
+    </param>
+    <param name="color">
+      <color>
+        <r>0.000000</r>
+        <g>0.000000</g>
+        <b>0.000000</b>
+        <a>1.000000</a>
+      </color>
+    </param>
+    <param name="radius">
+      <real value="0.5000000000"/>
+    </param>
+    <param name="feather">
+      <real value="0.5000000000"/>
+    </param>
+    <param name="pos">
+      <vector>
+        <x>-0.8399999738</x>
+        <y>-0.3600000143</y>
+      </vector>
+    </param>
+    <param name="invert">
+      <bool value="false"/>
+    </param>
+    <param name="falloff">
+      <integer value="1" guid="24311A9C4E3CBFBF872BBDDBE0854ACA"/>
+    </param>
+  </layer>
+  <layer type="circle" active="true" version="0.1">
+    <param name="z_depth">
+      <real value="0.0000000000"/>
+    </param>
+    <param name="amount">
+      <real value="1.0000000000"/>
+    </param>
+    <param name="blend_method">
+      <integer value="3"/>
+    </param>
+    <param name="color">
+      <color>
+        <r>0.000000</r>
+        <g>0.000000</g>
+        <b>0.000000</b>
+        <a>1.000000</a>
+      </color>
+    </param>
+    <param name="radius">
+      <real value="0.5000000000"/>
+    </param>
+    <param name="feather">
+      <real value="0.5000000000"/>
+    </param>
+    <param name="pos">
+      <vector>
+        <x>-0.6000000238</x>
+        <y>1.6000000238</y>
+      </vector>
+    </param>
+    <param name="invert">
+      <bool value="false"/>
+    </param>
+    <param name="falloff">
+      <integer value="1" guid="24311A9C4E3CBFBF872BBDDBE0854ACA"/>
+    </param>
+  </layer>
+  <layer type="circle" active="true" version="0.1">
+    <param name="z_depth">
+      <real value="0.0000000000"/>
+    </param>
+    <param name="amount">
+      <real value="1.0000000000"/>
+    </param>
+    <param name="blend_method">
+      <integer value="3"/>
+    </param>
+    <param name="color">
+      <color>
+        <r>0.000000</r>
+        <g>0.000000</g>
+        <b>0.000000</b>
+        <a>1.000000</a>
+      </color>
+    </param>
+    <param name="radius">
+      <real value="0.5000000000"/>
+    </param>
+    <param name="feather">
+      <real value="0.5000000000"/>
+    </param>
+    <param name="pos">
+      <vector>
+        <x>1.3999999762</x>
+        <y>-1.3999999762</y>
+      </vector>
+    </param>
+    <param name="invert">
+      <bool value="false"/>
+    </param>
+    <param name="falloff">
+      <integer value="1" guid="24311A9C4E3CBFBF872BBDDBE0854ACA"/>
+    </param>
+  </layer>
+  <layer type="circle" active="true" version="0.1">
+    <param name="z_depth">
+      <real value="0.0000000000"/>
+    </param>
+    <param name="amount">
+      <real value="1.0000000000"/>
+    </param>
+    <param name="blend_method">
+      <integer value="3"/>
+    </param>
+    <param name="color">
+      <color>
+        <r>0.000000</r>
+        <g>0.000000</g>
+        <b>0.000000</b>
+        <a>1.000000</a>
+      </color>
+    </param>
+    <param name="radius">
+      <real value="0.5000000000"/>
+    </param>
+    <param name="feather">
+      <real value="0.5000000000"/>
+    </param>
+    <param name="pos">
+      <vector>
+        <x>2.4000000954</x>
+        <y>0.6000000238</y>
+      </vector>
+    </param>
+    <param name="invert">
+      <bool value="false"/>
+    </param>
+    <param name="falloff">
+      <integer value="1" guid="24311A9C4E3CBFBF872BBDDBE0854ACA"/>
+    </param>
+  </layer>
+  <layer type="circle" active="true" version="0.1">
+    <param name="z_depth">
+      <real value="0.0000000000"/>
+    </param>
+    <param name="amount">
+      <real value="1.0000000000"/>
+    </param>
+    <param name="blend_method">
+      <integer value="3"/>
+    </param>
+    <param name="color">
+      <color>
+        <r>0.000000</r>
+        <g>0.000000</g>
+        <b>0.000000</b>
+        <a>1.000000</a>
+      </color>
+    </param>
+    <param name="radius">
+      <real value="0.5000000000"/>
+    </param>
+    <param name="feather">
+      <real value="0.5000000000"/>
+    </param>
+    <param name="pos">
+      <vector>
+        <x>-2.4000000954</x>
+        <y>-1.7999999523</y>
+      </vector>
+    </param>
+    <param name="invert">
+      <bool value="false"/>
+    </param>
+    <param name="falloff">
+      <integer value="1" guid="24311A9C4E3CBFBF872BBDDBE0854ACA"/>
+    </param>
+  </layer>
+  <layer type="circle" active="true" version="0.1">
+    <param name="z_depth">
+      <real value="0.0000000000"/>
+    </param>
+    <param name="amount">
+      <real value="1.0000000000"/>
+    </param>
+    <param name="blend_method">
+      <integer value="3"/>
+    </param>
+    <param name="color">
+      <color>
+        <r>0.000000</r>
+        <g>0.000000</g>
+        <b>0.000000</b>
+        <a>1.000000</a>
+      </color>
+    </param>
+    <param name="radius">
+      <real value="0.5000000000"/>
+    </param>
+    <param name="feather">
+      <real value="0.5000000000"/>
+    </param>
+    <param name="pos">
+      <vector>
+        <x>2.4000000954</x>
+        <y>-1.7999999523</y>
+      </vector>
+    </param>
+    <param name="invert">
+      <bool value="false"/>
+    </param>
+    <param name="falloff">
+      <integer value="1" guid="24311A9C4E3CBFBF872BBDDBE0854ACA"/>
+    </param>
+  </layer>
+  <layer type="circle" active="true" version="0.1">
+    <param name="z_depth">
+      <real value="0.0000000000"/>
+    </param>
+    <param name="amount">
+      <real value="1.0000000000"/>
+    </param>
+    <param name="blend_method">
+      <integer value="3"/>
+    </param>
+    <param name="color">
+      <color>
+        <r>0.000000</r>
+        <g>0.000000</g>
+        <b>0.000000</b>
+        <a>1.000000</a>
+      </color>
+    </param>
+    <param name="radius">
+      <real value="0.5000000000"/>
+    </param>
+    <param name="feather">
+      <real value="0.5000000000"/>
+    </param>
+    <param name="pos">
+      <vector>
+        <x>0.4000000060</x>
+        <y>-2.0000000000</y>
+      </vector>
+    </param>
+    <param name="invert">
+      <bool value="false"/>
+    </param>
+    <param name="falloff">
+      <integer value="1" guid="24311A9C4E3CBFBF872BBDDBE0854ACA"/>
+    </param>
+  </layer>
+  <layer type="circle" active="true" version="0.1">
+    <param name="z_depth">
+      <real value="0.0000000000"/>
+    </param>
+    <param name="amount">
+      <real value="1.0000000000"/>
+    </param>
+    <param name="blend_method">
+      <integer value="3"/>
+    </param>
+    <param name="color">
+      <color>
+        <r>0.000000</r>
+        <g>0.000000</g>
+        <b>0.000000</b>
+        <a>1.000000</a>
+      </color>
+    </param>
+    <param name="radius">
+      <real value="0.5000000000"/>
+    </param>
+    <param name="feather">
+      <real value="0.5000000000"/>
+    </param>
+    <param name="pos">
+      <vector>
+        <x>-2.2000000477</x>
+        <y>-0.6000000238</y>
+      </vector>
+    </param>
+    <param name="invert">
+      <bool value="false"/>
+    </param>
+    <param name="falloff">
+      <integer value="1" guid="24311A9C4E3CBFBF872BBDDBE0854ACA"/>
+    </param>
+  </layer>
+  <layer type="circle" active="true" version="0.1">
+    <param name="z_depth">
+      <real value="0.0000000000"/>
+    </param>
+    <param name="amount">
+      <real value="1.0000000000"/>
+    </param>
+    <param name="blend_method">
+      <integer value="3"/>
+    </param>
+    <param name="color">
+      <color>
+        <r>0.000000</r>
+        <g>0.000000</g>
+        <b>0.000000</b>
+        <a>1.000000</a>
+      </color>
+    </param>
+    <param name="radius">
+      <real value="0.5000000000"/>
+    </param>
+    <param name="feather">
+      <real value="0.5000000000"/>
+    </param>
+    <param name="pos">
+      <vector>
+        <x>-0.7900000215</x>
+        <y>0.7099999785</y>
+      </vector>
+    </param>
+    <param name="invert">
+      <bool value="false"/>
+    </param>
+    <param name="falloff">
+      <integer value="1" guid="24311A9C4E3CBFBF872BBDDBE0854ACA"/>
+    </param>
+  </layer>
+  <layer type="linear_gradient" active="true" version="0.0">
+    <param name="z_depth">
+      <real value="0.0000000000"/>
+    </param>
+    <param name="amount">
+      <real value="1.0000000000"/>
+    </param>
+    <param name="blend_method">
+      <integer value="18"/>
+    </param>
+    <param name="p1">
+      <animated type="vector" guid="3A8E75EB60DEAC652DFB8EAE6FF07787">
+        <waypoint time="SOT">
+          <vector>
+            <x>2.0000000000</x>
+            <y>1.5000000000</y>
+          </vector>
+        </waypoint>
+        <waypoint time="0f">
+          <vector>
+            <x>1.5000000000</x>
+            <y>1.5000000000</y>
+          </vector>
+        </waypoint>
+        <waypoint time="2s 15f" tension="-0.500000">
+          <vector>
+            <x>-1.5000000000</x>
+            <y>1.5000000000</y>
+          </vector>
+        </waypoint>
+        <waypoint time="5s 0f">
+          <vector>
+            <x>-1.5000000000</x>
+            <y>-1.5000000000</y>
+          </vector>
+        </waypoint>
+        <waypoint time="7s 15f" tension="-0.500000">
+          <vector>
+            <x>1.5000000000</x>
+            <y>-1.5000000000</y>
+          </vector>
+        </waypoint>
+        <waypoint time="10s 0f">
+          <vector>
+            <x>1.5000000000</x>
+            <y>1.5000000000</y>
+          </vector>
+        </waypoint>
+      </animated>
+    </param>
+    <param name="p2">
+      <animated type="vector" guid="187DED8A43166FA15EAB67C20819E0B1">
+        <waypoint time="SOT">
+          <vector>
+            <x>-2.0000000000</x>
+            <y>-1.5000000000</y>
+          </vector>
+        </waypoint>
+        <waypoint time="0f">
+          <vector>
+            <x>-1.5000000000</x>
+            <y>-1.5000000000</y>
+          </vector>
+        </waypoint>
+        <waypoint time="2s 15f" tension="-0.500000">
+          <vector>
+            <x>1.5000000000</x>
+            <y>-1.5000000000</y>
+          </vector>
+        </waypoint>
+        <waypoint time="5s 0f" tension="-0.500000">
+          <vector>
+            <x>1.5000000000</x>
+            <y>1.5000000000</y>
+          </vector>
+        </waypoint>
+        <waypoint time="7s 15f" tension="-0.500000">
+          <vector>
+            <x>-1.5000000000</x>
+            <y>1.5000000000</y>
+          </vector>
+        </waypoint>
+        <waypoint time="10s 0f">
+          <vector>
+            <x>-1.5000000000</x>
+            <y>-1.5000000000</y>
+          </vector>
+        </waypoint>
+      </animated>
+    </param>
+    <param name="gradient">
+      <gradient>
+        <color pos="0.000000">
+          <r>0.000000</r>
+          <g>0.000000</g>
+          <b>0.000000</b>
+          <a>1.000000</a>
+        </color>
+        <color pos="1.000000">
+          <r>1.000000</r>
+          <g>1.000000</g>
+          <b>1.000000</b>
+          <a>1.000000</a>
+        </color>
+      </gradient>
+    </param>
+    <param name="loop">
+      <bool value="false"/>
+    </param>
+    <param name="zigzag">
+      <bool value="false"/>
+    </param>
+  </layer>
+  <layer type="blur" active="false" version="0.2">
+    <param name="z_depth">
+      <real value="0.0000000000"/>
+    </param>
+    <param name="amount">
+      <real value="1.0000000000"/>
+    </param>
+    <param name="blend_method">
+      <integer value="3"/>
+    </param>
+    <param name="size">
+      <vector>
+        <x>0.1000000015</x>
+        <y>0.1000000015</y>
+      </vector>
+    </param>
+    <param name="type">
+      <integer value="0"/>
+    </param>
+  </layer>
+  <layer type="linear_gradient" active="true" version="0.0">
+    <param name="z_depth">
+      <real value="0.0000000000"/>
+    </param>
+    <param name="amount">
+      <real value="0.5500000119"/>
+    </param>
+    <param name="blend_method">
+      <integer value="8"/>
+    </param>
+    <param name="p1">
+      <animated type="vector" guid="187DED8A43166FA15EAB67C20819E0B1">
+        <waypoint time="SOT">
+          <vector>
+            <x>-2.0000000000</x>
+            <y>-1.5000000000</y>
+          </vector>
+        </waypoint>
+        <waypoint time="0f">
+          <vector>
+            <x>-1.5000000000</x>
+            <y>-1.5000000000</y>
+          </vector>
+        </waypoint>
+        <waypoint time="2s 15f" tension="-0.500000">
+          <vector>
+            <x>1.5000000000</x>
+            <y>-1.5000000000</y>
+          </vector>
+        </waypoint>
+        <waypoint time="5s 0f" tension="-0.500000">
+          <vector>
+            <x>1.5000000000</x>
+            <y>1.5000000000</y>
+          </vector>
+        </waypoint>
+        <waypoint time="7s 15f" tension="-0.500000">
+          <vector>
+            <x>-1.5000000000</x>
+            <y>1.5000000000</y>
+          </vector>
+        </waypoint>
+        <waypoint time="10s 0f">
+          <vector>
+            <x>-1.5000000000</x>
+            <y>-1.5000000000</y>
+          </vector>
+        </waypoint>
+      </animated>
+    </param>
+    <param name="p2">
+      <animated type="vector" guid="3A8E75EB60DEAC652DFB8EAE6FF07787">
+        <waypoint time="SOT">
+          <vector>
+            <x>2.0000000000</x>
+            <y>1.5000000000</y>
+          </vector>
+        </waypoint>
+        <waypoint time="0f">
+          <vector>
+            <x>1.5000000000</x>
+            <y>1.5000000000</y>
+          </vector>
+        </waypoint>
+        <waypoint time="2s 15f" tension="-0.500000">
+          <vector>
+            <x>-1.5000000000</x>
+            <y>1.5000000000</y>
+          </vector>
+        </waypoint>
+        <waypoint time="5s 0f">
+          <vector>
+            <x>-1.5000000000</x>
+            <y>-1.5000000000</y>
+          </vector>
+        </waypoint>
+        <waypoint time="7s 15f" tension="-0.500000">
+          <vector>
+            <x>1.5000000000</x>
+            <y>-1.5000000000</y>
+          </vector>
+        </waypoint>
+        <waypoint time="10s 0f">
+          <vector>
+            <x>1.5000000000</x>
+            <y>1.5000000000</y>
+          </vector>
+        </waypoint>
+      </animated>
+    </param>
+    <param name="gradient">
+      <twotone type="gradient">
+        <color1>
+          <color>
+            <r>1.000000</r>
+            <g>0.000000</g>
+            <b>0.000000</b>
+            <a>1.000000</a>
+          </color>
+        </color1>
+        <color2>
+          <color>
+            <r>0.000000</r>
+            <g>0.000000</g>
+            <b>1.000000</b>
+            <a>1.000000</a>
+          </color>
+        </color2>
+      </twotone>
+    </param>
+    <param name="loop">
+      <bool value="false"/>
+    </param>
+    <param name="zigzag">
+      <bool value="false"/>
+    </param>
+  </layer>
+  <layer type="clamp" active="false" version="0.2">
+    <param name="invert_negative">
+      <bool value="false"/>
+    </param>
+    <param name="clamp_ceiling">
+      <bool value="true"/>
+    </param>
+    <param name="ceiling">
+      <real value="1.0000000000"/>
+    </param>
+    <param name="floor">
+      <real value="0.0000000000"/>
+    </param>
+  </layer>
+  <layer type="colorcorrect" active="true" version="0.1">
+    <param name="hue_adjust">
+      <angle value="0.000000"/>
+    </param>
+    <param name="brightness">
+      <real value="0.0000000000"/>
+    </param>
+    <param name="contrast">
+      <real value="1.0000000000"/>
+    </param>
+    <param name="exposure">
+      <real value="0.0000000000"/>
+    </param>
+    <param name="gamma">
+      <real value="0.5999999714"/>
+    </param>
+  </layer>
+</canvas>
