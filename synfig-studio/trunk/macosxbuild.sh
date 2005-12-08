@@ -27,7 +27,7 @@ set -x
 ../configure $OPTIONS LDFLAGS="$LDFLAGS" || exit 1
 
 make -j2
-#make package
+make package
 
 #make installer
 
