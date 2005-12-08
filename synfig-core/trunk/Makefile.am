@@ -17,9 +17,10 @@ bin_SCRIPTS=synfig-config
 EXTRA_DIST=TODO config/subs.m4 bootstrap config/package doc/hw-gfx-mapping.txt win32build.sh macosxbuild.sh win32inst.nsi.in COPYING config/depcomp config/synfig.m4 config/cxx_macros.m4 synfig.pbproj/config.h synfig.pbproj/project.pbxproj @PACKAGE_TARNAME@-@VERSION@.spec config/project.spec.in config/build.cfg synfig.kdevprj synfig-config.in config/ETL.m4 config/doxygen.cfg.in doxygen.cfg config/pkgconfig.pc.in config/pkgconfig.m4 config/libxml++.m4 @PACKAGE_TARNAME@.pc.in pkg-info/macosx/core-resources/ReadMe.txt pkg-info/macosx/core-resources/Welcome.txt pkg-info/macosx/core-resources/install.sh
 
 CVS=cvs
-
+SVN=svn
+SVN_REPOSITORY=https://svn.voria.com/code/synfig-core
 GREP=grep
-
+TAG=@PACKAGE_TARNAME@_@VERSION_MAJ@_@VERSION_MIN@_@VERSION_REV@
 PRINTF=printf
 
 SH=sh
@@ -36,11 +37,20 @@ stats:
 	-@du -hcs $(shell find $(top_srcdir)/src -name '*.[ch]*') | $(GREP) total
 	-@echo 
 
+#tagstable:
+#	$(CVS) tag -F stable
+
+#tagrelease:
+#	$(CVS) tag -F @PACKAGE_TARNAME@_@VERSION_MAJ@_@VERSION_MIN@_@VERSION_REV@
+
 tagstable:
-	$(CVS) tag -F stable
+	-$(SVN) delete $(SVN_REPOSITORY)/tags/stable -m "Stabe Tag: Removing old tag"
+	$(SVN) mkdir $(SVN_REPOSITORY)/tags/stable -m "Stable Tag: Creating new directory"
+	$(SVN) copy . $(SVN_REPOSITORY)/tags/stable -m "Stable Tag: Copying everyhting over"
 
 tagrelease:
-	$(CVS) tag -F @PACKAGE_TARNAME@_@VERSION_MAJ@_@VERSION_MIN@_@VERSION_REV@
+	$(SVN) mkdir $(SVN_REPOSITORY)/tags/$(TAG) -m "Release Tag: Making directory"
+	$(SVN) copy . $(SVN_REPOSITORY)/tags/$(TAG) -m "Release $(TAG)"
 
 listfixmes:
 	-@echo
