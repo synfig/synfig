@@ -1,0 +1,193 @@
+; example2.nsi
+;
+; This script is based on example1.nsi, but it remember the directory, 
+; has uninstall support and (optionally) installs start menu shortcuts.
+;
+; It will install makensisw.exe into a directory that the user selects,
+
+!include "MUI.nsh"
+
+;--------------------------------
+
+; The name of the installer
+Name "@PACKAGE_NAME@ @PACKAGE_VERSION@"
+
+; The file to write
+OutFile "@PACKAGE_TARNAME@-@PACKAGE_VERSION@.exe"
+
+; The default installation directory
+InstallDir $PROGRAMFILES\Synfig
+
+; Registry key to check for directory (so if you install again, it will 
+; overwrite the old one automatically)
+InstallDirRegKey HKLM "Software\Voria_@PACKAGE_TARNAME@" "Install_Dir"
+
+!define MUI_ABORTWARNING
+
+!define SHCNE_ASSOCCHANGED 0x8000000
+!define SHCNF_IDLIST 0
+
+!define PRODUCT_REG_KEY "Software\@PACKAGE_TARNAME@\@API_VERSION@"
+!define PRODUCT_UNINSTALL_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\@PACKAGE_TARNAME@"
+!define PRODUCT_UNINSTALL_EXE "uninstall-@PACKAGE_TARNAME@.exe"
+
+;--------------------------------
+
+!define MUI_WELCOMEFINISHPAGE_BITMAP ".\images\installer_logo.bmp"
+
+; Pages
+
+!insertmacro MUI_PAGE_WELCOME
+;!insertmacro MUI_PAGE_LICENSE "@srcdir@\alphalicense.txt"
+!insertmacro MUI_PAGE_LICENSE "@srcdir@\COPYING"
+!insertmacro MUI_PAGE_COMPONENTS
+!insertmacro MUI_PAGE_DIRECTORY
+!insertmacro MUI_PAGE_INSTFILES
+
+!insertmacro MUI_UNPAGE_CONFIRM
+!insertmacro MUI_UNPAGE_INSTFILES
+
+!insertmacro MUI_LANGUAGE "English"
+
+;--------------------------------
+
+; The stuff to install
+Section "Synfig Studio"
+
+  SectionIn RO
+  
+  SetOutPath "$INSTDIR\share\pixmaps"
+  File "images\*.png"
+  
+  SetOutPath "$INSTDIR\share"
+  File "images\*.ico"
+
+  SetOutPath "$INSTDIR\bin"
+  File "src\synfigapp\.libs\libsynfigapp-0.dll"
+  File "src\gtkmm\.libs\synfigstudio.exe"
+
+	FileOpen $0 $PROFILE\.gtkrc-2.0 a
+	FileSeek $0 0 END
+	FileWrite $0 "gtk-toolbar-style = 0"
+	FileWriteByte $0 "13"
+	FileWriteByte $0 "10"
+	FileWrite $0 'gtk-theme-name = "Default"'
+	FileWriteByte $0 "13"
+	FileWriteByte $0 "10"	
+	FileClose $0
+
+  WriteRegStr HKLM "${PRODUCT_REG_KEY}" "Path" "$INSTDIR"
+  WriteRegStr HKLM "${PRODUCT_REG_KEY}" "Version" "@PRODUCT_VERSION@"
+  
+  ; Write the uninstall keys for Windows
+  WriteRegStr HKLM "${PRODUCT_UNINSTALL_KEY}" "DisplayName" "@PACKAGE_NAME@"
+  WriteRegStr HKLM "${PRODUCT_UNINSTALL_KEY}" "DisplayVersion" "@PACKAGE_VERSION@"
+  WriteRegStr HKLM "${PRODUCT_UNINSTALL_KEY}" "UninstallString" '"$INSTDIR\${PRODUCT_UNINSTALL_EXE}"'
+  WriteRegDWORD HKLM "${PRODUCT_UNINSTALL_KEY}" "NoModify" 1
+  WriteRegDWORD HKLM "${PRODUCT_UNINSTALL_KEY}" "NoRepair" 1
+
+
+	WriteRegStr HKCR ".sif" "" "Synfig.Composition"
+	WriteRegStr HKCR ".sif" "Content Type" "image/x-sif"
+	WriteRegStr HKCR ".sif" "PerceivedType" "image"
+
+	WriteRegStr HKCR ".sif.gz" "" "Synfig.Composition"
+	WriteRegStr HKCR ".sif.gz" "Content Type" "image/x-sifz"
+	WriteRegStr HKCR ".sif.gz" "PerceivedType" "image"
+
+	WriteRegStr HKCR "Synfig.Composition" "" "Synfig Composition File"
+	WriteRegStr HKCR "Synfig.Composition\DefaultIcon" "" "$INSTDIR\bin\synfigstudio.exe;1"
+	WriteRegStr HKCR "Synfig.Composition\shell" "" "open"
+	WriteRegStr HKCR "Synfig.Composition\shell\open\command" "" '$INSTDIR\bin\synfigstudio.exe "%1"'
+	
+	System::Call 'Shell32::SHChangeNotify(i ${SHCNE_ASSOCCHANGED}, i ${SHCNF_IDLIST}, i 0, i 0)'
+  WriteUninstaller "${PRODUCT_UNINSTALL_EXE}"
+SectionEnd
+
+
+; Optional section (can be disabled by the user)
+Section "Start Menu Shortcuts"
+
+  CreateDirectory "$SMPROGRAMS\Voria"
+  CreateShortCut "$SMPROGRAMS\Voria\Uninstall Synfig Studio.lnk" "$INSTDIR\uninstall-@PACKAGE_TARNAME@.exe" "" "$INSTDIR\uninstall-@PACKAGE_TARNAME@.exe" 0
+  CreateShortCut "$SMPROGRAMS\Voria\Synfig Studio.lnk" "$INSTDIR\bin\synfigstudio.exe" "" "$INSTDIR\bin\synfigstudio.exe" 0
+  
+SectionEnd
+
+;--------------------------------
+
+; Uninstaller
+
+Section "Uninstall"
+  
+	DeleteRegKey HKCR "Synfig.Composition\shell\open\command" 
+	DeleteRegKey HKCR "Synfig.Composition\DefaultIcon" 
+	DeleteRegKey HKCR "Synfig.Composition\shell"
+	DeleteRegKey HKCR "Synfig.Composition" 
+	DeleteRegKey HKCR ".sif"
+	DeleteRegKey HKCR ".sif.gz"
+  
+  ; Remove registry keys
+  DeleteRegKey HKLM "${PRODUCT_REG_KEY}"
+  DeleteRegKey HKLM "${PRODUCT_UNINSTALL_KEY}"
+
+  ; Remove files and uninstaller
+	Delete "$INSTDIR\${PRODUCT_UNINSTALL_EXE}"
+  Delete $INSTDIR\bin\synfigstudio.exe
+  Delete $INSTDIR\bin\libsynfigapp-0.dll
+  RMDir $INSTDIR\bin
+
+  ; Remove shortcuts, if any
+  Delete "$SMPROGRAMS\Voria\Uninstall Synfig Studio.lnk"
+  Delete "$SMPROGRAMS\Voria\Synfig Studio.lnk"
+
+  ; Remove directories used
+  RMDir "$SMPROGRAMS\Voria"
+  RMDir "$INSTDIR"
+
+	System::Call 'Shell32::SHChangeNotify(i ${SHCNE_ASSOCCHANGED}, i ${SHCNF_IDLIST}, i 0, i 0)'
+SectionEnd
+
+Function .onInit
+	; Get installer location
+	ReadRegStr $R0 HKLM "${PRODUCT_UNINSTALL_KEY}" "UninstallString"
+;	IfErrors 0 +2
+;	ReadRegStr $R0 HKCU "${PRODUCT_UNINSTALL_KEY}" "UninstallString"
+	
+	StrCmp $R0 "" done
+
+	; Get current installed version
+	ReadRegStr $R1 HKLM "${PRODUCT_UNINSTALL_KEY}" "DisplayVersion"
+;	IfErrors 0 +2
+;	ReadRegStr $R1 HKCU "${PRODUCT_UNINSTALL_KEY}" "DisplayVersion"
+
+;  StrCmp $R1 ${PRODUCT_VERSION} done
+
+	MessageBox MB_YESNOCANCEL|MB_ICONEXCLAMATION "A previous version of @PACKAGE_NAME@ appears to be installed. Would you like to uninstall it first?" IDNO done IDCANCEL abortInstall
+
+	; Run the uninstaller
+	
+	ClearErrors
+	; CopyFiles "$R0" $TEMP
+	ExecWait '$R0 _?=$INSTDIR'
+	IfErrors no_remove_uninstaller
+	Delete $R0
+	RMDir $INSTDIR
+
+no_remove_uninstaller:
+;    Delete "$TEMP\$R0"
+	
+    ; Check that the user completed the uninstallation by examining the registry
+    ReadRegStr $R0 HKLM "${PRODUCT_UNINSTALL_KEY}" "UninstallString"
+	StrCmp $R0 "" done abortInstall
+	ReadRegStr $R0 HKCU "${PRODUCT_UNINSTALL_KEY}" "UninstallString"
+	StrCmp $R0 "" done abortInstall
+
+abortInstall:
+    MessageBox MB_OK|MB_ICONEXCLAMATION "Unable to uninstall previous version of @PACKAGE_NAME@"
+    Abort
+
+done:
+    BringToFront
+
+FunctionEnd

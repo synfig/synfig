@@ -1,0 +1,34 @@
+#!/bin/bash
+
+TEMPFILENAME=~/deleteme.tmp
+
+SEDSCRIPT='
+s/bigfoot/deepdarc/;
+
+s/\*\* Copyright (c) 2002 Robert B\. Quattlebaum Jr\./**	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley/;
+s/\*\* This software and associated documentation/**	This package is free software; you can redistribute it and\/or/;
+s/\*\* are CONFIDENTIAL and PROPRIETARY property of/**	modify it under the terms of the GNU General Public License as/;
+s/\*\* the above-mentioned copyright holder./**	published by the Free Software Foundation; either version 2 of\
+**	the License, or (at your option) any later version./;
+
+s/\*\* You may not copy, print, publish, or in any/**	This package is distributed in the hope that it will be useful,/;
+s/\*\* other way distribute this software without/**	but WITHOUT ANY WARRANTY; without even the implied warranty of/;
+s/\*\* a prior written agreement with/**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU/;
+s/\*\* the copyright holder\./**	General Public License for more details./;
+
+s/n\*\* /\
+**	/;
+';
+
+#for filename in `find . -name "*sinfg*" -a ! -name '*svn*'` ; do {
+#	newfilename=`echo $filename | sed "$SEDSCRIPT"`;
+#	echo $filename '=>' $newfilename;
+#	svn rename $filename  $newfilename || exit 2;
+#} ; done
+
+
+#exit 0;
+
+for filename in `find . -name '*.[ch]*' -o -name '*.am' -o -name '*.px' -o -name '*.ac' -o -name '*.nsh' -o -name '*.in' | grep -v .svn` ; do {
+	sed "$SEDSCRIPT" < $filename > $TEMPFILENAME && { diff -q $TEMPFILENAME $filename || cp $TEMPFILENAME $filename ;  }
+} ; done
