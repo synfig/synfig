@@ -18,6 +18,8 @@ AM_MAINTAINER_MODE
 
 # -- V A R I A B L E S ----------------------------------------
 
+SVN_REPOSITORY=@SVN_REPOSITORY@
+
 # -- P R O G R A M S ------------------------------------------
 
 AC_PROG_CC
@@ -135,6 +137,7 @@ AC_SUBST(CFLAGS)
 AC_SUBST(CPPFLAGS)
 AC_SUBST(CXXFLAGS)
 AC_SUBST(LDFLAGS)
+AC_SUBST(SVN_REPOSITORY)
 
 VERSION_MAJ=@VERSION_MAJ@
 VERSION_MIN=@VERSION_MIN@

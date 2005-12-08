@@ -30,6 +30,20 @@ GREP=grep
 PRINTF=printf
 SH=sh
 DOXYGEN=doxygen
+#SVN_REPOSITORY=@SVN_REPOSITORY@
+
+SVN=svn
+TAG=@PACKAGE_TARNAME@_@VERSION_MAJ@_@VERSION_MIN@_@VERSION_REV@
+
+
+tagstable:
+	-$(SVN) delete $(SVN_REPOSITORY)/tags/stable -m "Stabe Tag: Removing old tag"
+	$(SVN) mkdir $(SVN_REPOSITORY)/tags/stable -m "Stable Tag: Creating new directory"
+	$(SVN) copy $(top_srcdir) $(SVN_REPOSITORY)/tags/stable -m "Stable Tag: Copying everyhting over"
+
+tagrelease:
+	$(SVN) mkdir $(SVN_REPOSITORY)/tags/$(TAG) -m "Release Tag: Making directory"
+	$(SVN) copy $(top_srcdir) $(SVN_REPOSITORY)/tags/$(TAG) -m "Release $(TAG)"
 
 stats:
 	-@echo
@@ -41,11 +55,11 @@ stats:
 	-@du -hcs $(shell find $(top_srcdir)/src -name '*.[ch]*' | $(GREP) -v libavcodec) | $(GREP) total
 	-@echo 
 
-tagstable:
-	$(CVS) tag -F stable
+#tagstable:
+#	$(CVS) tag -F stable
 
-tagrelease:
-	$(CVS) tag -F @PACKAGE_TARNAME@_@VERSION_MAJ@_@VERSION_MIN@_@VERSION_REV@
+#tagrelease:
+#	$(CVS) tag -F @PACKAGE_TARNAME@_@VERSION_MAJ@_@VERSION_MIN@_@VERSION_REV@
 
 listfixmes:
 	-@echo

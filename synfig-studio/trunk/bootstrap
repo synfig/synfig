@@ -24,6 +24,7 @@ s/@PACKAGE_NAME@/$PACKAGE_NAME/g;
 s/@PACKAGE_BUGREPORT@/$PACKAGE_BUGREPORT/g;
 s/@PACKAGE_TARNAME@/$PACKAGE_TARNAME/g;
 s/@PACKAGE_VERSION@/$PACKAGE_VERSION/g;
+s|@SVN_REPOSITORY@|$SVN_REPOSITORY|g;
 s/@VERSION@/$VERSION/g;
 s/@VERSION_MAJ@/$VERSION_MAJ/g;
 s/@VERSION_MIN@/$VERSION_MIN/g;
@@ -230,6 +231,18 @@ distcheck:
 dist:
 	./configure --enable-maintainer-mode
 	make dist
+
+TAG=${PACKAGE_TARNAME}_${VERSION_MAJ}_${VERSION_MIN}_${VERSION_REV}
+
+tagstable:
+	-svn delete $SVN_REPOSITORY/tags/stable -m \"Stabe Tag: Removing old tag\"
+	svn mkdir $SVN_REPOSITORY/tags/stable -m \"Stable Tag: Creating new directory\"
+	svn copy . $SVN_REPOSITORY/tags/stable -m \"Stable Tag: Copying everyhting over\"
+
+tagrelease:
+	svn mkdir $SVN_REPOSITORY/tags/\$(TAG) -m \"Release Tag: Making directory\"
+	svn copy . $SVN_REPOSITORY/tags/\$(TAG) -m \"Release \$(TAG)\"
+
 " ) > Makefile
 
 echo $BOOTSTRAP_NAME: Complete.
