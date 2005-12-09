@@ -1,0 +1,67 @@
+
+VERSION=0.61.03
+
+COREDIR=synfig-core
+STUDIODIR=synfig-studio
+
+OUTPUTDIR=output
+
+SRCPKG=Synfig.mpkg
+OUTPKG=$(OUTPUTDIR)/Synfig-$(VERSION).mpkg
+PKGDIR=$(OUTPKG)/Contents/Packages
+
+SSH_USER=darco@www.bridgetone.com
+SSH_DIR=~/voria/files
+
+all: src osx package
+
+publish:
+	cd $(OUTPUTDIR) && tar c *.gz *.zip *.bz2 | ssh $(SSH_USER) "cd $(SSH_DIR) && tar xv" 
+
+osx-pkg:
+	rm -fr $(OUTPKG)
+	rm -fr $(OUTPKG).zip
+	cp -R $(SRCPKG) $(OUTPKG)
+	cp -r $(OUTPUTDIR)/*.pkg $(PKGDIR)
+	cd $(OUTPUTDIR) && zip -r Synfig-$(VERSION).mpkg.zip *.mpkg
+	
+core-osx:
+	[ -d $(OUTPUTDIR) ] || mkdir $(OUTPUTDIR)
+	rm -fr $(COREDIR)
+	svn export https://svn.voria.com/code/synfig-core/trunk $(COREDIR) || exit 2
+	cd $(COREDIR) && ./macosxbuild.sh
+	cp -r $(COREDIR)/macosxbuild/*.pkg $(OUTPUTDIR)
+
+studio-osx:
+	[ -d $(OUTPUTDIR) ] || mkdir $(OUTPUTDIR)
+	rm -fr $(STUDIODIR)
+	svn export https://svn.voria.com/code/synfig-studio/trunk $(STUDIODIR) || exit 2
+	cd $(STUDIODIR) && ./macosxbuild.sh
+	cp -r $(STUDIODIR)/macosxbuild/*.pkg $(OUTPUTDIR)
+
+core-src:
+	[ -d $(OUTPUTDIR) ] || mkdir $(OUTPUTDIR)
+	rm -fr $(COREDIR)
+	svn export https://svn.voria.com/code/synfig-core/trunk $(COREDIR) || exit 2
+	cd $(COREDIR) && ./bootstrap && ./configure
+	make -C $(COREDIR) dist
+	cp -r $(COREDIR)/*.gz $(OUTPUTDIR)
+
+studio-src:
+	[ -d $(OUTPUTDIR) ] || mkdir $(OUTPUTDIR)
+	rm -fr $(STUDIODIR)
+	svn export https://svn.voria.com/code/synfig-studio/trunk $(STUDIODIR) || exit 2
+	cd $(STUDIODIR) && ./bootstrap && ./configure
+	make -C $(STUDIODIR) dist
+	cp -r $(STUDIODIR)/*.gz $(OUTPUTDIR)
+
+src: core-src studio-src
+
+osx: core-osx studio-osx
+
+
+clean:
+	rm -fr $(COREDIR)
+	rm -fr $(STUDIODIR)
+	rm -fr $(OUTPUTDIR)
+
