@@ -73,7 +73,7 @@ src: core-src studio-src
 
 osx: core-osx studio-osx
 
-osx: core-w32 studio-w32
+w32: core-w32 studio-w32
 
 clean:
 	rm -fr $(COREDIR)
