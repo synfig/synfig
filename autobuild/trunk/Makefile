@@ -16,7 +16,7 @@ SSH_DIR=~/voria/files
 all: src osx package
 
 publish:
-	cd $(OUTPUTDIR) && tar c *.gz *.zip *.bz2 | ssh $(SSH_USER) "cd $(SSH_DIR) && tar xv" 
+	cd $(OUTPUTDIR) && tar c *.gz *.zip *.exe *.bz2 | ssh $(SSH_USER) "cd $(SSH_DIR) && tar xv" 
 
 osx-pkg:
 	rm -fr $(OUTPKG)
@@ -39,6 +39,20 @@ studio-osx:
 	cd $(STUDIODIR) && ./macosxbuild.sh
 	cp -r $(STUDIODIR)/macosxbuild/*.pkg $(OUTPUTDIR)
 
+core-w32:
+	[ -d $(OUTPUTDIR) ] || mkdir $(OUTPUTDIR)
+	rm -fr $(COREDIR)
+	svn export https://svn.voria.com/code/synfig-core/trunk $(COREDIR) || exit 2
+	cd $(COREDIR) && ./win32build.sh
+	cp -r $(COREDIR)/win32build/*.exe $(OUTPUTDIR)
+
+studio-w32:
+	[ -d $(OUTPUTDIR) ] || mkdir $(OUTPUTDIR)
+	rm -fr $(STUDIODIR)
+	svn export https://svn.voria.com/code/synfig-studio/trunk $(STUDIODIR) || exit 2
+	cd $(STUDIODIR) && ./win32build.sh
+	cp -r $(STUDIODIR)/win32build/*.exe $(OUTPUTDIR)
+
 core-src:
 	[ -d $(OUTPUTDIR) ] || mkdir $(OUTPUTDIR)
 	rm -fr $(COREDIR)
@@ -59,6 +73,7 @@ src: core-src studio-src
 
 osx: core-osx studio-osx
 
+osx: core-w32 studio-w32
 
 clean:
 	rm -fr $(COREDIR)
