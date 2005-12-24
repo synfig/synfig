@@ -41,7 +41,7 @@
 //#define gettext(x)	(x)
 #endif
 
-#define SYNFIG_COPYRIGHT "Copyright (c) 2001-2004 Voria Software, LLC"
+#define SYNFIG_COPYRIGHT "Copyright (c) 2001-2005 Robert B. Quattlebaum Jr., Adrian Bentley"
 
 
 #ifdef _DEBUG

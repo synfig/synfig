@@ -202,7 +202,7 @@ png_trgt::start_frame(synfig::ProgressCallback *callback)
 	{
 		{ PNG_TEXT_COMPRESSION_NONE, "Title", const_cast<char *>(get_canvas()->get_name().c_str()) },
 		{ PNG_TEXT_COMPRESSION_NONE, "Description", const_cast<char *>(get_canvas()->get_description().c_str()) },
-		{ PNG_TEXT_COMPRESSION_NONE, "Copyright", "(c) 2004 Voria Studios, LLC" },
+//		{ PNG_TEXT_COMPRESSION_NONE, "Copyright", "(c) 2004 Voria Studios, LLC" },
 		{ PNG_TEXT_COMPRESSION_NONE, "Software", "SYNFIG" },
 	};
 	png_set_text(png_ptr,info_ptr,comments,sizeof(comments)/sizeof(png_text));

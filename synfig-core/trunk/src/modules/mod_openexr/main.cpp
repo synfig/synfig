@@ -44,7 +44,7 @@ MODULE_DESC_BEGIN(mod_openexr)
 	MODULE_DESCRIPTION("Provides support for the EXR image format.")
 	MODULE_AUTHOR("Industrial Light & Magic")
 	MODULE_VERSION("1.0.4")
-	MODULE_COPYRIGHT("Copyright (c) 2003 Lucas Digital Ltd. LLC.")
+	MODULE_COPYRIGHT("OpenEXR Library is Copyright (c) 2003 Lucas Digital Ltd. LLC.")
 MODULE_DESC_END
 
 MODULE_INVENTORY_BEGIN(mod_openexr)
