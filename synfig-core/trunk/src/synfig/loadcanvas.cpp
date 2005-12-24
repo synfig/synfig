@@ -2260,6 +2260,7 @@ CanvasParser::parse_from_file_as(const String &file_,const String &as_)
 	CHECK_EXPIRE_TIME();
 	try
 	{
+        ChangeLocale change_locale(LC_NUMERIC, "C");
 		String file(unix_to_local_path(file_));
 		String as(unix_to_local_path(as_));
 
@@ -2321,6 +2322,7 @@ CanvasParser::parse_from_string(const String &data)
 
 	try
 	{
+        ChangeLocale change_locale(LC_NUMERIC, "C");
 		filename=_("<INTERNAL>");
 		total_warnings_=0;
 		xmlpp::DomParser parser;

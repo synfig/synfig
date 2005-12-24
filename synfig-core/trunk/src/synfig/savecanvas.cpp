@@ -710,6 +710,8 @@ xmlpp::Element* encode_canvas(xmlpp::Element* root,Canvas::ConstHandle canvas)
 bool
 synfig::save_canvas(const String &filename, Canvas::ConstHandle canvas)
 {
+    ChangeLocale change_locale(LC_NUMERIC, "C");
+
 	synfig::String tmp_filename(filename+".TMP");
 
 	try
@@ -750,6 +752,7 @@ synfig::save_canvas(const String &filename, Canvas::ConstHandle canvas)
 String
 synfig::canvas_to_string(Canvas::ConstHandle canvas)
 {
+    ChangeLocale change_locale(LC_NUMERIC, "C");
 	assert(canvas);
 
 	xmlpp::Document document;

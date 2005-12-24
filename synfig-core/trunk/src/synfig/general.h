@@ -30,6 +30,7 @@
 #include <ETL/stringf>
 #include "string.h"
 #include "version.h"
+#include <locale.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -60,6 +61,20 @@
 /* === C L A S S E S & S T R U C T S ======================================= */
 
 namespace synfig {
+
+class ChangeLocale {
+    const char *previous;
+    int category;
+public:
+    ChangeLocale(int category, const char *locale):
+        previous(setlocale(category,NULL)),category(category)
+    {
+            setlocale(category,locale);
+    }
+    ~ChangeLocale() {
+        setlocale(category,previous);
+    }
+};
 
 /*!	\class ProgressCallback
 **	\todo writeme
