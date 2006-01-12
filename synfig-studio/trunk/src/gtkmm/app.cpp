@@ -661,7 +661,7 @@ public:
 	}
 };
 
-static Preferences _preferences;
+static ::Preferences _preferences;
 
 void
 init_ui_manager()
