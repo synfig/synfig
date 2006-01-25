@@ -141,7 +141,7 @@ AC_ARG_WITH(imagemagick,[
   --without-imagemagick   Disable support for ImageMagick],[
 ],[
     AC_CHECK_PROG([imagemagick_convert],[convert],[yes],[no])
-    with_imagemagick=$imagemagic_convert
+    with_imagemagick=$imagemagick_convert
 ])
 if test $with_imagemagick = "no" ; then {
 	AM_CONDITIONAL(WITH_IMAGEMAGICK,false)
