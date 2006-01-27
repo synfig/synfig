@@ -13,8 +13,8 @@ LAYERSOURCES=layer_motionblur.cpp layer_pastecanvas.cpp layer_solidcolor.cpp lay
 TARGETHEADERS=target_scanline.h target_tile.h target_multi.h target_null.h target_null_tile.h
 TARGETSOURCES=target_scanline.cpp target_tile.cpp target_multi.cpp target_null.cpp target_null_tile.cpp
 
-IMPORTERHEADERS=listimporter.cpp
-IMPORTERSOURCES=listimporter.h
+IMPORTERHEADERS=listimporter.h
+IMPORTERSOURCES=listimporter.cpp
 
 VALUENODEHEADERS=valuenode_sine.h valuenode_radialcomposite.h valuenode_bline.h valuenode_segcalcvertex.h valuenode_segcalctangent.h valuenode_twotone.h valuenode_stripes.h valuenode_subtract.h valuenode_const.h valuenode_reference.h valuenode_linear.h valuenode_composite.h valuenode_dynamiclist.h valuenode_animated.h valuenode_scale.h valuenode_timedswap.h valuenode_gradientrotate.h
 VALUENODESOURCES=valuenode_sine.cpp valuenode_radialcomposite.cpp valuenode_bline.cpp valuenode_segcalcvertex.cpp valuenode_segcalctangent.cpp valuenode_twotone.cpp valuenode_stripes.cpp valuenode_subtract.cpp valuenode_const.cpp valuenode_reference.cpp valuenode_linear.cpp valuenode_composite.cpp valuenode_dynamiclist.cpp valuenode_animated.cpp valuenode_scale.cpp valuenode_timedswap.cpp valuenode_gradientrotate.cpp
