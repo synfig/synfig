@@ -128,7 +128,7 @@ DockDialog::DockDialog():
 */
 
 	add_accel_group(App::ui_manager()->get_accel_group());
-	App::signal_present_all().connect(sigc::mem_fun(*this,&DockDialog::present));
+	App::signal_present_all().connect(sigc::mem_fun0(*this,&DockDialog::present));
 
 }
 

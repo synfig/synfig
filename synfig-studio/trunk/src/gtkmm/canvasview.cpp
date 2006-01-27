@@ -1208,7 +1208,7 @@ CanvasView::init_menus()
 		sigc::hide_return(sigc::mem_fun(*this, &studio::CanvasView::image_import))
 	);
 	action_group->add( Gtk::Action::create("render", _("Render")),
-		sigc::mem_fun(render_settings,&studio::RenderSettings::present)
+		sigc::mem_fun0(render_settings,&studio::RenderSettings::present)
 	);
 	action_group->add( Gtk::Action::create("preview", _("Preview")),
 		sigc::mem_fun(*this,&CanvasView::on_preview_option)
@@ -1217,7 +1217,7 @@ CanvasView::init_menus()
 		sigc::mem_fun(*this,&CanvasView::on_audio_option)
 	);
 	action_group->add( Gtk::Action::create("options", _("Options")),
-		sigc::mem_fun(canvas_options,&studio::CanvasOptions::present)
+		sigc::mem_fun0(canvas_options,&studio::CanvasOptions::present)
 	);
 	action_group->add( Gtk::Action::create("close", Gtk::StockID("gtk-close")),
 		sigc::hide_return(sigc::mem_fun(*this,&studio::CanvasView::close))	
@@ -1248,7 +1248,7 @@ CanvasView::init_menus()
 	);
 
 	action_group->add( Gtk::Action::create("properties", Gtk::StockID("gtk-properties")),
-		sigc::mem_fun(canvas_properties,&studio::CanvasProperties::present)
+		sigc::mem_fun0(canvas_properties,&studio::CanvasProperties::present)
 	);
 
 	// Preview Quality Menu
@@ -1279,7 +1279,7 @@ CanvasView::init_menus()
 	);
 	
 	action_group->add( Gtk::Action::create("dialog-flipbook", _("Flipbook Dialog")),
-		sigc::mem_fun(*preview_dialog, &studio::Dialog_Preview::present)
+		sigc::mem_fun0(*preview_dialog, &studio::Dialog_Preview::present)
 	);
 
 	action_group->add( Gtk::Action::create("toggle-grid-show", _("Toggle Grid Show")),

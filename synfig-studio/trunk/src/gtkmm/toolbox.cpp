@@ -377,7 +377,7 @@ Toolbox::Toolbox():
 
 	add_accel_group(App::ui_manager()->get_accel_group());
 	
-	App::signal_present_all().connect(sigc::mem_fun(*this,&Toolbox::present));
+	App::signal_present_all().connect(sigc::mem_fun0(*this,&Toolbox::present));
 }
 
 Toolbox::~Toolbox()
