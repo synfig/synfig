@@ -53,11 +53,7 @@ _ETL_BEGIN_CDECLS
 #else
 
 # ifdef HAVE_VSNPRINTF	// This is the secondary method
-#  if defined(__CYGWIN__)  || defined(_WIN32)
-extern int vsnprintf(char *,unsigned int,const char*,va_list)ETL_NO_THROW;
-#  else
-extern int vsnprintf(char *,int,const char*,va_list)ETL_NO_THROW;
-#  endif
+ extern int vsnprintf(char *,size_t,const char*,va_list)ETL_NO_THROW;
 # endif
 
 #endif
