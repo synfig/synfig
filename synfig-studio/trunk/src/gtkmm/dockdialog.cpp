@@ -98,7 +98,6 @@ DockDialog::DockDialog():
 		Gdk::WINDOW_TYPE_HINT_UTILITY
 #endif
 	);
-	set_keep_below(true);
 	set_keep_above(false);
 	
 	// Set up the window

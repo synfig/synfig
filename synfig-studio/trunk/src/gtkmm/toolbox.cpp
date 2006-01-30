@@ -199,7 +199,6 @@ Toolbox::Toolbox():
 		Gdk::WINDOW_TYPE_HINT_UTILITY
 #endif
 	);
-	set_keep_below(true);
 	set_keep_above(false);
 	set_role("toolbox");
 
