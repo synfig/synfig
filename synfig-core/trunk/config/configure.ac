@@ -227,7 +227,7 @@ AC_ARG_WITH(freetype,[
 
 
 if test $with_freetype != "no" ; then {
-	PKG_CHECK_MODULES(FREETYPE, xft fontconfig,[
+	PKG_CHECK_MODULES(FREETYPE, xft freetype2 fontconfig,[
 		with_freetype="yes"
 	],[
 		PKG_CHECK_MODULES(FREETYPE, freetype2 fontconfig,[
