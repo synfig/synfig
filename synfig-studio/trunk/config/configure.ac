@@ -95,6 +95,22 @@ windowsys="gtkmm"
 AC_DEFINE(STUDIO_WINSYS_H,"gtkmm/winsys.h",[blah])
 AM_CONDITIONAL(WINDOWSYS_GTKMM,true)
 
+AC_ARG_WITH(userdir,[
+  --with-userdir=(dirname)         Relative path to user directory],[
+],[
+case "$host" in
+	*mingw* | *cygwin*)
+		with_userdir="Synfig"
+	;;
+	*darwin*)
+		with_userdir="Library/Synfig"
+	;;
+	*)
+		with_userdir="Synfig"
+	;;
+esac
+])
+AC_DEFINE_UNQUOTED(SYNFIG_USER_APP_DIR,"$with_userdir",[Synfig User Data Directory])
 
 # --- FMOD CHECK -------------
 AC_ARG_WITH(libfmod,[

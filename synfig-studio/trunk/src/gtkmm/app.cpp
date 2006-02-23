@@ -131,6 +131,14 @@ using namespace studio;
 
 /* === M A C R O S ========================================================= */
 
+#ifndef SYNFIG_USER_APP_DIR
+#ifdef __APPLE__
+#define SYNFIG_USER_APP_DIR	"Library/Synfig"
+#else
+#define SYNFIG_USER_APP_DIR	"Synfig"
+#endif
+#endif
+
 #ifndef DPM2DPI
 #define DPM2DPI(x)	(float(x)/39.3700787402f)
 #define DPI2DPM(x)	(float(x)*39.3700787402f)
@@ -1340,11 +1348,7 @@ App::~App()
 String
 App::get_user_app_directory()
 {
-#ifdef __APPLE__
-	return Glib::build_filename(Glib::get_home_dir(),"Library/Synfig");
-#else
-	return Glib::build_filename(Glib::get_home_dir(),"Synfig");
-#endif
+	return Glib::build_filename(Glib::get_home_dir(),SYNFIG_USER_APP_DIR);
 }
 
 synfig::String
