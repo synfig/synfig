@@ -1,3 +1,27 @@
+2006-02-04 03:06:01  pabs
+	* Fix 1423944: switch to AC_LIBLTDL_INSTALLABLE so we'll use the system libltdl when it's available.
+
+2006-01-30 22:44:07  pabs
+	* Prevent FTBFS when we have both xft and freetype2 installed.
+
+2006-01-29 23:48:07  pabs
+	* Fix 1402909: update doxygen files
+
+2006-01-26 17:30:11  pabs
+	* Fix #1414370: don't distribute .cpp files as includes
+
+2006-01-24 21:31:21  darco
+	* Oops, I seem to be missing a K here...
+	
+2006-01-10 13:05:13  darco
+	* more updates
+
+2005-12-24 15:11:59  darco
+	* Fixed some copyright issues
+
+2005-12-24  darco <darco@deepdarc.com>
+	* Fixed weird localization issue where saves SIF files would use number in the local format
+	
 2005-11-28	Robert Quattlebaum	<darco@deepdarc.com>
 	* src/modules/lyr_std/sphere_distort.cpp/h: Clarified namespace issues 
 2005-11-08	Robert Quattlebaum	<darco@deepdarc.com>
