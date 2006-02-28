@@ -16,6 +16,8 @@ aclocaldir = $(prefix)/share/aclocal
 EXTRA_DIST=bootstrap config/subs.m4 config/depcomp config/cxx_macros.m4 ETL.pbproj/project.pbxproj ETL.pbproj/etl_profile.h ETL.pbproj/frameworkfix.cpp @PACKAGE_TARNAME@-@VERSION@.spec config/project.spec.in config/build.cfg ETL-config.in config/ETL.m4 config/doxygen.cfg.in doxygen.cfg config/pkgconfig.pc.in @PACKAGE_TARNAME@.pc.in
 
 CVS=cvs
+SVN=svn
+TAG=@PACKAGE_TARNAME@_@VERSION_MAJ@_@VERSION_MIN@_@VERSION_REV@
 
 GREP=grep
 
@@ -36,10 +38,14 @@ stats:
 	-@echo 
 
 tagstable:
-	$(CVS) tag -F stable
+	-$(SVN) delete $(SVN_REPOSITORY)/tags/stable -m "Stabe Tag: Removing old tag"
+	$(SVN) mkdir $(SVN_REPOSITORY)/tags/stable -m "Stable Tag: Creating new directory"
+	$(SVN) copy $(top_srcdir) $(SVN_REPOSITORY)/tags/stable -m "Stable Tag: Copying everyhting over"
 
 tagrelease:
-	$(CVS) tag -F $(PACKAGE_TARNAME)_$(VERSION_MAJ)_$(VERSION_MIN)_$(VERSION_REV)
+	$(SVN) mkdir $(SVN_REPOSITORY)/tags/$(TAG) -m "Release Tag: Making directory"
+	$(SVN) copy $(top_srcdir) $(SVN_REPOSITORY)/tags/$(TAG) -m "Release $(TAG)"
+
 
 listfixmes:
 	-@echo

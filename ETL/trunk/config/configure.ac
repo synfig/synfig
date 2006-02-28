@@ -19,6 +19,9 @@ AM_MAINTAINER_MODE
 
 debug="no"
 
+SVN_REPOSITORY=@SVN_REPOSITORY@
+AC_SUBST(SVN_REPOSITORY)
+
 # -- A R G U M E N T S ----------------------------------------
 
 

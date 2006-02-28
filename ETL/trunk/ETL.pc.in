@@ -6,6 +6,6 @@ includedir=@includedir@
 Name: ETL
 Description: Voria Extended Class and Template Library
 Requires:
-Version: 0.04.07
+Version: 0.04.08-138
 Libs: @LIBS@
 Cflags: -I${includedir}
