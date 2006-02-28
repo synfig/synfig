@@ -1,0 +1,2 @@
+aclocal.m4 config.log configure *.spec Makefile Makefile.in
+.deps clock handle hermite pen smart_ptr stringf surface
