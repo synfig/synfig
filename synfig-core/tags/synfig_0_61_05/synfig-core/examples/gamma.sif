@@ -1,0 +1,212 @@
+<?xml version="1.0"?>
+<canvas version="0.1" width="200" height="200" xres="2952.755900" yres="2952.755900" view-box="-2.000000 2.000000 2.000000 -2.000000" antialias="1" fps="30.000" begin-time="0f" end-time="0f">
+  <name>Gamma Test Pattern</name>
+  <desc>This Composition is for gamma testing. If the gamma has been adjusted properly, the inner circle should appear to be the same shade as the area around it.</desc>
+  <layer type="SolidColor" active="true" version="0.1">
+    <param name="amount">
+      <real value="1.0000000000"/>
+    </param>
+    <param name="blend_method">
+      <integer value="1"/>
+    </param>
+    <param name="color">
+      <color>
+        <r>1.000000</r>
+        <g>1.000000</g>
+        <b>1.000000</b>
+        <a>1.000000</a>
+      </color>
+    </param>
+  </layer>
+  <layer type="checker_board" active="true" version="0.1">
+    <param name="amount">
+      <real value="1.0000000000"/>
+    </param>
+    <param name="blend_method">
+      <integer value="1"/>
+    </param>
+    <param name="color">
+      <color>
+        <r>0.000000</r>
+        <g>0.000000</g>
+        <b>0.000000</b>
+        <a>1.000000</a>
+      </color>
+    </param>
+    <param name="pos">
+      <vector>
+        <x>0.0000000000</x>
+        <y>0.0000000000</y>
+      </vector>
+    </param>
+    <param name="size">
+      <vector>
+        <x>0.0400000000</x>
+        <y>0.0400000000</y>
+      </vector>
+    </param>
+  </layer>
+  <layer type="linear_gradient" active="true" version="0.0">
+    <param name="amount">
+      <real value="1.0000000000"/>
+    </param>
+    <param name="blend_method">
+      <integer value="1"/>
+    </param>
+    <param name="p1">
+      <vector>
+        <x>0.0000000000</x>
+        <y>2.0000000000</y>
+      </vector>
+    </param>
+    <param name="p2">
+      <vector>
+        <x>0.0000000000</x>
+        <y>-2.0000000000</y>
+      </vector>
+    </param>
+    <param name="gradient">
+      <stripes type="gradient">
+        <color1>
+          <color>
+            <r>1.000000</r>
+            <g>1.000000</g>
+            <b>1.000000</b>
+            <a>1.000000</a>
+          </color>
+        </color1>
+        <color2>
+          <color>
+            <r>0.000000</r>
+            <g>0.000000</g>
+            <b>0.000000</b>
+            <a>1.000000</a>
+          </color>
+        </color2>
+        <stripes>
+          <integer value="99"/>
+        </stripes>
+      </stripes>
+    </param>
+    <param name="loop">
+      <bool value="true"/>
+    </param>
+    <param name="zigzag">
+      <bool value="false"/>
+    </param>
+  </layer>
+  <layer type="circle" active="true" version="0.1">
+    <param name="amount">
+      <real value="1.0000000000"/>
+    </param>
+    <param name="blend_method">
+      <integer value="1"/>
+    </param>
+    <param name="color">
+      <color>
+        <r>0.500000</r>
+        <g>0.500000</g>
+        <b>0.500000</b>
+        <a>1.000000</a>
+      </color>
+    </param>
+    <param name="radius">
+      <real value="1.0000000000"/>
+    </param>
+    <param name="feather">
+      <real value="0.0000000000"/>
+    </param>
+    <param name="pos">
+      <vector>
+        <x>0.0000000000</x>
+        <y>0.0000000000</y>
+      </vector>
+    </param>
+    <param name="invert">
+      <bool value="false"/>
+    </param>
+    <param name="falloff">
+      <integer value="1"/>
+    </param>
+  </layer>
+  <layer type="SolidColor" active="false" version="0.1">
+    <param name="amount">
+      <real value="1.0000000000"/>
+    </param>
+    <param name="blend_method">
+      <integer value="6"/>
+    </param>
+    <param name="color">
+      <color>
+        <r>0.500000</r>
+        <g>0.500000</g>
+        <b>0.500000</b>
+        <a>1.000000</a>
+      </color>
+    </param>
+  </layer>
+  <layer type="SolidColor" active="false" version="0.1">
+    <param name="amount">
+      <real value="1.0000000000"/>
+    </param>
+    <param name="blend_method">
+      <integer value="16"/>
+    </param>
+    <param name="color">
+      <color>
+        <r>0.500000</r>
+        <g>0.500000</g>
+        <b>0.500000</b>
+        <a>1.000000</a>
+      </color>
+    </param>
+  </layer>
+  <layer type="SolidColor" active="false" version="0.1">
+    <param name="amount">
+      <real value="1.0000000000"/>
+    </param>
+    <param name="blend_method">
+      <integer value="6"/>
+    </param>
+    <param name="color">
+      <color>
+        <r>0.000000</r>
+        <g>1.000000</g>
+        <b>1.000000</b>
+        <a>1.000000</a>
+      </color>
+    </param>
+  </layer>
+  <layer type="SolidColor" active="false" version="0.1">
+    <param name="amount">
+      <real value="1.0000000000"/>
+    </param>
+    <param name="blend_method">
+      <integer value="6"/>
+    </param>
+    <param name="color">
+      <color>
+        <r>1.000000</r>
+        <g>0.000000</g>
+        <b>1.000000</b>
+        <a>1.000000</a>
+      </color>
+    </param>
+  </layer>
+  <layer type="SolidColor" active="false" version="0.1">
+    <param name="amount">
+      <real value="1.0000000000"/>
+    </param>
+    <param name="blend_method">
+      <integer value="6"/>
+    </param>
+    <param name="color">
+      <color>
+        <r>1.000000</r>
+        <g>1.000000</g>
+        <b>0.000000</b>
+        <a>1.000000</a>
+      </color>
+    </param>
+  </layer>
+</canvas>

@@ -1,0 +1,990 @@
+<?xml version="1.0"?>
+<canvas version="0.1" width="300" height="300" xres="2952.755900" yres="2952.755900" view-box="-1.000000 1.000000 1.000000 -1.000000" antialias="2" fps="12.000" begin-time="0f" end-time="0f">
+  <name>Gradient Test</name>
+  <defs>
+    <gradient id="RedPipe">
+      <color pos="0.000000">
+        <r>0.000000</r>
+        <g>0.000000</g>
+        <b>0.000000</b>
+        <a>0.000000</a>
+      </color>
+      <color pos="0.189482">
+        <r>0.000000</r>
+        <g>0.000000</g>
+        <b>0.000000</b>
+        <a>0.000000</a>
+      </color>
+      <color pos="0.378965">
+        <r>0.000000</r>
+        <g>0.000000</g>
+        <b>0.000000</b>
+        <a>0.000000</a>
+      </color>
+      <color pos="0.378965">
+        <r>0.000000</r>
+        <g>0.000000</g>
+        <b>0.000000</b>
+        <a>0.000000</a>
+      </color>
+      <color pos="0.624374">
+        <r>-0.000000</r>
+        <g>-0.000000</g>
+        <b>-0.000000</b>
+        <a>0.500000</a>
+      </color>
+      <color pos="0.721202">
+        <r>0.000000</r>
+        <g>0.000000</g>
+        <b>0.000000</b>
+        <a>1.000000</a>
+      </color>
+      <color pos="0.721202">
+        <r>0.393939</r>
+        <g>0.091171</g>
+        <b>0.035564</b>
+        <a>1.000000</a>
+      </color>
+      <color pos="0.748748">
+        <r>0.299242</r>
+        <g>0.069255</g>
+        <b>0.027015</b>
+        <a>1.000000</a>
+      </color>
+      <color pos="0.776294">
+        <r>0.204545</r>
+        <g>0.047339</g>
+        <b>0.018466</b>
+        <a>1.000000</a>
+      </color>
+      <color pos="0.776294">
+        <r>0.204545</r>
+        <g>0.047339</g>
+        <b>0.018466</b>
+        <a>1.000000</a>
+      </color>
+      <color pos="0.833723">
+        <r>0.481061</r>
+        <g>0.111334</g>
+        <b>0.043429</b>
+        <a>1.000000</a>
+      </color>
+      <color pos="0.859766">
+        <r>0.757576</r>
+        <g>0.175329</g>
+        <b>0.068392</b>
+        <a>1.000000</a>
+      </color>
+      <color pos="0.859766">
+        <r>0.757576</r>
+        <g>0.175329</g>
+        <b>0.068392</b>
+        <a>1.000000</a>
+      </color>
+      <color pos="0.876461">
+        <r>0.878788</r>
+        <g>0.338230</g>
+        <b>0.244196</b>
+        <a>1.000000</a>
+      </color>
+      <color pos="0.893155">
+        <r>1.000000</r>
+        <g>0.501132</g>
+        <b>0.420000</b>
+        <a>1.000000</a>
+      </color>
+      <color pos="0.893200">
+        <r>0.977356</r>
+        <g>0.641591</g>
+        <b>0.586910</b>
+        <a>1.000000</a>
+      </color>
+      <color pos="0.911519">
+        <r>0.878788</r>
+        <g>0.338230</g>
+        <b>0.244196</b>
+        <a>1.000000</a>
+      </color>
+      <color pos="0.928214">
+        <r>0.757576</r>
+        <g>0.175329</g>
+        <b>0.068392</b>
+        <a>1.000000</a>
+      </color>
+      <color pos="0.928214">
+        <r>0.757576</r>
+        <g>0.175329</g>
+        <b>0.068392</b>
+        <a>0.000000</a>
+      </color>
+      <color pos="0.964107">
+        <r>0.757576</r>
+        <g>0.175329</g>
+        <b>0.068392</b>
+        <a>0.000000</a>
+      </color>
+      <color pos="1.000000">
+        <r>0.757576</r>
+        <g>0.175329</g>
+        <b>0.068392</b>
+        <a>0.000000</a>
+      </color>
+    </gradient>
+    <stripes type="gradient" id="BlackStripes">
+      <color1>
+        <color>
+          <r>0.000000</r>
+          <g>0.000000</g>
+          <b>0.000000</b>
+          <a>0.000000</a>
+        </color>
+      </color1>
+      <color2>
+        <color>
+          <r>0.000000</r>
+          <g>0.000000</g>
+          <b>0.000000</b>
+          <a>1.000000</a>
+        </color>
+      </color2>
+      <stripes>
+        <integer value="5"/>
+      </stripes>
+    </stripes>
+    <gradient id="RedGreenBlue">
+      <color pos="0.000000">
+        <r>1.000000</r>
+        <g>0.000000</g>
+        <b>0.000000</b>
+        <a>1.000000</a>
+      </color>
+      <color pos="0.500000">
+        <r>-0.000000</r>
+        <g>1.000000</g>
+        <b>-0.000000</b>
+        <a>0.839378</a>
+      </color>
+      <color pos="1.000000">
+        <r>0.000000</r>
+        <g>0.000000</g>
+        <b>1.000000</b>
+        <a>1.000000</a>
+      </color>
+    </gradient>
+    <canvas id="PsychoColors">
+      <layer type="SolidColor" active="true" version="0.1">
+        <param name="amount">
+          <real value="1.0000000000"/>
+        </param>
+        <param name="blend_method">
+          <integer value="1"/>
+        </param>
+        <param name="color">
+          <color>
+            <r>0.800000</r>
+            <g>0.800000</g>
+            <b>0.800000</b>
+            <a>1.000000</a>
+          </color>
+        </param>
+      </layer>
+      <layer type="linear_gradient" active="true" version="0.0">
+        <param name="amount">
+          <real value="1.0000000000"/>
+        </param>
+        <param name="blend_method">
+          <integer value="17"/>
+        </param>
+        <param name="p1">
+          <vector>
+            <x>1.0000000000</x>
+            <y>1.0000000000</y>
+          </vector>
+        </param>
+        <param name="p2">
+          <vector>
+            <x>-1.0000000000</x>
+            <y>-1.0000000000</y>
+          </vector>
+        </param>
+        <param name="gradient" use=":RedGreenBlue"/>
+        <param name="loop">
+          <bool value="false"/>
+        </param>
+        <param name="zigzag">
+          <bool value="false"/>
+        </param>
+      </layer>
+      <layer type="linear_gradient" active="true" version="0.0">
+        <param name="amount">
+          <real value="0.6499999762"/>
+        </param>
+        <param name="blend_method">
+          <integer value="18"/>
+        </param>
+        <param name="p1">
+          <vector>
+            <x>-0.3533333333</x>
+            <y>-0.0400000000</y>
+          </vector>
+        </param>
+        <param name="p2">
+          <vector>
+            <x>0.1466666667</x>
+            <y>-0.6200000000</y>
+          </vector>
+        </param>
+        <param name="gradient" use=":RedGreenBlue"/>
+        <param name="loop">
+          <bool value="false"/>
+        </param>
+        <param name="zigzag">
+          <bool value="false"/>
+        </param>
+      </layer>
+      <layer type="linear_gradient" active="true" version="0.0">
+        <param name="amount">
+          <real value="0.6499999762"/>
+        </param>
+        <param name="blend_method">
+          <integer value="18"/>
+        </param>
+        <param name="p1">
+          <vector>
+            <x>0.8933333333</x>
+            <y>0.6133333333</y>
+          </vector>
+        </param>
+        <param name="p2">
+          <vector>
+            <x>0.2000000000</x>
+            <y>0.2066666667</y>
+          </vector>
+        </param>
+        <param name="gradient" use=":RedGreenBlue"/>
+        <param name="loop">
+          <bool value="false"/>
+        </param>
+        <param name="zigzag">
+          <bool value="false"/>
+        </param>
+      </layer>
+      <layer type="linear_gradient" active="true" version="0.0">
+        <param name="amount">
+          <real value="0.6499999762"/>
+        </param>
+        <param name="blend_method">
+          <integer value="18"/>
+        </param>
+        <param name="p1">
+          <vector>
+            <x>-0.6333333333</x>
+            <y>0.0400000000</y>
+          </vector>
+        </param>
+        <param name="p2">
+          <vector>
+            <x>-0.2466666667</x>
+            <y>-0.9200000000</y>
+          </vector>
+        </param>
+        <param name="gradient" use=":RedGreenBlue"/>
+        <param name="loop">
+          <bool value="false"/>
+        </param>
+        <param name="zigzag">
+          <bool value="false"/>
+        </param>
+      </layer>
+      <layer type="linear_gradient" active="true" version="0.0">
+        <param name="amount">
+          <real value="0.6499999762"/>
+        </param>
+        <param name="blend_method">
+          <integer value="18"/>
+        </param>
+        <param name="p1">
+          <vector>
+            <x>0.8800000000</x>
+            <y>0.8066666667</y>
+          </vector>
+        </param>
+        <param name="p2">
+          <vector>
+            <x>-0.8466666667</x>
+            <y>-0.3666666667</y>
+          </vector>
+        </param>
+        <param name="gradient" use=":RedGreenBlue"/>
+        <param name="loop">
+          <bool value="false"/>
+        </param>
+        <param name="zigzag">
+          <bool value="false"/>
+        </param>
+      </layer>
+      <layer type="clamp" active="false" version="0.2">
+        <param name="invert_negative">
+          <bool value="true"/>
+        </param>
+        <param name="clamp_ceiling">
+          <bool value="false"/>
+        </param>
+        <param name="ceiling">
+          <real value="1.0000000000"/>
+        </param>
+        <param name="floor">
+          <real value="0.0000000000"/>
+        </param>
+      </layer>
+      <layer type="linear_gradient" active="true" version="0.0">
+        <param name="amount">
+          <real value="0.6499999762"/>
+        </param>
+        <param name="blend_method">
+          <integer value="18"/>
+        </param>
+        <param name="p1">
+          <vector>
+            <x>0.1866666667</x>
+            <y>0.7800000000</y>
+          </vector>
+        </param>
+        <param name="p2">
+          <vector>
+            <x>0.3000000000</x>
+            <y>0.0666666667</y>
+          </vector>
+        </param>
+        <param name="gradient" use=":RedGreenBlue"/>
+        <param name="loop">
+          <bool value="false"/>
+        </param>
+        <param name="zigzag">
+          <bool value="false"/>
+        </param>
+      </layer>
+      <layer type="blur" active="false" version="0.2">
+        <param name="amount">
+          <real value="1.0000000000"/>
+        </param>
+        <param name="blend_method">
+          <integer value="0"/>
+        </param>
+        <param name="size">
+          <vector>
+            <x>0.1000000000</x>
+            <y>0.1000000000</y>
+          </vector>
+        </param>
+        <param name="type">
+          <integer value="1"/>
+        </param>
+      </layer>
+      <layer type="clamp" active="true" version="0.2">
+        <param name="invert_negative">
+          <bool value="true"/>
+        </param>
+        <param name="clamp_ceiling">
+          <bool value="true"/>
+        </param>
+        <param name="ceiling">
+          <real value="1.0000000000"/>
+        </param>
+        <param name="floor">
+          <real value="0.0000000000"/>
+        </param>
+      </layer>
+      <layer type="SolidColor" active="false" version="0.1">
+        <param name="amount">
+          <real value="0.6499999762"/>
+        </param>
+        <param name="blend_method">
+          <integer value="8"/>
+        </param>
+        <param name="color">
+          <color>
+            <r>-0.055843</r>
+            <g>0.323707</g>
+            <b>-0.220453</b>
+            <a>1.000000</a>
+          </color>
+        </param>
+      </layer>
+      <layer type="twirl" active="false" version="0.1">
+        <param name="center">
+          <vector>
+            <x>0.7266666667</x>
+            <y>-0.1000000000</y>
+          </vector>
+        </param>
+        <param name="radius">
+          <real value="1.0000000000"/>
+        </param>
+        <param name="rotations">
+          <angle value="30.000000"/>
+        </param>
+        <param name="distort_inside">
+          <bool value="true"/>
+        </param>
+        <param name="distort_outside">
+          <bool value="true"/>
+        </param>
+      </layer>
+      <layer type="twirl" active="false" version="0.1">
+        <param name="center">
+          <vector>
+            <x>-0.2533333333</x>
+            <y>0.1733333333</y>
+          </vector>
+        </param>
+        <param name="radius">
+          <real value="0.6483483289"/>
+        </param>
+        <param name="rotations">
+          <angle value="-25.999998"/>
+        </param>
+        <param name="distort_inside">
+          <bool value="true"/>
+        </param>
+        <param name="distort_outside">
+          <bool value="true"/>
+        </param>
+      </layer>
+    </canvas>
+    <canvas id="Label">
+      <layer type="text" active="true" version="0.1">
+        <param name="amount">
+          <real value="1.0000000000"/>
+        </param>
+        <param name="blend_method">
+          <integer value="0"/>
+        </param>
+        <param name="text">
+          <string>GRADIENTS</string>
+        </param>
+        <param name="color">
+          <color>
+            <r>1.000000</r>
+            <g>1.000000</g>
+            <b>1.000000</b>
+            <a>1.000000</a>
+          </color>
+        </param>
+        <param name="family">
+          <string>luxisr</string>
+        </param>
+        <param name="style">
+          <integer value="0"/>
+        </param>
+        <param name="weight">
+          <integer value="400"/>
+        </param>
+        <param name="compress">
+          <real value="1.0000000000"/>
+        </param>
+        <param name="vcompress">
+          <real value="1.0000000000"/>
+        </param>
+        <param name="size">
+          <vector>
+            <x>0.2533333333</x>
+            <y>0.2600000000</y>
+          </vector>
+        </param>
+        <param name="orient">
+          <vector>
+            <x>0.5000000000</x>
+            <y>0.5000000000</y>
+          </vector>
+        </param>
+        <param name="pos">
+          <vector>
+            <x>0.0000000000</x>
+            <y>0.0000000000</y>
+          </vector>
+        </param>
+        <param name="use_kerning">
+          <bool value="true"/>
+        </param>
+        <param name="grid_fit">
+          <bool value="false"/>
+        </param>
+      </layer>
+      <layer type="linear_gradient" active="true" version="0.0">
+        <param name="amount">
+          <real value="1.0000000000"/>
+        </param>
+        <param name="blend_method">
+          <integer value="3"/>
+        </param>
+        <param name="p1">
+          <vector>
+            <x>0.0000000000</x>
+            <y>-0.2000000000</y>
+          </vector>
+        </param>
+        <param name="p2">
+          <vector>
+            <x>0.0000000000</x>
+            <y>0.0500000000</y>
+          </vector>
+        </param>
+        <param name="gradient">
+          <gradient>
+            <color pos="0.000000">
+              <r>0.000000</r>
+              <g>0.000000</g>
+              <b>0.000000</b>
+              <a>1.000000</a>
+            </color>
+            <color pos="1.000000">
+              <r>1.000000</r>
+              <g>1.000000</g>
+              <b>1.000000</b>
+              <a>1.000000</a>
+            </color>
+          </gradient>
+        </param>
+        <param name="loop">
+          <bool value="false"/>
+        </param>
+        <param name="zigzag">
+          <bool value="false"/>
+        </param>
+      </layer>
+      <layer type="rotate" active="true" version="0.1">
+        <param name="origin">
+          <vector>
+            <x>0.0000000000</x>
+            <y>0.0000000000</y>
+          </vector>
+        </param>
+        <param name="amount">
+          <angle value="45.000000"/>
+        </param>
+      </layer>
+    </canvas>
+  </defs>
+  <layer type="SolidColor" active="true" version="0.1">
+    <param name="amount">
+      <real value="1.0000000000"/>
+    </param>
+    <param name="blend_method">
+      <integer value="1"/>
+    </param>
+    <param name="color">
+      <color>
+        <r>0.750000</r>
+        <g>0.750000</g>
+        <b>0.750000</b>
+        <a>1.000000</a>
+      </color>
+    </param>
+  </layer>
+  <layer type="linear_gradient" active="false" version="0.0">
+    <param name="amount">
+      <real value="1.0000000000"/>
+    </param>
+    <param name="blend_method">
+      <integer value="0"/>
+    </param>
+    <param name="p1">
+      <vector>
+        <x>1.0000000000</x>
+        <y>1.0000000000</y>
+      </vector>
+    </param>
+    <param name="p2">
+      <vector>
+        <x>-1.0000000000</x>
+        <y>-1.0000000000</y>
+      </vector>
+    </param>
+    <param name="gradient">
+      <gradient>
+        <color pos="0.000000">
+          <r>0.000000</r>
+          <g>0.000000</g>
+          <b>0.000000</b>
+          <a>1.000000</a>
+        </color>
+        <color pos="1.000000">
+          <r>1.000000</r>
+          <g>1.000000</g>
+          <b>1.000000</b>
+          <a>1.000000</a>
+        </color>
+      </gradient>
+    </param>
+    <param name="loop">
+      <bool value="false"/>
+    </param>
+    <param name="zigzag">
+      <bool value="false"/>
+    </param>
+  </layer>
+  <layer type="checker_board" active="false" version="0.1">
+    <param name="amount">
+      <real value="1.0000000000"/>
+    </param>
+    <param name="blend_method">
+      <integer value="1"/>
+    </param>
+    <param name="color">
+      <color>
+        <r>0.500000</r>
+        <g>0.500000</g>
+        <b>0.500000</b>
+        <a>1.000000</a>
+      </color>
+    </param>
+    <param name="pos">
+      <vector>
+        <x>0.1250000000</x>
+        <y>0.1250000000</y>
+      </vector>
+    </param>
+    <param name="size">
+      <vector>
+        <x>0.2500000000</x>
+        <y>0.2500000000</y>
+      </vector>
+    </param>
+  </layer>
+  <layer type="radial_gradient" active="true" version="0.1">
+    <param name="amount">
+      <real value="0.2500000000"/>
+    </param>
+    <param name="blend_method">
+      <integer value="0"/>
+    </param>
+    <param name="gradient" use="BlackStripes"/>
+    <param name="center">
+      <vector>
+        <x>0.0000000000</x>
+        <y>0.0000000000</y>
+      </vector>
+    </param>
+    <param name="radius">
+      <real value="1.4000000000"/>
+    </param>
+    <param name="loop">
+      <bool value="false"/>
+    </param>
+    <param name="zigzag">
+      <bool value="false"/>
+    </param>
+  </layer>
+  <layer type="spiral_gradient" active="true" version="0.1">
+    <param name="amount">
+      <real value="0.2500000000"/>
+    </param>
+    <param name="blend_method">
+      <integer value="0"/>
+    </param>
+    <param name="gradient" use="BlackStripes"/>
+    <param name="center">
+      <vector>
+        <x>0.0000000000</x>
+        <y>0.0000000000</y>
+      </vector>
+    </param>
+    <param name="radius">
+      <real value="2.4000000000"/>
+    </param>
+    <param name="angle">
+      <angle value="-20.000000"/>
+    </param>
+    <param name="clockwise">
+      <bool value="false"/>
+    </param>
+  </layer>
+  <layer type="noise" active="true" version="0.0">
+    <param name="amount">
+      <real value="1.0000000000"/>
+    </param>
+    <param name="blend_method">
+      <integer value="0"/>
+    </param>
+    <param name="gradient">
+      <gradient_rotate type="gradient">
+        <gradient>
+          <gradient>
+            <color pos="0.000000">
+              <r>0.000000</r>
+              <g>0.000000</g>
+              <b>0.000000</b>
+              <a>0.000000</a>
+            </color>
+            <color pos="0.189482">
+              <r>0.000000</r>
+              <g>0.000000</g>
+              <b>0.000000</b>
+              <a>0.000000</a>
+            </color>
+            <color pos="0.378965">
+              <r>0.000000</r>
+              <g>0.000000</g>
+              <b>0.000000</b>
+              <a>0.000000</a>
+            </color>
+            <color pos="0.378965">
+              <r>0.000000</r>
+              <g>0.000000</g>
+              <b>0.000000</b>
+              <a>0.000000</a>
+            </color>
+            <color pos="0.624374">
+              <r>-0.000000</r>
+              <g>-0.000000</g>
+              <b>-0.000000</b>
+              <a>0.500000</a>
+            </color>
+            <color pos="0.721202">
+              <r>0.000000</r>
+              <g>0.000000</g>
+              <b>0.000000</b>
+              <a>1.000000</a>
+            </color>
+            <color pos="0.721202">
+              <r>0.393939</r>
+              <g>0.091171</g>
+              <b>0.035564</b>
+              <a>1.000000</a>
+            </color>
+            <color pos="0.748748">
+              <r>0.299242</r>
+              <g>0.069255</g>
+              <b>0.027015</b>
+              <a>1.000000</a>
+            </color>
+            <color pos="0.776294">
+              <r>0.204545</r>
+              <g>0.047339</g>
+              <b>0.018466</b>
+              <a>1.000000</a>
+            </color>
+            <color pos="0.776294">
+              <r>0.204545</r>
+              <g>0.047339</g>
+              <b>0.018466</b>
+              <a>1.000000</a>
+            </color>
+            <color pos="0.833723">
+              <r>0.481061</r>
+              <g>0.111334</g>
+              <b>0.043429</b>
+              <a>1.000000</a>
+            </color>
+            <color pos="0.859766">
+              <r>0.757576</r>
+              <g>0.175329</g>
+              <b>0.068392</b>
+              <a>1.000000</a>
+            </color>
+            <color pos="0.859766">
+              <r>0.757576</r>
+              <g>0.175329</g>
+              <b>0.068392</b>
+              <a>1.000000</a>
+            </color>
+            <color pos="0.876461">
+              <r>0.878788</r>
+              <g>0.338230</g>
+              <b>0.244196</b>
+              <a>1.000000</a>
+            </color>
+            <color pos="0.893155">
+              <r>1.000000</r>
+              <g>0.501132</g>
+              <b>0.420000</b>
+              <a>1.000000</a>
+            </color>
+            <color pos="0.893200">
+              <r>0.977356</r>
+              <g>0.641591</g>
+              <b>0.586910</b>
+              <a>1.000000</a>
+            </color>
+            <color pos="0.911519">
+              <r>0.878788</r>
+              <g>0.338230</g>
+              <b>0.244196</b>
+              <a>1.000000</a>
+            </color>
+            <color pos="0.928214">
+              <r>0.757576</r>
+              <g>0.175329</g>
+              <b>0.068392</b>
+              <a>1.000000</a>
+            </color>
+            <color pos="0.928214">
+              <r>0.757576</r>
+              <g>0.175329</g>
+              <b>0.068392</b>
+              <a>0.000000</a>
+            </color>
+            <color pos="0.964107">
+              <r>0.757576</r>
+              <g>0.175329</g>
+              <b>0.068392</b>
+              <a>0.000000</a>
+            </color>
+            <color pos="1.000000">
+              <r>0.757576</r>
+              <g>0.175329</g>
+              <b>0.068392</b>
+              <a>0.000000</a>
+            </color>
+          </gradient>
+        </gradient>
+        <offset>
+          <real value="-0.2000000000"/>
+        </offset>
+      </gradient_rotate>
+    </param>
+    <param name="seed">
+      <integer value="1080157549"/>
+    </param>
+    <param name="size">
+      <vector>
+        <x>0.6000000000</x>
+        <y>0.6000000000</y>
+      </vector>
+    </param>
+    <param name="smooth">
+      <integer value="4"/>
+    </param>
+    <param name="detail">
+      <integer value="1"/>
+    </param>
+    <param name="speed">
+      <real value="0.0000000000"/>
+    </param>
+    <param name="turbulent">
+      <bool value="false"/>
+    </param>
+    <param name="do_alpha">
+      <bool value="false"/>
+    </param>
+    <param name="super_sample">
+      <bool value="true"/>
+    </param>
+  </layer>
+  <layer type="PasteCanvas" active="true" version="0.1">
+    <param name="amount">
+      <real value="1.0000000000"/>
+    </param>
+    <param name="blend_method">
+      <integer value="9"/>
+    </param>
+    <param name="origin">
+      <vector>
+        <x>0.0000000000</x>
+        <y>0.0000000000</y>
+      </vector>
+    </param>
+    <param name="canvas" use="PsychoColors"/>
+    <param name="zoom">
+      <real value="0.0000000000"/>
+    </param>
+    <param name="time_offset">
+      <time value="0f"/>
+    </param>
+  </layer>
+  <layer type="linear_gradient" active="true" version="0.0" desc="Pipe">
+    <param name="amount">
+      <real value="1.0000000000"/>
+    </param>
+    <param name="blend_method">
+      <integer value="0"/>
+    </param>
+    <param name="p1">
+      <vector>
+        <x>1.0000000000</x>
+        <y>-1.0000000000</y>
+      </vector>
+    </param>
+    <param name="p2">
+      <vector>
+        <x>-0.2133333333</x>
+        <y>0.2133333333</y>
+      </vector>
+    </param>
+    <param name="gradient" use="RedPipe"/>
+    <param name="loop">
+      <bool value="false"/>
+    </param>
+    <param name="zigzag">
+      <bool value="false"/>
+    </param>
+  </layer>
+  <layer type="linear_gradient" active="false" version="0.0">
+    <param name="amount">
+      <real value="1.0000000000"/>
+    </param>
+    <param name="blend_method">
+      <integer value="9"/>
+    </param>
+    <param name="p1">
+      <vector>
+        <x>-1.0000000000</x>
+        <y>-1.0000000000</y>
+      </vector>
+    </param>
+    <param name="p2">
+      <vector>
+        <x>1.0000000000</x>
+        <y>1.0000000000</y>
+      </vector>
+    </param>
+    <param name="gradient">
+      <twotone type="gradient">
+        <color1>
+          <color>
+            <r>1.000000</r>
+            <g>0.000000</g>
+            <b>0.000000</b>
+            <a>1.000000</a>
+          </color>
+        </color1>
+        <color2>
+          <color>
+            <r>0.000000</r>
+            <g>0.000000</g>
+            <b>1.000000</b>
+            <a>1.000000</a>
+          </color>
+        </color2>
+      </twotone>
+    </param>
+    <param name="loop">
+      <bool value="false"/>
+    </param>
+    <param name="zigzag">
+      <bool value="false"/>
+    </param>
+  </layer>
+  <layer type="PasteCanvas" active="true" version="0.1">
+    <param name="amount">
+      <real value="0.5000000000"/>
+    </param>
+    <param name="blend_method">
+      <integer value="20"/>
+    </param>
+    <param name="origin">
+      <vector>
+        <x>0.0000000000</x>
+        <y>0.0000000000</y>
+      </vector>
+    </param>
+    <param name="canvas" use="Label"/>
+    <param name="zoom">
+      <real value="0.1000000000"/>
+    </param>
+    <param name="time_offset">
+      <time value="0f"/>
+    </param>
+  </layer>
+</canvas>
