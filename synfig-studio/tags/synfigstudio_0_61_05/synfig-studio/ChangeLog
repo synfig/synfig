@@ -1,0 +1,7 @@
+2005-11-26	Robert Quattlebaum	<darco@deepdarc.com>
+	* src/gtkmm/layertreestore.cpp: Fixed bug which caused crash on DND layer move 
+	
+2005-11-03	Robert Quattlebaum	<darco@deepdarc.com>
+	* src/gtkmm/render.cpp: Fixed default render file to use the directory seperator for the given OS, rather than just use forward slashes all the time.
+
+
