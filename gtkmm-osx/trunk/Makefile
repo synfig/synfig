@@ -25,6 +25,10 @@ PANGO_VER=1.10.4
 PANGO_DIR=$(ROOT_DIR)/pango-$(PANGO_VER)
 PANGO_DL=http://ftp.gtk.org/pub/gtk/v2.8/pango-$(PANGO_VER).tar.gz
 
+CAIRO_VER=1.0.2
+CAIRO_DIR=$(ROOT_DIR)/cairo-$(CAIRO_VER)
+CAIRO_DL=http://cairographics.org/releases/cairo-$(CAIRO_VER).tar.gz
+
 ATK_VER=1.6.1
 ATK_VER=1.10.3
 ATK_DIR=$(ROOT_DIR)/atk-$(ATK_VER)
@@ -108,6 +112,7 @@ CAT=cat
 OFLAGS=-faltivac -maltivec
 OFLAGS=
 ARCHFLAGS=-arch i386 -arch ppc
+ARCHFLAGS=
 CFLAGS=-I$(PREFIX_DIR)/include -no-cpp-precomp -prebind $(OFLAGS) $(ARCHFLAGS)
 CC=gcc $(CFLAGS)
 CC3=gcc $(CFLAGS)
@@ -126,11 +131,11 @@ DESTDIR_FIX=for filename in `$(FIND) . | $(GREP) Makefile | $(GREP) -v -e Makefi
 CONFIG_FLAGS=--prefix=$(PREFIX_DIR) --disable-static --enable-shared "CC=$(CC)" "CXX=$(CXX)" "CXXCPP=$(CXXCPP)" "CPP=$(CPP)" "PKG_CONFIG_PATH=$(PKG_CONFIG_PATH)" "LDFLAGS=$(LDFLAGS)" "MACOSX_DEPLOYMENT_TARGET=$(MACOSX_DEPLOYMENT_TARGET)"
 
 # Targets
-all: gettext glib pango atk libpng libjpeg gtk libsigc2 glibmm gtkmm libxmlpp
+all: gettext glib cairo pango atk libpng libjpeg gtk libsigc2 glibmm gtkmm libxmlpp
 
-packages: gettext-pkg glib-pkg pango-pkg atk-pkg libpng-pkg libjpeg-pkg  gtk-pkg libsigc2-pkg glibmm-pkg gtkmm-pkg libxmlpp-pkg
+packages: gettext-pkg glib-pkg pango-pkg atk-pkg libpng-pkg libjpeg-pkg cairo-pkg gtk-pkg libsigc2-pkg glibmm-pkg gtkmm-pkg libxmlpp-pkg
 
-clean: gettext-clean glib-clean pango-clean atk-clean libpng-clean libjpeg-clean libtiff-clean gtk-clean libsigc-clean libsigc2-clean glibmm-clean gtkmm-clean libxmlpp-clean
+clean: gettext-clean glib-clean pango-clean atk-clean libpng-clean libjpeg-clean cairo-clean gtk-clean libsigc-clean libsigc2-clean glibmm-clean gtkmm-clean libxmlpp-clean
 	$(RM) -r gtkmm.pkg
 
 clean-all: clean
@@ -228,6 +233,34 @@ glib-$(GLIB_VER):
 	$(CURL) $(GLIB_DL) -o glib-$(GLIB_VER).tar.gz
 	$(UNTARZ) glib-$(GLIB_VER).tar.gz
 
+
+
+
+cairo: cairo-$(CAIRO_VER)
+	cd $(CAIRO_DIR) && ./configure $(CONFIG_FLAGS)
+	cd $(CAIRO_DIR) && $(DESTDIR_FIX)
+	$(MAKE) -C $(CAIRO_DIR)
+	$(MAKE) -C $(CAIRO_DIR) install
+
+cairo-pkg:
+	$(RM) -r $(ROOT_DIR)/pkg_out
+	$(MAKE) -C $(CAIRO_DIR) install-strip prefix=$(ROOT_DIR)/pkg_out
+	-cd $(ROOT_DIR)/pkg_out && $(PACKAGE_PREP)
+	$(SED) "s/@PACKAGE@/cairo/g;s/@VERSION@/$(CAIRO_VER)/;" < package.info > cairo.info
+	$(PACKAGE) $(ROOT_DIR)/pkg_out cairo.info -r PkgResource -bzip
+	$(RM) -r $(ROOT_DIR)/pkg_out
+	mv $(ROOT_DIR)/cairo.pkg packages
+
+cairo-clean:
+	$(MAKE) -C $(CAIRO_DIR) clean
+
+cairo-$(CAIRO_VER):
+	$(CURL) $(CAIRO_DL) -o cairo-$(CAIRO_VER).tar.gz
+	$(UNTARZ) cairo-$(CAIRO_VER).tar.gz
+
+
+
+
 pango: pango-$(PANGO_VER)
 	cd $(PANGO_DIR) && ./configure $(CONFIG_FLAGS) 
 	cd $(PANGO_DIR) && $(DESTDIR_FIX)
@@ -268,7 +301,7 @@ atk-pkg:
 atk-clean:
 	$(MAKE) -C $(ATK_DIR) clean
 
-atk-$(PANGO_VER):
+atk-$(ATK_VER):
 	$(CURL) $(ATK_DL) -o atk-$(ATK_VER).tar.gz
 	$(UNTARZ) atk-$(ATK_VER).tar.gz
 
@@ -428,7 +461,7 @@ gtkmm-clean:
 	$(MAKE) -C $(GTKMM_DIR) clean
 
 gtkmm-$(GTKMM_VER):
-	$(CURL) $(GTKMM_DL) -o glibmm-$(GTKMM_VER).tar.gz
+	$(CURL) $(GTKMM_DL) -o gtkmm-$(GTKMM_VER).tar.gz
 	$(UNTARZ) gtkmm-$(GTKMM_VER).tar.gz
 
 
@@ -451,7 +484,7 @@ libsigc2-clean:
 	$(MAKE) -C $(LIBSIGC2_DIR) clean
 
 libsigc++-$(LIBSIGC2_VER):
-	$(CURL) $(LIBSIGC2_DL) -o libsigc2-$(GTKMM_VER).tar.gz
+	$(CURL) $(LIBSIGC2_DL) -o libsigc2-$(LIBSIGC2_VER).tar.gz
 	$(UNTARZ) libsigc2-$(LIBSIGC2_VER).tar.gz
 
 LDFLAGS=-L$(PREFIX_DIR)/lib -prebind -prebind_all_twolevel_modules -twolevel_namespace -bind_at_load
