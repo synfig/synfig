@@ -109,10 +109,13 @@ CURL=curl -f
 UNTARZ=tar xvzf
 UNTARJ=tar xvjf
 CAT=cat
-OFLAGS=-faltivac -maltivec
+
 OFLAGS=
 ARCHFLAGS=-arch i386 -arch ppc
-ARCHFLAGS=
+
+OFLAGS=-faltivec -maltivec
+ARCHFLAGS=-arch ppc
+
 CFLAGS=-I$(PREFIX_DIR)/include -no-cpp-precomp -prebind $(OFLAGS) $(ARCHFLAGS)
 CC=gcc $(CFLAGS)
 CC3=gcc $(CFLAGS)
@@ -131,7 +134,7 @@ DESTDIR_FIX=for filename in `$(FIND) . | $(GREP) Makefile | $(GREP) -v -e Makefi
 CONFIG_FLAGS=--prefix=$(PREFIX_DIR) --disable-static --enable-shared "CC=$(CC)" "CXX=$(CXX)" "CXXCPP=$(CXXCPP)" "CPP=$(CPP)" "PKG_CONFIG_PATH=$(PKG_CONFIG_PATH)" "LDFLAGS=$(LDFLAGS)" "MACOSX_DEPLOYMENT_TARGET=$(MACOSX_DEPLOYMENT_TARGET)"
 
 # Targets
-all: gettext glib cairo pango atk libpng libjpeg gtk libsigc2 glibmm gtkmm libxmlpp
+all: gettext glib libpng libjpeg cairo pango atk gtk libsigc2 glibmm gtkmm libxmlpp
 
 packages: gettext-pkg glib-pkg pango-pkg atk-pkg libpng-pkg libjpeg-pkg cairo-pkg gtk-pkg libsigc2-pkg glibmm-pkg gtkmm-pkg libxmlpp-pkg
 
