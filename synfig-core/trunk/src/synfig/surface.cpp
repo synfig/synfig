@@ -158,12 +158,12 @@ synfig::Surface::blit_to(alpha_pen& pen, int x, int y, int w, int h)
 		}
 				
 		//clip width against dest width
-		w = min(w,pen.end_x()-pen.x());
-		h = min(h,pen.end_y()-pen.y());
+		w = min(w,(int)(pen.end_x()-pen.x()));
+		h = min(h,(int)(pen.end_y()-pen.y()));
 		
 		//clip width against src width
-		w = min(w,get_w()-x);		
-		h = min(h,get_h()-y);	
+		w = min(w,(int)(get_w()-x));
+		h = min(h,(int)(get_h()-y));
 
 		if(w<=0 || h<=0)
 			return;
