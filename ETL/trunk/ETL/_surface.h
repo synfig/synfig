@@ -274,8 +274,8 @@ public:
 		}
 				
 		//clip width against dest width
-		w = std::min(w,(int)(DEST_PEN.end_x()-DEST_PEN.x()));
-		h = std::min(h,(int)(DEST_PEN.end_y()-DEST_PEN.y()));
+		w = std::min((long)w,(long)(DEST_PEN.end_x()-DEST_PEN.x()));
+		h = std::min((long)h,(long)(DEST_PEN.end_y()-DEST_PEN.y()));
 		
 		//clip width against src width
 		w = std::min(w,w_-x);		
