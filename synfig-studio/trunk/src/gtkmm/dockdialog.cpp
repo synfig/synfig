@@ -87,7 +87,7 @@ DockDialog::DockDialog():
 	widget_comp_select=new Widget_CompSelect();
 	
 	// Give ourselves an ID that is most likely unique
-	set_id(synfig::UniqueID().get_uid()^reinterpret_cast<int>(this));
+	set_id(synfig::UniqueID().get_uid()^reinterpret_cast<long>(this));
 	
 	set_role(strprintf("dock_dialog_%d",get_id()));
 	GRAB_HINT_DATA(

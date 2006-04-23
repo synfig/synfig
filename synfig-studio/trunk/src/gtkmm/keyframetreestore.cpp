@@ -223,7 +223,7 @@ KeyframeTreeStore::create(etl::loose_handle<synfigapp::CanvasInterface> canvas_i
 void
 KeyframeTreeStore::reset_stamp()
 {
-	stamp_=time(0)+reinterpret_cast<int>(this);
+	stamp_=time(0)+reinterpret_cast<long>(this);
 }
 
 /*
