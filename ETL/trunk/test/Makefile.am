@@ -3,9 +3,9 @@
 MAINTAINERCLEANFILES=Makefile.in
 CXXFLAGS=@CXXFLAGS@ -I$(top_srcdir) -I$(top_builddir)
 DEFAULT_INCLUDES=-I$(top_srcdir) -I$(top_builddir)
-TESTS=fixed clock handle angle random hermite stringf pen surface smart_ptr benchmark
+TESTS=fixed clock handle angle random hermite stringf pen surface smart_ptr benchmark spline value
 
-check_PROGRAMS=fixed handle clock angle random hermite stringf pen surface smart_ptr benchmark smach
+check_PROGRAMS=fixed handle clock angle random hermite stringf pen surface smart_ptr benchmark smach spline value
 
 benchmark_SOURCES=benchmark.cpp
 smart_ptr_SOURCES=smart_ptr.cpp
