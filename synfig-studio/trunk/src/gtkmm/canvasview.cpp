@@ -1350,7 +1350,7 @@ CanvasView::init_menus()
 
 
 #define DUCK_MASK(lower,upper)	\
-	duck_mask_##lower=Gtk::ToggleAction::create("mask-" #lower "-ducks", _("Mask "#lower" ducks")); \
+	duck_mask_##lower=Gtk::ToggleAction::create("mask-" #lower "-ducks", _("Show "#lower" ducks")); \
 	duck_mask_##lower->set_active((bool)(work_area->get_type_mask()&Duck::TYPE_##upper)); \
 	action_group->add( duck_mask_##lower, \
 		sigc::bind( \
