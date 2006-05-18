@@ -1,10 +1,10 @@
 [Desktop Entry]
 Name=@PACKAGE_NAME@
-Comment=A Powerful 2D Animation and Composition Package
-Exec=@prefix@/bin/synfigstudio
-Terminal=1
+Comment=Create and edit 2D animations and compositions
+Exec=synfigstudio %F
+Terminal=false
 Type=Application
-Icon=@prefix@/share/pixmaps/synfig_icon.@imageext@
+Icon=synfig_icon
 Categories=Application;Graphics;
 StartupNotify=true
 Encoding=UTF-8
