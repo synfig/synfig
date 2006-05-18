@@ -1,3 +1,9 @@
+2005-11-26	Robert Quattlebaum	<darco@deepdarc.com>
+	* src/gtkmm/layertreestore.cpp: Fixed bug which caused crash on DND layer move 
+	
+2005-11-03	Robert Quattlebaum	<darco@deepdarc.com>
+	* src/gtkmm/render.cpp: Fixed default render file to use the directory seperator for the given OS, rather than just use forward slashes all the time.
+
 2004-04-26 (darco): Delete button now deletes layers
 2004-04-21 (darco): Various improvements to the dock/dialog system
 2004-04-19 (adruab): Added Zoom out to the zoom tool using the Ctrl key
