@@ -1,0 +1,33 @@
+              synfigstudio releases
+
+ 0.61.05 - February 27, 2006 - build issues
+
+  * fixed building with gtkmm 2.8 (#1373933, #1358304)
+  * allow the toolbox to come to the front (#1367916)
+  * fixed minor build issues
+
+ 0.61.04 - January 10, 2006 - 
+
+  * 
+
+ 0.61.03 - December 8, 2005 - 
+
+  * fully fix GCC 4 building
+
+ 0.61.02 - November 26, 2005 -
+
+  * GCC 4 tweaks
+  * fixes crash on layer reorder
+  * errno.h
+  * other tweaks
+
+ 0.61.01 - November 6, 2005 - Copyright updates
+
+  * Update old copyright and licence notices
+  * Add ./configure options for debug, warnings, optimisation, profiling
+  * Uses per-os directory separator
+
+ 0.61.00-39 - November 1, 2005 - Developer preview
+
+  * First public release!
+
