@@ -2,30 +2,35 @@
 
  0.61.05 - February 27, 2006 - build issues
 
-  * fixed building with gtkmm 2.8 (#1373933, #1358304)
-  * allow the toolbox to come to the front (#1367916)
-  * fixed minor build issues
+  * Fixed building with gtkmm 2.8 (#1373933, #1358304)
+  * Allow the toolbox to come to the front (#1367916)
+  * Make the user prefs dir configurable at build time
+  * Fixed minor build issues
 
- 0.61.04 - January 10, 2006 - 
+ 0.61.04 - January 10, 2006 - MacOS X packaging
 
-  * 
+  * Fixes for the MacOS X packaging
 
- 0.61.03 - December 8, 2005 - 
+ 0.61.03 - December 8, 2005 - Build & copyright fixes
 
-  * fully fix GCC 4 building
+  * Update more old copyright and licence notices
+  * Fully fix building with GCC 4
 
- 0.61.02 - November 26, 2005 -
+ 0.61.02 - November 26, 2005 - Build fixes
 
-  * GCC 4 tweaks
-  * fixes crash on layer reorder
-  * errno.h
-  * other tweaks
+  * Better Win32 / MacOS X packaging
+  * Use new GTK+ file chooser
+  * Adds some GCC 4 tweaks
+  * Fixes crash on layer reorder
+  * Include errno.h where needed
+  * Other tweaks
 
  0.61.01 - November 6, 2005 - Copyright updates
 
   * Update old copyright and licence notices
   * Add ./configure options for debug, warnings, optimisation, profiling
   * Uses per-os directory separator
+  * Add TODO file
 
  0.61.00-39 - November 1, 2005 - Developer preview
 
