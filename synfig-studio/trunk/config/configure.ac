@@ -185,6 +185,7 @@ Makefile
 synfigstudio.desktop
 synfigstudio.mime
 synfigstudio.keys
+synfigstudio.xml
 src/Makefile
 src/gtkmm/Makefile
 src/synfigapp/Makefile
