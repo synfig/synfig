@@ -6,7 +6,7 @@ MAINTAINERCLEANFILES=config/ltmain.sh config/config.guess config/config.sub conf
 
 SUBDIRS=src images
 
-EXTRA_DIST=COPYING TODO config/subs.m4 macosxbuild.sh win32build.sh win32inst.nsi.in bootstrap config/package config/depcomp config/cxx_macros.m4 @PACKAGE_TARNAME@-@VERSION@.spec config/project.spec.in config/build.cfg config/ETL.m4 ChangeLog.old synfigstudio.xml.in
+EXTRA_DIST=COPYING TODO config/subs.m4 macosxbuild.sh win32build.sh win32inst.nsi.in bootstrap config/package config/depcomp config/cxx_macros.m4 @PACKAGE_TARNAME@-@VERSION@.spec config/project.spec.in config/build.cfg config/ETL.m4 ChangeLog.old synfigstudio.xml.in synfigstudio-thumbnailer.schemas.in
 
 # Desktop entry
 #desktopdir              = $(datadir)/gnome/apps/Graphics
