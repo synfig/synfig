@@ -1,3 +1,14 @@
+2005-11-28	Robert Quattlebaum	<darco@deepdarc.com>
+	* src/modules/lyr_std/sphere_distort.cpp/h: Clarified namespace issues 
+2005-11-08	Robert Quattlebaum	<darco@deepdarc.com>
+	* src/modules/lyr_std/stretch.cpp/h: Clarified namespace issues 
+2005-11-03	Robert Quattlebaum	<darco@deepdarc.com>
+	* src/synfig/savecanvas.cpp: added #include <sys/errorno.h>
+	* src/synfig/value.cpp: Various GCC 4.0 fixes
+	* src/modules/mod_bmp/trgt_bmp.cpp: The BMP target was broken. It's now fixed.
+	* examples: Removed SFAutomaton font due to licensing issues.
+	* All: Updated copyright notice to reflect new license
+
 2004-04-07 (darco): Foldy... Powers?
 2004-03-30 (darco): Fix for weird keyframe problem
 2004-03-24 (darco): Speed improvements for both the pastecanvas layer and the checkerboard layer
