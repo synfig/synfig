@@ -1,0 +1,136 @@
+XCOMM $XFree86: xc/programs/Xserver/hw/darwin/Imakefile,v 1.14 2002/08/28 06:19:15 torrey Exp $
+
+#include <Server.tmpl>
+#define IHaveSubdirs
+
+LinkSourceFile(XFree86.man,../xfree86)
+LinkSourceFile(appledri.h,$(LIBSRC)/GL/apple)
+LinkSourceFile(appledristr.h,$(LIBSRC)/GL/apple)
+
+SRCS =	darwin.c \
+	darwin-input.c \
+        darwin-keyboard.c \
+	darwin-new-keymap.c \
+	darwin-old-keymap.c \
+	keysym2ucs.c \
+        quartz.c \
+        quartz-audio.c \
+        quartz-cursor.c \
+	quartz-server.c \
+        rootless-common.c \
+        rootless-gc.c \
+        rootless-picture.c \
+        rootless-screen.c \
+        rootless-val-tree.c \
+        rootless-window.c \
+        pseudoramiX.c \
+	appledri.c \
+	applewm-impl.c \
+	dri-surface.c \
+	x-list.c \
+	x-hash.c \
+	x-hook.c \
+	X11Application.m \
+	X11Controller.m
+
+OBJS =	darwin.o \
+	darwin-input.o \
+        darwin-keyboard.o \
+	darwin-new-keymap.o \
+	darwin-old-keymap.o \
+	keysym2ucs.o \
+        quartz.o \
+        quartz-audio.o \
+        quartz-cursor.o \
+	quartz-server.o \
+        rootless-common.o \
+        rootless-gc.o \
+        rootless-picture.o \
+        rootless-screen.o \
+        rootless-val-tree.o \
+        rootless-window.o \
+        pseudoramiX.o \
+        appledri.o \
+        applewm-impl.o \
+	dri-surface.o \
+	x-list.o \
+	x-hash.o \
+	x-hook.o \
+	X11Application.o \
+	X11Controller.o	
+
+AS := /System/Library/Frameworks/ApplicationServices.framework
+
+INCLUDES = -I. -I$(SERVERSRC)/mi -I$(SERVERSRC)/fb -I$(EXTINCSRC) \
+           -I$(SERVERSRC)/render -I$(SERVERSRC)/include -I$(XINCLUDESRC) \
+           -I$(SERVERSRC)/os -I$(SERVERSRC)/Xext -I$(SERVERSRC)/GL/apple \
+           -I$(INCLUDESRC) -I$(FONTINCSRC) -F$(AS)/Frameworks \
+	   $(XPLUGIN_INCLUDE)
+
+OSNAME = OSName
+OSVENDOR = OSVendor
+OSNAMEDEF = -DOSNAME='" $(OSNAME)"' -DOSVENDOR='" $(OSVENDOR)"'
+
+#if defined(XFree86CustomVersion)
+CUSTOMVERSION = XFree86CustomVersion
+CUSTOMVERDEF = -DXF86_CUSTOM_VERSION='$(CUSTOMVERSION)'
+#endif
+
+#if defined(BuilderString)
+BUILDERSTRING = BuilderString
+BUILDERMSG = -DBUILDERSTRING='$(BUILDERSTRING)'
+#endif
+
+SUBDIRS = utils
+
+DEFINES = $(CUSTOMVERDEF) -DXBINDIR=$(BINDIR) -DXINITDIR=$(XINITDIR) \
+          $(QUARTZDEFINES) $(DEBUGDEFINES)
+
+#if XFree86Devel
+DEBUGDEFINES = -DROOTLESSDEBUG
+#endif
+
+EXTRAMANDEFS = -D__logdir__=$(LOGDIRECTORY)
+
+SpecialCObjectRule(darwin,$(ICONFIGFILES),$(OSNAMEDEF) $(BUILDERMSG) $(CUSTOMVERDEF))
+
+NormalLibraryObjectRule()
+NormalLibraryTarget(XQuartz,$(OBJS))
+
+InstallManPage(Xquartz,$(MANDIR))
+InstallManPage(XFree86,$(MANDIR))
+
+DependTarget()
+
+MakeSubdirs($(SUBDIRS))
+DependSubdirs($(SUBDIRS))
+
+#ifndef DarwinArchEnv
+#define DarwinArchEnv
+#endif
+
+PBXBUILD = DarwinArchEnv pbxbuild
+PBXBUILDSTYLE = Development
+PBXBUILDDIR= ./build
+
+DITTO = ditto
+
+#if NothingOutsideProjectRoot
+APPINSTALLDIR = $(BINDIR)/../Applications
+#else
+APPINSTALLDIR = /Applications/Utilities
+#endif
+
+all::
+	$(PBXBUILD) -buildstyle $(PBXBUILDSTYLE) build
+
+install::
+	$(PBXBUILD) -buildstyle $(PBXBUILDSTYLE) install
+	mkdir -p $(DESTDIR)$(APPINSTALLDIR)
+	$(DITTO) $(PBXBUILDDIR)/UninstalledProducts/X11.app $(DESTDIR)$(APPINSTALLDIR)/X11.app
+
+clean::
+	$(PBXBUILD) 'clean'
+
+%.o : %.m
+	$(CC) $(CFLAGS) -c -o $@ $<

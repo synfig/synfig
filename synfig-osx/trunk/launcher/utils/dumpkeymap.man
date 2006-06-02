@@ -1,0 +1,1004 @@
+.ig
+//=============================================================================
+//
+// Manual page for `dumpkeymap'.
+//
+// Copyright (C) 1999,2000 by Eric Sunshine <sunshine@sunshineco.com>
+// All rights reserved.
+//
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions are met:
+//
+//   1. Redistributions of source code must retain the above copyright
+//      notice, this list of conditions and the following disclaimer.
+//   2. Redistributions in binary form must reproduce the above copyright
+//      notice, this list of conditions and the following disclaimer in the
+//      documentation and/or other materials provided with the distribution.
+//   3. The name of the author may not be used to endorse or promote products
+//      derived from this software without specific prior written permission.
+//
+// THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
+// WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+// MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO
+// EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+// PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+// OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+// WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+// OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+// ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//
+//=============================================================================
+//
+// $XFree86: xc/programs/Xserver/hw/darwin/utils/dumpkeymap.man,v 1.2 2000/12/05 21:18:34 dawes Exp $
+//
+..
+.ig
+//-----------------------------------------------------------------------------
+// Local identification information.
+//-----------------------------------------------------------------------------
+..
+.nr VE 4 \" Version number
+.TH DUMPKEYMAP 1 "v\n(VE \-\- 1 December 2000" "Version \n(VE"
+.de UP
+1 December 2000
+..
+.ig
+//-----------------------------------------------------------------------------
+// Annotation Macros
+// -----------------
+//	Facilitate creation of annotated, non-filled blocks of text.  An
+//	annotated block is initiated with the `AS' macro.  Each annotated,
+//	non-filled line within the block must be introduced with the `AN' macro
+//	which takes three arguments.  The first argument is the detail text to
+//	be annotated.  The second is a string of spaces used to align the
+//	annotations by certain (broken) roff interpreters which fail to
+//	implement the proper set of roff commands (such as diversions,
+//	indentation, and tab stops).  It is assumed that the spaces will be
+//	used with fixed-point font.  The third argument is the annotation
+//	itself.  The block should be terminated with the `AE' macro.  For all
+//	roff interpreters which properly implement diversions, indentation, and
+//	tab stops, all anotations within the block are automatically aligned at
+//	the same horizontal position.  This position is guaranteed to be just
+//	to the right of the widest `AN' detail line.  For broken roff
+//	interpreters, such as `rman', the string of spaces from the second
+//	argument are used to align the annotations.  Finally, the `AZ' macro,
+//	which takes a single argument, can be used to to insert a non-annotated
+//	line into the block which does not play a part in the calculation of
+//	the horizontal annotation alignment.
+//
+// Implementation Notes
+// --------------------
+// *1*	These macros utilize a diversion (named `AD').  Since the prevailing
+//	indentation is stored along with the diverted text, we must muck with
+//	the indentation level in order to prevent the indentation from being
+//	applied to the text a second time when `AD' is finally emitted.
+//
+// *2*	Unfortunately, `.if' strips leading whitespace from following text, so
+//	`AN' uses \& to preserve the whitespace.
+//
+// *3*	This manual page has been tested for proper formatting with troff,
+//	groff, nroff and rman (the `man' to `HTML' converter).  Unfortunately,
+//	rman fails to implement many useful features such as diversions,
+//	indentation, and tab stops, and is also hideously buggy.  Furthermore
+//	it identifies itself as nroff and fails to provide any further
+//	identification, so there is no way to create macros which specifically
+//	work around its limitations.  Following is a list of several bugs in
+//	rman which the implementation of these macros must avoid:
+//	    o Fails with multi-line conditionals within macros.
+//	    o Fails on macro definition within multi-line conditionals.
+//	    o Fails when macro arguments are not delimited by exactly 1 space.
+//	    o String definition `.ds' ignores the value; uses empty "" instead.
+//	As a consequence of these problems, the following macros are written
+//	using a series of ugly single-line `.if' conditionals rather than the
+//	more natural multi-line `.if' and `.ie' conditionals.  Also, rman fails
+//	to understand the common idiom of `.\"' to introduce a comment, which
+//	is why all comments in this file are wrapped in ignore `.ig' blocks.
+//-----------------------------------------------------------------------------
+..
+.de AS
+.if t .nr AW 0
+.if t .nr AI \\n(.i
+.if t .in -\\n(AI
+.nf
+..
+.de AN
+.if t .if \w'\\$1'>\\n(AW .nr AW \w'\\$1'
+.if t .da AD
+.if t \\&\\$1\\t\\$3
+.if t .da
+.if n \\&\\$1 \\$2\\$3
+..
+.de AZ
+.if t .da AD
+\\$1
+.if t .da
+..
+.de AE
+.if t .in +\\n(AIu
+.if t .if \\n(AW .ta \\n(AWu+\w'\\(em'u
+.if t .AD
+.if t .DT
+.if t .rm AD
+.if t .rm AW
+.fi
+..
+.ig
+//-----------------------------------------------------------------------------
+// Bulleted list macros -- `BG' begins a bulleted list; `BU' delimits
+//	bulleted entries; `BE' ends a bulleted list.
+//-----------------------------------------------------------------------------
+..
+.de BG
+.PP
+.RS
+..
+.de BU
+.HP
+\\(bu\\ \\c
+..
+.de BE
+.RE
+.PP
+..
+.ig
+//-----------------------------------------------------------------------------
+// Indented paragraph with stylized hanging tag macro.  `TG' takes a single
+//	argument and treats it as the hanging tag of the indented paragraph.
+//	The tag is italicized in troff but not in nroff.
+//-----------------------------------------------------------------------------
+..
+.de TG
+.TP
+.ie t .I "\\$1"
+.el \\$1
+..
+.ig
+//-----------------------------------------------------------------------------
+// Manual page for `dumpkeymap'.
+//-----------------------------------------------------------------------------
+..
+.SH NAME
+dumpkeymap \- Dianostic dump of a .keymapping file
+.SH SYNOPSIS
+.B dumpkeymap
+.RI [ options "] [-] [" file "...]"
+.SH DESCRIPTION
+.I dumpkeymap
+prints a textual representation of each Apple/\c
+.SM NeXT
+.I .keymapping
+file mentioned on the command-line.  If no files are mentioned and if the
+local machine is an Apple or
+.SM NeXT
+installation, then the key mapping currently in use by the WindowServer and the
+AppKit is printed instead.
+.SH OPTIONS
+.TP
+.B "\-h \-\^\-help"
+Display general program instructions and option summary.
+.TP
+.B "\-k \-\^\-help\-keymapping"
+Display a detailed description of the internal layout of a
+.I .keymapping
+file.  This is the same information as that presented in the
+.I "Key Mapping Description"
+section of this document.
+.TP
+.B "\-o \-\^\-help\-output"
+Display an explanation of the output generated by
+.I dumpkeymap
+when dissecting a
+.I .keymapping
+file.  This is the same information as that presented in the
+.I "Output Description"
+section of this document.
+.TP
+.B "\-f \-\^\-help\-files"
+Display a summary of the various files and directories which are related to
+key mappings.  This is the same information as that presented in the
+.I "Files"
+section of this document.
+.TP
+.B "\-d \-\^\-help\-diagnostics"
+Display a list of the various diagnostic messages which may be emitted by
+.I dumpkeymap.
+This is the same information as that presented in the
+.I "Diagnostics"
+section of this document.
+.TP
+.B "\-v \-\^\-version"
+Display the
+.I dumpkeymap
+version number and warranty information.
+.TP
+.B "\- \-\^\-"
+Inhibit processing of options at this point in the argument list.  An
+occurrence of `\-' or `\-\^\-' in the argument list causes all following
+arguments to be treated as file names even if an argument begins with a `\-'
+character.
+.SH "KEY MAPPING DESCRIPTION"
+The following sections describe, in complete detail, the format of a raw key
+mapping resource, as well as the format of the
+.I .keymapping
+file which encapsulates one or more raw mappings.
+.SH "Types and Data"
+The following type definitions are employed throughout this discussion:
+.PP
+.RS
+.AS
+.AZ "typedef unsigned char byte;"
+.AZ "typedef unsigned short word;"
+.AZ "typedef unsigned long dword;"
+.AE
+.RE
+.PP
+Additionally, the type definition
+.RI ` number '
+is used generically to
+indicate a numeric value.  The actual size of the
+.RI ` number '
+type may be one or two bytes depending upon how the data is stored in the key
+map.  Although most key maps use byte-sized numeric values, word-sized values
+are also allowed.
+.PP
+Multi-byte values in a key mapping file are stored in big-endian byte order.
+.SH "Key Mapping File and Device Mapping"
+A key mapping file begins with a magic-number and continues with a
+variable number of device-specific key mappings.
+.PP
+.RS
+.AS
+.AZ "struct KeyMappingFile {"
+.AN "    char magic_number[4];" "   " "// `KYM1'"
+.AN "    DeviceMapping maps[...];" "" "// Variable number of maps"
+.AZ };
+.AE
+.PP
+.AS
+.AZ "struct DeviceMapping {"
+.AN "    dword interface;" " " "// Interface type"
+.AN "    dword handler_id;" "" "// Interface subtype"
+.AN "    dword map_size;" "  " "// Byte count of `map' (below)"
+.AN "    KeyMapping map;"
+.AZ };
+.AE
+.RE
+.PP
+The value of `interface' represents a family of keyboard device types
+(such as Intel
+.SM "PC, ADB, NeXT,"
+Sun Type5, etc.), and is generally specified as one of the constant values
+.SM "NX_EVS_DEVICE_INTERFACE_ADB, NX_EVS_DEVICE_INTERFACE_ACE,"
+etc., which are are defined in IOHIDTypes.h on MacOS/X and Darwin, and in
+ev_types.h on MacOS/X Server, OpenStep, and NextStep.
+.PP
+The value of `handler_id' represents a specific keyboard layout within the
+much broader `interface' family.  For instance, for a 101-key Intel
+.SM PC
+keyboard (of type
+.SM NX_EVS_DEVICE_INTERFACE_ACE\c
+) the `handler_id' is '0', whereas for a 102-key keyboard it is `1'.
+.PP
+Together, `interface' and `handler_id' identify the exact keyboard hardware to
+which this mapping applies.  Programs which display a visual representation of
+a keyboard layout, match `interface' and `handler_id' from the
+.I .keymapping
+file against the `interface' and `handler_id' values found in each
+.I .keyboard
+file.
+.SH "Key Mapping"
+A key mapping completely defines the relationship of all scan codes with their
+associated functionality.  A
+.I KeyMapping
+structure is embedded within the
+.I DeviceMapping
+structure in a
+.IR KeyMappingFile .
+The key mapping currently in use by the WindowServer and AppKit is also
+represented by a
+.I KeyMapping
+structure, and can be referred to directly by calling NXGetKeyMapping() and
+accessing the `mapping' data member of the returned
+.I NXKeyMapping
+structure.
+.PP
+.RS
+.AS
+.AZ "struct KeyMapping {"
+.AN "    word number_size;" "          " "// 0=1 byte, non-zero=2 bytes"
+.AN "    number num_modifier_groups;" "" "// Modifier groups"
+.AZ "    ModifierGroup modifier_groups[...];"
+.AN "    number num_scan_codes;" "     " "// Scan groups"
+.AN "    ScanGroup scan_table[...];"
+.AN "    number num_sequence_lists;" " " "// Sequence lists"
+.AN "    Sequence sequence_lists[...];"
+.AN "    number num_special_keys;" "   " "// Special keys"
+.AN "    SpecialKey special_key[...];"
+.AZ };
+.AE
+.RE
+.PP
+The `number_size' flag determines the size, in bytes, of all remaining numeric
+values (denoted by the type definition
+.RI ` number ')
+within the
+key mapping.  If its value is zero, then numbers are represented by a single
+byte.  If it is non-zero, then numbers are represented by a word (two bytes).
+.SH "Modifier Group"
+A modifier group defines all scan codes which map to a particular type of
+modifier, such as
+.IR shift ,
+.IR control ,
+etc.
+.PP
+.RS
+.AS
+.AZ "enum Modifier {"
+.AZ "    ALPHALOCK = 0,"
+.AZ "    SHIFT,"
+.AZ "    CONTROL,"
+.AZ "    ALTERNATE,"
+.AZ "    COMMAND,"
+.AZ "    KEYPAD,"
+.AZ "    HELP"
+.AZ };
+.AE
+.PP
+.AS
+.AZ "struct ModifierGroup {"
+.AN "    number modifier;" "       " "// A Modifier constant"
+.AN "    number num_scan_codes;"
+.AN "    number scan_codes[...];" "" "// Variable number of scan codes"
+.AZ };
+.AE
+.RE
+.PP
+The scan_codes[] array contains a list of all scan codes which map to the
+specified modifier.  The
+.IR shift ", " command ", and " alternate
+modifiers are frequently mapped to two different scan codes, apiece,
+since these modifiers often appear on both the left and right sides of
+the keyboard.
+.SH "Scan Group"
+There is one
+.I ScanGroup
+for each scan code generated by the given keyboard.  This number is given by
+KeyMapping::num_scan_codes.  The first scan group represents hardware scan
+code 0, the second represents scan code 1, etc.
+.PP
+.RS
+.AS
+.AZ "enum ModifierMask {"
+.AN "    ALPHALOCK_MASK" "      " "= 1 << 0,"
+.AN "    SHIFT_MASK" "          " "= 1 << 1,"
+.AN "    CONTROL_MASK" "        " "= 1 << 2,"
+.AN "    ALTERNATE_MASK" "      " "= 1 << 3,"
+.AN "    CARRIAGE_RETURN_MASK" "" "= 1 << 4"
+.AZ };
+.AZ "#define NOT_BOUND 0xff"
+.AE
+.PP
+.AS
+.AZ "struct ScanGroup {"
+.AN "    number mask;"
+.AN "    Character characters[...];"
+.AZ };
+.AE
+.RE
+.PP
+For each scan code, `mask' defines which modifier combinations generate
+characters.  If `mask' is
+.SM NOT_BOUND
+(0xff) then then this scan code does not generate any characters ever, and its
+characters[] array is zero length.  Otherwise, the characters[] array contains
+one
+.I Character
+record for each modifier combination.
+.PP
+The number of records in characters[] is determined by computing (1 <<
+bits_set_in_mask).  In other words, if mask is zero, then zero bits are set,
+so characters[] contains only one record.  If `mask' is
+.SM "(SHIFT_MASK | CONTROL_MASK),"
+then two bits are set, so characters[] contains four records.
+.PP
+The first record always represents the character which is generated by that
+key when no modifiers are active.  The remaining records represent characters
+generated by the various modifier combinations.  Using the example with the
+.I shift
+and
+.I control
+masks set, record two would represent the character with the
+.I shift
+modifier active; record three, the
+.I control
+modifier active; and record four, both the
+.I shift
+and
+.I control
+modifiers active.
+.PP
+As a special case,
+.SM ALPHALOCK_MASK
+implies
+.SM SHIFT_MASK,
+though only
+.SM ALPHALOCK_MASK
+appears in `mask'.  In this case the same character is generated for both the
+.I shift
+and
+.I alpha-lock
+modifiers, but only needs to appear once in the characters[] array.
+.PP
+.SM CARRIAGE_RETURN_MASK
+does not actually refer to a modifier key.  Instead, it is used to
+distinguish the scan code which is given the special pseudo-designation of
+.I "carriage return"
+key.  Typically, this mask appears solo in a
+.I ScanGroup
+record and only the two
+.I Character
+records for control-M and control-C follow.  This flag may be a throwback to
+an earlier time or may be specially interpreted by the low-level keyboard
+driver, but its purpose is otherwise enigmatic.
+.SH Character
+Each
+.I Character
+record indicates the character generated when this key is pressed, as well as
+the character set which contains the character.  Well known character sets are
+.SM `ASCII'
+and `Symbol'.  The character set can also be one of the meta values
+.SM FUNCTION_KEY
+or
+.SM KEY_SEQUENCE.
+If it is
+.SM FUNCTION_KEY
+then `char_code' represents a generally well-known function key such as those
+enumerated by
+.I FunctionKey.
+If the character set is
+.SM KEY_SEQUENCE
+then `char_code' represents is a zero-base index into
+KeyMapping::sequence_lists[].
+.PP
+.RS
+.AS
+.AZ "enum CharacterSet {"
+.AN "    ASCII" "       " "= 0x00,"
+.AN "    SYMBOL" "      " "= 0x01,"
+.AN "    ..."
+.AN "    FUNCTION_KEY" "" "= 0xfe,"
+.AN "    KEY_SEQUENCE" "" "= 0xff"
+.AZ };
+.AE
+.PP
+.AS
+.AZ "struct Character {"
+.AN "    number set;" "      " "// CharacterSet of generated character"
+.AN "    number char_code;" "" "// Actual character generated"
+.AZ };
+.AE
+.PP
+.AS
+.AZ "enum FunctionKey {"
+.AZ "    F1 = 0x20, F2, F3, F4, F5, F6, F7, F8, F9, F10, F11, F12,"
+.AZ "    INSERT, DELETE, HOME, END, PAGE_UP, PAGE_DOWN, PRINT_SCREEN,"
+.AZ "    SCROLL_LOCK, PAUSE, SYS_REQUEST, BREAK, RESET, STOP, MENU,"
+.AZ "    USER, SYSTEM, PRINT, CLEAR_LINE, CLEAR_DISPLAY, INSERT_LINE,"
+.AZ "    DELETE_LINE, INSERT_CHAR, DELETE_CHAR, PREV, NEXT, SELECT"
+.AZ };
+.AE
+.RE
+.SH Sequence
+When Character::set contains the meta value
+.SM KEY_SEQUENCE,
+the scan code is bound to a sequence of keys rather than a single character.
+A sequence is a series of modifiers and characters which are automatically
+generated when the associated key is depressed.
+.PP
+.RS
+.AS
+.AZ "#define MODIFIER_KEY 0xff"
+.AE
+.PP
+.AS
+.AZ "struct Sequence {"
+.AN "    number num_chars;"
+.AN "    Character characters[...];"
+.AZ };
+.AE
+.RE
+.PP
+Each generated
+.I Character
+is represented as previously described, with the exception that
+.SM MODIFIER_KEY
+may appear in place of
+.SM KEY_SEQUENCE.
+When the value of Character::set is
+.SM MODIFIER_KEY
+then Character::char_code represents a modifier key rather than an actual
+character.  If the modifier represented by `char_code' is non-zero, then it
+indicates that the associated modifier key has been depressed.  In this case,
+the value is one of the constants enumerated by
+.I Modifier
+(\c
+.SM "SHIFT, CONTROL, ALTERNATE,"
+etc.).  If the value is zero then it means that the modifier keys have been
+released.
+.SH "Special Key"
+A special key is one which is scanned directly by the Mach kernel rather than
+by the WindowServer.  In general, events are not generated for special keys.
+.PP
+.RS
+.AS
+.AZ "enum SpecialKeyType {"
+.AZ "    VOLUME_UP = 0,"
+.AZ "    VOLUME_DOWN,"
+.AZ "    BRIGHTNESS_UP,"
+.AZ "    BRIGHTNESS_DOWN,"
+.AZ "    ALPHA_LOCK,"
+.AZ "    HELP,"
+.AZ "    POWER,"
+.AZ "    SECONDARY_ARROW_UP,"
+.AZ "    SECONDARY_ARROW_DOWN"
+.AZ };
+.AE
+.PP
+.AS
+.AZ "struct SpecialKey {"
+.AN "    number type;" "     " "// A SpecialKeyType constant"
+.AN "    number scan_code;" "" "// Actual scan code"
+.AZ };
+.AE
+.RE
+.SH OUTPUT
+What follows is an explanation and description of the various pieces of
+information emitted by
+.I dumpkeymap.
+.PP
+For a more thorough discussion of any particular piece of information described
+here, refer to the detailed description of the internal layout of a key mapping
+provided by the
+.I "Key Mapping Description"
+section above.
+.SH Conventions
+Depending upon context, some numeric values are displayed in decimal
+notation, whereas others are displayed in hexadecimal notation.
+Hexadecimal numbers are denoted by a `0x' prefix (for instance, `0x7b'),
+except when explicitly noted otherwise.
+.SH "Key Mapping Source"
+The first piece of information presented about a particular key mapping is the
+source from which the data was gleaned.  For a
+.I .keymapping
+file, the title
+.SM "`KEYMAP FILE'"
+is emitted along with the path and name of the file in question.  For the key
+mapping currently in use by the WindowServer and AppKit, the title
+.SM "`ACTIVE KEYMAP'"
+is emitted instead.
+.SH "Device Information"
+Each
+.I .keymapping
+file may contain one or more raw key mappings.  For example, a file which maps
+keys to a Dvorak-style layout might contain raw mappings for Intel
+.SM "PC, ADB, NeXT,"
+and Sun Type5 keyboards.
+.PP
+For each raw mapping, the following information is emitted:
+.BG
+.BU
+The title
+.SM `KEYMAP'
+along with the mapping's relative position in the
+.I .keymapping
+file.
+.BU
+The `interface' identifier.
+.BU
+The `handler_id' sub-identifier.
+.BU
+The size of the raw mapping resource counted in bytes.
+.BE
+The `interface' and `handler_id' values, taken together, define a specific
+keyboard device.  A
+.I .keyboard
+file, which describes the visual layout of a keyboard, also contains
+`interface' and `handler_id' identifiers.  The
+.I .keyboard
+file corresponding to a particular key mapping can be found by matching the
+`interface' and `handler_id' values from each resource.
+.SH Modifiers
+Each mapping may contain zero or more modifier records which associate hardware
+scan codes with modifier descriptions such as
+.I "shift, control, alternate,"
+etc.  The title
+.SM `MODIFIERS'
+is printed along with the count of modifier records which follow.  For each
+modifier record, the modifier's name is printed along with a list of scan
+codes, in hexadecimal format, which generate that modifier value.  For example:
+.PP
+.RS
+.nf
+MODIFIERS [4]
+alternate: 0x1d 0x60
+control: 0x3a
+keypad: 0x52 0x53 ... 0x63 0x62
+shift: 0x2a 0x36
+.fi
+.RE
+.SH Characters
+Each mapping may contain zero or more character records which associate
+hardware scan codes with the actual characters generated by those scan
+codes in the presence or absence of various modifier combinations.  The
+title
+.SM `CHARACTERS'
+is printed along with the count of character records which follow.  Here is a
+highly abbreviated example:
+.PP
+.RS
+.nf
+CHARACTERS [9]
+scan 0x00: -AC-L  "a" "A" "^A" "^A" ca c7 "^A" "^A"
+scan 0x07: -AC-L  "x" "X" "^X" "^X" 01/b4 01/ce "^X" "^X"
+scan 0x0a: ---S-  "<" ">"
+scan 0x13: -ACS-  "2" "@" "^@" "^@" b2 b3 "^@" "^@"
+scan 0x24: R----  "^M" "^C"
+scan 0x3e: -----  [F4]
+scan 0x4a: -----  [page up]
+scan 0x60: -----  {seq#3}
+scan 0x68: not-bound
+.fi
+.RE
+.PP
+For each record, the hexadecimal value of the hardware scan code is printed,
+followed by a list of modifier flag combinations and the actual characters
+generated by this scan code with and without modifiers applied.
+.PP
+The modifier flags field is composed of a combination of single letter
+representations of the various modifier types.  The letters stand for:
+.PP
+.RS
+.nf
+L \- alpha-lock
+S \- shift
+C \- control
+A \- alternate
+R \- carriage-return
+.fi
+.RE
+.PP
+As a special case, the
+.I alpha-lock
+flag also implies the
+.I shift
+flag, so these two flags never appear together in the same record.
+.PP
+The combination of modifier flags determines the meaning and number of fields
+which follow.  The first field after the modifier flags always represents the
+character that will be generated if no modifier keys are depressed.  The
+remaining fields represent characters generated by the various modifier
+combinations.  The order of the fields follows this general pattern:
+.BG
+.BU
+The character generated by this scan code when no modifiers are in effect is
+listed first.
+.BU
+If the `L' or `S' flag is active, then the shifted character generated by this
+scan code is listed next.
+.BU
+If the `C' flag is active, then the control-character generated by this scan
+code is listed next.  Furthermore, if the `L' or `S' flag is also active, then
+the shifted control-character is listed after that.
+.BU
+If the `A' flag is active, then the alternate-character generated by this scan
+code is listed next.  Furthermore, if the `L' or `S' flag is active, then the
+shifted alternate-character is listed after that.  If the `C' flag is also
+active, then the alternate-control-character is listed next.  Finally, if the
+`C' and `L' or `C' and `S' flags are also active, then the shifted
+alternate-control-character is listed.
+.BE
+The `R' flag does not actually refer to a modifier key.  Instead, it is used to
+distinguish the scan code which is given the special pseudo-designation of
+.I "carriage return"
+key.  Typically, this mask appears solo and only the two fields for control-M
+and control-C follow.  This flag may be a throwback to an earlier time or may
+be specially interpreted by the low-level keyboard driver, but its purpose is
+otherwise enigmatic.
+.PP
+Recalling the example from above, the following fields can be identified:
+.PP
+.RS
+.nf
+scan 0x00: -AC-L  "a" "A" "^A" "^A" ca c7 "^A" "^A"
+.fi
+.RE
+.BG
+.BU
+Lower-case `a' is generated when no modifiers are active.
+.BU
+Upper-case `A' is generated when
+.IR shift " or " alpha-lock
+are active.
+.BU
+Control-A is generated when
+.I control
+is active.
+.BU
+Control-A is generated when
+.IR control " and " shift
+are active.
+.BU
+The character represented by the hexadecimal code 0xca is generated when
+.I alternate
+is active.
+.BU
+The character represented by 0xc7 is generated when
+.IR alternate " and " shift " (or " alpha-lock ") are active."
+.BU
+Control-A is generated when
+.IR alternate " and " control
+are active.
+.BU
+Control-A is generated when
+.IR "alternate, control" " and " shift " (or " alpha-lock ") are active."
+.BE
+The notation used to represent a particular generated character varies.
+.BG
+.BU
+Printable
+.SM ASCII
+characters are quoted, as in "x" or "X".
+.BU
+Control-characters are quoted and prefixed with `^', as in "^X".
+.BU
+Characters with values greater than 127 (0x7f) are displayed as hexadecimal
+values without the `0x' prefix.
+.BU
+Characters in a non-\c
+.SM ASCII
+character set (such as `Symbol') are displayed as two hexadecimal numbers
+separated by a slash, as in `01/4a'.  The first number is the character set's
+identification code (such as `01' for the `Symbol' set), and the second number
+is the value of the generated character.
+.BU
+Non-printing special function characters are displayed with the function's
+common name enclosed in brackets, as in `[page up]' or `[F4]'.
+.BU
+If the binding represents a key sequence rather than a single character, then
+the sequence's identification number is enclosed in braces, as in `{seq#3}'.
+.BE
+Recalling a few examples from above, the following interpretations can be made:
+.PP
+.RS
+.nf
+scan 0x07: -AC-L  "x" "X" "^X" "^X" 01/b4 01/ce "^X" "^X"
+scan 0x3e: -----  [F4]
+scan 0x4a: -----  [page up]
+scan 0x60: -----  {seq#3}
+.fi
+.RE
+.BG
+.BU
+"x" and "X" are printable
+.SM ASCII
+characters.
+.BU
+"^X" is a control-character.
+.BU
+`01/b4' and `01/ce' represent the character codes 0xb4 and 0xce in the `Symbol'
+character set.
+.BU
+Scan code 0x3e generates function-key `F4', and scan code 0x4a generates
+function-key `page up'.
+.BU
+Scan code 0x60 is bound to key sequence #3.
+.BE
+Finally, if a scan code is not bound to any characters, then it is annotated
+with the label `not-bound', as with example scan code 0x68 from above.
+.SH Sequences
+A scan code (modified and unmodified) can be bound to a key sequence rather
+than generating a single character or acting as a modifier.  When it is bound
+to a key sequence, a series of character invocations and modifier actions are
+automatically generated rather than a single keystroke.
+.PP
+Each mapping may contain zero or more key sequence records.  The title
+.SM `SEQUENCES'
+is printed along with the count of sequence records which follow.  For example:
+.PP
+.RS
+.nf
+SEQUENCES [3]
+sequence 0: "f" "o" "o"
+sequence 1: {alternate} "b" "a" "r" {unmodify}
+sequence 2: [home] "b" "a" "z"
+.fi
+.RE
+.PP
+The notation used to represent the sequence of generated characters is
+identical to the notation already described in the
+.I Characters
+section above, with the exception that modifier actions may be interposed
+between generated characters.  Such modifier actions are represented by the
+modifier's name enclosed in braces.  The special name `{unmodify}' indicates
+the release of the modifier keys.
+.PP
+Thus, the sequences in the above example can be interpreted as follows:
+.BG
+.BU
+Sequence\ #0 generates `foo'.
+.BU
+Sequence\ #1 invokes the
+.I alternate
+modifier, generates `bar', and then releases
+.I alternate.
+.BU
+Sequence\ #2 invokes the
+.I home
+key and then generates `baz'.  In a text editor, this would probably result in
+`baz' being prepended to the line of text on which the cursor resides.
+.BE
+.SH Special Keys
+Certain keyboards feature keys which perform some type of special purpose
+function rather than generating a character or acting as a modifier.  For
+instance, Apple keyboards often contain a
+.I power
+key, and
+.SM NeXT
+keyboards have historically featured screen brightness and volume control keys.
+.PP
+Each mapping may contain zero or more special-key records which associate
+hardware scan codes with such special purpose functions.  The title
+.SM `SPECIALS'
+is printed along with the count of records which follow.  For each record, the
+special function's name is printed along with a list of scan codes, in
+hexadecimal format, which are bound to that function.  For example:
+.PP
+.RS
+.nf
+SPECIALS [6]
+alpha-lock: 0x39
+brightness-down: 0x79
+brightness-up: 0x74
+power: 0x7f
+sound-down: 0x77
+sound-up: 0x73
+.fi
+.RE
+.SH FILES
+.IP *.keymapping
+A key mapping file which precisely defines the relationship of all
+hardware-specific keyboard scan-codes with their associated functionality.
+.IP *.keyboard
+A file describing the physical layout of keys on a particular type of
+keyboard.  Each `key' token in this file defines the position and shape of the
+key on the keyboard, as well as the associated scan code which that key
+generates.  A
+.I .keymapping
+file, on the other hand, defines the characters which are generated by a
+particular scan code depending upon the state of the various modifier keys
+(such as
+.I shift,
+.I control,
+etc.).  The `interface' and `handler_id' values from a
+.I .keymapping
+file are matched against those in each
+.I .keyboard
+file in order to associate a particular
+.I .keyboard
+file with a key mapping.  Various
+.SM GUI
+programs use the
+.I .keyboard
+file to display a visual representation of a keyboard for the user.  Since
+these files are just plain text, they can be easily viewed and interpreted
+without the aid of a specialized program, thus
+.I dumpkeymap
+leaves these files alone.
+.PP
+/System/Library/Keyboards
+.br
+/Network/Library/Keyboards
+.br
+/Local/Library/Keyboards
+.br
+/Library/Keyboards
+.RS
+Repositories for
+.I .keymapping
+and
+.I .keyboard
+files for MacOS/X, Darwin, and MacOS/X Server.
+.RE
+.PP
+/NextLibrary/Keyboards
+.br
+/LocalLibrary/Keyboards
+.RS
+Repositories for
+.I .keymapping
+and
+.I .keyboard
+files for OpenStep and NextStep.
+.RE
+.IP $(HOME)/Library/Keyboards
+Repository for personal
+.I .keymapping
+and
+.I .keyboard
+files.
+.SH DIGANOSTICS
+The following diagnostic messages may be issued to the standard error stream.
+.TG "Unrecognized option."
+An unrecognized option was specified on the command-line.  Invoke
+.I dumpkeymap
+with the
+.B "\-\^\-help"
+option to view a list of valid options.
+.TG "Insufficient data in keymapping data stream."
+The key mapping file or data stream is corrupt.  Either the file has been
+incorrectly truncated or a field, such as those which indicates the number of
+variable records which follow, contains a corrupt value.
+.PP
+The following diagnostic messages have significance only when trying to print
+.I .keymapping
+files mentioned on the command-line.
+.TG "Bad magic number."
+The mentioned file is not a
+.I .keymapping
+file.  The file's content does not start with the string `KYM1'.
+.TG "Unable to open key mapping file."
+The call to fopen() failed; probably because the specified path is invalid or
+.I dumpkeymap
+does not have permission to read the file.
+.TG "Unable to determine key mapping file size."
+The call to fstat() failed, thus memory can not be allocated for loading the
+file.
+.TG "Unable to read key mapping file."
+The call to fread() failed.
+.PP
+The following diagnostic messages have significance only when trying to print
+the currently active key mapping when no
+.I .keymapping
+files have been mentioned on the command-line.
+.TG "Unable to open event status driver."
+The call to NXOpenEventStatus() failed.
+.TG "Bad key mapping length."
+The call to NXKeyMappingLength() returned a bogus value.
+.TG "Unable to get current key mapping."
+The call to NXGetKeyMapping() failed.
+.PP
+The following diagnostic messages have significance only when using
+.I dumpkeymap
+on a non-Apple/\c
+.SM NeXT
+platform.
+.TG "Must specify at least one .keymapping file."
+No
+.I .keymapping
+files were mentioned on the command-line.  On non-Apple/\c
+.SM NeXT
+platforms, there is no concept of a currently active
+.I .keymapping
+file, so at least one file must be mentioned on the command-line.
+.SH AUTHOR
+Eric Sunshine <sunshine@sunshineco.com> wrote
+.I dumpkeymap
+and this document, the
+.I "dumpkeymap user's manual."
+Both
+.I dumpkeymap
+and this document are copyright \(co1999,2000 by Eric Sunshine
+<sunshine@sunshineco.com>.  All rights reserved.
+.PP
+The implementation of
+.I dumpkeymap
+is based upon information gathered on September 3, 1997 by Eric Sunshine
+<sunshine@sunshineco.com> and Paul S. McCarthy <zarnuk@zarnuk.com> during an
+effort to reverse engineer the format of the
+.SM NeXT
+.I .keymapping
+file.
+.if n .PP
+.if n Version \n(VE \-\-
+.if n .UP

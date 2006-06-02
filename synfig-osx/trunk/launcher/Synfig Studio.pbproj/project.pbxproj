@@ -1,0 +1,552 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 39;
+	objects = {
+		02345980000FD03B11CA0E72 = {
+			children = (
+				1870340FFE93FCAF11CA0CD7,
+			);
+			isa = PBXVariantGroup;
+			name = main.nib;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		02345981000FD03B11CA0E72 = {
+			fileRef = 02345980000FD03B11CA0E72;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0249A667FF388E1711CA2CEA = {
+			explicitFileType = wrapper.application;
+			isa = PBXFileReference;
+			path = "Synfig Studio.app";
+			refType = 3;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+//020
+//021
+//022
+//023
+//024
+//040
+//041
+//042
+//043
+//044
+		04313892FE3035C9C02AAC07 = {
+			buildActionMask = 2147483647;
+			files = (
+			);
+			isa = PBXRezBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+//040
+//041
+//042
+//043
+//044
+//080
+//081
+//082
+//083
+//084
+		0867D6AAFE840B52C02AAC07 = {
+			children = (
+				0867D6ABFE840B52C02AAC07,
+			);
+			isa = PBXVariantGroup;
+			name = InfoPlist.strings;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		0867D6ABFE840B52C02AAC07 = {
+			fileEncoding = 10;
+			isa = PBXFileReference;
+			lastKnownFileType = text.plist.strings;
+			name = English;
+			path = English.lproj/InfoPlist.strings;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		0867D6ACFE840B52C02AAC07 = {
+			fileRef = 0867D6AAFE840B52C02AAC07;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+//080
+//081
+//082
+//083
+//084
+//180
+//181
+//182
+//183
+//184
+		1870340FFE93FCAF11CA0CD7 = {
+			isa = PBXFileReference;
+			lastKnownFileType = wrapper.nib;
+			name = English;
+			path = English.lproj/main.nib;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+//180
+//181
+//182
+//183
+//184
+//190
+//191
+//192
+//193
+//194
+		195DF8CFFE9D517E11CA2CBB = {
+			children = (
+				0249A667FF388E1711CA2CEA,
+			);
+			isa = PBXGroup;
+			name = Products;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+//190
+//191
+//192
+//193
+//194
+//200
+//201
+//202
+//203
+//204
+		20286C28FDCF999611CA2CEA = {
+			buildSettings = {
+			};
+			buildStyles = (
+				4A9504C5FFE6A39111CA0CBA,
+				4A9504C6FFE6A39111CA0CBA,
+			);
+			hasScannedForEncodings = 1;
+			isa = PBXProject;
+			mainGroup = 20286C29FDCF999611CA2CEA;
+			projectDirPath = "";
+			targets = (
+				20286C34FDCF999611CA2CEA,
+			);
+		};
+		20286C29FDCF999611CA2CEA = {
+			children = (
+				20286C2AFDCF999611CA2CEA,
+				20286C2CFDCF999611CA2CEA,
+				20286C32FDCF999611CA2CEA,
+				195DF8CFFE9D517E11CA2CBB,
+			);
+			isa = PBXGroup;
+			name = X11;
+			path = "";
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		20286C2AFDCF999611CA2CEA = {
+			children = (
+				50EE2AB703849F0B0ECA21EC,
+				A65E488407517A2600A66E82,
+				A65E44C807516A5C00A66E82,
+				A65E44C907516A5C00A66E82,
+				A65E4880075176F200A66E82,
+				A65E4881075176F200A66E82,
+			);
+			isa = PBXGroup;
+			name = Sources;
+			path = "";
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		20286C2CFDCF999611CA2CEA = {
+			children = (
+				A65E3D3307515F5900A66E82,
+				A65E3D3407515F5900A66E82,
+				50459C5F038587C60ECA21EC,
+				0867D6AAFE840B52C02AAC07,
+				02345980000FD03B11CA0E72,
+			);
+			isa = PBXGroup;
+			name = Resources;
+			path = "";
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		20286C32FDCF999611CA2CEA = {
+			children = (
+				50F4F0A7039D6ACA0E82C0CB,
+				A65E488607517A6900A66E82,
+				570C5748047186C400ACF82F,
+			);
+			isa = PBXGroup;
+			name = "External Frameworks and Libraries";
+			path = "";
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		20286C34FDCF999611CA2CEA = {
+			buildPhases = (
+				20286C35FDCF999611CA2CEA,
+				A65E44BC075161B900A66E82,
+				20286C36FDCF999611CA2CEA,
+				20286C38FDCF999611CA2CEA,
+				20286C3BFDCF999611CA2CEA,
+				04313892FE3035C9C02AAC07,
+			);
+			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = "";
+				HEADER_SEARCH_PATHS = "/Users/darco/Desktop/X11ForMacOSXSource-1.0/xc/programs/Xserver/include /usr/X11R6/include/X11 /usr/X11R6/include";
+				LIBRARY_SEARCH_PATHS = /usr/X11R6/lib;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "-lXau -lX11";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = "Synfig Studio";
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost -Wno-four-char-constants -Wno-unknown-pragmas";
+				WRAPPER_EXTENSION = app;
+			};
+			dependencies = (
+			);
+			isa = PBXApplicationTarget;
+			name = SynfigStudio;
+			productName = X11;
+			productReference = 0249A667FF388E1711CA2CEA;
+			productSettingsXML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<!DOCTYPE plist PUBLIC \"-//Apple Computer//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">
+<plist version=\"1.0\">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>English</string>
+	<key>CFBundleDocumentTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>sif</string>
+			</array>
+			<key>CFBundleTypeIconFile</key>
+			<string>sif_file.icns</string>
+			<key>CFBundleTypeMIMETypes</key>
+			<array>
+				<string>image/x-sif</string>
+			</array>
+			<key>CFBundleTypeName</key>
+			<string>Synfig Composition</string>
+			<key>CFBundleTypeOSTypes</key>
+			<array>
+				<string>****</string>
+			</array>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>LSIsAppleDefaultForType</key>
+			<true/>
+			<key>NSDocumentClass</key>
+			<string>image</string>
+		</dict>
+	</array>
+	<key>CFBundleExecutable</key>
+	<string>Synfig Studio</string>
+	<key>CFBundleGetInfoString</key>
+	<string>Synfig</string>
+	<key>CFBundleIconFile</key>
+	<string>voria.icns</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.voria.synfig</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>Synfig Studio</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>0.1</string>
+	<key>CFBundleSignature</key>
+	<string>????</string>
+	<key>CFBundleVersion</key>
+	<string>0.1</string>
+	<key>CSResourcesFileMapped</key>
+	<true/>
+	<key>NSHumanReadableCopyright</key>
+	<string>Copyright © 2003, Apple Computer, Inc.
+Copyright © 2003, XFree86 Project, Inc.</string>
+	<key>NSMainNibFile</key>
+	<string>main</string>
+	<key>NSPrincipalClass</key>
+	<string>SynfigApplication</string>
+</dict>
+</plist>
+";
+		};
+		20286C35FDCF999611CA2CEA = {
+			buildActionMask = 2147483647;
+			files = (
+			);
+			isa = PBXHeadersBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		20286C36FDCF999611CA2CEA = {
+			buildActionMask = 2147483647;
+			files = (
+				0867D6ACFE840B52C02AAC07,
+				02345981000FD03B11CA0E72,
+				A65E488807517AA400A66E82,
+				50459C60038587C60ECA21EC,
+				A65E3D3507515F5900A66E82,
+				A65E3D3607515F5900A66E82,
+			);
+			isa = PBXResourcesBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		20286C38FDCF999611CA2CEA = {
+			buildActionMask = 2147483647;
+			files = (
+				50EE2AB803849F0B0ECA21EC,
+			);
+			isa = PBXSourcesBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		20286C3BFDCF999611CA2CEA = {
+			buildActionMask = 2147483647;
+			files = (
+				50F4F0E8039D6ACA0E82C0CB,
+				570C5749047186C400ACF82F,
+				A65E488707517A6900A66E82,
+			);
+			isa = PBXFrameworksBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+//200
+//201
+//202
+//203
+//204
+//4A0
+//4A1
+//4A2
+//4A3
+//4A4
+		4A9504C5FFE6A39111CA0CBA = {
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				OPTIMIZATION_CFLAGS = "-O0";
+				ZERO_LINK = YES;
+			};
+			isa = PBXBuildStyle;
+			name = Development;
+		};
+		4A9504C6FFE6A39111CA0CBA = {
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				ZERO_LINK = NO;
+			};
+			isa = PBXBuildStyle;
+			name = Deployment;
+		};
+//4A0
+//4A1
+//4A2
+//4A3
+//4A4
+//500
+//501
+//502
+//503
+//504
+		50459C5F038587C60ECA21EC = {
+			isa = PBXFileReference;
+			lastKnownFileType = image.icns;
+			path = X11.icns;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		50459C60038587C60ECA21EC = {
+			fileRef = 50459C5F038587C60ECA21EC;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		50EE2AB703849F0B0ECA21EC = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.c;
+			path = "bundle-main.c";
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		50EE2AB803849F0B0ECA21EC = {
+			fileRef = 50EE2AB703849F0B0ECA21EC;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		50F4F0A7039D6ACA0E82C0CB = {
+			isa = PBXFileReference;
+			lastKnownFileType = wrapper.framework;
+			name = CoreFoundation.framework;
+			path = /System/Library/Frameworks/CoreFoundation.framework;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		50F4F0E8039D6ACA0E82C0CB = {
+			fileRef = 50F4F0A7039D6ACA0E82C0CB;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+//500
+//501
+//502
+//503
+//504
+//570
+//571
+//572
+//573
+//574
+		570C5748047186C400ACF82F = {
+			isa = PBXFileReference;
+			lastKnownFileType = wrapper.framework;
+			name = SystemConfiguration.framework;
+			path = /System/Library/Frameworks/SystemConfiguration.framework;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		570C5749047186C400ACF82F = {
+			fileRef = 570C5748047186C400ACF82F;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+//570
+//571
+//572
+//573
+//574
+//A60
+//A61
+//A62
+//A63
+//A64
+		A65E3D3307515F5900A66E82 = {
+			isa = PBXFileReference;
+			lastKnownFileType = image.icns;
+			path = sif_file.icns;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		A65E3D3407515F5900A66E82 = {
+			isa = PBXFileReference;
+			lastKnownFileType = image.icns;
+			path = voria.icns;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		A65E3D3507515F5900A66E82 = {
+			fileRef = A65E3D3307515F5900A66E82;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		A65E3D3607515F5900A66E82 = {
+			fileRef = A65E3D3407515F5900A66E82;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		A65E44BC075161B900A66E82 = {
+			buildActionMask = 2147483647;
+			contextName = "";
+			files = (
+				A65E488507517A2600A66E82,
+			);
+			isSharedContext = 0;
+			isa = PBXAppleScriptBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A65E44C807516A5C00A66E82 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = X11Controller.h;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		A65E44C907516A5C00A66E82 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			path = X11Controller.m;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		A65E4880075176F200A66E82 = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = SynfigApplication.h;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		A65E4881075176F200A66E82 = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			path = SynfigApplication.m;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		A65E488407517A2600A66E82 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.applescript;
+			path = events.applescript;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		A65E488507517A2600A66E82 = {
+			fileRef = A65E488407517A2600A66E82;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+					Debug,
+				);
+			};
+		};
+		A65E488607517A6900A66E82 = {
+			isa = PBXFileReference;
+			lastKnownFileType = wrapper.framework;
+			name = AppleScriptKit.framework;
+			path = /System/Library/Frameworks/AppleScriptKit.framework;
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		A65E488707517A6900A66E82 = {
+			fileRef = A65E488607517A6900A66E82;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		A65E488807517AA400A66E82 = {
+			fileRef = A65E488407517A2600A66E82;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+	};
+	rootObject = 20286C28FDCF999611CA2CEA;
+}

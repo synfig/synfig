@@ -1,0 +1,49 @@
+{
+    IBClasses = (
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            ACTIONS = {
+                "apps_table_cancel" = id; 
+                "apps_table_delete" = id; 
+                "apps_table_done" = id; 
+                "apps_table_duplicate" = id; 
+                "apps_table_new" = id; 
+                "apps_table_show" = id; 
+                "bring_to_front" = id; 
+                "close_window" = id; 
+                "enable_fullscreen_changed" = id; 
+                "minimize_window" = id; 
+                "next_window" = id; 
+                "prefs_changed" = id; 
+                "prefs_show" = id; 
+                "previous_window" = id; 
+                "toggle_fullscreen" = id; 
+                "x11_help" = id; 
+                "zoom_window" = id; 
+            }; 
+            CLASS = X11Controller; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                "apps_separator" = id; 
+                "apps_table" = id; 
+                depth = id; 
+                "dock_apps_menu" = id; 
+                "dock_menu" = id; 
+                "dock_window_separator" = id; 
+                "enable_auth" = id; 
+                "enable_fullscreen" = id; 
+                "enable_keyequivs" = id; 
+                "enable_tcp" = id; 
+                "fake_buttons" = id; 
+                "prefs_panel" = id; 
+                "sync_keymap" = id; 
+                "toggle_fullscreen_item" = id; 
+                "use_sysbeep" = id; 
+                "window_separator" = id; 
+                "x11_about_item" = id; 
+            }; 
+            SUPERCLASS = NSObject; 
+        }
+    ); 
+    IBVersion = 1; 
+}
