@@ -1,5 +1,5 @@
 
-prefix=/Users/darco/Projects/GTK/output
+prefix=/Applications/SynfigStudio.app/Contents/synfig
 exec_prefix=${prefix}
 libdir=${exec_prefix}/lib
 includedir=${exec_prefix}/include

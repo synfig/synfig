@@ -70,14 +70,15 @@ libpng-config:
 	chmod +x libpng-config
 
 libpng.a: $(OBJS)
-	ar rc $@  $(OBJS)
-	$(RANLIB) $@
+	$(CC) -static -nodefaultlibs -o $@ $(OBJS)
+#	ar rc $(ARCHFLAGS) $@  $(OBJS)
+#	$(RANLIB) $@
 
 $(LIBNAME).$(PNGVER).$(SHAREDLIB_POSTFIX): $(OBJS)
-	cc -dynamiclib -flat_namespace -undefined suppress -o $@ $(OBJS)
+	$(CC) -dynamiclib -flat_namespace -undefined suppress -o $@ $(OBJS)
 
 libpng.3.$(PNGMIN).$(SHAREDLIB_POSTFIX): $(OBJS)
-	cc -dynamiclib -compatibility_version 3 -flat_namespace \
+	$(CC) -dynamiclib -compatibility_version 3 -flat_namespace \
 	-undefined suppress -o $@ $(OBJS)
 
 pngtest: pngtest.o libpng.a

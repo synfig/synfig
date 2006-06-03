@@ -1,9 +1,11 @@
 #export
 
+
 # Directories
 #ROOT_DIR=/Users/darco/Projects/GTK
 ROOT_DIR=$(shell pwd)
 PREFIX_DIR=$(ROOT_DIR)/output
+#PREFIX_DIR=/Applications/SynfigStudio.app/Contents/synfig
 PACKAGETMP_DIR=$(ROOT_DIR)/pkg_out
 #PREFIX_DIR=/usr/local
 
@@ -18,12 +20,12 @@ LIBICONV_DL=http://mirrors.kernel.org/gnu/libiconv/libiconv-$(GETTEXT_VER).tar.g
 GLIB_VER=2.4.7
 GLIB_VER=2.8.6
 GLIB_DIR=$(ROOT_DIR)/glib-$(GLIB_VER)
-GLIB_DL=http://ftp.gtk.org/pub/gtk/v2.8/glib-$(GLIB_VER).tar.gz
+GLIB_DL=ftp://ftp.gtk.org/pub/gtk/v2.8/glib-$(GLIB_VER).tar.bz2
 
 PANGO_VER=1.4.1
 PANGO_VER=1.10.4
 PANGO_DIR=$(ROOT_DIR)/pango-$(PANGO_VER)
-PANGO_DL=http://ftp.gtk.org/pub/gtk/v2.8/pango-$(PANGO_VER).tar.gz
+PANGO_DL=http://ftp.gtk.org/pub/gtk/v2.8/pango-$(PANGO_VER).tar.bz2
 
 CAIRO_VER=1.0.2
 CAIRO_DIR=$(ROOT_DIR)/cairo-$(CAIRO_VER)
@@ -32,15 +34,16 @@ CAIRO_DL=http://cairographics.org/releases/cairo-$(CAIRO_VER).tar.gz
 ATK_VER=1.6.1
 ATK_VER=1.10.3
 ATK_DIR=$(ROOT_DIR)/atk-$(ATK_VER)
-ATK_DL=http://ftp.gtk.org/pub/gtk/v2.8/atk-$(ATK_VER).tar.gz
+ATK_DL=http://ftp.gtk.org/pub/gtk/v2.8/atk-$(ATK_VER).tar.bz2
 
 GTK_VER=2.4.13
 GTK_VER=2.8.13
 GTK_DIR=$(ROOT_DIR)/gtk+-$(GTK_VER)
-GTK_DL=http://ftp.gtk.org/pub/gtk/v2.8/gtk+-$(GTK_VER).tar.gz
+GTK_DL=http://ftp.gtk.org/pub/gtk/v2.8/gtk+-$(GTK_VER).tar.bz2
 
-LIBPNG_VER=1.2.5
+LIBPNG_VER=1.2.10
 LIBPNG_DIR=$(ROOT_DIR)/libpng-$(LIBPNG_VER)
+LIBPNG_DL=ftp://ftp.simplesystems.org/pub/libpng/png/src/libpng-$(LIBPNG_VER).tar.bz2
 
 LIBJPEG_VER=6b
 LIBJPEG_DIR=$(ROOT_DIR)/jpeg-$(LIBJPEG_VER)
@@ -80,12 +83,12 @@ FONTCONFIG_DIR=$(ROOT_DIR)/fontconfig-$(FONTCONFIG_VER)
 INSTALL_PREFIX=/usr/local
 
 # Other
-prefix=$(PREFIX_DIR)
+prefix="$(PREFIX_DIR)"
 TEMP_FILE=$(ROOT_DIR)/tempfile.xxx
-PKG_CONFIG_PATH=$(PREFIX_DIR)/lib/pkgconfig:/usr/X11R6/lib/pkgconfig:/usr/lib/pkgconfig
+PKG_CONFIG_PATH="$(PREFIX_DIR)"/lib/pkgconfig:/usr/X11R6/lib/pkgconfig:/usr/lib/pkgconfig
 PREFIX_SYMBOL=@PREFIX@
 
-#export DYLD_LIBRARY_PATH=$(PREFIX_DIR)/lib:/lib:/usr/local/lib:/lib:/usr/lib
+#export DYLD_LIBRARY_PATH="$(PREFIX_DIR)"/lib:/lib:/usr/local/lib:/lib:/usr/lib
 export LD_PREBIND=1
 export LD_PREBIND_ALLOW_OVERLAP=1
 export LD_PREBIND_ALL_TWOLEVEL_MODULES=1
@@ -103,7 +106,7 @@ STRIP=strip
 FIND=find
 CHMOD=chmod
 PRINTF=printf
-SED=sed
+SED=/sw/bin/sed
 PACKAGE=./package
 CURL=curl -f
 UNTARZ=tar xvzf
@@ -113,39 +116,54 @@ CAT=cat
 OFLAGS=
 ARCHFLAGS=-arch i386 -arch ppc
 
-OFLAGS=-faltivec -maltivec
-ARCHFLAGS=-arch ppc
+#ARCHFLAGS=-arch i386
 
-CFLAGS=-I$(PREFIX_DIR)/include -no-cpp-precomp -prebind $(OFLAGS) $(ARCHFLAGS)
+#OFLAGS=-faltivec -maltivec
+#ARCHFLAGS=-arch ppc
+
+CFLAGS=-I"$(PREFIX_DIR)"/include -no-cpp-precomp $(OFLAGS) $(ARCHFLAGS)
 CC=gcc $(CFLAGS)
 CC3=gcc $(CFLAGS)
 CXXFLAGS=$(CFLAGS)
 CXX=g++ $(CXXFLAGS)
 CXXCPP=g++ -E
 CPP=gcc -E
-#LDFLAGS=-L$(PREFIX_DIR)/lib -prebind -flat_namespace -fcoalesce-templates
-#LDFLAGS=-L$(PREFIX_DIR)/lib -prebind -prebind_allow_overlap -prebind_all_twolevel_modules -twolevel_namespace  -undefined dynamic_lookup
-LDFLAGS=-L$(PREFIX_DIR)/lib -prebind -prebind_all_twolevel_modules -twolevel_namespace -bind_at_load -undefined dynamic_lookup
+LDFLAGS=$(ARCHFLAGS) -L"$(PREFIX_DIR)"/lib -prebind_all_twolevel_modules -twolevel_namespace -bind_at_load -undefined dynamic_lookup
+LFLAGS=$(LDFLAGS)
 
 
 DESTDIR_FIX=for filename in `$(FIND) . | $(GREP) Makefile | $(GREP) -v -e Makefile.am -e Makefile.in` ; do { echo Patching $$filename ... && sed 's:LIBDIR=\\"$$(libdir)\\":LIBDIR=\\"$(INSTALL_PREFIX)/lib\\":g;s:DATA_PREFIX=\\"$$(prefix)\\":DATA_PREFIX=\\"$(INSTALL_PREFIX)\\":g; s:LOCALEDIR=\\"$$(localedir)\\":LOCALEDIR=\\"$(INSTALL_PREFIX)/share/locale\\":g; s:LOCALE_ALIAS_PATH=\\"$$(aliaspath)\\":LOCALE_ALIAS_PATH=\\"$(INSTALL_PREFIX)/share/locale\\":g;s:SYSCONFDIR=\\"$$(sysconfdir)\\":SYSCONFDIR=\\"$(INSTALL_PREFIX)/etc\\":g;' < $$filename > $(TEMP_FILE) && cp $(TEMP_FILE) $$filename ; } ; done ; 
 
+ENDIAN_FIX=$(PRINTF) "\#ifdef __BIG_ENDIAN__\n\
+\#define WORDS_BIGENDIAN\n\
+\#endif\n\
+\#undef G_ATOMIC_I486\n\
+\#undef G_ATOMIC_POWERPC\n\
+\#ifdef __i386__\n\
+\#define G_ATOMIC_I486\n\
+\#endif\n\
+\#ifdef __ppc__\n\
+\#define G_ATOMIC_POWERPC\n\
+\#endif\n\
+" >> config.h
+
+ENVIRONMENT="ARCHFLAGS=$(ARCHFLAGS)" "CC=$(CC)" "CXX=$(CXX)" "CXXCPP=$(CXXCPP)" "CPP=$(CPP)" "PKG_CONFIG_PATH=$(PKG_CONFIG_PATH)" "LDFLAGS=$(LDFLAGS)" "MACOSX_DEPLOYMENT_TARGET=$(MACOSX_DEPLOYMENT_TARGET)"
+
 # Flags
-CONFIG_FLAGS=--prefix=$(PREFIX_DIR) --disable-static --enable-shared "CC=$(CC)" "CXX=$(CXX)" "CXXCPP=$(CXXCPP)" "CPP=$(CPP)" "PKG_CONFIG_PATH=$(PKG_CONFIG_PATH)" "LDFLAGS=$(LDFLAGS)" "MACOSX_DEPLOYMENT_TARGET=$(MACOSX_DEPLOYMENT_TARGET)"
+CONFIG_FLAGS=--prefix="$(PREFIX_DIR)" --disable-static --enable-shared $(ENVIRONMENT)
 
 # Targets
 all: gettext glib libpng libjpeg cairo pango atk gtk libsigc2 glibmm gtkmm libxmlpp
 
 packages: gettext-pkg glib-pkg pango-pkg atk-pkg libpng-pkg libjpeg-pkg cairo-pkg gtk-pkg libsigc2-pkg glibmm-pkg gtkmm-pkg libxmlpp-pkg
-
-clean: gettext-clean glib-clean pango-clean atk-clean libpng-clean libjpeg-clean cairo-clean gtk-clean libsigc-clean libsigc2-clean glibmm-clean gtkmm-clean libxmlpp-clean
+clean: gettext-clean glib-clean libpng-clean libjpeg-clean cairo-clean pango-clean atk-clean gtk-clean libsigc2-clean glibmm-clean gtkmm-clean libxmlpp-clean
 	$(RM) -r gtkmm.pkg
 
 clean-all: clean
 	$(RM) -r output
 
 strip:
-	$(STRIP) $(PREFIX_DIR)/lib/*.dylib
+	$(STRIP) "$(PREFIX_DIR)"/lib/*.dylib
 
 setup-uninstall:
 	$(PRINTF) "\
@@ -156,20 +174,20 @@ do\n\
 	printf .\n\
 	rm $$file\n\
 done\n\
-" > $(PREFIX_DIR)/bin/uninstall_gtk
-	$(CHMOD) +x $(PREFIX_DIR)/bin/uninstall_gtk
-	cd $(PREFIX_DIR) && find . | tac > bin/uninstall_gtk_list.txt
+" > "$(PREFIX_DIR)"/bin/uninstall_gtk
+	$(CHMOD) +x "$(PREFIX_DIR)"/bin/uninstall_gtk
+	cd "$(PREFIX_DIR)" && find . | tac > bin/uninstall_gtk_list.txt
 
-#PACKAGE_PREP="for filename in `find . | $(GREP) -e '\.la' -e '\.pc' -e '[-]config' -e '\.loaders' -e '\.immodules'` ; do [ -d $$filename ] || { $(GREP) -l '$(ROOT_DIR)' $$filename && $(SED) 's;$(PREFIX_DIR);@PREFIX@;g;s:-L$(ROOT_DIR)/gettext-0.11.5/intl::g;' < $$filename > $(TEMP_FILE) && $(CP) $(TEMP_FILE) $$filename ;} ; done; $(RM) $(TEMP_FILE)"
+#PACKAGE_PREP="for filename in `find . | $(GREP) -e '\.la' -e '\.pc' -e '[-]config' -e '\.loaders' -e '\.immodules'` ; do [ -d $$filename ] || { $(GREP) -l '$(ROOT_DIR)' $$filename && $(SED) 's;"$(PREFIX_DIR)";@PREFIX@;g;s:-L$(ROOT_DIR)/gettext-0.11.5/intl::g;' < $$filename > $(TEMP_FILE) && $(CP) $(TEMP_FILE) $$filename ;} ; done; $(RM) $(TEMP_FILE)"
 
-PACKAGE_PREP=for filename in `find | $(GREP) -e '\.la' -e '\.pc' -e '[-]config' -e '\.loaders' -e '\.immodules'` ; do [ -d $$filename ] || { $(SED) 's;$(PACKAGETMP_DIR);@PREFIX@;g;s;$(PREFIX_DIR);@PREFIX@;g;s:-L$(ROOT_DIR)/gettext-0.11.5/intl::g;' < $$filename > $(TEMP_FILE) && $(CP) $(TEMP_FILE) $$filename && echo $$filename ;} ; done; $(RM) $(TEMP_FILE) ; $(RM) -R share/doc
+PACKAGE_PREP=for filename in `find | $(GREP) -e '\.la' -e '\.pc' -e '[-]config' -e '\.loaders' -e '\.immodules'` ; do [ -d $$filename ] || { $(SED) 's;$(PACKAGETMP_DIR);@PREFIX@;g;s;"$(PREFIX_DIR)";@PREFIX@;g;s:-L$(ROOT_DIR)/gettext-0.11.5/intl::g;' < $$filename > $(TEMP_FILE) && $(CP) $(TEMP_FILE) $$filename && echo $$filename ;} ; done; $(RM) $(TEMP_FILE) ; $(RM) -R share/doc
 
 package-prep: setup-uninstall
-	-cd $(PREFIX_DIR) && $(PACKAGE_PREP)	
-#	-cd $(PREFIX_DIR) && for filename in `$(CAT) $(PREFIX_DIR)/bin/uninstall_gtk_list.txt | $(GREP) -e "\.la" -e "\.pc" -e -config -e "\.loaders" -e "\.immodules"` ;\
+	-cd "$(PREFIX_DIR)" && $(PACKAGE_PREP)	
+#	-cd "$(PREFIX_DIR)" && for filename in `$(CAT) "$(PREFIX_DIR)"/bin/uninstall_gtk_list.txt | $(GREP) -e "\.la" -e "\.pc" -e -config -e "\.loaders" -e "\.immodules"` ;\
 #		do [ -d $$filename ] || { \
 #			$(GREP) -l "$(ROOT_DIR)" $$filename && \
-#			$(SED) "s;$(PREFIX_DIR);@PREFIX@;g;s:-L$(ROOT_DIR)/gettext-0.11.5/intl::g;" \
+#			$(SED) "s;"$(PREFIX_DIR)";@PREFIX@;g;s:-L$(ROOT_DIR)/gettext-0.11.5/intl::g;" \
 #			< $$filename > $(TEMP_FILE) && \
 #			$(CP) $(TEMP_FILE) $$filename \
 #	;} ; done
@@ -177,11 +195,12 @@ package-prep: setup-uninstall
 
 
 package:
-	$(PACKAGE) $(PREFIX_DIR) gtkmm.info -r PkgResource -bzip
+	$(PACKAGE) "$(PREFIX_DIR)" gtkmm.info -r PkgResource -bzip
 #	-[ -d gtkmm.xpm ] && mv gtkmm.xpm gtkmm.pkg
 
 gettext: gettext-$(GETTEXT_VER)
 	cd $(GETTEXT_DIR) && ./configure $(CONFIG_FLAGS) "LDFLAGS=$(LDFLAGS) -L$(GETTEXT_DIR)/intl" --with-libiconv-prefix=/usr/lib
+	cd $(GETTEXT_DIR) && $(ENDIAN_FIX)
 #	$(SED) "s/__USER_LABEL_PREFIX__/_/g;" < $(GETTEXT_DIR)/intl/libgnuintl.h > $(TEMP_FILE)
 #	$(CP) $(TEMP_FILE) $(GETTEXT_DIR)/intl/libgnuintl.h
 #	$(RM) $(TEMPFILE)
@@ -207,6 +226,7 @@ gettext-$(GETTEXT_VER):
 	
 libiconv:
 	cd $(LIBICONV_DIR) && ./configure $(CONFIG_FLAGS)
+	cd $(LIBICONV_DIR) && $(ENDIAN_FIX)
 	cd $(LIBICONV_DIR) && $(DESTDIR_FIX)
 	$(MAKE) -C $(LIBICONV_DIR)
 	$(MAKE) -C $(LIBICONV_DIR) install
@@ -216,9 +236,10 @@ libiconv-clean:
 
 glib: glib-$(GLIB_VER)
 	cd $(GLIB_DIR) && ./configure $(CONFIG_FLAGS)
+	cd $(GLIB_DIR) && $(ENDIAN_FIX)
 	cd $(GLIB_DIR) && $(DESTDIR_FIX)
 	$(MAKE) -C $(GLIB_DIR)
-	$(MAKE) -C $(GLIB_DIR) install
+	$(MAKE) -C $(GLIB_DIR) install-strip
 
 glib-pkg:
 	$(RM) -r $(ROOT_DIR)/pkg_out
@@ -233,17 +254,19 @@ glib-clean:
 	$(MAKE) -C $(GLIB_DIR) clean
 
 glib-$(GLIB_VER):
-	$(CURL) $(GLIB_DL) -o glib-$(GLIB_VER).tar.gz
-	$(UNTARZ) glib-$(GLIB_VER).tar.gz
+	$(CURL) $(GLIB_DL) -o glib-$(GLIB_VER).tar.bz2
+#	$(UNTARZ) glib-$(GLIB_VER).tar.gz
+	$(UNTARJ) glib-$(GLIB_VER).tar.bz2
 
 
 
 
 cairo: cairo-$(CAIRO_VER)
 	cd $(CAIRO_DIR) && ./configure $(CONFIG_FLAGS)
+	cd $(CAIRO_DIR) && $(ENDIAN_FIX)
 	cd $(CAIRO_DIR) && $(DESTDIR_FIX)
 	$(MAKE) -C $(CAIRO_DIR)
-	$(MAKE) -C $(CAIRO_DIR) install
+	$(MAKE) -C $(CAIRO_DIR) install-strip
 
 cairo-pkg:
 	$(RM) -r $(ROOT_DIR)/pkg_out
@@ -266,9 +289,10 @@ cairo-$(CAIRO_VER):
 
 pango: pango-$(PANGO_VER)
 	cd $(PANGO_DIR) && ./configure $(CONFIG_FLAGS) 
+	cd $(PANGO_DIR) && $(ENDIAN_FIX)
 	cd $(PANGO_DIR) && $(DESTDIR_FIX)
 	$(MAKE) -C $(PANGO_DIR)
-	$(MAKE) -C $(PANGO_DIR) install
+	$(MAKE) -C $(PANGO_DIR) install-strip
 
 pango-pkg:
 	$(RM) -r $(ROOT_DIR)/pkg_out
@@ -283,14 +307,15 @@ pango-clean:
 	$(MAKE) -C $(PANGO_DIR) clean
 
 pango-$(PANGO_VER):
-	$(CURL) $(PANGO_DL) -o pango-$(PANGO_VER).tar.gz
-	$(UNTARZ) pango-$(PANGO_VER).tar.gz
+	$(CURL) $(PANGO_DL) -o pango-$(PANGO_VER).tar.bz2
+	$(UNTARJ) pango-$(PANGO_VER).tar.bz2
 
 atk: atk-$(ATK_VER)
 	cd $(ATK_DIR) && ./configure $(CONFIG_FLAGS) 
+	cd $(ATK_DIR) && $(ENDIAN_FIX)
 	cd $(ATK_DIR) && $(DESTDIR_FIX)
 	$(MAKE) -C $(ATK_DIR)
-	$(MAKE) -C $(ATK_DIR) install
+	$(MAKE) -C $(ATK_DIR) install-strip
 
 atk-pkg:
 	$(RM) -r $(ROOT_DIR)/pkg_out
@@ -305,13 +330,20 @@ atk-clean:
 	$(MAKE) -C $(ATK_DIR) clean
 
 atk-$(ATK_VER):
-	$(CURL) $(ATK_DL) -o atk-$(ATK_VER).tar.gz
-	$(UNTARZ) atk-$(ATK_VER).tar.gz
+	$(CURL) $(ATK_DL) -o atk-$(ATK_VER).tar.bz2
+	$(UNTARJ) atk-$(ATK_VER).tar.bz2
 
-libpng:
-	$(MAKE) -C $(LIBPNG_DIR) -f makefile.macosx prefix=$(PREFIX_DIR)
-	$(MAKE) -C $(LIBPNG_DIR) -f makefile.macosx install prefix=$(PREFIX_DIR)
-	$(MV) $(PREFIX_DIR)/lib/libpng.dylib $(PREFIX_DIR)/lib/libpng.dylib.xxx
+libpng: libpng-$(LIBPNG_VER)
+	cd $(LIBPNG_DIR) && ./configure $(CONFIG_FLAGS) 
+	cd $(LIBPNG_DIR) && $(ENDIAN_FIX)
+	cd $(LIBPNG_DIR) && $(DESTDIR_FIX)
+	$(MAKE) -C $(LIBPNG_DIR)
+	$(MAKE) -C $(LIBPNG_DIR) install-strip
+#	$(MAKE) -C $(LIBPNG_DIR) -f makefile.macosx prefix="$(PREFIX_DIR)" $(ENVIRONMENT)
+#	$(MAKE) -C $(LIBPNG_DIR) -f makefile.macosx install prefix="$(PREFIX_DIR)" $(ENVIRONMENT)
+#	$(MAKE) -C $(LIBPNG_DIR) -f makefile.macosx shared prefix="$(PREFIX_DIR)" $(ENVIRONMENT)
+#	$(MAKE) -C $(LIBPNG_DIR) -f makefile.macosx install-shared prefix="$(PREFIX_DIR)" $(ENVIRONMENT)
+#	$(MV) "$(PREFIX_DIR)"/lib/libpng.dylib "$(PREFIX_DIR)"/lib/libpng.dylib.xxx
 
 libpng-pkg:
 	$(RM) -r $(ROOT_DIR)/pkg_out
@@ -324,20 +356,25 @@ libpng-pkg:
 	mv $(ROOT_DIR)/libpng.pkg packages
 
 libpng-clean:
-	$(MAKE) -C $(LIBPNG_DIR) -f makefile.macosx clean
+	$(MAKE) -C $(LIBPNG_DIR) clean
+
+libpng-$(LIBPNG_VER):
+	$(CURL) $(LIBPNG_DL) -o libpng-$(LIBPNG_VER).tar.bz2
+	$(UNTARJ) libpng-$(LIBPNG_VER).tar.bz2
 
 
-gtk: gtk-$(GTK_VER)
-	-$(MV) $(PREFIX_DIR)/lib/libjpeg.dylib.xxx $(PREFIX_DIR)/lib/libjpeg.dylib
-	-$(MV) $(PREFIX_DIR)/lib/libpng.dylib.xxx $(PREFIX_DIR)/lib/libpng.dylib
-	$(SED) -i bak "s/ libjpeg.dylib//" $(PREFIX_DIR)/lib/libjpeg.la
+gtk: gtk+-$(GTK_VER)
+	-$(MV) "$(PREFIX_DIR)"/lib/libjpeg.dylib.xxx "$(PREFIX_DIR)"/lib/libjpeg.dylib
+	-$(MV) "$(PREFIX_DIR)"/lib/libpng.dylib.xxx "$(PREFIX_DIR)"/lib/libpng.dylib
+	$(SED) -ibak "s/ libjpeg.dylib//" "$(PREFIX_DIR)"/lib/libjpeg.la
 	cd $(GTK_DIR) && ./configure $(CONFIG_FLAGS)  LIBS="-L/usr/X11R6/lib -lfontconfig -lxinerama" --without-libtiff
-	-$(MV) $(PREFIX_DIR)/lib/libjpeg.dylib $(PREFIX_DIR)/lib/libjpeg.dylib.xxx
-	-$(MV) $(PREFIX_DIR)/lib/libpng.dylib $(PREFIX_DIR)/lib/libpng.dylib.xxx
+	cd $(GTK_DIR) && $(ENDIAN_FIX)
+	-$(MV) "$(PREFIX_DIR)"/lib/libjpeg.dylib "$(PREFIX_DIR)"/lib/libjpeg.dylib.xxx
+	-$(MV) "$(PREFIX_DIR)"/lib/libpng.dylib "$(PREFIX_DIR)"/lib/libpng.dylib.xxx
 	cd $(GTK_DIR) && $(DESTDIR_FIX)
 	$(MAKE) -C $(GTK_DIR)
-	$(MAKE) -C $(GTK_DIR) install
-	$(SED) -i bak "s:dependency_libs='':dependency_libs='-L/usr/X11R6/lib -lX11 -lXinerama':" $(PREFIX_DIR)/lib/libgdk-x11-2.0.la
+	$(MAKE) -C $(GTK_DIR) install-strip
+	$(SED) -ibak "s:dependency_libs='':dependency_libs='-L/usr/X11R6/lib -lX11 -lXinerama':" "$(PREFIX_DIR)"/lib/libgdk-x11-2.0.la
 
 gtk-pkg:
 	$(RM) -r $(ROOT_DIR)/pkg_out
@@ -351,16 +388,17 @@ gtk-pkg:
 gtk-clean:
 	$(MAKE) -C $(GTK_DIR) clean
 
-gtk-$(GTK_VER):
-	$(CURL) $(GTK_DL) -o gtk-$(GTK_VER).tar.gz
-	$(UNTARZ) gtk-$(GTK_VER).tar.gz
+gtk+-$(GTK_VER):
+	$(CURL) $(GTK_DL) -o gtk+-$(GTK_VER).tar.bz2
+	$(UNTARJ) gtk+-$(GTK_VER).tar.bz2
 
 libjpeg:
 	cd $(LIBJPEG_DIR) && ./configure $(CONFIG_FLAGS)
+	$(CP) $(GLIB_DIR)/libtool $(LIBJPEG_DIR)
 	$(MAKE) -C $(LIBJPEG_DIR)
 	$(MAKE) -C $(LIBJPEG_DIR) install
-	$(MV) $(PREFIX_DIR)/lib/libjpeg.dylib $(PREFIX_DIR)/lib/libjpeg.dylib.xxx
-#	$(RM) $(PREFIX_DIR)/lib/libjpeg.dylib
+	$(MV) "$(PREFIX_DIR)"/lib/libjpeg.dylib "$(PREFIX_DIR)"/lib/libjpeg.dylib.xxx
+#	$(RM) "$(PREFIX_DIR)"/lib/libjpeg.dylib
 
 libjpeg-pkg:
 	$(RM) -r $(ROOT_DIR)/pkg_out
@@ -383,7 +421,7 @@ libjpeg-clean:
 
 
 libtiff:
-	MAKE=make && cd $(LIBTIFF_DIR) && ./configure --prefix=$(PREFIX_DIR) --noninteractive --with-CC="$(CC3)" --with-CFLAGS="$(CFLAGS)"
+	MAKE=make && cd $(LIBTIFF_DIR) && ./configure --prefix="$(PREFIX_DIR)" --noninteractive --with-CC="$(CC3)" --with-CFLAGS="$(CFLAGS)"
 	$(MAKE) -C $(LIBTIFF_DIR) -e
 	$(MAKE) -C $(LIBTIFF_DIR) install
 
@@ -399,13 +437,14 @@ libtiff-pkg:
 libtiff-clean:
 	$(MAKE) -C $(LIBTIFF_DIR) clean
 
-#LDFLAGS=-L$(PREFIX_DIR)/lib -prebind -flat_namespace # -fcoalesce-templates
+#LDFLAGS=-L"$(PREFIX_DIR)"/lib -prebind -flat_namespace # -fcoalesce-templates
 
 libsigc:
 	#cd $(LIBSIGC_DIR) && ./configure $(CONFIG_FLAGS) LDFLAGS="$(LDFLAGS) -lstdc++ -lsupc++" "CC=g++ $(CFLAGS)"
 	cd $(LIBSIGC_DIR) && ./configure $(CONFIG_FLAGS) LDFLAGS="$(LDFLAGS) -lstdc++" "CC=g++ $(CFLAGS)"
+	cd $(LIBSIGC_DIR) && $(ENDIAN_FIX)
 	$(MAKE) -C $(LIBSIGC_DIR)
-	$(MAKE) -C $(LIBSIGC_DIR) install
+	$(MAKE) -C $(LIBSIGC_DIR) install-strip
 
 libsigc-pkg:
 	$(RM) -r $(ROOT_DIR)/pkg_out
@@ -423,9 +462,10 @@ libsigc-clean:
 glibmm: glibmm-$(GLIBMM_VER)
 	#cd $(GLIBMM_DIR) && ./configure $(CONFIG_FLAGS) "LDFLAGS=$(LDFLAGS) -L/usr/X11R6/lib -lXinerama -lstdc++ -lsupc++"  "CC=g++ $(CFLAGS)"
 	cd $(GLIBMM_DIR) && ./configure $(CONFIG_FLAGS) "LDFLAGS=$(LDFLAGS) -L/usr/X11R6/lib -lXinerama -lstdc++"  "CC=g++ $(CFLAGS)"
+	cd $(GLIBMM_DIR) && $(ENDIAN_FIX)
 	cd $(GLIBMM_DIR) && $(DESTDIR_FIX)
 	$(MAKE) -C $(GLIBMM_DIR)
-	$(MAKE) -C $(GLIBMM_DIR) install
+	$(MAKE) -C $(GLIBMM_DIR) install-strip
 
 glibmm-pkg:
 	$(RM) -r $(ROOT_DIR)/pkg_out
@@ -445,11 +485,11 @@ glibmm-$(GLIBMM_VER):
 
 
 gtkmm: gtkmm-$(GTKMM_VER)
-	#cd $(GTKMM_DIR) && ./configure $(CONFIG_FLAGS) "LDFLAGS=$(LDFLAGS) -L/usr/X11R6/lib -lXinerama -lstdc++ -lsupc++"  "CC=g++ $(CFLAGS)"
+	#cd $(GTKMM_DIR) && ./configure $(CONFIG_FLAGS) "LDFLAGS=$(LDFLAGS) -L/usr/X11R6/lib -lXinerama -lstdc++ -lsupc++"  "CC=g++ $(CFLAGS)" --enable-examples=no --enable-demos=no --enable-docs=no
 	cd $(GTKMM_DIR) && ./configure $(CONFIG_FLAGS) "LDFLAGS=$(LDFLAGS) -L/usr/X11R6/lib -lXinerama -lstdc++"  "CC=g++ $(CFLAGS)"
 	cd $(GTKMM_DIR) && $(DESTDIR_FIX)
 	$(MAKE) -C $(GTKMM_DIR)
-	$(MAKE) -C $(GTKMM_DIR) install
+	$(MAKE) -C $(GTKMM_DIR) install-strip
 
 gtkmm-pkg:
 	$(RM) -r $(ROOT_DIR)/pkg_out
@@ -471,8 +511,9 @@ gtkmm-$(GTKMM_VER):
 libsigc2: libsigc++-$(LIBSIGC2_VER)
 	#cd $(LIBSIGC2_DIR) && ./configure $(CONFIG_FLAGS) LDFLAGS="$(LDFLAGS) -lstdc++ -lsupc++" "CC=g++ $(CFLAGS)"
 	cd $(LIBSIGC2_DIR) && ./configure $(CONFIG_FLAGS) LDFLAGS="$(LDFLAGS) -lstdc++" "CC=g++ $(CFLAGS)"
+	cd $(LIBSIGC2_DIR) && $(ENDIAN_FIX)
 	$(MAKE) -C $(LIBSIGC2_DIR)
-	$(MAKE) -C $(LIBSIGC2_DIR) install
+	$(MAKE) -C $(LIBSIGC2_DIR) install-strip
 
 libsigc2-pkg:
 	$(RM) -r $(ROOT_DIR)/pkg_out
@@ -490,14 +531,15 @@ libsigc++-$(LIBSIGC2_VER):
 	$(CURL) $(LIBSIGC2_DL) -o libsigc2-$(LIBSIGC2_VER).tar.gz
 	$(UNTARZ) libsigc2-$(LIBSIGC2_VER).tar.gz
 
-LDFLAGS=-L$(PREFIX_DIR)/lib -prebind -prebind_all_twolevel_modules -twolevel_namespace -bind_at_load
-CONFIG_FLAGS=--prefix=$(PREFIX_DIR) --disable-static --enable-shared "CC=$(CC)" "CXX=$(CXX)" "CXXCPP=$(CXXCPP)" "PKG_CONFIG_PATH=$(PKG_CONFIG_PATH)" "LDFLAGS=$(LDFLAGS)" "MACOSX_DEPLOYMENT_TARGET=$(MACOSX_DEPLOYMENT_TARGET)"
+LDFLAGS=-L"$(PREFIX_DIR)"/lib -prebind -prebind_all_twolevel_modules -twolevel_namespace -bind_at_load
+CONFIG_FLAGS=--prefix="$(PREFIX_DIR)" --disable-static --enable-shared "CC=$(CC)" "CXX=$(CXX)" "CXXCPP=$(CXXCPP)" "PKG_CONFIG_PATH=$(PKG_CONFIG_PATH)" "LDFLAGS=$(LDFLAGS)" "MACOSX_DEPLOYMENT_TARGET=$(MACOSX_DEPLOYMENT_TARGET)"
 
 libxml2:
 	cd $(LIBXML2_DIR) && ./configure $(CONFIG_FLAGS) 
+	cd $(LIBXML2_DIR) && $(ENDIAN_FIX)
 	cd $(LIBXML2_DIR) && $(DESTDIR_FIX)
 	$(MAKE) -C $(LIBXML2_DIR)
-	$(MAKE) -C $(LIBXML2_DIR) install
+	$(MAKE) -C $(LIBXML2_DIR) install-strip
 
 libxml2-pkg:
 	$(RM) -r $(ROOT_DIR)/pkg_out
@@ -514,9 +556,10 @@ libxml2-clean:
 
 fontconfig:
 	cd $(FONTCONFIG_DIR) && ./configure $(CONFIG_FLAGS) --disable-docs --without-docdir HASDOCBOOK=no 
+	cd $(FONTCONFIG_DIR) && $(ENDIAN_FIX)
 	cd $(FONTCONFIG_DIR) && $(DESTDIR_FIX)
 	$(MAKE) -C $(FONTCONFIG_DIR)
-	$(MAKE) -C $(FONTCONFIG_DIR) install
+	$(MAKE) -C $(FONTCONFIG_DIR) install-strip
 
 fontconfig-pkg:
 	$(RM) -r $(ROOT_DIR)/pkg_out
@@ -530,14 +573,15 @@ fontconfig-pkg:
 fontconfig-clean:
 	$(MAKE) -C $(FONTCONFIG_DIR) clean
 
-LDFLAGS=-L$(PREFIX_DIR)/lib -prebind -prebind_all_twolevel_modules -twolevel_namespace -bind_at_load
-CONFIG_FLAGS=--prefix=$(PREFIX_DIR) --disable-static --enable-shared "CC=$(CC)" "CXX=$(CXX)" "CXXCPP=$(CXXCPP)" "PKG_CONFIG_PATH=$(PKG_CONFIG_PATH)" "LDFLAGS=$(LDFLAGS)" "MACOSX_DEPLOYMENT_TARGET=$(MACOSX_DEPLOYMENT_TARGET)"
+LDFLAGS=-L"$(PREFIX_DIR)"/lib -prebind -prebind_all_twolevel_modules -twolevel_namespace -bind_at_load
+CONFIG_FLAGS=--prefix="$(PREFIX_DIR)" --disable-static --enable-shared "CC=$(CC)" "CXX=$(CXX)" "CXXCPP=$(CXXCPP)" "PKG_CONFIG_PATH=$(PKG_CONFIG_PATH)" "LDFLAGS=$(LDFLAGS)" "MACOSX_DEPLOYMENT_TARGET=$(MACOSX_DEPLOYMENT_TARGET)"
 
 libxmlpp: $(LIBXMLPP_DIR)
 	cd $(LIBXMLPP_DIR) && ./configure $(CONFIG_FLAGS)
+	cd $(LIBXMLPP_DIR) && $(ENDIAN_FIX)
 	cd $(LIBXMLPP_DIR) && $(DESTDIR_FIX)
 	$(MAKE) -C $(LIBXMLPP_DIR)
-	$(MAKE) -C $(LIBXMLPP_DIR) install
+	$(MAKE) -C $(LIBXMLPP_DIR) install-strip
 
 libxmlpp-pkg:
 	$(RM) -r $(ROOT_DIR)/pkg_out
