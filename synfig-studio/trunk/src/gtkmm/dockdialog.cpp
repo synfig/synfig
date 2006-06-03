@@ -480,9 +480,9 @@ DockDialog::set_contents(const synfig::String& z)
 	synfig::String str(z);
 	while(!str.empty())
 	{
-		unsigned int separator=str.find_first_of('-');
+		synfig::String::size_type separator=str.find_first_of('-');
 		{
-			unsigned int sep2=str.find_first_of('|');
+			synfig::String::size_type sep2=str.find_first_of('|');
 			if(separator!=synfig::String::npos || sep2!=synfig::String::npos)
 			{
 				if((separator==synfig::String::npos || sep2<separator) && sep2!=synfig::String::npos)

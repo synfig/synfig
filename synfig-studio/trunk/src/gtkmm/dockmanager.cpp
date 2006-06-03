@@ -73,7 +73,7 @@ public:
 		if(key_.size()>6 && String(key_.begin(),key_.begin()+6)=="dialog")try
 		{
 			synfig::String key(key_.begin()+7,key_.end());
-			int separator=key.find_first_of('.');
+			synfig::String::size_type separator=key.find_first_of('.');
 			int id(atoi(synfig::String(key.begin(),key.begin()+separator).c_str()));
 			key=synfig::String(key.begin()+separator+1,key.end());
 			
@@ -123,7 +123,7 @@ public:
 		if(key_.size()>6 && String(key_.begin(),key_.begin()+6)=="dialog")
 		{
 			synfig::String key(key_.begin()+7,key_.end());
-			int separator=key.find_first_of('.');
+			synfig::String::size_type separator=key.find_first_of('.');
 			int id(atoi(synfig::String(key.begin(),key.begin()+separator).c_str()));
 			key=synfig::String(key.begin()+separator+1,key.end());
 			
@@ -134,7 +134,7 @@ public:
 				try {
 					
 				vector<int> data;
-				int n=0;
+				String::size_type n=0;
 				String value_(value);
 				while(value_.size() && (signed)value_.size()>n && n>=0){
 					value_=String(value_.begin()+n,value_.end());
@@ -145,7 +145,7 @@ public:
 					data.push_back(size);
 
 					n=value_.find(" ");
-					if((unsigned)n!=String::npos)
+					if(n!=String::npos)
 						n++;
 						
 				}

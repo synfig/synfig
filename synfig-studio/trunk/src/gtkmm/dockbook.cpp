@@ -213,7 +213,7 @@ DockBook::set_contents(const synfig::String& x)
 	synfig::String str(x);
 	while(!str.empty())
 	{
-		unsigned int separator=str.find_first_of(' ');
+		synfig::String::size_type separator=str.find_first_of(' ');
 		synfig::String dock;
 		if(separator==synfig::String::npos)
 		{
