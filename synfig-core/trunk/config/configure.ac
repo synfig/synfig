@@ -341,9 +341,16 @@ AC_CHECK_LIB(png, png_write_row,[
 	AC_SUBST(PNG_LIBS)
 	AM_CONDITIONAL(HAVE_LIBPNG,true)
 ],[
-	AC_MSG_RESULT([ *** PNG Output target disabled])
-	TARGET_PNG="no"
-	AM_CONDITIONAL(HAVE_LIBPNG,false)
+	AC_CHECK_LIB(png12, png_write_row,[
+	PNG_LIBS="-lpng12"
+	AC_DEFINE(HAVE_LIBPNG,[])
+	AC_SUBST(PNG_LIBS)
+	AM_CONDITIONAL(HAVE_LIBPNG,true)
+	],[
+		AC_MSG_RESULT([ *** PNG Output target disabled])
+		TARGET_PNG="no"
+		AM_CONDITIONAL(HAVE_LIBPNG,false)
+	],[-lz -L${exec_prefix}/lib])
 ],[-lz -L${exec_prefix}/lib])
 
 AC_CHECK_LIB(jpeg, main,[
