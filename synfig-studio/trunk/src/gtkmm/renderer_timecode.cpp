@@ -35,6 +35,7 @@
 #include <pangomm/context.h>
 #include <pango/pango.h>
 #include "app.h"
+#include <cassert>
 
 #endif
 
@@ -150,6 +151,9 @@ Renderer_Timecode::render_vfunc(
 		catch(synfig::Exception::NotFound)
 		{
 			return;
+		}
+		catch(...) {
+			assert(0);
 		}
 		
   		drawable->draw_layout(gc, 4, 4, layout);

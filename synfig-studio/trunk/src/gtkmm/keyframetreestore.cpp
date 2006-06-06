@@ -357,7 +357,6 @@ KeyframeTreeStore::set_value_impl(const Gtk::TreeModel::iterator& row, int colum
 				return;
 			}
 			
-			// New Method
 			{
 				Keyframe keyframe((*row)[model.keyframe]);
 				synfigapp::Action::Handle action(synfigapp::Action::create("keyframe_set_delta"));
@@ -370,68 +369,6 @@ KeyframeTreeStore::set_value_impl(const Gtk::TreeModel::iterator& row, int colum
 				action->set_param("delta",change_delta);
 				
 				canvas_interface()->get_instance()->perform_action(action);
-			}
-			
-			
-			if(0)
-			{	// Old Method The slowest method EVER!!!
-				OneMoment one_moment;
-				
-				// Create the action group
-				synfigapp::Action::PassiveGrouper group(canvas_interface()->get_instance().get(),_("Adjust Time"));
-				synfigapp::PushMode push_mode(canvas_interface(), synfigapp::MODE_NORMAL);
-				
-				Gtk::TreeModel::iterator iter(row);
-				if(change_delta<0)
-				{
-					//DEBUGPOINT();
-					KeyframeList keyframe_list(get_canvas()->keyframe_list());
-					synfig::KeyframeList::iterator iter(keyframe_list.find((*row)[model.keyframe]));
-					//DEBUGPOINT();
-					for(;iter!=keyframe_list.end();++iter)
-					{
-					//DEBUGPOINT();
-						synfig::Keyframe keyframe(*iter);
-
-						keyframe.set_time(keyframe.get_time()+change_delta);
-			
-						synfigapp::Action::Handle action(synfigapp::Action::create("keyframe_set"));
-			
-						if(!action)return;
-						
-						action->set_param("canvas",canvas_interface()->get_canvas());
-						action->set_param("canvas_interface",canvas_interface());
-						action->set_param("keyframe",keyframe);
-						
-						canvas_interface()->get_instance()->perform_action(action);
-					}
-				}
-				else
-				{
-					//DEBUGPOINT();
-					KeyframeList keyframe_list(get_canvas()->keyframe_list());
-					synfig::KeyframeList::reverse_iterator end(keyframe_list.find((*row)[model.keyframe]));
-					synfig::KeyframeList::reverse_iterator iter(keyframe_list.rbegin());
-					//end++;
-					//DEBUGPOINT();
-					for(;iter!=end;++iter)
-					{
-					//DEBUGPOINT();
-						synfig::Keyframe keyframe(*iter);
-
-						keyframe.set_time(keyframe.get_time()+change_delta);
-			
-						synfigapp::Action::Handle action(synfigapp::Action::create("keyframe_set"));
-			
-						if(!action)return;
-						
-						action->set_param("canvas",canvas_interface()->get_canvas());
-						action->set_param("canvas_interface",canvas_interface());
-						action->set_param("keyframe",keyframe);
-						
-						canvas_interface()->get_instance()->perform_action(action);
-					}
-				}
 			}
 			
 			return;

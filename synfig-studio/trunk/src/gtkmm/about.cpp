@@ -166,6 +166,13 @@ About::About():
 #else
 	imagepath=IMAGE_DIR;
 #endif
+	char* synfig_root=getenv("SYNFIG_ROOT");
+	if(synfig_root) {
+		imagepath=synfig_root;
+		imagepath+=ETL_DIRECTORY_SEPERATOR;
+		
+		imagepath+="share/pixmaps";
+	}
 	imagepath+=ETL_DIRECTORY_SEPERATOR;
 	
 	
