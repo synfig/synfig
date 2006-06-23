@@ -123,7 +123,7 @@ ffmpeg_trgt::init()
 		multi_image=true;
 	string command;
 	
-	command=strprintf("ffmpeg -f imagepipe -an -r %f -i pipe: -loop -hq -title \"%s\" -y \"%s\"\n",desc.get_frame_rate(),get_canvas()->get_name().c_str(),filename.c_str());
+	command=strprintf("ffmpeg -f image2pipe -vcodec ppm -an -r %f -i pipe: -loop -hq -title \"%s\" -vcodec mpeg1video -y \"%s\"\n",desc.get_frame_rate(),get_canvas()->get_name().c_str(),filename.c_str());
 	
 	file=popen(command.c_str(),"w");
 	

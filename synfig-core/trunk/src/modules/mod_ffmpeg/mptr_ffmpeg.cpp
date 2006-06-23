@@ -65,7 +65,7 @@ ffmpeg_mptr::seek_to(int frame)
 
 		string command;
 	
-		command=strprintf("ffmpeg -i \"%s\" -an -f ppmpipe -\n",filename.c_str());
+		command=strprintf("ffmpeg -i \"%s\" -an -f image2pipe -vcodec ppm -\n",filename.c_str());
 	
 		file=popen(command.c_str(),"r");
 	
