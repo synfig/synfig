@@ -118,7 +118,7 @@ synfig::Module::Register(const String &module_name, ProgressCallback *callback)
 	
 	if(!module)
 	{
-		if(callback)callback->error(strprintf(_("Unable to find module \"%s\" (%s)"),module_name.c_str(),lt_dlerror()));
+		if(callback)callback->warning(strprintf(_("Unable to find module \"%s\" (%s)"),module_name.c_str(),lt_dlerror()));
 		return false;
 	}
 
