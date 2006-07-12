@@ -225,22 +225,12 @@ AC_ARG_WITH(freetype,[
 	with_freetype="yes"
 ])
 
-
 if test $with_freetype != "no" ; then {
-	PKG_CHECK_MODULES(FREETYPE, xft freetype2 fontconfig,[
+	PKG_CHECK_MODULES(FREETYPE, freetype2,[
 		with_freetype="yes"
 	],[
-		PKG_CHECK_MODULES(FREETYPE, freetype2 fontconfig,[
-			with_freetype="yes"
-		],[
-			with_freetype="no"
-		])
+		with_freetype="no"
 	])
-#	AC_CHECK_FT2(,[
-#		with_freetype="yes"
-#	],[
-#		with_freetype="no"
-#	])	
 } ; fi
 
 if test $with_freetype = "no" ; then {
@@ -250,8 +240,28 @@ if test $with_freetype = "no" ; then {
 } ; fi
 
 
+# FONTCONFIG CHECK--------------------
 
+AC_ARG_WITH(fontconfig,[
+  --without-fontconfig         disable support for fontconfig (Default=auto)],[
+],[
+	with_fontconfig="yes"
+])
 
+if test $with_fontconfig != "no" ; then {
+	PKG_CHECK_MODULES(FONTCONFIG, fontconfig,[
+		with_fontconfig="yes"
+	],[
+		with_fontconfig="no"
+	])
+} ; fi
+
+if test $with_fontconfig = "yes" ; then {
+	AC_DEFINE(WITH_FONTCONFIG,[],[enable fontconfig support])
+	AM_CONDITIONAL(WITH_FONTCONFIG,true)
+} else {
+	AM_CONDITIONAL(WITH_FONTCONFIG,false)
+} ; fi
 
 
 # OPENEXR CHECK------------------------
@@ -556,6 +566,7 @@ TIFF output target support -------> $TARGET_TIF
 JPEG output target support -------> $TARGET_JPEG
 ETL_CFLAGS -----------------------> $ETL_CFLAGS
 FreeType2 ------------------------> $with_freetype
+fontconfig ------------------------> $with_fontconfig
 libavcodec -----------------------> $with_libavcodec
 vImage ---------------------------> $with_vimage
 GLib -----------------------------> $GLIB

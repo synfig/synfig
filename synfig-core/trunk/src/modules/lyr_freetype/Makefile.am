@@ -12,6 +12,11 @@ liblyr_freetype_la_SOURCES = main.cpp lyr_freetype.cpp lyr_freetype.h
 liblyr_freetype_la_LIBADD = -L../../synfig -lsynfig @FREETYPE_LIBS@ @SYNFIG_LIBS@
 liblyr_freetype_la_LDFLAGS = -module -no-undefined
 liblyr_freetype_la_CXXFLAGS = @SYNFIG_CFLAGS@ @FREETYPE_CFLAGS@
+if WITH_FONTCONFIG
+liblyr_freetype_la_LIBADD += @FONTCONFIG_LIBS@
+liblyr_freetype_la_CXXFLAGS += @FONTCONFIG_CFLAGS@
+else
+endif
 else
 endif
 

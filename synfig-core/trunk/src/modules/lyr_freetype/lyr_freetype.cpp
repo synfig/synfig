@@ -4,6 +4,7 @@
 ** $Id: lyr_freetype.cpp,v 1.5 2005/01/24 05:00:18 darco Exp $
 **
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
+**	Copyright (c) 2006 Paul Wise
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -28,6 +29,9 @@
 #else
 #ifdef HAVE_CONFIG_H
 #	include <config.h>
+#endif
+#ifdef WITH_FONTCONFIG
+#include <fontconfig/fontconfig.h>
 #endif
 
 #include "lyr_freetype.h"
@@ -363,6 +367,37 @@ lyr_freetype::new_face(const String &newfont)
 			// Unable to generate fs_spec
 		}
 		  
+	}
+#endif
+
+#ifdef WITH_FONTCONFIG
+	if(error)
+	{
+		FcFontSet *fs;
+		FcResult result;
+		if( !FcInit() )
+		{
+			synfig::warning("lyr_freetype: fontconfig: %s",_("unable to initialise")));
+			error = 1;
+		} else {
+			FcPattern* pat = FcNameParse((FcChar8 *) newfont.c_str());
+			FcConfigSubstitute(0, pat, FcMatchPattern);
+			FcDefaultSubstitute(pat);
+			FcPattern *match;
+			fs = FcFontSetCreate();
+			match = FcFontMatch(0, pat, &result);
+			if (match)
+				FcFontSetAdd(fs, match);
+			if (pat)
+				FcPatternDestroy(pat);
+			if(fs){
+				FcChar8* file;
+				if( FcPatternGetString (fs->fonts[0], FC_FILE, 0, &file) == FcResultMatch )
+					error=FT_New_Face(ft_library,(const char*)file,face_index,&face);
+				FcFontSetDestroy(fs);
+			} else
+				synfig::warning("lyr_freetype: fontconfig: %s",_("empty font set")));
+		}
 	}
 #endif
 
