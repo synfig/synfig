@@ -377,7 +377,7 @@ lyr_freetype::new_face(const String &newfont)
 		FcResult result;
 		if( !FcInit() )
 		{
-			synfig::warning("lyr_freetype: fontconfig: %s",_("unable to initialise")));
+			synfig::warning("lyr_freetype: fontconfig: %s",_("unable to initialise"));
 			error = 1;
 		} else {
 			FcPattern* pat = FcNameParse((FcChar8 *) newfont.c_str());
@@ -396,7 +396,7 @@ lyr_freetype::new_face(const String &newfont)
 					error=FT_New_Face(ft_library,(const char*)file,face_index,&face);
 				FcFontSetDestroy(fs);
 			} else
-				synfig::warning("lyr_freetype: fontconfig: %s",_("empty font set")));
+				synfig::warning("lyr_freetype: fontconfig: %s",_("empty font set"));
 		}
 	}
 #endif
