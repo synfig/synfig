@@ -1,13 +1,13 @@
               synfigstudio releases
 
- 0.61.05 - February 27, 2006 - build issues
+ 0.61.05 (SVN 128) - February 27, 2006 - build issues
 
   * Fixed building with gtkmm 2.8 (#1373933, #1358304)
   * Allow the toolbox to come to the front (#1367916)
   * Make the user prefs dir configurable at build time
   * Fixed minor build issues
 
- 0.61.04 - January 10, 2006 - MacOS X packaging
+ 0.61.04 (SVN 103) - January 10, 2006 - MacOS X packaging
 
   * Fixes for the MacOS X packaging
 
