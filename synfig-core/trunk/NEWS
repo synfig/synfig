@@ -1,13 +1,13 @@
               synfig releases
 
- 0.61.05 - February 27, 2005 - Misc fixes
+ 0.61.05 (SVN 126) - February 27, 2005 - Misc fixes
 
   * Use system libltdl when available (#1423944)
   * Update doxygen config file (#1402909)
   * Fix fontconfig/xft FTBFS
   * Misc fix (#1414370)
 
- 0.61.04 - January 10, 2005 - Misc fixes
+ 0.61.04 (SVN 102) - January 10, 2005 - Misc fixes
 
   * Check for imagemagick at build time
   * Clarify mod_openexr copyright
