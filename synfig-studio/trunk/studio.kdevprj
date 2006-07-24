@@ -41,7 +41,7 @@ type=DATA
 
 [Config for BinMakefileAm]
 addcxxflags=
-bin_program=sinfgstudio
+bin_program=synfigstudio
 cflags=
 cppflags=
 cxxflags=\s-O1
@@ -112,7 +112,7 @@ install_location=
 type=DATA
 
 [config/Makefile.am]
-files=config/ETL.m4,config/libxml.m4,config/sinfg.m4,config/configure.ac,config/cxx_macros.m4,config/project.spec.in,config/build.cfg,config/gnome.m4,
+files=config/ETL.m4,config/libxml.m4,config/synfig.m4,config/configure.ac,config/cxx_macros.m4,config/project.spec.in,config/build.cfg,config/gnome.m4,
 sub_dirs=
 type=normal
 
@@ -152,7 +152,7 @@ install=false
 install_location=
 type=DATA
 
-[config/sinfg.m4]
+[config/synfig.m4]
 dist=true
 install=false
 install_location=

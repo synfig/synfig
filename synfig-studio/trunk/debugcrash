@@ -1,2 +1,2 @@
 #!/bin/sh
-gdb -nw --core=~/core src/gtkmm/.libs/lt-sinfgstudio
+gdb -nw --core=~/core src/gtkmm/.libs/lt-synfigstudio

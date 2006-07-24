@@ -31,7 +31,7 @@ project.type=GNOMEmm 2.0
 project.target.type=EXECUTABLE
 project.version=0.60.00
 project.author=Robert Quattlebaum
-project.source.target=src/gtkmm/sinfgstudio
+project.source.target=src/gtkmm/synfigstudio
 project.has.gettext=0
 project.gui.command=
 project.programming.language=C++
@@ -124,7 +124,7 @@ module.pixmap.name=.
 module.pixmap.type=
 module.pixmap.files=\
 	images/sif_icon.png\
-	images/sinfg_icon.png\
+	images/synfig_icon.png\
 	images/about_icon.png\
 	images/canvas_icon.png\
 	images/about_dialog.png

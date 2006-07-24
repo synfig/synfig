@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <canvas version="0.1" width="128" height="128" xres="2952.755928" yres="2952.755928" view-box="-1.200000 1.200000 1.200000 -1.200000" antialias="2" fps="12.000" begin-time="0f" end-time="0f" bgcolor="0.500000 0.500000 0.500000 1.000000">
-  <name>Sinfg Studio Color Icon</name>
+  <name>Synfig Studio Color Icon</name>
   <defs>
     <canvas id="ColorDisc" xres="2952.755900" yres="2952.755900" view-box="-1.000000 -1.000000 1.000000 1.000000" bgcolor="0.500000 0.500000 0.500000 1.000000">
       <name>ColorDisc</name>

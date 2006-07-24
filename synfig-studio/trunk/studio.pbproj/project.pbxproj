@@ -100,14 +100,14 @@
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = layersetdesc.cpp;
-			path = src/sinfgapp/actions/layersetdesc.cpp;
+			path = src/synfigapp/actions/layersetdesc.cpp;
 			refType = 4;
 		};
 		A63EEE2105446F5B00140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = layersetdesc.h;
-			path = src/sinfgapp/actions/layersetdesc.h;
+			path = src/synfigapp/actions/layersetdesc.h;
 			refType = 4;
 		};
 		A63EEE2205446F5B00140006 = {
@@ -126,14 +126,14 @@
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = cvs.cpp;
-			path = src/sinfgapp/cvs.cpp;
+			path = src/synfigapp/cvs.cpp;
 			refType = 4;
 		};
 		A63F3B47054DAC3A00140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = cvs.h;
-			path = src/sinfgapp/cvs.h;
+			path = src/synfigapp/cvs.h;
 			refType = 4;
 		};
 		A63F3B48054DAC3A00140006 = {
@@ -430,14 +430,14 @@
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = blineconvert.cpp;
-			path = src/sinfgapp/blineconvert.cpp;
+			path = src/synfigapp/blineconvert.cpp;
 			refType = 4;
 		};
 		A64DD844057FEF2300140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = blineconvert.h;
-			path = src/sinfgapp/blineconvert.h;
+			path = src/synfigapp/blineconvert.h;
 			refType = 4;
 		};
 		A64DD845057FEF2300140006 = {
@@ -557,49 +557,49 @@
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = action_param.cpp;
-			path = src/sinfgapp/action_param.cpp;
+			path = src/synfigapp/action_param.cpp;
 			refType = 4;
 		};
 		A64F6D2B052AA52700140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = action_param.h;
-			path = src/sinfgapp/action_param.h;
+			path = src/synfigapp/action_param.h;
 			refType = 4;
 		};
 		A64F6D2C052AA52700140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = action_system.cpp;
-			path = src/sinfgapp/action_system.cpp;
+			path = src/synfigapp/action_system.cpp;
 			refType = 4;
 		};
 		A64F6D2D052AA52700140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = action_system.h;
-			path = src/sinfgapp/action_system.h;
+			path = src/synfigapp/action_system.h;
 			refType = 4;
 		};
 		A64F6D2E052AA52700140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = editmode.h;
-			path = src/sinfgapp/editmode.h;
+			path = src/synfigapp/editmode.h;
 			refType = 4;
 		};
 		A64F6D2F052AA52700140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = main.cpp;
-			path = src/sinfgapp/main.cpp;
+			path = src/synfigapp/main.cpp;
 			refType = 4;
 		};
 		A64F6D30052AA52700140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = main.h;
-			path = src/sinfgapp/main.h;
+			path = src/synfigapp/main.h;
 			refType = 4;
 		};
 		A64F6D31052AA52700140006 = {
@@ -660,686 +660,686 @@
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = activepointadd.cpp;
-			path = src/sinfgapp/actions/activepointadd.cpp;
+			path = src/synfigapp/actions/activepointadd.cpp;
 			refType = 4;
 		};
 		A64F6D39052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = activepointadd.h;
-			path = src/sinfgapp/actions/activepointadd.h;
+			path = src/synfigapp/actions/activepointadd.h;
 			refType = 4;
 		};
 		A64F6D3A052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = activepointremove.cpp;
-			path = src/sinfgapp/actions/activepointremove.cpp;
+			path = src/synfigapp/actions/activepointremove.cpp;
 			refType = 4;
 		};
 		A64F6D3B052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = activepointremove.h;
-			path = src/sinfgapp/actions/activepointremove.h;
+			path = src/synfigapp/actions/activepointremove.h;
 			refType = 4;
 		};
 		A64F6D3C052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = activepointset.cpp;
-			path = src/sinfgapp/actions/activepointset.cpp;
+			path = src/synfigapp/actions/activepointset.cpp;
 			refType = 4;
 		};
 		A64F6D3D052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = activepointset.h;
-			path = src/sinfgapp/actions/activepointset.h;
+			path = src/synfigapp/actions/activepointset.h;
 			refType = 4;
 		};
 		A64F6D3E052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = activepointsetoff.cpp;
-			path = src/sinfgapp/actions/activepointsetoff.cpp;
+			path = src/synfigapp/actions/activepointsetoff.cpp;
 			refType = 4;
 		};
 		A64F6D3F052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = activepointsetoff.h;
-			path = src/sinfgapp/actions/activepointsetoff.h;
+			path = src/synfigapp/actions/activepointsetoff.h;
 			refType = 4;
 		};
 		A64F6D40052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = activepointseton.cpp;
-			path = src/sinfgapp/actions/activepointseton.cpp;
+			path = src/synfigapp/actions/activepointseton.cpp;
 			refType = 4;
 		};
 		A64F6D41052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = activepointseton.h;
-			path = src/sinfgapp/actions/activepointseton.h;
+			path = src/synfigapp/actions/activepointseton.h;
 			refType = 4;
 		};
 		A64F6D42052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = activepointsetsmart.cpp;
-			path = src/sinfgapp/actions/activepointsetsmart.cpp;
+			path = src/synfigapp/actions/activepointsetsmart.cpp;
 			refType = 4;
 		};
 		A64F6D43052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = activepointsetsmart.h;
-			path = src/sinfgapp/actions/activepointsetsmart.h;
+			path = src/synfigapp/actions/activepointsetsmart.h;
 			refType = 4;
 		};
 		A64F6D44052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = blinepointtangentmerge.cpp;
-			path = src/sinfgapp/actions/blinepointtangentmerge.cpp;
+			path = src/synfigapp/actions/blinepointtangentmerge.cpp;
 			refType = 4;
 		};
 		A64F6D45052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = blinepointtangentmerge.h;
-			path = src/sinfgapp/actions/blinepointtangentmerge.h;
+			path = src/synfigapp/actions/blinepointtangentmerge.h;
 			refType = 4;
 		};
 		A64F6D46052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = blinepointtangentsplit.cpp;
-			path = src/sinfgapp/actions/blinepointtangentsplit.cpp;
+			path = src/synfigapp/actions/blinepointtangentsplit.cpp;
 			refType = 4;
 		};
 		A64F6D47052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = blinepointtangentsplit.h;
-			path = src/sinfgapp/actions/blinepointtangentsplit.h;
+			path = src/synfigapp/actions/blinepointtangentsplit.h;
 			refType = 4;
 		};
 		A64F6D48052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = canvasadd.cpp;
-			path = src/sinfgapp/actions/canvasadd.cpp;
+			path = src/synfigapp/actions/canvasadd.cpp;
 			refType = 4;
 		};
 		A64F6D49052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = canvasadd.h;
-			path = src/sinfgapp/actions/canvasadd.h;
+			path = src/synfigapp/actions/canvasadd.h;
 			refType = 4;
 		};
 		A64F6D4A052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = canvasremove.cpp;
-			path = src/sinfgapp/actions/canvasremove.cpp;
+			path = src/synfigapp/actions/canvasremove.cpp;
 			refType = 4;
 		};
 		A64F6D4B052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = canvasremove.h;
-			path = src/sinfgapp/actions/canvasremove.h;
+			path = src/synfigapp/actions/canvasremove.h;
 			refType = 4;
 		};
 		A64F6D4C052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = canvasrenddescset.cpp;
-			path = src/sinfgapp/actions/canvasrenddescset.cpp;
+			path = src/synfigapp/actions/canvasrenddescset.cpp;
 			refType = 4;
 		};
 		A64F6D4D052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = canvasrenddescset.h;
-			path = src/sinfgapp/actions/canvasrenddescset.h;
+			path = src/synfigapp/actions/canvasrenddescset.h;
 			refType = 4;
 		};
 		A64F6D4E052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = editmodeset.cpp;
-			path = src/sinfgapp/actions/editmodeset.cpp;
+			path = src/synfigapp/actions/editmodeset.cpp;
 			refType = 4;
 		};
 		A64F6D4F052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = editmodeset.h;
-			path = src/sinfgapp/actions/editmodeset.h;
+			path = src/synfigapp/actions/editmodeset.h;
 			refType = 4;
 		};
 		A64F6D50052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = keyframeadd.cpp;
-			path = src/sinfgapp/actions/keyframeadd.cpp;
+			path = src/synfigapp/actions/keyframeadd.cpp;
 			refType = 4;
 		};
 		A64F6D51052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = keyframeadd.h;
-			path = src/sinfgapp/actions/keyframeadd.h;
+			path = src/synfigapp/actions/keyframeadd.h;
 			refType = 4;
 		};
 		A64F6D52052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = keyframeduplicate.cpp;
-			path = src/sinfgapp/actions/keyframeduplicate.cpp;
+			path = src/synfigapp/actions/keyframeduplicate.cpp;
 			refType = 4;
 		};
 		A64F6D53052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = keyframeduplicate.h;
-			path = src/sinfgapp/actions/keyframeduplicate.h;
+			path = src/synfigapp/actions/keyframeduplicate.h;
 			refType = 4;
 		};
 		A64F6D54052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = keyframeremove.cpp;
-			path = src/sinfgapp/actions/keyframeremove.cpp;
+			path = src/synfigapp/actions/keyframeremove.cpp;
 			refType = 4;
 		};
 		A64F6D55052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = keyframeremove.h;
-			path = src/sinfgapp/actions/keyframeremove.h;
+			path = src/synfigapp/actions/keyframeremove.h;
 			refType = 4;
 		};
 		A64F6D56052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = keyframeset.cpp;
-			path = src/sinfgapp/actions/keyframeset.cpp;
+			path = src/synfigapp/actions/keyframeset.cpp;
 			refType = 4;
 		};
 		A64F6D57052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = keyframeset.h;
-			path = src/sinfgapp/actions/keyframeset.h;
+			path = src/synfigapp/actions/keyframeset.h;
 			refType = 4;
 		};
 		A64F6D58052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = layeractivate.cpp;
-			path = src/sinfgapp/actions/layeractivate.cpp;
+			path = src/synfigapp/actions/layeractivate.cpp;
 			refType = 4;
 		};
 		A64F6D59052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = layeractivate.h;
-			path = src/sinfgapp/actions/layeractivate.h;
+			path = src/synfigapp/actions/layeractivate.h;
 			refType = 4;
 		};
 		A64F6D5A052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = layeradd.cpp;
-			path = src/sinfgapp/actions/layeradd.cpp;
+			path = src/synfigapp/actions/layeradd.cpp;
 			refType = 4;
 		};
 		A64F6D5B052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = layeradd.h;
-			path = src/sinfgapp/actions/layeradd.h;
+			path = src/synfigapp/actions/layeradd.h;
 			refType = 4;
 		};
 		A64F6D5C052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = layerduplicate.cpp;
-			path = src/sinfgapp/actions/layerduplicate.cpp;
+			path = src/synfigapp/actions/layerduplicate.cpp;
 			refType = 4;
 		};
 		A64F6D5D052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = layerduplicate.h;
-			path = src/sinfgapp/actions/layerduplicate.h;
+			path = src/synfigapp/actions/layerduplicate.h;
 			refType = 4;
 		};
 		A64F6D5E052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = layerencapsulate.cpp;
-			path = src/sinfgapp/actions/layerencapsulate.cpp;
+			path = src/synfigapp/actions/layerencapsulate.cpp;
 			refType = 4;
 		};
 		A64F6D5F052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = layerencapsulate.h;
-			path = src/sinfgapp/actions/layerencapsulate.h;
+			path = src/synfigapp/actions/layerencapsulate.h;
 			refType = 4;
 		};
 		A64F6D60052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = layerlower.cpp;
-			path = src/sinfgapp/actions/layerlower.cpp;
+			path = src/synfigapp/actions/layerlower.cpp;
 			refType = 4;
 		};
 		A64F6D61052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = layerlower.h;
-			path = src/sinfgapp/actions/layerlower.h;
+			path = src/synfigapp/actions/layerlower.h;
 			refType = 4;
 		};
 		A64F6D62052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = layermove.cpp;
-			path = src/sinfgapp/actions/layermove.cpp;
+			path = src/synfigapp/actions/layermove.cpp;
 			refType = 4;
 		};
 		A64F6D63052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = layermove.h;
-			path = src/sinfgapp/actions/layermove.h;
+			path = src/synfigapp/actions/layermove.h;
 			refType = 4;
 		};
 		A64F6D64052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = layerparamconnect.cpp;
-			path = src/sinfgapp/actions/layerparamconnect.cpp;
+			path = src/synfigapp/actions/layerparamconnect.cpp;
 			refType = 4;
 		};
 		A64F6D65052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = layerparamconnect.h;
-			path = src/sinfgapp/actions/layerparamconnect.h;
+			path = src/synfigapp/actions/layerparamconnect.h;
 			refType = 4;
 		};
 		A64F6D66052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = layerparamdisconnect.cpp;
-			path = src/sinfgapp/actions/layerparamdisconnect.cpp;
+			path = src/synfigapp/actions/layerparamdisconnect.cpp;
 			refType = 4;
 		};
 		A64F6D67052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = layerparamdisconnect.h;
-			path = src/sinfgapp/actions/layerparamdisconnect.h;
+			path = src/synfigapp/actions/layerparamdisconnect.h;
 			refType = 4;
 		};
 		A64F6D68052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = layerparamset.cpp;
-			path = src/sinfgapp/actions/layerparamset.cpp;
+			path = src/synfigapp/actions/layerparamset.cpp;
 			refType = 4;
 		};
 		A64F6D69052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = layerparamset.h;
-			path = src/sinfgapp/actions/layerparamset.h;
+			path = src/synfigapp/actions/layerparamset.h;
 			refType = 4;
 		};
 		A64F6D6A052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = layerraise.cpp;
-			path = src/sinfgapp/actions/layerraise.cpp;
+			path = src/synfigapp/actions/layerraise.cpp;
 			refType = 4;
 		};
 		A64F6D6B052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = layerraise.h;
-			path = src/sinfgapp/actions/layerraise.h;
+			path = src/synfigapp/actions/layerraise.h;
 			refType = 4;
 		};
 		A64F6D6C052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = layerremove.cpp;
-			path = src/sinfgapp/actions/layerremove.cpp;
+			path = src/synfigapp/actions/layerremove.cpp;
 			refType = 4;
 		};
 		A64F6D6D052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = layerremove.h;
-			path = src/sinfgapp/actions/layerremove.h;
+			path = src/synfigapp/actions/layerremove.h;
 			refType = 4;
 		};
 		A64F6D6E052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = valuedescconnect.cpp;
-			path = src/sinfgapp/actions/valuedescconnect.cpp;
+			path = src/synfigapp/actions/valuedescconnect.cpp;
 			refType = 4;
 		};
 		A64F6D6F052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = valuedescconnect.h;
-			path = src/sinfgapp/actions/valuedescconnect.h;
+			path = src/synfigapp/actions/valuedescconnect.h;
 			refType = 4;
 		};
 		A64F6D70052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = valuedescconvert.cpp;
-			path = src/sinfgapp/actions/valuedescconvert.cpp;
+			path = src/synfigapp/actions/valuedescconvert.cpp;
 			refType = 4;
 		};
 		A64F6D71052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = valuedescconvert.h;
-			path = src/sinfgapp/actions/valuedescconvert.h;
+			path = src/synfigapp/actions/valuedescconvert.h;
 			refType = 4;
 		};
 		A64F6D72052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = valuedescdisconnect.cpp;
-			path = src/sinfgapp/actions/valuedescdisconnect.cpp;
+			path = src/synfigapp/actions/valuedescdisconnect.cpp;
 			refType = 4;
 		};
 		A64F6D73052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = valuedescdisconnect.h;
-			path = src/sinfgapp/actions/valuedescdisconnect.h;
+			path = src/synfigapp/actions/valuedescdisconnect.h;
 			refType = 4;
 		};
 		A64F6D74052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = valuedescexport.cpp;
-			path = src/sinfgapp/actions/valuedescexport.cpp;
+			path = src/synfigapp/actions/valuedescexport.cpp;
 			refType = 4;
 		};
 		A64F6D75052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = valuedescexport.h;
-			path = src/sinfgapp/actions/valuedescexport.h;
+			path = src/synfigapp/actions/valuedescexport.h;
 			refType = 4;
 		};
 		A64F6D76052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = valuedescset.cpp;
-			path = src/sinfgapp/actions/valuedescset.cpp;
+			path = src/synfigapp/actions/valuedescset.cpp;
 			refType = 4;
 		};
 		A64F6D77052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = valuedescset.h;
-			path = src/sinfgapp/actions/valuedescset.h;
+			path = src/synfigapp/actions/valuedescset.h;
 			refType = 4;
 		};
 		A64F6D78052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = valuenodeadd.cpp;
-			path = src/sinfgapp/actions/valuenodeadd.cpp;
+			path = src/synfigapp/actions/valuenodeadd.cpp;
 			refType = 4;
 		};
 		A64F6D79052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = valuenodeadd.h;
-			path = src/sinfgapp/actions/valuenodeadd.h;
+			path = src/synfigapp/actions/valuenodeadd.h;
 			refType = 4;
 		};
 		A64F6D7A052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = valuenodeconstset.cpp;
-			path = src/sinfgapp/actions/valuenodeconstset.cpp;
+			path = src/synfigapp/actions/valuenodeconstset.cpp;
 			refType = 4;
 		};
 		A64F6D7B052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = valuenodeconstset.h;
-			path = src/sinfgapp/actions/valuenodeconstset.h;
+			path = src/synfigapp/actions/valuenodeconstset.h;
 			refType = 4;
 		};
 		A64F6D7C052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = valuenodedynamiclistinsert.cpp;
-			path = src/sinfgapp/actions/valuenodedynamiclistinsert.cpp;
+			path = src/synfigapp/actions/valuenodedynamiclistinsert.cpp;
 			refType = 4;
 		};
 		A64F6D7D052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = valuenodedynamiclistinsert.h;
-			path = src/sinfgapp/actions/valuenodedynamiclistinsert.h;
+			path = src/synfigapp/actions/valuenodedynamiclistinsert.h;
 			refType = 4;
 		};
 		A64F6D7E052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = valuenodedynamiclistinsertsmart.cpp;
-			path = src/sinfgapp/actions/valuenodedynamiclistinsertsmart.cpp;
+			path = src/synfigapp/actions/valuenodedynamiclistinsertsmart.cpp;
 			refType = 4;
 		};
 		A64F6D7F052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = valuenodedynamiclistinsertsmart.h;
-			path = src/sinfgapp/actions/valuenodedynamiclistinsertsmart.h;
+			path = src/synfigapp/actions/valuenodedynamiclistinsertsmart.h;
 			refType = 4;
 		};
 		A64F6D80052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = valuenodedynamiclistloop.cpp;
-			path = src/sinfgapp/actions/valuenodedynamiclistloop.cpp;
+			path = src/synfigapp/actions/valuenodedynamiclistloop.cpp;
 			refType = 4;
 		};
 		A64F6D81052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = valuenodedynamiclistloop.h;
-			path = src/sinfgapp/actions/valuenodedynamiclistloop.h;
+			path = src/synfigapp/actions/valuenodedynamiclistloop.h;
 			refType = 4;
 		};
 		A64F6D82052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = valuenodedynamiclistremove.cpp;
-			path = src/sinfgapp/actions/valuenodedynamiclistremove.cpp;
+			path = src/synfigapp/actions/valuenodedynamiclistremove.cpp;
 			refType = 4;
 		};
 		A64F6D83052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = valuenodedynamiclistremove.h;
-			path = src/sinfgapp/actions/valuenodedynamiclistremove.h;
+			path = src/synfigapp/actions/valuenodedynamiclistremove.h;
 			refType = 4;
 		};
 		A64F6D84052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = valuenodedynamiclistremovesmart.cpp;
-			path = src/sinfgapp/actions/valuenodedynamiclistremovesmart.cpp;
+			path = src/synfigapp/actions/valuenodedynamiclistremovesmart.cpp;
 			refType = 4;
 		};
 		A64F6D85052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = valuenodedynamiclistremovesmart.h;
-			path = src/sinfgapp/actions/valuenodedynamiclistremovesmart.h;
+			path = src/synfigapp/actions/valuenodedynamiclistremovesmart.h;
 			refType = 4;
 		};
 		A64F6D86052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = valuenodedynamiclistunloop.cpp;
-			path = src/sinfgapp/actions/valuenodedynamiclistunloop.cpp;
+			path = src/synfigapp/actions/valuenodedynamiclistunloop.cpp;
 			refType = 4;
 		};
 		A64F6D87052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = valuenodedynamiclistunloop.h;
-			path = src/sinfgapp/actions/valuenodedynamiclistunloop.h;
+			path = src/synfigapp/actions/valuenodedynamiclistunloop.h;
 			refType = 4;
 		};
 		A64F6D88052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = valuenodelinkconnect.cpp;
-			path = src/sinfgapp/actions/valuenodelinkconnect.cpp;
+			path = src/synfigapp/actions/valuenodelinkconnect.cpp;
 			refType = 4;
 		};
 		A64F6D89052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = valuenodelinkconnect.h;
-			path = src/sinfgapp/actions/valuenodelinkconnect.h;
+			path = src/synfigapp/actions/valuenodelinkconnect.h;
 			refType = 4;
 		};
 		A64F6D8A052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = valuenodelinkdisconnect.cpp;
-			path = src/sinfgapp/actions/valuenodelinkdisconnect.cpp;
+			path = src/synfigapp/actions/valuenodelinkdisconnect.cpp;
 			refType = 4;
 		};
 		A64F6D8B052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = valuenodelinkdisconnect.h;
-			path = src/sinfgapp/actions/valuenodelinkdisconnect.h;
+			path = src/synfigapp/actions/valuenodelinkdisconnect.h;
 			refType = 4;
 		};
 		A64F6D8C052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = valuenoderemove.cpp;
-			path = src/sinfgapp/actions/valuenoderemove.cpp;
+			path = src/synfigapp/actions/valuenoderemove.cpp;
 			refType = 4;
 		};
 		A64F6D8D052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = valuenoderemove.h;
-			path = src/sinfgapp/actions/valuenoderemove.h;
+			path = src/synfigapp/actions/valuenoderemove.h;
 			refType = 4;
 		};
 		A64F6D8E052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = valuenoderename.cpp;
-			path = src/sinfgapp/actions/valuenoderename.cpp;
+			path = src/synfigapp/actions/valuenoderename.cpp;
 			refType = 4;
 		};
 		A64F6D8F052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = valuenoderename.h;
-			path = src/sinfgapp/actions/valuenoderename.h;
+			path = src/synfigapp/actions/valuenoderename.h;
 			refType = 4;
 		};
 		A64F6D90052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = valuenodereplace.cpp;
-			path = src/sinfgapp/actions/valuenodereplace.cpp;
+			path = src/synfigapp/actions/valuenodereplace.cpp;
 			refType = 4;
 		};
 		A64F6D91052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = valuenodereplace.h;
-			path = src/sinfgapp/actions/valuenodereplace.h;
+			path = src/synfigapp/actions/valuenodereplace.h;
 			refType = 4;
 		};
 		A64F6D92052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = waypointadd.cpp;
-			path = src/sinfgapp/actions/waypointadd.cpp;
+			path = src/synfigapp/actions/waypointadd.cpp;
 			refType = 4;
 		};
 		A64F6D93052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = waypointadd.h;
-			path = src/sinfgapp/actions/waypointadd.h;
+			path = src/synfigapp/actions/waypointadd.h;
 			refType = 4;
 		};
 		A64F6D94052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = waypointremove.cpp;
-			path = src/sinfgapp/actions/waypointremove.cpp;
+			path = src/synfigapp/actions/waypointremove.cpp;
 			refType = 4;
 		};
 		A64F6D95052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = waypointremove.h;
-			path = src/sinfgapp/actions/waypointremove.h;
+			path = src/synfigapp/actions/waypointremove.h;
 			refType = 4;
 		};
 		A64F6D96052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = waypointset.cpp;
-			path = src/sinfgapp/actions/waypointset.cpp;
+			path = src/synfigapp/actions/waypointset.cpp;
 			refType = 4;
 		};
 		A64F6D97052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = waypointset.h;
-			path = src/sinfgapp/actions/waypointset.h;
+			path = src/synfigapp/actions/waypointset.h;
 			refType = 4;
 		};
 		A64F6D98052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = waypointsetsmart.cpp;
-			path = src/sinfgapp/actions/waypointsetsmart.cpp;
+			path = src/synfigapp/actions/waypointsetsmart.cpp;
 			refType = 4;
 		};
 		A64F6D99052AA5C100140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = waypointsetsmart.h;
-			path = src/sinfgapp/actions/waypointsetsmart.h;
+			path = src/synfigapp/actions/waypointsetsmart.h;
 			refType = 4;
 		};
 		A64F6D9A052AA5C100140006 = {
@@ -2870,7 +2870,7 @@
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = value_desc.h;
-			path = src/sinfgapp/value_desc.h;
+			path = src/synfigapp/value_desc.h;
 			refType = 4;
 		};
 		A6714E110413F36C00F656BD = {
@@ -2985,8 +2985,8 @@
 		A6BEE1D1058004B500140006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
-			name = sinfg_icon.sif;
-			path = images/sinfg_icon.sif;
+			name = synfig_icon.sif;
+			path = images/synfig_icon.sif;
 			refType = 4;
 		};
 		A6C8247303CC275900A80006 = {
@@ -3202,7 +3202,7 @@
 				F50C84E0037799AE01A80006,
 			);
 			isa = PBXGroup;
-			name = "Sinfg Studio Sources";
+			name = "Synfig Studio Sources";
 			refType = 4;
 		};
 		F50C84E0037799AE01A80006 = {
@@ -3493,7 +3493,7 @@
 				OTHER_CFLAGS = "\\\"'-DIMAGE_DIR=\\\"/Users/darco/src/voria/studio/images/\\\"'\\\"";
 				OTHER_LDFLAGS = "";
 				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = sinfgstudio;
+				PRODUCT_NAME = synfigstudio;
 				REZ_EXECUTABLE = YES;
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = "-Wmost -Wno-four-char-constants -Wno-unknown-pragmas";
@@ -3502,14 +3502,14 @@
 				F5F2706A03C94D2101BABFEF,
 			);
 			isa = PBXToolTarget;
-			name = "Sinfg Studio (Gtk--)";
+			name = "Synfig Studio (Gtk--)";
 			productInstallPath = /usr/local/bin;
-			productName = "Sinfg Studio GTKMM-2.0";
+			productName = "Synfig Studio GTKMM-2.0";
 			productReference = F50C84FA03779A4701A80006;
 		};
 		F50C84FA03779A4701A80006 = {
 			isa = PBXExecutableFileReference;
-			path = sinfgstudio;
+			path = synfigstudio;
 			refType = 3;
 		};
 		F50C84FC03779A8301A80006 = {
@@ -3520,8 +3520,8 @@
 		};
 		F50C84FD03779A8301A80006 = {
 			isa = PBXFrameworkReference;
-			name = sinfg.framework;
-			path = /Library/Frameworks/sinfg.framework;
+			name = synfig.framework;
+			path = /Library/Frameworks/synfig.framework;
 			refType = 0;
 		};
 		F50C856903779A8301A80006 = {
@@ -4028,7 +4028,7 @@
 				A64DD844057FEF2300140006,
 			);
 			isa = PBXGroup;
-			name = "Sinfg Application Library";
+			name = "Synfig Application Library";
 			refType = 4;
 		};
 		F5F2703103C947FC01BABFEF = {
@@ -4209,7 +4209,7 @@
 				OTHER_REZFLAGS = "";
 				PREBINDING = NO;
 				PRINCIPAL_CLASS = "";
-				PRODUCT_NAME = sinfgapp;
+				PRODUCT_NAME = synfigapp;
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = "-Wmost -Wno-four-char-constants -Wno-unknown-pragmas";
 				WRAPPER_EXTENSION = framework;
@@ -4217,9 +4217,9 @@
 			dependencies = (
 			);
 			isa = PBXFrameworkTarget;
-			name = "Sinfg Application Library";
+			name = "Synfig Application Library";
 			productInstallPath = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-			productName = sinfgapp;
+			productName = synfigapp;
 			productReference = F5F2703703C947FC01BABFEF;
 			productSettingsXML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
 <!DOCTYPE plist PUBLIC \"-//Apple Computer//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">
@@ -4253,70 +4253,70 @@
 		};
 		F5F2703703C947FC01BABFEF = {
 			isa = PBXFrameworkReference;
-			path = sinfgapp.framework;
+			path = synfigapp.framework;
 			refType = 3;
 		};
 		F5F2704003C9487C01BABFEF = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = action.cpp;
-			path = src/sinfgapp/action.cpp;
+			path = src/synfigapp/action.cpp;
 			refType = 4;
 		};
 		F5F2704103C9487C01BABFEF = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = action.h;
-			path = src/sinfgapp/action.h;
+			path = src/synfigapp/action.h;
 			refType = 4;
 		};
 		F5F2704203C9487C01BABFEF = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = canvasinterface.cpp;
-			path = src/sinfgapp/canvasinterface.cpp;
+			path = src/synfigapp/canvasinterface.cpp;
 			refType = 4;
 		};
 		F5F2704303C9487C01BABFEF = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = canvasinterface.h;
-			path = src/sinfgapp/canvasinterface.h;
+			path = src/synfigapp/canvasinterface.h;
 			refType = 4;
 		};
 		F5F2704403C9487C01BABFEF = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = instance.cpp;
-			path = src/sinfgapp/instance.cpp;
+			path = src/synfigapp/instance.cpp;
 			refType = 4;
 		};
 		F5F2704503C9487C01BABFEF = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = instance.h;
-			path = src/sinfgapp/instance.h;
+			path = src/synfigapp/instance.h;
 			refType = 4;
 		};
 		F5F2704603C9487C01BABFEF = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = selectionmanager.h;
-			path = src/sinfgapp/selectionmanager.h;
+			path = src/synfigapp/selectionmanager.h;
 			refType = 4;
 		};
 		F5F2704703C9487C01BABFEF = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = uimanager.cpp;
-			path = src/sinfgapp/uimanager.cpp;
+			path = src/synfigapp/uimanager.cpp;
 			refType = 4;
 		};
 		F5F2704803C9487C01BABFEF = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			name = uimanager.h;
-			path = src/sinfgapp/uimanager.h;
+			path = src/synfigapp/uimanager.h;
 			refType = 4;
 		};
 		F5F2705103C9487C01BABFEF = {
