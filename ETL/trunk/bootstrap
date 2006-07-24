@@ -127,7 +127,7 @@ mv project.spec "$PACKAGE.spec"
 
 output Finishing up $PACKAGE.spec...
 echo %changelog >> "$PACKAGE.spec"
-cat ChangeLog >> "$PACKAGE.spec"
+cat NEWS >> "$PACKAGE.spec"
 
 output Creating configure.in from configure.ac...
 sed "$SED_SCRIPT" < "$CONFIG_DIR/configure.ac" > configure.in;
