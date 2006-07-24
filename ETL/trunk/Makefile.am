@@ -1,6 +1,6 @@
 # $Header: /opt/voria/cvs/ETL/Makefile.am,v 1.1.1.1 2005/01/04 01:31:46 darco Exp $
 
-MAINTAINERCLEANFILES=config/config.guess config/config.sub config/ltmain.sh config/install-sh config/mkinstalldirs config/aclocal.m4 config/missing config/texinfo.tex config/depcomp aclocal.m4 config.h.in configure stamp-h.in Makefile.in config.log config.status .doc_stamp .DS_Store @PACKAGE@-@VERSION@.spec include/etl_profile.h.in
+MAINTAINERCLEANFILES=config/config.guess config/config.sub config/ltmain.sh config/install-sh config/mkinstalldirs config/aclocal.m4 config/missing config/texinfo.tex config/depcomp aclocal.m4 config.h.in configure stamp-h.in Makefile.in config.log config.status .doc_stamp .DS_Store @PACKAGE@.spec include/etl_profile.h.in
 
 SUBDIRS=ETL test
 
@@ -13,7 +13,7 @@ bin_SCRIPTS=ETL-config
 aclocaldir = $(prefix)/share/aclocal
 
 
-EXTRA_DIST=bootstrap config/subs.m4 config/depcomp config/cxx_macros.m4 ETL.pbproj/project.pbxproj ETL.pbproj/etl_profile.h ETL.pbproj/frameworkfix.cpp @PACKAGE_TARNAME@-@VERSION@.spec config/project.spec.in config/build.cfg ETL-config.in config/ETL.m4 config/doxygen.cfg.in doxygen.cfg config/pkgconfig.pc.in @PACKAGE_TARNAME@.pc.in
+EXTRA_DIST=bootstrap config/subs.m4 config/depcomp config/cxx_macros.m4 ETL.pbproj/project.pbxproj ETL.pbproj/etl_profile.h ETL.pbproj/frameworkfix.cpp @PACKAGE_TARNAME@.spec config/project.spec.in config/build.cfg ETL-config.in config/ETL.m4 config/doxygen.cfg.in doxygen.cfg config/pkgconfig.pc.in @PACKAGE_TARNAME@.pc.in
 
 CVS=cvs
 SVN=svn
