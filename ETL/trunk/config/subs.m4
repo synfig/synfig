@@ -108,12 +108,12 @@ AC_DEFUN([AC_ARG_OPTIMIZATION],
 	optimization_flags=''
 	case "$optimization" in
 		0|no)	optimization_flags="-O0";;
-		1) 		optimization_flags="-O1 -ffast-math";;
-		2|yes)	optimization_flags="-O2 -ffast-math";;
-		pass1)	optimization_flags="-O2 -ffast-math -fprofile-arcs";;
-		pass2)	optimization_flags="-O2 -ffast-math -fbranch-probabilities";;
-		3) 		optimization_flags="-O3 -ffast-math";;
-		*) 		optimization_flags="-O4 -ffast-math";;
+		1) 		optimization_flags="-O1";;
+		2|yes)	optimization_flags="-O2";;
+		pass1)	optimization_flags="-O2 -fprofile-arcs";;
+		pass2)	optimization_flags="-O2 -fbranch-probabilities";;
+		3) 		optimization_flags="-O3";;
+		*) 		optimization_flags="-O4";;
 	esac
 	CXXFLAGS="`echo $CXXFLAGS | sed 's:-O.::g'` $optimization_flags"
 	CFLAGS="`echo $CFLAGS | sed 's:-O.::g'` $optimization_flags"
