@@ -42,7 +42,7 @@ int bspline_basic_test(void)
 	float f;
 	
 	bspline<float> BSpline;
-	clock timer;
+	etl::clock timer;
 	double t;
 	
 	*BSpline.cpoints().insert(BSpline.cpoints().end())=0;
