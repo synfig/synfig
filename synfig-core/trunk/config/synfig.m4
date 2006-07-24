@@ -1,12 +1,12 @@
-# SINFG M4 Macro
+# SYNFIG M4 Macro
 # For GNU Autotools
-# $Id: sinfg.m4,v 1.1.1.1 2005/01/04 01:23:08 darco Exp $
+# $Id: synfig.m4,v 1.1.1.1 2005/01/04 01:23:08 darco Exp $
 #
 # By Robert B. Quattlebaum Jr. <darco@users.sf.net>
 #	AM_LIBXMLPP(,$2)
 
 
-AC_DEFUN([SINFG_DEPS],
+AC_DEFUN([SYNFIG_DEPS],
 [
 	USING_ETL(,$2)
 	AM_PATH_XML2(,,$2)
@@ -19,33 +19,33 @@ AC_DEFUN([SINFG_DEPS],
 	$1
 ])
 
-AC_DEFUN([USING_SINFG],
+AC_DEFUN([USING_SYNFIG],
 [
-	AC_ARG_WITH(sinfg-includes,
-	[  --with-sinfg-includes    Specify location of sinfg headers],[
+	AC_ARG_WITH(synfig-includes,
+	[  --with-synfig-includes    Specify location of synfig headers],[
 	CXXFLAGS="$CXXFLAGS -I$withval"
 	])
 
-	AC_PATH_PROG(SINFG_CONFIG,sinfg-config,no)
+	AC_PATH_PROG(SYNFIG_CONFIG,synfig-config,no)
 
-	if test "$SINFG_CONFIG" = "no"; then
-		no_SINFG_config="yes"
+	if test "$SYNFIG_CONFIG" = "no"; then
+		no_SYNFIG_config="yes"
 		$2
 	else
-		AC_MSG_CHECKING([if $SINFG_CONFIG works])
-		if $SINFG_CONFIG --libs >/dev/null 2>&1; then
-			SINFG_VERSION="`$SINFG_CONFIG --version`"
-			AC_MSG_RESULT([yes, $SINFG_VERSION])
-			CXXFLAGS="$CXXFLAGS `$SINFG_CONFIG --cxxflags`"
+		AC_MSG_CHECKING([if $SYNFIG_CONFIG works])
+		if $SYNFIG_CONFIG --libs >/dev/null 2>&1; then
+			SYNFIG_VERSION="`$SYNFIG_CONFIG --version`"
+			AC_MSG_RESULT([yes, $SYNFIG_VERSION])
+			CXXFLAGS="$CXXFLAGS `$SYNFIG_CONFIG --cxxflags`"
 			$1
 		else
 			AC_MSG_RESULT(no)
-			no_SINFG_config="yes"
+			no_SYNFIG_config="yes"
 			$2
 		fi
 	fi
 
-	SINFG_DEPS($1,$2)
+	SYNFIG_DEPS($1,$2)
 ])
 
 

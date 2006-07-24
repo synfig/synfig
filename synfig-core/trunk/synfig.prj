@@ -26,12 +26,12 @@ props.file.type=project
 anjuta.version=1.2.2
 anjuta.compatibility.level=1
 
-project.name=sinfg
+project.name=synfig
 project.type=GENERIC
 project.target.type=EXECUTABLE
 project.version=0.60.00
 project.author=Robert B. Quattlebaum Jr
-project.source.target=src/tool/sinfg
+project.source.target=src/tool/synfig
 project.has.gettext=0
 project.gui.command=
 project.programming.language=C++
@@ -42,9 +42,9 @@ project.config.extra.modules.after=
 project.config.blocked=1
 project.config.disable.overwriting=1 1 1 1 1 1 1 1 1 
 
-project.menu.entry=sinfg Version 0.60.00
+project.menu.entry=synfig Version 0.60.00
 project.menu.group=Application
-project.menu.comment=sinfg Version 0.60.00
+project.menu.comment=synfig Version 0.60.00
 project.menu.icon=
 project.menu.need.terminal=0
 
@@ -68,8 +68,8 @@ preferences.indent.closing=0
 module.include.name=.
 module.include.type=
 module.include.files=\
-	sinfg.pbproj/config.h\
-	sinfg.pbproj/etl_profile.h\
+	synfig.pbproj/config.h\
+	synfig.pbproj/etl_profile.h\
 	src/modules/lyr_std/bezier.h\
 	src/modules/lyr_std/blur.h\
 	src/modules/lyr_std/checkerboard.h\
@@ -97,24 +97,24 @@ module.include.files=\
 	src/modules/mod_imagemagick/mptr_imagemagick.h\
 	src/modules/lyr_freetype/lyr_freetype.h\
 	src/template.h\
-	src/sinfg/animate.h\
-	src/sinfg/bmplayer.h\
-	src/sinfg/color.h\
-	src/sinfg/general.h\
-	src/sinfg/importer.h\
-	src/sinfg/layer.h\
-	src/sinfg/modules.h\
-	src/sinfg/pch.h\
-	src/sinfg/renddesc.h\
-	src/sinfg/render.h\
-	src/sinfg/sinfg.h\
-	src/sinfg/surface.h\
-	src/sinfg/target.h\
-	src/sinfg/vector.h\
-	src/sinfg/datatype.h\
-	src/sinfg/canvas.h\
-	src/sinfg/loadcanvas.h\
-	src/sinfg/savecanvas.h
+	src/synfig/animate.h\
+	src/synfig/bmplayer.h\
+	src/synfig/color.h\
+	src/synfig/general.h\
+	src/synfig/importer.h\
+	src/synfig/layer.h\
+	src/synfig/modules.h\
+	src/synfig/pch.h\
+	src/synfig/renddesc.h\
+	src/synfig/render.h\
+	src/synfig/synfig.h\
+	src/synfig/surface.h\
+	src/synfig/target.h\
+	src/synfig/vector.h\
+	src/synfig/datatype.h\
+	src/synfig/canvas.h\
+	src/synfig/loadcanvas.h\
+	src/synfig/savecanvas.h
 
 module.source.name=.
 module.source.type=
@@ -157,20 +157,20 @@ module.source.files=\
 	src/modules/lyr_freetype/main.cpp\
 	src/modules/lyr_freetype/lyr_freetype.cpp\
 	src/template.cpp\
-	src/sinfg/animate.cpp\
-	src/sinfg/bmplayer.cpp\
-	src/sinfg/color.cpp\
-	src/sinfg/importer.cpp\
-	src/sinfg/layer.cpp\
-	src/sinfg/main.cpp\
-	src/sinfg/modules.cpp\
-	src/sinfg/render.cpp\
-	src/sinfg/surface.cpp\
-	src/sinfg/target.cpp\
-	src/sinfg/datatype.cpp\
-	src/sinfg/canvas.cpp\
-	src/sinfg/loadcanvas.cpp\
-	src/sinfg/savecanvas.cpp\
+	src/synfig/animate.cpp\
+	src/synfig/bmplayer.cpp\
+	src/synfig/color.cpp\
+	src/synfig/importer.cpp\
+	src/synfig/layer.cpp\
+	src/synfig/main.cpp\
+	src/synfig/modules.cpp\
+	src/synfig/render.cpp\
+	src/synfig/surface.cpp\
+	src/synfig/target.cpp\
+	src/synfig/datatype.cpp\
+	src/synfig/canvas.cpp\
+	src/synfig/loadcanvas.cpp\
+	src/synfig/savecanvas.cpp\
 	src/tool/main.cpp
 
 module.pixmap.name=.

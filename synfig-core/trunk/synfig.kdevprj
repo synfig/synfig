@@ -71,7 +71,7 @@ type=DATA
 
 [Config for BinMakefileAm]
 addcxxflags=
-bin_program=sinfg
+bin_program=synfig
 cflags=
 cppflags=
 cxxflags=\s-O1
@@ -96,9 +96,9 @@ execute_args=-v -v -v --version
 kdevprj_version=1.3
 lfv_open_groups=
 make_options=\s-j2 -l 2 -j 2
-makefiles=./Makefile.am,include/Makefile.am,ETL.pbproj/Makefile.am,config/Makefile.am,config/pkg-support/Makefile.am,config/pkg-support/devel-resources/Makefile.am,test/Makefile.am,src/modules/trgt_bmp/Makefile.am,src/modules/Makefile.am,src/Makefile.am,src/modules/trgt_gif/Makefile.am,src/modules/lyr_std/Makefile.am,src/modules/example/Makefile.am,src/sinfg/Makefile.am,src/tool/Makefile.am,Makefile.am,src/modules/trgt_ppm/Makefile.am,src/modules/trgt_mpg/Makefile.am,src/modules/mod_ffmpeg/Makefile.am,src/modules/mptr_mplayer/Makefile.am,src/modules/trgt_dv/Makefile.am,src/modules/mod_imagemagick/Makefile.am
+makefiles=./Makefile.am,include/Makefile.am,ETL.pbproj/Makefile.am,config/Makefile.am,config/pkg-support/Makefile.am,config/pkg-support/devel-resources/Makefile.am,test/Makefile.am,src/modules/trgt_bmp/Makefile.am,src/modules/Makefile.am,src/Makefile.am,src/modules/trgt_gif/Makefile.am,src/modules/lyr_std/Makefile.am,src/modules/example/Makefile.am,src/synfig/Makefile.am,src/tool/Makefile.am,Makefile.am,src/modules/trgt_ppm/Makefile.am,src/modules/trgt_mpg/Makefile.am,src/modules/mod_ffmpeg/Makefile.am,src/modules/mptr_mplayer/Makefile.am,src/modules/trgt_dv/Makefile.am,src/modules/mod_imagemagick/Makefile.am
 modifyMakefiles=true
-project_name=Sinfg
+project_name=Synfig
 project_type=normal_empty
 short_info=
 sub_dir=
@@ -123,7 +123,7 @@ groups=Headers,Sources,GNU,Translations,User Interface,Others
 
 [Makefile.am]
 dist=true
-files=bootstrap,ChangeLog,INSTALL,Makefile.am,README,sinfg.kdevprj,sinfg-config.in
+files=bootstrap,ChangeLog,INSTALL,Makefile.am,README,synfig.kdevprj,synfig-config.in
 install=false
 install_location=
 sub_dirs=src,config
@@ -148,7 +148,7 @@ install_location=
 type=DATA
 
 [config/Makefile.am]
-files=config/depcomp,config/configure.ac,config/config.guess,config/install-sh,config/config.sub,config/missing,config/cxx_macros.m4,config/project.spec.in,config/mkinstalldirs,config/sdl.m4,config/build.cfg,config/libxml.m4,config/ETL.m4,config/sinfg.m4
+files=config/depcomp,config/configure.ac,config/config.guess,config/install-sh,config/config.sub,config/missing,config/cxx_macros.m4,config/project.spec.in,config/mkinstalldirs,config/sdl.m4,config/build.cfg,config/libxml.m4,config/ETL.m4,config/synfig.m4
 sub_dirs=pkg-support,
 type=normal
 
@@ -258,7 +258,7 @@ install=false
 install_location=
 type=DATA
 
-[config/sinfg.m4]
+[config/synfig.m4]
 dist=true
 install=false
 install_location=
@@ -467,13 +467,13 @@ install=false
 install_location=
 type=DATA
 
-[sinfg-config.in]
+[synfig-config.in]
 dist=true
 install=false
 install_location=
 type=DATA
 
-[sinfg.kdevprj]
+[synfig.kdevprj]
 dist=true
 install=false
 install_location=
@@ -484,7 +484,7 @@ dist=true
 files=src/Makefile.am,src/template.cpp,src/template.h
 install=false
 install_location=
-sub_dirs=modules,sinfg,tool
+sub_dirs=modules,synfig,tool
 type=static_library
 
 [src/modules/Makefile.am]
@@ -890,203 +890,203 @@ install=false
 install_location=
 type=HEADER
 
-[src/sinfg/Makefile.am]
+[src/synfig/Makefile.am]
 dist=true
-files=src/sinfg/animate.cpp,src/sinfg/animate.h,src/sinfg/color.cpp,src/sinfg/color.h,src/sinfg/general.h,src/sinfg/layer.cpp,src/sinfg/layer.h,src/sinfg/main.cpp,src/sinfg/Makefile.am,src/sinfg/modules.cpp,src/sinfg/modules.h,src/sinfg/pch.h,src/sinfg/renddesc.h,src/sinfg/render.cpp,src/sinfg/render.h,src/sinfg/sinfg.h,src/sinfg/target.cpp,src/sinfg/target.h,src/sinfg/vector.h,src/sinfg/bmplayer.cpp,src/sinfg/bmplayer.h,src/sinfg/importer.cpp,src/sinfg/importer.h,src/sinfg/surface.cpp,src/sinfg/surface.h,src/sinfg/datatype.h,src/sinfg/datatype.cpp,src/sinfg/canvas.cpp,src/sinfg/canvas.h,src/sinfg/loadcanvas.cpp,src/sinfg/loadcanvas.h,src/sinfg/savecanvas.cpp,src/sinfg/savecanvas.h
+files=src/synfig/animate.cpp,src/synfig/animate.h,src/synfig/color.cpp,src/synfig/color.h,src/synfig/general.h,src/synfig/layer.cpp,src/synfig/layer.h,src/synfig/main.cpp,src/synfig/Makefile.am,src/synfig/modules.cpp,src/synfig/modules.h,src/synfig/pch.h,src/synfig/renddesc.h,src/synfig/render.cpp,src/synfig/render.h,src/synfig/synfig.h,src/synfig/target.cpp,src/synfig/target.h,src/synfig/vector.h,src/synfig/bmplayer.cpp,src/synfig/bmplayer.h,src/synfig/importer.cpp,src/synfig/importer.h,src/synfig/surface.cpp,src/synfig/surface.h,src/synfig/datatype.h,src/synfig/datatype.cpp,src/synfig/canvas.cpp,src/synfig/canvas.h,src/synfig/loadcanvas.cpp,src/synfig/loadcanvas.h,src/synfig/savecanvas.cpp,src/synfig/savecanvas.h
 install=false
 install_location=
 sharedlib_LDFLAGS=-version-info 0:0:1
-sharedlib_rootname=sinfg
+sharedlib_rootname=synfig
 sub_dirs=
 type=static_library
 
-[src/sinfg/animate.cpp]
+[src/synfig/animate.cpp]
 dist=true
 install=false
 install_location=
 type=SOURCE
 
-[src/sinfg/animate.h]
+[src/synfig/animate.h]
 dist=true
 install=false
 install_location=
 type=HEADER
 
-[src/sinfg/bmplayer.cpp]
+[src/synfig/bmplayer.cpp]
 dist=true
 install=false
 install_location=
 type=SOURCE
 
-[src/sinfg/bmplayer.h]
+[src/synfig/bmplayer.h]
 dist=true
 install=false
 install_location=
 type=HEADER
 
-[src/sinfg/canvas.cpp]
+[src/synfig/canvas.cpp]
 dist=true
 install=false
 install_location=
 type=SOURCE
 
-[src/sinfg/canvas.h]
+[src/synfig/canvas.h]
 dist=true
 install=false
 install_location=
 type=HEADER
 
-[src/sinfg/color.cpp]
+[src/synfig/color.cpp]
 dist=true
 install=false
 install_location=
 type=SOURCE
 
-[src/sinfg/color.h]
+[src/synfig/color.h]
 dist=true
 install=false
 install_location=
 type=HEADER
 
-[src/sinfg/datatype.cpp]
+[src/synfig/datatype.cpp]
 dist=true
 install=false
 install_location=
 type=SOURCE
 
-[src/sinfg/datatype.h]
+[src/synfig/datatype.h]
 dist=true
 install=false
 install_location=
 type=HEADER
 
-[src/sinfg/general.h]
+[src/synfig/general.h]
 dist=true
 install=false
 install_location=
 type=HEADER
 
-[src/sinfg/importer.cpp]
+[src/synfig/importer.cpp]
 dist=true
 install=false
 install_location=
 type=SOURCE
 
-[src/sinfg/importer.h]
+[src/synfig/importer.h]
 dist=true
 install=false
 install_location=
 type=HEADER
 
-[src/sinfg/layer.cpp]
+[src/synfig/layer.cpp]
 dist=true
 install=false
 install_location=
 type=SOURCE
 
-[src/sinfg/layer.h]
+[src/synfig/layer.h]
 dist=true
 install=false
 install_location=
 type=HEADER
 
-[src/sinfg/loadcanvas.cpp]
+[src/synfig/loadcanvas.cpp]
 dist=true
 install=false
 install_location=
 type=SOURCE
 
-[src/sinfg/loadcanvas.h]
+[src/synfig/loadcanvas.h]
 dist=true
 install=false
 install_location=
 type=HEADER
 
-[src/sinfg/main.cpp]
+[src/synfig/main.cpp]
 dist=true
 install=false
 install_location=
 type=SOURCE
 
-[src/sinfg/modules.cpp]
+[src/synfig/modules.cpp]
 dist=true
 install=false
 install_location=
 type=SOURCE
 
-[src/sinfg/modules.h]
+[src/synfig/modules.h]
 dist=true
 install=false
 install_location=
 type=HEADER
 
-[src/sinfg/pch.h]
+[src/synfig/pch.h]
 dist=true
 install=false
 install_location=
 type=HEADER
 
-[src/sinfg/renddesc.h]
+[src/synfig/renddesc.h]
 dist=true
 install=false
 install_location=
 type=HEADER
 
-[src/sinfg/render.cpp]
+[src/synfig/render.cpp]
 dist=true
 install=false
 install_location=
 type=SOURCE
 
-[src/sinfg/render.h]
+[src/synfig/render.h]
 dist=true
 install=false
 install_location=
 type=HEADER
 
-[src/sinfg/savecanvas.cpp]
+[src/synfig/savecanvas.cpp]
 dist=true
 install=false
 install_location=
 type=SOURCE
 
-[src/sinfg/savecanvas.h]
+[src/synfig/savecanvas.h]
 dist=true
 install=false
 install_location=
 type=HEADER
 
-[src/sinfg/sinfg.h]
+[src/synfig/synfig.h]
 dist=true
 install=false
 install_location=
 type=HEADER
 
-[src/sinfg/surface.cpp]
+[src/synfig/surface.cpp]
 dist=true
 install=false
 install_location=
 type=SOURCE
 
-[src/sinfg/surface.h]
+[src/synfig/surface.h]
 dist=true
 install=false
 install_location=
 type=HEADER
 
-[src/sinfg/target.cpp]
+[src/synfig/target.cpp]
 dist=true
 install=false
 install_location=
 type=SOURCE
 
-[src/sinfg/target.h]
+[src/synfig/target.h]
 dist=true
 install=false
 install_location=
 type=HEADER
 
-[src/sinfg/vector.h]
+[src/synfig/vector.h]
 dist=true
 install=false
 install_location=

@@ -690,7 +690,7 @@
 		);
 		isa = PBXExecutable;
 		libgmallocEnabled = 0;
-		name = "Sinfg Tool";
+		name = "Synfig Tool";
 		shlibInfoDictList = (
 		);
 		sourceDirectories = (

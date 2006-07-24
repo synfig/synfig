@@ -1,6 +1,6 @@
 #! /bin/sh
 #
-# Sinfg Bootstrap Script
+# Synfig Bootstrap Script
 # $Id: bootstrap,v 1.2 2005/01/10 07:40:26 darco Exp $
 # 
 # This script creates the configure script and Makefile.in files,
@@ -248,7 +248,7 @@ false && {
 # sed "
 # s/g++ c++/g++3 g++ c++/;
 # s/gcc cc/gcc3 gcc cc/;
-# s:"'${prefix}/include'":"'${prefix}/include/sinfg'":;
+# s:"'${prefix}/include'":"'${prefix}/include/synfig'":;
 # s:PREFIX/include:PREFIX/include/ETL:;
 # " < configure > $TEMPFILE
 # cp $TEMPFILE configure

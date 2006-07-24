@@ -70,7 +70,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = angle.h;
-			path = src/sinfg/angle.h;
+			path = src/synfig/angle.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -79,7 +79,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = renddesc.cpp;
-			path = src/sinfg/renddesc.cpp;
+			path = src/synfig/renddesc.cpp;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -88,7 +88,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = string.h;
-			path = src/sinfg/string.h;
+			path = src/synfig/string.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -97,7 +97,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = time.cpp;
-			path = src/sinfg/time.cpp;
+			path = src/synfig/time.cpp;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -106,7 +106,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = time.h;
-			path = src/sinfg/time.h;
+			path = src/synfig/time.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -154,7 +154,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = valuenode_animated.cpp;
-			path = src/sinfg/valuenode_animated.cpp;
+			path = src/synfig/valuenode_animated.cpp;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -163,7 +163,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = valuenode_animated.h;
-			path = src/sinfg/valuenode_animated.h;
+			path = src/synfig/valuenode_animated.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -172,7 +172,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = valuenode_composite.cpp;
-			path = src/sinfg/valuenode_composite.cpp;
+			path = src/synfig/valuenode_composite.cpp;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -181,7 +181,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = valuenode_composite.h;
-			path = src/sinfg/valuenode_composite.h;
+			path = src/synfig/valuenode_composite.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -190,7 +190,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = valuenode_const.cpp;
-			path = src/sinfg/valuenode_const.cpp;
+			path = src/synfig/valuenode_const.cpp;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -199,7 +199,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = valuenode_const.h;
-			path = src/sinfg/valuenode_const.h;
+			path = src/synfig/valuenode_const.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -208,7 +208,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = valuenode_dynamiclist.cpp;
-			path = src/sinfg/valuenode_dynamiclist.cpp;
+			path = src/synfig/valuenode_dynamiclist.cpp;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -217,7 +217,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = valuenode_dynamiclist.h;
-			path = src/sinfg/valuenode_dynamiclist.h;
+			path = src/synfig/valuenode_dynamiclist.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -226,7 +226,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = valuenode_linear.cpp;
-			path = src/sinfg/valuenode_linear.cpp;
+			path = src/synfig/valuenode_linear.cpp;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -235,7 +235,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = valuenode_linear.h;
-			path = src/sinfg/valuenode_linear.h;
+			path = src/synfig/valuenode_linear.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -244,7 +244,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = valuenode_reference.cpp;
-			path = src/sinfg/valuenode_reference.cpp;
+			path = src/synfig/valuenode_reference.cpp;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -253,7 +253,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = valuenode_reference.h;
-			path = src/sinfg/valuenode_reference.h;
+			path = src/synfig/valuenode_reference.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -262,7 +262,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = valuenode_scale.cpp;
-			path = src/sinfg/valuenode_scale.cpp;
+			path = src/synfig/valuenode_scale.cpp;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -271,7 +271,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = valuenode_scale.h;
-			path = src/sinfg/valuenode_scale.h;
+			path = src/synfig/valuenode_scale.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -280,7 +280,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = valuenode_subtract.cpp;
-			path = src/sinfg/valuenode_subtract.cpp;
+			path = src/synfig/valuenode_subtract.cpp;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -289,7 +289,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = valuenode_subtract.h;
-			path = src/sinfg/valuenode_subtract.h;
+			path = src/synfig/valuenode_subtract.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -298,7 +298,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = valuenode_timedswap.cpp;
-			path = src/sinfg/valuenode_timedswap.cpp;
+			path = src/synfig/valuenode_timedswap.cpp;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -307,7 +307,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = valuenode_timedswap.h;
-			path = src/sinfg/valuenode_timedswap.h;
+			path = src/synfig/valuenode_timedswap.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -316,7 +316,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = valuenode.cpp;
-			path = src/sinfg/valuenode.cpp;
+			path = src/synfig/valuenode.cpp;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -325,7 +325,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = valuenode.h;
-			path = src/sinfg/valuenode.h;
+			path = src/synfig/valuenode.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -484,7 +484,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = activepoint.cpp;
-			path = src/sinfg/activepoint.cpp;
+			path = src/synfig/activepoint.cpp;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -493,7 +493,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = activepoint.h;
-			path = src/sinfg/activepoint.h;
+			path = src/synfig/activepoint.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -502,7 +502,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = blinepoint.cpp;
-			path = src/sinfg/blinepoint.cpp;
+			path = src/synfig/blinepoint.cpp;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -511,7 +511,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = blinepoint.h;
-			path = src/sinfg/blinepoint.h;
+			path = src/synfig/blinepoint.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -520,7 +520,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = gamma.cpp;
-			path = src/sinfg/gamma.cpp;
+			path = src/synfig/gamma.cpp;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -529,7 +529,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = gamma.h;
-			path = src/sinfg/gamma.h;
+			path = src/synfig/gamma.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -538,7 +538,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = gradient.cpp;
-			path = src/sinfg/gradient.cpp;
+			path = src/synfig/gradient.cpp;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -547,7 +547,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = gradient.h;
-			path = src/sinfg/gradient.h;
+			path = src/synfig/gradient.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -556,7 +556,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = layer_shape.cpp;
-			path = src/sinfg/layer_shape.cpp;
+			path = src/synfig/layer_shape.cpp;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -565,7 +565,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = layer_shape.h;
-			path = src/sinfg/layer_shape.h;
+			path = src/synfig/layer_shape.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -574,7 +574,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = main.h;
-			path = src/sinfg/main.h;
+			path = src/synfig/main.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -583,7 +583,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = target_null_tile.cpp;
-			path = src/sinfg/target_null_tile.cpp;
+			path = src/synfig/target_null_tile.cpp;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -592,7 +592,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = target_null_tile.h;
-			path = src/sinfg/target_null_tile.h;
+			path = src/synfig/target_null_tile.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -601,7 +601,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = target_scanline.cpp;
-			path = src/sinfg/target_scanline.cpp;
+			path = src/synfig/target_scanline.cpp;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -610,7 +610,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = target_scanline.h;
-			path = src/sinfg/target_scanline.h;
+			path = src/synfig/target_scanline.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -619,7 +619,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = target_tile.cpp;
-			path = src/sinfg/target_tile.cpp;
+			path = src/synfig/target_tile.cpp;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -628,7 +628,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = target_tile.h;
-			path = src/sinfg/target_tile.h;
+			path = src/synfig/target_tile.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -637,7 +637,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = valuenode_bline.cpp;
-			path = src/sinfg/valuenode_bline.cpp;
+			path = src/synfig/valuenode_bline.cpp;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -646,7 +646,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = valuenode_bline.h;
-			path = src/sinfg/valuenode_bline.h;
+			path = src/synfig/valuenode_bline.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -655,7 +655,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = valuenode_segcalctangent.cpp;
-			path = src/sinfg/valuenode_segcalctangent.cpp;
+			path = src/synfig/valuenode_segcalctangent.cpp;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -664,7 +664,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = valuenode_segcalctangent.h;
-			path = src/sinfg/valuenode_segcalctangent.h;
+			path = src/synfig/valuenode_segcalctangent.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -673,7 +673,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = valuenode_segcalcvertex.cpp;
-			path = src/sinfg/valuenode_segcalcvertex.cpp;
+			path = src/synfig/valuenode_segcalcvertex.cpp;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -682,7 +682,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = valuenode_segcalcvertex.h;
-			path = src/sinfg/valuenode_segcalcvertex.h;
+			path = src/synfig/valuenode_segcalcvertex.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -691,7 +691,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = valuenode_stripes.cpp;
-			path = src/sinfg/valuenode_stripes.cpp;
+			path = src/synfig/valuenode_stripes.cpp;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -700,7 +700,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = valuenode_stripes.h;
-			path = src/sinfg/valuenode_stripes.h;
+			path = src/synfig/valuenode_stripes.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -709,7 +709,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = valuenode_twotone.cpp;
-			path = src/sinfg/valuenode_twotone.cpp;
+			path = src/synfig/valuenode_twotone.cpp;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -718,7 +718,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = valuenode_twotone.h;
-			path = src/sinfg/valuenode_twotone.h;
+			path = src/synfig/valuenode_twotone.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -727,7 +727,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = waypoint.cpp;
-			path = src/sinfg/waypoint.cpp;
+			path = src/synfig/waypoint.cpp;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -736,7 +736,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = waypoint.h;
-			path = src/sinfg/waypoint.h;
+			path = src/synfig/waypoint.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -1009,7 +1009,7 @@
 			isa = PBXContainerItemProxy;
 			proxyType = 1;
 			remoteGlobalIDString = F5F48ECF0314873101682FCB;
-			remoteInfo = "Sinfg Library";
+			remoteInfo = "Synfig Library";
 		};
 		A65F23C905E843AF005A2B7E = {
 			containerPortal = F550016502F0983D01000102;
@@ -1079,14 +1079,14 @@
 			isa = PBXContainerItemProxy;
 			proxyType = 1;
 			remoteGlobalIDString = F5F48EBB0314868C01682FCB;
-			remoteInfo = "Sinfg Tool";
+			remoteInfo = "Synfig Tool";
 		};
 		A65F23D305E843AF005A2B7E = {
 			containerPortal = F550016502F0983D01000102;
 			isa = PBXContainerItemProxy;
 			proxyType = 1;
 			remoteGlobalIDString = F5F48ECF0314873101682FCB;
-			remoteInfo = "Sinfg Library";
+			remoteInfo = "Synfig Library";
 		};
 		A65F23D405E843AF005A2B7E = {
 			containerPortal = F550016502F0983D01000102;
@@ -1100,21 +1100,21 @@
 			isa = PBXContainerItemProxy;
 			proxyType = 1;
 			remoteGlobalIDString = F5F48ECF0314873101682FCB;
-			remoteInfo = "Sinfg Library";
+			remoteInfo = "Synfig Library";
 		};
 		A65F23D605E843AF005A2B7E = {
 			containerPortal = F550016502F0983D01000102;
 			isa = PBXContainerItemProxy;
 			proxyType = 1;
 			remoteGlobalIDString = F5F48ECF0314873101682FCB;
-			remoteInfo = "Sinfg Library";
+			remoteInfo = "Synfig Library";
 		};
 		A65F23D705E843AF005A2B7E = {
 			containerPortal = F550016502F0983D01000102;
 			isa = PBXContainerItemProxy;
 			proxyType = 1;
 			remoteGlobalIDString = F5F48EBB0314868C01682FCB;
-			remoteInfo = "Sinfg Tool";
+			remoteInfo = "Synfig Tool";
 		};
 		A65F23D805E843AF005A2B7E = {
 			containerPortal = F550016502F0983D01000102;
@@ -1128,7 +1128,7 @@
 			isa = PBXContainerItemProxy;
 			proxyType = 1;
 			remoteGlobalIDString = F5F48ECF0314873101682FCB;
-			remoteInfo = "Sinfg Library";
+			remoteInfo = "Synfig Library";
 		};
 		A6714DEC0413E7BB00F656BD = {
 			children = (
@@ -1173,7 +1173,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = segment.h;
-			path = src/sinfg/segment.h;
+			path = src/synfig/segment.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -1182,7 +1182,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = types.h;
-			path = src/sinfg/types.h;
+			path = src/synfig/types.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -1239,7 +1239,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = canvasbase.h;
-			path = src/sinfg/canvasbase.h;
+			path = src/synfig/canvasbase.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -1248,7 +1248,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = context.cpp;
-			path = src/sinfg/context.cpp;
+			path = src/synfig/context.cpp;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -1257,7 +1257,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = context.h;
-			path = src/sinfg/context.h;
+			path = src/synfig/context.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -1266,7 +1266,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = layer_bitmap.cpp;
-			path = src/sinfg/layer_bitmap.cpp;
+			path = src/synfig/layer_bitmap.cpp;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -1275,7 +1275,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = layer_bitmap.h;
-			path = src/sinfg/layer_bitmap.h;
+			path = src/synfig/layer_bitmap.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -1284,7 +1284,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = layer_composite.cpp;
-			path = src/sinfg/layer_composite.cpp;
+			path = src/synfig/layer_composite.cpp;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -1293,7 +1293,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = layer_composite.h;
-			path = src/sinfg/layer_composite.h;
+			path = src/synfig/layer_composite.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -1302,7 +1302,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = layer_mime.cpp;
-			path = src/sinfg/layer_mime.cpp;
+			path = src/synfig/layer_mime.cpp;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -1311,7 +1311,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = layer_mime.h;
-			path = src/sinfg/layer_mime.h;
+			path = src/synfig/layer_mime.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -1320,7 +1320,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = layer_motionblur.cpp;
-			path = src/sinfg/layer_motionblur.cpp;
+			path = src/synfig/layer_motionblur.cpp;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -1329,7 +1329,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = layer_motionblur.h;
-			path = src/sinfg/layer_motionblur.h;
+			path = src/synfig/layer_motionblur.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -1338,7 +1338,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = layer_pastecanvas.cpp;
-			path = src/sinfg/layer_pastecanvas.cpp;
+			path = src/synfig/layer_pastecanvas.cpp;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -1347,7 +1347,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = layer_pastecanvas.h;
-			path = src/sinfg/layer_pastecanvas.h;
+			path = src/synfig/layer_pastecanvas.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -1356,7 +1356,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = layer_polygon.cpp;
-			path = src/sinfg/layer_polygon.cpp;
+			path = src/synfig/layer_polygon.cpp;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -1365,7 +1365,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = layer_polygon.h;
-			path = src/sinfg/layer_polygon.h;
+			path = src/synfig/layer_polygon.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -1374,7 +1374,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = layer_solidcolor.cpp;
-			path = src/sinfg/layer_solidcolor.cpp;
+			path = src/synfig/layer_solidcolor.cpp;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -1383,7 +1383,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = layer_solidcolor.h;
-			path = src/sinfg/layer_solidcolor.h;
+			path = src/synfig/layer_solidcolor.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -1392,7 +1392,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = paramdesc.h;
-			path = src/sinfg/paramdesc.h;
+			path = src/synfig/paramdesc.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -1401,7 +1401,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = real.h;
-			path = src/sinfg/real.h;
+			path = src/synfig/real.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -1410,7 +1410,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = string_decl.h;
-			path = src/sinfg/string_decl.h;
+			path = src/synfig/string_decl.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -1419,7 +1419,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = target_multi.cpp;
-			path = src/sinfg/target_multi.cpp;
+			path = src/synfig/target_multi.cpp;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -1428,7 +1428,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = target_multi.h;
-			path = src/sinfg/target_multi.h;
+			path = src/synfig/target_multi.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -1437,7 +1437,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = target_null.cpp;
-			path = src/sinfg/target_null.cpp;
+			path = src/synfig/target_null.cpp;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -1446,7 +1446,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = target_null.h;
-			path = src/sinfg/target_null.h;
+			path = src/synfig/target_null.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -1455,7 +1455,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = uniqueid.cpp;
-			path = src/sinfg/uniqueid.cpp;
+			path = src/synfig/uniqueid.cpp;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -1464,7 +1464,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = uniqueid.h;
-			path = src/sinfg/uniqueid.h;
+			path = src/synfig/uniqueid.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -1902,7 +1902,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = curve_helper.cpp;
-			path = src/sinfg/curve_helper.cpp;
+			path = src/synfig/curve_helper.cpp;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -1911,7 +1911,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = curve_helper.h;
-			path = src/sinfg/curve_helper.h;
+			path = src/synfig/curve_helper.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -1920,7 +1920,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = palette.cpp;
-			path = src/sinfg/palette.cpp;
+			path = src/synfig/palette.cpp;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -1929,7 +1929,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = palette.h;
-			path = src/sinfg/palette.h;
+			path = src/synfig/palette.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -1938,7 +1938,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = polynomial_root.cpp;
-			path = src/sinfg/polynomial_root.cpp;
+			path = src/synfig/polynomial_root.cpp;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -1947,7 +1947,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = polynomial_root.h;
-			path = src/sinfg/polynomial_root.h;
+			path = src/synfig/polynomial_root.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -1956,7 +1956,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = transform.cpp;
-			path = src/sinfg/transform.cpp;
+			path = src/synfig/transform.cpp;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -1965,7 +1965,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = transform.h;
-			path = src/sinfg/transform.h;
+			path = src/synfig/transform.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -2070,7 +2070,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = exception.cpp;
-			path = src/sinfg/exception.cpp;
+			path = src/synfig/exception.cpp;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -2079,7 +2079,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = keyframe.cpp;
-			path = src/sinfg/keyframe.cpp;
+			path = src/synfig/keyframe.cpp;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -2088,7 +2088,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = keyframe.h;
-			path = src/sinfg/keyframe.h;
+			path = src/synfig/keyframe.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -2118,7 +2118,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = exception.h;
-			path = src/sinfg/exception.h;
+			path = src/synfig/exception.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -2195,7 +2195,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = curveset.cpp;
-			path = src/sinfg/curveset.cpp;
+			path = src/synfig/curveset.cpp;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -2204,7 +2204,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = curveset.h;
-			path = src/sinfg/curveset.h;
+			path = src/synfig/curveset.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -2213,7 +2213,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = distance.cpp;
-			path = src/sinfg/distance.cpp;
+			path = src/synfig/distance.cpp;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -2222,7 +2222,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = distance.h;
-			path = src/sinfg/distance.h;
+			path = src/synfig/distance.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -2231,7 +2231,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = guid.cpp;
-			path = src/sinfg/guid.cpp;
+			path = src/synfig/guid.cpp;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -2240,7 +2240,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = guid.h;
-			path = src/sinfg/guid.h;
+			path = src/synfig/guid.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -2249,7 +2249,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = guidset.h;
-			path = src/sinfg/guidset.h;
+			path = src/synfig/guidset.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -2258,7 +2258,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = interpolation.h;
-			path = src/sinfg/interpolation.h;
+			path = src/synfig/interpolation.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -2267,7 +2267,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = node.cpp;
-			path = src/sinfg/node.cpp;
+			path = src/synfig/node.cpp;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -2276,7 +2276,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = node.h;
-			path = src/sinfg/node.h;
+			path = src/synfig/node.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -2285,7 +2285,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = rect.cpp;
-			path = src/sinfg/rect.cpp;
+			path = src/synfig/rect.cpp;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -2294,7 +2294,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = rect.h;
-			path = src/sinfg/rect.h;
+			path = src/synfig/rect.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -2303,7 +2303,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = smartfile.h;
-			path = src/sinfg/smartfile.h;
+			path = src/synfig/smartfile.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -2312,7 +2312,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = timepointcollect.cpp;
-			path = src/sinfg/timepointcollect.cpp;
+			path = src/synfig/timepointcollect.cpp;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -2321,7 +2321,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = timepointcollect.h;
-			path = src/sinfg/timepointcollect.h;
+			path = src/synfig/timepointcollect.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -2330,7 +2330,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = valuenode_radialcomposite.cpp;
-			path = src/sinfg/valuenode_radialcomposite.cpp;
+			path = src/synfig/valuenode_radialcomposite.cpp;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -2339,7 +2339,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = valuenode_radialcomposite.h;
-			path = src/sinfg/valuenode_radialcomposite.h;
+			path = src/synfig/valuenode_radialcomposite.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -2348,7 +2348,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = valuenode_sine.cpp;
-			path = src/sinfg/valuenode_sine.cpp;
+			path = src/synfig/valuenode_sine.cpp;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -2357,7 +2357,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = valuenode_sine.h;
-			path = src/sinfg/valuenode_sine.h;
+			path = src/synfig/valuenode_sine.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -2594,7 +2594,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = listimporter.cpp;
-			path = src/sinfg/listimporter.cpp;
+			path = src/synfig/listimporter.cpp;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -2603,7 +2603,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = listimporter.h;
-			path = src/sinfg/listimporter.h;
+			path = src/synfig/listimporter.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -2612,7 +2612,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = version.h;
-			path = src/sinfg/version.h;
+			path = src/synfig/version.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -2672,7 +2672,7 @@
 				OTHER_LIBTOOL_FLAGS = "-module -dynamic";
 				OTHER_REZFLAGS = "";
 				PREBINDING = NO;
-				PREFIX_HEADER = sinfg.pbproj/config.h;
+				PREFIX_HEADER = synfig.pbproj/config.h;
 				PRODUCT_NAME = libmod_openexr.so;
 				REZ_EXECUTABLE = YES;
 				SECTORDER_FLAGS = "";
@@ -2825,7 +2825,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = blur.cpp;
-			path = src/sinfg/blur.cpp;
+			path = src/synfig/blur.cpp;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -2834,7 +2834,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = blur.h;
-			path = src/sinfg/blur.h;
+			path = src/synfig/blur.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -2843,7 +2843,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = paramdesc.cpp;
-			path = src/sinfg/paramdesc.cpp;
+			path = src/synfig/paramdesc.cpp;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -2881,7 +2881,7 @@
 		F504527502F391C901000102 = {
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
-				HEADER_SEARCH_PATHS = "\U0001./sinfg.pbproj";
+				HEADER_SEARCH_PATHS = "\U0001./synfig.pbproj";
 				LDFLAGS = "\U0001-flat-namespace";
 				MACOSX_DEPLOYMENT_TARGET = 10.2;
 				OPTIMIZATION_CFLAGS = "-O0 -g -faltivec";
@@ -2914,7 +2914,7 @@
 				OTHER_LIBTOOL_FLAGS = "-module -dynamic";
 				OTHER_REZFLAGS = "";
 				PREBINDING = NO;
-				PREFIX_HEADER = sinfg.pbproj/config.h;
+				PREFIX_HEADER = synfig.pbproj/config.h;
 				PRODUCT_NAME = libmod_imagemagick.so;
 				REZ_EXECUTABLE = YES;
 				SECTORDER_FLAGS = "";
@@ -3145,7 +3145,7 @@
 				OTHER_LIBTOOL_FLAGS = "-module -dynamic";
 				OTHER_REZFLAGS = "";
 				PREBINDING = NO;
-				PREFIX_HEADER = sinfg.pbproj/config.h;
+				PREFIX_HEADER = synfig.pbproj/config.h;
 				PRODUCT_NAME = libmod_dv.so;
 				REZ_EXECUTABLE = YES;
 				SECTORDER_FLAGS = "";
@@ -3339,7 +3339,7 @@
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "";
 				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = "sinfg-devel";
+				PRODUCT_NAME = "synfig-devel";
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = "-Wmost -Wno-four-char-constants -Wno-unknown-pragmas";
 				WRAPPER_EXTENSION = pkg;
@@ -3385,7 +3385,7 @@
 		F513071603267616012F4765 = {
 			explicitFileType = wrapper.cfbundle;
 			isa = PBXFileReference;
-			path = "sinfg-devel.pkg";
+			path = "synfig-devel.pkg";
 			refType = 3;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
@@ -3416,7 +3416,7 @@
 			isa = PBXShellScriptBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = ". config/build.cfg\n\nset -x\n\n# clean up the framework, remove extra files\nrm -rf build/pkg-tmp/sinfg.framework/Resources/pbdevelopment.plist\n\n# create the module manifest\nls --color=no build/pkg-tmp/sinfg.framework/Resources/modules | sed \"s/.so//;s/.dylib//;s/lib//;\" > build/pkg-tmp/sinfg.framework/Resources/sinfg_modules.cfg\n\n# remove the .DS_Store file to keep tool from crapping out\nrm -rf pkg-support/devel-resources/.DS_Store\n\nsed \"\ns:@_VERSION_@:$VERSION:;\ns:@_PACKAGE_@:$PACKAGE:;\ns:@_RELEASE_@:$RELEASE:;\ns:@_PACKAGE_NAME_@:$PACKAGE_NAME:;\ns:@_PRODUCT_NAME_@:$PRODUCT_NAME:;\n\" < config/pkg-support/sinfg-devel.info > build/$PRODUCT_NAME.info\n\n# create the .pkg\npackage build/pkg-tmp build/$PRODUCT_NAME.info -d  build \n\n# remove temporary files\nrm -rf build/pkg-tmp build/$PRODUCT_NAME.info\n\n# compress\n(cd build; sleep 1; tar -zcvf $PRODUCT_NAME.pkg.tar.gz $PRODUCT_NAME.pkg)";
+			shellScript = ". config/build.cfg\n\nset -x\n\n# clean up the framework, remove extra files\nrm -rf build/pkg-tmp/synfig.framework/Resources/pbdevelopment.plist\n\n# create the module manifest\nls --color=no build/pkg-tmp/synfig.framework/Resources/modules | sed \"s/.so//;s/.dylib//;s/lib//;\" > build/pkg-tmp/synfig.framework/Resources/synfig_modules.cfg\n\n# remove the .DS_Store file to keep tool from crapping out\nrm -rf pkg-support/devel-resources/.DS_Store\n\nsed \"\ns:@_VERSION_@:$VERSION:;\ns:@_PACKAGE_@:$PACKAGE:;\ns:@_RELEASE_@:$RELEASE:;\ns:@_PACKAGE_NAME_@:$PACKAGE_NAME:;\ns:@_PRODUCT_NAME_@:$PRODUCT_NAME:;\n\" < config/pkg-support/synfig-devel.info > build/$PRODUCT_NAME.info\n\n# create the .pkg\npackage build/pkg-tmp build/$PRODUCT_NAME.info -d  build \n\n# remove temporary files\nrm -rf build/pkg-tmp build/$PRODUCT_NAME.info\n\n# compress\n(cd build; sleep 1; tar -zcvf $PRODUCT_NAME.pkg.tar.gz $PRODUCT_NAME.pkg)";
 		};
 		F513071B03267685012F4765 = {
 			buildActionMask = 2147483647;
@@ -3425,7 +3425,7 @@
 			isa = PBXShellScriptBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = ". config/build.cfg\n\nDIR=build/sinfg-devel.pkg/Contents/Resources\n\nsed \"\ns:@_VERSION_@:$VERSION:;\ns:@_PACKAGE_@:$PACKAGE:;\ns:@_RELEASE_@:$RELEASE:;\ns:@_PACKAGE_NAME_@:$PACKAGE_NAME:;\ns:@_PRODUCT_NAME_@:$PRODUCT_NAME:;\n\" < $DIR/install.sh > $DIR/$PRODUCT_NAME.post_install\ncp $DIR/$PRODUCT_NAME.post_install $DIR/$PRODUCT_NAME.post_upgrade\n\nrm $DIR/install.sh\n\n# add execute flag to scripts\nchmod 755 $DIR/$PRODUCT_NAME.post_install $DIR/$PRODUCT_NAME.post_upgrade\n";
+			shellScript = ". config/build.cfg\n\nDIR=build/synfig-devel.pkg/Contents/Resources\n\nsed \"\ns:@_VERSION_@:$VERSION:;\ns:@_PACKAGE_@:$PACKAGE:;\ns:@_RELEASE_@:$RELEASE:;\ns:@_PACKAGE_NAME_@:$PACKAGE_NAME:;\ns:@_PRODUCT_NAME_@:$PRODUCT_NAME:;\n\" < $DIR/install.sh > $DIR/$PRODUCT_NAME.post_install\ncp $DIR/$PRODUCT_NAME.post_install $DIR/$PRODUCT_NAME.post_upgrade\n\nrm $DIR/install.sh\n\n# add execute flag to scripts\nchmod 755 $DIR/$PRODUCT_NAME.post_install $DIR/$PRODUCT_NAME.post_upgrade\n";
 		};
 		F513071C032676F4012F4765 = {
 			children = (
@@ -3440,8 +3440,8 @@
 		F513072703267737012F4765 = {
 			isa = PBXFileReference;
 			lastKnownFileType = text;
-			name = "sinfg-devel.info";
-			path = "config/pkg-support/sinfg-devel.info";
+			name = "synfig-devel.info";
+			path = "config/pkg-support/synfig-devel.info";
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -3452,7 +3452,7 @@
 				F513072D032677B1012F4765,
 			);
 			isa = PBXGroup;
-			name = "sinfg-devel";
+			name = "synfig-devel";
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -3514,7 +3514,7 @@
 			isa = PBXShellScriptBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "[ -e sinfg ] && mv sinfg build\nexit 0";
+			shellScript = "[ -e synfig ] && mv synfig build\nexit 0";
 		};
 		F513073B03267CDB012F4765 = {
 			fileRef = F5F48EBC0314868C01682FCB;
@@ -3526,7 +3526,7 @@
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = text.script.sh;
-			path = "sinfg-config.in";
+			path = "synfig-config.in";
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -3539,14 +3539,14 @@
 		F513079503267FC7012F4765 = {
 			isa = PBXFileReference;
 			lastKnownFileType = file;
-			name = "sinfg-devel.pkg.tar.gz";
-			path = "build/sinfg-devel.pkg.tar.gz";
+			name = "synfig-devel.pkg.tar.gz";
+			path = "build/synfig-devel.pkg.tar.gz";
 			refType = 4;
 			sourceTree = "<group>";
 		};
 		F513079E032682CF012F4765 = {
 			buildActionMask = 2147483647;
-			dstPath = sinfg.framework/Resources/modules;
+			dstPath = synfig.framework/Resources/modules;
 			dstSubfolderSpec = 16;
 			files = (
 				F536547F0357610A012F4ADF,
@@ -3598,7 +3598,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = render.cpp;
-			path = src/sinfg/render.cpp;
+			path = src/synfig/render.cpp;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -3607,7 +3607,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = render.h;
-			path = src/sinfg/render.h;
+			path = src/synfig/render.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -3625,7 +3625,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = target.cpp;
-			path = src/sinfg/target.cpp;
+			path = src/synfig/target.cpp;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -3634,7 +3634,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = target.h;
-			path = src/sinfg/target.h;
+			path = src/synfig/target.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -3777,7 +3777,7 @@
 				OTHER_LIBTOOL_FLAGS = "-module -dynamic";
 				OTHER_REZFLAGS = "";
 				PREBINDING = NO;
-				PREFIX_HEADER = sinfg.pbproj/config.h;
+				PREFIX_HEADER = synfig.pbproj/config.h;
 				PRODUCT_NAME = libmod_ffmpeg.so;
 				REZ_EXECUTABLE = YES;
 				SECTORDER_FLAGS = "";
@@ -4144,7 +4144,7 @@
 				A6C1415005E836A0004C1DD1,
 			);
 			isa = PBXGroup;
-			name = "Sinfg Library Sources";
+			name = "Synfig Library Sources";
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -4154,7 +4154,7 @@
 				F5F48EC2031486BE01682FCB,
 			);
 			isa = PBXGroup;
-			name = "Sinfg Tool Sources";
+			name = "Synfig Tool Sources";
 			path = "";
 			refType = 4;
 			sourceTree = "<group>";
@@ -4182,7 +4182,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = module.h;
-			path = src/sinfg/module.h;
+			path = src/synfig/module.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -4200,7 +4200,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = text;
 			name = Makefile.am;
-			path = src/sinfg/Makefile.am;
+			path = src/synfig/Makefile.am;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -4218,7 +4218,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = module.cpp;
-			path = src/sinfg/module.cpp;
+			path = src/synfig/module.cpp;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -4233,7 +4233,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = layer.cpp;
-			path = src/sinfg/layer.cpp;
+			path = src/synfig/layer.cpp;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -4242,7 +4242,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = layer.h;
-			path = src/sinfg/layer.h;
+			path = src/synfig/layer.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -4266,7 +4266,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = pch.h;
-			path = src/sinfg/pch.h;
+			path = src/synfig/pch.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -4284,7 +4284,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = color.cpp;
-			path = src/sinfg/color.cpp;
+			path = src/synfig/color.cpp;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -4293,7 +4293,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = color.h;
-			path = src/sinfg/color.h;
+			path = src/synfig/color.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -4317,7 +4317,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = vector.h;
-			path = src/sinfg/vector.h;
+			path = src/synfig/vector.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -4418,7 +4418,7 @@
 				OTHER_LIBTOOL_FLAGS = "-module -dynamic";
 				OTHER_REZFLAGS = "";
 				PREBINDING = NO;
-				PREFIX_HEADER = sinfg.pbproj/config.h;
+				PREFIX_HEADER = synfig.pbproj/config.h;
 				PRODUCT_NAME = libmod_ppm.so;
 				REZ_EXECUTABLE = YES;
 				SECTORDER_FLAGS = "";
@@ -4562,7 +4562,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = surface.h;
-			path = src/sinfg/surface.h;
+			path = src/synfig/surface.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -4580,7 +4580,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = canvas.cpp;
-			path = src/sinfg/canvas.cpp;
+			path = src/synfig/canvas.cpp;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -4589,7 +4589,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = canvas.h;
-			path = src/sinfg/canvas.h;
+			path = src/synfig/canvas.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -4598,7 +4598,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = loadcanvas.cpp;
-			path = src/sinfg/loadcanvas.cpp;
+			path = src/synfig/loadcanvas.cpp;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -4607,7 +4607,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = loadcanvas.h;
-			path = src/sinfg/loadcanvas.h;
+			path = src/synfig/loadcanvas.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -4616,7 +4616,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = savecanvas.cpp;
-			path = src/sinfg/savecanvas.cpp;
+			path = src/synfig/savecanvas.cpp;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -4625,7 +4625,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = savecanvas.h;
-			path = src/sinfg/savecanvas.h;
+			path = src/synfig/savecanvas.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -4689,7 +4689,7 @@
 			};
 		};
 		F58056B303A2F5F401A80006 = {
-			buildArgumentsString = sinfg.pbproj/doxygen.cfg;
+			buildArgumentsString = synfig.pbproj/doxygen.cfg;
 			buildPhases = (
 			);
 			buildSettings = {
@@ -4754,7 +4754,7 @@
 				WARNING_CFLAGS = "-Wmost -Wno-four-char-constants -Wno-unknown-pragmas";
 			};
 			buildToolPath = /usr/bin/gnumake;
-			buildWorkingDirectory = /Users/darco/src/voria/sinfg/doc/latex/;
+			buildWorkingDirectory = /Users/darco/src/voria/synfig/doc/latex/;
 			dependencies = (
 			);
 			isa = PBXLegacyTarget;
@@ -4777,7 +4777,7 @@
 			isa = PBXShellScriptBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "rm -fr sinfg-devel.pkg";
+			shellScript = "rm -fr synfig-devel.pkg";
 		};
 		F581E14003B24C140101DBD7 = {
 			isa = PBXFileReference;
@@ -4820,7 +4820,7 @@
 				OTHER_LIBTOOL_FLAGS = "-module -dynamic";
 				OTHER_REZFLAGS = "";
 				PREBINDING = NO;
-				PREFIX_HEADER = sinfg.pbproj/config.h;
+				PREFIX_HEADER = synfig.pbproj/config.h;
 				PRODUCT_NAME = libmod_png.so;
 				REZ_EXECUTABLE = YES;
 				SECTORDER_FLAGS = "";
@@ -5060,7 +5060,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = importer.cpp;
-			path = src/sinfg/importer.cpp;
+			path = src/synfig/importer.cpp;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -5069,7 +5069,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = importer.h;
-			path = src/sinfg/importer.h;
+			path = src/synfig/importer.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -5107,7 +5107,7 @@
 				OTHER_LIBTOOL_FLAGS = "-module -dynamic";
 				OTHER_REZFLAGS = "";
 				PREBINDING = NO;
-				PREFIX_HEADER = sinfg.pbproj/config.h;
+				PREFIX_HEADER = synfig.pbproj/config.h;
 				PRODUCT_NAME = liblyr_freetype.so;
 				REZ_EXECUTABLE = YES;
 				SECTORDER_FLAGS = "";
@@ -5265,7 +5265,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = renddesc.h;
-			path = src/sinfg/renddesc.h;
+			path = src/synfig/renddesc.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -5347,7 +5347,7 @@
 				OTHER_LIBTOOL_FLAGS = "-module -dynamic";
 				OTHER_REZFLAGS = "";
 				PREBINDING = NO;
-				PREFIX_HEADER = sinfg.pbproj/config.h;
+				PREFIX_HEADER = synfig.pbproj/config.h;
 				PRODUCT_NAME = libmod_bmp.so;
 				REZ_EXECUTABLE = YES;
 				SECTORDER_FLAGS = "";
@@ -5499,7 +5499,7 @@
 				OTHER_LIBTOOL_FLAGS = "-module -dynamic";
 				OTHER_REZFLAGS = "";
 				PREBINDING = NO;
-				PREFIX_HEADER = sinfg.pbproj/config.h;
+				PREFIX_HEADER = synfig.pbproj/config.h;
 				PRODUCT_NAME = liblyr_std.so;
 				REZ_EXECUTABLE = YES;
 				SECTORDER_FLAGS = "";
@@ -5699,7 +5699,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = text;
 			name = doxygen.cfg;
-			path = sinfg.pbproj/doxygen.cfg;
+			path = synfig.pbproj/doxygen.cfg;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -5717,7 +5717,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = value.cpp;
-			path = src/sinfg/value.cpp;
+			path = src/synfig/value.cpp;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -5726,7 +5726,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = value.h;
-			path = src/sinfg/value.h;
+			path = src/synfig/value.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -5775,7 +5775,7 @@
 				OTHER_LIBTOOL_FLAGS = "-module -dynamic";
 				OTHER_REZFLAGS = "";
 				PREBINDING = NO;
-				PREFIX_HEADER = sinfg.pbproj/config.h;
+				PREFIX_HEADER = synfig.pbproj/config.h;
 				PRODUCT_NAME = libmod_gif.so;
 				REZ_EXECUTABLE = YES;
 				SECTORDER_FLAGS = "";
@@ -5969,7 +5969,7 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				GCC_VERSION = 3;
-				HEADER_SEARCH_PATHS = "\U0001./sinfg.pbproj";
+				HEADER_SEARCH_PATHS = "\U0001./synfig.pbproj";
 				LDFLAGS = "\U0001-flat-namespace";
 				MACOSX_DEPLOYMENT_TARGET = 10.2;
 				OPTIMIZATION_CFLAGS = "-O3 -ffast-math -faltivec";
@@ -6024,8 +6024,8 @@
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "";
 				OTHER_REZFLAGS = "";
-				PREFIX_HEADER = sinfg.pbproj/config.h;
-				PRODUCT_NAME = sinfg;
+				PREFIX_HEADER = synfig.pbproj/config.h;
+				PRODUCT_NAME = synfig;
 				REZ_EXECUTABLE = YES;
 				SECTORDER_FLAGS = "";
 				USE_GCC3_PFE_SUPPORT = YES;
@@ -6035,14 +6035,14 @@
 				F5F48ED50314875A01682FCB,
 			);
 			isa = PBXToolTarget;
-			name = "Sinfg Tool";
-			productName = "Sinfg Tool";
+			name = "Synfig Tool";
+			productName = "Synfig Tool";
 			productReference = F5F48EBC0314868C01682FCB;
 		};
 		F5F48EBC0314868C01682FCB = {
 			explicitFileType = "compiled.mach-o.executable";
 			isa = PBXFileReference;
-			path = sinfg;
+			path = synfig;
 			refType = 3;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
@@ -6066,7 +6066,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = general.h;
-			path = src/sinfg/general.h;
+			path = src/synfig/general.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -6075,7 +6075,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = main.cpp;
-			path = src/sinfg/main.cpp;
+			path = src/synfig/main.cpp;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -6083,8 +6083,8 @@
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
-			name = sinfg.h;
-			path = src/sinfg/sinfg.h;
+			name = synfig.h;
+			path = src/synfig/synfig.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -6297,9 +6297,9 @@
 				OTHER_LDFLAGS = "\U0001";
 				OTHER_LIBTOOL_FLAGS = "\U0001-dynamic";
 				OTHER_REZFLAGS = "";
-				PREFIX_HEADER = sinfg.pbproj/config.h;
+				PREFIX_HEADER = synfig.pbproj/config.h;
 				PRINCIPAL_CLASS = "";
-				PRODUCT_NAME = sinfg;
+				PRODUCT_NAME = synfig;
 				SECTORDER_FLAGS = "";
 				USE_GCC3_PFE_SUPPORT = YES;
 				WARNING_CFLAGS = "-Wmost -Wno-four-char-constants -Wno-unknown-pragmas";
@@ -6308,9 +6308,9 @@
 			dependencies = (
 			);
 			isa = PBXFrameworkTarget;
-			name = "Sinfg Library";
+			name = "Synfig Library";
 			productInstallPath = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-			productName = "Sinfg Library";
+			productName = "Synfig Library";
 			productReference = F5F48ED00314873101682FCB;
 			productSettingsXML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
 <!DOCTYPE plist PUBLIC \"-//Apple Computer//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">
@@ -6319,7 +6319,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
 	<key>CFBundleExecutable</key>
-	<string>sinfg</string>
+	<string>synfig</string>
 	<key>CFBundleGetInfoString</key>
 	<string></string>
 	<key>CFBundleIconFile</key>
@@ -6329,7 +6329,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>Sinfg Library Framework</string>
+	<string>Synfig Library Framework</string>
 	<key>CFBundlePackageType</key>
 	<string>FMWK</string>
 	<key>CFBundleShortVersionString</key>
@@ -6345,7 +6345,7 @@
 		F5F48ED00314873101682FCB = {
 			explicitFileType = wrapper.framework;
 			isa = PBXFileReference;
-			path = sinfg.framework;
+			path = synfig.framework;
 			refType = 3;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
@@ -6450,7 +6450,7 @@
 				OTHER_LIBTOOL_FLAGS = "-module -dynamic";
 				OTHER_REZFLAGS = "";
 				PREBINDING = NO;
-				PREFIX_HEADER = sinfg.pbproj/config.h;
+				PREFIX_HEADER = synfig.pbproj/config.h;
 				PRODUCT_NAME = libmptr_mplayer.so;
 				REZ_EXECUTABLE = YES;
 				SECTORDER_FLAGS = "";
@@ -6574,7 +6574,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = surface.cpp;
-			path = src/sinfg/surface.cpp;
+			path = src/synfig/surface.cpp;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -6634,7 +6634,7 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			name = config.h;
-			path = sinfg.pbproj/config.h;
+			path = synfig.pbproj/config.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -6745,7 +6745,7 @@
 				OTHER_LIBTOOL_FLAGS = "-module -dynamic";
 				OTHER_REZFLAGS = "";
 				PREBINDING = NO;
-				PREFIX_HEADER = sinfg.pbproj/config.h;
+				PREFIX_HEADER = synfig.pbproj/config.h;
 				PRODUCT_NAME = libexample.so;
 				REZ_EXECUTABLE = YES;
 				SECTORDER_FLAGS = "";
