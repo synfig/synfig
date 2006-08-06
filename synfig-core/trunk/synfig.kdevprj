@@ -4,7 +4,7 @@ install=false
 install_location=
 type=DATA
 
-[./ETL-0.01.01.spec]
+[./ETL.spec]
 dist=true
 install=false
 install_location=
@@ -23,7 +23,7 @@ install_location=
 type=DATA
 
 [./Makefile.am]
-files=./aclocal.m4,./config.status,./README,./configure,./config.log,./ETL-0.01.01.spec,./INSTALL,./ChangeLog,./ETL.kdevprj,./bootstrap,
+files=./aclocal.m4,./config.status,./README,./configure,./config.log,./ETL.spec,./INSTALL,./ChangeLog,./ETL.kdevprj,./bootstrap,
 sub_dirs=test,config,ETL.pbproj,include,
 type=normal
 
