@@ -679,8 +679,7 @@ lyr_freetype::accelerated_render(Context context,Surface *surface,int quality, c
 
 	if(error)
 	{
-		if(cb)cb->error(string("lyr_freetype:")+_("Unable to set face size.")+strprintf(" (err=%d)",error));
-		return false;
+		if(cb)cb->warning(string("lyr_freetype:")+_("Unable to set face size.")+strprintf(" (err=%d)",error));
 	}
 
 	FT_GlyphSlot  slot = face->glyph;  // a small shortcut
