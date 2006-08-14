@@ -15,7 +15,7 @@ cd "$(dirname $0)"
 # Environment Variables
 BOOTSTRAP_NAME="$(basename $0)"
 
-CONFIG_DIR="$(pwd)/config"
+CONFIG_DIR="config"
 
 [ -x /bin/cygpath ] && CONFIG_DIR="`cygpath -m -s "$CONFIG_DIR"`"
 [ -x /bin/cygpath ] && CONFIG_DIR="`cygpath -u "$CONFIG_DIR"`"
@@ -213,4 +213,4 @@ echo $BOOTSTRAP_NAME: Complete.
 cleanup;
 
 # Move back to the current directory
-cd $CURR_DIR
+cd "$CURR_DIR"
