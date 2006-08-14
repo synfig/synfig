@@ -14,7 +14,7 @@ cd "$(dirname $0)"
 
 # Environment Variables
 BOOTSTRAP_NAME="$(basename $0)"
-CONFIG_DIR="$(pwd)/config"
+CONFIG_DIR="config"
 
 [ -x /bin/cygpath ] && CONFIG_DIR="`cygpath -m -s "$CONFIG_DIR"`"
 [ -x /bin/cygpath ] && CONFIG_DIR="`cygpath -u "$CONFIG_DIR"`"
@@ -29,7 +29,7 @@ export WANT_AUTOMAKE=1.8
 export WANT_AUTOCONF_2_5=1
 export WANT_AUTOCONF=2.5
 
-. $CONFIG_DIR/build.cfg
+. "$CONFIG_DIR/build.cfg"
 
 SED_SCRIPT="
 s/@PACKAGE@/$PACKAGE/g;
@@ -143,7 +143,7 @@ RECONFIG_LTDL=1
 
 for FILENAME in doxygen.cfg pkgconfig.pc project.spec ; do {
 output Creating $FILENAME...
-sed "$SED_SCRIPT" < $CONFIG_DIR/$FILENAME.in > $FILENAME;
+sed "$SED_SCRIPT" < "$CONFIG_DIR/$FILENAME.in" > $FILENAME;
 } ; done
 
 output Renaming pkgconfig.pc to $PACKAGE_TARNAME.pc.in...
@@ -157,7 +157,7 @@ echo %changelog >> "$PACKAGE.spec"
 cat NEWS >> "$PACKAGE.spec"
 
 output Creating configure.in from configure.ac...
-sed "$SED_SCRIPT" < $CONFIG_DIR/configure.ac > configure.in;
+sed "$SED_SCRIPT" < "$CONFIG_DIR/configure.ac" > configure.in;
 
 output Setting up build environment...
 
@@ -167,7 +167,7 @@ set -x
 # Create all of the build environment files
 (
 	libtoolize -c -f --ltdl &&
-	aclocal -I $CONFIG_DIR $ACLOCAL_FLAGS &&
+	aclocal -I "$CONFIG_DIR" $ACLOCAL_FLAGS &&
 	autoheader &&
 	autoconf -o configure &&
 	automake --foreign --add-missing --copy --include-deps &&
@@ -191,7 +191,7 @@ set +x
 	(
 		cd libltdl &&
 		( echo "AC_CONFIG_AUX_DIR(../config)" >> configure.[ai][cn] ) &&
-		aclocal -I $CONFIG_DIR &&
+		aclocal -I "../$CONFIG_DIR" &&
 		autoheader &&
 		autoconf &&
 		automake --foreign --add-missing --copy
@@ -310,6 +310,6 @@ output Complete.
 cleanup;
 
 # Move back to the current directory
-cd $CURR_DIR
+cd "$CURR_DIR"
 
 make -C src/synfig/proto
