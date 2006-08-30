@@ -317,13 +317,7 @@ CanvasParser::parse_vector(xmlpp::Element *element,Canvas::Handle canvas)
 				error(element, "Undefined value in <x>");
 				return Vector();
 			}
-			xmlpp::TextNode *text=dynamic_cast<xmlpp::TextNode*>(child->get_children().front());
-			if(!text)
-			{
-				error(element,"I need a number, not an element!");
-				return Vector();				
-			}
-			vect[0]=atof(text->get_content().c_str());
+			vect[0]=atof(child->get_child_text()->get_content().c_str());
 		}
 		else
 		if(child->get_name()=="y")
@@ -333,13 +327,7 @@ CanvasParser::parse_vector(xmlpp::Element *element,Canvas::Handle canvas)
 				error(element, "Undefined value in <y>");
 				return Vector();
 			}
-			xmlpp::TextNode *text=dynamic_cast<xmlpp::TextNode*>(child->get_children().front());
-			if(!text)
-			{
-				error(element,"I need a number, not an element!");
-				return Vector();				
-			}
-			vect[1]=atof(text->get_content().c_str());
+			vect[1]=atof(child->get_child_text()->get_content().c_str());
 		}
 		else
 			error_unexpected_element(child,child->get_name());

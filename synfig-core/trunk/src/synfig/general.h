@@ -63,16 +63,15 @@
 namespace synfig {
 
 class ChangeLocale {
-    const char *previous;
-    int category;
+    const String previous;
+    const int category;
 public:
     ChangeLocale(int category, const char *locale):
-        previous(setlocale(category,NULL)),category(category)
+        previous(setlocale(category,locale)),category(category)
     {
-            setlocale(category,locale);
     }
     ~ChangeLocale() {
-        setlocale(category,previous);
+        setlocale(category,previous.c_str());
     }
 };
 
