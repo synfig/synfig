@@ -32,6 +32,7 @@
 #include <gtkmm/spinbutton.h>
 #include <gtkmm/adjustment.h>
 #include <gtkmm/checkbutton.h>
+#include <gtkmm/notebook.h>
 #include "widget_vector.h"
 #include "widget_time.h"
 
@@ -43,7 +44,7 @@
 
 namespace studio {
 
-class Widget_RendDesc : public Gtk::Table
+class Widget_RendDesc : public Gtk::Notebook
 {
 	synfig::RendDesc rend_desc_;
 	sigc::signal<void> signal_changed_;
@@ -83,7 +84,7 @@ class Widget_RendDesc : public Gtk::Table
 	Gtk::CheckButton *toggle_im_height;
 	Gtk::CheckButton *toggle_im_span;
 
-	Gtk::Table *time_table;
+	/* Gtk::Table *time_table; */
 	Gtk::Frame *time_frame;
 
 	Widget_Vector *entry_tl;
@@ -142,6 +143,12 @@ private:
 	void on_lock_changed();
 	void on_focus_changed();
 	void on_span_changed();
+
+	void create_widgets();
+	void connect_signals();
+	Gtk::Widget *create_image_tab();
+	Gtk::Widget *create_time_tab();
+	Gtk::Widget *create_other_tab();
 };
 	
 }; // END of namespace studio

@@ -90,6 +90,7 @@ class Dialog_PreviewOptions : public Gtk::Dialog
 	
 	// for finishing
 	void on_ok_pressed();
+	void on_cancel_pressed();
 	
 	//for ui stuff
 	void on_overbegin_toggle();

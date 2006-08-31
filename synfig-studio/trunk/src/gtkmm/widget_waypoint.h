@@ -44,7 +44,7 @@
 #include <gtkmm/combo.h>
 #include <gtkmm/optionmenu.h>
 #include <gtkmm/spinbutton.h>
-
+#include <gtkmm/alignment.h>
 
 #include <synfigapp/value_desc.h>
 #include <synfig/waypoint.h>
@@ -65,7 +65,7 @@ class Widget_ValueBase;
 class Widget_Time;
 class Widget_Waypoint;
 
-class Widget_Waypoint : public Gtk::Table
+class Widget_Waypoint : public Gtk::Alignment
 {
     Widget_ValueBase *value_widget;
 	Gtk::Label *value_node_label;

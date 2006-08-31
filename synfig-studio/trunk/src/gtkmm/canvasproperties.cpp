@@ -33,7 +33,7 @@
 #include <gtkmm/frame.h>
 #include <gtkmm/table.h>
 #include <gtkmm/label.h>
-#include <gtkmm/notebook.h>
+#include <gtkmm/alignment.h>
 #include <synfigapp/canvasinterface.h>
 #include "metadatatreestore.h"
 #include <gtkmm/treeview.h>
@@ -62,36 +62,51 @@ CanvasProperties::CanvasProperties(Gtk::Window& parent,handle<synfigapp::CanvasI
 	canvas_interface_(canvas_interface)
 {
 	widget_rend_desc.show();
-
 	widget_rend_desc.signal_changed().connect(sigc::mem_fun(*this,&studio::CanvasProperties::on_rend_desc_changed));
 
+	Gtk::Alignment *dialogPadding = manage(new Gtk::Alignment(0, 0, 1, 1));
+	dialogPadding->set_padding(12, 12, 12, 12);
+	get_vbox()->pack_start(*dialogPadding, false, false, 0);
+
+	Gtk::VBox *dialogBox = manage(new Gtk::VBox(false, 12));
+	dialogPadding->add(*dialogBox);
+
 	Gtk::Frame *info_frame=manage(new Gtk::Frame(_("Canvas Info")));
+	info_frame->set_shadow_type(Gtk::SHADOW_NONE);
+	((Gtk::Label *) info_frame->get_label_widget())->set_markup(_("<b>Canvas Info</b>"));
+	dialogBox->pack_start(*info_frame, false, false, 0);
+
+	Gtk::Alignment *infoPadding = manage(new Gtk::Alignment(0, 0, 1, 1));
+	infoPadding->set_padding(6, 0, 24, 0);
+	info_frame->add(*infoPadding);
 	
 	Gtk::Table *info_table=manage(new Gtk::Table(2,2,false));
-	info_frame->add(*info_table);
+	info_table->set_row_spacings(6);
+	info_table->set_col_spacings(12);
+	infoPadding->add(*info_table);
 
 	// The root canvas doesn't have an ID, so don't
 	// display it if this is a root canvas.
 	if(!canvas_interface_->get_canvas()->is_root())
 	{
-		info_table->attach(*manage(new Gtk::Label(_("ID"))), 0, 1, 0, 1, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);	
+		Gtk::Label *idLabel = manage(new Gtk::Label(_("_ID"), true));
+		idLabel->set_alignment(0, 0.5);
+		idLabel->set_mnemonic_widget(entry_id);
+		info_table->attach(*idLabel, 0, 1, 0, 1, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);	
 		info_table->attach(entry_id, 1, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 	}
-	info_table->attach(*manage(new Gtk::Label(_("Name"))), 0, 1, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);	
-	info_table->attach(*manage(new Gtk::Label(_("Description"))), 0, 1, 2, 3, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);	
+	Gtk::Label *nameLabel = manage(new Gtk::Label(_("_Name"), true));
+	nameLabel->set_alignment(0, 0.5);
+	nameLabel->set_mnemonic_widget(entry_name);
+	Gtk::Label *descriptionLabel = manage(new Gtk::Label(_("_Description"), true));
+	descriptionLabel->set_alignment(0, 0.5);
+	descriptionLabel->set_mnemonic_widget(entry_description);
+	info_table->attach(*nameLabel, 0, 1, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);	
+	info_table->attach(*descriptionLabel, 0, 1, 2, 3, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);	
 	info_table->attach(entry_name, 1, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);	
 	info_table->attach(entry_description, 1, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);	
 
-	info_frame->show_all();
-	
-	get_vbox()->pack_start(*info_frame);
-	
-	Gtk::Notebook* notebook(manage(new Gtk::Notebook()));
-	notebook->show();
-	notebook->append_page(widget_rend_desc,_("RendDesc"));
-	//notebook->append_page(create_meta_data_view(),_("MetaData"));
-	
-	get_vbox()->pack_start(*notebook);
+	dialogBox->pack_start(widget_rend_desc, false, false, 0);
 
 	canvas_interface_->signal_rend_desc_changed().connect(sigc::mem_fun(*this,&studio::CanvasProperties::refresh));
 
@@ -112,6 +127,7 @@ CanvasProperties::CanvasProperties(Gtk::Window& parent,handle<synfigapp::CanvasI
 
 	//set_default_response(1);
 	
+	get_vbox()->show_all();
 	refresh();
 
 	update_title();

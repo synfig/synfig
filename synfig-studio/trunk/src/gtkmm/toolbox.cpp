@@ -193,11 +193,11 @@ Toolbox::Toolbox():
 {
 	GRAB_HINT_DATA(
 		"toolbox",
-#ifdef __APPLE__
+//#ifdef __APPLE__
 		Gdk::WINDOW_TYPE_HINT_NORMAL
-#else
-		Gdk::WINDOW_TYPE_HINT_UTILITY
-#endif
+//#else
+//		Gdk::WINDOW_TYPE_HINT_UTILITY
+//#endif
 	);
 	set_keep_above(false);
 	set_role("toolbox");

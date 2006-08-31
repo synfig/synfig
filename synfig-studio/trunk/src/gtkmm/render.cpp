@@ -32,6 +32,7 @@
 #include "render.h"
 #include "app.h"
 #include <gtkmm/frame.h>
+#include <gtkmm/alignment.h>
 #include <synfig/target_scanline.h>
 #include <synfig/canvas.h>
 #include "asyncrenderer.h"
@@ -60,7 +61,7 @@ RenderSettings::RenderSettings(Gtk::Window& parent,handle<synfigapp::CanvasInter
 	entry_quality(adjustment_quality,1,0),
 	adjustment_antialias(1,1,31),
 	entry_antialias(adjustment_antialias,1,0),
-	toggle_single_frame(_("Use Current Frame"))
+	toggle_single_frame(_("Use _current frame"), true)
 {
 	widget_rend_desc.show();
 	widget_rend_desc.signal_changed().connect(sigc::mem_fun(*this,&studio::RenderSettings::on_rend_desc_changed));
@@ -86,42 +87,76 @@ RenderSettings::RenderSettings(Gtk::Window& parent,handle<synfigapp::CanvasInter
 	optionmenu_target.set_menu(*menu_target);
 
 	optionmenu_target.set_history(0);
-	
-	
-	
-	
+
+	Gtk::Alignment *dialogPadding = manage(new Gtk::Alignment(0, 0, 1, 1));
+	dialogPadding->set_padding(12, 12, 12, 12);
+	get_vbox()->pack_start(*dialogPadding, false, false, 0);
+
+	Gtk::VBox *dialogBox = manage(new Gtk::VBox(false, 12));
+	dialogPadding->add(*dialogBox);
 
 	Gtk::Button *choose_button(manage(new class Gtk::Button(Gtk::StockID(_("Choose...")))));
 	choose_button->show();
 	choose_button->signal_clicked().connect(sigc::mem_fun(*this, &studio::RenderSettings::on_choose_pressed));
 	
 	Gtk::Frame *target_frame=manage(new Gtk::Frame(_("Target")));
-	Gtk::Table *target_table=manage(new Gtk::Table(2,2,false));
-	target_frame->add(*target_table);
-	target_table->attach(*manage(new Gtk::Label(_("Filename"))), 0, 1, 0, 1, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);	
-	target_table->attach(entry_filename, 1, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);	
+	target_frame->set_shadow_type(Gtk::SHADOW_NONE);
+	((Gtk::Label *) target_frame->get_label_widget())->set_markup(_("<b>Target</b>"));
+	dialogBox->pack_start(*target_frame);
+	Gtk::Alignment *targetPadding = manage(new Gtk::Alignment(0, 0, 1, 1));
+	targetPadding->set_padding(6, 0, 24, 0);
+	target_frame->add(*targetPadding);
+	
+	Gtk::Table *target_table = manage(new Gtk::Table(2, 3, false));
+	target_table->set_row_spacings(6);
+	target_table->set_col_spacings(12);
+	targetPadding->add(*target_table);
+
+	Gtk::Label *filenameLabel = manage(new Gtk::Label(_("_Filename"), true));
+	filenameLabel->set_alignment(0, 0.5);
+	filenameLabel->set_mnemonic_widget(entry_filename);
+	target_table->attach(*filenameLabel, 0, 1, 0, 1, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+	target_table->attach(entry_filename, 1, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 	target_table->attach(*choose_button, 2, 3, 0, 1, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);	
-	target_table->attach(*manage(new Gtk::Label(_("Target"))), 3, 4, 0, 1, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);	
-	target_table->attach(optionmenu_target, 4, 5, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);	
-	get_vbox()->pack_start(*target_frame);
+	
+	Gtk::Label *targetLabel = manage(new Gtk::Label(_("_Target"), true));
+	targetLabel->set_alignment(0, 0.5);
+	targetLabel->set_mnemonic_widget(optionmenu_target);
+	target_table->attach(*targetLabel, 0, 1, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);	
+	target_table->attach(optionmenu_target, 1, 3, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);	
 
 	toggle_single_frame.signal_toggled().connect(sigc::mem_fun(*this, &studio::RenderSettings::on_single_frame_toggle));
 
-
 	Gtk::Frame *settings_frame=manage(new Gtk::Frame(_("Settings")));
+	settings_frame->set_shadow_type(Gtk::SHADOW_NONE);
+	((Gtk::Label *) settings_frame->get_label_widget())->set_markup(_("<b>Settings</b>"));
+	dialogBox->pack_start(*settings_frame);
+
+	Gtk::Alignment *settingsPadding = manage(new Gtk::Alignment(0, 0, 1, 1));
+	settingsPadding->set_padding(6, 0, 24, 0);
+	settings_frame->add(*settingsPadding);
+	
 	Gtk::Table *settings_table=manage(new Gtk::Table(2,2,false));
-	settings_frame->add(*settings_table);
-	settings_table->attach(*manage(new Gtk::Label(_("Quality"))), 0, 1, 0, 1, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);	
+	settings_table->set_row_spacings(6);
+	settings_table->set_col_spacings(12);
+	settingsPadding->add(*settings_table);
+
+	Gtk::Label *qualityLabel = manage(new Gtk::Label(_("_Quality"), true));
+	qualityLabel->set_alignment(0, 0.5);
+	qualityLabel->set_mnemonic_widget(entry_quality);
+	settings_table->attach(*qualityLabel, 0, 1, 0, 1, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);	
 	settings_table->attach(entry_quality, 1, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);	
-	settings_table->attach(*manage(new Gtk::Label(_("Anti-Alias"))), 2, 3, 0, 1, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);	
-	settings_table->attach(entry_antialias, 3, 4, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);	
-	settings_table->attach(toggle_single_frame, 4, 5, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);	
-	get_vbox()->pack_start(*settings_frame);
-	
-	
 
+	Gtk::Label *antiAliasLabel = manage(new Gtk::Label(_("_Anti-Aliasing"), true));
+	antiAliasLabel->set_alignment(0, 0.5);
+	antiAliasLabel->set_mnemonic_widget(entry_antialias);
+	settings_table->attach(*antiAliasLabel, 0, 1, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);	
+	settings_table->attach(entry_antialias, 1, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);	
+	
+	toggle_single_frame.set_alignment(0, 0.5);
+	settings_table->attach(toggle_single_frame, 0, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);	
 
-	get_vbox()->pack_start(widget_rend_desc);
+	dialogBox->pack_start(widget_rend_desc);
 	
 	
 	Gtk::Button *render_button(manage(new class Gtk::Button(Gtk::StockID("Render"))));

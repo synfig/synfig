@@ -53,16 +53,19 @@ using namespace studio;
 /* === M E T H O D S ======================================================= */
 
 Widget_Vector::Widget_Vector():
+	Gtk::HBox(false, 5),
 	x_adjustment(0,-100000000,100000000,0.05,0.05,0.05),
 	y_adjustment(0,-100000000,100000000,0.05,0.05,0.05)
 {
 	Gtk::Label *label;
 	
-	label=manage(new class Gtk::Label("x:"));
+	label=manage(new class Gtk::Label("X:"));
+	label->set_alignment(0, 0.5);
 	label->show();
 	pack_start(*label, Gtk::PACK_SHRINK);
 
 	spinbutton_x=manage(new class Gtk::SpinButton(x_adjustment,0.05,DIGITS));
+	spinbutton_x->set_alignment(1);
 	spinbutton_x->set_update_policy(Gtk::UPDATE_ALWAYS);
 	spinbutton_x->signal_value_changed().connect(sigc::mem_fun(*this,&studio::Widget_Vector::on_value_changed));
 	pack_start(*spinbutton_x, Gtk::PACK_EXPAND_WIDGET);
@@ -73,11 +76,13 @@ Widget_Vector::Widget_Vector():
 	distance_x->signal_value_changed().connect(sigc::mem_fun(*this,&studio::Widget_Vector::on_value_changed));
 	pack_start(*distance_x, Gtk::PACK_EXPAND_WIDGET);
 
-	label=manage(new class Gtk::Label("y:"));
+	label=manage(new class Gtk::Label("Y:"));
+	label->set_alignment(0, 0.5);
 	label->show();
 	pack_start(*label, Gtk::PACK_SHRINK);
 
 	spinbutton_y=manage(new class Gtk::SpinButton(y_adjustment,0.05,DIGITS));
+	spinbutton_y->set_alignment(1);
 	spinbutton_y->set_update_policy(Gtk::UPDATE_ALWAYS);
 	spinbutton_y->signal_value_changed().connect(sigc::mem_fun(*this,&studio::Widget_Vector::on_value_changed));
 	spinbutton_y->signal_activate().connect(sigc::mem_fun(*this,&studio::Widget_Vector::activate));
