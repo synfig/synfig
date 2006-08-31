@@ -1211,20 +1211,28 @@ App::App(int *argc, char ***argv):
 		state_manager->add_state(&state_rotate);
 
 		state_manager->add_state(&state_bline);
-		state_manager->add_state(&state_polygon);
+		
+		
 		state_manager->add_state(&state_circle);
 		state_manager->add_state(&state_rectangle);
 
-		state_manager->add_state(&state_draw);
-		state_manager->add_state(&state_sketch);
-
+		state_manager->add_state(&state_gradient);
 		state_manager->add_state(&state_eyedrop);
 		state_manager->add_state(&state_fill);
 		
-		state_manager->add_state(&state_width);
-		state_manager->add_state(&state_gradient);
-		
 		state_manager->add_state(&state_zoom);
+
+		if(false) {
+			// Disabled this tool because it should be
+			// considered deprecated. Use the bline tool instead.
+			state_manager->add_state(&state_polygon);
+	
+			// These tools are disabled for now,
+			// because they tend to confuse users.
+			state_manager->add_state(&state_draw);
+			state_manager->add_state(&state_sketch);
+			state_manager->add_state(&state_width);
+		}
 
 		studio_init_cb.task("Init ModPalette...");
 		module_list_.push_back(new ModPalette()); module_list_.back()->start();
