@@ -96,6 +96,7 @@ AC_DEFUN([AC_ARG_DEBUG],
 
 
 
+## Optimisation level 2 in g++ 4.1 or g++ 4.2 breaks composition loading in the vector parsing function in loadcanvas.cpp (1509627)
 AC_DEFUN([AC_ARG_OPTIMIZATION],
 [
 	AC_MSG_CHECKING([for optimization flags])
