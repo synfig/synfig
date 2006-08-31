@@ -77,13 +77,13 @@ Time::Time(const String &str_, float fps):
 	std::transform(str.begin(),str.end(),str.begin(),&tolower);
 
 	// Start/Begin Of Time
-	if(str=="SOT" || str=="BOT")
+	if(str=="sot" || str=="bot")
 	{
 		operator=(begin());
 		return;
 	}
 	// End Of Time
-	if(str=="EOT")
+	if(str=="eot")
 	{
 		operator=(end());
 		return;

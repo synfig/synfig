@@ -388,8 +388,7 @@ xmlpp::Element* encode_subtract(xmlpp::Element* root,ValueNode_Subtract::ConstHa
 xmlpp::Element* encode_dynamic_list(xmlpp::Element* root,ValueNode_DynamicList::ConstHandle value_node,Canvas::ConstHandle canvas=0)
 {
 	assert(value_node);
-//	const float fps(canvas?canvas->rend_desc().get_frame_rate():0);
-	const float fps(0);
+	const float fps(canvas?canvas->rend_desc().get_frame_rate():0);
 	
 	root->set_name(value_node->get_name());
 

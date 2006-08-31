@@ -50,7 +50,7 @@ using namespace synfig;
 
 #define PIXEL_RENDERING_LIMIT 1500000
 
-#define USE_PIXELRENDERING_LIMIT 0
+#define USE_PIXELRENDERING_LIMIT 1
 
 /* === G L O B A L S ======================================================= */
 

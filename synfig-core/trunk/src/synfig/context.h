@@ -57,7 +57,7 @@ public:
 	Context() { }
 
 	Context(const CanvasBase::const_iterator &x):CanvasBase::const_iterator(x) { }
-
+	
 	Context operator=(const CanvasBase::const_iterator &x)
 	{ return CanvasBase::const_iterator::operator=(x); }
 	
@@ -76,7 +76,7 @@ public:
 	Rect get_full_bounding_rect()const;
 
 	/*! \writeme */
-	virtual etl::handle<Layer> hit_check(const Point &point)const;
+	etl::handle<Layer> hit_check(const Point &point)const;
 
 }; // END of class Context
 	
