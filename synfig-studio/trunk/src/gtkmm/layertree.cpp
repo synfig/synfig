@@ -188,10 +188,21 @@ LayerTree::create_layer_tree()
 
 	
 	{	// --- O N / O F F ----------------------------------------------------
-		int index;
-		index=get_layer_tree_view().append_column_editable(_(" "),layer_model.active);
+		//int index;
+		//index=get_layer_tree_view().append_column_editable(_(" "),layer_model.active);
 		//Gtk::TreeView::Column* column = get_layer_tree_view().get_column(index-1);
-	}
+
+		Gtk::TreeView::Column* column = Gtk::manage( new Gtk::TreeView::Column(_(" ")) );
+
+		// Set up the icon cell-renderer
+		Gtk::CellRendererToggle* cellrenderer = Gtk::manage( new Gtk::CellRendererToggle() );
+		cellrenderer->signal_toggled().connect(sigc::mem_fun(*this, &studio::LayerTree::on_layer_toggle));		
+
+		column->pack_start(*cellrenderer,false);
+		column->add_attribute(cellrenderer->property_active(), layer_model.active);
+		get_layer_tree_view().append_column(*column);
+	}	
+
 	{	// --- I C O N --------------------------------------------------------
 		int index;
 		index=get_layer_tree_view().append_column(_("Z"),layer_model.icon);
@@ -210,8 +221,19 @@ LayerTree::create_layer_tree()
 	}
 	//get_layer_tree_view().append_column(_("Z"),layer_model.z_depth);
 	{	// --- N A M E --------------------------------------------------------
-		int index;
-		index=get_layer_tree_view().append_column_editable(_("Layer"),layer_model.label);
+		Gtk::TreeView::Column* column = Gtk::manage( new Gtk::TreeView::Column(_("Layer")) );
+
+		// Set up the icon cell-renderer
+		Gtk::CellRendererText* cellrenderer = Gtk::manage( new Gtk::CellRendererText() );
+		cellrenderer->signal_edited().connect(sigc::mem_fun(*this, &studio::LayerTree::on_layer_renamed));		
+		cellrenderer->property_editable()=true;
+		
+		column->pack_start(*cellrenderer,false);
+		column->add_attribute(cellrenderer->property_text(), layer_model.label);
+		get_layer_tree_view().append_column(*column);
+
+		//		int index;
+//		index=get_layer_tree_view().append_column_editable(_("Layer"),layer_model.label);
 		//Gtk::TreeView::Column* column = get_layer_tree_view().get_column(index-1);
 
 		//column->set_sort_column_id(layer_model.index);
@@ -236,48 +258,7 @@ LayerTree::create_layer_tree()
 
 		column_z_depth->set_sort_column_id(layer_model.z_depth);
 	}
-	/*
-	{	// --- N A M E --------------------------------------------------------
-		Gtk::TreeView::Column* column = Gtk::manage( new Gtk::TreeView::Column(_("Layer")) );
 
-		// Set up the icon cell-renderer
-		Gtk::CellRendererPixbuf* icon_cellrenderer = Gtk::manage( new Gtk::CellRendererPixbuf() );
-		column->pack_start(*icon_cellrenderer,false);
-		column->add_attribute(icon_cellrenderer->property_pixbuf(), layer_model.icon);
-
-		// Set up the text attributes
-		Pango::AttrList attr_list;
-		{
-			Pango::AttrInt pango_size(Pango::Attribute::create_attr_size(Pango::SCALE*8));
-			pango_size.set_start_index(0);
-			pango_size.set_end_index(64);
-			attr_list.change(pango_size);
-		}
-
-		// Pack the label into the column
-		//column->pack_start(layer_model.label,true);
-		Gtk::CellRendererText* text_cellrenderer = Gtk::manage( new Gtk::CellRendererText() );
-		column->pack_start(*text_cellrenderer,false);
-		column->add_attribute(text_cellrenderer->property_text(), layer_model.label);
-		text_cellrenderer->property_attributes()=attr_list;
-				
-		// Finish setting up the column		
-		column->set_reorderable();
-		column->set_resizable();
-		column->set_clickable();
-		get_layer_tree_view().append_column(*column);
-		get_layer_tree_view().set_expander_column(*column);
-	}
-	*/
-	
-/*	{
-		Gtk::Widget& widget(get_layer_tree_view());
-		Pango::FontDescription font(widget.get_modifier_style()->get_font());
-		font.set_size(font.get_size()*3/4);
-		widget.get_modifier_style()->set_font(font);
-		widget.modify_style(widget.get_modifier_style());
-	}
-*/
 	get_layer_tree_view().set_enable_search(true);
 	get_layer_tree_view().set_search_column(layer_model.label);
 	get_layer_tree_view().set_search_equal_func(sigc::ptr_fun(&studio::LayerTreeStore::search_func));
@@ -740,17 +721,26 @@ LayerTree::on_edited_value(const Glib::ustring&path_string,synfig::ValueBase val
 	//signal_edited_value()(row[param_model.value_desc],value);
 }
 
-/*
+void
+LayerTree::on_layer_renamed(const Glib::ustring&path_string,const Glib::ustring& value)
+{
+	Gtk::TreePath path(path_string);
+	
+	const Gtk::TreeRow row = *(get_layer_tree_view().get_model()->get_iter(path));
+	if(!row)
+		return;
+	row[layer_model.label]=value;
+}
+
 void
 LayerTree::on_layer_toggle(const Glib::ustring& path_string)
 {
 	Gtk::TreePath path(path_string);
 
 	const Gtk::TreeRow row = *(get_layer_tree_view().get_model()->get_iter(path));
-
-	signal_layer_toggle()(row[layer_model.layer]);
+	bool active=static_cast<bool>(row[layer_model.active]);
+	row[layer_model.active]=!active;	
 }
-*/
 
 void
 LayerTree::on_waypoint_clicked(const Glib::ustring &path_string, synfig::Waypoint waypoint,int button)

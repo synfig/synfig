@@ -118,8 +118,7 @@ private:
 	*/
 
 private:
-
-	virtual void set_value_impl (const Gtk::TreeModel::iterator& row, int column, const Glib::ValueBase& value);
+	virtual void  set_value_impl (const Gtk::TreeModel::iterator& row, int column, const Glib::ValueBase& value);
 	virtual void  get_value_vfunc (const Gtk::TreeModel::iterator& iter, int column, Glib::ValueBase& value)const;
 
 	virtual bool  row_draggable_vfunc (const TreeModel::Path& path)const;

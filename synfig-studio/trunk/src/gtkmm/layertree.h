@@ -166,6 +166,8 @@ private:
 
 	void on_edited_value(const Glib::ustring&path_string,synfig::ValueBase value);
 
+	void on_layer_renamed(const Glib::ustring&path_string,const Glib::ustring& value);
+
 	void on_layer_toggle(const Glib::ustring& path_string);
 
 	void on_waypoint_clicked(const Glib::ustring &, synfig::Waypoint, int button);
