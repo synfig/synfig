@@ -31,6 +31,7 @@
 
 #include <fstream>
 #include <iostream>
+#include <locale>
 
 #ifdef HAVE_SYS_ERRNO_H
 #include <sys/errno.h>
@@ -1424,8 +1425,11 @@ App::set_time_format(synfig::Time::Format x)
 void
 App::save_settings()
 {
+	char * old_locale;
 	try
 	{
+	old_locale=strdup(setlocale(LC_NUMERIC, NULL));
+	setlocale(LC_NUMERIC, "C");
 		{
 			std::string filename=get_config_file("accelrc");
 			Gtk::AccelMap::save(filename);
@@ -1449,6 +1453,7 @@ App::save_settings()
 
 		std::string filename=get_config_file("settings");
 		synfigapp::Main::settings().save_to_file(filename);
+	setlocale(LC_NUMERIC,old_locale);	
 	}
 	catch(...)
 	{
@@ -1459,8 +1464,11 @@ App::save_settings()
 void
 App::load_settings()
 {
+	char  * old_locale;
 	try
 	{
+	old_locale=strdup(setlocale(LC_NUMERIC, NULL));
+	setlocale(LC_NUMERIC, "C");
 		{
 			std::string filename=get_config_file("accelrc");
 			Gtk::AccelMap::load(filename);
@@ -1500,7 +1508,7 @@ App::load_settings()
 				synfigapp::Main::settings().set_value("window.toolbox.pos","4 4");
 			}
 		}
-		
+	setlocale(LC_NUMERIC,old_locale);	
 	}
 	catch(...)
 	{
