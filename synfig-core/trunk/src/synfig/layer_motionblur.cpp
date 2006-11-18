@@ -118,7 +118,7 @@ Layer_MotionBlur::get_param_vocab()const
 	//ret=Layer_Composite::get_param_vocab();
 	
 	ret.push_back(ParamDesc("aperture")
-		.set_local_name(_("Aperature"))
+		.set_local_name(_("Aperture"))
 		.set_description(_("Shutter Time"))
 	);
 	

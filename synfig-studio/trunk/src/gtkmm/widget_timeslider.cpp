@@ -316,6 +316,7 @@ Widget_Timeslider::Widget_Timeslider()
 adj_default(0,0,2,1/defaultfps,10/defaultfps),
 adj_timescale(0),
 //invalidated(false),
+last_event_time(0),
 fps(defaultfps),
 dragscroll(false)
 {

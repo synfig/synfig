@@ -258,6 +258,7 @@ Widget_Defaults::Widget_Defaults()
 
 	widget_bline_width=manage(new Widget_Distance());
 	widget_bline_width->show();
+	bline_width_refresh();
 	widget_bline_width->set_digits(2);
 	widget_bline_width->set_size_request(24,-1);
 	widget_bline_width->signal_value_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::on_bline_width_changed));
@@ -314,7 +315,6 @@ Widget_Defaults::Widget_Defaults()
 	fg_color_refresh();
 	bg_color_refresh();
 	gradient_refresh();
-	bline_width_refresh();
 	blend_method_refresh();
 	opacity_refresh();
 	interpolation_refresh();

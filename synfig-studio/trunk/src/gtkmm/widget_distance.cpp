@@ -57,6 +57,7 @@ using namespace studio;
 
 Widget_Distance::Widget_Distance():
 	Gtk::SpinButton(0.05,5),
+	distance_(1, Distance::SYSTEM_POINTS),
 	adjustment(0,-100000000,100000000,1,1,1)
 //	adjustment(0,-100000000,100000000,1,2,0)
 {

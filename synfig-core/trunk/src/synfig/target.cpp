@@ -89,7 +89,8 @@ Target::ext_book()
 Target::Target():
 	quality_(4),
 	gamma_(*default_gamma_),
-	remove_alpha(false)
+	remove_alpha(false),
+	avoid_time_sync_(false)
 {
 }
 

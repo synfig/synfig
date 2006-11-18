@@ -293,6 +293,8 @@ Widget_Preview::Widget_Preview()
 adj_time_scrub(0,0,1000,1,10,0),
 scr_time_scrub(adj_time_scrub),
 b_loop(/*_("Loop")*/),
+currentindex(0),
+audiotime(0),
 adj_sound(0,0,4),
 l_lasttime("0s"),
 playing(false)

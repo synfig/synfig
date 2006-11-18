@@ -65,6 +65,7 @@ const double log_10_2 = log(2.0);
 studio::Widget_NavView::Widget_NavView(CanvasView::LooseHandle cv)
 :canvview(cv),
 adj_zoom(0,-4,4,1,2),
+scrolling(false),
 surface(new synfig::Surface)
 {
 	attach(drawto,0,4,0,1);

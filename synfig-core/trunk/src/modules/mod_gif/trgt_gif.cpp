@@ -165,7 +165,7 @@ gif::output_curr_palette()
 	// Output the color table
 	for(i=0;i<256/(1<<(8-rootsize));i++)
 	{
-//		if(i && (i-1)<curr_palette.size())
+		if(i<(signed)curr_palette.size())
 		{
 			Color color(curr_palette[i].color.clamped());
 			//fputc(i*(1<<(8-rootsize)),file.get());
@@ -175,13 +175,12 @@ gif::output_curr_palette()
 			fputc(gamma().g_F32_to_U8(color.get_g()),file.get());
 			fputc(gamma().b_F32_to_U8(color.get_b()),file.get());
 		}
-/*		else
+		else
 		{
 			fputc(255,file.get());
 			fputc(0,file.get());
 			fputc(255,file.get());
 		}
-*/
 	}
 }
 

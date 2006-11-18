@@ -203,11 +203,11 @@ CVSInfo::in_repository()const
 bool
 CVSInfo::is_modified()const
 {
+	if(!in_sandbox() || !in_repository())
+		return false;
 #ifdef _DEBUG
 	synfig::info("%d-%d=%d",get_current_timestamp(),get_original_timestamp(),get_current_timestamp()-get_original_timestamp());
 #endif
-	if(!in_sandbox() || !in_repository())
-		return false;
 	return get_current_timestamp()!=get_original_timestamp() && abs(get_current_timestamp()-get_original_timestamp())!=3600;
 }
 

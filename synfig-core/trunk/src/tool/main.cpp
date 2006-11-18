@@ -67,7 +67,8 @@ enum exit_code
 	SYNFIGTOOL_INVALIDTARGET		=6,	
 	SYNFIGTOOL_RENDERFAILURE		=7,	
 	SYNFIGTOOL_BLANK				=8,
-	SYNFIGTOOL_BADVERSION		=9
+	SYNFIGTOOL_BADVERSION		=9,
+	SYNFIGTOOL_MISSINGARGUMENT	=10
 };
 
 #ifndef VERSION
@@ -565,6 +566,10 @@ int extract_arg_cluster(arg_list_t &arg_list,arg_list_t &cluster)
 			cluster.push_back(*iter);
 			arg_list.erase(iter);
 			iter=next++;
+			if (iter==arg_list.end()) {
+				error("The `%s' flag requires a value.  Use --help for a list of options.", cluster.back().c_str());
+				return SYNFIGTOOL_MISSINGARGUMENT;
+			}
 		}
 			
 		cluster.push_back(*iter);
@@ -588,14 +593,14 @@ int extract_RendDesc(arg_list_t &arg_list,RendDesc &desc)
 			w=atoi(iter->c_str());
 			arg_list.erase(iter);
 		}
-		if(*iter=="-h")
+		else if(*iter=="-h")
 		{
 			arg_list.erase(iter);
 			iter=next++;
 			h=atoi(iter->c_str());
 			arg_list.erase(iter);
 		}
-		if(*iter=="-a")
+		else if(*iter=="-a")
 		{
             int a;
 			arg_list.erase(iter);
@@ -605,7 +610,7 @@ int extract_RendDesc(arg_list_t &arg_list,RendDesc &desc)
 			VERBOSE_OUT(1)<<strprintf(_("Antialiasing set to %d, (%d samples per pixel)"),a,a*a)<<endl;
 			arg_list.erase(iter);
 		}
-		if(*iter=="-s")
+		else if(*iter=="-s")
 		{
 			arg_list.erase(iter);
 			iter=next++;
@@ -613,7 +618,7 @@ int extract_RendDesc(arg_list_t &arg_list,RendDesc &desc)
 			VERBOSE_OUT(1)<<strprintf(_("Span set to %d units"),span)<<endl;
 			arg_list.erase(iter);
 		}
-		if(*iter=="--fps")
+		else if(*iter=="--fps")
 		{
 			arg_list.erase(iter);
 			iter=next++;
@@ -622,7 +627,7 @@ int extract_RendDesc(arg_list_t &arg_list,RendDesc &desc)
 			arg_list.erase(iter);
 			VERBOSE_OUT(1)<<strprintf(_("Frame rate set to %d frames per second"),fps)<<endl;
 		}
-		if(*iter=="--dpi")
+		else if(*iter=="--dpi")
 		{
 			arg_list.erase(iter);
 			iter=next++;
@@ -632,7 +637,7 @@ int extract_RendDesc(arg_list_t &arg_list,RendDesc &desc)
 			arg_list.erase(iter);
 			VERBOSE_OUT(1)<<strprintf(_("Physical resolution set to %f dpi"),dpi)<<endl;
 		}
-		if(*iter=="--dpi-x")
+		else if(*iter=="--dpi-x")
 		{
 			arg_list.erase(iter);
 			iter=next++;
@@ -642,7 +647,7 @@ int extract_RendDesc(arg_list_t &arg_list,RendDesc &desc)
 			arg_list.erase(iter);
 			VERBOSE_OUT(1)<<strprintf(_("Physical X resolution set to %f dpi"),dpi)<<endl;
 		}
-		if(*iter=="--dpi-y")
+		else if(*iter=="--dpi-y")
 		{
 			arg_list.erase(iter);
 			iter=next++;
@@ -652,21 +657,21 @@ int extract_RendDesc(arg_list_t &arg_list,RendDesc &desc)
 			arg_list.erase(iter);
 			VERBOSE_OUT(1)<<strprintf(_("Physical Y resolution set to %f dpi"),dpi)<<endl;
 		}
-		if(*iter=="--start-time" || *iter=="--begin-time")
+		else if(*iter=="--start-time" || *iter=="--begin-time")
 		{
 			arg_list.erase(iter);
 			iter=next++;
 			desc.set_time_start(Time(*iter,desc.get_frame_rate()));
 			arg_list.erase(iter);
 		}
-		if(*iter=="--end-time")
+		else if(*iter=="--end-time")
 		{
 			arg_list.erase(iter);
 			iter=next++;
 			desc.set_time_end(Time(*iter,desc.get_frame_rate()));
 			arg_list.erase(iter);
 		}
-		if(*iter=="--time")
+		else if(*iter=="--time")
 		{
 			arg_list.erase(iter);
 			iter=next++;
@@ -674,7 +679,7 @@ int extract_RendDesc(arg_list_t &arg_list,RendDesc &desc)
 			VERBOSE_OUT(1)<<_("Rendering frame at ")<<desc.get_time_start().get_string(desc.get_frame_rate())<<endl;
 			arg_list.erase(iter);
 		}
-		if(*iter=="-g")
+		else if(*iter=="-g")
 		{
 			synfig::warning("Gamma argument is currently ignored");
 			//arg_list.erase(iter);
@@ -855,9 +860,11 @@ int main(int argc, char *argv[])
 	
 	{
 		arg_list_t defaults, imageargs;
+		int ret;
 		
 		// Grab the defaults before the first file
-		extract_arg_cluster(arg_list,defaults);
+		if ((ret = extract_arg_cluster(arg_list,defaults)) != SYNFIGTOOL_OK)
+		  return ret;
 		
 		while(arg_list.size())
 		{
@@ -869,7 +876,8 @@ int main(int argc, char *argv[])
 			job_list.front().filename=arg_list.front();
 			arg_list.pop_front();
 
-			extract_arg_cluster(arg_list,imageargs);			
+			if ((ret = extract_arg_cluster(arg_list,imageargs)) != SYNFIGTOOL_OK)
+			  return ret;
 			
 			// Open the composition
 			{

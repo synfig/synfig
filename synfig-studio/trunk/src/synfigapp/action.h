@@ -248,7 +248,7 @@ private:
 
 protected:
 	CanvasSpecific(const synfig::Canvas::Handle &canvas):is_dirty_(true),mode_(MODE_UNDEFINED),canvas_(canvas) { }
-	CanvasSpecific():mode_(MODE_UNDEFINED) { }
+	CanvasSpecific():is_dirty_(true), mode_(MODE_UNDEFINED) { }
 
 	virtual ~CanvasSpecific() { };
 	
