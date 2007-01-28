@@ -279,7 +279,7 @@ Widget_Defaults::Widget_Defaults()
 	widget_interpolation->set_param_desc(
 		ParamDesc("interpolation")
 			.set_hint("enum")
-			.add_enum_value(INTERPOLATION_TCB,"auto",_("TBC"))
+			.add_enum_value(INTERPOLATION_TCB,"auto",_("TCB"))
 			.add_enum_value(INTERPOLATION_CONSTANT,"constant",_("Constant"))
 			.add_enum_value(INTERPOLATION_HALT,"ease",_("Ease in/out"))
 			.add_enum_value(INTERPOLATION_LINEAR,"linear",_("Linear"))
