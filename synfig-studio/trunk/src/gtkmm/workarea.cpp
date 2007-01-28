@@ -6,6 +6,7 @@
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
+**	Copyright 2006 Yue Shi Lai
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -1242,7 +1243,17 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 			//	button_pressed=0;				
 		}
 	}
+	// GDK mouse scrolling events
+	else if(event->any.type==GDK_SCROLL)
+	{
+		// GDK information needed to properly interprete mouse
+		// scrolling events are: scroll.state, scroll.x/scroll.y, and
+		// scroll.direction. The value of scroll.direction will be
+		// obtained later.
 
+		modifier=Gdk::ModifierType(event->scroll.state);
+		mouse_pos=synfig::Point(screen_to_comp_coords(synfig::Point(event->scroll.x,event->scroll.y)));
+	}
 
 	// Handle the renderables
 	{
@@ -1642,6 +1653,97 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 			ret=true;
 		
 		return ret;
+	}
+		break;
+	case GDK_SCROLL:
+	{
+		// Handle a mouse scrolling event like Xara Xtreme and
+		// Inkscape:
+
+		// Scroll up/down: scroll up/down
+		// Shift + scroll up/down: scroll left/right
+		// Control + scroll up/down: zoom in/out
+
+		if(modifier&GDK_CONTROL_MASK)
+		{
+			
+			// The zoom is performed while preserving the pointer
+			// position as a fixed point (similarly to Xara Xtreme and
+			// Inkscape).
+
+			// The strategy used below is to scroll to the updated
+			// position, then zoom. This is easy to implement within
+			// the present architecture, but has the disadvantage of
+			// triggering multiple visible refreshes. Note: 1.25 is
+			// the hard wired ratio in zoom_in()/zoom_out(). The
+			// variable "drift" compensates additional inaccuracies in
+			// the zoom. There is also an additional minus sign for
+			// the inverted y coordinates.
+
+			// FIXME: One might want to figure out where in the code
+			// this empirical drift is been introduced.
+
+			const synfig::Point scroll_point(get_scrollx_adjustment()->get_value(),get_scrolly_adjustment()->get_value());
+			const double drift = 0.052;
+
+			switch(event->scroll.direction)
+			{
+				case GDK_SCROLL_UP:
+					get_scrollx_adjustment()->set_value(scroll_point[0]+(mouse_pos[0]-scroll_point[0])*(1.25-(1+drift)));
+					get_scrolly_adjustment()->set_value(scroll_point[1]-(mouse_pos[1]+scroll_point[1])*(1.25-(1+drift)));
+					zoom_in();
+					break;
+				case GDK_SCROLL_DOWN:
+					get_scrollx_adjustment()->set_value(scroll_point[0]+(mouse_pos[0]-scroll_point[0])*(1/1.25-(1+drift)));
+					get_scrolly_adjustment()->set_value(scroll_point[1]-(mouse_pos[1]+scroll_point[1])*(1/1.25-(1+drift)));
+					zoom_out();
+					break;
+				default:
+					break;
+			}
+		}
+		else if(modifier&GDK_SHIFT_MASK)
+		{
+			// Scroll in either direction by 20 pixels. Ideally, the
+			// amount of pixels per scrolling event should be
+			// configurable. Xara Xtreme currently uses an (hard
+			// wired) amount 20 pixel, Inkscape defaults to 40 pixels.
+
+			const int scroll_pixel = 20;
+
+			switch(event->scroll.direction)
+			{
+				case GDK_SCROLL_UP:
+					get_scrollx_adjustment()->set_value(get_scrollx_adjustment()->get_value()-scroll_pixel*pw);
+					break;
+				case GDK_SCROLL_DOWN:
+					get_scrollx_adjustment()->set_value(get_scrollx_adjustment()->get_value()+scroll_pixel*pw);
+					break;
+				default:
+					break;
+			}
+		}
+		else
+		{	
+			// Scroll in either direction by 20 pixels. Ideally, the
+			// amount of pixels per scrolling event should be
+			// configurable. Xara Xtreme currently uses an (hard
+			// wired) amount 20 pixel, Inkscape defaults to 40 pixels.
+
+			const int scroll_pixel = 20;
+
+			switch(event->scroll.direction)
+			{
+				case GDK_SCROLL_UP:
+					get_scrolly_adjustment()->set_value(get_scrolly_adjustment()->get_value()+scroll_pixel*ph);
+					break;
+				case GDK_SCROLL_DOWN:
+					get_scrolly_adjustment()->set_value(get_scrolly_adjustment()->get_value()-scroll_pixel*ph);
+					break;
+				default:
+					break;
+			}
+		}
 	}
 		break;
 	default:
