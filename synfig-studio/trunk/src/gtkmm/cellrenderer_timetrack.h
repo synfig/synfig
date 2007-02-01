@@ -39,7 +39,6 @@
 #include <gtkmm/statusbar.h>
 #include <gtkmm/button.h>
 #include <gtkmm/progressbar.h>
-#include <atkmm/stateset.h>
 #include <gtkmm/paned.h>
 #include <gtkmm/treeview.h>
 #include <gtkmm/treestore.h>
