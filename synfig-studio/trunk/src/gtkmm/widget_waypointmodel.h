@@ -36,7 +36,6 @@
 #include <gtkmm/table.h>
 #include <gtkmm/button.h>
 //#include <gtkmm/progressbar.h>
-//#include <atkmm/stateset.h>
 #include <gtkmm/adjustment.h>
 #include <gtkmm/box.h>
 #include <gtkmm/combo.h>
