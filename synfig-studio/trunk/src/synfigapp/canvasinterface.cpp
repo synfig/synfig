@@ -748,13 +748,13 @@ _process_value_desc(const synfigapp::ValueDesc& value_desc,std::vector<synfigapp
 				ret++;
 			}
 			// Process the linkable ValueNode's children
-			LinkableValueNode::Handle value_node(LinkableValueNode::Handle::cast_dynamic(value_node));
+			LinkableValueNode::Handle value_node_copy(LinkableValueNode::Handle::cast_dynamic(value_node));
 			int i;
-			for(i=0;i<value_node->link_count();i++)
+			for(i=0;i<value_node_copy->link_count();i++)
 			{
-				ValueNode::Handle link(value_node->get_link(i));
+				ValueNode::Handle link(value_node_copy->get_link(i));
 				if(!link->is_exported())
-					ret+=_process_value_desc(ValueDesc(value_node,i),out,guid_set);
+					ret+=_process_value_desc(ValueDesc(value_node_copy,i),out,guid_set);
 			}
 		}
 		else if(ValueNode_Animated::Handle::cast_dynamic(value_node))

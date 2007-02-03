@@ -164,13 +164,13 @@ Action::KeyframeDuplicate::process_value_desc(const synfigapp::ValueDesc& value_
 		// If we are a dynamic list, then we need to update the ActivePoints
 		if(ValueNode_DynamicList::Handle::cast_dynamic(value_node))
 		{
-			ValueNode_DynamicList::Handle value_node(ValueNode_DynamicList::Handle::cast_dynamic(value_node));
+			ValueNode_DynamicList::Handle value_node_dynamic(ValueNode_DynamicList::Handle::cast_dynamic(value_node));
 			int i;
 			
-			for(i=0;i<value_node->link_count();i++)
+			for(i=0;i<value_node_dynamic->link_count();i++)
 			{
-				synfigapp::ValueDesc value_desc(value_node,i);
-				Activepoint activepoint(value_node->list[i].new_activepoint_at_time(old_time));
+				synfigapp::ValueDesc value_desc(value_node_dynamic,i);
+				Activepoint activepoint(value_node_dynamic->list[i].new_activepoint_at_time(old_time));
 				activepoint.set_time(new_time);
 
 				Action::Handle action(ActivepointSetSmart::create());
@@ -189,15 +189,15 @@ Action::KeyframeDuplicate::process_value_desc(const synfigapp::ValueDesc& value_
 		}
 		else if(ValueNode_Animated::Handle::cast_dynamic(value_node))
 		{
-			ValueNode_Animated::Handle value_node(ValueNode_Animated::Handle::cast_dynamic(value_node));
-			Waypoint waypoint(value_node->new_waypoint_at_time(old_time));
+			ValueNode_Animated::Handle value_node_animated(ValueNode_Animated::Handle::cast_dynamic(value_node));
+			Waypoint waypoint(value_node_animated->new_waypoint_at_time(old_time));
 			waypoint.set_time(new_time);
 			
 			Action::Handle action(WaypointSetSmart::create());
 			
 			action->set_param("canvas",get_canvas());
 			action->set_param("canvas_interface",get_canvas_interface());
-			action->set_param("value_node",ValueNode::Handle(value_node));
+			action->set_param("value_node",ValueNode::Handle(value_node_animated));
 			action->set_param("waypoint",waypoint);
 	
 			assert(action->is_ready());

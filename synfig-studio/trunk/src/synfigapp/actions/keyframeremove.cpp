@@ -142,15 +142,15 @@ Action::KeyframeRemove::process_value_desc(const synfigapp::ValueDesc& value_des
 		// If we are a dynamic list, then we need to update the ActivePoints
 		if(ValueNode_DynamicList::Handle::cast_dynamic(value_node))
 		{
-			ValueNode_DynamicList::Handle value_node(ValueNode_DynamicList::Handle::cast_dynamic(value_node));
+			ValueNode_DynamicList::Handle value_node_dynamic(ValueNode_DynamicList::Handle::cast_dynamic(value_node));
 			int i;
-			for(i=0;i<value_node->link_count();i++)
+			for(i=0;i<value_node_dynamic->link_count();i++)
 			try
 			{
 				Activepoint activepoint;
-				activepoint=*value_node->list[i].find(time);
+				activepoint=*value_node_dynamic->list[i].find(time);
 
-				synfigapp::ValueDesc value_desc(value_node,i);
+				synfigapp::ValueDesc value_desc(value_node_dynamic,i);
 
 				Action::Handle action(ActivepointRemove::create());
 				
@@ -172,16 +172,16 @@ Action::KeyframeRemove::process_value_desc(const synfigapp::ValueDesc& value_des
 		else if(ValueNode_Animated::Handle::cast_dynamic(value_node))
 		try
 		{
-			ValueNode_Animated::Handle value_node(ValueNode_Animated::Handle::cast_dynamic(value_node));
+			ValueNode_Animated::Handle value_node_animated(ValueNode_Animated::Handle::cast_dynamic(value_node));
 			Waypoint waypoint;
-			waypoint=*value_node->find(time);
+			waypoint=*value_node_animated->find(time);
 			assert(waypoint.get_time()==time);
 			
 			Action::Handle action(WaypointRemove::create());
 			
 			action->set_param("canvas",get_canvas());
 			action->set_param("canvas_interface",get_canvas_interface());
-			action->set_param("value_node",ValueNode::Handle(value_node));
+			action->set_param("value_node",ValueNode::Handle(value_node_animated));
 			action->set_param("waypoint",waypoint);
 	
 			assert(action->is_ready());

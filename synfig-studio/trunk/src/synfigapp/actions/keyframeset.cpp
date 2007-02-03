@@ -275,11 +275,11 @@ Action::KeyframeSet::process_value_desc(const synfigapp::ValueDesc& value_desc)
 		// If we are a dynamic list, then we need to update the ActivePoints
 		if(ValueNode_DynamicList::Handle::cast_dynamic(value_node))
 		{
-			ValueNode_DynamicList::Handle value_node(ValueNode_DynamicList::Handle::cast_dynamic(value_node));
+			ValueNode_DynamicList::Handle value_node_dynamic(ValueNode_DynamicList::Handle::cast_dynamic(value_node));
 			int i;
-			for(i=0;i<value_node->link_count();i++)
+			for(i=0;i<value_node_dynamic->link_count();i++)
 			{
-				synfigapp::ValueDesc value_desc(value_node,i);
+				synfigapp::ValueDesc value_desc(value_node_dynamic,i);
 				if(new_time>keyframe_prev && new_time<keyframe_next)
 				{
 					// In this circumstance, we need to adjust any
@@ -299,13 +299,13 @@ Action::KeyframeSet::process_value_desc(const synfigapp::ValueDesc& value_desc)
 					Activepoint activepoint;
 					try
 					{
-						activepoint=*value_node->list[i].find(old_time);
+						activepoint=*value_node_dynamic->list[i].find(old_time);
 						activepoint.set_time(new_time);
 					}
 					catch(...)
 					{
 						activepoint.set_time(new_time);
-						activepoint.set_state(value_node->list[i].status_at_time(old_time));
+						activepoint.set_state(value_node_dynamic->list[i].status_at_time(old_time));
 						activepoint.set_priority(0);
 					}
 					action->set_param("activepoint",activepoint);
@@ -330,24 +330,24 @@ Action::KeyframeSet::process_value_desc(const synfigapp::ValueDesc& value_desc)
 			}
 			//else
 			{
-				ValueNode_Animated::Handle value_node(ValueNode_Animated::Handle::cast_dynamic(value_node));
+				ValueNode_Animated::Handle value_node_animated(ValueNode_Animated::Handle::cast_dynamic(value_node));
 				
 				Action::Handle action(WaypointSetSmart::create());
 				
 				action->set_param("canvas",get_canvas());
 				action->set_param("canvas_interface",get_canvas_interface());
-				action->set_param("value_node",ValueNode::Handle(value_node));
+				action->set_param("value_node",ValueNode::Handle(value_node_animated));
 				
 				Waypoint waypoint;
 				try
 				{
-					waypoint=*value_node->find(old_time);
+					waypoint=*value_node_animated->find(old_time);
 					waypoint.set_time(new_time);
 				}
 				catch(...)
 				{
 					waypoint.set_time(new_time);
-					waypoint.set_value((*value_node)(old_time));
+					waypoint.set_value((*value_node_animated)(old_time));
 				}
 				action->set_param("waypoint",waypoint);
 		
