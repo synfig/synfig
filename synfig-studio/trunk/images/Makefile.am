@@ -18,19 +18,14 @@ SUFFIXES=.sif .tif .png
 
 #.SUFFIXES: $(SUFFIXES)
 
-PNGTOICO=pngtoico
-CONVERT=convert
+PNGTOICO=png2ico
 
-sif_icon.ico: $(srcdir)/sif_icon.sif
-	-$(SYNFIG) $< -w 16 -h 16 -o sif_icon_16.png $< -w 32 -h 32 -o sif_icon_32.png $< -w 64 -h 64 -o sif_icon_64.png
-	$(CONVERT) sif_icon_16.png sif_icon_16.gif
-	$(CONVERT) sif_icon_32.png sif_icon_32.gif
-	$(CONVERT) sif_icon_64.png sif_icon_64.gif
-	$(CONVERT) sif_icon_16.gif sif_icon_16.png
-	$(CONVERT) sif_icon_32.gif sif_icon_32.png
-	$(CONVERT) sif_icon_64.gif sif_icon_64.png
-	$(PNGTOICO) sif_icon_64.png > $@
-#	$(PNGTOICO) sif_icon_16.png sif_icon_32.png sif_icon_64.png > $@
+.sif.ico:
+	$(SYNFIG) $< -w 16 -h 16 -o $*-16x16.png $< -w 32 -h 32 -o $*-32x32.png $< -w 64 -h 64 -o $*-64x64.png
+	p2i=`which $(PNGTOICO)`
+	cp -f $${p2i}.* ./
+	$(PNGTOICO) $@ $*-16x16.png $*-32x32.png $*-64x64.png
+	rm -f ./$(PNGTOICO).*
 
 clean:
 	$(RM) $(CLEANFILES)
