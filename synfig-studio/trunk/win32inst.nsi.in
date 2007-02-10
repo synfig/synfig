@@ -59,7 +59,7 @@ Section "Synfig Studio"
   SetOutPath "$INSTDIR\share\pixmaps"
   File "images\*.png"
   
-  SetOutPath "$INSTDIR\share"
+  SetOutPath "$INSTDIR\share\pixmaps"
   File "images\*.ico"
 
   SetOutPath "$INSTDIR\bin"
@@ -96,7 +96,7 @@ Section "Synfig Studio"
 	WriteRegStr HKCR ".sif.gz" "PerceivedType" "image"
 
 	WriteRegStr HKCR "Synfig.Composition" "" "Synfig Composition File"
-	WriteRegStr HKCR "Synfig.Composition\DefaultIcon" "" "$INSTDIR\bin\synfigstudio.exe;1"
+	WriteRegStr HKCR "Synfig.Composition\DefaultIcon" "" "$INSTDIR\share\pixmaps\sif_icon.ico"
 	WriteRegStr HKCR "Synfig.Composition\shell" "" "open"
 	WriteRegStr HKCR "Synfig.Composition\shell\open\command" "" '$INSTDIR\bin\synfigstudio.exe "%1"'
 	
@@ -110,7 +110,7 @@ Section "Start Menu Shortcuts"
 
   CreateDirectory "$SMPROGRAMS\Voria"
   CreateShortCut "$SMPROGRAMS\Voria\Uninstall Synfig Studio.lnk" "$INSTDIR\uninstall-@PACKAGE_TARNAME@.exe" "" "$INSTDIR\uninstall-@PACKAGE_TARNAME@.exe" 0
-  CreateShortCut "$SMPROGRAMS\Voria\Synfig Studio.lnk" "$INSTDIR\bin\synfigstudio.exe" "" "$INSTDIR\bin\synfigstudio.exe" 0
+  CreateShortCut "$SMPROGRAMS\Voria\Synfig Studio.lnk" "$INSTDIR\bin\synfigstudio.exe" "" "$INSTDIR\share\pixmaps\synfig_icon.ico" 0
   
 SectionEnd
 

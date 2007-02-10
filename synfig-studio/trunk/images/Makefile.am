@@ -25,7 +25,7 @@ PNGTOICO=png2ico
 	p2i=`which $(PNGTOICO)`
 	cp -f $${p2i}.* ./
 	$(PNGTOICO) $@ $*-16x16.png $*-32x32.png $*-64x64.png
-	rm -f ./$(PNGTOICO).*
+	rm -f ./$(PNGTOICO).* $*-16x16.png $*-32x32.png $*-64x64.png
 
 clean:
 	$(RM) $(CLEANFILES)
