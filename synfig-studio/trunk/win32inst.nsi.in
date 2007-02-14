@@ -91,9 +91,9 @@ Section "Synfig Studio"
 	WriteRegStr HKCR ".sif" "Content Type" "image/x-sif"
 	WriteRegStr HKCR ".sif" "PerceivedType" "image"
 
-	WriteRegStr HKCR ".sif.gz" "" "Synfig.Composition"
-	WriteRegStr HKCR ".sif.gz" "Content Type" "image/x-sifz"
-	WriteRegStr HKCR ".sif.gz" "PerceivedType" "image"
+	WriteRegStr HKCR ".sifz" "" "Synfig.Composition"
+	WriteRegStr HKCR ".sifz" "Content Type" "image/x-sifz"
+	WriteRegStr HKCR ".sifz" "PerceivedType" "image"
 
 	WriteRegStr HKCR "Synfig.Composition" "" "Synfig Composition File"
 	WriteRegStr HKCR "Synfig.Composition\DefaultIcon" "" "$INSTDIR\share\pixmaps\sif_icon.ico"
@@ -125,7 +125,7 @@ Section "Uninstall"
 	DeleteRegKey HKCR "Synfig.Composition\shell"
 	DeleteRegKey HKCR "Synfig.Composition" 
 	DeleteRegKey HKCR ".sif"
-	DeleteRegKey HKCR ".sif.gz"
+	DeleteRegKey HKCR ".sifz"
   
   ; Remove registry keys
   DeleteRegKey HKLM "${PRODUCT_REG_KEY}"
