@@ -49,7 +49,7 @@
 //! Sets the local name of the layer
 #define SYNFIG_LAYER_SET_LOCAL_NAME(class,x) const char class::local_name__[]=x;
 
-//! Sets the categpru of the layer
+//! Sets the category of the layer
 #define SYNFIG_LAYER_SET_CATEGORY(class,x) const char class::category__[]=x
 
 //! Sets the version string for the layer
