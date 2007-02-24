@@ -308,7 +308,7 @@ Outline::sync()
 	}
 	
 	// Insert code for adding end tip
-	if(round_tip[1] && !loop)
+	if(round_tip[1] && !loop && side_a.size())
 	{
 		// remove the last point
 		side_a.pop_back();
@@ -335,7 +335,7 @@ Outline::sync()
 		side_a.push_back(side_b.back());
 
 	// Insert code for adding begin tip
-	if(round_tip[0] && !loop)
+	if(round_tip[0] && !loop && side_a.size())
 	{
 		// remove the last point
 		side_a.pop_back();
