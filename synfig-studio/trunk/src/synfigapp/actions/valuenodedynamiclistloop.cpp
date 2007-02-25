@@ -78,7 +78,12 @@ Action::ValueNodeDynamicListLoop::is_canidate(const ParamList &x)
 {
 	if(canidate_check(get_param_vocab(),x))
 	{
-		ValueNode::Handle value_node(x.find("value_node")->second.get_value_node());
+		ValueNode::Handle value_node;
+		ValueDesc value_desc(x.find("value_desc")->second.get_value_desc());
+		if(value_desc.parent_is_value_node())
+			value_node = value_desc.get_parent_value_node();
+		else
+			value_node = x.find("value_node")->second.get_value_node();
 		if(!ValueNode_DynamicList::Handle::cast_dynamic(value_node))
 			return false;
 		if(ValueNode_DynamicList::Handle::cast_dynamic(value_node)->get_loop()==true)
@@ -91,7 +96,22 @@ Action::ValueNodeDynamicListLoop::is_canidate(const ParamList &x)
 bool
 Action::ValueNodeDynamicListLoop::set_param(const synfig::String& name, const Action::Param &param)
 {
-	if(name=="value_node" && param.get_type()==Param::TYPE_VALUENODE)
+	if(!value_node && name=="value_desc" && param.get_type()==Param::TYPE_VALUEDESC)
+	{
+		ValueDesc value_desc(param.get_value_desc());
+
+		if(!value_desc.parent_is_value_node())
+			return false;
+
+		value_node=ValueNode_DynamicList::Handle::cast_dynamic(value_desc.get_parent_value_node());
+
+		if (!value_node)
+			return false;
+
+		return true;
+	}
+
+	if(!value_node && name=="value_node" && param.get_type()==Param::TYPE_VALUENODE)
 	{		
 		value_node=ValueNode_DynamicList::Handle::cast_dynamic(param.get_value_node());
 		

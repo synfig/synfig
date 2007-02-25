@@ -104,6 +104,7 @@ class studio::StateBLine_Context : public sigc::trackable
 	void bline_delete_vertex(synfig::ValueNode_Const::Handle value_node);
 	void bline_insert_vertex(synfig::ValueNode_Const::Handle value_node,float origin=0.5);
 	void loop_bline();
+	void unloop_bline();
 
 	void refresh_ducks(bool x=true);
 	
@@ -1055,12 +1056,24 @@ StateBLine_Context::loop_bline()
 }
 
 void
+StateBLine_Context::unloop_bline()
+{
+	loop_=false;
+
+	refresh_ducks(false);
+}
+
+void
 StateBLine_Context::popup_vertex_menu(synfig::ValueNode_Const::Handle value_node)
 {
 	menu.items().clear();
 
-	if(!loop_ && value_node==bline_point_list.front())
+	if(loop_)
 	{
+		menu.items().push_back(Gtk::Menu_Helpers::MenuElem("Unloop BLine",
+				sigc::mem_fun(*this,&studio::StateBLine_Context::unloop_bline)
+		));
+	} else {
 		menu.items().push_back(Gtk::Menu_Helpers::MenuElem("Loop BLine",
 				sigc::mem_fun(*this,&studio::StateBLine_Context::loop_bline)
 		));
