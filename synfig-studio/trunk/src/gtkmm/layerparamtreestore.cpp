@@ -538,7 +538,7 @@ LayerParamTreeStore::on_value_node_child_added(synfig::ValueNode::Handle value_n
 void
 LayerParamTreeStore::on_value_node_child_removed(synfig::ValueNode::Handle value_node,synfig::ValueNode::Handle child)
 {
-	queue_rebuild();
+	rebuild();
 }
 
 void
