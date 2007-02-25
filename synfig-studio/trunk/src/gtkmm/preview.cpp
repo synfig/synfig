@@ -34,7 +34,6 @@
 #include "audiocontainer.h"
 #include <gtkmm/stock.h>
 #include <gtkmm/separator.h>
-#include <gtkmm/tooltips.h>
 
 #include <synfig/target_scanline.h>
 #include <synfig/surface.h>

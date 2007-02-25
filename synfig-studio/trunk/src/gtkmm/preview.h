@@ -35,6 +35,7 @@
 #include <gtkmm/scrollbar.h>
 #include <gtkmm/checkbutton.h>
 #include <gtkmm/canvasview.h>
+#include <gtkmm/tooltips.h>
 
 #include <synfig/time.h>
 #include <synfig/vector.h>
