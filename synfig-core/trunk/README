@@ -1,5 +1,20 @@
               synfig -- vector animation renderer
 
+synfig is a vector based 2D animation package. It is designed to be
+capable of producing feature-film quality animation. It eliminates the
+need for tweening, preventing the need to hand-draw each frame. synfig
+features spatial and temporal resolution independence (sharp and smooth
+at any resolution or framerate), high dynamic range images, and a
+flexible plugin system.
+
+This package contains the renderer used to convert synfig .sif files to
+raster images, videos and other formats. Layer types include geometric,
+gradient, filter, distortion, transformation, fractal and others. Output
+targets include JPEG, PNG, GIF, BMP, PPM, DV, OpenEXR, ffmpeg (MPEG1),
+libavcodec (AVI), imagemagick (MIFF), yuv420p and others. 
+
+Links
+
 Web:  http://www.synfig.com/
 Wiki: http://wiki.synfig.com/
 SVN:  http://svn.voria.com/code/synfig/
