@@ -34,6 +34,7 @@
 #include "audiocontainer.h"
 #include <gtkmm/stock.h>
 #include <gtkmm/separator.h>
+#include <gtkmm/tooltips.h>
 
 #include <synfig/target_scanline.h>
 #include <synfig/surface.h>
@@ -282,9 +283,10 @@ void studio::Preview::frame_finish(const Preview_Target *targ)
 	signal_changed()();
 }
 
-#define IMAGIFY_BUTTON(button,stockid)	\
+#define IMAGIFY_BUTTON(button,stockid,tooltip)					\
 	icon=manage(new Gtk::Image(Gtk::StockID(stockid),Gtk::ICON_SIZE_BUTTON));	\
 	button->add(*icon);	\
+	tooltips.set_tip(*button,tooltip);	\
 	icon->set_padding(0,0);\
 	icon->show();	
 
@@ -344,19 +346,19 @@ playing(false)
 	hbox = manage(new Gtk::HBox);
 	
 	button = &b_loop;
-	IMAGIFY_BUTTON(button,Gtk::Stock::REFRESH);
+	IMAGIFY_BUTTON(button,Gtk::Stock::REFRESH,"Toggle Looping");
 	hbox->pack_start(b_loop,Gtk::PACK_SHRINK,0);
 	//attach(b_loop,0,1,2,3,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK);
 	
 	button = manage(new Gtk::Button(/*_("Play")*/));
 	button->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Preview::play));
-	IMAGIFY_BUTTON(button,Gtk::Stock::GO_FORWARD);
+	IMAGIFY_BUTTON(button,Gtk::Stock::GO_FORWARD,"Play");
 	hbox->pack_start(*button,Gtk::PACK_SHRINK,0);
 	//attach(*button,1,2,2,3,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK);
 	
 	button = manage(new Gtk::Button(/*_("Stop")*/));
 	button->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Preview::stop));
-	IMAGIFY_BUTTON(button,Gtk::Stock::NO);
+	IMAGIFY_BUTTON(button,Gtk::Stock::NO,"Stop");
 	hbox->pack_start(*button,Gtk::PACK_SHRINK,0);
 	//attach(*button,2,3,2,3,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK);
 	
@@ -368,19 +370,19 @@ playing(false)
 	
 	button = manage(new Gtk::Button(/*_("Halt Render")*/));
 	button->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Preview::stoprender));
-	IMAGIFY_BUTTON(button,Gtk::Stock::STOP);
+	IMAGIFY_BUTTON(button,Gtk::Stock::STOP,"Halt Render");
 	hbox->pack_start(*button,Gtk::PACK_SHRINK,0);
 	//attach(*button,2,3,3,4,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK);
 	
 	button = manage(new Gtk::Button(/*_("Re-Preview")*/));
 	button->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Preview::repreview));
-	IMAGIFY_BUTTON(button,Gtk::Stock::CONVERT);
+	IMAGIFY_BUTTON(button,Gtk::Stock::CONVERT,"Re-Preview");
 	hbox->pack_start(*button,Gtk::PACK_SHRINK,0);
 	//attach(*button,0,2,4,5,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK);
 	
 	button = manage(new Gtk::Button(/*_("Erase All")*/));
 	button->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Preview::eraseall));
-	//IMAGIFY_BUTTON(button,Gtk::Stock::DELETE);
+	IMAGIFY_BUTTON(button,Gtk::Stock::DELETE,"Erase All");
 	hbox->pack_start(*button,Gtk::PACK_SHRINK,0);
 	//attach(*button,2,3,4,5,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK);
 	
