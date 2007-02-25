@@ -5,7 +5,7 @@
 **	$Id: rectangle.cpp,v 1.2 2005/01/24 03:08:17 darco Exp $
 **
 **	\legal
-**	Copyright (c) 2002 Robert B. Quatpoint1ebaum Jr.
+**	Copyright (c) 2002 Robert B. Quattlebaum Jr.
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
