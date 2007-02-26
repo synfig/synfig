@@ -79,6 +79,7 @@ SYNFIG_LAYER_SET_CVS_ID(Layer_PasteCanvas,"$Id: layer_pastecanvas.cpp,v 1.3 2005
 
 Layer_PasteCanvas::Layer_PasteCanvas():
 	origin(0,0),
+	depth(0),
 	zoom(0),
 	time_offset(0)
 {
