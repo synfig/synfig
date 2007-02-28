@@ -27,9 +27,6 @@
 
 /* === H E A D E R S ======================================================= */
 
-#ifndef SYNFIG_NO_ANGLE
-# include "angle.h"
-#endif
 
 //#include <cmath>
 #include <math.h>
@@ -41,9 +38,11 @@
 #include <OpenEXR/half.h>
 #endif
 
-/* === M A C R O S ========================================================= */
+#ifndef SYNFIG_NO_ANGLE
+# include "angle.h"
+#endif
 
-#ifndef isnan
+/* === M A C R O S ========================================================= */
 
 #ifdef WIN32
 #include <float.h>
@@ -53,10 +52,15 @@ extern "C" { int _isnan(double x); }
 #endif
 #endif
 
-#ifdef __APPLE__
-#define isnan __isnanf
+// For some reason isnan() isn't working on macosx any more.
+// This is a quick fix.
+#if defined(__APPLE__) && !defined(SYNFIG_ISNAN_FIX)
+#ifdef isnan
+#undef isnan
 #endif
-
+inline bool isnan(double x) { return x != x; }
+inline bool isnan(float x) { return x != x; }
+#define SYNFIG_ISNAN_FIX 1
 #endif
 
 namespace synfig {
