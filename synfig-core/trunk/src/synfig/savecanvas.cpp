@@ -55,6 +55,7 @@
 #include <libxml++/libxml++.h>
 #include <ETL/stringf>
 #include "gradient.h"
+#include <errno.h>
 
 #endif
 

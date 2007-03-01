@@ -2,7 +2,7 @@
 
 #OPTIONS="--disable-optimization --enable-debug"
 
-PREFIX=/Applications/SynfigStudio.app/Contents/synfig
+PREFIX=/Users/darco/Projects/Voria/synfig-build
 
 export PKG_CONFIG_PATH=$PREFIX/lib/pkgconfig:/usr/lib/pkgconfig:/usr/X11R6/lib/pkgconfig
 OPTIONS="--prefix=$PREFIX"
@@ -18,7 +18,7 @@ OPTIONS="$OPTIONS --disable-dependency-tracking"
 #OPTIONS="$OPTIONS --enable-universal"
 
 ARCH_FLAGS=""
-ARCH_FLAGS="$ARCH_FLAGS -arch ppc"
+#ARCH_FLAGS="$ARCH_FLAGS -arch ppc"
 ARCH_FLAGS="$ARCH_FLAGS -arch i386"
 
 LDFLAGS="-L$PREFIX/lib"
@@ -50,7 +50,7 @@ echo ../configure $OPTIONS CC=\"$CC\" CXX=\"$CXX\" CPP=\"$CPP\" CXXCPP=\"$CXXCPP
 
 ../configure $OPTIONS CC="$CC" CXX="$CXX" CPP="$CPP" CXXCPP="$CXXCPP" LDFLAGS="$LDFLAGS" CFLAGS="$CFLAGS" CXXFLAGS="$CXXFLAGS" MACOS_DEPLOYMENT_TARGET=10.4 || exit 1
 
-make
+make -j2
 make install-strip
 
 #make package $MAKEFLAGS

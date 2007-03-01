@@ -33,8 +33,12 @@
 
 #include "module.h"
 #include "general.h"
-#include <ltdl.h>
 #include <ETL/stringf>
+
+#ifndef USE_CF_BUNDLES
+#include <ltdl.h>
+#endif
+
 #endif
 
 /* === M A C R O S ========================================================= */
@@ -52,6 +56,7 @@ Module::Book *synfig::Module::book_;
 bool
 Module::subsys_init(const String &prefix)
 {
+#ifndef USE_CF_BUNDLES
 	#ifndef SYNFIG_LTDL_NO_STATIC
 	//LTDL_SET_PRELOADED_SYMBOLS();
 	#endif
@@ -74,7 +79,7 @@ Module::subsys_init(const String &prefix)
 #endif
 	lt_dladdsearchdir("/usr/local/lib/synfig/modules");
 	lt_dladdsearchdir(".");
-	
+#endif	
 	book_=new Book;
 	return true;
 }
@@ -84,7 +89,9 @@ Module::subsys_stop()
 {
 	delete book_;
 	
+#ifndef USE_CF_BUNDLES
 	lt_dlexit();
+#endif
 	return true;
 }
 
@@ -109,6 +116,7 @@ synfig::Module::Register(Module::Handle mod)
 bool
 synfig::Module::Register(const String &module_name, ProgressCallback *callback)
 {
+#ifndef USE_CF_BUNDLES
 	lt_dlhandle module;
 
 	if(callback)callback->task(strprintf(_("Attempting to register \"%s\""),module_name.c_str()));
@@ -175,5 +183,6 @@ synfig::Module::Register(const String &module_name, ProgressCallback *callback)
 
 	if(callback)callback->task(strprintf(_("Success for \"%s\""),module_name.c_str()));
 	
+#endif
 	return false;
 }

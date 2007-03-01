@@ -229,7 +229,11 @@ if test $with_freetype != "no" ; then {
 	PKG_CHECK_MODULES(FREETYPE, freetype2,[
 		with_freetype="yes"
 	],[
-		with_freetype="no"
+		PKG_CHECK_MODULES(FREETYPE, xft,[
+			with_freetype="yes"
+		],[
+			with_freetype="no"
+		])
 	])
 } ; fi
 
