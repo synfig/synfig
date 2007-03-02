@@ -55,7 +55,7 @@ public:
 		width_(0.01),
 		origin_(0.0),
 		split_tangent_(false)
-	{ }
+	{ tangent_[0] = Point(0,0); tangent_[1] = Point(0,0); }
 
 	const Point& get_vertex()const { return vertex_; }
 	void set_vertex(const Point& x) { vertex_=x; }
