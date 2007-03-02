@@ -325,7 +325,7 @@ Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quali
 			blend_method=Color::BLEND_STRAIGHT;
 	}
 	else
-	if(!etl::intersect(context.get_full_bounding_rect(),full_bounding_rect))
+	if(!etl::intersect(context.get_full_bounding_rect(),full_bounding_rect+origin))
 	{
 		if(Color::is_onto(blend_method))
 			return true;
