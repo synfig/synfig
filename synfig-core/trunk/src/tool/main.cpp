@@ -139,7 +139,7 @@ class RenderProgress : public synfig::ProgressCallback
 	float last_time;	
 public:
 	
-	RenderProgress():clk_scanline(0) { }
+	RenderProgress():clk_scanline(0), last_time(0) { }
 	
 	virtual bool
 	task(const String &thetask)
