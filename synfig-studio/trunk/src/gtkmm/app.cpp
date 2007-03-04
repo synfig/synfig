@@ -38,6 +38,7 @@
 #endif
 #include <gtkmm/fileselection.h>
 #include <gtkmm/dialog.h>
+#include <gtkmm/messagedialog.h>
 #include <gtkmm/label.h>
 #include <gtkmm/stock.h>
 #include <gtkmm/stockitem.h>
@@ -1942,18 +1943,10 @@ App::dialog_yes_no_cancel(const std::string &title, const std::string &message)
 void
 App::dialog_not_implemented()
 {
-	Gtk::Dialog dialog(
-		"Feature not available",		// Title
-		true,		// Modal
-		true		// use_separator
-	);
-	Gtk::Label label("Sorry, this feature has not yet been implemented.");
-	label.show();
-	
-	dialog.get_vbox()->pack_start(label);
-	dialog.add_button(Gtk::StockID("gtk-ok"),Gtk::RESPONSE_OK);
-	dialog.show();
-	dialog.run();
+	Gtk::MessageDialog dialog("Feature not available", false, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_CLOSE, true);
+	dialog.set_secondary_text("Sorry, this feature has not yet been implemented.");
+	dialog.set_title("Feature not available");
+	dialog.run(); 
 }
 
 bool
