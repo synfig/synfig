@@ -1945,7 +1945,6 @@ App::dialog_not_implemented()
 {
 	Gtk::MessageDialog dialog("Feature not available", false, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_CLOSE, true);
 	dialog.set_secondary_text("Sorry, this feature has not yet been implemented.");
-	dialog.set_title("Feature not available");
 	dialog.run(); 
 }
 
