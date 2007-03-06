@@ -1946,9 +1946,7 @@ CanvasView::refresh_rend_desc()
 bool
 CanvasView::close()
 {
-	hide();
-	// I think this is bad..., removing
-	//	get_instance()->canvas_view_list().erase(std::find(get_instance()->canvas_view_list().begin(),get_instance()->canvas_view_list().end(),this));
+	get_instance()->safe_close();
 	return false;
 }
 
