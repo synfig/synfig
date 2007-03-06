@@ -322,6 +322,8 @@ Instance::close()
 	// Delete all of the canvas views
 	canvas_view_list().clear();
 
+	while(studio::App::events_pending())studio::App::iteration(false);
+
 	// If there is another open instance to select,
 	// go ahead and do so. If not, never mind.
 	if(studio::App::instance_list.empty())
@@ -633,8 +635,6 @@ Instance::safe_close()
 	}
 	
 	close();
-
-	while(studio::App::events_pending())studio::App::iteration(false);
 
 	return true;
 }
