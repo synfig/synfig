@@ -197,23 +197,26 @@ if test $with_libdv = "no" ; then {
 
 
 
+# LIBAVCODEC CHECK--------------------
 
 AC_ARG_WITH(libavcodec,[
-  --with-libavcodec         Enable support for libavcodec (Default=auto)],[
+  --without-libavcodec         disable support for libavcodec (Default=auto)],[
 ],[
-	AC_CHECK_LIB(avcodec, avcodec_find_encoder,[
-		with_libavcodec="yes"
-	],[
-		with_libavcodec="no"
-	])
+	with_libavcodec="yes"
 ])
-if test $with_libavcodec = "no" ; then {
-	AM_CONDITIONAL(WITH_LIBAVCODEC,false)
-} else {
-	AM_CONDITIONAL(WITH_LIBAVCODEC,true)
+
+if test $with_libavcodec != "no" ; then {
+	PKG_CHECK_MODULES(LIBAVCODEC, libavcodec,[with_libavcodec="yes"],[with_libavcodec="no"])
 } ; fi
-
-
+if test $with_libavcodec != "no" ; then {
+	PKG_CHECK_MODULES(LIBAVFORMAT, libavformat,[with_libavcodec="yes"],[with_libavcodec="no"])
+} ; fi
+if test $with_libavcodec = "yes" ; then {
+	AC_DEFINE(WITH_LIBAVCODEC,[],[enable libavcodec support])
+	AM_CONDITIONAL(WITH_LIBAVCODEC,true)
+} else {
+	AM_CONDITIONAL(WITH_LIBAVCODEC,false)
+} ; fi
 
 
 

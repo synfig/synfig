@@ -35,7 +35,7 @@
 
 extern "C"
 {
-#include "libavformat/avformat.h"
+#include <avformat.h>
 }
 
 #include <synfig/general.h>
@@ -307,7 +307,7 @@ public:
 		AVCodecContext *context;
 	
 		//get from inside stream
-		context = &stream->codec;
+		context = stream->codec;
 	
 		//search for desired codec (contained in the stream)
 		codec = avcodec_find_encoder(context->codec_id);
@@ -374,7 +374,7 @@ public:
 		
 		int 			size, 
 						ret = 0;
-		AVCodecContext 	*context = &stream->codec;
+		AVCodecContext 	*context = stream->codec;
 		
 		/*
 		If pict is invalid (NULL), then we are done compressing frames and we are trying to get
@@ -396,10 +396,20 @@ public:
 			pict = encodable;
 		}
 		
+		AVPacket pkt;
+		av_init_packet(&pkt);
+		pkt.stream_index = stream->index;
+		pkt.data = (uint8_t *)pict;
+		pkt.size = sizeof(AVPicture);
+		if( context->coded_frame )
+			pkt.pts = context->coded_frame->pts;
+		if( context->coded_frame && context->coded_frame->key_frame)
+			pkt.flags |= PKT_FLAG_KEY;
+		
 		//cludge for raw picture format (they said they'd fix)
 		if (formatc->oformat->flags & AVFMT_RAWPICTURE)
 		{
-			ret = av_write_frame(formatc, stream->index, (uint8_t *)pict, sizeof(AVPicture));
+			ret = av_write_frame(formatc, &pkt);
 		}
 		else 
 		{
@@ -409,7 +419,16 @@ public:
 			//if not zero we've got stuff to write
 			if (size != 0)
 			{
-				ret = av_write_frame(formatc, stream->index, &videobuffer[0], size);
+				av_init_packet(&pkt);
+				pkt.stream_index = stream->index;
+				pkt.data = &videobuffer[0];
+				pkt.size = size;
+				if( context->coded_frame )
+					pkt.pts = context->coded_frame->pts;
+				if( context->coded_frame && context->coded_frame->key_frame)
+					pkt.flags |= PKT_FLAG_KEY;
+
+				ret = av_write_frame(formatc, &pkt);
 				
 				//error detect - possibly throw later...
 				if(ret != 0)
@@ -438,7 +457,7 @@ public:
 	void close(AVFormatContext *formatc, AVStream *stream)
 	{
 		if(stream)
-			avcodec_close(&stream->codec);
+			avcodec_close(stream->codec);
 		
 		if (encodable) 
 		{
@@ -567,8 +586,9 @@ public:
 		
 		AVFormatParameters	fmtparam,*ap = &fmtparam;
 		memset(ap, 0, sizeof(*ap));
-		ap->frame_rate = vInfo.fps;
-		ap->frame_rate_base = 1;
+		// FIXME: Port next two lines to recent libavcodec versions
+		//ap->frame_rate = vInfo.fps;
+		//ap->frame_rate_base = 1;
 		ap->width = vInfo.w;
 		ap->height = vInfo.h;
 		//ap->pix_fmt = frame_pix_fmt;
@@ -700,7 +720,7 @@ public:
 			return 0;
 		}
 		
-		context = &st->codec;
+		context = st->codec;
 		context->codec_id = (CodecID)codec_id;
 		context->codec_type = CODEC_TYPE_VIDEO;
 	
@@ -714,8 +734,9 @@ public:
 		context->bit_rate = info.bitrate; //TODO: Make dependant on the quality
 		
 		/* frames per second */
-		context->frame_rate = info.fps;
-		context->frame_rate_base = 1;
+		// FIXME: Port next two lines to recent libavcodec versions
+		//context->frame_rate = info.fps;
+		//context->frame_rate_base = 1;
 		
 		/* "High Quality" */
 		context->mb_decision=FF_MB_DECISION_BITS;
@@ -746,7 +767,7 @@ public:
 			return 0;
 		}
 	
-		context = &stream->codec;
+		context = stream->codec;
 		context->codec_id = (CodecID)codec_id;	
 		context->codec_type = CODEC_TYPE_AUDIO;
 	
