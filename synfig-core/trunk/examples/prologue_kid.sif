@@ -62254,41 +62254,6 @@
     </param>
     <param name="canvas">
       <canvas end-time="0f">
-        <layer type="import" active="true" version="0.1" desc="bg_concepts05.png">
-          <param name="z_depth">
-            <real value="0.0000000000"/>
-          </param>
-          <param name="amount">
-            <real value="1.0000000000"/>
-          </param>
-          <param name="blend_method">
-            <integer value="0"/>
-          </param>
-          <param name="tl">
-            <vector>
-              <x>4.0694870949</x>
-              <y>4.8401479721</y>
-            </vector>
-          </param>
-          <param name="br">
-            <vector>
-              <x>-5.6682143211</x>
-              <y>-3.0326652527</y>
-            </vector>
-          </param>
-          <param name="c">
-            <integer value="1"/>
-          </param>
-          <param name="gamma_adjust">
-            <real value="1.0000000000"/>
-          </param>
-          <param name="filename">
-            <string>../../../../../../Program Files\Synfig\bin</string>
-          </param>
-          <param name="time_offset">
-            <time value="0s"/>
-          </param>
-        </layer>
         <layer type="noise_distort" active="true" version="0.0">
           <param name="z_depth">
             <real value="0.0000000000"/>
@@ -62362,41 +62327,6 @@
           </param>
           <param name="invert">
             <bool value="true"/>
-          </param>
-        </layer>
-        <layer type="import" active="true" version="0.1" desc="bg_concepts05.png">
-          <param name="z_depth">
-            <real value="0.0000000000"/>
-          </param>
-          <param name="amount">
-            <real value="1.0000000000"/>
-          </param>
-          <param name="blend_method">
-            <integer value="12"/>
-          </param>
-          <param name="tl">
-            <vector>
-              <x>4.0694870949</x>
-              <y>4.8401479721</y>
-            </vector>
-          </param>
-          <param name="br">
-            <vector>
-              <x>-5.6682143211</x>
-              <y>-3.0326652527</y>
-            </vector>
-          </param>
-          <param name="c">
-            <integer value="1"/>
-          </param>
-          <param name="gamma_adjust">
-            <real value="1.0000000000"/>
-          </param>
-          <param name="filename">
-            <string>../../../../../../Program Files\Synfig\bin</string>
-          </param>
-          <param name="time_offset">
-            <time value="0s"/>
           </param>
         </layer>
         <layer type="polygon" active="true" version="0.1" desc="Polygon013">
@@ -62474,41 +62404,6 @@
     </param>
     <param name="children_lock">
       <bool value="false"/>
-    </param>
-  </layer>
-  <layer type="import" active="false" version="0.1" desc="shortsketches01.jpg">
-    <param name="z_depth">
-      <real value="0.0000000000"/>
-    </param>
-    <param name="amount">
-      <real value="0.6499999762"/>
-    </param>
-    <param name="blend_method">
-      <integer value="6"/>
-    </param>
-    <param name="tl">
-      <vector>
-        <x>-2.3391449451</x>
-        <y>3.9847061634</y>
-      </vector>
-    </param>
-    <param name="br">
-      <vector>
-        <x>2.3391449451</x>
-        <y>-3.9847061634</y>
-      </vector>
-    </param>
-    <param name="c">
-      <integer value="3"/>
-    </param>
-    <param name="gamma_adjust">
-      <real value="1.0000000000"/>
-    </param>
-    <param name="filename">
-      <string>../../../../../../Program Files\Synfig\bin</string>
-    </param>
-    <param name="time_offset">
-      <time value="0s"/>
     </param>
   </layer>
   <layer type="PasteCanvas" active="false" version="0.1" desc="Child Below Water">
@@ -62819,41 +62714,6 @@
     </param>
     <param name="children_lock">
       <bool value="false"/>
-    </param>
-  </layer>
-  <layer type="import" active="false" version="0.1" desc="web01.jpg">
-    <param name="z_depth">
-      <real value="0.0000000000"/>
-    </param>
-    <param name="amount">
-      <real value="0.4499999881"/>
-    </param>
-    <param name="blend_method">
-      <integer value="6"/>
-    </param>
-    <param name="tl">
-      <vector>
-        <x>-2.3393578529</x>
-        <y>3.9847061634</y>
-      </vector>
-    </param>
-    <param name="br">
-      <vector>
-        <x>2.3393578529</x>
-        <y>-3.9847061634</y>
-      </vector>
-    </param>
-    <param name="c">
-      <integer value="3"/>
-    </param>
-    <param name="gamma_adjust">
-      <real value="1.0000000000"/>
-    </param>
-    <param name="filename">
-      <string>../../../../../../Program Files\Synfig\bin</string>
-    </param>
-    <param name="time_offset">
-      <time value="0s"/>
     </param>
   </layer>
   <layer type="SolidColor" active="false" version="0.1">

@@ -59808,45 +59808,6 @@
         <y>0.0000000000</y>
       </vector>
     </param>
-    <param name="canvas">
-      <canvas>
-        <layer type="import" active="true" version="0.1" desc="sb_1.jpg">
-          <param name="z_depth">
-            <real value="0.0000000000"/>
-          </param>
-          <param name="amount">
-            <real value="1.0000000000"/>
-          </param>
-          <param name="blend_method">
-            <integer value="0"/>
-          </param>
-          <param name="tl">
-            <vector>
-              <x>-3.9454226494</x>
-              <y>2.2500000000</y>
-            </vector>
-          </param>
-          <param name="br">
-            <vector>
-              <x>3.9454226494</x>
-              <y>-2.2500000000</y>
-            </vector>
-          </param>
-          <param name="c">
-            <integer value="1"/>
-          </param>
-          <param name="gamma_adjust">
-            <real value="1.0000000000"/>
-          </param>
-          <param name="filename">
-            <string>../../../../../../Program Files\Synfig\bin</string>
-          </param>
-          <param name="time_offset">
-            <time value="0s"/>
-          </param>
-        </layer>
-      </canvas>
-    </param>
     <param name="zoom">
       <real value="0.0000000000"/>
     </param>
