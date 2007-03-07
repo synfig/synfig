@@ -573,22 +573,21 @@ TIFF output target support -------> $TARGET_TIF
 JPEG output target support -------> $TARGET_JPEG
 ETL_CFLAGS -----------------------> $ETL_CFLAGS
 FreeType2 ------------------------> $with_freetype
-fontconfig ------------------------> $with_fontconfig
+fontconfig -----------------------> $with_fontconfig
 libavcodec -----------------------> $with_libavcodec
 vImage ---------------------------> $with_vimage
-GLib -----------------------------> $GLIB
 ImageMagick ----------------------> $with_imagemagick
 FFMPEG ---------------------------> $with_ffmpeg
 libdv ----------------------------> $with_libdv
 OpenEXR --------------------------> $with_openexr
 Using OpenEXR's \"half\" type ------> $use_openexr_half
 
-"'$'"CXX ------------------------------> '$CXX'
-"'$'"CXXFLAGS -------------------------> '$CXXFLAGS'
-"'$'"SYNFIG_LIBS -----------------------> '$SYNFIG_LIBS'
-"'$'"LIBXMLPP_LIBS --------------------> '$LIBXMLPP_LIBS'
-"'$'"ETL_LIBS -------------------------> '$ETL_LIBS'
-"'$'"LIBSIGC_LIBS ---------------------> '$LIBSIGC_LIBS'
-"'$'"SYNFIG_CFLAGS ---------------------> '$SYNFIG_CFLAGS'
-"'$'"LIBADD_DL ------------------------> '$LIBADD_DL'
+"'$'"CXX -----------------------------> '$CXX'
+"'$'"CXXFLAGS ------------------------> '$CXXFLAGS'
+"'$'"SYNFIG_LIBS ---------------------> '$SYNFIG_LIBS'
+"'$'"LIBXMLPP_LIBS -------------------> '$LIBXMLPP_LIBS'
+"'$'"ETL_LIBS ------------------------> '$ETL_LIBS'
+"'$'"LIBSIGC_LIBS --------------------> '$LIBSIGC_LIBS'
+"'$'"SYNFIG_CFLAGS -------------------> '$SYNFIG_CFLAGS'
+"'$'"LIBADD_DL -----------------------> '$LIBADD_DL'
 "
