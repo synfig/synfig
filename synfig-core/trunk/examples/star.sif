@@ -1956,9 +1956,6 @@
         <waypoint time="3s 0f">
           <real value="0.2500000000"/>
         </waypoint>
-        <waypoint time="3s 0f">
-          <real value="0.2500000000"/>
-        </waypoint>
         <waypoint time="3s 7f">
           <real value="0.2500000000"/>
         </waypoint>
@@ -2010,9 +2007,6 @@
           <real value="0.5000000000"/>
         </waypoint>
         <waypoint time="2s 23f">
-          <real value="0.2500000000"/>
-        </waypoint>
-        <waypoint time="3s 0f">
           <real value="0.2500000000"/>
         </waypoint>
         <waypoint time="3s 0f">
