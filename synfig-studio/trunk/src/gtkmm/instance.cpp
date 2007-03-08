@@ -319,10 +319,11 @@ Instance::close()
 	for(std::list<etl::handle<CanvasView> >::iterator iter=canvas_view_list().begin();iter!=canvas_view_list().end();iter++)
 		(*iter)->hide();
 
+	// Consume pending events before deleting the canvas views
+	while(studio::App::events_pending())studio::App::iteration(false);
+
 	// Delete all of the canvas views
 	canvas_view_list().clear();
-
-	while(studio::App::events_pending())studio::App::iteration(false);
 
 	// If there is another open instance to select,
 	// go ahead and do so. If not, never mind.
