@@ -206,10 +206,7 @@ AC_ARG_WITH(libavcodec,[
 ])
 
 if test $with_libavcodec != "no" ; then {
-	PKG_CHECK_MODULES(LIBAVCODEC, libavcodec,[with_libavcodec="yes"],[with_libavcodec="no"])
-} ; fi
-if test $with_libavcodec != "no" ; then {
-	PKG_CHECK_MODULES(LIBAVFORMAT, libavformat,[with_libavcodec="yes"],[with_libavcodec="no"])
+	PKG_CHECK_MODULES(LIBAVCODEC, [libavcodec libavformat],[],[echo no; with_libavcodec="no"])
 } ; fi
 if test $with_libavcodec = "yes" ; then {
 	AC_DEFINE(WITH_LIBAVCODEC,[],[enable libavcodec support])
