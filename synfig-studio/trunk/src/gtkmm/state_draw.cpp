@@ -715,16 +715,12 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline
 		{
 			synfigapp::ValueDesc value_desc(start_duck->get_value_desc());
 			if(!value_desc)
-			{
 				break;
-			}
 
 			ValueNode_BLine::Handle value_node_bline;
 
 			if(value_desc.parent_is_value_node())
-			{
 				value_node_bline=ValueNode_BLine::Handle::cast_dynamic(value_desc.get_parent_value_node());
-			}
 
 			// don't extend looped blines
 			if(value_node_bline && !value_node_bline->get_loop())
@@ -766,9 +762,7 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline
 		{
 			synfigapp::ValueDesc value_desc(finish_duck->get_value_desc());
 			if(!value_desc)
-			{
 				break;
-			}
 
 			ValueNode_BLine::Handle value_node_bline;
 
