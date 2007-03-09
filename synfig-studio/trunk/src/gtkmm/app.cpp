@@ -335,16 +335,7 @@ public:
 	virtual bool
 	error(const std::string &err)
 	{		
-		Gtk::Dialog dialog(
-			"Error",		// Title
-			true,		// Modal
-			true		// use_separator
-		);
-		Gtk::Label label(err);
-		label.show();
-		
-		dialog.get_vbox()->pack_start(label);
-		dialog.add_button(Gtk::StockID("gtk-ok"),RESPONSE_OK);
+		Gtk::MessageDialog dialog(err, false, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_CLOSE, true);
 		dialog.show();
 		dialog.run();
 		return true;
@@ -1870,16 +1861,8 @@ App::dialog_saveas_file(const std::string &title, std::string &filename)
 void
 App::dialog_error_blocking(const std::string &title, const std::string &message)
 {
-	Gtk::Dialog dialog(
-		title,		// Title
-		true,		// Modal
-		true		// use_separator
-	);
-	Gtk::Label label(message);
-	label.show();
-	
-	dialog.get_vbox()->pack_start(label);
-	dialog.add_button(Gtk::StockID("gtk-ok"),1);
+	Gtk::MessageDialog dialog(message, false, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_CLOSE, true);
+	dialog.set_title(title);
 	dialog.show();
 	dialog.run();
 }
@@ -1887,16 +1870,8 @@ App::dialog_error_blocking(const std::string &title, const std::string &message)
 void
 App::dialog_warning_blocking(const std::string &title, const std::string &message)
 {
-	Gtk::Dialog dialog(
-		title,		// Title
-		true,		// Modal
-		true		// use_separator
-	);
-	Gtk::Label label(message);
-	label.show();
-
-	dialog.get_vbox()->pack_start(label);
-	dialog.add_button(Gtk::StockID("gtk-ok"),1);
+	Gtk::MessageDialog dialog(message, false, Gtk::MESSAGE_WARNING, Gtk::BUTTONS_CLOSE, true);
+	dialog.set_title(title);
 	dialog.show();
 	dialog.run();
 }

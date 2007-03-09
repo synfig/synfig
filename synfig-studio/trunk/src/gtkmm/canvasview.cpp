@@ -37,6 +37,7 @@
 #include <gtkmm/paned.h>
 #include <gtkmm/scale.h>
 #include <gtkmm/dialog.h>
+#include <gtkmm/messagedialog.h>
 #include <gtkmm/treemodelsort.h>
 #include <gtkmm/buttonbox.h>
 
@@ -336,18 +337,7 @@ public:
 		// then just go ahead and return false --
 		// don't bother displaying a dialog
 		if(view->cancel)return false;
-		
-		Gtk::Dialog dialog(
-			"Error",		// Title
-			*view,		// Parent
-			true,		// Modal
-			true		// use_separator
-		);
-		Gtk::Label label(err);
-		label.show();
-		
-		dialog.get_vbox()->pack_start(label);
-		dialog.add_button(Gtk::StockID("gtk-ok"),RESPONSE_OK);
+		Gtk::MessageDialog dialog(*view, err, false, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_CLOSE, true);
 		dialog.show();
 		dialog.run();
 		view->statusbar->pop();
