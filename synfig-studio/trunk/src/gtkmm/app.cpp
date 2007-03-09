@@ -1237,6 +1237,7 @@ App::App(int *argc, char ***argv):
 		
 		studio_init_cb.task("Init Input Dialog...");
 		dialog_input=new Gtk::InputDialog();
+		dialog_input->get_close_button()->signal_clicked().connect( sigc::mem_fun( *dialog_input, &Gtk::InputDialog::hide ) );
 
 		studio_init_cb.task("Init auto recovery...");
 		auto_recover=new AutoRecover();
