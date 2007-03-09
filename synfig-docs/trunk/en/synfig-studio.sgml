@@ -1,0 +1,64 @@
+<!-- retain these comments for translator revision tracking -->
+<!-- $Id: synfig-studio.sgml 1 2006-08-29 05:11:55 xerakko $ -->
+
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook V4.2//EN" [
+ <!-- ENTITY % commondata     SYSTEM "##ENTPATH##/../entities/common.ent" > %commondata; -->
+
+<!ENTITY index.sgml SYSTEM "index.sgml">
+<!ENTITY introduction.sgml SYSTEM "##PATHLANG##/introduction/introduction.sgml">
+
+<!ENTITY interface.sgml SYSTEM "##PATHLANG##/interface/interface.sgml">
+<!ENTITY toolbox.sgml SYSTEM "##PATHLANG##/interface/toolbox.sgml">
+<!ENTITY layers.sgml SYSTEM "##PATHLANG##/interface/layers.sgml">
+<!ENTITY params.sgml SYSTEM "##PATHLANG##/interface/params.sgml">
+<!ENTITY tooloptions.sgml SYSTEM "##PATHLANG##/interface/tooloptions.sgml">
+<!ENTITY navigator.sgml SYSTEM "##PATHLANG##/interface/navigator.sgml">
+<!ENTITY history.sgml SYSTEM "##PATHLANG##/interface/history.sgml">
+
+<!ENTITY firststeps.sgml SYSTEM "##PATHLANG##/steps/firststeps.sgml">
+<!ENTITY linking.sgml SYSTEM "##PATHLANG##/steps/linking.sgml">
+<!ENTITY shapes.sgml SYSTEM "##PATHLANG##/steps/shapes.sgml">
+
+
+<!ENTITY steplayers.sgml SYSTEM "##PATHLANG##/steps/layers/layers.sgml">
+<!ENTITY combining.sgml SYSTEM "##PATHLANG##/steps/layers/combining.sgml">
+<!ENTITY using.sgml SYSTEM "##PATHLANG##/steps/layers/using.sgml">
+
+<!ENTITY apendices.sgml SYSTEM "##PATHLANG##/appendix/apendices.sgml">
+]>
+<book lang="en" id="gettingstarted">
+  <bookinfo>
+    <date>28 Aug 2006</date>
+    <title><acronym>Synfig Studio</acronym>
+    </title>
+    <subtitle>Getting Started</subtitle>
+    <releaseinfo>Intial Release</releaseinfo>
+    <authorgroup>
+      <author>
+	<firstname>xxxx</firstname>
+	<surname>xxx xxxxxx</surname>
+      </author>
+      <author>
+      	<firstname>et Alt.</firstname>
+      </author>
+    </authorgroup>
+    <address>synfig@miguelgea.com</address>
+    <legalnotice>
+      <para>Released with GFDL license</para>
+    </legalnotice>
+    <revhistory>
+      <revision>
+	<revnumber>0.1</revnumber>
+	<date>2006-8-28</date>
+	<authorinitials>mgm</authorinitials>
+	<revremark>Document start</revremark>
+      </revision>
+    </revhistory>
+  </bookinfo>
+&introduction.sgml;
+&interface.sgml;
+&firststeps.sgml;
+&apendices.sgml;
+&index.sgml;
+</book>
+

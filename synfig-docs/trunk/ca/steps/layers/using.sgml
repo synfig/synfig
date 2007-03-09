@@ -1,0 +1,57 @@
+<!-- retain these comments for translator revision tracking --> 
+<!--$Id: using.sgml 1 2006-08-30 05:11:55 xerakko $ --> 
+<sect2 id="using">
+<title>Using</title> 
+<para> However, there is still a problem: The gradient still covers the whole 
+canvas althought we wanted it to be restricted on the rectangle. To do so, 
+activate the gradient layer in the Layer tab. Now go to the Params Dialog (by 
+default a tab in the Params-Children-Keyframes window), and search the attribute
+called 'Blend Method'. Double-click the entry and select 'Onto' from the
+appearing drop-down menu.</para>
+
+<para>The gradient should now be restricted to the rectangle. Congratulations!
+You just made your first interacting layers with Synfig.</para>
+
+<para>If only for the additional organization, encapsulating layers into inline
+canvases dramatically improves the ease of use of Synfig Studio. But
+lots of programs can do this. The concept of scope as just demonstrated
+sets Synfig apart from other programs with layer hierarchies.</para>
+<para>
+<footnote><para>The following remarks seem to be outdated already! A blur 
+defaults to 'Straight' here (using SVN 110). --Claus 06:45, 11 Jan 2006 (PST)
+</para></footnote>
+
+    <footnote><para>It defaulted to composite for me, as described (using 
+    SVN 147) Matumio 07:56, 12 Mar 2006 (PST)</para></footnote>
+
+    However, a layer can only modify the data that it gets from directly
+    below it. In other words, if you were to throw a Blur Layer at
+    the top of the objects inside the inline canvas we just created,
+    it would just blur them -- anything under it would not be blurred!</para>
+
+    <para>Lets try it. Add a few circles under the inline canvas we just
+    created. Expand the inline canvas to show its contents, and select
+    the top layer inside of it (should be the "Outline" layer). This
+    is where we want to insert the blur. Right click on the selected
+    layer and a popup menu will appear. The first item in that popup
+    is "New Layer". Inside of the "New Layer" menu, you'll see several
+    categories of layers you could create, but what we want is a blur,
+    so goto the Blur category and select the "Blur" layer. (so that
+    would be "New Layer->Blurs->Blur")</para>
+
+    <para> Well, it blurred... but something is not quite right--the inside edge
+    of the outline is now all soft, but it still kinda looks like there is
+    a hard edge on the outside. It is doing this because the blend method
+    of the blur defaulted to "Composite" (you can change the default
+    blend method for new layers from the New Layer Defaults section of
+    the Toolbox). What we want is a blend method of "Straight". Just
+    select the blur layer, and change the Blend Method to "Straight"
+    in the Params Dialog.</para>
+
+    <para>(NOTE: I will probably change the way that default blend methods are
+    handled in the future--as the way it is currently handled seems to
+    only create hassles like this)</para>
+
+    <para>Ok, now we have all of the contents of the inline canvas blurred,
+    but everything under it is sharp!</para> 
+</sect2>

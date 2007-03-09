@@ -1,0 +1,52 @@
+<!-- retain these comments for translator revision tracking -->
+<!-- $Id: introduction.sgml 1 2006-08-30 05:11:55 xerakko $ -->
+<chapter id="introduction">
+    
+ <title><acronym>Introduction</acronym></title>
+ <para>Synfig, like most every other competent graphics program, breaks down 
+ individual elements of a Canvas into Layers. However, it differs from other 
+ programs in two major ways:</para>
+ <orderedlist>
+   <listitem>
+    <para>An individual layer in Synfig usually represents a single "Primitive". 
+    ie: A single region, an outline of a region, an imported JPEG, etc... This
+    allows you to have a great deal of flexibility and control. It is not
+    uncommon for a composition to have hundreds of layers(organized into a 
+    hierarchy for artist sanity of course).</para>
+   </listitem>
+   <listitem>
+    <para>A layer can not only composite information on top of the image below it,
+    but also distort and/or modify it in some other way. In this sense, Synfig 
+    Layers act much like filters do in Adobe Photoshop or the GIMP. For example, 
+    we have a Blur Layer, Radial Blur Layer, Spherical Distortion Layer, 
+    color-correct layer, bevel layer, etc... </para>
+   </listitem>
+ </orderedlist>
+
+ <para>Each layer has a set of parameters which determine how it behaves. When 
+ you click on a layer (either in the canvas window, or in the Layer Dialog), 
+ you will see its parameters in the Params Dialog.</para>
+
+ <para>Synfig Studio has an autorecover feature. If it crashes, even if the 
+ current file has not been saved, it will not lose more than 5 minutes of work. 
+ At restart it will automatically prompt the user to recover the unsaved changes. 
+ Unfortunately history isn't recovered yet. That feature comes later.</para>
+
+ <para>One thing you may notice is that Synfig Studio is SLOW, making it
+ practically unusable on hardware that is over 3 years old. The biggest reason
+ for this is that all of the color calculations are done in floating point 
+ because Synfig Studio was built from the ground up with High-Dynamic-Range 
+ Imaging in mind. HOWEVER, this will not be the case forever.</para>
+
+ <para>darco has some fairly major re-implementations and optimizations that 
+ he plans to implement that should quite dramatically improve the performance 
+ of Synfig on all platforms. The goal is not a 200% speed increase, it is at 
+ least a 2000% speed increase. With the optimizations that are planned to be 
+ implemented, we will be able to pipeline operations in such a way that this 
+ performance improvement can be realized. It should also pave the way to hardware 
+ acceleration using todays powerful graphics processors, which should yield 
+ further performance improvements measurable in orders of magnitude.</para>
+</chapter>
+<!-- Local Variables: -->
+<!-- sgml-parent-document: "synfig-studio.sgml" -->
+<!-- End: -->

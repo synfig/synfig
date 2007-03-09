@@ -1,0 +1,33 @@
+*+ 1.- Introduction
+2.- Installation
+3.- The user Interface
+	* 3.0.- The Toolbox
+	3.1.- Layers Dialog
+	3.2.- Params Dialog
+	3.3.- Tool Options Dialog
+	3.4.- Navigator
+	3.5.- History Dialog
+4.- First steps
+	*+ 4.1.- Linking
+	4.2.- Layers
+		4.2.1.- Combining
+		4.2.2.- Using
+	4.3.- Shapes
+5.- Animation Basics
+	5.1 Introduction
+	5.2 Setting up the workspace
+	5.3 Adding movement
+	5.4 The s's and f's: Understanding the Timeline
+	5.5 The Keyframe List
+	5.6 Rendering your animation
+	5.7 Conclusion
+6.- Tips
+	6.1 Apply a gradient to an object instead of the entire canvas?
+	6.2 Show or hide a layer, or fade the effect of a blur?
+	6.3 Fill an outline?
+	6.4 Dock Together Windows?
+	6.5 Use an external Bitmap?
+	6.6 Close a bline?
+Appendix
+A.- Keyboard Shortcuts
+B.- Glossary

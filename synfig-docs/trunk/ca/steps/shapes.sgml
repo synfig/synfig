@@ -1,0 +1,82 @@
+<!-- retain these comments for translator revision tracking -->
+<!-- $Id:shapes.sgml 1 2006-08-29 05:11:55 xerakko $ -->
+<sect1 id="shapes">
+  <title>Shapes</title>
+  <para> Basic primitives such as circles or
+rectangles are all great, but they are pretty much geometrically
+inflexible. What about shapes? To do this, we use the bline tool.</para>
+  <para>In Synfig, the construct for describing shapes is called a Bline. This
+is roughly analogous to a "path" in other programs, except that it is
+strictly a hermite spline.</para>
+  <para>When you click on the bline tool, you will see that the ducks from
+your currently selected layer (if there was one) will disappear, but
+the layer(s) will still remain selected in the Layers Dialog. This is
+normal. Anything you create in the bline tool will be inserted above the
+currently selected layer. Keep in mind that if you want to insert a shape
+somewhere, you should select where you want to insert it before you go
+into the Bline tool-changing the selection afterward will automaticly
+swap you back to the normal tool.</para>
+  <para>If you take a look at the tool options dialog, you'll notice that the
+first things you see are three checkboxes. Make sure that only "Fill"
+AND "Outline" are checked.</para>
+  <para>First, go ahead and click on the "R" button in the lower left corner of
+the FG/BG color widget in the toolbox. This will reset us back to black
+and white. Also, go ahead and set the default line width (right next to
+the FG/BG widget) to something nice and thick -- 10pt should do the 
+trick.</para>
+  <para>Clicking with your mouse in the canvas will place vertices. While you are
+placing a vertex, you can drag out its tangent by dragging the mouse. Do
+this over and over, and you construct a Bline.</para>
+  <para>Keep in mind, however, that during this construction, there is nothing
+stopping you from just moving it if you don't like where you placed
+a vertex or a tangent. Honest! If you want to remove a vertex, right
+click on it and delete it. Want to split the tangents? Right click on
+the tangent and hit "split tangents". Want to loop the bline? right
+click on the first vertex and select "loop".</para>
+  <para>So I assume you got your first Bline laid out like you want it. That's
+great. But we are still in construction mode -- the layers haven't been
+created yet. There are two ways to create the layers:</para>
+  <orderedlist>
+    <listitem>
+      <para>just switch to another tool, or</para>
+    </listitem>
+    <listitem>
+      <para>press the "create" button at the bottom of the tool options tab
+      (it's the icon that looks like a gear).</para>
+    </listitem>
+  </orderedlist>
+  <para>     For now, just go ahead and click on the normal tool because we
+      are done with the bline tool.</para>
+  <para>// Insert Figure about here</para>
+  <para>Ok, we now have a nice pretty white region with a thick black
+      outline. Notice that there are two layers that we have created--the
+      Outline and the Region. Despite the fact that they are two separate
+      layers, their vertices parameter has already been linked--so you
+      can select either one and move its ducks around and the other one
+      will also change.</para>
+  <para>If you want to manipulate the vertices after you have created
+      the layers, it is very easy to do so. Just click on one of the
+      layers and have at it. If you want to remove a vertex, right
+      click on it and hit "Remove Item (smart)". Want to insert a point
+      somewhere? Right click on the segment where you want to insert
+      something and his "Insert item (smart)".</para>
+  <para>NOTE: The only major difference between this normal editing mode
+      and the construction mode is in how you split the tangents--in
+      construction mode you right click on the tangent itself. In normal
+      duck editing mode, you must right click on the vertex that the
+      tangents are attached to. This could be considered a usability bug,
+      and it will be resolved at some point.</para>
+  <para>This may appear to be leading to a mess of layers. And yes, if
+      you aren't using the software properly, that is exactly what you
+      will get. But there is a way to make this more sane: Just study
+      the previous tutorial</para>
+  <para>One quick thing to mention before I finish up. You can change the
+      width of an outline at each vertex. You do this by selecting the
+      outline layer (NOTE: you must select the Outline Layer, the Region
+      Layer has no width data) and tweaking with the width ducks. By
+      default, these are masked. To show them, press Alt-5. Repeat to
+      hide them again. You can also see other things to mask via the
+      Canvas Menu Caret &gt; View Menu &gt; Mask Ducks Menu.</para>
+  <para>That should give you enough of a grasp of the software to be able
+      to figure out more stuff on your own.</para>
+</sect1>

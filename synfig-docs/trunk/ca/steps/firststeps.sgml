@@ -1,0 +1,69 @@
+<!-- retain these comments for translator revision tracking --> 
+<!-- $Id: firststeps.sgml 1 2006-08-29 05:11:55 xerakko $ --> 
+<chapter id="firststeps"> 
+<title>First Steps</title> 
+<para> Lets create something
+so that we can tweak with it. Now that you have a new composition open
+and the properties dialog is out of the way, go over to the toolbox and
+click on the circle tool(If you don't know which one it is, just mouse
+over them until you find the one with the tooltip that says "circle").</para>
+
+<para>The second you click on the circle tool, you should notice that the tool
+options tab changed. But we'll get to that later.
+
+    <footnote><para>Some laptop users might experience trouble where click-drag on
+    the canvas when using the circle tool doesn't seem to do anything
+    or produce insanely huge circles. The problem is that Synfig has
+    detected the touchpad and enabled that device (incorrectly!) To fix
+    this: click File->Input devices... In the resulting dialog window,
+    select 'Disabled' for your touchpad device. After this change,
+    your external mouse and the touchpad will work as expected.</para></footnote>
+</para>
+    <para>With the circle tool selected, you can now create circles in the
+    canvas window. This pretty much works exactly as you might expect
+    it to. Go ahead and create two (or more, if you fancy) circles. If
+    by accident you just clicked on the canvas instead of clicking and
+    dragging(with mouse button pressed) to draw the circle, you end up
+    creating a circle with 0 radius and it is effectively invisible! No
+    need to worry, you can easily fix this. In the Params dialog, you
+    can change the parameters of the selected object. If you just made
+    a 0 radius circle, it should be the current selected object. you can
+    change its radius to some value other than 0, say 10, and manipulate
+    it to your liking with the canvas ducks later.</para>
+
+    <para>Now go back to the toolbox and click on the normal tool (the blue
+    circle with the arrow on it). After you do this, click on one of your
+    circles. You will then see a bounding box(which is kinda useless
+    at this point in time, but I digress), a green dot at the center,
+    and a cyan dot on the radius. Those dots are called ducks. If you
+    want to modify the circle, grab a duck and drag it around. Easy!</para>
+
+    <para>So you can select a layer by clicking on it. If you want to select
+    more than one layer, hold down CONTROL while you are clicking--this
+    works in both the canvas window and the layer tab. Try it!</para>
+
+    <para>You can also select multiple ducks. You can do this in several
+    ways. First, you can hold down CONTROL and individually click the
+    ducks that you want selected, but this can be tedious. However, there
+    is a much faster method--just create a selection box by clicking the
+    mouse and dragging it over the area of ducks that you want selected.<para>
+
+    <para>Go ahead and select two circles, and select all of their ducks. With
+    several ducks selected, moving one duck will move all of the
+    ducks. This behavior is dependent on the normal tool. Thus, a
+    more descriptive name for this tool might have been the "move" or
+    "translate" tool.</para>
+
+    <para>The Rotate and Scale tools work much like the Normal tool, except in
+    the case where you have multiple ducks selected. It is much easier
+    to just try it than read about it. Select a few circles, select all
+    of their ducks, and try using the rotate and scale tools.</para>
+
+    <para>Note that, unlike the normal tool, the other duck manipulation tools
+    DO have options associated with them. If a particular tool isn't
+    doing what you want, take a look in the tool options tab to see if
+    it is set up like you want it.</para>
+&linking.sgml; 
+&steplayers.sgml; 
+&shapes.sgml; 
+</chapter>

@@ -1,0 +1,76 @@
+<!-- retain these comments for translator revision tracking -->
+<!-- $Id: interface.sgml 1 2006-08-29 05:11:55 xerakko $ -->
+
+<chapter id="interface">
+<title>The user Interface</title>
+<para>When you start Synfig Studio, it will display a splash graphic and boot 
+itself up. After it finishes loading, you should see three windows. The window 
+in the upper left is the toolbox. This is where you can open files, change tools, 
+etc. You'll notice that most of the buttons are greyed out--because there is no 
+file open yet.</para>
+
+<para>The other two windows (one on the bottom, and one to the right) are 
+customizable dock dialogs. You can rearrange the contents of these however 
+you wish by simply dragging the tab to where you want it. You can even create a 
+new dock dialog by dragging a tab out of the dock dialog it was inside of.</para>
+
+<para>If you ever accidently close a dock tabs (by dragging it out of the dock 
+dialog, and closing the new dock dialog that gets created), no worries. Simply 
+goto the toolbox and goto "File->Dialogs", and then click on the name of the 
+dialog you need.</para>
+
+<para>There are a lot of dock tabs. If you have no idea what a dock tab does, 
+simply hold your mouse over its icon and a tooltip will pop up describing the 
+name of the tab.<para>
+
+Here are some of the more important ones:
+<itemizedlist>
+ <listitem>
+  <para>Layers Dialog (<xref linkend="layers"/>) - This tab shows you the layer 
+  hierarchy for the currently selected canvas. It also allows you to manipulate 
+  these layers.</para>
+ </listitem>
+ <listitem>
+  <para>Params Dialog (<xref linkend="params"/>)- This tab will show you the 
+  parameters of the currently selected layer, (OR, if multiple layers are 
+  selected, it shows you only the parameters that the selected layers have 
+  in common)</para>
+ </listitem>
+ <listitem>
+  <para>Tool Options Dialog (<xref linkend="tooloptions"/>) - Shows you any 
+  options specific to the currently selected tool</para>
+ </listitem>
+ <listitem>
+  <para>Navigator (<xref linkend="navigator"/>) - Shows you a thumbnail of what the currently selected Canvas
+  looks like. You can also zoom in and move the focus around with this tab.</para>
+ </listitem>
+ <listitem>
+  <para>History Dialog (<xref linkend="history"/>- Shows you the history stack for the current composition. 
+  You can also edit the actions in history.</para>
+ </listitem>
+</itemizedlist>
+
+<para>If you click the "new composition" button in the toolbox, a new composition 
+will be opened and the canvas properties dialog will appear.</para>
+
+<para>The canvas properties dialog is a mess, I know. I'll have it re-designed into 
+something much more comprehendible in the next few days. For now, ignore the 
+"Image Area" and "Locks and Links" sections.</para>
+
+<para>If you click OK, the canvas properties dialog will disappear and you will see 
+the Canvas window. This window represents the Root Canvas, not that that means much 
+to you at the moment, but that's OK--I'm just trying to show you around.</para>
+
+<para>In the upper left corner of the Canvas Window, you'll see a button with a 
+caret If you click on this button, the canvas window menu will pop up. (As an aside, 
+if you right click in the canvas area and there is not a layer under the mouse 
+position, this menu will also appear) So now you know where the menu is in the Canvas 
+Window. Good. Everything else should be pretty self-explanatory in the Canvas Window. 
+(Explanations on the menu stuff is to come in a sec)</para>
+&toolbox.sgml;
+&layers.sgml;
+&params.sgml;
+&tooloptions.sgml;
+&navigator.sgml;
+&history.sgml;
+</chapter>

@@ -1,0 +1,48 @@
+<!-- retain these comments for translator revision tracking -->
+<!-- $Id: toolbox.sgml 1 2006-08-29 05:11:55 xerakko $ -->
+<?xml version="1.0" encoding="utf-8"?>
+<sect1 id="toolbox">
+<title>The toolbox</title>
+<para>
+apsldkfjañsdlfads ñlaskdfjñald skfañdkl fjañsdklfj añdslvf kjadsñfkjadñfjkaflñjak añ kfjañ fñakjd fañ
+a dfñladjf añdlkfj añlkf añldkf adlkf ajdñlf adñflkj dsñalj kfañldkf asjdñfkl asdñf akj
+añ kfd ñaj kasñj kds ñjk sñljks añljskañ kñasjksdañ jk dfñljk
+</para>
+    <figure id="toolboximg">
+   <title>Toolbox</title>
+   <screenshot>
+    <mediaobject>
+     <imageobject>
+      <imagedata fileref="toolbox" format="EPS" scale="50">
+     </imageobject>
+    </mediaobject>
+    </screenshot>
+    </figure>
+<para>
+asdf a dsf dsfa sdf adf adfadf ad f adsfasd fa sdf asd f asdf asdf  asf  adsf asdf asd fa
+ adsf asdf asd f asdf a dfa sdf as fasdf asdf adf ad faf f asdf af asd fa sf asdf adf adf 
+ a dsf a dfa sdf ad fa df asdf asdf asd f af
+</para>
+<para>
+<table>
+<title></title>
+<tgroup cols="4" align="center">
+<tbody>
+<row>
+<entry >New</entry>
+<entry >Open</entry>
+<entry >Save</entry>
+<entry >Save As</entry>
+</row>
+<row>
+<entry >Save All</entry>
+<entry >Undo</entry>
+<entry >Redo</entry>
+<entry >About Synfig Studio</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+
+</para>
+</sect1>

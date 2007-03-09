@@ -1,0 +1,32 @@
+<!-- retain these comments for translator revision tracking -->
+<!-- $Id: combining.sgml 1 2006-08-30 05:11:55 xerakko $ -->
+<sect2 id="combining">
+<title>Combining</title>
+<para>Now there are two ways to proceed. In the first way, pick the gradient 
+tool from the Synfig Toolbox, and click into the canvas once. You should note
+that another layer was added in the Layers Dialog called 'Gradient'. This is 
+nothing special. If you see no gradient but just a plain color, pick the normal
+tool, click into the canvas to acivate the gradient's ducks. You need to grab 
+the one you see and move it a bit until a gradient appears.</para>
+
+<para>You now have a gradient but it is not what you wanted: It spreads the 
+whole canvas and the goal was to have a gradient on the rectangle. Let's fix 
+this now.</para>
+
+<para>Select the gradient and the rectangle layer in the Layers Dialog. They 
+should appear with a blue background now. Then, context-click (ie. right-click 
+on Windows and Linux) and select 'Encapsulate' from the menu. The view of your 
+layer tab should change now, showing a small box called 'Inline Canvas' with an
+arrow in front. If you click the arrow, it will unfold and show your previous 
+two layers; the gradient and the rectangle.</para>
+
+<para>You can treat this layer like any other layer -- move it around, 
+duplicate it, copy and paste it. You'll notice an arrow next to the icon of the
+box. By clicking on this arrow, you can expand the inline canvas to see its 
+contents.</para>
+
+<para>If you want to change the name of it to something more descriptive, just 
+select the layer in the layer tab and click on its label. Then you just edit it
+in place. You can do this for ANY layer, and are strongly encouraged to do so. 
+</para>
+</sect2>

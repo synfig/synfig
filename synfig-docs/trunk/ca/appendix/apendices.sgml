@@ -1,0 +1,46 @@
+<appendix id="archivo-hola">
+ <title>El archivo <filename>hola.txt</filename></title>
+ <para>Por motivos de referencia incluímos el contenido del
+  archivo <filename>hola.txt</filename></para>
+ 
+ <informalexample>
+<programlisting>
+Hola Mundo
+</programlisting>
+ </informalexample>
+</appendix>
+
+<appendix id="faq">
+ <title>Preguntas Frecuentes</title>
+ <qandaset defaultlabel="number">
+  <qandaentry>
+   <question>
+    <para>¿Qué es <acronym>DocBook</acronym>?</para>
+   </question>
+   <answer>
+    <para>Es un lenguaje de marcado útil para escribir
+     documentación técnica.</para>
+   </answer>
+  </qandaentry>
+ </qandaset>
+</appendix>
+<glossary>
+ <glossentry id="doc">
+  <glossterm><acronym>DocBook</acronym></glossterm>
+  <glossdef>
+   <para>Lenguaje de marcado definido en
+    <acronym>SGML</acronym>que permite escribir documentación
+    técnica</para>
+  </glossdef>
+ </glossentry>
+ <glossentry>
+  <glossterm>emacs</glossterm>
+  <glossdef>
+   <para>Editor de amplio uso en <acronym>unix</acronym>. Su
+    nombre proviene de Editor MACroS (Macros de Edición). </para>
+  </glossdef>
+ </glossentry>
+</glossary>
+<!-- Local Variables: -->
+<!-- sgml-parent-document: "herramientas.sgml" -->
+<!-- End: -->

@@ -1,0 +1,53 @@
+<!-- retain these comments for translator revision tracking --> 
+<!-- $Id: linking.sgml 1 2006-08-29 05:11:55 xerakko $ --> 
+<sect1 id="linking">
+<title>Linking</title> 
+<para>Now lets try linking. Lets say we always
+want these two circles to be the same size. Select two circles, and then
+select both of their Radius ducks(the cyan dot). Then right click on
+either duck and a menu will pop up. Click on "Link". Boom. The parameters
+are linked together. You can prove it to yourself by selecting just one
+of the circles and changing its radius--the other one will change as
+well. Neat stuff, eh?</para>
+
+<para>Linking is a fundamental concept in Synfig. You can create links not only
+between ducks, but also between parameters as well by selecting multiple
+layers, right clicking on the parameter in the param tab, and selecting
+"Link".</para>
+
+<para>DIGRESSION: This is how outlines are attached to their regions-but
+I'm getting ahead of myself. At the moment, the fundamental power and
+flexibility of linking in Synfig Core is beyond what Synfig Studio
+currently allows for. This will change in the future. Anyway, back
+on track...</para>
+
+<para>Lets say you want one of the circles to be a different color. If you look
+in the toolbox below the tools, you'll see the foreground/background
+color selector, the outline width selector, and some other stuff like
+the default blend method and gradient. The foreground/background color
+widget works exactly as you might expect--you can click on the foreground
+color, and a modest color chooser will appear. Now to can change the
+color pretty easily.</para>
+
+<para>But sometimes you just want to click on a color and go. This is where
+the palette editor tab comes in. It's functionality isn't quite 100% yet
+(ie: saving and loading custom palettes hasn't been implemented yet),
+but the default palette is pretty decent. Click on the Palette editor tab
+and have a look--it's the one with the palette-ish looking icon. Clicking
+on colors in here will immediately change the default foreground color.</para>
+
+<para>That's all great, but we still haven't changed the color of the
+circle. There are two ways to do this. The first way is that you select
+the circle layer you want to modify, goto the params tab and double click
+on the color parameter--a color selector dialog shows up and you just
+tweak away. But lets say you already got the color you wanted selected as
+the default foreground color. Easy. Just click on the "Fill tool" from the
+toolbox, and then click on the circle in the canvas window. Boom. Circle
+changes color. This works with more than just circles, but we'll get to
+that in a sec.</para>
+
+<para>Try playing around with the circles for a bit. Muck around with the
+parameters, and see what happens. To get you started, play around with
+feather a bit.  
+</para> 
+</sect1>

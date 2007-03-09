@@ -1,0 +1,37 @@
+<!-- retain these comments for translator revision tracking --> 
+<!-- $Id:layers.sgml 1 2006-08-29 05:11:55 xerakko $ --> 
+<sect1 id="steplayers">
+<title>Layers</title> 
+<para> In the previous tutorial, you made a
+first simple animation by changing the attributes of primitive objects
+such as its position, color, and size. These simple types, however, are
+seldomly sufficient to create advanced characters and objects. To do so,
+Synfig uses Layers. They are similar to layers known from other drawing
+application such as the GIMP, for instance.</para>
+
+<para>However, Synfig is different to simple layers in at least two 
+respects:</para>
+<orderedlist>
+  <listitem>
+   <para>You can organize layers into hierachical groups.</para>
+  </listitem>
+  <listitem>
+   <para>You can use upper layers to change the behaviour (or look)
+      or underlying layers.</para>
+  </listitem>
+</orderedlist>
+
+<para>Doing so is quite easy. Let's look at a simple example.</para>
+
+<orderedlist>
+  <listitem>
+   <para>Create a new file with 0 duration. There's no need to bother
+	 with a timeline at this point.</para>   
+  </listitem>
+  <listitem>
+   <para>Create a simple rectangle.</para>
+  </listitem>
+</orderedlist>
+&using.sgml; 
+&combining.sgml; 
+</sect1>
