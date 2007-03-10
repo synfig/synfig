@@ -109,7 +109,7 @@ ${INDEX}.sgml.m: HTML.index.m
 	perl -S collateindex.pl -o ${SGMLDIR}/${INDEX}.sgml.m ${SGMLDIR}/HTML.index.m
 
 ${MULTIPLEHTMLDIR}:
-	mkdir ${MULTIPLEHTMLDIR}
+	mkdir -p ${MULTIPLEHTMLDIR}
 
 cpfilesmultiple: ${PNGMULTIPLE} ${OTHERMULTIPLE}
 
@@ -132,7 +132,7 @@ ${PSDIR}/%.eps: ${PNGDIR}/%.png ${PSDIR}
 	convert $< $@
 
 ${PSDIR}:
-	mkdir ${PSDIR}
+	mkdir -p ${PSDIR}
 
 #Rules needed for generating the pdf file
 
@@ -147,7 +147,7 @@ ${PDFDIR}/${DOC}.pdf: ${PDFDIR} ${INDEX}.sgml.m
 	cd ..
 
 ${PDFDIR}:
-	mkdir ${PDFDIR}
+	mkdir -p ${PDFDIR}
 
 #Some additional and standard tags
 init:
