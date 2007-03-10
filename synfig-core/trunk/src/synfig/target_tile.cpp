@@ -306,6 +306,11 @@ synfig::Target_Tile::render(ProgressCallback *cb)
 	assert(canvas);
 	curr_frame_=0;
 	init();
+	if( !init() ){
+		if(cb) cb->error(_("Target initialisation failure"));
+		return false;
+	}
+
 	
 	// If the description's end frame is equal to
 	// the start frame, then it is assumed that we
