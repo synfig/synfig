@@ -56,7 +56,7 @@ using namespace etl;
 /* === G L O B A L S ======================================================= */
 
 SYNFIG_IMPORTER_INIT(png_mptr);
-SYNFIG_IMPORTER_SET_NAME(png_mptr,"png_mptr");
+SYNFIG_IMPORTER_SET_NAME(png_mptr,"png");
 SYNFIG_IMPORTER_SET_EXT(png_mptr,"png");
 SYNFIG_IMPORTER_SET_VERSION(png_mptr,"0.1");
 SYNFIG_IMPORTER_SET_CVS_ID(png_mptr,"$Id: mptr_png.cpp,v 1.1.1.1 2005/01/04 01:23:14 darco Exp $");

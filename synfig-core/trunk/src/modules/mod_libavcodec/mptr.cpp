@@ -48,7 +48,7 @@ using namespace etl;
 /* === G L O B A L S ======================================================= */
 
 SYNFIG_IMPORTER_INIT(Importer_LibAVCodec);
-SYNFIG_IMPORTER_SET_NAME(Importer_LibAVCodec,"Importer_LibAVCodec");
+SYNFIG_IMPORTER_SET_NAME(Importer_LibAVCodec,"libav");
 SYNFIG_IMPORTER_SET_EXT(Importer_LibAVCodec,"avi");
 SYNFIG_IMPORTER_SET_VERSION(Importer_LibAVCodec,"0.1");
 SYNFIG_IMPORTER_SET_CVS_ID(Importer_LibAVCodec,"$Id: mptr.cpp,v 1.1.1.1 2005/01/04 01:23:11 darco Exp $");
