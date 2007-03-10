@@ -2932,6 +2932,17 @@ CanvasView::hide_timebar()
 		children_tree->set_show_timetrack(false);
 }
 
+void
+CanvasView::timebar_set_sensitive(bool sensitive)
+{
+	timebar->set_sensitive(sensitive);
+	current_time_widget->set_sensitive(sensitive);
+	//keyframe_tab_child->set_sensitive(sensitive);
+	if(layer_tree)
+		layer_tree->set_sensitive(sensitive);
+	if(children_tree)
+		children_tree->set_sensitive(sensitive);
+}
 
 
 void

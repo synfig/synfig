@@ -568,6 +568,9 @@ public:
 	//! Hides the time bar
 	void hide_timebar();
 
+	//t Enables or disables interaction with the timebar
+	void timebar_set_sensitive(bool sensitive);
+
 	void do_rotoscope_bline();
 
 	void do_rotoscope();
