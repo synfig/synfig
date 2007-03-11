@@ -307,7 +307,11 @@ IPC::make_connection()
 	);
 	if(pipe_handle==INVALID_HANDLE_VALUE)
 	{
-		synfig::warning("IPC::make_connection(): Unable to connect to previous instance. GetLastError=%d",GetLastError());
+		DWORD error = GetLastError();
+#ifndef _DEBUG
+		if( error != ERROR_FILE_NOT_FOUND )
+#endif
+			synfig::warning("IPC::make_connection(): Unable to connect to previous instance. GetLastError=%d",error);
 	}
 	int fd=_open_osfhandle(reinterpret_cast<long int>(pipe_handle),_O_APPEND|O_WRONLY);
 #else
@@ -324,7 +328,9 @@ IPC::make_connection()
 	if(fd>=0)
 		ret=SmartFILE(fdopen(fd,"w"));
 
+#ifdef _DEBUG
 	synfig::info("uplink fd=%d",fd);
+#endif
 
 	return ret;
 }
