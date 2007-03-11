@@ -210,7 +210,6 @@ int anglefixed_test(void)
 int float_intersection_test()
 {
 	int ret=0;
-	float f;
 
 	hermite<float> curve1(0,1,0,1);
 	hermite<float> curve2(-1,2,-1,-2);
