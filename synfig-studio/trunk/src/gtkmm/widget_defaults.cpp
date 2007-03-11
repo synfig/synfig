@@ -260,6 +260,7 @@ Widget_Defaults::Widget_Defaults()
 	widget_bline_width->show();
 	bline_width_refresh();
 	widget_bline_width->set_digits(2);
+	widget_bline_width->set_range(0,10000000);
 	widget_bline_width->set_size_request(24,-1);
 	widget_bline_width->signal_value_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::on_bline_width_changed));
 	attach(*widget_bline_width,1, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
