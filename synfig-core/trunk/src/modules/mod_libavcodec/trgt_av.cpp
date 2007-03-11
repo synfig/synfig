@@ -584,21 +584,11 @@ public:
 	
 		//set output parameters: required in ALL cases
 		
-		AVFormatParameters	fmtparam,*ap = &fmtparam;
-		memset(ap, 0, sizeof(*ap));
-		// FIXME: Port next two lines to recent libavcodec versions
-		//ap->frame_rate = vInfo.fps;
-		//ap->frame_rate_base = 1;
-		ap->width = vInfo.w;
-		ap->height = vInfo.h;
-		//ap->pix_fmt = frame_pix_fmt;
+		video_st->codec->time_base= (AVRational){1,vInfo.fps};
+		video_st->codec->width = vInfo.w;
+		video_st->codec->height = vInfo.h;
+		video_st->codec->pix_fmt = PIX_FMT_YUV420P;
 		
-		if(av_set_parameters(formatc, ap) < 0)
-		{
-			synfig::warning("Invalid output formatting parameters");
-			return 0;
-		}
-	
 		//dump the formatting information as the file header
 		dump_format(formatc, 0, filename, 1);
 		
