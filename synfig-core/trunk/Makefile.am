@@ -1,9 +1,6 @@
 # $Header: /opt/voria/cvs/synfig/Makefile.am,v 1.5 2005/03/24 21:07:24 darco Exp $
 
-#AUTOMAKE_OPTIONS=dist-zip dist-shar dist-bzip2
-AUTOMAKE_OPTIONS=dist-zip dist-shar
-
-MAINTAINERCLEANFILES=@PACKAGE_TARNAME@.pc.in @PACKAGE_TARNAME@.shar.gz @PACKAGE_TARNAME@.tar.gz @PACKAGE_TARNAME@.zip doxygen.cfg config/config.guess config/config.sub config/ltmain.sh config/install-sh config/mkinstalldirs config/aclocal.m4 config/missing config/texinfo.tex config/depcomp aclocal.m4 config.h.in configure stamp-h.in Makefile.in config.log config.status .doc_stamp .DS_Store @PACKAGE_TARNAME@.spec include/etl_profile.h.in libltdl/COPYING.LIB  libltdl/Makefile.in  libltdl/acinclude.m4  libltdl/config-h.in  libltdl/configure.in  libltdl/ltdl.h libltdl/Makefile.am  libltdl/README       libltdl/aclocal.m4    libltdl/configure    libltdl/ltdl.c        libltdl/stamp-h.in
+MAINTAINERCLEANFILES=@PACKAGE_TARNAME@.pc.in @PACKAGE_TARNAME@.tar.gz doxygen.cfg config/config.guess config/config.sub config/ltmain.sh config/install-sh config/mkinstalldirs config/aclocal.m4 config/missing config/texinfo.tex config/depcomp aclocal.m4 config.h.in configure stamp-h.in Makefile.in config.log config.status .doc_stamp .DS_Store @PACKAGE_TARNAME@.spec include/etl_profile.h.in libltdl/COPYING.LIB  libltdl/Makefile.in  libltdl/acinclude.m4  libltdl/config-h.in  libltdl/configure.in  libltdl/ltdl.h libltdl/Makefile.am  libltdl/README       libltdl/aclocal.m4    libltdl/configure    libltdl/ltdl.c        libltdl/stamp-h.in
 
 
 SUBDIRS=libltdl src examples
