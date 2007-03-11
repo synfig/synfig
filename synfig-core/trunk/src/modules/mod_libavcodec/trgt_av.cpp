@@ -416,8 +416,8 @@ public:
 			//encode our given image
 			size = avcodec_encode_video(context, &videobuffer[0], videobuffer.size(), pict);
 			
-			//if not zero we've got stuff to write
-			if (size != 0)
+			//if greater than zero we've got stuff to write
+			if (size > 0)
 			{
 				av_init_packet(&pkt);
 				pkt.stream_index = stream->index;
@@ -431,7 +431,7 @@ public:
 				ret = av_write_frame(formatc, &pkt);
 				
 				//error detect - possibly throw later...
-				if(ret != 0)
+				if(ret < 0)
 				{
 					synfig::warning("write_frame: error while writing video frame");
 					return false;					
