@@ -1,7 +1,5 @@
 # $Header: /opt/voria/cvs/studio/Makefile.am,v 1.3 2005/03/24 21:40:05 darco Exp $
 
-AUTOMAKE_OPTIONS=dist-zip dist-shar dist-bzip2
-
 MAINTAINERCLEANFILES=config/ltmain.sh config/config.guess config/config.sub config/ltmain.sh config/install-sh config/mkinstalldirs config/aclocal.m4 config/missing config/texinfo.tex config/depcomp aclocal.m4 config.h.in configure stamp-h.in Makefile.in config.log config.status .doc_stamp .DS_Store @PACKAGE_TARNAME@.spec
 
 SUBDIRS=src images
