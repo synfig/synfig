@@ -292,6 +292,9 @@ if test $with_openexr = "no" ; then {
 if test $use_openexr_half = yes ; then {
 	AC_MSG_RESULT([ ** Using OpenEXR Half.])
 	CONFIG_CFLAGS="$CONFIG_CFLAGS -DUSE_HALF_TYPE"
+	OPENEXR_HALF_LIBS="-lHalf"
+} else {
+	OPENEXR_HALF_LIBS=""
 } ; fi
 
 
@@ -499,6 +502,8 @@ AC_SUBST(LIBADD_DL)
 
 AC_SUBST(SYNFIG_LIBS)
 AC_SUBST(SYNFIG_CFLAGS)
+AC_SUBST(OPENEXR_HALF_LIBS)
+
 AC_SUBST(API_VERSION)
 
 synfigincludedir=$includedir/synfig-@API_VERSION@
