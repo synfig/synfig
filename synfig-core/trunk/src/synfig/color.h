@@ -632,6 +632,9 @@ public:
 		g_(c.g_),
 		b_(c.b_) { }
 
+	//! Converter
+	ColorAccumulator(int c): a_(c),r_(c), g_(c), b_(c) { }
+
 	//! Returns the RED component
 	const value_type& get_r()const { return r_; }
 
