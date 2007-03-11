@@ -41,6 +41,10 @@
 #include "blinepoint.h"
 #include "exception.h"
 
+#ifdef USE_HALF_TYPE
+#include <OpenEXR/half.h>
+#endif
+
 #ifndef SYNFIG_NO_ANGLE
 #include "angle.h"
 #endif
