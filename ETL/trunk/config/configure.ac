@@ -12,7 +12,7 @@ AM_CONFIG_HEADER(ETL/etl_profile_.h)
 AC_CANONICAL_HOST
 AC_CANONICAL_TARGET
 
-AM_INIT_AUTOMAKE([ no-define dist-zip dist-shar dist-bzip2 ])
+AM_INIT_AUTOMAKE([ no-define ])
 AM_MAINTAINER_MODE
 
 # -- V A R I A B L E S ----------------------------------------
