@@ -13,7 +13,7 @@ bin_SCRIPTS=ETL-config
 aclocaldir = $(prefix)/share/aclocal
 
 
-EXTRA_DIST=bootstrap config/subs.m4 config/depcomp config/cxx_macros.m4 ETL.pbproj/project.pbxproj ETL.pbproj/etl_profile.h ETL.pbproj/frameworkfix.cpp @PACKAGE_TARNAME@.spec config/project.spec.in config/build.cfg ETL-config.in config/ETL.m4 config/doxygen.cfg.in doxygen.cfg config/pkgconfig.pc.in @PACKAGE_TARNAME@.pc.in
+EXTRA_DIST=COPYING bootstrap config/subs.m4 config/depcomp config/cxx_macros.m4 ETL.pbproj/project.pbxproj ETL.pbproj/etl_profile.h ETL.pbproj/frameworkfix.cpp @PACKAGE_TARNAME@.spec config/project.spec.in config/build.cfg ETL-config.in config/ETL.m4 config/doxygen.cfg.in doxygen.cfg config/pkgconfig.pc.in @PACKAGE_TARNAME@.pc.in
 
 CVS=cvs
 SVN=svn
