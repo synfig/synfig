@@ -89,9 +89,9 @@ Action::LayerMove::get_param_vocab()
 }
 
 bool
-Action::LayerMove::is_canidate(const ParamList &x)
+Action::LayerMove::is_candidate(const ParamList &x)
 {
-	return canidate_check(get_param_vocab(),x);
+	return candidate_check(get_param_vocab(),x);
 }
 
 bool

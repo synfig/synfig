@@ -135,7 +135,7 @@ synfigapp::Action::Book *book_;
 	be.category=x::category__; \
 	be.factory=x::create; \
 	be.get_param_vocab=x::get_param_vocab; \
-	be.is_canidate=x::is_canidate; \
+	be.is_candidate=x::is_candidate; \
 	}
 	
 
@@ -238,10 +238,10 @@ Action::create(const String &name)
 }
 
 
-Action::CanidateList
-Action::compile_canidate_list(const ParamList& param_list, Category category)
+Action::CandidateList
+Action::compile_candidate_list(const ParamList& param_list, Category category)
 {
-	Action::CanidateList ret;
+	Action::CandidateList ret;
 	
 	Book::const_iterator iter;
 
@@ -251,11 +251,11 @@ Action::compile_canidate_list(const ParamList& param_list, Category category)
 	{
 		if((iter->second.category&category))
 		{
-			if(iter->second.is_canidate(param_list))
+			if(iter->second.is_candidate(param_list))
 				ret.push_back(iter->second);
 			else
 			{
-				//synfig::info("Action \"%s\" is not a canidate",iter->second.name.c_str());
+				//synfig::info("Action \"%s\" is not a candidate",iter->second.name.c_str());
 			}
 		}
 	}
@@ -263,8 +263,8 @@ Action::compile_canidate_list(const ParamList& param_list, Category category)
 	return ret;
 }
 
-Action::CanidateList::iterator
-Action::CanidateList::find(const String& x)
+Action::CandidateList::iterator
+Action::CandidateList::find(const String& x)
 {
 	iterator iter;
 	for(iter=begin();iter!=end();++iter)

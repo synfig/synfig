@@ -86,9 +86,9 @@ Action::BLinePointTangentMerge::get_param_vocab()
 }
 
 bool
-Action::BLinePointTangentMerge::is_canidate(const ParamList &x)
+Action::BLinePointTangentMerge::is_candidate(const ParamList &x)
 {
-	if(canidate_check(get_param_vocab(),x))
+	if(candidate_check(get_param_vocab(),x))
 	{
 		ValueNode_Composite::Handle value_node;
 		value_node=ValueNode_Composite::Handle::cast_dynamic(x.find("value_node")->second.get_value_node());

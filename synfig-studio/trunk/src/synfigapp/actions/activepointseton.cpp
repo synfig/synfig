@@ -95,15 +95,15 @@ Action::ActivepointSetOn::get_param_vocab()
 }
 
 bool
-Action::ActivepointSetOn::is_canidate(const ParamList &x)
+Action::ActivepointSetOn::is_candidate(const ParamList &x)
 {
-	if(canidate_check(get_param_vocab(),x))
+	if(candidate_check(get_param_vocab(),x))
 	{
 		ValueDesc value_desc(x.find("value_desc")->second.get_value_desc());
 		if(!value_desc.parent_is_value_node() || !ValueNode_DynamicList::Handle::cast_dynamic(value_desc.get_parent_value_node()))
 			return false;
 
-		// We are only a canidate if this canvas is animated.
+		// We are only a candidate if this canvas is animated.
 		Canvas::Handle canvas(x.find("canvas")->second.get_canvas());
 		if(canvas->rend_desc().get_time_start()==canvas->rend_desc().get_time_end())
 			return false;

@@ -75,9 +75,9 @@ Action::LayerAdd::get_param_vocab()
 }
 
 bool
-Action::LayerAdd::is_canidate(const ParamList &x)
+Action::LayerAdd::is_candidate(const ParamList &x)
 {
-	return canidate_check(get_param_vocab(),x);
+	return candidate_check(get_param_vocab(),x);
 }
 
 bool

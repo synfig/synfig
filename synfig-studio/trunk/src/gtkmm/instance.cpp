@@ -644,17 +644,17 @@ Instance::safe_close()
 void
 Instance::add_actions_to_group(const Glib::RefPtr<Gtk::ActionGroup>& action_group, synfig::String& ui_info,   const synfigapp::Action::ParamList &param_list, synfigapp::Action::Category category)const
 {
-	synfigapp::Action::CanidateList canidate_list;
-	synfigapp::Action::CanidateList::iterator iter;
+	synfigapp::Action::CandidateList candidate_list;
+	synfigapp::Action::CandidateList::iterator iter;
 	
-	canidate_list=compile_canidate_list(param_list,category);
+	candidate_list=compile_candidate_list(param_list,category);
 	
-	canidate_list.sort();
+	candidate_list.sort();
 
-	if(canidate_list.empty())
-		synfig::warning("Action CanidateList is empty!");
+	if(candidate_list.empty())
+		synfig::warning("Action CandidateList is empty!");
 	
-	for(iter=canidate_list.begin();iter!=canidate_list.end();++iter)
+	for(iter=candidate_list.begin();iter!=candidate_list.end();++iter)
 	{
 		Gtk::StockID stock_id(get_action_stock_id(*iter));
 		
@@ -684,17 +684,17 @@ Instance::add_actions_to_group(const Glib::RefPtr<Gtk::ActionGroup>& action_grou
 void
 Instance::add_actions_to_menu(Gtk::Menu *menu, const synfigapp::Action::ParamList &param_list,synfigapp::Action::Category category)const
 {
-	synfigapp::Action::CanidateList canidate_list;
-	synfigapp::Action::CanidateList::iterator iter;
+	synfigapp::Action::CandidateList candidate_list;
+	synfigapp::Action::CandidateList::iterator iter;
 	
-	canidate_list=compile_canidate_list(param_list,category);
+	candidate_list=compile_candidate_list(param_list,category);
 	
-	canidate_list.sort();
+	candidate_list.sort();
 
-	if(canidate_list.empty())
-		synfig::warning("Action CanidateList is empty!");
+	if(candidate_list.empty())
+		synfig::warning("Action CandidateList is empty!");
 	
-	for(iter=canidate_list.begin();iter!=canidate_list.end();++iter)
+	for(iter=candidate_list.begin();iter!=candidate_list.end();++iter)
 	{
 		if(!(iter->category&synfigapp::Action::CATEGORY_HIDDEN))
 		{
@@ -750,30 +750,30 @@ Instance::add_actions_to_menu(Gtk::Menu *menu, const synfigapp::Action::ParamLis
 void
 Instance::add_actions_to_menu(Gtk::Menu *menu, const synfigapp::Action::ParamList &param_list,const synfigapp::Action::ParamList &param_list2,synfigapp::Action::Category category)const
 {
-	synfigapp::Action::CanidateList canidate_list;
-	synfigapp::Action::CanidateList canidate_list2;
+	synfigapp::Action::CandidateList candidate_list;
+	synfigapp::Action::CandidateList candidate_list2;
 	
-	synfigapp::Action::CanidateList::iterator iter;
+	synfigapp::Action::CandidateList::iterator iter;
 	
-	canidate_list=compile_canidate_list(param_list,category);
-	canidate_list2=compile_canidate_list(param_list2,category);
+	candidate_list=compile_candidate_list(param_list,category);
+	candidate_list2=compile_candidate_list(param_list2,category);
 	
-	canidate_list.sort();
+	candidate_list.sort();
 
-	if(canidate_list.empty())
-		synfig::warning("Action CanidateList is empty!");
-	if(canidate_list2.empty())
-		synfig::warning("Action CanidateList2 is empty!");
+	if(candidate_list.empty())
+		synfig::warning("Action CandidateList is empty!");
+	if(candidate_list2.empty())
+		synfig::warning("Action CandidateList2 is empty!");
 
-	// Seperate out the canidate lists so that there are no conflicts
-	for(iter=canidate_list.begin();iter!=canidate_list.end();++iter)
+	// Seperate out the candidate lists so that there are no conflicts
+	for(iter=candidate_list.begin();iter!=candidate_list.end();++iter)
 	{
-		synfigapp::Action::CanidateList::iterator iter2(canidate_list2.find(iter->name));
-		if(iter2!=canidate_list2.end())
-			canidate_list2.erase(iter2);
+		synfigapp::Action::CandidateList::iterator iter2(candidate_list2.find(iter->name));
+		if(iter2!=candidate_list2.end())
+			candidate_list2.erase(iter2);
 	}
 		
-	for(iter=canidate_list2.begin();iter!=canidate_list2.end();++iter)
+	for(iter=candidate_list2.begin();iter!=candidate_list2.end();++iter)
 	{
 		if(!(iter->category&synfigapp::Action::CATEGORY_HIDDEN))
 		{
@@ -824,7 +824,7 @@ Instance::add_actions_to_menu(Gtk::Menu *menu, const synfigapp::Action::ParamLis
 		}
 	}
 
-	for(iter=canidate_list.begin();iter!=canidate_list.end();++iter)
+	for(iter=candidate_list.begin();iter!=candidate_list.end();++iter)
 	{
 		if(!(iter->category&synfigapp::Action::CATEGORY_HIDDEN))
 		{

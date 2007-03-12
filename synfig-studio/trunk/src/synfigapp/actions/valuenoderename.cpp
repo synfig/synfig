@@ -80,9 +80,9 @@ Action::ValueNodeRename::get_param_vocab()
 }
 
 bool
-Action::ValueNodeRename::is_canidate(const ParamList &x)
+Action::ValueNodeRename::is_candidate(const ParamList &x)
 {
-	if(canidate_check(get_param_vocab(),x))
+	if(candidate_check(get_param_vocab(),x))
 	{
 		if(x.find("value_node")->second.get_value_node()->is_exported())
 			return true;

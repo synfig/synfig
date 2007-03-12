@@ -179,7 +179,7 @@ inline Category operator|(Category lhs, Category rhs)
 
 //! Action Base Class
 /*!	An action should implement the following functions:
-**	static bool is_canidate(const ParamList &x);
+**	static bool is_candidate(const ParamList &x);
 **		- 	Checks the ParamList to see if this action could be performed.
 **	static ParamVocab get_param_vocab();
 **		-	Yields the ParamVocab object which describes what
@@ -210,7 +210,7 @@ public:
 }; // END of class Action::Base
 
 typedef Action::Base* (*Factory)();
-typedef bool (*CanidateChecker)(const ParamList &x);
+typedef bool (*CandidateChecker)(const ParamList &x);
 typedef ParamVocab (*GetParamVocab)();
 
 typedef etl::handle<Base> Handle;
@@ -341,7 +341,7 @@ struct BookEntry
 	int 			priority;
 	Category		category;
 	Factory 		factory;
-	CanidateChecker	is_canidate;
+	CandidateChecker	is_candidate;
 	GetParamVocab	get_param_vocab;	
 	
 	bool operator<(const BookEntry &rhs)const { return priority<rhs.priority; }
@@ -349,19 +349,19 @@ struct BookEntry
 
 typedef std::map<synfig::String,BookEntry> Book;
 
-class CanidateList : public std::list<BookEntry>
+class CandidateList : public std::list<BookEntry>
 {
 public:
 	iterator find(const synfig::String& x);
-	const_iterator find(const synfig::String& x)const { return const_cast<CanidateList*>(this)->find(x); }
+	const_iterator find(const synfig::String& x)const { return const_cast<CandidateList*>(this)->find(x); }
 };
 
 Book& book();
 
 Handle create(const synfig::String &name);
 
-//! Compiles a list of potential canidate actions with the given \a param_list and \a category
-CanidateList compile_canidate_list(const ParamList& param_list, Category category=CATEGORY_ALL);
+//! Compiles a list of potential candidate actions with the given \a param_list and \a category
+CandidateList compile_candidate_list(const ParamList& param_list, Category category=CATEGORY_ALL);
 
 /*!	\class synfigapp::Action::Main
 **	\brief \writeme

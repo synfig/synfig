@@ -86,9 +86,9 @@ Action::ValueDescExport::get_param_vocab()
 }
 
 bool
-Action::ValueDescExport::is_canidate(const ParamList &x)
+Action::ValueDescExport::is_candidate(const ParamList &x)
 {
-	if(canidate_check(get_param_vocab(),x))
+	if(candidate_check(get_param_vocab(),x))
 	{
 		ValueDesc value_desc=x.find("value_desc")->second.get_value_desc();
 		if(!value_desc || value_desc.parent_is_canvas() || (value_desc.is_value_node() && value_desc.get_value_node()->is_exported()))

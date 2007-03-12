@@ -74,9 +74,9 @@ Action::ValueNodeRemove::get_param_vocab()
 }
 
 bool
-Action::ValueNodeRemove::is_canidate(const ParamList &x)
+Action::ValueNodeRemove::is_candidate(const ParamList &x)
 {
-	if(canidate_check(get_param_vocab(),x))
+	if(candidate_check(get_param_vocab(),x))
 	{
 		ValueNode::Handle value_node=x.find("value_node")->second.get_value_node();
 		if(!value_node->is_exported())

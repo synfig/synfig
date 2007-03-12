@@ -79,9 +79,9 @@ Action::ValueNodeConstSet::get_param_vocab()
 }
 
 bool
-Action::ValueNodeConstSet::is_canidate(const ParamList &x)
+Action::ValueNodeConstSet::is_candidate(const ParamList &x)
 {
-	if(canidate_check(get_param_vocab(),x))
+	if(candidate_check(get_param_vocab(),x))
 	{
 		if(ValueNode_Const::Handle::cast_dynamic(x.find("value_node")->second.get_value_node()))
 			return true;

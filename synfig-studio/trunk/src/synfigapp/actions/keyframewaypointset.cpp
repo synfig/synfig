@@ -84,9 +84,9 @@ Action::KeyframeWaypointSet::get_param_vocab()
 }
 
 bool
-Action::KeyframeWaypointSet::is_canidate(const ParamList &x)
+Action::KeyframeWaypointSet::is_candidate(const ParamList &x)
 {
-	return canidate_check(get_param_vocab(),x);
+	return candidate_check(get_param_vocab(),x);
 }
 
 bool

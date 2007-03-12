@@ -75,12 +75,12 @@ Action::GroupRemove::get_param_vocab()
 }
 
 bool
-Action::GroupRemove::is_canidate(const ParamList &x)
+Action::GroupRemove::is_candidate(const ParamList &x)
 {
-	bool ret(canidate_check(get_param_vocab(),x));
+	bool ret(candidate_check(get_param_vocab(),x));
 	if(!ret)
 	{
-		synfig::info("Action::GroupRemove::is_canidate(): failed canidate check");
+		synfig::info("Action::GroupRemove::is_candidate(): failed candidate check");
 		ParamList::const_iterator iter;
 		for(iter=x.begin();iter!=x.end();++iter)
 		{

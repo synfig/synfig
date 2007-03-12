@@ -44,7 +44,7 @@ using namespace Action;
 /* === P R O C E D U R E S ================================================= */
 
 bool
-Action::canidate_check(const ParamVocab& param_vocab, const ParamList& param_list)
+Action::candidate_check(const ParamVocab& param_vocab, const ParamList& param_list)
 {
 	ParamVocab::const_iterator iter;
 	

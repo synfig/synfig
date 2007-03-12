@@ -107,9 +107,9 @@ Action::TimepointsDelete::get_param_vocab()
 }
 
 bool
-Action::TimepointsDelete::is_canidate(const ParamList &x)
+Action::TimepointsDelete::is_candidate(const ParamList &x)
 {
-	if(!canidate_check(get_param_vocab(),x)) 
+	if(!candidate_check(get_param_vocab(),x)) 
 		return false;
 	
 	if(	x.find("addlayer") == x.end() && 

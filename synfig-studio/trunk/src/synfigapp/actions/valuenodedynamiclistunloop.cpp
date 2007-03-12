@@ -74,9 +74,9 @@ Action::ValueNodeDynamicListUnLoop::get_param_vocab()
 }
 
 bool
-Action::ValueNodeDynamicListUnLoop::is_canidate(const ParamList &x)
+Action::ValueNodeDynamicListUnLoop::is_candidate(const ParamList &x)
 {
-	if(canidate_check(get_param_vocab(),x))
+	if(candidate_check(get_param_vocab(),x))
 	{
 		ValueNode::Handle value_node;
 		ValueDesc value_desc(x.find("value_desc")->second.get_value_desc());

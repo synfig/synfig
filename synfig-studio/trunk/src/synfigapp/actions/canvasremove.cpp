@@ -70,9 +70,9 @@ Action::CanvasRemove::get_param_vocab()
 }
 
 bool
-Action::CanvasRemove::is_canidate(const ParamList &x)
+Action::CanvasRemove::is_candidate(const ParamList &x)
 {
-	if(canidate_check(get_param_vocab(),x))
+	if(candidate_check(get_param_vocab(),x))
 	{
 		Canvas::Handle canvas=x.find("canvas")->second.get_canvas();
 		assert(canvas);

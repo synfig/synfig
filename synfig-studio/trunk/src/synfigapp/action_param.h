@@ -226,7 +226,7 @@ public:
 
 class ParamVocab : public std::list< ParamDesc > { };
 
-bool canidate_check(const ParamVocab& param_vocab, const ParamList& param_list);
+bool candidate_check(const ParamVocab& param_vocab, const ParamList& param_list);
 
 }; // END of namespace Action
 

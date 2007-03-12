@@ -86,9 +86,9 @@ Action::GradientSet::get_param_vocab()
 }
 
 bool
-Action::GradientSet::is_canidate(const ParamList &x)
+Action::GradientSet::is_candidate(const ParamList &x)
 {
-	if(!canidate_check(get_param_vocab(),x))
+	if(!candidate_check(get_param_vocab(),x))
 		return false;
 	return x.find("value_desc")->second.get_value_desc().get_value_type()==ValueBase::TYPE_GRADIENT;
 }

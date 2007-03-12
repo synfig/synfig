@@ -66,7 +66,7 @@ public:
 	TimepointsMove();
 
 	static ParamVocab get_param_vocab();
-	static bool is_canidate(const ParamList &x);
+	static bool is_candidate(const ParamList &x);
 
 	virtual bool set_param(const synfig::String& name, const Param &);
 	virtual bool is_ready()const;

@@ -89,9 +89,9 @@ Action::ValueDescConnect::get_param_vocab()
 }
 
 bool
-Action::ValueDescConnect::is_canidate(const ParamList &x)
+Action::ValueDescConnect::is_candidate(const ParamList &x)
 {
-	if(canidate_check(get_param_vocab(),x))
+	if(candidate_check(get_param_vocab(),x))
 	{
 		if(x.count("src"))
 		{

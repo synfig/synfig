@@ -93,9 +93,9 @@ Action::ValueNodeReplace::get_param_vocab()
 }
 
 bool
-Action::ValueNodeReplace::is_canidate(const ParamList &x)
+Action::ValueNodeReplace::is_candidate(const ParamList &x)
 {
-	return canidate_check(get_param_vocab(),x);
+	return candidate_check(get_param_vocab(),x);
 }
 
 bool
