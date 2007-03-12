@@ -202,8 +202,8 @@ CellRenderer_TimeTrack::render_vfunc(
 	Glib::RefPtr<Gdk::GC> gc(Gdk::GC::create(window));
 	Glib::RefPtr<Gdk::GC> inactive_gc(Gdk::GC::create(window));
 	Gtk::Adjustment *adjustment=get_adjustment();
-	Gtk::StateType state = Gtk::STATE_ACTIVE;
-	Gtk::ShadowType shadow;
+	// Gtk::StateType state = Gtk::STATE_ACTIVE;
+	// Gtk::ShadowType shadow;
 
 	Gdk::Color
 		curr_time_color("#0000ff"),
@@ -222,7 +222,7 @@ CellRenderer_TimeTrack::render_vfunc(
 	
 	synfigapp::ValueDesc value_desc = property_value_desc().get_value();
 	synfig::ValueNode *base_value = value_desc.get_value_node().get();
-	synfig::ValueNode_Animated *value_node=dynamic_cast<synfig::ValueNode_Animated*>(base_value);
+	// synfig::ValueNode_Animated *value_node=dynamic_cast<synfig::ValueNode_Animated*>(base_value);
 
 	synfig::ValueNode_DynamicList *parent_value_node(0);
 	if(property_value_desc().get_value().parent_is_value_node())
@@ -567,7 +567,7 @@ CellRenderer_TimeTrack::activate_vfunc(
     Time nearest=1000000000;
 	Gtk::Adjustment *adjustment=get_adjustment();
 
-	synfig::ValueNode_Animated *value_node=dynamic_cast<synfig::ValueNode_Animated*>(property_value_desc().get_value().get_value_node().get());
+	// synfig::ValueNode_Animated *value_node=dynamic_cast<synfig::ValueNode_Animated*>(property_value_desc().get_value().get_value_node().get());
 
 	synfig::Canvas::Handle canvas(get_canvas());
 
