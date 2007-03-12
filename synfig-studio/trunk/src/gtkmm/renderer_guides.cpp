@@ -82,8 +82,8 @@ bool
 Renderer_Guides::event_vfunc(GdkEvent* event)
 {
 	synfig::Point mouse_pos;
-    float bezier_click_pos;
-	const float radius((abs(get_pw())+abs(get_ph()))*4);
+	// float bezier_click_pos;
+	// const float radius((abs(get_pw())+abs(get_ph()))*4);
 	int button_pressed(0);
 	float pressure(0);
 	bool is_mouse(false);
@@ -198,7 +198,7 @@ Renderer_Guides::render_vfunc(
 	if(!get_work_area())
 		return;
 	
-	const synfig::RendDesc &rend_desc(get_work_area()->get_canvas()->rend_desc());
+	// const synfig::RendDesc &rend_desc(get_work_area()->get_canvas()->rend_desc());
 	
 	const synfig::Vector focus_point(get_work_area()->get_focus_point());
 
@@ -209,31 +209,31 @@ Renderer_Guides::render_vfunc(
 	
 	// Calculate the window coordinates of the top-left
 	// corner of the canvas.
-	const synfig::Vector::value_type
-		x(focus_point[0]/get_pw()+drawable_w/2-get_w()/2),
-		y(focus_point[1]/get_ph()+drawable_h/2-get_h()/2);
+	// const synfig::Vector::value_type
+	// 	x(focus_point[0]/get_pw()+drawable_w/2-get_w()/2),
+	// 	y(focus_point[1]/get_ph()+drawable_h/2-get_h()/2);
 
 	/*const synfig::Vector::value_type window_startx(window_tl[0]);
 	const synfig::Vector::value_type window_endx(window_br[0]);
 	const synfig::Vector::value_type window_starty(window_tl[1]);
 	const synfig::Vector::value_type window_endy(window_br[1]);
 	*/
-	const int
-		tile_w(get_work_area()->get_tile_w()),
-		tile_h(get_work_area()->get_tile_h());
+	// const int
+	// 	tile_w(get_work_area()->get_tile_w()),
+	// 	tile_h(get_work_area()->get_tile_h());
 
-	const int
-		w(get_w()),
-		h(get_h());
+	// const int
+	// 	w(get_w()),
+	// 	h(get_h());
 	
 	Glib::RefPtr<Gdk::GC> gc(Gdk::GC::create(drawable));
 	
 	//const synfig::Vector grid_size(get_grid_size());
 
 	const synfig::Vector::value_type window_startx(get_work_area()->get_window_tl()[0]);
-	const synfig::Vector::value_type window_endx(get_work_area()->get_window_br()[0]);
+	// const synfig::Vector::value_type window_endx(get_work_area()->get_window_br()[0]);
 	const synfig::Vector::value_type window_starty(get_work_area()->get_window_tl()[1]);
-	const synfig::Vector::value_type window_endy(get_work_area()->get_window_br()[1]);
+	// const synfig::Vector::value_type window_endy(get_work_area()->get_window_br()[1]);
 	const float pw(get_pw()),ph(get_ph());
 
 	// Draw out the guides
