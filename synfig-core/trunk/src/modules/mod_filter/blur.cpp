@@ -121,7 +121,7 @@ Blur_Layer::get_color(Context context, const Point &pos)const
 bool
 Blur_Layer::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
-	int x,y;
+	// int x,y;
 	SuperCallback stageone(cb,0,5000,10000);
 	SuperCallback stagetwo(cb,5000,10000,10000);
 	

@@ -508,9 +508,9 @@ Warp::accelerated_render(Context context,Surface *surface,int quality, const Ren
 		
 		bool init_point_set=false;
 		
-		Point trans_point[4];
+		// Point trans_point[4];
 		Point p;
-		Real trans_z[4];
+		// Real trans_z[4];
 		Real z,minz(10000000000000.0f),maxz(0);
 		
 		
