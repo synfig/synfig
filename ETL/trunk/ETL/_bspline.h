@@ -48,31 +48,31 @@ public:
 	typedef T value_type;
 	typedef K knot_type;
 	typedef std::vector<knot_type>	knot_container;
-	typedef std::vector<value_type>	cpoint_container;	
+	typedef std::vector<value_type>	cpoint_container;
 	typedef typename knot_container::iterator knot_iterator;
 	typedef typename cpoint_container::iterator cpoint_iterator;
 
 	typedef C affine_func_type;
 	typedef D distance_func_type;
-		
+
 protected:
 	affine_func_type affine_func;
 	distance_func_type distance_func;
-	
+
 private:
 	int m;
 	knot_container _knots;
 	cpoint_container _cpoints;
 	bool _loop;
-	
-public:	
+
+public:
 	bspline():m(2),_loop(false) {  }
-	
+
 	int get_m()const { return m-1; };
 	int set_m(int new_m) { m=new_m+1; return m-1; };
-	
+
 	bool set_loop(bool x) { _loop=x; reset_knots(); return _loop; }
-	
+
 	knot_container & knots() { return _knots; };
 	cpoint_container & cpoints() { return _cpoints; };
 
@@ -82,7 +82,7 @@ public:
 	void reset_knots()
 	{
 		int i;
-		
+
 		if(!_loop)
 		{
 			_knots.clear();
@@ -95,7 +95,7 @@ public:
 			for(i=1;i<(signed)_cpoints.size()-m+1;i++)
 				*_knots.insert(_knots.end())=i;
 			for(i=0;i<m;i++)
-				*_knots.insert(_knots.end())=_cpoints.size()-m+1;		
+				*_knots.insert(_knots.end())=_cpoints.size()-m+1;
 		}
 		else
 		{
@@ -108,7 +108,7 @@ public:
 				*_knots.insert(_knots.end())=i;
 		}
 	}
-		
+
 	int calc_curve_segment(knot_type t)const
 	{
 		int k;
@@ -117,8 +117,8 @@ public:
 		if(t>=_knots.back())
 			t=_knots.back()-0.0001;
 		for(k=0;_knots[k]>t || _knots[k+1]<=t;k++);
-		
-		return k;		
+
+		return k;
 	}
 
 	knot_container get_segment_knots(int i)const
@@ -137,7 +137,7 @@ public:
 		return knot_container(_knots.begin()+i-m+1,	_knots.begin()+i+m);
 	}
 
-	cpoint_container get_segment_cpoints(int i)const 
+	cpoint_container get_segment_cpoints(int i)const
 	{
 		if(i+1<m)
 		{
@@ -205,16 +205,16 @@ public:
 		cpoint_iterator i=_cpoints.begin();
 		cpoint_iterator ret=i;
 		typename distance_func_type::result_type dist=distance_func(point,_cpoints[0]);
-		
+
 		// The distance function returns "cooked" (ie: squared)
 		// distances, so we need to cook our max distance for
 		// the comparison to work correctly.
 		max=distance_func.cook(max);
-		
+
 		for(++i;i<_cpoints.end();i++)
 		{
 			typename distance_func_type::result_type thisdist=distance_func(point,*i);
-			
+
 			if(thisdist<dist)
 			{
 				dist=thisdist;

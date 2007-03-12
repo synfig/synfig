@@ -44,7 +44,7 @@ struct affine_combo
 	T reverse(const T &x, const T &b, const K &t)const
 	{
 		return T( (x-t*b)*(static_cast<K>(1)/(static_cast<K>(1)-t)) );
-	}	
+	}
 };
 
 template <class T, class K=float>
@@ -55,10 +55,10 @@ struct distance_func : public std::binary_function<T, T, K>
 		T delta=b-a;
 		return static_cast<K>(delta*delta);
 	}
-	
+
 	K cook(const K &x)const { return x*x; }
 	K uncook(const K &x)const { return sqrt(x); }
-	
+
 };
 
 /* -- E N D ----------------------------------------------------------------- */

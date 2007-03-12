@@ -47,48 +47,48 @@ public: //type niceties
 	typedef T	value_type;
 
 public: //representation
-	
+
 	value_type	minx,maxx,miny,maxy;
 
 public: //interface
-	
+
 	rect() {}
-	
+
 	rect(const value_type &x1,const value_type &y1)
 	{
 		set_point(x1,y1);
 	}
-	
+
 	rect(const value_type &x1,const value_type &y1,
 			const value_type &x2,const value_type &y2)
 	{
 		set_point(x1,y1);
 		expand(x2,y2);
 	}
-	
+
 	rect(const rect<T> &o)
 	:minx(o.minx),maxx(o.maxx),miny(o.miny),maxy(o.maxy)
 	{}
-		
+
 	template < typename U >
 	rect(const rect<U> &o)
 	:minx(o.minx),maxx(o.maxx),miny(o.miny),maxy(o.maxy)
 	{}
-	
+
 	void set_point(const value_type &x1,const value_type &y1)
 	{
 		minx = maxx = x1;
-		miny = maxy = y1;		
+		miny = maxy = y1;
 	}
-	
+
 	void expand(const value_type &x1,const value_type &y1)
 	{
 		minx = std::min(minx,x1);
 		maxx = std::max(maxx,x1);
 		miny = std::min(miny,y1);
-		maxy = std::max(maxy,y1);		
+		maxy = std::max(maxy,y1);
 	}
-	
+
 	void set(const value_type &x1,const value_type &y1,
 			const value_type &x2,const value_type &y2)
 	{
@@ -101,7 +101,7 @@ public: //interface
 	{
 		return valid(std::less<T>());
 	}
-	
+
 	template < typename F >
 	bool valid(const F & func) const
 	{
@@ -113,18 +113,18 @@ template < typename T, typename F >
 inline bool intersect(const rect<T> &r1, const rect<T> &r2, const F & func)
 {
 	/* We wan to do the edge compare test
-			  |-----|	
+			  |-----|
 		|------|	 intersecting
-	
+
 		|-----|
 				|-----| not intersecting
-	
+
 		So we want to compare the mins of the one against the maxs of the other, and
 		visa versa
-	
+
 		by default (exclude edge sharing) less will not be true if they are equal...
 	*/
-	
+
 	return func(r1.minx,r2.maxx) &&
            func(r2.minx,r1.maxx) &&
            func(r1.miny,r2.maxy) &&

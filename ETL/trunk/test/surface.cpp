@@ -90,7 +90,7 @@ void make_pattern(generic_pen<float> pen, int w, int h)
 int basic_test()
 {
 	printf("Surface:basic_test(): Running...\n");
-	
+
 	int ret=0;
 
 	surface<float> my_surface(100,100);
@@ -132,14 +132,14 @@ int linear_sample_test()
 	int ret=0;
 
 	surface<float> my_surface(16,16);
-	
+
 	my_surface.fill(0.0f);
-	
+
 	make_pattern(my_surface.begin(),my_surface.get_w(),my_surface.get_h());
 
 	int extra(5);
 	surface<float> dest(18+extra*2,18+extra*2);
-	
+
 	int x,y;
 	for(x=-extra;x<dest.get_w()-extra;x++)
 		for(y=-extra;y<dest.get_h()-extra;y++)
@@ -151,7 +151,7 @@ int linear_sample_test()
 		}
 
 	display_pen(dest.begin(),dest.get_w(),dest.get_h());
-		
+
 	printf("Surface:linear_sample_test(): %d errors.\n",ret);
 
 	return ret;
@@ -164,14 +164,14 @@ int cubic_sample_test()
 	int ret=0;
 
 	surface<float> my_surface(16,16);
-	
+
 	my_surface.fill(0.0f);
-	
+
 	make_pattern(my_surface.begin(),my_surface.get_w(),my_surface.get_h());
 
 	{
 		surface<float> dest(24,24);
-	
+
 		int x,y;
 		for(x=0;x<dest.get_w();x++)
 			for(y=0;y<dest.get_h();y++)
@@ -181,14 +181,14 @@ int cubic_sample_test()
 					float(y)/float(dest.get_h()-1)*float(my_surface.get_h()-1)
 				);
 			}
-	
+
 		display_pen(dest.begin(),dest.get_w(),dest.get_h());
 	}
 
 	display_pen(my_surface.begin(),my_surface.get_w(),my_surface.get_h());
 	{
 		surface<float> dest(16,16);
-	
+
 		int x,y;
 		for(x=0;x<dest.get_w();x++)
 			for(y=0;y<dest.get_h();y++)
@@ -198,10 +198,10 @@ int cubic_sample_test()
 					float(y)/float(dest.get_h()-1)*float(my_surface.get_h()-1)
 				);
 			}
-	
+
 		display_pen(dest.begin(),dest.get_w(),dest.get_h());
 	}
-	
+
 	printf("Surface:cubic_sample_test(): %d errors.\n",ret);
 
 	return ret;
@@ -212,7 +212,7 @@ int cubic_sample_test()
 int main()
 {
 	int error=0;
-	
+
 	error+=basic_test();
 	error+=linear_sample_test();
 	error+=cubic_sample_test();

@@ -57,7 +57,7 @@ private:
 	time_type r,s;
 
 protected:
-	affine_combo<value_type,time_type> affine_func; 
+	affine_combo<value_type,time_type> affine_func;
 
 public:
 	bezier_base():r(0.0),s(1.0) { }
@@ -65,7 +65,7 @@ public:
 		const value_type &a, const value_type &b, const value_type &c, const value_type &d,
 		const time_type &r=0.0, const time_type &s=1.0):
 		a(a),b(b),c(c),d(d),r(r),s(s) { sync(); }
-		
+
 	void sync()
 	{
 	}
@@ -86,12 +86,12 @@ public:
 			,t)
 		,t);
 	}
-	
+
 	/*
 	void evaluate(time_type t, value_type &f, value_type &df) const
 	{
 		t=(t-r)/(s-r);
-		
+
 		value_type p1 = affine_func(
 							affine_func(a,b,t),
 							affine_func(b,c,t)
@@ -100,12 +100,12 @@ public:
 							affine_func(b,c,t),
 							affine_func(c,d,t)
 						,t);
-		
+
 		f = affine_func(p1,p2,t);
 		df = (p2-p1)*3;
 	}
 	*/
-	
+
 	void set_rs(time_type new_r, time_type new_s) { r=new_r; s=new_s; }
 	void set_r(time_type new_r) { r=new_r; }
 	void set_s(time_type new_s) { s=new_s; }
@@ -131,7 +131,7 @@ public:
 	**	entire bi-infinite curve, is to iteratively
 	**	intersect the hulls. However, we would only detect
 	**	intersections that occur between R and S.
-	**	
+	**
 	**	It is entirely possible that a new construct similar
 	**	to the affine combination function will be necessary
 	**	for this to work properly.
@@ -143,9 +143,9 @@ public:
 	{
 		return 0;
 	}
-	
+
 	/* subdivide at some time t into 2 separate curves left and right
-	
+
 		b0 l1
 		*		0+1 l2
 		b1 		*		1+2*1+2 l3
@@ -153,18 +153,18 @@ public:
 		b2 		*		1+2*2+2	r2	*
 		*		2+3	r3	*
 		b3 r4	*
-		*		
-		
+		*
+
 		0.1 2.3 ->	0.1 2 3 4 5.6
 	*/
 /*	void subdivide(bezier_base *left, bezier_base *right, const time_type &time = (time_type)0.5) const
 	{
 		time_type t = (time-r)/(s-r);
 		bezier_base lt,rt;
-		
+
 		value_type temp;
 
-		//1st stage points to keep		
+		//1st stage points to keep
 		lt.a = a;
 		rt.d = d;
 
@@ -172,23 +172,23 @@ public:
 		lt.b = affine_func(a,b,t);
 		temp = affine_func(b,c,t);
 		rt.c = affine_func(c,d,t);
-				
+
 		//3rd stage calc
 		lt.c = affine_func(lt.b,temp,t);
 		rt.b = affine_func(temp,rt.c,t);
-		
+
 		//last stage calc
 		lt.d = rt.a = affine_func(lt.c,rt.b,t);
-		
+
 		//set the time range for l,r (the inside values should be 1, 0 respectively)
 		lt.r = r;
 		rt.s = s;
-		
+
 		//give back the curves
 		if(left) *left = lt;
-		if(right) *right = rt; 
+		if(right) *right = rt;
 	}
-	*/	
+	*/
 	value_type &
 	operator[](int i)
 	{ return (&a)[i]; }
@@ -208,7 +208,7 @@ public:
 	typedef float value_type;
 	typedef float time_type;
 private:
-	affine_combo<value_type,time_type> affine_func; 
+	affine_combo<value_type,time_type> affine_func;
 	value_type a,b,c,d;
 	time_type r,s;
 
@@ -229,7 +229,7 @@ public:
 		_coeff[2]=     c*3 - b*6 + a*3;
 		_coeff[3]= d - c*3 + b*3 - a;
 	}
-	
+
 	// Cost Summary: 4 products, 3 sums, and 1 difference.
 	inline value_type
 	operator()(time_type t)const
@@ -457,7 +457,7 @@ public:
 	typedef V value_type;
 	typedef T difference_type;
 	typedef V reference;
-	
+
 private:
 	difference_type t;
 	difference_type dt;
@@ -485,7 +485,7 @@ public:
 	operator--(int)
 	{ hermite_iterator _tmp=*this; t-=dt; return _tmp; }
 
-	
+
 	surface_iterator
 	operator+(difference_type __n) const
 	{ return surface_iterator(data+__n[0]+__n[1]*pitch,pitch); }
@@ -494,7 +494,7 @@ public:
 	operator-(difference_type __n) const
 	{ return surface_iterator(data-__n[0]-__n[1]*pitch,pitch); }
 */
-	
+
 };
 
 template <typename V,typename T=float>
@@ -506,14 +506,14 @@ public:
 	typedef float distance_type;
 	typedef bezier_iterator<V,T> iterator;
 	typedef bezier_iterator<V,T> const_iterator;
-	
+
 	distance_func<value_type> dist;
-	
+
 	using bezier_base<V,T>::get_r;
 	using bezier_base<V,T>::get_s;
 	using bezier_base<V,T>::get_dt;
 
-public:	
+public:
 	bezier() { }
 	bezier(const value_type &a, const value_type &b, const value_type &c, const value_type &d):
 		bezier_base<V,T>(a,b,c,d) { }
@@ -521,12 +521,12 @@ public:
 
 	const_iterator begin()const;
 	const_iterator end()const;
-	
+
 	time_type find_closest(const value_type& x, int i=7, time_type r=(0), time_type s=(1))const
 	{
 		float t((r+s)*0.5);
 		for(;i;i--)
-		{						
+		{
 			if(dist(operator()((s-r)*(1.0/3.0)+r),x) < dist(operator()((s-r)*(2.0/3.0)+r),x))
 				s=t;
 			else
@@ -536,13 +536,13 @@ public:
 		return t;
 	}
 
-	
+
 	distance_type find_distance(time_type r, time_type s, int steps=7)const
 	{
 		const time_type inc((s-r)/steps);
 		distance_type ret(0);
 		value_type last(operator()(r));
-		
+
 		for(r+=inc;r<s;r+=inc)
 		{
 			const value_type n(operator()(r));
@@ -550,14 +550,14 @@ public:
 			last=n;
 		}
 		ret+=dist.uncook(dist(last,operator()(r)))*(s-(r-inc))/inc;
-		
+
 		return ret;
 	}
-	
+
 	distance_type length()const { return find_distance(get_r(),get_s()); }
-	
+
 	/* subdivide at some time t into 2 separate curves left and right
-	
+
 		b0 l1
 		*		0+1 l2
 		b1 		*		1+2*1+2 l3
@@ -565,22 +565,22 @@ public:
 		b2 		*		1+2*2+2	r2	*
 		*		2+3	r3	*
 		b3 r4	*
-		*		
-		
+		*
+
 		0.1 2.3 ->	0.1 2 3 4 5.6
 	*/
 	void subdivide(bezier *left, bezier *right, const time_type &time = (time_type)0.5) const
 	{
 		time_type t=(t-get_r())/get_dt();
 		bezier lt,rt;
-		
+
 		value_type temp;
 		const value_type& a((*this)[0]);
 		const value_type& b((*this)[1]);
 		const value_type& c((*this)[2]);
 		const value_type& d((*this)[3]);
 
-		//1st stage points to keep		
+		//1st stage points to keep
 		lt[0] = a;
 		rt[3] = d;
 
@@ -588,27 +588,27 @@ public:
 		lt[1] = affine_func(a,b,t);
 		temp = affine_func(b,c,t);
 		rt[2] = affine_func(c,d,t);
-				
+
 		//3rd stage calc
 		lt[2] = affine_func(lt[1],temp,t);
 		rt[1] = affine_func(temp,rt[2],t);
-		
+
 		//last stage calc
 		lt[3] = rt[0] = affine_func(lt[2],rt[1],t);
-		
+
 		//set the time range for l,r (the inside values should be 1, 0 respectively)
 		lt.set_r(get_r());
 		rt.set_s(get_s());
-		
+
 		lt.sync();
 		rt.sync();
-		
+
 		//give back the curves
 		if(left) *left = lt;
-		if(right) *right = rt; 
+		if(right) *right = rt;
 	}
 
-	
+
 	void evaluate(time_type t, value_type &f, value_type &df) const
 	{
 		t=(t-get_r())/get_dt();
@@ -617,7 +617,7 @@ public:
 		const value_type& b((*this)[1]);
 		const value_type& c((*this)[2]);
 		const value_type& d((*this)[3]);
-		
+
 		const value_type p1 = affine_func(
 							affine_func(a,b,t),
 							affine_func(b,c,t)
@@ -626,7 +626,7 @@ public:
 							affine_func(b,c,t),
 							affine_func(c,d,t)
 						,t);
-		
+
 		f = affine_func(p1,p2,t);
 		df = (p2-p1)*3;
 	}

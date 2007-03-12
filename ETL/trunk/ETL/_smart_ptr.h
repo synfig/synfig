@@ -73,7 +73,7 @@ public:
 	typedef D destructor_type;
 
 #ifdef DOXYGEN_SHOULD_SKIP_THIS		// #ifdef is not a typo
-private:	
+private:
 #endif
 	value_type *obj;		//!< \internal Pointer to object
 	reference_counter refcount;
@@ -128,7 +128,7 @@ public:
 			obj=(pointer)x.get();
 			refcount=x.refcount;
 		}
-		
+
 		return *this;
 	}
 
@@ -138,31 +138,31 @@ public:
 	{
 		if(x.get()==obj)
 			return *this;
-	
+
 		reset();
 
 		if(x.obj)
 		{
-		
+
 			obj=(pointer)x.get();
 			refcount=x.refcount;
 		}
-		
+
 		return *this;
 	}
 
 	//! smart_ptr reset procedure
 	void
 	reset()
-	{		
+	{
 		if(obj)
-		{			
+		{
 			if(refcount.unique()) destructor_type()(obj);
 			refcount.detach();
 			obj=0;
 		}
 	}
-		
+
 	void spawn() { operator=(smart_ptr(new T)); }
 
 	//! Returns number of instances
@@ -269,7 +269,7 @@ public:
 	const count_type& count()const { return refcount; }
 
 	bool unique()const { return refcount.unique(); }
-	
+
 	reference operator*()const { assert(obj); return *obj; }
 
 	pointer	operator->()const { assert(obj); return obj; }

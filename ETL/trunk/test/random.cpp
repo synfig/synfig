@@ -33,7 +33,7 @@ int random_basic_test(void)
 {
 	int ret=0;
 	random<int> Rand;
-	
+
 	return ret;
 }
 
@@ -42,7 +42,7 @@ int random_basic_test(void)
 int main()
 {
 	int error=0;
-	
-	
+
+
 	return error;
 }

@@ -56,7 +56,7 @@ public:
 	public:
 		lock(mutex_null &x) { }
 	};
-	
+
 	void lock_mutex(){}
 	bool try_lock_mutex(){return true;}
 	void unlock_mutex(){}

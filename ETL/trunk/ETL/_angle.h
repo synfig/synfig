@@ -60,9 +60,9 @@ protected:
 	typedef value_type unit;
 
 	unit v;	//! Stored in rotations
-	
+
 public:
-	
+
 	/*
 	** Arithmetic Operators
 	*/
@@ -104,7 +104,7 @@ public:
 	angle
 	operator/(const unit &rhs)const
 		{ return angle(*this)/=rhs; }
-	
+
 	//! Angle Negation
 	angle
 	operator-()const
@@ -113,7 +113,7 @@ public:
 		ret.v=-v;
 		return ret;
 	}
-	
+
 	//! 180 degree rotation operator
 	/*! Returns the angle directly opposite of
 		the given angle, and will yield a result
@@ -189,9 +189,9 @@ public:
 		angle ret;
 
 		ret.v=v-rhs.v;
-		
+
 		ret.v-=rot_floor(ret.v+PI);
-		
+
 		return ret;
 	}
 
@@ -205,7 +205,7 @@ public:
 		ret.v-=rot_floor(ret.v);
 		return ret;
 	}
-	
+
 	static angle
 	zero()
 	{
@@ -233,10 +233,10 @@ public:
 	bool operator!()const { return v==0; }
 
 private:
-	
+
 	static value_type rot_floor(value_type x)
 	{ return static_cast<value_type>(std::floor(x/(PI*2))*PI*2); }
-	
+
 public:
 	/*
 	** Converstion Classes
@@ -252,7 +252,7 @@ public:
 
 	class sin;
 	class cos;
-	class tan; 
+	class tan;
 
 	/*
 	** Friend classes
@@ -408,7 +408,7 @@ struct affine_combo<etl::angle, T>
 
 	//affine_combo() { std::cerr<<"affine_combo<etl::angle,float>: I was created!"<<std::endl; }
 	//~affine_combo() { std::cerr<<"affine_combo<etl::angle,float>: I was DELETED!"<<std::endl; }
-	
+
 	etl::angle operator()(const etl::angle &a,const etl::angle &b,const time_type &t)const
 	{
 		return b.dist(a)*(float)t+a;
@@ -430,7 +430,7 @@ struct distance_func<etl::angle> : public std::binary_function<etl::angle, etl::
 		//	return delta+etl::angle::one();
 		return delta;
 	}
-	
+
 	etl::angle cook(const etl::angle &x)const { return x; }
 	etl::angle uncook(const etl::angle &x)const { return x; }
 };

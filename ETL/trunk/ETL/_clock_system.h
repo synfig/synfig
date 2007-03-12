@@ -61,7 +61,7 @@ class clock_desc_sys_clock
 {
 public:
 	typedef float value_type;
-	
+
 	inline static bool realtime()
 	{ return false; }
 
@@ -80,7 +80,7 @@ public:
 
 protected:
 	typedef clock_t timestamp;
-	
+
 	static void
 	get_current_time(timestamp &time)
 	{ time=__sys_clock(); }
@@ -88,28 +88,28 @@ protected:
 	static timestamp
 	get_current_time()
 	{ return __sys_clock(); }
-	
+
 	static value_type
 	timestamp_to_seconds(const timestamp &x)
-	{ return precision()*x; } 
+	{ return precision()*x; }
 
 	static timestamp
 	seconds_to_timestamp(const value_type &x)
-	{ return (timestamp)(x*(value_type)CLOCKS_PER_SEC+0.5); } 
-	
+	{ return (timestamp)(x*(value_type)CLOCKS_PER_SEC+0.5); }
+
 };
 
 class clock_desc_sys_time
 {
 public:
 	typedef float value_type;
-	
+
 	inline static bool realtime()
 	{ return true; }
 
 	inline static bool proctime()
 	{ return false; }
-	
+
 	inline static value_type
 	one_second()
 	{ return 1.0f; }
@@ -122,7 +122,7 @@ public:
 
 protected:
 	typedef time_t timestamp;
-	
+
 	static void
 	get_current_time(timestamp &time)
 	{ __sys_time(&time); }
@@ -130,14 +130,14 @@ protected:
 	static timestamp
 	get_current_time()
 	{ return __sys_time(NULL); }
-	
+
 	static value_type
 	timestamp_to_seconds(const timestamp &x)
-	{ return (value_type)x; } 
+	{ return (value_type)x; }
 
 	static timestamp
 	seconds_to_timestamp(const value_type &x)
-	{ return (timestamp)(x+(value_type)0.5f); } 
+	{ return (timestamp)(x+(value_type)0.5f); }
 };
 
 _ETL_END_NAMESPACE

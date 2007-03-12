@@ -108,7 +108,7 @@ public:
 			(*references)++;
 		return *this;
 	}
-	
+
 	void start(void)
 	{
 		references = new int;
@@ -125,12 +125,12 @@ public:
 		pthread_cancel(thread);
 		pthread_join(thread,&exit_status);
 	}
-	
+
 	static void TestStop()
 	{
 		pthread_testcancel();
 	}
-	
+
 	static void SyncStop()
 	{
 		int i;
@@ -307,18 +307,18 @@ private:
 	unsigned long thread;
 	HANDLE handle;
 	int *references;
-	
+
 	entrypoint_return  (THREAD_ENTRYPOINT *entrypoint)(void *);
-	
+
 	void *context;
-	
+
 	HDC hdc;
 	HGLRC hglrc;
-	
+
 	static entrypoint_return THREAD_ENTRYPOINT thread_prefix(void*data)
 	{
 		Thread *thread=(Thread *)data;
-		
+
 		if(thread->hglrc)
 			wglMakeCurrent(thread->hdc, thread->hglrc);
 
@@ -356,7 +356,7 @@ public:
 			(*references)++;
 		return *this;
 	}
-	
+
 	void start(void)
 	{
 		references = new int;
@@ -379,10 +379,10 @@ public:
 	{
 		delete references;
 		references=NULL;
-		
+
 		TerminateThread(handle, FALSE);
 	}
-	
+
 	int wait(void)
 	{
 		if(handle)
@@ -392,11 +392,11 @@ public:
 		}
 		return 0;
 	}
-	
+
 	static void TestStop()
 	{
 	}
-	
+
 	static void SyncStop()
 	{
 	}

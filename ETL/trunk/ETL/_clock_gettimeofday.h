@@ -66,17 +66,17 @@ protected:
 	{
 		timestamp(int sec, int usec)
 		{ tv_sec=sec; tv_usec=usec; }
-		
-		friend class clock_desc_gettimeofday; 
+
+		friend class clock_desc_gettimeofday;
 	public:
 		timestamp() { }
-		
-		
+
+
 		inline timestamp operator-(const timestamp &rhs)const
 		{
 			timestamp ret;
 			ret.tv_usec=tv_usec-rhs.tv_usec;
-			
+
 			if(ret.tv_usec<0)
 			{
 				ret.tv_sec=tv_sec-rhs.tv_sec-1;
@@ -90,7 +90,7 @@ protected:
 		inline timestamp operator+(timestamp rhs)const
 		{
 			rhs.tv_usec+=tv_usec;
-			
+
 			if(rhs.tv_usec>1000000)
 			{
 				rhs.tv_sec+=tv_sec+1;
@@ -100,7 +100,7 @@ protected:
 				rhs.tv_sec+=tv_sec;
 			return rhs;
 		}
-		
+
 		inline bool operator<(const timestamp &rhs)const
 		{ return tv_sec<rhs.tv_sec || tv_usec<rhs.tv_usec; }
 
@@ -110,7 +110,7 @@ protected:
 		inline bool operator!=(const timestamp &rhs)const
 		{ return tv_usec!=rhs.tv_usec || tv_sec!=rhs.tv_sec; }
 	};
-	
+
 	static void
 	get_current_time(timestamp &x)
 	{ gettimeofday(&x,NULL);}
@@ -118,14 +118,14 @@ protected:
 	static timestamp
 	get_current_time()
 	{ timestamp ret; get_current_time(ret); return ret; }
-	
+
 	static value_type
 	timestamp_to_seconds(const timestamp &x)
-	{ return (value_type)x.tv_sec + precision()*x.tv_usec; } 
+	{ return (value_type)x.tv_sec + precision()*x.tv_usec; }
 
 	static timestamp
 	seconds_to_timestamp(const value_type &x)
-	{ return timestamp((int)floor(x), (int)((x-floor(x))/precision()+0.5)); } 
+	{ return timestamp((int)floor(x), (int)((x-floor(x))/precision()+0.5)); }
 };
 
 _ETL_END_NAMESPACE

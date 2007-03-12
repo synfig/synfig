@@ -10,7 +10,7 @@
 
 #ifndef HAVE_GETTIMEOFDAY
 #define HAVE_GETTIMEOFDAY
-#endif 
+#endif
 
 #ifndef HAVE_PTHREAD_H
 #define HAVE_PTHREAD_H

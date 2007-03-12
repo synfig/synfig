@@ -36,7 +36,7 @@
 
 #if defined(__GNUG__) && defined(__int64)
 #undef __int64
-#define __int64 long long int 
+#define __int64 long long int
 #endif
 
 /* === T Y P E D E F S ===================================================== */
@@ -72,7 +72,7 @@ public:
 
 protected:
 	typedef __int64 timestamp;
-	
+
 	static void
 	get_current_time(timestamp &x)
 	{ QueryPerformanceCounter((LARGE_INTEGER*)&x);}
@@ -80,14 +80,14 @@ protected:
 	static timestamp
 	get_current_time()
 	{ timestamp ret; QueryPerformanceCounter((LARGE_INTEGER*)&ret); return ret; }
-	
+
 	static value_type
 	timestamp_to_seconds(const timestamp &x)
-	{ return precision()*x; } 
+	{ return precision()*x; }
 
 	static timestamp
 	seconds_to_timestamp(const value_type &x)
-	{ return (timestamp)(x/precision()); } 
+	{ return (timestamp)(x/precision()); }
 };
 
 _ETL_END_NAMESPACE

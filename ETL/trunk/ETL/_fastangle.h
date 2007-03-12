@@ -63,9 +63,9 @@ protected:
 	typedef fixed_base<ETL_FIXED_TYPE,ETL_FASTANGLE_LOOKUP_RES> unit;
 
 	unit v;	//! Stored in rotations
-	
+
 public:
-	
+
 	/*
 	** Arithmetic Operators
 	*/
@@ -107,7 +107,7 @@ public:
 		ret.v=v/rhs;
 		return ret;
 	}
-	
+
 	const fastangle	&
 	operator+=(const fastangle &rhs)
 	{
@@ -144,7 +144,7 @@ public:
 		ret.v=-v;
 		return ret;
 	}
-	
+
 	//! 180 degree rotation operator
 	/*! Returns the fastangle directly opposite of
 		the given fastangle, and will yield a result
@@ -259,7 +259,7 @@ public:
 
 	class sin;
 	class cos;
-	class tan; 
+	class tan;
 
 	/*
 	** Friend classes
@@ -385,7 +385,7 @@ public:
 		else
 			v.data()=_fastangle_atan_table[(int)((x+1)*(value_type)((1<<(ETL_FASTANGLE_LOOKUP_RES-1))-1))];
 	}
-	
+
 	tan(const value_type &y,const value_type &x)
 	{
 		if(x>=0 && y>=0) // First quadrant
@@ -451,7 +451,7 @@ struct distance_func<etl::fastangle> : public std::binary_function<etl::fastangl
 			return -delta;
 		return delta;
 	}
-	
+
 	etl::fastangle cook(const etl::fastangle &x) { return x; }
 	etl::fastangle uncook(const etl::fastangle &x) { return x; }
 };

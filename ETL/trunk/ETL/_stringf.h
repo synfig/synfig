@@ -195,7 +195,7 @@ is_absolute_path(const std::string &path)
 #ifdef WIN32
 	if(path.size()>=3 && path[1]==':' && (path[2]=='\\' || path[2]=='/'))
 		return true;
-#endif	
+#endif
 	if(!path.empty() && path[0]==ETL_DIRECTORY_SEPERATOR)
 		return true;
 	return false;
@@ -235,7 +235,7 @@ get_root_from_path(std::string path)
 {
 	std::string ret;
 	std::string::const_iterator iter;
-	
+
 	for(iter=path.begin();iter!=path.end();++iter)
 	{
 		if(*iter==ETL_DIRECTORY_SEPERATOR)
@@ -268,7 +268,7 @@ cleanup_path(std::string path)
 	std::string ret;
 
 	while(basename(path)==".")path=dirname(path);
-	
+
 	while(!path.empty())
 	{
 		std::string dir(get_root_from_path(path));
@@ -282,7 +282,7 @@ cleanup_path(std::string path)
 		}
 		path=remove_root_from_path(path);
 	}
-	
+
 	// Remove any trailing directory seperators
 	if(ret.size() && ret[ret.size()-1]==ETL_DIRECTORY_SEPERATOR)
 	{
@@ -295,7 +295,7 @@ inline std::string
 absolute_path(std::string path)
 {
 	std::string ret(current_working_directory());
-	
+
 	if(path.empty())
 		return cleanup_path(ret);
 	if(is_absolute_path(path))
@@ -306,14 +306,14 @@ absolute_path(std::string path)
 
 inline std::string
 relative_path(std::string curr_path,std::string dest_path)
-{	
+{
 	// If dest_path is already a relative path,
 	// then there is no need to do anything.
 	if(!is_absolute_path(dest_path))
 		dest_path=absolute_path(dest_path);
 	else
 		dest_path=cleanup_path(dest_path);
-	
+
 	if(!is_absolute_path(curr_path))
 		curr_path=absolute_path(curr_path);
 	else
@@ -332,7 +332,7 @@ relative_path(std::string curr_path,std::string dest_path)
 	{
 		return basename(dest_path);
 	}
-	
+
 	while(!dest_path.empty() && !curr_path.empty() && get_root_from_path(dest_path)==get_root_from_path(curr_path))
 	{
 		dest_path=remove_root_from_path(dest_path);
@@ -344,7 +344,7 @@ relative_path(std::string curr_path,std::string dest_path)
 		dest_path=std::string("..")+ETL_DIRECTORY_SEPERATOR+dest_path;
 		curr_path=remove_root_from_path(curr_path);
 	}
-	
+
 	return dest_path;
 }
 

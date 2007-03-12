@@ -40,13 +40,13 @@ int basic_test(void)
 	int ret=0;
 	char mystring[80]="My formatted string!";
 	string myotherstring="my other string!";
-	
+
 	cout<<strprintf("This is a test of >>%s<<.",mystring)<<endl;
 
 	myotherstring="5 6.75 George 7";
 	int i,i2;
 	float f;
-	
+
 #ifndef ETL_NO_STRSCANF
 	strscanf(myotherstring,"%d %f %s %d",&i, &f, mystring, &i2);
 #else
@@ -117,7 +117,7 @@ int relative_path_test()
 	cout<<"relative_path="<<relative_path(curr_path,dest_path)<<endl;
 	if(relative_path(curr_path,dest_path)!=unix_to_local_path("myfile.txt"))
 		cerr<<"Bad relative path"<<endl,ret++;
-	
+
 	cout<<endl;
 
 	curr_path=unix_to_local_path("/home/darco/projects/voria");
@@ -126,7 +126,7 @@ int relative_path_test()
 	cout<<"relative_path="<<relative_path(curr_path,dest_path)<<endl;
 	if(relative_path(curr_path,dest_path)!=unix_to_local_path("files/myfile.txt"))
 		cerr<<"Bad relative path"<<endl,ret++;
-	
+
 	cout<<endl;
 
 	curr_path=unix_to_local_path("/usr/local/../include/sys/../linux/linux.h");
@@ -143,7 +143,7 @@ int relative_path_test()
 int main()
 {
 	int error=0;
-	
+
 	error+=basic_test();
 	error+=base_and_dir_name_test();
 	error+=relative_path_test();

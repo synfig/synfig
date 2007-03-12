@@ -41,28 +41,28 @@ class rand_source_xor
 public:
 	typedef int seed_type;
 	typedef short value_type;
-	
+
 private:
 	short entropy_pool[256];
 	int pool_index;
-	
+
 public:
 	random()
 	{
 		seed(0);
 		mod=offset=0;
 	}
-	
+
 	void seed(const seed_type &x)
 	{ pool_index=0; }
-		
+
 	void add_entropy(value_type entropy)
 	{
 		int i;
 		for(i=0;i<POOL_SIZE;i++)
 			entropy^=(entropy_pool[i]^=entropy*i);
 	}
-	
+
 	void add_entropy(const value_type *entropy, int size)
 	{
 	}
@@ -84,13 +84,13 @@ class random
 public:
 	typedef T value_type;
 	typedef int seed_type;
-	
+
 private:
 	value_type entropy_pool[POOL_SIZE];
 	int pool_index;
-	
+
 	value_type mod,offset;
-	
+
 public:
 	random()
 	{
@@ -100,24 +100,24 @@ public:
 
 	void seed(const seed_type &x)
 	{ pool_index=0; }
-	
+
 	void set_range(const value_type &floor,const value_type &ceil)
 	{ mod=ceil-floor; offset=floor; }
 
 	void set_range(const value_type &ceil)
 	{ mod=ceil; }
-	
+
 	void add_entropy(value_type entropy)
 	{
 		int i;
 		for(i=0;i<POOL_SIZE;i++)
 			entropy^=(entropy_pool[i]^=entropy*i);
 	}
-	
+
 	void add_entropy(const char *entropy)
 	{
 	}
-	
+
 	value_type operator()(void)
 	{
 		if(pool_index>POOL_SIZE)

@@ -70,20 +70,20 @@ class value
 		virtual contentholder *clone() const = 0;
 		virtual const std::type_info &type() const = 0;
 	};
-	
-	contentholder	*content;	
-	
+
+	contentholder	*content;
+
 public:	//structor interface
 	value()
-		:content(0) 
+		:content(0)
 	{
 	}
-	
+
 	value(const value &v)
 		:content( v.content ? v.content->clone() : 0 )
 	{
 	}
-	
+
 	/* Copies the object passed to it
 	*/
 	template < typename T >
@@ -92,9 +92,9 @@ public:	//structor interface
 						(reinterpret_cast<const typename value_store_type<T>::value_type &>(v)) )
 	{
 	}
-	
+
 public: //modifier interface
-	
+
 	value & swap(value & rhs)
 	{
 		std::swap(content, rhs.content);
@@ -113,21 +113,21 @@ public: //modifier interface
 		value(rhs).swap(*this);
 		return *this;
 	}
-	
+
 public: //query interface
-	
+
 	bool empty() const
 	{
 		return content == 0;
 	}
-	
+
 	const std::type_info & type() const
 	{
 		return content ? content->type() : typeid(void);
 	}
-	
+
 private: //implementation interface
-	
+
 	template < typename T >
 	class holder : public contentholder
 	{
@@ -135,12 +135,12 @@ private: //implementation interface
 		T	obj;
 
 	public: //structor interface
-				
+
 		holder(const T &o)
 			:obj(o)
 		{
 		}
-		
+
 		holder(const holder<T> &h)
 			:obj(h.obj)
 		{
@@ -151,21 +151,21 @@ private: //implementation interface
 		{
 			return new holder(*this);
 		}
-		
+
 		virtual const std::type_info &type() const
 		{
 			return typeid(T);
 		}
-	
+
 	public: //allocation interface
 		void *operator new(unsigned int size)
 		{
 			assert(size == sizeof(holder<T>));
-			
+
 			//use pool allocation at some point
 			return malloc(size);
 		}
-		
+
 		void operator delete(void *p)
 		{
 			assert(p);
@@ -173,7 +173,7 @@ private: //implementation interface
 			return free(p);
 		}
 	};
-	
+
 	template < typename ValueType >
 	friend ValueType *value_cast(value *v);
 };
@@ -199,8 +199,8 @@ template < typename ValueType >
 ValueType *value_cast(value *v)
 {
 	assert(v);
-	
-	return ( typeid(typename value_store_type<ValueType>::value_type) == v->type() ) 
+
+	return ( typeid(typename value_store_type<ValueType>::value_type) == v->type() )
 			? &static_cast<value::holder<ValueType> *>(v->content)->obj
 			: 0;
 }
@@ -214,7 +214,7 @@ const ValueType * value_cast(const value *v)
 	return value_cast<ValueType>(const_cast<value *>(v));
 }
 
-/*!	Extract a copy of the internal object and will throw a bad_value_cast exception 
+/*!	Extract a copy of the internal object and will throw a bad_value_cast exception
 	if the types do not agree.
 
 	\note	I'm not sure why boost::any didn't use a reference here... there must be a reason...

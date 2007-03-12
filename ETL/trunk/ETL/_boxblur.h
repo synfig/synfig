@@ -45,19 +45,19 @@ hbox_blur(T1 pen,int w, int h, int length, T2 outpen)
 
 	length=std::min(w,length);
 	const float divisor(1.0f/(length*2+1));
-	
+
 	for(y=0;y<h;y++,pen.inc_y(),outpen.inc_y())
 	{
 		iter=pen.x();
 		end=pen.end_x();
-		
+
 		typename T1::accumulator_type tot(*iter*(length+1));
 
 		for (x=0;x<length && iter!=end;x++,++iter) tot+=*iter;
 		iter=pen.x();
 
 		for (x=0;x<w && iter!=end;x++,++iter,outpen.inc_x())
-		{			
+		{
 			tot -= (x>length) ? iter[-length-1] : *pen.x();
 			tot += ((x+length)<w) ? iter[length] : end[-1];
 
@@ -76,19 +76,19 @@ vbox_blur(T1 pen,const int w, const int h, int length, T2 outpen)
 
 	length=std::min(h,length);
 	const float divisor(1.0f/(length*2+1));
-	
+
 	for(x=0;x<w;x++,pen.inc_x(),outpen.inc_x())
 	{
 		iter=pen.y();
 		end=pen.end_y();
-		
+
 		typename T1::accumulator_type tot(*iter*(length+1));
 
 		for (y=0;y<length && iter!=end;y++,++iter) tot+=*iter;
 		iter=pen.y();
 
 		for (y=0;y<h && iter!=end;y++,++iter,outpen.inc_y())
-		{			
+		{
 			tot -= (y>length) ? iter[-length-1] : *pen.y();
 			tot += ((y+length)<h) ? iter[length] : end[-1];
 
@@ -113,7 +113,7 @@ vbox_blur(T1 pen,int w, int h, int length,T2 outpen)
 		T1 endpen = pen;
 		endpen.move(w,h);
 		ypen.inc_y();
-		
+
 		T2 	open = outpen,
 			oepen = outpen;
 		oepen.move(w,h);
@@ -122,7 +122,7 @@ vbox_blur(T1 pen,int w, int h, int length,T2 outpen)
 				(char*)open.x(),(char*)oepen.x());
 	}*/
 	length=min(h-1,length);
-	
+
 	const float divisor(1.0f/(length*2+1));
 	//const int div = (length*2+1);
 
@@ -131,15 +131,15 @@ vbox_blur(T1 pen,int w, int h, int length,T2 outpen)
 	{
 		iter=pen.y();
 		end=pen.end_y();
-		
+
 		const typename T1::value_type bval = *iter;
 		const typename T1::value_type eval = end[-1];
-		
+
 		typename T1::accumulator_type tot(bval*(length+1));
 		//beginptr = (char*)&*iter; endptr = (char*)&*end;
-		
+
 		//printf("\nx line %d (%p,%p)\n",x,beginptr,endptr);
-		
+
 		//printf("Init %.3f - ",tot);
 		for (y=0;y<length && iter!=end;y++)
 		{
@@ -147,19 +147,19 @@ vbox_blur(T1 pen,int w, int h, int length,T2 outpen)
 			//printf("(%d,%p,+%.3f->%.3f),",y,&iter[y],iter[y],tot);
 		}
 		iter=pen.y();
-		
+
 		//printf(" tot=%.3f\n",tot);
-		
+
 		biter = iter+(-length-1); //get the first one...
 		eiter = iter+length;
-		
+
 		//y will always be > length
 		//T2 open = outpen;
 		for (y=0;y<h && iter!=end;y++,++iter,++biter,++eiter,outpen.inc_y())
-		{			
+		{
 			//printf("y line %d - (%f) ",y,tot);
-			
-			if (y>length) 
+
+			if (y>length)
 			{
 				typename T1::value_type &v = *biter;
 				/*if( (char*)&v < beginptr ||
@@ -174,25 +174,25 @@ vbox_blur(T1 pen,int w, int h, int length,T2 outpen)
 				//printf("[%.3f,",bval);
 			}
 
-			if (y+length<h) 
+			if (y+length<h)
 			{
 				typename T1::value_type &v = *eiter;
-				/*if( (char*)&v < beginptr || 
+				/*if( (char*)&v < beginptr ||
 					(char*)&v >= endptr)
 					printf("crap! %d (%p off %p)\n",y,(char*)&v,(char*)&*iter);*/
 				tot += v;
 				//printf("%.3f]",v);
 			}
-			else 
+			else
 			{
 				tot += eval;
 				//printf("%.3f]",eval);
 			}
-			
+
 			//test handled in the previous case...
 			//tot -= (y>length) ? *biter : bval;
 			//tot += (y+length<h) ? *eiter : eval;
-			
+
 			//printf(" - %.3f\n",tot);
 			outpen.put_value(tot*divisor);
 		}

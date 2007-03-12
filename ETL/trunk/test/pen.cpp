@@ -115,7 +115,7 @@ int generic_pen_test(int w, int h)
 		printf("FAILURE! "__FILE__"@%d: iterator_x inconsistancy\n",__LINE__);
 		return 1;
 	}
-	
+
 	printf("PASSED\n");
 
 	return 0;
@@ -260,18 +260,18 @@ int box_blur_test(void)
 	// Pen 2 will be the end
 	pen2=pen;
 	pen2.move(w,h);
-	
+
 	//temporary
 	vbox_blur(pen,pen2,2,pen3);
 	printf("\n VBLUR ONLY:\n");
 	display_pen(pen3,w,h);
-	
+
 //	box_blur(pen,w,h,4);
 	hbox_blur(pen,pen2,2,pen3);
-	
+
 	printf("\n HBLUR ONLY:\n");
 	display_pen(pen3,w,h);
-	
+
 	pen2=pen3;
 	pen2.move(w,h);
 	vbox_blur(pen3,pen2,2,pen);
@@ -286,7 +286,7 @@ int box_blur_test(void)
 		printf("FAILURE! "__FILE__"@%d: blur result contained %d bad values\n",__LINE__,bad_values);
 		return 1;
 	}
-	
+
 	boxblur_float max=0;
 	printf("CHECK BOXBLUR RESULTS %d,%d:\n",pen.diff_begin().x, pen.diff_begin().y);
 	for(y=0;y<h;y++,pen.inc_y())
@@ -294,24 +294,24 @@ int box_blur_test(void)
 		for(x=0;x<w;x++,pen.inc_x())
 		{
 			boxblur_float f = 0;
-			
+
 			for(int oy=-2; oy <= 2; ++oy)
 			{
 				int iy = y+oy;
 				if(iy < 0) iy = 0;
 				if(iy >= h) iy = h-1;
-				
+
 				for(int ox=-2; ox <= 2; ++ox)
 				{
 					int ix = x+ox;
 					if(ix < 0) ix = 0;
 					if(ix >= w) ix = w-1;
-					
+
 					if(ix-iy<=1 && iy-ix<=1 || iy==h/2 || ix==w/2)
 						f += 2;
 				}
 			}
-			
+
 			//print out if the relative error is high
 			/*f /= 25;
 			float rf = pen.get_value() - f/25;
@@ -326,7 +326,7 @@ int box_blur_test(void)
 		pen.dec_x(x);
 	}
 	pen.dec_y(y);
-	
+
 	/*if(max)
 	{
 		for(y=0;y<h;y++,pen.inc_y())
@@ -485,7 +485,7 @@ int gaussian_blur_test(void)
 	gaussian_blur_3x3(pen,pen2);
 	gaussian_blur_3x3(pen,pen2);
 #endif
-	
+
 //	gaussian_blur(pen,pen2,15);
 	gaussian_blur(pen,pen2,10,10);
 
@@ -545,6 +545,6 @@ int main()
 	error+=box_blur_test();
     if(error)return error;
 	error+=gaussian_blur_test();
-	
+
 	return error;
 }

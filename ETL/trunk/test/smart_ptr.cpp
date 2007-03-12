@@ -314,6 +314,6 @@ int main()
 	error+=smart_ptr_general_use_test();
 	error+=smart_ptr_inheritance_test();
 	error+=loose_smart_ptr_test();
-	
+
 	return error;
 }

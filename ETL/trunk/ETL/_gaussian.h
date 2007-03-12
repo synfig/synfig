@@ -209,7 +209,7 @@ gaussian_blur_3(I begin, I end, bool endpts = true)
 		if(iter!=begin && ( endpts || (prev != begin) ))
 			*prev=(Tmp1)/4;
 	}
-	
+
 	if(endpts)
 	{
 		Tmp1=*prev;

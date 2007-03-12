@@ -44,14 +44,14 @@ struct my_test_obj : public etl::rshared_object
 	{
 		instance_count++;
 	}
-	
+
 	virtual ~my_test_obj()
 	{
 		if(instance_count==0)
 			printf("Error, instance count is going past zero!\n");
 		instance_count--;
 	}
-	
+
 	bool operator<(const my_test_obj &rhs)const
 	{
 		return my_id<rhs.my_id;
@@ -120,13 +120,13 @@ int handle_basic_test()
 
 	etl::handle<my_test_obj> obj_handle(new my_test_obj(rand()));
 
-	if(obj_handle != obj_handle.constant())	
+	if(obj_handle != obj_handle.constant())
 	{
 		printf("FAILED!\n");
 		printf(__FILE__":%d: on call to handle<>::constant().\n",__LINE__);
 		return 1;
 	}
-		
+
 	printf("PASSED\n");
 
 	return 0;
@@ -136,13 +136,13 @@ int handle_general_use_test(void)
 {
 	printf("handle: General-use test: ");
 	my_test_obj::instance_count=0;
-	
+
 	obj_list my_list, my_other_list;
 	int i;
-	
+
 	for(i=0;i<NUMBER_OF_OBJECTS;i++)
 		my_list.push_back( obj_handle(new my_test_obj(rand())) );
-	
+
 	my_other_list=my_list;
 	if(my_test_obj::instance_count!=NUMBER_OF_OBJECTS)
 	{
@@ -158,7 +158,7 @@ int handle_general_use_test(void)
 		printf(__FILE__":%d: On copy, instance count=%d, should be %d.\n",__LINE__,my_test_obj::instance_count,NUMBER_OF_OBJECTS);
 		return 1;
 	}
-	
+
 	my_list.clear();
 	if(my_test_obj::instance_count!=NUMBER_OF_OBJECTS)
 	{
@@ -176,7 +176,7 @@ int handle_general_use_test(void)
 	}
 
 	printf("PASSED\n");
-	
+
 	return 0;
 }
 
@@ -191,29 +191,29 @@ int handle_general_use_test(void)
 
 int rhandle_general_use_test(void)
 {
-	
-	
+
+
 	printf("rhandle: General-use test: ");
 	my_test_obj::instance_count=0;
-	
+
 	robj_list my_list;
 	int i;
-	
+
 	robj_handle obj=	new my_test_obj(rand());
 	for(i=0;i<NUMBER_OF_OBJECTS;i++)
 		my_list.push_back(obj);
 
 	obj_list my_other_list(my_list.begin(),my_list.end());
-	
-	
-	
+
+
+
 	if(obj.count()!=NUMBER_OF_OBJECTS*2+1)
 	{
 		printf("FAILED!\n");
 		printf(__FILE__":%d: On copy, handle count=%d, should be %d.\n",__LINE__,obj.count(),NUMBER_OF_OBJECTS*2+1);
 		return 1;
 	}
-	
+
 	if(obj.rcount()!=NUMBER_OF_OBJECTS+1)
 	{
 		printf("FAILED!\n");
@@ -237,7 +237,7 @@ int rhandle_general_use_test(void)
 		printf(__FILE__":%d: On copy, instance count=%d, should be %d.\n",__LINE__,obj.rcount(),NUMBER_OF_OBJECTS+1);
 		return 1;
 	}
-	
+
 	my_other_list.clear();
 
 	if(obj.rcount()!=obj.count())
@@ -277,11 +277,11 @@ int rhandle_general_use_test(void)
 		robj_handle blah(obj.get());
 	}
 
-	
+
 	my_list.clear();
 	obj.detach();
 	new_obj.detach();
-	
+
 	if(my_test_obj::instance_count)
 	{
 		printf("FAILED!\n");
@@ -289,13 +289,13 @@ int rhandle_general_use_test(void)
 		return 1;
 	}
 
-	
-	
+
+
 	std::vector<ListItem> my_item_list;
 	for(i=0;i<NUMBER_OF_OBJECTS;i++)
 		my_item_list.push_back(ListItem(new my_test_obj(rand()),3,4));
 
-	
+
 	for(i=0;i<100;i++)
 	{
 		int src,dest;
@@ -308,7 +308,7 @@ int rhandle_general_use_test(void)
 		my_item_list.insert(my_item_list.begin()+dest,tmp);
 		assert(tmp.obj.rcount()>=2);
 	}
-	
+
 	my_item_list.clear();
 
 	if(my_test_obj::instance_count)
@@ -319,7 +319,7 @@ int rhandle_general_use_test(void)
 	}
 
 	printf("PASSED\n");
-	
+
 	return 0;
 }
 
@@ -328,13 +328,13 @@ int handle_inheritance_test(void)
 	printf("handle: Inheritance test: ");
 	my_test_obj::instance_count=0;
 	my_other_test_obj::instance_count=0;
-	
+
 	other_obj_list my_other_list;
 	int i;
-	
+
 	for(i=0;i<NUMBER_OF_OBJECTS;i++)
 		my_other_list.push_back( other_obj_handle(new my_other_test_obj(rand())) );
-	
+
 	obj_list my_list(my_other_list.begin(),my_other_list.end());
 	if(my_test_obj::instance_count!=NUMBER_OF_OBJECTS)
 	{
@@ -361,7 +361,7 @@ int handle_inheritance_test(void)
 		printf(__FILE__":%d: On sort, instance count=%d, should be %d.\n",__LINE__,my_test_obj::instance_count,NUMBER_OF_OBJECTS*2);
 		return 1;
 	}
-	
+
 	my_list.clear();
 	if(my_test_obj::instance_count!=NUMBER_OF_OBJECTS)
 	{
@@ -379,7 +379,7 @@ int handle_inheritance_test(void)
 	}
 
 	printf("PASSED\n");
-	
+
 	return 0;
 }
 
@@ -448,19 +448,19 @@ int handle_cast_test()
 	etl::handle<my_test_obj> obj;
 	etl::handle<my_other_test_obj> other_obj;
 	etl::loose_handle<my_other_test_obj> loose_obj;
-	
+
 	other_obj.spawn();
 	loose_obj=other_obj;
-	
+
 	obj=etl::handle<my_test_obj>::cast_dynamic(loose_obj);
-	
+
 	if(obj!=other_obj)
 	{
 		printf("FAILED!\n");
 		printf(__FILE__":%d: on handle assignment from loose_handle.\n",__LINE__);
 		return 1;
 	}
-	
+
 	printf("PASSED\n");
 	return 0;
 }
@@ -477,6 +477,6 @@ int main()
 	error+=handle_inheritance_test();
 	error+=loose_handle_test();
 	error+=rhandle_general_use_test();
-	
+
 	return error;
 }

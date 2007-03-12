@@ -62,7 +62,7 @@ private:
 	typedef typename DESC::timestamp timestamp;
 
 	timestamp base_time;
-	
+
 	using DESC::get_current_time;
 	using DESC::realtime;
 	using DESC::one_second;
@@ -72,7 +72,7 @@ public:
 
 	void reset()
 	{ get_current_time(base_time); }
-	
+
 	value_type operator()()const
 	{ return timestamp_to_seconds(get_current_time()-base_time); }
 
@@ -80,13 +80,13 @@ public:
 	{
 		// Grab the old base time
 		timestamp old_time=base_time;
-		
+
 		// Put the current time into base_time
 		get_current_time(base_time);
-		
+
 		return timestamp_to_seconds(base_time-old_time);
 	}
-	
+
 	static void
 	sleep(const value_type &length)
 	{
@@ -106,7 +106,7 @@ public:
 		/* This is a different waiting mechanism that uses
 		** the native timestamp type of the clock rather
 		** than converting it to a double (or whatever).
-		** You would think that this would be at least a 
+		** You would think that this would be at least a
 		** few microseconds faster, but a few tests on my
 		** PowerBook G4 have proved otherwise. Indeed I loose
 		** several microseconds using this "optimized" method.
@@ -120,7 +120,7 @@ public:
 			while(get_current_time()<endtime);
 		}
 		*/
-		
+
 		return;
 	}
 };

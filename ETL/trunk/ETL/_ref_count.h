@@ -1,6 +1,6 @@
 /*! ========================================================================
 ** Extended Template Library
-** 
+**
 ** $Id: _ref_count.h,v 1.1.1.1 2005/01/04 01:31:48 darco Exp $
 **
 ** Copyright (c) 2002 Robert B. Quattlebaum Jr.
@@ -41,7 +41,7 @@
 _ETL_BEGIN_NAMESPACE
 
 class weak_reference_counter;
-	
+
 // ========================================================================
 /*!	\class	reference_counter	_ref_count.h	ETL/ref_count
 **	\brief	Reference counter
@@ -56,14 +56,14 @@ private:
 public:
 
 	reference_counter(const bool &x=true):counter_(x?new int(1):0) { }
-	
+
 	reference_counter(const reference_counter &x):counter_(x.counter_)
 		{ if(counter_) (*counter_)++; }
 
 	reference_counter(const weak_reference_counter &x);
-		
+
 	~reference_counter() { detach(); }
-	
+
 	reference_counter& operator=(const reference_counter &rhs)
 	{
 		detach();
@@ -71,9 +71,9 @@ public:
 		if(counter_)
 		{
 			assert(*counter_>0);
-			(*counter_)++;	
+			(*counter_)++;
 		}
-		return *this;			
+		return *this;
 	}
 
 	void detach()
@@ -84,19 +84,19 @@ public:
 			if(!--(*counter_))
 				delete counter_;
 			counter_=0;
-		}		
-	}	
-	
+		}
+	}
+
 	void reset()
 	{
 		detach();
-		counter_=new int(1);		
+		counter_=new int(1);
 	}
-	
+
 	int count()const { return counter_?*counter_:0; }
 
 	bool unique()const { return counter_?*counter_==1:0; }
-	
+
 	operator int()const { return count(); }
 }; // END of class reference_counter
 
@@ -113,13 +113,13 @@ private:
 	int* counter_;
 public:
 	weak_reference_counter():counter_(0) { }
-	
+
 	weak_reference_counter(const weak_reference_counter &x):counter_(x.counter_) { }
 
 	weak_reference_counter(const reference_counter &x):counter_(x.counter_) { }
-	
+
 	~weak_reference_counter() { }
-	
+
 	weak_reference_counter& operator=(const reference_counter &rhs)
 	{
 		counter_=rhs.counter_;
@@ -134,12 +134,12 @@ public:
 		return *this;
 	}
 
-	void detach() { counter_=0; }	
-	
+	void detach() { counter_=0; }
+
 	int count()const { return counter_?*counter_:0; }
 
 	bool unique()const { return counter_?*counter_==1:0; }
-	
+
 	operator int()const { return count(); }
 }; // END of class weak_reference_counter
 

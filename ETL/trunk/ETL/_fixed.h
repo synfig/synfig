@@ -74,7 +74,7 @@ template<typename T, unsigned int FIXED_BITS> _ETL::fixed_base<T,FIXED_BITS> log
 template<typename T, unsigned int FIXED_BITS> _ETL::fixed_base<T,FIXED_BITS> log10(const _ETL::fixed_base<T,FIXED_BITS>&);
 template<typename T, unsigned int FIXED_BITS> _ETL::fixed_base<T,FIXED_BITS> pow(const _ETL::fixed_base<T,FIXED_BITS>&, int);
 template<typename T, unsigned int FIXED_BITS> _ETL::fixed_base<T,FIXED_BITS> pow(const _ETL::fixed_base<T,FIXED_BITS>&, const T&);
-template<typename T, unsigned int FIXED_BITS> _ETL::fixed_base<T,FIXED_BITS> pow(const _ETL::fixed_base<T,FIXED_BITS>&, 
+template<typename T, unsigned int FIXED_BITS> _ETL::fixed_base<T,FIXED_BITS> pow(const _ETL::fixed_base<T,FIXED_BITS>&,
 					const _ETL::fixed_base<T,FIXED_BITS>&);
 template<typename T, unsigned int FIXED_BITS> _ETL::fixed_base<T,FIXED_BITS> pow(const _ETL::fixed_base<T,FIXED_BITS>&, const _ETL::fixed_base<T,FIXED_BITS>&);
 template<typename T, unsigned int FIXED_BITS> _ETL::fixed_base<T,FIXED_BITS> sin(const _ETL::fixed_base<T,FIXED_BITS>&);
@@ -98,7 +98,7 @@ public:
 	typedef T value_type;
 private:
 	T _data;
-	
+
 	typedef fixed_base<T,FIXED_BITS> _fixed;
 	typedef fixed_base<T,FIXED_BITS> self_type;
 
@@ -119,7 +119,7 @@ public:
 	fixed_base(const _fixed &x)ETL_ATTRIB_INLINE;
 	fixed_base(value_type x,raw)ETL_ATTRIB_INLINE;
 
-	T &data() ETL_ATTRIB_PURE ETL_ATTRIB_INLINE;	
+	T &data() ETL_ATTRIB_PURE ETL_ATTRIB_INLINE;
 	const T &data()const ETL_ATTRIB_PURE ETL_ATTRIB_INLINE;
 
 	const _fixed& operator+=(const _fixed &rhs) ETL_ATTRIB_INLINE;
@@ -144,7 +144,7 @@ public:
 	_fixed operator/(const int &rhs)const ETL_ATTRIB_INLINE;
 	_fixed operator*(const float &rhs)const ETL_ATTRIB_INLINE;
 	_fixed operator*(const double &rhs)const ETL_ATTRIB_INLINE;
-	
+
 	// Negation Operator
 	_fixed operator-()const ETL_ATTRIB_INLINE;
 
@@ -158,7 +158,7 @@ public:
 	_fixed floor()const;
 	_fixed ceil()const;
 	_fixed round()const;
-	
+
 	bool operator==(const _fixed &rhs)const { return data()==rhs.data(); }
 	bool operator!=(const _fixed &rhs)const { return data()!=rhs.data(); }
 	bool operator<(const _fixed &rhs)const { return data()<rhs.data(); }
@@ -170,7 +170,7 @@ public:
 
 template <class T,unsigned int FIXED_BITS>
 fixed_base<T,FIXED_BITS>::fixed_base()
-{}	
+{}
 
 template <class T,unsigned int FIXED_BITS>
 fixed_base<T,FIXED_BITS>::fixed_base(const _fixed &x):_data(x._data)
@@ -197,55 +197,55 @@ fixed_base<T,FIXED_BITS>::fixed_base(value_type x,raw):_data(x) { }
 
 template <class T,unsigned int FIXED_BITS>
 fixed_base<T,FIXED_BITS>::fixed_base(const int &n,const int &d):_data((n<<FIXED_BITS)/d) { }
-	
-	
+
+
 
 template <class T,unsigned int FIXED_BITS> inline bool
-fixed_base<T,FIXED_BITS>::_TYPE_SMALLER_THAN_INT() 
+fixed_base<T,FIXED_BITS>::_TYPE_SMALLER_THAN_INT()
 {
 	return sizeof(T)<sizeof(int);
-}	
+}
 
 template <class T,unsigned int FIXED_BITS> inline bool
-fixed_base<T,FIXED_BITS>::_USING_ALL_BITS() 
+fixed_base<T,FIXED_BITS>::_USING_ALL_BITS()
 {
 	return sizeof(T)*8==FIXED_BITS;
 }
 
 template <class T,unsigned int FIXED_BITS> inline T
-fixed_base<T,FIXED_BITS>::_ONE() 
+fixed_base<T,FIXED_BITS>::_ONE()
 {
 	return static_cast<T>((_USING_ALL_BITS()?~T(0):1<<FIXED_BITS));
 }
 
 template <class T,unsigned int FIXED_BITS> inline T
-fixed_base<T,FIXED_BITS>::_F_MASK() 
+fixed_base<T,FIXED_BITS>::_F_MASK()
 {
 	return static_cast<T>(_USING_ALL_BITS()?~T(0):_ONE()-1);
 }
 
 template <class T,unsigned int FIXED_BITS> inline float
-fixed_base<T,FIXED_BITS>::_EPSILON() 
+fixed_base<T,FIXED_BITS>::_EPSILON()
 {
 	return 1.0f/((float)_ONE()*2);
 }
 
 
 template <class T,unsigned int FIXED_BITS>T &
-fixed_base<T,FIXED_BITS>::data() 
+fixed_base<T,FIXED_BITS>::data()
 {
 	return _data;
 }
 
 template <class T,unsigned int FIXED_BITS>const T &
-fixed_base<T,FIXED_BITS>::data()const 
+fixed_base<T,FIXED_BITS>::data()const
 {
 	return _data;
 }
 
 //! fixed+=fixed
 template <class T,unsigned int FIXED_BITS>const fixed_base<T,FIXED_BITS> &
-fixed_base<T,FIXED_BITS>::operator+=(const fixed_base<T,FIXED_BITS> &rhs) 
+fixed_base<T,FIXED_BITS>::operator+=(const fixed_base<T,FIXED_BITS> &rhs)
 {
 	_data+=rhs._data;
 	return *this;
@@ -253,7 +253,7 @@ fixed_base<T,FIXED_BITS>::operator+=(const fixed_base<T,FIXED_BITS> &rhs)
 
 //! fixed-=fixed
 template <class T,unsigned int FIXED_BITS>const fixed_base<T,FIXED_BITS> &
-fixed_base<T,FIXED_BITS>::operator-=(const fixed_base<T,FIXED_BITS> &rhs) 
+fixed_base<T,FIXED_BITS>::operator-=(const fixed_base<T,FIXED_BITS> &rhs)
 {
 	_data-=rhs._data;
 	return *this;
@@ -261,7 +261,7 @@ fixed_base<T,FIXED_BITS>::operator-=(const fixed_base<T,FIXED_BITS> &rhs)
 
 //! fixed*=fixed
 template <class T,unsigned int FIXED_BITS>const fixed_base<T,FIXED_BITS> &
-fixed_base<T,FIXED_BITS>::operator*=(const fixed_base<T,FIXED_BITS> &rhs) 
+fixed_base<T,FIXED_BITS>::operator*=(const fixed_base<T,FIXED_BITS> &rhs)
 {
 	if(_TYPE_SMALLER_THAN_INT())
 		_data=static_cast<T>((int)_data*(int)rhs._data>>FIXED_BITS);
@@ -270,13 +270,13 @@ fixed_base<T,FIXED_BITS>::operator*=(const fixed_base<T,FIXED_BITS> &rhs)
 		_data*=rhs._data;
 		_data>>=FIXED_BITS;
 	}
-		
+
 	return *this;
 }
 
 //! fixed/=fixed
 template <class T,unsigned int FIXED_BITS>const fixed_base<T,FIXED_BITS> &
-fixed_base<T,FIXED_BITS>::operator/=(const fixed_base<T,FIXED_BITS> &rhs) 
+fixed_base<T,FIXED_BITS>::operator/=(const fixed_base<T,FIXED_BITS> &rhs)
 {
 	if(_TYPE_SMALLER_THAN_INT())
 		_data=static_cast<T>((int)_data/(int)rhs._data<<FIXED_BITS);
@@ -289,27 +289,27 @@ fixed_base<T,FIXED_BITS>::operator/=(const fixed_base<T,FIXED_BITS> &rhs)
 }
 
 template <class T,unsigned int FIXED_BITS> template<typename U> const fixed_base<T,FIXED_BITS> &
-fixed_base<T,FIXED_BITS>::operator*=(const U &rhs) 
+fixed_base<T,FIXED_BITS>::operator*=(const U &rhs)
 {
 	return operator*=(fixed_base<T,FIXED_BITS>(rhs));
 }
 
 template <class T,unsigned int FIXED_BITS> template<typename U> const fixed_base<T,FIXED_BITS> &
-fixed_base<T,FIXED_BITS>::operator/=(const U &rhs) 
+fixed_base<T,FIXED_BITS>::operator/=(const U &rhs)
 {
 	return operator/=(fixed_base<T,FIXED_BITS>(rhs));
 }
 
 //! fixed*=int
 template <class T,unsigned int FIXED_BITS>const fixed_base<T,FIXED_BITS> &
-fixed_base<T,FIXED_BITS>::operator*=(const int &rhs) 
+fixed_base<T,FIXED_BITS>::operator*=(const int &rhs)
 {
 	_data*=rhs; return *this;
 }
 
 //! fixed/=int
 template <class T,unsigned int FIXED_BITS>const fixed_base<T,FIXED_BITS> &
-fixed_base<T,FIXED_BITS>::operator/=(const int &rhs) 
+fixed_base<T,FIXED_BITS>::operator/=(const int &rhs)
 {
 	_data/=rhs; return *this;
 }
@@ -322,7 +322,7 @@ fixed_base<T,FIXED_BITS>::operator/=(const int &rhs)
 
 //! fixed + fixed
 template <class T,unsigned int FIXED_BITS>fixed_base<T,FIXED_BITS>
-fixed_base<T,FIXED_BITS>::operator+(const fixed_base<T,FIXED_BITS> &rhs)const 
+fixed_base<T,FIXED_BITS>::operator+(const fixed_base<T,FIXED_BITS> &rhs)const
 {
 	_fixed ret;
 	ret._data=_data+rhs._data;
@@ -331,7 +331,7 @@ fixed_base<T,FIXED_BITS>::operator+(const fixed_base<T,FIXED_BITS> &rhs)const
 
 //! fixed - fixed
 template <class T,unsigned int FIXED_BITS>fixed_base<T,FIXED_BITS>
-fixed_base<T,FIXED_BITS>::operator-(const fixed_base<T,FIXED_BITS> &rhs)const 
+fixed_base<T,FIXED_BITS>::operator-(const fixed_base<T,FIXED_BITS> &rhs)const
 {
 	_fixed ret;
 	ret._data=_data-rhs._data;
@@ -340,7 +340,7 @@ fixed_base<T,FIXED_BITS>::operator-(const fixed_base<T,FIXED_BITS> &rhs)const
 
 //! fixed * fixed
 template <class T,unsigned int FIXED_BITS>fixed_base<T,FIXED_BITS>
-fixed_base<T,FIXED_BITS>::operator*(const fixed_base<T,FIXED_BITS> &rhs)const 
+fixed_base<T,FIXED_BITS>::operator*(const fixed_base<T,FIXED_BITS> &rhs)const
 {
 	_fixed ret;
 	ret._data=((_data*rhs._data)>>FIXED_BITS);
@@ -350,7 +350,7 @@ fixed_base<T,FIXED_BITS>::operator*(const fixed_base<T,FIXED_BITS> &rhs)const
 
 //! fixed / fixed
 template <class T,unsigned int FIXED_BITS>fixed_base<T,FIXED_BITS>
-fixed_base<T,FIXED_BITS>::operator/(const fixed_base<T,FIXED_BITS> &rhs)const 
+fixed_base<T,FIXED_BITS>::operator/(const fixed_base<T,FIXED_BITS> &rhs)const
 {
 	_fixed ret;
 	ret._data=((_data/rhs._data)<<FIXED_BITS);
@@ -388,7 +388,7 @@ fixed_base<T,FIXED_BITS>::operator/(const U &rhs) const
 
 //! fixed * int
 template <class T,unsigned int FIXED_BITS>fixed_base<T,FIXED_BITS>
-fixed_base<T,FIXED_BITS>::operator*(const int &rhs)const 
+fixed_base<T,FIXED_BITS>::operator*(const int &rhs)const
 {
 	_fixed ret;
 	ret._data=_data*rhs;
@@ -398,14 +398,14 @@ fixed_base<T,FIXED_BITS>::operator*(const int &rhs)const
 
 //! fixed * float
 template <class T,unsigned int FIXED_BITS>fixed_base<T,FIXED_BITS>
-fixed_base<T,FIXED_BITS>::operator*(const float &rhs)const 
+fixed_base<T,FIXED_BITS>::operator*(const float &rhs)const
 {
     return (*this)*_fixed(rhs);
 }
 
 //! fixed * double
 template <class T,unsigned int FIXED_BITS>fixed_base<T,FIXED_BITS>
-fixed_base<T,FIXED_BITS>::operator*(const double &rhs)const 
+fixed_base<T,FIXED_BITS>::operator*(const double &rhs)const
 {
     return (*this)*_fixed(rhs);
 }
@@ -413,7 +413,7 @@ fixed_base<T,FIXED_BITS>::operator*(const double &rhs)const
 
 //! fixed / int
 template <class T,unsigned int FIXED_BITS>fixed_base<T,FIXED_BITS>
-fixed_base<T,FIXED_BITS>::operator/(const int &rhs)const 
+fixed_base<T,FIXED_BITS>::operator/(const int &rhs)const
 {
 	_fixed ret;
 	ret._data=_data/rhs;
@@ -423,14 +423,14 @@ fixed_base<T,FIXED_BITS>::operator/(const int &rhs)const
 
 //! float * fixed
 template <class T,unsigned int FIXED_BITS>fixed_base<T,FIXED_BITS>
-operator*(const float& lhs, const fixed_base<T,FIXED_BITS> &rhs) 
+operator*(const float& lhs, const fixed_base<T,FIXED_BITS> &rhs)
 {
     return rhs*lhs;
 }
 
 //! double * fixed
 template <class T,unsigned int FIXED_BITS>fixed_base<T,FIXED_BITS>
-operator*(const double& lhs, const fixed_base<T,FIXED_BITS> &rhs) 
+operator*(const double& lhs, const fixed_base<T,FIXED_BITS> &rhs)
 {
     return rhs*lhs;
 }
@@ -442,38 +442,38 @@ operator*(const double& lhs, const fixed_base<T,FIXED_BITS> &rhs)
 
 // Negation Operator
 template <class T,unsigned int FIXED_BITS>fixed_base<T,FIXED_BITS>
-fixed_base<T,FIXED_BITS>::operator-()const 
+fixed_base<T,FIXED_BITS>::operator-()const
 {
 	_fixed ret; ret._data=-_data; return ret;
 }
 
 // Casting Operators
 template <class T,unsigned int FIXED_BITS>
-fixed_base<T,FIXED_BITS>::operator float()const 
+fixed_base<T,FIXED_BITS>::operator float()const
 {
 	return static_cast<float>(_data)/static_cast<float>(_ONE());
-}	
+}
 
 template <class T,unsigned int FIXED_BITS>
-fixed_base<T,FIXED_BITS>::operator double()const 
+fixed_base<T,FIXED_BITS>::operator double()const
 {
 	return static_cast<double>(_data)/static_cast<double>(_ONE());
-}	
+}
 
 template <class T,unsigned int FIXED_BITS>
-fixed_base<T,FIXED_BITS>::operator long double()const 
+fixed_base<T,FIXED_BITS>::operator long double()const
 {
 	return static_cast<long double>(_data)/static_cast<long double>(_ONE());
-}	
+}
 
 template <class T,unsigned int FIXED_BITS>
-fixed_base<T,FIXED_BITS>::operator int()const 
+fixed_base<T,FIXED_BITS>::operator int()const
 {
 	return static_cast<int>(_data>>FIXED_BITS);
 }
 
 template <class T,unsigned int FIXED_BITS>
-fixed_base<T,FIXED_BITS>::operator bool()const 
+fixed_base<T,FIXED_BITS>::operator bool()const
 {
 	return static_cast<bool>(_data);
 }

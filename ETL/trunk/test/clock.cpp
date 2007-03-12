@@ -39,10 +39,10 @@ int basic_test(void)
 	fprintf(stderr,"default etl::clock precision:  %0.8f\n",etl::clock::precision());
 	fprintf(stderr,"realtime etl::clock precision: %0.8f\n",etl::clock_realtime::precision());
 	fprintf(stderr,"proctime etl::clock precision: %0.8f\n",etl::clock_proctime::precision());
-	
+
 	etl::clock_realtime timer;
 	etl::clock::value_type amount,total;
-	
+
 	for(amount=3.0;amount>=0.00015;amount/=2.0)
 	{
 		if(amount*1000000.0<1000.0f)
@@ -56,12 +56,12 @@ int basic_test(void)
 		etl::clock::sleep(amount);
 		total=timer();
 		if((total-amount)*1000000.0<1000.0f)
-			fprintf(stderr," ** I waited %f seconds, error of %f microseconds\n",total,(total-amount)*1000000); 
+			fprintf(stderr," ** I waited %f seconds, error of %f microseconds\n",total,(total-amount)*1000000);
 		else if((total-amount)*1000.0<400.0f)
-			fprintf(stderr," ** I waited %f seconds, error of %f milliseconds\n",total,(total-amount)*1000); 
+			fprintf(stderr," ** I waited %f seconds, error of %f milliseconds\n",total,(total-amount)*1000);
 		else
-			fprintf(stderr," ** I waited %f seconds, error of %f seconds\n",total,total-amount); 
-		
+			fprintf(stderr," ** I waited %f seconds, error of %f seconds\n",total,total-amount);
+
 	}
 	return ret;
 }
@@ -71,9 +71,9 @@ int basic_test(void)
 int main()
 {
 	int error=0;
-	
+
 	error+=basic_test();
-		
+
 	return error;
 }
 

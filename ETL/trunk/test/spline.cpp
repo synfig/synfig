@@ -40,31 +40,31 @@ int bspline_basic_test(void)
 {
 	int ret=0;
 	float f;
-	
+
 	bspline<float> BSpline;
 	etl::clock timer;
 	double t;
-	
+
 	*BSpline.cpoints().insert(BSpline.cpoints().end())=0;
 	*BSpline.cpoints().insert(BSpline.cpoints().end())=-1;
 	*BSpline.cpoints().insert(BSpline.cpoints().end())=0;
 	*BSpline.cpoints().insert(BSpline.cpoints().end())=1;
 	*BSpline.cpoints().insert(BSpline.cpoints().end())=0;
-	
+
 	BSpline.set_m(4);
 	BSpline.reset_knots();
-	
+
 	integral<bspline<float> > inte(BSpline);
 
-	
+
 	/*
 	for(f=0.0;f<1.001;f+=0.05)
 		fprintf(stderr,"BSpline(%f)= %f\n",f,BSpline(f));
 	*/
-	
+
 	fprintf(stderr,"integral of BSpline() on [0,1] = %f\n",inte(0,1.0));
-	
-	
+
+
 	for(f=0.0f,timer.reset();f<1.001f;f+=0.000005f)
 	{
 		t+=BSpline(f)+BSpline(f+0.1f);
@@ -81,7 +81,7 @@ int bspline_basic_test(void)
 		t+=BSpline(f)+BSpline(f+0.1f);
 	}
 	t=timer();
-	
+
 	fprintf(stderr,"BSpline time=%f milliseconds\n",t*1000);
 	return ret;
 }
@@ -91,9 +91,9 @@ int bspline_basic_test(void)
 int main()
 {
 	int error=0;
-	
+
 	error+=bspline_basic_test();
-	
+
 	return error;
 }
 

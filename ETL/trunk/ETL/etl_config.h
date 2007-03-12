@@ -22,20 +22,20 @@
 
 #ifndef ETL_FLAG_NONAMESPACE
 # define _ETL					ETL_NAMESPACE
-# define _ETL_BEGIN_NAMESPACE	namespace _ETL { 
+# define _ETL_BEGIN_NAMESPACE	namespace _ETL {
 # define _ETL_END_NAMESPACE		};
-# define _STD_BEGIN_NAMESPACE	namespace std { 
+# define _STD_BEGIN_NAMESPACE	namespace std {
 # define _STD_END_NAMESPACE		};
 #else
 # define _ETL
 # define _ETL_BEGIN_NAMESPACE
-# define _ETL_END_NAMESPACE	
+# define _ETL_END_NAMESPACE
 # define _STD_BEGIN_NAMESPACE
-# define _STD_END_NAMESPACE	
+# define _STD_END_NAMESPACE
 #endif
 
 #define _ETL_BEGIN_CDECLS		extern "C" {
-#define _ETL_END_CDECLS			}			
+#define _ETL_END_CDECLS			}
 
 #ifdef _REENTRANT
 #define ETL_REENTRANT	1

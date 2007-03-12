@@ -44,7 +44,7 @@ enum EventKey
 struct MachineContext
 {
 	smach<MachineContext,EventKey> machine;
-	
+
 	MachineContext():machine(this)
 	{
 	}
@@ -65,7 +65,7 @@ class DefaultStateContext
 public:
 	DefaultStateContext(MachineContext *context):context(context) { printf("Enterted Default State\n"); }
 	~DefaultStateContext() { printf("Left Default State\n"); }
-	
+
 	Smach::event_result event1_handler(const Smach::event& x)
 	{
 		printf("DEFAULT STATE: Received Event 1\n");
@@ -80,7 +80,7 @@ public:
 	{
 		insert(event_def(EVENT_1,&DefaultStateContext::event1_handler));
 	}
-	
+
 } default_state;
 
 
@@ -95,7 +95,7 @@ class State1Context
 public:
 	State1Context(MachineContext *context):context(context) { printf("Enterted State 1\n"); }
 	~State1Context() { printf("Left State 1\n"); }
-	
+
 	Smach::event_result event1_handler(const Smach::event& x)
 	{
 		printf("STATE1: Received Event 1\n");
@@ -113,7 +113,7 @@ public:
 		insert(event_def(EVENT_1,&State1Context::event1_handler));
 		insert(event_def(EVENT_3,&State1Context::event3_handler));
 	}
-	
+
 } state_1;
 
 
@@ -123,7 +123,7 @@ class State2Context
 public:
 	State2Context(MachineContext *context):context(context) { printf("Enterted State 2\n"); }
 	~State2Context() { printf("Left State 2\n"); }
-	
+
 	Smach::event_result event1_handler(const Smach::event& x)
 	{
 		printf("STATE2: Received Event 1\n");
@@ -152,14 +152,14 @@ public:
 		insert(event_def(EVENT_2,&State2Context::event2_handler));
 		insert(event_def(EVENT_3,&State2Context::event3_handler));
 	}
-	
+
 } state_2;
 
 Smach::event_result
 State1Context::event3_handler(const Smach::event& x)
 {
 	printf("STATE1: Received Event 3, throwing state to change to...\n");
-	
+
 	throw &state_2;
 //	context->machine.enter(&state_2);
 //	return Smach::RESULT_ACCEPT;
@@ -173,7 +173,7 @@ int main()
 {
 	int error=0;
 
-	MachineContext context;	
+	MachineContext context;
 	try
 	{
 		Smach& state_machine(context.machine);
@@ -181,7 +181,7 @@ int main()
 		state_machine.set_default_state(&default_state);
 
 		state_machine.enter(&state_1);
-		
+
 		state_machine.process_event(Event1());
 		state_machine.process_event(EVENT_1);
 		state_machine.process_event(EVENT_2);
@@ -202,6 +202,6 @@ int main()
 		printf("Uncaught exception\n");
 		error++;
 	}
-	
+
 	return error;
 }

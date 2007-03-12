@@ -65,7 +65,7 @@ private:
 		LINEAR,
 		ABSOLUTE,
 		FAST_TO_SLOW,
-		
+
 	};
 public:
 };

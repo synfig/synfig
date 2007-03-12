@@ -89,8 +89,8 @@ struct speed_test
 			a-=a;
 
 		}
-		
-		
+
+
 		return MyTimer();
 	}
 
@@ -105,7 +105,7 @@ struct speed_test
 		etl::clock MyTimer;
 		MyTimer.reset();
 		for(i=0;i<MUL_TEST;i++)
-		{			
+		{
 			d*=a;d*=b;d*=c;d*=3;d*=i;
 			b*=c;b*=d;b*=d;b*=3;
 			c*=d;c*=half;c*=a;c*=b;c*=3;
@@ -144,7 +144,7 @@ struct speed_test
 		}
 		return MyTimer();
 	}
-	
+
 	double div_test(void)
 	{
 		value_type a(30);
@@ -185,8 +185,8 @@ struct speed_test
 			a/=(i%20)+1;
 
 		}
-		
-		
+
+
 		return MyTimer();
 	}
 };
@@ -196,10 +196,10 @@ struct speed_test
 int basic_test(void)
 {
 	int ret=0;
-	
+
 	fixed a,b,c;
 	double d;
-	
+
 	a=-1;
 	a=std::abs(a);
 	if(a!=fixed(1))
@@ -207,10 +207,10 @@ int basic_test(void)
 		fprintf(stderr,"fixed: abs() failure on line %d in "__FILE__".\n",__LINE__);
 		ret++;
 	}
-	
+
 	d=(double)(fixed(2.5)*fixed(3.0f)/7)-(2.5f*3.0f/7.0f);
 	fprintf(stderr,"fixed: 2.5 * 2 / 7 --- Difference: %f\n",d);
-	if(d<0.0)d=-d;	
+	if(d<0.0)d=-d;
 	if( d>0.0005)
 	{
 		fprintf(stderr,"fixed: Failed test on line %d in "__FILE__".\n",__LINE__);
@@ -230,23 +230,23 @@ int basic_test(void)
 		fprintf(stderr,"fixed: Failed test on line %d in "__FILE__".\n",__LINE__);
 		ret++;
 	}
-	
+
 	return ret;
 }
 
 int char_test(void)
 {
 	int ret=0;
-	
+
 	fixed_base<unsigned char,8> fix;
 	double flt;
-	
+
 	if(sizeof(fix)!=sizeof(unsigned char))
 	{
 		ret++;
 		fprintf(stderr,"fixed: Size of fixed_base<unsigned char,8> is wrong!\n");
 	}
-	
+
 	flt=1.0;
 	fix=1.0;
 	fprintf(stderr,"fixed: value=%f, data=%d, shouldbe=%f, error=%f\n",(float)fix,fix.data(),flt,(float)fix-flt);
@@ -258,15 +258,15 @@ int char_test(void)
 	flt*=0.7;
 	fix*=0.7;
 	fprintf(stderr,"fixed: value=%f, data=%d, shouldbe=%f, error=%f\n",(float)fix,fix.data(),flt,(float)fix-flt);
-	
+
 	flt*=0.7;
 	fix*=0.7;
 	fprintf(stderr,"fixed: value=%f, data=%d, shouldbe=%f, error=%f\n",(float)fix,fix.data(),flt,(float)fix-flt);
-	
+
 	flt*=0.7;
 	fix*=0.7;
 	fprintf(stderr,"fixed: value=%f, data=%d, shouldbe=%f, error=%f\n",(float)fix,fix.data(),flt,(float)fix-flt);
-	
+
 	flt*=0.7;
 	fix*=0.7;
 	fprintf(stderr,"fixed: value=%f, data=%d, shouldbe=%f, error=%f\n",(float)fix,fix.data(),flt,(float)fix-flt);
@@ -283,7 +283,7 @@ int char_test(void)
 	fix*=2;
 	fprintf(stderr,"fixed: value=%f, data=%d, shouldbe=%f, error=%f\n",(float)fix,fix.data(),flt,(float)fix-flt);
 
-	
+
 	return ret;
 }
 
@@ -292,27 +292,27 @@ int char_test(void)
 int main()
 {
 	int error=0;
-	
+
 	error+=basic_test();
 	error+=char_test();
-	
+
 	speed_test<float> float_test;
 	speed_test<int> int_test;
 	speed_test<fixed> fixed_test;
-	
+
 	{
 		double flt,fix,inte;
-		fprintf(stderr,"Addition/subtraction test...");		
+		fprintf(stderr,"Addition/subtraction test...");
 
-		fprintf(stderr,"calculating float...");	
+		fprintf(stderr,"calculating float...");
 		flt=float_test.add_sub_test();
 		fprintf(stderr,"float time: %fsec\n",flt);
 
-		fprintf(stderr,"calculating fixed...");	
+		fprintf(stderr,"calculating fixed...");
 		fix=fixed_test.add_sub_test();
 		fprintf(stderr,"fixed time: %fsec\n",fix);
 
-		fprintf(stderr,"calculating integer...");	
+		fprintf(stderr,"calculating integer...");
 		inte=int_test.add_sub_test();
 		fprintf(stderr,"integer time: %fsec\n",inte);
 
@@ -320,46 +320,46 @@ int main()
 			fprintf(stderr,"Fixed point wins by %f seconds! (%f%% faster)\n",flt-fix,flt/fix*100.0f-100.0f);
 		else
 			fprintf(stderr,"Floating point wins by %f seconds! (%f%% faster)\n",fix-flt,fix/flt*100.0f-100.0f);
-		
+
 	}
-	
+
 	{
 		double flt,fix,inte;
-		fprintf(stderr,"Product test...");		
-		fprintf(stderr,"calculating float...");	
+		fprintf(stderr,"Product test...");
+		fprintf(stderr,"calculating float...");
 		flt=float_test.mul_test();
 		fprintf(stderr,"float time: %fsec\n",flt);
-		fprintf(stderr,"calculating fixed...");	
+		fprintf(stderr,"calculating fixed...");
 		fix=fixed_test.mul_test();
 		fprintf(stderr,"fixed time: %fsec\n",fix);
-		fprintf(stderr,"calculating integer...");	
+		fprintf(stderr,"calculating integer...");
 		inte=int_test.mul_test();
 		fprintf(stderr,"integer time: %fsec\n",inte);
 		if(flt>fix)
 			fprintf(stderr,"Fixed point wins by %f seconds! (%f%% faster)\n",flt-fix,flt/fix*100.0f-100.0f);
 		else
 			fprintf(stderr,"Floating point wins by %f seconds! (%f%% faster)\n",fix-flt,fix/flt*100.0f-100.0f);
-		
+
 	}
 
 	{
 		double flt,fix,inte;
-		fprintf(stderr,"Division test...");		
-		fprintf(stderr,"calculating float...");	
+		fprintf(stderr,"Division test...");
+		fprintf(stderr,"calculating float...");
 		flt=float_test.div_test();
 		fprintf(stderr,"float time: %fsec\n",flt);
-		fprintf(stderr,"calculating fixed...");	
+		fprintf(stderr,"calculating fixed...");
 		fix=fixed_test.div_test();
 		fprintf(stderr,"fixed time: %fsec\n",fix);
-		fprintf(stderr,"calculating integer...");	
+		fprintf(stderr,"calculating integer...");
 		inte=int_test.div_test();
 		fprintf(stderr,"integer time: %fsec\n",inte);
 		if(flt>fix)
 			fprintf(stderr,"Fixed point wins by %f seconds! (%f%% faster)\n",flt-fix,flt/fix*100.0f-100.0f);
 		else
 			fprintf(stderr,"Floating point wins by %f seconds! (%f%% faster)\n",fix-flt,fix/flt*100.0f-100.0f);
-		
+
 	}
-	
+
 	return error;
 }

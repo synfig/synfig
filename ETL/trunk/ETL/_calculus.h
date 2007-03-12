@@ -49,7 +49,7 @@ class derivative : public std::unary_function<typename T::argument_type,typename
 	typename T::argument_type epsilon;
 public:
 	explicit derivative(const T &x, const typename T::argument_type &epsilon=0.000001):func(x),epsilon(epsilon) { }
-	
+
 	typename T::result_type
 	operator()(const typename T::argument_type &x)const
 	{
@@ -68,14 +68,14 @@ class integral : public std::binary_function<typename T::argument_type,typename 
 	int samples;
 public:
 	explicit integral(const T &x, const int &samples=500):func(x),samples(samples) { }
-	
+
 	typename T::result_type
 	operator()(typename T::argument_type x,typename T::argument_type y)const
 	{
 		typename T::result_type ret=0;
 		int i=samples;
 		const typename T::argument_type increment=(y-x)/i;
-		
+
 		for(;i;i--,x+=increment)
 			ret+=(func(x)+func(x+increment))*increment/2;
 		return ret;

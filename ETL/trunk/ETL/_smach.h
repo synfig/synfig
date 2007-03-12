@@ -65,7 +65,7 @@ public:
 	typedef M _mutex;
 	typedef CON context_type;
 
-	
+
 	struct egress_exception { };
 	struct pop_exception { };
 
@@ -79,7 +79,7 @@ public:
 		RESULT_OK,			//!< Event has been processed
 		RESULT_ACCEPT,		//!< The event has been explicitly accepted.
 		RESULT_REJECT,		//!< The event has been explicitly rejected.
-		
+
 		RESULT_END			//!< Not a valid result
 	};
 
@@ -89,13 +89,13 @@ public:
 	struct event
 	{
 		event_key key;
-		
+
 		event() { }
 		event(const event_key& key):key(key) { }
-		
+
 		operator event_key()const { return key; }
 	};
-	
+
 	//! Event definition class
 	template<typename T>
 	class event_def
@@ -116,7 +116,7 @@ public:
 		funcptr handler;	//<! Pointer event handler
 
 	public:
-		
+
 		//! Less-than operator for sorting. Based on event_key value.
 		bool operator<(const event_def &rhs)const
 			{ return id<rhs.id; }
@@ -124,7 +124,7 @@ public:
 		//! Equal-to operator. Based on event_key value.
 		bool operator==(const event_def &rhs)const
 			{ return id==rhs.id; }
-	
+
 		//! Less-than operator for finding.
 		bool operator<(const event_key &rhs)const
 			{ return id<rhs; }
@@ -132,7 +132,7 @@ public:
 		//! Equal-to operator. Based on event_key value.
 		bool operator==(const event_key &rhs)const
 			{ return id==rhs; }
-			
+
 		//! Trivial Constructor
 		event_def() { }
 
@@ -143,39 +143,39 @@ public:
 		event_def(const event_def &x):id(x.id),handler(x.handler) { }
 
 	};
-	
+
 	class state_base
 	{
 		// Our parent is our friend
 		friend class smach;
 	public:
 		virtual ~state_base() { }
-	
+
 		virtual void* enter_state(context_type* machine_context)const=0;
 
 		virtual bool leave_state(void* state_context)const=0;
-		
+
 		virtual event_result process_event(void* state_context,const event& id)const=0;
 
 		virtual const char *get_name() const=0;
 	};
-	
+
 	//! State class
 	template<typename T>
 	class state : public state_base
 	{
 		// Our parent is our friend
 		friend class smach;
-		
+
 	public:
 		typedef event_def<T> event_def;
 		typedef T state_context_type;
-		
+
 
 	private:
-		
+
 		std::vector<event_def> event_list;
-	
+
 		smach *nested;		//! Nested machine
 		event_key low,high;	//! Lowest and Highest event values
 		const char *name;	//! Name of the state
@@ -187,9 +187,9 @@ public:
 		state(const char *n, smach* nest=0):
 			nested(nest),name(n),default_handler(NULL)
 		{ }
-		
+
 		virtual ~state() { }
-		
+
 		//! Setup a nested state machine
 		/*! A more detailed explanation needs to be written */
 		void set_nested_machine(smach *sm) { nested=sm; }
@@ -199,19 +199,19 @@ public:
 
 		//! Returns given the name of the state
 		virtual const char *get_name() const { return name; }
-		
+
 		state_context_type& get_context(smach& machine)
 		{
 			state_context_type *context(dynamic_cast<state_context_type*>(machine.state_context));
 			if(context)
 				return context;
-			
+
 		}
 
 		//! Adds an event_def onto the list and then make sure it is sorted correctly.
 		void
 		insert(const event_def &x)
-		{	
+		{
 			// If this is our first event_def,
 			// setup the high and low values.
 			if(!event_list.size())
@@ -227,29 +227,29 @@ public:
 			if(high<x.id)
 				high=x.id;
 		}
-		
+
 		typename std::vector<event_def>::iterator find(const event_key &x) { return binary_find(event_list.begin(),event_list.end(),x); }
 		typename std::vector<event_def>::const_iterator find(const event_key &x)const { return binary_find(event_list.begin(),event_list.end(),x); }
-		
+
 	protected:
-		
+
 		virtual void* enter_state(context_type* machine_context)const
 		{
 			return new state_context_type(machine_context);
 		}
-		
+
 		virtual bool leave_state(void* x)const
 		{
 			state_context_type* state_context(reinterpret_cast<state_context_type*>(x));
 			delete state_context;
 			return true;
 		}
-		
+
 		virtual event_result
 		process_event(void* x,const event& id)const
 		{
 			state_context_type* state_context(reinterpret_cast<state_context_type*>(x));
-			
+
 			// Check for nested machine in state
 			if(nested)
 			{
@@ -257,27 +257,27 @@ public:
 				if(ret!=RESULT_OK)
 					return ret;
 			}
-	
+
 			// Quick test to make sure that the
 			// given event is in the state
 			if(id.key<low || high<id.key)
 				return RESULT_OK;
-	
+
 			// Look for the event
 			typename std::vector<event_def>::const_iterator iter(find(id.key));
-	
+
 			// If search results were negative, fail.
 			if(iter->id!=id.key)
 				return RESULT_OK;
-			
+
 			// Execute event function
 			event_result ret((state_context->*(iter->handler))(id));
-					
+
 			if(ret==RESULT_OK && default_handler)
 				ret=(state_context->*(default_handler))(id);
-	
+
 			return ret;
-		}		
+		}
 	};
 
 private:
@@ -291,14 +291,14 @@ public: // this really should be private
 private:
 
 	context_type* machine_context;		//!< Machine Context
-	
+
 	const state_base* default_state;
 	void*	default_context;
 
 #ifdef ETL_MUTEX_LOCK
 	_mutex mutex;
 #endif
-	
+
 	//! State stack data
 	const state_base* 	state_stack[SMACH_STATE_STACK_SIZE];
 	void* 				state_context_stack[SMACH_STATE_STACK_SIZE];
@@ -319,7 +319,7 @@ public:
 			return default_state->get_name();
 		return 0;
 	}
-	
+
 	//! Determines if a given event result is an error
 	/*! This function allows us to quickly see
 		if an event_result contained an error */
@@ -345,7 +345,7 @@ public:
 		// Set this as our current state
 		default_state=nextstate;
 		default_context=0;
-		
+
 		// Attempt to enter the state
 		if(default_state)
 		{
@@ -362,12 +362,12 @@ public:
 		// If we had a previous state, enter it
 		if(default_state)
 			default_context=default_state->enter_state(machine_context);
-		
+
 		// At this point we are not in the
 		// requested state, so return failure
 		return false;
 	}
-	
+
 	//! Leaves the current state
 	/*! Effectively makes the state_depth() function return zero. */
 	bool
@@ -387,7 +387,7 @@ public:
 
 		// Grab the return value from the exit function
 		bool ret=true;
-		
+
 		const state_base* old_state=curr_state;
 		void *old_context=state_context;
 
@@ -396,7 +396,7 @@ public:
 
 		// Leave the state
 		return old_state->leave_state(old_context);
-				
+
 		return ret;
 	}
 
@@ -423,7 +423,7 @@ public:
 		// Set this as our current state
 		curr_state=nextstate;
 		state_context=0;
-		
+
 		// Attempt to enter the state
 		state_context=curr_state->enter_state(machine_context);
 		if(state_context)
@@ -435,7 +435,7 @@ public:
 		// If we had a previous state, enter it
 		if(curr_state)
 			state_context=curr_state->enter_state(machine_context);
-		
+
 		// At this point we are not in the
 		// requested state, so return failure
 		return false;
@@ -499,13 +499,13 @@ public:
 		{
 			const state_base* old_state=curr_state;
 			void *old_context=state_context;
-			
+
 			// Pop previous state off of stack
 			--states_on_stack;
 			curr_state=state_stack[states_on_stack];
 			state_context=state_context_stack[states_on_stack];
 
-			old_state->leave_state(old_context);			
+			old_state->leave_state(old_context);
 		}
 		else // If there are no states on stack, just egress
 			egress();
@@ -522,7 +522,7 @@ public:
 		default_context(0),
 		states_on_stack(0)
 	{ }
-	
+
 	//! The destructor
 	~smach()
 	{
@@ -531,7 +531,7 @@ public:
 		if(default_state)
 			default_state->leave_state(default_context);
 	}
-	
+
 	//! Sets up a child state machine
 	/*! A child state machine runs in parallel with
 		its parent, and gets event priority. This
@@ -544,7 +544,7 @@ public:
 #endif
 		child=x;
 	}
-	
+
 	//! Returns the number states currently active
 	int
 	state_depth()
@@ -552,7 +552,7 @@ public:
 
 	event_result
 	process_event(const event_key& id) { return process_event(event(id)); }
-	
+
 	//! Process an event
 	event_result
 	process_event(const event& id)
@@ -560,25 +560,25 @@ public:
 #ifdef ETL_MUTEX_LOCK
 		ETL_MUTEX_LOCK();
 #endif
-		
+
 		event_result ret(RESULT_OK);
-		
+
 		// Check for child machine
 		if(child)
-		{	
+		{
 			ret=child->process_event(id);
 			if(ret!=RESULT_OK)
 				return ret;
 		}
-				
+
 		try
-		{			
+		{
 			if(curr_state)
 				ret=curr_state->process_event(state_context,id);
-			
+
 			if(ret==RESULT_OK)
 				return default_state->process_event(default_context,id);
-			
+
 			return ret;
 		}
 		catch(egress_exception) { return egress()?RESULT_ACCEPT:RESULT_ERROR; }

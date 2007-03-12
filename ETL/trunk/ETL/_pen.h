@@ -60,10 +60,10 @@ public:
 	reference operator[](int i)const { assert(data_); return *(pointer)( (char*)data_+pitch_*i ); }
 	reference operator*()const { assert(data_); return *data_; }
 	pointer operator->() const { assert(data_); return &(operator*()); }
-	
+
 	void inc() { assert(data_); data_ = (pointer)((char*)data_ + pitch_); }
 	void inc(int n) { assert(data_); data_ = (pointer)((char*)data_ + n*pitch_); }
-	
+
 	void dec() { assert(data_); data_ = (pointer)((char*)data_ - pitch_); }
 	void dec(int n) { assert(data_); data_ = (pointer)((char*)data_ - n*pitch_); }
 
@@ -151,7 +151,7 @@ private:
 	{
 		data_ = (pointer)((char*)data_ + nbytes);
 	}
-	
+
 	void subptr(int nbytes)
 	{
 		data_ = (pointer)((char*)data_ + nbytes);
@@ -181,12 +181,12 @@ public:
 
 	generic_pen():data_(NULL) { }
 
-	self_type& move(int a, int b) 
-	{ 
-		assert(data_); 
+	self_type& move(int a, int b)
+	{
+		assert(data_);
 		x_ += a, y_ += b;
-		addptr(b*pitch_ + a*sizeof(value_type)); 
-		return *this; 
+		addptr(b*pitch_ + a*sizeof(value_type));
+		return *this;
 	}
 	self_type& move_to(int x, int y) { assert(data_); return move(x - x_,y - y_);}
 	void set_value(const value_type &v) { value_=v; }
@@ -220,49 +220,49 @@ public:
 
 	void put_hline(int l,const value_type &v)
 	{for(;l>0;l--,inc_x())put_value(v);}
-	
+
 	void put_hline(int l) {put_hline(l,value_);}
 
 	void put_hline_clip(int l, const value_type &v)
 	{l=std::min(l,w_-x_);for(;l>0;l--,inc_x())put_value_clip(v);}
-	
+
 	void put_hline_clip(int l) {put_hline_clip(l,value_);}
-		
+
 	//the put_block functions do not modify the pen
 	void put_block(int h, int w, const value_type &v)
 	{
 		self_type row(*this);
 		for(;h>0;h--,row.inc_y())
-		{ 
+		{
 			self_type col(row);
 			col.put_hline(w,v);
 		}
 	}
-	
+
 	void put_block(int h, int w) { put_block(h,w,value_); }
 
 	void put_block_clip(int h, int w, const value_type &v)
 	{
 		self_type row(*this);
-		
+
 		//clip start position
-		if(row.x_ < 0) { w+=row.x_; row.inc_x(-row.x_); }		
+		if(row.x_ < 0) { w+=row.x_; row.inc_x(-row.x_); }
 		if(row.y_ < 0) { h+=row.y_; row.inc_y(-row.y_);	}
-		
+
 		//clip width and height of copy rect
 		h = std::min(h,h_-y_);
 		w = std::min(w,w_-x_);
-		
+
 		//copy rect
 		for(;h>0;h--,row.inc_y())
-		{ 
+		{
 			self_type col(row);
 			col.put_hline(w,v);	//already clipped
 		}
 	}
-	
+
 	void put_block_clip(int h, int w) { put_block(h,w,value_); }
-	
+
 
 	iterator_x operator[](int i)const { assert(data_); return (pointer)(((char*)data_)+i*pitch_); }
 
@@ -294,15 +294,15 @@ public:
 		assert(data_);
 		self_type ret(*this);
 		ret.move(rhs.x,rhs.y);
-		return ret;		
+		return ret;
 	}
-	
+
 	difference_type	diff_begin()const {return difference_type(-x_,-y_);}
 	difference_type	diff_end()const {return difference_type(w_-x_,h_-y_);}
-	
+
 	self_type get_start()const 	{return *this + diff_begin(); }
 	self_type get_end()const 	{return *this + diff_end(); }
-	
+
 	int get_width()const {return w_;}
 	int get_height()const {return h_;}
 
@@ -343,7 +343,7 @@ public:
 	using PEN_::h_;
 	using PEN_::x_;
 	using PEN_::y_;
-	
+
 	alpha_pen(const alpha_type &a = 1, const affine_func_type &func = affine_func_type()):alpha_(a),affine_func_(func) { }
 	alpha_pen(const PEN_ &x, const alpha_type &a=1, const affine_func_type &func=affine_func_type())
 		:PEN_(x),alpha_(a),affine_func_(func) { }
@@ -363,13 +363,13 @@ public:
 	void put_value_clip()const { put_value_clip(get_pen_value()); }
 	void put_value_clip_alpha(alpha_type a)const { put_value_clip(get_pen_value(),a); }
 	void put_hline_clip(int l, const alpha_type &a = 1){l=std::min(l,w_-x_);for(;l>0;l--,inc_x())put_value_clip_alpha(a);}
-	
+
 	//the put_block functions do not modify the pen
 	void put_block(int h, int w, const alpha_type &a = 1)
 	{
 		self_type row(*this);
 		for(;h>0;h--,row.inc_y())
-		{ 
+		{
 			self_type col(row);
 			col.put_hline(w,a);
 		}
@@ -378,18 +378,18 @@ public:
 	void put_block_clip(int h, int w, const alpha_type &a = 1)
 	{
 		self_type row(*this);
-		
+
 		//clip start position
 		if(row.x_ < 0) { w+=row.x_; row.inc_x(-row.x_); }
 		if(row.y_ < 0) { h+=row.y_; row.inc_y(-row.y_);	}
-		
+
 		//clip width and height of copy rect
 		h = std::min(h,h_-y_);
 		w = std::min(w,w_-x_);
-		
+
 		//copy rect
 		for(;h>0;h--,row.inc_y())
-		{ 
+		{
 			self_type col(row);
 			col.put_hline(w,a);	//already clipped
 		}

@@ -95,10 +95,10 @@ class hermite : public hermite_base<T>
 public:
 	typedef T value_type;
 	typedef float time_type;
-	
-	
 
-public:	
+
+
+public:
 	hermite() { }
 	hermite(const value_type &p1, const value_type &p2, const value_type &t1, const value_type &t2):
     	P1(p1),P2(p2),T1(t1),T2(t2) { sync(); }

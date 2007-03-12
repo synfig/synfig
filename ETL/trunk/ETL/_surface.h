@@ -82,7 +82,7 @@ private:
 	bool deletable_;
 
 	value_prep_type cooker_;
-	
+
 	void swap(const surface &x)
 	{
 		std::swap(data_,x.data_);
@@ -92,7 +92,7 @@ private:
 		std::swap(h_,x.h_);
 		std::swap(deletable_,x.deletable_);
 	}
-	
+
 public:
 	surface():
 		data_(0),
@@ -121,7 +121,7 @@ public:
 		pitch_(sizeof(value_type)*s.x),
 		w_(s.x),h_(s.y),
 		deletable_(true) { }
-	
+
 	template <typename _pen>
 	surface(const _pen &_begin, const _pen &_end)
 	{
@@ -163,8 +163,8 @@ public:
 		if(deletable_)
 			delete [] data_;
 	}
-	
-	size_type 
+
+	size_type
 	size()const
 	{ return size_type(w_,h_); }
 
@@ -175,24 +175,24 @@ public:
 	const surface &mirror(const surface &rhs)
 	{
 		if(deletable_)delete [] data_;
-			
+
 		data_=rhs.data_;
 		zero_pos_=rhs.zero_pos_;
 		pitch_=rhs.pitch_;
 		w_=rhs.w_;
 		h_=rhs.h_;
 		deletable_=false;
-		
+
 		return *this;
 	}
-	
+
 	const surface &operator=(const surface &rhs)
 	{
 		set_wh(rhs.w_,rhs.h_);
 		zero_pos_=data_+(rhs.zero_pos_-rhs.data_);
 		pitch_=rhs.pitch_;
 		deletable_=true;
-	
+
 		memcpy(data_,rhs.data_,pitch_*h_);
 
 		return *this;
@@ -228,7 +228,7 @@ public:
 			PEN.put_hline(w);
 	}
 
-	template <class _pen> void 
+	template <class _pen> void
 	fill(value_type v, _pen& PEN, int w, int h)
 	{
 		assert(data_);
@@ -252,7 +252,7 @@ public:
 
 	template <class _pen> void blit_to(_pen &pen)
 	{ return blit_to(pen,0,0, get_w(),get_h()); }
-	
+
 	template <class _pen> void
 	blit_to(_pen &DEST_PEN,
 			int x, int y, int w, int h) //src param
@@ -264,28 +264,28 @@ public:
 		if(x<0)
 		{
 			w+=x;	//decrease
-			x=0;		
+			x=0;
 		}
-		
+
 		if(y<0)
 		{
 			h+=y;	//decrease
-			y=0;		
+			y=0;
 		}
-				
+
 		//clip width against dest width
 		w = std::min((long)w,(long)(DEST_PEN.end_x()-DEST_PEN.x()));
 		h = std::min((long)h,(long)(DEST_PEN.end_y()-DEST_PEN.y()));
-		
+
 		//clip width against src width
-		w = std::min(w,w_-x);		
-		h = std::min(h,h_-y);	
+		w = std::min(w,w_-x);
+		h = std::min(h,h_-y);
 
 		if(w<=0 || h<=0)
 			return;
-		
+
 		pen SOURCE_PEN(get_pen(x,y));
-		
+
 		for(; h>0; h--,DEST_PEN.inc_y(),SOURCE_PEN.inc_y())
 		{
 			int i;
@@ -335,9 +335,9 @@ public:
 			&&	pitch_!=0
 		;
 	}
-	
+
 	operator bool()const { return is_valid(); }
-	
+
 	pen begin() { assert(data_); return pen(data_,w_,h_,pitch_); }
 	pen get_pen(int x, int y) { assert(data_); return begin().move(x,y); }
 	pen end() { assert(data_); return get_pen(w_,h_); }
@@ -345,22 +345,22 @@ public:
 	const_pen begin()const { assert(data_); return const_pen(data_,w_,h_,pitch_); }
 	const_pen get_pen(int x, int y)const { assert(data_); return begin().move(x,y); }
 	const_pen end()const { assert(data_); return get_pen(w_,h_); }
-	
+
 	//! Linear sample
 	value_type linear_sample(const float x, const float y)const
 	{
 		int u(floor_to_int(x)), v(floor_to_int(y));
 		float a, b;
 		static const float epsilon(1.0e-6);
-		
+
 		if(x<0.0f)u=0,a=0.0f;
 		else if(x>w_-1)u=w_-1,a=0.0f;
 		else a=x-u;
-		
+
 		if(y<0.0f)v=0,b=0.0f;
 		else if(y>h_-1)v=h_-1,b=0.0f;
 		else b=y-v;
-			
+
 		const float
 			c(1.0f-a), d(1.0f-b),
 			e(a*d),f(c*b),g(a*b);
@@ -378,22 +378,22 @@ public:
 		int u(floor_to_int(x)), v(floor_to_int(y));
 		float a, b;
 		static const float epsilon(1.0e-6);
-		
+
 		if(x<0.0f)u=0,a=0.0f;
 		else if(x>w_-1)u=w_-1,a=0.0f;
 		else a=x-u;
-		
+
 		if(y<0.0f)v=0,b=0.0f;
 		else if(y>h_-1)v=h_-1,b=0.0f;
 		else b=y-v;
 
 		a=(1.0f-cos(a*3.1415927f))*0.5f;
 		b=(1.0f-cos(b*3.1415927f))*0.5f;
-			
+
 		const float
 			c(1.0f-a), d(1.0f-b),
 			e(a*d),f(c*b),g(a*b);
-		
+
 		accumulator_type ret(cooker_.cook((*this)[v][u])*(c*d));
 		if(e>=epsilon)ret+=cooker_.cook((*this)[v][u+1])*e;
 		if(f>=epsilon)ret+=cooker_.cook((*this)[v+1][u])*f;
@@ -402,7 +402,7 @@ public:
 		return cooker_.uncook(ret);
 	}
 
-	//! Cubic sample		
+	//! Cubic sample
 	value_type cubic_sample(float x, float y)const
 	{
 		#if 0
@@ -411,15 +411,15 @@ public:
 	#define F(i,j)	(cooker_.cook((*this)[max(min(j+v,h_-1),0)][max(min(i+u,w_-1),0)])*(R((i)-a)*R(b-(j))))
 	#define Z(i,j) ret+=F(i,j)
 	#define X(i,j)	// placeholder... To make box more symetric
-		
+
 		int u(floor_to_int(x)), v(floor_to_int(y));
 		float a, b;
-		
+
 		// Clamp X
 		if(x<0.0f)u=0,a=0.0f;
 		else if(u>w_-1)u=w_-1,a=0.0f;
 		else a=x-u;
-		
+
 		// Clamp Y
 		if(y<0.0f)v=0,b=0.0f;
 		else if(v>h_-1)v=h_-1,b=0.0f;
@@ -433,52 +433,52 @@ public:
 		Z( 2,-1); Z( 2, 0); Z( 2, 1); Z( 2, 2);
 
 		return cooker_.uncook(ret);
-	
+
 	#undef X
 	#undef Z
 	#undef F
 	#undef P
 	#undef R
 		#else
-		
+
 		#define f(j,i)	(cooker_.cook((*this)[j][i]))
 		//Using catmull rom interpolation because it doesn't blur at all
 		//bezier curve with intermediate ctrl pts: 0.5/3(p(i+1) - p(i-1)) and similar
 		accumulator_type xfa [4];
-		
+
 		//precalculate indices (all clamped) and offset
 		const int xi = x > 0 ? (x < w_ ? (int)floor(x) : w_-1) : 0;
 		const int xa[] = {std::max(0,xi-1),xi,std::min(w_-1,xi+1),std::min(w_-1,xi+2)};
-		
+
 		const int yi = y > 0 ? (y < h_ ? (int)floor(y) : h_-1) : 0;
 		const int ya[] = {std::max(0,yi-1),yi,std::min(h_-1,yi+1),std::min(h_-1,yi+2)};
-		
+
 		const float xf = x-xi;
 		const float yf = y-yi;
-		
+
 		//figure polynomials for each point
-		const float txf[] = 
+		const float txf[] =
 		{
 			0.5*xf*(xf*(xf*(-1) + 2) - 1),	//-t + 2t^2 -t^3
 			0.5*(xf*(xf*(3*xf - 5)) + 2), 	//2 - 5t^2 + 3t^3
 			0.5*xf*(xf*(-3*xf + 4) + 1),	//t + 4t^2 - 3t^3
 			0.5*xf*xf*(xf-1)				//-t^2 + t^3
 		};
-		
-		const float tyf[] = 
+
+		const float tyf[] =
 		{
 			0.5*yf*(yf*(yf*(-1) + 2) - 1),	//-t + 2t^2 -t^3
 			0.5*(yf*(yf*(3*yf - 5)) + 2), 	//2 - 5t^2 + 3t^3
 			0.5*yf*(yf*(-3*yf + 4) + 1),	//t + 4t^2 - 3t^3
 			0.5*yf*yf*(yf-1)				//-t^2 + t^3
 		};
-		
-		//evaluate polynomial for each row		
+
+		//evaluate polynomial for each row
 		for(int i = 0; i < 4; ++i)
 		{
 			xfa[i] = f(ya[i],xa[0])*txf[0] + f(ya[i],xa[1])*txf[1] + f(ya[i],xa[2])*txf[2] + f(ya[i],xa[3])*txf[3];
 		}
-		
+
 		//return the cumulative column evaluation
 		return cooker_.uncook(xfa[0]*tyf[0] + xfa[1]*tyf[1] + xfa[2]*tyf[2] + xfa[3]*tyf[3]);
 #undef f
@@ -488,150 +488,150 @@ public:
 	value_type	sample_rect(float x0,float y0,float x1,float y1) const
 	{
 		const surface &s = *this;
-		
+
 		//assumes it's clamped to the boundary of the image
 		//force min max relationship for x0,x1 and y0,y1
 		if(x0 > x1) std::swap(x0,x1);
 		if(y0 > y1) std::swap(y0,y1);
-		
+
 		//local variable madness
 		//all things that want to interoperate should provide a default value constructor for = 0
 		accumulator_type acum = 0;
 		int xi=0,yi=0;
-		
+
 		int	xib=(int)floor(x0),
 			xie=(int)floor(x1);
-		
+
 		int	yib=(int)floor(y0),
 			yie=(int)floor(y1);
-		
+
 		//the weight for the pixel should remain the same...
 		float weight = (y1-y0)*(x1-x0);
 		assert(weight != 0);
-		
-		float ylast = y0, xlastb = x0;		
+
+		float ylast = y0, xlastb = x0;
 		const_pen	pen_ = s.get_pen(xib,yib);
-		
+
 		for(yi = yib; yi < yie; ylast = ++yi, pen_.inc_y())
 		{
 			const float yweight = yi+1 - ylast;
-			
-			float xlast = xlastb;		
+
+			float xlast = xlastb;
 			for(xi = xib; xi < xie; xlast = ++xi, pen_.inc_x())
 			{
-				const float w = yweight*(xi+1 - xlast);				
+				const float w = yweight*(xi+1 - xlast);
 				acum += cooker_.cook(pen_.get_value())*w;
 			}
-			
+
 			//post... with next being fractional...
 			const float w = yweight*(x1 - xlast);
 			acum += cooker_.cook(pen_.get_value())*w;
-			
+
 			pen_.dec_x(xie-xib);
 		}
-		
+
 		//post in y direction... must have all x...
 		{
 			const float yweight = y1 - ylast;
-			
+
 			float xlast = xlastb;
 			for(xi = xib; xi < xie; xlast = ++xi)
 			{
 				const float w = yweight*(xi+1 - xlast);
-			
+
 				acum += cooker_.cook(pen_.get_value())*w;
 			}
-			
+
 			//post... with next being fractional...
 			const float w = yweight*(x1 - xlast);
 			acum += cooker_.cook(pen_.get_value())*w;
 		}
-		
+
 		acum *= 1/weight;
 		return cooker_.uncook(acum);
 	}
-	
+
 	value_type	sample_rect_clip(float x0,float y0,float x1,float y1) const
 	{
 		const surface &s = *this;
-		
+
 		//assumes it's clamped to the boundary of the image
 		//force min max relationship for x0,x1 and y0,y1
 		if(x0 > x1) std::swap(x0,x1);
 		if(y0 > y1) std::swap(y0,y1);
-		
+
 		//local variable madness
 		//all things that want to interoperate should provide a default value constructor for = 0
 		accumulator_type acum = 0;
 		int xi=0,yi=0;
-		
+
 		int	xib=(int)floor(x0),
 			xie=(int)floor(x1);
-		
+
 		int	yib=(int)floor(y0),
 			yie=(int)floor(y1);
-		
+
 		//the weight for the pixel should remain the same...
 		float weight = (y1-y0)*(x1-x0);
-		
+
 		assert(weight != 0);
-		
+
 		//clip to the input region
 		if(x0 >= s.get_w() || x1 <= 0) return acum;
 		if(y0 >= s.get_h() || y1 <= 0) return acum;
-		
+
 		if(x0 < 0) { x0 = 0; xib = 0; }
 		if(x1 >= s.get_w())
 		{
 			x1 = s.get_w(); //want to be just below the last pixel...
 			xie = s.get_w()-1;
 		}
-			
+
 		if(y0 < 0) { y0 = 0; yib = 0; }
-		if(y1 >= s.get_h()) 
+		if(y1 >= s.get_h())
 		{
 			y1 = s.get_h(); //want to be just below the last pixel...
 			yie = s.get_h()-1;
 		}
-		
-		float ylast = y0, xlastb = x0;		
+
+		float ylast = y0, xlastb = x0;
 		const_pen	pen = s.get_pen(xib,yib);
-		
+
 		for(yi = yib; yi < yie; ylast = ++yi, pen.inc_y())
 		{
 			const float yweight = yi+1 - ylast;
-			
-			float xlast = xlastb;		
+
+			float xlast = xlastb;
 			for(xi = xib; xi < xie; xlast = ++xi, pen.inc_x())
 			{
-				const float w = yweight*(xi+1 - xlast);				
+				const float w = yweight*(xi+1 - xlast);
 				acum += cooker_.cook(pen.get_value())*w;
 			}
-			
+
 			//post... with next being fractional...
 			const float w = yweight*(x1 - xlast);
 			acum += cooker_.cook(pen.get_value())*w;
-			
+
 			pen.dec_x(xie-xib);
 		}
-		
+
 		//post in y direction... must have all x...
 		{
 			const float yweight = y1 - ylast;
-			
+
 			float xlast = xlastb;
 			for(xi = xib; xi < xie; xlast = ++xi)
 			{
 				const float w = yweight*(xi+1 - xlast);
-			
+
 				acum += cooker_.cook(pen.get_value())*w;
 			}
-			
+
 			//post... with next being fractional...
 			const float w = yweight*(x1 - xlast);
 			acum += cooker_.cook(pen.get_value())*w;
 		}
-		
+
 		acum *= 1/weight;
 		return cooker_.uncook(acum);
 	}

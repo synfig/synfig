@@ -41,13 +41,13 @@ int fastangle_test(void)
 {
 	int ret=0;
 	float largest_error;
-	
+
 	{
 		angle theta;
 		fastangle theta2;
 		float error;
 		largest_error=0.0f;
-		
+
 		for(
 			theta=angle::degrees(0),theta2=fastangle::degrees(0);
 			theta<=angle::degrees(360);
@@ -68,18 +68,18 @@ int fastangle_test(void)
 				largest_error=error;
 			if(error < -largest_error)
 				largest_error=-error;
-				
+
 		}
 	}
 	printf("fastangle: Largest SIN error: (+/-)%f\n",largest_error);
 	if(largest_error>0.075)ret++;
-	
+
 	{
 		angle theta;
 		fastangle theta2;
 		float error;
 		largest_error=0.0f;
-		
+
 		for(
 			theta=angle::degrees(0),theta2=fastangle::degrees(0);
 			theta<=angle::degrees(360);
@@ -100,7 +100,7 @@ int fastangle_test(void)
 				largest_error=error;
 			if(error < -largest_error)
 				largest_error=-error;
-				
+
 		}
 	}
 	printf("fastangle: Largest COS error: (+/-)%f\n",largest_error);
@@ -110,7 +110,7 @@ int fastangle_test(void)
 		double val;
 		float error;
 		largest_error=0.0f;
-		
+
 		for(
 			val=-1.0f;
 			val<1.0f;
@@ -131,7 +131,7 @@ int fastangle_test(void)
 				largest_error=error;
 			if(error < -largest_error)
 				largest_error=-error;
-				
+
 		}
 	}
 	printf("fastangle: Largest ASIN error: (+/-)%frad\n",largest_error);
@@ -142,7 +142,7 @@ int fastangle_test(void)
 		double val;
 		float error;
 		largest_error=0.0f;
-		
+
 		for(
 			val=-1.0f;
 			val<1.0f;
@@ -163,7 +163,7 @@ int fastangle_test(void)
 				largest_error=error;
 			if(error < -largest_error)
 				largest_error=-error;
-				
+
 		}
 	}
 	printf("fastangle: Largest ACOS error: (+/-)%frad\n",largest_error);
@@ -175,7 +175,7 @@ int fastangle_test(void)
 		fastangle theta2;
 		float error;
 		largest_error=0.0f;
-		
+
 		for(
 			theta=angle::degrees(0),theta2=fastangle::degrees(0);
 			theta<angle::degrees(360);
@@ -196,7 +196,7 @@ int fastangle_test(void)
 				largest_error=error;
 			if(error < -largest_error)
 				largest_error=-error;
-				
+
 		}
 	}
 	printf("fastangle: Largest TAN error: (+/-)%f\n",largest_error);
@@ -206,7 +206,7 @@ int fastangle_test(void)
 		double val;
 		float error;
 		largest_error=0.0f;
-		
+
 		for(
 			val=-4.0f;
 			val<4.0f;
@@ -227,7 +227,7 @@ int fastangle_test(void)
 				largest_error=error;
 			if(error < -largest_error)
 				largest_error=-error;
-				
+
 		}
 	}
 	printf("fastangle: Largest ATAN error: (+/-)%frad\n",largest_error);
@@ -238,7 +238,7 @@ int fastangle_test(void)
 		angle theta;
 		float error;
 		largest_error=0.0f;
-		
+
 		for(
 			theta=angle::degrees(-179);
 			theta<angle::degrees(180);
@@ -259,7 +259,7 @@ int fastangle_test(void)
 				largest_error=error;
 			if(error < -largest_error)
 				largest_error=-error;
-				
+
 		}
 	}
 	printf("fastangle: Largest ATAN2 error: (+/-)%frad\n",largest_error);
@@ -271,7 +271,7 @@ int fastangle_test(void)
 	printf("constant tests: %f==%f\n",
 		(float)angle::degrees(angle::tan(-1.0)).get(),
 		(float)fastangle::degrees(fastangle::tan(-1.0)).get());
-	
+
 	return ret;
 }
 
@@ -280,7 +280,7 @@ void angle_cos_speed_test(void)
 {
 	Angle a,b,c,d;
 	float tmp,tmp2;
-	
+
 	for(tmp=-1.0;tmp<1.0;tmp+=0.000002)
 	{
 		a=(typename Angle::cos)(tmp);
@@ -290,7 +290,7 @@ void angle_cos_speed_test(void)
 		tmp2=((typename Angle::cos)(a)).get();
 		tmp2=((typename Angle::cos)(b)).get();
 		tmp2=((typename Angle::cos)(c)).get();
-		tmp2=((typename Angle::cos)(d)).get();		
+		tmp2=((typename Angle::cos)(d)).get();
 	}
 }
 template <class Angle>
@@ -298,7 +298,7 @@ void angle_sin_speed_test(void)
 {
 	Angle a,b,c,d;
 	float tmp,tmp2;
-	
+
 	for(tmp=-1.0;tmp<1.0;tmp+=0.000002)
 	{
 		a=(typename Angle::sin)(tmp);
@@ -308,7 +308,7 @@ void angle_sin_speed_test(void)
 		tmp2=((typename Angle::sin)(a)).get();
 		tmp2=((typename Angle::sin)(b)).get();
 		tmp2=((typename Angle::sin)(c)).get();
-		tmp2=((typename Angle::sin)(d)).get();		
+		tmp2=((typename Angle::sin)(d)).get();
 	}
 }
 template <class Angle>
@@ -316,7 +316,7 @@ void angle_tan_speed_test(void)
 {
 	Angle a,b,c,d;
 	float tmp,tmp2;
-	
+
 	for(tmp=-1.0;tmp<1.0;tmp+=0.000002)
 	{
 		a=(typename Angle::tan)(tmp);
@@ -326,7 +326,7 @@ void angle_tan_speed_test(void)
 		tmp2=((typename Angle::tan)(a)).get();
 		tmp2=((typename Angle::tan)(b)).get();
 		tmp2=((typename Angle::tan)(c)).get();
-		tmp2=((typename Angle::tan)(d)).get();		
+		tmp2=((typename Angle::tan)(d)).get();
 	}
 }
 template <class Angle, class mytan>
@@ -334,7 +334,7 @@ void angle_atan2_speed_test(void)
 {
 	Angle a,b,c;
 	float x,y;
-	
+
 	for(y=-10.0;y<10.0;y+=0.05)
 		for(x=-10.0;x<10.0;x+=0.05)
 		{
@@ -365,25 +365,25 @@ int fastangle_speed_test(void)
 		fastangle_atan2_time,
 		angle_sin_time,
 		fastangle_sin_time ;
-		
+
 	etl::clock MyTimer;
-	
+
 	MyTimer.reset();
 	angle_cos_speed_test<angle>();
 	angle_cos_time=MyTimer();
 	printf("angle: Cosine test: %f seconds\n",angle_cos_time);
-	
+
 	MyTimer.reset();
 	angle_cos_speed_test<fastangle>();
 	fastangle_cos_time=MyTimer();
 	printf("fastangle: Cosine test: %f seconds\n",fastangle_cos_time);
 	printf("fastangle is %.02f%% faster\n",(angle_cos_time/fastangle_cos_time)*100.0-100.0);
-	
+
 	MyTimer.reset();
 	angle_sin_speed_test<angle>();
 	angle_sin_time=MyTimer();
 	printf("angle: Sine test: %f seconds\n",angle_sin_time);
-	
+
 	MyTimer.reset();
 	angle_sin_speed_test<fastangle>();
 	fastangle_sin_time=MyTimer();
@@ -394,7 +394,7 @@ int fastangle_speed_test(void)
 	angle_tan_speed_test<angle>();
 	angle_tan_time=MyTimer();
 	printf("angle: Tangent test: %f seconds\n",angle_tan_time);
-	
+
 	MyTimer.reset();
 	angle_tan_speed_test<fastangle>();
 	fastangle_tan_time=MyTimer();
@@ -405,13 +405,13 @@ int fastangle_speed_test(void)
 	angle_atan2_speed_test<angle,angle::tan>();
 	angle_atan2_time=MyTimer();
 	printf("angle: arcTangent2 test: %f seconds\n",angle_atan2_time);
-	
+
 	MyTimer.reset();
 	angle_atan2_speed_test<fastangle,fastangle::tan>();
 	fastangle_atan2_time=MyTimer();
 	printf("fastangle: arcTangent2 test: %f seconds\n",fastangle_atan2_time);
-	printf("fastangle is %.02f%% faster\n",(angle_atan2_time/fastangle_atan2_time)*100.0-100.0);	
-	
+	printf("fastangle is %.02f%% faster\n",(angle_atan2_time/fastangle_atan2_time)*100.0-100.0);
+
 	return ret;
 }
 
@@ -419,14 +419,14 @@ int angle_test()
 {
 	int ret=0;
 	float dist;
-	
+
 	dist=angle::deg(angle::deg(330).dist(angle::deg(30))).get();
 	printf("angle: angular difference between 330deg and 30deg is %0.1fdeg\n",dist);
 	if(floor(dist+0.5)!=-60)
 	{
 		printf("angle: error: should be -60deg!\n");
 		ret++;
-	}		
+	}
 
 	dist=angle::deg(angle::deg(30).dist(angle::deg(330))).get();
 	printf("angle: angular difference between 30deg and 330deg is %0.1fdeg\n",dist);
@@ -434,7 +434,7 @@ int angle_test()
 	{
 		printf("angle: error: should be 60deg!\n");
 		ret++;
-	}		
+	}
 
 	dist=angle::deg(angle::deg(30).dist(angle::deg(-30))).get();
 	printf("angle: angular difference between 30deg and -30deg is %0.1fdeg\n",dist);
@@ -442,7 +442,7 @@ int angle_test()
 	{
 		printf("angle: error: should be 60deg!\n");
 		ret++;
-	}		
+	}
 
 	dist=angle::deg(angle::deg(-30).dist(angle::deg(30))).get();
 	printf("angle: angular difference between -30deg and 30deg is %0.1fdeg\n",dist);
@@ -450,7 +450,7 @@ int angle_test()
 	{
 		printf("angle: error: should be -60deg!\n");
 		ret++;
-	}		
+	}
 
 	dist=angle::deg(angle::deg(20).dist(angle::deg(195))).get();
 	printf("angle: angular difference between 20deg and 195deg is %0.1fdeg\n",dist);
@@ -458,7 +458,7 @@ int angle_test()
 	{
 		printf("angle: error: should be -175deg!\n");
 		ret++;
-	}		
+	}
 
 	dist=angle::deg(angle::deg(20).dist(angle::deg(205))).get();
 	printf("angle: angular difference between 20deg and 205deg is %0.1fdeg\n",dist);
@@ -466,7 +466,7 @@ int angle_test()
 	{
 		printf("angle: error: should be 175deg!\n");
 		ret++;
-	}		
+	}
 
 	int i;
 
@@ -477,8 +477,8 @@ int angle_test()
 		{
 			printf("angle: error: Badness at %d!\n",i);
 			ret++;
-		}		
-			
+		}
+
 	}
 
 	for(i=-1000;i<1000;i++)
@@ -488,8 +488,8 @@ int angle_test()
 		{
 			printf("angle: error: Badness at %d!\n",i);
 			ret++;
-		}		
-			
+		}
+
 	}
 
 
@@ -500,14 +500,14 @@ int angle_test()
 		angle b(angle::deg(200));
 
 		affine_combo<angle> combo;
-		
+
 		hermite<angle> hermie(a,b,b.dist(a),b.dist(a));
-		
+
 		for(f=0;f<1.001;f+=0.1)
 		{
 			printf("@%f--affine_combo: %f hermie: %f\n",angle::deg(f).get(),angle::deg(combo(a,b,f)).get(),angle::deg(hermie(f)).get());
 		}
-			
+
 	}
 
 	return ret;
@@ -518,10 +518,10 @@ int angle_test()
 int main()
 {
 	int error=0;
-	
+
 	error+=fastangle_test();
 	error+=fastangle_speed_test();
 	error+=angle_test();
-	
+
 	return error;
 }

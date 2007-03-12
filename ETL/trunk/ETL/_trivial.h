@@ -55,33 +55,33 @@ class trivial
 	typedef const T& const_reference;
 	typedef T* pointer;
 	typedef const T* const_pointer;
-	
+
 	char data[sizeof(T)];
 public:
-	operator reference() 
+	operator reference()
 	{ return *reinterpret_cast<pointer>(data); }
 
 	// HACK - Rather dangerous
-	//operator reference()const 
+	//operator reference()const
 	//{ return *reinterpret_cast<pointer>(const_cast<char *>(data)); }
-	
-	operator const_reference()const 
+
+	operator const_reference()const
 	{ return *reinterpret_cast<const_pointer>(data); }
-	
+
 	reference get()
 	{ return *reinterpret_cast<pointer>(data); }
 
 	const_reference get()const
 	{ return *reinterpret_cast<const_pointer>(data); }
-	
+
 	void construct()
 	{ new(&get()) value_type(); }
 
 	void destruct()
 	{ get().~value_type(); }
-	
+
 	void destroy() { destruct(); }
-	
+
 	template<class U> reference
 	operator=(const U &rhs)
 	{ return get()=rhs; }
@@ -125,11 +125,11 @@ public:
 	template<class U> reference
 	operator<<=(const U &rhs)
 	{ return get()<<=rhs; }
-	
-	operator bool()const 
+
+	operator bool()const
 	{ return get(); }
 
-	bool operator!()const 
+	bool operator!()const
 	{ return !get(); }
 }; // END of template class trivial
 

@@ -42,28 +42,28 @@ binary_find(I begin, I end, const T& value)
 {
 #if 1
 	I iter(begin+(end-begin)/2);
-	
+
 	while(end-begin>1 && !(*iter==value))
 	{
 		((*iter<value)?begin:end) = iter;
-		
+
 		iter = begin+(end-begin)/2;
 	}
 	return iter;
 #else
 	size_t len_(end-begin);
 	size_t half_(len_/2);
-	
+
 	I iter(begin);
 	iter+=half_;
-	
+
 	while(len_>1 && !(*iter==value))
 	{
 		((*iter<value)?begin:end) = iter;
-		
+
 		len_=half_;
 		half_/=2;
-		
+
 		iter=begin;
 		iter+=half_;
 	}

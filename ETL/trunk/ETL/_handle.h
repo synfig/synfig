@@ -66,7 +66,7 @@ class shared_object
 {
 private:
 	mutable int refcount;
-	
+
 protected:
 	shared_object():refcount(0) { }
 
@@ -75,11 +75,11 @@ protected:
 #else
 	~shared_object() { }
 #endif
-	
-public:	
+
+public:
 	void ref()const
 		{ assert(refcount>=0); refcount++; }
-	
+
 	//! Returns \c false if object needs to be deleted
 	bool unref()const
 	{
@@ -97,7 +97,7 @@ public:
 
 		return true;
 	}
-	
+
 	int count()const
 		{ return refcount; }
 }; // END of class shared_object
@@ -182,7 +182,7 @@ public:
 		return *this;
 	}
 	*/
-	
+
 	//! Assignment operator
 	handle<value_type> &
 	operator=(const handle<value_type> &x)
@@ -229,7 +229,7 @@ public:
 	void reset() { detach(); }
 
 	bool empty()const { return obj==0; }
-	
+
 	//! Creates a new instance of a T object and puts it in the handle.
 	/*! Uses the default constructor */
 	void spawn() { operator=(handle(new T())); }
@@ -327,20 +327,20 @@ private:
 public:
 	void *front_;
 	void *back_;
-	
+
 protected:
 	rshared_object():rrefcount(0),front_(0),back_(0) { }
-	
-public:	
+
+public:
 	void rref()const
 		{ rrefcount++; }
-	
+
 	void runref()const
 	{
 		assert(rrefcount>0);
 		rrefcount--;
 	}
-	
+
 	int rcount()const
 		{ return rrefcount; }
 }; // END of class rshared_object
@@ -372,7 +372,7 @@ public:
 	using handle<value_type>::get;
 	using handle<value_type>::operator *;
 	using handle<value_type>::operator ->;
-	
+
 	/*
 	operator const handle<value_type>&()const
 	{ return *this; }
@@ -380,7 +380,7 @@ public:
 
 private:
 	using handle<value_type>::obj;
-	
+
 	rhandle<value_type> *prev_;
 	rhandle<value_type> *next_;
 
@@ -398,7 +398,7 @@ private:
 			prev_=next_=0;
 			return;
 		}
-		
+
 		prev_=reinterpret_cast<rhandle<value_type>*>(obj->back_);
 		next_=0;
 		prev_->next_=this;
@@ -429,7 +429,7 @@ private:
 		else
 			next_->prev_=prev_;
 	}
-	
+
 public:
 
 	//! Default constructor - empty handle
@@ -457,7 +457,7 @@ public:
 
 	//! Handle is released on deletion
 	~rhandle() { detach(); }
-		
+
 	//! Template Assignment operator
 	/*! \note This class may not be necessary, and may be removed
 	**		at some point in the future.
@@ -480,7 +480,7 @@ public:
 		return *this;
 	}
 	*/
-	
+
 	//! Assignment operator
 	rhandle<value_type> &
 	operator=(const rhandle<value_type> &x)
@@ -578,32 +578,32 @@ public:
 //		value_type*& obj(handle<T>::obj); // Required to keep gcc 3.4.2 form barfing
 		assert(obj);
 		assert(x.get()!=obj);
-		
+
 		if(x.get()==obj)
 			return 0;
-		
+
 		rhandle<value_type> *iter;
 		rhandle<value_type> *next;
-		
+
 		iter=reinterpret_cast<rhandle<value_type>*>(obj->front_);
 
-		assert(iter);		
+		assert(iter);
 
 		next=iter->next_;
-		
+
 		int i=0;
 		#ifndef NDEBUG
 		pointer obj_=obj;
 		#endif
-		
+
 		for(;iter;iter=next,next=iter?iter->next_:0,i++)
 		{
-			assert(iter->get()==obj_);	
+			assert(iter->get()==obj_);
 			(*iter)=x;
 		}
 
 		assert(obj==x.get());
-		
+
 		return i;
 	}
 
@@ -711,7 +711,7 @@ public:
 	//void release() { detach(); }
 
 	void reset() { detach(); }
-	
+
 	bool empty()const { return obj==0; }
 
 	handle<value_type> clone()const { assert(obj); return obj->clone(); }
@@ -782,8 +782,8 @@ template <class T> template <class U> handle<T>
 handle<T>::cast_reinterpret(const loose_handle<U> &x)
 	{ return handle<T>(reinterpret_cast<T*>(x.get())); }
 
-	
-	
+
+
 template <class T> template <class U> handle<T>
 handle<T>::cast_static(const rhandle<U> &x)
 	{ return handle<T>(static_cast<T*>(x.get())); }
@@ -800,8 +800,8 @@ template <class T> template <class U> handle<T>
 handle<T>::cast_reinterpret(const rhandle<U> &x)
 	{ return handle<T>(reinterpret_cast<T*>(x.get())); }
 
-	
-	
+
+
 template <class T> template <class U> handle<T>
 handle<T>::cast_static(U* x)
 	{ return handle<T>(static_cast<T*>(x)); }
