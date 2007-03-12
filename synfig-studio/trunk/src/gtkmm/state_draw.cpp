@@ -116,8 +116,8 @@ class studio::StateDraw_Context : public sigc::trackable
 
 	Smach::event_result new_region(std::list<synfig::BLinePoint> bline,synfig::Real radius);
 
-	Smach::event_result extend_bline_from_begin(ValueNode_BLine::Handle value_node,std::list<synfig::BLinePoint> bline);
-	Smach::event_result extend_bline_from_end(ValueNode_BLine::Handle value_node,std::list<synfig::BLinePoint> bline);
+	Smach::event_result extend_bline_from_begin(ValueNode_BLine::Handle value_node,std::list<synfig::BLinePoint> bline,bool complete_loop);
+	Smach::event_result extend_bline_from_end(ValueNode_BLine::Handle value_node,std::list<synfig::BLinePoint> bline,bool complete_loop);
 	void reverse_bline(std::list<synfig::BLinePoint> &bline);
 
 	synfigapp::Settings& settings;
@@ -704,107 +704,169 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline
 	}
 
 	// Find any ducks at the start or end that we might attach to
-	// (If we aren't a loop)
-	if(!loop_bline_flag && get_auto_connect_flag())
+	// (this used to only run if we aren't a loop - ie. !loop_bline_flag
+	// but having loops auto-connect can be useful as well)
+	if(get_auto_connect_flag())
 	{
+		bool extend_start=false,extend_finish=false,complete_loop=false;
+		bool extend_start_join_same=false,extend_start_join_different=false,extend_finish_join_same=false,extend_finish_join_different=false;
+		int start_duck_index,finish_duck_index;
 		
 		etl::handle<Duck> start_duck(get_work_area()->find_duck(bline.front().get_vertex(),radius,Duck::TYPE_VERTEX));
 		etl::handle<Duck> finish_duck(get_work_area()->find_duck(bline.back().get_vertex(),radius,Duck::TYPE_VERTEX));
 		
+		synfigapp::ValueDesc start_duck_value_desc,finish_duck_value_desc;
+		ValueNode_BLine::Handle start_duck_value_node_bline=NULL,finish_duck_value_node_bline=NULL;
+
+		// check whether the start of the new line extends an
+		// existing line.  this is only the case if the new
+		// line isn't a self-contained loop, and if the new
+		// line starts at one of the ends of an existing line
 		if(start_duck)do
 		{
-			synfigapp::ValueDesc value_desc(start_duck->get_value_desc());
-			if(!value_desc)
-				break;
-
-			ValueNode_BLine::Handle value_node_bline;
-
-			if(value_desc.parent_is_value_node())
-				value_node_bline=ValueNode_BLine::Handle::cast_dynamic(value_desc.get_parent_value_node());
+			if(!(start_duck_value_desc=start_duck->get_value_desc()))break;
+			if(loop_bline_flag)break;
+			if(!start_duck_value_desc.parent_is_value_node())break;
+			start_duck_index=start_duck_value_desc.get_index();
+			start_duck_value_node_bline=ValueNode_BLine::Handle::cast_dynamic(start_duck_value_desc.get_parent_value_node());
 
 			// don't extend looped blines
-			if(value_node_bline && !value_node_bline->get_loop())
-			{
-				if(value_desc.get_index()==0)
-				{
-					// SPECIAL CASE -- EXTENSION
-					// We need to reverse the BLine first.
-					bline.pop_front();
-					reverse_bline(bline);
-					return extend_bline_from_begin(value_node_bline,bline);					
-				}
-				if(value_desc.get_index()==value_node_bline->link_count()-1)
-				{
-					// SPECIAL CASE -- EXTENSION
-					bline.pop_front();
-					return extend_bline_from_end(value_node_bline,bline);
-				}
-			}
-
-			switch(value_desc.get_value_type())
-			{
-			case synfig::ValueBase::TYPE_BLINEPOINT:
-				//get_canvas_interface()->auto_export(value_desc);
-				//value_node->list.front().value_node=value_desc.get_value_node();
-				
-				value_desc=synfigapp::ValueDesc(LinkableValueNode::Handle::cast_dynamic(value_desc.get_value_node()),0);
-				//break;
-			case synfig::ValueBase::TYPE_VECTOR:
-				get_canvas_interface()->auto_export(value_desc);
-				LinkableValueNode::Handle::cast_dynamic(value_node->list.front().value_node)->set_link(0,value_desc.get_value_node());
-				break;
-			default:
-				break;
-			}
+			if(start_duck_value_node_bline&&!start_duck_value_node_bline->get_loop()&&
+			   (start_duck_index==0||start_duck_index==start_duck_value_node_bline->link_count()-1))
+				extend_start=true;
 		}while(0);
-		
+
+		// check whether the end of the new line extends an
+		// existing line.  this is only the case if the new
+		// line isn't a self-contained loop, and if the new
+		// line ends at one of the ends of an existing line
 		if(finish_duck)do
 		{
-			synfigapp::ValueDesc value_desc(finish_duck->get_value_desc());
-			if(!value_desc)
-				break;
-
-			ValueNode_BLine::Handle value_node_bline;
-
-			if(value_desc.parent_is_value_node())
-				value_node_bline=ValueNode_BLine::Handle::cast_dynamic(value_desc.get_parent_value_node());
+			if(!(finish_duck_value_desc=finish_duck->get_value_desc()))break;
+			if(loop_bline_flag)break;
+			if(!finish_duck_value_desc.parent_is_value_node())break;
+			finish_duck_index=finish_duck_value_desc.get_index();
+			finish_duck_value_node_bline=ValueNode_BLine::Handle::cast_dynamic(finish_duck_value_desc.get_parent_value_node());
 
 			// don't extend looped blines
-			if(value_node_bline && !value_node_bline->get_loop())
-			{
-				if(value_desc.get_index()==0)
+			if(finish_duck_value_node_bline&&!finish_duck_value_node_bline->get_loop()&&
+			   (finish_duck_index==0||finish_duck_index==finish_duck_value_node_bline->link_count()-1))
+				if(extend_start)
 				{
-					// SPECIAL CASE -- EXTENSION
-					bline.pop_back();
-					return extend_bline_from_begin(value_node_bline,bline);					
-				}
-				if(value_desc.get_index()==value_node_bline->link_count()-1)
-				{
-					// SPECIAL CASE -- EXTENSION
-					// We need to reverse the BLine first.
-					bline.pop_back();
-					reverse_bline(bline);
-					return extend_bline_from_end(value_node_bline,bline);
-				}
-			}
+					// we've started and finished drawing at the end of a bline.  we can't
+					// extend both blines, so unless we started and finished at the 2 ends
+					// of the same bline, only extend the one we started on
+					if(start_duck_value_node_bline==finish_duck_value_node_bline)
+						complete_loop=extend_finish=true;
+				}else
+					extend_finish=true;
+		}while(0);
 
-			switch(value_desc.get_value_type())
+		// if the new line's start didn't extend an existing line,
+		// check whether it needs to be linked to an existing duck
+		if(!extend_start&&start_duck&&start_duck_value_desc) {
+			switch(start_duck_value_desc.get_value_type())
 			{
 			case synfig::ValueBase::TYPE_BLINEPOINT:
-				//get_canvas_interface()->auto_export(value_desc);
-				//value_node->list.back().value_node=value_desc.get_value_node();
-
-				value_desc=synfigapp::ValueDesc(LinkableValueNode::Handle::cast_dynamic(value_desc.get_value_node()),0);
-				//break;
+				start_duck_value_desc=synfigapp::ValueDesc(LinkableValueNode::Handle::cast_dynamic(start_duck_value_desc.get_value_node()),0);
+				// fall through
 			case synfig::ValueBase::TYPE_VECTOR:
-				get_canvas_interface()->auto_export(value_desc);
-				LinkableValueNode::Handle::cast_dynamic(value_node->list.back().value_node)->set_link(0,value_desc.get_value_node());
-				break;
-			default:
-				break;
+				get_canvas_interface()->auto_export(start_duck_value_desc);
+				if (extend_finish)
+					if(start_duck_value_node_bline&&start_duck_value_node_bline==finish_duck_value_node_bline)
+						extend_finish_join_same=true;
+					else
+						extend_finish_join_different=true;
+				else
+					LinkableValueNode::Handle::cast_dynamic(value_node->list.front().value_node)->
+					  set_link(0,start_duck_value_desc.get_value_node());
+				// fall through
+			default:break;
 			}
-			
-		}while(0);
+		}		
+
+		// if the new line's end didn't extend an existing line,
+		// check whether it needs to be linked to an existing duck
+		if(!extend_finish&&finish_duck&&finish_duck_value_desc)
+			switch(finish_duck_value_desc.get_value_type())
+			{
+			case synfig::ValueBase::TYPE_BLINEPOINT:
+				finish_duck_value_desc=synfigapp::ValueDesc(LinkableValueNode::Handle::cast_dynamic(finish_duck_value_desc.get_value_node()),0);
+				// fall through
+			case synfig::ValueBase::TYPE_VECTOR:
+				get_canvas_interface()->auto_export(finish_duck_value_desc);
+				if(extend_start)
+					if(finish_duck_value_node_bline&&start_duck_value_node_bline==finish_duck_value_node_bline)
+						extend_start_join_same=true;
+					else
+						extend_start_join_different=true;
+				else
+					LinkableValueNode::Handle::cast_dynamic(value_node->list.back().value_node)->
+					  set_link(0,finish_duck_value_desc.get_value_node());
+				// fall through
+			default:break;
+			}
+
+		Smach::event_result result;
+		synfig::ValueNode_DynamicList::ListEntry source;
+		int target_index;
+
+		// the new line's start extends an existing line
+		if(extend_start)
+		{
+			if(complete_loop)bline.pop_back();
+			bline.pop_front();
+			if(start_duck_index==0)
+			{	// We need to reverse the BLine first.
+				reverse_bline(bline);
+				result=extend_bline_from_begin(start_duck_value_node_bline,bline,complete_loop);
+				source=start_duck_value_node_bline->list.front();
+				target_index=bline.size()+finish_duck_index;
+			}
+			else
+			{
+				result=extend_bline_from_end(start_duck_value_node_bline,bline,complete_loop);
+				source=start_duck_value_node_bline->list.back();
+				target_index=finish_duck_index;
+			}
+
+			if(extend_start_join_different)
+				LinkableValueNode::Handle::cast_dynamic(source.value_node)->
+				  set_link(0,finish_duck_value_desc.get_value_node());
+			else if(extend_start_join_same)
+				LinkableValueNode::Handle::cast_dynamic(source.value_node)->
+				  set_link(0,synfigapp::ValueDesc(LinkableValueNode::Handle::cast_dynamic(start_duck_value_node_bline->
+													  list[target_index].value_node),0).get_value_node());
+			return result;
+		}
+
+		// the new line's end extends an existing line
+		if(extend_finish)
+		{	// SPECIAL CASE -- EXTENSION
+			bline.pop_back();
+			if(finish_duck_index==0)
+			{
+				result=extend_bline_from_begin(finish_duck_value_node_bline,bline,false);
+				source=finish_duck_value_node_bline->list.front();
+				target_index=bline.size()+start_duck_index;
+			}
+			else
+			{	// We need to reverse the BLine first.
+				reverse_bline(bline);
+				result=extend_bline_from_end(finish_duck_value_node_bline,bline,false);
+				source=finish_duck_value_node_bline->list.back();
+				target_index=start_duck_index;
+			}
+
+			if(extend_finish_join_different)
+				LinkableValueNode::Handle::cast_dynamic(source.value_node)->
+				  set_link(0,start_duck_value_desc.get_value_node());
+			else if(extend_finish_join_same)
+				LinkableValueNode::Handle::cast_dynamic(source.value_node)->
+				  set_link(0,synfigapp::ValueDesc(LinkableValueNode::Handle::cast_dynamic(finish_duck_value_node_bline->
+													  list[target_index].value_node),0).get_value_node());
+			return result;
+		}
 	}
 	
 	// Create the layer
@@ -1199,11 +1261,28 @@ StateDraw_Context::refresh_ducks()
 
 
 Smach::event_result
-StateDraw_Context::extend_bline_from_begin(ValueNode_BLine::Handle value_node,std::list<synfig::BLinePoint> bline)
+StateDraw_Context::extend_bline_from_begin(ValueNode_BLine::Handle value_node,std::list<synfig::BLinePoint> bline,bool complete_loop)
 {
 	// Create the action group
 	synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Extend BLine"));
 	
+	if (complete_loop)
+	{
+		synfigapp::Action::Handle action(synfigapp::Action::create("value_node_dynamic_list_loop"));
+		assert(action);
+
+		action->set_param("canvas",get_canvas());			
+		action->set_param("canvas_interface",get_canvas_interface());			
+		action->set_param("value_node",ValueNode::Handle(value_node));
+		
+		if(!get_canvas_interface()->get_instance()->perform_action(action))
+		{
+			get_canvas_view()->get_ui_interface()->error(_("Unable to set loop for bline"));
+			group.cancel();
+			return Smach::RESULT_ERROR;
+		}		
+	}
+
 	std::list<synfig::BLinePoint>::reverse_iterator iter;
 	iter=bline.rbegin();
 	for(;!(iter==bline.rend());++iter)
@@ -1235,10 +1314,27 @@ StateDraw_Context::extend_bline_from_begin(ValueNode_BLine::Handle value_node,st
 }
 
 Smach::event_result
-StateDraw_Context::extend_bline_from_end(ValueNode_BLine::Handle value_node,std::list<synfig::BLinePoint> bline)
+StateDraw_Context::extend_bline_from_end(ValueNode_BLine::Handle value_node,std::list<synfig::BLinePoint> bline,bool complete_loop)
 {
 	// Create the action group
 	synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Extend BLine"));
+
+	if (complete_loop)
+	{
+		synfigapp::Action::Handle action(synfigapp::Action::create("value_node_dynamic_list_loop"));
+		assert(action);
+
+		action->set_param("canvas",get_canvas());			
+		action->set_param("canvas_interface",get_canvas_interface());			
+		action->set_param("value_node",ValueNode::Handle(value_node));
+		
+		if(!get_canvas_interface()->get_instance()->perform_action(action))
+		{
+			get_canvas_view()->get_ui_interface()->error(_("Unable to set loop for bline"));
+			group.cancel();
+			return Smach::RESULT_ERROR;
+		}		
+	}
 
 	std::list<synfig::BLinePoint>::iterator iter;
 	iter=bline.begin();
