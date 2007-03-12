@@ -39,7 +39,7 @@ struct ValueNode_Scale : public LinkableValueNode
 {
 	typedef etl::handle<ValueNode_Scale> Handle;
 	typedef etl::handle<const ValueNode_Scale> ConstHandle;
-	
+
 private:
 	ValueNode::RHandle value_node;
 	ValueNode::RHandle scalar;
@@ -79,14 +79,14 @@ public:
 	virtual ValueBase operator()(Time t)const;
 
 	virtual String get_name()const;
-	
+
 	virtual String get_local_name()const;
 
 	virtual String link_local_name(int i)const;
 
 protected:
 	virtual bool set_link_vfunc(int i,ValueNode::Handle x);
-	
+
 	virtual LinkableValueNode* create_new()const;
 
 public:

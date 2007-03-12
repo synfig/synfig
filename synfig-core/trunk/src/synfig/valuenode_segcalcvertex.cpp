@@ -58,10 +58,10 @@ ValueNode_SegCalcVertex::ValueNode_SegCalcVertex(const ValueBase::Type &x):
 {
 	if(x!=ValueBase::TYPE_VECTOR)
 		throw Exception::BadType(ValueBase::type_name(x));
-	
+
 	segment_=ValueNode_Composite::create(ValueBase::TYPE_SEGMENT);
 	amount_=ValueNode_Const::create(Real(0.5));
-	
+
 }
 
 ValueNode_SegCalcVertex*
@@ -81,7 +81,7 @@ ValueNode_SegCalcVertex::operator()(Time t)const
 	Segment segment((*segment_)(t).get(Segment()));
 
 	etl::hermite<Vector> curve(segment.p1,segment.p2,segment.t1,segment.t2);
-	
+
 	return curve((*amount_)(t).get(Real()));
 }
 
@@ -97,7 +97,7 @@ ValueNode_SegCalcVertex::get_local_name()const
 {
 	return _("SegCalcVertex");
 }
-		
+
 bool
 ValueNode_SegCalcVertex::check_type(ValueBase::Type type)
 {
@@ -170,7 +170,7 @@ ValueNode_SegCalcVertex::get_link_index_from_name(const String &name)const
 		return 0;
 	if(name=="amount")
 		return 1;
-	
+
 	throw Exception::BadLinkName(name);
 }
 

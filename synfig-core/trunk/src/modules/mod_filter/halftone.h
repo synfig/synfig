@@ -52,7 +52,7 @@ public:
 	synfig::Angle angle;
 
 	float mask(synfig::Point point)const;
-	
+
 	float operator()(const synfig::Point &point, const float& intensity, float supersample=0)const;
 };
 

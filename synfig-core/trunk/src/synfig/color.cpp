@@ -66,7 +66,7 @@ Color::rotate_uv(const Angle& theta)const
 	const float
 		u(get_u()),
 		v(get_v());
-	
+
 	return set_uv(b*u-a*v,a*u+b*v);
 	//return YUV(get_y(),b*u-a*v,a*u+b*v,get_a());
 //*/
@@ -77,7 +77,7 @@ Color
 Color::clamped_negative()const
 {
 	Color ret=*this;
-		
+
 	if(ret.a_==0)
 		return alpha();
 
@@ -162,13 +162,13 @@ blendfunc_COMPOSITE(Color &src,Color &dest,float amount)
 
 	// if a_arc==0.0
 	//if(fabsf(a_src)<COLOR_EPSILON) return dest;
-	
+
 	// Scale the source and destination by their alpha values
 	src*=a_src;
 	dest*=a_dest;
-	
+
 	dest=src + dest*(1.0f-a_src);
-	
+
 	a_dest=a_src + a_dest*(1.0f-a_src);
 
 	// if a_dest!=0.0
@@ -195,9 +195,9 @@ blendfunc_STRAIGHT(Color &src,Color &bg,float amount)
 	//if(fabsf(amount-1.0f)<COLOR_EPSILON)return src;
 
 	Color out;
-	
+
 	float a_out((src.get_a()-bg.get_a())*amount+bg.get_a());
-	
+
 	// if a_out!=0.0
 	if(fabsf(a_out)>COLOR_EPSILON)
 //	if(a_out>COLOR_EPSILON || a_out<-COLOR_EPSILON)
@@ -230,7 +230,7 @@ static Color
 blendfunc_BRIGHTEN(Color &a,Color &b,float amount)
 {
 	const float alpha(a.get_a()*amount);
-	
+
 	if(b.get_r()<a.get_r()*alpha)
 		b.set_r(a.get_r()*alpha);
 
@@ -239,7 +239,7 @@ blendfunc_BRIGHTEN(Color &a,Color &b,float amount)
 
 	if(b.get_b()<a.get_b()*alpha)
 		b.set_b(a.get_b()*alpha);
-	
+
 	return b;
 }
 
@@ -247,7 +247,7 @@ static Color
 blendfunc_DARKEN(Color &a,Color &b,float amount)
 {
 	const float alpha(a.get_a()*amount);
-	
+
 	if(b.get_r()>(a.get_r()-1.0f)*alpha+1.0f)
 		b.set_r((a.get_r()-1.0f)*alpha+1.0f);
 
@@ -257,7 +257,7 @@ blendfunc_DARKEN(Color &a,Color &b,float amount)
 	if(b.get_b()>(a.get_b()-1.0f)*alpha+1.0f)
 		b.set_b((a.get_b()-1.0f)*alpha+1.0f);
 
-	
+
 	return b;
 }
 
@@ -318,7 +318,7 @@ blendfunc_DIVIDE(Color &a,Color &b,float amount)
 	// This causes DIVIDE to bias toward positive values, but the effect is
 	// really neglegable. There is a reason why we use COLOR_EPSILON--we
 	// want the change to be imperceptable.
-	
+
 	b.set_r(((b.get_r()/(a.get_r()+COLOR_EPSILON))-b.get_r())*(amount)+b.get_r());
 	b.set_g(((b.get_g()/(a.get_g()+COLOR_EPSILON))-b.get_g())*(amount)+b.get_g());
 	b.set_b(((b.get_b()/(a.get_b()+COLOR_EPSILON))-b.get_b())*(amount)+b.get_b());
@@ -331,7 +331,7 @@ blendfunc_COLOR(Color &a,Color &b,float amount)
 {
 	Color temp(b);
 	temp.set_uv(a.get_u(),a.get_v());
-	return (temp-b)*amount*a.get_a()+b;			
+	return (temp-b)*amount*a.get_a()+b;
 }
 
 static Color
@@ -390,13 +390,13 @@ blendfunc_SCREEN(Color &a,Color &b,float amount)
 	a.set_r(1.0-(1.0f-a.get_r())*(1.0f-b.get_r()));
 	a.set_g(1.0-(1.0f-a.get_g())*(1.0f-b.get_g()));
 	a.set_b(1.0-(1.0f-a.get_b())*(1.0f-b.get_b()));
-	
+
 	return blendfunc_ONTO(a,b,amount);
 }
 
 static Color
 blendfunc_OVERLAY(Color &a,Color &b,float amount)
-{	
+{
 	if(amount<0) a=~a, amount=-amount;
 
 	Color rm;
@@ -410,7 +410,7 @@ blendfunc_OVERLAY(Color &a,Color &b,float amount)
 	rs.set_b(1.0-(1.0f-a.get_b())*(1.0f-b.get_b()));
 
 	Color& ret(a);
-	
+
 	ret.set_r(a.get_r()*rs.get_r() + (1.0-a.get_r())*rm.get_r());
 	ret.set_g(a.get_g()*rs.get_g() + (1.0-a.get_g())*rm.get_g());
 	ret.set_b(a.get_b()*rs.get_b() + (1.0-a.get_b())*rm.get_b());
@@ -467,7 +467,7 @@ Color::blend(Color a, Color b,float amount, Color::BlendMethod type)
 #endif
 	}
 #endif
-	
+
 /*
 	if(!a.is_valid()&&b.is_valid())
 		return b;
@@ -484,17 +484,17 @@ Color::blend(Color a, Color b,float amount, Color::BlendMethod type)
 #endif
 	}
 */
-	
+
 	// No matter what blend method is being used,
 	// if the amount is equal to zero, then only B
 	// will shine through
 	if(fabsf(amount)<=COLOR_EPSILON)return b;
-	
+
 	assert(type<BLEND_END);
-	
+
 	const static blendfunc vtable[BLEND_END]=
 	{
-		blendfunc_COMPOSITE, 
+		blendfunc_COMPOSITE,
 		blendfunc_STRAIGHT,
 		blendfunc_BRIGHTEN,
 		blendfunc_DARKEN,
@@ -517,6 +517,6 @@ Color::blend(Color a, Color b,float amount, Color::BlendMethod type)
 		blendfunc_OVERLAY,
 		blendfunc_STRAIGHT_ONTO,
 	};
-	
+
 	return vtable[type](a,b,amount);
 }

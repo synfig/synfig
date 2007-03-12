@@ -50,10 +50,10 @@ Target::subsys_init()
 {
 	book_=new synfig::Target::Book();
 	ext_book_=new synfig::Target::ExtBook();
-	
+
 	default_gamma_=new synfig::Gamma(1.0/2.2);
 	//default_gamma_->set_black_level(0.05); // Default to 5% black level.
-	
+
 	book()["null"]=std::pair<synfig::Target::Factory,String>(Target_Null::create,"null");
 	ext_book()["null"]="null";
 	book()["null-tile"]=std::pair<synfig::Target::Factory,String>(Target_Null_Tile::create,"null-tile");
@@ -108,6 +108,6 @@ Target::create(const String &name, const String &filename)
 {
 	if(!book().count(name))
 		return handle<Target>();
-		
+
 	return Target::Handle(book()[name].first(filename.c_str()));
 }

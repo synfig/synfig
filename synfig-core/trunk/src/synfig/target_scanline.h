@@ -84,7 +84,7 @@ public:
 	**	\see start_scanline()
 	*/
 	virtual bool end_scanline()=0;
-	
+
 	void set_threads(int x) { threads_=x; }
 
 	int get_threads()const { return threads_; }

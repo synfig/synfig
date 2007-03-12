@@ -69,7 +69,7 @@ public:
 
 protected:
 	virtual bool set_link_vfunc(int i,ValueNode::Handle x);
-	
+
 	LinkableValueNode* create_new()const;
 
 public:

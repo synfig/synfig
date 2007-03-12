@@ -43,7 +43,7 @@
 /* === C L A S S E S & S T R U C T S ======================================= */
 
 namespace synfig {
-	
+
 class Layer_PasteCanvas : public Layer_Composite, public Layer_NoDeform
 {
 	SYNFIG_LAYER_MODULE_EXT
@@ -65,7 +65,7 @@ private:
 	bool optimize_layers(synfig::Context context,synfig::CanvasBase&)const;
 
 	bool do_not_muck_with_time_;
-	
+
 	bool children_lock;
 
 	mutable Rect bounds;
@@ -79,7 +79,7 @@ public:
 
 	etl::handle<synfig::Canvas> get_sub_canvas()const { return canvas; }
 	void set_sub_canvas(etl::handle<synfig::Canvas> x);
-	
+
 	Real get_zoom()const { return zoom; }
 
 	Time get_time_offset()const { return time_offset; }
@@ -90,7 +90,7 @@ public:
 	virtual ~Layer_PasteCanvas();
 
 	virtual String get_local_name()const;
-	
+
 	virtual bool set_param(const String & param, const synfig::ValueBase &value);
 
 	virtual ValueBase get_param(const String & param)const;
@@ -106,9 +106,9 @@ public:
 	virtual synfig::Rect get_bounding_rect()const;
 
 	virtual synfig::Layer::Handle hit_check(synfig::Context context, const synfig::Point &point)const;
-	
+
 protected:
-	virtual void get_times_vfunc(Node::time_set &set) const;	
+	virtual void get_times_vfunc(Node::time_set &set) const;
 
 }; // END of class Layer_PasteCanvas
 

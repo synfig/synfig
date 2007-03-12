@@ -42,7 +42,7 @@
 /* === M A C R O S ========================================================= */
 
 //! Marks the start of a module description
-#define MODULE_DESC_BEGIN(x) struct x##_modclass : public synfig::Module { x##_modclass(synfig::ProgressCallback *callback=NULL); 
+#define MODULE_DESC_BEGIN(x) struct x##_modclass : public synfig::Module { x##_modclass(synfig::ProgressCallback *callback=NULL);
 
 //! Sets the localized name of the module
 #define MODULE_NAME(x) 			virtual const char * Name() { return x; }
@@ -75,14 +75,14 @@
 	synfig::Module* _##x##_LTX_new_instance(synfig::ProgressCallback *cb) \
 	{ if(SYNFIG_CHECK_VERSION()){x##_modclass *mod=new x##_modclass(cb); mod->constructor_(cb); return mod; }\
 	if(cb)cb->error(#x": Unable to load module due to version mismatch."); return NULL; } \
-	}; x##_modclass::x##_modclass(synfig::ProgressCallback *cb) { 
+	}; x##_modclass::x##_modclass(synfig::ProgressCallback *cb) {
 #else
 //! Marks the start of a module's inventory
 #define MODULE_INVENTORY_BEGIN(x)  extern "C" {		\
 	synfig::Module* x##_LTX_new_instance(synfig::ProgressCallback *cb) \
 	{ if(SYNFIG_CHECK_VERSION()){x##_modclass *mod=new x##_modclass(cb); mod->constructor_(cb); return mod; }\
 	if(cb)cb->error(#x": Unable to load module due to version mismatch."); return NULL; } \
-	}; x##_modclass::x##_modclass(synfig::ProgressCallback *cb) { 
+	}; x##_modclass::x##_modclass(synfig::ProgressCallback *cb) {
 #endif
 
 //! Marks the start of the layers in the module's inventory
@@ -135,11 +135,11 @@ class Module : public etl::shared_object
 public:
 	bool constructor_(synfig::ProgressCallback *cb) { return true; }
 	virtual void destructor_() { }
-	
+
 	typedef etl::handle<Module> Handle;
 	typedef etl::loose_handle<Module> LooseHandle;
 	typedef etl::handle<const Module> ConstHandle;
-	
+
 public:
 	typedef Module*(*constructor_type)(ProgressCallback *);
 	typedef std::map<String, Handle > Book;
@@ -155,7 +155,7 @@ public:
 	static void Register(Handle mod);
 	static bool Register(const String &module_name, ProgressCallback *cb=NULL);
 	static inline void Register(Module *mod) { Register(Handle(mod)); }
-	
+
 	virtual const char * Name() { return " "; }
 	virtual const char * Desc() { return " "; }
 	virtual const char * Author() { return " "; }

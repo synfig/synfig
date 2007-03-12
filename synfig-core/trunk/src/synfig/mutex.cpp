@@ -103,7 +103,7 @@ Mutex::Mutex()
 
 	pthread_mutex_init(mtx_ptr,&attr);
 	pthread_mutexattr_destroy(&attr);
-	
+
 	blackbox=mtx_ptr;
 }
 
@@ -157,9 +157,9 @@ RecMutex::RecMutex()
 RWLock::RWLock()
 {
 	pthread_rwlock_t*const rwlock_ptr(new pthread_rwlock_t);
-	
+
 	pthread_rwlock_init(rwlock_ptr, NULL);
-	
+
 	blackbox=rwlock_ptr;
 }
 
@@ -168,7 +168,7 @@ RWLock::~RWLock()
 	pthread_rwlock_t*const rwlock_ptr(static_cast<pthread_rwlock_t*>(blackbox));
 
 	pthread_rwlock_destroy(rwlock_ptr);
-	
+
 	delete rwlock_ptr;
 }
 

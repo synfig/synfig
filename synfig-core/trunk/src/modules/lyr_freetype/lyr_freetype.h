@@ -82,24 +82,24 @@ struct TextLine
 
 	TextLine():width(0) { }
 	void clear_and_free();
-	
+
 	int actual_height()const
 	{
 		int height(0);
-		
+
 		std::vector<Glyph>::const_iterator iter;
 		for(iter=glyph_table.begin();iter!=glyph_table.end();++iter)
 		{
 			FT_BBox   glyph_bbox;
-	
+
 			//FT_Glyph_Get_CBox( glyphs[n], ft_glyph_bbox_pixels, &glyph_bbox );
 			FT_Glyph_Get_CBox( iter->glyph, ft_glyph_bbox_subpixels, &glyph_bbox );
-	
+
 			if(glyph_bbox.yMax>height)
 				height=glyph_bbox.yMax;
 		}
 		return height;
-	}	
+	}
 };
 
 
@@ -129,9 +129,9 @@ private:
 	bool needs_sync_;
 
 	void sync();
-	
+
 	mutable synfig::Mutex mutex;
-	
+
 public:
 	lyr_freetype();
 	virtual ~lyr_freetype();
@@ -140,7 +140,7 @@ public:
 	virtual ValueBase get_param(const String & param)const;
 	virtual Color get_color(Context context, const synfig::Point &pos)const;
 	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
-	
+
 	virtual Vocab get_param_vocab()const;
 
 	virtual bool set_version(const String &ver){if(ver=="0.1")old_version=true;return true;}

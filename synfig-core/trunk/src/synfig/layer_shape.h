@@ -41,31 +41,31 @@
 /* === C L A S S E S & S T R U C T S ======================================= */
 
 namespace synfig {
-	
+
 /*!	\class Layer_Shape
 **	\beief writeme			*/
 class Layer_Shape : public Layer_Composite, public Layer_NoDeform
 {
 	SYNFIG_LAYER_MODULE_EXT
-	
+
 private:
-	
+
 	//internal cacheing
 	struct Intersector;
 	Intersector	*edge_table;
-	
+
 	//exported data
 	Color 					color;
-	
+
 	Point 	offset;
 	bool	invert;
 	bool	antialias;
-	
+
 	int		blurtype;
 	Real	feather;
-	
+
 	std::vector< char > 	bytestream;
-	
+
 	//for use in creating the bytestream
 	int						lastbyteop;
 	int						lastoppos;
@@ -95,7 +95,7 @@ public:
 
 	virtual bool set_param(const String & param, const synfig::ValueBase &value);
 	virtual ValueBase get_param(const String & param)const;
-	
+
 	virtual Vocab get_param_vocab()const;
 
 	virtual Color get_color(Context context, const Point &pos)const;

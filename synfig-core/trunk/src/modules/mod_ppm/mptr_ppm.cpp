@@ -72,23 +72,23 @@ ppm_mptr::get_frame(synfig::Surface &surface,Time, synfig::ProgressCallback *cb)
 	SmartFILE file(fopen(filename.c_str(),"rb"));
 	if(!file)
 	{
-		if(cb)cb->error("pp_mptr::GetFrame(): "+strprintf(_("Unable to open %s"),filename.c_str())); 
+		if(cb)cb->error("pp_mptr::GetFrame(): "+strprintf(_("Unable to open %s"),filename.c_str()));
 		return false;
 	}
 	int w,h;
 	float divisor;
-	
+
 	if(fgetc(file.get())!='P' || fgetc(file.get())!='6')
 	{
-		if(cb)cb->error("pp_mptr::GetFrame(): "+strprintf(_("%s was not in PPM format"),filename.c_str())); 
+		if(cb)cb->error("pp_mptr::GetFrame(): "+strprintf(_("%s was not in PPM format"),filename.c_str()));
 		return false;
 	}
-	
+
 	fgetc(file.get());
 	fscanf(file.get(),"%d %d\n",&w,&h);
 	fscanf(file.get(),"%f",&divisor);
 	fgetc(file.get());
-	
+
 	int x;
 	int y;
 	surface.set_wh(w,h);

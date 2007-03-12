@@ -88,7 +88,7 @@ synfig::ValueNode_Composite::ValueNode_Composite(const ValueBase &value):
 		}
 		default:
 			assert(0);
-			throw Exception::BadType(ValueBase::type_name(get_type()));			
+			throw Exception::BadType(ValueBase::type_name(get_type()));
 	}
 }
 
@@ -102,7 +102,7 @@ ValueNode_Composite::create(const ValueBase &value)
 {
 	return new ValueNode_Composite(value);
 }
-	
+
 LinkableValueNode*
 ValueNode_Composite::create_new()const
 {
@@ -186,7 +186,7 @@ ValueNode_Composite::set_link_vfunc(int i,ValueNode::Handle x)
 {
 	assert(i>=0);
 	assert(i<6);
-	
+
 	if(PlaceholderValueNode::Handle::cast_dynamic(x))
 	{
 		components[i]=x;
@@ -212,7 +212,7 @@ ValueNode_Composite::set_link_vfunc(int i,ValueNode::Handle x)
 				return true;
 			}
 			break;
-			
+
 		case ValueBase::TYPE_SEGMENT:
 			assert(i<4);
 			if(x->get_type()==ValueBase(Point()).get_type() || PlaceholderValueNode::Handle::cast_dynamic(x))
@@ -240,11 +240,11 @@ ValueNode_Composite::set_link_vfunc(int i,ValueNode::Handle x)
 				return true;
 			}
 			break;
-			
+
 		default:
 			break;
 	}
-	return false;	
+	return false;
 }
 
 ValueNode::LooseHandle
@@ -272,7 +272,7 @@ ValueNode_Composite::link_local_name(int i)const
 				return _("Blue");
 			else if(i==3)
 				return _("Alpha");
-			
+
 		case ValueBase::TYPE_SEGMENT:
 			if(i==0)
 				return _("Vertex 1");
@@ -300,8 +300,8 @@ ValueNode_Composite::link_local_name(int i)const
 		default:
 			break;
 	}
-	return etl::strprintf(_("C%d"),i+1);	
-}	
+	return etl::strprintf(_("C%d"),i+1);
+}
 
 
 String
@@ -309,7 +309,7 @@ ValueNode_Composite::link_name(int i)const
 {
 	assert(i>=0 && i<5);
 	return strprintf("c%d",i);
-}	
+}
 
 int
 ValueNode_Composite::get_link_index_from_name(const String &name)const
@@ -360,7 +360,7 @@ ValueNode_Composite::get_link_index_from_name(const String &name)const
 			return 4;
 		if(name=="t2")
 			return 5;
-	default:			
+	default:
 		break;
 	}
 

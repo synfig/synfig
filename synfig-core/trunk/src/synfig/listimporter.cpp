@@ -98,18 +98,18 @@ ListImporter::get_frame(Surface &surface,Time time, ProgressCallback *cb)
 //			DEBUGPOINT();
 	int frame=static_cast<int>(time*fps);
 //			DEBUGPOINT();
-	
+
 	if(!filename_list.size())
 	{
 		if(cb)cb->error(_("No images in list"));
 		else synfig::error(_("No images in list"));
 		return false;
 	}
-	
+
 //			DEBUGPOINT();
 	if(frame<0)frame=0;
 	if(frame>=(signed)filename_list.size())frame=filename_list.size()-1;
-	
+
 //			DEBUGPOINT();
 	// See if that frame is cached
 	std::list<std::pair<int,Surface> >::iterator iter;
@@ -122,9 +122,9 @@ ListImporter::get_frame(Surface &surface,Time time, ProgressCallback *cb)
 			return static_cast<bool>(surface);
 		}
 	}
-		
+
 	Importer::Handle importer(Importer::open(filename_list[frame]));
-	
+
 //	DEBUGPOINT();
 
 	if(!importer)
@@ -133,7 +133,7 @@ ListImporter::get_frame(Surface &surface,Time time, ProgressCallback *cb)
 		else synfig::error(_("Unable to open ")+filename_list[frame]);
 		return false;
 	}
-	
+
 //	DEBUGPOINT();
 
 	if(!importer->get_frame(surface,0,cb))
@@ -142,7 +142,7 @@ ListImporter::get_frame(Surface &surface,Time time, ProgressCallback *cb)
 		else synfig::error(_("Unable to get frame from ")+filename_list[frame]);
 		return false;
 	}
-		
+
 //	DEBUGPOINT();
 
 	if(frame_cache.size()>=LIST_IMPORTER_CACHE_SIZE)
@@ -150,7 +150,7 @@ ListImporter::get_frame(Surface &surface,Time time, ProgressCallback *cb)
 
 //	DEBUGPOINT();
 
-	frame_cache.push_back(std::pair<int,Surface>(frame,surface));	
+	frame_cache.push_back(std::pair<int,Surface>(frame,surface));
 
 //	DEBUGPOINT();
 

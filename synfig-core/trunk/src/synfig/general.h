@@ -87,7 +87,7 @@ public:
 	virtual bool error(const String &task) { return true; }
 	virtual bool warning(const String &task) { return true; }
 	virtual bool amount_complete(int current, int total) { return true; }
-	
+
 	virtual bool valid() const { return true; }
 };
 
@@ -115,7 +115,7 @@ public:
 	virtual bool error(const String &task) { if(cb)return cb->error(task); return true; }
 	virtual bool warning(const String &task) { if(cb)return cb->warning(task); return true; }
 	virtual bool amount_complete(int cur, int total) { if(cb)return cb->amount_complete(start+cur*w/total,tot); return true; }
-	
+
 	virtual bool valid() const { return cb != 0; }
 };
 

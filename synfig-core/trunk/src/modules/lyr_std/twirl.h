@@ -45,7 +45,7 @@ class Twirl : public synfig::Layer_Composite
 {
 	SYNFIG_LAYER_MODULE_EXT
 	friend class Twirl_Trans;
-	
+
 private:
 
 	synfig::Point center;
@@ -60,19 +60,19 @@ private:
 
 	synfig::Point distort(const synfig::Point &pos, bool reverse=false)const;
 public:
-	
+
 	Twirl();
-	
+
 	virtual bool set_param(const synfig::String & param, const synfig::ValueBase &value);
 
 	virtual synfig::ValueBase get_param(const synfig::String & param)const;
 
 	virtual synfig::Color get_color(synfig::Context context, const synfig::Point &pos)const;
-	
+
 	//virtual bool accelerated_render(synfig::Context context,synfig::Surface *surface,int quality, const synfig::RendDesc &renddesc, synfig::ProgressCallback *cb)const;
 
-	synfig::Layer::Handle hit_check(synfig::Context context, const synfig::Point &point)const;	
-	
+	synfig::Layer::Handle hit_check(synfig::Context context, const synfig::Point &point)const;
+
 	virtual Vocab get_param_vocab()const;
 	virtual etl::handle<synfig::Transform> get_transform()const;
 }; // END of class Twirl

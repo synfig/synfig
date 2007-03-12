@@ -75,7 +75,7 @@ Layer_ColorCorrect::correct_color(const Color &in)const
 {
 	Color ret(in);
 	Real brightness((this->brightness-0.5)*this->contrast+0.5);
-	
+
 	if(gamma.get_gamma_r()!=1.0)
 	{
 		if(ret.get_r() < 0)
@@ -83,8 +83,8 @@ Layer_ColorCorrect::correct_color(const Color &in)const
 			ret.set_r(-gamma.r_F32_to_F32(-ret.get_r()));
 		}else
 		{
-			ret.set_r(gamma.r_F32_to_F32(ret.get_r()));			
-		}			
+			ret.set_r(gamma.r_F32_to_F32(ret.get_r()));
+		}
 	}
 	if(gamma.get_gamma_g()!=1.0)
 	{
@@ -93,8 +93,8 @@ Layer_ColorCorrect::correct_color(const Color &in)const
 			ret.set_g(-gamma.g_F32_to_F32(-ret.get_g()));
 		}else
 		{
-			ret.set_g(gamma.g_F32_to_F32(ret.get_g()));			
-		}			
+			ret.set_g(gamma.g_F32_to_F32(ret.get_g()));
+		}
 	}
 	if(gamma.get_gamma_b()!=1.0)
 	{
@@ -103,14 +103,14 @@ Layer_ColorCorrect::correct_color(const Color &in)const
 			ret.set_b(-gamma.b_F32_to_F32(-ret.get_b()));
 		}else
 		{
-			ret.set_b(gamma.b_F32_to_F32(ret.get_b()));			
-		}			
+			ret.set_b(gamma.b_F32_to_F32(ret.get_b()));
+		}
 	}
-	
+
 	assert(!isnan(ret.get_r()));
 	assert(!isnan(ret.get_g()));
 	assert(!isnan(ret.get_b()));
-	
+
 	if(exposure!=0.0)
 	{
 		const float factor(exp(exposure));
@@ -118,7 +118,7 @@ Layer_ColorCorrect::correct_color(const Color &in)const
 		ret.set_g(ret.get_g()*factor);
 		ret.set_b(ret.get_b()*factor);
 	}
-	
+
 	// Adjust Contrast
 	if(contrast!=1.0)
 	{
@@ -126,7 +126,7 @@ Layer_ColorCorrect::correct_color(const Color &in)const
 		ret.set_g(ret.get_g()*contrast);
 		ret.set_b(ret.get_b()*contrast);
 	}
-	
+
 	if(brightness)
 	{
 		// Adjust R Channel Brightness
@@ -136,7 +136,7 @@ Layer_ColorCorrect::correct_color(const Color &in)const
 			ret.set_r(ret.get_r()-brightness);
 		else
 			ret.set_r(0);
-	
+
 		// Adjust G Channel Brightness
 		if(ret.get_g()>-brightness)
 			ret.set_g(ret.get_g()+brightness);
@@ -144,7 +144,7 @@ Layer_ColorCorrect::correct_color(const Color &in)const
 			ret.set_g(ret.get_g()-brightness);
 		else
 			ret.set_g(0);
-	
+
 		// Adjust B Channel Brightness
 		if(ret.get_b()>-brightness)
 			ret.set_b(ret.get_b()+brightness);
@@ -153,14 +153,14 @@ Layer_ColorCorrect::correct_color(const Color &in)const
 		else
 			ret.set_b(0);
 	}
-	
+
 	// Return the color, adjusting the hue if necessary
 	if(!!hue_adjust)
 		return ret.rotate_uv(hue_adjust);
 	else
 		return ret;
 }
-	
+
 bool
 Layer_ColorCorrect::set_param(const String & param, const ValueBase &value)
 {
@@ -173,8 +173,8 @@ Layer_ColorCorrect::set_param(const String & param, const ValueBase &value)
 	{
 		gamma.set_gamma(1.0/value.get(Real()));
 		return true;
-	}		
-	return false;	
+	}
+	return false;
 }
 
 ValueBase
@@ -190,15 +190,15 @@ Layer_ColorCorrect::get_param(const String &param)const
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
-		
-	return ValueBase();	
+
+	return ValueBase();
 }
 
 Layer::Vocab
 Layer_ColorCorrect::get_param_vocab()const
 {
 	Layer::Vocab ret;
-	
+
 	ret.push_back(ParamDesc("hue_adjust")
 		.set_local_name(_("Hue Adjust"))
 	);
@@ -218,7 +218,7 @@ Layer_ColorCorrect::get_param_vocab()const
 	ret.push_back(ParamDesc("gamma")
 		.set_local_name(_("Gamma Adjustment"))
 	);
-	
+
 	return ret;
 }
 
@@ -227,7 +227,7 @@ Layer_ColorCorrect::get_color(Context context, const Point &pos)const
 {
 	return correct_color(context.get_color(pos));
 }
-	
+
 bool
 Layer_ColorCorrect::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {

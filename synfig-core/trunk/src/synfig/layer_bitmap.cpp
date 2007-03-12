@@ -71,7 +71,7 @@ synfig::Layer_Bitmap::Layer_Bitmap():
 	gamma_adjust	(1.0)
 {
 }
-	
+
 bool
 synfig::Layer_Bitmap::set_param(const String & param, ValueBase value)
 {
@@ -84,7 +84,7 @@ synfig::Layer_Bitmap::set_param(const String & param, ValueBase value)
 		//gamma_adjust.set_gamma(1.0/value.get(Real()));
 		return true;
 	}
-	
+
 	return Layer_Composite::set_param(param,value);
 }
 
@@ -105,7 +105,7 @@ synfig::Layer_Bitmap::get_param(const String & param)const
 	{
 		return surface.get_h();
 	}
-	
+
 	return Layer_Composite::get_param(param);
 }
 
@@ -113,7 +113,7 @@ Layer::Vocab
 Layer_Bitmap::get_param_vocab()const
 {
 	Layer::Vocab ret(Layer_Composite::get_param_vocab());
-	
+
 	ret.push_back(ParamDesc("tl")
 		.set_local_name(_("Top-Left"))
 		.set_description(_("Upper left-hand Corner of image"))
@@ -146,7 +146,7 @@ Layer_Bitmap::hit_check(synfig::Context context, const synfig::Point &pos)const
 {
 	Point surface_pos;
 	surface_pos=pos-tl;
-	
+
 	surface_pos[0]/=br[0]-tl[0];
 	if(surface_pos[0]<=1.0 && surface_pos[0]>=0.0)
 	{
@@ -156,7 +156,7 @@ Layer_Bitmap::hit_check(synfig::Context context, const synfig::Point &pos)const
 			return const_cast<Layer_Bitmap*>(this);
 		}
 	}
-	
+
 	return context.hit_check(pos);
 }
 
@@ -168,7 +168,7 @@ synfig::Layer_Bitmap::filter(const Color& c)const
 		return c;
 	static Color x;
 	x=c;
-	
+
 	x.set_r(powf((float)x.get_r(),gamma_adjust));
 	x.set_g(powf((float)x.get_g(),gamma_adjust));
 	x.set_b(powf((float)x.get_b(),gamma_adjust));
@@ -182,9 +182,9 @@ synfig::Layer_Bitmap::get_color(Context context, const Point &pos)const
 
 	if(!get_amount())
 		return context.get_color(pos);
-	
+
 	surface_pos=pos-tl;
-	
+
 	surface_pos[0]/=br[0]-tl[0];
 	if(surface_pos[0]<=1.0 && surface_pos[0]>=0.0)
 	{
@@ -193,7 +193,7 @@ synfig::Layer_Bitmap::get_color(Context context, const Point &pos)const
 		{
 			surface_pos[0]*=surface.get_w();
 			surface_pos[1]*=surface.get_h();
-				
+
 			Color ret(Color::alpha());
 
 			switch(c)
@@ -220,16 +220,16 @@ synfig::Layer_Bitmap::get_color(Context context, const Point &pos)const
 				}
 			break;
 			}
-			
+
 			ret=filter(ret);
-			
+
 			if(get_amount()==1 && get_blend_method()==Color::BLEND_STRAIGHT)
 				return ret;
 			else
 				return Color::blend(ret,context.get_color(pos),get_amount(),get_blend_method());
 		}
 	}
-	
+
 	return context.get_color(pos);
 }
 
@@ -245,14 +245,14 @@ Layer_Bitmap::accelerated_render(Context context,Surface *out_surface,int qualit
 	// We can only handle NN and Linear at the moment
 	//if(interp>1)
 	//	return Layer_Composite::accelerated_render(context,out_surface,quality,renddesc,cb);
-	
+
 	//if we don't actually have a valid surface just skip us
 	if(!surface.is_valid())
 	{
 		// Render what is behind us
 		return context.accelerated_render(out_surface,quality,renddesc,cb);
 	}
-			
+
 	SuperCallback subcb(cb,1,10000,10001+renddesc.get_h());
 
 	if(	get_amount()==1 &&
@@ -276,92 +276,92 @@ Layer_Bitmap::accelerated_render(Context context,Surface *out_surface,int qualit
 		if(!context.accelerated_render(out_surface,quality,renddesc,&subcb))
 			return false;
 	}
-	
+
 	if(cb && !cb->amount_complete(10000,10001+renddesc.get_h())) return false;
 
 	Point	obr	= renddesc.get_br(),
 			otl = renddesc.get_tl();
-	
+
 	//Vector::value_type pw=renddesc.get_w()/(renddesc.get_br()[0]-renddesc.get_tl()[0]);
 	//Vector::value_type ph=renddesc.get_h()/(renddesc.get_br()[1]-renddesc.get_tl()[1]);
-	
+
 	//A = representation of input (just tl,br) 	//just a scaling right now
 	//B = representation of output (just tl,br)	//just a scaling right now
 	//sa = scaling for input (0,1) -> (0,w/h)
 	//sb = scaling for output (0,1) -> (0,w/h)
-	
+
 	float	inwf = br[0] - tl[0];
 	float	inhf = br[1] - tl[1];
-	
+
 	float	outwf = obr[0] - otl[0];
 	float	outhf = obr[1] - otl[1];
-	
+
 	int		inw = surface.get_w();
 	int		inh = surface.get_h();
-		
+
 	int		outw = renddesc.get_w();
 	int		outh = renddesc.get_h();
-		
+
 	//need to get the input coords in output space, so we can clip
-	
+
 	//get the desired corners of the bitmap (in increasing order) in integers
 	//floating point corners
 	float x1f = (tl[0] - otl[0])*outw/outwf;
 	float x2f = (br[0] - otl[0])*outw/outwf;
 	float y1f = (tl[1] - otl[1])*outh/outhf;
 	float y2f = (br[1] - otl[1])*outh/outhf;
-	
+
 	if(x1f > x2f) swap(x1f,x2f);
 	if(y1f > y2f) swap(y1f,y2f);
-	
+
 	int x_start = max(0,(int)floor(x1f));	//probably floor
 	int x_end 	= min(outw,(int)ceil(x2f));	//probably ceil
 	int y_start = max(0,(int)floor(y1f));	//probably floor
 	int y_end	= min(outh,(int)ceil(y2f));	//probably ceil
-	
+
 	//need to get the x,y,dx,dy values from output space to input, so we can do fast interpolation
-	
+
 	//get the starting position in input space... for interpolating
-	
+
 	// in int -> out float:
 	// Sb(B^-1)A(Sa^-1) x
 	float inx_start = (((x_start/*+0.5f*/)*outwf/outw + otl[0]) - tl[0])*inw/inwf; //may want to bias this (center of pixel)???
 	float iny_start = (((y_start/*+0.5f*/)*outhf/outh + otl[1]) - tl[1])*inh/inhf; //may want to bias this (center of pixel)???
-	
+
 	//calculate the delta values in input space for one pixel movement in output space
 	//same matrix but with a vector instead of a point...
 	float indx = outwf*(inw)/((outw)*inwf);		//translations died
 	float indy = outhf*(inh)/((outh)*inhf);		//translations died
-	
-	//perhaps use a DDA algorithm... if faster... 
+
+	//perhaps use a DDA algorithm... if faster...
 	//   will still want pixel fractions to be floating point since colors are
 
 	//synfig::info("xstart:%d ystart:%d xend:%d yend:%d",x_start,y_start,x_end,y_end);
-	
+
 	//start drawing at the start of the bitmap (either origin or corner of input...)
 	//and get other info
 	Surface::alpha_pen pen(out_surface->get_pen(x_start,y_start));
 	pen.set_alpha(get_amount());
 	pen.set_blend_method(get_blend_method());
-	
+
 	//check if we should use the downscale filtering
 	if(quality <= 7)
 	{
-		//the stride of the value should be inverted because we want to downsample 
+		//the stride of the value should be inverted because we want to downsample
 		//when the stride is small, not big
 		//int multw = (int)ceil(indx);
 		//int multh = (int)ceil(indy);
-		
+
 		if(indx > 1.7 || indy > 1.7)
 		{
-			/*synfig::info("Decided to downsample? ratios - (%f,%f) -> (%d,%d)", 
-						indx, indy, multw, multh);	*/		
-			
+			/*synfig::info("Decided to downsample? ratios - (%f,%f) -> (%d,%d)",
+						indx, indy, multw, multh);	*/
+
 			//use sample rect here...
-			
+
 			float iny, inx;
 			int x,y;
-			
+
 			//Point sample - truncate
 			iny = iny_start;//+0.5f;
 			for(y = y_start; y < y_end; ++y, pen.inc_y(), iny += indy)
@@ -374,21 +374,21 @@ Layer_Bitmap::accelerated_render(Context context,Surface *out_surface,int qualit
 				}
 				pen.dec_x(x_end-x_start);
 			}
-			
+
 			//Color c = (*out_surface)[0][0];
 			//synfig::info("ValueBase of first pixel = (%f,%f,%f,%f)",c.get_r(),c.get_g(),c.get_b(),c.get_a());
-			
+
 			return true;
 		}
 	}
-	
+
 	//perform normal interpolation
 	if(interp==0)
-	{	
+	{
 		//synfig::info("Decided to do nearest neighbor");
 		float iny, inx;
 		int x,y;
-		
+
 		//Point sample - truncate
 		iny = iny_start;//+0.5f;
 		for(y = y_start; y < y_end; y++, pen.inc_y(), iny += indy)
@@ -408,14 +408,14 @@ Layer_Bitmap::accelerated_render(Context context,Surface *out_surface,int qualit
 	if(interp==1)
 	{
 		//bilinear filtering
-		
+
 		//float 	xmf,xpf,ymf,ypf;
 		//int		xm,xp,ym,yp;
 		float 	inx,iny;
 		int		x,y;
-		
+
 		//can probably buffer for x values...
-		
+
 		//loop and based on inx,iny sample input image
 		iny = iny_start;
 		for(y = y_start; y < y_end; y++, pen.inc_y(), iny += indy)
@@ -426,21 +426,21 @@ Layer_Bitmap::accelerated_render(Context context,Surface *out_surface,int qualit
 				pen.put_value(filter(surface.linear_sample(inx,iny)));
 			}
 			pen.dec_x(x_end-x_start);
-			
+
 		}
-	}	
+	}
 	else
 	if(interp==2)
 	{
 		//cosine filtering
-		
+
 		//float 	xmf,xpf,ymf,ypf;
 		//int		xm,xp,ym,yp;
 		float 	inx,iny;
 		int		x,y;
-		
+
 		//can probably buffer for x values...
-		
+
 		//loop and based on inx,iny sample input image
 		iny = iny_start;
 		for(y = y_start; y < y_end; y++, pen.inc_y(), iny += indy)
@@ -451,20 +451,20 @@ Layer_Bitmap::accelerated_render(Context context,Surface *out_surface,int qualit
 				pen.put_value(filter(surface.cosine_sample(inx,iny)));
 			}
 			pen.dec_x(x_end-x_start);
-			
+
 		}
-	}	
+	}
 	else
 	{
 		//cubic filtering
-		
+
 		//float 	xmf,xpf,ymf,ypf;
 		//int		xm,xp,ym,yp;
 		float 	inx,iny;
 		int		x,y;
-		
+
 		//can probably buffer for x values...
-		
+
 		//loop and based on inx,iny sample input image
 		iny = iny_start;
 		for(y = y_start; y < y_end; y++, pen.inc_y(), iny += indy)
@@ -475,9 +475,9 @@ Layer_Bitmap::accelerated_render(Context context,Surface *out_surface,int qualit
 				pen.put_value(filter(surface.cubic_sample(inx,iny)));
 			}
 			pen.dec_x(x_end-x_start);
-			
+
 		}
-	}	
+	}
 
 	return true;
 }

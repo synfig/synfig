@@ -33,7 +33,7 @@
 /* === S T R U C T S & C L A S S E S ======================================= */
 
 namespace synfig {
-	
+
 class Layer_MotionBlur : public synfig::Layer_Composite
 {
 	SYNFIG_LAYER_MODULE_EXT
@@ -47,9 +47,9 @@ private:
 public:
 
 	Layer_MotionBlur();
-	
+
 	virtual bool set_param(const String & param, const synfig::ValueBase &value);
-	
+
 	virtual ValueBase get_param(const String & param)const;
 
 	virtual Color get_color(Context context, const Point &pos)const;
@@ -57,7 +57,7 @@ public:
 	virtual void set_time(Context context, Time time)const;
 
 	virtual void set_time(Context context, Time time, const Point &pos)const;
-	
+
 	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 
 	virtual Vocab get_param_vocab()const;

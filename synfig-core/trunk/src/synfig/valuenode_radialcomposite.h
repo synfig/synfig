@@ -39,7 +39,7 @@ class ValueNode_RadialComposite : public LinkableValueNode
 {
 	ValueNode::RHandle components[6];
 	ValueNode_RadialComposite(const ValueBase &value);
-	
+
 public:
 	typedef etl::handle<ValueNode_RadialComposite> Handle;
 	typedef etl::handle<const ValueNode_RadialComposite> ConstHandle;
@@ -57,10 +57,10 @@ public:
 	virtual String get_name()const;
 	virtual String get_local_name()const;
 	virtual int get_link_index_from_name(const String &name)const;
-	
+
 protected:
 	virtual bool set_link_vfunc(int i,ValueNode::Handle x);
-	
+
 	LinkableValueNode* create_new()const;
 
 public:

@@ -117,7 +117,7 @@ synfig::check_version_(int version,int vec_size, int color_size,int canvas_size,
 	bool ret=true;
 
 	CHECK_EXPIRE_TIME();
-	
+
 	if(version!=SYNFIG_LIBRARY_VERSION)
 	{
 		synfig::error(_("API Version mismatch (LIB:%d, PROG:%d)"),SYNFIG_LIBRARY_VERSION,version);
@@ -143,7 +143,7 @@ synfig::check_version_(int version,int vec_size, int color_size,int canvas_size,
 		synfig::error(_("Size of Layer mismatch (app:%d, lib:%d)"),layer_size,sizeof(Layer));
 		ret=false;
 	}
-	
+
 	return ret;
 }
 
@@ -194,12 +194,12 @@ bool retrieve_modules_to_load(String filename,std::list<String> &modules_to_load
 			String modulename;
 			getline(file,modulename);
 			if(!modulename.empty() && find(modules_to_load.begin(),modules_to_load.end(),modulename)==modules_to_load.end())
-				modules_to_load.push_back(modulename);			
+				modules_to_load.push_back(modulename);
 		}
 	}
 
-	
-	
+
+
 	return true;
 }
 
@@ -215,7 +215,7 @@ synfig::Main::Main(const synfig::String& basepath,ProgressCallback *cb):
 
 	synfig_ref_count_.reset();
 	ref_count_=synfig_ref_count_;
-	
+
 	// Add initialization after this point
 
 
@@ -226,13 +226,13 @@ synfig::Main::Main(const synfig::String& basepath,ProgressCallback *cb):
 #ifdef _DEBUG
 	std::set_terminate(__gnu_cxx::__verbose_terminate_handler);
 #endif
-	
+
 #if defined(HAVE_SIGNAL_H) && defined(SIGPIPE)
 	signal(SIGPIPE, broken_pipe_signal);
 #endif
-	
+
 	//_config_search_path=new vector"string.h"();
-	
+
 	// Init the subsystems
 	if(cb)cb->amount_complete(0, 100);
 	if(cb)cb->task(_("Starting Subsystem \"Modules\""));
@@ -253,7 +253,7 @@ synfig::Main::Main(const synfig::String& basepath,ProgressCallback *cb):
 		Module::subsys_stop();
 		throw std::runtime_error(_("Unable to initialize subsystem \"Targets\""));
 	}
-	
+
 	if(cb)cb->task(_("Starting Subsystem \"Importers\""));
 	if(!Importer::subsys_init())
 	{
@@ -272,16 +272,16 @@ synfig::Main::Main(const synfig::String& basepath,ProgressCallback *cb):
 		Module::subsys_stop();
 		throw std::runtime_error(_("Unable to initialize subsystem \"ValueNodes\""));
 	}
-	
+
 	// Load up the list importer
 	Importer::book()[String("lst")]=ListImporter::create;
-		
 
-	
-	// Load up the modules	
+
+
+	// Load up the modules
 	std::list<String> modules_to_load;
 	std::vector<String> locations;
-	
+
 	if(!getenv("SYNFIG_MODULE_LIST"))
 	{
 		locations.push_back("standard");
@@ -306,7 +306,7 @@ synfig::Main::Main(const synfig::String& basepath,ProgressCallback *cb):
 	{
 		locations.push_back(getenv("SYNFIG_MODULE_LIST"));
 	}
-/*	
+/*
 	const char *locations[]=
 	{
 		"standard",	//0
@@ -328,24 +328,24 @@ synfig::Main::Main(const synfig::String& basepath,ProgressCallback *cb):
 #endif
 	};
 */
-	
+
 	for(i=0;i<locations.size();i++)
 		if(retrieve_modules_to_load(locations[i],modules_to_load))
 			if(cb)cb->task(strprintf(_("Loading modules from %s"),locations[i].c_str()));
-	
+
 	std::list<String>::iterator iter;
-	
+
 	for(i=0,iter=modules_to_load.begin();iter!=modules_to_load.end();++iter,i++)
 	{
 		Module::Register(*iter,cb);
 		if(cb)cb->amount_complete((i+1)*100,modules_to_load.size()*100);
 	}
-	
+
 //	load_modules(cb);
-	
+
 	CHECK_EXPIRE_TIME();
 
-	
+
 	if(cb)cb->amount_complete(100, 100);
 	if(cb)cb->task(_("DONE"));
 }
@@ -368,7 +368,7 @@ synfig::Main::~Main()
 			synfig::warning("%s: count()=%d",iter->first.c_str(), iter->second.count());
 		}
 	}
-		
+
 	ValueNode::subsys_stop();
 	Importer::subsys_stop();
 	Target::subsys_stop();

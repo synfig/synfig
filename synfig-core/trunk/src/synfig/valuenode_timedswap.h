@@ -39,7 +39,7 @@ struct ValueNode_TimedSwap : public LinkableValueNode
 {
 	typedef etl::handle<ValueNode_TimedSwap> Handle;
 	typedef etl::handle<const ValueNode_TimedSwap> ConstHandle;
-	
+
 private:
 
 	ValueNode::RHandle before;
@@ -78,12 +78,12 @@ public:
 
 	virtual ValueBase operator()(Time t)const;
 
-	virtual String get_name()const;	
+	virtual String get_name()const;
 	virtual String get_local_name()const;
 //	static bool check_type(const ValueBase::Type &type);
 
 protected:
-	
+
 	virtual LinkableValueNode* create_new()const;
 
 public:

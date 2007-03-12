@@ -43,25 +43,25 @@ public:
 
 private:
 	ValueBase value;
-	
+
 	ValueNode_Const();
 	ValueNode_Const(const ValueBase &x);
 
 public:
-	
+
 	virtual ValueBase operator()(Time t)const;
 	virtual ~ValueNode_Const();
 
 	const ValueBase &get_value()const;
 	ValueBase &get_value();
 	void set_value(const ValueBase &data);
-	
+
 
 	virtual String get_name()const;
 	virtual String get_local_name()const;
 
 	virtual ValueNode* clone(const GUID& deriv_guid=GUID())const;
-	
+
 public:
 	static ValueNode_Const* create(const ValueBase &x=ValueBase());
 

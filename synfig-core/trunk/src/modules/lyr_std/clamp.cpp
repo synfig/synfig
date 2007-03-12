@@ -74,7 +74,7 @@ inline Color
 Layer_Clamp::clamp_color(const Color &in)const
 {
 	Color ret(in);
-		
+
 	if(ret.get_a()==0)
 		return Color::alpha();
 
@@ -82,7 +82,7 @@ Layer_Clamp::clamp_color(const Color &in)const
 	{
 		if(ret.get_a()<floor)
 			ret=-ret;
-	
+
 		if(ret.get_r()<floor)
 		{
 			ret.set_g(ret.get_g()-ret.get_r());
@@ -119,7 +119,7 @@ Layer_Clamp::clamp_color(const Color &in)const
 	}
 	return ret;
 }
-	
+
 bool
 Layer_Clamp::set_param(const String & param, const ValueBase &value)
 {
@@ -127,8 +127,8 @@ Layer_Clamp::set_param(const String & param, const ValueBase &value)
 	IMPORT(clamp_ceiling);
 	IMPORT(ceiling);
 	IMPORT(floor);
-	
-	return false;	
+
+	return false;
 }
 
 ValueBase
@@ -142,15 +142,15 @@ Layer_Clamp::get_param(const String &param)const
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
-		
-	return ValueBase();	
+
+	return ValueBase();
 }
 
 Layer::Vocab
 Layer_Clamp::get_param_vocab()const
 {
 	Layer::Vocab ret;
-	
+
 	ret.push_back(ParamDesc("invert_negative")
 		.set_local_name(_("Invert Negative"))
 	);
@@ -166,7 +166,7 @@ Layer_Clamp::get_param_vocab()const
 	ret.push_back(ParamDesc("floor")
 		.set_local_name(_("Floor"))
 	);
-	
+
 	return ret;
 }
 
@@ -175,7 +175,7 @@ Layer_Clamp::get_color(Context context, const Point &pos)const
 {
 	return clamp_color(context.get_color(pos));
 }
-	
+
 bool
 Layer_Clamp::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {

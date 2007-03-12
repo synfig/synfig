@@ -46,9 +46,9 @@ private:
 
 	class LibAVEncoder;
 	LibAVEncoder	*data;
-	
+
 	static bool registered;
-	
+
 	synfig::Surface	surface;
 
 public:

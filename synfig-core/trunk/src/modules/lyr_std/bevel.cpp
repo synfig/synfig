@@ -112,7 +112,7 @@ Layer_Bevel::set_param(const String &param, const ValueBase &value)
 	IMPORT(type);
 	IMPORT(use_luma);
 	IMPORT(solid);
-	
+
 	return Layer_Composite::set_param(param,value);
 }
 
@@ -127,11 +127,11 @@ Layer_Bevel::get_param(const String &param)const
 	EXPORT(angle);
 	EXPORT(use_luma);
 	EXPORT(solid);
-	
+
 	EXPORT_NAME();
 	EXPORT_VERSION();
-		
-	return Layer_Composite::get_param(param);	
+
+	return Layer_Composite::get_param(param);
 }
 
 Color
@@ -142,18 +142,18 @@ Layer_Bevel::get_color(Context context, const Point &pos)const
 
 	if(get_amount()==0.0)
 		return context.get_color(pos);
-	
+
 	Color shade;
 
 	Real hi_alpha(1.0f-context.get_color(blurpos+offset).get_a());
 	Real lo_alpha(1.0f-context.get_color(blurpos-offset).get_a());
-	
+
 	Real shade_alpha(hi_alpha-lo_alpha);
 	if(shade_alpha>0)
 		shade=color1,shade.set_a(shade_alpha);
-	else	
+	else
 		shade=color2,shade.set_a(-shade_alpha);
-	
+
 	return Color::blend(shade,context.get_color(pos),get_amount(),get_blend_method());
 }
 
@@ -163,39 +163,39 @@ Layer_Bevel::accelerated_render(Context context,Surface *surface,int quality, co
 	int x,y;
 	SuperCallback stageone(cb,0,5000,10000);
 	SuperCallback stagetwo(cb,5000,10000,10000);
-	
+
 	const int	w = renddesc.get_w(),
 				h = renddesc.get_h();
 	const Real	pw = renddesc.get_pw(),
 				ph = renddesc.get_ph();
 	const Vector size(softness,softness);
-	
+
 	RendDesc	workdesc(renddesc);
 	Surface		worksurface;
 	etl::surface<float> blurred;
-	
+
 	//callbacks depend on how long the blur takes
 	if(size[0] || size[1])
 	{
 		if(type == Blur::DISC)
 		{
 			stageone = SuperCallback(cb,0,5000,10000);
-			stagetwo = SuperCallback(cb,5000,10000,10000);	
+			stagetwo = SuperCallback(cb,5000,10000,10000);
 		}
 		else
 		{
 			stageone = SuperCallback(cb,0,9000,10000);
-			stagetwo = SuperCallback(cb,9000,10000,10000);	
+			stagetwo = SuperCallback(cb,9000,10000,10000);
 		}
 	}
 	else
 	{
 		stageone = SuperCallback(cb,0,9999,10000);
-		stagetwo = SuperCallback(cb,9999,10000,10000);	
+		stagetwo = SuperCallback(cb,9999,10000,10000);
 	}
-	
+
 	//expand the working surface to accommodate the blur
-	
+
 	//the expanded size = 1/2 the size in each direction rounded up
 	int	halfsizex = (int) (abs(size[0]*.5/pw) + 3),
 		halfsizey = (int) (abs(size[1]*.5/ph) + 3);
@@ -209,7 +209,7 @@ Layer_Bevel::accelerated_render(Context context,Surface *surface,int quality, co
 		w+abs(offset_u),
 		h+abs(offset_v)
 	);
-	
+
 	//expand by 1/2 size in each direction on either side
 	switch(type)
 	{
@@ -235,7 +235,7 @@ Layer_Bevel::accelerated_render(Context context,Surface *surface,int quality, co
 		#define GAUSSIAN_ADJUSTMENT		(0.05)
 			Real	pw = (Real)workdesc.get_w()/(workdesc.get_br()[0]-workdesc.get_tl()[0]);
 			Real 	ph = (Real)workdesc.get_h()/(workdesc.get_br()[1]-workdesc.get_tl()[1]);
-			
+
 			pw=pw*pw;
 			ph=ph*ph;
 
@@ -245,11 +245,11 @@ Layer_Bevel::accelerated_render(Context context,Surface *surface,int quality, co
 			halfsizex = (halfsizex + 1)/2;
 			halfsizey = (halfsizey + 1)/2;
 			workdesc.set_subwindow( -halfsizex, -halfsizey, offset_w+2*halfsizex, offset_h+2*halfsizey );
-						
+
 			break;
 		}
 	}
-	
+
 	//render the background onto the expanded surface
 	if(!context.accelerated_render(&worksurface,quality,workdesc,&stageone))
 		return false;
@@ -278,7 +278,7 @@ Layer_Bevel::accelerated_render(Context context,Surface *surface,int quality, co
 
 	//be sure the surface is of the correct size
 	surface->set_wh(renddesc.get_w(),renddesc.get_h());
-	
+
 	int u = halfsizex+abs(offset_u), v = halfsizey+abs(offset_v);
 	for(y=0;y<renddesc.get_h();y++,v++)
 	{
@@ -324,12 +324,12 @@ Layer_Bevel::accelerated_render(Context context,Surface *surface,int quality, co
 				alpha/=2;
 				if(alpha>0)
 					shade=color1,shade.set_a(shade.get_a()*alpha);
-				else	
+				else
 					shade=color2,shade.set_a(shade.get_a()*-alpha);
 			}
-				
 
-						
+
+
 			if(shade.get_a())
 			{
 				(*surface)[y][x]=Color::blend(shade,worksurface[v][u],get_amount(),get_blend_method());
@@ -337,16 +337,16 @@ Layer_Bevel::accelerated_render(Context context,Surface *surface,int quality, co
 			else (*surface)[y][x] = worksurface[v][u];
 		}
 	}
-	
+
 	if(cb && !cb->amount_complete(10000,10000))
 	{
 		//if(cb)cb->error(strprintf(__FILE__"%d: Accelerated Renderer Failure",__LINE__));
 		return false;
 	}
-		
+
 	return true;
 }
-	
+
 Layer::Vocab
 Layer_Bevel::get_param_vocab(void)const
 {
@@ -386,7 +386,7 @@ Layer_Bevel::get_param_vocab(void)const
 	ret.push_back(ParamDesc("solid")
 		.set_local_name(_("Solid"))
 	);
-		
+
 	return ret;
 }
 
@@ -404,6 +404,6 @@ Layer_Bevel::get_full_bounding_rect(Context context)const
 	Rect bounds(under.expand(softness));
 	bounds.expand_x(abs(depth));
 	bounds.expand_y(abs(depth));
-		
+
 	return bounds;
 }

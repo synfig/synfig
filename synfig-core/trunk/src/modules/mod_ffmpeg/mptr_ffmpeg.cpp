@@ -60,15 +60,15 @@ ffmpeg_mptr::seek_to(int frame)
 	{
 		if(file)
 		{
-			pclose(file);	
+			pclose(file);
 		}
 
 		string command;
-	
+
 		command=strprintf("ffmpeg -i \"%s\" -an -f image2pipe -vcodec ppm -\n",filename.c_str());
-	
+
 		file=popen(command.c_str(),"r");
-	
+
 		if(!file)
 		{
 			cerr<<"Unable to open pipe to ffmpeg"<<endl;
@@ -76,7 +76,7 @@ ffmpeg_mptr::seek_to(int frame)
 		}
 		cur_frame=-1;
 	}
-	
+
 	while(cur_frame<frame-1)
 	{
 		cerr<<"Seeking to..."<<frame<<'('<<cur_frame<<')'<<endl;
@@ -99,21 +99,21 @@ ffmpeg_mptr::grab_frame(void)
 	char cookie[2];
 	cookie[0]=fgetc(file);
 	cookie[1]=fgetc(file);
-	
+
 	if(cookie[0]!='P' || cookie[1]!='6')
 	{
 		cerr<<"stream not in PPM format \""<<cookie[0]<<cookie[1]<<'"'<<endl;
 		return false;
 	}
-	
+
 	fgetc(file);
 	fscanf(file,"%d %d\n",&w,&h);
 	fscanf(file,"%f",&divisor);
 	fgetc(file);
-			
+
 	if(feof(file))
 		return false;
-	
+
 	int x;
 	int y;
 	frame.set_wh(w,h);
@@ -139,7 +139,7 @@ ffmpeg_mptr::grab_frame(void)
 				1.0
 			);
 		}
-	cur_frame++;		
+	cur_frame++;
 	return true;
 }
 
@@ -157,7 +157,7 @@ ffmpeg_mptr::ffmpeg_mptr(const char *f)
 ffmpeg_mptr::~ffmpeg_mptr()
 {
 	if(file)
-		pclose(file);	
+		pclose(file);
 #ifdef HAVE_TERMIOS_H
 	tcsetattr(0,TCSANOW,&oldtty);
 #endif
@@ -174,7 +174,7 @@ ffmpeg_mptr::get_frame(synfig::Surface &surface,Time time, synfig::ProgressCallb
 		if(!grab_frame());
 			return false;
 	}
-	
+
 	surface=frame;
 	return false;
 }

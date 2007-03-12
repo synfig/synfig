@@ -92,7 +92,7 @@ Halftone3::Halftone3()
 		color[1]=Color::green();
 		color[2]=Color::blue();
 	}
-		
+
 	set_blend_method(Color::BLEND_STRAIGHT);
 
 	for(int i=0;i<3;i++)
@@ -110,10 +110,10 @@ Halftone3::sync()
 		tone[i].size=size;
 		tone[i].type=type;
 	}
-	
+
 #define matrix inverse_matrix
 	//float matrix[3][3];
-	
+
 	if(subtractive)
 	{
 		for(int i=0;i<3;i++)
@@ -154,38 +154,38 @@ Halftone3::sync()
 	}
 #undef matrix
 
-	
-	
+
+
 #if 0
 	// Insert guass-jordan elimination code here
 	int k=0,i=0,j=0,z_size=3;
 #define A inverse_matrix
-	
-	for (k=0;k<z_size;k++)   
-  // the pivot element 
-    { A[k][k]= -1/A[k][k];   
- 
+
+	for (k=0;k<z_size;k++)
+  // the pivot element
+    { A[k][k]= -1/A[k][k];
+
   //the pivot column
-     for (i=0;i<z_size;i++)             
+     for (i=0;i<z_size;i++)
          if (i!=k) A[i][k]*=A[k][k];
 
  //elements not in a pivot row or column
      for (i=0;i<z_size;i++)
-        if (i!=k) 
+        if (i!=k)
             for (j=0;j<z_size;j++)
                       if (j!=k)
                           A[i][j]+=A[i][k]*A[k][j];
 
  //elements in a pivot row
     for (i=0;i<z_size;i++)
-       if (i!=k) 
+       if (i!=k)
             A[k][i]*=A[k][k];
    }
 
  //change sign
    for (i=0;i<z_size;i++)        /*reverse sign*/
      for (j=0;j<z_size;j++)
-        A[i][j]=-A[i][j];	
+        A[i][j]=-A[i][j];
 #undef A
 #endif
 }
@@ -196,8 +196,8 @@ Halftone3::color_func(const Point &point, float supersample,const Color& in_colo
 	Color halfcolor;
 
 	float chan[3];
-	
-	
+
+
 	if(subtractive)
 	{
 		chan[0]=inverse_matrix[0][0]*(1.0f-in_color.get_r())+inverse_matrix[0][1]*(1.0f-in_color.get_g())+inverse_matrix[0][2]*(1.0f-in_color.get_b());
@@ -208,7 +208,7 @@ Halftone3::color_func(const Point &point, float supersample,const Color& in_colo
 		halfcolor-=(~color[0])*tone[0](point,chan[0],supersample);
 		halfcolor-=(~color[1])*tone[1](point,chan[1],supersample);
 		halfcolor-=(~color[2])*tone[2](point,chan[2],supersample);
-	
+
 		halfcolor.set_a(in_color.get_a());
 	}
 	else
@@ -221,7 +221,7 @@ Halftone3::color_func(const Point &point, float supersample,const Color& in_colo
 		halfcolor+=color[0]*tone[0](point,chan[0],supersample);
 		halfcolor+=color[1]*tone[1](point,chan[1],supersample);
 		halfcolor+=color[2]*tone[2](point,chan[2],supersample);
-	
+
 		halfcolor.set_a(in_color.get_a());
 	}
 
@@ -249,9 +249,9 @@ Halftone3::set_param(const String & param, const ValueBase &value)
 	IMPORT_PLUS(color[0],sync());
 	IMPORT_PLUS(color[1],sync());
 	IMPORT_PLUS(color[2],sync());
-	
+
 	IMPORT_PLUS(subtractive,sync());
-	
+
 	IMPORT(tone[0].angle);
 	IMPORT(tone[0].offset);
 
@@ -260,8 +260,8 @@ Halftone3::set_param(const String & param, const ValueBase &value)
 
 	IMPORT(tone[2].angle);
 	IMPORT(tone[2].offset);
-	
-	return Layer_Composite::set_param(param,value);	
+
+	return Layer_Composite::set_param(param,value);
 }
 
 ValueBase
@@ -275,7 +275,7 @@ Halftone3::get_param(const String & param)const
 	EXPORT(color[2]);
 
 	EXPORT(subtractive);
-	
+
 	EXPORT(tone[0].angle);
 	EXPORT(tone[0].offset);
 
@@ -287,8 +287,8 @@ Halftone3::get_param(const String & param)const
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
-		
-	return Layer_Composite::get_param(param);	
+
+	return Layer_Composite::get_param(param);
 }
 
 Layer::Vocab
@@ -311,11 +311,11 @@ Halftone3::get_param_vocab()const
 	ret.push_back(ParamDesc("subtractive")
 		.set_local_name(_("Subtractive Flag"))
 	);
-	
+
 	for(int i=0;i<3;i++)
 	{
 		String chan_name(strprintf("Chan%d",i));
-		
+
 		ret.push_back(ParamDesc(strprintf("color[%d]",i))
 			.set_local_name(chan_name+_(" Color"))
 		);
@@ -329,7 +329,7 @@ Halftone3::get_param_vocab()const
 			.set_origin(strprintf("tone[%d].offset",i))
 		);
 	}
-	
+
 	return ret;
 }
 
@@ -354,7 +354,7 @@ Halftone3::accelerated_render(Context context,Surface *surface,int quality, cons
 		return false;
 	if(get_amount()==0)
 		return true;
-		
+
 	const Real pw(renddesc.get_pw()),ph(renddesc.get_ph());
 	const Point tl(renddesc.get_tl());
 	const int w(surface->get_w());
@@ -364,7 +364,7 @@ Halftone3::accelerated_render(Context context,Surface *surface,int quality, cons
 	Surface::pen pen(surface->begin());
 	Point pos;
 	int x,y;
-	
+
 	if(is_solid_color())
 	{
 		for(y=0,pos[1]=tl[1];y<h;y++,pen.inc_y(),pen.dec_x(x),pos[1]+=ph)
@@ -394,7 +394,7 @@ Halftone3::accelerated_render(Context context,Surface *surface,int quality, cons
 					)
 				);
 	}
-	
+
 	// Mark our progress as finished
 	if(cb && !cb->amount_complete(10000,10000))
 		return false;

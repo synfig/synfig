@@ -89,7 +89,7 @@ clip(false)
 {
 }
 
-	
+
 bool
 Layer_SphereDistort::set_param(const String & param, const ValueBase &value)
 {
@@ -110,8 +110,8 @@ Layer_SphereDistort::set_param(const String & param, const ValueBase &value)
 		else
 			synfig::warning("Layer_SphereDistort::::set_param(): The parameter \"segment_list\" is deprecated. Use \"bline\" instead.");
 	}
-	
-	return false;	
+
+	return false;
 }
 
 ValueBase
@@ -122,10 +122,10 @@ Layer_SphereDistort::get_param(const String &param)const
 	EXPORT(type);
 	EXPORT_AS(percent,"amount");
 	EXPORT(clip);
-	
+
 	EXPORT_NAME();
 	EXPORT_VERSION();
-		
+
 	return ValueBase();
 }
 
@@ -138,17 +138,17 @@ Layer::Vocab
 Layer_SphereDistort::get_param_vocab()const
 {
 	Layer::Vocab ret;
-	
+
 	ret.push_back(ParamDesc("center")
 		.set_local_name(_("Position"))
 	);
-	
+
 	ret.push_back(ParamDesc("radius")
 		.set_local_name(_("Radius"))
 		.set_origin("center")
 		.set_is_distance()
 	);
-	
+
 	ret.push_back(ParamDesc("amount")
 		.set_local_name(_("Amount"))
 		.set_is_distance(false)
@@ -157,7 +157,7 @@ Layer_SphereDistort::get_param_vocab()const
 	ret.push_back(ParamDesc("clip")
 		.set_local_name(_("Clip"))
 	);
-	
+
 	ret.push_back(ParamDesc("type")
 		.set_local_name(_("Distort Type"))
 		.set_description(_("The direction of the distortion"))
@@ -166,30 +166,30 @@ Layer_SphereDistort::get_param_vocab()const
 		.add_enum_value(TYPE_DISTH,"honly",_("Vertical Bar"))
 		.add_enum_value(TYPE_DISTV,"vonly",_("Horizontal Bar"))
 	);
-	
+
 	return ret;
 }
 
 /*
 	Spherical Distortion: maps an image onto a ellipsoid of some sort
-	
-	so the image coordinate (i.e. distance away from the center) 
+
+	so the image coordinate (i.e. distance away from the center)
 	will determine how things get mapped
-	
+
 	so with the radius and position the mapping would go as follows
-	
+
 	r = (pos - center) / radius	clamped to [-1,1]
-	
+
 	if it's outside of that range then it's not distorted
 	but if it's inside of that range then it goes as follows
-	
+
 	angle = r * pi/2 (-pi/2,pi/2)
-	
+
 	newr = cos(angle)*radius
-	
+
 	the inverse of this is (which is actually what we'd be transforming it from
 
-	
+
 */
 
 inline float spherify(float f)
@@ -206,21 +206,21 @@ inline float unspherify(float f)
 	else return f;
 }
 
-Point sphtrans(const Point &p, const Point &center, const float &radius, 
+Point sphtrans(const Point &p, const Point &center, const float &radius,
 											const Real &percent, int type, bool& clipped)
 {
 	const Vector v = (p - center) / radius;
-	
+
 	Point newp = p;
 	const float t = percent;
-	
+
 	clipped=false;
-	
+
 	if(type == TYPE_NORMAL)
 	{
 		const float m = v.mag();
 		float lerp(0);
-		
+
 		if(m <= -1 || m >= 1)
 		{
 			clipped=true;
@@ -233,14 +233,14 @@ Point sphtrans(const Point &p, const Point &center, const float &radius,
 		{
 			lerp = (t*unspherify(m) + (1-t)*m);
 		}else if(t < 0)
-		{			
+		{
 			lerp = ((1+t)*m - t*spherify(m));
 		}else lerp = m;
-		
+
 		const float d = lerp*radius;
 		newp = center + v*(d/m);
 	}
-	
+
 	else if(type == TYPE_DISTH)
 	{
 		float lerp(0);
@@ -259,10 +259,10 @@ Point sphtrans(const Point &p, const Point &center, const float &radius,
 		{
 			lerp = ((1+t)*v[0] - t*spherify(v[0]));
 		}else lerp = v[0];
-		
+
 		newp[0] = center[0] + lerp*radius;
 	}
-	
+
 	else if(type == TYPE_DISTV)
 	{
 		float lerp(0);
@@ -282,14 +282,14 @@ Point sphtrans(const Point &p, const Point &center, const float &radius,
 		{
 			lerp = ((1+t)*v[1] - t*spherify(v[1]));
 		}else lerp = v[1];
-		
+
 		newp[1] = center[1] + lerp*radius;
 	}
-	
+
 	return newp;
 }
 
-inline Point sphtrans(const Point &p, const Point &center, const Real &radius, 
+inline Point sphtrans(const Point &p, const Point &center, const Real &radius,
 											const Real &percent, int type)
 {
 	bool tmp;
@@ -324,25 +324,25 @@ bool Layer_SphereDistort::accelerated_render(Context context,Surface *surface,in
 		2) Bounding box clipping
 		3) Super sampling for better visual quality (based on the quality level?)
 		4) Interpolation type for sampling (based on quality level?)
-	
+
 		//things to defer until after
 		super sampling, non-linear interpolation
 	*/
-	
+
 	//bounding box reject
 	{
 		Rect	sphr;
-		
+
 		sphr.set_point(center[0]-radius,center[1]-radius);
 		sphr.expand(center[0]+radius,center[1]+radius);
 
-		//get the bounding box of the transform		
+		//get the bounding box of the transform
 		Rect	windr;
-		
-		//and the bounding box of the rendering		
+
+		//and the bounding box of the rendering
 		windr.set_point(renddesc.get_tl()[0],renddesc.get_tl()[1]);
 		windr.expand(renddesc.get_br()[0],renddesc.get_br()[1]);
-		
+
 		//test bounding boxes for collision
 		if( (type == TYPE_NORMAL && !intersect(sphr,windr)) ||
 			(type == TYPE_DISTH && (sphr.minx >= windr.maxx || windr.minx >= sphr.maxx)) ||
@@ -351,50 +351,50 @@ bool Layer_SphereDistort::accelerated_render(Context context,Surface *surface,in
 			//synfig::warning("Spherize: Bounding box reject");
 			return context.accelerated_render(surface,quality,renddesc,cb);
 		}
-		
+
 		//synfig::warning("Spherize: Bounding box accept");
 	}
-	
+
 	//Ok, so we overlap some... now expand the window for rendering
 	RendDesc r = renddesc;
 	Surface background;
 	Real pw = renddesc.get_pw(),ph = renddesc.get_ph();
-	
+
 	int nl=0,nt=0,nr=0,nb=0, nw=0,nh=0;
 	Point tl = renddesc.get_tl(), br = renddesc.get_br();
-	
-	{		
+
+	{
 		//must enlarge window by pixel coordinates so go!
-		
+
 		//need to figure out closest and farthest point and distort THOSE
-		
+
 		Point origin[4] = {tl,tl,br,br};
 		Vector v[4] = {Vector(0,br[1]-tl[1]),
 					   Vector(br[0]-tl[0],0),
 					   Vector(0,tl[1]-br[1]),
 					   Vector(tl[0]-br[0],0)};
-		
+
 		Point close(0,0);
 		Real t = 0;
 		Rect	expandr(tl,br);
-					   
+
 		//expandr.set_point(tl[0],tl[1]);
 		//expandr.expand(br[0],br[1]);
 
-		//synfig::warning("Spherize: Loop through lines and stuff");					   
+		//synfig::warning("Spherize: Loop through lines and stuff");
 		for(int i=0; i<4; ++i)
 		{
 			//synfig::warning("Spherize: 	%d", i);
 			Vector p_o = center-origin[i];
-			
+
 			//project onto left line
 			t = (p_o*v[i])/v[i].mag_squared();
-			
+
 			//clamp
 			if(t < 0) t = 0; if(t > 1) t = 1;
-			
+
 			close = origin[i] + v[i]*t;
-			
+
 			//now get transforms and expand the rectangle to accomodate
 			Point p = sphtrans(close,center,radius,percent,type);
 			expandr.expand(p[0],p[1]);
@@ -403,83 +403,83 @@ bool Layer_SphereDistort::accelerated_render(Context context,Surface *surface,in
 			p = sphtrans(origin[i]+v[i],center,radius,percent,type);
 			expandr.expand(p[0],p[1]);
 		}
-		
+
 		/*synfig::warning("Spherize: Bounding box (%f,%f)-(%f,%f)",
 							expandr.minx,expandr.miny,expandr.maxx,expandr.maxy);*/
-		
+
 		//now that we have the bouding rectangle of ALL the pixels (should be...)
 		//order it so that it's in the same orientation as the tl,br pair
 
 		//synfig::warning("Spherize: Organize like tl,br");
 		Point ntl(0,0),nbr(0,0);
-		
+
 		//sort x
 		if(tl[0] < br[0])
-		{ 
+		{
 			ntl[0] = expandr.minx;
 			nbr[0] = expandr.maxx;
 		}
 		else
 		{
 			ntl[0] = expandr.maxx;
-			nbr[0] = expandr.minx;			
+			nbr[0] = expandr.minx;
 		}
-		
+
 		//sort y
 		if(tl[1] < br[1])
-		{ 
+		{
 			ntl[1] = expandr.miny;
 			nbr[1] = expandr.maxy;
 		}
 		else
 		{
 			ntl[1] = expandr.maxy;
-			nbr[1] = expandr.miny;			
+			nbr[1] = expandr.miny;
 		}
-		
+
 		//now expand the window as needed
 		Vector temp = ntl-tl;
-		
+
 		//pixel offset
 		nl = (int)(temp[0]/pw)-1;
 		nt = (int)(temp[1]/ph)-1;
-		
+
 		temp = nbr - br;
 		nr = (int)(temp[0]/pw)+1;
 		nb = (int)(temp[1]/ph)+1;
-		
+
 		nw = renddesc.get_w() + nr - nl;
 		nh = renddesc.get_h() + nb - nt;
-		
-		//synfig::warning("Spherize: Setting subwindow (%d,%d) (%d,%d) (%d,%d)",nl,nt,nr,nb,nw,nh);		
+
+		//synfig::warning("Spherize: Setting subwindow (%d,%d) (%d,%d) (%d,%d)",nl,nt,nr,nb,nw,nh);
 		r.set_subwindow(nl,nt,nw,nh);
-		
+
 		/*r = renddesc;
 		nw = r.get_w(), nh = r.get_h();
 		nl = 0, nt = 0;*/
 	}
-	
+
 	//synfig::warning("Spherize: render background");
 	if(!context.accelerated_render(&background,quality,r,cb))
 	{
 		synfig::warning("SphereDistort: Layer below failed");
 		return false;
 	}
-	
+
 	//now distort and check to make sure we aren't overshooting our bounds here
 	int w = renddesc.get_w(), h = renddesc.get_h();
 	surface->set_wh(w,h);
-		
+
 	Point sample = tl, sub = tl, trans(0,0);
 	float xs = 0,ys = 0;
 	int y=0,x=0;
 	Real invpw = 1/pw, invph = 1/ph;
 	Surface::pen	p = surface->begin();
-	
+
 	Point rtl = r.get_tl();
-	
+
 	//synfig::warning("Spherize: About to transform");
-	
+
 	for(y = 0; y < h; ++y, sample[1] += ph, p.inc_y())
 	{
 		sub = sample;
@@ -495,15 +495,15 @@ bool Layer_SphereDistort::accelerated_render(Context context,Surface *surface,in
 
 			xs = (trans[0]-rtl[0])*invpw;
 			ys = (trans[1]-rtl[1])*invph;
-			
+
 			if(!(xs >= 0 && xs < nw && ys >= 0 && ys < nh))
 			{
 				//synfig::warning("Spherize: we failed to account for %f,%f",xs,ys);
 				p.put_value(context.get_color(trans));//Color::alpha());
 				continue;
 			}
-			
-			//sample at that pixel location based on the quality		
+
+			//sample at that pixel location based on the quality
 			if(quality <= 4) //cubic
 			{
 				p.put_value(background.cubic_sample(xs,ys));
@@ -520,8 +520,8 @@ bool Layer_SphereDistort::accelerated_render(Context context,Surface *surface,in
 		}
 		p.dec_x(w);
 	}
-	
-	return true;	
+
+	return true;
 }
 #endif
 
@@ -530,12 +530,12 @@ class synfig::Spherize_Trans : public synfig::Transform
 	etl::handle<const Layer_SphereDistort> layer;
 public:
 	Spherize_Trans(const Layer_SphereDistort* x):Transform(x->get_guid()),layer(x) { }
-	
+
 	synfig::Vector perform(const synfig::Vector& x)const
 	{
 		return sphtrans(x,layer->center,layer->radius,-layer->percent,layer->type);
 	}
-	
+
 	synfig::Vector unperform(const synfig::Vector& x)const
 	{
 		return sphtrans(x,layer->center,layer->radius,layer->percent,layer->type);
@@ -569,7 +569,7 @@ Layer_SphereDistort::get_bounding_rect()const
 		default:
 			break;
 	}
-	
+
 	return bounds;
 }
 

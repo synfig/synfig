@@ -71,12 +71,12 @@ synfig::Gradient::Gradient(const Color &c1, const Color &c2, const Color &c3)
 // it will sort an inverse sorted list at ~O(N*N).
 void
 synfig::Gradient::sort()
-{	
+{
 	stable_sort(begin(),end());
 	/*
 	iterator iter;
 	iterator iter2,next;
-	
+
 	for(iter=begin();iter!=end();iter++)
 	{
 		for(next=iter, iter2=next--;iter2!=begin();iter2=next--)
@@ -86,7 +86,7 @@ synfig::Gradient::sort()
 				//insert(next,*iter);
 				//erase(iter);
 				iter_swap(next,iter);
-				
+
 				continue;
 			}
 			else
@@ -103,7 +103,7 @@ supersample_helper(const synfig::Gradient::CPoint &color1, const synfig::Gradien
 	{
 		weight=0;
 		return Color::alpha();
-	}		
+	}
 	if(color1.pos>=begin && color2.pos<end)
 	{
 		weight=color2.pos-color1.pos;
@@ -144,10 +144,10 @@ supersample_helper(const synfig::Gradient::CPoint &color1, const synfig::Gradien
 
 	weight=0;
 	return Color::alpha();
-	
+
 //	assert(0);
 }
-	
+
 Color
 synfig::Gradient::operator()(const Real &x,float supersample)const
 {
@@ -157,13 +157,13 @@ synfig::Gradient::operator()(const Real &x,float supersample)const
 		supersample=-supersample;
 	if(supersample>2.0)
 		supersample=2.0f;
-	
+
 	float begin_sample(x-supersample*0.5);
 	float end_sample(x+supersample*0.5);
 
 	if(size()==1 || end_sample<=front().pos || isnan(x))
 		return front().color;
-	
+
 	if(begin_sample>=back().pos)
 		return back().color;
 
@@ -174,58 +174,58 @@ synfig::Gradient::operator()(const Real &x,float supersample)const
 	if(begin_sample<=front().pos)
 		begin_sample=front().pos;
 	*/
-	
+
 	const_iterator iter,next;
 
 	/*
 	//optimizize...
 	Real 	left = x-supersample/2, right = x+supersample/2;
-	
+
 	if(left < front().pos) left = front().pos;
 	if(right > back().pos) right = back().pos;
-	
+
 	//find using binary search...
 	const_iterator iterl,iterr;
-	
+
 	//the binary search should give us the values BEFORE the point we're looking for...
 	iterl = binary_find(begin(),end(),left);
 	iterr = binary_find(iterl,end(),right);
-	
+
 	//now integrate over the range of left to right...
-	
+
 	if(iterl == iterr)
 	{
 		iterr++; //let's look at the next one shall we :)
-		
+
 		//interpolate neighboring colors
 		const Real one = iterr->pos - iterl->pos;
 		const Real lambda = (x - iterl->pos)/one;
-		
+
 		//(1-l)iterl + (l)iterr
 		return iterl->color.premult_alpha()*(1-lambda) + iterr->color.premult_alpha()*lambda;
-		
+
 		//return Color::blend(iterr->color,iterl->color,lambda,Color::BLEND_STRAIGHT);
 	}else
 	{
 		//itegration madness
 		const_iterator i = iterl, ie = iterr+1;
 		Real wlast = left;
-		
+
 		ColorAccumulator clast,cwork;
 		{
 			const Real lambda = (x - iterl->pos)/(iterr->pos - iterl->pos);
-			
+
 			//premultiply because that's the form in which we can combine things...
 			clast = iterl->color.premult_alpha()*(1-lambda) + iterr->color.premult_alpha()*lambda;
 			//Color::blend((i+1)->color,i->color,(left - i->pos)/((i+1)->pos - i->pos),Color::BLEND_STRAIGHT);
 		}
-		
+
 		ColorAccumulator	accum = 0;
-		
+
 		//loop through all the trapezoids and integrate them as we go...
 		//	area of trap = (yi + yi1)*(xi1 - xi)
-		//	yi = clast, xi = wlast, yi1 = i->color, xi1 = i->pos		
-		
+		//	yi = clast, xi = wlast, yi1 = i->color, xi1 = i->pos
+
 		for(;i<=iterr; wlast=i->pos,clast=i->color.premult_alpha(),++i)
 		{
 			const Real diff = i->pos - wlast;
@@ -235,30 +235,30 @@ synfig::Gradient::operator()(const Real &x,float supersample)const
 				accum += (cwork + clast)*diff;
 			}
 		}
-		
+
 		{
-			const_iterator ibef = i-1;			
+			const_iterator ibef = i-1;
 			const Real diff = right - ibef->pos;
-			
+
 			if(diff > 0)
 			{
 				const Real lambda = diff/(i->pos - ibef->pos);
 				cwork = ibef->color.premult_alpha()*(1-lambda) + i->color.premult_alpha()*lambda;
-				
+
 				accum += (cwork + clast)*diff; //can probably optimize this more... but it's not too bad
 			}
 		}
-		
+
 		accum /= supersample; //should be the total area it was sampled over...
 		return accum.demult_alpha();
 	}*/
-	
+
 	next=begin(),iter=next++;
-	
+
 	//add for optimization
 	next = binary_find(begin(),end(),(Real)begin_sample);
-	iter = next++;	
-	
+	iter = next++;
+
 	//! As a future optimization, this could be performed faster
 	//! using a binary search.
 	for(;iter<end();iter=next++)
@@ -278,7 +278,7 @@ synfig::Gradient::operator()(const Real &x,float supersample)const
 			// CPoints. So, we need to calculate our coverage amount.
 			ColorAccumulator pool(Color::alpha());
 			float divisor(0.0),weight(0);
-			
+
 			const_iterator iter2,next2;
 			iter2=iter;
 			if(iter==begin() && iter->pos>x)
@@ -305,7 +305,7 @@ synfig::Gradient::operator()(const Real &x,float supersample)const
 					divisor+=weight;
 				}
 			}
-			
+
 			next2=iter;
 			iter2=next2++;
 			while(iter2->pos<=end_sample)
@@ -321,7 +321,7 @@ synfig::Gradient::operator()(const Real &x,float supersample)const
 				divisor+=weight;
 				iter2=next2++;
 			}
-			
+
 			if(divisor && pool.get_a() && pool.is_valid())
 			{
 /*
@@ -361,12 +361,12 @@ synfig::Gradient::proximity(const Real &x)
 	for(iter=begin();iter<end();iter++)
 	{
 		float new_dist;
-		
+
 		if(prev_pos==iter->pos)
 			new_dist=(abs(x-iter->pos-0.00001));
 		else
 			new_dist=(abs(x-iter->pos));
-		
+
 		if(new_dist>dist)
 		{
 			iter--;
@@ -386,7 +386,7 @@ synfig::Gradient::proximity(const Real &x)const
 	/*
 	const_iterator iter;
 	float dist(100000000);
-	
+
 	// This algorithm requires a sorted list.
 	for(iter=begin();iter<end();iter++)
 	{
@@ -407,26 +407,26 @@ synfig::Gradient::iterator
 synfig::Gradient::find(const UniqueID &id)
 {
 	iterator iter;
-	
+
 	for(iter=begin();iter<end();iter++)
 	{
 		if(id==*iter)
 			return iter;
 	}
-	
+
 	throw Exception::NotFound("synfig::Gradient::find(): Unable to find UniqueID in gradient");
 }
-	
+
 synfig::Gradient::const_iterator
 synfig::Gradient::find(const UniqueID &id)const
 {
 	const_iterator iter;
-	
+
 	for(iter=begin();iter<end();iter++)
 	{
 		if(id==*iter)
 			return iter;
 	}
-	
+
 	throw Exception::NotFound("synfig::Gradient::find()const: Unable to find UniqueID in gradient");
 }

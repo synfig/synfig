@@ -56,9 +56,9 @@ private:
 
 	float* data_;
 	float* origin_;
-	
+
 	int w_,h_,stride_;
-	
+
 public:
 
 	RWLock rw_lock;
@@ -71,40 +71,40 @@ public:
 		h_(0)
 	{
 	}
-	
+
 	~ChannelData()
 	{
 		if(ref_count_.unique())
 			delete [] data_;
 	}
-	
+
 	void set_wh(int w, int h)
 	{
 		w_=w;
 		h_=h;
 		stride_=w;
-		
+
 		if(data_&&ref_count_.is_unique())
 			delete [] data_;
-			
+
 		ref_count.make_unique();
 		data_=new float [w_*h_];
 		origin_=data_;
 		clear();
 	}
-	
+
 	void crop(int x, int y, int w, int h)
 	{
 		origin_=origin+y*stride_+x;
 		w_=w;
 		h_=h;
 	}
-	
+
 	int get_stride()const
 	{
 		return stride_;
 	}
-	
+
 	void clear()
 	{
 		for(int i=0;i<h;i++)
@@ -114,7 +114,7 @@ public:
 	void fill(float v)
 	{
 		float* ptr(get_data());
-		
+
 		for(int y=0;y<h;y++,ptr+=stride_)
 			for(int i=0;i<w_;i++)
 				ptr[i]=v;
@@ -129,11 +129,11 @@ public:
 			ref_count_.make_unique();
 			float* old_data(origin_);
 			int old_stride;
-			
+
 			data_=new float [w_*h_];
 			origin_=data_;
 			stride_=w_;
-			
+
 			for(int i=0;i<h;i++)
 				memcpy(data_+i*stride_,old_data+i*old_stride,sizeof(float)*w_);
 		}
@@ -158,10 +158,10 @@ SurfaceNew::Handle
 SurfaceNew::create(int w, int h, ColorSystem sys=COLORSYS_RGB)
 {
 	Handle ret(new SurfaceNew);
-	
+
 	ret.set_wh(w,h);
 	ret.set_color_system(sys);
-	
+
 	return ret;
 }
 
@@ -176,7 +176,7 @@ SurfaceNew::Handle
 SurfaceNew::create(HandleConst orig)
 {
 	Lock lock(orig);
-	
+
 	Handle ret(new SurfaceNew);
 
 	ret.w_=orig.w_;
@@ -184,7 +184,7 @@ SurfaceNew::create(HandleConst orig)
 	ret.color_system_=orig.color_system_;
 	ret.premult_flag_=orig.premult_flag_;
 	ret.channel_map_=orig.channel_map_;
-	
+
 	return ret;
 }
 
@@ -192,7 +192,7 @@ Handle
 SurfaceNew::crop(HandleConst, int x, int y, int w, int h)
 {
 	Lock lock(orig);
-	
+
 	Handle ret(new SurfaceNew);
 
 	ret.w_=orig.w_;
@@ -204,7 +204,7 @@ SurfaceNew::crop(HandleConst, int x, int y, int w, int h)
 	std::map<Channel,ChannelData>::iterator iter;
 	for(iter=ret.channel_map_.begin();iter!=ret.channel_map_.end();++iter)
 		iter->crop(x,y,w,h);
-	
+
 	return ret;
 }
 
@@ -213,13 +213,13 @@ SurfaceNew::get_w()const
 {
 	return w_;
 }
-	
+
 int
 SurfaceNew::get_h()const
 {
 	return h_;
 }
-	
+
 void
 SurfaceNew::set_wh(int w, int h)
 {
@@ -248,40 +248,40 @@ SurfaceNew::get_color(int x, int y)const
 {
 	// This operation is rather expensive, as it should be.
 	// I want to discurage people from using it all over the place.
-	
+
 	Color ret(
 		lock_channel_const(CHAN_R).get_value(x,y),
 		lock_channel_const(CHAN_G).get_value(x,y),
 		lock_channel_const(CHAN_B).get_value(x,y),
 		lock_channel_const(CHAN_A).get_value(x,y)
 	);
-	
+
 	if(get_premult())
 	{
 		ret=ret.demult_alpha();
 	}
-	
+
 	return ret;
 }
-	
+
 void
 SurfaceNew::lock()
 {
 	mutex_.lock();
 }
-	
+
 void
 SurfaceNew::unlock()
 {
 	mutex_.unlock();
 }
-	
+
 bool
 SurfaceNew::trylock()
 {
 	return mutex_.trylock();
 }
-	
+
 SurfaceNew::ChannelLock
 SurfaceNew::lock_channel(SurfaceNew::Channel chan)
 {
@@ -291,12 +291,12 @@ SurfaceNew::lock_channel(SurfaceNew::Channel chan)
 		channel_map_[chan].make_unique();
 
 	ChannelLockConst channel_lock;
-	
+
 	channel_lock.surface_=this;
 	channel_lock.channel_=chan;
 
 	channel_map_[chan].rw_lock.writer_lock();
-	
+
 	return channel_lock;
 }
 
@@ -307,12 +307,12 @@ SurfaceNew::lock_channel_const(SurfaceNew::Channel chan)const
 		channel_map_[chan].set_wh(get_w(),get_h());
 
 	ChannelLockConst channel_lock;
-	
+
 	channel_lock.surface_=this;
 	channel_lock.channel_=chan;
 
 	channel_map_[chan].rw_lock.reader_lock();
-	
+
 	return channel_lock;
 }
 
@@ -349,9 +349,9 @@ SurfaceNew::set_premult(bool x)
 {
 	if(x==premult_flag_)
 		return;
-		
+
 	premult_flag_=x;
-	
+
 	for(int i=0;i<3;i++)
 	{
 		Channel chan;
@@ -368,23 +368,23 @@ SurfaceNew::set_premult(bool x)
 			case 1: chan=CHAN_U;
 			case 2: chan=CHAN_V;
 		}
-		
+
 		// If this channel isn't defined, then
 		// skip it and move on to the next one
 		if(!is_channel_defined(chan))
 			continue;
-			
+
 		ChannelLock color_channel(lock_channel(chan));
 		ChannelLockConst alpha_channel(lock_channel_alpha_const(chan));
 		const int w(get_w());
 		const int h(get_h());
-		
+
 		float* color_ptr(color_channel.get_data_ptr());
 		const float* alpha_ptr(alpha_channel.get_data_ptr());
-		
+
 		const int color_pitch(color_channel.get_data_ptr_stride()-w);
 		const int alpha_pitch(alpha_channel.get_data_ptr_stride()-w);
-		
+
 		if(premult_flag_)
 		{
 			for(int y=0;y<h;y++,color_ptr+=color_pitch,alpha_ptr+=alpha_pitch)
@@ -431,11 +431,11 @@ SurfaceNew::blit(
 )
 {
 	int w(src->get_w()), h(src->get_h);
-	
+
 	// Clip
 	{
 		int x(0), y(0);
-		
+
 		if(x_dest+w>dest.get_w())
 			w=dest.get_w()-x_dest;
 		if(y_dest+h>dest.get_h())
@@ -452,7 +452,7 @@ SurfaceNew::blit(
 		}
 		src=crop(src,x,y,w,h);
 	}
-	
+
 	dest=crop(dest,x_dest,y_dest,w,h);
 
 	if(bm==Color::BLEND_STRAIGHT)
@@ -461,10 +461,10 @@ SurfaceNew::blit(
 		chan_add(dest,src);
 		chan_mlt(dest,(1.0-amount)/amount);
 	}
-	
+
 	if(bm==Color::BLEND_COMPOSITE)
 	{
-		
+
 	}
 }
 
@@ -481,7 +481,7 @@ SurfaceChannelLockConst::~SurfaceChannelLockConst()
 {
 	if(data_ptr_checked_out_)
 		release_data_ptr();
-		
+
 	if(surface_ && ref_count_.is_unique())
 		return surface->channel_map_[channel_].rw_lock.reader_unlock();
 	surface=0;
@@ -498,13 +498,13 @@ SurfaceChannelLockConst::get_w()const
 {
 	return surface_->get_w();
 }
-	
+
 int
 SurfaceChannelLockConst::get_h()const
 {
 	return surface_->get_h();
 }
-	
+
 float
 SurfaceChannelLockConst::get_value(int x, int y)
 {
@@ -517,7 +517,7 @@ const float*
 SurfaceChannelLockConst::get_data_ptr()const
 {
 	data_ptr_checked_out_=true;
-	
+
 	// WOW! CRAZY SLOW!
 	return surface_->channel_map_[channel_].get_data();
 }
@@ -597,7 +597,7 @@ SurfaceNew::chan_mlt(ChannelLock& dest, float x)
 	const int w(dest.get_w());
 	const int h(dest.get_h());
 	const int pitch(dest.get_data_pitch()-w);
-	
+
 	int(y=0;y<h;y++,ptr+=pitch)
 		int(x=0;x<w;x++,ptr++)
 			*ptr*=x;
@@ -612,7 +612,7 @@ SurfaceNew::chan_mlt(ChannelLock& dest, const ChannelLockConst& x)
 	const int h(dest.get_h());
 	const int d_pitch(dest.get_data_stride()-w);
 	const int s_pitch(x.get_data_stride()-w);
-	
+
 	int(y=0;y<h;y++,d_ptr+=d_pitch,s_ptr+=s_pitch)
 		int(x=0;x<w;x++,d_ptr++,s_ptr++)
 			*d_ptr *= *s_ptr;
@@ -625,7 +625,7 @@ SurfaceNew::chan_div(ChannelLock& dest, float x)
 	const int w(dest.get_w());
 	const int h(dest.get_h());
 	const int pitch(dest.get_data_pitch()-w);
-	
+
 	int(y=0;y<h;y++,ptr+=pitch)
 		int(x=0;x<w;x++,ptr++)
 			*ptr/=x;
@@ -640,7 +640,7 @@ SurfaceNew::chan_div(ChannelLock& dest, const ChannelLockConst& x)
 	const int h(dest.get_h());
 	const int d_pitch(dest.get_data_stride()-w);
 	const int s_pitch(x.get_data_stride()-w);
-	
+
 	int(y=0;y<h;y++,d_ptr+=d_pitch,s_ptr+=s_pitch)
 		int(x=0;x<w;x++,d_ptr++,s_ptr++)
 			*d_ptr /= *s_ptr;
@@ -653,7 +653,7 @@ SurfaceNew::chan_add(ChannelLock& dest, float x)
 	const int w(dest.get_w());
 	const int h(dest.get_h());
 	const int pitch(dest.get_data_pitch()-w);
-	
+
 	int(y=0;y<h;y++,ptr+=pitch)
 		int(x=0;x<w;x++,ptr++)
 			*ptr+=x;
@@ -668,7 +668,7 @@ SurfaceNew::chan_add(ChannelLock& dest, const ChannelLockConst& x)
 	const int h(dest.get_h());
 	const int d_pitch(dest.get_data_stride()-w);
 	const int s_pitch(x.get_data_stride()-w);
-	
+
 	int(y=0;y<h;y++,d_ptr+=d_pitch,s_ptr+=s_pitch)
 		int(x=0;x<w;x++,d_ptr++,s_ptr++)
 			*d_ptr += *s_ptr;
@@ -681,7 +681,7 @@ SurfaceNew::chan_sub(ChannelLock& dest, float x)
 	const int w(dest.get_w());
 	const int h(dest.get_h());
 	const int pitch(dest.get_data_pitch()-w);
-	
+
 	int(y=0;y<h;y++,ptr+=pitch)
 		int(x=0;x<w;x++,ptr++)
 			*ptr-=x;
@@ -696,7 +696,7 @@ SurfaceNew::chan_sub(ChannelLock& dest, const ChannelLockConst& x)
 	const int h(dest.get_h());
 	const int d_pitch(dest.get_data_stride()-w);
 	const int s_pitch(x.get_data_stride()-w);
-	
+
 	int(y=0;y<h;y++,d_ptr+=d_pitch,s_ptr+=s_pitch)
 		int(x=0;x<w;x++,d_ptr++,s_ptr++)
 			*d_ptr -= *s_ptr;

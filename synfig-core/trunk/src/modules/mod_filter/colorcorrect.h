@@ -43,7 +43,7 @@ namespace synfig {
 class Layer_ColorCorrect : public Layer
 {
 	SYNFIG_LAYER_MODULE_EXT
-	
+
 private:
 
 	Angle hue_adjust;
@@ -56,9 +56,9 @@ private:
 	Color correct_color(const Color &in)const;
 
 public:
-	
+
 	Layer_ColorCorrect();
-		
+
 	virtual bool set_param(const String & param, const synfig::ValueBase &value);
 
 	virtual ValueBase get_param(const String & param)const;
@@ -66,9 +66,9 @@ public:
 	virtual Color get_color(Context context, const Point &pos)const;
 
 	virtual Rect get_full_bounding_rect(Context context)const;
-	
+
 	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
-	
+
 	virtual Vocab get_param_vocab()const;
 }; // END of class Layer_ColorCorrect
 

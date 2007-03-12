@@ -59,7 +59,7 @@ ValueNode_SegCalcTangent::ValueNode_SegCalcTangent(const ValueBase::Type &x):
 {
 	if(x!=ValueBase::TYPE_VECTOR)
 		throw Exception::BadType(ValueBase::type_name(x));
-	
+
 	segment_=ValueNode_Composite::create(ValueBase::TYPE_SEGMENT);
 	amount_=ValueNode_Const::create(Real(0.5));
 }
@@ -82,13 +82,13 @@ ValueNode_SegCalcTangent::operator()(Time t)const
 
 	etl::hermite<Vector> curve(segment.p1,segment.p2,segment.t1,segment.t2);
 	etl::derivative< etl::hermite<Vector> > deriv(curve);
-	
+
 #ifdef ETL_FIXED_DERIVATIVE
 	return deriv((*amount_)(t).get(Real()))*(0.5);
 #else
 	return deriv((*amount_)(t).get(Real()))*(-0.5);
 #endif
-	
+
 }
 
 
@@ -103,7 +103,7 @@ ValueNode_SegCalcTangent::get_local_name()const
 {
 	return _("SegCalcTangent");
 }
-		
+
 bool
 ValueNode_SegCalcTangent::check_type(ValueBase::Type type)
 {
@@ -176,7 +176,7 @@ ValueNode_SegCalcTangent::get_link_index_from_name(const String &name)const
 		return 0;
 	if(name=="amount")
 		return 1;
-	
+
 	throw Exception::BadLinkName(name);
 }
 

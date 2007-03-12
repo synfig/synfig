@@ -63,7 +63,7 @@ bool
 Layer_Composite::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc_, ProgressCallback *cb)  const
 {
 	RendDesc renddesc(renddesc_);
-	
+
 	if(!amount_)
 		return context.accelerated_render(surface,quality,renddesc,cb);
 
@@ -75,7 +75,7 @@ Layer_Composite::accelerated_render(Context context,Surface *surface,int quality
 	Layer_Bitmap::Handle surfacelayer(new class Layer_Bitmap());
 
 	Context iter;
-	
+
 	for(iter=context;*iter;iter++)
 		image.push_back(*iter);
 
@@ -107,15 +107,15 @@ Layer_Composite::accelerated_render(Context context,Surface *surface,int quality
 
 	// Set up a surface target
 	Target::Handle target(surface_target(surface));
-	
+
 	if(!target)
 	{
 		if(cb)cb->error(_("Unable to create surface target"));
 		return false;
 	}
-	
+
 	RendDesc desc(renddesc);
-	
+
 	target->set_rend_desc(&desc);
 
 	// Render the scene

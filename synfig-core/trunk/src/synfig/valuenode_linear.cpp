@@ -120,7 +120,7 @@ ValueNode_Linear::get_local_name()const
 {
 	return _("Linear");
 }
-		
+
 bool
 ValueNode_Linear::check_type(ValueBase::Type type)
 {
@@ -204,7 +204,7 @@ ValueNode_Linear::get_link_index_from_name(const String &name)const
 		return 0;
 	if(name=="offset")
 		return 1;
-	
+
 	throw Exception::BadLinkName(name);
 }
 

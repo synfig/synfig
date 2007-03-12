@@ -91,7 +91,7 @@ exr_mptr::get_frame(synfig::Surface &out_surface,Time, synfig::ProgressCallback 
 	in.setFrameBuffer (reinterpret_cast<Imf::Rgba *>(in_surface[0]), 1, w);
 
 	in.readPixels (in.dataWindow().min.y, in.dataWindow().max.y);
-	
+
 	int x;
 	int y;
 	out_surface.set_wh(w,h);
@@ -114,5 +114,5 @@ exr_mptr::get_frame(synfig::Surface &out_surface,Time, synfig::ProgressCallback 
 		return false;
     }
 
-	return true;		
+	return true;
 }

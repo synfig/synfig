@@ -75,7 +75,7 @@ bool
 Rotate::set_param(const String & param, const ValueBase &value)
 {
 	IMPORT(origin);
-	
+
 	if(param=="amount" && value.same_as(amount))
 	{
 		amount=value.get(amount);
@@ -83,7 +83,7 @@ Rotate::set_param(const String & param, const ValueBase &value)
 		cos_val=Angle::cos(amount).get();
 		return true;
 	}
-	
+
 	return false;
 }
 
@@ -92,18 +92,18 @@ Rotate::get_param(const String &param)const
 {
 	EXPORT(origin);
 	EXPORT(amount);
-	
+
 	EXPORT_NAME();
 	EXPORT_VERSION();
-		
-	return ValueBase();	
+
+	return ValueBase();
 }
 
 Layer::Vocab
 Rotate::get_param_vocab()const
 {
 	Layer::Vocab ret;
-	
+
 	ret.push_back(ParamDesc("origin")
 		.set_local_name(_("Origin"))
 		.set_description(_("Point where you want the origin to be"))
@@ -114,7 +114,7 @@ Rotate::get_param_vocab()const
 		.set_description(_("Amount of rotation"))
 		.set_origin("origin")
 	);
-	
+
 	return ret;
 }
 
@@ -123,13 +123,13 @@ class Rotate_Trans : public Transform
 	etl::handle<const Rotate> layer;
 public:
 	Rotate_Trans(const Rotate* x):Transform(x->get_guid()),layer(x) { }
-	
+
 	synfig::Vector perform(const synfig::Vector& x)const
 	{
 		Point pos(x-layer->origin);
 		return Point(layer->cos_val*pos[0]-layer->sin_val*pos[1],layer->sin_val*pos[0]+layer->cos_val*pos[1])+layer->origin;
 	}
-	
+
 	synfig::Vector unperform(const synfig::Vector& x)const
 	{
 		Point pos(x-layer->origin);
@@ -179,21 +179,21 @@ Rotate::accelerated_render(Context context,Surface *surface,int quality, const R
 
 	SuperCallback stageone(cb,0,9000,10000);
 	SuperCallback stagetwo(cb,9000,10000,10000);
-	
+
 	if(cb && !cb->amount_complete(0,10000))
 		return false;
-	
+
 	Point tl(renddesc.get_tl()-origin);
 	Point br(renddesc.get_br()-origin);
 	Point rot_tl(cos_val*tl[0]+sin_val*tl[1],-sin_val*tl[0]+cos_val*tl[1]);
-	Point rot_br(cos_val*br[0]+sin_val*br[1],-sin_val*br[0]+cos_val*br[1]);	
+	Point rot_br(cos_val*br[0]+sin_val*br[1],-sin_val*br[0]+cos_val*br[1]);
 	Point rot_tr(cos_val*br[0]+sin_val*tl[1],-sin_val*br[0]+cos_val*tl[1]);
-	Point rot_bl(cos_val*tl[0]+sin_val*br[1],-sin_val*tl[0]+cos_val*br[1]);	
+	Point rot_bl(cos_val*tl[0]+sin_val*br[1],-sin_val*tl[0]+cos_val*br[1]);
 	rot_tl+=origin;
 	rot_br+=origin;
 	rot_tr+=origin;
 	rot_bl+=origin;
-	
+
 	Point min_point(min(min(min(rot_tl[0],rot_br[0]),rot_tr[0]),rot_bl[0]),min(min(min(rot_tl[1],rot_br[1]),rot_tr[1]),rot_bl[1]));
 	Point max_point(max(max(max(rot_tl[0],rot_br[0]),rot_tr[0]),rot_bl[0]),max(max(max(rot_tl[1],rot_br[1]),rot_tr[1]),rot_bl[1]));
 
@@ -217,10 +217,10 @@ Rotate::accelerated_render(Context context,Surface *surface,int quality, const R
 		br[1]=max_point[1];
 		tl[1]=min_point[1];
 	}
-	
+
 	Real pw=(renddesc.get_w())/(renddesc.get_br()[0]-renddesc.get_tl()[0]);
 	Real ph=(renddesc.get_h())/(renddesc.get_br()[1]-renddesc.get_tl()[1]);
-	
+
 	RendDesc desc(renddesc);
 	desc.clear_flags();
 	//desc.set_flags(RendDesc::PX_ASPECT);
@@ -230,13 +230,13 @@ Rotate::accelerated_render(Context context,Surface *surface,int quality, const R
 
 	//synfig::warning("given window: [%f,%f]-[%f,%f] %dx%d",renddesc.get_tl()[0],renddesc.get_tl()[1],renddesc.get_br()[0],renddesc.get_br()[1],renddesc.get_w(),renddesc.get_h());
 	//synfig::warning("surface to render: [%f,%f]-[%f,%f] %dx%d",desc.get_tl()[0],desc.get_tl()[1],desc.get_br()[0],desc.get_br()[1],desc.get_w(),desc.get_h());
-		
+
 	Surface source;
 	source.set_wh(desc.get_w(),desc.get_h());
 
 	if(!context.accelerated_render(&source,quality,desc,&stageone))
 		return false;
-	
+
 	surface->set_wh(renddesc.get_w(),renddesc.get_h());
 
 	Surface::pen pen(surface->begin());

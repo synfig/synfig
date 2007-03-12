@@ -35,7 +35,7 @@
 #include <synfig/layer.h>
 
 //#include "mptr.h"
-#include "trgt_av.h" 
+#include "trgt_av.h"
 
 #endif
 

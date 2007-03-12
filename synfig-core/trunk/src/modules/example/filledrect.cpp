@@ -75,7 +75,7 @@ FilledRect::FilledRect():
 	bevCircle(0)
 {
 }
-	
+
 bool
 FilledRect::set_param(const String & param, const ValueBase &value)
 {
@@ -86,7 +86,7 @@ FilledRect::set_param(const String & param, const ValueBase &value)
 	IMPORT(feather_y);
 	IMPORT(bevel);
 	IMPORT(bevCircle);
-	
+
 	return Layer_Composite::set_param(param,value);
 }
 
@@ -103,15 +103,15 @@ FilledRect::get_param(const String &param)const
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
-		
-	return Layer_Composite::get_param(param);	
+
+	return Layer_Composite::get_param(param);
 }
 
 Layer::Vocab
 FilledRect::get_param_vocab()const
 {
 	Layer::Vocab ret(Layer_Composite::get_param_vocab());
-	
+
 	ret.push_back(ParamDesc("color")
 		.set_local_name(_("Color"))
 	);
@@ -119,27 +119,27 @@ FilledRect::get_param_vocab()const
 	ret.push_back(ParamDesc("point1")
 		.set_local_name(_("Point 1"))
 	);
-	
+
 	ret.push_back(ParamDesc("point2")
 		.set_local_name(_("Point 2"))
 	);
-	
+
 	ret.push_back(ParamDesc("feather_x")
 		.set_local_name(_("Feather X"))
 	);
-	
+
 	ret.push_back(ParamDesc("feather_y")
 		.set_local_name(_("Feather Y"))
 	);
-	
+
 	ret.push_back(ParamDesc("bevel")
 		.set_local_name(_("Bevel"))
 	);
-	
+
 	ret.push_back(ParamDesc("bevCircle")
 		.set_local_name(_("Keep Bevel Circular"))
 	);
-	
+
 	return ret;
 }
 
@@ -148,21 +148,21 @@ FilledRect::get_color(const Point &pos, Color &out, Real &outamount) const
 {
 	Point p[2] = {point1,point2};
 	Real swap;
-	
+
 	if(p[0][0] > p[1][0])
 	{
 		swap = p[0][0];
 		p[0][0] = p[1][0];
 		p[1][0] = swap;
 	}
-	
+
 	if(p[0][1] > p[1][1])
 	{
 		swap = p[0][1];
 		p[0][1] = p[1][1];
 		p[1][1] = swap;
 	}
-	
+
 	/*
 	p[0][0] -= feather_x;
 	p[1][0] += feather_x;
@@ -174,39 +174,39 @@ FilledRect::get_color(const Point &pos, Color &out, Real &outamount) const
 	if(pos[0] >= p[0][0] && pos[0] <= p[1][0] && pos[1] >= p[0][1] && pos[1] <= p[1][1])
 	{
 		Real value = 1;
-		
+
 		if(feather_x > 0)
 		{
 			Real xdist = pos[0] - p[0][0];
 			xdist = min(xdist,p[1][0]-pos[0]);
-		
+
 			if(xdist < feather_x)
 			{
 				value = xdist/feather_x;
 			}
 		}
-		
+
 		if(feather_y > 0)
 		{
 			Real ydist = pos[1]-p[0][1];
 			ydist = min(ydist,p[1][1]-pos[1]);
-		
+
 			if(ydist < feather_y)
 			{
 				value = min(value,(ydist/feather_y));
 			}
 		}
-		
+
 		//if we're beveled then check with ellipse code...
 		if(bevel > 0)
-		{			
+		{
 			const Real bev = (bevel > 1) ? 1 : bevel;
 			const Real bevx = bevCircle ? min(w*bev/2,h*bev/2) : w*bev/2;
 			const Real bevy = bevCircle ? min(w*bev/2,h*bev/2) : h*bev/2;;
-			
+
 			Vector v(0,0);
 			bool	in = false;
-			
+
 			//based on which quarter it is in (and because it's x/y symmetric) get a positive vector (x/y)
 			if(pos[0] < p[0][0] + bevx)
 			{
@@ -227,73 +227,73 @@ FilledRect::get_color(const Point &pos, Color &out, Real &outamount) const
 				if(pos[1] < p[0][1] + bevy)
 				 {
 					 v[0] = pos[0] - (p[1][0] - bevx);
-					 v[1] = p[0][1] + bevy - pos[1];					 
+					 v[1] = p[0][1] + bevy - pos[1];
 					 in = true;
 				 }else if(pos[1] > p[1][1] - bevy)
 				 {
 					 v[0] = pos[0] - (p[1][0] - bevx);
-					 v[1] = pos[1] - (p[1][1] - bevy);	
+					 v[1] = pos[1] - (p[1][1] - bevy);
 					 in = true;
-				 }				
+				 }
 			}
-			
+
 			//if it's inside a bevelled block
 			if(in)
 			{
 				const Vector scale(bevx,bevy);
-				
+
 				Vector vc(v[0]/scale[0],v[1]/scale[1]);
 				Real	d = vc.mag();
-				
+
 				//if it's inside the ellipse
 				if(d < 1)
 				{
 					Real val = atan2(vc[1],vc[0]);
 					val /= (PI/2); //< will always be (0,pi/2) because both components are positive
-										
+
 					Real fthx=1,fthy=1;
-					
+
 					//change d into distance away from edge
 					d = 1 - d;
-					
+
 					if(feather_x > 0)
-					{	
+					{
 						if(scale[0] < feather_x)
 						{
 							fthy = scale[0]/feather_x;
 						}
-						
+
 						if(d*scale[0] < feather_x)
 						{
 							fthx = d*scale[0]/feather_x;
 						}
 					}
-					
+
 					if(feather_y > 0)
 					{
 						if(scale[1] < feather_y)
 						{
 							fthx = min(fthx,scale[1]/feather_y);
 						}
-						
+
 						if(d*scale[1] < feather_y)
 						{
 							fthy = min(fthy,d*scale[1]/feather_y);
 						}
 					}
-					
+
 					//interpolate
 					outamount = min(value,((1-val)*fthx + val*fthy)) * get_amount();
 					out = color;
 					return true;
-						
+
 				}else return false;
 			}
 		}
-			
+
 		outamount = value * get_amount();
 		out = color;
-		
+
 		return true;
 	}else
 		return false;
@@ -304,7 +304,7 @@ FilledRect::get_color(Context context, const Point &pos)const
 {
 	Color 	clr;
 	Real 	amt;
-	
+
 	if(get_color(pos,clr,amt))
 	{
 		if(amt==1.0 && get_blend_method()==Color::BLEND_STRAIGHT)
@@ -318,47 +318,47 @@ FilledRect::get_color(Context context, const Point &pos)const
 
 bool
 FilledRect::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
-{	
+{
 	// Width and Height of a pixel
 	const Point br(renddesc.get_br()), tl(renddesc.get_tl());
 	const int w = renddesc.get_w(), h = renddesc.get_h();
-	
+
 	Real	wpp = (br[0]-tl[0])/w;
 	Real	hpp = (br[1]-tl[1])/h;
 	//const Real	xneg = wpp<0?-1:1;
-	//const Real	yneg = hpp<0?-1:1;	
-	
+	//const Real	yneg = hpp<0?-1:1;
+
 	//the bounds of the rectangle
 	Point p[2] = {point1,point2};
-	
+
 	if((p[0][0] > p[1][0]) ^ wpp < 0)
 	{
 		swap(p[0][0],p[1][0]);
 	}
-	
+
 	if((p[0][1] > p[1][1]) ^ hpp < 0)
 	{
 		swap(p[0][1],p[1][1]);
 	}
-	
+
 	/*p[0][0] -= xneg*feather_x;
 	p[1][0] += xneg*feather_x;
 	p[0][1] -= yneg*feather_y;
 	p[1][1] += yneg*feather_y;*/
-		
+
 	//the integer coordinates
 	int y_start = (int)((p[0][1] - tl[1])/hpp +.5); 	//round start up
 	int x_start = (int)((p[0][0] - tl[0])/wpp +.5);
 	int y_end = (int)((p[1][1] - tl[1])/hpp +.5);	//and ends up
 	int x_end =	(int)((p[1][0] - tl[0])/wpp +.5);
-	
+
 	y_start = max(0,y_start);
 	x_start = max(0,x_start);
 	y_end = min(h,y_end);
 	x_end = min(w,x_end);
 
 	SuperCallback supercb(cb,0,9000,10000);
-	
+
 	if(y_start >= h || x_start > w	|| x_end < 0 || y_end < 0)
 	{
 		if(!context.accelerated_render(surface,quality,renddesc,&supercb))
@@ -366,55 +366,55 @@ FilledRect::accelerated_render(Context context,Surface *surface,int quality, con
 			if(cb)cb->error(strprintf(__FILE__"%d: Accelerated Renderer Failure",__LINE__));
 			return false;
 		}
-		
+
 		return true;
 	}
-	
+
 	Real xf_start = tl[0] + x_start*wpp;
 	Point pos(xf_start,tl[1] + y_start*hpp);
-	
+
 	Color 	clr = Color::black();
 	Real	amt;
-	
+
 	if(!context.accelerated_render(surface,quality,renddesc,&supercb))
 	{
 		if(cb)cb->error(strprintf(__FILE__"%d: Accelerated Renderer Failure",__LINE__));
 		return false;
 	}
-	
+
 	for(int y = y_start; y < y_end; y++, pos[1] += hpp)
 	{
 		pos[0] = xf_start;
 		for(int x = x_start; x < x_end; x++, pos[0] += wpp)
 		{
 			if(get_color(pos,clr,amt))
-			{				
+			{
 				if(amt==1.0 && get_blend_method()==Color::BLEND_STRAIGHT)
 					(*surface)[y][x] = clr;
 				else
 					(*surface)[y][x] = Color::blend(clr,(*surface)[y][x],amt,get_blend_method());
 			}
-		}		
+		}
 	}
-	
+
 	return true;
 
-#if	0	
+#if	0
 	//faster version but much more complex
-	//the floating point 
+	//the floating point
 	Real y1,y2,y3;
 	Real x1,x2,x3;
 	Real dx1,dx2; //reversed in 3rd y section, not used in 2nd
-	
-	//the transparent 
+
+	//the transparent
 	Real fx = 0, fy = 0;
-	Real dfx,dfy;	
+	Real dfx,dfy;
 
 	//Get the slopes of the lines we need to worry about
 	if(feather_x)
 	{
 		dfx = 1/(fxsize);
-		
+
 		if(fxsize*2 > xfw)
 		{
 			x1 = xfw/2;
@@ -425,7 +425,7 @@ FilledRect::accelerated_render(Context context,Surface *surface,int quality, con
 			x1 = fxsize;
 			x2 = xfw - fxsize;
 			x3 = xfw;
-		}		
+		}
 	}else
 	{
 		fx = 1;
@@ -434,11 +434,11 @@ FilledRect::accelerated_render(Context context,Surface *surface,int quality, con
 		x2=xfw;
 		x3=0;
 	}
-	
+
 	if(feather_y)
 	{
 		dfy = 1/(fysize);
-		
+
 		if(fysize*2 > yfh)
 		{
 			y1 = yfh/2;
@@ -450,10 +450,10 @@ FilledRect::accelerated_render(Context context,Surface *surface,int quality, con
 			y2 = yfh - fysize;
 			y3 = yfh;
 		}
-		
+
 		dx1 = ph*feather_x/feather_y;
 		dx2 = -2*dx1;
-		
+
 	}else
 	{
 		fy = 1;
@@ -464,18 +464,18 @@ FilledRect::accelerated_render(Context context,Surface *surface,int quality, con
 	}
 
 	fy = yf*dfy;
-	
+
 	int x,y;
 	Real value = 0;
 	SuperCallback supercb(cb,0,9000,10000);
 	Surface::pen	p;
-	
-	Real tx1 = 0,tx2 = 
+
+	Real tx1 = 0,tx2 =
 	for(y = y_start;yf < y1; y++,yf++,fy+=dfy, tx1+=dx1)
-	{	
+	{
 		fx = xf*dfx;
-		
-		p = surface->get_pen(x_start,y);		
+
+		p = surface->get_pen(x_start,y);
 		for(; xf < x1; xf++,p.inc_x(), fx+=dfx)
 		{
 			//we are in the x portion... use fx
@@ -485,7 +485,7 @@ FilledRect::accelerated_render(Context context,Surface *surface,int quality, con
 			else
 				p.put_value(Color::blend(color,p.get_value(),value,get_blend_method()));
 		}
-		
+
 		for(;xf < x2; xf++,p.inc_x())
 		{
 			//we are now in y... use fy
@@ -493,9 +493,9 @@ FilledRect::accelerated_render(Context context,Surface *surface,int quality, con
 			if(value==1.0 && get_blend_method()==Color::BLEND_STRAIGHT)
 				p.put_value(color);
 			else
-				p.put_value(Color::blend(color,p.get_value(),value,get_blend_method()));						
+				p.put_value(Color::blend(color,p.get_value(),value,get_blend_method()));
 		}
-		
+
 		fx = xfw?(xfw - xf)/xfw:1;
 		for(;xf < x3 && ; xf++,p.inc_x(), fx-=dfx)
 		{
@@ -504,16 +504,16 @@ FilledRect::accelerated_render(Context context,Surface *surface,int quality, con
 			if(value==1.0 && get_blend_method()==Color::BLEND_STRAIGHT)
 				p.put_value(color);
 			else
-				p.put_value(Color::blend(color,p.get_value(),value,get_blend_method()));			
+				p.put_value(Color::blend(color,p.get_value(),value,get_blend_method()));
 		}
 	}
-	
-	x1 = 
+
+	x1 =
 	for(;fy < 1.0; y++,yf++,fy+=dfy)
 	{
 		fx = xf*dfx;
-		
-		p = surface->get_pen(x_start,y);		
+
+		p = surface->get_pen(x_start,y);
 		for(; xf < x1; xf++,p.inc_x(), fx+=dfx)
 		{
 			//we are in the x portion... use fx
@@ -523,7 +523,7 @@ FilledRect::accelerated_render(Context context,Surface *surface,int quality, con
 			else
 				p.put_value(Color::blend(color,p.get_value(),value,get_blend_method()));
 		}
-		
+
 		for(;xf < x2; xf++,p.inc_x())
 		{
 			//we are now in y... use fy
@@ -531,9 +531,9 @@ FilledRect::accelerated_render(Context context,Surface *surface,int quality, con
 			if(value==1.0 && get_blend_method()==Color::BLEND_STRAIGHT)
 				p.put_value(color);
 			else
-				p.put_value(Color::blend(color,p.get_value(),value,get_blend_method()));						
+				p.put_value(Color::blend(color,p.get_value(),value,get_blend_method()));
 		}
-		
+
 		fx = xfw?(xfw - xf)/xfw:1;
 		for(;xf < x3 && ; xf++,p.inc_x(), fx-=dfx)
 		{
@@ -542,15 +542,15 @@ FilledRect::accelerated_render(Context context,Surface *surface,int quality, con
 			if(value==1.0 && get_blend_method()==Color::BLEND_STRAIGHT)
 				p.put_value(color);
 			else
-				p.put_value(Color::blend(color,p.get_value(),value,get_blend_method()));			
+				p.put_value(Color::blend(color,p.get_value(),value,get_blend_method()));
 		}
 	}
-	
+
 	for()
 	{
 		for(int x = x_start; x < x_end; x++)
 		{
-			
+
 		}
 	}
 

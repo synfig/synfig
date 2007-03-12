@@ -98,7 +98,7 @@ Time::Time(const String &str_, float fps):
 	unsigned int pos=0;
 	int read;
 	float amount;
-	
+
 	// Now try to read it in the letter-abreviated format
 	while(pos<str.size() && sscanf(String(str,pos).c_str(),"%f%n",&amount,&read))
 	{
@@ -145,7 +145,7 @@ Time::Time(const String &str_, float fps):
 							value_=frame/fps+(hour*3600+minute*60+second);
 							return;
 					}
-			
+
 					if(sscanf(str.c_str(),"%d:%d:%d",&hour,&minute,&second)==3)
 					{
 						value_=hour*3600+minute*60+second;
@@ -169,22 +169,22 @@ String
 Time::get_string(float fps, Time::Format format)const
 {
 	Time time(*this);
-	
+
 	if(time<=begin())
 		return "SOT";	// Start Of Time
 	if(time>=end())
 		return "EOT";	// End Of Time
-	
+
 	if(fps<0)fps=0;
-	
+
 	if(ceil(time.value_)-time.value_<epsilon_())
 		time.value_=ceil(time.value_);
-	
+
 	int hour,minute;
-	
+
 	hour=time/3600;time-=hour*3600;
 	minute=time/60;time-=minute*60;
-	
+
 	if(format<=FORMAT_VIDEO)
 	{
 		int second;
@@ -200,15 +200,15 @@ Time::get_string(float fps, Time::Format format)const
 		else
 			return strprintf("%02d:%02d:%02d",hour,minute,second);
 	}
-	
+
 	String ret;
 
 	if(format<=FORMAT_FULL || hour)
 		ret+=strprintf(format<=FORMAT_NOSPACES?"%dh":"%dh ",hour);
-	
+
 	if(format<=FORMAT_FULL || hour || minute)
 		ret+=strprintf(format<=FORMAT_NOSPACES?"%dm":"%dm ",minute);
-	
+
 	if(fps)
 	{
 		int second;
@@ -217,7 +217,7 @@ Time::get_string(float fps, Time::Format format)const
 		frame=time*fps;
 		if(format<=FORMAT_FULL || second)
 			ret+=strprintf(format<=FORMAT_NOSPACES?"%ds":"%ds ",(int)second);
-		
+
 		if(abs(frame-floor(frame)>=epsilon_()))
 			ret+=strprintf("%0.3ff",frame);
 		else
@@ -232,7 +232,7 @@ Time::get_string(float fps, Time::Format format)const
 		else
 			ret+=strprintf("%0.0fs",second);
 	}
-	
+
 	return ret;
 }
 

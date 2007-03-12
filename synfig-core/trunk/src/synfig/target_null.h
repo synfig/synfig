@@ -45,12 +45,12 @@ namespace synfig {
 class Target_Null : public Target_Scanline
 {
 	Color *buffer;
-	
+
 	Target_Null():buffer(0) { }
-	
+
 public:
 
-	~Target_Null() { delete buffer; } 
+	~Target_Null() { delete buffer; }
 
 	virtual bool start_frame(ProgressCallback *cb=NULL)
 		{ delete buffer; buffer=new Color[desc.get_w()*sizeof(Color)]; return true; }
@@ -60,7 +60,7 @@ public:
 	virtual Color * start_scanline(int scanline) { return buffer; }
 
 	virtual bool end_scanline() { return true; }
-	
+
 	static Target* create(const char *filename=0) { return new Target_Null(); }
 }; // END of class Target_Null
 

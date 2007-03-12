@@ -37,9 +37,9 @@
 namespace synfig {
 
 class Layer;
-	
+
 typedef std::deque< etl::handle< Layer > > CanvasBase;
-	
+
 }; // END of namespace synfig
 
 /* === E N D =============================================================== */

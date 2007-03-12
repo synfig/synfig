@@ -82,9 +82,9 @@ public:
 	void set_split_tangent_flag(bool x=true) { split_tangent_=x; }
 
 	void reverse();
-	
+
 }; // END of class BLinePoint
-	
+
 }; // END of namespace synfig
 
 /* === E N D =============================================================== */

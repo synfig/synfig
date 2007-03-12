@@ -40,16 +40,16 @@
 /* === C L A S S E S & S T R U C T S ======================================= */
 
 namespace synfig {
-	
+
 /*!	\class Layer_Polygon
 **	\beief writeme
 **	\todo This layer needs to support multiple polygons */
 class Layer_Polygon : public Layer_Shape
 {
 	SYNFIG_LAYER_MODULE_EXT
-	
+
 private:
-		
+
 	//exported data
 	std::vector< Point > 	vector_list;
 
@@ -78,11 +78,11 @@ public:
 
 	//! Updates EdgeTable so it will reflect the parameter data
 	void sync();
-	
+
 	virtual bool set_param(const String & param, const synfig::ValueBase &value);
 
 	virtual ValueBase get_param(const String & param)const;
-	
+
 	virtual Vocab get_param_vocab()const;
 
 private:

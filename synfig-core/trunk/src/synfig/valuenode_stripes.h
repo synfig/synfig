@@ -39,7 +39,7 @@ struct ValueNode_Stripes : public LinkableValueNode
 {
 	typedef etl::handle<ValueNode_Stripes> Handle;
 	typedef etl::handle<const ValueNode_Stripes> ConstHandle;
-	
+
 protected:
 
 	ValueNode_Stripes();

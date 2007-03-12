@@ -52,11 +52,11 @@ private:
 
 public:
 	XORPattern();
-	
+
 	virtual bool set_param(const String &param, const ValueBase &value);
 	virtual ValueBase get_param(const String &param)const;
 	virtual Color get_color(Context context, const Point &pos)const;
-	virtual Vocab get_param_vocab()const;	
+	virtual Vocab get_param_vocab()const;
 };
 
 /* === E N D =============================================================== */

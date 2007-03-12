@@ -115,7 +115,7 @@ Julia::Julia():color_shift(angle::degrees(0))
 	bailout=4;
 	lp=log(log(bailout));
 }
-	
+
 bool
 Julia::set_param(const String & param, const ValueBase &value)
 {
@@ -188,8 +188,8 @@ Julia::get_param(const String & param)const
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
-		
-	return ValueBase();	
+
+	return ValueBase();
 }
 
 Color
@@ -199,18 +199,18 @@ Julia::get_color(Context context, const Point &pos)const
 		cr, ci,
 		zr, zi,
 		zr_hold;
-	
+
 	ColorReal
 		depth, mag;
-	
+
 	Color
 		ret;
-	
+
 	cr=seed[0];
 	ci=seed[1];
 	zr=pos[0];
 	zi=pos[1];
-	
+
 	for(int i=0;i<iterations;i++)
 	{
 		// Perform complex multiplication
@@ -220,12 +220,12 @@ Julia::get_color(Context context, const Point &pos)const
 
 		// Use "broken" algorithm, if requested (looks weird)
 		if(broken)zr+=zi;
-		
+
 		// Calculate Magnitude
 		mag=zr*zr+zi*zi;
 
 		if(mag>4)
-		{	
+		{
 			if(smooth_outside)
 			{
 				// Darco's original mandelbrot smoothing algo
@@ -257,7 +257,7 @@ Julia::get_color(Context context, const Point &pos)const
 
 			if(color_cycle)
 				ret=ret.rotate_uv(color_shift.operator*(depth)).clamped_negative();
-			
+
 			if(shade_outside)
 			{
 				ColorReal alpha=depth/static_cast<ColorReal>(iterations);
@@ -286,12 +286,12 @@ Julia::get_color(Context context, const Point &pos)const
 
 	return ret;
 }
-	
+
 Layer::Vocab
 Julia::get_param_vocab()const
 {
 	Layer::Vocab ret;
-	
+
 	ret.push_back(ParamDesc("icolor")
 		.set_local_name(_("Inside Color"))
 		.set_description(_("Color of the Set"))
@@ -312,7 +312,7 @@ Julia::get_param_vocab()const
 	ret.push_back(ParamDesc("bailout")
 		.set_local_name(_("Bailout ValueBase"))
 	);
-	
+
 	ret.push_back(ParamDesc("distort_inside")
 		.set_local_name(_("Distort Inside"))
 	);
@@ -343,7 +343,7 @@ Julia::get_param_vocab()const
 	ret.push_back(ParamDesc("color_outside")
 		.set_local_name(_("Color Outside"))
 	);
-	
+
 	ret.push_back(ParamDesc("color_cycle")
 		.set_local_name(_("Color Cycle"))
 	);
@@ -355,7 +355,7 @@ Julia::get_param_vocab()const
 		.set_local_name(_("Break Set"))
 		.set_description(_("Modify equation to achieve interesting results"))
 	);
-	
-	
+
+
 	return ret;
 }

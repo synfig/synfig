@@ -60,7 +60,7 @@ public:
 	virtual bool render(ProgressCallback *cb=NULL);
 
 	//! Determines which tile needs to be rendered next.
-	/*!	Most cases will not have to redefine this function. 
+	/*!	Most cases will not have to redefine this function.
 	**	The default should be adequate in nearly all situations.
 	**	\returns The number of tiles left to go <i>plus one</i>.
 	**		This means that whenever this function returns zero,
@@ -70,7 +70,7 @@ public:
 
 	virtual int next_frame(Time& time);
 
-	//! Adds the tile at \a x , \a y contained in \a surface 
+	//! Adds the tile at \a x , \a y contained in \a surface
 	virtual bool add_tile(const synfig::Surface &surface, int x, int y)=0;
 
 	virtual int total_tiles()const
@@ -78,7 +78,7 @@ public:
 		// Width of the image(in tiles)
 		const int tw(rend_desc().get_w()/tile_w_+(rend_desc().get_w()%tile_w_?1:0));
 		const int th(rend_desc().get_h()/tile_h_+(rend_desc().get_h()%tile_h_?1:0));
-		
+
 		return tw*th;
 	}
 
@@ -91,7 +91,7 @@ public:
 	//! Marks the end of a frame
 	/*! \see start_frame() */
 	virtual void end_frame()=0;
-	
+
 	void set_threads(int x) { threads_=x; }
 
 	int get_threads()const { return threads_; }
@@ -103,15 +103,15 @@ public:
 	void set_tile_h(int h) { tile_h_=h; }
 
 	int get_tile_h()const { return tile_h_; }
-	
+
 	bool get_clipping()const { return clipping_; }
 
 	void set_clipping(bool x) { clipping_=x; }
-	
+
 private:
-	
+
 	bool render_frame_(Context context,ProgressCallback *cb=0);
-	
+
 }; // END of class Target_Tile
 
 }; // END of namespace synfig

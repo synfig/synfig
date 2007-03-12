@@ -40,29 +40,29 @@
 namespace synfig {
 class GUID;
 class ValueNode;
-	
+
 struct Activepoint : public UniqueID
 {
 private:
 	etl::loose_handle<ValueNode> parent_;
 	int index;
-	
+
 public:
 	//! Time of the activepoint
 	Time time;
-	
+
 	//! Priority
 	int priority;
 
 	//! Does this activepoint turn the entry on, or off?
 	bool state;
-		
+
 	bool operator<(const Activepoint& rhs) { return time<rhs.time; }
 	bool operator<(const Time& rhs) { return time<rhs; }
-	
+
 	Activepoint(const Time &time, const bool &state, int p=0): time(time), priority(p),state(state) { }
 	Activepoint() { }
-	
+
 	const Time& get_time()const { return time; }
 	void set_time(const Time& x) { time=x; }
 
@@ -73,11 +73,11 @@ public:
 	void set_priority(int x) { priority=x; }
 
 	const etl::loose_handle<ValueNode> &get_parent_value_node()const { return parent_; }
-	void set_parent_value_node(const etl::loose_handle<ValueNode> &x) { parent_=x; }	
-	
+	void set_parent_value_node(const etl::loose_handle<ValueNode> &x) { parent_=x; }
+
 	int get_parent_index()const { return index; }
 	void set_parent_index(int x) { index=x; }
-	
+
 	GUID get_guid()const;
 }; // END of struct ValueNode_BLine::Activepoint
 

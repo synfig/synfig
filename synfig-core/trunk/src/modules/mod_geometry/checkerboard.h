@@ -48,13 +48,13 @@ private:
 
 public:
 	CheckerBoard();
-	
+
 	virtual bool set_param(const synfig::String & param, const synfig::ValueBase &value);
 
 	virtual synfig::ValueBase get_param(const synfig::String & param)const;
 
 	virtual synfig::Color get_color(synfig::Context context, const synfig::Point &pos)const;
-	
+
 	virtual Vocab get_param_vocab()const;
 
 	synfig::Layer::Handle hit_check(synfig::Context context, const synfig::Point &point)const;

@@ -36,7 +36,7 @@
 /* === T Y P E D E F S ===================================================== */
 
 /* === C L A S S E S & S T R U C T S ======================================= */
-namespace synfig 
+namespace synfig
 {
 class Spherize_Trans;
 
@@ -44,7 +44,7 @@ class Layer_SphereDistort : public Layer_Composite
 {
 	SYNFIG_LAYER_MODULE_EXT
 	friend class Spherize_Trans;
-	
+
 private:
 
 	Vector center;
@@ -66,20 +66,20 @@ private:
 	void sync();
 
 public:
-	
+
 	Layer_SphereDistort();
-		
+
 	virtual bool set_param(const String & param, const synfig::ValueBase &value);
 
 	virtual ValueBase get_param(const String & param)const;
 
 	virtual Color get_color(Context context, const Point &pos)const;
-	
+
 	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
-	synfig::Layer::Handle hit_check(synfig::Context context, const synfig::Point &point)const;	
+	synfig::Layer::Handle hit_check(synfig::Context context, const synfig::Point &point)const;
 
 	virtual Rect get_bounding_rect()const;
-	
+
 	virtual Vocab get_param_vocab()const;
 	virtual etl::handle<synfig::Transform> get_transform()const;
 }; // END of class Layer_SphereDistort

@@ -124,16 +124,16 @@ TimePoint::absorb(const TimePoint& x)
 	if(get_guid()==x.get_guid())
 		return;
 	set_guid(get_guid()^x.get_guid());
-	
+
 	if(get_after()==INTERPOLATION_NIL)
 		set_after(x.get_after());
 	if(get_before()==INTERPOLATION_NIL)
 		set_before(x.get_before());
-	
+
 	if(get_after()!=x.get_after() && x.get_after()!=INTERPOLATION_NIL)
 		set_after(INTERPOLATION_UNDEFINED);
 	if(get_before()!=x.get_before() && x.get_before()!=INTERPOLATION_NIL)
-		set_before(INTERPOLATION_UNDEFINED);	
+		set_before(INTERPOLATION_UNDEFINED);
 }
 
 TimePointSet::iterator
@@ -171,7 +171,7 @@ Node::Node():
 	guid_.make_unique();
 	assert(guid_);
 	assert(!global_node_map().count(guid_));
-	global_node_map()[guid_]=this;	
+	global_node_map()[guid_]=this;
 #endif
 }
 
@@ -205,10 +205,10 @@ Node::get_guid()const
 		const_cast<GUID&>(guid_).make_unique();
 		assert(guid_);
 		assert(!global_node_map().count(guid_));
-		global_node_map()[guid_]=const_cast<Node*>(this);	
+		global_node_map()[guid_]=const_cast<Node*>(this);
 	}
 #endif
-	
+
 	return guid_;
 }
 
@@ -223,7 +223,7 @@ Node::set_guid(const GUID& x)
 	{
 		guid_=x;
 		assert(!global_node_map().count(guid_));
-		global_node_map()[guid_]=this;	
+		global_node_map()[guid_]=this;
 	}
 	else
 #endif
@@ -269,7 +269,7 @@ Node::get_times() const
 		get_times_vfunc(times);
 		bchanged = false;
 	}
-	
+
 	//set the output set...
 	return times;
 }

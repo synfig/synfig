@@ -42,9 +42,9 @@ struct _FILE_deleter
 {
 	void operator()(FILE* x)const { if(x!=stdout && x!=stdin) fclose(x); }
 };
-	
+
 typedef etl::smart_ptr<FILE,_FILE_deleter> SmartFILE;
-	
+
 }; // END of namespace synfig
 
 /* === E N D =============================================================== */

@@ -70,17 +70,17 @@ ValueNode_Stripes*
 ValueNode_Stripes::create(const ValueBase& x)
 {
 	ValueBase::Type id(x.get_type());
-	
+
 	if(id!=ValueBase::TYPE_GRADIENT)
 	{
 		assert(0);
-		throw runtime_error("synfig::ValueNode_Stripes:Bad type "+ValueBase::type_name(id));			
-	}		
+		throw runtime_error("synfig::ValueNode_Stripes:Bad type "+ValueBase::type_name(id));
+	}
 
 	ValueNode_Stripes* value_node=new ValueNode_Stripes();
 
 	assert(value_node->get_type()==id);
-	
+
 	return value_node;
 }
 
@@ -134,7 +134,7 @@ synfig::ValueNode_Stripes::set_stripes(ValueNode::Handle b)
 synfig::ValueBase
 synfig::ValueNode_Stripes::operator()(Time t)const
 {
-	const int total((*stripes_)(t).get(int()));		
+	const int total((*stripes_)(t).get(int()));
 	int i;
 	Gradient ret;
 
@@ -144,10 +144,10 @@ synfig::ValueNode_Stripes::operator()(Time t)const
 	const Color color1((*color1_)(t).get(Color()));
 	const Color color2((*color2_)(t).get(Color()));
 	const float width(max(0.0,min(1.0,(*width_)(t).get(Real()))));
-	
+
 	const float stripe_width_a(width/total);
 	const float stripe_width_b((1.0-width)/total);
-	
+
 	for(i=0;i<total;i++)
 	{
 		float pos(float(i)/total+stripe_width_b/2);
@@ -223,7 +223,7 @@ ValueNode_Stripes::link_local_name(int i)const
 			return _("Width");
 	}
 	return String();
-}	
+}
 
 String
 ValueNode_Stripes::link_name(int i)const
@@ -241,7 +241,7 @@ ValueNode_Stripes::link_name(int i)const
 			return "width";
 	}
 	return String();
-}	
+}
 
 int
 ValueNode_Stripes::get_link_index_from_name(const String &name)const

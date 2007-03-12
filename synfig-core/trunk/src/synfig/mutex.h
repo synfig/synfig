@@ -43,9 +43,9 @@ class Mutex
 
 protected:
 	void* blackbox;
-	
+
 public:
-	
+
 	class Lock
 	{
 		Mutex& mutex;
@@ -53,19 +53,19 @@ public:
 		Lock(Mutex& x):mutex(x) { mutex.lock(); }
 		~Lock() { mutex.unlock(); }
 	};
-	
+
 	Mutex();
 	~Mutex();
-	
+
 	void lock();
 	void unlock();
 	bool try_lock();
 	bool is_locked();
-	
+
 private:
 	//! Non-copyable
 	Mutex(const Mutex&);
-	
+
 	//! Non-assignable
 	void operator=(const Mutex&);
 };
@@ -81,9 +81,9 @@ public:
 class RWLock
 {
 	void* blackbox;
-	
+
 public:
-	
+
 	class ReaderLock
 	{
 		RWLock& rw_lock;
@@ -98,7 +98,7 @@ public:
 		WriterLock(RWLock& x):rw_lock(x) { rw_lock.writer_lock(); }
 		~WriterLock() { rw_lock.writer_unlock(); }
 	};
-	
+
 	RWLock();
 	~RWLock();
 

@@ -50,7 +50,7 @@ enum SurfaceColorSystem
 {
 	COLORSYS_RGB,
 	COLORSYS_YUV,
-	
+
 	COLORSYS_END
 }; // END of enum SurfaceColorSystem
 
@@ -77,14 +77,14 @@ class SurfaceNew : etl::shared_object
  --	** -- T Y P E S -----------------------------------------------------------
 	*/
 
-public: 
+public:
 
 	//! \writeme
 	typedef etl::handle<SurfaceNew> Handle;
 
 	//! \writeme
 	typedef etl::handle<const SurfaceNew> HandleConst;
-	
+
 	//! \writeme
 	typedef etl::loose_handle<SurfaceNew> LooseHandle;
 
@@ -99,7 +99,7 @@ public:
 
 	//! \writeme
 	typedef SurfaceColorSystem;
-	
+
 	//! \writeme
 	class Lock
 	{
@@ -107,36 +107,36 @@ public:
 	public:
 		Lock(const Handle& x):x(x) { x->lock(); }
 		void unlock() { if(x){ x->unlock(); x=0; } }
-		~Lock() { unlock(); }		
+		~Lock() { unlock(); }
 	}; // END of class Lock
 	friend class Lock;
-	
+
 private:
 
 	//! \writeme
 	class ChannelData;
-	
+
 	/*
  --	** -- D A T A -------------------------------------------------------------
 	*/
 
 private:
-	
+
 	//! \writeme
 	RecMutex mutex_;
-	
+
 	//! \writeme
 	int w_,h_;
 
 	//! \writeme
 	ColorSystem color_system_;
-	
+
 	//! \writeme
 	bool premult_flag_;
 
 	//! \writeme
 	std::map<Channel,ChannelData> channel_map_;
-	
+
 	/*
  -- ** -- S I G N A L S -------------------------------------------------------
 	*/
@@ -154,7 +154,7 @@ public:
 	*/
 
 protected:
-	
+
 	//! \writeme
 	SurfaceNew();
 
@@ -171,10 +171,10 @@ public:
 
 	//! \writeme
 	int get_w()const;
-	
+
 	//! \writeme
 	int get_h()const;
-	
+
 	//! \writeme
 	void set_wh(int w, int h);
 
@@ -186,16 +186,16 @@ public:
 
 	//! Should only be used in certain circumstances
 	Color get_color(int x, int y)const;
-	
+
 	//! \writeme
 	void lock();
-	
+
 	//! \writeme
 	void unlock();
-	
+
 	//! \writeme
 	bool trylock();
-	
+
 	//! \writeme
 	ChannelLock lock_channel(Channel chan);
 
@@ -210,13 +210,13 @@ public:
 
 	//! \writeme
 	bool is_channel_defined(Channel chan)const;
-	
+
 	//! \writeme
 	bool get_premult()const;
 
 	//! \writeme
 	void set_premult();
-	
+
 	/*
  --	** -- S T A T I C   F U N C T I O N S -------------------------------------
 	*/
@@ -234,7 +234,7 @@ public:
 
 	//! Creates a cropped copy of a surface
 	static Handle crop(HandleConst, int x, int y, int w, int h);
-	
+
 	static void blit(
 		Handle dest,
 		int x_dest,
@@ -243,7 +243,7 @@ public:
 		float amount=1.0,
 		Color::BlendMethod bm=Color::BLEND_COMPOSITE
 	);
-	
+
 	static void blit(
 		Handle dest,
 		int x_dest,
@@ -256,8 +256,8 @@ public:
 		float amount=1.0,
 		Color::BlendMethod bm=Color::BLEND_COMPOSITE
 	);
-	
-	
+
+
 	static void chan_mlt(ChannelLock& dest, float x);
 	static void chan_mlt(ChannelLock& dest, const ChannelLockConst& x);
 
@@ -280,17 +280,17 @@ class SurfaceChannelLockConst
  --	** -- T Y P E S -----------------------------------------------------------
 	*/
 
-public: 
+public:
 
 	/*
  --	** -- D A T A -------------------------------------------------------------
 	*/
 
 protected:
-	
+
 	//! \writeme
 	SurfaceNew::Handle surface_;
-	
+
 	//! \writeme
 	etl::reference_counter ref_count_;
 
@@ -299,7 +299,7 @@ protected:
 
 	//! \writeme
 	bool data_ptr_checked_out_;
-	
+
 	/*
  --	** -- C O N S T R U C T O R S ---------------------------------------------
 	*/
@@ -307,7 +307,7 @@ protected:
 public:
 
 	SurfaceChannelLockConst();
-	
+
 	//! \writeme
 	~SurfaceChannelLockConst();
 
@@ -316,28 +316,28 @@ public:
 	*/
 
 public:
-	
+
 	//! \writeme
 	SurfaceChannel get_channel()const;
-	
+
 	//! \writeme
 	int get_w()const;
-	
+
 	//! \writeme
 	int get_h()const;
-	
+
 	//! \writeme
 	float get_value(int x, int y);
-	
+
 	//! \writeme
 	const float* get_data_ptr()const;
-	
+
 	//! \writeme
 	int get_data_ptr_stride()const;
-	
+
 	//! Releases the pointer obtained with get_data_ptr()
 	void release_data_ptr()const;
-	
+
 	//! \writeme
 	operator bool()const;
 }; // END of class SurfaceChannelLockConst
@@ -349,19 +349,19 @@ class SurfaceChannelLock : public SurfaceChannelLockConst
 	friend class SurfaceNew;
 
 	using SurfaceChannelLock::get_data_ptr;
-	
+
 	/*
  --	** -- T Y P E S -----------------------------------------------------------
 	*/
 
-public: 
+public:
 
 	/*
  --	** -- D A T A -------------------------------------------------------------
 	*/
 
 private:
-	
+
 	/*
  --	** -- C O N S T R U C T O R S ---------------------------------------------
 	*/
@@ -382,10 +382,10 @@ public:
 
 	//! \writeme
 	void clear();
-	
+
 	//! \writeme
 	void fill(float value);
-		
+
 	//! \writeme
 	void set_value(int x, int y, float v);
 

@@ -82,7 +82,7 @@ bool
 ffmpeg_trgt::set_rend_desc(RendDesc *given_desc)
 {
 	//given_desc->set_pixel_format(PF_RGB);
-	
+
 	// Make sure that the width and height
 	// are multiples of 8
 	given_desc->set_w((given_desc->get_w()+4)/8*8);
@@ -109,7 +109,7 @@ ffmpeg_trgt::set_rend_desc(RendDesc *given_desc)
 	if(fps>=59.94)
 		given_desc->set_frame_rate(59.94);
     */
-	
+
 	desc=*given_desc;
 
 	return true;
@@ -122,19 +122,19 @@ ffmpeg_trgt::init()
 	if(desc.get_frame_end()-desc.get_frame_start()>0)
 		multi_image=true;
 	string command;
-	
+
 	command=strprintf("ffmpeg -f image2pipe -vcodec ppm -an -r %f -i pipe: -loop -hq -title \"%s\" -vcodec mpeg1video -y \"%s\"\n",desc.get_frame_rate(),get_canvas()->get_name().c_str(),filename.c_str());
-	
+
 	file=popen(command.c_str(),"w");
-	
+
 	// etl::yield();
-	
+
 	if(!file)
 	{
 		synfig::error(_("Unable to open pipe to ffmpeg"));
 		return false;
 	}
-			
+
 	return true;
 }
 
@@ -150,19 +150,19 @@ bool
 ffmpeg_trgt::start_frame(synfig::ProgressCallback *callback)
 {
 	int w=desc.get_w(),h=desc.get_h();
-		
+
 	if(!file)
 		return false;
-	
+
 	fprintf(file, "P6\n");
 	fprintf(file, "%d %d\n", w, h);
-	fprintf(file, "%d\n", 255);	
-	
+	fprintf(file, "%d\n", 255);
+
 	delete [] buffer;
 	buffer=new unsigned char[3*w];
 	delete [] color_buffer;
 	color_buffer=new Color[w];
-	
+
 	return true;
 }
 
@@ -177,11 +177,11 @@ ffmpeg_trgt::end_scanline()
 {
 	if(!file)
 		return false;
-			
+
 	convert_color_format(buffer, color_buffer, desc.get_w(), PF_RGB, gamma());
 
 	if(!fwrite(buffer,1,desc.get_w()*3,file))
 		return false;
-	
+
 	return true;
 }

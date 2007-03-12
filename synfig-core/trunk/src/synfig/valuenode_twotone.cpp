@@ -72,13 +72,13 @@ ValueNode_TwoTone::create(const ValueBase& x)
 	if(id!=ValueBase::TYPE_GRADIENT)
 	{
 		assert(0);
-		throw runtime_error("synfig::ValueNode_TwoTone:Bad type "+ValueBase::type_name(id));			
-	}		
+		throw runtime_error("synfig::ValueNode_TwoTone:Bad type "+ValueBase::type_name(id));
+	}
 
 	ValueNode_TwoTone* value_node=new ValueNode_TwoTone();
 
 	assert(value_node->get_type()==id);
-	
+
 	return value_node;
 }
 
@@ -162,7 +162,7 @@ ValueNode_TwoTone::link_local_name(int i)const
 			return _("Color2");
 	}
 	return String();
-}	
+}
 
 String
 ValueNode_TwoTone::link_name(int i)const
@@ -176,7 +176,7 @@ ValueNode_TwoTone::link_name(int i)const
 			return "color2";
 	}
 	return String();
-}	
+}
 
 int
 ValueNode_TwoTone::get_link_index_from_name(const String &name)const

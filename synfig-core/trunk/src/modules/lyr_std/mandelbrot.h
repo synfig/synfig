@@ -57,7 +57,7 @@ private:
 	bool distort_inside;
 	bool distort_outside;
 	bool solid_inside;
-	bool solid_outside;	
+	bool solid_outside;
 	bool invert_inside;
 	bool invert_outside;
 	bool shade_outside;
@@ -71,11 +71,11 @@ private:
 
 public:
 	Mandelbrot();
-	
+
 	virtual bool set_param(const String &param, const ValueBase &value);
 	virtual ValueBase get_param(const String &param)const;
 	virtual Color get_color(Context context, const Point &pos)const;
-	virtual Vocab get_param_vocab()const;	
+	virtual Vocab get_param_vocab()const;
 };
 
 /* === E N D =============================================================== */

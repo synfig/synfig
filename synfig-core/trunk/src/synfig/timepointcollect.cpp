@@ -54,7 +54,7 @@ using namespace synfig;
 //! \writeme
 int
 synfig::waypoint_collect(set<Waypoint, std::less<UniqueID> >& waypoint_set,const Time& time, const etl::handle<Node>& node)
-{	
+{
 	const TimePointSet& timepoint_set(node->get_times());
 
 	// Check to see if there is anything in here at the given time
@@ -114,7 +114,7 @@ synfig::waypoint_collect(set<Waypoint, std::less<UniqueID> >& waypoint_set,const
 	{
 		try{
 			Waypoint waypoint=*value_node_animated->find(time);
-			
+
 			// If it is already in the waypoint set, then
 			// don't bother adding it again
 			if(waypoint_set.find(waypoint)!=waypoint_set.end())

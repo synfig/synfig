@@ -279,7 +279,7 @@ ValueBase::clear()
 			break;
 		}
 	}
-	
+
 	ref_count.detach();
 	data=0;
 	type=TYPE_NIL;
@@ -369,7 +369,7 @@ ValueBase::operator==(const ValueBase& rhs)const
 		return false;
 	if(data==rhs.data)
 		return true;
-	
+
 	switch(get_type())
 	{
 	case TYPE_TIME:

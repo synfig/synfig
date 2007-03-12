@@ -185,13 +185,13 @@ Warp::sync()
 	cache_e=(-dest_tl[1]+dest_tr[1])/(src_br[0]-src_tl[0]);
 	cache_f=(-dest_tl[1]+dest_bl[1])/(src_br[1]-src_tl[1]);
 	cache_i=(dest_tl[1]-dest_tr[1]+dest_br[1]-dest_bl[1])/((src_br[1]-src_tl[1])*(src_br[0]-src_tl[0]));
-	cache_j=dest_tl[1];	
+	cache_j=dest_tl[1];
 */
-	
+
 /*	matrix[2][0]=(dest_tl[0]-dest_tr[0]+dest_br[0]-dest_bl[0])/((src_br[1]-src_tl[1])*(src_br[0]-src_tl[0]));
 	matrix[2][1]=(dest_tl[1]-dest_tr[1]+dest_br[1]-dest_bl[1])/((src_br[1]-src_tl[1])*(src_br[0]-src_tl[0]));
 	matrix[2][2]=quad_area(dest_tl,dest_tr,dest_br,dest_bl)/((src_br[1]-src_tl[1])*(src_br[0]-src_tl[0]));
-	
+
 	matrix[0][0]=-(-dest_tl[1]+dest_tr[1])/(src_br[0]-src_tl[0]);
 	matrix[0][1]=-(-dest_tl[1]+dest_bl[1])/(src_br[1]-src_tl[1]);
 
@@ -209,7 +209,7 @@ Warp::sync()
 	const Real& y1(min(src_br[1],src_tl[1]));
 	const Real& x2(max(src_br[0],src_tl[0]));
 	const Real& y2(max(src_br[1],src_tl[1]));
-	
+
 	Real tx1(dest_bl[0]);
 	Real ty1(dest_bl[1]);
 	Real tx2(dest_br[0]);
@@ -293,7 +293,7 @@ Warp::sync()
     matrix[2][2] = 1.0;
   }
 #undef matrix
-  
+
 	Real scaletrans[3][3]={
 			{ scalex, 0, -x1*scalex },
 			{ 0, scaley, -y1*scaley },
@@ -336,7 +336,7 @@ Warp::set_param(const String & param, const ValueBase &value)
 	IMPORT_PLUS(dest_br,sync());
 	IMPORT(clip);
 	IMPORT(horizon);
-	
+
 	return false;
 }
 
@@ -351,18 +351,18 @@ Warp::get_param(const String &param)const
 	EXPORT(dest_br);
 	EXPORT(clip);
 	EXPORT(horizon);
-	
+
 	EXPORT_NAME();
 	EXPORT_VERSION();
-		
-	return ValueBase();	
+
+	return ValueBase();
 }
 
 Layer::Vocab
 Warp::get_param_vocab()const
 {
 	Layer::Vocab ret;
-	
+
 	ret.push_back(ParamDesc("src_tl")
 		.set_local_name(_("Source TL"))
 		.set_box("src_br")
@@ -409,14 +409,14 @@ class Warp_Trans : public Transform
 	etl::handle<const Warp> layer;
 public:
 	Warp_Trans(const Warp* x):Transform(x->get_guid()),layer(x) { }
-	
+
 	synfig::Vector perform(const synfig::Vector& x)const
 	{
 		return layer->transform_backward(x);
 		//Point pos(x-layer->origin);
 		//return Point(layer->cos_val*pos[0]-layer->sin_val*pos[1],layer->sin_val*pos[0]+layer->cos_val*pos[1])+layer->origin;
 	}
-	
+
 	synfig::Vector unperform(const synfig::Vector& x)const
 	{
 
@@ -442,7 +442,7 @@ Warp::hit_check(synfig::Context context, const synfig::Point &p)const
 		if(!rect.is_inside(newpos))
 			return 0;
 	}
-	
+
 	return context.hit_check(newpos);
 }
 
@@ -475,15 +475,15 @@ Warp::accelerated_render(Context context,Surface *surface,int quality, const Ren
 
 	Real pw=(renddesc.get_w())/(renddesc.get_br()[0]-renddesc.get_tl()[0]);
 	Real ph=(renddesc.get_h())/(renddesc.get_br()[1]-renddesc.get_tl()[1]);
-	
+
 	if(cb && !cb->amount_complete(0,10000))
 		return false;
-	
+
 	Point tl(renddesc.get_tl());
 	Point br(renddesc.get_br());
 
 	Rect bounding_rect;
-	
+
 	Rect render_rect(tl,br);
 	Rect clip_rect(Rect::full_plane());
 	Rect dest_rect(dest_tl,dest_br); dest_rect.expand(dest_tr).expand(dest_bl);
@@ -497,23 +497,23 @@ Warp::accelerated_render(Context context,Surface *surface,int quality, const Ren
 		surface->clear();
 		return true;
 	}
-	
+
 	{
 		Rect other(render_rect);
 		if(clip)
 			other&=dest_rect;
-		
+
 		Point min(other.get_min());
 		Point max(other.get_max());
-		
+
 		bool init_point_set=false;
-		
+
 		// Point trans_point[4];
 		Point p;
 		// Real trans_z[4];
 		Real z,minz(10000000000000.0f),maxz(0);
-		
-		
+
+
 		p=transform_forward(min);
 		z=transform_backward_z(p);
 		if(z>0 && z<horizon*2)
@@ -524,9 +524,9 @@ Warp::accelerated_render(Context context,Surface *surface,int quality, const Ren
 				bounding_rect=Rect(p);
 			init_point_set=true;
 			maxz=std::max(maxz,z);
-			minz=std::min(minz,z);			
+			minz=std::min(minz,z);
 		}
-		
+
 		p=transform_forward(max);
 		z=transform_backward_z(p);
 		if(z>0 && z<horizon*2)
@@ -537,7 +537,7 @@ Warp::accelerated_render(Context context,Surface *surface,int quality, const Ren
 				bounding_rect=Rect(p);
 			init_point_set=true;
 			maxz=std::max(maxz,z);
-			minz=std::min(minz,z);			
+			minz=std::min(minz,z);
 		}
 
 		swap(min[1],max[1]);
@@ -552,9 +552,9 @@ Warp::accelerated_render(Context context,Surface *surface,int quality, const Ren
 				bounding_rect=Rect(p);
 			init_point_set=true;
 			maxz=std::max(maxz,z);
-			minz=std::min(minz,z);			
+			minz=std::min(minz,z);
 		}
-		
+
 		p=transform_forward(max);
 		z=transform_backward_z(p);
 		if(z>0 && z<horizon*2)
@@ -565,9 +565,9 @@ Warp::accelerated_render(Context context,Surface *surface,int quality, const Ren
 				bounding_rect=Rect(p);
 			init_point_set=true;
 			maxz=std::max(maxz,z);
-			minz=std::min(minz,z);			
+			minz=std::min(minz,z);
 		}
-		
+
 		if(!init_point_set)
 		{
 			surface->set_wh(renddesc.get_w(),renddesc.get_h());
@@ -575,20 +575,20 @@ Warp::accelerated_render(Context context,Surface *surface,int quality, const Ren
 			return true;
 		}
 		zoom_factor=(1+(maxz-minz));
-		
+
 	}
 
 #ifdef ACCEL_WARP_IS_BROKEN
 	return Layer::accelerated_render(context,surface,quality,renddesc, cb);
 #else
-	
+
 	/*swap(tl[1],br[1]);
 	bounding_rect
 		.expand(transform_forward(tl))
 		.expand(transform_forward(br))
 	;
 	swap(tl[1],br[1]);*/
-	
+
 	//synfig::warning("given window: [%f,%f]-[%f,%f] %dx%d",tl[0],tl[1],br[0],br[1],renddesc.get_w(),renddesc.get_h());
 	//synfig::warning("Projected: [%f,%f]-[%f,%f]",bounding_rect.get_min()[0],bounding_rect.get_min()[1],bounding_rect.get_max()[0],bounding_rect.get_max()[1]);
 
@@ -596,17 +596,17 @@ Warp::accelerated_render(Context context,Surface *surface,int quality, const Ren
 	// source rectangle
 	if(clip)
 		clip_rect&=Rect(src_tl,src_br);
-		
+
 	// Bound ourselves to the bounding rectangle of
 	// what is under us
 	clip_rect&=context.get_full_bounding_rect();//.expand_x(abs(zoom_factor/pw)).expand_y(abs(zoom_factor/ph));
 
 	bounding_rect&=clip_rect;
-	
+
 	Point min_point(bounding_rect.get_min());
 	Point max_point(bounding_rect.get_max());
-	
-	
+
+
 	if(tl[0]>br[0])
 	{
 		tl[0]=max_point[0];
@@ -627,14 +627,14 @@ Warp::accelerated_render(Context context,Surface *surface,int quality, const Ren
 		br[1]=max_point[1];
 		tl[1]=min_point[1];
 	}
-	
-	
+
+
 
 	const int tmp_d(max(renddesc.get_w(),renddesc.get_h()));
 	Real src_pw=(tmp_d*zoom_factor)/(br[0]-tl[0]);
 	Real src_ph=(tmp_d*zoom_factor)/(br[1]-tl[1]);
 
-	
+
 	RendDesc desc(renddesc);
 	desc.clear_flags();
 	//desc.set_flags(RendDesc::PX_ASPECT);
@@ -654,16 +654,16 @@ Warp::accelerated_render(Context context,Surface *surface,int quality, const Ren
 	src_pw=(desc.get_w())/(desc.get_br()[0]-desc.get_tl()[0]);
 	src_ph=(desc.get_h())/(desc.get_br()[1]-desc.get_tl()[1]);
 
-	
+
 	Surface source;
 	source.set_wh(desc.get_w(),desc.get_h());
 
 	if(!context.accelerated_render(&source,quality,desc,&stageone))
 		return false;
-	
+
 	surface->set_wh(renddesc.get_w(),renddesc.get_h());
 	surface->clear();
-	
+
 	Surface::pen pen(surface->begin());
 
 	if(quality<=4)
@@ -683,15 +683,15 @@ Warp::accelerated_render(Context context,Surface *surface,int quality, const Ren
 					(*surface)[y][x]=Color::alpha();
 					continue;
 				}
-				
+
 				u=(tmp[0]-tl[0])*src_pw;
 				v=(tmp[1]-tl[1])*src_ph;
-				
+
 				if(u<0 || v<0 || u>=source.get_w() || v>=source.get_h() || isnan(u) || isnan(v))
 				{
 					(*surface)[y][x]=context.get_color(tmp);
 				}
-				else				
+				else
 					(*surface)[y][x]=source.cubic_sample(u,v);
 			}
 			if(y&31==0 && cb)
@@ -719,10 +719,10 @@ Warp::accelerated_render(Context context,Surface *surface,int quality, const Ren
 					(*surface)[y][x]=Color::alpha();
 					continue;
 				}
-				
+
 				u=(tmp[0]-tl[0])*src_pw;
 				v=(tmp[1]-tl[1])*src_ph;
-				
+
 				if(u<0 || v<0 || u>=source.get_w() || v>=source.get_h() || isnan(u) || isnan(v))
 				{
 					if(clip)
@@ -757,10 +757,10 @@ Warp::accelerated_render(Context context,Surface *surface,int quality, const Ren
 					(*surface)[y][x]=Color::alpha();
 					continue;
 				}
-				
+
 				u=(tmp[0]-tl[0])*src_pw;
 				v=(tmp[1]-tl[1])*src_ph;
-				
+
 				if(u<0 || v<0 || u>=source.get_w() || v>=source.get_h() || isnan(u) || isnan(v))
 				{
 					if(clip)
@@ -789,7 +789,7 @@ Warp::accelerated_render(Context context,Surface *surface,int quality, const Ren
 
 synfig::Rect
 Warp::get_bounding_rect()const
-{	
+{
 	return Rect::full_plane();
 }
 
@@ -797,23 +797,23 @@ synfig::Rect
 Warp::get_full_bounding_rect(Context context)const
 {
 //	return Rect::full_plane();
-	
+
 	Rect under(context.get_full_bounding_rect());
 
 	if(clip)
 	{
 		under&=Rect(src_tl,src_br);
 	}
-	
+
 	return get_transform()->perform(under);
-	
+
 	/*
 	Rect under(context.get_full_bounding_rect());
 	Rect ret(Rect::zero());
-	
+
 	if(under.area()==HUGE_VAL)
 		return Rect::full_plane();
-	
+
 	ret.expand(
 		transform_backward(
 			under.get_min()

@@ -124,7 +124,7 @@ bmp_mptr::get_frame(synfig::Surface &surface,Time, synfig::ProgressCallback *cb)
 	FILE *file=fopen(filename.c_str(),"rb");
 	if(!file)
 	{
-		if(cb)cb->error("bmp_mptr::GetFrame(): "+strprintf(_("Unable to open %s"),filename.c_str())); 
+		if(cb)cb->error("bmp_mptr::GetFrame(): "+strprintf(_("Unable to open %s"),filename.c_str()));
 		else synfig::error("bmp_mptr::GetFrame(): "+strprintf(_("Unable to open %s"),filename.c_str()));
 		return false;
 	}
@@ -133,72 +133,72 @@ bmp_mptr::get_frame(synfig::Surface &surface,Time, synfig::ProgressCallback *cb)
 	BITMAPINFOHEADER infoheader;
 	char b_char=fgetc(file);
 	char m_char=fgetc(file);
-	
+
 	if(b_char!='B' || m_char!='M')
 	{
-		if(cb)cb->error("bmp_mptr::GetFrame(): "+strprintf(_("%s is not in BMP format"),filename.c_str())); 
+		if(cb)cb->error("bmp_mptr::GetFrame(): "+strprintf(_("%s is not in BMP format"),filename.c_str()));
 		else synfig::error("bmp_mptr::GetFrame(): "+strprintf(_("%s is not in BMP format"),filename.c_str()));
 		return false;
 	}
-		
+
 	if(fread(&fileheader.bfSize, 1, sizeof(BITMAPFILEHEADER)-4, file)!=sizeof(BITMAPFILEHEADER)-4)
 	{
-		String str("bmp_mptr::get_frame(): "+strprintf(_("Failure while reading BITMAPFILEHEADER from %s"),filename.c_str())); 
-		if(cb)cb->error(str); 
+		String str("bmp_mptr::get_frame(): "+strprintf(_("Failure while reading BITMAPFILEHEADER from %s"),filename.c_str()));
+		if(cb)cb->error(str);
 		else synfig::error(str);
 		return false;
 	}
-		
+
 	if(fread(&infoheader, 1, sizeof(BITMAPINFOHEADER), file)!=sizeof(BITMAPINFOHEADER))
 	{
-		String str("bmp_mptr::get_frame(): "+strprintf(_("Failure while reading BITMAPINFOHEADER from %s"),filename.c_str())); 
-		if(cb)cb->error(str); 
+		String str("bmp_mptr::get_frame(): "+strprintf(_("Failure while reading BITMAPINFOHEADER from %s"),filename.c_str()));
+		if(cb)cb->error(str);
 		else synfig::error(str);
 		return false;
 	}
-	
+
 	int offset=little_endian(fileheader.bfOffsetBits);
-	
-	if(offset!=sizeof(BITMAPFILEHEADER)+sizeof(BITMAPINFOHEADER)-2)	
+
+	if(offset!=sizeof(BITMAPFILEHEADER)+sizeof(BITMAPINFOHEADER)-2)
 	{
-		String str("bmp_mptr::get_frame(): "+strprintf(_("Bad BITMAPFILEHEADER in %s. (bfOffsetBits=%d, should be %d)"),filename.c_str(),offset,sizeof(BITMAPFILEHEADER)+sizeof(BITMAPINFOHEADER)-2)); 
-		if(cb)cb->error(str); 
+		String str("bmp_mptr::get_frame(): "+strprintf(_("Bad BITMAPFILEHEADER in %s. (bfOffsetBits=%d, should be %d)"),filename.c_str(),offset,sizeof(BITMAPFILEHEADER)+sizeof(BITMAPINFOHEADER)-2));
+		if(cb)cb->error(str);
 		else synfig::error(str);
 		return false;
 	}
 
 	if(little_endian(infoheader.biSize)!=little_endian(40))
 	{
-		String str("bmp_mptr::get_frame(): "+strprintf(_("Bad BITMAPINFOHEADER in %s. (biSize=%d, should be 40)"),filename.c_str(),little_endian(infoheader.biSize))); 
-		if(cb)cb->error(str); 
+		String str("bmp_mptr::get_frame(): "+strprintf(_("Bad BITMAPINFOHEADER in %s. (biSize=%d, should be 40)"),filename.c_str(),little_endian(infoheader.biSize)));
+		if(cb)cb->error(str);
 		else synfig::error(str);
 		return false;
 	}
-	
+
 	int w,h,bit_count;
 
 	w=little_endian(infoheader.biWidth);
 	h=little_endian(infoheader.biHeight);
 	bit_count=little_endian_short(infoheader.biBitCount);
-	
+
 	synfig::warning("w:%d\n",w);
 	synfig::warning("h:%d\n",h);
 	synfig::warning("bit_count:%d\n",bit_count);
-	
+
 	if(little_endian(infoheader.biCompression))
 	{
-		if(cb)cb->error("bmp_mptr::GetFrame(): "+string(_("Reading compressed bitmaps is not supported"))); 
+		if(cb)cb->error("bmp_mptr::GetFrame(): "+string(_("Reading compressed bitmaps is not supported")));
 		else synfig::error("bmp_mptr::GetFrame(): "+string(_("Reading compressed bitmaps is not supported")));
 		return false;
 	}
 
 	if(bit_count!=24 && bit_count!=32)
 	{
-		if(cb)cb->error("bmp_mptr::GetFrame(): "+strprintf(_("Unsupported bit depth (bit_count=%d, should be 24 or 32)"),bit_count)); 
+		if(cb)cb->error("bmp_mptr::GetFrame(): "+strprintf(_("Unsupported bit depth (bit_count=%d, should be 24 or 32)"),bit_count));
 		else synfig::error("bmp_mptr::GetFrame(): "+strprintf(_("Unsupported bit depth (bit_count=%d, should be 24 or 32)"),bit_count));
 		return false;
 	}
-	
+
 	int x;
 	int y;
 	surface.set_wh(w,h);
@@ -211,7 +211,7 @@ bmp_mptr::get_frame(synfig::Surface &surface,Time, synfig::ProgressCallback *cb)
 			float b=gamma().b_U8_to_F32((unsigned char)fgetc(file));
 			float g=gamma().g_U8_to_F32((unsigned char)fgetc(file));
 			float r=gamma().r_U8_to_F32((unsigned char)fgetc(file));
-			
+
 			surface[h-y-1][x]=Color(
 				r,
 				g,
@@ -221,8 +221,8 @@ bmp_mptr::get_frame(synfig::Surface &surface,Time, synfig::ProgressCallback *cb)
 			if(bit_count==32)
 				fgetc(file);
 		}
-	
 
-	fclose(file);	
+
+	fclose(file);
 	return true;
 }

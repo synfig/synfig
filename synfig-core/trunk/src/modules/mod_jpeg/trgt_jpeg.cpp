@@ -61,7 +61,7 @@ jpeg_trgt::jpeg_trgt(const char *Filename)
 	buffer=NULL;
 	ready=false;
 	quality=95;
-	color_buffer=0;	
+	color_buffer=0;
 	set_remove_alpha();
 }
 
@@ -96,7 +96,7 @@ bool
 jpeg_trgt::start_frame(synfig::ProgressCallback *callback)
 {
 	int w=desc.get_w(),h=desc.get_h();
-	
+
 	if(file && file!=stdout)
 		fclose(file);
 	if(filename=="-")
@@ -110,7 +110,7 @@ jpeg_trgt::start_frame(synfig::ProgressCallback *callback)
 			newfilename(filename),
 			ext(find(filename.begin(),filename.end(),'.'),filename.end());
 		newfilename.erase(find(newfilename.begin(),newfilename.end(),'.'),newfilename.end());
-		
+
 		newfilename+=etl::strprintf("%04d",imagecount)+ext;
 		file=fopen(newfilename.c_str(),"wb");
 		if(callback)callback->task(newfilename);
@@ -120,13 +120,13 @@ jpeg_trgt::start_frame(synfig::ProgressCallback *callback)
 		file=fopen(filename.c_str(),"wb");
 		if(callback)callback->task(filename);
 	}
-	
+
 	if(!file)
 		return false;
-		
+
 	delete [] buffer;
 	buffer=new unsigned char[3*w];
-	
+
 	delete [] color_buffer;
 	color_buffer=new Color[w];
 
@@ -148,14 +148,14 @@ jpeg_trgt::start_frame(synfig::ProgressCallback *callback)
 	* Here we just illustrate the use of quality (quantization table) scaling:
 	*/
 	jpeg_set_quality(&cinfo, quality, TRUE /* limit to baseline-JPEG values */);
-	
+
 	/* Step 4: Start compressor */
-	
+
 	/* TRUE ensures that we will write a complete interchange-JPEG file.
 	* Pass TRUE unless you are very sure of what you're doing.
 	*/
 	jpeg_start_compress(&cinfo, TRUE);
-		
+
 	ready=true;
 	return true;
 }

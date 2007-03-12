@@ -72,7 +72,7 @@ Twirl::Twirl():
 	distort_outside(false)
 {
 }
-	
+
 bool
 Twirl::set_param(const String & param, const ValueBase &value)
 {
@@ -81,7 +81,7 @@ Twirl::set_param(const String & param, const ValueBase &value)
 	IMPORT(rotations);
 	IMPORT(distort_inside);
 	IMPORT(distort_outside);
-	
+
 	return Layer_Composite::set_param(param,value);
 }
 
@@ -93,10 +93,10 @@ Twirl::get_param(const String &param)const
 	EXPORT(rotations);
 	EXPORT(distort_inside);
 	EXPORT(distort_outside);
-	
+
 	EXPORT_NAME();
 	EXPORT_VERSION();
-		
+
 	return false;
 }
 
@@ -104,11 +104,11 @@ Layer::Vocab
 Twirl::get_param_vocab()const
 {
 	Layer::Vocab ret;
-	
+
 	ret.push_back(ParamDesc("center")
 		.set_local_name(_("Center"))
 	);
-	
+
 	ret.push_back(ParamDesc("radius")
 		.set_local_name(_("Radius"))
 		.set_description(_("This is the radius of the circle"))
@@ -137,18 +137,18 @@ Twirl::distort(const synfig::Point &pos,bool reverse)const
 {
 	Point centered(pos-center);
 	Real mag(centered.mag());
-	
+
 	Angle a;
 
 	if((distort_inside || mag>radius) && (distort_outside || mag<radius))
 		a=rotations*((centered.mag()-radius)/radius);
 	else
 		return pos;
-	
+
 	if(reverse)	a=-a;
-		
-	const Real sin(Angle::sin(a).get());	
-	const Real cos(Angle::cos(a).get());	
+
+	const Real sin(Angle::sin(a).get());
+	const Real cos(Angle::cos(a).get());
 
 	Point twirled;
 	twirled[0]=cos*centered[0]-sin*centered[1];
@@ -174,12 +174,12 @@ class Twirl_Trans : public Transform
 	etl::handle<const Twirl> layer;
 public:
 	Twirl_Trans(const Twirl* x):Transform(x->get_guid()),layer(x) { }
-	
+
 	synfig::Vector perform(const synfig::Vector& x)const
 	{
 		return layer->distort(x,true);
 	}
-	
+
 	synfig::Vector unperform(const synfig::Vector& x)const
 	{
 		return layer->distort(x,false);
@@ -209,7 +209,7 @@ Twirl::accelerated_render(Context context,Surface *surface,int quality, const Re
 			return true;
 	}
 
-		
+
 	int x,y;
 
 	Surface::pen pen(surface->begin());
@@ -218,7 +218,7 @@ Twirl::accelerated_render(Context context,Surface *surface,int quality, const Re
 	Point tl(renddesc.get_tl());
 	const int w(surface->get_w());
 	const int h(surface->get_h());
-	
+
 	if(get_amount()==1.0 && get_blend_method()==Color::BLEND_STRAIGHT)
 	{
 		for(y=0,pos[1]=tl[1];y<h;y++,pen.inc_y(),pen.dec_x(x),pos[1]+=ph)

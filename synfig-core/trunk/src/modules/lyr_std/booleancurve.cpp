@@ -67,51 +67,51 @@ BooleanCurve::~BooleanCurve()
 }
 
 bool BooleanCurve::set_param(const String & param, const synfig::ValueBase &value)
-{	
-	if(param=="regions" && value.same_as(regions)) 
+{
+	if(param=="regions" && value.same_as(regions))
 	{
 		vector<BLinePoint> bv;
 		int size = value.get_list().size();
-		
+
 		const vector<ValueBase> &vlist = value.get_list();
-		
-		regions.clear();		
+
+		regions.clear();
 		for(int i = 0; i < size; ++i)
 		{
 			regions.push_back(vector<BLinePoint>(vlist[i].get_list().begin(),vlist[i].get_list().end()));
 		}
 		return true;
 	}
-	
+
 	return Layer_Shape::set_param(param,value);
 }
 
 ValueBase BooleanCurve::get_param(const String & param)const
 {
 	EXPORT(regions);
-	
+
 	EXPORT_NAME();
 	EXPORT_VERSION();
-	
+
 	return Layer_Shape::get_param(param);
 }
 
 Layer::Vocab BooleanCurve::get_param_vocab()const
 {
 	Layer::Vocab ret(Layer_Shape::get_param_vocab());
-	
+
 	ret.push_back(ParamDesc("regions")
 		.set_local_name(_("Region Set"))
 		.set_description(_("Set of regions to combine"))
 	);
-	
+
 	return ret;
 }
 
 Color BooleanCurve::get_color(Context context, const Point &pos)const
 {
 	Color c(Color::alpha());
-	
+
 	return c;
 }
 

@@ -69,7 +69,7 @@ ValueNode_Subtract*
 ValueNode_Subtract::create(const ValueBase& x)
 {
 	ValueBase::Type id(x.get_type());
-	
+
 	ValueNode_Subtract* value_node=new ValueNode_Subtract();
 	switch(id)
 	{
@@ -86,10 +86,10 @@ ValueNode_Subtract::create(const ValueBase& x)
 		break;
 	default:
 		assert(0);
-		throw runtime_error("synfig::ValueNode_Subtract:Bad type "+ValueBase::type_name(id));			
+		throw runtime_error("synfig::ValueNode_Subtract:Bad type "+ValueBase::type_name(id));
 	}
 	assert(value_node->get_type()==id);
-	
+
 	return value_node;
 }
 
@@ -117,10 +117,10 @@ bool
 synfig::ValueNode_Subtract::set_lhs(ValueNode::Handle a)
 {
 	ref_a=a;
-	
+
 	if(PlaceholderValueNode::Handle::cast_dynamic(a))
 		return true;
-	
+
 	if(!ref_a || !ref_b)
 		set_type(ValueBase::TYPE_NIL);
 	else
@@ -263,7 +263,7 @@ ValueNode_Subtract::link_local_name(int i)const
 			return _("Scalar");
 	}
 	return String();
-}	
+}
 
 String
 ValueNode_Subtract::link_name(int i)const
@@ -279,7 +279,7 @@ ValueNode_Subtract::link_name(int i)const
 			return "scalar";
 	}
 	return String();
-}	
+}
 
 int
 ValueNode_Subtract::get_link_index_from_name(const String &name)const
@@ -308,7 +308,7 @@ ValueNode_Subtract::get_local_name()const
 bool
 ValueNode_Subtract::check_type(ValueBase::Type type)
 {
-	return type==ValueBase::TYPE_VECTOR 
+	return type==ValueBase::TYPE_VECTOR
 		|| type==ValueBase::TYPE_REAL
 		|| type==ValueBase::TYPE_INTEGER
 		|| type==ValueBase::TYPE_COLOR

@@ -60,7 +60,7 @@ Module::subsys_init(const String &prefix)
 	#ifndef SYNFIG_LTDL_NO_STATIC
 	//LTDL_SET_PRELOADED_SYMBOLS();
 	#endif
-	
+
 	if(lt_dlinit())
 	{
 		error(_("Errors on lt_dlinit()"));
@@ -79,7 +79,7 @@ Module::subsys_init(const String &prefix)
 #endif
 	lt_dladdsearchdir("/usr/local/lib/synfig/modules");
 	lt_dladdsearchdir(".");
-#endif	
+#endif
 	book_=new Book;
 	return true;
 }
@@ -88,7 +88,7 @@ bool
 Module::subsys_stop()
 {
 	delete book_;
-	
+
 #ifndef USE_CF_BUNDLES
 	lt_dlexit();
 #endif
@@ -123,7 +123,7 @@ synfig::Module::Register(const String &module_name, ProgressCallback *callback)
 
 	module=lt_dlopenext((string("lib")+module_name).c_str());
 	if(!module)module=lt_dlopenext(module_name.c_str());
-	
+
 	if(!module)
 	{
 		if(callback)callback->warning(strprintf(_("Unable to find module \"%s\" (%s)"),module_name.c_str(),lt_dlerror()));
@@ -131,7 +131,7 @@ synfig::Module::Register(const String &module_name, ProgressCallback *callback)
 	}
 
 	if(callback)callback->task(strprintf(_("Found module \"%s\""),module_name.c_str()));
-	
+
 	Module::constructor_type constructor=NULL;
 	Handle mod;
 
@@ -156,7 +156,7 @@ synfig::Module::Register(const String &module_name, ProgressCallback *callback)
 //		if(callback)callback->task(string("looking for -> lib")+module_name+"_LTX_new_instance()");
 		constructor=(Module::constructor_type )lt_dlsym(module,(string("_")+module_name+"_LTX_new_instance").c_str());
 	}
-	
+
 	if(constructor)
 	{
 //		if(callback)callback->task(strprintf("Executing callback for \"%s\"",module_name.c_str()));
@@ -182,7 +182,7 @@ synfig::Module::Register(const String &module_name, ProgressCallback *callback)
     }
 
 	if(callback)callback->task(strprintf(_("Success for \"%s\""),module_name.c_str()));
-	
+
 #endif
 	return false;
 }

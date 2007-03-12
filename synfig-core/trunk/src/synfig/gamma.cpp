@@ -152,7 +152,7 @@ Gamma::set_black_level(float x)
 	if(x==black_level) return;
 
 	black_level=x;
-	
+
 	// Rebuild tables
 	refresh_gamma_r();
 	refresh_gamma_g();
@@ -166,7 +166,7 @@ Gamma::set_red_blue_level(float x)
 	if(x==red_blue_level) return;
 
 	red_blue_level=x;
-	
+
 	// Rebuild tables
 	refresh_gamma_r();
 	refresh_gamma_g();
@@ -179,7 +179,7 @@ Gamma::set_all(float r, float g, float b, float black, float red_blue)
 	// If nothing has changed, then don't recompute the tables
 	if(gamma_r==r && gamma_g==g && gamma_b==b && black_level==black && red_blue_level==red_blue)
 		return;
-	
+
 	gamma_r=r;
 	gamma_g=g;
 	gamma_b=b;

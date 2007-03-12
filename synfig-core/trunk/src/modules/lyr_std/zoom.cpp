@@ -64,14 +64,14 @@ Zoom::Zoom():
 	amount(0)
 {
 }
-	
+
 bool
 Zoom::set_param(const String & param, const ValueBase &value)
 {
 
 	IMPORT(center);
 	IMPORT(amount);
-	
+
 	return false;
 }
 
@@ -83,15 +83,15 @@ Zoom::get_param(const String &param)const
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
-		
-	return ValueBase();	
+
+	return ValueBase();
 }
 
 Layer::Vocab
 Zoom::get_param_vocab()const
 {
 	Layer::Vocab ret;
-	
+
 	ret.push_back(ParamDesc("amount")
 		.set_local_name(_("Amount"))
 		.set_description(_("Amount to zoom in"))
@@ -101,7 +101,7 @@ Zoom::get_param_vocab()const
 		.set_local_name(_("Center"))
 		.set_description(_("Point to zoom in to"))
 	);
-	
+
 	return ret;
 }
 
@@ -122,12 +122,12 @@ class Zoom_Trans : public Transform
 	etl::handle<const Zoom> layer;
 public:
 	Zoom_Trans(const Zoom* x):Transform(x->get_guid()),layer(x) { }
-	
+
 	synfig::Vector perform(const synfig::Vector& x)const
 	{
 		return (x-layer->center)*exp(layer->amount)+layer->center;
 	}
-	
+
 	synfig::Vector unperform(const synfig::Vector& x)const
 	{
 		return (x-layer->center)/exp(layer->amount)+layer->center;

@@ -66,7 +66,7 @@ class Segment;
 class Gradient;
 class BLinePoint;
 class Color;
-	
+
 /*!	\class ValueBase
 **	\todo writeme
 */
@@ -82,25 +82,25 @@ public:
 	enum Type
 	{
 		TYPE_NIL=0,			//!< Represents an empty value
-		
+
 		TYPE_BOOL,
 		TYPE_INTEGER,
 		TYPE_ANGLE,			//!< Angle
 
 		// All types after this point are larger than 32 bits
-		
+
 		TYPE_TIME,			//!< Time
 		TYPE_REAL,			//!< Real
 
 		// All types after this point are larger than 64 bits
-		
+
 		TYPE_VECTOR,		//!< Vector
 		TYPE_COLOR,			//!< Color
 		TYPE_SEGMENT,		//!< Segment
 		TYPE_BLINEPOINT,	//!< BLinePoint
 
 		// All types after this point require construction/destruction
-		
+
 		TYPE_LIST,			//!< List
 		TYPE_CANVAS,		//!< Canvas
 		TYPE_STRING,		//!< String
@@ -108,7 +108,7 @@ public:
 
 		TYPE_END			//!< Not a valid type, used for sanity checks
 	};
-	
+
 private:
 
 	typedef std::vector<ValueBase> list_type;
@@ -118,16 +118,16 @@ private:
 	*/
 
 protected:
-	
+
 	Type type;
 	void *data;
 	etl::reference_counter ref_count;
-	bool loop_;	
+	bool loop_;
 
 	/*
  --	** -- C O N S T R U C T O R S -----------------------------------
 	*/
-	
+
 public:
 
 	//! \writeme
@@ -144,7 +144,7 @@ public:
 
 	//! \writeme
 	~ValueBase();
-		
+
 	/*
  --	** -- O P E R A T O R S ---------------------------------------------------
 	*/
@@ -156,7 +156,7 @@ public:
 		{ set(x); return *this; }
 
 	//! \writeme
-	ValueBase& operator=(const ValueBase& x);	
+	ValueBase& operator=(const ValueBase& x);
 
 	//! \writeme
 	bool operator==(const ValueBase& rhs)const;
@@ -181,14 +181,14 @@ public:
 	bool get_loop()const { return loop_; }
 
 	//! \writeme
-	void set_loop(bool x) { loop_=x; }	
-		
+	void set_loop(bool x) { loop_=x; }
+
 	//! \writeme
 	bool empty()const;
 
 	//! \writeme
 	Type get_contained_type()const;
-	
+
 	//! Returns true if the contained value is defined and valid.
 	bool is_valid()const;
 
@@ -197,22 +197,22 @@ public:
 
 	//! Returns the type of the contained value
 	const Type & get_type()const { return type; }
-	
+
 	//! Checks the type of the parameter against itself. Returns true if they are of the same type.
 	template <class T> bool
 	same_as(const T &x)const
 	{
 		const Type testtype(get_type(x));
-		
+
 		if(testtype==type)return true;
 		if(	(type==TYPE_REAL || type==TYPE_TIME) &&
 			(testtype==TYPE_REAL || testtype==TYPE_TIME) )
 			return true;
 		return false;
 	}
-	
-	
-	// === GET MEMBERS ========================================================	
+
+
+	// === GET MEMBERS ========================================================
 	template <typename T>
 	const T &get(const T& x)const
 	{
@@ -227,10 +227,10 @@ public:
 	const char* get(const char*)const;
 	const list_type& get_list()const { return get(list_type()); }
 	// ========================================================================
-	
-	
-	
-	// === PUT MEMBERS ========================================================	
+
+
+
+	// === PUT MEMBERS ========================================================
 	template <typename T>
 	void put(T* x)const
 	{
@@ -241,23 +241,23 @@ public:
 	void put(char** x)const;
 	// ========================================================================
 
-	
-	
-	// === SET MEMBERS ========================================================	
+
+
+	// === SET MEMBERS ========================================================
 	template <typename T> void set(const T& x) { _set(x); }
 	void set(const float &x) { _set(Real(x)); }
 	void set(const list_type &x);
-	void set(const char* x);	
+	void set(const char* x);
 	void set(Canvas*x);
 	void set(etl::loose_handle<Canvas> x);
 	void set(etl::handle<Canvas> x);
 	template <class T> void set(const std::vector<T> &x)
 		{ _set(list_type(x.begin(),x.end())); }
 	template <class T> void set(const std::list<T> &x)
-		{ _set(list_type(x.begin(),x.end())); }	
+		{ _set(list_type(x.begin(),x.end())); }
 	// ========================================================================
 
-		
+
 	/*
  --	** -- S T A T I C   F U N C T I O N S -------------------------------------
 	*/
@@ -271,7 +271,7 @@ public:
 	static Type ident_type(const String &str);
 
 
-	// === GET TYPE MEMBERS ===================================================	
+	// === GET TYPE MEMBERS ===================================================
 	static const Type get_type(bool) { return TYPE_BOOL; }
 	static const Type get_type(int) { return TYPE_INTEGER; }
 	static const Type get_type(const Time&) { return TYPE_TIME; }
@@ -287,7 +287,7 @@ public:
 	static const Type get_type(const etl::handle<Canvas>&)
 		{ return TYPE_CANVAS; }
 	static const Type get_type(const etl::loose_handle<Canvas>&)
-		{ return TYPE_CANVAS; }	
+		{ return TYPE_CANVAS; }
 	static const Type get_type(const list_type&) { return TYPE_LIST; }
 	template <class T> static const Type get_type(const std::vector<T> &x)
 		{ return TYPE_LIST; }
@@ -295,7 +295,7 @@ public:
 		{ return TYPE_LIST; }
 	// ========================================================================
 
-		
+
 	/*
  --	** -- C A S T   O P E R A T O R S -----------------------------------------
 	*/
@@ -306,7 +306,7 @@ public:
 	//operator const Color&()const { return get(Color()); }
 	//operator const Real&()const { return get(Real()); }
 	//operator const Time&()const { return get(Time()); }
-	
+
 	operator const Vector&()const {  return get(Vector()); }
 	operator const BLinePoint&()const {  return get(BLinePoint()); }
 	//operator const int&()const {  return get(int()); }
@@ -328,7 +328,7 @@ public:
 	static const Type get_type(const half&) { return TYPE_REAL; }
 	operator half()const { return get(Real()); }
 #endif
-	
+
 #ifndef SYNFIG_NO_ANGLE
 	operator const Angle&()const { return get(Angle()); }
 	static const Type get_type(const Angle&) { return TYPE_ANGLE; }
@@ -349,16 +349,16 @@ public:
 		return ret;
 	}
 
-	
+
 private:
-	
+
 	template <typename T> void
 	_set(const T& x)
 	{
 		const Type newtype(get_type(x));
-		
+
 		assert(newtype!=TYPE_NIL);
-		
+
 		if(newtype==type)
 		{
 			if(ref_count.unique())
@@ -373,7 +373,7 @@ private:
 		type=newtype;
 		ref_count.reset();
 		data=new T(x);
-	}	
+	}
 }; // END of class ValueBase
 
 
@@ -387,21 +387,21 @@ public:
 	Value(const T &x):ValueBase(x)
 	{
 	}
-	
+
 	Value(const ValueBase &x):ValueBase(x)
 	{
 		if(!x.same_as(T()))
 			throw Exception::BadType("Value<T>(ValueBase): Type Mismatch");
 	}
-	
+
 	Value()
 	{
 	}
-	
+
 	T get()const { return ValueBase::get(T()); }
 
 	void put(T* x)const	{ ValueBase::put(x); }
-	
+
 	void set(const T& x) { ValueBase::operator=(x); }
 
 	Value<T>& operator=(const T& x) { set(x); return *this; }
@@ -414,7 +414,7 @@ public:
 			throw Exception::BadType("Value<T>(ValueBase): Type Mismatch");
 		return ValueBase::operator=(x);
 	}
-	
+
 }; // END of class Value
 
 /*
@@ -433,11 +433,11 @@ public:
 	Value()
 	{
 	}
-	
+
 	T get()const { return ValueBase::get(T()); }
 
 	void put(T* x)const	{ ValueBase::put(x); }
-	
+
 	void set(const T& x) { ValueBase::operator=(x); }
 
 	Value<T>& operator=(const T& x) { set(x); return *this; }
@@ -450,7 +450,7 @@ public:
 			throw Exception::BadType("Value<T>(ValueBase): Type Mismatch");
 		return ValueBase::operator=(x);
 	}
-	
+
 }; // END of class Value
 */
 

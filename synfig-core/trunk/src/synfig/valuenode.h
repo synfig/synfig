@@ -68,7 +68,7 @@ namespace synfig {
 class Canvas;
 class LinkableValueNode;
 class Layer;
-	
+
 /*!	\class ValueNode
 **	\todo writeme
 */
@@ -76,7 +76,7 @@ class ValueNode : public synfig::Node
 {
 	friend class Layer;
 	friend class LinkableValueNode;
-		
+
 	/*
  --	** -- T Y P E S -----------------------------------------------------------
 	*/
@@ -105,7 +105,7 @@ private:
 	String name;
 	etl::loose_handle<Canvas> canvas_;
 	etl::loose_handle<Canvas> root_canvas_;
-	
+
 	/*
  -- ** -- S I G N A L S -------------------------------------------------------
 	*/
@@ -113,22 +113,22 @@ private:
 private:
 
 	//!	ValueBase Changed
-	sigc::signal<void> signal_value_changed_;	
+	sigc::signal<void> signal_value_changed_;
 
 	//!	Children Reordered
-	sigc::signal<void,int*> signal_children_reordered_;	
+	sigc::signal<void,int*> signal_children_reordered_;
 
 	//!	Child Changed
-	sigc::signal<void,int> signal_child_changed_;	
+	sigc::signal<void,int> signal_child_changed_;
 
 	//!	Child Removed
-	sigc::signal<void,int> signal_child_removed_;	
+	sigc::signal<void,int> signal_child_removed_;
 
 	//!	Child Inserted
-	sigc::signal<void,int> signal_child_inserted_;	
+	sigc::signal<void,int> signal_child_inserted_;
 
 	//!	ID Changed
-	sigc::signal<void> signal_id_changed_;	
+	sigc::signal<void> signal_id_changed_;
 
 	/*
  -- ** -- S I G N A L   I N T E R F A C E -------------------------------------
@@ -159,7 +159,7 @@ public:
 	*/
 
 protected:
-	
+
 	ValueNode(ValueBase::Type type=ValueBase::TYPE_NIL);
 
 public:
@@ -196,7 +196,7 @@ public:
 
 	//! \writeme
 	bool is_exported()const { return !get_id().empty(); }
-	
+
 	//! Returns the type of the ValueNode
 	ValueBase::Type get_type()const { return type; }
 
@@ -205,24 +205,24 @@ public:
 
 	//! Returns a handle to the parent canvas, if it has one.
 	etl::loose_handle<Canvas> get_root_canvas()const { return root_canvas_; }
-	
+
 	//! \writeme
 	void set_parent_canvas(etl::loose_handle<Canvas> x);
 
 	//! \writeme
 	void set_root_canvas(etl::loose_handle<Canvas> x);
-	
+
 	//! \writeme
 	String get_relative_id(etl::loose_handle<const Canvas> x)const;
-	
+
 	int replace(etl::handle<ValueNode> x);
-	
+
 protected:
 	//! Sets the type of the ValueNode
 	void set_type(ValueBase::Type t) { type=t; }
 
 	virtual void on_changed();
-	
+
 public:
 	DCAST_HACK_BASECLASS();
 	DCAST_HACK_ID(0);
@@ -244,7 +244,7 @@ private:
 	PlaceholderValueNode(ValueBase::Type type=ValueBase::TYPE_NIL);
 
 public:
-	
+
 	virtual ValueBase operator()(Time t)const;
 
 	virtual String get_name()const;
@@ -286,9 +286,9 @@ public:
 	{
 		String local_name;
 		Factory factory;
-		CheckType check_type;		
+		CheckType check_type;
 	};
-	
+
 	typedef std::map<String,BookEntry> Book;
 
 	static Book& book();
@@ -307,7 +307,7 @@ protected:
 	void unlink_all();
 
 public:
-	
+
 	virtual int link_count()const=0;
 
 	virtual String link_local_name(int i)const=0;
@@ -315,12 +315,12 @@ public:
 	virtual String link_name(int i)const=0;
 
 	virtual int get_link_index_from_name(const String &name)const=0;
-		
+
 	virtual ValueNode* clone(const GUID& deriv_guid=GUID())const;
 
 	bool set_link(int i,ValueNode::Handle x);
-	bool set_link(const String &name,ValueNode::Handle x) {	return set_link(get_link_index_from_name(name),x);	}		
-		
+	bool set_link(const String &name,ValueNode::Handle x) {	return set_link(get_link_index_from_name(name),x);	}
+
 	ValueNode::LooseHandle get_link(int i)const;
 	ValueNode::LooseHandle get_link(const String &name)const { return get_link(get_link_index_from_name(name)); }
 
@@ -332,7 +332,7 @@ protected:
 
 	// Wrapper for new operator, used by clone()
 	virtual LinkableValueNode* create_new()const=0;
-	
+
 	virtual void get_times_vfunc(Node::time_set &set) const;
 }; // END of class LinkableValueNode
 
@@ -373,7 +373,7 @@ public:
 
 	//! Removes any value_nodes with reference counts of 1.
 	void audit();
-	
+
 	//! Placeholder Count
 	int placeholder_count()const { return placeholder_count_; }
 };

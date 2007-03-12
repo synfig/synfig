@@ -51,7 +51,7 @@ namespace synfig {
 
 class Context;
 class GUID;
-	
+
 /*!	\class Canvas
 **	\todo writeme
 */
@@ -119,8 +119,8 @@ private:
 
 	//! List containing any child Canvases
 	/*!	\see children() */
-	Children children_;		
-	
+	Children children_;
+
 	//! Render Description for Canvas
 	/*!	\see rend_desc() */
     RendDesc desc_;
@@ -130,16 +130,16 @@ private:
 
 	//! \writeme
 	mutable std::map<String,Handle> externals_;
-	
+
 	//! This flag is set if this canvas is "inline"
 	bool is_inline_;
 
 	mutable bool is_dirty_;
-	
+
 	bool op_flag_;
-	
+
 	//! Layer Group database
-	std::map<String,std::set<etl::handle<Layer> > > group_db_;	
+	std::map<String,std::set<etl::handle<Layer> > > group_db_;
 
 	/*
  -- ** -- S I G N A L S -------------------------------------------------------
@@ -148,45 +148,45 @@ private:
 private:
 
 	//!	Group Added
-	sigc::signal<void,String> signal_group_added_;	
+	sigc::signal<void,String> signal_group_added_;
 
 	//!	Group Removed
-	sigc::signal<void,String> signal_group_removed_;	
-	
+	sigc::signal<void,String> signal_group_removed_;
+
 	//! Group Changed
-	sigc::signal<void,String> signal_group_changed_;	
+	sigc::signal<void,String> signal_group_changed_;
 
 	sigc::signal<void,String,etl::handle<synfig::Layer> > signal_group_pair_added_;
 	sigc::signal<void,String,etl::handle<synfig::Layer> > signal_group_pair_removed_;
 
 	//!	Layers Reordered
-	sigc::signal<void,int*> signal_layers_reordered_;	
-	
+	sigc::signal<void,int*> signal_layers_reordered_;
+
 	//!	RendDesc Changed
-	sigc::signal<void> signal_rend_desc_changed_;	
-	
+	sigc::signal<void> signal_rend_desc_changed_;
+
 	//!	ID Changed
-	sigc::signal<void> signal_id_changed_;	
+	sigc::signal<void> signal_id_changed_;
 
 	//!	Dirty
-	//sigc::signal<void> signal_dirty_;	
+	//sigc::signal<void> signal_dirty_;
 
 	//!	FileName Changed
-	sigc::signal<void> signal_file_name_changed_;	
+	sigc::signal<void> signal_file_name_changed_;
 
 	//!	Metadata Changed
-	sigc::signal<void, String> signal_meta_data_changed_;	
+	sigc::signal<void, String> signal_meta_data_changed_;
 
 	//! Key-Specific meta data changed signals
 	std::map<String, sigc::signal<void> > signal_map_meta_data_changed_;
 
 
 	//!	ValueBasenode Changed
-	sigc::signal<void, etl::handle<ValueNode> > signal_value_node_changed_;	
+	sigc::signal<void, etl::handle<ValueNode> > signal_value_node_changed_;
 
-	sigc::signal<void, etl::handle<ValueNode>, etl::handle<ValueNode> > signal_value_node_child_added_;	
+	sigc::signal<void, etl::handle<ValueNode>, etl::handle<ValueNode> > signal_value_node_child_added_;
 
-	sigc::signal<void, etl::handle<ValueNode>, etl::handle<ValueNode> > signal_value_node_child_removed_;	
+	sigc::signal<void, etl::handle<ValueNode>, etl::handle<ValueNode> > signal_value_node_child_removed_;
 
 	/*
  -- ** -- S I G N A L   I N T E R F A C E -------------------------------------
@@ -202,30 +202,30 @@ public:
 
 	//!	Group Removed
 	sigc::signal<void,String>& signal_group_removed() { return signal_group_removed_; }
-	
+
 	//! Group Changed
 	sigc::signal<void,String>& signal_group_changed() { return signal_group_changed_; }
 
 	//!	Layers Reordered
 	sigc::signal<void,int*>& signal_layers_reordered() { return signal_layers_reordered_; }
-	
+
 	//!	RendDesc Changed
 	sigc::signal<void>& signal_rend_desc_changed() { return signal_rend_desc_changed_; }
-	
+
 	//!	ID Changed
 	sigc::signal<void>& signal_id_changed() { return signal_id_changed_; }
 
 	//!	File name Changed
 	sigc::signal<void>& signal_file_name_changed();
-	
+
 	//!	Metadata Changed
 	sigc::signal<void, String>& signal_meta_data_changed() { return signal_meta_data_changed_; }
 
 	//!	Metadata Changed
 	sigc::signal<void>& signal_meta_data_changed(const String& key) { return signal_map_meta_data_changed_[key]; }
-	
 
-	sigc::signal<void, etl::handle<ValueNode> >& signal_value_node_changed() { return signal_value_node_changed_; }	
+
+	sigc::signal<void, etl::handle<ValueNode> >& signal_value_node_changed() { return signal_value_node_changed_; }
 
 	//!	Dirty
 	sigc::signal<void>& signal_dirty() { return signal_changed();	}
@@ -256,10 +256,10 @@ public:
 
 	//! Returns the set of layers in group
 	std::set<etl::handle<Layer> > get_layers_in_group(const String&group);
-	
+
 	//! Gets all the groups
 	std::set<String> get_groups()const;
-	
+
 	//! Gets the number of groups in this canvas
 	int get_group_count()const;
 
@@ -298,7 +298,7 @@ public:
 
 	//! Sets the ID of the canvas
 	void set_id(const String &x);
-	
+
 	//!	Returns the data string for the given meta data key
 	String get_meta_data(const String& key)const;
 
@@ -325,7 +325,7 @@ public:
 	LooseHandle parent()const { return parent_; }
 
 	LooseHandle get_root()const;
-	
+
 	//! Returns a list of all child canvases in this canvas
 	std::list<Handle> &children() { return children_; }
 
@@ -419,7 +419,7 @@ public:
 
 	//! Gets the filename (with path)
 	String get_file_name()const;
-	
+
 	//! Creates a new child canvas, and returns its handle
 	Handle new_child_canvas();
 
@@ -446,7 +446,7 @@ public:
 	const_reverse_iterator rbegin()const;
 
 	etl::handle<Layer> &back();
-	
+
 	void push_back(etl::handle<Layer> x);
 
 	void push_front(etl::handle<Layer> x);
@@ -455,7 +455,7 @@ public:
 
 	void insert(iterator iter,etl::handle<Layer> x);
 	void erase(iterator iter);
-	
+
 	const etl::handle<Layer> &back()const;
 
 	void set_inline(LooseHandle parent);
@@ -463,7 +463,7 @@ public:
 	static Handle create();
 
 	static Handle create_inline(Handle parent);
-	
+
 	Handle clone(const GUID& deriv_guid=GUID())const;
 
 private:

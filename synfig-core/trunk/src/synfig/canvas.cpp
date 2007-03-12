@@ -132,7 +132,7 @@ Canvas::clear()
 	{
 		Layer::Handle layer(front());
 		//if(layer->count()>2)synfig::info("before layer->count()=%d",layer->count());
-				
+
 		erase(begin());
 		//if(layer->count()>1)synfig::info("after layer->count()=%d",layer->count());
 	}
@@ -144,7 +144,7 @@ Canvas::clear()
 	// would just continue going when polled
 	// for a color.
 	CanvasBase::push_back(Layer::Handle());
-	
+
 	changed();
 }
 
@@ -207,10 +207,10 @@ valid_id(const String &x)
 {
 	static const char bad_chars[]=" :#@$^&()*";
 	unsigned int i;
-	
+
 	if(!x.empty() && x[0]>='0' && x[0]<='9')
 		return false;
-	
+
 	for(i=0;i<sizeof(bad_chars);i++)
 		if(x.find_first_of(bad_chars[i])!=string::npos)
 			return false;
@@ -223,7 +223,7 @@ Canvas::set_id(const String &x)
 {
 	if(is_inline() && parent_)
 		throw runtime_error("Inline Canvas cannot have an ID");
-	
+
 	if(!valid_id(x))
 		throw runtime_error("Invalid ID");
 	id_=x;
@@ -256,9 +256,9 @@ Canvas::set_description(const String &x)
 
 void
 Canvas::set_time(Time t)const
-{	
+{
 	if(is_dirty_ || !get_time().is_equal(t))
-	{	
+	{
 #if 0
 		if(is_root())
 		{
@@ -270,7 +270,7 @@ Canvas::set_time(Time t)const
 
 		// ...questionable
 		const_cast<Canvas&>(*this).cur_time_=t;
-		
+
 		is_dirty_=false;
 		get_context().set_time(t);
 	}
@@ -314,34 +314,34 @@ Canvas::_get_relative_id(etl::loose_handle<const Canvas> x)const
 
 	if(x.get()==this)
 		return String();
-	
+
 	if(parent()==x.get())
 		return get_id();
-	
+
 	String id;
-	
+
 	const Canvas* canvas=this;
-	
+
 	for(;!canvas->is_root();canvas=canvas->parent().get())
 		id=':'+canvas->get_id()+id;
-	
+
 	if(x && get_root()!=x->get_root())
 	{
 		//String file_name=get_file_name();
 		//String file_path=x->get_file_path();
-		
+
 		String file_name;
 		if(is_absolute_path(get_file_name()))
 			file_name=etl::relative_path(x->get_file_path(),get_file_name());
 		else
 			file_name=get_file_name();
-		
+
 		// If the path of X is inside of file_name,
 		// then remove it.
 		//if(file_name.size()>file_path.size())
 		//	if(file_path==String(file_name,0,file_path.size()))
 		//		file_name.erase(0,file_path.size()+1);
-			
+
 		id=file_name+'#'+id;
 	}
 
@@ -363,7 +363,7 @@ Canvas::find_value_node(const String &id)const
 {
 	if(is_inline() && parent_)
 		return parent_->find_value_node(id);
-		
+
 	if(id.empty())
 		throw Exception::IDNotFound("Empty ID");
 
@@ -400,7 +400,7 @@ Canvas::surefind_value_node(const String &id)
 	String value_node_id(id,id.rfind(':')+1);
 	if(canvas_id.empty())
 		canvas_id=':';
-		
+
 	return surefind_canvas(canvas_id)->value_node_list_.surefind(value_node_id);
 }
 
@@ -420,13 +420,13 @@ Canvas::add_value_node(ValueNode::Handle x, const String &id)
 
 	if(id.find_first_of(':',0)!=string::npos)
 		throw Exception::BadLinkName("Bad character");
-	
+
 	try
 	{
 		//DEBUGPOINT();
 		if(PlaceholderValueNode::Handle::cast_dynamic(value_node_list_.find(id)))
 			throw Exception::IDNotFound("add_value_node()");
-		
+
 		//DEBUGPOINT();
 		throw Exception::IDAlreadyExists(id);
 	}
@@ -434,16 +434,16 @@ Canvas::add_value_node(ValueNode::Handle x, const String &id)
 	{
 		//DEBUGPOINT();
 		x->set_id(id);
-	
+
 		x->set_parent_canvas(this);
-	
+
 		if(!value_node_list_.add(x))
 		{
 			synfig::error("Unable to add ValueNode");
 			throw std::runtime_error("Unable to add ValueNode");
 		}
 		//DEBUGPOINT();
-		
+
 		return;
 	}
 }
@@ -466,7 +466,7 @@ Canvas::rename_value_node(ValueNode::Handle x, const String &id)
 	}
 	catch(Exception::IDNotFound)
 	{
-		x->set_id(id);	
+		x->set_id(id);
 
 		return;
 	}
@@ -479,15 +479,15 @@ Canvas::remove_value_node(ValueNode::Handle x)
 	if(is_inline() && parent_)
 		return parent_->remove_value_node(x);
 //		throw Exception::IDNotFound("Canvas::remove_value_node() was called from an inline canvas");
-		
+
 	if(!x)
 		throw Exception::IDNotFound("Canvas::remove_value_node() was passed empty handle");
-	
+
 	if(!value_node_list_.erase(x))
 		throw Exception::IDNotFound("Canvas::remove_value_node(): ValueNode was not found inside of this canvas");
 
 	//x->set_parent_canvas(0);
-	
+
 	x->set_id("");
 }
 
@@ -497,27 +497,27 @@ Canvas::surefind_canvas(const String &id)
 {
 	if(is_inline() && parent_)
 		return parent_->surefind_canvas(id);
-	
+
 	if(id.empty())
 		return this;
-	
+
 	// If the ID contains a "#" character, then a filename is
-	// expected on the left side. 
+	// expected on the left side.
 	if(id.find_first_of('#')!=string::npos)
 	{
 		// If '#' is the first character, remove it
 		// and attempt to parse the ID again.
 		if(id[0]=='#')
 			return surefind_canvas(String(id,1));
-		
+
 		//! \todo This needs alot more optimization
 		String file_name(id,0,id.find_first_of('#'));
 		String external_id(id,id.find_first_of('#')+1);
 
 		file_name=unix_to_local_path(file_name);
-		
+
 		Canvas::Handle external_canvas;
-		
+
 		// If the composition is already open, then use it.
 		if(externals_.count(file_name))
 			external_canvas=externals_[file_name];
@@ -532,38 +532,38 @@ Canvas::surefind_canvas(const String &id)
 				throw Exception::FileNotFound(file_name);
 			externals_[file_name]=external_canvas;
 		}
-		
+
 		return Handle::cast_const(external_canvas.constant()->find_canvas(external_id));
 	}
-	
+
 	// If we do not have any resolution, then we assume that the
 	// request is for this immediate canvas
 	if(id.find_first_of(':')==string::npos)
 	{
 		Children::iterator iter;
-	
+
 		// Search for the image in the image list,
 		// and return it if it is found
 		for(iter=children().begin();iter!=children().end();iter++)
 			if(id==(*iter)->get_id())
 				return *iter;
-			
+
 		// Create a new canvas and return it
 		//synfig::warning("Implicitly creating canvas named "+id);
 		return new_child_canvas(id);
 	}
-	
-	// If the first character is the seperator, then 
+
+	// If the first character is the seperator, then
 	// this references the root canvas.
 	if(id[0]==':')
 		return get_root()->surefind_canvas(string(id,1));
 
 	// Now we know that the requested Canvas is in a child
-	// of this canvas. We have to find that canvas and 
+	// of this canvas. We have to find that canvas and
 	// call "find_canvas" on it, and return the result.
-	
+
 	String canvas_name=string(id,0,id.find_first_of(':'));
-	
+
 	Canvas::Handle child_canvas=surefind_canvas(canvas_name);
 
 	return child_canvas->surefind_canvas(string(id,id.find_first_of(':')+1));
@@ -587,22 +587,22 @@ Canvas::find_canvas(const String &id)const
 		return this;
 
 	// If the ID contains a "#" character, then a filename is
-	// expected on the left side. 
+	// expected on the left side.
 	if(id.find_first_of('#')!=string::npos)
 	{
 		// If '#' is the first character, remove it
 		// and attempt to parse the ID again.
 		if(id[0]=='#')
 			return find_canvas(String(id,1));
-		
+
 		//! \todo This needs alot more optimization
 		String file_name(id,0,id.find_first_of('#'));
 		String external_id(id,id.find_first_of('#')+1);
-		
+
 		file_name=unix_to_local_path(file_name);
-		
+
 		Canvas::Handle external_canvas;
-		
+
 		// If the composition is already open, then use it.
 		if(externals_.count(file_name))
 			external_canvas=externals_[file_name];
@@ -617,36 +617,36 @@ Canvas::find_canvas(const String &id)const
 				throw Exception::FileNotFound(file_name);
 			externals_[file_name]=external_canvas;
 		}
-		
+
 		return Handle::cast_const(external_canvas.constant()->find_canvas(external_id));
 	}
-	
+
 	// If we do not have any resolution, then we assume that the
 	// request is for this immediate canvas
 	if(id.find_first_of(':')==string::npos)
 	{
 		Children::const_iterator iter;
-	
+
 		// Search for the image in the image list,
 		// and return it if it is found
 		for(iter=children().begin();iter!=children().end();iter++)
 			if(id==(*iter)->get_id())
 				return *iter;
-			
+
 		throw Exception::IDNotFound("Child Canvas in Parent Canvas: (child)"+id);
 	}
-	
-	// If the first character is the seperator, then 
+
+	// If the first character is the seperator, then
 	// this references the root canvas.
 	if(id.find_first_of(':')==0)
 		return get_root()->find_canvas(string(id,1));
 
 	// Now we know that the requested Canvas is in a child
-	// of this canvas. We have to find that canvas and 
+	// of this canvas. We have to find that canvas and
 	// call "find_canvas" on it, and return the result.
-	
+
 	String canvas_name=string(id,0,id.find_first_of(':'));
-	
+
 	Canvas::ConstHandle child_canvas=find_canvas(canvas_name);
 
 	return child_canvas->find_canvas(string(id,id.find_first_of(':')+1));
@@ -695,11 +695,11 @@ Canvas::insert(iterator iter,etl::handle<Layer> x)
 
 	add_child(x.get());
 
-	
+
 	LooseHandle correct_canvas(this);
 	//while(correct_canvas->is_inline())correct_canvas=correct_canvas->parent();
 	Layer::LooseHandle loose_layer(x);
-	
+
 	x->signal_added_to_group().connect(
 		sigc::bind(
 			sigc::mem_fun(
@@ -739,7 +739,7 @@ Canvas::erase(Canvas::iterator iter)
 {
 	if(!(*iter)->get_group().empty())
 		remove_group_pair((*iter)->get_group(),(*iter));
-	
+
 	// HACK: We really shouldn't be wiping
 	// out these signals entirely. We should
 	// only be removing the specific connections
@@ -753,7 +753,7 @@ Canvas::erase(Canvas::iterator iter)
 	(*iter)->signal_removed_from_group().clear();
 
 	if(!op_flag_)remove_child(iter->get());
-		
+
 	CanvasBase::erase(iter);
 	if(!op_flag_)changed();
 }
@@ -767,12 +767,12 @@ Canvas::clone(const GUID& deriv_guid)const
 	else
 	{
 		name=get_id()+"_CLONE";
-		
+
 		throw runtime_error("Cloning of non-inline canvases is not yet suported");
 	}
-	
+
 	Handle canvas(new Canvas(name));
-	
+
 	if(is_inline())
 	{
 		canvas->is_inline_=true;
@@ -818,9 +818,9 @@ Canvas::set_inline(LooseHandle parent)
 {
 	if(is_inline_ && parent_)
 	{
-		
+
 	}
-	
+
 	id_="inline";
 	is_inline_=true;
 	parent_=parent;
@@ -833,7 +833,7 @@ Canvas::set_inline(LooseHandle parent)
 	{
 		parent->group_db_[iter->first].insert(iter->second.begin(),iter->second.end());
 	}
-	
+
 	rend_desc()=parent->rend_desc();
 }
 
@@ -843,7 +843,7 @@ Canvas::create_inline(Handle parent)
 	assert(parent);
 	//if(parent->is_inline())
 	//	return create_inline(parent->parent());
-	
+
 	Handle canvas(new Canvas("inline"));
 	canvas->set_inline(parent);
 	return canvas;
@@ -877,7 +877,7 @@ Canvas::new_child_canvas(const String &id)
 	// Create a new canvas
 	children().push_back(create());
 	Canvas::Handle canvas(children().back());
-	
+
 	canvas->set_id(id);
 	canvas->parent_=this;
 	canvas->rend_desc()=rend_desc();
@@ -893,10 +893,10 @@ Canvas::add_child_canvas(Canvas::Handle child_canvas, const synfig::String& id)
 
 	if(child_canvas->parent() && !child_canvas->is_inline())
 		throw std::runtime_error("Cannot add child canvas because it belongs to someone else!");
-	
+
 	if(!valid_id(id))
 		throw runtime_error("Invalid ID");
-	
+
 	try
 	{
 		find_canvas(id);
@@ -910,7 +910,7 @@ Canvas::add_child_canvas(Canvas::Handle child_canvas, const synfig::String& id)
 		children().push_back(child_canvas);
 		child_canvas->parent_=this;
 	}
-	
+
 	return child_canvas;
 }
 
@@ -919,13 +919,13 @@ Canvas::remove_child_canvas(Canvas::Handle child_canvas)
 {
 	if(is_inline() && parent_)
 		return parent_->remove_child_canvas(child_canvas);
-	
+
 	if(child_canvas->parent_!=this)
 		throw runtime_error("Given child does not belong to me");
-	
+
 	if(find(children().begin(),children().end(),child_canvas)==children().end())
 		throw Exception::IDNotFound(child_canvas->get_id());
-	
+
 	children().remove(child_canvas);
 
 	child_canvas->parent_=0;
@@ -968,7 +968,7 @@ Canvas::get_file_path()const
 	return dirname(file_name_);
 }
 
-	
+
 String
 Canvas::get_meta_data(const String& key)const
 {
@@ -1008,7 +1008,7 @@ Canvas::get_meta_data_keys()const
 
 	for(iter=meta_data_.begin();!(iter==meta_data_.end());++iter)
 		ret.push_back(iter->first);
-	
+
 	return ret;
 }
 
@@ -1019,13 +1019,13 @@ synfig::optimize_layers(Context context, Canvas::Handle op_canvas)
 
 	std::vector< std::pair<float,Layer::Handle> > sort_list;
 	int i;
-	
+
 	// Go ahead and start romping through the canvas to paste
 	for(iter=context,i=0;*iter;iter++,i++)
 	{
 		Layer::Handle layer=*iter;
 		float z_depth(layer->get_z_depth()*1.0001+i);
-		
+
 		// If the layer isn't active, don't worry about it
 		if(!layer->active())
 			continue;
@@ -1042,16 +1042,16 @@ synfig::optimize_layers(Context context, Canvas::Handle op_canvas)
 			optimize_layers(paste_canvas->get_sub_canvas()->get_context(),sub_canvas);
 //#define SYNFIG_OPTIMIZE_PASTE_CANVAS 1
 
-#ifdef SYNFIG_OPTIMIZE_PASTE_CANVAS			
+#ifdef SYNFIG_OPTIMIZE_PASTE_CANVAS
 			Canvas::iterator sub_iter;
 			// Determine if we can just remove the paste canvas
-			// altogether			
+			// altogether
 			if(paste_canvas->get_blend_method()==Color::BLEND_COMPOSITE && paste_canvas->get_amount()==1.0f && paste_canvas->get_zoom()==0 && paste_canvas->get_time_offset()==0 && paste_canvas->get_origin()==Point(0,0))
 			try{
 				for(sub_iter=sub_canvas->begin();sub_iter!=sub_canvas->end();++sub_iter)
 				{
 					Layer* layer=sub_iter->get();
-					
+
 					// any layers that deform end up breaking things
 					// so do things the old way if we run into anything like this
 					if(!dynamic_cast<Layer_NoDeform*>(layer))
@@ -1061,7 +1061,7 @@ synfig::optimize_layers(Context context, Canvas::Handle op_canvas)
 					if(value.get_type()!=ValueBase::TYPE_INTEGER || value.get(int())!=(int)Color::BLEND_COMPOSITE)
 						throw int();
 				}
-				
+
 				// It has turned out that we don't need a paste canvas
 				// layer, so just go ahead and add all the layers onto
 				// the current stack and be done with it
@@ -1083,11 +1083,11 @@ synfig::optimize_layers(Context context, Canvas::Handle op_canvas)
 			dynamic_cast<Layer_PasteCanvas*>(new_layer.get())->set_do_not_muck_with_time(false);
 			layer=new_layer;
 		}
-								
+
 		sort_list.push_back(std::pair<float,Layer::Handle>(z_depth,layer));
-		//op_canvas->push_back_simple(layer);	
+		//op_canvas->push_back_simple(layer);
 	}
-	
+
 	//sort_list.sort();
 	stable_sort(sort_list.begin(),sort_list.end());
 	std::vector< std::pair<float,Layer::Handle> >::iterator iter2;
@@ -1101,7 +1101,7 @@ Canvas::get_times_vfunc(Node::time_set &set) const
 {
 	const_iterator	i = begin(),
 				iend = end();
-	
+
 	for(; i != iend; ++i)
 	{
 		const Node::time_set &tset = (*i)->get_times();
@@ -1141,7 +1141,7 @@ Canvas::get_group_count()const
 
 	return group_db_.size();
 }
-	
+
 void
 Canvas::add_group_pair(String group, etl::handle<Layer> layer)
 {
@@ -1150,7 +1150,7 @@ Canvas::add_group_pair(String group, etl::handle<Layer> layer)
 		signal_group_added()(group);
 	else
 		signal_group_changed()(group);
-	
+
 	signal_group_pair_added()(group,layer);
 
 	if(is_inline()  && parent_)
@@ -1181,7 +1181,7 @@ Canvas::rename_group(const String&old_name,const String&new_name)
 {
 	if(is_inline() && parent_)
 		return parent_->rename_group(old_name,new_name);
-	
+
 	{
 		std::map<String,std::set<etl::handle<Layer> > >::iterator iter;
 		iter=group_db_.find(old_name);
@@ -1193,10 +1193,10 @@ Canvas::rename_group(const String&old_name,const String&new_name)
 			rename_group(iter->first,name);
 		}
 	}
-	
+
 	std::set<etl::handle<Layer> > layers(get_layers_in_group(old_name));
 	std::set<etl::handle<Layer> >::iterator iter;
-	
+
 	for(iter=layers.begin();iter!=layers.end();++iter)
 	{
 		(*iter)->remove_from_group(old_name);

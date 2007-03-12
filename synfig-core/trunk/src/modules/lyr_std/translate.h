@@ -41,7 +41,7 @@ using namespace std;
 using namespace etl;
 
 class Translate_Trans;
-	
+
 class Translate : public Layer
 {
 	SYNFIG_LAYER_MODULE_EXT
@@ -51,14 +51,14 @@ private:
 public:
 	Translate();
 	~Translate();
-	
+
 	virtual bool set_param(const String & param, const synfig::ValueBase &value);
 	virtual ValueBase get_param(const String & param)const;
 	virtual Color get_color(Context context, const Point &pos)const;
 	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 	virtual Vocab get_param_vocab()const;
 	virtual synfig::Rect get_full_bounding_rect(Context context)const;
-	synfig::Layer::Handle hit_check(synfig::Context context, const synfig::Point &point)const;	
+	synfig::Layer::Handle hit_check(synfig::Context context, const synfig::Point &point)const;
 	virtual etl::handle<synfig::Transform> get_transform()const;
 
 };

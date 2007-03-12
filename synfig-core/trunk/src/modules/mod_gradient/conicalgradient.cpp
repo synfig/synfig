@@ -72,7 +72,7 @@ ConicalGradient::ConicalGradient():
 	symmetric(false)
 {
 }
-	
+
 bool
 ConicalGradient::set_param(const String & param, const ValueBase &value)
 {
@@ -93,15 +93,15 @@ ConicalGradient::get_param(const String &param)const
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
-		
-	return Layer_Composite::get_param(param);	
+
+	return Layer_Composite::get_param(param);
 }
 
 Layer::Vocab
 ConicalGradient::get_param_vocab()const
 {
 	Layer::Vocab ret(Layer_Composite::get_param_vocab());
-	
+
 	ret.push_back(ParamDesc("gradient")
 		.set_local_name(_("Gradient"))
 	);
@@ -109,7 +109,7 @@ ConicalGradient::get_param_vocab()const
 	ret.push_back(ParamDesc("center")
 		.set_local_name(_("Center"))
 	);
-	
+
 	ret.push_back(ParamDesc("angle")
 		.set_local_name(_("Angle"))
 		.set_origin("center")
@@ -118,7 +118,7 @@ ConicalGradient::get_param_vocab()const
 	ret.push_back(ParamDesc("symmetric")
 		.set_local_name(_("Symmetric"))
 	);
-	
+
 	return ret;
 }
 
@@ -129,7 +129,7 @@ ConicalGradient::color_func(const Point &pos, float supersample)const
 	Angle::rot a=Angle::tan(-centered[1],centered[0]).mod();
 	a+=angle;
 	Real dist(a.mod().get());
-	
+
 	dist-=floor(dist);
 
 	if(symmetric)
@@ -207,13 +207,13 @@ Color
 ConicalGradient::get_color(Context context, const Point &pos)const
 {
 	const Color color(color_func(pos));
-	
+
 	if(get_amount()==1.0 && get_blend_method()==Color::BLEND_STRAIGHT)
 		return color;
 	else
 		return Color::blend(color,context.get_color(pos),get_amount(),get_blend_method());
 }
-	
+
 bool
 ConicalGradient::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
@@ -231,7 +231,7 @@ ConicalGradient::accelerated_render(Context context,Surface *surface,int quality
 			return true;
 	}
 
-		
+
 	int x,y;
 
 	Surface::pen pen(surface->begin());
@@ -240,7 +240,7 @@ ConicalGradient::accelerated_render(Context context,Surface *surface,int quality
 	Point tl(renddesc.get_tl());
 	const int w(surface->get_w());
 	const int h(surface->get_h());
-	
+
 	if(get_amount()==1.0 && get_blend_method()==Color::BLEND_STRAIGHT)
 	{
 		if(quality<9)

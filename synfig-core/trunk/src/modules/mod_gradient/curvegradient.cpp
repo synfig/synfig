@@ -73,16 +73,16 @@ inline float calculate_distance(const std::vector<synfig::BLinePoint>& bline)
 {
 	std::vector<synfig::BLinePoint>::const_iterator iter,next,ret;
 	std::vector<synfig::BLinePoint>::const_iterator end(bline.end());
-	
+
 	float dist(0);
-	
+
 	next=bline.begin();
-	
+
 	//if(loop)
 	//	iter=--bline.end();
 	//else
 		iter=next++;
-	
+
 	for(;next!=end;iter=next++)
 	{
 		// Setup the curve
@@ -105,24 +105,24 @@ find_closest(const std::vector<synfig::BLinePoint>& bline,const Point& p,bool lo
 {
 	std::vector<synfig::BLinePoint>::const_iterator iter,next,ret;
 	std::vector<synfig::BLinePoint>::const_iterator end(bline.end());
-	
+
 	ret=bline.end();
 	float dist(100000000000.0);
-	
+
 	next=bline.begin();
 
 	float best_bline_dist(0);
 	float best_bline_len(0);
 	float total_bline_dist(0);
 	etl::hermite<Vector> best_curve;
-	
+
 	if(loop)
 		iter=--bline.end();
 	else
 		iter=next++;
 
 	Point bp;
-	
+
 	for(;next!=end;iter=next++)
 	{
 		// Setup the curve
@@ -135,7 +135,7 @@ find_closest(const std::vector<synfig::BLinePoint>& bline,const Point& p,bool lo
 
 		/*
 		const float t(curve.find_closest(p,6,0.01,0.99));
-		bp=curve(t);if((bp-p).mag_squared()<dist) { ret=iter; dist=(bp-p).mag_squared(); ret_t=t; }		
+		bp=curve(t);if((bp-p).mag_squared()<dist) { ret=iter; dist=(bp-p).mag_squared(); ret_t=t; }
 		*/
 
 		float thisdist(0);
@@ -145,7 +145,7 @@ find_closest(const std::vector<synfig::BLinePoint>& bline,const Point& p,bool lo
 			//len=calculate_distance(*iter,*next);
 			len=curve.length();
 		}
-		
+
 #define POINT_CHECK(x) bp=curve(x);	thisdist=(bp-p).mag_squared(); if(thisdist<dist) { ret=iter; dist=thisdist; best_bline_dist=total_bline_dist; best_bline_len=len; best_curve=curve; }
 
 		POINT_CHECK(0.0001);
@@ -164,7 +164,7 @@ find_closest(const std::vector<synfig::BLinePoint>& bline,const Point& p,bool lo
 		*bline_dist_ret=best_bline_dist+best_curve.find_distance(0,best_curve.find_closest(p));
 //		*bline_dist_ret=best_bline_dist+best_curve.find_closest(p)*best_bline_len;
 	}
-	
+
 	return ret;
 }
 
@@ -194,17 +194,17 @@ CurveGradient::CurveGradient():
 	bline.push_back(BLinePoint());
 	bline.push_back(BLinePoint());
 	bline.push_back(BLinePoint());
-	bline[0].set_vertex(Point(0,1));	
-	bline[1].set_vertex(Point(0,-1));	
+	bline[0].set_vertex(Point(0,1));
+	bline[1].set_vertex(Point(0,-1));
 	bline[2].set_vertex(Point(1,0));
-	bline[0].set_tangent(bline[1].get_vertex()-bline[2].get_vertex()*0.5f);	
-	bline[1].set_tangent(bline[2].get_vertex()-bline[0].get_vertex()*0.5f);	
-	bline[2].set_tangent(bline[0].get_vertex()-bline[1].get_vertex()*0.5f);	
-	bline[0].set_width(1.0f);	
-	bline[1].set_width(1.0f);	
-	bline[2].set_width(1.0f);	
+	bline[0].set_tangent(bline[1].get_vertex()-bline[2].get_vertex()*0.5f);
+	bline[1].set_tangent(bline[2].get_vertex()-bline[0].get_vertex()*0.5f);
+	bline[2].set_tangent(bline[0].get_vertex()-bline[1].get_vertex()*0.5f);
+	bline[0].set_width(1.0f);
+	bline[1].set_width(1.0f);
+	bline[2].set_width(1.0f);
 	bline_loop=true;
-	
+
 	sync();
 }
 
@@ -218,7 +218,7 @@ CurveGradient::color_func(const Point &point_, int quality, float supersample)co
 	Real dist;
 
 	float perp_dist;
-	
+
 	if(bline.size()==0)
 		return Color::alpha();
 	else if(bline.size()==1)
@@ -230,9 +230,9 @@ CurveGradient::color_func(const Point &point_, int quality, float supersample)co
 	else
 	{
 		Point point(point_-offset);
-		
+
 		std::vector<synfig::BLinePoint>::const_iterator iter,next;
-		
+
 		// Figure out the BLinePoints we will be using,
 		// Taking into account looping.
 		if(perpendicular)
@@ -246,7 +246,7 @@ CurveGradient::color_func(const Point &point_, int quality, float supersample)co
 		}
 			iter=next++;
 			if(next==bline.end()) next=bline.begin();
-			
+
 			// Setup the curve
 			etl::hermite<Vector> curve(
 				iter->get_vertex(),
@@ -254,12 +254,12 @@ CurveGradient::color_func(const Point &point_, int quality, float supersample)co
 				iter->get_tangent2(),
 				next->get_tangent1()
 			);
-			
+
 			// Setup the derivative function
 			etl::derivative<etl::hermite<Vector> > deriv(curve);
-	
+
 			int search_iterations(7);
-			
+
 			/*if(quality==0)search_iterations=8;
 			else if(quality<=2)search_iterations=10;
 			else if(quality<=4)search_iterations=8;
@@ -276,15 +276,15 @@ CurveGradient::color_func(const Point &point_, int quality, float supersample)co
 				if(quality>7)
 					search_iterations=4;
 			}
-			
+
 			// Figure out the closest point on the curve
 			const float t(curve.find_closest(point,search_iterations));
-				
-			
+
+
 			// Calculate our values
 			p1=curve(t);
 			tangent=deriv(t).norm();
-			
+
 			if(perpendicular)
 			{
 				tangent*=curve_length_;
@@ -295,9 +295,9 @@ CurveGradient::color_func(const Point &point_, int quality, float supersample)co
 			{
 				thickness=(next->get_width()-iter->get_width())*t+iter->get_width();
 			}
-		//}		
+		//}
 	}
-	
+
 
 	if(!perpendicular)
 	{
@@ -329,10 +329,10 @@ CurveGradient::color_func(const Point &point_, int quality, float supersample)co
 		dist=((point_-offset)*diff-p1*diff);
 		}
 	}
-	
+
 	if(loop)
 		dist-=floor(dist);
-	
+
 	if(zigzag)
 	{
 		dist*=2.0;
@@ -394,8 +394,8 @@ CurveGradient::set_param(const String & param, const ValueBase &value)
 	}
 	//IMPORT(p1);
 	//IMPORT(p2);
-	
-	
+
+
 	IMPORT(offset);
 	IMPORT(perpendicular);
 
@@ -412,7 +412,7 @@ CurveGradient::set_param(const String & param, const ValueBase &value)
 	IMPORT(gradient);
 	IMPORT(loop);
 	IMPORT(zigzag);
-	return Layer_Composite::set_param(param,value);	
+	return Layer_Composite::set_param(param,value);
 }
 
 ValueBase
@@ -427,11 +427,11 @@ CurveGradient::get_param(const String & param)const
 	EXPORT(zigzag);
 	EXPORT(width);
 	EXPORT(perpendicular);
-	
+
 	EXPORT_NAME();
 	EXPORT_VERSION();
-		
-	return Layer_Composite::get_param(param);	
+
+	return Layer_Composite::get_param(param);
 }
 
 Layer::Vocab
@@ -468,7 +468,7 @@ CurveGradient::get_param_vocab()const
 	ret.push_back(ParamDesc("perpendicular")
 		.set_local_name(_("Perpendicular"))
 	);
-	
+
 	return ret;
 }
 
@@ -500,7 +500,7 @@ CurveGradient::accelerated_render(Context context,Surface *surface,int quality, 
 			return true;
 	}
 
-		
+
 	int x,y;
 
 	Surface::pen pen(surface->begin());
@@ -509,7 +509,7 @@ CurveGradient::accelerated_render(Context context,Surface *surface,int quality, 
 	Point tl(renddesc.get_tl());
 	const int w(surface->get_w());
 	const int h(surface->get_h());
-	
+
 	if(get_amount()==1.0 && get_blend_method()==Color::BLEND_STRAIGHT)
 	{
 		for(y=0,pos[1]=tl[1];y<h;y++,pen.inc_y(),pen.dec_x(x),pos[1]+=ph)

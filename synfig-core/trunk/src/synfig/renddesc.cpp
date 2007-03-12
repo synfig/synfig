@@ -339,7 +339,7 @@ RendDesc::get_interlaced()const
 
 RendDesc &
 RendDesc::set_interlaced(bool x)
-{ interlaced=x; return *this; }	
+{ interlaced=x; return *this; }
 
 //! Return the status of the clamp flag
 const bool &
@@ -349,7 +349,7 @@ RendDesc::get_clamp()const
 //! Set the clamp flag
 RendDesc &
 RendDesc::set_clamp(bool x)
-{ clamp=x; return *this; }	
+{ clamp=x; return *this; }
 
 //! Set constraint flags
 RendDesc &
@@ -451,7 +451,7 @@ RendDesc::set_span(const Real &x)
 /*
 const Gamma &
 RendDesc::get_gamma()const
-{ return gamma; }	
+{ return gamma; }
 
 RendDesc &
 RendDesc::set_gamma(const Gamma &x)
@@ -483,18 +483,18 @@ RendDesc::set_tl(const Point &x)
 		Vector new_size(x-br_);
 		new_size[0]=abs(new_size[0]);
 		new_size[1]=abs(new_size[1]);
-	
+
 		Vector old_size(tl_-br_);
 		old_size[0]=abs(old_size[0]);
 		old_size[1]=abs(old_size[1]);
-		
+
 		if(new_size[0]!=old_size[0])
 			w_=round_to_int(new_size[0]*w_/old_size[0]);
-	
+
 		if(new_size[1]!=old_size[1])
 			h_=round_to_int(new_size[1]*h_/old_size[1]);
 	}
-	
+
 	tl_=x; return *this;
 }
 
@@ -506,14 +506,14 @@ RendDesc::set_br(const Point &x)
 		Vector new_size(x-tl_);
 		new_size[0]=abs(new_size[0]);
 		new_size[1]=abs(new_size[1]);
-	
+
 		Vector old_size(tl_-br_);
 		old_size[0]=abs(old_size[0]);
 		old_size[1]=abs(old_size[1]);
-		
+
 		if(new_size[0]!=old_size[0])
 			w_=round_to_int(new_size[0]*w_/old_size[0]);
-	
+
 		if(new_size[1]!=old_size[1])
 			h_=round_to_int(new_size[1]*h_/old_size[1]);
 	}
@@ -545,7 +545,7 @@ RendDesc::set_subwindow(int x, int y, int w, int h)
 {
 	const Real pw(get_pw());
 	const Real ph(get_ph());
-	
+
 	tl_[0]+=pw*x;
 	tl_[1]+=ph*y;
 
@@ -554,6 +554,6 @@ RendDesc::set_subwindow(int x, int y, int w, int h)
 
 	w_=w;
 	h_=h;
-	
+
 	return *this;
 }

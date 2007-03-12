@@ -39,7 +39,7 @@ class ValueNode_SegCalcVertex : public LinkableValueNode
 {
 	ValueNode::RHandle segment_;
 	ValueNode::RHandle amount_;
-	
+
 	ValueNode_SegCalcVertex(const ValueBase::Type &x=ValueBase::TYPE_VECTOR);
 
 public:

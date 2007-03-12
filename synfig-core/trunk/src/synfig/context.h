@@ -47,7 +47,7 @@ class ProgressCallback;
 class Layer;
 class Time;
 class Rect;
-	
+
 /*!	\class Context
 **	\todo writeme
 **	\see Layer, Canvas */
@@ -57,10 +57,10 @@ public:
 	Context() { }
 
 	Context(const CanvasBase::const_iterator &x):CanvasBase::const_iterator(x) { }
-	
+
 	Context operator=(const CanvasBase::const_iterator &x)
 	{ return CanvasBase::const_iterator::operator=(x); }
-	
+
 	/*!	\todo write me */
 	Color get_color(const Point &pos)const;
 
@@ -79,9 +79,9 @@ public:
 	etl::handle<Layer> hit_check(const Point &point)const;
 
 }; // END of class Context
-	
+
 }; // END of namespace synfig
-	
+
 /* === E N D =============================================================== */
 
 #endif

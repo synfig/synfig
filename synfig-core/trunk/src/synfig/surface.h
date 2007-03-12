@@ -58,9 +58,9 @@ public:
 	{
 		if(!x.get_a())
 			return Color::alpha();
-		
+
 		const float a(1.0f/x.get_a());
-		
+
 		x.set_r(x.get_r()*a);
 		x.set_g(x.get_g()*a);
 		x.set_b(x.get_b()*a);
@@ -137,7 +137,7 @@ public:
 	alpha_pen(const etl::alpha_pen< etl::generic_pen<Color, ColorAccumulator>, Color::value_type, _BlendFunc > &x):
 		etl::alpha_pen< etl::generic_pen<Color, ColorAccumulator>, Color::value_type, _BlendFunc >(x)
 	{ }
-	
+
 	alpha_pen(const etl::generic_pen<Color, ColorAccumulator>& pen, const Color::value_type &a = 1, const _BlendFunc &func = _BlendFunc()):
 		etl::alpha_pen< etl::generic_pen<Color, ColorAccumulator>, Color::value_type, _BlendFunc >(pen,a,func)
 	{ }

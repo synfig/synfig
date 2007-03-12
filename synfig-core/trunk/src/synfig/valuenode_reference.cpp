@@ -87,7 +87,7 @@ ValueNode_Reference::set_link_vfunc(int i,ValueNode::Handle x)
 	signal_child_changed()(i);signal_value_changed()();
 	return true;
 }
-	
+
 ValueNode::LooseHandle
 ValueNode_Reference::get_link_vfunc(int i)const
 {
@@ -106,7 +106,7 @@ ValueNode_Reference::link_local_name(int i)const
 {
 	assert(i==0);
 	return _("Link");
-}	
+}
 
 String
 ValueNode_Reference::link_name(int i)const

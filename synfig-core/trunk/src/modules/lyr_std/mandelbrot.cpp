@@ -112,11 +112,11 @@ Mandelbrot::Mandelbrot():
 
 	smooth_outside=true;
 	broken=false;
-	
+
 	bailout=4;
 	lp=log(log(bailout));
 }
-	
+
 bool
 Mandelbrot::set_param(const String & param, const ValueBase &value)
 {
@@ -127,7 +127,7 @@ Mandelbrot::set_param(const String & param, const ValueBase &value)
 	IMPORT(gradient_offset_outside);
 	IMPORT(gradient_loop_inside);
 	IMPORT(gradient_scale_outside);
-	
+
 	IMPORT(distort_inside);
 	IMPORT(distort_outside);
 	IMPORT(solid_inside);
@@ -142,7 +142,7 @@ Mandelbrot::set_param(const String & param, const ValueBase &value)
 
 	IMPORT(gradient_inside);
 	IMPORT(gradient_outside);
-	
+
 	if(param=="iterations" && value.same_as(iterations))
 	{
 		iterations=value.get(iterations);
@@ -189,22 +189,22 @@ Mandelbrot::get_param(const String & param)const
 
 	EXPORT(gradient_inside);
 	EXPORT(gradient_outside);
-	
+
 	if(param=="bailout")
 		return sqrt(bailout);
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
-		
-	return ValueBase();	
+
+	return ValueBase();
 }
 
 Layer::Vocab
 Mandelbrot::get_param_vocab()const
 {
 	Layer::Vocab ret;
-	
-	
+
+
 	ret.push_back(ParamDesc("iterations")
 		.set_local_name(_("Iterations"))
 	);
@@ -217,7 +217,7 @@ Mandelbrot::get_param_vocab()const
 		.set_description(_("Modify equation to achieve interesting results"))
 	);
 
-	
+
 	ret.push_back(ParamDesc("distort_inside")
 		.set_local_name(_("Distort Inside"))
 		.set_group(_("Inside"))
@@ -280,7 +280,7 @@ Mandelbrot::get_param_vocab()const
 		.set_local_name(_("Scale Outside"))
 		.set_group(_("Outside"))
 	);
-		
+
 	return ret;
 }
 
@@ -291,18 +291,18 @@ Mandelbrot::get_color(Context context, const Point &pos)const
 		cr, ci,
 		zr, zi,
 		zr_hold;
-	
+
 	ColorReal
 		depth, mag;
-	
+
 	Color
 		ret;
 
-	
+
 	zr=zi=0;
 	cr=pos[0];
 	ci=pos[1];
-	
+
 	for(int i=0;i<iterations;i++)
 	{
 		// Perform complex multiplication
@@ -311,12 +311,12 @@ Mandelbrot::get_color(Context context, const Point &pos)const
 		if(broken)zr+=zi; // Use "broken" algorithm, if requested (looks weird)
 		zi=zr_hold*zi*2 + ci;
 
-		
+
 		// Calculate Magnitude
 		mag=zr*zr+zi*zi;
 
 		if(mag>bailout)
-		{	
+		{
 			if(smooth_outside)
 			{
 				// Darco's original mandelbrot smoothing algo
@@ -335,7 +335,7 @@ Mandelbrot::get_color(Context context, const Point &pos)const
 			ColorReal amount(depth/static_cast<ColorReal>(iterations));
 			amount=amount*gradient_scale_outside+gradient_offset_outside;
 			amount-=floor(amount);
-			
+
 			if(solid_outside)
 				ret=gradient_outside(amount);
 			else
@@ -344,7 +344,7 @@ Mandelbrot::get_color(Context context, const Point &pos)const
 					ret=context.get_color(Point(pos[0]+zr,pos[1]+zi));
 				else
 					ret=context.get_color(pos);
-				
+
 				if(invert_outside)
 					ret=~ret;
 
@@ -352,7 +352,7 @@ Mandelbrot::get_color(Context context, const Point &pos)const
 					ret=Color::blend(gradient_outside(amount), ret, 1.0);
 			}
 
-			
+
 			return ret;
 		}
 	}
@@ -369,13 +369,13 @@ Mandelbrot::get_color(Context context, const Point &pos)const
 			ret=context.get_color(Point(pos[0]+zr,pos[1]+zi));
 		else
 			ret=context.get_color(pos);
-		
+
 		if(invert_inside)
 			ret=~ret;
 
 		if(shade_inside)
 			ret=Color::blend(gradient_inside(amount), ret, 1.0);
 	}
-	
+
 	return ret;
 }

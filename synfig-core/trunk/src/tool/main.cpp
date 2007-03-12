@@ -62,10 +62,10 @@ enum exit_code
 	SYNFIGTOOL_FILENOTFOUND		=1,
 	SYNFIGTOOL_BORRED			=2,
 	SYNFIGTOOL_HELP				=3,
-	SYNFIGTOOL_UNKNOWNARGUMENT	=4,	
-	SYNFIGTOOL_UNKNOWNERROR		=5,	
-	SYNFIGTOOL_INVALIDTARGET		=6,	
-	SYNFIGTOOL_RENDERFAILURE		=7,	
+	SYNFIGTOOL_UNKNOWNARGUMENT	=4,
+	SYNFIGTOOL_UNKNOWNERROR		=5,
+	SYNFIGTOOL_INVALIDTARGET		=6,
+	SYNFIGTOOL_RENDERFAILURE		=7,
 	SYNFIGTOOL_BLANK				=8,
 	SYNFIGTOOL_BADVERSION		=9,
 	SYNFIGTOOL_MISSINGARGUMENT	=10
@@ -95,11 +95,11 @@ bool print_benchmarks=false;
 class Progress : public synfig::ProgressCallback
 {
 	const char *program;
-	
+
 public:
-	
+
 	Progress(const char *name):program(name) { }
-	
+
 	virtual bool
 	task(const String &task)
 	{
@@ -131,16 +131,16 @@ public:
 class RenderProgress : public synfig::ProgressCallback
 {
 	string taskname;
-	
+
 	etl::clock clk;
 	int clk_scanline; // The scanline at which the clock was reset
 	etl::clock clk2;
 
-	float last_time;	
+	float last_time;
 public:
-	
+
 	RenderProgress():clk_scanline(0), last_time(0) { }
-	
+
 	virtual bool
 	task(const String &thetask)
 	{
@@ -178,7 +178,7 @@ public:
 			if(clk2()<0.2)
 				return true;
 			clk2.reset();
-				
+
 			if(scanline)
 				seconds=(int)time+1;
 			else
@@ -187,7 +187,7 @@ public:
 				clk.reset();
 				clk_scanline=scanline;
 			}
-			
+
 			if(seconds<0)
 			{
 				clk.reset();
@@ -202,7 +202,7 @@ public:
 				days++,hours-=24;
 			while(days>=7)
 				weeks++,days-=7;
-			
+
 			cerr<<taskname<<": "<<_("Line")<<" "<<scanline<<_(" of ")<<h<<" -- ";
 			//cerr<<time/(h-clk_scanline)<<" ";
 			/*
@@ -213,9 +213,9 @@ public:
 			{
 				//cerr<<"reset"<<endl;
 				clk.reset();
-				clk_scanline=scanline;				
+				clk_scanline=scanline;
 			}
-			
+
 			if(weeks)
 				cerr<<weeks<<"w ";
 			if(days)
@@ -226,7 +226,7 @@ public:
 				cerr<<minutes<<"m ";
 			if(seconds)
 				cerr<<seconds<<"s ";
-			
+
 			cerr<<"           \r";
 		}
 		else
@@ -239,13 +239,13 @@ struct Job
 {
 	String filename;
 	String outfilename;
-	
+
 	RendDesc desc;
 
 	Canvas::Handle root;
 	Canvas::Handle canvas;
 	Target::Handle target;
-	
+
 	int quality;
 	bool sifout;
 };
@@ -295,7 +295,7 @@ void display_help(int amount)
 				cerr<<strprintf(" %s %s %s",flag, arg, spaces+strlen(arg)+strlen(flag)+1)+description<<endl;
 			else
 				cerr<<strprintf(" %s %s",flag,spaces+strlen(flag))+description<<endl;
-		
+
 		}
 	};
 	cerr<<_("syntax: ")<<progname<<" [DEFAULT OPTIONS] ([SIF FILE] [SPECIFIC OPTIONS])..."<<endl;
@@ -348,7 +348,7 @@ void display_help(int amount)
 int process_global_flags(arg_list_t &arg_list)
 {
 	arg_list_t::iterator iter, next;
-	
+
 	for(next=arg_list.begin(),iter=next++;iter!=arg_list.end();iter=next++)
 	{
 		if(*iter == "--")
@@ -359,14 +359,14 @@ int process_global_flags(arg_list_t &arg_list)
 			signal_test();
 			return SYNFIGTOOL_HELP;
 		}
-		
+
 		if(*iter == "--guid-test")
 		{
 			guid_test();
 			return SYNFIGTOOL_HELP;
 		}
 
-		
+
 		if(*iter == "--help")
 		{
 			display_help(1);
@@ -446,7 +446,7 @@ int process_global_flags(arg_list_t &arg_list)
 			synfig::Target::Book::iterator iter=synfig::Target::book().begin();
 			for(;iter!=synfig::Target::book().end();iter++)
 				cout<<iter->first<<endl;
-				
+
 			return SYNFIGTOOL_HELP;
 		}
 
@@ -457,7 +457,7 @@ int process_global_flags(arg_list_t &arg_list)
 			synfig::LinkableValueNode::Book::iterator iter=synfig::LinkableValueNode::book().begin();
 			for(;iter!=synfig::LinkableValueNode::book().end();iter++)
 				cout<<iter->first<<endl;
-				
+
 			return SYNFIGTOOL_HELP;
 		}
 
@@ -468,16 +468,16 @@ int process_global_flags(arg_list_t &arg_list)
 			synfig::Importer::Book::iterator iter=synfig::Importer::book().begin();
 			for(;iter!=synfig::Importer::book().end();iter++)
 				cout<<iter->first<<endl;
-				
+
 			return SYNFIGTOOL_HELP;
 		}
 
 		if(*iter == "--version")
 		{
 			cerr<<PACKAGE<<" "<<VERSION<<endl;
-		
+
 			arg_list.erase(iter);
-			
+
 			return SYNFIGTOOL_HELP;
 		}
 
@@ -491,18 +491,18 @@ int process_global_flags(arg_list_t &arg_list)
 **	published by the Free Software Foundation; either version 2 of\n\
 **	the License, or (at your option) any later version.\n\
 **\n\
-**	" << endl << endl;	
+**	" << endl << endl;
 			arg_list.erase(iter);
-			
+
 			return SYNFIGTOOL_HELP;
 		}
 
 		if(*iter == "-v")
 		{
 			verbosity++;
-			
+
 			arg_list.erase(iter);
-			
+
 			continue;
 		}
 
@@ -523,14 +523,14 @@ int process_global_flags(arg_list_t &arg_list)
 			continue;
 		}
 	}
-	
+
 	return SYNFIGTOOL_OK;
 }
 
 int extract_arg_cluster(arg_list_t &arg_list,arg_list_t &cluster)
 {
 	arg_list_t::iterator iter, next;
-	
+
 	for(next=arg_list.begin(),iter=next++;iter!=arg_list.end();iter=next++)
 	{
 		if(*iter->begin() != '-')
@@ -571,11 +571,11 @@ int extract_arg_cluster(arg_list_t &arg_list,arg_list_t &cluster)
 				return SYNFIGTOOL_MISSINGARGUMENT;
 			}
 		}
-			
+
 		cluster.push_back(*iter);
 		arg_list.erase(iter);
 	}
-	
+
 	return SYNFIGTOOL_OK;
 }
 
@@ -725,7 +725,7 @@ int extract_quality(arg_list_t &arg_list,int &quality)
 			arg_list.erase(iter);
 		}
 	}
-	
+
 	return SYNFIGTOOL_OK;
 }
 
@@ -743,7 +743,7 @@ int extract_threads(arg_list_t &arg_list,int &threads)
 			arg_list.erase(iter);
 		}
 	}
-	
+
 	return SYNFIGTOOL_OK;
 }
 
@@ -751,7 +751,7 @@ int extract_target(arg_list_t &arg_list,string &type)
 {
 	arg_list_t::iterator iter, next;
 	type.clear();
-	
+
 	for(next=arg_list.begin(),iter=next++;iter!=arg_list.end();iter=next++)
 	{
 		if(*iter=="-t")
@@ -770,7 +770,7 @@ int extract_append(arg_list_t &arg_list,string &filename)
 {
 	arg_list_t::iterator iter, next;
 	filename.clear();
-	
+
 	for(next=arg_list.begin(),iter=next++;iter!=arg_list.end();iter=next++)
 	{
 		if(*iter=="--append")
@@ -790,7 +790,7 @@ int extract_outfile(arg_list_t &arg_list,string &outfile)
 	arg_list_t::iterator iter, next;
 	int ret=SYNFIGTOOL_FILENOTFOUND;
 	outfile.clear();
-	
+
 	for(next=arg_list.begin(),iter=next++;iter!=arg_list.end();iter=next++)
 	{
 		if(*iter=="-o")
@@ -810,7 +810,7 @@ int extract_canvasid(arg_list_t &arg_list,string &canvasid)
 {
 	arg_list_t::iterator iter, next;
 	//canvasid.clear();
-	
+
 	for(next=arg_list.begin(),iter=next++;iter!=arg_list.end();iter=next++)
 	{
 		if(*iter=="-c")
@@ -834,10 +834,10 @@ int main(int argc, char *argv[])
 	int i;
 	arg_list_t arg_list;
 	job_list_t job_list;
-	
+
 	progname=argv[0];
 	Progress p(argv[0]);
-	
+
 	if(!SYNFIG_CHECK_VERSION())
 	{
 		cerr<<_("FATAL: Synfig Version Mismatch")<<endl;
@@ -851,34 +851,34 @@ int main(int argc, char *argv[])
 
 	for(i=1;i<argc;i++)
 		arg_list.push_back(argv[i]);
-	
+
 	if((i=process_global_flags(arg_list)))
 		return i;
 
 	VERBOSE_OUT(1)<<_("verbosity set to ")<<verbosity<<endl;
 	synfig::Main synfig_main(dirname(progname),&p);
-	
+
 	{
 		arg_list_t defaults, imageargs;
 		int ret;
-		
+
 		// Grab the defaults before the first file
 		if ((ret = extract_arg_cluster(arg_list,defaults)) != SYNFIGTOOL_OK)
 		  return ret;
-		
+
 		while(arg_list.size())
 		{
 			string target_name;
 			job_list.push_front(Job());
 			int threads=0;
-			
+
 			imageargs=defaults;
 			job_list.front().filename=arg_list.front();
 			arg_list.pop_front();
 
 			if ((ret = extract_arg_cluster(arg_list,imageargs)) != SYNFIGTOOL_OK)
 			  return ret;
-			
+
 			// Open the composition
 			{
 				job_list.front().root=open_canvas(job_list.front().filename);
@@ -892,7 +892,7 @@ int main(int argc, char *argv[])
 			}
 
 			job_list.front().root->set_time(0);
-			
+
 			string canvasid;
 			extract_canvasid(imageargs,canvasid);
 			if(!canvasid.empty())
@@ -907,7 +907,7 @@ int main(int argc, char *argv[])
 					cerr<<_("Throwing out job...")<<endl;
 					job_list.pop_front();
 					continue;
-					
+
 				}
 				catch(Exception::BadLinkName)
 				{
@@ -915,12 +915,12 @@ int main(int argc, char *argv[])
 					cerr<<_("Throwing out job...")<<endl;
 					job_list.pop_front();
 					continue;
-					
+
 				}
 			}
 			else
 				job_list.front().canvas=job_list.front().root;
-			
+
 			extract_RendDesc(imageargs,job_list.front().canvas->rend_desc());
 			extract_target(imageargs,target_name);
 			extract_threads(imageargs,threads);
@@ -949,9 +949,9 @@ int main(int argc, char *argv[])
 					VERBOSE_OUT(2)<<_("Appended contents of ")<<composite_file<<endl;
 				}
 			}while(false);
-			
+
 			VERBOSE_OUT(4)<<_("Attempting to determine target/outfile...")<<endl;
-			
+
 			// If the target type is not yet defined,
 			// try to figure it out from the outfile.
 			if(target_name.empty() && !job_list.front().outfilename.empty())
@@ -993,10 +993,10 @@ int main(int argc, char *argv[])
 
 			VERBOSE_OUT(4)<<"target_name="<<target_name<<endl;
 			VERBOSE_OUT(4)<<"outfile_name="<<job_list.front().outfilename<<endl;
-			
+
 			VERBOSE_OUT(4)<<_("Creating the target...")<<endl;
 			job_list.front().target=synfig::Target::create(target_name,job_list.front().outfilename);
-			
+
 			if(target_name=="sif")
 			{
 				job_list.front().sifout=true;
@@ -1018,16 +1018,16 @@ int main(int argc, char *argv[])
 			{
 				VERBOSE_OUT(4)<<_("Setting the canvas on the target...")<<endl;
 				job_list.front().target->set_canvas(job_list.front().canvas);
-				VERBOSE_OUT(4)<<_("Setting the quality of the target...")<<endl;				
+				VERBOSE_OUT(4)<<_("Setting the quality of the target...")<<endl;
 				job_list.front().target->set_quality(job_list.front().quality);
 			}
-			
+
 			// Set the threads for the target
 			if(job_list.front().target && Target_Scanline::Handle::cast_dynamic(job_list.front().target))
 			{
 				Target_Scanline::Handle::cast_dynamic(job_list.front().target)->set_threads(threads);
 			}
-			
+
 			if(imageargs.size())
 			{
 				cerr<<_("Unidentified arguments for ")<<job_list.front().filename<<": ";
@@ -1042,7 +1042,7 @@ int main(int argc, char *argv[])
 			//getline(cin,bleh);
 		}
 	}
-	
+
 	if(arg_list.size())
 	{
 		cerr<<_("Unidentified arguments:");
@@ -1051,13 +1051,13 @@ int main(int argc, char *argv[])
 		cerr<<endl;
 		return SYNFIGTOOL_UNKNOWNARGUMENT;
 	}
-	
+
 	if(!job_list.size())
 	{
 		cerr<<_("Nothing to do!")<<endl;
 		return SYNFIGTOOL_BORRED;
 	}
-	
+
 	for(;job_list.size();job_list.pop_front())
 	{
 		VERBOSE_OUT(3)<<job_list.front().filename<<" -- "<<endl<<'\t'<<
@@ -1074,7 +1074,7 @@ int main(int argc, char *argv[])
 			job_list.front().desc.get_br()[0],job_list.front().desc.get_br()[1],
 			job_list.front().desc.get_focus()[0],job_list.front().desc.get_focus()[1]
 			)<<endl;
-		
+
 		RenderProgress p;
 		p.task(job_list.front().filename+" ==> "+job_list.front().outfilename);
 		if(!job_list.front().sifout)
@@ -1102,10 +1102,10 @@ int main(int argc, char *argv[])
 			}
 		}
 	}
-	
+
 	job_list.clear();
-	
+
 	VERBOSE_OUT(1)<<_("Done.")<<endl;
-	
+
 	return SYNFIGTOOL_OK;
 }

@@ -48,7 +48,7 @@ ValueBase convert_bline_to_segment_list(const ValueBase &bline);
 
 //! Converts a list of bline points into a list of widths
 ValueBase convert_bline_to_width_list(const ValueBase &bline);
-	
+
 /*! \class ValueNode_BLine
 **	\brief \writeme
 */
@@ -58,14 +58,14 @@ public:
 
 	typedef etl::handle<ValueNode_BLine> Handle;
 	typedef etl::handle<const ValueNode_BLine> ConstHandle;
-	
+
 
 	ValueNode_BLine();
 
 public:
-	
 
-	
+
+
  	virtual ValueBase operator()(Time t)const;
 
 	virtual ~ValueNode_BLine();
@@ -76,11 +76,11 @@ public:
 	virtual String get_local_name()const;
 
 	virtual ValueNode* clone(const GUID& deriv_guid=GUID())const;
-	
+
 	virtual ListEntry create_list_entry(int index, Time time=0, Real origin=0.5);
 
 protected:
-	
+
 	LinkableValueNode* create_new()const;
 
 public:

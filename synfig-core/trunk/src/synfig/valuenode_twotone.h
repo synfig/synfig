@@ -39,7 +39,7 @@ struct ValueNode_TwoTone : public LinkableValueNode
 {
 	typedef etl::handle<ValueNode_TwoTone> Handle;
 	typedef etl::handle<const ValueNode_TwoTone> ConstHandle;
-	
+
 protected:
 
 	ValueNode_TwoTone();

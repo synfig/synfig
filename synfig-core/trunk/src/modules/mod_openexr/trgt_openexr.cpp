@@ -70,7 +70,7 @@ exr_trgt::exr_trgt(const char *Filename):
 #ifndef USE_HALF_TYPE
 	buffer_color=0;
 #endif
-	
+
 	// OpenEXR uses linear gamma
 	gamma().set_gamma(1.0);
 }
@@ -103,9 +103,9 @@ bool
 exr_trgt::start_frame(synfig::ProgressCallback *cb)
 {
 	int w=desc.get_w(),h=desc.get_h();
-	
+
 	String frame_name;
-	
+
 	if(exr_file)
 		delete exr_file;
 	if(multi_image)
@@ -114,7 +114,7 @@ exr_trgt::start_frame(synfig::ProgressCallback *cb)
 			newfilename(filename),
 			ext(find(filename.begin(),filename.end(),'.'),filename.end());
 		newfilename.erase(find(newfilename.begin(),newfilename.end(),'.'),newfilename.end());
-		
+
 		newfilename+=etl::strprintf("%04d",imagecount)+ext;
 		frame_name=newfilename;
 		if(cb)cb->task(newfilename);
@@ -132,7 +132,7 @@ exr_trgt::start_frame(synfig::ProgressCallback *cb)
 	//if(buffer) delete [] buffer;
 	//buffer=new Imf::Rgba[w];
 	out_surface.set_wh(w,h);
-	
+
 	return true;
 }
 
@@ -146,9 +146,9 @@ exr_trgt::end_frame()
 
 		delete exr_file;
 	}
-	
+
 	exr_file=0;
-	
+
 	imagecount++;
 }
 

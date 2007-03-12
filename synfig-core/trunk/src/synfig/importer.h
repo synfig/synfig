@@ -76,9 +76,9 @@ public:
 	typedef Importer* (*Factory)(const char *filename);
 	typedef std::map<String,Factory> Book;
 	static Book* book_;
-	
+
 	static Book& book();
-	
+
 	static bool subsys_init();
 	static bool subsys_stop();
 
@@ -96,7 +96,7 @@ public:
 
 	Gamma& gamma() { return gamma_; }
 	const Gamma& gamma()const { return gamma_; }
-	
+
 	virtual ~Importer();
 
 	//! Gets a frame and puts it into \a surface

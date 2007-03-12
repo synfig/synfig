@@ -68,16 +68,16 @@ public:
 	Rect(const Point& min, const Point& max) { set_point(min); expand(max); }
 
 	Rect(const value_type &x1,const value_type &y1)	{ set_point(x1,y1); }
-	
+
 	Rect(const value_type &x1,const value_type &y1,
 			const value_type &x2,const value_type &y2)
 	{
 		set_point(x1,y1);
 		expand(x2,y2);
 	}
-		
+
 	void set_point(const Point& max) { set_point(max[0],max[1]);	}
-	
+
 	Rect& expand(const Point& max) { expand(max[0],max[1]); return *this; }
 
 	Rect& expand(const Real& r) { minx-=r; miny-=r; maxx+=r; maxy+=r; return *this; }
@@ -85,21 +85,21 @@ public:
 	Rect& expand_x(const Real& r) { minx-=r; maxx+=r; return *this; }
 
 	Rect& expand_y(const Real& r) { miny-=r; maxy+=r; return *this; }
-	
+
 	Rect& set(const Point& min,const Point& max) { set(min[0],min[1],max[0],max[1]); return *this; }
-	
+
 	Point get_min()const { return Point(minx,miny); }
 	Point get_max()const { return Point(maxx,maxy); }
-	
+
 	bool is_inside(const Point& x) { return x[0]>minx && x[0]<maxx && x[1]>miny && x[1]<maxy; }
-		
+
 	Real area()const
 	{
 		return (maxx-minx)*(maxy-miny);
 	}
-	
+
 	// Operators
-	
+
 	Rect& operator+=(const Vector& rhs)
 	{
 		minx+=rhs[0]; miny+=rhs[1];

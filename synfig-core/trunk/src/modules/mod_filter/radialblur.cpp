@@ -76,8 +76,8 @@ RadialBlur::set_param(const String & param, const ValueBase &value)
 	IMPORT(origin);
 	IMPORT(size);
 	IMPORT(fade_out);
-	
-	return Layer_Composite::set_param(param,value);	
+
+	return Layer_Composite::set_param(param,value);
 }
 
 ValueBase
@@ -86,18 +86,18 @@ RadialBlur::get_param(const String &param)const
 	EXPORT(origin);
 	EXPORT(size);
 	EXPORT(fade_out);
-	
+
 	EXPORT_NAME();
 	EXPORT_VERSION();
-		
-	return Layer_Composite::get_param(param);	
+
+	return Layer_Composite::get_param(param);
 }
 
 Layer::Vocab
 RadialBlur::get_param_vocab()const
 {
 	Layer::Vocab ret(Layer_Composite::get_param_vocab());
-	
+
 	ret.push_back(ParamDesc("origin")
 		.set_local_name(_("Origin"))
 		.set_description(_("Point where you want the origin to be"))
@@ -112,7 +112,7 @@ RadialBlur::get_param_vocab()const
 	ret.push_back(ParamDesc("fade_out")
 		.set_local_name(_("Fade Out"))
 	);
-	
+
 	return ret;
 }
 
@@ -128,14 +128,14 @@ RadialBlur::accelerated_render(Context context,Surface *surface,int quality, con
 {
 	if(cb && !cb->amount_complete(0,10000))
 		return false;
-	
+
 	Surface tmp_surface;
-	
+
 	if(!context.accelerated_render(surface,quality,renddesc,cb))
 		return false;
 
 	tmp_surface=*surface;
-	
+
 	int x,y;
 
 	const Point tl(renddesc.get_tl());
@@ -148,17 +148,17 @@ RadialBlur::accelerated_render(Context context,Surface *surface,int quality, con
 
 	apen.set_alpha(get_amount());
 	apen.set_blend_method(get_blend_method());
-	
+
 	int steps(5);
-	
+
 	if(quality>=9)steps=20;
 	else if(quality>=5)steps=30;
 	else if(quality>=4)steps=60;
 	else if(quality>=3)steps=100;
 	else steps=120;
-	
+
 	Surface::value_prep_type cooker;
-	
+
 	for(y=0,pos[1]=tl[1];y<h;y++,apen.inc_y(),apen.dec_x(x),pos[1]+=ph)
 		for(x=0,pos[0]=tl[0];x<w;x++,apen.inc_x(),pos[0]+=pw)
 		{
@@ -170,19 +170,19 @@ RadialBlur::accelerated_render(Context context,Surface *surface,int quality, con
 
 			Color pool(Color::alpha());
 			int poolsize(0);
-			
+
 			int x0(round_to_int(begin[0])),
 				y0(round_to_int(begin[1])),
 				x1(round_to_int(end[0])),
 				y1(round_to_int(end[1]));
-			
+
 			int i;
 			int steep = 1;
 			int sx, sy;  /* step positive or negative (1 or -1) */
 			int dx, dy;  /* delta (difference in X and Y between points) */
 			int e;
 			int w(tmp_surface.get_w()),h(tmp_surface.get_h());
-			
+
 			dx = abs(x1 - x0);
 			sx = ((x1 - x0) > 0) ? 1 : -1;
 			dy = abs(y1 - y0);
@@ -217,7 +217,7 @@ RadialBlur::accelerated_render(Context context,Surface *surface,int quality, con
 						poolsize+=1;
 					}
 				}
-				
+
 				while (e >= 0)
 				{
 					y0 += sy;
@@ -235,7 +235,7 @@ RadialBlur::accelerated_render(Context context,Surface *surface,int quality, con
 			Point begin,end;
 			begin=pos;
 			end=(pos-origin)*(1.0f-size)+origin;
-			
+
 			Color pool(Color::alpha());
 			float f,poolsize(0);
 			int i;
@@ -244,7 +244,7 @@ RadialBlur::accelerated_render(Context context,Surface *surface,int quality, con
 			{
 				Point loc((end-begin)*f+begin-tl);
 				loc[0]/=pw;loc[1]/=ph;
-				
+
 				if(fade_out)
 					pool+=tmp_surface.linear_sample(loc[0],loc[1])*(i-steps),poolsize+=(i-steps);
 				else

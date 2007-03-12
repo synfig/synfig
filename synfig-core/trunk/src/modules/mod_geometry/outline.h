@@ -52,11 +52,11 @@ private:
 
 	std::vector<synfig::Segment> segment_list;
 	std::vector<synfig::Real> width_list;
-	
+
 	bool round_tip[2];
-	
+
 	bool sharp_cusps;
-	
+
 	bool loop_;
 
 	synfig::Real width;
@@ -76,7 +76,7 @@ public:
 
 	//! Updates the polygon data to match the parameters.
 	void sync();
-	
+
 	virtual bool set_param(const String & param, const synfig::ValueBase &value);
 
 	virtual ValueBase get_param(const String & param)const;
@@ -86,7 +86,7 @@ public:
 	virtual void set_time(Context context, Time time, Vector pos)const;
 	virtual bool set_version(const String &ver){if(ver=="0.1")old_version=true; return true;}
 	virtual void reset_version(){old_version=false;}
-	
+
 };
 
 /* === E N D =============================================================== */

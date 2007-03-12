@@ -92,16 +92,16 @@
 #define HAVE_LIBDL 1
 
 /* Define if JPEG library is available */
-#define HAVE_LIBJPEG 
+#define HAVE_LIBJPEG
 
 /* Define if PNG library is available */
-#define HAVE_LIBPNG 
+#define HAVE_LIBPNG
 
 /* Define to 1 if you have the `pthread' library (-lpthread). */
 #define HAVE_LIBPTHREAD 1
 
 /* Define if TIFF library is available */
-#define HAVE_LIBTIFF 
+#define HAVE_LIBTIFF
 
 /* Define to 1 if you have the <mach-o/dyld.h> header file. */
 #define HAVE_MACH_O_DYLD_H 1
@@ -255,7 +255,7 @@
 #define VERSION "0.61.05-257"
 
 /* enable fontconfig support */
-#define WITH_FONTCONFIG 
+#define WITH_FONTCONFIG
 
 /* Define to empty if `const' does not conform to ANSI C. */
 /* #undef const */

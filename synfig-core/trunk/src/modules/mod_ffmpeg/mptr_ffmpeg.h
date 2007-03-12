@@ -57,7 +57,7 @@ private:
 
 	bool seek_to(int frame);
 	bool grab_frame(void);
-	
+
 public:
 	ffmpeg_mptr(const char *filename);
 	~ffmpeg_mptr();

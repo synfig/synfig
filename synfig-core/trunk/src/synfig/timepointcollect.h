@@ -46,7 +46,7 @@ int waypoint_collect(std::set<Waypoint, std::less<UniqueID> >& waypoint_set,cons
 
 //! \writeme
 int activepoint_collect(std::set<Activepoint, std::less<UniqueID> >& activepoint_set,const Time& time, const etl::handle<Node>& node);
-	
+
 }; // END of namespace synfig
 
 /* === E N D =============================================================== */

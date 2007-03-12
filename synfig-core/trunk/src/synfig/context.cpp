@@ -88,14 +88,14 @@ Color
 Context::get_color(const Point &pos)const
 {
 	Context context(*this);
-		
+
 	while(!context->empty())
-	{	
+	{
 		// If this layer is active, then go
 		// ahead and break out of the loop
 		if((*context)->active())
 			break;
-		
+
 		// Otherwise, we want to keep searching
 		// till we find either an active layer,
 		// or the end of the layer list
@@ -114,14 +114,14 @@ Rect
 Context::get_full_bounding_rect()const
 {
 	Context context(*this);
-		
+
 	while(!context->empty())
-	{	
+	{
 		// If this layer is active, then go
 		// ahead and break out of the loop
 		if((*context)->active())
 			break;
-		
+
 		// Otherwise, we want to keep searching
 		// till we find either an active layer,
 		// or the end of the layer list
@@ -157,7 +157,7 @@ Context::get_full_bounding_rect()const
 	  -
 	  +
 	-
-	
+
 	at each minus we must record all the info for that which we are worried about...
 	each layer can do work before or after the other work is done... so both values must be recorded...
 */
@@ -167,7 +167,7 @@ Context::accelerated_render(Surface *surface,int quality, const RendDesc &rendde
 {
 	#ifdef SYNFIG_PROFILE_LAYERS
 	String layer_name(curr_layer);
-	
+
 	//sum the pre-work done by layer above us... (curr_layer is layer above us...)
 	if(depth>0)
 	{
@@ -178,7 +178,7 @@ Context::accelerated_render(Surface *surface,int quality, const RendDesc &rendde
 	#endif
 
 	const Rect bbox(renddesc.get_rect());
-	
+
 	Context context(*this);
 	for(;!(context)->empty();++context)
 	{
@@ -186,19 +186,19 @@ Context::accelerated_render(Surface *surface,int quality, const RendDesc &rendde
 		// then move on to next layer
 		if(!(*context)->active())
 			continue;
-		
+
 		const Rect layer_bounds((*context)->get_bounding_rect());
-		
+
 		// If the box area is less than zero
 		// then move on to next layer
 		if(layer_bounds.area()<=0.0000000000001)
 			continue;
-		
+
 		// If the boxes do not intersect
 		// then move on to next layer
 		if(!(layer_bounds && bbox))
 			continue;
-		
+
 		// Break out of the loop--we have found a good layer
 		break;
 	}
@@ -212,7 +212,7 @@ Context::accelerated_render(Surface *surface,int quality, const RendDesc &rendde
 		surface->set_wh(renddesc.get_w(),renddesc.get_h());
 		surface->clear();
 		#ifdef SYNFIG_PROFILE_LAYERS
-		profile_timer.reset();	
+		profile_timer.reset();
 		#endif
 		return true;
 	}
@@ -223,15 +223,15 @@ Context::accelerated_render(Surface *surface,int quality, const RendDesc &rendde
 
 	try {
 		RWLock::ReaderLock lock((*context)->get_rw_lock());
-		
+
 	#ifdef SYNFIG_PROFILE_LAYERS
-	
+
 	//go down one layer :P
 	depth++;
 	curr_layer=(*context)->get_name();	//make sure the layer inside is referring to the correct layer outside
 	profile_timer.reset(); 										// +
 	bool ret((*context)->accelerated_render(context+1,surface,quality,renddesc, cb));
-	
+
 	//post work for the previous layer
 	time_table[curr_layer]+=profile_timer();							//-
 	if(run_table.count(curr_layer))run_table[curr_layer]++;
@@ -239,7 +239,7 @@ Context::accelerated_render(Surface *surface,int quality, const RendDesc &rendde
 
 	depth--;
 	curr_layer = layer_name; //we are now onto this layer (make sure the post gets recorded correctly...
-		
+
 	//print out the table it we're done...
 	if(depth==0) _print_profile_report(),time_table.clear(),run_table.clear();
 	profile_timer.reset();												//+
@@ -262,7 +262,7 @@ Context::accelerated_render(Surface *surface,int quality, const RendDesc &rendde
 	catch(...)
 	{
 		synfig::error("Context::accelerated_render(): Layer \"%s\" threw an exception, rethrowing...",(*context)->get_name().c_str());
-		throw;		
+		throw;
 	}
 }
 
@@ -271,12 +271,12 @@ Context::set_time(Time time)const
 {
 	Context context(*this);
 	while(!(context)->empty())
-	{	
+	{
 		// If this layer is active, then go
 		// ahead and break out of the loop
 		if((*context)->active() && !(*context)->dirty_time_.is_equal(time))
 			break;
-		
+
 		// Otherwise, we want to keep searching
 		// till we find either an active layer,
 		// or the end of the layer list
@@ -295,10 +295,10 @@ Context::set_time(Time time)const
 	{
 		Layer::ParamList params;
 		Layer::DynamicParamList::const_iterator iter;
-		
+
 		for(iter=(*context)->dynamic_param_list().begin();iter!=(*context)->dynamic_param_list().end();iter++)
 			params[iter->first]=(*iter->second)(time);
-		
+
 		(*context)->set_param_list(params);
 
 		(*context)->set_time(context+1,time);
@@ -314,12 +314,12 @@ Context::set_time(Time time,const Vector &pos)const
 /*
 	Context context(*this);
 	while(!(context)->empty())
-	{	
+	{
 		// If this layer is active, then go
 		// ahead and break out of the loop
 		if((*context)->active())
 			break;
-		
+
 		// Otherwise, we want to keep searching
 		// till we find either an active layer,
 		// or the end of the layer list
@@ -333,10 +333,10 @@ Context::set_time(Time time,const Vector &pos)const
 	{
 		Layer::ParamList params;
 		Layer::DynamicParamList::const_iterator iter;
-		
+
 		for(iter=(*context)->dynamic_param_list().begin();iter!=(*context)->dynamic_param_list().end();iter++)
 			params[iter->first]=(*iter->second)(time);
-		
+
 		(*context)->set_param_list(params);
 
 		(*context)->set_time(context+1,time,pos);
@@ -348,14 +348,14 @@ etl::handle<Layer>
 Context::hit_check(const Point &pos)const
 {
 	Context context(*this);
-	
+
 	while(!context->empty())
-	{	
+	{
 		// If this layer is active, then go
 		// ahead and break out of the loop
 		if((*context)->active())
 			break;
-		
+
 		// Otherwise, we want to keep searching
 		// till we find either an active layer,
 		// or the end of the layer list

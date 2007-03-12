@@ -83,7 +83,7 @@ public:
 int test_class::bleh(0);
 
 test_class test_class_instance;
-*/	
+*/
 
 /* === M A C R O S ========================================================= */
 
@@ -105,7 +105,7 @@ static void _remove_from_open_canvas_map(Canvas *x) { get_open_canvas_map().eras
 static void _canvas_file_name_changed(Canvas *x)
 {
 	std::map<synfig::String, etl::loose_handle<Canvas> >::iterator iter;
-	
+
 	for(iter=get_open_canvas_map().begin();iter!=get_open_canvas_map().end();++iter)
 		if(iter->second==x)
 			break;
@@ -114,7 +114,7 @@ static void _canvas_file_name_changed(Canvas *x)
 		return;
 	get_open_canvas_map().erase(iter->first);
 	get_open_canvas_map()[etl::absolute_path(x->get_file_name())]=x;
-	
+
 }
 
 Canvas::Handle
@@ -128,7 +128,7 @@ synfig::open_canvas(const String &filename)
 
 	if(parser.error_count())
 		return Canvas::Handle();
-	
+
 	return canvas;
 }
 
@@ -143,7 +143,7 @@ synfig::open_canvas_as(const String &filename,const String &as)
 
 	if(parser.error_count())
 		return Canvas::Handle();
-	
+
 	return canvas;
 }
 
@@ -217,19 +217,19 @@ CanvasParser::parse_keyframe(xmlpp::Element *element,Canvas::Handle canvas)
 		error(element,strprintf(_("<%s> is missing \"%s\" attribute"),"real","time"));
 		return Keyframe();
 	}
-	
+
 	Keyframe ret(Time(element->get_attribute("time")->get_value(),canvas->rend_desc().get_frame_rate()));
 
 
 	if(element->get_children().empty())
 		return ret;
-	
+
 	if(element->get_child_text()->get_content().empty())
 		return ret;
-	
+
 	ret.set_description(element->get_child_text()->get_content());
 
-	return ret;	
+	return ret;
 }
 
 
@@ -411,13 +411,13 @@ CanvasParser::parse_string(xmlpp::Element *element,Canvas::Handle canvas)
 		warning(element, "Undefined value in <string>");
 		return synfig::String();
 	}
-	
+
 	if(element->get_child_text()->get_content().empty())
 	{
 		warning(element, "Content element of <string> appears to be empty");
 		return synfig::String();
 	}
-	
+
 	return element->get_child_text()->get_content();
 }
 
@@ -443,7 +443,7 @@ CanvasParser::parse_bool(xmlpp::Element *element,Canvas::Handle canvas)
 		return false;
 
 	error(element,strprintf(_("Bad value \"%s\" in <%s>"),val.c_str(),"bool"));
-	
+
 	return false;
 }
 
@@ -452,7 +452,7 @@ CanvasParser::parse_gradient(xmlpp::Element *node,Canvas::Handle canvas)
 {
 	assert(node->get_name()=="gradient");
 	Gradient ret;
-	
+
 	xmlpp::Element::NodeList list = node->get_children();
 	for(xmlpp::Element::NodeList::iterator iter = list.begin(); iter != list.end(); ++iter)
 	{
@@ -471,7 +471,7 @@ CanvasParser::parse_gradient(xmlpp::Element *node,Canvas::Handle canvas)
 			}
 
 			cpoint.pos=atof(child->get_attribute("pos")->get_value().c_str());
-			
+
 			ret.push_back(cpoint);
 		}
 	}
@@ -670,7 +670,7 @@ CanvasParser::parse_bline_point(xmlpp::Element *element,Canvas::Handle canvas)
 			ret.set_vertex(parse_vector(dynamic_cast<xmlpp::Element*>(*iter),canvas));
 		}
 		else
-		// Tangent 1 
+		// Tangent 1
 		if(child->get_name()=="t1" || child->get_name()=="tangent")
 		{
 			xmlpp::Element::NodeList list = child->get_children();
@@ -695,7 +695,7 @@ CanvasParser::parse_bline_point(xmlpp::Element *element,Canvas::Handle canvas)
 			ret.set_tangent1(parse_vector(dynamic_cast<xmlpp::Element*>(*iter),canvas));
 		}
 		else
-		// Tangent 2 
+		// Tangent 2
 		if(child->get_name()=="t2")
 		{
 			xmlpp::Element::NodeList list = child->get_children();
@@ -871,7 +871,7 @@ CanvasParser::parse_animated(xmlpp::Element *element,Canvas::Handle canvas)
 		error(element,"Bad type in <animated>");
 		return ValueNode_Animated::Handle();
 	}
-	
+
 	ValueNode_Animated::Handle value_node=ValueNode_Animated::create(type);
 
 	if(!value_node)
@@ -899,9 +899,9 @@ CanvasParser::parse_animated(xmlpp::Element *element,Canvas::Handle canvas)
 
 			Time time(child->get_attribute("time")->get_value(),canvas->rend_desc().get_frame_rate());
 
-			
+
 			ValueNode::Handle waypoint_value_node;
-			
+
 			if(child->get_attribute("use"))
 			{
 				waypoint_value_node=canvas->surefind_value_node(child->get_attribute("use")->get_value());
@@ -913,25 +913,25 @@ CanvasParser::parse_animated(xmlpp::Element *element,Canvas::Handle canvas)
 					error(child, strprintf(_("<%s> is missing its data"),"waypoint"));
 					continue;
 				}
-	
+
 				xmlpp::Element::NodeList list = child->get_children();
 				xmlpp::Element::NodeList::iterator iter;
-	
+
 				// Search for the first non-text XML element
 				for(iter = list.begin(); iter != list.end(); ++iter)
 					if(dynamic_cast<xmlpp::Element*>(*iter)) break;
-	
+
 				if(iter==list.end())
 				{
 					error(child, strprintf(_("<%s> is missing its data"),"waypoint"));
 					continue;
 				}
-				
+
 				waypoint_value_node=parse_value_node(dynamic_cast<xmlpp::Element*>(*iter),canvas);
-				
+
 				/*
 				ValueBase data=parse_value(dynamic_cast<xmlpp::Element*>(*iter),canvas);
-	
+
 				if(!data.is_valid())
 				{
 					error(child,_("Bad data for <waypoint>"));
@@ -943,7 +943,7 @@ CanvasParser::parse_animated(xmlpp::Element *element,Canvas::Handle canvas)
 					error(child,_("Bad data for <waypoint>"));
 					continue;
 				}
-				
+
 				/*! HACK -- This is a temporary fix to help repair some
 				**	weirdness that is currently going on (10-21-2004).
 				**	This short circuits the linking of waypoints,
@@ -951,7 +951,7 @@ CanvasParser::parse_animated(xmlpp::Element *element,Canvas::Handle canvas)
 				**	away with something like this pretty easily.
 				*/
 				waypoint_value_node=waypoint_value_node->clone();
-				
+
 				// Warn if there is trash after the param value
 				for(iter++; iter != list.end(); ++iter)
 					if(dynamic_cast<xmlpp::Element*>(*iter))
@@ -999,7 +999,7 @@ CanvasParser::parse_animated(xmlpp::Element *element,Canvas::Handle canvas)
 				else
 					error(child,strprintf(_("\"%s\" not a valid value for attribute \"%s\" in <%s>"),val.c_str(),"before","waypoint"));
 			}
-			
+
 			if(child->get_attribute("after"))
 			{
 				string val=child->get_attribute("after")->get_value();
@@ -1036,22 +1036,22 @@ etl::handle<ValueNode_Animated>
 CanvasParser::parse_timedswap(xmlpp::Element *node,Canvas::Handle canvas)
 {
 	ValueNode_TimedSwap::Handle timed_swap(parse_linkable_value_node(node,canvas));
-	
+
 	assert(timed_swap);
 
 	ValueNode_Animated::Handle animated(ValueNode_Animated::create(timed_swap->get_type()));
 
 	animated->set_root_canvas(canvas->get_root());
-	
+
 	assert(animated);
-	
+
 	Time swap_time, swap_length;
 	(*timed_swap->get_swap_time())(0).put(&swap_time);
 	(*timed_swap->get_swap_length())(0).put(&swap_length);
-	
+
 	animated->new_waypoint(swap_time-swap_length,timed_swap->get_before());
 	animated->new_waypoint(swap_time,timed_swap->get_after());
-	
+
 	return animated;
 }
 
@@ -1108,9 +1108,9 @@ CanvasParser::parse_subtract(xmlpp::Element *element,Canvas::Handle canvas)
 		if(element->get_attribute("lhs"))
 		{
 			lhs=canvas->surefind_value_node(element->get_attribute("lhs")->get_value());
-			value_node->set_lhs(lhs);			
+			value_node->set_lhs(lhs);
 		}
-	
+
 		if(element->get_attribute("rhs"))
 		{
 			rhs=canvas->surefind_value_node(element->get_attribute("rhs")->get_value());
@@ -1125,7 +1125,7 @@ CanvasParser::parse_subtract(xmlpp::Element *element,Canvas::Handle canvas)
 	{
 		error(element,"Unable to open external file referenced in ID");
 	}
-	
+
 	xmlpp::Element::NodeList list = element->get_children();
 	for(xmlpp::Element::NodeList::iterator iter = list.begin(); iter != list.end(); ++iter)
 	{
@@ -1249,7 +1249,7 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 {
 	handle<LinkableValueNode> value_node;
 	ValueBase::Type type;
-	
+
 	// Determine the type
 	if(element->get_attribute("type"))
 	{
@@ -1268,18 +1268,18 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 	}
 
 	value_node=LinkableValueNode::create(element->get_name(),type);
-		
+
 	if(!value_node)
 	{
 		error(element,"Unknown ValueNode type "+element->get_name());
 		return 0;
-	}		
+	}
 
 	if(value_node->get_type()!=type)
 	{
 		error(element,"ValueNode did not accept type");
 		return 0;
-	}		
+	}
 
 	value_node->set_root_canvas(canvas->get_root());
 
@@ -1289,13 +1289,13 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 		if(element->get_attribute(value_node->link_name(i)))
 		try {
 			String id(element->get_attribute(value_node->link_name(i))->get_value());
-			
+
 			if(!value_node->set_link(i,
 					canvas->surefind_value_node(
 						id
 					)
 				)
-			) error(element,strprintf(_("Unable to set link \"%s\" to ValueNode \"%s\" (link #%d in \"%s\")"),value_node->link_name(i).c_str(),id.c_str(),i,value_node->get_name().c_str()));			
+			) error(element,strprintf(_("Unable to set link \"%s\" to ValueNode \"%s\" (link #%d in \"%s\")"),value_node->link_name(i).c_str(),id.c_str(),i,value_node->get_name().c_str()));
 		}
 		catch(Exception::IDNotFound)
 		{
@@ -1311,8 +1311,8 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 				element->get_attribute(value_node->link_name(i))->get_value().c_str()));
 			throw;
 		}
-	}		
-	
+	}
+
 
 
 	xmlpp::Element::NodeList list = element->get_children();
@@ -1352,7 +1352,7 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 			}
 
 			// \todo do a search for more elements and warn if they are found
-			
+
 		}
 		catch(Exception::BadLinkName)
 		{
@@ -1464,7 +1464,7 @@ CanvasParser::parse_composite(xmlpp::Element *element,Canvas::Handle canvas)
 				{
 					error(child,strprintf(_("<%s> has a bad value"),name.c_str()));
 					break;
-				}					
+				}
 
 				// \todo do a search for more elements and warn if they are found
 				break;
@@ -1513,7 +1513,7 @@ handle<ValueNode_DynamicList>
 CanvasParser::parse_dynamic_list(xmlpp::Element *element,Canvas::Handle canvas)
 {
 	assert(element->get_name()=="dynamic_list" || element->get_name()=="bline");
-	
+
 	const float fps(canvas?canvas->rend_desc().get_frame_rate():0);
 
 	if(!element->get_attribute("type"))
@@ -1544,8 +1544,8 @@ CanvasParser::parse_dynamic_list(xmlpp::Element *element,Canvas::Handle canvas)
 			else
 				bline_value_node->set_loop(false);
 		}
-		
-	}		
+
+	}
 	else
 		value_node=ValueNode_DynamicList::create(type);
 
@@ -1567,7 +1567,7 @@ CanvasParser::parse_dynamic_list(xmlpp::Element *element,Canvas::Handle canvas)
 		if(child->get_name()=="entry")
 		{
 			ValueNode_DynamicList::ListEntry list_entry;
-			
+
 			// Parse begin/end waypoints
 			{
 				typedef synfig::ValueNode_DynamicList::ListEntry::Activepoint Activepoint;
@@ -1575,9 +1575,9 @@ CanvasParser::parse_dynamic_list(xmlpp::Element *element,Canvas::Handle canvas)
 
 				String begin_sequence;
 				String end_sequence;
-				
+
 				ActivepointList &timing_info(list_entry.timing_info);
-				
+
 				if(child->get_attribute("begin"))
 					begin_sequence=child->get_attribute("begin")->get_value();
 
@@ -1589,18 +1589,18 @@ CanvasParser::parse_dynamic_list(xmlpp::Element *element,Canvas::Handle canvas)
 
 				if(child->get_attribute("off"))
 					end_sequence=child->get_attribute("off")->get_value();
-				
+
 				// clear out any auto-start
 				if(!begin_sequence.empty())
 					timing_info.clear();
-				
+
 				//! \optimize
 				while(!begin_sequence.empty())
 				{
 					String::iterator iter(find(begin_sequence.begin(),begin_sequence.end(),','));
-					String timecode(begin_sequence.begin(),	iter);						
+					String timecode(begin_sequence.begin(),	iter);
 					int priority=0;
-					
+
 					// If there is a priority, then grab it and remove
 					// it from the timecode
 					if(timecode[0]=='p')
@@ -1612,7 +1612,7 @@ CanvasParser::parse_dynamic_list(xmlpp::Element *element,Canvas::Handle canvas)
 						timecode=String(timecode.begin()+space+1,timecode.end());
 						//synfig::info("priority: %d      timecode: %s",priority,timecode.c_str());
 					}
-					
+
 					timing_info.push_back(
 						Activepoint(
 							Time(
@@ -1623,7 +1623,7 @@ CanvasParser::parse_dynamic_list(xmlpp::Element *element,Canvas::Handle canvas)
 							priority
 						)
 					);
-					
+
 					if(iter==begin_sequence.end())
 						begin_sequence.clear();
 					else
@@ -1634,9 +1634,9 @@ CanvasParser::parse_dynamic_list(xmlpp::Element *element,Canvas::Handle canvas)
 				while(!end_sequence.empty())
 				{
 					String::iterator iter(find(end_sequence.begin(),end_sequence.end(),','));
-					String timecode(end_sequence.begin(),	iter);						
+					String timecode(end_sequence.begin(),	iter);
 					int priority=0;
-					
+
 					// If there is a priority, then grab it and remove
 					// it from the timecode
 					if(timecode[0]=='p')
@@ -1648,7 +1648,7 @@ CanvasParser::parse_dynamic_list(xmlpp::Element *element,Canvas::Handle canvas)
 						timecode=String(timecode.begin()+space+1,timecode.end());
 						//synfig::info("priority: %d      timecode: %s",priority,timecode.c_str());
 					}
-				
+
 					timing_info.push_back(
 						Activepoint(
 							Time(
@@ -1664,7 +1664,7 @@ CanvasParser::parse_dynamic_list(xmlpp::Element *element,Canvas::Handle canvas)
 					else
 						end_sequence=String(iter+1,end_sequence.end());
 				}
-				
+
 				timing_info.sort();
 			}
 
@@ -1719,9 +1719,9 @@ CanvasParser::parse_value_node(xmlpp::Element *element,Canvas::Handle canvas)
 {
 	handle<ValueNode> value_node;
 	assert(element);
-	
+
 	GUID guid;
-	
+
 	if(element->get_attribute("guid"))
 	{
 		guid=GUID(element->get_attribute("guid")->get_value())^canvas->get_root()->get_guid();
@@ -1729,10 +1729,10 @@ CanvasParser::parse_value_node(xmlpp::Element *element,Canvas::Handle canvas)
 		if(value_node)
 			return value_node;
 	}
-	
+
 	// If ValueBase::ident_type() recognises the name, then we know it's a ValueBase
 	if(element->get_name()!="canvas" && ValueBase::ident_type(element->get_name()))
-	{	
+	{
 		ValueBase data=parse_value(element,canvas);
 
 		if(!data.is_valid())
@@ -1767,7 +1767,7 @@ CanvasParser::parse_value_node(xmlpp::Element *element,Canvas::Handle canvas)
 	if(element->get_name()=="timed_swap")
 		value_node=parse_timedswap(element,canvas);
 	else
-	if(LinkableValueNode::book().count(element->get_name()))	
+	if(LinkableValueNode::book().count(element->get_name()))
 		value_node=parse_linkable_value_node(element,canvas);
 	else
 	if(element->get_name()=="canvas")
@@ -1778,10 +1778,10 @@ CanvasParser::parse_value_node(xmlpp::Element *element,Canvas::Handle canvas)
 		error(element, "Expected a ValueNode");
 	}
 
-	
+
 	value_node->set_root_canvas(canvas->get_root());
-	
-	
+
+
 	// If we were successful, and our element has
 	// an ID attribute, go ahead and add it to the
 	// value_node list
@@ -1797,7 +1797,7 @@ CanvasParser::parse_value_node(xmlpp::Element *element,Canvas::Handle canvas)
 		catch(Exception::BadLinkName)
 		{
 			warning(element,strprintf(_("Bad ID \"%s\""),id.c_str()));
-			return value_node;			
+			return value_node;
 		}
 		catch(Exception::IDAlreadyExists)
 		{
@@ -1835,7 +1835,7 @@ CanvasParser::parse_canvas_defs(xmlpp::Element *element,Canvas::Handle canvas)
 Layer::Handle
 CanvasParser::parse_layer(xmlpp::Element *element,Canvas::Handle canvas)
 {
-	
+
 	assert(element->get_name()=="layer");
 	Layer::Handle layer;
 
@@ -1868,7 +1868,7 @@ CanvasParser::parse_layer(xmlpp::Element *element,Canvas::Handle canvas)
 	// Handle the description
 	if(element->get_attribute("desc"))
 		layer->set_description(element->get_attribute("desc")->get_value());
-	
+
 	if(element->get_attribute("active"))
 		layer->set_active(element->get_attribute("active")->get_value()=="false"?false:true);
 
@@ -1980,7 +1980,7 @@ CanvasParser::parse_layer(xmlpp::Element *element,Canvas::Handle canvas)
 			for(iter++; iter != list.end(); ++iter)
 				if(dynamic_cast<xmlpp::Element*>(*iter))
 					warning((*iter),strprintf(_("Unexpected element <%s> after <param> data, ignoring..."),(*iter)->get_name().c_str()));
-			continue;				
+			continue;
 		}
 		else
 			error_unexpected_element(child,child->get_name());
@@ -1993,7 +1993,7 @@ CanvasParser::parse_layer(xmlpp::Element *element,Canvas::Handle canvas)
 Canvas::Handle
 CanvasParser::parse_canvas(xmlpp::Element *element,Canvas::Handle parent,bool inline_, String filename)
 {
-	
+
 	if(element->get_name()!="canvas")
 	{
 		error_unexpected_element(element,element->get_name(),"canvas");
@@ -2001,8 +2001,8 @@ CanvasParser::parse_canvas(xmlpp::Element *element,Canvas::Handle parent,bool in
 	}
 	Canvas::Handle canvas;
 
-	
-	
+
+
 	if(parent && (element->get_attribute("id") || inline_))
 	{
 		if(inline_)
@@ -2053,7 +2053,7 @@ CanvasParser::parse_canvas(xmlpp::Element *element,Canvas::Handle parent,bool in
 	if(element->get_attribute("yres"))
 		canvas->rend_desc().set_y_res(atof(element->get_attribute("yres")->get_value().c_str()));
 
-	
+
 	if(element->get_attribute("fps"))
 		canvas->rend_desc().set_frame_rate(atof(element->get_attribute("fps")->get_value().c_str()));
 
@@ -2091,16 +2091,16 @@ CanvasParser::parse_canvas(xmlpp::Element *element,Canvas::Handle parent,bool in
 	{
 		string values=element->get_attribute("bgcolor")->get_value();
 		Color bg;
-		
+
 		bg.set_r(atof(string(values.data(),values.find(' ')).c_str()));
 		values=string(values.begin()+values.find(' ')+1,values.end());
-		
+
 		bg.set_g(atof(string(values.data(),values.find(' ')).c_str()));
 		values=string(values.begin()+values.find(' ')+1,values.end());
-		
+
 		bg.set_b(atof(string(values.data(),values.find(' ')).c_str()));
 		values=string(values.begin()+values.find(' ')+1,values.end());
-		
+
 		bg.set_a(atof(values.c_str()));
 
 		canvas->rend_desc().set_bg_color(bg);
@@ -2152,9 +2152,9 @@ CanvasParser::parse_canvas(xmlpp::Element *element,Canvas::Handle parent,bool in
 					warning(child,_("Inline canvases cannot have metadata"));
 					continue;
 				}
-				
+
 				String name,content;
-				
+
 				if(!child->get_attribute("name"))
 				{
 					warning(child,_("<meta> must have a name"));
@@ -2166,17 +2166,17 @@ CanvasParser::parse_canvas(xmlpp::Element *element,Canvas::Handle parent,bool in
 					warning(child,_("<meta> must have content"));
 					continue;
 				}
-					
+
 				canvas->set_meta_data(child->get_attribute("name")->get_value(),child->get_attribute("content")->get_value());
 			}
 			else if(child->get_name()=="name")
 			{
 				xmlpp::Element::NodeList list = child->get_children();
-	
+
 				// If we don't have any name, warn
 				if(list.empty())
 					warning(child,_("blank \"name\" entitity"));
-	
+
 				string tmp;
 				for(xmlpp::Element::NodeList::iterator iter = list.begin(); iter != list.end(); ++iter)
 					if(dynamic_cast<xmlpp::TextNode*>(*iter))tmp+=dynamic_cast<xmlpp::TextNode*>(*iter)->get_content();
@@ -2185,13 +2185,13 @@ CanvasParser::parse_canvas(xmlpp::Element *element,Canvas::Handle parent,bool in
 			else
 			if(child->get_name()=="desc")
 			{
-				
+
 				xmlpp::Element::NodeList list = child->get_children();
-	
+
 				// If we don't have any description, warn
 				if(list.empty())
 					warning(child,_("blank \"desc\" entitity"));
-	
+
 				string tmp;
 				for(xmlpp::Element::NodeList::iterator iter = list.begin(); iter != list.end(); ++iter)
 					if(dynamic_cast<xmlpp::TextNode*>(*iter))tmp+=dynamic_cast<xmlpp::TextNode*>(*iter)->get_content();
@@ -2200,13 +2200,13 @@ CanvasParser::parse_canvas(xmlpp::Element *element,Canvas::Handle parent,bool in
 			else
 			if(child->get_name()=="author")
 			{
-				
+
 				xmlpp::Element::NodeList list = child->get_children();
-	
+
 				// If we don't have any description, warn
 				if(list.empty())
 					warning(child,_("blank \"author\" entitity"));
-	
+
 				string tmp;
 				for(xmlpp::Element::NodeList::iterator iter = list.begin(); iter != list.end(); ++iter)
 					if(dynamic_cast<xmlpp::TextNode*>(*iter))tmp+=dynamic_cast<xmlpp::TextNode*>(*iter)->get_content();
@@ -2230,7 +2230,7 @@ CanvasParser::parse_canvas(xmlpp::Element *element,Canvas::Handle parent,bool in
 
 	if(canvas->value_node_list().placeholder_count())
 	{
-		error(element,strprintf(_("Canvas %s has undefined ValueNodes"),canvas->get_id().c_str()));	
+		error(element,strprintf(_("Canvas %s has undefined ValueNodes"),canvas->get_id().c_str()));
 	}
 
 	return canvas;
@@ -2268,7 +2268,7 @@ CanvasParser::parse_from_file_as(const String &file_,const String &as_)
 
 
 			const ValueNodeList& value_node_list(canvas->value_node_list());
-			
+
 			again:
 			ValueNodeList::const_iterator iter;
 			for(iter=value_node_list.begin();iter!=value_node_list.end();++iter)
@@ -2334,7 +2334,7 @@ CanvasParser::parse_from_string(const String &data)
 					goto again;
 				}
 			}
-			
+
 			return canvas;
 		}
 	}

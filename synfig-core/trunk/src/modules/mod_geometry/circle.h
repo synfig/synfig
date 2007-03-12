@@ -57,32 +57,32 @@ private:
 	{
 		Real inner_radius;
 		Real outer_radius;
-	
+
 		Real inner_radius_sqd;
 		Real outer_radius_sqd;
-	
+
 		Real diff_sqd;
 		Real double_feather;
 	};
-	
+
 	typedef	Real	FALLOFF_FUNC(const CircleDataCache &c, const Real &mag_sqd);
-	
+
 	FALLOFF_FUNC	*falloff_func;
 	CircleDataCache	cache;
 
 	void constructcache();
 
 	static	Real	SqdFalloff(const CircleDataCache &c, const Real &mag_sqd);
-	static	Real	InvSqdFalloff(const CircleDataCache &c, const Real &mag_sqd);			
+	static	Real	InvSqdFalloff(const CircleDataCache &c, const Real &mag_sqd);
 	static	Real	SqrtFalloff(const CircleDataCache &c, const Real &mag_sqd);
-	static	Real	InvSqrtFalloff(const CircleDataCache &c, const Real &mag_sqd);		
+	static	Real	InvSqrtFalloff(const CircleDataCache &c, const Real &mag_sqd);
 	static	Real	LinearFalloff(const CircleDataCache &c, const Real &mag_sqd);
-	static	Real	InvLinearFalloff(const CircleDataCache &c, const Real &mag_sqd);		
+	static	Real	InvLinearFalloff(const CircleDataCache &c, const Real &mag_sqd);
 	static	Real	SigmondFalloff(const CircleDataCache &c, const Real &mag_sqd);
 	static	Real	InvSigmondFalloff(const CircleDataCache &c, const Real &mag_sqd);
 	static	Real	CosineFalloff(const CircleDataCache &c, const Real &mag_sqd);
-	static	Real	InvCosineFalloff(const CircleDataCache &c, const Real &mag_sqd);		
-	
+	static	Real	InvCosineFalloff(const CircleDataCache &c, const Real &mag_sqd);
+
 	FALLOFF_FUNC	*GetFalloffFunc()const;
 	bool ImportParameters(const String &param, const ValueBase &value);
 
@@ -96,22 +96,22 @@ public:
 		FALLOFF_SIGMOND		=3,
 		FALLOFF_SQRT		=4
 	};
-	
+
 	Circle();
-	
+
 	virtual bool set_param(const String &param, const ValueBase &value);
-	
+
 	virtual ValueBase get_param(const String &param)const;
-	
+
 	virtual Color get_color(Context context, const Point &pos)const;
-	
+
 	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 
 	virtual synfig::Rect get_full_bounding_rect(synfig::Context context)const;
 	virtual synfig::Rect get_bounding_rect()const;
 
-	synfig::Layer::Handle hit_check(synfig::Context context, const synfig::Point &point)const;	
-	
+	synfig::Layer::Handle hit_check(synfig::Context context, const synfig::Point &point)const;
+
 	virtual Vocab get_param_vocab()const;
 };
 

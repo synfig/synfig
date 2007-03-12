@@ -70,7 +70,7 @@ synfig::ValueNode_RadialComposite::ValueNode_RadialComposite(const ValueBase &va
 			break;
 		default:
 			assert(0);
-			throw Exception::BadType(ValueBase::type_name(get_type()));			
+			throw Exception::BadType(ValueBase::type_name(get_type()));
 	}
 }
 
@@ -84,7 +84,7 @@ ValueNode_RadialComposite::create(const ValueBase &value)
 {
 	return new ValueNode_RadialComposite(value);
 }
-	
+
 LinkableValueNode*
 ValueNode_RadialComposite::create_new()const
 {
@@ -142,7 +142,7 @@ ValueNode_RadialComposite::set_link_vfunc(int i,ValueNode::Handle x)
 {
 	assert(i>=0);
 	assert(i<6);
-	
+
 	if(PlaceholderValueNode::Handle::cast_dynamic(x))
 	{
 		components[i]=x;
@@ -170,12 +170,12 @@ ValueNode_RadialComposite::set_link_vfunc(int i,ValueNode::Handle x)
 			components[i]=x;
 			return true;
 			break;
-			
-			
+
+
 		default:
 			break;
 	}
-	return false;	
+	return false;
 }
 
 ValueNode::LooseHandle
@@ -208,12 +208,12 @@ ValueNode_RadialComposite::link_local_name(int i)const
 			else if(i==3)
 				return _("Alpha");
 			break;
-			
+
 		default:
 			break;
 	}
-	return etl::strprintf(_("C%d"),i+1);	
-}	
+	return etl::strprintf(_("C%d"),i+1);
+}
 
 
 String
@@ -221,7 +221,7 @@ ValueNode_RadialComposite::link_name(int i)const
 {
 	assert(i>=0 && i<5);
 	return strprintf("c%d",i);
-}	
+}
 
 int
 ValueNode_RadialComposite::get_link_index_from_name(const String &name)const
@@ -248,7 +248,7 @@ ValueNode_RadialComposite::get_link_index_from_name(const String &name)const
 			return 0;
 		if(name[0]=='t')
 			return 1;
-	default:			
+	default:
 		break;
 	}
 

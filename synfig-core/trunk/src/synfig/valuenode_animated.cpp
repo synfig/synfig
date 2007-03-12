@@ -67,11 +67,11 @@ template<typename I, typename T> inline I
 binary_find(I begin, I end, const T& value)
 {
 	I iter(begin+(end-begin)/2);
-	
+
 	while(end-begin>1 && !(*iter==value))
 	{
 		((*iter<value)?begin:end) = iter;
-		
+
 		iter = begin+(end-begin)/2;
 	}
 	return iter;
@@ -187,21 +187,21 @@ private:
 	{
 		is_angle_type<value_type>	is_angle;
 		subtractor<value_type>	subtract_func;
-		
+
 		mutable hermite<Time,Time> first;
 		mutable hermite<value_type,Time> second;
 		WaypointList::iterator start;
 		WaypointList::iterator end;
-		
+
 		value_type resolve(const Time &t)const
 		{
 			bool start_static(start->is_static());
 			bool end_static(end->is_static());
-			
+
 			if(!start_static || !end_static)
 			{
 				//if(!start_static)
-					second.p1()=start->get_value(t).get(value_type());					
+					second.p1()=start->get_value(t).get(value_type());
 				if(start->get_after()==INTERPOLATION_CONSTANT || end->get_before()==INTERPOLATION_CONSTANT)
 					return second.p1();
 				//if(!end_static)
@@ -211,7 +211,7 @@ private:
 				// that we support is linear.
 				second.t1()=
 				second.t2()=subtract_func(second.p2(),second.p1());
-				
+
 				second.sync();
 			}
 
@@ -229,10 +229,10 @@ private:
 	> curve_list_type;
 
 	curve_list_type curve_list;
-		
+
 	// Bounds of this curve
 	Time r,s;
-	
+
 public:
 	ValueNode* clone(const GUID& deriv_guid)const
 	{
@@ -254,23 +254,23 @@ public:
 		// Make sure we are getting data of the correct type
 		//if(data.type!=type)
 		//	return waypoint_list_type::iterator();
-		
+
 		try { find(t); throw Exception::BadTime(_("A waypoint already exists at this point in time")); } catch(Exception::NotFound) { };
 		Waypoint waypoint(value,t);
 		waypoint.set_parent_value_node(this);
-		
+
 		waypoint_list_.push_back(waypoint);
 		WaypointList::iterator ret=waypoint_list_.end();
 		--ret;
-		
+
 		if(is_angle())
 		{
 			ret->set_before(INTERPOLATION_LINEAR);
 			ret->set_after(INTERPOLATION_LINEAR);
 		}
-		
+
 		changed();
-		
+
 		return ret;
 	}
 
@@ -280,10 +280,10 @@ public:
 		//if(data.type!=type)
 		//	return waypoint_list_type::iterator();
 		try { find(t); throw Exception::BadTime(_("A waypoint already exists at this point in time")); } catch(Exception::NotFound) { };
-		
+
 		Waypoint waypoint(value_node,t);
 		waypoint.set_parent_value_node(this);
-		
+
 		waypoint_list_.push_back(waypoint);
 		WaypointList::iterator ret=waypoint_list_.end();
 		--ret;
@@ -295,14 +295,14 @@ public:
 		}
 
 		changed();
-		
+
 		return ret;
 	}
-	
+
 	virtual void on_changed()
 	{
 		ValueNode_Animated::on_changed();
-		
+
 		if(waypoint_list_.size()<=1)
 			return;
 		std::sort(waypoint_list_.begin(),waypoint_list_.end());
@@ -310,12 +310,12 @@ public:
 
 		r=waypoint_list_.front().get_time();
 		s=waypoint_list_.back().get_time();
-		
+
 		curve_list.clear();
-		
+
 		WaypointList::iterator prev,iter,next=waypoint_list_.begin();
 		int i=0;
-		
+
 		for(iter=next++;iter!=waypoint_list_.end() && next!=waypoint_list_.end();prev=iter,iter=next++,i++)
 		{
 			typename curve_list_type::value_type curve;
@@ -324,16 +324,16 @@ public:
 
 			curve.start=iter;
 			curve.end=next;
-			
+
 			// Set up the positions
 			curve.first.set_rs(iter->get_time(), next->get_time());
 			curve.second.set_rs(iter->get_time(), next->get_time());
-			
+
 			Waypoint::Interpolation iter_get_after(iter->get_after());
 			Waypoint::Interpolation next_get_after(next->get_after());
 			Waypoint::Interpolation iter_get_before(iter->get_before());
 			Waypoint::Interpolation next_get_before(next->get_before());
-			
+
 			if(is_angle())
 			{
 				if(iter_get_after==INTERPOLATION_TCB)
@@ -345,7 +345,7 @@ public:
 				if(next_get_before==INTERPOLATION_TCB)
 					next_get_before=INTERPOLATION_LINEAR;
 			}
-			
+
 			if(iter->is_static() && next->is_static())
 			{
 				curve.second.p1()=iter->get_value().get(T());
@@ -378,29 +378,29 @@ public:
 						const Real& t(iter->get_tension());		// Tension
 						const Real& c(iter->get_continuity());	// Continuity
 						const Real& b(iter->get_bias());			// Bias
-						
+
 						// The folloing line works where the previous line fails.
 						value_type Pp; Pp=curve_list.back().second.p1();	// P_{i-1}
-						
+
 						const value_type& Pc(curve.second.p1());	// P_i
 						const value_type& Pn(curve.second.p2());	// P_{i+1}
-						
+
 						// TCB
 						value_type vect(static_cast<value_type>(subtract_func(Pc,Pp)*(((1.0-t)*(1.0+c)*(1.0+b))/2.0)+(Pn-Pc)*(((1.0-t)*(1.0-c)*(1.0-b))/2.0)));
-						
+
 						// Tension Only
 						//value_type vect=(value_type)((Pn-Pp)*(1.0-t));
-						
+
 						// Linear
 						//value_type vect=(value_type)(Pn-Pc);
 
 						// Debugging stuff
 						//synfig::info("%d:t1: %s",i,tangent_info(Pp,Pn,vect).c_str());
-	
+
 						// Adjust for time
 						//vect=value_type(vect*(curve.second.get_dt()*2.0)/(curve.second.get_dt()+curve_list.back().second.get_dt()));
 						//vect=value_type(vect*(curve.second.get_dt())/(curve_list.back().second.get_dt()));
-	
+
 						curve.second.t1()=vect;
 						}
 					}
@@ -417,7 +417,7 @@ public:
 						curve_list.back().second.sync();
 					}
 
-					
+
 					if(next_get_before==INTERPOLATION_TCB && after_next!=waypoint_list_.end()  && !is_angle())
 					{
 						const Real &t(next->get_tension());		// Tension
@@ -426,13 +426,13 @@ public:
 						const value_type &Pp(curve.second.p1());	// P_{i-1}
 						const value_type &Pc(curve.second.p2());	// P_i
 						value_type Pn; Pn=after_next->get_value().get(T());	// P_{i+1}
-						
+
 						// TCB
 						value_type vect(static_cast<value_type>(subtract_func(Pc,Pp)*(((1.0-t)*(1.0-c)*(1.0+b))/2.0)+(Pn-Pc)*(((1.0-t)*(1.0+c)*(1.0-b))/2.0)));
 
 						// Tension Only
 						//value_type vect((value_type)((Pn-Pp)*(1.0-t)));
-						
+
 						// Linear
 						//value_type vect=(value_type)(Pc-Pp);
 
@@ -454,7 +454,7 @@ public:
 
 					// Adjust for time
 					const float timeadjust(0.5);
-					
+
 					if(!curve_list.empty())
 						curve.second.t1()*=(curve.second.get_dt()*(timeadjust+1))/(curve.second.get_dt()*timeadjust+curve_list.back().second.get_dt());
 					if(after_next!=waypoint_list_.end())
@@ -462,9 +462,9 @@ public:
 
 					if(iter_get_after==INTERPOLATION_HALT)
 						curve.second.t1()*=0;
-		
+
 					if(next_get_before==INTERPOLATION_HALT)
-						curve.second.t2()*=0;					
+						curve.second.t2()*=0;
 				}
 			}
 
@@ -482,7 +482,7 @@ public:
 			curve_list.push_back(curve);
 		}
 	}
-	
+
 	virtual ValueBase operator()(Time t)const
 	{
 		if(waypoint_list_.empty())
@@ -493,7 +493,7 @@ public:
 			return waypoint_list_.front().get_value(t);
 		if(t>=s)
 			return waypoint_list_.back().get_value(t);
-						
+
 		typename curve_list_type::const_iterator iter;
 
 		// This next line will set iter to the
@@ -503,8 +503,8 @@ public:
 		if(iter==curve_list.end())
 			return waypoint_list_.back().get_value(t);
 		return iter->resolve(t);
-	}	
-};  
+	}
+};
 
 
 template<typename T>
@@ -540,10 +540,10 @@ public:
 		//if(data.type!=type)
 		//	return waypoint_list_type::iterator();
 		try { find(t); throw Exception::BadTime(_("A waypoint already exists at this point in time")); } catch(Exception::NotFound) { };
-		
+
 		Waypoint waypoint(value,t);
 		waypoint.set_parent_value_node(this);
-		
+
 		waypoint_list_.push_back(waypoint);
 		WaypointList::iterator ret=waypoint_list_.end();
 		--ret;
@@ -561,7 +561,7 @@ public:
 
 		Waypoint waypoint(value_node,t);
 		waypoint.set_parent_value_node(this);
-		
+
 		waypoint_list_.push_back(waypoint);
 		WaypointList::iterator ret=waypoint_list_.end();
 		--ret;
@@ -573,7 +573,7 @@ public:
 	virtual void on_changed()
 	{
 		ValueNode_Animated::on_changed();
-		
+
 		if(waypoint_list_.size()<=1)
 			return;
 		std::sort(waypoint_list_.begin(),waypoint_list_.end());
@@ -639,10 +639,10 @@ public:
 		//	return waypoint_list_type::iterator();
 		try { find(t); throw Exception::BadTime(_("A waypoint already exists at this point in time")); } catch(Exception::NotFound) { };
 
-		
+
 		Waypoint waypoint(value,t);
 		waypoint.set_parent_value_node(this);
-		
+
 		waypoint_list_.push_back(waypoint);
 		WaypointList::iterator ret=waypoint_list_.end();
 		--ret;
@@ -660,7 +660,7 @@ public:
 
 		Waypoint waypoint(value_node,t);
 		waypoint.set_parent_value_node(this);
-		
+
 		waypoint_list_.push_back(waypoint);
 		WaypointList::iterator ret=waypoint_list_.end();
 		--ret;
@@ -672,7 +672,7 @@ public:
 	virtual void on_changed()
 	{
 		ValueNode_Animated::on_changed();
-		
+
 		if(waypoint_list_.size()<=1)
 			return;
 		std::sort(waypoint_list_.begin(),waypoint_list_.end());
@@ -704,7 +704,7 @@ public:
 
 		if(iter->get_time()==t)
 			return iter->get_value(t);
-		
+
 		if(next!=waypoint_list_.end())
 			return iter->get_value(t).get(bool()) || next->get_value(t).get(bool());
 		return iter->get_value(t);
@@ -723,7 +723,7 @@ ValueNode_Animated::find(const Time& begin,const Time& end,std::vector<Waypoint*
 {
 	Time curr_time(begin);
 	int ret(0);
-	
+
 	// try to grab first waypoint
 	try
 	{
@@ -733,7 +733,7 @@ ValueNode_Animated::find(const Time& begin,const Time& end,std::vector<Waypoint*
 		ret++;
 	}
 	catch(...) { }
-	
+
 	try
 	{
 		WaypointList::iterator iter;
@@ -748,7 +748,7 @@ ValueNode_Animated::find(const Time& begin,const Time& end,std::vector<Waypoint*
 		}
 	}
 	catch(...) { }
-	
+
 	return ret;
 }
 
@@ -776,18 +776,18 @@ ValueNode_Animated::manipulate_time(const Time& old_begin,const Time& old_end,co
 				throw Exception::BadTime(_("Waypoint Conflict"));
 			}
 			catch(Exception::NotFound) { }
-			
+
 			selected.back()->set_time(old_2_new(selected.back()->get_time()));
 			selected.pop_back();
 		}
-	
-		
+
+
 		while(!selected.empty())
 		{
 			selected.back()->set_time(old_2_new(selected.back()->get_time()));
 			selected.pop_back();
 		}
-		
+
 		changed();
 	}
 #undef old_2_new
@@ -805,7 +805,7 @@ ValueNode_Animated::new_waypoint_at_time(const Time& time)const
 		waypoint.make_unique();
 	}
 	catch(...)
-	{	
+	{
 		if(waypoint_list().empty())
 		{
 			waypoint.set_value((*this)(time));
@@ -816,10 +816,10 @@ ValueNode_Animated::new_waypoint_at_time(const Time& time)const
 			WaypointList::const_iterator next;
 
 			bool has_prev(false), has_next(false);
-			
+
 			try { prev=find_prev(time); has_prev=true; } catch(...) { }
 			try { next=find_next(time); has_next=true; } catch(...) { }
-			
+
 			/*
 			WaypointList::const_iterator closest;
 
@@ -831,7 +831,7 @@ ValueNode_Animated::new_waypoint_at_time(const Time& time)const
 				closest=prev;
 			else
 				closest=next;
-				
+
 			for(iter=waypoint_list().begin();iter!=waypoint_list().end();++iter)
 			{
 				const Real dist(abs(iter->get_time()-time));
@@ -839,14 +839,14 @@ ValueNode_Animated::new_waypoint_at_time(const Time& time)const
 					closest=iter;
 			}
 			*/
-			
+
 			if(has_prev && !prev->is_static())
 				waypoint.set_value_node(prev->get_value_node());
 			if(has_next && !next->is_static())
 				waypoint.set_value_node(next->get_value_node());
 			else
 				waypoint.set_value((*this)(time));
-			
+
 			/*if(has_prev)
 				waypoint.set_after(prev->get_before());
 			if(has_next)
@@ -858,7 +858,7 @@ ValueNode_Animated::new_waypoint_at_time(const Time& time)const
 	waypoint.set_parent_value_node(const_cast<ValueNode_Animated*>(this));
 //	synfig::info("waypoint.get_after()=set to %d",waypoint.get_after());
 //	synfig::info("waypoint.get_before()=set to %d",waypoint.get_before());
-	
+
 	return waypoint;
 }
 
@@ -923,7 +923,7 @@ ValueNode_Animated::find_next(const Time &x)
 		if(iter!=waypoint_list().end() && iter->get_time().is_more_than(x))
 			return iter;
 	}
-	
+
 	throw Exception::NotFound(strprintf("ValueNode_Animated::find_next(): Can't find Waypoint after %s",x.get_string().c_str()));
 }
 
@@ -942,7 +942,7 @@ ValueNode_Animated::find_next(const Time &x)const
 		if(iter!=waypoint_list().end() && iter->get_time()-Time::epsilon()>x)
 			return iter;
 	}
-	
+
 	throw Exception::NotFound(strprintf("ValueNode_Animated::find_next(): Can't find Waypoint after %s",x.get_string().c_str()));
 */
 }
@@ -959,7 +959,7 @@ ValueNode_Animated::find_prev(const Time &x)
 		if(iter!=waypoint_list().begin() && (--iter)->get_time().is_less_than(x))
 			return iter;
 	}
-	
+
 	throw Exception::NotFound(strprintf("ValueNode_Animated::find_prev(): Can't find Waypoint after %s",x.get_string().c_str()));
 }
 
@@ -1023,7 +1023,7 @@ synfig::ValueNode_Animated::create(ValueBase::Type type)
 			return ValueNode_Animated::Handle(new _Hermite<Vector>);
 		case ValueBase::TYPE_COLOR:
 			return ValueNode_Animated::Handle(new _Hermite<Color>);
-			
+
 		case ValueBase::TYPE_STRING:
 			return ValueNode_Animated::Handle(new _Constant<String>);
 		case ValueBase::TYPE_GRADIENT:
@@ -1075,7 +1075,7 @@ ValueNode_Animated::get_local_name()const
 void ValueNode_Animated::get_times_vfunc(Node::time_set &set) const
 {
 	//add all the way point times to the value node...
-	
+
 	WaypointList::const_iterator 	i = waypoint_list().begin(),
 									end = waypoint_list().end();
 
@@ -1092,68 +1092,68 @@ void ValueNode_Animated::get_times_vfunc(Node::time_set &set) const
 struct timecmp
  {
  	Time t;
- 
+
  	timecmp(const Time &c) :t(c) {}
- 
+
  	bool operator()(const Waypoint &rhs) const
  	{
  		return t.is_equal(rhs.get_time());
  	}
  };
- 
+
  ValueNode_Animated::findresult
  ValueNode_Animated::find_uid(const UniqueID &x)
  {
  	findresult	f;
  	f.second = false;
- 	
+
  	//search for it... and set the bool part of the return value to true if we found it!
  	f.first = std::find(waypoint_list_.begin(), waypoint_list_.end(), x);
  	if(f.first != waypoint_list_.end())
  		f.second = true;
- 		
+
  	return f;
  }
- 
+
  ValueNode_Animated::const_findresult
  ValueNode_Animated::find_uid(const UniqueID &x)const
  {
  	const_findresult	f;
  	f.second = false;
- 	
+
  	//search for it... and set the bool part of the return value to true if we found it!
  	f.first = std::find(waypoint_list_.begin(), waypoint_list_.end(), x);
  	if(f.first != waypoint_list_.end())
  		f.second = true;
- 		
+
  	return f;
  }
- 
- ValueNode_Animated::findresult	
+
+ ValueNode_Animated::findresult
  ValueNode_Animated::find_time(const Time &x)
  {
  	findresult	f;
  	f.second = false;
- 	
+
  	//search for it... and set the bool part of the return value to true if we found it!
  	f.first = std::find_if(waypoint_list_.begin(), waypoint_list_.end(), timecmp(x));
  	if(f.first != waypoint_list_.end())
  		f.second = true;
- 		
+
  	return f;
  }
- 
+
 ValueNode_Animated::const_findresult
 ValueNode_Animated::find_time(const Time &x)const
 {
  	const_findresult	f;
  	f.second = false;
- 	
+
  	//search for it... and set the bool part of the return value to true if we found it!
  	f.first = std::find_if(waypoint_list_.begin(), waypoint_list_.end(), timecmp(x));
  	if(f.first != waypoint_list_.end())
  		f.second = true;
- 		
+
  	return f;
 }
 

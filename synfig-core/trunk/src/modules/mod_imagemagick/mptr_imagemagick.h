@@ -45,7 +45,7 @@ private:
 	FILE *file;
 	int cur_frame;
 	synfig::Surface frame;
-	
+
 public:
 	imagemagick_mptr(const char *filename);
 

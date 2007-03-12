@@ -50,7 +50,7 @@ public:
 	Time time_;
 	String desc_;
 	GUID guid_;
-	
+
 public:
 
 	Keyframe();
@@ -60,11 +60,11 @@ public:
 	~Keyframe();
 
 	void set_time(Time x) { time_=x; }
-	
+
 	Time get_time()const { return time_; }
 
 	void set_description(String x) { desc_=x; }
-	
+
 	String get_description()const { return desc_; }
 
 	const GUID& get_guid()const { return guid_; }
@@ -74,7 +74,7 @@ public:
 	using UniqueID::operator==;
 	using UniqueID::operator!=;
 	using UniqueID::operator=;
-	
+
 	bool operator<(const Keyframe &rhs)const { return time_<rhs.time_; }
 	bool operator<(const Time &rhs)const { return time_<rhs; }
 
@@ -110,13 +110,13 @@ public:
 	const_iterator find(const Time &x)const;
 	const_iterator find_next(const Time &x)const;
 	const_iterator find_prev(const Time &x)const;
-	
+
 	void find_prev_next(const Time& time, Time &prev, Time &next)const;
 
 	void insert_time(const Time& location, const Time& delta);
 
 	void dump()const;
-	void sync();	
+	void sync();
 };
 
 //typedef std::list<Keyframe> KeyframeList;

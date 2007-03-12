@@ -68,7 +68,7 @@ SYNFIG_LAYER_SET_CVS_ID(lyr_freetype,"$Id: lyr_freetype.cpp,v 1.5 2005/01/24 05:
 
 /*Glyph::~Glyph()
 {
-	if(glyph)FT_Done_Glyph(glyph);	
+	if(glyph)FT_Done_Glyph(glyph);
 }
 */
 void
@@ -88,7 +88,7 @@ TextLine::clear_and_free()
 lyr_freetype::lyr_freetype()
 {
 	face=0;
-	
+
 	size=Vector(0.25,0.25);
 	text=_("Text Layer");
 	color=Color::black();
@@ -104,9 +104,9 @@ lyr_freetype::lyr_freetype()
 	old_version=false;
 	set_blend_method(Color::BLEND_COMPOSITE);
 	needs_sync_=true;
-	
+
 	new_font(family,style,weight);
-	
+
 	invert=false;
 }
 
@@ -118,7 +118,7 @@ lyr_freetype::~lyr_freetype()
 
 void
 lyr_freetype::new_font(const synfig::String &family, int style, int weight)
-{		
+{
 	if(
 		!new_font_(family,style,weight) &&
 		!new_font_(family,style,WEIGHT_NORMAL) &&
@@ -138,7 +138,7 @@ lyr_freetype::new_font_(const synfig::String &font_fam_, int style, int weight)
 
 	if(new_face(font_fam_))
 		return true;
-	
+
 	//start evil hack
 	for(unsigned int i=0;i<font_fam.size();i++)font_fam[i]=tolower(font_fam[i]);
 	//end evil hack
@@ -150,7 +150,7 @@ lyr_freetype::new_font_(const synfig::String &font_fam_, int style, int weight)
 		else
 #endif
 		font_fam="sans serif";
-	
+
 	if(font_fam=="sans serif" || font_fam=="arial")
 	{
 		String arial("arial");
@@ -207,7 +207,7 @@ lyr_freetype::new_font_(const synfig::String &font_fam_, int style, int weight)
 		if(new_face(filename))
 			return true;
 	}
-	
+
 	if(font_fam=="trebuchet")
 	{
 		String filename("trebuc");
@@ -223,8 +223,8 @@ lyr_freetype::new_font_(const synfig::String &font_fam_, int style, int weight)
 		if(new_face(filename))
 			return true;
 	}
-		
-	
+
+
 	if(font_fam=="sans serif" || font_fam=="luxi sans")
 	{
 		{
@@ -235,8 +235,8 @@ lyr_freetype::new_font_(const synfig::String &font_fam_, int style, int weight)
 				luxi+='r';
 			if(style==PANGO_STYLE_ITALIC||style==PANGO_STYLE_OBLIQUE)
 				luxi+='i';
-			
-			
+
+
 			if(new_face(luxi))
 				return true;
 		}
@@ -255,7 +255,7 @@ lyr_freetype::new_font_(const synfig::String &font_fam_, int style, int weight)
 				luxi+='r';
 			if(style==PANGO_STYLE_ITALIC||style==PANGO_STYLE_OBLIQUE)
 				luxi+='i';
-			
+
 			if(new_face(luxi))
 				return true;
 		}
@@ -274,7 +274,7 @@ lyr_freetype::new_font_(const synfig::String &font_fam_, int style, int weight)
 				luxi+='r';
 			if(style==PANGO_STYLE_ITALIC||style==PANGO_STYLE_OBLIQUE)
 				luxi+='i';
-			
+
 			if(new_face(luxi))
 				return true;
 		}
@@ -284,9 +284,9 @@ lyr_freetype::new_font_(const synfig::String &font_fam_, int style, int weight)
 		if(new_face("Times"))
 			return true;
 	}
-	
+
 	return new_face(font_fam_) || new_face(font_fam);
-	
+
 	return false;
 }
 
@@ -294,21 +294,21 @@ lyr_freetype::new_font_(const synfig::String &font_fam_, int style, int weight)
 void fss2path(char *path, FSSpec *fss)
 {
   int l;             //fss->name contains name of last item in path
-  for(l=0; l<(fss->name[0]); l++) path[l] = fss->name[l + 1]; 
+  for(l=0; l<(fss->name[0]); l++) path[l] = fss->name[l + 1];
   path[l] = 0;
 
   if(fss->parID != fsRtParID) //path is more than just a volume name
-  { 
+  {
     int i, len;
     CInfoPBRec pb;
-    
+
     pb.dirInfo.ioNamePtr = fss->name;
     pb.dirInfo.ioVRefNum = fss->vRefNum;
     pb.dirInfo.ioDrParID = fss->parID;
     do
     {
       pb.dirInfo.ioFDirIndex = -1;  //get parent directory name
-      pb.dirInfo.ioDrDirID = pb.dirInfo.ioDrParID;   
+      pb.dirInfo.ioDrDirID = pb.dirInfo.ioDrParID;
       if(PBGetCatInfoSync(&pb) != noErr) break;
 
       len = fss->name[0] + 1;
@@ -356,7 +356,7 @@ lyr_freetype::new_face(const String &newfont)
 			char filename[512];
 			fss2path(filename,&fs_spec);
 			//FSSpecToNativePathName(fs_spec,filename,sizeof(filename)-1, 0);
-			
+
 			error=FT_New_Face(ft_library, filename, face_index,&face);
 			//error=FT_New_Face_From_FSSpec(ft_library, &fs_spec, face_index,&face);
 			synfig::info(__FILE__":%d: \"%s\" (%s) -- ft_error=%d",__LINE__,newfont.c_str(),filename,error);
@@ -366,7 +366,7 @@ lyr_freetype::new_face(const String &newfont)
 			synfig::info(__FILE__":%d: \"%s\" -- ft_error=%d",__LINE__,newfont.c_str(),error);
 			// Unable to generate fs_spec
 		}
-		  
+
 	}
 #endif
 
@@ -466,7 +466,7 @@ lyr_freetype::set_param(const String & param, const ValueBase &value)
 	IMPORT_PLUS(vcompress,needs_sync_=true);
 	IMPORT_PLUS(use_kerning,needs_sync_=true);
 	IMPORT_PLUS(grid_fit,needs_sync_=true);
-	
+
 	return Layer_Composite::set_param(param,value);
 }
 
@@ -487,7 +487,7 @@ lyr_freetype::get_param(const String& param)const
 	EXPORT(use_kerning);
 	EXPORT(grid_fit);
 	EXPORT(invert);
-	
+
 	EXPORT_NAME();
 	EXPORT_VERSION();
 
@@ -589,10 +589,10 @@ void
 lyr_freetype::sync()
 {
 	needs_sync_=false;
-	
-	
-	
-	
+
+
+
+
 }
 
 Color
@@ -600,7 +600,7 @@ lyr_freetype::get_color(Context context, const synfig::Point &pos)const
 {
 	if(needs_sync_)
 		const_cast<lyr_freetype*>(this)->sync();
-	
+
 	if(!face)
 		return context.get_color(pos);
 	return context.get_color(pos);
@@ -614,18 +614,18 @@ lyr_freetype::accelerated_render(Context context,Surface *surface,int quality, c
 	if(needs_sync_)
 		const_cast<lyr_freetype*>(this)->sync();
 
-	
-	
-	
+
+
+
 	int error;
 	Vector size(lyr_freetype::size*2);
-	
+
 	if(!context.accelerated_render(surface,quality,renddesc,cb))
 		return false;
-	
+
 	if(is_disabled() || text.empty())
 		return true;
-	
+
 	// If there is no font loaded, just bail
 	if(!face)
 	{
@@ -638,7 +638,7 @@ lyr_freetype::accelerated_render(Context context,Surface *surface,int quality, c
 	{
 		text=basename(get_canvas()->get_file_name());
 	}
-	
+
 	// Width and Height of a pixel
 	Vector::value_type pw=renddesc.get_w()/(renddesc.get_br()[0]-renddesc.get_tl()[0]);
 	Vector::value_type ph=renddesc.get_h()/(renddesc.get_br()[1]-renddesc.get_tl()[1]);
@@ -651,7 +651,7 @@ lyr_freetype::accelerated_render(Context context,Surface *surface,int quality, c
     //int by=(int)((pos[1]-renddesc.get_tl()[1])*ph*64+0.5);
     int bx=0;
     int by=0;
-	
+
     // If the font is the size of a pixel, don't bother rendering any text
 	if(w<=1 || h<=1)
 	{
@@ -663,11 +663,11 @@ lyr_freetype::accelerated_render(Context context,Surface *surface,int quality, c
 
 #define CHAR_RESOLUTION		(64)
 	error = FT_Set_Char_Size(
-		face,						// handle to face object           
-		(int)CHAR_RESOLUTION,	// char_width in 1/64th of points 
-		(int)CHAR_RESOLUTION,	// char_height in 1/64th of points 
-		round_to_int(abs(size[0]*pw*CHAR_RESOLUTION)),						// horizontal device resolution    
-		round_to_int(abs(size[1]*ph*CHAR_RESOLUTION)) );						// vertical device resolution      
+		face,						// handle to face object
+		(int)CHAR_RESOLUTION,	// char_width in 1/64th of points
+		(int)CHAR_RESOLUTION,	// char_height in 1/64th of points
+		round_to_int(abs(size[0]*pw*CHAR_RESOLUTION)),						// horizontal device resolution
+		round_to_int(abs(size[1]*ph*CHAR_RESOLUTION)) );						// vertical device resolution
 
 	// Here is where we can compensate for the
 	// error in freetype's rendering engine.
@@ -721,7 +721,7 @@ lyr_freetype::accelerated_render(Context context,Surface *surface,int quality, c
 
 			if(grid_fit)
 				FT_Get_Kerning( face, previous, glyph_index, ft_kerning_default, &delta );
-			else	
+			else
 				FT_Get_Kerning( face, previous, glyph_index, ft_kerning_unfitted, &delta );
 
 			if(compress<1.0f)
@@ -735,9 +735,9 @@ lyr_freetype::accelerated_render(Context context,Surface *surface,int quality, c
 				by += delta.y;
 			}
         }
-		
+
 		Glyph curr_glyph;
-		
+
         // store current pen position
         curr_glyph.pos.x = bx;
         curr_glyph.pos.y = by;
@@ -755,10 +755,10 @@ lyr_freetype::accelerated_render(Context context,Surface *surface,int quality, c
 
         // record current glyph index
         previous = glyph_index;
-		
+
 		// Update the line width
 		lines.front().width=bx+slot->advance.x;
-		
+
 		// increment pen position
 		if(multiplier>1)
 			bx += round_to_int(slot->advance.x*multiplier*compress)-bx%round_to_int(slot->advance.x*multiplier*compress);
@@ -770,9 +770,9 @@ lyr_freetype::accelerated_render(Context context,Surface *surface,int quality, c
 		by += slot->advance.y*multiplier;
 
 		lines.front().glyph_table.push_back(curr_glyph);
-		
+
 	}
-      
+
 
 	//float	string_height;
 	//string_height=(((lines.size()-1)*face->size->metrics.height+lines.back().actual_height()));
@@ -780,7 +780,7 @@ lyr_freetype::accelerated_render(Context context,Surface *surface,int quality, c
 	//int string_height=face->size->metrics.ascender;
 //#define METRICS_SCALE_ONE		(65536.0f)
 #define METRICS_SCALE_ONE		((float)(1<<16))
-	
+
 	float line_height;
 	line_height=vcompress*((float)face->height*(((float)face->size->metrics.y_scale/METRICS_SCALE_ONE)));
 
@@ -788,26 +788,26 @@ lyr_freetype::accelerated_render(Context context,Surface *surface,int quality, c
 	string_height=round_to_int(((lines.size()-1)*line_height+lines.back().actual_height()));
 	//synfig::info("string_height=%d",string_height);
 	//synfig::info("line_height=%f",line_height);
-	
+
 	/*
  --	** -- RENDER THE GLYPHS ---------------------------------------------------
 	*/
 
 	Surface src_;
 	Surface *src_surface;
-	
+
 	src_surface=surface;
 
 	if(invert)
 	{
 		src_=*surface;
 		Surface::alpha_pen pen(surface->begin(),get_amount(),get_blend_method());
-		
+
 		surface->fill(color,pen,src_.get_w(),src_.get_h());
-		
+
 		src_surface=&src_;
 	}
-	
+
 	{
 	std::list<TextLine>::iterator iter;
 	int curr_line;
@@ -817,22 +817,22 @@ lyr_freetype::accelerated_render(Context context,Surface *surface,int quality, c
 		by=round_to_int((pos[1]-renddesc.get_tl()[1])*ph*CHAR_RESOLUTION+(1.0-orient[1])*string_height-line_height*curr_line);
 		//by=round_to_int(vcompress*((pos[1]-renddesc.get_tl()[1])*ph*64+(1.0-orient[1])*string_height-face->size->metrics.height*curr_line));
 		//synfig::info("curr_line=%d, bx=%d, by=%d",curr_line,bx,by);
-		
+
 		std::vector<Glyph>::iterator iter2;
 		for(iter2=iter->glyph_table.begin();iter2!=iter->glyph_table.end();++iter2)
 		{
 			FT_Glyph  image(iter2->glyph);
 			FT_Vector pen;
 			FT_BitmapGlyph  bit;
-				
+
 			pen.x = bx + iter2->pos.x;
 			pen.y = by + iter2->pos.y;
-			
+
 			//synfig::info("GLYPH: pen.x=%d, pen,y=%d",curr_line,(pen.x+32)>>6,(pen.y+32)>>6);
-		
+
 			error = FT_Glyph_To_Bitmap( &image, ft_render_mode_normal,0/*&pen*/, 1 );
 			if(error) { FT_Done_Glyph( image ); continue; }
-		
+
 			bit = (FT_BitmapGlyph)image;
 
 			for(v=0;v<bit->bitmap.rows;v++)
@@ -851,13 +851,13 @@ lyr_freetype::accelerated_render(Context context,Surface *surface,int quality, c
 						(*surface)[y][x]=Color::blend(color,(*src_surface)[y][x],myamount*get_amount(),get_blend_method());
 					}
 				}
-		
+
 			FT_Done_Glyph( image );
 		}
 		//iter->clear_and_free();
 	}
 	}
-   
+
 
 	return true;
 }

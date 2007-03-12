@@ -48,7 +48,7 @@ private:
 	synfig::String filename;
 	synfig::SmartFILE file;
 	synfig::Surface surface;
-	
+
 	bool dithering;
 
 public:

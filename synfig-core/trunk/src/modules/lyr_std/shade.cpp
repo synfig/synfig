@@ -95,7 +95,7 @@ Layer_Shade::set_param(const String &param, const ValueBase &value)
 	IMPORT(color);
 	IMPORT(offset);
 	IMPORT(invert);
-	
+
 	return Layer_Composite::set_param(param,value);
 }
 
@@ -107,11 +107,11 @@ Layer_Shade::get_param(const String &param)const
 	EXPORT(color);
 	EXPORT(offset);
 	EXPORT(invert);
-	
+
 	EXPORT_NAME();
 	EXPORT_VERSION();
-		
-	return Layer_Composite::get_param(param);	
+
+	return Layer_Composite::get_param(param);
 }
 
 Color
@@ -121,7 +121,7 @@ Layer_Shade::get_color(Context context, const Point &pos)const
 
 	if(get_amount()==0.0)
 		return context.get_color(pos);
-	
+
 	Color shade(color);
 
 	if(!invert)
@@ -136,18 +136,18 @@ bool
 Layer_Shade::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
 	int x,y;
-	
+
 	const int	w = renddesc.get_w(),
 				h = renddesc.get_h();
 	const Real	pw = renddesc.get_pw(),
 				ph = renddesc.get_ph();
-	
+
 	RendDesc	workdesc(renddesc);
 	Surface		worksurface;
 	etl::surface<float> blurred;
-			
+
 	//expand the working surface to accommodate the blur
-	
+
 	//the expanded size = 1/2 the size in each direction rounded up
 	int	halfsizex = (int) (abs(size[0]*.5/pw) + 3),
 		halfsizey = (int) (abs(size[1]*.5/ph) + 3);
@@ -175,7 +175,7 @@ Layer_Shade::accelerated_render(Context context,Surface *surface,int quality, co
 		halfsizex/=4;
 		halfsizey/=4;
 	}
-	
+
 	//expand by 1/2 size in each direction on either side
 	switch(type)
 	{
@@ -201,7 +201,7 @@ Layer_Shade::accelerated_render(Context context,Surface *surface,int quality, co
 		#define GAUSSIAN_ADJUSTMENT		(0.05)
 			Real	pw = (Real)workdesc.get_w()/(workdesc.get_br()[0]-workdesc.get_tl()[0]);
 			Real 	ph = (Real)workdesc.get_h()/(workdesc.get_br()[1]-workdesc.get_tl()[1]);
-			
+
 			pw=pw*pw;
 			ph=ph*ph;
 
@@ -211,7 +211,7 @@ Layer_Shade::accelerated_render(Context context,Surface *surface,int quality, co
 			halfsizex = (halfsizex + 1)/2;
 			halfsizey = (halfsizey + 1)/2;
 			workdesc.set_subwindow( -halfsizex, -halfsizey, offset_w+2*halfsizex, offset_h+2*halfsizey );
-						
+
 			break;
 		}
 	}
@@ -220,25 +220,25 @@ Layer_Shade::accelerated_render(Context context,Surface *surface,int quality, co
 	{
 		SuperCallback stageone(cb,0,5000,10000);
 		SuperCallback stagetwo(cb,5000,10000,10000);
-		
+
 		//callbacks depend on how long the blur takes
 		if(size[0] || size[1])
 		{
 			if(type == Blur::DISC)
 			{
 				stageone = SuperCallback(cb,0,5000,10000);
-				stagetwo = SuperCallback(cb,5000,10000,10000);	
+				stagetwo = SuperCallback(cb,5000,10000,10000);
 			}
 			else
 			{
 				stageone = SuperCallback(cb,0,9000,10000);
-				stagetwo = SuperCallback(cb,9000,10000,10000);	
+				stagetwo = SuperCallback(cb,9000,10000,10000);
 			}
 		}
 		else
 		{
 			stageone = SuperCallback(cb,0,9999,10000);
-			stagetwo = SuperCallback(cb,9999,10000,10000);	
+			stagetwo = SuperCallback(cb,9999,10000,10000);
 		}
 
 
@@ -246,7 +246,7 @@ Layer_Shade::accelerated_render(Context context,Surface *surface,int quality, co
 		//render the background onto the expanded surface
 		if(!context.accelerated_render(&worksurface,quality,workdesc,&stageone))
 			return false;
-	
+
 		// Copy over the alpha
 		blurred.set_wh(worksurface.get_w(),worksurface.get_h());
 		for(int j=0;j<worksurface.get_h();j++)
@@ -254,13 +254,13 @@ Layer_Shade::accelerated_render(Context context,Surface *surface,int quality, co
 			{
 				blurred[j][i]=worksurface[j][i].get_a();
 			}
-		
+
 		//blur the image
 		Blur(size,type,&stagetwo)(blurred,workdesc.get_br()-workdesc.get_tl(),blurred);
-		
+
 		//be sure the surface is of the correct size
 		surface->set_wh(renddesc.get_w(),renddesc.get_h());
-		
+
 		int u = halfsizex-(offset_u<0?offset_u:0), v = halfsizey-(offset_v<0?offset_v:0);
 		for(y=0;y<renddesc.get_h();y++,v++)
 		{
@@ -268,12 +268,12 @@ Layer_Shade::accelerated_render(Context context,Surface *surface,int quality, co
 			for(x=0;x<renddesc.get_w();x++,u++)
 			{
 				Color a(color);
-	
+
 				if(!invert)
 					a.set_a(blurred.linear_sample(offset_u+(float)u,offset_v+(float)v));
 				else
 					a.set_a(1.0f-blurred.linear_sample(offset_u+(float)u,offset_v+(float)v));
-				
+
 				if(a.get_a() || get_blend_method()==Color::BLEND_STRAIGHT)
 				{
 					(*surface)[y][x]=Color::blend(a,worksurface[v][u],get_amount(),get_blend_method());
@@ -284,34 +284,34 @@ Layer_Shade::accelerated_render(Context context,Surface *surface,int quality, co
 	}
 	else
 	{
-		
+
 		SuperCallback stageone(cb,0,5000,10000);
 		SuperCallback stagetwo(cb,5000,10000,10000);
-		
+
 		//callbacks depend on how long the blur takes
 		if(size[0] || size[1])
 		{
 			if(type == Blur::DISC)
 			{
 				stageone = SuperCallback(cb,0,5000,10000);
-				stagetwo = SuperCallback(cb,5000,10000,10000);	
+				stagetwo = SuperCallback(cb,5000,10000,10000);
 			}
 			else
 			{
 				stageone = SuperCallback(cb,0,9000,10000);
-				stagetwo = SuperCallback(cb,9000,10000,10000);	
+				stagetwo = SuperCallback(cb,9000,10000,10000);
 			}
 		}
 		else
 		{
 			stageone = SuperCallback(cb,0,9999,10000);
-			stagetwo = SuperCallback(cb,9999,10000,10000);	
+			stagetwo = SuperCallback(cb,9999,10000,10000);
 		}
 
 		int fw(floor_to_int(abs(size[0]/(pw*SCALE_FACTOR)))+1);
 		int fh(floor_to_int(abs(size[1]/(ph*SCALE_FACTOR)))+1);
 		int tmpw(round_to_int((float)workdesc.get_w()/fw)),tmph(round_to_int((float)workdesc.get_h()/fh));
-		
+
 		workdesc.clear_flags();
 		workdesc.set_wh(tmpw,tmph);
 		//synfig::info("fw: %d, fh: %d",fw,fh);
@@ -329,7 +329,7 @@ Layer_Shade::accelerated_render(Context context,Surface *surface,int quality, co
 		for(int j=0;j<worksurface.get_h();j++)
 			for(int i=0;i<worksurface.get_w();i++)
 				blurred[j][i]=worksurface[j][i].get_a();
-		
+
 		//blur the image
 		Blur(size,type,&stagetwo)(blurred,workdesc.get_br()-workdesc.get_tl(),blurred);
 
@@ -341,12 +341,12 @@ Layer_Shade::accelerated_render(Context context,Surface *surface,int quality, co
 			for(x=0;x<renddesc.get_w();x++,u++)
 			{
 				Color a(color);
-	
+
 				if(!invert)
 					a.set_a(blurred.linear_sample(((float)offset_u+(float)u)/(float)fw,((float)offset_v+(float)v)/(float)fh));
 				else
 					a.set_a(1.0f-blurred.linear_sample(((float)offset_u+(float)u)/fw,((float)offset_v+(float)v)/(float)fh));
-				
+
 				if(a.get_a() || get_blend_method()==Color::BLEND_STRAIGHT)
 				{
 					(*surface)[y][x]=Color::blend(a,(*surface)[y][x],get_amount(),get_blend_method());
@@ -354,17 +354,17 @@ Layer_Shade::accelerated_render(Context context,Surface *surface,int quality, co
 			}
 		}
 	}
-	
-	
+
+
 	if(cb && !cb->amount_complete(10000,10000))
 	{
 		//if(cb)cb->error(strprintf(__FILE__"%d: Accelerated Renderer Failure",__LINE__));
 		return false;
 	}
-		
+
 	return true;
 }
-	
+
 Layer::Vocab
 Layer_Shade::get_param_vocab(void)const
 {
@@ -392,11 +392,11 @@ Layer_Shade::get_param_vocab(void)const
 		.add_enum_value(Blur::GAUSSIAN,"gaussian",_("Gaussian Blur"))
 		.add_enum_value(Blur::DISC,"disc",_("Disc Blur"))
 	);
-	
+
 	ret.push_back(ParamDesc("invert")
 		.set_local_name(_("Invert"))
 	);
-	
+
 	return ret;
 }
 
@@ -418,6 +418,6 @@ Layer_Shade::get_full_bounding_rect(Context context)const
 
 	if(is_solid_color())
 		return bounds;
-		
+
 	return bounds|under;
 }

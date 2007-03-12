@@ -89,7 +89,7 @@ Layer::Vocab
 Layer_TimeLoop::get_param_vocab()const
 {
 	Layer::Vocab ret(Layer::get_param_vocab());
-	
+
 	ret.push_back(ParamDesc("start_time")
 		.set_local_name(_("Start Time"))
 	);
@@ -97,7 +97,7 @@ Layer_TimeLoop::get_param_vocab()const
 	ret.push_back(ParamDesc("end_time")
 		.set_local_name(_("End Time"))
 	);
-	
+
 	return ret;
 }
 

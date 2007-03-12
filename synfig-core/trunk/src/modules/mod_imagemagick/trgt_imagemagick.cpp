@@ -133,7 +133,7 @@ imagemagick_trgt::start_frame(synfig::ProgressCallback *cb)
 		return false;
 	}
 
-	//etl::yield();	
+	//etl::yield();
 
 	return true;
 }
@@ -154,6 +154,6 @@ imagemagick_trgt::end_scanline(void)
 
 	if(!fwrite(buffer,channels(pf),desc.get_w(),file))
 		return false;
-	
+
 	return true;
 }

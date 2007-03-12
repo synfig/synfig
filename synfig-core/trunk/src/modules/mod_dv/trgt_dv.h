@@ -50,7 +50,7 @@ private:
 public:
 	dv_trgt(const char *filename);
 	virtual ~dv_trgt();
-	
+
 
 	virtual bool set_rend_desc(synfig::RendDesc *desc);
 	virtual bool init();

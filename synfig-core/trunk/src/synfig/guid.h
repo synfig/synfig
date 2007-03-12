@@ -38,7 +38,7 @@
 /* === C L A S S E S & S T R U C T S ======================================= */
 
 namespace synfig {
-	
+
 class GUID
 {
 	union {
@@ -52,24 +52,24 @@ class GUID
 			uint64_t a;
 			uint64_t b;
 		} u_64;
-			
+
 	} data;
-	
+
 public:
 	GUID()
-		{ make_unique(); }	
+		{ make_unique(); }
 	GUID(const GUID& x):data(x.data)
 		{ }
 	GUID(const int i){assert(!i); data.u_64.a=0;data.u_64.b=0;}
 
 	GUID(const String& str);
-	
+
 	static GUID zero() { return GUID(0); }
 	static GUID hasher(const String& str);
 	static GUID hasher(int i);
 
 	operator bool()const { return data.u_32.a||data.u_32.b||data.u_32.c||data.u_32.d; }
-	
+
 	uint64_t get_hi()const { return data.u_64.a; }
 	uint64_t get_lo()const { return data.u_64.b; }
 
@@ -77,10 +77,10 @@ public:
 	uint64_t get_hi_lo()const { return data.u_32.b; }
 	uint64_t get_lo_hi()const { return data.u_32.c; }
 	uint64_t get_lo_lo()const { return data.u_32.d; }
-	
+
 	void make_unique();
 	String get_string()const;
-	
+
 	bool operator==(const GUID& rhs)const
 		{ return data.u_64.a==rhs.data.u_64.a && data.u_64.b==rhs.data.u_64.b; }
 	bool operator!=(const GUID& rhs)const
@@ -106,7 +106,7 @@ public:
 		return *this;
 	}
 	GUID operator^(const GUID& rhs)const { return GUID(*this)^=rhs; }
-	
+
 	//! Operator '%' (alt-xor)
 	/*! A % B != B % A. */
 	GUID& operator%=(const GUID& rhs)

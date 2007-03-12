@@ -87,12 +87,12 @@ public:
 	{
 		next=x;
 	}
-	
+
 	unsigned long i32()
 	{
 		static const unsigned long a(1664525);
 		static const unsigned long c(1013904223);
-		
+
 		return next=next*a+c;
 	}
 
@@ -104,10 +104,10 @@ public:
 	float f()
 	{
 		static const float m(int(65535));
-		
+
 		return float(i16())/m;
 	}
-	
+
 	unsigned long operator()(const unsigned long& m)
 	{
 		if(m==65536)
@@ -146,10 +146,10 @@ static void _get_rand_long_long(uint64_t &x)
 {
 	//subtractive_rng _c(clock());
 	unsigned short* data(reinterpret_cast<unsigned short *>(&x));
-	data[0]=_a(65536);	
-	data[1]=_a(65536);	
-	data[2]=_a(65536);	
-	data[3]=_a(65536);	
+	data[0]=_a(65536);
+	data[1]=_a(65536);
+	data[2]=_a(65536);
+	data[3]=_a(65536);
 }
 
 #else
@@ -160,7 +160,7 @@ static void _get_rand_long_long(uint64_t &x)
 static void get_rand_long_long(uint64_t &x)
 {
 	_GUID* guid(reinterpret_cast<_GUID*>(&x));
-	CoCreateGuid(guid);	
+	CoCreateGuid(guid);
 }
 
 #else
@@ -195,7 +195,7 @@ synfig::GUID::make_unique()
 
 synfig::GUID
 synfig::GUID::hasher(const String& str)
-{	
+{
 #ifdef HASH_MAP_H
 	hash<const char*> string_hash_;
 	const unsigned int seed(
@@ -211,7 +211,7 @@ synfig::GUID::hasher(const String& str)
 		seed=(seed>>(32-(i%24)))^(seed<<(i%24))
 	}
 #endif
-	
+
 	GUID_RNG random(seed);
 	GUID ret(0);
 	ret.data.u_32.a=random(~(unsigned int)0);

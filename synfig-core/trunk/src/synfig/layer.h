@@ -115,7 +115,7 @@ class Layer : public Node
 {
 	friend class ValueNode;
 	friend class Context;
-		
+
 	/*
  --	** -- T Y P E S -----------------------------------------------------------
 	*/
@@ -143,7 +143,7 @@ public:
 	static void register_in_book(const BookEntry &);
 
 	static Book& book();
-	
+
 	static bool subsys_init();
 
 	static bool subsys_stop();
@@ -183,16 +183,16 @@ private:
 
 	//! \writeme
 	float z_depth_;
-	
+
 	//! \writeme
 	mutable Time dirty_time_;
-	
+
 	//! Contains the name of the group that this layer belongs to
 	String group_;
-	
+
 	//! \writeme
 	sigc::connection parent_death_connect_;
-	
+
 	/*
  -- ** -- S I G N A L S -------------------------------------------------------
 	*/
@@ -200,20 +200,20 @@ private:
 private:
 
 	//!	Status Changed
-	sigc::signal<void> signal_status_changed_;	
-	
+	sigc::signal<void> signal_status_changed_;
+
 	//!	Parameter changed
-	sigc::signal<void,String> signal_param_changed_;	
+	sigc::signal<void,String> signal_param_changed_;
 
 	//!	Description Changed
-	sigc::signal<void> signal_description_changed_;	
+	sigc::signal<void> signal_description_changed_;
 
 	//!	Moved
-	sigc::signal<void, int, etl::handle<Canvas> > signal_moved_;	
+	sigc::signal<void, int, etl::handle<Canvas> > signal_moved_;
 
-	sigc::signal<void, String> signal_added_to_group_;	
+	sigc::signal<void, String> signal_added_to_group_;
 
-	sigc::signal<void, String> signal_removed_from_group_;	
+	sigc::signal<void, String> signal_removed_from_group_;
 
 	/*
  -- ** -- S I G N A L   I N T E R F A C E -------------------------------------
@@ -222,20 +222,20 @@ private:
 public:
 
 	//!	Status Changed
-	sigc::signal<void>& signal_status_changed() { return signal_status_changed_; }	
-	
+	sigc::signal<void>& signal_status_changed() { return signal_status_changed_; }
+
 	//!	Parameter changed
 	sigc::signal<void,String>& signal_param_changed() { return signal_param_changed_; }
 
 	//!	Description Changed
-	sigc::signal<void>& signal_description_changed() { return signal_description_changed_;}	
+	sigc::signal<void>& signal_description_changed() { return signal_description_changed_;}
 
 	//!	Moved
 	sigc::signal<void, int, etl::handle<Canvas> >& signal_moved() { return signal_moved_; }
 
-	sigc::signal<void, String>& signal_added_to_group() { return signal_added_to_group_; }	
+	sigc::signal<void, String>& signal_added_to_group() { return signal_added_to_group_; }
 
-	sigc::signal<void, String>& signal_removed_from_group() { return signal_removed_from_group_; }	
+	sigc::signal<void, String>& signal_removed_from_group() { return signal_removed_from_group_; }
 
 	/*
  --	** -- C O N S T R U C T O R S ---------------------------------------------
@@ -258,13 +258,13 @@ public:
 
 	//! Adds this layer to the given layer group
 	void add_to_group(const String&);
-	
+
 	//! Removes this layer from the given layer group
 	void remove_from_group(const String&);
-	
+
 	//! Removes this layer from all layer groups
 	void remove_from_all_groups();
-	
+
 	//! Gets the name of the group that this layer belongs to
 	String get_group()const;
 
@@ -276,7 +276,7 @@ public:
 
 	bool connect_dynamic_param(const String& param, etl::loose_handle<ValueNode>);
 	bool disconnect_dynamic_param(const String& param);
-		
+
 	//! Enables the layer for rendering (Making it \em active)
 	void enable() { set_active(true); }
 
@@ -305,19 +305,19 @@ public:
 
 	//! \writeme
 	void set_z_depth(float x) { z_depth_=x; }
-	
+
 	//! Sets the Canvas that this Layer is a part of
 	void set_canvas(etl::loose_handle<Canvas> canvas);
-	
+
 	//! Returns a handle to the Canvas to which this Layer belongs
 	etl::loose_handle<Canvas> get_canvas()const;
-	
+
 	//! \writeme
 	const String& get_description()const { return description_; }
 
 	//! \writeme
 	void set_description(const String& x);
-	
+
 	/*
  --	** -- V I R T U A L   F U N C T I O N S -----------------------------------
 	*/
@@ -328,7 +328,7 @@ public:
 	virtual Rect get_full_bounding_rect(Context context)const;
 
 	//! Returns a string containing the name of the Layer
-	virtual String get_name()const;	
+	virtual String get_name()const;
 
 	//! Returns a string containing the localized name of the Layer
 	virtual String get_local_name()const;

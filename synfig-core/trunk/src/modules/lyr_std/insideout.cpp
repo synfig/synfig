@@ -61,7 +61,7 @@ InsideOut::InsideOut():
 	origin(0,0)
 {
 }
-	
+
 bool
 InsideOut::set_param(const String & param, const ValueBase &value)
 {
@@ -73,11 +73,11 @@ ValueBase
 InsideOut::get_param(const String & param)const
 {
 	EXPORT(origin);
-	
+
 	EXPORT_NAME();
 	EXPORT_VERSION();
-		
-	return ValueBase();	
+
+	return ValueBase();
 }
 
 synfig::Layer::Handle
@@ -103,7 +103,7 @@ class InsideOut_Trans : public Transform
 	etl::handle<const InsideOut> layer;
 public:
 	InsideOut_Trans(const InsideOut* x):layer(x) { }
-	
+
 	synfig::Vector perform(const synfig::Vector& x)const
 	{
 		Point pos(x-layer->origin);
@@ -112,7 +112,7 @@ public:
 			return (pos*(inv_mag*inv_mag)+layer->origin);
 		return x;
 	}
-	
+
 	synfig::Vector unperform(const synfig::Vector& x)const
 	{
 		Point pos(x-layer->origin);
@@ -132,11 +132,11 @@ Layer::Vocab
 InsideOut::get_param_vocab()const
 {
 	Layer::Vocab ret;
-	
+
 	ret.push_back(ParamDesc("origin")
 		.set_local_name(_("Origin"))
 		.set_description(_("Defines the where the center will be"))
 	);
-	
+
 	return ret;
 }

@@ -78,7 +78,7 @@ ValueNode_DynamicList::ListEntry::ActivepointList::iterator
 ValueNode_DynamicList::ListEntry::add(Time time, bool status, int priority)
 {
 	typedef synfig::ValueNode_DynamicList::ListEntry::ActivepointList::iterator iterator;
-	
+
 	//! \optimize
 	Activepoint ap(time,status,priority);
 	ap.set_parent_index(get_index());
@@ -86,7 +86,7 @@ ValueNode_DynamicList::ListEntry::add(Time time, bool status, int priority)
 	timing_info.push_back(ap);
 	iterator iter(--iterator(timing_info.end()));
 	timing_info.sort();
-	
+
 	return iter;
 }
 
@@ -94,7 +94,7 @@ ValueNode_DynamicList::ListEntry::ActivepointList::iterator
 ValueNode_DynamicList::ListEntry::add(const Activepoint &x)
 {
 	typedef synfig::ValueNode_DynamicList::ListEntry::ActivepointList::iterator iterator;
-	
+
 	//! \optimize
 	Activepoint ap(x);
 	ap.set_parent_index(get_index());
@@ -102,7 +102,7 @@ ValueNode_DynamicList::ListEntry::add(const Activepoint &x)
 	timing_info.push_back(ap);
 	iterator iter(--iterator(timing_info.end()));
 	timing_info.sort();
-	
+
 	return iter;
 }
 
@@ -110,7 +110,7 @@ void
 ValueNode_DynamicList::reindex()
 {
 	int i(0);
-	
+
 	std::vector<ListEntry>::iterator iter;
 
 	for(iter=list.begin();iter!=list.end();++iter)
@@ -126,7 +126,7 @@ ValueNode_DynamicList::reindex()
 				iter2->set_parent_index(i);
 				iter2->set_parent_value_node(this);
 			}
-			iter->index=i;		
+			iter->index=i;
 			iter->set_parent_value_node(this);
 		}
 	}
@@ -136,19 +136,19 @@ ValueNode_DynamicList::ListEntry
 ValueNode_DynamicList::create_list_entry(int index, Time time, Real origin)
 {
 	ValueNode_DynamicList::ListEntry ret;
-	
-	
+
+
 	synfig::ValueBase prev,next;
 
 	index=index%link_count();
 
 	assert(index>=0);
-	
+
 	ret.index=index;
 	ret.set_parent_value_node(this);
-	
+
 	next=(*list[index].value_node)(time);
-	
+
 	if(index!=0)
 		prev=(*list[index-1].value_node)(time);
 	else
@@ -160,8 +160,8 @@ ValueNode_DynamicList::create_list_entry(int index, Time time, Real origin)
 			prev=next;
 		}
 	}
-	
-	
+
+
 	switch(get_contained_type())
 	{
 	case ValueBase::TYPE_VECTOR:
@@ -199,7 +199,7 @@ ValueNode_DynamicList::create_list_entry(int index, Time time, Real origin)
 		break;
 	}
 
-	
+
 	return ret;
 }
 
@@ -225,63 +225,63 @@ ValueNode_DynamicList::ListEntry::ActivepointList::iterator
 ValueNode_DynamicList::ListEntry::find(const Time& x)
 {
 	typedef synfig::ValueNode_DynamicList::ListEntry::ActivepointList ActivepointList;
-	
+
 	ActivepointList::iterator iter;
 
 	for(iter=timing_info.begin();iter!=timing_info.end();++iter)
 		if(iter->time==x)
 			return iter;
 
-	throw Exception::NotFound("ValueNode_DynamicList::ListEntry::find():"+x.get_string());	
+	throw Exception::NotFound("ValueNode_DynamicList::ListEntry::find():"+x.get_string());
 }
 
 ValueNode_DynamicList::ListEntry::ActivepointList::const_iterator
 ValueNode_DynamicList::ListEntry::find(const Time& x)const
 {
 	typedef synfig::ValueNode_DynamicList::ListEntry::ActivepointList ActivepointList;
-	
+
 	ActivepointList::const_iterator iter;
 
 	for(iter=timing_info.begin();iter!=timing_info.end();++iter)
 		if(iter->time==x)
 			return iter;
 
-	throw Exception::NotFound("ValueNode_DynamicList::ListEntry::find()const:"+x.get_string());	
+	throw Exception::NotFound("ValueNode_DynamicList::ListEntry::find()const:"+x.get_string());
 }
 
 ValueNode_DynamicList::ListEntry::ActivepointList::iterator
 ValueNode_DynamicList::ListEntry::find_next(const Time& x)
 {
 	typedef synfig::ValueNode_DynamicList::ListEntry::ActivepointList ActivepointList;
-	
+
 	ActivepointList::iterator iter;
 
 	for(iter=timing_info.begin();iter!=timing_info.end();++iter)
 		if(iter->time>x)
 			return iter;
 
-	throw Exception::NotFound("ValueNode_DynamicList::ListEntry::find_next():"+x.get_string());	
+	throw Exception::NotFound("ValueNode_DynamicList::ListEntry::find_next():"+x.get_string());
 }
 
 ValueNode_DynamicList::ListEntry::ActivepointList::const_iterator
 ValueNode_DynamicList::ListEntry::find_next(const Time& x)const
 {
 	typedef synfig::ValueNode_DynamicList::ListEntry::ActivepointList ActivepointList;
-	
+
 	ActivepointList::const_iterator iter;
 
 	for(iter=timing_info.begin();iter!=timing_info.end();++iter)
 		if(iter->time>x)
 			return iter;
 
-	throw Exception::NotFound("ValueNode_DynamicList::ListEntry::find_next()const:"+x.get_string());	
+	throw Exception::NotFound("ValueNode_DynamicList::ListEntry::find_next()const:"+x.get_string());
 }
 
 ValueNode_DynamicList::ListEntry::ActivepointList::iterator
 ValueNode_DynamicList::ListEntry::find_prev(const Time& x)
 {
 	typedef synfig::ValueNode_DynamicList::ListEntry::ActivepointList ActivepointList;
-	
+
 	ActivepointList::iterator iter;
 	iter=timing_info.end();
 	do
@@ -292,14 +292,14 @@ ValueNode_DynamicList::ListEntry::find_prev(const Time& x)
 	}
 	while(iter!=timing_info.begin());
 
-	throw Exception::NotFound("ValueNode_DynamicList::ListEntry::find_prev():"+x.get_string());	
+	throw Exception::NotFound("ValueNode_DynamicList::ListEntry::find_prev():"+x.get_string());
 }
 
 ValueNode_DynamicList::ListEntry::ActivepointList::const_iterator
 ValueNode_DynamicList::ListEntry::find_prev(const Time& x)const
 {
 	typedef synfig::ValueNode_DynamicList::ListEntry::ActivepointList ActivepointList;
-	
+
 	ActivepointList::const_iterator iter;
 	iter=timing_info.end();
 	do
@@ -310,7 +310,7 @@ ValueNode_DynamicList::ListEntry::find_prev(const Time& x)const
 	}
 	while(iter!=timing_info.begin());
 
-	throw Exception::NotFound("ValueNode_DynamicList::ListEntry::find_prev()const:"+x.get_string());	
+	throw Exception::NotFound("ValueNode_DynamicList::ListEntry::find_prev()const:"+x.get_string());
 }
 
 int
@@ -318,7 +318,7 @@ ValueNode_DynamicList::ListEntry::find(const Time& begin,const Time& end,std::ve
 {
 	Time curr_time(begin);
 	int ret(0);
-	
+
 	// try to grab first waypoint
 	try
 	{
@@ -328,7 +328,7 @@ ValueNode_DynamicList::ListEntry::find(const Time& begin,const Time& end,std::ve
 		ret++;
 	}
 	catch(...) { }
-	
+
 	try
 	{
 		ActivepointList::iterator iter;
@@ -343,7 +343,7 @@ ValueNode_DynamicList::ListEntry::find(const Time& begin,const Time& end,std::ve
 		}
 	}
 	catch(...) { }
-	
+
 	return ret;
 }
 
@@ -352,10 +352,10 @@ ValueNode_DynamicList::ListEntry::amount_at_time(const Time &t,bool *rising)cons
 {
 	typedef synfig::ValueNode_DynamicList::ListEntry::Activepoint Activepoint;
 	typedef synfig::ValueNode_DynamicList::ListEntry::ActivepointList ActivepointList;
-	
+
 	if(timing_info.empty())
 		return 1.0f;
-		
+
 	try
 	{
 		ActivepointList::const_iterator iter;
@@ -369,13 +369,13 @@ ValueNode_DynamicList::ListEntry::amount_at_time(const Time &t,bool *rising)cons
 
 	try	{ prev_iter=find_prev(t); }
 	catch(...) { return find_next(t)->state?1.0f:0.0f; }
-	
+
 	try	{ next_iter=find_next(t); }
 	catch(...) { return prev_iter->state?1.0f:0.0f; }
-	
+
 	if(next_iter->state==prev_iter->state)
 		return next_iter->state?1.0f:0.0f;
-	
+
 	if(rising)*rising=next_iter->state;
 
 	if(next_iter->state==true)
@@ -388,10 +388,10 @@ Activepoint
 ValueNode_DynamicList::ListEntry::new_activepoint_at_time(const Time& time)const
 {
 	Activepoint activepoint;
-	
+
 	activepoint.set_state(status_at_time(time));
 	activepoint.set_priority(0);
-	
+
 	return activepoint;
 }
 
@@ -400,7 +400,7 @@ ValueNode_DynamicList::ListEntry::status_at_time(const Time &t)const
 {
 	typedef synfig::ValueNode_DynamicList::ListEntry::Activepoint Activepoint;
 	typedef synfig::ValueNode_DynamicList::ListEntry::ActivepointList ActivepointList;
-	
+
 	ActivepointList::const_iterator entry_iter;
 	ActivepointList::const_iterator prev_iter;
 	bool state(true);
@@ -424,16 +424,16 @@ ValueNode_DynamicList::ListEntry::status_at_time(const Time &t)const
 				}
 				if(entry_iter->time>t)
 					break;
-				
+
 			}
 			prev_iter=entry_iter;
 			prev_iter--;
-			
+
 			// ie:
 			//
 			//		|-------|---t---|-------|
 			//	   prev_iter^		^entry_iter
-			
+
 			if(entry_iter==timing_info.end())
 			{
 				state=prev_iter->state;
@@ -455,8 +455,8 @@ ValueNode_DynamicList::ListEntry::status_at_time(const Time &t)const
 			}
 			else
 			{
-				state=prev_iter->state;				
-			}				
+				state=prev_iter->state;
+			}
 		}
 	}
 	return state;
@@ -470,7 +470,7 @@ ValueNode_DynamicList::add(const ValueNode::Handle &value_node, int index)
 {
 	ListEntry list_entry(value_node);
 	list_entry.timing_info.size();
-	
+
 	if(index<0 || index>=(int)list.size())
 	{
 		list.push_back(list_entry);
@@ -512,11 +512,11 @@ void
 ValueNode_DynamicList::erase(const ValueNode::Handle &value_node_)
 {
 	ValueNode::Handle value_node(value_node_);
-	
+
 	assert(value_node);
 	if(!value_node)
 		throw String("ValueNode_DynamicList::erase(): Passed bad value node");
-	
+
 	std::vector<ListEntry>::iterator iter;
 	for(iter=list.begin();iter!=list.end();++iter)
 		if(iter->value_node==value_node)
@@ -565,9 +565,9 @@ ValueNode_DynamicList::create_from(const ValueBase &value)
 
 	if(value_list.empty())
 		return 0;
-	
+
 	ValueNode_DynamicList* value_node(new ValueNode_DynamicList(value_list.front().get_type()));
-	
+
 	for(iter=value_list.begin();iter!=value_list.end();++iter)
 	{
 		ValueNode::Handle item(ValueNode_Const::create(*iter));
@@ -588,7 +588,7 @@ ValueNode_DynamicList::operator()(Time t)const
 	for(iter=list.begin();iter!=list.end();++iter)
 	{
 		bool state(iter->status_at_time(t));
-		
+
 		if(state)
 		{
 			if(iter->value_node->get_type()==container_type)
@@ -599,7 +599,7 @@ ValueNode_DynamicList::operator()(Time t)const
 			}
 		}
 	}
-	
+
 	if(list.empty())
 		synfig::warning(string("ValueNode_DynamicList::operator()():")+_("No entries in list"));
 	else
@@ -641,7 +641,7 @@ ValueNode_DynamicList::link_local_name(int i)const
 {
 	assert(i>=0 && (unsigned)i<list.size());
 	return etl::strprintf(_("Item %03d"),i+1);
-}	
+}
 
 ValueNode*
 ValueNode_DynamicList::clone(const GUID& deriv_guid)const
@@ -658,7 +658,7 @@ ValueNode_DynamicList::clone(const GUID& deriv_guid)const
 		if(iter->value_node->is_exported())
 			ret->add(*iter);
 		else
-		{		
+		{
 			ListEntry list_entry(*iter);
 			//list_entry.value_node=find_value_node(iter->value_node->get_guid()^deriv_guid).get();
 			//if(!list_entry.value_node)
@@ -718,7 +718,7 @@ int
 ValueNode_DynamicList::find_next_valid_entry(int orig_item, Time t)const
 {
 	int curr_item;
-	
+
 	for(curr_item=orig_item+1;curr_item!=orig_item;curr_item++)
 	{
 		if(curr_item==(int)list.size())
@@ -736,7 +736,7 @@ int
 ValueNode_DynamicList::find_prev_valid_entry(int orig_item, Time t)const
 {
 	int curr_item;
-	
+
 	for(curr_item=orig_item-1;curr_item!=orig_item;curr_item--)
 	{
 		if(curr_item==-1)
@@ -754,10 +754,10 @@ const synfig::Node::time_set	& ValueNode_DynamicList::ListEntry::get_times() con
 {
 	synfig::ActivepointList::const_iterator 	j = timing_info.begin(),
 											end = timing_info.end();
-		
+
 	//must remerge with all the other values because we don't know if we've changed...
 	times = value_node->get_times();
-	
+
 	for(; j != end; ++j)
 	{
 		TimePoint t;
@@ -766,7 +766,7 @@ const synfig::Node::time_set	& ValueNode_DynamicList::ListEntry::get_times() con
 
 		times.insert(t);
 	}
-	
+
 	return times;
 }
 
@@ -774,7 +774,7 @@ void ValueNode_DynamicList::get_times_vfunc(Node::time_set &set) const
 {
 	//add in the active points
 	int size = list.size();
-	
+
 	//rebuild all the info...
 	for(int i = 0; i < size; ++i)
 	{
@@ -801,14 +801,14 @@ ValueNode_DynamicList::ListEntry::findresult ValueNode_DynamicList::ListEntry::f
 {
 	findresult f;
 	f.second = false;
-	
+
 	f.first = std::find(timing_info.begin(),timing_info.end(),x);
-	
+
 	if(f.first != timing_info.end())
 	{
 		f.second = true;
 	}
-	
+
 	return f;
 }
 
@@ -816,14 +816,14 @@ ValueNode_DynamicList::ListEntry::const_findresult ValueNode_DynamicList::ListEn
 {
 	const_findresult f;
 	f.second = false;
-	
+
 	f.first = std::find(timing_info.begin(),timing_info.end(),x);
-	
+
 	if(f.first != timing_info.end())
 	{
 		f.second = true;
 	}
-	
+
 	return f;
 }
 
@@ -831,14 +831,14 @@ ValueNode_DynamicList::ListEntry::findresult ValueNode_DynamicList::ListEntry::f
 {
 	findresult f;
 	f.second = false;
-	
+
 	f.first = std::find_if(timing_info.begin(),timing_info.end(),timecmp(x));
-	
+
 	if(f.first != timing_info.end())
 	{
 		f.second = true;
 	}
-	
+
 	return f;
 }
 
@@ -846,14 +846,14 @@ ValueNode_DynamicList::ListEntry::const_findresult ValueNode_DynamicList::ListEn
 {
 	const_findresult f;
 	f.second = false;
-	
+
 	f.first = std::find_if(timing_info.begin(),timing_info.end(),timecmp(x));
-	
+
 	if(f.first != timing_info.end())
 	{
 		f.second = true;
 	}
-	
+
 	return f;
 }
 
@@ -869,7 +869,7 @@ ValueNode_DynamicList::insert_time(const Time& location, const Time& delta)
 		try
 		{
 			ListEntry& item(*iter);
-			
+
 			ActivepointList::iterator iter(item.find_next(location));
 			for(;iter!=item.timing_info.end();++iter)
 			{

@@ -80,7 +80,7 @@ Star::sync()
 {
 	Angle dist_between_points(Angle::rot(1)/float(points));
 	std::vector<Point> vector_list;
-	
+
 	int i;
 	for(i=0;i<points;i++)
 	{
@@ -143,7 +143,7 @@ Star::get_param(const String& param)const
 	EXPORT_VERSION();
 
 	if(param=="vector_list")
-		return ValueBase();	
+		return ValueBase();
 
 	return Layer_Polygon::get_param(param);
 }

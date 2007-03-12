@@ -61,7 +61,7 @@ XORPattern::XORPattern():
 	size(0.25,0.25)
 {
 }
-	
+
 bool
 XORPattern::set_param(const String & param, const ValueBase &value)
 {
@@ -75,11 +75,11 @@ XORPattern::get_param(const String & param)const
 {
 	EXPORT(pos);
 	EXPORT(size);
-	
+
 	EXPORT_NAME();
 	EXPORT_VERSION();
-		
-	return ValueBase();	
+
+	return ValueBase();
 }
 
 Color
@@ -92,12 +92,12 @@ XORPattern::get_color(Context context, const Point &point)const
 
 	return Color((Color::value_type)rindex/(Color::value_type)255.0,(Color::value_type)gindex/(Color::value_type)255.0,(Color::value_type)bindex/(Color::value_type)255.0,1.0);
 }
-	
+
 Layer::Vocab
 XORPattern::get_param_vocab()const
 {
 	Layer::Vocab ret;
-	
+
 	ret.push_back(ParamDesc("pos")
 		.set_local_name(_("Offset"))
 	);
@@ -105,6 +105,6 @@ XORPattern::get_param_vocab()const
 		.set_local_name(_("Size"))
 		.set_origin("pos")
 	);
-	
+
 	return ret;
 }

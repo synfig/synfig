@@ -88,7 +88,7 @@ Importer::open(const String &filename)
 		synfig::error(_("Importer::open(): Cannot open empty filename"));
 		return 0;
 	}
-	
+
 	// If we already have an importer open under that filename,
 	// then use it instead.
 	if(__open_importers->count(filename))
@@ -96,23 +96,23 @@ Importer::open(const String &filename)
 		//synfig::info("Found importer already open, using it...");
 		return (*__open_importers)[filename];
 	}
-	
+
 	if(find(filename.begin(),filename.end(),'.')==filename.end())
 	{
 		synfig::error(_("Importer::open(): Couldn't find extension"));
 		return 0;
 	}
-		
+
 	String ext=string(filename.begin()+filename.find_last_of('.')+1,filename.end());
 	std::transform(ext.begin(),ext.end(),ext.begin(),&::tolower);
-	
-	
+
+
 	if(!Importer::book().count(ext))
 	{
 		synfig::error(_("Importer::open(): Unknown file type -- ")+ext);
 		return 0;
 	}
-	
+
 	try {
 		Importer::Handle importer;
 		importer=Importer::book()[ext](filename.c_str());

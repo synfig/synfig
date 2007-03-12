@@ -59,9 +59,9 @@ public:
 	virtual ~target2surface();
 
 	virtual bool set_rend_desc(synfig::RendDesc *newdesc);
-	
+
 	virtual bool start_frame(synfig::ProgressCallback *cb);
-	
+
 	virtual void end_frame();
 
 	virtual Color * start_scanline(int scanline);
@@ -85,23 +85,23 @@ target2surface::set_rend_desc(synfig::RendDesc *newdesc)
 	desc=*newdesc;
 	return synfig::Target_Scanline::set_rend_desc(newdesc);
 }
-	
+
 bool
-target2surface::start_frame(synfig::ProgressCallback *cb) 
-{ 
+target2surface::start_frame(synfig::ProgressCallback *cb)
+{
 	if(surface->get_w() != desc.get_w() || surface->get_h() != desc.get_h())
 	{
 		surface->set_wh(desc.get_w(),desc.get_h());
 	}
-	return true; 
+	return true;
 }
-	
+
 void
 target2surface::end_frame()
 {
 	return;
 }
-	
+
 Color *
 target2surface::start_scanline(int scanline)
 {
@@ -148,26 +148,26 @@ synfig::Surface::blit_to(alpha_pen& pen, int x, int y, int w, int h)
 		if(x<0)
 		{
 			w+=x;	//decrease
-			x=0;		
+			x=0;
 		}
-		
+
 		if(y<0)
 		{
 			h+=y;	//decrease
-			y=0;		
+			y=0;
 		}
-				
+
 		//clip width against dest width
 		w = min((long)w,(long)(pen.end_x()-pen.x()));
 		h = min((long)h,(long)(pen.end_y()-pen.y()));
-		
+
 		//clip width against src width
 		w = min(w,get_w()-x);
 		h = min(h,get_h()-y);
 
 		if(w<=0 || h<=0)
 			return;
-				
+
 		for(int i=0;i<h;i++)
 		{
 			char* src(static_cast<char*>(static_cast<void*>(operator[](y)+x))+i*get_w()*sizeof(Color));
@@ -176,8 +176,8 @@ synfig::Surface::blit_to(alpha_pen& pen, int x, int y, int w, int h)
 		}
 		return;
 	}
-	
-#ifdef HAS_VIMAGE	
+
+#ifdef HAS_VIMAGE
 	if(	pen.get_blend_method()==Color::BLEND_COMPOSITE && fabs(alpha-1.0f)<epsilon )
 	{
 		if(x>=get_w() || y>=get_w())
@@ -188,23 +188,23 @@ synfig::Surface::blit_to(alpha_pen& pen, int x, int y, int w, int h)
 		{
 			//u-=x;	//increase
 			w+=x;	//decrease
-			x=0;		
+			x=0;
 		}
-		
+
 		if(y<0)
 		{
 			//v-=y;	//increase
 			h+=y;	//decrease
-			y=0;		
+			y=0;
 		}
-				
+
 		//clip width against dest width
 		w = min(w,pen.end_x()-pen.x());
 		h = min(h,pen.end_y()-pen.y());
-		
+
 		//clip width against src width
-		w = min(w,get_w()-x);		
-		h = min(h,get_h()-y);	
+		w = min(w,get_w()-x);
+		h = min(h,get_h()-y);
 
 		if(w<=0 || h<=0)
 			return;
@@ -213,7 +213,7 @@ synfig::Surface::blit_to(alpha_pen& pen, int x, int y, int w, int h)
 
 		vImage_Buffer top,bottom;
 		vImage_Buffer& dest(bottom);
-		
+
 		top.data=static_cast<void*>(operator[](y)+x);
 		top.height=h;
 		top.width=w;
@@ -225,12 +225,12 @@ synfig::Surface::blit_to(alpha_pen& pen, int x, int y, int w, int h)
 		bottom.width=w;
 		//bottom.rowBytes=pen.get_width()*sizeof(Color); //! \fixme this should get the pitch!!
 		bottom.rowBytes=pen.get_pitch(); //! \fixme this should get the pitch!!
-				
+
 		vImage_Error ret;
 		ret=vImageAlphaBlend_ARGBFFFF(&top,&bottom,&dest,kvImageNoFlags);
-		
+
 		assert(ret!=kvImageNoError);
-		
+
 		return;
 	}
 #endif

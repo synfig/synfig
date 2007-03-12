@@ -54,7 +54,7 @@ private:
 		bitstream(synfig::SmartFILE file):file(file),pool(0),curr_bit(0),curr_pos(0) {}
 		unsigned char buffer[256];
 		int curr_pos;
-		
+
 		// Pushes a single bit onto the bit
 		void push_bit(bool bit)
 		{
@@ -64,7 +64,7 @@ private:
 			if(curr_bit==8)
 				empty();
 		}
-		
+
 		// Emptys out the current pool into
 		// the buffer. Calls 'dump()' if the
 		// buffer is full.
@@ -75,9 +75,9 @@ private:
 			pool=0;
 			if(curr_pos==255)dump();
 		}
-		
+
 		// If there is anything in the
-		// buffer or in the pool, it 
+		// buffer or in the pool, it
 		// dumps it to the filestream.
 		// Buffer and pool are cleared.
 		void dump()
@@ -91,7 +91,7 @@ private:
 				curr_pos=0;
 			}
 		}
-		
+
 		// Pushes a symbol of the given size
 		// onto the bitstream.
 		void push_value(int value, int size)
@@ -109,24 +109,24 @@ private:
 		int code; // lzwcode
 		struct lzwcode* kids; // children of this node
 		struct lzwcode* next; // siblings of this node
-		
+
 		lzwcode():value(0),code(0),kids(0),next(0) { }
-		
+
 		lzwcode *FindCode(int value)
 		{
 			lzwcode *node=this;
-			
+
 			// check the children (kids) of the node for the value
 			for (node = node->kids; node != 0; node = node->next)
 				if (node->value == value)
 					return(node);
 			return(0);
 		}
-	
+
 		void AddNode(unsigned short code, unsigned short value)
 		{
 			lzwcode *n = new lzwcode;
-		
+
 			// add a new child to node; the child will have code and value
 			n->value = value;
 			n->code = code;
@@ -134,19 +134,19 @@ private:
 			n->next = this->kids;
 			this->kids = n;
 		}
-		
+
 		static lzwcode * NewTable(int values)
 		{
 			int i;
 			lzwcode * table = new lzwcode;
-		
+
 			table->kids = 0;
 			for (i = 0; i < values; i++)
 				table->AddNode( i, i);
-		
+
 			return(table);
 		}
-		
+
 		// Destructor just deletes any
 		// children and sibblings.
 		~lzwcode()
@@ -162,13 +162,13 @@ private:
 	bitstream bs;
 	synfig::String filename;
 	synfig::SmartFILE file;
-	int 
+	int
 		i,			// General-purpose index
 		codesize,	// Current code size
 		rootsize,	// Size of pixel bits (will be recalculted)
 		nextcode;	// Next code to use
 	lzwcode *table,*next,*node;
-	
+
 	synfig::Surface curr_surface;
 	etl::surface<unsigned char> curr_frame;
 	etl::surface<unsigned char> prev_frame;
@@ -185,11 +185,11 @@ private:
 	int iframe_density;
 	int loop_count;
 	bool local_palette;
-	
+
 	synfig::Palette curr_palette;
-	
+
 	void output_curr_palette();
-	
+
 public:
 	gif(const char *filename);
 
@@ -199,7 +199,7 @@ public:
 	virtual void end_frame();
 
 	virtual ~gif();
-	
+
 	virtual synfig::Color * start_scanline(int scanline);
 	virtual bool end_scanline(void);
 

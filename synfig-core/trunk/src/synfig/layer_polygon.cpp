@@ -93,7 +93,7 @@ Layer_Polygon::sync()
 
 	// Build edge table
 	move_to(vector_list[0][0],vector_list[0][1]);
-	
+
 	for(i = 1;i < pointcount; i++)
 	{
 		if(isnan(vector_list[i][0]) || isnan(vector_list[i][1]))
@@ -118,7 +118,7 @@ Layer_Polygon::add_polygon(const vector<Point> &point_list)
 
 	// Build edge table
 	move_to(point_list[0][0],point_list[0][1]);
-	
+
 	for(i = 1;i < pointcount; i++)
 	{
 		if(isnan(point_list[i][0]) || isnan(point_list[i][1]))
@@ -135,7 +135,7 @@ Layer_Polygon::clear()
 	Layer_Shape::clear();
 	vector_list.clear();
 }
-	
+
 bool
 Layer_Polygon::set_param(const String & param, const ValueBase &value)
 {
@@ -147,7 +147,7 @@ Layer_Polygon::set_param(const String & param, const ValueBase &value)
 		sync();
 		return true;
 	}
-	
+
 	return Layer_Shape::set_param(param,value);
 }
 
@@ -158,19 +158,19 @@ Layer_Polygon::get_param(const String &param)const
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
-		
-	return Layer_Shape::get_param(param);	
+
+	return Layer_Shape::get_param(param);
 }
 
 Layer::Vocab
 Layer_Polygon::get_param_vocab()const
 {
 	Layer::Vocab ret(Layer_Shape::get_param_vocab());
-	
+
 	ret.push_back(ParamDesc("vector_list")
 		.set_local_name(_("Vector List"))
 		.set_origin("offset")
 	);
-	
+
 	return ret;
 }

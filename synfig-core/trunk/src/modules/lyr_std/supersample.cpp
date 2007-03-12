@@ -72,7 +72,7 @@ SuperSample::set_param(const String & param, const ValueBase &value)
 	IMPORT(height);
 	IMPORT(scanline);
 	IMPORT(alpha_aware);
-	
+
 	return false;
 }
 
@@ -83,7 +83,7 @@ SuperSample::get_param(const String& param)const
 	EXPORT(height);
     EXPORT(scanline);
     EXPORT(alpha_aware);
-	
+
 	EXPORT_NAME();
 	EXPORT_VERSION();
 
@@ -96,7 +96,7 @@ SuperSample::accelerated_render(Context context,Surface *surface,int quality, co
 	// don't bother supersampling if our quality is too low.
 	if(quality>=10)
 		return context.accelerated_render(surface,quality,renddesc,cb);
-	
+
 	RendDesc desc(renddesc);
 
 	SuperCallback subcb(cb,1,9000,10000);
@@ -197,9 +197,9 @@ SuperSample::accelerated_render(Context context,Surface *surface,int quality, co
 			}
 		}
 	}
-	
+
 	if(cb && !cb->amount_complete(10000,10000)) return false;
-	
+
 	return true;
 }
 
@@ -223,7 +223,7 @@ SuperSample::get_param_vocab(void)const
 	ret.push_back(ParamDesc("alpha_aware")
 		.set_local_name(_("Be Alpha Safe"))
 	);
-	
+
 	return ret;
 }
 

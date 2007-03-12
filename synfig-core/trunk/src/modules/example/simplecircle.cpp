@@ -70,14 +70,14 @@ SimpleCircle::SimpleCircle():
 	radius(0.5)
 {
 }
-	
+
 bool
 SimpleCircle::set_param(const String & param, const ValueBase &value)
 {
 	IMPORT(color);
 	IMPORT(center);
 	IMPORT(radius);
-	
+
 	return Layer_Composite::set_param(param,value);
 }
 
@@ -90,15 +90,15 @@ SimpleCircle::get_param(const String &param)const
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
-		
-	return Layer_Composite::get_param(param);	
+
+	return Layer_Composite::get_param(param);
 }
 
 Layer::Vocab
 SimpleCircle::get_param_vocab()const
 {
 	Layer::Vocab ret(Layer_Composite::get_param_vocab());
-	
+
 	ret.push_back(ParamDesc("color")
 		.set_local_name(_("Color"))
 	);
@@ -106,13 +106,13 @@ SimpleCircle::get_param_vocab()const
 	ret.push_back(ParamDesc("center")
 		.set_local_name(_("Center"))
 	);
-	
+
 	ret.push_back(ParamDesc("radius")
 		.set_local_name(_("Radius"))
 		.set_description(_("This is the radius of the circle"))
 		.set_origin("center")
 	);
-	
+
 	return ret;
 }
 
@@ -149,7 +149,7 @@ SimpleCircle::accelerated_render(Context context,Surface *surface,int quality, c
 		// Mark our progress as starting
 		if(cb && !cb->amount_complete(0,1000))
 			return false;
-		
+
 		surface->set_wh(renddesc.get_w(),renddesc.get_h());
 		surface->fill(color);
 

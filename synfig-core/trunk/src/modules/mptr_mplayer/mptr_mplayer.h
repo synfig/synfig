@@ -41,7 +41,7 @@ class mplayer_mptr : public synfig::Importer
 public:
 private:
 	String filename;
-	
+
 public:
 	mplayer_mptr(const char *filename);
 	~mplayer_mptr();

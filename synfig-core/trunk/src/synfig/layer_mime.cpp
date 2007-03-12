@@ -142,7 +142,7 @@ Layer_Mime::get_param_vocab()const
 		if(iter->first!="Version")
 			ret.push_back(ParamDesc(iter->first));
 	}
-	
+
 	// ... and return it
 	return ret;
 }

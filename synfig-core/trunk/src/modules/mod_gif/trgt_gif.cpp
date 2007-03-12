@@ -57,14 +57,14 @@ gif::gif(const char *filename_):
 	filename(filename_),
 	file( (filename=="-")?stdout:fopen(filename_,"wb") ),
 	imagecount(0),
-	
+
 	lossy(true),
-	multi_image(false),	
+	multi_image(false),
 	dithering(true),
 	color_bits(8),
 	iframe_density(30),
 	loop_count(0x7fff),
-	local_palette(true)	
+	local_palette(true)
 {
 }
 
@@ -97,13 +97,13 @@ bool
 gif::init()
 {
 	int w=desc.get_w(),h=desc.get_h();
-		
+
 	if(!file)
 	{
 		synfig::error(strprintf(_("Unable to open \"%s\" for write access!"),filename.c_str()));
 		return false;
 	}
-	
+
 	rootsize=color_bits;	// Size of pixel bits
 
 	curr_frame.set_wh(w,h);
@@ -112,7 +112,7 @@ gif::init()
 	curr_frame.clear();
 	prev_frame.clear();
 	curr_surface.clear();
-	
+
 	if(get_quality()>5)
 		lossy=true;
 	else
@@ -128,34 +128,34 @@ gif::init()
 		fputc(0xF0+(rootsize-1),file.get());	// flags
 	else
 		fputc((0xF0+(rootsize-1))&~(1<<7),file.get());	// flags
-		
+
 	fputc(0,file.get());		// backgound color
 	fputc(0,file.get());		// Pixel Aspect Ratio
-	
+
 	DEBUGPOINT();
-	
+
 	if(!local_palette)
 	{
 	DEBUGPOINT();
 		curr_palette=Palette::grayscale(256/(1<<(8-rootsize))-1);
 		output_curr_palette();
 	}
-	
+
 	if(loop_count && multi_image)
 	{
 	DEBUGPOINT();
 		fputc(33,file.get()); // 33 (hex 0x21) GIF Extension code
 		fputc(255,file.get()); // 255 (hex 0xFF) Application Extension Label
-		fputc(11,file.get()); // 11 (hex (0x0B) Length of Application Block 
+		fputc(11,file.get()); // 11 (hex (0x0B) Length of Application Block
 		fprintf(file.get(),"NETSCAPE2.0");
-		fputc(3,file.get()); // 3 (hex 0x03) Length of Data Sub-Block 
+		fputc(3,file.get()); // 3 (hex 0x03) Length of Data Sub-Block
 		fputc(1,file.get()); // 1 (hex 0x01)
 		fputc(loop_count&0x000000ff,file.get());
 		fputc((loop_count&0x0000ff00)>>8,file.get());
-		fputc(0,file.get()); // 0 (hex 0x00) a Data Sub-block Terminator. 
+		fputc(0,file.get()); // 0 (hex 0x00) a Data Sub-block Terminator.
 	}
 	DEBUGPOINT();
-	
+
 	return true;
 }
 
@@ -190,17 +190,17 @@ gif::start_frame(synfig::ProgressCallback *callback)
 //	int
 //		w=desc.get_w(),
 //		h=desc.get_h();
-	
+
 	if(!file)
 	{
 		if(callback)callback->error(string("BUG:")+_("Description not set!"));
 		return false;
 	}
-	
+
 	if(callback)callback->task(filename+strprintf(" %d",imagecount));
 
 
-	
+
 	return true;
 }
 
@@ -211,11 +211,11 @@ gif::end_frame()
 	unsigned int value;
 	int
 		delaytime=round_to_int(100.0/desc.get_frame_rate());
-	
+
 	bool build_off_previous(multi_image);
 
 	Palette prev_palette(curr_palette);
-	
+
 	// Fill in the background color
 	if(!get_remove_alpha())
 	{
@@ -234,25 +234,25 @@ gif::end_frame()
 			pen.dec_x(x);
 		}
 	}
-	
+
 	if(local_palette)
 	{
 		curr_palette=Palette(curr_surface,256/(1<<(8-rootsize))-build_off_previous-1);
 		synfig::info("curr_palette.size()=%d",curr_palette.size());
 	}
-	
+
 	int transparent_index(curr_palette.find_closest(Color(1,0,1,0))-curr_palette.begin());
 	bool has_transparency(curr_palette[transparent_index].color.get_a()<=0.00001);
-	
+
 	if(has_transparency)
 		build_off_previous=false;
-	
+
 	if(build_off_previous)
 	{
 		transparent_index=0;
 		has_transparency=true;
 	}
-		
+
 #define DISPOSE_UNDEFINED			(0)
 #define DISPOSE_NONE				(1<<2)
 #define DISPOSE_RESTORE_BGCOLOR		(2<<2)
@@ -264,7 +264,7 @@ gif::end_frame()
 		gec_flags|=DISPOSE_RESTORE_PREVIOUS;
 	if(has_transparency)
 		gec_flags|=1;
-	
+
 	// output the Graphic Control Extension
 	fputc(0x21,file.get()); // Extension introducer
 	fputc(0xF9,file.get()); // Graphic Control Label
@@ -274,7 +274,7 @@ gif::end_frame()
 	fputc((delaytime&0x0000ff00)>>8,file.get()); // Delay Time (LSB)
 	fputc(transparent_index,file.get()); // Transparent Color Index
 	fputc(0,file.get()); // Block Terminator
-	
+
 	// output the image header
 	fputc(',',file.get());
 	fputc(0,file.get());	// image left
@@ -290,17 +290,17 @@ gif::end_frame()
 	else
 		fputc(0x00+ rootsize-1,file.get());	// flags
 
-	
+
 	if(local_palette)
 	{
 		Palette out(curr_palette);
-		
+
 		if(build_off_previous)
 			curr_palette.insert(curr_palette.begin(),Color(1,0,1,0));
 		output_curr_palette();
 		curr_palette=out;
 	}
-	
+
 	bs=bitstream(file);
 
 	// Prepare ourselves for LZW compression
@@ -308,7 +308,7 @@ gif::end_frame()
 	nextcode=(1<<rootsize)+2;
 	table=lzwcode::NewTable((1<<rootsize));
 	node=table;
-	
+
 	// Output the rootsize
 	fputc(rootsize,file.get());	// rootsize;
 
@@ -318,13 +318,13 @@ gif::end_frame()
 	for(int cur_scanline=0;cur_scanline<desc.get_h();cur_scanline++)
 	{
 		//convert_color_format(curr_frame[cur_scanline], curr_surface[cur_scanline], desc.get_w(), PF_GRAY, gamma());
-	
+
 		// Now we compress it!
 		for(i=0;i<w;i++)
 		{
 			Color color(curr_surface[cur_scanline][i].clamped());
 			Palette::iterator iter(curr_palette.find_closest(color));
-			
+
 			if(dithering)
 			{
 				Color error(color-iter->color);
@@ -339,15 +339,15 @@ gif::end_frame()
 				if(curr_surface.get_w()>i+1)
 					curr_surface[cur_scanline][i+1]    += error * ((float)7/(float)16);
 			}
-			
+
 			curr_frame[cur_scanline][i]=iter-curr_palette.begin();
-			
+
 			value=curr_frame[cur_scanline][i];
 			if(build_off_previous)
 				value++;
 			if(value>(unsigned)(1<<rootsize)-1)
 				value=(1<<rootsize)-1;
-			
+
 			// If the pixel is the same as the one that
 			// is already there, then we should make it
 			// transparent
@@ -355,7 +355,7 @@ gif::end_frame()
 			{
 				if(lossy)
 				{
-					
+
 					// Lossy
 					if(
 						abs( ( iter->color-prev_palette[prev_frame[cur_scanline][i]-1].color ).get_y() ) > (1.0/16.0) ||
@@ -372,7 +372,7 @@ gif::end_frame()
 				else
 				{
 					// lossless version
-					if(value!=prev_frame[cur_scanline][i]) 
+					if(value!=prev_frame[cur_scanline][i])
 						prev_frame[cur_scanline][i]=value;
 					else
 						value=0;
@@ -389,25 +389,25 @@ gif::end_frame()
 				node->AddNode(nextcode, value);
 				bs.push_value(node->code, codesize);
 				node = table->FindCode(value);
-				
+
 				// Check to see if we need to increase the codesize
 				if (nextcode == ( 1 << codesize))
 					codesize += 1;
-					
+
 				nextcode += 1;
-		
+
 				// check to see if we have filled up the table
 				if (nextcode == 4096)
 				{
 					// output the clear code: make sure to use the current
 					// codesize
 					bs.push_value((unsigned) 1 << rootsize, codesize);
-		
+
 					delete table;
 					table = lzwcode::NewTable((1<<rootsize));
 					codesize = rootsize + 1;
 					nextcode = (1 << rootsize) + 2;
-					
+
 					// since we have a new table, need the correct prefix
 					node = table->FindCode(value);
 				}
@@ -421,15 +421,15 @@ gif::end_frame()
 
 	// Push the last code onto the bitstream
 	bs.push_value(node->code,codesize);
-	
+
 	// Push a end-of-stream code onto the bitstream
 	bs.push_value((1<<rootsize)+1,codesize);
-	
+
 	// Make sure everything is dumped out
 	bs.dump();
-	
+
 	delete table;
-	
+
 	fputc(0,file.get());		// Block terminator
 
 	fflush(file.get());

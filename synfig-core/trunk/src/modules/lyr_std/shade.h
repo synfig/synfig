@@ -48,7 +48,7 @@ private:
 
 public:
 	Layer_Shade();
-	
+
 	virtual bool set_param(const String & param, const synfig::ValueBase &value);
 
 	virtual ValueBase get_param(const String & param)const;

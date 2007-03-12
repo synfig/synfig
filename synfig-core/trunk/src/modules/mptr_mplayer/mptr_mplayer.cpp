@@ -95,12 +95,12 @@ mplayer_mptr::GetFrame(Time time, synfig::Surface &surface, synfig::ProgressCall
 		cerr<<"unable to open /tmp/tmp.synfig.size"<<endl;
 		return false;
 	}
-	
+
 	int w=4,h=4,x,y;
 	char bleh[500];
-	
+
 	fscanf(sizefile,"%s %s %dx%d",bleh,bleh,&w,&h);
-	
+
 	cerr<<strprintf("w:%d, h:%d, time:%f",w,h,time)<<endl;
 	fseek(rgbfile,2047+3*8,SEEK_CUR);
 	surface.set_wh(w,h);
@@ -111,7 +111,7 @@ mplayer_mptr::GetFrame(Time time, synfig::Surface &surface, synfig::ProgressCall
 				b=(unsigned char)fgetc(rgbfile),
 				g=(unsigned char)fgetc(rgbfile),
 				r=(unsigned char)fgetc(rgbfile);
-				
+
 			surface[h-y-1][x]=Color(
 				(float)r/255.0,
 				(float)g/255.0,
@@ -119,9 +119,9 @@ mplayer_mptr::GetFrame(Time time, synfig::Surface &surface, synfig::ProgressCall
 				1.0
 			);
 		}
-	
+
 	fclose(rgbfile);
 	fclose(sizefile);
-	
+
 	return true;
 }

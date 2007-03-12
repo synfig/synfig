@@ -53,7 +53,7 @@ public:
 	virtual void end_frame();
 
 	virtual ~bsd_mpeg1();
-	
+
 
 	virtual unsigned char * start_scanline(int scanline);
 	virtual bool end_scanline(void);

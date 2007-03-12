@@ -40,16 +40,16 @@ class Random
 {
 	int pool_[POOL_SIZE];
 	int seed_;
-	
+
 	int x_mask, y_mask, t_mask;
-	
+
 public:
-	
+
 	void set_seed(int x);
 	int get_seed()const { return seed_; }
-	
-	float operator()(int subseed,int x,int y=0, int t=0)const;	
-	float operator()(int smooth,int subseed,float x,float y=0, float t=0)const;	
+
+	float operator()(int subseed,int x,int y=0, int t=0)const;
+	float operator()(int smooth,int subseed,float x,float y=0, float t=0)const;
 };
 
 /* === E N D =============================================================== */

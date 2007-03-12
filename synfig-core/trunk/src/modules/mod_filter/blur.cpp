@@ -97,18 +97,18 @@ Blur_Layer::get_param(const String &param)const
 {
 	EXPORT(size);
 	EXPORT(type);
-	
+
 	EXPORT_NAME();
 	EXPORT_VERSION();
-		
-	return Layer_Composite::get_param(param);	
+
+	return Layer_Composite::get_param(param);
 }
 
 Color
 Blur_Layer::get_color(Context context, const Point &pos)const
 {
 	Point blurpos = Blur(size,type)(pos);
-	
+
 	if(get_amount()==1.0 && get_blend_method()==Color::BLEND_STRAIGHT)
 		return context.get_color(blurpos);
 
@@ -124,41 +124,41 @@ Blur_Layer::accelerated_render(Context context,Surface *surface,int quality, con
 	// int x,y;
 	SuperCallback stageone(cb,0,5000,10000);
 	SuperCallback stagetwo(cb,5000,10000,10000);
-	
+
 	const int	w = renddesc.get_w(),
 				h = renddesc.get_h();
 	const Real	pw = renddesc.get_pw(),
 				ph = renddesc.get_ph();
-	
+
 	RendDesc	workdesc(renddesc);
 	Surface		worksurface,blurred;
-		
+
 	//callbacks depend on how long the blur takes
 	if(size[0] || size[1])
 	{
 		if(type == Blur::DISC)
 		{
 			stageone = SuperCallback(cb,0,5000,10000);
-			stagetwo = SuperCallback(cb,5000,10000,10000);	
+			stagetwo = SuperCallback(cb,5000,10000,10000);
 		}
 		else
 		{
 			stageone = SuperCallback(cb,0,9000,10000);
-			stagetwo = SuperCallback(cb,9000,10000,10000);	
+			stagetwo = SuperCallback(cb,9000,10000,10000);
 		}
 	}
 	else
 	{
 		stageone = SuperCallback(cb,0,9999,10000);
-		stagetwo = SuperCallback(cb,9999,10000,10000);	
+		stagetwo = SuperCallback(cb,9999,10000,10000);
 	}
-	
+
 	//expand the working surface to accommodate the blur
-	
+
 	//the expanded size = 1/2 the size in each direction rounded up
 	int	halfsizex = (int) (abs(size[0]*.5/pw) + 3),
 		halfsizey = (int) (abs(size[1]*.5/ph) + 3);
-		
+
 	//expand by 1/2 size in each direction on either side
 	switch(type)
 	{
@@ -184,7 +184,7 @@ Blur_Layer::accelerated_render(Context context,Surface *surface,int quality, con
 		#define GAUSSIAN_ADJUSTMENT		(0.05)
 			Real	pw = (Real)workdesc.get_w()/(workdesc.get_br()[0]-workdesc.get_tl()[0]);
 			Real 	ph = (Real)workdesc.get_h()/(workdesc.get_br()[1]-workdesc.get_tl()[1]);
-			
+
 			pw=pw*pw;
 			ph=ph*ph;
 
@@ -194,21 +194,21 @@ Blur_Layer::accelerated_render(Context context,Surface *surface,int quality, con
 			halfsizex = (halfsizex + 1)/2;
 			halfsizey = (halfsizey + 1)/2;
 			workdesc.set_subwindow( -halfsizex, -halfsizey, w+2*halfsizex, h+2*halfsizey );
-						
+
 			break;
 		}
 	}
-	
+
 	//render the background onto the expanded surface
 	if(!context.accelerated_render(&worksurface,quality,workdesc,&stageone))
 		return false;
 
 	//blur the image
 	Blur(size,type,&stagetwo)(worksurface,workdesc.get_br()-workdesc.get_tl(),blurred);
-	
+
 	//be sure the surface is of the correct size
 	surface->set_wh(renddesc.get_w(),renddesc.get_h());
-	
+
 	{
 		Surface::pen pen(surface->begin());
 		worksurface.blit_to(pen,halfsizex,halfsizey,renddesc.get_w(),renddesc.get_h());
@@ -224,10 +224,10 @@ Blur_Layer::accelerated_render(Context context,Surface *surface,int quality, con
 		//if(cb)cb->error(strprintf(__FILE__"%d: Accelerated Renderer Failure",__LINE__));
 		return false;
 	}
-		
+
 	return true;
 }
-	
+
 Layer::Vocab
 Blur_Layer::get_param_vocab(void)const
 {
@@ -247,7 +247,7 @@ Blur_Layer::get_param_vocab(void)const
 		.add_enum_value(Blur::GAUSSIAN,"gaussian",_("Gaussian Blur"))
 		.add_enum_value(Blur::DISC,"disc",_("Disc Blur"))
 	);
-	
+
 	return ret;
 }
 
@@ -258,6 +258,6 @@ Blur_Layer::get_full_bounding_rect(Context context)const
 		return context.get_full_bounding_rect();
 
 	Rect bounds(context.get_full_bounding_rect().expand_x(size[0]).expand_y(size[1]));
-	
+
 	return bounds;
 }

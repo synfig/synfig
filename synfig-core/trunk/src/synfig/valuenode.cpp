@@ -106,7 +106,7 @@ ValueNode::subsys_init()
 	ADD_VALUENODE2(ValueNode_DynamicList,"dynamic_list");
 	ADD_VALUENODE(ValueNode_GradientRotate,"gradient_rotate");
 	ADD_VALUENODE(ValueNode_Sine,"sine");
-	
+
 #undef ADD_VALUENODE
 	return true;
 }
@@ -122,8 +122,8 @@ ValueNode::subsys_stop()
 
 		if(global_value_node_map.size()!=value_node_count)
 			synfig::error("value node count mismatch! map.size()!=value_node_count (%d!=%d)",global_value_node_map.size(),value_node_count);
-		
-		GlobalValueNodeMap::iterator iter;		
+
+		GlobalValueNodeMap::iterator iter;
 		for(iter=global_value_node_map.begin();iter!=global_value_node_map.end();++iter)
 		{
 			if(!iter->second->is_exported())
@@ -178,13 +178,13 @@ bool
 LinkableValueNode::set_link(int i,ValueNode::Handle x)
 {
 	ValueNode::Handle previous(get_link(i));
-	
+
 	if(set_link_vfunc(i,x))
 	{
 		if(previous)
 			remove_child(previous.get());
 		add_child(x.get());
-		
+
 		if(!x->is_exported() && get_parent_canvas())
 		{
 			x->set_parent_canvas(get_parent_canvas());
@@ -215,7 +215,7 @@ LinkableValueNode::unlink_all()
 ValueNode::~ValueNode()
 {
 	value_node_count--;
-	
+
 	begin_delete();
 
 	//DEBUGPOINT();
@@ -228,7 +228,7 @@ ValueNode::on_changed()
 		get_parent_canvas()->signal_value_node_changed()(this);
 	else if(get_root_canvas() && get_parent_canvas())
 		get_root_canvas()->signal_value_node_changed()(this);
-	
+
 	Node::on_changed();
 }
 
@@ -237,7 +237,7 @@ ValueNode::replace(etl::handle<ValueNode> x)
 {
 	if(x.get()==this)
 		return 0;
-	
+
 	while(parent_set.size())
 	{
 		(*parent_set.begin())->add_child(x.get());
@@ -318,9 +318,9 @@ ValueNodeList::surefind(const String &id)
 {
 	if(id.empty())
 		throw Exception::IDNotFound("Empty ID");
-	
+
 	ValueNode::Handle value_node;
-	
+
 	try
 	{
 		value_node=find(id);
@@ -375,11 +375,11 @@ ValueNodeList::add(ValueNode::Handle value_node)
 		return false;
 	}
 	catch(Exception::IDNotFound)
-	{	
+	{
 		push_back(value_node);
 		return true;
 	}
-	
+
 	return false;
 }
 
@@ -440,7 +440,7 @@ LinkableValueNode::clone(const GUID& deriv_guid)const
 	int i;
 	LinkableValueNode *ret=create_new();
 	ret->set_guid(get_guid()^deriv_guid);
-	
+
 	for(i=0;i<link_count();i++)
 	{
 		ValueNode::Handle link=get_link_vfunc(i);
@@ -463,10 +463,10 @@ ValueNode::get_relative_id(etl::loose_handle<const Canvas> x)const
 {
 	assert(is_exported());
 	assert(canvas_);
-	
+
 	if(x.get()==canvas_.get())
 		return get_id();
-	
+
 	return canvas_->_get_relative_id(x)+':'+get_id();
 }
 
@@ -485,9 +485,9 @@ ValueNode::set_root_canvas(etl::loose_handle<Canvas> x)
 void LinkableValueNode::get_times_vfunc(Node::time_set &set) const
 {
 	ValueNode::LooseHandle	h;
-	
+
 	int size = link_count();
-		
+
 	//just add it to the set...
 	for(int i=0; i < size; ++i)
 	{

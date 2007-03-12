@@ -39,7 +39,7 @@ struct ValueNode_Subtract : public LinkableValueNode
 {
 	typedef etl::handle<ValueNode_Subtract> Handle;
 	typedef etl::handle<const ValueNode_Subtract> ConstHandle;
-	
+
 protected:
 
 	ValueNode_Subtract();

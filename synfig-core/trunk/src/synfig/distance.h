@@ -44,12 +44,12 @@ class Distance
 {
 public:
 	typedef Real value_type;
-	
+
 	enum System
 	{
 		SYSTEM_UNITS,		//!<
 		SYSTEM_PIXELS,		//!<
-		
+
 		SYSTEM_POINTS,		//!<
 		SYSTEM_INCHES,		//!<
 		SYSTEM_METERS,		//!<
@@ -61,18 +61,18 @@ public:
 
 	class BadSystem { };
 
-private:	
+private:
 	value_type value_;
-		
+
 	System system_;
 
-	
+
 public:
 
 	Distance(){ }
 	Distance(const value_type& value, System system):value_(value),system_(system) { }
 	explicit Distance(const synfig::String& string);
-	
+
 	operator Real()const { return value_; }
 
 	Distance& operator=(const Real& rhs) { value_=rhs; return *this; }
@@ -80,19 +80,19 @@ public:
 	Distance& operator=(const synfig::String& rhs);
 
 	synfig::String get_string(int digits=4)const;
-	
+
 	const System& get_system()const { return system_; }
 
 	const Real& get()const { return value_; }
 
 	Real get(System system, const RendDesc& rend_desc)const;
-	
+
 	void convert(System system, const RendDesc& rend_desc);
-	
+
 	Real meters()const;
 	Real meters(const RendDesc& rend_desc)const;
 	Real units(const RendDesc& rend_desc)const;
-	
+
 	static Real meters_to_system(Real x, System target_system);
 	static System ident_system(const synfig::String& str);
 	static synfig::String system_name(System system);
@@ -105,7 +105,7 @@ public:
 	const Distance& operator-=(const float &rhs) { value_-=rhs; return *this; }
 	const Distance& operator*=(const float &rhs) { value_*=rhs; return *this; }
 	const Distance& operator/=(const float &rhs) { value_/=rhs; return *this; }
-	
+
 /*
 	template<typename U> const Time& operator+=(const U &rhs) { value_+=rhs; return *this; }
 	template<typename U> const Time& operator-=(const U &rhs) { value_-=rhs; return *this; }
@@ -116,11 +116,11 @@ public:
 	template<typename U> Time operator-(const U &rhs)const { return value_-rhs; }
 	template<typename U> Time operator*(const U &rhs)const { return value_*rhs; }
 	template<typename U> Time operator/(const U &rhs)const { return value_/rhs; }
-	
+
 	Time operator-()const { return -value_; }
 */
 }; // END of class Distance
-	
+
 }; // END of namespace synfig
 
 /* === E N D =============================================================== */

@@ -67,7 +67,7 @@ public:
 	void set_time(const Time& x) { time=x; }
 	void set_before(Interpolation x) { before=x; }
 	void set_after(Interpolation x) { after=x; }
-	
+
 	void absorb(const TimePoint& x);
 }; // END of class TimePoint
 
@@ -98,15 +98,15 @@ public:
 		{ for(;begin!=end;++begin) insert(*begin); }
 
 }; // END of class TimePointSet
-	
+
 class Node : public etl::rshared_object
 {
 	/*
  --	** -- T Y P E S -----------------------------------------------------------
 	*/
 
-public: 
-	
+public:
+
 	//! \writeme
 	typedef	TimePointSet	time_set;
 
@@ -130,7 +130,7 @@ private:
 
 	//! \writeme
 	mutable RWLock rw_lock_;
-	
+
 	//! \writeme
 	bool deleting_;
 
@@ -144,15 +144,15 @@ public:
 	*/
 
 private:
-	
+
 	sigc::signal<void> signal_changed_;
 
 	//!	GUID Changed
 	/*! \note The second parameter is the *OLD* guid! */
-	sigc::signal<void,GUID> signal_guid_changed_;	
+	sigc::signal<void,GUID> signal_guid_changed_;
 
 	//!	Deleted
-	sigc::signal<void> signal_deleted_;	
+	sigc::signal<void> signal_deleted_;
 
 	/*
  -- ** -- S I G N A L   I N T E R F A C E -------------------------------------
@@ -186,7 +186,7 @@ public:
 	/*
  --	** -- M E M B E R   F U N C T I O N S -------------------------------------
 	*/
-	
+
 public:
 
 	void changed();
@@ -198,21 +198,21 @@ public:
 	void set_guid(const GUID& x);
 
 	int get_time_last_changed()const;
-	
+
 	void add_child(Node*x);
 
 	void remove_child(Node*x);
 
 	int parent_count()const;
-	
+
 	const time_set &get_times() const;
 
 	RWLock& get_rw_lock()const { return rw_lock_; }
-	
+
 protected:
-	
+
 	void begin_delete();
-	
+
 	/*
  --	** -- V I R T U A L   F U N C T I O N S -----------------------------------
 	*/
@@ -222,10 +222,10 @@ protected:
 
 	virtual void on_guid_changed(GUID guid);
 
-	/*!	Function to be overloaded that fills 
+	/*!	Function to be overloaded that fills
 	*/
 	virtual void get_times_vfunc(time_set &set) const = 0;
-};	
+};
 
 synfig::Node* find_node(const synfig::GUID& guid);
 

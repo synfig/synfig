@@ -82,22 +82,22 @@ inline Color
 Noise::color_func(const Point &point, float pixel_size,Context context)const
 {
 	Color ret(0,0,0,0);
-	
+
 	float x(point[0]/size[0]*(1<<detail));
 	float y(point[1]/size[1]*(1<<detail));
 	float x2(0),y2(0);
-	
+
 	if(super_sample&&pixel_size)
 	{
 		x2=(point[0]+pixel_size)/size[0]*(1<<detail);
 		y2=(point[1]+pixel_size)/size[1]*(1<<detail);
 	}
-	
+
 	int i;
 	Time time;
 	time=speed*curr_time;
 	int smooth((!speed && Noise::smooth==3)?5:Noise::smooth);
-	
+
 	float t(time);
 
 	{
@@ -109,7 +109,7 @@ Noise::color_func(const Point &point, float pixel_size,Context context)const
 		{
 			amount=random(smooth,0+(detail-i)*5,x,y,t)+amount*0.5;
 			if(amount<-1)amount=-1;if(amount>1)amount=1;
-			
+
 			if(super_sample&&pixel_size)
 			{
 				amount2=random(smooth,0+(detail-i)*5,x2,y,t)+amount2*0.5;
@@ -127,19 +127,19 @@ Noise::color_func(const Point &point, float pixel_size,Context context)const
 				x2*=0.5f;
 				y2*=0.5f;
 			}
-			
+
 			if(do_alpha)
 			{
 				alpha=random(smooth,3+(detail-i)*5,x,y,t)+alpha*0.5;
 				if(alpha<-1)alpha=-1;if(alpha>1)alpha=1;
 			}
-			
+
 			if(turbulent)
 			{
 				amount=abs(amount);
 				alpha=abs(alpha);
 			}
-				
+
 			x*=0.5f;
 			y*=0.5f;
 			//t*=0.5f;
@@ -156,7 +156,7 @@ Noise::color_func(const Point &point, float pixel_size,Context context)const
 				amount3=amount3/2.0f+0.5f;
 			}
 		}
-		
+
 		if(super_sample && pixel_size)
 			ret=gradient(amount,max(amount3,max(amount,amount2))-min(amount3,min(amount,amount2)));
 		else
@@ -216,8 +216,8 @@ Noise::set_param(const String & param, const ValueBase &value)
 	IMPORT(gradient);
 	IMPORT(turbulent);
 	IMPORT(super_sample);
-	
-	return Layer_Composite::set_param(param,value);	
+
+	return Layer_Composite::set_param(param,value);
 }
 
 ValueBase
@@ -231,20 +231,20 @@ Noise::get_param(const String & param)const
 	EXPORT(detail);
 	EXPORT(do_alpha);
 	EXPORT(gradient);
-	EXPORT(turbulent)	
+	EXPORT(turbulent)
 	EXPORT(super_sample);
-	
+
 	EXPORT_NAME();
 	EXPORT_VERSION();
-		
-	return Layer_Composite::get_param(param);	
+
+	return Layer_Composite::get_param(param);
 }
 
 Layer::Vocab
 Noise::get_param_vocab()const
 {
 	Layer::Vocab ret(Layer_Composite::get_param_vocab());
-	
+
 	ret.push_back(ParamDesc("gradient")
 		.set_local_name(_("Gradient"))
 	);
@@ -279,7 +279,7 @@ Noise::get_param_vocab()const
 	ret.push_back(ParamDesc("super_sample")
 		.set_local_name(_("Super Sampling"))
 	);
-	
+
 	return ret;
 }
 
@@ -311,7 +311,7 @@ Noise::accelerated_render(Context context,Surface *surface,int quality, const Re
 			return true;
 	}
 
-		
+
 	int x,y;
 
 	Surface::pen pen(surface->begin());
@@ -323,7 +323,7 @@ Noise::accelerated_render(Context context,Surface *surface,int quality, const Re
 	float supersampleradius((abs(pw)+abs(ph))*0.5f);
 	if(quality>=8)
 		supersampleradius=0;
-	
+
 	if(get_amount()==1.0 && get_blend_method()==Color::BLEND_STRAIGHT)
 	{
 		for(y=0,pos[1]=tl[1];y<h;y++,pen.inc_y(),pen.dec_x(x),pos[1]+=ph)

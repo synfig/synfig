@@ -115,7 +115,7 @@ public:
 	void set_path(const synfig::String& x) { path=x; }
 
 	const synfig::String& get_path()const { return path; }
-	
+
 	//! \todo writeme
 	Canvas::Handle parse_from_file(const String &filename);
 

@@ -87,7 +87,7 @@ PaletteItem::add(const Color& x,int xweight)
 
 Palette::Palette(const Surface& surface, int max_colors):
 	name_(_("Surface Palette"))
-{	
+{
 	max_colors-=2;
 	for(int i=0;(signed)size()<(max_colors-1) && i<max_colors*16;++i) {
         int x=rand()%surface.get_w();
@@ -95,7 +95,7 @@ Palette::Palette(const Surface& surface, int max_colors):
 
 			float dist;
 			Color color(surface[y][x]);
-						
+
 			if(empty())
 			{
 				push_back(color);
@@ -116,7 +116,7 @@ Palette::Palette(const Surface& surface, int max_colors):
 				iter->add(color);
 				continue;
 			}
-			
+
 			/*if(size()>=max_colors)
 			{
 				iterator iterlight(find_light());
@@ -125,9 +125,9 @@ Palette::Palette(const Surface& surface, int max_colors):
 				find_closest(light.color)->add(light.color,light.weight);
 			}
 			*/
-			
+
 			push_back(color);
-			continue;			
+			continue;
     }
 
 /*
@@ -138,7 +138,7 @@ Palette::Palette(const Surface& surface, int max_colors):
 		{
 			float dist;
 			Color color(surface[y][x]);
-						
+
 			if(empty())
 			{
 				push_back(color);
@@ -159,10 +159,10 @@ Palette::Palette(const Surface& surface, int max_colors):
 				iter->add(color);
 				continue;
 			}
-			
-			
+
+
 			push_back(color);
-			continue;			
+			continue;
 		}
 	sort(rbegin(),rend());
 
@@ -203,7 +203,7 @@ Palette::find_closest(const Color& color, float* dist)
 	const float prep_y(powf(color.get_y(),2.2f)*color.get_a());
 	const float prep_u(color.get_u());
 	const float prep_v(color.get_v());
-	
+
 	for(iter=begin();iter!=end();++iter)
 	{
 		const float diff_y(prep_y-powf(iter->color.get_y(),2.2f)*iter->color.get_a());
@@ -216,12 +216,12 @@ Palette::find_closest(const Color& color, float* dist)
 			diff_y*diff_y*1.5f+
 			diff_a*diff_a+
 
-			diff_u*diff_u+	
+			diff_u*diff_u+
 			diff_v*diff_v
-			
+
 			// cross product
 			/*abs(
-				prep_u*iter->color.get_u()-	
+				prep_u*iter->color.get_u()-
 				prep_v*iter->color.get_v()
 			)*/
 		);
@@ -233,7 +233,7 @@ Palette::find_closest(const Color& color, float* dist)
 	}
 	if(dist)
 		*dist=best_dist;
-	
+
 	return best_match;
 }
 
@@ -244,13 +244,13 @@ Palette::find_heavy()
 	iterator iter;
 
 	iterator best_match(begin());
-	
+
 	for(iter=begin();iter!=end();++iter)
 	{
 		if(iter->weight>best_match->weight)
 			best_match=iter;
 	}
-	
+
 	return best_match;
 }
 
@@ -260,13 +260,13 @@ Palette::find_light()
 	iterator iter;
 
 	iterator best_match(begin());
-	
+
 	for(iter=begin();iter!=end();++iter)
 	{
 		if(iter->weight<best_match->weight)
 			best_match=iter;
 	}
-	
+
 	return best_match;
 }
 
@@ -294,12 +294,12 @@ Palette::save_to_file(const synfig::String& filename)const
 	const_iterator iter;
 
 	std::ofstream file(filename.c_str());
-	
+
 	if(!file)
 		throw strprintf(_("Unable to open %s for write"),filename.c_str());
-	
+
 	file<<PALETTE_FILE_COOKIE<<endl;
-	file<<name_<<endl;	
+	file<<name_<<endl;
 	for(iter=begin();iter!=end();++iter)
 	{
 		file<<iter->name<<endl;
@@ -308,7 +308,7 @@ Palette::save_to_file(const synfig::String& filename)const
 			<<iter->color.get_g()<<endl
 			<<iter->color.get_b()<<endl
 			<<iter->color.get_a()<<endl;
-		
+
 	}
 }
 
@@ -316,20 +316,20 @@ Palette
 Palette::load_from_file(const synfig::String& filename)
 {
 	std::ifstream file(filename.c_str());
-	
+
 	if(!file)
 		throw strprintf(_("Unable to open %s for read"),filename.c_str());
-	
+
 	Palette ret;
 	String line;
-	
+
 	getline(file,line);
 
 	if(line!=PALETTE_FILE_COOKIE)
 		throw strprintf(_("%s does not appear to be a palette file"),filename.c_str());
 
 	getline(file,ret.name_);
-	
+
 	while(!file.eof())
 	{
 		PaletteItem item;
@@ -351,9 +351,9 @@ Palette::load_from_file(const synfig::String& filename)
 		getline(file,line);
 		if(!file.eof())break;
 		item.color.set_a(atof(line.c_str()));
-		
+
 		ret.push_back(item);
 	}
-	
+
 	return ret;
 }

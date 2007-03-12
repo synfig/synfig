@@ -70,7 +70,7 @@ Halftone2::Halftone2():
 	halftone.size=(synfig::Vector(0.25,0.25));
 	halftone.angle=(Angle::zero());
 	halftone.type=TYPE_SYMMETRIC;
-	
+
 	set_blend_method(Color::BLEND_STRAIGHT);
 }
 
@@ -85,8 +85,8 @@ Halftone2::color_func(const Point &point, float supersample,const Color& color)c
 	else if(amount>=1.0f)
 		halfcolor=color_light;
 	else
-		halfcolor=Color::blend(color_light,color_dark,amount,Color::BLEND_STRAIGHT);		
-	
+		halfcolor=Color::blend(color_light,color_dark,amount,Color::BLEND_STRAIGHT);
+
 	halfcolor.set_a(color.get_a());
 
 	return halfcolor;
@@ -114,8 +114,8 @@ Halftone2::set_param(const String & param, const ValueBase &value)
 	IMPORT_AS(halftone.type,"type");
 	IMPORT_AS(halftone.angle,"angle");
 	IMPORT_AS(halftone.offset,"offset");
-	
-	return Layer_Composite::set_param(param,value);	
+
+	return Layer_Composite::set_param(param,value);
 }
 
 ValueBase
@@ -128,18 +128,18 @@ Halftone2::get_param(const String & param)const
 
 	EXPORT(color_dark);
 	EXPORT(color_light);
-	
+
 	EXPORT_NAME();
 	EXPORT_VERSION();
-		
-	return Layer_Composite::get_param(param);	
+
+	return Layer_Composite::get_param(param);
 }
 
 Layer::Vocab
 Halftone2::get_param_vocab()const
 {
 	Layer::Vocab ret(Layer_Composite::get_param_vocab());
-	
+
 	ret.push_back(ParamDesc("offset")
 		.set_local_name(_("Mask Offset"))
 		.set_is_distance()
@@ -168,7 +168,7 @@ Halftone2::get_param_vocab()const
 		.add_enum_value(TYPE_DIAMOND,"diamond",_("Diamond"))
 		.add_enum_value(TYPE_STRIPE,"stripe",_("Stripe"))
 	);
-	
+
 	return ret;
 }
 
@@ -193,7 +193,7 @@ Halftone2::accelerated_render(Context context,Surface *surface,int quality, cons
 		return false;
 	if(get_amount()==0)
 		return true;
-		
+
 	const Real pw(renddesc.get_pw()),ph(renddesc.get_ph());
 	const Point tl(renddesc.get_tl());
 	const int w(surface->get_w());
@@ -203,7 +203,7 @@ Halftone2::accelerated_render(Context context,Surface *surface,int quality, cons
 	Surface::pen pen(surface->begin());
 	Point pos;
 	int x,y;
-	
+
 	if(is_solid_color())
 	{
 		for(y=0,pos[1]=tl[1];y<h;y++,pen.inc_y(),pen.dec_x(x),pos[1]+=ph)
@@ -233,7 +233,7 @@ Halftone2::accelerated_render(Context context,Surface *surface,int quality, cons
 					)
 				);
 	}
-	
+
 	// Mark our progress as finished
 	if(cb && !cb->amount_complete(10000,10000))
 		return false;

@@ -52,7 +52,7 @@ synfig::GUID
 TransformStack::get_guid()const
 {
 	GUID ret(0);
-	
+
 	for(const_iterator iter(begin());iter!=end();++iter)
 		ret%=(*iter)->get_guid();
 	return ret;
@@ -62,10 +62,10 @@ synfig::Vector
 TransformStack::perform(const synfig::Vector& x)const
 {
 	synfig::Vector ret(x);
-	
+
 	for(const_reverse_iterator iter(rbegin());iter!=rend();++iter)
 		ret=(*iter)->perform(ret);
-	
+
 	return ret;
 }
 
@@ -73,10 +73,10 @@ synfig::Vector
 TransformStack::unperform(const synfig::Vector& x)const
 {
 	synfig::Vector ret(x);
-	
+
 	for(const_iterator iter(begin());iter!=end();++iter)
 		ret=(*iter)->unperform(ret);
-	
+
 	return ret;
 }
 
@@ -137,7 +137,7 @@ Transform::unperform(const synfig::Rect& x)const
 
 	Point min(x.get_min());
 	Point max(x.get_max());
-		
+
 	Rect ret(unperform(min),unperform(max));
 
 	std::swap(min[1],max[1]);

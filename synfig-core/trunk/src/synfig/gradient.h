@@ -48,15 +48,15 @@ struct GradientCPoint : public UniqueID
 {
 	Real pos;
 	Color color;
-	
+
 	bool operator<(const GradientCPoint &rhs)const { return pos<rhs.pos; }
 	bool operator<(const Real &rhs)const { return pos<rhs; }
-	
+
 	GradientCPoint() { }
 	GradientCPoint(const Real &pos, const Color &color):pos(pos),color(color) { }
 }; // END of class GradientCPoint
 
-	
+
 /*! \class Gradient
 **	\brief Color Gradient Class
 */
@@ -65,10 +65,10 @@ class Gradient : public std::vector<GradientCPoint>
 public:
 	typedef GradientCPoint CPoint;
 private:
-	
+
 public:
 	Gradient() { }
-	
+
 	//! Two-Tone Color Gradient Convience Constructor
 	Gradient(const Color &c1, const Color &c2);
 
@@ -80,7 +80,7 @@ public:
 
 	//! You should call this function after changing stuff.
 	void sort();
-	
+
 	Color operator()(const Real &x, float supersample=0)const;
 
 	//! Returns the iterator of the CPoint closest to \a x
@@ -91,11 +91,11 @@ public:
 
 	//! Returns the iterator of the CPoint with UniqueID \a id
 	iterator find(const UniqueID &id);
-	
+
 	//! Returns the const_iterator of the CPoint with UniqueID \a id
 	const_iterator find(const UniqueID &id)const;
 }; // END of class Gradient
-	
+
 }; // END of namespace synfig
 
 /* === E N D =============================================================== */

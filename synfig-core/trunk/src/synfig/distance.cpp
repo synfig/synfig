@@ -60,7 +60,7 @@ Distance::Distance(const synfig::String& str)
 	float val;
 	int ret(strscanf(str,"%f%n",&val,&i));
 	synfig::info("Distance::Distance(): ret=%d, val=%f",ret,val);
-	
+
 	if(ret<=0)
 	{
 		// Error
@@ -69,7 +69,7 @@ Distance::Distance(const synfig::String& str)
 	}
 	else
 		value_=val;
-	
+
 	synfig::info("Distance::Distance(): system=\"%s\"",String(str.begin()+i,str.end()).c_str());
 	system_=ident_system(String(str.begin()+i,str.end()));
 */
@@ -82,7 +82,7 @@ Distance::operator=(const synfig::String& str)
 	float val;
 	int ret(strscanf(str,"%f%n",&val,&i));
 	synfig::info("Distance::Distance(): ret=%d, val=%f",ret,val);
-	
+
 	if(ret<=0)
 	{
 		// Error
@@ -121,10 +121,10 @@ Distance::get(Distance::System target, const RendDesc& rend_desc)const
 		return units(rend_desc);
 	if(target==SYSTEM_PIXELS)
 		return units(rend_desc)*METERS_PER_UNIT*rend_desc.get_x_res();
-	
-	return meters_to_system(meters(rend_desc),target);	
+
+	return meters_to_system(meters(rend_desc),target);
 }
-	
+
 Real
 Distance::meters()const
 {
@@ -194,7 +194,7 @@ Distance::ident_system(const synfig::String& x)
 	// If it is plural, make it singular
 	if(str[str.size()-1]=='S')
 		str=synfig::String(str.begin(),str.end()-1);
-	
+
 	if(str.empty() || str=="U" || str=="UNIT")
 		return SYSTEM_UNITS;
 	if(str=="PX" || str=="PIXEL")
@@ -209,9 +209,9 @@ Distance::ident_system(const synfig::String& x)
 		return SYSTEM_CENTIMETERS;
 	if(str=="MM" || str=="MILLIMETER")
 		return SYSTEM_MILLIMETERS;
-	
+
 	synfig::warning("Distance::ident_system(): Unknown distance system \"%s\"",x.c_str());
-	
+
 	return SYSTEM_UNITS;
 }
 
@@ -227,7 +227,7 @@ Distance::system_name(Distance::System system)
 		case SYSTEM_METERS:		return "m";
 		case SYSTEM_MILLIMETERS:	return "mm";
 		case SYSTEM_CENTIMETERS:	return "cm";
-	
+
 		default:				throw BadSystem();
 	}
 	return synfig::String();
@@ -245,7 +245,7 @@ Distance::system_local_name(Distance::System system)
 		case SYSTEM_METERS:		return _("Meters");
 		case SYSTEM_MILLIMETERS:return _("Millimeters");
 		case SYSTEM_CENTIMETERS:return _("Centimeters");
-	
+
 		default:				throw BadSystem();
 	}
 	return synfig::String();

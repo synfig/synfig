@@ -79,11 +79,11 @@ ValueNode_Scale::create(const ValueBase& x)
 		break;
 	default:
 		assert(0);
-		throw runtime_error("synfig::ValueNode_Scale:Bad type "+ValueBase::type_name(x.get_type()));			
+		throw runtime_error("synfig::ValueNode_Scale:Bad type "+ValueBase::type_name(x.get_type()));
 	}
 	assert(value_node);
 	assert(value_node->get_type()==x.get_type());
-	
+
 	return value_node;
 }
 
@@ -192,13 +192,13 @@ ValueNode_Scale::set_link_vfunc(int i,ValueNode::Handle x)
 {
 	if(!(i==0 || i==1))
 		return false;
-	
+
 	if(i==0 && !set_value_node(x))
 		return false;
 	else
 	if(i==1 && !set_scalar(x))
 		return false;
-	
+
 	signal_child_changed()(i);signal_value_changed()();
 
 	return true;
@@ -230,7 +230,7 @@ ValueNode_Scale::link_local_name(int i)const
 	else if(i==1)
 		return _("Scalar");
 	return String();
-}	
+}
 
 String
 ValueNode_Scale::link_name(int i)const
@@ -250,7 +250,7 @@ ValueNode_Scale::get_link_index_from_name(const String &name)const
 		return 0;
 	if(name=="scalar")
 		return 1;
-	
+
 	throw Exception::BadLinkName(name);
 }
 

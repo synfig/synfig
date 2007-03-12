@@ -45,23 +45,23 @@ class Layer_Bitmap : public Layer_Composite, public Layer_NoDeform
 {
 	const Color& filter(const Color& c)const;
 public:
-	typedef etl::handle<Layer_Bitmap> Handle;	
+	typedef etl::handle<Layer_Bitmap> Handle;
 
 	Point tl;
 	Point br;
 	int c;
 	mutable Surface surface;
-	
+
 	Real gamma_adjust;
-	
+
 	Layer_Bitmap();
-	
+
 	virtual bool set_param(const String & param, ValueBase value);
 
 	virtual ValueBase get_param(const String & param)const;
 
 	virtual Color get_color(Context context, const Point &pos)const;
-	
+
 	virtual Vocab get_param_vocab()const;
 
 	virtual Rect get_bounding_rect()const;

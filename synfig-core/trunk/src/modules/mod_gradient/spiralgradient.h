@@ -43,7 +43,7 @@
 class SpiralGradient : public synfig::Layer_Composite, public synfig::Layer_NoDeform
 {
 	SYNFIG_LAYER_MODULE_EXT
-	
+
 private:
 
 	synfig::Gradient gradient;
@@ -61,18 +61,18 @@ private:
 	float calc_supersample(const synfig::Point &x, float pw,float ph)const;
 
 public:
-	
+
 	SpiralGradient();
-	
+
 	virtual bool set_param(const synfig::String & param, const synfig::ValueBase &value);
 
 	virtual synfig::ValueBase get_param(const synfig::String & param)const;
 
 	virtual synfig::Color get_color(synfig::Context context, const synfig::Point &pos)const;
-	
+
 	virtual bool accelerated_render(synfig::Context context,synfig::Surface *surface,int quality, const synfig::RendDesc &renddesc, synfig::ProgressCallback *cb)const;
-	synfig::Layer::Handle hit_check(synfig::Context context, const synfig::Point &point)const;	
-	
+	synfig::Layer::Handle hit_check(synfig::Context context, const synfig::Point &point)const;
+
 	virtual Vocab get_param_vocab()const;
 }; // END of class SpiralGradient
 

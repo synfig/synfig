@@ -86,19 +86,19 @@ imagemagick_mptr::get_frame(synfig::Surface &surface,Time time, synfig::Progress
 		return false;
 	}
 	string temp_file="/tmp/deleteme.png";
-	
+
 	if(filename.find("psd")!=String::npos)
 		command=strprintf("convert \"%s\" -flatten \"png32:%s\"\n",filename.c_str(),temp_file.c_str());
 	else
 		command=strprintf("convert \"%s\" \"png32:%s\"\n",filename.c_str(),temp_file.c_str());
-	
+
 	synfig::info("command=%s",command.c_str());
-	
+
 	if(system(command.c_str())!=0)
 		return false;
 
 	Importer::Handle importer(Importer::open(temp_file));
-	
+
 	DEBUGPOINT();
 
 	if(!importer)
@@ -107,7 +107,7 @@ imagemagick_mptr::get_frame(synfig::Surface &surface,Time time, synfig::Progress
 		else synfig::error(_("Unable to open ")+temp_file);
 		return false;
 	}
-	
+
 	DEBUGPOINT();
 
 	if(!importer->get_frame(surface,0,cb))
@@ -116,12 +116,12 @@ imagemagick_mptr::get_frame(synfig::Surface &surface,Time time, synfig::Progress
 		else synfig::error(_("Unable to get frame from ")+temp_file);
 		return false;
 	}
-	
+
 	if(!surface)
 	{
 		if(cb)cb->error(_("Bad surface from ")+temp_file);
 		else synfig::error(_("Bad surface from ")+temp_file);
-		return false;		
+		return false;
 	}
 
 	if(1)
@@ -149,12 +149,12 @@ imagemagick_mptr::get_frame(synfig::Surface &surface,Time time, synfig::Progress
 
 	Surface bleh(surface);
 	surface=bleh;
-	
+
 
 	//remove(temp_file.c_str());
 	DEBUGPOINT();
 	return true;
-	
+
 #else
 	if(file)
 		pclose(file);
@@ -244,6 +244,6 @@ imagemagick_mptr::get_frame(synfig::Surface &surface,Time time, synfig::Progress
 
 	return true;
 #endif
-		
-	
+
+
 }

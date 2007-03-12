@@ -86,7 +86,7 @@ KeyframeList::sync()
 {
 	//DEBUGPOINT();
 	//synfig::info("PRE-SORT:");
-	//dump();	
+	//dump();
 	sort(begin(),end());
 	//synfig::info("POST-SORT:");
 	//dump();
@@ -164,7 +164,7 @@ KeyframeList::find_next(const Time &x)
 */
 		}
 	}
-	
+
 	throw Exception::NotFound(strprintf("KeyframeList::find(): Can't find next Keyframe %s",x.get_string().c_str()));
 }
 

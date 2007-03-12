@@ -78,13 +78,13 @@ dv_trgt::~dv_trgt()
 
 bool
 dv_trgt::set_rend_desc(RendDesc *given_desc)
-{	
+{
 	// Set the aspect ratio
 	if(wide_aspect)
 	{
 		// 16:9 Aspect
 		given_desc->set_wh(160,90);
-		
+
 		// Widescreen should be progressive scan
 		given_desc->set_interlaced(false);
 	}
@@ -92,23 +92,23 @@ dv_trgt::set_rend_desc(RendDesc *given_desc)
 	{
 		// 4:3 Aspect
 		given_desc->set_wh(400,300);
-		
+
 		// We should be interlaced
 		given_desc->set_interlaced(true);
 	}
-	
+
 	// but the pixel res should be 720x480
 	given_desc->clear_flags(),given_desc->set_wh(720,480);
-		
+
 	// NTSC Frame rate is 29.97
 	given_desc->set_frame_rate(29.97);
-	
+
 	// The pipe to encodedv is PPM, which needs RGB data
 	//given_desc->set_pixel_format(PF_RGB);
-	
+
 	// Set the description
 	desc=*given_desc;
-	
+
 	return true;
 }
 
@@ -116,17 +116,17 @@ bool
 dv_trgt::init()
 {
 	imagecount=desc.get_frame_start();
-	
+
 	string command;
-	
+
 	if(wide_aspect)
 		command=strprintf("encodedv -w 1 - > \"%s\"\n",filename.c_str());
 	else
 		command=strprintf("encodedv - > \"%s\"\n",filename.c_str());
-	
+
 	// Open the pipe to encodedv
 	file=popen(command.c_str(),"w");
-	
+
 	if(!file)
 	{
 		synfig::error(_("Unable to open pipe to encodedv"));
@@ -134,7 +134,7 @@ dv_trgt::init()
 	}
 
 	// Sleep for a moment to let the pipe catch up
-	etl::clock().sleep(0.25f);	
+	etl::clock().sleep(0.25f);
 
 	return true;
 }
@@ -151,20 +151,20 @@ bool
 dv_trgt::start_frame(synfig::ProgressCallback *callback)
 {
 	int w=desc.get_w(),h=desc.get_h();
-		
+
 	if(!file)
 		return false;
-	
+
 	fprintf(file, "P6\n");
 	fprintf(file, "%d %d\n", w, h);
-	fprintf(file, "%d\n", 255);	
-	
+	fprintf(file, "%d\n", 255);
+
 	delete [] buffer;
 	buffer=new unsigned char[3*w];
 
 	delete [] color_buffer;
 	color_buffer=new Color[w];
-	
+
 	return true;
 }
 
@@ -181,9 +181,9 @@ dv_trgt::end_scanline()
 		return false;
 
 	convert_color_format(buffer, color_buffer, desc.get_w(), PF_RGB, gamma());
-			
+
 	if(!fwrite(buffer,1,desc.get_w()*3,file))
 		return false;
-	
+
 	return true;
 }

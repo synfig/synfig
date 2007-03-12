@@ -71,16 +71,16 @@ synfig::parametric_render(
 
 	bool
 		no_clamp=!desc.get_clamp();
-	
+
 	int
 		w(desc.get_w()),
 		h(desc.get_h()),
 		a(desc.get_antialias());
-	
+
 	Point
 		tl(desc.get_tl()),
 		br(desc.get_br());
-	
+
 	//Gamma
 	//	gamma(desc.get_gamma());
 
@@ -90,10 +90,10 @@ synfig::parametric_render(
 
 	Color::value_type
 		pool;		// Alpha pool (for correct alpha antialiasing)
-	
+
 	// Calculate the number of channels
 	//chan=channels(desc.get_pixel_format());
-		
+
 	// Calculate the distance between pixels
 	du=(br[0]-tl[0])/(Point::value_type)w;
 	dv=(br[1]-tl[1])/(Point::value_type)h;
@@ -107,11 +107,11 @@ synfig::parametric_render(
 	//sv=tl[1]-(dv-dsv)/(Point::value_type)2.0;
 	su=tl[0];
 	sv=tl[1];
-	
+
 	surface.set_wh(desc.get_w(),desc.get_h());
 
 	assert(surface);
-	
+
 	// Loop through all horizontal lines
 	for(y=0,v=sv;y<h;y++,v+=dv)
 	{
@@ -120,7 +120,7 @@ synfig::parametric_render(
 		Color *colordata=surface[y];
 
 		assert(colordata);
-		
+
 		// If we have a callback that we need
 		// to report to, do so now.
 		if(callback)
@@ -164,7 +164,7 @@ synfig::parametric_render(
 				c/=pool;
 		}
 	}
-	
+
 	// Give the callback one more last call,
 	// this time with the full height as the
 	// current line
@@ -190,16 +190,16 @@ synfig::render(
 
 	bool
 		no_clamp=!desc.get_clamp();
-	
+
 	int
 		w(desc.get_w()),
 		h(desc.get_h()),
 		a(desc.get_antialias());
-	
+
 	Point
 		tl(desc.get_tl()),
 		br(desc.get_br());
-	
+
 	//Gamma
 	//	gamma(desc.get_gamma());
 
@@ -211,14 +211,14 @@ synfig::render(
 		pool;		// Alpha pool (for correct alpha antialiasing)
 
 	assert(target);
-	
+
 	// If we do not have a a target then bail
 	if(!target)
 		return false;
-	
+
 	// Calculate the number of channels
 	//chan=channels(desc.get_pixel_format());
-		
+
 	// Calculate the distance between pixels
 	du=(br[0]-tl[0])/(Point::value_type)w;
 	dv=(br[1]-tl[1])/(Point::value_type)h;
@@ -234,7 +234,7 @@ synfig::render(
 	// Mark the start of a new frame.
 	if(!target->start_frame(callback))
 		return false;
-			
+
 	// Loop through all horizontal lines
 	for(y=0,v=sv;y<h;y++,v+=dv)
 	{
@@ -248,7 +248,7 @@ synfig::render(
 			else throw(string(_("Target panic")));
 			return false;
 		}
-		
+
 		// If we have a callback that we need
 		// to report to, do so now.
 		if(callback)
@@ -304,7 +304,7 @@ synfig::render(
 			return false;
 		}
 	}
-	
+
 	// Finish up the target's frame
 	target->end_frame();
 
@@ -348,9 +348,9 @@ synfig::render_threaded(
 			}
 		}
     } *render_thread;
-    
+
     int i, mythread=-1;
-	
+
 	Point::value_type
 		u,v,		// Current location in image
 		su,sv,		// Starting locations
@@ -359,16 +359,16 @@ synfig::render_threaded(
 
 	bool
 		no_clamp=!desc.get_clamp();
-	
+
 	int
 		w(desc.get_w()),
 		h(desc.get_h()),
 		a(desc.get_antialias());
-	
+
 	Point
 		tl(desc.get_tl()),
 		br(desc.get_br());
-	
+
 	int
 		x,y,		// Current location on output bitmap
 		x2,y2;		// Subpixel counters
@@ -377,11 +377,11 @@ synfig::render_threaded(
 		pool;		// Alpha pool (for correct alpha antialiasing)
 
 	assert(target);
-	
+
 	// If we do not have a a target then bail
 	if(!target)
 		return false;
-			
+
 	// Calculate the distance between pixels
 	du=(br[0]-tl[0])/(Point::value_type)w;
 	dv=(br[1]-tl[1])/(Point::value_type)h;
@@ -395,7 +395,7 @@ synfig::render_threaded(
 	sv=tl[1]-(dv-dsv)/(Point::value_type)2.0;
 
     render_thread=new _render_thread[threads];
-    
+
 	// Start the forks
     for(i=0;i<threads;i++)
     {
@@ -407,7 +407,7 @@ synfig::render_threaded(
 		}
 		render_thread[i].pid=pid;
     }
-    
+
 	// Mark the start of a new frame.
 	if(!target->start_frame(callback))
 		return false;
@@ -424,7 +424,7 @@ synfig::render_threaded(
 			else throw(string(_("Target panic")));
 			return false;
 		}
-		
+
 		// If we have a callback that we need
 		// to report to, do so now.
 		if(callback)
@@ -439,9 +439,9 @@ synfig::render_threaded(
 				delete [] render_thread;
 				return false;
 			}
-				
+
 		read(render_thread[y%threads].pipe_read,colordata,w*sizeof(Color));
-		
+
 		// Send the buffer to the render target.
 		// If anything goes wrong, cleanup and bail.
 		if(!target->end_scanline())
@@ -461,15 +461,15 @@ synfig::render_threaded(
 	// current line
 	if(callback)
 		callback->amount_complete(h,h);
-    
+
     delete [] render_thread;
     return true;
 
 renderthread:
-	
+
 	// Change the random seed, so that each thread has a different one
 	srand(mythread*20+threads+time(0));
-	
+
 	Color *buffer(new Color[w]);
 
 	// Loop through all horizontal lines
@@ -478,7 +478,7 @@ renderthread:
 		// Set the current pixel pointer
 		// to the start of the line
 		Color* colordata(buffer);
-		
+
 		// Loop through every pixel in row
 		for(x=0,u=su;x<w;x++,u+=du)
 		{
@@ -510,17 +510,17 @@ renderthread:
 			if(pool)
 				c/=pool;
 		}
-		
+
 		// Send the buffer to the primary thread.
 		write(render_thread[mythread].pipe_write,buffer,w*sizeof(Color));
 	}
-	
+
 	delete [] buffer;
-	
+
     _exit(0);
-	return false;	
+	return false;
 #else
 	return render(context, target, desc, callback);
 
-#endif	
+#endif
 }

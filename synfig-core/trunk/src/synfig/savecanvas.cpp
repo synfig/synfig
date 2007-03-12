@@ -169,7 +169,7 @@ xmlpp::Element* encode_bline_point(xmlpp::Element* root,BLinePoint bline_point)
 
 	if(bline_point.get_split_tangent_flag())
 		encode_vector(root->add_child("t2")->add_child("vector"),bline_point.get_tangent2());
-	
+
 	encode_real(root->add_child("width")->add_child("real"),bline_point.get_width());
 	encode_real(root->add_child("origin")->add_child("real"),bline_point.get_origin());
 	return root;
@@ -178,7 +178,7 @@ xmlpp::Element* encode_bline_point(xmlpp::Element* root,BLinePoint bline_point)
 xmlpp::Element* encode_gradient(xmlpp::Element* root,Gradient x)
 {
 	root->set_name("gradient");
-	
+
 	Gradient::const_iterator iter;
 	x.sort();
 	for(iter=x.begin();iter!=x.end();iter++)
@@ -195,7 +195,7 @@ xmlpp::Element* encode_value(xmlpp::Element* root,const ValueBase &data,Canvas::
 xmlpp::Element* encode_list(xmlpp::Element* root,std::list<ValueBase> list, Canvas::ConstHandle canvas=0)
 {
 	root->set_name("list");
-	
+
 	while(!list.empty())
 	{
 		encode_value(root->add_child("value"),list.front(),canvas);
@@ -270,7 +270,7 @@ xmlpp::Element* encode_animated(xmlpp::Element* root,ValueNode_Animated::ConstHa
 			waypoint_node->set_attribute("use",iter->get_value_node()->get_relative_id(canvas));
 		else
 			encode_value_node(waypoint_node->add_child("value_node"),iter->get_value_node(),canvas);
-					
+
 		switch(iter->get_before())
 		{
 		case INTERPOLATION_HALT:
@@ -390,7 +390,7 @@ xmlpp::Element* encode_dynamic_list(xmlpp::Element* root,ValueNode_DynamicList::
 {
 	assert(value_node);
 	const float fps(canvas?canvas->rend_desc().get_frame_rate():0);
-	
+
 	root->set_name(value_node->get_name());
 
 	root->set_attribute("type",ValueBase::type_name(value_node->get_contained_type()));
@@ -398,7 +398,7 @@ xmlpp::Element* encode_dynamic_list(xmlpp::Element* root,ValueNode_DynamicList::
 	vector<ValueNode_DynamicList::ListEntry>::const_iterator iter;
 
 	ValueNode_BLine::ConstHandle bline_value_node(ValueNode_BLine::ConstHandle::cast_dynamic(value_node));
-	
+
 	if(bline_value_node)
 	{
 		if(bline_value_node->get_loop())
@@ -406,7 +406,7 @@ xmlpp::Element* encode_dynamic_list(xmlpp::Element* root,ValueNode_DynamicList::
 		else
 			root->set_attribute("loop","false");
 	}
-	
+
 	for(iter=value_node->list.begin();iter!=value_node->list.end();++iter)
 	{
 		xmlpp::Element	*entry_node=root->add_child("entry");
@@ -425,41 +425,41 @@ xmlpp::Element* encode_dynamic_list(xmlpp::Element* root,ValueNode_DynamicList::
 
 			const ActivepointList& timing_info(iter->timing_info);
 			ActivepointList::const_iterator entry_iter;
-			
+
 			for(entry_iter=timing_info.begin();entry_iter!=timing_info.end();++entry_iter)
 				if(entry_iter->state==true)
 				{
 					if(entry_iter->priority)
 						begin_sequence+=strprintf("p%d ",entry_iter->priority);
 					begin_sequence+=entry_iter->time.get_string(fps)+", ";
-				}	
+				}
 				else
 				{
 					if(entry_iter->priority)
 						end_sequence+=strprintf("p%d ",entry_iter->priority);
 					end_sequence+=entry_iter->time.get_string(fps)+", ";
 				}
-			
+
 			// If this is just a plane-jane vanilla entry,
 			// then don't bother with begins and ends
 			if(end_sequence.empty() && begin_sequence=="SOT, ")
 				begin_sequence.clear();
-			
+
 			if(!begin_sequence.empty())
 			{
 				// Remove the last ", " stuff
 				begin_sequence=String(begin_sequence.begin(),begin_sequence.end()-2);
 				// Add the attribute
-				entry_node->set_attribute("on",begin_sequence);				
-			}				
+				entry_node->set_attribute("on",begin_sequence);
+			}
 
 			if(!end_sequence.empty())
 			{
 				// Remove the last ", " stuff
 				end_sequence=String(end_sequence.begin(),end_sequence.end()-2);
 				// Add the attribute
-				entry_node->set_attribute("off",end_sequence);				
-			}				
+				entry_node->set_attribute("off",end_sequence);
+			}
 		}
 	}
 
@@ -580,7 +580,7 @@ xmlpp::Element* encode_layer(xmlpp::Element* root,Layer::ConstHandle layer)
 			if(value.get_type()==ValueBase::TYPE_CANVAS && !value.get(Canvas::LooseHandle())->is_inline())
 			{
 				Canvas::Handle child(value.get(Canvas::LooseHandle()));
-				
+
 				if(!value.get(Canvas::Handle()))
 					continue;
 				xmlpp::Element *node=root->add_child("param");
@@ -592,7 +592,7 @@ xmlpp::Element* encode_layer(xmlpp::Element* root,Layer::ConstHandle layer)
 			node->set_attribute("name",iter->get_name());
 
 			encode_value(node->add_child("value"),value,layer->get_canvas().constant());
-		}		
+		}
 	}
 
 
@@ -604,7 +604,7 @@ xmlpp::Element* encode_canvas(xmlpp::Element* root,Canvas::ConstHandle canvas)
 	assert(canvas);
 	const RendDesc &rend_desc=canvas->rend_desc();
 	root->set_name("canvas");
-	
+
 	if(canvas->is_root())
 		root->set_attribute("version","0.1");
 
@@ -645,7 +645,7 @@ xmlpp::Element* encode_canvas(xmlpp::Element* root,Canvas::ConstHandle canvas)
 
 	if(!canvas->parent() || canvas->parent()->rend_desc().get_time_end()!=canvas->rend_desc().get_time_end())
 		root->set_attribute("end-time",rend_desc.get_time_end().get_string(rend_desc.get_frame_rate()));
-	
+
 	if(!canvas->is_inline())
 	{
 		root->set_attribute("bgcolor",strprintf(VIEW_BOX_FORMAT,
@@ -673,7 +673,7 @@ xmlpp::Element* encode_canvas(xmlpp::Element* root,Canvas::ConstHandle canvas)
 		for(KeyframeList::const_iterator iter=canvas->keyframe_list().begin();iter!=canvas->keyframe_list().end();++iter)
 			encode_keyframe(root->add_child("keyframe"),*iter,canvas->rend_desc().get_frame_rate());
 	}
-	
+
 	// Output the <defs> section
 	if(!canvas->is_inline() && !canvas->value_node_list().empty() || !canvas->children().empty())
 	{
@@ -697,12 +697,12 @@ xmlpp::Element* encode_canvas(xmlpp::Element* root,Canvas::ConstHandle canvas)
 		{
 			encode_canvas(node->add_child("canvas"),*iter);
 		}
-	}	
+	}
 
 	Canvas::const_reverse_iterator iter;
 
 	for(iter=canvas->rbegin();iter!=canvas->rend();++iter)
-		encode_layer(root->add_child("layer"),*iter);	
+		encode_layer(root->add_child("layer"),*iter);
 
 	return root;
 }
@@ -718,19 +718,19 @@ synfig::save_canvas(const String &filename, Canvas::ConstHandle canvas)
 	{
 		assert(canvas);
 		xmlpp::Document document;
-	
+
 		encode_canvas(document.create_root_node("canvas"),canvas);
-	
+
 		document.write_to_file_formatted(tmp_filename);
 	}
 	catch(...) { synfig::error("synfig::save_canvas(): Caught unknown exception"); return false; }
-	
-	
+
+
 #ifdef _WIN32
 	// On Win32 platforms, rename() has bad behavior. work around it.
 	char old_file[80]="sif.XXXXXXXX";
 	mktemp(old_file);
-	rename(filename.c_str(),old_file);	
+	rename(filename.c_str(),old_file);
 	if(rename(tmp_filename.c_str(),filename.c_str())!=0)
 	{
 		rename(old_file,tmp_filename.c_str());

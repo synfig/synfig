@@ -77,15 +77,15 @@ inline Color
 NoiseDistort::color_func(const Point &point, float supersample,Context context)const
 {
 	Color ret(0,0,0,0);
-	
+
 	float x(point[0]/size[0]*(1<<detail));
 	float y(point[1]/size[1]*(1<<detail));
-	
+
 	int i;
 	Time time;
 	time=speed*curr_time;
 	int smooth((!speed && smooth==3)?5:smooth);
-	
+
 	{
 		Vector vect(0,0);
 		for(i=0;i<detail;i++)
@@ -95,13 +95,13 @@ NoiseDistort::color_func(const Point &point, float supersample,Context context)c
 
 			if(vect[0]<-1)vect[0]=-1;if(vect[0]>1)vect[0]=1;
 			if(vect[1]<-1)vect[1]=-1;if(vect[1]>1)vect[1]=1;
-				
+
 			if(turbulent)
 			{
 				vect[0]=abs(vect[0]);
 				vect[1]=abs(vect[1]);
 			}
-				
+
 			x/=2.0f;
 			y/=2.0f;
 		}
@@ -113,7 +113,7 @@ NoiseDistort::color_func(const Point &point, float supersample,Context context)c
 		}
 		vect[0]=(vect[0]-0.5f)*displacement[0];
 		vect[1]=(vect[1]-0.5f)*displacement[1];
-		
+
 		ret=context.get_color(point+vect);
 	}
 	return ret;
@@ -165,7 +165,7 @@ NoiseDistort::set_param(const String & param, const ValueBase &value)
 	IMPORT(detail);
 	IMPORT(turbulent);
 	IMPORT(displacement);
-	return Layer_Composite::set_param(param,value);	
+	return Layer_Composite::set_param(param,value);
 }
 
 ValueBase
@@ -179,18 +179,18 @@ NoiseDistort::get_param(const String & param)const
 	EXPORT(detail);
 	EXPORT(displacement);
 	EXPORT(turbulent);
-	
+
 	EXPORT_NAME();
 	EXPORT_VERSION();
-		
-	return Layer_Composite::get_param(param);	
+
+	return Layer_Composite::get_param(param);
 }
 
 Layer::Vocab
 NoiseDistort::get_param_vocab()const
 {
 	Layer::Vocab ret(Layer_Composite::get_param_vocab());
-	
+
 	ret.push_back(ParamDesc("displacement")
 		.set_local_name(_("Displacement"))
 	);
@@ -220,7 +220,7 @@ NoiseDistort::get_param_vocab()const
 	ret.push_back(ParamDesc("turbulent")
 		.set_local_name(_("Turbulent"))
 	);
-	
+
 	return ret;
 }
 
@@ -243,9 +243,9 @@ NoiseDistort::get_bounding_rect(Context context)const
 
 	if(Color::is_onto(get_blend_method()))
 		return context.get_full_bounding_rect();
-	
+
 	Rect bounds(context.get_full_bounding_rect().expand_x(displacement[0]).expand_y(displacement[1]));
-	
+
 	return bounds;
 }
 
@@ -267,7 +267,7 @@ NoiseDistort::accelerated_render(Context context,Surface *surface,int quality, c
 			return true;
 	}
 
-		
+
 	int x,y;
 
 	Surface::pen pen(surface->begin());
@@ -276,7 +276,7 @@ NoiseDistort::accelerated_render(Context context,Surface *surface,int quality, c
 	Point tl(renddesc.get_tl());
 	const int w(surface->get_w());
 	const int h(surface->get_h());
-	
+
 	if(get_amount()==1.0 && get_blend_method()==Color::BLEND_STRAIGHT)
 	{
 		for(y=0,pos[1]=tl[1];y<h;y++,pen.inc_y(),pen.dec_x(x),pos[1]+=ph)

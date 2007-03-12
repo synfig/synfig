@@ -44,7 +44,7 @@ namespace synfig {
 class Transform : public etl::shared_object
 {
 	GUID guid_;
-	
+
 public:
 	typedef etl::handle<Transform> Handle;
 
@@ -71,10 +71,10 @@ public:
 
 	synfig::Vector perform(const synfig::Vector& x)const;
 	synfig::Vector unperform(const synfig::Vector& x)const;
-	
+
 	synfig::Rect perform(const synfig::Rect& x)const;
 	synfig::Rect unperform(const synfig::Rect& x)const;
-	
+
 	void push(const Transform::Handle& x) { if(x)push_back(x); }
 	void pop() { pop_back(); }
 }; // END of class TransformStack

@@ -41,11 +41,11 @@ namespace synfig {
  * class Object
 {
 public:
-	
+
 	sigc::signal_
 	bool find_protocol(Protocol& proto)
 	{
-		
+
 	}
 };
 */
@@ -54,7 +54,7 @@ class Protocol
 {
 public:
 	class Type;
-	
+
 }; // END of class Protocol
 
 class Protocol::Type

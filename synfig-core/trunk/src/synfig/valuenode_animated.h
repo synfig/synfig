@@ -47,7 +47,7 @@ public:
 
 	typedef synfig::Waypoint Waypoint;
 	typedef synfig::WaypointList WaypointList;
-	
+
 	typedef	std::pair<WaypointList::iterator,bool>	findresult;
 	typedef	std::pair<WaypointList::const_iterator,bool>	const_findresult;
 
@@ -65,22 +65,22 @@ public:
 
 	/*! \note this does not add any waypoint to the ValueNode! */
 	Waypoint new_waypoint_at_time(const Time& t)const;
-	
+
 	WaypointList::iterator add(const Waypoint &x);
 
 	void erase(const UniqueID &x);
-	
-	//either use find result (return bool and iterator) or 
+
+	//either use find result (return bool and iterator) or
 	findresult 			find_uid(const UniqueID &x);
 	const_findresult 	find_uid(const UniqueID &x)const;
-	findresult			find_time(const Time &x);	
+	findresult			find_time(const Time &x);
 	const_findresult	find_time(const Time &x)const;
-		
+
 	WaypointList::iterator find(const UniqueID &x);
 	WaypointList::const_iterator find(const UniqueID &x)const;
-	WaypointList::iterator find(const Time &x);	
+	WaypointList::iterator find(const Time &x);
 	WaypointList::const_iterator find(const Time &x)const;
-	
+
 	WaypointList::iterator find_next(const Time &x);
 	WaypointList::const_iterator find_next(const Time &x)const;
 	WaypointList::iterator find_prev(const Time &x);
@@ -100,7 +100,7 @@ public:
 	int find(const Time& begin,const Time& end,std::vector<Waypoint*>& list);
 
 	void insert_time(const Time& location, const Time& delta);
-	
+
 protected:
 	ValueNode_Animated();
 

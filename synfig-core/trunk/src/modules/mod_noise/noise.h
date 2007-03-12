@@ -58,10 +58,10 @@ private:
 	bool turbulent;
 	bool do_displacement;
 	synfig::Vector displacement;
-	
+
 	//void sync();
 	mutable synfig::Time curr_time;
-	
+
 	bool super_sample;
 
 	synfig::Color color_func(const synfig::Point &x, float supersample,synfig::Context context)const;
@@ -70,12 +70,12 @@ private:
 
 public:
 	Noise();
-	
+
 	virtual bool set_param(const synfig::String &param, const synfig::ValueBase &value);
 	virtual synfig::ValueBase get_param(const synfig::String &param)const;
 	virtual synfig::Color get_color(synfig::Context context, const synfig::Point &pos)const;
 	virtual bool accelerated_render(synfig::Context context,synfig::Surface *surface,int quality, const synfig::RendDesc &renddesc, synfig::ProgressCallback *cb)const;
-	synfig::Layer::Handle hit_check(synfig::Context context, const synfig::Point &point)const;	
+	synfig::Layer::Handle hit_check(synfig::Context context, const synfig::Point &point)const;
 	virtual void set_time(synfig::Context context, synfig::Time time)const;
 	virtual void set_time(synfig::Context context, synfig::Time time, const synfig::Point &point)const;
 

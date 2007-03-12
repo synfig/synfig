@@ -73,9 +73,9 @@ public:
 	Layer_Composite& set_blend_method(Color::BlendMethod x) { blend_method_=x; return *this; }
 
 	bool is_solid_color()const { return amount_==1.0f && blend_method_==Color::BLEND_STRAIGHT; }
-	
+
 	bool is_disabled()const { return amount_==0.0f; }
-	
+
 	virtual Vocab get_param_vocab()const;
 
 	virtual bool set_param(const String &param, const ValueBase &value);

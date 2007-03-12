@@ -45,12 +45,12 @@ public:
 	{
 		next=x;
 	}
-	
+
 	unsigned long i32()
 	{
 		static const unsigned long a(1664525);
 		static const unsigned long c(1013904223);
-		
+
 		return next=next*a+c;
 	}
 
@@ -62,7 +62,7 @@ public:
 	float f()
 	{
 		static const float m(int(65535));
-		
+
 		return float(i16())/m;
 	}
 };
@@ -82,7 +82,7 @@ Random::set_seed(int x)
 {
 	seed_=x;
 }
-	
+
 float
 Random::operator()(const int salt,const int x,const int y,const int t)const
 {
@@ -90,14 +90,14 @@ Random::operator()(const int salt,const int x,const int y,const int t)const
 	static const unsigned int b(11213);
 	static const unsigned int c(36979);
 	static const unsigned int d(31337);
-	
+
 	quick_rng rng(
 		( static_cast<unsigned int>(x+y)        * a ) ^
 		( static_cast<unsigned int>(y+t)        * b ) ^
 		( static_cast<unsigned int>(t+x)        * c ) ^
-		( static_cast<unsigned int>(seed_+salt) * d ) 
+		( static_cast<unsigned int>(seed_+salt) * d )
 	);
-	
+
 	return rng.f() * 2.0f - 1.0f;
 }
 
@@ -116,28 +116,28 @@ Random::operator()(int smooth,int subseed,float xf,float yf,float tf)const
 			//Using catmull rom interpolation because it doesn't blur at all
 			//bezier curve with intermediate ctrl pts: 0.5/3(p(i+1) - p(i-1)) and similar
 			float xfa [4], tfa[4];
-			
+
 			//precalculate indices (all clamped) and offset
 			const int xa[] = {x-1,x,x+1,x+2};
-			
+
 			const int ya[] = {y-1,y,y+1,y+2};
 
 			const int ta[] = {t-1,t,t+1,t+2};
-			
+
 			const float dx(xf-x);
 			const float dy(yf-y);
 			const float dt(tf-t);
-			
+
 			//figure polynomials for each point
-			const float txf[] = 
+			const float txf[] =
 			{
 				0.5*dx*(dx*(dx*(-1) + 2) - 1),	//-t + 2t^2 -t^3
 				0.5*(dx*(dx*(3*dx - 5)) + 2), 	//2 - 5t^2 + 3t^3
 				0.5*dx*(dx*(-3*dx + 4) + 1),	//t + 4t^2 - 3t^3
 				0.5*dx*dx*(dx-1)				//-t^2 + t^3
 			};
-			
-			const float tyf[] = 
+
+			const float tyf[] =
 			{
 				0.5*dy*(dy*(dy*(-1) + 2) - 1),	//-t + 2t^2 -t^3
 				0.5*(dy*(dy*(3*dy - 5)) + 2), 	//2 - 5t^2 + 3t^3
@@ -145,15 +145,15 @@ Random::operator()(int smooth,int subseed,float xf,float yf,float tf)const
 				0.5*dy*dy*(dy-1)				//-t^2 + t^3
 			};
 
-			const float ttf[] = 
+			const float ttf[] =
 			{
 				0.5*dt*(dt*(dt*(-1) + 2) - 1),	//-t + 2t^2 -t^3
 				0.5*(dt*(dt*(3*dt - 5)) + 2), 	//2 - 5t^2 + 3t^3
 				0.5*dt*(dt*(-3*dt + 4) + 1),	//t + 4t^2 - 3t^3
 				0.5*dt*dt*(dt-1)				//-t^2 + t^3
 			};
-			
-			//evaluate polynomial for each row		
+
+			//evaluate polynomial for each row
 			for(int i = 0; i < 4; ++i)
 			{
 				for(int j = 0; j < 4; ++j)
@@ -162,7 +162,7 @@ Random::operator()(int smooth,int subseed,float xf,float yf,float tf)const
 				}
 				xfa[i] = tfa[0]*txf[0] + tfa[1]*txf[1] + tfa[2]*txf[2] + tfa[3]*txf[3];
 			}
-			
+
 			//return the cumulative column evaluation
 			return xfa[0]*tyf[0] + xfa[1]*tyf[1] + xfa[2]*tyf[2] + xfa[3]*tyf[3];
 #undef f
@@ -180,9 +180,9 @@ Random::operator()(int smooth,int subseed,float xf,float yf,float tf)const
 #define ZT(i,j,k) ret+=FT(i,j,k)
 #define X(i,j)	// placeholder... To make box more symetric
 #define XT(i,j,k)	// placeholder... To make box more symetric
-	
+
 		float a(xf-x), b(yf-y);
-		
+
 		// Interpolate
 		float ret(F(0,0));
 		Z(-1,-1); Z(-1, 0); Z(-1, 1); Z(-1, 2);
@@ -192,11 +192,11 @@ Random::operator()(int smooth,int subseed,float xf,float yf,float tf)const
 
 		return ret;
 	}
-		
+
 	case 3:	// Spline (animated)
 		{
 			float a(xf-x), b(yf-y), c(tf-t);
-			
+
 			// Interpolate
 			float ret(FT(0,0,0));
 			ZT(-1,-1,-1); ZT(-1, 0,-1); ZT(-1, 1,-1); ZT(-1, 2,-1);
@@ -218,7 +218,7 @@ Random::operator()(int smooth,int subseed,float xf,float yf,float tf)const
 			ZT( 0,-1, 2); ZT( 0, 0, 2); ZT( 0, 1, 2); ZT( 0, 2, 2);
 			ZT( 1,-1, 2); ZT( 1, 0, 2); ZT( 1, 1, 2); ZT( 1, 2, 2);
 			ZT( 2,-1, 2); ZT( 2, 0, 2); ZT( 2, 1, 2); ZT( 2, 2, 2);
-			
+
 			return ret;
 
 /*
@@ -269,17 +269,17 @@ Random::operator()(int smooth,int subseed,float xf,float yf,float tf)const
 
 		a=(1.0f-cos(a*3.1415927))*0.5f;
 		b=(1.0f-cos(b*3.1415927))*0.5f;
-		
+
 		// We don't perform this on the time axis, otherwise we won't
 		// get smooth motion
 		//c=(1.0f-cos(c*3.1415927))*0.5f;
-		
+
 		float d=1.0-a;
 		float e=1.0-b;
 		float f=1.0-c;
-		
+
 		int x2=x+1,y2=y+1,t2=t+1;
-		
+
 		return
 			(*this)(subseed,x,y,t)*(d*e*f)+
 			(*this)(subseed,x2,y,t)*(a*e*f)+
@@ -308,17 +308,17 @@ Random::operator()(int smooth,int subseed,float xf,float yf,float tf)const
 	}
 	else
 	{
-		
+
 		float a=xf-x;
 		float b=yf-y;
 		float c=tf-t;
-		
+
 		float d=1.0-a;
 		float e=1.0-b;
 		float f=1.0-c;
-		
+
 		int x2=x+1,y2=y+1,t2=t+1;
-		
+
 		return
 			(*this)(subseed,x,y,t)*(d*e*f)+
 			(*this)(subseed,x2,y,t)*(a*e*f)+

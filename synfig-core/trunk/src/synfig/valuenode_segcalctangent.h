@@ -39,7 +39,7 @@ class ValueNode_SegCalcTangent : public LinkableValueNode
 {
 	ValueNode::RHandle segment_;
 	ValueNode::RHandle amount_;
-	
+
 	ValueNode_SegCalcTangent(const ValueBase::Type &x=ValueBase::TYPE_VECTOR);
 
 public:

@@ -82,7 +82,7 @@ Rectangle::Rectangle():
 	invert(false)
 {
 }
-	
+
 bool
 Rectangle::set_param(const String & param, const ValueBase &value)
 {
@@ -91,7 +91,7 @@ Rectangle::set_param(const String & param, const ValueBase &value)
 	IMPORT(point2);
 	IMPORT(expand);
 	IMPORT(invert);
-	
+
 	return Layer_Composite::set_param(param,value);
 }
 
@@ -106,15 +106,15 @@ Rectangle::get_param(const String &param)const
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
-		
-	return Layer_Composite::get_param(param);	
+
+	return Layer_Composite::get_param(param);
 }
 
 Layer::Vocab
 Rectangle::get_param_vocab()const
 {
 	Layer::Vocab ret(Layer_Composite::get_param_vocab());
-	
+
 	ret.push_back(ParamDesc("color")
 		.set_local_name(_("Color"))
 	);
@@ -123,7 +123,7 @@ Rectangle::get_param_vocab()const
 		.set_local_name(_("Point 1"))
 		.set_box("point2")
 	);
-	
+
 	ret.push_back(ParamDesc("point2")
 		.set_local_name(_("Point 2"))
 	);
@@ -132,7 +132,7 @@ Rectangle::get_param_vocab()const
 		.set_is_distance()
 		.set_local_name(_("Expand amount"))
 	);
-	
+
 	ret.push_back(ParamDesc("invert")
 		.set_local_name(_("Invert the rectangle"))
 	);
@@ -154,7 +154,7 @@ Rectangle::hit_check(synfig::Context context, const synfig::Point &pos)const
 	min[1]=std::min(point1[1],point2[1])-expand;
 
 	bool intersect(false);
-	
+
 	if(	pos[0]<max[0] && pos[0]>min[0] &&
 		pos[1]<max[1] && pos[1]>min[1] )
 	{
@@ -163,7 +163,7 @@ Rectangle::hit_check(synfig::Context context, const synfig::Point &pos)const
 
 	if(invert)
 		intersect=!intersect;
-	
+
 	if(intersect)
 	{
 		synfig::Layer::Handle tmp;
@@ -189,10 +189,10 @@ Rectangle::get_color(Context context, const Point &pos)const
 	max[1]=std::max(point1[1],point2[1])+expand;
 	min[0]=std::min(point1[0],point2[0])-expand;
 	min[1]=std::min(point1[1],point2[1])-expand;
-	
+
 /**************************
 // This is darco's old-old-old feathered box code
-// it produces really nice feathered edges	
+// it produces really nice feathered edges
 	if(feather!=0.0)
 	{
 		if(	pos[0]<=max[0]-feather/2.0 && pos[0]>=min[0]+feather/2.0 &&
@@ -215,12 +215,12 @@ Rectangle::get_color(Context context, const Point &pos)const
 
 		Color::unit alpha=1000000;
 		Color::unit alpha2=1000000;
-		
+
 		if(max[0]-pos[0]+feather/2.0<alpha)
 			alpha=max[0]-pos[0]+feather/2.0;
 		if(pos[0]-min[0]+feather/2.0<alpha)
 			alpha=pos[0]-min[0]+feather/2.0;
-		
+
 		if(max[1]-pos[1]+feather/2.0<alpha2)
 			alpha2=max[1]-pos[1]+feather/2.0;
 		if(pos[1]-min[1]+feather/2.0<alpha2)
@@ -233,7 +233,7 @@ Rectangle::get_color(Context context, const Point &pos)const
 			alpha2=feather-alpha2;
 
 			alpha=sqrt(alpha*alpha+alpha2*alpha2);
-			
+
 			if(alpha>=feather)
 			{
 				if(invert)
@@ -256,7 +256,7 @@ Rectangle::get_color(Context context, const Point &pos)const
 
 		return Color::blend(color,context.get_color(pos),alpha,get_blend_method());
 	}
-	
+
 *****************/
 
 	if(	pos[0]<max[0] && pos[0]>min[0] &&
@@ -270,7 +270,7 @@ Rectangle::get_color(Context context, const Point &pos)const
 				return color;
 			else
 				return Color::blend(color,context.get_color(pos),get_amount(),get_blend_method());
-				
+
 		}
 	}
 
@@ -287,7 +287,7 @@ Rectangle::get_color(Context context, const Point &pos)const
 
 bool
 Rectangle::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
-{	
+{
 	if(is_disabled())
 		return context.accelerated_render(surface,quality,renddesc,cb);
 
@@ -302,12 +302,12 @@ Rectangle::accelerated_render(Context context,Surface *surface,int quality, cons
 	const Real ph = (br[1] - tl[1]) / h;
 
 	Point max(point1),min(point2);
-	
-	
-	
-	
+
+
+
+
 	/*
-	
+
 	if(invert)
 	{
 		max=context.get_bounding_rect().get_max();
@@ -319,14 +319,14 @@ Rectangle::accelerated_render(Context context,Surface *surface,int quality, cons
 		min=context.get_full_bounding_rect().get_min();
 	}
 	*/
-	
-	
-	
-	
-	
+
+
+
+
+
 	if((min[0] > max[0]) ^ (pw < 0))swap(min[0],max[0]);
 	if((min[1] > max[1]) ^ (ph < 0))swap(min[1],max[1]);
-	
+
 	if(min[0] > max[0])
 	{
 		min[0]+=expand;
@@ -348,49 +348,49 @@ Rectangle::accelerated_render(Context context,Surface *surface,int quality, cons
 		min[1]-=expand;
 		max[1]+=expand;
 	}
-		
+
 	if(invert)
 	{
 		int left(floor_to_int((min[0]-tl[0])/pw));
 		int right(ceil_to_int((max[0]-tl[0])/pw));
 		int top(floor_to_int((min[1]-tl[1])/ph));
 		int bottom(ceil_to_int((max[1]-tl[1])/ph));
-	
+
 		float left_edge((min[0]-tl[0])/pw-float(left));
 		float right_edge(float(right)-(max[0]-tl[0])/pw);
 		float top_edge((min[1]-tl[1])/ph-float(top));
 		float bottom_edge(float(bottom)-(max[1]-tl[1])/ph);
-			
+
 		if(top<0)top=0,top_edge=0;
 		if(left<0)left=0,left_edge=0;
 		if(bottom>h)bottom=h,bottom_edge=0;
 		if(right>w)right=w,right_edge=0;
-			
+
 		if(is_solid_color())
 		{
 			Surface subimage;
 			RendDesc desc(renddesc);
 			desc.set_flags(0);
-					
+
 			//fill the surface with the background color initially
 			surface->set_wh(w,h);
 			surface->fill(color);
-	
+
 			// Check for the case where there is nothing to render
 			if(right-left<=0||bottom-top<=0)
 				return true;
-			
+
 			desc.set_subwindow(left,top,right-left,bottom-top);
-	
+
 			// Render what is behind us
 			if(!context.accelerated_render(&subimage,quality,desc,cb))
 			{
 				if(cb)cb->error(strprintf(__FILE__"%d: Accelerated Renderer Failure",__LINE__));
 				return false;
 			}
-			
+
 			Surface::pen pen(surface->get_pen(left,top));
-			
+
 			subimage.blit_to(pen);
 		}
 		else
@@ -411,7 +411,7 @@ Rectangle::accelerated_render(Context context,Surface *surface,int quality, cons
 			}
 
 			Surface::alpha_pen surface_pen(surface->begin(),get_amount(),get_blend_method());
-		
+
 			surface->fill(color,surface_pen,w,h);
 
 			if(subimage)
@@ -428,25 +428,25 @@ Rectangle::accelerated_render(Context context,Surface *surface,int quality, cons
 			pen=Surface::alpha_pen(surface->get_pen(left,bottom-1),get_amount()*bottom_edge,get_blend_method());
 			surface->fill(color,pen,right-left,1);
 		}
-		
+
 		if(right-1>=0 && right_edge)
 		{
 			pen=Surface::alpha_pen(surface->get_pen(right-1,top),get_amount()*right_edge,get_blend_method());
 			surface->fill(color,pen,1,bottom-top);
 		}
-		
+
 		if(left>=0 && left_edge)
 		{
 			pen=Surface::alpha_pen(surface->get_pen(left,top),get_amount()*left_edge,get_blend_method());
 			surface->fill(color,pen,1,bottom-top);
 		}
-		
+
 		if(top>=0 && top_edge)
 		{
 			pen=Surface::alpha_pen(surface->get_pen(left,top),get_amount()*top_edge,get_blend_method());
 			surface->fill(color,pen,right-left,1);
 		}
-		
+
 		return true;
 	}
 
@@ -466,7 +466,7 @@ Rectangle::accelerated_render(Context context,Surface *surface,int quality, cons
 	float right_edge((max[0]-tl[0])/pw-float(right));
 	float top_edge(float(top)-(min[1]-tl[1])/ph);
 	float bottom_edge((max[1]-tl[1])/ph-float(bottom));
-		
+
 	if(top<=0)top=0,top_edge=0;
 	if(left<=0)left=0,left_edge=0;
 	if(bottom>=h)bottom=h,bottom_edge=0;
@@ -478,24 +478,24 @@ Rectangle::accelerated_render(Context context,Surface *surface,int quality, cons
 	bottom = std::min(h,bottom);
 	right = std::min(w,right);
 */
-	
+
 	Surface::alpha_pen pen;
 
 	// In the case where there is nothing to render...
 	if(right-left<0||bottom-top<0)
 		return true;
-	
+
 	if(right-left>0&&bottom-top>0)
 	{
 		if(is_solid_color())
 			surface->fill(color,left,top,right-left,bottom-top);
 		else
-		{	
+		{
 			pen=Surface::alpha_pen(surface->get_pen(left,top),get_amount(),get_blend_method());
 			surface->fill(color,pen,right-left,bottom-top);
 		}
 	}
-	
+
 	if(bottom<surface->get_h() && bottom_edge>=0.0001)
 	{
 		pen=Surface::alpha_pen(surface->get_pen(left,bottom),get_amount()*bottom_edge,get_blend_method());
@@ -507,7 +507,7 @@ Rectangle::accelerated_render(Context context,Surface *surface,int quality, cons
 		pen=Surface::alpha_pen(surface->get_pen(right,top),get_amount()*right_edge,get_blend_method());
 		surface->fill(color,pen,1,bottom-top);
 	}
-	
+
 	if(left>0 && left_edge>=0.0001)
 	{
 		pen=Surface::alpha_pen(surface->get_pen(left-1,top),get_amount()*left_edge,get_blend_method());
@@ -530,9 +530,9 @@ Rectangle::get_bounding_rect()const
 	if(invert)
 		return Rect::full_plane();
 
-	Point max(point1),min(point2);	
+	Point max(point1),min(point2);
 	if((min[0] > max[0]))swap(min[0],max[0]);
-	if((min[1] > max[1]))swap(min[1],max[1]);	
+	if((min[1] > max[1]))swap(min[1],max[1]);
 	if(min[0] > max[0])
 	{
 		min[0]+=expand;
@@ -567,9 +567,9 @@ Rectangle::get_full_bounding_rect(Context context)const
 	{
 		if(is_solid_color() && color.get_a()==0)
 		{
-			Point max(point1),min(point2);	
+			Point max(point1),min(point2);
 			if((min[0] > max[0]))swap(min[0],max[0]);
-			if((min[1] > max[1]))swap(min[1],max[1]);	
+			if((min[1] > max[1]))swap(min[1],max[1]);
 			if(min[0] > max[0])
 			{
 				min[0]+=expand;
@@ -596,7 +596,7 @@ Rectangle::get_full_bounding_rect(Context context)const
 
 			return bounds & context.get_full_bounding_rect();
 		}
-		return Rect::full_plane();			
+		return Rect::full_plane();
 	}
 
 	return Layer_Composite::get_full_bounding_rect(context);

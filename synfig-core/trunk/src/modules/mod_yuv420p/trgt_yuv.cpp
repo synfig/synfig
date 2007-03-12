@@ -88,7 +88,7 @@ yuv::set_rend_desc(RendDesc *given_desc)
 
 	// Set up our surface
 	surface.set_wh(desc.get_w(),desc.get_h());
-	
+
 	return true;
 }
 
@@ -146,11 +146,11 @@ yuv::end_frame()
 				if(surface.get_w()>x+1)
 					surface[y][x+1]+=error * ((float)7/(float)16);
 			}
-			
+
 			fputc(i,file.get());
 		}
-	
-		
+
+
 	// Create new super-sampled surface
 	Surface sm_surface(w/2,h/2);
 	for(y=0;y<h;y+=2)
@@ -190,7 +190,7 @@ yuv::end_frame()
 			}
 			fputc(i,file.get());
 		}
-				
+
 	// Output V channel
 	for(y=0;y<sm_surface.get_h();y++)
 		for(x=0;x<sm_surface.get_w();x++)
@@ -216,7 +216,7 @@ yuv::end_frame()
 			}
 			fputc(i,file.get());
 		}
-	
+
 	// Flush out the frame
 	fflush(file.get());
 }

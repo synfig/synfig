@@ -60,7 +60,7 @@ private:
 	bool shade_inside;
 	bool shade_outside;
 	bool solid_inside;
-	bool solid_outside;	
+	bool solid_outside;
 	bool invert_inside;
 	bool invert_outside;
 	bool color_inside;
@@ -72,14 +72,14 @@ private:
 
 public:
 	Julia();
-	
+
 	virtual bool set_param(const synfig::String &param, const synfig::ValueBase &value);
 
 	virtual ValueBase get_param(const synfig::String &param)const;
 
 	virtual Color get_color(synfig::Context context, const synfig::Point &pos)const;
 
-	virtual Vocab get_param_vocab()const;	
+	virtual Vocab get_param_vocab()const;
 };
 
 /* === E N D =============================================================== */

@@ -92,11 +92,11 @@ Target_Tile::next_frame(Time& time)
 	frame_end=desc.get_frame_end();
 	time_start=desc.get_time_start();
 	time_end=desc.get_time_end();
-	
+
 	// Calculate the number of frames
 	total_frames=frame_end-frame_start;
 	if(total_frames<=0)total_frames=1;
-	
+
 	//RendDesc rend_desc=desc;
 	//rend_desc.set_gamma(1);
 
@@ -124,7 +124,7 @@ Target_Tile::next_tile(int& x, int& y)
 	// Add the last tiles (which will be clipped)
 	if(rend_desc().get_w()%tile_w_!=0)tw++;
 	if(rend_desc().get_h()%tile_h_!=0)th++;
-	
+
 	x=(curr_tile_%tw)*tile_h_;
 	y=(curr_tile_/tw)*tile_w_;
 
@@ -148,13 +148,13 @@ synfig::Target_Tile::render_frame_(Context context,ProgressCallback *cb)
 	etl::clock::value_type find_tile_time(0);
 	etl::clock::value_type add_tile_time(0);
 	total_time.reset();
-	
+
 	// If the quality is set to zero, then we
 	// use the parametric scanline-renderer.
 	if(get_quality()==0)
 	{
 		Surface surface;
-		
+
 		RendDesc tile_desc;
 		int x,y,w,h;
 		int i;
@@ -200,7 +200,7 @@ synfig::Target_Tile::render_frame_(Context context,ProgressCallback *cb)
 				if(get_remove_alpha())
 					for(int i=0;i<surface.get_w()*surface.get_h();i++)
 						surface[0][i]=Color::blend(surface[0][i],desc.get_bg_color(),1.0f);
-				
+
 				// Add the tile to the target
 				if(!add_tile(surface,x,y))
 				{
@@ -214,7 +214,7 @@ synfig::Target_Tile::render_frame_(Context context,ProgressCallback *cb)
 	else // If quality is set otherwise, then we use the accelerated renderer
 	{
 		Surface surface;
-		
+
 		RendDesc tile_desc;
 		int x,y,w,h;
 		int i;
@@ -243,10 +243,10 @@ synfig::Target_Tile::render_frame_(Context context,ProgressCallback *cb)
 
 			tile_desc=rend_desc;
 			tile_desc.set_subwindow(x,y,w,h);
-			
+
 			etl::clock timer2;
 			timer2.reset();
-			
+
 			if(!context.accelerated_render(&surface,get_quality(),tile_desc,&super))
 			{
 				// For some reason, the accelerated renderer failed.
@@ -280,7 +280,7 @@ synfig::Target_Tile::render_frame_(Context context,ProgressCallback *cb)
 	}
 	if(cb && !cb->amount_complete(total_tiles,total_tiles))
 		return false;
-	
+
 #if SYNFIG_DISPLAY_EFFICIENCY==1
 	synfig::info(">>>>>> Render Time: %fsec, Find Tile Time: %fsec, Add Tile Time: %fsec, Total Time: %fsec",work_time,find_tile_time,add_tile_time,total_time());
 	synfig::info(">>>>>> FRAME EFICIENCY: %f%%",(100.0f*work_time/total_time()));
@@ -311,7 +311,7 @@ synfig::Target_Tile::render(ProgressCallback *cb)
 		return false;
 	}
 
-	
+
 	// If the description's end frame is equal to
 	// the start frame, then it is assumed that we
 	// are rendering only one frame. Correct it.
@@ -322,38 +322,38 @@ synfig::Target_Tile::render(ProgressCallback *cb)
 	frame_end=desc.get_frame_end();
 	time_start=desc.get_time_start();
 	time_end=desc.get_time_end();
-	
+
 	// Calculate the number of frames
 	total_frames=frame_end-frame_start;
-	
-	
-	
+
+
+
 	try {
 		// Grab the time
 		i=next_frame(t);
-		
+
 		//synfig::info("1time_set_to %s",t.get_string().c_str());
-		
+
 		if(i>=1)
 		{
 		do
 		{
 			curr_tile_=0;
-			
+
 			// If we have a callback, and it returns
 			// false, go ahead and bail. (maybe a use cancel)
 			if(cb && !cb->amount_complete(total_frames-(i-1),total_frames))
 				return false;
-			
+
 			if(!start_frame(cb))
 				return false;
 
 			// Set the time that we wish to render
 			//if(!get_avoid_time_sync() || canvas->get_time()!=t)
 				canvas->set_time(t);
-			
+
 			Context context;
-			
+
 			#ifdef SYNFIG_OPTIMIZE_LAYER_TREE
 			Canvas::Handle op_canvas(Canvas::create());
 			optimize_layers(canvas->get_context(), op_canvas);
@@ -361,7 +361,7 @@ synfig::Target_Tile::render(ProgressCallback *cb)
 			#else
 			context=canvas->get_context();
 			#endif
-			
+
 /*
 			#ifdef SYNFIG_OPTIMIZE_LAYER_TREE
 			Context context;
@@ -377,7 +377,7 @@ synfig::Target_Tile::render(ProgressCallback *cb)
 			context=canvas->get_context();
 			#endif
 */
-			
+
 			if(!render_frame_(context,0))
 				return false;
 			end_frame();
@@ -387,7 +387,7 @@ synfig::Target_Tile::render(ProgressCallback *cb)
 		else
 		{
 			curr_tile_=0;
-	
+
 			if(!start_frame(cb))
 				return false;
 
@@ -398,7 +398,7 @@ synfig::Target_Tile::render(ProgressCallback *cb)
 			//synfig::info("2time_set_to %s",t.get_string().c_str());
 
 			Context context;
-			
+
 			#ifdef SYNFIG_OPTIMIZE_LAYER_TREE
 			Canvas::Handle op_canvas(Canvas::create());
 			optimize_layers(canvas->get_context(), op_canvas);
@@ -406,12 +406,12 @@ synfig::Target_Tile::render(ProgressCallback *cb)
 			#else
 			context=canvas->get_context();
 			#endif
-		
+
 			if(!render_frame_(context, cb))
 				return false;
 			end_frame();
 		}
-	
+
 	}
 	catch(String str)
 	{

@@ -48,19 +48,19 @@ class Rotate : public Layer
 private:
 	Vector origin;
 	Angle amount;
-	
+
 	Real sin_val;
 	Real cos_val;
 public:
 	Rotate();
 	~Rotate();
-	
+
 	virtual bool set_param(const synfig::String & param, const synfig::ValueBase &value);
 	virtual ValueBase get_param(const synfig::String & param)const;
 	virtual Color get_color(Context context, const Point &pos)const;
 	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
-	synfig::Layer::Handle hit_check(synfig::Context context, const synfig::Point &point)const;	
-	virtual Vocab get_param_vocab()const;	
+	synfig::Layer::Handle hit_check(synfig::Context context, const synfig::Point &point)const;
+	virtual Vocab get_param_vocab()const;
 	virtual Rect get_full_bounding_rect(Context context)const;
 
 	virtual etl::handle<synfig::Transform> get_transform()const;

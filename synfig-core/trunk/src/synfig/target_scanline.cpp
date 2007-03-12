@@ -85,11 +85,11 @@ Target_Scanline::next_frame(Time& time)
 	frame_end=desc.get_frame_end();
 	time_start=desc.get_time_start();
 	time_end=desc.get_time_end();
-	
+
 	// Calculate the number of frames
 	total_frames=frame_end-frame_start;
 	if(total_frames<=0)total_frames=1;
-	
+
 	//RendDesc rend_desc=desc;
 	//rend_desc.set_gamma(1);
 
@@ -128,7 +128,7 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 		if(cb) cb->error(_("Target initialisation failure"));
 		return false;
 	}
-	
+
 	// If the description's end frame is equal to
 	// the start frame, then it is assumed that we
 	// are rendering only one frame. Correct it.
@@ -139,22 +139,22 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 	frame_end=desc.get_frame_end();
 	time_start=desc.get_time_start();
 	time_end=desc.get_time_end();
-	
+
 	// Calculate the number of frames
 	total_frames=frame_end-frame_start;
-	
-	
+
+
 	//RendDesc rend_desc=desc;
-		
+
 	try {
 	// Grab the time
 	int i=next_frame(t);
-	
+
 	//synfig::info("1time_set_to %s",t.get_string().c_str());
-	
+
 	if(i>1)
 	do{
-	
+
 	//if(total_frames>1)
 	//for(i=0,t=time_start;i<total_frames;i++)
 	//{
@@ -164,13 +164,13 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 		// false, go ahead and bail. (it may be a user cancel)
 		if(cb && !cb->amount_complete(total_frames-(i-1),total_frames))
 			return false;
-		
+
 		// Set the time that we wish to render
 		if(!get_avoid_time_sync() || canvas->get_time()!=t)
 			canvas->set_time(t);
-		
+
 		Context context;
-		
+
 		#ifdef SYNFIG_OPTIMIZE_LAYER_TREE
 		Canvas::Handle op_canvas(Canvas::create());
 		optimize_layers(canvas->get_context(), op_canvas);
@@ -178,7 +178,7 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 		#else
 		context=canvas->get_context();
 		#endif
-		
+
 		// If the quality is set to zero, then we
 		// use the parametric scanline-renderer.
 		if(quality==0)
@@ -198,29 +198,29 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 		{
 			#if USE_PIXELRENDERING_LIMIT
 			if(desc.get_w()*desc.get_h() > PIXEL_RENDERING_LIMIT)
-			{					
+			{
 				synfig::info("Render BROKEN UP! (%d pixels)", desc.get_w()*desc.get_h());
-								
-				Surface surface;				
+
+				Surface surface;
 				int rowheight = PIXEL_RENDERING_LIMIT/desc.get_w();
 				int rows = desc.get_h()/rowheight;
 				int lastrowheight = desc.get_h() - rows*rowheight;
-				
+
 				rows++;
-				
-				synfig::info("\t blockh=%d,remh=%d,totrows=%d", rowheight,lastrowheight,rows);				
-				
+
+				synfig::info("\t blockh=%d,remh=%d,totrows=%d", rowheight,lastrowheight,rows);
+
 				// loop through all the full rows
 				if(!start_frame())
 				{
 					throw(string("add_frame(): target panic on start_frame()"));
 					return false;
 				}
-				
+
 				for(int i=0; i < rows; ++i)
 				{
 					RendDesc	blockrd = desc;
-					
+
 					//render the strip at the normal size unless it's the last one...
 					if(i == rows)
 					{
@@ -231,7 +231,7 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 					{
 						blockrd.set_subwindow(0,i*rowheight,desc.get_w(),rowheight);
 					}
-					
+
 					if(!context.accelerated_render(&surface,quality,blockrd,0))
 					{
 						if(cb)cb->error(_("Accelerated Renderer Failure"));
@@ -241,9 +241,9 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 						int y;
 						int rowspan=sizeof(Color)*surface.get_w();
 						Surface::pen pen = surface.begin();
-						
+
 						int yoff = i*rowheight;
-						
+
 						for(y = 0; y < blockrd.get_h(); y++, pen.inc_y())
 						{
 							Color *colordata= start_scanline(y + yoff);
@@ -252,7 +252,7 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 								throw(string("add_frame(): call to start_scanline(y) returned NULL"));
 								return false;
 							}
-							
+
 							if(get_remove_alpha())
 							{
 								for(int i = 0; i < surface.get_w(); i++)
@@ -260,7 +260,7 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 							}
 							else
 								memcpy(colordata,surface[y],rowspan);
-						
+
 							if(!end_scanline())
 							{
 								throw(string("add_frame(): target panic on end_scanline()"));
@@ -268,15 +268,15 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 							}
 						}
 					}
-				}	
+				}
 
-				end_frame();				
-				
+				end_frame();
+
 			}else //use normal rendering...
 			{
 			#endif
 				Surface surface;
-				
+
 				if(!context.accelerated_render(&surface,quality,desc,0))
 				{
 					// For some reason, the accelerated renderer failed.
@@ -304,7 +304,7 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 		if(!get_avoid_time_sync() || canvas->get_time()!=t)
 			canvas->set_time(t);
 		Context context;
-		
+
 		#ifdef SYNFIG_OPTIMIZE_LAYER_TREE
 		Canvas::Handle op_canvas(Canvas::create());
 		optimize_layers(canvas->get_context(), op_canvas);
@@ -312,7 +312,7 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 		#else
 		context=canvas->get_context();
 		#endif
-		
+
 		// If the quality is set to zero, then we
 		// use the parametric scanline-renderer.
 		if(quality==0)
@@ -334,28 +334,28 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 			if(desc.get_w()*desc.get_h() > PIXEL_RENDERING_LIMIT)
 			{
 				synfig::info("Render BROKEN UP! (%d pixels)", desc.get_w()*desc.get_h());
-				
-				Surface surface;				
-				int totalheight = desc.get_h();				
+
+				Surface surface;
+				int totalheight = desc.get_h();
 				int rowheight = PIXEL_RENDERING_LIMIT/desc.get_w();
 				int rows = desc.get_h()/rowheight;
 				int lastrowheight = desc.get_h() - rows*rowheight;
-				
+
 				rows++;
-				
-				synfig::info("\t blockh=%d,remh=%d,totrows=%d", rowheight,lastrowheight,rows);				
-				
+
+				synfig::info("\t blockh=%d,remh=%d,totrows=%d", rowheight,lastrowheight,rows);
+
 				// loop through all the full rows
 				if(!start_frame())
 				{
 					throw(string("add_frame(): target panic on start_frame()"));
 					return false;
 				}
-				
+
 				for(int i=0; i < rows; ++i)
 				{
 					RendDesc	blockrd = desc;
-					
+
 					//render the strip at the normal size unless it's the last one...
 					if(i == rows)
 					{
@@ -366,9 +366,9 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 					{
 						blockrd.set_subwindow(0,i*rowheight,desc.get_w(),rowheight);
 					}
-					
+
 					SuperCallback	sc(cb, i*rowheight, (i+1)*rowheight, totalheight);
-					
+
 					if(!context.accelerated_render(&surface,quality,blockrd,&sc))
 					{
 						if(cb)cb->error(_("Accelerated Renderer Failure"));
@@ -378,9 +378,9 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 						int y;
 						int rowspan=sizeof(Color)*surface.get_w();
 						Surface::pen pen = surface.begin();
-						
+
 						int yoff = i*rowheight;
-						
+
 						for(y = 0; y < blockrd.get_h(); y++, pen.inc_y())
 						{
 							Color *colordata= start_scanline(y + yoff);
@@ -389,7 +389,7 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 								throw(string("add_frame(): call to start_scanline(y) returned NULL"));
 								return false;
 							}
-							
+
 							if(get_remove_alpha())
 							{
 								for(int i = 0; i < surface.get_w(); i++)
@@ -397,7 +397,7 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 							}
 							else
 								memcpy(colordata,surface[y],rowspan);
-						
+
 							if(!end_scanline())
 							{
 								throw(string("add_frame(): target panic on end_scanline()"));
@@ -405,18 +405,18 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 							}
 						}
 					}
-					
+
 					//I'm done with this part
 					sc.amount_complete(100,100);
-				}	
+				}
 
-				end_frame();				
-				
+				end_frame();
+
 			}else
 			{
-			#endif			
+			#endif
 				Surface surface;
-				
+
 				if(!context.accelerated_render(&surface,quality,desc,cb))
 				{
 					if(cb)cb->error(_("Accelerated Renderer Failure"));
@@ -437,7 +437,7 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 			#endif
 		}
 	}
-	
+
 	}
 	catch(String str)
 	{
@@ -466,13 +466,13 @@ Target_Scanline::add_frame(const Surface *surface)
 	int y;
 	int rowspan=sizeof(Color)*surface->get_w();
 	Surface::const_pen pen=surface->begin();
-	
+
 	if(!start_frame())
 	{
 		throw(string("add_frame(): target panic on start_frame()"));
 		return false;
 	}
-		
+
 	for(y=0;y<surface->get_h();y++,pen.inc_y())
 	{
 		Color *colordata= start_scanline(y);
@@ -481,7 +481,7 @@ Target_Scanline::add_frame(const Surface *surface)
 			throw(string("add_frame(): call to start_scanline(y) returned NULL"));
 			return false;
 		}
-		
+
 		if(get_remove_alpha())
 		{
 			for(int i=0;i<surface->get_w();i++)
@@ -489,15 +489,15 @@ Target_Scanline::add_frame(const Surface *surface)
 		}
 		else
 			memcpy(colordata,(*surface)[y],rowspan);
-	
+
 		if(!end_scanline())
 		{
 			throw(string("add_frame(): target panic on end_scanline()"));
 			return false;
 		}
 	}
-	
+
 	end_frame();
-	
+
 	return true;
 }

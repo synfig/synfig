@@ -180,13 +180,13 @@ synfig::ValueNode_TimedSwap::operator()(Time t)const
 
 	if(t>swptime)
 		return (*after)(t);
-	
+
 	if(t<=swptime && t>swptime-swplength)
 	{
 		Real amount=(swptime-t)/swplength;
 		// if amount==0.0, then we are after
 		// if amount==1.0, then we are before
-		
+
 		switch(get_type())
 		{
 		case ValueBase::TYPE_REAL:
@@ -292,7 +292,7 @@ ValueNode_TimedSwap::link_local_name(int i)const
 		return _("Swap Duration");
 	}
 	return 0;
-}	
+}
 
 String
 ValueNode_TimedSwap::link_name(int i)const
@@ -310,7 +310,7 @@ ValueNode_TimedSwap::link_name(int i)const
 		return "length";
 	}
 	return 0;
-}	
+}
 
 int
 ValueNode_TimedSwap::get_link_index_from_name(const String &name)const

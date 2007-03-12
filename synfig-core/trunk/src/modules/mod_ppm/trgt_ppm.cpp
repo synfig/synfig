@@ -92,7 +92,7 @@ bool
 ppm::start_frame(synfig::ProgressCallback *callback)
 {
 	int w=desc.get_w(),h=desc.get_h();
-	
+
 	if(filename=="-")
 	{
 		if(callback)callback->task(strprintf("(stdout) %d",imagecount).c_str());
@@ -104,7 +104,7 @@ ppm::start_frame(synfig::ProgressCallback *callback)
 			newfilename(filename),
 			ext(find(filename.begin(),filename.end(),'.'),filename.end());
 		newfilename.erase(find(newfilename.begin(),newfilename.end(),'.'),newfilename.end());
-		
+
 		newfilename+=etl::strprintf("%04d",imagecount)+ext;
 		file=SmartFILE(fopen(newfilename.c_str(),"wb"));
 		if(callback)callback->task(newfilename);
@@ -114,20 +114,20 @@ ppm::start_frame(synfig::ProgressCallback *callback)
 		file=SmartFILE(fopen(filename.c_str(),"wb"));
 		if(callback)callback->task(filename);
 	}
-	
+
 	if(!file)
 		return false;
-	
+
 	fprintf(file.get(), "P6\n");
 	fprintf(file.get(), "%d %d\n", w, h);
-	fprintf(file.get(), "%d\n", 255);	
-	
+	fprintf(file.get(), "%d\n", 255);
+
 	delete [] buffer;
 	buffer=new unsigned char[3*w];
 
 	delete [] color_buffer;
 	color_buffer=new Color[desc.get_w()];
-	
+
 	return true;
 }
 
@@ -144,7 +144,7 @@ ppm::end_scanline()
 		return false;
 
 	convert_color_format(buffer, color_buffer, desc.get_w(), PF_RGB, gamma());
-			
+
 	if(!fwrite(buffer,1,desc.get_w()*3,file.get()))
 		return false;
 

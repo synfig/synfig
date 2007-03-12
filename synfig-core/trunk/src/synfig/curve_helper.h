@@ -43,20 +43,20 @@
 namespace synfig {
 
 //line helper functions
-inline Real line_point_distsq(const Point &p1, const Point &p2, 
+inline Real line_point_distsq(const Point &p1, const Point &p2,
 										const Point &p, float &t)
 {
 	Vector v,vt;
-	
+
 	v = p2 - p1;
 	vt = p - p1;
-	
+
 	t = v.mag_squared() > 1e-12 ? (vt*v)/v.mag_squared() : 0; //get the projected time value for the current line
-	
-	//get distance to line segment with the time value clamped 0-1			
+
+	//get distance to line segment with the time value clamped 0-1
 	if(t >= 1)	//use p+v
 	{
-		vt += v; //makes it pp - (p+v)	
+		vt += v; //makes it pp - (p+v)
 		t = 1;
 	}else if(t > 0)	//use vt-proj
 	{
@@ -65,7 +65,7 @@ inline Real line_point_distsq(const Point &p1, const Point &p2,
 	{
 		t = 0;
 	}
-	
+
 	//else use p
 	return vt.mag_squared();
 }
@@ -76,23 +76,23 @@ struct Ray
 {
 	Point	p;
 	Vector	v;
-	
+
 	Ray() {}
 	Ray(const Point &pin, const Vector &vin):p(pin), v(vin) {}
 };
 
-/* This algorithm calculates the INTERSECTION of 2 line segments 
+/* This algorithm calculates the INTERSECTION of 2 line segments
 	(not the closest point or anything like that, just intersection)
 	//parameter values returned are [0,1]
 */
-int intersect(const Point &p1, const Vector &v1, float &t1, 
+int intersect(const Point &p1, const Vector &v1, float &t1,
 				const Point &p2, const Vector &v2, float &t2);
 
 inline bool intersect_line_segments(const Point &a, const Point &b, float &tout,
 										const Point &c, const Point &d, float &sout)
 {
 	Vector v1(b-a), v2(d-c);
-		
+
 	//ok so treat both lines as parametric (so we can find the time values simultaneously)
 	float t,s;
 
@@ -102,8 +102,8 @@ inline bool intersect_line_segments(const Point &a, const Point &b, float &tout,
 		sout = s;
 		return true;
 	}
-	
-	return false;	
+
+	return false;
 }
 
 //Find the closest point on the curve to a point (and return it's distance, and time value)
@@ -126,15 +126,15 @@ inline bool intersect(const etl::rect<T> &r1, const etl::rect<T> &r2)
 	return (r1.minx < r2.maxx) &
 			(r2.minx < r1.maxx) &
 			(r1.miny < r2.maxy) &
-			(r2.miny < r1.maxy);			
+			(r2.miny < r1.maxy);
 }*/
 
 //----- Convex Hull of a Bezier Curve --------------
 struct BezHull
 {
-	Point	p[4];	
+	Point	p[4];
 	int		size;
-	
+
 	void Bound(const etl::bezier<Point> &b);
 };
 
@@ -152,7 +152,7 @@ public:
 	struct SCurve;
 private:
 	void recurse_intersect(const SCurve &left, const SCurve &right, int depth = 0);
-	
+
 public:
 	//size should be equal
 	typedef std::vector< std::pair<float,float > >	intersect_set;

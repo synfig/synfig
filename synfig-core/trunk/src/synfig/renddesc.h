@@ -58,21 +58,21 @@ public:
 		PX_AREA=(1<<1),
 		PX_W=(1<<2),
 		PX_H=(1<<3),
-		
+
 		IM_ASPECT=(1<<4),
 		IM_SPAN=(1<<5),
 		IM_W=(1<<6),
 		IM_H=(1<<7),
 		IM_ZOOMIN=(1<<8),
 		IM_ZOOMOUT=(1<<9),
-				
+
 		LINK_PX_ASPECT=(1<<10),
 		LINK_PX_AREA=(1<<11),
 		LINK_IM_ASPECT=(1<<12),
 		LINK_IM_SPAN=(1<<13),
 		LINK_IM_CENTER=(1<<14)
 	};
-	
+
 private:
 	int w_,h_;
 	Real x_res;
@@ -88,7 +88,7 @@ private:
 
 	float frame_rate;
 	Time time_begin, time_end;
-		
+
 public:
 
 	enum
@@ -118,10 +118,10 @@ public:
 		time_begin	(0),
 		time_end	(0)
 	{ }
-	
+
 	//! \writeme
 	RendDesc &apply(const RendDesc &x);
-	
+
 	//! \writeme
 	const Color &get_bg_color()const;
 
@@ -154,7 +154,7 @@ public:
 
 	//! Sets the horizontal resolution (in dots per meter)
 	RendDesc &set_x_res(Real x);
-	
+
     //! Returns the vertical resolution (in dots per meter)
 	Real get_y_res()const;
 
@@ -180,22 +180,22 @@ public:
 
 	//! Set the index of the first frame
 	RendDesc &set_frame_start(int x);
-	
+
 	//!	Return the index of the last frame
 	int get_frame_end()const;
-	
+
 	//! Set the index of the last frame
 	RendDesc &set_frame_end(int x);
 
 	//!	Return the starting time of the animation
 	const Time get_time_start()const;
-	
+
 	//!	Set the time that the animation will start
 	RendDesc &set_time_start(Time x);
 
 	//! Return the end time of the animation
 	const Time get_time_end()const;
-	
+
 	//!	Set the time that the animation will end
 	RendDesc &set_time_end(Time x);
 
@@ -207,25 +207,25 @@ public:
 
 	//!	Return the frame rate (frames-per-second)
 	const float &get_frame_rate()const;
-	
+
 	//! Set the frame rate (frames-per-second)
 	RendDesc &set_frame_rate(float x);
 
 	//! Return the status of the interlaced flag
 	const bool &get_interlaced()const;
-	
+
 	//! Set the interlace flag
 	RendDesc &set_interlaced(bool x);
 
 	//! Return the status of the clamp flag
 	const bool &get_clamp()const;
-	
+
 	//! Set the clamp flag
 	RendDesc &set_clamp(bool x);
 
 	//! Set constraint flags
 	RendDesc &set_flags(const int &x);
-	
+
 	//! Clear constraint flags
 	RendDesc &clear_flags();
 
@@ -237,7 +237,7 @@ public:
 
 	//!	Return the aspect ratio of the entire image
 	Point::value_type get_image_aspect()const;
-	
+
 	//! Return the antialias amount
 	const int &get_antialias()const;
 
@@ -259,17 +259,17 @@ public:
 	RendDesc &set_focus(const Point &x);
 
 	const Point &get_tl()const;
-	
+
 	RendDesc &set_tl(const Point &x);
 
 	const Point &get_br()const;
-	
+
 	RendDesc &set_br(const Point &x);
-	
+
 	Rect get_rect()const { return Rect(get_tl(),get_br()); }
 
 	RendDesc &set_viewport(const Point &__tl, const Point &__br);
-	
+
 	RendDesc &set_viewport(Vector::value_type a,Vector::value_type b,Vector::value_type c,Vector::value_type d);
 
 	//! Returns the width of one pixel

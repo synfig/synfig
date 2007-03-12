@@ -66,12 +66,12 @@ Translate::Translate():origin(0,0)
 Translate::~Translate()
 {
 }
-	
+
 bool
 Translate::set_param(const String & param, const ValueBase &value)
 {
 	IMPORT(origin);
-	
+
 	return false;
 }
 
@@ -81,20 +81,20 @@ Translate::get_param(const String& param)const
 	EXPORT(origin);
 	EXPORT_NAME();
 	EXPORT_VERSION();
-		
-	return ValueBase();	
+
+	return ValueBase();
 }
 
 Layer::Vocab
 Translate::get_param_vocab()const
 {
 	Layer::Vocab ret;
-	
+
 	ret.push_back(ParamDesc("origin")
 		.set_local_name(_("Origin"))
 		.set_description(_("Point where you want the origin to be"))
 	);
-	
+
 	return ret;
 }
 
@@ -115,12 +115,12 @@ class Translate_Trans : public Transform
 	etl::handle<const Translate> layer;
 public:
 	Translate_Trans(const Translate* x):Transform(x->get_guid()),layer(x) { }
-	
+
 	synfig::Vector perform(const synfig::Vector& x)const
 	{
 		return x+layer->origin;
 	}
-	
+
 	synfig::Vector unperform(const synfig::Vector& x)const
 	{
 		return x-layer->origin;

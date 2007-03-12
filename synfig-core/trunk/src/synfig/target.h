@@ -91,13 +91,13 @@ public:
 
 	//! Map of target names indexed by associated file extension
 	static ExtBook* ext_book_;
-	
+
 	static Book& book();
 	static ExtBook& ext_book();
 
 	static bool subsys_init();
 	static bool subsys_stop();
-	
+
 	//! Adjusted Render description set by set_rend_desc()
 	RendDesc desc;
 
@@ -107,9 +107,9 @@ public:
 	Gamma gamma_;
 
 	bool remove_alpha;
-	
+
 	bool avoid_time_sync_;
-	
+
 protected:
 
 	Target();
@@ -118,17 +118,17 @@ public:
 	virtual ~Target() { }
 
 	int get_quality()const { return quality_; }
-	
+
 	void set_quality(int q) { quality_=q; }
-	
+
 	void set_avoid_time_sync(bool x=true) { avoid_time_sync_=x; }
 
 	bool get_avoid_time_sync()const { return avoid_time_sync_; }
-	
+
 	bool get_remove_alpha()const { return remove_alpha; }
 
 	void set_remove_alpha(bool x=true) { remove_alpha=x; }
-	
+
 	Gamma &gamma() { return gamma_; }
 
 	const Gamma &gamma()const { return gamma_; }
@@ -139,7 +139,7 @@ public:
 
 	RendDesc &rend_desc() { return desc; }
 	const RendDesc &rend_desc()const { return desc; }
-	
+
 	//! Renders the canvas to the target
 	virtual bool render(ProgressCallback *cb=NULL)=0;
 

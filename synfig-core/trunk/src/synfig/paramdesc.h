@@ -41,7 +41,7 @@
 namespace synfig {
 
 class ValueBase;
-	
+
 /*!	\class ParamDesc
 **	\brief Parameter Description Class
 **	\todo writeme
@@ -63,7 +63,7 @@ public:
 		{
 		}
 	};
-	
+
 	/*
  --	** -- D A T A -------------------------------------------------------------
 	*/
@@ -85,7 +85,7 @@ private:
 	bool animation_only_;
 
 	std::list<EnumData> enum_list_;
-	
+
 	/*
  --	** -- C O N S T R U C T O R S ---------------------------------------------
 	*/
@@ -116,7 +116,7 @@ public:
 
 	//! \writeme
 	const std::list<EnumData> &get_enum_list()const { return enum_list_; }
-	
+
    	//! Sets the localized name of the parameter.
    	ParamDesc &set_local_name(const String &n) { local_name_=n; return *this; }
 
@@ -141,14 +141,14 @@ public:
    	//! Returns the flag regarding duck visibility
    	bool get_invisible_duck() { return invisible_duck_; }
 
-	
+
    	//! \writeme
    	ParamDesc &set_animation_only(bool x=true) { animation_only_=x; return *this; }
 
    	//! \writeme
    	bool get_animation_only() { return animation_only_; }
 
-	
+
    	//! Sets which parameter is to be used as the origin when the user edits visually.
    	ParamDesc &set_origin(const String &h) { origin_=h; return *this; }
 
@@ -210,8 +210,8 @@ public:
    	//! Returns \c true if the layer is hidden, \c false otherwise.
    	bool get_hidden()const { return hidden_; }
 
-	
-	
+
+
    	ParamDesc& set_is_distance(bool x=true) { is_distance_=x; return *this;}
    	bool get_is_distance()const { return is_distance_; }
 }; // END of class ParamDesc

@@ -36,7 +36,7 @@
 /* === C L A S S E S & S T R U C T S ======================================= */
 
 namespace synfig {
-	
+
 /*!	\struct Segment
 **	\todo writeme
 */

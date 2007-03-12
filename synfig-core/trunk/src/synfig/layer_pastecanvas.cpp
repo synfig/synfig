@@ -95,7 +95,7 @@ Layer_PasteCanvas::~Layer_PasteCanvas()
 */
 
 	//if(canvas)DEBUGINFO(strprintf("%d",canvas->count()));
-	
+
 	set_sub_canvas(0);
 
 	//if(canvas && (canvas->is_inline() || !get_canvas() || get_canvas()->get_root()!=canvas->get_root()))
@@ -108,7 +108,7 @@ Layer_PasteCanvas::get_local_name()const
 	if(!canvas)	return _("Pasted Canvas");
 	if(canvas->is_inline()) return _("Inline Canvas");
 	if(canvas->get_root()==get_canvas()->get_root()) return '[' + canvas->get_id() + ']';
-		
+
 	return '[' + canvas->get_file_name() + ']';
 }
 
@@ -116,7 +116,7 @@ Layer::Vocab
 Layer_PasteCanvas::get_param_vocab()const
 {
 	Layer::Vocab ret(Layer_Composite::get_param_vocab());
-	
+
 	ret.push_back(ParamDesc("origin")
 		.set_local_name(_("Origin"))
 		.set_description(_("Point where you want the origin to be"))
@@ -137,7 +137,7 @@ Layer_PasteCanvas::get_param_vocab()const
 	ret.push_back(ParamDesc("children_lock")
 		.set_local_name(_("Children Lock"))
 	);
-	
+
 	return ret;
 }
 
@@ -145,7 +145,7 @@ bool
 Layer_PasteCanvas::set_param(const String & param, const ValueBase &value)
 {
 	IMPORT(origin);
-	
+
 	if(param=="canvas" && value.same_as(Canvas::Handle()))
 	{
 		set_sub_canvas(value.get(Canvas::Handle()));
@@ -156,7 +156,7 @@ Layer_PasteCanvas::set_param(const String & param, const ValueBase &value)
 	IMPORT(children_lock);
 	IMPORT(zoom);
 	IMPORT(time_offset);
-	
+
 	return Layer_Composite::set_param(param,value);
 }
 
@@ -165,14 +165,14 @@ Layer_PasteCanvas::set_sub_canvas(etl::handle<synfig::Canvas> x)
 {
 	if(canvas && !do_not_muck_with_time_)
 		remove_child(canvas.get());
-	
+
 	if(canvas && (canvas->is_inline() || !get_canvas() || get_canvas()->get_root()!=canvas->get_root()))
 		canvas->unref();
-	
+
 	child_changed_connection.disconnect();
-	
+
 	canvas=x;
-	
+
 	/*if(canvas)
 		child_changed_connection=canvas->signal_changed().connect(
 			sigc::mem_fun(
@@ -183,13 +183,13 @@ Layer_PasteCanvas::set_sub_canvas(etl::handle<synfig::Canvas> x)
 	*/
 	if(canvas)
 		bounds=(canvas->get_context().get_full_bounding_rect()-canvas->rend_desc().get_focus())*exp(zoom)+origin+canvas->rend_desc().get_focus();
-	
+
 	if(canvas && !do_not_muck_with_time_)
 		add_child(canvas.get());
 
 	if(canvas && (canvas->is_inline() || !get_canvas() || get_canvas()->get_root()!=canvas->get_root()))
 		canvas->ref();
-	
+
 	if(canvas)
 		on_canvas_set();
 }
@@ -215,7 +215,7 @@ Layer_PasteCanvas::get_param(const String& param)const
 	EXPORT(zoom);
 	EXPORT(time_offset);
 	EXPORT(children_lock);
-	
+
 	EXPORT_NAME();
 	EXPORT_VERSION();
 
@@ -227,12 +227,12 @@ Layer_PasteCanvas::set_time(Context context, Time time)const
 {
 	if(depth==MAX_DEPTH)return;depth_counter counter(depth);
 	curr_time=time;
-	
+
 	context.set_time(time);
 	if(canvas)
 	{
 		canvas->set_time(time);
-		
+
 		bounds=(canvas->get_context().get_full_bounding_rect()-canvas->rend_desc().get_focus())*exp(zoom)+origin+canvas->rend_desc().get_focus();
 	}
 	else
@@ -267,7 +267,7 @@ Layer_PasteCanvas::get_color(Context context, const Point &pos)const
 	if(depth==MAX_DEPTH)return Color::alpha();depth_counter counter(depth);
 
 	Point target_pos=(pos-canvas->rend_desc().get_focus()-origin)/exp(zoom)+canvas->rend_desc().get_focus();
-	
+
 	return Color::blend(canvas->get_context().get_color(target_pos),context.get_color(pos),get_amount(),get_blend_method());
 }
 
@@ -285,15 +285,15 @@ Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quali
 		return context.accelerated_render(surface,quality,renddesc,cb);
 	}
 	depth_counter counter(depth);
-		
+
 	if(!canvas || !get_amount())
 		return context.accelerated_render(surface,quality,renddesc,cb);
-	
+
 	if(!do_not_muck_with_time_ && 	curr_time!=Time::begin() && canvas->get_time()!=curr_time+time_offset)
 	{
 		canvas->set_time(curr_time+time_offset);
 	}
-	
+
 	SuperCallback stageone(cb,0,4500,10000);
 	SuperCallback stagetwo(cb,4500,9000,10000);
 	SuperCallback stagethree(cb,9000,9999,10000);
@@ -313,14 +313,14 @@ Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quali
 	else if(!context.accelerated_render(surface,quality,renddesc,&stageone))
 		return false;
 	Color::BlendMethod blend_method(get_blend_method());
-	
+
 	const Rect full_bounding_rect(canvas->get_context().get_full_bounding_rect());
 
 	if(context->empty())
 	{
 		if(Color::is_onto(blend_method))
 			return true;
-			
+
 		if(blend_method==Color::BLEND_COMPOSITE)
 			blend_method=Color::BLEND_STRAIGHT;
 	}
@@ -329,16 +329,16 @@ Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quali
 	{
 		if(Color::is_onto(blend_method))
 			return true;
-			
+
 		if(blend_method==Color::BLEND_COMPOSITE)
 			blend_method=Color::BLEND_STRAIGHT;
 	}
-	
+
 #ifndef SYNFIG_NO_CLIP
 	{
 		//synfig::info("PasteCanv Clip");
 		Rect area(desc.get_rect()&full_bounding_rect);
-				
+
 		Point min(area.get_min());
 		Point max(area.get_max());
 
@@ -347,16 +347,16 @@ Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quali
 		if(desc.get_tl()[1]>desc.get_br()[1])
 			swap(min[1],max[1]);
 
-		const int 
+		const int
 			x(floor_to_int((min[0]-desc.get_tl()[0])/desc.get_pw())),
 			y(floor_to_int((min[1]-desc.get_tl()[1])/desc.get_ph())),
 			w(ceil_to_int((max[0]-desc.get_tl()[0])/desc.get_pw())-x),
 			h(ceil_to_int((max[1]-desc.get_tl()[1])/desc.get_ph())-y);
-				
+
 		desc.set_subwindow(x,y,w,h);
-	
+
 		Surface pastesurface;
-		
+
 		if(area.area()<=0.000001 || desc.get_w()==0 || desc.get_h()==0)
 		{
 			if(cb && !cb->amount_complete(10000,10000)) return false;
@@ -366,30 +366,30 @@ Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quali
 
 		if(!canvas->get_context().accelerated_render(&pastesurface,quality,desc,&stagetwo))
 			return false;
-		
+
 		Surface::alpha_pen apen(surface->get_pen(x,y));
-	
+
 		apen.set_alpha(get_amount());
 		apen.set_blend_method(blend_method);
-	
+
 		pastesurface.blit_to(apen);
 	}
 #else
 	{
 		Surface pastesurface;
-	
+
 		if(!canvas->get_context().accelerated_render(&pastesurface,quality,desc,&stagetwo))
 			return false;
-	
+
 		Surface::alpha_pen apen(surface->begin());
-	
+
 		apen.set_alpha(get_amount());
 		apen.set_blend_method(blend_method);
-	
+
 		pastesurface.blit_to(apen);
 	}
 #endif
-	
+
 	if(cb && !cb->amount_complete(10000,10000)) return false;
 
 	return true;
@@ -407,15 +407,15 @@ void Layer_PasteCanvas::get_times_vfunc(Node::time_set &set) const
 	if(canvas) tset = canvas->get_times();
 
 	Node::time_set::iterator 	i = tset.begin(),
-									end = tset.end();	
-	
+									end = tset.end();
+
 	//Make sure we offset the time...
-	//TODO: SOMETHING STILL HAS TO BE DONE WITH THE OTHER DIRECTION 
+	//TODO: SOMETHING STILL HAS TO BE DONE WITH THE OTHER DIRECTION
 	//		(recursing down the tree needs to take this into account too...)
 	for(; i != end; ++i)
 	{
 		set.insert(*i + time_offset);
 	}
-		
+
 	Layer::get_times_vfunc(set);
 }

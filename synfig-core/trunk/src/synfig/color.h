@@ -186,12 +186,12 @@ public:
 
 	bool is_valid()const
 	{ return !isnan(r_) && !isnan(g_) && !isnan(b_) && !isnan(a_); }
-	
+
 	Color premult_alpha() const
 	{
 		return Color (r_*a_, g_*a_, b_*a_, a_);
 	}
-	
+
 	Color demult_alpha() const
 	{
 		if(a_)
@@ -224,14 +224,14 @@ public:
 		g_(c.g_),
 		b_(c.b_) { }
 
-	
+
 	//!	Copy constructor
 	Color(const Color& c):
 		a_(c.a_),
 		r_(c.r_),
 		g_(c.g_),
 		b_(c.b_) { }
-	
+
 #ifdef USE_HALF_TYPE
 	friend class ColorAccumulator;
 	//!	Convert constructor
@@ -247,7 +247,7 @@ public:
 		return *this;
 	}*/
 	//Color& operator=(const Color &c) { memcpy((void*)this, (const void*)&c, sizeof(Color)); return *this; }
-	
+
 	//! Returns the RED component
 	const value_type& get_r()const { return r_; }
 
@@ -259,7 +259,7 @@ public:
 
 	//! Returns the amount of opacity (alpha)
 	const value_type& get_a()const { return a_; }
-	
+
 	//! Synonym for get_a(). \see get_a()
 	const value_type& get_alpha()const { return get_a(); }
 
@@ -274,7 +274,7 @@ public:
 
 	//! Sets the opacity (alpha) to \a x
 	Color& set_a(const value_type& x) { a_ = x; return *this; }
-	
+
 	//! Synonym for set_a(). \see set_a()
 	Color& set_alpha(const value_type& x) { return set_a(x); }
 
@@ -288,7 +288,7 @@ public:
 			(float)get_b()*EncodeYUV[0][2];
 	}
 
-	
+
 	//! Returns U component of chromanance
 	float
 	get_u() const
@@ -332,16 +332,16 @@ public:
 
 	//! Sets color luminance
 	Color& set_y(const float &y) { return set_yuv(y,get_u(),get_v()); }
-	
+
 	//! Set U component of chromanance
 	Color& set_u(const float &u) { return set_yuv(get_y(),u,get_v()); }
-	
+
 	//! Set V component of chromanance
 	Color& set_v(const float &v) { return set_yuv(get_y(),get_u(),v); }
-	
+
 	//! Set the U and V components of chromanance
 	Color& set_uv(const float& u, const float& v) { return set_yuv(get_y(),u,v); }
-		
+
 	//! Sets the color's saturation
 	/*!	\see get_s() */
 	Color&
@@ -349,7 +349,7 @@ public:
 	{
 		float u(get_u()), v(get_v());
 		const float s(sqrt(u*u+v*v));
-		if(s)	
+		if(s)
 		{
 			u=(u/s)*x;
 			v=(v/s)*x;
@@ -372,7 +372,7 @@ public:
 
 	//! Synonym for get_hue(). \see get_hue()
 	Angle get_uv_angle() const { return get_hue(); }
-	
+
 	//! Sets the color's hue
 	/*!	\see get_hue() */
 	Color&
@@ -387,16 +387,16 @@ public:
 
 	//! Synonym for set_hue(). \see set_hue()
 	Color& set_uv_angle(const Angle& theta) { return set_hue(theta); }
-	
+
 	//! Rotates the chromanance vector by amount specified by \a theta
 	Color& rotate_uv(const Angle& theta)
 	{
 		const float	a(Angle::sin(theta).get()),	b(Angle::cos(theta).get());
 		const float	u(get_u()),	v(get_v());
-		
+
 		return set_uv(b*u-a*v,a*u+b*v);
 	}
-		
+
 	//! Sets the luminance (\a y) and chromanance (\a s and \a theta).
 	/*!	\param y Luminance
 	**	\param s Saturation
@@ -423,7 +423,7 @@ public:
 
 	//! Clamps a color so that its values are in range. Ignores attempting to visualize negative colors.
 	Color clamped()const;
-	
+
 	//! Clamps a color so that its values are in range.
 	Color clamped_negative()const;
 
@@ -446,7 +446,7 @@ public:
 	static inline Color cyan() { return Color(0,1,1); }
 	static inline Color yellow() { return Color(1,1,0); }
 	//@}
-	
+
 	//! \writeme
 	enum BlendMethod
 	{
@@ -468,19 +468,19 @@ public:
 		BLEND_OVERLAY=20,		//!< \writeme
 		BLEND_DIFFERENCE=18,		//!< \writeme
 		BLEND_HARD_LIGHT=17,		//!< \writeme
-		
+
 		//! Deprecated
 		BLEND_ALPHA_BRIGHTEN=14,	//!< If A is less opaque than B, use A
 		BLEND_ALPHA_DARKEN=15,		//!< If A is more opaque than B, use B
 		BLEND_ALPHA_OVER=19,//!< multiply alphas and then straight blends that using the amount
 		BLEND_STRAIGHT_ONTO=21,//!< \writeme
-		
+
 		BLEND_END=22			//!< \internal
 	};
 
 	/* Other */
 	static Color blend(Color a, Color b,float amount,BlendMethod type=BLEND_COMPOSITE);
-	
+
 	static bool is_onto(BlendMethod x)
 	{
 		return x==BLEND_BRIGHTEN
@@ -646,7 +646,7 @@ public:
 
 	//! Returns the amount of opacity (alpha)
 	const value_type& get_a()const { return a_; }
-	
+
 	//! Synonym for get_a(). \see get_a()
 	const value_type& get_alpha()const { return get_a(); }
 
@@ -661,7 +661,7 @@ public:
 
 	//! Sets the opacity (alpha) to \a x
 	ColorAccumulator& set_a(const value_type& x) { a_ = x; return *this; }
-	
+
 	//! Synonym for set_a(). \see set_a()
 	ColorAccumulator& set_alpha(const value_type& x) { return set_a(x); }
 };
@@ -709,7 +709,7 @@ enum PixelFormat
 
 inline PixelFormat operator|(PixelFormat lhs, PixelFormat rhs)
 	{ return static_cast<PixelFormat>((int)lhs|(int)rhs); }
-	
+
 inline PixelFormat operator&(PixelFormat lhs, PixelFormat rhs)
 	{ return static_cast<PixelFormat>((int)lhs&(int)rhs); }
 #define FLAGS(x,y)		(((x)&(y))==(y))
@@ -729,7 +729,7 @@ channels(PixelFormat x)
 		++chan;
 	if(FLAGS(x,PF_RAW_COLOR))
 		chan=sizeof(Color);
-		
+
 	return chan;
 }
 
@@ -747,7 +747,7 @@ Color2PixelFormat(const Color &color, const PixelFormat &pf, unsigned char *out,
 	int alpha=(int)((FLAGS(pf,PF_A_INV)?(-(float)color.get_a()+1):(float)color.get_a())*255);
 	if(alpha<0)alpha=0;
 	if(alpha>255)alpha=255;
-		
+
 	if(FLAGS(pf,PF_ZA|PF_A_START|PF_Z_START))
 	{
 		if(FLAGS(pf,PF_Z_START))
@@ -761,7 +761,7 @@ Color2PixelFormat(const Color &color, const PixelFormat &pf, unsigned char *out,
 			*out++=static_cast<unsigned char>(alpha);
 		if(FLAGS(pf,PF_Z_START))
 			*out++/*=(unsigned char)(color.GetZ()*255.0f)*/;
-		
+
 	}
 
 	if(FLAGS(pf,PF_GRAY))
@@ -781,7 +781,7 @@ Color2PixelFormat(const Color &color, const PixelFormat &pf, unsigned char *out,
 			*out++=static_cast<unsigned char>(gamma.b_F32_to_U8(color.get_b()));
 		}
 	}
-	
+
 	if(FLAGS(pf,PF_ZA))
 	{
 		if(!FLAGS(pf,PF_Z_START) && FLAGS(pf,PF_Z))
@@ -842,7 +842,7 @@ PixelFormat2Color(Color &color, const PixelFormat &pf,const unsigned char *out)
 			color.set_b((float)*out++/255);
 		}
 	}
-	
+
 	if(FLAGS(pf,PF_ZA))
 	{
 		if(!FLAGS(pf,PF_Z_START) && FLAGS(pf,PF_Z))

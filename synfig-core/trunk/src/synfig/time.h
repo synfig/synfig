@@ -55,7 +55,7 @@ public:
 		FORMAT_NOSPACES=(1<<0),	//!< Remove any whitespace
 		FORMAT_FULL=(1<<1),		//!< Do not remove units that have "zero" value
 		FORMAT_VIDEO=(1<<2),	//!< Use the HH:MM:SS.ff format
-	
+
 		FORMAT_END=(1<<4)		//!< \internal Not used
 	}; // END of enum Format
 
@@ -84,30 +84,30 @@ public:
 
 	//! Marks the exclusive negative boundary of time
 	static const Time begin() { return static_cast<synfig::Time>(-32767.0f*512.0f); }
-	
+
 	//! Marks the exclusive positive boundary of time
 	static const Time end() { return static_cast<synfig::Time>(32767.0f*512.0f); }
 
 	//! Marks zero time
 	static const Time zero() { return static_cast<synfig::Time>(0); }
-	
+
 	//! The amount of allowable error in calculations
 	static const Time epsilon() { return static_cast<synfig::Time>(epsilon_()); }
-	
+
 	//! Returns a string describing the current time value
 	/*!	\see Format */
 	String get_string(float fps=0, Time::Format format=FORMAT_NORMAL)const;
-	
+
 	//! \writeme
 	bool is_valid()const;
-	
+
 	//! Rounds time to the nearest frame for the given frame rate, \a fps
 	Time round(float fps)const;
 
 	bool is_equal(const Time& rhs)const { return (value_>rhs.value_)?value_-rhs.value_<=epsilon_():rhs.value_-value_<=epsilon_(); }
 	bool is_less_than(const Time& rhs)const { return rhs.value_-value_ > epsilon_(); }
 	bool is_more_than(const Time& rhs)const { return value_-rhs.value_ > epsilon_(); }
-	
+
 	operator double()const { return value_; }
 
 	template<typename U> bool operator<(const U& rhs)const { return value_<rhs; }
@@ -132,7 +132,7 @@ public:
 	bool operator==(const Time& rhs)const { return is_equal(rhs); }
 	bool operator!=(const Time& rhs)const { return !is_equal(rhs); }
 #endif
-	
+
 	template<typename U> const Time& operator+=(const U &rhs) { value_+=static_cast<value_type>(rhs); return *this; }
 	template<typename U> const Time& operator-=(const U &rhs) { value_-=static_cast<value_type>(rhs); return *this; }
 	template<typename U> const Time& operator*=(const U &rhs) { value_*=static_cast<value_type>(rhs); return *this; }
@@ -142,7 +142,7 @@ public:
 	template<typename U> Time operator-(const U &rhs)const { return value_-static_cast<value_type>(rhs); }
 	template<typename U> Time operator*(const U &rhs)const { return value_*static_cast<value_type>(rhs); }
 	template<typename U> Time operator/(const U &rhs)const { return value_/static_cast<value_type>(rhs); }
-	
+
 	Time operator-()const { return -value_; }
 }; // END of class Time
 
@@ -159,7 +159,7 @@ inline bool operator<=(Time::Format lhs, Time::Format rhs)
 { return (static_cast<int>(lhs) & static_cast<int>(rhs))==static_cast<int>(rhs); }
 
 }; // END of namespace synfig
-	
+
 /* === E N D =============================================================== */
 
 #endif

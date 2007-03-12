@@ -71,14 +71,14 @@ Layer_Stretch::Layer_Stretch():
 {
 }
 
-	
+
 bool
 Layer_Stretch::set_param(const String & param, const ValueBase &value)
 {
 	IMPORT(amount);
 	IMPORT(center);
-	
-	return false;	
+
+	return false;
 }
 
 ValueBase
@@ -89,15 +89,15 @@ Layer_Stretch::get_param(const String &param)const
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
-		
-	return ValueBase();	
+
+	return ValueBase();
 }
 
 Layer::Vocab
 Layer_Stretch::get_param_vocab()const
 {
 	Layer::Vocab ret;
-	
+
 	ret.push_back(ParamDesc("amount")
 		.set_local_name(_("Amount"))
 	);
@@ -105,7 +105,7 @@ Layer_Stretch::get_param_vocab()const
 	ret.push_back(ParamDesc("center")
 		.set_local_name(_("Center"))
 	);
-	
+
 	return ret;
 }
 
@@ -132,12 +132,12 @@ class Stretch_Trans : public Transform
 	etl::handle<const Layer_Stretch> layer;
 public:
 	Stretch_Trans(const Layer_Stretch* x):Transform(x->get_guid()),layer(x) { }
-	
+
 	synfig::Vector perform(const synfig::Vector& x)const
 	{
 		return Vector((x[0]-layer->center[0])*layer->amount[0]+layer->center[0],(x[1]-layer->center[1])*layer->amount[1]+layer->center[1]);
 	}
-	
+
 	synfig::Vector unperform(const synfig::Vector& x)const
 	{
 		return Vector((x[0]-layer->center[0])/layer->amount[0]+layer->center[0],(x[1]-layer->center[1])/layer->amount[1]+layer->center[1]);

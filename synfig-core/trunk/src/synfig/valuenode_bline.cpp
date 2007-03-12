@@ -65,10 +65,10 @@ radial_interpolation(const Vector& a, const Vector& b, float c)
 {
 	affine_combo<Real,float> mag_combo;
 	affine_combo<Angle,float> ang_combo;
-	
+
 	Real mag(mag_combo(a.mag(),b.mag(),c));
 	Angle ang(ang_combo(Angle::tan(a[1],a[0]),Angle::tan(b[1],b[0]),c));
-	
+
 	return Point( mag*Angle::cos(ang).get(),mag*Angle::sin(ang).get() );
 }
 
@@ -78,19 +78,19 @@ ValueBase
 synfig::convert_bline_to_segment_list(const ValueBase& bline)
 {
 	std::vector<Segment> ret;
-	
+
 //	std::vector<BLinePoint> list(bline.operator std::vector<BLinePoint>());
 	//std::vector<BLinePoint> list(bline);
 	std::vector<BLinePoint> list(bline.get_list().begin(),bline.get_list().end());
 	std::vector<BLinePoint>::const_iterator	iter;
 
 	BLinePoint prev,first;
-	
+
 	//start with prev = first and iter on the second...
-	
+
 	if(list.empty()) return ValueBase(ret,bline.get_loop());
 	first = prev = list.front();
-	
+
 	for(iter=++list.begin();iter!=list.end();++iter)
 	{
 		ret.push_back(
@@ -102,7 +102,7 @@ synfig::convert_bline_to_segment_list(const ValueBase& bline)
 			)
 		);
 		prev=*iter;
-	}		
+	}
 	if(bline.get_loop())
 	{
 		ret.push_back(
@@ -125,10 +125,10 @@ synfig::convert_bline_to_width_list(const ValueBase& bline)
 	//std::vector<BLinePoint> list(bline);
 	std::vector<BLinePoint> list(bline.get_list().begin(),bline.get_list().end());
 	std::vector<BLinePoint>::const_iterator	iter;
-	
+
 	if(bline.empty())
 		return ValueBase(ValueBase::TYPE_LIST);
-	
+
 	for(iter=list.begin();iter!=list.end();++iter)
 		ret.push_back(iter->get_width());
 
@@ -156,7 +156,7 @@ ValueNode_BLine::create(const ValueBase &value)
 {
 	if(value.get_type()!=ValueBase::TYPE_LIST)
 		return 0;
-	
+
 	ValueNode_BLine* value_node(new ValueNode_BLine());
 
 	if(!value.empty())
@@ -171,7 +171,7 @@ ValueNode_BLine::create(const ValueBase &value)
 			std::vector<BLinePoint>::const_iterator iter;
 
 			for(iter=bline_points.begin();iter!=bline_points.end();iter++)
-			{	
+			{
 				value_node->add(ValueNode::Handle(ValueNode_Composite::create(*iter)));
 			}
 			value_node->set_loop(value.get_loop());
@@ -183,7 +183,7 @@ ValueNode_BLine::create(const ValueBase &value)
 			// into a list of BLinePoints. We make an assumption
 			// that the segment list is continuous(sp), but not necessarily
 			// smooth.
-			
+
 			value_node->set_loop(false);
 //			std::vector<Segment> segments(value.operator std::vector<Segment>());
 //			std::vector<Segment> segments(value);
@@ -191,9 +191,9 @@ ValueNode_BLine::create(const ValueBase &value)
 			std::vector<Segment>::const_iterator iter,last(segments.end());
 			--last;
 			ValueNode_Const::Handle prev,first;
-			
+
 			for(iter=segments.begin();iter!=segments.end();iter++)
-			{	
+			{
 #define PREV_POINT	prev->get_value().get(BLinePoint())
 #define FIRST_POINT	first->get_value().get(BLinePoint())
 #define CURR_POINT	curr->get_value().get(BLinePoint())
@@ -202,7 +202,7 @@ ValueNode_BLine::create(const ValueBase &value)
 					prev=ValueNode_Const::create(ValueBase::TYPE_BLINEPOINT);
 					{
 						BLinePoint prev_point(PREV_POINT);
-						prev_point.set_vertex(iter->p1);					
+						prev_point.set_vertex(iter->p1);
 						prev_point.set_tangent1(iter->t1);
 						prev_point.set_width(0.01);
 						prev_point.set_origin(0.5);
@@ -211,7 +211,7 @@ ValueNode_BLine::create(const ValueBase &value)
 					}
 					first=prev;
 					value_node->add(ValueNode::Handle(prev));
-					
+
 				}
 				if(iter==last && iter->p2.is_equal_to(FIRST_POINT.get_vertex()))
 				{
@@ -224,12 +224,12 @@ ValueNode_BLine::create(const ValueBase &value)
 					}
 					continue;
 				}
-					
+
 				ValueNode_Const::Handle curr;
 				curr=ValueNode_Const::create(ValueBase::TYPE_BLINEPOINT);
 				{
 					BLinePoint curr_point(CURR_POINT);
-					curr_point.set_vertex(iter->p2);					
+					curr_point.set_vertex(iter->p2);
 					curr_point.set_tangent1(iter->t2);
 					curr_point.set_width(0.01);
 					curr_point.set_origin(0.5);
@@ -246,7 +246,7 @@ ValueNode_BLine::create(const ValueBase &value)
 				value_node->add(ValueNode::Handle(curr));
 				prev=curr;
 			}
-			
+
 		}
 			break;
 		default:
@@ -256,8 +256,8 @@ ValueNode_BLine::create(const ValueBase &value)
 			break;
 		}
 	}
-	
-	
+
+
 	return value_node;
 }
 
@@ -266,7 +266,7 @@ ValueNode_BLine::create_list_entry(int index, Time time, Real origin)
 {
 	ValueNode_BLine::ListEntry ret;
 
-	
+
 	synfig::BLinePoint prev,next;
 
 	int prev_i,next_i;
@@ -282,12 +282,12 @@ ValueNode_BLine::create_list_entry(int index, Time time, Real origin)
 	else
 		next_i=index;
 	prev_i=find_prev_valid_entry(index,time);
-	
+
 	synfig::info("index=%d, next_i=%d, prev_i=%d",index,next_i,prev_i);
-	
+
 	next=(*list[next_i].value_node)(time);
 	prev=(*list[prev_i].value_node)(time);
-	
+
 	etl::hermite<Vector> curve(prev.get_vertex(),next.get_vertex(),prev.get_tangent2(),next.get_tangent1());
 	etl::derivative< etl::hermite<Vector> > deriv(curve);
 
@@ -298,9 +298,9 @@ ValueNode_BLine::create_list_entry(int index, Time time, Real origin)
 	bline_point.set_tangent2(bline_point.get_tangent1());
 	bline_point.set_split_tangent_flag(false);
 	bline_point.set_origin(origin);
-	
+
 	ret.value_node=ValueNode_Composite::create(bline_point);
-	
+
 	return ret;
 }
 
@@ -308,23 +308,23 @@ ValueBase
 ValueNode_BLine::operator()(Time t)const
 {
 	std::vector<BLinePoint> ret_list;
-	
+
 	std::vector<ListEntry>::const_iterator iter,first_iter;
 	bool first_flag(true);
 	bool rising;
 	int index(0);
 	float next_scale(1.0f);
-	
+
 	BLinePoint prev,first;
 	first.set_origin(100.0f);
-	
+
 	for(iter=list.begin();iter!=list.end();++iter,index++)
 	{
 		float amount(iter->amount_at_time(t,&rising));
-		
+
 		assert(amount>=0.0f);
 		assert(amount<=1.0f);
-		
+
 		if(amount==1.0f)
 		{
 			if(first_flag)
@@ -335,10 +335,10 @@ ValueNode_BLine::operator()(Time t)const
 				ret_list.push_back(first);
 				continue;
 			}
-			
+
 			BLinePoint curr;
 			curr=(*iter->value_node)(t).get(prev);
-			
+
 			if(next_scale!=1.0f)
 			{
 				ret_list.back().set_split_tangent_flag(true);
@@ -357,28 +357,28 @@ ValueNode_BLine::operator()(Time t)const
 				ret_list.push_back(curr);
 
 			}
-			
+
 			prev=curr;
 		}
 		else
 		if(amount>0.0f)
 		{
 			std::vector<ListEntry>::const_iterator begin_iter,end_iter;
-			
+
 			// This is where the interesting stuff happens
 			// We need to seek forward in the list to see what the next
 			// active point is
-			
+
 			BLinePoint curr;
 			BLinePoint begin;	// begin of dynamic group
 			BLinePoint end;		// End of dynamic group
 			Time blend_time;
 			int dist_from_begin(0), dist_from_end(0);
 			BLinePoint ret;
-			
+
 			Time begin_time;
 			Time end_time;
-			
+
 			if(!rising)
 			{
 				try{ end_time=iter->find_prev(t)->get_time(); }
@@ -394,10 +394,10 @@ ValueNode_BLine::operator()(Time t)const
 				catch(...) { end_time=Time::end(); }
 			}
 			blend_time=begin_time;
-			curr=(*iter->value_node)(end_time).get(curr);				
+			curr=(*iter->value_node)(end_time).get(curr);
 
 //			curr=(*iter->value_node)(t).get(curr);
-			
+
 			// Find "end" of dynamic group
 			end_iter=iter;
 //			for(++end_iter;begin_iter!=list.end();++end_iter)
@@ -407,7 +407,7 @@ ValueNode_BLine::operator()(Time t)const
 					end=(*end_iter->value_node)(blend_time).get(prev);
 					break;
 				}
-			
+
 			// If we did not find an end of the dynamic group...
 			if(end_iter==list.end())
 			{
@@ -438,10 +438,10 @@ ValueNode_BLine::operator()(Time t)const
 					else
 						break;
 				}
-				
+
 				--begin_iter;
 				dist_from_begin++;
-				
+
 				if(begin_iter==iter)
 					break;
 
@@ -451,7 +451,7 @@ ValueNode_BLine::operator()(Time t)const
 					break;
 				}
 			}while(begin_iter!=iter);
-			
+
 			// If we did not find a begin
 			if(begin.get_origin()==100.0f)
 			{
@@ -469,23 +469,23 @@ ValueNode_BLine::operator()(Time t)const
 //					begin=first;
 				}
 			}
-			
+
 			etl::hermite<Vector> curve(begin.get_vertex(),end.get_vertex(),begin.get_tangent2(),end.get_tangent1());
 			etl::derivative< etl::hermite<Vector> > deriv(curve);
-	
+
 			ret.set_vertex(curve(curr.get_origin()));
 
 			ret.set_width((end.get_width()-begin.get_width())*curr.get_origin()+begin.get_width());
 
 			ret.set_tangent1(deriv(curr.get_origin()));
 			ret.set_tangent2(deriv(curr.get_origin()));
-			
+
 			float prev_tangent_scalar(1.0f);
 			float next_tangent_scalar(1.0f);
-			
+
 			//synfig::info("index_%d:dist_from_begin=%d",index,dist_from_begin);
 			//synfig::info("index_%d:dist_from_end=%d",index,dist_from_end);
-			
+
 			// If we are the next to the begin
 			if(begin_iter==--std::vector<ListEntry>::const_iterator(iter) || dist_from_begin==1)
 			{
@@ -494,7 +494,7 @@ ValueNode_BLine::operator()(Time t)const
 			else
 			{
 				float origin=curr.get_origin()-prev.get_origin();
-				prev_tangent_scalar=(1.0f-origin)*amount+origin;				
+				prev_tangent_scalar=(1.0f-origin)*amount+origin;
 			}
 
 			// If we are the next to the end
@@ -509,10 +509,10 @@ ValueNode_BLine::operator()(Time t)const
 				BLinePoint next;
 				next=((*(++std::vector<ListEntry>::const_iterator(iter))->value_node)(t).get(prev));
 				float origin=next.get_origin()-curr.get_origin();
-				next_tangent_scalar=(1.0f-origin)*amount+origin;				
+				next_tangent_scalar=(1.0f-origin)*amount+origin;
 			}
 			next_scale=next_tangent_scalar;
-			
+
 			//ret.set_vertex((curr.get_vertex()-ret.get_vertex())*amount+ret.get_vertex());
 			if(false)
 			{
@@ -552,7 +552,7 @@ ValueNode_BLine::operator()(Time t)const
 				Point begin_cord_sys[2], begin_cord_origin;
 				Point end_cord_sys[2], end_cord_origin;
 				Point curr_cord_sys[2], curr_cord_origin;
-				
+
 				{
 					const Point a((*end_iter->value_node)(begin_time).get(prev).get_vertex());
 					const Point b((*begin_iter->value_node)(begin_time).get(prev).get_vertex());
@@ -574,7 +574,7 @@ ValueNode_BLine::operator()(Time t)const
 					curr_cord_sys[0]=( b - a ).norm();
 					curr_cord_sys[1]=curr_cord_sys[0].perp();
 				}
-				
+
 				/*
 				end_cord_origin=(*end_iter->value_node)(end_time).get(prev).get_vertex();
 				end_cord_sys[0]=(
@@ -582,7 +582,7 @@ ValueNode_BLine::operator()(Time t)const
 					end_cord_origin
 				).norm();
 				end_cord_sys[1]=end_cord_sys[0].perp();
-				
+
 				curr_cord_origin=(*end_iter->value_node)(t).get(prev).get_vertex();
 				curr_cord_sys[0]=(
 					(*begin_iter->value_node)(t).get(prev).get_vertex() -
@@ -590,7 +590,7 @@ ValueNode_BLine::operator()(Time t)const
 				).norm();
 				curr_cord_sys[1]=curr_cord_sys[0].perp();
 				*/
-				
+
 				// Convert start point
 				Point a;
 				Vector at1,at2;
@@ -599,12 +599,12 @@ ValueNode_BLine::operator()(Time t)const
 					a[0]=tmp*begin_cord_sys[0];
 					a[1]=tmp*begin_cord_sys[1];
 #define COORD_SYS_RADIAL_TAN_INTERP 1
-					
+
 #ifdef COORD_SYS_RADIAL_TAN_INTERP
 					tmp=ret.get_tangent1()+ret.get_vertex()-begin_cord_origin;
 					at1[0]=tmp*begin_cord_sys[0];
 					at1[1]=tmp*begin_cord_sys[1];
-					
+
 					if(curr.get_split_tangent_flag())
 					{
 						tmp=ret.get_tangent2()+ret.get_vertex()-begin_cord_origin;
@@ -613,7 +613,7 @@ ValueNode_BLine::operator()(Time t)const
 					}
 #endif
 				}
-				
+
 				// Convert finish point
 				Point b;
 				Vector bt1,bt2;
@@ -621,7 +621,7 @@ ValueNode_BLine::operator()(Time t)const
 					Point tmp(curr.get_vertex()-end_cord_origin);
 					b[0]=tmp*end_cord_sys[0];
 					b[1]=tmp*end_cord_sys[1];
-					
+
 #ifdef COORD_SYS_RADIAL_TAN_INTERP
 					tmp=curr.get_tangent1()+curr.get_vertex()-end_cord_origin;
 					bt1[0]=tmp*end_cord_sys[0];
@@ -635,7 +635,7 @@ ValueNode_BLine::operator()(Time t)const
 					}
 #endif
 				}
-								
+
 				// Convert current point
 				Point c;
 				Vector ct1,ct2;
@@ -650,14 +650,14 @@ ValueNode_BLine::operator()(Time t)const
 
 #define INTERP_FUNCTION		radial_interpolation
 //#define INTERP_FUNCTION		linear_interpolation
-					
+
 #ifdef COORD_SYS_RADIAL_TAN_INTERP
 					tmp=INTERP_FUNCTION(at1,bt1,amount);
 					ct1[0]=tmp*curr_cord_sys[0];
 					ct1[1]=tmp*curr_cord_sys[1];
 					ct1+=curr_cord_origin;
 					ct1-=c;
-					
+
 					if(curr.get_split_tangent_flag())
 					{
 						tmp=INTERP_FUNCTION(at2,bt2,amount);
@@ -675,17 +675,17 @@ ValueNode_BLine::operator()(Time t)const
 				ret.set_split_tangent_flag(curr.get_split_tangent_flag());
 				if(ret.get_split_tangent_flag())
 					ret.set_tangent2(radial_interpolation(ret.get_tangent2(),curr.get_tangent2(),amount));
-#else				
+#else
 				ret.set_tangent1(ct1);
 				ret.set_split_tangent_flag(curr.get_split_tangent_flag());
 				if(ret.get_split_tangent_flag())
 					ret.set_tangent2(ct2);
 #endif
 			}
-			
+
 			ret.set_origin(curr.get_origin());
 			ret.set_width((curr.get_width()-ret.get_width())*amount+ret.get_width());
-			
+
 
 			// Handle the case where we are the first vertex
 			if(first_flag)
@@ -708,7 +708,7 @@ ValueNode_BLine::operator()(Time t)const
 			prev=ret;
 		}
 	}
-	
+
 	if(next_scale!=1.0f)
 	{
 		ret_list.back().set_split_tangent_flag(true);
@@ -728,7 +728,7 @@ ValueNode_BLine::operator()(Time t)const
 		);
 	}
 */
-	
+
 	if(list.empty())
 		synfig::warning(string("ValueNode_BLine::operator()():")+_("No entries in list"));
 	else
@@ -743,7 +743,7 @@ ValueNode_BLine::link_local_name(int i)const
 {
 	assert(i>=0 && (unsigned)i<list.size());
 	return etl::strprintf(_("Vertex %03d"),i+1);
-}	
+}
 
 ValueNode*
 ValueNode_BLine::clone(const GUID& deriv_guid)const
@@ -752,7 +752,7 @@ ValueNode_BLine::clone(const GUID& deriv_guid)const
 
 	ValueNode_BLine* ret=new ValueNode_BLine();
 	ret->set_guid(get_guid()^deriv_guid);
-	
+
 	std::vector<ListEntry>::const_iterator iter;
 
 	for(iter=list.begin();iter!=list.end();++iter)
@@ -770,7 +770,7 @@ ValueNode_BLine::clone(const GUID& deriv_guid)const
 		}
 	}
 	ret->set_loop(get_loop());
-	
+
 	return ret;
 }
 

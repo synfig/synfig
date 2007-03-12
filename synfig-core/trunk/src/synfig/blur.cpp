@@ -57,9 +57,9 @@ using namespace synfig;
 
 /* === M E T H O D S ======================================================= */
 Point Blur::operator ()(const Point &pos) const
-{	
+{
 	Point blurpos(pos);
-	
+
 	switch(type)
 	{
 	case CROSS:
@@ -110,7 +110,7 @@ Point Blur::operator ()(const Point &pos) const
 			blurpos[1]+=(Vector::value_type)( (signed)(RAND_MAX/2)-(signed)rand() )/(Vector::value_type)(RAND_MAX) * size[1];
 		break;
 	}
-	
+
 	return blurpos;
 }
 
@@ -152,7 +152,7 @@ static void GuassianBlur_2x2(etl::surface<T,AT,VP> &surface)
 			Tmp2=SR0+Tmp1;
 			SR0=Tmp1;
 			surface[y][x]=(SC0[x]+Tmp2)/4;
-			SC0[x]=Tmp2;			
+			SC0[x]=Tmp2;
 		}
 	}
 	delete [] SC0;
@@ -195,14 +195,14 @@ static void GuassianBlur_3x3(etl::surface<T,AT,VP> &surface)
 			SR0=Tmp1;
 			Tmp1=SR1+Tmp2;
 			SR1=Tmp2;
-			
+
 			// Column Machine
 			Tmp2=SC0[x]+Tmp1;
 			SC0[x]=Tmp1;
 			if(y&&x)
 				surface[y-1][x-1]=(SC1[x]+Tmp2)/16;
 			SC1[x]=Tmp2;
-		}		
+		}
 	}
 
 	delete [] SC0;
@@ -299,7 +299,7 @@ static void GuassianBlur_nxn(etl::surface<T,AT,VP> &surface,int n)
 
     T SR[n-1];
 	T *SC[n-1];
-	
+
 	for(i=0;i<n-1;i++)
 	{
 		SC[i]=new T[w+half_n];
@@ -449,29 +449,29 @@ static void GuassianBlur_1x3(etl::surface<T,AT,VP> &surface)
 }
 
 //THE GOOD ONE!!!!!!!!!
-bool Blur::operator ()(const Surface &surface, 
-						const Vector &resolution, 
+bool Blur::operator ()(const Surface &surface,
+						const Vector &resolution,
 						Surface &out) const
 {
 	int w = surface.get_w(),
 		h = surface.get_h();
-	
+
 	if(w == 0 || h == 0 || resolution[0] == 0 || resolution[1] == 0) return false;
-	
+
 	const Real	pw = resolution[0]/w,
 				ph = resolution[1]/h;
-	
+
 	int	halfsizex = (int) (abs(size[0]*.5/pw) + 1),
-		halfsizey = (int) (abs(size[1]*.5/ph) + 1);	
-	
+		halfsizey = (int) (abs(size[1]*.5/ph) + 1);
+
 	int x,y;
-	
+
 	SuperCallback blurcall(cb,0,5000,5000);
-	
+
 	Surface worksurface(w,h);
-	
+
 	//synfig::info("Blur: check surface = %s", surface_valid(surface)?"true":"false");
-	
+
 	// Premultiply the alpha
 	for(y=0;y<h;y++)
 	{
@@ -484,19 +484,19 @@ bool Blur::operator ()(const Surface &surface,
 			worksurface[y][x] = a;
 		}
 	}
-	
+
 	switch(type)
 	{
 	case Blur::DISC:	// D I S C ----------------------------------------------------------
-		{			
+		{
 			int bw = halfsizex;
 			int bh = halfsizey;
-			
+
 			if(size[0] && size[1] && w*h>2)
 			{
 				int x2,y2;
 				Surface tmp_surface(worksurface);
-				
+
 				for(y=0;y<h;y++)
 				{
 					for(x=0;x<w;x++)
@@ -504,7 +504,7 @@ bool Blur::operator ()(const Surface &surface,
 						//accumulate all the pixels in an ellipse of w,h about the current pixel
 						Color color=Color::alpha();
 						int total=0;
-						
+
 						for(y2=-bh;y2<=bh;y2++)
 						{
 							for(x2=-bw;x2<=bw;x2++)
@@ -514,27 +514,27 @@ bool Blur::operator ()(const Surface &surface,
 								float tmp_y=(float)y2/bh;
 								tmp_x*=tmp_x;
 								tmp_y*=tmp_y;
-								
+
 								//ignore if it's outside of the disc
 								if( tmp_x+tmp_y>1.0)
 									continue;
-								
+
 								//cap the pixel indices to inside the surface
 								int u= x+x2,
 									v= y+y2;
-								
+
 								if( u < 0 )					u = 0;
 								if( u >= w ) u = w-1;
-									
+
 								if( v < 0 ) 				v = 0;
 								if( v >= h ) v = h-1;
-									
+
 								//accumulate the color, and # of pixels added in
 								color += tmp_surface[v][u];
 								total++;
 							}
 						}
-						
+
 						//blend the color with the original color
 						//if(get_amount()==1.0 && get_blend_method()==Color::BLEND_STRAIGHT)
 							worksurface[y][x]=color/total;
@@ -549,7 +549,7 @@ bool Blur::operator ()(const Surface &surface,
 				}
 				break;
 			}
-			
+
 			//if we don't qualify for disc blur just use box blur
 		}
 
@@ -557,36 +557,36 @@ bool Blur::operator ()(const Surface &surface,
 		{
 			//horizontal part
 			//synfig::info("Blur: Starting Box blur (surface valid %d)", (int)surface_valid(worksurface));
-			
+
 			Surface temp_surface;
 			temp_surface.set_wh(w,h);
-			
+
 			if(size[0])
 			{
 				int length = halfsizex;
 				length=std::max(1,length);
-				
+
 				//synfig::info("Blur: hbox blur work -> temp %d", length);
 				etl::hbox_blur(worksurface.begin(),worksurface.end(),length,temp_surface.begin());
 			}
 			else temp_surface = worksurface;
 			//synfig::info("Blur: hbox finished");
-			
+
 			//vertical part
 			//Surface temp_surface2;
 			//temp_surface2.set_wh(w,h);
-						
+
 			if(size[1])
 			{
 				int length = halfsizey;
 				length = std::max(1,length);
-				
+
 				//synfig::info("Blur: vbox blur temp -> work %d",length);
 				etl::vbox_blur(temp_surface.begin(),temp_surface.end(),length,worksurface.begin());
 			}
 			else worksurface = temp_surface;
 			//synfig::info("Blur: vbox finished");
-			
+
 			//blend with the original surface
 			/*int x,y;
 			for(y=0;y<h;y++)
@@ -600,44 +600,44 @@ bool Blur::operator ()(const Surface &surface,
 		break;
 
 	case Blur::FASTGAUSSIAN:	// F A S T G A U S S I A N ----------------------------------------------
-		{		
+		{
 			//fast gaussian is treated as a 3x3 type of thing, except expanded to work with the length
-			
+
 			/*	1	2	1
 				2	4	2
 				1	2	1
 			*/
-			
+
 			Surface temp_surface;
 			temp_surface.set_wh(w,h);
-			
+
 			//Surface temp_surface2;
 			//temp_surface2.set_wh(w,h);
-			
+
 			//horizontal part
 			if(size[0])
 			{
 				Real length=abs((float)w/(resolution[0]))*size[0]*0.5+1;
 				length=std::max(1.0,length);
-				
+
 				//two box blurs produces: 1 2 1
 				etl::hbox_blur(worksurface.begin(),w,h,(int)(length*3/4),temp_surface.begin());
 				etl::hbox_blur(temp_surface.begin(),w,h,(int)(length*3/4),worksurface.begin());
 			}
 			//else temp_surface2=worksurface;
-			
+
 			//vertical part
 			if(size[1])
 			{
 				Real length=abs((float)h/(resolution[1]))*size[1]*0.5+1;
 				length=std::max(1.0,length);
-				
+
 				//two box blurs produces: 1 2 1 on the horizontal 1 2 1
 				etl::vbox_blur(worksurface.begin(),w,h,(int)(length*3/4),temp_surface.begin());
 				etl::vbox_blur(temp_surface.begin(),w,h,(int)(length*3/4),worksurface.begin());
 			}
 			//else temp_surface2=temp_surface2;
-	
+
 			/*int x,y;
 			for(y=0;y<h;y++)
 			{
@@ -654,29 +654,29 @@ bool Blur::operator ()(const Surface &surface,
 			//horizontal part
 			Surface temp_surface;
 			temp_surface.set_wh(worksurface.get_w(),worksurface.get_h());
-			
+
 			if(size[0])
 			{
 				int length = halfsizex;
 				length = std::max(1,length);
-				
+
 				etl::hbox_blur(worksurface.begin(),worksurface.end(),length,temp_surface.begin());
 			}
 			else temp_surface = worksurface;
-				
+
 			//vertical part
 			Surface temp_surface2;
 			temp_surface2.set_wh(worksurface.get_w(),worksurface.get_h());
-			
+
 			if(size[1])
 			{
 				int length = halfsizey;
 				length = std::max(1,length);
-				
+
 				etl::vbox_blur(worksurface.begin(),worksurface.end(),length,temp_surface2.begin());
 			}
 			else temp_surface2 = worksurface;
-	
+
 			//blend the two together
 			int x,y;
 
@@ -699,12 +699,12 @@ bool Blur::operator ()(const Surface &surface,
 
 			Real	pw = (Real)w/(resolution[0]);
 			Real 	ph = (Real)h/(resolution[1]);
-			
+
 			Surface temp_surface;
 			Surface *gauss_surface;
-			
+
 			//synfig::warning("Didn't crash yet b1");
-			
+
 			//if(get_amount()==1.0 && get_blend_method()==Color::BLEND_STRAIGHT)
 				gauss_surface = &worksurface;
 			/*else
@@ -739,7 +739,7 @@ bool Blur::operator ()(const Surface &surface,
 
 			//synfig::warning("Didn't crash yet b2");
 			//int i = 0;
-			
+
 			while(bw&&bh)
 			{
 				if(!blurcall.amount_complete(max-(bw+bh),max))return false;
@@ -761,7 +761,7 @@ bool Blur::operator ()(const Surface &surface,
 					GuassianBlur_2x2(*gauss_surface);
 					bw--,bh--;
 				}
-				
+
 				//synfig::warning("Didn't crash yet bi - %d",i++);
 			}
 			while(bw)
@@ -818,11 +818,11 @@ bool Blur::operator ()(const Surface &surface,
 	}
 
 	// Scale up the alpha
-	
+
 	//be sure the surface is of the correct size
 	//surface->set_wh(renddesc.get_w(),renddesc.get_h());
 	out.set_wh(w,h);
-	
+
 	//divide out the alpha
 	for(y=0;y<h;y++)
 	{
@@ -839,47 +839,47 @@ bool Blur::operator ()(const Surface &surface,
 			else out[y][x]=Color::alpha();
 		}
 	}
-	
+
 	//we are FRIGGGIN done....
 	blurcall.amount_complete(100,100);
-	
+
 	return true;
 }
 
-bool Blur::operator ()(const surface<float> &surface, 
-						const Vector &resolution, 
+bool Blur::operator ()(const surface<float> &surface,
+						const Vector &resolution,
 						surface<float> &out) const
 {
 	int w = surface.get_w(),
 		h = surface.get_h();
-	
+
 	if(w == 0 || h == 0 || resolution[0] == 0 || resolution[1] == 0) return false;
-	
+
 	const Real	pw = resolution[0]/w,
 				ph = resolution[1]/h;
-	
+
 	int	halfsizex = (int) (abs(size[0]*.5/pw) + 1),
-		halfsizey = (int) (abs(size[1]*.5/ph) + 1);	
+		halfsizey = (int) (abs(size[1]*.5/ph) + 1);
 	int x,y;
-	
+
 	SuperCallback blurcall(cb,0,5000,5000);
-	
+
 	etl::surface<float> worksurface(surface);
-	
+
 	//don't need to premultiply because we are dealing with ONLY alpha
-		
+
 	switch(type)
 	{
 	case Blur::DISC:	// D I S C ----------------------------------------------------------
-		{			
+		{
 			int bw = halfsizex;
 			int bh = halfsizey;
-			
+
 			if(size[0] && size[1] && w*h>2)
 			{
 				int x2,y2;
 				etl::surface<float> tmp_surface(worksurface);
-				
+
 				for(y=0;y<h;y++)
 				{
 					for(x=0;x<w;x++)
@@ -887,7 +887,7 @@ bool Blur::operator ()(const surface<float> &surface,
 						//accumulate all the pixels in an ellipse of w,h about the current pixel
 						float a = 0;
 						int total=0;
-						
+
 						for(y2=-bh;y2<=bh;y2++)
 						{
 							for(x2=-bw;x2<=bw;x2++)
@@ -897,27 +897,27 @@ bool Blur::operator ()(const surface<float> &surface,
 								float tmp_y=(float)y2/bh;
 								tmp_x*=tmp_x;
 								tmp_y*=tmp_y;
-								
+
 								//ignore if it's outside of the disc
 								if( tmp_x+tmp_y>1.0)
 									continue;
-								
+
 								//cap the pixel indices to inside the surface
 								int u= x+x2,
 									v= y+y2;
-								
+
 								if( u < 0 )					u = 0;
 								if( u >= w ) u = w-1;
-									
+
 								if( v < 0 ) 				v = 0;
 								if( v >= h ) v = h-1;
-									
+
 								//accumulate the color, and # of pixels added in
 								a += tmp_surface[v][u];
 								total++;
 							}
 						}
-						
+
 						//blend the color with the original color
 						//if(get_amount()==1.0 && get_blend_method()==Color::BLEND_STRAIGHT)
 							worksurface[y][x]=a/total;
@@ -932,7 +932,7 @@ bool Blur::operator ()(const surface<float> &surface,
 				}
 				break;
 			}
-			
+
 			//if we don't qualify for disc blur just use box blur
 		}
 
@@ -941,20 +941,20 @@ bool Blur::operator ()(const surface<float> &surface,
 			//horizontal part
 			etl::surface<float> temp_surface;
 			temp_surface.set_wh(w,h);
-			
+
 			if(size[0])
 			{
 				int length = halfsizex;
 				length=std::max(1,length);
-				
+
 				etl::hbox_blur(worksurface.begin(),worksurface.end(),length,temp_surface.begin());
 			}
 			else temp_surface = worksurface;
-			
+
 			//vertical part
 			//etl::surface<float> temp_surface2;
 			//temp_surface2.set_wh(w,h);
-			
+
 			if(size[1])
 			{
 				int length = halfsizey;
@@ -962,7 +962,7 @@ bool Blur::operator ()(const surface<float> &surface,
 				etl::vbox_blur(temp_surface.begin(),temp_surface.end(),length,worksurface.begin());
 			}
 			else worksurface = temp_surface;
-			
+
 			//blend with the original surface
 			/*int x,y;
 			for(y=0;y<h;y++)
@@ -976,44 +976,44 @@ bool Blur::operator ()(const surface<float> &surface,
 		break;
 
 	case Blur::FASTGAUSSIAN:	// F A S T G A U S S I A N ----------------------------------------------
-		{		
+		{
 			//fast gaussian is treated as a 3x3 type of thing, except expanded to work with the length
-			
+
 			/*	1	2	1
 				2	4	2
 				1	2	1
 			*/
-			
+
 			etl::surface<float> temp_surface;
 			temp_surface.set_wh(w,h);
-			
+
 			//etl::surface<float> temp_surface2;
 			//temp_surface2.set_wh(w,h);
-			
+
 			//horizontal part
 			if(size[0])
 			{
 				Real length=abs((float)w/(resolution[0]))*size[0]*0.5+1;
 				length=std::max(1.0,length);
-				
+
 				//two box blurs produces: 1 2 1
 				etl::hbox_blur(worksurface.begin(),w,h,(int)(length*3/4),temp_surface.begin());
 				etl::hbox_blur(temp_surface.begin(),w,h,(int)(length*3/4),worksurface.begin());
 			}
 			//else temp_surface2=worksurface;
-			
+
 			//vertical part
 			if(size[1])
 			{
 				Real length=abs((float)h/(resolution[1]))*size[1]*0.5+1;
 				length=std::max(1.0,length);
-				
+
 				//two box blurs produces: 1 2 1 on the horizontal 1 2 1
 				etl::vbox_blur(worksurface.begin(),w,h,(int)(length*3/4),temp_surface.begin());
 				etl::vbox_blur(temp_surface.begin(),w,h,(int)(length*3/4),worksurface.begin());
 			}
 			//else temp_surface2=temp_surface2;
-	
+
 			/*int x,y;
 			for(y=0;y<h;y++)
 			{
@@ -1030,29 +1030,29 @@ bool Blur::operator ()(const surface<float> &surface,
 			//horizontal part
 			etl::surface<float> temp_surface;
 			temp_surface.set_wh(worksurface.get_w(),worksurface.get_h());
-			
+
 			if(size[0])
 			{
 				int length = halfsizex;
 				length = std::max(1,length);
-				
+
 				etl::hbox_blur(worksurface.begin(),worksurface.end(),length,temp_surface.begin());
 			}
 			else temp_surface = worksurface;
-				
+
 			//vertical part
 			etl::surface<float> temp_surface2;
 			temp_surface2.set_wh(worksurface.get_w(),worksurface.get_h());
-			
+
 			if(size[1])
 			{
 				int length = halfsizey;
 				length = std::max(1,length);
-				
+
 				etl::vbox_blur(worksurface.begin(),worksurface.end(),length,temp_surface2.begin());
 			}
 			else temp_surface2 = worksurface;
-	
+
 			//blend the two together
 			int x,y;
 
@@ -1075,10 +1075,10 @@ bool Blur::operator ()(const surface<float> &surface,
 
 			Real	pw = (Real)w/(resolution[0]);
 			Real 	ph = (Real)h/(resolution[1]);
-			
+
 			//etl::surface<float> temp_surface;
 			etl::surface<float> *gauss_surface;
-			
+
 			//if(get_amount()==1.0 && get_blend_method()==Color::BLEND_STRAIGHT)
 				gauss_surface = &worksurface;
 			/*else
@@ -1106,16 +1106,16 @@ bool Blur::operator ()(const surface<float> &surface,
 			float *SC1=new float[w+2];
 			float *SC2=new float[w+2];
 			float *SC3=new float[w+2];
-			
+
 			memset(SC0,0,(w+2)*sizeof(float));
 			memset(SC0,0,(w+2)*sizeof(float));
 			memset(SC0,0,(w+2)*sizeof(float));
 			memset(SC0,0,(w+2)*sizeof(float));
 
 			//int i = 0;
-			
+
 			while(bw&&bh)
-			{				
+			{
 				if(!blurcall.amount_complete(max-(bw+bh),max))return false;
 
 				if(bw>=4 && bh>=4)
@@ -1136,7 +1136,7 @@ bool Blur::operator ()(const surface<float> &surface,
 					bw--,bh--;
 				}
 			}
-			
+
 			while(bw)
 			{
 				if(!blurcall.amount_complete(max-(bw+bh),max))return false;
@@ -1152,7 +1152,7 @@ bool Blur::operator ()(const surface<float> &surface,
 					bw--;
 				}
 			}
-			
+
 			while(bh)
 			{
 				if(!blurcall.amount_complete(max-(bw+bh),max))return false;
@@ -1187,17 +1187,17 @@ bool Blur::operator ()(const surface<float> &surface,
 		default:
 		break;
 	}
-	
+
 	//be sure the surface is of the correct size
 	//surface->set_wh(renddesc.get_w(),renddesc.get_h());
 	out.set_wh(w,h);
-	
+
 	//divide out the alpha - don't need to cause we rock
 	out = worksurface;
-	
+
 	//we are FRIGGGIN done....
 	blurcall.amount_complete(100,100);
-	
+
 	return true;
 }
 

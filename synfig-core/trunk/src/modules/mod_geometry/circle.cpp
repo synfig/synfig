@@ -69,7 +69,7 @@ Circle::Circle():
 {
 	constructcache();
 }
-	
+
 bool
 Circle::ImportParameters(const String &param, const ValueBase &value)
 {
@@ -79,7 +79,7 @@ Circle::ImportParameters(const String &param, const ValueBase &value)
 	IMPORT(invert);
 	IMPORT(pos);
 	IMPORT(falloff);
-		
+
 	return Layer_Composite::set_param(param,value);
 }
 
@@ -91,7 +91,7 @@ Circle::set_param(const String &param, const ValueBase &value)
 		constructcache();
 		return true;
 	}
-	
+
 	return false;
 }
 
@@ -107,7 +107,7 @@ Circle::get_param(const String &param)const
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
-		
+
 	return Layer_Composite::get_param(param);
 }
 
@@ -115,7 +115,7 @@ Layer::Vocab
 Circle::get_param_vocab()const
 {
 	Layer::Vocab ret(Layer_Composite::get_param_vocab());
-	
+
 	ret.push_back(ParamDesc("color")
 		.set_local_name(_("Color"))
 	);
@@ -130,7 +130,7 @@ Circle::get_param_vocab()const
 	);
 	ret.push_back(ParamDesc("pos")
 		.set_local_name(_("Center"))
-	);	
+	);
 	ret.push_back(ParamDesc("invert")
 		.set_local_name(_("Invert"))
 		.set_description(_("Invert the circle"))
@@ -146,7 +146,7 @@ Circle::get_param_vocab()const
 		.add_enum_value(FALLOFF_SIGMOND,"sigmond",_("Sigmond"))
 		.add_enum_value(FALLOFF_COSINE,"cosine",_("Cosine"))
 	);
-	
+
 	return ret;
 }
 
@@ -157,7 +157,7 @@ Circle::hit_check(synfig::Context context, const synfig::Point &point)const
 
 	if(get_amount()==0)
 		return context.hit_check(point);
-		
+
 	bool in_circle(temp.mag_squared() <= radius*radius);
 
 	if(invert)
@@ -171,7 +171,7 @@ Circle::hit_check(synfig::Context context, const synfig::Point &point)const
 		if(get_amount()-(feather/radius)<=0.0)
 			in_circle=false;
 	}
-			
+
 	if(in_circle)
 	{
 		synfig::Layer::Handle tmp;
@@ -185,7 +185,7 @@ Circle::hit_check(synfig::Context context, const synfig::Point &point)const
 	return context.hit_check(point);
 }
 
-//falloff functions		
+//falloff functions
 Real	Circle::SqdFalloff(const Circle::CircleDataCache &c, const Real &mag_sqd)
 {
 	//squared proportional falloff
@@ -198,7 +198,7 @@ Real	Circle::InvSqdFalloff(const Circle::CircleDataCache &c, const Real &mag_sqd
 	return 1.0 - (c.outer_radius_sqd - mag_sqd) / c.diff_sqd;
 }
 
-			
+
 Real	Circle::SqrtFalloff(const Circle::CircleDataCache &c, const Real &mag_sqd)
 {
 	//linear distance falloff
@@ -216,7 +216,7 @@ Real	Circle::InvSqrtFalloff(const Circle::CircleDataCache &c, const Real &mag_sq
 	ret = 1.0 - sqrt(ret);
 	return ret;
 }
-		
+
 Real	Circle::LinearFalloff(const Circle::CircleDataCache &c, const Real &mag_sqd)
 {
 	//linear distance falloff
@@ -228,7 +228,7 @@ Real	Circle::InvLinearFalloff(const Circle::CircleDataCache &c, const Real &mag_
 	return 1.0 - ( c.outer_radius - sqrt(mag_sqd) ) / c.double_feather;
 	//linear distance falloff
 }
-		
+
 Real	Circle::SigmondFalloff(const Circle::CircleDataCache &c, const Real &mag_sqd)
 {
 	//linear distance falloff
@@ -269,28 +269,28 @@ void Circle::constructcache()
 	cache.inner_radius = radius - feather;
 	if(cache.inner_radius < 0)
 		cache.inner_radius = 0;
-	
+
 	cache.outer_radius = radius + feather;
-	
+
 	cache.inner_radius_sqd = cache.inner_radius > 0 ? (radius-feather)*(radius-feather) : 0;
 	cache.outer_radius_sqd = (radius+feather)*(radius+feather);
-	
+
 	cache.diff_sqd = feather*feather*4.0;
 	cache.double_feather = feather*2.0;
-	
+
 	falloff_func = GetFalloffFunc();
 }
 
 Circle::FALLOFF_FUNC *Circle::GetFalloffFunc()const
 {
 	switch(falloff)
-	{	
+	{
 	case FALLOFF_SQUARED:	return invert?InvSqdFalloff:SqdFalloff;
-	
+
 	case FALLOFF_SQRT:		return invert?InvSqrtFalloff:SqrtFalloff;
-	
+
 	case FALLOFF_INTERPOLATION_LINEAR:	return invert?InvLinearFalloff:LinearFalloff;
-	
+
 	case FALLOFF_SIGMOND:	return invert?InvSigmondFalloff:SigmondFalloff;
 
 	case FALLOFF_COSINE:
@@ -304,35 +304,35 @@ Circle::get_color(Context context, const Point &point)const
 	if(radius==0 || is_disabled())
 		return context.get_color(point);
 
-		
+
 	Point temp=pos-point;
-		
+
 	/*const Real inner_radius = radius-feather;
 	const Real outer_radius = radius+feather;
-	
+
 	const Real inner_radius_sqd = inner_radius > 0 ? (radius-feather)*(radius-feather) : 0;
 	const Real outer_radius_sqd = (radius+feather)*(radius+feather);
-	
+
 	const Real diff_radii_sqd = outer_radius_sqd - inner_radius_sqd;
 	const Real double_feather = feather*2.0;*/
-	
+
 	/*const Real &inner_radius = cache.inner_radius;
 	const Real &outer_radius = cache.outer_radius;*/
-	
+
 	const Real &inner_radius_sqd = cache.inner_radius_sqd;
 	const Real &outer_radius_sqd = cache.outer_radius_sqd;
-	
+
 	/*const Real &diff_radii_sqd = cache.diff_radii_sqd;
 	const Real &double_feather = cache.double_feather;*/
-	
+
 	const Vector::value_type mag_squared = temp.mag_squared();
-	
+
 	//Outside the circle, with feathering enabled
 	if( mag_squared > outer_radius_sqd )
 	{
 		// inverted -> outside == colored in
 		if(invert)
-		{	
+		{
 			if(get_amount() == 1 && get_blend_method() == Color::BLEND_STRAIGHT)
 				return color;
 			else
@@ -341,7 +341,7 @@ Circle::get_color(Context context, const Point &point)const
 		else
 			return context.get_color(point);
 	}
-	
+
 	//inside the circle's solid area (with feathering)
 	else if(mag_squared <= inner_radius_sqd)
 	{
@@ -354,32 +354,32 @@ Circle::get_color(Context context, const Point &point)const
 		else
 			return context.get_color(point);
 	}
-	
+
 	//If we get here, the pixel is within the feathering area, and is thus subject to falloff
 	else
 	{
 		Color::value_type alpha;
-	
+
 		/*switch(falloff)
 		{
-		
+
 		case FALLOFF_SQUARED:
 			//squared proportional falloff
 			alpha = (outer_radius_sqd - mag_squared) / diff_radii_sqd;
 			break;
-		
+
 		case FALLOFF_SQRT:
 			//linear distance falloff
 			alpha = ( outer_radius - sqrt(mag_squared) ) / double_feather;
 			//then take the square root of it
 			alpha = sqrt(alpha);
 			break;
-		
+
 		case FALLOFF_INTERPOLATION_LINEAR:
 			//linear distance falloff
 			alpha = ( outer_radius - sqrt(mag_squared) ) / double_feather;
 			break;
-		
+
 		case FALLOFF_SIGMOND:
 		default:
 			//linear distance falloff
@@ -389,16 +389,16 @@ Circle::get_color(Context context, const Point &point)const
 			alpha = 1.0 / (1 + exp(-(alpha*10-5)) );
 			break;
 		}
-		
+
 		//If we're inverted, we need to invert the falloff value
 		if(invert)
 			alpha=1.0-alpha;*/
-			
+
 		alpha = falloff_func(cache,mag_squared);
-		
+
 		//Compose falloff value with amount from the composite layer, and that is the blend value
 		alpha *= get_amount();
-		
+
 		return Color::blend(color,context.get_color(point),alpha,get_blend_method());
 	}
 }
@@ -411,7 +411,7 @@ Color NormalBlend(Color a, Color b, float amount)
 
 bool
 Circle::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
-{	
+{
 	// trivial case
 	if(is_disabled() || (radius==0 && invert==false))
 		return context.accelerated_render(surface,quality, renddesc, cb);
@@ -431,24 +431,24 @@ Circle::accelerated_render(Context context,Surface *surface,int quality, const R
 	const Point br(renddesc.get_br());
 	const int	w(renddesc.get_w());
 	const int	h(renddesc.get_h());
-	
+
 	const Real x_neg = tl[0] > br[0] ? -1 : 1;
 	const Real y_neg = tl[1] > br[1] ? -1 : 1;
-			
+
 	// Width and Height of a pixel
 	const Real pw = (br[0] - tl[0]) / w;
 	const Real ph = (br[1] - tl[1]) / h;
-	
+
 	// Increasing the feather amount by the size of
 	// a pixel will create an anti-aliased appearance
 	const Real newfeather=feather + (abs(ph)+abs(pw))/4.0;
-		
+
 	//int u,v;
 	int left = 	(int)	floor( (pos[0] - x_neg*(radius+newfeather) - tl[0]) / pw );
 	int right = (int)	ceil( (pos[0] + x_neg*(radius+newfeather) - tl[0]) / pw );
 	int top = 	(int)	floor( (pos[1] - y_neg*(radius+newfeather) - tl[1]) / ph );
 	int bottom = (int)	ceil( (pos[1] + y_neg*(radius+newfeather) - tl[1]) / ph );
-		
+
 	//clip the rectangle bounds
 	if(left < 0)
 		left = 0;
@@ -458,36 +458,36 @@ Circle::accelerated_render(Context context,Surface *surface,int quality, const R
 		right = w-1;
 	if(bottom >= h)
 		bottom = h-1;
-	
+
 	const Real inner_radius = radius-newfeather>0 ? radius-newfeather : 0;
 	const Real outer_radius = radius+newfeather;
-	
+
 	const Real inner_radius_sqd = inner_radius*inner_radius;
 	const Real outer_radius_sqd = outer_radius*outer_radius;
-	
+
 	const Real diff_radii_sqd = 4*newfeather*std::max(newfeather,radius);//4.0*radius*newfeather;
 	const Real double_feather = newfeather * 2.0;
-	
+
 	//Compile the temporary cache for the falloff calculations
 	FALLOFF_FUNC *func = GetFalloffFunc();
-	
-	const CircleDataCache cache = 
+
+	const CircleDataCache cache =
 	{
 		inner_radius,outer_radius,
 		inner_radius_sqd,outer_radius_sqd,
 		diff_radii_sqd,double_feather
-	};	
-	
+	};
+
 	//info("Circle: Initialized everything");
-	
+
 	//let the rendering begin
 	SuperCallback supercb(cb,0,9000,10000);
-	
+
 	//if it's a degenerate circle, do what we need to do, and then leave
 	if(left >= right || top >= bottom)
 	{
 		if(invert)
-		{			
+		{
 			if(get_amount() == 1 && get_blend_method() == Color::BLEND_STRAIGHT)
 			{
 				surface->set_wh(w,h);
@@ -500,10 +500,10 @@ Circle::accelerated_render(Context context,Surface *surface,int quality, const R
 				{
 					if(cb)cb->error(strprintf(__FILE__"%d: Accelerated Renderer Failure",__LINE__));
 					return false;
-				}			
-				
+				}
+
 				Surface::alpha_pen p(surface->begin(),get_amount(),_BlendFunc(get_blend_method()));
-				
+
 				p.set_value(color);
 				p.put_block(h,w);
 				return true;
@@ -516,10 +516,10 @@ Circle::accelerated_render(Context context,Surface *surface,int quality, const R
 				if(cb)cb->error(strprintf(__FILE__"%d: Accelerated Renderer Failure",__LINE__));
 				return false;
 			}
-			return true;			
+			return true;
 		}
 	}
-	
+
 	if( (pos[0] - tl[0])*(pos[0] - tl[0]) + (pos[1] - tl[1])*(pos[1] - tl[1]) < inner_radius_sqd
 		&& (pos[0] - br[0])*(pos[0] - br[0]) + (pos[1] - br[1])*(pos[1] - br[1]) < inner_radius_sqd
 		&& (pos[0] - tl[0])*(pos[0] - tl[0]) + (pos[1] - br[1])*(pos[1] - br[1]) < inner_radius_sqd
@@ -540,16 +540,16 @@ Circle::accelerated_render(Context context,Surface *surface,int quality, const R
 				surface->set_wh(w,h);
 				surface->fill(color);
 				return true;
-			}						
-		}		
+			}
+		}
 	}
-	
-	//info("Circle: Non degenerate, rasterize %c", invert);	
+
+	//info("Circle: Non degenerate, rasterize %c", invert);
 
 	//we start in the middle of the left-top pixel
 	Real leftf 	= (left + 0.5)*pw + tl[0];
 	Real topf 	= (top + 0.5)*ph + tl[1];
-	
+
 	//the looping variables
 	Real 		x,y;
 	int			i,j;
@@ -563,26 +563,26 @@ Circle::accelerated_render(Context context,Surface *surface,int quality, const R
 			if(cb)cb->error(strprintf(__FILE__"%d: Accelerated Renderer Failure",__LINE__));
 			return false;
 		}
-		
+
 		//make topf and leftf relative to the center of the circle
 		leftf 	-= 	pos[0];
 		topf 	-= 	pos[1];
-		
+
 		j = top;
 		y = topf;
-		
+
 		//Loop over the valid y-values in the bounding square
 		for(;j <= bottom; j++, y += ph)
 		{
 			i = left;
 			x = leftf;
-			
+
 			//for each y-value, Loop over the bounding x-values in the bounding square
 			for(;i <= right; i++, x += pw)
 			{
 				//for each pixel, figure out the distance and blend
 				Real	r = x*x + y*y;
-				
+
 				//if in the inner circle then the full color shows through
 				if(r <= inner_radius_sqd)
 				{
@@ -601,30 +601,30 @@ Circle::accelerated_render(Context context,Surface *surface,int quality, const R
 					case FALLOFF_SQUARED:
 						myamount = (outer_radius_sqd - r) / diff_radii_sqd;
 						break;
-					
+
 					case FALLOFF_SQRT:
 						myamount = (outer_radius - sqrt(r)) / double_feather;
 						myamount = sqrt(myamount);
 						break;
-					
+
 					case FALLOFF_INTERPOLATION_LINEAR:
 						myamount = (outer_radius - sqrt(r)) / double_feather;
 						break;
-					
+
 					case FALLOFF_SIGMOND:
 					default:
 						myamount = (outer_radius - sqrt(r)) / double_feather;
 						myamount = 1.0 / ( 1 + exp(-(myamount*10 - 5)) );
 						break;
 					}*/
-					
+
 					Real	myamount = func(cache,r);
 
 					//if(myamount<0.0)myamount=0.0;
 					//if(myamount>1.0)myamount=1.0;
 					myamount *= get_amount();
 					(*surface)[j][i] = Color::blend(color,(*surface)[j][i],myamount,get_blend_method());
-				}								
+				}
 			}
 		}
 	}
@@ -633,25 +633,25 @@ Circle::accelerated_render(Context context,Surface *surface,int quality, const R
 		Surface background;
 		RendDesc desc(renddesc);
 		desc.set_flags(0);
-		
+
 		int offset_x=0,offset_y=0;
-		
+
 		//fill the surface with the background color initially
 		surface->set_wh(w,h);
 		surface->fill(color);
-				
+
 		//then render the background to an alternate surface
 		if(get_amount() == 1 && get_blend_method() == Color::BLEND_STRAIGHT)
 		{
 			offset_x = left;
 			offset_y = top;
-			
+
 			//if there is no background showing through we are done
 			if(right < left || bottom < top)
 				return true;
-			
+
 			desc.set_subwindow(left,top,right-left+1,bottom-top+1);
-									
+
 			// Render what is behind us
 			if(!context.accelerated_render(&background,quality,desc,&supercb))
 			{
@@ -665,10 +665,10 @@ Circle::accelerated_render(Context context,Surface *surface,int quality, const R
 			right = w-1;
 			top = 0;
 			bottom = h-1;
-			
+
 			leftf = /*0.5*pw +*/ tl[0];
 			topf = /*0.5*ph +*/ tl[1];
-			
+
 			// Render what is behind us
 			if(!context.accelerated_render(&background,quality,renddesc,&supercb))
 			{
@@ -676,22 +676,22 @@ Circle::accelerated_render(Context context,Surface *surface,int quality, const R
 				return false;
 			}
 		}
-		
+
 		topf -= pos[1];
 		leftf-= pos[0];
-		
+
 		j = top;
 		y = topf;
-		
+
 		for(;j <= bottom; j++, y+=ph)
 		{
 			i = left;
 			x = leftf;
-			
+
 			for(;i <= right; i++, x+=pw)
-			{				
+			{
 				Vector::value_type r = x*x + y*y;
-	
+
 				if(r < inner_radius_sqd)
 				{
 					(*surface)[j][i] = background[j-offset_y][i-offset_x];
@@ -718,19 +718,19 @@ Circle::accelerated_render(Context context,Surface *surface,int quality, const R
 						amount = 1.0 - ( 1.0/( 1 + exp(-(amount*10-5)) ) );
 						break;
 					}*/
-					
+
 					Real amount = func(cache,r);
-					
+
 					if(amount<0.0)amount=0.0;
 					if(amount>1.0)amount=1.0;
-						
+
 					amount*=get_amount();
-					
+
 					(*surface)[j][i]=Color::blend(color,background[j-offset_y][i-offset_x],amount,get_blend_method());
 				}else if(get_amount() != 1 || get_blend_method() != Color::BLEND_STRAIGHT)
 				{
-					(*surface)[j][i]=Color::blend(color,background[j][i],get_amount(),get_blend_method());					
-				}				
+					(*surface)[j][i]=Color::blend(color,background[j][i],get_amount(),get_blend_method());
+				}
 			}
 		}
     }
@@ -773,7 +773,7 @@ Circle::get_full_bounding_rect(Context context)const
 			);
 			return bounds & context.get_full_bounding_rect();
 		}
-		return Rect::full_plane();			
+		return Rect::full_plane();
 	}
 
 	return Layer_Composite::get_full_bounding_rect(context);

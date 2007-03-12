@@ -67,12 +67,12 @@ Layer_SolidColor::Layer_SolidColor():
 	color(Color::black())
 {
 }
-	
+
 bool
 Layer_SolidColor::set_param(const String & param, const ValueBase &value)
 {
 	IMPORT(color);
-	
+
 	return Layer_Composite::set_param(param,value);
 }
 
@@ -83,19 +83,19 @@ Layer_SolidColor::get_param(const String &param)const
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
-		
-	return Layer_Composite::get_param(param);	
+
+	return Layer_Composite::get_param(param);
 }
 
 Layer::Vocab
 Layer_SolidColor::get_param_vocab()const
 {
 	Layer::Vocab ret(Layer_Composite::get_param_vocab());
-	
+
 	ret.push_back(ParamDesc("color")
 		.set_local_name(_("Color"))
 	);
-	
+
 	return ret;
 }
 
@@ -107,9 +107,9 @@ Layer_SolidColor::hit_check(synfig::Context context, const synfig::Point &point)
 	else
 	if(get_blend_method()==Color::BLEND_COMPOSITE && get_amount()*color.get_a()>=0.5)
 		return const_cast<Layer_SolidColor*>(this);
-	
+
 	Layer::Handle layer(context.hit_check(point));
-	
+
 	return layer?layer:const_cast<Layer_SolidColor*>(this);
 }
 
@@ -121,7 +121,7 @@ Layer_SolidColor::get_color(Context context, const Point &pos)const
 	else
 		return Color::blend(color,context.get_color(pos),get_amount(),get_blend_method());
 }
-	
+
 bool
 Layer_SolidColor::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
@@ -130,7 +130,7 @@ Layer_SolidColor::accelerated_render(Context context,Surface *surface,int qualit
 		// Mark our progress as starting
 		if(cb && !cb->amount_complete(0,1000))
 			return false;
-		
+
 		surface->set_wh(renddesc.get_w(),renddesc.get_h());
 		surface->fill(color);
 

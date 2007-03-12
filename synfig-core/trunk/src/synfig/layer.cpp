@@ -133,7 +133,7 @@ synfig::Layer::create(const String &name)
 	{
 		return Layer::LooseHandle(new Layer_Mime(name));
 	}
-	
+
 	Layer* layer(book()[name].factory());
 	return Layer::LooseHandle(layer);
 }
@@ -146,9 +146,9 @@ synfig::Layer::~Layer()
 		remove_child(dynamic_param_list_.begin()->second.get());
 		dynamic_param_list_.erase(dynamic_param_list_.begin());
 	}
-	
+
 	remove_from_all_groups();
-	
+
 	parent_death_connect_.disconnect();
 	begin_delete();
 }
@@ -213,7 +213,7 @@ Layer::set_description(const String& x)
 	if(description_!=x)
 	{
 		description_=x;
-		signal_description_changed_();		
+		signal_description_changed_();
 	}
 }
 
@@ -224,19 +224,19 @@ Layer::connect_dynamic_param(const String& param, etl::loose_handle<ValueNode> v
 
 	if(previous==value_node)
 		return true;
-	
+
 	dynamic_param_list_[param]=ValueNode::Handle(value_node);
-	
+
 	if(previous)
 		remove_child(previous.get());
-	
+
 	add_child(value_node.get());
-	
+
 	if(!value_node->is_exported() && get_canvas())
 	{
 		value_node->set_parent_canvas(get_canvas());
 	}
-	
+
 	changed();
 	return true;
 }
@@ -303,16 +303,16 @@ Layer::Handle
 Layer::clone(const GUID& deriv_guid) const
 {
 	if(!book().count(get_name())) return 0;
-	
+
 	//Layer *ret = book()[get_name()].factory();//create(get_name()).get();
 	Handle ret = create(get_name()).get();
-	
+
 	ret->group_=group_;
 	//ret->set_canvas(get_canvas());
 	ret->set_description(get_description());
 	ret->set_active(active());
 	ret->set_guid(get_guid()^deriv_guid);
-	
+
 	//ret->set_param_list(get_param_list());
 	// Process the parameter list sothat
 	// we can duplicate any inlinecanvases
@@ -321,7 +321,7 @@ Layer::clone(const GUID& deriv_guid) const
 	{
 		if(dynamic_param_list().count(iter->first)==0 && iter->second.get_type()==ValueBase::TYPE_CANVAS)
 		{
-			
+
 			// This parameter is a canvas.  We need a close look.
 			Canvas::Handle canvas(iter->second.get(Canvas::Handle()));
 			if(canvas->is_inline())
@@ -334,11 +334,11 @@ Layer::clone(const GUID& deriv_guid) const
 				continue;
 			}
 		}
-		
+
 		// This is a normal parameter,go ahead and set it.
 		ret->set_param(iter->first, iter->second);
 	}
-		
+
 	// Duplicate the dynamic paramlist, but only the exported data nodes
 	DynamicParamList::const_iterator iter;
 	for(iter=dynamic_param_list().begin();iter!=dynamic_param_list().end();++iter)
@@ -355,7 +355,7 @@ Layer::clone(const GUID& deriv_guid) const
 				continue;
 			}
 		}
-		
+
 		if(iter->second->is_exported())
 			ret->connect_dynamic_param(iter->first,iter->second);
 		else
@@ -363,7 +363,7 @@ Layer::clone(const GUID& deriv_guid) const
 	}
 
 	//ret->set_canvas(0);
-	
+
 	return ret;
 }
 
@@ -522,10 +522,10 @@ Layer::get_times_vfunc(Node::time_set &set) const
 {
 	DynamicParamList::const_iterator 	i = dynamic_param_list_.begin(),
 										end = dynamic_param_list_.end();
-		
+
 	for(; i != end; ++i)
 	{
-		const Node::time_set &tset = i->second->get_times();		
+		const Node::time_set &tset = i->second->get_times();
 		set.insert(tset.begin(),tset.end());
 	}
 }
@@ -541,14 +541,14 @@ Layer::add_to_group(const String&x)
 	group_=x;
 	signal_added_to_group()(group_);
 }
-	
+
 void
 Layer::remove_from_group(const String&x)
 {
 	if(group_==x)
 		remove_from_all_groups();
 }
-	
+
 void
 Layer::remove_from_all_groups()
 {
@@ -557,7 +557,7 @@ Layer::remove_from_all_groups()
 	signal_removed_from_group()(group_);
 	group_.clear();
 }
-	
+
 String
 Layer::get_group()const
 {

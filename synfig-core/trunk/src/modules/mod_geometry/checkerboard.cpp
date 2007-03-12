@@ -91,7 +91,7 @@ CheckerBoard::set_param(const String &param, const ValueBase &value)
 	IMPORT(pos[0]);
 	IMPORT(pos[1]);
 	IMPORT(size);
-	
+
 	return Layer_Composite::set_param(param,value);
 }
 
@@ -101,19 +101,19 @@ CheckerBoard::get_param(const String &param)const
 	EXPORT(color);
 	EXPORT(pos);
 	EXPORT(pos[0]);
-	EXPORT(pos[1]);	
+	EXPORT(pos[1]);
 	EXPORT(size);
 	EXPORT_NAME();
 	EXPORT_VERSION();
-		
-	return Layer_Composite::get_param(param);	
+
+	return Layer_Composite::get_param(param);
 }
 
 Layer::Vocab
 CheckerBoard::get_param_vocab()const
 {
 	Layer::Vocab ret(Layer_Composite::get_param_vocab());
-	
+
 	ret.push_back(ParamDesc("color")
 		.set_local_name(_("Color"))
 		.set_description(_("Color of checkers"))

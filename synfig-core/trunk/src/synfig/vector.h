@@ -75,7 +75,7 @@ public:
 	Vector(const value_type &x, const value_type &y):_x(x),_y(y) { };
 
 	bool is_valid()const { return !(isnan(_x) || isnan(_y)); }
-	
+
 	value_type &
 	operator[](const int& i)
 	{ return (&_x)[i] ; }
@@ -83,7 +83,7 @@ public:
 	const value_type &
 	operator[](const int& i) const
 	{ return (&_x)[i] ; }
-	
+
 	const Vector &
 	operator+=(const Vector &rhs)
 	{
@@ -91,7 +91,7 @@ public:
 		_y+=rhs._y;
 		return *this;
 	}
-	
+
 	const Vector &
 	operator-=(const Vector &rhs)
 	{
@@ -99,7 +99,7 @@ public:
 		_y-=rhs._y;
 		return *this;
 	}
-	
+
 	const Vector &
 	operator*=(const value_type &rhs)
 	{
@@ -107,7 +107,7 @@ public:
 		_y*=rhs;
 		return *this;
 	}
-	
+
 	const Vector &
 	operator/=(const value_type &rhs)
 	{
@@ -116,7 +116,7 @@ public:
 		_y*=tmp;
 		return *this;
 	}
-		
+
 	Vector
 	operator+(const Vector &rhs)const
 		{ return Vector(*this)+=rhs; }
@@ -144,15 +144,15 @@ public:
 	bool
 	operator==(const Vector &rhs)const
 		{ return _x==rhs._x && _y==rhs._y; }
-	
+
 	bool
 	operator!=(const Vector &rhs)const
 		{ return _y!=rhs._y || _x!=rhs._x; }
-	
+
 	//! Returns the squared magnitude of the vector
 	value_type mag_squared()const
 		{ return _x*_x+_y*_y; }
-	
+
 	//! Returns the magnitude of the vector
 	value_type mag()const
 		{ return sqrt(mag_squared()); }
@@ -168,14 +168,14 @@ public:
 	//! Returns a perpendicular version of the vector
 	Vector perp()const
 		{ return Vector(_y,-_x); }
-		
+
 	bool is_equal_to(const Vector& rhs)const
 	{
 		static const value_type epsilon(0.0000000000001);
 //		return (_x>rhs._x)?_x-rhs._x<=epsilon:rhs._x-_x<=epsilon && (_y>rhs._y)?_y-rhs._y<=epsilon:rhs._y-_y<=epsilon;
 		return (*this-rhs).mag_squared()<=epsilon;
 	}
-	
+
 	static const Vector zero() { return Vector(0,0); }
 };
 
@@ -213,7 +213,7 @@ private:
 	value_type a,b,c,d;
 
 protected:
-	affine_combo<value_type,time_type> affine_func; 
+	affine_combo<value_type,time_type> affine_func;
 
 public:
 	bezier_base() { }
@@ -221,7 +221,7 @@ public:
 		const value_type &a, const value_type &b, const value_type &c, const value_type &d,
 		const time_type &r=0.0, const time_type &s=1.0):
 		a(a),b(b),c(c),d(d) { set_rs(r,s); sync(); }
-		
+
 	void sync()
 	{
 		bezier_x[0]=a[0],bezier_y[0]=a[1];
@@ -237,11 +237,11 @@ public:
 	{
 		return synfig::Vector(bezier_x(t),bezier_y(t));
 	}
-	
+
 	void evaluate(time_type t, value_type &f, value_type &df) const
 	{
 		t=(t-get_r())/get_dt();
-		
+
 		const value_type p1 = affine_func(
 							affine_func(a,b,t),
 							affine_func(b,c,t)
@@ -250,7 +250,7 @@ public:
 							affine_func(b,c,t),
 							affine_func(c,d,t)
 						,t);
-		
+
 		f = affine_func(p1,p2,t);
 		df = (p2-p1)*3;
 	}

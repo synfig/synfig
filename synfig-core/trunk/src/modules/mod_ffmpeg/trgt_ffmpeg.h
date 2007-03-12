@@ -55,7 +55,7 @@ public:
 	virtual void end_frame();
 
 	virtual ~ffmpeg_trgt();
-	
+
 	virtual synfig::Color * start_scanline(int scanline);
 	virtual bool end_scanline();
 };

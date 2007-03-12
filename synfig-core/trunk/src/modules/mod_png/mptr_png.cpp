@@ -89,10 +89,10 @@ png_mptr::read_chunk_callback(png_struct *png_data, png_unknown_chunkp chunk)
 	//png_size_t size;
 	/* Note that libpng has already taken care of
 	  the CRC handling */
-	
+
 	/* put your code here.  Return one of the
 	  following: */
-	
+
 	//return (-n); /* chunk had an error */
 	return (0); /* did not recognize */
 	//return (n); /* success */
@@ -101,7 +101,7 @@ png_mptr::read_chunk_callback(png_struct *png_data, png_unknown_chunkp chunk)
 png_mptr::png_mptr(const char *file_name)
 {
 	filename=file_name;
-	
+
 	/* Open the file pointer */
     FILE *file = fopen(file_name, "rb");
     if (!file)
@@ -110,8 +110,8 @@ png_mptr::png_mptr(const char *file_name)
 		throw strprintf("Unable to physically open %s",file_name);
 		return;
     }
-    
-	
+
+
 	/* Make sure we are dealing with a PNG format file */
 	png_byte header[PNG_CHECK_BYTES];
 	fread(header, 1, PNG_CHECK_BYTES, file);
@@ -122,8 +122,8 @@ png_mptr::png_mptr(const char *file_name)
 		throw strprintf("This (\"%s\") doesn't appear to be a PNG file",file_name);
 		return;
     }
-	
-	
+
+
 	png_structp png_ptr = png_create_read_struct
        (PNG_LIBPNG_VER_STRING, (png_voidp)this,
         &png_mptr::png_out_error, &png_mptr::png_out_warning);
@@ -154,8 +154,8 @@ png_mptr::png_mptr(const char *file_name)
 		return;
     }
 
-	
-	
+
+
 	png_init_io(png_ptr, file);
 	png_set_sig_bytes(png_ptr,PNG_CHECK_BYTES);
 
@@ -165,8 +165,8 @@ png_mptr::png_mptr(const char *file_name)
 		synfig::info("PNG: Image gamma is %f",fgamma);
 		png_set_gamma(png_ptr, gamma().get_gamma(), fgamma);
 	}
-	
-	
+
+
 	/*
 	if (setjmp(png_jmpbuf(png_ptr)))
 	{
@@ -178,19 +178,19 @@ png_mptr::png_mptr(const char *file_name)
 		return;
 	}
 	*/
-	
+
 	png_set_read_user_chunk_fn(png_ptr, this, &png_mptr::read_chunk_callback);
-	
-	
+
+
 	png_read_png(png_ptr, info_ptr, PNG_TRANSFORM_PACKING|PNG_TRANSFORM_STRIP_16, NULL);
 
 	int bit_depth,color_type,interlace_type, compression_type,filter_method;
 	png_uint_32 width,height;
-	
+
     png_get_IHDR(png_ptr, info_ptr, &width, &height,
        &bit_depth, &color_type, &interlace_type,
        &compression_type, &filter_method);
-	
+
 	png_bytep *row_pointers=new png_bytep[height];
 	row_pointers = png_get_rows(png_ptr, info_ptr);
 	int x;
@@ -223,7 +223,7 @@ png_mptr::png_mptr(const char *file_name)
 */
 			}
 		break;
-			
+
 	case PNG_COLOR_TYPE_RGB_ALPHA:
 		DEBUGPOINT();
 		for(y=0;y<surface_buffer.get_h();y++)
@@ -248,7 +248,7 @@ png_mptr::png_mptr(const char *file_name)
 				*/
 			}
 		break;
-			
+
 	case PNG_COLOR_TYPE_GRAY:
 		for(y=0;y<surface_buffer.get_h();y++)
 			for(x=0;x<surface_buffer.get_w();x++)
@@ -303,11 +303,11 @@ png_mptr::png_mptr(const char *file_name)
 	}
 
 	DEBUGPOINT();
-	
+
 	// \fixme These shouldn't be uncommented, but for some
 	// reason, they crash the program. I will have to look into this
 	// later. This is a memory leak, but it shouldn't be too bad.
-	
+
 	/*
 	png_read_end(png_ptr, end_info);
 	png_destroy_read_struct(&png_ptr, &info_ptr, &end_info);

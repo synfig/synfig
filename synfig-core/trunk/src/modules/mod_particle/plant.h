@@ -62,7 +62,7 @@ private:
 	{
 		synfig::Point point;
 		synfig::Color color;
-		
+
 		Particle(const synfig::Point &point,const synfig::Color& color):
 			point(point),color(color) { }
 	};
@@ -80,10 +80,10 @@ private:
 	int sprouts;
 	synfig::Real random_factor;
 	Random random;
-	
+
 	bool size_as_alpha;
 	mutable bool needs_sync_;
-	
+
 
 	void branch(int n, int depth,float t, float stunt_growth, synfig::Point position,synfig::Vector velocity)const;
 

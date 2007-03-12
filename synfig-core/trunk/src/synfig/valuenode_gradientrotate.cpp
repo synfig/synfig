@@ -72,14 +72,14 @@ ValueNode_GradientRotate::create(const ValueBase& x)
 	if(id!=ValueBase::TYPE_GRADIENT)
 	{
 		assert(0);
-		throw runtime_error("synfig::ValueNode_GradientRotate:Bad type "+ValueBase::type_name(id));			
-	}		
+		throw runtime_error("synfig::ValueNode_GradientRotate:Bad type "+ValueBase::type_name(id));
+	}
 
 	ValueNode_GradientRotate* value_node=new ValueNode_GradientRotate();
 	value_node->set_gradient(ValueNode_Const::create(x.get(Gradient())));
 
 	assert(value_node->get_type()==id);
-	
+
 	return value_node;
 }
 
@@ -117,7 +117,7 @@ synfig::ValueNode_GradientRotate::operator()(Time t)const
 	Gradient::iterator iter;
 	for(iter=gradient.begin();iter!=gradient.end();++iter)
 		iter->pos+=offset;
-	
+
 	return gradient;
 }
 
@@ -170,7 +170,7 @@ ValueNode_GradientRotate::link_local_name(int i)const
 			return _("Offset");
 	}
 	return String();
-}	
+}
 
 String
 ValueNode_GradientRotate::link_name(int i)const
@@ -184,7 +184,7 @@ ValueNode_GradientRotate::link_name(int i)const
 			return "offset";
 	}
 	return String();
-}	
+}
 
 int
 ValueNode_GradientRotate::get_link_index_from_name(const String &name)const

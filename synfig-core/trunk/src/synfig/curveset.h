@@ -38,28 +38,28 @@ namespace synfig
 {
 
 class BLinePoint;
-	
+
 struct CurvePoint
 {
 	Point	p;
 	Point	l,r;
-	
+
 	CurvePoint () {}
 	CurvePoint(const Point &pin, const Vector &left, const Vector &right);
-	
+
 	CurvePoint(const BLinePoint &bpoint);
 };
-	
-class CurveSet 
+
+class CurveSet
 {
 	bool		invert; //winding order...
-	
+
 	void CleanUp(int curve = 0);
 public:
-	
+
 	typedef std::vector<CurvePoint>	region;
 	typedef std::vector<region>		set_type;
-	
+
 	set_type	set; //specifies a region object (assumes looping)
 
 	void SetClamp(int &i, int &si);
@@ -68,7 +68,7 @@ public:
 	CurveSet()
 	{
 	}
-	
+
 	//anything supporting iterator type operations
 	template < typename Iterator >
 	CurveSet(Iterator begin, Iterator end, bool invert = false)
@@ -76,12 +76,12 @@ public:
 		set.push_back(std::vector<CurvePoint>(begin,end));
 		CleanUp(invert);
 	}
-	
+
 	CurveSet operator &(const CurveSet &rhs) const;	//intersect
 	CurveSet operator |(const CurveSet &rhs) const; //union
 	CurveSet operator -(const CurveSet &rhs) const; //subtract
-	
-	
+
+
 	//Point containment
 	int intersect(const Point &p) const;
 };

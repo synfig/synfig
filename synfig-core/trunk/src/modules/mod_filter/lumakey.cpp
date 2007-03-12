@@ -71,7 +71,7 @@ LumaKey::LumaKey():
 
 bool
 LumaKey::set_param(const String &param, const ValueBase &value)
-{	
+{
 	return Layer_Composite::set_param(param,value);
 }
 
@@ -80,15 +80,15 @@ LumaKey::get_param(const String &param)const
 {
 	EXPORT_NAME();
 	EXPORT_VERSION();
-		
-	return Layer_Composite::get_param(param);	
+
+	return Layer_Composite::get_param(param);
 }
 
 Layer::Vocab
 LumaKey::get_param_vocab()const
 {
 	Layer::Vocab ret(Layer_Composite::get_param_vocab());
-	
+
 /*	ret.push_back(ParamDesc("color")
 		.set_local_name(_("Color"))
 		.set_description(_("Color of checkers"))
@@ -115,14 +115,14 @@ Color
 LumaKey::get_color(Context context, const Point &getpos)const
 {
 	const Color color(context.get_color(getpos));
-	
+
 	if(get_amount()==0.0)
 		return color;
-	
+
 	Color ret(color);
 	ret.set_a(ret.get_y()*ret.get_a());
 	ret.set_y(1);
-	
+
 	if(get_amount()==1.0 && get_blend_method()==Color::BLEND_STRAIGHT)
 		return ret;
 
@@ -162,6 +162,6 @@ LumaKey::get_bounding_rect(Context context)const
 {
 	if(is_disabled())
 		return Rect::zero();
-	
+
 	return context.get_full_bounding_rect();
 }

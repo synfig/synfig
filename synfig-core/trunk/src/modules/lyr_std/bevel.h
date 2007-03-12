@@ -46,20 +46,20 @@ private:
 
 	synfig::Color	color1;
 	synfig::Color	color2;
-	
+
 	synfig::Angle	angle;
 	synfig::Real		depth;
 
 	synfig::Vector	offset;
 	synfig::Vector	offset45;
-	
+
 	bool use_luma;
 	bool solid;
 
 	void calc_offset();
 public:
 	Layer_Bevel();
-	
+
 	virtual bool set_param(const String & param, const synfig::ValueBase &value);
 
 	virtual ValueBase get_param(const String & param)const;

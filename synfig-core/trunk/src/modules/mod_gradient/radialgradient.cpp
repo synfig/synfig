@@ -72,7 +72,7 @@ RadialGradient::RadialGradient():
 	zigzag(false)
 {
 }
-	
+
 bool
 RadialGradient::set_param(const String & param, const ValueBase &value)
 {
@@ -81,7 +81,7 @@ RadialGradient::set_param(const String & param, const ValueBase &value)
 	IMPORT(radius);
 	IMPORT(loop);
 	IMPORT(zigzag);
-	
+
 	return Layer_Composite::set_param(param,value);
 }
 
@@ -93,18 +93,18 @@ RadialGradient::get_param(const String &param)const
 	EXPORT(radius);
 	EXPORT(loop);
 	EXPORT(zigzag);
-	
+
 	EXPORT_NAME();
 	EXPORT_VERSION();
-		
-	return Layer_Composite::get_param(param);	
+
+	return Layer_Composite::get_param(param);
 }
 
 Layer::Vocab
 RadialGradient::get_param_vocab()const
 {
 	Layer::Vocab ret(Layer_Composite::get_param_vocab());
-	
+
 	ret.push_back(ParamDesc("gradient")
 		.set_local_name(_("Gradient"))
 	);
@@ -112,7 +112,7 @@ RadialGradient::get_param_vocab()const
 	ret.push_back(ParamDesc("center")
 		.set_local_name(_("Center"))
 	);
-	
+
 	ret.push_back(ParamDesc("radius")
 		.set_local_name(_("Radius"))
 		.set_description(_("This is the radius of the circle"))
@@ -127,7 +127,7 @@ RadialGradient::get_param_vocab()const
 	ret.push_back(ParamDesc("zigzag")
 		.set_local_name(_("Zig-Zag"))
 	);
-	
+
 	return ret;
 }
 
@@ -135,7 +135,7 @@ inline Color
 RadialGradient::color_func(const Point &point, float supersample)const
 {
 	Real dist((point-center).mag()/radius);
-	
+
 	if(zigzag)
 	{
 		dist*=2.0;
@@ -160,7 +160,7 @@ RadialGradient::color_func(const Point &point, float supersample)const
 			return pool.demult_alpha();
 		}
 	}
-	
+
 	return gradient(dist,supersample);
 }
 
@@ -194,7 +194,7 @@ RadialGradient::get_color(Context context, const Point &pos)const
 	else
 		return Color::blend(color,context.get_color(pos),get_amount(),get_blend_method());
 }
-	
+
 bool
 RadialGradient::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
@@ -212,7 +212,7 @@ RadialGradient::accelerated_render(Context context,Surface *surface,int quality,
 			return true;
 	}
 
-		
+
 	int x,y;
 
 	Surface::pen pen(surface->begin());
@@ -221,7 +221,7 @@ RadialGradient::accelerated_render(Context context,Surface *surface,int quality,
 	Point tl(renddesc.get_tl());
 	const int w(surface->get_w());
 	const int h(surface->get_h());
-	
+
 	if(get_amount()==1.0 && get_blend_method()==Color::BLEND_STRAIGHT)
 	{
 		for(y=0,pos[1]=tl[1];y<h;y++,pen.inc_y(),pen.dec_x(x),pos[1]+=ph)

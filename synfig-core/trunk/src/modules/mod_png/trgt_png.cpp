@@ -81,7 +81,7 @@ png_trgt::png_trgt(const char *Filename)
 	filename=Filename;
 	buffer=NULL;
 	ready=false;
-	color_buffer=0;	
+	color_buffer=0;
 }
 
 png_trgt::~png_trgt()
@@ -126,7 +126,7 @@ bool
 png_trgt::start_frame(synfig::ProgressCallback *callback)
 {
 	int w=desc.get_w(),h=desc.get_h();
-	
+
 	if(file && file!=stdout)
 		fclose(file);
 	if(filename=="-")
@@ -140,7 +140,7 @@ png_trgt::start_frame(synfig::ProgressCallback *callback)
 			newfilename(filename),
 			ext(find(filename.begin(),filename.end(),'.'),filename.end());
 		newfilename.erase(find(newfilename.begin(),newfilename.end(),'.'),newfilename.end());
-		
+
 		newfilename+=etl::strprintf("%04d",imagecount)+ext;
 		file=fopen(newfilename.c_str(),"wb");
 		if(callback)callback->task(newfilename);
@@ -150,10 +150,10 @@ png_trgt::start_frame(synfig::ProgressCallback *callback)
 		file=fopen(filename.c_str(),"wb");
 		if(callback)callback->task(filename);
 	}
-	
+
 	if(!file)
 		return false;
-		
+
 	delete [] buffer;
 	buffer=new unsigned char[4*w];
 
@@ -167,7 +167,7 @@ png_trgt::start_frame(synfig::ProgressCallback *callback)
 		fclose(file);
 		return false;
 	}
-	
+
 	info_ptr= png_create_info_struct(png_ptr);
 	if (!info_ptr)
 	{
@@ -176,7 +176,7 @@ png_trgt::start_frame(synfig::ProgressCallback *callback)
 		png_destroy_write_struct(&png_ptr,(png_infopp)NULL);
 		return false;
 	}
-	
+
 	if (setjmp(png_jmpbuf(png_ptr)))
 	{
 		synfig::error("Unable to setup longjump");
@@ -193,10 +193,10 @@ png_trgt::start_frame(synfig::ProgressCallback *callback)
 	// Write the gamma
 	//png_set_gAMA(png_ptr, info_ptr,1.0/gamma().get_gamma());
 	png_set_gAMA(png_ptr, info_ptr,gamma().get_gamma());
-	
+
 	// Write the physical size
 	png_set_pHYs(png_ptr,info_ptr,round_to_int(desc.get_x_res()),round_to_int(desc.get_y_res()),PNG_RESOLUTION_METER);
-	
+
 	// Output any text info along with the file
 	png_text comments[]=
 	{
@@ -206,7 +206,7 @@ png_trgt::start_frame(synfig::ProgressCallback *callback)
 		{ PNG_TEXT_COMPRESSION_NONE, "Software", "SYNFIG" },
 	};
 	png_set_text(png_ptr,info_ptr,comments,sizeof(comments)/sizeof(png_text));
-	
+
 	png_write_info_before_PLTE(png_ptr, info_ptr);
 	png_write_info(png_ptr, info_ptr);
 	ready=true;

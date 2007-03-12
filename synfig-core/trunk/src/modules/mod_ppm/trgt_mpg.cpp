@@ -64,7 +64,7 @@ bsd_mpeg1::bsd_mpeg1(const char *Filename)
 	filename=Filename;
 	passthru=ppm::New((tmp_dir+"temp.ppm").c_str());
 	paramfile=NULL;
-	
+
 }
 
 bsd_mpeg1::~bsd_mpeg1()
@@ -84,16 +84,16 @@ bool
 bsd_mpeg1::set_rend_desc(RendDesc *given_desc)
 {
 	if(paramfile)
-		fclose(paramfile);		
-	
-	
+		fclose(paramfile);
+
+
 	paramfile=fopen((tmp_dir+"temp.param").c_str(),"wt");
 	int bitrate=150; // kbytes per second
 	int buffer_drift=50; // bitrate drift (in kbytes per second)
-	
+
 	bitrate*=8*1024;
 	buffer_drift*=8*1024;
-	
+
 	fprintf(paramfile,
 		"PATTERN		IBBPBBPBBPBBPBBP\n"
 		"OUTPUT		%s\n"
@@ -119,10 +119,10 @@ bsd_mpeg1::set_rend_desc(RendDesc *given_desc)
 		"BUFFER_SIZE %d\n"
 		,filename.c_str(),bitrate,buffer_drift);
 	 float fps=given_desc->get_frame_rate();
-	
+
 	// Valid framerates:
 	// 23.976, 24, 25, 29.97, 30, 50 ,59.94, 60
-		
+
 	if(fps <24.0)
 	{
 		fprintf(paramfile,"FRAME_RATE 23.976\n");
@@ -163,15 +163,15 @@ bsd_mpeg1::set_rend_desc(RendDesc *given_desc)
 		fprintf(paramfile,"FRAME_RATE 59.94\n");
 		given_desc->set_frame_rate(59.94);
 	}
-	
+
 	// Make sure that the width and height
 	// are multiples of 8
 	given_desc->set_w((given_desc->get_w()+4)/8*8);
 	given_desc->set_h((given_desc->get_h()+4)/8*8);
-	
+
 	if(!passthru->set_rend_desc(given_desc))
 		return false;
-		
+
 	desc=*given_desc;
 
 	fprintf(paramfile,
@@ -181,7 +181,7 @@ bsd_mpeg1::set_rend_desc(RendDesc *given_desc)
 
 	fclose(paramfile);
 	paramfile=NULL;
-	
+
 	return true;
 }
 

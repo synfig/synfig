@@ -131,7 +131,7 @@ bool
 bmp::set_rend_desc(RendDesc *given_desc)
 {
 	pf=PF_BGR;
-	
+
     // Flip the image upside down,
 	// because bitmaps are upside down.
     given_desc->set_flags(0);
@@ -143,7 +143,7 @@ bmp::set_rend_desc(RendDesc *given_desc)
 	br[1]=tmp;
 	given_desc->set_tl(tl);
 	given_desc->set_br(br);
-    
+
 	desc=*given_desc;
 	if(desc.get_frame_end()-desc.get_frame_start()>0)
 	{
@@ -152,7 +152,7 @@ bmp::set_rend_desc(RendDesc *given_desc)
 	}
 	else
 		multi_image=false;
-	
+
     return true;
 }
 
@@ -171,7 +171,7 @@ bool
 bmp::start_frame(synfig::ProgressCallback *callback)
 {
 	int w=desc.get_w(),h=desc.get_h();
-	
+
 	rowspan=4*((w*(channels(pf)*8)+31)/32);
 	if(multi_image)
 	{
@@ -179,7 +179,7 @@ bmp::start_frame(synfig::ProgressCallback *callback)
 			newfilename(filename),
 			ext(find(filename.begin(),filename.end(),'.'),filename.end());
 		newfilename.erase(find(newfilename.begin(),newfilename.end(),'.'),newfilename.end());
-		
+
 		newfilename+=etl::strprintf("%04d",imagecount)+ext;
 		file=fopen(newfilename.c_str(),"wb");
 		if(callback)callback->task(newfilename+_(" (animated)"));
@@ -189,24 +189,24 @@ bmp::start_frame(synfig::ProgressCallback *callback)
 		file=fopen(filename.c_str(),"wb");
 		if(callback)callback->task(filename);
 	}
-	
+
 	if(!file)
 	{
 		if(callback)callback->error(_("Unable to open file"));
 		else synfig::error(_("Unable to open file"));
 		return false;
 	}
-	
+
 	BITMAPFILEHEADER fileheader;
 	BITMAPINFOHEADER infoheader;
-	
+
 	fileheader.bfType[0]='B';
 	fileheader.bfType[1]='M';
 	fileheader.bfSize=little_endian(sizeof(BITMAPFILEHEADER)+sizeof(BITMAPINFOHEADER)+rowspan*h);
-	fileheader.bfReserved1=0;	
-	fileheader.bfReserved2=0;	
-	fileheader.bfOffsetBits=little_endian(sizeof(BITMAPFILEHEADER)+sizeof(BITMAPINFOHEADER)-2);	
-	
+	fileheader.bfReserved1=0;
+	fileheader.bfReserved2=0;
+	fileheader.bfOffsetBits=little_endian(sizeof(BITMAPFILEHEADER)+sizeof(BITMAPINFOHEADER)-2);
+
 	infoheader.biSize=little_endian(40);
 	infoheader.biWidth=little_endian(w);
 	infoheader.biHeight=little_endian(h);
@@ -218,9 +218,9 @@ bmp::start_frame(synfig::ProgressCallback *callback)
 	infoheader.biYPelsPerMeter=little_endian((int)rend_desc().get_y_res()); // pels per meter...?
 	infoheader.biClrUsed=little_endian(0);
 	infoheader.biClrImportant=little_endian(0);
-	
+
 	fprintf(file,"BM");
-	
+
 	if(!fwrite(&fileheader.bfSize,sizeof(BITMAPFILEHEADER)-4,1,file))
 	{
 		if(callback)callback->error(_("Unable to write file header to file"));
@@ -237,7 +237,7 @@ bmp::start_frame(synfig::ProgressCallback *callback)
 
 	delete [] buffer;
 	buffer=new unsigned char[rowspan];
-	
+
 	delete [] color_buffer;
 	color_buffer=new Color[desc.get_w()];
 
@@ -255,9 +255,9 @@ bmp::end_scanline()
 {
 	if(!file)
 		return false;
-	
+
 	convert_color_format(buffer, color_buffer, desc.get_w(), pf, gamma());
-	
+
 	if(!fwrite(buffer,1,rowspan,file))
 		return false;
 

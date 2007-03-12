@@ -89,29 +89,29 @@ Import::set_param(const String & param, const ValueBase &value)
 			surface.clear();
 			return true;
 		}
-		
+
 		String newfilename=value.get(string());
 		String filename_with_path;
-		
+
 		// Get rid of any %20 crap
 		{
 			unsigned int n;
 			while((n=newfilename.find("%20"))!=String::npos)
 				newfilename.replace(n,3," ");
 		}
-		
+
 		//if(get_canvas()->get_file_path()==dirname(newfilename))
 		//{
 		//	synfig::info("Image seems to be in local directory. Adjusting path...");
 		//	newfilename=basename(newfilename);
 		//}
-		
+
 #ifndef WIN32
 		if(is_absolute_path(newfilename))
 		{
 			string curpath(cleanup_path(absolute_path(get_canvas()->get_file_path())));
 			while(basename(curpath)==".")curpath=dirname(curpath);
-				
+
 			newfilename=relative_path(curpath,newfilename);
 			synfig::info("basename(curpath)=%s, Path adjusted to %s",basename(curpath).c_str(),newfilename.c_str());
 		}
@@ -127,23 +127,23 @@ Import::set_param(const String & param, const ValueBase &value)
 			surface.clear();
 			return true;
 		}
-		
+
 		// If we are already loaded, don't reload
 		if(filename==newfilename && importer)
 		{
 			synfig::warning(strprintf(_("Filename seems to already be set to \"%s\" (%s)"),filename.c_str(),newfilename.c_str()));
 			return true;
 		}
-		
+
 		assert(get_canvas());
-		
+
 		if(is_absolute_path(newfilename))
 			filename_with_path=newfilename;
 		else
 			filename_with_path=get_canvas()->get_file_path()+ETL_DIRECTORY_SEPERATOR+newfilename;
-			
+
 		handle<Importer> newimporter;
-		
+
 		newimporter=Importer::open(absolute_path(filename_with_path));
 
 		if(!newimporter)
@@ -166,11 +166,11 @@ Import::set_param(const String & param, const ValueBase &value)
 		importer=newimporter;
 		filename=newfilename;
 		abs_filename=absolute_path(filename_with_path);
-		
+
 		return true;
 	}
 	} catch(...) { set_amount(0); return false; }
-	
+
 	return Layer_Bitmap::set_param(param,value);
 }
 
@@ -192,15 +192,15 @@ Import::get_param(const String & param)const
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
-		
-	return Layer_Bitmap::get_param(param);	
+
+	return Layer_Bitmap::get_param(param);
 }
 
 Layer::Vocab
 Import::get_param_vocab()const
 {
 	Layer::Vocab ret(Layer_Bitmap::get_param_vocab());
-	
+
 	ret.push_back(ParamDesc("filename")
 		.set_local_name(_("Filename"))
 		.set_description(_("File to import"))
@@ -209,7 +209,7 @@ Import::get_param_vocab()const
 	ret.push_back(ParamDesc("time_offset")
 		.set_local_name(_("Time Offset"))
 	);
-	
+
 	return ret;
 }
 

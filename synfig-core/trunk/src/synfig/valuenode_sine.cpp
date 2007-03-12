@@ -98,7 +98,7 @@ ValueNode_Sine::get_local_name()const
 {
 	return _("Sine");
 }
-		
+
 bool
 ValueNode_Sine::check_type(ValueBase::Type type)
 {
@@ -171,7 +171,7 @@ ValueNode_Sine::get_link_index_from_name(const String &name)const
 		return 0;
 	if(name=="amp")
 		return 1;
-	
+
 	throw Exception::BadLinkName(name);
 }
 

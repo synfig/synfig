@@ -44,7 +44,7 @@
 /* === C L A S S E S & S T R U C T S ======================================= */
 
 namespace synfig {
-	
+
 class GUIDSet : public
 #ifdef HASH_SET_H
 std::set<synfig::GUID>
@@ -53,7 +53,7 @@ std::hash_set<synfig::GUID,synfig::GUIDHash>
 #endif
 {
 }; // END of class GUIDSet
-	
+
 };
 
 /* === E N D =============================================================== */

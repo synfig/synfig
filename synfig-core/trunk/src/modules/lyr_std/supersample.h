@@ -47,7 +47,7 @@ private:
 	bool scanline,alpha_aware;
 public:
 	SuperSample();
-	
+
 	virtual bool set_param(const String & param, const synfig::ValueBase &value);
 
 	virtual ValueBase get_param(const String & param)const;

@@ -64,12 +64,12 @@ Layer_MotionBlur::Layer_MotionBlur():
 	aperture		(0)
 {
 }
-	
+
 bool
 Layer_MotionBlur::set_param(const String &param, const ValueBase &value)
 {
 
-	IMPORT(aperture);		
+	IMPORT(aperture);
 	return Layer_Composite::set_param(param,value);
 }
 
@@ -77,10 +77,10 @@ ValueBase
 Layer_MotionBlur::get_param(const String &param)const
 {
  	EXPORT(aperture);
-	
+
 	EXPORT_NAME();
 	EXPORT_VERSION();
-		
+
 	return Layer_Composite::get_param(param);
 }
 
@@ -106,7 +106,7 @@ Layer_MotionBlur::get_color(Context context, const Point &pos)const
 		Time time(time_cur);
 		time+=(Vector::value_type)( (signed)(RAND_MAX/2)-(signed)rand() )/(Vector::value_type)(RAND_MAX) *aperture -aperture*0.5;
 		context.set_time(time, pos);
-	}	
+	}
 */
 	return context.get_color(pos);
 }
@@ -116,12 +116,12 @@ Layer_MotionBlur::get_param_vocab()const
 {
 	Layer::Vocab ret;
 	//ret=Layer_Composite::get_param_vocab();
-	
+
 	ret.push_back(ParamDesc("aperture")
 		.set_local_name(_("Aperture"))
 		.set_description(_("Shutter Time"))
 	);
-	
+
 	return ret;
 }
 
@@ -163,18 +163,18 @@ Layer_MotionBlur::accelerated_render(Context context,Surface *surface,int qualit
 				samples=3;
 				break;
 			case 10: // Rough Quality
-            default:			
+            default:
 				samples=1;
 				break;
-				
+
 		}
-	
+
 		Surface tmp;
 		int i;
 
 		surface->set_wh(renddesc.get_w(),renddesc.get_h());
 		surface->clear();
-		
+
 		for(i=0;i<samples;i++)
 		{
 			subimagecb=SuperCallback(cb,i*(5000/samples),(i+1)*(5000/samples),5000);
@@ -191,6 +191,6 @@ Layer_MotionBlur::accelerated_render(Context context,Surface *surface,int qualit
 	}
 	else
 		return context.accelerated_render(surface,quality,renddesc,cb);
-	
+
 	return true;
 }

@@ -41,14 +41,14 @@
 
 namespace synfig {
 class ValueNode_BLine;
-	
+
 /*! \class ValueNode_DynamicList
 **	\brief Animated List ValueNode
 **
 **	This ValueNode was originaly set up to have a list
 **	of ValueNodes and their associated "on" and "off" points.
 **	ie: Any time that was directly after an "on" point,
-**	the item would be "on", and any time that was directly 
+**	the item would be "on", and any time that was directly
 **	after an "off" point would be "off". This is pretty intuitive.
 **	However, it does have it's problems.
 **
@@ -74,7 +74,7 @@ class ValueNode_BLine;
 class ValueNode_DynamicList : public LinkableValueNode
 {
 public:
-	
+
 	/*! \class ListEntry
 	**	\brief Contains a potential list item, and associated timing information
 	**
@@ -90,43 +90,43 @@ public:
 		friend class ValueNode_BLine;
 	public:
 		typedef synfig::Activepoint Activepoint;
-		
+
 		typedef std::list<Activepoint> ActivepointList;
-	
+
 		typedef std::pair<ActivepointList::iterator,bool>		findresult;
 		typedef std::pair<ActivepointList::const_iterator,bool>	const_findresult;
 
-		
+
 	private:
 		mutable Node::time_set	times;
 	public:
 		ValueNode::RHandle value_node;
-		
+
 		ActivepointList timing_info;
-		
+
 	private:
 		int index;
 		etl::loose_handle<ValueNode> parent_;
-		void set_parent_value_node(const etl::loose_handle<ValueNode> &x) { parent_=x; }	
+		void set_parent_value_node(const etl::loose_handle<ValueNode> &x) { parent_=x; }
 
 	public:
 
 		int get_index()const { return index; }
-		
-				
+
+
 		bool status_at_time(const Time &x)const;
 
 		float amount_at_time(const Time &x, bool *rising=0)const;
 
 		ActivepointList::iterator add(Time time, bool status, int priority=0);
 		ActivepointList::iterator add(const Activepoint &x);
-	
+
 		findresult find_uid(const UniqueID& x);
 		const_findresult find_uid(const UniqueID& x)const;
-	
+
 		findresult find_time(const Time& x);
 		const_findresult find_time(const Time& x)const;
-		
+
 		ActivepointList::iterator find(const UniqueID& x);
 		ActivepointList::const_iterator find(const UniqueID& x)const;
 		ActivepointList::iterator find(const Time& x);
@@ -141,10 +141,10 @@ public:
 		ActivepointList::iterator add(Time time)
 			{ return add(time, status_at_time(time)); }
 
-		void erase(const UniqueID& x);		
-		
+		void erase(const UniqueID& x);
+
 		int find(const Time& begin,const Time& end,std::vector<Activepoint*>& list);
-			
+
 		const synfig::Node::time_set	&get_times() const;
 
 		const etl::loose_handle<ValueNode> &get_parent_value_node()const { return parent_; }
@@ -153,7 +153,7 @@ public:
 		ListEntry(const ValueNode::Handle &value_node);
 		ListEntry(const ValueNode::Handle &value_node,Time begin, Time end);
 	}; // END of struct ValueNode_DynamicList::ListEntry
-	
+
 	typedef etl::handle<ValueNode_DynamicList> Handle;
 	typedef etl::handle<const ValueNode_DynamicList> ConstHandle;
 
@@ -169,7 +169,7 @@ public:
 	std::vector<ListEntry> list;
 
 public:
-	
+
 	void add(const ValueNode::Handle &value_node, int index=-1);
 	void add(const ListEntry &value_node, int index=-1);
 	void erase(const ValueNode::Handle &value_node);
@@ -177,7 +177,7 @@ public:
 
 	int find_next_valid_entry(int x, Time t)const;
 	int find_prev_valid_entry(int x, Time t)const;
-	
+
 	virtual ValueNode::LooseHandle get_link_vfunc(int i)const;
 
 	virtual int link_count()const;
@@ -217,7 +217,7 @@ public:
 	virtual ListEntry create_list_entry(int index, Time time=0, Real origin=0.5);
 
 protected:
-	
+
 	virtual bool set_link_vfunc(int i,ValueNode::Handle x);
 	LinkableValueNode* create_new()const;
 

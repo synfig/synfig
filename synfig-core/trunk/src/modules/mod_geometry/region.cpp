@@ -74,15 +74,15 @@ Region::Region()
 	bline_point_list.push_back(BLinePoint());
 	bline_point_list.push_back(BLinePoint());
 	bline_point_list.push_back(BLinePoint());
-	bline_point_list[0].set_vertex(Point(0,1));	
-	bline_point_list[1].set_vertex(Point(0,-1));	
+	bline_point_list[0].set_vertex(Point(0,1));
+	bline_point_list[1].set_vertex(Point(0,-1));
 	bline_point_list[2].set_vertex(Point(1,0));
-	bline_point_list[0].set_tangent(bline_point_list[1].get_vertex()-bline_point_list[2].get_vertex()*0.5f);	
-	bline_point_list[1].set_tangent(bline_point_list[2].get_vertex()-bline_point_list[0].get_vertex()*0.5f);	
-	bline_point_list[2].set_tangent(bline_point_list[0].get_vertex()-bline_point_list[1].get_vertex()*0.5f);	
-	bline_point_list[0].set_width(1.0f);	
-	bline_point_list[1].set_width(1.0f);	
-	bline_point_list[2].set_width(1.0f);	
+	bline_point_list[0].set_tangent(bline_point_list[1].get_vertex()-bline_point_list[2].get_vertex()*0.5f);
+	bline_point_list[1].set_tangent(bline_point_list[2].get_vertex()-bline_point_list[0].get_vertex()*0.5f);
+	bline_point_list[2].set_tangent(bline_point_list[0].get_vertex()-bline_point_list[1].get_vertex()*0.5f);
+	bline_point_list[0].set_width(1.0f);
+	bline_point_list[1].set_width(1.0f);
+	bline_point_list[2].set_width(1.0f);
 	bline=bline_point_list;
 }
 
@@ -106,7 +106,7 @@ Region::sync()
 		clear();
 		return;
 	}
-	
+
 	bool looped = bline.get_loop();
 
 	Vector::value_type n;
@@ -115,13 +115,13 @@ Region::sync()
 
 	vector<Segment>::const_iterator iter=segment_list.begin();
 	//Vector							last = iter->p1;
-	
+
 	//make sure the shape has a clean slate for writing
 	//clear();
-	
+
 	//and start off at the first point
 	//move_to(last[0],last[1]);
-	
+
 	for(;iter!=segment_list.end();++iter)
 	{
 		//connect them with a line if they aren't already joined
@@ -129,14 +129,14 @@ Region::sync()
 		{
 			line_to(iter->p1[0],iter->p1[1]);
 		}
-		
+
 		//curve to the next end point
 		curve_to(iter->p1[0] + iter->t1[0]/3.0,iter->p1[1] + iter->t1[1]/3.0,
 				 iter->p2[0] - iter->t2[0]/3.0,iter->p2[1] - iter->t2[1]/3.0,
 				 iter->p2[0],iter->p2[1]);
-		
+
 		last = iter->p2;*/
-		
+
 		if(iter->t1.is_equal_to(Vector(0,0)) && iter->t2.is_equal_to(Vector(0,0)))
 		{
 			vector_list.push_back(iter->p2);
@@ -153,7 +153,7 @@ Region::sync()
 				vector_list.push_back(curve(n));
 		}
 	}
-	
+
 	//add a single point onto the end so it actually fits the shape, so we can be awesome...
 	if(!looped)
 	{
@@ -162,7 +162,7 @@ Region::sync()
 
 	clear();
 	add_polygon(vector_list);
-	
+
 	/*close();
 	endpath();*/
 }
@@ -181,12 +181,12 @@ Region::set_param(const String & param, const ValueBase &value)
 		else
 			synfig::warning("Region::set_param(): The parameter \"segment_list\" is deprecated. Use \"bline\" instead.");
 	}
-	
+
 	if(	(param=="segment_list" || param=="bline") && value.get_type()==ValueBase::TYPE_LIST)
 	{
 		//if(value.get_contained_type()!=ValueBase::TYPE_BLINEPOINT)
 		//	return false;
-			
+
 		bline=value;
 
 		return true;

@@ -51,10 +51,10 @@ protected:
 
 public:
 	~Layer_TimeLoop();
-	
+
 	virtual bool set_param(const synfig::String & param, const synfig::ValueBase &value);
 
-	virtual synfig::ValueBase get_param(const synfig::String & param)const;	
+	virtual synfig::ValueBase get_param(const synfig::String & param)const;
 
 	virtual Vocab get_param_vocab()const;
 	virtual synfig::Color get_color(synfig::Context context, const synfig::Point &pos)const;

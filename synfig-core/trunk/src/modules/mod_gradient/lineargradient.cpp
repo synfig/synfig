@@ -79,10 +79,10 @@ inline Color
 LinearGradient::color_func(const Point &point, float supersample)const
 {
 	Real dist(point*diff-p1*diff);
-	
+
 	if(loop)
 		dist-=floor(dist);
-	
+
 	if(zigzag)
 	{
 		dist*=2.0;
@@ -143,12 +143,12 @@ LinearGradient::set_param(const String & param, const ValueBase &value)
 	}
 	//IMPORT(p1);
 	//IMPORT(p2);
-	
-	
+
+
 	IMPORT(gradient);
 	IMPORT(loop);
 	IMPORT(zigzag);
-	return Layer_Composite::set_param(param,value);	
+	return Layer_Composite::set_param(param,value);
 }
 
 ValueBase
@@ -159,18 +159,18 @@ LinearGradient::get_param(const String & param)const
 	EXPORT(gradient);
 	EXPORT(loop);
 	EXPORT(zigzag);
-	
+
 	EXPORT_NAME();
 	EXPORT_VERSION();
-		
-	return Layer_Composite::get_param(param);	
+
+	return Layer_Composite::get_param(param);
 }
 
 Layer::Vocab
 LinearGradient::get_param_vocab()const
 {
 	Layer::Vocab ret(Layer_Composite::get_param_vocab());
-	
+
 	ret.push_back(ParamDesc("p1")
 		.set_local_name(_("Point 1"))
 		.set_connect("p2")
@@ -187,7 +187,7 @@ LinearGradient::get_param_vocab()const
 	ret.push_back(ParamDesc("zigzag")
 		.set_local_name(_("ZigZag"))
 	);
-	
+
 	return ret;
 }
 
@@ -219,7 +219,7 @@ LinearGradient::accelerated_render(Context context,Surface *surface,int quality,
 			return true;
 	}
 
-		
+
 	int x,y;
 
 	Surface::pen pen(surface->begin());
@@ -228,7 +228,7 @@ LinearGradient::accelerated_render(Context context,Surface *surface,int quality,
 	Point tl(renddesc.get_tl());
 	const int w(surface->get_w());
 	const int h(surface->get_h());
-	
+
 	if(get_amount()==1.0 && get_blend_method()==Color::BLEND_STRAIGHT)
 	{
 		for(y=0,pos[1]=tl[1];y<h;y++,pen.inc_y(),pen.dec_x(x),pos[1]+=ph)

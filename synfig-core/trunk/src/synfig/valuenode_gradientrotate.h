@@ -39,7 +39,7 @@ struct ValueNode_GradientRotate : public LinkableValueNode
 {
 	typedef etl::handle<ValueNode_GradientRotate> Handle;
 	typedef etl::handle<const ValueNode_GradientRotate> ConstHandle;
-	
+
 protected:
 
 	ValueNode_GradientRotate();

@@ -50,7 +50,7 @@ private:
 	struct jpeg_compress_struct cinfo;
 	struct jpeg_error_mgr jerr;
 
-	
+
 	bool multi_image,ready;
 	int imagecount;
 	synfig::String filename;

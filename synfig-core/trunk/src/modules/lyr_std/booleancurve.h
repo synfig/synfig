@@ -38,13 +38,13 @@
 /* === C L A S S E S & S T R U C T S ======================================= */
 namespace synfig
 {
-	
+
 class BooleanCurve : public Layer_Shape
 {
 	//dynamic list of regions and such
 	typedef std::vector< std::vector<BLinePoint> >	region_list_type;
 	region_list_type	regions;
-	
+
 	enum BOOLEAN_OP
 	{
 		Union = 0,
@@ -52,21 +52,21 @@ class BooleanCurve : public Layer_Shape
 		MutualExclude,
 		Num_Boolean_Ops
 	};
-	
+
 	int operation;
-	
+
 public:
 
 	BooleanCurve();
 	~BooleanCurve();
-		
+
 	virtual bool set_param(const String & param, const synfig::ValueBase &value);
 	virtual ValueBase get_param(const String & param)const;
-	
+
 	virtual Vocab get_param_vocab()const;
 
 	virtual Color get_color(Context context, const Point &pos)const;
-	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;		
+	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 };
 
 } //end of namespace synfig

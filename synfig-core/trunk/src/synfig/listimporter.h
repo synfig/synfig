@@ -64,7 +64,7 @@ public:
 
 	static Importer* create(const char *filename);
 };
-	
+
 }; // END of namespace synfig
 
 /* === E N D =============================================================== */
