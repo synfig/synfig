@@ -65,11 +65,11 @@ Action::ParamVocab
 Action::EditModeSet::get_param_vocab()
 {
 	ParamVocab ret(Action::CanvasSpecific::get_param_vocab());
-	
+
 	ret.push_back(ParamDesc("edit_mode",Param::TYPE_EDITMODE)
 		.set_local_name(_("New Edit Mode"))
 	);
-	
+
 	return ret;
 }
 
@@ -86,11 +86,11 @@ Action::EditModeSet::set_param(const synfig::String& name, const Action::Param &
 	if(name=="edit_mode" && param.get_type()==Param::TYPE_EDITMODE)
 	{
 		set_edit_mode(param.get_edit_mode());
-		
+
 		return true;
 	}
 */
-	
+
 	return Action::CanvasSpecific::set_param(name,param);
 }
 
@@ -111,7 +111,7 @@ Action::EditModeSet::perform()
 		return;
 
 	get_canvas_interface()->mode_=get_edit_mode();
-		
+
 	get_canvas_interface()->signal_mode_changed_(get_edit_mode());
 }
 
@@ -124,6 +124,6 @@ Action::EditModeSet::undo()
 		return;
 
 	get_canvas_interface()->mode_=old_edit_mode;
-		
+
 	get_canvas_interface()->signal_mode_changed_(old_edit_mode);
 }

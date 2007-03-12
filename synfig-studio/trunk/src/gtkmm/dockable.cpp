@@ -82,24 +82,24 @@ Dockable::Dockable(const synfig::String& name,const synfig::String& local_name,G
 {
 	parent_=0;
 	scrolled_=0;
-	
+
 	use_scrolled_=true;
-	
+
 	//set_title(local_name);
 	//set_type_hint(Gdk::WINDOW_TYPE_HINT_UTILITY);
-	
+
 
 	title_label_.show();
 
 	attach_dnd_to(title_label_);
-	
+
 	//scrolled_.set_policy(Gtk::POLICY_AUTOMATIC,Gtk::POLICY_AUTOMATIC);
-	//scrolled_.show();	
+	//scrolled_.show();
 	//scrolled_.set_shadow_type(Gtk::SHADOW_NONE);
 
 	toolbar_=0;
 	//button_box_.show();
-	
+
 	Gtk::Table* table(this);
 
 	{
@@ -108,14 +108,14 @@ Dockable::Dockable(const synfig::String& name,const synfig::String& local_name,G
 		event_box->set_border_width(0);
 		event_box->add(title_label_);
 		//table->attach(*event_box, 0, 1, 0,1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-		
+
 		header_box_.pack_start(*event_box);
-		
+
 		attach_dnd_to(*event_box);
 		event_box->show();
 	//	event_box->set_events(Gdk::ALL_EVENTS_MASK); //!< \todo change this to only allow what is necessary for DnD
 
-		
+
 		Gtk::Button* bttn_close(manage(new Gtk::Button("X")));
 		//table->attach(*bttn_close, 1, 2, 0,1, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 		header_box_.pack_end(*bttn_close,false,false);
@@ -127,7 +127,7 @@ Dockable::Dockable(const synfig::String& name,const synfig::String& local_name,G
 	}
 
 	prev_widget_=manage(new Gtk::Label(" "));
-	
+
 	//table->attach(header_box_, 0, 1, 0,1, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 	table->attach(*prev_widget_, 0, 1, 1,2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	//table->attach(*toolbar_, 0, 1, 2,3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
@@ -138,7 +138,7 @@ Dockable::Dockable(const synfig::String& name,const synfig::String& local_name,G
 
 	set_size_request(175,120);
 	//scrolled_.set_shadow_type(Gtk::SHADOW_NONE);
-	
+
 }
 
 Dockable::~Dockable()
@@ -178,7 +178,7 @@ Dockable::attach_dnd_to(Gtk::Widget& widget)
 	widget.signal_drag_data_get().connect(sigc::mem_fun(*this,&Dockable::on_drag_data_get));
 	widget.signal_drag_end().connect(sigc::mem_fun(*this,&Dockable::on_drag_end));
 	widget.signal_drag_begin().connect(sigc::mem_fun(*this,&Dockable::on_drag_begin));
-	widget.signal_drag_data_received().connect(sigc::mem_fun(*this,&Dockable::on_drag_data_received));	
+	widget.signal_drag_data_received().connect(sigc::mem_fun(*this,&Dockable::on_drag_data_received));
 }
 
 void
@@ -187,7 +187,7 @@ Dockable::on_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& context, i
 	if ((selection_data.get_length() >= 0) && (selection_data.get_format() == 8))
 	{
 		Dockable& dockable(**reinterpret_cast<Dockable**>(const_cast<guint8*>(selection_data.get_data())));
-		
+
 		if(dockable.parent_ != parent_)
 			parent_->add(dockable,parent_->page_num(*this));
 		else
@@ -196,7 +196,7 @@ Dockable::on_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& context, i
 		context->drag_finish(true, false, time);
 		return;
 	}
-	
+
 	context->drag_finish(false, false, time);
 }
 
@@ -278,19 +278,19 @@ Dockable::add(Gtk::Widget& x)
 		delete scrolled_;
 		scrolled_=0;
 	}
-	
+
 	if(use_scrolled_)
 	{
 		scrolled_=new Gtk::ScrolledWindow;
-		
+
 		scrolled_->add(x);
 
 		attach(*scrolled_, 0, 1, 1,2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-		
+
 		x.show();
-	
+
 		scrolled_->show();
-		
+
 		scrolled_->set_shadow_type(Gtk::SHADOW_NONE);
 		scrolled_->set_policy(Gtk::POLICY_AUTOMATIC,Gtk::POLICY_AUTOMATIC);
 		prev_widget_=scrolled_;
@@ -331,7 +331,7 @@ Dockable::add_button(const Gtk::StockID& stock_id, const synfig::String& tooltip
 	ret->show();
 	//icon->show();
 	toolbar_->set_tooltips(true);
-	
+
 	toolbar_->append(*ret);
 	//button_box_.pack_start(*ret,false,false);
 	//get_action_area()->pack_start(*ret,false,false);
@@ -369,13 +369,13 @@ Gtk::Widget*
 Dockable::create_tab_label()
 {
 	Gtk::EventBox* event_box(manage(new Gtk::EventBox()));
-	
+
 	attach_dnd_to(*event_box);
-	
+
 	{
 		Gtk::StockID stock_id(get_stock_id());
 		Gtk::StockItem item;
-		
+
 		// Check to make sure the icon is valid
 		if(Gtk::Stock::lookup(stock_id,item))
 		{
@@ -387,7 +387,7 @@ Dockable::create_tab_label()
 		else
 		{
 			// Bad icon, try to make a label
-			
+
 			Glib::ustring text(get_local_name());
 
 			Gtk::Label* label(manage(new Gtk::Label(text)));
@@ -395,6 +395,6 @@ Dockable::create_tab_label()
 			label->show();
 		}
 	}
-	
+
 	return event_box;
 }

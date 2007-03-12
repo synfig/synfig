@@ -92,8 +92,8 @@ LayerActionManager::LayerActionManager():
 			&LayerActionManager::paste
 		)
 	);
-	
-	
+
+
 	action_amount_inc_=Gtk::Action::create(
 		"amount-inc",
 		Gtk::StockID("gtk-add"),
@@ -196,7 +196,7 @@ LayerActionManager::queue_refresh()
 {
 	if(queued)
 		return;
-		
+
 	//queue_refresh_connection.disconnect();
 	queue_refresh_connection=Glib::signal_idle().connect(
 		sigc::bind_return(
@@ -204,7 +204,7 @@ LayerActionManager::queue_refresh()
 			false
 		)
 	);
-	
+
 	queued=true;
 }
 
@@ -219,25 +219,25 @@ LayerActionManager::refresh()
 
 
 	clear();
-	
+
 	// Make sure we are ready
 	if(!ui_manager_ || !layer_tree_ || !canvas_interface_)
 	{
 		synfig::error("LayerActionManager::refresh(): Not ready!");
 		return;
 	}
-	
-	
+
+
 	String ui_info;
 
 	action_paste_->set_sensitive(!clipboard_.empty());
 	action_group_->add(action_paste_);
-	
+
 	if(layer_tree_->get_selection()->count_selected_rows()!=0)
 	{
 		bool multiple_selected(layer_tree_->get_selection()->count_selected_rows()>1);
 		Layer::Handle layer(layer_tree_->get_selected_layer());
-		
+
 		{
 			bool canvas_set(false);
 			synfigapp::Action::ParamList param_list;
@@ -257,7 +257,7 @@ LayerActionManager::refresh()
 				action_group_->add(action_amount_inc_);
 				action_group_->add(action_amount_dec_);
 				action_group_->add(action_amount_);
-				
+
 				for(iter=layer_list.begin();iter!=layer_list.end();++iter)
 				{
 					update_connection_list.push_back(
@@ -265,7 +265,7 @@ LayerActionManager::refresh()
 							sigc::mem_fun(*this, &LayerActionManager::queue_refresh)
 						)
 					);
-					
+
 					if(!canvas_set)
 					{
 						param_list.add("canvas",Canvas::Handle((*iter)->get_canvas()));
@@ -279,7 +279,7 @@ LayerActionManager::refresh()
 					param_list.add("layer",Layer::Handle(*iter));
 				}
 			}
-			
+
 			if(!multiple_selected && layer->get_name()=="PasteCanvas")
 			{
 				action_group_->add(Gtk::Action::create(
@@ -300,9 +300,9 @@ LayerActionManager::refresh()
 				add_actions_to_group(action_group_, ui_info,   param_list, synfigapp::Action::CATEGORY_LAYER);
 		}
 	}
-	
+
 	ui_info="<ui><menubar action='menu-main'><menu action='menu-layer'>"+ui_info+"<separator/><menuitem action='cut' /><menuitem action='copy' /><menuitem action='paste' /><separator/></menu></menubar></ui>";
-	popup_id_=get_ui_manager()->add_ui_from_string(ui_info);	
+	popup_id_=get_ui_manager()->add_ui_from_string(ui_info);
 #ifdef ONE_ACTION_GROUP
 #else
 	get_ui_manager()->insert_action_group(action_group_);
@@ -324,7 +324,7 @@ LayerActionManager::copy()
 	synfigapp::SelectionManager::LayerList layer_list(layer_tree_->get_selected_layers());
 	clipboard_.clear();
 	synfig::GUID guid;
-	
+
 	while(!layer_list.empty())
 	{
 		clipboard_.push_back(layer_list.front()->clone(guid));
@@ -332,7 +332,7 @@ LayerActionManager::copy()
 	}
 
 	action_paste_->set_sensitive(!clipboard_.empty());
-	
+
 	//queue_refresh();
 }
 
@@ -346,7 +346,7 @@ LayerActionManager::paste()
 
 	Canvas::Handle canvas(get_canvas_interface()->get_canvas());
 	int depth(0);
-	
+
 	// we are temporarily using the layer to hold something
 	Layer::Handle layer(layer_tree_->get_selected_layer());
 	if(layer)
@@ -354,62 +354,62 @@ LayerActionManager::paste()
 		depth=layer->get_depth();
 		canvas=layer->get_canvas();
 	}
-	
+
 	synfigapp::SelectionManager::LayerList layer_selection;
-	
+
 	for(std::list<synfig::Layer::Handle>::iterator iter=clipboard_.begin();iter!=clipboard_.end();++iter)
 	{
 		layer=(*iter)->clone(guid);
 		layer_selection.push_back(layer);
 		synfigapp::Action::Handle 	action(synfigapp::Action::create("layer_add"));
-	
+
 		assert(action);
 		if(!action)
 			return;
-		
+
 		action->set_param("canvas",canvas);
 		action->set_param("canvas_interface",etl::loose_handle<synfigapp::CanvasInterface>(get_canvas_interface()));
 		action->set_param("new",layer);
-		
+
 		if(!action->is_ready())
 		{
 			return;
 		}
-		
+
 		if(!get_instance()->perform_action(action))
 		{
 			return;
 		}
-	
+
 		synfig::info("DEPTH=%d",depth);
 		// Action to move the layer (if necessary)
 		if(depth>0)
 		{
 			synfigapp::Action::Handle 	action(synfigapp::Action::create("layer_move"));
-		
+
 			assert(action);
 			if(!action)
 				return;
-			
+
 			action->set_param("canvas",canvas);
 			action->set_param("canvas_interface",etl::loose_handle<synfigapp::CanvasInterface>(get_canvas_interface()));
 			action->set_param("layer",layer);
 			action->set_param("new_index",depth);
-			
+
 			if(!action->is_ready())
 			{
-				//get_ui_interface()->error(_("Move Action Not Ready"));			
+				//get_ui_interface()->error(_("Move Action Not Ready"));
 				//return 0;
 				return;
 			}
-			
+
 			if(!get_instance()->perform_action(action))
 			{
-				//get_ui_interface()->error(_("Move Action Not Ready"));			
+				//get_ui_interface()->error(_("Move Action Not Ready"));
 				//return 0;
 				return;
 			}
-		}	
+		}
 		depth++;
 	}
 	get_canvas_interface()->get_selection_manager()->clear_selected_layers();
@@ -420,10 +420,10 @@ void
 LayerActionManager::amount_inc()
 {
 	float adjust(0.1);
-	
+
 	// Create the action group
 	synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Decrease Amount"));
-	
+
 	if(adjust>0)
 		group.set_name(_("Increase Amount"));
 
@@ -444,10 +444,10 @@ void
 LayerActionManager::amount_dec()
 {
 	float adjust(-0.1);
-	
+
 	// Create the action group
 	synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Decrease Amount"));
-	
+
 	if(adjust>0)
 		group.set_name(_("Increase Amount"));
 

@@ -61,11 +61,11 @@ class Widget_Time;
 class Widget_WaypointModel;
 
 class Widget_WaypointModel : public Gtk::Table
-{	
+{
 	synfig::Waypoint::Model waypoint_model;
-	
+
 	bool updating;
-	
+
 	Gtk::Combo *in,*out;
 	Gtk::OptionMenu *before, *after;
 	Gtk::Menu *before_options,*after_options;
@@ -81,7 +81,7 @@ class Widget_WaypointModel : public Gtk::Table
 	Gtk::CheckButton checkbutton_temporal_tension;
 
 	void on_change();
-	
+
 public:
 	Widget_WaypointModel();
 	void set_waypoint_model(synfig::Waypoint::Model &x);

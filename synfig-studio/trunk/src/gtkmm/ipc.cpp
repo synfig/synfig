@@ -105,7 +105,7 @@ pipe_listen_thread()
 			synfig::error("IPC(): Call to CreateNamedPipe failed. Ignore next error. GetLastError=%d",GetLastError());
 			return;
 		}
-		
+
 		bool connected;
 		connected=ConnectNamedPipe(pipe_handle,NULL)?true:(GetLastError()==ERROR_PIPE_CONNECTED);
 		DWORD read_bytes;
@@ -116,7 +116,7 @@ pipe_listen_thread()
 		if(connected)
 		do {
 			String data;
-			char c;			
+			char c;
 			do
 			{
 				success= ReadFile(
@@ -133,7 +133,7 @@ pipe_listen_thread()
 			cmd_queue.push_back(data);
 			cmd_dispatcher->emit();
 		} while(success && read_bytes);
-		
+
 		CloseHandle(pipe_handle);
 	}
 }
@@ -161,22 +161,22 @@ IPC::IPC()
 
 	cmd_dispatcher=new Glib::Dispatcher;
 	cmd_dispatcher->connect(sigc::ptr_fun(empty_cmd_queue));
-	
+
 	Glib::Thread::create(
 		sigc::ptr_fun(pipe_listen_thread),
 		false
 	);
-	
+
 #else
-	
+
 	remove(fifo_path().c_str());
 	fd=-1;
-	
+
 	if(mkfifo(fifo_path().c_str(), S_IRWXU)!=0)
 	{
 		synfig::error("IPC(): mkfifo failed for "+fifo_path());
 	}
-	
+
 	{
 		fd=open(fifo_path().c_str(),O_RDWR);
 
@@ -189,7 +189,7 @@ IPC::IPC()
 		else
 		{
 			file=SmartFILE(fdopen(fd,"r"));
-			
+
 			Glib::signal_io().connect(
 				sigc::mem_fun(this,&IPC::fifo_activity),
 				fd,
@@ -206,7 +206,7 @@ IPC::~IPC()
 	//	fclose(file.get());
 
 	remove(fifo_path().c_str());
-	
+
 	//if(fd>=0)
 	//	close(fd);
 }
@@ -225,7 +225,7 @@ bool
 IPC::fifo_activity(Glib::IOCondition cond)
 {
 	synfig::info(__FILE__":%d: fifo activity",__LINE__);
-	
+
 	if(cond&(Glib::IO_ERR|Glib::IO_HUP|Glib::IO_NVAL))
 	{
 		if(cond&(Glib::IO_ERR))
@@ -248,7 +248,7 @@ IPC::fifo_activity(Glib::IOCondition cond)
 				command+=tmp;
 		} while(tmp!='\n');
 	}
-	
+
 	process_command(command);
 	return true;
 }
@@ -258,13 +258,13 @@ IPC::process_command(const synfig::String& command_line)
 {
 	if(command_line.empty())
 		return false;
-	
+
 	char cmd=command_line[0];
-	
+
 	String args(command_line.begin()+1,command_line.end());
 	while(!args.empty() && args[0]==' ') args.erase(args.begin());
 	while(!args.empty() && args[args.size()-1]=='\n' || args[args.size()-1]==' ') args.erase(args.end()-1);
-	
+
 	switch(toupper(cmd))
 	{
 		case 'F': // Focus/Foreground
@@ -286,7 +286,7 @@ IPC::process_command(const synfig::String& command_line)
 			synfig::warning("Received unknown command '%c' with arg '%s'",cmd,args.c_str());
 			break;
 	}
-	
+
 	return true;
 }
 
@@ -303,7 +303,7 @@ IPC::make_connection()
 		NULL, // security attributes
 		OPEN_EXISTING, // creation disposition
 		FILE_ATTRIBUTE_NORMAL, // flags and attributes
-		NULL  // template file 
+		NULL  // template file
 	);
 	if(pipe_handle==INVALID_HANDLE_VALUE)
 	{
@@ -318,13 +318,13 @@ IPC::make_connection()
 	struct stat file_stat;
 	if(stat(fifo_path().c_str(),&file_stat)!=0)
 		return ret;
-	
+
 	if(!S_ISFIFO(file_stat.st_mode))
 		return ret;
-	
+
 	int fd=open(fifo_path().c_str(),O_WRONLY|O_NONBLOCK);
 #endif
-	
+
 	if(fd>=0)
 		ret=SmartFILE(fdopen(fd,"w"));
 

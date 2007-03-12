@@ -68,9 +68,9 @@ class studio::StateStroke_Context : public sigc::trackable
 {
 	etl::handle<CanvasView> canvas_view_;
 	CanvasView::IsWorking is_working;
-	
+
 	Duckmatic::Push duckmatic_push;
-	
+
 	etl::smart_ptr<std::list<synfig::Point> > stroke_data;
 
 	etl::smart_ptr<std::list<synfig::Real> > width_data;
@@ -96,7 +96,7 @@ public:
 	etl::handle<synfigapp::CanvasInterface> get_canvas_interface()const{return canvas_view_->canvas_interface();}
 	synfig::Canvas::Handle get_canvas()const{return canvas_view_->get_canvas();}
 	WorkArea * get_work_area()const{return canvas_view_->get_work_area();}
-	
+
 };	// END of class StateStroke_Context
 
 
@@ -111,7 +111,7 @@ StateStroke::StateStroke():
 	insert(event_def(EVENT_WORKAREA_MOUSE_BUTTON_UP,&StateStroke_Context::event_mouse_up_handler));
 	insert(event_def(EVENT_WORKAREA_MOUSE_BUTTON_DRAG,&StateStroke_Context::event_mouse_draw_handler));
 	insert(event_def(EVENT_REFRESH_TOOL_OPTIONS,&StateStroke_Context::event_refresh_tool_options));
-}	
+}
 
 StateStroke::~StateStroke()
 {
@@ -128,15 +128,15 @@ StateStroke_Context::StateStroke_Context(CanvasView* canvas_view):
 
 	get_work_area()->add_stroke(stroke_data, synfigapp::Main::get_foreground_color());
 
-	synfig::info("Now Scribbling...");	
+	synfig::info("Now Scribbling...");
 }
 
 StateStroke_Context::~StateStroke_Context()
 {
 	duckmatic_push.restore();
-	
+
 	App::toolbox->refresh();
-	synfig::info("No longer scribbling");	
+	synfig::info("No longer scribbling");
 
 	// Send the stroke data to whatever previously called this state.
 	if(stroke_data->size()>=2)
@@ -172,11 +172,11 @@ StateStroke_Context::event_mouse_up_handler(const Smach::event& x)
 			modifier=event.modifier;
 			throw Smach::pop_exception();
 		}
-	
+
 	case BUTTON_RIGHT: // Intercept the right-button click to short-circut the pop-up menu
 		return Smach::RESULT_ACCEPT;
-	
-	default:	
+
+	default:
 		return Smach::RESULT_OK;
 	}
 }
@@ -191,14 +191,14 @@ StateStroke_Context::event_mouse_draw_handler(const Smach::event& x)
 		{
 			stroke_data->push_back(event.pos);
 			width_data->push_back(event.pressure);
-			get_work_area()->queue_draw();			
+			get_work_area()->queue_draw();
 			return Smach::RESULT_ACCEPT;
 		}
-	
+
 	case BUTTON_RIGHT: // Intercept the right-button click to short-circut the pop-up menu
 		return Smach::RESULT_ACCEPT;
-	
-	default:	
+
+	default:
 		return Smach::RESULT_OK;
 	}
 }

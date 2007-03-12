@@ -45,18 +45,18 @@ namespace studio {
 class Dockable;
 class DockDialog;
 class DockSettings;
-	
+
 class DockManager : public sigc::trackable
 {
 	friend class Dockable;
 	friend class DockDialog;
 	friend class DockSettings;
-		
+
 	std::list<Dockable*> dockable_list_;
 	std::list<DockDialog*> dock_dialog_list_;
 
 	sigc::signal<void,Dockable*> signal_dockable_registered_;
-	
+
 	etl::smart_ptr<DockSettings> dock_settings;
 
 public:
@@ -72,7 +72,7 @@ public:
 	bool unregister_dockable(Dockable& x);
 	Dockable& find_dockable(const synfig::String& x);
 	void present(synfig::String x);
-	
+
 }; // END of class DockManager
 
 }; // END of namespace studio

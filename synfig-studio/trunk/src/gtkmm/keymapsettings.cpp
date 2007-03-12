@@ -86,7 +86,7 @@ bool KeyMapSettings::get_key(const char *path, AccelKey *key)
 		*key = AccelKey(ac.accel_key,(Gdk::ModifierType)ac.accel_mods,string(path));
 		return true;
 	}
-	
+
 	return false;
 }
 
@@ -94,18 +94,18 @@ bool KeyMapSettings::load(const char *filename)
 {
 	string n(filename);
 	n += ".skm";
-	
+
 	AccelMap::load(filename);
-	
-	return true;	
+
+	return true;
 }
 
 bool KeyMapSettings::save(const char *filename)
 {
 	string n(filename);
 	n += ".skm";
-	
+
 	AccelMap::save(filename);
-	
+
 	return true;
 }

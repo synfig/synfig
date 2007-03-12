@@ -68,7 +68,7 @@ public:
 	*/
 
 public:
-	
+
 	/*
  -- ** -- P R I V A T E   D A T A ---------------------------------------------
 	*/
@@ -83,7 +83,7 @@ private:
 	sigc::signal<void> signal_filename_changed_;
 	sigc::signal<void> signal_saved_;
 	etl::handle<SelectionManager> selection_manager_;
-	
+
 protected:
 	Instance(etl::handle<synfig::Canvas>);
 
@@ -97,7 +97,7 @@ public:
 
 	void set_selection_manager(const etl::handle<SelectionManager> &sm) { assert(sm); selection_manager_=sm; }
 	void unset_selection_manager() { selection_manager_=new NullSelectionManager(); }
-	const etl::handle<SelectionManager> &get_selection_manager() { return selection_manager_; }	
+	const etl::handle<SelectionManager> &get_selection_manager() { return selection_manager_; }
 
 
 
@@ -124,7 +124,7 @@ public:	// Interfaces to internal information
 	void set_file_name(const synfig::String &name);
 
 public:
-	
+
 
 public:	// Constructor interfaces
 	static etl::handle<Instance> create(etl::handle<synfig::Canvas> canvas);

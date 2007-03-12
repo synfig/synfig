@@ -75,16 +75,16 @@ Renderer_Grid::render_vfunc(
 	assert(get_work_area());
 	if(!get_work_area())
 		return;
-	
+
 //	const synfig::RendDesc &rend_desc(get_work_area()->get_canvas()->rend_desc());
-	
+
 	const synfig::Vector focus_point(get_work_area()->get_focus_point());
 
 //	std::vector< std::pair<Glib::RefPtr<Gdk::Pixbuf>,int> >& tile_book(get_tile_book());
-	
+
 	int drawable_w,drawable_h;
 	drawable->get_size(drawable_w,drawable_h);
-	
+
 	// Calculate the window coordinates of the top-left
 	// corner of the canvas.
 //	const synfig::Vector::value_type
@@ -103,9 +103,9 @@ Renderer_Grid::render_vfunc(
 //	const int
 //		w(get_w()),
 //		h(get_h());
-	
+
 	Glib::RefPtr<Gdk::GC> gc(Gdk::GC::create(drawable));
-	
+
 	const synfig::Vector grid_size(get_grid_size());
 
 	const synfig::Vector::value_type window_startx(get_work_area()->get_window_tl()[0]);
@@ -113,7 +113,7 @@ Renderer_Grid::render_vfunc(
 	const synfig::Vector::value_type window_starty(get_work_area()->get_window_tl()[1]);
 	const synfig::Vector::value_type window_endy(get_work_area()->get_window_br()[1]);
 	const float pw(get_pw()),ph(get_ph());
-	
+
 	// Draw out the grid
 	if(grid_size[0]>pw*3.5 && grid_size[1]>ph*3.5)
 	{
@@ -121,7 +121,7 @@ Renderer_Grid::render_vfunc(
 
 		x=floor(window_startx/grid_size[0])*grid_size[0];
 		y=floor(window_starty/grid_size[1])*grid_size[1];
-		
+
 		gc->set_function(Gdk::COPY);
 		gc->set_rgb_fg_color(Gdk::Color("#9f9f9f"));
 		gc->set_line_attributes(1,Gdk::LINE_ON_OFF_DASH,Gdk::CAP_BUTT,Gdk::JOIN_MITER);

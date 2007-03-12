@@ -43,7 +43,7 @@ namespace studio {
 class Renderer_BBox : public studio::WorkAreaRenderer
 {
 	synfig::Rect bbox;
-	
+
 public:
 	Renderer_BBox();
 	~Renderer_BBox();

@@ -68,7 +68,7 @@ Action::ParamVocab
 Action::ActivepointAdd::get_param_vocab()
 {
 	ParamVocab ret(Action::CanvasSpecific::get_param_vocab());
-	
+
 	ret.push_back(ParamDesc("value_desc",Param::TYPE_VALUEDESC)
 		.set_local_name(_("ValueDesc"))
 	);
@@ -110,26 +110,26 @@ Action::ActivepointAdd::set_param(const synfig::String& name, const Action::Para
 	if(name=="value_desc" && param.get_type()==Param::TYPE_VALUEDESC)
 	{
 		ValueDesc value_desc(param.get_value_desc());
-		
+
 		if(!value_desc.parent_is_value_node())
 			return false;
-		
+
 		value_node=ValueNode_DynamicList::Handle::cast_dynamic(value_desc.get_parent_value_node());
-		
+
 		if(!value_node)
 			return false;
-		
+
 		index=value_desc.get_index();
-		
+
 		if(time_set)
 			calc_activepoint();
-		
+
 		return true;
 	}
 	if(name=="activepoint" && param.get_type()==Param::TYPE_ACTIVEPOINT && !time_set)
 	{
 		activepoint=param.get_activepoint();
-		
+
 		return true;
 	}
 	if(name=="time" && param.get_type()==Param::TYPE_TIME && activepoint.get_time()==Time::begin()-1)
@@ -139,7 +139,7 @@ Action::ActivepointAdd::set_param(const synfig::String& name, const Action::Para
 
 		if(value_node)
 			calc_activepoint();
-		
+
 		return true;
 	}
 
@@ -154,16 +154,16 @@ Action::ActivepointAdd::is_ready()const
 	return Action::CanvasSpecific::is_ready();
 }
 
-// This function is called if a time is specified, but not 
+// This function is called if a time is specified, but not
 // a activepoint. In this case, we need to calculate the value
 // of the activepoint
 void
 Action::ActivepointAdd::calc_activepoint()
-{	
+{
 	const Time time(activepoint.get_time());
 	activepoint.set_state(value_node->list[index].status_at_time(time));
 	activepoint.set_priority(0);
-	
+
 	// In this case, nothing is really changing, so there will be
 	// no need to redraw the window
 	set_dirty(false);
@@ -171,16 +171,16 @@ Action::ActivepointAdd::calc_activepoint()
 
 void
 Action::ActivepointAdd::perform()
-{	
+{
 	try { value_node->list[index].find(activepoint.get_time()); throw Error(_("A Activepoint already exists at this point in time"));}
-	catch(synfig::Exception::NotFound) { }	
+	catch(synfig::Exception::NotFound) { }
 
 	try { if(value_node->list[index].find(activepoint)!=value_node->list[index].timing_info.end()) throw Error(_("This activepoint is already in the ValueNode"));}
-	catch(synfig::Exception::NotFound) { }	
-	
+	catch(synfig::Exception::NotFound) { }
+
 	value_node->list[index].add(activepoint);
 	value_node->changed();
-	
+
 	/*if(get_canvas_interface())
 	{
 		get_canvas_interface()->signal_value_node_changed()(value_node);

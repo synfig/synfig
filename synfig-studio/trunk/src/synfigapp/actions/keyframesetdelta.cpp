@@ -72,7 +72,7 @@ Action::ParamVocab
 Action::KeyframeSetDelta::get_param_vocab()
 {
 	ParamVocab ret(Action::CanvasSpecific::get_param_vocab());
-	
+
 	ret.push_back(ParamDesc("keyframe",Param::TYPE_KEYFRAME)
 		.set_local_name(_("Keyframe"))
 	);
@@ -121,9 +121,9 @@ Action::KeyframeSetDelta::prepare()
 	value_desc_list.clear();
 	get_canvas_interface()->find_important_value_descs(value_desc_list);
 
-	
+
 	Time time(get_canvas()->keyframe_list().find(keyframe)->get_time());
-	
+
 	std::vector<synfigapp::ValueDesc>::iterator iter;
 		DEBUGPOINT();
 	for(iter=value_desc_list.begin();iter!=value_desc_list.end();++iter)
@@ -132,10 +132,10 @@ Action::KeyframeSetDelta::prepare()
 		ValueNode_Animated::Handle value_node(
 			ValueNode_Animated::Handle::cast_dynamic(value_desc.get_value_node())
 		);
-		
+
 		if(!value_node)
 			continue;
-		
+
 		try{
 			value_node->find(time);
 			// if we got to this point, then we know that
@@ -153,7 +153,7 @@ Action::KeyframeSetDelta::prepare()
 			}
 		}
 		Action::Handle action(Action::create("waypoint_set_smart"));
-		
+
 		action->set_param("canvas",get_canvas());
 		action->set_param("canvas_interface",get_canvas_interface());
 		action->set_param("value_node",ValueNode::Handle::cast_static(value_node));
@@ -163,8 +163,8 @@ Action::KeyframeSetDelta::prepare()
 		assert(action->is_ready());
 		if(!action->is_ready())
 			throw Error(Error::TYPE_NOTREADY);
-	
-		add_action(action);						
+
+		add_action(action);
 	}
 }
 
@@ -174,11 +174,11 @@ Action::KeyframeSetDelta::perform()
 	if(!delta)
 		return;
 	Action::Super::perform();
-	
+
 //	Time location(keyframe.get_time());
-	Time location(get_canvas()->keyframe_list().find(keyframe)->get_time());	
+	Time location(get_canvas()->keyframe_list().find(keyframe)->get_time());
 	Time delta(delta);
-	
+
 	get_canvas()->keyframe_list().insert_time(location,delta);
 
 	std::vector<synfigapp::ValueDesc>::iterator iter;
@@ -218,11 +218,11 @@ Action::KeyframeSetDelta::undo()
 {
 	if(!delta)
 		return;
-	
+
 //	Time location(keyframe.get_time());
-	Time location(get_canvas()->keyframe_list().find(keyframe)->get_time());	
+	Time location(get_canvas()->keyframe_list().find(keyframe)->get_time());
 	Time delta(-delta);
-	
+
 	get_canvas()->keyframe_list().insert_time(location,delta);
 
 	std::vector<synfigapp::ValueDesc>::iterator iter;

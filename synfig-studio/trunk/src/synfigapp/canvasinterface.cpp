@@ -104,18 +104,18 @@ CanvasInterface::set_time(synfig::Time x)
 	if(cur_time_.is_equal(x))
 		return;
 	cur_time_=x;
-	
+
 	signal_time_changed()();
 	signal_dirty_preview()();
 }
-	
+
 synfig::Time
 CanvasInterface::get_time()const
 {
 	return cur_time_;
 }
 
-void 
+void
 CanvasInterface::refresh_current_values()
 {
 	get_canvas()->set_time(cur_time_);
@@ -138,20 +138,20 @@ CanvasInterface::set_mode(Mode x)
 	Action::Handle 	action(Action::EditModeSet::create());
 
 	assert(action);
-	
+
 	action->set_param("canvas",get_canvas());
 	action->set_param("canvas_interface",etl::loose_handle<CanvasInterface>(this));
 	action->set_param("edit_mode",x);
-	
+
 	if(!action->is_ready())
 	{
 		get_ui_interface()->error(_("Action Not Ready, unable to change mode"));
 		assert(0);
 		return;
 	}
-	
+
 	if(!get_instance()->perform_action(action))
-		get_ui_interface()->error(_("Unable to change mode"));			
+		get_ui_interface()->error(_("Unable to change mode"));
 
 //	mode_=x;
 //	signal_mode_changed_(x);
@@ -171,9 +171,9 @@ CanvasInterface::add_layer_to(String name, Canvas::Handle canvas, int depth)
 	synfigapp::Action::PassiveGrouper group(get_instance().get(),_("Add Layer To"));
 
 	Layer::Handle	layer(Layer::create(name));
-	
+
 	assert(layer);
-	
+
 	if(!layer)
 		return 0;
 
@@ -184,7 +184,7 @@ CanvasInterface::add_layer_to(String name, Canvas::Handle canvas, int depth)
 	}
 
 	layer->set_canvas(canvas);
-	
+
 	// Apply some defaults
 	if(layer->set_param("fg",synfigapp::Main::get_foreground_color()))
 		layer->set_param("bg",synfigapp::Main::get_background_color());
@@ -204,14 +204,14 @@ CanvasInterface::add_layer_to(String name, Canvas::Handle canvas, int depth)
 		for(iter=paramlist.begin();iter!=paramlist.end();++iter)
 		{
 			ValueNode::Handle value_node;
-			
+
 			if(iter->second.get_type()==ValueBase::TYPE_LIST)
 				value_node=LinkableValueNode::create("dynamic_list",iter->second);
 			else if(LinkableValueNode::check_type("composite",iter->second.get_type()) &&
 				(iter->second.get_type()!=ValueBase::TYPE_COLOR && iter->second.get_type()!=ValueBase::TYPE_VECTOR)
 			)
 				value_node=LinkableValueNode::create("composite",iter->second);
-			
+
 			if(value_node)
 				layer->connect_dynamic_param(iter->first,value_node);
 		}
@@ -223,20 +223,20 @@ CanvasInterface::add_layer_to(String name, Canvas::Handle canvas, int depth)
 	assert(action);
 	if(!action)
 		return 0;
-	
+
 	action->set_param("canvas",canvas);
 	action->set_param("canvas_interface",etl::loose_handle<CanvasInterface>(this));
 	action->set_param("new",layer);
-	
+
 	if(!action->is_ready())
 	{
-		get_ui_interface()->error(_("Action Not Ready"));			
+		get_ui_interface()->error(_("Action Not Ready"));
 		return 0;
 	}
-	
+
 	if(!get_instance()->perform_action(action))
 	{
-		get_ui_interface()->error(_("Action Failed."));			
+		get_ui_interface()->error(_("Action Failed."));
 		return 0;
 	}
 
@@ -245,30 +245,30 @@ CanvasInterface::add_layer_to(String name, Canvas::Handle canvas, int depth)
 	if(depth>0)
 	{
 		Action::Handle 	action(Action::create("layer_move"));
-	
+
 		assert(action);
 		if(!action)
 			return 0;
-		
+
 		action->set_param("canvas",canvas);
 		action->set_param("canvas_interface",etl::loose_handle<CanvasInterface>(this));
 		action->set_param("layer",layer);
 		action->set_param("new_index",depth);
-		
+
 		if(!action->is_ready())
 		{
-			get_ui_interface()->error(_("Move Action Not Ready"));			
+			get_ui_interface()->error(_("Move Action Not Ready"));
 			return 0;
 		}
-		
+
 		if(!get_instance()->perform_action(action))
 		{
-			get_ui_interface()->error(_("Move Action Failed."));			
+			get_ui_interface()->error(_("Move Action Failed."));
 			return 0;
 		}
-	}	
-	
-	
+	}
+
+
 	return layer;
 }
 
@@ -281,22 +281,22 @@ CanvasInterface::convert(ValueDesc value_desc, String type)
 	assert(action);
 	if(!action)
 		return 0;
-	
+
 	action->set_param("canvas",get_canvas());
 	action->set_param("canvas_interface",etl::loose_handle<CanvasInterface>(this));
 	action->set_param("value_desc",value_desc);
 	action->set_param("type",type);
-	
+
 	if(!action->is_ready())
 	{
-		get_ui_interface()->error(_("Action Not Ready"));			
+		get_ui_interface()->error(_("Action Not Ready"));
 		return 0;
 	}
-	
+
 	if(get_instance()->perform_action(action))
 		return true;
-	
-	get_ui_interface()->error(_("Action Failed."));			
+
+	get_ui_interface()->error(_("Action Failed."));
 	return false;
 }
 
@@ -308,28 +308,28 @@ CanvasInterface::add_value_node(synfig::ValueNode::Handle value_node, synfig::St
 		get_ui_interface()->error(_("Empty name!"));
 		return false;
 	}
-	
+
 	Action::Handle 	action(Action::ValueNodeAdd::create());
 
 	assert(action);
 	if(!action)
 		return 0;
-	
+
 	action->set_param("canvas",get_canvas());
 	action->set_param("canvas_interface",etl::loose_handle<CanvasInterface>(this));
 	action->set_param("new",value_node);
 	action->set_param("name",name);
-	
+
 	if(!action->is_ready())
 	{
-		get_ui_interface()->error(_("Action Not Ready"));			
+		get_ui_interface()->error(_("Action Not Ready"));
 		return 0;
 	}
-	
+
 	if(get_instance()->perform_action(action))
 		return true;
-	
-	get_ui_interface()->error(_("Action Failed."));			
+
+	get_ui_interface()->error(_("Action Failed."));
 	return false;
 }
 
@@ -345,10 +345,10 @@ CanvasInterface::generate_param_list(const ValueDesc &value_desc)
 
 	if(value_desc.parent_is_value_node())
 		param_list.add("parent_value_node",value_desc.get_parent_value_node());
-	
+
 	if(value_desc.is_value_node())
 		param_list.add("value_node",value_desc.get_value_node());
-	
+
 	if(value_desc.is_const())
 		param_list.add("value",value_desc.get_value());
 
@@ -366,7 +366,7 @@ CanvasInterface::generate_param_list(const ValueDesc &value_desc)
 			param_list.add("dest",value_desc);
 			param_list.add("src",children_list.front().get_value_node());
 		}
-	}	
+	}
 	return param_list;
 }
 
@@ -384,7 +384,7 @@ CanvasInterface::generate_param_list(const std::list<synfigapp::ValueDesc> &valu
 		param_list.add("value_desc",*iter);
 		if(iter->is_value_node())
 		{
-			param_list.add("value_node",iter->get_value_node());			
+			param_list.add("value_node",iter->get_value_node());
 		}
 	}
 
@@ -400,13 +400,13 @@ CanvasInterface::set_rend_desc(const synfig::RendDesc &rend_desc)
 	assert(action);
 	if(!action)
 		return;
-	
+
 	action->set_param("canvas",get_canvas());
 	action->set_param("canvas_interface",etl::loose_handle<CanvasInterface>(this));
 	action->set_param("rend_desc",rend_desc);
-		
+
 	if(!get_instance()->perform_action(action))
-		get_ui_interface()->error(_("Action Failed."));			
+		get_ui_interface()->error(_("Action Failed."));
 }
 
 bool
@@ -466,7 +466,7 @@ bool
 CanvasInterface::import(const synfig::String &filename, bool copy)
 {
 	Action::PassiveGrouper group(get_instance().get(),_("Import Image"));
-	
+
 	synfig::info("Attempting to import "+filename);
 
 
@@ -482,7 +482,7 @@ CanvasInterface::import(const synfig::String &filename, bool copy)
 	// If this is a SIF file, then we need to do things slightly differently
 	if(ext=="sif" || ext=="sifz")try
 	{
-		
+
 		Canvas::Handle outside_canvas(synfig::open_canvas(filename));
 		if(!outside_canvas)
 			throw String(_("Unable to open this composition"));
@@ -507,9 +507,9 @@ CanvasInterface::import(const synfig::String &filename, bool copy)
 		get_ui_interface()->error(_("Uncaught exception when attempting\nto open this composition -- ")+filename);
 		return false;
 	}
-	
-	
-	
+
+
+
 	if(!Importer::book().count(ext))
 	{
 		get_ui_interface()->error(_("I don't know how to open images of this type -- ")+ext);
@@ -559,8 +559,8 @@ CanvasInterface::import(const synfig::String &filename, bool copy)
 
 		layer->set_description(basename(filename));
 		signal_layer_new_description()(layer,filename);
-	
-		return true;		
+
+		return true;
 	}
 	catch(...)
 	{
@@ -579,20 +579,20 @@ CanvasInterface::waypoint_duplicate(synfigapp::ValueDesc value_desc,synfig::Wayp
 	assert(action);
 	if(!action)
 		return;
-	
+
 	waypoint.make_unique();
 	waypoint.set_time(get_time());
 
 	ValueNode::Handle value_node(value_desc.get_value_node());
-	
+
 	action->set_param("canvas",get_canvas());
 	action->set_param("canvas_interface",etl::loose_handle<CanvasInterface>(this));
 	action->set_param("waypoint",waypoint);
 	action->set_param("time",get_time());
 	action->set_param("value_node",value_node);
-		
+
 	if(!get_instance()->perform_action(action))
-		get_ui_interface()->error(_("Action Failed."));			
+		get_ui_interface()->error(_("Action Failed."));
 }
 
 void
@@ -603,16 +603,16 @@ CanvasInterface::waypoint_remove(synfigapp::ValueDesc value_desc,synfig::Waypoin
 	assert(action);
 	if(!action)
 		return;
-	
+
 	ValueNode::Handle value_node(value_desc.get_value_node());
-	
+
 	action->set_param("canvas",get_canvas());
 	action->set_param("canvas_interface",etl::loose_handle<CanvasInterface>(this));
 	action->set_param("waypoint",waypoint);
 	action->set_param("value_node",value_node);
-		
+
 	if(!get_instance()->perform_action(action))
-		get_ui_interface()->error(_("Action Failed."));			
+		get_ui_interface()->error(_("Action Failed."));
 }
 
 
@@ -629,24 +629,24 @@ CanvasInterface::auto_export(ValueNode::Handle value_node)
 	assert(action);
 	if(!action)
 		return;
-	
+
 	String name(strprintf(_("Unnamed%08d"),synfig::UniqueID().get_uid()));
-	
+
 	action->set_param("canvas",get_canvas());
 	action->set_param("canvas_interface",etl::loose_handle<CanvasInterface>(this));
 	action->set_param("new",value_node);
 	action->set_param("name",name);
-		
+
 	if(!get_instance()->perform_action(action))
-		get_ui_interface()->error(_("Action Failed."));			
+		get_ui_interface()->error(_("Action Failed."));
 */
 }
 
 void
 CanvasInterface::auto_export(const ValueDesc& value_desc)
-{	
+{
 	// THIS FUNCTION IS DEPRECATED, AND IS NOW A STUB.
-#if 0	
+#if 0
 	// Check to see if we are already exported.
 	if(value_desc.is_exported())
 		return;
@@ -656,16 +656,16 @@ CanvasInterface::auto_export(const ValueDesc& value_desc)
 	assert(action);
 	if(!action)
 		return;
-	
+
 	String name(strprintf(_("Unnamed%08d"),synfig::UniqueID().get_uid()));
-	
+
 	action->set_param("canvas",get_canvas());
 	action->set_param("canvas_interface",etl::loose_handle<CanvasInterface>(this));
 	action->set_param("value_desc",value_desc);
 	action->set_param("name",name);
-		
+
 	if(!get_instance()->perform_action(action))
-		get_ui_interface()->error(_("Action Failed."));			
+		get_ui_interface()->error(_("Action Failed."));
 #endif
 }
 
@@ -675,18 +675,18 @@ CanvasInterface::change_value(synfigapp::ValueDesc value_desc,synfig::ValueBase 
 	// If this isn't really a change, then don't bother
 	if(new_value==value_desc.get_value(get_time()))
 		return true;
-		
+
 	// If this change needs to take place elsewhere, then so be it.
 	if(value_desc.get_canvas() && value_desc.get_canvas()->get_root()!=get_canvas()->get_root())do
 	{
 		etl::handle<Instance> instance;
 		instance=find_instance(value_desc.get_canvas()->get_root());
-		
+
 		if(instance)
 			return instance->find_canvas_interface(value_desc.get_canvas())->change_value(value_desc,new_value);
 		else
 		{
-			get_ui_interface()->error(_("The value you are trying to edit is in a composition\nwhich doesn't seem to be open. Open that composition and you\nshould be able to edit this value as normal."));			
+			get_ui_interface()->error(_("The value you are trying to edit is in a composition\nwhich doesn't seem to be open. Open that composition and you\nshould be able to edit this value as normal."));
 			return false;
 		}
 	}while(0);
@@ -694,13 +694,13 @@ CanvasInterface::change_value(synfigapp::ValueDesc value_desc,synfig::ValueBase 
 	else
 	{ synfig::warning("Can't get canvas from value desc...?"); }
 #endif
-	
+
 	synfigapp::Action::Handle action(synfigapp::Action::create("value_desc_set"));
 	if(!action)
 	{
 		return false;
 	}
-	
+
 	action->set_param("canvas",get_canvas());
 	action->set_param("canvas_interface",etl::loose_handle<CanvasInterface>(this));
 	action->set_param("time",get_time());
@@ -731,7 +731,7 @@ _process_value_desc(const synfigapp::ValueDesc& value_desc,std::vector<synfigapp
 			return ret;
 		ret+=CanvasInterface::find_important_value_descs(canvas,out,guid_set);
 	}
-	
+
 	if(value_desc.is_value_node())
 	{
 		ValueNode::Handle value_node(value_desc.get_value_node());
@@ -739,7 +739,7 @@ _process_value_desc(const synfigapp::ValueDesc& value_desc,std::vector<synfigapp
 		if(guid_set.count(value_node->get_guid()))
 			return ret;
 		guid_set.insert(value_node->get_guid());
-		
+
 		if(LinkableValueNode::Handle::cast_dynamic(value_node))
 		{
 			if(ValueNode_DynamicList::Handle::cast_dynamic(value_node))
@@ -763,7 +763,7 @@ _process_value_desc(const synfigapp::ValueDesc& value_desc,std::vector<synfigapp
 			ret++;
 		}
 	}
-	
+
 	return ret;
 }
 
@@ -774,7 +774,7 @@ CanvasInterface::find_important_value_descs(synfig::Canvas::Handle canvas,std::v
 	if(!canvas->is_inline())
 	{
 		ValueNodeList::const_iterator iter;
-	
+
 		for(
 			iter=canvas->value_node_list().begin();
 			iter!=canvas->value_node_list().end();
@@ -783,11 +783,11 @@ CanvasInterface::find_important_value_descs(synfig::Canvas::Handle canvas,std::v
 	}
 
 	Canvas::const_iterator iter;
-	
+
 	for(iter=canvas->begin();iter!=canvas->end();++iter)
 	{
 		Layer::Handle layer(*iter);
-		
+
 		Layer::DynamicParamList::const_iterator iter;
 		for(
 			iter=layer->dynamic_param_list().begin();
@@ -801,7 +801,7 @@ CanvasInterface::find_important_value_descs(synfig::Canvas::Handle canvas,std::v
 		if(value.is_valid())
 			ret+=_process_value_desc(ValueDesc(layer,"canvas"),out,guid_set);
 	}
-	
+
 	return ret;
 }
 
@@ -833,7 +833,7 @@ CanvasInterface::seek_time(synfig::Time time)
 {
 	if(!time)
 		return;
-	
+
 	float fps(get_canvas()->rend_desc().get_frame_rate());
 
 	if(time>=synfig::Time::end())
@@ -846,7 +846,7 @@ CanvasInterface::seek_time(synfig::Time time)
 		set_time(get_canvas()->rend_desc().get_time_end());
 		return;
 	}
-		
+
 	Time newtime(get_time()+time);
 	newtime=newtime.round(fps);
 

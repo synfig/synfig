@@ -84,11 +84,11 @@ extern      const guint gtk_interface_age;
 class studio::AboutProgress : public synfig::ProgressCallback
 {
 	About &about;
-	
+
 public:
 
 	AboutProgress(About &about):about(about) { }
-	
+
 	virtual bool task(const std::string &task)
 	{
 		if(about.tasklabel)
@@ -170,19 +170,19 @@ About::About():
 	if(synfig_root) {
 		imagepath=synfig_root;
 		imagepath+=ETL_DIRECTORY_SEPERATOR;
-		
+
 		imagepath+="share/pixmaps";
 	}
 	imagepath+=ETL_DIRECTORY_SEPERATOR;
-	
-	
+
+
 	// Create the Logo
 	Gtk::Image *Logo = manage(new class Gtk::Image());
 	Logo->set(imagepath+"about_dialog."IMAGE_EXT);
 	Logo->set_size_request(image_w,image_h);
 	Logo->set_alignment(0.5,0.5);
 	Logo->set_padding(0,0);
-	
+
 	// Create the Copyright Label
 	Gtk::Label *CopyrightLabel = manage(new class Gtk::Label(SYNFIG_COPYRIGHT));
 	CopyrightLabel->set_size_request(image_w,24);
@@ -199,7 +199,7 @@ About::About():
 	VersionLabel->set_padding(0,0);
 	VersionLabel->set_justify(Gtk::JUSTIFY_CENTER);
 	VersionLabel->set_line_wrap(false);
-	
+
 	// Set the version label to contain the correct information
 	string ver;
 	ver+="Version "VERSION" ("__DATE__" "__TIME__")\n";
@@ -220,7 +220,7 @@ About::About():
  	Gtk::Image *image2 = manage(new class Gtk::Image(Gtk::StockID("gtk-close"), Gtk::IconSize(4)));
 	image2->set_alignment(0.5,0.5);
 	image2->set_padding(0,0);
-	
+
 	// Create the close button, and attach the image to it
 	CloseButton = manage(new class Gtk::Button());
 	CloseButton->set_size_request(24,24);
@@ -237,7 +237,7 @@ About::About():
 	tasklabel = manage(new class Gtk::Label());
 	tasklabel->set_size_request(image_w,24);
 	tasklabel->set_use_underline(false);
-	
+
 	// Create the Gtk::Fixed container and put all of the widgets into it
 	Gtk::Fixed *fixed1 = manage(new class Gtk::Fixed());
 	fixed1->put(*Logo, 0, 0);
@@ -287,7 +287,7 @@ About::set_can_self_destruct(bool x)
 	if(x==true)
 		CloseButton->show();
 	else
-		CloseButton->hide();		
+		CloseButton->hide();
 }
 
 synfig::ProgressCallback *

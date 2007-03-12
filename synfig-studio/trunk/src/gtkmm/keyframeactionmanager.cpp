@@ -131,7 +131,7 @@ KeyframeActionManager::queue_refresh()
 {
 	if(queued)
 		return;
-	
+
 	//queue_refresh_connection.disconnect();
 	queue_refresh_connection=Glib::signal_idle().connect(
 		sigc::bind_return(
@@ -139,7 +139,7 @@ KeyframeActionManager::queue_refresh()
 			false
 		)
 	);
-	
+
 	queued=true;
 }
 
@@ -156,7 +156,7 @@ KeyframeActionManager::on_add_keyframe()
 
 	if(!action)
 		return;
-	
+
 	action->set_param("canvas",canvas_interface_->get_canvas());
 	action->set_param("canvas_interface",canvas_interface_);
 	action->set_param("keyframe",Keyframe(canvas_interface_->get_time()));
@@ -168,7 +168,7 @@ void
 KeyframeActionManager::refresh()
 {
 	KeyframeTreeStore::Model model;
-	
+
 	if(queued)
 	{
 		queued=false;
@@ -177,16 +177,16 @@ KeyframeActionManager::refresh()
 
 
 	clear();
-	
+
 	// Make sure we are ready
 	if(!ui_manager_ || !keyframe_tree_ || !canvas_interface_)
 	{
 		synfig::error("KeyframeActionManager::refresh(): Not ready!");
 		return;
 	}
-		
+
 	String ui_info;
-	
+
 	{
 		synfigapp::Action::ParamList param_list;
 		param_list.add("time",get_canvas_interface()->get_time());
@@ -211,7 +211,7 @@ KeyframeActionManager::refresh()
 	{
 		action_group_->remove(action_group_->get_action("action-keyframe_add"));
 	}
-	
+
 		action_group_->add(Gtk::Action::create(
 			"action-keyframe_add",
 			Gtk::StockID("gtk-add"),
@@ -219,7 +219,7 @@ KeyframeActionManager::refresh()
 		),
 			sigc::mem_fun(*this,&KeyframeActionManager::on_add_keyframe)
 		);
-	
+
 	try
 	{
 		canvas_interface_->get_canvas()->keyframe_list().find(canvas_interface_->get_time());
@@ -230,7 +230,7 @@ KeyframeActionManager::refresh()
 	catch(...)
 	{
 	}
-	
+
 	{
 		Glib::RefPtr<Gtk::Action> action(Gtk::Action::create("keyframe-properties", Gtk::StockID("gtk-properties"), _("Keyframe Properties")));
 		action_group_->add(action,sigc::mem_fun(*this,&KeyframeActionManager::on_keyframe_properties));
@@ -239,7 +239,7 @@ KeyframeActionManager::refresh()
 	}
 
 	ui_info="<ui><menubar action='menu-main'><menu action='menu-keyframe'>"+ui_info+"</menu></menubar></ui>";
-	popup_id_=get_ui_manager()->add_ui_from_string(ui_info);	
+	popup_id_=get_ui_manager()->add_ui_from_string(ui_info);
 #ifdef ONE_ACTION_GROUP
 #else
 	get_ui_manager()->insert_action_group(action_group_);

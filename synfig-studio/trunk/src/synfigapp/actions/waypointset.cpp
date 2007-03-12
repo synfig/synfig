@@ -66,7 +66,7 @@ Action::ParamVocab
 Action::WaypointSet::get_param_vocab()
 {
 	ParamVocab ret(Action::CanvasSpecific::get_param_vocab());
-	
+
 	ret.push_back(ParamDesc("value_node",Param::TYPE_VALUENODE)
 		.set_local_name(_("Destination ValueNode (Animated)"))
 	);
@@ -92,14 +92,14 @@ Action::WaypointSet::set_param(const synfig::String& name, const Action::Param &
 	if(name=="value_node" && param.get_type()==Param::TYPE_VALUENODE)
 	{
 		value_node=ValueNode_Animated::Handle::cast_dynamic(param.get_value_node());
-		
+
 		return static_cast<bool>(value_node);
 	}
 	if(name=="waypoint" && param.get_type()==Param::TYPE_WAYPOINT)
 	{
 		//NOTE: at the moment there is no error checking for multiple sets!!!
 		waypoints.push_back(param.get_waypoint());
-		
+
 		return true;
 	}
 
@@ -116,13 +116,13 @@ Action::WaypointSet::is_ready()const
 
 void
 Action::WaypointSet::perform()
-{	
+{
 	WaypointList::iterator iter;
 
-#if 1	
+#if 1
 	vector<WaypointList::iterator>	iters;
-	vector<Waypoint>::iterator i = waypoints.begin(), end = waypoints.end();	
-	
+	vector<Waypoint>::iterator i = waypoints.begin(), end = waypoints.end();
+
 	for(; i != end; ++i)
 	{
 		try { iters.push_back(value_node->find(*i)); }
@@ -131,16 +131,16 @@ Action::WaypointSet::perform()
 			throw Error(_("Unable to find waypoint"));
 		}
 	}
-	
+
 	//check to see which valuenodes are going to override because of the time...
 	ValueNode_Animated::findresult timeiter;
-	
+
 	for(i = waypoints.begin(); i != end; ++i)
 	{
 		timeiter = value_node->find_time(i->get_time());
-		
+
 		bool candelete = timeiter.second;
-	
+
 		//we only want to track overwrites (not waypoints that are also being modified)
 		if(candelete)
 		{
@@ -153,7 +153,7 @@ Action::WaypointSet::perform()
 				}
 			}
 		}
-		
+
 		//if we can still delete it after checking, record it, and then remove them all later
 		if(candelete)
 		{
@@ -161,7 +161,7 @@ Action::WaypointSet::perform()
 			overwritten_waypoints.push_back(w);
 		}
 	}
-	
+
 	//overwrite all the valuenodes we're supposed to set
 	{
 		i = waypoints.begin();
@@ -171,7 +171,7 @@ Action::WaypointSet::perform()
 			**ii = *i; //set the point to the corresponding point in the normal waypoint list
 		}
 	}
-	
+
 	//remove all the points we're supposed to be overwritting
 	{
 		vector<Waypoint>::iterator 	oi = overwritten_waypoints.begin(),
@@ -192,27 +192,27 @@ Action::WaypointSet::perform()
 	//find the value at the old time before we replace it
 	ValueNode_Animated::findresult timeiter;
 	timeiter = value_node->find_time(waypoint.get_time());
-	
+
 	//we only want to track overwrites (not inplace modifications)
 	if(timeiter.second && waypoint.get_uid() == timeiter.first->get_uid())
 	{
-		timeiter.second = false;			
+		timeiter.second = false;
 	}
-		
+
 	//copy and overwrite
 	old_waypoint=*iter;
 	*iter=waypoint;
-	
+
 	//if we've found a unique one then we need to erase it, but store it first
 	if(timeiter.second)
 	{
 		time_overwrite = true;
 		overwritten_wp = *timeiter.first;
-		
+
 		value_node->erase(overwritten_wp);
 	}
 #endif
-	
+
 	// Signal that a valuenode has been changed
 	value_node->changed();
 }
@@ -221,10 +221,10 @@ void
 Action::WaypointSet::undo()
 {
 	WaypointList::iterator iter;
-	
+
 #if 1
-	vector<Waypoint>::iterator i = old_waypoints.begin(), end = old_waypoints.end();	
-	
+	vector<Waypoint>::iterator i = old_waypoints.begin(), end = old_waypoints.end();
+
 	for(; i != end; ++i)
 	{
 		try { iter = value_node->find(*i); }
@@ -232,11 +232,11 @@ Action::WaypointSet::undo()
 		{
 			throw Error(_("Unable to find waypoint"));
 		}
-		
+
 		//overwrite with old one
 		*iter = *i;
 	}
-		
+
 	//add back in all the points that we removed before...
 	{
 		vector<Waypoint>::iterator 	oi = overwritten_waypoints.begin(),
@@ -252,16 +252,16 @@ Action::WaypointSet::undo()
 	catch(synfig::Exception::NotFound)
 	{
 		throw Error(_("Unable to find waypoint"));
-	}	
+	}
 
 	*iter=old_waypoint;
-	
+
 	if(time_overwrite)
 	{
 		value_node->add(overwritten_wp);
 	}
 #endif
-	
+
 	// Signal that a valuenode has been changed
 	value_node->changed();
 }

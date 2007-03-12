@@ -40,13 +40,13 @@
 namespace studio {
 
 class Dock_Canvases : public Dockable
-{	
+{
 	Gtk::TreeView *canvas_tree;
 	//Gtk::Menu	menu;
 	etl::loose_handle<studio::Instance>	selected_instance;
 
 private:
-	
+
 	void set_selected_instance_(etl::handle<studio::Instance> x);
 
 	etl::loose_handle<studio::Instance> get_selected_instance() { return selected_instance; }
@@ -66,7 +66,7 @@ private:
 	void refresh_instances();
 
 	bool close();
-	
+
 	void on_row_activate(const Gtk::TreeModel::Path &path, Gtk::TreeViewColumn *);
 	//bool on_tree_event(GdkEvent *event);
 

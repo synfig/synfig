@@ -46,7 +46,7 @@ namespace studio {
 {
 private:
 	Glib::RefPtr<Gtk::ActionGroup> state_group;
-	
+
 	guint merge_id;
 	std::vector<guint> merge_id_list;
 
@@ -56,7 +56,7 @@ public:
 	StateManager();
 
 	~StateManager();
-	
+
 	void add_state(const Smach::state_base *state);
 
 	Glib::RefPtr<Gtk::ActionGroup> get_action_group();

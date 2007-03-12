@@ -52,7 +52,7 @@
 namespace studio
 {
 class AsyncRenderer;
-	
+
 class RenderSettings : public Gtk::Dialog
 {
 	Gtk::Tooltips tooltips;
@@ -63,10 +63,10 @@ class RenderSettings : public Gtk::Dialog
 	Gtk::Entry entry_filename;
 
 	Gtk::Adjustment adjustment_quality;
-	Gtk::SpinButton entry_quality;	
+	Gtk::SpinButton entry_quality;
 
 	Gtk::Adjustment adjustment_antialias;
-	Gtk::SpinButton entry_antialias;	
+	Gtk::SpinButton entry_antialias;
 
 	Gtk::CheckButton toggle_single_frame;
 
@@ -74,7 +74,7 @@ class RenderSettings : public Gtk::Dialog
 	Gtk::Menu *menu_target;
 
 	synfig::String target_name;
-	
+
 	void set_target(synfig::String name);
 
 	etl::handle<AsyncRenderer> async_renderer;
@@ -90,10 +90,10 @@ private:
 	void on_choose_pressed();
 	void on_render_pressed();
 	void on_cancel_pressed();
-	
+
 	void on_finished();
 }; // END of class RenderSettings
-	
+
 }; // END of namespace studio
 
 

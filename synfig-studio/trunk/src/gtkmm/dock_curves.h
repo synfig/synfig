@@ -44,16 +44,16 @@ namespace studio {
 
 class Widget_Curves;
 class Widget_Timeslider;
-	
+
 class Dock_Curves : public Dock_CanvasSpecific
-{	
+{
 	Gtk::Table* table_;
 	Gtk::HScrollbar* hscrollbar_;
 	Gtk::VScrollbar* vscrollbar_;
-	
+
 	Widget_Timeslider* widget_timeslider_;
 	Widget_Curves* last_widget_curves_;
-	
+
 protected:
 	virtual void init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view);
 	virtual void changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view);

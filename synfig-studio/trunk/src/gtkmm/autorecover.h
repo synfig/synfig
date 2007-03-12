@@ -56,14 +56,14 @@ public:
 
 	void set_timeout(int milliseconds);
 	int get_timeout()const { return timeout; }
-	
+
 	static synfig::String get_shadow_directory();
-	
+
 	bool recovery_needed()const;
 	bool recover();
-	
+
 	void normal_shutdown();
-	
+
 	void clear_backup(synfig::Canvas::Handle canvas);
 }; // END of class AutoRecover
 

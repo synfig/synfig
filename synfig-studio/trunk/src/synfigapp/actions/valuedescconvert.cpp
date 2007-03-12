@@ -75,7 +75,7 @@ Action::ParamVocab
 Action::ValueDescConvert::get_param_vocab()
 {
 	ParamVocab ret(Action::CanvasSpecific::get_param_vocab());
-	
+
 	ret.push_back(ParamDesc("value_desc",Param::TYPE_VALUEDESC)
 		.set_local_name(_("ValueDesc"))
 	);
@@ -84,7 +84,7 @@ Action::ValueDescConvert::get_param_vocab()
 		.set_local_name(_("Type"))
 		.set_desc(_("The type of ValueNode that you want to be converted to"))
 	);
-	
+
 	return ret;
 }
 
@@ -100,14 +100,14 @@ Action::ValueDescConvert::set_param(const synfig::String& name, const Action::Pa
 	if(name=="value_desc" && param.get_type()==Param::TYPE_VALUEDESC)
 	{
 		value_desc=param.get_value_desc();
-		
+
 		return true;
 	}
 
 	if(name=="type" && param.get_type()==Param::TYPE_STRING)
 	{
 		type=param.get_string();
-		
+
 		return true;
 	}
 
@@ -128,25 +128,25 @@ Action::ValueDescConvert::prepare()
 	clear();
 
 	ValueBase value;
-	
+
 	if(value_desc.is_const())
 		value=value_desc.get_value();
 	else if(value_desc.is_value_node())
 		value=(*value_desc.get_value_node())(0);
 	else
 		throw Error(_("Unable to decipher ValueDesc (Bug?)"));
-	
+
 	ValueNode::Handle src_value_node(LinkableValueNode::create(type,value));
 
 	if(!src_value_node)
 		throw Error(_("Unable to create new value node"));
 
-	
+
 	ValueNode::Handle dest_value_node;
 	dest_value_node=value_desc.get_value_node();
 
 	Action::Handle action(ValueDescConnect::create());
-	
+
 	action->set_param("canvas",get_canvas());
 	action->set_param("canvas_interface",get_canvas_interface());
 	action->set_param("src",src_value_node);
@@ -159,67 +159,67 @@ Action::ValueDescConvert::prepare()
 	add_action_front(action);
 
 /*
-	return;		
+	return;
 
-		
+
 	if(value_desc.parent_is_canvas())
-	{				
+	{
 		ValueNode::Handle dest_value_node;
 		dest_value_node=value_desc.get_value_node();
 
 		Action::Handle action(ValueNodeReplace::create());
-		
+
 		action->set_param("canvas",get_canvas());
 		action->set_param("canvas_interface",get_canvas_interface());
 		action->set_param("src",src_value_node);
 		action->set_param("dest",dest_value_node);
-	
+
 		assert(action->is_ready());
 		if(!action->is_ready())
 			throw Error(Error::TYPE_NOTREADY);
-	
+
 		add_action_front(action);
-		return;		
+		return;
 	}
 	else
 	if(value_desc.parent_is_linkable_value_node())
 	{
 		Action::Handle action(ValueNodeLinkConnect::create());
-		
+
 		action->set_param("canvas",get_canvas());
 		action->set_param("canvas_interface",get_canvas_interface());
 		action->set_param("parent_value_node",value_desc.get_parent_value_node());
 		action->set_param("value_node", src_value_node);
 		action->set_param("index",value_desc.get_index());
-	
+
 		assert(action->is_ready());
 		if(!action->is_ready())
 			throw Error(Error::TYPE_NOTREADY);
-	
+
 		add_action_front(action);
-		return;		
+		return;
 	}
 	else
 	if(value_desc.parent_is_layer_param())
 	{
 		Action::Handle action(LayerParamConnect::create());
-		
+
 		action->set_param("canvas",get_canvas());
 		action->set_param("canvas_interface",get_canvas_interface());
 		action->set_param("layer",value_desc.get_layer());
 		action->set_param("param",value_desc.get_param_name());
 		action->set_param("value_node",src_value_node);
-	
-		assert(action->is_ready());		
+
+		assert(action->is_ready());
 		if(!action->is_ready())
 			throw Error(Error::TYPE_NOTREADY);
-	
+
 		add_action_front(action);
-		return;		
+		return;
 	}
-	
-	
-	
-	throw Error(_("ValueDesc is not recognised or supported."));	
+
+
+
+	throw Error(_("ValueDesc is not recognised or supported."));
 */
 }

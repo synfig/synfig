@@ -39,7 +39,7 @@
 namespace studio {
 
 class CanvasView;
-	
+
 typedef etl::smach<CanvasView,EventKey> Smach;
 
 }; // END of namespace studio

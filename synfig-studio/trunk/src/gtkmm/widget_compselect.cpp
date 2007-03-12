@@ -105,7 +105,7 @@ Widget_CompSelect::set_selected_instance(etl::loose_handle<studio::Instance> x)
 	else
 		set_history(0);
 
-	set_selected_instance_(x);	
+	set_selected_instance_(x);
 }
 
 void
@@ -113,11 +113,11 @@ Widget_CompSelect::new_instance(etl::handle<studio::Instance> instance)
 {
 	if(studio::App::shutdown_in_progress)
 		return;
-	
+
 	assert(instance);
-	
+
 	etl::loose_handle<studio::Instance> loose_instance(instance);
-	
+
 	instance->synfigapp::Instance::signal_filename_changed().connect(sigc::mem_fun(*this,&Widget_CompSelect::refresh));
 	instance->synfigapp::Instance::signal_filename_changed().connect(
 		sigc::bind<etl::loose_handle<studio::Instance> >(
@@ -132,7 +132,7 @@ Widget_CompSelect::new_instance(etl::handle<studio::Instance> instance)
 		instance_list_menu.items().push_back(Gtk::Menu_Helpers::MenuElem(name,
 			sigc::bind<etl::loose_handle<studio::Instance> >(sigc::ptr_fun(&studio::App::set_selected_instance),loose_instance)	));
 	}
-	
+
 }
 
 void

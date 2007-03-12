@@ -67,7 +67,7 @@ Action::ParamVocab
 Action::ActivepointRemove::get_param_vocab()
 {
 	ParamVocab ret(Action::CanvasSpecific::get_param_vocab());
-	
+
 	ret.push_back(ParamDesc("value_desc",Param::TYPE_VALUEDESC)
 		.set_local_name(_("ValueDesc"))
 	);
@@ -100,23 +100,23 @@ Action::ActivepointRemove::set_param(const synfig::String& name, const Action::P
 	if(name=="value_desc" && param.get_type()==Param::TYPE_VALUEDESC)
 	{
 		ValueDesc value_desc(param.get_value_desc());
-		
+
 		if(!value_desc.parent_is_value_node())
 			return false;
-		
+
 		value_node=ValueNode_DynamicList::Handle::cast_dynamic(value_desc.get_parent_value_node());
-		
+
 		if(!value_node)
 			return false;
-		
+
 		index=value_desc.get_index();
-		
+
 		return true;
 	}
 	if(name=="activepoint" && param.get_type()==Param::TYPE_ACTIVEPOINT)
 	{
 		activepoint=param.get_activepoint();
-		
+
 		return true;
 	}
 
@@ -133,18 +133,18 @@ Action::ActivepointRemove::is_ready()const
 
 void
 Action::ActivepointRemove::perform()
-{	
+{
 	ValueNode_DynamicList::ListEntry::ActivepointList::iterator iter;
-	
+
 	try { iter=value_node->list[index].find(activepoint); }
 	catch(synfig::Exception::NotFound)
 	{
 		throw Error(_("Unable to find activepoint"));
-	}	
+	}
 
 	value_node->list[index].erase(activepoint);
 	value_node->changed();
-	
+
 	/*
 	// Signal that a layer has been inserted
 	if(get_canvas_interface())
@@ -159,11 +159,11 @@ void
 Action::ActivepointRemove::undo()
 {
 	try { value_node->list[index].find(activepoint.get_time()); throw Error(_("A Activepoint already exists at this point in time"));}
-	catch(synfig::Exception::NotFound) { }	
+	catch(synfig::Exception::NotFound) { }
 
 	try { if(value_node->list[index].find(activepoint)!=value_node->list[index].timing_info.end()) throw Error(_("This activepoint is already in the ValueNode"));}
-	catch(synfig::Exception::NotFound) { }	
-	
+	catch(synfig::Exception::NotFound) { }
+
 	value_node->list[index].add(activepoint);
 	value_node->changed();
 	/*

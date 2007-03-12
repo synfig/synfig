@@ -66,13 +66,13 @@ Action::ParamVocab
 Action::LayerDuplicate::get_param_vocab()
 {
 	ParamVocab ret(Action::CanvasSpecific::get_param_vocab());
-	
+
 	ret.push_back(ParamDesc("layer",Param::TYPE_LAYER)
 		.set_local_name(_("Layer"))
 		.set_desc(_("Layer to be duplicated"))
 		.set_supports_multiple()
 	);
-	
+
 	return ret;
 }
 
@@ -88,7 +88,7 @@ Action::LayerDuplicate::set_param(const synfig::String& name, const Action::Para
 	if(name=="layer" && param.get_type()==Param::TYPE_LAYER)
 	{
 		layers.push_back(param.get_layer());
-		
+
 		return true;
 	}
 
@@ -108,47 +108,47 @@ Action::LayerDuplicate::prepare()
 {
 	if(!first_time())
 		return;
-	
+
 	std::list<synfig::Layer::Handle>::const_iterator iter;
-	
+
 	for(iter=layers.begin();iter!=layers.end();++iter)
 	{
 		Layer::Handle layer(*iter);
-		
+
 		Canvas::Handle subcanvas(layer->get_canvas());
-		
+
 		// Find the iterator for the layer
 		Canvas::iterator iter=find(subcanvas->begin(),subcanvas->end(),layer);
-		
+
 		// If we couldn't find the layer in the canvas, then bail
 		if(*iter!=layer)
 			throw Error(_("This layer doesn't exist anymore."));
-	
+
 		// If the subcanvas isn't the same as the canvas,
 		// then it had better be an inline canvas. If not,
 		// bail
 		if(get_canvas()!=subcanvas && !subcanvas->is_inline())
 			throw Error(_("This layer doesn't belong to this canvas anymore"));
-		
+
 		Layer::Handle new_layer(layer->clone(guid));
-		
+
 		{
 			Action::Handle action(Action::create("layer_move"));
-			
+
 			action->set_param("canvas",subcanvas);
 			action->set_param("canvas_interface",get_canvas_interface());
 			action->set_param("layer",new_layer);
 			action->set_param("new_index",layers.front()->get_depth());
-			
+
 			add_action_front(action);
 		}
 		{
 			Action::Handle action(Action::create("layer_add"));
-		
+
 			action->set_param("canvas",subcanvas);
 			action->set_param("canvas_interface",get_canvas_interface());
 			action->set_param("new",new_layer);
-			
+
 			add_action_front(action);
 		}
 	}

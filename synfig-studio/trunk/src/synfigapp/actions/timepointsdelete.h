@@ -49,7 +49,7 @@ class TimepointsDelete :
 	public Super
 {
 private:
-	
+
 	//process all the value descriptions that are selected (or are in subselections)
 	std::vector<synfig::Layer::Handle>	sel_layers;
 	std::vector<synfig::Canvas::Handle>	sel_canvases;

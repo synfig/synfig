@@ -72,7 +72,7 @@ Action::ParamVocab
 Action::GradientSet::get_param_vocab()
 {
 	ParamVocab ret(Action::CanvasSpecific::get_param_vocab());
-	
+
 	ret.push_back(ParamDesc("value_desc",Param::TYPE_VALUEDESC)
 		.set_local_name(_("ValueDesc"))
 	);
@@ -81,7 +81,7 @@ Action::GradientSet::get_param_vocab()
 		.set_local_name(_("Time"))
 		.set_optional()
 	);
-	
+
 	return ret;
 }
 
@@ -100,17 +100,17 @@ Action::GradientSet::set_param(const synfig::String& name, const Action::Param &
 	{
 		// Grab the value_desc
 		value_desc=param.get_value_desc();
-		
+
 		// Grab the current gradient
 		gradient=synfigapp::Main::get_gradient();
-		
+
 		return value_desc.get_value_type()==ValueBase::TYPE_GRADIENT;
 	}
 
 	if(name=="time" && param.get_type()==Param::TYPE_TIME)
 	{
 		time=param.get_time();
-		
+
 		return true;
 	}
 
@@ -129,16 +129,16 @@ void
 Action::GradientSet::prepare()
 {
 	clear();
-	
+
 	Action::Handle action;
 	action=Action::create("value_desc_set");
-		
+
 	action->set_param("canvas",get_canvas());
 	action->set_param("canvas_interface",get_canvas_interface());
 	action->set_param("value_desc",value_desc);
 	action->set_param("new_value",ValueBase(gradient));
 	action->set_param("time",time);
-	
+
 	if(!action->is_ready())
 		throw Error(Error::TYPE_NOTREADY);
 

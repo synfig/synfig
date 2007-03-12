@@ -105,7 +105,7 @@ LayerGroupTreeStore::search_func(const Glib::RefPtr<TreeModel>&,int,const Glib::
 	Glib::ustring substr(x.uppercase());
 	Glib::ustring label((*iter)[model.label]);
 	label=label.uppercase();
-		
+
 	return label.find(substr)==Glib::ustring::npos;
 }
 
@@ -123,11 +123,11 @@ LayerGroupTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& iter, int 
 	{
 		Glib::Value<LayerList> x;
 		g_value_init(x.gobj(),x.value_type());
-		
+
 		if((bool)(*iter)[model.is_group])
 		{
 			set<Layer::Handle> layer_set(canvas_interface()->get_canvas()->get_layers_in_group((Glib::ustring)(*iter)[model.group_name]));
-		
+
 			x.set(LayerList(layer_set.begin(),layer_set.end()));
 		}
 		else if((bool)(*iter)[model.is_layer])
@@ -136,7 +136,7 @@ LayerGroupTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& iter, int 
 			layer_list.push_back((Layer::Handle)(*iter)[model.layer]);
 			x.set(layer_list);
 		}
-		
+
 		g_value_init(value.gobj(),x.value_type());
 		value=x;
 	}
@@ -144,7 +144,7 @@ LayerGroupTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& iter, int 
 	{
 		Glib::Value<LayerList> x;
 		g_value_init(x.gobj(),x.value_type());
-		
+
 		if((bool)(*iter)[model.is_group])
 		{
 			LayerList layer_list;
@@ -163,7 +163,7 @@ LayerGroupTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& iter, int 
 			layer_list.push_back((Layer::Handle)(*iter)[model.layer]);
 			x.set(layer_list);
 		}
-		
+
 		g_value_init(value.gobj(),x.value_type());
 		value=x;
 	}
@@ -189,15 +189,15 @@ LayerGroupTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& iter, int 
 		{
 			Glib::Value<Glib::ustring> x;
 			g_value_init(x.gobj(),x.value_type());
-	
+
 			Glib::ustring group_name((*iter)[model.group_name]);
-			
+
 			// Get rid of any parent group crap
 			while(group_name.find(GROUP_NEST_CHAR)!=Glib::ustring::npos)
 				group_name=Glib::ustring(group_name,group_name.find(GROUP_NEST_CHAR)+1,Glib::ustring::npos);
-			
+
 			x.set(group_name);
-			
+
 			g_value_init(value.gobj(),x.value_type());
 
 			value=x;
@@ -205,18 +205,18 @@ LayerGroupTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& iter, int 
 		else if((bool)(*iter)[model.is_layer])
 		{
 			synfig::Layer::Handle layer((*iter)[model.layer]);
-	
+
 			if(!layer)return;
-	
+
 			Glib::Value<Glib::ustring> x;
 			g_value_init(x.gobj(),x.value_type());
-	
-	
+
+
 			if(!layer->get_description().empty())
 				x.set(layer->get_description());
 			else
 				x.set(layer->get_local_name());
-			
+
 			g_value_init(value.gobj(),x.value_type());
 			//g_value_copy(x.gobj(),value.gobj());
 			value=x;
@@ -234,7 +234,7 @@ LayerGroupTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& iter, int 
 
 
 		x.set(layer->get_local_name());
-		
+
 		g_value_init(value.gobj(),x.value_type());
 		//g_value_copy(x.gobj(),value.gobj());
 		value=x;
@@ -251,7 +251,7 @@ LayerGroupTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& iter, int 
 
 
 		x.set(layer->get_canvas());
-		
+
 		g_value_init(value.gobj(),x.value_type());
 		//g_value_copy(x.gobj(),value.gobj());
 		value=x;
@@ -281,7 +281,7 @@ LayerGroupTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& iter, int 
 		}
 		else
 			x.set(false);
-		
+
 		g_value_init(value.gobj(),x.value_type());
 		g_value_copy(x.gobj(),value.gobj());
 	}
@@ -300,7 +300,7 @@ LayerGroupTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& iter, int 
 		}
 		if((bool)(*iter)[model.is_group])
 			x.set(group_icon);
-		
+
 		g_value_init(value.gobj(),x.value_type());
 		g_value_copy(x.gobj(),value.gobj());
 	}
@@ -333,30 +333,30 @@ LayerGroupTreeStore::set_value_impl(const Gtk::TreeModel::iterator& iter, int co
 			Glib::Value<Glib::ustring> x;
 			g_value_init(x.gobj(),model.label.type());
 			g_value_copy(value.gobj(),x.gobj());
-			
+
 			if((bool)(*iter)[model.is_layer])
 			{
 				synfig::Layer::Handle layer((*iter)[model.layer]);
 				if(!layer)
 					return;
 				synfig::String new_desc(x.get());
-				
+
 				if(new_desc==layer->get_local_name())
 					new_desc=synfig::String();
-	
+
 				if(new_desc==layer->get_description())
 					return;
-				
+
 				synfigapp::Action::Handle action(synfigapp::Action::create("layer_set_desc"));
-				
+
 				if(!action)
 					return;
-				
+
 				action->set_param("canvas",canvas_interface()->get_canvas());
 				action->set_param("canvas_interface",canvas_interface());
 				action->set_param("layer",layer);
 				action->set_param("new_description",synfig::String(x.get()));
-				
+
 				canvas_interface()->get_instance()->perform_action(action);
 				return;
 			}
@@ -364,14 +364,14 @@ LayerGroupTreeStore::set_value_impl(const Gtk::TreeModel::iterator& iter, int co
 			{
 				synfig::String group((Glib::ustring)(*iter)[model.label]);
 				synfig::String new_group(x.get());
-				
+
 				if(x.get()==group)
 					return;
 
 				Glib::ustring group_name((*iter)[model.group_name]);
 				group=group_name;
 				new_group.clear();
-				
+
 				// Get rid of any parent group crap
 				while(group_name.find(GROUP_NEST_CHAR)!=Glib::ustring::npos)
 				{
@@ -379,9 +379,9 @@ LayerGroupTreeStore::set_value_impl(const Gtk::TreeModel::iterator& iter, int co
 					group_name=Glib::ustring(group_name,group_name.find(GROUP_NEST_CHAR)+1,Glib::ustring::npos);
 				}
 				new_group+=x.get();
-				
+
 				synfig::info("Renaming group \"%s\" to \"%s\"...",group.c_str(),new_group.c_str());
-				
+
 				// Check to see if this group is real or not.
 				// If it isn't real, then renaming it is a cinch.
 				// We know it isn't real if it doesn't have any
@@ -393,15 +393,15 @@ LayerGroupTreeStore::set_value_impl(const Gtk::TreeModel::iterator& iter, int co
 				else
 				{
 					synfigapp::Action::Handle action(synfigapp::Action::create("group_rename"));
-					
+
 					if(!action)
 						return;
-					
+
 					action->set_param("canvas",canvas_interface()->get_canvas());
 					action->set_param("canvas_interface",canvas_interface());
 					action->set_param("group",group);
 					action->set_param("new_group",new_group);
-					
+
 					canvas_interface()->get_instance()->perform_action(action);
 				}
 				return;
@@ -414,23 +414,23 @@ LayerGroupTreeStore::set_value_impl(const Gtk::TreeModel::iterator& iter, int co
 			Glib::Value<bool> x;
 			g_value_init(x.gobj(),model.active.type());
 			g_value_copy(value.gobj(),x.gobj());
-			
+
 			if((bool)(*iter)[model.is_layer])
-			{			
+			{
 				synfig::Layer::Handle layer((*iter)[model.layer]);
 				if(!layer)return;
-					
+
 				synfigapp::Action::Handle action(synfigapp::Action::create("layer_activate"));
-				
+
 				if(!action)
 					return;
-				
+
 				action->set_param("canvas",canvas_interface()->get_canvas());
 				action->set_param("canvas_interface",canvas_interface());
 				action->set_param("layer",layer);
 				action->set_param("new_status",bool(x.get()));
 
-				
+
 				canvas_interface()->get_instance()->perform_action(action);
 				return;
 			}
@@ -442,12 +442,12 @@ LayerGroupTreeStore::set_value_impl(const Gtk::TreeModel::iterator& iter, int co
 						x.get()?_("Activate "):_("Deactivate ")
 					)+(Glib::ustring)(*iter)[model.label]
 				);
-				
+
 				Gtk::TreeModel::iterator child_iter(iter->children().begin());
-				
+
 				for(;child_iter;++child_iter)
 					(*child_iter)[model.active]=x.get();
-				
+
 				Gtk::TreeStore::set_value_impl(iter,column, value);
 			}
 		}
@@ -458,7 +458,7 @@ LayerGroupTreeStore::set_value_impl(const Gtk::TreeModel::iterator& iter, int co
 	catch(std::exception x)
 	{
 		g_warning(x.what());
-	}	
+	}
 }
 
 
@@ -469,7 +469,7 @@ LayerGroupTreeStore::row_draggable_vfunc (const TreeModel::Path& path)const
 {
 	//if(!get_iter(path)) return false;
 //	Gtk::TreeModel::Row row(*get_iter(path));
-	
+
 	return true;
 //	return (bool)true;
 }
@@ -492,7 +492,7 @@ LayerGroupTreeStore::drag_data_get_vfunc (const TreeModel::Path& path, Gtk::Sele
 		std::vector<Layer*> layers;
 
 		layers.push_back(layer);
-		
+
 		selection_data.set("LAYER", 8, reinterpret_cast<const guchar*>(&layers.front()), sizeof(void*)*layers.size());
 
 		return true;
@@ -502,12 +502,12 @@ LayerGroupTreeStore::drag_data_get_vfunc (const TreeModel::Path& path, Gtk::Sele
 		synfig::String group((Glib::ustring)row[model.group_name]);
 		if(group.empty())
 			return false;
-		
+
 		selection_data.set("GROUP", 8, reinterpret_cast<const guchar*>(&*group.begin()), sizeof(void*)*group.size());
 
-		return true;		
+		return true;
 	}
-		
+
 	return false;
 }
 
@@ -531,18 +531,18 @@ LayerGroupTreeStore::row_drop_possible_vfunc (const TreeModel::Path& dest, const
 		synfig::String dest_group((Glib::ustring)(*iter)[model.group_name]);
 		synfig::String src_group(reinterpret_cast<const gchar*>(selection_data.get_data()));
 		//synfig::String src_group(const_cast<gchar*>(selection_data.get_data()));
-		
+
 		// Avoid putting a group inside of itself
 		if(dest_group.size()>src_group.size() && src_group==String(dest_group,0,src_group.size()))
 			return false;
 		return true;
 	}
-	
+
 	return false;
 	//synfig::info("possible_drop -- data of type \"%s\"",selection_data.get_data_type());
 	//synfig::info("possible_drop -- data of target \"%s\"",gdk_atom_name(selection_data->target));
 	//synfig::info("possible_drop -- selection=\"%s\"",gdk_atom_name(selection_data->selection));
-	
+
 	//Gtk::TreeModel::Row row(*get_iter(dest));
 
 /*	if(synfig::String(selection_data.get_data_type())=="LAYER" && (bool)true)
@@ -557,7 +557,7 @@ LayerGroupTreeStore::drag_data_received_vfunc (const TreeModel::Path& dest, cons
 	if(!get_iter(dest)) return false;
 //	bool ret=false;
 	//int i(0);
-	
+
 	Gtk::TreeModel::Row row(*get_iter(dest));
 
 	//synfig::info("Dropped data of type \"%s\"",selection_data.get_data_type());
@@ -568,19 +568,19 @@ LayerGroupTreeStore::drag_data_received_vfunc (const TreeModel::Path& dest, cons
 	if ((selection_data.get_length() >= 0) && (selection_data.get_format() == 8))
 	{
 		synfig::String dest_group;
-		
+
 		dest_group=(Glib::ustring)row[model.group_name];
-		
+
 		if(dest_group.empty())
 			return false;
 
 		if(synfig::String(selection_data.get_data_type())=="LAYER")
 		{
 			synfigapp::Action::Handle action(synfigapp::Action::create("group_add_layers"));
-			
+
 			if(!action)
 				return false;
-			
+
 			action->set_param("canvas",canvas_interface()->get_canvas());
 			action->set_param("canvas_interface",canvas_interface());
 			action->set_param("group",dest_group);
@@ -589,7 +589,7 @@ LayerGroupTreeStore::drag_data_received_vfunc (const TreeModel::Path& dest, cons
 			{
 				Layer::Handle layer(reinterpret_cast<Layer**>(const_cast<guint8*>(selection_data.get_data()))[i]);
 				assert(layer);
-	
+
 				action->set_param("layer",layer);
 			}
 			if(!canvas_interface()->get_instance()->perform_action(action))
@@ -603,23 +603,23 @@ LayerGroupTreeStore::drag_data_received_vfunc (const TreeModel::Path& dest, cons
 		{
 			synfig::String src_group(reinterpret_cast<const gchar*>(selection_data.get_data()));
 			synfig::String group(src_group);
-			
+
 			// Get rid of any parent group crap
 			while(group.find(GROUP_NEST_CHAR)!=Glib::ustring::npos)
 				group=Glib::ustring(group,group.find(GROUP_NEST_CHAR)+1,Glib::ustring::npos);
-			
+
 			group=dest_group+GROUP_NEST_CHAR+group;
-			
+
 			synfigapp::Action::Handle action(synfigapp::Action::create("group_rename"));
-			
+
 			if(!action)
 				return false;
-			
+
 			action->set_param("canvas",canvas_interface()->get_canvas());
 			action->set_param("canvas_interface",canvas_interface());
 			action->set_param("group",src_group);
 			action->set_param("new_group",group);
-			
+
 			if(!canvas_interface()->get_instance()->perform_action(action))
 			{
 				passive_grouper.cancel();
@@ -635,7 +635,7 @@ LayerGroupTreeStore::drag_data_received_vfunc (const TreeModel::Path& dest, cons
 	{
 		Canvas::Handle dest_canvas;
 		Layer::Handle dest_layer;
-		
+
 		dest_canvas=(Canvas::Handle)(row[model.canvas]);
 		dest_layer=(Layer::Handle)(row[model.layer]);
 		assert(dest_canvas);
@@ -644,16 +644,16 @@ LayerGroupTreeStore::drag_data_received_vfunc (const TreeModel::Path& dest, cons
 			return false;
 
 		int dest_layer_depth=dest_layer->get_depth();
-		
+
 		if(synfig::String(selection_data.get_data_type())=="LAYER")for(i=0;i<selection_data.get_length()/sizeof(void*);i++)
 		{
 			//synfig::info("dest_layer_depth=%d",dest_layer_depth);
-			
+
 			Layer::Handle src(reinterpret_cast<Layer**>(const_cast<guint8*>(selection_data.get_data()))[i]);
 			assert(src);
 			if(dest_layer==src)
 				continue;
-			
+
 			// In this case, we are just moving.
 //			if(dest_canvas==src->get_canvas())
 			{
@@ -661,7 +661,7 @@ LayerGroupTreeStore::drag_data_received_vfunc (const TreeModel::Path& dest, cons
 					dest_layer_depth--;
 				if(dest_canvas==src->get_canvas() && dest_layer_depth==src->get_depth())
 					continue;
-				
+
 				synfigapp::Action::Handle action(synfigapp::Action::create("layer_move"));
 				action->set_param("canvas",dest_canvas);
 				action->set_param("canvas_interface",canvas_interface());
@@ -687,7 +687,7 @@ LayerGroupTreeStore::drag_data_received_vfunc (const TreeModel::Path& dest, cons
 
 	// Reselect the previously selected layers
 	canvas_interface()->get_selection_manager()->set_selected_layers(selected_layer_list);
-	
+
 	return ret;
 	*/
 	return false;
@@ -705,7 +705,7 @@ LayerGroupTreeStore::rebuild()
 	rebuilding=true;
 		etl::clock timer;timer.reset();
 	try {
-	
+
 		// Clear out the current list
 		clear();
 		Canvas::Handle canvas(canvas_interface()->get_canvas());
@@ -715,15 +715,15 @@ LayerGroupTreeStore::rebuild()
 			String group(*groups.begin());
 			Gtk::TreeRow row(on_group_added(group));
 			std::set<Layer::Handle> layers(canvas->get_layers_in_group(group));
-			
+
 			for(;layers.size();layers.erase(layers.begin()))
 			{
 				Gtk::TreeRow layer_row(*(prepend(row.children())));
 				Layer::Handle layer(*layers.begin());
 				set_row_layer(layer_row,layer);
-			}		
+			}
 		}
-		
+
 		// Go ahead and and add all the layers
 		/*std::for_each(
 			canvas_interface()->get_canvas()->rbegin(), canvas_interface()->get_canvas()->rend(),
@@ -751,8 +751,8 @@ LayerGroupTreeStore::refresh_row(Gtk::TreeModel::Row &row)
 	if((bool)row[model.is_layer])
 	{
 		Layer::Handle layer=row[model.layer];
-	
-		
+
+
 		//if(layer->dynamic_param_list().count("z_depth"))
 		//	row[model.z_depth]=Time::begin();
 	}
@@ -787,7 +787,7 @@ LayerGroupTreeStore::on_group_added(synfig::String group)
 		if(find_group_row(group,  iter))
 			return *iter;
 	}
-	
+
 	if(group.find(GROUP_NEST_CHAR)!=String::npos)
 	{
 		Gtk::TreeModel::Children::iterator iter;
@@ -797,17 +797,17 @@ LayerGroupTreeStore::on_group_added(synfig::String group)
 			if(parent_name.size())
 				parent_name+=GROUP_NEST_CHAR;
 			parent_name+=string(group,0,group.find(GROUP_NEST_CHAR));
-				
+
 			if(!find_group_row(parent_name, iter))
 				iter=on_group_added(parent_name);
-			
+
 			group=String(group,group.find(GROUP_NEST_CHAR)+1,String::npos);
 		}while(group.find(GROUP_NEST_CHAR)!=String::npos);
 
 		if(parent_name.size())
 			parent_name+=GROUP_NEST_CHAR;
 		parent_name+=group;
-		
+
 		if(iter)
 		{
 			Gtk::TreeRow row(*(prepend(iter->children())));
@@ -831,13 +831,13 @@ bool
 LayerGroupTreeStore::on_group_removed(synfig::String group)
 {
 	//DEBUGPOINT();
-	
+
 	Gtk::TreeModel::Children::iterator iter;
 	if(find_group_row(group,iter) && iter->children().size()==0)
 		erase(iter);
 	else
 		return false;
-	
+
 	return true;
 }
 
@@ -874,12 +874,12 @@ LayerGroupTreeStore::on_group_pair_removed(String group, etl::handle<Layer> laye
 		return;
 
 	Gtk::TreeModel::Children::iterator prev,layer_iter;
-	
+
 	if(!find_layer_row_(layer, layer->get_canvas(), iter->children(), layer_iter, prev))
 		return;
-	
+
 	erase(layer_iter);
-	
+
 	on_activity();
 }
 
@@ -918,9 +918,9 @@ LayerGroupTreeStore::on_layer_new_description(synfig::Layer::Handle handle,synfi
 	if(find_layer_row(handle,iter))
 	{
 		Gtk::TreeRow row(*iter);
-		
-		Layer::Handle layer(row[model.layer]);		
-		
+
+		Layer::Handle layer(row[model.layer]);
+
 		if(desc.empty())
 		{
 			//row[model.label]=layer->get_local_name();
@@ -930,7 +930,7 @@ LayerGroupTreeStore::on_layer_new_description(synfig::Layer::Handle handle,synfi
 			//row[model.label]=layer->get_description();
 			row[model.tooltip]=layer->get_local_name();
 	}
-	else	
+	else
 	{
 		rebuild();
 	}
@@ -940,7 +940,7 @@ bool
 LayerGroupTreeStore::find_layer_row_(const synfig::Layer::Handle &layer, synfig::Canvas::Handle canvas, Gtk::TreeModel::Children layers, Gtk::TreeModel::Children::iterator &iter, Gtk::TreeModel::Children::iterator &prev)
 {
 	assert(layer);
-	
+
 	//if(layer->get_canvas()==canvas)
 	{
 		for(iter=prev=layers.begin(); iter && iter != layers.end(); prev=iter++)
@@ -949,31 +949,31 @@ LayerGroupTreeStore::find_layer_row_(const synfig::Layer::Handle &layer, synfig:
 			if((bool)row[model.is_layer] && layer==(synfig::Layer::Handle)row[model.layer])
 				return true;
 		}
-		
+
 		iter=children().end();
 		//DEBUGPOINT();
 		//return false;
 	}
 
 	Gtk::TreeModel::Children::iterator iter2;
-	
+
 	for(iter2 = layers.begin(); iter2 && iter2 != layers.end(); ++iter2)
 	{
 		Gtk::TreeModel::Row row = *iter2;
 		assert((bool)true);
-		
+
 		if(row.children().empty())
 			continue;
-		
+
 		/*Canvas::Handle canvas((*row.children().begin())[model.canvas]);
 		if(!canvas)
 			continue;
 		*/
-		
+
 		if(find_layer_row_(layer,canvas,iter2->children(),iter,prev))
 			return true;
 	}
-	
+
 	iter=children().end();
 	return false;
 }
@@ -1003,26 +1003,26 @@ LayerGroupTreeStore::find_group_row_(const synfig::String &group, Gtk::TreeModel
 			if((bool)row[model.is_group] && group==(Glib::ustring)row[model.group_name])
 				return true;
 		}
-		
+
 		iter=children().end();
 		//DEBUGPOINT();
 		//return false;
 	}
 
 	Gtk::TreeModel::Children::iterator iter2;
-	
+
 	for(iter2 = layers.begin(); iter2 && iter2 != layers.end(); ++iter2)
 	{
 		Gtk::TreeModel::Row row = *iter2;
 		assert((bool)true);
-		
+
 		if(row.children().empty())
 			continue;
-				
+
 		if(find_group_row_(group,iter2->children(),iter,prev))
 			return true;
 	}
-	
+
 	iter=children().end();
 	return false;
 }

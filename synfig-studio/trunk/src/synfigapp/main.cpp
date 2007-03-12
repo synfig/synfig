@@ -93,19 +93,19 @@ synfigapp::Main::Main(const synfig::String &basepath,ProgressCallback *cb):
 
 	synfigapp_ref_count_.reset();
 	ref_count_=synfigapp_ref_count_;
-	
+
 	// Add initialization after this point
 	action_main=new synfigapp::Action::Main();
 
 	settings_.construct();
-	
+
 	signal_foreground_color_changed_.construct();
 	signal_background_color_changed_.construct();
 	signal_gradient_changed_.construct();
 	signal_opacity_changed_.construct();
 	signal_blend_method_changed_.construct();
 	signal_interpolation_changed_.construct();
-	
+
 	set_foreground_color(Color::black());
 	set_background_color(Color::white());
 	set_gradient_default_colors();
@@ -120,14 +120,14 @@ synfigapp::Main::~Main()
 	if(!synfigapp_ref_count_.unique())
 		return;
 	synfigapp_ref_count_.detach();
-	
+
 	// Add deinitialization after this point
 
-	delete action_main;	
-	
+	delete action_main;
+
 	selected_input_device_=0;
 	input_devices_.clear();
-	
+
 	settings_.destruct();
 	signal_foreground_color_changed_.destruct();
 	signal_background_color_changed_.destruct();
@@ -298,7 +298,7 @@ synfigapp::Main::set_interpolation(synfig::Waypoint::Interpolation x)
 	if(interpolation_!=x)
 	{
 		interpolation_=x;
-		
+
 		signal_interpolation_changed();
 	}
 }
@@ -316,10 +316,10 @@ synfigapp::Main::set_bline_width(synfig::Distance x)
 	if(x!=bline_width_)
 	{
 		bline_width_=x;
-		
+
 		if(selected_input_device_)
 			selected_input_device_->set_bline_width(x);
-		
+
 		signal_bline_width_changed()();
 	}
 }
@@ -375,23 +375,23 @@ bool
 synfigapp::Main::select_input_device(InputDevice::Handle input_device)
 {
 	assert(input_device);
-	
+
 	synfig::info("Input device changed to \"%s\"",input_device->get_id().c_str());
-	
+
 	selected_input_device_=input_device;
 
-	set_bline_width(input_device->get_bline_width());	
+	set_bline_width(input_device->get_bline_width());
 	set_foreground_color(input_device->get_foreground_color());
-	set_opacity(input_device->get_opacity());	
-	set_blend_method(input_device->get_blend_method());	
-	
+	set_opacity(input_device->get_opacity());
+	set_blend_method(input_device->get_blend_method());
+
 	return true;
 }
 
 InputDevice::Handle
 synfigapp::Main::get_selected_input_device()
 {
-	return selected_input_device_;	
+	return selected_input_device_;
 }
 
 void

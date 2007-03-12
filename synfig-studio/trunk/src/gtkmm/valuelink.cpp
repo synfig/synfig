@@ -65,12 +65,12 @@ ValueBaseLink::~ValueBaseLink()
 ValueNode::LooseHandle ValueBaseLink::get_link_vfunc(int i)const
 {
 	/*list_type::const_iterator	it = list.begin();
-	
+
 	while(it != list.end() && i-- > 0)
 	{
 		++it;
 	}
-	
+
 	if(it == list.end())
 	{
 		return ValueNode::LooseHandle();
@@ -99,7 +99,7 @@ String ValueBaseLink::link_local_name(int i)const
 
 	if(h)
 	{
-		return h->get_local_name();		
+		return h->get_local_name();
 	}else return String();
 }
 
@@ -128,7 +128,7 @@ ValueBaseLink::list_type::const_iterator ValueBaseLink::findlink(ValueNode::Hand
 			return i;
 		}
 	}
-	
+
 	return list.end();
 }
 ValueBaseLink::list_type::iterator ValueBaseLink::findlink(ValueNode::Handle x)
@@ -140,14 +140,14 @@ ValueBaseLink::list_type::iterator ValueBaseLink::findlink(ValueNode::Handle x)
 			return i;
 		}
 	}
-	
+
 	return list.end();
 }
 
 void ValueBaseLink::add(ValueNode::Handle v)
 {
 	list_type::iterator i = findlink(v);
-	
+
 	if(i != list.end())
 	{
 		list.push_back(v);
@@ -157,7 +157,7 @@ void ValueBaseLink::add(ValueNode::Handle v)
 void ValueBaseLink::remove(ValueNode::Handle v)
 {
 	list_type::iterator i = findlink(v);
-	
+
 	if(i != list.end())
 	{
 		if(i != list.end()-1)
@@ -165,5 +165,5 @@ void ValueBaseLink::remove(ValueNode::Handle v)
 			*i = list.back();
 		}
 		list.pop_back();
-	}	
+	}
 }

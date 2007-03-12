@@ -65,7 +65,7 @@ Action::ParamVocab
 Action::GroupAddLayers::get_param_vocab()
 {
 	ParamVocab ret(Action::CanvasSpecific::get_param_vocab());
-	
+
 	ret.push_back(ParamDesc("layer",Param::TYPE_LAYER)
 		.set_local_name(_("Layer"))
 		.set_desc(_("Layer to be added to group"))
@@ -77,7 +77,7 @@ Action::GroupAddLayers::get_param_vocab()
 		.set_desc(_("Name of the Group to add the Layers to"))
 		.set_user_supplied()
 	);
-	
+
 	return ret;
 }
 
@@ -95,14 +95,14 @@ Action::GroupAddLayers::set_param(const synfig::String& name, const Action::Para
 		std::pair<synfig::Layer::Handle,String> layer_pair;
 		layer_pair.first=param.get_layer();
 		layer_list.push_back(layer_pair);
-		
+
 		return true;
 	}
 
 	if(name=="group" && param.get_type()==Param::TYPE_STRING)
 	{
 		group=param.get_string();
-		
+
 		return true;
 	}
 
@@ -125,7 +125,7 @@ Action::GroupAddLayers::perform()
 	{
 		Layer::Handle layer(iter->first);
 		iter->second=layer->get_group();
-		
+
 		layer->add_to_group(group);
 	}
 }
@@ -137,9 +137,9 @@ Action::GroupAddLayers::undo()
 	for(iter=layer_list.begin();iter!=layer_list.end();++iter)
 	{
 		Layer::Handle layer(iter->first);
-		
+
 		layer->remove_from_group(group);
-		
+
 		layer->add_to_group(iter->second);
 	}
 }

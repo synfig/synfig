@@ -54,7 +54,7 @@ public:
 	virtual Response yes_no(const std::string &title, const std::string &message,Response dflt=RESPONSE_YES)=0;
 	virtual Response yes_no_cancel(const std::string &title, const std::string &message,Response dflt=RESPONSE_YES)=0;
 	virtual Response ok_cancel(const std::string &title, const std::string &message,Response dflt=RESPONSE_OK)=0;
-};	
+};
 
 class DefaultUIInterface : public UIInterface
 {
@@ -65,7 +65,7 @@ public:
 		{ return dflt; }
 	Response ok_cancel(const std::string &title, const std::string &message,Response dflt)
 		{ return dflt; }
-	
+
 	bool task(const std::string &task)
 		{ return true; }
 	bool error(const std::string &task)
@@ -74,7 +74,7 @@ public:
 		{ return true; }
 	bool amount_complete(int current, int total)
 		{ return true; }
-};	
+};
 
 class ConfidentUIInterface : public UIInterface
 {
@@ -85,7 +85,7 @@ public:
 		{ return RESPONSE_YES; }
 	Response ok_cancel(const std::string &title, const std::string &message,Response dflt)
 		{ return RESPONSE_OK; }
-	
+
 	bool task(const std::string &task)
 		{ return true; }
 	bool error(const std::string &task)
@@ -94,7 +94,7 @@ public:
 		{ return true; }
 	bool amount_complete(int current, int total)
 		{ return true; }
-};	
+};
 
 class ConsoleUIInterface : public UIInterface
 {
@@ -102,12 +102,12 @@ public:
 	Response yes_no(const std::string &title, const std::string &message,Response dflt);
 	Response yes_no_cancel(const std::string &title, const std::string &message,Response dflt);
 	Response ok_cancel(const std::string &title, const std::string &message,Response dflt);
-	
+
 	bool task(const std::string &task);
 	bool error(const std::string &task);
 	bool warning(const std::string &task);
 	bool amount_complete(int current, int total);
-};	
+};
 
 }; // END of namespace synfigapp
 

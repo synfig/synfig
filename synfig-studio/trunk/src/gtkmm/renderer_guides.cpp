@@ -53,7 +53,7 @@ using namespace studio;
 Renderer_Guides::Renderer_Guides():
 	dragging(false)
 {
-	
+
 }
 
 Renderer_Guides::~Renderer_Guides()
@@ -88,7 +88,7 @@ Renderer_Guides::event_vfunc(GdkEvent* event)
 	float pressure(0);
 	bool is_mouse(false);
 	Gdk::ModifierType modifier(Gdk::ModifierType(0));
-	
+
 	// Handle input stuff
 	if(
 		event->any.type==GDK_MOTION_NOTIFY ||
@@ -109,7 +109,7 @@ Renderer_Guides::event_vfunc(GdkEvent* event)
 			device=event->button.device;
 			modifier=Gdk::ModifierType(event->button.state);
 		}
-			
+
 		// Make sure we recognise the device
 		/*if(curr_input_device)
 		{
@@ -119,15 +119,15 @@ Renderer_Guides::event_vfunc(GdkEvent* event)
 				curr_input_device=device;
 				signal_input_device_changed()(curr_input_device);
 			}
-		}		
+		}
 		else*/ if(device)
 		{
 			//curr_input_device=device;
 			//signal_input_device_changed()(curr_input_device);
-		}			
+		}
 
 		//assert(curr_input_device);
-		
+
 		// Calculate the position of the
 		// input device in canvas coordinates
 		// and the buttons
@@ -151,14 +151,14 @@ Renderer_Guides::event_vfunc(GdkEvent* event)
 			//synfig::info("pressure=%f",pressure);
 			pressure-=0.04f;
 			pressure/=1.0f-0.04f;
-			
-			
+
+
 			assert(!isnan(pressure));
-			
+
 			mouse_pos=synfig::Point(screen_to_comp_coords(synfig::Point(x,y)));
-			
+
 			button_pressed=event->button.button;
-			
+
 			if(button_pressed==1 && pressure<0 && (event->any.type!=GDK_BUTTON_RELEASE && event->any.type!=GDK_BUTTON_PRESS))
 				button_pressed=0;
 			if(pressure<0)
@@ -166,11 +166,11 @@ Renderer_Guides::event_vfunc(GdkEvent* event)
 
 			//if(event->any.type==GDK_BUTTON_PRESS && button_pressed)
 			//	synfig::info("Button pressed on input device = %d",event->button.button);
-			
+
 			//if(event->button.axes[2]>0.1)
 			//	button_pressed=1;
 			//else
-			//	button_pressed=0;				
+			//	button_pressed=0;
 		}
 	}
 	switch(event->type)
@@ -184,7 +184,7 @@ Renderer_Guides::event_vfunc(GdkEvent* event)
 	default:
 		break;
 	}
-	
+
 	return false;
 }
 
@@ -197,16 +197,16 @@ Renderer_Guides::render_vfunc(
 	assert(get_work_area());
 	if(!get_work_area())
 		return;
-	
+
 	// const synfig::RendDesc &rend_desc(get_work_area()->get_canvas()->rend_desc());
-	
+
 	const synfig::Vector focus_point(get_work_area()->get_focus_point());
 
 	//std::vector< std::pair<Glib::RefPtr<Gdk::Pixbuf>,int> >& tile_book(get_tile_book());
-	
+
 	int drawable_w,drawable_h;
 	drawable->get_size(drawable_w,drawable_h);
-	
+
 	// Calculate the window coordinates of the top-left
 	// corner of the canvas.
 	// const synfig::Vector::value_type
@@ -225,9 +225,9 @@ Renderer_Guides::render_vfunc(
 	// const int
 	// 	w(get_w()),
 	// 	h(get_h());
-	
+
 	Glib::RefPtr<Gdk::GC> gc(Gdk::GC::create(drawable));
-	
+
 	//const synfig::Vector grid_size(get_grid_size());
 
 	const synfig::Vector::value_type window_startx(get_work_area()->get_window_tl()[0]);
@@ -241,19 +241,19 @@ Renderer_Guides::render_vfunc(
 		gc->set_function(Gdk::COPY);
 		gc->set_rgb_fg_color(Gdk::Color("#9f9fff"));
 		gc->set_line_attributes(1,Gdk::LINE_ON_OFF_DASH,Gdk::CAP_BUTT,Gdk::JOIN_MITER);
-		
+
 		Duckmatic::GuideList::const_iterator iter;
-		
+
 		// vertical
 		for(iter=get_guide_list_x().begin();iter!=get_guide_list_x().end();++iter)
 		{
 			const float x((*iter-window_startx)/pw);
-			
+
 			if(iter==get_work_area()->curr_guide)
 				gc->set_rgb_fg_color(Gdk::Color("#ff6f6f"));
 			else
 				gc->set_rgb_fg_color(Gdk::Color("#6f6fff"));
-				
+
 			drawable->draw_line(gc,
 				round_to_int(x),
 				0,

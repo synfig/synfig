@@ -57,7 +57,7 @@ public:
 
 	static bool process_command(const synfig::String& cmd);
 }; // END of class IPC
-	
+
 }; // END of namespace studio
 
 /* === E N D =============================================================== */

@@ -55,7 +55,7 @@ public:
 	*/
 
 public:
-	
+
 	//! TreeModel for the layers
 	const Model model;
 
@@ -64,25 +64,25 @@ public:
 	*/
 
 private:
-	
+
 	Gtk::TreeModel::Row value_node_row;
 	Gtk::TreeModel::Row canvas_row;
-	
+
 	std::set<synfig::ValueNode::Handle> changed_set_;
 
 	std::set<synfig::ValueNode::Handle> replaced_set_;
-	
+
 	/*
  -- ** -- P R I V A T E   M E T H O D S ---------------------------------------
 	*/
 
 private:
-	
+
 	sigc::connection changed_connection;
 	bool execute_changed_queued()const { return !changed_set_.empty() || !replaced_set_.empty(); }
 	bool execute_changed_value_nodes();
 	void clear_changed_queue() { changed_set_.clear(); replaced_set_.clear(); }
-	
+
 	/*
  -- ** -- S I G N A L   T E R M I N A L S -------------------------------------
 	*/
@@ -103,7 +103,7 @@ private:
 	*/
 
 public:
-	
+
 	ChildrenTreeStore(etl::loose_handle<synfigapp::CanvasInterface> canvas_interface_);
 	~ChildrenTreeStore();
 
@@ -122,7 +122,7 @@ public:
 	void refresh_row(Gtk::TreeModel::Row &row, bool do_children=false);
 
 	Gtk::TreeModel::Row get_canvas_row()const { return canvas_row; }
-	
+
 	Gtk::TreeModel::Row get_value_node_row()const { return value_node_row; }
 
 	/*
@@ -130,7 +130,7 @@ public:
 	*/
 
 public:
-	
+
 	static Glib::RefPtr<ChildrenTreeStore> create(etl::loose_handle<synfigapp::CanvasInterface> canvas_interface_);
 }; // END of class ChildrenTreeStore
 

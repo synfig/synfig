@@ -43,21 +43,21 @@ class Dock_Info : public Dock_CanvasSpecific
 {
 	//bool			valid;
 	//synfig::Point	pos;
-	
+
 	Gtk::Label  r,g,b,a;
 	Gtk::Label	x,y;
-	
-	SigC::Connection mousecon;	
-	
-	void on_mouse_move();	
-		
+
+	SigC::Connection mousecon;
+
+	void on_mouse_move();
+
 public:
 	Dock_Info();
 	~Dock_Info();
 
 	virtual void changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view);
 };
-	
+
 }; // END of namespace studio
 
 /* === E N D =============================================================== */

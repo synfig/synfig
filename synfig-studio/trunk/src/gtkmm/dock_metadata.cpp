@@ -63,11 +63,11 @@ Dock_MetaData::Dock_MetaData():
 	tree_view(manage(new Gtk::TreeView()))
 {
 	MetaDataTreeStore::Model model;
-	
+
 	tree_view->append_column(_("Key"),model.key);
 	tree_view->append_column_editable(_("Data"),model.data);
 	tree_view->set_rules_hint();
-	
+
 	Gtk::ScrolledWindow *scrolledwindow = manage(new class Gtk::ScrolledWindow());
 	scrolledwindow->set_flags(Gtk::CAN_FOCUS);
 	scrolledwindow->set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);

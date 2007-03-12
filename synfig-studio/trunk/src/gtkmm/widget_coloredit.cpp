@@ -130,9 +130,9 @@ ColorSlider::redraw(GdkEventExpose*bleh)
 		slider_color_TYPE_SAT,
 		slider_color_TYPE_A,
 	};
-	
+
 	slider_color_func color_func(jump_table[int(type)]);
-	
+
 	float amount;
 	switch(type)
 	{
@@ -149,12 +149,12 @@ ColorSlider::redraw(GdkEventExpose*bleh)
 	}
 	if(use_colorspace_gamma() && (type<TYPE_U))
 		amount=gamma_in(amount);
-	
+
 	const int height(get_height());
 	const int width(get_width());
 
 	Gdk::Rectangle ca(0,0,width,height);
-	
+
 	Glib::RefPtr<Gdk::GC> gc(Gdk::GC::create(get_window()));
 	const Color bg1(0.75, 0.75, 0.75);
 	const Color bg2(0.5, 0.5, 0.5);
@@ -167,14 +167,14 @@ ColorSlider::redraw(GdkEventExpose*bleh)
 		const Color c2(Color::blend(color,bg2,1.0).clamped());
 		assert(c1.is_valid());
 		assert(c2.is_valid());
-		
+
 		gushort r1;
 		gushort g1;
 		gushort b1;
 		gushort r2;
 		gushort g2;
 		gushort b2;
-		
+
 		if(use_colorspace_gamma() && (type<TYPE_U))
 		{
 			r1=(256*App::gamma.r_F32_to_U8(gamma_out(c1.get_r())));
@@ -193,14 +193,14 @@ ColorSlider::redraw(GdkEventExpose*bleh)
 			g2=(256*App::gamma.g_F32_to_U8(c2.get_g()));
 			b2=(256*App::gamma.b_F32_to_U8(c2.get_b()));
 		}
-			
-		
+
+
 		if((i*2/height)&1)
 		{
 			gdk_c.set_rgb(r1,g1,b1);
 			gc->set_rgb_fg_color(gdk_c);
-			get_window()->draw_rectangle(gc, true, ca.get_x()+i, ca.get_y(), 1, height/2);				
-	
+			get_window()->draw_rectangle(gc, true, ca.get_x()+i, ca.get_y(), 1, height/2);
+
 			gdk_c.set_rgb(r2,g2,b2);
 			gc->set_rgb_fg_color(gdk_c);
 			get_window()->draw_rectangle(gc, true, ca.get_x()+i, ca.get_y()+height/2, 1, height/2);
@@ -209,14 +209,14 @@ ColorSlider::redraw(GdkEventExpose*bleh)
 		{
 			gdk_c.set_rgb(r2,g2,b2);
 			gc->set_rgb_fg_color(gdk_c);
-			get_window()->draw_rectangle(gc, true, ca.get_x()+i, ca.get_y(), 1, height/2);				
-	
+			get_window()->draw_rectangle(gc, true, ca.get_x()+i, ca.get_y(), 1, height/2);
+
 			gdk_c.set_rgb(r1,g1,b1);
 			gc->set_rgb_fg_color(gdk_c);
 			get_window()->draw_rectangle(gc, true, ca.get_x()+i, ca.get_y()+height/2, 1, height/2);
 		}
 	}
-	
+
 	get_style()->paint_arrow(
 		get_window(),
 		Gtk::STATE_SELECTED,
@@ -231,7 +231,7 @@ ColorSlider::redraw(GdkEventExpose*bleh)
 		height,
 		height
 	);
-	
+
 	gc->set_rgb_fg_color(Gdk::Color("#ffffff"));
 	get_window()->draw_rectangle(gc, false, ca.get_x()+1, ca.get_y()+1, width-3, height-3);
 	gc->set_rgb_fg_color(Gdk::Color("#000000"));
@@ -256,7 +256,7 @@ ColorSlider::on_event(GdkEvent *event)
 	case GDK_BUTTON_RELEASE:
 		signal_activated_();
 		return true;
-	
+
 	case GDK_MOTION_NOTIFY:
 //		adjust_color(type,color_,pos);
 		signal_slider_moved_(type,pos);
@@ -278,7 +278,7 @@ Widget_ColorEdit::Widget_ColorEdit():
 	A_adjustment(0,-10000000,10000000,1,10,0)
 {
 	notebook=manage(new Gtk::Notebook);
-	
+
 	Gtk::Table* rgb_table(manage(new Gtk::Table()));
 	Gtk::Table* yuv_table(manage(new Gtk::Table()));
 	Gtk::Table* main_table(this);
@@ -295,27 +295,27 @@ Widget_ColorEdit::Widget_ColorEdit():
 	color=Color(0,0,0,0);
 
 	set_size_request(150,-1);
-	hold_signals=true;		
+	hold_signals=true;
 
 	Gtk::Label *label;
-	
+
 	R_adjustment.set_lower(-10000000);
 	G_adjustment.set_lower(-10000000);
 	B_adjustment.set_lower(-10000000);
 	A_adjustment.set_lower(-10000000);
-	
+
 	clamp_=true;
-	
+
 	Pango::AttrList attr_list;
 	Pango::AttrInt pango_size(Pango::Attribute::create_attr_size(Pango::SCALE*7));
 	pango_size.set_start_index(0);
 	pango_size.set_end_index(64);
 	attr_list.change(pango_size);
-	
+
 	widget_color.set_size_request(-1,16);
 	attach(widget_color, 0, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	attach(*notebook, 0, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	
+
 #define SLIDER_ROW(i,n,l) \
 	slider_##n=manage(new ColorSlider(ColorSlider::TYPE_##n));	\
 	slider_##n->signal_slider_moved().connect(sigc::mem_fun(*this,&studio::Widget_ColorEdit::on_slider_moved)); \
@@ -357,10 +357,10 @@ Widget_ColorEdit::Widget_ColorEdit():
 		SLIDER_ROW(1,A,_("Alpha"));
 		ATTACH_SPIN_BUTTON(1,A);
 	}
-	
+
 #undef SLIDER_ROW
-#undef ATTACH_SPIN_BUTTON	
-	
+#undef ATTACH_SPIN_BUTTON
+
 	spinbutton_R->signal_activate().connect(sigc::mem_fun(*spinbutton_G,&Gtk::SpinButton::grab_focus));
 	spinbutton_G->signal_activate().connect(sigc::mem_fun(*spinbutton_B,&Gtk::SpinButton::grab_focus));
 	spinbutton_B->signal_activate().connect(sigc::mem_fun(*spinbutton_A,&Gtk::SpinButton::grab_focus));
@@ -386,7 +386,7 @@ void
 Widget_ColorEdit::on_slider_moved(ColorSlider::Type type, float amount)
 {
 	Color color(get_value_raw());
-	
+
 	assert(color.is_valid());
 	ColorSlider::adjust_color(type,color,amount);
 	assert(color.is_valid());
@@ -402,7 +402,7 @@ Widget_ColorEdit::on_slider_moved(ColorSlider::Type type, float amount)
 	if(type==ColorSlider::TYPE_B && color.get_b()<0)clamp_=false;
 	*/
 	clamp_=false;
-	
+
 	set_value(color);
 	assert(color.is_valid());
 }
@@ -412,7 +412,7 @@ Widget_ColorEdit::on_value_changed()
 {
 	if(hold_signals)
 		return;
-	
+
 	const Color color(get_value_raw());
 	assert(color.is_valid());
 	slider_R->set_color(color);
@@ -513,7 +513,7 @@ Widget_ColorEdit::get_value_raw()
 	}
 	color.set_a(A_adjustment.get_value()/100);
 	assert(color.is_valid());
-	
+
 	return color;
 }
 
@@ -536,16 +536,16 @@ Widget_ColorEdit::get_value()
 	}
 	color.set_a(A_adjustment.get_value()/100);
 	assert(color.is_valid());
-	
+
 	if(notebook->get_current_page()!=0)
 		color=color.clamped();
-	
+
 	/*{
 		// Clamp out negative values
 		color.set_r(std::max(0.0f,(float)color.get_r()));
 		color.set_g(std::max(0.0f,(float)color.get_g()));
 		color.set_b(std::max(0.0f,(float)color.get_b()));
 	}*/
-	
+
 	return color;
 }

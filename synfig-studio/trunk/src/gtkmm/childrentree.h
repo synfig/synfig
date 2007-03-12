@@ -69,9 +69,9 @@ public:
 	*/
 
 public:
-	
+
 	ChildrenTreeStore::Model model;
-	
+
 	/*
  -- ** -- P R I V A T E   D A T A ---------------------------------------------
 	*/
@@ -106,13 +106,13 @@ private:
 	Gtk::Button *button_delete;
 
 	Widget_ValueBase blend_method_widget;
-	
+
 	/*
  -- ** -- P R I V A T E   M E T H O D S ---------------------------------------
 	*/
 
 private:
-	
+
 	/*
  -- ** -- S I G N A L   T E R M I N A L S -------------------------------------
 	*/
@@ -146,10 +146,10 @@ public:
 	Gtk::HBox& get_hbox() { return *hbox; }
 
 	Gtk::TreeView& get_tree_view() { return tree_view; }
-	
+
 	Glib::RefPtr<Gtk::TreeSelection> get_selection() { return tree_view.get_selection(); }
 	Glib::SignalProxy1< bool,GdkEvent* >  signal_event () { return tree_view.signal_event(); }
-	
+
 	ChildrenTree();
 	~ChildrenTree();
 

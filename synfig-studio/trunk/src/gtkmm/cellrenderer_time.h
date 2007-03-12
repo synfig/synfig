@@ -63,12 +63,12 @@ public:
 
 	Glib::PropertyProxy<synfig::Time> property_time() { return property_time_.get_proxy();}
 	Glib::PropertyProxy<synfig::Time> property_fps() { return property_fps_.get_proxy();}
-	
+
 	CellRenderer_Time();
 	~CellRenderer_Time();
 
 protected:
-	
+
 	virtual void
 	render_vfunc(
 		const Glib::RefPtr<Gdk::Drawable>& window,

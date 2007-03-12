@@ -57,7 +57,7 @@ public:
 	Glib::SignalProxy0<void> signal_activate() { return entry_filename->signal_activate(); }
 
 	void on_value_changed();
-	
+
 	void set_value(const  std::string &data);
 	std::string get_value() const;
 	void set_has_frame(bool x);

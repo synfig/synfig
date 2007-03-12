@@ -67,7 +67,7 @@ Action::ParamVocab
 Action::KeyframeAdd::get_param_vocab()
 {
 	ParamVocab ret(Action::CanvasSpecific::get_param_vocab());
-	
+
 	ret.push_back(ParamDesc("keyframe",Param::TYPE_KEYFRAME)
 		.set_local_name(_("New Keyframe"))
 		.set_desc(_("Keyframe to be added"))
@@ -81,7 +81,7 @@ Action::KeyframeAdd::is_candidate(const ParamList &x)
 {
 	if(!candidate_check(get_param_vocab(),x))
 		return false;
-	
+
 	return true;
 }
 
@@ -91,7 +91,7 @@ Action::KeyframeAdd::set_param(const synfig::String& name, const Action::Param &
 	if(name=="keyframe" && param.get_type()==Param::TYPE_KEYFRAME)
 	{
 		keyframe=param.get_keyframe();
-		
+
 		return true;
 	}
 
@@ -108,15 +108,15 @@ Action::KeyframeAdd::is_ready()const
 
 void
 Action::KeyframeAdd::perform()
-{	
+{
 	try { get_canvas()->keyframe_list().find(keyframe.get_time()); throw Error(_("A Keyframe already exists at this point in time"));}
-	catch(synfig::Exception::NotFound) { }	
+	catch(synfig::Exception::NotFound) { }
 
 	try { get_canvas()->keyframe_list().find(keyframe); throw Error(_("This keyframe is already in the ValueNode"));}
-	catch(synfig::Exception::NotFound) { }	
-	
+	catch(synfig::Exception::NotFound) { }
+
 	get_canvas()->keyframe_list().add(keyframe);
-	
+
 	if(get_canvas_interface())
 	{
 		get_canvas_interface()->signal_keyframe_added()(keyframe);
@@ -133,5 +133,5 @@ Action::KeyframeAdd::undo()
 	}
 	else synfig::warning("CanvasInterface not set on action");
 
-	get_canvas()->keyframe_list().erase(keyframe);	
+	get_canvas()->keyframe_list().erase(keyframe);
 }

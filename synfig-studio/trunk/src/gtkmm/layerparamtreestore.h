@@ -43,7 +43,7 @@
 namespace studio {
 
 class LayerTree;
-	
+
 class LayerParamTreeStore : public CanvasTreeStore
 {
 	/*
@@ -58,7 +58,7 @@ public:
 	*/
 
 public:
-	
+
 	//! TreeModel for the layer parameters
 	class Model : public CanvasTreeStore::Model
 	{
@@ -76,10 +76,10 @@ public:
 			add(is_toplevel);
 		}
 	};
-	
+
 	Model model;
 
-	
+
 	/*
  -- ** -- P R I V A T E   D A T A ---------------------------------------------
 	*/
@@ -87,13 +87,13 @@ public:
 private:
 
 	int queued;
-	
+
 	LayerTree* layer_tree;
-	
+
 	LayerList layer_list;
 
 	sigc::connection queue_connection;
-	
+
 	std::list<sigc::connection> changed_connection_list;
 
 	sigc::signal<void> signal_changed_;
@@ -129,7 +129,7 @@ private:
 	*/
 
 public:
-	
+
 	LayerParamTreeStore(etl::loose_handle<synfigapp::CanvasInterface> canvas_interface_,
 		LayerTree* layer_tree);
 	~LayerParamTreeStore();
@@ -147,13 +147,13 @@ public:
 	sigc::signal<void>& signal_changed() { return signal_changed_; }
 
 	void changed() { signal_changed_(); }
-	
+
 	/*
  -- ** -- S T A T I C   P U B L I C   M E T H O D S ---------------------------
 	*/
 
 public:
-	
+
 	static Glib::RefPtr<LayerParamTreeStore> create(etl::loose_handle<synfigapp::CanvasInterface> canvas_interface_, LayerTree*layer_tree);
 }; // END of class LayerParamTreeStore
 

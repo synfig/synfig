@@ -45,9 +45,9 @@
 #include <gtk/gtkversion.h>
 
 #include <synfig/valuenode_reference.h>
-#include <synfig/valuenode_subtract.h>		
-#include <synfig/valuenode_linear.h>		
-#include <synfig/valuenode_timedswap.h>		
+#include <synfig/valuenode_subtract.h>
+#include <synfig/valuenode_linear.h>
+#include <synfig/valuenode_timedswap.h>
 #include <synfig/valuenode_scale.h>
 #include <synfig/valuenode_dynamiclist.h>
 #include <synfig/valuenode_twotone.h>
@@ -156,17 +156,17 @@ using namespace SigC;
 #define NOT_IMPLEMENTED_SLOT sigc::mem_fun(*reinterpret_cast<studio::CanvasViewUIInterface*>(get_ui_interface().get()),&studio::CanvasViewUIInterface::not_implemented)
 
 #define SLOT_EVENT(x)	sigc::hide_return(sigc::bind(sigc::mem_fun(*this,&studio::CanvasView::process_event_key),x))
-	
+
 /* === C L A S S E S ======================================================= */
 
-	
+
 class studio::UniversalScrubber
 {
 	CanvasView *canvas_view;
 
 	bool		scrubbing;
 	etl::clock	scrub_timer;
-	
+
 	sigc::connection end_scrub_connection;
 public:
 	UniversalScrubber(CanvasView *canvas_view):
@@ -177,12 +177,12 @@ public:
 			sigc::mem_fun(*this,&studio::UniversalScrubber::on_time_changed)
 		);
 	}
-	
+
 	~UniversalScrubber()
 	{
 		end_scrub_connection.disconnect();
 	}
-	
+
 	void on_time_changed()
 	{
 		// Make sure we are changing the time quickly
@@ -192,14 +192,14 @@ public:
 			scrub_timer.reset();
 			return;
 		}
-		
+
 		// If we aren't scrubbing already, enable it
 		if(!scrubbing)
 		{
-			scrubbing=true;			
+			scrubbing=true;
 			audio_container()->start_scrubbing(canvas_view->get_time());
 		}
-		
+
 		// Reset the scrubber ender
 		end_scrub_connection.disconnect();
 		end_scrub_connection=Glib::signal_timeout().connect(
@@ -215,14 +215,14 @@ public:
 
 		scrub_timer.reset();
 	}
-	
+
 	void end_of_scrubbing()
-	{		
+	{
 		scrubbing=false;
 		audio_container()->stop_scrubbing();
 		scrub_timer.reset();
 	}
-	
+
 	handle<AudioContainer> audio_container()
 	{
 		assert(canvas_view->audio);
@@ -230,7 +230,7 @@ public:
 	}
 };
 
-	
+
 class studio::CanvasViewUIInterface : public synfigapp::UIInterface
 {
 	CanvasView *view;
@@ -240,7 +240,7 @@ public:
 	CanvasViewUIInterface(CanvasView *view):
 		view(view)
 	{
-	
+
 		view->statusbar->push("Idle");
 	}
 
@@ -262,11 +262,11 @@ public:
 		);
 		Gtk::Label label(message);
 		label.show();
-		
+
 		dialog.get_vbox()->pack_start(label);
 		dialog.add_button(Gtk::StockID("gtk-yes"),RESPONSE_YES);
 		dialog.add_button(Gtk::StockID("gtk-no"),RESPONSE_NO);
-		
+
 		dialog.set_default_response(dflt);
 		dialog.show();
 		return (Response)dialog.run();
@@ -283,12 +283,12 @@ public:
 		);
 		Gtk::Label label(message);
 		label.show();
-		
+
 		dialog.get_vbox()->pack_start(label);
 		dialog.add_button(Gtk::StockID("gtk-yes"),RESPONSE_YES);
 		dialog.add_button(Gtk::StockID("gtk-no"),RESPONSE_NO);
 		dialog.add_button(Gtk::StockID("gtk-cancel"),RESPONSE_CANCEL);
-		
+
 		dialog.set_default_response(dflt);
 		dialog.show();
 		return (Response)dialog.run();
@@ -305,11 +305,11 @@ public:
 		);
 		Gtk::Label label(message);
 		label.show();
-		
+
 		dialog.get_vbox()->pack_start(label);
 		dialog.add_button(Gtk::StockID("gtk-ok"),RESPONSE_OK);
 		dialog.add_button(Gtk::StockID("gtk-cancel"),RESPONSE_CANCEL);
-		
+
 		dialog.set_default_response(dflt);
 		dialog.show();
 		return (Response)dialog.run();
@@ -319,7 +319,7 @@ public:
 	task(const std::string &task)
 	{
 		if(!view->is_playing_)
-		{	
+		{
 			view->statusbar->pop();
 			view->statusbar->push(task);
 		}
@@ -332,7 +332,7 @@ public:
 	error(const std::string &err)
 	{
 		view->statusbar->push("ERROR");
-		
+
 		// If we are in the process of canceling,
 		// then just go ahead and return false --
 		// don't bother displaying a dialog
@@ -349,7 +349,7 @@ public:
 	{
 		view->statusbar->pop();
 		view->statusbar->push(err);
-		
+
 		//while(studio::App::events_pending())studio::App::iteration(false);
 		if(view->cancel)return false;
 		return true;
@@ -359,7 +359,7 @@ public:
 	amount_complete(int current, int total)
 	{
 		if(!view->is_playing_)
-		{	
+		{
 			if(!view->working_depth)
 			{
 				if(current)
@@ -376,7 +376,7 @@ public:
 		if(view->cancel){/*view->cancel=false;*/return false;}
 		return true;
 	}
-	
+
 	void
 	not_implemented()
 	{
@@ -392,10 +392,10 @@ class studio::CanvasViewSelectionManager : public synfigapp::SelectionManager
 public:
 
 	CanvasViewSelectionManager(CanvasView *view): view(view)
-{	
-	
+{
+
  }
-		
+
 
 private:
 	void _set_selected_layer(const synfig::Layer::Handle &layer)
@@ -407,7 +407,7 @@ private:
 		// It musta been for some reason, but I cannot recall.
 		//if(App::Busy::count)
 		//	return;
-		
+
 		if(view->layer_tree->get_selection()->get_selected())
 		{
 			const Gtk::TreeRow row = *(view->layer_tree->get_selection()->get_selected());
@@ -434,7 +434,7 @@ private:
 */
 	}
 public:
-	
+
 	//! Returns the number of layers selected.
 	virtual int get_selected_layer_count()const
 	{
@@ -445,25 +445,25 @@ public:
 	virtual LayerList get_selected_layers()const
 	{
 //		assert(view->layer_tree);
-		
+
 		if(!view->layer_tree) { DEBUGPOINT(); synfig::error("canvas_view.layer_tree not defined!?"); return LayerList(); }
 		return view->layer_tree->get_selected_layers();
 	}
-	
+
 	//! Returns the first layer selected or an empty handle if none are selected.
 	virtual synfig::Layer::Handle get_selected_layer()const
 	{
 //		assert(view->layer_tree);
-		
+
 		if(!view->layer_tree) { DEBUGPOINT(); synfig::error("canvas_view.layer_tree not defined!?"); return 0; }
 		return view->layer_tree->get_selected_layer();
 	}
-	
+
 	//! Sets which layers should be selected
 	virtual void set_selected_layers(const LayerList &layer_list)
 	{
 //		assert(view->layer_tree);
-		
+
 		if(!view->layer_tree) { DEBUGPOINT(); synfig::error("canvas_view.layer_tree not defined!?"); return; }
 		view->layer_tree->select_layers(layer_list);
 		//view->get_smach().process_event(EVENT_REFRESH_DUCKS);
@@ -475,7 +475,7 @@ public:
 	virtual void set_selected_layer(const synfig::Layer::Handle &layer)
 	{
 //		assert(view->layer_tree);
-		
+
 		if(!view->layer_tree) { DEBUGPOINT(); synfig::error("canvas_view.layer_tree not defined!?"); return; }
 		view->layer_tree->select_layer(layer);
 		//view->queue_rebuild_ducks();
@@ -495,7 +495,7 @@ public:
 	{
 		return get_selected_children().size();
 	}
-	
+
 	static inline void __child_grabber(const Gtk::TreeModel::iterator& iter, ChildrenList* ret)
 	{
 		const CanvasView::ChildrenTreeModel children_tree_model;
@@ -503,19 +503,19 @@ public:
 		if(value_desc)
 			ret->push_back(value_desc);
 	}
-	
+
 	//! Returns a list of the currently selected value_nodes.
 	virtual ChildrenList get_selected_children()const
 	{
 		if(!view->children_tree) return ChildrenList();
-			
+
 		Glib::RefPtr<Gtk::TreeSelection> selection=view->children_tree->get_selection();
 
 		if(!selection)
 			return ChildrenList();
-	
+
 		ChildrenList ret;
-		
+
 		selection->selected_foreach_iter(
 			sigc::bind(
 				sigc::ptr_fun(
@@ -524,7 +524,7 @@ public:
 				&ret
 			)
 		);
-		
+
 		/*
 		Gtk::TreeModel::Children::iterator iter(view->children_tree_store()->children().begin());
 		iter++;
@@ -538,7 +538,7 @@ public:
 		*/
 		return ret;
 	}
-	
+
 	//! Returns the first value_node selected or an empty handle if none are selected.
 	virtual ChildrenList::value_type get_selected_child()const
 	{
@@ -551,7 +551,7 @@ public:
 
 		return children.front();
 	}
-	
+
 	//! Sets which value_nodes should be selected
 	virtual void set_selected_children(const ChildrenList &children_list)
 	{
@@ -569,14 +569,14 @@ public:
 	{
 		return;
 	}
-	
-	
-	
+
+
+
 	int get_selected_layer_parameter_count()const
 	{
 		return get_selected_layer_parameters().size();
 	}
-	
+
 	LayerParamList get_selected_layer_parameters()const
 	{
 		if(!view->layer_tree) return LayerParamList();
@@ -585,9 +585,9 @@ public:
 
 		if(!selection)
 			return LayerParamList();
-	
+
 		LayerParamList ret;
-	
+
 		Gtk::TreeModel::Children children = const_cast<CanvasView*>(view)->layer_tree_store()->children();
 		Gtk::TreeModel::Children::iterator iter;
 		for(iter = children.begin(); iter != children.end(); ++iter)
@@ -603,23 +603,23 @@ public:
 		}
 		return ret;
 	}
-	
+
 	LayerParam get_selected_layer_parameter() const
 	{
 		if(!view->layer_tree) return LayerParam();
 		return get_selected_layer_parameters().front();
 	}
-	
+
 	void set_selected_layer_parameters(const LayerParamList &layer_param_list)
 	{
 		return;
 	}
-	
+
 	void set_selected_layer_param(const LayerParam &layer_param)
 	{
 		return;
 	}
-	
+
 	void clear_selected_layer_parameters()
 	{
 		return;
@@ -663,16 +663,16 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 	time_adjustment_		(0,0,25,0,0,0),
 	time_window_adjustment_	(0,0,25,0,0,0),
 	statusbar				(manage(new class Gtk::Statusbar())),
-	
+
 	timeslider				(new Widget_Timeslider),
-	
+
 	ui_interface_			(new CanvasViewUIInterface(this)),
 	selection_manager_		(new CanvasViewSelectionManager(this)),
 	is_playing_				(false),
-	
+
 	working_depth			(0),
 	cancel					(false),
-	
+
 	canvas_properties		(*this,canvas_interface_),
 	canvas_options			(this),
 	render_settings			(*this,canvas_interface_),
@@ -684,21 +684,21 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 	layer_tree=0;
 	children_tree=0;
 	duck_refresh_flag=true;
-	
+
 	smach_.set_default_state(&state_normal);
-	
+
 	disp_audio = new Widget_Sound();
-	
+
 	//synfig::info("Canvasview: Entered constructor");
 	// Minor hack
 	get_canvas()->set_time(0);
 	//layer_tree_store_->rebuild();
-		
+
 	// Set up the UI and Selection managers
 	canvas_interface()->set_ui_interface(get_ui_interface());
 	canvas_interface()->set_selection_manager(get_selection_manager());
 	rebuild_ducks_queued=false;
-	
+
 	//notebook=manage(new class Gtk::Notebook());
 	//Gtk::VPaned *vpaned = manage(new class Gtk::VPaned());
 	//vpaned->pack1(*create_work_area(), Gtk::EXPAND|Gtk::SHRINK);
@@ -707,25 +707,25 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 
 
 	//notebook->show();
-	
+
 	//notebook->append_page(*create_layer_tree(),"Layers");
 	//notebook->append_page(*create_children_tree(),"Children");
 	//notebook->append_page(*create_keyframe_tree(),"Keyframes");
-	
+
 	//synfig::info("Canvasview: Before big chunk of allocation and tabling stuff");
 	//create all allocated stuff for this canvas
 	audio = new AudioContainer();
-	
-	Gtk::Table *layout_table= manage(new class Gtk::Table(1, 3, false));	
+
+	Gtk::Table *layout_table= manage(new class Gtk::Table(1, 3, false));
 	//layout_table->attach(*vpaned, 0, 1, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	layout_table->attach(*create_work_area(), 0, 1, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	init_menus();	
+	init_menus();
 	//layout_table->attach(*App::ui_manager()->get_widget("/menu-main"), 0, 1, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-	
-	
+
+
 	layout_table->attach(*create_time_bar(), 0, 1, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 	layout_table->attach(*create_status_bar(), 0, 1, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-	
+
 	update_title();
 
 	layout_table->show();
@@ -748,10 +748,10 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 	canvas_interface()->signal_rend_desc_changed().connect(sigc::mem_fun(*this,&studio::CanvasView::refresh_rend_desc));
 	waypoint_dialog.signal_changed().connect(sigc::mem_fun(*this,&studio::CanvasView::on_waypoint_changed));
 	waypoint_dialog.signal_delete().connect(sigc::mem_fun(*this,&studio::CanvasView::on_waypoint_delete));
-	
+
 	//MODIFIED TIME ADJUSTMENT STUFF....
 	time_window_adjustment().set_child_adjustment(&time_adjustment());
-	time_window_adjustment().signal_value_changed().connect(sigc::mem_fun(*this,&studio::CanvasView::refresh_time_window));	
+	time_window_adjustment().signal_value_changed().connect(sigc::mem_fun(*this,&studio::CanvasView::refresh_time_window));
 	time_adjustment().signal_value_changed().connect(sigc::mem_fun(*this,&studio::CanvasView::time_was_changed));
 
 
@@ -776,20 +776,20 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 			)
 		)
 	);
-	
+
 
 	//MUCH TIME STUFF TAKES PLACE IN HERE
 	refresh_rend_desc();
 	refresh_time_window();
 
-	/*! \todo We shouldn't need to do this at construction -- 
+	/*! \todo We shouldn't need to do this at construction --
 	**	This should be preformed at the first time the window
 	** 	becomes visible.
 	*/
 	work_area->queue_render_preview();
-	
+
 	// If the canvas is really big, zoom out so that we can fit it all in the window
-	/*! \todo In other words, this is a zoom-to-fit, and should be 
+	/*! \todo In other words, this is a zoom-to-fit, and should be
 	** in it's own function.
 	*/
 	int w=get_canvas()->rend_desc().get_w()+70;
@@ -799,15 +799,15 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 		work_area->zoom_out();
 		w=round_to_int(get_canvas()->rend_desc().get_w()*work_area->get_zoom()+70);
 		h=round_to_int(get_canvas()->rend_desc().get_h()*work_area->get_zoom()+70);
-	} 
+	}
 	if(w>700)w=700;
-	if(h>600)h=600;	
+	if(h>600)h=600;
 	set_default_size(w,h);
 	property_window_position().set_value(Gtk::WIN_POS_NONE);
-	
-	
-	
-	
+
+
+
+
 	std::list<Gtk::TargetEntry> listTargets;
 	listTargets.push_back( Gtk::TargetEntry("STRING") );
 	listTargets.push_back( Gtk::TargetEntry("text/plain") );
@@ -830,38 +830,38 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 		time_window_adjustment().set_page_size(10.0);
 	}
 	*/
-	
+
 	//synfig::info("Canvasview: Before Sound Hookup");
 	//load sound info from meta data
 	{
 		//synfig::warning("Should load Audio: %s with %s offset",apath.c_str(),aoffset.c_str());
-		
+
 		on_audio_file_notify(); //redundant setting of the metadata, but oh well, it's no big deal :)
 		on_audio_offset_notify();
-		
+
 		//signal connection - since they are all associated with the canvas view
-		
+
 		//hook in signals for sound options box
 		sound_dialog->signal_file_changed().connect(sigc::mem_fun(*this,&CanvasView::on_audio_file_change));
 		sound_dialog->signal_offset_changed().connect(sigc::mem_fun(*this,&CanvasView::on_audio_offset_change));
-		
-		//attach to the preview when it's visible		
+
+		//attach to the preview when it's visible
 		//preview_dialog->get_widget().signal_play().connect(sigc::mem_fun(*this,&CanvasView::play_audio));
 		//preview_dialog->get_widget().signal_stop().connect(sigc::mem_fun(*this,&CanvasView::stop_audio));
-		
+
 		//hook to metadata signals
 		get_canvas()->signal_meta_data_changed("audiofile").connect(sigc::mem_fun(*this,&CanvasView::on_audio_file_notify));
 		get_canvas()->signal_meta_data_changed("audiooffset").connect(sigc::mem_fun(*this,&CanvasView::on_audio_offset_notify));
 
 		//universal_scrubber=std::auto_ptr<UniversalScrubber>(new UniversalScrubber(this));
 	}
-	
+
 	//synfig::info("Canvasview: Before Final time set up");
 	//MORE TIME STUFF
 	time_window_adjustment().set_value(get_canvas()->rend_desc().get_time_start());
 	time_window_adjustment().value_changed();
 
-	
+
 	GRAB_HINT_DATA("canvas_view");
 	/*
 	{
@@ -870,12 +870,12 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 	set_type_hint(Gdk::WINDOW_TYPE_HINT_UTILITY);
 	}
 	*/
-	
-	refresh_rend_desc();	
+
+	refresh_rend_desc();
 	hide_tables();
 
-	on_time_changed();	
-	//synfig::info("Canvasview: Constructor Done");	
+	on_time_changed();
+	//synfig::info("Canvasview: Constructor Done");
 }
 
 CanvasView::~CanvasView()
@@ -899,12 +899,12 @@ CanvasView::~CanvasView()
 		if(ext_widget_book_.begin()->second)
 			delete ext_widget_book_.begin()->second;
 	}
-	
+
 	//delete preview
 	audio.reset();
-		
+
 	hide();
-	
+
 	synfig::info("CanvasView:~CanvasView(): Destructor Finished");
 }
 
@@ -923,8 +923,8 @@ CanvasView::create_time_bar()
 	timeslider->set_time_adjustment(&time_adjustment());
 	timeslider->set_bounds_adjustment(&time_window_adjustment());
 	//layout_table->attach(*timeslider, 0, 1, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL);
-	
-	
+
+
 	tooltips.set_tip(*time_window_scroll,_("Moves the time window"));
 	tooltips.set_tip(*timeslider,_("Changes the current time"));
 	time_window_scroll->show();
@@ -934,7 +934,7 @@ CanvasView::create_time_bar()
 
 	//time_scroll->signal_value_changed().connect(sigc::mem_fun(*work_area, &studio::WorkArea::render_preview_hook));
 	//time_scroll->set_update_policy(Gtk::UPDATE_DISCONTINUOUS);
-	
+
 	NORMAL_BUTTON(animatebutton,"gtk-yes","Animate");
 	animatebutton->signal_clicked().connect(sigc::mem_fun(*this, &studio::CanvasView::on_animate_button_pressed));
 	animatebutton->show();
@@ -942,11 +942,11 @@ CanvasView::create_time_bar()
 	NORMAL_BUTTON(keyframebutton,"synfig-keyframe_lock_all","All Keyframes Locked");
 	keyframebutton->signal_clicked().connect(sigc::mem_fun(*this, &studio::CanvasView::on_keyframe_button_pressed));
 	keyframebutton->show();
-	
+
 	Gtk::Table *table= manage(new class Gtk::Table(2, 3, false));
 
 	//setup the audio display
-	disp_audio->set_size_request(-1,32); //disp_audio.show(); 
+	disp_audio->set_size_request(-1,32); //disp_audio.show();
 	disp_audio->set_time_adjustment(&time_adjustment());
 	disp_audio->signal_start_scrubbing().connect(
 		sigc::mem_fun(*audio,&AudioContainer::start_scrubbing)
@@ -957,7 +957,7 @@ CanvasView::create_time_bar()
 	disp_audio->signal_stop_scrubbing().connect(
 		sigc::mem_fun(*audio,&AudioContainer::stop_scrubbing)
 	);
-	
+
 	table->attach(*manage(disp_audio), 0, 1, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK);
 	table->attach(*timeslider, 0, 1, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK, 0, 0);
 	table->attach(*time_window_scroll, 0, 1, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK, 0, 0);
@@ -1030,7 +1030,7 @@ CanvasView::create_status_bar()
 	refreshbutton->signal_clicked().connect(SLOT_EVENT(EVENT_REFRESH));
 	stopbutton->signal_clicked().connect(SLOT_EVENT(EVENT_STOP));
 
-	
+
 	statusbartable->show_all();
 	return statusbartable;
 }
@@ -1058,7 +1058,7 @@ CanvasView::create_children_tree()
 	if(children_tree)children_tree->signal_waypoint_clicked().connect(sigc::mem_fun(*this, &studio::CanvasView::on_waypoint_clicked));
 	if(children_tree)children_tree->get_selection()->signal_changed().connect(SLOT_EVENT(EVENT_REFRESH_DUCKS));
 
-	return children_tree;	
+	return children_tree;
 }
 
 Gtk::Widget*
@@ -1073,7 +1073,7 @@ CanvasView::create_keyframe_tree()
 	//keyframe_tree->signal_edited().connect(sigc::hide_return(sigc::mem_fun(*canvas_interface(), &synfigapp::CanvasInterface::update_keyframe)));
 
 	keyframe_tree->signal_event().connect(sigc::mem_fun(*this, &studio::CanvasView::on_keyframe_tree_event));
-	
+
 	Gtk::ScrolledWindow *scroll_layer_tree = manage(new class Gtk::ScrolledWindow());
 	scroll_layer_tree->set_flags(Gtk::CAN_FOCUS);
 	scroll_layer_tree->set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
@@ -1081,10 +1081,10 @@ CanvasView::create_keyframe_tree()
 	scroll_layer_tree->set_shadow_type(Gtk::SHADOW_ETCHED_IN);
 	//scroll_layer_tree->show();
 
-	
-	Gtk::Table *layout_table= manage(new Gtk::Table(1, 2, false));	
+
+	Gtk::Table *layout_table= manage(new Gtk::Table(1, 2, false));
 	layout_table->attach(*scroll_layer_tree, 0, 1, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	
+
 	Gtk::Image *icon;
 	Gtk::IconSize iconsize(Gtk::IconSize::from_name("synfig-small_icon"));
 
@@ -1094,18 +1094,18 @@ CanvasView::create_keyframe_tree()
 
 	Gtk::HBox *hbox(manage(new Gtk::HBox()));
 	layout_table->attach(*hbox, 0, 1, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK, 0, 0);
-	
+
 	hbox->pack_start(*button_add,Gtk::PACK_SHRINK);
 	hbox->pack_start(*button_duplicate,Gtk::PACK_SHRINK);
 	hbox->pack_start(*button_delete,Gtk::PACK_SHRINK);
-	
+
 	/*
 	button_raise->set_relief(Gtk::RELIEF_HALF);
 	button_lower->set_relief(Gtk::RELIEF_HALF);
 	button_duplicate->set_relief(Gtk::RELIEF_HALF);
 	button_delete->set_relief(Gtk::RELIEF_HALF);
 	*/
-	
+
 	button_add->signal_clicked().connect(sigc::mem_fun(*this, &studio::CanvasView::on_keyframe_add_pressed));
 	button_duplicate->signal_clicked().connect(sigc::mem_fun(*this, &studio::CanvasView::on_keyframe_duplicate_pressed));
 	button_delete->signal_clicked().connect(sigc::mem_fun(*this, &studio::CanvasView::on_keyframe_remove_pressed));
@@ -1113,11 +1113,11 @@ CanvasView::create_keyframe_tree()
 	//layout_table->show_all();
 
 	keyframe_tab_child=layout_table;
-	
-	
+
+
 	layout_table->hide();
-	
-	return layout_table;	
+
+	return layout_table;
 }
 
 Gtk::Widget*
@@ -1140,7 +1140,7 @@ CanvasView::create_layer_tree()
 	layer_tree->get_selection()->signal_changed().connect(SLOT_EVENT(EVENT_REFRESH_DUCKS));
 
 	layer_tree->hide();
-	return layer_tree;	
+	return layer_tree;
 }
 
 void
@@ -1160,7 +1160,7 @@ CanvasView::init_menus()
 	layermenu.set_accel_path("<Canvas-view>/Layer");
 */
 	//cache the position of desired widgets
-	
+
 	/*Menus to worry about:
 	- filemenu
 	- editmenu
@@ -1171,7 +1171,7 @@ CanvasView::init_menus()
 	- viewmenu
 	*/
 	action_group = Gtk::ActionGroup::create();
-	
+
 	//action_group->add( Gtk::Action::create("MenuFile", "_File") );
 	action_group->add( Gtk::Action::create("save", Gtk::Stock::SAVE),
 		hide_return(sigc::mem_fun(*get_instance().get(), &studio::Instance::save))
@@ -1210,7 +1210,7 @@ CanvasView::init_menus()
 		sigc::mem_fun0(canvas_options,&studio::CanvasOptions::present)
 	);
 	action_group->add( Gtk::Action::create("close", Gtk::StockID("gtk-close")),
-		sigc::hide_return(sigc::mem_fun(*this,&studio::CanvasView::close))	
+		sigc::hide_return(sigc::mem_fun(*this,&studio::CanvasView::close))
 	);
 
 	//action_group->add( Gtk::Action::create("undo", Gtk::StockID("gtk-undo")),
@@ -1232,7 +1232,7 @@ CanvasView::init_menus()
 	action_group->add( Gtk::Action::create("stop", Gtk::StockID("gtk-stop")),
 		SLOT_EVENT(EVENT_STOP)
 	);
-	
+
 	action_group->add( Gtk::Action::create("refresh", Gtk::StockID("gtk-refresh")),
 		SLOT_EVENT(EVENT_REFRESH)
 	);
@@ -1267,7 +1267,7 @@ CanvasView::init_menus()
 	action_group->add( Gtk::Action::create("play", Gtk::StockID("synfig-play")),
 		sigc::mem_fun(*this, &studio::CanvasView::play)
 	);
-	
+
 	action_group->add( Gtk::Action::create("dialog-flipbook", _("Flipbook Dialog")),
 		sigc::mem_fun0(*preview_dialog, &studio::Dialog_Preview::present)
 	);
@@ -1299,7 +1299,7 @@ CanvasView::init_menus()
 
 	{
 		Glib::RefPtr<Gtk::Action> action;
-		
+
 		action=Gtk::Action::create("seek-next-frame", Gtk::Stock::GO_FORWARD,_("Next Frame"),_("Next Frame"));
 		action_group->add(action,sigc::bind(sigc::mem_fun(*canvas_interface().get(), &synfigapp::CanvasInterface::seek_frame),1));
 		action=Gtk::Action::create("seek-prev-frame", Gtk::Stock::GO_BACK,_("Prev Frame"),_("Prev Frame"));
@@ -1326,16 +1326,16 @@ CanvasView::init_menus()
 
 		action=Gtk::Action::create("canvas-zoom-in", Gtk::Stock::ZOOM_IN);
 		action_group->add( action,sigc::mem_fun(*work_area, &studio::WorkArea::zoom_in));
-		
+
 		action=Gtk::Action::create("canvas-zoom-out", Gtk::Stock::ZOOM_OUT);
 		action_group->add( action, sigc::mem_fun(*work_area, &studio::WorkArea::zoom_out) );
-		
+
 		action=Gtk::Action::create("time-zoom-in", Gtk::Stock::ZOOM_IN, _("Zoom In on Timeline"));
 		action_group->add( action, sigc::mem_fun(*this, &studio::CanvasView::time_zoom_in) );
-		
+
 		action=Gtk::Action::create("time-zoom-out", Gtk::Stock::ZOOM_OUT, _("Zoom Out on Timeline"));
 		action_group->add( action, sigc::mem_fun(*this, &studio::CanvasView::time_zoom_out) );
-		
+
 	}
 
 
@@ -1347,7 +1347,7 @@ CanvasView::init_menus()
 			sigc::mem_fun(*this, &studio::CanvasView::toggle_duck_mask), \
 			Duck::TYPE_##upper \
 		) \
-	) 
+	)
 	DUCK_MASK(position,POSITION);
 	DUCK_MASK(tangent,TANGENT);
 	DUCK_MASK(vertex,VERTEX);
@@ -1363,7 +1363,7 @@ CanvasView::init_menus()
 	{
 		Glib::RefPtr<Gtk::ActionGroup> accel_action_group(Gtk::ActionGroup::create("canvas_view"));
 		Glib::RefPtr<Gtk::Action> action;
-		
+
 		action=Gtk::Action::create("seek-next-frame", Gtk::StockID("gtk-forward"),_("Next Frame"),_("Next Frame"));
 		accel_action_group->add(action,sigc::bind(sigc::mem_fun(*canvas_interface().get(), &synfigapp::CanvasInterface::seek),1));
 
@@ -1378,16 +1378,16 @@ CanvasView::init_menus()
 
 		action=Gtk::Action::create("canvas-zoom-in", Gtk::StockID("gtk-zoom-in"));
 		accel_action_group->add( action,sigc::mem_fun(*work_area, &studio::WorkArea::zoom_in));
-		
+
 		action=Gtk::Action::create("canvas-zoom-out", Gtk::StockID("gtk-zoom-out"));
 		accel_action_group->add( action, sigc::mem_fun(*work_area, &studio::WorkArea::zoom_out) );
-		
+
 		action=Gtk::Action::create("time-zoom-in", Gtk::StockID("gtk-zoom-in"), _("Zoom In on Timeline"));
 		accel_action_group->add( action, sigc::mem_fun(*this, &studio::CanvasView::time_zoom_in) );
-		
+
 		action=Gtk::Action::create("time-zoom-out", Gtk::StockID("gtk-zoom-out"), _("Zoom Out on Timeline"));
 		accel_action_group->add( action, sigc::mem_fun(*this, &studio::CanvasView::time_zoom_out) );
-		
+
 		Glib::RefPtr<Gtk::UIManager> accel_ui_manager(Gtk::UIManager::create());
 
 		Glib::ustring ui_info =
@@ -1406,7 +1406,7 @@ CanvasView::init_menus()
 
 		accel_ui_manager->add_ui_from_string(ui_info);
 		add_accel_group(accel_ui_manager->get_accel_group());
-	
+
 		accel_ui_manager->insert_action_group(accel_action_group);
 		set_ref_obj("accel_ui_manager",accel_ui_manager);
 		set_ref_obj("accel_action_group",accel_action_group);
@@ -1415,10 +1415,10 @@ CanvasView::init_menus()
 
 
 
-#if 0	
-	
+#if 0
+
 	//Test some key stuff
-	
+
 	filemenu.items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::StockID("gtk-save"),
 		hide_return(sigc::mem_fun(*get_instance().get(), &studio::Instance::save))));
 	filemenu.items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::StockID("gtk-save-as"),sigc::hide_return(sigc::mem_fun(*get_instance(), &studio::Instance::dialog_save_as))));
@@ -1437,11 +1437,11 @@ CanvasView::init_menus()
 	));
 	filemenu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("Preview"),Gtk::AccelKey("F11"),
 		sigc::mem_fun(*this,&CanvasView::on_preview_option)
-	));	
+	));
 	filemenu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("Sound File"),
 		sigc::mem_fun(*this,&CanvasView::on_audio_option)
-	));	
-	
+	));
+
  	filemenu.items().push_back(Gtk::Menu_Helpers::SeparatorElem());
 	filemenu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("Options"),Gtk::AccelKey("F12"),
 		sigc::mem_fun(canvas_options,&studio::CanvasOptions::present)
@@ -1487,7 +1487,7 @@ CanvasView::init_menus()
 		add_actions_to_menu(&canvasmenu, param_list,synfigapp::Action::CATEGORY_CANVAS);
 	}
 
-	
+
 	//canvasmenu.items().push_back(Gtk::Menu_Helpers::MenuElem("Keyframe Dialog",sigc::mem_fun(keyframe_dialog,&studio::Dialog_Keyframe::present)));
 
 	// Duck Mask Menu
@@ -1557,7 +1557,7 @@ CanvasView::init_menus()
 
 		viewmenu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("_Mask Ducks"),duckmaskmenu));
 	}
-	
+
 	// Preview Quality Menu
 	if(1)
 	{
@@ -1580,7 +1580,7 @@ CanvasView::init_menus()
 		}
 		viewmenu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("Preview Quality"),qualitymenu));
 	}
-	
+
 	viewmenu.items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::StockID("synfig-play"),
 		sigc::mem_fun(*this, &studio::CanvasView::play)));
 	viewmenu.items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::StockID("Flipbook Dialog"),
@@ -1596,7 +1596,7 @@ CanvasView::init_menus()
 		sigc::mem_fun(*work_area, &studio::WorkArea::toggle_guide_snap)));
 	viewmenu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("Toggle Low-Res"),Gtk::AccelKey('`',Gdk::CONTROL_MASK),
 		sigc::mem_fun(*work_area, &studio::WorkArea::toggle_low_resolution_flag)));
-	
+
  	viewmenu.items().push_back(Gtk::Menu_Helpers::SeparatorElem());
 
 	viewmenu.items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::StockID("gtk-zoom-in"),Gtk::AccelKey('=',static_cast<Gdk::ModifierType>(0)),
@@ -1627,9 +1627,9 @@ CanvasView::init_menus()
 	mainmenu.items().push_back(Gtk::Menu_Helpers::MenuElem("_Layer",layermenu));
 
 	mainmenu.accelerate(*this);
-	
+
 	{
-		
+
 		trackmenu.items().push_back(Gtk::Menu_Helpers::MenuElem("New Waypoint",NOT_IMPLEMENTED_SLOT));
 		trackmenu.items().push_back(Gtk::Menu_Helpers::MenuElem("Delete Waypoint",NOT_IMPLEMENTED_SLOT));
 		trackmenu.items().push_back(Gtk::Menu_Helpers::MenuElem("Export",NOT_IMPLEMENTED_SLOT));
@@ -1657,7 +1657,7 @@ CanvasView::init_menus()
 	canvasmenu.set_accel_path("<synfig>/Canvas");
 	viewmenu.set_accel_path("<synfig>/View");
 	duckmaskmenu.set_accel_path("<synfig>/DuckMask");
-#endif	
+#endif
 }
 
 void
@@ -1673,9 +1673,9 @@ CanvasView::show_keyframe_dialog()
 	if(selection->get_selected())
 	{
 		Gtk::TreeRow row(*selection->get_selected());
-		
+
 		Keyframe keyframe(row[keyframe_tree->model.keyframe]);
-		
+
 		keyframe_dialog.set_keyframe(keyframe);
 		keyframe_dialog.present();
 	}
@@ -1685,11 +1685,11 @@ void
 CanvasView::add_layer(synfig::String x)
 {
 	Canvas::Handle canvas;
-	
+
 	synfigapp::SelectionManager::LayerList layer_list(get_selection_manager()->get_selected_layers());
-	
+
 	int target_depth(0);
-	
+
 	if(layer_list.empty())
 	{
 		canvas=get_canvas();
@@ -1700,12 +1700,12 @@ CanvasView::add_layer(synfig::String x)
 		target_depth=canvas->get_depth(*layer_list.begin());
 	}
 
-	
+
 	Layer::Handle layer(canvas_interface()->add_layer_to(x,canvas,target_depth));
 	if(layer)
 	{
 		get_selection_manager()->clear_selected_layers();
-		get_selection_manager()->set_selected_layer(layer);		
+		get_selection_manager()->set_selected_layer(layer);
 	}
 }
 
@@ -1715,16 +1715,16 @@ CanvasView::popup_layer_menu(synfig::Layer::Handle layer)
 	//Gtk::Menu* menu(manage(new Gtk::Menu));
 	Gtk::Menu* menu(&parammenu);
 	menu->items().clear();
-	
+
 	synfigapp::Action::ParamList param_list;
 	param_list.add("time",canvas_interface()->get_time());
 	param_list.add("canvas",Canvas::Handle(layer->get_canvas()));
 	param_list.add("canvas_interface",canvas_interface());
 	param_list.add("layer",layer);
-	
+
 	//Gtk::Menu *newlayers(manage(new Gtk::Menu()));
 	//build_new_layer_menu(*newlayers);
-	
+
 	//parammenu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("New Layer"),*newlayers));
 
 	if(layer->get_name()=="PasteCanvas")
@@ -1739,9 +1739,9 @@ CanvasView::popup_layer_menu(synfig::Layer::Handle layer)
 			)
 		));
 	}
-	
+
 	add_actions_to_menu(menu, param_list,synfigapp::Action::CATEGORY_LAYER);
-	
+
 	menu->popup(3,gtk_get_current_event_time());
 }
 
@@ -1750,7 +1750,7 @@ CanvasView::register_layer_type(synfig::Layer::Book::value_type &lyr,std::map<sy
 {
 /*	if(lyr.second.category==_("Do Not Use"))
 		return;
-	
+
 	if(category_map->count(lyr.second.category)==0)
 		(*category_map)[lyr.second.category]=manage(new Gtk::Menu());
 
@@ -1788,7 +1788,7 @@ CanvasView::build_new_layer_menu(Gtk::Menu &menu)
 
 	std::map<synfig::String,Gtk::Menu*>::iterator iter;
 	for(iter=category_map.begin();iter!=category_map.end();++iter)
-		menu.items().push_back(Gtk::Menu_Helpers::MenuElem(iter->first,*iter->second));	
+		menu.items().push_back(Gtk::Menu_Helpers::MenuElem(iter->first,*iter->second));
 
 	menu.show();
 */
@@ -1829,7 +1829,7 @@ CanvasView::refresh_rend_desc()
 {
 	current_time_widget->set_fps(get_canvas()->rend_desc().get_frame_rate());
 
-	
+
 	//????
 	//synfig::info("Canvasview: Refreshing render desc info");
 	if(!get_time().is_equal(time_adjustment().get_value()))
@@ -1852,7 +1852,7 @@ CanvasView::refresh_rend_desc()
 
 	//set the FPS of the timeslider
 	timeslider->set_global_fps(get_canvas()->rend_desc().get_frame_rate());
-	
+
 	//set the beginning and ending time of the time slider
 	Time begin_time=get_canvas()->rend_desc().get_time_start();
 	Time end_time=get_canvas()->rend_desc().get_time_end();
@@ -1868,35 +1868,35 @@ CanvasView::refresh_rend_desc()
 		time_window_adjustment().set_page_increment(length);
 		time_window_adjustment().set_page_size(length);
 	}
-	
+
 	/*synfig::info("w: %p - [%.3f,%.3f] (%.3f,%.3f) child: %p\n",
 				&time_window_adjustment_, time_window_adjustment_.get_lower(),
 				time_window_adjustment_.get_upper(),time_window_adjustment_.get_value(),
 				time_window_adjustment_.get_page_size(),time_window_adjustment_.get_child_adjustment()
 	);*/
-	
+
 	time_window_adjustment().changed(); //only non-value stuff was changed
 
 	// Setup the time adjustment
-	
+
 	//NOTE THESE TWO SHOULD BE CHANGED BY THE changed() CALL ABOVE
 	//time_adjustment().set_lower(time_window_adjustment().get_value());
 	//time_adjustment().set_upper(time_window_adjustment().get_value()+time_window_adjustment().get_page_size());
-	
+
 //	time_adjustment().set_lower(get_canvas()->rend_desc().get_time_start());
 //	time_adjustment().set_upper(get_canvas()->rend_desc().get_time_end());
 	time_adjustment().set_step_increment(synfig::Time(1.0/get_canvas()->rend_desc().get_frame_rate()));
 	time_adjustment().set_page_increment(synfig::Time(1.0));
 	time_adjustment().set_page_size(0);
-	
+
 	time_adjustment().changed();
-	
+
 	/*synfig::info("w: %p - [%.3f,%.3f] (%.3f,%.3f) child: %p\n",
 				&time_window_adjustment_, time_window_adjustment_.get_lower(),
 				time_window_adjustment_.get_upper(),time_window_adjustment_.get_value(),
 				time_window_adjustment_.get_page_size(),time_window_adjustment_.get_child_adjustment()
 	);	*/
-	
+
 	if(begin_time==end_time)
 	{
 		hide_timebar();
@@ -1912,13 +1912,13 @@ CanvasView::refresh_rend_desc()
 		time_adjustment().set_value(begin_time);
 		time_adjustment().value_changed();
 	}
-	
+
 	if(time_adjustment().get_value() > end_time)
 	{
 		time_adjustment().set_value(end_time);
 		time_adjustment().value_changed();
 	}
-	
+
 	/*synfig::info("Time stats: \n"
 				"w: %p - [%.3f,%.3f] (%.3f,%.3f) child: %p\n"
 				"t: %p - [%.3f,%.3f] %.3f",
@@ -2009,14 +2009,14 @@ CanvasView::on_focus_in_event(GdkEventFocus*x)
 		get_smach().process_event(EVENT_REFRESH_TOOL_OPTIONS);
 
 		studio::App::set_selected_canvas_view(this);
-	
+
 		App::ui_manager()->insert_action_group(action_group);
 	}
-	
+
 	// HACK ... Questionable...?
 	if(x)
 		return Gtk::Window::on_focus_in_event(x);
-	
+
 	return true;
 }
 
@@ -2054,10 +2054,10 @@ CanvasView::on_layer_toggle(synfig::Layer::Handle layer)
 {
 	synfigapp::Action::Handle action(synfigapp::Action::create("layer_activate"));
 	assert(action);
-	
+
 	if(!action)
 		return;
-	
+
 	action->set_param("canvas",Canvas::Handle(layer->get_canvas()));
 	if(!action->set_param("canvas_interface",canvas_interface()))
 //	if(!action->set_param("canvas_interface",get_instance()->find_canvas_interface(layer->get_canvas())))
@@ -2067,7 +2067,7 @@ CanvasView::on_layer_toggle(synfig::Layer::Handle layer)
 	action->set_param("new_status",!layer->active());
 
 	assert(action->is_ready());
-	
+
 	canvas_interface()->get_instance()->perform_action(action);
 }
 
@@ -2077,7 +2077,7 @@ CanvasView::popup_param_menu(synfigapp::ValueDesc value_desc, float location)
 {
 	parammenu.items().clear();
 	get_instance()->make_param_menu(&parammenu,get_canvas(),value_desc,location);
-	
+
 	parammenu.popup(3,gtk_get_current_event_time());
 }
 
@@ -2089,7 +2089,7 @@ CanvasView::add_actions_to_menu(Gtk::Menu *menu, const synfigapp::Action::ParamL
 
 bool
 CanvasView::on_layer_user_click(int button, Gtk::TreeRow row, LayerTree::ColumnID column_id)
-{	
+{
 	switch(button)
 	{
 	case 3:
@@ -2103,10 +2103,10 @@ CanvasView::on_layer_user_click(int button, Gtk::TreeRow row, LayerTree::ColumnI
 				menu->get_submenu()->popup(button,gtk_get_current_event_time());
 			}
 
-			
+
 			#if 0
 			bool multiple_selected=true;
-			
+
 			if(layer_tree->get_selection()->count_selected_rows()<=1)
 				multiple_selected=false;
 
@@ -2118,15 +2118,15 @@ CanvasView::on_layer_user_click(int button, Gtk::TreeRow row, LayerTree::ColumnI
 				layer_tree->get_selection()->select(row);
 				multiple_selected=false;
 			}
-			
+
 			if(column_id==COLUMNID_TIME_TRACK)
 				return false;
-			
+
 			//synfigapp::ValueDesc value_desc(row[layer_param_tree_model.value_desc]);
 			//ValueNode::Handle value_node(row[layer_param_tree_model.value_node]);
 			//ValueNode::Handle parent_value_node;
 			//ValueBase value=row[layer_param_tree_model.value];
-			
+
 			//if(row.parent())
 			//{
 			//	parent_value_node=(*row.parent())[layer_tree_model.value_node];
@@ -2144,16 +2144,16 @@ CanvasView::on_layer_user_click(int button, Gtk::TreeRow row, LayerTree::ColumnI
 				{
 					synfigapp::SelectionManager::LayerList layer_list(get_selection_manager()->get_selected_layers());
 					synfigapp::SelectionManager::LayerList::iterator iter;
-				
+
 					for(iter=layer_list.begin();iter!=layer_list.end();++iter)
 						param_list.add("layer",Layer::Handle(*iter));
 				}
-				
+
 				parammenu.items().clear();
 
 				Gtk::Menu *newlayers(manage(new Gtk::Menu()));
 				build_new_layer_menu(*newlayers);
-				
+
 				parammenu.items().push_back(Gtk::Menu_Helpers::MenuElem("New Layer",*newlayers));
 				if(!multiple_selected && layer->get_name()=="PasteCanvas")
 				{
@@ -2167,14 +2167,14 @@ CanvasView::on_layer_user_click(int button, Gtk::TreeRow row, LayerTree::ColumnI
 						)
 					));
 				}
-				
+
 				add_actions_to_menu(&parammenu, param_list,synfigapp::Action::CATEGORY_LAYER);
 				parammenu.popup(button,gtk_get_current_event_time());
 				return true;
 			}
 /*
 			else if(column_id==LayerTree::COLUMNID_TIME_TRACK && value_node && handle<synfig::ValueNode_Animated>::cast_dynamic(value_node))
-			{					
+			{
 				// Right-click on time track with animated
 //				trackmenu.popup(0,0);
 				return true;
@@ -2207,10 +2207,10 @@ CanvasView::on_layer_user_click(int button, Gtk::TreeRow row, LayerTree::ColumnI
 }
 		return true;
 		break;
-		
+
 	default:
 		return false;
-		break;		
+		break;
 	}
 }
 
@@ -2218,7 +2218,7 @@ CanvasView::on_layer_user_click(int button, Gtk::TreeRow row, LayerTree::ColumnI
 
 bool
 CanvasView::on_children_user_click(int button, Gtk::TreeRow row, ChildrenTree::ColumnID column_id)
-{	
+{
 	switch(button)
 	{
 	case 3:
@@ -2235,10 +2235,10 @@ CanvasView::on_children_user_click(int button, Gtk::TreeRow row, ChildrenTree::C
 		}
 		return true;
 		break;
-		
+
 	default:
 		return false;
-		break;		
+		break;
 	}
 }
 
@@ -2250,7 +2250,7 @@ CanvasView::on_keyframe_tree_event(GdkEvent *event)
 	case GDK_BUTTON_PRESS:
 		switch(event->button.button)
 		{
-			case 3:	
+			case 3:
 			{
 				//keyframemenu.popup(event->button.button,gtk_get_current_event_time());
 				return true;
@@ -2275,14 +2275,14 @@ CanvasView::refresh_time_window()
 	//THESE SHOULD AUTOMATICALLY BE TAKEN CARE OF
 	//time_adjustment().set_lower(time_window_adjustment().get_value());
 	//time_adjustment().set_upper(time_window_adjustment().get_value()+time_window_adjustment().get_page_size());
-	
+
 	time_adjustment().set_page_increment(1.0); // One second
 	time_adjustment().set_page_size(0);
-	
+
 	if(get_canvas())
 		time_adjustment().set_step_increment(1.0/get_canvas()->rend_desc().get_frame_rate());
 	time_adjustment().changed();
-	
+
 	//NOTE THIS SHOULD HOOK INTO THE CORRECT SIGNALS...
 	if(children_tree)
 		children_tree->queue_draw();
@@ -2292,18 +2292,18 @@ void
 CanvasView::on_time_changed()
 {
 	Time time(get_time());
-		
+
 	current_time_widget->set_value(time);
 	try {
 		get_canvas()->keyframe_list().find(time);
 		current_time_widget->modify_text(Gtk::STATE_NORMAL,Gdk::Color("#FF0000"));
 	}catch(...){
-		current_time_widget->modify_text(Gtk::STATE_NORMAL,Gdk::Color("#000000"));		
+		current_time_widget->modify_text(Gtk::STATE_NORMAL,Gdk::Color("#000000"));
 	}
-	
+
 	if(get_time() != time_adjustment().get_value())
 	{
-		
+
 		//Recenters the window, causing it to jump (possibly undesirably... but whatever)
 		if(time < time_window_adjustment().get_value() ||
 			time > time_window_adjustment().get_value()+time_window_adjustment().get_page_size())
@@ -2314,7 +2314,7 @@ CanvasView::on_time_changed()
 		}
 		time_adjustment().set_value(time);
 		time_adjustment().value_changed();
-		
+
 		// Shouldn't these trees just hook into
 		// the time changed signal...?
 		//YES THEY SHOULD...
@@ -2328,7 +2328,7 @@ CanvasView::time_zoom_in()
 {
 	time_window_adjustment().set_page_size(time_window_adjustment().get_page_size()*0.75);
 	time_window_adjustment().changed();
-	
+
 	refresh_time_window();
 }
 
@@ -2337,7 +2337,7 @@ CanvasView::time_zoom_out()
 {
 	time_window_adjustment().set_page_size(time_window_adjustment().get_page_size()/0.75);
 	time_window_adjustment().changed();
-	
+
 	refresh_time_window();
 }
 
@@ -2359,7 +2359,7 @@ void
 CanvasView::on_children_edited_value(const Glib::ustring&path_string,synfig::ValueBase value)
 {
 	Gtk::TreePath path(path_string);
-	
+
 	const Gtk::TreeRow row = *(children_tree->get_model()->get_iter(path));
 
 	assert((bool)row[children_tree_model.is_value_node]);
@@ -2386,8 +2386,8 @@ CanvasView::on_mode_changed(synfigapp::CanvasInterface::Mode mode)
 	{
 		Gtk::Image *icon;
 		icon=manage(new Gtk::Image(Gtk::StockID("gtk-no"),Gtk::ICON_SIZE_BUTTON));
-		animatebutton->remove();	
-		animatebutton->add(*icon);	
+		animatebutton->remove();
+		animatebutton->add(*icon);
 		tooltips.set_tip(*animatebutton,_("In Animate Editing Mode"));
 		icon->set_padding(0,0);
 		icon->show();
@@ -2396,8 +2396,8 @@ CanvasView::on_mode_changed(synfigapp::CanvasInterface::Mode mode)
 	{
 		Gtk::Image *icon;
 		icon=manage(new Gtk::Image(Gtk::StockID("gtk-yes"),Gtk::ICON_SIZE_BUTTON));
-		animatebutton->remove();	
-		animatebutton->add(*icon);	
+		animatebutton->remove();
+		animatebutton->add(*icon);
 		tooltips.set_tip(*animatebutton,_("Not in Animate Editing Mode"));
 		icon->set_padding(0,0);
 		icon->show();
@@ -2407,8 +2407,8 @@ CanvasView::on_mode_changed(synfigapp::CanvasInterface::Mode mode)
 	{
 		Gtk::Image *icon;
 		icon=manage(new Gtk::Image(Gtk::StockID("synfig-keyframe_lock_all"),Gtk::ICON_SIZE_BUTTON));
-		keyframebutton->remove();	
-		keyframebutton->add(*icon);	
+		keyframebutton->remove();
+		keyframebutton->add(*icon);
 		tooltips.set_tip(*keyframebutton,_("All Keyframes Locked"));
 		icon->set_padding(0,0);
 		icon->show();
@@ -2417,8 +2417,8 @@ CanvasView::on_mode_changed(synfigapp::CanvasInterface::Mode mode)
 	{
 		Gtk::Image *icon;
 		icon=manage(new Gtk::Image(Gtk::StockID("synfig-keyframe_lock_future"),Gtk::ICON_SIZE_BUTTON));
-		keyframebutton->remove();	
-		keyframebutton->add(*icon);	
+		keyframebutton->remove();
+		keyframebutton->add(*icon);
 		tooltips.set_tip(*keyframebutton,_("Future Keyframes Locked"));
 		icon->set_padding(0,0);
 		icon->show();
@@ -2427,8 +2427,8 @@ CanvasView::on_mode_changed(synfigapp::CanvasInterface::Mode mode)
 	{
 		Gtk::Image *icon;
 		icon=manage(new Gtk::Image(Gtk::StockID("synfig-keyframe_lock_past"),Gtk::ICON_SIZE_BUTTON));
-		keyframebutton->remove();	
-		keyframebutton->add(*icon);	
+		keyframebutton->remove();
+		keyframebutton->add(*icon);
 		tooltips.set_tip(*keyframebutton,_("Past Keyframes Locked"));
 		icon->set_padding(0,0);
 		icon->show();
@@ -2437,13 +2437,13 @@ CanvasView::on_mode_changed(synfigapp::CanvasInterface::Mode mode)
 	{
 		Gtk::Image *icon;
 		icon=manage(new Gtk::Image(Gtk::StockID("synfig-keyframe_lock_none"),Gtk::ICON_SIZE_BUTTON));
-		keyframebutton->remove();	
-		keyframebutton->add(*icon);	
+		keyframebutton->remove();
+		keyframebutton->add(*icon);
 		tooltips.set_tip(*keyframebutton,_("No Keyframes Locked"));
 		icon->set_padding(0,0);
 		icon->show();
 	}
-	
+
 	work_area->queue_draw();
 }
 
@@ -2460,7 +2460,7 @@ void
 CanvasView::on_keyframe_button_pressed()
 {
 	synfigapp::CanvasInterface::Mode mode(get_mode());
-	
+
 	if((mode&synfigapp::MODE_ANIMATE_FUTURE) && (mode&synfigapp::MODE_ANIMATE_PAST))
 	{
 		set_mode(get_mode()-synfigapp::MODE_ANIMATE_FUTURE);
@@ -2528,8 +2528,8 @@ CanvasView::rebuild_ducks_layer_(synfig::TransformStack& transform_stack, Canvas
 {
 	int transforms(0);
 	String layer_name;
-		
-#define QUEUE_REBUILD_DUCKS		sigc::mem_fun(*this,&CanvasView::queue_rebuild_ducks)	
+
+#define QUEUE_REBUILD_DUCKS		sigc::mem_fun(*this,&CanvasView::queue_rebuild_ducks)
 
 	if(!canvas)
 	{
@@ -2550,17 +2550,17 @@ CanvasView::rebuild_ducks_layer_(synfig::TransformStack& transform_stack, Canvas
 
 			// This layer is currently selected.
 			duck_changed_connections.push_back(layer->signal_changed().connect(QUEUE_REBUILD_DUCKS));
-			
+
 			// do the bounding box thing
 			bbox|=transform_stack.perform(layer->get_bounding_rect());
-			
+
 			// Grab the layer's list pf parameters
 			Layer::ParamList paramlist(layer->get_param_list());
-		
+
 			// Grab the layer vocabulary
 			Layer::Vocab vocab=layer->get_param_vocab();
 			Layer::Vocab::iterator iter;
-				
+
 			for(iter=vocab.begin();iter!=vocab.end();iter++)
 			{
 				if(!iter->get_hidden() && !iter->get_invisible_duck())
@@ -2582,15 +2582,15 @@ CanvasView::rebuild_ducks_layer_(synfig::TransformStack& transform_stack, Canvas
 								*this,
 								&studio::CanvasView::selected_layer_color_set
 							)
-						);		
+						);
 					}
 					*/
 				}
 			}
 		}
-		
+
 		layer_name=layer->get_name();
-		
+
 		if(layer->active())
 		{
 			Transform::Handle trans(layer->get_transform());
@@ -2626,7 +2626,7 @@ CanvasView::rebuild_ducks_layer_(synfig::TransformStack& transform_stack, Canvas
 			}
 */
 		}
-		
+
 		// If this is a paste canvas layer, then we need to
 		// descend into it
 		if(layer_name=="PasteCanvas")
@@ -2634,16 +2634,16 @@ CanvasView::rebuild_ducks_layer_(synfig::TransformStack& transform_stack, Canvas
 			Vector scale;
 			scale[0]=scale[1]=exp(layer->get_param("zoom").get(Real()));
 			Vector origin(layer->get_param("origin").get(Vector()));
-			
+
 			Canvas::Handle child_canvas(layer->get_param("canvas").get(Canvas::Handle()));
-			
+
 			if(!scale.is_equal_to(Vector(1,1)))
 				transform_stack.push(new Transform_Scale(scale,origin));
 			if(!scale.is_equal_to(Vector(0,0)))
 				transform_stack.push(new Transform_Translate(origin));
-			
+
 			rebuild_ducks_layer_(transform_stack,child_canvas,selected_list);
-			
+
 			if(!scale.is_equal_to(Vector(0,0)))
 				transform_stack.pop();
 			if(!scale.is_equal_to(Vector(1,1)))
@@ -2662,11 +2662,11 @@ CanvasView::queue_rebuild_ducks()
 #if 0
 	if(rebuild_ducks_queued)
 		return;
-#else	
+#else
 	if(rebuild_ducks_queued)
 		queue_rebuild_ducks_connection.disconnect();
 #endif
-	
+
 	queue_rebuild_ducks_connection=Glib::signal_timeout().connect(
 		sigc::bind_return(
 			sigc::mem_fun(*this,&CanvasView::rebuild_ducks),
@@ -2674,36 +2674,36 @@ CanvasView::queue_rebuild_ducks()
 		),
 		50
 	);
-	
+
 	rebuild_ducks_queued=true;
 }
 
 void
 CanvasView::rebuild_ducks()
-{	
+{
 	/*static int i=0;
 	i++;
 	if(i>30)
 		synfig::info("%d",i/(i-i));
 	*/
-	
+
 	rebuild_ducks_queued=false;
 	//queue_rebuild_ducks_connection.disconnect();
-	
+
 	if(work_area->is_dragging())
 	{
 		queue_rebuild_ducks();
 		return;
 	}
-	
+
 	if(!duck_refresh_flag)
 	{
 		duck_refresh_needed=true;
 		return;
 	}
-	
+
 	bbox=Rect::zero();
-	
+
 	work_area->clear_ducks();
 	work_area->set_time(get_time());
 	get_canvas()->set_time(get_time());
@@ -2712,20 +2712,20 @@ CanvasView::rebuild_ducks()
 	curr_transform_stack_set=false;
 
 	for(;!duck_changed_connections.empty();duck_changed_connections.pop_back())duck_changed_connections.back().disconnect();
-	
+
 	//get_canvas()->set_time(get_time());
 	bool not_empty(false);
-	
-	// First do the layers...	
+
+	// First do the layers...
 	do{
 		synfigapp::SelectionManager::LayerList selected_list(get_selection_manager()->get_selected_layers());
 		std::set<synfig::Layer::Handle> layer_set(selected_list.begin(),selected_list.end());
-		
+
 		if(!layer_set.empty())
 			not_empty=true;
-		
+
 		synfig::TransformStack transform_stack;
-		
+
 		rebuild_ducks_layer_(transform_stack, get_canvas(), layer_set);
 
 	}while(0);
@@ -2735,7 +2735,7 @@ CanvasView::rebuild_ducks()
 		synfigapp::SelectionManager::ChildrenList selected_list(get_selection_manager()->get_selected_children());
 		synfigapp::SelectionManager::ChildrenList::iterator iter;
 		synfig::TransformStack transform_stack;
-	
+
 		if(selected_list.empty())
 		{
 			break;
@@ -2768,13 +2768,13 @@ void
 CanvasView::play()
 {
 	assert(get_canvas());
-	
+
 	// If we are already busy, don't play!
 	if(working_depth)return;
-	
+
 	// Set us up as working
 	IsWorking is_working(*this);
-	
+
 	etl::clock timer;
 	Time
 		time=work_area->get_time(),
@@ -2783,16 +2783,16 @@ CanvasView::play()
 	// If we are already at the end of time, start over
 	if(time==endtime)
 		time=get_canvas()->rend_desc().get_time_start();
-	
-	is_playing_=true;		
+
+	is_playing_=true;
 
 	work_area->clear_ducks();
-	
+
 	for(timer.reset(); time + timer() < endtime;)
 	{
 		//Clamp the time window so we can see the time value as it races across the horizon
 		bool timewindreset = false;
-		
+
 		while( time + timer() > Time(time_window_adjustment().get_sub_upper()) )
 		{
 			time_window_adjustment().set_value(
@@ -2802,7 +2802,7 @@ CanvasView::play()
 				);
 			timewindreset = true;
 		}
-		
+
 		while( time + timer() < Time(time_window_adjustment().get_sub_lower()) )
 		{
 			time_window_adjustment().set_value(
@@ -2810,26 +2810,26 @@ CanvasView::play()
 					time_window_adjustment().get_value()-time_window_adjustment().get_page_size()/2,
 					time_window_adjustment().get_lower())
 			);
-			
+
 			timewindreset = true;
 		}
-		
+
 		//we need to tell people that the value changed
 		if(timewindreset) time_window_adjustment().value_changed();
-		
+
 		//update actual time to next step
 		time_adjustment().set_value(time+timer());
 		time_adjustment().value_changed();
-		
+
 		if(!work_area->sync_render_preview())
 			break;
-		
+
 		studio::App::iteration(false);
-		
+
 		if(get_cancel_status())
 			return;
 	}
-	is_playing_=false;		
+	is_playing_=false;
 
 	time_adjustment().set_value(endtime);
 	time_adjustment().value_changed();
@@ -2844,7 +2844,7 @@ CanvasView::show_tables()
 	{
 		Gtk::IconSize iconsize=Gtk::IconSize::from_name("synfig-small_icon");
 		treetogglebutton->remove();
-		treetogglebutton->add(*manage(new Gtk::Image(Gtk::StockID("gtk-go-down"),iconsize)));	
+		treetogglebutton->add(*manage(new Gtk::Image(Gtk::StockID("gtk-go-down"),iconsize)));
 		treetogglebutton->show_all();
 		notebook->show();
 	}
@@ -2860,7 +2860,7 @@ CanvasView::hide_tables()
 	{
 		Gtk::IconSize iconsize=Gtk::IconSize::from_name("synfig-small_icon");
 		treetogglebutton->remove();
-		treetogglebutton->add(*manage(new Gtk::Image(Gtk::StockID("gtk-go-up"),iconsize)));	
+		treetogglebutton->add(*manage(new Gtk::Image(Gtk::StockID("gtk-go-up"),iconsize)));
 		treetogglebutton->show_all();
 		notebook->hide();
 	}
@@ -2912,7 +2912,7 @@ CanvasView::show_timebar()
 {
 	timebar->show();
 	current_time_widget->show();
-	
+
 	//keyframe_tab_child->show();
 	if(layer_tree)
 		layer_tree->set_show_timetrack(true);
@@ -2976,7 +2976,7 @@ CanvasView::on_waypoint_clicked(synfigapp::ValueDesc value_desc,synfig::Waypoint
 					&Gtk::Widget::show
 				)
 			));
-			
+
 			waypoint_menu->items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::StockID("synfig-duplicate"),
 				sigc::bind(
 					sigc::bind(
@@ -3043,7 +3043,7 @@ CanvasView::on_drop_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& con
 	//synfig::info("Droped data of type \"%s\"",selection_data.get_data_type());
 	//synfig::info("Droped data of target \"%s\"",gdk_atom_name(selection_data->target));
 	//synfig::info("selection=\"%s\"",gdk_atom_name(selection_data->selection));
-	
+
 	if ((selection_data_.get_length() >= 0) && (selection_data_.get_format() == 8))
 	{
 		if(synfig::String(selection_data_.get_data_type())=="STRING")do
@@ -3057,44 +3057,44 @@ CanvasView::on_drop_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& con
 				break;
 
 			synfigapp::Action::Handle 	action(synfigapp::Action::create("layer_add"));
-		
+
 			assert(action);
 			if(!action)
 				break;
-			
+
 			action->set_param("canvas",get_canvas());
 			action->set_param("canvas_interface",canvas_interface());
 			action->set_param("new",layer);
 
 			if(!get_instance()->perform_action(action))
 				break;
-			
+
 			// Ok, we have successfuly imported at least one item.
 			success=true;
 		} while(0); // END of "STRING"
-		
+
 		if(synfig::String(selection_data_.get_data_type())=="text/plain")
 		{
 			synfig::String selection_data((gchar *)(selection_data_.get_data()));
-	
+
 			// For some reason, GTK hands us a list of URL's seperated
 			// by not only Carrage-Returns, but also Line-Feeds.
 			// Line-Feeds will mess us up. Remove all the line-feeds.
 			while(selection_data.find_first_of('\r')!=synfig::String::npos)
 				selection_data.erase(selection_data.begin()+selection_data.find_first_of('\r'));
-	
+
 			std::stringstream stream(selection_data);
-	
+
 			//synfigapp::PassiveGrouper group(canvas_interface()->get_instance(),_("Insert Image"));
 			while(stream)
 			{
 				synfig::String filename,URI;
 				getline(stream,filename);
-				
+
 				// If we don't have a filename, move on.
 				if(filename.empty())
 					continue;
-				
+
 				// Make sure this URL is of the "file://" type.
 				URI=String(filename.begin(),filename.begin()+sizeof("file://")-1);
 				if(URI!="file://")
@@ -3102,13 +3102,13 @@ CanvasView::on_drop_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& con
 					synfig::warning("Unknown URI (%s) in \"%s\"",URI.c_str(),filename.c_str());
 					continue;
 				}
-				
+
 				// Strip the "file://" part from the filename
 				filename=synfig::String(filename.begin()+sizeof("file://")-1,filename.end());
 
 				String ext;
 				try{ext=(String(filename.begin()+filename.find_last_of('.')+1,filename.end()));}catch(...){continue;}
-	
+
 				// If this is a SIF file, then we need to do things slightly differently
 				if(ext=="sketch")
 				{
@@ -3144,8 +3144,8 @@ CanvasView::on_keyframe_add_pressed()
 	{
 		ui_interface_->error("I am unable to find the appropriate action");
 		return;
-	}		
-	
+	}
+
 	action->set_param("canvas",get_canvas());
 	action->set_param("canvas_interface",canvas_interface());
 	action->set_param("keyframe",Keyframe(get_time()));
@@ -3163,7 +3163,7 @@ CanvasView::on_keyframe_duplicate_pressed()
 	{
 		ui_interface_->error("I am unable to duplicate the keyframe");
 		return;
-	}		
+	}
 	keyframe=row[model.keyframe];
 
 	synfigapp::Action::Handle action(synfigapp::Action::create("keyframe_duplicate"));
@@ -3172,8 +3172,8 @@ CanvasView::on_keyframe_duplicate_pressed()
 	{
 		ui_interface_->error("I am unable to find the appropriate action");
 		return;
-	}		
-	
+	}
+
 	action->set_param("canvas",get_canvas());
 	action->set_param("canvas_interface",canvas_interface());
 	action->set_param("keyframe",keyframe);
@@ -3192,7 +3192,7 @@ CanvasView::on_keyframe_remove_pressed()
 	{
 		ui_interface_->error("I am unable to remove the keyframe");
 		return;
-	}		
+	}
 	keyframe=row[model.keyframe];
 
 	synfigapp::Action::Handle action(synfigapp::Action::create("keyframe_remove"));
@@ -3201,8 +3201,8 @@ CanvasView::on_keyframe_remove_pressed()
 	{
 		ui_interface_->error("I am unable to find the appropriate action");
 		return;
-	}		
-	
+	}
+
 	action->set_param("canvas",get_canvas());
 	action->set_param("canvas_interface",canvas_interface());
 	action->set_param("keyframe",keyframe);
@@ -3222,22 +3222,22 @@ CanvasView::toggle_duck_mask(Duckmatic::Type type)
 		if(duck_mask_position)
 			duck_mask_position->set_active(!is_currently_on);
 		break;
-	
+
 	case Duck::TYPE_VERTEX:
 		if(duck_mask_vertex)
 			duck_mask_vertex->set_active(!is_currently_on);
 		break;
-	
+
 	case Duck::TYPE_TANGENT:
 		if(duck_mask_tangent)
 			duck_mask_tangent->set_active(!is_currently_on);
 		break;
-	
+
 	case Duck::TYPE_RADIUS:
 		if(duck_mask_radius)
 			duck_mask_radius->set_active(!is_currently_on);
 		break;
-	
+
 	case Duck::TYPE_WIDTH:
 		if(duck_mask_width)
 			duck_mask_width->set_active(!is_currently_on);
@@ -3257,7 +3257,7 @@ CanvasView::toggle_duck_mask(Duckmatic::Type type)
 		work_area->set_type_mask(work_area->get_type_mask()-type);
 	else
 		work_area->set_type_mask(work_area->get_type_mask()|type);
-	
+
 	work_area->queue_draw();
 }
 
@@ -3284,7 +3284,7 @@ CanvasView::on_input_device_changed(GdkDevice* device)
 		get_smach().egress();
 	}
 	assert(device);
-	
+
 	synfigapp::InputDevice::Handle input_device;
 	input_device=synfigapp::Main::select_input_device(device->name);
 	App::toolbox->change_state(input_device->get_state());
@@ -3295,9 +3295,9 @@ void
 CanvasView::on_preview_option()
 {
 	Dialog_PreviewOptions *po = dynamic_cast<Dialog_PreviewOptions *>(get_ext_widget("prevoptions"));
-	
+
 	Canvas::Handle	canv = get_canvas();
-	
+
 	if(canv)
 	{
 		RendDesc &r = canv->rend_desc();
@@ -3316,7 +3316,7 @@ CanvasView::on_preview_option()
 				po->set_begin_override(false);
 				po->set_endtime(end);
 				po->set_end_override(false);
-				
+
 				set_ext_widget("prevoptions",po);
 			}
 			/*po->set_zoom(work_area->get_zoom()/2);
@@ -3325,7 +3325,7 @@ CanvasView::on_preview_option()
 			po->set_begin_override(false);
 			po->set_endtime(end);
 			po->set_end_override(false);*/
-			
+
 			po->set_global_fps(r.get_frame_rate());
 			po->signal_finish().connect(sigc::mem_fun(*this,&CanvasView::on_preview_create));
 			po->present();
@@ -3335,10 +3335,10 @@ CanvasView::on_preview_option()
 
 void
 CanvasView::on_preview_create(const PreviewInfo &info)
-{	
+{
 	//set all the options
 	etl::handle<Preview>	prev = new Preview;
-	
+
 	prev->set_canvasview(this);
 	prev->set_zoom(info.zoom);
 	prev->set_fps(info.fps);
@@ -3350,10 +3350,10 @@ CanvasView::on_preview_create(const PreviewInfo &info)
 
 	//render it out...
 	prev->render();
-	
+
 	Dialog_Preview *pd = preview_dialog.get();
 	assert(pd);
-	
+
 	pd->set_preview(prev.get());
 	pd->present();
 }
@@ -3368,7 +3368,7 @@ CanvasView::on_audio_option()
 
 void
 CanvasView::on_audio_file_change(const std::string &f)
-{	
+{
 	//save in meta data - always even when not valid...
 	canvas_interface()->set_meta_data("audiofile",f);
 }
@@ -3384,7 +3384,7 @@ CanvasView::on_audio_file_notify()
 {
 	std::string file(get_canvas()->get_meta_data("audiofile"));
 	if(!file.c_str()) return;
-	
+
 	if(!audio->load(file,dirname(get_canvas()->get_file_name())+string("/")))
 	{
 		if(file != "") synfig::warning("Could not load the file: %s", file.c_str());
@@ -3393,25 +3393,25 @@ CanvasView::on_audio_file_notify()
 		disp_audio->set_profile(etl::handle<AudioProfile>());
 	}else
 	{
-		//save in canvasview		
+		//save in canvasview
 		synfig::warning("Getting the profile of the music stuff");
-		
+
 		//profile specific stuff for the preview widget
 		//similar for other attachments
 		Dialog_Preview *pd = preview_dialog.get();
 		pd->get_widget().set_audio(audio);
-		
+
 		handle<AudioProfile>	prof = audio->get_profile();
-		
+
 		if(!prof)
 		{
-			synfig::warning("Agh, I couldn't build the profile captain!");			
+			synfig::warning("Agh, I couldn't build the profile captain!");
 		}
 		pd->get_widget().set_audioprofile(prof);
-		
+
 		disp_audio->set_profile(audio->get_profile());
 		disp_audio->show();
-		
+
 		synfig::warning("successfully set the profiles and stuff");
 	}
 	disp_audio->queue_draw();
@@ -3424,7 +3424,7 @@ CanvasView::on_audio_offset_notify()
 	audio->set_offset(t);
 	sound_dialog->set_offset(t);
 	disp_audio->queue_draw();
-	
+
 	synfig::info("CanvasView::on_audio_offset_notify(): offset time set to %s",t.get_string(get_canvas()->rend_desc().get_frame_rate()).c_str());
 }
 
@@ -3435,7 +3435,7 @@ CanvasView::play_audio(float t)
 	{
 		synfig::info("Playing audio at %f s",t);
 		audio->play(t);
-	}		
+	}
 }
 
 void
@@ -3547,6 +3547,6 @@ CanvasView::on_delete_event(GdkEventAny* event)
 	}
 	if(event)
 		return Gtk::Window::on_delete_event(event);
-	
+
 	return true;
 }

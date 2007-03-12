@@ -88,7 +88,7 @@ class CellRenderer_TimeTrack :
 private:
 	//! Time adjustment window
 	Gtk::Adjustment adjustment_;
-	
+
 	//! Signal for when the user clicks on a waypoint
 	sigc::signal<void, const Glib::ustring&,synfig::Waypoint, int> signal_waypoint_clicked_;
 
@@ -96,7 +96,7 @@ private:
 
 	//! Iterator for selected waypoint. (Should this be an UniqueID instead?)
 	synfig::ValueNode_Animated::WaypointList::iterator selected_waypoint;
-	
+
 	synfig::UniqueID selected;
 
 	//! selected information for time... (will work for way points etc...)
@@ -109,17 +109,17 @@ private:
 
 	//! ???
 	synfig::Time selected_time;
-    
+
 	//! The path to the current item in the tree model
 	Glib::ustring path;
-	
+
 	//! ???
 	bool selection;
 
 	bool dragging;
 
 	synfig::Time drag_time;
-	
+
 	etl::loose_handle<synfigapp::CanvasInterface>	canvas_interface_;
 
 	/*
@@ -127,7 +127,7 @@ private:
 	*/
 
 private:
-	
+
 	//! ValueBase Desc
 	Glib::Property<synfigapp::ValueDesc> property_valuedesc_;
 
@@ -172,7 +172,7 @@ public:
 
 	CellRenderer_TimeTrack();
     ~CellRenderer_TimeTrack();
-	
+
 	void show_timepoint_menu(const etl::handle<synfig::Node>& node, const synfig::Time& time, Side side=SIDE_RIGHT);
 
 	void set_adjustment(Gtk::Adjustment &x);
@@ -181,9 +181,9 @@ public:
 
 	etl::loose_handle<synfigapp::CanvasInterface>	canvas_interface()const {return canvas_interface_;}
 	void set_canvas_interface(etl::loose_handle<synfigapp::CanvasInterface> h); //this should only be called by smart people
-	
+
 	synfig::Canvas::Handle get_canvas()const;
-	
+
 	bool is_selected(const synfig::Waypoint& waypoint)const;
 
 	synfig::ValueNode_Animated::WaypointList::iterator find_waypoint(const synfig::Time& t, const synfig::Time& scope=synfig::Time::end());

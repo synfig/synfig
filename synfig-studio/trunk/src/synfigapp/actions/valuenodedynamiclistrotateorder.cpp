@@ -67,7 +67,7 @@ Action::ParamVocab
 Action::ValueNodeDynamicListRotateOrder::get_param_vocab()
 {
 	ParamVocab ret(Action::CanvasSpecific::get_param_vocab());
-	
+
 	ret.push_back(ParamDesc("value_desc",Param::TYPE_VALUEDESC)
 		.set_local_name(_("ValueDesc"))
 	);
@@ -95,12 +95,12 @@ Action::ValueNodeDynamicListRotateOrder::set_param(const synfig::String& name, c
 	if(name=="value_desc" && param.get_type()==Param::TYPE_VALUEDESC)
 	{
 		ValueDesc value_desc(param.get_value_desc());
-		
+
 		if(!value_desc.parent_is_value_node())
 			return false;
-		
+
 		value_node=ValueNode_DynamicList::Handle::cast_dynamic(value_desc.get_parent_value_node());
-		
+
 		if(!value_node)
 			return false;
 
@@ -124,7 +124,7 @@ void
 Action::ValueNodeDynamicListRotateOrder::prepare()
 {
 	clear();
-	
+
 	for(int i(0);i<(value_node->link_count()-index)%value_node->link_count();++i)
 	{
 		ValueDesc value_desc(value_node,value_node->link_count()-1-i);
@@ -132,33 +132,33 @@ Action::ValueNodeDynamicListRotateOrder::prepare()
 
 
 		Action::Handle action(Action::create("value_node_dynamic_list_remove"));
-		
+
 		action->set_param("canvas",get_canvas());
 		action->set_param("canvas_interface",get_canvas_interface());
 		action->set_param("value_desc",ValueDesc(value_node,value_node->link_count()-1));
-		
+
 		assert(action->is_ready());
 		if(!action->is_ready())
 			throw Error(Error::TYPE_NOTREADY);
-	
+
 		add_action(action);
-		
-		
+
+
 		action=Action::create("value_node_dynamic_list_insert");
-		
+
 		action->set_param("canvas",get_canvas());
 		action->set_param("canvas_interface",get_canvas_interface());
 		action->set_param("value_desc",ValueDesc(value_node,0));
 		action->set_param("item",child);
-	
+
 		assert(action->is_ready());
 		if(!action->is_ready())
 			throw Error(Error::TYPE_NOTREADY);
-	
+
 		add_action(action);
 
-		
-		
-	
+
+
+
 	}
 }

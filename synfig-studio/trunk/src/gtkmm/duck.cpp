@@ -133,7 +133,7 @@ Duck::get_trans_point()const
 {
 	return transform_stack_.perform(get_sub_trans_point());
 }
-	
+
 void
 Duck::set_trans_point(const synfig::Point &x)
 {

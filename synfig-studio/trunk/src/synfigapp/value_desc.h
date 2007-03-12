@@ -47,14 +47,14 @@ class ValueDesc
 	// Info for Layer parent
 	synfig::Layer::Handle layer;
 	synfig::String name;
-	
+
 	// Info for ValueNode parent
 	synfig::ValueNode::Handle parent_value_node;
 	int index;
 
 	// Info for exported ValueNode
 	synfig::Canvas::Handle canvas;
-	
+
 public:
 	bool operator==(const ValueDesc &rhs)const
 	{
@@ -77,7 +77,7 @@ public:
 		return !operator==(rhs);
 	}
 
-	
+
 	ValueDesc(synfig::Layer::Handle layer,const synfig::String& param_name):
 		layer(layer),
 		name(param_name) { }
@@ -112,16 +112,16 @@ public:
 	bool parent_is_linkable_value_node()const { return parent_is_value_node() && index>=0; }
 	bool parent_is_value_node_const()const { return parent_is_value_node() && index==-1; }
 	bool parent_is_canvas()const { return (bool)canvas; }
-	
+
 	bool is_value_node()const { return parent_is_value_node() || parent_is_canvas() || (parent_is_layer_param() && (bool)layer->dynamic_param_list().count(name)); }
 	bool is_const()const { return (parent_is_layer_param() && !layer->dynamic_param_list().count(name)) || parent_is_value_node_const(); }
-	
+
 	synfig::Layer::Handle get_layer()const { assert(parent_is_layer_param()); return layer; }
 	const synfig::String& get_param_name()const { assert(parent_is_layer_param()); return name; }
-	
+
 	synfig::ValueNode::Handle get_parent_value_node()const { assert(parent_is_value_node()); return parent_value_node; }
 	int get_index()const { assert(parent_is_linkable_value_node()); return index; }
-	
+
 	const synfig::String& get_value_node_id()const { assert(parent_is_canvas()); return name; }
 
 	synfig::Canvas::Handle get_canvas()const
@@ -134,7 +134,7 @@ public:
 			return parent_value_node->get_root_canvas();
 		return 0;
 	}
-	
+
 	synfig::ValueNode::Handle
 	get_value_node()const
 	{
@@ -158,7 +158,7 @@ public:
 		if(parent_is_layer_param() && layer)
 			return layer->get_param(name);
 		return synfig::ValueBase();
-	}	
+	}
 
 	synfig::ValueBase::Type
 	get_value_type()const
@@ -168,7 +168,7 @@ public:
 			return value_node->get_type();
 		return get_value().get_type();
 	}
-	
+
 	bool
 	is_exported()const
 	{

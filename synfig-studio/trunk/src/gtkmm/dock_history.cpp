@@ -68,7 +68,7 @@ Dock_History::Dock_History():
 {
 	App::signal_instance_deleted().connect(sigc::mem_fun(*this,&studio::Dock_History::delete_instance));
 	App::signal_instance_selected().connect(sigc::mem_fun(*this,&studio::Dock_History::set_selected_instance_signal));
-	
+
 	action_group->add(Gtk::Action::create(
 		"clear-undo",
 		Gtk::StockID("synfig-clear_undo"),
@@ -97,7 +97,7 @@ Dock_History::Dock_History():
 		_("Undo previous action"),
 		_("Undo previous action")
 	),
-		sigc::ptr_fun(studio::App::undo)	
+		sigc::ptr_fun(studio::App::undo)
 	);
 	action_group->add(Gtk::Action::create(
 		"redo",
@@ -105,7 +105,7 @@ Dock_History::Dock_History():
 		_("Redo previous action"),
 		_("Redo previous action")
 	),
-		sigc::ptr_fun(studio::App::redo)	
+		sigc::ptr_fun(studio::App::redo)
 	);
 
 	action_group->add( Gtk::Action::create("toolbar-history", "History") );
@@ -126,9 +126,9 @@ Dock_History::Dock_History():
 
 	action_group->set_sensitive(false);
 
-	set_toolbar(*dynamic_cast<Gtk::Toolbar*>(App::ui_manager()->get_widget("/toolbar-history")));	
+	set_toolbar(*dynamic_cast<Gtk::Toolbar*>(App::ui_manager()->get_widget("/toolbar-history")));
 	add(*create_action_tree());
-	
+
 	/*
 	add_button(
 		Gtk::StockID("synfig-clear_undo"),
@@ -173,23 +173,23 @@ Dock_History::create_action_tree()
 
 		Gtk::CellRendererToggle* toggle_cr = Gtk::manage( new Gtk::CellRendererToggle() );
 		toggle_cr->signal_toggled().connect(sigc::mem_fun(*this, &studio::Dock_History::on_action_toggle) );
-		
+
 		column->pack_start(*toggle_cr); //false = don't expand.
 		column->add_attribute(toggle_cr->property_active(),history_tree_model.is_active);
 		column->set_resizable();
 		column->set_clickable();
-				
+
 		action_tree->append_column(*column);
 	}
 	/*{
 		Gtk::TreeView::Column* column = Gtk::manage( new Gtk::TreeView::Column("Canvas") );
 		Gtk::CellRendererText *text_cr=Gtk::manage(new Gtk::CellRendererText());
 		text_cr->property_foreground()=Glib::ustring("#7f7f7f");
-		
+
 		column->pack_start(*text_cr);
 		column->add_attribute(text_cr->property_text(),history_tree_model.canvas_id);
 		column->add_attribute(text_cr->property_foreground_set(),history_tree_model.is_redo);
-				
+
 		action_tree->append_column(*column);
 	}*/
 	{
@@ -197,13 +197,13 @@ Dock_History::create_action_tree()
 
 		Gtk::CellRendererText* cell_renderer_jump=Gtk::manage(new Gtk::CellRendererText());
 		column->pack_start(*cell_renderer_jump,true);
-		
+
 		cell_renderer_jump->property_text()="(JMP)";
 		cell_renderer_jump->property_foreground()="#003a7f";
-		
+
 		column->set_resizable();
 		column->set_clickable();
-		
+
 		column->set_sort_column_id(COLUMNID_JUMP);
 
 		action_tree->append_column(*column);
@@ -215,17 +215,17 @@ Dock_History::create_action_tree()
 		Gtk::CellRendererText *text_cr=Gtk::manage(new Gtk::CellRendererText());
 		text_cr->property_foreground()=Glib::ustring("#7f7f7f");
 
-		
+
 
 		//column->pack_start(history_tree_model.icon, false); //false = don't expand.
 		column->pack_start(*text_cr);
 		column->add_attribute(text_cr->property_text(),history_tree_model.name);
 		column->add_attribute(text_cr->property_foreground_set(),history_tree_model.is_redo);
-				
+
 		action_tree->append_column(*column);
 	}
 
-	
+
 	action_tree->set_rules_hint();
 //	action_tree->signal_row_activated().connect(sigc::mem_fun(*this,&Dock_History::on_row_activate));
 	action_tree->signal_event().connect(sigc::mem_fun(*this,&Dock_History::on_action_event));
@@ -255,7 +255,7 @@ void
 Dock_History::clear_undo()
 {
 	if(selected_instance && App::dialog_yes_no(_("Clear History"), _("You will not be able to undo any changes that you have made!\nAre you sure you want to clear the undo stack?")))
-	{		
+	{
 		selected_instance->clear_undo_stack();
 	}
 }
@@ -264,7 +264,7 @@ void
 Dock_History::clear_redo()
 {
 	if(selected_instance && App::dialog_yes_no(_("Clear History"), _("You will not be able to redo any changes that you have made!\nAre you sure you want to clear the redo stack?")))
-	{		
+	{
 		selected_instance->clear_redo_stack();
 	}
 }
@@ -322,7 +322,7 @@ Dock_History::set_selected_instance(etl::loose_handle<studio::Instance> x)
 
 	std::list<etl::handle<studio::Instance> >::iterator iter;
 
-	set_selected_instance_(x);	
+	set_selected_instance_(x);
 }
 
 void
@@ -357,7 +357,7 @@ Dock_History::on_action_event(GdkEvent *event)
 				)
 			) break;
 			const Gtk::TreeRow row = *(action_tree->get_model()->get_iter(path));
-			
+
 			//signal_user_click()(event->button.button,row,(ColumnID)column->get_sort_column_id());
 			if((ColumnID)column->get_sort_column_id()==COLUMNID_JUMP)
 			{
@@ -382,7 +382,7 @@ Dock_History::on_action_event(GdkEvent *event)
 				}
 			}
 		}
-		
+
 	case GDK_BUTTON_RELEASE:
 		break;
 	default:
@@ -397,10 +397,10 @@ Dock_History::on_action_toggle(const Glib::ustring& path_string)
 	studio::HistoryTreeStore::Model history_tree_model;
 
 	Gtk::TreePath path(path_string);
-	
+
 	const Gtk::TreeRow row = *(selected_instance->history_tree_store()->get_iter(path));
 
 	handle<synfigapp::Action::Undoable> action=row[history_tree_model.action];
-	
+
 	selected_instance->synfigapp::Instance::set_action_status(action,!action->is_active());
 }

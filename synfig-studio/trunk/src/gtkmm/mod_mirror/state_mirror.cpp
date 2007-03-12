@@ -76,8 +76,8 @@ class DuckDrag_Mirror : public DuckDrag_Base
 	synfig::Vector center;
 
 	std::vector<synfig::Vector> positions;
-	
-	
+
+
 public:
 	Axis axis;
 
@@ -91,17 +91,17 @@ public:
 class studio::StateMirror_Context : public sigc::trackable
 {
 	etl::handle<CanvasView> canvas_view_;
-		
+
 	synfigapp::Settings& settings;
 
 	etl::handle<DuckDrag_Mirror> duck_dragger_;
 
 	Gtk::Table options_table;
-	
-	
+
+
 	Gtk::CheckButton checkbutton_axis_x;
 	Gtk::CheckButton checkbutton_axis_y;
-	
+
 public:
 
 	Axis get_axis()const { return checkbutton_axis_x.get_active()?AXIS_X:AXIS_Y; }
@@ -117,10 +117,10 @@ public:
 			checkbutton_axis_y.set_active(true);
 			checkbutton_axis_x.set_active(false);
 		}
-			
+
 		duck_dragger_->axis=get_axis();
 	}
-	
+
 	void update_axis_y()
 	{
 		checkbutton_axis_x.set_active(!checkbutton_axis_y.get_active());
@@ -143,7 +143,7 @@ public:
 	etl::handle<synfigapp::CanvasInterface> get_canvas_interface()const{return canvas_view_->canvas_interface();}
 	synfig::Canvas::Handle get_canvas()const{return canvas_view_->get_canvas();}
 	WorkArea * get_work_area()const{return canvas_view_->get_work_area();}
-	
+
 	void load_settings();
 	void save_settings();
 };	// END of class StateMirror_Context
@@ -154,7 +154,7 @@ StateMirror::StateMirror():
 	Smach::state<StateMirror_Context>("mirror")
 {
 	insert(event_def(EVENT_REFRESH_TOOL_OPTIONS,&StateMirror_Context::event_refresh_tool_options));
-}	
+}
 
 StateMirror::~StateMirror()
 {
@@ -162,7 +162,7 @@ StateMirror::~StateMirror()
 
 void
 StateMirror_Context::load_settings()
-{	
+{
 	String value;
 
 	settings.get_value("mirror.axis",value);
@@ -171,7 +171,7 @@ StateMirror_Context::load_settings()
 
 void
 StateMirror_Context::save_settings()
-{	
+{
 	settings.set_value("mirror.lock_aspect",strprintf("%d",(int)get_axis()));
 }
 
@@ -181,19 +181,19 @@ StateMirror_Context::StateMirror_Context(CanvasView* canvas_view):
 	duck_dragger_(new DuckDrag_Mirror()),
 	checkbutton_axis_x(_("Horizontal")),
 	checkbutton_axis_y(_("Vertical"))
-{	
+{
 	// Set up the tool options dialog
-	options_table.attach(*manage(new Gtk::Label(_("Mirror Tool"))), 0, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);	
+	options_table.attach(*manage(new Gtk::Label(_("Mirror Tool"))), 0, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	options_table.attach(checkbutton_axis_x, 0, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	options_table.attach(checkbutton_axis_y, 0, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
 	checkbutton_axis_x.signal_toggled().connect(sigc::mem_fun(*this,&StateMirror_Context::update_axis_x));
 	checkbutton_axis_y.signal_toggled().connect(sigc::mem_fun(*this,&StateMirror_Context::update_axis_y));
-		
+
 	options_table.show_all();
 	refresh_tool_options();
 	App::dialog_tool_options->present();
-	
+
 	get_work_area()->allow_layer_clicks=true;
 	get_work_area()->set_duck_dragger(duck_dragger_);
 
@@ -270,7 +270,7 @@ DuckDrag_Mirror::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector)
 {
 	center=vector;
 	int i;
-	
+
 		const DuckList selected_ducks(duckmatic->get_selected_ducks());
 		DuckList::const_iterator iter;
 	for(i=0,iter=selected_ducks.begin();iter!=selected_ducks.end();++iter,i++)
@@ -279,12 +279,12 @@ DuckDrag_Mirror::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector)
 
 		Vector p(positions[i]);
 		//Point p((*iter)->get_trans_point());
-		
+
 		if(axis==AXIS_X)
 			p[0]=-(p[0]-center[0])+center[0];
 		if(axis==AXIS_Y)
 			p[1]=-(p[1]-center[1])+center[1];
-		
+
 		(*iter)->set_trans_point(p);
 	}
 	for(i=0,iter=selected_ducks.begin();iter!=selected_ducks.end();++iter,i++)
@@ -293,12 +293,12 @@ DuckDrag_Mirror::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector)
 
 		Vector p(positions[i]);
 		//Point p((*iter)->get_trans_point());
-		
+
 		if(axis==AXIS_X)
 			p[0]=-(p[0]-center[0])+center[0];
 		if(axis==AXIS_Y)
 			p[1]=-(p[1]-center[1])+center[1];
-		
+
 		(*iter)->set_trans_point(p);
 	}
 }

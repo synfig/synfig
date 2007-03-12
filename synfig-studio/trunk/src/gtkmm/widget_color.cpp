@@ -72,18 +72,18 @@ studio::render_color_to_window(const Glib::RefPtr<Gdk::Drawable>& window,const G
 {
 	const int height(ca.get_height());
 	const int width(ca.get_width());
-	
+
 	const int square_size(height/2);
-	
+
 	Glib::RefPtr<Gdk::GC> gc(Gdk::GC::create(window));
-	
+
 	if(color.get_alpha()!=1.0)
 	{
 		// In this case we need to render the alpha squares
-		
+
 		const Color bg1(Color::blend(color,Color(0.75, 0.75, 0.75),1.0).clamped());
 		const Color bg2(Color::blend(color,Color(0.5, 0.5, 0.5),1.0).clamped());
-	
+
 		Gdk::Color gdk_c1(colorconv_synfig2gdk(bg1));
 		Gdk::Color gdk_c2(colorconv_synfig2gdk(bg2));
 
@@ -91,12 +91,12 @@ studio::render_color_to_window(const Glib::RefPtr<Gdk::Drawable>& window,const G
 		for(int i=0;i<width;i+=square_size)
 		{
 			const int square_width(min(square_size,width-i));
-			
+
 			if(toggle)
 			{
 				gc->set_rgb_fg_color(gdk_c1);
-				window->draw_rectangle(gc, true, ca.get_x()+i, ca.get_y(), square_width, square_size);				
-		
+				window->draw_rectangle(gc, true, ca.get_x()+i, ca.get_y(), square_width, square_size);
+
 				gc->set_rgb_fg_color(gdk_c2);
 				window->draw_rectangle(gc, true, ca.get_x()+i, ca.get_y()+square_size, square_width, square_size);
 				toggle=false;
@@ -104,8 +104,8 @@ studio::render_color_to_window(const Glib::RefPtr<Gdk::Drawable>& window,const G
 			else
 			{
 				gc->set_rgb_fg_color(gdk_c2);
-				window->draw_rectangle(gc, true, ca.get_x()+i, ca.get_y(), square_width, square_size);				
-		
+				window->draw_rectangle(gc, true, ca.get_x()+i, ca.get_y(), square_width, square_size);
+
 				gc->set_rgb_fg_color(gdk_c1);
 				window->draw_rectangle(gc, true, ca.get_x()+i, ca.get_y()+square_size, square_width, square_size);
 				toggle=true;
@@ -117,7 +117,7 @@ studio::render_color_to_window(const Glib::RefPtr<Gdk::Drawable>& window,const G
 		// In this case we have a solid color to use
 		Gdk::Color gdk_c1(colorconv_synfig2gdk(color));
 
-		gc->set_rgb_fg_color(gdk_c1);	
+		gc->set_rgb_fg_color(gdk_c1);
 		window->draw_rectangle(gc, true, ca.get_x(), ca.get_y(), width-1, height-1);
 	}
 	gc->set_rgb_fg_color(Gdk::Color("#ffffff"));
@@ -177,7 +177,7 @@ Widget_Color::on_event(GdkEvent *event)
 			return true;
 		}
 		break;
-		
+
 	default:
 		break;
 	}
@@ -190,8 +190,8 @@ Widget_Color::redraw(GdkEventExpose*bleh)
 	//Glib::RefPtr<Gdk::GC> gc(Gdk::GC::create(get_window()));
 
 	const int h(get_height());
-	const int w(get_width());	
-	
+	const int w(get_width());
+
 	render_color_to_window(get_window(),Gdk::Rectangle(0,0,w,h),color);
 
 	return true;

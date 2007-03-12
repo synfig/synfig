@@ -40,14 +40,14 @@ namespace studio {
 
 class Renderer_Canvas : public studio::WorkAreaRenderer
 {
-	
+
 public:
 	~Renderer_Canvas();
 
 	std::vector< std::pair<Glib::RefPtr<Gdk::Pixbuf>,int> >& get_tile_book();
 
 	bool get_full_frame()const;
-	
+
 	int get_refreshes()const;
 	bool get_canceled()const;
 	bool get_queued()const;

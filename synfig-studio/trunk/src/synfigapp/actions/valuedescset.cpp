@@ -52,7 +52,7 @@ using namespace Action;
 /* === M A C R O S ========================================================= */
 #define ACTION_INIT2(class) \
 	Action::Base* class::create() { return new class(); }	\
-	synfig::String class::get_name()const { return name__; }	
+	synfig::String class::get_name()const { return name__; }
 
 ACTION_INIT2(Action::ValueDescSet);
 ACTION_SET_NAME(Action::ValueDescSet,"value_desc_set");
@@ -78,7 +78,7 @@ synfig::String
 Action::ValueDescSet::get_local_name()const
 {
 	String name("ValueDesc");
-	
+
 	if(!value_desc)
 	{
 	}
@@ -94,7 +94,7 @@ Action::ValueDescSet::get_local_name()const
 	{
 		synfig::LinkableValueNode::Handle value_node(synfig::LinkableValueNode::Handle::cast_reinterpret(value_desc.get_parent_value_node()));
 		name=value_node->link_local_name(value_desc.get_index());
-		
+
 		synfig::Node* node;
 		for(node=value_node.get();!node->parent_set.empty() && !dynamic_cast<Layer*>(node);node=*node->parent_set.begin());
 		Layer::Handle parent_layer(dynamic_cast<Layer*>(node));
@@ -114,7 +114,7 @@ Action::ParamVocab
 Action::ValueDescSet::get_param_vocab()
 {
 	ParamVocab ret(Action::CanvasSpecific::get_param_vocab());
-	
+
 	ret.push_back(ParamDesc("value_desc",Param::TYPE_VALUEDESC)
 		.set_local_name(_("ValueDesc"))
 	);
@@ -127,7 +127,7 @@ Action::ValueDescSet::get_param_vocab()
 		.set_local_name(_("Time"))
 		.set_optional()
 	);
-	
+
 	return ret;
 }
 
@@ -143,21 +143,21 @@ Action::ValueDescSet::set_param(const synfig::String& name, const Action::Param 
 	if(name=="value_desc" && param.get_type()==Param::TYPE_VALUEDESC)
 	{
 		value_desc=param.get_value_desc();
-		
+
 		return true;
 	}
 
 	if(name=="new_value" && param.get_type()==Param::TYPE_VALUE)
 	{
 		value=param.get_value();
-		
+
 		return true;
 	}
 
 	if(name=="time" && param.get_type()==Param::TYPE_TIME)
 	{
 		time=param.get_time();
-		
+
 		return true;
 	}
 
@@ -190,24 +190,24 @@ Action::ValueDescSet::prepare()
 		DEBUGPOINT();
 		ValueNode_Composite::Handle parent_value_node;
 		parent_value_node=parent_value_node.cast_dynamic(value_desc.get_parent_value_node());
-		
+
 		assert(parent_value_node);
-		
+
 		Action::Handle action(Action::create("value_desc_set"));
-	
+
 		if(!action)
 			throw Error(_("Unable to find action value_desc_set (bug)"));
-		
+
 		action->set_param("canvas",get_canvas());
 		action->set_param("canvas_interface",get_canvas_interface());
 		action->set_param("time",time);
 		action->set_param("new_value",value);
 		action->set_param("value_desc",ValueDesc(parent_value_node,5));
-		
+
 		if(!action->is_ready())
 			throw Error(Error::TYPE_NOTREADY);
-	
-		add_action(action);			
+
+		add_action(action);
 	}
 
 	// If we are a reference value node, then
@@ -221,21 +221,21 @@ Action::ValueDescSet::prepare()
 
 		if(!action)
 			throw Error(_("Unable to find action value_desc_set (bug)"));
-		
+
 		action->set_param("canvas",get_canvas());
 		action->set_param("canvas_interface",get_canvas_interface());
 		action->set_param("time",time);
 		action->set_param("new_value",value);
 		action->set_param("value_desc",reference_value_desc);
-		
+
 		if(!action->is_ready())
 			throw Error(Error::TYPE_NOTREADY);
 
-		add_action(action);			
-	
+		add_action(action);
+
 		return;
 	}
-	
+
 	// If we are a composite value node, then
 	// we need to distribute the changes to the
 	// individual parts
@@ -277,35 +277,35 @@ Action::ValueDescSet::prepare()
 			break;
 		}
 		default:
-			throw Error("Bad type for composite (%s)",ValueBase::type_name(value.get_type()).c_str());			
+			throw Error("Bad type for composite (%s)",ValueBase::type_name(value.get_type()).c_str());
 			break;
 		}
-		
+
 		for(int i=0;i<n_components;i++)
 		{
 			ValueDesc component_value_desc(ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node()),i);
 
 			Action::Handle action(Action::create("value_desc_set"));
-	
+
 			if(!action)
 				throw Error(_("Unable to find action value_desc_set (bug)"));
-			
+
 			action->set_param("canvas",get_canvas());
 			action->set_param("canvas_interface",get_canvas_interface());
 			action->set_param("time",time);
 			action->set_param("new_value",components[i]);
 			action->set_param("value_desc",component_value_desc);
-			
+
 			if(!action->is_ready())
 				throw Error(Error::TYPE_NOTREADY);
-	
-			add_action(action);			
+
+			add_action(action);
 		}
-		
+
 		return;
 	}
 
-	
+
 	// If we are a RADIAL composite value node, then
 	// we need to distribute the changes to the
 	// individual parts
@@ -331,7 +331,7 @@ Action::ValueDescSet::prepare()
 			n_components=4;
 			break;
 		default:
-			throw Error("Bad type for radial composite (%s)",ValueBase::type_name(value.get_type()).c_str());			
+			throw Error("Bad type for radial composite (%s)",ValueBase::type_name(value.get_type()).c_str());
 			break;
 		}
 		for(int i=0;i<n_components;i++)
@@ -339,22 +339,22 @@ Action::ValueDescSet::prepare()
 			ValueDesc component_value_desc(ValueNode_RadialComposite::Handle::cast_dynamic(value_desc.get_value_node()),i);
 
 			Action::Handle action(Action::create("value_desc_set"));
-	
+
 			if(!action)
 				throw Error(_("Unable to find action value_desc_set (bug)"));
-			
+
 			action->set_param("canvas",get_canvas());
 			action->set_param("canvas_interface",get_canvas_interface());
 			action->set_param("time",time);
 			action->set_param("new_value",components[i]);
 			action->set_param("value_desc",component_value_desc);
-			
+
 			if(!action->is_ready())
 				throw Error(Error::TYPE_NOTREADY);
-	
-			add_action(action);			
+
+			add_action(action);
 		}
-		
+
 		return;
 	}
 
@@ -369,24 +369,24 @@ Action::ValueDescSet::prepare()
 	{
 		ValueNode_Composite::Handle parent_value_node;
 		parent_value_node=parent_value_node.cast_dynamic(value_desc.get_parent_value_node());
-		
+
 		assert(parent_value_node);
-		
+
 		Action::Handle action(Action::create("value_desc_set"));
-	
+
 		if(!action)
 			throw Error(_("Unable to find action value_desc_set (bug)"));
-		
+
 		action->set_param("canvas",get_canvas());
 		action->set_param("canvas_interface",get_canvas_interface());
 		action->set_param("time",time);
 		action->set_param("new_value",(*parent_value_node->get_link(4))(time));
 		action->set_param("value_desc",ValueDesc(parent_value_node,5));
-		
+
 		if(!action->is_ready())
 			throw Error(Error::TYPE_NOTREADY);
-	
-		add_action(action);			
+
+		add_action(action);
 	}
 
 /*	DEBUGPOINT();
@@ -406,9 +406,9 @@ Action::ValueDescSet::prepare()
 			}
 		}
 	}
-*/	
+*/
 
-	
+
 	// If we are in animate editing mode
 	if(get_edit_mode()&MODE_ANIMATE)
 	{
@@ -425,12 +425,12 @@ Action::ValueDescSet::prepare()
 				value=ValueNode_Const::Handle::cast_dynamic(value_desc.get_value_node())->get_value();
 			else
 				value=value_desc.get_value();
-			
+
 			if(!value_node)value_node=ValueNode_Animated::create(value,time);
 			//if(!value_node)value_node=ValueNode_Animated::create(value.get_type());
-			
+
 			Action::Handle action;
-			
+
 			if(!value_desc.is_value_node())
 			{
 				action=(ValueDescConnect::create());
@@ -443,13 +443,13 @@ Action::ValueDescSet::prepare()
 				action->set_param("dest",value_desc.get_value_node());
 				action->set_param("src",ValueNode::Handle(value_node));
 			}
-			
+
 			action->set_param("canvas",get_canvas());
 			action->set_param("canvas_interface",get_canvas_interface());
-			
+
 			if(!action->is_ready())
 				throw Error(Error::TYPE_NOTREADY);
-	
+
 				DEBUGPOINT();
 			add_action_front(action);
 		}
@@ -457,32 +457,32 @@ Action::ValueDescSet::prepare()
 		{
 			value_node=value_node.cast_dynamic(value_desc.get_value_node());
 		}
-		
+
 				DEBUGPOINT();
 		if(!value_node)
-			throw Error(_("Direct manipulation of this ValueNode type is not yet supported"));		
-		
+			throw Error(_("Direct manipulation of this ValueNode type is not yet supported"));
+
 		Action::Handle action(WaypointSetSmart::create());
-		
+
 		//Waypoint waypoint(value,time);
-		
+
 		Waypoint waypoint(value_node->new_waypoint_at_time(time));
 		waypoint.set_value(value);
-		
+
 		waypoint.set_before(synfigapp::Main::get_interpolation());
 		waypoint.set_after(synfigapp::Main::get_interpolation());
-		
+
 		action->set_param("canvas",get_canvas());
 		action->set_param("canvas_interface",get_canvas_interface());
 		action->set_param("value_node",ValueNode::Handle(value_node));
 		action->set_param("waypoint",waypoint);
-		
+
 		if(!action->is_ready())
 			throw Error(Error::TYPE_NOTREADY);
 
 				DEBUGPOINT();
 		add_action(action);
-		
+
 		return;
 	}
 	else
@@ -492,38 +492,38 @@ Action::ValueDescSet::prepare()
 			if(ValueNode_Const::Handle::cast_dynamic(value_desc.get_value_node()))
 			{
 				Action::Handle action(ValueNodeConstSet::create());
-				
+
 				action->set_param("canvas",get_canvas());
 				action->set_param("canvas_interface",get_canvas_interface());
 				action->set_param("value_node",value_desc.get_value_node());
 				action->set_param("new_value",value);
-				
+
 				if(!action->is_ready())
 					throw Error(Error::TYPE_NOTREADY);
-		
+
 				add_action_front(action);
 				return;
 			}
 			else
 			if(ValueNode_Animated::Handle::cast_dynamic(value_desc.get_value_node()))
-				throw Error(_("You must be in Animate-Editing-Mode to directly manipulate this value"));		
+				throw Error(_("You must be in Animate-Editing-Mode to directly manipulate this value"));
 			else
-				throw Error(_("Direct manipulation of this ValueNode type is not yet supported"));		
+				throw Error(_("Direct manipulation of this ValueNode type is not yet supported"));
 		}
 		else
 		if(value_desc.parent_is_layer_param() && !value_desc.is_value_node())
 		{
 			Action::Handle layer_param_set(LayerParamSet::create());
-			
+
 			layer_param_set->set_param("canvas",get_canvas());
 			layer_param_set->set_param("canvas_interface",get_canvas_interface());
 			layer_param_set->set_param("layer",value_desc.get_layer());
 			layer_param_set->set_param("param",value_desc.get_param_name());
 			layer_param_set->set_param("new_value",value);
-	
+
 			if(!layer_param_set->is_ready())
 				throw Error(Error::TYPE_NOTREADY);
-			
+
 			add_action_front(layer_param_set);
 			return;
 		}

@@ -65,12 +65,12 @@ Action::ParamVocab
 Action::GroupRemove::get_param_vocab()
 {
 	ParamVocab ret(Action::CanvasSpecific::get_param_vocab());
-	
+
 	ret.push_back(ParamDesc("group",Param::TYPE_STRING)
 		.set_local_name(_("Group"))
 		.set_desc(_("Name of the Group to remove"))
 	);
-	
+
 	return ret;
 }
 
@@ -96,7 +96,7 @@ Action::GroupRemove::set_param(const synfig::String& name, const Action::Param &
 	if(name=="group" && param.get_type()==Param::TYPE_STRING)
 	{
 		group=param.get_string();
-		
+
 		return true;
 	}
 
@@ -115,7 +115,7 @@ void
 Action::GroupRemove::perform()
 {
 	layer_list=get_canvas()->get_layers_in_group(group);
-	
+
 	std::set<synfig::Layer::Handle>::iterator iter;
 	for(iter=layer_list.begin();iter!=layer_list.end();++iter)
 	{

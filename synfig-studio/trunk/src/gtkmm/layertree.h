@@ -50,7 +50,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace Gtk { class TreeModelSort; }; 
+namespace Gtk { class TreeModelSort; };
 
 namespace studio {
 
@@ -71,18 +71,18 @@ public:
 		COLUMNID_NAME,
 		COLUMNID_VALUE,
 		COLUMNID_TIME_TRACK,
-		
+
 		COLUMNID_END			//!< \internal
 	};
 */
 	typedef std::list<synfig::Layer::Handle> LayerList;
-	
+
 	/*
  -- ** -- P U B L I C  D A T A ------------------------------------------------
 	*/
 
 public:
-	
+
 	//LayerTreeStore::Model model;
 
 	LayerTreeStore::Model layer_model;
@@ -106,7 +106,7 @@ private:
 
 	Gtk::TreeView* param_tree_view_;
 
-	
+
 
 	Gtk::HBox *hbox;
 
@@ -119,7 +119,7 @@ private:
 	Glib::RefPtr<LayerTreeStore> layer_tree_store_;
 
 	Glib::RefPtr<LayerParamTreeStore> param_tree_store_;
-	
+
 	Glib::RefPtr<Gtk::TreeModelSort> sorted_layer_tree_store_;
 
 //	CellRenderer_TimeTrack *cellrenderer_time_track;
@@ -148,16 +148,16 @@ private:
 	Gtk::Button *button_delete;
 
 	Widget_ValueBase blend_method_widget;
-	
+
 	/*
  -- ** -- P R I V A T E   M E T H O D S ---------------------------------------
 	*/
 
 private:
-	
+
 	Gtk::Widget* create_layer_tree();
 	Gtk::Widget* create_param_tree();
-	
+
 	/*
  -- ** -- S I G N A L   T E R M I N A L S -------------------------------------
 	*/
@@ -187,7 +187,7 @@ private:
 	void on_blend_method_changed();
 
 public:
-	
+
 	void on_raise_pressed();
 
 	void on_lower_pressed();
@@ -211,10 +211,10 @@ public:
 
 	const Gtk::TreeView& get_layer_tree_view()const { return *layer_tree_view_; }
 	const Gtk::TreeView& get_param_tree_view()const { return *param_tree_view_; }
-	
+
 	Glib::RefPtr<Gtk::TreeSelection> get_selection() { return get_layer_tree_view().get_selection(); }
 	Glib::SignalProxy1< bool,GdkEvent* >  signal_event () { return get_layer_tree_view().signal_event(); }
-	
+
 	LayerTree();
 	~LayerTree();
 
@@ -237,9 +237,9 @@ public:
 	sigc::signal<void,synfigapp::ValueDesc,synfig::Waypoint,int>& signal_waypoint_clicked() { return signal_waypoint_clicked_; }
 
 	etl::handle<synfigapp::SelectionManager> get_selection_manager() { return layer_tree_store_->canvas_interface()->get_selection_manager(); }
-	
-	
-	
+
+
+
 	void select_layer(synfig::Layer::Handle layer);
 	void select_layers(const LayerList& layer_list);
 	void select_all_children_layers(synfig::Layer::Handle layer);

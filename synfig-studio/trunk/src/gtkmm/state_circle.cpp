@@ -80,33 +80,33 @@ class studio::StateCircle_Context : public sigc::trackable
 {
 	etl::handle<CanvasView> canvas_view_;
 	CanvasView::IsWorking is_working;
-	
+
 	Duckmatic::Push duckmatic_push;
-	
+
 	Point point_holder;
-	
+
 	etl::handle<Duck> point2_duck;
 
 	void refresh_ducks();
-	
+
 	bool prev_workarea_layer_status_;
-		
+
 	//Toolbox settings
 	synfigapp::Settings& settings;
-	
+
 	//Toolbox display
 	Gtk::Table options_table;
-	
+
 	Gtk::Entry		entry_id; //what to name the layer
-	
+
 	Widget_Enum		enum_falloff;
 	Widget_Enum		enum_blend;
-	
+
 	Gtk::Adjustment	adj_feather;
 	Gtk::SpinButton	spin_feather;
-	
+
 	Gtk::CheckButton check_invert;
-	
+
 public:
 
 	synfig::String get_id()const { return entry_id.get_text(); }
@@ -114,17 +114,17 @@ public:
 
 	int get_falloff()const { return enum_falloff.get_value(); }
 	void set_falloff(int x) { return enum_falloff.set_value(x); }
-	
+
 	int get_blend()const { return enum_blend.get_value(); }
 	void set_blend(int x) { return enum_blend.set_value(x); }
-	
+
 	Real get_feather()const { return adj_feather.get_value(); }
 	void set_feather(Real f) { adj_feather.set_value(f); }
-	
+
 	bool get_invert()const { return check_invert.get_active(); }
 	void set_invert(bool i) { check_invert.set_active(i); }
-	
-	void refresh_tool_options(); //to refresh the toolbox	
+
+	void refresh_tool_options(); //to refresh the toolbox
 
 	//events
 	Smach::event_result event_stop_handler(const Smach::event& x);
@@ -141,7 +141,7 @@ public:
 	etl::handle<synfigapp::CanvasInterface> get_canvas_interface()const{return canvas_view_->canvas_interface();}
 	synfig::Canvas::Handle get_canvas()const{return canvas_view_->get_canvas();}
 	WorkArea * get_work_area()const{return canvas_view_->get_work_area();}
-	
+
 	//Modifying settings etc.
 	void load_settings();
 	void save_settings();
@@ -156,7 +156,7 @@ public:
 	}
 
 	void make_circle(const Point& p1, const Point& p2);
-	
+
 };	// END of class StateGradient_Context
 
 /* === M E T H O D S ======================================================= */
@@ -172,7 +172,7 @@ StateCircle::StateCircle():
 	insert(event_def(EVENT_WORKAREA_MOUSE_BUTTON_DRAG,&StateCircle_Context::event_mouse_click_handler));
 	insert(event_def(EVENT_WORKAREA_MOUSE_BUTTON_UP,&StateCircle_Context::event_mouse_click_handler));
 	insert(event_def(EVENT_REFRESH_TOOL_OPTIONS,&StateCircle_Context::event_refresh_tool_options));
-}	
+}
 
 StateCircle::~StateCircle()
 {
@@ -180,9 +180,9 @@ StateCircle::~StateCircle()
 
 void
 StateCircle_Context::load_settings()
-{	
+{
 	String value;
-	
+
 	//parse the arguments yargh!
 	if(settings.get_value("circle.id",value))
 		set_id(value);
@@ -193,17 +193,17 @@ StateCircle_Context::load_settings()
 		set_falloff(atoi(value.c_str()));
 	else
 		set_falloff(2);
-	
+
 	if(settings.get_value("circle.blend",value) && value != "")
 		set_blend(atoi(value.c_str()));
 	else
 		set_blend(0);//(int)Color::BLEND_COMPOSITE); //0 should be blend composites value
-	
+
 	if(settings.get_value("circle.feather",value))
 		set_feather(atof(value.c_str()));
 	else
 		set_feather(0);
-	
+
 	if(settings.get_value("circle.invert",value) && value != "0")
 		set_invert(true);
 	else
@@ -212,7 +212,7 @@ StateCircle_Context::load_settings()
 
 void
 StateCircle_Context::save_settings()
-{	
+{
 	settings.set_value("circle.id",get_id());
 	settings.set_value("circle.fallofftype",strprintf("%d",get_falloff()));
 	settings.set_value("circle.blend",strprintf("%d",get_blend()));
@@ -232,10 +232,10 @@ StateCircle_Context::increment_id()
 	String id(get_id());
 	int number=1;
 	int digits=0;
-	
+
 	if(id.empty())
 		id="Circle";
-	
+
 	// If there is a number
 	// already at the end of the
 	// id, then remove it.
@@ -243,11 +243,11 @@ StateCircle_Context::increment_id()
 	{
 		// figure out how many digits it is
 		for(digits=0;(int)id.size()-1>=digits && id[id.size()-1-digits]<='9' && id[id.size()-1-digits]>='0';digits++)while(false);
-		
+
 		String str_number;
 		str_number=String(id,id.size()-digits,id.size());
 		id=String(id,0,id.size()-digits);
-		
+
 		number=atoi(str_number.c_str());
 	}
 	else
@@ -255,15 +255,15 @@ StateCircle_Context::increment_id()
 		number=1;
 		digits=3;
 	}
-	
+
 	number++;
-	
+
 	// Add the number back onto the id
 	{
 		const String format(strprintf("%%0%dd",digits));
 		id+=strprintf(format.c_str(),number);
 	}
-	
+
 	// Set the ID
 	set_id(id);
 }
@@ -281,7 +281,7 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 {
 	no_egress_on_selection_change=false;
 	// Set up the tool options dialog
-	//options_table.attach(*manage(new Gtk::Label(_("Circle Tool"))), 0, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);	
+	//options_table.attach(*manage(new Gtk::Label(_("Circle Tool"))), 0, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	options_table.attach(entry_id, 0, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
 	enum_falloff.set_param_desc(ParamDesc("falloff")
@@ -293,11 +293,11 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 		.add_enum_value(CIRCLE_SQRT,"sqrt",_("Square Root"))
 		.add_enum_value(CIRCLE_SIGMOND,"sigmond",_("Sigmond"))
 		.add_enum_value(CIRCLE_COSINE,"cosine",_("Cosine")));
-	
+
 	enum_blend.set_param_desc(ParamDesc(Color::BLEND_COMPOSITE,"blend_method")
 		.set_local_name(_("Blend Method"))
 		.set_description(_("Defines the blend method to be used for circles")));
-	
+
 	load_settings();
 
 	//feather stuff
@@ -305,31 +305,31 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	options_table.attach(spin_feather, 1, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	options_table.attach(enum_falloff, 0, 2, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	options_table.attach(enum_blend, 0, 2, 5, 6, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	
+
 	//invert flag
 	options_table.attach(check_invert, 0, 2, 6, 7, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	
+
 	options_table.show_all();
-	
+
 	refresh_tool_options();
 	App::dialog_tool_options->present();
 
 	// Turn off layer clicking
 	get_work_area()->allow_layer_clicks=false;
-	
+
 	// clear out the ducks
 	get_work_area()->clear_ducks();
-	
+
 	// Refresh the work area
 	get_work_area()->queue_draw();
-	
+
 	// Hide the tables if they are showing
 	//prev_table_status=get_canvas_view()->tables_are_visible();
 	//if(prev_table_status)get_canvas_view()->hide_tables();
-		
+
 	// Hide the time bar
 	//get_canvas_view()->hide_timebar();
-	
+
 	// Connect a signal
 	//get_work_area()->signal_user_click().connect(sigc::mem_fun(*this,&studio::StateCircle_Context::on_user_click));
 	get_canvas_view()->work_area->set_cursor(Gdk::CROSSHAIR);
@@ -369,7 +369,7 @@ StateCircle_Context::~StateCircle_Context()
 
 	// Bring back the tables if they were out before
 	//if(prev_table_status)get_canvas_view()->show_tables();
-			
+
 	// Refresh the work area
 	get_work_area()->queue_draw();
 
@@ -396,10 +396,10 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 	synfigapp::PushMode push_mode(get_canvas_interface(),synfigapp::MODE_NORMAL);
 
 	Layer::Handle layer;
-	
+
 	Canvas::Handle canvas(get_canvas_view()->get_canvas());
 	int depth(0);
-	
+
 	// we are temporarily using the layer to hold something
 	layer=get_canvas_view()->get_selection_manager()->get_selected_layer();
 	if(layer)
@@ -411,30 +411,30 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 	const synfig::TransformStack& transform(get_canvas_view()->get_curr_transform_stack());
 	const Point p1(transform.unperform(_p1));
 	const Point p2(transform.unperform(_p2));
-	
+
 	if(get_falloff() >= 0 && get_falloff() < CIRCLE_NUM_FALLOFF)
 	{
-		
+
 		layer=get_canvas_interface()->add_layer_to("circle",canvas,depth);
-		
+
 		layer->set_param("pos",p1);
 		get_canvas_interface()->signal_layer_param_changed()(layer,"pos");
-		
+
 		layer->set_param("radius",(p2-p1).mag());
 		get_canvas_interface()->signal_layer_param_changed()(layer,"radius");
-		
+
 		layer->set_param("falloff",get_falloff());
 		get_canvas_interface()->signal_layer_param_changed()(layer,"falloff");
-		
+
 		layer->set_param("feather",get_feather());
 		get_canvas_interface()->signal_layer_param_changed()(layer,"feather");
 
 		layer->set_param("invert",get_invert());
 		get_canvas_interface()->signal_layer_param_changed()(layer,"invert");
-		
+
 		layer->set_param("blend_method",get_blend());
 		get_canvas_interface()->signal_layer_param_changed()(layer,"blend_method");
-		
+
 		layer->set_description(get_id());
 		get_canvas_interface()->signal_layer_new_description()(layer,layer->get_description());
 
@@ -443,7 +443,7 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 		get_canvas_interface()->get_selection_manager()->set_selected_layer(layer);
 		no_egress_on_selection_change=false;
 	}
-	
+
 	reset();
 	increment_id();
 }
@@ -452,7 +452,7 @@ Smach::event_result
 StateCircle_Context::event_mouse_click_handler(const Smach::event& x)
 {
 	const EventMouse& event(*reinterpret_cast<const EventMouse*>(&x));
-	
+
 	if(event.key==EVENT_WORKAREA_MOUSE_BUTTON_DOWN && event.button==BUTTON_LEFT)
 	{
 		point_holder=get_work_area()->snap_point_to_grid(event.pos);
@@ -478,7 +478,7 @@ StateCircle_Context::event_mouse_click_handler(const Smach::event& x)
 	if(event.key==EVENT_WORKAREA_MOUSE_BUTTON_DRAG && event.button==BUTTON_LEFT)
 	{
 		point2_duck->set_point(point_holder-get_work_area()->snap_point_to_grid(event.pos));
-		get_work_area()->queue_draw();			
+		get_work_area()->queue_draw();
 		return Smach::RESULT_ACCEPT;
 	}
 

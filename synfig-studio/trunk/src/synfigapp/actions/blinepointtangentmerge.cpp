@@ -73,7 +73,7 @@ Action::ParamVocab
 Action::BLinePointTangentMerge::get_param_vocab()
 {
 	ParamVocab ret(Action::CanvasSpecific::get_param_vocab());
-	
+
 	ret.push_back(ParamDesc("value_node",Param::TYPE_VALUENODE)
 		.set_local_name(_("ValueNode of BLinePoint"))
 	);
@@ -81,7 +81,7 @@ Action::BLinePointTangentMerge::get_param_vocab()
 	ret.push_back(ParamDesc("time",Param::TYPE_TIME)
 		.set_local_name(_("Time"))
 	);
-	
+
 	return ret;
 }
 
@@ -108,13 +108,13 @@ Action::BLinePointTangentMerge::set_param(const synfig::String& name, const Acti
 	if(name=="value_node" && param.get_type()==Param::TYPE_VALUENODE)
 	{
 		value_node=value_node.cast_dynamic(param.get_value_node());
-		
+
 		return (bool)(value_node);
 	}
 	if(name=="time" && param.get_type()==Param::TYPE_TIME)
 	{
 		time=param.get_time();
-		
+
 		return true;
 	}
 
@@ -129,7 +129,7 @@ Action::BLinePointTangentMerge::is_ready()const
 
 	if(time==(Time::begin()-1))
 		synfig::error("Missing time");
-	
+
 	if(!value_node || time==(Time::begin()-1))
 		return false;
 	return Action::CanvasSpecific::is_ready();
@@ -141,40 +141,40 @@ Action::BLinePointTangentMerge::prepare()
 	clear();
 
 	Action::Handle action;
-	
+
 	{
 		action=Action::create("value_desc_set");
 		if(!action)
 			throw Error(_("Couldn't find action \"value_desc_set\""));
-		
+
 		action->set_param("canvas",get_canvas());
 		action->set_param("canvas_interface",get_canvas_interface());
 		action->set_param("value_desc",ValueDesc(value_node,3));
 		action->set_param("time",time);
 		action->set_param("new_value",synfig::ValueBase(false));
-	
+
 		assert(action->is_ready());
 		if(!action->is_ready())
 			throw Error(Error::TYPE_NOTREADY);
-	
+
 		add_action(action);
 	}
 	{
 		action=Action::create("value_desc_set");
 		if(!action)
 			throw Error(_("Couldn't find action \"value_desc_set\""));
-		
+
 		action->set_param("canvas",get_canvas());
 		action->set_param("canvas_interface",get_canvas_interface());
 		action->set_param("value_desc",ValueDesc(value_node,5));
 		action->set_param("time",time);
 		action->set_param("new_value",(*value_node->get_link("t1"))(time));
-	
+
 		assert(action->is_ready());
 		if(!action->is_ready())
 			throw Error(Error::TYPE_NOTREADY);
-	
+
 		add_action(action);
 	}
-	
+
 }

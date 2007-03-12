@@ -48,11 +48,11 @@ class WaypointSet :
 	public CanvasSpecific
 {
 private:
-	
+
 	synfig::ValueNode_Animated::Handle value_node;
-	
+
 	std::vector<synfig::Waypoint> waypoints;
-	std::vector<synfig::Waypoint> old_waypoints;	
+	std::vector<synfig::Waypoint> old_waypoints;
 
 	std::vector<synfig::Waypoint> overwritten_waypoints;
 

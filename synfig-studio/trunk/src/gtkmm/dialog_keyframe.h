@@ -50,11 +50,11 @@ class Dialog_Keyframe : public Gtk::Dialog
 {
 	Gtk::Tooltips tooltips_;
 	etl::handle<synfigapp::CanvasInterface> canvas_interface;
-	
+
 	synfig::Keyframe keyframe_;
 
 	Gtk::Entry entry_description;
-	
+
 	Widget_WaypointModel* widget_waypoint_model;
 
 	void on_ok_pressed();
@@ -71,7 +71,7 @@ public:
 private:
 
 }; // END of class RenderSettings
-	
+
 }; // END of namespace studio
 
 /* === E N D =============================================================== */

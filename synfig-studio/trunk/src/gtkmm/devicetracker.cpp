@@ -58,17 +58,17 @@ DeviceTracker::DeviceTracker()
 		GList*	device_list;
 		GList*	iter;
 		device_list=gdk_devices_list();
-		
+
 		for(iter=device_list;iter;iter=g_list_next(iter))
 		{
 			GdkDevice* device=reinterpret_cast<GdkDevice*>(iter->data);
 			gdk_device_set_mode(device,GDK_MODE_SCREEN);
-			
+
 			synfigapp::InputDevice::Handle input_device;
 			input_device=synfigapp::Main::add_input_device(device->name,synfigapp::InputDevice::Type(device->source));
 			if(input_device->get_type()==synfigapp::InputDevice::TYPE_MOUSE)
 				synfigapp::Main::select_input_device(input_device);
-		}		
+		}
 	}
 }
 

@@ -96,7 +96,7 @@ DockBook::on_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& context, i
 		context->drag_finish(true, false, time);
 		return;
 	}
-	
+
 	context->drag_finish(false, false, time);
 }
 
@@ -104,7 +104,7 @@ void
 DockBook::add(Dockable& dockable, int position)
 {
 	dockable.detach();
-	
+
 	if(position==-1)
 		append_page(dockable, " ");
 	else
@@ -121,13 +121,13 @@ DockBook::add(Dockable& dockable, int position)
 			&dockable
 		)
 	);
-	
+
 	dockable.parent_=this;
 
 	dockable.show();
 
 	//set_current_page(get_n_pages()-1);
-		
+
 	signal_changed_();
 }
 
@@ -135,7 +135,7 @@ void
 DockBook::refresh_tab(Dockable* dockable)
 {
 	Gtk::Widget* label(dockable->create_tab_label());
-	
+
 	label->signal_button_press_event().connect(
 		sigc::bind(
 			sigc::mem_fun(
@@ -161,7 +161,7 @@ DockBook::remove(Dockable& dockable)
 	if(!deleting_)
 	{
 		signal_changed_();
-	
+
 		if(get_n_pages()==0)
 			signal_empty()();
 	}
@@ -177,16 +177,16 @@ synfig::String
 DockBook::get_local_contents()const
 {
 	synfig::String ret;
-	
+
 	for(int i(0);i!=const_cast<DockBook*>(this)->get_n_pages();i++)
 	{
 		Dockable& dockable(static_cast<Dockable&>(*const_cast<DockBook*>(this)->get_nth_page(i)));
-		
+
 		if(i)
 			ret+=", ";
 		ret+=dockable.get_local_name();
 	}
-	
+
 	return ret;
 }
 
@@ -194,16 +194,16 @@ synfig::String
 DockBook::get_contents()const
 {
 	synfig::String ret;
-	
+
 	for(int i(0);i!=const_cast<DockBook*>(this)->get_n_pages();i++)
 	{
 		Dockable& dockable(static_cast<Dockable&>(*const_cast<DockBook*>(this)->get_nth_page(i)));
-		
+
 		if(i)
 			ret+=' ';
 		ret+=dockable.get_name();
 	}
-	
+
 	return ret;
 }
 
@@ -225,7 +225,7 @@ DockBook::set_contents(const synfig::String& x)
 			dock=String(str.begin(),str.begin()+separator);
 			str=String(str.begin()+separator+1,str.end());
 		}
-		
+
 		try
 		{
 			add(App::dock_manager->find_dockable(dock));
@@ -238,9 +238,9 @@ DockBook::tab_button_pressed(GdkEventButton* event, Dockable* dockable)
 {
 	if(event->button!=3)
 		return false;
-	
+
 	Gtk::Menu *tabmenu=manage(new class Gtk::Menu());
-	
+
 	tabmenu->items().push_back(
 		Gtk::Menu_Helpers::StockMenuElem(Gtk::StockID("gtk-close"),
 			sigc::mem_fun(*dockable,&Dockable::detach)
@@ -248,6 +248,6 @@ DockBook::tab_button_pressed(GdkEventButton* event, Dockable* dockable)
 	);
 
 	tabmenu->popup(event->button,gtk_get_current_event_time());
-	
+
 	return true;
 }

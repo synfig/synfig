@@ -61,11 +61,11 @@ class CanvasInterface;
 namespace studio {
 
 class Widget_Color;
-	
+
 class Dialog_Color : public Gtk::Dialog
 {
 	DialogSettings dialog_settings;
-	
+
 	sigc::signal<void,synfig::Color> signal_edited_;
 	//sigc::signal<void,synfig::Color> signal_apply_;
 
@@ -76,21 +76,21 @@ class Dialog_Color : public Gtk::Dialog
 	Widget_ColorEdit* widget_color;
 
 	bool busy_;
-	
+
 public:
 	bool busy()const { return busy_; }
-	
+
 	sigc::signal<void,synfig::Color>& signal_edited() { return signal_edited_; }
-	
+
 	//sigc::signal<void,synfig::Color>& signal_apply() { return signal_apply_; }
-	
+
 	void set_color(const synfig::Color& x) { widget_color->set_value(x); }
 
 	synfig::Color get_color()const { return widget_color->get_value(); }
-		
+
 	void reset();
 
-	
+
 	Dialog_Color();
 	~Dialog_Color();
 

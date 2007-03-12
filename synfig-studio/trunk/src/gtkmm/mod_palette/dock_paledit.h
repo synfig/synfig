@@ -64,7 +64,7 @@ namespace studio {
 
 class Widget_Color;
 class PaletteSettings;
-	
+
 class Dock_PalEdit : public Dockable
 {
 	friend class PaletteSettings;
@@ -72,11 +72,11 @@ class Dock_PalEdit : public Dockable
 	Glib::RefPtr<Gtk::ActionGroup> action_group;
 
 	synfig::Palette palette_;
-	
+
 	Gtk::Table table;
-	
+
 	void on_add_pressed();
-	
+
 	void show_menu(int i);
 
 	sigc::signal<void> signal_changed_;
@@ -97,11 +97,11 @@ public:
 	int size()const;
 
 	void set_default_palette();
-	
+
 	void refresh();
 
 	const sigc::signal<void>& signal_changed() { return signal_changed_; }
-		
+
 	Dock_PalEdit();
 	~Dock_PalEdit();
 }; // END of Dock_PalEdit

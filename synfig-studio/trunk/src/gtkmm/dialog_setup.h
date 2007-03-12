@@ -65,11 +65,11 @@ class GammaPattern : public Gtk::DrawingArea
 	float r_F32_to_F32(float x)const { float f((pow(x,gamma_r)*std::min(red_blue_level,1.0f)*(1.0f-black_level)+black_level)); if(f<0)f=0; if(f>1)f=1; return f; }
 	float g_F32_to_F32(float x)const { float f((pow(x,gamma_g)*sqrt(std::min(2.0f-red_blue_level,red_blue_level))*(1.0f-black_level)+black_level)); if(f<0)f=0; if(f>1)f=1; return f; }
 	float b_F32_to_F32(float x)const { float f((pow(x,gamma_b)*std::min(2.0f-red_blue_level,1.0f)*(1.0f-black_level)+black_level)); if(f<0)f=0; if(f>1)f=1; return f; }
-	
+
 public:
-	
+
 	void refresh();
-	
+
 	void set_gamma_r(float x) { gamma_r=x; }
 	void set_gamma_g(float x) { gamma_g=x; };
 	void set_gamma_b(float x) { gamma_b=x; };
@@ -81,9 +81,9 @@ public:
 	float get_gamma_b()const { return gamma_b; }
 	float get_black_level()const { return black_level; }
 	float get_red_blue_level()const { return red_blue_level; }
-	
+
 	GammaPattern();
-	
+
 	~GammaPattern();
 
 	bool redraw(GdkEventExpose*bleh=NULL);
@@ -96,16 +96,16 @@ class BlackLevelSelector : public Gtk::DrawingArea
 	sigc::signal<void> signal_value_changed_;
 
 public:
-	
+
 	BlackLevelSelector();
-	
+
 	~BlackLevelSelector();
 
 	sigc::signal<void>& signal_value_changed() { return signal_value_changed_; }
-	
+
 	void set_value(float x) { level=x; queue_draw(); }
 
-	const float &get_value()const { return level; }	
+	const float &get_value()const { return level; }
 
 	bool redraw(GdkEventExpose*bleh=NULL);
 
@@ -119,16 +119,16 @@ class RedBlueLevelSelector : public Gtk::DrawingArea
 	sigc::signal<void> signal_value_changed_;
 
 public:
-	
+
 	RedBlueLevelSelector();
-	
+
 	~RedBlueLevelSelector();
 
 	sigc::signal<void>& signal_value_changed() { return signal_value_changed_; }
-	
+
 	void set_value(float x) { level=x; queue_draw(); }
 
-	const float &get_value()const { return level; }	
+	const float &get_value()const { return level; }
 
 	bool redraw(GdkEventExpose*bleh=NULL);
 
@@ -139,7 +139,7 @@ class Widget_Enum;
 
 class Dialog_Setup : public Gtk::Dialog
 {
-		
+
 	void on_ok_pressed();
 	void on_apply_pressed();
 
@@ -149,11 +149,11 @@ class Dialog_Setup : public Gtk::Dialog
 	void on_black_level_change();
 	void on_red_blue_level_change();
 
-	GammaPattern gamma_pattern;	
+	GammaPattern gamma_pattern;
 	BlackLevelSelector black_level_selector;
 	RedBlueLevelSelector red_blue_level_selector;
 	Gtk::OptionMenu timestamp_optionmenu;
-	
+
 	Gtk::Adjustment adj_gamma_r;
 	Gtk::Adjustment adj_gamma_g;
 	Gtk::Adjustment adj_gamma_b;
@@ -164,7 +164,7 @@ class Dialog_Setup : public Gtk::Dialog
 	Gtk::CheckButton toggle_use_colorspace_gamma;
 
 	synfig::Time::Format time_format;
-	
+
 	Gtk::Menu *timestamp_menu;
 	Widget_Enum *widget_enum;
 public:
@@ -172,7 +172,7 @@ public:
 	void set_time_format(synfig::Time::Format time_format);
 
 	const synfig::Time::Format& get_time_format()const { return time_format; }
-	
+
 	Dialog_Setup();
 	~Dialog_Setup();
 

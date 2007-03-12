@@ -39,7 +39,7 @@
 /* === C L A S S E S & S T R U C T S ======================================= */
 
 namespace synfigapp {
-	
+
 class BLineConverter
 {
 public:
@@ -48,15 +48,15 @@ public:
 		int 		curind;
 		synfig::Real	tangentscale;
 		synfig::Real	error;	//negative error will indicate invalid;
-		
-		cpindex(int ci, synfig::Real s=0, synfig::Real e=-1) 
-		:curind(ci), tangentscale(s), error(e) 
+
+		cpindex(int ci, synfig::Real s=0, synfig::Real e=-1)
+		:curind(ci), tangentscale(s), error(e)
 		{}
-		
+
 		cpindex(const cpindex & o)
-		:curind(o.curind), tangentscale(o.tangentscale), error(o.error) 
+		:curind(o.curind), tangentscale(o.tangentscale), error(o.error)
 		{}
-		
+
 		const cpindex & operator = (const cpindex & rhs)
 		{
 			curind = rhs.curind;
@@ -64,12 +64,12 @@ public:
 			error = rhs.error;
 			return *this;
 		}
-		
+
 		bool operator < (const cpindex &rhs) const
 		{
-			return curind < rhs.curind;		
+			return curind < rhs.curind;
 		}
-		
+
 		//point is obviously in[curind]
 		//tangent scale will get reset to the smallest (or something else depending on experimentation)
 	};
@@ -81,18 +81,18 @@ private:
 
 	//temporary point storage for vector calc
 	std::vector<synfig::Point>	ftemp;
-	
-	std::vector<synfig::Vector>	df; //the derivative cache	
+
+	std::vector<synfig::Vector>	df; //the derivative cache
 	std::vector<synfig::Real>	cvt; //the curvature cache
-	
+
 	std::vector<int>			brk; //the break point cache
-	
+
 	std::vector<synfig::Real> 	di,	//cumulative distance
 								d_i; //distance between adjacent segments
-	
+
 	std::vector<synfig::Point>	work; //the working point cache for the entire curve
 	std::vector<cpindex> 		curind;
-	
+
 	//function parameters
 	void clear();
 
@@ -108,7 +108,7 @@ public:
 	static void EnforceMinWidth(std::list<synfig::BLinePoint> &bline, synfig::Real min_pressure);
 	void operator ()(std::list<synfig::BLinePoint> &out, const std::list<synfig::Point> &in,const std::list<synfig::Real> &in_w);
 };
-	
+
 }; // END of namespace synfigapp
 
 /* === E N D =============================================================== */

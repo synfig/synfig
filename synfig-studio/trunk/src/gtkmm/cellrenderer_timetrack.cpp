@@ -77,7 +77,7 @@ CellRenderer_TimeTrack::CellRenderer_TimeTrack():
 	Glib::ObjectBase	(typeid(CellRenderer_TimeTrack)),
 	Gtk::CellRenderer	(),
 	adjustment_			(10,10,20,0,0,0),
-	
+
 	property_valuedesc_	(*this,"value_desc",synfigapp::ValueDesc()),
 	property_canvas_	(*this,"canvas",synfig::Canvas::Handle()),
 	property_adjustment_(*this,"adjustment",&adjustment_),
@@ -129,20 +129,20 @@ const synfig::Node::time_set *get_times_from_vdesc(const synfigapp::ValueDesc &v
 	if(v.get_value_type() == synfig::ValueBase::TYPE_CANVAS)
 	{
 		synfig::Canvas::Handle canvasparam = v.get_value().get(Canvas::Handle());
-	
+
 		if(canvasparam)
 		{
 			return &canvasparam->get_times();
 		}
 	}
-	
+
 	ValueNode *base_value = v.get_value_node().get();
-	
-	ValueNode_DynamicList *parent_value_node = 
+
+	ValueNode_DynamicList *parent_value_node =
 			v.parent_is_value_node() ?
 				dynamic_cast<ValueNode_DynamicList *>(v.get_parent_value_node().get()) :
 				0;
-	
+
 	//we want a dynamic list entry to override the normal...
 	if(parent_value_node)
 	{
@@ -157,33 +157,33 @@ const synfig::Node::time_set *get_times_from_vdesc(const synfigapp::ValueDesc &v
 bool get_closest_time(const synfig::Node::time_set &tset, const Time &t, const Time &range, Time &out)
 {
 	Node::time_set::const_iterator	i,j,end = tset.end();
-	
+
 	//TODO add in RangeGet so it's not so damn hard to click on points
-	
+
 	i = tset.upper_bound(t); //where t is the lower bound, t < [first,i)
 	j = i; --j;
-	
+
 	double dist = Time::end();
 	double closest = 0;
-	
+
 	if(i != end)
 	{
 		closest = i->get_time();
 		dist = abs(i->get_time() - t);
 	}
-	
+
 	if(j != end && (abs(j->get_time() - t) < dist) )
 	{
 		closest = j->get_time();
 		dist = abs(j->get_time() - t);
 	}
-	
+
 	if( dist <= range/2 )
 	{
 		out = closest;
 		return true;
 	}
-	
+
 	return false;
 }
 
@@ -198,7 +198,7 @@ CellRenderer_TimeTrack::render_vfunc(
 {
 	if(!window)
 		return;
-	
+
 	Glib::RefPtr<Gdk::GC> gc(Gdk::GC::create(window));
 	Glib::RefPtr<Gdk::GC> inactive_gc(Gdk::GC::create(window));
 	Gtk::Adjustment *adjustment=get_adjustment();
@@ -217,9 +217,9 @@ CellRenderer_TimeTrack::render_vfunc(
 	inactive_gc->set_rgb_fg_color(inactive_color);
 	inactive_gc->set_stipple(Gdk::Bitmap::create(stipple_xpm,2,2));
 	inactive_gc->set_fill(Gdk::STIPPLED);
-	
+
 	synfig::Canvas::Handle canvas(property_canvas().get_value());
-	
+
 	synfigapp::ValueDesc value_desc = property_value_desc().get_value();
 	synfig::ValueNode *base_value = value_desc.get_value_node().get();
 	// synfig::ValueNode_Animated *value_node=dynamic_cast<synfig::ValueNode_Animated*>(base_value);
@@ -233,61 +233,61 @@ CellRenderer_TimeTrack::render_vfunc(
 	{
 		const synfig::KeyframeList& keyframe_list(canvas->keyframe_list());
 		synfig::KeyframeList::const_iterator iter;
-		
+
 		for(iter=keyframe_list.begin();iter!=keyframe_list.end();++iter)
 		{
 			if(!iter->get_time().is_valid())
 				continue;
-			
+
 			const int x((int)((float)area_.get_width()/(adjustment->get_upper()-adjustment->get_lower())*(iter->get_time()-adjustment->get_lower())));
 			if(iter->get_time()>=adjustment->get_lower() && iter->get_time()<adjustment->get_upper())
 			{
 				gc->set_rgb_fg_color(keyframe_color);
 				window->draw_rectangle(gc, true, area_.get_x()+x, area_.get_y(), 1, area_.get_height()+1);
-			}			
+			}
 		}
 	}
-	
+
 	//render all the time points that exist
 	{
 		const synfig::Node::time_set *tset = get_times_from_vdesc(value_desc);
-		
+
 		if(tset)
 		{
 			synfig::Node::time_set::const_iterator	i = tset->begin(), end = tset->end();
-			
+
 			float 	lower = adjustment->get_lower(),
 					upper = adjustment->get_upper();
-			
+
 			Glib::RefPtr<Gdk::GC>	gc = Gdk::GC::create(widget.get_window());
-			
+
 			Gdk::Rectangle area(area_);
 			gc->set_clip_rectangle(area);
 			gc->set_line_attributes(1,Gdk::LINE_SOLID,Gdk::CAP_BUTT,Gdk::JOIN_MITER);
-			
+
 			bool valselected = sel_value.get_value_node() == base_value && !sel_times.empty();
-			
+
 			float cfps = get_canvas()->rend_desc().get_frame_rate();
-			
+
 			vector<Time>	drawredafter;
-			
+
 			Time diff = actual_time - actual_dragtime;//selected_time-drag_time;
 			for(; i != end; ++i)
 			{
 				//find the coordinate in the drawable space...
 				Time t = i->get_time();
-				
+
 				if(!t.is_valid())
 					continue;
-				
-				//if it found it... (might want to change comparison, and optimize 
+
+				//if it found it... (might want to change comparison, and optimize
 				//					 sel_times.find to not produce an overall nlogn solution)
-				
+
 				bool selected=false;
 				//not dragging... just draw as per normal
 				//if move dragging draw offset
 				//if copy dragging draw both...
-								
+
 				if(valselected && sel_times.find(t) != sel_times.end())
 				{
 					if(dragging) //skip if we're dragging because we'll render it later
@@ -314,10 +314,10 @@ CellRenderer_TimeTrack::render_vfunc(
 				{
 					gc->set_rgb_fg_color(Gdk::Color("#00EEEE"));
 				}
-				
+
 				//synfig::info("Displaying time: %.3f s",(float)t);
 				const int x = (int)((t-lower)*area.get_width()/(upper-lower));
-				
+
 				//should draw me a grey filled circle...
 				Gdk::Rectangle area2(
 					area.get_x() - area.get_height()/2 + x + 1,
@@ -326,12 +326,12 @@ CellRenderer_TimeTrack::render_vfunc(
 					area.get_height()-2
 				);
 				render_time_point_to_window(window,area2,*i,selected);
-				
+
 				/*window->draw_arc(gc,true,
 				area.get_x() + x - area.get_height()/4,	area.get_y() + area.get_height()/8,
 				area.get_height()/2, area.get_height()*3/4,
 				0, 64*360);
-				
+
 				gc->set_rgb_fg_color(Gdk::Color("#000000"));
 				window->draw_arc(gc,false,
 				area.get_x() + x - area.get_height()/4,	area.get_y() + area.get_height()/8,
@@ -339,22 +339,22 @@ CellRenderer_TimeTrack::render_vfunc(
 				0, 64*360);
 				*/
 			}
-			
+
 			{
 				vector<Time>::iterator i = drawredafter.begin(), end = drawredafter.end();
 				for(; i != end; ++i)
 				{
 					//find the coordinate in the drawable space...
 					Time t = *i;
-					
+
 					if(!t.is_valid())
 						continue;
-														
+
 					//synfig::info("Displaying time: %.3f s",(float)t);
 					const int x = (int)((t-lower)*area.get_width()/(upper-lower));
-					
+
 					//should draw me a grey filled circle...
-					
+
 					Gdk::Rectangle area2(
 						area.get_x() - area.get_height()/2 + x + 1,
 						area.get_y() + 1,
@@ -367,14 +367,14 @@ CellRenderer_TimeTrack::render_vfunc(
 					area.get_x() + x - area.get_height()/4,	area.get_y() + area.get_height()/8,
 					area.get_height()/2, area.get_height()*3/4,
 					0, 64*360);
-					
+
 					gc->set_rgb_fg_color(Gdk::Color("#000000"));
 					window->draw_arc(gc,false,
 					area.get_x() + x - area.get_height()/4,	area.get_y() + area.get_height()/8,
 					area.get_height()/2, area.get_height()*3/4,
 					0, 64*360);
 */
-				}		
+				}
 			}
 		}
 	}
@@ -382,7 +382,7 @@ CellRenderer_TimeTrack::render_vfunc(
 	/* THIS IS NOW HANDLED ENTIRELY BY THE TIMEPOINT SYSTEM
 	// This this is an animated value node, then render the waypoints
 	if(value_node)
-	{				
+	{
 		//now render the actual waypoints
 		synfig::ValueNode_Animated::WaypointList::iterator iter;
 		for(
@@ -413,8 +413,8 @@ CellRenderer_TimeTrack::render_vfunc(
 				shadow=Gtk::SHADOW_OUT;
 				selected=false;
 			}
-			
-			
+
+
 			widget.get_style()->paint_diamond(
 				Glib::RefPtr<Gdk::Window>::cast_static(window),
 				state,
@@ -443,24 +443,24 @@ CellRenderer_TimeTrack::render_vfunc(
 		bool is_off(false);
 		if(!activepoint_list.empty())
 			is_off=!activepoint_list.front().state;
-		
+
 		int xstart(0);
-		
+
 		int x=0,prevx=0;
 		for(next=activepoint_list.begin(),iter=next++;iter!=activepoint_list.end();iter=next++)
 		{
 			x=((int)((float)area.get_width()/(adjustment->get_upper()-adjustment->get_lower())*(iter->time-adjustment->get_lower())));
 			if(x<0)x=0;
 			if(x>area.get_width())x=area.get_width();
-			
+
 			bool status_at_time=0;
 			if(next!=activepoint_list.end())
 			{
-				status_at_time=!list_entry.status_at_time((iter->time+next->time)/2.0);	
+				status_at_time=!list_entry.status_at_time((iter->time+next->time)/2.0);
 			}
 			else
-				status_at_time=!list_entry.status_at_time(Time::end());	
-			
+				status_at_time=!list_entry.status_at_time(Time::end());
+
 			if(!is_off && status_at_time)
 			{
 				xstart=x;
@@ -472,7 +472,7 @@ CellRenderer_TimeTrack::render_vfunc(
 				window->draw_rectangle(inactive_gc, true, area.get_x()+xstart, area.get_y(), x-xstart, area.get_height());
 				is_off=false;
 			}
-			
+
 			/*
 			if(!is_off && iter!=activepoint_list.end() && next->state==false && iter->state==false)
 			{
@@ -490,9 +490,9 @@ CellRenderer_TimeTrack::render_vfunc(
 				is_off=false;
 			}
 			*/
-			
-			
-			
+
+
+
 			if(iter->time>=adjustment->get_lower() && iter->time<adjustment->get_upper())
 			{
 				int w(1);
@@ -507,8 +507,8 @@ CellRenderer_TimeTrack::render_vfunc(
 		{
 			window->draw_rectangle(inactive_gc, true, area.get_x()+xstart, area.get_y(), area.get_width()-xstart, area.get_height());
 		}
-	}		
-		
+	}
+
 	// Render a line that defines the current tick in time
 	{
 		gc->set_rgb_fg_color(curr_time_color);
@@ -581,9 +581,9 @@ CellRenderer_TimeTrack::activate_vfunc(
 	{
 	case GDK_MOTION_NOTIFY:
 		curr_time=((float)event->motion.x-(float)cell_area.get_x())/(float)cell_area.get_width()*(adjustment->get_upper()-adjustment->get_lower())+adjustment->get_lower();
-		
-		mode = NONE;			
-		{	
+
+		mode = NONE;
+		{
 			Gdk::ModifierType mod;
 			Gdk::Event(event).get_state(mod);
 			mode = mod;
@@ -593,20 +593,20 @@ CellRenderer_TimeTrack::activate_vfunc(
 	case GDK_BUTTON_RELEASE:
 	default:
 		curr_time=((float)event->button.x-(float)cell_area.get_x())/(float)cell_area.get_width()*(adjustment->get_upper()-adjustment->get_lower())+adjustment->get_lower();
-		{	
+		{
 			Gdk::ModifierType mod;
 			Gdk::Event(event).get_state(mod);
 			mode = mod;
 		}
-		break;		
+		break;
 	}
-	actual_time = curr_time;	
+	actual_time = curr_time;
 	if(canvas)
 		curr_time=curr_time.round(canvas->rend_desc().get_frame_rate());
 	selected_time=curr_time;
 
     Time pixel_width((adjustment->get_upper()-adjustment->get_lower())/cell_area.get_width());
-	
+
     switch(event->type)
     {
 	case GDK_BUTTON_PRESS:
@@ -616,26 +616,26 @@ CellRenderer_TimeTrack::activate_vfunc(
 		if(/*!value_node && */event->button.button == 1)
 		{
 			Time stime;
-			
+
 			/*!	UI specification:
-			
+
 				When nothing is selected, clicking on a point in either normal mode order
-					addative mode will select the time point closest to the click. 
+					addative mode will select the time point closest to the click.
 					Subtractive click will do nothing
-			
+
 				When things are already selected, clicking on a selected point does
 					nothing (in both normal and add mode).  Add mode clicking on an unselected
 					point adds it to the set.  Normal clicking on an unselected point will
 					select only that one time point.  Subtractive clicking on any point
 					will remove it from the the set if it is included.
 			*/
-						
+
 			synfigapp::ValueDesc valdesc = property_value_desc().get_value();
 			const Node::time_set *tset = get_times_from_vdesc(valdesc);
-			
+
 			bool clickfound = tset && get_closest_time(*tset,actual_time,pixel_width*cell_area.get_height(),stime);
 			bool selectmode = mode & SELECT_MASK;
-						
+
 			//NOTE LATER ON WE SHOULD MAKE IT SO MULTIPLE VALUENODES CAN BE SELECTED AT ONCE
 			//we want to jump to the value desc if we're not currently on it
 			//	but only if we want to add the point
@@ -644,34 +644,34 @@ CellRenderer_TimeTrack::activate_vfunc(
 				sel_value = valdesc;
 				sel_times.clear();
 			}
-			
+
 			//now that we've made sure we're selecting the correct value, deal with the already selected points
 			set<Time>::iterator foundi = clickfound ? sel_times.find(stime) : sel_times.end();
 			bool found = foundi != sel_times.end();
-			
+
 			//remove all other points from our list... (only select the one we need)
 			if(!selectmode && !found)
 			{
 				sel_times.clear();
 			}
-			
+
 			if(found && selectmode) //remove a single already selected point
 			{
 				sel_times.erase(foundi);
 			}else if(clickfound) //otherwise look at adding it
 			{
 				//for replace the list was cleared earlier, and for add it wasn't so it works
-				sel_times.insert(stime);				
+				sel_times.insert(stime);
 			}
 		}
-		
+
 		selection=false;
 		try
 		{
 			iter=find_waypoint(selected_time,pixel_width*cell_area.get_height()/2);
 			selected_waypoint=iter;
 			selected=*iter;
-			
+
 			selection=true;
 		}
 		catch(int)
@@ -679,7 +679,7 @@ CellRenderer_TimeTrack::activate_vfunc(
 			selection=false;
 			selected=synfig::UniqueID::nil();
 		}
-		
+
 		if((!sel_times.empty() || selection) && event->button.button==1)
 		{
 			dragging=true;
@@ -695,7 +695,7 @@ CellRenderer_TimeTrack::activate_vfunc(
 			const int index(property_value_desc().get_value().get_index());
 			const synfig::ValueNode_DynamicList::ListEntry::ActivepointList& activepoint_list(parent_value_node->list[index].timing_info);
 			synfig::ValueNode_DynamicList::ListEntry::ActivepointList::const_iterator iter;
-	
+
 			for(iter=activepoint_list.begin();iter!=activepoint_list.end();++iter)
 			{
 				Time val=abs(iter->time-selected_time);
@@ -708,15 +708,15 @@ CellRenderer_TimeTrack::activate_vfunc(
 			}
 			// Perhaps I sould signal if we selected this activepoint?
 		}*/
-		
+
 			if(event->button.button==3)
 			{
 				Time stime;
 				synfigapp::ValueDesc valdesc = property_value_desc().get_value();
 				const Node::time_set *tset = get_times_from_vdesc(valdesc);
-				
+
 				bool clickfound = tset && get_closest_time(*tset,actual_time,pixel_width*cell_area.get_height(),stime);
-				
+
 				etl::handle<synfig::Node> node;
 				if(valdesc.get_value(stime).get_type()==ValueBase::TYPE_CANVAS)
 				{
@@ -726,7 +726,7 @@ CellRenderer_TimeTrack::activate_vfunc(
 				{
 					node=valdesc.get_value_node();
 				}
-				
+
 				if(clickfound && node)
 				{
 					show_timepoint_menu(node, stime, actual_time<stime?SIDE_LEFT:SIDE_RIGHT);
@@ -739,22 +739,22 @@ CellRenderer_TimeTrack::activate_vfunc(
 		//if(selection && dragging)
 		//	selected_time=((float)event->motion.x-(float)cell_area.get_x())/(float)cell_area.get_width()*(adjustment->get_upper()-adjustment->get_lower())+adjustment->get_lower();
 		return true;
-		
+
 		break;
 	case GDK_BUTTON_RELEASE:
 		{
 			DEBUGPOINT();
-	
+
 			//selected_time=((float)event->button.x-(float)cell_area.get_x())/(float)cell_area.get_width()*(adjustment->get_upper()-adjustment->get_lower())+adjustment->get_lower();
 			dragging=false;
-	
+
 			/*if(event->button.button==3 && selection)
 			{
 				signal_waypoint_clicked_(path,*selected_waypoint,event->button.button-1);
 				return true;
 			}
 			*/
-			
+
 			//Time point stuff...
 			if(event->button.button == 1)
 			{
@@ -765,7 +765,7 @@ CellRenderer_TimeTrack::activate_vfunc(
 					synfigapp::Action::ParamList param_list;
 					param_list.add("canvas",canvas_interface()->get_canvas());
 					param_list.add("canvas_interface",canvas_interface());
-					
+
 					if(sel_value.get_value_type() == synfig::ValueBase::TYPE_CANVAS)
 					{
 						param_list.add("addcanvas",sel_value.get_value().get(Canvas::Handle()));
@@ -773,20 +773,20 @@ CellRenderer_TimeTrack::activate_vfunc(
 					{
 						param_list.add("addvaluedesc",sel_value);
 					}
-					
+
 					set<Time>	newset;
 					std::set<synfig::Time>::iterator i = sel_times.begin(), end = sel_times.end();
 					for(; i != end; ++i)
 					{
 						param_list.add("addtime",*i);
-						
+
 						newset.insert((*i + deltatime).round(get_canvas()->rend_desc().get_frame_rate()));
 					}
-								
+
 					if(!delmode)
 						param_list.add("deltatime",deltatime);
 				//	param_list.add("time",canvas_interface()->get_time());
-					
+
 					if(mode & COPY_MASK) //copy
 					{
 						etl::handle<studio::Instance>::cast_static(canvas_interface()->get_instance())
@@ -794,20 +794,20 @@ CellRenderer_TimeTrack::activate_vfunc(
 					}else if(delmode) //DELETE
 					{
 						etl::handle<studio::Instance>::cast_static(canvas_interface()->get_instance())
-							->process_action("timepoint_delete", param_list);					
+							->process_action("timepoint_delete", param_list);
 					}else //MOVE
 					{
 						etl::handle<studio::Instance>::cast_static(canvas_interface()->get_instance())
-							->process_action("timepoint_move", param_list);					
+							->process_action("timepoint_move", param_list);
 					}
-					
+
 					//now replace all the selected with the new selected
-					sel_times = newset;			
+					sel_times = newset;
 				}
 			}
-			
-			
-			
+
+
+
 			/*if(value_node && selection)
 			{
 				if(selected_time==drag_time && event->button.button!=3)
@@ -824,7 +824,7 @@ CellRenderer_TimeTrack::activate_vfunc(
 					}
 				}
 			}*/
-			
+
 			//if(selection)
 			//	selected_time=iter->time;
 			//selected_time=iter->get_time();
@@ -834,7 +834,7 @@ CellRenderer_TimeTrack::activate_vfunc(
 		//std::cerr<<"unknown event type "<<event->type<<std::endl;
 		return false;
 		break;
-	}	
+	}
 
 
 
@@ -878,11 +878,11 @@ set_waypoint_model(std::set<synfig::Waypoint, std::less<UniqueID> > waypoints, W
 	{
 		Waypoint waypoint(*iter);
 		waypoint.apply_model(model);
-		
+
 		synfigapp::Action::Handle action(synfigapp::Action::create("waypoint_set"));
-		
+
 		assert(action);
-		
+
 		action->set_param("canvas",canvas_interface->get_canvas());
 		action->set_param("canvas_interface",canvas_interface);
 
@@ -911,7 +911,7 @@ CellRenderer_TimeTrack::show_timepoint_menu(const etl::handle<synfig::Node>& nod
 	{
 		Gtk::Menu* interp_menu(manage(new Gtk::Menu()));
 		Waypoint::Model model;
-		
+
 		if(side==SIDE_LEFT)model.set_before(INTERPOLATION_TCB);
 		else model.set_after(INTERPOLATION_TCB);
 		interp_menu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("TCB"),
@@ -955,8 +955,8 @@ CellRenderer_TimeTrack::show_timepoint_menu(const etl::handle<synfig::Node>& nod
 				canvas_interface()
 			)
 		));
-		
-		
+
+
 		menu->items().push_back(
 			Gtk::Menu_Helpers::MenuElem(
 				side==SIDE_LEFT?_("Change \"In\" Interp."):_("Change \"Out\" Interp."),

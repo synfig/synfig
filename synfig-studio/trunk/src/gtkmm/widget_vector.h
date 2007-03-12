@@ -44,7 +44,7 @@ namespace Gtk { class SpinButton; };
 namespace studio {
 
 class Widget_Distance;
-	
+
 class Widget_Vector : public Gtk::HBox
 {
 	Gtk::SpinButton* spinbutton_x;
@@ -52,7 +52,7 @@ class Widget_Vector : public Gtk::HBox
 
 	Widget_Distance* distance_x;
 	Widget_Distance* distance_y;
-	
+
 	Gtk::Adjustment x_adjustment;
 	Gtk::Adjustment y_adjustment;
 
@@ -61,16 +61,16 @@ class Widget_Vector : public Gtk::HBox
 	sigc::signal<void> signal_value_changed_;
 
 	sigc::signal<void> signal_activate_;
-	
+
 	synfig::Canvas::LooseHandle canvas_;
 
 public:
-	
+
 	void activate() { signal_activate_(); }
-	
+
 	void set_canvas(synfig::Canvas::LooseHandle);
 	synfig::Canvas::LooseHandle get_canvas()const { return canvas_; }
-	
+
 	sigc::signal<void>& signal_value_changed() { return signal_value_changed_; }
 
 	sigc::signal<void>& signal_activate() { return signal_activate_; }
@@ -84,7 +84,7 @@ public:
 	void set_digits(int x);
 	Widget_Vector();
 	~Widget_Vector();
-	
+
 protected:
 	void show_all_vfunc();
 }; // END of class Widget_Vector

@@ -90,7 +90,7 @@ void
 CVSInfo::set_file_name(const synfig::String& file_name)
 {
 	file_name_=file_name;
-	
+
 	std::ifstream file((dirname(file_name_)+"/CVS/Root").c_str());
 
 	if(file)
@@ -108,10 +108,10 @@ CVSInfo::calc_repository_info()
 #ifdef _DEBUG
 	synfig::info("in_sandbox() = %d",in_sandbox());
 #endif
-	
+
 	if(!in_sandbox_)
 		return;
-	
+
 	std::ifstream file((dirname(file_name_)+"/CVS/Entries").c_str());
 
 	while(file)
@@ -122,7 +122,7 @@ CVSInfo::calc_repository_info()
 		{
 			in_repository_=true;
 			String::size_type s,f;
-			
+
 			// Grab the version
 			s=line.find('/',1);
 			assert(s!=String::npos);
@@ -130,7 +130,7 @@ CVSInfo::calc_repository_info()
 			f=line.find('/',s+1);
 			assert(f!=String::npos);
 			cvs_version_=String(line,s,f-s);
-			
+
 			// Grab the time
 #ifdef HAVE_STRPTIME
 			s=f+1;
@@ -140,7 +140,7 @@ CVSInfo::calc_repository_info()
 			strptime(String(line,s,f-s).c_str(),"%c",&time_struct);
 			original_timestamp_=mktime(&time_struct);
 #endif
-			
+
 			if(
 				system(strprintf(
 					"cd '%s' && cvs status '%s' | grep -q -e 'Needs Patch'",
@@ -162,8 +162,8 @@ CVSInfo::calc_repository_info()
 				synfig::info("UPDATE_AVAILABLE=FALSE");
 				update_available_=false;
 			}
-				
-			
+
+
 #ifdef _DEBUG
 			synfig::info("in_repository() = %d",in_repository());
 			synfig::info("get_cvs_version() = %s",get_cvs_version().c_str());
@@ -172,7 +172,7 @@ CVSInfo::calc_repository_info()
 			synfig::info("get_current_timestamp() = %s",ctime(&t));
 			synfig::info("get_cvs_root() = %s",get_cvs_root().c_str());
 			synfig::info("get_cvs_module() = %s",get_cvs_module().c_str());
-#endif			
+#endif
 			return;
 		}
 	}
@@ -249,7 +249,7 @@ CVSInfo::get_cvs_root()const
 {
 	if(!in_sandbox_)
 		return synfig::String();
-	
+
 	std::ifstream file((dirname(file_name_)+"/CVS/Root").c_str());
 
 	if(file)
@@ -305,11 +305,11 @@ CVSInfo::cvs_add(const synfig::String& message)
 		throw int();
 		return;
 	}
-	
+
 	synfig::String command(strprintf("cd '%s' && %s add -m '%s' '%s'",dirname(file_name_).c_str(),cvs_command.c_str(),fix_msg(message).c_str(),basename(file_name_).c_str()));
-	
+
 	int ret(system(command.c_str()));
-	
+
 	calc_repository_info();
 
 	switch(ret)
@@ -322,7 +322,7 @@ CVSInfo::cvs_add(const synfig::String& message)
 		break;
 	}
 }
-	
+
 void
 CVSInfo::cvs_update()
 {
@@ -332,13 +332,13 @@ CVSInfo::cvs_update()
 		throw int();
 		return;
 	}
-	
+
 	synfig::String command(strprintf("cd '%s' && %s update '%s'",dirname(file_name_).c_str(),cvs_command.c_str(),basename(file_name_).c_str()));
-	
+
 	int ret(system(command.c_str()));
 
 	calc_repository_info();
-	
+
 	switch(ret)
 	{
 	case 0:
@@ -349,7 +349,7 @@ CVSInfo::cvs_update()
 		break;
 	}
 }
-	
+
 void
 CVSInfo::cvs_commit(const synfig::String& message)
 {
@@ -359,13 +359,13 @@ CVSInfo::cvs_commit(const synfig::String& message)
 		throw int();
 		return;
 	}
-	
+
 	synfig::String command(strprintf("cd '%s' && %s commit -m '%s' '%s'",dirname(file_name_).c_str(),cvs_command.c_str(),fix_msg(message).c_str(),basename(file_name_).c_str()));
-	
+
 	int ret(system(command.c_str()));
 
 	calc_repository_info();
-	
+
 	switch(ret)
 	{
 	case 0:

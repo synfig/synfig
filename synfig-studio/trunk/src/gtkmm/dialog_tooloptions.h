@@ -39,15 +39,15 @@
 /* === C L A S S E S & S T R U C T S ======================================= */
 
 namespace studio {
-	
+
 class Dialog_ToolOptions : public Dockable
-{		
+{
 	Gtk::Label empty_label;
 	Gtk::ScrolledWindow scrolled_;
 	Gtk::VBox sub_vbox_;
-	
+
 public:
-		
+
 	void clear();
 	void set_widget(Gtk::Widget&);
 	void set_name(const synfig::String& name);

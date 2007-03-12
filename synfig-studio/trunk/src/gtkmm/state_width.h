@@ -48,7 +48,7 @@ public:
 }; // END of class StateWidth
 
 extern StateWidth state_width;
-	
+
 }; // END of namespace studio
 
 /* === E N D =============================================================== */

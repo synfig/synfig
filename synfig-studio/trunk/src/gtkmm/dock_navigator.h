@@ -49,50 +49,50 @@
 
 namespace studio {
 class AsyncRenderer;
-	
+
 class Widget_NavView : public Gtk::Table
 {
 	//handle to out parent canvas
 	CanvasView::LooseHandle		canvview;
-	
+
 	Glib::RefPtr<Gdk::Pixbuf>	prev;
 	bool dirty;
-	
-	//The drawing stuff	
+
+	//The drawing stuff
 	Gtk::DrawingArea	drawto;
-	
+
 	//The input stuff
 	Gtk::Adjustment		adj_zoom;
 	Gtk::Label			zoom_print;
-	
+
 	//zoom window stuff
 	bool				scrolling;
-	
+
 	//asyncronous rendering stuff
 	etl::handle<AsyncRenderer>	renderer;
 	etl::smart_ptr<synfig::Surface> surface;
 	bool						rendering;
-	
+
 	//drawing functionality
 	void on_start_render(); //breaks out into asynchronous rendering
 	void on_finish_render();
 	void on_draw(); //renders the small thing we have
 	void on_dirty_preview(); //dirties the preview for rerender
-	
+
 	//for the zoom buttons
 	void on_zoom_in();
 	void on_zoom_out();
-	
+
 	//handles the zoom scroller
 	bool on_scroll_event(GdkEvent *event);
 	void on_number_modify();
-	
+
 	//
 	bool on_mouse_event(GdkEvent * e);
-	
+
 	//draws the gotten bitmap on the draw area
 	bool on_expose_draw(GdkEventExpose *exp=0);
-	
+
 	//for when the canvasview view changes (boolean value scrolling solves cyclic problems)
 	void on_workarea_view_change();
 
@@ -102,18 +102,18 @@ public:
 
 	etl::loose_handle<studio::CanvasView> get_canvas_view() {return canvview;}
 };
-	
+
 class Dock_Navigator : public Dock_CanvasSpecific
 {
 	Widget_NavView	dummy;
-		
+
 public:
 	Dock_Navigator();
 	~Dock_Navigator();
 
 	virtual void changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view);
 };
-	
+
 }; // END of namespace studio
 
 /* === E N D =============================================================== */

@@ -127,7 +127,7 @@ GroupActionManager::queue_refresh()
 {
 	if(queued)
 		return;
-	
+
 	//queue_refresh_connection.disconnect();
 	queue_refresh_connection=Glib::signal_idle().connect(
 		sigc::bind_return(
@@ -135,7 +135,7 @@ GroupActionManager::queue_refresh()
 			false
 		)
 	);
-	
+
 	queued=true;
 }
 
@@ -151,19 +151,19 @@ GroupActionManager::refresh()
 
 
 	clear();
-	
+
 	// Make sure we are ready
 	if(!ui_manager_ || !group_tree_ || !canvas_interface_)
 	{
 		synfig::error("GroupActionManager::refresh(): Not ready!");
 		return;
 	}
-	
+
 	if(group_tree_->get_selection()->count_selected_rows()==0)
 		return;
-	
+
 	String ui_info;
-	
+
 	{
 		{
 			action_group_->add(
@@ -184,19 +184,19 @@ GroupActionManager::refresh()
 //		bool multiple_selected(group_tree_->get_selection()->count_selected_rows()>1);
 		LayerGroupTree::LayerList selected_layers(group_tree_->get_selected_layers());
 		std::list<synfig::String> selected_groups(group_tree_->get_selected_groups());
-		
+
 		synfig::info("selected_layers.size()=%d",selected_layers.size());
 		synfig::info("selected_groups.size()=%d",selected_groups.size());
-		
+
 		{
 			bool canvas_set(false);
 			synfigapp::Action::ParamList param_list;
 			param_list.add("time",get_canvas_interface()->get_time());
 			param_list.add("canvas_interface",get_canvas_interface());
-			
+
 			{
 				LayerGroupTree::LayerList::iterator iter;
-			
+
 				for(iter=selected_layers.begin();iter!=selected_layers.end();++iter)
 				{
 					if(!canvas_set)
@@ -210,7 +210,7 @@ GroupActionManager::refresh()
 
 			{
 				std::list<synfig::String>::iterator iter;
-			
+
 				for(iter=selected_groups.begin();iter!=selected_groups.end();++iter)
 				{
 					param_list.add("group",(synfig::String)*iter);
@@ -222,12 +222,12 @@ GroupActionManager::refresh()
 				param_list.add("canvas",Canvas::Handle(get_canvas_interface()->get_canvas()));
 				canvas_set=true;
 			}
-			
+
 			handle<studio::Instance>::cast_static(get_canvas_interface()->get_instance())->
 				add_actions_to_group(action_group_, ui_info,   param_list, synfigapp::Action::CATEGORY_GROUP);
 			}
 	}
-	
+
 	if(true)
 	{
 		ui_info="<ui><menubar action='menu-main'><menu action='menu-group'>"+ui_info+"</menu></menubar></ui>";
@@ -250,9 +250,9 @@ GroupActionManager::on_action_add()
 	LayerGroupTreeStore::Model model;
 
 	String group_name;
-	
+
 	Gtk::TreeIter selected_iter;
-	
+
 	if(group_tree_->get_selection()->count_selected_rows())
 	{
 		selected_iter=(
@@ -263,11 +263,11 @@ GroupActionManager::on_action_add()
 		if(selected_iter && selected_iter->parent())
 			group_name=(Glib::ustring)(*selected_iter->parent())[model.group_name]+'.';
 	}
-	
+
 	group_name+=_("UnnamedGroup");
-	
+
 	Gtk::TreePath path(group_tree_->get_model()->on_group_added(group_name));
-	
+
 	group_tree_->expand_to_path(path);
 	group_tree_->set_cursor(path,true);
 }

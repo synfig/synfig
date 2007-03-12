@@ -47,7 +47,7 @@ enum MouseButton
 	BUTTON_RIGHT,
 	BUTTON_UP,
 	BUTTON_DOWN,
-	
+
 	BUTTON_END
 };
 
@@ -57,7 +57,7 @@ struct EventMouse : public Smach::event
 	MouseButton button;
 	float pressure;
 	Gdk::ModifierType modifier;
-	
+
 	EventMouse(EventKey id, MouseButton button, const synfig::Point& pos, Gdk::ModifierType modifier=Gdk::ModifierType(0)):
 		Smach::event(id),
 		pos(pos),
@@ -80,7 +80,7 @@ struct EventBox : public Smach::event
 	synfig::Point p1,p2;
 	MouseButton button;
 	Gdk::ModifierType modifier;
-	
+
 	EventBox(EventKey id, const synfig::Point& p1,const synfig::Point& p2,MouseButton button=BUTTON_NONE, Gdk::ModifierType modifier=Gdk::ModifierType(0)):
 		Smach::event(id),
 		p1(p1),

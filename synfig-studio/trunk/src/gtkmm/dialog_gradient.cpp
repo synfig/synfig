@@ -68,7 +68,7 @@ Dialog_Gradient::Dialog_Gradient():
 	set_keep_above(false);
 
 	set_role("gradient_editor");
-	
+
 	// Setup the buttons
 	Gtk::Button *grab_button(manage(new class Gtk::Button(Gtk::StockID("Grab"))));
 	grab_button->show();
@@ -81,36 +81,36 @@ Dialog_Gradient::Dialog_Gradient():
 	add_action_widget(*apply_button,1);
 	apply_button->signal_clicked().connect(sigc::mem_fun(*this, &Dialog_Gradient::on_apply_pressed));
 	*/
-	
+
 	Gtk::Button *cancel_button(manage(new class Gtk::Button(Gtk::StockID("gtk-close"))));
 	cancel_button->show();
 	add_action_widget(*cancel_button,0);
-	cancel_button->signal_clicked().connect(sigc::mem_fun(*this, &Dialog_Gradient::hide));	
+	cancel_button->signal_clicked().connect(sigc::mem_fun(*this, &Dialog_Gradient::hide));
 
 	Gtk::Table* table(manage(new Gtk::Table(2,2,false)));
 	get_vbox()->pack_start(*table);
 
 	widget_gradient=manage(new Widget_Gradient());
 	widget_gradient->set_editable();
-	widget_gradient->signal_cpoint_selected().connect(sigc::mem_fun(*this,&studio::Dialog_Gradient::on_cpoint_selected));	
+	widget_gradient->signal_cpoint_selected().connect(sigc::mem_fun(*this,&studio::Dialog_Gradient::on_cpoint_selected));
 	widget_gradient->signal_value_changed().connect(sigc::mem_fun(*this,&studio::Dialog_Gradient::on_changed));
-	//table->attach(*manage(new Gtk::Label(_("Not yet fully implemented"))), 0, 1, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);	
-	table->attach(*widget_gradient, 0, 1, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);	
+	//table->attach(*manage(new Gtk::Label(_("Not yet fully implemented"))), 0, 1, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	table->attach(*widget_gradient, 0, 1, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
 	widget_color=manage(new Widget_ColorEdit());
 	widget_color->signal_value_changed().connect(sigc::mem_fun(*this,&studio::Dialog_Gradient::on_values_adjusted));
 	widget_color->signal_value_changed().connect(sigc::mem_fun(*this,&studio::Dialog_Gradient::on_changed));
 	widget_color->signal_activated().connect(sigc::mem_fun(*this,&studio::Dialog_Gradient::on_values_adjusted));
-	table->attach(*widget_color, 0, 1, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);	
+	table->attach(*widget_color, 0, 1, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
 
 	spinbutton_pos=manage(new class Gtk::SpinButton(adjustment_pos,0.0001,4));
 	spinbutton_pos->set_update_policy(Gtk::UPDATE_ALWAYS);
 	adjustment_pos.signal_value_changed().connect(sigc::mem_fun(*this,&studio::Dialog_Gradient::on_values_adjusted));
 	adjustment_pos.signal_value_changed().connect(sigc::mem_fun(*this,&studio::Dialog_Gradient::on_changed));
-	table->attach(*spinbutton_pos, 0, 1, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);	
+	table->attach(*spinbutton_pos, 0, 1, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 
-	
+
 	add_accel_group(App::ui_manager()->get_accel_group());
 
 	show_all_children();
@@ -184,7 +184,7 @@ Dialog_Gradient::edit(const synfigapp::ValueDesc &x, etl::handle<synfigapp::Canv
 		set_gradient(x.get_value().get(Gradient()));
 	else if(x.is_value_node())
 		set_gradient((*x.get_value_node())(time).get(Gradient()));
-		
+
 	signal_edited().connect(
 		sigc::bind(
 			sigc::bind(
@@ -194,6 +194,6 @@ Dialog_Gradient::edit(const synfigapp::ValueDesc &x, etl::handle<synfigapp::Canv
 			x
 		)
 	);
-		
+
 	present();
 }

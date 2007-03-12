@@ -66,11 +66,11 @@ Action::ParamVocab
 Action::CanvasRendDescSet::get_param_vocab()
 {
 	ParamVocab ret(Action::CanvasSpecific::get_param_vocab());
-	
+
 	ret.push_back(ParamDesc("rend_desc",Param::TYPE_RENDDESC)
 		.set_local_name(_("RendDesc"))
 	);
-	
+
 	return ret;
 }
 
@@ -86,7 +86,7 @@ Action::CanvasRendDescSet::set_param(const synfig::String& name, const Action::P
 	if(name=="rend_desc" && param.get_type()==Param::TYPE_RENDDESC)
 	{
 		new_rend_desc=param.get_rend_desc();
-		
+
 		return true;
 	}
 
@@ -105,7 +105,7 @@ Action::CanvasRendDescSet::perform()
 	old_rend_desc=get_canvas()->rend_desc();
 
 	get_canvas()->rend_desc()=new_rend_desc;
-	
+
 	if(get_canvas_interface())
 	{
 		get_canvas_interface()->signal_rend_desc_changed()();
@@ -117,7 +117,7 @@ void
 Action::CanvasRendDescSet::undo()
 {
 	get_canvas()->rend_desc()=old_rend_desc;
-	
+
 	if(get_canvas_interface())
 	{
 		get_canvas_interface()->signal_rend_desc_changed()();

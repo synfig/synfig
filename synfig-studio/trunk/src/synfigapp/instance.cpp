@@ -87,7 +87,7 @@ Instance::Instance(Canvas::Handle canvas):
 	assert(canvas->is_root());
 
 	unset_selection_manager();
-	
+
 	instance_map_[canvas]=this;
 } // END of synfigapp::Instance::Instance()
 
@@ -126,7 +126,7 @@ Instance::find_canvas_interface(handle<Canvas> canvas)
 		return 0;
 	while(canvas->is_inline())
 		canvas=canvas->parent();
-	
+
 	CanvasInterfaceList::iterator iter;
 
 	for(iter=canvas_interface_list().begin();iter!=canvas_interface_list().end();iter++)
@@ -166,7 +166,7 @@ Instance::save_as(const std::string &file_name)
 	bool ret;
 
 	String old_file_name(get_file_name());
-	
+
 	set_file_name(file_name);
 
 	ret=save_canvas(file_name,canvas_);

@@ -57,7 +57,7 @@ public:
 		COLUMNID_TIME,
 		COLUMNID_DESCRIPTION,
 		COLUMNID_JUMP,
-		
+
 		COLUMNID_END			//!< \internal
 	};
 
@@ -66,9 +66,9 @@ public:
 	*/
 
 public:
-	
+
 	KeyframeTreeStore::Model model;
-	
+
 	/*
  -- ** -- P R I V A T E   D A T A ---------------------------------------------
 	*/
@@ -98,7 +98,7 @@ private:
 	*/
 
 private:
-	
+
 	/*
  -- ** -- S I G N A L   T E R M I N A L S -------------------------------------
 	*/
@@ -120,19 +120,19 @@ private:
 	*/
 
 public:
-	
+
 	KeyframeTree();
 	~KeyframeTree();
 
 	void set_model(Glib::RefPtr<KeyframeTreeStore> keyframe_tree_store_);
 
 	void set_editable(bool x=true);
-	
+
 	bool get_editable()const { return editable_; }
 
 	//! Signal called when a keyframe has been edited in any way
 	sigc::signal<void,synfig::Keyframe>& signal_edited() { return signal_edited_; }
-	
+
 	//! Signal called when a time has been edited.
 	sigc::signal<void,synfig::Keyframe,synfig::Time>& signal_edited_time() { return signal_edited_time_; }
 

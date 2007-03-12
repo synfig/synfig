@@ -64,8 +64,8 @@ class RendDesc;
 namespace synfigapp {
 
 class CanvasInterface;
-	
-namespace Action {	
+
+namespace Action {
 
 //! Action Parameter
 class Param
@@ -91,7 +91,7 @@ public:
 		TYPE_CANVASINTERFACE,
 		TYPE_EDITMODE,
 		TYPE_RENDDESC,
-		
+
 		TYPE_END
 	};
 private:
@@ -116,7 +116,7 @@ private:
 		synfig::Real real;
 		bool b;
 		EditMode edit_mode;
-		
+
 	} data;
 public:
 
@@ -147,11 +147,11 @@ public:
 	Param(const synfig::ValueBase& x);
 
 	~Param();
-	
+
 	Param& operator=(const Param& rhs);
-	
+
 	void clear();
-	
+
 	const synfig::Canvas::LooseHandle& get_canvas()const { assert(type_==TYPE_CANVAS); return data.canvas.get(); }
 	const etl::loose_handle<synfigapp::CanvasInterface>& get_canvas_interface()const { assert(type_==TYPE_CANVASINTERFACE); return data.canvas_interface.get(); }
 	const synfig::Layer::LooseHandle& get_layer()const { assert(type_==TYPE_LAYER); return data.layer.get(); }
@@ -204,7 +204,7 @@ public:
 		requires_multiple_(false),
 		optional_(false)
 	{ }
-	
+
 	const synfig::String& get_name()const { return name_; }
 	const synfig::String& get_desc()const { return desc_; }
 	const synfig::String& get_mutual_exclusion()const { return mutual_exclusion_; }

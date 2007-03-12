@@ -78,7 +78,7 @@ void
 StateManager::add_state(const Smach::state_base *state)
 {
 	String name(state->get_name());
-	
+
 	Glib::RefPtr<Gtk::Action> action(
 		Gtk::Action::create(
 			"state-"+name,
@@ -89,14 +89,14 @@ StateManager::add_state(const Smach::state_base *state)
 	);
 	/*action->set_sensitive(false);*/
 	state_group->add(action);
-	
+
 	action->signal_activate().connect(
 		sigc::bind(
 			sigc::mem_fun(*this,&studio::StateManager::change_state_),
 			state
 		)
 	);
-	
+
 	App::ui_manager()->ensure_update();
 
 	/*App::ui_manager()->add_ui(
@@ -106,10 +106,10 @@ StateManager::add_state(const Smach::state_base *state)
 		"state-"+name
 	);
 	*/
-	
+
 	String uid_def("<ui><popup action='menu-main'><menu action='menu-state'><menuitem action='state-"+name+"' /></menu></popup></ui>");
 	merge_id_list.push_back(App::ui_manager()->add_ui_from_string(uid_def));
-	
+
 	App::ui_manager()->ensure_update();
 
 	App::toolbox->add_state(state);

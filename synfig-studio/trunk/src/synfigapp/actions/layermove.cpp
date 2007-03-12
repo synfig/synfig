@@ -68,7 +68,7 @@ Action::ParamVocab
 Action::LayerMove::get_param_vocab()
 {
 	ParamVocab ret(Action::CanvasSpecific::get_param_vocab());
-	
+
 	ret.push_back(ParamDesc("layer",Param::TYPE_LAYER)
 		.set_local_name(_("Layer"))
 		.set_desc(_("Layer to be moved"))
@@ -84,7 +84,7 @@ Action::LayerMove::get_param_vocab()
 		.set_desc(_("The canvas the layer is to be moved to"))
 		.set_optional()
 	);
-	
+
 	return ret;
 }
 
@@ -101,21 +101,21 @@ Action::LayerMove::set_param(const synfig::String& name, const Action::Param &pa
 	{
 
 		layer=param.get_layer();
-		
+
 		return true;
 	}
 
 	if(name=="new_index" && param.get_type()==Param::TYPE_INTEGER)
 	{
 		new_index=param.get_integer();
-		
+
 		return true;
 	}
 
 	if(name=="dest_canvas" && param.get_type()==Param::TYPE_CANVAS)
 	{
 		dest_canvas=param.get_canvas();
-		
+
 		return true;
 	}
 
@@ -133,17 +133,17 @@ Action::LayerMove::is_ready()const
 
 void
 Action::LayerMove::perform()
-{		
+{
 	synfig::info(__FILE__":%d: layer->count()=%d",__LINE__,layer.count());
 
 	Canvas::Handle subcanvas(layer->get_canvas());
 	src_canvas=subcanvas;
 	if(!dest_canvas)
 		dest_canvas=subcanvas;
-		
+
 	// Find the iterator for the layer
 	Canvas::iterator iter=find(src_canvas->begin(),src_canvas->end(),layer);
-	
+
 	// If we couldn't find the layer in the canvas, then bail
 	if(*iter!=layer)
 		throw Error(_("This layer doesn't exist anymore."));
@@ -156,15 +156,15 @@ Action::LayerMove::perform()
 	//if(get_canvas()!=subcanvas && !subcanvas->is_inline())
 	if(get_canvas()->get_root()!=dest_canvas->get_root() || get_canvas()->get_root()!=src_canvas->get_root())
 		throw Error(_("You cannot directly move layers across compositions"));
-	
+
 	old_index=iter-src_canvas->begin();
 	int depth;
-	
+
 	if(new_index<0)
 		depth=dest_canvas->size()+new_index+1;
 	else
 		depth=new_index;
-	
+
 	set_dirty(layer->active());
 
 	synfig::info(__FILE__":%d: layer->count()=%d",__LINE__,layer.count());
@@ -172,22 +172,22 @@ Action::LayerMove::perform()
 	// If we were to move it to where it is
 	if(old_index==depth && src_canvas==dest_canvas)
 		return;
-	
+
 	if(depth>dest_canvas->size())
 		depth=dest_canvas->size();
 	if(depth<0)
 		depth=0;
-		
+
 	src_canvas->erase(iter);
-	
-	dest_canvas->insert(dest_canvas->begin()+depth,layer);		
+
+	dest_canvas->insert(dest_canvas->begin()+depth,layer);
 	layer->set_canvas(dest_canvas);
-	
+
 	layer->changed();
 	dest_canvas->changed(); if(dest_canvas!=src_canvas) src_canvas->changed();
-	
+
 	synfig::info(__FILE__":%d: layer->count()=%d",__LINE__,layer.count());
-	
+
 	if(get_canvas_interface())
 	{
 		if(src_canvas==dest_canvas)
@@ -216,11 +216,11 @@ Action::LayerMove::undo()
 {
 	// Find the iterator for the layer
 	Canvas::iterator iter=find(dest_canvas->begin(),dest_canvas->end(),layer);
-	
+
 	// If we couldn't find the layer in the canvas, then bail
 	if(*iter!=layer || (get_canvas()!=dest_canvas && !dest_canvas->is_inline()))
 		throw Error(_("This layer doesn't exist anymore."));
-	
+
 	// If we were to move it to where it is
 	if(old_index==new_index && src_canvas==dest_canvas)
 		return;
@@ -229,13 +229,13 @@ Action::LayerMove::undo()
 	set_dirty(layer->active());
 
 	dest_canvas->erase(iter);
-	
+
 	src_canvas->insert(src_canvas->begin()+old_index,layer);
 	layer->set_canvas(src_canvas);
 
 	layer->changed();
 	dest_canvas->changed(); if(dest_canvas!=src_canvas) src_canvas->changed();
-	
+
 	// Execute any signals
 	if(get_canvas_interface())
 	{
@@ -253,7 +253,7 @@ Action::LayerMove::undo()
 		else
 		{
 			get_canvas_interface()->signal_layer_moved()(layer,old_index,src_canvas);
-			//get_canvas_interface()->signal_layer_removed()(layer);	
+			//get_canvas_interface()->signal_layer_removed()(layer);
 			//get_canvas_interface()->signal_layer_inserted()(layer,old_index);
 		}
 	}

@@ -61,19 +61,19 @@ class Widget_RendDesc : public Gtk::Notebook
 	//Gtk::Adjustment adjustment_start_frame;
 	//Gtk::Adjustment adjustment_end_frame;
 	Gtk::Adjustment adjustment_span;
-	
-	Gtk::SpinButton *entry_width;	
-	Gtk::SpinButton *entry_height;	
-	Gtk::SpinButton *entry_xres;	
-	Gtk::SpinButton *entry_yres;	
-	Gtk::SpinButton *entry_phy_width;	
-	Gtk::SpinButton *entry_phy_height;	
-	Gtk::SpinButton *entry_fps;	
-//	Gtk::SpinButton *entry_start_time;	
-//	Gtk::SpinButton *entry_end_time;	
-//	Gtk::SpinButton *entry_start_frame;	
-//	Gtk::SpinButton *entry_end_frame;	
-	Gtk::SpinButton *entry_span;	
+
+	Gtk::SpinButton *entry_width;
+	Gtk::SpinButton *entry_height;
+	Gtk::SpinButton *entry_xres;
+	Gtk::SpinButton *entry_yres;
+	Gtk::SpinButton *entry_phy_width;
+	Gtk::SpinButton *entry_phy_height;
+	Gtk::SpinButton *entry_fps;
+//	Gtk::SpinButton *entry_start_time;
+//	Gtk::SpinButton *entry_end_time;
+//	Gtk::SpinButton *entry_start_frame;
+//	Gtk::SpinButton *entry_end_frame;
+	Gtk::SpinButton *entry_span;
 
 	Gtk::CheckButton *toggle_px_aspect;
 	Gtk::CheckButton *toggle_px_width;
@@ -103,14 +103,14 @@ class Widget_RendDesc : public Gtk::Notebook
 		UpdateLock(int &locked):locked(locked){locked++;}
 		~UpdateLock(){locked--;}
 	};
-	
+
 public:
 
 	sigc::signal<void> &signal_changed() { return signal_changed_; }
 
 	Widget_RendDesc();
 	~Widget_RendDesc();
-	
+
 	//! Sets the RendDesc
 	void set_rend_desc(const synfig::RendDesc &rend_desc);
 
@@ -121,12 +121,12 @@ public:
 	const synfig::RendDesc &get_rend_desc();
 
 	void disable_time_section();
-	
+
 	void enable_time_section();
-	
+
 	void refresh();
 private:
-	
+
 	void on_width_changed();
 	void on_height_changed();
 	void on_xres_changed();
@@ -150,7 +150,7 @@ private:
 	Gtk::Widget *create_time_tab();
 	Gtk::Widget *create_other_tab();
 };
-	
+
 }; // END of namespace studio
 
 /* === E N D =============================================================== */

@@ -82,36 +82,36 @@ class studio::StateDraw_Context : public sigc::trackable
 {
 	typedef etl::smart_ptr<std::list<synfig::Point> > StrokeData;
 	typedef etl::smart_ptr<std::list<synfig::Real> > WidthData;
-	
+
 	typedef list< pair<StrokeData,WidthData> > StrokeQueue;
-	
+
 	StrokeQueue stroke_queue;
-	
-	
+
+
 	etl::handle<CanvasView> canvas_view_;
 	CanvasView::IsWorking is_working;
-	
+
 	bool prev_table_status;
 	bool loop_;
 	bool prev_workarea_layer_status_;
 
 	int nested;
 	SigC::Connection process_queue_connection;
-	
+
 	ValueNode_BLine::Handle last_stroke;
-	
+
 	Gtk::Menu menu;
 
 	//Duckmatic::Push duckmatic_push;
-	
+
 	std::list< etl::smart_ptr<std::list<synfig::Point> > > stroke_list;
 
 	void refresh_ducks();
-	
+
 	Duckmatic::Type old_duckmask;
 
 	void fill_last_stroke();
-	
+
 	Smach::event_result new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline_flag,float radius);
 
 	Smach::event_result new_region(std::list<synfig::BLinePoint> bline,synfig::Real radius);
@@ -129,7 +129,7 @@ class studio::StateDraw_Context : public sigc::trackable
 	Gtk::CheckButton checkbutton_auto_connect;
 	Gtk::CheckButton checkbutton_region_only;
 	Gtk::Button button_fill_last_stroke;
-	
+
 	//pressure spinner and such
 	Gtk::Adjustment	 adj_min_pressure;
 	Gtk::SpinButton  spin_min_pressure;
@@ -137,10 +137,10 @@ class studio::StateDraw_Context : public sigc::trackable
 
 	Gtk::Adjustment	 adj_feather;
 	Gtk::SpinButton  spin_feather;
-	
+
 	Gtk::Adjustment	 adj_globalthres;
 	Gtk::SpinButton  spin_globalthres;
-	
+
 	Gtk::Adjustment	 adj_localthres;
 	Gtk::CheckButton check_localerror;
 	void UpdateErrorBox();	//switches the stuff if need be :)
@@ -160,28 +160,28 @@ public:
 
 	bool get_region_only_flag()const { return checkbutton_region_only.get_active(); }
 	void set_region_only_flag(bool x) { return checkbutton_region_only.set_active(x); }
-	
+
 	Real get_min_pressure() const { return adj_min_pressure.get_value(); }
 	void set_min_pressure(Real x) { return adj_min_pressure.set_value(x); }
 
 	Real get_feather() const { return adj_feather.get_value(); }
 	void set_feather(Real x) { return adj_feather.set_value(x); }
-	
+
 	Real get_gthres() const { return adj_globalthres.get_value(); }
 	void set_gthres(Real x) { return adj_globalthres.set_value(x); }
-	
+
 	Real get_lthres() const { return adj_localthres.get_value(); }
 	void set_lthres(Real x) { return adj_localthres.set_value(x); }
-	
+
 	bool get_local_error_flag() const { return check_localerror.get_active(); }
 	void set_local_error_flag(bool x) { check_localerror.set_active(x); }
-	
+
 	bool get_min_pressure_flag()const { return check_min_pressure.get_active(); }
 	void set_min_pressure_flag(bool x) { check_min_pressure.set_active(x); }
 
 	void load_settings();
 	void save_settings();
-	
+
 	Smach::event_result event_stop_handler(const Smach::event& x);
 
 	Smach::event_result event_refresh_handler(const Smach::event& x);
@@ -195,7 +195,7 @@ public:
 	Smach::event_result process_stroke(StrokeData stroke_data, WidthData width_data, bool region_flag=false);
 
 	bool process_queue();
-	
+
 
 	StateDraw_Context(CanvasView* canvas_view);
 
@@ -206,7 +206,7 @@ public:
 	synfig::Time get_time()const { return get_canvas_interface()->get_time(); }
 	synfig::Canvas::Handle get_canvas()const{return canvas_view_->get_canvas();}
 	WorkArea * get_work_area()const{return canvas_view_->get_work_area();}
-	
+
 	//void on_user_click(synfig::Point point);
 
 //	bool run();
@@ -217,7 +217,7 @@ public:
 
 StateDraw::StateDraw():
 	Smach::state<StateDraw_Context>("draw")
-{	
+{
 	insert(event_def(EVENT_STOP,&StateDraw_Context::event_stop_handler));
 	insert(event_def(EVENT_REFRESH,&StateDraw_Context::event_refresh_handler));
 	insert(event_def(EVENT_WORKAREA_MOUSE_BUTTON_DOWN,&StateDraw_Context::event_mouse_down_handler));
@@ -232,7 +232,7 @@ StateDraw::~StateDraw()
 
 void
 StateDraw_Context::load_settings()
-{	
+{
 	String value;
 
 	if(settings.get_value("draw.pressure_width",value) && value=="0")
@@ -254,12 +254,12 @@ StateDraw_Context::load_settings()
 		set_region_only_flag(true);
 	else
 		set_region_only_flag(false);
-	
+
 	if(settings.get_value("draw.min_pressure_on",value) && value=="0")
 		set_min_pressure_flag(false);
 	else
 		set_min_pressure_flag(true);
-	
+
 	if(settings.get_value("draw.min_pressure",value))
 	{
 		Real n = atof(value.c_str());
@@ -272,20 +272,20 @@ StateDraw_Context::load_settings()
 		Real n = atof(value.c_str());
 		set_feather(n);
 	}else
-		set_feather(0);	
-	
+		set_feather(0);
+
 	if(settings.get_value("draw.gthreshold",value))
 	{
 		Real n = atof(value.c_str());
 		set_gthres(n);
 	}
-	
+
 	if(settings.get_value("draw.lthreshold",value))
 	{
 		Real n = atof(value.c_str());
 		set_lthres(n);
 	}
-	
+
 	if(settings.get_value("draw.localize",value) && value == "1")
 		set_local_error_flag(true);
 	else
@@ -294,7 +294,7 @@ StateDraw_Context::load_settings()
 
 void
 StateDraw_Context::save_settings()
-{	
+{
 	settings.set_value("draw.pressure_width",get_pressure_width_flag()?"1":"0");
 	settings.set_value("draw.auto_loop",get_auto_loop_flag()?"1":"0");
 	settings.set_value("draw.auto_connect",get_auto_connect_flag()?"1":"0");
@@ -303,7 +303,7 @@ StateDraw_Context::save_settings()
 	settings.set_value("draw.feather",strprintf("%f",get_feather()));
 	settings.set_value("draw.min_pressure_on",get_min_pressure_flag()?"1":"0");
 	settings.set_value("draw.gthreshold",strprintf("%f",get_gthres()));
-	settings.set_value("draw.lthreshold",strprintf("%f",get_lthres()));	
+	settings.set_value("draw.lthreshold",strprintf("%f",get_lthres()));
 	settings.set_value("draw.localize",get_local_error_flag()?"1":"0");
 }
 
@@ -325,73 +325,73 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	spin_feather(adj_feather,0.01,4),
 	adj_globalthres(.70f,0.01,10000,0.01,0.1),
 	spin_globalthres(adj_globalthres,0.01,3),
-	adj_localthres(20,1,100000,0.1,1),	
+	adj_localthres(20,1,100000,0.1,1),
 	check_localerror(_("LocalError"))
-	
+
 {
 	synfig::info("STATE SKETCH: entering state");
 
 	nested=0;
 	load_settings();
-	
+
 	UpdateErrorBox();
-	
-	//options_table.attach(*manage(new Gtk::Label(_("Draw Tool"))), 0, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);	
+
+	//options_table.attach(*manage(new Gtk::Label(_("Draw Tool"))), 0, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	options_table.attach(checkbutton_pressure_width, 0, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(checkbutton_auto_loop, 0, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);	
-	options_table.attach(checkbutton_auto_connect, 0, 2, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);	
-	options_table.attach(checkbutton_region_only, 0, 2, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);	
-	
+	options_table.attach(checkbutton_auto_loop, 0, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(checkbutton_auto_connect, 0, 2, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(checkbutton_region_only, 0, 2, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+
 	options_table.attach(check_min_pressure, 0, 2, 5, 6, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	options_table.attach(spin_min_pressure, 0, 2, 6, 7, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
-	options_table.attach(*manage(new Gtk::Label(_("Feather"))), 0, 1, 7, 8, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);	
+	options_table.attach(*manage(new Gtk::Label(_("Feather"))), 0, 1, 7, 8, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	options_table.attach(spin_feather, 1, 2, 7, 8, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	
-	options_table.attach(check_localerror, 0, 2, 8, 9, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);	
-	options_table.attach(*manage(new Gtk::Label(_("Smooth"))), 0, 1, 9, 10, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);	
+
+	options_table.attach(check_localerror, 0, 2, 8, 9, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(*manage(new Gtk::Label(_("Smooth"))), 0, 1, 9, 10, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	options_table.attach(spin_globalthres, 1, 2, 9, 10, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
-	//options_table.attach(button_fill_last_stroke, 0, 2, 10, 11, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);	
-	
+	//options_table.attach(button_fill_last_stroke, 0, 2, 10, 11, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+
 	button_fill_last_stroke.signal_pressed().connect(sigc::mem_fun(*this,&StateDraw_Context::fill_last_stroke));
 	check_localerror.signal_toggled().connect(sigc::mem_fun(*this,&StateDraw_Context::UpdateErrorBox));
-	
+
 	options_table.show_all();
 	refresh_tool_options();
 	//App::dialog_tool_options->set_widget(options_table);
 	App::dialog_tool_options->present();
-	
-	
+
+
 	old_duckmask=get_work_area()->get_type_mask();
 	get_work_area()->set_type_mask(Duck::TYPE_ALL-Duck::TYPE_TANGENT-Duck::TYPE_WIDTH);
-	
+
 	// Turn off layer clicking
 	get_work_area()->allow_layer_clicks=false;
 
 	// Turn off duck clicking
 	get_work_area()->allow_duck_clicks=false;
-	
+
 	// clear out the ducks
 	//get_work_area()->clear_ducks();
-	
+
 	// Refresh the work area
 	//get_work_area()->queue_draw();
-	
+
 	// Hide the tables if they are showing
 	prev_table_status=get_canvas_view()->tables_are_visible();
 	//if(prev_table_status)get_canvas_view()->hide_tables();
-		
+
 	// Hide the time bar
 	get_canvas_view()->hide_timebar();
-	
+
 	// Connect a signal
 	//get_work_area()->signal_user_click().connect(sigc::mem_fun(*this,&studio::StateDraw_Context::on_user_click));
 
 	get_canvas_view()->work_area->set_cursor(Gdk::PENCIL);
 
 	App::toolbox->refresh();
-	
+
 	refresh_ducks();
 }
 
@@ -409,7 +409,7 @@ void StateDraw_Context::UpdateErrorBox()
 		spin_globalthres.set_value(adj_globalthres.get_value());
 		spin_globalthres.set_increments(0.01,.1);
 	}
-	
+
 	spin_globalthres.update();
 }
 
@@ -420,7 +420,7 @@ StateDraw_Context::refresh_tool_options()
 	App::dialog_tool_options->set_widget(options_table);
 	App::dialog_tool_options->set_local_name(_("Draw Tool"));
 	App::dialog_tool_options->set_name("draw");
-	
+
 	App::dialog_tool_options->add_button(
 		Gtk::StockID("synfig-fill"),
 		_("Fill Last Stroke")
@@ -447,7 +447,7 @@ StateDraw_Context::~StateDraw_Context()
 	App::dialog_tool_options->clear();
 
 	get_work_area()->set_type_mask(old_duckmask);
-	
+
 	get_canvas_view()->work_area->reset_cursor();
 
 	// Restore layer clicking
@@ -462,7 +462,7 @@ StateDraw_Context::~StateDraw_Context()
 
 	// Bring back the tables if they were out before
 	if(prev_table_status)get_canvas_view()->show_tables();
-			
+
 	// Refresh the work area
 	get_work_area()->queue_draw();
 
@@ -494,11 +494,11 @@ StateDraw_Context::event_mouse_down_handler(const Smach::event& x)
 			get_canvas_view()->get_smach().push_state(&state_stroke);
 			return Smach::RESULT_ACCEPT;
 		}
-	
+
 	case BUTTON_RIGHT: // Intercept the right-button click to short-circut the pop-up menu
 		return Smach::RESULT_ACCEPT;
-	
-	default:	
+
+	default:
 		return Smach::RESULT_OK;
 	}
 }
@@ -522,20 +522,20 @@ struct DepthCounter
 {
 	int &i;
 	DepthCounter(int &i):i(i) { i++; }
-	~DepthCounter() { i--; }	
+	~DepthCounter() { i--; }
 };
 
 Smach::event_result
 StateDraw_Context::event_stroke(const Smach::event& x)
 {
 //	debugclass debugger("StateDraw_Context::event_stroke(const Smach::event& x)");
-		
+
 	const EventStroke& event(*reinterpret_cast<const EventStroke*>(&x));
 
 	assert(event.stroke_data);
 
 	get_work_area()->add_stroke(event.stroke_data,synfigapp::Main::get_foreground_color());
-	
+
 	if(nested==0)
 	{
 		DirtyTrap dirty_trap(get_work_area());
@@ -544,10 +544,10 @@ StateDraw_Context::event_stroke(const Smach::event& x)
 		process_queue();
 		return result;
 	}
-	
+
 	stroke_queue.push_back(pair<StrokeData,WidthData>(event.stroke_data,event.width_data));
 
-	return Smach::RESULT_ACCEPT;	
+	return Smach::RESULT_ACCEPT;
 }
 
 bool
@@ -571,7 +571,7 @@ StateDraw_Context::process_stroke(StrokeData stroke_data, WidthData width_data, 
 {
 //	debugclass debugger("StateDraw_Context::process_stroke");
 	DepthCounter depth_counter(nested);
-	
+
 	const float radius(synfigapp::Main::get_bline_width().units(get_canvas()->rend_desc())+(abs(get_work_area()->get_pw())+abs(get_work_area()->get_ph()))*5);
 
 
@@ -585,39 +585,39 @@ StateDraw_Context::process_stroke(StrokeData stroke_data, WidthData width_data, 
 			*iter=1.0;
 		}
 	}
-	
+
 	//get_work_area()->add_stroke(event.stroke_data,synfigapp::Main::get_foreground_color());
 	//stroke_list.push_back(event.stroke_data);
 	//refresh_ducks();
-		
+
 	std::list<synfig::BLinePoint> bline;
 	bool loop_bline_flag(false);
-	
+
 	//Changed by Adrian - use resident class :)
 	//synfigapp::convert_stroke_to_bline(bline, *event.stroke_data,*event.width_data, synfigapp::Main::get_bline_width());
 	blineconv.width = synfigapp::Main::get_bline_width().units(get_canvas()->rend_desc());
-	
+
 	if(get_local_error_flag())
 	{
 		float pw = get_work_area()->get_pw();
 		float ph = get_work_area()->get_ph();
-		
+
 		blineconv.pixelwidth = sqrt(pw*pw+ph*ph);
 		blineconv.smoothness = get_lthres();
 	}else
 	{
 		blineconv.pixelwidth = 1;
-		blineconv.smoothness = get_gthres();		
+		blineconv.smoothness = get_gthres();
 	}
-	
+
 	blineconv(bline,*stroke_data,*width_data);
-	
+
 	//Postprocess to require minimum pressure
 	if(get_min_pressure_flag())
 	{
 		synfigapp::BLineConverter::EnforceMinWidth(bline,get_min_pressure());
 	}
-	
+
 	// If the start and end points are similar, then make then the same point
 	if(get_auto_loop_flag())
 	if(bline.size()>2&&(bline.front().get_vertex()-bline.back().get_vertex()).mag()<=radius)
@@ -632,7 +632,7 @@ StateDraw_Context::process_stroke(StrokeData stroke_data, WidthData width_data, 
 			width=bline.back().get_width();
 			bline.pop_back();
 		}
-		
+
 		if(abs(bline.front().get_tangent1().norm()*tangent.norm().perp())>SIMILAR_TANGENT_THRESHOLD)
 		{
 			// If the tangents are not similar, then
@@ -646,9 +646,9 @@ StateDraw_Context::process_stroke(StrokeData stroke_data, WidthData width_data, 
 			// to the average of the two
 			bline.front().set_tangent((tangent+bline.front().get_tangent1())*0.5f);
 		}
-		
+
 		// Add the widths of the two points
-		{	
+		{
 			Real width(bline.front().get_width()+width);
 			width=width<=1?width:1;
 			bline.front().set_width(width);
@@ -678,12 +678,12 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline
 		std::list<synfig::BLinePoint> trans_bline;
 		std::list<synfig::BLinePoint>::iterator iter;
 		const synfig::TransformStack& transform(get_canvas_view()->get_curr_transform_stack());
-		
+
 		for(iter=bline.begin();iter!=bline.end();++iter)
 		{
 			BLinePoint bline_point(*iter);
 			Point new_vertex(transform.unperform(bline_point.get_vertex()));
-			
+
 			bline_point.set_tangent1(
 				transform.unperform(
 					bline_point.get_tangent1()+bline_point.get_vertex()
@@ -695,9 +695,9 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline
 					bline_point.get_tangent2()+bline_point.get_vertex()
 				) -new_vertex
 			);
-			
+
 			bline_point.set_vertex(new_vertex);
-			
+
 			trans_bline.push_back(bline_point);
 		}
 		value_node=ValueNode_BLine::create(synfig::ValueBase(trans_bline,loop_bline_flag));
@@ -711,10 +711,10 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline
 		bool extend_start=false,extend_finish=false,complete_loop=false;
 		bool extend_start_join_same=false,extend_start_join_different=false,extend_finish_join_same=false,extend_finish_join_different=false;
 		int start_duck_index,finish_duck_index;
-		
+
 		etl::handle<Duck> start_duck(get_work_area()->find_duck(bline.front().get_vertex(),radius,Duck::TYPE_VERTEX));
 		etl::handle<Duck> finish_duck(get_work_area()->find_duck(bline.back().get_vertex(),radius,Duck::TYPE_VERTEX));
-		
+
 		synfigapp::ValueDesc start_duck_value_desc,finish_duck_value_desc;
 		ValueNode_BLine::Handle start_duck_value_node_bline=NULL,finish_duck_value_node_bline=NULL;
 
@@ -783,7 +783,7 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline
 				// fall through
 			default:break;
 			}
-		}		
+		}
 
 		// if the new line's end didn't extend an existing line,
 		// check whether it needs to be linked to an existing duck
@@ -868,13 +868,13 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline
 			return result;
 		}
 	}
-	
+
 	// Create the layer
 	{
 		Layer::Handle layer;
 		Canvas::Handle canvas(get_canvas_view()->get_canvas());
 		int depth(0);
-		
+
 		// we are temporarily using the layer to hold something
 		layer=get_canvas_view()->get_selection_manager()->get_selected_layer();
 		if(layer)
@@ -882,16 +882,16 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline
 			depth=layer->get_depth();
 			canvas=layer->get_canvas();
 		}
-		
+
 		//int number(synfig::UniqueID().get_uid());
-		
+
 		synfigapp::PushMode push_mode(get_canvas_interface(),synfigapp::MODE_NORMAL);
-		
+
 		if(get_region_only_flag())
 			layer=get_canvas_interface()->add_layer_to("region",canvas,depth);
 		else
 			layer=get_canvas_interface()->add_layer_to("outline",canvas,depth);
-			
+
 		if(get_feather())
 		{
 			layer->set_param("feather",get_feather());
@@ -900,21 +900,21 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline
 		assert(layer);
 		//layer->set_description(strprintf("Stroke %d",number));
 		//get_canvas_interface()->signal_layer_new_description()(layer,layer->get_description());
-		
-		
-		
+
+
+
 		synfigapp::Action::Handle action(synfigapp::Action::create("layer_param_connect"));
-		
+
 		assert(action);
-		
-		action->set_param("canvas",get_canvas());			
-		action->set_param("canvas_interface",get_canvas_interface());			
-		action->set_param("layer",layer);			
+
+		action->set_param("canvas",get_canvas());
+		action->set_param("canvas_interface",get_canvas_interface());
+		action->set_param("layer",layer);
 		if(!action->set_param("param",String("bline")))
 			synfig::error("LayerParamConnect didn't like \"param\"");
 		if(!action->set_param("value_node",ValueNode::Handle(value_node)))
 			synfig::error("LayerParamConnect didn't like \"value_node\"");
-		
+
 		if(!get_canvas_interface()->get_instance()->perform_action(action))
 		{
 			get_canvas_view()->get_ui_interface()->error(_("Unable to create layer"));
@@ -925,7 +925,7 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline
 		get_canvas_view()->get_selection_manager()->set_selected_layer(layer);
 		//refresh_ducks();
 	}
-	
+
 	last_stroke=value_node;
 	return Smach::RESULT_ACCEPT;
 }
@@ -935,61 +935,61 @@ StateDraw_Context::new_region(std::list<synfig::BLinePoint> bline, synfig::Real 
 {
 	// Create the action group
 	synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Define Region"));
-	
+
 	std::list<synfigapp::ValueDesc> vertex_list;
-	
+
 	// First we need to come up with a rough list of
 	// BLinePoints that we are going to be using to
-	// define our region. 
+	// define our region.
 	{
 		std::list<synfig::BLinePoint>::iterator iter;
 		for(iter=bline.begin();iter!=bline.end();++iter)
 		{
 			etl::handle<Duck> duck(get_work_area()->find_duck(iter->get_vertex(),0,Duck::TYPE_VERTEX));
-			
+
 			if(!duck)
 			{
-				synfig::info(__FILE__":%d: Nothing to enclose!",__LINE__);				
-				return Smach::RESULT_OK;		
+				synfig::info(__FILE__":%d: Nothing to enclose!",__LINE__);
+				return Smach::RESULT_OK;
 			}
-			
-			
+
+
 			assert(duck->get_type()==Duck::TYPE_VERTEX);
-			
+
 			synfigapp::ValueDesc value_desc(duck->get_value_desc());
-			
+
 			if(!value_desc)
 			{
-				synfig::info(__FILE__":%d: Got a hit, but no ValueDesc on this duck",__LINE__);				
+				synfig::info(__FILE__":%d: Got a hit, but no ValueDesc on this duck",__LINE__);
 				continue;
 			}
-			
+
 			switch(value_desc.get_value_type())
 			{
 			case synfig::ValueBase::TYPE_BLINEPOINT:
 				//if(vertex_list.empty() || value_desc!=vertex_list.back())
 				vertex_list.push_back(value_desc);
 				assert(vertex_list.back().is_valid());
-			
+
 				break;
 			default:
 				break;
 			}
 		}
 	}
-	
+
 	if(vertex_list.size()<=2)
 	{
 		synfig::info(__FILE__":%d: Vertex list too small to make region.",__LINE__);
-		return Smach::RESULT_OK;		
+		return Smach::RESULT_OK;
 	}
 
 	assert(vertex_list.back().is_valid());
-	
+
 	// Remove any duplicates
 	{
 	}
-	
+
 	// Now we need to clean the list of vertices up
 	// a bit. This includes inserting missing vertices
 	// and removing extraneous ones.
@@ -1001,22 +1001,22 @@ StateDraw_Context::new_region(std::list<synfig::BLinePoint> bline, synfig::Real 
 		// any updates are performed, we will
 		// change it back to false.
 		done=true;
-		
+
 		std::list<synfigapp::ValueDesc>::iterator prev,iter,next;
 		prev=vertex_list.end();prev--;	// Set prev to the last ValueDesc
 		next=vertex_list.begin();
 		iter=next++; // Set iter to the first value desc, and next to the second
-		
+
 		for(;iter!=vertex_list.end();prev=iter,iter=next++)
 		{
 			synfigapp::ValueDesc value_prev(*prev);
 			synfigapp::ValueDesc value_desc(*iter);
 			synfigapp::ValueDesc value_next((next==vertex_list.end())?vertex_list.front():*next);
-			
+
 			assert(value_desc.is_valid());
 			assert(value_next.is_valid());
 			assert(value_prev.is_valid());
-			
+
 			//synfig::info("-------");
 			//synfig::info(__FILE__":%d: value_prev 0x%08X:%d",__LINE__,value_prev.get_parent_value_node().get(),value_prev.get_index());
 			//synfig::info(__FILE__":%d: value_desc 0x%08X:%d",__LINE__,value_desc.get_parent_value_node().get(),value_desc.get_index());
@@ -1034,9 +1034,9 @@ StateDraw_Context::new_region(std::list<synfig::BLinePoint> bline, synfig::Real 
 					done=false;
 					break;
 				}
-			}	
+			}
 			*/
-			
+
 			// Remove duplicate vertices
 			if(value_prev.get_value_node()==value_desc.get_value_node()
 				|| value_desc.get_value_node()==value_next.get_value_node())
@@ -1053,7 +1053,7 @@ StateDraw_Context::new_region(std::list<synfig::BLinePoint> bline, synfig::Real 
 				done=false;
 				break;
 			}
-			
+
 			if(value_desc.parent_is_value_node() && value_next.parent_is_value_node())
 			if(value_desc.get_parent_value_node()==value_next.get_parent_value_node() && (next!=vertex_list.end()))
 			{
@@ -1073,7 +1073,7 @@ StateDraw_Context::new_region(std::list<synfig::BLinePoint> bline, synfig::Real 
 					break;
 				}
 			}
-			
+
 			// Ensure that connections
 			// between blines are properly
 			// connected
@@ -1087,7 +1087,7 @@ StateDraw_Context::new_region(std::list<synfig::BLinePoint> bline, synfig::Real 
 				//synfig::info("--------");
 				//synfig::info(__FILE__":%d: vertex: [%f, %f]",__LINE__,vertex.get_vertex()[0],vertex.get_vertex()[1]);
 				//synfig::info(__FILE__":%d: vertex_next: [%f, %f]",__LINE__,vertex_next.get_vertex()[0],vertex_next.get_vertex()[1]);
-				
+
 				if((vertex.get_vertex()-vertex_next.get_vertex()).mag_squared()<radius*radius)
 				{
 					DEBUGPOINT();
@@ -1109,29 +1109,29 @@ StateDraw_Context::new_region(std::list<synfig::BLinePoint> bline, synfig::Real 
 					*iter=synfigapp::ValueDesc(get_canvas(),value_node->get_id());
 					vertex_list.erase(next);
 					done=false;
-					break;					
+					break;
 				}
 				else
 				{
 					DEBUGPOINT();
 					bool positive_trend(value_desc.get_index()>value_prev.get_index());
-					
+
 					if(!positive_trend && value_desc.get_index()>0)
 					{
 						DEBUGPOINT();
 						vertex_list.insert(next,synfigapp::ValueDesc(value_desc.get_parent_value_node(),value_desc.get_index()-1));
 						done=false;
-						break;					
+						break;
 					}
 					if(positive_trend && value_desc.get_index()<LinkableValueNode::Handle::cast_static(value_desc.get_value_node())->link_count()-1)
 					{
 						DEBUGPOINT();
 						vertex_list.insert(next,synfigapp::ValueDesc(value_desc.get_parent_value_node(),value_desc.get_index()+1));
 						done=false;
-						break;					
+						break;
 					}
 				}
-				
+
 			}
 		}
 	}
@@ -1139,21 +1139,21 @@ StateDraw_Context::new_region(std::list<synfig::BLinePoint> bline, synfig::Real 
 	if(vertex_list.size()<=2)
 	{
 		synfig::info(__FILE__":%d: Vertex list too small to make region.",__LINE__);
-		return Smach::RESULT_OK;		
+		return Smach::RESULT_OK;
 	}
-	
+
 	ValueNode_BLine::Handle value_node_bline;
 
 	// Now we need to test for the trivial case,
 	// which is where all of the vertices
-	// come from one BLine. 
+	// come from one BLine.
 	if(vertex_list.front().parent_is_linkable_value_node())
 	{
 		bool trivial_case(true);
 		ValueNode::Handle trivial_case_value_node;
-		
+
 		trivial_case_value_node=vertex_list.front().get_parent_value_node();
-		
+
 		std::list<synfigapp::ValueDesc>::iterator iter;
 		for(iter=vertex_list.begin();iter!=vertex_list.end();++iter)
 		{
@@ -1166,7 +1166,7 @@ StateDraw_Context::new_region(std::list<synfig::BLinePoint> bline, synfig::Real 
 		if(trivial_case)
 			value_node_bline=ValueNode_BLine::Handle::cast_dynamic(trivial_case_value_node);
 	}
-	
+
 	// If we aren't the trivial case,
 	// then go ahead and create the new
 	// BLine value node
@@ -1174,20 +1174,20 @@ StateDraw_Context::new_region(std::list<synfig::BLinePoint> bline, synfig::Real 
 	{
 		value_node_bline=ValueNode_BLine::create();
 
-		std::list<synfigapp::ValueDesc>::iterator iter;		
+		std::list<synfigapp::ValueDesc>::iterator iter;
 		for(iter=vertex_list.begin();iter!=vertex_list.end();++iter)
 		{
 			// Ensure that the vertex is exported.
-			get_canvas_interface()->auto_export(*iter);	
-			
-			value_node_bline->add(iter->get_value_node());	
-			//value_node_bline->add(ValueNode_BLine::ListEntry(iter->get_value_node()));	
+			get_canvas_interface()->auto_export(*iter);
+
+			value_node_bline->add(iter->get_value_node());
+			//value_node_bline->add(ValueNode_BLine::ListEntry(iter->get_value_node()));
 		}
-		
+
 		value_node_bline->set_loop(true);
 	}
 
-	get_canvas_interface()->auto_export(value_node_bline);			
+	get_canvas_interface()->auto_export(value_node_bline);
 
 	// Now we create the region layer
 	// Create the layer
@@ -1195,7 +1195,7 @@ StateDraw_Context::new_region(std::list<synfig::BLinePoint> bline, synfig::Real 
 		Layer::Handle layer;
 		Canvas::Handle canvas(get_canvas_view()->get_canvas());
 		int depth(0);
-		
+
 		// we are temporarily using the layer to hold something
 		layer=get_canvas_view()->get_selection_manager()->get_selected_layer();
 		if(layer)
@@ -1203,9 +1203,9 @@ StateDraw_Context::new_region(std::list<synfig::BLinePoint> bline, synfig::Real 
 			depth=layer->get_depth();
 			canvas=layer->get_canvas();
 		}
-		
+
 		synfigapp::PushMode push_mode(get_canvas_interface(),synfigapp::MODE_NORMAL);
-		
+
 		layer=get_canvas_interface()->add_layer_to("region",canvas,depth);
 		assert(layer);
 		layer->set_param("color",synfigapp::Main::get_background_color());
@@ -1217,17 +1217,17 @@ StateDraw_Context::new_region(std::list<synfig::BLinePoint> bline, synfig::Real 
 		get_canvas_interface()->signal_layer_param_changed()(layer,"color");
 
 		synfigapp::Action::Handle action(synfigapp::Action::create("layer_param_connect"));
-		
+
 		assert(action);
-		
-		action->set_param("canvas",get_canvas());			
-		action->set_param("canvas_interface",get_canvas_interface());			
-		action->set_param("layer",layer);			
+
+		action->set_param("canvas",get_canvas());
+		action->set_param("canvas_interface",get_canvas_interface());
+		action->set_param("layer",layer);
 		if(!action->set_param("param",String("bline")))
 			synfig::error("LayerParamConnect didn't like \"param\"");
 		if(!action->set_param("value_node",ValueNode::Handle(value_node_bline)))
 			synfig::error("LayerParamConnect didn't like \"value_node\"");
-		
+
 		if(!get_canvas_interface()->get_instance()->perform_action(action))
 		{
 			get_canvas_view()->get_ui_interface()->error(_("Unable to create Region layer"));
@@ -1236,7 +1236,7 @@ StateDraw_Context::new_region(std::list<synfig::BLinePoint> bline, synfig::Real 
 		}
 		get_canvas_view()->get_selection_manager()->set_selected_layer(layer);
 	}
-	
+
 	return Smach::RESULT_ACCEPT;
 }
 
@@ -1246,16 +1246,16 @@ StateDraw_Context::refresh_ducks()
 	get_canvas_view()->queue_rebuild_ducks();
 /*
 	get_work_area()->clear_ducks();
-	
-	
+
+
 	std::list< etl::smart_ptr<std::list<synfig::Point> > >::iterator iter;
-	
+
 	for(iter=stroke_list.begin();iter!=stroke_list.end();++iter)
 	{
 		get_work_area()->add_stroke(*iter);
 	}
-	
-	get_work_area()->queue_draw();			
+
+	get_work_area()->queue_draw();
 */
 }
 
@@ -1265,22 +1265,22 @@ StateDraw_Context::extend_bline_from_begin(ValueNode_BLine::Handle value_node,st
 {
 	// Create the action group
 	synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Extend BLine"));
-	
+
 	if (complete_loop)
 	{
 		synfigapp::Action::Handle action(synfigapp::Action::create("value_node_dynamic_list_loop"));
 		assert(action);
 
-		action->set_param("canvas",get_canvas());			
-		action->set_param("canvas_interface",get_canvas_interface());			
+		action->set_param("canvas",get_canvas());
+		action->set_param("canvas_interface",get_canvas_interface());
 		action->set_param("value_node",ValueNode::Handle(value_node));
-		
+
 		if(!get_canvas_interface()->get_instance()->perform_action(action))
 		{
 			get_canvas_view()->get_ui_interface()->error(_("Unable to set loop for bline"));
 			group.cancel();
 			return Smach::RESULT_ERROR;
-		}		
+		}
 	}
 
 	std::list<synfig::BLinePoint>::reverse_iterator iter;
@@ -1291,23 +1291,23 @@ StateDraw_Context::extend_bline_from_begin(ValueNode_BLine::Handle value_node,st
 		ValueNode_Composite::Handle composite(ValueNode_Composite::create(*iter));
 
 		synfigapp::Action::Handle action(synfigapp::Action::create("value_node_dynamic_list_insert"));
-		
+
 		assert(action);
 		synfigapp::ValueDesc value_desc(value_node,0);
-		
-		action->set_param("canvas",get_canvas());			
-		action->set_param("canvas_interface",get_canvas_interface());			
+
+		action->set_param("canvas",get_canvas());
+		action->set_param("canvas_interface",get_canvas_interface());
 		action->set_param("value_desc",value_desc);
 		if(!action->set_param("item",ValueNode::Handle(composite)))
 			synfig::error("ACTION didn't like \"item\"");
-		
+
 		if(!get_canvas_interface()->get_instance()->perform_action(action))
 		{
 			get_canvas_view()->get_ui_interface()->error(_("Unable to insert item"));
 			group.cancel();
 			//refresh_ducks();
 			return Smach::RESULT_ERROR;
-		}		
+		}
 	}
 	last_stroke=value_node;
 	return Smach::RESULT_ACCEPT;
@@ -1324,16 +1324,16 @@ StateDraw_Context::extend_bline_from_end(ValueNode_BLine::Handle value_node,std:
 		synfigapp::Action::Handle action(synfigapp::Action::create("value_node_dynamic_list_loop"));
 		assert(action);
 
-		action->set_param("canvas",get_canvas());			
-		action->set_param("canvas_interface",get_canvas_interface());			
+		action->set_param("canvas",get_canvas());
+		action->set_param("canvas_interface",get_canvas_interface());
 		action->set_param("value_node",ValueNode::Handle(value_node));
-		
+
 		if(!get_canvas_interface()->get_instance()->perform_action(action))
 		{
 			get_canvas_view()->get_ui_interface()->error(_("Unable to set loop for bline"));
 			group.cancel();
 			return Smach::RESULT_ERROR;
-		}		
+		}
 	}
 
 	std::list<synfig::BLinePoint>::iterator iter;
@@ -1343,23 +1343,23 @@ StateDraw_Context::extend_bline_from_end(ValueNode_BLine::Handle value_node,std:
 		ValueNode_Composite::Handle composite(ValueNode_Composite::create(*iter));
 
 		synfigapp::Action::Handle action(synfigapp::Action::create("value_node_dynamic_list_insert"));
-		
+
 		assert(action);
 		synfigapp::ValueDesc value_desc(value_node,value_node->link_count());
-		
-		action->set_param("canvas",get_canvas());			
-		action->set_param("canvas_interface",get_canvas_interface());			
+
+		action->set_param("canvas",get_canvas());
+		action->set_param("canvas_interface",get_canvas_interface());
 		action->set_param("value_desc",value_desc);
 		if(!action->set_param("item",ValueNode::Handle(composite)))
 			synfig::error("ACTION didn't like \"item\"");
-		
+
 		if(!get_canvas_interface()->get_instance()->perform_action(action))
 		{
 			get_canvas_view()->get_ui_interface()->error(_("Unable to insert item"));
 			group.cancel();
 			//refresh_ducks();
 			return Smach::RESULT_ERROR;
-		}		
+		}
 	}
 	last_stroke=value_node;
 	return Smach::RESULT_ACCEPT;
@@ -1369,7 +1369,7 @@ void
 StateDraw_Context::reverse_bline(std::list<synfig::BLinePoint> &bline)
 {
 	int i;
-	
+
 	std::list<synfig::BLinePoint>::iterator iter,eiter;
 	iter=bline.begin();
 	eiter=bline.end();
@@ -1387,31 +1387,31 @@ StateDraw_Context::fill_last_stroke()
 {
 	if(!last_stroke)
 		return;
-	
+
 	synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Fill Stroke"));
 
 	Layer::Handle layer;
-	
-	get_canvas_interface()->auto_export(last_stroke);			
+
+	get_canvas_interface()->auto_export(last_stroke);
 
 	synfigapp::PushMode push_mode(get_canvas_interface(),synfigapp::MODE_NORMAL);
-	
+
 	layer=get_canvas_interface()->add_layer("region");
 	assert(layer);
 	layer->set_param("color",synfigapp::Main::get_background_color());
 
 	synfigapp::Action::Handle action(synfigapp::Action::create("layer_param_connect"));
-	
+
 	assert(action);
-	
-	action->set_param("canvas",get_canvas());			
-	action->set_param("canvas_interface",get_canvas_interface());			
-	action->set_param("layer",layer);			
+
+	action->set_param("canvas",get_canvas());
+	action->set_param("canvas_interface",get_canvas_interface());
+	action->set_param("layer",layer);
 	if(!action->set_param("param",String("segment_list")))
 		synfig::error("LayerParamConnect didn't like \"param\"");
 	if(!action->set_param("value_node",ValueNode::Handle(last_stroke)))
 		synfig::error("LayerParamConnect didn't like \"value_node\"");
-	
+
 	if(!get_canvas_interface()->get_instance()->perform_action(action))
 	{
 		get_canvas_view()->get_ui_interface()->error(_("Unable to create Region layer"));

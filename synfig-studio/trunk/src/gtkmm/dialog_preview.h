@@ -55,9 +55,9 @@ class Dialog_Preview : public Gtk::Dialog
 {
 	Widget_Preview 	preview;
 	DialogSettings	settings;
-	
+
 	//etl::handle<synfig::Canvas> canvas;
-			
+
 public:
 	Dialog_Preview();
 	~Dialog_Preview();
@@ -73,29 +73,29 @@ public:
 
 class Dialog_PreviewOptions : public Gtk::Dialog
 {
-	//all the info needed to construct a render description...	
+	//all the info needed to construct a render description...
 	Gtk::Adjustment	adj_zoom;	// factor at which to resize the window...
-	
+
 	Gtk::Adjustment	adj_fps;	// how often to take samples of the animation
-	
+
 	studio::Widget_Time time_begin;
 	studio::Widget_Time time_end;
-			
+
 	Gtk::CheckButton check_overbegin;
 	Gtk::CheckButton check_overend;
-	
+
 	DialogSettings	settings;
-	
+
 	float	globalfps;
-	
+
 	// for finishing
 	void on_ok_pressed();
 	void on_cancel_pressed();
-	
+
 	//for ui stuff
 	void on_overbegin_toggle();
 	void on_overend_toggle();
-	
+
 	sigc::signal<void,const PreviewInfo &>	signal_finish_;
 public:
 	Dialog_PreviewOptions();
@@ -103,25 +103,25 @@ public:
 
 	float get_zoom() const { return adj_zoom.get_value(); }
 	void set_zoom(float z) { adj_zoom.set_value(z); }
-	
+
 	float get_fps() const { return adj_fps.get_value(); }
 	void set_fps(float z) { adj_fps.set_value(z); }
-	
+
 	float get_global_fps() const { return globalfps; }
 	void set_global_fps(float f);
-	
+
 	synfig::Time get_begintime() const { return time_begin.get_value(); }
 	void set_begintime(const synfig::Time &t) { time_begin.set_value(t); }
-	
+
 	synfig::Time get_endtime() const { return time_end.get_value(); }
 	void set_endtime(const synfig::Time &t) { time_end.set_value(t); }
-	
+
 	bool get_begin_override() const { return check_overbegin.get_active(); }
 	void set_begin_override(bool o) { check_overbegin.set_active(o); }
-	
+
 	bool get_end_override() const { return check_overend.get_active(); }
 	void set_end_override(bool o) { check_overend.set_active(o); }
-	
+
 	sigc::signal<void,const PreviewInfo &>	&signal_finish() {return signal_finish_;}
 };
 

@@ -66,7 +66,7 @@ Action::ParamVocab
 Action::ValueNodeLinkConnect::get_param_vocab()
 {
 	ParamVocab ret(Action::CanvasSpecific::get_param_vocab());
-	
+
 	ret.push_back(ParamDesc("parent_value_node",Param::TYPE_VALUENODE)
 		.set_local_name(_("Parent ValueNode"))
 	);
@@ -94,21 +94,21 @@ Action::ValueNodeLinkConnect::set_param(const synfig::String& name, const Action
 	if(name=="parent_value_node" && param.get_type()==Param::TYPE_VALUENODE)
 	{
 		parent_value_node=LinkableValueNode::Handle::cast_dynamic(param.get_value_node());
-		
+
 		return static_cast<bool>(parent_value_node);
 	}
 
 	if(name=="value_node" && param.get_type()==Param::TYPE_VALUENODE)
 	{
 		new_value_node=param.get_value_node();
-		
+
 		return true;
 	}
 
 	if(name=="index" && param.get_type()==Param::TYPE_INTEGER)
 	{
 		index=param.get_integer();
-		
+
 		return true;
 	}
 
@@ -127,15 +127,15 @@ void
 Action::ValueNodeLinkConnect::perform()
 {
 	if(parent_value_node->link_count()<=index)
-		throw Error(_("Bad index, too big. LinkCount=%d, Index=%d"),parent_value_node->link_count(),index);		
-		
+		throw Error(_("Bad index, too big. LinkCount=%d, Index=%d"),parent_value_node->link_count(),index);
+
 	old_value_node=parent_value_node->get_link(index);
 
 	if(!parent_value_node->set_link(index,new_value_node))
 		throw Error(_("Parent would not accept link"));
-	
+
 	/*set_dirty(true);
-	
+
 	if(get_canvas_interface())
 	{
 		get_canvas_interface()->signal_value_node_changed()(parent_value_node);
@@ -146,13 +146,13 @@ void
 Action::ValueNodeLinkConnect::undo()
 {
 	if(parent_value_node->link_count()<=index)
-		throw Error(_("Bad index, too big. LinkCount=%d, Index=%d"),parent_value_node->link_count(),index);		
-		
+		throw Error(_("Bad index, too big. LinkCount=%d, Index=%d"),parent_value_node->link_count(),index);
+
 	if(!parent_value_node->set_link(index,old_value_node))
 		throw Error(_("Parent would not accept old link"));
-	
+
 	/*set_dirty(true);
-	
+
 	if(get_canvas_interface())
 	{
 		get_canvas_interface()->signal_value_node_changed()(parent_value_node);

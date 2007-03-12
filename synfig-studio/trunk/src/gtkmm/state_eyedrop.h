@@ -36,8 +36,8 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace studio { 
-	
+namespace studio {
+
 class StateEyedrop_Context;
 
 class StateEyedrop : public Smach::state<StateEyedrop_Context>

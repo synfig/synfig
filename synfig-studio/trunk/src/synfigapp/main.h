@@ -51,7 +51,7 @@ namespace synfig {
 };
 
 namespace synfigapp {
-	
+
 /*!	\class synfigapp::Main
 **	\brief \writeme
 **
@@ -65,7 +65,7 @@ public:
 	~Main();
 
 	const etl::reference_counter& ref_count()const { return ref_count_; }
-		
+
 	static const synfig::Color& get_foreground_color();
 	static const synfig::Color& get_background_color();
 	static const synfig::Gradient& get_gradient();
@@ -74,12 +74,12 @@ public:
 
 
 	static void set_interpolation(synfig::Waypoint::Interpolation x);
-	static void set_bline_width(synfig::Distance x);	
+	static void set_bline_width(synfig::Distance x);
 	static void set_foreground_color(synfig::Color color);
 	static void set_background_color(synfig::Color color);
 	static void set_gradient(synfig::Gradient gradient);
 	static void set_gradient_default_colors();
-	static void color_swap();	
+	static void color_swap();
 
 	static synfig::Color::BlendMethod get_blend_method();
 	static const synfig::Real& get_opacity();
@@ -88,7 +88,7 @@ public:
 	static sigc::signal<void>& signal_blend_method_changed();
 	static sigc::signal<void>& signal_opacity_changed();
 	static sigc::signal<void>& signal_interpolation_changed();
-	
+
 	// Input Device stuff
 	static InputDevice::Handle add_input_device(const synfig::String id_, InputDevice::Type type_=InputDevice::TYPE_MOUSE);
 	static InputDevice::Handle find_input_device(const synfig::String id_);
@@ -98,8 +98,8 @@ public:
 	static void set_state(synfig::String state);
 
 	static Settings& settings();
-	
-	// Signal interfaces	
+
+	// Signal interfaces
 	static sigc::signal<void>& signal_foreground_color_changed();
 	static sigc::signal<void>& signal_background_color_changed();
 	static sigc::signal<void>& signal_gradient_changed();

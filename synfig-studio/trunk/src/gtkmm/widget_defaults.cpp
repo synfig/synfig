@@ -76,14 +76,14 @@ public:
 		synfigapp::Main::signal_bline_width_changed().connect(sigc::mem_fun(*this,&studio::Widget_Brush::queue_draw));
 		studio::App::signal_instance_selected().connect(sigc::hide(sigc::mem_fun(*this,&studio::Widget_Brush::queue_draw)));
 	}
-	
+
 	bool
 	redraw(GdkEventExpose*bleh)
 	{
 		Glib::RefPtr<Gdk::GC> gc(Gdk::GC::create(get_window()));
-		
+
 		const int h(get_height());
-		const int w(get_width());	
+		const int w(get_width());
 
 		float pixelsize(0);
 		if(App::get_selected_canvas_view())
@@ -91,7 +91,7 @@ public:
 			const RendDesc& rend_desc(App::get_selected_canvas_view()->get_canvas()->rend_desc());
 			pixelsize=synfigapp::Main::get_bline_width().get(Distance::SYSTEM_PIXELS,rend_desc);
 		}
-		else 
+		else
 		{
 			RendDesc rend_desc;
 			pixelsize=synfigapp::Main::get_bline_width().get(Distance::SYSTEM_PIXELS,rend_desc);
@@ -101,7 +101,7 @@ public:
 
 /*
 		gc->set_rgb_fg_color(colorconv_synfig2gdk(synfigapp::Main::get_background_color()));
-		gc->set_line_attributes(1,Gdk::LINE_SOLID,Gdk::CAP_BUTT,Gdk::JOIN_MITER);	
+		gc->set_line_attributes(1,Gdk::LINE_SOLID,Gdk::CAP_BUTT,Gdk::JOIN_MITER);
 		get_window()->draw_rectangle(
 			gc,
 			true,	// Fill?
@@ -109,7 +109,7 @@ public:
 			w,h	//w,h
 		);
 */
-		
+
 		// Draw in the circle
 		gc->set_rgb_fg_color(colorconv_synfig2gdk(synfigapp::Main::get_foreground_color()));
 		gc->set_function(Gdk::COPY);
@@ -123,8 +123,8 @@ public:
 			round_to_int(pixelsize+0.6),
 			0,
 			360*64
-		);  
-			
+		);
+
 		return true;
 	}
 
@@ -133,10 +133,10 @@ public:
 	{
 //		const int x(static_cast<int>(event->button.x));
 		const int y(static_cast<int>(event->button.y));
-		
+
 		const int h(get_height());
-//		const int w(get_width());	
-		
+//		const int w(get_width());
+
 		switch(event->type)
 		{
 			case GDK_MOTION_NOTIFY:
@@ -145,7 +145,7 @@ public:
 				if(event->button.button==1) // Left click
 				{
 					Distance dist(synfigapp::Main::get_bline_width());
-					
+
 					if(y<h/2) // increase BLine size
 					{
 						dist+=DEFAULT_INCREMENT;
@@ -167,7 +167,7 @@ public:
 			case GDK_SCROLL:
 				{
 					Distance dist(synfigapp::Main::get_bline_width());
-					
+
 					if(event->scroll.direction==GDK_SCROLL_UP)
 					{
 						dist+=DEFAULT_INCREMENT;
@@ -182,7 +182,7 @@ public:
 			default:
 				break;
 		}
-		
+
 		return false;
 	}
 
@@ -196,10 +196,10 @@ Widget_Defaults::Widget_Defaults()
 {
 	//set_size_request(48,48+GRADIENT_HEIGHT+16);
 	//set_size_request(48,-1);
-	
+
 	{
 		Gtk::Table* subtable(manage(new Gtk::Table()));
-	
+
 		// Foreground Color
 		widget_fg_color=manage(new Widget_Color());
 		widget_fg_color->show();
@@ -207,7 +207,7 @@ Widget_Defaults::Widget_Defaults()
 		widget_fg_color->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Defaults::on_fg_color_clicked));
 		subtable->attach(*widget_fg_color, 0, 2, 0, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 		tooltips_.set_tip(*widget_fg_color,_("Foreground Color"));
-	
+
 		// Background Color
 		widget_bg_color=manage(new Widget_Color());
 		widget_bg_color->show();
@@ -217,7 +217,7 @@ Widget_Defaults::Widget_Defaults()
 		tooltips_.set_tip(*widget_bg_color,_("Background Color"));
 
 		Gtk::Image* icon;
-		
+
 		// Swap button
 		Gtk::Button* button_swap(manage(new Gtk::Button()));
 		button_swap->show();
@@ -244,7 +244,7 @@ Widget_Defaults::Widget_Defaults()
 		subtable->attach(*button_reset, 0,1, 2, 3, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 		tooltips_.set_tip(*button_reset,_("Reset Colors to Black and White"));
 
-		
+
 		attach(*subtable, 0, 1, 0, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 1, 1);
 		subtable->set_size_request(36,36);
 		subtable->set_homogeneous(true);
@@ -336,7 +336,7 @@ Widget_Defaults::Widget_Defaults()
 		App::dialog_gradient->reset();
 		App::dialog_gradient->signal_edited().connect(sigc::mem_fun(synfigapp::Main::set_gradient));
 	}
-	
+
 	if(App::dialog_color)
 	{
 		App::dialog_color->set_color(synfigapp::Main::get_foreground_color());
@@ -345,7 +345,7 @@ Widget_Defaults::Widget_Defaults()
 	}
 */
 }
-	
+
 Widget_Defaults::~Widget_Defaults()
 {
 }
@@ -465,21 +465,21 @@ Widget_Defaults::redraw(GdkEventExpose*bleh)
 	Glib::RefPtr<Gdk::GC> gc(Gdk::GC::create(get_window()));
 
 	const int h(get_height());
-	const int w(get_width());	
+	const int w(get_width());
 	const int size=std::min(h-GRADIENT_HEIGHT,w);
-	
+
 	render_color_to_window(get_window(),Gdk::Rectangle(size/4,size/4,size/4*3-1,size/4*3-1),synfigapp::Main::get_background_color());
 	render_color_to_window(get_window(),Gdk::Rectangle(0,0,size/4*3-1,size/4*3-1),synfigapp::Main::get_foreground_color());
 	render_gradient_to_window(get_window(),Gdk::Rectangle(0,h-GRADIENT_HEIGHT,w,GRADIENT_HEIGHT-1),synfigapp::Main::get_gradient());
 
-	
+
 
 
 
 	Glib::RefPtr<Pango::Layout> layout(Pango::Layout::create(get_pango_context()));
-	
+
 	gc->set_rgb_fg_color(Gdk::Color("#FF0000"));
-	layout->set_text(synfigapp::Main::get_bline_width().get_string(2));		
+	layout->set_text(synfigapp::Main::get_bline_width().get_string(2));
 	layout->set_alignment(Pango::ALIGN_CENTER);
 	layout->set_width(w/2);
 	get_window()->draw_layout(gc, w*3/4, (h-GRADIENT_HEIGHT)-16, layout);
@@ -494,7 +494,7 @@ Widget_Defaults::on_event(GdkEvent *event)
 	const int y(static_cast<int>(event->button.y));
 
 	const int h(get_height());
-	const int w(get_width());	
+	const int w(get_width());
 	const int size=std::min(h-GRADIENT_HEIGHT,w);
 
 	switch(event->type)
@@ -540,7 +540,7 @@ Widget_Defaults::on_event(GdkEvent *event)
 			if(x>size) // Left click on BLine Width
 			{
 				Distance dist(synfigapp::Main::get_bline_width());
-				
+
 				if(y<size/2) // increase BLine size
 				{
 					dist+=DEFAULT_INCREMENT;
@@ -568,20 +568,20 @@ Widget_Defaults::on_event(GdkEvent *event)
 					synfigapp::Main::color_swap();
 					return true;
 				}
-				
+
 				if(x>w/2)
 				{
 					// right click on bline width
 					synfigapp::Main::set_bline_width(DEFAULT_WIDTH);
 				}
-				
+
 			}
 		}
 		break;
 	case GDK_SCROLL:
 		{
 			Distance dist(synfigapp::Main::get_bline_width());
-			
+
 			if(event->scroll.direction==GDK_SCROLL_UP)
 			{
 				dist+=DEFAULT_INCREMENT;
@@ -595,7 +595,7 @@ Widget_Defaults::on_event(GdkEvent *event)
 	default:
 		break;
 	}
-	
+
 	return false;
 }
 */

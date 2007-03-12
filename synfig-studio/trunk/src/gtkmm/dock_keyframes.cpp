@@ -112,7 +112,7 @@ Dock_Keyframes::Dock_Keyframes():
 
 	App::ui_manager()->add_ui_from_string(ui_info);
 
-	set_toolbar(*dynamic_cast<Gtk::Toolbar*>(App::ui_manager()->get_widget("/toolbar-keyframe")));	
+	set_toolbar(*dynamic_cast<Gtk::Toolbar*>(App::ui_manager()->get_widget("/toolbar-keyframe")));
 }
 
 Dock_Keyframes::~Dock_Keyframes()
@@ -169,10 +169,10 @@ Dock_Keyframes::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_v
 	if(canvas_view)
 	{
 		Gtk::Widget* tree_view(canvas_view->get_ext_widget(get_name()));
-	
+
 		add(*tree_view);
 		tree_view->show();
-		
+
 		keyframe_action_manager->set_keyframe_tree(dynamic_cast<KeyframeTree*>(canvas_view->get_ext_widget(get_name())));
 		keyframe_action_manager->set_canvas_interface(canvas_view->canvas_interface());
 		keyframe_action_manager->refresh();
@@ -180,7 +180,7 @@ Dock_Keyframes::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_v
 	else
 	{
 		clear_previous();
-		
+
 		keyframe_action_manager->set_keyframe_tree(0);
 		keyframe_action_manager->set_canvas_interface(0);
 		keyframe_action_manager->refresh();

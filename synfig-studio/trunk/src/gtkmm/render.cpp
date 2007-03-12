@@ -66,9 +66,9 @@ RenderSettings::RenderSettings(Gtk::Window& parent,handle<synfigapp::CanvasInter
 	widget_rend_desc.show();
 	widget_rend_desc.signal_changed().connect(sigc::mem_fun(*this,&studio::RenderSettings::on_rend_desc_changed));
 	widget_rend_desc.set_rend_desc(canvas_interface_->get_canvas()->rend_desc());
-	
+
 	canvas_interface->signal_rend_desc_changed().connect(sigc::mem_fun(*this,&RenderSettings::on_rend_desc_changed));
-	
+
 	menu_target=manage(new class Gtk::Menu());
 
 	menu_target->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Auto"),
@@ -77,7 +77,7 @@ RenderSettings::RenderSettings(Gtk::Window& parent,handle<synfigapp::CanvasInter
 
 	synfig::Target::Book::iterator iter;
 	synfig::Target::Book book(synfig::Target::book());
-	
+
 	for(iter=book.begin();iter!=book.end();iter++)
 	{
 		menu_target->items().push_back(Gtk::Menu_Helpers::MenuElem(iter->first,
@@ -98,7 +98,7 @@ RenderSettings::RenderSettings(Gtk::Window& parent,handle<synfigapp::CanvasInter
 	Gtk::Button *choose_button(manage(new class Gtk::Button(Gtk::StockID(_("Choose...")))));
 	choose_button->show();
 	choose_button->signal_clicked().connect(sigc::mem_fun(*this, &studio::RenderSettings::on_choose_pressed));
-	
+
 	Gtk::Frame *target_frame=manage(new Gtk::Frame(_("Target")));
 	target_frame->set_shadow_type(Gtk::SHADOW_NONE);
 	((Gtk::Label *) target_frame->get_label_widget())->set_markup(_("<b>Target</b>"));
@@ -106,7 +106,7 @@ RenderSettings::RenderSettings(Gtk::Window& parent,handle<synfigapp::CanvasInter
 	Gtk::Alignment *targetPadding = manage(new Gtk::Alignment(0, 0, 1, 1));
 	targetPadding->set_padding(6, 0, 24, 0);
 	target_frame->add(*targetPadding);
-	
+
 	Gtk::Table *target_table = manage(new Gtk::Table(2, 3, false));
 	target_table->set_row_spacings(6);
 	target_table->set_col_spacings(12);
@@ -117,13 +117,13 @@ RenderSettings::RenderSettings(Gtk::Window& parent,handle<synfigapp::CanvasInter
 	filenameLabel->set_mnemonic_widget(entry_filename);
 	target_table->attach(*filenameLabel, 0, 1, 0, 1, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 	target_table->attach(entry_filename, 1, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-	target_table->attach(*choose_button, 2, 3, 0, 1, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);	
-	
+	target_table->attach(*choose_button, 2, 3, 0, 1, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+
 	Gtk::Label *targetLabel = manage(new Gtk::Label(_("_Target"), true));
 	targetLabel->set_alignment(0, 0.5);
 	targetLabel->set_mnemonic_widget(optionmenu_target);
-	target_table->attach(*targetLabel, 0, 1, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);	
-	target_table->attach(optionmenu_target, 1, 3, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);	
+	target_table->attach(*targetLabel, 0, 1, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+	target_table->attach(optionmenu_target, 1, 3, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 
 	toggle_single_frame.signal_toggled().connect(sigc::mem_fun(*this, &studio::RenderSettings::on_single_frame_toggle));
 
@@ -135,7 +135,7 @@ RenderSettings::RenderSettings(Gtk::Window& parent,handle<synfigapp::CanvasInter
 	Gtk::Alignment *settingsPadding = manage(new Gtk::Alignment(0, 0, 1, 1));
 	settingsPadding->set_padding(6, 0, 24, 0);
 	settings_frame->add(*settingsPadding);
-	
+
 	Gtk::Table *settings_table=manage(new Gtk::Table(2,2,false));
 	settings_table->set_row_spacings(6);
 	settings_table->set_col_spacings(12);
@@ -144,21 +144,21 @@ RenderSettings::RenderSettings(Gtk::Window& parent,handle<synfigapp::CanvasInter
 	Gtk::Label *qualityLabel = manage(new Gtk::Label(_("_Quality"), true));
 	qualityLabel->set_alignment(0, 0.5);
 	qualityLabel->set_mnemonic_widget(entry_quality);
-	settings_table->attach(*qualityLabel, 0, 1, 0, 1, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);	
-	settings_table->attach(entry_quality, 1, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);	
+	settings_table->attach(*qualityLabel, 0, 1, 0, 1, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+	settings_table->attach(entry_quality, 1, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 
 	Gtk::Label *antiAliasLabel = manage(new Gtk::Label(_("_Anti-Aliasing"), true));
 	antiAliasLabel->set_alignment(0, 0.5);
 	antiAliasLabel->set_mnemonic_widget(entry_antialias);
-	settings_table->attach(*antiAliasLabel, 0, 1, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);	
-	settings_table->attach(entry_antialias, 1, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);	
-	
+	settings_table->attach(*antiAliasLabel, 0, 1, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+	settings_table->attach(entry_antialias, 1, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+
 	toggle_single_frame.set_alignment(0, 0.5);
-	settings_table->attach(toggle_single_frame, 0, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);	
+	settings_table->attach(toggle_single_frame, 0, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 
 	dialogBox->pack_start(widget_rend_desc);
-	
-	
+
+
 	Gtk::Button *render_button(manage(new class Gtk::Button(Gtk::StockID("Render"))));
 	render_button->show();
 	add_action_widget(*render_button,1);
@@ -170,13 +170,13 @@ RenderSettings::RenderSettings(Gtk::Window& parent,handle<synfigapp::CanvasInter
 	cancel_button->signal_clicked().connect(sigc::mem_fun(*this, &studio::RenderSettings::on_cancel_pressed));
 
 	//set_default_response(1);
-	
+
 	set_title(_("Render Settings")+String(" - ")+canvas_interface_->get_canvas()->get_name());
 
 
 	toggle_single_frame.set_active(true);
 	widget_rend_desc.disable_time_section();
-	
+
 
 	try
 	{
@@ -187,7 +187,7 @@ RenderSettings::RenderSettings(Gtk::Window& parent,handle<synfigapp::CanvasInter
 		synfig::warning("Averted crash!");
 		entry_filename.set_text("output.png");
 	}
-	
+
 	get_vbox()->show_all();
 }
 
@@ -219,7 +219,7 @@ void
 RenderSettings::on_render_pressed()
 {
 	String filename=entry_filename.get_text();
-	
+
 	if(filename.empty())
 	{
 		canvas_interface_->get_ui_interface()->error(_("You must supply a filename!"));
@@ -241,7 +241,7 @@ RenderSettings::on_render_pressed()
 		catch(std::runtime_error x)
 		{
 			canvas_interface_->get_ui_interface()->error(_("Unable to determine proper target from filename."));
-			return;			
+			return;
 		}
 	}
 
@@ -259,11 +259,11 @@ RenderSettings::on_render_pressed()
 	}
 
 	hide();
-	
+
 	target->set_canvas(canvas_interface_->get_canvas());
 	RendDesc rend_desc(widget_rend_desc.get_rend_desc());
 	rend_desc.set_antialias((int)adjustment_antialias.get_value());
-	
+
 	// If we are to only render the current frame
 	if(toggle_single_frame.get_active())
 		rend_desc.set_time(canvas_interface_->get_time());
@@ -292,21 +292,21 @@ RenderSettings::on_render_pressed()
 		canvas_interface_->get_ui_interface()->amount_complete(0,10000);
 		return;
 	}
-	
+
 	// Success!
-	canvas_interface_->get_ui_interface()->task(filename+_(" rendered sucessfuly"));	
+	canvas_interface_->get_ui_interface()->task(filename+_(" rendered sucessfuly"));
 	canvas_interface_->get_ui_interface()->amount_complete(0,10000);
 	*/
-	return;	
+	return;
 }
 
 void
 RenderSettings::on_finished()
 {
-	canvas_interface_->get_ui_interface()->task(_("File rendered sucessfuly"));	
+	canvas_interface_->get_ui_interface()->task(_("File rendered sucessfuly"));
 	canvas_interface_->get_ui_interface()->amount_complete(0,10000);
 }
-	
+
 void
 RenderSettings::on_cancel_pressed()
 {

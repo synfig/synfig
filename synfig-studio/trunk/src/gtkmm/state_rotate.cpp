@@ -83,11 +83,11 @@ class DuckDrag_Rotate : public DuckDrag_Base
 	Real original_mag;
 
 	std::vector<synfig::Vector> positions;
-	
-	
+
+
 	bool bad_drag;
 	bool move_only;
-	
+
 public:
 	etl::handle<CanvasView> canvas_view_;
 	bool use_magnitude;
@@ -103,20 +103,20 @@ public:
 class studio::StateRotate_Context : public sigc::trackable
 {
 	etl::handle<CanvasView> canvas_view_;
-		
+
 	synfigapp::Settings& settings;
 
 	etl::handle<DuckDrag_Rotate> duck_dragger_;
 
 	Gtk::Table options_table;
-	
+
 	Gtk::CheckButton checkbutton_scale;
-	
+
 public:
 
 	bool get_scale_flag()const { return checkbutton_scale.get_active(); }
 	void set_scale_flag(bool x) { return checkbutton_scale.set_active(x); refresh_scale_flag(); }
-	
+
 
 	Smach::event_result event_refresh_tool_options(const Smach::event& x);
 
@@ -132,7 +132,7 @@ public:
 	etl::handle<synfigapp::CanvasInterface> get_canvas_interface()const{return canvas_view_->canvas_interface();}
 	synfig::Canvas::Handle get_canvas()const{return canvas_view_->get_canvas();}
 	WorkArea * get_work_area()const{return canvas_view_->get_work_area();}
-	
+
 	void load_settings();
 	void save_settings();
 };	// END of class StateRotate_Context
@@ -143,7 +143,7 @@ StateRotate::StateRotate():
 	Smach::state<StateRotate_Context>("rotate")
 {
 	insert(event_def(EVENT_REFRESH_TOOL_OPTIONS,&StateRotate_Context::event_refresh_tool_options));
-}	
+}
 
 StateRotate::~StateRotate()
 {
@@ -151,7 +151,7 @@ StateRotate::~StateRotate()
 
 void
 StateRotate_Context::load_settings()
-{	
+{
 	String value;
 
 	if(settings.get_value("rotate.scale",value) && value=="0")
@@ -162,7 +162,7 @@ StateRotate_Context::load_settings()
 
 void
 StateRotate_Context::save_settings()
-{	
+{
 	settings.set_value("rotate.scale",get_scale_flag()?"1":"0");
 }
 
@@ -171,20 +171,20 @@ StateRotate_Context::StateRotate_Context(CanvasView* canvas_view):
 	settings(synfigapp::Main::get_selected_input_device()->settings()),
 	duck_dragger_(new DuckDrag_Rotate()),
 	checkbutton_scale(_("Allow Scale"))
-{	
+{
 	duck_dragger_->canvas_view_=get_canvas_view();
-	
+
 	// Set up the tool options dialog
-	//options_table.attach(*manage(new Gtk::Label(_("Rotate Tool"))), 0, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);	
+	//options_table.attach(*manage(new Gtk::Label(_("Rotate Tool"))), 0, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	options_table.attach(checkbutton_scale, 0, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
 	checkbutton_scale.signal_toggled().connect(sigc::mem_fun(*this,&StateRotate_Context::refresh_scale_flag));
-	
+
 	options_table.show_all();
 	refresh_tool_options();
 	//App::dialog_tool_options->set_widget(options_table);
 	App::dialog_tool_options->present();
-	
+
 	get_work_area()->allow_layer_clicks=true;
 	get_work_area()->set_duck_dragger(duck_dragger_);
 
@@ -240,7 +240,7 @@ DuckDrag_Rotate::begin_duck_drag(Duckmatic* duckmatic, const synfig::Vector& off
 
 	const DuckList selected_ducks(duckmatic->get_selected_ducks());
 	DuckList::const_iterator iter;
-	
+
 /*
 	if(duckmatic->get_selected_ducks().size()<2)
 	{
@@ -249,7 +249,7 @@ DuckDrag_Rotate::begin_duck_drag(Duckmatic* duckmatic, const synfig::Vector& off
 	}
 */
 	bad_drag=false;
-	
+
 		drag_offset=duckmatic->find_duck(offset)->get_trans_point();
 
 		//snap=drag_offset-duckmatic->snap_point_to_grid(drag_offset);
@@ -277,7 +277,7 @@ DuckDrag_Rotate::begin_duck_drag(Duckmatic* duckmatic, const synfig::Vector& off
 	else
 		move_only=false;
 
-	
+
 	synfig::Vector vect(offset-center);
 	original_angle=Angle::tan(vect[1],vect[0]);
 	original_mag=vect.mag();
@@ -289,7 +289,7 @@ DuckDrag_Rotate::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector)
 {
 	if(bad_drag)
 		return;
-	
+
 	//std::set<etl::handle<Duck> >::iterator iter;
 	synfig::Vector vect(duckmatic->snap_point_to_grid(vector)-center+snap);
 
@@ -302,9 +302,9 @@ DuckDrag_Rotate::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector)
 		for(i=0,iter=selected_ducks.begin();iter!=selected_ducks.end();++iter,i++)
 		{
 			if((*iter)->get_type()!=Duck::TYPE_VERTEX&&(*iter)->get_type()!=Duck::TYPE_POSITION)continue;
-			
+
 			Vector p(positions[i]);
-	
+
 			p[0]+=vect[0];
 			p[1]+=vect[1];
 			(*iter)->set_trans_point(p);
@@ -312,27 +312,27 @@ DuckDrag_Rotate::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector)
 		for(i=0,iter=selected_ducks.begin();iter!=selected_ducks.end();++iter,i++)
 		{
 			if(!((*iter)->get_type()!=Duck::TYPE_VERTEX&&(*iter)->get_type()!=Duck::TYPE_POSITION))continue;
-			
+
 			Vector p(positions[i]);
-	
+
 			p[0]+=vect[0];
 			p[1]+=vect[1];
 			(*iter)->set_trans_point(p);
 		}
 		return;
 	}
-	
+
 	Angle::tan angle(vect[1],vect[0]);
 	angle=original_angle-angle;
 	Real mag(vect.mag()/original_mag);
 	Real sine(Angle::sin(angle).get());
 	Real cosine(Angle::cos(angle).get());
-	
+
 	int i;
 	for(i=0,iter=selected_ducks.begin();iter!=selected_ducks.end();++iter,i++)
 	{
 		if((*iter)->get_type()!=Duck::TYPE_VERTEX&&(*iter)->get_type()!=Duck::TYPE_POSITION)continue;
-		
+
 		Vector x(positions[i]-center),p;
 
 		p[0]=cosine*x[0]+sine*x[1];
@@ -344,7 +344,7 @@ DuckDrag_Rotate::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector)
 	for(i=0,iter=selected_ducks.begin();iter!=selected_ducks.end();++iter,i++)
 	{
 		if(!((*iter)->get_type()!=Duck::TYPE_VERTEX&&(*iter)->get_type()!=Duck::TYPE_POSITION))continue;
-		
+
 		Vector x(positions[i]-center),p;
 
 		p[0]=cosine*x[0]+sine*x[1];
@@ -353,7 +353,7 @@ DuckDrag_Rotate::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector)
 		p+=center;
 		(*iter)->set_trans_point(p);
 	}
-	
+
 	last_rotate=vect;
 	//snap=Vector(0,0);
 }
@@ -368,9 +368,9 @@ DuckDrag_Rotate::end_duck_drag(Duckmatic* duckmatic)
 		duckmatic->signal_edited_selected_ducks();
 		return true;
 	}
-	
+
 	synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Rotate Ducks"));
-		
+
 	if((last_rotate-Vector(1,1)).mag()>0.0001)
 	{
 		duckmatic->signal_edited_selected_ducks();

@@ -88,18 +88,18 @@ void
 HistoryTreeStore::rebuild()
 {
 	synfigapp::Action::Stack::const_iterator iter;
-	
+
 	clear();
-	
+
 	for(iter=instance()->undo_action_stack().begin();iter!=instance()->undo_action_stack().end();++iter)
 	{
-		insert_action(*(prepend()),*iter,true,true,false);	
+		insert_action(*(prepend()),*iter,true,true,false);
 	}
 	curr_row=*children().end();
 	for(iter=instance()->redo_action_stack().begin();iter!=instance()->redo_action_stack().end();++iter)
 	{
-		insert_action(*(append()),*iter,true,false,true);	
-	}		
+		insert_action(*(append()),*iter,true,false,true);
+	}
 }
 
 void
@@ -112,13 +112,13 @@ HistoryTreeStore::insert_action(Gtk::TreeRow row,etl::handle<synfigapp::Action::
 	row[model.is_active] = action->is_active();
 	row[model.is_undo] = is_undo;
 	row[model.is_redo] = is_redo;
-	
+
 	synfigapp::Action::CanvasSpecific *specific_action;
 	specific_action=dynamic_cast<synfigapp::Action::CanvasSpecific*>(action.get());
 	if(specific_action)
 	{
 		row[model.canvas] = specific_action->get_canvas();
-		row[model.canvas_id] = specific_action->get_canvas()->get_id();		
+		row[model.canvas_id] = specific_action->get_canvas()->get_id();
 	}
 
 	etl::handle<synfigapp::Action::Group> group;
@@ -132,8 +132,8 @@ HistoryTreeStore::insert_action(Gtk::TreeRow row,etl::handle<synfigapp::Action::
 			insert_action(child_row,*iter,true,is_undo,is_redo);
 		}
 	}
-	
-	//row[model.icon] = Gtk::Button().render_icon(Gtk::StockID("synfig-canvas"),Gtk::ICON_SIZE_SMALL_TOOLBAR);	
+
+	//row[model.icon] = Gtk::Button().render_icon(Gtk::StockID("synfig-canvas"),Gtk::ICON_SIZE_SMALL_TOOLBAR);
 }
 
 
@@ -154,7 +154,7 @@ HistoryTreeStore::on_undo_stack_cleared()
 {
 	Gtk::TreeModel::Children::iterator iter,next;
 	Gtk::TreeModel::Children children_(children());
-	
+
 	for(next=children_.begin(),iter=next++; iter != children_.end(); iter=(next!=children_.end())?next++:next)
 	{
 		Gtk::TreeModel::Row row = *iter;
@@ -168,7 +168,7 @@ HistoryTreeStore::on_redo_stack_cleared()
 {
 	Gtk::TreeModel::Children::iterator iter,next;
 	Gtk::TreeModel::Children children_(children());
-	
+
 	for(next=children_.begin(),iter=next++; iter != children_.end(); iter=(next!=children_.end())?next++:next)
 	{
 		Gtk::TreeModel::Row row = *iter;
@@ -202,7 +202,7 @@ HistoryTreeStore::on_action_status_changed(etl::handle<synfigapp::Action::Undoab
 {
 	Gtk::TreeModel::Children::iterator iter;
 	Gtk::TreeModel::Children children_(children());
-	
+
 	for(iter=children_.begin(); iter != children_.end(); ++iter)
 	{
 		Gtk::TreeModel::Row row = *iter;
@@ -211,5 +211,5 @@ HistoryTreeStore::on_action_status_changed(etl::handle<synfigapp::Action::Undoab
 			row[model.is_active]=action->is_active();
 			return;
 		}
-	}	
+	}
 }

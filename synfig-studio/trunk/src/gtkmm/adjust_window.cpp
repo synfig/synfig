@@ -81,14 +81,14 @@ const Gtk::Adjustment *Adjust_Window::get_child_adjustment() const
 void Adjust_Window::set_child_adjustment(Gtk::Adjustment *child)
 {
 	childchanged.disconnect();
-	
+
 	adj_child = child;
-	
+
 	synfig::info("Adjust: connecting to child signals");
 	if(child)
 	{
 		childchanged = child->signal_changed().connect(sigc::mem_fun(*this,&Adjust_Window::update_fromchild));
-		
+
 		update_child();
 	}
 }
@@ -120,23 +120,23 @@ void Adjust_Window::update_child()
 	if(adj_child)
 	{
 		bool childchanged = false;
-		
+
 		double v = get_value();
 		double ve = v + get_page_size();
-		
+
 		//reset child's values if they need to be...
 		if(abs(v - adj_child->get_lower()) > EPSILON)
 		{
 			adj_child->set_lower(v);
 			childchanged = true;
 		}
-		
+
 		if(abs(ve - adj_child->get_upper()) > EPSILON)
 		{
 			adj_child->set_upper(ve);
-			childchanged = true;									
+			childchanged = true;
 		}
-		
+
 		if(childchanged)
 		{
 			adj_child->changed();
@@ -147,17 +147,17 @@ void Adjust_Window::update_child()
 void Adjust_Window::update_fromchild()
 {
 	if(adj_child)
-	{		
+	{
 		double b = adj_child->get_lower();
 		double dist = adj_child->get_upper() - b;
-		
+
 		//reset our values if they need to be...
 		if(abs(get_value() - b) > EPSILON)
 		{
 			set_value(b);
 			value_changed();
 		}
-		
+
 		if(abs(get_page_size() - dist) > EPSILON)
 		{
 			set_page_size(dist);

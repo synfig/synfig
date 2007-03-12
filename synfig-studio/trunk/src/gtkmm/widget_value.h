@@ -72,7 +72,7 @@ class Widget_Filename;
 class Widget_Vector;
 class Widget_Time;
 class Widget_Distance;
-	
+
 class Widget_ValueBase : public Gtk::HBox
 {
 	Gtk::Label *label;
@@ -95,9 +95,9 @@ class Widget_ValueBase : public Gtk::HBox
 	Widget_Time *time_widget;
 	Gtk::Entry *string_widget;
 	Widget_Distance *distance_widget;
-	
+
 //	std::string hint;
-	
+
 	synfig::ParamDesc param_desc;
 	etl::handle<synfig::Canvas> canvas;
 	sigc::signal<void> signal_value_changed_;
@@ -105,21 +105,21 @@ class Widget_ValueBase : public Gtk::HBox
 
 public:
 	sigc::signal<void> &signal_value_changed() { return signal_value_changed_; }
-	
+
 	void activate();
-	
+
 	sigc::signal<void>& signal_activate() { return signal_activate_; }
 
 	void set_value(const synfig::ValueBase &data);
 	const synfig::ValueBase &get_value();
 
 	void on_grab_focus();
-	
+
 	void set_param_desc(const synfig::ParamDesc &x) { param_desc=x; }
 	const synfig::ParamDesc &get_param_desc() { return param_desc; }
 
 	void set_sensitive(bool x);
-	
+
 	//void set_hint(std::string x) { hint=x; }
 //	std::string get_hint() { return hint; }
 

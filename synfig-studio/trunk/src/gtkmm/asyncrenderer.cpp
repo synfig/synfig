@@ -75,7 +75,7 @@ class AsyncTarget_Tile : public synfig::Target_Tile
 {
 public:
 	etl::handle<synfig::Target_Tile> warm_target;
-	
+
 	struct tile_t
 	{
 		Surface surface;
@@ -88,15 +88,15 @@ public:
 	};
 	std::list<tile_t> tile_queue;
 	Glib::Mutex mutex;
-	
+
 #ifndef GLIB_DISPATCHER_BROKEN
 	Glib::Dispatcher tile_ready_signal;
 #endif
 	Glib::Cond cond_tile_queue_empty;
 	bool alive_flag;
-	
+
 	sigc::connection ready_connection;
-	
+
 public:
 	AsyncTarget_Tile(etl::handle<synfig::Target_Tile> warm_target):
 		warm_target(warm_target)
@@ -115,7 +115,7 @@ public:
 		ready_connection=tile_ready_signal.connect(sigc::mem_fun(*this,&AsyncTarget_Tile::tile_ready));
 #endif
 	}
-		
+
 	~AsyncTarget_Tile()
 	{
 		ready_connection.disconnect();
@@ -125,17 +125,17 @@ public:
 		Glib::Mutex::Lock lock(mutex);
 		alive_flag=false;
 	}
-	
+
 	virtual int total_tiles()const
 	{
 		return warm_target->total_tiles();
 	}
-	
+
 	virtual int next_tile(int& x, int& y)
 	{
 		if(!alive_flag)
 			return 0;
-		
+
 		return warm_target->next_tile(x,y);
 	}
 
@@ -145,14 +145,14 @@ public:
 			return 0;
 		return warm_target->next_frame(time);
 	}
-	
+
 	virtual bool start_frame(synfig::ProgressCallback *cb=0)
 	{
 		if(!alive_flag)
 			return false;
 		return warm_target->start_frame(cb);
 	}
-	
+
 	virtual bool add_tile(const synfig::Surface &surface, int gx, int gy)
 	{
 		assert(surface);
@@ -174,7 +174,7 @@ public:
 		tile_ready_signal();
 #endif
 		}
-		
+
 		return alive_flag;
 	}
 
@@ -190,9 +190,9 @@ public:
 		while(!tile_queue.empty() && alive_flag)
 		{
 			tile_t& tile(tile_queue.front());
-			
+
 			alive_flag=warm_target->add_tile(tile.surface,tile.x,tile.y);
-			
+
 			tile_queue.pop_front();
 		}
 		cond_tile_queue_empty.signal();
@@ -224,12 +224,12 @@ class AsyncTarget_Scanline : public synfig::Target_Scanline
 {
 public:
 	etl::handle<synfig::Target_Scanline> warm_target;
-	
+
 	int scanline_;
 	Surface surface;
 
 	Glib::Mutex mutex;
-	
+
 #ifndef GLIB_DISPATCHER_BROKEN
 	Glib::Dispatcher frame_ready_signal;
 #endif
@@ -255,7 +255,7 @@ public:
 #endif
 		surface.set_wh(warm_target->rend_desc().get_w(),warm_target->rend_desc().get_h());
 	}
-	
+
 	~AsyncTarget_Scanline()
 	{
 		ready_connection.disconnect();
@@ -274,12 +274,12 @@ public:
 		Glib::Mutex::Lock lock(mutex);
 		alive_flag=false;
 	}
-	
+
 	virtual bool start_frame(synfig::ProgressCallback *cb=0)
-	{		
+	{
 		return alive_flag;
 	}
-	
+
 	virtual void end_frame()
 	{
 		{
@@ -310,14 +310,14 @@ public:
 		}
 	}
 
-	
+
 	virtual Color * start_scanline(int scanline)
 	{
 		Glib::Mutex::Lock lock(mutex);
 
 		return surface[scanline];
 	}
-	
+
 	virtual bool end_scanline()
 	{
 		return alive_flag;
@@ -350,9 +350,9 @@ AsyncRenderer::AsyncRenderer(etl::handle<synfig::Target> target_,synfig::Progres
 		etl::handle<AsyncTarget_Tile> wrap_target(
 			new AsyncTarget_Tile(etl::handle<synfig::Target_Tile>::cast_dynamic(target_))
 		);
-		
+
 		signal_stop_.connect(sigc::mem_fun(*wrap_target,&AsyncTarget_Tile::set_dead));
-		
+
 		target=wrap_target;
 	}
 	else if(etl::handle<synfig::Target_Scanline>::cast_dynamic(target_))
@@ -362,9 +362,9 @@ AsyncRenderer::AsyncRenderer(etl::handle<synfig::Target> target_,synfig::Progres
 				etl::handle<synfig::Target_Scanline>::cast_dynamic(target_)
 			)
 		);
-	
+
 		signal_stop_.connect(sigc::mem_fun(*wrap_target,&AsyncTarget_Scanline::set_dead));
-		
+
 		target=wrap_target;
 	}
 }
@@ -381,23 +381,23 @@ AsyncRenderer::stop()
 	{
 		Glib::Mutex::Lock lock(mutex);
 		done_connection.disconnect();
-	
+
 		if(render_thread)
 		{
 			signal_stop_();
-		
+
 #if REJOIN_ON_STOP
 			render_thread->join();
 #endif
-			
+
 			// Make sure all the dispatch crap is cleared out
 			//Glib::MainContext::get_default()->iteration(false);
-			
+
 			if(success)
 				signal_success_();
-				
+
 			signal_finished_();
-	
+
 			target=0;
 			render_thread=0;
 		}
@@ -435,7 +435,7 @@ AsyncRenderer::start_()
 #ifndef GLIB_DISPATCHER_BROKEN
 		done_connection=signal_done_.connect(mem_fun(*this,&AsyncRenderer::stop));
 #endif
-		
+
 		render_thread=Glib::Thread::create(
 			sigc::mem_fun(*this,&AsyncRenderer::render_target),
 #if REJOIN_ON_STOP
@@ -456,7 +456,7 @@ void
 AsyncRenderer::render_target()
 {
 	etl::handle<Target> target(AsyncRenderer::target);
-	
+
 	if(target && target->render())
 	{
 		success=true;

@@ -127,7 +127,7 @@ Dock_CanvasSpecific::init_canvas_view(CanvasView* canvas_view)
 				),
 				false
 			)
-		)	
+		)
 	);
 	*/
 	synfig::info("%s init_canvas_view() Starting init...",get_local_name().c_str());
@@ -162,7 +162,7 @@ Dock_CanvasSpecific::canvas_view_changed()
 		);
 	}
 */
-	
+
 #ifdef _DEBUG
 	synfig::info("%s canvas_view_changed: start",get_local_name().c_str());
 #endif

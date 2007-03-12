@@ -50,7 +50,7 @@ class LayerRemove :
 private:
 
 	std::list<std::pair<synfig::Layer::Handle,int> > layer_list;
-	
+
 	//synfig::Layer::Handle layer;
 	//int depth;
 

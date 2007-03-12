@@ -67,7 +67,7 @@ Action::ParamVocab
 Action::ValueNodeDynamicListRemove::get_param_vocab()
 {
 	ParamVocab ret(Action::CanvasSpecific::get_param_vocab());
-	
+
 	ret.push_back(ParamDesc("value_desc",Param::TYPE_VALUEDESC)
 		.set_local_name(_("ValueDesc"))
 	);
@@ -95,20 +95,20 @@ Action::ValueNodeDynamicListRemove::set_param(const synfig::String& name, const 
 	if(name=="value_desc" && param.get_type()==Param::TYPE_VALUEDESC)
 	{
 		ValueDesc value_desc(param.get_value_desc());
-		
+
 		if(!value_desc.parent_is_value_node())
 			return false;
-		
+
 		value_node=ValueNode_DynamicList::Handle::cast_dynamic(value_desc.get_parent_value_node());
-		
+
 		if(!value_node)
 			return false;
-		
+
 		index=value_desc.get_index();
-		
+
 		return true;
 	}
-	
+
 	return Action::CanvasSpecific::set_param(name,param);
 }
 
@@ -122,13 +122,13 @@ Action::ValueNodeDynamicListRemove::is_ready()const
 
 void
 Action::ValueNodeDynamicListRemove::perform()
-{	
+{
 	if(index>=value_node->link_count())
 		index=value_node->link_count()-1;
 
 	list_entry=value_node->list[index];
 	value_node->erase((value_node->list.begin()+index)->value_node);
-		
+
 	// Signal that a layer has been inserted
 	value_node->changed();
 /*_if(get_canvas_interface())
@@ -142,7 +142,7 @@ void
 Action::ValueNodeDynamicListRemove::undo()
 {
 	value_node->add(list_entry,index);
-	
+
 	// Signal that a layer has been inserted
 	value_node->changed();
 /*_if(get_canvas_interface())

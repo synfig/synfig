@@ -60,12 +60,12 @@ canvas_interface(ci)
 	table->attach(soundfile,0,1,0,1);
 	table->attach(offset,1,2,0,1);
 	table->attach(okbutton,0,2,1,2);
-	
+
 	table->show_all();
 	get_vbox()->pack_start(*table);
-	
+
 	offset.set_value(0);
-	
+
 	okbutton.signal_clicked().connect(sigc::mem_fun(*this,&Dialog_SoundSelect::on_ok));
 }
 
@@ -86,7 +86,7 @@ void studio::Dialog_SoundSelect::on_offset()
 void studio::Dialog_SoundSelect::on_ok()
 {
 	hide();
-		
+
 	//signal_finish_(a);
 	signal_file_changed_(soundfile.get_value());
 	signal_offset_changed_(offset.get_value());

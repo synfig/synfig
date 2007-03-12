@@ -86,7 +86,7 @@ class studio::StateSketch_Context : public sigc::trackable
 
 	bool prev_table_status;
 	bool prev_workarea_layer_status_;
-	
+
 	Gtk::Table options_table;
 	Gtk::Button button_clear_sketch;
 	Gtk::Button button_undo_stroke;
@@ -99,7 +99,7 @@ class studio::StateSketch_Context : public sigc::trackable
 	void load_sketch();
 	void undo_stroke();
 	void toggle_show_sketch();
-	
+
 public:
 
 	Smach::event_result event_stop_handler(const Smach::event& x);
@@ -125,7 +125,7 @@ public:
 	synfig::Time get_time()const { return get_canvas_interface()->get_time(); }
 	synfig::Canvas::Handle get_canvas()const{return canvas_view_->get_canvas();}
 	WorkArea * get_work_area()const{return canvas_view_->get_work_area();}
-	
+
 };	// END of class StateSketch_Context
 
 
@@ -139,9 +139,9 @@ StateSketch::StateSketch():
 	insert(event_def(EVENT_REFRESH_DUCKS,&StateSketch_Context::event_refresh_handler));
 	insert(event_def(EVENT_WORKAREA_MOUSE_BUTTON_DOWN,&StateSketch_Context::event_mouse_down_handler));
 	insert(event_def(EVENT_WORKAREA_STROKE,&StateSketch_Context::event_stroke));
-	insert(event_def(EVENT_REFRESH_TOOL_OPTIONS,&StateSketch_Context::event_refresh_tool_options));	
-	insert(event_def(EVENT_YIELD_TOOL_OPTIONS,&StateSketch_Context::event_yield_tool_options));	
-}	
+	insert(event_def(EVENT_REFRESH_TOOL_OPTIONS,&StateSketch_Context::event_refresh_tool_options));
+	insert(event_def(EVENT_YIELD_TOOL_OPTIONS,&StateSketch_Context::event_yield_tool_options));
+}
 
 StateSketch::~StateSketch()
 {
@@ -151,7 +151,7 @@ void
 StateSketch_Context::save_sketch()
 {
 	synfig::String filename(basename(get_canvas()->get_file_name())+".sketch");
-	
+
 	while(App::dialog_save_file(_("Save Sketch"), filename))
 	{
 		// If the filename still has wildcards, then we should
@@ -170,7 +170,7 @@ void
 StateSketch_Context::load_sketch()
 {
 	synfig::String filename(basename(get_canvas()->get_file_name())+".sketch");
-	
+
 	while(App::dialog_open_file(_("Load Sketch"), filename))
 	{
 		// If the filename still has wildcards, then we should
@@ -296,26 +296,26 @@ StateSketch_Context::StateSketch_Context(CanvasView* canvas_view):
 
 	App::ui_manager()->add_ui_from_string(ui_info);
 
-	
+
 	checkbutton_show_sketch.set_active(get_work_area()->get_show_persistant_strokes());
-	
+
 	button_clear_sketch.signal_clicked().connect(sigc::mem_fun(*this,&studio::StateSketch_Context::clear_sketch));
 	button_undo_stroke.signal_clicked().connect(sigc::mem_fun(*this,&studio::StateSketch_Context::undo_stroke));
 	button_save_sketch.signal_clicked().connect(sigc::mem_fun(*this,&studio::StateSketch_Context::save_sketch));
 	button_load_sketch.signal_clicked().connect(sigc::mem_fun(*this,&studio::StateSketch_Context::load_sketch));
 	checkbutton_show_sketch.signal_clicked().connect(sigc::mem_fun(*this,&studio::StateSketch_Context::toggle_show_sketch));
-	//options_table.attach(*manage(new Gtk::Label(_("Sketch Tool"))), 0, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);	
-	options_table.attach(checkbutton_show_sketch, 0, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);	
-	//options_table.attach(button_undo_stroke, 0, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);	
-	//options_table.attach(button_clear_sketch, 0, 2, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);	
-	//options_table.attach(button_save_sketch, 0, 1, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);	
-	//options_table.attach(button_load_sketch, 1, 2, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);	
+	//options_table.attach(*manage(new Gtk::Label(_("Sketch Tool"))), 0, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(checkbutton_show_sketch, 0, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	//options_table.attach(button_undo_stroke, 0, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	//options_table.attach(button_clear_sketch, 0, 2, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	//options_table.attach(button_save_sketch, 0, 1, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	//options_table.attach(button_load_sketch, 1, 2, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
-	
+
 	options_table.show_all();
 	refresh_tool_options();
 	App::dialog_tool_options->present();
-	
+
 	// Turn off layer clicking
 	get_work_area()->allow_layer_clicks=false;
 
@@ -323,20 +323,20 @@ StateSketch_Context::StateSketch_Context(CanvasView* canvas_view):
 
 	// Turn off duck clicking
 	get_work_area()->allow_duck_clicks=false;
-	
+
 	// clear out the ducks
 	//get_work_area()->clear_ducks();
-	
+
 	// Refresh the work area
 	//get_work_area()->queue_draw();
-	
+
 	// Hide the tables if they are showing
 	prev_table_status=get_canvas_view()->tables_are_visible();
 	//if(prev_table_status)get_canvas_view()->hide_tables();
-		
+
 	// Hide the time bar
 	//get_canvas_view()->hide_timebar();
-	
+
 	// Connect a signal
 	//get_work_area()->signal_user_click().connect(sigc::mem_fun(*this,&studio::StateSketch_Context::on_user_click));
 
@@ -348,7 +348,7 @@ StateSketch_Context::~StateSketch_Context()
 	get_canvas_view()->work_area->reset_cursor();
 
 	App::dialog_tool_options->clear();
-	
+
 	// Restore layer clicking
 	get_work_area()->allow_layer_clicks=prev_workarea_layer_status_;
 
@@ -361,7 +361,7 @@ StateSketch_Context::~StateSketch_Context()
 
 	// Bring back the tables if they were out before
 	if(prev_table_status)get_canvas_view()->show_tables();
-			
+
 	// Refresh the work area
 	//get_work_area()->queue_draw();
 
@@ -384,7 +384,7 @@ StateSketch_Context::refresh_tool_options()
 	App::dialog_tool_options->set_name("sketch");
 
 	App::ui_manager()->insert_action_group(action_group);
-	App::dialog_tool_options->set_toolbar(*dynamic_cast<Gtk::Toolbar*>(App::ui_manager()->get_widget("/toolbar-sketch")));	
+	App::dialog_tool_options->set_toolbar(*dynamic_cast<Gtk::Toolbar*>(App::ui_manager()->get_widget("/toolbar-sketch")));
 
 	/*
 	App::dialog_tool_options->add_button(
@@ -470,11 +470,11 @@ StateSketch_Context::event_mouse_down_handler(const Smach::event& x)
 			get_canvas_view()->get_smach().push_state(&state_stroke);
 			return Smach::RESULT_ACCEPT;
 		}
-	
+
 	case BUTTON_RIGHT: // Intercept the right-button click to short-circut the pop-up menu
 		return Smach::RESULT_ACCEPT;
-	
-	default:	
+
+	default:
 		return Smach::RESULT_OK;
 	}
 }
@@ -485,7 +485,7 @@ StateSketch_Context::event_stroke(const Smach::event& x)
 	const EventStroke& event(*reinterpret_cast<const EventStroke*>(&x));
 
 	assert(event.stroke_data);
-		
+
 	get_work_area()->add_persistant_stroke(event.stroke_data,synfigapp::Main::get_foreground_color());
 
 	return Smach::RESULT_ACCEPT;

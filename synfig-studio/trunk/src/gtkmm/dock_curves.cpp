@@ -69,7 +69,7 @@ Dock_Curves::Dock_Curves():
 {
 	last_widget_curves_=0;
 	table_=0;
-	
+
 	hscrollbar_=new Gtk::HScrollbar();
 	vscrollbar_=new Gtk::VScrollbar();
 	widget_timeslider_= new Widget_Timeslider();
@@ -93,17 +93,17 @@ _curve_selection_changed(Gtk::TreeView* param_tree_view,Widget_Curves* curves)
 		curves->clear();
 		return;
 	}
-	
+
 	std::list<synfigapp::ValueDesc> value_descs;
 
 	//std::list<Gtk::TreePath> path_list(
 	//param_tree_view->get_selection()->selected_foreach_iter(tmp);
 	iter=param_tree_view->get_selection()->get_selected();
-	
+
 	value_descs.push_back((*iter)[model.value_desc]);
 	curves->set_value_descs(value_descs);
-	
-	//curves->set_value_descs(tmp.value_descs);	
+
+	//curves->set_value_descs(tmp.value_descs);
 }
 
 void
@@ -111,11 +111,11 @@ Dock_Curves::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
 {
 	Widget_Curves* curves(new Widget_Curves());
 	curves->set_time_adjustment(canvas_view->time_adjustment());
-	
+
 	Gtk::TreeView* param_tree_view(
 		static_cast<Gtk::TreeView*>(canvas_view->get_ext_widget("params"))
 	);
-	
+
 	param_tree_view->get_selection()->signal_changed().connect(
 		sigc::bind(
 			sigc::bind(
@@ -125,7 +125,7 @@ Dock_Curves::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
 			),param_tree_view
 		)
 	);
-	
+
 	canvas_view->set_ext_widget(get_name(),curves);
 }
 
@@ -136,7 +136,7 @@ Dock_Curves::refresh_selected_param()
 		static_cast<Gtk::TreeView*>(get_canvas_view()->get_ext_widget(get_name()))
 	);
 	Gtk::TreeModel::iterator iter(tree_view->get_selection()->get_selected());
-	
+
 	if(iter)
 	{
 		LayerParamTreeStore::Model model;
@@ -164,7 +164,7 @@ Dock_Curves::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view
 		table_=0;
 	}
 
-	
+
 	if(canvas_view)
 	{
 		last_widget_curves_=dynamic_cast<Widget_Curves*>(
@@ -183,7 +183,7 @@ Dock_Curves::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view
 		table_->attach(*hscrollbar_, 0, 1, 2, 3, Gtk::FILL|Gtk::EXPAND, Gtk::FILL|Gtk::SHRINK);
 		table_->attach(*vscrollbar_, 1, 2, 0, 2, Gtk::FILL|Gtk::SHRINK, Gtk::FILL|Gtk::EXPAND);
 		add(*table_);
-		
+
 		//add(*last_widget_curves_);
 		last_widget_curves_->show();
 		table_->show_all();

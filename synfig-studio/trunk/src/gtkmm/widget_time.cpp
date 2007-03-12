@@ -103,7 +103,7 @@ Widget_Time::refresh_value()
 		if(abs(newtime-time_)>=0.001)
 		{
 			time_=newtime;
-			refresh_text();		
+			refresh_text();
 			signal_value_changed()();
 		}
 	}
@@ -117,7 +117,7 @@ bool
 Widget_Time::on_event(GdkEvent* event)
 {
 	const Time scroll_amount(0.25);
-	
+
 	switch(event->type)
 	{
 	case GDK_SCROLL:
@@ -138,7 +138,7 @@ Widget_Time::on_event(GdkEvent* event)
 	default:
 		break;
 	}
-	
+
 	return Gtk::Entry::on_event(event);
 }
 
@@ -146,7 +146,7 @@ bool
 Widget_Time::on_focus_out_event(GdkEventFocus* event)
 {
 	refresh_value();
-	refresh_text();		
+	refresh_text();
 	return Gtk::Entry::on_focus_out_event(event);
 }
 

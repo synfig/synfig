@@ -76,7 +76,7 @@ Action::ParamVocab
 Action::ActivepointSetOff::get_param_vocab()
 {
 	ParamVocab ret(Action::CanvasSpecific::get_param_vocab());
-	
+
 	ret.push_back(ParamDesc("value_desc",Param::TYPE_VALUEDESC)
 		.set_local_name(_("ValueDesc"))
 	);
@@ -90,7 +90,7 @@ Action::ActivepointSetOff::get_param_vocab()
 		.set_local_name(_("Time"))
 		.set_optional()
 	);
-	
+
 	return ret;
 }
 
@@ -102,12 +102,12 @@ Action::ActivepointSetOff::is_candidate(const ParamList &x)
 		ValueDesc value_desc(x.find("value_desc")->second.get_value_desc());
 		if(!value_desc.parent_is_value_node() || !ValueNode_DynamicList::Handle::cast_dynamic(value_desc.get_parent_value_node()))
 			return false;
-		
+
 		// We are only a candidate if this canvas is animated.
 		Canvas::Handle canvas(x.find("canvas")->second.get_canvas());
 		if(canvas->rend_desc().get_time_start()==canvas->rend_desc().get_time_end())
 			return false;
-		
+
 		// We need either a activepoint or a time.
 		if(x.count("activepoint") || x.count("time"))
 			return true;
@@ -121,26 +121,26 @@ Action::ActivepointSetOff::set_param(const synfig::String& name, const Action::P
 	if(name=="value_desc" && param.get_type()==Param::TYPE_VALUEDESC)
 	{
 		value_desc=param.get_value_desc();
-		
+
 		if(!value_desc.parent_is_value_node())
 			return false;
-		
+
 		value_node=ValueNode_DynamicList::Handle::cast_dynamic(value_desc.get_parent_value_node());
-		
+
 		if(!value_node)
 			return false;
-		
+
 		index=value_desc.get_index();
-		
+
 		if(time_set)
 			calc_activepoint();
-		
+
 		return true;
 	}
 	if(name=="activepoint" && param.get_type()==Param::TYPE_ACTIVEPOINT && !time_set)
 	{
 		activepoint=param.get_activepoint();
-		
+
 		return true;
 	}
 	if(name=="time" && param.get_type()==Param::TYPE_TIME && activepoint.get_time()==Time::begin()-1)
@@ -150,7 +150,7 @@ Action::ActivepointSetOff::set_param(const synfig::String& name, const Action::P
 
 		if(value_node)
 			calc_activepoint();
-		
+
 		return true;
 	}
 
@@ -165,20 +165,20 @@ Action::ActivepointSetOff::is_ready()const
 
 	if(activepoint.get_time()==(Time::begin()-1))
 		synfig::error("Missing activepoint");
-	
+
 	if(!value_node || activepoint.get_time()==(Time::begin()-1))
 		return false;
 	return Action::CanvasSpecific::is_ready();
 }
 
-// This function is called if a time is specified, but not 
+// This function is called if a time is specified, but not
 // a activepoint. In this case, we need to calculate the value
 // of the activepoint
 void
 Action::ActivepointSetOff::calc_activepoint()
-{	
+{
 	const Time time(activepoint.get_time());
-	
+
 	try { activepoint=*value_node->list[index].find(time); }
 	catch(...)
 	{
@@ -197,7 +197,7 @@ Action::ActivepointSetOff::prepare()
 	activepoint.set_state(false);
 
 	Action::Handle action(ActivepointSetSmart::create());
-	
+
 	action->set_param("edit_mode",get_edit_mode());
 	action->set_param("canvas",get_canvas());
 	action->set_param("canvas_interface",get_canvas_interface());
@@ -209,5 +209,5 @@ Action::ActivepointSetOff::prepare()
 		throw Error(Error::TYPE_NOTREADY);
 
 	add_action_front(action);
-	
+
 }

@@ -51,7 +51,7 @@ private:
 
 	// List contains the layers
 	std::set<synfig::Layer::Handle> layer_list;
-	
+
 	// The name of the group to remove
 	synfig::String old_group_name;
 

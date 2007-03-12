@@ -63,17 +63,17 @@ Dialog_Keyframe::Dialog_Keyframe(Gtk::Window& parent,handle<synfigapp::CanvasInt
 		ok_button->show();
 		add_action_widget(*ok_button,2);
 		ok_button->signal_clicked().connect(sigc::mem_fun(*this, &Dialog_Keyframe::on_ok_pressed));
-	
+
 /*		Gtk::Button *apply_button(manage(new class Gtk::Button(Gtk::StockID("gtk-apply"))));
 		apply_button->show();
 		add_action_widget(*apply_button,1);
 		apply_button->signal_clicked().connect(sigc::mem_fun(*this, &Dialog_Keyframe::on_apply_pressed));
-*/	
+*/
 		Gtk::Button *delete_button(manage(new class Gtk::Button(Gtk::StockID("gtk-delete"))));
 		delete_button->show();
 		add_action_widget(*delete_button,3);
 		delete_button->signal_clicked().connect(sigc::mem_fun(*this, &Dialog_Keyframe::on_delete_pressed));
-	
+
 		Gtk::Button *cancel_button(manage(new class Gtk::Button(Gtk::StockID("gtk-close"))));
 		cancel_button->show();
 		add_action_widget(*cancel_button,0);
@@ -85,12 +85,12 @@ Dialog_Keyframe::Dialog_Keyframe(Gtk::Window& parent,handle<synfigapp::CanvasInt
 	get_vbox()->pack_start(*table);
 
 	entry_description.set_text("Not yet implemented");
-	
-	//table->attach(*manage(new Gtk::Label(_("Description"))), 0, 1, 0, 1, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);	
+
+	//table->attach(*manage(new Gtk::Label(_("Description"))), 0, 1, 0, 1, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 	//table->attach(entry_description, 1, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 
 	table->show_all();
-	
+
 	widget_waypoint_model=Gtk::manage(new Widget_WaypointModel());
 	widget_waypoint_model->show();
 	table->attach(*widget_waypoint_model, 0, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
@@ -118,16 +118,16 @@ Dialog_Keyframe::on_ok_pressed()
 {
 	if(widget_waypoint_model->get_waypoint_model().is_trivial())
 		return;
-	
+
 	synfigapp::Action::Handle action(synfigapp::Action::create("keyframe_waypoint_set"));
-	
+
 	assert(action);
-	
-	action->set_param("canvas",canvas_interface->get_canvas());			
-	action->set_param("canvas_interface",canvas_interface);			
+
+	action->set_param("canvas",canvas_interface->get_canvas());
+	action->set_param("canvas_interface",canvas_interface);
 	action->set_param("keyframe",keyframe_);
 	action->set_param("model",widget_waypoint_model->get_waypoint_model());
-	
+
 	if(!canvas_interface->get_instance()->perform_action(action))
 	{
 	}

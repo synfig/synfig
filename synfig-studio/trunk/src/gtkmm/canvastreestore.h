@@ -50,7 +50,7 @@ class CellRenderer_ValueBase;
 		COLUMNID_VALUE,
 		COLUMNID_TIME_TRACK,
 		COLUMNID_TYPE,
-		
+
 		COLUMNID_END			//!< \internal
 	};
 #define	COLUMNID_NAME COLUMNID_ID
@@ -85,9 +85,9 @@ public:
 
 		Gtk::TreeModelColumn<bool> is_shared;
 		Gtk::TreeModelColumn<bool> is_exported;
-	
+
 		Gtk::TreeModelColumn<synfigapp::ValueDesc> value_desc;
-	
+
 		Gtk::TreeModelColumn<Glib::ustring> tooltip;
 
 		Model()
@@ -109,7 +109,7 @@ public:
 			add(value_desc);
 			add(link_count);
 			add(link_id);
-			
+
 			add(tooltip);
 		}
 	};
@@ -119,7 +119,7 @@ public:
 	*/
 
 public:
-	
+
 	const Model model;
 
 	//std::multimap<etl::handle<ValueNode>, sigc::connection> connection_map;
@@ -152,7 +152,7 @@ private:
 	*/
 
 public:
-	
+
 	CanvasTreeStore(etl::loose_handle<synfigapp::CanvasInterface> canvas_interface_);
 	~CanvasTreeStore();
 
@@ -170,8 +170,8 @@ public:
 
 	bool find_first_value_node(const synfig::ValueNode::Handle& value_node, Gtk::TreeIter& iter);
 	bool find_next_value_node(const synfig::ValueNode::Handle& value_node, Gtk::TreeIter& iter);
-	
-	
+
+
 	static CellRenderer_ValueBase* add_cell_renderer_value(Gtk::TreeView::Column* column);
 
 	static CellRenderer_TimeTrack* add_cell_renderer_value_node(Gtk::TreeView::Column* column);
@@ -185,7 +185,7 @@ public:
 	*/
 
 public:
-	
+
 }; // END of class CanvasTreeStore
 
 }; // END of namespace studio

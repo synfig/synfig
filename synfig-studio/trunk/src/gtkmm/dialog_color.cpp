@@ -83,7 +83,7 @@ Dialog_Color::Dialog_Color():
 	Gtk::Button *cancel_button(manage(new class Gtk::Button(Gtk::StockID("gtk-close"))));
 	cancel_button->show();
 	add_action_widget(*cancel_button,0);
-	cancel_button->signal_clicked().connect(sigc::hide_return(sigc::mem_fun(*this, &Dialog_Color::on_close_pressed)));	
+	cancel_button->signal_clicked().connect(sigc::hide_return(sigc::mem_fun(*this, &Dialog_Color::on_close_pressed)));
 	signal_delete_event().connect(sigc::hide(sigc::mem_fun(*this, &Dialog_Color::on_close_pressed)));
 
 	Gtk::Table* table(manage(new Gtk::Table(2,2,false)));
@@ -92,7 +92,7 @@ Dialog_Color::Dialog_Color():
 	widget_color=manage(new Widget_ColorEdit());
 	widget_color->signal_value_changed().connect(sigc::mem_fun(*this,&studio::Dialog_Color::on_color_changed));
 	//widget_color->signal_activate().connect(sigc::mem_fun(*this,&studio::Dialog_Color::on_color_changed));
-	table->attach(*widget_color, 0, 1, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);	
+	table->attach(*widget_color, 0, 1, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
 	add_accel_group(App::ui_manager()->get_accel_group());
 

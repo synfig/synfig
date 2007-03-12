@@ -56,11 +56,11 @@ Dialog_ToolOptions::Dialog_ToolOptions():
 {
 	//scrolled_.add(sub_vbox_);
 	//scrolled_.set_policy(Gtk::POLICY_AUTOMATIC,Gtk::POLICY_AUTOMATIC);
-	//scrolled_.show();	
+	//scrolled_.show();
 	//get_vbox()->pack_start(scrolled_);
 
 	add(sub_vbox_);
-	
+
 	set_widget(empty_label);
 	empty_label.show();
 }

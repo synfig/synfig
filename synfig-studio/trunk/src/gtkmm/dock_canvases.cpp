@@ -57,7 +57,7 @@ Dock_Canvases::Dock_Canvases():
 	App::signal_instance_deleted().connect(sigc::mem_fun(*this,&studio::Dock_Canvases::delete_instance));
 	App::signal_instance_selected().connect(sigc::mem_fun(*this,&studio::Dock_Canvases::set_selected_instance_signal));
 
-	
+
 	add(*create_canvas_tree());
 
 /*
@@ -113,7 +113,7 @@ Dock_Canvases::create_canvas_tree()
 //#ifdef NDEBUG
 //		column->add_attribute(icon_cellrenderer->property_pixbuf(), canvas_tree_model.icon);
 //#endif
-		
+
 		canvas_tree->append_column(*column);
 	}
 	canvas_tree->set_rules_hint();
@@ -123,7 +123,7 @@ Dock_Canvases::create_canvas_tree()
 	canvas_tree->add_events(Gdk::BUTTON1_MOTION_MASK);
 	canvas_tree->show();
 	canvas_tree->set_headers_visible(false);
-	
+
 	Gtk::ScrolledWindow *scrolledwindow = manage(new class Gtk::ScrolledWindow());
 	scrolledwindow->set_flags(Gtk::CAN_FOCUS);
 	scrolledwindow->set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
@@ -190,7 +190,7 @@ Dock_Canvases::set_selected_instance(etl::loose_handle<studio::Instance> x)
 	if (x==selected_instance)
 		return;
 
-	set_selected_instance_(x);	
+	set_selected_instance_(x);
 }
 
 void
@@ -198,11 +198,11 @@ Dock_Canvases::new_instance(etl::handle<studio::Instance> instance)
 {
 	if(studio::App::shutdown_in_progress)
 		return;
-	
+
 	assert(instance);
-	
+
 	etl::loose_handle<studio::Instance> loose_instance(instance);
-	
+
 	instance->synfigapp::Instance::signal_filename_changed().connect(sigc::mem_fun(*this,&Dock_Canvases::refresh_instances));
 	instance->synfigapp::Instance::signal_filename_changed().connect(
 		sigc::bind<etl::loose_handle<studio::Instance> >(
@@ -210,9 +210,9 @@ Dock_Canvases::new_instance(etl::handle<studio::Instance> instance)
 			loose_instance
 		)
 	);
-	
+
 	present();
-	
+
 }
 
 void

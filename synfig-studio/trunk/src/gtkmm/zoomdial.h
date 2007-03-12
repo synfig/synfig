@@ -55,7 +55,7 @@ class ZoomDial : public Gtk::Table
 	Gtk::Tooltips tooltips;
 	Gtk::IconSize iconsize;
 
-	
+
 public:
 	Gtk::Button *zoom_in;
 	Gtk::Button *zoom_out;

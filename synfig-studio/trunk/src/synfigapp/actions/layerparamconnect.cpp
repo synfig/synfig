@@ -65,7 +65,7 @@ Action::ParamVocab
 Action::LayerParamConnect::get_param_vocab()
 {
 	ParamVocab ret(Action::CanvasSpecific::get_param_vocab());
-	
+
 	ret.push_back(ParamDesc("layer",Param::TYPE_LAYER)
 		.set_local_name(_("Layer"))
 	);
@@ -77,7 +77,7 @@ Action::LayerParamConnect::get_param_vocab()
 	ret.push_back(ParamDesc("value_node",Param::TYPE_VALUENODE)
 		.set_local_name(_("ValueNode"))
 	);
-	
+
 	return ret;
 }
 
@@ -93,21 +93,21 @@ Action::LayerParamConnect::set_param(const synfig::String& name, const Action::P
 	if(name=="layer" && param.get_type()==Param::TYPE_LAYER)
 	{
 		layer=param.get_layer();
-		
+
 		return true;
 	}
 
 	if(name=="value_node" && param.get_type()==Param::TYPE_VALUENODE)
 	{
 		value_node=param.get_value_node();
-		
+
 		return true;
 	}
 
 	if(name=="param" && param.get_type()==Param::TYPE_STRING)
 	{
 		param_name=param.get_string();
-		
+
 		return true;
 	}
 
@@ -123,7 +123,7 @@ Action::LayerParamConnect::is_ready()const
 		synfig::warning("Action::LayerParamConnect: Missing \"value_node\"");
 	if(param_name.empty())
 		synfig::warning("Action::LayerParamConnect: Missing \"param\"");
-	
+
 	if(!layer || !value_node || param_name.empty())
 		return false;
 	return Action::CanvasSpecific::is_ready();
@@ -142,11 +142,11 @@ Action::LayerParamConnect::perform()
 
 	old_value=layer->get_param(param_name);
 	if(!old_value.is_valid())
-		throw Error(_("Layer did not recognise parameter name"));		
+		throw Error(_("Layer did not recognise parameter name"));
 
 	if(!layer->set_param(param_name,(*value_node)(0)))
 		throw Error(_("Bad connection"));
-	
+
 	layer->connect_dynamic_param(param_name,value_node);
 
 	layer->changed();
@@ -169,7 +169,7 @@ Action::LayerParamConnect::undo()
 		layer->disconnect_dynamic_param(param_name);
 		layer->set_param(param_name,old_value);
 	}
-	
+
 	layer->changed();
 	if(old_value_node)
 		old_value_node->changed();
@@ -179,7 +179,7 @@ Action::LayerParamConnect::undo()
 	else
 		set_dirty(false);
 	*/
-	
+
 	if(get_canvas_interface())
 	{
 		get_canvas_interface()->signal_layer_param_changed()(layer,param_name);

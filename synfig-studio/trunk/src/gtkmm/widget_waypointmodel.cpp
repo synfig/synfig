@@ -103,7 +103,7 @@ Widget_WaypointModel::Widget_WaypointModel():
 	checkbutton_continuity.signal_toggled().connect(sigc::mem_fun(*this,&Widget_WaypointModel::on_change));
 	checkbutton_bias.signal_toggled().connect(sigc::mem_fun(*this,&Widget_WaypointModel::on_change));
 	checkbutton_temporal_tension.signal_toggled().connect(sigc::mem_fun(*this,&Widget_WaypointModel::on_change));
-	
+
 	adj_tension.signal_value_changed().connect(sigc::mem_fun(*this,&Widget_WaypointModel::on_change));
 	adj_continuity.signal_value_changed().connect(sigc::mem_fun(*this,&Widget_WaypointModel::on_change));
 	adj_bias.signal_value_changed().connect(sigc::mem_fun(*this,&Widget_WaypointModel::on_change));
@@ -111,19 +111,19 @@ Widget_WaypointModel::Widget_WaypointModel():
 
 	before->signal_changed().connect(sigc::mem_fun(*this,&Widget_WaypointModel::on_change));
 	after->signal_changed().connect(sigc::mem_fun(*this,&Widget_WaypointModel::on_change));
-	
-	attach(checkbutton_before, 0, 1, 0, 1, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);	
+
+	attach(checkbutton_before, 0, 1, 0, 1, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 	attach(*before, 1, 2, 0,1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	attach(checkbutton_after, 2, 3, 0, 1, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);	
+	attach(checkbutton_after, 2, 3, 0, 1, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 	attach(*after, 3, 4, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
-	attach(checkbutton_tension, 0, 1, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);	
+	attach(checkbutton_tension, 0, 1, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 	attach(*spin_tension, 1, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	attach(checkbutton_continuity, 2, 3, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);	
+	attach(checkbutton_continuity, 2, 3, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 	attach(*spin_continuity, 3, 4, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	attach(checkbutton_bias, 0, 1, 2, 3, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);	
+	attach(checkbutton_bias, 0, 1, 2, 3, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 	attach(*spin_bias, 1, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	attach(checkbutton_temporal_tension, 2, 3, 2, 3, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);	
+	attach(checkbutton_temporal_tension, 2, 3, 2, 3, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 	attach(*spin_temporal_tension, 3, 4, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
 	show_all();
@@ -137,7 +137,7 @@ Widget_WaypointModel::on_change()
 {
 	if(updating)
 		return;
-	
+
 	waypoint_model.set_before((Waypoint::Interpolation)before->get_history());
 	waypoint_model.set_after((Waypoint::Interpolation)after->get_history());
 
@@ -152,7 +152,7 @@ Widget_WaypointModel::on_change()
 	waypoint_model.set_continuity_flag(checkbutton_continuity.get_active());
 	waypoint_model.set_bias_flag(checkbutton_bias.get_active());
 	waypoint_model.set_temporal_tension_flag(checkbutton_temporal_tension.get_active());
-	
+
 	before->set_sensitive(checkbutton_before.get_active());
 	after->set_sensitive(checkbutton_after.get_active());
 	spin_tension->set_sensitive(checkbutton_tension.get_active());
@@ -166,7 +166,7 @@ Widget_WaypointModel::set_waypoint_model(synfig::Waypoint::Model &x)
 {
 	waypoint_model=x;
 	updating=true;
-	
+
 	before->set_history((int)waypoint_model.get_before());
 	after->set_history((int)waypoint_model.get_after());
 
@@ -174,15 +174,15 @@ Widget_WaypointModel::set_waypoint_model(synfig::Waypoint::Model &x)
 	adj_continuity.set_value(waypoint_model.get_continuity());
 	adj_bias.set_value(waypoint_model.get_bias());
 	adj_temporal_tension.set_value(waypoint_model.get_temporal_tension());
-	
+
 	checkbutton_before.set_active(waypoint_model.get_before_flag());
 	checkbutton_after.set_active(waypoint_model.get_after_flag());
 	checkbutton_tension.set_active(waypoint_model.get_tension_flag());
 	checkbutton_continuity.set_active(waypoint_model.get_continuity_flag());
 	checkbutton_bias.set_active(waypoint_model.get_bias_flag());
 	checkbutton_temporal_tension.set_active(waypoint_model.get_temporal_tension_flag());
-	
+
 	updating=false;
-	
+
 	on_change();
 }

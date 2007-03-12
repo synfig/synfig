@@ -45,7 +45,7 @@
 namespace studio {
 
 class KeyframeTreeStore_Class;
-	
+
 class KeyframeTreeStore :
 	public Glib::Object,
 	public Gtk::TreeModel,
@@ -65,7 +65,7 @@ public:
 		Gtk::TreeModelColumn<Glib::ustring> description;
 		Gtk::TreeModelColumn<synfig::Keyframe> keyframe;
 		Gtk::TreeModelColumn<synfig::Time> time_delta;
-	
+
 		Model()
 		{
 			add(time);
@@ -80,7 +80,7 @@ public:
 	*/
 
 public:
-	
+
 	const Model model;
 
 	/*
@@ -93,7 +93,7 @@ private:
 
 	//! Unique stamp for this TreeModel.
 	int stamp_;
-	
+
 	static KeyframeTreeStore_Class keyframe_tree_store_class_;
 
 	//std::map<synfig::Keyframe,TreeRowReferenceHack> path_table_;
@@ -127,7 +127,7 @@ private:
 	**	constructed	or when large numbers of
 	**	iterators become invalid. */
 	void reset_stamp();
-	
+
 	//void reset_path_table();
 
 	/*
@@ -135,7 +135,7 @@ private:
 	*/
 
 protected:
-	
+
 	virtual void set_value_impl (const Gtk::TreeModel::iterator& row, int column, const Glib::ValueBase& value);
 	virtual Gtk::TreeModelFlags  get_flags_vfunc ();
 	virtual int  get_n_columns_vfunc ();
@@ -163,7 +163,7 @@ protected:
 	virtual void  set_default_sort_func_vfunc (GtkTreeIterCompareFunc func, void* data, GtkDestroyNotify destroy);
 	virtual bool  has_default_sort_func_vfunc ();
 	*/
-	
+
 	/*
  -- ** -- S I G N A L   T E R M I N A L S -------------------------------------
 	*/
@@ -175,13 +175,13 @@ private:
 	*/
 
 public:
-	
+
 	KeyframeTreeStore(etl::loose_handle<synfigapp::CanvasInterface> canvas_interface_);
 	~KeyframeTreeStore();
 
 	etl::loose_handle<synfigapp::CanvasInterface> canvas_interface() { return canvas_interface_; }
 	etl::loose_handle<const synfigapp::CanvasInterface> canvas_interface()const { return canvas_interface_; }
-	
+
 	synfig::Canvas::Handle get_canvas() { return canvas_interface()->get_canvas(); }
 	synfig::Canvas::Handle get_canvas()const { return canvas_interface()->get_canvas(); }
 
@@ -207,11 +207,11 @@ public:
 	{
 		GObjectClass parent_class;
 	};
-	
+
 	friend class KeyframeTreeStore;
-	
+
 	const Glib::Class& init();
-	
+
 	static void class_init_function(gpointer g_blass, gpointer class_data);
 }; // END of CustomTreeStore_Class
 

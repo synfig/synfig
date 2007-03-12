@@ -62,15 +62,15 @@ using namespace studio;
 class studio::Preview::Preview_Target : public Target_Scanline
 {
 	Surface	surface;
-	
+
 	sigc::signal<void, const Preview_Target *>		signal_frame_done_;
-	
+
 	int scanline;
-	
+
 	double	tbegin,tend;
-	
+
 	int		nframes,curframe;
-	
+
 public:
 
 	Preview_Target()
@@ -90,25 +90,25 @@ public:
 			/*synfig::warning("Succeeded in setting the desc to new one: %d x %d, %.2f fps [%.2f,%.2f]",
 							desc.get_w(),desc.get_h(),desc.get_frame_rate(),
 					(float)desc.get_time_start(),(float)desc.get_time_end());*/
-			
+
 			surface.set_wh(desc.get_w(),desc.get_h());
-			
-			curframe = 0;			
+
+			curframe = 0;
 			nframes = (int)floor((desc.get_time_end() - desc.get_time_start())*desc.get_frame_rate());
-			
+
 			tbegin = desc.get_time_start();
 			tend = tbegin + nframes/desc.get_frame_rate();
-				
-			return true;		
+
+			return true;
 		}
 		return false;
 	}
-	
+
 	virtual bool start_frame(ProgressCallback *cb=NULL)
 	{
-		return true;		
+		return true;
 	}
-	
+
 	virtual void end_frame()
 	{
 		//ok... notify our subscribers...
@@ -116,19 +116,19 @@ public:
 		curframe += 1;
 		//synfig::warning("Finished the frame stuff, and changed time to %.3f",t);
 	}
-	
+
 	virtual Color * start_scanline(int scanline)
 	{
 		return surface[scanline];
 	}
-	
+
 	virtual bool end_scanline() {return true;}
-	
+
 	sigc::signal<void, const Preview_Target *>	&signal_frame_done() {return signal_frame_done_;}
-	
+
 	const Surface &get_surface() const {return surface;}
-	
-	float get_time() const 
+
+	float get_time() const
 	{
 		double time = ((nframes-curframe)/(double)nframes)*tbegin
 					+ ((curframe)/(double)nframes)*tend;
@@ -146,7 +146,7 @@ studio::Preview::Preview(const studio::CanvasView::LooseHandle &h, float zoom, f
 void studio::Preview::set_canvasview(const studio::CanvasView::LooseHandle &h)
 {
 	canvasview = h;
-	
+
 	if(canvasview)
 	{
 		//perhaps reset override values...
@@ -171,36 +171,36 @@ void studio::Preview::render()
 	{
 		//render using the preview target
 		etl::handle<Preview_Target>	target = new Preview_Target;
-		
+
 		//connect our information to his...
 		//synfig::warning("Connecting to the end frame function...");
 		target->signal_frame_done().connect(sigc::mem_fun(*this,&Preview::frame_finish));
-		
+
 		//set the options
 		//synfig::warning("Setting Canvas");
 		target->set_canvas(get_canvas());
 		target->set_quality(quality);
-		
+
 		//render description
 		RendDesc desc = get_canvas()->rend_desc();
-		
+
 		//set the global fps of the preview
 		set_global_fps(desc.get_frame_rate());
-		
+
 		desc.clear_flags();
-		
+
 		int neww = (int)floor(desc.get_w()*zoom+0.5),
 			newh = (int)floor(desc.get_h()*zoom+0.5);
 		float newfps = fps;
-		
+
 		/*synfig::warning("Setting the render description: %d x %d, %f fps, [%f,%f]",
 						neww,newh,newfps, overbegin?begintime:(float)desc.get_time_start(),
 						overend?endtime:(float)desc.get_time_end());*/
-		
+
 		desc.set_w(neww);
 		desc.set_h(newh);
 		desc.set_frame_rate(newfps);
-		
+
 		if(overbegin)
 		{
 			desc.set_time_start(std::max(begintime,(float)desc.get_time_start()));
@@ -211,17 +211,17 @@ void studio::Preview::render()
 			desc.set_time_end(std::min(endtime,(float)desc.get_time_end()));
 			//synfig::warning("Set end time to %.2f...",(float)desc.get_time_end());
 		}
-			
+
 		//setting the description
-		
+
 		//HACK - BECAUSE THE RENDERER CAN'T RENDER INCLUDING THE LAST FRAME
 		desc.set_time_end(desc.get_time_end() + 1.3/fps);
-		
+
 		target->set_rend_desc(&desc);
-		
+
 		//... first we must clear our current selves of space
 		frames.resize(0);
-		
+
 		//now tell it to go... with inherited prog. reporting...
 		//synfig::info("Rendering Asynchronously...");
 		if(renderer) renderer->stop();
@@ -242,13 +242,13 @@ void studio::Preview::frame_finish(const Preview_Target *targ)
 	float time = targ->get_time();
 	const Surface &surf = targ->get_surface();
 	const RendDesc& r = targ->get_rend_desc();
-	
+
 	//synfig::warning("Finished a frame at %f s",time);
-	
+
 	//copy EVERYTHING!
 	PixelFormat pf(PF_RGB);
 	const int total_bytes(r.get_w()*r.get_h()*synfig::channels(pf));
-	
+
 	//synfig::warning("Creating a buffer");
 	unsigned char *buffer((unsigned char*)malloc(total_bytes));
 
@@ -256,14 +256,14 @@ void studio::Preview::frame_finish(const Preview_Target *targ)
 		return;
 
 	//convert all the pixles to the pixbuf... buffer... thing...
-	//synfig::warning("Converting...");	
+	//synfig::warning("Converting...");
 	convert_color_format(buffer, surf[0], surf.get_w()*surf.get_h(), pf, App::gamma);
-	
+
 	//load time
-	fe.t = time;	
+	fe.t = time;
 	//uses and manages the memory for the buffer...
 	//synfig::warning("Create a pixmap...");
-	fe.buf = 
+	fe.buf =
 	Gdk::Pixbuf::create_from_data(
 		buffer,	// pointer to the data
 		Gdk::COLORSPACE_RGB, // the colorspace
@@ -274,11 +274,11 @@ void studio::Preview::frame_finish(const Preview_Target *targ)
 		surf.get_w()*synfig::channels(pf), // stride (pitch)
 		sigc::ptr_fun(free_guint8)
 	);
-	
+
 	//add the flipbook element to the list (assume time is correct)
 	//synfig::info("Prev: Adding %f s to the list", time);
 	frames.push_back(fe);
-	
+
 	signal_changed()();
 }
 
@@ -287,7 +287,7 @@ void studio::Preview::frame_finish(const Preview_Target *targ)
 	button->add(*icon);	\
 	tooltips.set_tip(*button,tooltip);	\
 	icon->set_padding(0,0);\
-	icon->show();	
+	icon->show();
 
 Widget_Preview::Widget_Preview()
 :Gtk::Table(5,5,false),
@@ -302,19 +302,19 @@ playing(false)
 {
 	//connect to expose events
 	//signal_expose_event().connect(sigc::mem_fun(*this, &studio::Widget_Preview::redraw));
-	
+
 	//manage all the change in values etc...
 	adj_time_scrub.signal_value_changed().connect(sigc::mem_fun(*this,&Widget_Preview::slider_move));
 	scr_time_scrub.signal_event().connect(sigc::mem_fun(*this,&Widget_Preview::scroll_move_event));
 	draw_area.signal_expose_event().connect(sigc::mem_fun(*this,&Widget_Preview::redraw));
-	
+
 	disp_sound.set_time_adjustment(&adj_sound);
 	timedisp = -1;
-	
+
 	//Set up signals to modify time value as it should be...
 	disp_sound.signal_start_scrubbing().connect(sigc::mem_fun(*this,&Widget_Preview::scrub_updated));
 	disp_sound.signal_scrub().connect(sigc::mem_fun(*this,&Widget_Preview::scrub_updated));
-		
+
 	/*
 	---------------------------------
 	|								|
@@ -327,67 +327,67 @@ playing(false)
 	---------------------------------
 	|loop|play|stop					| hbox
 	|lastl|lastt|rerender|haltrend	| hbox
-	|	
+	|
 	|sound							|
 	*/
-	
+
 	Gtk::HBox *hbox = 0;
 	Gtk::Button *button = 0;
 	Gtk::Image *icon = 0;
-	
-	//should set up the dialog using attach etc.	
+
+	//should set up the dialog using attach etc.
 	attach(draw_area, 0, 1, 0, 1);
 	attach(scr_time_scrub, 0, 1, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK);
-	
+
 	#if 1
-	
+
 	//2nd row
 	hbox = manage(new Gtk::HBox);
-	
+
 	button = &b_loop;
 	IMAGIFY_BUTTON(button,Gtk::Stock::REFRESH,"Toggle Looping");
 	hbox->pack_start(b_loop,Gtk::PACK_SHRINK,0);
 	//attach(b_loop,0,1,2,3,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK);
-	
+
 	button = manage(new Gtk::Button(/*_("Play")*/));
 	button->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Preview::play));
 	IMAGIFY_BUTTON(button,Gtk::Stock::GO_FORWARD,"Play");
 	hbox->pack_start(*button,Gtk::PACK_SHRINK,0);
 	//attach(*button,1,2,2,3,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK);
-	
+
 	button = manage(new Gtk::Button(/*_("Stop")*/));
 	button->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Preview::stop));
 	IMAGIFY_BUTTON(button,Gtk::Stock::NO,"Stop");
 	hbox->pack_start(*button,Gtk::PACK_SHRINK,0);
 	//attach(*button,2,3,2,3,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK);
-	
+
 	//attack the stop render and erase all buttons to same line...
 	{
 		Gtk::VSeparator *vsep = manage(new Gtk::VSeparator);
 		hbox->pack_start(*vsep,Gtk::PACK_SHRINK,0);
 	}
-	
+
 	button = manage(new Gtk::Button(/*_("Halt Render")*/));
 	button->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Preview::stoprender));
 	IMAGIFY_BUTTON(button,Gtk::Stock::STOP,"Halt Render");
 	hbox->pack_start(*button,Gtk::PACK_SHRINK,0);
 	//attach(*button,2,3,3,4,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK);
-	
+
 	button = manage(new Gtk::Button(/*_("Re-Preview")*/));
 	button->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Preview::repreview));
 	IMAGIFY_BUTTON(button,Gtk::Stock::CONVERT,"Re-Preview");
 	hbox->pack_start(*button,Gtk::PACK_SHRINK,0);
 	//attach(*button,0,2,4,5,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK);
-	
+
 	button = manage(new Gtk::Button(/*_("Erase All")*/));
 	button->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Preview::eraseall));
 	IMAGIFY_BUTTON(button,Gtk::Stock::DELETE,"Erase All");
 	hbox->pack_start(*button,Gtk::PACK_SHRINK,0);
 	//attach(*button,2,3,4,5,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK);
-	
+
 	hbox->show_all();
 	attach(*hbox,0,1,2,3,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK|Gtk::FILL);
-	
+
 	//3rd row
 	hbox = manage(new Gtk::HBox);
 	{
@@ -401,13 +401,13 @@ playing(false)
 	hbox->show_all();
 	attach(*hbox,0,1,3,4,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK);
 	//attach(l_lasttime,0,1,3,4,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK);
-		
+
 	//5th row
 	disp_sound.set_size_request(-1,32);
 	attach(disp_sound,0,1,4,5,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK);
-	
+
 	show_all();
-	
+
 	//if(draw_area.get_window()) gc_area = Gdk::GC::create(draw_area.get_window());
 	#endif
 }
@@ -420,32 +420,32 @@ void studio::Widget_Preview::update()
 {
 	//the meat goes in this locker...
 	double time = adj_time_scrub.get_value();
-	
+
 	//find the frame and display it...
 	if(preview)
 	{
-		//synfig::warning("Updating at %.3f s",time);		
-		
+		//synfig::warning("Updating at %.3f s",time);
+
 		//use time to find closest frame...
 		studio::Preview::FlipBook::const_iterator 	beg = preview->begin(),end = preview->end();
 		studio::Preview::FlipBook::const_iterator 	i;
-		
+
 		i = beg;
-		
+
 		//go to current hint if need be...
 		if(currentindex >= 0 && currentindex < (int)preview->numframes())
 		{
 			i = beg+currentindex;
 		}
-		
+
 		//we can't have a picture if there are none to get
 		if(beg != end)
-		{			
+		{
 			//don't bother with binary search it will just be slower...
-			
+
 			//synfig::info("Search for time %f",time);
-			
-			//incrementally go in either direction 
+
+			//incrementally go in either direction
 			//(bias downward towards beg, because that's what we want)
 			for(;i != end;++i)
 			{
@@ -453,10 +453,10 @@ void studio::Widget_Preview::update()
 				if(i->t > time) break;
 				//synfig::info("Go past...");
 			}
-			
-			//if(i!=beg)--i; 
-			
-			//bias down, so we can't be at end... and it still is valid...		
+
+			//if(i!=beg)--i;
+
+			//bias down, so we can't be at end... and it still is valid...
 			for(;i != beg;)
 			{
 				--i;
@@ -464,18 +464,18 @@ void studio::Widget_Preview::update()
 				if(i->t <= time) break;
 				//synfig::info("Go past...");
 			}
-			
+
 			/*i = preview->begin(); end = preview->end();
 			if(i == end) return;
-			
+
 			j = i;
 			for(;i != end; j = i++)
 			{
 				if(i->t > time) break;
 			}*/
-			
+
 			//we should be at a valid edge since we biased downward
-			
+
 			//don't get the closest, round down... (if we can)
 			if(i == end)
 			{
@@ -493,18 +493,18 @@ void studio::Widget_Preview::update()
 					timedisp = i->t;
 					//synfig::warning("Update at: %f seconds (%f s)",time,timedisp);
 					preview_draw();
-					//synfig::warning("success!");			
+					//synfig::warning("success!");
 				}
 			}
 		}
 	}
-	
+
 	if(disp_sound.get_profile() && adj_sound.get_value() != time)
 	{
 		//timeupdate = time;
-		
+
 		//Set the position of the sound (short circuited for sound modifying the time)
-		
+
 		disp_sound.set_position(time);
 		disp_sound.queue_draw();
 	}
@@ -515,35 +515,35 @@ void studio::Widget_Preview::preview_draw()
 }
 
 bool studio::Widget_Preview::redraw(GdkEventExpose *heh)
-{	
+{
 	//And render the drawing area
 	Glib::RefPtr<Gdk::Pixbuf> pxnew, px = currentbuf;
-	
-	if(!px || draw_area.get_height() == 0 
+
+	if(!px || draw_area.get_height() == 0
 		|| px->get_height() == 0 || px->get_width() == 0 /*|| is_visible()*/) //made not need this line
 		return true;
-	
+
 	//figure out the scaling factors...
 	float sx, sy;
 	int nw,nh;
 
 	sx = draw_area.get_width() / (float)px->get_width();
 	sy = draw_area.get_height() / (float)px->get_height();
-	
+
 	//synfig::info("widget_preview redraw: now to scale the bitmap: %.3f x %.3f",sx,sy);
-	
+
 	//round to smallest scale (fit entire thing in window without distortion)
 	if(sx > sy) sx = sy;
 	//else sy = sx;
-	
+
 	//scale to a new pixmap and then copy over to the window
 	nw = (int)(px->get_width()*sx);
 	nh = (int)(px->get_height()*sx);
-	
+
 	if(nw == 0 || nh == 0)return true;
-		
+
 	pxnew = px->scale_simple(nw,nh,Gdk::INTERP_NEAREST);
-		
+
 	//synfig::info("Now to draw to the window...");
 	//copy to window
 	Glib::RefPtr<Gdk::Window>	wind = draw_area.get_window();
@@ -557,7 +557,7 @@ bool studio::Widget_Preview::redraw(GdkEventExpose *heh)
 
 	if(!wind) synfig::warning("The destination window is broken...");
 	if(!surf) synfig::warning("The destination is not drawable...");
-	
+
 	if(surf)
 	{
 		/* Options for drawing...
@@ -570,7 +570,7 @@ bool studio::Widget_Preview::redraw(GdkEventExpose *heh)
 				+ better memory footprint
 		*/
 		//px->composite(const Glib::RefPtr<Gdk::Pixbuf>& dest, int dest_x, int dest_y, int dest_width, int dest_height, double offset_x, double offset_y, double scale_x, double scale_y, InterpType interp_type, int overall_alpha) const
-		
+
 		surf->draw_pixbuf(
 			gc, //GC
 			pxnew, //pixbuf
@@ -580,15 +580,15 @@ bool studio::Widget_Preview::redraw(GdkEventExpose *heh)
 			Gdk::RGB_DITHER_NONE, // RgbDither
 			0, 0 // Dither offset X and Y
 		);
-		
+
 		if(timedisp >= 0)
 		{
-			Glib::RefPtr<Pango::Layout> layout(Pango::Layout::create(get_pango_context()));		
+			Glib::RefPtr<Pango::Layout> layout(Pango::Layout::create(get_pango_context()));
 			Glib::ustring timecode(Time((double)timedisp).round(preview->get_global_fps())
 															.get_string(preview->get_global_fps(),
 																			App::get_time_format()));
 			//synfig::info("Time for preview draw is: %s for time %g", timecode.c_str(), adj_time_scrub.get_value());
-																		
+
 			gc->set_rgb_fg_color(Gdk::Color("#FF0000"));
 			layout->set_text(timecode);
 			surf->draw_layout(gc,4,4,layout);
@@ -596,10 +596,10 @@ bool studio::Widget_Preview::redraw(GdkEventExpose *heh)
 	}
 
 	draw_area.get_window()->end_paint();
-	
+
 	//synfig::warning("Refresh the draw area");
 	//make sure the widget refreshes
-	
+
 	return false;
 }
 
@@ -607,24 +607,24 @@ bool studio::Widget_Preview::play_update()
 {
 	float diff = timer.pop_time();
 	//synfig::info("Play update: diff = %.2f",diff);
-	
+
 	if(playing)
 	{
 		//we go to the next one...
 		double time = adj_time_scrub.get_value() + diff;
-		
+
 		//adjust it to be synced with the audio if it can...
 		{
 			double newtime = audiotime;
 			if(audio && audio->is_playing()) audio->get_current_time(newtime);
-				
+
 			if(newtime != audiotime)
 			{
 				//synfig::info("Adjusted time from %.3lf to %.3lf", time,newtime);
 				time = audiotime = newtime;
 			}
 		}
-		
+
 		//Looping conditions...
 		if(time >= adj_time_scrub.get_upper())
 		{
@@ -638,16 +638,16 @@ bool studio::Widget_Preview::play_update()
 				adj_time_scrub.set_value(time);
 				play_stop();
 				update();
-				
+
 				//synfig::info("Play Stopped: time set to %f",adj_time_scrub.get_value());
 				return false;
 			}
 		}
-		
+
 		//set the new time...
 		adj_time_scrub.set_value(time);
 		adj_time_scrub.value_changed();
-		
+
 		//update the window to the correct image we might want to do this later...
 		//update();
 		//synfig::warning("Did update pu");
@@ -668,26 +668,26 @@ void studio::Widget_Preview::slider_move()
 void studio::Widget_Preview::scrub_updated(double t)
 {
 	stop();
-	
+
 	//Attempt at being more accurate... the time is adjusted to be exactly where the sound says it is
 	//double oldt = t;
 	if(audio)
 	{
-		if(!audio->isPaused()) 
+		if(!audio->isPaused())
 		{
 			audio->get_current_time(t);
 		}
 	}
-	
+
 	//synfig::info("Scrubbing to %.3f, setting adj to %.3f",oldt,t);
-			
+
 	if(adj_time_scrub.get_value() != t)
 	{
 		adj_time_scrub.set_value(t);
 		adj_time_scrub.value_changed();
 	}
 }
-	
+
 void studio::Widget_Preview::disconnect_preview(Preview *prev)
 {
 	if(prev == preview)
@@ -700,12 +700,12 @@ void studio::Widget_Preview::disconnect_preview(Preview *prev)
 void studio::Widget_Preview::set_preview(handle<Preview>	prev)
 {
 	preview = prev;
-	
+
 	synfig::info("Setting preview");
-	
+
 	//stop playing the mini animation...
 	stop();
-	
+
 	if(preview)
 	{
 		//set the internal values
@@ -715,15 +715,15 @@ void studio::Widget_Preview::set_preview(handle<Preview>	prev)
 		{
 			float start = preview->get_begintime();
 			float end = preview->get_endtime();
-			
+
 			rate = 1/rate;
-			
+
 			adj_time_scrub.set_lower(start);
 			adj_time_scrub.set_upper(end);
 			adj_time_scrub.set_value(start);
 			adj_time_scrub.set_step_increment(rate);
 			adj_time_scrub.set_page_increment(10*rate);
-			
+
 			//if the begin time and the end time are the same there is only a single frame
 			singleframe = end==start;
 		}else
@@ -732,10 +732,10 @@ void studio::Widget_Preview::set_preview(handle<Preview>	prev)
 			adj_time_scrub.set_upper(0);
 			adj_time_scrub.set_value(0);
 			adj_time_scrub.set_step_increment(0);
-			adj_time_scrub.set_page_increment(0);			
+			adj_time_scrub.set_page_increment(0);
 			singleframe = true;
 		}
-		
+
 		//connect so future information will be found...
 		prevchanged = prev->signal_changed().connect(sigc::mem_fun(*this,&Widget_Preview::whenupdated));
 		prev->signal_destroyed().connect(sigc::mem_fun(*this,&Widget_Preview::disconnect_preview));
@@ -767,25 +767,25 @@ void studio::Widget_Preview::play()
 		//audiotime = adj_time_scrub.get_value();
 		playing = true;
 
-		//adj_time_scrub.set_value(adj_time_scrub.get_lower());		
+		//adj_time_scrub.set_value(adj_time_scrub.get_lower());
 		update(); //we don't want to call play update because that will try to advance the timer
 		//synfig::warning("Did update p");
-		
+
 		//approximate length of time in seconds, right?
 		double rate = /*std::min(*/adj_time_scrub.get_step_increment()/*,1/30.0)*/;
 		int timeout = (int)floor(1000*rate);
-		
+
 		//synfig::info("	rate = %.3lfs = %d ms",rate,timeout);
-		
+
 		signal_play_(adj_time_scrub.get_value());
-		
+
 		//play the audio...
 		if(audio) audio->play(adj_time_scrub.get_value());
-				
-		timecon = Glib::signal_timeout().connect(sigc::mem_fun(*this,&Widget_Preview::play_update),timeout);		
-		timer.reset();		
+
+		timecon = Glib::signal_timeout().connect(sigc::mem_fun(*this,&Widget_Preview::play_update),timeout);
+		timer.reset();
 	}
-	
+
 }
 
 void studio::Widget_Preview::play_stop()
@@ -814,10 +814,10 @@ bool studio::Widget_Preview::scroll_move_event(GdkEvent *event)
 				stop();
 			}
 		}
-		
+
 		default: break;
 	}
-	
+
 	return false;
 }
 
@@ -829,10 +829,10 @@ void studio::Widget_Preview::set_audioprofile(etl::handle<AudioProfile> p)
 void studio::Widget_Preview::set_audio(etl::handle<AudioContainer> a)
 {
 	audio = a;
-	
+
 	//disconnect any previous signals
 	scrstartcon.disconnect(); scrstopcon.disconnect(); scrubcon.disconnect();
-		
+
 	//connect the new signals
 	scrstartcon = disp_sound.signal_start_scrubbing().connect(sigc::mem_fun(*a,&AudioContainer::start_scrubbing));
 	scrstopcon = disp_sound.signal_stop_scrubbing().connect(sigc::mem_fun(*a,&AudioContainer::stop_scrubbing));
@@ -862,17 +862,17 @@ void studio::Widget_Preview::stoprender()
 		preview->renderer.detach();
 	}
 }
-	
+
 void studio::Widget_Preview::eraseall()
 {
 	stop();
 	stoprender();
-	
+
 	currentbuf.clear();
 	currentindex = 0;
 	timedisp = 0;
 	queue_draw();
-	
+
 	if(preview)
 	{
 		preview->clear();

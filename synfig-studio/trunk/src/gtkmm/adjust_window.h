@@ -38,20 +38,20 @@ namespace studio {
 
 /* Sets up an adjustment that controls/communicates with another adjustment
 	(could be expanded to multiple children)
-	
+
 	The current value and pagesize define the lower and upper bounds of the
 	child adjustment.
-	
+
 	NEED TO REPLACE FUNCTIONALITY IN:
 	refresh_rend_desc
 	refresh_time_window
 	on_time_changed - possibly....
-	
+
 	time_zoom_in - possibly...
 	time_zoom_out - possibly...
-	
+
 	play - possibly...
-	
+
 	THINGS TO CHECK:
 	disp_audio's use of time_adjustment
 	children_tree's use of time_adjustment
@@ -60,18 +60,18 @@ namespace studio {
 class Adjust_Window : public Gtk::Adjustment
 {
 	Gtk::Adjustment	*adj_child;
-	
+
 	sigc::connection childchanged; //we only care about the non-value parts of the child
-	
+
 	virtual void on_changed(); //value+pagesize corresponds to child upper
 	virtual void on_value_changed(); //value corresponds to child lower
 
 protected: //update interface
 	virtual void update_child();
 	virtual void update_fromchild();
-	
+
 public: //structors
-	Adjust_Window(double value, double lower, double upper, 
+	Adjust_Window(double value, double lower, double upper,
 					double step_increment=1, double page_increment=10, double page_size=0,
 					Gtk::Adjustment *adj = 0);
 
@@ -86,7 +86,7 @@ public: //Sub value interface
 	double get_sub_lower() const;
 	double get_sub_upper() const;
 };
-	
+
 }; // END of namespace studio
 
 /* === E N D =============================================================== */

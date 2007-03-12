@@ -57,7 +57,7 @@ using namespace studio;
 
 #define COLUMNID_JUMP		(787584)
 #define ColumnID	int
-	
+
 /* === G L O B A L S ======================================================= */
 
 /* === P R O C E D U R E S ================================================= */
@@ -83,7 +83,7 @@ CompView::CompView():
 	notebook->append_page(*create_canvas_tree(),"Canvases");
 	notebook->append_page(*create_action_tree(),"History");
 
-	
+
 
 /*
 
@@ -153,7 +153,7 @@ CompView::CompView():
 	App::signal_instance_created().connect(sigc::mem_fun(*this,&studio::CompView::new_instance));
 	App::signal_instance_deleted().connect(sigc::mem_fun(*this,&studio::CompView::delete_instance));
 	App::signal_instance_selected().connect(sigc::mem_fun(*this,&studio::CompView::set_selected_instance_signal));
-	
+
 	table->show_all();
 	add(*table);
 
@@ -191,7 +191,7 @@ CompView::create_canvas_tree()
 //#ifdef NDEBUG
 //		column->add_attribute(icon_cellrenderer->property_pixbuf(), canvas_tree_model.icon);
 //#endif
-		
+
 		canvas_tree->append_column(*column);
 	}
 	canvas_tree->set_rules_hint();
@@ -221,23 +221,23 @@ CompView::create_action_tree()
 
 		Gtk::CellRendererToggle* toggle_cr = Gtk::manage( new Gtk::CellRendererToggle() );
 		toggle_cr->signal_toggled().connect(sigc::mem_fun(*this, &studio::CompView::on_action_toggle) );
-		
+
 		column->pack_start(*toggle_cr); //false = don't expand.
 		column->add_attribute(toggle_cr->property_active(),history_tree_model.is_active);
 		column->set_resizable();
 		column->set_clickable();
-				
+
 		action_tree->append_column(*column);
 	}
 	/*{
 		Gtk::TreeView::Column* column = Gtk::manage( new Gtk::TreeView::Column("Canvas") );
 		Gtk::CellRendererText *text_cr=Gtk::manage(new Gtk::CellRendererText());
 		text_cr->property_foreground()=Glib::ustring("#7f7f7f");
-		
+
 		column->pack_start(*text_cr);
 		column->add_attribute(text_cr->property_text(),history_tree_model.canvas_id);
 		column->add_attribute(text_cr->property_foreground_set(),history_tree_model.is_redo);
-				
+
 		action_tree->append_column(*column);
 	}*/
 	{
@@ -245,13 +245,13 @@ CompView::create_action_tree()
 
 		Gtk::CellRendererText* cell_renderer_jump=Gtk::manage(new Gtk::CellRendererText());
 		column->pack_start(*cell_renderer_jump,true);
-		
+
 		cell_renderer_jump->property_text()="(JMP)";
 		cell_renderer_jump->property_foreground()="#003a7f";
-		
+
 		column->set_resizable();
 		column->set_clickable();
-		
+
 		column->set_sort_column_id(COLUMNID_JUMP);
 
 		action_tree->append_column(*column);
@@ -263,17 +263,17 @@ CompView::create_action_tree()
 		Gtk::CellRendererText *text_cr=Gtk::manage(new Gtk::CellRendererText());
 		text_cr->property_foreground()=Glib::ustring("#7f7f7f");
 
-		
+
 
 		//column->pack_start(history_tree_model.icon, false); //false = don't expand.
 		column->pack_start(*text_cr);
 		column->add_attribute(text_cr->property_text(),history_tree_model.name);
 		column->add_attribute(text_cr->property_foreground_set(),history_tree_model.is_redo);
-				
+
 		action_tree->append_column(*column);
 	}
 
-	
+
 	action_tree->set_rules_hint();
 //	action_tree->signal_row_activated().connect(sigc::mem_fun(*this,&CompView::on_row_activate));
 	action_tree->signal_event().connect(sigc::mem_fun(*this,&CompView::on_action_event));
@@ -293,14 +293,14 @@ CompView::create_action_tree()
 
 	Gtk::Button* clear_redo_button(manage(new Gtk::Button(_("Clear Redo"))));
 	clear_redo_button->signal_pressed().connect(sigc::mem_fun(*this,&studio::CompView::clear_redo));
-	
+
 	Gtk::Table* table(manage(new Gtk::Table()));
 	table->attach(*scrolledwindow, 0, 2, 0,1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	table->attach(*clear_button, 0, 1, 1,2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK, 0, 0);
 	table->attach(*clear_redo_button, 1, 2, 1,2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK, 0, 0);
-	
+
 	table->show_all();
-	
+
 	return table;
 }
 
@@ -324,7 +324,7 @@ void
 CompView::clear_history()
 {
 	if(selected_instance && App::dialog_yes_no(_("Clear History"), _("You will not be able to undo any changes that you have made!\nAre you sure you want to clear the undo stack?")))
-	{		
+	{
 		selected_instance->clear_undo_stack();
 	}
 }
@@ -333,7 +333,7 @@ void
 CompView::clear_redo()
 {
 	if(selected_instance && App::dialog_yes_no(_("Clear History"), _("You will not be able to redo any changes that you have made!\nAre you sure you want to clear the redo stack?")))
-	{		
+	{
 		selected_instance->clear_redo_stack();
 	}
 }
@@ -437,7 +437,7 @@ CompView::set_selected_instance(etl::loose_handle<studio::Instance> x)
 	else
 		instance_selector->set_history(0);
 
-	set_selected_instance_(x);	
+	set_selected_instance_(x);
 }
 
 void
@@ -445,11 +445,11 @@ CompView::new_instance(etl::handle<studio::Instance> instance)
 {
 	if(studio::App::shutdown_in_progress)
 		return;
-	
+
 	assert(instance);
-	
+
 	etl::loose_handle<studio::Instance> loose_instance(instance);
-	
+
 	instance->synfigapp::Instance::signal_filename_changed().connect(sigc::mem_fun(*this,&CompView::refresh_instances));
 	instance->synfigapp::Instance::signal_filename_changed().connect(
 		sigc::bind<etl::loose_handle<studio::Instance> >(
@@ -457,7 +457,7 @@ CompView::new_instance(etl::handle<studio::Instance> instance)
 			loose_instance
 		)
 	);
-	
+
 	{
 		std::string name=basename(instance->get_file_name());
 
@@ -533,7 +533,7 @@ CompView::on_action_event(GdkEvent *event)
 				)
 			) break;
 			const Gtk::TreeRow row = *(action_tree->get_model()->get_iter(path));
-			
+
 			//signal_user_click()(event->button.button,row,(ColumnID)column->get_sort_column_id());
 			if((ColumnID)column->get_sort_column_id()==COLUMNID_JUMP)
 			{
@@ -550,7 +550,7 @@ CompView::on_action_event(GdkEvent *event)
 				}
 			}
 		}
-		
+
 	case GDK_BUTTON_RELEASE:
 		break;
 	default:
@@ -575,7 +575,7 @@ CompView::on_tree_event(GdkEvent *event)
 			synfigapp::Action::ParamList param_list;
 			param_list.add("canvas",synfig::Canvas::Handle(get_selected_canvas()));
 			param_list.add("canvas_interface",get_selected_instance()->find_canvas_interface(get_selected_canvas()));
-			get_selected_instance()->find_canvas_view(get_selected_canvas())->add_actions_to_menu(&menu, param_list,synfigapp::Action::CATEGORY_CANVAS);					
+			get_selected_instance()->find_canvas_view(get_selected_canvas())->add_actions_to_menu(&menu, param_list,synfigapp::Action::CATEGORY_CANVAS);
 			menu.popup(0,0);
 			menu.show();
 			break;
@@ -600,10 +600,10 @@ CompView::on_action_toggle(const Glib::ustring& path_string)
 	studio::HistoryTreeStore::Model history_tree_model;
 
 	Gtk::TreePath path(path_string);
-	
+
 	const Gtk::TreeRow row = *(selected_instance->history_tree_store()->get_iter(path));
 
 	handle<synfigapp::Action::Undoable> action=row[history_tree_model.action];
-	
+
 	selected_instance->synfigapp::Instance::set_action_status(action,!action->is_active());
 }

@@ -42,7 +42,7 @@
 namespace studio {
 
 class Dock_History : public Dock_CanvasSpecific
-{	
+{
 	Glib::RefPtr<Gtk::ActionGroup> action_group;
 	Gtk::TreeView *action_tree;
 
@@ -69,7 +69,7 @@ public:
 	void on_action_toggle(const Glib::ustring& path);
 
 	void update_undo_redo();
-	
+
 	Dock_History();
 	~Dock_History();
 protected:

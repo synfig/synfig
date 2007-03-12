@@ -54,7 +54,7 @@ public:
 		cos_val(synfig::Angle::cos(angle).get())
 	{
 	}
-	
+
 	synfig::Vector perform(const synfig::Vector& x)const
 	{
 		synfig::Point pos(x-origin);

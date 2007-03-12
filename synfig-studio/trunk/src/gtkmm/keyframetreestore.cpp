@@ -73,13 +73,13 @@ struct _keyframe_iterator
 Gtk::TreeModel::iterator keyframe_iter_2_model_iter(synfig::KeyframeList::iterator iter,int index)
 {
 	Gtk::TreeModel::iterator ret;
-	
+
 	_keyframe_iterator*& data(static_cast<_keyframe_iterator*&>(ret->gobj()->user_data));
 	data=new _keyframe_iterator();
 	data->ref_count=1;
 	data->iter=iter;
 	data->index=index;
-	
+
 	return ret;
 }
 */
@@ -111,7 +111,7 @@ public:
 		gobject_(0)
 	{
 	}
-	
+
 	TreeRowReferenceHack(const Glib::RefPtr<Gtk::TreeModel>& model, const Gtk::TreeModel::Path& path):
 		gobject_ ( gtk_tree_row_reference_new(model->gobj(), const_cast<GtkTreePath*>(path.gobj())) )
 	{
@@ -120,7 +120,7 @@ public:
 	TreeRowReferenceHack(const TreeRowReferenceHack &x):
 		gobject_ ( x.gobject_?gtk_tree_row_reference_copy(x.gobject_):0 )
 	{
-		
+
 	}
 
 	void swap(TreeRowReferenceHack & other)
@@ -137,13 +137,13 @@ public:
   		swap(temp);
 		return *this;
 	}
-	
+
 	~TreeRowReferenceHack()
 	{
 		if(gobject_)
 			gtk_tree_row_reference_free(gobject_);
 	}
-	
+
 	Gtk::TreeModel::Path get_path() { return Gtk::TreeModel::Path(gtk_tree_row_reference_get_path(gobject_),false); }
 	GtkTreeRowReference *gobj() { return gobject_; }
 };
@@ -166,7 +166,7 @@ KeyframeTreeStore_Class::init()
 	if(!gtype_)
 	{
 		class_init_func_ = &KeyframeTreeStore_Class::class_init_function;
-		
+
 		const GTypeInfo derived_info =
 		{
 			sizeof(GObjectClass),
@@ -180,7 +180,7 @@ KeyframeTreeStore_Class::init()
 			0,
 			NULL
 		};
-		
+
 		gtype_ = g_type_register_static(G_TYPE_OBJECT, "KeyframeTreeStore", &derived_info, GTypeFlags(0));
 		Gtk::TreeModel::add_interface(get_type());
 	}
@@ -232,7 +232,7 @@ KeyframeTreeStore::reset_path_table()
 {
 	Gtk::TreeModel::Children::iterator iter;
 	const Gtk::TreeModel::Children children(children());
-	path_table_.clear();	
+	path_table_.clear();
 	for(iter = children.begin(); iter != children.end(); ++iter)
 	{
 		Gtk::TreeModel::Row row(*iter);
@@ -292,10 +292,10 @@ int
 KeyframeTreeStore::time_sorter(const Gtk::TreeModel::iterator &rhs,const Gtk::TreeModel::iterator &lhs)
 {
 	const Model model;
-	
+
 	_keyframe_iterator *rhs_iter(static_cast<_keyframe_iterator*>(rhs->gobj()->user_data));
 	_keyframe_iterator *lhs_iter(static_cast<_keyframe_iterator*>(lhs->gobj()->user_data));
-	
+
 	Time diff(rhs_iter->iter->get_time()-lhs_iter->iter->get_time());
 	if(diff<0)
 		return -1;
@@ -323,22 +323,22 @@ KeyframeTreeStore::set_value_impl(const Gtk::TreeModel::iterator& row, int colum
 	}
 
 	_keyframe_iterator *iter(static_cast<_keyframe_iterator*>(row.gobj()->user_data));
-	
+
 	try
 	{
 		if(column==model.time_delta.index())
-		{			
+		{
 			Glib::Value<synfig::Time> x;
 			g_value_init(x.gobj(),model.time.type());
 			g_value_copy(value.gobj(),x.gobj());
-			
+
 			Time new_delta(x.get());
 			if(new_delta<=Time::zero()+Time::epsilon())
 			{
 				// Bad value
 				return;
 			}
-			
+
 			Time old_delta((*row)[model.time_delta]);
 			if(old_delta<=Time::zero()+Time::epsilon())
 			{
@@ -348,29 +348,29 @@ KeyframeTreeStore::set_value_impl(const Gtk::TreeModel::iterator& row, int colum
 			//Gtk::TreeModel::iterator row(row);
 			//row++;
 			//if(!row)return;
-			
+
 			Time change_delta(new_delta-old_delta);
-			
+
 			if(change_delta<=Time::zero()+Time::epsilon() &&change_delta>=Time::zero()-Time::epsilon())
 			{
 				// Not an error, just no change
 				return;
 			}
-			
+
 			{
 				Keyframe keyframe((*row)[model.keyframe]);
 				synfigapp::Action::Handle action(synfigapp::Action::create("keyframe_set_delta"));
-	
+
 				if(!action)return;
-				
+
 				action->set_param("canvas",canvas_interface()->get_canvas());
 				action->set_param("canvas_interface",canvas_interface());
 				action->set_param("keyframe",keyframe);
 				action->set_param("delta",change_delta);
-				
+
 				canvas_interface()->get_instance()->perform_action(action);
 			}
-			
+
 			return;
 		}
 		else
@@ -386,16 +386,16 @@ KeyframeTreeStore::set_value_impl(const Gtk::TreeModel::iterator& row, int colum
 			synfig::info("KeyframeTreeStore::set_value_impl():old_time=%s",keyframe.get_time().get_string().c_str());
 			keyframe.set_time(x.get());
 			synfig::info("KeyframeTreeStore::set_value_impl():new_time=%s",keyframe.get_time().get_string().c_str());
-			
+
 			synfigapp::Action::Handle action(synfigapp::Action::create("keyframe_set"));
-			
+
 			if(!action)
 				return;
-			
+
 			action->set_param("canvas",canvas_interface()->get_canvas());
 			action->set_param("canvas_interface",canvas_interface());
 			action->set_param("keyframe",keyframe);
-			
+
 			canvas_interface()->get_instance()->perform_action(action);
 		}
 		else if(column==model.description.index())
@@ -407,14 +407,14 @@ KeyframeTreeStore::set_value_impl(const Gtk::TreeModel::iterator& row, int colum
 			keyframe.set_description(x.get());
 
 			synfigapp::Action::Handle action(synfigapp::Action::create("keyframe_set"));
-			
+
 			if(!action)
 				return;
-			
+
 			action->set_param("canvas",canvas_interface()->get_canvas());
 			action->set_param("canvas_interface",canvas_interface());
 			action->set_param("keyframe",keyframe);
-			
+
 			canvas_interface()->get_instance()->perform_action(action);
 		}
 		else if(column==model.keyframe.index())
@@ -429,7 +429,7 @@ KeyframeTreeStore::set_value_impl(const Gtk::TreeModel::iterator& row, int colum
 	catch(std::exception x)
 	{
 		g_warning(x.what());
-	}	
+	}
 }
 
 Gtk::TreeModelFlags
@@ -461,7 +461,7 @@ KeyframeTreeStore::iter_next_vfunc (const iterator& xiter, iterator& iter_next) 
 		return false;
 
 	_keyframe_iterator *next(new _keyframe_iterator());
-	iter_next.gobj()->user_data=static_cast<gpointer>(next);	
+	iter_next.gobj()->user_data=static_cast<gpointer>(next);
 	next->ref_count=1;
 	next->index=iter->index+1;
 	next->iter=iter->iter;
@@ -469,8 +469,8 @@ KeyframeTreeStore::iter_next_vfunc (const iterator& xiter, iterator& iter_next) 
 
 	if(next->iter==canvas_interface()->get_canvas()->keyframe_list().end())
 		return false;
-	
-	iter_next.gobj()->stamp=stamp_;		
+
+	iter_next.gobj()->stamp=stamp_;
 
 	return true;
 }
@@ -486,9 +486,9 @@ KeyframeTreeStore::iter_next_vfunc (GtkTreeIter* gtk_iter)
 	// If we are already at the end, then we are very invalid
 	if(iter->iter==canvas_interface()->get_canvas()->keyframe_list().end())
 		return false;
-	
+
 	++(iter->iter);
-	
+
 	if(iter->iter==canvas_interface()->get_canvas()->keyframe_list().end())
 	{
 		--(iter->iter);
@@ -509,16 +509,16 @@ KeyframeTreeStore::iter_children_vfunc (GtkTreeIter* gtk_iter, const GtkTreeIter
 		clear_iterator(gtk_iter);
 		return false;
 	}
-	
+
 	_keyframe_iterator *iter(new _keyframe_iterator());
 	iter->ref_count=1;
 	iter->index=0;
 	iter->iter=canvas_interface()->get_canvas()->keyframe_list().begin();
-	
-	gtk_iter->user_data=static_cast<gpointer>(iter);
-	gtk_iter->stamp=stamp_;		
 
-	return true;	
+	gtk_iter->user_data=static_cast<gpointer>(iter);
+	gtk_iter->stamp=stamp_;
+
+	return true;
 }
 
 bool
@@ -539,7 +539,7 @@ KeyframeTreeStore::iter_n_children_vfunc (const GtkTreeIter* parent)
 
 	if(parent)
 		return 0;
-	
+
 	return canvas_interface()->get_canvas()->keyframe_list().size();
 }
 */
@@ -583,8 +583,8 @@ KeyframeTreeStore::iter_nth_root_child_vfunc (int n, iterator& xiter)const
 		}
 		++iter->iter;
 	}
-	xiter.gobj()->user_data=static_cast<gpointer>(iter);	
-	xiter.gobj()->stamp=stamp_;	
+	xiter.gobj()->user_data=static_cast<gpointer>(iter);
+	xiter.gobj()->stamp=stamp_;
 	return true;
 }
 
@@ -602,7 +602,7 @@ KeyframeTreeStore::iter_nth_child_vfunc (GtkTreeIter* gtk_iter, const GtkTreeIte
 	}
 
 
-	
+
 	_keyframe_iterator *iter(new _keyframe_iterator());
 	iter->ref_count=1;
 	iter->index=n;
@@ -618,9 +618,9 @@ KeyframeTreeStore::iter_nth_child_vfunc (GtkTreeIter* gtk_iter, const GtkTreeIte
 		}
 		++iter->iter;
 	}
-	
+
 	gtk_iter->user_data=static_cast<gpointer>(iter);
-	gtk_iter->stamp=stamp_;		
+	gtk_iter->stamp=stamp_;
 	return true;
 }
 
@@ -655,7 +655,7 @@ KeyframeTreeStore::unref_node_vfunc (iterator& xiter)const
 	if(!iter->ref_count)
 	{
 		delete iter;
-		
+
 		// Make this iterator invalid
 		gtk_iter->stamp=0;
 	}
@@ -672,7 +672,7 @@ KeyframeTreeStore::get_path_vfunc (const TreeModel::iterator& gtk_iter)const
 		return path;
 
 	_keyframe_iterator *iter(static_cast<_keyframe_iterator*>(gtk_iter->gobj()->user_data));
-	
+
 	path.append_index(iter->index);
 
 	return path;
@@ -720,7 +720,7 @@ KeyframeTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& gtk_iter, in
 	{
 		Glib::Value<synfig::Time> x;
 		g_value_init(x.gobj(),x.value_type());
-		
+
 		synfig::Keyframe prev_keyframe(*iter->iter);
 		synfig::Keyframe keyframe;
 		{
@@ -735,7 +735,7 @@ KeyframeTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& gtk_iter, in
 			}
 			keyframe=*tmp;
 		}
-		
+
 		Time delta(0);
 		try {
 			delta=keyframe.get_time()-prev_keyframe.get_time();
@@ -773,15 +773,15 @@ KeyframeTreeStore::find_row(const synfig::Keyframe &keyframe)
 	const GtkTreeIter *gtk_iter(row.gobj());
 	if(!iterator_sane(gtk_iter))
 		throw std::runtime_error(_("Unable to find Keyframe in table"));
-		
+
 	_keyframe_iterator *iter(static_cast<_keyframe_iterator*>(gtk_iter->user_data));
-	
+
 	synfig::KeyframeList &keyframe_list(canvas_interface()->get_canvas()->keyframe_list());
 	if(keyframe_list.empty())
 		throw std::runtime_error(_("There are no keyframes n this canvas"));
 
 	iter->index=0;
-		
+
 	for(iter->iter=keyframe_list.begin();iter->iter!=keyframe_list.end() && *iter->iter!=keyframe;++iter->iter)
 	{
 		iter->index++;
@@ -799,7 +799,7 @@ KeyframeTreeStore::add_keyframe(Keyframe keyframe)
 		Gtk::TreeRow row(find_row(keyframe));
 		dump_iterator(row.gobj(),"add_keyframe,row");
 		Gtk::TreePath path(get_path(row));
-		
+
 		row_inserted(path,row);
 
 		old_keyframe_list=get_canvas()->keyframe_list();
@@ -809,7 +809,7 @@ KeyframeTreeStore::add_keyframe(Keyframe keyframe)
 	catch(std::exception x)
 	{
 		g_warning(x.what());
-	}	
+	}
 }
 
 void
@@ -818,7 +818,7 @@ KeyframeTreeStore::remove_keyframe(Keyframe keyframe)
 	try
 	{
 		if(1)
-		{	
+		{
 			Gtk::TreeRow row(find_row(keyframe));
 			dump_iterator(row,"remove_keyframe,row");
 			Gtk::TreePath path(get_path(row));
@@ -835,7 +835,7 @@ KeyframeTreeStore::remove_keyframe(Keyframe keyframe)
 	{
 		DEBUGPOINT();
 		g_warning(x.what());
-	}	
+	}
 }
 
 void
@@ -849,7 +849,7 @@ KeyframeTreeStore::change_keyframe(Keyframe keyframe)
 		unsigned int old_index(0);
 		synfig::KeyframeList::iterator iter;
 		for(old_index=0,iter=old_keyframe_list.begin();iter!=old_keyframe_list.end() && (UniqueID)*iter!=(UniqueID)keyframe;++iter,old_index++);
-		
+
 		if(iter!=old_keyframe_list.end() && new_index!=old_index)
 		{
 			DEBUGPOINT();
@@ -862,22 +862,22 @@ KeyframeTreeStore::change_keyframe(Keyframe keyframe)
 			{
 				new_order.erase(new_order.begin()+new_index);
 				new_order.insert(new_order.begin()+old_index,new_index);
-				
+
 				//new_order[old_index]=
-				
+
 				rows_reordered (Path(), iterator(), &new_order[0]);
 			}
 			old_keyframe_list=get_canvas()->keyframe_list();
-				
+
 			row=find_row(keyframe);
 		}
 
 		dump_iterator(row,"change_keyframe,row");
-		row_changed(get_path(row),row);	
+		row_changed(get_path(row),row);
 	}
 	catch(std::exception x)
 	{
 		DEBUGPOINT();
 		g_warning(x.what());
-	}	
+	}
 }

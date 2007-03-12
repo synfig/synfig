@@ -47,11 +47,11 @@ namespace studio {
 
 class Dockable;
 class StateManager;
-	
+
 class Toolbox : public Gtk::Window
 {
 	friend class studio::StateManager;
-	
+
 	DialogSettings dialog_settings;
 
 	Gtk::Tooltips tooltips;
@@ -62,22 +62,22 @@ class Toolbox : public Gtk::Window
 	Gtk::Button *button_rotoscope;
 	Gtk::Button *button_rotoscope_bline;
 	Gtk::Button *button_rotoscope_polygon;
-	
+
 	Gtk::Table *tool_table;
 
 	std::map<synfig::String,Gtk::ToggleButton *> state_button_map;
-	
+
 	Gtk::Menu	*recent_files_menu;
 
 	Gtk::Menu	*dock_dialogs;
 
 	bool changing_state_;
-	
-	void on_recent_files_changed();	
+
+	void on_recent_files_changed();
 	void on_drop_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, const Gtk::SelectionData& selection_data, guint info, guint time);
 
 	void change_state_(const Smach::state_base *state);
-	
+
 public:
 
 	void change_state(const synfig::String& statename);
@@ -90,12 +90,12 @@ public:
 
 	void add_state(const Smach::state_base *state);
 
-	
+
 	void dockable_registered(Dockable* x);
-	
+
 	Toolbox();
 	virtual ~Toolbox();
-	
+
 };
 
 }; // END of namespace studio

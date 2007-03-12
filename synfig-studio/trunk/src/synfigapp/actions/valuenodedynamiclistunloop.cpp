@@ -65,7 +65,7 @@ Action::ParamVocab
 Action::ValueNodeDynamicListUnLoop::get_param_vocab()
 {
 	ParamVocab ret(Action::CanvasSpecific::get_param_vocab());
-	
+
 	ret.push_back(ParamDesc("value_node",Param::TYPE_VALUENODE)
 		.set_local_name(_("ValueNode"))
 	);
@@ -112,9 +112,9 @@ Action::ValueNodeDynamicListUnLoop::set_param(const synfig::String& name, const 
 	}
 
 	if(!value_node && name=="value_node" && param.get_type()==Param::TYPE_VALUENODE)
-	{		
+	{
 		value_node=ValueNode_DynamicList::Handle::cast_dynamic(param.get_value_node());
-		
+
 		if(!value_node)
 			return false;
 
@@ -134,9 +134,9 @@ Action::ValueNodeDynamicListUnLoop::is_ready()const
 
 void
 Action::ValueNodeDynamicListUnLoop::perform()
-{	
+{
 	old_loop_value=value_node->get_loop();
-	
+
 	if(old_loop_value==false)
 	{
 		set_dirty(false);
@@ -145,7 +145,7 @@ Action::ValueNodeDynamicListUnLoop::perform()
 
 	set_dirty(true);
 	value_node->set_loop(false);
-		
+
 	value_node->changed();
 /*_if(get_canvas_interface())
 	{
@@ -165,7 +165,7 @@ Action::ValueNodeDynamicListUnLoop::undo()
 
 	set_dirty(true);
 	value_node->set_loop(old_loop_value);
-		
+
 	value_node->changed();
 /*_if(get_canvas_interface())
 	{

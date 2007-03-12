@@ -72,7 +72,7 @@ Action::ParamVocab
 Action::KeyframeDuplicate::get_param_vocab()
 {
 	ParamVocab ret(Action::CanvasSpecific::get_param_vocab());
-	
+
 	ret.push_back(ParamDesc("keyframe",Param::TYPE_KEYFRAME)
 		.set_local_name(_("Keyframe"))
 		.set_desc(_("Keyframe to be duplicated"))
@@ -98,13 +98,13 @@ Action::KeyframeDuplicate::set_param(const synfig::String& name, const Action::P
 	{
 		keyframe=param.get_keyframe();
 		new_keyframe.set_description(keyframe.get_description()+_(" (Duplicate)"));
-		
+
 		return true;
 	}
 	if(name=="time" && param.get_type()==Param::TYPE_TIME)
 	{
 		new_keyframe.set_time(param.get_time());
-		
+
 		return true;
 	}
 
@@ -131,12 +131,12 @@ Action::KeyframeDuplicate::prepare()
 	catch(synfig::Exception::NotFound)
 	{
 		throw Error(_("Unable to find the given keyframe"));
-	}	
+	}
 
 	try { if(get_canvas()->keyframe_list().find(new_time)!=get_canvas()->keyframe_list().end()) throw Error(_("A Keyframe already exists at this point in time"));}
-	catch(...) { }			
+	catch(...) { }
 
-	// If the times are different, then we 
+	// If the times are different, then we
 	// will need to romp through the valuenodes
 	// and add actions to update their values.
 	if(new_time!=old_time)
@@ -153,20 +153,20 @@ Action::KeyframeDuplicate::prepare()
 
 void
 Action::KeyframeDuplicate::process_value_desc(const synfigapp::ValueDesc& value_desc)
-{	
+{
 	const synfig::Time old_time=keyframe.get_time();
 	const synfig::Time new_time=new_keyframe.get_time();
 
 	if(value_desc.is_value_node())
 	{
 		ValueNode::Handle value_node(value_desc.get_value_node());
-	
+
 		// If we are a dynamic list, then we need to update the ActivePoints
 		if(ValueNode_DynamicList::Handle::cast_dynamic(value_node))
 		{
 			ValueNode_DynamicList::Handle value_node_dynamic(ValueNode_DynamicList::Handle::cast_dynamic(value_node));
 			int i;
-			
+
 			for(i=0;i<value_node_dynamic->link_count();i++)
 			{
 				synfigapp::ValueDesc value_desc(value_node_dynamic,i);
@@ -174,7 +174,7 @@ Action::KeyframeDuplicate::process_value_desc(const synfigapp::ValueDesc& value_
 				activepoint.set_time(new_time);
 
 				Action::Handle action(ActivepointSetSmart::create());
-				
+
 				action->set_param("canvas",get_canvas());
 				action->set_param("canvas_interface",get_canvas_interface());
 				action->set_param("value_desc",value_desc);
@@ -183,8 +183,8 @@ Action::KeyframeDuplicate::process_value_desc(const synfigapp::ValueDesc& value_
 				assert(action->is_ready());
 				if(!action->is_ready())
 					throw Error(Error::TYPE_NOTREADY);
-			
-				add_action_front(action);						
+
+				add_action_front(action);
 			}
 		}
 		else if(ValueNode_Animated::Handle::cast_dynamic(value_node))
@@ -192,19 +192,19 @@ Action::KeyframeDuplicate::process_value_desc(const synfigapp::ValueDesc& value_
 			ValueNode_Animated::Handle value_node_animated(ValueNode_Animated::Handle::cast_dynamic(value_node));
 			Waypoint waypoint(value_node_animated->new_waypoint_at_time(old_time));
 			waypoint.set_time(new_time);
-			
+
 			Action::Handle action(WaypointSetSmart::create());
-			
+
 			action->set_param("canvas",get_canvas());
 			action->set_param("canvas_interface",get_canvas_interface());
 			action->set_param("value_node",ValueNode::Handle(value_node_animated));
 			action->set_param("waypoint",waypoint);
-	
+
 			assert(action->is_ready());
 			if(!action->is_ready())
 				throw Error(Error::TYPE_NOTREADY);
-		
-			add_action_front(action);						
+
+			add_action_front(action);
 		}
 	}
 }
@@ -213,15 +213,15 @@ void
 Action::KeyframeDuplicate::perform()
 {
 	try { get_canvas()->keyframe_list().find(new_keyframe.get_time()); throw Error(_("A Keyframe already exists at this point in time"));}
-	catch(synfig::Exception::NotFound) { }	
+	catch(synfig::Exception::NotFound) { }
 
 	try { get_canvas()->keyframe_list().find(new_keyframe); throw Error(_("This keyframe is already in the ValueNode"));}
-	catch(synfig::Exception::NotFound) { }	
+	catch(synfig::Exception::NotFound) { }
 
 	Action::Super::perform();
-	
+
 	get_canvas()->keyframe_list().add(new_keyframe);
-	
+
 	if(get_canvas_interface())
 	{
 		get_canvas_interface()->signal_keyframe_added()(new_keyframe);
@@ -233,12 +233,12 @@ void
 Action::KeyframeDuplicate::undo()
 {
 	Action::Super::undo();
-	
+
 	if(get_canvas_interface())
 	{
 		get_canvas_interface()->signal_keyframe_removed()(new_keyframe);
 	}
 	else synfig::warning("CanvasInterface not set on action");
 
-	get_canvas()->keyframe_list().erase(new_keyframe);	
+	get_canvas()->keyframe_list().erase(new_keyframe);
 }

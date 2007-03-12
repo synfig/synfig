@@ -96,14 +96,14 @@ ChildrenTree::ChildrenTree()
 		// Pack the label into the column
 		column->pack_start(model.label,true);
 
-		// Finish setting up the column		
+		// Finish setting up the column
 		column->set_reorderable();
 		column->set_resizable();
 		column->set_clickable();
 		column->set_min_width(150);
 		column->set_sort_column_id(model.label);
 		tree_view.append_column(*column);
-		
+
 	}
 	{	// --- T Y P E --------------------------------------------------------
 		int cols_count = tree_view.append_column(_("Type"),model.type);
@@ -118,7 +118,7 @@ ChildrenTree::ChildrenTree()
 	}
 	{	// --- V A L U E  -----------------------------------------------------
 		Gtk::TreeView::Column* column = Gtk::manage( new Gtk::TreeView::Column(_("ValueBase")) );
-		
+
 		// Set up the value cell-renderer
 		cellrenderer_value=ChildrenTreeStore::add_cell_renderer_value(column);
 		cellrenderer_value->signal_edited().connect(sigc::mem_fun(*this, &studio::ChildrenTree::on_edited_value));
@@ -135,7 +135,7 @@ ChildrenTree::ChildrenTree()
 	{	// --- T I M E   T R A C K --------------------------------------------
 		Gtk::TreeView::Column* column = Gtk::manage( new Gtk::TreeView::Column(_("Time Track")) );
 		column_time_track=column;
-		
+
 		// Set up the value-node cell-renderer
 		cellrenderer_time_track=ChildrenTreeStore::add_cell_renderer_value_node(column);
 		cellrenderer_time_track->property_mode()=Gtk::CELL_RENDERER_MODE_ACTIVATABLE;
@@ -144,7 +144,7 @@ ChildrenTree::ChildrenTree()
 		column->add_attribute(cellrenderer_time_track->property_canvas(), model.canvas);
 
 		//column->pack_start(*cellrenderer_time_track);
-				
+
 		// Finish setting up the column
 		column->set_reorderable();
 		column->set_resizable();
@@ -153,10 +153,10 @@ ChildrenTree::ChildrenTree()
 
 	// This makes things easier to read.
 	tree_view.set_rules_hint();
-	
+
 	// Make us more sensitive to several events
 	tree_view.add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK | Gdk::BUTTON1_MOTION_MASK | Gdk::BUTTON2_MOTION_MASK|Gdk::POINTER_MOTION_MASK);
-	
+
 	tree_view.signal_event().connect(sigc::mem_fun(*this, &studio::ChildrenTree::on_tree_event));
 
 	// Create a scrolled window for that tree
@@ -170,15 +170,15 @@ ChildrenTree::ChildrenTree()
 	attach(*scroll_children_tree, 0, 3, 0, 1, Gtk::EXPAND|Gtk::FILL,Gtk::EXPAND|Gtk::FILL, 0, 0);
 
 	hbox=manage(new Gtk::HBox());
-	
+
 	attach(*hbox, 0, 1, 1, 2, Gtk::FILL|Gtk::SHRINK, Gtk::SHRINK, 0, 0);
 
-	
-	
+
+
 	tree_view.set_enable_search(true);
 	tree_view.set_search_column(model.label);
-	
-	
+
+
 /*
 	Gtk::Image *icon;
 	//Gtk::IconSize iconsize(Gtk::IconSize::from_name("synfig-small_icon"));
@@ -188,7 +188,7 @@ ChildrenTree::ChildrenTree()
 	SMALL_BUTTON(button_lower,"gtk-go-down","Lower");
 	SMALL_BUTTON(button_duplicate,"synfig-duplicate","Duplicate");
 	SMALL_BUTTON(button_delete,"gtk-delete","Delete");
-	
+
 	hbox->pack_start(*button_raise,Gtk::PACK_SHRINK);
 	hbox->pack_start(*button_lower,Gtk::PACK_SHRINK);
 	hbox->pack_start(*button_duplicate,Gtk::PACK_SHRINK);
@@ -252,7 +252,7 @@ ChildrenTree::on_dirty_preview()
 
 void
 ChildrenTree::on_selection_changed()
-{	
+{
 	if(0)
 		{
 		button_raise->set_sensitive(false);
@@ -268,7 +268,7 @@ void
 ChildrenTree::on_edited_value(const Glib::ustring&path_string,synfig::ValueBase value)
 {
 	Gtk::TreePath path(path_string);
-	
+
 	const Gtk::TreeRow row = *(tree_view.get_model()->get_iter(path));
 
 	row[model.value]=value;
@@ -279,9 +279,9 @@ void
 ChildrenTree::on_waypoint_clicked(const Glib::ustring &path_string, synfig::Waypoint waypoint,int button)
 {
 	Gtk::TreePath path(path_string);
-	
+
 	const Gtk::TreeRow row = *(tree_view.get_model()->get_iter(path));
-	
+
 	signal_waypoint_clicked()(static_cast<synfigapp::ValueDesc>(row[model.value_desc]),waypoint,button);
 }
 
@@ -303,7 +303,7 @@ ChildrenTree::on_tree_event(GdkEvent *event)
 				)
 			) break;
 			const Gtk::TreeRow row = *(tree_view.get_model()->get_iter(path));
-			
+
 			if(column->get_first_cell_renderer()==cellrenderer_time_track)
 			{
 				return signal_user_click()(event->button.button,row,COLUMNID_TIME_TRACK);
@@ -312,10 +312,10 @@ ChildrenTree::on_tree_event(GdkEvent *event)
 				return signal_user_click()(event->button.button,row,COLUMNID_VALUE);
 			else
 				return signal_user_click()(event->button.button,row,COLUMNID_ID);
-			
+
 		}
 		break;
-		
+
 	case GDK_MOTION_NOTIFY:
 		{
 			Gtk::TreeModel::Path path;
@@ -328,12 +328,12 @@ ChildrenTree::on_tree_event(GdkEvent *event)
 				cell_x,cell_y //int&cell_x,int&cell_y
 				)
 			) break;
-			
+
 			if(!tree_view.get_model()->get_iter(path))
 				break;
-			
+
 			Gtk::TreeRow row = *(tree_view.get_model()->get_iter(path));
-			
+
 			if(cellrenderer_time_track==column->get_first_cell_renderer())
 			{
 				// Movement on TimeLine

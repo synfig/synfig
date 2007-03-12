@@ -61,14 +61,14 @@ ACTION_SET_CVS_ID(Action::LayerParamDisconnect,"$Id: layerparamdisconnect.cpp,v 
 Action::LayerParamDisconnect::LayerParamDisconnect():
 	time(0)
 {
-	
+
 }
 
 Action::ParamVocab
 Action::LayerParamDisconnect::get_param_vocab()
 {
 	ParamVocab ret(Action::CanvasSpecific::get_param_vocab());
-	
+
 	ret.push_back(ParamDesc("layer",Param::TYPE_LAYER)
 		.set_local_name(_("Layer"))
 	);
@@ -81,7 +81,7 @@ Action::LayerParamDisconnect::get_param_vocab()
 		.set_local_name(_("Time"))
 		.set_optional()
 	);
-	
+
 	return ret;
 }
 
@@ -97,21 +97,21 @@ Action::LayerParamDisconnect::set_param(const synfig::String& name, const Action
 	if(name=="layer" && param.get_type()==Param::TYPE_LAYER)
 	{
 		layer=param.get_layer();
-		
+
 		return true;
 	}
 
 	if(name=="param" && param.get_type()==Param::TYPE_STRING)
 	{
 		param_name=param.get_string();
-		
+
 		return true;
 	}
 
 	if(name=="time" && param.get_type()==Param::TYPE_TIME)
 	{
 		time=param.get_time();
-		
+
 		return true;
 	}
 
@@ -134,7 +134,7 @@ Action::LayerParamDisconnect::perform()
 
 	old_value_node=layer->dynamic_param_list().find(param_name)->second;
 	layer->disconnect_dynamic_param(param_name);
-	
+
 	if(new_value_node || ValueNode_DynamicList::Handle::cast_dynamic(old_value_node))
 	{
 		if(!new_value_node)
@@ -143,12 +143,12 @@ Action::LayerParamDisconnect::perform()
 	}
 	else
 		layer->set_param(param_name,(*old_value_node)(time));
-	
+
 	layer->changed();
 	old_value_node->changed();
 
 	set_dirty(false);
-	
+
 	if(get_canvas_interface())
 	{
 		get_canvas_interface()->signal_layer_param_changed()(layer,param_name);
@@ -159,7 +159,7 @@ void
 Action::LayerParamDisconnect::undo()
 {
 	layer->connect_dynamic_param(param_name,old_value_node);
-	
+
 /*	if(layer->active() && get_canvas()->get_time()!=time)
 		set_dirty(true);
 	else

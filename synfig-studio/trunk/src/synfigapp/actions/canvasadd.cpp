@@ -66,7 +66,7 @@ Action::ParamVocab
 Action::CanvasAdd::get_param_vocab()
 {
 	ParamVocab ret(Action::CanvasSpecific::get_param_vocab());
-	
+
 	ret.push_back(ParamDesc("src",Param::TYPE_CANVAS)
 		.set_local_name(_("New Canvas"))
 		.set_optional()
@@ -77,7 +77,7 @@ Action::CanvasAdd::get_param_vocab()
 		.set_desc(_("The name that you want this canvas to be"))
 		.set_user_supplied()
 	);
-	
+
 	return ret;
 }
 
@@ -93,13 +93,13 @@ Action::CanvasAdd::set_param(const synfig::String& name, const Action::Param &pa
 	if(name=="src" && param.get_type()==Param::TYPE_CANVAS)
 	{
 		new_canvas=param.get_canvas();
-		
+
 		return true;
 	}
 	if(name=="id" && param.get_type()==Param::TYPE_STRING)
 	{
 		id=param.get_string();
-		
+
 		return true;
 	}
 
@@ -141,8 +141,8 @@ Action::CanvasAdd::undo()
 	get_canvas()->remove_child_canvas(new_canvas);
 
 	if(inline_parent)
-		new_canvas->set_inline(inline_parent);		
-	
+		new_canvas->set_inline(inline_parent);
+
 	if(get_canvas_interface())
 	{
 		get_canvas_interface()->signal_canvas_removed()(new_canvas);

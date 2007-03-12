@@ -79,7 +79,7 @@ CanvasProperties::CanvasProperties(Gtk::Window& parent,handle<synfigapp::CanvasI
 	Gtk::Alignment *infoPadding = manage(new Gtk::Alignment(0, 0, 1, 1));
 	infoPadding->set_padding(6, 0, 24, 0);
 	info_frame->add(*infoPadding);
-	
+
 	Gtk::Table *info_table=manage(new Gtk::Table(2,2,false));
 	info_table->set_row_spacings(6);
 	info_table->set_col_spacings(12);
@@ -92,7 +92,7 @@ CanvasProperties::CanvasProperties(Gtk::Window& parent,handle<synfigapp::CanvasI
 		Gtk::Label *idLabel = manage(new Gtk::Label(_("_ID"), true));
 		idLabel->set_alignment(0, 0.5);
 		idLabel->set_mnemonic_widget(entry_id);
-		info_table->attach(*idLabel, 0, 1, 0, 1, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);	
+		info_table->attach(*idLabel, 0, 1, 0, 1, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 		info_table->attach(entry_id, 1, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 	}
 	Gtk::Label *nameLabel = manage(new Gtk::Label(_("_Name"), true));
@@ -101,10 +101,10 @@ CanvasProperties::CanvasProperties(Gtk::Window& parent,handle<synfigapp::CanvasI
 	Gtk::Label *descriptionLabel = manage(new Gtk::Label(_("_Description"), true));
 	descriptionLabel->set_alignment(0, 0.5);
 	descriptionLabel->set_mnemonic_widget(entry_description);
-	info_table->attach(*nameLabel, 0, 1, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);	
-	info_table->attach(*descriptionLabel, 0, 1, 2, 3, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);	
-	info_table->attach(entry_name, 1, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);	
-	info_table->attach(entry_description, 1, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);	
+	info_table->attach(*nameLabel, 0, 1, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+	info_table->attach(*descriptionLabel, 0, 1, 2, 3, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+	info_table->attach(entry_name, 1, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+	info_table->attach(entry_description, 1, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 
 	dialogBox->pack_start(widget_rend_desc, false, false, 0);
 
@@ -126,7 +126,7 @@ CanvasProperties::CanvasProperties(Gtk::Window& parent,handle<synfigapp::CanvasI
 	cancel_button->signal_clicked().connect(sigc::mem_fun(*this, &studio::CanvasProperties::on_cancel_pressed));
 
 	//set_default_response(1);
-	
+
 	get_vbox()->show_all();
 	refresh();
 
@@ -138,13 +138,13 @@ CanvasProperties::create_meta_data_view()
 {
 	MetaDataTreeStore::Model model;
 	meta_data_tree_view=(manage(new class Gtk::TreeView()));
-		
+
 	meta_data_tree_view->append_column(_("Key"),model.key);
 	meta_data_tree_view->append_column_editable(_("Data"),model.data);
 	meta_data_tree_view->set_model(MetaDataTreeStore::create(canvas_interface_));
 	meta_data_tree_view->set_rules_hint();
 	meta_data_tree_view->show();
-	
+
 	Gtk::ScrolledWindow *scrolledwindow = manage(new class Gtk::ScrolledWindow());
 	scrolledwindow->set_flags(Gtk::CAN_FOCUS);
 	scrolledwindow->set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
@@ -152,11 +152,11 @@ CanvasProperties::create_meta_data_view()
 	scrolledwindow->set_shadow_type(Gtk::SHADOW_ETCHED_IN);
 	scrolledwindow->show();
 
-	
-	
+
+
 	Gtk::Table *table=manage(new Gtk::Table());
 	table->attach(*scrolledwindow, 0, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	
+
 	Gtk::Button* button_add(manage(new Gtk::Button(Gtk::StockID("gtk-add"))));
 	button_add->show();
 	button_add->signal_clicked().connect(sigc::mem_fun(*this,&CanvasProperties::on_button_meta_data_add));
@@ -164,9 +164,9 @@ CanvasProperties::create_meta_data_view()
 
 	Gtk::Button* button_delete(manage(new Gtk::Button(Gtk::StockID("gtk-delete"))));
 	button_delete->show();
-	button_delete->signal_clicked().connect(sigc::mem_fun(*this,&CanvasProperties::on_button_meta_data_delete));	
+	button_delete->signal_clicked().connect(sigc::mem_fun(*this,&CanvasProperties::on_button_meta_data_delete));
 	table->attach(*button_delete, 1, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-	
+
 	table->show();
 	return *table;
 }
@@ -200,7 +200,7 @@ CanvasProperties::refresh()
 	entry_id.set_text(canvas_interface_->get_canvas()->get_id());
 	entry_name.set_text(canvas_interface_->get_canvas()->get_name());
 	entry_description.set_text(canvas_interface_->get_canvas()->get_description());
-	
+
 	dirty_rend_desc=false;
 
 	update_title();
@@ -227,7 +227,7 @@ CanvasProperties::on_apply_pressed()
 		canvas_interface_->set_name(entry_name.get_text());
 	if(entry_description.get_text()!=canvas_interface_->get_canvas()->get_description())
 		canvas_interface_->set_description(entry_description.get_text());
-	
+
 	dirty_rend_desc=false;
 }
 

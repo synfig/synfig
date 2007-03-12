@@ -47,29 +47,29 @@ class Widget_Time : public Gtk::Entry
 
 
 	sigc::signal<void> signal_value_changed_;
-	
+
 	float fps_;
-	
+
 	synfig::Time time_;
-	
+
 protected:
 	bool on_focus_out_event(GdkEventFocus* event);
 
 	bool on_focus_in_event(GdkEventFocus* event);
-	
+
 	//void on_activate();
-	
+
 	void refresh_text();
 
 	void refresh_value();
-	
+
 	bool on_event(GdkEvent* event);
 
 public:
 	sigc::signal<void> &signal_value_changed() { return signal_value_changed_; }
 
 
-	
+
 	void set_value(const synfig::Time &data);
 	synfig::Time get_value()const;
 	void set_fps(float x);

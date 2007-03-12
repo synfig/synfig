@@ -54,14 +54,14 @@ using namespace studio;
 KeyframeTree::KeyframeTree()
 {
 	const KeyframeTreeStore::Model model;
-	
+
 	{
 		Gtk::TreeView::Column* column = Gtk::manage( new Gtk::TreeView::Column(_("Time")) );
 
 		cell_renderer_time = Gtk::manage( new CellRenderer_Time() );
 		column->pack_start(*cell_renderer_time,true);
 		column->add_attribute(cell_renderer_time->property_time(), model.time);
-		
+
 		cell_renderer_time->signal_edited().connect(sigc::mem_fun(*this,&studio::KeyframeTree::on_edited_time));
 
 		column->set_reorderable();
@@ -79,7 +79,7 @@ KeyframeTree::KeyframeTree()
 		cell_renderer_time_delta = Gtk::manage( new CellRenderer_Time() );
 		column->pack_start(*cell_renderer_time_delta,true);
 		column->add_attribute(cell_renderer_time_delta->property_time(), model.time_delta);
-		
+
 		cell_renderer_time_delta->signal_edited().connect(sigc::mem_fun(*this,&studio::KeyframeTree::on_edited_time_delta));
 
 		column->set_reorderable();
@@ -97,13 +97,13 @@ KeyframeTree::KeyframeTree()
 
 		Gtk::CellRendererText* cell_renderer_jump=Gtk::manage(new Gtk::CellRendererText());
 		column->pack_start(*cell_renderer_jump,true);
-		
+
 		cell_renderer_jump->property_text()="(JMP)";
 		cell_renderer_jump->property_foreground()="#003a7f";
-		
+
 		column->set_reorderable();
 		column->set_resizable();
-		
+
 		column->set_sort_column_id(COLUMNID_JUMP);
 
 		column->set_clickable(false);
@@ -114,7 +114,7 @@ KeyframeTree::KeyframeTree()
 	//append_column_editable(_("Description"),model.description);
 	{
 		Gtk::TreeView::Column* column = Gtk::manage( new Gtk::TreeView::Column(_("Description")) );
-		
+
 		cell_renderer_description=Gtk::manage(new Gtk::CellRendererText());
 		column->pack_start(*cell_renderer_description,true);
 		column->add_attribute(cell_renderer_description->property_text(), model.description);
@@ -134,7 +134,7 @@ KeyframeTree::KeyframeTree()
 
 	// This makes things easier to read.
 	set_rules_hint();
-		
+
 	// Make us more sensitive to several events
 	add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK);
 }
@@ -156,7 +156,7 @@ KeyframeTree::set_model(Glib::RefPtr<KeyframeTreeStore> keyframe_tree_store)
 {
 	keyframe_tree_store_=keyframe_tree_store;
 	KeyframeTreeStore::Model model;
-	
+
 	if(true)
 	{
 		Glib::RefPtr<Gtk::TreeModelSort> sorted_store(Gtk::TreeModelSort::create(keyframe_tree_store_));
@@ -167,7 +167,7 @@ KeyframeTree::set_model(Glib::RefPtr<KeyframeTreeStore> keyframe_tree_store)
 	}
 	else
 		Gtk::TreeView::set_model(keyframe_tree_store);
-	
+
 	keyframe_tree_store_->canvas_interface()->signal_rend_desc_changed().connect(
 		sigc::mem_fun(
 			*this,
@@ -182,7 +182,7 @@ void
 KeyframeTree::set_editable(bool x)
 {
 	editable_=x;
-	
+
 	if(editable_)
 	{
 		cell_renderer_time->property_editable()=true;
@@ -201,9 +201,9 @@ void
 KeyframeTree::on_edited_time(const Glib::ustring&path_string,synfig::Time time)
 {
 	Gtk::TreePath path(path_string);
-	
+
 	const Gtk::TreeRow row(*(get_model()->get_iter(path)));
-	
+
 	synfig::Keyframe keyframe(row[model.keyframe]);
 	if(time!=keyframe.get_time())
 	{
@@ -218,9 +218,9 @@ void
 KeyframeTree::on_edited_time_delta(const Glib::ustring&path_string,synfig::Time time)
 {
 	Gtk::TreePath path(path_string);
-	
+
 	const Gtk::TreeRow row(*(get_model()->get_iter(path)));
-	
+
 	if(row)row[model.time_delta]=time;
 }
 
@@ -228,9 +228,9 @@ void
 KeyframeTree::on_edited_description(const Glib::ustring&path_string,const Glib::ustring &desc)
 {
 	Gtk::TreePath path(path_string);
-	
+
 	const Gtk::TreeRow row = *(get_model()->get_iter(path));
-	
+
 	const synfig::String description(desc);
 	synfig::Keyframe keyframe(row[model.keyframe]);
 	if(description!=keyframe.get_description())
@@ -262,7 +262,7 @@ KeyframeTree::on_event(GdkEvent *event)
 				)
 			) break;
 			const Gtk::TreeRow row = *(get_model()->get_iter(path));
-			
+
 			signal_user_click()(event->button.button,row,(ColumnID)column->get_sort_column_id());
 			if((ColumnID)column->get_sort_column_id()==COLUMNID_JUMP)
 			{
@@ -283,14 +283,14 @@ KeyframeTree::on_event(GdkEvent *event)
 				)
 			) break;
 			const Gtk::TreeRow row = *(get_model()->get_iter(path));
-			
+
 			{
 				keyframe_tree_store_->canvas_interface()->set_time(row[model.time]);
 				return true;
 			}
 		}
 		break;
-		
+
 	case GDK_BUTTON_RELEASE:
 		break;
 	default:

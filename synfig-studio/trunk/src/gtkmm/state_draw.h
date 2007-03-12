@@ -48,7 +48,7 @@ public:
 }; // END of class StateDraw
 
 extern StateDraw state_draw;
-	
+
 }; // END of namespace studio
 
 /* === E N D =============================================================== */

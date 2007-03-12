@@ -40,15 +40,15 @@ namespace studio {
 
 class Dock_PalEdit;
 class Dock_PalBrowse;
-	
+
 class ModPalette : public Module
 {
 	friend class Dock_PalEdit;
 	friend class Dock_PalBrowse;
-		
+
 	Dock_PalEdit*	dock_pal_edit;
 	Dock_PalBrowse*	dock_pal_browse;
-	
+
 protected:
 	virtual bool start_vfunc();
 	virtual bool stop_vfunc();
@@ -56,7 +56,7 @@ protected:
 public:
 	virtual ~ModPalette() { stop(); }
 };
-	
+
 }; // END of namespace studio
 
 /* === E N D =============================================================== */

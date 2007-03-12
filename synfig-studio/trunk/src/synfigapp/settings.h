@@ -43,11 +43,11 @@ namespace synfigapp {
 class Settings
 {
 public:
-	
+
 	typedef std::list<synfig::String> KeyList;
 	typedef std::map<synfig::String,synfig::String> ValueBaseMap;
 	typedef std::map<synfig::String,Settings*> DomainMap;
-	
+
 private:
 	ValueBaseMap simple_value_map;
 

@@ -67,7 +67,7 @@ Action::ParamVocab
 Action::ActivepointSimpleAdd::get_param_vocab()
 {
 	ParamVocab ret(Action::CanvasSpecific::get_param_vocab());
-	
+
 	ret.push_back(ParamDesc("value_desc",Param::TYPE_VALUEDESC)
 		.set_local_name(_("Destination ValueNode (Animated)"))
 	);
@@ -100,23 +100,23 @@ Action::ActivepointSimpleAdd::set_param(const synfig::String& name, const Action
 	if(name=="value_desc" && param.get_type()==Param::TYPE_VALUEDESC)
 	{
 		ValueDesc value_desc(param.get_value_desc());
-		
+
 		if(!value_desc.parent_is_value_node())
 			return false;
-		
+
 		value_node=ValueNode_DynamicList::Handle::cast_dynamic(value_desc.get_parent_value_node());
-		
+
 		if(!value_node)
 			return false;
-		
+
 		index=value_desc.get_index();
-		
+
 		return true;
 	}
 	if(name=="activepoint" && param.get_type()==Param::TYPE_ACTIVEPOINT)
 	{
 		activepoint = param.get_activepoint();
-		
+
 		return true;
 	}
 
@@ -133,11 +133,11 @@ Action::ActivepointSimpleAdd::is_ready()const
 
 void
 Action::ActivepointSimpleAdd::perform()
-{	
+{
 	//remove any pretenders that lie at our destination
 	ValueNode_DynamicList::ListEntry::findresult iter = value_node->list[index]
 															.find_time(activepoint.get_time());
-	
+
 	time_overwrite = false;
 	if(iter.second)
 	{
@@ -145,13 +145,13 @@ Action::ActivepointSimpleAdd::perform()
 		time_overwrite = true;
 		value_node->list[index].erase(overwritten_ap);
 	}
-	
+
 	//add the value node in since it's safe
 	value_node->list[index].add(activepoint);
-	
+
 	//sort them...
 	value_node->list[index].timing_info.sort();
-	
+
 	// Signal that a valuenode has been changed
 	value_node->changed();
 }
@@ -161,23 +161,23 @@ Action::ActivepointSimpleAdd::undo()
 {
 	//remove our old version...
 	ValueNode_DynamicList::ListEntry::findresult iter = value_node->list[index].find_uid(activepoint);
-	
+
 	if(!iter.second)
 	{
 		throw Error(_("The activepoint to remove no longer exists"));
 	}
-	
+
 	//remove the offending value
 	value_node->list[index].erase(*iter.first); //could also just use waypoint
-	
+
 	if(time_overwrite)
 	{
-		value_node->list[index].add(overwritten_ap);				
+		value_node->list[index].add(overwritten_ap);
 	}
-	
+
 	//sort them...
 	value_node->list[index].timing_info.sort();
-	
+
 	// Signal that a valuenode has been changed
 	value_node->changed();
 }

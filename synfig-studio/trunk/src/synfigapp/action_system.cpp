@@ -67,28 +67,28 @@ bool
 Action::System::perform_action(handle<Action::Base> action)
 {
 	handle<UIInterface> uim(get_ui_interface());
-	
+
 	assert(action);
-	
+
 	if(!action->is_ready())
 	{
 		uim->error(action->get_name()+": "+_("Action is not ready."));
 		return false;
-	}	
-	
+	}
+
 	most_recent_action_=action;
-	
+
 	static bool inuse=false;
 
 	if(inuse) return false;
 
 	inuse=true;
 	try {
-		
+
 	assert(action);
-	
+
 	Action::CanvasSpecific* canvas_specific(dynamic_cast<Action::CanvasSpecific*>(action.get()));
-	
+
 	if(canvas_specific && canvas_specific->get_canvas())
 	{
 		handle<CanvasInterface> canvas_interface=static_cast<Instance*>(this)->find_canvas_interface(canvas_specific->get_canvas());
@@ -97,7 +97,7 @@ Action::System::perform_action(handle<Action::Base> action)
 	}
 
 	handle<Action::Undoable> undoable_action=handle<Action::Undoable>::cast_dynamic(action);
-	
+
 	// If we cannot undo this action, make sure
 	// that the user knows this.
 	if(!undoable_action)
@@ -129,9 +129,9 @@ Action::System::perform_action(handle<Action::Base> action)
 		if(err.get_type()!=Action::Error::TYPE_UNABLE)
 		{
 			if(err.get_desc().empty())
-				uim->error(action->get_name()+": "+strprintf("%d",err.get_type()));		
+				uim->error(action->get_name()+": "+strprintf("%d",err.get_type()));
 			else
-				uim->error(action->get_name()+": "+err.get_desc());		
+				uim->error(action->get_name()+": "+err.get_desc());
 		}
 
 		// If action failed for whatever reason, just return false and do
@@ -143,7 +143,7 @@ Action::System::perform_action(handle<Action::Base> action)
 		uim->task(action->get_name()+' '+_("Failed"));
 		inuse=false;
 
-		uim->error(action->get_name()+": "+err.what());		
+		uim->error(action->get_name()+": "+err.what());
 
 		// If action failed for whatever reason, just return false and do
 		// not add the action onto the list
@@ -161,19 +161,19 @@ Action::System::perform_action(handle<Action::Base> action)
 
 	// Clear the redo stack
 	if(clear_redo_stack_on_new_action_)
-		clear_redo_stack();	
+		clear_redo_stack();
 
 	if(!group_stack_.empty())
 		group_stack_.front()->inc_depth();
 	else
 		inc_action_count();
-	
+
 	// Push this action onto the action list if we can undo it
 	if(undoable_action)
 	{
 		// If necessary, signal the change in status of undo
 		if(undo_action_stack_.empty()) signal_undo_status_(true);
-		
+
 		// Add it to the list
 		undo_action_stack_.push_front(undoable_action);
 
@@ -181,7 +181,7 @@ Action::System::perform_action(handle<Action::Base> action)
 		if(group_stack_.empty())
 			signal_new_action()(undoable_action);
 	}
-		
+
 	inuse=false;
 
 	uim->task(action->get_name()+' '+_("Successful"));
@@ -211,16 +211,16 @@ synfigapp::Action::System::undo_(handle<UIInterface> uim)
 {
 	handle<Action::Undoable> action(undo_action_stack().front());
 	most_recent_action_=action;
-	
+
 	try { if(action->is_active()) action->undo(); }
 	catch(Action::Error err)
 	{
 		if(err.get_type()!=Action::Error::TYPE_UNABLE)
 		{
 			if(err.get_desc().empty())
-				uim->error(action->get_name()+_(" (Undo): ")+strprintf("%d",err.get_type()));		
+				uim->error(action->get_name()+_(" (Undo): ")+strprintf("%d",err.get_type()));
 			else
-				uim->error(action->get_name()+_(" (Undo): ")+err.get_desc());		
+				uim->error(action->get_name()+_(" (Undo): ")+err.get_desc());
 		}
 
 		return false;
@@ -286,7 +286,7 @@ synfigapp::Action::System::undo()
 	}
 
 	inuse=false;
-	
+
 	// If the action has "dirtied" the preview, signal it.
 	if(0)if(action->is_active() && canvas_specific && canvas_specific->is_dirty())
 	{
@@ -317,9 +317,9 @@ Action::System::redo_(handle<UIInterface> uim)
 		if(err.get_type()!=Action::Error::TYPE_UNABLE)
 		{
 			if(err.get_desc().empty())
-				uim->error(action->get_name()+_(" (Redo): ")+strprintf("%d",err.get_type()));		
+				uim->error(action->get_name()+_(" (Redo): ")+strprintf("%d",err.get_type()));
 			else
-				uim->error(action->get_name()+_(" (Redo): ")+err.get_desc());		
+				uim->error(action->get_name()+_(" (Redo): ")+err.get_desc());
 		}
 
 		return false;
@@ -442,7 +442,7 @@ Action::System::clear_undo_stack()
 	signal_undo_status_(false);
 	signal_undo_stack_cleared_();
 }
-	
+
 void
 Action::System::clear_redo_stack()
 {
@@ -457,7 +457,7 @@ Action::System::set_action_status(etl::handle<Action::Undoable> action, bool x)
 {
 	Stack::iterator iter;
 	int failed=false;
-	
+
 	if(action->is_active()==x)
 		return true;
 
@@ -466,7 +466,7 @@ Action::System::set_action_status(etl::handle<Action::Undoable> action, bool x)
 	Action::CanvasSpecific* canvas_specific(dynamic_cast<Action::CanvasSpecific*>(action.get()));
 
 	handle<UIInterface> uim=new ConfidentUIInterface();
-	
+
 	iter=find(undo_action_stack_.begin(),undo_action_stack_.end(),action);
 	if(iter!=undo_action_stack_.end())
 	{
@@ -476,12 +476,12 @@ Action::System::set_action_status(etl::handle<Action::Undoable> action, bool x)
 			{
 				return false;
 			}
-		} 
+		}
 		if(!undo_(uim))
 		{
 			return false;
 		}
-		
+
 		action->set_active(x);
 
 		if(redo_(get_ui_interface()))
@@ -493,8 +493,8 @@ Action::System::set_action_status(etl::handle<Action::Undoable> action, bool x)
 			action->set_active(!x);
 			failed=true;
 		}
-		
-		
+
+
 		while(undo_action_stack_.front()!=cur_pos)
 		{
 			if(!redo_(uim))
@@ -592,7 +592,7 @@ Action::PassiveGrouper::request_redraw(handle<CanvasInterface> x)
 Action::PassiveGrouper::~PassiveGrouper()
 {
 	assert(instance_->group_stack_.front()==this);
-	
+
 	// Remove this group from the group stack
 	instance_->group_stack_.pop_front();
 
@@ -613,11 +613,11 @@ Action::PassiveGrouper::~PassiveGrouper()
 		else
 		{
 			Action::CanvasSpecific* canvas_specific(dynamic_cast<Action::CanvasSpecific*>(action.get()));
-			
+
 			if(0)if(canvas_specific && canvas_specific->is_dirty() && canvas_specific->get_canvas_interface())
 			{
 				if(instance_->group_stack_.empty())
-					request_redraw(canvas_specific->get_canvas_interface());					
+					request_redraw(canvas_specific->get_canvas_interface());
 			}
 		}
 
@@ -634,34 +634,34 @@ Action::PassiveGrouper::~PassiveGrouper()
 	if(depth_>0)
 	{
 		group=new Action::Group(name_);
-		
+
 		for(int i=0;i<depth_;i++)
 	//	for(;depth_;depth_--)
 		{
 			handle<Action::Undoable> action(instance_->undo_action_stack_.front());
 			Action::CanvasSpecific* canvas_specific(dynamic_cast<Action::CanvasSpecific*>(action.get()));
-			
+
 			if(0)if(canvas_specific && canvas_specific->is_dirty())
 			{
 				group->set_dirty(true);
 				group->set_canvas(canvas_specific->get_canvas());
 				group->set_canvas_interface(canvas_specific->get_canvas_interface());
 			}
-			
+
 			// Copy the action from the undo stack to the group
 			group->add_action_front(action);
-	
+
 			// Remove the action from the undo stack
 			instance_->undo_action_stack_.pop_front();
 		}
-			
+
 		// Push the group onto the stack
 		instance_->undo_action_stack_.push_front(group);
-	
+
 		if(0)if(group->is_dirty())
 			request_redraw(group->get_canvas_interface());
 		//	group->get_canvas_interface()->signal_dirty_preview()();
-	
+
 		if(instance_->group_stack_.empty())
 		{
 			instance_->inc_action_count();
@@ -670,7 +670,7 @@ Action::PassiveGrouper::~PassiveGrouper()
 		else
 			instance_->group_stack_.front()->inc_depth();
 	}
-	
+
 	if(0)if(redraw_requested_)
 	{
 		if(instance_->group_stack_.empty())
@@ -695,16 +695,16 @@ Action::PassiveGrouper::cancel()
 	// Cancel any groupers that may be on top of us first
 	//while(instance_->group_stack_.front()!=this)
 	//	instance_->group_stack_.front()->cancel();
-	
+
 	synfig::warning("Cancel depth: %d",depth_);
-	
+
 	while(depth_)
 		if(!instance_->undo())
 		{
 			error=true;
 			break;
 		}
-	
+
 	if(error)
 		instance_->get_ui_interface()->error(_("State restore failure"));
 	else

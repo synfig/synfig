@@ -91,7 +91,7 @@ IconControler::IconControler(const synfig::String& basepath)
 	if(synfig_root) {
 		path_to_icons=synfig_root;
 		path_to_icons+=ETL_DIRECTORY_SEPERATOR;
-		
+
 		path_to_icons+="share/pixmaps";
 	}
 	path_to_icons+=ETL_DIRECTORY_SEPERATOR;
@@ -102,7 +102,7 @@ IconControler::IconControler(const synfig::String& basepath)
 	{
 		synfig::warning("Unable to open "+path_to_icons+"synfig_icon."+IMAGE_EXT);
 	}
-	
+
 /*
 #define INIT_STOCK_ICON(name,iconfile,desc)							\
 	stock_##name=Gtk::StockItem(Gtk::StockID("synfig-" #name),desc);   			\
@@ -130,7 +130,7 @@ IconControler::IconControler(const synfig::String& basepath)
 
 #define INIT_STOCK_ITEM(name,desc)							\
 	stock_##name=Gtk::StockItem(Gtk::StockID("synfig-" #name),desc);   			\
-	Gtk::Stock::add(stock_##name);								
+	Gtk::Stock::add(stock_##name);
 
 	INIT_STOCK_ICON(swap_colors,"swap_colors_icon."IMAGE_EXT,_("Swap Colors"));
 	INIT_STOCK_ICON(canvas,"canvas_icon."IMAGE_EXT,_("Canvas"));
@@ -198,7 +198,7 @@ IconControler::IconControler(const synfig::String& basepath)
 	INIT_STOCK_ICON(mirror,"mirror_icon."IMAGE_EXT,_("Mirror Tool"));
 
 	icon_factory->add_default();
-	
+
 	Gtk::IconSize::register_new("synfig-small_icon",12,12);
 	for(int i(0);i<(int)ValueBase::TYPE_END;i++)
 		_tree_pixbuf_table_value_type[i]=Gtk::Button().render_icon(value_icon(ValueBase::Type(i)),Gtk::ICON_SIZE_SMALL_TOOLBAR);
@@ -256,10 +256,10 @@ IconControler::get_tool_cursor(const Glib::ustring& name,const Glib::RefPtr<Gdk:
 	);
 */
 	DEBUGPOINT();
-	
+
 	Gdk::Color FG("#000000");
 	Gdk::Color BG("#FF00FF");
-	
+
 	DEBUGPOINT();
   	return Gdk::Cursor(pixmap, pixmap, FG, BG, 0, 0);
 }
@@ -321,7 +321,7 @@ studio::valuenode_icon(etl::handle<synfig::ValueNode> value_node)
 	}
 	else
 	{
-		return Gtk::StockID("synfig-value_node");		
+		return Gtk::StockID("synfig-value_node");
 	}
 }
 
@@ -347,7 +347,7 @@ studio::get_action_stock_id(const synfigapp::Action::BookEntry& action)
 	else if(action.task=="set_off")		stock_id=Gtk::Stock::NO;
 	else if(action.task=="remove")		stock_id=Gtk::Stock::DELETE;
 	else								stock_id=Gtk::StockID("synfig-"+action.task);
-	
+
 	return stock_id;
 }
 

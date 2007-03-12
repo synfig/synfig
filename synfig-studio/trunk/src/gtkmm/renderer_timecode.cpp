@@ -81,16 +81,16 @@ Renderer_Timecode::render_vfunc(
 	assert(get_work_area());
 	if(!get_work_area())
 		return;
-	
+
 	//const synfig::RendDesc &rend_desc(get_work_area()->get_canvas()->rend_desc());
-	
+
 	const synfig::Vector focus_point(get_work_area()->get_focus_point());
 
 	//std::vector< std::pair<Glib::RefPtr<Gdk::Pixbuf>,int> >& tile_book(get_tile_book());
-	
+
 	int drawable_w,drawable_h;
 	drawable->get_size(drawable_w,drawable_h);
-	
+
 	// Calculate the window coordinates of the top-left
 	// corner of the canvas.
 //	const synfig::Vector::value_type
@@ -109,9 +109,9 @@ Renderer_Timecode::render_vfunc(
 //	const int
 //		w(get_w()),
 //		h(get_h());
-	
+
 	Glib::RefPtr<Gdk::GC> gc(Gdk::GC::create(drawable));
-	
+
 	//const synfig::Vector grid_size(get_grid_size());
 
 //	const synfig::Vector::value_type window_startx(get_work_area()->get_window_tl()[0]);
@@ -122,11 +122,11 @@ Renderer_Timecode::render_vfunc(
 
 	Canvas::Handle canvas(get_work_area()->get_canvas());
 	synfig::Time cur_time(canvas->get_time());
-	
+
 	// Print out the timecode
 	{
 		Glib::RefPtr<Pango::Layout> layout(Pango::Layout::create(get_work_area()->get_pango_context()));
-		
+
 /*		Glib::ustring timecode(cur_time.get_string(rend_desc.get_frame_rate(),App::get_time_format()));
 
 		try
@@ -139,14 +139,14 @@ Renderer_Timecode::render_vfunc(
 			return;
 			gc->set_rgb_fg_color(Gdk::Color("#000000"));
 		}
-		
-		layout->set_text(timecode);		
+
+		layout->set_text(timecode);
 */
 
 		gc->set_rgb_fg_color(Gdk::Color("#5f0000"));
 		try
 		{
-			layout->set_text(canvas->keyframe_list().find(cur_time)->get_description());		
+			layout->set_text(canvas->keyframe_list().find(cur_time)->get_description());
 		}
 		catch(synfig::Exception::NotFound)
 		{
@@ -155,7 +155,7 @@ Renderer_Timecode::render_vfunc(
 		catch(...) {
 			assert(0);
 		}
-		
+
   		drawable->draw_layout(gc, 4, 4, layout);
-	}	
+	}
 }

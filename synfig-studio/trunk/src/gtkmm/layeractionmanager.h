@@ -50,7 +50,7 @@ class LayerActionManager
 
 	Glib::RefPtr<Gtk::ActionGroup>	action_group_;
 	Gtk::UIManager::ui_merge_id 	popup_id_;
-	
+
 
 	Glib::RefPtr<Gtk::ActionGroup> action_group_copy_paste;
 
@@ -65,7 +65,7 @@ class LayerActionManager
 
 	std::list<synfig::Layer::Handle> clipboard_;
 
-	
+
 	sigc::connection selection_changed_connection;
 
 	bool queued;

@@ -52,9 +52,9 @@ class Widget_Curves : public Gtk::DrawingArea
 
 	Gtk::Adjustment* time_adjustment_;
 	Gtk::Adjustment* range_adjustment_;
-		
+
 	std::list<CurveStruct> curve_list_;
-	
+
 public:
 
 	Widget_Curves();
@@ -73,7 +73,7 @@ private:
 	bool on_event(GdkEvent *event);
 
 }; // END of class Widget_Curves
-	
+
 }; // END of namespace studio
 
 /* === E N D =============================================================== */

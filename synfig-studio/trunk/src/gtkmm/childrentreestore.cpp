@@ -88,7 +88,7 @@ ChildrenTreeStore::ChildrenTreeStore(etl::loose_handle<synfigapp::CanvasInterfac
 	canvas_interface()->signal_value_node_replaced().connect(sigc::mem_fun(*this,&studio::ChildrenTreeStore::on_value_node_replaced));
 	canvas_interface()->signal_canvas_added().connect(sigc::mem_fun(*this,&studio::ChildrenTreeStore::on_canvas_added));
 	canvas_interface()->signal_canvas_removed().connect(sigc::mem_fun(*this,&studio::ChildrenTreeStore::on_canvas_removed));
-	
+
 	rebuild();
 }
 
@@ -124,13 +124,13 @@ ChildrenTreeStore::rebuild_value_nodes()
 	Gtk::TreeModel::Children children(value_node_row.children());
 
 	while(!children.empty())erase(children.begin());
-	
+
 	clear_changed_queue();
-	
+
 	std::for_each(
 		canvas_interface()->get_canvas()->value_node_list().rbegin(), canvas_interface()->get_canvas()->value_node_list().rend(),
 		sigc::mem_fun(*this, &studio::ChildrenTreeStore::on_value_node_added)
-	);	
+	);
 }
 
 void
@@ -153,13 +153,13 @@ void
 ChildrenTreeStore::rebuild_canvases()
 {
 	Gtk::TreeModel::Children children(canvas_row.children());
-	
+
 	while(!children.empty())erase(children.begin());
-		
+
 	std::for_each(
 		canvas_interface()->get_canvas()->children().rbegin(), canvas_interface()->get_canvas()->children().rend(),
 		sigc::mem_fun(*this, &studio::ChildrenTreeStore::on_canvas_added)
-	);	
+	);
 }
 
 void
@@ -172,7 +172,7 @@ void
 ChildrenTreeStore::refresh_row(Gtk::TreeModel::Row &row, bool do_children)
 {
 	CanvasTreeStore::refresh_row(row,false);
-	
+
 	if((bool)row[model.is_value_node])
 	{
 		changed_set_.erase(row[model.value_node]);
@@ -185,18 +185,18 @@ ChildrenTreeStore::on_canvas_added(Canvas::Handle canvas)
 {
 	Gtk::TreeRow row = *(prepend(canvas_row.children()));
 
-	row[model.icon] = Gtk::Button().render_icon(Gtk::StockID("synfig-canvas"),Gtk::ICON_SIZE_SMALL_TOOLBAR);	
+	row[model.icon] = Gtk::Button().render_icon(Gtk::StockID("synfig-canvas"),Gtk::ICON_SIZE_SMALL_TOOLBAR);
 	row[model.id] = canvas->get_id();
 	row[model.name] = canvas->get_name();
-	
+
 	if(!canvas->get_id().empty())
 		row[model.label] = canvas->get_id();
 	else
 	if(!canvas->get_name().empty())
-		row[model.label] = canvas->get_name();		
+		row[model.label] = canvas->get_name();
 	else
-		row[model.label] = _("[Unnamed]");		
-	
+		row[model.label] = _("[Unnamed]");
+
 	row[model.canvas] = canvas;
 	row[model.type] = _("Canvas");
 	//row[model.is_canvas] = true;
@@ -216,7 +216,7 @@ ChildrenTreeStore::on_value_node_added(ValueNode::Handle value_node)
 //		return;
 
 	Gtk::TreeRow row = *prepend(value_node_row.children());
-	
+
 	set_row(row,synfigapp::ValueDesc(canvas_interface()->get_canvas(),value_node->get_id()),false);
 }
 
@@ -224,7 +224,7 @@ void
 ChildrenTreeStore::on_value_node_deleted(etl::handle<ValueNode> value_node)
 {
 	Gtk::TreeIter iter;
-	//int i(0);		
+	//int i(0);
 
 	if(find_first_value_node(value_node,iter))
 	{
@@ -243,18 +243,18 @@ ChildrenTreeStore::execute_changed_value_nodes()
 
 	etl::clock timer;
 	timer.reset();
-	
+
 	while(!changed_set_.empty())
 	{
 		ValueNode::Handle value_node(*changed_set_.begin());
 		changed_set_.erase(value_node);
 
 		Gtk::TreeIter iter;
-		
+
 		try
 		{
 			Gtk::TreeIter iter;
-			int i(0);		
+			int i(0);
 
 			if(!value_node->is_exported() && find_first_value_node(value_node,iter))
 			{
@@ -268,13 +268,13 @@ ChildrenTreeStore::execute_changed_value_nodes()
 				i++;
 				refresh_row(row);
 			}while(find_next_value_node(value_node,iter));
-			
+
 			if(!i)
 			{
 				refresh_value_nodes();
 				return false;
 			}
-			
+
 		}
 		catch(...)
 		{
@@ -289,7 +289,7 @@ ChildrenTreeStore::execute_changed_value_nodes()
 			return false;
 		}
 	}
-		
+
 	return false;
 }
 
@@ -303,13 +303,13 @@ ChildrenTreeStore::on_value_node_changed(etl::handle<ValueNode> value_node)
 //	if(!execute_changed_queued())
 //		changed_connection=Glib::signal_idle().connect(sigc::mem_fun(*this,&ChildrenTreeStore::execute_changed_value_nodes));
 	changed_connection=Glib::signal_timeout().connect(sigc::mem_fun(*this,&ChildrenTreeStore::execute_changed_value_nodes),150);
-	
+
 	changed_set_.insert(value_node);
 	/*
 	try
 	{
 		Gtk::TreeIter iter;
-		int i(0);		
+		int i(0);
 		while(find_next_value_node(value_node,iter))
 		{
 			Gtk::TreeRow row(*iter);
@@ -335,7 +335,7 @@ ChildrenTreeStore::on_value_node_replaced(synfig::ValueNode::Handle replaced_val
 	//if(!execute_changed_queued())
 //		changed_connection=Glib::signal_idle().connect(sigc::mem_fun(*this,&ChildrenTreeStore::execute_changed_value_nodes));
 		changed_connection=Glib::signal_timeout().connect(sigc::mem_fun(*this,&ChildrenTreeStore::execute_changed_value_nodes),150);
-	
+
 	replaced_set_.insert(replaced_value_node);
 }
 
@@ -377,5 +377,5 @@ ChildrenTreeStore::set_value_impl(const Gtk::TreeModel::iterator& iter, int colu
 	catch(std::exception x)
 	{
 		g_warning(x.what());
-	}	
+	}
 }

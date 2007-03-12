@@ -36,8 +36,8 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace studio { 
-	
+namespace studio {
+
 class StateFill_Context;
 
 class StateFill : public Smach::state<StateFill_Context>

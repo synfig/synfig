@@ -70,30 +70,30 @@ class studio::StateRectangle_Context : public sigc::trackable
 {
 	etl::handle<CanvasView> canvas_view_;
 	CanvasView::IsWorking is_working;
-	
+
 	Duckmatic::Push duckmatic_push;
-	
+
 	Point point_holder;
-	
+
 	etl::handle<Duck> point2_duck;
 
 	void refresh_ducks();
-	
+
 	bool prev_workarea_layer_status_;
-		
+
 	//Toolbox settings
 	synfigapp::Settings& settings;
-	
+
 	//Toolbox display
 	Gtk::Table options_table;
-	
+
 	Gtk::Entry		entry_id; //what to name the layer
-		
+
 	Gtk::Adjustment	adj_expand;
 	Gtk::SpinButton	spin_expand;
-	
+
 	Gtk::CheckButton check_invert;
-	
+
 public:
 
 	synfig::String get_id()const { return entry_id.get_text(); }
@@ -101,11 +101,11 @@ public:
 
 	Real get_expand()const { return adj_expand.get_value(); }
 	void set_expand(Real f) { adj_expand.set_value(f); }
-	
+
 	bool get_invert()const { return check_invert.get_active(); }
 	void set_invert(bool i) { check_invert.set_active(i); }
-	
-	void refresh_tool_options(); //to refresh the toolbox	
+
+	void refresh_tool_options(); //to refresh the toolbox
 
 	//events
 	Smach::event_result event_stop_handler(const Smach::event& x);
@@ -122,7 +122,7 @@ public:
 	etl::handle<synfigapp::CanvasInterface> get_canvas_interface()const{return canvas_view_->canvas_interface();}
 	synfig::Canvas::Handle get_canvas()const{return canvas_view_->get_canvas();}
 	WorkArea * get_work_area()const{return canvas_view_->get_work_area();}
-	
+
 	//Modifying settings etc.
 	void load_settings();
 	void save_settings();
@@ -137,7 +137,7 @@ public:
 	}
 
 	void make_rectangle(const Point& p1, const Point& p2);
-	
+
 };	// END of class StateGradient_Context
 
 /* === M E T H O D S ======================================================= */
@@ -161,9 +161,9 @@ StateRectangle::~StateRectangle()
 
 void
 StateRectangle_Context::load_settings()
-{	
+{
 	String value;
-	
+
 	//parse the arguments yargh!
 	if(settings.get_value("rectangle.id",value))
 		set_id(value);
@@ -174,7 +174,7 @@ StateRectangle_Context::load_settings()
 		set_expand(atof(value.c_str()));
 	else
 		set_expand(0);
-	
+
 	if(settings.get_value("rectangle.invert",value) && value != "0")
 		set_invert(true);
 	else
@@ -183,7 +183,7 @@ StateRectangle_Context::load_settings()
 
 void
 StateRectangle_Context::save_settings()
-{	
+{
 	settings.set_value("rectangle.id",get_id().c_str());
 	settings.set_value("rectangle.expand",strprintf("%f",get_expand()));
 	settings.set_value("rectangle.invert",get_invert()?"1":"0");
@@ -201,10 +201,10 @@ StateRectangle_Context::increment_id()
 	String id(get_id());
 	int number=1;
 	int digits=0;
-	
+
 	if(id.empty())
 		id="Circle";
-	
+
 	// If there is a number
 	// already at the end of the
 	// id, then remove it.
@@ -212,11 +212,11 @@ StateRectangle_Context::increment_id()
 	{
 		// figure out how many digits it is
 		for(digits=0;(int)id.size()-1>=digits && id[id.size()-1-digits]<='9' && id[id.size()-1-digits]>='0';digits++)while(false);
-		
+
 		String str_number;
 		str_number=String(id,id.size()-digits,id.size());
 		id=String(id,0,id.size()-digits);
-		
+
 		number=atoi(str_number.c_str());
 	}
 	else
@@ -224,15 +224,15 @@ StateRectangle_Context::increment_id()
 		number=1;
 		digits=3;
 	}
-	
+
 	number++;
-	
+
 	// Add the number back onto the id
 	{
 		const String format(strprintf("%%0%dd",digits));
 		id+=strprintf(format.c_str(),number);
 	}
-	
+
 	// Set the ID
 	set_id(id);
 }
@@ -250,30 +250,30 @@ StateRectangle_Context::StateRectangle_Context(CanvasView* canvas_view):
 {
 	no_egress_on_selection_change=false;
 	load_settings();
-	
+
 	// Set up the tool options dialog
-	//options_table.attach(*manage(new Gtk::Label(_("Circle Tool"))), 0, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);	
+	//options_table.attach(*manage(new Gtk::Label(_("Circle Tool"))), 0, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	options_table.attach(entry_id, 0, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
 	//expand stuff
 	options_table.attach(*manage(new Gtk::Label(_("Expansion:"))), 0, 1, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	options_table.attach(spin_expand, 1, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-		
+
 	//invert flag
 	options_table.attach(check_invert, 1, 2, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	
+
 	options_table.show_all();
-	
+
 	//App::dialog_tool_options->set_widget(options_table);
 	refresh_tool_options();
 	App::dialog_tool_options->present();
 
 	// Turn off layer clicking
 	get_work_area()->allow_layer_clicks=false;
-	
+
 	// clear out the ducks
 	get_work_area()->clear_ducks();
-	
+
 	// Refresh the work area
 	get_work_area()->queue_draw();
 
@@ -282,10 +282,10 @@ StateRectangle_Context::StateRectangle_Context(CanvasView* canvas_view):
 	// Hide the tables if they are showing
 	//prev_table_status=get_canvas_view()->tables_are_visible();
 	//if(prev_table_status)get_canvas_view()->hide_tables();
-		
+
 	// Hide the time bar
 	//get_canvas_view()->hide_timebar();
-	
+
 	// Connect a signal
 	//get_work_area()->signal_user_click().connect(sigc::mem_fun(*this,&studio::StateRectangle_Context::on_user_click));
 
@@ -325,7 +325,7 @@ StateRectangle_Context::~StateRectangle_Context()
 
 	// Bring back the tables if they were out before
 	//if(prev_table_status)get_canvas_view()->show_tables();
-			
+
 	// Refresh the work area
 	get_work_area()->queue_draw();
 
@@ -352,10 +352,10 @@ StateRectangle_Context::make_rectangle(const Point& _p1, const Point& _p2)
 	synfigapp::PushMode push_mode(get_canvas_interface(),synfigapp::MODE_NORMAL);
 
 	Layer::Handle layer;
-	
+
 	Canvas::Handle canvas(get_canvas_view()->get_canvas());
 	int depth(0);
-	
+
 	// we are temporarily using the layer to hold something
 	layer=get_canvas_view()->get_selection_manager()->get_selected_layer();
 	if(layer)
@@ -370,19 +370,19 @@ StateRectangle_Context::make_rectangle(const Point& _p1, const Point& _p2)
 	const synfig::TransformStack& transform(get_canvas_view()->get_curr_transform_stack());
 	const Point p1(transform.unperform(_p1));
 	const Point p2(transform.unperform(_p2));
-	
+
 	//set all the parameters
 	layer->set_param("point1",p1);
 	get_canvas_interface()->signal_layer_param_changed()(layer,"point1");
 	layer->set_param("point2",p2);
 	get_canvas_interface()->signal_layer_param_changed()(layer,"point2");
-	
+
 	layer->set_param("expand",get_expand());
 	get_canvas_interface()->signal_layer_param_changed()(layer,"expand");
 
 	layer->set_param("invert",get_invert());
 	get_canvas_interface()->signal_layer_param_changed()(layer,"invert");
-	
+
 	//name
 	layer->set_description(get_id());
 	get_canvas_interface()->signal_layer_new_description()(layer,layer->get_description());
@@ -401,7 +401,7 @@ Smach::event_result
 StateRectangle_Context::event_mouse_click_handler(const Smach::event& x)
 {
 	const EventMouse& event(*reinterpret_cast<const EventMouse*>(&x));
-	
+
 	if(event.key==EVENT_WORKAREA_MOUSE_BUTTON_DOWN && event.button==BUTTON_LEFT)
 	{
 		point_holder=get_work_area()->snap_point_to_grid(event.pos);
@@ -424,7 +424,7 @@ StateRectangle_Context::event_mouse_click_handler(const Smach::event& x)
 	if(event.key==EVENT_WORKAREA_MOUSE_BUTTON_DRAG && event.button==BUTTON_LEFT)
 	{
 		point2_duck->set_point(get_work_area()->snap_point_to_grid(event.pos));
-		get_work_area()->queue_draw();			
+		get_work_area()->queue_draw();
 		return Smach::RESULT_ACCEPT;
 	}
 

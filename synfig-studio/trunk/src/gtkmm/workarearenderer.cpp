@@ -88,7 +88,7 @@ WorkAreaRenderer::set_work_area(WorkArea* x)
 {
 	work_area_=x;
 }
-	
+
 void
 WorkAreaRenderer::render_vfunc(
 	const Glib::RefPtr<Gdk::Drawable>& window,
@@ -111,7 +111,7 @@ WorkAreaRenderer::get_w()const
 int
 WorkAreaRenderer::get_h()const
 { return get_work_area()->get_h(); }
-	
+
 float
 WorkAreaRenderer::get_pw()const
 { return get_work_area()->get_pw(); }

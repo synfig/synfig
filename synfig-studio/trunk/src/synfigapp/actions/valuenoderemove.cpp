@@ -65,11 +65,11 @@ Action::ParamVocab
 Action::ValueNodeRemove::get_param_vocab()
 {
 	ParamVocab ret(Action::CanvasSpecific::get_param_vocab());
-	
+
 	ret.push_back(ParamDesc("value_node",Param::TYPE_VALUENODE)
 		.set_local_name(_("ValueNode"))
 	);
-	
+
 	return ret;
 }
 
@@ -94,13 +94,13 @@ Action::ValueNodeRemove::set_param(const synfig::String& name, const Action::Par
 	if(name=="value_node" && param.get_type()==Param::TYPE_VALUENODE)
 	{
 		value_node=param.get_value_node();
-		
+
 		if(value_node && !value_node->is_exported())
 		{
 			synfig::error("Action::ValueNodeRemove::set_param(): ValueBase node not exported!");
 			value_node=0;
 		}
-		
+
 		return (bool)value_node;
 	}
 
@@ -120,7 +120,7 @@ Action::ValueNodeRemove::is_ready()const
 
 void
 Action::ValueNodeRemove::perform()
-{	
+{
 //	if(value_node->rcount()!=1)
 //		throw Error(_("ValueNode is still being used by something"));
 
@@ -132,18 +132,18 @@ Action::ValueNodeRemove::perform()
 	{
 		get_canvas_interface()->signal_value_node_deleted()(value_node);
 	}
-	
+
 	//throw Error(_("Not yet implemented"));
 /*
 	assert(value_node->is_exported());
 
 	if(get_canvas()->value_node_list().count(new_name))
 		throw Error(_("A ValueNode with this ID already exists in this canvas"));
-	
+
 	old_name=value_node->get_id();
 
-	value_node->set_id(new_name);	
-	
+	value_node->set_id(new_name);
+
 	if(get_canvas_interface())
 	{
 		get_canvas_interface()->signal_value_node_changed()(value_node);
@@ -159,16 +159,16 @@ Action::ValueNodeRemove::undo()
 	{
 		get_canvas_interface()->signal_value_node_added()(value_node);
 	}
-	
+
 	//throw Error(_("Not yet implemented"));
 /*
 	assert(value_node->is_exported());
 
 	if(get_canvas()->value_node_list().count(old_name))
 		throw Error(_("A ValueNode with the old ID already exists in this canvas (BUG)"));
-	
-	value_node->set_id(old_name);	
-	
+
+	value_node->set_id(old_name);
+
 	if(get_canvas_interface())
 	{
 		get_canvas_interface()->signal_value_node_changed()(value_node);

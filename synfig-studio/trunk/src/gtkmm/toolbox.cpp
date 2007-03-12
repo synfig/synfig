@@ -156,7 +156,7 @@ close_selected_instance()
 	}
 
 	instance->safe_close();
-	
+
 	//assert(instance.unique());
 }
 
@@ -205,7 +205,7 @@ Toolbox::Toolbox():
 
 
 	recent_files_menu= manage(new class Gtk::Menu());
-	
+
 	Gtk::Menu	*filemenu	=manage(new class Gtk::Menu());
 
 	dock_dialogs=manage(new class Gtk::Menu());
@@ -214,14 +214,14 @@ Toolbox::Toolbox():
 	dock_dialogs->items().push_back(Gtk::Menu_Helpers::MenuElem("Layers, Children , Params",sigc::ptr_fun(_create_stock_dialog2)));
 	dock_dialogs->items().push_back(Gtk::Menu_Helpers::SeparatorElem());
 
-	
+
 	filemenu->items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::Stock::NEW,
-		sigc::ptr_fun(&studio::App::new_instance)));	
+		sigc::ptr_fun(&studio::App::new_instance)));
 	filemenu->items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::Stock::OPEN,
-		sigc::ptr_fun(&studio::App::dialog_open)));	
+		sigc::ptr_fun(&studio::App::dialog_open)));
 
 	filemenu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Open Recent"),*recent_files_menu));
-	
+
 	filemenu->items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::StockID("synfig-saveall"),
 		sigc::ptr_fun(&studio::App::dialog_not_implemented)));
 	filemenu->items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::Stock::CLOSE,
@@ -244,26 +244,26 @@ Toolbox::Toolbox():
 	filemenu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Setup..."),
 		sigc::ptr_fun(&studio::App::show_setup)));
 
-	filemenu->items().push_back(Gtk::Menu_Helpers::SeparatorElem());	
+	filemenu->items().push_back(Gtk::Menu_Helpers::SeparatorElem());
 	filemenu->items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::StockID(Gtk::Stock::QUIT),
-		sigc::ptr_fun(studio::App::quit)));	
-	
+		sigc::ptr_fun(studio::App::quit)));
+
 	Gtk::Menu	*helpmenu = manage(new class Gtk::Menu());
 	helpmenu->items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::Stock::HELP,
-		sigc::ptr_fun(studio::App::dialog_not_implemented)));	
-	helpmenu->items().push_back(Gtk::Menu_Helpers::SeparatorElem());	
+		sigc::ptr_fun(studio::App::dialog_not_implemented)));
+	helpmenu->items().push_back(Gtk::Menu_Helpers::SeparatorElem());
 	helpmenu->items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::StockID("synfig-about"),
-		sigc::ptr_fun(studio::App::dialog_about)));	
-	
+		sigc::ptr_fun(studio::App::dialog_about)));
+
 	Gtk::MenuBar *menubar1 = manage(new class Gtk::MenuBar());
 	menubar1->items().push_back(Gtk::Menu_Helpers::MenuElem("_File",*filemenu));
 	menubar1->items().push_back(Gtk::Menu_Helpers::MenuElem("_Help",*helpmenu));
 
-	
+
 	menubar1->show();
-	
+
 	Gtk::Image *icon;
-	
+
 	ADD_TOOLBOX_BUTTON(button_new,"gtk-new","New");
 	ADD_TOOLBOX_BUTTON(button_open,"gtk-open","Open");
 	ADD_TOOLBOX_BUTTON(button_save,"gtk-save","Save");
@@ -273,12 +273,12 @@ Toolbox::Toolbox():
 	TOOLBOX_BUTTON(button_redo,"gtk-redo","Redo");
 	ADD_TOOLBOX_BUTTON(button_about,"synfig-about","About Synfig Studio");
 	ADD_TOOLBOX_BUTTON(button_color,"synfig-color","Color Dialog");
-	
+
 	TOOLBOX_BUTTON(button_rotoscope_bline,"synfig-rotoscope_bline",_("Old Rotoscope BLine"));
 	TOOLBOX_BUTTON(button_rotoscope_polygon,"synfig-rotoscope_polygon",_("Rotoscope Polygon"));
 	TOOLBOX_BUTTON(button_eyedrop,"synfig-eyedrop",_("Eyedrop Tool"));
 	TOOLBOX_BUTTON(button_rotoscope,"synfig-rotoscope_bline",_("Rotoscope 2"));
-	
+
 
 
 	button_about->signal_clicked().connect(sigc::ptr_fun(studio::App::dialog_about));
@@ -311,7 +311,7 @@ Toolbox::Toolbox():
 	handle_tools->show();
 	handle_tools->set_handle_position(Gtk::POS_TOP);
 	handle_tools->set_snap_edge(Gtk::POS_TOP);
-	
+
 	Widget_Defaults* widget_defaults(manage(new Widget_Defaults()));
 	widget_defaults->show();
 	Gtk::HandleBox* handle_defaults(manage(new Gtk::HandleBox()));
@@ -319,7 +319,7 @@ Toolbox::Toolbox():
 	handle_defaults->show();
 	handle_defaults->set_handle_position(Gtk::POS_TOP);
 	handle_defaults->set_snap_edge(Gtk::POS_TOP);
-	
+
 	// Create the toplevel table
 	Gtk::Table *table1 = manage(new class Gtk::Table(1, 2, false));
 	table1->set_row_spacings(0);
@@ -330,9 +330,9 @@ Toolbox::Toolbox():
 	table1->attach(*handle_tools, 0, 1, 3, 4, Gtk::FILL|Gtk::EXPAND,Gtk::EXPAND|Gtk::FILL, 0, 0);
 	table1->attach(*handle_defaults, 0, 1, 4, 5, Gtk::FILL|Gtk::EXPAND,Gtk::EXPAND|Gtk::FILL, 0, 0);
 	table1->show_all();
-	
-	
-	
+
+
+
 	// Set the parameters for this window
 	add(*table1);
 	set_title("Synfig Studio");
@@ -342,7 +342,7 @@ Toolbox::Toolbox():
 	set_resizable(false);
 
 
-	
+
 	App::signal_instance_selected().connect(
 		sigc::hide(
 			sigc::mem_fun(*this,&studio::Toolbox::update_undo_redo)
@@ -354,11 +354,11 @@ Toolbox::Toolbox():
 	);
 
 	button_undo->set_sensitive(false);
-	button_redo->set_sensitive(false);	
+	button_redo->set_sensitive(false);
 	button_rotoscope_bline->set_sensitive(false);
 	button_rotoscope->set_sensitive(false);
-	button_rotoscope_polygon->set_sensitive(false);	
-	button_eyedrop->set_sensitive(false);	
+	button_rotoscope_polygon->set_sensitive(false);
+	button_eyedrop->set_sensitive(false);
 
 
 	std::list<Gtk::TargetEntry> listTargets;
@@ -368,14 +368,14 @@ Toolbox::Toolbox():
 
 	drag_dest_set(listTargets);
 	signal_drag_data_received().connect( sigc::mem_fun(*this, &studio::Toolbox::on_drop_drag_data_received) );
-	
+
 	App::dock_manager->signal_dockable_registered().connect(sigc::mem_fun(*this,&Toolbox::dockable_registered));
-	
+
 	changing_state_=false;
-	
+
 
 	add_accel_group(App::ui_manager()->get_accel_group());
-	
+
 	App::signal_present_all().connect(sigc::mem_fun0(*this,&Toolbox::present));
 }
 
@@ -396,12 +396,12 @@ Toolbox::set_active_state(const String& statename)
 	std::map<synfig::String,Gtk::ToggleButton *>::iterator iter;
 
 	changing_state_=true;
-	
+
 	synfigapp::Main::set_state(statename);
-	
+
 	try
 	{
-		
+
 		for(iter=state_button_map.begin();iter!=state_button_map.end();++iter)
 		{
 			if(iter->first==statename)
@@ -434,7 +434,7 @@ Toolbox::change_state(const synfig::String& statename)
 		{
 			return;
 		}
-		
+
 		if(state_button_map.count(statename))
 		{
 			state_button_map[statename]->clicked();
@@ -452,7 +452,7 @@ Toolbox::change_state_(const Smach::state_base *state)
 	if(changing_state_)
 		return;
 	changing_state_=true;
-	
+
 	try
 	{
 		etl::handle<studio::CanvasView> canvas_view(studio::App::get_selected_canvas_view());
@@ -460,7 +460,7 @@ Toolbox::change_state_(const Smach::state_base *state)
 		{
 			if(state->get_name()==String("normal"))
 			{
-				canvas_view->get_smach().egress();				
+				canvas_view->get_smach().egress();
 			}
 			else
 			{
@@ -475,7 +475,7 @@ Toolbox::change_state_(const Smach::state_base *state)
 		changing_state_=false;
 		throw;
 	}
-	
+
 	changing_state_=false;
 }
 
@@ -487,7 +487,7 @@ Toolbox::add_state(const Smach::state_base *state)
 	assert(state);
 
 	String name=state->get_name();
-	
+
 	Gtk::ToggleButton* button;
 	button=manage(new class Gtk::ToggleButton());
 
@@ -497,38 +497,38 @@ Toolbox::add_state(const Smach::state_base *state)
 	icon->show();
 	button->show();
 
-	
 
-	
+
+
 	int row=state_button_map.size()/4;
 	int col=state_button_map.size()%4;
 
 	tool_table->attach(*button,col,col+1,row,row+1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
-	
+
 	state_button_map[name]=button;
-	
+
 	button->signal_clicked().connect(
 		sigc::bind(
 			sigc::mem_fun(*this,&studio::Toolbox::change_state_),
 			state
 		)
 	);
-	
-	
+
+
 	refresh();
 }
 
 
 void
 Toolbox::update_undo_redo()
-{	
+{
 	etl::handle<Instance> instance=App::get_selected_instance();
 	if(instance)
 	{
 		button_undo->set_sensitive(instance->get_undo_status());
-		button_redo->set_sensitive(instance->get_redo_status());	
+		button_redo->set_sensitive(instance->get_redo_status());
 	}
-	
+
 	// This should probably go elsewhere, but it should
 	// work fine here with no troubles.
 	// These next several lines just adjust the rotoscope buttons
@@ -536,14 +536,14 @@ Toolbox::update_undo_redo()
 	if(instance && App::get_selected_canvas_view())
 	{
 		std::map<synfig::String,Gtk::ToggleButton *>::iterator iter;
-		
+
 		for(iter=state_button_map.begin();iter!=state_button_map.end();++iter)
 			iter->second->set_sensitive(true);
 	}
 	else
 	{
 		std::map<synfig::String,Gtk::ToggleButton *>::iterator iter;
-		
+
 		for(iter=state_button_map.begin();iter!=state_button_map.end();++iter)
 			iter->second->set_sensitive(false);
 	}
@@ -560,10 +560,10 @@ Toolbox::update_undo_redo()
 
 void
 Toolbox::on_recent_files_changed()
-{	
+{
 	while(recent_files_menu->get_children().size())
 		recent_files_menu->remove(**recent_files_menu->get_children().begin());
-	
+
 	list<string>::const_iterator iter;
 	// Check to see if the file is already on the list.
 	// If it is, then remove it from the list
@@ -571,7 +571,7 @@ Toolbox::on_recent_files_changed()
 		recent_files_menu->items().push_back(Gtk::Menu_Helpers::MenuElem(basename(*iter),
 			sigc::hide_return(sigc::bind(sigc::ptr_fun(&App::open),*iter))
 		));
-	
+
 	// HACK
 	show();
 }
@@ -581,7 +581,7 @@ Toolbox::on_drop_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& contex
 {
 	// We will make this true once we have a solid drop
 	bool success(false);
-	
+
 	if ((selection_data_.get_length() >= 0) && (selection_data_.get_format() == 8))
 	{
 		synfig::String selection_data((gchar *)(selection_data_.get_data()));
@@ -598,11 +598,11 @@ Toolbox::on_drop_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& contex
 		{
 			synfig::String filename,URI;
 			getline(stream,filename);
-			
+
 			// If we don't have a filename, move on.
 			if(filename.empty())
 				continue;
-			
+
 			// Make sure this URL is of the "file://" type.
 			URI=String(filename.begin(),filename.begin()+sizeof("file://")-1);
 			if(URI!="file://")
@@ -610,11 +610,11 @@ Toolbox::on_drop_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& contex
 				synfig::warning("Unknown URI (%s) in \"%s\"",URI.c_str(),filename.c_str());
 				continue;
 			}
-			
+
 			// Strip the "file://" part from the filename
 			filename=synfig::String(filename.begin()+sizeof("file://")-1,filename.end());
-		
-			synfig::info("Attempting to open "+filename);		
+
+			synfig::info("Attempting to open "+filename);
 			if(App::open(filename))
 				success=true;
 			else

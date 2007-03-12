@@ -40,10 +40,10 @@ namespace studio {
 
 class Renderer_Ducks : public studio::WorkAreaRenderer
 {
-	
+
 public:
 	~Renderer_Ducks();
-	
+
 	void render_vfunc(const Glib::RefPtr<Gdk::Drawable>& drawable,const Gdk::Rectangle& expose_area	);
 
 protected:

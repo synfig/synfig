@@ -44,13 +44,13 @@ namespace synfig { class ProgressCallback; };
 namespace studio {
 
 class AboutProgress;
-	
+
 class About : public Gtk::Window
 {
 	friend class AboutProgress;
-	
+
 	AboutProgress *cb;
-	
+
 	Gtk::Tooltips _tooltips;
 
 	Gtk::Label *tasklabel;
@@ -60,10 +60,10 @@ class About : public Gtk::Window
 	void close();
 
 	bool can_self_destruct;
-	
+
 public:
-	
-	synfig::ProgressCallback *get_callback();	
+
+	synfig::ProgressCallback *get_callback();
 
 	void set_can_self_destruct(bool x);
 

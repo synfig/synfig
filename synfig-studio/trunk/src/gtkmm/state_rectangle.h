@@ -48,7 +48,7 @@ public:
 }; // END of class StateRectangle
 
 extern StateRectangle state_rectangle;
-	
+
 }; // END of namespace studio
 
 /* === E N D =============================================================== */

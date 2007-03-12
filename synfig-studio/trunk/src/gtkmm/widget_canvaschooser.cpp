@@ -83,13 +83,13 @@ Widget_CanvasChooser::set_value(etl::handle<synfig::Canvas> data)
 	synfig::Canvas::Children::iterator iter;
 	synfig::Canvas::Children &children(parent_canvas->children());
 	String label;
-	
+
 	if(canvas)
 	{
 		label=canvas->get_name().empty()?canvas->get_id():canvas->get_name();
 		canvas_menu->items().push_back(Gtk::Menu_Helpers::MenuElem(label));
 	}
-	
+
 	for(iter=children.begin();iter!=children.end();iter++)
 		if(*iter!=canvas)
 		{
@@ -139,7 +139,7 @@ Widget_CanvasChooser::chooser_menu()
 	catch(std::runtime_error x)
 	{
 		App::dialog_error_blocking(_("Error:Exception Thrown"),x.what());
-		set_value_(canvas);		
+		set_value_(canvas);
 	}
 	catch(...)
 	{

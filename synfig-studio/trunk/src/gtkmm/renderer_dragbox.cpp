@@ -82,16 +82,16 @@ Renderer_Dragbox::render_vfunc(
 	assert(get_work_area());
 	if(!get_work_area())
 		return;
-	
+
 	// const synfig::RendDesc &rend_desc(get_work_area()->get_canvas()->rend_desc());
-	
+
 	const synfig::Vector focus_point(get_work_area()->get_focus_point());
 
 //	std::vector< std::pair<Glib::RefPtr<Gdk::Pixbuf>,int> >& tile_book(get_tile_book());
-	
+
 	int drawable_w,drawable_h;
 	drawable->get_size(drawable_w,drawable_h);
-	
+
 	// Calculate the window coordinates of the top-left
 	// corner of the canvas.
 	// const synfig::Vector::value_type
@@ -110,9 +110,9 @@ Renderer_Dragbox::render_vfunc(
 	// const int
 	// 	w(get_w()),
 	// 	h(get_h());
-	
+
 	Glib::RefPtr<Gdk::GC> gc(Gdk::GC::create(drawable));
-	
+
 	//const synfig::Vector grid_size(get_grid_size());
 
 	const synfig::Vector::value_type window_startx(get_work_area()->get_window_tl()[0]);
@@ -120,10 +120,10 @@ Renderer_Dragbox::render_vfunc(
 	const synfig::Vector::value_type window_starty(get_work_area()->get_window_tl()[1]);
 	// const synfig::Vector::value_type window_endy(get_work_area()->get_window_br()[1]);
 	const float pw(get_pw()),ph(get_ph());
-	
+
 	const synfig::Point& curr_point(get_curr_point());
 	const synfig::Point& drag_point(get_drag_point());
-	
+
 	{
 		gc->set_function(Gdk::COPY);
 		gc->set_rgb_fg_color(Gdk::Color("#000000"));
@@ -141,7 +141,7 @@ Renderer_Dragbox::render_vfunc(
 			swap(tl[0],br[0]);
 		if(tl[1]>br[1])
 			swap(tl[1],br[1]);
-		
+
 		drawable->draw_rectangle(gc,false,
 			round_to_int(tl[0]),
 			round_to_int(tl[1]),

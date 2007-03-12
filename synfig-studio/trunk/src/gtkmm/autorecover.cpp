@@ -87,7 +87,7 @@ AutoRecover::AutoRecover()
 {
 	// Three Minutes
 	set_timeout(3*60*1000);
-	
+
 	if(mkdir(get_shadow_directory().c_str(),ACCESSPERMS)<0)
 	{
 		if(errno!=EEXIST)
@@ -133,11 +133,11 @@ AutoRecover::get_shadow_file_name(const synfig::String& filename)
 	unsigned int hash2(0x83502529);
 	char* str_hash1(reinterpret_cast<char*>(&hash1));
 	char* str_hash2(reinterpret_cast<char*>(&hash2));
-	
+
 	// First we need to hash up the directory
 	{
 		String pool(dirname(filename));
-		
+
 		while(pool.size()>4)
 		{
 			str_hash1[0]^=pool[1];str_hash1[1]^=pool[2];str_hash1[2]^=pool[3];str_hash1[3]^=pool[0];
@@ -156,9 +156,9 @@ AutoRecover::get_shadow_file_name(const synfig::String& filename)
 		}
 	}
 	hash1^=hash2;
-	
+
 	return Glib::build_filename(get_shadow_directory(),strprintf("%08X-%s",hash1,basename(filename).c_str()));
-	
+
 //	return dirname(filename) + ETL_DIRECTORY_SEPERATOR + ".shadow_" + basename(filename);
 }
 
@@ -190,7 +190,7 @@ AutoRecover::auto_backup()
 #ifdef HAVE_FORK
 	pid=fork();
 #endif
-	
+
 	if(pid<=0)
 	{
 #ifdef HAVE_SETPRIORITY
@@ -198,16 +198,16 @@ AutoRecover::auto_backup()
 		// cause the machine to slow down too much
 		setpriority(PRIO_PROCESS,0,15);
 #endif
-		
+
 		try
 		{
 			std::list<etl::handle<Instance> >::iterator iter;
-	
+
 			std::string filename=App::get_config_file("autorecovery");
 			std::ofstream file(filename.c_str());
-			
+
 			int savecount(0);
-			
+
 			for(iter=App::instance_list.begin();iter!=App::instance_list.end();++iter)
 			{
 				// If this file hasn't even been changed
@@ -215,13 +215,13 @@ AutoRecover::auto_backup()
 				// backing it up.
 				if((*iter)->get_action_count()==0)
 					continue;
-					
+
 				Canvas::Handle canvas((*iter)->get_canvas());
 				file<<canvas->get_file_name()<<endl;
 				save_canvas(get_shadow_file_name(canvas->get_file_name()),canvas);
 				savecount++;
 			}
-			
+
 			if(savecount)
 				synfig::info("AutoRecover::auto_backup(): %d Files backed up.",savecount);
 		}
@@ -230,7 +230,7 @@ AutoRecover::auto_backup()
 			synfig::error("AutoRecover::auto_backup(): UNKNOWN EXCEPTION THROWN.");
 			synfig::error("AutoRecover::auto_backup(): FILES NOT BACKED UP.");
 		}
-		
+
 #ifdef HAVE_FORK
 		if(pid==0)
 		{
@@ -247,11 +247,11 @@ AutoRecover::auto_backup()
 		),
 		60*1000
 	);
-#endif	
-	
+#endif
+
 	// Also go ahead and save the settings
 	App::save_settings();
-	
+
 	return true;
 }
 
@@ -270,7 +270,7 @@ AutoRecover::recovery_needed()const
 		if(!filename.empty())
 			return true;
 	}
-	
+
 	return false;
 }
 
@@ -282,7 +282,7 @@ AutoRecover::recover()
 	if(!file)
 		return false;
 	bool success=true;
-	
+
 	while(file)
 	{
 		std::string filename;
@@ -295,7 +295,7 @@ AutoRecover::recover()
 		{
 			// Correct the file name
 			App::instance_list.back()->set_file_name(filename);
-			
+
 			// This file isn't saved! mark it as such
 			App::instance_list.back()->inc_action_count();
 		}

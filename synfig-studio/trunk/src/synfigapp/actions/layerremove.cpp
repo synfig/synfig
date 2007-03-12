@@ -65,13 +65,13 @@ Action::ParamVocab
 Action::LayerRemove::get_param_vocab()
 {
 	ParamVocab ret(Action::CanvasSpecific::get_param_vocab());
-	
+
 	ret.push_back(ParamDesc("layer",Param::TYPE_LAYER)
 		.set_local_name(_("Layer"))
 		.set_desc(_("Layer to be deleted"))
 		.set_supports_multiple()
 	);
-	
+
 	return ret;
 }
 
@@ -89,7 +89,7 @@ Action::LayerRemove::set_param(const synfig::String& name, const Action::Param &
 		std::pair<synfig::Layer::Handle,int> layer_pair;
 		layer_pair.first=param.get_layer();
 		layer_list.push_back(layer_pair);
-		
+
 		return true;
 	}
 
@@ -116,7 +116,7 @@ Action::LayerRemove::perform()
 
 		// Find the iterator for the layer
 		Canvas::iterator iter2=find(subcanvas->begin(),subcanvas->end(),layer);
-		
+
 		// If we couldn't find the layer in the canvas, then bail
 		if(*iter2!=layer)
 		{
@@ -124,7 +124,7 @@ Action::LayerRemove::perform()
 			**	before we go throwing shit around */
 			throw Error(_("This layer doesn't exist anymore."));
 		}
-		
+
 		// If the subcanvas isn't the same as the canvas,
 		// then it had better be an inline canvas. If not,
 		// bail
@@ -134,18 +134,18 @@ Action::LayerRemove::perform()
 			**	before we go throwing shit around */
 			throw Error(_("This layer doesn't belong to this canvas anymore"));
 		}
-		
+
 		set_canvas(subcanvas);
-		
+
 		// Calculate the depth that the layer was at (For the undo)
 		iter->second=layer->get_depth();
-	
+
 		// Mark ourselves as dirty if necessary
 		set_dirty(layer->active());
-			
+
 		// Remove the layer from the canvas
 		subcanvas->erase(iter2);
-		
+
 		// Signal that a layer has been removed
 		if(get_canvas_interface())
 			get_canvas_interface()->signal_layer_removed()(layer);
@@ -157,23 +157,23 @@ Action::LayerRemove::undo()
 {
 	std::list<std::pair<synfig::Layer::Handle,int> >::reverse_iterator iter;
 	for(iter=layer_list.rbegin();iter!=layer_list.rend();++iter)
-	{	
+	{
 		Layer::Handle layer(iter->first);
 		int& depth(iter->second);
-		
+
 		// Set the layer's canvas
 		layer->set_canvas(get_canvas());
-	
+
 		// Make sure that the depth is valid
 		if(get_canvas()->size()<depth)
 			depth=get_canvas()->size();
-		
+
 		// Mark ourselves as dirty if necessary
 		set_dirty(layer->active());
-	
+
 		// Insert the layer into the canvas at the desired depth
-		get_canvas()->insert(get_canvas()->begin()+depth,layer);	
-		
+		get_canvas()->insert(get_canvas()->begin()+depth,layer);
+
 		// Signal that a layer has been inserted
 		if(get_canvas_interface())
 			get_canvas_interface()->signal_layer_inserted()(layer,depth);

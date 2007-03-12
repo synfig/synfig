@@ -61,10 +61,10 @@ public:
 		TYPE_HUE,
 		TYPE_SAT,
 		TYPE_A,
-		
+
 		TYPE_END
 	};
-	
+
 private:
 
 	sigc::signal<void,Type,float> signal_slider_moved_;
@@ -107,14 +107,14 @@ private:
 	static void slider_color_TYPE_HUE(synfig::Color &color, float amount);
 	static void slider_color_TYPE_SAT(synfig::Color &color, float amount);
 	static void slider_color_TYPE_A(synfig::Color &color, float amount);
-	
+
 
 	bool
 	redraw(GdkEventExpose*bleh);
 	bool on_event(GdkEvent *event);
 }; // END of class ColorSlider
 
-	
+
 class Widget_ColorEdit : public Gtk::Table
 {
 	sigc::signal<void> signal_activated_;
@@ -129,13 +129,13 @@ class Widget_ColorEdit : public Gtk::Table
 	ColorSlider *slider_V;
 	ColorSlider *slider_SAT;
 	ColorSlider *slider_HUE;
-	
+
 	Widget_Color widget_color;
-	
+
 	bool hold_signals;
-	
+
 	bool clamp_;
-	
+
 	Gtk::SpinButton *spinbutton_R;
 	Gtk::SpinButton *spinbutton_G;
 	Gtk::SpinButton *spinbutton_B;
@@ -145,13 +145,13 @@ class Widget_ColorEdit : public Gtk::Table
 	Gtk::Adjustment G_adjustment;
 	Gtk::Adjustment B_adjustment;
 	Gtk::Adjustment A_adjustment;
-	
+
 	synfig::Color color;
 
 	Gtk::Notebook* notebook;
 
 protected:
-	
+
 	void on_value_changed();
 
 public:
@@ -163,9 +163,9 @@ public:
 	void on_slider_moved(ColorSlider::Type type, float amount);
 
 	//Glib::SignalProxy0<void> signal_activate() { return spinbutton_A->signal_activate(); }
-	
+
 	sigc::signal<void>& signal_value_changed() { return signal_value_changed_; }
-	
+
 	void activated() { signal_activated_(); }
 	void activate() { signal_activated_(); }
 	void set_value(const synfig::Color &data);
@@ -176,7 +176,7 @@ public:
 	Widget_ColorEdit();
 	~Widget_ColorEdit();
 }; // END of class Widget_ColorEdit
-	
+
 }; // END of namespace studio
 
 /* === E N D =============================================================== */

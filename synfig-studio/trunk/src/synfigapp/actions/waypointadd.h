@@ -50,7 +50,7 @@ class WaypointAdd :
 private:
 
 	synfig::Waypoint waypoint;
-	
+
 	bool time_overwrite;
 	synfig::Waypoint overwritten_wp;
 

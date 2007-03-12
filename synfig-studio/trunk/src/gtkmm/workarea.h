@@ -69,7 +69,7 @@ public:
 	typedef etl::loose_handle<T_> first_argument_type;
 	typedef etl::loose_handle<T_> second_argument_type;
 	typedef bool result_type;
-	
+
 }
 };
 */
@@ -105,11 +105,11 @@ class WorkArea : public Gtk::Table, public Duckmatic
 	friend class WorkAreaTarget_Full;
 	friend class DirtyTrap;
 	friend class WorkAreaRenderer;
-		
+
 	/*
  -- ** -- P U B L I C   T Y P E S ---------------------------------------------
 	*/
-	
+
 public:
 
 	void insert_renderer(const etl::handle<WorkAreaRenderer> &x);
@@ -152,7 +152,7 @@ private:
 	Gtk::Frame *drawing_frame;
 
 	GdkDevice* curr_input_device;
-	
+
 	// Bleh!
 	int	w;						//!< Width of the image (in pixels)
 	int	h;						//!< Height of the image (in pixels)
@@ -169,17 +169,17 @@ private:
 
 	int bpp;
 	//unsigned char *buffer;
-	
+
 	//! ???
 	synfig::ProgressCallback *progresscallback;
 
 	//! ???
 	synfig::RendDesc desc;
-	
+
 	//! This flag is set if the user is dragging the video window
 	/*! \see drag_point */
 	DragMode dragging;
-		
+
 	etl::handle<Duckmatic::Duck> clicked_duck;
 	etl::handle<Duckmatic::Duck> hover_duck;
 
@@ -198,23 +198,23 @@ private:
 	bool show_guides;
 
 	bool low_resolution;
-	
+
 	bool meta_data_lock;
 
-	//! This flag is set if the entire frame is rendered rather than using tiles	
+	//! This flag is set if the entire frame is rendered rather than using tiles
 	bool full_frame;
-	
+
 	//Glib::RefPtr<Gdk::Pixbuf> pix_buf;
-	
+
 	//! This vector holds all of the tiles for this image
 	std::vector< std::pair<Glib::RefPtr<Gdk::Pixbuf>,int> > tile_book;
 
 	//! This integer describes the total times that the work are has been refreshed
 	int refreshes;
-	
+
 	//! This list holds the queue of tiles that need to be rendered
 	//std::list<int> tile_queue;
-	
+
 	int tile_w, tile_h;
 
 	gint render_idle_func_id;
@@ -223,16 +223,16 @@ private:
 	synfig::Point last_focus_point;
 
 	bool canceled_;
-	
+
 	int quality;
 
 	bool dirty_trap_enabled;
-	
+
 	int dirty_trap_queued;
-	
-	
+
+
 	bool onion_skin;
-		
+
 	etl::loose_handle<synfig::ValueNode> selected_value_node_;
 
 
@@ -255,7 +255,7 @@ public:
 
 	int get_tile_w()const { return tile_w; }
 	int get_tile_h()const { return tile_h; }
-	
+
 	bool solid_lines;
 	bool rendering;
 	bool dirty;
@@ -358,16 +358,16 @@ public:
 	etl::loose_handle<studio::CanvasView> get_canvas_view()const { return canvas_view; }
 
 	void refresh_dimension_info();
-	
+
 	//! Enables showing of the grid
 	void enable_grid();
-	
+
 	//! Disables showing of the grid
 	void disable_grid();
-	
+
 	//! Toggles the showing of the grid
 	void toggle_grid();
-	
+
 	//! Returns the state of the show_grid flag
 	bool grid_status()const { return show_grid; }
 
@@ -376,24 +376,24 @@ public:
 	bool get_show_guides()const { return show_guides; }
 	void set_show_guides(bool x);
 	void toggle_show_guides() { set_show_guides(!get_show_guides()); }
-		
+
 	bool get_low_resolution_flag()const { return low_resolution; }
 	void set_low_resolution_flag(bool x);
 	void toggle_low_resolution_flag();
-	
+
 	//! ???
 	void queue_scroll();
-	
+
 	//! Sets the size of the grid
 	void set_grid_size(const synfig::Vector &s);
-		
+
 	//! ??
 	void popup_menu();
-	
+
 	int get_quality()const { return quality; }
 
 	void set_quality(int x);
-	
+
 
 	int get_w()const { return w; }
 	int get_h()const { return h; }
@@ -401,10 +401,10 @@ public:
 
 	//! ??
 	const synfig::RendDesc &get_rend_desc()const { return desc; }
-	
+
 	//! ??
 	void set_rend_desc(const synfig::RendDesc &x) { desc=x; }
-	
+
 	//! Converts screen coords (ie: pixels) to composition coordinates
 	synfig::Point screen_to_comp_coords(synfig::Point pos)const;
 
@@ -413,7 +413,7 @@ public:
 
 	float get_pw()const { return pw; }
 	float get_ph()const { return ph; }
-	
+
 	const synfig::Point &get_window_tl()const { return window_tl; }
 	const synfig::Point &get_window_br()const { return window_br; }
 
@@ -422,23 +422,23 @@ public:
 	void async_update_finished();
 	void async_render_preview(synfig::Time time);
 	void async_render_preview();
-	
+
 	bool sync_update_preview();
 	bool sync_render_preview(synfig::Time time);
 	bool sync_render_preview();
 	void sync_render_preview_hook();
 
 	void queue_render_preview();
-	
-	
+
+
 	void queue_draw_preview();
-	
+
 	void zoom_in();
 	void zoom_out();
 	void zoom_fit();
 	void zoom_norm();
 	float get_zoom()const { return zoom; }
-	
+
 	void set_zoom(float z);
 
 
@@ -450,15 +450,15 @@ public:
 	synfig::Point get_focus_point()const;
 
 	void done_rendering();
-	
+
 	bool refresh(GdkEventExpose*bleh=NULL);
-	
+
 	void reset_cursor();
 	void refresh_cursor();
 
 	void save_meta_data();
 	void load_meta_data();
-	
+
 	/*
  -- ** -- S I G N A L   T E R M I N A L S -------------------------------------
 	*/

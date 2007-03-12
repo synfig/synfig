@@ -47,7 +47,7 @@ public:
 }; // END of class StateSketch
 
 extern StateSketch state_sketch;
-	
+
 }; // END of namespace studio
 
 /* === E N D =============================================================== */

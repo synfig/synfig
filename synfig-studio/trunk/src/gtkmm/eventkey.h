@@ -50,8 +50,8 @@ enum EventKey
 	EVENT_TABLES_HIDE,
 	EVENT_LAYER_SELECTION_CHANGED,
 	EVENT_TABLES_SHOW,
-	
-	
+
+
 	EVENT_WORKAREA_START=1000,		//!< Not a valid event
 	EVENT_WORKAREA_LAYER_CLICKED,
 	EVENT_WORKAREA_MULTIPLE_DUCKS_CLICKED,
@@ -64,7 +64,7 @@ enum EventKey
 
 	EVENT_WORKAREA_STROKE,
 
-	EVENT_END		//!< Not a valid event	
+	EVENT_END		//!< Not a valid event
 };
 
 };

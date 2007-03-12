@@ -61,7 +61,7 @@ class studio::StateFill_Context
 public:
 	StateFill_Context(CanvasView *canvas_view);
 	~StateFill_Context();
-	
+
 	Smach::event_result event_stop_handler(const Smach::event& x);
 
 	Smach::event_result event_refresh_handler(const Smach::event& x);
@@ -92,7 +92,7 @@ StateFill::StateFill():
 	insert(event_def(EVENT_STOP,&StateFill_Context::event_stop_handler));
 	insert(event_def(EVENT_REFRESH,&StateFill_Context::event_refresh_handler));
 	insert(event_def(EVENT_WORKAREA_LAYER_CLICKED,&StateFill_Context::event_workarea_layer_clicked_handler));
-}	
+}
 
 StateFill::~StateFill()
 {
@@ -104,7 +104,7 @@ StateFill_Context::StateFill_Context(CanvasView *canvas_view):
 {
 	synfig::info("Enterted Fill State");
 	canvas_view->work_area->set_cursor(Gdk::CROSSHAIR);
-	
+
 	App::toolbox->refresh();
 }
 
@@ -144,7 +144,7 @@ StateFill_Context::event_workarea_layer_clicked_handler(const Smach::event& x)
 		return Smach::RESULT_ACCEPT;
 	}
 
-	
+
 	//synfigapp::Action::Handle action(synfigapp::Action::create("value_desc_set"));
 	synfigapp::ValueDesc value_desc(event.layer,"color");
 
@@ -155,17 +155,17 @@ StateFill_Context::event_workarea_layer_clicked_handler(const Smach::event& x)
 	}
 	/*
 	assert(action);
-	
-	action->set_param("canvas",get_canvas());			
-	action->set_param("canvas_interface",get_canvas_interface());			
+
+	action->set_param("canvas",get_canvas());
+	action->set_param("canvas_interface",get_canvas_interface());
 	action->set_param("value_desc",value_desc);
 	action->set_param("time",get_canvas_interface()->get_time());
-	//action->set_param("layer",event.layer);			
+	//action->set_param("layer",event.layer);
 	//if(!action->set_param("param",String("color")))
 	//	synfig::error("LayerParamConnect didn't like \"param\"");
 	if(!action->set_param("new_value",ValueBase(synfigapp::Main::get_foreground_color())))
 		synfig::error("LayerParamConnect didn't like \"foreground_color\"");
-	
+
 	if(!get_canvas_interface()->get_instance()->perform_action(action))
 	{
 		get_canvas_view()->get_ui_interface()->warning(_("Unable to set layer color"));

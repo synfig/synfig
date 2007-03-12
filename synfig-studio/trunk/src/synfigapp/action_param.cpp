@@ -47,7 +47,7 @@ bool
 Action::candidate_check(const ParamVocab& param_vocab, const ParamList& param_list)
 {
 	ParamVocab::const_iterator iter;
-	
+
 	for(iter=param_vocab.begin();iter!=param_vocab.end();++iter)
 	{
 		int n(param_list.count(iter->get_name()));
@@ -60,14 +60,14 @@ Action::candidate_check(const ParamVocab& param_vocab, const ParamList& param_li
 
 		if(iter->get_user_supplied() || iter->get_optional())
 			continue;
-							
+
 		if(n==0)
 			return false;
 		if(n==1 && iter->get_requires_multiple())
 			return false;
 		if(n>1 && !iter->get_supports_multiple())
 			return false;
-		
+
 		if(iter->get_type()!=param_list.find(iter->get_name())->second.get_type())
 			return false;
 	}
@@ -172,7 +172,7 @@ Param::Param(const Param &rhs):
 }
 
 Param::Param(const etl::handle<synfigapp::CanvasInterface>& x):
-	
+
 	type_(TYPE_CANVASINTERFACE)
 {
 	_ParamCounter::counter++;
@@ -182,7 +182,7 @@ Param::Param(const etl::handle<synfigapp::CanvasInterface>& x):
 
 /*
 Param::Param(synfigapp::CanvasInterface* x):
-	
+
 	type_(TYPE_CANVASINTERFACE)
 {
 	_ParamCounter::counter++;
@@ -192,7 +192,7 @@ Param::Param(synfigapp::CanvasInterface* x):
 */
 
 Param::Param(const etl::loose_handle<synfigapp::CanvasInterface>& x):
-	
+
 	type_(TYPE_CANVASINTERFACE)
 {
 	_ParamCounter::counter++;
@@ -200,7 +200,7 @@ Param::Param(const etl::loose_handle<synfigapp::CanvasInterface>& x):
 	data.canvas_interface.get()=x;
 }
 
-Param::Param(const synfig::Canvas::Handle& x):	
+Param::Param(const synfig::Canvas::Handle& x):
 	type_(TYPE_CANVAS)
 {
 	_ParamCounter::counter++;
@@ -208,7 +208,7 @@ Param::Param(const synfig::Canvas::Handle& x):
 	data.canvas.get()=x;
 }
 
-Param::Param(const synfig::Canvas::LooseHandle& x):	
+Param::Param(const synfig::Canvas::LooseHandle& x):
 	type_(TYPE_CANVAS)
 {
 	_ParamCounter::counter++;
@@ -217,7 +217,7 @@ Param::Param(const synfig::Canvas::LooseHandle& x):
 }
 
 Param::Param(const synfig::Layer::Handle& x):
-	
+
 	type_(TYPE_LAYER)
 {
 	_ParamCounter::counter++;
@@ -226,7 +226,7 @@ Param::Param(const synfig::Layer::Handle& x):
 }
 
 Param::Param(const synfig::Layer::LooseHandle& x):
-	
+
 	type_(TYPE_LAYER)
 {
 	_ParamCounter::counter++;
@@ -235,7 +235,7 @@ Param::Param(const synfig::Layer::LooseHandle& x):
 }
 
 Param::Param(const synfig::ValueNode::Handle& x):
-	
+
 	type_(TYPE_VALUENODE)
 {
 	_ParamCounter::counter++;
@@ -244,7 +244,7 @@ Param::Param(const synfig::ValueNode::Handle& x):
 }
 
 Param::Param(const synfig::ValueNode::LooseHandle& x):
-	
+
 	type_(TYPE_VALUENODE)
 {
 	_ParamCounter::counter++;
@@ -253,7 +253,7 @@ Param::Param(const synfig::ValueNode::LooseHandle& x):
 }
 
 Param::Param(const synfig::ValueBase& x):
-	
+
 	type_(TYPE_VALUE)
 {
 	_ParamCounter::counter++;
@@ -261,7 +261,7 @@ Param::Param(const synfig::ValueBase& x):
 	data.value.get()=x;
 }
 
-Param::Param(const synfig::RendDesc& x):	
+Param::Param(const synfig::RendDesc& x):
 	type_(TYPE_RENDDESC)
 {
 	_ParamCounter::counter++;
@@ -278,7 +278,7 @@ Param::Param(const synfig::Time& x):
 }
 
 Param::Param(const synfig::Activepoint& x):
-	
+
 	type_(TYPE_ACTIVEPOINT)
 {
 	_ParamCounter::counter++;
@@ -286,7 +286,7 @@ Param::Param(const synfig::Activepoint& x):
 	data.activepoint.get()=x;
 }
 
-Param::Param(const synfig::Waypoint& x):	
+Param::Param(const synfig::Waypoint& x):
 	type_(TYPE_WAYPOINT)
 {
 	_ParamCounter::counter++;
@@ -294,7 +294,7 @@ Param::Param(const synfig::Waypoint& x):
 	data.waypoint.get()=x;
 }
 
-Param::Param(const synfig::Waypoint::Model& x):	
+Param::Param(const synfig::Waypoint::Model& x):
 	type_(TYPE_WAYPOINTMODEL)
 {
 	_ParamCounter::counter++;
@@ -319,7 +319,7 @@ Param::Param(const char * x):
 }
 
 Param::Param(const synfig::Keyframe& x):
-	
+
 	type_(TYPE_KEYFRAME)
 {
 	_ParamCounter::counter++;
@@ -328,7 +328,7 @@ Param::Param(const synfig::Keyframe& x):
 }
 
 Param::Param(const synfigapp::ValueDesc& x):
-	
+
 	type_(TYPE_VALUEDESC)
 {
 	_ParamCounter::counter++;
@@ -351,7 +351,7 @@ Param::Param(const EditMode& x):
 }
 
 Param::Param(const synfig::Real& x):
-	
+
 	type_(TYPE_REAL)
 {
 	_ParamCounter::counter++;
@@ -359,7 +359,7 @@ Param::Param(const synfig::Real& x):
 }
 
 Param::Param(const bool& x):
-	
+
 	type_(TYPE_BOOL)
 {
 	_ParamCounter::counter++;
@@ -377,7 +377,7 @@ Param::operator=(const Param& rhs)
 {
 	clear();
 	type_=rhs.type_;
-	
+
 	switch(type_)
 	{
 	case TYPE_ACTIVEPOINT:

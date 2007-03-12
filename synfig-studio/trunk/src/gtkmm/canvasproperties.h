@@ -47,7 +47,7 @@ namespace Gtk { class TreeView; };
 namespace synfigapp { class CanvasInterface; };
 
 namespace studio
-{	
+{
 class CanvasProperties  :  public Gtk::Dialog
 {
 	Gtk::Tooltips tooltips;
@@ -59,11 +59,11 @@ class CanvasProperties  :  public Gtk::Dialog
 	Gtk::Entry entry_description;
 
 	bool dirty_rend_desc;
-	
+
 	Gtk::TreeView* meta_data_tree_view;
 	void on_button_meta_data_add();
 	void on_button_meta_data_delete();
-	
+
 public:
 	CanvasProperties(Gtk::Window& parent,etl::handle<synfigapp::CanvasInterface> canvas_interface);
 	~CanvasProperties();

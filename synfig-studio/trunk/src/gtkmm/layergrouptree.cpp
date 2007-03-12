@@ -55,7 +55,7 @@ LayerGroupTree::LayerGroupTree()
 {
 	const LayerGroupTreeStore::Model model;
 
-	
+
 	{	// --- O N / O F F ----------------------------------------------------
 		int index;
 		index=append_column_editable(_(" "),model.active);
@@ -78,7 +78,7 @@ LayerGroupTree::LayerGroupTree()
 		//column->set_reorderable();
 		//column->set_resizable();
 		//column->set_clickable(false);
-		
+
 		//Gtk::CellRendererPixbuf* icon_cellrenderer = Gtk::manage( new Gtk::CellRendererPixbuf() );
 		//column->pack_start(*icon_cellrenderer,false);
 		//column->add_attribute(icon_cellrenderer->property_pixbuf(), layer_model.icon);
@@ -90,7 +90,7 @@ LayerGroupTree::LayerGroupTree()
 
 	// This makes things easier to read.
 	set_rules_hint();
-		
+
 	// Make us more sensitive to several events
 	add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK | Gdk::BUTTON1_MOTION_MASK | Gdk::BUTTON2_MOTION_MASK|Gdk::POINTER_MOTION_MASK);
 
@@ -116,7 +116,7 @@ LayerGroupTree::set_model(Glib::RefPtr<LayerGroupTreeStore> layer_group_tree_sto
 {
 	layer_group_tree_store_=layer_group_tree_store;
 	LayerGroupTreeStore::Model model;
-	
+
 #if 0
 	{
 		Glib::RefPtr<Gtk::TreeModelSort> sorted_store(Gtk::TreeModelSort::create(layer_group_tree_store_));
@@ -134,7 +134,7 @@ void
 LayerGroupTree::set_editable(bool x)
 {
 	editable_=x;
-/*	
+/*
 	if(editable_)
 	{
 		cell_renderer_time->property_editable()=true;
@@ -154,9 +154,9 @@ void
 LayerGroupTree::on_edited_time(const Glib::ustring&path_string,synfig::Time time)
 {
 	Gtk::TreePath path(path_string);
-	
+
 	const Gtk::TreeRow row(*(get_model()->get_iter(path)));
-	
+
 	synfig::Keyframe keyframe(row[model.keyframe]);
 	if(time!=keyframe.get_time())
 	{
@@ -171,9 +171,9 @@ void
 LayerGroupTree::on_edited_time_delta(const Glib::ustring&path_string,synfig::Time time)
 {
 	Gtk::TreePath path(path_string);
-	
+
 	const Gtk::TreeRow row(*(get_model()->get_iter(path)));
-	
+
 	if(row)row[model.time_delta]=time;
 }
 
@@ -181,9 +181,9 @@ void
 LayerGroupTree::on_edited_description(const Glib::ustring&path_string,const Glib::ustring &desc)
 {
 	Gtk::TreePath path(path_string);
-	
+
 	const Gtk::TreeRow row = *(get_model()->get_iter(path));
-	
+
 	const synfig::String description(desc);
 	synfig::Keyframe keyframe(row[model.keyframe]);
 	if(description!=keyframe.get_description())
@@ -222,7 +222,7 @@ LayerGroupTree::on_event(GdkEvent *event)
 				signal_popup_layer_menu()((Layer::Handle)row[model.layer]);
 				return true;
 			}
-			
+
 			/*signal_user_click()(event->button.button,row,(ColumnID)column->get_sort_column_id());
 			if((ColumnID)column->get_sort_column_id()==COLUMNID_JUMP)
 			{
@@ -243,7 +243,7 @@ LayerGroupTree::on_event(GdkEvent *event)
 				)
 			) break;
 			const Gtk::TreeRow row = *(get_model()->get_iter(path));
-			
+
 			LayerList layer_list(row[model.all_layers]);
 			if(!layer_list.empty())
 			{

@@ -46,7 +46,7 @@ struct ValueBaseTimeInfo
 {
 	synfig::ValueNode_Animated::Handle	val;
 	mutable std::set<synfig::Waypoint>	waypoints;
-	
+
 	bool operator<(const ValueBaseTimeInfo &rhs) const
 	{
 		return val < rhs.val;
@@ -60,32 +60,32 @@ struct ActiveTimeInfo
 		bool operator()(const synfig::Activepoint &lhs, const synfig::Activepoint &rhs) const
 		{
 			return lhs.time < rhs.time;
-		}		
+		}
 	};
-	
+
 	synfigapp::ValueDesc						val;
-	
+
 	typedef std::set<synfig::Activepoint,actcmp>	set;
-	
+
 	mutable set activepoints;
-	
+
 	bool operator<(const ActiveTimeInfo &rhs) const
 	{
-		return val.get_parent_value_node() == rhs.val.get_parent_value_node() ? 
-						val.get_index() < rhs.val.get_index() : 
+		return val.get_parent_value_node() == rhs.val.get_parent_value_node() ?
+						val.get_index() < rhs.val.get_index() :
 						val.get_parent_value_node() < rhs.val.get_parent_value_node();
 	}
 };
 
 struct timepoints_ref
 {
-	typedef std::set<ValueBaseTimeInfo>		waytracker;	
+	typedef std::set<ValueBaseTimeInfo>		waytracker;
 	typedef std::set<ActiveTimeInfo>	acttracker;
-	
+
 	waytracker		waypointbiglist;
-	acttracker		actpointbiglist;	
-	
-	void insert(synfig::ValueNode_Animated::Handle v, synfig::Waypoint w);	
+	acttracker		actpointbiglist;
+
+	void insert(synfig::ValueNode_Animated::Handle v, synfig::Waypoint w);
 	void insert(synfigapp::ValueDesc v, synfig::Activepoint a);
 };
 
@@ -94,9 +94,9 @@ struct timepoints_ref
 template < typename I1, typename I2 >
 bool check_intersect(I1 b1, I1 end1, I2 b2, I2 end2)
 {
-	if(b1 == end1 || b2 == end2) 
+	if(b1 == end1 || b2 == end2)
 		return false;
-	
+
 	for(; b1 != end1 && b2 != end2;)
 	{
 		if(*b1 < *b2) ++b1;
@@ -110,21 +110,21 @@ bool check_intersect(I1 b1, I1 end1, I2 b2, I2 end2)
 	return false;
 }
 
-//pointer kind of a hack, gets the accurate times from a value desc 
+//pointer kind of a hack, gets the accurate times from a value desc
 //	(deals with dynamic list member correctly... i.e. gathers activepoints)
 const synfig::Node::time_set *get_times_from_vdesc(const synfigapp::ValueDesc &v);
 
 //get's the closest time inside the set
-bool get_closest_time(const synfig::Node::time_set &tset, const synfig::Time &t, 
+bool get_closest_time(const synfig::Node::time_set &tset, const synfig::Time &t,
 						const synfig::Time &range, synfig::Time &out);
 
 //recursion functions based on time restrictions (can be expanded later)...
 //builds a list of relevant waypoints and activepoints inside the timepoints_ref structure
 void recurse_valuedesc(synfigapp::ValueDesc valdesc, const std::set<synfig::Time> &tlist,
 								timepoints_ref &vals);
-void recurse_layer(synfig::Layer::Handle layer, const std::set<synfig::Time> &tlist, 
+void recurse_layer(synfig::Layer::Handle layer, const std::set<synfig::Time> &tlist,
 								timepoints_ref &vals);
-void recurse_canvas(synfig::Canvas::Handle canvas, const std::set<synfig::Time> &tlist, 
+void recurse_canvas(synfig::Canvas::Handle canvas, const std::set<synfig::Time> &tlist,
 								timepoints_ref &vals);
 
 

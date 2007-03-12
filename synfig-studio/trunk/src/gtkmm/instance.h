@@ -47,7 +47,7 @@ namespace Gtk { class Menu; class ActionGroup; };
 namespace studio {
 
 class CanvasView;
-	
+
 
 class Instance : public synfigapp::Instance
 {
@@ -75,7 +75,7 @@ public:
 		Gtk::TreeModelColumn<bool> is_editable;
 
 		Gtk::TreeModelColumn<synfigapp::ValueDesc> value_desc;
-	
+
 		CanvasTreeModel()
 		{
 			add(value);
@@ -95,12 +95,12 @@ public:
 			add(link_id);
 		}
 	} canvas_tree_model;
-	
+
 private:
 
 	sigc::signal<void,CanvasView*> signal_canvas_view_created_;
 	sigc::signal<void,CanvasView*> signal_canvas_view_deleted_;
-	
+
 	sigc::signal<void> signal_undo_redo_status_changed_;
 
 	//! Tree containing the canvases -- used for the "canvas browser"
@@ -117,7 +117,7 @@ private:
 
 	//! List of canvas view windows
 	CanvasViewList canvas_view_list_;
-	
+
 	bool undo_status_;
 	bool redo_status_;
 
@@ -144,7 +144,7 @@ public:
 	bool get_redo_status()const { return redo_status_; }
 
 	int get_visible_canvases()const;
-	
+
 	Glib::RefPtr<Gtk::TreeStore> canvas_tree_store() { return canvas_tree_store_; }
 
 	Glib::RefPtr<const Gtk::TreeStore> canvas_tree_store()const { return canvas_tree_store_; }
@@ -157,14 +157,14 @@ public:
 	static int get_count() { return instance_count_; }
 
 	//etl::handle<synfig::Canvas> get_canvas()const { return synfigapp::Instance::get_canvas(); }
-	
+
 	etl::handle<CanvasView>	find_canvas_view(etl::handle<synfig::Canvas> canvas);
 
 	//! Sets the focus to a specific canvas
 	void focus(etl::handle<synfig::Canvas> canvas);
 
 	CanvasViewList & canvas_view_list() { return canvas_view_list_; }
-	
+
 	const CanvasViewList & canvas_view_list()const { return canvas_view_list_; }
 
 	bool save_as(const synfig::String &filename)const;
@@ -183,16 +183,16 @@ public:
 	void dialog_cvs_update();
 
 	void dialog_cvs_revert();
-	
+
 	//! Closes the instance of this composition
 	void close();
-	
+
 	void revert();
-	
+
 	void update_all_titles();
 
 	void refresh_canvas_tree();
-	
+
 	bool safe_revert();
 	bool safe_close();
 

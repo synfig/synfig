@@ -49,14 +49,14 @@ class GroupActionManager
 
 	Glib::RefPtr<Gtk::ActionGroup>	action_group_;
 	Gtk::UIManager::ui_merge_id 	popup_id_;
-	
+
 	sigc::connection selection_changed_connection;
 
 	bool queued;
 	sigc::connection queue_refresh_connection;
 
 private:
-	
+
 	void on_action_add();
 
 public:

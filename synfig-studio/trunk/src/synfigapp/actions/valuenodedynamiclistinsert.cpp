@@ -69,7 +69,7 @@ Action::ParamVocab
 Action::ValueNodeDynamicListInsert::get_param_vocab()
 {
 	ParamVocab ret(Action::CanvasSpecific::get_param_vocab());
-	
+
 	ret.push_back(ParamDesc("value_desc",Param::TYPE_VALUEDESC)
 		.set_local_name(_("ValueDesc"))
 	);
@@ -109,12 +109,12 @@ Action::ValueNodeDynamicListInsert::set_param(const synfig::String& name, const 
 	if(name=="value_desc" && param.get_type()==Param::TYPE_VALUEDESC)
 	{
 		ValueDesc value_desc(param.get_value_desc());
-		
+
 		if(!value_desc.parent_is_value_node())
 			return false;
-		
+
 		value_node=ValueNode_DynamicList::Handle::cast_dynamic(value_desc.get_parent_value_node());
-		
+
 		if(!value_node)
 			return false;
 
@@ -125,15 +125,15 @@ Action::ValueNodeDynamicListInsert::set_param(const synfig::String& name, const 
 		list_entry=value_node->create_list_entry(index,time,origin);
 		if(item)
 			list_entry.value_node=item;
-		
+
 		assert(list_entry.value_node.rcount()==1);
-				
+
 		return true;
 	}
 	if(name=="time" && param.get_type()==Param::TYPE_TIME)
 	{
 		time=param.get_time();
-		
+
 		return true;
 	}
 	if(name=="item" && param.get_type()==Param::TYPE_VALUENODE)
@@ -141,13 +141,13 @@ Action::ValueNodeDynamicListInsert::set_param(const synfig::String& name, const 
 		item=param.get_value_node();
 		if(item)
 			list_entry.value_node=item;
-		
+
 		return true;
 	}
 	if(name=="origin" && param.get_type()==Param::TYPE_REAL)
 	{
 		origin=param.get_real();
-		
+
 		return true;
 	}
 
@@ -164,13 +164,13 @@ Action::ValueNodeDynamicListInsert::is_ready()const
 
 void
 Action::ValueNodeDynamicListInsert::perform()
-{	
+{
 	if(index>value_node->link_count())
 		index=value_node->link_count();
-	
+
 	value_node->add(list_entry,index);
 	assert(list_entry.value_node.rcount()>=2);
-	
+
 	// Signal that a layer has been inserted
 	value_node->changed();
 /*_if(get_canvas_interface())
@@ -186,7 +186,7 @@ Action::ValueNodeDynamicListInsert::undo()
 	assert(list_entry.value_node.rcount()>=2);
 	value_node->erase((value_node->list.begin()+index)->value_node);
 	assert(list_entry.value_node.rcount()>=1);
-	
+
 	// Signal that a layer has been inserted
 	value_node->changed();
 /*_if(get_canvas_interface())

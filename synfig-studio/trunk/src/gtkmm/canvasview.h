@@ -89,7 +89,7 @@
 #if	_DEBUG
 #define DEBUGPOINT_CLASS(x)		struct debugpointclass_ ## x { debugpointclass_ ## x () { DEBUGPOINT(); } ~debugpointclass_ ## x () { DEBUGPOINT(); } } badfthguae_ ## x ;
 #else
-#define DEBUGPOINT_CLASS(x)	
+#define DEBUGPOINT_CLASS(x)
 #endif
 #endif
 
@@ -112,11 +112,11 @@ class Duckmatic;
 class Preview;
 struct PreviewInfo;
 class AudioContainer;
-	
+
 class Widget_Sound;
 class Widget_Timeslider;
 class Widget_Time;
-	
+
 class Dialog_SoundSelect;
 class Dialog_Preview;
 
@@ -124,29 +124,29 @@ class synfig::TransformStack;
 class Dock_Layers;
 class Dock_Children;
 class Dock_Keyframes;
-	
+
 class CanvasView : public Gtk::Window, public etl::shared_object
 {
 	friend class UniversalScrubber;
 	friend class Dock_Layers;
 	friend class Dock_Children;
 	friend class Dock_Keyframes;
-		
+
 	friend class CanvasViewUIInterface;
 	friend class CanvasViewSelectionManager;
 
 	friend class Duckmatic;
-		
+
 	/*
  -- ** -- P U B L I C   T Y P E S ---------------------------------------------
 	*/
-	
+
 public:
 
 	typedef etl::handle<CanvasView> Handle;
-	
+
 	typedef etl::handle<const CanvasView> ConstHandle;
-	
+
 	typedef etl::loose_handle<CanvasView> LooseHandle;
 
 	typedef LayerTreeStore::Model LayerTreeModel;
@@ -202,9 +202,9 @@ private:
 
 	SigC::Connection				playcon;
 	SigC::Connection				stopcon;
-	
+
 	std::auto_ptr<UniversalScrubber> universal_scrubber;
-	
+
 	//! Tooltip controler
 	Gtk::Tooltips tooltips;
 
@@ -223,7 +223,7 @@ private:
 	//Glib::RefPtr<KeyframeTreeStore> keyframe_tree_store_;
 
 	DEBUGPOINT_CLASS(5);
-	
+
 	//std::map<synfig::String,Glib::RefPtr<Gtk::TreeModel> > tree_model_book_;
 	std::map<synfig::String,Glib::RefPtr<Glib::ObjectBase> > ref_obj_book_;
 	std::map<synfig::String,Gtk::Widget*> ext_widget_book_;
@@ -231,14 +231,14 @@ private:
 
 	//! The time adjustment's scope is defined by the time_window adjustment
 	Gtk::Adjustment time_adjustment_;
-	
+
 	//! The time_window adjustment governs the position of the time window on the whole time line
 	//Gtk::Adjustment time_window_adjustment_;
 	studio::Adjust_Window time_window_adjustment_;
-	
-			
+
+
 	LayerTree *layer_tree;
-	
+
 	ChildrenTree *children_tree;
 
 	KeyframeTree *keyframe_tree;
@@ -247,10 +247,10 @@ private:
 
 	Gtk::ProgressBar *progressbar;
 	Gtk::Statusbar *statusbar;
-	
+
 	Gtk::TreeRow children_canvas_row;
 	Gtk::TreeRow children_valuenode_row;
-	
+
 	Gtk::Button *stopbutton;
 	Gtk::Button *refreshbutton;
 	Gtk::Button *treetogglebutton;
@@ -259,7 +259,7 @@ private:
 
 	Widget_Time *current_time_widget;
 	void on_current_time_widget_changed();
-	
+
 	std::auto_ptr<Widget_Timeslider>		timeslider;
 
 	std::list<sigc::connection> duck_changed_connections;
@@ -268,7 +268,7 @@ private:
 
 	Gtk::Button *animatebutton;
 	Gtk::Button *keyframebutton;
-	
+
 /*	DEBUGPOINT_CLASS(8);
 
 	Gtk::Menu duckmaskmenu;
@@ -316,13 +316,13 @@ private:
 	Glib::RefPtr<Gtk::ToggleAction> duck_mask_angle;
 
 	Gtk::RadioButtonGroup quality_group;
-	
+
 	Glib::RefPtr<Gtk::ActionGroup> action_group;
 
 
 	etl::handle<synfigapp::UIInterface> ui_interface_;
 	etl::handle<synfigapp::SelectionManager> selection_manager_;
-	
+
 	bool is_playing_;
 
 	sigc::signal<void> signal_deleted_;
@@ -370,7 +370,7 @@ public:
 	*/
 
 private:
-	
+
 	// Constructor is private to force the use of the "create()" constructor
 	CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigapp::CanvasInterface> canvas_interface);
 
@@ -395,8 +395,8 @@ private:
 
 	void time_was_changed();
 
-	void refresh_rend_desc();	
-	
+	void refresh_rend_desc();
+
 	void toggle_duck_mask(Duckmatic::Type type);
 
 	Gtk::Widget *create_work_area();
@@ -407,14 +407,14 @@ private:
 
 	void popup_param_menu_bezier(float location, synfigapp::ValueDesc value_desc)
 	{ popup_param_menu(value_desc,location); }
-	
+
 	void popup_param_menu(synfigapp::ValueDesc value_desc, float location=0);
 
 
 	void workarea_layer_selected(synfig::Layer::Handle layer);
 
 	void selected_layer_color_set(synfig::Color color);
-		
+
 
 
 	void register_layer_type(synfig::Layer::Book::value_type &lyr,std::map<synfig::String,Gtk::Menu*>*);
@@ -443,7 +443,7 @@ public:
 
 	Gtk::Widget* get_ext_widget(const synfig::String& x);
 	void set_ext_widget(const synfig::String& x, Gtk::Widget* y);
-	
+
 	//std::map<synfig::String,Gtk::Widget*>& tree_view_book() { return tree_view_book_; }
 	//std::map<synfig::String,Gtk::Widget*>& ext_widget_book() { return tree_view_book_; }
 
@@ -452,23 +452,23 @@ public:
 	Smach& get_smach() { return smach_; }
 
 	const Smach& get_smach()const { return smach_; }
-	
+
 	Smach::event_result process_event_key(EventKey x);
-	
+
 	void popup_layer_menu(synfig::Layer::Handle layer);
 
 	virtual ~CanvasView();
 
 	void set_mode(Mode x) { canvas_interface()->set_mode(x); }
-	
+
 	Mode get_mode()const { return canvas_interface()->get_mode(); }
-				
+
 	Gtk::Adjustment &time_adjustment() { return time_adjustment_; }
-	
+
 	const Gtk::Adjustment &time_adjustment()const { return time_adjustment_; }
 
 	studio::Adjust_Window &time_window_adjustment() { return time_window_adjustment_; }
-	
+
 	const studio::Adjust_Window &time_window_adjustment()const { return time_window_adjustment_; }
 
 	etl::handle<synfigapp::UIInterface> get_ui_interface() { return ui_interface_;}
@@ -476,19 +476,19 @@ public:
 	etl::handle<synfigapp::SelectionManager> get_selection_manager() { return selection_manager_; }
 
 	Glib::RefPtr<Gtk::TreeModel> layer_tree_store() { return get_tree_model("layers"); }
-	
+
 	Glib::RefPtr<const Gtk::TreeModel> layer_tree_store()const { return get_tree_model("layers"); }
 
 	Glib::RefPtr<Gtk::TreeModel> children_tree_store() { return get_tree_model("children"); }
-	
+
 	Glib::RefPtr<const Gtk::TreeModel> children_tree_store()const { return get_tree_model("children"); }
 
 	Glib::RefPtr<Gtk::TreeModel> keyframe_tree_store() { return get_tree_model("keyframes"); }
-	
+
 	Glib::RefPtr<const Gtk::TreeModel> keyframe_tree_store()const { return get_tree_model("keyframes"); }
 
 	void set_time(synfig::Time t) { canvas_interface_->set_time(t); }
-	
+
 	synfig::Time get_time() { return canvas_interface_->get_time(); }
 
 	etl::handle<synfig::Canvas> get_canvas()const { return canvas_interface_->get_canvas(); }
@@ -544,24 +544,24 @@ public:
 
 	//! \writeme
 	void rebuild_ducks();
-	
+
 	//bool add_to_ducks(synfigapp::ValueDesc value_desc, synfig::ParamDesc *param_desc=NULL);
-		
+
 	//! Starts "playing" the animation in real-time
 	void play();
 
 	//! Shows the tables (Layer/Children)
 	void show_tables();
-	
+
 	//! Hides the tables (Layer/Children)
 	void hide_tables();
-	
+
 	//! Toggles the tables
 	void toggle_tables();
 
 	//! Gets the table status
 	bool tables_are_visible();
-	
+
 	//! Shows the time bar
 	void show_timebar();
 
@@ -581,28 +581,28 @@ public:
 
 	void time_zoom_in();
 	void time_zoom_out();
-	
+
 	void add_layer(synfig::String x);
-	
+
 	void show_keyframe_dialog();
-	
+
 	void play_audio(float t);
 	void stop_audio();
-	
+
 	void image_import();
 
 	void on_waypoint_clicked(synfigapp::ValueDesc,synfig::Waypoint, int button);
-	
+
 	void preview_option() {on_preview_option();}
-	
+
 	void present();
-	
+
 	/*
  -- ** -- S I G N A L   T E R M I N A L S -------------------------------------
 	*/
 
 private:
-	
+
 	void on_unselect_layers();
 
 	void on_input_device_changed(GdkDevice*);
@@ -611,7 +611,7 @@ private:
 
 	virtual bool on_focus_in_event(GdkEventFocus*);
 	virtual bool on_focus_out_event(GdkEventFocus*);
-	
+
 	//bool on_children_tree_event(GdkEvent *event);
 
 	bool on_keyframe_tree_event(GdkEvent *event);
@@ -625,21 +625,21 @@ private:
 	bool on_layer_user_click(int, Gtk::TreeRow, LayerTree::ColumnID);
 
 //	void on_layer_toggle(const Glib::ustring& path_string, Gtk::TreeModelColumn<bool> column);
-	
+
 	void on_mode_changed(synfigapp::CanvasInterface::Mode mode);
 
 //	void on_layer_waypoint_clicked(const Glib::ustring &, synfig::ValueNode_Animated::WaypointList::iterator);
-	
+
 	//void on_children_waypoint_clicked(const Glib::ustring &, synfig::ValueNode_Animated::WaypointList::iterator);
 
 	void on_waypoint_changed();
-	
+
 	void on_waypoint_delete();
 
 	void on_refresh_pressed();
 
 	void on_id_changed();
-	
+
 	void on_time_changed();
 
 	/*
@@ -648,7 +648,7 @@ private:
 	void on_layer_duplicate_pressed();
 	void on_layer_delete_pressed();
 	*/
-	
+
 	void on_keyframe_add_pressed();
 
 	void on_keyframe_duplicate_pressed();
@@ -658,17 +658,17 @@ private:
 	void on_animate_button_pressed();
 
 	void on_keyframe_button_pressed();
-	
+
 	void on_preview_option();
 	void on_preview_create(const PreviewInfo &);
-	
+
 	void on_audio_option();
 	void on_audio_file_change(const std::string &f);
 	void on_audio_offset_change(const synfig::Time &t);
-	
+
 	void on_audio_file_notify();
 	void on_audio_offset_notify();
-	
+
 	bool on_duck_changed(const synfig::Point &value,const synfigapp::ValueDesc& value_desc);
 
 	void on_layer_toggle(synfig::Layer::Handle);
@@ -678,19 +678,19 @@ private:
 	//void on_waypoint_clicked(synfigapp::ValueDesc,synfig::ValueNode_Animated::WaypointList::iterator, int button);
 
 	void on_drop_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, const Gtk::SelectionData& selection_data, guint info, guint time);
-	
+
 	//void on_audio_play();
 	bool on_audio_scrub();
 
 protected:
 	bool on_delete_event(GdkEventAny* event);
-	
+
 	/*
  -- ** -- S T A T I C   P U B L I C   M E T H O D S ---------------------------
 	*/
 
 public:
-	
+
 	static etl::handle<studio::CanvasView> create(etl::loose_handle<Instance> instance,etl::handle<synfig::Canvas> canvas);
 }; // END of class CanvasView
 

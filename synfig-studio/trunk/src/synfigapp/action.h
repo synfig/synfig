@@ -92,11 +92,11 @@ namespace synfigapp {
 
 class Instance;
 class Main;
-	
-namespace Action {	
+
+namespace Action {
 
 class System;
-	
+
 
 //! Exception class, thrown when redoing or undoing an action
 class Error
@@ -119,7 +119,7 @@ private:
 	synfig::String desc_;
 
 public:
-	
+
 	Error(Type type, const char *format, ...):
 		type_(type)
 	{
@@ -140,10 +140,10 @@ public:
 		type_(type)
 	{
 	}
-	
+
 	Type get_type()const { return type_; }
 	synfig::String get_desc()const { return desc_; }
-	
+
 }; // END of class Action::Error
 
 class Param;
@@ -167,7 +167,7 @@ enum Category
 	CATEGORY_OTHER			=(1<<12),
 
 	CATEGORY_DRAG			=(1<<24),
-	
+
 	CATEGORY_HIDDEN			=(1<<31),
 	CATEGORY_ALL			=(~0)-(1<<31)		//!< All categories (EXCEPT HIDDEN)
 }; // END of enum Category
@@ -188,25 +188,25 @@ inline Category operator|(Category lhs, Category rhs)
 **		-	Factory for creating this action from a ParamList
 **
 */
-class Base : public etl::shared_object 
+class Base : public etl::shared_object
 {
 protected:
 	Base() { }
-	
+
 public:
 	virtual ~Base() { };
 
 	//! This function will throw an Action::Error() on failure
 	virtual void perform()=0;
-	
+
 	virtual bool set_param(const synfig::String& name, const Param &) { return false; }
 	virtual bool is_ready()const=0;
-	
+
 	virtual synfig::String get_name()const =0;
 	virtual synfig::String get_local_name()const { return get_name(); }
 
 	void set_param_list(const ParamList &);
-	
+
 }; // END of class Action::Base
 
 typedef Action::Base* (*Factory)();
@@ -237,7 +237,7 @@ public:
 }; // END of class Action::Undoable
 
 //! Action base class for canvas-specific actions
-class CanvasSpecific 
+class CanvasSpecific
 {
 private:
 	bool is_dirty_;
@@ -251,8 +251,8 @@ protected:
 	CanvasSpecific():is_dirty_(true), mode_(MODE_UNDEFINED) { }
 
 	virtual ~CanvasSpecific() { };
-	
-	
+
+
 public:
 
 	void set_canvas(synfig::Canvas::Handle x) { canvas_=x; }
@@ -268,10 +268,10 @@ public:
 	EditMode get_edit_mode()const;
 
 	void set_edit_mode(EditMode x) { mode_=x; }
-	
+
 	bool is_dirty()const { return is_dirty_; }
 	void set_dirty(bool x=true) { is_dirty_=x; }
-	
+
 }; // END of class Action::Undoable
 
 typedef std::list< etl::handle<Action::Undoable> > ActionList;
@@ -294,9 +294,9 @@ public:
 	virtual void prepare()=0;
 
 	void clear() { action_list().clear(); }
-	
+
 	bool first_time()const { return action_list_.empty(); }
-	
+
 	void add_action(etl::handle<Undoable> action);
 
 	void add_action_front(etl::handle<Undoable> action);
@@ -342,8 +342,8 @@ struct BookEntry
 	Category		category;
 	Factory 		factory;
 	CandidateChecker	is_candidate;
-	GetParamVocab	get_param_vocab;	
-	
+	GetParamVocab	get_param_vocab;
+
 	bool operator<(const BookEntry &rhs)const { return priority<rhs.priority; }
 }; // END of struct BookEntry
 

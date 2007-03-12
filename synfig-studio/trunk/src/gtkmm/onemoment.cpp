@@ -80,7 +80,7 @@ using namespace studio;
 
 OneMoment::OneMoment():	Gtk::Window(Gtk::WINDOW_POPUP)
 {
-	
+
 	// Create the Copyright Label
 	Gtk::Label *label = manage(new class Gtk::Label(_("One Moment, Please...")));
 
@@ -104,7 +104,7 @@ OneMoment::OneMoment():	Gtk::Window(Gtk::WINDOW_POPUP)
 
 	// show everything off
 	show_all();
-	
+
 	present();
 	while(studio::App::events_pending())studio::App::iteration(false);
 }

@@ -71,7 +71,7 @@ Action::ParamVocab
 Action::KeyframeSet::get_param_vocab()
 {
 	ParamVocab ret(Action::CanvasSpecific::get_param_vocab());
-	
+
 	ret.push_back(ParamDesc("keyframe",Param::TYPE_KEYFRAME)
 		.set_local_name(_("New Keyframe"))
 		.set_desc(_("Keyframe to be added"))
@@ -95,7 +95,7 @@ Action::KeyframeSet::set_param(const synfig::String& name, const Action::Param &
 		keyframe=param.get_keyframe();
 		synfig::info("KeyframeSet::set_param():new_time: %s",keyframe.get_time().get_string().c_str());
 		synfig::info("KeyframeSet::set_param():get_keyframe(): %s",param.get_keyframe().get_time().get_string().c_str());
-		
+
 		return true;
 	}
 
@@ -115,19 +115,19 @@ Action::KeyframeSet::prepare()
 {
 	clear();
 	guid_set.clear();
-	
-	
 
-	
-	
+
+
+
+
 	//synfig::info("new_time: %s",new_time.get_string().c_str());
 	//synfig::info("old_time: %s",old_time.get_string().c_str());
-	
+
 	try { if(get_canvas()->keyframe_list().find(new_time)!=get_canvas()->keyframe_list().end()) throw Error(_("A Keyframe already exists at this point in time"));}
-	catch(...) { }	
+	catch(...) { }
 
 
-	// If the times are different, then we 
+	// If the times are different, then we
 	// will need to romp through the valuenodes
 	// and add actions to update their values.
 	if(new_time!=old_time)
@@ -149,10 +149,10 @@ Action::KeyframeSet::scale_activepoints(const synfigapp::ValueDesc& value_desc,c
 {
 	ValueNode_DynamicList::Handle value_node(ValueNode_DynamicList::Handle::cast_static(value_desc.get_parent_value_node()));
 	ValueNode_DynamicList::ListEntry& list_entry(value_node->list[value_desc.get_index()]);
-	
+
 	std::vector<Activepoint*> selected;
 	std::vector<Activepoint*>::iterator iter;
-	
+
 	if(list_entry.find(old_begin,old_end,selected))
 	{
 		// check to make sure this operation is OK
@@ -170,18 +170,18 @@ Action::KeyframeSet::scale_activepoints(const synfigapp::ValueDesc& value_desc,c
 			}
 			catch(Exception::NotFound) { }
 		}
-		
+
 		int ret(0);
 		while(!selected.empty())
 		{
 			if(selected.back()->get_time()!=old_2_new(selected.back()->get_time()))
 			{
 				Action::Handle action(Action::create("activepoint_set"));
-				
+
 				action->set_param("canvas",get_canvas());
 				action->set_param("canvas_interface",get_canvas_interface());
 				action->set_param("value_desc",value_desc);
-				
+
 				Activepoint activepoint(*selected.back());
 				activepoint.set_time(old_2_new(selected.back()->get_time()));
 
@@ -190,8 +190,8 @@ Action::KeyframeSet::scale_activepoints(const synfigapp::ValueDesc& value_desc,c
 				assert(action->is_ready());
 				if(!action->is_ready())
 					throw Error(Error::TYPE_NOTREADY);
-			
-				add_action_front(action);						
+
+				add_action_front(action);
 
 				ret++;
 			}
@@ -206,10 +206,10 @@ int
 Action::KeyframeSet::scale_waypoints(const synfigapp::ValueDesc& value_desc,const Time& old_begin,const Time& old_end,const Time& new_begin,const Time& new_end)
 {
 	ValueNode_Animated::Handle value_node(ValueNode_Animated::Handle::cast_static(value_desc.get_value_node()));
-	
+
 	std::vector<Waypoint*> selected;
 	std::vector<Waypoint*>::iterator iter;
-	
+
 	if(value_node->find(old_begin,old_end,selected))
 	{
 		// check to make sure this operation is OK
@@ -229,18 +229,18 @@ Action::KeyframeSet::scale_waypoints(const synfigapp::ValueDesc& value_desc,cons
 			}
 			catch(Exception::NotFound) { }
 		}
-		
+
 		int ret(0);
 		while(!selected.empty())
 		{
 			if(selected.back()->get_time()!=old_2_new(selected.back()->get_time()))
 			{
 				Action::Handle action(Action::create("waypoint_set"));
-				
+
 				action->set_param("canvas",get_canvas());
 				action->set_param("canvas_interface",get_canvas_interface());
 				action->set_param("value_node",ValueNode::Handle::cast_static(value_node));
-				
+
 				Waypoint waypoint(*selected.back());
 				waypoint.set_time(old_2_new(selected.back()->get_time()));
 
@@ -249,8 +249,8 @@ Action::KeyframeSet::scale_waypoints(const synfigapp::ValueDesc& value_desc,cons
 				assert(action->is_ready());
 				if(!action->is_ready())
 					throw Error(Error::TYPE_NOTREADY);
-			
-				add_action_front(action);						
+
+				add_action_front(action);
 
 				ret++;
 			}
@@ -263,9 +263,9 @@ Action::KeyframeSet::scale_waypoints(const synfigapp::ValueDesc& value_desc,cons
 
 void
 Action::KeyframeSet::process_value_desc(const synfigapp::ValueDesc& value_desc)
-{	
+{
 	if(value_desc.is_value_node())
-	{		
+	{
 		ValueNode::Handle value_node(value_desc.get_value_node());
 
 		//if(guid_set.count(value_node->get_guid()))
@@ -289,13 +289,13 @@ Action::KeyframeSet::process_value_desc(const synfigapp::ValueDesc& value_desc)
 					scale_activepoints(value_desc,old_time,keyframe_next,new_time,keyframe_next);
 				}
 				//else
-				{	
+				{
 					Action::Handle action(ActivepointSetSmart::create());
-					
+
 					action->set_param("canvas",get_canvas());
 					action->set_param("canvas_interface",get_canvas_interface());
 					action->set_param("value_desc",value_desc);
-					
+
 					Activepoint activepoint;
 					try
 					{
@@ -309,11 +309,11 @@ Action::KeyframeSet::process_value_desc(const synfigapp::ValueDesc& value_desc)
 						activepoint.set_priority(0);
 					}
 					action->set_param("activepoint",activepoint);
-	
+
 					assert(action->is_ready());
 					if(!action->is_ready())
 						throw Error(Error::TYPE_NOTREADY);
-				
+
 					add_action_front(action);
 				}
 			}
@@ -331,13 +331,13 @@ Action::KeyframeSet::process_value_desc(const synfigapp::ValueDesc& value_desc)
 			//else
 			{
 				ValueNode_Animated::Handle value_node_animated(ValueNode_Animated::Handle::cast_dynamic(value_node));
-				
+
 				Action::Handle action(WaypointSetSmart::create());
-				
+
 				action->set_param("canvas",get_canvas());
 				action->set_param("canvas_interface",get_canvas_interface());
 				action->set_param("value_node",ValueNode::Handle(value_node_animated));
-				
+
 				Waypoint waypoint;
 				try
 				{
@@ -350,11 +350,11 @@ Action::KeyframeSet::process_value_desc(const synfigapp::ValueDesc& value_desc)
 					waypoint.set_value((*value_node_animated)(old_time));
 				}
 				action->set_param("waypoint",waypoint);
-		
+
 				assert(action->is_ready());
 				if(!action->is_ready())
 					throw Error(Error::TYPE_NOTREADY);
-			
+
 				add_action_front(action);
 			}
 		}
@@ -368,13 +368,13 @@ Action::KeyframeSet::perform()
 
 	old_time=get_canvas()->keyframe_list().find(keyframe)->get_time();
 	new_time=keyframe.get_time();
-	
+
 	try { get_canvas()->keyframe_list().find(keyframe);}
 	catch(synfig::Exception::NotFound)
 	{
 		throw Error(_("Unable to find the given keyframe"));
-	}	
-	
+	}
+
 	// Check for colisions
 	if(old_time!=new_time)
 	{
@@ -391,7 +391,7 @@ Action::KeyframeSet::perform()
 
 	old_keyframe=*get_canvas()->keyframe_list().find(keyframe);
 	*get_canvas()->keyframe_list().find(keyframe)=keyframe;
-	
+
 	get_canvas()->keyframe_list().sync();
 
 	try{
@@ -403,7 +403,7 @@ Action::KeyframeSet::perform()
 		get_canvas()->keyframe_list().sync();
 		throw;
 	}
-	
+
 	// Signal that a layer has been inserted
 	if(get_canvas_interface())
 	{
@@ -420,7 +420,7 @@ Action::KeyframeSet::undo()
 	*get_canvas()->keyframe_list().find(old_keyframe)=old_keyframe;
 
 	get_canvas()->keyframe_list().sync();
-	
+
 	// Signal that a layer has been inserted
 	if(get_canvas_interface())
 	{

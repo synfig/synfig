@@ -39,7 +39,7 @@
 /* === C L A S S E S & S T R U C T S ======================================= */
 
 namespace studio {
-	
+
 class AudioProfile;
 class AudioContainer;
 
@@ -55,20 +55,20 @@ class AudioContainer;
 class Widget_Sound : public Widget_Timeslider
 {
 	etl::handle<AudioProfile>	audioprof;
-	
+
 	//event override interface
 	virtual bool on_expose_event(GdkEventExpose *heh = 0);
-	
+
 	//for scrubbing... (click is start, drag is scrub, and release is stop...)
 	virtual bool on_motion_notify_event(GdkEventMotion* event);
 	virtual bool on_button_press_event(GdkEventButton *event);
 	virtual bool on_button_release_event(GdkEventButton *event);
-	
+
 	//Might want a signal setup for scrubbing... and here it is
 	sigc::signal1<void,double>	signal_start_scrubbing_;
 	sigc::signal1<void,double>	signal_scrub_;
 	sigc::signal0<void>			signal_stop_scrubbing_;
-	
+
 public: //structors
 	Widget_Sound();
 	~Widget_Sound();
@@ -88,7 +88,7 @@ public: //get set interface
 
 public: //interface
 	void draw();
-	
+
 	void clear();
 };
 

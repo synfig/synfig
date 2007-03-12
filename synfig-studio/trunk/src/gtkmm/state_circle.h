@@ -48,7 +48,7 @@ public:
 }; // END of class StateCircle
 
 extern StateCircle state_circle;
-	
+
 }; // END of namespace studio
 
 /* === E N D =============================================================== */

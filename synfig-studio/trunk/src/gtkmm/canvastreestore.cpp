@@ -99,7 +99,7 @@ CanvasTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& iter, int colu
 			synfig::error(__FILE__":%d: Unable to figure out value",__LINE__);
 			return;
 		}
-		
+
 		g_value_init(value.gobj(),x.value_type());
 		g_value_copy(x.gobj(),value.gobj());
 	}
@@ -112,7 +112,7 @@ CanvasTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& iter, int colu
 		g_value_init(x.gobj(),x.value_type());
 
 		x.set(value_desc && value_desc.is_value_node());
-		
+
 		g_value_init(value.gobj(),x.value_type());
 		g_value_copy(x.gobj(),value.gobj());
 	}
@@ -125,7 +125,7 @@ CanvasTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& iter, int colu
 		g_value_init(x.gobj(),x.value_type());
 
 		x.set(value_desc.is_value_node() && value_desc.get_value_node()->rcount()>1);
-		
+
 		g_value_init(value.gobj(),x.value_type());
 		g_value_copy(x.gobj(),value.gobj());
 	}
@@ -138,7 +138,7 @@ CanvasTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& iter, int colu
 		g_value_init(x.gobj(),x.value_type());
 
 		x.set(value_desc.is_value_node() && value_desc.get_value_node()->is_exported());
-		
+
 		g_value_init(value.gobj(),x.value_type());
 		g_value_copy(x.gobj(),value.gobj());
 	}
@@ -151,7 +151,7 @@ CanvasTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& iter, int colu
 		g_value_init(x.gobj(),x.value_type());
 
 		x.set(!value_desc && (Canvas::Handle)(*iter)[model.canvas]);
-		
+
 		g_value_init(value.gobj(),x.value_type());
 		g_value_copy(x.gobj(),value.gobj());
 	}
@@ -168,8 +168,8 @@ CanvasTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& iter, int colu
 		else if(!value_desc && Canvas::Handle((*iter)[model.canvas]))
 			x.set(Canvas::Handle((*iter)[model.canvas])->get_id());
 		else
-			return Gtk::TreeStore::get_value_vfunc(iter,column,value);	
-		
+			return Gtk::TreeStore::get_value_vfunc(iter,column,value);
+
 		g_value_init(value.gobj(),x.value_type());
 		g_value_copy(x.gobj(),value.gobj());
 	}
@@ -182,7 +182,7 @@ CanvasTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& iter, int colu
 		g_value_init(x.gobj(),x.value_type());
 
 		x.set(!value_desc.is_value_node() || synfigapp::is_editable(value_desc.get_value_node()));
-		
+
 		g_value_init(value.gobj(),x.value_type());
 		g_value_copy(x.gobj(),value.gobj());
 	}
@@ -211,7 +211,7 @@ CanvasTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& iter, int colu
 				x.set(value_desc.get_value_node()->get_local_name());
 			}
 		}
-		
+
 		g_value_init(value.gobj(),x.value_type());
 		g_value_copy(x.gobj(),value.gobj());
 	}
@@ -233,9 +233,9 @@ CanvasTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& iter, int colu
 					x.set(canvas->get_id());
 				else
 				if(!canvas->get_name().empty())
-					x.set(canvas->get_name());	
+					x.set(canvas->get_name());
 				else
-					x.set(_("[Unnamed]"));		
+					x.set(_("[Unnamed]"));
 				x.set(_("Canvas"));
 			}
 			return Gtk::TreeStore::get_value_vfunc(iter,column,value);
@@ -243,16 +243,16 @@ CanvasTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& iter, int colu
 		else
 		{
 			ValueNode::Handle value_node=value_desc.get_value_node();
-			
+
 			// Setup the row's label
 			if(value_node->get_id().empty())
-				x.set(Glib::ustring((*iter)[model.name]));	
+				x.set(Glib::ustring((*iter)[model.name]));
 			else if(Glib::ustring((*iter)[model.name]).empty())
 				x.set(value_node->get_id());
 			else
-				x.set(Glib::ustring((*iter)[model.name])+" ("+value_node->get_id()+')');			
+				x.set(Glib::ustring((*iter)[model.name])+" ("+value_node->get_id()+')');
 		}
-		
+
 		g_value_init(value.gobj(),x.value_type());
 		g_value_copy(x.gobj(),value.gobj());
 	}
@@ -265,7 +265,7 @@ CanvasTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& iter, int colu
 
 		Glib::Value<Glib::RefPtr<Gdk::Pixbuf> > x;
 		g_value_init(x.gobj(),x.value_type());
-		
+
 		x.set(get_tree_pixbuf(value_desc.get_value_type()));
 
 		g_value_init(value.gobj(),x.value_type());
@@ -303,7 +303,7 @@ bool
 CanvasTreeStore::find_next_value_desc(const synfigapp::ValueDesc& value_desc, Gtk::TreeIter& iter)
 {
 	if(!iter) return find_first_value_desc(value_desc,iter);
-		
+
 	if(iter) do {
 		if(!iter->children().empty())
 		{
@@ -359,7 +359,7 @@ bool
 CanvasTreeStore::find_next_value_node(const ValueNode::Handle& value_node, Gtk::TreeIter& iter)
 {
 	if(!iter) return find_first_value_node(value_node,iter);
-		
+
 	if(iter) do {
 		if(!iter->children().empty())
 		{
@@ -392,7 +392,7 @@ CanvasTreeStore::set_row(Gtk::TreeRow row,synfigapp::ValueDesc value_desc, bool 
 	try
 	{
 		//row[model.icon] = get_tree_pixbuf(value_desc.get_value_type());
-		
+
 		if(value_desc.is_value_node())
 		{
 			ValueNode::Handle value_node=value_desc.get_value_node();
@@ -404,16 +404,16 @@ CanvasTreeStore::set_row(Gtk::TreeRow row,synfigapp::ValueDesc value_desc, bool 
 			//row[model.is_value_node] = true;
 			//row[model.is_editable] = synfigapp::is_editable(value_node);
 			//row[model.id]=value_node->get_id();
-			
+
 			// Set the canvas
 			if(value_desc.parent_is_canvas())
 				row[model.canvas]=value_desc.get_canvas();
 			else
 				row[model.canvas]=canvas_interface()->get_canvas();
-				
+
 			LinkableValueNode::Handle linkable;
 			linkable=LinkableValueNode::Handle::cast_dynamic(value_node);
-	
+
 			if(linkable && do_children)
 			{
 				row[model.link_count] = linkable->link_count();
@@ -442,7 +442,7 @@ CanvasTreeStore::set_row(Gtk::TreeRow row,synfigapp::ValueDesc value_desc, bool 
 		erase(row);
 		return;
 	}
-	
+
 	// We should never get to this point
 	assert(0);
 }
@@ -458,52 +458,52 @@ CanvasTreeStore::refresh_row(Gtk::TreeModel::Row &row, bool do_children)
 			(!bool(row[model.is_value_node]) && row[model.link_count]!=0))
 		{
 			set_row(row,value_desc,do_children);
-			return;				
+			return;
 		}
-		
+
 		if(row[model.is_value_node])
 		{
 			ValueNode::Handle value_node(value_desc.get_value_node());
-	
+
 			if(ValueNode::Handle(row[model.value_node])!=value_node)
 			{
 				rebuild_row(row,do_children);
 				return;
 			}
-	
+
 			//row[model.id]=value_node->get_id();
-	
+
 			// Setup the row's label
 			/*
 			if(value_node->get_id().empty())
-				row[model.label] = Glib::ustring(row[model.name]);					
+				row[model.label] = Glib::ustring(row[model.name]);
 			else if(Glib::ustring(row[model.name]).empty())
 				row[model.label] = value_node->get_id();
 			else
-				row[model.label] = Glib::ustring(row[model.name])+" ("+value_node->get_id()+')';			
+				row[model.label] = Glib::ustring(row[model.name])+" ("+value_node->get_id()+')';
 			*/
-			
+
 			LinkableValueNode::Handle linkable;
 			linkable=LinkableValueNode::Handle::cast_dynamic(value_node);
 			if(do_children && linkable && ((int)row[model.link_count] != linkable->link_count()))
 			{
 	//			Gtk::TreeModel::Children children = row.children();
 	//			while(!children.empty() && erase(children.begin()));
-				
+
 				set_row(row,value_desc);
-				return;				
+				return;
 			}
 		}
 		else
 		{
-			//row[model.label] = Glib::ustring(row[model.name]);					
+			//row[model.label] = Glib::ustring(row[model.name]);
 			//row[model.is_value_node] = false;
 			//row[model.is_editable] = true;
 		}
 	}
 	if(!do_children)
-		return; 
-	
+		return;
+
 	Gtk::TreeModel::Children children = row.children();
 	Gtk::TreeModel::Children::iterator iter;
 
@@ -526,14 +526,14 @@ CanvasTreeStore::rebuild_row(Gtk::TreeModel::Row &row, bool do_children)
 		value_node=value_desc.get_value_node();
 
 		assert(value_node);if(!value_node)return;
-		
+
 		if(value_node && value_node!=(ValueNode::Handle)row[model.value_node])
 		{
 //			Gtk::TreeModel::Children children = row.children();
 //			while(!children.empty() && erase(children.begin()));
-				
+
 			set_row(row,value_desc,do_children);
-			return;				
+			return;
 		}
 
 		LinkableValueNode::Handle linkable;
@@ -543,34 +543,34 @@ CanvasTreeStore::rebuild_row(Gtk::TreeModel::Row &row, bool do_children)
 		{
 //			Gtk::TreeModel::Children children = row.children();
 //			while(!children.empty() && erase(children.begin()));
-			
+
 			set_row(row,value_desc);
-			return;				
+			return;
 		}
-			
+
 		//if(!value_node)
 		//	value_node=row[model.value_node];
-		
+
 		row[model.id]=value_node->get_id();
 
 		// Setup the row's label
 		if(value_node->get_id().empty())
-			row[model.label] = Glib::ustring(row[model.name]);					
+			row[model.label] = Glib::ustring(row[model.name]);
 		else if(Glib::ustring(row[model.name]).empty())
 			row[model.label] = value_node->get_id();
 		else
-			row[model.label] = Glib::ustring(row[model.name])+" ("+value_node->get_id()+')';			
+			row[model.label] = Glib::ustring(row[model.name])+" ("+value_node->get_id()+')';
 	}
 	else
 	{
-		row[model.label] = Glib::ustring(row[model.name]);					
+		row[model.label] = Glib::ustring(row[model.name]);
 		row[model.is_value_node] = false;
 		row[model.is_editable] = true;
 		Gtk::TreeModel::Children children = row.children();
 		while(!children.empty() && erase(children.begin()));
 	}
 	if(!do_children)
-		return; 
+		return;
 
 	Gtk::TreeModel::Children children = row.children();
 	Gtk::TreeModel::Children::iterator iter;
@@ -586,9 +586,9 @@ CellRenderer_ValueBase*
 CanvasTreeStore::add_cell_renderer_value(Gtk::TreeView::Column* column)
 {
 	const CanvasTreeStore::Model model;
-	
+
 	CellRenderer_ValueBase* ret;
-	
+
 	ret=Gtk::manage( new CellRenderer_ValueBase() );
 
 	column->pack_start(*ret,true);
@@ -603,16 +603,16 @@ CellRenderer_TimeTrack*
 CanvasTreeStore::add_cell_renderer_value_node(Gtk::TreeView::Column* column)
 {
 	const CanvasTreeStore::Model model;
-	
+
 	CellRenderer_TimeTrack* ret;
-	
+
 	ret = Gtk::manage( new CellRenderer_TimeTrack() );
-	
+
 	column->pack_start(*ret,true);
 	//column->add_attribute(ret->property_visible(), model.is_value_node);
 	column->add_attribute(ret->property_value_desc(), model.value_desc);
 	column->add_attribute(ret->property_canvas(), model.canvas);
-	
-	
+
+
 	return ret;
 }

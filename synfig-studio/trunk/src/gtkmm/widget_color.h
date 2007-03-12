@@ -44,13 +44,13 @@ namespace studio {
 
 
 Gdk::Color colorconv_synfig2gdk(const synfig::Color &c);
-	
+
 void render_color_to_window(const Glib::RefPtr<Gdk::Drawable>& window,const Gdk::Rectangle& ca,const synfig::Color &color);
 
 class Widget_Color : public Gtk::DrawingArea
 {
 	synfig::Color color;
-	
+
 	sigc::signal<void> signal_activate_;
 	sigc::signal<void> signal_secondary_;
 
@@ -60,7 +60,7 @@ public:
 	sigc::signal<void>& signal_activate() { return signal_activate_; }
 	sigc::signal<void>& signal_clicked() { return signal_activate_; }
 	sigc::signal<void>& signal_secondary() { return signal_secondary_; }
-	
+
 	void set_value(const synfig::Color &data);
 	const synfig::Color &get_value();
 	Widget_Color();
@@ -70,7 +70,7 @@ private:
 	bool on_event(GdkEvent *event);
 
 }; // END of class Widget_Color
-	
+
 }; // END of namespace studio
 
 /* === E N D =============================================================== */

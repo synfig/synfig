@@ -45,14 +45,14 @@ class CVSInfo
 	bool in_sandbox_;
 	bool in_repository_;
 	bool update_available_;
-	
+
 	synfig::String cvs_version_;
 	time_t original_timestamp_;
-	
-	
+
+
 public:
 	void calc_repository_info();
-	
+
 	CVSInfo(const synfig::String& file_name);
 	CVSInfo();
 	~CVSInfo();
@@ -63,7 +63,7 @@ public:
 
 	//! Returns TRUE if \a file_name is in a sandbox
 	bool in_sandbox()const;
-	
+
 	//! Returns TRUE if \a file_name is in the repository
 	bool in_repository()const;
 
@@ -75,7 +75,7 @@ public:
 
 	//! Returns the CVS version string
 	const synfig::String& get_cvs_version()const;
-	
+
 	//! Returns the unix timestamp of the repository file
 	const time_t &get_original_timestamp()const;
 
@@ -87,16 +87,16 @@ public:
 
 	//! Returns the name of the module
 	synfig::String get_cvs_module()const;
-			
+
 //	WRITE OPERATIONS -------------------------------------------------
-	
+
 	void cvs_add(const synfig::String& message=synfig::String());
-	
+
 	void cvs_update();
-	
+
 	void cvs_commit(const synfig::String& message=synfig::String());
 }; // END of class CVSInfo
-	
+
 }; // END of namespace synfigapp
 
 /* === E N D =============================================================== */

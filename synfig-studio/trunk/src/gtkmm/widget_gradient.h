@@ -48,46 +48,46 @@ class Widget_Gradient : public Gtk::DrawingArea
 	sigc::signal<void,synfig::Gradient::CPoint> signal_cpoint_selected_;
 
 	synfig::Gradient gradient_;
-	
+
 	bool editable_;
-	
+
 	bool changed_;
-	
+
 	synfig::Gradient::CPoint	selected_cpoint;
 
-	void popup_menu(float x);	
+	void popup_menu(float x);
 
-	void insert_cpoint(float x);	
+	void insert_cpoint(float x);
 
-	void remove_cpoint(float x);	
-		
+	void remove_cpoint(float x);
+
 public:
-	
+
 	Widget_Gradient();
-	
+
 	~Widget_Gradient();
 
 	sigc::signal<void>& signal_value_changed() { return signal_value_changed_; }
 	sigc::signal<void>& signal_clicked() { return signal_clicked_; }
 
 	sigc::signal<void,synfig::Gradient::CPoint>& signal_cpoint_selected() { return signal_cpoint_selected_; }
-	
+
 	void set_value(const synfig::Gradient& x);
 
-	const synfig::Gradient& get_value()const { return gradient_; }	
-	
+	const synfig::Gradient& get_value()const { return gradient_; }
+
 	void set_editable(bool x=true) { editable_=x; }
-	
+
 	bool get_editable()const { return editable_; }
 
 
-	
+
 	void set_selected_cpoint(const synfig::Gradient::CPoint &x);
 
 	const synfig::Gradient::CPoint& get_selected_cpoint() { return selected_cpoint; }
 
 	void update_cpoint(const synfig::Gradient::CPoint &x);
-	
+
 
 
 	bool redraw(GdkEventExpose*bleh=NULL);

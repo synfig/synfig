@@ -40,7 +40,7 @@ namespace studio {
 class Module : public etl::shared_object
 {
 	bool status_;
-	
+
 protected:
 	Module();
 
@@ -48,18 +48,18 @@ public:
 	virtual ~Module();
 
 	bool start();
-	
+
 	bool stop();
-	
+
 	bool get_status()const;
 
 protected:
-	
+
 	virtual bool start_vfunc()=0;
 	virtual bool stop_vfunc()=0;
 };
 
-	
+
 }; // END of namespace studio
 
 /* === E N D =============================================================== */

@@ -40,10 +40,10 @@ namespace studio {
 
 class Renderer_Timecode : public studio::WorkAreaRenderer
 {
-	
+
 public:
 	~Renderer_Timecode();
-	
+
 	synfig::Vector get_grid_size()const;
 
 	void render_vfunc(const Glib::RefPtr<Gdk::Drawable>& drawable,const Gdk::Rectangle& expose_area	);

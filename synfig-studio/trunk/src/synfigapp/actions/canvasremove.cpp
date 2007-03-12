@@ -65,7 +65,7 @@ Action::ParamVocab
 Action::CanvasRemove::get_param_vocab()
 {
 	ParamVocab ret(Action::CanvasSpecific::get_param_vocab());
-	
+
 	return ret;
 }
 
@@ -79,7 +79,7 @@ Action::CanvasRemove::is_candidate(const ParamList &x)
 		// We cannot remove the root canvas.
 		if(canvas->is_root())
 			return false;
-		
+
 		return true;
 	}
 	return false;
@@ -106,14 +106,14 @@ Action::CanvasRemove::perform()
 
 	if(get_canvas()->is_inline())
 		throw Error(_("You cannot remove an inline canvas!"));
-	
+
 	parent_canvas=get_canvas()->parent();
 	canvas_id=get_canvas()->get_id();
-	
+
 	assert(parent_canvas);
-	
+
 	parent_canvas->remove_child_canvas(get_canvas());
-	
+
 	if(get_canvas_interface())
 	{
 		get_canvas_interface()->signal_canvas_removed()(get_canvas());

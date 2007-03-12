@@ -67,7 +67,7 @@ Action::ParamVocab
 Action::WaypointSimpleAdd::get_param_vocab()
 {
 	ParamVocab ret(Action::CanvasSpecific::get_param_vocab());
-	
+
 	ret.push_back(ParamDesc("value_node",Param::TYPE_VALUENODE)
 		.set_local_name(_("Destination ValueNode (Animated)"))
 	);
@@ -92,13 +92,13 @@ Action::WaypointSimpleAdd::set_param(const synfig::String& name, const Action::P
 	if(name=="value_node" && param.get_type()==Param::TYPE_VALUENODE)
 	{
 		value_node=ValueNode_Animated::Handle::cast_dynamic(param.get_value_node());
-		
+
 		return static_cast<bool>(value_node);
 	}
 	if(name=="waypoint" && param.get_type()==Param::TYPE_WAYPOINT)
 	{
 		waypoint = param.get_waypoint();
-		
+
 		return true;
 	}
 
@@ -115,20 +115,20 @@ Action::WaypointSimpleAdd::is_ready()const
 
 void
 Action::WaypointSimpleAdd::perform()
-{	
+{
 	//remove any pretenders that lie at our destination
 	ValueNode_Animated::findresult iter = value_node->find_time(waypoint.get_time());
-	
+
 	time_overwrite = false;
 	if(iter.second)
 	{
 		overwritten_wp = *iter.first;
 		time_overwrite = true;
 	}
-	
+
 	//add the value node in since it's safe
 	value_node->add(waypoint);
-	
+
 	// Signal that a valuenode has been changed
 	value_node->changed();
 }
@@ -138,20 +138,20 @@ Action::WaypointSimpleAdd::undo()
 {
 	//remove our old version...
 	ValueNode_Animated::findresult iter = value_node->find_uid(waypoint);
-	
+
 	if(!iter.second)
 	{
 		throw Error(_("The waypoint to remove no longer exists"));
 	}
-	
+
 	//remove the offending value
 	value_node->erase(*iter.first); //could also just use waypoint
-	
+
 	if(time_overwrite)
 	{
-		value_node->add(overwritten_wp);				
+		value_node->add(overwritten_wp);
 	}
-	
+
 	// Signal that a valuenode has been changed
 	value_node->changed();
 }

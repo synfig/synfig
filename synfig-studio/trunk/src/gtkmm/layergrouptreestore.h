@@ -56,7 +56,7 @@ public:
 		Gtk::TreeModelColumn<Glib::RefPtr<Gdk::Pixbuf> > icon;
 		Gtk::TreeModelColumn<Glib::ustring> label;
 		Gtk::TreeModelColumn<Glib::ustring> tooltip;
-		
+
 		Gtk::TreeModelColumn<Glib::ustring> group_name;
 		Gtk::TreeModelColumn<Glib::ustring> parent_group_name;
 
@@ -66,10 +66,10 @@ public:
 		Gtk::TreeModelColumn<bool>						is_layer;
 		Gtk::TreeModelColumn<bool>						is_group;
 		Gtk::TreeModelColumn<synfig::Layer::Handle>		layer;
-		
+
 		Gtk::TreeModelColumn<LayerList>		all_layers;
 		Gtk::TreeModelColumn<LayerList>		child_layers;
-		
+
 		Model()
 		{
 			add(icon);
@@ -92,10 +92,10 @@ public:
 	*/
 
 public:
-	
+
 	//! TreeModel for the layers
 	const Model model;
-	
+
 	bool rebuilding;
 
 	/*
@@ -160,7 +160,7 @@ private:
 	*/
 
 public:
-	
+
 	LayerGroupTreeStore(etl::loose_handle<synfigapp::CanvasInterface> canvas_interface_);
 	~LayerGroupTreeStore();
 
@@ -190,7 +190,7 @@ public:
 	*/
 
 public:
-	
+
 	static Glib::RefPtr<LayerGroupTreeStore> create(etl::loose_handle<synfigapp::CanvasInterface> canvas_interface_);
 
 }; // END of class LayerGroupTreeStore

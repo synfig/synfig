@@ -55,7 +55,7 @@ private:
 	std::vector<synfigapp::ValueDesc> value_desc_list;
 
 	void process_value_desc(const synfigapp::ValueDesc& value_desc);
-	
+
 	int scale_activepoints(const synfigapp::ValueDesc& value_desc,const synfig::Time& old_begin,const synfig::Time& old_end,const synfig::Time& new_begin,const synfig::Time& new_end);
 	int scale_waypoints(const synfigapp::ValueDesc& value_desc,const synfig::Time& old_begin,const synfig::Time& old_end,const synfig::Time& new_begin,const synfig::Time& new_end);
 

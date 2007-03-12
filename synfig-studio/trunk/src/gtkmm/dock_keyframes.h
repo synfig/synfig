@@ -45,9 +45,9 @@ class KeyframeTreeStore;
 class KeyframeTree;
 
 class KeyframeActionManager;
-	
+
 class Dock_Keyframes : public Dock_CanvasSpecific
-{	
+{
 	Glib::RefPtr<Gtk::ActionGroup> action_group;
 
 	/*
@@ -55,11 +55,11 @@ class Dock_Keyframes : public Dock_CanvasSpecific
 	void duplicate_keyframe_pressed();
 	void delete_keyframe_pressed();
 	*/
-	
+
 	void show_keyframe_properties();
-	
+
 	KeyframeActionManager* keyframe_action_manager;
-	
+
 protected:
 	virtual void init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view);
 	virtual void changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view);

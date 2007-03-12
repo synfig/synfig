@@ -66,7 +66,7 @@ Action::ParamVocab
 Action::ValueNodeConstSet::get_param_vocab()
 {
 	ParamVocab ret(Action::CanvasSpecific::get_param_vocab());
-	
+
 	ret.push_back(ParamDesc("value_node",Param::TYPE_VALUENODE)
 		.set_local_name(_("ValueNode_Const"))
 	);
@@ -74,7 +74,7 @@ Action::ValueNodeConstSet::get_param_vocab()
 	ret.push_back(ParamDesc("new_value",Param::TYPE_VALUE)
 		.set_local_name(_("ValueBase"))
 	);
-	
+
 	return ret;
 }
 
@@ -95,14 +95,14 @@ Action::ValueNodeConstSet::set_param(const synfig::String& name, const Action::P
 	if(name=="value_node" && param.get_type()==Param::TYPE_VALUENODE)
 	{
 		value_node=ValueNode_Const::Handle::cast_dynamic(param.get_value_node());
-		
+
 		return (bool)value_node;
 	}
 
 	if(name=="new_value" && param.get_type()==Param::TYPE_VALUE)
 	{
 		new_value=param.get_value();
-		
+
 		return true;
 	}
 
@@ -121,11 +121,11 @@ void
 Action::ValueNodeConstSet::perform()
 {
 	//set_dirty(true);
-	
+
 	old_value=value_node->get_value();
 
-	value_node->set_value(new_value);	
-	
+	value_node->set_value(new_value);
+
 	// Signal that a layer has been inserted
 	/*if(get_canvas_interface())
 	{
@@ -138,8 +138,8 @@ Action::ValueNodeConstSet::undo()
 {
 	//set_dirty(true);
 
-	value_node->set_value(old_value);	
-	
+	value_node->set_value(old_value);
+
 	// Signal that a layer has been inserted
 	/*if(get_canvas_interface())
 	{

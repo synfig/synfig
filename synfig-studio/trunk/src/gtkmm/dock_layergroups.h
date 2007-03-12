@@ -44,9 +44,9 @@ namespace Gtk { class HScale; }
 namespace studio {
 
 class GroupActionManager ;
-	
+
 class Dock_LayerGroups : public Dock_CanvasSpecific
-{	
+{
 	Glib::RefPtr<Gtk::ActionGroup> action_group_group_ops;
 	Glib::RefPtr<Gtk::Action> action_group_add;
 

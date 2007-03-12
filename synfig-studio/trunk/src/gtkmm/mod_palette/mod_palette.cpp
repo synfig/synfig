@@ -61,7 +61,7 @@ studio::ModPalette::start_vfunc()
 
 	dock_pal_browse=new Dock_PalBrowse();
 	App::get_dock_manager()->register_dockable(*dock_pal_browse);
-	
+
 	return true;
 }
 

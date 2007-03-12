@@ -47,17 +47,17 @@ protected:
 	//stuff I don't want
 	virtual bool set_link_vfunc(int i,synfig::ValueNode::Handle x) {return false;}
 	virtual LinkableValueNode* create_new()const {return 0;}
-	
+
 	//new stuff I need
 	list_type::const_iterator findlink(synfig::ValueNode::Handle x) const;
 	list_type::iterator findlink(synfig::ValueNode::Handle x);
-	
+
 public: //linkable interface
-	
-	//stuff I do want	
+
+	//stuff I do want
 	virtual synfig::ValueNode::LooseHandle get_link_vfunc(int i)const;
 	virtual int link_count()const;
-	
+
 	//I have to support the thing because it's too much work otherwise
 	virtual synfig::String link_local_name(int i)const;
 	virtual synfig::String link_name(int i)const;
@@ -74,7 +74,7 @@ public:
 	virtual void remove(synfig::ValueNode::Handle v);
 
 };
-	
+
 }; // END of namespace studio
 
 /* === E N D =============================================================== */

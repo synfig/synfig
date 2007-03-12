@@ -71,7 +71,7 @@ Action::ParamVocab
 Action::KeyframeRemove::get_param_vocab()
 {
 	ParamVocab ret(Action::CanvasSpecific::get_param_vocab());
-	
+
 	ret.push_back(ParamDesc("keyframe",Param::TYPE_KEYFRAME)
 		.set_local_name(_("Keyframe"))
 		.set_desc(_("Keyframe to be removed"))
@@ -92,7 +92,7 @@ Action::KeyframeRemove::set_param(const synfig::String& name, const Action::Para
 	if(name=="keyframe" && param.get_type()==Param::TYPE_KEYFRAME)
 	{
 		keyframe=param.get_keyframe();
-		
+
 		return true;
 	}
 
@@ -116,9 +116,9 @@ Action::KeyframeRemove::prepare()
 	catch(synfig::Exception::NotFound)
 	{
 		throw Error(_("Unable to find the given keyframe"));
-	}	
+	}
 
-	
+
 	{
 		std::vector<synfigapp::ValueDesc> value_desc_list;
 		get_canvas_interface()->find_important_value_descs(value_desc_list);
@@ -132,13 +132,13 @@ Action::KeyframeRemove::prepare()
 
 void
 Action::KeyframeRemove::process_value_desc(const synfigapp::ValueDesc& value_desc)
-{	
+{
 	const synfig::Time time(keyframe.get_time());
 
 	if(value_desc.is_value_node())
 	{
 		ValueNode::Handle value_node(value_desc.get_value_node());
-	
+
 		// If we are a dynamic list, then we need to update the ActivePoints
 		if(ValueNode_DynamicList::Handle::cast_dynamic(value_node))
 		{
@@ -153,7 +153,7 @@ Action::KeyframeRemove::process_value_desc(const synfigapp::ValueDesc& value_des
 				synfigapp::ValueDesc value_desc(value_node_dynamic,i);
 
 				Action::Handle action(ActivepointRemove::create());
-				
+
 				action->set_param("canvas",get_canvas());
 				action->set_param("canvas_interface",get_canvas_interface());
 				action->set_param("value_desc",value_desc);
@@ -162,8 +162,8 @@ Action::KeyframeRemove::process_value_desc(const synfigapp::ValueDesc& value_des
 				assert(action->is_ready());
 				if(!action->is_ready())
 					throw Error(Error::TYPE_NOTREADY);
-			
-				add_action_front(action);						
+
+				add_action_front(action);
 			}
 			catch(...)
 			{
@@ -176,19 +176,19 @@ Action::KeyframeRemove::process_value_desc(const synfigapp::ValueDesc& value_des
 			Waypoint waypoint;
 			waypoint=*value_node_animated->find(time);
 			assert(waypoint.get_time()==time);
-			
+
 			Action::Handle action(WaypointRemove::create());
-			
+
 			action->set_param("canvas",get_canvas());
 			action->set_param("canvas_interface",get_canvas_interface());
 			action->set_param("value_node",ValueNode::Handle(value_node_animated));
 			action->set_param("waypoint",waypoint);
-	
+
 			assert(action->is_ready());
 			if(!action->is_ready())
 				throw Error(Error::TYPE_NOTREADY);
-		
-			add_action_front(action);						
+
+			add_action_front(action);
 		}
 		catch(...)
 		{
@@ -201,29 +201,29 @@ void
 Action::KeyframeRemove::perform()
 {
 	Action::Super::perform();
-	
+
 	if(get_canvas_interface())
 	{
 		get_canvas_interface()->signal_keyframe_removed()(keyframe);
 	}
 	else synfig::warning("CanvasInterface not set on action");
 
-	get_canvas()->keyframe_list().erase(keyframe);	
+	get_canvas()->keyframe_list().erase(keyframe);
 }
 
 void
 Action::KeyframeRemove::undo()
 {
 	try { get_canvas()->keyframe_list().find(keyframe.get_time()); throw Error(_("A Keyframe already exists at this point in time"));}
-	catch(synfig::Exception::NotFound) { }	
+	catch(synfig::Exception::NotFound) { }
 
 	try { get_canvas()->keyframe_list().find(keyframe); throw Error(_("This keyframe is already in the ValueNode"));}
-	catch(synfig::Exception::NotFound) { }	
+	catch(synfig::Exception::NotFound) { }
 
 	Action::Super::undo();
-	
+
 	get_canvas()->keyframe_list().add(keyframe);
-	
+
 	if(get_canvas_interface())
 	{
 		get_canvas_interface()->signal_keyframe_added()(keyframe);

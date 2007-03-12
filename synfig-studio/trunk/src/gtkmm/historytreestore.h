@@ -41,7 +41,7 @@
 namespace studio {
 
 class Instance;
-	
+
 class HistoryTreeStore : virtual public Gtk::TreeStore
 {
 	/*
@@ -82,7 +82,7 @@ public:
 	*/
 
 public:
-	
+
 	const Model model;
 
 	/*
@@ -92,14 +92,14 @@ public:
 private:
 
 	etl::loose_handle<studio::Instance> instance_;
-	Gtk::TreeIter curr_row; 
+	Gtk::TreeIter curr_row;
 
 	/*
  -- ** -- P R I V A T E   M E T H O D S ---------------------------------------
 	*/
 
 private:
-	
+
 	/*
  -- ** -- S I G N A L   T E R M I N A L S -------------------------------------
 	*/
@@ -107,13 +107,13 @@ private:
 private:
 
 	void on_undo();
-	
+
 	void on_redo();
-	
+
 	void on_undo_stack_cleared();
-	
+
 	void on_redo_stack_cleared();
-	
+
 	void on_new_action(etl::handle<synfigapp::Action::Undoable> action);
 
 	void on_action_status_changed(etl::handle<synfigapp::Action::Undoable> action);
@@ -123,7 +123,7 @@ private:
 	*/
 
 public:
-	
+
 	HistoryTreeStore(etl::loose_handle<studio::Instance> instance_);
 	~HistoryTreeStore();
 
@@ -143,7 +143,7 @@ public:
 public:
 
 	static Glib::RefPtr<HistoryTreeStore> create(etl::loose_handle<studio::Instance> instance);
-	
+
 }; // END of class HistoryTreeStore
 
 }; // END of namespace studio

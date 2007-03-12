@@ -58,7 +58,7 @@ Widget_Vector::Widget_Vector():
 	y_adjustment(0,-100000000,100000000,0.05,0.05,0.05)
 {
 	Gtk::Label *label;
-	
+
 	label=manage(new class Gtk::Label("X:"));
 	label->set_alignment(0, 0.5);
 	label->show();
@@ -97,7 +97,7 @@ Widget_Vector::Widget_Vector():
 
 	spinbutton_x->show();
 	spinbutton_y->show();
-	
+
 	spinbutton_x->signal_activate().connect(sigc::mem_fun(*spinbutton_y,&Gtk::SpinButton::grab_focus));
 	distance_x->signal_activate().connect(sigc::mem_fun(*distance_y,&Gtk::SpinButton::grab_focus));
 }
@@ -142,7 +142,7 @@ Widget_Vector::set_digits(int x)
 		spinbutton_x->set_size_request(48,-1);
 		spinbutton_y->set_size_request(48,-1);
 	}
-	
+
 	distance_x->set_digits(x);
 	distance_y->set_digits(x);
 	distance_x->set_size_request(48,-1);

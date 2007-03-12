@@ -69,10 +69,10 @@ Widget_Waypoint::Widget_Waypoint(etl::handle<synfig::Canvas> canvas):
 	value_widget=manage(new Widget_ValueBase());
 	value_widget->set_canvas(canvas);
 	value_widget->show();
-	
+
 	value_node_label=manage(new Gtk::Label(_("(Non-static value)")));
-	
-	
+
+
 	time_widget=manage(new Widget_Time());
 	time_widget->set_fps(canvas->rend_desc().get_frame_rate());
 	//spinbutton=manage(new Gtk::SpinButton(time_adjustment,0.05,3));
@@ -109,12 +109,12 @@ Widget_Waypoint::Widget_Waypoint(etl::handle<synfig::Canvas> canvas):
 	spin_bias->show();
 	spin_temporal_tension=manage(new class Gtk::SpinButton(adj_temporal_tension,0.1,3));
 	spin_temporal_tension->show();
-	
+
 	set_padding(12, 12, 12, 12);
-	
+
 	Gtk::VBox *widgetBox = manage(new Gtk::VBox(false, 12));
 	add(*widgetBox);
-	
+
 	Gtk::Frame *waypointFrame = manage(new Gtk::Frame(_("Waypoint")));
 	waypointFrame->set_shadow_type(Gtk::SHADOW_NONE);
 	((Gtk::Label *) waypointFrame->get_label_widget())->set_markup(_("<b>Waypoint</b>"));
@@ -154,7 +154,7 @@ Widget_Waypoint::Widget_Waypoint(etl::handle<synfig::Canvas> canvas):
 	interpolationTable->set_row_spacings(6);
 	interpolationTable->set_col_spacings(12);
 	interpolationPadding->add(*interpolationTable);
-	
+
 	Gtk::Label *interpolationInLabel = manage(new Gtk::Label(_("_In Interpolation"), true));
 	interpolationInLabel->set_alignment(0, 0.5);
 	interpolationInLabel->set_mnemonic_widget(*before);
@@ -220,7 +220,7 @@ Widget_Waypoint::set_canvas(synfig::Canvas::Handle x)
 {
 	canvas=x;
 	assert(canvas);
-	
+
 	time_widget->set_fps(canvas->rend_desc().get_frame_rate());
 	value_widget->set_canvas(canvas);
 }
@@ -231,7 +231,7 @@ Widget_Waypoint::set_waypoint(synfig::Waypoint &x)
 	time_widget->set_fps(canvas->rend_desc().get_frame_rate());
 
 	waypoint=x;
-			
+
 #warning This really needs to be fixed to support value node waypoints!
 	if(waypoint.is_static())
 	{
@@ -244,7 +244,7 @@ Widget_Waypoint::set_waypoint(synfig::Waypoint &x)
 		value_widget->hide();
 		value_node_label->show();
 	}
-	
+
 	time_widget->set_value(waypoint.get_time());
 
 	before->set_history((int)waypoint.get_before());
@@ -254,7 +254,7 @@ Widget_Waypoint::set_waypoint(synfig::Waypoint &x)
 	adj_continuity.set_value(waypoint.get_continuity());
 	adj_bias.set_value(waypoint.get_bias());
 	adj_temporal_tension.set_value(waypoint.get_temporal_tension());
-	
+
 }
 const synfig::Waypoint &
 Widget_Waypoint::get_waypoint()const

@@ -48,9 +48,9 @@ class WaypointSimpleAdd :
 	public CanvasSpecific
 {
 private:
-	
+
 	synfig::ValueNode_Animated::Handle value_node;
-	
+
 	synfig::Waypoint waypoint;
 
 	bool time_overwrite;

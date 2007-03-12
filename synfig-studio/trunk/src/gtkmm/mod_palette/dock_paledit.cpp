@@ -68,7 +68,7 @@ public:
 	{
 		dialog_palette->dialog_settings.add_domain(this,name);
 	}
-	
+
 	virtual ~PaletteSettings()
 	{
 		dialog_palette->dialog_settings.remove_domain(name);
@@ -83,7 +83,7 @@ public:
 		value=strprintf("%f %f %f %f",c.get_r(),c.get_g(),c.get_b(),c.get_a());
 		return true;
 	}
-	
+
 	virtual bool set_value(const synfig::String& key,const synfig::String& value)
 	{
 		int i(atoi(key.c_str()));
@@ -97,11 +97,11 @@ public:
 		dialog_palette->set_color(Color(r,g,b,a),i);
 		return true;
 	}
-	
+
 	virtual KeyList get_key_list()const
 	{
 		synfigapp::Settings::KeyList ret(synfigapp::Settings::get_key_list());
-	
+
 		int i;
 		for(i=0;i<dialog_palette->size();i++)
 			ret.push_back(strprintf("%03d",i));
@@ -117,7 +117,7 @@ Dock_PalEdit::Dock_PalEdit():
 	Dockable("pal_edit",_("Palette Editor"),Gtk::StockID("gtk-select-color")),
 	//palette_settings(new PaletteSettings(this,"colors")),
 	table(2,2,false)
-{	
+{
 	action_group=Gtk::ActionGroup::create();
 	DEBUGPOINT();
 	action_group->add(Gtk::Action::create(
@@ -131,7 +131,7 @@ Dock_PalEdit::Dock_PalEdit():
 			&Dock_PalEdit::on_add_pressed
 		)
 	);
-		
+
 	App::ui_manager()->insert_action_group(action_group);
 
     Glib::ustring ui_info =
@@ -145,7 +145,7 @@ Dock_PalEdit::Dock_PalEdit():
 	App::ui_manager()->add_ui_from_string(ui_info);
 
 	set_toolbar(*dynamic_cast<Gtk::Toolbar*>(App::ui_manager()->get_widget("/toolbar-palette")));
-	
+
 	/*
 	add_button(
 		Gtk::StockID("gtk-add"),
@@ -157,12 +157,12 @@ Dock_PalEdit::Dock_PalEdit():
 		)
 	);
 	*/
-	
+
 	add(table);
 	table.set_homogeneous(true);
-	
+
 	set_default_palette();
-	
+
 	show_all_children();
 }
 
@@ -247,10 +247,10 @@ void
 Dock_PalEdit::refresh()
 {
 	const int width(12);
-	
+
 	// Clear the table
 	table.foreach(sigc::mem_fun(table,&Gtk::Table::remove));
-	
+
 	for(int i=0;i<size();i++)
 	{
 		Widget_Color* widget_color(manage(new Widget_Color()));
@@ -269,7 +269,7 @@ Dock_PalEdit::refresh()
 			)
 		);
 		int c(i%width),r(i/width);
-		table.attach(*widget_color, c, c+1, r, r+1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);	
+		table.attach(*widget_color, c, c+1, r, r+1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	}
 	table.show_all();
 	queue_draw();
@@ -295,12 +295,12 @@ Dock_PalEdit::select_color(int i)
 {
 	synfigapp::Main::set_foreground_color(get_color(i));
 }
-		
+
 void
 Dock_PalEdit::set_default_palette()
 {
 	int width=12;
-	
+
 	palette_.clear();
 
 	// Greys
@@ -321,7 +321,7 @@ Dock_PalEdit::set_default_palette()
 		float x(float(i)/(float)(width-1));
 		const Color tan1(0.2,0.05,0);
 		const Color tan2(0.85,0.64,0.20);
-		
+
 		palette_.push_back(Color::blend(tan2,tan1,x));
 	}
 
@@ -339,7 +339,7 @@ Dock_PalEdit::set_default_palette()
 	palette_.push_back(Color::magenta());
 	palette_.push_back(Color(1.0f,0.0f,0.25f));
 
-	
+
 	const int levels(3);
 
 	// Colors
@@ -357,10 +357,10 @@ Dock_PalEdit::set_default_palette()
 		palette_.push_back(c);
 	}
 
-	
+
 	/*
 	const int levels(3);
-	
+
 	for(int i=0;i<levels*levels*levels;i++)
 	{
 		Color c(

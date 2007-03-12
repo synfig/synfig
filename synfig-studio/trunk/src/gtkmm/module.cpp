@@ -51,7 +51,7 @@ using namespace studio;
 Module::Module():status_(false)
 {
 }
-	
+
 Module::~Module()
 {
 	stop();

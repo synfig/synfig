@@ -44,7 +44,7 @@ class DeviceSettings;
 namespace synfigapp {
 class Settings;
 
-	
+
 class InputDevice : public etl::shared_object
 {
 public:
@@ -57,14 +57,14 @@ public:
 	};
 
 	typedef etl::handle<InputDevice> Handle;
-	
+
 private:
 	synfig::String id_;
 	Type type_;
 	synfig::String state_;
 	synfig::Color foreground_color_;
 	synfig::Color background_color_;
-	synfig::Distance	bline_width_;	
+	synfig::Distance	bline_width_;
 	synfig::Real opacity_;
 	synfig::Color::BlendMethod blend_method_;
 
@@ -82,7 +82,7 @@ public:
 	const synfig::Real& get_opacity()const { return opacity_; }
 	const synfig::Color::BlendMethod& get_blend_method()const { return blend_method_; }
 	Type get_type()const { return type_; }
-	
+
 	void set_state(const synfig::String& x) { state_=x; }
 	void set_foreground_color(const synfig::Color& x) { foreground_color_=x; }
 	void set_background_color(const synfig::Color& x) { background_color_=x; }
@@ -90,7 +90,7 @@ public:
 	void set_blend_method(const synfig::Color::BlendMethod& x) { blend_method_=x; }
 	void set_opacity(const synfig::Real& x) { opacity_=x; }
 	void set_type(Type x) { type_=x; }
-	
+
 	Settings& settings();
 	const Settings& settings()const;
 }; // END of class InputDevice

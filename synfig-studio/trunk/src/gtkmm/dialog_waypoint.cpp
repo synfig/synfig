@@ -85,7 +85,7 @@ Dialog_Waypoint::Dialog_Waypoint(Gtk::Window& parent,etl::handle<synfig::Canvas>
 	add_action_widget(*cancel_button,0);
 	cancel_button->signal_clicked().connect(sigc::mem_fun(*this, &Dialog_Waypoint::hide));
 
-	
+
 	waypointwidget->show_all();
 }
 
@@ -103,14 +103,14 @@ Dialog_Waypoint::on_ok_pressed()
 void
 Dialog_Waypoint::on_apply_pressed()
 {
-    signal_changed_();	
+    signal_changed_();
 }
 
 void
 Dialog_Waypoint::on_delete_pressed()
 {
 	hide();
-    signal_delete_();	
+    signal_delete_();
 }
 
 void

@@ -104,18 +104,18 @@ public:
 
 		//set_flags(Gtk::CAN_FOCUS);
 		//set_events(Gdk::KEY_PRESS_MASK | Gdk::KEY_RELEASE_MASK);
-		
+
 		/*
 		set_events(//(Gdk::ALL_EVENTS_MASK)
-		~(	Gdk::EXPOSURE_MASK 	
-			| Gdk::ENTER_NOTIFY_MASK 	
-			| Gdk::LEAVE_NOTIFY_MASK 	
-			| Gdk::FOCUS_CHANGE_MASK 	
-			| Gdk::STRUCTURE_MASK 	
-			| Gdk::PROPERTY_CHANGE_MASK 	
-			| Gdk::VISIBILITY_NOTIFY_MASK 	
-			| Gdk::PROXIMITY_IN_MASK 	
-			| Gdk::PROXIMITY_OUT_MASK 	
+		~(	Gdk::EXPOSURE_MASK
+			| Gdk::ENTER_NOTIFY_MASK
+			| Gdk::LEAVE_NOTIFY_MASK
+			| Gdk::FOCUS_CHANGE_MASK
+			| Gdk::STRUCTURE_MASK
+			| Gdk::PROPERTY_CHANGE_MASK
+			| Gdk::VISIBILITY_NOTIFY_MASK
+			| Gdk::PROXIMITY_IN_MASK
+			| Gdk::PROXIMITY_OUT_MASK
 			| Gdk::SUBSTRUCTURE_MASK
 		)
 		);
@@ -124,14 +124,14 @@ public:
 		//signal_remove_widget().connect(sigc::mem_fun(*this, &studio::ValueBase_Entry::hide));
 
 		show_all_children();
-		
+
 		//signal_show().connect(sigc::mem_fun(*this, &ValueBase_Entry::grab_focus));
 	}
 	~ValueBase_Entry()
 	{
 		DEBUGPOINT();
 	}
-	
+
 	void on_editing_done()
 	{
 		hide();
@@ -199,7 +199,7 @@ public:
 		if(valuewidget)
 			valuewidget->set_param_desc(data);
 	}
-	
+
 	const synfig::ValueBase &get_value()
 	{
 		if(valuewidget)
@@ -241,13 +241,13 @@ bool get_paragraph(synfig::String& text)
 	entry.set_activates_default(true);
 	dialog.get_vbox()->pack_start(entry);
 */
-	
+
 	dialog.add_button(Gtk::StockID("gtk-ok"),Gtk::RESPONSE_OK);
 	dialog.add_button(Gtk::StockID("gtk-cancel"),Gtk::RESPONSE_CANCEL);
 	dialog.set_default_response(Gtk::RESPONSE_OK);
-	
+
 	//text_entry.signal_activate().connect(sigc::bind(sigc::mem_fun(dialog,&Gtk::Dialog::response),Gtk::RESPONSE_OK));
-	
+
 	dialog.show();
 
 	if(dialog.run()!=Gtk::RESPONSE_OK)
@@ -270,7 +270,7 @@ CellRenderer_ValueBase::CellRenderer_ValueBase():
 	CellRendererText::signal_edited().connect(sigc::mem_fun(*this,&CellRenderer_ValueBase::string_edited_));
 	value_entry=new ValueBase_Entry();
 	value_entry->hide();
-	
+
 	Pango::AttrList attr_list;
 	{
 		Pango::AttrInt pango_size(Pango::Attribute::create_attr_size(Pango::SCALE*8));
@@ -279,7 +279,7 @@ CellRenderer_ValueBase::CellRenderer_ValueBase():
 		attr_list.change(pango_size);
 	}
 	property_attributes()=attr_list;
-	
+
 	property_foreground()=Glib::ustring("#7f7f7f");
 	property_inconsistant()=false;
 }
@@ -294,14 +294,14 @@ CellRenderer_ValueBase::string_edited_(const Glib::ustring&path,const Glib::ustr
 {
 	ValueBase old_value=property_value_.get_value();
 	ValueBase value;
-	
+
 	if(old_value.get_type()==ValueBase::TYPE_TIME)
 	{
 		value=ValueBase(Time((String)str,get_canvas()->rend_desc().get_frame_rate()));
 	}
-	else 
+	else
 		value=ValueBase((String)str);
-	
+
 	if(old_value!=value)
 		signal_edited_(path,value);
 }
@@ -367,7 +367,7 @@ CellRenderer_ValueBase::render_vfunc(
 			property_text()=(Glib::ustring)strprintf("(%i)",data.get(int()));
 			std::list<synfig::ParamDesc::EnumData> enum_list=((synfig::ParamDesc)property_param_desc_).get_enum_list();
 			std::list<synfig::ParamDesc::EnumData>::iterator iter;
-						
+
 			for(iter=enum_list.begin();iter!=enum_list.end();iter++)
 				if(iter->value==data.get(int()))
 				{
@@ -375,7 +375,7 @@ CellRenderer_ValueBase::render_vfunc(
 					break;
 				}
 		}
-			
+
 		break;
 	case ValueBase::TYPE_VECTOR:
 		{
@@ -386,9 +386,9 @@ CellRenderer_ValueBase::render_vfunc(
 			property_text()=static_cast<Glib::ustring>(strprintf("%s,%s",x.get_string(6).c_str(),y.get_string(6).c_str()));
 		}
 		break;
-	
+
 	case ValueBase::TYPE_STRING:
-	
+
 		if(data.get_type()==ValueBase::TYPE_STRING)
 		{
 			if(!data.get(synfig::String()).empty())
@@ -417,7 +417,7 @@ CellRenderer_ValueBase::render_vfunc(
 	case ValueBase::TYPE_BOOL:
 		{
 			widget.get_style()->paint_check(
-				Glib::RefPtr<Gdk::Window>::cast_static(window), state, 
+				Glib::RefPtr<Gdk::Window>::cast_static(window), state,
 				data.get(bool())?Gtk::SHADOW_IN:Gtk::SHADOW_OUT,
 				ca, widget, "cellcheck",
 				ca.get_x()/* + x_offset + cell_xpad*/,
@@ -445,7 +445,7 @@ CellRenderer_ValueBase::render_vfunc(
 		break;
 	default:
 		property_text()=static_cast<Glib::ustring>(_("UNKNOWN"));
-		break;	
+		break;
 	}
 	CellRendererText::render_vfunc(window,widget,background_area,ca,expose_area,flags);
 }
@@ -505,7 +505,7 @@ CellRenderer_ValueBase::start_editing_vfunc(
 	// If we aren't editable, then there is nothing to do
 	if(!property_editable())
 		return 0;
-		
+
 	ValueBase data=property_value_.get_value();
 
 	switch(data.get_type())
@@ -516,7 +516,7 @@ CellRenderer_ValueBase::start_editing_vfunc(
 	//case ValueBase::TYPE_TIME:
 	//	property_text()=(Glib::ustring)data.get(Time()).get_string(get_canvas()->rend_desc().get_frame_rate(),App::get_time_format()|Time::FORMAT_FULL);
 	//	return CellRendererText::start_editing_vfunc(event,widget,path,background_area,cell_area,flags);
-		
+
 	case ValueBase::TYPE_GRADIENT:
 		App::dialog_gradient->reset();
 		App::dialog_gradient->set_gradient(data.get(Gradient()));
@@ -527,7 +527,7 @@ CellRenderer_ValueBase::start_editing_vfunc(
 			)
 		);
 		App::dialog_gradient->present();
-	
+
 		return NULL;
 
 	case ValueBase::TYPE_COLOR:
@@ -540,7 +540,7 @@ CellRenderer_ValueBase::start_editing_vfunc(
 			)
 		);
 		App::dialog_color->present();
-	
+
 		return NULL;
 	case ValueBase::TYPE_STRING:
 		if(get_param_desc().get_hint()=="paragraph")
@@ -550,7 +550,7 @@ CellRenderer_ValueBase::start_editing_vfunc(
 			if(get_paragraph(string))
 			{
 				signal_edited_(path,ValueBase(string));
-			}			
+			}
 			return NULL;
 		}
 		if(get_param_desc().get_hint()!="filename")
@@ -582,8 +582,8 @@ CellRenderer_ValueBase::on_value_editing_done()
 
 		if(old_value!=value)
 			signal_edited_(value_entry->get_path(),value);
-		
+
 		//delete value_entry;
 		//value_entry=0;
-	}	
+	}
 }

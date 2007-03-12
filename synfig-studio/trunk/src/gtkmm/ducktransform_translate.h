@@ -36,7 +36,7 @@
 /* === C L A S S E S & S T R U C T S ======================================= */
 
 namespace studio {
-	
+
 class Transform_Translate : public synfig::Transform
 {
 private:

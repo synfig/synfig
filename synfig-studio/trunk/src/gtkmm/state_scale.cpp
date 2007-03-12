@@ -77,7 +77,7 @@ class DuckDrag_Scale : public DuckDrag_Base
 	std::vector<synfig::Vector> positions;
 
 	bool move_only;
-	
+
 	bool bad_drag;
 public:
 	bool lock_aspect;
@@ -91,16 +91,16 @@ public:
 class studio::StateScale_Context : public sigc::trackable
 {
 	etl::handle<CanvasView> canvas_view_;
-		
+
 	synfigapp::Settings& settings;
 
 	etl::handle<DuckDrag_Scale> duck_dragger_;
 
 	Gtk::Table options_table;
-	
-	
+
+
 	Gtk::CheckButton checkbutton_aspect_lock;
-	
+
 public:
 
 	bool get_aspect_lock_flag()const { return checkbutton_aspect_lock.get_active(); }
@@ -120,7 +120,7 @@ public:
 	etl::handle<synfigapp::CanvasInterface> get_canvas_interface()const{return canvas_view_->canvas_interface();}
 	synfig::Canvas::Handle get_canvas()const{return canvas_view_->get_canvas();}
 	WorkArea * get_work_area()const{return canvas_view_->get_work_area();}
-	
+
 	void load_settings();
 	void save_settings();
 };	// END of class StateScale_Context
@@ -131,7 +131,7 @@ StateScale::StateScale():
 	Smach::state<StateScale_Context>("scale")
 {
 	insert(event_def(EVENT_REFRESH_TOOL_OPTIONS,&StateScale_Context::event_refresh_tool_options));
-}	
+}
 
 StateScale::~StateScale()
 {
@@ -139,7 +139,7 @@ StateScale::~StateScale()
 
 void
 StateScale_Context::load_settings()
-{	
+{
 	String value;
 
 	if(settings.get_value("scale.lock_aspect",value) && value=="0")
@@ -150,7 +150,7 @@ StateScale_Context::load_settings()
 
 void
 StateScale_Context::save_settings()
-{	
+{
 	settings.set_value("scale.lock_aspect",get_aspect_lock_flag()?"1":"0");
 }
 
@@ -159,17 +159,17 @@ StateScale_Context::StateScale_Context(CanvasView* canvas_view):
 	settings(synfigapp::Main::get_selected_input_device()->settings()),
 	duck_dragger_(new DuckDrag_Scale()),
 	checkbutton_aspect_lock(_("Lock Aspect Ratio"))
-{	
+{
 	// Set up the tool options dialog
-	//options_table.attach(*manage(new Gtk::Label(_("Scale Tool"))), 0, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);	
+	//options_table.attach(*manage(new Gtk::Label(_("Scale Tool"))), 0, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	options_table.attach(checkbutton_aspect_lock, 0, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
 	checkbutton_aspect_lock.signal_toggled().connect(sigc::mem_fun(*this,&StateScale_Context::refresh_aspect_lock_flag));
-		
+
 	options_table.show_all();
 	refresh_tool_options();
 	App::dialog_tool_options->present();
-	
+
 	get_work_area()->allow_layer_clicks=true;
 	get_work_area()->set_duck_dragger(duck_dragger_);
 
@@ -228,14 +228,14 @@ DuckDrag_Scale::begin_duck_drag(Duckmatic* duckmatic, const synfig::Vector& offs
 	last_scale=Vector(1,1);
 	const DuckList selected_ducks(duckmatic->get_selected_ducks());
 	DuckList::const_iterator iter;
-	
+
 	//if(duckmatic->get_selected_ducks().size()<2)
 	//{
 	//	bad_drag=true;
 //		return;
 //	}
 	bad_drag=false;
-	
+
 		drag_offset=duckmatic->find_duck(offset)->get_trans_point();
 
 		//snap=drag_offset-duckmatic->snap_point_to_grid(drag_offset);
@@ -261,7 +261,7 @@ DuckDrag_Scale::begin_duck_drag(Duckmatic* duckmatic, const synfig::Vector& offs
 		move_only=true;
 	else
 		move_only=false;
-	
+
 	center=(vmin+vmax)*0.5;
 }
 
@@ -274,7 +274,7 @@ DuckDrag_Scale::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector)
 
 	if(bad_drag)
 		return;
-	
+
 	//std::set<etl::handle<Duck> >::iterator iter;
 	synfig::Vector vect(duckmatic->snap_point_to_grid(vector)-center);
 	last_scale=vect;
@@ -285,9 +285,9 @@ DuckDrag_Scale::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector)
 		for(i=0,iter=selected_ducks.begin();iter!=selected_ducks.end();++iter,i++)
 		{
 			if(((*iter)->get_type()!=Duck::TYPE_VERTEX&&(*iter)->get_type()!=Duck::TYPE_POSITION))continue;
-			
+
 			Vector p(positions[i]);
-	
+
 			p[0]+=vect[0];
 			p[1]+=vect[1];
 			(*iter)->set_trans_point(p);
@@ -295,16 +295,16 @@ DuckDrag_Scale::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector)
 		for(i=0,iter=selected_ducks.begin();iter!=selected_ducks.end();++iter,i++)
 		{
 			if(!((*iter)->get_type()!=Duck::TYPE_VERTEX&&(*iter)->get_type()!=Duck::TYPE_POSITION))continue;
-			
+
 			Vector p(positions[i]);
-	
+
 			p[0]+=vect[0];
 			p[1]+=vect[1];
 			(*iter)->set_trans_point(p);
 		}
 		return;
 	}
-		
+
 	if(!lock_aspect)
 	{
 		if(abs(drag_offset[0]-center[0])>EPSILON)
@@ -327,12 +327,12 @@ DuckDrag_Scale::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector)
 		vect[0]=1;
 	if(vect[1]<EPSILON && vect[1]>-EPSILON)
 		vect[1]=1;
-	
+
 	int i;
 	for(i=0,iter=selected_ducks.begin();iter!=selected_ducks.end();++iter,i++)
 	{
 		if(((*iter)->get_type()!=Duck::TYPE_VERTEX&&(*iter)->get_type()!=Duck::TYPE_POSITION))continue;
-		
+
 		Vector p(positions[i]-center);
 
 		p[0]*=vect[0];
@@ -343,7 +343,7 @@ DuckDrag_Scale::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector)
 	for(i=0,iter=selected_ducks.begin();iter!=selected_ducks.end();++iter,i++)
 	{
 		if(!((*iter)->get_type()!=Duck::TYPE_VERTEX&&(*iter)->get_type()!=Duck::TYPE_POSITION))continue;
-		
+
 		Vector p(positions[i]-center);
 
 		p[0]*=vect[0];
@@ -351,7 +351,7 @@ DuckDrag_Scale::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector)
 		p+=center;
 		(*iter)->set_trans_point(p);
 	}
-	
+
 	last_scale=vect;
 	//snap=Vector(0,0);
 }
@@ -360,7 +360,7 @@ bool
 DuckDrag_Scale::end_duck_drag(Duckmatic* duckmatic)
 {
 	if(bad_drag)return false;
-		
+
 	if((last_scale-Vector(1,1)).mag()>0.0001)
 	{
 		duckmatic->signal_edited_selected_ducks();

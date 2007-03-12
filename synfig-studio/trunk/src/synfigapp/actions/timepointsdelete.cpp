@@ -75,45 +75,45 @@ Action::ParamVocab
 Action::TimepointsDelete::get_param_vocab()
 {
 	ParamVocab ret(Action::CanvasSpecific::get_param_vocab());
-	
+
 	ret.push_back(ParamDesc("addlayer",Param::TYPE_VALUE)
 		.set_local_name(_("New Selected Layer"))
 		.set_desc(_("A layer to add to our selected list"))
 		.set_supports_multiple()
 		.set_optional()
 	);
-	
+
 	ret.push_back(ParamDesc("addcanvas",Param::TYPE_CANVAS)
 		.set_local_name(_("New Selected Canvas"))
 		.set_desc(_("A canvas to add to our selected list"))
 		.set_supports_multiple()
 		.set_optional()
 	);
-	
+
 	ret.push_back(ParamDesc("addvaluedesc",Param::TYPE_VALUEDESC)
 		.set_local_name(_("New Selected ValueBase"))
 		.set_desc(_("A valuenode's description to add to our selected list"))
 		.set_supports_multiple()
 		.set_optional()
 	);
-	
+
 	ret.push_back(ParamDesc("addtime",Param::TYPE_TIME)
 		.set_local_name(_("New Selected Time Point"))
 		.set_desc(_("A time point to add to our selected list"))
 		.set_supports_multiple()
 	);
-	
+
 	return ret;
 }
 
 bool
 Action::TimepointsDelete::is_candidate(const ParamList &x)
 {
-	if(!candidate_check(get_param_vocab(),x)) 
+	if(!candidate_check(get_param_vocab(),x))
 		return false;
-	
-	if(	x.find("addlayer") == x.end() && 
-		x.find("addcanvas") == x.end() && 
+
+	if(	x.find("addlayer") == x.end() &&
+		x.find("addcanvas") == x.end() &&
 		x.find("addvaluedesc") == x.end())
 		return false;
 	return true;
@@ -126,31 +126,31 @@ Action::TimepointsDelete::set_param(const synfig::String& name, const Action::Pa
 	{
 		//add a layer to the list
 		sel_layers.push_back(param.get_layer());
-		
+
 		return true;
 	}
-	
+
 	if(name=="addcanvas" && param.get_type()==Param::TYPE_CANVAS)
 	{
 		//add a layer to the list
 		sel_canvases.push_back(param.get_canvas());
-		
+
 		return true;
 	}
-	
+
 	if(name=="addvaluedesc" && param.get_type()==Param::TYPE_VALUEDESC)
 	{
 		//add a layer to the list
 		sel_values.push_back(param.get_value_desc());
-		
+
 		return true;
 	}
-	
+
 	if(name=="addtime" && param.get_type()==Param::TYPE_TIME)
 	{
 		//add a layer to the list
 		sel_times.insert(param.get_time());
-		
+
 		return true;
 	}
 
@@ -169,57 +169,57 @@ void
 Action::TimepointsDelete::prepare()
 {
 	clear();
-	
+
 	if(sel_times.empty()) return;
-	
+
 	//all our lists should be set correctly...
 
 	//build our sub-action list
-	// 	and yes we do need to store it temporarily so we don't duplicate 
+	// 	and yes we do need to store it temporarily so we don't duplicate
 	//		an operation on a specific valuenode, etc....
 	timepoints_ref	match;
-	
+
 	Time fps = get_canvas()->rend_desc().get_frame_rate();
-	
+
 	//std::vector<synfig::Layer::Handle>
 	//synfig::info("Layers %d", sel_layers.size());
 	{
 		std::vector<synfig::Layer::Handle>::iterator i = sel_layers.begin(),
 													end = sel_layers.end();
-		
+
 		for(; i != end; ++i)
 		{
 			//synfig::info("Recurse through a layer");
 			recurse_layer(*i,sel_times,match);
 		}
 	}
-	
+
 	//std::vector<synfig::Canvas::Handle>	sel_canvases;
 	//synfig::info("Canvases %d", sel_canvases.size());
 	{
 		std::vector<synfig::Canvas::Handle>::iterator 	i = sel_canvases.begin(),
 														end = sel_canvases.end();
-		
+
 		for(; i != end; ++i)
 		{
 			//synfig::info("Recurse through a canvas");
 			recurse_canvas(*i,sel_times,match);
 		}
 	}
-	
+
 	//std::vector<synfigapp::ValueDesc>
 	//synfig::info("ValueBasedescs %d", sel_values.size());
 	{
 		std::vector<synfigapp::ValueDesc>::iterator 	i = sel_values.begin(),
 													end = sel_values.end();
-		
+
 		for(; i != end; ++i)
 		{
 			//synfig::info("Recurse through a valuedesc");
 			recurse_valuedesc(*i,sel_times,match);
 		}
 	}
-	
+
 	//process the hell out of em...
 	{
 		//must build from both lists
@@ -229,21 +229,21 @@ Action::TimepointsDelete::prepare()
 		{
 			//iterate through each waypoint for this specific valuenode
 			std::set<synfig::Waypoint>::const_iterator 	j = i->waypoints.begin(),
-														end = i->waypoints.end();			
+														end = i->waypoints.end();
 			for(; j != end; ++j)
 			{
 				Action::Handle action(WaypointRemove::create());
-		
+
 				action->set_param("canvas",get_canvas());
 				action->set_param("canvas_interface",get_canvas_interface());
 				action->set_param("value_node",ValueNode::Handle(i->val));
 				action->set_param("waypoint",*j);
-				
+
 				//run the action now that we've added everything
 				assert(action->is_ready());
 				if(!action->is_ready())
 					throw Error(Error::TYPE_NOTREADY);
-				
+
 				add_action_front(action);
 			}
 		}
@@ -260,19 +260,19 @@ Action::TimepointsDelete::prepare()
 			for(; j != jend; ++j)
 			{
 				Action::Handle action(ActivepointRemove::create());
-					
+
 				action->set_param("canvas",get_canvas());
 				action->set_param("canvas_interface",get_canvas_interface());
 				action->set_param("value_desc",i->val);
 				action->set_param("activepoint",*j);
-				
+
 				//run the action now that everything should be in order
 				assert(action->is_ready());
 				if(!action->is_ready())
 				{
 					throw Error(Error::TYPE_NOTREADY);
 				}
-			
+
 				add_action_front(action);
 			}
 		}

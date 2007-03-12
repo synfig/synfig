@@ -80,31 +80,31 @@ class studio::StateGradient_Context : public sigc::trackable
 {
 	etl::handle<CanvasView> canvas_view_;
 	CanvasView::IsWorking is_working;
-	
+
 	Duckmatic::Push duckmatic_push;
-	
+
 	synfigapp::Settings& settings;
 
 	Point point_holder;
-	
+
 	etl::handle<Duck> point2_duck;
 
 	void refresh_ducks();
 
 	bool prev_workarea_layer_status_;
-	
+
 	Gtk::Table options_table;
 	Gtk::Entry entry_id;
 	Widget_Enum enum_type;
 	Widget_Enum	enum_blend;
-	
+
 public:
 	synfig::String get_id()const { return entry_id.get_text(); }
 	void set_id(const synfig::String& x) { return entry_id.set_text(x); }
 
 	int get_type()const { return enum_type.get_value(); }
 	void set_type(int x) { return enum_type.set_value(x); }
-	
+
 	int get_blend()const { return enum_blend.get_value(); }
 	void set_blend(int x) { return enum_blend.set_value(x); }
 
@@ -125,13 +125,13 @@ public:
 	etl::handle<synfigapp::CanvasInterface> get_canvas_interface()const{return canvas_view_->canvas_interface();}
 	synfig::Canvas::Handle get_canvas()const{return canvas_view_->get_canvas();}
 	WorkArea * get_work_area()const{return canvas_view_->get_work_area();}
-	
+
 	//void on_user_click(synfig::Point point);
 	void load_settings();
 	void save_settings();
 	void reset();
 	void increment_id();
-	
+
 	void make_gradient(const Point& p1, const Point& p2);
 	bool no_egress_on_selection_change;
 	Smach::event_result event_layer_selection_changed_handler(const Smach::event& x)
@@ -157,7 +157,7 @@ StateGradient::StateGradient():
 	insert(event_def(EVENT_WORKAREA_MOUSE_BUTTON_DRAG,&StateGradient_Context::event_mouse_click_handler));
 	insert(event_def(EVENT_WORKAREA_MOUSE_BUTTON_UP,&StateGradient_Context::event_mouse_click_handler));
 	insert(event_def(EVENT_REFRESH_TOOL_OPTIONS,&StateGradient_Context::event_refresh_tool_options));
-}	
+}
 
 StateGradient::~StateGradient()
 {
@@ -165,19 +165,19 @@ StateGradient::~StateGradient()
 
 void
 StateGradient_Context::load_settings()
-{	
+{
 	String value;
 
 	if(settings.get_value("gradient.id",value))
 		set_id(value);
 	else
 		set_id("Gradient");
-	
+
 	if(settings.get_value("gradient.type",value))
 		set_type(atoi(value.c_str()));
 	else
 		set_type(GRADIENT_INTERPOLATION_LINEAR);
-	
+
 	if(settings.get_value("gradient.blend",value))
 		set_blend(atoi(value.c_str()));
 	else
@@ -186,7 +186,7 @@ StateGradient_Context::load_settings()
 
 void
 StateGradient_Context::save_settings()
-{	
+{
 	settings.set_value("gradient.id",get_id().c_str());
 	settings.set_value("gradient.type",strprintf("%d",get_type()));
 	settings.set_value("gradient.blend",strprintf("%d",get_blend()));
@@ -204,10 +204,10 @@ StateGradient_Context::increment_id()
 	String id(get_id());
 	int number=1;
 	int digits=0;
-	
+
 	if(id.empty())
 		id="Gradient";
-	
+
 	// If there is a number
 	// already at the end of the
 	// id, then remove it.
@@ -215,11 +215,11 @@ StateGradient_Context::increment_id()
 	{
 		// figure out how many digits it is
 		for(digits=0;(int)id.size()-1>=digits && id[id.size()-1-digits]<='9' && id[id.size()-1-digits]>='0';digits++)while(false);
-		
+
 		String str_number;
 		str_number=String(id,id.size()-digits,id.size());
 		id=String(id,0,id.size()-digits);
-		
+
 		number=atoi(str_number.c_str());
 	}
 	else
@@ -227,15 +227,15 @@ StateGradient_Context::increment_id()
 		number=1;
 		digits=3;
 	}
-	
+
 	number++;
-	
+
 	// Add the number back onto the id
 	{
 		const String format(strprintf("%%0%dd",digits));
 		id+=strprintf(format.c_str(),number);
 	}
-	
+
 	// Set the ID
 	set_id(id);
 }
@@ -250,7 +250,7 @@ StateGradient_Context::StateGradient_Context(CanvasView* canvas_view):
 {
 	no_egress_on_selection_change=false;
 	// Set up the tool options dialog
-	///options_table.attach(*manage(new Gtk::Label(_("Gradient Tool"))), 0, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);	
+	///options_table.attach(*manage(new Gtk::Label(_("Gradient Tool"))), 0, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	options_table.attach(entry_id, 0, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
 	enum_type.set_param_desc(ParamDesc("type")
@@ -261,11 +261,11 @@ StateGradient_Context::StateGradient_Context(CanvasView* canvas_view):
 		.add_enum_value(GRADIENT_RADIAL,"radial",_("Radial"))
 		.add_enum_value(GRADIENT_CONICAL,"conical",_("Conical"))
 		.add_enum_value(GRADIENT_SPIRAL,"spiral",_("Spiral")));
-	
+
 	enum_blend.set_param_desc(ParamDesc(Color::BLEND_COMPOSITE,"blend_method")
 		.set_local_name(_("Blend Method"))
 		.set_description(_("The blend method the gradient will use")));
-	
+
 	load_settings();
 
 	options_table.attach(enum_type, 0, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
@@ -280,21 +280,21 @@ StateGradient_Context::StateGradient_Context(CanvasView* canvas_view):
 	get_work_area()->allow_layer_clicks=false;
 
 	get_canvas_view()->work_area->set_cursor(Gdk::CROSSHAIR);
-	
+
 	// clear out the ducks
 	get_work_area()->clear_ducks();
-	
+
 	// Refresh the work area
 	get_work_area()->queue_draw();
-	
+
 	get_work_area()->refresh_cursor();
-	
+
 	// Hide the tables if they are showing
 	get_canvas_view()->hide_tables();
-		
+
 	// Hide the time bar
 	//get_canvas_view()->hide_timebar();
-	
+
 	// Connect a signal
 	//get_work_area()->signal_user_click().connect(sigc::mem_fun(*this,&studio::StateGradient_Context::on_user_click));
 
@@ -334,7 +334,7 @@ StateGradient_Context::~StateGradient_Context()
 
 	// Bring back the tables if they were out before
 	//if(prev_table_status)get_canvas_view()->show_tables();
-			
+
 	// Refresh the work area
 	get_work_area()->queue_draw();
 
@@ -365,10 +365,10 @@ StateGradient_Context::make_gradient(const Point& _p1, const Point& _p2)
 	synfigapp::PushMode push_mode(get_canvas_interface(),synfigapp::MODE_NORMAL);
 
 	Layer::Handle layer;
-	
+
 	Canvas::Handle canvas(get_canvas_view()->get_canvas());
 	int depth(0);
-	
+
 	// we are temporarily using the layer to hold something
 	layer=get_canvas_view()->get_selection_manager()->get_selected_layer();
 	if(layer)
@@ -383,7 +383,7 @@ StateGradient_Context::make_gradient(const Point& _p1, const Point& _p2)
 	switch(get_type())
 	{
 	case GRADIENT_INTERPOLATION_LINEAR:
-		
+
 		layer=get_canvas_interface()->add_layer_to("linear_gradient",canvas,depth);
 		layer->set_param("p1",p1);
 		get_canvas_interface()->signal_layer_param_changed()(layer,"p1");
@@ -423,13 +423,13 @@ StateGradient_Context::make_gradient(const Point& _p1, const Point& _p2)
 	default:
 		return;
 	}
-	
+
 	layer->set_param("blend_method",get_blend());
 	get_canvas_interface()->signal_layer_param_changed()(layer,"blend_method");
-	
+
 	layer->set_description(get_id());
 	get_canvas_interface()->signal_layer_new_description()(layer,layer->get_description());
-	
+
 	no_egress_on_selection_change=true;
 	get_canvas_interface()->get_selection_manager()->clear_selected_layers();
 	get_canvas_interface()->get_selection_manager()->set_selected_layer(layer);
@@ -443,7 +443,7 @@ Smach::event_result
 StateGradient_Context::event_mouse_click_handler(const Smach::event& x)
 {
 	const EventMouse& event(*reinterpret_cast<const EventMouse*>(&x));
-	
+
 	if(event.key==EVENT_WORKAREA_MOUSE_BUTTON_DOWN && event.button==BUTTON_LEFT)
 	{
 		point_holder=get_work_area()->snap_point_to_grid(event.pos);
@@ -457,7 +457,7 @@ StateGradient_Context::event_mouse_click_handler(const Smach::event& x)
 		point2_duck->set_point(point_holder);
 		point2_duck->set_name("p2");
 		point2_duck->set_type(Duck::TYPE_POSITION);
-		get_work_area()->add_duck(point2_duck);		
+		get_work_area()->add_duck(point2_duck);
 
 		handle<Duckmatic::Bezier> bezier(new Duckmatic::Bezier());
 		bezier->p1=bezier->c1=duck;
@@ -470,7 +470,7 @@ StateGradient_Context::event_mouse_click_handler(const Smach::event& x)
 	if(event.key==EVENT_WORKAREA_MOUSE_BUTTON_DRAG && event.button==BUTTON_LEFT)
 	{
 		point2_duck->set_point(get_work_area()->snap_point_to_grid(event.pos));
-		get_work_area()->queue_draw();			
+		get_work_area()->queue_draw();
 		return Smach::RESULT_ACCEPT;
 	}
 
@@ -489,5 +489,5 @@ void
 StateGradient_Context::refresh_ducks()
 {
 	get_work_area()->clear_ducks();
-	get_work_area()->queue_draw();			
+	get_work_area()->queue_draw();
 }

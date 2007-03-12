@@ -52,13 +52,13 @@ class TimepointsMove :
 	public Super
 {
 private:
-	
+
 	//process all the value descriptions that are selected (or are in subselections)
 	std::vector<synfig::Layer::Handle>	sel_layers;
 	std::vector<synfig::Canvas::Handle>	sel_canvases;
 	std::vector<synfigapp::ValueDesc>	sel_values;
 	std::set<synfig::Time>				sel_times;
-	
+
 	synfig::Time							timemove;
 
 public:

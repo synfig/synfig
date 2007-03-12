@@ -67,7 +67,7 @@ Action::ParamVocab
 Action::WaypointRemove::get_param_vocab()
 {
 	ParamVocab ret(Action::CanvasSpecific::get_param_vocab());
-	
+
 	ret.push_back(ParamDesc("value_node",Param::TYPE_VALUENODE)
 		.set_local_name(_("ValueNode (Animated)"))
 	);
@@ -92,13 +92,13 @@ Action::WaypointRemove::set_param(const synfig::String& name, const Action::Para
 	if(name=="value_node" && param.get_type()==Param::TYPE_VALUENODE)
 	{
 		value_node=ValueNode_Animated::Handle::cast_dynamic(param.get_value_node());
-		
+
 		return static_cast<bool>(value_node);
 	}
 	if(name=="waypoint" && param.get_type()==Param::TYPE_WAYPOINT)
 	{
 		waypoint=param.get_waypoint();
-		
+
 		return true;
 	}
 
@@ -115,7 +115,7 @@ Action::WaypointRemove::is_ready()const
 
 void
 Action::WaypointRemove::perform()
-{	
+{
 	WaypointList::iterator iter(value_node->find(waypoint));
 
 	if((UniqueID)*iter!=(UniqueID)waypoint)
@@ -123,9 +123,9 @@ Action::WaypointRemove::perform()
 
 	if(iter->get_time()!=waypoint.get_time())
 		throw Error(_("Time mismatch iter=%s, waypoint=%s"),iter->get_time().get_string().c_str(),waypoint.get_time().get_string().c_str());
-	
+
 	waypoint=*iter;
-	
+
 	value_node->erase(waypoint);
 
 	// In this case, we need to convert this to a
@@ -138,10 +138,10 @@ Action::WaypointRemove::perform()
 			if(!value_node_ref)
 				throw Error(_("Unable to create ValueNode_Reference"));
 		}
-		
+
 		value_node->replace(value_node_ref);
 		value_node->waypoint_list().clear();
-		
+
 		if(get_canvas_interface())
 		{
 			get_canvas_interface()->signal_value_node_replaced()(value_node,value_node_ref);
@@ -158,11 +158,11 @@ Action::WaypointRemove::undo()
 	{
 		if(value_node->waypoint_list().size()!=0)
 			throw Error(_("This animated value node should be empty, but for some reason it isn't. This is a bug. (1)"));
-		
+
 		value_node_ref->replace(value_node);
-		
+
 		waypoint.set_value_node(value_node_ref);
-		
+
 		if(get_canvas_interface())
 			get_canvas_interface()->signal_value_node_replaced()(value_node_ref,value_node);
 
@@ -173,14 +173,14 @@ Action::WaypointRemove::undo()
 	if(value_node->waypoint_list().size()!=0)
 	{
 		try { value_node->find(waypoint.get_time()); throw Error(_("A Waypoint already exists at this point in time"));}
-		catch(synfig::Exception::NotFound) { }	
-		
+		catch(synfig::Exception::NotFound) { }
+
 		try { if(value_node->find(waypoint)!=value_node->waypoint_list().end()) throw Error(_("This waypoint is already in the ValueNode"));}
-		catch(synfig::Exception::NotFound) { }	
+		catch(synfig::Exception::NotFound) { }
 	}
-	
+
 	value_node->add(waypoint);
-	
+
 /*_if(get_canvas_interface())
 	{
 		get_canvas_interface()->signal_value_node_changed()(value_node);

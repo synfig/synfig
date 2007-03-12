@@ -47,7 +47,7 @@ class Widget_Brush;
 class Widget_Color;
 class Widget_Distance;
 class Widget_Enum;
-	
+
 class Widget_Defaults : public Gtk::Table
 {
 	Widget_Brush *widget_brush;
@@ -58,13 +58,13 @@ class Widget_Defaults : public Gtk::Table
 	Widget_Enum	*widget_blend_method;
 	Widget_Enum	*widget_interpolation;
 	Gtk::HScale *widget_opacity;
-	
+
 	void fg_color_refresh();
 	void bg_color_refresh();
 	void gradient_refresh();
 	void bline_width_refresh();
 	void interpolation_refresh();
-	
+
 	void on_bline_width_changed();
 	void on_fg_color_clicked();
 	void on_bg_color_clicked();
@@ -80,11 +80,11 @@ class Widget_Defaults : public Gtk::Table
 	void on_opacity_changed();
 
 	Gtk::Tooltips tooltips_;
-	
+
 public:
-	
+
 	Widget_Defaults();
-	
+
 	~Widget_Defaults();
 
 //	bool redraw(GdkEventExpose*bleh=NULL);

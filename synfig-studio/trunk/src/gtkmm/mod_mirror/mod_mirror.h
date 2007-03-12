@@ -39,11 +39,11 @@
 namespace studio {
 
 class State_Mirror;
-	
+
 class ModMirror : public Module
 {
 	friend class State_Mirror;
-			
+
 protected:
 	virtual bool start_vfunc();
 	virtual bool stop_vfunc();
@@ -51,7 +51,7 @@ protected:
 public:
 	virtual ~ModMirror() { stop(); }
 };
-	
+
 }; // END of namespace studio
 
 /* === E N D =============================================================== */

@@ -67,7 +67,7 @@ Action::ParamVocab
 Action::LayerSetDesc::get_param_vocab()
 {
 	ParamVocab ret(Action::CanvasSpecific::get_param_vocab());
-	
+
 	ret.push_back(ParamDesc("layer",Param::TYPE_LAYER)
 		.set_local_name(_("Layer"))
 		.set_desc(_("Layer to be moved"))
@@ -78,7 +78,7 @@ Action::LayerSetDesc::get_param_vocab()
 		.set_local_name(_("Enter a new description for this layer"))
 		.set_user_supplied()
 	);
-	
+
 	return ret;
 }
 
@@ -94,14 +94,14 @@ Action::LayerSetDesc::set_param(const synfig::String& name, const Action::Param 
 	if(name=="layer" && param.get_type()==Param::TYPE_LAYER)
 	{
 		layer=param.get_layer();
-		
+
 		return true;
 	}
 
 	if(name=="new_description" && param.get_type()==Param::TYPE_STRING)
 	{
 		new_description=param.get_string();
-		
+
 		return true;
 	}
 

@@ -50,7 +50,7 @@ class AudioProfile : public etl::shared_object
 {
 public:
 	typedef std::vector<char>	SampleProfile;
-	
+
 private:
 	SampleProfile	samples;
 	double			samplerate; //samples / second of the profile
@@ -62,23 +62,23 @@ public:	//samples interface
 
 	SampleProfile::const_iterator	begin() const 	{return samples.begin();}
 	SampleProfile::const_iterator	end() const 	{return samples.end();}
-	
+
 	void clear();
 	unsigned int size() const {return samples.size();}
-	
+
 	char operator[](int i) const
 	{
 		if(i >= 0 && i < (int)samples.size()) return samples[i];
 		else return 0;
 	}
-	
+
 public: //
-	
+
 	double get_samplerate() const {return samplerate;}
 	void set_samplerate(double f) {samplerate = f;}
-	
+
 	double get_offset() const;
-	
+
 	etl::handle<AudioContainer>	get_parent() const;
 	void set_parent(etl::handle<AudioContainer> i);
 	friend class AudioContainer;
@@ -90,13 +90,13 @@ public: //
 class AudioContainer : public sigc::trackable, public etl::shared_object
 {
 	etl::handle<AudioProfile>	prof;
-	
+
 	struct	AudioImp;
 	AudioImp *imp;
-	
-	bool	profilevalid; //this is only half useful 
+
+	bool	profilevalid; //this is only half useful
 		//it makes it so we don't always have to realloc memory when the file switches...
-	
+
 public: //structors
 
 	AudioContainer();
@@ -119,7 +119,7 @@ public: //operational interface
 	void stop();
 	//Note: this refers to the wrapper concept of the audio, the actual sound may or may not be playing...
 	bool is_playing() const;
-	
+
 	//scrubbing functions...
 	void start_scrubbing(double t);
 	void stop_scrubbing();
@@ -131,7 +131,7 @@ public: //operational interface
 	bool isRunning() const;
 	bool isPaused() const;
 };
-	
+
 } // END of namespace studio
 
 /* === E N D =============================================================== */

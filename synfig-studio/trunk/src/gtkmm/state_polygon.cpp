@@ -68,18 +68,18 @@ class studio::StatePolygon_Context : public sigc::trackable
 {
 	etl::handle<CanvasView> canvas_view_;
 	CanvasView::IsWorking is_working;
-	
+
 	bool prev_table_status;
 	bool prev_workarea_layer_status_;
 
 	Gtk::Menu menu;
 
 	Duckmatic::Push duckmatic_push;
-	
+
 	std::list<synfig::Point> polygon_point_list;
 	synfigapp::Settings& settings;
 
-	
+
 	bool on_polygon_duck_change(const synfig::Point &point, std::list<synfig::Point>::iterator iter);
 
 
@@ -87,7 +87,7 @@ class studio::StatePolygon_Context : public sigc::trackable
 
 
 	void refresh_ducks();
-	
+
 	Gtk::Table options_table;
 	Gtk::Entry entry_id;
 	Gtk::Button button_make;
@@ -112,7 +112,7 @@ public:
 	etl::handle<synfigapp::CanvasInterface> get_canvas_interface()const{return canvas_view_->canvas_interface();}
 	synfig::Canvas::Handle get_canvas()const{return canvas_view_->get_canvas();}
 	WorkArea * get_work_area()const{return canvas_view_->get_work_area();}
-	
+
 	//void on_user_click(synfig::Point point);
 	void load_settings();
 	void save_settings();
@@ -140,7 +140,7 @@ StatePolygon::StatePolygon():
 	insert(event_def(EVENT_REFRESH_DUCKS,&StatePolygon_Context::event_refresh_handler));
 	insert(event_def(EVENT_WORKAREA_MOUSE_BUTTON_DOWN,&StatePolygon_Context::event_mouse_click_handler));
 	insert(event_def(EVENT_REFRESH_TOOL_OPTIONS,&StatePolygon_Context::event_refresh_tool_options));
-}	
+}
 
 StatePolygon::~StatePolygon()
 {
@@ -148,7 +148,7 @@ StatePolygon::~StatePolygon()
 
 void
 StatePolygon_Context::load_settings()
-{	
+{
 	String value;
 
 	if(settings.get_value("polygon.id",value))
@@ -159,7 +159,7 @@ StatePolygon_Context::load_settings()
 
 void
 StatePolygon_Context::save_settings()
-{	
+{
 	settings.set_value("polygon.id",get_id().c_str());
 }
 
@@ -176,10 +176,10 @@ StatePolygon_Context::increment_id()
 	String id(get_id());
 	int number=1;
 	int digits=0;
-	
+
 	if(id.empty())
 		id="Polygon";
-	
+
 	// If there is a number
 	// already at the end of the
 	// id, then remove it.
@@ -187,11 +187,11 @@ StatePolygon_Context::increment_id()
 	{
 		// figure out how many digits it is
 		for(digits=0;(int)id.size()-1>=digits && id[id.size()-1-digits]<='9' && id[id.size()-1-digits]>='0';digits++)while(false);
-		
+
 		String str_number;
 		str_number=String(id,id.size()-digits,id.size());
 		id=String(id,0,id.size()-digits);
-		
+
 		number=atoi(str_number.c_str());
 	}
 	else
@@ -199,15 +199,15 @@ StatePolygon_Context::increment_id()
 		number=1;
 		digits=3;
 	}
-	
+
 	number++;
-	
+
 	// Add the number back onto the id
 	{
 		const String format(strprintf("%%0%dd",digits));
 		id+=strprintf(format.c_str(),number);
 	}
-	
+
 	// Set the ID
 	set_id(id);
 }
@@ -223,11 +223,11 @@ StatePolygon_Context::StatePolygon_Context(CanvasView* canvas_view):
 {
 	no_egress_on_selection_change=false;
 	load_settings();
-	
+
 	// Set up the tool options dialog
-	//options_table.attach(*manage(new Gtk::Label(_("Polygon Tool"))), 0, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);	
+	//options_table.attach(*manage(new Gtk::Label(_("Polygon Tool"))), 0, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	options_table.attach(entry_id, 0, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	//options_table.attach(button_make, 0, 2, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);	
+	//options_table.attach(button_make, 0, 2, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	button_make.signal_pressed().connect(sigc::mem_fun(*this,&StatePolygon_Context::run));
 	options_table.show_all();
 	refresh_tool_options();
@@ -236,22 +236,22 @@ StatePolygon_Context::StatePolygon_Context(CanvasView* canvas_view):
 
 	// Turn off layer clicking
 	get_work_area()->allow_layer_clicks=false;
-	
+
 	// clear out the ducks
 	get_work_area()->clear_ducks();
-	
+
 	// Refresh the work area
 	get_work_area()->queue_draw();
 
 	get_canvas_view()->work_area->set_cursor(Gdk::CROSSHAIR);
-	
+
 	// Hide the tables if they are showing
 	prev_table_status=get_canvas_view()->tables_are_visible();
 	if(prev_table_status)get_canvas_view()->hide_tables();
-		
+
 	// Hide the time bar
 	get_canvas_view()->hide_timebar();
-	
+
 	// Connect a signal
 	//get_work_area()->signal_user_click().connect(sigc::mem_fun(*this,&studio::StatePolygon_Context::on_user_click));
 
@@ -313,7 +313,7 @@ StatePolygon_Context::~StatePolygon_Context()
 
 	// Bring back the tables if they were out before
 	if(prev_table_status)get_canvas_view()->show_tables();
-			
+
 	// Refresh the work area
 	get_work_area()->queue_draw();
 
@@ -327,7 +327,7 @@ StatePolygon_Context::event_stop_handler(const Smach::event& x)
 	//throw Smach::egress_exception();
 	reset();
 	return Smach::RESULT_ACCEPT;
-	
+
 }
 
 Smach::event_result
@@ -343,7 +343,7 @@ StatePolygon_Context::run()
 {
 	if(polygon_point_list.empty())
 		return;
-	
+
 	if(polygon_point_list.size()<3)
 	{
 		get_canvas_view()->get_ui_interface()->error("You need at least 3 points to create a polygon");
@@ -352,7 +352,7 @@ StatePolygon_Context::run()
 		Layer::Handle layer;
 		Canvas::Handle canvas(get_canvas_view()->get_canvas());
 		int depth(0);
-		
+
 		// we are temporarily using the layer to hold something
 		layer=get_canvas_view()->get_selection_manager()->get_selected_layer();
 		if(layer)
@@ -364,11 +364,11 @@ StatePolygon_Context::run()
 		{
 			synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("New Polygon"));
 			synfigapp::PushMode push_mode(get_canvas_interface(),synfigapp::MODE_NORMAL);
-	
+
 			Layer::Handle layer(get_canvas_interface()->add_layer_to("polygon",canvas,depth));
 			layer->set_description(get_id());
 			get_canvas_interface()->signal_layer_new_description()(layer,layer->get_description());
-			
+
 			layer->disconnect_dynamic_param("vector_list");
 			if(!layer->set_param("vector_list",polygon_point_list))
 			{
@@ -376,13 +376,13 @@ StatePolygon_Context::run()
 				get_canvas_view()->get_ui_interface()->error("Unable to set layer parameter");
 				return;
 			}
-			
+
 			{
 				synfigapp::Action::Handle action(synfigapp::Action::create("value_desc_convert"));
 				synfigapp::ValueDesc value_desc(layer,"vector_list");
-				action->set_param("canvas",get_canvas());			
-				action->set_param("canvas_interface",get_canvas_interface());			
-				action->set_param("value_desc",value_desc);			
+				action->set_param("canvas",get_canvas());
+				action->set_param("canvas_interface",get_canvas_interface());
+				action->set_param("value_desc",value_desc);
 				action->set_param("type","dynamic_list");
 				if(!get_canvas_interface()->get_instance()->perform_action(action))
 				{
@@ -390,7 +390,7 @@ StatePolygon_Context::run()
 					get_canvas_view()->get_ui_interface()->error("Unable to execute action \"value_desc_convert\"");
 					return;
 				}
-			}			
+			}
 			no_egress_on_selection_change=true;
 			get_canvas_interface()->get_selection_manager()->clear_selected_layers();
 			get_canvas_interface()->get_selection_manager()->set_selected_layer(layer);
@@ -422,11 +422,11 @@ StatePolygon_Context::event_mouse_click_handler(const Smach::event& x)
 		polygon_point_list.push_back(get_work_area()->snap_point_to_grid(event.pos));
 		refresh_ducks();
 		return Smach::RESULT_ACCEPT;
-	
+
 	case BUTTON_RIGHT: // Intercept the right-button click to short-circut the pop-up menu
 		return Smach::RESULT_ACCEPT;
-	
-	default:	
+
+	default:
 		return Smach::RESULT_OK;
 	}
 }
@@ -436,11 +436,11 @@ void
 StatePolygon_Context::refresh_ducks()
 {
 	get_work_area()->clear_ducks();
-	
+
 	if(polygon_point_list.empty()) return;
 
 	std::list<synfig::Point>::iterator iter=polygon_point_list.begin();
-	
+
 	etl::handle<WorkArea::Duck> duck;
 	duck=new WorkArea::Duck(*iter);
 	duck->set_editable(true);
@@ -448,7 +448,7 @@ StatePolygon_Context::refresh_ducks()
 		sigc::bind(sigc::mem_fun(*this,&studio::StatePolygon_Context::on_polygon_duck_change),iter)
 	);
 	duck->signal_user_click(0).connect(sigc::mem_fun(*this,&StatePolygon_Context::run));
-	
+
 	get_work_area()->add_duck(duck);
 
 	for(++iter;iter!=polygon_point_list.end();++iter)
@@ -461,14 +461,14 @@ StatePolygon_Context::refresh_ducks()
 		duck->set_name(strprintf("%x",&*iter));
 		duck->signal_edited().connect(
 			sigc::bind(sigc::mem_fun(*this,&studio::StatePolygon_Context::on_polygon_duck_change),iter)
-		);		
+		);
 
-		get_work_area()->add_duck(duck);			
+		get_work_area()->add_duck(duck);
 
 		bezier->p2=bezier->c2=duck;
-		get_work_area()->add_bezier(bezier);			
+		get_work_area()->add_bezier(bezier);
 	}
-	get_work_area()->queue_draw();			
+	get_work_area()->queue_draw();
 }
 
 

@@ -44,7 +44,7 @@ class KeyframeTree;
 class KeyframeActionManager
 {
 	sigc::signal<void> signal_show_keyframe_properties_;
-		
+
 	Glib::RefPtr<Gtk::UIManager> ui_manager_;
 	//Glib::RefPtr<Gtk::TreeSelection> tree_selection_;
 	KeyframeTree* keyframe_tree_;
@@ -52,17 +52,17 @@ class KeyframeActionManager
 
 	Glib::RefPtr<Gtk::ActionGroup>	action_group_;
 	Gtk::UIManager::ui_merge_id 	popup_id_;
-	
-	
+
+
 	sigc::connection selection_changed_connection;
 
 	bool queued;
 	sigc::connection queue_refresh_connection;
 	sigc::connection time_changed_connection;
-	
+
 	void on_add_keyframe();
 	void on_keyframe_properties();
-	
+
 public:
 	sigc::signal<void>& signal_show_keyframe_properties() { return signal_show_keyframe_properties_; }
 

@@ -86,7 +86,7 @@ class CellRenderer_ValueBase : public Gtk::CellRendererText
 
 	void gradient_edited(synfig::Gradient gradient, Glib::ustring path);
 	void color_edited(synfig::Color color, Glib::ustring path);
-	
+
 public:
 	sigc::signal<void, const Glib::ustring&> &signal_secondary_click()
 	{return signal_secondary_click_; }
@@ -101,7 +101,7 @@ public:
 
 	etl::handle<synfig::Canvas> get_canvas()const { return property_canvas_; }
 	synfig::ParamDesc get_param_desc()const { return property_param_desc_; }
-	
+
 	CellRenderer_ValueBase();
 	~CellRenderer_ValueBase();
 
@@ -117,7 +117,7 @@ public:
 		const Gdk::Rectangle& ca,
 		const Gdk::Rectangle& expose_area,
 		Gtk::CellRendererState flags);
-	
+
 	virtual Gtk::CellEditable* start_editing_vfunc(GdkEvent* event,
                                                  Gtk::Widget& widget,
                                                  const Glib::ustring& path,

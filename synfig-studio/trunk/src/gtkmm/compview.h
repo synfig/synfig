@@ -57,7 +57,7 @@ class CanvasView;
 class CompView : public Gtk::Window
 {
 	DialogSettings dialog_settings;
-	
+
 	Gtk::Tooltips tooltips;
 
 	Gtk::OptionMenu *instance_selector;
@@ -75,7 +75,7 @@ class CompView : public Gtk::Window
 
 	void clear_history();
 	void clear_redo();
-	
+
 public:
 	CompView();
 	~CompView();
@@ -99,11 +99,11 @@ public:
 	bool close();
 
 private:
-	
+
 	Gtk::Widget* create_canvas_tree();
 	Gtk::Widget* create_action_tree();
 	Gtk::Widget* create_instance_selector();
-	
+
 	void on_row_activate(const Gtk::TreeModel::Path &path, Gtk::TreeViewColumn *);
 	bool on_tree_event(GdkEvent *event);
 

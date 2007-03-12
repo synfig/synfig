@@ -46,19 +46,19 @@ namespace studio {
 class Widget_Distance : public Gtk::SpinButton
 {
 	//sigc::signal<void> signal_value_changed_;
-	
+
 	mutable synfig::Distance distance_;
 
 	Gtk::Adjustment adjustment;
-	
+
 protected:
-	
+
 	int	on_input(double* new_value);
 	bool on_output();
 
 public:
 	//sigc::signal<void> &signal_value_changed() { return signal_value_changed_; }
-	
+
 	void set_value(const synfig::Distance &data);
 	synfig::Distance get_value()const;
 	Widget_Distance();

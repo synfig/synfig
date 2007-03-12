@@ -93,41 +93,41 @@ Dialog_Setup::Dialog_Setup():
 	Gtk::Table *gamma_table=manage(new Gtk::Table(2,2,false));
 	notebook->append_page(*gamma_table,_("Gamma"));
 	//gamma_frame->add(*gamma_table);
-	
-	gamma_table->attach(gamma_pattern, 0, 2, 0, 1, Gtk::EXPAND, Gtk::SHRINK|Gtk::FILL, 0, 0);	
+
+	gamma_table->attach(gamma_pattern, 0, 2, 0, 1, Gtk::EXPAND, Gtk::SHRINK|Gtk::FILL, 0, 0);
 
 	Gtk::HScale* scale_gamma_r(manage(new Gtk::HScale(adj_gamma_r)));
-	gamma_table->attach(*manage(new Gtk::Label(_("Red"))), 0, 1, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);	
-	gamma_table->attach(*scale_gamma_r, 1, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);	
+	gamma_table->attach(*manage(new Gtk::Label(_("Red"))), 0, 1, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+	gamma_table->attach(*scale_gamma_r, 1, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 	adj_gamma_r.signal_value_changed().connect(sigc::mem_fun(*this,&studio::Dialog_Setup::on_gamma_r_change));
-	
+
 	Gtk::HScale* scale_gamma_g(manage(new Gtk::HScale(adj_gamma_g)));
-	gamma_table->attach(*manage(new Gtk::Label(_("Green"))), 0, 1, 2, 3, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);	
-	gamma_table->attach(*scale_gamma_g, 1, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);	
+	gamma_table->attach(*manage(new Gtk::Label(_("Green"))), 0, 1, 2, 3, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+	gamma_table->attach(*scale_gamma_g, 1, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 	adj_gamma_g.signal_value_changed().connect(sigc::mem_fun(*this,&studio::Dialog_Setup::on_gamma_g_change));
 
 	Gtk::HScale* scale_gamma_b(manage(new Gtk::HScale(adj_gamma_b)));
-	gamma_table->attach(*manage(new Gtk::Label(_("Blue"))), 0, 1, 3, 4, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);	
-	gamma_table->attach(*scale_gamma_b, 1, 2, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);	
+	gamma_table->attach(*manage(new Gtk::Label(_("Blue"))), 0, 1, 3, 4, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+	gamma_table->attach(*scale_gamma_b, 1, 2, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 	adj_gamma_b.signal_value_changed().connect(sigc::mem_fun(*this,&studio::Dialog_Setup::on_gamma_b_change));
 
-	gamma_table->attach(*manage(new Gtk::Label(_("Black Level"))), 0, 1, 4, 5, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);	
-	gamma_table->attach(black_level_selector, 1, 2, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);	
+	gamma_table->attach(*manage(new Gtk::Label(_("Black Level"))), 0, 1, 4, 5, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+	gamma_table->attach(black_level_selector, 1, 2, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 	black_level_selector.signal_value_changed().connect(sigc::mem_fun(*this,&studio::Dialog_Setup::on_black_level_change));
 
-	//gamma_table->attach(*manage(new Gtk::Label(_("Red-Blue Level"))), 0, 1, 5, 6, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);	
-	//gamma_table->attach(red_blue_level_selector, 1, 2, 5, 6, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);	
+	//gamma_table->attach(*manage(new Gtk::Label(_("Red-Blue Level"))), 0, 1, 5, 6, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+	//gamma_table->attach(red_blue_level_selector, 1, 2, 5, 6, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 	//red_blue_level_selector.signal_value_changed().connect(sigc::mem_fun(*this,&studio::Dialog_Setup::on_red_blue_level_change));
 
 
 	// Misc
 	Gtk::Table *misc_table=manage(new Gtk::Table(2,2,false));
 	notebook->append_page(*misc_table,_("Misc."));
-	
+
 	// Misc - Timestamp
 	timestamp_menu=manage(new class Gtk::Menu());
-	misc_table->attach(*manage(new Gtk::Label(_("Timestamp"))), 0, 1, 0, 1, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);	
-	misc_table->attach(timestamp_optionmenu, 1, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);	
+	misc_table->attach(*manage(new Gtk::Label(_("Timestamp"))), 0, 1, 0, 1, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+	misc_table->attach(timestamp_optionmenu, 1, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 
 #define ADD_TIMESTAMP(desc,x)	\
 	timestamp_menu->items().push_back(	\
@@ -149,7 +149,7 @@ Dialog_Setup::Dialog_Setup():
 	ADD_TIMESTAMP("HHhMMmSSsFFf",Time::FORMAT_NORMAL|Time::FORMAT_NOSPACES|Time::FORMAT_FULL);
 
 	timestamp_optionmenu.set_menu(*timestamp_menu);
-	
+
 #undef ADD_TIMESTAMP
 
 	{
@@ -167,18 +167,18 @@ Dialog_Setup::Dialog_Setup():
 		widget_enum=manage(new Widget_Enum());
 		widget_enum->set_param_desc(param_desc);
 
-		misc_table->attach(*manage(new Gtk::Label(_("Unit System"))), 0, 1, 3, 4, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);	
-		misc_table->attach(*widget_enum, 1, 2, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);	
+		misc_table->attach(*manage(new Gtk::Label(_("Unit System"))), 0, 1, 3, 4, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+		misc_table->attach(*widget_enum, 1, 2, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 	}
 
 	// Misc - recent files
 	Gtk::SpinButton* recent_files_spinbutton(manage(new Gtk::SpinButton(adj_recent_files,1,0)));
-	misc_table->attach(*manage(new Gtk::Label(_("Recent Files"))), 0, 1, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);	
-	misc_table->attach(*recent_files_spinbutton, 1, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);	
+	misc_table->attach(*manage(new Gtk::Label(_("Recent Files"))), 0, 1, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+	misc_table->attach(*recent_files_spinbutton, 1, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 
 	// Misc - use_colorspace_gamma
-	misc_table->attach(toggle_use_colorspace_gamma, 0, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);	
-	
+	misc_table->attach(toggle_use_colorspace_gamma, 0, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+
 	show_all_children();
 }
 
@@ -198,16 +198,16 @@ Dialog_Setup::on_apply_pressed()
 {
 	App::gamma.set_all(1.0/adj_gamma_r.get_value(),1.0/adj_gamma_g.get_value(),1.0/adj_gamma_b.get_value(),black_level_selector.get_value(),red_blue_level_selector.get_value());
 
-	App::set_max_recent_files((int)adj_recent_files.get_value());	
-	
+	App::set_max_recent_files((int)adj_recent_files.get_value());
+
 	// Set the time format
 	App::set_time_format(get_time_format());
-	
+
 	// Set the use_colorspace_gamma flag
 	App::use_colorspace_gamma=toggle_use_colorspace_gamma.get_active();
 
 	App::distance_system=Distance::System(widget_enum->get_value());
-	
+
 	App::save_settings();
 }
 
@@ -255,12 +255,12 @@ Dialog_Setup::on_red_blue_level_change()
 void
 Dialog_Setup::refresh()
 {
-	adj_gamma_r.set_value(1.0/App::gamma.get_gamma_r());	
-	adj_gamma_g.set_value(1.0/App::gamma.get_gamma_g());	
-	adj_gamma_b.set_value(1.0/App::gamma.get_gamma_b());	
+	adj_gamma_r.set_value(1.0/App::gamma.get_gamma_r());
+	adj_gamma_g.set_value(1.0/App::gamma.get_gamma_g());
+	adj_gamma_b.set_value(1.0/App::gamma.get_gamma_b());
 	black_level_selector.set_value(App::gamma.get_black_level());
 	red_blue_level_selector.set_value(App::gamma.get_red_blue_level());
-	
+
 	// Refresh the temporary gamma
 	gamma_pattern.set_gamma_r(1.0/adj_gamma_r.get_value());
 	gamma_pattern.set_gamma_g(1.0/adj_gamma_g.get_value());
@@ -268,14 +268,14 @@ Dialog_Setup::refresh()
 	gamma_pattern.set_black_level(black_level_selector.get_value());
 	gamma_pattern.set_red_blue_level(red_blue_level_selector.get_value());
 	gamma_pattern.refresh();
-	
+
 	adj_recent_files.set_value(App::get_max_recent_files());
-	
+
 	// Refresh the time format
 	set_time_format(App::get_time_format());
 
 	widget_enum->set_value(App::distance_system);
-	
+
 	// Refresh the status of the use_colorspace_gamma flag
 	toggle_use_colorspace_gamma.set_active(App::use_colorspace_gamma);
 
@@ -288,7 +288,7 @@ GammaPattern::GammaPattern():
 	set_size_request(tile_w*4,tile_h*3);
 	signal_expose_event().connect(sigc::mem_fun(*this, &studio::GammaPattern::redraw));
 }
-	
+
 GammaPattern::~GammaPattern()
 {
 }
@@ -297,23 +297,23 @@ void
 GammaPattern::refresh()
 {
 	black[0].set_rgb_p(
-		r_F32_to_F32(0.0),	
-		g_F32_to_F32(0.0),	
+		r_F32_to_F32(0.0),
+		g_F32_to_F32(0.0),
 		b_F32_to_F32(0.0)
 	);
 	white[0].set_rgb_p(
-		r_F32_to_F32(1.0),	
-		g_F32_to_F32(1.0),	
+		r_F32_to_F32(1.0),
+		g_F32_to_F32(1.0),
 		b_F32_to_F32(1.0)
 	);
 	gray50[0].set_rgb_p(
-		r_F32_to_F32(0.5),	
-		g_F32_to_F32(0.5),	
+		r_F32_to_F32(0.5),
+		g_F32_to_F32(0.5),
 		b_F32_to_F32(0.5)
 	);
 	gray25[0].set_rgb_p(
-		r_F32_to_F32(0.25),	
-		g_F32_to_F32(0.25),	
+		r_F32_to_F32(0.25),
+		g_F32_to_F32(0.25),
 		b_F32_to_F32(0.25)
 	);
 
@@ -342,24 +342,24 @@ GammaPattern::redraw(GdkEventExpose*bleh)
 	static const char hlines[] = { 3, 0 };
 
 	Glib::RefPtr<Gdk::GC> gc(Gdk::GC::create(get_window()));
-	
+
 	int i;
 	Gdk::Color trueblack("#000000");
-	
+
 	// 50% Pattern
 	for(i=0;i<4;i++)
 	{
 		gc->set_rgb_fg_color(black[i]);
 		get_window()->draw_rectangle(gc, true, i*tile_w, 0, tile_w, tile_h);
-	
+
 		gc->set_stipple(Gdk::Bitmap::create(hlines,2,2));
 		gc->set_fill(Gdk::STIPPLED);
 		gc->set_rgb_fg_color(white[i]);
 		get_window()->draw_rectangle(gc, true, i*tile_w, 0, tile_w, tile_h);
-	
+
 		gc->set_fill(Gdk::SOLID);
 		gc->set_rgb_fg_color(gray50[i]);
-	
+
 		get_window()->draw_rectangle(gc, true, i*tile_w+tile_w/4, tile_h/4, tile_w-tile_w/2, tile_h-tile_h/2);
 	}
 
@@ -368,15 +368,15 @@ GammaPattern::redraw(GdkEventExpose*bleh)
 	{
 		gc->set_rgb_fg_color(black[i]);
 		get_window()->draw_rectangle(gc, true, i*tile_w, tile_h, tile_w, tile_h);
-	
+
 		gc->set_stipple(Gdk::Bitmap::create(hlines,2,2));
 		gc->set_fill(Gdk::STIPPLED);
 		gc->set_rgb_fg_color(gray50[i]);
 		get_window()->draw_rectangle(gc, true, i*tile_w, tile_h, tile_w, tile_h);
-	
+
 		gc->set_fill(Gdk::SOLID);
 		gc->set_rgb_fg_color(gray25[i]);
-	
+
 		get_window()->draw_rectangle(gc, true, i*tile_w+tile_w/4, tile_h+tile_h/4, tile_w-tile_w/2, tile_h-tile_h/2);
 	}
 
@@ -387,19 +387,19 @@ GammaPattern::redraw(GdkEventExpose*bleh)
 	for(i=0;i<4;i++)
 	{
 		gc->set_rgb_fg_color(black[i]);
-	
+
 		get_window()->draw_rectangle(gc, true, i*tile_w+tile_w/4, tile_h*2+tile_h/4, tile_w-tile_w/2, tile_h-tile_h/2);
 	}
 
 	return true;
 }
 
-	
+
 BlackLevelSelector::BlackLevelSelector()
 {
-	set_size_request(-1,24);	
+	set_size_request(-1,24);
 	signal_expose_event().connect(sigc::mem_fun(*this, &studio::BlackLevelSelector::redraw));
-	
+
 	add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK);
 	add_events(Gdk::BUTTON1_MOTION_MASK);
 	add_events(Gdk::BUTTON1_MOTION_MASK);
@@ -419,16 +419,16 @@ BlackLevelSelector::redraw(GdkEventExpose*bleh)
 	Glib::RefPtr<Gdk::GC> gc(Gdk::GC::create(get_window()));
 
 	int i;
-	
+
 	// Draw the gradient
 	for(i=0;i<w;i++)
 	{
 		color.set_rgb(i*65536/w,i*65536/w,i*65536/w);
-		
+
 		gc->set_rgb_fg_color(color);
 		get_window()->draw_rectangle(gc, true, i, 0, 1, h);
 	}
-		
+
 	// Draw a frame
 	gc->set_rgb_fg_color(Gdk::Color("#000000"));
 	get_window()->draw_rectangle(gc, false, 0, 0, w-1, h-1);
@@ -439,7 +439,7 @@ BlackLevelSelector::redraw(GdkEventExpose*bleh)
 	get_window()->draw_rectangle(gc, true, i, 1, 1, h-1);
 
 	// Print out the value
-	Glib::RefPtr<Pango::Layout> layout(Pango::Layout::create(get_pango_context()));		
+	Glib::RefPtr<Pango::Layout> layout(Pango::Layout::create(get_pango_context()));
 	layout->set_text(etl::strprintf("%0.01f%%",level*100.0f));
 	layout->set_alignment(Pango::ALIGN_CENTER);
 	gc->set_rgb_fg_color(Gdk::Color("#a00000"));
@@ -522,9 +522,9 @@ Dialog_Setup::set_time_format(Time::Format x)
 
 RedBlueLevelSelector::RedBlueLevelSelector()
 {
-	set_size_request(-1,24);	
+	set_size_request(-1,24);
 	signal_expose_event().connect(sigc::mem_fun(*this, &studio::RedBlueLevelSelector::redraw));
-	
+
 	add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK);
 	add_events(Gdk::BUTTON1_MOTION_MASK);
 	add_events(Gdk::BUTTON1_MOTION_MASK);
@@ -544,7 +544,7 @@ RedBlueLevelSelector::redraw(GdkEventExpose*bleh)
 	Glib::RefPtr<Gdk::GC> gc(Gdk::GC::create(get_window()));
 
 	int i;
-	
+
 	// Draw the gradient
 	for(i=0;i<w;i++)
 	{
@@ -552,17 +552,17 @@ RedBlueLevelSelector::redraw(GdkEventExpose*bleh)
 		float blue_red(2.0f-(red_blue));
 		if(red_blue>1.0f)red_blue=1.0f;
 		if(blue_red>1.0f)blue_red=1.0f;
-			
+
 		color.set_rgb(
 			round_to_int(min(red_blue,1.0f)*65535),
 			round_to_int(sqrt(min(red_blue,blue_red))*65535),
 			round_to_int(min(blue_red,1.0f)*65535)
 		);
-		
+
 		gc->set_rgb_fg_color(color);
 		get_window()->draw_rectangle(gc, true, i, 0, 1, h);
 	}
-		
+
 	// Draw a frame
 	gc->set_rgb_fg_color(Gdk::Color("#000000"));
 	get_window()->draw_rectangle(gc, false, 0, 0, w-1, h-1);
@@ -573,7 +573,7 @@ RedBlueLevelSelector::redraw(GdkEventExpose*bleh)
 	get_window()->draw_rectangle(gc, true, i, 1, 1, h-1);
 
 	// Print out the value
-	Glib::RefPtr<Pango::Layout> layout(Pango::Layout::create(get_pango_context()));		
+	Glib::RefPtr<Pango::Layout> layout(Pango::Layout::create(get_pango_context()));
 	layout->set_text(etl::strprintf("%0.02f",level));
 	layout->set_alignment(Pango::ALIGN_CENTER);
 	gc->set_rgb_fg_color(Gdk::Color("#a00000"));

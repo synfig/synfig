@@ -53,13 +53,13 @@ using namespace studio;
 class studio::DockSettings : public synfigapp::Settings
 {
 	DockManager* dock_manager;
-	
+
 public:
 	DockSettings(DockManager* dock_manager):dock_manager(dock_manager)
 	{
 		synfigapp::Main::settings().add_domain(this,"dock");
 	}
-	
+
 	virtual ~DockSettings()
 	{
 		synfigapp::Main::settings().remove_domain("dock");
@@ -69,16 +69,16 @@ public:
 	{
 		int screen_w(Gdk::screen_width());
 		int screen_h(Gdk::screen_height());
-		
+
 		if(key_.size()>6 && String(key_.begin(),key_.begin()+6)=="dialog")try
 		{
 			synfig::String key(key_.begin()+7,key_.end());
 			synfig::String::size_type separator=key.find_first_of('.');
 			int id(atoi(synfig::String(key.begin(),key.begin()+separator).c_str()));
 			key=synfig::String(key.begin()+separator+1,key.end());
-			
+
 			DockDialog& dock_dialog(dock_manager->find_dock_dialog(id));
-			
+
 			if(key=="contents_size")
 			{
 				dock_dialog.rebuild_sizes();
@@ -126,13 +126,13 @@ public:
 			synfig::String::size_type separator=key.find_first_of('.');
 			int id(atoi(synfig::String(key.begin(),key.begin()+separator).c_str()));
 			key=synfig::String(key.begin()+separator+1,key.end());
-			
+
 			DockDialog& dock_dialog(dock_manager->find_dock_dialog(id));
 
 			if(key=="contents_size")
 			{
 				try {
-					
+
 				vector<int> data;
 				String::size_type n=0;
 				String value_(value);
@@ -147,7 +147,7 @@ public:
 					n=value_.find(" ");
 					if(n!=String::npos)
 						n++;
-						
+
 				}
 				dock_dialog.set_dock_book_sizes(data);
 				}
@@ -195,7 +195,7 @@ public:
 		}
 		return synfigapp::Settings::set_value(key_,value);
 	}
-	
+
 	virtual KeyList get_key_list()const
 	{
 		synfigapp::Settings::KeyList ret(synfigapp::Settings::get_key_list());
@@ -230,7 +230,7 @@ DockManager::~DockManager()
 	{
 		Dockable* dockable(dockable_list_.back());
 		synfig::info("DockManager::~DockManager(): Deleting dockable \"%s\"",dockable->get_name().c_str());
-		dockable_list_.pop_back();		
+		dockable_list_.pop_back();
 		delete dockable;
 	}
 }
@@ -267,7 +267,7 @@ DockManager::find_dockable(const synfig::String& x)
 	for(iter=dockable_list_.begin();iter!=dockable_list_.end();++iter)
 		if((*iter)->get_name()==x)
 			return **iter;
-	
+
 	throw std::runtime_error("DockManager::find_dockable(): not found");
 }
 
@@ -304,6 +304,6 @@ DockManager::find_dock_dialog(int id)const
 	for(iter=dock_dialog_list_.begin();iter!=dock_dialog_list_.end();++iter)
 		if((*iter)->get_id()==id)
 			return **iter;
-	
+
 	throw std::runtime_error("DockManager::find_dock_dialog(int id)const: not found");
 }

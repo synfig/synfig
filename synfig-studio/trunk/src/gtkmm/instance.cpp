@@ -81,7 +81,7 @@ Instance::Instance(Canvas::Handle canvas):
 	canvas_tree_store_=Gtk::TreeStore::create(model);
 
 	id_=instance_count_++;
-	
+
 	// Connect up all the signals
 	signal_filename_changed().connect(sigc::mem_fun(*this,&studio::Instance::update_all_titles));
 	signal_unsaved_status_changed().connect(sigc::hide(sigc::mem_fun(*this,&studio::Instance::update_all_titles)));
@@ -95,9 +95,9 @@ Instance::Instance(Canvas::Handle canvas):
 			)
 		)
 	);
-	
+
 	canvas_tree_store_=Gtk::TreeStore::create(canvas_tree_model);
-	
+
 	refresh_canvas_tree();
 }
 
@@ -124,20 +124,20 @@ Instance::create(Canvas::Handle canvas)
 
 	// Add the new instance to the application's instance list
 	App::instance_list.push_back(instance);
-	
+
 	// Set up the instance with the default UI manager
 	instance->synfigapp::Instance::set_ui_interface(App::get_ui_interface());
-	
+
 	// Signal the new instance
 	App::signal_instance_created()(instance);
-	
+
 	// And then make sure that is has been selected
 	App::set_selected_instance(instance);
-	
+
 	// Create the initial window for the root canvas
 	instance->focus(canvas);
-	
-	return instance;	
+
+	return instance;
 }
 
 handle<CanvasView>
@@ -150,11 +150,11 @@ Instance::find_canvas_view(Canvas::Handle canvas)
 		canvas=canvas->parent();
 
 	CanvasViewList::iterator iter;
-	
+
 	for(iter=canvas_view_list().begin();iter!=canvas_view_list().end();iter++)
 		if((*iter)->get_canvas()==canvas)
 			return *iter;
-	
+
 	return CanvasView::create(this,canvas);
 }
 
@@ -214,16 +214,16 @@ studio::Instance::save()
 	}
 
 	return synfigapp::Instance::save();
-	
+
 }
 
 void
 studio::Instance::dialog_save_as()
 {
 	string filename="*.sif";
-	
+
 	Canvas::Handle canvas(get_canvas());
-	
+
 	{
 		OneMoment one_moment;
 		std::set<Node*>::iterator iter;
@@ -241,7 +241,7 @@ studio::Instance::dialog_save_as()
 						"files that are currently open. Close these\n"
 						"other files first before trying to use \"SaveAs\"."
 					);
-					
+
 					return;
 				}
 				if(parent_layer)
@@ -249,7 +249,7 @@ studio::Instance::dialog_save_as()
 			}
 		}
 	}
-	
+
 	while(App::dialog_saveas_file("SaveAs", filename))
 	{
 		// If the filename still has wildcards, then we should
@@ -273,14 +273,14 @@ studio::Instance::dialog_save_as()
 		{
 			continue;
 		}
-			
+
 		if(save_as(filename))
 			break;
-		
+
 		App::dialog_error_blocking("SaveAs - Error","Unable to save file");
 	}
 }
-	
+
 void
 Instance::update_all_titles()
 {
@@ -339,14 +339,14 @@ Instance::close()
 	}
 }
 
-	
+
 void
 Instance::insert_canvas(Gtk::TreeRow row,Canvas::Handle canvas)
 {
 	CanvasTreeModel canvas_tree_model;
 	assert(canvas);
 
-	row[canvas_tree_model.icon] = Gtk::Button().render_icon(Gtk::StockID("synfig-canvas"),Gtk::ICON_SIZE_SMALL_TOOLBAR);	
+	row[canvas_tree_model.icon] = Gtk::Button().render_icon(Gtk::StockID("synfig-canvas"),Gtk::ICON_SIZE_SMALL_TOOLBAR);
 	row[canvas_tree_model.id] = canvas->get_id();
 	row[canvas_tree_model.name] = canvas->get_name();
 	if(canvas->is_root())
@@ -356,10 +356,10 @@ Instance::insert_canvas(Gtk::TreeRow row,Canvas::Handle canvas)
 		row[canvas_tree_model.label] = canvas->get_id();
 	else
 	if(!canvas->get_name().empty())
-		row[canvas_tree_model.label] = canvas->get_name();		
+		row[canvas_tree_model.label] = canvas->get_name();
 	else
-		row[canvas_tree_model.label] = _("[Unnamed]");		
-		
+		row[canvas_tree_model.label] = _("[Unnamed]");
+
 	row[canvas_tree_model.canvas] = canvas;
 	row[canvas_tree_model.is_canvas] = true;
 	row[canvas_tree_model.is_value_node] = false;
@@ -367,7 +367,7 @@ Instance::insert_canvas(Gtk::TreeRow row,Canvas::Handle canvas)
 	{
 		synfig::Canvas::Children::iterator iter;
 		synfig::Canvas::Children &children(canvas->children());
-	
+
 		for(iter=children.begin();iter!=children.end();iter++)
 			insert_canvas(*(canvas_tree_store()->append(row.children())),*iter);
 	}
@@ -447,7 +447,7 @@ Instance::dialog_cvs_commit()
 
 		if(!App::dialog_entry(_("CVS Commit"),_("Enter a log message describing the changes you have made"), message))
 			return;
-		
+
 		OneMoment one_moment;
 		cvs_commit(message);
 	}
@@ -470,7 +470,7 @@ Instance::dialog_cvs_add()
 	try
 	{
 		string message;
-		
+
 		//if(!App::dialog_entry(_("CVS Add"),_("Enter a log message describing the file"), message))
 		//	return;
 		OneMoment one_moment;
@@ -497,7 +497,7 @@ Instance::dialog_cvs_update()
 		App::dialog_error_blocking(_("Info"),_("This file is up-to-date"));
 		return;
 	}
-	
+
 	try
 	{
 		String filename(get_file_name());
@@ -510,7 +510,7 @@ Instance::dialog_cvs_update()
 		OneMoment one_moment;
 		time_t oldtime=get_original_timestamp();
 		cvs_update();
-		calc_repository_info();		
+		calc_repository_info();
 		// If something has been updated...
 		if(oldtime!=get_original_timestamp())
 		{
@@ -568,7 +568,7 @@ Instance::_revert(Instance *instance)
 	String filename(instance->get_file_name());
 
 	Canvas::Handle canvas(instance->get_canvas());
-	
+
 	instance->close();
 
 	if(canvas->count()!=1)
@@ -578,7 +578,7 @@ Instance::_revert(Instance *instance)
 		one_moment.show();
 	}
 	canvas=0;
-	
+
 	App::open(filename);
 }
 
@@ -634,7 +634,7 @@ Instance::safe_close()
 		if(answer==synfigapp::UIInterface::RESPONSE_CANCEL)
 			return false;
 	}
-	
+
 	close();
 
 	return true;
@@ -646,18 +646,18 @@ Instance::add_actions_to_group(const Glib::RefPtr<Gtk::ActionGroup>& action_grou
 {
 	synfigapp::Action::CandidateList candidate_list;
 	synfigapp::Action::CandidateList::iterator iter;
-	
+
 	candidate_list=compile_candidate_list(param_list,category);
-	
+
 	candidate_list.sort();
 
 	if(candidate_list.empty())
 		synfig::warning("Action CandidateList is empty!");
-	
+
 	for(iter=candidate_list.begin();iter!=candidate_list.end();++iter)
 	{
 		Gtk::StockID stock_id(get_action_stock_id(*iter));
-		
+
 		if(!(iter->category&synfigapp::Action::CATEGORY_HIDDEN))
 		{
 			action_group->add(Gtk::Action::create(
@@ -686,21 +686,21 @@ Instance::add_actions_to_menu(Gtk::Menu *menu, const synfigapp::Action::ParamLis
 {
 	synfigapp::Action::CandidateList candidate_list;
 	synfigapp::Action::CandidateList::iterator iter;
-	
+
 	candidate_list=compile_candidate_list(param_list,category);
-	
+
 	candidate_list.sort();
 
 	if(candidate_list.empty())
 		synfig::warning("Action CandidateList is empty!");
-	
+
 	for(iter=candidate_list.begin();iter!=candidate_list.end();++iter)
 	{
 		if(!(iter->category&synfigapp::Action::CATEGORY_HIDDEN))
 		{
 			Gtk::Image* image(manage(new Gtk::Image()));
 			Gtk::Stock::lookup(get_action_stock_id(*iter),Gtk::ICON_SIZE_MENU,*image);
-			
+
 			/*
 			if(iter->task=="raise")
 				Gtk::Stock::lookup(Gtk::Stock::GO_UP,Gtk::ICON_SIZE_MENU,*image);
@@ -752,12 +752,12 @@ Instance::add_actions_to_menu(Gtk::Menu *menu, const synfigapp::Action::ParamLis
 {
 	synfigapp::Action::CandidateList candidate_list;
 	synfigapp::Action::CandidateList candidate_list2;
-	
+
 	synfigapp::Action::CandidateList::iterator iter;
-	
+
 	candidate_list=compile_candidate_list(param_list,category);
 	candidate_list2=compile_candidate_list(param_list2,category);
-	
+
 	candidate_list.sort();
 
 	if(candidate_list.empty())
@@ -772,7 +772,7 @@ Instance::add_actions_to_menu(Gtk::Menu *menu, const synfigapp::Action::ParamLis
 		if(iter2!=candidate_list2.end())
 			candidate_list2.erase(iter2);
 	}
-		
+
 	for(iter=candidate_list2.begin();iter!=candidate_list2.end();++iter)
 	{
 		if(!(iter->category&synfigapp::Action::CATEGORY_HIDDEN))
@@ -881,7 +881,7 @@ Instance::process_action(String name, synfigapp::Action::ParamList param_list)
 	assert(synfigapp::Action::book().count(name));
 
 	synfigapp::Action::BookEntry entry(synfigapp::Action::book().find(name)->second);
-	
+
 	synfigapp::Action::Handle action(entry.factory());
 
 	if(!action)
@@ -889,12 +889,12 @@ Instance::process_action(String name, synfigapp::Action::ParamList param_list)
 		synfig::error("Bad Action");
 		return;
 	}
-	
+
 	action->set_param_list(param_list);
 
 	synfigapp::Action::ParamVocab param_vocab(entry.get_param_vocab());
 	synfigapp::Action::ParamVocab::const_iterator iter;
-	
+
 	for(iter=param_vocab.begin();iter!=param_vocab.end();++iter)
 	{
 		if(!iter->get_mutual_exclusion().empty() && param_list.count(iter->get_mutual_exclusion()))
@@ -923,7 +923,7 @@ Instance::process_action(String name, synfigapp::Action::ParamList param_list)
 			}
 		}
 	}
-		
+
 	if(!action->is_ready())
 	{
 		synfig::error("Action not ready");
@@ -937,12 +937,12 @@ void
 Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfigapp::ValueDesc value_desc, float location)
 {
 	Gtk::Menu& parammenu(*menu);
-	
+
 	etl::handle<synfigapp::CanvasInterface> canvas_interface(find_canvas_interface(canvas));
-	
+
 	if(!canvas_interface)
 		return;
-	
+
 	synfigapp::Action::ParamList param_list,param_list2;
 	param_list=canvas_interface->generate_param_list(value_desc);
 	param_list.add("origin",location);
@@ -958,7 +958,7 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 		param_list2.add("origin",location);
 	}
 
-	
+
 	// Populate the convert menu by looping through
 	// the ValueNode book and find the ones that are
 	// relevant.
@@ -983,7 +983,7 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 			}
 		}
 
-		parammenu.items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::Stock::CONVERT,*convert_menu));			
+		parammenu.items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::Stock::CONVERT,*convert_menu));
 	}
 
 	if(param_list2.empty())
@@ -999,7 +999,7 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 	if(value_desc.is_value_node() && ValueNode_Animated::Handle::cast_dynamic(value_desc.get_value_node()))
 	{
 		ValueNode_Animated::Handle value_node(ValueNode_Animated::Handle::cast_dynamic(value_desc.get_value_node()));
-		
+
 		try
 		{
 			WaypointList::iterator iter(value_node->find(canvas->get_time()));
@@ -1037,12 +1037,12 @@ edit_several_waypoints(etl::handle<CanvasView> canvas_view, std::list<synfigapp:
 	widget_waypoint_model.show();
 
 	dialog.get_vbox()->pack_start(widget_waypoint_model);
-	
-	
+
+
 	dialog.add_button(Gtk::StockID("gtk-apply"),1);
 	dialog.add_button(Gtk::StockID("gtk-cancel"),0);
 	dialog.show();
-	
+
 	DEBUGPOINT();
 	if(dialog.run()==0 || widget_waypoint_model.get_waypoint_model().is_trivial())
 		return;
@@ -1053,12 +1053,12 @@ edit_several_waypoints(etl::handle<CanvasView> canvas_view, std::list<synfigapp:
 	for(iter=value_desc_list.begin();iter!=value_desc_list.end();++iter)
 	{
 		synfigapp::ValueDesc value_desc(*iter);
-		
+
 		if(!value_desc.is_valid())
 			continue;
 
 		ValueNode_Animated::Handle value_node;
-		
+
 		// If this value isn't a ValueNode_Animated, but
 		// it is somewhat constant, then go ahead and convert
 		// it to a ValueNode_Animated.
@@ -1069,11 +1069,11 @@ edit_several_waypoints(etl::handle<CanvasView> canvas_view, std::list<synfigapp:
 				value=ValueNode_Const::Handle::cast_dynamic(value_desc.get_value_node())->get_value();
 			else
 				value=value_desc.get_value();
-			
+
 			value_node=ValueNode_Animated::create(value,canvas_interface->get_time());
-			
+
 			synfigapp::Action::Handle action;
-			
+
 			if(!value_desc.is_value_node())
 			{
 				action=synfigapp::Action::create("value_desc_connect");
@@ -1086,11 +1086,11 @@ edit_several_waypoints(etl::handle<CanvasView> canvas_view, std::list<synfigapp:
 				action->set_param("dest",value_desc.get_value_node());
 				action->set_param("src",ValueNode::Handle(value_node));
 			}
-			
+
 			action->set_param("canvas",canvas_view->get_canvas());
 			action->set_param("canvas_interface",canvas_interface);
-			
-	
+
+
 			if(!canvas_interface->get_instance()->perform_action(action))
 			{
 				canvas_view->get_ui_interface()->error(_("Unable to convert to animated waypoint"));
@@ -1103,11 +1103,11 @@ edit_several_waypoints(etl::handle<CanvasView> canvas_view, std::list<synfigapp:
 			if(value_desc.is_value_node())
 				value_node=ValueNode_Animated::Handle::cast_dynamic(value_desc.get_value_node());
 		}
-		
-		
+
+
 		if(value_node)
 		{
-			
+
 			synfigapp::Action::Handle action(synfigapp::Action::create("waypoint_set_smart"));
 
 			if(!action)
@@ -1116,14 +1116,14 @@ edit_several_waypoints(etl::handle<CanvasView> canvas_view, std::list<synfigapp:
 				group.cancel();
 				return;
 			}
-				
+
 
 			action->set_param("canvas",canvas_view->get_canvas());
-			action->set_param("canvas_interface",canvas_interface);			
-			action->set_param("value_node",ValueNode::Handle(value_node));			
-			action->set_param("time",canvas_interface->get_time());						
+			action->set_param("canvas_interface",canvas_interface);
+			action->set_param("value_node",ValueNode::Handle(value_node));
+			action->set_param("time",canvas_interface->get_time());
 			action->set_param("model",widget_waypoint_model.get_waypoint_model());
-		
+
 			if(!canvas_interface->get_instance()->perform_action(action))
 			{
 				canvas_view->get_ui_interface()->error(_("Unable to set a specific waypoint"));
@@ -1137,7 +1137,7 @@ edit_several_waypoints(etl::handle<CanvasView> canvas_view, std::list<synfigapp:
 			//group.cancel();
 			//return;
 		}
-			
+
 	}
 }
 

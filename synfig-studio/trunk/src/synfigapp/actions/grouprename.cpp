@@ -65,7 +65,7 @@ Action::ParamVocab
 Action::GroupRename::get_param_vocab()
 {
 	ParamVocab ret(Action::CanvasSpecific::get_param_vocab());
-	
+
 	ret.push_back(ParamDesc("group",Param::TYPE_STRING)
 		.set_local_name(_("Old Group"))
 		.set_desc(_("Name of the Group to rename"))
@@ -75,7 +75,7 @@ Action::GroupRename::get_param_vocab()
 		.set_local_name(_("New Group"))
 		.set_desc(_("New name for group"))
 	);
-	
+
 	return ret;
 }
 
@@ -91,14 +91,14 @@ Action::GroupRename::set_param(const synfig::String& name, const Action::Param &
 	if(name=="group" && param.get_type()==Param::TYPE_STRING)
 	{
 		old_group_name=param.get_string();
-		
+
 		return true;
 	}
 
 	if(name=="new_group" && param.get_type()==Param::TYPE_STRING)
 	{
 		new_group_name=param.get_string();
-		
+
 		return true;
 	}
 

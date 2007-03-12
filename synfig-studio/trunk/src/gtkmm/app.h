@@ -65,7 +65,7 @@ namespace synfigapp
 };
 
 class Preferences;
-	
+
 namespace studio {
 
 typedef Gtk::UIManager UIManager;
@@ -94,17 +94,17 @@ class Dock_Info;
 class Dock_Navigator;
 class Dock_LayerGroups;
 class IPC;
-	
+
 class Module;
 
 class StateManager;
 class IconControler;
-	
+
 class App : public Gtk::Main, private IconControler
 {
 	friend class Preferences;
 	friend class Dialog_Setup;
-		
+
 	/*
  -- ** -- P U B L I C   T Y P E S ---------------------------------------------
 	*/
@@ -149,7 +149,7 @@ private:
 	static etl::handle<CanvasView> selected_canvas_view;
 
 	static Glib::RefPtr<UIManager>	ui_manager_;
-	
+
 //	static std::list< etl::handle< Module > > module_list_;
 
 	/*
@@ -179,7 +179,7 @@ public:
 
 	static std::list<etl::handle<Instance> > instance_list;
 
-	static bool shutdown_in_progress;	
+	static bool shutdown_in_progress;
 
 	static bool use_colorspace_gamma;
 
@@ -285,14 +285,14 @@ public:
 	static void dialog_open();
 
 	static void dialog_about();
-	
+
 	static void quit();
-	
+
 	static void show_setup();
 
 	static void undo();
 	static void redo();
-	
+
 	static int get_max_recent_files();
 	static void set_max_recent_files(int x);
 
@@ -301,7 +301,7 @@ public:
 	static void set_time_format(synfig::Time::Format x);
 
 	static bool shutdown_request(GdkEventAny*bleh=NULL);
-	
+
 //	static bool dialog_file(const std::string &title, std::string &filename);
 
 	static bool dialog_open_file(const std::string &title, std::string &filename);
@@ -317,7 +317,7 @@ public:
 	static bool dialog_yes_no(const std::string &title, const std::string &message);
 
 	static int dialog_yes_no_cancel(const std::string &title, const std::string &message);
-	
+
 	static void dialog_not_implemented();
 
 	static synfig::String get_user_app_directory();

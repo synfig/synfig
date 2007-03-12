@@ -126,7 +126,7 @@ ConsoleUIInterface::ok_cancel(const std::string &title, const std::string &messa
 			return RESPONSE_OK;
 	}
 }
-	
+
 bool
 ConsoleUIInterface::task(const std::string &task)
 {

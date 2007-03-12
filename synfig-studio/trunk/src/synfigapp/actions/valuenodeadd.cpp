@@ -65,7 +65,7 @@ Action::ParamVocab
 Action::ValueNodeAdd::get_param_vocab()
 {
 	ParamVocab ret(Action::CanvasSpecific::get_param_vocab());
-	
+
 	ret.push_back(ParamDesc("new",Param::TYPE_VALUENODE)
 		.set_local_name(_("New ValueNode"))
 		.set_desc(_("ValueNode to be added"))
@@ -74,7 +74,7 @@ Action::ValueNodeAdd::get_param_vocab()
 	ret.push_back(ParamDesc("name",Param::TYPE_STRING)
 		.set_local_name(_("Name"))
 	);
-	
+
 	return ret;
 }
 
@@ -90,14 +90,14 @@ Action::ValueNodeAdd::set_param(const synfig::String& param_name, const Action::
 	if(param_name=="new" && param.get_type()==Param::TYPE_VALUENODE)
 	{
 		value_node=param.get_value_node();
-		
+
 		return true;
 	}
 
 	if(param_name=="name" && param.get_type()==Param::TYPE_STRING)
 	{
 		name=param.get_string();
-		
+
 		return true;
 	}
 
@@ -119,7 +119,7 @@ Action::ValueNodeAdd::perform()
 	{
 		throw Error(_("Parameter appears to already be exported"));
 	}
-	
+
 	try
 	{
 		get_canvas()->add_value_node(value_node,name);
@@ -134,7 +134,7 @@ Action::ValueNodeAdd::perform()
 	}
 
 	set_dirty(false);
-	
+
 	// Signal that a layer has been inserted
 	if(get_canvas_interface())
 	{
@@ -153,7 +153,7 @@ Action::ValueNodeAdd::undo()
 	}
 
 	set_dirty(false);
-	
+
 	// Signal that a layer has been inserted
 	if(get_canvas_interface())
 	{

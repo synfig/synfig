@@ -66,7 +66,7 @@ Dock_LayerGroups::Dock_LayerGroups():
 	Dock_CanvasSpecific("groups",_("Groups"),Gtk::StockID("synfig-group")),
 	action_group_group_ops(Gtk::ActionGroup::create()),
 	group_action_manager(new GroupActionManager)
-{	
+{
 	group_action_manager->set_ui_manager(App::ui_manager());
 
 	action_group_group_ops->add( Gtk::Action::create("toolbar-groups", "Group Ops") );
@@ -74,7 +74,7 @@ Dock_LayerGroups::Dock_LayerGroups():
 	action_group_add=Gtk::Action::create("action-group_add", Gtk::Stock::ADD,_("Add a New Group"),_("Add a New Group"));
 	action_group_group_ops->add(action_group_add);
 	action_group_add->set_sensitive(false);
-	
+
 	App::ui_manager()->insert_action_group(action_group_group_ops);
 
     Glib::ustring ui_info =
@@ -88,7 +88,7 @@ Dock_LayerGroups::Dock_LayerGroups():
 
 	App::ui_manager()->add_ui_from_string(ui_info);
 
-	set_toolbar(*dynamic_cast<Gtk::Toolbar*>(App::ui_manager()->get_widget("/toolbar-groups")));	
+	set_toolbar(*dynamic_cast<Gtk::Toolbar*>(App::ui_manager()->get_widget("/toolbar-groups")));
 }
 
 Dock_LayerGroups::~Dock_LayerGroups()
@@ -116,17 +116,17 @@ Dock_LayerGroups::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas
 	if(canvas_view)
 	{
 		Gtk::Widget* tree_view(canvas_view->get_ext_widget(get_name()));
-	
+
 		add(*tree_view);
 		tree_view->show();
-		
+
 		group_action_manager->set_group_tree(dynamic_cast<LayerGroupTree*>(tree_view));
 		group_action_manager->set_canvas_interface(canvas_view->canvas_interface());
 		group_action_manager->refresh();
 	}
 	else
 	{
-		clear_previous();		
+		clear_previous();
 		group_action_manager->clear();
 		group_action_manager->set_canvas_interface(0);
 		group_action_manager->set_group_tree(0);

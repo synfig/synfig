@@ -73,13 +73,13 @@ studio::render_gradient_to_window(const Glib::RefPtr<Gdk::Drawable>& window,cons
 		gushort r2(256*App::gamma.r_F32_to_U8(c2.get_r()));
 		gushort g2(256*App::gamma.g_F32_to_U8(c2.get_g()));
 		gushort b2(256*App::gamma.b_F32_to_U8(c2.get_b()));
-				
+
 		if((i*2/height)&1)
 		{
 			gdk_c.set_rgb(r1,g1,b1);
 			gc->set_rgb_fg_color(gdk_c);
-			window->draw_rectangle(gc, true, ca.get_x()+i+2, ca.get_y(), 1, height/2);				
-	
+			window->draw_rectangle(gc, true, ca.get_x()+i+2, ca.get_y(), 1, height/2);
+
 			gdk_c.set_rgb(r2,g2,b2);
 			gc->set_rgb_fg_color(gdk_c);
 			window->draw_rectangle(gc, true, ca.get_x()+i+2, ca.get_y()+height/2, 1, height/2);
@@ -88,8 +88,8 @@ studio::render_gradient_to_window(const Glib::RefPtr<Gdk::Drawable>& window,cons
 		{
 			gdk_c.set_rgb(r2,g2,b2);
 			gc->set_rgb_fg_color(gdk_c);
-			window->draw_rectangle(gc, true, ca.get_x()+i+2, ca.get_y(), 1, height/2);				
-	
+			window->draw_rectangle(gc, true, ca.get_x()+i+2, ca.get_y(), 1, height/2);
+
 			gdk_c.set_rgb(r1,g1,b1);
 			gc->set_rgb_fg_color(gdk_c);
 			window->draw_rectangle(gc, true, ca.get_x()+i+2, ca.get_y()+height/2, 1, height/2);
@@ -112,7 +112,7 @@ Widget_Gradient::Widget_Gradient():
 	add_events(Gdk::BUTTON1_MOTION_MASK);
 
 }
-	
+
 Widget_Gradient::~Widget_Gradient()
 {
 }
@@ -123,7 +123,7 @@ Widget_Gradient::redraw(GdkEventExpose*bleh)
 {
 	const int h(get_height());
 	const int w(get_width());
-	
+
 	Glib::RefPtr<Gdk::GC> gc(Gdk::GC::create(get_window()));
 	Gdk::Rectangle area(0,0,w,h);
 	if(!editable_)
@@ -162,7 +162,7 @@ Widget_Gradient::redraw(GdkEventExpose*bleh)
 			show_selected=true;
 		}
 	}
-	
+
 	// we do this so that we can be sure that
 	// the selected marker is shown on top
 	if(show_selected)
@@ -182,7 +182,7 @@ Widget_Gradient::redraw(GdkEventExpose*bleh)
 			CONTROL_HEIGHT
 		);
 	}
-	
+
 	return true;
 }
 
@@ -210,7 +210,7 @@ void
 Widget_Gradient::popup_menu(float x)
 {
 	Gtk::Menu* menu(manage(new Gtk::Menu()));
-	
+
 	menu->items().clear();
 
 	menu->items().push_back(
@@ -235,7 +235,7 @@ Widget_Gradient::popup_menu(float x)
 			)
 		);
 	}
-	
+
 	menu->popup(0,0);
 }
 
@@ -284,14 +284,14 @@ Widget_Gradient::on_event(GdkEvent *event)
 		float pos((float)x/(float)get_width());
 		if(pos<0.0f)pos=0.0f;
 		if(pos>1.0f)pos=1.0f;
-	
+
 		switch(event->type)
 		{
 		case GDK_MOTION_NOTIFY:
 			if(editable_ && y>get_height()-CONTROL_HEIGHT)
 			{
 				Gradient::iterator iter(gradient_.find(selected_cpoint));
-				
+
 				if(event->button.state&GDK_SHIFT_MASK)
 				{
 					float begin(-100000000),end(100000000);
@@ -306,20 +306,20 @@ Widget_Gradient::on_event(GdkEvent *event)
 					{
 						end=after->pos;
 					}
-					
+
 					if(pos>end)
 						pos=end;
 					if(pos<begin)
 						pos=begin;
-					
-					iter->pos=pos;					
+
+					iter->pos=pos;
 				}
 				else
 				{
 					iter->pos=pos;
 					gradient_.sort();
 				}
-				
+
 //				signal_value_changed_();
 				changed_=true;
 				queue_draw();
@@ -359,6 +359,6 @@ Widget_Gradient::on_event(GdkEvent *event)
 			break;
 		}
 	}
-	
+
 	return false;
 }

@@ -66,7 +66,7 @@ CanvasOptions::CanvasOptions(loose_handle<studio::CanvasView> canvas_view):
 
 	Gtk::Alignment *dialogPadding = manage(new Gtk::Alignment(0, 0, 1, 1));
 	dialogPadding->set_padding(12, 12, 12, 12);
-	
+
 	Gtk::Notebook *notebook=manage(new class Gtk::Notebook());
 	dialogPadding->add(*notebook);
 
@@ -79,7 +79,7 @@ CanvasOptions::CanvasOptions(loose_handle<studio::CanvasView> canvas_view):
 
 	Gtk::VBox *gridBox = manage(new Gtk::VBox(false, 12));
 	gridPadding->add(*gridBox);
-	
+
 	Gtk::Table *gridTable = manage(new Gtk::Table(3, 2, false));
 	gridTable->set_row_spacings(6);
 	gridTable->set_col_spacings(12);
@@ -127,15 +127,15 @@ CanvasOptions::CanvasOptions(loose_handle<studio::CanvasView> canvas_view):
 	cancel_button->signal_clicked().connect(sigc::mem_fun(*this, &studio::CanvasOptions::on_cancel_pressed));
 
 	//set_default_response(1);
-	
-	
+
+
 	get_vbox()->pack_start(*dialogPadding);
 	get_vbox()->show_all();
-	
+
 	signal_show().connect(sigc::mem_fun(*this, &studio::CanvasOptions::refresh));
 
 	vector_grid_size.set_digits(5);
-	
+
 	update_title();
 }
 
@@ -156,14 +156,14 @@ CanvasOptions::refresh()
 		toggle_grid_show.set_active(true);
 	else
 		toggle_grid_show.set_active(false);
-		
+
 	if(canvas_view_->work_area->get_grid_snap())
 		toggle_grid_snap.set_active(true);
 	else
 		toggle_grid_snap.set_active(false);
-	
+
 	vector_grid_size.set_value(canvas_view_->work_area->get_grid_size());
-	
+
 	tooltips.set_tip(toggle_time_snap,_("Not yet implemented"));
 	toggle_time_snap.set_sensitive(false);
 
@@ -187,7 +187,7 @@ CanvasOptions::on_apply_pressed()
 		canvas_view_->work_area->enable_grid_snap();
 	else
 		canvas_view_->work_area->disable_grid_snap();
-		
+
 	if(toggle_grid_show.get_active())
 		canvas_view_->work_area->enable_grid();
 	else

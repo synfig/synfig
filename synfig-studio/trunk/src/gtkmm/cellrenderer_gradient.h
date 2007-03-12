@@ -57,12 +57,12 @@ public:
 	{return signal_edited_; }
 
 	Glib::PropertyProxy<synfig::Gradient> property_gradient() { return property_gradient_.get_proxy();}
-	
+
 	CellRenderer_Gradient();
 	~CellRenderer_Gradient();
 
 protected:
-	
+
 	virtual void
 	render_vfunc(
 		const Glib::RefPtr<Gdk::Drawable>& window,

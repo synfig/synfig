@@ -72,7 +72,7 @@ int main(int argc, char **argv)
 						fprintf(file.get(),"O %s\n",etl::absolute_path((argv)[argc]).c_str());
 					}
 			}
-			
+
 			fprintf(file.get(),"F\n");
 
 			return 0;
@@ -117,6 +117,6 @@ int main(int argc, char **argv)
 	}
 
 	std::cerr<<"Application appears to have terminated successfuly"<<std::endl;
-	
+
 	return 0;
 }

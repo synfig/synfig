@@ -42,21 +42,21 @@ namespace studio {
 
 class CanvasView;
 class Instance;
-	
+
 class Dock_MetaData : public Dock_CanvasSpecific
-{	
+{
 
 	Gtk::TreeView *tree_view;
-	
+
 
 	void on_add_pressed();
 	void on_delete_pressed();
 
 protected:
-	
+
 	virtual void init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view);
 	virtual void changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view);
-	
+
 public:
 
 

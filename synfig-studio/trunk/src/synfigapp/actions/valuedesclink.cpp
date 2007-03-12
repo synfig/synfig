@@ -68,12 +68,12 @@ Action::ParamVocab
 Action::ValueDescLink::get_param_vocab()
 {
 	ParamVocab ret(Action::CanvasSpecific::get_param_vocab());
-	
+
 	ret.push_back(ParamDesc("value_desc",Param::TYPE_VALUEDESC)
 		.set_local_name(_("ValueDesc to link"))
 		.set_requires_multiple()
 	);
-	
+
 	return ret;
 }
 
@@ -91,22 +91,22 @@ Action::ValueDescLink::set_param(const synfig::String& name, const Action::Param
 		time=param.get_time();
 		return true;
 	}
-	
+
 	if(name=="value_desc" && param.get_type()==Param::TYPE_VALUEDESC)
 	{
 		ValueDesc value_desc(param.get_value_desc());
-				
+
 		if(value_desc.is_value_node() && value_desc.get_value_node()->is_exported())
 		{
 			if(link_value_node==value_desc.get_value_node())
 				return true;
-			
+
 			if(link_value_node && link_value_node->is_exported())
 			{
 				poison=true;
 				return false;
 			}
-						
+
 			link_value_node=value_desc.get_value_node();
 		}
 		else if(value_desc.is_value_node())
@@ -142,7 +142,7 @@ Action::ValueDescLink::set_param(const synfig::String& name, const Action::Param
 			{
 				link_value_node=value_desc.get_value_node();
 			}
-			
+
 			/*
 			// Use the one that was most recently changed
 			else if(link_value_node->get_time_last_changed()<value_desc.get_value_node()->get_time_last_changed())
@@ -152,7 +152,7 @@ Action::ValueDescLink::set_param(const synfig::String& name, const Action::Param
 			*/
 		}
 
-		
+
 		if(value_desc_list.size() && value_desc.get_value_type()!=value_desc_list.front().get_value_type())
 		{
 			// Everything must be of the same type
@@ -180,66 +180,66 @@ Action::ValueDescLink::prepare()
 {
 	if(poison || value_desc_list.empty())
 		throw Error(Error::TYPE_NOTREADY);
-		
+
 	clear();
 
 	if(!link_value_node)
 	{
 		ValueDesc& value_desc(value_desc_list.front());
-		
+
 		link_value_node=ValueNode_Const::create(value_desc.get_value(time));
-		
+
 		Action::Handle action(Action::create("value_desc_connect"));
-		
+
 		action->set_param("canvas",get_canvas());
 		action->set_param("canvas_interface",get_canvas_interface());
 		action->set_param("src",link_value_node);
 		action->set_param("dest",value_desc);
-	
-		assert(action->is_ready());		
+
+		assert(action->is_ready());
 		if(!action->is_ready())
 			throw Error(Error::TYPE_NOTREADY);
-	
-		add_action_front(action);		
+
+		add_action_front(action);
 	}
 
 	/*
 	if(!link_value_node->is_exported())
 	{
 		Action::Handle action(Action::create("value_node_add"));
-		
+
 		action->set_param("canvas",get_canvas());
 		action->set_param("canvas_interface",get_canvas_interface());
 		action->set_param("new",link_value_node);
 		action->set_param("name",strprintf(_("Unnamed%08d"),synfig::UniqueID().get_uid()));
-	
-		assert(action->is_ready());		
+
+		assert(action->is_ready());
 		if(!action->is_ready())
 			throw Error(Error::TYPE_NOTREADY);
-	
+
 		add_action_front(action);
 	}
 	*/
-	
+
 	std::list<ValueDesc>::iterator iter;
 	for(iter=value_desc_list.begin();iter!=value_desc_list.end();++iter)
 	{
 		ValueDesc& value_desc(*iter);
-		
+
 		if(value_desc.is_value_node() && value_desc.get_value_node()==link_value_node)
 			continue;
 
 		Action::Handle action(Action::create("value_desc_connect"));
-		
+
 		action->set_param("canvas",get_canvas());
 		action->set_param("canvas_interface",get_canvas_interface());
 		action->set_param("src",link_value_node);
 		action->set_param("dest",value_desc);
-	
-		assert(action->is_ready());		
+
+		assert(action->is_ready());
 		if(!action->is_ready())
 			throw Error(Error::TYPE_NOTREADY);
-	
-		add_action_front(action);		
+
+		add_action_front(action);
 	}
 }

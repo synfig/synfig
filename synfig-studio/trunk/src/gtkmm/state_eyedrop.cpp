@@ -61,7 +61,7 @@ class studio::StateEyedrop_Context
 public:
 	StateEyedrop_Context(CanvasView *canvas_view);
 	~StateEyedrop_Context();
-	
+
 	Smach::event_result event_stop_handler(const Smach::event& x);
 
 	Smach::event_result event_refresh_handler(const Smach::event& x);
@@ -85,7 +85,7 @@ StateEyedrop::StateEyedrop():
 	insert(event_def(EVENT_STOP,&StateEyedrop_Context::event_stop_handler));
 	insert(event_def(EVENT_REFRESH,&StateEyedrop_Context::event_refresh_handler));
 	insert(event_def(EVENT_WORKAREA_MOUSE_BUTTON_DOWN,&StateEyedrop_Context::event_workarea_mouse_button_down_handler));
-}	
+}
 
 StateEyedrop::~StateEyedrop()
 {
@@ -97,7 +97,7 @@ StateEyedrop_Context::StateEyedrop_Context(CanvasView *canvas_view):
 {
 	synfig::info("Enterted Eyedrop State");
 	canvas_view->work_area->set_cursor(Gdk::Cursor(Gdk::CROSSHAIR));
-	
+
 	App::toolbox->refresh();
 }
 

@@ -116,8 +116,8 @@ DialogSettings::set_value(const synfig::String& key,const synfig::String& value)
 {
 	if(value.empty())
 		return false;
-	
-	if(key=="pos") 
+
+	if(key=="pos")
 	{
 		int x,y;
 		if(!strscanf(value,"%d %d",&x, &y))
@@ -125,7 +125,7 @@ DialogSettings::set_value(const synfig::String& key,const synfig::String& value)
 		window->move(x,y);
 		return true;
 	}
-	if(key=="size") 
+	if(key=="size")
 	{
 		int x,y;
 		if(!strscanf(value,"%d %d",&x, &y))
@@ -133,7 +133,7 @@ DialogSettings::set_value(const synfig::String& key,const synfig::String& value)
 		window->set_default_size(x,y);
 		return true;
 	}
-	if(key=="x") 
+	if(key=="x")
 	{
 		int x,y; window->get_position(x,y);
 		x=atoi(value.c_str());
@@ -177,10 +177,10 @@ synfigapp::Settings::KeyList
 DialogSettings::get_key_list()const
 {
 	synfigapp::Settings::KeyList ret(synfigapp::Settings::get_key_list());
-	
+
 	ret.push_back("size");
 	ret.push_back("pos");
 	ret.push_back("visible");
-	
+
 	return ret;
 }

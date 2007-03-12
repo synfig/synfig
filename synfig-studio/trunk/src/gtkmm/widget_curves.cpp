@@ -59,18 +59,18 @@ studio::render_color_to_window(const Glib::RefPtr<Gdk::Drawable>& window,const G
 {
 	const int height(ca.get_height());
 	const int width(ca.get_width());
-	
+
 	const int square_size(height/2);
-	
+
 	Glib::RefPtr<Gdk::GC> gc(Gdk::GC::create(window));
-	
+
 	if(color.get_alpha()!=1.0)
 	{
 		// In this case we need to render the alpha squares
-		
+
 		const Color bg1(Color::blend(color,Color(0.75, 0.75, 0.75),1.0).clamped());
 		const Color bg2(Color::blend(color,Color(0.5, 0.5, 0.5),1.0).clamped());
-	
+
 		Gdk::Color gdk_c1(colorconv_synfig2gdk(bg1));
 		Gdk::Color gdk_c2(colorconv_synfig2gdk(bg2));
 
@@ -78,12 +78,12 @@ studio::render_color_to_window(const Glib::RefPtr<Gdk::Drawable>& window,const G
 		for(int i=0;i<width;i+=square_size)
 		{
 			const int square_width(min(square_size,width-i));
-			
+
 			if(toggle)
 			{
 				gc->set_rgb_fg_color(gdk_c1);
-				window->draw_rectangle(gc, true, ca.get_x()+i, ca.get_y(), square_width, square_size);				
-		
+				window->draw_rectangle(gc, true, ca.get_x()+i, ca.get_y(), square_width, square_size);
+
 				gc->set_rgb_fg_color(gdk_c2);
 				window->draw_rectangle(gc, true, ca.get_x()+i, ca.get_y()+square_size, square_width, square_size);
 				toggle=false;
@@ -91,8 +91,8 @@ studio::render_color_to_window(const Glib::RefPtr<Gdk::Drawable>& window,const G
 			else
 			{
 				gc->set_rgb_fg_color(gdk_c2);
-				window->draw_rectangle(gc, true, ca.get_x()+i, ca.get_y(), square_width, square_size);				
-		
+				window->draw_rectangle(gc, true, ca.get_x()+i, ca.get_y(), square_width, square_size);
+
 				gc->set_rgb_fg_color(gdk_c1);
 				window->draw_rectangle(gc, true, ca.get_x()+i, ca.get_y()+square_size, square_width, square_size);
 				toggle=true;
@@ -104,7 +104,7 @@ studio::render_color_to_window(const Glib::RefPtr<Gdk::Drawable>& window,const G
 		// In this case we have a solid color to use
 		Gdk::Color gdk_c1(colorconv_synfig2gdk(color));
 
-		gc->set_rgb_fg_color(gdk_c1);	
+		gc->set_rgb_fg_color(gdk_c1);
 		window->draw_rectangle(gc, true, ca.get_x(), ca.get_y(), width-1, height-1);
 	}
 	gc->set_rgb_fg_color(Gdk::Color("#ffffff"));
@@ -189,7 +189,7 @@ struct studio::Widget_Curves::CurveStruct : sigc::trackable
 				channels.push_back(Channel());
 				channels.back().name="v.y";
 				channels.back().color=Gdk::Color("#7f3f00");
-				
+
 				channels.push_back(Channel());
 				channels.back().name="width";
 				channels.back().color=Gdk::Color("#000000");
@@ -201,7 +201,7 @@ struct studio::Widget_Curves::CurveStruct : sigc::trackable
 				channels.push_back(Channel());
 				channels.back().name="tsplit";
 				channels.back().color=Gdk::Color("#ff00ff");
-			
+
 				channels.push_back(Channel());
 				channels.back().name="t1.x";
 				channels.back().color=Gdk::Color("#ff0000");
@@ -220,7 +220,7 @@ struct studio::Widget_Curves::CurveStruct : sigc::trackable
 				throw synfig::Exception::BadType("Bad type for curves");
 		}
 	}
-	
+
 	void clear_all_values()
 	{
 		DEBUGPOINT();
@@ -228,18 +228,18 @@ struct studio::Widget_Curves::CurveStruct : sigc::trackable
 		for(iter=channels.begin();iter!=channels.end();++iter)
 			iter->values.clear();
 	}
-	
+
 	synfig::Real get_value(int chan, synfig::Real time, synfig::Real tolerance)
 	{
 		std::map<synfig::Real,synfig::Real>::iterator iter;
-		
+
 		// First check to see if we have a value
 		// that is "close enough" to the time
 		// we are looking for
 		iter=channels[chan].values.lower_bound(time);
 		if(iter!=channels[chan].values.end() && iter->first-time<=tolerance)
 			return -iter->second;
-		
+
 		// Since that didn't work, we now need
 		// to go ahead and figure out what the
 		// actual value is at that time.
@@ -285,7 +285,7 @@ struct studio::Widget_Curves::CurveStruct : sigc::trackable
 			default:
 				return 0;
 		}
-		
+
 		return -channels[chan].values[time];
 	}
 };
@@ -310,10 +310,10 @@ Widget_Curves::Widget_Curves():
 		)
 	);
 	//set_vadjustment(*range_adjustment_);
-	
+
 	signal_expose_event().connect(sigc::mem_fun(*this, &studio::Widget_Curves::redraw));
 	add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK);
-	
+
 }
 
 Widget_Curves::~Widget_Curves()
@@ -360,7 +360,7 @@ void
 Widget_Curves::set_value_descs(std::list<synfigapp::ValueDesc> value_descs)
 {
 	curve_list_.clear();
-	
+
 	std::list<synfigapp::ValueDesc>::iterator iter;
 	for(iter=value_descs.begin();iter!=value_descs.end();++iter)
 	{
@@ -430,7 +430,7 @@ Widget_Curves::on_event(GdkEvent *event)
 	}
 
 	return true;
-	
+
 /*	switch(event->type)
 	{
 	case GDK_BUTTON_PRESS:
@@ -445,7 +445,7 @@ Widget_Curves::on_event(GdkEvent *event)
 			return true;
 		}
 		break;
-		
+
 	default:
 		break;
 	}
@@ -457,14 +457,14 @@ bool
 Widget_Curves::redraw(GdkEventExpose*bleh)
 {
 	const int h(get_height());
-	const int w(get_width());	
+	const int w(get_width());
 	get_window()->clear();
-	
+
 	if(!time_adjustment_ || !range_adjustment_ || !h || !w)
 		return false;
-	
+
 	Glib::RefPtr<Gdk::GC> gc(Gdk::GC::create(get_window()));
-	
+
 	const Real t_begin(time_adjustment_->get_lower());
 	const Real t_end(time_adjustment_->get_upper());
 	const Real dt((t_end-t_begin)/w);
@@ -474,7 +474,7 @@ Widget_Curves::redraw(GdkEventExpose*bleh)
 	const Real dr((r_top-r_bottom)/h);
 	Real r_max(-100000000);
 	Real r_min(100000000);
-	
+
 	std::list<CurveStruct>::iterator curve_iter;
 
 	vector<Gdk::Point> points[10];
@@ -521,23 +521,23 @@ Widget_Curves::redraw(GdkEventExpose*bleh)
 		for(int chan=0;chan<channels;chan++)
 		{
 			gc->set_rgb_fg_color(curve_iter->channels[chan].color);
-	
+
 			// Draw the curve
 			get_window()->draw_lines(gc, Glib::ArrayHandle<Gdk::Point>(points[chan]));
 
 			Glib::RefPtr<Pango::Layout> layout(Pango::Layout::create(get_pango_context()));
-						
-			layout->set_text(curve_iter->channels[chan].name);		
-			get_window()->draw_layout(gc, 1, points[chan][0].get_y()+1, layout);			
+
+			layout->set_text(curve_iter->channels[chan].name);
+			get_window()->draw_layout(gc, 1, points[chan][0].get_y()+1, layout);
 		}
 	}
-	
+
 	if(!curve_list_.empty())
 	{
 		range_adjustment_->set_upper(r_max+range_adjustment_->get_page_size()/2);
 		range_adjustment_->set_lower(r_min-range_adjustment_->get_page_size()/2);
 	}
 	get_window()->get_update_area();
-	
+
 	return true;
 }

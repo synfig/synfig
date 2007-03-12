@@ -65,12 +65,12 @@ Action::ParamVocab
 Action::LayerAdd::get_param_vocab()
 {
 	ParamVocab ret(Action::CanvasSpecific::get_param_vocab());
-	
+
 	ret.push_back(ParamDesc("new",Param::TYPE_LAYER)
 		.set_local_name(_("New Layer"))
 		.set_desc(_("Layer to be added"))
 	);
-	
+
 	return ret;
 }
 
@@ -86,7 +86,7 @@ Action::LayerAdd::set_param(const synfig::String& name, const Action::Param &par
 	if(name=="new" && param.get_type()==Param::TYPE_LAYER)
 	{
 		layer=param.get_layer();
-		
+
 		return true;
 	}
 
@@ -106,13 +106,13 @@ Action::LayerAdd::perform()
 {
 	// Set the layer's canvas
 	layer->set_canvas(get_canvas());
-		
+
 	// Push the layer onto the front of the canvas
-	get_canvas()->push_front(layer);	
+	get_canvas()->push_front(layer);
 
 	// Mark ourselves as dirty if necessary
 	//set_dirty(layer->active());
-	
+
 	// Signal that a layer has been inserted
 	if(get_canvas_interface())
 	{
@@ -126,17 +126,17 @@ Action::LayerAdd::undo()
 {
 	// Find the iterator for the layer
 	Canvas::iterator iter=find(get_canvas()->begin(),get_canvas()->end(),layer);
-		
+
 	// If we couldn't find the layer in the canvas, then bail
 	if(*iter!=layer)
 		throw Error(_("This layer doesn't exist anymore."));
-	
+
 	// Remove the layer from the canvas
 	get_canvas()->erase(iter);
 
 	// Mark ourselves as dirty if necessary
 	//set_dirty(layer->active());
-	
+
 	// Signal that a layer has been inserted
 	if(get_canvas_interface())
 	{

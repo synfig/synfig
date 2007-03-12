@@ -54,16 +54,16 @@ class AsyncRenderer : public etl::shared_object, public sigc::trackable
 	sigc::signal<void> signal_success_;
 
 	std::list<sigc::connection> activity_connection_list;
-	
+
 	//etl::handle<synfig::Target_Scanline> target_scanline;
 	//etl::handle<synfig::Target_Tile> target_tile;
 	etl::handle<synfig::Target> target;
 
 	bool error;
 	bool success;
-	
+
 	synfig::ProgressCallback *cb;
-	
+
 	sigc::signal<void> signal_stop_;
 
 	Glib::Thread* render_thread;
@@ -100,7 +100,7 @@ private:
 	*/
 
 protected:
-	
+
 };
 
 }; // END of namespace studio

@@ -73,13 +73,13 @@ public:
 
 namespace studio {
 class Duckmatic;
-	
+
 /*! \class Duck
 **	\writeme */
 class Duck : public etl::shared_object
 {
 	friend class Duckmatic;
-		
+
 public:
 	enum Type
 	{
@@ -98,18 +98,18 @@ public:
 
 	typedef etl::handle<Duck> Handle;
 	typedef etl::loose_handle<Duck> LooseHandle;
-	
+
 private:
 
 	sigc::signal<bool,const synfig::Point &> signal_edited_;
 	sigc::signal<void> signal_user_click_[5];
-	
+
 	Type type_;
 
 	synfig::Point point;
 
 	etl::smart_ptr<synfig::Point> shared_point;
-	
+
 	synfig::Point origin;
 	synfig::String name;
 	synfig::Real scalar;
@@ -119,13 +119,13 @@ private:
 	etl::handle<Duck> connect_duck;
 	etl::handle<Duck> box_duck;
 
-	synfig::GUID guid_;	
+	synfig::GUID guid_;
 
 	// Flags
 	bool editable;
 	bool radius_;
 	bool tangent_;
-	
+
 	synfig::TransformStack transform_stack_;
 
 	synfigapp::ValueDesc value_desc_;
@@ -136,7 +136,7 @@ public:
 	Duck(const synfig::Point &point);
 	Duck(const synfig::Point &point,const synfig::Point &origin);
 	~Duck();
-		
+
 	sigc::signal<bool,const synfig::Point &> &signal_edited() { return signal_edited_; }
 	sigc::signal<void> &signal_user_click(int i=0) { assert(i>=0); assert(i<5); return signal_user_click_[i]; }
 
@@ -170,7 +170,7 @@ public:
 	void set_transform_stack(const synfig::TransformStack& x) { transform_stack_=x; }
 
 	const synfig::TransformStack& get_transform_stack()const { return transform_stack_; }
-	
+
 	//! \writeme
 	void set_type(Type x) { type_=x; }
 
@@ -187,12 +187,12 @@ public:
 
 	//! Sets the location of the duck with respect to the origin
 	void set_point(const synfig::Point &x) { (shared_point?*shared_point:point)=x; }
-		
+
 	//! Returns the location of the duck
 	synfig::Point get_point()const { return shared_point?*shared_point:point; }
-	
+
 	synfig::Point get_trans_point()const;
-	
+
 	void set_trans_point(const synfig::Point &x);
 
 	synfig::Point get_sub_trans_point()const;
@@ -207,22 +207,22 @@ public:
 
 	//! Retrieves the origin location
 	synfig::Point get_origin()const;
-	
+
 	//! Retrieves the origin duck
-	const etl::handle<Duck> & get_origin_duck() const;	
+	const etl::handle<Duck> & get_origin_duck() const;
 
 	//! Retrieves the origin location
 	synfig::Point get_trans_origin()const;
 
 	void set_radius(bool r) { radius_=r; }
 	bool is_radius()const { return radius_; }
-	
+
 	//! Sets the name of the duck
 	void set_name(const synfig::String &x);
 
 	//! Retrieves the name of the duck
 	synfig::String get_name()const { return name; }
-	
+
 	bool operator==(const Duck &rhs)const;
 }; // END of class Duck
 

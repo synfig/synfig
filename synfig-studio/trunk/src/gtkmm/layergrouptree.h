@@ -58,9 +58,9 @@ public:
 	*/
 
 public:
-	
+
 	LayerGroupTreeStore::Model model;
-	
+
 	/*
  -- ** -- P R I V A T E   D A T A ---------------------------------------------
 	*/
@@ -84,7 +84,7 @@ private:
 	*/
 
 private:
-	
+
 	/*
  -- ** -- S I G N A L   T E R M I N A L S -------------------------------------
 	*/
@@ -98,7 +98,7 @@ private:
 	*/
 
 public:
-	
+
 	LayerGroupTree();
 	~LayerGroupTree();
 	void set_cursor(const Gtk::TreeModel::Path& path, bool start_editing=false);
@@ -112,12 +112,12 @@ public:
 	void set_model(Glib::RefPtr<LayerGroupTreeStore> layer_group_tree_store_);
 
 	void set_editable(bool x=true);
-	
+
 	bool get_editable()const { return editable_; }
-	
+
 	std::list<synfig::String> get_selected_groups()const;
 
-	LayerList get_selected_layers()const;	
+	LayerList get_selected_layers()const;
 }; // END of LayerGroupTree
 
 }; // END of namespace studio

@@ -42,7 +42,7 @@
 
 namespace studio {
 class WorkArea;
-	
+
 class WorkAreaRenderer : public etl::shared_object, public sigc::trackable
 {
 public:
@@ -52,19 +52,19 @@ public:
 private:
 	bool enabled_;
 	int priority_;
-	
+
 	sigc::signal<void> signal_changed_;
-	
+
 	WorkArea* work_area_;
-	
+
 public:
 
 	sigc::signal<void>& signal_changed() { return signal_changed_; }
-		
+
 public:
 	int get_w()const;
 	int get_h()const;
-	
+
 	float get_pw()const;
 	float get_ph()const;
 
@@ -80,11 +80,11 @@ public:
 	bool get_enabled()const { return get_enabled_vfunc(); }
 	int get_priority()const { return priority_; }
 	WorkArea* get_work_area()const { return work_area_; }
-	
+
 	void set_enabled(bool x);
 	void set_priority(int x);
 	void set_work_area(WorkArea* work_area_);
-	
+
 	virtual void render_vfunc(
 		const Glib::RefPtr<Gdk::Drawable>& window,
 		const Gdk::Rectangle& expose_area

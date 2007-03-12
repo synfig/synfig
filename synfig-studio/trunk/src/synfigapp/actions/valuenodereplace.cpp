@@ -62,7 +62,7 @@ void swap_guid(const ValueNode::Handle& a,const ValueNode::Handle& b)
 
 	GUID old_b(b->get_guid());
 	b->set_guid(GUID());
-	
+
 	a->set_guid(old_b);
 	b->set_guid(old_a);
 }
@@ -78,7 +78,7 @@ Action::ParamVocab
 Action::ValueNodeReplace::get_param_vocab()
 {
 	ParamVocab ret(Action::CanvasSpecific::get_param_vocab());
-	
+
 	ret.push_back(ParamDesc("dest",Param::TYPE_VALUENODE)
 		.set_local_name(_("Destination ValueNode"))
 		.set_desc(_("ValueNode to replaced"))
@@ -88,7 +88,7 @@ Action::ValueNodeReplace::get_param_vocab()
 		.set_local_name(_("Source ValueNode"))
 		.set_desc(_("ValueNode that will replace the destination"))
 	);
-	
+
 	return ret;
 }
 
@@ -104,14 +104,14 @@ Action::ValueNodeReplace::set_param(const synfig::String& name, const Action::Pa
 	if(name=="dest" && param.get_type()==Param::TYPE_VALUENODE)
 	{
 		dest_value_node=param.get_value_node();
-		
+
 		return true;
 	}
 
 	if(name=="src" && param.get_type()==Param::TYPE_VALUENODE)
 	{
 		src_value_node=param.get_value_node();
-		
+
 		return true;
 	}
 
@@ -136,47 +136,47 @@ Action::ValueNodeReplace::perform()
 
 	if(dest_value_node->get_type() != src_value_node->get_type())
 		throw Error(_("You cannot replace ValueNodes with different types!"));
-	
+
 	is_undoable=true;
-	
+
 	if(!src_value_node->is_exported())
 	{
 		src_value_node->set_id(dest_value_node->get_id());
 		src_value_node->set_parent_canvas(dest_value_node->get_parent_canvas());
 
 		ValueNode::RHandle value_node(src_value_node);
-		
+
 		if(!value_node.runique() && value_node.rcount()>1)
 			is_undoable=false;	// !!!
 	}
 	else
 		is_undoable=false;	// !!!
-	
+
 	if(!is_undoable)
 		synfig::warning("ValueNodeReplace: Circumstances make undoing this action impossible at the current time. :(");
-	
+
 	ValueNode::RHandle value_node(dest_value_node);
-	
+
 	if(value_node.runique() || value_node.rcount()<=1)
 		throw Error(_("Nothing to replace."));
-	
+
 	int replacements;
-		
+
 	replacements=value_node->replace(src_value_node);
 	assert(replacements);
 	if(!replacements)
 		throw Error(_("Action Failure. This is a bug. Please report it."));
 	swap_guid(dest_value_node,src_value_node);
-	
+
 	//src_value_node->parent_set.swap(dest_value_node->parent_set);
-	
+
 	// Signal that a layer has been inserted
 	if(get_canvas_interface())
 	{
 		get_canvas_interface()->signal_value_node_replaced()(dest_value_node,src_value_node);
 	}
 	else synfig::warning("CanvasInterface not set on action");
-	
+
 }
 
 void
@@ -184,7 +184,7 @@ Action::ValueNodeReplace::undo()
 {
 	if(!is_undoable)
 		throw Error(_("This action cannot be undone under these circumstances."));
-		
+
 	set_dirty(true);
 
 	if(dest_value_node == src_value_node)
@@ -192,14 +192,14 @@ Action::ValueNodeReplace::undo()
 
 	if(dest_value_node->get_type() != src_value_node->get_type())
 		throw Error(_("You cannot replace ValueNodes with different types!"));
-		
+
 	ValueNode::RHandle value_node(src_value_node);
-	
+
 	if(value_node.runique() || value_node.rcount()<=1)
 		throw Error(_("Nothing to replace."));
-	
+
 	int replacements;
-	
+
 	replacements=value_node->replace(dest_value_node);
 	assert(replacements);
 	if(!replacements)
@@ -207,17 +207,17 @@ Action::ValueNodeReplace::undo()
 	swap_guid(dest_value_node,src_value_node);
 
 	//src_value_node->parent_set.swap(dest_value_node->parent_set);
-	
+
 	synfig::info(get_name()+_(": (Undo) ")+strprintf("Replaced %d ValueNode instances",replacements));
 
 	src_value_node->set_id(String());
 	src_value_node->set_parent_canvas(0);
-	
+
 	// Signal that a layer has been inserted
 	if(get_canvas_interface())
 	{
 		get_canvas_interface()->signal_value_node_replaced()(src_value_node,dest_value_node);
 	}
 	else synfig::warning("CanvasInterface not set on action");
-	
+
 }

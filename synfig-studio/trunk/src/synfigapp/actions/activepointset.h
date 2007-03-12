@@ -51,9 +51,9 @@ private:
 
 	synfig::ValueNode_DynamicList::Handle value_node;
 	int index;
-	
+
 	std::vector<synfig::Activepoint> activepoints;
-	std::vector<synfig::Activepoint> old_activepoints;	
+	std::vector<synfig::Activepoint> old_activepoints;
 
 	std::vector<synfig::Activepoint> overwritten_activepoints;
 

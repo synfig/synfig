@@ -43,7 +43,7 @@ using namespace Action;
 /* === M A C R O S ========================================================= */
 #define ACTION_INIT2(class) \
 	Action::Base* class::create() { return new class(); }	\
-	synfig::String class::get_name()const { return name__; }	
+	synfig::String class::get_name()const { return name__; }
 
 ACTION_INIT2(Action::LayerActivate);
 ACTION_SET_NAME(Action::LayerActivate,"layer_activate");
@@ -82,7 +82,7 @@ Action::ParamVocab
 Action::LayerActivate::get_param_vocab()
 {
 	ParamVocab ret(Action::CanvasSpecific::get_param_vocab());
-	
+
 	ret.push_back(ParamDesc("layer",Param::TYPE_LAYER)
 		.set_local_name(_("Layer"))
 	);
@@ -91,7 +91,7 @@ Action::LayerActivate::get_param_vocab()
 		.set_local_name(_("New Status"))
 		.set_desc(_("The new status of the layer"))
 	);
-	
+
 	return ret;
 }
 
@@ -107,14 +107,14 @@ Action::LayerActivate::set_param(const synfig::String& name, const Action::Param
 	if(name=="layer" && param.get_type()==Param::TYPE_LAYER)
 	{
 		layer=param.get_layer();
-		
+
 		return true;
 	}
 
 	if(name=="new_status" && param.get_type()==Param::TYPE_BOOL)
 	{
 		new_status=param.get_bool();
-		
+
 		return true;
 	}
 
@@ -133,10 +133,10 @@ void
 Action::LayerActivate::perform()
 {
 	Canvas::Handle subcanvas(layer->get_canvas());
-	
+
 	// Find the iterator for the layer
 	Canvas::iterator iter=find(subcanvas->begin(),subcanvas->end(),layer);
-	
+
 	// If we couldn't find the layer in the canvas, then bail
 	if(*iter!=layer)
 		throw Error(_("This layer doesn't exist anymore."));
@@ -147,9 +147,9 @@ Action::LayerActivate::perform()
 	//if(get_canvas()!=subcanvas && !subcanvas->is_inline())
 	//if(get_canvas()->get_root()!=subcanvas->get_root())
 	//	throw Error(_("This layer doesn't belong to this composition"));
-	
+
 	old_status=layer->active();
-	
+
 	// If we are changing the status to what it already is,
 	// the go ahead and return
 	if(new_status==old_status)
@@ -159,7 +159,7 @@ Action::LayerActivate::perform()
 	}
 	else
 		set_dirty();
-	
+
 	if(new_status)
 		layer->enable();
 	else
@@ -190,7 +190,7 @@ Action::LayerActivate::undo()
 		layer->enable();
 	else
 		layer->disable();
-	
+
 	if(get_canvas_interface())
 	{
 		get_canvas_interface()->signal_layer_status_changed()(layer,old_status);

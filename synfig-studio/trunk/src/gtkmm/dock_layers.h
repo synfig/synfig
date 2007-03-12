@@ -47,14 +47,14 @@ namespace studio {
 class LayerActionManager;
 
 class Dock_Layers : public Dock_CanvasSpecific
-{	
+{
 	Glib::RefPtr<Gtk::ActionGroup> action_group_new_layers;
 	Glib::RefPtr<Gtk::ActionGroup> action_group_layer_ops;
-	
+
 	Gtk::HScale *layer_amount_hscale;
 
 	LayerActionManager* layer_action_manager;
-	
+
 protected:
 	virtual void init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view);
 	virtual void changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view);

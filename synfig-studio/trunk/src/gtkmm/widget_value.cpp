@@ -74,7 +74,7 @@ Widget_ValueBase::Widget_ValueBase():
 	angle_adjustment(0,-2000000000,2000000000,1,1,1)
 {
 	set_no_show_all();
-	
+
 	label=manage(new class Gtk::Label("Unknown Datatype"));
 	pack_start(*label);
 	label->show();
@@ -97,7 +97,7 @@ Widget_ValueBase::Widget_ValueBase():
 	angle_widget=manage(new class Gtk::SpinButton(angle_adjustment,15,2));
 	pack_start(*angle_widget);
 
-	bool_widget=manage(new class Gtk::CheckButton());                     
+	bool_widget=manage(new class Gtk::CheckButton());
 	pack_start(*bool_widget);
 
 	//color_widget=manage(new class Gtk::ColorSelection());
@@ -105,7 +105,7 @@ Widget_ValueBase::Widget_ValueBase():
 
 	string_widget=manage(new class Gtk::Entry());
 	pack_start(*string_widget);
-	
+
 	canvas_widget=manage(new class Widget_CanvasChooser());
 	pack_start(*canvas_widget);
 
@@ -118,7 +118,7 @@ Widget_ValueBase::Widget_ValueBase():
 	distance_widget=manage(new class Widget_Distance());
 	pack_start(*distance_widget);
 
-	
+
 	vector_widget->signal_activate().connect(sigc::mem_fun(*this,&Widget_ValueBase::activate));
 	color_widget->signal_activate().connect(sigc::mem_fun(*this,&Widget_ValueBase::activate));
 	enum_widget->signal_activate().connect(sigc::mem_fun(*this,&Widget_ValueBase::activate));
@@ -130,7 +130,7 @@ Widget_ValueBase::Widget_ValueBase():
 	filename_widget->signal_activate().connect(sigc::mem_fun(*this,&Widget_ValueBase::activate));
 	time_widget->signal_activate().connect(sigc::mem_fun(*this,&Widget_ValueBase::activate));
 	distance_widget->signal_activate().connect(sigc::mem_fun(*this,&Widget_ValueBase::activate));
-	
+
 	/*signal_focus_in_event().connect(
 		sigc::bind_return(
 		sigc::hide(
@@ -162,7 +162,7 @@ Widget_ValueBase::inside_cellrenderer()
 
 	distance_widget->set_has_frame(false);
 	//static_cast<Gtk::Entry*>(distance_widget)->gobj()->is_cell_renderer = true; // XXX
-	
+
 	integer_widget->set_has_frame(false);
 	//static_cast<Gtk::Entry*>(integer_widget)->gobj()->is_cell_renderer = true; // XXX
 	vector_widget->set_has_frame(false);
@@ -209,7 +209,7 @@ Widget_ValueBase::set_value(const synfig::ValueBase &data)
 	filename_widget->hide();
 	time_widget->hide();
 	distance_widget->hide();
-	
+
 	value=data;
 	try{
 	switch(value.get_type())
@@ -331,7 +331,7 @@ Widget_ValueBase::get_value()
 		{
 			value=enum_widget->get_value();
 		}
-			
+
 		break;
 	case ValueBase::TYPE_BOOL:
 		value=bool_widget->get_active();
@@ -357,7 +357,7 @@ Widget_ValueBase::get_value()
             color.set_g(gdkcolor.get_green_p());
             color.set_b(gdkcolor.get_blue_p());
 			color.set_a(color_widget->get_current_alpha()/65535.0);
-			
+
 			value=color;
 */
 		}
@@ -368,7 +368,7 @@ Widget_ValueBase::get_value()
 
 	return value;
 }
-	
+
 
 void
 Widget_ValueBase::on_grab_focus()
@@ -402,7 +402,7 @@ Widget_ValueBase::on_grab_focus()
 		{
 			enum_widget->grab_focus();
 		}
-			
+
 		break;
 	case ValueBase::TYPE_BOOL:
 		bool_widget->grab_focus();
@@ -441,7 +441,7 @@ Widget_ValueBase::signal_activate()
 			return distance_widget->signal_activate();
 		else
 			return real_widget->signal_activate();
-		
+
 		break;
 	case ValueBase::TYPE_TIME:
 		return time_widget->signal_activate();
@@ -457,7 +457,7 @@ Widget_ValueBase::signal_activate()
 			return integer_widget->signal_activate();
 		else
 			return enum_widget->signal_activate();
-			
+
 		break;
 	case ValueBase::TYPE_BOOL:
 		return string_widget->signal_activate();

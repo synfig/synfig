@@ -74,10 +74,10 @@ class DuckDrag_SmoothMove : public DuckDrag_Base
 	synfig::Vector last_translate_;
 	synfig::Vector drag_offset_;
 	synfig::Vector snap;
-	
+
 	std::vector<synfig::Vector> last_;
 	std::vector<synfig::Vector> positions;
-	
+
 public:
 	DuckDrag_SmoothMove();
 	void begin_duck_drag(Duckmatic* duckmatic, const synfig::Vector& begin);
@@ -85,16 +85,16 @@ public:
 	void duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector);
 
 	void set_radius(float x) { radius=x; }
-	float get_radius()const { return radius; }	
+	float get_radius()const { return radius; }
 };
 
 
 class studio::StateSmoothMove_Context : public sigc::trackable
 {
 	etl::handle<CanvasView> canvas_view_;
-	
+
 	//Duckmatic::Push duckmatic_push;
-	
+
 	synfigapp::Settings& settings;
 
 	etl::handle<DuckDrag_SmoothMove> duck_dragger_;
@@ -103,15 +103,15 @@ class studio::StateSmoothMove_Context : public sigc::trackable
 
 	Gtk::Adjustment	 adj_radius;
 	Gtk::SpinButton  spin_radius;
-	
+
 	float pressure;
-	
+
 public:
 	float get_radius()const { return adj_radius.get_value(); }
 	void set_radius(float x) { return adj_radius.set_value(x); }
-	
+
 	void refresh_radius() { duck_dragger_->set_radius(get_radius()*pressure); }
-	
+
 	Smach::event_result event_stop_handler(const Smach::event& x);
 
 	Smach::event_result event_refresh_tool_options(const Smach::event& x);
@@ -126,7 +126,7 @@ public:
 	etl::handle<synfigapp::CanvasInterface> get_canvas_interface()const{return canvas_view_->canvas_interface();}
 	synfig::Canvas::Handle get_canvas()const{return canvas_view_->get_canvas();}
 	WorkArea * get_work_area()const{return canvas_view_->get_work_area();}
-	
+
 	void load_settings();
 	void save_settings();
 };	// END of class StateSmoothMove_Context
@@ -137,7 +137,7 @@ StateSmoothMove::StateSmoothMove():
 	Smach::state<StateSmoothMove_Context>("smooth_move")
 {
 	insert(event_def(EVENT_REFRESH_TOOL_OPTIONS,&StateSmoothMove_Context::event_refresh_tool_options));
-}	
+}
 
 StateSmoothMove::~StateSmoothMove()
 {
@@ -145,7 +145,7 @@ StateSmoothMove::~StateSmoothMove()
 
 void
 StateSmoothMove_Context::load_settings()
-{	
+{
 	String value;
 
 	if(settings.get_value("smooth_move.radius",value))
@@ -156,7 +156,7 @@ StateSmoothMove_Context::load_settings()
 
 void
 StateSmoothMove_Context::save_settings()
-{	
+{
 	settings.set_value("smooth_move.radius",strprintf("%f",get_radius()));
 }
 
@@ -169,20 +169,20 @@ StateSmoothMove_Context::StateSmoothMove_Context(CanvasView* canvas_view):
 	spin_radius(adj_radius,0.1,3)
 {
 	pressure=1.0f;
-	
+
 	// Set up the tool options dialog
-	//options_table.attach(*manage(new Gtk::Label(_("SmoothMove Tool"))), 0, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);	
-	
-	options_table.attach(*manage(new Gtk::Label(_("Radius"))), 0, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);	
+	//options_table.attach(*manage(new Gtk::Label(_("SmoothMove Tool"))), 0, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+
+	options_table.attach(*manage(new Gtk::Label(_("Radius"))), 0, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	options_table.attach(spin_radius, 0, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
 	spin_radius.signal_value_changed().connect(sigc::mem_fun(*this,&StateSmoothMove_Context::refresh_radius));
-	
+
 	options_table.show_all();
 	refresh_tool_options();
 	//App::dialog_tool_options->set_widget(options_table);
 	App::dialog_tool_options->present();
-	
+
 	get_work_area()->allow_layer_clicks=true;
 	get_work_area()->set_duck_dragger(duck_dragger_);
 
@@ -257,9 +257,9 @@ DuckDrag_SmoothMove::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vecto
 	const DuckList selected_ducks(duckmatic->get_selected_ducks());
 	DuckList::const_iterator iter;
 	synfig::Vector vect(duckmatic->snap_point_to_grid(vector)-drag_offset_+snap);
-	
+
 	int i;
-	
+
 	for(i=0,iter=selected_ducks.begin();iter!=selected_ducks.end();++iter,i++)
 	{
 		if(((*iter)->get_type()!=Duck::TYPE_VERTEX&&(*iter)->get_type()!=Duck::TYPE_POSITION))continue;
@@ -268,7 +268,7 @@ DuckDrag_SmoothMove::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vecto
 		float dist(1.0f-(p-drag_offset_).mag()/get_radius());
 		if(dist<0)
 			dist=0;
-		
+
 		last_[i]=vect*dist;
 		(*iter)->set_trans_point(p+last_[i]);
 	}
@@ -281,11 +281,11 @@ DuckDrag_SmoothMove::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vecto
 		float dist(1.0f-(p-drag_offset_).mag()/get_radius());
 		if(dist<0)
 			dist=0;
-		
+
 		last_[i]=vect*dist;
 		(*iter)->set_trans_point(p+last_[i]);
 	}
-	
+
 	last_translate_=vect;
 	//snap=Vector(0,0);
 }
@@ -300,9 +300,9 @@ DuckDrag_SmoothMove::end_duck_drag(Duckmatic* duckmatic)
 		DuckList::const_iterator iter;
 
 		int i;
-		
+
 		smart_ptr<OneMoment> wait;if(selected_ducks.size()>20)wait.spawn();
-			
+
 		for(i=0,iter=selected_ducks.begin();iter!=selected_ducks.end();++iter,i++)
 		{
 			if(last_[i].mag()>0.0001)

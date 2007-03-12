@@ -71,7 +71,7 @@ Action::ParamVocab
 Action::KeyframeWaypointSet::get_param_vocab()
 {
 	ParamVocab ret(Action::CanvasSpecific::get_param_vocab());
-	
+
 	ret.push_back(ParamDesc("keyframe",Param::TYPE_KEYFRAME)
 		.set_local_name(_("Keyframe"))
 	);
@@ -95,13 +95,13 @@ Action::KeyframeWaypointSet::set_param(const synfig::String& name, const Action:
 	if(name=="keyframe" && param.get_type()==Param::TYPE_KEYFRAME)
 	{
 		keyframe=param.get_keyframe();
-		
+
 		return true;
 	}
 	if(name=="model" && param.get_type()==Param::TYPE_WAYPOINTMODEL)
 	{
 		waypoint_model=param.get_waypoint_model();
-		
+
 		return true;
 	}
 
@@ -125,7 +125,7 @@ Action::KeyframeWaypointSet::prepare()
 	catch(synfig::Exception::NotFound)
 	{
 		throw Error(_("Unable to find the given keyframe"));
-	}	
+	}
 
 	{
 		std::vector<synfigapp::ValueDesc> value_desc_list;
@@ -140,19 +140,19 @@ Action::KeyframeWaypointSet::prepare()
 
 void
 Action::KeyframeWaypointSet::process_value_desc(const synfigapp::ValueDesc& value_desc)
-{	
+{
 	if(value_desc.is_value_node())
 	{
 		ValueNode_Animated::Handle value_node(ValueNode_Animated::Handle::cast_dynamic(value_desc.get_value_node()));
-	
+
 		if(value_node)
-		{			
+		{
 			Action::Handle action(WaypointSetSmart::create());
-			
+
 			action->set_param("canvas",get_canvas());
 			action->set_param("canvas_interface",get_canvas_interface());
 			action->set_param("value_node",ValueNode::Handle(value_node));
-			
+
 			Waypoint waypoint;
 			try
 			{
@@ -164,14 +164,14 @@ Action::KeyframeWaypointSet::process_value_desc(const synfigapp::ValueDesc& valu
 				waypoint.set_value((*value_node)(keyframe.get_time()));
 			}
 			waypoint.apply_model(waypoint_model);
-			
+
 			action->set_param("waypoint",waypoint);
-	
+
 			assert(action->is_ready());
 			if(!action->is_ready())
 				throw Error(Error::TYPE_NOTREADY);
-		
-			add_action_front(action);						
+
+			add_action_front(action);
 		}
 	}
 }

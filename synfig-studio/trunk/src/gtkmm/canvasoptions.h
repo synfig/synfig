@@ -45,7 +45,7 @@ namespace studio
 {
 
 class CanvasView;
-	
+
 class CanvasOptions  :  public Gtk::Dialog
 {
 	Gtk::Tooltips tooltips;
@@ -58,7 +58,7 @@ class CanvasOptions  :  public Gtk::Dialog
 	Widget_Vector vector_grid_size;
 
 	Gtk::CheckButton toggle_time_snap;
-	
+
 public:
 	CanvasOptions(etl::loose_handle<CanvasView> canvas_view);
 	~CanvasOptions();

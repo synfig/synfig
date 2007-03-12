@@ -80,9 +80,9 @@ Widget_Enum::refresh()
 
 	std::list<synfig::ParamDesc::EnumData> enum_list=param_desc.get_enum_list();
 	std::list<synfig::ParamDesc::EnumData>::iterator iter;
-	
+
 	String name=strprintf("(%d)",value);
-	
+
 	for(iter=enum_list.begin();iter!=enum_list.end();iter++)
 		if(iter->value!=value)
 			enum_menu->items().push_back(Gtk::Menu_Helpers::MenuElem(iter->local_name,
@@ -92,17 +92,17 @@ Widget_Enum::refresh()
 			name=iter->local_name;
 
 	enum_menu->items().push_front(Gtk::Menu_Helpers::MenuElem(name));
-		
-	set_menu(*enum_menu);	
+
+	set_menu(*enum_menu);
 }
 
 void
 Widget_Enum::set_value(int data)
 {
 	value=data;
-	
+
 	refresh();
-	
+
 	set_history(0);
 }
 

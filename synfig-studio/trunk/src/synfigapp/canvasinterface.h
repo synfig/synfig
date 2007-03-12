@@ -47,16 +47,16 @@ namespace synfig { class ValueNode_DynamicList; class Waypoint; class GUIDSet; c
 
 namespace synfigapp {
 
-namespace Action { class ParamList; class Param; class EditModeSet; }; 
+namespace Action { class ParamList; class Param; class EditModeSet; };
 
 class Instance;
 class ValueDesc;
-	
+
 class CanvasInterface : public etl::shared_object, public sigc::trackable
 {
 	friend class Instance;
 	friend class Action::EditModeSet;
-		
+
 public:
 
 	typedef EditMode Mode;
@@ -82,7 +82,7 @@ private:
 	sigc::signal<void,synfig::Layer::Handle,synfig::String> signal_layer_new_description_;
 	sigc::signal<void,synfig::Canvas::Handle> signal_canvas_added_;
 	sigc::signal<void,synfig::Canvas::Handle> signal_canvas_removed_;
-	
+
 	sigc::signal<void,synfig::ValueNode::Handle> signal_value_node_added_;
 	sigc::signal<void,synfig::ValueNode::Handle> signal_value_node_deleted_;
 	sigc::signal<void,synfig::ValueNode::Handle> signal_value_node_changed_;
@@ -112,10 +112,10 @@ public:	// Signal Interface
 
 	//! Signal called when layer is raised.
 	sigc::signal<void,synfig::Layer::Handle>& signal_layer_raised() { return signal_layer_raised_; }
-	
+
 	//! Signal called when layer is lowered.
 	sigc::signal<void,synfig::Layer::Handle>& signal_layer_lowered() { return signal_layer_lowered_; }
-	
+
 	//! Signal called when layer has been inserted at a given position.
 	sigc::signal<void,synfig::Layer::Handle,int>& signal_layer_inserted() { return signal_layer_inserted_; }
 
@@ -186,21 +186,21 @@ public:
 
 	//! Changes the current SelectionManager object
 	void set_selection_manager(const etl::handle<SelectionManager> &sm) { selection_manager_=sm; }
-	
+
 	//! Disables the selection manager
 	void unset_selection_manager() { selection_manager_=new NullSelectionManager(); }
-	
+
 	//! Returns a handle to the current SelectionManager
-	const etl::handle<SelectionManager> &get_selection_manager()const { return selection_manager_; }	
+	const etl::handle<SelectionManager> &get_selection_manager()const { return selection_manager_; }
 
 	//! Changes the current UIInterface object
 	void set_ui_interface(const etl::handle<UIInterface> &uim) { ui_interface_=uim; }
 
 	//! Disables the UIInterface
 	void unset_ui_interface() { ui_interface_=new DefaultUIInterface(); }
-	
+
 	//! Returns a handle to the current UIInterface
-	const etl::handle<UIInterface> &get_ui_interface() { return ui_interface_; }	
+	const etl::handle<UIInterface> &get_ui_interface() { return ui_interface_; }
 
 	//! Returns the Canvas associated with this interface
 	etl::handle<synfig::Canvas> get_canvas()const { return canvas_; }
@@ -216,7 +216,7 @@ public:
 
 	//! Changes the ID of the canvas. Undoable.
 	bool set_id(const synfig::String &x);
-	
+
 	//! Convience function to retrieve the name of the canvas
 	synfig::String get_name()const { return get_canvas()->get_name(); }
 
@@ -228,23 +228,23 @@ public:
 
 	//! Sets the current time
 	void set_time(synfig::Time x);
-	
+
 	//! Retrieves the current time
 	synfig::Time get_time()const;
-	
+
 	//! Changes the current time to the next keyframe
 	void jump_to_next_keyframe();
 
 	//! Changes the current time to the next keyframe
 	void jump_to_prev_keyframe();
-	
+
 	void seek_frame(int frames);
 
 	void seek_time(synfig::Time time);
-	
+
 	//! \writeme
 	void refresh_current_values();
-	
+
 	//! Sets the current editing mode
 	/*! \see Mode */
 	void set_mode(Mode x);
@@ -270,8 +270,8 @@ public:
 	void set_rend_desc(const synfig::RendDesc &rend_desc);
 
 	bool import(const synfig::String &filename, bool copy=false);
-	
-	
+
+
 	void waypoint_duplicate(synfigapp::ValueDesc value_desc,synfig::Waypoint waypoint);
 
 	void waypoint_remove(synfigapp::ValueDesc value_desc,synfig::Waypoint waypoint);
@@ -298,7 +298,7 @@ public:
 	PushMode(etl::loose_handle<CanvasInterface> c, CanvasInterface::Mode mode):
 		canvas_interface_(c.get()), old_mode_(canvas_interface_->get_mode())
 	{ canvas_interface_->set_mode(mode); }
-	
+
 	~PushMode() { canvas_interface_->set_mode(old_mode_); }
 }; // END of class PushMode
 

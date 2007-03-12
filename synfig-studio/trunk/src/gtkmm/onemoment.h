@@ -41,7 +41,7 @@ namespace studio {
 class OneMoment : public Gtk::Window
 {
 public:
-	
+
 	OneMoment();
 	~OneMoment();
 };

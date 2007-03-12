@@ -41,7 +41,7 @@
 namespace synfigapp { class CanvasInterface; }
 
 namespace studio {
-	
+
 class MetaDataTreeStore : virtual public Gtk::TreeStore
 {
 	/*
@@ -69,7 +69,7 @@ public:
 	*/
 
 public:
-	
+
 	const Model model;
 
 	/*
@@ -85,7 +85,7 @@ private:
 	*/
 
 private:
-	
+
 	/*
  -- ** -- S I G N A L   T E R M I N A L S -------------------------------------
 	*/
@@ -99,7 +99,7 @@ private:
 	*/
 
 public:
-	
+
 	~MetaDataTreeStore();
 
 	etl::loose_handle<synfigapp::CanvasInterface> get_canvas_interface() { return canvas_interface_; }
@@ -123,7 +123,7 @@ protected:
 public:
 
 	static Glib::RefPtr<MetaDataTreeStore> create(etl::loose_handle<synfigapp::CanvasInterface>);
-	
+
 }; // END of class MetaDataTreeStore
 
 }; // END of namespace studio

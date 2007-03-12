@@ -97,7 +97,7 @@ CellRenderer_Time::render_vfunc(
 
 	const Time time(property_time_);
 	const float fps((Real)Time(property_fps_));
-	
+
 	property_text()=(Glib::ustring)time.get_string(fps,App::get_time_format());
 
 	CellRendererText::render_vfunc(window,widget,background_area,ca,expose_area,flags);
@@ -119,7 +119,7 @@ CellRenderer_Time::start_editing_vfunc(
 
 	const Time time(property_time_);
 	const float fps((Real)Time(property_fps_));
-	
+
 	property_text()=(Glib::ustring)time.get_string(fps,App::get_time_format()|Time::FORMAT_FULL);
 #if 0
 	Widget_Time* widget_time(manage(new Widget_Time));

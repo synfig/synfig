@@ -70,7 +70,7 @@ Action::ParamVocab
 Action::ValueNodeDynamicListInsertSmart::get_param_vocab()
 {
 	ParamVocab ret(Action::CanvasSpecific::get_param_vocab());
-	
+
 	ret.push_back(ParamDesc("value_desc",Param::TYPE_VALUEDESC)
 		.set_local_name(_("ValueDesc"))
 	);
@@ -106,29 +106,29 @@ Action::ValueNodeDynamicListInsertSmart::set_param(const synfig::String& name, c
 	if(name=="value_desc" && param.get_type()==Param::TYPE_VALUEDESC)
 	{
 		ValueDesc value_desc(param.get_value_desc());
-		
+
 		if(!value_desc.parent_is_value_node())
 			return false;
-		
+
 		value_node=ValueNode_DynamicList::Handle::cast_dynamic(value_desc.get_parent_value_node());
-		
+
 		if(!value_node)
 			return false;
 
 		index=value_desc.get_index();
-				
+
 		return true;
 	}
 	if(name=="time" && param.get_type()==Param::TYPE_TIME)
 	{
 		time=param.get_time();
-		
+
 		return true;
 	}
 	if(name=="origin" && param.get_type()==Param::TYPE_REAL)
 	{
 		origin=param.get_real();
-		
+
 		return true;
 	}
 
@@ -145,12 +145,12 @@ Action::ValueNodeDynamicListInsertSmart::is_ready()const
 
 void
 Action::ValueNodeDynamicListInsertSmart::prepare()
-{	
+{
 	//clear();
 	// HACK
 	if(!first_time())
 		return;
-	
+
 	// If we are in animate editing mode
 	if(get_edit_mode()&MODE_ANIMATE)
 	{
@@ -163,87 +163,87 @@ Action::ValueNodeDynamicListInsertSmart::prepare()
 		synfig::info("ValueNodeDynamicListInsertSmart: value_node->list.size()=%d",value_node->list.size());
 		if(value_node->list.size()<=index && index>0)
 			synfig::info("ValueNodeDynamicListInsertSmart: value_node->list[index-1].status_at_time(time)=%d",value_node->list[index-1].status_at_time(time));
-		
+
 		if(value_node->list.size()>=index && index>0 && !value_node->list[index-1].status_at_time(time))
 		{
 			// Ok, we do not have to create a new
-			// entry in the dynamic list after all.			
+			// entry in the dynamic list after all.
 			// However, we do need to set the
 			// position and tangent of this point.
 			ValueNode_DynamicList::ListEntry list_entry(value_node->create_list_entry(index,time,origin));
 			ValueBase value((*list_entry.value_node)(time));
 			index--;
-			
+
 			ValueDesc item_value_desc(value_node,index);
 
 			Action::Handle action(Action::create("value_desc_set"));
-	
+
 			if(!action)
 				throw Error(_("Unable to find action value_desc_set (bug)"));
-			
+
 			action->set_param("edit_mode",get_edit_mode());
 			action->set_param("canvas",get_canvas());
 			action->set_param("canvas_interface",get_canvas_interface());
 			action->set_param("time",time);
 			action->set_param("new_value",value);
 			action->set_param("value_desc",ValueDesc(value_node,index));
-			
+
 			if(!action->is_ready())
 				throw Error(Error::TYPE_NOTREADY);
-	
-			add_action(action);			
+
+			add_action(action);
 		}
 		else
 		{
 			// Ok, not a big deal, we just need to
 			// add a new item
 			Action::Handle action(Action::create("value_node_dynamic_list_insert"));
-	
+
 			if(!action)
 				throw Error(_("Unable to find action (bug)"));
-			
+
 			action->set_param("canvas",get_canvas());
 			action->set_param("canvas_interface",get_canvas_interface());
 			action->set_param("time",time);
 			action->set_param("origin",origin);
 			action->set_param("value_desc",ValueDesc(value_node,index));
-			
+
 			if(!action->is_ready())
 				throw Error(Error::TYPE_NOTREADY);
-	
+
 			add_action(action);
-			
+
 			action=Action::create("activepoint_set_off");
-	
+
 			if(!action)
 				throw Error(_("Unable to find action \"activepoint_set_off\""));
-			
+
 			action->set_param("edit_mode",MODE_ANIMATE);
 			action->set_param("canvas",get_canvas());
 			action->set_param("canvas_interface",get_canvas_interface());
 			action->set_param("time",Time::begin());
 			action->set_param("origin",origin);
 			action->set_param("value_desc",ValueDesc(value_node,index));
-			
+
 			if(!action->is_ready())
 				throw Error(Error::TYPE_NOTREADY);
-	
+
 			add_action(action);
 		}
-			
+
 		// Now we set the activepoint up and then we'll be done
 		Action::Handle action(Action::create("activepoint_set_on"));
 
 		if(!action)
 			throw Error(_("Unable to find action \"activepoint_set_on\""));
-		
+
 		action->set_param("edit_mode",get_edit_mode());
 		action->set_param("canvas",get_canvas());
 		action->set_param("canvas_interface",get_canvas_interface());
 		action->set_param("time",time);
 		action->set_param("origin",origin);
 		action->set_param("value_desc",ValueDesc(value_node,index));
-		
+
 		if(!action->is_ready())
 			throw Error(Error::TYPE_NOTREADY);
 
@@ -255,16 +255,16 @@ Action::ValueNodeDynamicListInsertSmart::prepare()
 
 		if(!action)
 			throw Error(_("Unable to find action (bug)"));
-		
+
 		action->set_param("canvas",get_canvas());
 		action->set_param("canvas_interface",get_canvas_interface());
 		action->set_param("time",time);
 		action->set_param("origin",origin);
 		action->set_param("value_desc",ValueDesc(value_node,index));
-		
+
 		if(!action->is_ready())
 			throw Error(Error::TYPE_NOTREADY);
 
-		add_action(action);	
+		add_action(action);
 	}
 }

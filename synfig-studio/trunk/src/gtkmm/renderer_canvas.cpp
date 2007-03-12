@@ -97,16 +97,16 @@ Renderer_Canvas::render_vfunc(
 	assert(get_work_area());
 	if(!get_work_area())
 		return;
-	
+
 //	const synfig::RendDesc &rend_desc(get_work_area()->get_canvas()->rend_desc());
-	
+
 	const synfig::Vector focus_point(get_work_area()->get_focus_point());
 
 	std::vector< std::pair<Glib::RefPtr<Gdk::Pixbuf>,int> >& tile_book(get_tile_book());
-	
+
 	int drawable_w,drawable_h;
 	drawable->get_size(drawable_w,drawable_h);
-	
+
 	// Calculate the window coordinates of the top-left
 	// corner of the canvas.
 	const synfig::Vector::value_type
@@ -125,9 +125,9 @@ Renderer_Canvas::render_vfunc(
 	const int
 		w(get_w()),
 		h(get_h());
-	
+
 	Glib::RefPtr<Gdk::GC> gc(Gdk::GC::create(drawable));
-	
+
 	if(!tile_book.empty())
 	if(get_full_frame())
 	{
@@ -150,12 +150,12 @@ Renderer_Canvas::render_vfunc(
 	{
 		const int width_in_tiles(w/tile_w+(w%tile_w?1:0));
 		const int height_in_tiles(h/tile_h+(h%tile_h?1:0));
-				
+
 		int u(0),v(0),tx,ty;
 		int u1(0),v1(0),u2(width_in_tiles), v2(height_in_tiles);
 
 		bool needs_refresh(false);
-		
+
 		u1=int(-x/tile_w);
 		v1=int(-y/tile_h);
 		u2=int((-x+drawable_w)/tile_w+1);
@@ -164,7 +164,7 @@ Renderer_Canvas::render_vfunc(
 		if(v2>height_in_tiles)v2=height_in_tiles;
 		if(u1<0)u1=0;
 		if(v1<0)v1=0;
-			
+
 		for(v=v1;v<v2;v++)
 		{
 			for(u=u1;u<u2;u++)
@@ -202,7 +202,7 @@ Renderer_Canvas::render_vfunc(
 	// Draw the border around the rendered region
 	{
 		gc->set_rgb_fg_color(Gdk::Color("#000000"));
-		gc->set_line_attributes(1,Gdk::LINE_SOLID,Gdk::CAP_BUTT,Gdk::JOIN_MITER);	
+		gc->set_line_attributes(1,Gdk::LINE_SOLID,Gdk::CAP_BUTT,Gdk::JOIN_MITER);
 		drawable->draw_rectangle(
 			gc,
 			false,	// Fill?

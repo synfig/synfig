@@ -47,13 +47,13 @@
 
 namespace Gtk { class Box; class Paned;  };
 namespace studio {
-	
+
 class DockManager;
 class DockBook;
 class Dockable;
 class Widget_CompSelect;
 class CanvasView;
-	
+
 class DockDialog : public Gtk::Window
 {
 	friend class DockManager;
@@ -62,11 +62,11 @@ class DockDialog : public Gtk::Window
 	SigC::Connection empty_sig;
 
 	bool composition_selector_;
-	
+
 	bool is_deleting;
-	
+
 	bool is_horizontal;
-	
+
 private:
 	std::list<DockBook*> dock_book_list;
 
@@ -93,24 +93,24 @@ private:
 
 	void drop_on_append(const Glib::RefPtr<Gdk::DragContext>& context, int, int, const Gtk::SelectionData& selection_data, guint, guint time);
 	void drop_on_prepend(const Glib::RefPtr<Gdk::DragContext>& context, int, int, const Gtk::SelectionData& selection_data, guint, guint time);
-	
+
 public:
 
 	const std::vector<int>&	get_dock_book_sizes()const { return dock_book_sizes_;}
 	void set_dock_book_sizes(const std::vector<int>&);
 	void rebuild_sizes();
-	
+
 	bool close();
-	
+
 	int get_id()const { return id_; }
-	
+
 	DockBook* append_dock_book();
 	DockBook* prepend_dock_book();
 	void erase_dock_book(DockBook*);
-	
+
 	void set_composition_selector(bool x);
 	bool get_composition_selector()const { return composition_selector_; }
-	
+
 	DockDialog();
 	~DockDialog();
 

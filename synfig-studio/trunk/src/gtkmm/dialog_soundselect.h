@@ -45,22 +45,22 @@ struct AudioBaseInfo
 	std::string		file;
 	synfig::Time		offset;
 };
-	
+
 class Dialog_SoundSelect : public Gtk::Dialog
 {
 	Widget_Filename		soundfile;
 	Widget_Time			offset;
 	Gtk::Button			okbutton;
-	
+
 	etl::handle<synfigapp::CanvasInterface> canvas_interface;
-	
+
 	sigc::signal<void,const std::string &>	signal_file_changed_;
 	sigc::signal<void,const synfig::Time &>	signal_offset_changed_;
-	
+
 	void on_file();
 	void on_offset();
 	void on_ok();
-	
+
 public:
 	Dialog_SoundSelect(Gtk::Window &parent,etl::handle<synfigapp::CanvasInterface> ci );
 	~Dialog_SoundSelect();
@@ -70,14 +70,14 @@ public:
 
 	synfig::Time get_offset() const { return offset.get_value(); }
 	void set_offset(const synfig::Time &t) {offset.set_value(t); }
-	
+
 	std::string get_file() const { return soundfile.get_value(); }
 	void set_file(const std::string &f) {soundfile.set_value(f); }
-	
+
 	sigc::signal<void,const std::string &> &signal_file_changed() { return signal_file_changed_; }
 	sigc::signal<void,const synfig::Time &> &signal_offset_changed() { return signal_offset_changed_; }
 };
-	
+
 }; // END of namespace studio
 
 /* === E N D =============================================================== */

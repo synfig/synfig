@@ -137,12 +137,12 @@ synfigapp::Action::Book *book_;
 	be.get_param_vocab=x::get_param_vocab; \
 	be.is_candidate=x::is_candidate; \
 	}
-	
+
 
 Action::Main::Main()
 {
 	book_=new synfigapp::Action::Book();
-	
+
 	ADD_ACTION(Action::LayerRemove);
 	ADD_ACTION(Action::LayerMove);
 	ADD_ACTION(Action::LayerRaise);
@@ -155,10 +155,10 @@ Action::Main::Main()
 	ADD_ACTION(Action::LayerEncapsulate);
 	ADD_ACTION(Action::LayerDuplicate);
 	ADD_ACTION(Action::LayerSetDesc);
-	
-	ADD_ACTION(Action::ValueNodeConstSet);	
-	ADD_ACTION(Action::ValueNodeAdd);	
-	ADD_ACTION(Action::ValueNodeReplace);	
+
+	ADD_ACTION(Action::ValueNodeConstSet);
+	ADD_ACTION(Action::ValueNodeAdd);
+	ADD_ACTION(Action::ValueNodeReplace);
 	ADD_ACTION(Action::ValueNodeLinkConnect);
 	ADD_ACTION(Action::ValueNodeLinkDisconnect);
 	ADD_ACTION(Action::ValueNodeDynamicListInsert);
@@ -170,7 +170,7 @@ Action::Main::Main()
 	ADD_ACTION(Action::ValueNodeDynamicListRotateOrder);
 	ADD_ACTION(Action::ValueNodeRename);
 	ADD_ACTION(Action::ValueNodeRemove);
-	
+
 	ADD_ACTION(Action::ValueDescSet);
 	ADD_ACTION(Action::ValueDescExport);
 	ADD_ACTION(Action::ValueDescConvert);
@@ -208,7 +208,7 @@ Action::Main::Main()
 
 	ADD_ACTION(Action::GradientSet);
 	ADD_ACTION(Action::ColorSet);
-	
+
 	ADD_ACTION(Action::TimepointsMove);
 	ADD_ACTION(Action::TimepointsCopy);
 	ADD_ACTION(Action::TimepointsDelete);
@@ -222,7 +222,7 @@ Action::Main::Main()
 Action::Main::~Main()
 {
 	delete book_;
-	
+
 }
 
 
@@ -234,7 +234,7 @@ Action::create(const String &name)
 {
 	if(!book().count(name))
 		return 0; //! \todo perhaps we should throw something instead?
-	return book()[name].factory();	
+	return book()[name].factory();
 }
 
 
@@ -242,7 +242,7 @@ Action::CandidateList
 Action::compile_candidate_list(const ParamList& param_list, Category category)
 {
 	Action::CandidateList ret;
-	
+
 	Book::const_iterator iter;
 
 	//synfig::info("param_list.size()=%d",param_list.size());
@@ -259,7 +259,7 @@ Action::compile_candidate_list(const ParamList& param_list, Category category)
 			}
 		}
 	}
-	
+
 	return ret;
 }
 
@@ -277,7 +277,7 @@ void
 Action::Base::set_param_list(const ParamList &param_list)
 {
 	ParamList::const_iterator iter;
-	
+
 	for(iter=param_list.begin();iter!=param_list.end();++iter)
 		set_param(iter->first,iter->second);
 }
@@ -286,7 +286,7 @@ void
 Super::perform()
 {
 	set_dirty(false);
-	
+
 	prepare();
 
 	ActionList::const_iterator iter;
@@ -382,7 +382,7 @@ Action::ParamVocab
 Action::CanvasSpecific::get_param_vocab()
 {
 	ParamVocab ret;
-	
+
 	ret.push_back(ParamDesc("canvas",Param::TYPE_CANVAS)
 		.set_local_name(_("Canvas"))
 		.set_desc(_("Selected Canvas"))
@@ -393,7 +393,7 @@ Action::CanvasSpecific::get_param_vocab()
 		.set_desc(_("Canvas Interface"))
 		.set_optional(true)
 	);
-	
+
 
 	return ret;
 }
@@ -406,7 +406,7 @@ CanvasSpecific::set_param(const synfig::String& name, const Param &param)
 		if(!param.get_canvas())
 			return false;
 		set_canvas(param.get_canvas());
-		
+
 		return true;
 	}
 	if(name=="canvas_interface" && param.get_type()==Param::TYPE_CANVASINTERFACE)
@@ -416,13 +416,13 @@ CanvasSpecific::set_param(const synfig::String& name, const Param &param)
 		set_canvas_interface(param.get_canvas_interface());
 		if(!get_canvas())
 			set_canvas(get_canvas_interface()->get_canvas());
-		
+
 		return true;
 	}
 	if(name=="edit_mode" && param.get_type()==Param::TYPE_EDITMODE)
 	{
 		set_edit_mode(param.get_edit_mode());
-		
+
 		return true;
 	}
 
@@ -442,9 +442,9 @@ CanvasSpecific::get_edit_mode()const
 {
 	if(mode_!=MODE_UNDEFINED)
 		return mode_;
-	
+
 	if(get_canvas_interface())
 		return get_canvas_interface()->get_mode();
-	
+
 	return MODE_NORMAL;
 }

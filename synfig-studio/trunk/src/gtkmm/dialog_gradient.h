@@ -63,11 +63,11 @@ namespace studio {
 
 class Widget_Gradient;
 class Widget_ColorEdit;
-	
+
 class Dialog_Gradient : public Gtk::Dialog
 {
 	DialogSettings dialog_settings;
-	
+
 	Gtk::SpinButton *spinbutton_pos;
 
 	Gtk::Adjustment adjustment_pos;
@@ -76,11 +76,11 @@ class Dialog_Gradient : public Gtk::Dialog
 	sigc::signal<void,synfig::Gradient> signal_edited_;
 
 	sigc::connection value_changed_connection;
-	
+
 	void on_ok_pressed();
 	void on_apply_pressed();
 	void on_grab_pressed();
-	
+
 	void on_cpoint_selected(synfig::Gradient::CPoint x);
 	void on_values_adjusted();
 
@@ -88,18 +88,18 @@ class Dialog_Gradient : public Gtk::Dialog
 	Widget_ColorEdit* widget_color;
 
 	void on_changed();
-	
+
 public:
 
 	sigc::signal<void,synfig::Gradient>& signal_edited() { return signal_edited_; }
-	
+
 	void set_gradient(const synfig::Gradient& x);
 
 	const synfig::Gradient& get_gradient()const { return widget_gradient->get_value(); }
-		
+
 	void reset();
 
-	
+
 	Dialog_Gradient();
 	~Dialog_Gradient();
 

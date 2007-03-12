@@ -45,14 +45,14 @@ class Widget_Enum : public Gtk::OptionMenu
 {
 	Gtk::Menu *enum_menu;
 	synfig::ParamDesc param_desc;
-	
+
 	int value;
 	void set_value_(int data);
 public:
 
 	Widget_Enum();
 	~Widget_Enum();
-	
+
 	void set_param_desc(const synfig::ParamDesc &x);
 	void refresh();
 

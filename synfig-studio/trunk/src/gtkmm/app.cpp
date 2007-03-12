@@ -277,11 +277,11 @@ public:
 		);
 		Gtk::Label label(message);
 		label.show();
-		
+
 		dialog.get_vbox()->pack_start(label);
 		dialog.add_button(Gtk::StockID("gtk-yes"),RESPONSE_YES);
 		dialog.add_button(Gtk::StockID("gtk-no"),RESPONSE_NO);
-		
+
 		dialog.set_default_response(dflt);
 		dialog.show();
 		return (Response)dialog.run();
@@ -295,12 +295,12 @@ public:
 		);
 		Gtk::Label label(message);
 		label.show();
-		
+
 		dialog.get_vbox()->pack_start(label);
 		dialog.add_button(Gtk::StockID("gtk-yes"),RESPONSE_YES);
 		dialog.add_button(Gtk::StockID("gtk-no"),RESPONSE_NO);
 		dialog.add_button(Gtk::StockID("gtk-cancel"),RESPONSE_CANCEL);
-		
+
 		dialog.set_default_response(dflt);
 		dialog.show();
 		return (Response)dialog.run();
@@ -314,11 +314,11 @@ public:
 		);
 		Gtk::Label label(message);
 		label.show();
-		
+
 		dialog.get_vbox()->pack_start(label);
 		dialog.add_button(Gtk::StockID("gtk-ok"),RESPONSE_OK);
 		dialog.add_button(Gtk::StockID("gtk-cancel"),RESPONSE_CANCEL);
-		
+
 		dialog.set_default_response(dflt);
 		dialog.show();
 		return (Response)dialog.run();
@@ -334,7 +334,7 @@ public:
 
 	virtual bool
 	error(const std::string &err)
-	{		
+	{
 		Gtk::MessageDialog dialog(err, false, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_CLOSE, true);
 		dialog.show();
 		dialog.run();
@@ -391,11 +391,11 @@ int v_unwind_key(V_KeyUnwound* unwound, const char* key)
 	int i;
 	unwound->element.serial=0;
 	unwound->element.checksum=0;
-	
+
 	for(i=0;i<16;i++)
 	{
 		U8 data;
-		
+
 		switch(key[i])
 		{
 			case '0': data=0; break;
@@ -428,13 +428,13 @@ int v_key_check(const char* key, U32* serial, U32 appid)
 	V_KeyUnwound unwound_key;
 	U32 appid_mask_a=hash_U32(appid);
 	U32 appid_mask_b=hash_U32(appid_mask_a);
-	
+
 	if(!v_unwind_key(&unwound_key, key))
 	{
 		// Invalid characters in key
 		return 0;
 	}
-	
+
 
 	// Undo obfuscation pass
 	{
@@ -446,12 +446,12 @@ int v_key_check(const char* key, U32* serial, U32 appid)
 			unwound_key.raw[endian_fix(i)]^=(next>>24);
 		}
 	}
-	
+
 	unwound_key.element.serial^=appid_mask_a;
 	unwound_key.element.checksum^=appid_mask_b;
 
 	*serial=unwound_key.element.serial;
-	
+
 	return unwound_key.element.checksum==hash_U32(unwound_key.element.serial);
 }
 
@@ -466,8 +466,8 @@ int check_license(String basedir)
 	license_file="/usr/local/etc/.synfiglicense";
 #else
 	license_file=basedir+"\\etc\\.synfiglicense";
-#endif		
-	
+#endif
+
 	try {
 		key=Glib::file_get_contents(license_file);
 	} catch (Glib::FileError) { }
@@ -477,7 +477,7 @@ int check_license(String basedir)
 		while(!v_key_check(key.c_str(),&serial,0xdeadbeef))
 		{
 			key.clear();
-			
+
 			if(!App::dialog_entry(
 				_("Synfig Studio Authentication"),
 				_("Please enter your license key below. You will not\nbe able to use this software without a valid license key."),
@@ -485,7 +485,7 @@ int check_license(String basedir)
 			))
 				throw String("No License");
 		}
-		
+
 		FILE* file=fopen(license_file.c_str(),"w");
 		if(file)
 		{
@@ -499,7 +499,7 @@ int check_license(String basedir)
 	return serial;
 #else
 	return 1;
-#endif	
+#endif
 }
 
 /*
@@ -532,7 +532,7 @@ studio::add_action_group_to_top(Glib::RefPtr<studio::UIManager> ui_manager, Glib
 	DEBUGPOINT();
 	std::list<Glib::RefPtr<Gtk::ActionGroup> > prev_groups(ui_manager->get_action_groups());
 	std::list<Glib::RefPtr<Gtk::ActionGroup> >::reverse_iterator iter;
-	
+
 	DEBUGPOINT();
 	for(iter=prev_groups.rbegin();iter!=prev_groups.rend();++iter)
 	{
@@ -545,7 +545,7 @@ studio::add_action_group_to_top(Glib::RefPtr<studio::UIManager> ui_manager, Glib
 	}
 	DEBUGPOINT();
 	ui_manager->insert_action_group(group,0);
-	
+
 	DEBUGPOINT();
 	for(;!prev_groups.empty();prev_groups.pop_front())
 	{
@@ -595,16 +595,16 @@ public:
 			value=strprintf("%i",App::auto_recover->get_timeout());
 			return true;
 		}
-		
+
 		return synfigapp::Settings::get_value(key,value);
 	}
-	
+
 	virtual bool set_value(const synfig::String& key,const synfig::String& value)
 	{
 		if(key=="gamma")
 		{
 			float r,g,b,blk;
-			
+
 			strscanf(value,"%f %f %f %f",
 				&r,
 				&g,
@@ -613,7 +613,7 @@ public:
 			);
 
 			App::gamma.set_all(r,g,b,blk);
-			
+
 			return true;
 		}
 		if(key=="time_format")
@@ -645,10 +645,10 @@ public:
 			App::distance_system=Distance::ident_system(value);;
 			return true;
 		}
-		
+
 		return synfigapp::Settings::set_value(key,value);
 	}
-	
+
 	virtual KeyList get_key_list()const
 	{
 		KeyList ret(synfigapp::Settings::get_key_list());
@@ -672,7 +672,7 @@ init_ui_manager()
 	Glib::RefPtr<Gtk::ActionGroup> toolbox_action_group = Gtk::ActionGroup::create("toolbox");
 
 	Glib::RefPtr<Gtk::ActionGroup> actions_action_group = Gtk::ActionGroup::create();
-	
+
 	menus_action_group->add( Gtk::Action::create("menu-file", "_File") );
 	menus_action_group->add( Gtk::Action::create("menu-edit", "_Edit") );
 	menus_action_group->add( Gtk::Action::create("menu-view", "_View") );
@@ -696,7 +696,7 @@ init_ui_manager()
 			iter->second.local_name,iter->second.local_name
 		));
 	}
-	
+
 #define DEFINE_ACTION(x,stock) { Glib::RefPtr<Gtk::Action> action( Gtk::Action::create(x, stock) ); /*action->set_sensitive(false);*/ actions_action_group->add(action); }
 #define DEFINE_ACTION2(x,stock,label) { Glib::RefPtr<Gtk::Action> action( Gtk::Action::create(x, stock,label,label) ); /*action->set_sensitive(false);*/ actions_action_group->add(action); }
 #define DEFINE_ACTION_SIG(group,x,stock,sig) { Glib::RefPtr<Gtk::Action> action( Gtk::Action::create(x, stock) ); /*action->set_sensitive(false);*/ group->add(action,sig); }
@@ -782,11 +782,11 @@ init_ui_manager()
 // Set up synfigapp actions
 	/*{
 		synfigapp::Action::Book::iterator iter;
-	
+
 		for(iter=synfigapp::Action::book().begin();iter!=synfigapp::Action::book().end();++iter)
 		{
 			Gtk::StockID stock_id;
-			
+
 			if(!(iter->second.category&synfigapp::Action::CATEGORY_HIDDEN))
 			{
 				//Gtk::Image* image(manage(new Gtk::Image()));
@@ -800,7 +800,7 @@ init_ui_manager()
 				//else if(iter->second.task=="duplicate")	stock_id=Gtk::Stock::COPY;
 				else if(iter->second.task=="remove")	stock_id=Gtk::Stock::DELETE;
 				else									stock_id=Gtk::StockID("synfig-"+iter->second.task);
-	
+
 				actions_action_group->add(Gtk::Action::create(
 					"action-"+iter->second.name,
 					stock_id,
@@ -1032,7 +1032,7 @@ init_ui_manager()
 	ACCEL("<Actions>//state-gradient","<Mod1>g");
 	ACCEL("<Actions>//state-zoom","<Mod1>z");
 	ACCEL("<Actions>//canvas-zoom-fit","<Control><Shift>z");
-	
+
 #undef ACCEL
 }
 
@@ -1047,11 +1047,11 @@ App::App(int *argc, char ***argv):
 	IconControler(etl::dirname((*argv)[0]))
 {
 	app_base_path_=etl::dirname(etl::dirname((*argv)[0]));
-	
+
 	int serial_;
 	serial_=check_license(app_base_path_);
-	
-	
+
+
 	ui_interface_=new GlobalUIInterface();
 
 	gdk_rgb_init();
@@ -1059,7 +1059,7 @@ App::App(int *argc, char ***argv):
 	Glib::thread_init();
 
 	distance_system=Distance::SYSTEM_UNITS;
-		
+
 	if(mkdir(get_user_app_directory().c_str(),ACCESSPERMS)<0)
 	{
 		if(errno!=EEXIST)
@@ -1069,10 +1069,10 @@ App::App(int *argc, char ***argv):
 	{
 		synfig::info("Created directory \"%s\"",get_user_app_directory().c_str());
 	}
-	
-	
+
+
 	ipc=new IPC();
-	
+
 	try
 	{
 		if(!SYNFIG_CHECK_VERSION())
@@ -1100,7 +1100,7 @@ App::App(int *argc, char ***argv):
 		throw 39;
 	}
 	Glib::set_application_name(_("SYNFIG Studio"));
-	
+
 	About about_window;
 	about_window.set_can_self_destruct(false);
 	about_window.show();
@@ -1108,7 +1108,7 @@ App::App(int *argc, char ***argv):
 	shutdown_in_progress=false;
 	SuperCallback synfig_init_cb(about_window.get_callback(),0,9000,10000);
 	SuperCallback studio_init_cb(about_window.get_callback(),9000,10000,10000);
-	
+
 	// Initialize the Synfig library
 	try { synfigapp_main=etl::smart_ptr<synfigapp::Main>(new synfigapp::Main(etl::dirname((*argv)[0]),&synfig_init_cb)); }
 	catch(...)
@@ -1119,13 +1119,13 @@ App::App(int *argc, char ***argv):
 
 	// add the preferences to the settings
 	synfigapp::Main::settings().add_domain(&_preferences,"pref");
-	
+
 	try
 	{
 		studio_init_cb.task("Init UI Manager...");
 		App::ui_manager_=studio::UIManager::create();
 		init_ui_manager();
-		
+
 		studio_init_cb.task("Init Dock Manager...");
 		dock_manager=new studio::DockManager();
 
@@ -1166,11 +1166,11 @@ App::App(int *argc, char ***argv):
 		studio_init_cb.task("Init Children...");
 		dock_children=new studio::Dock_Children();
 		dock_manager->register_dockable(*dock_children);
-		
+
 		studio_init_cb.task("Init Info...");
 		dock_info = new studio::Dock_Info();
 		dock_manager->register_dockable(*dock_info);
-		
+
 		studio_init_cb.task("Init Navigator...");
 		dock_navigator = new studio::Dock_Navigator();
 		dock_manager->register_dockable(*dock_navigator);
@@ -1186,8 +1186,8 @@ App::App(int *argc, char ***argv):
 		studio_init_cb.task("Init Layer Groups...");
 		dock_layer_groups = new studio::Dock_LayerGroups();
 		dock_manager->register_dockable(*dock_layer_groups);
-		
-		
+
+
 		studio_init_cb.task("Init Color Dialog...");
 		dialog_color=new studio::Dialog_Color();
 
@@ -1204,21 +1204,21 @@ App::App(int *argc, char ***argv):
 		state_manager->add_state(&state_rotate);
 
 		state_manager->add_state(&state_bline);
-		
-		
+
+
 		state_manager->add_state(&state_circle);
 		state_manager->add_state(&state_rectangle);
 
 		state_manager->add_state(&state_gradient);
 		state_manager->add_state(&state_eyedrop);
 		state_manager->add_state(&state_fill);
-		
+
 		state_manager->add_state(&state_zoom);
 
 		// Disabled this tool because it should be
 		// considered deprecated. Use the bline tool instead.
 		if(getenv("SYNFIG_ENABLE_POLYGON")) state_manager->add_state(&state_polygon);
-	
+
 		// These tools are disabled by default for now,
 		// because they tend to confuse users.
 		if(getenv("SYNFIG_ENABLE_DRAW"  )) state_manager->add_state(&state_draw);
@@ -1234,7 +1234,7 @@ App::App(int *argc, char ***argv):
 
 		studio_init_cb.task("Init Setup Dialog...");
 		dialog_setup=new studio::Dialog_Setup();
-		
+
 		studio_init_cb.task("Init Input Dialog...");
 		dialog_input=new Gtk::InputDialog();
 		dialog_input->get_close_button()->signal_clicked().connect( sigc::mem_fun( *dialog_input, &Gtk::InputDialog::hide ) );
@@ -1246,9 +1246,9 @@ App::App(int *argc, char ***argv):
 		studio_init_cb.task("Loading Settings...");
 		load_settings();
 		studio_init_cb.task("Checking auto-recover...");
-	
+
 		studio_init_cb.amount_complete(9900,10000);
-	
+
 		if(auto_recover->recovery_needed())
 		{
 			about_window.hide();
@@ -1276,7 +1276,7 @@ App::App(int *argc, char ***argv):
 			}
 			about_window.show();
 		}
-		
+
 		// Look for any files given on the command line,
 		// and load them if found.
 		for(;*argc>=1;(*argc)--)
@@ -1287,10 +1287,10 @@ App::App(int *argc, char ***argv):
 				open((*argv)[*argc]);
 				about_window.show();
 			}
-		
+
 		studio_init_cb.task("Done.");
 		studio_init_cb.amount_complete(10000,10000);
-	
+
 		toolbox->present();
 	}
 	catch(...)
@@ -1308,27 +1308,27 @@ App::~App()
 	save_settings();
 
 	synfigapp::Main::settings().remove_domain("pref");
-	
+
 	selected_instance=0;
 
 	// Unload all of the modules
 	for(;!module_list_.empty();module_list_.pop_back());
-	
+
 	delete state_manager;
 
 	delete ipc;
-	
+
 	delete auto_recover;
 
 	toolbox->hide();
 
-//	studio::App::iteration(false); 
-	
-	delete toolbox;
-	
-//	studio::App::iteration(false); 
+//	studio::App::iteration(false);
 
-//	studio::App::iteration(false); 
+	delete toolbox;
+
+//	studio::App::iteration(false);
+
+//	studio::App::iteration(false);
 
 	delete dialog_setup;
 
@@ -1363,18 +1363,18 @@ App::add_recent_file(const std::string &file_name)
 	std::string filename(file_name);
 
 	assert(!filename.empty());
-	
+
 	if(filename.empty())
 		return;
-	
+
 	// Toss out any "hidden" files
 	if(basename(filename)[0]=='.')
 		return;
-		
+
 	// If we aren't an absolute path, turn outselves into one
 	if(!is_absolute_path(filename))
 		filename=absolute_path(filename);
-	
+
 	list<string>::iterator iter;
 	// Check to see if the file is already on the list.
 	// If it is, then remove it from the list
@@ -1385,16 +1385,16 @@ App::add_recent_file(const std::string &file_name)
 			break;
 		}
 
-	
+
 	// Push the filename to the front of the list
 	recent_files.push_front(filename);
-		
+
 	// Clean out the files at the end of the list.
 	while(recent_files.size()>(unsigned)get_max_recent_files())
 		recent_files.pop_back();
-	
+
 	signal_recent_files_changed_();
-	
+
 	return;
 }
 
@@ -1429,22 +1429,22 @@ App::save_settings()
 			std::string filename=get_config_file("recentfiles");
 
 			std::ofstream file(filename.c_str());
-		
+
 			if(!file)
 			{
 				synfig::warning("Unable to save %s",filename.c_str());
 				break;
 			}
-		
+
 			list<string>::reverse_iterator iter;
-	
+
 			for(iter=recent_files.rbegin();iter!=recent_files.rend();iter++)
 				file<<*iter<<endl;
 		}while(0);
 
 		std::string filename=get_config_file("settings");
 		synfigapp::Main::settings().save_to_file(filename);
-	setlocale(LC_NUMERIC,old_locale);	
+	setlocale(LC_NUMERIC,old_locale);
 	}
 	catch(...)
 	{
@@ -1468,7 +1468,7 @@ App::load_settings()
 			std::string filename=get_config_file("recentfiles");
 
 			std::ifstream file(filename.c_str());
-	
+
 			while(file)
 			{
 				std::string recent_file;
@@ -1499,7 +1499,7 @@ App::load_settings()
 				synfigapp::Main::settings().set_value("window.toolbox.pos","4 4");
 			}
 		}
-	setlocale(LC_NUMERIC,old_locale);	
+	setlocale(LC_NUMERIC,old_locale);
 	}
 	catch(...)
 	{
@@ -1519,8 +1519,8 @@ void
 App::quit()
 {
 	if(shutdown_in_progress)return;
-		
-	
+
+
 	get_ui_interface()->task("Quit Request");
 	if(Busy::count)
 	{
@@ -1577,18 +1577,18 @@ App::quit()
 					return;
 			}
 		}
-*/		
-		
+*/
+
 		// This next line causes things to crash for some reason
-		//(*iter)->close(); 
+		//(*iter)->close();
 	}
-	
+
 	shutdown_in_progress=true;
 
 	instance_list.clear();
 
 	while(studio::App::events_pending())studio::App::iteration(false);
-		
+
 	Gtk::Main::quit();
 	auto_recover->normal_shutdown();
 
@@ -1616,7 +1616,7 @@ static OPENFILENAME ofn={};
 #ifdef WIN32
 #include <gdk/gdkwin32.h>
 #endif
-	
+
 bool
 App::dialog_open_file(const std::string &title, std::string &filename)
 {
@@ -1626,7 +1626,7 @@ App::dialog_open_file(const std::string &title, std::string &filename)
 	GdkWindow *gdkWinPtr=toolbox->get_window()->gobj();
 	HINSTANCE hInstance=static_cast<HINSTANCE>(GetModuleHandle(NULL));
 	HWND hWnd=static_cast<HWND>(GDK_WINDOW_HWND(gdkWinPtr));
-	
+
 	ofn.lStructSize=sizeof(OPENFILENAME);
 	ofn.hwndOwner = hWnd;
 	ofn.hInstance = hInstance;
@@ -1646,27 +1646,27 @@ App::dialog_open_file(const std::string &title, std::string &filename)
 //	ofn.lCustData = 0l;
 	ofn.lpfnHook=NULL;
 //	ofn.lpTemplateName=NULL;
-	
+
 	CHAR szFilename[MAX_PATH];
 	CHAR szTitle[500];
 	strcpy(szFilename,filename.c_str());
 	strcpy(szTitle,title.c_str());
-	
+
 	ofn.lpstrFile=szFilename;
 	ofn.lpstrFileTitle=szTitle;
-	
+
 	if(GetOpenFileName(&ofn))
 	{
 		filename=szFilename;
 		return true;
 	}
 	return false;
-	
+
 #else
 	synfig::String prev_path;
 	if(!_preferences.get_value("curr_path",prev_path))
 		prev_path=".";
-	
+
     Gtk::FileChooserDialog *dialog=new Gtk::FileChooserDialog(title,Gtk::FILE_CHOOSER_ACTION_OPEN);
     dialog->set_current_folder(prev_path);
     dialog->add_button(Gtk::StockID("gtk-ok"),GTK_RESPONSE_ACCEPT);
@@ -1681,18 +1681,18 @@ App::dialog_open_file(const std::string &title, std::string &filename)
     delete dialog;
     return false;
     /*
-    
+
 	GtkWidget *ok;
 	GtkWidget *cancel;
 	int val=0;
-	
+
 	GtkWidget *fileselection;
 	fileselection = gtk_file_selection_new(title.c_str());
 
-	
+
 	if(basename(filename)==filename)
 	{
-		gtk_file_selection_set_filename(GTK_FILE_SELECTION(fileselection),(prev_path+ETL_DIRECTORY_SEPERATOR).c_str());		
+		gtk_file_selection_set_filename(GTK_FILE_SELECTION(fileselection),(prev_path+ETL_DIRECTORY_SEPERATOR).c_str());
 	}
 	else
 		gtk_file_selection_set_filename(GTK_FILE_SELECTION(fileselection),dirname(filename).c_str());
@@ -1702,15 +1702,15 @@ App::dialog_open_file(const std::string &title, std::string &filename)
 	ok=GTK_FILE_SELECTION(fileselection)->ok_button;
 	cancel=GTK_FILE_SELECTION(fileselection)->cancel_button;
 
-	gtk_signal_connect(GTK_OBJECT(ok),"clicked",GTK_SIGNAL_FUNC(Signal_Open_Ok),&val);		
-	gtk_signal_connect(GTK_OBJECT(cancel),"clicked",GTK_SIGNAL_FUNC(Signal_Open_Cancel),&val);		
+	gtk_signal_connect(GTK_OBJECT(ok),"clicked",GTK_SIGNAL_FUNC(Signal_Open_Ok),&val);
+	gtk_signal_connect(GTK_OBJECT(cancel),"clicked",GTK_SIGNAL_FUNC(Signal_Open_Cancel),&val);
 
 	gtk_widget_show(fileselection);
 
 	while(!val)
-		iteration();		
-	
-	
+		iteration();
+
+
 	if(val==1)
 	{
 		filename=gtk_file_selection_get_filename(GTK_FILE_SELECTION(fileselection));
@@ -1732,11 +1732,11 @@ App::dialog_save_file(const std::string &title, std::string &filename)
 {
 #ifdef USE_WIN32_FILE_DIALOGS
 	static TCHAR szFilter[] = TEXT ("All Files (*.*)\0*.*\0\0") ;
-	
+
 	GdkWindow *gdkWinPtr=toolbox->get_window()->gobj();
 	HINSTANCE hInstance=static_cast<HINSTANCE>(GetModuleHandle(NULL));
 	HWND hWnd=static_cast<HWND>(GDK_WINDOW_HWND(gdkWinPtr));
-	
+
 	ofn.lStructSize=sizeof(OPENFILENAME);
 	ofn.hwndOwner = hWnd;
 	ofn.hInstance = hInstance;
@@ -1756,15 +1756,15 @@ App::dialog_save_file(const std::string &title, std::string &filename)
 //	ofn.lCustData = 0l;
 	ofn.lpfnHook=NULL;
 //	ofn.lpTemplateName=NULL;
-	
+
 	CHAR szFilename[MAX_PATH];
 	CHAR szTitle[500];
 	strcpy(szFilename,filename.c_str());
 	strcpy(szTitle,title.c_str());
-	
+
 	ofn.lpstrFile=szFilename;
 	ofn.lpstrFileTitle=szTitle;
-	
+
 	if(GetSaveFileName(&ofn))
 	{
 		filename=szFilename;
@@ -1775,7 +1775,7 @@ App::dialog_save_file(const std::string &title, std::string &filename)
 	synfig::String prev_path;
 	if(!_preferences.get_value("curr_path",prev_path))
 		prev_path=".";
-	
+
     Gtk::FileChooserDialog *dialog=new Gtk::FileChooserDialog(title,Gtk::FILE_CHOOSER_ACTION_SAVE);
     dialog->set_current_folder(prev_path);
     dialog->add_button(Gtk::StockID("gtk-ok"),GTK_RESPONSE_ACCEPT);
@@ -1798,11 +1798,11 @@ App::dialog_saveas_file(const std::string &title, std::string &filename)
 {
 #if USE_WIN32_FILE_DIALOGS
 	static TCHAR szFilter[] = TEXT ("All Files (*.*)\0*.*\0\0") ;
-	
+
 	GdkWindow *gdkWinPtr=toolbox->get_window()->gobj();
 	HINSTANCE hInstance=static_cast<HINSTANCE>(GetModuleHandle(NULL));
 	HWND hWnd=static_cast<HWND>(GDK_WINDOW_HWND(gdkWinPtr));
-	
+
 	ofn.lStructSize=sizeof(OPENFILENAME);
 	ofn.hwndOwner = hWnd;
 	ofn.hInstance = hInstance;
@@ -1822,15 +1822,15 @@ App::dialog_saveas_file(const std::string &title, std::string &filename)
 //	ofn.lCustData = 0l;
 	ofn.lpfnHook=NULL;
 //	ofn.lpTemplateName=NULL;
-	
+
 	CHAR szFilename[MAX_PATH];
 	CHAR szTitle[500];
 	strcpy(szFilename,filename.c_str());
 	strcpy(szTitle,title.c_str());
-	
+
 	ofn.lpstrFile=szFilename;
 	ofn.lpstrFileTitle=szTitle;
-	
+
 	if(GetSaveFileName(&ofn))
 	{
 		filename=szFilename;
@@ -1841,7 +1841,7 @@ App::dialog_saveas_file(const std::string &title, std::string &filename)
 	synfig::String prev_path;
 	if(!_preferences.get_value("curr_path",prev_path))
 		prev_path=".";
-	
+
     Gtk::FileChooserDialog *dialog=new Gtk::FileChooserDialog(title,Gtk::FILE_CHOOSER_ACTION_SAVE);
     dialog->set_current_folder(prev_path);
     dialog->add_button(Gtk::StockID("gtk-ok"),GTK_RESPONSE_ACCEPT);
@@ -1887,7 +1887,7 @@ App::dialog_yes_no(const std::string &title, const std::string &message)
 	);
 	Gtk::Label label(message);
 	label.show();
-	
+
 	dialog.get_vbox()->pack_start(label);
 	dialog.add_button(Gtk::StockID("gtk-yes"),1);
 	dialog.add_button(Gtk::StockID("gtk-no"),0);
@@ -1919,7 +1919,7 @@ App::dialog_not_implemented()
 {
 	Gtk::MessageDialog dialog("Feature not available", false, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_CLOSE, true);
 	dialog.set_secondary_text("Sorry, this feature has not yet been implemented.");
-	dialog.run(); 
+	dialog.run();
 }
 
 bool
@@ -1975,25 +1975,25 @@ App::open_as(std::string filename,std::string as)
 	try
 	{
 		OneMoment one_moment;
-	
+
 		etl::handle<synfig::Canvas> canvas(open_canvas_as(filename,as));
 		if(canvas && get_instance(canvas))
 		{
 			get_instance(canvas)->find_canvas_view(canvas)->present();
-			throw (String)strprintf(_("\"%s\" appears to already be open!"),filename.c_str());		
+			throw (String)strprintf(_("\"%s\" appears to already be open!"),filename.c_str());
 		}
 		if(!canvas)
 			throw (String)strprintf(_("Unable to open file \"%s\""),filename.c_str());
 
 		add_recent_file(as);
-		
+
 		handle<Instance> instance(Instance::create(canvas));
 
 		if(!instance)
 			throw (String)strprintf(_("Unable to create instance for \"%s\""),filename.c_str());
-		
+
 		one_moment.hide();
-		
+
 		if(instance->is_updated() && App::dialog_yes_no(_("CVS Update"), _("There appears to be a newer version of this file available on the CVS repository.\nWould you like to update now? (It would probably be a good idea)")))
 			instance->dialog_cvs_update();
 	}
@@ -2009,7 +2009,7 @@ App::open_as(std::string filename,std::string as)
 	}
 
 	_preferences.set_value("curr_path",dirname(as));
-	
+
 	return true;
 }
 
@@ -2021,7 +2021,7 @@ App::new_instance()
 	canvas->set_name(strprintf("Untitled%d",Instance::get_count()));
 
 	String file_name(strprintf("untitled%d.sif",Instance::get_count()));
-	
+
 	canvas->rend_desc().set_frame_rate(24.0);
 	canvas->rend_desc().set_time_start(0.0);
 	canvas->rend_desc().set_time_end(00.0);
@@ -2034,7 +2034,7 @@ App::new_instance()
 	canvas->rend_desc().set_antialias(1);
 	canvas->rend_desc().set_flags(RendDesc::PX_ASPECT|RendDesc::IM_SPAN);
 	canvas->set_file_name(file_name);
-	
+
 	Instance::create(canvas)->find_canvas_view(canvas)->canvas_properties.present();
 }
 

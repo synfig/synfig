@@ -43,13 +43,13 @@
 namespace synfigapp {
 
 class CanvasInterface;
-	
+
 namespace Action {
 
 
-	
-	
-	
+
+
+
 class System;
 
 //! Passive action grouping class
@@ -71,11 +71,11 @@ public:
 	void set_name(const synfig::String &x) { name_=x; }
 
 	etl::loose_handle<System> get_instance() { return instance_; }
-	
+
 	void request_redraw(etl::handle<CanvasInterface>);
-	
+
 	void cancel();
-	
+
 	void inc_depth() { depth_++; }
 
 	void dec_depth() { depth_--; }
@@ -84,11 +84,11 @@ public:
 }; // END of class Action::PassiveGrouper
 
 typedef std::list< etl::handle<Action::Undoable> > Stack;
-	
+
 class System : public etl::shared_object, public sigc::trackable
 {
 	friend class PassiveGrouper;
-		
+
 	/*
  -- ** -- P U B L I C   T Y P E S ---------------------------------------------
 	*/
@@ -100,7 +100,7 @@ public:
 	*/
 
 public:
-	
+
 	/*
  -- ** -- P R I V A T E   D A T A ---------------------------------------------
 	*/
@@ -122,7 +122,7 @@ private:
 	sigc::signal<void> signal_undo_;
 	sigc::signal<void> signal_redo_;
 	sigc::signal<void,etl::handle<Action::Undoable> > signal_action_status_changed_;
-	
+
 	mutable sigc::signal<void,bool> signal_unsaved_status_changed_;
 
 	//! If this is non-zero, then the changes have not yet been saved.
@@ -131,7 +131,7 @@ private:
 	etl::handle<UIInterface> ui_interface_;
 
 	bool clear_redo_stack_on_new_action_;
-	
+
 	/*
  -- ** -- P R I V A T E   M E T H O D S ---------------------------------------
 	*/
@@ -168,7 +168,7 @@ public:
 	const etl::handle<Action::Base>& get_most_recent_action() { return most_recent_action_; }
 
 	bool get_clear_redo_stack_on_new_action()const { return clear_redo_stack_on_new_action_; }
-	
+
 	void set_clear_redo_stack_on_new_action(bool x) { clear_redo_stack_on_new_action_=x; }
 
 	bool perform_action(etl::handle<Action::Base> action);
@@ -184,13 +184,13 @@ public:
 
 	//! Redoes the last undone action
 	bool redo();
-	
-	//! Clears the undo stack. 
+
+	//! Clears the undo stack.
 	void clear_undo_stack();
-	
-	//! Clears the redo stack. 
+
+	//! Clears the redo stack.
 	void clear_redo_stack();
-	
+
 	//! Increments the action counter
 	/*! \note You should not have to call this under normal circumstances.
 	**	\see dec_action_count(), reset_action_count(), get_action_count() */
@@ -212,7 +212,7 @@ public:
 
 	void set_ui_interface(const etl::handle<UIInterface> &uim) { assert(uim); ui_interface_=uim; }
 	void unset_ui_interface() { ui_interface_=new DefaultUIInterface(); }
-	const etl::handle<UIInterface> &get_ui_interface() { return ui_interface_; }	
+	const etl::handle<UIInterface> &get_ui_interface() { return ui_interface_; }
 
 	/*
  -- ** -- S I G N A L   I N T E R F A C E S -----------------------------------

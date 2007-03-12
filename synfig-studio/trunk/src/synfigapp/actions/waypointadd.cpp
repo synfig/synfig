@@ -69,7 +69,7 @@ Action::ParamVocab
 Action::WaypointAdd::get_param_vocab()
 {
 	ParamVocab ret(Action::CanvasSpecific::get_param_vocab());
-	
+
 	ret.push_back(ParamDesc("value_node",Param::TYPE_VALUENODE)
 		.set_local_name(_("Destination ValueNode (Animated)"))
 	);
@@ -112,13 +112,13 @@ Action::WaypointAdd::set_param(const synfig::String& name, const Action::Param &
 		value_node=ValueNode_Animated::Handle::cast_dynamic(param.get_value_node());
 		if(time_set)
 			calc_waypoint();
-		
+
 		return static_cast<bool>(value_node);
 	}
 	if(name=="waypoint" && param.get_type()==Param::TYPE_WAYPOINT && !time_set)
 	{
 		waypoint=param.get_waypoint();
-		
+
 		return true;
 	}
 	if(name=="time" && param.get_type()==Param::TYPE_TIME && waypoint.get_time()==Time::begin()-1)
@@ -128,7 +128,7 @@ Action::WaypointAdd::set_param(const synfig::String& name, const Action::Param &
 
 		if(value_node)
 			calc_waypoint();
-		
+
 		return true;
 	}
 
@@ -143,15 +143,15 @@ Action::WaypointAdd::is_ready()const
 	return Action::CanvasSpecific::is_ready();
 }
 
-// This function is called if a time is specified, but not 
+// This function is called if a time is specified, but not
 // a waypoint. In this case, we need to calculate the value
 // of the waypoint
 void
 Action::WaypointAdd::calc_waypoint()
-{	
+{
 	Time time=waypoint.get_time();
 	Waypoint original(waypoint);
-	waypoint=value_node->new_waypoint_at_time(time);	
+	waypoint=value_node->new_waypoint_at_time(time);
 	waypoint.mimic(original);
 	waypoint.set_before(synfigapp::Main::get_interpolation());
 	waypoint.set_after(synfigapp::Main::get_interpolation());
@@ -159,7 +159,7 @@ Action::WaypointAdd::calc_waypoint()
 /*
 	ValueNode_Animated::WaypointList &waypoint_list(value_node->waypoint_list());
 	ValueNode_Animated::WaypointList::iterator iter;
-	
+
 	if(waypoint_list.empty())
 	{
 		waypoint.set_value((*value_node)(time));
@@ -167,7 +167,7 @@ Action::WaypointAdd::calc_waypoint()
 	}
 
 	ValueNode_Animated::WaypointList::iterator closest=waypoint_list.begin();
-		
+
 	for(iter=waypoint_list.begin();iter!=waypoint_list.end();++iter)
 	{
 		const Real dist(abs(iter->get_time()-time));
@@ -183,15 +183,15 @@ Action::WaypointAdd::calc_waypoint()
 
 void
 Action::WaypointAdd::perform()
-{		
+{
 	try { value_node->find(waypoint.get_time()); throw Error(_("A Waypoint already exists at this point in time (%s)"),waypoint.get_time().get_string().c_str());}
-	catch(synfig::Exception::NotFound) { }	
+	catch(synfig::Exception::NotFound) { }
 
 	try { if(value_node->find(waypoint)!=value_node->waypoint_list().end()) throw Error(_("This waypoint is already in the ValueNode"));}
-	catch(synfig::Exception::NotFound) { }	
-	
+	catch(synfig::Exception::NotFound) { }
+
 	value_node->add(waypoint);
-	
+
 	value_node->changed();
 /*_if(get_canvas_interface())
 	{
@@ -204,7 +204,7 @@ void
 Action::WaypointAdd::undo()
 {
 	value_node->erase(waypoint);
-	
+
 	value_node->changed();
 /*_if(get_canvas_interface())
 	{

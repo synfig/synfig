@@ -44,11 +44,11 @@ namespace studio {
 class Widget_CompSelect : public Gtk::OptionMenu
 {
 	Gtk::Menu	instance_list_menu;
-	
+
 
 	etl::loose_handle<studio::Instance>	selected_instance;
 	void set_selected_instance_(etl::handle<studio::Instance> x);
-	
+
 	void new_instance(etl::handle<studio::Instance> x);
 
 	void delete_instance(etl::handle<studio::Instance> x);
@@ -56,12 +56,12 @@ class Widget_CompSelect : public Gtk::OptionMenu
 	void set_selected_instance(etl::loose_handle<studio::Instance> x);
 
 	void set_selected_instance_signal(etl::handle<studio::Instance> x);
-		
+
 public:
 
 	Widget_CompSelect();
 	~Widget_CompSelect();
-	
+
 	etl::loose_handle<studio::Instance> get_selected_instance() { return selected_instance; }
 
 	void refresh();

@@ -91,7 +91,7 @@ Settings::get_value(const synfig::String& key, synfig::String& value)const
 		if(key.size()>iter->first.size() && String(key.begin(),key.begin()+iter->first.size())==iter->first)
 		{
 			synfig::String key_(key.begin()+iter->first.size()+1,key.end());
-			
+
 			// If the domain has it, then we have got a hit
 			if(iter->second->get_value(key_,value))
 				return true;
@@ -104,7 +104,7 @@ Settings::get_value(const synfig::String& key, synfig::String& value)const
 		value=simple_value_map.find(key)->second;
 		return true;
 	}
-	
+
 	// key not found
 	return false;
 }
@@ -120,7 +120,7 @@ Settings::set_value(const synfig::String& key,const synfig::String& value)
 		if(key.size()>iter->first.size() && String(key.begin(),key.begin()+iter->first.size())==iter->first)
 		{
 			synfig::String key_(key.begin()+iter->first.size()+1,key.end());
-			
+
 			return iter->second->set_value(key_,value);
 		}
 	}
@@ -145,7 +145,7 @@ Settings::get_key_list()const
 				key_list.push_back(iter->first+'.'+*key_iter);
 		}
 	}
-	
+
 	// Get keys from the simple variables
 	{
 		ValueBaseMap::const_iterator iter;
@@ -155,7 +155,7 @@ Settings::get_key_list()const
 
 	// Sort the keys
 	key_list.sort();
-	
+
 	return key_list;
 }
 
@@ -163,15 +163,15 @@ bool
 Settings::save_to_file(const synfig::String& filename)const
 {
 	synfig::String tmp_filename(filename+".TMP");
-	
+
 	try
 	{
 		std::ofstream file(tmp_filename.c_str());
 
 		if(!file)return false;
-	
+
 		KeyList key_list(get_key_list());
-		
+
 		// Save the keys
 		{
 			KeyList::const_iterator iter;
@@ -181,15 +181,15 @@ Settings::save_to_file(const synfig::String& filename)const
 				file<<*iter<<'='<<get_value(*iter)<<endl;
 			}
 		}
-	
+
 		if(!file)
 			return false;
 	}catch(...) { return false; }
-	
+
 #ifdef _WIN32
 	char old_file[80]="sif.XXXXXXXX";
 	mktemp(old_file);
-	rename(filename.c_str(),old_file);	
+	rename(filename.c_str(),old_file);
 	if(rename(tmp_filename.c_str(),filename.c_str())!=0)
 	{
 		rename(old_file,tmp_filename.c_str());
@@ -200,7 +200,7 @@ Settings::save_to_file(const synfig::String& filename)const
 	if(rename(tmp_filename.c_str(),filename.c_str())!=0)
 		return false;
 #endif
-	
+
 	return true;
 }
 
@@ -221,7 +221,7 @@ Settings::load_from_file(const synfig::String& filename)
 				continue;
 			std::string key(line.begin(),equal);
 			std::string value(equal+1,line.end());
-			
+
 			//synfig::info("Settings::load_from_file(): Trying Key \"%s\" with a value of \"%s\".",key.c_str(),value.c_str());
 			try{
 			if(!set_value(key,value))

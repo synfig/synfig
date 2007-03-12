@@ -47,7 +47,7 @@ public:
 }; // END of class StateBLine
 
 extern StateBLine state_bline;
-	
+
 }; // END of namespace studio
 
 /* === E N D =============================================================== */

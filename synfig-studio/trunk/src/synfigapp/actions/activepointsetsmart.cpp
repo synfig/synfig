@@ -75,7 +75,7 @@ Action::ParamVocab
 Action::ActivepointSetSmart::get_param_vocab()
 {
 	ParamVocab ret(Action::CanvasSpecific::get_param_vocab());
-	
+
 	ret.push_back(ParamDesc("value_desc",Param::TYPE_VALUEDESC)
 		.set_local_name(_("ValueDesc"))
 	);
@@ -91,7 +91,7 @@ Action::ActivepointSetSmart::get_param_vocab()
 		.set_desc(_("Time where activepoint is to be added"))
 		.set_optional()
 	);
-	
+
 	return ret;
 }
 
@@ -117,26 +117,26 @@ Action::ActivepointSetSmart::set_param(const synfig::String& name, const Action:
 	if(name=="value_desc" && param.get_type()==Param::TYPE_VALUEDESC)
 	{
 		value_desc=param.get_value_desc();
-		
+
 		if(!value_desc.parent_is_value_node())
 			return false;
-		
+
 		value_node=ValueNode_DynamicList::Handle::cast_dynamic(value_desc.get_parent_value_node());
-		
+
 		if(!value_node)
 			return false;
-		
+
 		index=value_desc.get_index();
-		
+
 		if(time_set)
 			calc_activepoint();
-		
+
 		return true;
 	}
 	if(name=="activepoint" && param.get_type()==Param::TYPE_ACTIVEPOINT && !time_set)
 	{
 		activepoint=param.get_activepoint();
-		
+
 		return true;
 	}
 	if(name=="time" && param.get_type()==Param::TYPE_TIME && activepoint.get_time()==Time::begin()-1)
@@ -146,7 +146,7 @@ Action::ActivepointSetSmart::set_param(const synfig::String& name, const Action:
 
 		if(value_node)
 			calc_activepoint();
-		
+
 		return true;
 	}
 
@@ -163,18 +163,18 @@ Action::ActivepointSetSmart::is_ready()const
 
 	if(activepoint.get_time()==(Time::begin()-1))
 		synfig::error("Missing activepoint");
-	
+
 	if(!value_node || activepoint.get_time()==(Time::begin()-1))
 		return false;
 	return Action::CanvasSpecific::is_ready();
 }
 
-// This function is called if a time is specified, but not 
+// This function is called if a time is specified, but not
 // a activepoint. In this case, we need to calculate the value
 // of the activepoint
 void
 Action::ActivepointSetSmart::calc_activepoint()
-{	
+{
 /*
 	const Time time(activepoint.get_time());
 	activepoint.set_state(value_node->list[index].status_at_time(time));
@@ -191,7 +191,7 @@ Action::ActivepointSetSmart::calc_activepoint()
 void
 Action::ActivepointSetSmart::enclose_activepoint(const synfig::Activepoint& activepoint)
 {
-	times.insert(activepoint.get_time());			
+	times.insert(activepoint.get_time());
 
 	if(get_edit_mode()&MODE_ANIMATE_PAST) try
 	{
@@ -201,25 +201,25 @@ Action::ActivepointSetSmart::enclose_activepoint(const synfig::Activepoint& acti
 		if(times.count(keyframe.get_time()))
 			throw int();
 		else
-			times.insert(keyframe.get_time());			
-		
+			times.insert(keyframe.get_time());
+
 		try { value_node->list[index].find(keyframe.get_time()); }
 		catch(synfig::Exception::NotFound)
 		{
 			Action::Handle action(ActivepointAdd::create());
-			
+
 			action->set_param("canvas",get_canvas());
 			action->set_param("canvas_interface",get_canvas_interface());
 			action->set_param("value_desc",value_desc);
-		
+
 			if(!value_node->list[index].timing_info.empty())
-			{	
+			{
 				action->set_param("time",keyframe.get_time());
 			}
 			else
 			{
 				synfig::Activepoint tmp;
-				
+
 				tmp.set_state(true);
 				tmp.set_time(keyframe.get_time());
 				action->set_param("activepoint",tmp);
@@ -228,9 +228,9 @@ Action::ActivepointSetSmart::enclose_activepoint(const synfig::Activepoint& acti
 			assert(action->is_ready());
 			if(!action->is_ready())
 				throw Error(Error::TYPE_NOTREADY);
-		
+
 			add_action_front(action);
-		}						
+		}
 	}
 	catch(int) { }
 	catch(synfig::Exception::NotFound) { }
@@ -243,25 +243,25 @@ Action::ActivepointSetSmart::enclose_activepoint(const synfig::Activepoint& acti
 		if(times.count(keyframe.get_time()))
 			throw int();
 		else
-			times.insert(keyframe.get_time());			
-		
+			times.insert(keyframe.get_time());
+
 		try { value_node->list[index].find(keyframe.get_time()); }
 		catch(synfig::Exception::NotFound)
 		{
 			Action::Handle action(ActivepointAdd::create());
-			
+
 			action->set_param("canvas",get_canvas());
 			action->set_param("canvas_interface",get_canvas_interface());
 			action->set_param("value_desc",value_desc);
-		
+
 			if(!value_node->list[index].timing_info.empty())
-			{	
+			{
 				action->set_param("time",keyframe.get_time());
 			}
 			else
 			{
 				synfig::Activepoint tmp;
-				
+
 				tmp.set_state(true);
 				tmp.set_time(keyframe.get_time());
 				action->set_param("activepoint",tmp);
@@ -270,9 +270,9 @@ Action::ActivepointSetSmart::enclose_activepoint(const synfig::Activepoint& acti
 			assert(action->is_ready());
 			if(!action->is_ready())
 				throw Error(Error::TYPE_NOTREADY);
-		
+
 			add_action_front(action);
-		}						
+		}
 	}
 	catch(int) { }
 	catch(synfig::Exception::NotFound) { }
@@ -283,32 +283,32 @@ Action::ActivepointSetSmart::prepare()
 {
 	clear();
 	times.clear();
-	
+
 	// First, we need to to add any activepoints necessary to
 	// maintain the integrity of the keyframes.
 	enclose_activepoint(activepoint);
-	
+
 	try
 	{
 		if(value_node->list[index].find(activepoint)==value_node->list[index].timing_info.end())
 			throw int();
-		
+
 		// Then, lets try to replace the old activepoint, if it exists
 		enclose_activepoint(*value_node->list[index].find(activepoint));
 
 		Action::Handle action(ActivepointSet::create());
-		
+
 		action->set_param("canvas",get_canvas());
 		action->set_param("canvas_interface",get_canvas_interface());
 		action->set_param("value_desc",value_desc);
 		action->set_param("activepoint",activepoint);
-	
+
 		assert(action->is_ready());
 		if(!action->is_ready())
 			throw Error(Error::TYPE_NOTREADY);
-	
+
 		add_action_front(action);
-		
+
 		return;
 	}
 	catch(int){}
@@ -320,46 +320,46 @@ Action::ActivepointSetSmart::prepare()
 		activepoint.mimic(*value_node->list[index].find(activepoint.get_time()));
 
 		enclose_activepoint(*value_node->list[index].find(activepoint.get_time()));
-		
+
 		Action::Handle action(ActivepointSet::create());
-		
+
 		action->set_param("canvas",get_canvas());
 		action->set_param("canvas_interface",get_canvas_interface());
 		action->set_param("value_desc",value_desc);
 		action->set_param("activepoint",activepoint);
-	
+
 		assert(action->is_ready());
 		if(!action->is_ready())
 			throw Error(Error::TYPE_NOTREADY);
-	
+
 		add_action_front(action);
-		
+
 		return;
 	}
 	catch(int){}
 	catch(Exception::NotFound){}
-	
+
 	try
 	{
 		// At this point we know that the old activepoint doesn't exist,
 		// so we need to create it.
 		Action::Handle action(ActivepointAdd::create());
-		
+
 		action->set_param("canvas",get_canvas());
 		action->set_param("canvas_interface",get_canvas_interface());
 		action->set_param("value_desc",value_desc);
 		action->set_param("activepoint",activepoint);
-	
+
 		assert(action->is_ready());
 		if(!action->is_ready())
 			throw Error(Error::TYPE_NOTREADY);
-	
+
 		add_action_front(action);
-		
+
 		return;
 	}
 	catch(int){}
 	catch(Exception::NotFound){}
-	
+
 	throw Error(_("Unable to determine how to procede. This is a bug."));
 }

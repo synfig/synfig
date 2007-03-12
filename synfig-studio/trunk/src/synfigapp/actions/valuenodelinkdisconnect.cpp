@@ -68,7 +68,7 @@ Action::ParamVocab
 Action::ValueNodeLinkDisconnect::get_param_vocab()
 {
 	ParamVocab ret(Action::CanvasSpecific::get_param_vocab());
-	
+
 	ret.push_back(ParamDesc("parent_value_node",Param::TYPE_VALUENODE)
 		.set_local_name(_("Parent ValueNode"))
 	);
@@ -97,21 +97,21 @@ Action::ValueNodeLinkDisconnect::set_param(const synfig::String& name, const Act
 	if(name=="parent_value_node" && param.get_type()==Param::TYPE_VALUENODE)
 	{
 		parent_value_node=LinkableValueNode::Handle::cast_dynamic(param.get_value_node());
-		
+
 		return static_cast<bool>(parent_value_node);
 	}
 
 	if(name=="index" && param.get_type()==Param::TYPE_INTEGER)
 	{
 		index=param.get_integer();
-		
+
 		return true;
 	}
 
 	if(name=="time" && param.get_type()==Param::TYPE_TIME)
 	{
 		time=param.get_time();
-		
+
 		return true;
 	}
 
@@ -130,19 +130,19 @@ void
 Action::ValueNodeLinkDisconnect::perform()
 {
 	if(parent_value_node->link_count()<=index)
-		throw Error(_("Bad index, too big. LinkCount=%d, Index=%d"),parent_value_node->link_count(),index);		
-		
+		throw Error(_("Bad index, too big. LinkCount=%d, Index=%d"),parent_value_node->link_count(),index);
+
 	old_value_node=parent_value_node->get_link(index);
 
 	if(!parent_value_node->set_link(index,ValueNode_Const::create((*old_value_node)(time))))
 		throw Error(_("Parent would not accept link"));
-	
+
 	/*
 	if(get_canvas()->get_time()!=time)
 		set_dirty(true);
 	else
 		set_dirty(false);
-	
+
 	if(get_canvas_interface())
 	{
 		get_canvas_interface()->signal_value_node_changed()(parent_value_node);
@@ -154,16 +154,16 @@ void
 Action::ValueNodeLinkDisconnect::undo()
 {
 	if(parent_value_node->link_count()<=index)
-		throw Error(_("Bad index, too big. LinkCount=%d, Index=%d"),parent_value_node->link_count(),index);		
-		
+		throw Error(_("Bad index, too big. LinkCount=%d, Index=%d"),parent_value_node->link_count(),index);
+
 	if(!parent_value_node->set_link(index,old_value_node))
 		throw Error(_("Parent would not accept old link"));
-	
+
 	/*if(get_canvas()->get_time()!=time)
 		set_dirty(true);
 	else
 		set_dirty(false);
-	
+
 	if(get_canvas_interface())
 	{
 		get_canvas_interface()->signal_value_node_changed()(parent_value_node);

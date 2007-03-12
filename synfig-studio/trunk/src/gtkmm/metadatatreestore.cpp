@@ -62,7 +62,7 @@ MetaDataTreeStore::MetaDataTreeStore(etl::loose_handle<synfigapp::CanvasInterfac
 {
 	// Connect the signal
 	get_canvas()->signal_meta_data_changed().connect(sigc::mem_fun(*this,&MetaDataTreeStore::meta_data_changed));
-	
+
 	rebuild();
 }
 
@@ -88,9 +88,9 @@ void
 MetaDataTreeStore::rebuild()
 {
 	clear();
-	
+
 	std::list<String> keys(get_canvas()->get_meta_data_keys());
-	
+
 	for(;!keys.empty();keys.pop_front())
 	{
 		Gtk::TreeRow row(*append());
@@ -138,10 +138,10 @@ MetaDataTreeStore::set_value_impl(const Gtk::TreeModel::iterator& iter, int colu
 		Glib::Value<Glib::ustring> x;
 		g_value_init(x.gobj(),model.data.type());
 		g_value_copy(value.gobj(),x.gobj());
-		
+
 		synfig::String key((Glib::ustring)(*iter)[model.key]);
 		synfig::String new_data(x.get());
-		
+
 		get_canvas_interface()->set_meta_data(key,new_data);
 	}
 	else

@@ -52,7 +52,7 @@ public:
 
 	Widget_CanvasChooser();
 	~Widget_CanvasChooser();
-	
+
 	void set_parent_canvas(synfig::Canvas::Handle x);
 	void set_value(synfig::Canvas::Handle data);
 	const synfig::Canvas::Handle &get_value();

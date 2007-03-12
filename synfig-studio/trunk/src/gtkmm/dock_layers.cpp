@@ -76,7 +76,7 @@ Dock_Layers::Dock_Layers():
 
 	action_group_new_layers=Gtk::ActionGroup::create();
 	action_group_layer_ops=Gtk::ActionGroup::create();
-	
+
 	std::map<synfig::String,synfig::String> category_map;
 
 	// Build layer creation actions
@@ -84,10 +84,10 @@ Dock_Layers::Dock_Layers():
 	for(iter=synfig::Layer::book().begin();iter!=synfig::Layer::book().end();++iter)
 	{
 		synfig::Layer::Book::value_type lyr(*iter);
-		
+
 		if(lyr.second.category==_("Do Not Use"))
 			continue;
-		
+
 		action_group_new_layers->add(Gtk::Action::create(
 			strprintf("layer-new-%s",lyr.first.c_str()),
 			layer_icon(lyr.first.c_str()),
@@ -102,15 +102,15 @@ Dock_Layers::Dock_Layers():
 		);
 
 		category_map[lyr.second.category]+=strprintf("<menuitem action='layer-new-%s' />",lyr.first.c_str());
-	
+
 		//(*category_map)[lyr.second.category]->items().push_back(Gtk::Menu_Helpers::MenuElem(lyr.second.local_name,
 		//));
 	}
-	
+
 	{
 		Glib::RefPtr<Gtk::ActionGroup> action_group_categories(Gtk::ActionGroup::create("layer-category"));
 		synfig::String layer_ui_info;
-		
+
 		layer_ui_info+="<ui><menubar action='menu-main'><menu action='menu-layer'><menu action='menu-layer-new'>";
 
 		std::map<synfig::String,synfig::String>::iterator iter;
@@ -121,13 +121,13 @@ Dock_Layers::Dock_Layers():
 		}
 
 		layer_ui_info+="</menu></menu></menubar></ui>";
-		
+
 		App::ui_manager()->insert_action_group(action_group_categories);
 		App::ui_manager()->insert_action_group(action_group_new_layers);
 		App::ui_manager()->add_ui_from_string(layer_ui_info);
 	}
-	
-	
+
+
 	action_group_layer_ops->add( Gtk::Action::create("toolbar-layer", "Layer Ops") );
 	App::ui_manager()->insert_action_group(action_group_layer_ops);
 
@@ -150,7 +150,7 @@ Dock_Layers::Dock_Layers():
 
 	action_group_new_layers->set_sensitive(false);
 
-	set_toolbar(*dynamic_cast<Gtk::Toolbar*>(App::ui_manager()->get_widget("/toolbar-layer")));	
+	set_toolbar(*dynamic_cast<Gtk::Toolbar*>(App::ui_manager()->get_widget("/toolbar-layer")));
 
 
 
@@ -162,21 +162,21 @@ Dock_Layers::Dock_Layers():
 
 	{
 		sigc::signal<void> tmp_signal;
-		
+
 		tmp_signal.connect(
 			sigc::bind(
 				sigc::ptr_fun(do_nothing),
 				ref_count
 			)
 		);
-		
+
 	synfig::info(__FILE__":%d:ref_count.count()=%d",__LINE__,ref_count.count());
 		tmp_signal();
 	synfig::info(__FILE__":%d:ref_count.count()=%d",__LINE__,ref_count.count());
-		
+
 		tmp_signal.clear();
 	synfig::info(__FILE__":%d:ref_count.count()=%d",__LINE__,ref_count.count());
-		
+
 		tmp_signal();
 	synfig::info(__FILE__":%d:ref_count.count()=%d",__LINE__,ref_count.count());
 		tmp_signal.connect(
@@ -188,7 +188,7 @@ Dock_Layers::Dock_Layers():
 	synfig::info(__FILE__":%d:ref_count.count()=%d",__LINE__,ref_count.count());
 	}
 	synfig::info(__FILE__":%d:ref_count.count()=%d",__LINE__,ref_count.count());
-	assert(ref_count.count()==1);	
+	assert(ref_count.count()==1);
 	*/
 }
 
@@ -240,7 +240,7 @@ Dock_Layers::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view
 	if(canvas_view)
 	{
 		Gtk::Widget* tree_view(canvas_view->get_ext_widget(get_name()));
-	
+
 		add(*tree_view);
 		tree_view->show();
 		action_group_new_layers->set_sensitive(true);
@@ -260,8 +260,8 @@ Dock_Layers::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view
 			layer_action_manager->set_canvas_interface(0);
 			layer_action_manager->set_layer_tree(0);
 		}
-		
-		clear_previous();		
+
+		clear_previous();
 	}
 }
 

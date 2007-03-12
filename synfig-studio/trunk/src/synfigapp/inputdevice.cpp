@@ -54,7 +54,7 @@ class DeviceSettings : public Settings
 public:
 	DeviceSettings(InputDevice* input_device):
 		input_device(input_device) { }
-		
+
 
 	virtual bool get_value(const synfig::String& key, synfig::String& value)const
 	{
@@ -85,10 +85,10 @@ public:
 
 			return true;
 		}
-		
+
 		return Settings::get_value(key, value);
 	}
-	
+
 	virtual bool set_value(const synfig::String& key,const synfig::String& value)
 	{
 			DEBUGPOINT();
@@ -120,10 +120,10 @@ public:
 			input_device->set_foreground_color(synfig::Color(r,g,b,a));
 			return true;
 		}
-		
+
 		return Settings::set_value(key, value);
 	}
-	
+
 	virtual KeyList get_key_list()const
 	{
 		KeyList ret(Settings::get_key_list());
@@ -172,14 +172,14 @@ InputDevice::InputDevice(const synfig::String id_, Type type_):
 			state_="normal";
 			break;
 	}
-	
+
 	device_settings=new DeviceSettings(this);
 	Main::settings().add_domain(device_settings,"input_device."+id_);
 }
 
 InputDevice::~InputDevice()
 {
-	Main::settings().remove_domain("input_device."+id_);	
+	Main::settings().remove_domain("input_device."+id_);
 	delete device_settings;
 }
 

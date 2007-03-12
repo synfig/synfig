@@ -93,7 +93,7 @@ public:
 	*/
 
 public:
-	
+
 	//! TreeModel for the layers
 	const Model model;
 
@@ -170,7 +170,7 @@ private:
 	*/
 
 public:
-	
+
 	LayerTreeStore(etl::loose_handle<synfigapp::CanvasInterface> canvas_interface_);
 	~LayerTreeStore();
 
@@ -205,7 +205,7 @@ public:
 	*/
 
 public:
-	
+
 	static Glib::RefPtr<LayerTreeStore> create(etl::loose_handle<synfigapp::CanvasInterface> canvas_interface_);
 
 

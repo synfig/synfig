@@ -67,13 +67,13 @@ Action::ParamVocab
 Action::LayerEncapsulate::get_param_vocab()
 {
 	ParamVocab ret(Action::CanvasSpecific::get_param_vocab());
-	
+
 	ret.push_back(ParamDesc("layer",Param::TYPE_LAYER)
 		.set_local_name(_("Layer"))
 		.set_desc(_("Layer to be encapsulated"))
 		.set_supports_multiple()
 	);
-	
+
 	return ret;
 }
 
@@ -89,7 +89,7 @@ Action::LayerEncapsulate::set_param(const synfig::String& name, const Action::Pa
 	if(name=="layer" && param.get_type()==Param::TYPE_LAYER)
 	{
 		layers.push_back(param.get_layer());
-		
+
 		return true;
 	}
 
@@ -109,7 +109,7 @@ Action::LayerEncapsulate::lowest_depth()const
 {
 	std::list<synfig::Layer::Handle>::const_iterator iter;
 	int lowest_depth(0x7fffffff);
-	
+
 	for(iter=layers.begin();iter!=layers.end();++iter)
 	{
 		int depth((*iter)->get_depth());
@@ -130,57 +130,57 @@ Action::LayerEncapsulate::prepare()
 
 	if(layers.empty())
 		throw Error("No layers to encapsulate");
-		
+
 	// First create the new canvas and layer
 	if(!child_canvas)
 		child_canvas=Canvas::create_inline(get_canvas());
-	
+
 	Layer::Handle new_layer(Layer::create("PasteCanvas"));
-	
+
 	new_layer->set_param("canvas",child_canvas);
-	
+
 	int target_depth(lowest_depth());
-	
+
 	// Add the layer
 	{
 		Action::Handle action(LayerAdd::create());
-	
+
 		action->set_param("canvas",get_canvas());
 		action->set_param("canvas_interface",get_canvas_interface());
 		action->set_param("new",new_layer);
-		
+
 		add_action(action);
-	}	
-	
+	}
+
 	// Move the layer
 	{
 		Action::Handle action(Action::create("layer_move"));
-		
+
 		assert(action);
-	
+
 		action->set_param("canvas",get_canvas());
 		action->set_param("canvas_interface",get_canvas_interface());
 		action->set_param("layer",new_layer);
 		action->set_param("new_index",target_depth);
-		
+
 		add_action(action);
-	}		
-		
+	}
+
 	std::list<synfig::Layer::Handle>::reverse_iterator iter;
-	
+
 	for(iter=layers.rbegin();iter!=layers.rend();++iter)
 	{
 		Layer::Handle layer(*iter);
-		
+
 		Canvas::Handle subcanvas(layer->get_canvas());
-		
+
 		// Find the iterator for the layer
 		Canvas::iterator iter=find(subcanvas->begin(),subcanvas->end(),layer);
-		
+
 		// If we couldn't find the layer in the canvas, then bail
 		if(*iter!=layer)
 			throw Error(_("This layer doesn't exist anymore."));
-	
+
 		if(!subcanvas)
 			throw Error(_("This layer doesn't have a parent canvas"));
 
@@ -192,25 +192,25 @@ Action::LayerEncapsulate::prepare()
 
 		if(get_canvas()!=subcanvas)
 			throw Error(_("get_canvas()!=subcanvas"));
-		
+
 		// Remove the layer from the old canvas
 		{
 			Action::Handle action(LayerRemove::create());
-			
+
 			action->set_param("canvas",subcanvas);
 			action->set_param("canvas_interface",get_canvas_interface());
 			action->set_param("layer",layer);
-			
+
 			add_action(action);
 		}
 		// Add the layer to the new canvas
 		{
 			Action::Handle action(LayerAdd::create());
-			
+
 			action->set_param("canvas",child_canvas);
 			action->set_param("canvas_interface",get_canvas_interface());
 			action->set_param("new",layer);
-			
+
 			add_action(action);
 		}
 	}

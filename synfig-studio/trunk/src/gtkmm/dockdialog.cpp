@@ -83,12 +83,12 @@ DockDialog::DockDialog():
 	is_horizontal=false;
 	last_dock_book=0;
 	box=0;
-	
+
 	widget_comp_select=new Widget_CompSelect();
-	
+
 	// Give ourselves an ID that is most likely unique
 	set_id(synfig::UniqueID().get_uid()^reinterpret_cast<long>(this));
-	
+
 	set_role(strprintf("dock_dialog_%d",get_id()));
 	GRAB_HINT_DATA(
 		"dock_dialog",
@@ -99,22 +99,22 @@ DockDialog::DockDialog():
 #endif
 	);
 	set_keep_above(false);
-	
+
 	// Set up the window
 	//set_type_hint(Gdk::WINDOW_TYPE_HINT_UTILITY);
 	set_title("Dock Dialog");
-	
+
 	// Register with the dock manager
 	App::dock_manager->dock_dialog_list_.push_back(this);
 
-	
-	// connect our signals	
+
+	// connect our signals
 	signal_delete_event().connect(
 		sigc::hide(
 			sigc::mem_fun(*this,&DockDialog::close)
 		)
 	);
-	
+
 /*
 	App::signal_canvas_view_focus().connect(
 		sigc::hide(
@@ -149,7 +149,7 @@ DockDialog::~DockDialog()
 		// but it causes crashes. Without it, a small
 		// memory hole is created--but at least it doesn't crash
 		// delete dock_book_list.front();
-		
+
 		// Oddly enough, the following line should
 		// theoreticly do the same thing after this
 		// class is destroyed, but it doesn't seem to
@@ -187,7 +187,7 @@ DockDialog::drop_on_prepend(const Glib::RefPtr<Gdk::DragContext>& context, int, 
 		context->drag_finish(true, false, time);
 		return;
 	}
-	
+
 	context->drag_finish(false, false, time);
 }
 
@@ -201,7 +201,7 @@ DockDialog::drop_on_append(const Glib::RefPtr<Gdk::DragContext>& context, int, i
 		context->drag_finish(true, false, time);
 		return;
 	}
-	
+
 	context->drag_finish(false, false, time);
 }
 
@@ -217,7 +217,7 @@ DockBook*
 DockDialog::prepend_dock_book()
 {
 	if(is_deleting)return 0;
-		
+
 	dock_book_list.push_front(new DockBook);
 	last_dock_book=dock_book_list.front();
 
@@ -238,7 +238,7 @@ DockBook*
 DockDialog::append_dock_book()
 {
 	if(is_deleting)return 0;
-		
+
 	dock_book_list.push_back(new DockBook);
 	last_dock_book=dock_book_list.back();
 	last_dock_book->signal_empty().connect(
@@ -282,9 +282,9 @@ DockDialog::erase_dock_book(DockBook* dock_book)
 				if(last_dock_book==dock_book)
 					last_dock_book=dock_book_list.front();
 			}
-			
+
 			refresh();
-			
+
 			return;
 		}
 }
@@ -297,16 +297,16 @@ DockDialog::refresh()
 
 	if(dock_book_list.empty())
 		return;
-	
+
 	if(box)delete box;
 	box=(manage(is_horizontal?(Gtk::Box*)new Gtk::HBox:(Gtk::Box*)new Gtk::VBox));
 	add(*box);
-	
+
 	box->pack_start(*widget_comp_select,false,true);
 
 	Gtk::Button* append_button(manage(new Gtk::Button));
 	Gtk::Button* prepend_button(manage(new Gtk::Button));
-	
+
 	std::list<Gtk::TargetEntry> listTargets;
 	listTargets.push_back( Gtk::TargetEntry("DOCK") );
 
@@ -320,14 +320,14 @@ DockDialog::refresh()
 	prepend_button->signal_drag_data_received().connect(
 		sigc::mem_fun(*this,&DockDialog::drop_on_prepend)
 	);
-	
+
 	box->pack_start(*prepend_button,false,true);
 	box->pack_end(*append_button,false,true);
 
 	//prepend_button->show();
 	//append_button->show();
 	pannels_.clear();
-	
+
 	if(dock_book_list.size()==1)
 	{
 		box->pack_start(get_dock_book(),true,true);
@@ -335,9 +335,9 @@ DockDialog::refresh()
 	else
 	{
 		Gtk::Paned* parent(manage(is_horizontal?(Gtk::Paned*)new Gtk::HPaned:(Gtk::Paned*)new Gtk::VPaned));
-		
+
 		pannels_.push_back(parent);
-		
+
 		if(pannels_.size()<=dock_book_sizes_.size())
 			pannels_.back()->set_position(dock_book_sizes_[pannels_.size()-1]);
 		pannels_.back()->property_position().signal_changed().connect(
@@ -346,15 +346,15 @@ DockDialog::refresh()
 		//parent->show();
 		parent->add1(*dock_book_list.front());
 		//dock_book_list.front()->show();
-	 
+
 		box->pack_start(*parent,true,true);
-		
+
 		std::list<DockBook*>::iterator iter,next;
 		for(next=dock_book_list.begin(),next++,iter=next++;next!=dock_book_list.end();iter=next++)
 		{
 			Gtk::Paned* current(manage(is_horizontal?(Gtk::Paned*)new Gtk::HPaned:(Gtk::Paned*)new Gtk::VPaned));
 			pannels_.push_back(current);
-			
+
 			if(pannels_.size()<=dock_book_sizes_.size())
 				pannels_.back()->set_position(dock_book_sizes_[pannels_.size()-1]);
 			pannels_.back()->property_position().signal_changed().connect(
@@ -367,13 +367,13 @@ DockDialog::refresh()
 			current->add1(**iter);
 			//(*iter)->show();
 			//current->show();
-			
+
 			parent=current;
 		}
 		parent->add2(**iter);
 		//(*iter)->show();
 	}
-	
+
 	box->show_all();
 	if(!composition_selector_)
 		widget_comp_select->hide();
@@ -413,7 +413,7 @@ DockDialog::refresh_accel_group()
 		remove_accel_group(last_accel_group_);
 		last_accel_group_=Glib::RefPtr<Gtk::AccelGroup>();
 	}
-	
+
 	etl::loose_handle<CanvasView> canvas_view(App::get_selected_canvas_view());
 	if(canvas_view)
 	{
@@ -435,7 +435,7 @@ DockDialog::close()
 	synfig::info("DockDialog::close(): DELETED!");
 	empty_sig.disconnect();
 	//get_dock_book().clear();
-	delete this;	
+	delete this;
 	return true;
 }
 
@@ -466,8 +466,8 @@ DockDialog::get_contents()const
 			ret+=is_horizontal?" | ":" - ";
 		ret+=(*iter)->get_contents();
 	}
-		
-	
+
+
 	return ret;
 }
 
@@ -494,7 +494,7 @@ DockDialog::set_contents(const synfig::String& z)
 					is_horizontal=false;
 			}
 		}
-		
+
 		synfig::String book_contents;
 		if(separator==synfig::String::npos)
 		{
@@ -506,7 +506,7 @@ DockDialog::set_contents(const synfig::String& z)
 			book_contents=String(str.begin(),str.begin()+separator);
 			str=String(str.begin()+separator+1,str.end());
 		}
-		
+
 		try
 		{
 			append_dock_book()->set_contents(book_contents);

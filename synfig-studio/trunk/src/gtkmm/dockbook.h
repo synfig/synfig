@@ -38,10 +38,10 @@
 /* === C L A S S E S & S T R U C T S ======================================= */
 
 namespace studio {
-	
+
 class DockManager;
 class Dockable;
-	
+
 class DockBook : public Gtk::Notebook
 {
 	friend class DockManager;
@@ -49,11 +49,11 @@ class DockBook : public Gtk::Notebook
 
 	sigc::signal<void> signal_empty_;
 	sigc::signal<void> signal_changed_;
-	
-	Gtk::Tooltips tooltips_;	
-	
+
+	Gtk::Tooltips tooltips_;
+
 	bool deleting_;
-	
+
 protected:
 public:
 	DockBook();
@@ -70,12 +70,12 @@ public:
 	void clear();
 
 	synfig::String get_local_contents()const;
-	
+
 	synfig::String get_contents()const;
 	void set_contents(const synfig::String& x);
 
 	void refresh_tabs_headers();
-	
+
 	void refresh_tab(Dockable*);
 
 	bool tab_button_pressed(GdkEventButton* event, Dockable* dockable);

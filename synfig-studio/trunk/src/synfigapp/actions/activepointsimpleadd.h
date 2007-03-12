@@ -48,10 +48,10 @@ class ActivepointSimpleAdd :
 	public CanvasSpecific
 {
 private:
-	
+
 	synfig::ValueNode_DynamicList::Handle value_node;
 	int	index;
-	
+
 	synfig::Activepoint activepoint;
 
 	bool time_overwrite;

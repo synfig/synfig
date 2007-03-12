@@ -65,7 +65,7 @@ Action::ParamVocab
 Action::LayerParamSet::get_param_vocab()
 {
 	ParamVocab ret(Action::CanvasSpecific::get_param_vocab());
-	
+
 	ret.push_back(ParamDesc("layer",Param::TYPE_LAYER)
 		.set_local_name(_("Layer"))
 	);
@@ -77,7 +77,7 @@ Action::LayerParamSet::get_param_vocab()
 	ret.push_back(ParamDesc("new_value",Param::TYPE_VALUE)
 		.set_local_name(_("ValueBase"))
 	);
-	
+
 	return ret;
 }
 
@@ -93,21 +93,21 @@ Action::LayerParamSet::set_param(const synfig::String& name, const Action::Param
 	if(name=="layer" && param.get_type()==Param::TYPE_LAYER)
 	{
 		layer=param.get_layer();
-		
+
 		return true;
 	}
 
 	if(name=="new_value" && param.get_type()==Param::TYPE_VALUE)
 	{
 		new_value=param.get_value();
-		
+
 		return true;
 	}
 
 	if(name=="param" && param.get_type()==Param::TYPE_STRING)
 	{
 		param_name=param.get_string();
-		
+
 		return true;
 	}
 
@@ -130,7 +130,7 @@ Action::LayerParamSet::perform()
 		throw Error(_("ValueNode attached to Parameter."));
 
 	old_value=layer->get_param(param_name);
-	
+
 	if(!layer->set_param(param_name,new_value))
 		throw Error(_("Layer did not accept parameter."));
 
@@ -140,7 +140,7 @@ Action::LayerParamSet::perform()
 		set_dirty(false);
 	*/
 	layer->changed();
-	
+
 	// Signal that a layer has been inserted
 	if(get_canvas_interface())
 	{
@@ -160,9 +160,9 @@ Action::LayerParamSet::undo()
 	else
 		set_dirty(false);
 	*/
-	
+
 	layer->changed();
-	
+
 	// Signal that a layer has been inserted
 	if(get_canvas_interface())
 	{

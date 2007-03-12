@@ -48,20 +48,20 @@
 /* === C L A S S E S & S T R U C T S ======================================= */
 
 namespace studio {
-	
+
 class DockManager;
 class DockBook;
-	
+
 class Dockable : public Gtk::Table
 {
 	friend class DockManager;
 	friend class DockBook;
 
-	
+
 	sigc::signal<void> signal_stock_id_changed_;
 	SigC::Connection prev_widget_delete_connection;
 protected:
-	
+
 //	DialogSettings dialog_settings;
 
 
@@ -77,13 +77,13 @@ private:
 	//Gtk::HBox button_box_;
 	Gtk::HBox header_box_;
 	//Gtk::VBox vbox_;
-	
+
 	//Gtk::HandleBox handle_box_;
 	Gtk::ScrolledWindow *scrolled_;
 	Gtk::Widget *prev_widget_;
 
 	bool use_scrolled_;
-	
+
 	Gtk::StockID stock_id_;
 
 	DockBook* parent_;
@@ -96,7 +96,7 @@ public:
 	void set_toolbar(Gtk::Toolbar& toolbar);
 
 	void set_use_scrolled(bool x) { use_scrolled_=x; }
-	
+
 	Dockable(const synfig::String& name,const synfig::String& local_name,Gtk::StockID stock_id_=Gtk::StockID(" "));
 	~Dockable();
 
@@ -107,31 +107,31 @@ public:
 
 	const Gtk::StockID& get_stock_id()const { return stock_id_; }
 	void set_stock_id(Gtk::StockID x) { stock_id_=x; signal_stock_id_changed()(); }
-	
+
 	void set_local_name(const synfig::String&);
 
 	void clear();
-	
+
 	Gtk::Tooltips& get_tooltips() { return tooltips_; }
-	
+
 	//DialogSettings& settings() { return dialog_settings; }
 	//const DialogSettings& settings()const { return dialog_settings; }
-	
+
 	void add(Gtk::Widget& x);
-	
-	Gtk::ToolButton* add_button(const Gtk::StockID& stock_id, const synfig::String& tooltip=synfig::String());	
-	
+
+	Gtk::ToolButton* add_button(const Gtk::StockID& stock_id, const synfig::String& tooltip=synfig::String());
+
 	void detach();
 
 	void present();
-	
+
 	void attach_dnd_to(Gtk::Widget& widget);
 
 	bool clear_previous();
 	virtual Gtk::Widget* create_tab_label();
 
 private:
-	
+
 	void on_drag_data_get(const Glib::RefPtr<Gdk::DragContext>&, Gtk::SelectionData& selection_data, guint info, guint time);
 	void on_drag_end(const Glib::RefPtr<Gdk::DragContext>&context);
 	void on_drag_begin(const Glib::RefPtr<Gdk::DragContext>&context);

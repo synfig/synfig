@@ -59,10 +59,10 @@ public:
 
 	//! Returns a list of the currently selected layers.
 	virtual LayerList get_selected_layers()const=0;
-	
+
 	//! Returns the first layer selected or an empty handle if none are selected.
 	virtual synfig::Layer::Handle get_selected_layer()const=0;
-	
+
 	//! Sets which layers should be selected
 	virtual void set_selected_layers(const LayerList &layer_list)=0;
 
@@ -79,10 +79,10 @@ public:
 
 	//! Returns a list of the currently selected childrens.
 	virtual ChildrenList get_selected_children()const=0;
-	
+
 	//! Returns the first children selected or an empty handle if none are selected.
 	virtual ChildrenList::value_type get_selected_child()const=0;
-	
+
 	//! Sets which childrens should be selected
 	virtual void set_selected_children(const ChildrenList &children_list)=0;
 
@@ -98,10 +98,10 @@ public:
 
 	//! Returns a list of the currently selected layer parameters.
 	virtual LayerParamList get_selected_layer_parameters()const=0;
-	
+
 	//! Returns the first layer parameter selected or an empty handle if none are selected.
 	virtual LayerParam get_selected_layer_parameter()const=0;
-	
+
 	//! Sets which layer parameters should be selected
 	virtual void set_selected_layer_parameters(const LayerParamList &layer_param_list)=0;
 
