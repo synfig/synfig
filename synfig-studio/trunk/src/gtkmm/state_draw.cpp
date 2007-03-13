@@ -854,7 +854,6 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline
 		}
 	}
 
-	//ValueNode_BLine::Handle value_node(ValueNode_BLine::create(synfig::ValueBase(bline,loop_bline_flag)));
 	ValueNode_BLine::Handle value_node;
 
 	{
@@ -880,9 +879,7 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline
 			);
 
 			if (shift_offset)
-			  {
-			    new_vertex = new_vertex - shift_offset_vector;
-			  }
+				new_vertex=new_vertex-shift_offset_vector;
 
 			bline_point.set_vertex(new_vertex);
 
@@ -892,16 +889,12 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline
 	}
 
 	if (join_start_no_extend)
-	  {
-	    LinkableValueNode::Handle::cast_dynamic(value_node->list.front().value_node)->
-	      set_link(0,start_duck_value_desc.get_value_node());
-	  }
+		LinkableValueNode::Handle::cast_dynamic(value_node->list.front().value_node)->
+		  set_link(0,start_duck_value_desc.get_value_node());
 
 	if (join_finish_no_extend)
-	  {
-	    LinkableValueNode::Handle::cast_dynamic(value_node->list.back().value_node)->
-	      set_link(0,finish_duck_value_desc.get_value_node());
-	  }
+		LinkableValueNode::Handle::cast_dynamic(value_node->list.back().value_node)->
+		  set_link(0,finish_duck_value_desc.get_value_node());
 
 	// Create the layer
 	{
