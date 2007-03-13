@@ -116,8 +116,8 @@ class studio::StateDraw_Context : public sigc::trackable
 
 	Smach::event_result new_region(std::list<synfig::BLinePoint> bline,synfig::Real radius);
 
-	Smach::event_result extend_bline_from_begin(ValueNode_BLine::Handle value_node,std::list<synfig::BLinePoint> bline,bool complete_loop);
-	Smach::event_result extend_bline_from_end(ValueNode_BLine::Handle value_node,std::list<synfig::BLinePoint> bline,bool complete_loop);
+	Smach::event_result extend_bline_from_begin(ValueNode_BLine::Handle value_node,std::list<synfig::BLinePoint> bline,bool complete_loop,Vector shift_offset_vector);
+	Smach::event_result extend_bline_from_end(ValueNode_BLine::Handle value_node,std::list<synfig::BLinePoint> bline,bool complete_loop,Vector shift_offset_vector);
 	void reverse_bline(std::list<synfig::BLinePoint> &bline);
 
 	synfigapp::Settings& settings;
@@ -705,7 +705,11 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline
 			// don't extend looped blines
 			if(start_duck_value_node_bline&&!start_duck_value_node_bline->get_loop()&&
 			   (start_duck_index==0||start_duck_index==start_duck_value_node_bline->link_count()-1))
+			{
 				extend_start=true;
+				shift_offset=true;
+				shift_offset_vector=start_duck->get_origin();
+			}
 		}while(0);
 
 		// check whether the end of the new line extends an
@@ -730,8 +734,11 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline
 					// of the same bline, only extend the one we started on
 					if(start_duck_value_node_bline==finish_duck_value_node_bline)
 						complete_loop=extend_finish=true;
-				}else
+				}else{
 					extend_finish=true;
+					shift_offset=true;
+					shift_offset_vector=finish_duck->get_origin();
+				}
 		}while(0);
 
 		// if the new line's start didn't extend an existing line,
@@ -743,6 +750,8 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline
 				start_duck_value_desc=synfigapp::ValueDesc(LinkableValueNode::Handle::cast_dynamic(start_duck_value_desc.get_value_node()),0);
 				// fall through
 			case synfig::ValueBase::TYPE_VECTOR:
+				if (shift_offset && shift_offset_vector != start_duck->get_origin())
+					break;
 				shift_offset = true;
 				shift_offset_vector = start_duck->get_origin();
 				get_canvas_interface()->auto_export(start_duck_value_desc);
@@ -795,13 +804,13 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline
 			if(start_duck_index==0)
 			{	// We need to reverse the BLine first.
 				reverse_bline(bline);
-				result=extend_bline_from_begin(start_duck_value_node_bline,bline,complete_loop);
+				result=extend_bline_from_begin(start_duck_value_node_bline,bline,complete_loop,shift_offset_vector);
 				source=start_duck_value_node_bline->list.front();
 				target_index=bline.size()+finish_duck_index;
 			}
 			else
 			{
-				result=extend_bline_from_end(start_duck_value_node_bline,bline,complete_loop);
+				result=extend_bline_from_end(start_duck_value_node_bline,bline,complete_loop,shift_offset_vector);
 				source=start_duck_value_node_bline->list.back();
 				target_index=finish_duck_index;
 			}
@@ -822,14 +831,14 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline
 			bline.pop_back();
 			if(finish_duck_index==0)
 			{
-				result=extend_bline_from_begin(finish_duck_value_node_bline,bline,false);
+				result=extend_bline_from_begin(finish_duck_value_node_bline,bline,false,shift_offset_vector);
 				source=finish_duck_value_node_bline->list.front();
 				target_index=bline.size()+start_duck_index;
 			}
 			else
 			{	// We need to reverse the BLine first.
 				reverse_bline(bline);
-				result=extend_bline_from_end(finish_duck_value_node_bline,bline,false);
+				result=extend_bline_from_end(finish_duck_value_node_bline,bline,false,shift_offset_vector);
 				source=finish_duck_value_node_bline->list.back();
 				target_index=start_duck_index;
 			}
@@ -1288,7 +1297,7 @@ StateDraw_Context::refresh_ducks()
 
 
 Smach::event_result
-StateDraw_Context::extend_bline_from_begin(ValueNode_BLine::Handle value_node,std::list<synfig::BLinePoint> bline,bool complete_loop)
+StateDraw_Context::extend_bline_from_begin(ValueNode_BLine::Handle value_node,std::list<synfig::BLinePoint> bline,bool complete_loop,Vector shift_offset_vector)
 {
 	// Create the action group
 	synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Extend BLine"));
@@ -1314,8 +1323,11 @@ StateDraw_Context::extend_bline_from_begin(ValueNode_BLine::Handle value_node,st
 	iter=bline.rbegin();
 	for(;!(iter==bline.rend());++iter)
 	{
-		//iter->reverse();
-		ValueNode_Composite::Handle composite(ValueNode_Composite::create(*iter));
+		BLinePoint bline_point(*iter);
+		// Point new_vertex(transform.unperform(bline_point.get_vertex()));
+		Point vertex(bline_point.get_vertex());
+		bline_point.set_vertex(vertex-shift_offset_vector);
+		ValueNode_Composite::Handle composite(ValueNode_Composite::create(bline_point));
 
 		synfigapp::Action::Handle action(synfigapp::Action::create("value_node_dynamic_list_insert"));
 
@@ -1341,7 +1353,7 @@ StateDraw_Context::extend_bline_from_begin(ValueNode_BLine::Handle value_node,st
 }
 
 Smach::event_result
-StateDraw_Context::extend_bline_from_end(ValueNode_BLine::Handle value_node,std::list<synfig::BLinePoint> bline,bool complete_loop)
+StateDraw_Context::extend_bline_from_end(ValueNode_BLine::Handle value_node,std::list<synfig::BLinePoint> bline,bool complete_loop,Vector shift_offset_vector)
 {
 	// Create the action group
 	synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Extend BLine"));
@@ -1367,7 +1379,11 @@ StateDraw_Context::extend_bline_from_end(ValueNode_BLine::Handle value_node,std:
 	iter=bline.begin();
 	for(;iter!=bline.end();++iter)
 	{
-		ValueNode_Composite::Handle composite(ValueNode_Composite::create(*iter));
+		BLinePoint bline_point(*iter);
+		// Point new_vertex(transform.unperform(bline_point.get_vertex()));
+		Point vertex(bline_point.get_vertex());
+		bline_point.set_vertex(vertex-shift_offset_vector);
+		ValueNode_Composite::Handle composite(ValueNode_Composite::create(bline_point));
 
 		synfigapp::Action::Handle action(synfigapp::Action::create("value_node_dynamic_list_insert"));
 
