@@ -1082,8 +1082,8 @@ App::App(int *argc, char ***argv):
 			"This copy of Synfig Studio was compiled against a\n"
 			"different version of libsynfig than what is currently\n"
 			"installed. Synfig Studio will now abort. Try downloading\n"
-			"the latest version from the Synfig Development Website at\n"
-			"http://dev.synfig.com/ "
+			"the latest version from the Synfig website at\n"
+			"http://www.synfig.com/ "
 		);
 		throw 40;
 		}
@@ -1095,7 +1095,7 @@ App::App(int *argc, char ***argv):
 			"This copy of Synfig Studio has expired.\n"
 			"Please erase this copy, or download and\n"
 			"install the latest copy from the Synfig\n"
-			"Development Website at http://dev.synfig.com/ ."
+			"website at http://www.synfig.com/ ."
 		);
 		throw 39;
 	}
