@@ -12,7 +12,7 @@
 ; The name of the installer
 Name "@PACKAGE_NAME@ @PACKAGE_VERSION@"
 
-!define PRODUCT_WEB_SITE "http://voria.com/synfig/"
+!define PRODUCT_WEB_SITE "http://www.synfig.com/"
 
 ; The file to write
 OutFile "@PACKAGE_TARNAME@-@PACKAGE_VERSION@.exe"
