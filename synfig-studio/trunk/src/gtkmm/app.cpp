@@ -1078,11 +1078,11 @@ App::App(int *argc, char ***argv):
 		if(!SYNFIG_CHECK_VERSION())
 		{
 		cerr<<"FATAL: Synfig Version Mismatch"<<endl;
-		dialog_error_blocking("SYNFIG Studio",
-			"This copy of SYNFIG Studio was compiled against a\n"
+		dialog_error_blocking("Synfig Studio",
+			"This copy of Synfig Studio was compiled against a\n"
 			"different version of libsynfig than what is currently\n"
 			"installed. Synfig Studio will now abort. Try downloading\n"
-			"the latest version from the SYNFIG Development Website at\n"
+			"the latest version from the Synfig Development Website at\n"
 			"http://dev.synfig.com/ "
 		);
 		throw 40;
@@ -1091,15 +1091,15 @@ App::App(int *argc, char ***argv):
 	catch(synfig::SoftwareExpired)
 	{
 		cerr<<"FATAL: Software Expired"<<endl;
-		dialog_error_blocking("SYNFIG Studio",
-			"This copy of SYNFIG Studio has expired.\n"
+		dialog_error_blocking("Synfig Studio",
+			"This copy of Synfig Studio has expired.\n"
 			"Please erase this copy, or download and\n"
-			"install the latest copy from the SYNFIG\n"
+			"install the latest copy from the Synfig\n"
 			"Development Website at http://dev.synfig.com/ ."
 		);
 		throw 39;
 	}
-	Glib::set_application_name(_("SYNFIG Studio"));
+	Glib::set_application_name(_("Synfig Studio"));
 
 	About about_window;
 	about_window.set_can_self_destruct(false);
@@ -1255,7 +1255,7 @@ App::App(int *argc, char ***argv):
 			if(
 				get_ui_interface()->yes_no(
 					"Auto Recovery",
-					"SYNFIG Studio seems to have crashed\n"
+					"Synfig Studio seems to have crashed\n"
 					"before you could save all your files.\n"
 					"Would you like to re-open those files\n"
 					"and recover your unsaved changes?"
@@ -1268,7 +1268,7 @@ App::App(int *argc, char ***argv):
 				}
 				else
 				get_ui_interface()->error(
-					_("SYNFIG Studio has attempted to recover\n"
+					_("Synfig Studio has attempted to recover\n"
 					"from a previous crash. The files that it has\n"
 					"recovered are NOT YET SAVED. It would be a good\n"
 					"idea to review them and save them now.")

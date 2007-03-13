@@ -58,7 +58,7 @@ using namespace studio;
 /* === M E T H O D S ======================================================= */
 
 Dialog_Setup::Dialog_Setup():
-	Dialog(_("SYNFIG Studio Setup"),false,true),
+	Dialog(_("Synfig Studio Setup"),false,true),
 	adj_gamma_r(2.2,0.1,3.0,0.025,0.025,0.025),
 	adj_gamma_g(2.2,0.1,3.0,0.025,0.025,0.025),
 	adj_gamma_b(2.2,0.1,3.0,0.025,0.025,0.025),

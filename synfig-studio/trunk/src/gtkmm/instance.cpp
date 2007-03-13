@@ -574,7 +574,7 @@ Instance::_revert(Instance *instance)
 	if(canvas->count()!=1)
 	{
 		one_moment.hide();
-		App::dialog_error_blocking(_("Error: Revert Failed"),_("The revert operation has failed. This can be due to it being\nreferenced by another composition that is already open, or\nbecause of an internal error in SYNFIG Studio. Try closing any\ncompositions that might reference this composition and try\nagain, or restart SYNFIG studio."));
+		App::dialog_error_blocking(_("Error: Revert Failed"),_("The revert operation has failed. This can be due to it being\nreferenced by another composition that is already open, or\nbecause of an internal error in Synfig Studio. Try closing any\ncompositions that might reference this composition and try\nagain, or restart Synfig Studio."));
 		one_moment.show();
 	}
 	canvas=0;

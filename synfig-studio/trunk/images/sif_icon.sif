@@ -1149,7 +1149,7 @@
     </param>
     <param name="canvas">
       <canvas>
-        <layer type="PasteCanvas" active="true" version="0.1" desc="SYNFIG Logo">
+        <layer type="PasteCanvas" active="true" version="0.1" desc="Synfig Logo">
           <param name="z_depth">
             <real value="0.0000000000"/>
           </param>

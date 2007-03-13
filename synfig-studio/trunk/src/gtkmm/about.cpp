@@ -203,7 +203,7 @@ About::About():
 	// Set the version label to contain the correct information
 	string ver;
 	ver+="Version "VERSION" ("__DATE__" "__TIME__")\n";
-	ver+="Using SYNFIG ";
+	ver+="Using Synfig ";
 	ver+=synfig::get_version();
 	#ifdef __GNUC__
 		ver+=strprintf(" and GNU G++ %d.%d.%d",__GNUC__,__GNUC_MINOR__,__GNUC_PATCHLEVEL__);
