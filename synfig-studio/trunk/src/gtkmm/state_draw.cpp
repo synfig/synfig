@@ -671,37 +671,10 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline
 	// Create the action group
 	synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Sketch BLine"));
 
-	//ValueNode_BLine::Handle value_node(ValueNode_BLine::create(synfig::ValueBase(bline,loop_bline_flag)));
-	ValueNode_BLine::Handle value_node;
-
-	{
-		std::list<synfig::BLinePoint> trans_bline;
-		std::list<synfig::BLinePoint>::iterator iter;
-		const synfig::TransformStack& transform(get_canvas_view()->get_curr_transform_stack());
-
-		for(iter=bline.begin();iter!=bline.end();++iter)
-		{
-			BLinePoint bline_point(*iter);
-			Point new_vertex(transform.unperform(bline_point.get_vertex()));
-
-			bline_point.set_tangent1(
-				transform.unperform(
-					bline_point.get_tangent1()+bline_point.get_vertex()
-				) -new_vertex
-			);
-
-			bline_point.set_tangent2(
-				transform.unperform(
-					bline_point.get_tangent2()+bline_point.get_vertex()
-				) -new_vertex
-			);
-
-			bline_point.set_vertex(new_vertex);
-
-			trans_bline.push_back(bline_point);
-		}
-		value_node=ValueNode_BLine::create(synfig::ValueBase(trans_bline,loop_bline_flag));
-	}
+	bool shift_offset = false;
+	Vector shift_offset_vector;
+	bool join_start_no_extend=false,join_finish_no_extend=false;
+	synfigapp::ValueDesc start_duck_value_desc,finish_duck_value_desc;
 
 	// Find any ducks at the start or end that we might attach to
 	// (this used to only run if we aren't a loop - ie. !loop_bline_flag
@@ -715,7 +688,6 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline
 		etl::handle<Duck> start_duck(get_work_area()->find_duck(bline.front().get_vertex(),radius,Duck::TYPE_VERTEX));
 		etl::handle<Duck> finish_duck(get_work_area()->find_duck(bline.back().get_vertex(),radius,Duck::TYPE_VERTEX));
 
-		synfigapp::ValueDesc start_duck_value_desc,finish_duck_value_desc;
 		ValueNode_BLine::Handle start_duck_value_node_bline=NULL,finish_duck_value_node_bline=NULL;
 
 		// check whether the start of the new line extends an
@@ -771,6 +743,8 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline
 				start_duck_value_desc=synfigapp::ValueDesc(LinkableValueNode::Handle::cast_dynamic(start_duck_value_desc.get_value_node()),0);
 				// fall through
 			case synfig::ValueBase::TYPE_VECTOR:
+				shift_offset = true;
+				shift_offset_vector = start_duck->get_origin();
 				get_canvas_interface()->auto_export(start_duck_value_desc);
 				if (extend_finish)
 					if(start_duck_value_node_bline&&start_duck_value_node_bline==finish_duck_value_node_bline)
@@ -778,8 +752,7 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline
 					else
 						extend_finish_join_different=true;
 				else
-					LinkableValueNode::Handle::cast_dynamic(value_node->list.front().value_node)->
-					  set_link(0,start_duck_value_desc.get_value_node());
+					join_start_no_extend=true;
 				// fall through
 			default:break;
 			}
@@ -794,6 +767,10 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline
 				finish_duck_value_desc=synfigapp::ValueDesc(LinkableValueNode::Handle::cast_dynamic(finish_duck_value_desc.get_value_node()),0);
 				// fall through
 			case synfig::ValueBase::TYPE_VECTOR:
+				if (shift_offset && shift_offset_vector != finish_duck->get_origin())
+					break;
+				shift_offset = true;
+				shift_offset_vector = finish_duck->get_origin();
 				get_canvas_interface()->auto_export(finish_duck_value_desc);
 				if(extend_start)
 					if(finish_duck_value_node_bline&&start_duck_value_node_bline==finish_duck_value_node_bline)
@@ -801,8 +778,7 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline
 					else
 						extend_start_join_different=true;
 				else
-					LinkableValueNode::Handle::cast_dynamic(value_node->list.back().value_node)->
-					  set_link(0,finish_duck_value_desc.get_value_node());
+					join_finish_no_extend=true;
 				// fall through
 			default:break;
 			}
@@ -869,6 +845,55 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline
 		}
 	}
 
+	//ValueNode_BLine::Handle value_node(ValueNode_BLine::create(synfig::ValueBase(bline,loop_bline_flag)));
+	ValueNode_BLine::Handle value_node;
+
+	{
+		std::list<synfig::BLinePoint> trans_bline;
+		std::list<synfig::BLinePoint>::iterator iter;
+		const synfig::TransformStack& transform(get_canvas_view()->get_curr_transform_stack());
+
+		for(iter=bline.begin();iter!=bline.end();++iter)
+		{
+			BLinePoint bline_point(*iter);
+			Point new_vertex(transform.unperform(bline_point.get_vertex()));
+
+			bline_point.set_tangent1(
+				transform.unperform(
+					bline_point.get_tangent1()+bline_point.get_vertex()
+				) -new_vertex
+			);
+
+			bline_point.set_tangent2(
+				transform.unperform(
+					bline_point.get_tangent2()+bline_point.get_vertex()
+				) -new_vertex
+			);
+
+			if (shift_offset)
+			  {
+			    new_vertex = new_vertex - shift_offset_vector;
+			  }
+
+			bline_point.set_vertex(new_vertex);
+
+			trans_bline.push_back(bline_point);
+		}
+		value_node=ValueNode_BLine::create(synfig::ValueBase(trans_bline,loop_bline_flag));
+	}
+
+	if (join_start_no_extend)
+	  {
+	    LinkableValueNode::Handle::cast_dynamic(value_node->list.front().value_node)->
+	      set_link(0,start_duck_value_desc.get_value_node());
+	  }
+
+	if (join_finish_no_extend)
+	  {
+	    LinkableValueNode::Handle::cast_dynamic(value_node->list.back().value_node)->
+	      set_link(0,finish_duck_value_desc.get_value_node());
+	  }
+
 	// Create the layer
 	{
 		Layer::Handle layer;
@@ -901,7 +926,9 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline
 		//layer->set_description(strprintf("Stroke %d",number));
 		//get_canvas_interface()->signal_layer_new_description()(layer,layer->get_description());
 
-
+		if (shift_offset)
+			get_canvas_interface()->
+			  change_value(synfigapp::ValueDesc(layer,"offset"),shift_offset_vector);
 
 		synfigapp::Action::Handle action(synfigapp::Action::create("layer_param_connect"));
 
