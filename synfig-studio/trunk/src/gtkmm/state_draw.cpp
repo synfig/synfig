@@ -116,8 +116,8 @@ class studio::StateDraw_Context : public sigc::trackable
 
 	Smach::event_result new_region(std::list<synfig::BLinePoint> bline,synfig::Real radius);
 
-	Smach::event_result extend_bline_from_begin(ValueNode_BLine::Handle value_node,std::list<synfig::BLinePoint> bline,bool complete_loop,Vector shift_offset_vector);
-	Smach::event_result extend_bline_from_end(ValueNode_BLine::Handle value_node,std::list<synfig::BLinePoint> bline,bool complete_loop,Vector shift_offset_vector);
+	Smach::event_result extend_bline_from_begin(ValueNode_BLine::Handle value_node,std::list<synfig::BLinePoint> bline,bool complete_loop);
+	Smach::event_result extend_bline_from_end(ValueNode_BLine::Handle value_node,std::list<synfig::BLinePoint> bline,bool complete_loop);
 	void reverse_bline(std::list<synfig::BLinePoint> &bline);
 
 	synfigapp::Settings& settings;
@@ -675,20 +675,19 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline
 	Vector shift_offset_vector;
 	bool join_start_no_extend=false,join_finish_no_extend=false;
 	synfigapp::ValueDesc start_duck_value_desc,finish_duck_value_desc;
+	bool extend_start=false,extend_finish=false,complete_loop=false;
+	bool extend_start_join_same=false,extend_start_join_different=false;
+	bool extend_finish_join_same=false,extend_finish_join_different=false;
+	int start_duck_index,finish_duck_index;
+	ValueNode_BLine::Handle start_duck_value_node_bline=NULL,finish_duck_value_node_bline=NULL;
 
 	// Find any ducks at the start or end that we might attach to
 	// (this used to only run if we aren't a loop - ie. !loop_bline_flag
 	// but having loops auto-connect can be useful as well)
 	if(get_auto_connect_flag())
 	{
-		bool extend_start=false,extend_finish=false,complete_loop=false;
-		bool extend_start_join_same=false,extend_start_join_different=false,extend_finish_join_same=false,extend_finish_join_different=false;
-		int start_duck_index,finish_duck_index;
-
 		etl::handle<Duck> start_duck(get_work_area()->find_duck(bline.front().get_vertex(),radius,Duck::TYPE_VERTEX));
 		etl::handle<Duck> finish_duck(get_work_area()->find_duck(bline.back().get_vertex(),radius,Duck::TYPE_VERTEX));
-
-		ValueNode_BLine::Handle start_duck_value_node_bline=NULL,finish_duck_value_node_bline=NULL;
 
 		// check whether the start of the new line extends an
 		// existing line.  this is only the case if the new
@@ -791,73 +790,12 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline
 				// fall through
 			default:break;
 			}
-
-		Smach::event_result result;
-		synfig::ValueNode_DynamicList::ListEntry source;
-		int target_index;
-
-		// the new line's start extends an existing line
-		if(extend_start)
-		{
-			if(complete_loop)bline.pop_back();
-			bline.pop_front();
-			if(start_duck_index==0)
-			{	// We need to reverse the BLine first.
-				reverse_bline(bline);
-				result=extend_bline_from_begin(start_duck_value_node_bline,bline,complete_loop,shift_offset_vector);
-				source=start_duck_value_node_bline->list.front();
-				target_index=bline.size()+finish_duck_index;
-			}
-			else
-			{
-				result=extend_bline_from_end(start_duck_value_node_bline,bline,complete_loop,shift_offset_vector);
-				source=start_duck_value_node_bline->list.back();
-				target_index=finish_duck_index;
-			}
-
-			if(extend_start_join_different)
-				LinkableValueNode::Handle::cast_dynamic(source.value_node)->
-				  set_link(0,finish_duck_value_desc.get_value_node());
-			else if(extend_start_join_same)
-				LinkableValueNode::Handle::cast_dynamic(source.value_node)->
-				  set_link(0,synfigapp::ValueDesc(LinkableValueNode::Handle::cast_dynamic(start_duck_value_node_bline->
-													  list[target_index].value_node),0).get_value_node());
-			return result;
-		}
-
-		// the new line's end extends an existing line
-		if(extend_finish)
-		{	// SPECIAL CASE -- EXTENSION
-			bline.pop_back();
-			if(finish_duck_index==0)
-			{
-				result=extend_bline_from_begin(finish_duck_value_node_bline,bline,false,shift_offset_vector);
-				source=finish_duck_value_node_bline->list.front();
-				target_index=bline.size()+start_duck_index;
-			}
-			else
-			{	// We need to reverse the BLine first.
-				reverse_bline(bline);
-				result=extend_bline_from_end(finish_duck_value_node_bline,bline,false,shift_offset_vector);
-				source=finish_duck_value_node_bline->list.back();
-				target_index=start_duck_index;
-			}
-
-			if(extend_finish_join_different)
-				LinkableValueNode::Handle::cast_dynamic(source.value_node)->
-				  set_link(0,start_duck_value_desc.get_value_node());
-			else if(extend_finish_join_same)
-				LinkableValueNode::Handle::cast_dynamic(source.value_node)->
-				  set_link(0,synfigapp::ValueDesc(LinkableValueNode::Handle::cast_dynamic(finish_duck_value_node_bline->
-													  list[target_index].value_node),0).get_value_node());
-			return result;
-		}
 	}
 
 	ValueNode_BLine::Handle value_node;
+	std::list<synfig::BLinePoint> trans_bline;
 
 	{
-		std::list<synfig::BLinePoint> trans_bline;
 		std::list<synfig::BLinePoint>::iterator iter;
 		const synfig::TransformStack& transform(get_canvas_view()->get_curr_transform_stack());
 
@@ -886,6 +824,67 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline
 			trans_bline.push_back(bline_point);
 		}
 		value_node=ValueNode_BLine::create(synfig::ValueBase(trans_bline,loop_bline_flag));
+	}
+
+	Smach::event_result result;
+	synfig::ValueNode_DynamicList::ListEntry source;
+	int target_index;
+
+	// the new line's start extends an existing line
+	if(extend_start)
+	{
+		if(complete_loop)trans_bline.pop_back();
+		trans_bline.pop_front();
+		if(start_duck_index==0)
+		{	// We need to reverse the BLine first.
+			reverse_bline(trans_bline);
+			result=extend_bline_from_begin(start_duck_value_node_bline,trans_bline,complete_loop);
+			source=start_duck_value_node_bline->list.front();
+			target_index=trans_bline.size()+finish_duck_index;
+		}
+		else
+		{
+			result=extend_bline_from_end(start_duck_value_node_bline,trans_bline,complete_loop);
+			source=start_duck_value_node_bline->list.back();
+			target_index=finish_duck_index;
+		}
+
+		if(extend_start_join_different)
+			LinkableValueNode::Handle::cast_dynamic(source.value_node)->
+				set_link(0,finish_duck_value_desc.get_value_node());
+		else if(extend_start_join_same)
+			LinkableValueNode::Handle::cast_dynamic(source.value_node)->
+				set_link(0,synfigapp::ValueDesc(LinkableValueNode::Handle::cast_dynamic(start_duck_value_node_bline->
+													list[target_index].value_node),0).get_value_node());
+		return result;
+	}
+
+	// the new line's end extends an existing line
+	if(extend_finish)
+	{	// SPECIAL CASE -- EXTENSION
+		trans_bline.pop_back();
+		if(finish_duck_index==0)
+		{
+			result=extend_bline_from_begin(finish_duck_value_node_bline,trans_bline,false);
+			source=finish_duck_value_node_bline->list.front();
+			target_index=trans_bline.size()+start_duck_index;
+		}
+		else
+		{	// We need to reverse the BLine first.
+			reverse_bline(trans_bline);
+			result=extend_bline_from_end(finish_duck_value_node_bline,trans_bline,false);
+			source=finish_duck_value_node_bline->list.back();
+			target_index=start_duck_index;
+		}
+
+		if(extend_finish_join_different)
+			LinkableValueNode::Handle::cast_dynamic(source.value_node)->
+				set_link(0,start_duck_value_desc.get_value_node());
+		else if(extend_finish_join_same)
+			LinkableValueNode::Handle::cast_dynamic(source.value_node)->
+				set_link(0,synfigapp::ValueDesc(LinkableValueNode::Handle::cast_dynamic(finish_duck_value_node_bline->
+													list[target_index].value_node),0).get_value_node());
+		return result;
 	}
 
 	if (join_start_no_extend)
@@ -1290,7 +1289,7 @@ StateDraw_Context::refresh_ducks()
 
 
 Smach::event_result
-StateDraw_Context::extend_bline_from_begin(ValueNode_BLine::Handle value_node,std::list<synfig::BLinePoint> bline,bool complete_loop,Vector shift_offset_vector)
+StateDraw_Context::extend_bline_from_begin(ValueNode_BLine::Handle value_node,std::list<synfig::BLinePoint> bline,bool complete_loop)
 {
 	// Create the action group
 	synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Extend BLine"));
@@ -1313,14 +1312,9 @@ StateDraw_Context::extend_bline_from_begin(ValueNode_BLine::Handle value_node,st
 	}
 
 	std::list<synfig::BLinePoint>::reverse_iterator iter;
-	iter=bline.rbegin();
-	for(;!(iter==bline.rend());++iter)
+	for(iter=bline.rbegin();!(iter==bline.rend());++iter)
 	{
-		BLinePoint bline_point(*iter);
-		// Point new_vertex(transform.unperform(bline_point.get_vertex()));
-		Point vertex(bline_point.get_vertex());
-		bline_point.set_vertex(vertex-shift_offset_vector);
-		ValueNode_Composite::Handle composite(ValueNode_Composite::create(bline_point));
+		ValueNode_Composite::Handle composite(ValueNode_Composite::create(*iter));
 
 		synfigapp::Action::Handle action(synfigapp::Action::create("value_node_dynamic_list_insert"));
 
@@ -1346,7 +1340,7 @@ StateDraw_Context::extend_bline_from_begin(ValueNode_BLine::Handle value_node,st
 }
 
 Smach::event_result
-StateDraw_Context::extend_bline_from_end(ValueNode_BLine::Handle value_node,std::list<synfig::BLinePoint> bline,bool complete_loop,Vector shift_offset_vector)
+StateDraw_Context::extend_bline_from_end(ValueNode_BLine::Handle value_node,std::list<synfig::BLinePoint> bline,bool complete_loop)
 {
 	// Create the action group
 	synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Extend BLine"));
@@ -1369,14 +1363,9 @@ StateDraw_Context::extend_bline_from_end(ValueNode_BLine::Handle value_node,std:
 	}
 
 	std::list<synfig::BLinePoint>::iterator iter;
-	iter=bline.begin();
-	for(;iter!=bline.end();++iter)
+	for(iter=bline.begin();iter!=bline.end();++iter)
 	{
-		BLinePoint bline_point(*iter);
-		// Point new_vertex(transform.unperform(bline_point.get_vertex()));
-		Point vertex(bline_point.get_vertex());
-		bline_point.set_vertex(vertex-shift_offset_vector);
-		ValueNode_Composite::Handle composite(ValueNode_Composite::create(bline_point));
+		ValueNode_Composite::Handle composite(ValueNode_Composite::create(*iter));
 
 		synfigapp::Action::Handle action(synfigapp::Action::create("value_node_dynamic_list_insert"));
 
