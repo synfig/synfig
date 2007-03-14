@@ -525,9 +525,17 @@ ValueNode_DynamicList::erase(const ValueNode::Handle &value_node_)
 			if(value_node)
 			{
 				remove_child(value_node.get());
-				if(get_parent_canvas())
-					get_parent_canvas()->signal_value_node_child_removed()(this,value_node);
-				else if(get_root_canvas() && get_parent_canvas())
+				// changed to fix bug 1420091 - it seems that when a .sif file containing a bline layer encapsulated inside
+				// another layer, get_parent_canvas() is false and get_root_canvas() is true, but when we come to erase a
+				// vertex, both are true.  So the signal is sent to the parent, but the signal wasn't sent to the parent
+				// when it was added.  This probably isn't the right fix, but it seems to work for now.  Note that the same
+				// strange "if (X) else if (Y && X)" code is also present in the two previous functions, above.
+
+				// if(get_parent_canvas())
+				// 	get_parent_canvas()->signal_value_node_child_removed()(this,value_node);
+				// else if(get_root_canvas() && get_parent_canvas())
+				//	get_root_canvas()->signal_value_node_child_removed()(this,value_node);
+				if(get_root_canvas())
 					get_root_canvas()->signal_value_node_child_removed()(this,value_node);
 			}
 			break;
