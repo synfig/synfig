@@ -1,3 +1,4 @@
+// <smach> -*- C++ -*-
 /*! ========================================================================
 ** Extended Template and Library
 ** State Machine Abstraction Class

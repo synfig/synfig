@@ -1,3 +1,4 @@
+// <thread> -*- C++ -*-
 /*! ========================================================================
 ** Extended Template and Library
 ** Thread Abstraction Class
