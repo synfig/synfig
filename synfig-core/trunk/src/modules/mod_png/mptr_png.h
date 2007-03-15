@@ -57,7 +57,7 @@ public:
 	png_mptr(const char *filename);
 	~png_mptr();
 
-	virtual bool get_frame(synfig::Surface &,synfig::Time, synfig::ProgressCallback *);
+	virtual bool get_frame(synfig::Surface &surface,synfig::Time time, synfig::ProgressCallback *callback);
 };
 
 /* === E N D =============================================================== */
