@@ -64,7 +64,7 @@ public:
 
 	virtual void set_time(synfig::Context context, synfig::Time time)const;
 
-	virtual void set_time(synfig::Context context, synfig::Time time, const synfig::Point &pos)const;
+	virtual void set_time(synfig::Context context, synfig::Time time, const synfig::Point &point)const;
 };
 
 /* === E N D =============================================================== */

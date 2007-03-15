@@ -56,7 +56,7 @@ public:
 
 	virtual void set_time(Context context, Time time)const;
 
-	virtual void set_time(Context context, Time time, const Point &pos)const;
+	virtual void set_time(Context context, Time time, const Point &point)const;
 
 	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 
