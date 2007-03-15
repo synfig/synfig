@@ -75,7 +75,7 @@ public:
 
 	//! Constructs Time from the given string.
 	/*!	\note If the string references frames, then the
-	**	frame rate (\afps) should be provided from the
+	**	frame rate (\a fps) should be provided from the
 	**	correct source. (Which is most likely the RendDesc
 	**	of the current Canvas)
 	**	The frame count will be ignored if the

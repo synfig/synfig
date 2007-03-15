@@ -423,7 +423,7 @@ public:
 	//! Creates a new child canvas, and returns its handle
 	Handle new_child_canvas();
 
-	//! Creates a new child canvas with an ID of \aid, and returns its handle
+	//! Creates a new child canvas with an ID of \a id, and returns its handle
 	Handle new_child_canvas(const String &id);
 
 	//! Adds the given canvas as a child

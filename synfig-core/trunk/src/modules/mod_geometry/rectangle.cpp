@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file rectangle.cpp
-**	\point2ief Template Header
+**	\brief Template Header
 **
 **	$Id: rectangle.cpp,v 1.2 2005/01/24 03:08:17 darco Exp $
 **

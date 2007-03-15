@@ -43,7 +43,7 @@
 namespace synfig {
 
 /*!	\class Layer_Shape
-**	\beief writeme			*/
+**	\brief writeme			*/
 class Layer_Shape : public Layer_Composite, public Layer_NoDeform
 {
 	SYNFIG_LAYER_MODULE_EXT

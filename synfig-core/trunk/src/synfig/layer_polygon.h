@@ -42,7 +42,7 @@
 namespace synfig {
 
 /*!	\class Layer_Polygon
-**	\beief writeme
+**	\brief writeme
 **	\todo This layer needs to support multiple polygons */
 class Layer_Polygon : public Layer_Shape
 {
