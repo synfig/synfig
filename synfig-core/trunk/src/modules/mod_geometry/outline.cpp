@@ -361,7 +361,7 @@ Outline::sync()
 	add_polygon(side_a);
 
 
-#else
+#else /* 1 */
 
 	bool loop_;
 	if(bline.get_contained_type()==ValueBase::TYPE_BLINEPOINT)
@@ -623,12 +623,12 @@ Outline::sync()
 			}
 		//synfig::info("BLEHH__________--- x:%f, y:%f",vector_list.front()[0],vector_list.front()[1]);
 	}
-#endif
+#endif /* _DEBUG */
 
 	add_polygon(vector_list);
 
 
-#endif
+#endif /* 1 */
 	} catch (...) { synfig::error("Outline::sync(): Exception thrown"); throw; }
 }
 
