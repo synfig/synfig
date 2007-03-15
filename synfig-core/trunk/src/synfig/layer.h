@@ -401,12 +401,12 @@ public:
 	/*!	\param context		Context iterator refering to next Layer.
 	**	\param surface		Pointer to Surface to render to.
 	**	\param quality		The requested quality-level to render at.
-	**	\param rend_desc	The associated RendDesc.
-	**	\param callback		Pointer to callback object. May be NULL if there is no callback.
+	**	\param renddesc		The associated RendDesc.
+	**	\param cb			Pointer to callback object. May be NULL if there is no callback.
 	**	\return \c true on success, \c false on failure
 	**	\see Handle::accelerated_render()
 	*/
-	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &rend_desc, ProgressCallback *callback)const;
+	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 
 	//! Checks to see if a part of the layer is directly under \a point
 	/*!	\param context		Context iterator refering to next Layer.
