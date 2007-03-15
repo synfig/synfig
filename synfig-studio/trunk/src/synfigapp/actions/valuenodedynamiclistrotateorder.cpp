@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file valuenodedynamiclistinsert.cpp
+/*!	\file valuenodedynamiclistrotateorder.cpp
 **	\brief Template File
 **
 **	$Id: valuenodedynamiclistrotateorder.cpp,v 1.1.1.1 2005/01/07 03:34:37 darco Exp $

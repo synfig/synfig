@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file template.cpp
+/*!	\file state_normal.cpp
 **	\brief Template File
 **
 **	$Id: state_normal.cpp,v 1.1.1.1 2005/01/07 03:34:36 darco Exp $

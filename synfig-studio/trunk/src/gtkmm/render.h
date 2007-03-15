@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file render.h
+/*!	\file gtkmm/render.h
 **	\brief Template Header
 **
 **	$Id: render.h,v 1.2 2005/01/10 08:13:44 darco Exp $

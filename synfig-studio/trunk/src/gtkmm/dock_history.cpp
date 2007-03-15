@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file dialog_history.cpp
+/*!	\file dock_history.cpp
 **	\brief Template File
 **
 **	$Id: dock_history.cpp,v 1.1.1.1 2005/01/07 03:34:36 darco Exp $

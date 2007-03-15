@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file template.cpp
+/*!	\file synfigstudio/src/template.cpp
 **	\brief Template File
 **
 **	$Id: template.cpp,v 1.1.1.1 2005/01/07 03:34:35 darco Exp $

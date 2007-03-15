@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file main.cpp
+/*!	\file gtkmm/main.cpp
 **	\brief Synfig Studio Entrypoint
 **
 **	$Id: main.cpp,v 1.2 2005/01/13 18:37:30 darco Exp $

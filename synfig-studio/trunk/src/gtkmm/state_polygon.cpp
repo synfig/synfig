@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file rotoscope_polygon.cpp
+/*!	\file state_polygon.cpp
 **	\brief Template File
 **
 **	$Id: state_polygon.cpp,v 1.1.1.1 2005/01/07 03:34:36 darco Exp $

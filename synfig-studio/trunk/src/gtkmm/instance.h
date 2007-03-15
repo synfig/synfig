@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file instance.h
+/*!	\file gtkmm/instance.h
 **	\brief writeme
 **
 **	$Id: instance.h,v 1.2 2005/01/13 18:37:30 darco Exp $

@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file template.cpp
+/*!	\file renderer_timecode.cpp
 **	\brief Template File
 **
 **	$Id: renderer_timecode.cpp,v 1.1.1.1 2005/01/07 03:34:36 darco Exp $

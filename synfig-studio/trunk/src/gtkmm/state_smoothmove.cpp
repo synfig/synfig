@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file state_smooth_move.cpp
+/*!	\file state_smoothmove.cpp
 **	\brief Template File
 **
 **	$Id: state_smoothmove.cpp,v 1.1.1.1 2005/01/07 03:34:37 darco Exp $

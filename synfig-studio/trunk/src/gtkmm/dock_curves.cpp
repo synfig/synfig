@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file dock_params.cpp
+/*!	\file dock_curves.cpp
 **	\brief Template File
 **
 **	$Id: dock_curves.cpp,v 1.1.1.1 2005/01/07 03:34:36 darco Exp $

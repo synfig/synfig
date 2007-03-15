@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file template.cpp
+/*!	\file layeractionmanager.cpp
 **	\brief Template File
 **
 **	$Id: layeractionmanager.cpp,v 1.1.1.1 2005/01/07 03:34:36 darco Exp $

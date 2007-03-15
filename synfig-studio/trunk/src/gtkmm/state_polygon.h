@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file rotoscope_polygon.h
+/*!	\file state_polygon.h
 **	\brief Template Header
 **
 **	$Id: state_polygon.h,v 1.1.1.1 2005/01/07 03:34:37 darco Exp $

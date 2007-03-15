@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file rotoscope_bline.h
+/*!	\file state_bline.h
 **	\brief Template Header
 **
 **	$Id: state_bline.h,v 1.1.1.1 2005/01/07 03:34:36 darco Exp $

@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file action_layerremove.cpp
+/*!	\file groupremovelayers.cpp
 **	\brief Template File
 **
 **	$Id: groupremovelayers.cpp,v 1.1.1.1 2005/01/07 03:34:37 darco Exp $

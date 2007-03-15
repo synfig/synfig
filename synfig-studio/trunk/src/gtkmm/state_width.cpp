@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file state_gradient.cpp
+/*!	\file state_width.cpp
 **	\brief Template File
 **
 **	$Id: state_width.cpp,v 1.1.1.1 2005/01/07 03:34:37 darco Exp $

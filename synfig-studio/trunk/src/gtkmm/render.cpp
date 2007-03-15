@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file render.cpp
+/*!	\file gtkmm/render.cpp
 **	\brief Template File
 **
 **	$Id: render.cpp,v 1.2 2005/01/10 08:13:44 darco Exp $

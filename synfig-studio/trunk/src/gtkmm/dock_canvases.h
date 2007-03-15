@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file dialog_canvases.h
+/*!	\file dock_canvases.h
 **	\brief Template Header
 **
 **	$Id: dock_canvases.h,v 1.1.1.1 2005/01/07 03:34:36 darco Exp $

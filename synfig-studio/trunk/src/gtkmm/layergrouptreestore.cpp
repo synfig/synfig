@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file layertreestore.cpp
+/*!	\file layergrouptreestore.cpp
 **	\brief Template File
 **
 **	$Id: layergrouptreestore.cpp,v 1.2 2005/01/13 18:37:30 darco Exp $

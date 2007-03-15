@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file dialog_palette.cpp
+/*!	\file dock_paledit.cpp
 **	\brief Template File
 **
 **	$Id: dock_paledit.cpp,v 1.1.1.1 2005/01/07 03:34:37 darco Exp $

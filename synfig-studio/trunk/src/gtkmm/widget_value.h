@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file widget_value.cpp
+/*!	\file widget_value.h
 **	\brief Template File
 **
 **	$Id: widget_value.h,v 1.1.1.1 2005/01/07 03:34:37 darco Exp $

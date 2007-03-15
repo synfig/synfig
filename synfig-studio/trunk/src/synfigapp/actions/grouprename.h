@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file action_grouprename.h
+/*!	\file grouprename.h
 **	\brief Template File
 **
 **	$Id: grouprename.h,v 1.1.1.1 2005/01/07 03:34:37 darco Exp $

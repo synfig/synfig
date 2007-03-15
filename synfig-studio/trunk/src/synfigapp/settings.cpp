@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file template.cpp
+/*!	\file settings.cpp
 **	\brief Template File
 **
 **	$Id: settings.cpp,v 1.2 2005/01/12 04:08:32 darco Exp $

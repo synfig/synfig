@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file template.cpp
+/*!	\file renderer_bbox.cpp
 **	\brief Template File
 **
 **	$Id: renderer_bbox.cpp,v 1.1.1.1 2005/01/07 03:34:36 darco Exp $

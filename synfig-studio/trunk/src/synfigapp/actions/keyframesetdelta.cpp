@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file keyframeset.cpp
+/*!	\file keyframesetdelta.cpp
 **	\brief Template File
 **
 **	$Id: keyframesetdelta.cpp,v 1.1.1.1 2005/01/07 03:34:37 darco Exp $

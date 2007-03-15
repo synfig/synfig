@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file dialog_gradient.cpp
+/*!	\file dialog_color.cpp
 **	\brief Template File
 **
 **	$Id: dialog_color.cpp,v 1.1.1.1 2005/01/07 03:34:36 darco Exp $

@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file template.cpp
+/*!	\file dialog_soundselect.cpp
 **	\brief Template File
 **
 **	$Id: dialog_soundselect.cpp,v 1.1.1.1 2005/01/07 03:34:36 darco Exp $

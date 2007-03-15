@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file widget_time.cpp
+/*!	\file widget_distance.cpp
 **	\brief Template File
 **
 **	$Id: widget_distance.cpp,v 1.1.1.1 2005/01/07 03:34:37 darco Exp $

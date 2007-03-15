@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file dialog_waypointmodel.cpp
+/*!	\file widget_waypointmodel.cpp
 **	\brief Template Header
 **
 **	$Id: widget_waypointmodel.cpp,v 1.1.1.1 2005/01/07 03:34:37 darco Exp $

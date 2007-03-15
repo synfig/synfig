@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file instance.cpp
+/*!	\file synfigapp/instance.cpp
 **	\brief Instance
 **
 **	$Id: instance.cpp,v 1.1.1.1 2005/01/07 03:34:37 darco Exp $

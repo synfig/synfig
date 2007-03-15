@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file cellrenderer_value.cpp
+/*!	\file cellrenderer_value.h
 **	\brief Template File
 **
 **	$Id: cellrenderer_value.h,v 1.1.1.1 2005/01/07 03:34:36 darco Exp $

@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file childrentreestore.cpp
+/*!	\file layerparamtreestore.cpp
 **	\brief Template File
 **
 **	$Id: layerparamtreestore.cpp,v 1.1.1.1 2005/01/07 03:34:36 darco Exp $

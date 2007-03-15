@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file renddesc.cpp
+/*!	\file gtkmm/renddesc.cpp
 **	\brief Template File
 **
 **	$Id: renddesc.cpp,v 1.1.1.1 2005/01/07 03:34:36 darco Exp $

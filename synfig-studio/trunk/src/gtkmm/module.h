@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file module.h
+/*!	\file gtkmm/module.h
 **	\brief Template Header
 **
 **	$Id: module.h,v 1.1.1.1 2005/01/07 03:34:36 darco Exp $

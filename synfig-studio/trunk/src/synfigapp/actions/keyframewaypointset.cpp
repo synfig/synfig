@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file keyframeset.cpp
+/*!	\file keyframewaypointset.cpp
 **	\brief Template File
 **
 **	$Id: keyframewaypointset.cpp,v 1.1.1.1 2005/01/07 03:34:37 darco Exp $

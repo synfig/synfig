@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file template.h
+/*!	\file renderer_grid.h
 **	\brief Template Header
 **
 **	$Id: renderer_grid.h,v 1.1.1.1 2005/01/07 03:34:36 darco Exp $
