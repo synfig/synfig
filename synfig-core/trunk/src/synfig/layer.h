@@ -390,13 +390,12 @@ public:
 	**	\todo \a point should be of the type <tt>const Point \&</tt> */
 	virtual void set_time(Context context, Time time, const Point &point)const;
 
-	//! Gets the color of the Canvas at \a point
+	//! Gets the color of the Canvas at \a pos
 	/*!	\param context		Context iterator refering to next Layer.
-	**	\param point		Point which indicates where the desired Color should come from
-	**	\todo \a point should be of the type <tt>const Point \&</tt>
+	**	\param pos		Point which indicates where the Color should come from
 	**	\see Handle::get_color()
 	*/
-	virtual Color get_color(Context context, const Point &point)const;
+	virtual Color get_color(Context context, const Point &pos)const;
 
 	//! Renders the Canvas to the given Surface in an accelerated manner
 	/*!	\param context		Context iterator refering to next Layer.
