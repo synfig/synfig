@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file noise.h
+/*!	\file mod_noise/random.h
 **	\brief Template Header
 **
 **	$Id: random.h,v 1.2 2005/01/13 05:14:02 darco Exp $

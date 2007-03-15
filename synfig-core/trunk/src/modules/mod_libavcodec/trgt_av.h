@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file trgt.h
+/*!	\file trgt_av.h
 **	\brief Template Header
 **
 **	$Id: trgt_av.h,v 1.1.1.1 2005/01/04 01:23:11 darco Exp $

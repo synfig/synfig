@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file main.h
+/*!	\file synfig/main.h
 **	\brief Template Header
 **
 **	$Id: main.h,v 1.1.1.1 2005/01/04 01:23:14 darco Exp $

@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file main.cpp
+/*!	\file synfig/main.cpp
 **	\brief \writeme
 **
 **	$Id: main.cpp,v 1.3 2005/01/10 07:40:26 darco Exp $

@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file layer_motionblur.h
+/*!	\file layer_motionblur.cpp
 **	\brief Template Header
 **
 **	$Id: layer_motionblur.cpp,v 1.1.1.1 2005/01/04 01:23:14 darco Exp $

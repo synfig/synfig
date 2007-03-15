@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file layer_solidcolor.cpp
+/*!	\file lyr_std/radialgradient.cpp
 **	\brief Template Header
 **
 **	$Id: radialgradient.cpp,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $

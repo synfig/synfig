@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file main.cpp
+/*!	\file tool/main.cpp
 **	\brief SYNFIG Tool
 **
 **	$Id: main.cpp,v 1.9 2005/01/23 04:41:10 darco Exp $

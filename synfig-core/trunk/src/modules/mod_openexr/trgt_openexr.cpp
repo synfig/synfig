@@ -1,8 +1,8 @@
-/*! ========================================================================
-** Synfig
-** exr_trgt Target Module
-** $Id: trgt_openexr.cpp,v 1.1.1.1 2005/01/04 01:23:14 darco Exp $
+/* === S Y N F I G ========================================================= */
+/*!	\file trgt_openexr.cpp
+**	\brief exr_trgt Target Module
 **
+**	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **
 **	This package is free software; you can redistribute it and/or
@@ -14,6 +14,7 @@
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
 **	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 **	General Public License for more details.
+**	\endlegal
 **
 ** === N O T E S ===========================================================
 **

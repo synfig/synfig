@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file blur.cpp
+/*!	\file synfig/blur.cpp
 **	\brief Blur Implementation File
 **
 **	$Id: blur.cpp,v 1.1.1.1 2005/01/04 01:23:14 darco Exp $

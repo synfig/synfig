@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file color.h
+/*!	\file color.cpp
 **	\brief Color Class
 **
 **	$Id: color.cpp,v 1.2 2005/01/23 04:03:21 darco Exp $

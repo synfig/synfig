@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file noise.cpp
+/*!	\file mod_noise/random.cpp
 **	\brief blehh
 **
 **	$Id: random.cpp,v 1.6 2005/01/17 02:00:19 darco Exp $

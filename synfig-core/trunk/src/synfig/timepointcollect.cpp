@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file template.cpp
+/*!	\file timepointcollect.cpp
 **	\brief Template File
 **
 **	$Id: timepointcollect.cpp,v 1.1.1.1 2005/01/04 01:23:15 darco Exp $

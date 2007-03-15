@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file main.cpp
+/*!	\file mod_libavcodec/main.cpp
 **	\brief writeme
 **
 **	$Id: main.cpp,v 1.1.1.1 2005/01/04 01:23:11 darco Exp $

@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file boolean_curve.h
+/*!	\file booleancurve.h
 **	\brief Boolean Curve Header
 **
 **	$Id: booleancurve.h,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $

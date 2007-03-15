@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file layer_pastecanvas.h
+/*!	\file layer_pastecanvas.cpp
 **	\brief Template Header
 **
 **	$Id: layer_pastecanvas.cpp,v 1.3 2005/01/24 03:08:18 darco Exp $

@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file checkerboard.cpp
+/*!	\file lumakey.cpp
 **	\brief Template Header
 **
 **	$Id: lumakey.cpp,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $

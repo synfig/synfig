@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file blur.cpp
+/*!	\file mod_filter/blur.cpp
 **	\brief Template Header
 **
 **	$Id: blur.cpp,v 1.2 2005/01/24 03:08:17 darco Exp $

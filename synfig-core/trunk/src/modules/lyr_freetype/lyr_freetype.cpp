@@ -1,8 +1,8 @@
-/*! ========================================================================
-** Synfig
-** Template File
-** $Id: lyr_freetype.cpp,v 1.5 2005/01/24 05:00:18 darco Exp $
+/* === S Y N F I G ========================================================= */
+/*!	\file lyr_freetype.cpp
+**	\brief Template Header
 **
+**	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2006 Paul Wise
 **
@@ -15,6 +15,7 @@
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
 **	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 **	General Public License for more details.
+**	\endlegal
 **
 ** === N O T E S ===========================================================
 **

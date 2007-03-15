@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file render.h
+/*!	\file synfig/render.h
 **	\brief Template Header
 **
 **	$Id: render.h,v 1.1.1.1 2005/01/04 01:23:14 darco Exp $

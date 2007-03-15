@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file shade.h
+/*!	\file bevel.h
 **	\brief Template Header
 **
 **	$Id: bevel.h,v 1.2 2005/01/24 03:08:17 darco Exp $

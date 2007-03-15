@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file render.cpp
+/*!	\file synfig/render.cpp
 **	\brief Renderer
 **
 **	$Id: render.cpp,v 1.1.1.1 2005/01/04 01:23:14 darco Exp $

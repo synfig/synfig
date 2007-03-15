@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file bline.cpp
+/*!	\file plant.cpp
 **	\brief Template
 **
 **	$Id: plant.cpp,v 1.2 2005/01/13 06:48:39 darco Exp $

@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file template.cpp
+/*!	\file transform.cpp
 **	\brief Template File
 **
 **	$Id: transform.cpp,v 1.2 2005/01/24 05:00:18 darco Exp $

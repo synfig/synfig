@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file noise.cpp
+/*!	\file distort.cpp
 **	\brief blehh
 **
 **	$Id: distort.cpp,v 1.1.1.1 2005/01/04 01:23:14 darco Exp $

@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file renddesc.h_
+/*!	\file synfig/renddesc.cpp
 **	\brief RendDesc
 **
 **	$Id: renddesc.cpp,v 1.1.1.1 2005/01/04 01:23:14 darco Exp $

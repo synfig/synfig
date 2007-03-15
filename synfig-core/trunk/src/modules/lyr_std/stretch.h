@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file colorcorrect.h
+/*!	\file stretch.h
 **	\brief Template Header
 **
 **	$Id: stretch.h,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $

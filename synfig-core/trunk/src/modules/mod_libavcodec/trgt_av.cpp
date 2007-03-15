@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file trgt.cpp
+/*!	\file trgt_av.cpp
 **	\brief \writeme
 **
 **	$Id: trgt_av.cpp,v 1.1.1.1 2005/01/04 01:23:11 darco Exp $

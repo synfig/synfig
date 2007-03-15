@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file template.cpp
+/*!	\file polynomial_root.cpp
 **	\brief Template File
 **
 **	$Id: polynomial_root.cpp,v 1.1.1.1 2005/01/04 01:23:14 darco Exp $

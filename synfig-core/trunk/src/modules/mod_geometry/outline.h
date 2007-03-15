@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file bline.h
+/*!	\file outline.h
 **	\brief Template Header
 **
 **	$Id: outline.h,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $

@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file spiralgradient.cpp
+/*!	\file twirl.cpp
 **	\brief Template Header
 **
 **	$Id: twirl.cpp,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $

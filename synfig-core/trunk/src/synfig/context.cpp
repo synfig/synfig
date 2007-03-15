@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file template.cpp
+/*!	\file context.cpp
 **	\brief Template File
 **
 **	$Id: context.cpp,v 1.4 2005/01/24 05:00:18 darco Exp $

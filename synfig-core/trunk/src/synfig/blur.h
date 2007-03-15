@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file blur.h
+/*!	\file synfig/blur.h
 **	\brief Blur Helper Header file
 **
 **	$Id: blur.h,v 1.1.1.1 2005/01/04 01:23:14 darco Exp $

@@ -1,6 +1,8 @@
-/*! ========================================================================
-** Synfig
-** ppm Target Module
+/* === S Y N F I G ========================================================= */
+/*!	\file trgt_imagemagick.cpp
+**	\brief ppm Target Module
+**
+**	\legal
 ** $Id: trgt_imagemagick.cpp,v 1.1.1.1 2005/01/04 01:23:11 darco Exp $
 **
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
@@ -14,6 +16,7 @@
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
 **	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 **	General Public License for more details.
+**	\endlegal
 **
 ** === N O T E S ===========================================================
 **

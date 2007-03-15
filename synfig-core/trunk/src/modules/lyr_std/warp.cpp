@@ -1,8 +1,8 @@
-/*! ========================================================================
-** Synfig
-** Template File
-** $Id: warp.cpp,v 1.2 2005/01/24 05:00:18 darco Exp $
+/* === S Y N F I G ========================================================= */
+/*!	\file warp.cpp
+**	\brief Template File
 **
+**	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **
 **	This package is free software; you can redistribute it and/or
@@ -14,6 +14,7 @@
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
 **	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 **	General Public License for more details.
+**	\endlegal
 **
 ** === N O T E S ===========================================================
 **

@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file valuenode_subtract.cpp
+/*!	\file valuenode_twotone.cpp
 **	\brief Template File
 **
 **	$Id: valuenode_twotone.cpp,v 1.1.1.1 2005/01/04 01:23:15 darco Exp $

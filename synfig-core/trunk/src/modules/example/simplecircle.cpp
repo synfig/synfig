@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file layer_solidcolor.cpp
+/*!	\file simplecircle.cpp
 **	\brief Template Header
 **
 **	$Id: simplecircle.cpp,v 1.1.1.1 2005/01/04 01:23:09 darco Exp $

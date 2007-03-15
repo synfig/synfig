@@ -1,8 +1,8 @@
-/*! ========================================================================
-** Synfig
-** Template File
-** $Id: lineargradient.cpp,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $
+/* === S Y N F I G ========================================================= */
+/*!	\file lineargradient.cpp
+**	\brief Template Header
 **
+**	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **
 **	This package is free software; you can redistribute it and/or
@@ -14,6 +14,7 @@
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
 **	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 **	General Public License for more details.
+**	\endlegal
 **
 ** === N O T E S ===========================================================
 **
