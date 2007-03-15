@@ -1,8 +1,8 @@
-/*! ========================================================================
-** Synfig
-** Template Header File
-** $Id: toolbox.h,v 1.1.1.1 2005/01/07 03:34:37 darco Exp $
+/* === S Y N F I G ========================================================= */
+/*!	\file toolbox.h
+**	\brief Header File
 **
+**	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **
 **	This package is free software; you can redistribute it and/or
