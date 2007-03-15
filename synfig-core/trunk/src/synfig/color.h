@@ -216,10 +216,10 @@ public:
 		g_(G),
 		b_(B) { }
 
-	/*!	\param C Source for color components
+	/*!	\param c Source for color components
 	**	\param A Opacity(alpha) */
 	Color(const Color& c, const value_type& A):
-		a_(c.a_),
+		a_(A),
 		r_(c.r_),
 		g_(c.g_),
 		b_(c.b_) { }
