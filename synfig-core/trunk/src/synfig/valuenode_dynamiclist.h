@@ -45,22 +45,22 @@ class ValueNode_BLine;
 /*! \class ValueNode_DynamicList
 **	\brief Animated List ValueNode
 **
-**	This ValueNode was originaly set up to have a list
+**	This ValueNode was originally set up to have a list
 **	of ValueNodes and their associated "on" and "off" points.
 **	ie: Any time that was directly after an "on" point,
 **	the item would be "on", and any time that was directly
 **	after an "off" point would be "off". This is pretty intuitive.
-**	However, it does have it's problems.
+**	However, it does have its problems.
 **
-**	The problems arrise when we introduce the concept of a
+**	The problems arise when we introduce the concept of a
 **	Keyframe. Keyframes can be manipulated via the Synfig
 **	Application Library. They allow the user to quickly
 **	and "automagickly" rearange an animation by moving
-**	the associated keyframes. With they old way that the
+**	the associated keyframes. With the old way that the
 **	"on" and "off" points were handled, this task became
 **	overly complicated.
 **
-**	What is required is a "symetric" system of describing
+**	What is required is a "symmetric" system of describing
 **	"on" and "off" points. Instead of the point representing
 **	the state of the item after that point in time, we have
 **	the point represent <i>only that frame</i>. The state
