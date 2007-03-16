@@ -190,7 +190,15 @@ void
 StateSketch_Context::clear_sketch()
 {
 	get_work_area()->clear_persistant_strokes();
-	get_canvas_view()->get_smach().process_event(EVENT_REFRESH);
+
+	// if the sketch is currently shown, make sure it is updated
+	//! \todo is there a better way than this of getting Duckmatic to update its stroke_list_?
+	if (checkbutton_show_sketch.get_active())
+	{
+		get_work_area()->set_show_persistant_strokes(false);
+		get_work_area()->set_show_persistant_strokes(true);
+		get_canvas_view()->get_smach().process_event(EVENT_REFRESH);
+	}
 }
 
 void
@@ -199,7 +207,15 @@ StateSketch_Context::undo_stroke()
 	if(!get_work_area()->persistant_stroke_list().empty())
 	{
 		get_work_area()->persistant_stroke_list().pop_back();
-		get_canvas_view()->get_smach().process_event(EVENT_REFRESH);
+
+		// if the sketch is currently shown, make sure it is updated
+		//! \todo is there a better way than this of getting Duckmatic to update its stroke_list_?
+		if (checkbutton_show_sketch.get_active())
+		{
+			get_work_area()->set_show_persistant_strokes(false);
+			get_work_area()->set_show_persistant_strokes(true);
+			get_canvas_view()->get_smach().process_event(EVENT_REFRESH);
+		}
 	}
 }
 
