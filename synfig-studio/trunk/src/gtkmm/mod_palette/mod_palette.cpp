@@ -59,8 +59,8 @@ studio::ModPalette::start_vfunc()
 	dock_pal_edit=new Dock_PalEdit();
 	App::get_dock_manager()->register_dockable(*dock_pal_edit);
 
-	dock_pal_browse=new Dock_PalBrowse();
-	App::get_dock_manager()->register_dockable(*dock_pal_browse);
+	//dock_pal_browse=new Dock_PalBrowse();
+	//App::get_dock_manager()->register_dockable(*dock_pal_browse);
 
 	return true;
 }
@@ -68,11 +68,11 @@ studio::ModPalette::start_vfunc()
 bool
 studio::ModPalette::stop_vfunc()
 {
-	App::get_dock_manager()->unregister_dockable(*dock_pal_browse);
+	//App::get_dock_manager()->unregister_dockable(*dock_pal_browse);
 	App::get_dock_manager()->unregister_dockable(*dock_pal_edit);
 
 	delete dock_pal_edit;
-	delete dock_pal_browse;
+	//delete dock_pal_browse;
 
 	return true;
 }
