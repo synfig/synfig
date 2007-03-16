@@ -381,7 +381,7 @@ public:
 		while(states_on_stack) pop_state();
 
 		// If we are not in a state, then I guess
-		// we were succesful.
+		// we were successful.
 		if(!curr_state)
 			return true;
 
