@@ -2,7 +2,7 @@
 /*!	\file vector.h
 **	\brief Various discreet type definitions
 **
-**	$Id: vector.h,v 1.2 2005/01/23 04:03:21 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley

@@ -3,7 +3,7 @@
 **	\brief ppm Target Module
 **
 **	\legal
-** $Id: trgt_imagemagick.cpp,v 1.1.1.1 2005/01/04 01:23:11 darco Exp $
+** $Id$
 **
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **
@@ -55,7 +55,7 @@ SYNFIG_TARGET_INIT(imagemagick_trgt);
 SYNFIG_TARGET_SET_NAME(imagemagick_trgt,"imagemagick");
 SYNFIG_TARGET_SET_EXT(imagemagick_trgt,"miff");
 SYNFIG_TARGET_SET_VERSION(imagemagick_trgt,"0.1");
-SYNFIG_TARGET_SET_CVS_ID(imagemagick_trgt,"$Id: trgt_imagemagick.cpp,v 1.1.1.1 2005/01/04 01:23:11 darco Exp $");
+SYNFIG_TARGET_SET_CVS_ID(imagemagick_trgt,"$Id$");
 
 /* === M E T H O D S ======================================================= */
 

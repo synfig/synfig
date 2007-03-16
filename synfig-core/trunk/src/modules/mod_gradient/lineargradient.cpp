@@ -51,7 +51,7 @@ SYNFIG_LAYER_SET_NAME(LinearGradient,"linear_gradient");
 SYNFIG_LAYER_SET_LOCAL_NAME(LinearGradient,_("Linear Gradient"));
 SYNFIG_LAYER_SET_CATEGORY(LinearGradient,_("Gradients"));
 SYNFIG_LAYER_SET_VERSION(LinearGradient,"0.0");
-SYNFIG_LAYER_SET_CVS_ID(LinearGradient,"$Id: lineargradient.cpp,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $");
+SYNFIG_LAYER_SET_CVS_ID(LinearGradient,"$Id$");
 
 /* === P R O C E D U R E S ================================================= */
 

@@ -50,7 +50,7 @@ SYNFIG_IMPORTER_INIT(ffmpeg_mptr);
 SYNFIG_IMPORTER_SET_NAME(ffmpeg_mptr,"ffmpeg");
 SYNFIG_IMPORTER_SET_EXT(ffmpeg_mptr,"avi");
 SYNFIG_IMPORTER_SET_VERSION(ffmpeg_mptr,"0.1");
-SYNFIG_IMPORTER_SET_CVS_ID(ffmpeg_mptr,"$Id: mptr_ffmpeg.cpp,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $");
+SYNFIG_IMPORTER_SET_CVS_ID(ffmpeg_mptr,"$Id$");
 
 /* === M E T H O D S ======================================================= */
 

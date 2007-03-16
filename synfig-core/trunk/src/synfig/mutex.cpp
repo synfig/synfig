@@ -2,7 +2,7 @@
 /*!	\file mutex.cpp
 **	\brief Template File
 **
-**	$Id: mutex.cpp,v 1.3 2005/01/12 00:55:46 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley

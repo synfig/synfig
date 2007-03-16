@@ -52,7 +52,7 @@ SYNFIG_LAYER_SET_NAME(RadialBlur,"radial_blur");
 SYNFIG_LAYER_SET_LOCAL_NAME(RadialBlur,_("Radial Blur"));
 SYNFIG_LAYER_SET_CATEGORY(RadialBlur,_("Blurs"));
 SYNFIG_LAYER_SET_VERSION(RadialBlur,"0.1");
-SYNFIG_LAYER_SET_CVS_ID(RadialBlur,"$Id: radialblur.cpp,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $");
+SYNFIG_LAYER_SET_CVS_ID(RadialBlur,"$Id$");
 
 /* === P R O C E D U R E S ================================================= */
 

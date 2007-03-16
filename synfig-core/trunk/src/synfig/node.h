@@ -2,7 +2,7 @@
 /*!	\file node.h
 **	\brief Template Header
 **
-**	$Id: node.h,v 1.3 2005/01/10 07:40:26 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley

@@ -53,7 +53,7 @@ SYNFIG_LAYER_SET_NAME(SuperSample,"super_sample");
 SYNFIG_LAYER_SET_LOCAL_NAME(SuperSample,_("Super Sample"));
 SYNFIG_LAYER_SET_CATEGORY(SuperSample,_("Other"));
 SYNFIG_LAYER_SET_VERSION(SuperSample,"0.1");
-SYNFIG_LAYER_SET_CVS_ID(SuperSample,"$Id: supersample.cpp,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $");
+SYNFIG_LAYER_SET_CVS_ID(SuperSample,"$Id$");
 
 /* === P R O C E D U R E S ================================================= */
 

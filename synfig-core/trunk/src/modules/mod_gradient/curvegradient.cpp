@@ -54,7 +54,7 @@ SYNFIG_LAYER_SET_NAME(CurveGradient,"curve_gradient");
 SYNFIG_LAYER_SET_LOCAL_NAME(CurveGradient,_("Curve Gradient"));
 SYNFIG_LAYER_SET_CATEGORY(CurveGradient,_("Gradients"));
 SYNFIG_LAYER_SET_VERSION(CurveGradient,"0.0");
-SYNFIG_LAYER_SET_CVS_ID(CurveGradient,"$Id: curvegradient.cpp,v 1.2 2005/01/13 06:48:39 darco Exp $");
+SYNFIG_LAYER_SET_CVS_ID(CurveGradient,"$Id$");
 
 /* === P R O C E D U R E S ================================================= */
 

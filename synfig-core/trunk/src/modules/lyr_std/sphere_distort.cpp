@@ -2,7 +2,7 @@
 /*!	\file sphere_distort.cpp
 **	\brief Sphere Distort File
 **
-**	$Id: sphere_distort.cpp,v 1.2 2005/01/24 05:00:18 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
@@ -71,7 +71,7 @@ SYNFIG_LAYER_SET_NAME(Layer_SphereDistort,"spherize");
 SYNFIG_LAYER_SET_LOCAL_NAME(Layer_SphereDistort,_("Spherize"));
 SYNFIG_LAYER_SET_CATEGORY(Layer_SphereDistort,_("Distortions"));
 SYNFIG_LAYER_SET_VERSION(Layer_SphereDistort,"0.2");
-SYNFIG_LAYER_SET_CVS_ID(Layer_SphereDistort,"$Id: sphere_distort.cpp,v 1.2 2005/01/24 05:00:18 darco Exp $");
+SYNFIG_LAYER_SET_CVS_ID(Layer_SphereDistort,"$Id$");
 
 /* === P R O C E D U R E S ================================================= */
 

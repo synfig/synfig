@@ -2,7 +2,7 @@
 /*!	\file clamp.cpp
 **	\brief Template Header
 **
-**	$Id: clamp.cpp,v 1.2 2005/01/24 05:00:18 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
@@ -54,7 +54,7 @@ SYNFIG_LAYER_SET_NAME(Layer_Clamp,"clamp");
 SYNFIG_LAYER_SET_LOCAL_NAME(Layer_Clamp,_("Clamp"));
 SYNFIG_LAYER_SET_CATEGORY(Layer_Clamp,_("Filters"));
 SYNFIG_LAYER_SET_VERSION(Layer_Clamp,"0.2");
-SYNFIG_LAYER_SET_CVS_ID(Layer_Clamp,"$Id: clamp.cpp,v 1.2 2005/01/24 05:00:18 darco Exp $");
+SYNFIG_LAYER_SET_CVS_ID(Layer_Clamp,"$Id$");
 
 /* === P R O C E D U R E S ================================================= */
 

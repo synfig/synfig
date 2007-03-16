@@ -2,7 +2,7 @@
 /*!	\file trgt_av.h
 **	\brief Template Header
 **
-**	$Id: trgt_av.h,v 1.1.1.1 2005/01/04 01:23:11 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley

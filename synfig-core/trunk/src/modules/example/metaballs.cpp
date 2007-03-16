@@ -2,7 +2,7 @@
 /*!	\file metaballs.cpp
 **	\brief Implements metaballs
 **
-**	$Id: metaballs.cpp,v 1.1.1.1 2005/01/04 01:23:09 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
@@ -56,7 +56,7 @@ SYNFIG_LAYER_SET_NAME(Metaballs,"metaballs");
 SYNFIG_LAYER_SET_LOCAL_NAME(Metaballs,_("Metaballs"));
 SYNFIG_LAYER_SET_CATEGORY(Metaballs,_("Default"));
 SYNFIG_LAYER_SET_VERSION(Metaballs,"0.1");
-SYNFIG_LAYER_SET_CVS_ID(Metaballs,"$Id: metaballs.cpp,v 1.1.1.1 2005/01/04 01:23:09 darco Exp $");
+SYNFIG_LAYER_SET_CVS_ID(Metaballs,"$Id$");
 
 /* === P R O C E D U R E S ================================================= */
 

@@ -2,7 +2,7 @@
 /*!	\file halftone3.cpp
 **	\brief blehh
 **
-**	$Id: halftone3.cpp,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
@@ -56,7 +56,7 @@ SYNFIG_LAYER_SET_NAME(Halftone3,"halftone3");
 SYNFIG_LAYER_SET_LOCAL_NAME(Halftone3,_("Halftone3"));
 SYNFIG_LAYER_SET_CATEGORY(Halftone3,_("Filters"));
 SYNFIG_LAYER_SET_VERSION(Halftone3,"0.0");
-SYNFIG_LAYER_SET_CVS_ID(Halftone3,"$Id: halftone3.cpp,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $");
+SYNFIG_LAYER_SET_CVS_ID(Halftone3,"$Id$");
 
 /* === P R O C E D U R E S ================================================= */
 

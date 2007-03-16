@@ -2,7 +2,7 @@
 /*!	\file conicalgradient.cpp
 **	\brief Template Header
 **
-**	$Id: conicalgradient.cpp,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
@@ -56,7 +56,7 @@ SYNFIG_LAYER_SET_NAME(ConicalGradient,"conical_gradient");
 SYNFIG_LAYER_SET_LOCAL_NAME(ConicalGradient,_("Conical Gradient"));
 SYNFIG_LAYER_SET_CATEGORY(ConicalGradient,_("Gradients"));
 SYNFIG_LAYER_SET_VERSION(ConicalGradient,"0.1");
-SYNFIG_LAYER_SET_CVS_ID(ConicalGradient,"$Id: conicalgradient.cpp,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $");
+SYNFIG_LAYER_SET_CVS_ID(ConicalGradient,"$Id$");
 
 /* === P R O C E D U R E S ================================================= */
 

@@ -55,7 +55,7 @@ SYNFIG_LAYER_SET_NAME(Import,"import");
 SYNFIG_LAYER_SET_LOCAL_NAME(Import,_("Import"));
 SYNFIG_LAYER_SET_CATEGORY(Import,_("Other"));
 SYNFIG_LAYER_SET_VERSION(Import,"0.1");
-SYNFIG_LAYER_SET_CVS_ID(Import,"$Id: import.cpp,v 1.2 2005/03/19 04:26:42 darco Exp $");
+SYNFIG_LAYER_SET_CVS_ID(Import,"$Id$");
 
 /* === P R O C E D U R E S ================================================= */
 

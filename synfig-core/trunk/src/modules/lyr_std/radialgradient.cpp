@@ -2,7 +2,7 @@
 /*!	\file lyr_std/radialgradient.cpp
 **	\brief Template Header
 **
-**	$Id: radialgradient.cpp,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
@@ -55,7 +55,7 @@ SYNFIG_LAYER_SET_NAME(RadialGradient,"radial_gradient");
 SYNFIG_LAYER_SET_LOCAL_NAME(RadialGradient,_("Radial Gradient"));
 SYNFIG_LAYER_SET_CATEGORY(RadialGradient,_("Gradients"));
 SYNFIG_LAYER_SET_VERSION(RadialGradient,"0.1");
-SYNFIG_LAYER_SET_CVS_ID(RadialGradient,"$Id: radialgradient.cpp,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $");
+SYNFIG_LAYER_SET_CVS_ID(RadialGradient,"$Id$");
 
 /* === P R O C E D U R E S ================================================= */
 

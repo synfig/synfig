@@ -2,7 +2,7 @@
 /*!	\file simplecircle.cpp
 **	\brief Template Header
 **
-**	$Id: simplecircle.cpp,v 1.1.1.1 2005/01/04 01:23:09 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
@@ -55,7 +55,7 @@ SYNFIG_LAYER_SET_NAME(SimpleCircle,"simple_circle");
 SYNFIG_LAYER_SET_LOCAL_NAME(SimpleCircle,_("Simple Circle"));
 SYNFIG_LAYER_SET_CATEGORY(SimpleCircle,_("Do Not Use"));
 SYNFIG_LAYER_SET_VERSION(SimpleCircle,"0.1");
-SYNFIG_LAYER_SET_CVS_ID(SimpleCircle,"$Id: simplecircle.cpp,v 1.1.1.1 2005/01/04 01:23:09 darco Exp $");
+SYNFIG_LAYER_SET_CVS_ID(SimpleCircle,"$Id$");
 
 /* === P R O C E D U R E S ================================================= */
 

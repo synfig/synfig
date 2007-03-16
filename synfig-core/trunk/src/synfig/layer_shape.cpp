@@ -2,7 +2,7 @@
 /*!	\file layer_shape.cpp
 **	\brief Template Header
 **
-**	$Id: layer_shape.cpp,v 1.2 2005/01/24 03:08:18 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
@@ -62,7 +62,7 @@ SYNFIG_LAYER_SET_NAME(Layer_Shape,"shape");
 SYNFIG_LAYER_SET_LOCAL_NAME(Layer_Shape,_("Shape"));
 SYNFIG_LAYER_SET_CATEGORY(Layer_Shape,_("Internal"));
 SYNFIG_LAYER_SET_VERSION(Layer_Shape,"0.1");
-SYNFIG_LAYER_SET_CVS_ID(Layer_Shape,"$Id: layer_shape.cpp,v 1.2 2005/01/24 03:08:18 darco Exp $");
+SYNFIG_LAYER_SET_CVS_ID(Layer_Shape,"$Id$");
 
 #define EPSILON	1e-12
 

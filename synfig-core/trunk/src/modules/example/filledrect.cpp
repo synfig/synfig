@@ -2,7 +2,7 @@
 /*!	\file filledrect.cpp
 **	\brief Template Header
 **
-**	$Id: filledrect.cpp,v 1.1.1.1 2005/01/04 01:23:09 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
@@ -56,7 +56,7 @@ SYNFIG_LAYER_SET_NAME(FilledRect,"rectangle");
 SYNFIG_LAYER_SET_LOCAL_NAME(FilledRect,_("Rectangle"));
 SYNFIG_LAYER_SET_CATEGORY(FilledRect,_("Geometry"));
 SYNFIG_LAYER_SET_VERSION(FilledRect,"0.1");
-SYNFIG_LAYER_SET_CVS_ID(FilledRect,"$Id: filledrect.cpp,v 1.1.1.1 2005/01/04 01:23:09 darco Exp $");
+SYNFIG_LAYER_SET_CVS_ID(FilledRect,"$Id$");
 
 /* === P R O C E D U R E S ================================================= */
 

@@ -2,7 +2,7 @@
 /*!	\file layer_motionblur.cpp
 **	\brief Template Header
 **
-**	$Id: layer_motionblur.cpp,v 1.1.1.1 2005/01/04 01:23:14 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
@@ -55,7 +55,7 @@ SYNFIG_LAYER_SET_NAME(Layer_MotionBlur,"MotionBlur");
 SYNFIG_LAYER_SET_LOCAL_NAME(Layer_MotionBlur,_("Motion Blur"));
 SYNFIG_LAYER_SET_CATEGORY(Layer_MotionBlur,_("Blurs"));
 SYNFIG_LAYER_SET_VERSION(Layer_MotionBlur,"0.1");
-SYNFIG_LAYER_SET_CVS_ID(Layer_MotionBlur,"$Id: layer_motionblur.cpp,v 1.1.1.1 2005/01/04 01:23:14 darco Exp $");
+SYNFIG_LAYER_SET_CVS_ID(Layer_MotionBlur,"$Id$");
 
 /* === M E M B E R S ======================================================= */
 

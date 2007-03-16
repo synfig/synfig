@@ -2,7 +2,7 @@
 /*!	\file distort.cpp
 **	\brief blehh
 **
-**	$Id: distort.cpp,v 1.1.1.1 2005/01/04 01:23:14 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
@@ -55,7 +55,7 @@ SYNFIG_LAYER_SET_NAME(NoiseDistort,"noise_distort");
 SYNFIG_LAYER_SET_LOCAL_NAME(NoiseDistort,_("Noise Distort"));
 SYNFIG_LAYER_SET_CATEGORY(NoiseDistort,_("Distortions"));
 SYNFIG_LAYER_SET_VERSION(NoiseDistort,"0.0");
-SYNFIG_LAYER_SET_CVS_ID(NoiseDistort,"$Id: distort.cpp,v 1.1.1.1 2005/01/04 01:23:14 darco Exp $");
+SYNFIG_LAYER_SET_CVS_ID(NoiseDistort,"$Id$");
 
 /* === P R O C E D U R E S ================================================= */
 

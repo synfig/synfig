@@ -2,7 +2,7 @@
 /*!	\file outline.cpp
 **	\brief Template
 **
-**	$Id: outline.cpp,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
@@ -69,7 +69,7 @@ SYNFIG_LAYER_SET_NAME(Outline,"outline");
 SYNFIG_LAYER_SET_LOCAL_NAME(Outline,_("Outline"));
 SYNFIG_LAYER_SET_CATEGORY(Outline,_("Geometry"));
 SYNFIG_LAYER_SET_VERSION(Outline,"0.2");
-SYNFIG_LAYER_SET_CVS_ID(Outline,"$Id: outline.cpp,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $");
+SYNFIG_LAYER_SET_CVS_ID(Outline,"$Id$");
 
 /* === P R O C E D U R E S ================================================= */
 

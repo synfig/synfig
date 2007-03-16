@@ -2,7 +2,7 @@
 /*!	\file plant.cpp
 **	\brief Template
 **
-**	$Id: plant.cpp,v 1.2 2005/01/13 06:48:39 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
@@ -67,7 +67,7 @@ SYNFIG_LAYER_SET_NAME(Plant,"plant");
 SYNFIG_LAYER_SET_LOCAL_NAME(Plant,_("Plant"));
 SYNFIG_LAYER_SET_CATEGORY(Plant,_("Particle Systems"));
 SYNFIG_LAYER_SET_VERSION(Plant,"0.1");
-SYNFIG_LAYER_SET_CVS_ID(Plant,"$Id: plant.cpp,v 1.2 2005/01/13 06:48:39 darco Exp $");
+SYNFIG_LAYER_SET_CVS_ID(Plant,"$Id$");
 
 /* === P R O C E D U R E S ================================================= */
 

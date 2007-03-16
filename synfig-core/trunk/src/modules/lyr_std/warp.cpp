@@ -52,7 +52,7 @@ SYNFIG_LAYER_SET_NAME(Warp,"warp");
 SYNFIG_LAYER_SET_LOCAL_NAME(Warp,_("Warp"));
 SYNFIG_LAYER_SET_CATEGORY(Warp,_("Distortions"));
 SYNFIG_LAYER_SET_VERSION(Warp,"0.1");
-SYNFIG_LAYER_SET_CVS_ID(Warp,"$Id: warp.cpp,v 1.2 2005/01/24 05:00:18 darco Exp $");
+SYNFIG_LAYER_SET_CVS_ID(Warp,"$Id$");
 
 /* === P R O C E D U R E S ================================================= */
 

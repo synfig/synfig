@@ -2,7 +2,7 @@
 /*!	\file noise.cpp
 **	\brief blehh
 **
-**	$Id: noise.cpp,v 1.2 2005/01/13 06:48:39 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
@@ -55,7 +55,7 @@ SYNFIG_LAYER_SET_NAME(Noise,"noise");
 SYNFIG_LAYER_SET_LOCAL_NAME(Noise,_("Noise Gradient"));
 SYNFIG_LAYER_SET_CATEGORY(Noise,_("Gradients"));
 SYNFIG_LAYER_SET_VERSION(Noise,"0.0");
-SYNFIG_LAYER_SET_CVS_ID(Noise,"$Id: noise.cpp,v 1.2 2005/01/13 06:48:39 darco Exp $");
+SYNFIG_LAYER_SET_CVS_ID(Noise,"$Id$");
 
 /* === P R O C E D U R E S ================================================= */
 

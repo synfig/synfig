@@ -2,7 +2,7 @@
 /*!	\file layer_polygon.cpp
 **	\brief Template Header
 **
-**	$Id: layer_polygon.cpp,v 1.1.1.1 2005/01/04 01:23:14 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
@@ -59,7 +59,7 @@ SYNFIG_LAYER_SET_NAME(Layer_Polygon,"polygon");
 SYNFIG_LAYER_SET_LOCAL_NAME(Layer_Polygon,_("Polygon"));
 SYNFIG_LAYER_SET_CATEGORY(Layer_Polygon,_("Geometry"));
 SYNFIG_LAYER_SET_VERSION(Layer_Polygon,"0.1");
-SYNFIG_LAYER_SET_CVS_ID(Layer_Polygon,"$Id: layer_polygon.cpp,v 1.1.1.1 2005/01/04 01:23:14 darco Exp $");
+SYNFIG_LAYER_SET_CVS_ID(Layer_Polygon,"$Id$");
 
 /* === C L A S S E S ======================================================= */
 

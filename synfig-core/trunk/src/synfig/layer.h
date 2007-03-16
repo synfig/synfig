@@ -2,7 +2,7 @@
 /*!	\file layer.h
 **	\brief Layer Class Header
 **
-**	$Id: layer.h,v 1.2 2005/01/24 03:08:18 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
@@ -268,7 +268,7 @@ public:
 	//! Gets the name of the group that this layer belongs to
 	String get_group()const;
 
-	//! \todo writeme
+	//! writeme
 	//DynamicParamList &dynamic_param_list() { return dynamic_param_list_; }
 
 	//! \todo writeme

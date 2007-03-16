@@ -2,7 +2,7 @@
 /*!	\file circle.cpp
 **	\brief Template Header
 **
-**	$Id: circle.cpp,v 1.2 2005/01/24 03:08:17 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
@@ -54,7 +54,7 @@ SYNFIG_LAYER_SET_NAME(Circle,"circle");
 SYNFIG_LAYER_SET_LOCAL_NAME(Circle,_("Circle"));
 SYNFIG_LAYER_SET_CATEGORY(Circle,_("Geometry"));
 SYNFIG_LAYER_SET_VERSION(Circle,"0.1");
-SYNFIG_LAYER_SET_CVS_ID(Circle,"$Id: circle.cpp,v 1.2 2005/01/24 03:08:17 darco Exp $");
+SYNFIG_LAYER_SET_CVS_ID(Circle,"$Id$");
 
 /* -- F U N C T I O N S ----------------------------------------------------- */
 

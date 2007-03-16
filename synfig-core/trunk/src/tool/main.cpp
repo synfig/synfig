@@ -2,7 +2,7 @@
 /*!	\file tool/main.cpp
 **	\brief SYNFIG Tool
 **
-**	$Id: main.cpp,v 1.9 2005/01/23 04:41:10 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley

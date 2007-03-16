@@ -2,7 +2,7 @@
 /*!	\file exception.h
 **	\brief Exceptions
 **
-**	$Id: exception.h,v 1.1.1.1 2005/01/04 01:23:14 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley

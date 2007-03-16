@@ -2,7 +2,7 @@
 /*!	\file shade.h
 **	\brief Template Header
 **
-**	$Id: shade.h,v 1.2 2005/01/24 03:08:17 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley

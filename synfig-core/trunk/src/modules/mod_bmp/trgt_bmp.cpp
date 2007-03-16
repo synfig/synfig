@@ -2,7 +2,7 @@
 /*!	\file trgt_bmp.cpp
 **	\brief Bitmap Target
 **
-**	$Id: trgt_bmp.cpp,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
@@ -51,7 +51,7 @@ SYNFIG_TARGET_INIT(bmp);
 SYNFIG_TARGET_SET_NAME(bmp,"bmp");
 SYNFIG_TARGET_SET_EXT(bmp,"bmp");
 SYNFIG_TARGET_SET_VERSION(bmp,"0.1");
-SYNFIG_TARGET_SET_CVS_ID(bmp,"$Id: trgt_bmp.cpp,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $");
+SYNFIG_TARGET_SET_CVS_ID(bmp,"$Id$");
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 

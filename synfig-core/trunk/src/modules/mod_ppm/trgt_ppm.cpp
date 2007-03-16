@@ -51,7 +51,7 @@ SYNFIG_TARGET_INIT(ppm);
 SYNFIG_TARGET_SET_NAME(ppm,"ppm");
 SYNFIG_TARGET_SET_EXT(ppm,"ppm");
 SYNFIG_TARGET_SET_VERSION(ppm,"0.1");
-SYNFIG_TARGET_SET_CVS_ID(ppm,"$Id: trgt_ppm.cpp,v 1.1.1.1 2005/01/04 01:23:14 darco Exp $");
+SYNFIG_TARGET_SET_CVS_ID(ppm,"$Id$");
 
 /* === M E T H O D S ======================================================= */
 

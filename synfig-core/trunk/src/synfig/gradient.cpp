@@ -2,7 +2,7 @@
 /*!	\file gradient.cpp
 **	\brief Color Gradient Class Member Definitions
 **
-**	$Id: gradient.cpp,v 1.2 2005/01/21 19:29:10 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley

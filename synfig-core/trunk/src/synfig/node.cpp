@@ -2,7 +2,7 @@
 /*!	\file node.cpp
 **	\brief Template File
 **
-**	$Id: node.cpp,v 1.5 2005/01/07 03:29:12 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley

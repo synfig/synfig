@@ -2,7 +2,7 @@
 /*!	\file layer_pastecanvas.cpp
 **	\brief Template Header
 **
-**	$Id: layer_pastecanvas.cpp,v 1.3 2005/01/24 03:08:18 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
@@ -73,7 +73,7 @@ SYNFIG_LAYER_SET_NAME(Layer_PasteCanvas,"PasteCanvas");
 SYNFIG_LAYER_SET_LOCAL_NAME(Layer_PasteCanvas,_("Paste Canvas"));
 SYNFIG_LAYER_SET_CATEGORY(Layer_PasteCanvas,_("Default"));
 SYNFIG_LAYER_SET_VERSION(Layer_PasteCanvas,"0.1");
-SYNFIG_LAYER_SET_CVS_ID(Layer_PasteCanvas,"$Id: layer_pastecanvas.cpp,v 1.3 2005/01/24 03:08:18 darco Exp $");
+SYNFIG_LAYER_SET_CVS_ID(Layer_PasteCanvas,"$Id$");
 
 /* === M E T H O D S ======================================================= */
 

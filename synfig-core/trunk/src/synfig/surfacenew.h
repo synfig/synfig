@@ -2,7 +2,7 @@
 /*!	\file surfacenew.h
 **	\brief Template Header
 **
-**	$Id: surfacenew.h,v 1.1 2005/01/21 19:29:10 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley

@@ -53,7 +53,7 @@ SYNFIG_LAYER_SET_NAME(Mandelbrot,"mandelbrot");
 SYNFIG_LAYER_SET_LOCAL_NAME(Mandelbrot,_("Mandelbrot Set"));
 SYNFIG_LAYER_SET_CATEGORY(Mandelbrot,_("Fractals"));
 SYNFIG_LAYER_SET_VERSION(Mandelbrot,"0.2");
-SYNFIG_LAYER_SET_CVS_ID(Mandelbrot,"$Id: mandelbrot.cpp,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $");
+SYNFIG_LAYER_SET_CVS_ID(Mandelbrot,"$Id$");
 
 /* === P R O C E D U R E S ================================================= */
 

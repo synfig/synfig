@@ -2,7 +2,7 @@
 /*!	\file zoom.cpp
 **	\brief writeme
 **
-**	$Id: zoom.cpp,v 1.2 2005/01/24 03:08:17 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
@@ -51,7 +51,7 @@ SYNFIG_LAYER_SET_NAME(Zoom,"zoom");
 SYNFIG_LAYER_SET_LOCAL_NAME(Zoom,_("Zoom"));
 SYNFIG_LAYER_SET_CATEGORY(Zoom,_("Transform"));
 SYNFIG_LAYER_SET_VERSION(Zoom,"0.1");
-SYNFIG_LAYER_SET_CVS_ID(Zoom,"$Id: zoom.cpp,v 1.2 2005/01/24 03:08:17 darco Exp $");
+SYNFIG_LAYER_SET_CVS_ID(Zoom,"$Id$");
 
 /* === P R O C E D U R E S ================================================= */
 

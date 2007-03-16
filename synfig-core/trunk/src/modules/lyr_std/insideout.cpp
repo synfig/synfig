@@ -52,7 +52,7 @@ SYNFIG_LAYER_SET_NAME(InsideOut,"inside_out");
 SYNFIG_LAYER_SET_LOCAL_NAME(InsideOut,_("InsideOut"));
 SYNFIG_LAYER_SET_CATEGORY(InsideOut,_("Distortions"));
 SYNFIG_LAYER_SET_VERSION(InsideOut,"0.1");
-SYNFIG_LAYER_SET_CVS_ID(InsideOut,"$Id: insideout.cpp,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $");
+SYNFIG_LAYER_SET_CVS_ID(InsideOut,"$Id$");
 
 /* === P R O C E D U R E S ================================================= */
 

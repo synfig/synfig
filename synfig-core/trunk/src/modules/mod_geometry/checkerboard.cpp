@@ -2,7 +2,7 @@
 /*!	\file checkerboard.cpp
 **	\brief Template Header
 **
-**	$Id: checkerboard.cpp,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
@@ -56,7 +56,7 @@ SYNFIG_LAYER_SET_NAME(CheckerBoard,"checker_board");
 SYNFIG_LAYER_SET_LOCAL_NAME(CheckerBoard,_("CheckerBoard"));
 SYNFIG_LAYER_SET_CATEGORY(CheckerBoard,_("Geometry"));
 SYNFIG_LAYER_SET_VERSION(CheckerBoard,"0.1");
-SYNFIG_LAYER_SET_CVS_ID(CheckerBoard,"$Id: checkerboard.cpp,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $");
+SYNFIG_LAYER_SET_CVS_ID(CheckerBoard,"$Id$");
 
 /* === P R O C E D U R E S ================================================= */
 

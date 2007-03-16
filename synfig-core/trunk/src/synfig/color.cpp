@@ -2,7 +2,7 @@
 /*!	\file color.cpp
 **	\brief Color Class
 **
-**	$Id: color.cpp,v 1.2 2005/01/23 04:03:21 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley

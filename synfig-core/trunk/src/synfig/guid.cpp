@@ -2,7 +2,7 @@
 /*!	\file guid.cpp
 **	\brief Template File
 **
-**	$Id: guid.cpp,v 1.4 2005/01/13 06:48:39 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley

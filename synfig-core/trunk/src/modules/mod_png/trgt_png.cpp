@@ -53,7 +53,7 @@ SYNFIG_TARGET_INIT(png_trgt);
 SYNFIG_TARGET_SET_NAME(png_trgt,"png");
 SYNFIG_TARGET_SET_EXT(png_trgt,"png");
 SYNFIG_TARGET_SET_VERSION(png_trgt,"0.1");
-SYNFIG_TARGET_SET_CVS_ID(png_trgt,"$Id: trgt_png.cpp,v 1.1.1.1 2005/01/04 01:23:14 darco Exp $");
+SYNFIG_TARGET_SET_CVS_ID(png_trgt,"$Id$");
 
 /* === M E T H O D S ======================================================= */
 

@@ -51,7 +51,7 @@ SYNFIG_IMPORTER_INIT(imagemagick_mptr);
 SYNFIG_IMPORTER_SET_NAME(imagemagick_mptr,"imagemagick");
 SYNFIG_IMPORTER_SET_EXT(imagemagick_mptr,"miff");
 SYNFIG_IMPORTER_SET_VERSION(imagemagick_mptr,"0.1");
-SYNFIG_IMPORTER_SET_CVS_ID(imagemagick_mptr,"$Id: mptr_imagemagick.cpp,v 1.1.1.1 2005/01/04 01:23:11 darco Exp $");
+SYNFIG_IMPORTER_SET_CVS_ID(imagemagick_mptr,"$Id$");
 
 /* === M E T H O D S ======================================================= */
 

@@ -51,7 +51,7 @@ SYNFIG_LAYER_SET_NAME(Layer_TimeLoop,"timeloop");
 SYNFIG_LAYER_SET_LOCAL_NAME(Layer_TimeLoop,_("TimeLoop"));
 SYNFIG_LAYER_SET_CATEGORY(Layer_TimeLoop,_("Other"));
 SYNFIG_LAYER_SET_VERSION(Layer_TimeLoop,"0.1");
-SYNFIG_LAYER_SET_CVS_ID(Layer_TimeLoop,"$Id: timeloop.cpp,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $");
+SYNFIG_LAYER_SET_CVS_ID(Layer_TimeLoop,"$Id$");
 
 /* === P R O C E D U R E S ================================================= */
 

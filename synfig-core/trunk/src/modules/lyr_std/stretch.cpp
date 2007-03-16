@@ -2,7 +2,7 @@
 /*!	\file stretch.cpp
 **	\brief Template Header
 **
-**	$Id: stretch.cpp,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
@@ -57,7 +57,7 @@ SYNFIG_LAYER_SET_NAME(Layer_Stretch,"stretch");
 SYNFIG_LAYER_SET_LOCAL_NAME(Layer_Stretch,_("Stretch"));
 SYNFIG_LAYER_SET_CATEGORY(Layer_Stretch,_("Distortions"));
 SYNFIG_LAYER_SET_VERSION(Layer_Stretch,"0.1");
-SYNFIG_LAYER_SET_CVS_ID(Layer_Stretch,"$Id: stretch.cpp,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $");
+SYNFIG_LAYER_SET_CVS_ID(Layer_Stretch,"$Id$");
 
 /* === P R O C E D U R E S ================================================= */
 

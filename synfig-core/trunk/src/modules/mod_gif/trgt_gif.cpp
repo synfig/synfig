@@ -50,7 +50,7 @@ SYNFIG_TARGET_INIT(gif);
 SYNFIG_TARGET_SET_NAME(gif,"gif");
 SYNFIG_TARGET_SET_EXT(gif,"gif");
 SYNFIG_TARGET_SET_VERSION(gif,"0.1");
-SYNFIG_TARGET_SET_CVS_ID(gif,"$Id: trgt_gif.cpp,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $");
+SYNFIG_TARGET_SET_CVS_ID(gif,"$Id$");
 
 /* === M E T H O D S ======================================================= */
 

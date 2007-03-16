@@ -51,7 +51,7 @@ SYNFIG_TARGET_INIT(exr_trgt);
 SYNFIG_TARGET_SET_NAME(exr_trgt,"openexr");
 SYNFIG_TARGET_SET_EXT(exr_trgt,"exr");
 SYNFIG_TARGET_SET_VERSION(exr_trgt,"1.0.4");
-SYNFIG_TARGET_SET_CVS_ID(exr_trgt,"$Id: trgt_openexr.cpp,v 1.1.1.1 2005/01/04 01:23:14 darco Exp $");
+SYNFIG_TARGET_SET_CVS_ID(exr_trgt,"$Id$");
 
 /* === M E T H O D S ======================================================= */
 

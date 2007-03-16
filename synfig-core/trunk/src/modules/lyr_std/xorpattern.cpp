@@ -51,7 +51,7 @@ SYNFIG_LAYER_SET_NAME(XORPattern,"XORPattern");
 SYNFIG_LAYER_SET_LOCAL_NAME(XORPattern,_("XOR Pattern"));
 SYNFIG_LAYER_SET_CATEGORY(XORPattern,_("Other"));
 SYNFIG_LAYER_SET_VERSION(XORPattern,"0.1");
-SYNFIG_LAYER_SET_CVS_ID(XORPattern,"$Id: xorpattern.cpp,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $");
+SYNFIG_LAYER_SET_CVS_ID(XORPattern,"$Id$");
 
 /* === P R O C E D U R E S ================================================= */
 

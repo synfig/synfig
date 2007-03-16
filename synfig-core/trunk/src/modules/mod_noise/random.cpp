@@ -2,7 +2,7 @@
 /*!	\file mod_noise/random.cpp
 **	\brief blehh
 **
-**	$Id: random.cpp,v 1.6 2005/01/17 02:00:19 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley

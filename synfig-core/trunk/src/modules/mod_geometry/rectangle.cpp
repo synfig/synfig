@@ -2,7 +2,7 @@
 /*!	\file rectangle.cpp
 **	\brief Template Header
 **
-**	$Id: rectangle.cpp,v 1.2 2005/01/24 03:08:17 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002 Robert B. Quattlebaum Jr.
@@ -57,7 +57,7 @@ SYNFIG_LAYER_SET_NAME(Rectangle,"rectangle");
 SYNFIG_LAYER_SET_LOCAL_NAME(Rectangle,_("Rectangle"));
 SYNFIG_LAYER_SET_CATEGORY(Rectangle,_("Geometry"));
 SYNFIG_LAYER_SET_VERSION(Rectangle,"0.2");
-SYNFIG_LAYER_SET_CVS_ID(Rectangle,"$Id: rectangle.cpp,v 1.2 2005/01/24 03:08:17 darco Exp $");
+SYNFIG_LAYER_SET_CVS_ID(Rectangle,"$Id$");
 
 /* === P R O C E D U R E S ================================================= */
 

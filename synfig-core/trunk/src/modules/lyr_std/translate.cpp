@@ -52,7 +52,7 @@ SYNFIG_LAYER_SET_NAME(Translate,"translate");
 SYNFIG_LAYER_SET_LOCAL_NAME(Translate,_("Translate"));
 SYNFIG_LAYER_SET_CATEGORY(Translate,_("Transform"));
 SYNFIG_LAYER_SET_VERSION(Translate,"0.1");
-SYNFIG_LAYER_SET_CVS_ID(Translate,"$Id: translate.cpp,v 1.2 2005/01/24 03:08:17 darco Exp $");
+SYNFIG_LAYER_SET_CVS_ID(Translate,"$Id$");
 
 /* === P R O C E D U R E S ================================================= */
 

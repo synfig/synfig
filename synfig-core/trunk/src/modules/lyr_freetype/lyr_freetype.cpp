@@ -63,7 +63,7 @@ SYNFIG_LAYER_SET_NAME(lyr_freetype,"text");
 SYNFIG_LAYER_SET_LOCAL_NAME(lyr_freetype,_("Simple Text"));
 SYNFIG_LAYER_SET_CATEGORY(lyr_freetype,_("Typography"));
 SYNFIG_LAYER_SET_VERSION(lyr_freetype,"0.2");
-SYNFIG_LAYER_SET_CVS_ID(lyr_freetype,"$Id: lyr_freetype.cpp,v 1.5 2005/01/24 05:00:18 darco Exp $");
+SYNFIG_LAYER_SET_CVS_ID(lyr_freetype,"$Id$");
 
 /* === P R O C E D U R E S ================================================= */
 

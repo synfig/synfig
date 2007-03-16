@@ -2,7 +2,7 @@
 /*!	\file trgt_yuv.cpp
 **	\brief Template File
 **
-**	$Id: trgt_yuv.cpp,v 1.1.1.1 2005/01/04 01:23:14 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
@@ -58,7 +58,7 @@ SYNFIG_TARGET_INIT(yuv);
 SYNFIG_TARGET_SET_NAME(yuv,"yuv420p");
 SYNFIG_TARGET_SET_EXT(yuv,"yuv");
 SYNFIG_TARGET_SET_VERSION(yuv,"0.1");
-SYNFIG_TARGET_SET_CVS_ID(yuv,"$Id: trgt_yuv.cpp,v 1.1.1.1 2005/01/04 01:23:14 darco Exp $");
+SYNFIG_TARGET_SET_CVS_ID(yuv,"$Id$");
 
 /* === M E T H O D S ======================================================= */
 

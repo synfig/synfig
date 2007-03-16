@@ -2,7 +2,7 @@
 /*!	\file loadcanvas.cpp
 **	\brief writeme
 **
-**	$Id: loadcanvas.cpp,v 1.3 2005/01/04 23:40:44 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley

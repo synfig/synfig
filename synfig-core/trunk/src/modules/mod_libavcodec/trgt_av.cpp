@@ -2,7 +2,7 @@
 /*!	\file trgt_av.cpp
 **	\brief \writeme
 **
-**	$Id: trgt_av.cpp,v 1.1.1.1 2005/01/04 01:23:11 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
@@ -61,7 +61,7 @@ SYNFIG_TARGET_INIT(Target_LibAVCodec);
 SYNFIG_TARGET_SET_NAME(Target_LibAVCodec,"libav");
 SYNFIG_TARGET_SET_EXT(Target_LibAVCodec,"avi");
 SYNFIG_TARGET_SET_VERSION(Target_LibAVCodec,"0.1");
-SYNFIG_TARGET_SET_CVS_ID(Target_LibAVCodec,"$Id: trgt_av.cpp,v 1.1.1.1 2005/01/04 01:23:11 darco Exp $");
+SYNFIG_TARGET_SET_CVS_ID(Target_LibAVCodec,"$Id$");
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 

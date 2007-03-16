@@ -52,7 +52,7 @@ SYNFIG_LAYER_SET_NAME(Rotate,"rotate");
 SYNFIG_LAYER_SET_LOCAL_NAME(Rotate,_("Rotate"));
 SYNFIG_LAYER_SET_CATEGORY(Rotate,_("Transform"));
 SYNFIG_LAYER_SET_VERSION(Rotate,"0.1");
-SYNFIG_LAYER_SET_CVS_ID(Rotate,"$Id: rotate.cpp,v 1.2 2005/01/24 05:00:18 darco Exp $");
+SYNFIG_LAYER_SET_CVS_ID(Rotate,"$Id$");
 
 /* === P R O C E D U R E S ================================================= */
 

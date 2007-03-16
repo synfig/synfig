@@ -2,7 +2,7 @@
 /*!	\file mod_filter/blur.cpp
 **	\brief Template Header
 **
-**	$Id: blur.cpp,v 1.2 2005/01/24 03:08:17 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
@@ -66,7 +66,7 @@ SYNFIG_LAYER_SET_NAME(Blur_Layer,"blur");
 SYNFIG_LAYER_SET_LOCAL_NAME(Blur_Layer,_("Blur"));
 SYNFIG_LAYER_SET_CATEGORY(Blur_Layer,_("Blurs"));
 SYNFIG_LAYER_SET_VERSION(Blur_Layer,"0.2");
-SYNFIG_LAYER_SET_CVS_ID(Blur_Layer,"$Id: blur.cpp,v 1.2 2005/01/24 03:08:17 darco Exp $");
+SYNFIG_LAYER_SET_CVS_ID(Blur_Layer,"$Id$");
 
 /* -- F U N C T I O N S ----------------------------------------------------- */
 

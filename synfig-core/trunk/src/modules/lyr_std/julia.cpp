@@ -53,7 +53,7 @@ SYNFIG_LAYER_SET_NAME(Julia,"julia");
 SYNFIG_LAYER_SET_LOCAL_NAME(Julia,_("Julia Set"));
 SYNFIG_LAYER_SET_CATEGORY(Julia,_("Fractals"));
 SYNFIG_LAYER_SET_VERSION(Julia,"0.1");
-SYNFIG_LAYER_SET_CVS_ID(Julia,"$Id: julia.cpp,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $");
+SYNFIG_LAYER_SET_CVS_ID(Julia,"$Id$");
 
 /* === P R O C E D U R E S ================================================= */
 

@@ -59,7 +59,7 @@ SYNFIG_LAYER_SET_NAME(Star,"star");
 SYNFIG_LAYER_SET_LOCAL_NAME(Star,_("Star"));
 SYNFIG_LAYER_SET_CATEGORY(Star,_("Geometry"));
 SYNFIG_LAYER_SET_VERSION(Star,"0.1");
-SYNFIG_LAYER_SET_CVS_ID(Star,"$Id: star.cpp,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $");
+SYNFIG_LAYER_SET_CVS_ID(Star,"$Id$");
 
 /* === P R O C E D U R E S ================================================= */
 

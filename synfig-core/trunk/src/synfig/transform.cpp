@@ -2,7 +2,7 @@
 /*!	\file transform.cpp
 **	\brief Template File
 **
-**	$Id: transform.cpp,v 1.2 2005/01/24 05:00:18 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley

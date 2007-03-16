@@ -2,7 +2,7 @@
 /*!	\file savecanvas.cpp
 **	\brief Writeme
 **
-**	$Id: savecanvas.cpp,v 1.2 2005/01/07 03:29:12 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley

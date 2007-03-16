@@ -2,7 +2,7 @@
 /*!	\file bevel.cpp
 **	\brief Template Header
 **
-**	$Id: bevel.cpp,v 1.2 2005/01/24 03:08:17 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
@@ -67,7 +67,7 @@ SYNFIG_LAYER_SET_NAME(Layer_Bevel,"bevel");
 SYNFIG_LAYER_SET_LOCAL_NAME(Layer_Bevel,_("Bevel"));
 SYNFIG_LAYER_SET_CATEGORY(Layer_Bevel,_("Stylize"));
 SYNFIG_LAYER_SET_VERSION(Layer_Bevel,"0.2");
-SYNFIG_LAYER_SET_CVS_ID(Layer_Bevel,"$Id: bevel.cpp,v 1.2 2005/01/24 03:08:17 darco Exp $");
+SYNFIG_LAYER_SET_CVS_ID(Layer_Bevel,"$Id$");
 
 /* -- F U N C T I O N S ----------------------------------------------------- */
 

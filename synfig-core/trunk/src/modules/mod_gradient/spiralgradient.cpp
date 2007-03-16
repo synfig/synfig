@@ -2,7 +2,7 @@
 /*!	\file spiralgradient.cpp
 **	\brief Template Header
 **
-**	$Id: spiralgradient.cpp,v 1.1.1.1 2005/01/04 01:23:11 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
@@ -55,7 +55,7 @@ SYNFIG_LAYER_SET_NAME(SpiralGradient,"spiral_gradient");
 SYNFIG_LAYER_SET_LOCAL_NAME(SpiralGradient,_("Spiral Gradient"));
 SYNFIG_LAYER_SET_CATEGORY(SpiralGradient,_("Gradients"));
 SYNFIG_LAYER_SET_VERSION(SpiralGradient,"0.1");
-SYNFIG_LAYER_SET_CVS_ID(SpiralGradient,"$Id: spiralgradient.cpp,v 1.1.1.1 2005/01/04 01:23:11 darco Exp $");
+SYNFIG_LAYER_SET_CVS_ID(SpiralGradient,"$Id$");
 
 /* === P R O C E D U R E S ================================================= */
 

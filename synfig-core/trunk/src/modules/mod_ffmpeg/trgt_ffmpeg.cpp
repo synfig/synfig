@@ -52,7 +52,7 @@ SYNFIG_TARGET_INIT(ffmpeg_trgt);
 SYNFIG_TARGET_SET_NAME(ffmpeg_trgt,"ffmpeg");
 SYNFIG_TARGET_SET_EXT(ffmpeg_trgt,"mpg");
 SYNFIG_TARGET_SET_VERSION(ffmpeg_trgt,"0.1");
-SYNFIG_TARGET_SET_CVS_ID(ffmpeg_trgt,"$Id: trgt_ffmpeg.cpp,v 1.1.1.1 2005/01/04 01:23:10 darco Exp $");
+SYNFIG_TARGET_SET_CVS_ID(ffmpeg_trgt,"$Id$");
 
 /* === M E T H O D S ======================================================= */
 

@@ -54,7 +54,7 @@ SYNFIG_IMPORTER_INIT(ppm_mptr);
 SYNFIG_IMPORTER_SET_NAME(ppm_mptr,"ppm");
 SYNFIG_IMPORTER_SET_EXT(ppm_mptr,"ppm");
 SYNFIG_IMPORTER_SET_VERSION(ppm_mptr,"0.1");
-SYNFIG_IMPORTER_SET_CVS_ID(ppm_mptr,"$Id: mptr_ppm.cpp,v 1.1.1.1 2005/01/04 01:23:14 darco Exp $");
+SYNFIG_IMPORTER_SET_CVS_ID(ppm_mptr,"$Id$");
 
 /* === M E T H O D S ======================================================= */
 
