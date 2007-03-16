@@ -1,4 +1,4 @@
-i# $Header: /opt/voria/cvs/synfig/config/configure.ac,v 1.10 2005/03/24 21:07:24 darco Exp $
+# $Id$
 
 # -- I N I T --------------------------------------------------
 

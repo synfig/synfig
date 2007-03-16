@@ -1,4 +1,4 @@
-# $Header: /opt/voria/cvs/synfig/src/synfig/Makefile.am,v 1.3 2005/01/21 19:29:10 darco Exp $
+# $Id$
 
 # SUBDIRS=proto
 

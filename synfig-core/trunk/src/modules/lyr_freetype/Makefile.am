@@ -1,4 +1,4 @@
-# $Header: /opt/voria/cvs/synfig/src/modules/lyr_freetype/Makefile.am,v 1.3 2005/03/24 21:07:24 darco Exp $
+# $Id$
 
 MAINTAINERCLEANFILES=Makefile.in
 INCLUDES = -I$(top_srcdir)/src

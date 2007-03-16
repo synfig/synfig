@@ -1,4 +1,4 @@
-# $Header: /opt/voria/cvs/synfig/src/tool/Makefile.am,v 1.1.1.1 2005/01/04 01:23:15 darco Exp $
+# $Id$
 
 MAINTAINERCLEANFILES=Makefile.in
 EXTRA_DIST=tool.nsh

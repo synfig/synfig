@@ -1,4 +1,4 @@
-# $Header: /opt/voria/cvs/synfig/src/modules/mod_yuv420p/Makefile.am,v 1.1.1.1 2005/01/04 01:23:14 darco Exp $
+# $Id$
 
 
 MAINTAINERCLEANFILES=Makefile.in
