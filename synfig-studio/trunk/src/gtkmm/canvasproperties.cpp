@@ -2,7 +2,7 @@
 /*!	\file canvasproperties.cpp
 **	\brief Template File
 **
-**	$Id: canvasproperties.cpp,v 1.1.1.1 2005/01/07 03:34:35 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley

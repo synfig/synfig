@@ -2,7 +2,7 @@
 /*!	\file app.h
 **	\brief writeme
 **
-**	$Id: app.h,v 1.2 2005/01/13 21:11:16 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley

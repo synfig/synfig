@@ -2,7 +2,7 @@
 /*!	\file app.cpp
 **	\brief writeme
 **
-**	$Id: app.cpp,v 1.11 2005/03/24 21:47:28 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley

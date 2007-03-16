@@ -2,7 +2,7 @@
 /*!	\file gradientset.h
 **	\brief Template File
 **
-**	$Id: gradientset.h,v 1.1.1.1 2005/01/07 03:34:37 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley

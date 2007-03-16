@@ -2,7 +2,7 @@
 /*!	\file preview.cpp
 **	\brief Preview implementation file
 **
-**	$Id: preview.cpp,v 1.2 2005/01/10 08:13:44 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley

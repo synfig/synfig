@@ -2,7 +2,7 @@
 /*!	\file waypointremove.cpp
 **	\brief Template File
 **
-**	$Id: waypointremove.cpp,v 1.1.1.1 2005/01/07 03:34:37 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
@@ -49,7 +49,7 @@ ACTION_SET_TASK(Action::WaypointRemove,"remove");
 ACTION_SET_CATEGORY(Action::WaypointRemove,Action::CATEGORY_WAYPOINT);
 ACTION_SET_PRIORITY(Action::WaypointRemove,0);
 ACTION_SET_VERSION(Action::WaypointRemove,"0.0");
-ACTION_SET_CVS_ID(Action::WaypointRemove,"$Id: waypointremove.cpp,v 1.1.1.1 2005/01/07 03:34:37 darco Exp $");
+ACTION_SET_CVS_ID(Action::WaypointRemove,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

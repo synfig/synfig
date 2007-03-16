@@ -2,7 +2,7 @@
 /*!	\file gtkmm/main.cpp
 **	\brief Synfig Studio Entrypoint
 **
-**	$Id: main.cpp,v 1.2 2005/01/13 18:37:30 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley

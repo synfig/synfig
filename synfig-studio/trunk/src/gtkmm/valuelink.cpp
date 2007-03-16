@@ -2,7 +2,7 @@
 /*!	\file valuelink.cpp
 **	\brief ValueBase Link Implementation File
 **
-**	$Id: valuelink.cpp,v 1.1.1.1 2005/01/07 03:34:37 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2004 Adrian Bentley

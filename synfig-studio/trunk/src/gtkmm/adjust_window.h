@@ -2,7 +2,7 @@
 /*!	\file adjust_window.h
 **	\brief Adjustment Window Header
 **
-**	$Id: adjust_window.h,v 1.1.1.1 2005/01/07 03:34:35 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2004 Adrian Bentley

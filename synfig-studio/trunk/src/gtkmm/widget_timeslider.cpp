@@ -2,7 +2,7 @@
 /*!	\file widget_timeslider.cpp
 **	\brief Time Slider Widget Implementation File
 **
-**	$Id: widget_timeslider.cpp,v 1.1.1.1 2005/01/07 03:34:37 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2004 Adrian Bentley

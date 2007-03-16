@@ -2,7 +2,7 @@
 /*!	\file activepointsetoff.cpp
 **	\brief Template File
 **
-**	$Id: activepointsetoff.cpp,v 1.1.1.1 2005/01/07 03:34:37 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
@@ -57,7 +57,7 @@ ACTION_SET_TASK(Action::ActivepointSetOff,"set_off");
 ACTION_SET_CATEGORY(Action::ActivepointSetOff,Action::CATEGORY_ACTIVEPOINT|Action::CATEGORY_VALUEDESC);
 ACTION_SET_PRIORITY(Action::ActivepointSetOff,-9);
 ACTION_SET_VERSION(Action::ActivepointSetOff,"0.0");
-ACTION_SET_CVS_ID(Action::ActivepointSetOff,"$Id: activepointsetoff.cpp,v 1.1.1.1 2005/01/07 03:34:37 darco Exp $");
+ACTION_SET_CVS_ID(Action::ActivepointSetOff,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

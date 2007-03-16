@@ -2,7 +2,7 @@
 /*!	\file activepointsimpleadd.cpp
 **	\brief Simple add activepoint File
 **
-**	$Id: activepointsimpleadd.cpp,v 1.1.1.1 2005/01/07 03:34:37 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2004 Adrian Bentley
@@ -49,7 +49,7 @@ ACTION_SET_TASK(Action::ActivepointSimpleAdd,"add");
 ACTION_SET_CATEGORY(Action::ActivepointSimpleAdd,Action::CATEGORY_WAYPOINT);
 ACTION_SET_PRIORITY(Action::ActivepointSimpleAdd,0);
 ACTION_SET_VERSION(Action::ActivepointSimpleAdd,"0.0");
-ACTION_SET_CVS_ID(Action::ActivepointSimpleAdd,"$Id: activepointsimpleadd.cpp,v 1.1.1.1 2005/01/07 03:34:37 darco Exp $");
+ACTION_SET_CVS_ID(Action::ActivepointSimpleAdd,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

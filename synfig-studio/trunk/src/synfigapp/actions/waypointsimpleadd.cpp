@@ -2,7 +2,7 @@
 /*!	\file waypointsimpleadd.cpp
 **	\brief Simple add waypoint File
 **
-**	$Id: waypointsimpleadd.cpp,v 1.1.1.1 2005/01/07 03:34:37 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2004 Adrian Bentley
@@ -49,7 +49,7 @@ ACTION_SET_TASK(Action::WaypointSimpleAdd,"add");
 ACTION_SET_CATEGORY(Action::WaypointSimpleAdd,Action::CATEGORY_WAYPOINT);
 ACTION_SET_PRIORITY(Action::WaypointSimpleAdd,0);
 ACTION_SET_VERSION(Action::WaypointSimpleAdd,"0.0");
-ACTION_SET_CVS_ID(Action::WaypointSimpleAdd,"$Id: waypointsimpleadd.cpp,v 1.1.1.1 2005/01/07 03:34:37 darco Exp $");
+ACTION_SET_CVS_ID(Action::WaypointSimpleAdd,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

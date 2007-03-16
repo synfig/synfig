@@ -2,7 +2,7 @@
 /*!	\file blinepointtangentsplit.cpp
 **	\brief Template File
 **
-**	$Id: blinepointtangentsplit.cpp,v 1.1.1.1 2005/01/07 03:34:37 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
@@ -55,7 +55,7 @@ ACTION_SET_TASK(Action::BLinePointTangentSplit,"split");
 ACTION_SET_CATEGORY(Action::BLinePointTangentSplit,Action::CATEGORY_VALUENODE);
 ACTION_SET_PRIORITY(Action::BLinePointTangentSplit,0);
 ACTION_SET_VERSION(Action::BLinePointTangentSplit,"0.0");
-ACTION_SET_CVS_ID(Action::BLinePointTangentSplit,"$Id: blinepointtangentsplit.cpp,v 1.1.1.1 2005/01/07 03:34:37 darco Exp $");
+ACTION_SET_CVS_ID(Action::BLinePointTangentSplit,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

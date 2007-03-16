@@ -2,7 +2,7 @@
 /*!	\file valuenodelinkconnect.cpp
 **	\brief Template File
 **
-**	$Id: valuenodelinkconnect.cpp,v 1.1.1.1 2005/01/07 03:34:37 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
@@ -49,7 +49,7 @@ ACTION_SET_TASK(Action::ValueNodeLinkConnect,"connect");
 ACTION_SET_CATEGORY(Action::ValueNodeLinkConnect,Action::CATEGORY_LAYER|Action::CATEGORY_VALUENODE);
 ACTION_SET_PRIORITY(Action::ValueNodeLinkConnect,0);
 ACTION_SET_VERSION(Action::ValueNodeLinkConnect,"0.0");
-ACTION_SET_CVS_ID(Action::ValueNodeLinkConnect,"$Id: valuenodelinkconnect.cpp,v 1.1.1.1 2005/01/07 03:34:37 darco Exp $");
+ACTION_SET_CVS_ID(Action::ValueNodeLinkConnect,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

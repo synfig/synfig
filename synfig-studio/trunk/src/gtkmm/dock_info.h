@@ -2,7 +2,7 @@
 /*!	\file dock_info.h
 **	\brief Info Dock Header
 **
-**	$Id: dock_info.h,v 1.1.1.1 2005/01/07 03:34:36 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley

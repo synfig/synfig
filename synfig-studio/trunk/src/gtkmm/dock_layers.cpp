@@ -2,7 +2,7 @@
 /*!	\file dock_layers.cpp
 **	\brief Template File
 **
-**	$Id: dock_layers.cpp,v 1.2 2005/01/12 07:03:42 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley

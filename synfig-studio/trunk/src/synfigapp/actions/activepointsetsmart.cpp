@@ -2,7 +2,7 @@
 /*!	\file activepointsetsmart.cpp
 **	\brief Template File
 **
-**	$Id: activepointsetsmart.cpp,v 1.1.1.1 2005/01/07 03:34:37 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
@@ -56,7 +56,7 @@ ACTION_SET_TASK(Action::ActivepointSetSmart,"set");
 ACTION_SET_CATEGORY(Action::ActivepointSetSmart,Action::CATEGORY_ACTIVEPOINT);
 ACTION_SET_PRIORITY(Action::ActivepointSetSmart,0);
 ACTION_SET_VERSION(Action::ActivepointSetSmart,"0.0");
-ACTION_SET_CVS_ID(Action::ActivepointSetSmart,"$Id: activepointsetsmart.cpp,v 1.1.1.1 2005/01/07 03:34:37 darco Exp $");
+ACTION_SET_CVS_ID(Action::ActivepointSetSmart,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

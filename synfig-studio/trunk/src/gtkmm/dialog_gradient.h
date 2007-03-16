@@ -2,7 +2,7 @@
 /*!	\file dialog_gradient.h
 **	\brief Template Header
 **
-**	$Id: dialog_gradient.h,v 1.1.1.1 2005/01/07 03:34:36 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley

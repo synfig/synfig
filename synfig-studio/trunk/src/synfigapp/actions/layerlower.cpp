@@ -2,7 +2,7 @@
 /*!	\file layerlower.cpp
 **	\brief Template File
 **
-**	$Id: layerlower.cpp,v 1.1.1.1 2005/01/07 03:34:37 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
@@ -50,7 +50,7 @@ ACTION_SET_TASK(Action::LayerLower,"lower");
 ACTION_SET_CATEGORY(Action::LayerLower,Action::CATEGORY_LAYER);
 ACTION_SET_PRIORITY(Action::LayerLower,10);
 ACTION_SET_VERSION(Action::LayerLower,"0.0");
-ACTION_SET_CVS_ID(Action::LayerLower,"$Id: layerlower.cpp,v 1.1.1.1 2005/01/07 03:34:37 darco Exp $");
+ACTION_SET_CVS_ID(Action::LayerLower,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

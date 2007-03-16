@@ -2,7 +2,7 @@
 /*!	\file ipc.h
 **	\brief Template Header
 **
-**	$Id: ipc.h,v 1.2 2005/01/12 00:31:11 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley

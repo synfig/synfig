@@ -2,7 +2,7 @@
 /*!	\file valuenodedynamiclistremove.cpp
 **	\brief Template File
 **
-**	$Id: valuenodedynamiclistremove.cpp,v 1.1.1.1 2005/01/07 03:34:37 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
@@ -49,7 +49,7 @@ ACTION_SET_TASK(Action::ValueNodeDynamicListRemove,"remove");
 ACTION_SET_CATEGORY(Action::ValueNodeDynamicListRemove,Action::CATEGORY_VALUEDESC|Action::CATEGORY_VALUENODE|Action::CATEGORY_HIDDEN);
 ACTION_SET_PRIORITY(Action::ValueNodeDynamicListRemove,-19);
 ACTION_SET_VERSION(Action::ValueNodeDynamicListRemove,"0.0");
-ACTION_SET_CVS_ID(Action::ValueNodeDynamicListRemove,"$Id: valuenodedynamiclistremove.cpp,v 1.1.1.1 2005/01/07 03:34:37 darco Exp $");
+ACTION_SET_CVS_ID(Action::ValueNodeDynamicListRemove,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

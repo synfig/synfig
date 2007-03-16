@@ -2,7 +2,7 @@
 /*!	\file keyframeadd.cpp
 **	\brief Template File
 **
-**	$Id: keyframeadd.cpp,v 1.1.1.1 2005/01/07 03:34:37 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
@@ -49,7 +49,7 @@ ACTION_SET_TASK(Action::KeyframeAdd,"add");
 ACTION_SET_CATEGORY(Action::KeyframeAdd,Action::CATEGORY_KEYFRAME);
 ACTION_SET_PRIORITY(Action::KeyframeAdd,0);
 ACTION_SET_VERSION(Action::KeyframeAdd,"0.0");
-ACTION_SET_CVS_ID(Action::KeyframeAdd,"$Id: keyframeadd.cpp,v 1.1.1.1 2005/01/07 03:34:37 darco Exp $");
+ACTION_SET_CVS_ID(Action::KeyframeAdd,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

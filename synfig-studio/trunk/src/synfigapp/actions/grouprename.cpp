@@ -2,7 +2,7 @@
 /*!	\file grouprename.cpp
 **	\brief Template File
 **
-**	$Id: grouprename.cpp,v 1.1.1.1 2005/01/07 03:34:37 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
@@ -49,7 +49,7 @@ ACTION_SET_TASK(Action::GroupRename,"rename");
 ACTION_SET_CATEGORY(Action::GroupRename,Action::CATEGORY_GROUP);
 ACTION_SET_PRIORITY(Action::GroupRename,0);
 ACTION_SET_VERSION(Action::GroupRename,"0.0");
-ACTION_SET_CVS_ID(Action::GroupRename,"$Id: grouprename.cpp,v 1.1.1.1 2005/01/07 03:34:37 darco Exp $");
+ACTION_SET_CVS_ID(Action::GroupRename,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

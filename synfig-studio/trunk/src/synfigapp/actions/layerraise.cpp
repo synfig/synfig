@@ -2,7 +2,7 @@
 /*!	\file layerraise.cpp
 **	\brief Template File
 **
-**	$Id: layerraise.cpp,v 1.1.1.1 2005/01/07 03:34:37 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
@@ -50,7 +50,7 @@ ACTION_SET_TASK(Action::LayerRaise,"raise");
 ACTION_SET_CATEGORY(Action::LayerRaise,Action::CATEGORY_LAYER);
 ACTION_SET_PRIORITY(Action::LayerRaise,9);
 ACTION_SET_VERSION(Action::LayerRaise,"0.0");
-ACTION_SET_CVS_ID(Action::LayerRaise,"$Id: layerraise.cpp,v 1.1.1.1 2005/01/07 03:34:37 darco Exp $");
+ACTION_SET_CVS_ID(Action::LayerRaise,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

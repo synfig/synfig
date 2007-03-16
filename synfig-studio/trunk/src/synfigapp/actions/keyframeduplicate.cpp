@@ -2,7 +2,7 @@
 /*!	\file keyframeduplicate.cpp
 **	\brief Template File
 **
-**	$Id: keyframeduplicate.cpp,v 1.1.1.1 2005/01/07 03:34:37 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
@@ -53,7 +53,7 @@ ACTION_SET_TASK(Action::KeyframeDuplicate,"duplicate");
 ACTION_SET_CATEGORY(Action::KeyframeDuplicate,Action::CATEGORY_KEYFRAME);
 ACTION_SET_PRIORITY(Action::KeyframeDuplicate,0);
 ACTION_SET_VERSION(Action::KeyframeDuplicate,"0.0");
-ACTION_SET_CVS_ID(Action::KeyframeDuplicate,"$Id: keyframeduplicate.cpp,v 1.1.1.1 2005/01/07 03:34:37 darco Exp $");
+ACTION_SET_CVS_ID(Action::KeyframeDuplicate,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

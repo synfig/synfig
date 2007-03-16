@@ -2,7 +2,7 @@
 /*!	\file adjust_window.cpp
 **	\brief Adjustment Window Implementation File
 **
-**	$Id: adjust_window.cpp,v 1.1.1.1 2005/01/07 03:34:35 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2004 Adrian Bentley

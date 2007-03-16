@@ -2,7 +2,7 @@
 /*!	\file valuenoderename.cpp
 **	\brief Template File
 **
-**	$Id: valuenoderename.cpp,v 1.1.1.1 2005/01/07 03:34:37 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
@@ -49,7 +49,7 @@ ACTION_SET_TASK(Action::ValueNodeRename,"rename");
 ACTION_SET_CATEGORY(Action::ValueNodeRename,Action::CATEGORY_VALUENODE);
 ACTION_SET_PRIORITY(Action::ValueNodeRename,0);
 ACTION_SET_VERSION(Action::ValueNodeRename,"0.0");
-ACTION_SET_CVS_ID(Action::ValueNodeRename,"$Id: valuenoderename.cpp,v 1.1.1.1 2005/01/07 03:34:37 darco Exp $");
+ACTION_SET_CVS_ID(Action::ValueNodeRename,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

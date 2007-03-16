@@ -2,7 +2,7 @@
 /*!	\file canvasremove.cpp
 **	\brief Template File
 **
-**	$Id: canvasremove.cpp,v 1.1.1.1 2005/01/07 03:34:37 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
@@ -49,7 +49,7 @@ ACTION_SET_TASK(Action::CanvasRemove,"remove");
 ACTION_SET_CATEGORY(Action::CanvasRemove,Action::CATEGORY_CANVAS);
 ACTION_SET_PRIORITY(Action::CanvasRemove,0);
 ACTION_SET_VERSION(Action::CanvasRemove,"0.0");
-ACTION_SET_CVS_ID(Action::CanvasRemove,"$Id: canvasremove.cpp,v 1.1.1.1 2005/01/07 03:34:37 darco Exp $");
+ACTION_SET_CVS_ID(Action::CanvasRemove,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

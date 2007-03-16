@@ -2,7 +2,7 @@
 /*!	\file layeractivate.cpp
 **	\brief Template File
 **
-**	$Id: layeractivate.cpp,v 1.1.1.1 2005/01/07 03:34:37 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
@@ -52,7 +52,7 @@ ACTION_SET_TASK(Action::LayerActivate,"activate");
 ACTION_SET_CATEGORY(Action::LayerActivate,Action::CATEGORY_LAYER);
 ACTION_SET_PRIORITY(Action::LayerActivate,0);
 ACTION_SET_VERSION(Action::LayerActivate,"0.0");
-ACTION_SET_CVS_ID(Action::LayerActivate,"$Id: layeractivate.cpp,v 1.1.1.1 2005/01/07 03:34:37 darco Exp $");
+ACTION_SET_CVS_ID(Action::LayerActivate,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

@@ -2,7 +2,7 @@
 /*!	\file layerparamdisconnect.cpp
 **	\brief Template File
 **
-**	$Id: layerparamdisconnect.cpp,v 1.1.1.1 2005/01/07 03:34:37 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
@@ -50,7 +50,7 @@ ACTION_SET_TASK(Action::LayerParamDisconnect,"disconnect");
 ACTION_SET_CATEGORY(Action::LayerParamDisconnect,Action::CATEGORY_LAYER|Action::CATEGORY_VALUENODE);
 ACTION_SET_PRIORITY(Action::LayerParamDisconnect,0);
 ACTION_SET_VERSION(Action::LayerParamDisconnect,"0.0");
-ACTION_SET_CVS_ID(Action::LayerParamDisconnect,"$Id: layerparamdisconnect.cpp,v 1.1.1.1 2005/01/07 03:34:37 darco Exp $");
+ACTION_SET_CVS_ID(Action::LayerParamDisconnect,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

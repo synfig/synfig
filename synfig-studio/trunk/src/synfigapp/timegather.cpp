@@ -2,7 +2,7 @@
 /*!	\file timegather.cpp
 **	\brief Time Gather File
 **
-**	$Id: timegather.cpp,v 1.1.1.1 2005/01/07 03:34:37 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2004 Adrian Bentley

@@ -2,7 +2,7 @@
 /*!	\file dock_navigator.h
 **	\brief Navigator Dock Header
 **
-**	$Id: dock_navigator.h,v 1.3 2005/01/12 00:31:11 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley

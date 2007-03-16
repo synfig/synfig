@@ -2,7 +2,7 @@
 /*!	\file groupaddlayers.cpp
 **	\brief Template File
 **
-**	$Id: groupaddlayers.cpp,v 1.1.1.1 2005/01/07 03:34:37 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
@@ -49,7 +49,7 @@ ACTION_SET_TASK(Action::GroupAddLayers,"add");
 ACTION_SET_CATEGORY(Action::GroupAddLayers,Action::CATEGORY_LAYER|Action::CATEGORY_GROUP);
 ACTION_SET_PRIORITY(Action::GroupAddLayers,0);
 ACTION_SET_VERSION(Action::GroupAddLayers,"0.0");
-ACTION_SET_CVS_ID(Action::GroupAddLayers,"$Id: groupaddlayers.cpp,v 1.1.1.1 2005/01/07 03:34:37 darco Exp $");
+ACTION_SET_CVS_ID(Action::GroupAddLayers,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

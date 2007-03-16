@@ -2,7 +2,7 @@
 /*!	\file valuedescexport.cpp
 **	\brief Template File
 **
-**	$Id: valuedescexport.cpp,v 1.1.1.1 2005/01/07 03:34:37 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
@@ -55,7 +55,7 @@ ACTION_SET_TASK(Action::ValueDescExport,"export");
 ACTION_SET_CATEGORY(Action::ValueDescExport,Action::CATEGORY_VALUEDESC);
 ACTION_SET_PRIORITY(Action::ValueDescExport,0);
 ACTION_SET_VERSION(Action::ValueDescExport,"0.0");
-ACTION_SET_CVS_ID(Action::ValueDescExport,"$Id: valuedescexport.cpp,v 1.1.1.1 2005/01/07 03:34:37 darco Exp $");
+ACTION_SET_CVS_ID(Action::ValueDescExport,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

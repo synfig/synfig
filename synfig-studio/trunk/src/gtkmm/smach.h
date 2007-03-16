@@ -2,7 +2,7 @@
 /*!	\file smach.h
 **	\brief Template Header
 **
-**	$Id: smach.h,v 1.1.1.1 2005/01/07 03:34:36 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley

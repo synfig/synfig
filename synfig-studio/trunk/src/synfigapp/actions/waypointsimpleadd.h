@@ -2,7 +2,7 @@
 /*!	\file waypointsimpleadd.h
 **	\brief A simple add a waypoint function Header
 **
-**	$Id: waypointsimpleadd.h,v 1.1.1.1 2005/01/07 03:34:37 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2004 Adrian Bentley

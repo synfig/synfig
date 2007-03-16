@@ -2,7 +2,7 @@
 /*!	\file asyncrenderer.h
 **	\brief Template Header
 **
-**	$Id: asyncrenderer.h,v 1.3 2005/01/12 07:03:42 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley

@@ -2,7 +2,7 @@
 /*!	\file activepointremove.cpp
 **	\brief Template File
 **
-**	$Id: activepointremove.cpp,v 1.1.1.1 2005/01/07 03:34:37 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
@@ -49,7 +49,7 @@ ACTION_SET_TASK(Action::ActivepointRemove,"remove");
 ACTION_SET_CATEGORY(Action::ActivepointRemove,Action::CATEGORY_ACTIVEPOINT);
 ACTION_SET_PRIORITY(Action::ActivepointRemove,0);
 ACTION_SET_VERSION(Action::ActivepointRemove,"0.0");
-ACTION_SET_CVS_ID(Action::ActivepointRemove,"$Id: activepointremove.cpp,v 1.1.1.1 2005/01/07 03:34:37 darco Exp $");
+ACTION_SET_CVS_ID(Action::ActivepointRemove,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

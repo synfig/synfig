@@ -2,7 +2,7 @@
 /*!	\file widget_sound.cpp
 **	\brief Widget Sound Implementation File
 **
-**	$Id: widget_sound.cpp,v 1.1.1.1 2005/01/07 03:34:37 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley

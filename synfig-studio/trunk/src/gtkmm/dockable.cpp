@@ -2,7 +2,7 @@
 /*!	\file dockable.cpp
 **	\brief Template File
 **
-**	$Id: dockable.cpp,v 1.2 2005/01/12 07:24:45 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley

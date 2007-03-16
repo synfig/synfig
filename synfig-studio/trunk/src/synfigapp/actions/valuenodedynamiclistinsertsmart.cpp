@@ -2,7 +2,7 @@
 /*!	\file valuenodedynamiclistinsertsmart.cpp
 **	\brief Template File
 **
-**	$Id: valuenodedynamiclistinsertsmart.cpp,v 1.3 2005/01/17 05:20:08 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
@@ -50,7 +50,7 @@ ACTION_SET_TASK(Action::ValueNodeDynamicListInsertSmart,"insert");
 ACTION_SET_CATEGORY(Action::ValueNodeDynamicListInsertSmart,Action::CATEGORY_VALUEDESC|Action::CATEGORY_VALUENODE);
 ACTION_SET_PRIORITY(Action::ValueNodeDynamicListInsertSmart,-20);
 ACTION_SET_VERSION(Action::ValueNodeDynamicListInsertSmart,"0.0");
-ACTION_SET_CVS_ID(Action::ValueNodeDynamicListInsertSmart,"$Id: valuenodedynamiclistinsertsmart.cpp,v 1.3 2005/01/17 05:20:08 darco Exp $");
+ACTION_SET_CVS_ID(Action::ValueNodeDynamicListInsertSmart,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

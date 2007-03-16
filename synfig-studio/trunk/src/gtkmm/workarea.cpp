@@ -2,7 +2,7 @@
 /*!	\file workarea.cpp
 **	\brief Template Header
 **
-**	$Id: workarea.cpp,v 1.3 2005/01/16 19:55:57 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley

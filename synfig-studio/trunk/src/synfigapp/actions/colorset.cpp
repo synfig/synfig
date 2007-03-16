@@ -2,7 +2,7 @@
 /*!	\file colorset.cpp
 **	\brief Template File
 **
-**	$Id: colorset.cpp,v 1.1.1.1 2005/01/07 03:34:37 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
@@ -55,7 +55,7 @@ ACTION_SET_TASK(Action::ColorSet,"set");
 ACTION_SET_CATEGORY(Action::ColorSet,Action::CATEGORY_VALUEDESC);
 ACTION_SET_PRIORITY(Action::ColorSet,0);
 ACTION_SET_VERSION(Action::ColorSet,"0.0");
-ACTION_SET_CVS_ID(Action::ColorSet,"$Id: colorset.cpp,v 1.1.1.1 2005/01/07 03:34:37 darco Exp $");
+ACTION_SET_CVS_ID(Action::ColorSet,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

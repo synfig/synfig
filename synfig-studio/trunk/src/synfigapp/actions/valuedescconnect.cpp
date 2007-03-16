@@ -2,7 +2,7 @@
 /*!	\file valuedescconnect.cpp
 **	\brief Template File
 **
-**	$Id: valuedescconnect.cpp,v 1.1.1.1 2005/01/07 03:34:37 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
@@ -53,7 +53,7 @@ ACTION_SET_TASK(Action::ValueDescConnect,"connect");
 ACTION_SET_CATEGORY(Action::ValueDescConnect,Action::CATEGORY_VALUEDESC|Action::CATEGORY_VALUENODE);
 ACTION_SET_PRIORITY(Action::ValueDescConnect,0);
 ACTION_SET_VERSION(Action::ValueDescConnect,"0.0");
-ACTION_SET_CVS_ID(Action::ValueDescConnect,"$Id: valuedescconnect.cpp,v 1.1.1.1 2005/01/07 03:34:37 darco Exp $");
+ACTION_SET_CVS_ID(Action::ValueDescConnect,"$Id$");
 
 /* === G L O B A L S ======================================================= */
 

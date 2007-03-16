@@ -2,7 +2,7 @@
 /*!	\file dock_canvasspecific.cpp
 **	\brief Template File
 **
-**	$Id: dock_canvasspecific.cpp,v 1.3 2005/01/13 20:23:01 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
