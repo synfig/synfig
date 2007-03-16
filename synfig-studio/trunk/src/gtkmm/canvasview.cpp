@@ -3354,6 +3354,7 @@ CanvasView::on_preview_create(const PreviewInfo &info)
 	Dialog_Preview *pd = preview_dialog.get();
 	assert(pd);
 
+	pd->set_default_size(700,510);
 	pd->set_preview(prev.get());
 	pd->present();
 }
