@@ -1,6 +1,6 @@
 /* === E T L =============================================================== */
 /*!	\file _handle.h
-**	$Id: _handle.h,v 1.1.1.1 2005/01/04 01:31:47 darco Exp $
+**	$Id$
 **	\brief Template Object Handle Implementation
 **	\internal
 **

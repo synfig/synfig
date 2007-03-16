@@ -1,7 +1,7 @@
 /*! ========================================================================
 ** Extended Template and Library
 ** Win32 Clock Description Implementation
-** $Id: _clock_win32hpcount.h,v 1.1.1.1 2005/01/04 01:31:47 darco Exp $
+** $Id$
 **
 ** Copyright (c) 2002 Robert B. Quattlebaum Jr.
 **

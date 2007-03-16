@@ -1,7 +1,7 @@
 /*! ========================================================================
 ** Extended Template and Library
 ** Proc Clock Description Implementation
-** $Id: _clock_system.h,v 1.1.1.1 2005/01/04 01:31:47 darco Exp $
+** $Id$
 **
 ** Copyright (c) 2002 Robert B. Quattlebaum Jr.
 **

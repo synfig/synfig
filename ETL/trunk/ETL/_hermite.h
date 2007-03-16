@@ -1,7 +1,7 @@
 /*! ========================================================================
 ** Extended Template Library
 ** Hermite Template Class Implementation
-** $Id: _hermite.h,v 1.1.1.1 2005/01/04 01:31:47 darco Exp $
+** $Id$
 **
 ** Copyright (c) 2002 Robert B. Quattlebaum Jr.
 **

@@ -1,7 +1,7 @@
 /*! ========================================================================
 ** Extended Template and Library
 ** Calculus Functional Classes Implementation
-** $Id: _calculus.h,v 1.1.1.1 2005/01/04 01:31:46 darco Exp $
+** $Id$
 **
 ** Copyright (c) 2002 Robert B. Quattlebaum Jr.
 **

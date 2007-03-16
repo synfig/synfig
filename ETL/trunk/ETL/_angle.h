@@ -1,7 +1,7 @@
 /* ========================================================================
 ** Extended Template and Library
 ** Angle Abstraction Class Implementation
-** $Id: _angle.h,v 1.1.1.1 2005/01/04 01:31:46 darco Exp $
+** $Id$
 **
 ** Copyright (c) 2002 Robert B. Quattlebaum Jr.
 **

@@ -1,7 +1,7 @@
 /*! ========================================================================
 ** Extended Template Library
 ** Pen Template Class Implementation
-** $Id: _pen.h,v 1.1.1.1 2005/01/04 01:31:48 darco Exp $
+** $Id$
 **
 ** Copyright (c) 2002 Robert B. Quattlebaum Jr.
 **

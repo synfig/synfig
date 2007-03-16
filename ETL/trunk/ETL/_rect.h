@@ -1,7 +1,7 @@
 /*! ========================================================================
 ** Extended Template Library
 ** Rectangle Basic Class Implementation
-** $Id: _rect.h,v 1.1.1.1 2005/01/04 01:31:48 darco Exp $
+** $Id$
 **
 ** Copyright (c) 2002 Adrian Bentley
 **
