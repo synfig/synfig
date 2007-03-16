@@ -1,7 +1,7 @@
 #! /bin/sh
 #
 # Extended Template Library Bootstrap Script
-# $Id: bootstrap,v 1.2 2005/01/04 01:54:14 darco Exp $
+# $Id$
 # 
 # This script creates the configure script and Makefile.in files,
 # and also fixes a few things in both to ensure a smooth build

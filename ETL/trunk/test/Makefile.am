@@ -1,4 +1,4 @@
-# $Header: /opt/voria/cvs/ETL/test/Makefile.am,v 1.1.1.1 2005/01/04 01:31:48 darco Exp $
+# $Id$
 
 MAINTAINERCLEANFILES=Makefile.in
 CXXFLAGS=@CXXFLAGS@ -I$(top_srcdir) -I$(top_builddir)

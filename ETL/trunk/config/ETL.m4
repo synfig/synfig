@@ -1,6 +1,6 @@
 # ETL M4 Macro
 # For GNU Autotools
-# $Id: ETL.m4,v 1.1.1.1 2005/01/04 01:31:46 darco Exp $
+# $Id$
 #
 # By Robert B. Quattlebaum Jr. <darco@users.sf.net>
 #

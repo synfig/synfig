@@ -1,4 +1,4 @@
-# $Header: /opt/voria/cvs/ETL/ETL/Makefile.am,v 1.1.1.1 2005/01/04 01:31:46 darco Exp $
+# $Id$
 
 MAINTAINERCLEANFILES=Makefile.in
 

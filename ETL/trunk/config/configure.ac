@@ -1,4 +1,4 @@
-# $Header: /opt/voria/cvs/ETL/config/configure.ac,v 1.1.1.1 2005/01/04 01:31:46 darco Exp $
+# $Id$
 
 # -- I N I T --------------------------------------------------
 
