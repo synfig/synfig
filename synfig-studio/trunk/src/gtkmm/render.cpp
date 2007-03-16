@@ -294,7 +294,7 @@ RenderSettings::on_render_pressed()
 	}
 
 	// Success!
-	canvas_interface_->get_ui_interface()->task(filename+_(" rendered sucessfuly"));
+	canvas_interface_->get_ui_interface()->task(filename+_(" rendered successfully"));
 	canvas_interface_->get_ui_interface()->amount_complete(0,10000);
 	*/
 	return;
@@ -303,7 +303,7 @@ RenderSettings::on_render_pressed()
 void
 RenderSettings::on_finished()
 {
-	canvas_interface_->get_ui_interface()->task(_("File rendered sucessfuly"));
+	canvas_interface_->get_ui_interface()->task(_("File rendered successfully"));
 	canvas_interface_->get_ui_interface()->amount_complete(0,10000);
 }
 
