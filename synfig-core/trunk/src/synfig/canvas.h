@@ -2,7 +2,7 @@
 /*!	\file canvas.h
 **	\brief Canvas Class Implementation
 **
-**	$Id: canvas.h,v 1.1.1.1 2005/01/04 01:23:14 darco Exp $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
@@ -380,7 +380,7 @@ public:
 	//! \writeme
 	void add_value_node(ValueNode::Handle x, const String &id);
 
-	//! \writeme
+	//! writeme
 	//void rename_value_node(ValueNode::Handle x, const String &id);
 
 	//! \writeme
