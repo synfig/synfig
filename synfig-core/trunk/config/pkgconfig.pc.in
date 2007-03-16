@@ -8,4 +8,4 @@ Description: @PACKAGE_NAME@
 Requires: @CONFIG_DEPS@
 Version: @VERSION@
 Libs: -L${libdir} @CONFIG_LIBS@
-Cflags: @CONFIG_CFLAGS@ -I@synfigincludedir@
+Cflags: @CONFIG_CFLAGS@ -I${includedir}
