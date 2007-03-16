@@ -1,4 +1,4 @@
-# $Header: /opt/voria/cvs/studio/src/synfigapp/Makefile.am,v 1.1.1.1 2005/01/07 03:34:37 darco Exp $
+# $Id$
 
 MAINTAINERCLEANFILES=Makefile.in
 INCLUDES = -I$(top_srcdir)/src -I$(top_srcdir)/libltdl

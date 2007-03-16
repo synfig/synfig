@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.1.1.1 2005/01/07 03:34:36 darco Exp $
+# $Id$
 
 MAINTAINERCLEANFILES=Makefile.in $(GLADE_FILES)
 

@@ -1,4 +1,4 @@
-# $Header: /opt/voria/cvs/studio/src/Makefile.am,v 1.1.1.1 2005/01/07 03:34:35 darco Exp $
+# $Id$
 
 MAINTAINERCLEANFILES=Makefile.in
 EXTRA_DIST=template.cpp template.h

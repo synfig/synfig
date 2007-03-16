@@ -1,6 +1,6 @@
 # SYNFIG M4 Macro
 # For GNU Autotools
-# $Id: synfig.m4,v 1.1.1.1 2005/01/07 03:34:35 darco Exp $
+# $Id$
 #
 # By Robert B. Quattlebaum Jr. <darco@users.sf.net>
 #

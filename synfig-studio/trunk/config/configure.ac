@@ -1,4 +1,4 @@
-# $Header: /opt/voria/cvs/studio/config/configure.ac,v 1.3 2005/01/17 05:20:08 darco Exp $
+# $Id$
 
 # -- I N I T --------------------------------------------------
 
