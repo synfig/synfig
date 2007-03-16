@@ -94,13 +94,15 @@ all: multiple-html ps pdf
 
 multiple-html: ${MULTIPLEHTMLDIR}/${DOC}.html cpfilesmultiple
 
-${MULTIPLEHTMLDIR}/${DOC}.html: ${MULTIPLEHTMLDIR} ${INDEX}.sgml.m
+${MULTIPLEHTMLDIR}/${DOC}.html: ${MULTIPLEHTMLDIR} ${INDEX}.sgml.m ${SGMLDIR}/${DOC}.tmp.sgml
 	#cp -f ${SGMLDIR}/${INDEX}.sgml.m ${SGMLDIR}/${INDEX}.sgml
 	${COMPILER} ${MULTIPLEHTMLOPT} ${SGMLDIR}/${DOC}.tmp.sgml
 	mv *.html ${MULTIPLEHTMLDIR}
 
-HTML.index.m: ${DOC}.sgml ${SRCFILES} ${USEINIT}
-	sed "s:##PATHLANG##:${PATH_LANG}:" ${SGMLDIR}/${DOC}.sgml >  ${SGMLDIR}/${DOC}.tmp.sgml
+${SGMLDIR}/${DOC}.tmp.sgml: ${SGMLDIR}/${DOC}.sgml
+	sed "s:##PATHLANG##:${PATH_LANG}:" ${SGMLDIR}/${DOC}.sgml > ${SGMLDIR}/${DOC}.tmp.sgml
+
+HTML.index.m: ${DOC}.sgml ${SRCFILES} ${USEINIT} ${SGMLDIR}/${DOC}.tmp.sgml
 	${COMPILER} ${MULTIPLEHTMLOPT} -V html-index ${SGMLDIR}/${DOC}.tmp.sgml > /dev/null
 	mv HTML.index ${SGMLDIR}/HTML.index.m
 	rm *.html

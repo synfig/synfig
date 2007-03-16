@@ -1,5 +1,5 @@
 <!-- retain these comments for translator revision tracking --> 
-<!--$Id: using.sgml 1 2006-08-30 05:11:55 xerakko $ --> 
+<!--$Id$ --> 
 <sect2 id="using">
 <title>Using</title> 
 <para> However, there is still a problem: The gradient still covers the whole 
