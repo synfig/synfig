@@ -42,6 +42,15 @@ class CanvasInterface;
 
 namespace studio {
 
+/*
+
+The palette browser was intended to be a way to manage and select a single
+palette from a set of palettes that you could save to files. The palette
+editor was for editing individual palettes. Unfortunately the palette
+browser was never implemented.
+
+*/
+
 class Dock_PalBrowse : public Dockable
 {
 public:
