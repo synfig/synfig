@@ -32,7 +32,7 @@
 #include <math.h>
 #include <cassert>
 #include "gamma.h"
-#include <string.h>
+#include <synfig/string.h>
 
 #ifdef USE_HALF_TYPE
 #include <OpenEXR/half.h>
@@ -107,6 +107,7 @@ public:
 
 private:
 	value_type a_, r_, g_, b_;
+	mutable String hex_;
 
 public:
 
@@ -262,6 +263,18 @@ public:
 
 	//! Synonym for get_a(). \see get_a()
 	const value_type& get_alpha()const { return get_a(); }
+
+	//! Converts a 2 character hex string \a s (00-ff) into a ColorReal (0.0-1.0)
+	static ColorReal hex2real(String s);
+
+	//! Converts a ColorReal \a c (0.0-1.0) into a 2 character hex string (00-ff)
+	static const String real2hex(ColorReal c);
+
+	//! Returns the color as a 6 character hex sting
+	const String& get_hex()const { return hex_ = real2hex(r_)+real2hex(g_)+real2hex(b_); }
+
+	//! Sets the color's R, G, and B from a 3 or 6 character hex string
+	void set_hex(String& hex);
 
 	//! Sets the RED component to \a x
 	Color& set_r(const value_type& x) { r_ = x; return *this; }

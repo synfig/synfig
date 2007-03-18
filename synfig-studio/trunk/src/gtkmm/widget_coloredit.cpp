@@ -343,6 +343,17 @@ Widget_ColorEdit::Widget_ColorEdit():
 		ATTACH_SPIN_BUTTON(1,G);
 		SLIDER_ROW(2,B,_("Blue"));
 		ATTACH_SPIN_BUTTON(2,B);
+
+		hex_color_label = manage(new Gtk::Label(_("HTML code"), 0.0, 0.5));
+		hex_color_label->set_use_markup(false);
+		hex_color_label->set_use_underline(false);
+		hex_color_label->set_attributes(attr_list);
+		table->attach(*hex_color_label, 0, 1, 7, 8, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
+
+		hex_color = manage(new Gtk::Entry());
+		hex_color->set_width_chars(8);
+		hex_color->signal_activate().connect(sigc::mem_fun(*this,&studio::Widget_ColorEdit::on_hex_edited));
+		table->attach(*hex_color, 0, 1, 8, 9, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
 	}
 	{
 		Gtk::Table* table(yuv_table);
@@ -408,6 +419,15 @@ Widget_ColorEdit::on_slider_moved(ColorSlider::Type type, float amount)
 }
 
 void
+Widget_ColorEdit::on_hex_edited()
+{
+	Color color(get_value_raw());
+	String s = hex_color->get_text();
+	color.set_hex(s);
+	set_value(color);
+}
+
+void
 Widget_ColorEdit::on_value_changed()
 {
 	if(hold_signals)
@@ -424,6 +444,7 @@ Widget_ColorEdit::on_value_changed()
 	slider_HUE->set_color(color);
 	slider_SAT->set_color(color);
 	slider_A->set_color(color);
+	hex_color->set_text(color.get_hex());
 	widget_color.set_value(color);
 
 	activate();
@@ -488,6 +509,7 @@ Widget_ColorEdit::set_value(const synfig::Color &data)
 	slider_HUE->set_color(color);
 	slider_SAT->set_color(color);
 	slider_A->set_color(color);
+	hex_color->set_text(color.get_hex());
 	widget_color.set_value(color);
 
 	hold_signals=false;

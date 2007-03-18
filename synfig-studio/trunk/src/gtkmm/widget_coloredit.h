@@ -123,6 +123,9 @@ class Widget_ColorEdit : public Gtk::Table
 	ColorSlider *slider_R;
 	ColorSlider *slider_G;
 	ColorSlider *slider_B;
+	Gtk::Label *hex_color_label;
+	Gtk::Entry *hex_color;
+
 	ColorSlider *slider_A;
 	ColorSlider *slider_Y;
 	ColorSlider *slider_U;
@@ -161,6 +164,7 @@ public:
 	sigc::signal<void>& signal_activate() { return signal_activated_; }
 
 	void on_slider_moved(ColorSlider::Type type, float amount);
+	void on_hex_edited();
 
 	//Glib::SignalProxy0<void> signal_activate() { return spinbutton_A->signal_activate(); }
 

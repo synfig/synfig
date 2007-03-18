@@ -32,6 +32,8 @@
 #include <ETL/angle>
 #include "color.h"
 #include <cstdio>
+#include <sstream>
+#include <iostream>
 
 #endif
 
@@ -50,6 +52,57 @@ using namespace std;
 /* === M E T H O D S ======================================================= */
 
 
+
+static ColorReal
+Color::hex2real(String s)
+{
+	std::istringstream i(s);
+	int n;
+	i.fill('0');
+	if (!(i >> hex >> n))
+		throw String("bad conversion from hex string \"") + s + String("\"");
+	return n / 255.0f;
+}
+
+static const String
+Color::real2hex(ColorReal c)
+{
+	std::ostringstream o;
+	o.width(2);
+	o.fill('0');
+	if (c<0) c = 0;
+	if (c>1) c = 1;
+	o << hex << int(c*255.0f);
+	return o.str();
+}
+
+void
+Color::set_hex(String& hex)
+{
+	value_type r, g, b;
+	try
+	{
+		if (hex.size() == 3)
+		{
+			r = hex2real(hex.substr(0,1)+hex.substr(0,1));
+			g = hex2real(hex.substr(1,1)+hex.substr(1,1));
+			b = hex2real(hex.substr(2,1)+hex.substr(2,1));
+			r_ = r; g_ = g; b_ = b;
+		}
+		else if (hex.size() == 6)
+		{
+			r = hex2real(hex.substr(0,2));
+			g = hex2real(hex.substr(2,2));
+			b = hex2real(hex.substr(4,2));
+			r_ = r; g_ = g; b_ = b;
+		}
+	}
+	catch (string s)
+	{
+		printf("caught <%s>\n", s.c_str());
+		return;
+	}
+}
 
 #if 0
 Color&
