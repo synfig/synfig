@@ -47,13 +47,15 @@ using namespace std;
 
 /* === G L O B A L S ======================================================= */
 
+String Color::hex_;
+
 /* === P R O C E D U R E S ================================================= */
 
 /* === M E T H O D S ======================================================= */
 
 
 
-static ColorReal
+ColorReal
 Color::hex2real(String s)
 {
 	std::istringstream i(s);
@@ -64,7 +66,7 @@ Color::hex2real(String s)
 	return n / 255.0f;
 }
 
-static const String
+const String
 Color::real2hex(ColorReal c)
 {
 	std::ostringstream o;

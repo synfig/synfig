@@ -107,7 +107,7 @@ public:
 
 private:
 	value_type a_, r_, g_, b_;
-	mutable String hex_;
+	static String hex_;
 
 public:
 
