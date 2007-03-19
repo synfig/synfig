@@ -303,7 +303,7 @@ LayerTree::create_param_tree()
 	Gtk::IconSize icon_size(Gtk::ICON_SIZE_SMALL_TOOLBAR);
 
 	{	// --- N A M E --------------------------------------------------------
-		Gtk::TreeView::Column* column = Gtk::manage( new Gtk::TreeView::Column(_("Param")) );
+		Gtk::TreeView::Column* column = Gtk::manage( new Gtk::TreeView::Column(_("Name")) );
 
 		// Set up the icon cell-renderer
 		Gtk::CellRendererPixbuf* icon_cellrenderer = Gtk::manage( new Gtk::CellRendererPixbuf() );
@@ -337,7 +337,7 @@ LayerTree::create_param_tree()
 		get_param_tree_view().append_column(*column);
 	}
 	{	// --- V A L U E  -----------------------------------------------------
-		Gtk::TreeView::Column* column = Gtk::manage( new Gtk::TreeView::Column(_("ValueBase")) );
+		Gtk::TreeView::Column* column = Gtk::manage( new Gtk::TreeView::Column(_("Value")) );
 
 		// Set up the value cell-renderer
 		cellrenderer_value=LayerParamTreeStore::add_cell_renderer_value(column);
