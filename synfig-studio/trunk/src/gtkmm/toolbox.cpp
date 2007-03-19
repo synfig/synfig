@@ -214,7 +214,7 @@ Toolbox::Toolbox():
 	dock_dialogs=manage(new class Gtk::Menu());
 
 	dock_dialogs->items().push_back(Gtk::Menu_Helpers::MenuElem("Canvases, History",sigc::ptr_fun(_create_stock_dialog1)));
-	dock_dialogs->items().push_back(Gtk::Menu_Helpers::MenuElem("Layers, Children , Params",sigc::ptr_fun(_create_stock_dialog2)));
+	dock_dialogs->items().push_back(Gtk::Menu_Helpers::MenuElem("Layers, Children, Params",sigc::ptr_fun(_create_stock_dialog2)));
 	dock_dialogs->items().push_back(Gtk::Menu_Helpers::SeparatorElem());
 
 
