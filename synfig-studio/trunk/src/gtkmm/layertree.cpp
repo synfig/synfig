@@ -153,7 +153,7 @@ LayerTree::LayerTree():
 	get_selection()->set_mode(Gtk::SELECTION_MULTIPLE);
 	//get_param_tree_view().get_selection()->set_mode(Gtk::SELECTION_MULTIPLE);
 	get_layer_tree_view().show();
-	param_tree_view().show();
+	get_param_tree_view().show();
 
 
 	hbox->show();
@@ -334,7 +334,7 @@ LayerTree::create_param_tree()
 		column->set_resizable();
 		column->set_clickable();
 
-		param_tree_view().append_column(*column);
+		get_param_tree_view().append_column(*column);
 	}
 	{	// --- V A L U E  -----------------------------------------------------
 		Gtk::TreeView::Column* column = Gtk::manage( new Gtk::TreeView::Column(_("ValueBase")) );
@@ -349,7 +349,7 @@ LayerTree::create_param_tree()
 		cellrenderer_value->property_attributes()=attr_list;
 
 		// Finish setting up the column
-		param_tree_view().append_column(*column);
+		get_param_tree_view().append_column(*column);
 		column->set_sizing(Gtk::TREE_VIEW_COLUMN_AUTOSIZE);
 		column->set_clickable();
 		column->set_min_width(120);
@@ -375,24 +375,24 @@ LayerTree::create_param_tree()
 		column->set_reorderable();
 		column->set_resizable();
 		column->set_min_width(200);
-		//param_tree_view().append_column(*column);
+		//get_param_tree_view().append_column(*column);
 	}*/
 
 
 
 	// This makes things easier to read.
-	param_tree_view().set_rules_hint();
+	get_param_tree_view().set_rules_hint();
 
 	// Make us more sensitive to several events
-	param_tree_view().add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK | Gdk::BUTTON1_MOTION_MASK | Gdk::BUTTON2_MOTION_MASK|Gdk::POINTER_MOTION_MASK);
+	get_param_tree_view().add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK | Gdk::BUTTON1_MOTION_MASK | Gdk::BUTTON2_MOTION_MASK|Gdk::POINTER_MOTION_MASK);
 
-	param_tree_view().signal_event().connect(sigc::mem_fun(*this, &studio::LayerTree::on_param_tree_event));
-	param_tree_view().show();
+	get_param_tree_view().signal_event().connect(sigc::mem_fun(*this, &studio::LayerTree::on_param_tree_event));
+	get_param_tree_view().show();
 
 	Gtk::ScrolledWindow *scroll = manage(new class Gtk::ScrolledWindow());
 	scroll->set_flags(Gtk::CAN_FOCUS);
 	scroll->set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
-	//scroll->add(param_tree_view());
+	//scroll->add(get_param_tree_view());
 	scroll->set_shadow_type(Gtk::SHADOW_ETCHED_IN);
 	scroll->show();
 
@@ -556,14 +556,14 @@ LayerTree::set_model(Glib::RefPtr<LayerTreeStore> layer_tree_store)
 
 	layer_tree_store_->canvas_interface()->signal_time_changed().connect(
 		sigc::mem_fun(
-			&param_tree_view(),
+			&get_param_tree_view(),
 			&Gtk::Widget::queue_draw
 		)
 	);
 	if(!param_tree_store_)
 	{
 		param_tree_store_=LayerParamTreeStore::create(layer_tree_store_->canvas_interface(), this);
-		param_tree_view().set_model(param_tree_store_);
+		get_param_tree_view().set_model(param_tree_store_);
 	}
 
 /*	if(cellrenderer_time_track && layer_tree_store_ && layer_tree_store_->canvas_interface())
@@ -577,8 +577,8 @@ void
 LayerTree::set_time_adjustment(Gtk::Adjustment &adjustment)
 {
 	//cellrenderer_time_track->set_adjustment(adjustment);
-	adjustment.signal_value_changed().connect(sigc::mem_fun(param_tree_view(),&Gtk::TreeView::queue_draw));
-	adjustment.signal_changed().connect(sigc::mem_fun(param_tree_view(),&Gtk::TreeView::queue_draw));
+	adjustment.signal_value_changed().connect(sigc::mem_fun(get_param_tree_view(),&Gtk::TreeView::queue_draw));
+	adjustment.signal_changed().connect(sigc::mem_fun(get_param_tree_view(),&Gtk::TreeView::queue_draw));
 }
 
 void
@@ -714,7 +714,7 @@ LayerTree::on_edited_value(const Glib::ustring&path_string,synfig::ValueBase val
 {
 	Gtk::TreePath path(path_string);
 
-	const Gtk::TreeRow row = *(param_tree_view().get_model()->get_iter(path));
+	const Gtk::TreeRow row = *(get_param_tree_view().get_model()->get_iter(path));
 	if(!row)
 		return;
 	row[param_model.value]=value;
@@ -747,7 +747,7 @@ LayerTree::on_waypoint_clicked(const Glib::ustring &path_string, synfig::Waypoin
 {
 	Gtk::TreePath path(path_string);
 
-	const Gtk::TreeRow row = *(param_tree_view().get_model()->get_iter(path));
+	const Gtk::TreeRow row = *(get_param_tree_view().get_model()->get_iter(path));
 	if(!row)
 		return;
 
@@ -842,23 +842,23 @@ LayerTree::on_param_tree_event(GdkEvent *event)
 			Gtk::TreeModel::Path path;
 			Gtk::TreeViewColumn *column;
 			int cell_x, cell_y;
-			if(!param_tree_view().get_path_at_pos(
+			if(!get_param_tree_view().get_path_at_pos(
 				int(event->button.x),int(event->button.y),	// x, y
 				path, // TreeModel::Path&
 				column, //TreeViewColumn*&
 				cell_x,cell_y //int&cell_x,int&cell_y
 				)
 			) break;
-			const Gtk::TreeRow row = *(param_tree_view().get_model()->get_iter(path));
+			const Gtk::TreeRow row = *(get_param_tree_view().get_model()->get_iter(path));
 
 /*			if(column && column->get_first_cell_renderer()==cellrenderer_time_track)
 			{
 				Gdk::Rectangle rect;
-				param_tree_view().get_cell_area(path,*column,rect);
+				get_param_tree_view().get_cell_area(path,*column,rect);
 				cellrenderer_time_track->property_value_desc()=row[param_model.value_desc];
 				cellrenderer_time_track->property_canvas()=row[param_model.canvas];
 				cellrenderer_time_track->activate(event,*this,path.to_string(),rect,rect,Gtk::CellRendererState());
-				param_tree_view().queue_draw_area(rect.get_x(),rect.get_y(),rect.get_width(),rect.get_height());
+				get_param_tree_view().queue_draw_area(rect.get_x(),rect.get_y(),rect.get_width(),rect.get_height());
 				return true;
 				//return signal_param_user_click()(event->button.button,row,COLUMNID_TIME_TRACK);
 			}
@@ -900,7 +900,7 @@ LayerTree::on_param_tree_event(GdkEvent *event)
 			Gtk::TreeModel::Path path;
 			Gtk::TreeViewColumn *column;
 			int cell_x, cell_y;
-			if(!param_tree_view().get_path_at_pos(
+			if(!get_param_tree_view().get_path_at_pos(
 				(int)event->motion.x,(int)event->motion.y,	// x, y
 				path, // TreeModel::Path&
 				column, //TreeViewColumn*&
@@ -908,20 +908,20 @@ LayerTree::on_param_tree_event(GdkEvent *event)
 				)
 			) break;
 
-			if(!param_tree_view().get_model()->get_iter(path))
+			if(!get_param_tree_view().get_model()->get_iter(path))
 				break;
 
-			Gtk::TreeRow row = *(param_tree_view().get_model()->get_iter(path));
+			Gtk::TreeRow row = *(get_param_tree_view().get_model()->get_iter(path));
 
 /*			if((event->motion.state&GDK_BUTTON1_MASK ||event->motion.state&GDK_BUTTON3_MASK) && column && cellrenderer_time_track==column->get_first_cell_renderer())
 			{
 				Gdk::Rectangle rect;
-				param_tree_view().get_cell_area(path,*column,rect);
+				get_param_tree_view().get_cell_area(path,*column,rect);
 				cellrenderer_time_track->property_value_desc()=row[param_model.value_desc];
 				cellrenderer_time_track->property_canvas()=row[param_model.canvas];
 				cellrenderer_time_track->activate(event,*this,path.to_string(),rect,rect,Gtk::CellRendererState());
-				param_tree_view().queue_draw();
-				//param_tree_view().queue_draw_area(rect.get_x(),rect.get_y(),rect.get_width(),rect.get_height());
+				get_param_tree_view().queue_draw();
+				//get_param_tree_view().queue_draw_area(rect.get_x(),rect.get_y(),rect.get_width(),rect.get_height());
 				return true;
 			}
 			else
@@ -943,7 +943,7 @@ LayerTree::on_param_tree_event(GdkEvent *event)
 			Gtk::TreeModel::Path path;
 			Gtk::TreeViewColumn *column;
 			int cell_x, cell_y;
-			if(!param_tree_view().get_path_at_pos(
+			if(!get_param_tree_view().get_path_at_pos(
 				(int)event->button.x,(int)event->button.y,	// x, y
 				path, // TreeModel::Path&
 				column, //TreeViewColumn*&
@@ -951,20 +951,20 @@ LayerTree::on_param_tree_event(GdkEvent *event)
 				)
 			) break;
 
-			if(!param_tree_view().get_model()->get_iter(path))
+			if(!get_param_tree_view().get_model()->get_iter(path))
 				break;
 
-			Gtk::TreeRow row = *(param_tree_view().get_model()->get_iter(path));
+			Gtk::TreeRow row = *(get_param_tree_view().get_model()->get_iter(path));
 
 /*			if(column && cellrenderer_time_track==column->get_first_cell_renderer())
 			{
 				Gdk::Rectangle rect;
-				param_tree_view().get_cell_area(path,*column,rect);
+				get_param_tree_view().get_cell_area(path,*column,rect);
 				cellrenderer_time_track->property_value_desc()=row[param_model.value_desc];
 				cellrenderer_time_track->property_canvas()=row[param_model.canvas];
 				cellrenderer_time_track->activate(event,*this,path.to_string(),rect,rect,Gtk::CellRendererState());
-				param_tree_view().queue_draw();
-				param_tree_view().queue_draw_area(rect.get_x(),rect.get_y(),rect.get_width(),rect.get_height());
+				get_param_tree_view().queue_draw();
+				get_param_tree_view().queue_draw_area(rect.get_x(),rect.get_y(),rect.get_width(),rect.get_height());
 				return true;
 
 			}
