@@ -425,6 +425,7 @@ Widget_ColorEdit::on_hex_edited()
 	String s = hex_color->get_text();
 	color.set_hex(s);
 	set_value(color);
+	signal_value_changed_();
 }
 
 void
