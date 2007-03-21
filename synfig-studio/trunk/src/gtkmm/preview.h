@@ -26,6 +26,9 @@
 #define __SYNFIG_PREVIEW_H
 
 /* === H E A D E R S ======================================================= */
+#include <ETL/handle>
+#include <ETL/clock> /* indirectly includes winnt.h on WIN32 - needs to be included before gtkmm headers, which fix this */
+
 #include <gtkmm/drawingarea.h>
 #include <gtkmm/table.h>
 #include <gtkmm/adjustment.h>
@@ -44,9 +47,6 @@
 #include <synfig/canvas.h>
 
 #include "widget_sound.h"
-
-#include <ETL/handle>
-#include <ETL/clock>
 
 #include <vector>
 
