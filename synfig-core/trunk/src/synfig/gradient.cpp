@@ -107,11 +107,8 @@ supersample_helper(const synfig::Gradient::CPoint &color1, const synfig::Gradien
 	if(color1.pos>=begin && color2.pos<end)
 	{
 		weight=color2.pos-color1.pos;
-		ColorAccumulator ret=Color::blend(color2.color,color1.color, 0.5, Color::BLEND_STRAIGHT);
-		ret.set_r(ret.get_r()*ret.get_a());
-		ret.set_g(ret.get_g()*ret.get_a());
-		ret.set_b(ret.get_b()*ret.get_a());
-		return ret*weight;
+		ColorAccumulator ret=Color::blend(color2.color,color1.color, 0.5, Color::BLEND_STRAIGHT).premult_alpha()*weight;
+		return ret;
 	}
 	if(color1.pos>=begin && color2.pos>=end)
 	{
@@ -119,11 +116,8 @@ supersample_helper(const synfig::Gradient::CPoint &color1, const synfig::Gradien
 		float pos((end+color1.pos)*0.5);
 		float amount((pos-color1.pos)/(color2.pos-color1.pos));
 		//if(abs(amount)>1)amount=(amount>0)?1:-1;
-		ColorAccumulator ret(Color::blend(color2.color,color1.color, amount, Color::BLEND_STRAIGHT));
-		ret.set_r(ret.get_r()*ret.get_a());
-		ret.set_g(ret.get_g()*ret.get_a());
-		ret.set_b(ret.get_b()*ret.get_a());
-		return ret*weight;
+		ColorAccumulator ret(Color::blend(color2.color,color1.color, amount, Color::BLEND_STRAIGHT).premult_alpha()*weight);
+		return ret;
 	}
 	if(color1.pos<begin && color2.pos<end)
 	{
@@ -131,11 +125,8 @@ supersample_helper(const synfig::Gradient::CPoint &color1, const synfig::Gradien
 		float pos((begin+color2.pos)*0.5);
 		float amount((pos-color1.pos)/(color2.pos-color1.pos));
 		//if(abs(amount)>1)amount=(amount>0)?1:-1;
-		ColorAccumulator ret(Color::blend(color2.color,color1.color, amount, Color::BLEND_STRAIGHT));
-		ret.set_r(ret.get_r()*ret.get_a());
-		ret.set_g(ret.get_g()*ret.get_a());
-		ret.set_b(ret.get_b()*ret.get_a());
-		return ret*weight;
+		ColorAccumulator ret(Color::blend(color2.color,color1.color, amount, Color::BLEND_STRAIGHT).premult_alpha()*weight);
+		return ret;
 	}
 	synfig::error("color1.pos=%f",color1.pos);
 	synfig::error("color2.pos=%f",color2.pos);
@@ -285,7 +276,7 @@ synfig::Gradient::operator()(const Real &x,float supersample)const
 			{
 				weight=x-iter->pos;
 				//weight*=iter->color.get_a();
-				pool+=ColorAccumulator(iter->color)*(float)iter->color.get_a()*weight;
+				pool+=ColorAccumulator(iter->color).premult_alpha()*weight;
 				divisor+=weight;
 			}
 			else
@@ -296,7 +287,7 @@ synfig::Gradient::operator()(const Real &x,float supersample)const
 					{
 						weight=iter2->pos-(begin_sample);
 						//weight*=iter2->color.get_a();
-						pool+=ColorAccumulator(iter2->color)*(float)iter2->color.get_a()*weight;
+						pool+=ColorAccumulator(iter2->color).premult_alpha()*weight;
 						divisor+=weight;
 						break;
 					}
@@ -313,7 +304,7 @@ synfig::Gradient::operator()(const Real &x,float supersample)const
 				if(next2==end())
 				{
 					weight=(end_sample)-iter2->pos;
-					pool+=ColorAccumulator(iter2->color)*(float)iter2->color.get_a()*weight;
+					pool+=ColorAccumulator(iter2->color).premult_alpha()*weight;
 					divisor+=weight;
 					break;
 				}
