@@ -149,14 +149,20 @@ RadialGradient::color_func(const Point &point, float supersample)const
 
 		if(dist+supersample*0.5>1.0)
 		{
-			Color pool(gradient(dist,supersample*0.5).premult_alpha()*(1.0-(dist-supersample*0.5)));
-			pool+=gradient((dist+supersample*0.5)-1.0,supersample*0.5).premult_alpha()*((dist+supersample*0.5)-1.0);
+			float  left(supersample*0.5-(dist-1.0));
+			float right(supersample*0.5+(dist-1.0));
+			Color pool(gradient(1.0-(left*0.5),left).premult_alpha()*left/supersample);
+			if (zigzag) pool+=gradient(1.0-right*0.5,right).premult_alpha()*right/supersample;
+			else		pool+=gradient(right*0.5,right).premult_alpha()*right/supersample;
 			return pool.demult_alpha();
 		}
 		if(dist-supersample*0.5<0.0)
 		{
-			Color pool(gradient(dist,supersample*0.5).premult_alpha()*(dist+supersample*0.5));
-			pool+=gradient(1.0-(dist-supersample*0.5),supersample*0.5).premult_alpha()*(-(dist-supersample*0.5));
+			float  left(supersample*0.5-dist);
+			float right(supersample*0.5+dist);
+			Color pool(gradient(right*0.5,right).premult_alpha()*right/supersample);
+			if (zigzag) pool+=gradient(left*0.5,left).premult_alpha()*left/supersample;
+			else		pool+=gradient(1.0-left*0.5,left).premult_alpha()*left/supersample;
 			return pool.demult_alpha();
 		}
 	}
