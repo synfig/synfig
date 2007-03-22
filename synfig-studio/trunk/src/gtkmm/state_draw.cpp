@@ -125,8 +125,9 @@ class studio::StateDraw_Context : public sigc::trackable
 	Gtk::Table options_table;
 	Gtk::CheckButton checkbutton_pressure_width;
 	Gtk::CheckButton checkbutton_round_ends;
-	Gtk::CheckButton checkbutton_auto_loop;
-	Gtk::CheckButton checkbutton_auto_connect;
+	Gtk::CheckButton checkbutton_auto_loop;	  // whether to loop new strokes which start and end in the same place
+	Gtk::CheckButton checkbutton_auto_extend; // whether to extend existing lines
+	Gtk::CheckButton checkbutton_auto_link;	  // whether to link new ducks to existing ducks
 	Gtk::CheckButton checkbutton_region_only;
 	Gtk::Button button_fill_last_stroke;
 
@@ -155,8 +156,11 @@ public:
 	bool get_auto_loop_flag()const { return checkbutton_auto_loop.get_active(); }
 	void set_auto_loop_flag(bool x) { return checkbutton_auto_loop.set_active(x); }
 
-	bool get_auto_connect_flag()const { return checkbutton_auto_connect.get_active(); }
-	void set_auto_connect_flag(bool x) { return checkbutton_auto_connect.set_active(x); }
+	bool get_auto_extend_flag()const { return checkbutton_auto_extend.get_active(); }
+	void set_auto_extend_flag(bool x) { return checkbutton_auto_extend.set_active(x); }
+
+	bool get_auto_link_flag()const { return checkbutton_auto_link.get_active(); }
+	void set_auto_link_flag(bool x) { return checkbutton_auto_link.set_active(x); }
 
 	bool get_region_only_flag()const { return checkbutton_region_only.get_active(); }
 	void set_region_only_flag(bool x) { return checkbutton_region_only.set_active(x); }
@@ -245,10 +249,15 @@ StateDraw_Context::load_settings()
 	else
 		set_auto_loop_flag(true);
 
-	if(settings.get_value("draw.auto_connect",value) && value=="0")
-		set_auto_connect_flag(false);
+	if(settings.get_value("draw.auto_extend",value) && value=="0")
+		set_auto_extend_flag(false);
 	else
-		set_auto_connect_flag(true);
+		set_auto_extend_flag(true);
+
+	if(settings.get_value("draw.auto_link",value) && value=="0")
+		set_auto_link_flag(false);
+	else
+		set_auto_link_flag(true);
 
 	if(settings.get_value("draw.region_only",value) && value=="1")
 		set_region_only_flag(true);
@@ -297,7 +306,8 @@ StateDraw_Context::save_settings()
 {
 	settings.set_value("draw.pressure_width",get_pressure_width_flag()?"1":"0");
 	settings.set_value("draw.auto_loop",get_auto_loop_flag()?"1":"0");
-	settings.set_value("draw.auto_connect",get_auto_connect_flag()?"1":"0");
+	settings.set_value("draw.auto_extend",get_auto_extend_flag()?"1":"0");
+	settings.set_value("draw.auto_link",get_auto_link_flag()?"1":"0");
 	settings.set_value("draw.region_only",get_region_only_flag()?"1":"0");
 	settings.set_value("draw.min_pressure",strprintf("%f",get_min_pressure()));
 	settings.set_value("draw.feather",strprintf("%f",get_feather()));
@@ -315,7 +325,8 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	settings(synfigapp::Main::get_selected_input_device()->settings()),
 	checkbutton_pressure_width(_("Pressure Width")),
 	checkbutton_auto_loop(_("Auto Loop")),
-	checkbutton_auto_connect(_("Auto Connect")),
+	checkbutton_auto_extend(_("Auto Extend")),
+	checkbutton_auto_link(_("Auto Link")),
 	checkbutton_region_only(_("Create Region Only")),
 	button_fill_last_stroke(_("Fill Last Stroke")),
 	adj_min_pressure(0,0,1,0.01,0.1),
@@ -339,18 +350,19 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	//options_table.attach(*manage(new Gtk::Label(_("Draw Tool"))), 0, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	options_table.attach(checkbutton_pressure_width, 0, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	options_table.attach(checkbutton_auto_loop, 0, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(checkbutton_auto_connect, 0, 2, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(checkbutton_region_only, 0, 2, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(checkbutton_auto_extend, 0, 2, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(checkbutton_auto_link, 0, 2, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(checkbutton_region_only, 0, 2, 5, 6, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
-	options_table.attach(check_min_pressure, 0, 2, 5, 6, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(spin_min_pressure, 0, 2, 6, 7, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(check_min_pressure, 0, 2, 6, 7, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(spin_min_pressure, 0, 2, 7, 8, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
 	options_table.attach(*manage(new Gtk::Label(_("Feather"))), 0, 1, 7, 8, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(spin_feather, 1, 2, 7, 8, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(spin_feather, 1, 2, 8, 9, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
-	options_table.attach(check_localerror, 0, 2, 8, 9, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(check_localerror, 0, 2, 9, 10, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	options_table.attach(*manage(new Gtk::Label(_("Smooth"))), 0, 1, 9, 10, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(spin_globalthres, 1, 2, 9, 10, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(spin_globalthres, 1, 2, 10, 11, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
 	//options_table.attach(button_fill_last_stroke, 0, 2, 10, 11, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
@@ -618,9 +630,9 @@ StateDraw_Context::process_stroke(StrokeData stroke_data, WidthData width_data, 
 		synfigapp::BLineConverter::EnforceMinWidth(bline,get_min_pressure());
 	}
 
-	// If the start and end points are similar, then make then the same point
-	if(get_auto_loop_flag())
-	if(bline.size()>2&&(bline.front().get_vertex()-bline.back().get_vertex()).mag()<=radius)
+	// If the start and end points are similar, then make them the same point
+	if(get_auto_loop_flag() &&
+	   bline.size()>2&&(bline.front().get_vertex()-bline.back().get_vertex()).mag()<=radius)
 	{
 		loop_bline_flag=true;
 		Vector tangent;
@@ -684,7 +696,7 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline
 	// Find any ducks at the start or end that we might attach to
 	// (this used to only run if we aren't a loop - ie. !loop_bline_flag
 	// but having loops auto-connect can be useful as well)
-	if(get_auto_connect_flag())
+	if(get_auto_extend_flag() || get_auto_link_flag())
 	{
 		etl::handle<Duck> start_duck(get_work_area()->find_duck(bline.front().get_vertex(),radius,Duck::TYPE_VERTEX));
 		etl::handle<Duck> finish_duck(get_work_area()->find_duck(bline.back().get_vertex(),radius,Duck::TYPE_VERTEX));
@@ -700,6 +712,7 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline
 			if(!start_duck_value_desc.parent_is_value_node())break;
 			start_duck_index=start_duck_value_desc.get_index();
 			start_duck_value_node_bline=ValueNode_BLine::Handle::cast_dynamic(start_duck_value_desc.get_parent_value_node());
+			if(!get_auto_extend_flag())break;
 
 			// don't extend looped blines
 			if(start_duck_value_node_bline&&!start_duck_value_node_bline->get_loop()&&
@@ -722,6 +735,7 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline
 			if(!finish_duck_value_desc.parent_is_value_node())break;
 			finish_duck_index=finish_duck_value_desc.get_index();
 			finish_duck_value_node_bline=ValueNode_BLine::Handle::cast_dynamic(finish_duck_value_desc.get_parent_value_node());
+			if(!get_auto_extend_flag())break;
 
 			// don't extend looped blines
 			if(finish_duck_value_node_bline&&!finish_duck_value_node_bline->get_loop()&&
@@ -742,7 +756,7 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline
 
 		// if the new line's start didn't extend an existing line,
 		// check whether it needs to be linked to an existing duck
-		if(!extend_start&&start_duck&&start_duck_value_desc) {
+		if(!extend_start&&get_auto_link_flag()&&start_duck&&start_duck_value_desc)
 			switch(start_duck_value_desc.get_value_type())
 			{
 			case synfig::ValueBase::TYPE_BLINEPOINT:
@@ -764,11 +778,10 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline
 				// fall through
 			default:break;
 			}
-		}
 
 		// if the new line's end didn't extend an existing line,
 		// check whether it needs to be linked to an existing duck
-		if(!extend_finish&&finish_duck&&finish_duck_value_desc)
+		if(!extend_finish&&get_auto_link_flag()&&finish_duck&&finish_duck_value_desc)
 			switch(finish_duck_value_desc.get_value_type())
 			{
 			case synfig::ValueBase::TYPE_BLINEPOINT:
