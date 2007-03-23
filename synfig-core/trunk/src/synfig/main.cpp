@@ -222,7 +222,7 @@ synfig::Main::Main(const synfig::String& basepath,ProgressCallback *cb):
 	CHECK_EXPIRE_TIME();
 
 	String prefix=basepath+"/..";
-	int i;
+	unsigned int i;
 #ifdef _DEBUG
 	std::set_terminate(__gnu_cxx::__verbose_terminate_handler);
 #endif
