@@ -86,7 +86,7 @@ inline float calculate_distance(const std::vector<synfig::BLinePoint>& bline)
 	//if(loop)
 	//	iter=--bline.end();
 	//else
-		iter=next++;
+	iter=next++;
 
 	for(;next!=end;iter=next++)
 	{
@@ -95,8 +95,7 @@ inline float calculate_distance(const std::vector<synfig::BLinePoint>& bline)
 			iter->get_vertex(),
 			next->get_vertex(),
 			iter->get_tangent2(),
-			next->get_tangent1()
-		);
+			next->get_tangent1());
 
 //		dist+=calculate_distance(*iter,*next);
 		dist+=curve.length();
@@ -135,8 +134,7 @@ find_closest(const std::vector<synfig::BLinePoint>& bline,const Point& p,bool lo
 			iter->get_vertex(),
 			next->get_vertex(),
 			iter->get_tangent2(),
-			next->get_tangent1()
-		);
+			next->get_tangent1());
 
 		/*
 		const float t(curve.find_closest(p,6,0.01,0.99));
@@ -243,69 +241,69 @@ CurveGradient::color_func(const Point &point_, int quality, float supersample)co
 		{
 			next=find_closest(bline,point,bline_loop);
 		}
-			iter=next++;
-			if(next==bline.end()) next=bline.begin();
 
-			// Setup the curve
-			etl::hermite<Vector> curve(
-				iter->get_vertex(),
-				next->get_vertex(),
-				iter->get_tangent2(),
-				next->get_tangent1()
+		iter=next++;
+		if(next==bline.end()) next=bline.begin();
+
+		// Setup the curve
+		etl::hermite<Vector> curve(
+			iter->get_vertex(),
+			next->get_vertex(),
+			iter->get_tangent2(),
+			next->get_tangent1()
 			);
 
-			// Setup the derivative function
-			etl::derivative<etl::hermite<Vector> > deriv(curve);
+		// Setup the derivative function
+		etl::derivative<etl::hermite<Vector> > deriv(curve);
 
-			int search_iterations(7);
+		int search_iterations(7);
 
-			/*if(quality==0)search_iterations=8;
-			else if(quality<=2)search_iterations=10;
-			else if(quality<=4)search_iterations=8;
-			*/
-			if(!perpendicular)
-			{
-				if(quality<=6)search_iterations=7;
-				else if(quality<=7)search_iterations=6;
-				else if(quality<=8)search_iterations=5;
-				else search_iterations=4;
-			}
-			else
-			{
-				if(quality>7)
-					search_iterations=4;
-			}
+		/*if(quality==0)search_iterations=8;
+		  else if(quality<=2)search_iterations=10;
+		  else if(quality<=4)search_iterations=8;
+		*/
+		if(!perpendicular)
+		{
+			if(quality<=6)search_iterations=7;
+			else if(quality<=7)search_iterations=6;
+			else if(quality<=8)search_iterations=5;
+			else search_iterations=4;
+		}
+		else
+		{
+			if(quality>7)
+				search_iterations=4;
+		}
 
-			// Figure out the closest point on the curve
-			const float t(curve.find_closest(point,search_iterations));
+		// Figure out the closest point on the curve
+		const float t(curve.find_closest(point,search_iterations));
 
 
-			// Calculate our values
-			p1=curve(t);
-			tangent=deriv(t).norm();
+		// Calculate our values
+		p1=curve(t);
+		tangent=deriv(t).norm();
 
-			if(perpendicular)
-			{
-				tangent*=curve_length_;
-				p1-=tangent*perp_dist;
-				tangent=-tangent.perp();
-			}
-			else
-			{
-				thickness=(next->get_width()-iter->get_width())*t+iter->get_width();
-			}
+		if(perpendicular)
+		{
+			tangent*=curve_length_;
+			p1-=tangent*perp_dist;
+			tangent=-tangent.perp();
+		}
+		else
+		{
+			thickness=(next->get_width()-iter->get_width())*t+iter->get_width();
+		}
 		//}
 	}
 
-
 	if(!perpendicular)
 	{
-			diff=tangent.perp()*thickness*width;
-			p1-=diff*0.5;
-			const Real mag(diff.inv_mag());
-			supersample=supersample*mag;
-			diff*=mag*mag;
-			dist=((point_-offset)*diff-p1*diff);
+		diff=tangent.perp()*thickness*width;
+		p1-=diff*0.5;
+		const Real mag(diff.inv_mag());
+		supersample=supersample*mag;
+		diff*=mag*mag;
+		dist=((point_-offset)*diff-p1*diff);
 	}
 	else
 	{
@@ -320,12 +318,12 @@ CurveGradient::color_func(const Point &point_, int quality, float supersample)co
 		}
 		else
 		{
-		diff=tangent.perp();
-		//p1-=diff*0.5;
-		const Real mag(diff.inv_mag());
-		supersample=supersample*mag;
-		diff*=mag*mag;
-		dist=((point_-offset)*diff-p1*diff);
+			diff=tangent.perp();
+			//p1-=diff*0.5;
+			const Real mag(diff.inv_mag());
+			supersample=supersample*mag;
+			diff*=mag*mag;
+			dist=((point_-offset)*diff-p1*diff);
 		}
 	}
 
@@ -427,35 +425,27 @@ CurveGradient::get_param_vocab()const
 {
 	Layer::Vocab ret(Layer_Composite::get_param_vocab());
 
-		ret.push_back(ParamDesc("offset")
-		.set_local_name(_("Offset"))
-	);
+	ret.push_back(ParamDesc("offset")
+				  .set_local_name(_("Offset")));
 
 	ret.push_back(ParamDesc("width")
-		.set_is_distance()
-		.set_local_name(_("Width"))
-	);
+				  .set_is_distance()
+				  .set_local_name(_("Width")));
 
 	ret.push_back(ParamDesc("bline")
-		.set_local_name(_("Vertices"))
-		.set_origin("offset")
-		.set_scalar("width")
-		.set_description(_("A list of BLine Points"))
-	);
-
+				  .set_local_name(_("Vertices"))
+				  .set_origin("offset")
+				  .set_scalar("width")
+				  .set_description(_("A list of BLine Points")));
 
 	ret.push_back(ParamDesc("gradient")
-		.set_local_name(_("Gradient"))
-	);
+				  .set_local_name(_("Gradient")));
 	ret.push_back(ParamDesc("loop")
-		.set_local_name(_("Loop"))
-	);
+				  .set_local_name(_("Loop")));
 	ret.push_back(ParamDesc("zigzag")
-		.set_local_name(_("ZigZag"))
-	);
+				  .set_local_name(_("ZigZag")));
 	ret.push_back(ParamDesc("perpendicular")
-		.set_local_name(_("Perpendicular"))
-	);
+				  .set_local_name(_("Perpendicular")));
 
 	return ret;
 }
