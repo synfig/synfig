@@ -158,6 +158,5 @@ Zoom::accelerated_render(Context context,Surface *surface,int quality, const Ren
 synfig::Rect
 Zoom::get_full_bounding_rect(synfig::Context context)const
 {
-	return context.get_full_bounding_rect();
+	return (context.get_full_bounding_rect()-center)*exp(amount)+center;
 }
-
