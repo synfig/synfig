@@ -2,6 +2,8 @@
 /*!	\file timeloop.cpp
 **	\brief Image Layer_TimeLoop Layer Implementation
 **
+**	$Id$
+**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **

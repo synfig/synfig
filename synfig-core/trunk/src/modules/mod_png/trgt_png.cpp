@@ -2,6 +2,8 @@
 /*!	\file trgt_png.cpp
 **	\brief png_trgt Target Module
 **
+**	$Id$
+**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **
