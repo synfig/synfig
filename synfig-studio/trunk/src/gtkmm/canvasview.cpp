@@ -2933,7 +2933,7 @@ CanvasView::hide_timebar()
 }
 
 void
-CanvasView::timebar_set_sensitive(bool sensitive)
+CanvasView::set_sensitive_timebar(bool sensitive)
 {
 	timebar->set_sensitive(sensitive);
 	current_time_widget->set_sensitive(sensitive);

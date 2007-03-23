@@ -369,8 +369,8 @@ StateBLine_Context::StateBLine_Context(CanvasView* canvas_view):
 	prev_table_status=get_canvas_view()->tables_are_visible();
 	if(prev_table_status)get_canvas_view()->hide_tables();
 
-	// Hide the time bar
-	get_canvas_view()->hide_timebar();
+	// Disable the time bar
+	get_canvas_view()->set_sensitive_timebar(false);
 
 	// Connect a signal
 	//get_work_area()->signal_user_click().connect(sigc::mem_fun(*this,&studio::StateBLine_Context::on_user_click));
@@ -427,9 +427,8 @@ StateBLine_Context::~StateBLine_Context()
 	// Restore layer clicking
 	get_work_area()->allow_layer_clicks=prev_workarea_layer_status_;
 
-	// Show the time bar
-	if(get_canvas_view()->get_canvas()->rend_desc().get_time_start()!=get_canvas_view()->get_canvas()->rend_desc().get_time_end())
-		get_canvas_view()->show_timebar();
+	// Enable the time bar
+	get_canvas_view()->set_sensitive_timebar(true);
 
 	// Bring back the tables if they were out before
 	if(prev_table_status)get_canvas_view()->show_tables();
