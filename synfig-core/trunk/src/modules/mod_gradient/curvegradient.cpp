@@ -178,17 +178,11 @@ find_closest(const std::vector<synfig::BLinePoint>& bline,const Point& p,bool lo
 inline void
 CurveGradient::sync()
 {
-	diff=(p2-p1);
-	const Real mag(diff.inv_mag());
-	diff*=mag*mag;
-
 	curve_length_=calculate_distance(bline);
 }
 
 
 CurveGradient::CurveGradient():
-	p1(1,1),
-	p2(-1,-1),
 	offset(0,0),
 	width(0.25),
 	gradient(Color::black(), Color::white()),
@@ -372,7 +366,6 @@ CurveGradient::color_func(const Point &point_, int quality, float supersample)co
 float
 CurveGradient::calc_supersample(const synfig::Point &x, float pw,float ph)const
 {
-//	return pw/(p2-p1).mag();
 	return pw;
 }
 
@@ -391,20 +384,6 @@ CurveGradient::hit_check(synfig::Context context, const synfig::Point &point)con
 bool
 CurveGradient::set_param(const String & param, const ValueBase &value)
 {
-	if(param=="p1" && value.same_as(p1))
-	{
-		p1=value.get(p1);
-		sync();
-		return true;
-	}
-	if(param=="p2" && value.same_as(p2))
-	{
-		p2=value.get(p2);
-		sync();
-		return true;
-	}
-	//IMPORT(p1);
-	//IMPORT(p2);
 
 
 	IMPORT(offset);
@@ -431,8 +410,6 @@ CurveGradient::get_param(const String & param)const
 {
 	EXPORT(offset);
 	EXPORT(bline);
-	EXPORT(p1);
-	EXPORT(p2);
 	EXPORT(gradient);
 	EXPORT(loop);
 	EXPORT(zigzag);

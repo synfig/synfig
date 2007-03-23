@@ -51,12 +51,10 @@ class CurveGradient : public Layer_Composite, public Layer_NoDeform
 private:
 	std::vector<synfig::BLinePoint> bline;
 
-	Point p1,p2;
 	Point offset;
 	Real width;
-	Vector diff;
 	Gradient gradient;
-	Real	curve_length_;
+	Real curve_length_;
 
 	bool loop;
 	bool zigzag;
