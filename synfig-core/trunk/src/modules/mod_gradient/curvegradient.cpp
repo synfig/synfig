@@ -77,6 +77,8 @@ inline float calculate_distance(const std::vector<synfig::BLinePoint>& bline)
 
 	float dist(0);
 
+	if (bline.empty()) return dist;
+
 	next=bline.begin();
 
 	//if(loop)
