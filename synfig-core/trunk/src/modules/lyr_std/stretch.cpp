@@ -6,6 +6,7 @@
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
+**	Copyright (c) 2007 Chris Moore
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -135,12 +136,14 @@ public:
 
 	synfig::Vector perform(const synfig::Vector& x)const
 	{
-		return Vector((x[0]-layer->center[0])*layer->amount[0]+layer->center[0],(x[1]-layer->center[1])*layer->amount[1]+layer->center[1]);
+		return Vector((x[0]-layer->center[0])*layer->amount[0]+layer->center[0],
+					  (x[1]-layer->center[1])*layer->amount[1]+layer->center[1]);
 	}
 
 	synfig::Vector unperform(const synfig::Vector& x)const
 	{
-		return Vector((x[0]-layer->center[0])/layer->amount[0]+layer->center[0],(x[1]-layer->center[1])/layer->amount[1]+layer->center[1]);
+		return Vector((x[0]-layer->center[0])/layer->amount[0]+layer->center[0],
+					  (x[1]-layer->center[1])/layer->amount[1]+layer->center[1]);
 	}
 };
 etl::handle<Transform>
@@ -166,4 +169,16 @@ Layer_Stretch::accelerated_render(Context context,Surface *surface,int quality, 
 
 	// Render the scene
 	return context.accelerated_render(surface,quality,desc,cb);
+}
+
+Rect
+Layer_Stretch::get_full_bounding_rect(Context context)const
+{
+	Rect rect(context.get_full_bounding_rect());
+	Point min(rect.get_min()), max(rect.get_max());
+
+	return Rect(Point((min[0]-center[0])*amount[0]+center[0],
+					  (min[1]-center[1])*amount[1]+center[1]),
+				Point((max[0]-center[0])*amount[0]+center[0],
+					  (max[1]-center[1])*amount[1]+center[1]));
 }

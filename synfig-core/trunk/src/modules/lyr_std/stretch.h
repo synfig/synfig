@@ -6,6 +6,7 @@
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
+**	Copyright (c) 2007 Chris Moore
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -64,6 +65,7 @@ public:
 
 	virtual Vocab get_param_vocab()const;
 	virtual etl::handle<synfig::Transform> get_transform()const;
+	virtual synfig::Rect get_full_bounding_rect(Context context)const;
 }; // END of class Layer_Stretch
 
 }; // END of namespace synfig
