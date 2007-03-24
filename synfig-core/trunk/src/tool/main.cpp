@@ -682,10 +682,10 @@ int extract_RendDesc(arg_list_t &arg_list,RendDesc &desc)
 		else if(*iter=="-g")
 		{
 			synfig::warning("Gamma argument is currently ignored");
-			//arg_list.erase(iter);
-			//iter=next++;
+			arg_list.erase(iter);
+			iter=next++;
 			//desc.set_gamma(Gamma(atof(iter->c_str())));
-			//arg_list.erase(iter);
+			arg_list.erase(iter);
 		}
 	}
 	if(w&&h)
