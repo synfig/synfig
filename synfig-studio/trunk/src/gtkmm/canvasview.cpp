@@ -946,7 +946,7 @@ CanvasView::create_time_bar()
 	Gtk::Table *table= manage(new class Gtk::Table(2, 3, false));
 
 	//setup the audio display
-	disp_audio->set_size_request(-1,32); //disp_audio.show();
+	disp_audio->set_size_request(-1,32); //disp_audio->show();
 	disp_audio->set_time_adjustment(&time_adjustment());
 	disp_audio->signal_start_scrubbing().connect(
 		sigc::mem_fun(*audio,&AudioContainer::start_scrubbing)
