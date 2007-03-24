@@ -87,11 +87,14 @@ Gdk::Color get_interp_color(synfig::Interpolation x)
 static Gdk::Color
 color_darken(Gdk::Color x, float amount)
 {
-	x.set_rgb_p(
-		x.get_red_p()*amount,
-		x.get_green_p()*amount,
-		x.get_blue_p()*amount
-	);
+	double   red = x.get_red_p()   * amount;
+	double green = x.get_green_p() * amount;
+	double  blue = x.get_blue_p()  * amount;
+
+	x.set_rgb_p(  red > 1 ? 1 : red,
+				green > 1 ? 1 : green,
+				 blue > 1 ? 1 : blue);
+
 	return x;
 }
 
