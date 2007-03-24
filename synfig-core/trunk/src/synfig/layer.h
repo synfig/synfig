@@ -168,7 +168,7 @@ public:
 
 private:
 
-	/*! \c true if the layer is visible, \c is it is to be skipped
+	/*! \c true if the layer is visible, \c false if it is to be skipped
 	**	\see set_active(), enable(), disable, active()
 	*/
 	bool active_;
