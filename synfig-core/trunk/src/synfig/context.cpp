@@ -128,10 +128,10 @@ Context::get_full_bounding_rect()const
 		++context;
 	}
 
-	if(context->empty())
-		return Rect::zero();
+	// If this layer isn't defined, return zero-sized rectangle
+	if(context->empty()) return Rect::zero();
 
-	return (*context)->get_full_bounding_rect(*this+1);
+	return (*context)->get_full_bounding_rect(context+1);
 }
 
 
