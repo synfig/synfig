@@ -260,9 +260,13 @@ DuckDrag_SmoothMove::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vecto
 
 	int i;
 
+	// process vertex and position ducks first
 	for(i=0,iter=selected_ducks.begin();iter!=selected_ducks.end();++iter,i++)
 	{
-		if(((*iter)->get_type()!=Duck::TYPE_VERTEX&&(*iter)->get_type()!=Duck::TYPE_POSITION))continue;
+		// skip this duck if it is NOT a vertex or a position
+		if (((*iter)->get_type() != Duck::TYPE_VERTEX &&
+			 (*iter)->get_type() != Duck::TYPE_POSITION))
+			continue;
 		Point p(positions[i]);
 
 		float dist(1.0f-(p-drag_offset_).mag()/get_radius());
@@ -273,9 +277,13 @@ DuckDrag_SmoothMove::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vecto
 		(*iter)->set_trans_point(p+last_[i]);
 	}
 
+	// then process non vertex and non position ducks
 	for(i=0,iter=selected_ducks.begin();iter!=selected_ducks.end();++iter,i++)
 	{
-		if(!((*iter)->get_type()!=Duck::TYPE_VERTEX&&(*iter)->get_type()!=Duck::TYPE_POSITION))continue;
+		// skip this duck if it IS a vertex or a position
+		if (!((*iter)->get_type() != Duck::TYPE_VERTEX &&
+			 (*iter)->get_type() != Duck::TYPE_POSITION))
+			continue;
 		Point p(positions[i]);
 
 		float dist(1.0f-(p-drag_offset_).mag()/get_radius());
