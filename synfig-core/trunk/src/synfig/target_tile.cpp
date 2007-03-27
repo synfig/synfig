@@ -283,7 +283,7 @@ synfig::Target_Tile::render_frame_(Context context,ProgressCallback *cb)
 
 #if SYNFIG_DISPLAY_EFFICIENCY==1
 	synfig::info(">>>>>> Render Time: %fsec, Find Tile Time: %fsec, Add Tile Time: %fsec, Total Time: %fsec",work_time,find_tile_time,add_tile_time,total_time());
-	synfig::info(">>>>>> FRAME EFICIENCY: %f%%",(100.0f*work_time/total_time()));
+	synfig::info(">>>>>> FRAME EFFICIENCY: %f%%",(100.0f*work_time/total_time()));
 #endif
 #undef total_tiles
 	return true;
