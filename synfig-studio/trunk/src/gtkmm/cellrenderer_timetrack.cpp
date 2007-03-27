@@ -158,6 +158,14 @@ bool get_closest_time(const synfig::Node::time_set &tset, const Time &t, const T
 {
 	Node::time_set::const_iterator	i,j,end = tset.end();
 
+	// stop the crash mentioned in bug #1689282
+	// doesn't solve the underlying problem though, I don't think
+	if (tset.size() == 0)
+	{
+		synfig::error(__FILE__":%d: tset.size() == 0",__LINE__);
+		return false;
+	}
+
 	//TODO add in RangeGet so it's not so damn hard to click on points
 
 	i = tset.upper_bound(t); //where t is the lower bound, t < [first,i)
