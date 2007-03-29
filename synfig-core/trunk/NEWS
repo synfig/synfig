@@ -1,5 +1,17 @@
               synfig releases
 
+ 0.61.06 (SVN ???) - ??????? ??, ???? - Bug fixes
+
+  * Add fontconfig support
+  * Fix amd64 issue
+  * Fix ffmpeg, gif, libav targets
+  * Include more target modules in the Win32 package
+  * Fix some crashes in synfigstudio
+  * Fix some render artifacts
+  * Fix some doxygen warnings
+  * Some MacOS fixes
+  * Misc bug fixes
+
  0.61.05 (SVN 126) - February 27, 2005 - Misc fixes
 
   * Use system libltdl when available (#1423944)
