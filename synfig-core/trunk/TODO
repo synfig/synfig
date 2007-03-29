@@ -21,6 +21,7 @@
 * Migrate public API to be more language agnostic in nature
 * Network-distributed rendering
 * Solid multi-threaded rendering
+* mod_png: 16-bit pixel support
 
 
 ## Wanted Plug-Ins ##
