@@ -13,7 +13,7 @@
 	- Surface locking/unlocking
 	- Copy-on-write
 * Make the "Value" class extendable by plug-ins
-* Add paremeter mechanism to render target class to allow user to control things like:
+* Add parameter mechanism to render target class to allow user to control things like:
 	- Color depth
 	- Codec
 	- etc.
