@@ -1,5 +1,11 @@
               ETL releases
 
+ 0.04.09 (SVN ???) - ??????? ??, ???? - Bug fixes
+
+  * Fix amd64 issue
+  * Some tests fixes
+  * Misc bug fixes
+
  0.04.08 (SVN 139) - February 27, 2006 - Bug fixes
 
   * Update doxygen configuration
