@@ -1,5 +1,28 @@
               synfigstudio releases
 
+ 0.61.06 (SVN ???) - ??????? ??, ???? - Bug fixes
+ 
+  * Fix amd64 issues
+  * Fix corruption of gamma settings
+  * Fix manipulating layers in the layer dialog
+  * Disable the timebar instead of hiding it
+  * Fix File -> Close & input devices close button
+  * Fix targets that crash in synfigstudio
+  * Fix some doxygen warnings
+  * Fixes in the sketch tool
+  * Fixes in the draw tool
+  * Fix several crashes
+  * Fix bline looping
+  * Misc Win32 fixes
+  * Add optional GNOME thumbnailer
+  * Rework several dialogs to use GNOME HIG
+  * Disable several tools, see FAQ to re-enable
+  * Disable the empty Palette Browser dialog
+  * Add mousewheel support in canvas windows
+  * Add tooltips to preview window & give it a default size
+  * Display HTML values in the colour dialog
+  * Add an icon for the curves dialog
+
  0.61.05 (SVN 128) - February 27, 2006 - build issues
 
   * Fixed building with gtkmm 2.8 (#1373933, #1358304)
