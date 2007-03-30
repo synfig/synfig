@@ -222,7 +222,7 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 					RendDesc	blockrd = desc;
 
 					//render the strip at the normal size unless it's the last one...
-					if(i == rows)
+					if(i == rows-1)
 					{
 						if(!lastrowheight) break;
 						blockrd.set_subwindow(0,i*rowheight,desc.get_w(),lastrowheight);
@@ -357,7 +357,7 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 					RendDesc	blockrd = desc;
 
 					//render the strip at the normal size unless it's the last one...
-					if(i == rows)
+					if(i == rows-1)
 					{
 						if(!lastrowheight) break;
 						blockrd.set_subwindow(0,i*rowheight,desc.get_w(),lastrowheight);
