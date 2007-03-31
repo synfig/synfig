@@ -661,9 +661,9 @@ StateDraw_Context::process_stroke(StrokeData stroke_data, WidthData width_data, 
 
 		// Add the widths of the two points
 		{
-			Real width(bline.front().get_width()+width);
-			width=width<=1?width:1;
-			bline.front().set_width(width);
+			Real tmp_width(bline.front().get_width()+width);
+			tmp_width=tmp_width<=1?tmp_width:1;
+			bline.front().set_width(tmp_width);
 		}
 	}
 
