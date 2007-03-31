@@ -667,7 +667,7 @@ StateDraw_Context::process_stroke(StrokeData stroke_data, WidthData width_data, 
 		}
 	}
 
-	// If the bline only has once blinepoint, then there is nothing to do.
+	// If the bline only has one blinepoint, then there is nothing to do.
 	if(bline.size()<=1)
 		return Smach::RESULT_OK;
 
