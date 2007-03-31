@@ -177,6 +177,15 @@ Rectangle::hit_check(synfig::Context context, const synfig::Point &pos)const
 	return context.hit_check(pos);
 }
 
+bool
+Rectangle::is_solid_color()const
+{
+	return Layer_Composite::is_solid_color() ||
+		(get_blend_method() == Color::BLEND_COMPOSITE &&
+		 get_amount() == 1.0f &&
+		 color.get_a() == 1.0f);
+}
+
 Color
 Rectangle::get_color(Context context, const Point &pos)const
 {
