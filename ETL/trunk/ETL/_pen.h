@@ -154,7 +154,7 @@ private:
 
 	void subptr(int nbytes)
 	{
-		data_ = (pointer)((char*)data_ + nbytes);
+		data_ = (pointer)((char*)data_ - nbytes);
 	}
 
 public:
