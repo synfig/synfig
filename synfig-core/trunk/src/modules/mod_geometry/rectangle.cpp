@@ -456,12 +456,7 @@ Rectangle::accelerated_render(Context context,Surface *surface,int quality, cons
 		return true;
 	}
 
-	// Render what is behind us
-	if(!context.accelerated_render(surface,quality,renddesc,cb))
-	{
-		if(cb)cb->error(strprintf(__FILE__"%d: Accelerated Renderer Failure",__LINE__));
-		return false;
-	}
+	// not inverted
 
 	int left(ceil_to_int((min[0]-tl[0])/pw));
 	int right(floor_to_int((max[0]-tl[0])/pw));
@@ -488,8 +483,25 @@ Rectangle::accelerated_render(Context context,Surface *surface,int quality, cons
 	Surface::alpha_pen pen;
 
 	// In the case where there is nothing to render...
-	if(right-left<0||bottom-top<0)
+	if (right < left || bottom < top)
 		return true;
+
+	// optimisation - if the whole tile is covered by this rectangle,
+	// and the rectangle is a solid colour, we don't need to render
+	// what's behind us
+	if (is_solid_color() && top == 0 && left == 0 && bottom == h && right == w)
+	{
+		surface->set_wh(w,h);
+		surface->fill(color);
+		return true;
+	}
+
+	// Render what is behind us
+	if(!context.accelerated_render(surface,quality,renddesc,cb))
+	{
+		if(cb)cb->error(strprintf(__FILE__"%d: Accelerated Renderer Failure",__LINE__));
+		return false;
+	}
 
 	if(right-left>0&&bottom-top>0)
 	{
