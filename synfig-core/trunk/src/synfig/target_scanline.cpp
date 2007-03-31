@@ -203,6 +203,7 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 
 				Surface surface;
 				int rowheight = PIXEL_RENDERING_LIMIT/desc.get_w();
+				if (!rowheight) rowheight = 1; // TODO: render partial lines to stay within the limit?
 				int rows = desc.get_h()/rowheight;
 				int lastrowheight = desc.get_h() - rows*rowheight;
 
@@ -338,6 +339,7 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 				Surface surface;
 				int totalheight = desc.get_h();
 				int rowheight = PIXEL_RENDERING_LIMIT/desc.get_w();
+				if (!rowheight) rowheight = 1; // TODO: render partial lines to stay within the limit?
 				int rows = desc.get_h()/rowheight;
 				int lastrowheight = desc.get_h() - rows*rowheight;
 
