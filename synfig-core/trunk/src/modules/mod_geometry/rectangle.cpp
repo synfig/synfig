@@ -377,7 +377,7 @@ Rectangle::accelerated_render(Context context,Surface *surface,int quality, cons
 			surface->fill(color);
 
 			// Check for the case where there is nothing to render
-			if(right-left<=0||bottom-top<=0)
+			if (right <= left || bottom <= top)
 				return true;
 
 			desc.set_subwindow(left,top,right-left,bottom-top);
@@ -400,26 +400,31 @@ Rectangle::accelerated_render(Context context,Surface *surface,int quality, cons
 				if(cb)cb->error(strprintf(__FILE__"%d: Accelerated Renderer Failure",__LINE__));
 				return false;
 			}
+
 			Surface subimage;
 
-			// Check for the case where there is nothing to render
-			if(!(right-left<=0||bottom-top<=0))
+			// Check for the case where there is something to render
+			if (right > left && bottom > top)
 			{
+				// save a copy of the overlapping region from surface into subimage
 				subimage.set_wh(right-left,bottom-top);
 				Surface::pen subimage_pen(subimage.begin());
 				surface->blit_to(subimage_pen,left,top,right-left,bottom-top);
 			}
 
+			// fill surface with the rectangle's colour
 			Surface::alpha_pen surface_pen(surface->begin(),get_amount(),get_blend_method());
-
 			surface->fill(color,surface_pen,w,h);
 
-			if(subimage)
+			if (subimage)
 			{
+				// copy the saved overlapping region back from subimage into surface
 				Surface::pen pen(surface->get_pen(left,top));
 				subimage.blit_to(pen);
 			}
-			else return true;
+			else
+				// if there's no overlapping region, return now of the following code corrupts memory
+				return true;
 		}
 
 		Surface::alpha_pen pen;
