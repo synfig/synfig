@@ -419,6 +419,7 @@ Rectangle::accelerated_render(Context context,Surface *surface,int quality, cons
 				Surface::pen pen(surface->get_pen(left,top));
 				subimage.blit_to(pen);
 			}
+			else return true;
 		}
 
 		Surface::alpha_pen pen;
