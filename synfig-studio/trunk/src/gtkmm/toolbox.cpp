@@ -275,10 +275,10 @@ Toolbox::Toolbox():
 
 	Gtk::Image *icon;
 
-	ADD_TOOLBOX_BUTTON(button_new,"gtk-new","New");
-	ADD_TOOLBOX_BUTTON(button_open,"gtk-open","Open");
+	ADD_TOOLBOX_BUTTON(button_new,"gtk-new","New...");
+	ADD_TOOLBOX_BUTTON(button_open,"gtk-open","Open...");
 	ADD_TOOLBOX_BUTTON(button_save,"gtk-save","Save");
-	ADD_TOOLBOX_BUTTON(button_saveas,"gtk-save-as","SaveAs");
+	ADD_TOOLBOX_BUTTON(button_saveas,"gtk-save-as","Save as...");
 	ADD_TOOLBOX_BUTTON(button_save_all,"synfig-saveall","Save All");
 	TOOLBOX_BUTTON(button_undo,"gtk-undo","Undo");
 	TOOLBOX_BUTTON(button_redo,"gtk-redo","Redo");
@@ -304,15 +304,17 @@ Toolbox::Toolbox():
 
 	// Create the file button cluster
 	Gtk::Table *file_buttons=manage(new class Gtk::Table(4, 4, false));
-	file_buttons->attach(*button_new,0,1,0,1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
-	file_buttons->attach(*button_open,1,2,0,1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
-	file_buttons->attach(*button_save,2,3,0,1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
-	file_buttons->attach(*button_saveas,3,4,0,1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
-	file_buttons->attach(*button_save_all,0,1,1,2, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
-	file_buttons->attach(*button_undo,1,2,1,2, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
-	file_buttons->attach(*button_redo,2,3,1,2, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
-	file_buttons->attach(*button_about,3,4,1,2, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
-	//file_buttons->attach(*button_color,0,1,2,3, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
+
+	file_buttons->attach(*button_new,      0,1, 0,1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
+	file_buttons->attach(*button_open,     1,2, 0,1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
+	file_buttons->attach(*button_save,     2,3, 0,1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
+	file_buttons->attach(*button_saveas,   3,4, 0,1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
+
+	file_buttons->attach(*button_save_all, 0,1, 1,2, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
+	file_buttons->attach(*button_undo,     1,2, 1,2, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
+	file_buttons->attach(*button_redo,     2,3, 1,2, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
+	file_buttons->attach(*button_about,    3,4, 1,2, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
+
 	file_buttons->show();
 
 	tool_table=manage(new class Gtk::Table(4, 4, false));
@@ -335,11 +337,11 @@ Toolbox::Toolbox():
 	Gtk::Table *table1 = manage(new class Gtk::Table(1, 2, false));
 	table1->set_row_spacings(0);
 	table1->set_col_spacings(0);
-	table1->attach(*menubar1, 0, 1, 0, 1, Gtk::FILL|Gtk::EXPAND, Gtk::SHRINK, 0, 0);
-	table1->attach(*file_buttons, 0, 1, 1, 2, Gtk::FILL|Gtk::EXPAND,Gtk::EXPAND|Gtk::FILL, 0, 0);
+	table1->attach(*menubar1,        0,1, 0,1, Gtk::FILL|Gtk::EXPAND, Gtk::SHRINK, 0, 0);
+	table1->attach(*file_buttons,    0,1, 1,2, Gtk::FILL|Gtk::EXPAND,Gtk::EXPAND|Gtk::FILL, 0, 0);
 	//table1->attach(*manage(new Gtk::Label(_("Tools"))), 0, 1, 2, 3, Gtk::FILL|Gtk::EXPAND,Gtk::EXPAND|Gtk::FILL, 0, 0);
-	table1->attach(*handle_tools, 0, 1, 3, 4, Gtk::FILL|Gtk::EXPAND,Gtk::EXPAND|Gtk::FILL, 0, 0);
-	table1->attach(*handle_defaults, 0, 1, 4, 5, Gtk::FILL|Gtk::EXPAND,Gtk::EXPAND|Gtk::FILL, 0, 0);
+	table1->attach(*handle_tools,    0,1, 3,4, Gtk::FILL|Gtk::EXPAND,Gtk::EXPAND|Gtk::FILL, 0, 0);
+	table1->attach(*handle_defaults, 0,1, 4,5, Gtk::FILL|Gtk::EXPAND,Gtk::EXPAND|Gtk::FILL, 0, 0);
 	table1->show_all();
 
 
