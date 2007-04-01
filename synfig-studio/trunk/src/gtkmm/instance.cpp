@@ -50,6 +50,8 @@
 #include "widget_waypointmodel.h"
 #include <gtkmm/actiongroup.h>
 #include "iconcontroler.h"
+#include <sys/stat.h>
+#include <errno.h>
 
 #endif
 
@@ -272,6 +274,19 @@ studio::Instance::dialog_save_as()
 		catch(...)
 		{
 			continue;
+		}
+
+		{
+			struct stat	s;
+			// if stat() succeeds, or it fails with something other than 'file doesn't exist', the file exists
+			// if the file exists and the user doesn't want to overwrite it, keep prompting for a filename
+			if ((stat(filename.c_str(), &s) != -1 || errno != ENOENT) &&
+				!App::dialog_yes_no("File exists",
+									"A file named '" +
+									filename +
+									"' already exists.\n\n"
+									"Do you want to replace it with the file you are saving?"))
+				continue;
 		}
 
 		if(save_as(filename))
