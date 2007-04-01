@@ -962,8 +962,18 @@ init_ui_manager()
 	}
 
 	// Add default keyboard accelerators
-#define ACCEL(path,accel)	{ Gtk::AccelKey accel_key(accel,path); Gtk::AccelMap::add_entry(accel_key.get_path(), accel_key.get_key(),accel_key.get_mod()); }
-#define ACCEL2(accel)	{ Gtk::AccelKey accel_key(accel); Gtk::AccelMap::add_entry(accel_key.get_path(), accel_key.get_key(),accel_key.get_mod()); }
+#define ACCEL(path,accel)						\
+	{											\
+		Gtk::AccelKey accel_key(accel,path);	\
+		Gtk::AccelMap::add_entry(accel_key.get_path(), accel_key.get_key(), accel_key.get_mod());	\
+	}
+
+#define ACCEL2(accel)							\
+	{											\
+		Gtk::AccelKey accel_key(accel);			\
+		Gtk::AccelMap::add_entry(accel_key.get_path(), accel_key.get_key(), accel_key.get_mod());	\
+	}
+
 	ACCEL("<Actions>//select-all-ducks","<Control>a");
 	ACCEL("<Actions>//unselect-all-layers","<Control>d");
 	ACCEL("<Actions>//render","F9");
@@ -981,7 +991,6 @@ init_ui_manager()
 	ACCEL("<Actions>//mask-radius-ducks", "<Mod1>4");
 	ACCEL("<Actions>//mask-width-ducks", "<Mod1>5");
 	ACCEL("<Actions>//mask-angle-ducks", "<Mod1>6");
-
 
 	ACCEL2(Gtk::AccelKey(GDK_Page_Up,Gdk::SHIFT_MASK,"<Actions>//action-layer_raise"));
 	ACCEL2(Gtk::AccelKey(GDK_Page_Down,Gdk::SHIFT_MASK,"<Actions>//action-layer_lower"));
