@@ -192,12 +192,6 @@ void _create_stock_dialog2()
 	dock_dialog->present();
 }
 
-static void
-show_dialog_color()
-{
-	App::dialog_color->present();
-}
-
 Toolbox::Toolbox():
 	Gtk::Window(Gtk::WINDOW_TOPLEVEL),
 	dialog_settings(this,"toolbox")
@@ -283,14 +277,6 @@ Toolbox::Toolbox():
 	TOOLBOX_BUTTON(button_undo,"gtk-undo","Undo");
 	TOOLBOX_BUTTON(button_redo,"gtk-redo","Redo");
 	ADD_TOOLBOX_BUTTON(button_about,"synfig-about","About Synfig Studio");
-	ADD_TOOLBOX_BUTTON(button_color,"synfig-color","Color Dialog");
-
-	TOOLBOX_BUTTON(button_rotoscope_bline,"synfig-rotoscope_bline",_("Old Rotoscope BLine"));
-	TOOLBOX_BUTTON(button_rotoscope_polygon,"synfig-rotoscope_polygon",_("Rotoscope Polygon"));
-	TOOLBOX_BUTTON(button_eyedrop,"synfig-eyedrop",_("Eyedrop Tool"));
-	TOOLBOX_BUTTON(button_rotoscope,"synfig-rotoscope_bline",_("Rotoscope 2"));
-
-
 
 	button_about->signal_clicked().connect(sigc::ptr_fun(studio::App::dialog_about));
 	button_new->signal_clicked().connect(sigc::ptr_fun(studio::App::new_instance));
@@ -300,7 +286,6 @@ Toolbox::Toolbox():
 	button_save_all->signal_clicked().connect(sigc::ptr_fun(save_all));
 	button_undo->signal_clicked().connect(sigc::ptr_fun(studio::App::undo));
 	button_redo->signal_clicked().connect(sigc::ptr_fun(studio::App::redo));
-	button_color->signal_clicked().connect(sigc::ptr_fun(show_dialog_color));
 
 	// Create the file button cluster
 	Gtk::Table *file_buttons=manage(new class Gtk::Table(4, 4, false));
@@ -368,11 +353,6 @@ Toolbox::Toolbox():
 
 	button_undo->set_sensitive(false);
 	button_redo->set_sensitive(false);
-	button_rotoscope_bline->set_sensitive(false);
-	button_rotoscope->set_sensitive(false);
-	button_rotoscope_polygon->set_sensitive(false);
-	button_eyedrop->set_sensitive(false);
-
 
 	std::list<Gtk::TargetEntry> listTargets;
 	listTargets.push_back( Gtk::TargetEntry("text/plain") );
@@ -510,9 +490,6 @@ Toolbox::add_state(const Smach::state_base *state)
 	icon->show();
 	button->show();
 
-
-
-
 	int row=state_button_map.size()/4;
 	int col=state_button_map.size()%4;
 
@@ -526,7 +503,6 @@ Toolbox::add_state(const Smach::state_base *state)
 			state
 		)
 	);
-
 
 	refresh();
 }
@@ -544,7 +520,7 @@ Toolbox::update_undo_redo()
 
 	// This should probably go elsewhere, but it should
 	// work fine here with no troubles.
-	// These next several lines just adjust the rotoscope buttons
+	// These next several lines just adjust the tool buttons
 	// so that they are only clickable when they should be.
 	if(instance && App::get_selected_canvas_view())
 	{

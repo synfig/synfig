@@ -61,11 +61,6 @@ class Toolbox : public Gtk::Window
 	Gtk::Button *button_undo;
 	Gtk::Button *button_redo;
 
-	Gtk::Button *button_eyedrop;
-	Gtk::Button *button_rotoscope;
-	Gtk::Button *button_rotoscope_bline;
-	Gtk::Button *button_rotoscope_polygon;
-
 	Gtk::Table *tool_table;
 
 	std::map<synfig::String,Gtk::ToggleButton *> state_button_map;

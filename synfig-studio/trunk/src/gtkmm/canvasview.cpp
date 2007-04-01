@@ -1465,13 +1465,6 @@ CanvasView::init_menus()
 	editmenu.items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::StockID("gtk-stop"),Gtk::AccelKey(GDK_Escape,static_cast<Gdk::ModifierType>(0)),SLOT_EVENT(EVENT_STOP)));
 	editmenu.items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::StockID("gtk-refresh"),Gtk::AccelKey('k',Gdk::CONTROL_MASK),SLOT_EVENT(EVENT_REFRESH)));
 	editmenu.items().push_back(Gtk::Menu_Helpers::SeparatorElem());
- 	editmenu.items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::StockID("synfig-rotoscope_bline"),
-		sigc::mem_fun(*this, &studio::CanvasView::do_rotoscope_bline)));
- 	editmenu.items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::StockID("synfig-rotoscope_polygon"),
-		sigc::mem_fun(*this, &studio::CanvasView::do_rotoscope_poly)));
- 	editmenu.items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::StockID("synfig-eyedrop"),
-		sigc::mem_fun(*this, &studio::CanvasView::do_eyedrop)));
-	editmenu.items().push_back(Gtk::Menu_Helpers::SeparatorElem());
 	editmenu.items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::StockID("gtk-properties"),Gtk::AccelKey("F8"),
 		sigc::mem_fun(canvas_properties,&studio::CanvasProperties::present)
 	));
@@ -2881,30 +2874,6 @@ CanvasView::toggle_tables()
 //		hide_tables();
 //	else
 //		show_tables();
-}
-
-void
-CanvasView::do_rotoscope_bline()
-{
-	smach_.enter(&state_bline);
-}
-
-void
-CanvasView::do_rotoscope()
-{
-	smach_.enter(&state_draw);
-}
-
-void
-CanvasView::do_rotoscope_poly()
-{
-	smach_.enter(&state_polygon);
-}
-
-void
-CanvasView::do_eyedrop()
-{
-	smach_.enter(&state_eyedrop);
 }
 
 void
