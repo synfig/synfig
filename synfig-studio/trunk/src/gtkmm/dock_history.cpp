@@ -72,8 +72,8 @@ Dock_History::Dock_History():
 	action_group->add(Gtk::Action::create(
 		"clear-undo",
 		Gtk::StockID("synfig-clear_undo"),
-		_("Clear the UNDO Stack"),
-		_("Clear the UNDO Stack")
+		_("Clear Undo Stack"),
+		_("Clear the undo stack")
 	),
 		sigc::mem_fun(
 			*this,
@@ -83,8 +83,8 @@ Dock_History::Dock_History():
 	action_group->add(Gtk::Action::create(
 		"clear-redo",
 		Gtk::StockID("synfig-clear_redo"),
-		_("Clear the REDO Stack"),
-		_("Clear the REDO Stack")
+		_("Clear Redo Stack"),
+		_("Clear the redo stack")
 	),
 		sigc::mem_fun(
 			*this,
@@ -94,16 +94,16 @@ Dock_History::Dock_History():
 	action_group->add(Gtk::Action::create(
 		"undo",
 		Gtk::StockID("gtk-undo"),
-		_("Undo previous action"),
-		_("Undo previous action")
+		_("Undo"),
+		_("Undo the previous action")
 	),
 		sigc::ptr_fun(studio::App::undo)
 	);
 	action_group->add(Gtk::Action::create(
 		"redo",
 		Gtk::StockID("gtk-redo"),
-		_("Redo previous action"),
-		_("Redo previous action")
+		_("Redo"),
+		_("Redo the previously undone action")
 	),
 		sigc::ptr_fun(studio::App::redo)
 	);
@@ -115,9 +115,9 @@ Dock_History::Dock_History():
 	"<ui>"
 	"	<toolbar action='toolbar-history'>"
 	"	<toolitem action='undo' />"
+	"	<toolitem action='redo' />"
 	"	<toolitem action='clear-undo' />"
 	"	<toolitem action='clear-redo' />"
-	"	<toolitem action='redo' />"
 	"	</toolbar>"
 	"</ui>"
 	;
