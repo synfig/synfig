@@ -691,9 +691,7 @@ Warp::accelerated_render(Context context,Surface *surface,int quality, const Ren
 				v=(tmp[1]-tl[1])*src_ph;
 
 				if(u<0 || v<0 || u>=source.get_w() || v>=source.get_h() || isnan(u) || isnan(v))
-				{
 					(*surface)[y][x]=context.get_color(tmp);
-				}
 				else
 					(*surface)[y][x]=source.cubic_sample(u,v);
 			}
@@ -727,12 +725,7 @@ Warp::accelerated_render(Context context,Surface *surface,int quality, const Ren
 				v=(tmp[1]-tl[1])*src_ph;
 
 				if(u<0 || v<0 || u>=source.get_w() || v>=source.get_h() || isnan(u) || isnan(v))
-				{
-					if(clip)
-						(*surface)[y][x]=Color::alpha();
-					else
-						(*surface)[y][x]=context.get_color(tmp);
-				}
+					(*surface)[y][x]=context.get_color(tmp);
 				else
 					(*surface)[y][x]=source.linear_sample(u,v);
 			}
@@ -765,15 +758,10 @@ Warp::accelerated_render(Context context,Surface *surface,int quality, const Ren
 				v=(tmp[1]-tl[1])*src_ph;
 
 				if(u<0 || v<0 || u>=source.get_w() || v>=source.get_h() || isnan(u) || isnan(v))
-				{
-					if(clip)
-						(*surface)[y][x]=Color::alpha();
-					else
-						(*surface)[y][x]=context.get_color(tmp);
-				}
+					(*surface)[y][x]=context.get_color(tmp);
 				else
-				//pen.set_value(source[v][u]);
-				(*surface)[y][x]=source[floor_to_int(v)][floor_to_int(u)];
+					//pen.set_value(source[v][u]);
+					(*surface)[y][x]=source[floor_to_int(v)][floor_to_int(u)];
 			}
 			if(y&31==0 && cb)
 			{
