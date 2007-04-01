@@ -148,6 +148,14 @@ save_as_selected_instance()
 }
 
 void
+save_all()
+{
+	std::list<etl::handle<Instance> >::iterator iter;
+	for(iter=App::instance_list.begin();iter!=App::instance_list.end();iter++)
+		(*iter)->save();
+}
+
+void
 close_selected_instance()
 {
 	etl::handle<studio::Instance> instance=studio::App::get_selected_instance();
@@ -289,7 +297,7 @@ Toolbox::Toolbox():
 	button_open->signal_clicked().connect(sigc::ptr_fun(studio::App::dialog_open));
 	button_save->signal_clicked().connect(sigc::ptr_fun(save_selected_instance));
 	button_saveas->signal_clicked().connect(sigc::ptr_fun(save_as_selected_instance));
-	button_save_all->signal_clicked().connect(sigc::ptr_fun(studio::App::dialog_not_implemented));
+	button_save_all->signal_clicked().connect(sigc::ptr_fun(save_all));
 	button_undo->signal_clicked().connect(sigc::ptr_fun(studio::App::undo));
 	button_redo->signal_clicked().connect(sigc::ptr_fun(studio::App::redo));
 	button_color->signal_clicked().connect(sigc::ptr_fun(show_dialog_color));
