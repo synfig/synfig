@@ -67,8 +67,8 @@ Warp::Warp():
 	src_br	(2,-2),
 	dest_tl	(-1.8,2.1),
 	dest_tr	(1.8,2.1),
-	dest_br	(2.2,-2),
 	dest_bl	(-2.2,-2),
+	dest_br	(2.2,-2),
 	clip	(true)
 {
 	sync();
