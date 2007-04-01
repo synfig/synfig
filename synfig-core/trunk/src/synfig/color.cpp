@@ -84,7 +84,12 @@ Color::set_hex(String& hex)
 	value_type r, g, b;
 	try
 	{
-		if (hex.size() == 3)
+		if (hex.size() == 1)
+		{
+			r = hex2real(hex.substr(0,1)+hex.substr(0,1));
+			r_ = g_ = b_ = r;
+		}
+		else if (hex.size() == 3)
 		{
 			r = hex2real(hex.substr(0,1)+hex.substr(0,1));
 			g = hex2real(hex.substr(1,1)+hex.substr(1,1));
