@@ -571,14 +571,6 @@ public:
 	//t Enables or disables interaction with the timebar
 	void set_sensitive_timebar(bool sensitive);
 
-	void do_rotoscope_bline();
-
-	void do_rotoscope();
-
-	void do_rotoscope_poly();
-
-	void do_eyedrop();
-
 	void time_zoom_in();
 	void time_zoom_out();
 
