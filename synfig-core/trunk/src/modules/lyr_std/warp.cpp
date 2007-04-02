@@ -516,7 +516,11 @@ Warp::accelerated_render(Context context,Surface *surface,int quality, const Ren
 		// Real trans_z[4];
 		Real z,minz(10000000000000.0f),maxz(0);
 
-
+		//! \todo checking the 4 corners for 0<=z<horizon*2 and using
+		//! only 4 corners which satisfy this condition isn't the
+		//! right thing to do.  It's possible that none of the 4
+		//! corners fall within that range, and yet content of the
+		//! tile does.
 		p=transform_forward(min);
 		z=transform_backward_z(p);
 		if(z>0 && z<horizon*2)
