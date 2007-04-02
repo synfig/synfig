@@ -510,7 +510,7 @@ Canvas::surefind_canvas(const String &id)
 		if(id[0]=='#')
 			return surefind_canvas(String(id,1));
 
-		//! \todo This needs alot more optimization
+		//! \todo This needs a lot more optimization
 		String file_name(id,0,id.find_first_of('#'));
 		String external_id(id,id.find_first_of('#')+1);
 
@@ -595,7 +595,7 @@ Canvas::find_canvas(const String &id)const
 		if(id[0]=='#')
 			return find_canvas(String(id,1));
 
-		//! \todo This needs alot more optimization
+		//! \todo This needs a lot more optimization
 		String file_name(id,0,id.find_first_of('#'));
 		String external_id(id,id.find_first_of('#')+1);
 
