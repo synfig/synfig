@@ -159,16 +159,22 @@ Action::BLinePointTangentMerge::prepare()
 
 		add_action(action);
 	}
+
+	// the merged tangent should be the average of the 2 tangents we're merging
+	ValueBase average(((Vector)((*value_node->get_link("t1"))(time)) +
+					   (Vector)((*value_node->get_link("t2"))(time))) / 2);
+
 	{
+		// set tangent1
 		action=Action::create("value_desc_set");
 		if(!action)
 			throw Error(_("Couldn't find action \"value_desc_set\""));
 
 		action->set_param("canvas",get_canvas());
 		action->set_param("canvas_interface",get_canvas_interface());
-		action->set_param("value_desc",ValueDesc(value_node,5));
+		action->set_param("value_desc",ValueDesc(value_node,4));
 		action->set_param("time",time);
-		action->set_param("new_value",(*value_node->get_link("t1"))(time));
+		action->set_param("new_value",average);
 
 		assert(action->is_ready());
 		if(!action->is_ready())
@@ -177,4 +183,22 @@ Action::BLinePointTangentMerge::prepare()
 		add_action(action);
 	}
 
+	{
+		// set tangent2
+		action=Action::create("value_desc_set");
+		if(!action)
+			throw Error(_("Couldn't find action \"value_desc_set\""));
+
+		action->set_param("canvas",get_canvas());
+		action->set_param("canvas_interface",get_canvas_interface());
+		action->set_param("value_desc",ValueDesc(value_node,5));
+		action->set_param("time",time);
+		action->set_param("new_value",average);
+
+		assert(action->is_ready());
+		if(!action->is_ready())
+			throw Error(Error::TYPE_NOTREADY);
+
+		add_action(action);
+	}
 }
