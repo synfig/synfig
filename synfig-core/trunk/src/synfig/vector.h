@@ -71,7 +71,7 @@ private:
 	value_type _x, _y;
 
 public:
-	Vector() { };
+	Vector(): _x(0.0), _y(0.0) { };
 	Vector(const value_type &x, const value_type &y):_x(x),_y(y) { };
 
 	bool is_valid()const { return !(isnan(_x) || isnan(_y)); }
