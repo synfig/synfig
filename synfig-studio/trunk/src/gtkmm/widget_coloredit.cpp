@@ -525,14 +525,12 @@ Widget_ColorEdit::get_value_raw()
 		color.set_r(gamma_out(R_adjustment.get_value()/100.0f));
 		color.set_g(gamma_out(G_adjustment.get_value()/100.0f));
 		color.set_b(gamma_out(B_adjustment.get_value()/100.0f));
-		assert(color.is_valid());
 	}
 	else
 	{
 		color.set_r(R_adjustment.get_value()/100);
 		color.set_g(G_adjustment.get_value()/100);
 		color.set_b(B_adjustment.get_value()/100);
-		assert(color.is_valid());
 	}
 	color.set_a(A_adjustment.get_value()/100);
 	assert(color.is_valid());
