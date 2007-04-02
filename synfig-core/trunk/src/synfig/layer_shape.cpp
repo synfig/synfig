@@ -711,6 +711,8 @@ struct CurveArray
 struct Layer_Shape::Intersector
 {
 	Rect	aabb;
+
+	//! true iff aabb hasn't been initialised yet
 	bool	initaabb;
 
 	int 	flags;
@@ -3066,9 +3068,12 @@ Layer_Shape::get_bounding_rect()const
 	if(invert)
 		return Rect::full_plane();
 
-	Rect bounds(edge_table->aabb+offset);
-	bounds.expand(max((bounds.get_min()-bounds.get_max()).mag()*0.01,feather));
+	if (edge_table->initaabb)
+		return Rect::zero();
 
+	Rect bounds(edge_table->aabb+offset);
+	bounds.expand(max((bounds.get_min() - bounds.get_max()).mag()*0.01,
+					  feather));
 
 	return bounds;
 }
