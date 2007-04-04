@@ -771,7 +771,7 @@ struct Layer_Shape::Intersector
 		int dir = (y > cur_y)*1 + (-1)*(y < cur_y);
 
 		//check for context (if not line start a new segment)
-		//if we're not in line mode (cover's 0 set case), or if directions are different (not valid for 0 direction)
+		//if we're not in line mode (covers 0 set case), or if directions are different (not valid for 0 direction)
 		if(prim != TYPE_LINE || (dir && segs.back().ydir != dir))
 		{
 			MonoSegment		seg(dir,x,x,y,y);
@@ -792,7 +792,7 @@ struct Layer_Shape::Intersector
 
 		cur_x = x;
 		cur_y = y;
-		aabb.expand(x,y); //expand the entire things bounding box
+		aabb.expand(x,y); //expand the entire thing's bounding box
 
 		tangent[0] = x - cur_x;
 		tangent[1] = x - cur_y;
