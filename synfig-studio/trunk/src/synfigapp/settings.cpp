@@ -129,6 +129,19 @@ Settings::set_value(const synfig::String& key,const synfig::String& value)
 	return true;
 }
 
+//! Compare two key names, putting pref.* keys first
+static bool
+compare_pref_first (synfig::String first, synfig::String second)
+{
+	return	first.substr(0, 5) == "pref."
+			?	second.substr(0, 5) == "pref."
+				?	first < second
+				:	true
+			:	second.substr(0, 5) == "pref."
+				?	false
+				:	first < second;
+}
+
 Settings::KeyList
 Settings::get_key_list()const
 {
@@ -154,7 +167,10 @@ Settings::get_key_list()const
 	}
 
 	// Sort the keys
-	key_list.sort();
+	// We make sure the 'pref.*' keys come first to fix bug 1694393,
+	// where windows were being created before the parameter
+	// specifying which window manager hint to use had been loaded
+	key_list.sort(compare_pref_first);
 
 	return key_list;
 }
