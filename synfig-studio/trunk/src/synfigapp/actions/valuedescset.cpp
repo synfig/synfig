@@ -181,33 +181,47 @@ Action::ValueDescSet::prepare()
 	// our first tangent is being manipulated,
 	// then we also need to adjust the other
 	// tangent.
-	if(	value_desc.parent_is_value_node()
-	&&	value_desc.get_parent_value_node()->get_type()==ValueBase::TYPE_BLINEPOINT
-	&&	value_desc.get_index()==4
-	&&	(*value_desc.get_parent_value_node())(time).get(BLinePoint()).get_split_tangent_flag()==false
-	)
+	if(	value_desc.parent_is_value_node() &&
+		value_desc.get_parent_value_node()->get_type()==ValueBase::TYPE_BLINEPOINT &&
+		(value_desc.get_index()==4 || value_desc.get_index()==5) &&
+		(*value_desc.get_parent_value_node())(time).get(BLinePoint()).get_split_tangent_flag()==false)
 	{
-		DEBUGPOINT();
-		ValueNode_Composite::Handle parent_value_node;
-		parent_value_node=parent_value_node.cast_dynamic(value_desc.get_parent_value_node());
+		printf("a tangent got changed - #%d\n", value_desc.get_index()-3);
 
-		assert(parent_value_node);
+		{
+			ValueNode_Composite::Handle parent_value_node;
+			parent_value_node=parent_value_node.cast_dynamic(value_desc.get_parent_value_node());
+			assert(parent_value_node);
 
-		Action::Handle action(Action::create("value_desc_set"));
+			Vector t1((*parent_value_node->get_link("t1"))(time));
+			Vector t2((*parent_value_node->get_link("t2"))(time));
+			printf("current values are: t1(%.2f, %2.f)  t2(%.2f, %.2f)\n", t1[0], t1[1], t2[0], t2[1]);
+		}
 
-		if(!action)
-			throw Error(_("Unable to find action value_desc_set (bug)"));
+		if (value_desc.get_index()==4) {
+			printf("copying change to tangent 2\n");
+			DEBUGPOINT();
+			ValueNode_Composite::Handle parent_value_node;
+			parent_value_node=parent_value_node.cast_dynamic(value_desc.get_parent_value_node());
 
-		action->set_param("canvas",get_canvas());
-		action->set_param("canvas_interface",get_canvas_interface());
-		action->set_param("time",time);
-		action->set_param("new_value",value);
-		action->set_param("value_desc",ValueDesc(parent_value_node,5));
+			assert(parent_value_node);
 
-		if(!action->is_ready())
-			throw Error(Error::TYPE_NOTREADY);
+			Action::Handle action(Action::create("value_desc_set"));
 
-		add_action(action);
+			if(!action)
+				throw Error(_("Unable to find action value_desc_set (bug)"));
+
+			action->set_param("canvas",get_canvas());
+			action->set_param("canvas_interface",get_canvas_interface());
+			action->set_param("time",time);
+			action->set_param("new_value",value);
+			action->set_param("value_desc",ValueDesc(parent_value_node,5));
+
+			if(!action->is_ready())
+				throw Error(Error::TYPE_NOTREADY);
+
+			add_action(action);
+		}
 	}
 
 	// If we are a reference value node, then
@@ -361,32 +375,81 @@ Action::ValueDescSet::prepare()
 	// If we are merging the tangents of a BLinePoint,
 	// we must also set the second tangent for things
 	// to interpolate properly
-	if(	value_desc.parent_is_value_node()
-	&&	value_desc.get_parent_value_node()->get_type()==ValueBase::TYPE_BLINEPOINT
-	&&	value_desc.get_index()==3
-//	&&	value.get(bool())==false	// Actually, we want to do this any time the split flag is tweaked with
-	)
+	if (value_desc.parent_is_value_node() &&
+	    value_desc.get_parent_value_node()->get_type()==ValueBase::TYPE_BLINEPOINT &&
+	    value_desc.get_index()==3)
 	{
 		ValueNode_Composite::Handle parent_value_node;
 		parent_value_node=parent_value_node.cast_dynamic(value_desc.get_parent_value_node());
 
 		assert(parent_value_node);
 
-		Action::Handle action(Action::create("value_desc_set"));
+		// are we splitting or merging the tangents?
+	    if (value.get(bool()))
+	    {
+			// we are splitting tangents
 
-		if(!action)
-			throw Error(_("Unable to find action value_desc_set (bug)"));
+			Action::Handle action(Action::create("value_desc_set"));
 
-		action->set_param("canvas",get_canvas());
-		action->set_param("canvas_interface",get_canvas_interface());
-		action->set_param("time",time);
-		action->set_param("new_value",(*parent_value_node->get_link(4))(time));
-		action->set_param("value_desc",ValueDesc(parent_value_node,5));
+			if(!action)
+				throw Error(_("Unable to find action value_desc_set (bug)"));
 
-		if(!action->is_ready())
-			throw Error(Error::TYPE_NOTREADY);
+			action->set_param("canvas",get_canvas());
+			action->set_param("canvas_interface",get_canvas_interface());
+			action->set_param("time",time);
+			action->set_param("new_value",(*parent_value_node->get_link(4))(time));
+			action->set_param("value_desc",ValueDesc(parent_value_node,5));
 
-		add_action(action);
+			if(!action->is_ready())
+				throw Error(Error::TYPE_NOTREADY);
+
+			add_action(action);
+	    }
+	    else
+	    {
+			// we are merging tangents
+
+			// the merged tangent should be the average of the 2 tangents we're merging
+			ValueBase average(((Vector)((*parent_value_node->get_link("t1"))(time)) +
+							   (Vector)((*parent_value_node->get_link("t2"))(time))) / 2);
+
+			{
+				Action::Handle action(Action::create("value_desc_set"));
+
+				if(!action)
+					throw Error(_("Unable to find action value_desc_set (bug)"));
+
+				action->set_param("canvas",get_canvas());
+				action->set_param("canvas_interface",get_canvas_interface());
+				action->set_param("time",time);
+				action->set_param("new_value",average);
+				action->set_param("value_desc",ValueDesc(parent_value_node,4));
+
+				if(!action->is_ready())
+					throw Error(Error::TYPE_NOTREADY);
+
+				add_action(action);
+			}
+
+			{
+				Action::Handle action(Action::create("value_desc_set"));
+
+				if(!action)
+					throw Error(_("Unable to find action value_desc_set (bug)"));
+
+				action->set_param("canvas",get_canvas());
+				action->set_param("canvas_interface",get_canvas_interface());
+				action->set_param("time",time);
+				action->set_param("new_value",average);
+				action->set_param("value_desc",ValueDesc(parent_value_node,5));
+
+				if(!action->is_ready())
+					throw Error(Error::TYPE_NOTREADY);
+
+				add_action(action);
+			}
+	    }
+
 	}
 
 /*	DEBUGPOINT();

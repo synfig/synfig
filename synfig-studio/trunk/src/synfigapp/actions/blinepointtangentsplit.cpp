@@ -142,39 +142,19 @@ Action::BLinePointTangentSplit::prepare()
 
 	Action::Handle action;
 
-	{
-		action=Action::create("value_desc_set");
-		if(!action)
-			throw Error(_("Couldn't find action \"value_desc_set\""));
+	action=Action::create("value_desc_set");
+	if(!action)
+		throw Error(_("Couldn't find action \"value_desc_set\""));
 
-		action->set_param("canvas",get_canvas());
-		action->set_param("canvas_interface",get_canvas_interface());
-		action->set_param("value_desc",ValueDesc(value_node,3));
-		action->set_param("time",time);
-		action->set_param("new_value",synfig::ValueBase(true));
+	action->set_param("canvas",get_canvas());
+	action->set_param("canvas_interface",get_canvas_interface());
+	action->set_param("value_desc",ValueDesc(value_node,3));
+	action->set_param("time",time);
+	action->set_param("new_value",synfig::ValueBase(true));
 
-		assert(action->is_ready());
-		if(!action->is_ready())
-			throw Error(Error::TYPE_NOTREADY);
+	assert(action->is_ready());
+	if(!action->is_ready())
+		throw Error(Error::TYPE_NOTREADY);
 
-		add_action(action);
-	}
-	{
-		action=Action::create("value_desc_set");
-		if(!action)
-			throw Error(_("Couldn't find action \"value_desc_set\""));
-
-		action->set_param("canvas",get_canvas());
-		action->set_param("canvas_interface",get_canvas_interface());
-		action->set_param("value_desc",ValueDesc(value_node,5));
-		action->set_param("time",time);
-		action->set_param("new_value",(*value_node->get_link("t1"))(time));
-
-		assert(action->is_ready());
-		if(!action->is_ready())
-			throw Error(Error::TYPE_NOTREADY);
-
-		add_action(action);
-	}
-
+	add_action(action);
 }
