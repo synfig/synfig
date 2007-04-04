@@ -157,11 +157,9 @@ Region::sync()
 		}
 	}
 
-	//add a single point onto the end so it actually fits the shape, so we can be awesome...
+	//add the starting point onto the end so it actually fits the shape, so we can be extra awesome...
 	if(!looped)
-	{
-		vector_list.push_back(curve.p2());
-	}
+		vector_list.push_back(segment_list[0].p1);
 
 	clear();
 	add_polygon(vector_list);
