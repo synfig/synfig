@@ -35,6 +35,7 @@
 #include "general.h"
 #include <cmath>
 #include <cassert>
+#include <algorithm>
 #include <ctype.h>
 #include <math.h>
 

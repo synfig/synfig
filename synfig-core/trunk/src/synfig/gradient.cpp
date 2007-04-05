@@ -33,6 +33,7 @@
 #include "general.h"
 #include <stdexcept>
 #include "exception.h"
+#include <algorithm>
 
 #include <ETL/misc>
 #endif
