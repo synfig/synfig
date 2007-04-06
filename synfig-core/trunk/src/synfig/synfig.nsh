@@ -13,6 +13,7 @@ SectionEnd
 
 Section "un.Synfig Core"
 	Delete "$INSTDIR\bin\libsynfig-0.dll"
+	RMDir "$INSTDIR\bin"
 	RMDir "$INSTDIR"
 SectionEnd
 

@@ -13,6 +13,7 @@ SectionEnd
 
 Section "un.Synfig Tool Uninstall"
 	Delete "$INSTDIR\bin\synfig.exe"
+	RMDir "$INSTDIR\bin"
 	RMDir "$INSTDIR"
 SectionEnd
 
