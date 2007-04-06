@@ -73,7 +73,7 @@ Section "Synfig Studio"
 	FileClose $0
 
   WriteRegStr HKLM "${PRODUCT_REG_KEY}" "Path" "$INSTDIR"
-  WriteRegStr HKLM "${PRODUCT_REG_KEY}" "Version" "@PRODUCT_VERSION@"
+  WriteRegStr HKLM "${PRODUCT_REG_KEY}" "Version" "@PACKAGE_VERSION@"
   
   ; Write the uninstall keys for Windows
   WriteRegStr HKLM "${PRODUCT_UNINSTALL_KEY}" "DisplayName" "@PACKAGE_NAME@"
