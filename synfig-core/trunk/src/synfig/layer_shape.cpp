@@ -233,7 +233,7 @@ struct MonoSegment
 
 	int intersect(Real x,Real y) const
 	{
-		if((y < aabb.miny) | (y > aabb.maxy) | (x < aabb.minx)) return 0;
+		if((y < aabb.miny) || (y > aabb.maxy) || (x < aabb.minx)) return 0;
 		if(x > aabb.maxx) return ydir;
 
 		//int i = 0;
@@ -330,8 +330,8 @@ struct CurveArray
 
 		//to the left, to the right and out of range y, or completely out of range y
 		if( x < xmin ) return 0;
-		if( x > xmax  & (y > ymax | y < ymin) ) return 0;
-		if( (y > ymax & y > p[1][1]) | (y < ymin & y < p[1][1]) ) return 0;
+		if( x > xmax  && (y > ymax || y < ymin) ) return 0;
+		if( (y > ymax && y > p[1][1]) || (y < ymin && y < p[1][1]) ) return 0;
 
 		//degenerate line max
 		if(ymin == ymax == p[1][1])
@@ -340,7 +340,7 @@ struct CurveArray
 		//degenerate accept - to the right and crossing the base line
 		if(x > xmax)
 		{
-			return (y <= ymax & y >= ymin);
+			return (y <= ymax && y >= ymin);
 		}
 
 		//solve for curve = y
@@ -381,7 +381,7 @@ struct CurveArray
 		}
 
 		//calculate number of intersections
-		if(t1 >= 0 & t1 <= 1)
+		if(t1 >= 0 && t1 <= 1)
 		{
 			const Real t = t1;
 			const Real invt = 1 - t;
@@ -396,7 +396,7 @@ struct CurveArray
 			}
 		}
 
-		if(t2 >= 0 & t2 <= 1)
+		if(t2 >= 0 && t2 <= 1)
 		{
 			const Real t = t2;
 			const Real invt = 1 - t;
@@ -504,7 +504,7 @@ struct CurveArray
 		//right of curve (and outside base range)
 		if( x > xmax )
 		{
-			if( (y > ymax) | (y < ymin) ) return 0;
+			if( (y > ymax) || (y < ymin) ) return 0;
 
 			//degenerate accept - to the right and inside the [ymin,ymax] range (already rejected if out of range)
 			const Real n = p[3][1] - p[0][1];
@@ -582,7 +582,7 @@ struct CurveArray
 					t3 = -2.0*sqrt(Q)*cos((theta-2*PI)/3.0) - an/3.0;
 
 					//don't need to reorder,l just need to eliminate double/triple roots
-					//if(t3 == t2 & t1 == t2) t2 = t3 = INVALIDROOT;
+					//if(t3 == t2 && t1 == t2) t2 = t3 = INVALIDROOT;
 					if(t3 == t2) t2 = t3 = INVALIDROOT;
 					if(t1 == t2) t1 = t2 = INVALIDROOT;
 					if(t1 == t3) t1 = t3 = INVALIDROOT;
@@ -604,7 +604,7 @@ struct CurveArray
 		//if(t1 != INVALIDROOT)
 		{
 			t = t1;//polish_cubicroot(a,b,c,d,t1,&dydt);
-			if(t >= 0 & t < 1)
+			if(t >= 0 && t < 1)
 			{
 				//const Real invt = 1 - t;
 
@@ -622,7 +622,7 @@ struct CurveArray
 		//if(t2 != INVALIDROOT)
 		{
 			t = t2;//polish_cubicroot(a,b,c,d,t2,&dydt);
-			if(t >= 0 & t < 1)
+			if(t >= 0 && t < 1)
 			{
 				//const Real invt = 1 - t;
 
@@ -640,7 +640,7 @@ struct CurveArray
 		//if(t3 != INVALIDROOT)
 		{
 			t = t3;//polish_cubicroot(a,b,c,d,t3,&dydt);
-			if(t >= 0 & t < 1)
+			if(t >= 0 && t < 1)
 			{
 				//const Real invt = 1 - t;
 
@@ -660,7 +660,7 @@ struct CurveArray
 
 	int intersect(Real x,Real y, Point *table) const
 	{
-		if((y < aabb.miny) | (y > aabb.maxy) | (x < aabb.minx)) return 0;
+		if((y < aabb.miny) || (y > aabb.maxy) || (x < aabb.minx)) return 0;
 
 		int i, curdeg, intersects = 0;
 		const int numcurves = degrees.size();
@@ -745,7 +745,7 @@ struct Layer_Shape::Intersector
 
 	bool notclosed()
 	{
-		return (flags & NotClosed) | (cur_x != close_x) | (cur_y != close_y);
+		return (flags & NotClosed) || (cur_x != close_x) || (cur_y != close_y);
 	}
 
 	void move_to(Real x, Real y)
@@ -994,7 +994,7 @@ public:
 
 	bool notclosed() const
 	{
-		return (flags & NotClosed) | (cur_x != close_x) | (cur_y != close_y);
+		return (flags & NotClosed) || (cur_x != close_x) || (cur_y != close_y);
 	}
 
 	//0 out all the variables involved in processing
@@ -1019,7 +1019,7 @@ public:
 	//move to the next cell (cover values 0 initially), keeping the current if necessary
 	void move_pen(int x, int y)
 	{
-		if(y != current.y | x != current.x)
+		if(y != current.y || x != current.x)
 		{
 			addcurrent();
 			current.set(x,y,0,0);
@@ -1283,8 +1283,8 @@ void Layer_Shape::PolySpan::line_to(Real x, Real y)
 	//CLIP IT!!!!
 	try {
 	//outside y - ignore entirely
-	if(	 (cur_y >= window.maxy & y >= window.maxy)
-		|(cur_y <  window.miny & y <  window.miny) )
+	if(	 (cur_y >= window.maxy && y >= window.maxy)
+	   ||(cur_y <  window.miny && y <  window.miny) )
 	{
 		cur_x = x;
 		cur_y = y;
@@ -1450,9 +1450,9 @@ static inline bool clip_conic(const Point *const p, const ContextRect &r)
 	const Real maxx = max(max(p[0][0],p[1][0]),p[2][0]);
 	const Real maxy = max(max(p[0][1],p[1][1]),p[2][1]);
 
-	return 	(minx > r.maxx) |
-			(maxx < r.minx) |
-			(miny > r.maxy) |
+	return 	(minx > r.maxx) ||
+			(maxx < r.minx) ||
+			(miny > r.maxy) ||
 			(maxy < r.miny);
 }
 
@@ -1468,10 +1468,10 @@ static inline bool clip_cubic(const Point *const p, const ContextRect &r)
 			(miny > r.maxy) ||
 			(maxy < r.miny);*/
 
-	return 	((p[0][0] > r.maxx) & (p[1][0] > r.maxx) & (p[2][0] > r.maxx) & (p[3][0] > r.maxx)) |
-			((p[0][0] < r.minx) & (p[1][0] < r.minx) & (p[2][0] < r.minx) & (p[3][0] < r.minx)) |
-			((p[0][1] > r.maxy) & (p[1][1] > r.maxy) & (p[2][1] > r.maxy) & (p[3][1] > r.maxy)) |
-			((p[0][1] < r.miny) & (p[1][1] < r.miny) & (p[2][1] < r.miny) & (p[3][1] < r.miny));
+	return 	((p[0][0] > r.maxx) && (p[1][0] > r.maxx) && (p[2][0] > r.maxx) && (p[3][0] > r.maxx)) ||
+			((p[0][0] < r.minx) && (p[1][0] < r.minx) && (p[2][0] < r.minx) && (p[3][0] < r.minx)) ||
+			((p[0][1] > r.maxy) && (p[1][1] > r.maxy) && (p[2][1] > r.maxy) && (p[3][1] > r.maxy)) ||
+			((p[0][1] < r.miny) && (p[1][1] < r.miny) && (p[2][1] < r.miny) && (p[3][1] < r.miny));
 }
 
 static inline Real max_edges_cubic(const Point *const p)
@@ -1967,7 +1967,7 @@ void Layer_Shape::endpath()
 	op.operation = Primitive::END;
 	op.number = 0;
 
-	if(lastbyteop == Primitive::END | lastbyteop == Primitive::NONE)
+	if(lastbyteop == Primitive::END || lastbyteop == Primitive::NONE)
 	{
 	}else
 	{
@@ -1988,7 +1988,7 @@ void Layer_Shape::line_to(Real x, Real y)
 	op.operation = Primitive::LINE_TO;
 	op.number = 1;	//one point for now
 
-	if(lastbyteop == Primitive::MOVE_TO | lastbyteop == Primitive::LINE_TO)
+	if(lastbyteop == Primitive::MOVE_TO || lastbyteop == Primitive::LINE_TO)
 	{
 		//only need to insert the point
 		bytestream.insert(bytestream.end(),(char*)&p,(char*)(&p+1));
@@ -2185,7 +2185,7 @@ bool Layer_Shape::render_polyspan(Surface *surface, PolySpan &polyspan,
 		//accumulate for the current pixel
 		while(++cur_mark != polyspan.covers.end())
 		{
-			if(y != cur_mark->y | x != cur_mark->x)
+			if(y != cur_mark->y || x != cur_mark->x)
 				break;
 
 			area += cur_mark->area;
@@ -2311,7 +2311,7 @@ bool Layer_Shape::render_polyspan(etl::surface<float> *surface, PolySpan &polysp
 			//accumulate for the current pixel
 			while(++cur_mark != polyspan.covers.end())
 			{
-				if(y != cur_mark->y | x != cur_mark->x)
+				if(y != cur_mark->y || x != cur_mark->x)
 					break;
 
 				area += cur_mark->area;
@@ -2383,7 +2383,7 @@ bool Layer_Shape::render_polyspan(etl::surface<float> *surface, PolySpan &polysp
 			//accumulate for the current pixel
 			while(++cur_mark != polyspan.covers.end())
 			{
-				if(y != cur_mark->y | x != cur_mark->x)
+				if(y != cur_mark->y || x != cur_mark->x)
 					break;
 
 				area += cur_mark->area;
