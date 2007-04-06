@@ -489,12 +489,6 @@ Rectangle::accelerated_render(Context context,Surface *surface,int quality, cons
 	right = std::min(w,right);
 */
 
-	Surface::alpha_pen pen;
-
-	// In the case where there is nothing to render...
-	if (right < left || bottom < top)
-		return true;
-
 	// optimisation - if the whole tile is covered by this rectangle,
 	// and the rectangle is a solid colour, we don't need to render
 	// what's behind us
@@ -511,6 +505,12 @@ Rectangle::accelerated_render(Context context,Surface *surface,int quality, cons
 		if(cb)cb->error(strprintf(__FILE__"%d: Accelerated Renderer Failure",__LINE__));
 		return false;
 	}
+
+	// In the case where there is nothing to render...
+	if (right < left || bottom < top)
+		return true;
+
+	Surface::alpha_pen pen;
 
 	if(right-left>0&&bottom-top>0)
 	{
