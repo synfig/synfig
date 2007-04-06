@@ -21,10 +21,10 @@ SUFFIXES=.sif .tif .png
 PNGTOICO=png2ico
 
 .sif.ico:
-	$(SYNFIG) $< -w 16 -h 16 -o $*-16x16.png $< -w 32 -h 32 -o $*-32x32.png $< -w 64 -h 64 -o $*-64x64.png
+	$(SYNFIG) $< -w 16 -h 16 -o $*-16x16.png $< -w 32 -h 32 -o $*-32x32.png $< -w 48 -h 48 -o $*-48x48.png $< -w 64 -h 64 -o $*-64x64.png
 	cp -f `which $(PNGTOICO)`.* ./
-	$(PNGTOICO) $@ $*-16x16.png $*-32x32.png $*-64x64.png
-	rm -f ./$(PNGTOICO).* $*-16x16.png $*-32x32.png $*-64x64.png
+	$(PNGTOICO) $@ $*-16x16.png $*-32x32.png $*-48x48.png $*-64x64.png
+	rm -f ./$(PNGTOICO).* $*-16x16.png $*-32x32.png $*-48x48.png $*-64x64.png
 
 clean:
 	$(RM) $(CLEANFILES)
