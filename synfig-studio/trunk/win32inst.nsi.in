@@ -108,6 +108,7 @@ SectionEnd
 ; Optional section (can be disabled by the user)
 Section "Start Menu Shortcuts"
 
+  SetShellVarContext All
   CreateDirectory "$SMPROGRAMS\Voria"
   CreateShortCut "$SMPROGRAMS\Voria\Uninstall Synfig Studio.lnk" "$INSTDIR\uninstall-@PACKAGE_TARNAME@.exe" "" "$INSTDIR\uninstall-@PACKAGE_TARNAME@.exe" 0
   CreateShortCut "$SMPROGRAMS\Voria\Synfig Studio.lnk" "$INSTDIR\bin\synfigstudio.exe" "" "$INSTDIR\share\pixmaps\synfig_icon.ico" 0
@@ -144,6 +145,7 @@ Section "Uninstall"
   RMDir "$INSTDIR\bin"
 
   ; Remove shortcuts, if any
+  SetShellVarContext All
   Delete "$SMPROGRAMS\Voria\Uninstall Synfig Studio.lnk"
   Delete "$SMPROGRAMS\Voria\Synfig Studio.lnk"
 
