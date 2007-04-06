@@ -57,10 +57,10 @@ Section "Synfig Studio"
   SectionIn RO
   
   SetOutPath "$INSTDIR\share\pixmaps"
-  File "images\*.png"
+  !include "images\images.nsh"
   
   SetOutPath "$INSTDIR\share\pixmaps"
-  File "images\*.ico"
+  !include "images\icons.nsh"
 
   SetOutPath "$INSTDIR\bin"
   File "src\synfigapp\.libs\libsynfigapp-0.dll"
@@ -131,11 +131,17 @@ Section "Uninstall"
   DeleteRegKey HKLM "${PRODUCT_REG_KEY}"
   DeleteRegKey HKLM "${PRODUCT_UNINSTALL_KEY}"
 
+  ; Remove images and icons
+  !include "images\unimages.nsh"
+  !include "images\unicons.nsh"
+  RMDir "$INSTDIR\share\pixmaps"
+  RMDir "$INSTDIR\share"
+
   ; Remove files and uninstaller
 	Delete "$INSTDIR\${PRODUCT_UNINSTALL_EXE}"
   Delete $INSTDIR\bin\synfigstudio.exe
   Delete $INSTDIR\bin\libsynfigapp-0.dll
-  RMDir $INSTDIR\bin
+  RMDir "$INSTDIR\bin"
 
   ; Remove shortcuts, if any
   Delete "$SMPROGRAMS\Voria\Uninstall Synfig Studio.lnk"

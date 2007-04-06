@@ -87,8 +87,11 @@ win32inst.nsi: $(srcdir)/win32inst.nsi.in
 
 package-win32: all win32inst.nsi
 	convert images/installer_logo.png bmp3:images/installer_logo.bmp
-	rm images/installer_logo*.png
 	make -C images sif_icon.ico synfig_icon.ico
+	grep -v -e 'installer_logo' -e 'sif_icon' images/images.nsh >images/images.nsh.tmp
+	grep -v -e 'installer_logo' -e 'sif_icon' images/unimages.nsh >images/unimages.nsh.tmp
+	mv -f images/images.nsh.tmp images/images.nsh
+	mv -f images/unimages.nsh.tmp images/unimages.nsh
 	makensis win32inst.nsi
 
 package-osx: all pkg-info/macosx/synfig-studio.info
