@@ -71,10 +71,6 @@ Section ""
   ; Set output path to the installation directory.
   SetOutPath $INSTDIR\bin
 
-  File "C:\mingw\bin\mingwm10.dll"
-  File "C:\GTK\bin\libfreetype-6.dll"
-  File "C:\GTK\bin\libxml2.dll"
-  
   ; Put file there
   
   CreateDirectory "$INSTDIR\etc"
