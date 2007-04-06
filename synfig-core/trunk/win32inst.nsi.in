@@ -76,10 +76,9 @@ Section ""
   File "C:\GTK\bin\libxml2.dll"
   
   ; Put file there
-;  File "synfig_modules.conf"
   
   CreateDirectory "$INSTDIR\etc"
-  Delete $INSTDIR\etc\synfig_modules.conf
+  Delete $INSTDIR\etc\synfig_modules.cfg
 	
   ; Write the installation path into the registry
   ; WriteRegStr HKLM "Software\Voria_@PACKAGE_TARNAME@" "Install_Dir" "$INSTDIR"
@@ -130,7 +129,7 @@ Section "Uninstall"
   ; Remove files and uninstaller
   ;Delete $INSTDIR\synfig.exe
   Delete $INSTDIR\uninstall-@PACKAGE_TARNAME@.exe
-  Delete $INSTDIR\etc\synfig_modules.conf
+  Delete $INSTDIR\etc\synfig_modules.cfg
   RMDir $INSTDIR\bin
   RMDir $INSTDIR\etc
 
