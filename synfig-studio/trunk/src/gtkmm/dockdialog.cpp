@@ -35,6 +35,7 @@
 #include "dockdialog.h"
 #include "dockbook.h"
 #include "dockmanager.h"
+#include "toolbox.h"
 #include "widget_compselect.h"
 #include <synfig/general.h>
 #include <synfig/uniqueid.h>
@@ -99,6 +100,10 @@ DockDialog::DockDialog():
 #endif
 	);
 	set_keep_above(false);
+
+	//! \todo can we set dialog windows transient for all normal windows, not just the toolbox?
+	//! paragraph 3 of http://standards.freedesktop.org/wm-spec/1.3/ar01s07.html suggests we can
+	set_transient_for(*App::toolbox);
 
 	// Set up the window
 	//set_type_hint(Gdk::WINDOW_TYPE_HINT_UTILITY);
