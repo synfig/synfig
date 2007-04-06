@@ -85,7 +85,7 @@ Section ""
   ; WriteRegStr HKLM "Software\Voria_@PACKAGE_TARNAME@" "Install_Dir" "$INSTDIR"
   
   WriteRegStr HKLM "${SYNFIG_REG_KEY}" "Path" "$INSTDIR"
-  WriteRegStr HKLM "${SYNFIG_REG_KEY}" "Version" "@PRODUCT_VERSION@"
+  WriteRegStr HKLM "${SYNFIG_REG_KEY}" "Version" "@PACKAGE_VERSION@"
   
   ; Write the uninstall keys for Windows
   WriteRegStr HKLM "${SYNFIG_UNINSTALL_KEY}" "DisplayName" "@PACKAGE_NAME@"
