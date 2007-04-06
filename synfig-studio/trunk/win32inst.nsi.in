@@ -18,10 +18,6 @@ OutFile "@PACKAGE_TARNAME@-@PACKAGE_VERSION@.exe"
 ; The default installation directory
 InstallDir $PROGRAMFILES\Synfig
 
-; Registry key to check for directory (so if you install again, it will 
-; overwrite the old one automatically)
-InstallDirRegKey HKLM "Software\Voria_@PACKAGE_TARNAME@" "Install_Dir"
-
 !define MUI_ABORTWARNING
 
 !define SHCNE_ASSOCCHANGED 0x8000000
