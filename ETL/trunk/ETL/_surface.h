@@ -410,7 +410,7 @@ public:
 	#define R(x)	( P(x+2) - 4.0f*P(x+1) + 6.0f*P(x) - 4.0f*P(x-1) )*(1.0f/6.0f)
 	#define F(i,j)	(cooker_.cook((*this)[max(min(j+v,h_-1),0)][max(min(i+u,w_-1),0)])*(R((i)-a)*R(b-(j))))
 	#define Z(i,j) ret+=F(i,j)
-	#define X(i,j)	// placeholder... To make box more symetric
+	#define X(i,j)	// placeholder... To make box more symmetric
 
 		int u(floor_to_int(x)), v(floor_to_int(y));
 		float a, b;

@@ -178,8 +178,8 @@ Random::operator()(int smooth,int subseed,float xf,float yf,float tf)const
 #define FT(i,j,k)	((*this)(subseed,i+x,j+y,k+t)*(R((i)-a)*R(b-(j))*R((k)-c)))
 #define Z(i,j) ret+=F(i,j)
 #define ZT(i,j,k) ret+=FT(i,j,k)
-#define X(i,j)	// placeholder... To make box more symetric
-#define XT(i,j,k)	// placeholder... To make box more symetric
+#define X(i,j)	// placeholder... To make box more symmetric
+#define XT(i,j,k)	// placeholder... To make box more symmetric
 
 		float a(xf-x), b(yf-y);
 

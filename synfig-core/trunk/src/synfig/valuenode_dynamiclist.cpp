@@ -405,7 +405,7 @@ ValueNode_DynamicList::ListEntry::status_at_time(const Time &t)const
 	ActivepointList::const_iterator prev_iter;
 	bool state(true);
 
-	// New "symetric" state mechanism
+	// New "symmetric" state mechanism
 	if(!timing_info.empty())
 	{
 		if(timing_info.size()==1)
