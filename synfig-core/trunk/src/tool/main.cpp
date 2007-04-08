@@ -955,18 +955,13 @@ int main(int argc, char *argv[])
 			// If the target type is not yet defined,
 			// try to figure it out from the outfile.
 			if(target_name.empty() && !job_list.front().outfilename.empty())
-			try
 			{
 				VERBOSE_OUT(3)<<_("Target name undefined, attempting to figure it out")<<endl;
-				string ext=string(find(job_list.front().outfilename.begin(),job_list.front().outfilename.end(),'.')+1,job_list.front().outfilename.end());
+				string ext=job_list.front().outfilename.substr(job_list.front().outfilename.rfind('.')+1);
 				if(Target::ext_book().count(ext))
 					target_name=Target::ext_book()[ext];
 				else
 					target_name=ext;
-			}
-			catch(std::length_error)
-			{
-				synfig::warning("Length error caught when attempting to figure out target name");
 			}
 
 			// If the target type is STILL not yet defined, then
