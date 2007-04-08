@@ -1601,6 +1601,10 @@ CanvasParser::parse_dynamic_list(xmlpp::Element *element,Canvas::Handle canvas)
 					String timecode(begin_sequence.begin(),	iter);
 					int priority=0;
 
+					// skip whitespace before checking for a priority
+					while (isspace(timecode[0]))
+						timecode=timecode.substr(1);
+
 					// If there is a priority, then grab it and remove
 					// it from the timecode
 					if(timecode[0]=='p')
@@ -1636,6 +1640,10 @@ CanvasParser::parse_dynamic_list(xmlpp::Element *element,Canvas::Handle canvas)
 					String::iterator iter(find(end_sequence.begin(),end_sequence.end(),','));
 					String timecode(end_sequence.begin(),	iter);
 					int priority=0;
+
+					// skip whitespace before checking for a priority
+					while (isspace(timecode[0]))
+						timecode=timecode.substr(1);
 
 					// If there is a priority, then grab it and remove
 					// it from the timecode
