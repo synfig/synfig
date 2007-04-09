@@ -1089,19 +1089,27 @@ public:
 	void draw_scanline(int y, Real x1, Real y1, Real x2, Real y2);
 	void draw_line(Real x1, Real y1, Real x2, Real y2);
 
-	Real ExtractAlpha(Real area)
+	Real ExtractAlpha(Real area, WindingStyle winding_style)
 	{
-		//non-zero winding style
-		if(area < 0) area = -area;
-		if(area > 1) area = 1;
+		if (area < 0)
+			area = -area;
 
-		//even-odd winding style
-		/*if(area < 0) area = -area;
+		if (winding_style == WINDING_NON_ZERO)
+		{
+			// non-zero winding style
+			if (area > 1)
+				return 1;
+		}
+		else // if (winding_style == WINDING_EVEN_ODD)
+		{
+			// even-odd winding style
+			while (area > 1)
+				area -= 2;
 
-		while(area > 2) area -= 2;
-		if(area > 1) area = 1-area; //want pyramid like thing
-		*/
-		//broken? - yep broken
+			// want pyramid like thing
+			if (area < 0)
+				area = -area;
+		}
 
 		return area;
 	}
@@ -1118,6 +1126,7 @@ Layer_Shape::Layer_Shape(const Real &a, const Color::BlendMethod m):
 	antialias		(true),
 	blurtype		(Blur::FASTGAUSSIAN),
 	feather			(0),
+	winding_style	(WINDING_NON_ZERO),
 	bytestream		(0),
 	lastbyteop		(Primitive::NONE),
 	lastoppos		(-1)
@@ -1145,6 +1154,7 @@ Layer_Shape::set_param(const String & param, const ValueBase &value)
 	IMPORT(antialias);
 	IMPORT(feather);
 	IMPORT(blurtype);
+	IMPORT(winding_style);
 
 	return Layer_Composite::set_param(param,value);
 }
@@ -1158,6 +1168,7 @@ Layer_Shape::get_param(const String &param)const
 	EXPORT(antialias);
 	EXPORT(feather);
 	EXPORT(blurtype);
+	EXPORT(winding_style);
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
@@ -1196,6 +1207,13 @@ Layer_Shape::get_param_vocab()const
 		.add_enum_value(Blur::CROSS,"cross",_("Cross-Hatch Blur"))
 		.add_enum_value(Blur::GAUSSIAN,"gaussian",_("Gaussian Blur"))
 		.add_enum_value(Blur::DISC,"disc",_("Disc Blur"))
+	);
+	ret.push_back(ParamDesc("winding_style")
+		.set_local_name(_("Winding Style"))
+		.set_description(_("Winding style to use"))
+		.set_hint("enum")
+		.add_enum_value(WINDING_NON_ZERO,"nonzero",_("Non Zero"))
+		.add_enum_value(WINDING_EVEN_ODD,"evenodd",_("Even/Odd"))
 	);
 
 	return ret;
@@ -2195,7 +2213,7 @@ bool Layer_Shape::render_polyspan(Surface *surface, PolySpan &polyspan,
 		//draw pixel - based on covered area
 		if(area)	//if we're ok, draw the current pixel
 		{
-			alpha = polyspan.ExtractAlpha(cover - area);
+			alpha = polyspan.ExtractAlpha(cover - area, winding_style);
 			if(invert) alpha = 1 - alpha;
 
 			if(!antialias)
@@ -2232,7 +2250,7 @@ bool Layer_Shape::render_polyspan(Surface *surface, PolySpan &polyspan,
 		//draw span to next pixel - based on total amount of pixel cover
 		if(x < cur_mark->x)
 		{
-			alpha = polyspan.ExtractAlpha(cover);
+			alpha = polyspan.ExtractAlpha(cover, winding_style);
 			if(invert) alpha = 1 - alpha;
 
 			if(!antialias)
@@ -2321,7 +2339,7 @@ bool Layer_Shape::render_polyspan(etl::surface<float> *surface, PolySpan &polysp
 			//draw pixel - based on covered area
 			if(area)	//if we're ok, draw the current pixel
 			{
-				alpha = 1 - polyspan.ExtractAlpha(cover - area);
+				alpha = 1 - polyspan.ExtractAlpha(cover - area, winding_style);
 				if(!antialias)
 				{
 					if(alpha >= .5) p.put_value();
@@ -2353,7 +2371,7 @@ bool Layer_Shape::render_polyspan(etl::surface<float> *surface, PolySpan &polysp
 			//draw span to next pixel - based on total amount of pixel cover
 			if(x < cur_mark->x)
 			{
-				alpha = 1 - polyspan.ExtractAlpha(cover);
+				alpha = 1 - polyspan.ExtractAlpha(cover, winding_style);
 				if(!antialias)
 				{
 					if(alpha >= .5) p.put_hline(cur_mark->x - x);
@@ -2393,7 +2411,7 @@ bool Layer_Shape::render_polyspan(etl::surface<float> *surface, PolySpan &polysp
 			//draw pixel - based on covered area
 			if(area)	//if we're ok, draw the current pixel
 			{
-				alpha = polyspan.ExtractAlpha(cover - area);
+				alpha = polyspan.ExtractAlpha(cover - area, winding_style);
 				if(!antialias)
 				{
 					if(alpha >= .5) p.put_value();
@@ -2418,7 +2436,7 @@ bool Layer_Shape::render_polyspan(etl::surface<float> *surface, PolySpan &polysp
 			//draw span to next pixel - based on total amount of pixel cover
 			if(x < cur_mark->x)
 			{
-				alpha = polyspan.ExtractAlpha(cover);
+				alpha = polyspan.ExtractAlpha(cover, winding_style);
 				if(!antialias)
 				{
 					if(alpha >= .5) p.put_hline(cur_mark->x - x);

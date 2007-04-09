@@ -48,6 +48,14 @@ class Layer_Shape : public Layer_Composite, public Layer_NoDeform
 {
 	SYNFIG_LAYER_MODULE_EXT
 
+	enum WindingStyle
+	{
+	    WINDING_NON_ZERO=0,			//!< less than -1 --> 1;  -1 --> 1;   0 --> 0;   1 --> 1;  greater than 1 --> 1
+	    WINDING_EVEN_ODD=1,			//!< add or subtract multiples of 2 to get into range -1:1, then as above
+
+	    WINDING_END=2				//!< \internal
+	};
+
 private:
 
 	//internal cacheing
@@ -63,6 +71,7 @@ private:
 
 	int		blurtype;
 	Real	feather;
+	WindingStyle winding_style;
 
 	std::vector< char > 	bytestream;
 
