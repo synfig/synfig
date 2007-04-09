@@ -194,9 +194,24 @@ Outline::sync()
 	else
 		iter=next++;
 
+	// 				iter	next
+	//				----	----
+	// looped		nth		1st
+	// !looped		1st		2nd
+
+	Vector first_tangent=bline.front().get_tangent2();
 	Vector last_tangent=iter->get_tangent1();
 
-	for(bool first=!loop;next!=end;iter=next++,first=false)
+	// if we are looped and drawing sharp cusps, we'll need a value for the incoming tangent
+	if (loop && sharp_cusps && last_tangent.is_equal_to(Vector::zero()))
+	{
+		hermite<Vector> curve((iter-1)->get_vertex(), iter->get_vertex(), (iter-1)->get_tangent2(), iter->get_tangent1());
+		const derivative< hermite<Vector> > deriv(curve);
+		last_tangent=deriv(1.0-CUSP_TANGENT_ADJUST);
+	}
+
+	// `first' is for making the cusps; don't do that for the first point if we're not looped
+	for(bool first=!loop; next!=end; iter=next++)
 	{
 		Vector prev_t(iter->get_tangent1());
 		Vector iter_t(iter->get_tangent2());
@@ -204,10 +219,16 @@ Outline::sync()
 
 		bool split_flag(iter->get_split_tangent_flag());
 
+		// if iter.t2 == 0 and next.t1 == 0, this is a straight line
 		if(iter_t.is_equal_to(Vector::zero()) && next_t.is_equal_to(Vector::zero()))
 		{
 			iter_t=next_t=next->get_vertex()-iter->get_vertex();
-			split_flag=true;
+			// split_flag=true;
+
+			// if the two points are on top of each other, ignore this segment
+			// leave `first' true if was before
+			if (iter_t.is_equal_to(Vector::zero()))
+				continue;
 		}
 
 		// Setup the curve
@@ -223,6 +244,9 @@ Outline::sync()
 			next_w((next->get_width()*width)*0.5f+expand);
 
 		const derivative< hermite<Vector> > deriv(curve);
+
+		if (first)
+			first_tangent = deriv(CUSP_TANGENT_ADJUST);
 
 		// Make cusps as necessary
 		if(!first && sharp_cusps && split_flag && (!prev_t.is_equal_to(iter_t) || iter_t.is_equal_to(Vector::zero())) && !last_tangent.is_equal_to(Vector::zero()))
@@ -268,7 +292,7 @@ Outline::sync()
 			const float length(curve.length());
 			float dist(0);
 			Point lastpoint;
-			for(float n=0.0f;n<1.0f;n+=1.0f/SAMPLES)
+			for(float n=0.0f;n<0.999999f;n+=1.0f/SAMPLES)
 			{
 				const Vector d(deriv(n>CUSP_TANGENT_ADJUST?n:CUSP_TANGENT_ADJUST).perp().norm());
 				const Vector p(curve(n));
@@ -285,7 +309,7 @@ Outline::sync()
 			}
 		}
 		else
-			for(float n=0.0f;n<1.0f;n+=1.0f/SAMPLES)
+			for(float n=0.0f;n<0.999999f;n+=1.0f/SAMPLES)
 			{
 				const Vector d(deriv(n>CUSP_TANGENT_ADJUST?n:CUSP_TANGENT_ADJUST).perp().norm());
 				const Vector p(curve(n));
@@ -297,6 +321,8 @@ Outline::sync()
 		last_tangent=deriv(1.0-CUSP_TANGENT_ADJUST);
 		side_a.push_back(curve(1.0)+last_tangent.perp().norm()*next_w);
 		side_b.push_back(curve(1.0)-last_tangent.perp().norm()*next_w);
+
+		first=false;
 	}
 
 	if(loop)
@@ -324,11 +350,8 @@ Outline::sync()
 			-tangent*w*ROUND_END_FACTOR
 		);
 
-		for(float n=0.0f;n<1.0f;n+=1.0f/SAMPLES)
+		for(float n=0.0f;n<0.999999f;n+=1.0f/SAMPLES)
 			side_a.push_back(curve(n));
-
-		// remove the last point
-		side_a.pop_back();
 	}
 
 	for(;!side_b.empty();side_b.pop_back())
@@ -341,7 +364,7 @@ Outline::sync()
 		side_a.pop_back();
 
 		const Point vertex(bline.front().get_vertex());
-		const Vector tangent(bline.front().get_tangent2().norm());
+		const Vector tangent(first_tangent.norm());
 		const float w((bline.front().get_width()*width)*0.5f+expand);
 
 		hermite<Vector> curve(
@@ -351,11 +374,8 @@ Outline::sync()
 			tangent*w*ROUND_END_FACTOR
 		);
 
-		for(float n=0.0f;n<1.0f;n+=1.0f/SAMPLES)
+		for(float n=0.0f;n<0.999999f;n+=1.0f/SAMPLES)
 			side_a.push_back(curve(n));
-
-		// remove the last point
-		side_a.pop_back();
 	}
 
 	add_polygon(side_a);
