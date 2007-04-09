@@ -1,3 +1,4 @@
+#include <stdio.h>
 /* === S Y N F I G ========================================================= */
 /*!	\file activepoint.h
 **	\brief Template Header
@@ -61,7 +62,8 @@ public:
 	bool operator<(const Time& rhs) { return time<rhs; }
 
 	Activepoint(const Time &time, const bool &state, int p=0): time(time), priority(p),state(state) { }
-	Activepoint() { }
+	//! \todo Should priority be initialised here, or elsewhere?  This avoids a valgrind warning for now.
+	Activepoint(): priority(0) { }
 
 	const Time& get_time()const { return time; }
 	void set_time(const Time& x) { time=x; }
