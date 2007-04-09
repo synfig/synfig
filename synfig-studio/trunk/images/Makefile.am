@@ -41,19 +41,27 @@ clean:
 
 keyframe_lock_all.$(EXT): $(srcdir)/keyframe_lock_icon.sif
 	$(SYNFIG) -q $< -o $@ --time 0
+	echo "  File \"images\\$@\"" >>./images.nsh
+	echo "  Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 
 keyframe_lock_past.$(EXT): $(srcdir)/keyframe_lock_icon.sif
 	$(SYNFIG) -q $< -o $@ --time 0 -c PastOnly
+	echo "  File \"images\\$@\"" >>./images.nsh
+	echo "  Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 
 keyframe_lock_future.$(EXT): $(srcdir)/keyframe_lock_icon.sif
 	$(SYNFIG) -q $< -o $@ --time 0 -c FutureOnly
+	echo "  File \"images\\$@\"" >>./images.nsh
+	echo "  Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 
 keyframe_lock_none.$(EXT): $(srcdir)/keyframe_lock_icon.sif
 	$(SYNFIG) -q $< -o $@ --time 0 -c Disabled
+	echo "  File \"images\\$@\"" >>./images.nsh
+	echo "  Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 
 #.sif.png:
 #	$(SYNFIG) -q $< -o $@ --time 0
-	
+
 #datanode_icon.$(EXT): datanode_icon.sif
 #	$(SYNFIG) -q datanode_icon.sif -o datanode_icon.$(EXT) -w 128 -h 128 --time 0
 
