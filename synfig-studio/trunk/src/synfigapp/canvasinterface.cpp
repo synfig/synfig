@@ -843,7 +843,7 @@ CanvasInterface::seek_time(synfig::Time time)
 	}
 	if(time<=synfig::Time::begin())
 	{
-		set_time(get_canvas()->rend_desc().get_time_end());
+		set_time(get_canvas()->rend_desc().get_time_start());
 		return;
 	}
 
