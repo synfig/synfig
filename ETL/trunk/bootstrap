@@ -57,7 +57,7 @@ cleanup () {
 	rm -fr config.cache autom4te.cache configure.in $TEMPFILE
 }
 
-output Prepairing build environment for $PACKAGE-$VERSION...
+output Preparing build environment for $PACKAGE-$VERSION...
 
 # Look for the CVS directory. If we don't find it, we need to
 # ask the user if they know what they are doing.
