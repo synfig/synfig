@@ -821,10 +821,10 @@ CanvasInterface::seek_frame(int frames)
 	Time newtime(get_time()+(float)frames/fps);
 	newtime=newtime.round(fps);
 
-	if(newtime<=get_canvas()->rend_desc().get_frame_start())
-		newtime=get_canvas()->rend_desc().get_frame_start();
-	if(newtime>=get_canvas()->rend_desc().get_frame_end())
-		newtime=get_canvas()->rend_desc().get_frame_end();
+	if(newtime<=get_canvas()->rend_desc().get_time_start())
+		newtime=get_canvas()->rend_desc().get_time_start();
+	if(newtime>=get_canvas()->rend_desc().get_time_end())
+		newtime=get_canvas()->rend_desc().get_time_end();
 	set_time(newtime);
 }
 
