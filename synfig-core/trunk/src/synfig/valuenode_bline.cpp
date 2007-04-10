@@ -511,6 +511,13 @@ ValueNode_BLine::operator()(Time t)const
 				float origin=next.get_origin()-curr.get_origin();
 				next_tangent_scalar=(1.0f-origin)*amount+origin;
 			}
+			else
+			{
+				//! \todo this isn't quite right; we should handle looped blines identically no matter where the loop happens
+				//! and we currently don't.  this at least makes it a lot better than it was before
+				float origin=end.get_origin()-curr.get_origin();
+				next_tangent_scalar=(1.0f-origin)*amount+origin;
+			}
 			next_scale=next_tangent_scalar;
 
 			//ret.set_vertex((curr.get_vertex()-ret.get_vertex())*amount+ret.get_vertex());
