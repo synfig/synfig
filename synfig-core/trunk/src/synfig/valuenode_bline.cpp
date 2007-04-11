@@ -63,6 +63,10 @@ linear_interpolation(const Vector& a, const Vector& b, float c)
 inline Vector
 radial_interpolation(const Vector& a, const Vector& b, float c)
 {
+	// if either extreme is zero then use linear interpolation instead
+	if (a.is_equal_to(Vector::zero()) || b.is_equal_to(Vector::zero()))
+		return linear_interpolation(a, b, c);
+
 	affine_combo<Real,float> mag_combo;
 	affine_combo<Angle,float> ang_combo;
 
