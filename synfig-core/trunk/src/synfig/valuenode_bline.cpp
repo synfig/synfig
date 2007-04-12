@@ -592,13 +592,13 @@ ValueNode_BLine::operator()(Time t)const
 
 #ifdef COORD_SYS_RADIAL_TAN_INTERP
 				// this I don't understand.  why add on this bit ---v
-				transform_coords(blp_here_on.get_tangent1()  + blp_here_on.get_vertex(),  trans_on_t1,  on_coord_origin,  on_coord_sys);
-				transform_coords(blp_here_off.get_tangent1() + blp_here_off.get_vertex(), trans_off_t1, off_coord_origin, off_coord_sys);
+				transform_coords(blp_here_on.get_tangent1(),  trans_on_t1,  Point::zero(), on_coord_sys);
+				transform_coords(blp_here_off.get_tangent1(), trans_off_t1, Point::zero(), off_coord_sys);
 
 				if(blp_here_on.get_split_tangent_flag())
 				{
-					transform_coords(blp_here_on.get_tangent2()  + blp_here_on.get_vertex(),  trans_on_t2,  on_coord_origin,  on_coord_sys);
-					transform_coords(blp_here_off.get_tangent2() + blp_here_off.get_vertex(), trans_off_t2, off_coord_origin, off_coord_sys);
+					transform_coords(blp_here_on.get_tangent2(),  trans_on_t2,  Point::zero(), on_coord_sys);
+					transform_coords(blp_here_off.get_tangent2(), trans_off_t2, Point::zero(), off_coord_sys);
 				}
 #endif
 				// Convert current point
@@ -614,15 +614,11 @@ ValueNode_BLine::operator()(Time t)const
 
 #ifdef COORD_SYS_RADIAL_TAN_INTERP
 				untransform_coords(INTERP_FUNCTION(trans_off_t1,trans_on_t1,amount),
-								   untrans_curr_t1, curr_coord_origin, curr_coord_sys);
-				untrans_curr_t1 -= untrans_curr_point;
+								   untrans_curr_t1, Point::zero(), curr_coord_sys);
 
 				if(blp_here_on.get_split_tangent_flag())
-				{
 					untransform_coords(INTERP_FUNCTION(trans_off_t2,trans_on_t2,amount),
-									   untrans_curr_t2, curr_coord_origin, curr_coord_sys);
-					untrans_curr_t2 -= untrans_curr_point;
-				}
+									   untrans_curr_t2, Point::zero(), curr_coord_sys);
 #endif
 
 				blp_here_now.set_vertex(untrans_curr_point);
