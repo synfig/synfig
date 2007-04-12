@@ -214,8 +214,8 @@ void studio::Preview::render()
 
 		//setting the description
 
-		//HACK - BECAUSE THE RENDERER CAN'T RENDER INCLUDING THE LAST FRAME
-		desc.set_time_end(desc.get_time_end() + 1.3/fps);
+		//HACK - add on one extra frame because the renderer can't render the last frame
+		desc.set_time_end(desc.get_time_end() + 1.000001/fps);
 
 		target->set_rend_desc(&desc);
 
