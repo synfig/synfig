@@ -521,39 +521,39 @@ ValueNode_BLine::operator()(Time t)const
 			next_scale=next_tangent_scalar;
 
 			//ret.set_vertex((curr.get_vertex()-ret.get_vertex())*amount+ret.get_vertex());
-			if(false)
-			{
-				// My first try
-				Point ref_point_begin(
-					(
-						(*begin_iter->value_node)(off_time).get(prev).get_vertex() +
-						(*end_iter->value_node)(off_time).get(prev).get_vertex()
-					) * 0.5
-				);
-				Point ref_point_end(
-					(
-						(*begin_iter->value_node)(on_time).get(prev).get_vertex() +
-						(*end_iter->value_node)(on_time).get(prev).get_vertex()
-					) * 0.5
-				);
-				Point ref_point_now(
-					(
-						(*begin_iter->value_node)(t).get(prev).get_vertex() +
-						(*end_iter->value_node)(t).get(prev).get_vertex()
-					) * 0.5
-				);
-				Point ref_point_linear((ref_point_end-ref_point_begin)*amount+ref_point_begin);
-
-				ret.set_vertex(
-					(curr.get_vertex()-ret.get_vertex())*amount+ret.get_vertex() +
-					(ref_point_now-ref_point_linear)
-				);
-				ret.set_tangent1((curr.get_tangent1()-ret.get_tangent1())*amount+ret.get_tangent1());
-				ret.set_split_tangent_flag(curr.get_split_tangent_flag());
-				if(ret.get_split_tangent_flag())
-					ret.set_tangent2((curr.get_tangent2()-ret.get_tangent2())*amount+ret.get_tangent2());
-			}
-			else
+//			if(false)
+//			{
+//				// My first try
+//				Point ref_point_begin(
+//					(
+//						(*begin_iter->value_node)(off_time).get(prev).get_vertex() +
+//						(*end_iter->value_node)(off_time).get(prev).get_vertex()
+//					) * 0.5
+//				);
+//				Point ref_point_end(
+//					(
+//						(*begin_iter->value_node)(on_time).get(prev).get_vertex() +
+//						(*end_iter->value_node)(on_time).get(prev).get_vertex()
+//					) * 0.5
+//				);
+//				Point ref_point_now(
+//					(
+//						(*begin_iter->value_node)(t).get(prev).get_vertex() +
+//						(*end_iter->value_node)(t).get(prev).get_vertex()
+//					) * 0.5
+//				);
+//				Point ref_point_linear((ref_point_end-ref_point_begin)*amount+ref_point_begin);
+//
+//				ret.set_vertex(
+//					(curr.get_vertex()-ret.get_vertex())*amount+ret.get_vertex() +
+//					(ref_point_now-ref_point_linear)
+//				);
+//				ret.set_tangent1((curr.get_tangent1()-ret.get_tangent1())*amount+ret.get_tangent1());
+//				ret.set_split_tangent_flag(curr.get_split_tangent_flag());
+//				if(ret.get_split_tangent_flag())
+//					ret.set_tangent2((curr.get_tangent2()-ret.get_tangent2())*amount+ret.get_tangent2());
+//			}
+//			else
 			{
 				// My second try
 
