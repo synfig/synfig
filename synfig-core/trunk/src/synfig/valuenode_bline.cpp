@@ -587,21 +587,7 @@ ValueNode_BLine::operator()(Time t)const
 					curr_coord_sys[1]=curr_coord_sys[0].perp();
 				}
 
-				/*
-				on_coord_origin=(*end_iter->value_node)(on_time).get(prev).get_vertex();
-				on_coord_sys[0]=(
-					(*begin_iter->value_node)(on_time).get(prev).get_vertex() -
-					on_coord_origin
-				).norm();
-				on_coord_sys[1]=on_coord_sys[0].perp();
-
-				curr_coord_origin=(*end_iter->value_node)(t).get(prev).get_vertex();
-				curr_coord_sys[0]=(
-					(*begin_iter->value_node)(t).get(prev).get_vertex() -
-					curr_coord_origin
-				).norm();
-				curr_coord_sys[1]=curr_coord_sys[0].perp();
-				*/
+				/* the code that was here before used just end_iter as the origin, rather than the mid-point */
 
 				// Convert point where vertex is fully 'off'
 				Point trans_off_point;
