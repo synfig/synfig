@@ -359,7 +359,6 @@ ValueNode_BLine::operator()(Time t)const
 			else
 			{
 				ret_list.push_back(curr);
-
 			}
 
 			prev=curr;
@@ -375,30 +374,30 @@ ValueNode_BLine::operator()(Time t)const
 
 			BLinePoint curr;
 			BLinePoint begin;	// begin of dynamic group
-			BLinePoint end;		// End of dynamic group
+			BLinePoint end;		// end of dynamic group
 			Time blend_time;
 			int dist_from_begin(0), dist_from_end(0);
 			BLinePoint ret;
 
-			Time begin_time;
-			Time end_time;
+			Time off_time;
+			Time on_time;
 
 			if(!rising)
 			{
-				try{ end_time=iter->find_prev(t)->get_time(); }
-				catch(...) { end_time=Time::begin(); }
-				try{ begin_time=iter->find_next(t)->get_time(); }
-				catch(...) { begin_time=Time::end(); }
+				try{ on_time=iter->find_prev(t)->get_time(); }
+				catch(...) { on_time=Time::begin(); }
+				try{ off_time=iter->find_next(t)->get_time(); }
+				catch(...) { off_time=Time::end(); }
 			}
 			else
 			{
-				try{ begin_time=iter->find_prev(t)->get_time(); }
-				catch(...) { begin_time=Time::begin(); }
-				try{ end_time=iter->find_next(t)->get_time(); }
-				catch(...) { end_time=Time::end(); }
+				try{ off_time=iter->find_prev(t)->get_time(); }
+				catch(...) { off_time=Time::begin(); }
+				try{ on_time=iter->find_next(t)->get_time(); }
+				catch(...) { on_time=Time::end(); }
 			}
-			blend_time=begin_time;
-			curr=(*iter->value_node)(end_time).get(curr);
+			blend_time=off_time;
+			curr=(*iter->value_node)(on_time).get(curr);
 
 //			curr=(*iter->value_node)(t).get(curr);
 
@@ -530,14 +529,14 @@ ValueNode_BLine::operator()(Time t)const
 				// My first try
 				Point ref_point_begin(
 					(
-						(*begin_iter->value_node)(begin_time).get(prev).get_vertex() +
-						(*end_iter->value_node)(begin_time).get(prev).get_vertex()
+						(*begin_iter->value_node)(off_time).get(prev).get_vertex() +
+						(*end_iter->value_node)(off_time).get(prev).get_vertex()
 					) * 0.5
 				);
 				Point ref_point_end(
 					(
-						(*begin_iter->value_node)(end_time).get(prev).get_vertex() +
-						(*end_iter->value_node)(end_time).get(prev).get_vertex()
+						(*begin_iter->value_node)(on_time).get(prev).get_vertex() +
+						(*end_iter->value_node)(on_time).get(prev).get_vertex()
 					) * 0.5
 				);
 				Point ref_point_now(
@@ -560,137 +559,139 @@ ValueNode_BLine::operator()(Time t)const
 			else
 			{
 				// My second try
-				Point begin_cord_sys[2], begin_cord_origin;
-				Point end_cord_sys[2], end_cord_origin;
-				Point curr_cord_sys[2], curr_cord_origin;
 
+				// define 3 coordinate systems:
+				Point off_coord_sys[2],   off_coord_origin; // when the current vertex is completely off
+				Point on_coord_sys[2] ,    on_coord_origin; // when the current vertex is completely on
+				Point curr_coord_sys[2], curr_coord_origin; // the current state - somewhere in between
+
+				// for each of the 3 systems, the origin is half way between the previous and next active point
+				// and the axes are based on a vector from the next active point to the previous
 				{
-					const Point a((*end_iter->value_node)(begin_time).get(prev).get_vertex());
-					const Point b((*begin_iter->value_node)(begin_time).get(prev).get_vertex());
-					begin_cord_origin=(a+b)/2;
-					begin_cord_sys[0]=( b - a ).norm();
-					begin_cord_sys[1]=begin_cord_sys[0].perp();
-				}
-				{
-					const Point a((*end_iter->value_node)(end_time).get(prev).get_vertex());
-					const Point b((*begin_iter->value_node)(end_time).get(prev).get_vertex());
-					end_cord_origin=(a+b)/2;
-					end_cord_sys[0]=( b - a ).norm();
-					end_cord_sys[1]=end_cord_sys[0].perp();
-				}
-				{
-					const Point a((*end_iter->value_node)(t).get(prev).get_vertex());
-					const Point b((*begin_iter->value_node)(t).get(prev).get_vertex());
-					curr_cord_origin=(a+b)/2;
-					curr_cord_sys[0]=( b - a ).norm();
-					curr_cord_sys[1]=curr_cord_sys[0].perp();
+					const Point   end_pos_at_off_time((  *end_iter->value_node)(off_time).get(prev).get_vertex());
+					const Point begin_pos_at_off_time((*begin_iter->value_node)(off_time).get(prev).get_vertex());
+					off_coord_origin=(begin_pos_at_off_time + end_pos_at_off_time)/2;
+					off_coord_sys[0]=(begin_pos_at_off_time - end_pos_at_off_time).norm();
+					off_coord_sys[1]=off_coord_sys[0].perp();
+
+					const Point   end_pos_at_on_time((  *end_iter->value_node)(on_time).get(prev).get_vertex());
+					const Point begin_pos_at_on_time((*begin_iter->value_node)(on_time).get(prev).get_vertex());
+					on_coord_origin=(begin_pos_at_on_time + end_pos_at_on_time)/2;
+					on_coord_sys[0]=(begin_pos_at_on_time - end_pos_at_on_time).norm();
+					on_coord_sys[1]=on_coord_sys[0].perp();
+
+					const Point   end_pos_at_current_time((  *end_iter->value_node)(t).get(prev).get_vertex());
+					const Point begin_pos_at_current_time((*begin_iter->value_node)(t).get(prev).get_vertex());
+					curr_coord_origin=(begin_pos_at_current_time + end_pos_at_current_time)/2;
+					curr_coord_sys[0]=(begin_pos_at_current_time - end_pos_at_current_time).norm();
+					curr_coord_sys[1]=curr_coord_sys[0].perp();
 				}
 
 				/*
-				end_cord_origin=(*end_iter->value_node)(end_time).get(prev).get_vertex();
-				end_cord_sys[0]=(
-					(*begin_iter->value_node)(end_time).get(prev).get_vertex() -
-					end_cord_origin
+				on_coord_origin=(*end_iter->value_node)(on_time).get(prev).get_vertex();
+				on_coord_sys[0]=(
+					(*begin_iter->value_node)(on_time).get(prev).get_vertex() -
+					on_coord_origin
 				).norm();
-				end_cord_sys[1]=end_cord_sys[0].perp();
+				on_coord_sys[1]=on_coord_sys[0].perp();
 
-				curr_cord_origin=(*end_iter->value_node)(t).get(prev).get_vertex();
-				curr_cord_sys[0]=(
+				curr_coord_origin=(*end_iter->value_node)(t).get(prev).get_vertex();
+				curr_coord_sys[0]=(
 					(*begin_iter->value_node)(t).get(prev).get_vertex() -
-					curr_cord_origin
+					curr_coord_origin
 				).norm();
-				curr_cord_sys[1]=curr_cord_sys[0].perp();
+				curr_coord_sys[1]=curr_coord_sys[0].perp();
 				*/
 
-				// Convert start point
-				Point a;
-				Vector at1,at2;
+				// Convert point where vertex is fully 'off'
+				Point trans_off_point;
+				Vector trans_off_t1,trans_off_t2;
 				{
-					Point tmp(ret.get_vertex()-begin_cord_origin);
-					a[0]=tmp*begin_cord_sys[0];
-					a[1]=tmp*begin_cord_sys[1];
+					Point tmp(ret.get_vertex()-off_coord_origin);
+					trans_off_point[0]=tmp*off_coord_sys[0];
+					trans_off_point[1]=tmp*off_coord_sys[1];
 #define COORD_SYS_RADIAL_TAN_INTERP 1
 
 #ifdef COORD_SYS_RADIAL_TAN_INTERP
-					tmp=ret.get_tangent1()+ret.get_vertex()-begin_cord_origin;
-					at1[0]=tmp*begin_cord_sys[0];
-					at1[1]=tmp*begin_cord_sys[1];
+					tmp=ret.get_tangent1()+ret.get_vertex()-off_coord_origin;
+					trans_off_t1[0]=tmp*off_coord_sys[0];
+					trans_off_t1[1]=tmp*off_coord_sys[1];
 
 					if(curr.get_split_tangent_flag())
 					{
-						tmp=ret.get_tangent2()+ret.get_vertex()-begin_cord_origin;
-						at2[0]=tmp*begin_cord_sys[0];
-						at2[1]=tmp*begin_cord_sys[1];
+						tmp=ret.get_tangent2()+ret.get_vertex()-off_coord_origin;
+						trans_off_t2[0]=tmp*off_coord_sys[0];
+						trans_off_t2[1]=tmp*off_coord_sys[1];
 					}
 #endif
 				}
 
-				// Convert finish point
-				Point b;
-				Vector bt1,bt2;
+				// Convert point where vertex is fully 'on'
+				Point trans_on_point;
+				Vector trans_on_t1,trans_on_t2;
 				{
-					Point tmp(curr.get_vertex()-end_cord_origin);
-					b[0]=tmp*end_cord_sys[0];
-					b[1]=tmp*end_cord_sys[1];
+					Point tmp(curr.get_vertex()-on_coord_origin);
+					trans_on_point[0]=tmp*on_coord_sys[0];
+					trans_on_point[1]=tmp*on_coord_sys[1];
 
 #ifdef COORD_SYS_RADIAL_TAN_INTERP
-					tmp=curr.get_tangent1()+curr.get_vertex()-end_cord_origin;
-					bt1[0]=tmp*end_cord_sys[0];
-					bt1[1]=tmp*end_cord_sys[1];
+					tmp=curr.get_tangent1()+curr.get_vertex()-on_coord_origin;
+					trans_on_t1[0]=tmp*on_coord_sys[0];
+					trans_on_t1[1]=tmp*on_coord_sys[1];
 
 					if(curr.get_split_tangent_flag())
 					{
-						tmp=curr.get_tangent2()+curr.get_vertex()-end_cord_origin;
-						bt2[0]=tmp*end_cord_sys[0];
-						bt2[1]=tmp*end_cord_sys[1];
+						tmp=curr.get_tangent2()+curr.get_vertex()-on_coord_origin;
+						trans_on_t2[0]=tmp*on_coord_sys[0];
+						trans_on_t2[1]=tmp*on_coord_sys[1];
 					}
 #endif
 				}
 
 				// Convert current point
-				Point c;
-				Vector ct1,ct2;
+				Point trans_curr_point;
+				Vector trans_curr_t1,trans_curr_t2;
 				{
 					// Transpose (invert)
-					swap(curr_cord_sys[0][1],curr_cord_sys[1][0]);
+					swap(curr_coord_sys[0][1],curr_coord_sys[1][0]);
 
-					Point tmp((b-a)*amount+a);
-					c[0]=tmp*curr_cord_sys[0];
-					c[1]=tmp*curr_cord_sys[1];
-					c+=curr_cord_origin;
+					Point tmp((trans_on_point-trans_off_point)*amount+trans_off_point);
+					trans_curr_point[0]=tmp*curr_coord_sys[0];
+					trans_curr_point[1]=tmp*curr_coord_sys[1];
+					trans_curr_point+=curr_coord_origin;
 
 #define INTERP_FUNCTION		radial_interpolation
 //#define INTERP_FUNCTION		linear_interpolation
 
 #ifdef COORD_SYS_RADIAL_TAN_INTERP
-					tmp=INTERP_FUNCTION(at1,bt1,amount);
-					ct1[0]=tmp*curr_cord_sys[0];
-					ct1[1]=tmp*curr_cord_sys[1];
-					ct1+=curr_cord_origin;
-					ct1-=c;
+					tmp=INTERP_FUNCTION(trans_off_t1,trans_on_t1,amount);
+					trans_curr_t1[0]=tmp*curr_coord_sys[0];
+					trans_curr_t1[1]=tmp*curr_coord_sys[1];
+					trans_curr_t1+=curr_coord_origin;
+					trans_curr_t1-=trans_curr_point;
 
 					if(curr.get_split_tangent_flag())
 					{
-						tmp=INTERP_FUNCTION(at2,bt2,amount);
-						ct2[0]=tmp*curr_cord_sys[0];
-						ct2[1]=tmp*curr_cord_sys[1];
-						ct2+=curr_cord_origin;
-						ct2-=c;
+						tmp=INTERP_FUNCTION(trans_off_t2,trans_on_t2,amount);
+						trans_curr_t2[0]=tmp*curr_coord_sys[0];
+						trans_curr_t2[1]=tmp*curr_coord_sys[1];
+						trans_curr_t2+=curr_coord_origin;
+						trans_curr_t2-=trans_curr_point;
 					}
 #endif
 				}
 
-				ret.set_vertex(c);
+				ret.set_vertex(trans_curr_point);
 #ifndef COORD_SYS_RADIAL_TAN_INTERP
 				ret.set_tangent1(radial_interpolation(ret.get_tangent1(),curr.get_tangent1(),amount));
 				ret.set_split_tangent_flag(curr.get_split_tangent_flag());
 				if(ret.get_split_tangent_flag())
 					ret.set_tangent2(radial_interpolation(ret.get_tangent2(),curr.get_tangent2(),amount));
 #else
-				ret.set_tangent1(ct1);
+				ret.set_tangent1(trans_curr_t1);
 				ret.set_split_tangent_flag(curr.get_split_tangent_flag());
 				if(ret.get_split_tangent_flag())
-					ret.set_tangent2(ct2);
+					ret.set_tangent2(trans_curr_t2);
 #endif
 			}
 
