@@ -81,7 +81,7 @@ radial_interpolation(const Vector& a, const Vector& b, float c)
 }
 
 inline void
-transform(Vector in, Vector& out, Point& coord_origin, Point *coord_sys)
+transform_coords(Vector in, Vector& out, const Point& coord_origin, const Point *coord_sys)
 {
 	in -= coord_origin;
 	out[0] = in * coord_sys[0];
@@ -89,7 +89,7 @@ transform(Vector in, Vector& out, Point& coord_origin, Point *coord_sys)
 }
 
 inline void
-untransform(const Vector& in, Vector& out, Point& coord_origin, Point *coord_sys)
+untransform_coords(const Vector& in, Vector& out, const Point& coord_origin, const Point *coord_sys)
 {
 	out[0] = in * coord_sys[0];
 	out[1] = in * coord_sys[1];
@@ -394,19 +394,19 @@ ValueNode_BLine::operator()(Time t)const
 			BLinePoint blp_here_off; // the current vertex, when fully off
 			BLinePoint blp_here_now; // the current vertex, right now (between on and off)
 			BLinePoint blp_prev_off; // the beginning of dynamic group when fully off
-			BLinePoint blp_next_off; // end of the dynamic group when fully off
+			BLinePoint blp_next_off; // the end of the dynamic group when fully off
 
 			int dist_from_begin(0), dist_from_end(0);
 			Time off_time, on_time;
 
-			if(!rising)
+			if(!rising)	// if not rising, then we were fully on in the past, and will be fully off in the future
 			{
 				try{ on_time=iter->find_prev(t)->get_time(); }
 				catch(...) { on_time=Time::begin(); }
 				try{ off_time=iter->find_next(t)->get_time(); }
 				catch(...) { off_time=Time::end(); }
 			}
-			else
+			else // otherwise we were fully off in the past, and will be fully on in the future
 			{
 				try{ off_time=iter->find_prev(t)->get_time(); }
 				catch(...) { off_time=Time::begin(); }
@@ -489,14 +489,15 @@ ValueNode_BLine::operator()(Time t)const
 				}
 			}
 
+			// this is how the curve looks when we have completely vanished
 			etl::hermite<Vector> curve(blp_prev_off.get_vertex(),   blp_next_off.get_vertex(),
 									   blp_prev_off.get_tangent2(), blp_next_off.get_tangent1());
 			etl::derivative< etl::hermite<Vector> > deriv(curve);
 
+			// where would we be on this curve, how wide will we be, and
+			// where will our tangents point (all assuming that we hadn't vanished)
 			blp_here_off.set_vertex(curve(blp_here_on.get_origin()));
-
 			blp_here_off.set_width((blp_next_off.get_width()-blp_prev_off.get_width())*blp_here_on.get_origin()+blp_prev_off.get_width());
-
 			blp_here_off.set_tangent1(deriv(blp_here_on.get_origin()));
 			blp_here_off.set_tangent2(deriv(blp_here_on.get_origin()));
 
@@ -584,20 +585,20 @@ ValueNode_BLine::operator()(Time t)const
 				Vector trans_on_t1, trans_on_t2, trans_off_t1, trans_off_t2, untrans_curr_t1, untrans_curr_t2;
 
 				// Convert points where vertex is fully on and fully off
-				transform(blp_here_on.get_vertex(),  trans_on_point,  on_coord_origin,  on_coord_sys);
-				transform(blp_here_off.get_vertex(), trans_off_point, off_coord_origin, off_coord_sys);
+				transform_coords(blp_here_on.get_vertex(),  trans_on_point,  on_coord_origin,  on_coord_sys);
+				transform_coords(blp_here_off.get_vertex(), trans_off_point, off_coord_origin, off_coord_sys);
 
 #define COORD_SYS_RADIAL_TAN_INTERP 1
 
 #ifdef COORD_SYS_RADIAL_TAN_INTERP
 				// this I don't understand.  why add on this bit ---v
-				transform(blp_here_on.get_tangent1()  + blp_here_on.get_vertex(),  trans_on_t1,  on_coord_origin,  on_coord_sys);
-				transform(blp_here_off.get_tangent1() + blp_here_off.get_vertex(), trans_off_t1, off_coord_origin, off_coord_sys);
+				transform_coords(blp_here_on.get_tangent1()  + blp_here_on.get_vertex(),  trans_on_t1,  on_coord_origin,  on_coord_sys);
+				transform_coords(blp_here_off.get_tangent1() + blp_here_off.get_vertex(), trans_off_t1, off_coord_origin, off_coord_sys);
 
 				if(blp_here_on.get_split_tangent_flag())
 				{
-					transform(blp_here_on.get_tangent2()+blp_here_on.get_vertex(),   trans_on_t2,  on_coord_origin,  on_coord_sys);
-					transform(blp_here_off.get_tangent2()+blp_here_off.get_vertex(), trans_off_t2, off_coord_origin, off_coord_sys);
+					transform_coords(blp_here_on.get_tangent2()  + blp_here_on.get_vertex(),  trans_on_t2,  on_coord_origin,  on_coord_sys);
+					transform_coords(blp_here_off.get_tangent2() + blp_here_off.get_vertex(), trans_off_t2, off_coord_origin, off_coord_sys);
 				}
 #endif
 				// Convert current point
@@ -605,21 +606,21 @@ ValueNode_BLine::operator()(Time t)const
 				swap(curr_coord_sys[0][1],curr_coord_sys[1][0]);
 
 				// interpolate between the 'on' point and the 'off' point and untransform to get our point's location
-				untransform(linear_interpolation(trans_off_point, trans_on_point, amount),
-							untrans_curr_point, curr_coord_origin, curr_coord_sys);
+				untransform_coords(linear_interpolation(trans_off_point, trans_on_point, amount),
+								   untrans_curr_point, curr_coord_origin, curr_coord_sys);
 
 #define INTERP_FUNCTION		radial_interpolation
 //#define INTERP_FUNCTION	linear_interpolation
 
 #ifdef COORD_SYS_RADIAL_TAN_INTERP
-				untransform(INTERP_FUNCTION(trans_off_t1,trans_on_t1,amount),
-							untrans_curr_t1, curr_coord_origin, curr_coord_sys);
+				untransform_coords(INTERP_FUNCTION(trans_off_t1,trans_on_t1,amount),
+								   untrans_curr_t1, curr_coord_origin, curr_coord_sys);
 				untrans_curr_t1 -= untrans_curr_point;
 
 				if(blp_here_on.get_split_tangent_flag())
 				{
-					untransform(INTERP_FUNCTION(trans_off_t2,trans_on_t2,amount),
-								untrans_curr_t2, curr_coord_origin, curr_coord_sys);
+					untransform_coords(INTERP_FUNCTION(trans_off_t2,trans_on_t2,amount),
+									   untrans_curr_t2, curr_coord_origin, curr_coord_sys);
 					untrans_curr_t2 -= untrans_curr_point;
 				}
 #endif
