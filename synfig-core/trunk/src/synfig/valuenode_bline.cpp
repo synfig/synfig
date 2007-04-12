@@ -576,22 +576,24 @@ ValueNode_BLine::operator()(Time t)const
 					curr_coord_origin=(begin_pos_at_current_time + end_pos_at_current_time)/2;
 					curr_coord_sys[0]=(begin_pos_at_current_time - end_pos_at_current_time).norm();
 					curr_coord_sys[1]=curr_coord_sys[0].perp();
+
+					// Invert (transpose) the last of these matricies, since we use it for transform back
+					swap(curr_coord_sys[0][1],curr_coord_sys[1][0]);
 				}
 
 				/* The code that was here before used just end_iter as the origin, rather than the mid-point */
 
-				// For each of the 3 coordinate systems we've just defined, we convert a point and tangent(s) into that system
-				Point trans_on_point, trans_off_point, untrans_curr_point;
-				Vector trans_on_t1, trans_on_t2, trans_off_t1, trans_off_t2, untrans_curr_t1, untrans_curr_t2;
+				// We know our location and tangent(s) when fully on and fully off
+				// Transform each of these into their corresponding coordinate system
+				Point trans_on_point, trans_off_point;
+				Vector trans_on_t1, trans_on_t2, trans_off_t1, trans_off_t2;
 
-				// Convert points where vertex is fully on and fully off
 				transform_coords(blp_here_on.get_vertex(),  trans_on_point,  on_coord_origin,  on_coord_sys);
 				transform_coords(blp_here_off.get_vertex(), trans_off_point, off_coord_origin, off_coord_sys);
 
 #define COORD_SYS_RADIAL_TAN_INTERP 1
 
 #ifdef COORD_SYS_RADIAL_TAN_INTERP
-				// this I don't understand.  why add on this bit ---v
 				transform_coords(blp_here_on.get_tangent1(),  trans_on_t1,  Point::zero(), on_coord_sys);
 				transform_coords(blp_here_off.get_tangent1(), trans_off_t1, Point::zero(), off_coord_sys);
 
@@ -601,43 +603,47 @@ ValueNode_BLine::operator()(Time t)const
 					transform_coords(blp_here_off.get_tangent2(), trans_off_t2, Point::zero(), off_coord_sys);
 				}
 #endif
-				// Convert current point
-				// Transpose (invert)
-				swap(curr_coord_sys[0][1],curr_coord_sys[1][0]);
 
-				// interpolate between the 'on' point and the 'off' point and untransform to get our point's location
-				untransform_coords(linear_interpolation(trans_off_point, trans_on_point, amount),
-								   untrans_curr_point, curr_coord_origin, curr_coord_sys);
+				{
+					// Interpolate between the 'on' point and the 'off' point and untransform to get our point's location
+					Point tmp;
+					untransform_coords(linear_interpolation(trans_off_point, trans_on_point, amount),
+									   tmp, curr_coord_origin, curr_coord_sys);
+					blp_here_now.set_vertex(tmp);
+				}
 
 #define INTERP_FUNCTION		radial_interpolation
 //#define INTERP_FUNCTION	linear_interpolation
 
 #ifdef COORD_SYS_RADIAL_TAN_INTERP
-				untransform_coords(INTERP_FUNCTION(trans_off_t1,trans_on_t1,amount),
-								   untrans_curr_t1, Point::zero(), curr_coord_sys);
-
-				if(blp_here_on.get_split_tangent_flag())
-					untransform_coords(INTERP_FUNCTION(trans_off_t2,trans_on_t2,amount),
-									   untrans_curr_t2, Point::zero(), curr_coord_sys);
-#endif
-
-				blp_here_now.set_vertex(untrans_curr_point);
-#ifndef COORD_SYS_RADIAL_TAN_INTERP
-				blp_here_now.set_tangent1(radial_interpolation(blp_here_off.get_tangent1(),blp_here_on.get_tangent1(),amount));
-				blp_here_now.set_split_tangent_flag(blp_here_on.get_split_tangent_flag());
-				if(blp_here_now.get_split_tangent_flag())
-					blp_here_now.set_tangent2(radial_interpolation(blp_here_off.get_tangent2(),blp_here_on.get_tangent2(),amount));
+				{
+					Vector tmp;
+					untransform_coords(INTERP_FUNCTION(trans_off_t1,trans_on_t1,amount), tmp, Point::zero(), curr_coord_sys);
+					blp_here_now.set_tangent1(tmp);
+				}
 #else
-				blp_here_now.set_tangent1(untrans_curr_t1);
-				blp_here_now.set_split_tangent_flag(blp_here_on.get_split_tangent_flag());
-				if(blp_here_now.get_split_tangent_flag())
-					blp_here_now.set_tangent2(untrans_curr_t2);
+				blp_here_now.set_tangent1(radial_interpolation(blp_here_off.get_tangent1(),blp_here_on.get_tangent1(),amount));
 #endif
+
+				if (blp_here_on.get_split_tangent_flag())
+				{
+					blp_here_now.set_split_tangent_flag(true);
+#ifdef COORD_SYS_RADIAL_TAN_INTERP
+					{
+						Vector tmp;
+						untransform_coords(INTERP_FUNCTION(trans_off_t2,trans_on_t2,amount), tmp, Point::zero(), curr_coord_sys);
+						blp_here_now.set_tangent2(tmp);
+					}
+#else
+					blp_here_now.set_tangent2(radial_interpolation(blp_here_off.get_tangent2(),blp_here_on.get_tangent2(),amount));
+#endif
+				}
+				else
+					blp_here_now.set_split_tangent_flag(false);
 			}
 
 			blp_here_now.set_origin(blp_here_on.get_origin());
 			blp_here_now.set_width(linear_interpolation(blp_here_off.get_width(), blp_here_on.get_width(), amount));
-
 
 			// Handle the case where we are the first vertex
 			if(first_flag)
