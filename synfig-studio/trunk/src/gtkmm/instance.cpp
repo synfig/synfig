@@ -623,7 +623,7 @@ bool
 Instance::safe_revert()
 {
 	if(synfigapp::Instance::get_action_count())
-		if(!App::dialog_yes_no(_("Revert to saved"), _("You will loose any changes you have made since your last save.\nAre you sure?")))
+		if(!App::dialog_yes_no(_("Revert to saved"), _("You will lose any changes you have made since your last save.\nAre you sure?")))
 			return false;
 	revert();
 	return true;
