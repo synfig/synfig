@@ -375,12 +375,10 @@ ValueNode_BLine::operator()(Time t)const
 			BLinePoint curr;
 			BLinePoint begin;	// begin of dynamic group
 			BLinePoint end;		// end of dynamic group
-			Time blend_time;
 			int dist_from_begin(0), dist_from_end(0);
 			BLinePoint ret;
 
-			Time off_time;
-			Time on_time;
+			Time off_time, on_time;
 
 			if(!rising)
 			{
@@ -396,9 +394,8 @@ ValueNode_BLine::operator()(Time t)const
 				try{ on_time=iter->find_next(t)->get_time(); }
 				catch(...) { on_time=Time::end(); }
 			}
-			blend_time=off_time;
-			curr=(*iter->value_node)(on_time).get(curr);
 
+			curr=(*iter->value_node)(on_time).get(curr);
 //			curr=(*iter->value_node)(t).get(curr);
 
 			// Find "end" of dynamic group
@@ -407,7 +404,7 @@ ValueNode_BLine::operator()(Time t)const
 			for(++end_iter;end_iter!=list.end();++end_iter)
 				if(end_iter->amount_at_time(t)>amount)
 				{
-					end=(*end_iter->value_node)(blend_time).get(prev);
+					end=(*end_iter->value_node)(off_time).get(prev);
 					break;
 				}
 
@@ -417,14 +414,14 @@ ValueNode_BLine::operator()(Time t)const
 				if(get_loop())
 				{
 					end_iter=first_iter;
-					end=(*end_iter->value_node)(blend_time).get(prev);
+					end=(*end_iter->value_node)(off_time).get(prev);
 //					end=first;
 				}
 				else
 				{
 					// Writeme!
 					end_iter=first_iter;
-					end=(*end_iter->value_node)(blend_time).get(prev);
+					end=(*end_iter->value_node)(off_time).get(prev);
 //					end=first;
 				}
 			}
@@ -450,7 +447,7 @@ ValueNode_BLine::operator()(Time t)const
 
 				if(begin_iter->amount_at_time(t)>amount)
 				{
-					begin=(*begin_iter->value_node)(blend_time).get(prev);
+					begin=(*begin_iter->value_node)(off_time).get(prev);
 					break;
 				}
 			}while(begin_iter!=iter);
@@ -461,14 +458,14 @@ ValueNode_BLine::operator()(Time t)const
 				if(get_loop())
 				{
 					begin_iter=first_iter;
-					begin=(*begin_iter->value_node)(blend_time).get(prev);
+					begin=(*begin_iter->value_node)(off_time).get(prev);
 //					begin=first;
 				}
 				else
 				{
 					// Writeme!
 					begin_iter=first_iter;
-					begin=(*begin_iter->value_node)(blend_time).get(prev);
+					begin=(*begin_iter->value_node)(off_time).get(prev);
 //					begin=first;
 				}
 			}
@@ -587,7 +584,9 @@ ValueNode_BLine::operator()(Time t)const
 					curr_coord_sys[1]=curr_coord_sys[0].perp();
 				}
 
-				/* the code that was here before used just end_iter as the origin, rather than the mid-point */
+				/* The code that was here before used just end_iter as the origin, rather than the mid-point */
+
+				// For each of the 3 coordinate systems we've just defined, we convert a point and tangent(s) into that system
 
 				// Convert point where vertex is fully 'off'
 				Point trans_off_point;
