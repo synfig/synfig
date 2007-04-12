@@ -56,6 +56,10 @@ using namespace synfig;
 
 /* === P R O C E D U R E S ================================================= */
 
+inline float
+linear_interpolation(const float& a, const float& b, float c)
+{ return (b-a)*c+a; }
+
 inline Vector
 linear_interpolation(const Vector& a, const Vector& b, float c)
 { return (b-a)*c+a; }
@@ -76,7 +80,21 @@ radial_interpolation(const Vector& a, const Vector& b, float c)
 	return Point( mag*Angle::cos(ang).get(),mag*Angle::sin(ang).get() );
 }
 
+inline void
+transform(Vector in, Vector& out, Point& coord_origin, Point *coord_sys)
+{
+	in -= coord_origin;
+	out[0] = in * coord_sys[0];
+	out[1] = in * coord_sys[1];
+}
 
+inline void
+untransform(const Vector& in, Vector& out, Point& coord_origin, Point *coord_sys)
+{
+	out[0] = in * coord_sys[0];
+	out[1] = in * coord_sys[1];
+	out += coord_origin;
+}
 
 ValueBase
 synfig::convert_bline_to_segment_list(const ValueBase& bline)
@@ -372,12 +390,13 @@ ValueNode_BLine::operator()(Time t)const
 			// We need to seek forward in the list to see what the next
 			// active point is
 
-			BLinePoint curr;
-			BLinePoint begin;	// begin of dynamic group
-			BLinePoint end;		// end of dynamic group
-			int dist_from_begin(0), dist_from_end(0);
-			BLinePoint ret;
+			BLinePoint blp_here_on;  // the current vertex, when fully on
+			BLinePoint blp_here_off; // the current vertex, when fully off
+			BLinePoint blp_here_now; // the current vertex, right now (between on and off)
+			BLinePoint blp_prev_off; // the beginning of dynamic group when fully off
+			BLinePoint blp_next_off; // end of the dynamic group when fully off
 
+			int dist_from_begin(0), dist_from_end(0);
 			Time off_time, on_time;
 
 			if(!rising)
@@ -395,8 +414,8 @@ ValueNode_BLine::operator()(Time t)const
 				catch(...) { on_time=Time::end(); }
 			}
 
-			curr=(*iter->value_node)(on_time).get(curr);
-//			curr=(*iter->value_node)(t).get(curr);
+			blp_here_on=(*iter->value_node)(on_time).get(blp_here_on);
+//			blp_here_on=(*iter->value_node)(t).get(blp_here_on);
 
 			// Find "end" of dynamic group
 			end_iter=iter;
@@ -404,7 +423,7 @@ ValueNode_BLine::operator()(Time t)const
 			for(++end_iter;end_iter!=list.end();++end_iter)
 				if(end_iter->amount_at_time(t)>amount)
 				{
-					end=(*end_iter->value_node)(off_time).get(prev);
+					blp_next_off=(*end_iter->value_node)(off_time).get(prev);
 					break;
 				}
 
@@ -414,21 +433,21 @@ ValueNode_BLine::operator()(Time t)const
 				if(get_loop())
 				{
 					end_iter=first_iter;
-					end=(*end_iter->value_node)(off_time).get(prev);
+					blp_next_off=(*end_iter->value_node)(off_time).get(prev);
 //					end=first;
 				}
 				else
 				{
 					// Writeme!
 					end_iter=first_iter;
-					end=(*end_iter->value_node)(off_time).get(prev);
+					blp_next_off=(*end_iter->value_node)(off_time).get(prev);
 //					end=first;
 				}
 			}
 
 			// Find "begin" of dynamic group
 			begin_iter=iter;
-			begin.set_origin(100.0f); // set the origin to 100 (which is crazy) so that we can check to see if it was found
+			blp_prev_off.set_origin(100.0f); // set the origin to 100 (which is crazy) so that we can check to see if it was found
 			do
 			{
 				if(begin_iter==list.begin())
@@ -447,38 +466,39 @@ ValueNode_BLine::operator()(Time t)const
 
 				if(begin_iter->amount_at_time(t)>amount)
 				{
-					begin=(*begin_iter->value_node)(off_time).get(prev);
+					blp_prev_off=(*begin_iter->value_node)(off_time).get(prev);
 					break;
 				}
 			}while(begin_iter!=iter);
 
 			// If we did not find a begin
-			if(begin.get_origin()==100.0f)
+			if(blp_prev_off.get_origin()==100.0f)
 			{
 				if(get_loop())
 				{
 					begin_iter=first_iter;
-					begin=(*begin_iter->value_node)(off_time).get(prev);
-//					begin=first;
+					blp_prev_off=(*begin_iter->value_node)(off_time).get(prev);
+//					blp_prev_off=first;
 				}
 				else
 				{
 					// Writeme!
 					begin_iter=first_iter;
-					begin=(*begin_iter->value_node)(off_time).get(prev);
-//					begin=first;
+					blp_prev_off=(*begin_iter->value_node)(off_time).get(prev);
+//					blp_prev_off=first;
 				}
 			}
 
-			etl::hermite<Vector> curve(begin.get_vertex(),end.get_vertex(),begin.get_tangent2(),end.get_tangent1());
+			etl::hermite<Vector> curve(blp_prev_off.get_vertex(),   blp_next_off.get_vertex(),
+									   blp_prev_off.get_tangent2(), blp_next_off.get_tangent1());
 			etl::derivative< etl::hermite<Vector> > deriv(curve);
 
-			ret.set_vertex(curve(curr.get_origin()));
+			blp_here_off.set_vertex(curve(blp_here_on.get_origin()));
 
-			ret.set_width((end.get_width()-begin.get_width())*curr.get_origin()+begin.get_width());
+			blp_here_off.set_width((blp_next_off.get_width()-blp_prev_off.get_width())*blp_here_on.get_origin()+blp_prev_off.get_width());
 
-			ret.set_tangent1(deriv(curr.get_origin()));
-			ret.set_tangent2(deriv(curr.get_origin()));
+			blp_here_off.set_tangent1(deriv(blp_here_on.get_origin()));
+			blp_here_off.set_tangent2(deriv(blp_here_on.get_origin()));
 
 			float prev_tangent_scalar(1.0f);
 			float next_tangent_scalar(1.0f);
@@ -488,72 +508,45 @@ ValueNode_BLine::operator()(Time t)const
 
 			// If we are the next to the begin
 			if(begin_iter==--std::vector<ListEntry>::const_iterator(iter) || dist_from_begin==1)
-			{
-				prev_tangent_scalar=(1.0f-curr.get_origin())*amount+curr.get_origin();
-			}
+				prev_tangent_scalar=linear_interpolation(blp_here_on.get_origin(), 1.0f, amount);
 			else
-			{
-				float origin=curr.get_origin()-prev.get_origin();
-				prev_tangent_scalar=(1.0f-origin)*amount+origin;
-			}
+				prev_tangent_scalar=linear_interpolation(blp_here_on.get_origin()-prev.get_origin(), 1.0f, amount);
 
 			// If we are the next to the end
 			if(end_iter==++std::vector<ListEntry>::const_iterator(iter) || dist_from_end==1)
-			{
-				float origin=1.0-curr.get_origin();
-				next_tangent_scalar=(1.0f-origin)*amount+origin;
-			}
-			else
-			if(list.end()!=++std::vector<ListEntry>::const_iterator(iter))
+				next_tangent_scalar=linear_interpolation(1.0-blp_here_on.get_origin(), 1.0f, amount);
+			else if(list.end()!=++std::vector<ListEntry>::const_iterator(iter))
 			{
 				BLinePoint next;
 				next=((*(++std::vector<ListEntry>::const_iterator(iter))->value_node)(t).get(prev));
-				float origin=next.get_origin()-curr.get_origin();
-				next_tangent_scalar=(1.0f-origin)*amount+origin;
+				next_tangent_scalar=linear_interpolation(next.get_origin()-blp_here_on.get_origin(), 1.0f, amount);
 			}
 			else
-			{
 				//! \todo this isn't quite right; we should handle looped blines identically no matter where the loop happens
 				//! and we currently don't.  this at least makes it a lot better than it was before
-				float origin=end.get_origin()-curr.get_origin();
-				next_tangent_scalar=(1.0f-origin)*amount+origin;
-			}
+				next_tangent_scalar=linear_interpolation(blp_next_off.get_origin()-blp_here_on.get_origin(), 1.0f, amount);
 			next_scale=next_tangent_scalar;
 
-			//ret.set_vertex((curr.get_vertex()-ret.get_vertex())*amount+ret.get_vertex());
-//			if(false)
-//			{
-//				// My first try
-//				Point ref_point_begin(
-//					(
-//						(*begin_iter->value_node)(off_time).get(prev).get_vertex() +
-//						(*end_iter->value_node)(off_time).get(prev).get_vertex()
-//					) * 0.5
-//				);
-//				Point ref_point_end(
-//					(
-//						(*begin_iter->value_node)(on_time).get(prev).get_vertex() +
-//						(*end_iter->value_node)(on_time).get(prev).get_vertex()
-//					) * 0.5
-//				);
-//				Point ref_point_now(
-//					(
-//						(*begin_iter->value_node)(t).get(prev).get_vertex() +
-//						(*end_iter->value_node)(t).get(prev).get_vertex()
-//					) * 0.5
-//				);
-//				Point ref_point_linear((ref_point_end-ref_point_begin)*amount+ref_point_begin);
-//
-//				ret.set_vertex(
-//					(curr.get_vertex()-ret.get_vertex())*amount+ret.get_vertex() +
-//					(ref_point_now-ref_point_linear)
-//				);
-//				ret.set_tangent1((curr.get_tangent1()-ret.get_tangent1())*amount+ret.get_tangent1());
-//				ret.set_split_tangent_flag(curr.get_split_tangent_flag());
-//				if(ret.get_split_tangent_flag())
-//					ret.set_tangent2((curr.get_tangent2()-ret.get_tangent2())*amount+ret.get_tangent2());
-//			}
-//			else
+			//blp_here_now.set_vertex(linear_interpolation(blp_here_off.get_vertex(), blp_here_on.get_vertex(), amount));
+			// if(false)
+			// {
+			// 	// My first try
+			// 	Point ref_point_begin(((*begin_iter->value_node)(off_time).get(prev).get_vertex() +
+			// 						   (*end_iter->value_node)(off_time).get(prev).get_vertex()) * 0.5);
+			// 	Point ref_point_end(((*begin_iter->value_node)(on_time).get(prev).get_vertex() +
+			// 						 (*end_iter->value_node)(on_time).get(prev).get_vertex()) * 0.5);
+			// 	Point ref_point_now(((*begin_iter->value_node)(t).get(prev).get_vertex() +
+			// 						 (*end_iter->value_node)(t).get(prev).get_vertex()) * 0.5);
+			// 	Point ref_point_linear(linear_interpolation(ref_point_begin, ref_point_end, amount));
+			//
+			// 	blp_here_now.set_vertex(linear_interpolation(blp_here_off.get_vertex(), blp_here_on.get_vertex(), amount) +
+			// 							(ref_point_now-ref_point_linear));
+			// 	blp_here_now.set_tangent1(linear_interpolation(blp_here_off.get_tangent1(), blp_here_on.get_tangent1(), amount));
+			// 	blp_here_now.set_split_tangent_flag(blp_here_on.get_split_tangent_flag());
+			// 	if(blp_here_now.get_split_tangent_flag())
+			// 		blp_here_now.set_tangent2(linear_interpolation(blp_here_off.get_tangent2(), blp_here_on.get_tangent2(), amount));
+			// }
+			// else
 			{
 				// My second try
 
@@ -587,122 +580,87 @@ ValueNode_BLine::operator()(Time t)const
 				/* The code that was here before used just end_iter as the origin, rather than the mid-point */
 
 				// For each of the 3 coordinate systems we've just defined, we convert a point and tangent(s) into that system
+				Point trans_on_point, trans_off_point, untrans_curr_point;
+				Vector trans_on_t1, trans_on_t2, trans_off_t1, trans_off_t2, untrans_curr_t1, untrans_curr_t2;
 
-				// Convert point where vertex is fully 'off'
-				Point trans_off_point;
-				Vector trans_off_t1,trans_off_t2;
-				{
-					Point tmp(ret.get_vertex()-off_coord_origin);
-					trans_off_point[0]=tmp*off_coord_sys[0];
-					trans_off_point[1]=tmp*off_coord_sys[1];
+				// Convert points where vertex is fully on and fully off
+				transform(blp_here_on.get_vertex(),  trans_on_point,  on_coord_origin,  on_coord_sys);
+				transform(blp_here_off.get_vertex(), trans_off_point, off_coord_origin, off_coord_sys);
+
 #define COORD_SYS_RADIAL_TAN_INTERP 1
 
 #ifdef COORD_SYS_RADIAL_TAN_INTERP
-					tmp=ret.get_tangent1()+ret.get_vertex()-off_coord_origin;
-					trans_off_t1[0]=tmp*off_coord_sys[0];
-					trans_off_t1[1]=tmp*off_coord_sys[1];
+				// this I don't understand.  why add on this bit ---v
+				transform(blp_here_on.get_tangent1()  + blp_here_on.get_vertex(),  trans_on_t1,  on_coord_origin,  on_coord_sys);
+				transform(blp_here_off.get_tangent1() + blp_here_off.get_vertex(), trans_off_t1, off_coord_origin, off_coord_sys);
 
-					if(curr.get_split_tangent_flag())
-					{
-						tmp=ret.get_tangent2()+ret.get_vertex()-off_coord_origin;
-						trans_off_t2[0]=tmp*off_coord_sys[0];
-						trans_off_t2[1]=tmp*off_coord_sys[1];
-					}
-#endif
-				}
-
-				// Convert point where vertex is fully 'on'
-				Point trans_on_point;
-				Vector trans_on_t1,trans_on_t2;
+				if(blp_here_on.get_split_tangent_flag())
 				{
-					Point tmp(curr.get_vertex()-on_coord_origin);
-					trans_on_point[0]=tmp*on_coord_sys[0];
-					trans_on_point[1]=tmp*on_coord_sys[1];
-
-#ifdef COORD_SYS_RADIAL_TAN_INTERP
-					tmp=curr.get_tangent1()+curr.get_vertex()-on_coord_origin;
-					trans_on_t1[0]=tmp*on_coord_sys[0];
-					trans_on_t1[1]=tmp*on_coord_sys[1];
-
-					if(curr.get_split_tangent_flag())
-					{
-						tmp=curr.get_tangent2()+curr.get_vertex()-on_coord_origin;
-						trans_on_t2[0]=tmp*on_coord_sys[0];
-						trans_on_t2[1]=tmp*on_coord_sys[1];
-					}
-#endif
+					transform(blp_here_on.get_tangent2()+blp_here_on.get_vertex(),   trans_on_t2,  on_coord_origin,  on_coord_sys);
+					transform(blp_here_off.get_tangent2()+blp_here_off.get_vertex(), trans_off_t2, off_coord_origin, off_coord_sys);
 				}
-
+#endif
 				// Convert current point
-				Point trans_curr_point;
-				Vector trans_curr_t1,trans_curr_t2;
-				{
-					// Transpose (invert)
-					swap(curr_coord_sys[0][1],curr_coord_sys[1][0]);
+				// Transpose (invert)
+				swap(curr_coord_sys[0][1],curr_coord_sys[1][0]);
 
-					Point tmp((trans_on_point-trans_off_point)*amount+trans_off_point);
-					trans_curr_point[0]=tmp*curr_coord_sys[0];
-					trans_curr_point[1]=tmp*curr_coord_sys[1];
-					trans_curr_point+=curr_coord_origin;
+				// interpolate between the 'on' point and the 'off' point and untransform to get our point's location
+				untransform(linear_interpolation(trans_off_point, trans_on_point, amount),
+							untrans_curr_point, curr_coord_origin, curr_coord_sys);
 
 #define INTERP_FUNCTION		radial_interpolation
-//#define INTERP_FUNCTION		linear_interpolation
+//#define INTERP_FUNCTION	linear_interpolation
 
 #ifdef COORD_SYS_RADIAL_TAN_INTERP
-					tmp=INTERP_FUNCTION(trans_off_t1,trans_on_t1,amount);
-					trans_curr_t1[0]=tmp*curr_coord_sys[0];
-					trans_curr_t1[1]=tmp*curr_coord_sys[1];
-					trans_curr_t1+=curr_coord_origin;
-					trans_curr_t1-=trans_curr_point;
+				untransform(INTERP_FUNCTION(trans_off_t1,trans_on_t1,amount),
+							untrans_curr_t1, curr_coord_origin, curr_coord_sys);
+				untrans_curr_t1 -= untrans_curr_point;
 
-					if(curr.get_split_tangent_flag())
-					{
-						tmp=INTERP_FUNCTION(trans_off_t2,trans_on_t2,amount);
-						trans_curr_t2[0]=tmp*curr_coord_sys[0];
-						trans_curr_t2[1]=tmp*curr_coord_sys[1];
-						trans_curr_t2+=curr_coord_origin;
-						trans_curr_t2-=trans_curr_point;
-					}
-#endif
+				if(blp_here_on.get_split_tangent_flag())
+				{
+					untransform(INTERP_FUNCTION(trans_off_t2,trans_on_t2,amount),
+								untrans_curr_t2, curr_coord_origin, curr_coord_sys);
+					untrans_curr_t2 -= untrans_curr_point;
 				}
+#endif
 
-				ret.set_vertex(trans_curr_point);
+				blp_here_now.set_vertex(untrans_curr_point);
 #ifndef COORD_SYS_RADIAL_TAN_INTERP
-				ret.set_tangent1(radial_interpolation(ret.get_tangent1(),curr.get_tangent1(),amount));
-				ret.set_split_tangent_flag(curr.get_split_tangent_flag());
-				if(ret.get_split_tangent_flag())
-					ret.set_tangent2(radial_interpolation(ret.get_tangent2(),curr.get_tangent2(),amount));
+				blp_here_now.set_tangent1(radial_interpolation(blp_here_off.get_tangent1(),blp_here_on.get_tangent1(),amount));
+				blp_here_now.set_split_tangent_flag(blp_here_on.get_split_tangent_flag());
+				if(blp_here_now.get_split_tangent_flag())
+					blp_here_now.set_tangent2(radial_interpolation(blp_here_off.get_tangent2(),blp_here_on.get_tangent2(),amount));
 #else
-				ret.set_tangent1(trans_curr_t1);
-				ret.set_split_tangent_flag(curr.get_split_tangent_flag());
-				if(ret.get_split_tangent_flag())
-					ret.set_tangent2(trans_curr_t2);
+				blp_here_now.set_tangent1(untrans_curr_t1);
+				blp_here_now.set_split_tangent_flag(blp_here_on.get_split_tangent_flag());
+				if(blp_here_now.get_split_tangent_flag())
+					blp_here_now.set_tangent2(untrans_curr_t2);
 #endif
 			}
 
-			ret.set_origin(curr.get_origin());
-			ret.set_width((curr.get_width()-ret.get_width())*amount+ret.get_width());
+			blp_here_now.set_origin(blp_here_on.get_origin());
+			blp_here_now.set_width(linear_interpolation(blp_here_off.get_width(), blp_here_on.get_width(), amount));
 
 
 			// Handle the case where we are the first vertex
 			if(first_flag)
 			{
-				ret.set_tangent1(ret.get_tangent1()*prev_tangent_scalar);
+				blp_here_now.set_tangent1(blp_here_now.get_tangent1()*prev_tangent_scalar);
 				first_iter=iter;
-				first=prev=ret;
+				first=prev=blp_here_now;
 				first_flag=false;
-				ret_list.push_back(ret);
+				ret_list.push_back(blp_here_now);
 				continue;
 			}
 
 			ret_list.back().set_split_tangent_flag(true);
 			ret_list.back().set_tangent2(prev.get_tangent2()*prev_tangent_scalar);
-			ret_list.push_back(ret);
+			ret_list.push_back(blp_here_now);
 			ret_list.back().set_split_tangent_flag(true);
-			//ret_list.back().set_tangent2(ret.get_tangent1());
-			ret_list.back().set_tangent1(ret.get_tangent1()*prev_tangent_scalar);
+			//ret_list.back().set_tangent2(blp_here_now.get_tangent1());
+			ret_list.back().set_tangent1(blp_here_now.get_tangent1()*prev_tangent_scalar);
 
-			prev=ret;
+			prev=blp_here_now;
 		}
 	}
 
