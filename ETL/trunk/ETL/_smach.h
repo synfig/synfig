@@ -391,7 +391,7 @@ public:
 		const state_base* old_state=curr_state;
 		void *old_context=state_context;
 
-		// Clear out the current state and it's state_context
+		// Clear out the current state and its state_context
 		curr_state=0;state_context=0;
 
 		// Leave the state

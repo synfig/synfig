@@ -790,7 +790,7 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 
 	// If the canvas is really big, zoom out so that we can fit it all in the window
 	/*! \todo In other words, this is a zoom-to-fit, and should be
-	** in it's own function.
+	** in its own function.
 	*/
 	int w=get_canvas()->rend_desc().get_w()+70;
 	int h=get_canvas()->rend_desc().get_h()+70;

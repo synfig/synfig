@@ -101,8 +101,8 @@ cycles with MR different fractional values, once every MT steps, for MAXIT total
 
 /* Given the degree m and the m+1 complex coefficients a[0..m] of the polynomial sum(i=0,m){a[i]x^i},
 and given a complex value x, this routine improves x by laguerre's method until it converges,
-within the acheivable roundoff limit, to a root of teh given polynomial.  The number of iterations taken
-is returned as its.
+within the achievable roundoff limit, to a root of the given polynomial.  The number of iterations taken
+is returned as `its'.
 */
 void laguer(Complex a[], int m, Complex *x, int *its)
 {
@@ -123,7 +123,7 @@ void laguer(Complex a[], int m, Complex *x, int *its)
 		d = f = Complex(0,0); //clear variables for use
 		abx = abs(*x);	//the magnitude of the current root
 
-		//Efficent computation of the polynomial and it's first 2 derivatives
+		//Efficent computation of the polynomial and its first 2 derivatives
 		for(j = m-1; j >= 0; --j)
 		{
 			f = (*x)*f + d;
@@ -195,10 +195,10 @@ void laguer(Complex a[], int m, Complex *x, int *its)
 #define EPS 2.0e-6
 #define MAXM 100	//a small number, and maximum anticipated value of m..
 
-/* 	Given the degree m ad the m+1 complex coefficients a[0..m] of the polynomial a0 + a1*x +...+ an*x^n
+/* 	Given the degree m and the m+1 complex coefficients a[0..m] of the polynomial a0 + a1*x +...+ an*x^n
 	the routine successively calls laguer and finds all m complex roots in roots[1..m].
 	The boolean variable polish should be input as true (1) if polishing (also by Laguerre's Method)
-	is desired, false (0) if teh roots will be subsequently polished by other means.
+	is desired, false (0) if the roots will be subsequently polished by other means.
 */
 void RootFinder::find_all_roots(bool polish)
 {

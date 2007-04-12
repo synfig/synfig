@@ -108,7 +108,7 @@ void BezHull::Bound(const etl::bezier<Point> &b)
 {
 	#if 1
 
-	//with a starting vertex, find the only vertex that has all other vertices on it's right
+	//with a starting vertex, find the only vertex that has all other vertices on its right
 	int i,j;
 	int first,cur,last;
 

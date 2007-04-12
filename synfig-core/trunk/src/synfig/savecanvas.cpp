@@ -430,13 +430,19 @@ xmlpp::Element* encode_dynamic_list(xmlpp::Element* root,ValueNode_DynamicList::
 				if(entry_iter->state==true)
 				{
 					if(entry_iter->priority)
+					{
+						printf("begin priority is %d\n", entry_iter->priority);
 						begin_sequence+=strprintf("p%d ",entry_iter->priority);
+					}
 					begin_sequence+=entry_iter->time.get_string(fps)+", ";
 				}
 				else
 				{
 					if(entry_iter->priority)
+					{
+						printf("end priority is %d\n", entry_iter->priority);
 						end_sequence+=strprintf("p%d ",entry_iter->priority);
+					}
 					end_sequence+=entry_iter->time.get_string(fps)+", ";
 				}
 
@@ -573,7 +579,7 @@ xmlpp::Element* encode_layer(xmlpp::Element* root,Layer::ConstHandle layer)
 			ValueBase value=layer->get_param(iter->get_name());
 			if(!value.is_valid())
 			{
-				error("Layer doesn't know it's own vocabulary -- "+iter->get_name());
+				error("Layer doesn't know its own vocabulary -- "+iter->get_name());
 				continue;
 			}
 

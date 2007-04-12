@@ -494,7 +494,7 @@ bool Widget_Timeslider::redraw(bool doublebuffer)
 	//search around this area to get the right one
 
 
-	//get first valid line and it's position in pixel space
+	//get first valid line and its position in pixel space
 	double time = 0;
 	double pixel = 0;
 
@@ -502,7 +502,7 @@ bool Widget_Timeslider::redraw(bool doublebuffer)
 
 	double subr = scale / subdiv;
 
-	//get it's position inside...
+	//get its position inside...
 	time = ceil(start/subr)*subr - start;
 	pixel = time*dpdt;
 

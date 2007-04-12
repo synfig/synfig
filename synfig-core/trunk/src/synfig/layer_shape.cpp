@@ -440,7 +440,7 @@ struct CurveArray
 		const Real cn[4] = {a,b,c,d};
 		Real p,dp,newt,oldpmag=FLT_MAX;
 
-		//eval cubic eqn and it's derivative
+		//eval cubic eqn and its derivative
 		for(;;)
 		{
 			p = cn[0]*t + cn[1];

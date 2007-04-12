@@ -146,7 +146,7 @@ public:
 	//! Sets the RendDesc for the Target to \a desc.
 	/*!	If there are any parts of \a desc that the render target
 	**	is not capable of doing, the render target will adjust
-	**	\a desc to fit it's needs.
+	**	\a desc to fit its needs.
 	*/
 	virtual bool set_rend_desc(RendDesc *d) { desc=*d; return true; }
 

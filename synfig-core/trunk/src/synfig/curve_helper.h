@@ -106,7 +106,7 @@ inline bool intersect_line_segments(const Point &a, const Point &b, float &tout,
 	return false;
 }
 
-//Find the closest point on the curve to a point (and return it's distance, and time value)
+//Find the closest point on the curve to a point (and return its distance, and time value)
 Real find_closest(const etl::bezier<Point> &curve, const Point &point, float step, Real *closest, float *t);
 
 //----------- Rectangle helper functions ---------------

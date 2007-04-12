@@ -341,7 +341,7 @@ int tesselate_curves(const std::vector<cpindex> &inds, const std::vector<Point> 
 	j2 = j++;
 	for(; j != end; j2 = j++)
 	{
-		//if this curve has invalid error (in j) then retesselate it's work points (requires reparametrization, etc.)
+		//if this curve has invalid error (in j) then retesselate its work points (requires reparametrization, etc.)
 		if(j->error < 0)
 		{
 			//get the stepsize etc. for the number of points in here

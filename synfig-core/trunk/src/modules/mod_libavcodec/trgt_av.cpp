@@ -378,7 +378,7 @@ public:
 
 		/*
 		If pict is invalid (NULL), then we are done compressing frames and we are trying to get
-		the buffer cleared out (or if it's already in the right format) so no transofrm necessary
+		the buffer cleared out (or if it's already in the right format) so no transform necessary
 		*/
 		if ( pict )
 		{
