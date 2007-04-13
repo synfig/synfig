@@ -66,6 +66,13 @@ using namespace studio;
 
 /* === M A C R O S ========================================================= */
 
+/* 0.33333333333333333 makes for nice short tangent handles,
+   1.0 makes them draw as their real length */
+#define TANGENT_HANDLE_SCALE 0.33333333333333333
+
+/* leave this alone or the bezier won't lie on top of the bline */
+#define TANGENT_BEZIER_SCALE 0.33333333333333333
+
 /* === G L O B A L S ======================================================= */
 
 /* === P R O C E D U R E S ================================================= */
@@ -1235,7 +1242,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				bezier->c1=last_duck();
 				bezier->c1->set_type(Duck::TYPE_TANGENT);
 				bezier->c1->set_origin(bezier->p1);
-				bezier->c1->set_scalar(0.33333333333333333);
+				bezier->c1->set_scalar(TANGENT_BEZIER_SCALE);
 				bezier->c1->set_tangent(true);
 
 
@@ -1248,7 +1255,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				bezier->c2=last_duck();
 				bezier->c2->set_type(Duck::TYPE_TANGENT);
 				bezier->c2->set_origin(bezier->p2);
-				bezier->c2->set_scalar(-0.33333333333333333);
+				bezier->c2->set_scalar(-TANGENT_BEZIER_SCALE);
 				bezier->c2->set_tangent(true);
 
 				bezier->signal_user_click(2).connect(
@@ -1287,7 +1294,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				duck_c->set_type(Duck::TYPE_TANGENT);
 				add_duck(duck_c);
 				duck_c->set_origin(duck_p);
-				duck_c->set_scalar(0.33333333333333333);
+				duck_c->set_scalar(TANGENT_HANDLE_SCALE);
 				duck_c->set_tangent(true);
 
 				bezier->p1=duck_p;
@@ -1303,7 +1310,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				duck_c->set_name(name+".T2");
 				add_duck(duck_c);
 				duck_c->set_origin(duck_p);
-				duck_c->set_scalar(-0.33333333333333333);
+				duck_c->set_scalar(-TANGENT_HANDLE_SCALE);
 				duck_c->set_tangent(true);
 
 				bezier->p2=duck_p;
@@ -1335,7 +1342,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 			etl::handle<Duck> t1_duck(last_duck());
 
 			t1_duck->set_origin(vertex_duck);
-			t1_duck->set_scalar(-0.33333333333333333);
+			t1_duck->set_scalar(-TANGENT_HANDLE_SCALE);
 			t1_duck->set_tangent(true);
 
 			etl::handle<Duck> t2_duck;
@@ -1347,7 +1354,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 					return false;
 				t2_duck=last_duck();
 				t2_duck->set_origin(vertex_duck);
-				t2_duck->set_scalar(0.33333333333333333);
+				t2_duck->set_scalar(TANGENT_HANDLE_SCALE);
 				t2_duck->set_tangent(true);
 			}
 			else
@@ -1356,7 +1363,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 					return false;
 				t2_duck=last_duck();
 				t2_duck->set_origin(vertex_duck);
-				t2_duck->set_scalar(0.33333333333333333);
+				t2_duck->set_scalar(TANGENT_HANDLE_SCALE);
 				t2_duck->set_tangent(true);
 			}
 			return true;
@@ -1510,7 +1517,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 					}
 
 					tduck->set_origin(duck);
-					tduck->set_scalar(-0.33333333333333333);
+					tduck->set_scalar(-TANGENT_BEZIER_SCALE);
 					tduck->set_tangent(true);
 
 					bezier->p2=duck;
@@ -1610,7 +1617,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				}
 
 				tduck->set_origin(duck);
-				tduck->set_scalar(0.33333333333333333);
+				tduck->set_scalar(TANGENT_BEZIER_SCALE);
 				tduck->set_tangent(true);
 
 				bezier->p1=duck;
@@ -1679,7 +1686,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 					}
 
 					tduck->set_origin(duck);
-					tduck->set_scalar(-0.33333333333333333);
+					tduck->set_scalar(-TANGENT_BEZIER_SCALE);
 					tduck->set_tangent(true);
 
 					bezier->p2=duck;
