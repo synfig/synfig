@@ -33,6 +33,7 @@
 #endif
 
 #include "guid.h"
+#include "quick_rng.h"
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -75,50 +76,6 @@ using namespace synfig;
 /* === P R O C E D U R E S ================================================= */
 
 /* === M E T H O D S ======================================================= */
-
-// A fast 32-bit linear congruential random number generator
-class quick_rng
-{
-	unsigned long next;
-public:
-	quick_rng(unsigned long seed=0):next(seed) { }
-
-	void set_seed(unsigned long x)
-	{
-		next=x;
-	}
-
-	unsigned long i32()
-	{
-		static const unsigned long a(1664525);
-		static const unsigned long c(1013904223);
-
-		return next=next*a+c;
-	}
-
-	unsigned long i16()
-	{
-		return i32()>>16;
-	}
-
-	float f()
-	{
-		static const float m(int(65535));
-
-		return float(i16())/m;
-	}
-
-	unsigned long operator()(const unsigned long& m)
-	{
-		if(m==65536)
-			return i16();
-		else
-		if(m<=65536)
-			return i16()%m;
-		else
-			return i32()%m;
-	}
-};
 
 #define GUID_RNG quick_rng
 //#define GUID_RNG subtractive_rng

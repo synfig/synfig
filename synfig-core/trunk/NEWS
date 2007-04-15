@@ -11,6 +11,7 @@
   * Fix some doxygen warnings
   * Some MacOS fixes
   * Misc bug fixes
+  * Fix random number generation for 64 bit CPUs (#1698604)
 
  0.61.05 (SVN 126) - February 27, 2005 - Misc fixes
 

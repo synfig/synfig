@@ -30,42 +30,10 @@
 #endif
 
 #include "random.h"
+#include <synfig/quick_rng.h>
 #include <cmath>
 #include <cstdlib>
 #endif
-
-// A fast 32-bit linear congruential random number generator
-class quick_rng
-{
-	unsigned long next;
-public:
-	quick_rng(unsigned long seed):next(seed) { }
-
-	void set_seed(unsigned long x)
-	{
-		next=x;
-	}
-
-	unsigned long i32()
-	{
-		static const unsigned long a(1664525);
-		static const unsigned long c(1013904223);
-
-		return next=next*a+c;
-	}
-
-	unsigned long i16()
-	{
-		return i32()>>16;
-	}
-
-	float f()
-	{
-		static const float m(int(65535));
-
-		return float(i16())/m;
-	}
-};
 
 /* === M A C R O S ========================================================= */
 
