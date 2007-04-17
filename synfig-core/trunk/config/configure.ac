@@ -337,6 +337,7 @@ dnl PKG_CHECK_MODULES(GLIB, glib-2.0,[GLIB="yes"],[GLIB="no"])
 
 TARGET_TIF="yes"
 TARGET_PNG="yes"
+TARGET_MNG="no"
 TARGET_JPEG="yes"
 
 if test "$TARGET_TIF" != "disabled" ; then
@@ -369,6 +370,17 @@ AC_CHECK_LIB(png, png_write_row,[
 		AM_CONDITIONAL(HAVE_LIBPNG,false)
 	],[-lz -L${exec_prefix}/lib])
 ],[-lz -L${exec_prefix}/lib])
+
+#AC_CHECK_LIB(mng, mng_initialize,[
+#	MNG_LIBS="-lmng -lz"
+#	AC_DEFINE(HAVE_LIBMNG,[], [ Define if MNG library is available ] )
+#	AC_SUBST(MNG_LIBS)
+#	AM_CONDITIONAL(HAVE_LIBMNG,true)
+#],[
+#	AC_MSG_RESULT([ *** MNG Output target disabled])
+#	TARGET_MNG="no"
+#	AM_CONDITIONAL(HAVE_LIBMNG,false)
+#],[-lz -L${exec_prefix}/lib])
 
 AC_CHECK_LIB(jpeg, main,[
 	JPEG_LIBS="-ljpeg"
@@ -520,6 +532,8 @@ AC_SUBST(synfigincludedir)
 	
 )]
 
+# src/modules/mod_mng/Makefile
+
 AC_OUTPUT(
 synfig-config
 @PACKAGE_TARNAME@.pc
@@ -571,6 +585,7 @@ GProf Profiling ------------------> $profiling
 Debug Mode -----------------------> $debug ($debug_flags)
 Optimization ---------------------> $optimization
 PNG output target support --------> $TARGET_PNG
+MNG output target support --------> $TARGET_MNG
 TIFF output target support -------> $TARGET_TIF
 JPEG output target support -------> $TARGET_JPEG
 ETL_CFLAGS -----------------------> $ETL_CFLAGS
