@@ -203,10 +203,14 @@ png_trgt::start_frame(synfig::ProgressCallback *callback)
 	// Output any text info along with the file
 	png_text comments[]=
 	{
-		{ PNG_TEXT_COMPRESSION_NONE, "Title", const_cast<char *>(get_canvas()->get_name().c_str()) },
-		{ PNG_TEXT_COMPRESSION_NONE, "Description", const_cast<char *>(get_canvas()->get_description().c_str()) },
-//		{ PNG_TEXT_COMPRESSION_NONE, "Copyright", "(c) 2004 Voria Studios, LLC" },
-		{ PNG_TEXT_COMPRESSION_NONE, "Software", "SYNFIG" },
+		{ PNG_TEXT_COMPRESSION_NONE, "Title", const_cast<char *>(get_canvas()->get_name().c_str()),
+		  strlen(get_canvas()->get_name().c_str()) },
+		{ PNG_TEXT_COMPRESSION_NONE, "Description", const_cast<char *>(get_canvas()->get_description().c_str()),
+		  strlen(get_canvas()->get_description().c_str()) },
+//		{ PNG_TEXT_COMPRESSION_NONE, "Copyright", "(c) 2004 Voria Studios, LLC",
+//		  strlen("(c) 2004 Voria Studios, LLC") },
+		{ PNG_TEXT_COMPRESSION_NONE, "Software", "SYNFIG",
+		  strlen("SYNFIG") },
 	};
 	png_set_text(png_ptr,info_ptr,comments,sizeof(comments)/sizeof(png_text));
 
