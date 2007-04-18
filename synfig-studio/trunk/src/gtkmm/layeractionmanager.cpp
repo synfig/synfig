@@ -58,8 +58,8 @@ static const guint no_prev_popup((guint)-1);
 
 LayerActionManager::LayerActionManager():
 	action_group_(Gtk::ActionGroup::create()),
-	action_group_copy_paste(Gtk::ActionGroup::create()),
 	popup_id_(no_prev_popup),
+	action_group_copy_paste(Gtk::ActionGroup::create()),
 	queued(false)
 {
 	action_cut_=Gtk::Action::create(
