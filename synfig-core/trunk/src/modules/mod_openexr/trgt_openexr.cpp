@@ -34,7 +34,6 @@
 #endif
 
 #include "trgt_openexr.h"
-#include <synfig/synfig.h>
 #include <ETL/stringf>
 #include <cstdio>
 #include <algorithm>

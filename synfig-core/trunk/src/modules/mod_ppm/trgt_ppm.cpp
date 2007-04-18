@@ -34,7 +34,6 @@
 #endif
 
 #include "trgt_ppm.h"
-#include <synfig/synfig.h>
 #include <ETL/stringf>
 #include <cstdio>
 #include <algorithm>
