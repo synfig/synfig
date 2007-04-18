@@ -161,10 +161,10 @@ Action::ValueNodeDynamicListInsertSmart::prepare()
 		// turn on. If not, then we need to go ahead and create one.
 		synfig::info("ValueNodeDynamicListInsertSmart: index=%d",index);
 		synfig::info("ValueNodeDynamicListInsertSmart: value_node->list.size()=%d",value_node->list.size());
-		if(value_node->list.size()<=index && index>0)
+		if(int(value_node->list.size())<=index && index>0)
 			synfig::info("ValueNodeDynamicListInsertSmart: value_node->list[index-1].status_at_time(time)=%d",value_node->list[index-1].status_at_time(time));
 
-		if(value_node->list.size()>=index && index>0 && !value_node->list[index-1].status_at_time(time))
+		if(int(value_node->list.size())>=index && index>0 && !value_node->list[index-1].status_at_time(time))
 		{
 			// Ok, we do not have to create a new
 			// entry in the dynamic list after all.
