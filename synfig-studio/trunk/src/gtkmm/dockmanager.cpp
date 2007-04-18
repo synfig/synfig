@@ -136,7 +136,7 @@ public:
 				vector<int> data;
 				String::size_type n=0;
 				String value_(value);
-				while(value_.size() && (signed)value_.size()>n && n>=0){
+				while(value_.size() && value_.size()>n){
 					value_=String(value_.begin()+n,value_.end());
 					int size;
 					if(!strscanf(value_,"%d",&size))
@@ -145,9 +145,8 @@ public:
 					data.push_back(size);
 
 					n=value_.find(" ");
-					if(n!=String::npos)
-						n++;
-
+					if(n==String::npos)
+						break;
 				}
 				dock_dialog.set_dock_book_sizes(data);
 				}
