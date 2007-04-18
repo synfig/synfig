@@ -147,6 +147,7 @@ public:
 					n=value_.find(" ");
 					if(n==String::npos)
 						break;
+					n++;
 				}
 				dock_dialog.set_dock_book_sizes(data);
 				}
