@@ -34,6 +34,26 @@
 
 /* === M A C R O S ========================================================= */
 
+#define MAXDEPTH 64	/*  Maximum depth for recursion */
+
+/* take binary sign of a, either -1, or 1 if >= 0 */
+#define SGN(a)		(((a)<0) ? -1 : 1)
+
+/* find minimum of a and b */
+#ifndef MIN
+#define MIN(a,b)	(((a)<(b))?(a):(b))
+#endif
+
+/* find maximum of a and b */
+#ifndef MAX
+#define MAX(a,b)	(((a)>(b))?(a):(b))
+#endif
+
+#define	BEZIER_EPSILON	(ldexp(1.0,-MAXDEPTH-1)) /*Flatness control value */
+//#define	BEZIER_EPSILON	0.00005 /*Flatness control value */
+#define	DEGREE	3			/*  Cubic Bezier curve		*/
+#define	W_DEGREE 5			/*  Degree of eqn to find roots of */
+
 /* === T Y P E D E F S ===================================================== */
 
 /* === C L A S S E S & S T R U C T S ======================================= */
@@ -522,20 +542,35 @@ public:
 	const_iterator begin()const;
 	const_iterator end()const;
 
-	time_type find_closest(const value_type& x, int i=7, time_type r=(0), time_type s=(1))const
+	time_type find_closest(bool fast, const value_type& x, int i=7)const
 	{
-		float t((r+s)*0.5);
-		for(;i;i--)
-		{
-			if(dist(operator()((s-r)*(1.0/3.0)+r),x) < dist(operator()((s-r)*(2.0/3.0)+r),x))
-				s=t;
-			else
-				r=t;
-			t=((r+s)*0.5);
-		}
-		return t;
-	}
+	    if (!fast)
+	    {
+			value_type array[4] = {
+				bezier<V,T>::operator[](0),
+				bezier<V,T>::operator[](1),
+				bezier<V,T>::operator[](2),
+				bezier<V,T>::operator[](3)};
+			return NearestPointOnCurve(x, array);
+	    }
+	    else
+	    {
+			time_type r(0), s(1);
+			float t((r+s)*0.5); /* half way between r and s */
 
+			for(;i;i--)
+			{
+				// compare 33% of the way between r and s with 67% of the way between r and s
+				if(dist(operator()((s-r)*(1.0/3.0)+r), x) <
+				   dist(operator()((s-r)*(2.0/3.0)+r), x))
+					s=t;
+				else
+					r=t;
+				t=((r+s)*0.5);
+			}
+			return t;
+		}
+	}
 
 	distance_type find_distance(time_type r, time_type s, int steps=7)const
 	{
@@ -629,6 +664,319 @@ public:
 
 		f = affine_func(p1,p2,t);
 		df = (p2-p1)*3;
+	}
+
+private:
+	/*
+	 *  Bezier :
+	 *	Evaluate a Bezier curve at a particular parameter value
+	 *      Fill in control points for resulting sub-curves if "Left" and
+	 *	"Right" are non-null.
+	 *
+	 *    int 			degree;		Degree of bezier curve
+	 *    value_type 	*VT;		Control pts
+	 *    time_type 	t;			Parameter value
+	 *    value_type 	*Left;		RETURN left half ctl pts
+	 *    value_type 	*Right;		RETURN right half ctl pts
+	 */
+	static value_type Bezier(value_type *VT, int degree, time_type t, value_type *Left, value_type *Right)
+	{
+		int 		i, j;		/* Index variables	*/
+		value_type 	Vtemp[W_DEGREE+1][W_DEGREE+1];
+
+		/* Copy control points	*/
+		for (j = 0; j <= degree; j++)
+			Vtemp[0][j] = VT[j];
+
+		/* Triangle computation	*/
+		for (i = 1; i <= degree; i++)
+			for (j =0 ; j <= degree - i; j++)
+			{
+				Vtemp[i][j][0] = (1.0 - t) * Vtemp[i-1][j][0] + t * Vtemp[i-1][j+1][0];
+				Vtemp[i][j][1] = (1.0 - t) * Vtemp[i-1][j][1] + t * Vtemp[i-1][j+1][1];
+			}
+
+		if (Left != NULL)
+			for (j = 0; j <= degree; j++)
+				Left[j]  = Vtemp[j][0];
+
+		if (Right != NULL)
+			for (j = 0; j <= degree; j++)
+				Right[j] = Vtemp[degree-j][j];
+
+		return (Vtemp[degree][0]);
+	}
+
+	/*
+	 * CrossingCount :
+	 *	Count the number of times a Bezier control polygon
+	 *	crosses the 0-axis. This number is >= the number of roots.
+	 *
+	 *    value_type	*VT;			Control pts of Bezier curve
+	 */
+	static int CrossingCount(value_type *VT)
+	{
+		int 	i;
+		int 	n_crossings = 0;	/*  Number of zero-crossings	*/
+		int		sign, old_sign;		/*  Sign of coefficients		*/
+
+		sign = old_sign = SGN(VT[0][1]);
+		for (i = 1; i <= W_DEGREE; i++)
+		{
+			sign = SGN(VT[i][1]);
+			if (sign != old_sign) n_crossings++;
+			old_sign = sign;
+		}
+
+		return n_crossings;
+	}
+
+	/*
+	 *  ControlPolygonFlatEnough :
+	 *	Check if the control polygon of a Bezier curve is flat enough
+	 *	for recursive subdivision to bottom out.
+	 *
+	 *    value_type	*VT;		Control points
+	 */
+	static int ControlPolygonFlatEnough(value_type *VT)
+	{
+		int 			i;					/* Index variable					*/
+		distance_type 	distance[W_DEGREE];	/* Distances from pts to line		*/
+		distance_type 	max_distance_above;	/* maximum of these					*/
+		distance_type 	max_distance_below;
+		time_type 		intercept_1, intercept_2, left_intercept, right_intercept;
+		distance_type 	a, b, c;			/* Coefficients of implicit			*/
+		/* eqn for line from VT[0]-VT[deg]			*/
+		/* Find the  perpendicular distance			*/
+		/* from each interior control point to 		*/
+		/* line connecting VT[0] and VT[W_DEGREE]	*/
+		{
+			distance_type	abSquared;
+
+			/* Derive the implicit equation for line connecting first *
+			 *  and last control points */
+			a = VT[0][1] - VT[W_DEGREE][1];
+			b = VT[W_DEGREE][0] - VT[0][0];
+			c = VT[0][0] * VT[W_DEGREE][1] - VT[W_DEGREE][0] * VT[0][1];
+
+			abSquared = (a * a) + (b * b);
+
+			for (i = 1; i < W_DEGREE; i++)
+			{
+				/* Compute distance from each of the points to that line	*/
+				distance[i] = a * VT[i][0] + b * VT[i][1] + c;
+				if (distance[i] > 0.0) distance[i] =  (distance[i] * distance[i]) / abSquared;
+				if (distance[i] < 0.0) distance[i] = -(distance[i] * distance[i]) / abSquared;
+			}
+		}
+
+		/* Find the largest distance */
+		max_distance_above = max_distance_below = 0.0;
+
+		for (i = 1; i < W_DEGREE; i++)
+		{
+			if (distance[i] < 0.0) max_distance_below = MIN(max_distance_below, distance[i]);
+			if (distance[i] > 0.0) max_distance_above = MAX(max_distance_above, distance[i]);
+		}
+
+		/* Implicit equation for "above" line */
+		intercept_1 = -(c + max_distance_above)/a;
+
+		/*  Implicit equation for "below" line */
+		intercept_2 = -(c + max_distance_below)/a;
+
+		/* Compute intercepts of bounding box	*/
+		left_intercept = MIN(intercept_1, intercept_2);
+		right_intercept = MAX(intercept_1, intercept_2);
+
+		return 0.5 * (right_intercept-left_intercept) < BEZIER_EPSILON ? 1 : 0;
+	}
+
+	/*
+	 *  ComputeXIntercept :
+	 *	Compute intersection of chord from first control point to last
+	 *  with 0-axis.
+	 *
+	 *    value_type 	*VT;			Control points
+	 */
+	static time_type ComputeXIntercept(value_type *VT)
+	{
+		distance_type YNM = VT[W_DEGREE][1] - VT[0][1];
+		return (YNM*VT[0][0] - (VT[W_DEGREE][0] - VT[0][0])*VT[0][1]) / YNM;
+	}
+
+	/*
+	 *  FindRoots :
+	 *	Given a 5th-degree equation in Bernstein-Bezier form, find
+	 *	all of the roots in the interval [0, 1].  Return the number
+	 *	of roots found.
+	 *
+	 *    value_type	*w;				The control points
+	 *    time_type 	*t;				RETURN candidate t-values
+	 *    int 			depth;			The depth of the recursion
+	 */
+	static int FindRoots(value_type *w, time_type *t, int depth)
+	{
+		int 		i;
+		value_type 	Left[W_DEGREE+1];	/* New left and right 	*/
+		value_type	Right[W_DEGREE+1];	/* control polygons		*/
+		int 		left_count;			/* Solution count from	*/
+		int			right_count;		/* children				*/
+		time_type 	left_t[W_DEGREE+1];	/* Solutions from kids	*/
+		time_type	right_t[W_DEGREE+1];
+
+		switch (CrossingCount(w))
+		{
+			case 0 :
+			{	/* No solutions here	*/
+				return 0;
+			}
+			case 1 :
+			{	/* Unique solution	*/
+				/* Stop recursion when the tree is deep enough		*/
+				/* if deep enough, return 1 solution at midpoint 	*/
+				if (depth >= MAXDEPTH)
+				{
+					t[0] = (w[0][0] + w[W_DEGREE][0]) / 2.0;
+					return 1;
+				}
+				if (ControlPolygonFlatEnough(w))
+				{
+					t[0] = ComputeXIntercept(w);
+					return 1;
+				}
+				break;
+			}
+		}
+
+		/* Otherwise, solve recursively after	*/
+		/* subdividing control polygon			*/
+		Bezier(w, W_DEGREE, 0.5, Left, Right);
+		left_count  = FindRoots(Left,  left_t,  depth+1);
+		right_count = FindRoots(Right, right_t, depth+1);
+
+		/* Gather solutions together	*/
+		for (i = 0; i < left_count;  i++) t[i] = left_t[i];
+		for (i = 0; i < right_count; i++) t[i+left_count] = right_t[i];
+
+		/* Send back total number of solutions	*/
+		return (left_count+right_count);
+	}
+
+	/*
+	 *  ConvertToBezierForm :
+	 *		Given a point and a Bezier curve, generate a 5th-degree
+	 *		Bezier-format equation whose solution finds the point on the
+	 *      curve nearest the user-defined point.
+	 *
+	 *    value_type& 	P;				The point to find t for
+	 *    value_type 	*VT;			The control points
+	 */
+	static void ConvertToBezierForm(const value_type& P, value_type *VT, value_type w[W_DEGREE+1])
+	{
+		int 	i, j, k, m, n, ub, lb;
+		int 	row, column;				/* Table indices				*/
+		value_type 	c[DEGREE+1];			/* VT(i)'s - P					*/
+		value_type 	d[DEGREE];				/* VT(i+1) - VT(i)				*/
+		distance_type 	cdTable[3][4];		/* Dot product of c, d			*/
+		static distance_type z[3][4] = {	/* Precomputed "z" for cubics	*/
+			{1.0, 0.6, 0.3, 0.1},
+			{0.4, 0.6, 0.6, 0.4},
+			{0.1, 0.3, 0.6, 1.0}};
+
+		/* Determine the c's -- these are vectors created by subtracting */
+		/* point P from each of the control points						 */
+		for (i = 0; i <= DEGREE; i++)
+			c[i] = VT[i] - P;
+
+		/* Determine the d's -- these are vectors created by subtracting */
+		/* each control point from the next								 */
+		for (i = 0; i <= DEGREE - 1; i++)
+			d[i] = (VT[i+1] - VT[i]) * 3.0;
+
+		/* Create the c,d table -- this is a table of dot products of the */
+		/* c's and d's													  */
+		for (row = 0; row <= DEGREE - 1; row++)
+			for (column = 0; column <= DEGREE; column++)
+				cdTable[row][column] = d[row] * c[column];
+
+		/* Now, apply the z's to the dot products, on the skew diagonal */
+		/* Also, set up the x-values, making these "points"				*/
+		for (i = 0; i <= W_DEGREE; i++)
+		{
+			w[i][0] = (distance_type)(i) / W_DEGREE;
+			w[i][1] = 0.0;
+		}
+
+		n = DEGREE;
+		m = DEGREE-1;
+		for (k = 0; k <= n + m; k++)
+		{
+			lb = MAX(0, k - m);
+			ub = MIN(k, n);
+			for (i = lb; i <= ub; i++)
+			{
+				j = k - i;
+				w[i+j][1] += cdTable[j][i] * z[j][i];
+			}
+		}
+	}
+
+	/*
+	 *  NearestPointOnCurve :
+	 *  	Compute the parameter value of the point on a Bezier
+	 *		curve segment closest to some arbtitrary, user-input point.
+	 *		Return the point on the curve at that parameter value.
+	 *
+	 *    value_type& 	P;			The user-supplied point
+	 *    value_type 	*VT;		Control points of cubic Bezier
+	 */
+	static time_type NearestPointOnCurve(const value_type& P, value_type VT[4])
+	{
+		value_type 	w[W_DEGREE+1];			/* Ctl pts of 5th-degree curve  */
+		time_type 	t_candidate[W_DEGREE];	/* Possible roots				 */
+		int 		n_solutions;			/* Number of roots found		 */
+		time_type	t;						/* Parameter value of closest pt */
+
+		/*  Convert problem to 5th-degree Bezier form */
+		ConvertToBezierForm(P, VT, w);
+
+		/* Find all possible roots of 5th-degree equation */
+		n_solutions = FindRoots(w, t_candidate, 0);
+
+		/* Compare distances of P to all candidates, and to t=0, and t=1 */
+		{
+			distance_type 	dist, new_dist;
+			value_type 		p, v;
+			int				i;
+
+			/* Check distance to beginning of curve, where t = 0	*/
+			dist = (P - VT[0]).mag_squared();
+			t = 0.0;
+
+			/* Find distances for candidate points	*/
+			for (i = 0; i < n_solutions; i++)
+			{
+				p = Bezier(VT, DEGREE, t_candidate[i], (value_type *)NULL, (value_type *)NULL);
+				new_dist = (P - p).mag_squared();
+				if (new_dist < dist)
+				{
+					dist = new_dist;
+					t = t_candidate[i];
+				}
+			}
+
+			/* Finally, look at distance to end point, where t = 1.0 */
+			new_dist = (P - VT[DEGREE]).mag_squared();
+			if (new_dist < dist)
+			{
+				dist = new_dist;
+				t = 1.0;
+			}
+		}
+
+		/*  Return the point on the curve at parameter value t */
+		return t;
 	}
 };
 

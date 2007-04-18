@@ -5,6 +5,7 @@
   * Fix amd64 issue
   * Some tests fixes
   * Misc bug fixes
+  * Add better code for finding closest point to a bezier  (#1672033)
 
  0.04.08 (SVN 139) - February 27, 2006 - Bug fixes
 

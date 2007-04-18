@@ -105,7 +105,7 @@ inline float calculate_distance(const std::vector<synfig::BLinePoint>& bline)
 }
 
 std::vector<synfig::BLinePoint>::const_iterator
-find_closest(const std::vector<synfig::BLinePoint>& bline,const Point& p,bool loop=false,float *bline_dist_ret=0)
+find_closest(bool fast, const std::vector<synfig::BLinePoint>& bline,const Point& p,float& t,bool loop=false,float *bline_dist_ret=0)
 {
 	std::vector<synfig::BLinePoint>::const_iterator iter,next,ret;
 	std::vector<synfig::BLinePoint>::const_iterator end(bline.end());
@@ -118,6 +118,7 @@ find_closest(const std::vector<synfig::BLinePoint>& bline,const Point& p,bool lo
 	float best_bline_dist(0);
 	float best_bline_len(0);
 	float total_bline_dist(0);
+	float best_pos(0);
 	etl::hermite<Vector> best_curve;
 
 	if(loop)
@@ -149,23 +150,43 @@ find_closest(const std::vector<synfig::BLinePoint>& bline,const Point& p,bool lo
 			len=curve.length();
 		}
 
+		if (fast)
+		{
 #define POINT_CHECK(x) bp=curve(x);	thisdist=(bp-p).mag_squared(); if(thisdist<dist) { ret=iter; dist=thisdist; best_bline_dist=total_bline_dist; best_bline_len=len; best_curve=curve; }
-
-		POINT_CHECK(0.0001);
-		POINT_CHECK((1.0/6.0));
-		POINT_CHECK((2.0/6.0));
-		POINT_CHECK((3.0/6.0));
-		POINT_CHECK((4.0/6.0));
-		POINT_CHECK((5.0/6.0));
-		POINT_CHECK(0.9999);
+			POINT_CHECK(0.0001);
+			POINT_CHECK((1.0/6.0));
+			POINT_CHECK((2.0/6.0));
+			POINT_CHECK((3.0/6.0));
+			POINT_CHECK((4.0/6.0));
+			POINT_CHECK((5.0/6.0));
+			POINT_CHECK(0.9999);
+		}
+		else
+		{
+			float pos = curve.find_closest(fast, p);
+			thisdist=(curve(pos)-p).mag_squared();
+			if(thisdist<dist)
+			{
+				ret=iter;
+				dist=thisdist;
+				best_bline_dist=total_bline_dist;
+				best_bline_len=len;
+				best_curve=curve;
+				best_pos = pos;
+			}
+		}
 
 		total_bline_dist+=len;
 	}
 
+	t = best_pos;
+
 	if(bline_dist_ret)
 	{
-		*bline_dist_ret=best_bline_dist+best_curve.find_distance(0,best_curve.find_closest(p));
-//		*bline_dist_ret=best_bline_dist+best_curve.find_closest(p)*best_bline_len;
+		//! \todo is this a redundant call to find_closest()?
+		// note bline_dist_ret is null except when 'perpendicular' is true
+		*bline_dist_ret=best_bline_dist+best_curve.find_distance(0,best_curve.find_closest(fast, p));
+//		*bline_dist_ret=best_bline_dist+best_curve.find_closest(fast, p)*best_bline_len;
 	}
 
 	return ret;
@@ -186,7 +207,8 @@ CurveGradient::CurveGradient():
 	gradient(Color::black(), Color::white()),
 	loop(false),
 	zigzag(false),
-	perpendicular(false)
+	perpendicular(false),
+	fast(true)
 {
 	bline.push_back(BLinePoint());
 	bline.push_back(BLinePoint());
@@ -226,6 +248,7 @@ CurveGradient::color_func(const Point &point_, int quality, float supersample)co
 	}
 	else
 	{
+		float t;
 		Point point(point_-offset);
 
 		std::vector<synfig::BLinePoint>::const_iterator iter,next;
@@ -234,12 +257,12 @@ CurveGradient::color_func(const Point &point_, int quality, float supersample)co
 		// Taking into account looping.
 		if(perpendicular)
 		{
-			next=find_closest(bline,point,bline_loop,&perp_dist);
+			next=find_closest(fast,bline,point,t,bline_loop,&perp_dist);
 			perp_dist/=curve_length_;
 		}
 		else
 		{
-			next=find_closest(bline,point,bline_loop);
+			next=find_closest(fast,bline,point,t,bline_loop);
 		}
 
 		iter=next++;
@@ -276,7 +299,8 @@ CurveGradient::color_func(const Point &point_, int quality, float supersample)co
 		}
 
 		// Figure out the closest point on the curve
-		const float t(curve.find_closest(point,search_iterations));
+		if (fast)
+			t = curve.find_closest(fast, point,search_iterations);
 
 
 		// Calculate our values
@@ -386,6 +410,7 @@ CurveGradient::set_param(const String & param, const ValueBase &value)
 
 	IMPORT(offset);
 	IMPORT(perpendicular);
+	IMPORT(fast);
 
 	if(param=="bline" && value.get_type()==ValueBase::TYPE_LIST)
 	{
@@ -413,6 +438,7 @@ CurveGradient::get_param(const String & param)const
 	EXPORT(zigzag);
 	EXPORT(width);
 	EXPORT(perpendicular);
+	EXPORT(fast);
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
@@ -446,6 +472,8 @@ CurveGradient::get_param_vocab()const
 				  .set_local_name(_("ZigZag")));
 	ret.push_back(ParamDesc("perpendicular")
 				  .set_local_name(_("Perpendicular")));
+	ret.push_back(ParamDesc("fast")
+				  .set_local_name(_("Fast")));
 
 	return ret;
 }
