@@ -170,7 +170,7 @@ Renderer_Canvas::render_vfunc(
 			for(u=u1;u<u2;u++)
 			{
 				int index=v*width_in_tiles+u;
-				if(tile_book.size()>index && tile_book[index].first)
+				if(int(tile_book.size())>index && tile_book[index].first)
 				{
 					tx=u*tile_w;
 					ty=v*tile_w;
