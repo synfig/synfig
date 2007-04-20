@@ -60,6 +60,7 @@ private:
 	bool zigzag;
 	bool bline_loop;
 	bool perpendicular;
+	bool fast;
 
 	void sync();
 
