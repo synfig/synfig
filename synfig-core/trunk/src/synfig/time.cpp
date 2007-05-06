@@ -186,6 +186,7 @@ Time::get_string(float fps, Time::Format format)const
 	hour=time/3600;time-=hour*3600;
 	minute=time/60;time-=minute*60;
 
+	// <= is redefined, so this means "is the FORMAT_VIDEO bit set in the format?"
 	if(format<=FORMAT_VIDEO)
 	{
 		int second;
@@ -203,12 +204,19 @@ Time::get_string(float fps, Time::Format format)const
 	}
 
 	String ret;
+	bool started = false;
 
 	if(format<=FORMAT_FULL || hour)
+	{
 		ret+=strprintf(format<=FORMAT_NOSPACES?"%dh":"%dh ",hour);
+		started = true;
+	}
 
-	if(format<=FORMAT_FULL || hour || minute)
+	if(format<=FORMAT_FULL || minute)
+	{
 		ret+=strprintf(format<=FORMAT_NOSPACES?"%dm":"%dm ",minute);
+		started = true;
+	}
 
 	if(fps)
 	{
@@ -217,21 +225,30 @@ Time::get_string(float fps, Time::Format format)const
 		second=time;time-=second;
 		frame=time*fps;
 		if(format<=FORMAT_FULL || second)
+		{
 			ret+=strprintf(format<=FORMAT_NOSPACES?"%ds":"%ds ",(int)second);
+			started = true;
+		}
 
-		if(abs(frame-floor(frame)>=epsilon_()))
-			ret+=strprintf("%0.3ff",frame);
-		else
-			ret+=strprintf("%0.0ff",frame);
+		if(format<=FORMAT_FULL || frame || !started)
+		{
+			if(abs(frame-floor(frame)>=epsilon_()))
+				ret+=strprintf("%0.3ff",frame);
+			else
+				ret+=strprintf("%0.0ff",frame);
+		}
 	}
 	else
 	{
 		float second;
 		second=time;
-		if(abs(second-floor(second))>=epsilon_())
-			ret+=strprintf("%0.8fs",second);
-		else
-			ret+=strprintf("%0.0fs",second);
+		if(format<=FORMAT_FULL || second || !started)
+		{
+			if(abs(second-floor(second))>=epsilon_())
+				ret+=strprintf("%0.8fs",second);
+			else
+				ret+=strprintf("%0.0fs",second);
+		}
 	}
 
 	return ret;
