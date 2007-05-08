@@ -97,6 +97,10 @@ RMDIR=rm -fr
 
 if WIN32_PKG	
 package: all win32inst.nsi
+	cp -fu `which libHalf-4.dll` src/modules/mod_openexr/.libs/
+	cp -fu `which libIlmImf-4.dll` src/modules/mod_openexr/.libs/
+	cp -fu `which libIlmThread-4.dll` src/modules/mod_openexr/.libs/
+	cp -fu `which libIex-4.dll` src/modules/mod_openexr/.libs/
 	makensis win32inst.nsi
 else
 if MACOSX_PKG
