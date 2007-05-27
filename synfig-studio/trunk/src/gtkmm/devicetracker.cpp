@@ -52,6 +52,7 @@ using namespace studio;
 
 DeviceTracker::DeviceTracker()
 {
+	// FIXME: We no longer do this, but we should figure out why this was being done
 	// By default, set the input mode on devices to
 	// GDK_MODE_SCREEN.
 	{
@@ -62,7 +63,7 @@ DeviceTracker::DeviceTracker()
 		for(iter=device_list;iter;iter=g_list_next(iter))
 		{
 			GdkDevice* device=reinterpret_cast<GdkDevice*>(iter->data);
-			gdk_device_set_mode(device,GDK_MODE_SCREEN);
+			//gdk_device_set_mode(device,GDK_MODE_SCREEN);
 
 			synfigapp::InputDevice::Handle input_device;
 			input_device=synfigapp::Main::add_input_device(device->name,synfigapp::InputDevice::Type(device->source));
