@@ -136,8 +136,10 @@ using namespace studio;
 #ifndef SYNFIG_USER_APP_DIR
 #ifdef __APPLE__
 #define SYNFIG_USER_APP_DIR	"Library/Synfig"
-#else
+#elif defined(_WIN32)
 #define SYNFIG_USER_APP_DIR	"Synfig"
+#else
+#define SYNFIG_USER_APP_DIR	".synfig"
 #endif
 #endif
 

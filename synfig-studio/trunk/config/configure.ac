@@ -107,7 +107,7 @@ case "$host" in
 		with_userdir="Library/Synfig"
 	;;
 	*)
-		with_userdir="Synfig"
+		with_userdir=".synfig"
 	;;
 esac
 ])
