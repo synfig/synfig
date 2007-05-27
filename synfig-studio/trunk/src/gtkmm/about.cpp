@@ -193,6 +193,26 @@ About::About():
 	CopyrightLabel->set_padding(0,0);
 	CopyrightLabel->set_justify(Gtk::JUSTIFY_CENTER);
 	CopyrightLabel->set_line_wrap(false);
+	CopyrightLabel->modify_fg(Gtk::STATE_NORMAL,Gdk::Color("black"));
+
+	/* Scale the text to fit */
+	int width = 0;
+	int height = 0;
+	float size=11;
+	Glib::RefPtr<Pango::Layout> l = CopyrightLabel->get_layout();
+	Pango::FontDescription fd = Pango::FontDescription("Sans, 11");
+	l->set_font_description(fd);
+	l->set_justify(Pango::ALIGN_CENTER);
+	fd.set_size(size*Pango::SCALE);
+	l->set_font_description(fd);
+	l->get_pixel_size(width,height);
+	while( width >= image_w-6 ){
+		size-=0.5;
+		fd.set_size((int)(size*Pango::SCALE));
+		l->set_font_description(fd);
+		l->get_pixel_size(width,height);
+	}
+	CopyrightLabel->modify_font(fd);
 
 	// Create the Version information label
 	Gtk::Label *VersionLabel = manage(new class Gtk::Label("Version"));
@@ -202,6 +222,7 @@ About::About():
 	VersionLabel->set_padding(0,0);
 	VersionLabel->set_justify(Gtk::JUSTIFY_CENTER);
 	VersionLabel->set_line_wrap(false);
+	VersionLabel->modify_fg(Gtk::STATE_NORMAL,Gdk::Color("black"));
 
 	// Set the version label to contain the correct information
 	string ver;
@@ -218,6 +239,25 @@ About::About():
 		ver+="\nDEBUG BUILD";
 	#endif
 	VersionLabel->set_text(ver);
+
+	/* Scale the text to fit */
+	width = 0;
+	height = 0;
+	size=11;
+	l = VersionLabel->get_layout();
+	fd = Pango::FontDescription("Sans, 11");
+	l->set_font_description(fd);
+	l->set_justify(Pango::ALIGN_CENTER);
+	fd.set_size(size*Pango::SCALE);
+	l->set_font_description(fd);
+	l->get_pixel_size(width,height);
+	while( width >= image_w-6 ){
+		size-=0.5;
+		fd.set_size((int)(size*Pango::SCALE));
+		l->set_font_description(fd);
+		l->get_pixel_size(width,height);
+	}
+	VersionLabel->modify_font(fd);
 
  	// Create the image that will be used on the close button
  	Gtk::Image *image2 = manage(new class Gtk::Image(Gtk::StockID("gtk-close"), Gtk::IconSize(4)));
