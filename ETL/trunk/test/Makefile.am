@@ -23,3 +23,6 @@ hermite_SOURCES=hermite.cpp
 #spline_SOURCES=spline.cpp
 stringf_SOURCES=stringf.cpp
 #value_SOURCES=value.cpp
+
+# FIXME: fix compiler errors for the spline and value tests.
+EXTRA_DIST=spline.cpp value.cpp

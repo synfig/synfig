@@ -10,3 +10,6 @@ etl_HEADERS= value _value.h rect _rect.h misc _misc.h ref_count _ref_count.h ang
 
 $(top_builddir)/ETL/etl_profile.h:$(top_builddir)/ETL/etl_profile_.h
 	sed "s/PACKAGE/ETL/g;" < $(top_builddir)/ETL/etl_profile_.h > $(top_builddir)/ETL/etl_profile.h
+
+# FIXME: figure out why this is in SVN, but isn't installed
+EXTRA_DIST=_bit_rotate.h
