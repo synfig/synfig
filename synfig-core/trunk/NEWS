@@ -13,6 +13,7 @@
   * Misc bug fixes
   * Fix random number generation for 64 bit CPUs (#1698604)
   * Add parameter 'fast' to curve gradients allowing choice between fast or accurate rendering (#1672033)
+  * Add new odd/even winding style for regions
 
  0.61.05 (SVN 126) - February 27, 2005 - Misc fixes
 
