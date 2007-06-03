@@ -168,8 +168,8 @@ set -x
 	$ACLOCAL -I "$CONFIG_DIR" $ACLOCAL_FLAGS &&
 	aclocalfix &&
 	$AUTOHEADER &&
-	$AUTOMAKE --foreign --add-missing --copy --include-deps &&
 	$AUTOCONF -o configure &&
+	$AUTOMAKE --force-missing --add-missing --include-deps &&
 	true
 ) ||
 {
