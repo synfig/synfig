@@ -170,7 +170,7 @@ set -x
 	aclocal -I "$CONFIG_DIR" $ACLOCAL_FLAGS &&
 	autoheader &&
 	autoconf -o configure &&
-	automake --foreign --add-missing --copy --include-deps &&
+	automake --force-missing --add-missing --include-deps &&
 	true
 ) ||
 {
@@ -194,7 +194,7 @@ set +x
 		aclocal -I "../$CONFIG_DIR" &&
 		autoheader &&
 		autoconf &&
-		automake --foreign --add-missing --copy
+		automake --force-missing --add-missing --include-deps 
 	) ||
 	{
 		# Something went wrong...
