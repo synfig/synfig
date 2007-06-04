@@ -6,7 +6,7 @@ INCLUDES = -I$(top_srcdir)/src
 
 # GCC on MacOS X does not take kindly to the -ffastmath optimization
 # in this module for some reason.
-CXXFLAGS=`echo @CXXFLAGS@ | sed s/-ffast-math//g`
+AM_CXXFLAGS=`echo @CXXFLAGS@ | sed s/-ffast-math//g`
 
 moduledir=@MODULE_DIR@
 
