@@ -1,6 +1,6 @@
 # $Id$
 
-MAINTAINERCLEANFILES=@PACKAGE_TARNAME@.pc.in @PACKAGE_TARNAME@.tar.gz doxygen.cfg config/config.guess config/config.sub config/ltmain.sh config/install-sh config/mkinstalldirs config/aclocal.m4 config/missing config/texinfo.tex config/depcomp aclocal.m4 config.h.in configure stamp-h.in Makefile.in config.log config.status .doc_stamp .DS_Store @PACKAGE_TARNAME@.spec include/etl_profile.h.in libltdl/COPYING.LIB  libltdl/Makefile.in  libltdl/acinclude.m4  libltdl/config-h.in  libltdl/configure.in  libltdl/ltdl.h libltdl/Makefile.am  libltdl/README       libltdl/aclocal.m4    libltdl/configure    libltdl/ltdl.c        libltdl/stamp-h.in
+MAINTAINERCLEANFILES=@PACKAGE_TARNAME@.pc.in @PACKAGE_TARNAME@.tar.gz doxygen.cfg config/config.guess config/config.sub config/ltmain.sh config/ltmain.sh.orig config/ltmain.sh.rej config/install-sh config/mkinstalldirs config/aclocal.m4 config/missing config/texinfo.tex config/depcomp aclocal.m4 config.h.in configure stamp-h.in Makefile.in config.log config.status .doc_stamp .DS_Store @PACKAGE_TARNAME@.spec include/etl_profile.h.in libltdl/COPYING.LIB  libltdl/Makefile.in  libltdl/acinclude.m4  libltdl/config-h.in  libltdl/configure.in  libltdl/ltdl.h libltdl/Makefile.am  libltdl/README       libltdl/aclocal.m4    libltdl/configure    libltdl/ltdl.c        libltdl/stamp-h.in
 
 
 SUBDIRS=libltdl src examples
@@ -11,7 +11,7 @@ pkgconfig_DATA = @PACKAGE_TARNAME@.pc
 
 bin_SCRIPTS=synfig-config
 
-EXTRA_DIST=TODO config/subs.m4 bootstrap config/package doc/hw-gfx-mapping.txt win32build.sh macosxbuild.sh win32inst.nsi.in COPYING config/depcomp config/synfig.m4 config/cxx_macros.m4 synfig.pbproj/config.h synfig.pbproj/project.pbxproj @PACKAGE_TARNAME@.spec config/project.spec.in config/build.cfg synfig.kdevprj synfig-config.in config/ETL.m4 config/doxygen.cfg.in doxygen.cfg config/pkgconfig.pc.in config/pkgconfig.m4 config/libxml++.m4 @PACKAGE_TARNAME@.pc.in pkg-info/macosx/core-resources/ReadMe.txt pkg-info/macosx/core-resources/Welcome.txt pkg-info/macosx/core-resources/install.sh
+EXTRA_DIST=TODO config/subs.m4 bootstrap config/package doc/hw-gfx-mapping.txt win32build.sh macosxbuild.sh win32inst.nsi.in COPYING config/depcomp config/synfig.m4 config/cxx_macros.m4 @PACKAGE_TARNAME@.spec config/project.spec.in config/build.cfg synfig.kdevprj synfig-config.in config/ETL.m4 config/doxygen.cfg.in doxygen.cfg config/pkgconfig.pc.in config/pkgconfig.m4 config/libxml++.m4 @PACKAGE_TARNAME@.pc.in pkg-info/macosx/core-resources/ReadMe.txt pkg-info/macosx/core-resources/Welcome.txt pkg-info/macosx/core-resources/install.sh
 
 CVS=cvs
 GREP=grep
@@ -41,6 +41,10 @@ stats:
 	-@$(PRINTF) "Total size: "
 	-@du -hcs $(shell find $(top_srcdir)/src -name '*.[ch]*') | $(GREP) total
 	-@echo 
+
+ChangeLog: .svn
+	-svn update
+	svn2cl --include-rev
 
 #tagstable:
 #	$(CVS) tag -F stable
