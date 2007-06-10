@@ -43,6 +43,10 @@ tagrelease:
 	$(SVN) mkdir $(SVN_REPOSITORY)/tags/$(TAG) -m "Release Tag: Making directory"
 	$(SVN) copy $(top_srcdir) $(SVN_REPOSITORY)/tags/$(TAG) -m "Release $(TAG)"
 
+ChangeLog:
+	-svn update
+	svn2cl --include-rev || touch ChangeLog
+
 stats:
 	-@echo
 	-@echo  -- Stats
