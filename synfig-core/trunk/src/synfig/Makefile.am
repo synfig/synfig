@@ -2,7 +2,7 @@
 
 # SUBDIRS=proto
 
-MAINTAINERCLEANFILES=Makefile.in
+MAINTAINERCLEANFILES=Makefile.in proto/nodebase.h
 INCLUDES = -I$(top_srcdir)/src -I$(top_srcdir)/libltdl
 
 EXTRA_DIST=proto/Makefile proto/nodebase.h proto/nodebase.px proto/proto.m4 synfig.nsh
