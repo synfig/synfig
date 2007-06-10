@@ -159,6 +159,10 @@ cat NEWS >> "$PACKAGE.spec"
 output Creating configure.in from configure.ac...
 sed "$SED_SCRIPT" < "$CONFIG_DIR/configure.ac" > configure.in;
 
+output Generating ChangeLog from SVN
+if test x != "x$VERSION_REL" ; then export REVISION="--revision $VERSION_REL" ; fi
+test -f ChangeLog || svn2cl --include-rev $REVISION $SVN_REPOSITORY/trunk/ || touch ChangeLog
+
 output Setting up build environment...
 
 # Set the shell to output what we are doing

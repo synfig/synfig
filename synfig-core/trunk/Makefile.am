@@ -42,9 +42,9 @@ stats:
 	-@du -hcs $(shell find $(top_srcdir)/src -name '*.[ch]*') | $(GREP) total
 	-@echo 
 
-ChangeLog: .svn
+ChangeLog:
 	-svn update
-	svn2cl --include-rev
+	svn2cl --include-rev || touch ChangeLog
 
 #tagstable:
 #	$(CVS) tag -F stable
