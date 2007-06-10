@@ -1,6 +1,6 @@
 # $Id$
 
-MAINTAINERCLEANFILES=config/config.guess config/config.sub config/ltmain.sh config/install-sh config/mkinstalldirs config/aclocal.m4 config/missing config/texinfo.tex config/depcomp aclocal.m4 config.h.in configure stamp-h.in Makefile.in config.log config.status .doc_stamp .DS_Store @PACKAGE@.spec include/etl_profile.h.in ETL.pc.in doxygen.cfg
+MAINTAINERCLEANFILES=COPYING INSTALL config/config.guess config/config.sub config/ltmain.sh config/install-sh config/mkinstalldirs config/aclocal.m4 config/missing config/texinfo.tex config/depcomp aclocal.m4 config.h.in configure stamp-h.in Makefile.in config.log config.status .doc_stamp .DS_Store @PACKAGE@.spec include/etl_profile.h.in ETL.pc.in doxygen.cfg
 
 SUBDIRS=ETL test
 
