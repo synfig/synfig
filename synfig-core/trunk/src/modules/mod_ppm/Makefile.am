@@ -1,6 +1,7 @@
 # $Id$
 
 
+EXTRADIST=trgt_mpg.cpp trgt_mpg.h
 MAINTAINERCLEANFILES=Makefile.in
 INCLUDES = -I$(top_srcdir)/src
 
