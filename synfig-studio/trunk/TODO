@@ -16,6 +16,7 @@
 * Clean up crazy confusing console output
 * Implement palette browser feature
 * Move to icon theming so synfig icons can be customised
+* Switch icon naming to Tango and ArtLibreSet
 
 ## Wishful Thinking ##
 
