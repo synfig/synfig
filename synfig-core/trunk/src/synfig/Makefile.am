@@ -5,7 +5,7 @@
 MAINTAINERCLEANFILES=Makefile.in proto/nodebase.h
 INCLUDES = -I$(top_srcdir)/src -I$(top_srcdir)/libltdl
 
-EXTRA_DIST=pch.h proto/Makefile proto/nodebase.h proto/nodebase.px proto/proto.m4 synfig.nsh
+EXTRA_DIST=surfacenew.cpp pch.h proto/Makefile proto/nodebase.h proto/nodebase.px proto/proto.m4 synfig.nsh
 
 LAYERHEADERS=layer_motionblur.h layer_pastecanvas.h layer_solidcolor.h layer_polygon.h layer_composite.h layer_bitmap.h layer_mime.h layer_shape.h
 LAYERSOURCES=layer_motionblur.cpp layer_pastecanvas.cpp layer_solidcolor.cpp layer_polygon.cpp layer_composite.cpp layer_bitmap.cpp layer_mime.cpp layer_shape.cpp
@@ -23,7 +23,7 @@ VALUEHEADERS=blinepoint.h gradient.h value.h
 VALUESOURCES=blinepoint.cpp gradient.cpp value.cpp
 
 SYNFIGHEADERS=protocol.h surfacenew.h mutex.h timepointcollect.h interpolation.h guidset.h guid.h quick_rng.h rect.h node.h smartfile.h distance.h palette.h main.h waypoint.h activepoint.h gamma.h uniqueid.h canvasbase.h context.h real.h paramdesc.h string_decl.h angle.h keyframe.h synfig.h renddesc.h general.h importer.h surface.h module.h layer.h vector.h color.h canvas.h render.h target.h loadcanvas.h savecanvas.h valuenode.h version.h segment.h types.h exception.h string.h time.h blur.h transform.h curve_helper.h polynomial_root.h curveset.h
-SYNFIGSOURCES=surfacenew.cpp mutex.cpp timepointcollect.cpp rect.cpp node.cpp guid.cpp loadcanvas.cpp distance.cpp palette.cpp paramdesc.cpp waypoint.cpp activepoint.cpp gamma.cpp uniqueid.cpp context.cpp renddesc.cpp time.cpp exception.cpp keyframe.cpp main.cpp surface.cpp module.cpp importer.cpp layer.cpp color.cpp canvas.cpp render.cpp target.cpp savecanvas.cpp valuenode.cpp blur.cpp curve_helper.cpp polynomial_root.cpp transform.cpp curveset.cpp
+SYNFIGSOURCES=mutex.cpp timepointcollect.cpp rect.cpp node.cpp guid.cpp loadcanvas.cpp distance.cpp palette.cpp paramdesc.cpp waypoint.cpp activepoint.cpp gamma.cpp uniqueid.cpp context.cpp renddesc.cpp time.cpp exception.cpp keyframe.cpp main.cpp surface.cpp module.cpp importer.cpp layer.cpp color.cpp canvas.cpp render.cpp target.cpp savecanvas.cpp valuenode.cpp blur.cpp curve_helper.cpp polynomial_root.cpp transform.cpp curveset.cpp
 
 lib_LTLIBRARIES = libsynfig.la
 libsynfig_la_SOURCES = $(VALUEHEADERS) $(VALUESOURCES) $(LAYERSOURCES) $(LAYERHEADERS) $(TARGETHEADERS) $(TARGETSOURCES) $(VALUENODEHEADERS) $(VALUENODESOURCES) $(SYNFIGHEADERS) $(SYNFIGSOURCES) $(IMPORTERHEADERS) $(IMPORTERSOURCES)
