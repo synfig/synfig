@@ -168,15 +168,8 @@ AC_SUBST(VERSION_REV)
 # fmod stuff...
 AC_SUBST(FMOD_LIBS)
 
-eval datadir="${datadir}"
-eval datadir="${datadir}"
-eval datadir="${datadir}"
-eval imagedir="${datadir}/pixmaps"
 imageext=png
 AC_SUBST(imageext)
-AC_SUBST(imagedir)
-AC_DEFINE_UNQUOTED(IMAGE_EXT,"$imageext", [ Describes the file extension for images ] )
-AC_DEFINE_UNQUOTED(IMAGE_DIR,"${imagedir}", [ Describes where the icons and stuff will be ] )
 
 AC_OUTPUT(
 Makefile
@@ -200,8 +193,7 @@ $PACKAGE_NAME v.$VERSION
 Configuration Summary
 - - - - - -
 
-Install Prefix -------------------> ${prefix}
-Data Prefix ----------------------> ${datadir}
+Install Prefix -------------------> $prefix
 Host Platform --------------------> $host
 Icon Format ----------------------> $imageext
 Debug Mode -----------------------> $debug
