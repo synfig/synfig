@@ -194,7 +194,7 @@ set +x
 	set -x
 	(
 		cd libltdl &&
-		( echo "AC_CONFIG_AUX_DIR(../config)" >> configure.[ai][cn] ) &&
+		( echo "AC_CONFIG_AUX_DIR(../config)" >> configure.* ) &&
 		aclocal -I "../$CONFIG_DIR" &&
 		autoheader &&
 		autoconf &&
