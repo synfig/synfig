@@ -8,8 +8,6 @@ IMAGES=installer_logo.$(EXT) installer_logo_osx.$(EXT) mirror_icon.$(EXT) time_t
 MAINTAINERCLEANFILES=Makefile.in
 CLEANFILES=$(IMAGES) images.nsh unimages.nsh installer_logo.bmp sif_icon.ico synfig_icon.ico icons.nsh unicons.nsh
 
-imagedir=@imagedir@
-
 image_DATA=$(IMAGES)
 
 
