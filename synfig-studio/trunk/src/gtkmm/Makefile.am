@@ -1,5 +1,6 @@
 # $Id$
 
+EXTRADIST=compview.cpp
 MAINTAINERCLEANFILES=Makefile.in $(GLADE_FILES)
 
 CELLRENDERER_HH=cellrenderer_gradient.h cellrenderer_timetrack.h cellrenderer_time.h cellrenderer_value.h
@@ -42,7 +43,7 @@ ACTION_MANAGERS_HH=layeractionmanager.h keyframeactionmanager.h groupactionmanag
 ACTION_MANAGERS_CC=layeractionmanager.cpp keyframeactionmanager.cpp groupactionmanager.cpp
 
 OTHER_HH=compview.h statemanager.h module.h ipc.h asyncrenderer.h smach.h duckmatic.h canvasoptions.h render.h app.h instance.h canvasview.h about.h iconcontroler.h toolbox.h workarea.h canvasproperties.h renddesc.h zoomdial.h eventkey.h onemoment.h devicetracker.h dialogsettings.h autorecover.h keymapsettings.h preview.h audiocontainer.h adjust_window.h valuelink.h
-OTHER_CC=compview.cpp statemanager.cpp module.cpp ipc.cpp asyncrenderer.cpp duckmatic.cpp main.cpp canvasoptions.cpp render.cpp app.cpp instance.cpp canvasview.cpp about.cpp iconcontroler.cpp toolbox.cpp workarea.cpp canvasproperties.cpp renddesc.cpp zoomdial.cpp onemoment.cpp devicetracker.cpp dialogsettings.cpp autorecover.cpp keymapsettings.cpp preview.cpp audiocontainer.cpp adjust_window.cpp valuelink.cpp
+OTHER_CC=statemanager.cpp module.cpp ipc.cpp asyncrenderer.cpp duckmatic.cpp main.cpp canvasoptions.cpp render.cpp app.cpp instance.cpp canvasview.cpp about.cpp iconcontroler.cpp toolbox.cpp workarea.cpp canvasproperties.cpp renddesc.cpp zoomdial.cpp onemoment.cpp devicetracker.cpp dialogsettings.cpp autorecover.cpp keymapsettings.cpp preview.cpp audiocontainer.cpp adjust_window.cpp valuelink.cpp
 
 INCLUDES=-I$(top_srcdir)/src
 
