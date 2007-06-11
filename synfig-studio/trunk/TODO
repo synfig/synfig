@@ -15,6 +15,7 @@
 * Integrated error console tab
 * Clean up crazy confusing console output
 * Implement palette browser feature
+* Move to icon theming so synfig icons can be customised
 
 ## Wishful Thinking ##
 
