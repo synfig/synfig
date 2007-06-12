@@ -305,8 +305,8 @@ if test $use_openexr_half = yes ; then {
 
 AC_LIB_LTDL
 
-PKG_CHECK_MODULES(ETL, ETL,,[
-	AC_MSG_ERROR([ ** You need to install the ETL.])
+PKG_CHECK_MODULES(ETL, [ETL >= 0.04.09],,[
+	AC_MSG_ERROR([ ** You need to install the ETL (version 0.04.09 or greater).])
 ])
 CONFIG_DEPS="$CONFIG_DEPS ETL"
 
