@@ -462,7 +462,7 @@ bool studio::Widget_NavView::on_mouse_event(GdkEvent * e)
 
 		float max = abs((br[0]-tl[0]) / drawto.get_width());
 
-		if((prev->get_width() / drawto.get_width()) < (prev->get_height() / drawto.get_height()))
+		if((float(prev->get_width()) / drawto.get_width()) < (float(prev->get_height()) / drawto.get_height()))
 			max = abs((br[1]-tl[1]) / drawto.get_height());
 
 		float signx = (br[0]-tl[0]) < 0 ? -1 : 1;
