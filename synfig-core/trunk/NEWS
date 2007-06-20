@@ -1,6 +1,6 @@
               synfig releases
 
- 0.61.06 (SVN ???) - ??????? ??, ???? - Bug fixes
+ 0.61.06 (SVN 536) - June 20, 2007 - Bug fixes
 
   * Add fontconfig support
   * Fix amd64 issue
