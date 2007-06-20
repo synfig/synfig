@@ -24,7 +24,7 @@ TAG=@PACKAGE_TARNAME@_@VERSION_MAJ@_@VERSION_MIN@_@VERSION_REV@
 
 
 tagstable:
-	-$(SVN) delete $(SVN_REPOSITORY)/tags/stable -m "Stabe Tag: Removing old tag"
+	-$(SVN) delete $(SVN_REPOSITORY)/tags/stable -m "Stable Tag: Removing old tag"
 	$(SVN) copy $(top_srcdir) $(SVN_REPOSITORY)/tags/stable -m "Stable Tag: Copying everything over"
 
 tagrelease:
