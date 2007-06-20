@@ -1,0 +1,139 @@
+<?xml version="1.0"?>
+<canvas version="0.1" width="400" height="300" xres="2952.755900" yres="2952.755900" view-box="-2.000000 1.500000 2.000000 -1.500000" antialias="1" fps="30.000" begin-time="0f" end-time="10s 0f" bgcolor="0.500000 0.500000 0.500000 1.000000">
+  <name>Noise Test</name>
+  <desc>A Fire-Like test of the Noise layer</desc>
+  <layer type="SolidColor" active="true" version="0.1">
+    <param name="z_depth">
+      <real value="0.0000000000"/>
+    </param>
+    <param name="amount">
+      <real value="1.0000000000"/>
+    </param>
+    <param name="blend_method">
+      <integer value="1"/>
+    </param>
+    <param name="color">
+      <color>
+        <r>0.456263</r>
+        <g>0.460148</g>
+        <b>0.460148</b>
+        <a>1.000000</a>
+      </color>
+    </param>
+  </layer>
+  <layer type="checker_board" active="true" version="0.1">
+    <param name="z_depth">
+      <real value="0.0000000000"/>
+    </param>
+    <param name="amount">
+      <real value="1.0000000000"/>
+    </param>
+    <param name="blend_method">
+      <integer value="1"/>
+    </param>
+    <param name="color">
+      <color>
+        <r>0.147464</r>
+        <g>0.147464</g>
+        <b>0.147464</b>
+        <a>1.000000</a>
+      </color>
+    </param>
+    <param name="pos">
+      <vector>
+        <x>0.1250000000</x>
+        <y>0.1250000000</y>
+      </vector>
+    </param>
+    <param name="size">
+      <vector>
+        <x>0.2500000000</x>
+        <y>0.2500000000</y>
+      </vector>
+    </param>
+  </layer>
+  <layer type="noise" active="true" version="0.0">
+    <param name="z_depth">
+      <real value="0.0000000000"/>
+    </param>
+    <param name="amount">
+      <real value="1.0000000000"/>
+    </param>
+    <param name="blend_method">
+      <integer value="0"/>
+    </param>
+    <param name="gradient">
+      <gradient>
+        <color pos="0.000000">
+          <r>1.000000</r>
+          <g>1.000000</g>
+          <b>1.000000</b>
+          <a>1.000000</a>
+        </color>
+        <color pos="0.000000">
+          <r>1.000000</r>
+          <g>1.000000</g>
+          <b>1.000000</b>
+          <a>1.000000</a>
+        </color>
+        <color pos="0.098246">
+          <r>1.000000</r>
+          <g>0.653250</g>
+          <b>-0.000000</b>
+          <a>1.000000</a>
+        </color>
+        <color pos="0.235088">
+          <r>1.000000</r>
+          <g>-0.000000</g>
+          <b>-0.000000</b>
+          <a>1.000000</a>
+        </color>
+        <color pos="0.266667">
+          <r>-0.000000</r>
+          <g>-0.000000</g>
+          <b>-0.000000</b>
+          <a>1.000000</a>
+        </color>
+        <color pos="0.533333">
+          <r>-0.000000</r>
+          <g>-0.000000</g>
+          <b>-0.000000</b>
+          <a>0.000000</a>
+        </color>
+        <color pos="1.000000">
+          <r>1.000000</r>
+          <g>1.000000</g>
+          <b>1.000000</b>
+          <a>0.000000</a>
+        </color>
+      </gradient>
+    </param>
+    <param name="seed">
+      <integer value="1"/>
+    </param>
+    <param name="size">
+      <vector>
+        <x>0.8199999928</x>
+        <y>0.7799999714</y>
+      </vector>
+    </param>
+    <param name="smooth">
+      <integer value="3"/>
+    </param>
+    <param name="detail">
+      <integer value="4"/>
+    </param>
+    <param name="speed">
+      <real value="2.0000000000"/>
+    </param>
+    <param name="turbulent">
+      <bool value="true"/>
+    </param>
+    <param name="do_alpha">
+      <bool value="false"/>
+    </param>
+    <param name="super_sample">
+      <bool value="false"/>
+    </param>
+  </layer>
+</canvas>
