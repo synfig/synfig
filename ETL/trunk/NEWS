@@ -1,6 +1,6 @@
               ETL releases
 
- 0.04.09 (SVN 526) - June 20, 2006 - Bug fixes
+ 0.04.09 (SVN 530) - June 20, 2006 - Bug fixes
 
   * Fix amd64 issue
   * Some tests fixes
