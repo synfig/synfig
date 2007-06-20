@@ -1,0 +1,2183 @@
+<?xml version="1.0"?>
+<canvas version="0.1" width="400" height="300" xres="2952.755900" yres="2952.755900" view-box="-2.000000 1.500000 2.000000 -1.500000" antialias="1" fps="30.000" begin-time="0f" end-time="5s 0f">
+  <name>Untitled0</name>
+  <keyframe time="1s 0f">Start of change to Star</keyframe>
+  <keyframe time="2s 0f">Yellow Star</keyframe>
+  <keyframe time="0f">Circle</keyframe>
+  <keyframe time="2s 8f">Circle 1</keyframe>
+  <keyframe time="2s 15f">Circle 2</keyframe>
+  <keyframe time="2s 23f">Circle 3</keyframe>
+  <keyframe time="3s 0f">Circle 4</keyframe>
+  <keyframe time="3s 7f">Circle 5</keyframe>
+  <keyframe time="3s 15f">Finish</keyframe>
+  <defs>
+    <bline type="bline_point" loop="true" id="Shape">
+      <entry on="SOT, 2s 0f, 2s 8f, 2s 15f, 2s 23f, 3s 0f, 3s 7f, 3s 15f" off="0f, 1s 0f">
+        <composite type="bline_point">
+          <c1>
+            <animated type="vector">
+              <waypoint time="SOT">
+                <vector>
+                  <x>0.2500000000</x>
+                  <y>0.5000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="0f">
+                <vector>
+                  <x>0.2500000000</x>
+                  <y>0.5000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="1s 0f">
+                <vector>
+                  <x>0.2500000000</x>
+                  <y>0.5000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 0f">
+                <vector>
+                  <x>0.2500000000</x>
+                  <y>0.2500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 8f">
+                <vector>
+                  <x>0.2500000000</x>
+                  <y>0.2500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 15f">
+                <vector>
+                  <x>0.2500000000</x>
+                  <y>0.2500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 23f">
+                <vector>
+                  <x>0.2500000000</x>
+                  <y>0.2500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="3s 0f">
+                <vector>
+                  <x>0.2500000000</x>
+                  <y>0.2500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="3s 7f">
+                <vector>
+                  <x>0.2500000000</x>
+                  <y>0.2500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="3s 15f">
+                <vector>
+                  <x>0.2500000000</x>
+                  <y>0.2500000000</y>
+                </vector>
+              </waypoint>
+            </animated>
+          </c1>
+          <c2>
+            <real value="0.0000000000"/>
+          </c2>
+          <c3>
+            <real value="0.2500000000"/>
+          </c3>
+          <c4>
+            <bool value="true"/>
+          </c4>
+          <c5>
+            <animated type="vector">
+              <waypoint time="SOT">
+                <vector>
+                  <x>-0.7500000000</x>
+                  <y>-0.7500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="0f">
+                <vector>
+                  <x>-0.7500000000</x>
+                  <y>-0.7500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="1s 0f">
+                <vector>
+                  <x>-0.7500000000</x>
+                  <y>-0.7500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 0f">
+                <vector>
+                  <x>-0.7500000000</x>
+                  <y>0.0000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 8f">
+                <vector>
+                  <x>-0.7500000000</x>
+                  <y>0.0000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 15f">
+                <vector>
+                  <x>-0.7500000000</x>
+                  <y>0.0000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 23f">
+                <vector>
+                  <x>-0.7500000000</x>
+                  <y>0.0000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="3s 0f">
+                <vector>
+                  <x>-0.7500000000</x>
+                  <y>0.0000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="3s 7f">
+                <vector>
+                  <x>-0.7500000000</x>
+                  <y>0.0000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="3s 15f">
+                <vector>
+                  <x>-0.7500000000</x>
+                  <y>0.0000000000</y>
+                </vector>
+              </waypoint>
+            </animated>
+          </c5>
+          <c6>
+            <vector>
+              <x>-0.2500000000</x>
+              <y>0.7500000000</y>
+            </vector>
+          </c6>
+        </composite>
+      </entry>
+      <entry on="SOT, 2s 0f, 2s 8f, 2s 15f, 2s 23f, 3s 0f, 3s 7f, 3s 15f" off="0f, 1s 0f">
+        <composite type="bline_point">
+          <c1>
+            <animated type="vector">
+              <waypoint time="SOT">
+                <vector>
+                  <x>0.0000000000</x>
+                  <y>1.2500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="0f">
+                <vector>
+                  <x>0.0000000000</x>
+                  <y>1.2500000149</y>
+                </vector>
+              </waypoint>
+              <waypoint time="1s 0f">
+                <vector>
+                  <x>0.0000000000</x>
+                  <y>1.2500000149</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 0f">
+                <vector>
+                  <x>0.0000000000</x>
+                  <y>1.0000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 8f">
+                <vector>
+                  <x>0.0000000000</x>
+                  <y>1.0000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 15f">
+                <vector>
+                  <x>0.0000000000</x>
+                  <y>1.0000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 23f">
+                <vector>
+                  <x>0.0000000000</x>
+                  <y>1.0000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="3s 0f">
+                <vector>
+                  <x>0.0000000000</x>
+                  <y>1.0000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="3s 7f">
+                <vector>
+                  <x>0.0000000000</x>
+                  <y>1.0000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="3s 15f">
+                <vector>
+                  <x>0.0000000000</x>
+                  <y>1.0000000000</y>
+                </vector>
+              </waypoint>
+            </animated>
+          </c1>
+          <c2>
+            <real value="0.0100000000"/>
+          </c2>
+          <c3>
+            <real value="0.5000000000"/>
+          </c3>
+          <c4>
+            <bool value="true"/>
+          </c4>
+          <c5>
+            <vector>
+              <x>-0.2500000000</x>
+              <y>0.7500000000</y>
+            </vector>
+          </c5>
+          <c6>
+            <vector>
+              <x>-0.2500000000</x>
+              <y>-0.7500000000</y>
+            </vector>
+          </c6>
+        </composite>
+      </entry>
+      <entry on="SOT, 2s 0f, 2s 8f, 2s 15f, 2s 23f, 3s 0f, 3s 7f, 3s 15f" off="0f, 1s 0f">
+        <composite type="bline_point">
+          <c1>
+            <animated type="vector">
+              <waypoint time="SOT">
+                <vector>
+                  <x>-0.2500000000</x>
+                  <y>0.5000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="0f">
+                <vector>
+                  <x>-0.2500000000</x>
+                  <y>0.5000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="1s 0f">
+                <vector>
+                  <x>-0.2500000000</x>
+                  <y>0.5000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 0f">
+                <vector>
+                  <x>-0.2500000000</x>
+                  <y>0.2500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 8f">
+                <vector>
+                  <x>-0.2500000000</x>
+                  <y>0.2500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 15f">
+                <vector>
+                  <x>-0.2500000000</x>
+                  <y>0.2500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 23f">
+                <vector>
+                  <x>-0.2500000000</x>
+                  <y>0.2500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="3s 0f">
+                <vector>
+                  <x>-0.2500000000</x>
+                  <y>0.2500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="3s 7f">
+                <vector>
+                  <x>-0.2500000000</x>
+                  <y>0.2500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="3s 15f">
+                <vector>
+                  <x>-0.2500000000</x>
+                  <y>0.2500000000</y>
+                </vector>
+              </waypoint>
+            </animated>
+          </c1>
+          <c2>
+            <real value="0.0000000000"/>
+          </c2>
+          <c3>
+            <real value="0.7500000000"/>
+          </c3>
+          <c4>
+            <bool value="true"/>
+          </c4>
+          <c5>
+            <vector>
+              <x>-0.2500000000</x>
+              <y>-0.7500000000</y>
+            </vector>
+          </c5>
+          <c6>
+            <animated type="vector">
+              <waypoint time="SOT">
+                <vector>
+                  <x>-0.7500000000</x>
+                  <y>0.7500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="0f">
+                <vector>
+                  <x>-0.7500000000</x>
+                  <y>0.7500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="1s 0f">
+                <vector>
+                  <x>-0.7500000000</x>
+                  <y>0.7500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 0f">
+                <vector>
+                  <x>-0.7500000000</x>
+                  <y>0.0000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 8f">
+                <vector>
+                  <x>-0.7500000000</x>
+                  <y>0.0000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 15f">
+                <vector>
+                  <x>-0.7500000000</x>
+                  <y>0.0000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 23f">
+                <vector>
+                  <x>-0.7500000000</x>
+                  <y>0.0000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="3s 0f">
+                <vector>
+                  <x>-0.7500000000</x>
+                  <y>0.0000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="3s 7f">
+                <vector>
+                  <x>-0.7500000000</x>
+                  <y>0.0000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="3s 15f">
+                <vector>
+                  <x>-0.7500000000</x>
+                  <y>0.0000000000</y>
+                </vector>
+              </waypoint>
+            </animated>
+          </c6>
+        </composite>
+      </entry>
+      <entry on="0f, 0f, 1s 0f, 2s 8f, 2s 15f, 2s 23f, 3s 0f, 3s 7f, 3s 15f">
+        <composite type="bline_point">
+          <c1>
+            <animated type="vector">
+              <waypoint time="SOT">
+                <vector>
+                  <x>-1.0000000000</x>
+                  <y>1.0000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="0f">
+                <vector>
+                  <x>-1.0000000000</x>
+                  <y>1.0000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="1s 0f">
+                <vector>
+                  <x>-1.0000000000</x>
+                  <y>1.0000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 0f">
+                <vector>
+                  <x>-1.0000000000</x>
+                  <y>0.2500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 8f">
+                <vector>
+                  <x>-1.0000000000</x>
+                  <y>0.2500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 15f">
+                <vector>
+                  <x>-1.0000000000</x>
+                  <y>0.2500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 23f">
+                <vector>
+                  <x>-1.0000000000</x>
+                  <y>0.2500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="3s 0f">
+                <vector>
+                  <x>-1.0000000000</x>
+                  <y>0.2500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="3s 7f">
+                <vector>
+                  <x>-1.0000000000</x>
+                  <y>0.2500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="3s 15f">
+                <vector>
+                  <x>-1.0000000000</x>
+                  <y>0.2500000000</y>
+                </vector>
+              </waypoint>
+            </animated>
+          </c1>
+          <c2>
+            <real value="0.0099999998"/>
+          </c2>
+          <c3>
+            <real value="0.5000000000"/>
+          </c3>
+          <c4>
+            <bool value="true"/>
+          </c4>
+          <c5>
+            <animated type="vector">
+              <waypoint time="SOT">
+                <vector>
+                  <x>-1.5000000000</x>
+                  <y>-1.5000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="0f">
+                <vector>
+                  <x>-1.5000000000</x>
+                  <y>-1.5000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="1s 0f">
+                <vector>
+                  <x>-1.5000000000</x>
+                  <y>-1.5000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 0f">
+                <vector>
+                  <x>-0.7500000000</x>
+                  <y>0.0000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 8f">
+                <vector>
+                  <x>-0.7500000000</x>
+                  <y>0.0000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 15f">
+                <vector>
+                  <x>-0.7500000000</x>
+                  <y>0.0000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 23f">
+                <vector>
+                  <x>-0.7500000000</x>
+                  <y>0.0000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="3s 0f">
+                <vector>
+                  <x>-0.7500000000</x>
+                  <y>0.0000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="3s 7f">
+                <vector>
+                  <x>-0.7500000000</x>
+                  <y>0.0000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="3s 15f">
+                <vector>
+                  <x>-0.7500000000</x>
+                  <y>0.0000000000</y>
+                </vector>
+              </waypoint>
+            </animated>
+          </c5>
+          <c6>
+            <animated type="vector">
+              <waypoint time="SOT">
+                <vector>
+                  <x>-1.5000000000</x>
+                  <y>-1.5000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="0f">
+                <vector>
+                  <x>-1.5000000000</x>
+                  <y>-1.5000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="1s 0f">
+                <vector>
+                  <x>-1.5000000000</x>
+                  <y>-1.5000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 0f">
+                <vector>
+                  <x>0.5000000000</x>
+                  <y>-0.5000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 8f">
+                <vector>
+                  <x>0.5000000000</x>
+                  <y>-0.5000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 15f">
+                <vector>
+                  <x>0.5000000000</x>
+                  <y>-0.5000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 23f">
+                <vector>
+                  <x>0.5000000000</x>
+                  <y>-0.5000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="3s 0f">
+                <vector>
+                  <x>0.5000000000</x>
+                  <y>-0.5000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="3s 7f">
+                <vector>
+                  <x>0.5000000000</x>
+                  <y>-0.5000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="3s 15f">
+                <vector>
+                  <x>0.5000000000</x>
+                  <y>-0.5000000000</y>
+                </vector>
+              </waypoint>
+            </animated>
+          </c6>
+        </composite>
+      </entry>
+      <entry on="SOT, 2s 0f, 2s 8f, 2s 15f, 2s 23f, 3s 0f, 3s 7f, 3s 15f" off="0f, 1s 0f">
+        <composite type="bline_point">
+          <c1>
+            <animated type="vector">
+              <waypoint time="SOT">
+                <vector>
+                  <x>-0.5000000000</x>
+                  <y>0.0000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="0f">
+                <vector>
+                  <x>-0.5000000000</x>
+                  <y>0.0000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="1s 0f">
+                <vector>
+                  <x>-0.5000000000</x>
+                  <y>0.0000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 0f">
+                <vector>
+                  <x>-0.5000000000</x>
+                  <y>-0.2500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 8f">
+                <vector>
+                  <x>-0.5000000000</x>
+                  <y>-0.2500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 15f">
+                <vector>
+                  <x>-0.5000000000</x>
+                  <y>-0.2500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 23f">
+                <vector>
+                  <x>-0.5000000000</x>
+                  <y>-0.2500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="3s 0f">
+                <vector>
+                  <x>-0.5000000000</x>
+                  <y>-0.2500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="3s 7f">
+                <vector>
+                  <x>-0.5000000000</x>
+                  <y>-0.2500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="3s 15f">
+                <vector>
+                  <x>-0.5000000000</x>
+                  <y>-0.2500000000</y>
+                </vector>
+              </waypoint>
+            </animated>
+          </c1>
+          <c2>
+            <real value="0.0000000000"/>
+          </c2>
+          <c3>
+            <real value="0.5000000000"/>
+          </c3>
+          <c4>
+            <bool value="true"/>
+          </c4>
+          <c5>
+            <animated type="vector">
+              <waypoint time="SOT">
+                <vector>
+                  <x>0.7500000000</x>
+                  <y>-0.7500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="0f">
+                <vector>
+                  <x>0.7500000000</x>
+                  <y>-0.7500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="1s 0f">
+                <vector>
+                  <x>0.7500000000</x>
+                  <y>-0.7500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 0f">
+                <vector>
+                  <x>0.2500000000</x>
+                  <y>-0.2500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 8f">
+                <vector>
+                  <x>0.2500000000</x>
+                  <y>-0.2500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 15f">
+                <vector>
+                  <x>0.2500000000</x>
+                  <y>-0.2500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 23f">
+                <vector>
+                  <x>0.2500000000</x>
+                  <y>-0.2500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="3s 0f">
+                <vector>
+                  <x>0.2500000000</x>
+                  <y>-0.2500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="3s 7f">
+                <vector>
+                  <x>0.2500000000</x>
+                  <y>-0.2500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="3s 15f">
+                <vector>
+                  <x>0.2500000000</x>
+                  <y>-0.2500000000</y>
+                </vector>
+              </waypoint>
+            </animated>
+          </c5>
+          <c6>
+            <animated type="vector">
+              <waypoint time="SOT">
+                <vector>
+                  <x>-0.7500000000</x>
+                  <y>-0.7500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="0f">
+                <vector>
+                  <x>-0.7500000000</x>
+                  <y>-0.7500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="1s 0f">
+                <vector>
+                  <x>-0.7500000000</x>
+                  <y>-0.7500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 0f">
+                <vector>
+                  <x>-0.2500000000</x>
+                  <y>-0.7500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 8f">
+                <vector>
+                  <x>-0.2500000000</x>
+                  <y>-0.7500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 15f">
+                <vector>
+                  <x>-0.2500000000</x>
+                  <y>-0.7500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 23f">
+                <vector>
+                  <x>-0.2500000000</x>
+                  <y>-0.7500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="3s 0f">
+                <vector>
+                  <x>-0.2500000000</x>
+                  <y>-0.7500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="3s 7f">
+                <vector>
+                  <x>-0.2500000000</x>
+                  <y>-0.7500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="3s 15f">
+                <vector>
+                  <x>-0.2500000000</x>
+                  <y>-0.7500000000</y>
+                </vector>
+              </waypoint>
+            </animated>
+          </c6>
+        </composite>
+      </entry>
+      <entry on="0f, 0f, 1s 0f, 2s 8f, 2s 15f, 2s 23f, 3s 0f, 3s 7f, 3s 15f">
+        <composite type="bline_point">
+          <c1>
+            <animated type="vector">
+              <waypoint time="SOT">
+                <vector>
+                  <x>-1.0000000000</x>
+                  <y>-1.0000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="0f">
+                <vector>
+                  <x>-1.0000000000</x>
+                  <y>-1.0000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="1s 0f">
+                <vector>
+                  <x>-1.0000000000</x>
+                  <y>-1.0000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 0f">
+                <vector>
+                  <x>-0.7500000000</x>
+                  <y>-1.0000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 8f">
+                <vector>
+                  <x>-0.7500000000</x>
+                  <y>-1.0000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 15f">
+                <vector>
+                  <x>-0.7500000000</x>
+                  <y>-1.0000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 23f">
+                <vector>
+                  <x>-0.7500000000</x>
+                  <y>-1.0000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="3s 0f">
+                <vector>
+                  <x>-0.7500000000</x>
+                  <y>-1.0000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="3s 7f">
+                <vector>
+                  <x>-0.7500000000</x>
+                  <y>-1.0000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="3s 15f">
+                <vector>
+                  <x>-0.7500000000</x>
+                  <y>-1.0000000000</y>
+                </vector>
+              </waypoint>
+            </animated>
+          </c1>
+          <c2>
+            <real value="0.0099999998"/>
+          </c2>
+          <c3>
+            <real value="0.5000000000"/>
+          </c3>
+          <c4>
+            <bool value="true"/>
+          </c4>
+          <c5>
+            <animated type="vector">
+              <waypoint time="SOT">
+                <vector>
+                  <x>1.5000000000</x>
+                  <y>-1.5000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="0f">
+                <vector>
+                  <x>1.5000000000</x>
+                  <y>-1.5000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="1s 0f">
+                <vector>
+                  <x>1.5000000000</x>
+                  <y>-1.5000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 0f">
+                <vector>
+                  <x>-0.2500000000</x>
+                  <y>-0.7500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 8f">
+                <vector>
+                  <x>-0.2500000000</x>
+                  <y>-0.7500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 15f">
+                <vector>
+                  <x>-0.2500000000</x>
+                  <y>-0.7500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 23f">
+                <vector>
+                  <x>-0.2500000000</x>
+                  <y>-0.7500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="3s 0f">
+                <vector>
+                  <x>-0.2500000000</x>
+                  <y>-0.7500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="3s 7f">
+                <vector>
+                  <x>-0.2500000000</x>
+                  <y>-0.7500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="3s 15f">
+                <vector>
+                  <x>-0.2500000000</x>
+                  <y>-0.7500000000</y>
+                </vector>
+              </waypoint>
+            </animated>
+          </c5>
+          <c6>
+            <animated type="vector">
+              <waypoint time="SOT">
+                <vector>
+                  <x>1.5000000000</x>
+                  <y>-1.5000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="0f">
+                <vector>
+                  <x>1.5000000000</x>
+                  <y>-1.5000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="1s 0f">
+                <vector>
+                  <x>1.5000000000</x>
+                  <y>-1.5000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 0f">
+                <vector>
+                  <x>0.7500000000</x>
+                  <y>0.5000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 8f">
+                <vector>
+                  <x>0.7500000000</x>
+                  <y>0.5000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 15f">
+                <vector>
+                  <x>0.7500000000</x>
+                  <y>0.5000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 23f">
+                <vector>
+                  <x>0.7500000000</x>
+                  <y>0.5000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="3s 0f">
+                <vector>
+                  <x>0.7500000000</x>
+                  <y>0.5000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="3s 7f">
+                <vector>
+                  <x>0.7500000000</x>
+                  <y>0.5000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="3s 15f">
+                <vector>
+                  <x>0.7500000000</x>
+                  <y>0.5000000000</y>
+                </vector>
+              </waypoint>
+            </animated>
+          </c6>
+        </composite>
+      </entry>
+      <entry on="SOT, 2s 0f, 2s 8f, 2s 15f, 2s 23f, 3s 0f, 3s 7f, 3s 15f" off="0f, 1s 0f">
+        <composite type="bline_point">
+          <c1>
+            <animated type="vector">
+              <waypoint time="SOT">
+                <vector>
+                  <x>0.0000000000</x>
+                  <y>-0.5000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="0f">
+                <vector>
+                  <x>0.0000000000</x>
+                  <y>-0.5000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="1s 0f">
+                <vector>
+                  <x>0.0000000000</x>
+                  <y>-0.5000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 0f">
+                <vector>
+                  <x>0.0000000000</x>
+                  <y>-0.5000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 8f">
+                <vector>
+                  <x>0.0000000000</x>
+                  <y>-0.5000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 15f">
+                <vector>
+                  <x>0.0000000000</x>
+                  <y>-0.5000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 23f">
+                <vector>
+                  <x>0.0000000000</x>
+                  <y>-0.5000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="3s 0f">
+                <vector>
+                  <x>0.0000000000</x>
+                  <y>-0.5000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="3s 7f">
+                <vector>
+                  <x>0.0000000000</x>
+                  <y>-0.5000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="3s 15f">
+                <vector>
+                  <x>0.0000000000</x>
+                  <y>-0.5000000000</y>
+                </vector>
+              </waypoint>
+            </animated>
+          </c1>
+          <c2>
+            <real value="0.0000000000"/>
+          </c2>
+          <c3>
+            <real value="0.5000000000"/>
+          </c3>
+          <c4>
+            <bool value="true"/>
+          </c4>
+          <c5>
+            <animated type="vector">
+              <waypoint time="SOT">
+                <vector>
+                  <x>0.7500000000</x>
+                  <y>0.7500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="0f">
+                <vector>
+                  <x>0.7500000000</x>
+                  <y>0.7500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="1s 0f">
+                <vector>
+                  <x>0.7500000000</x>
+                  <y>0.7500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 0f">
+                <vector>
+                  <x>0.7500000000</x>
+                  <y>0.5000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 8f">
+                <vector>
+                  <x>0.7500000000</x>
+                  <y>0.5000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 15f">
+                <vector>
+                  <x>0.7500000000</x>
+                  <y>0.5000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 23f">
+                <vector>
+                  <x>0.7500000000</x>
+                  <y>0.5000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="3s 0f">
+                <vector>
+                  <x>0.7500000000</x>
+                  <y>0.5000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="3s 7f">
+                <vector>
+                  <x>0.7500000000</x>
+                  <y>0.5000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="3s 15f">
+                <vector>
+                  <x>0.7500000000</x>
+                  <y>0.5000000000</y>
+                </vector>
+              </waypoint>
+            </animated>
+          </c5>
+          <c6>
+            <animated type="vector">
+              <waypoint time="SOT">
+                <vector>
+                  <x>0.7500000000</x>
+                  <y>-0.7500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="0f">
+                <vector>
+                  <x>0.7500000000</x>
+                  <y>-0.7500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="1s 0f">
+                <vector>
+                  <x>0.7500000000</x>
+                  <y>-0.7500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 0f">
+                <vector>
+                  <x>0.7500000000</x>
+                  <y>-0.5000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 8f">
+                <vector>
+                  <x>0.7500000000</x>
+                  <y>-0.5000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 15f">
+                <vector>
+                  <x>0.7500000000</x>
+                  <y>-0.5000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 23f">
+                <vector>
+                  <x>0.7500000000</x>
+                  <y>-0.5000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="3s 0f">
+                <vector>
+                  <x>0.7500000000</x>
+                  <y>-0.5000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="3s 7f">
+                <vector>
+                  <x>0.7500000000</x>
+                  <y>-0.5000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="3s 15f">
+                <vector>
+                  <x>0.7500000000</x>
+                  <y>-0.5000000000</y>
+                </vector>
+              </waypoint>
+            </animated>
+          </c6>
+        </composite>
+      </entry>
+      <entry on="0f, 0f, 1s 0f, 2s 8f, 2s 15f, 2s 23f, 3s 0f, 3s 7f, 3s 15f">
+        <composite type="bline_point">
+          <c1>
+            <animated type="vector">
+              <waypoint time="SOT">
+                <vector>
+                  <x>1.0000000000</x>
+                  <y>-1.0000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="0f">
+                <vector>
+                  <x>1.0000000000</x>
+                  <y>-1.0000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="1s 0f">
+                <vector>
+                  <x>1.0000000000</x>
+                  <y>-1.0000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 0f">
+                <vector>
+                  <x>0.7500000000</x>
+                  <y>-1.0000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 8f">
+                <vector>
+                  <x>0.7500000000</x>
+                  <y>-1.0000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 15f">
+                <vector>
+                  <x>0.7500000000</x>
+                  <y>-1.0000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 23f">
+                <vector>
+                  <x>0.7500000000</x>
+                  <y>-1.0000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="3s 0f">
+                <vector>
+                  <x>0.7500000000</x>
+                  <y>-1.0000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="3s 7f">
+                <vector>
+                  <x>0.7500000000</x>
+                  <y>-1.0000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="3s 15f">
+                <vector>
+                  <x>0.7500000000</x>
+                  <y>-1.0000000000</y>
+                </vector>
+              </waypoint>
+            </animated>
+          </c1>
+          <c2>
+            <real value="0.0099999998"/>
+          </c2>
+          <c3>
+            <real value="0.5000000000"/>
+          </c3>
+          <c4>
+            <bool value="true"/>
+          </c4>
+          <c5>
+            <animated type="vector">
+              <waypoint time="SOT">
+                <vector>
+                  <x>1.5000000000</x>
+                  <y>1.5000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="0f">
+                <vector>
+                  <x>1.5000000000</x>
+                  <y>1.5000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="1s 0f">
+                <vector>
+                  <x>1.5000000000</x>
+                  <y>1.5000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 0f">
+                <vector>
+                  <x>0.7500000000</x>
+                  <y>-0.5000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 8f">
+                <vector>
+                  <x>0.7500000000</x>
+                  <y>-0.5000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 15f">
+                <vector>
+                  <x>0.7500000000</x>
+                  <y>-0.5000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 23f">
+                <vector>
+                  <x>0.7500000000</x>
+                  <y>-0.5000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="3s 0f">
+                <vector>
+                  <x>0.7500000000</x>
+                  <y>-0.5000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="3s 7f">
+                <vector>
+                  <x>0.7500000000</x>
+                  <y>-0.5000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="3s 15f">
+                <vector>
+                  <x>0.7500000000</x>
+                  <y>-0.5000000000</y>
+                </vector>
+              </waypoint>
+            </animated>
+          </c5>
+          <c6>
+            <animated type="vector">
+              <waypoint time="SOT">
+                <vector>
+                  <x>1.5000000000</x>
+                  <y>1.5000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="0f">
+                <vector>
+                  <x>1.5000000000</x>
+                  <y>1.5000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="1s 0f">
+                <vector>
+                  <x>1.5000000000</x>
+                  <y>1.5000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 0f">
+                <vector>
+                  <x>-0.2500000000</x>
+                  <y>0.7500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 8f">
+                <vector>
+                  <x>-0.2500000000</x>
+                  <y>0.7500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 15f">
+                <vector>
+                  <x>-0.2500000000</x>
+                  <y>0.7500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 23f">
+                <vector>
+                  <x>-0.2500000000</x>
+                  <y>0.7500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="3s 0f">
+                <vector>
+                  <x>-0.2500000000</x>
+                  <y>0.7500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="3s 7f">
+                <vector>
+                  <x>-0.2500000000</x>
+                  <y>0.7500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="3s 15f">
+                <vector>
+                  <x>-0.2500000000</x>
+                  <y>0.7500000000</y>
+                </vector>
+              </waypoint>
+            </animated>
+          </c6>
+        </composite>
+      </entry>
+      <entry on="SOT, 2s 0f, 2s 8f, 2s 15f, 2s 23f, 3s 0f, 3s 7f, 3s 15f" off="0f, 1s 0f">
+        <composite type="bline_point">
+          <c1>
+            <animated type="vector">
+              <waypoint time="SOT">
+                <vector>
+                  <x>0.5000000000</x>
+                  <y>0.0000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="0f">
+                <vector>
+                  <x>0.5000000000</x>
+                  <y>0.0000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="1s 0f">
+                <vector>
+                  <x>0.5000000000</x>
+                  <y>0.0000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 0f">
+                <vector>
+                  <x>0.5000000000</x>
+                  <y>-0.2500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 8f">
+                <vector>
+                  <x>0.5000000000</x>
+                  <y>-0.2500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 15f">
+                <vector>
+                  <x>0.5000000000</x>
+                  <y>-0.2500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 23f">
+                <vector>
+                  <x>0.5000000000</x>
+                  <y>-0.2500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="3s 0f">
+                <vector>
+                  <x>0.5000000000</x>
+                  <y>-0.2500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="3s 7f">
+                <vector>
+                  <x>0.5000000000</x>
+                  <y>-0.2500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="3s 15f">
+                <vector>
+                  <x>0.5000000000</x>
+                  <y>-0.2500000000</y>
+                </vector>
+              </waypoint>
+            </animated>
+          </c1>
+          <c2>
+            <real value="0.0000000000"/>
+          </c2>
+          <c3>
+            <real value="0.5000000000"/>
+          </c3>
+          <c4>
+            <bool value="true"/>
+          </c4>
+          <c5>
+            <animated type="vector">
+              <waypoint time="SOT">
+                <vector>
+                  <x>-0.7500000000</x>
+                  <y>0.7500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="0f">
+                <vector>
+                  <x>-0.7500000000</x>
+                  <y>0.7500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="1s 0f">
+                <vector>
+                  <x>-0.7500000000</x>
+                  <y>0.7500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 0f">
+                <vector>
+                  <x>-0.2500000000</x>
+                  <y>0.7500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 8f">
+                <vector>
+                  <x>-0.2500000000</x>
+                  <y>0.7500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 15f">
+                <vector>
+                  <x>-0.2500000000</x>
+                  <y>0.7500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 23f">
+                <vector>
+                  <x>-0.2500000000</x>
+                  <y>0.7500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="3s 0f">
+                <vector>
+                  <x>-0.2500000000</x>
+                  <y>0.7500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="3s 7f">
+                <vector>
+                  <x>-0.2500000000</x>
+                  <y>0.7500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="3s 15f">
+                <vector>
+                  <x>-0.2500000000</x>
+                  <y>0.7500000000</y>
+                </vector>
+              </waypoint>
+            </animated>
+          </c5>
+          <c6>
+            <animated type="vector">
+              <waypoint time="SOT">
+                <vector>
+                  <x>0.7500000000</x>
+                  <y>0.7500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="0f">
+                <vector>
+                  <x>0.7500000000</x>
+                  <y>0.7500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="1s 0f">
+                <vector>
+                  <x>0.7500000000</x>
+                  <y>0.7500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 0f">
+                <vector>
+                  <x>0.5000000000</x>
+                  <y>0.5000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 8f">
+                <vector>
+                  <x>0.5000000000</x>
+                  <y>0.5000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 15f">
+                <vector>
+                  <x>0.5000000000</x>
+                  <y>0.5000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 23f">
+                <vector>
+                  <x>0.5000000000</x>
+                  <y>0.5000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="3s 0f">
+                <vector>
+                  <x>0.5000000000</x>
+                  <y>0.5000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="3s 7f">
+                <vector>
+                  <x>0.5000000000</x>
+                  <y>0.5000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="3s 15f">
+                <vector>
+                  <x>0.5000000000</x>
+                  <y>0.5000000000</y>
+                </vector>
+              </waypoint>
+            </animated>
+          </c6>
+        </composite>
+      </entry>
+      <entry on="0f, 0f, 1s 0f, 2s 8f, 2s 15f, 2s 23f, 3s 0f, 3s 7f, 3s 15f">
+        <composite type="bline_point">
+          <c1>
+            <animated type="vector">
+              <waypoint time="SOT">
+                <vector>
+                  <x>1.0000000000</x>
+                  <y>1.0000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="0f">
+                <vector>
+                  <x>1.0000000000</x>
+                  <y>1.0000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="1s 0f">
+                <vector>
+                  <x>1.0000000000</x>
+                  <y>1.0000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 0f">
+                <vector>
+                  <x>1.0000000000</x>
+                  <y>0.2500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 8f">
+                <vector>
+                  <x>1.0000000000</x>
+                  <y>0.2500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 15f">
+                <vector>
+                  <x>1.0000000000</x>
+                  <y>0.2500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 23f">
+                <vector>
+                  <x>1.0000000000</x>
+                  <y>0.2500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="3s 0f">
+                <vector>
+                  <x>1.0000000000</x>
+                  <y>0.2500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="3s 7f">
+                <vector>
+                  <x>1.0000000000</x>
+                  <y>0.2500000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="3s 15f">
+                <vector>
+                  <x>1.0000000000</x>
+                  <y>0.2500000000</y>
+                </vector>
+              </waypoint>
+            </animated>
+          </c1>
+          <c2>
+            <real value="0.0099999998"/>
+          </c2>
+          <c3>
+            <real value="0.5000000000"/>
+          </c3>
+          <c4>
+            <bool value="true"/>
+          </c4>
+          <c5>
+            <animated type="vector">
+              <waypoint time="SOT">
+                <vector>
+                  <x>-1.5000000000</x>
+                  <y>1.5000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="0f">
+                <vector>
+                  <x>-1.5000000000</x>
+                  <y>1.5000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="1s 0f">
+                <vector>
+                  <x>-1.5000000000</x>
+                  <y>1.5000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 0f">
+                <vector>
+                  <x>0.5000000000</x>
+                  <y>0.5000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 8f">
+                <vector>
+                  <x>0.5000000000</x>
+                  <y>0.5000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 15f">
+                <vector>
+                  <x>0.5000000000</x>
+                  <y>0.5000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 23f">
+                <vector>
+                  <x>0.5000000000</x>
+                  <y>0.5000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="3s 0f">
+                <vector>
+                  <x>0.5000000000</x>
+                  <y>0.5000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="3s 7f">
+                <vector>
+                  <x>0.5000000000</x>
+                  <y>0.5000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="3s 15f">
+                <vector>
+                  <x>0.5000000000</x>
+                  <y>0.5000000000</y>
+                </vector>
+              </waypoint>
+            </animated>
+          </c5>
+          <c6>
+            <animated type="vector">
+              <waypoint time="SOT">
+                <vector>
+                  <x>-1.5000000000</x>
+                  <y>1.5000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="0f">
+                <vector>
+                  <x>-1.5000000000</x>
+                  <y>1.5000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="1s 0f">
+                <vector>
+                  <x>-1.5000000000</x>
+                  <y>1.5000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 0f">
+                <vector>
+                  <x>-0.7500000000</x>
+                  <y>0.0000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 8f">
+                <vector>
+                  <x>-0.7500000000</x>
+                  <y>0.0000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 15f">
+                <vector>
+                  <x>-0.7500000000</x>
+                  <y>0.0000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="2s 23f">
+                <vector>
+                  <x>-0.7500000000</x>
+                  <y>0.0000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="3s 0f">
+                <vector>
+                  <x>-0.7500000000</x>
+                  <y>0.0000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="3s 7f">
+                <vector>
+                  <x>-0.7500000000</x>
+                  <y>0.0000000000</y>
+                </vector>
+              </waypoint>
+              <waypoint time="3s 15f">
+                <vector>
+                  <x>-0.7500000000</x>
+                  <y>0.0000000000</y>
+                </vector>
+              </waypoint>
+            </animated>
+          </c6>
+        </composite>
+      </entry>
+    </bline>
+  </defs>
+  <layer type="SolidColor" active="true" version="0.1">
+    <param name="amount">
+      <real value="1.0000000000"/>
+    </param>
+    <param name="blend_method">
+      <integer value="1"/>
+    </param>
+    <param name="color">
+      <color>
+        <r>1.000000</r>
+        <g>1.000000</g>
+        <b>1.000000</b>
+        <a>1.000000</a>
+      </color>
+    </param>
+  </layer>
+  <layer type="region" active="true" version="0.1">
+    <param name="amount">
+      <real value="1.0000000000"/>
+    </param>
+    <param name="blend_method">
+      <integer value="0"/>
+    </param>
+    <param name="color">
+      <color>
+        <r>1.000000</r>
+        <g>1.000000</g>
+        <b>0.000000</b>
+        <a>1.000000</a>
+      </color>
+    </param>
+    <param name="offset">
+      <vector>
+        <x>0.0000000000</x>
+        <y>0.0000000000</y>
+      </vector>
+    </param>
+    <param name="invert">
+      <bool value="false"/>
+    </param>
+    <param name="feather">
+      <real value="0.0000000000"/>
+    </param>
+    <param name="blurtype">
+      <integer value="1"/>
+    </param>
+    <param name="segment_list" use="Shape"/>
+  </layer>
+  <layer type="outline" active="true" version="0.1">
+    <param name="amount">
+      <real value="1.0000000000"/>
+    </param>
+    <param name="blend_method">
+      <integer value="0"/>
+    </param>
+    <param name="color">
+      <color>
+        <r>0.000000</r>
+        <g>0.000000</g>
+        <b>0.000000</b>
+        <a>1.000000</a>
+      </color>
+    </param>
+    <param name="offset">
+      <vector>
+        <x>0.0000000000</x>
+        <y>0.0000000000</y>
+      </vector>
+    </param>
+    <param name="invert">
+      <bool value="false"/>
+    </param>
+    <param name="feather">
+      <real value="0.0000000000"/>
+    </param>
+    <param name="blurtype">
+      <integer value="1"/>
+    </param>
+    <param name="segment_list" use="Shape"/>
+    <param name="width">
+      <real value="1.0000000000"/>
+    </param>
+    <param name="sharp_cusps">
+      <bool value="true"/>
+    </param>
+    <param name="round_tip[0]">
+      <bool value="false"/>
+    </param>
+    <param name="round_tip[1]">
+      <bool value="false"/>
+    </param>
+  </layer>
+  <layer type="circle" active="true" version="0.1">
+    <param name="amount">
+      <real value="1.0000000000"/>
+    </param>
+    <param name="blend_method">
+      <integer value="1"/>
+    </param>
+    <param name="color">
+      <color>
+        <r>0.000000</r>
+        <g>0.000000</g>
+        <b>0.000000</b>
+        <a>1.000000</a>
+      </color>
+    </param>
+    <param name="radius">
+      <animated type="real">
+        <waypoint time="2s 0f">
+          <real value="0.0000000000"/>
+        </waypoint>
+        <waypoint time="2s 8f">
+          <real value="0.5000000075"/>
+        </waypoint>
+        <waypoint time="2s 15f">
+          <real value="0.2500000000"/>
+        </waypoint>
+        <waypoint time="2s 23f">
+          <real value="0.2500000000"/>
+        </waypoint>
+        <waypoint time="3s 0f">
+          <real value="0.2500000000"/>
+        </waypoint>
+        <waypoint time="3s 7f">
+          <real value="0.2500000000"/>
+        </waypoint>
+        <waypoint time="3s 15f">
+          <real value="0.2500000000"/>
+        </waypoint>
+      </animated>
+    </param>
+    <param name="feather">
+      <real value="0.0000000000"/>
+    </param>
+    <param name="pos">
+      <vector>
+        <x>0.5750000000</x>
+        <y>0.6750000000</y>
+      </vector>
+    </param>
+    <param name="invert">
+      <bool value="false"/>
+    </param>
+    <param name="falloff">
+      <integer value="1"/>
+    </param>
+  </layer>
+  <layer type="circle" active="true" version="0.1">
+    <param name="amount">
+      <real value="1.0000000000"/>
+    </param>
+    <param name="blend_method">
+      <integer value="1"/>
+    </param>
+    <param name="color">
+      <color>
+        <r>0.000000</r>
+        <g>0.000000</g>
+        <b>0.000000</b>
+        <a>1.000000</a>
+      </color>
+    </param>
+    <param name="radius">
+      <animated type="real">
+        <waypoint time="2s 0f">
+          <real value="0.0000000000"/>
+        </waypoint>
+        <waypoint time="2s 8f">
+          <real value="0.0000000000"/>
+        </waypoint>
+        <waypoint time="2s 15f">
+          <real value="0.5000000000"/>
+        </waypoint>
+        <waypoint time="2s 23f">
+          <real value="0.2500000000"/>
+        </waypoint>
+        <waypoint time="3s 0f">
+          <real value="0.2500000000"/>
+        </waypoint>
+        <waypoint time="3s 7f">
+          <real value="0.2500000000"/>
+        </waypoint>
+        <waypoint time="3s 15f">
+          <real value="0.2500000000"/>
+        </waypoint>
+      </animated>
+    </param>
+    <param name="feather">
+      <real value="0.0000000000"/>
+    </param>
+    <param name="pos">
+      <vector>
+        <x>0.9750000000</x>
+        <y>-0.3250000000</y>
+      </vector>
+    </param>
+    <param name="invert">
+      <bool value="false"/>
+    </param>
+    <param name="falloff">
+      <integer value="1"/>
+    </param>
+  </layer>
+  <layer type="circle" active="true" version="0.1">
+    <param name="amount">
+      <real value="1.0000000000"/>
+    </param>
+    <param name="blend_method">
+      <integer value="1"/>
+    </param>
+    <param name="color">
+      <color>
+        <r>0.000000</r>
+        <g>0.000000</g>
+        <b>0.000000</b>
+        <a>1.000000</a>
+      </color>
+    </param>
+    <param name="radius">
+      <animated type="real">
+        <waypoint time="2s 15f">
+          <real value="0.0000000000"/>
+        </waypoint>
+        <waypoint time="2s 23f">
+          <real value="0.5000000000"/>
+        </waypoint>
+        <waypoint time="3s 0f">
+          <real value="0.2500000000"/>
+        </waypoint>
+        <waypoint time="3s 7f">
+          <real value="0.2500000000"/>
+        </waypoint>
+        <waypoint time="3s 15f">
+          <real value="0.2500000000"/>
+        </waypoint>
+      </animated>
+    </param>
+    <param name="feather">
+      <real value="0.0000000000"/>
+    </param>
+    <param name="pos">
+      <vector>
+        <x>0.0000000000</x>
+        <y>-0.9625000000</y>
+      </vector>
+    </param>
+    <param name="invert">
+      <bool value="false"/>
+    </param>
+    <param name="falloff">
+      <integer value="1"/>
+    </param>
+  </layer>
+  <layer type="circle" active="true" version="0.1">
+    <param name="amount">
+      <real value="1.0000000000"/>
+    </param>
+    <param name="blend_method">
+      <integer value="1"/>
+    </param>
+    <param name="color">
+      <color>
+        <r>0.000000</r>
+        <g>0.000000</g>
+        <b>0.000000</b>
+        <a>1.000000</a>
+      </color>
+    </param>
+    <param name="radius">
+      <animated type="real">
+        <waypoint time="2s 23f">
+          <real value="0.0000000000"/>
+        </waypoint>
+        <waypoint time="3s 0f">
+          <real value="0.5000000000"/>
+        </waypoint>
+        <waypoint time="3s 7f">
+          <real value="0.2500000000"/>
+        </waypoint>
+        <waypoint time="3s 15f">
+          <real value="0.2500000000"/>
+        </waypoint>
+      </animated>
+    </param>
+    <param name="feather">
+      <real value="0.0000000000"/>
+    </param>
+    <param name="pos">
+      <vector>
+        <x>-0.9125000000</x>
+        <y>-0.3250000000</y>
+      </vector>
+    </param>
+    <param name="invert">
+      <bool value="false"/>
+    </param>
+    <param name="falloff">
+      <integer value="1"/>
+    </param>
+  </layer>
+  <layer type="circle" active="true" version="0.1">
+    <param name="amount">
+      <real value="1.0000000000"/>
+    </param>
+    <param name="blend_method">
+      <integer value="1"/>
+    </param>
+    <param name="color">
+      <color>
+        <r>0.000000</r>
+        <g>0.000000</g>
+        <b>0.000000</b>
+        <a>1.000000</a>
+      </color>
+    </param>
+    <param name="radius">
+      <animated type="real">
+        <waypoint time="2s 23f">
+          <real value="0.0000000000"/>
+        </waypoint>
+        <waypoint time="3s 0f">
+          <real value="0.0000000000"/>
+        </waypoint>
+        <waypoint time="3s 7f">
+          <real value="0.5000000000"/>
+        </waypoint>
+        <waypoint time="3s 15f">
+          <real value="0.2500000000"/>
+        </waypoint>
+      </animated>
+    </param>
+    <param name="feather">
+      <real value="0.0000000000"/>
+    </param>
+    <param name="pos">
+      <vector>
+        <x>-0.5375000000</x>
+        <y>0.6625000000</y>
+      </vector>
+    </param>
+    <param name="invert">
+      <bool value="false"/>
+    </param>
+    <param name="falloff">
+      <integer value="1"/>
+    </param>
+  </layer>
+</canvas>
