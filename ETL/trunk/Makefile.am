@@ -39,11 +39,9 @@ stats:
 
 tagstable:
 	-$(SVN) delete $(SVN_REPOSITORY)/tags/stable -m "Stabe Tag: Removing old tag"
-	$(SVN) mkdir $(SVN_REPOSITORY)/tags/stable -m "Stable Tag: Creating new directory"
-	$(SVN) copy $(top_srcdir) $(SVN_REPOSITORY)/tags/stable -m "Stable Tag: Copying everyhting over"
+	$(SVN) copy $(top_srcdir) $(SVN_REPOSITORY)/tags/stable -m "Stable Tag: Copying everything over"
 
 tagrelease:
-	$(SVN) mkdir $(SVN_REPOSITORY)/tags/$(TAG) -m "Release Tag: Making directory"
 	$(SVN) copy $(top_srcdir) $(SVN_REPOSITORY)/tags/$(TAG) -m "Release $(TAG)"
 
 ChangeLog:
