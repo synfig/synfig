@@ -1,6 +1,6 @@
               synfigstudio releases
 
- 0.61.06 (SVN ???) - ??????? ??, ???? - Bug fixes
+ 0.61.06 (SVN 543) - June 20, 2007 - Bug fixes
  
   * Fix amd64 issues
   * Fix corruption of gamma settings
