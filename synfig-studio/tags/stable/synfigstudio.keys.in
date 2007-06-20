@@ -1,0 +1,10 @@
+image/sif:
+	open=@prefix@/bin/synfigstudio %f
+	view=@prefix@/bin/synfigstudio %f
+	icon-filename=@prefix@/share/pixmaps/sif_icon.@imageext@
+	description=SYNFIG Composition
+	default_action_type=application
+	short_list_application_ids_for_novice_user_level=synfigstudio
+	short_list_application_ids_for_intermediate_user_level=synfigstudio
+	short_list_application_ids_for_advanced_user_level=synfigstudio
+#    category=Images

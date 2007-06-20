@@ -1,0 +1,4 @@
+# mime types for synfig studio
+
+image/sif
+	ext: sif SIF sifZ SIFZ sif.gz SIF.GZ SIF.gz
