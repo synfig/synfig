@@ -1034,14 +1034,27 @@ init_ui_manager()
 	ACCEL2(Gtk::AccelKey('o',Gdk::CONTROL_MASK,"<Actions>//toggle-onion-skin"));
 	ACCEL("<Actions>//seek-begin","Home");
 	ACCEL("<Actions>//seek-end","End");
-	ACCEL("<Actions>//state-normal","<Mod1>a");
-	ACCEL("<Actions>//state-rotate","<Mod1>s");
-	ACCEL("<Actions>//state-scale","<Mod1>d");
-	ACCEL("<Actions>//state-bline","<Mod1>b");
-	ACCEL("<Actions>//state-fill","<Mod1>f");
-	ACCEL("<Actions>//state-eyedrop","<Mod1>e");
-	ACCEL("<Actions>//state-gradient","<Mod1>g");
-	ACCEL("<Actions>//state-zoom","<Mod1>z");
+
+	ACCEL("<Actions>//state-normal",      "<Mod1>a");
+	ACCEL("<Actions>//state-smooth_move", "<Mod1>v");
+	ACCEL("<Actions>//state-scale",       "<Mod1>d");
+	ACCEL("<Actions>//state-rotate",      "<Mod1>s");
+
+	ACCEL("<Actions>//state-bline",       "<Mod1>b");
+	ACCEL("<Actions>//state-circle",      "<Mod1>c");
+	ACCEL("<Actions>//state-rectangle",   "<Mod1>r");
+	ACCEL("<Actions>//state-gradient",    "<Mod1>g");
+
+	ACCEL("<Actions>//state-eyedrop",     "<Mod1>e");
+	ACCEL("<Actions>//state-fill",        "<Mod1>f");
+	ACCEL("<Actions>//state-zoom",        "<Mod1>z");
+	ACCEL("<Actions>//state-polygon",     "<Mod1>p");
+
+	ACCEL("<Actions>//state-draw",        "<Mod1>w");
+	ACCEL("<Actions>//state-sketch",      "<Mod1>k");
+	ACCEL("<Actions>//state-width",       "<Mod1>t");
+	ACCEL("<Actions>//state-mirror",      "<Mod1>m");
+
 	ACCEL("<Actions>//canvas-zoom-fit","<Control><Shift>z");
 
 #undef ACCEL
