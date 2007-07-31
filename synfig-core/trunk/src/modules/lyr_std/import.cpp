@@ -98,7 +98,7 @@ Import::set_param(const String & param, const ValueBase &value)
 
 		// Get rid of any %20 crap
 		{
-			unsigned int n;
+			String::size_type n;
 			while((n=newfilename.find("%20"))!=String::npos)
 				newfilename.replace(n,3," ");
 		}
