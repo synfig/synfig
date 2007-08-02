@@ -171,7 +171,7 @@ AC_SUBST(FMOD_LIBS)
 imageext=png
 AC_SUBST(imageext)
 
-imagedir="${datadir}/pixmaps"
+imagedir="${datadir}/pixmaps/synfigstudio"
 AC_SUBST(imagedir)
 
 AC_OUTPUT(
