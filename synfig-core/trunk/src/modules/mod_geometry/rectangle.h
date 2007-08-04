@@ -62,7 +62,7 @@ public:
 
 	virtual synfig::ValueBase get_param(const synfig::String & param)const;
 
-	virtual bool Rectangle::is_solid_color()const;
+	virtual bool is_solid_color()const;
 
 	virtual synfig::Color get_color(synfig::Context context, const synfig::Point &pos)const;
 
