@@ -1039,7 +1039,9 @@ synfig::optimize_layers(Context context, Canvas::Handle op_canvas)
 		if(layer->get_name()=="PasteCanvas" && paste_canvas->get_time_offset()==0)
 		{
 			Canvas::Handle sub_canvas(Canvas::create_inline(op_canvas));
-			optimize_layers(paste_canvas->get_sub_canvas()->get_context(),sub_canvas);
+			Canvas::Handle paste_sub_canvas = paste_canvas->get_sub_canvas();
+			if(paste_sub_canvas)
+				optimize_layers(paste_sub_canvas->get_context(),sub_canvas);
 //#define SYNFIG_OPTIMIZE_PASTE_CANVAS 1
 
 #ifdef SYNFIG_OPTIMIZE_PASTE_CANVAS
