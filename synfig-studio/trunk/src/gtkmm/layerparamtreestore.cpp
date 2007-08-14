@@ -400,8 +400,9 @@ LayerParamTreeStore::rebuild()
 		}
 		if(value_desc.get_value_type()==ValueBase::TYPE_CANVAS)
 		{
-			changed_connection_list.push_back(
-				value_desc.get_value().get(Canvas::Handle())->signal_changed().connect(
+			Canvas::Handle canvas_handle = value_desc.get_value().get(Canvas::Handle());
+			if(canvas_handle) changed_connection_list.push_back(
+				canvas_handle->signal_changed().connect(
 					sigc::mem_fun(
 						this,
 						&LayerParamTreeStore::changed
