@@ -1689,11 +1689,13 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 			switch(event->scroll.direction)
 			{
 				case GDK_SCROLL_UP:
+				case GDK_SCROLL_RIGHT:
 					get_scrollx_adjustment()->set_value(scroll_point[0]+(mouse_pos[0]-scroll_point[0])*(1.25-(1+drift)));
 					get_scrolly_adjustment()->set_value(scroll_point[1]-(mouse_pos[1]+scroll_point[1])*(1.25-(1+drift)));
 					zoom_in();
 					break;
 				case GDK_SCROLL_DOWN:
+				case GDK_SCROLL_LEFT:
 					get_scrollx_adjustment()->set_value(scroll_point[0]+(mouse_pos[0]-scroll_point[0])*(1/1.25-(1+drift)));
 					get_scrolly_adjustment()->set_value(scroll_point[1]-(mouse_pos[1]+scroll_point[1])*(1/1.25-(1+drift)));
 					zoom_out();
@@ -1719,6 +1721,12 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 				case GDK_SCROLL_DOWN:
 					get_scrollx_adjustment()->set_value(get_scrollx_adjustment()->get_value()+scroll_pixel*pw);
 					break;
+				case GDK_SCROLL_LEFT:
+					get_scrolly_adjustment()->set_value(get_scrolly_adjustment()->get_value()+scroll_pixel*ph);
+					break;
+				case GDK_SCROLL_RIGHT:
+					get_scrolly_adjustment()->set_value(get_scrolly_adjustment()->get_value()-scroll_pixel*ph);
+					break;
 				default:
 					break;
 			}
@@ -1739,6 +1747,12 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 					break;
 				case GDK_SCROLL_DOWN:
 					get_scrolly_adjustment()->set_value(get_scrolly_adjustment()->get_value()-scroll_pixel*ph);
+					break;
+				case GDK_SCROLL_LEFT:
+					get_scrollx_adjustment()->set_value(get_scrollx_adjustment()->get_value()-scroll_pixel*pw);
+					break;
+				case GDK_SCROLL_RIGHT:
+					get_scrollx_adjustment()->set_value(get_scrollx_adjustment()->get_value()+scroll_pixel*pw);
 					break;
 				default:
 					break;
