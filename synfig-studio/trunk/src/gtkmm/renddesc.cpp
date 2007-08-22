@@ -81,12 +81,12 @@ Widget_RendDesc::Widget_RendDesc():
 	Gtk::Notebook(),
 	adjustment_width(1,1,SYNFIG_MAX_PIXEL_WIDTH),
 	adjustment_height(1,1,SYNFIG_MAX_PIXEL_HEIGHT),
-	adjustment_xres(0,0,10000000),
-	adjustment_yres(0,0,10000000),
-	adjustment_phy_width(0,0,10000000),
-	adjustment_phy_height(0,0,10000000),
-	adjustment_fps(0,0,10000000),
-	adjustment_span(0,0,10000000)
+	adjustment_xres(0,0.0000000001,10000000),
+	adjustment_yres(0,0.0000000001,10000000),
+	adjustment_phy_width(0,0.0000000001,10000000),
+	adjustment_phy_height(0,0.0000000001,10000000),
+	adjustment_fps(0,0.0000000001,10000000),
+	adjustment_span(0,0.0000000001,10000000)
 {
 	update_lock=0;
 
