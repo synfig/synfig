@@ -1694,8 +1694,8 @@ App::dialog_open_file(const std::string &title, std::string &filename)
 
     Gtk::FileChooserDialog *dialog=new Gtk::FileChooserDialog(title,Gtk::FILE_CHOOSER_ACTION_OPEN);
     dialog->set_current_folder(prev_path);
-    dialog->add_button(Gtk::StockID("gtk-ok"),GTK_RESPONSE_ACCEPT);
-    dialog->add_button(Gtk::StockID("gtk-cancel"),GTK_RESPONSE_CANCEL);
+    dialog->add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
+    dialog->add_button(Gtk::Stock::OPEN,   Gtk::RESPONSE_ACCEPT);
     if(!filename.empty())
         dialog->set_filename(filename);
     if(dialog->run()==GTK_RESPONSE_ACCEPT) {
@@ -1803,8 +1803,8 @@ App::dialog_save_file(const std::string &title, std::string &filename)
 
     Gtk::FileChooserDialog *dialog=new Gtk::FileChooserDialog(title,Gtk::FILE_CHOOSER_ACTION_SAVE);
     dialog->set_current_folder(prev_path);
-    dialog->add_button(Gtk::StockID("gtk-ok"),GTK_RESPONSE_ACCEPT);
-    dialog->add_button(Gtk::StockID("gtk-cancel"),GTK_RESPONSE_CANCEL);
+    dialog->add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
+    dialog->add_button(Gtk::Stock::SAVE,   Gtk::RESPONSE_ACCEPT);
     if(!filename.empty())
         dialog->set_filename(filename);
     if(dialog->run()==GTK_RESPONSE_ACCEPT) {
@@ -1869,8 +1869,8 @@ App::dialog_saveas_file(const std::string &title, std::string &filename)
 
     Gtk::FileChooserDialog *dialog=new Gtk::FileChooserDialog(title,Gtk::FILE_CHOOSER_ACTION_SAVE);
     dialog->set_current_folder(prev_path);
-    dialog->add_button(Gtk::StockID("gtk-ok"),GTK_RESPONSE_ACCEPT);
-    dialog->add_button(Gtk::StockID("gtk-cancel"),GTK_RESPONSE_CANCEL);
+    dialog->add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
+    dialog->add_button(Gtk::Stock::SAVE,   Gtk::RESPONSE_ACCEPT);
     if(!filename.empty())
         dialog->set_filename(filename);
     if(dialog->run()==GTK_RESPONSE_ACCEPT) {
