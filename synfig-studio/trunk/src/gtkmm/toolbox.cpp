@@ -481,12 +481,15 @@ Toolbox::add_state(const Smach::state_base *state)
 
 	String name=state->get_name();
 
+	Gtk::StockItem stock_item;
+	Gtk::Stock::lookup(Gtk::StockID("synfig-"+name),stock_item);
+
 	Gtk::ToggleButton* button;
 	button=manage(new class Gtk::ToggleButton());
 
-	icon=manage(new Gtk::Image(Gtk::StockID("synfig-"+name),Gtk::IconSize(4)));
+	icon=manage(new Gtk::Image(stock_item.get_stock_id(),Gtk::IconSize(4)));
 	button->add(*icon);
-	tooltips.set_tip(*button,name);
+	tooltips.set_tip(*button,stock_item.get_label());
 	icon->show();
 	button->show();
 
