@@ -79,12 +79,15 @@ StateManager::add_state(const Smach::state_base *state)
 {
 	String name(state->get_name());
 
+	Gtk::StockItem stock_item;
+	Gtk::Stock::lookup(Gtk::StockID("synfig-"+name),stock_item);
+
 	Glib::RefPtr<Gtk::Action> action(
 		Gtk::Action::create(
 			"state-"+name,
-			Gtk::StockID("synfig-"+name),
-			name,
-			name
+			stock_item.get_stock_id(),
+			stock_item.get_label(),
+			stock_item.get_label()
 		)
 	);
 	/*action->set_sensitive(false);*/
