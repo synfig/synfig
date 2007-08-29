@@ -51,6 +51,7 @@
 #include <synfig/target_scanline.h>
 #include <synfig/target_tile.h>
 #include <synfig/surface.h>
+#include <synfig/valuenode_composite.h>
 #include <synfigapp/canvasinterface.h>
 #include "event_mouse.h"
 #include "event_layerclick.h"
@@ -1320,6 +1321,37 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 			{
 				//get_selected_duck()->signal_user_click(0)();
 				//if(clicked_duck)clicked_duck->signal_user_click(0)();
+
+				// if the user is holding shift while clicking on a tangent duck, consider splitting the tangent
+				if (event->motion.state&GDK_SHIFT_MASK && duck->get_type() == Duck::TYPE_TANGENT)
+				{
+					synfigapp::ValueDesc value_desc = duck->get_value_desc();
+
+					// we have the tangent, but need the vertex - that's the parent
+					if (value_desc.parent_is_value_node()) {
+						ValueNode_Composite::Handle parent_value_node = value_desc.get_parent_value_node();
+
+						// if the tangent isn't split, then split it
+						if (!((*(parent_value_node->get_link("split")))(get_time()).get(bool())))
+						{
+							get_canvas_view()->canvas_interface()->
+								change_value(synfigapp::ValueDesc(parent_value_node,
+																  parent_value_node->get_link_index_from_name("split")),
+											 true);
+							// rebuild the ducks from scratch, so the tangents ducks aren't connected
+							get_canvas_view()->rebuild_ducks();
+
+							// reprocess the mouse click
+							return on_drawing_area_event(event);
+						}
+					} else {
+						// I don't know how to access the vertex from the tangent duck when originally drawing the bline in the bline tool
+
+						// synfig::ValueNode::Handle vn = value_desc.get_value_node();
+						synfig::info("parent isn't value node?  shift-drag-tangent doesn't work in bline tool yet...");
+					}
+				}
+
 				dragging=DRAG_DUCK;
 				drag_point=mouse_pos;
 				//drawing_area->queue_draw();
