@@ -583,16 +583,25 @@ xmlpp::Element* encode_layer(xmlpp::Element* root,Layer::ConstHandle layer)
 				continue;
 			}
 
-			if(value.get_type()==ValueBase::TYPE_CANVAS && !value.get(Canvas::LooseHandle())->is_inline())
+			if(value.get_type()==ValueBase::TYPE_CANVAS)
 			{
-				Canvas::Handle child(value.get(Canvas::LooseHandle()));
-
-				if(!value.get(Canvas::Handle()))
+				// the ->is_inline() below was crashing if the canvas
+				// contained a PasteCanvas with the default <No Image
+				// Selected> Canvas setting;  this avoids the crash
+				if (!value.get(Canvas::LooseHandle()))
 					continue;
-				xmlpp::Element *node=root->add_child("param");
-				node->set_attribute("name",iter->get_name());
-				node->set_attribute("use",child->get_relative_id(layer->get_canvas()));
-				continue;
+
+				if (!value.get(Canvas::LooseHandle())->is_inline())
+				{
+					Canvas::Handle child(value.get(Canvas::LooseHandle()));
+
+					if(!value.get(Canvas::Handle()))
+						continue;
+					xmlpp::Element *node=root->add_child("param");
+					node->set_attribute("name",iter->get_name());
+					node->set_attribute("use",child->get_relative_id(layer->get_canvas()));
+					continue;
+				}
 			}
 			xmlpp::Element *node=root->add_child("param");
 			node->set_attribute("name",iter->get_name());
