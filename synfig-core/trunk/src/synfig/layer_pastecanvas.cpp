@@ -244,18 +244,19 @@ Layer_PasteCanvas::hit_check(synfig::Context context, const synfig::Point &pos)c
 {
 	if(depth==MAX_DEPTH)return 0;depth_counter counter(depth);
 
-	Point target_pos=(pos-canvas->rend_desc().get_focus()-origin)/exp(zoom)+canvas->rend_desc().get_focus();
+	if (canvas) {
+		Point target_pos=(pos-canvas->rend_desc().get_focus()-origin)/exp(zoom)+canvas->rend_desc().get_focus();
 
-	if(canvas && get_amount() && canvas->get_context().get_color(target_pos).get_a()>=0.25)
-	{
-		if(!children_lock)
+		if(canvas && get_amount() && canvas->get_context().get_color(target_pos).get_a()>=0.25)
 		{
-			return canvas->get_context().hit_check(target_pos);
+			if(!children_lock)
+			{
+				return canvas->get_context().hit_check(target_pos);
+			}
+			return const_cast<Layer_PasteCanvas*>(this);
 		}
-		return const_cast<Layer_PasteCanvas*>(this);
 	}
-	else
-		return context.hit_check(pos);
+	return context.hit_check(pos);
 }
 
 Color
