@@ -1628,9 +1628,18 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 				if(canvas_view->get_smach().process_event(EventBox(drag_point,mouse_pos,MouseButton(event->button.button),modifier))==Smach::RESULT_ACCEPT)
 					return true;
 
-				if(!(modifier&GDK_CONTROL_MASK) && !(modifier&GDK_SHIFT_MASK))
+				// when dragging a box around some ducks:
+				// SHIFT selects; CTRL toggles; SHIFT+CTRL unselects; <none> clears all then selects
+				if(modifier&GDK_SHIFT_MASK)
+					select_ducks_in_box(drag_point,mouse_pos);
+
+				if(modifier&GDK_CONTROL_MASK)
+					toggle_select_ducks_in_box(drag_point,mouse_pos);
+				else if(!(modifier&GDK_SHIFT_MASK))
+				{
 					clear_selected_ducks();
-				select_ducks_in_box(drag_point,mouse_pos);
+					select_ducks_in_box(drag_point,mouse_pos);
+				}
 				ret=true;
 			}
 			else
