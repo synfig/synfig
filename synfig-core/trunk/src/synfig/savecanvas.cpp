@@ -563,7 +563,7 @@ xmlpp::Element* encode_layer(xmlpp::Element* root,Layer::ConstHandle layer)
 
 			handle<const ValueNode> value_node=dynamic_param_list.find(iter->get_name())->second;
 
-			// If the valuenode.has no ID, then it must be defined in-place
+			// If the valuenode has no ID, then it must be defined in-place
 			if(value_node->get_id().empty())
 			{
 				encode_value_node(node->add_child("value_node"),value_node,layer->get_canvas().constant());
