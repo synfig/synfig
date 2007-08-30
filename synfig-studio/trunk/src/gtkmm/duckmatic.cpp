@@ -276,6 +276,25 @@ Duckmatic::select_all_ducks()
 }
 
 void
+Duckmatic::toggle_select_ducks_in_box(const synfig::Vector& tl,const synfig::Vector& br)
+{
+	Vector vmin, vmax;
+	vmin[0]=std::min(tl[0],br[0]);
+	vmin[1]=std::min(tl[1],br[1]);
+	vmax[0]=std::max(tl[0],br[0]);
+	vmax[1]=std::max(tl[1],br[1]);
+
+	DuckMap::const_iterator iter;
+	for(iter=duck_map.begin();iter!=duck_map.end();++iter)
+	{
+		Point p(iter->second->get_trans_point());
+		if(p[0]<=vmax[0] && p[0]>=vmin[0] && p[1]<=vmax[1] && p[1]>=vmin[1] &&
+		   is_duck_group_selectable(iter->second))
+			toggle_select_duck(iter->second);
+	}
+}
+
+void
 Duckmatic::select_ducks_in_box(const synfig::Vector& tl,const synfig::Vector& br)
 {
 	Vector vmin, vmax;
