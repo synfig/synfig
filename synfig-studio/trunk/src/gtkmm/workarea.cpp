@@ -1288,26 +1288,16 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 
 				if(duck)
 				{
-					clicked_duck=0;
+					// make a note of whether the duck we click on was selected or not
 					if(duck_is_selected(duck))
-					{
 						clicked_duck=duck;
-					}
 					else
 					{
-						if(modifier&GDK_SHIFT_MASK)
-						{
-							select_duck(duck);
-						}
-						else if(modifier&GDK_CONTROL_MASK)
-						{
-							select_duck(duck);
-						}
-						else
-						{
+						clicked_duck=0;
+						// if CTRL isn't pressed, clicking an unselected duck will unselect all other ducks
+						if(!(modifier&GDK_CONTROL_MASK))
 							clear_selected_ducks();
-							select_duck(duck);
-						}
+						select_duck(duck);
 					}
 				}
 			}
@@ -1597,37 +1587,20 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 			get_canvas_view()->duck_refresh_flag=true;
 			if(!drag_did_anything)
 			{
-				//etl::handle<Duck> duck=find_duck(mouse_pos,radius);
-
-				if(modifier&GDK_SHIFT_MASK)
+				// if we originally clicked on a selected duck ...
+				if(clicked_duck)
 				{
-					//synfig::info("DUCK_DRAG_RELEASE: SHIFT-MASK ON!");
-					if(clicked_duck)
-					{
-						//synfig::info("DUCK_DRAG_RELEASE: CLICKED DUCK!");
+					// ... and CTRL is pressed, then just toggle the clicked duck
+					//     otherwise make the clicked duck the only selected duck
+					if(modifier&GDK_CONTROL_MASK)
 						unselect_duck(clicked_duck);
-					}
-				}
-				else if(modifier&GDK_CONTROL_MASK)
-				{
-					//synfig::info("DUCK_DRAG_RELEASE: CONTROL-MASK ON!");
-					if(clicked_duck)
+					else
 					{
-						//synfig::info("DUCK_DRAG_RELEASE: CLICKED DUCK!");
-						unselect_duck(clicked_duck);
-					}
-				}
-				else
-				{
-					//synfig::info("DUCK_DRAG_RELEASE: NO MASK!");
-					if(clicked_duck)
-					{
-						//synfig::info("DUCK_DRAG_RELEASE: CLICKED DUCK!");
 						clear_selected_ducks();
 						select_duck(clicked_duck);
 					}
+					clicked_duck->signal_user_click(0)();
 				}
-				if(clicked_duck)clicked_duck->signal_user_click(0)();
 			}
 			else
 			{
