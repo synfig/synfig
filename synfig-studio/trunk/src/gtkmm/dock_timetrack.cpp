@@ -349,7 +349,13 @@ public:
 			if(adjustment.get_page_size()>get_height())
 				adjustment.set_page_size(get_height());
 
-			cellrenderer_time_track->set_fixed_size(-1,18);
+			int row_height = 0;
+			if(getenv("SYNFIG_TIMETRACK_ROW_HEIGHT"))
+				row_height = atoi(getenv("SYNFIG_TIMETRACK_ROW_HEIGHT"));
+			if (row_height < 3)
+				row_height = 18;
+									  
+			cellrenderer_time_track->set_fixed_size(-1,row_height);
 		}
 	}
 
@@ -394,7 +400,14 @@ Dock_Timetrack::Dock_Timetrack():
 {
 	table_=0;
 	widget_timeslider_= new Widget_Timeslider();
-	widget_timeslider_->set_size_request(-1,22);
+
+	int header_height = 0;
+	if(getenv("SYNFIG_TIMETRACK_HEADER_HEIGHT"))
+		header_height = atoi(getenv("SYNFIG_TIMETRACK_HEADER_HEIGHT"));
+	if (header_height < 3)
+		header_height = 22;
+
+	widget_timeslider_->set_size_request(-1,header_height);
 	hscrollbar_=new Gtk::HScrollbar();
 	vscrollbar_=new Gtk::VScrollbar();
 }
