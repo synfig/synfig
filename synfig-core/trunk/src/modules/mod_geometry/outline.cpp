@@ -171,6 +171,13 @@ void
 Outline::sync()
 {
 	clear();
+
+	if (!bline.get_list().size())
+	{
+		synfig::warning(string("Outline::sync():")+_("No verticies in outline " + string("\"") + get_description() + string("\"")));
+		return;
+	}
+		
 	try {
 #if 1
 
