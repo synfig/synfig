@@ -340,13 +340,16 @@ ValueNode_BLine::operator()(Time t)const
 	BLinePoint prev,first;
 	first.set_origin(100.0f);
 
+	// loop through all the list's entries
 	for(iter=list.begin();iter!=list.end();++iter,index++)
 	{
+		// how 'on' is this vertex?
 		float amount(iter->amount_at_time(t,&rising));
 
 		assert(amount>=0.0f);
 		assert(amount<=1.0f);
 
+		// it's fully on
 		if(amount==1.0f)
 		{
 			if(first_flag)
@@ -381,8 +384,8 @@ ValueNode_BLine::operator()(Time t)const
 
 			prev=curr;
 		}
-		else
-		if(amount>0.0f)
+		// it's partly on
+		else if(amount>0.0f)
 		{
 			std::vector<ListEntry>::const_iterator begin_iter,end_iter;
 
@@ -417,33 +420,27 @@ ValueNode_BLine::operator()(Time t)const
 			blp_here_on=(*iter->value_node)(on_time).get(blp_here_on);
 //			blp_here_on=(*iter->value_node)(t).get(blp_here_on);
 
-			// Find "end" of dynamic group
+			// Find "end" of dynamic group - ie. search forward along
+			// the bline from the current point until we find a point
+			// which is more 'on'than the current one
 			end_iter=iter;
 //			for(++end_iter;begin_iter!=list.end();++end_iter)
 			for(++end_iter;end_iter!=list.end();++end_iter)
 				if(end_iter->amount_at_time(t)>amount)
-				{
-					blp_next_off=(*end_iter->value_node)(off_time).get(prev);
 					break;
-				}
 
 			// If we did not find an end of the dynamic group...
+			// Writeme!  at least now it doesn't crash if first_iter
+			// isn't set yet
 			if(end_iter==list.end())
 			{
-				if(get_loop())
-				{
+				if(get_loop() && !first_flag)
 					end_iter=first_iter;
-					blp_next_off=(*end_iter->value_node)(off_time).get(prev);
-//					end=first;
-				}
 				else
-				{
-					// Writeme!
-					end_iter=first_iter;
-					blp_next_off=(*end_iter->value_node)(off_time).get(prev);
-//					end=first;
-				}
+					end_iter=--list.end();
 			}
+
+			blp_next_off=(*end_iter->value_node)(off_time).get(prev);
 
 			// Find "begin" of dynamic group
 			begin_iter=iter;
@@ -461,6 +458,7 @@ ValueNode_BLine::operator()(Time t)const
 				--begin_iter;
 				dist_from_begin++;
 
+				// if we've gone all around the loop, give up
 				if(begin_iter==iter)
 					break;
 
@@ -469,24 +467,18 @@ ValueNode_BLine::operator()(Time t)const
 					blp_prev_off=(*begin_iter->value_node)(off_time).get(prev);
 					break;
 				}
-			}while(begin_iter!=iter);
+			}while(true);
 
 			// If we did not find a begin
 			if(blp_prev_off.get_origin()==100.0f)
 			{
-				if(get_loop())
-				{
-					begin_iter=first_iter;
-					blp_prev_off=(*begin_iter->value_node)(off_time).get(prev);
-//					blp_prev_off=first;
-				}
+				// Writeme! - this needs work, but at least now it
+				// doesn't crash
+				if(first_flag)
+					begin_iter=list.begin();
 				else
-				{
-					// Writeme!
 					begin_iter=first_iter;
-					blp_prev_off=(*begin_iter->value_node)(off_time).get(prev);
-//					blp_prev_off=first;
-				}
+				blp_prev_off=(*begin_iter->value_node)(off_time).get(prev);
 			}
 
 			// this is how the curve looks when we have completely vanished
