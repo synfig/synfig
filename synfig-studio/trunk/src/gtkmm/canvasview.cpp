@@ -2219,6 +2219,12 @@ CanvasView::on_children_user_click(int button, Gtk::TreeRow row, ChildrenTree::C
 			if(!(bool)row[children_tree_model.is_canvas])
 			{
 				synfigapp::ValueDesc value_desc=row[children_tree_model.value_desc];
+				if (!value_desc)
+				{
+					//! \todo fix properly -- what is the child dialog for?
+					synfig::info("preventing child dialog right-click crash");
+					return true;
+				}
 				assert(value_desc);
 				popup_param_menu(value_desc);
 				return true;
