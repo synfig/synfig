@@ -53,7 +53,7 @@ using namespace Action;
 
 ACTION_INIT(Action::WaypointSetSmart);
 ACTION_SET_NAME(Action::WaypointSetSmart,"waypoint_set_smart");
-ACTION_SET_LOCAL_NAME(Action::WaypointSetSmart,"Connect");
+ACTION_SET_LOCAL_NAME(Action::WaypointSetSmart,"Add Waypoint");
 ACTION_SET_TASK(Action::WaypointSetSmart,"set");
 ACTION_SET_CATEGORY(Action::WaypointSetSmart,Action::CATEGORY_WAYPOINT|Action::CATEGORY_VALUEDESC|Action::CATEGORY_VALUENODE);
 ACTION_SET_PRIORITY(Action::WaypointSetSmart,0);
