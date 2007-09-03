@@ -268,8 +268,18 @@ xmlpp::Element* encode_animated(xmlpp::Element* root,ValueNode_Animated::ConstHa
 		//waypoint_node->add_child(encode_value(iter->get_value(),canvas));
 		if(iter->get_value_node()->is_exported())
 			waypoint_node->set_attribute("use",iter->get_value_node()->get_relative_id(canvas));
-		else
-			encode_value_node(waypoint_node->add_child("value_node"),iter->get_value_node(),canvas);
+		else {
+			ValueNode::ConstHandle value_node = iter->get_value_node();
+			if(ValueNode_Const::ConstHandle::cast_dynamic(value_node)) {
+				const ValueBase data = ValueNode_Const::ConstHandle::cast_dynamic(value_node)->get_value();
+				if (data.get_type() == ValueBase::TYPE_CANVAS)
+					waypoint_node->set_attribute("use",data.get(Canvas::Handle()).get()->get_relative_id(canvas));
+				else
+					encode_value_node(waypoint_node->add_child("value_node"),iter->get_value_node(),canvas);
+			}
+			else
+				encode_value_node(waypoint_node->add_child("value_node"),iter->get_value_node(),canvas);
+		}
 
 		switch(iter->get_before())
 		{
