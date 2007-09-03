@@ -99,21 +99,21 @@ Star::sync()
 bool
 Star::set_param(const String & param, const ValueBase &value)
 {
-	if(	param=="radius1" && value.same_as(radius1))
+	if(	param=="radius1" && value.same_type_as(radius1))
 	{
 		value.put(&radius1);
 		sync();
 		return true;
 	}
 
-	if(	param=="radius2" && value.same_as(radius2))
+	if(	param=="radius2" && value.same_type_as(radius2))
 	{
 		value.put(&radius2);
 		sync();
 		return true;
 	}
 
-	if(	param=="points" && value.same_as(points))
+	if(	param=="points" && value.same_type_as(points))
 	{
 		value.put(&points);
 		if(points<2)points=2;
@@ -121,7 +121,7 @@ Star::set_param(const String & param, const ValueBase &value)
 		return true;
 	}
 
-	if(	param=="angle" && value.same_as(angle))
+	if(	param=="angle" && value.same_type_as(angle))
 	{
 		value.put(&angle);
 		sync();

@@ -200,7 +200,7 @@ public:
 
 	//! Checks the type of the parameter against itself. Returns true if they are of the same type.
 	template <class T> bool
-	same_as(const T &x)const
+	same_type_as(const T &x)const
 	{
 		const Type testtype(get_type(x));
 
@@ -216,7 +216,7 @@ public:
 	template <typename T>
 	const T &get(const T& x)const
 	{
-		assert(is_valid() && same_as(x));
+		assert(is_valid() && same_type_as(x));
 		return *static_cast<const T*>(data);
 	}
 	float get(const float &)const { return get(Real()); }
@@ -234,7 +234,7 @@ public:
 	template <typename T>
 	void put(T* x)const
 	{
-		assert(same_as(*x));
+		assert(same_type_as(*x));
 		*x=*static_cast<const T*>(data);
 	}
 	void put(float* x)const { *x=get(Real()); }
@@ -390,7 +390,7 @@ public:
 
 	Value(const ValueBase &x):ValueBase(x)
 	{
-		if(!x.same_as(T()))
+		if(!x.same_type_as(T()))
 			throw Exception::BadType("Value<T>(ValueBase): Type Mismatch");
 	}
 
@@ -410,7 +410,7 @@ public:
 
 	Value<T>& operator=(const ValueBase& x)
 	{
-		if(!x.same_as(T()))
+		if(!x.same_type_as(T()))
 			throw Exception::BadType("Value<T>(ValueBase): Type Mismatch");
 		return ValueBase::operator=(x);
 	}
@@ -427,7 +427,7 @@ public:
 	}
 	Value(const ValueBase &x):ValueBase(x)
 	{
-		if(!x.same_as(T()))
+		if(!x.same_type_as(T()))
 			throw Exception::BadType("Value<T>(ValueBase): Type Mismatch");
 	}
 	Value()
@@ -446,7 +446,7 @@ public:
 
 	Value<T>& operator=(const ValueBase& x)
 	{
-		if(!x.same_as(T()))
+		if(!x.same_type_as(T()))
 			throw Exception::BadType("Value<T>(ValueBase): Type Mismatch");
 		return ValueBase::operator=(x);
 	}

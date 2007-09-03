@@ -432,7 +432,7 @@ LayerActionManager::amount_inc()
 	while(!layer_list.empty())
 	{
 		ValueBase value(layer_list.front()->get_param("amount"));
-		if(value.same_as(Real()))
+		if(value.same_type_as(Real()))
 		{
 			get_canvas_interface()->change_value(synfigapp::ValueDesc(layer_list.front(),"amount"),value.get(Real())+adjust);
 		}
@@ -456,7 +456,7 @@ LayerActionManager::amount_dec()
 	while(!layer_list.empty())
 	{
 		ValueBase value(layer_list.front()->get_param("amount"));
-		if(value.same_as(Real()))
+		if(value.same_type_as(Real()))
 		{
 			get_canvas_interface()->change_value(synfigapp::ValueDesc(layer_list.front(),"amount"),value.get(Real())+adjust);
 		}

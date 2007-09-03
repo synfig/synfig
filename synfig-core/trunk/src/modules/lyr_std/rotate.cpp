@@ -79,7 +79,7 @@ Rotate::set_param(const String & param, const ValueBase &value)
 {
 	IMPORT(origin);
 
-	if(param=="amount" && value.same_as(amount))
+	if(param=="amount" && value.same_type_as(amount))
 	{
 		amount=value.get(amount);
 		sin_val=Angle::sin(amount).get();

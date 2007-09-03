@@ -185,7 +185,7 @@ LayerTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& iter, int colum
 		x.set(false);
 
 		ValueBase v(layer->get_param("children_lock"));
-		if(v.same_as(bool()))
+		if(v.same_type_as(bool()))
 			x.set(v.get(bool()));
 
 		g_value_init(value.gobj(),x.value_type());

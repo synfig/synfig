@@ -139,7 +139,7 @@ Layer_Polygon::clear()
 bool
 Layer_Polygon::set_param(const String & param, const ValueBase &value)
 {
-	if(	param=="vector_list" && value.same_as(vector_list))
+	if(	param=="vector_list" && value.same_type_as(vector_list))
 	{
 		vector_list=value;
 		Layer_Shape::clear();

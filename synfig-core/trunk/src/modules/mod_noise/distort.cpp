@@ -154,7 +154,7 @@ NoiseDistort::hit_check(synfig::Context context, const synfig::Point &point)cons
 bool
 NoiseDistort::set_param(const String & param, const ValueBase &value)
 {
-	if(param=="seed" && value.same_as(int()))
+	if(param=="seed" && value.same_type_as(int()))
 	{
 		random.set_seed(value.get(int()));
 		return true;

@@ -1455,7 +1455,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 								duck->set_origin(last_duck());
 /*
 								ValueBase value(synfigapp::ValueDesc(value_desc.get_layer(),param_desc->get_origin()).get_value(get_time()));
-								if(value.same_as(synfig::Point()))
+								if(value.same_type_as(synfig::Point()))
 									duck->set_origin(value.get(synfig::Point()));
 */
 							}
@@ -1484,7 +1484,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 								duck->set_origin(last_duck());
 /*
 								ValueBase value(synfigapp::ValueDesc(value_desc.get_layer(),param_desc->get_origin()).get_value(get_time()));
-								if(value.same_as(synfig::Point()))
+								if(value.same_type_as(synfig::Point()))
 									duck->set_origin(value.get(synfig::Point()));
 */
 						}
@@ -1506,7 +1506,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 						width->set_name(guid_string(synfigapp::ValueDesc(value_node,i))+".w");
 						{
 							ValueBase value(synfigapp::ValueDesc(value_desc.get_layer(),param_desc->get_hint()).get_value(get_time()));
-							if(value.same_as(synfig::Real()))
+							if(value.same_type_as(synfig::Real()))
 								width->set_scalar(value.get(synfig::Real())*0.5f);
 						}
 					}
@@ -1612,7 +1612,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 								duck->set_origin(last_duck());
 /*
 								ValueBase value(synfigapp::ValueDesc(value_desc.get_layer(),param_desc->get_origin()).get_value(get_time()));
-								if(value.same_as(synfig::Point()))
+								if(value.same_type_as(synfig::Point()))
 									duck->set_origin(value.get(synfig::Point()));
 */
 //						if(!param_desc->get_origin().empty())
@@ -1767,7 +1767,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 								duck->set_origin(last_duck());
 /*
 								ValueBase value(synfigapp::ValueDesc(value_desc.get_layer(),param_desc->get_origin()).get_value(get_time()));
-								if(value.same_as(synfig::Point()))
+								if(value.same_type_as(synfig::Point()))
 									duck->set_origin(value.get(synfig::Point()));
 */
 //						if(!param_desc->get_origin().empty())

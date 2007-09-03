@@ -83,7 +83,7 @@ Import::set_param(const String & param, const ValueBase &value)
 {
 	try{
 	IMPORT(time_offset);
-	if(param=="filename" && value.same_as(filename))
+	if(param=="filename" && value.same_type_as(filename))
 	{
 		if(!get_canvas())
 		{

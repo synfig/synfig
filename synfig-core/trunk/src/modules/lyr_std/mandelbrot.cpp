@@ -146,7 +146,7 @@ Mandelbrot::set_param(const String & param, const ValueBase &value)
 	IMPORT(gradient_inside);
 	IMPORT(gradient_outside);
 
-	if(param=="iterations" && value.same_as(iterations))
+	if(param=="iterations" && value.same_type_as(iterations))
 	{
 		iterations=value.get(iterations);
 		if(iterations<0)
@@ -155,7 +155,7 @@ Mandelbrot::set_param(const String & param, const ValueBase &value)
 			iterations=500000;
 		return true;
 	}
-	if(param=="bailout" && value.same_as(bailout))
+	if(param=="bailout" && value.same_type_as(bailout))
 	{
 		bailout=value.get(bailout);
 		bailout*=bailout;

@@ -73,19 +73,19 @@ Metaballs::Metaballs():
 bool
 Metaballs::set_param(const String & param, const ValueBase &value)
 {
-	if(	param=="centers" && value.same_as(centers))
+	if(	param=="centers" && value.same_type_as(centers))
 	{
 		centers = value;
 		return true;
 	}
 
-	if(	param=="weights" && value.same_as(weights))
+	if(	param=="weights" && value.same_type_as(weights))
 	{
 		weights = value;
 		return true;
 	}
 
-	if(	param=="radii" && value.same_as(radii))
+	if(	param=="radii" && value.same_type_as(radii))
 	{
 		radii = value;
 		return true;

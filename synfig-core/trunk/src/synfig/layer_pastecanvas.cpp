@@ -146,7 +146,7 @@ Layer_PasteCanvas::set_param(const String & param, const ValueBase &value)
 {
 	IMPORT(origin);
 
-	if(param=="canvas" && value.same_as(Canvas::Handle()))
+	if(param=="canvas" && value.same_type_as(Canvas::Handle()))
 	{
 		set_sub_canvas(value.get(Canvas::Handle()));
 		return true;

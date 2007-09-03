@@ -62,10 +62,10 @@
 #define SYNFIG_LAYER_INIT(class) synfig::Layer* class::create() { return new class(); }
 
 //! \writeme
-#define IMPORT_PLUS(x,y) if(param==#x && value.same_as(x)) { value.put(&x);{y;}return true;}
+#define IMPORT_PLUS(x,y) if(param==#x && value.same_type_as(x)) { value.put(&x);{y;}return true;}
 
 //! \writeme
-#define IMPORT_AS(x,y) if(param==y && value.same_as(x)) { value.put(&x); return true;}
+#define IMPORT_AS(x,y) if(param==y && value.same_type_as(x)) { value.put(&x); return true;}
 
 //! \writeme
 #define IMPORT(x) IMPORT_AS(x,#x)

@@ -150,10 +150,10 @@ Layer_Composite::get_param_vocab()const
 bool
 Layer_Composite::set_param(const String & param, const ValueBase &value)
 {
-	if(param=="amount" && value.same_as(amount_))
+	if(param=="amount" && value.same_type_as(amount_))
 		amount_=value.get(amount_);
 	else
-	if(param=="blend_method" && value.same_as(int()))
+	if(param=="blend_method" && value.same_type_as(int()))
 		blend_method_=static_cast<Color::BlendMethod>(value.get(int()));
 	else
 		return Layer::set_param(param,value);

@@ -728,7 +728,7 @@ Outline::set_param(const String & param, const ValueBase &value)
 		return true;
 	}
 
-	if(	param=="width_list" && value.same_as(width_list))
+	if(	param=="width_list" && value.same_type_as(width_list))
 	{
 		width_list=value;
 		//sync();

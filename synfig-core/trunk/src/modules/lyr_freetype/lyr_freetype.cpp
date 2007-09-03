@@ -449,7 +449,7 @@ lyr_freetype::set_param(const String & param, const ValueBase &value)
 {
 	Mutex::Lock lock(mutex);
 /*
-	if(param=="font" && value.same_as(font))
+	if(param=="font" && value.same_type_as(font))
 	{
 		new_font(etl::basename(value.get(font)),style,weight);
 		family=etl::basename(value.get(font));

@@ -648,7 +648,7 @@ LayerTree::on_selection_changed()
 	button_duplicate->set_sensitive(true);
 	button_delete->set_sensitive(true);
 
-	if(layer_list.size()==1 && (*layer_list.begin())->get_param("amount").is_valid()&& (*layer_list.begin())->get_param("amount").same_as(Real()))
+	if(layer_list.size()==1 && (*layer_list.begin())->get_param("amount").is_valid()&& (*layer_list.begin())->get_param("amount").same_type_as(Real()))
 	{
 		quick_layer=*layer_list.begin();
 	}

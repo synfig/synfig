@@ -266,7 +266,7 @@ Layer::on_changed()
 bool
 Layer::set_param(const String &param, const ValueBase &value)
 {
-	if(param=="z_depth" && value.same_as(z_depth_))
+	if(param=="z_depth" && value.same_type_as(z_depth_))
 	{
 		z_depth_=value.get(z_depth_);
 		return true;

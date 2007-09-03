@@ -131,7 +131,7 @@ bool
 ValueNode_TimedSwap::set_swap_time(const ValueNode::Handle &x)
 {
 	if(!x
-		|| !ValueBase(ValueBase::TYPE_TIME).same_as(x->get_type())
+		|| !ValueBase(ValueBase::TYPE_TIME).same_type_as(x->get_type())
 		&& !PlaceholderValueNode::Handle::cast_dynamic(x)
 	)
 		return false;
@@ -155,7 +155,7 @@ bool
 ValueNode_TimedSwap::set_swap_length(const ValueNode::Handle &x)
 {
 	if(!x || (
-		!ValueBase(ValueBase::TYPE_TIME).same_as(x->get_type())
+		!ValueBase(ValueBase::TYPE_TIME).same_type_as(x->get_type())
 		&& !PlaceholderValueNode::Handle::cast_dynamic(x)
 		)
 	)

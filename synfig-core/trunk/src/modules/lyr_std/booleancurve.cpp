@@ -68,7 +68,7 @@ BooleanCurve::~BooleanCurve()
 
 bool BooleanCurve::set_param(const String & param, const synfig::ValueBase &value)
 {
-	if(param=="regions" && value.same_as(regions))
+	if(param=="regions" && value.same_type_as(regions))
 	{
 		vector<BLinePoint> bv;
 		int size = value.get_list().size();
