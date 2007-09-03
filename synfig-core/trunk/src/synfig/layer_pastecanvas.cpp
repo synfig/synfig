@@ -84,7 +84,7 @@ Layer_PasteCanvas::Layer_PasteCanvas():
 	time_offset(0)
 {
 	children_lock=false;
-	do_not_muck_with_time_=false;
+	muck_with_time_=true;
 	curr_time=Time::begin();
 }
 
@@ -163,7 +163,7 @@ Layer_PasteCanvas::set_param(const String & param, const ValueBase &value)
 void
 Layer_PasteCanvas::set_sub_canvas(etl::handle<synfig::Canvas> x)
 {
-	if(canvas && !do_not_muck_with_time_)
+	if(canvas && muck_with_time_)
 		remove_child(canvas.get());
 
 	if(canvas && (canvas->is_inline() || !get_canvas() || get_canvas()->get_root()!=canvas->get_root()))
@@ -184,7 +184,7 @@ Layer_PasteCanvas::set_sub_canvas(etl::handle<synfig::Canvas> x)
 	if(canvas)
 		bounds=(canvas->get_context().get_full_bounding_rect()-canvas->rend_desc().get_focus())*exp(zoom)+origin+canvas->rend_desc().get_focus();
 
-	if(canvas && !do_not_muck_with_time_)
+	if(canvas && muck_with_time_)
 		add_child(canvas.get());
 
 	if(canvas && (canvas->is_inline() || !get_canvas() || get_canvas()->get_root()!=canvas->get_root()))
@@ -290,7 +290,7 @@ Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quali
 	if(!canvas || !get_amount())
 		return context.accelerated_render(surface,quality,renddesc,cb);
 
-	if(!do_not_muck_with_time_ && 	curr_time!=Time::begin() && canvas->get_time()!=curr_time+time_offset)
+	if(muck_with_time_ && curr_time!=Time::begin() && canvas->get_time()!=curr_time+time_offset)
 	{
 		canvas->set_time(curr_time+time_offset);
 	}

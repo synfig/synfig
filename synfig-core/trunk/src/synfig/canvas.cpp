@@ -1077,12 +1077,12 @@ synfig::optimize_layers(Context context, Canvas::Handle op_canvas)
 			}catch(int) { }
 #endif
 			Layer::Handle new_layer(Layer::create("PasteCanvas"));
-			dynamic_cast<Layer_PasteCanvas*>(new_layer.get())->set_do_not_muck_with_time(true);
+			dynamic_cast<Layer_PasteCanvas*>(new_layer.get())->set_muck_with_time(false);
 			Layer::ParamList param_list(paste_canvas->get_param_list());
 			//param_list.erase("canvas");
 			new_layer->set_param_list(param_list);
 			dynamic_cast<Layer_PasteCanvas*>(new_layer.get())->set_sub_canvas(sub_canvas);
-			dynamic_cast<Layer_PasteCanvas*>(new_layer.get())->set_do_not_muck_with_time(false);
+			dynamic_cast<Layer_PasteCanvas*>(new_layer.get())->set_muck_with_time(true);
 			layer=new_layer;
 		}
 

@@ -64,7 +64,7 @@ private:
 
 	bool optimize_layers(synfig::Context context,synfig::CanvasBase&)const;
 
-	bool do_not_muck_with_time_;
+	bool muck_with_time_;
 
 	bool children_lock;
 
@@ -75,7 +75,7 @@ public:
 
 	virtual void on_canvas_set();
 
-	void set_do_not_muck_with_time(bool x=true) { do_not_muck_with_time_=true; }
+	void set_muck_with_time(bool x=false) { muck_with_time_=false; }
 
 	etl::handle<synfig::Canvas> get_sub_canvas()const { return canvas; }
 	void set_sub_canvas(etl::handle<synfig::Canvas> x);
