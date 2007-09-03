@@ -324,7 +324,7 @@ Layer::clone(const GUID& deriv_guid) const
 
 			// This parameter is a canvas.  We need a close look.
 			Canvas::Handle canvas(iter->second.get(Canvas::Handle()));
-			if(canvas->is_inline())
+			if(canvas && canvas->is_inline())
 			{
 				// This parameter is an inlinecanvas! we need to clone it
 				// before we set it as aparameter.
