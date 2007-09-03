@@ -463,32 +463,31 @@ public:
 	//! \writeme
 	enum BlendMethod
 	{
-		BLEND_COMPOSITE=0,	//!< Color A is composited onto B (Taking into about A's alpha)
-		BLEND_STRAIGHT=1,	//!< Straight linear interpolation from A->B (Alpha ignored)
-		BLEND_BRIGHTEN=2,	//!< If composite is brighter than B, use composite. B otherwise.
-		BLEND_DARKEN=3,		//!< If composite is brighter than B, use composite. B otherwise.
-		BLEND_ADD=4,		//!< Simple A+B.
-		BLEND_SUBTRACT=5,	//!< Simple A-B.
-		BLEND_MULTIPLY=6,	//!< Simple A*B.
-		BLEND_DIVIDE=7,		//!< Simple B/A
-		BLEND_COLOR=8,		//!< Preserves the U and V channels of color A
-		BLEND_HUE=9,		//!< Preserves the angle of the UV vector of color A
-		BLEND_SATURATION=10,//!< Preserves the magnitude of the UV Vector of color A
-		BLEND_LUMINANCE=11,	//!< Preserves the Y channel of color A
-		BLEND_BEHIND=12,	//!< Similar to BLEND_COMPOSITE, except that B is composited onto A.
-		BLEND_ONTO=13,		//!< Similar to BLEND_COMPOSITE, except that B's alpha is maintained
-		BLEND_SCREEN=16,		//!< \writeme
-		BLEND_OVERLAY=20,		//!< \writeme
-		BLEND_DIFFERENCE=18,		//!< \writeme
+		BLEND_COMPOSITE=0,			//!< Color A is composited onto B (Taking A's alpha into account)
+		BLEND_STRAIGHT=1,			//!< Straight linear interpolation from A->B (Alpha ignored)
+		BLEND_ONTO=13,				//!< Similar to BLEND_COMPOSITE, except that B's alpha is maintained
+		BLEND_STRAIGHT_ONTO=21,		//!< <deprecated> \writeme
+		BLEND_BEHIND=12,			//!< Similar to BLEND_COMPOSITE, except that B is composited onto A.
+		BLEND_SCREEN=16,			//!< \writeme
+		BLEND_OVERLAY=20,			//!< \writeme
 		BLEND_HARD_LIGHT=17,		//!< \writeme
+		BLEND_MULTIPLY=6,			//!< Simple A*B.
+		BLEND_DIVIDE=7,				//!< Simple B/A
+		BLEND_ADD=4,				//!< Simple A+B.
+		BLEND_SUBTRACT=5,			//!< Simple A-B.
+		BLEND_DIFFERENCE=18,		//!< Simple |A-B|.
+		BLEND_BRIGHTEN=2,			//!< If composite is brighter than B, use composite. B otherwise.
+		BLEND_DARKEN=3,				//!< If composite is darker than B, use composite. B otherwise.
+		BLEND_COLOR=8,				//!< Preserves the U and V channels of color A
+		BLEND_HUE=9,				//!< Preserves the angle of the UV vector of color A
+		BLEND_SATURATION=10,		//!< Preserves the magnitude of the UV Vector of color A
+		BLEND_LUMINANCE=11,			//!< Preserves the Y channel of color A
 
-		//! Deprecated
-		BLEND_ALPHA_BRIGHTEN=14,	//!< If A is less opaque than B, use A
-		BLEND_ALPHA_DARKEN=15,		//!< If A is more opaque than B, use B
-		BLEND_ALPHA_OVER=19,//!< multiply alphas and then straight blends that using the amount
-		BLEND_STRAIGHT_ONTO=21,//!< \writeme
+		BLEND_ALPHA_BRIGHTEN=14,	//!< <deprecated> If A is less opaque than B, use A
+		BLEND_ALPHA_DARKEN=15,		//!< <deprecated> If A is more opaque than B, use B
+		BLEND_ALPHA_OVER=19,		//!< <deprecated> multiply alphas and then straight blends using the amount
 
-		BLEND_END=22			//!< \internal
+		BLEND_END=22				//!< \internal
 	};
 
 	/* Other */
