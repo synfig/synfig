@@ -75,7 +75,7 @@ public:
 
 	virtual void on_canvas_set();
 
-	void set_muck_with_time(bool x=false) { muck_with_time_=false; }
+	void set_muck_with_time(bool x=false) { muck_with_time_=x; }
 
 	etl::handle<synfig::Canvas> get_sub_canvas()const { return canvas; }
 	void set_sub_canvas(etl::handle<synfig::Canvas> x);
