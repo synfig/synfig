@@ -901,10 +901,22 @@ CanvasParser::parse_animated(xmlpp::Element *element,Canvas::Handle canvas)
 
 
 			ValueNode::Handle waypoint_value_node;
+			xmlpp::Element::NodeList list = child->get_children();
 
 			if(child->get_attribute("use"))
 			{
-				waypoint_value_node=canvas->surefind_value_node(child->get_attribute("use")->get_value());
+				if(!list.empty())
+					warning(child,_("Found \"use\" attribute for <waypoint>, but it wasn't empty. Ignoring contents..."));
+
+				// the waypoint might look like this, in which case we won't find "mycanvas" in the list of valuenodes, 'cos it's a canvas
+				//
+				//      <animated type="canvas">
+				//        <waypoint time="0s" use="mycanvas"/>
+				//      </animated>
+				if (type==ValueBase::TYPE_CANVAS)
+					waypoint_value_node=ValueNode_Const::create(canvas->surefind_canvas(child->get_attribute("use")->get_value()));
+				else
+					waypoint_value_node=canvas->surefind_value_node(child->get_attribute("use")->get_value());
 			}
 			else
 			{
@@ -914,7 +926,6 @@ CanvasParser::parse_animated(xmlpp::Element *element,Canvas::Handle canvas)
 					continue;
 				}
 
-				xmlpp::Element::NodeList list = child->get_children();
 				xmlpp::Element::NodeList::iterator iter;
 
 				// Search for the first non-text XML element
@@ -1678,6 +1689,7 @@ CanvasParser::parse_dynamic_list(xmlpp::Element *element,Canvas::Handle canvas)
 
 			if(child->get_attribute("use"))
 			{
+				// \todo does this need to be able to read 'use="canvas"', like waypoints can now?  (see 'surefind_canvas' in this file)
 				string id=child->get_attribute("use")->get_value();
 				try
 				{
