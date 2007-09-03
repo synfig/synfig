@@ -124,12 +124,14 @@ class studio::StateDraw_Context : public sigc::trackable
 	synfigapp::Settings& settings;
 
 	Gtk::Table options_table;
+	Gtk::Entry entry_id;
 	Gtk::CheckButton checkbutton_pressure_width;
 	Gtk::CheckButton checkbutton_round_ends;
 	Gtk::CheckButton checkbutton_auto_loop;	  // whether to loop new strokes which start and end in the same place
 	Gtk::CheckButton checkbutton_auto_extend; // whether to extend existing lines
 	Gtk::CheckButton checkbutton_auto_link;	  // whether to link new ducks to existing ducks
 	Gtk::CheckButton checkbutton_region_only;
+	Gtk::CheckButton checkbutton_auto_export;
 	Gtk::Button button_fill_last_stroke;
 
 	//pressure spinner and such
@@ -151,6 +153,9 @@ class studio::StateDraw_Context : public sigc::trackable
 	synfigapp::BLineConverter blineconv;
 
 public:
+	synfig::String get_id()const { return entry_id.get_text(); }
+	void set_id(const synfig::String& x) { return entry_id.set_text(x); }
+
 	bool get_pressure_width_flag()const { return checkbutton_pressure_width.get_active(); }
 	void set_pressure_width_flag(bool x) { return checkbutton_pressure_width.set_active(x); }
 
@@ -165,6 +170,9 @@ public:
 
 	bool get_region_only_flag()const { return checkbutton_region_only.get_active(); }
 	void set_region_only_flag(bool x) { return checkbutton_region_only.set_active(x); }
+
+	bool get_auto_export_flag()const { return checkbutton_auto_export.get_active(); }
+	void set_auto_export_flag(bool x) { return checkbutton_auto_export.set_active(x); }
 
 	Real get_min_pressure() const { return adj_min_pressure.get_value(); }
 	void set_min_pressure(Real x) { return adj_min_pressure.set_value(x); }
@@ -186,6 +194,7 @@ public:
 
 	void load_settings();
 	void save_settings();
+	void increment_id();
 
 	Smach::event_result event_stop_handler(const Smach::event& x);
 
@@ -240,6 +249,11 @@ StateDraw_Context::load_settings()
 {
 	String value;
 
+	if(settings.get_value("draw.id",value))
+		set_id(value);
+	else
+		set_id("NewDrawing");
+
 	if(settings.get_value("draw.pressure_width",value) && value=="0")
 		set_pressure_width_flag(false);
 	else
@@ -264,6 +278,11 @@ StateDraw_Context::load_settings()
 		set_region_only_flag(true);
 	else
 		set_region_only_flag(false);
+
+	if(settings.get_value("draw.auto_export",value) && value=="1")
+		set_auto_export_flag(true);
+	else
+		set_auto_export_flag(false);
 
 	if(settings.get_value("draw.min_pressure_on",value) && value=="0")
 		set_min_pressure_flag(false);
@@ -305,11 +324,13 @@ StateDraw_Context::load_settings()
 void
 StateDraw_Context::save_settings()
 {
+	settings.set_value("draw.id",get_id().c_str());
 	settings.set_value("draw.pressure_width",get_pressure_width_flag()?"1":"0");
 	settings.set_value("draw.auto_loop",get_auto_loop_flag()?"1":"0");
 	settings.set_value("draw.auto_extend",get_auto_extend_flag()?"1":"0");
 	settings.set_value("draw.auto_link",get_auto_link_flag()?"1":"0");
 	settings.set_value("draw.region_only",get_region_only_flag()?"1":"0");
+	settings.set_value("draw.auto_export",get_auto_export_flag()?"1":"0");
 	settings.set_value("draw.min_pressure",strprintf("%f",get_min_pressure()));
 	settings.set_value("draw.feather",strprintf("%f",get_feather()));
 	settings.set_value("draw.min_pressure_on",get_min_pressure_flag()?"1":"0");
@@ -318,17 +339,62 @@ StateDraw_Context::save_settings()
 	settings.set_value("draw.localize",get_local_error_flag()?"1":"0");
 }
 
+void
+StateDraw_Context::increment_id()
+{
+	String id(get_id());
+	int number=1;
+	int digits=0;
+
+	if(id.empty())
+		id="Drawing";
+
+	// If there is a number
+	// already at the end of the
+	// id, then remove it.
+	if(id[id.size()-1]<='9' && id[id.size()-1]>='0')
+	{
+		// figure out how many digits it is
+		for(digits=0;(int)id.size()-1>=digits && id[id.size()-1-digits]<='9' && id[id.size()-1-digits]>='0';digits++)while(false);
+
+		String str_number;
+		str_number=String(id,id.size()-digits,id.size());
+		id=String(id,0,id.size()-digits);
+		synfig::info("---------------- \"%s\"",str_number.c_str());
+
+		number=atoi(str_number.c_str());
+	}
+	else
+	{
+		number=1;
+		digits=3;
+	}
+
+	number++;
+
+	// Add the number back onto the id
+	{
+		const String format(strprintf("%%0%dd",digits));
+		id+=strprintf(format.c_str(),number);
+	}
+
+	// Set the ID
+	set_id(id);
+}
+
 StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	canvas_view_(canvas_view),
 	is_working(*canvas_view),
 	loop_(false),
 	prev_workarea_layer_status_(get_work_area()->allow_layer_clicks),
 	settings(synfigapp::Main::get_selected_input_device()->settings()),
+	entry_id(),
 	checkbutton_pressure_width(_("Pressure Width")),
 	checkbutton_auto_loop(_("Auto Loop")),
 	checkbutton_auto_extend(_("Auto Extend")),
 	checkbutton_auto_link(_("Auto Link")),
 	checkbutton_region_only(_("Create Region Only")),
+	checkbutton_auto_export(_("Auto Export")),
 	button_fill_last_stroke(_("Fill Last Stroke")),
 	adj_min_pressure(0,0,1,0.01,0.1),
 	spin_min_pressure(adj_min_pressure,0.1,3),
@@ -349,23 +415,25 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	UpdateErrorBox();
 
 	//options_table.attach(*manage(new Gtk::Label(_("Draw Tool"))), 0, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(checkbutton_pressure_width, 0, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(checkbutton_auto_loop, 0, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(checkbutton_auto_extend, 0, 2, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(checkbutton_auto_link, 0, 2, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(checkbutton_region_only, 0, 2, 5, 6, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(entry_id,					0, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(checkbutton_pressure_width,0, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(checkbutton_auto_loop,		0, 2, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(checkbutton_auto_extend,	0, 2, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(checkbutton_auto_link,		0, 2, 5, 6, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(checkbutton_region_only,	0, 2, 6, 7, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(checkbutton_auto_export,	0, 2, 7, 8, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
-	options_table.attach(check_min_pressure, 0, 2, 6, 7, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(spin_min_pressure, 0, 2, 7, 8, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(check_min_pressure,		0, 2, 8, 9, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(spin_min_pressure,			0, 2, 9, 10, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
-	options_table.attach(*manage(new Gtk::Label(_("Feather"))), 0, 1, 8, 9, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(spin_feather, 1, 2, 8, 9, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(*manage(new Gtk::Label(_("Feather"))), 0, 1, 10, 11, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(spin_feather,				1, 2, 10, 11, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
-	options_table.attach(check_localerror, 0, 2, 9, 10, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(*manage(new Gtk::Label(_("Smooth"))), 0, 1, 10, 11, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(spin_globalthres, 1, 2, 10, 11, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(check_localerror,			0, 2, 11, 12, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(*manage(new Gtk::Label(_("Smooth"))), 0, 1, 12, 13, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(spin_globalthres,			1, 2, 12, 13, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
-	//options_table.attach(button_fill_last_stroke, 0, 2, 11, 12, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	//options_table.attach(button_fill_last_stroke, 0, 2, 13, 14, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
 	button_fill_last_stroke.signal_pressed().connect(sigc::mem_fun(*this,&StateDraw_Context::fill_last_stroke));
 	check_localerror.signal_toggled().connect(sigc::mem_fun(*this,&StateDraw_Context::UpdateErrorBox));
@@ -908,6 +976,18 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline
 		LinkableValueNode::Handle::cast_dynamic(value_node->list.back().value_node)->
 		  set_link(0,finish_duck_value_desc.get_value_node());
 
+	if(get_auto_export_flag()) {
+		printf("this is where we would export the new line\n");
+		if (!get_canvas_interface()->add_value_node(value_node,get_id()))
+		{
+			/* it's no big deal, is it?  let's keep the shape anyway */
+			// get_canvas_view()->get_ui_interface()->error(_("Unable to add value node"));
+			// group.cancel();
+			// increment_id();
+			// return Smach::RESULT_ERROR;
+		}
+	}
+
 	// Create the layer
 	{
 		Layer::Handle layer;
@@ -927,9 +1007,15 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline
 		synfigapp::PushMode push_mode(get_canvas_interface(),synfigapp::MODE_NORMAL);
 
 		if(get_region_only_flag())
+		{
 			layer=get_canvas_interface()->add_layer_to("region",canvas,depth);
+			layer->set_description(get_id()+_(" Region"));
+		}
 		else
+		{
 			layer=get_canvas_interface()->add_layer_to("outline",canvas,depth);
+			layer->set_description(get_id()+_(" Outline"));
+		}
 
 		if(get_feather())
 		{
@@ -960,6 +1046,7 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline
 		{
 			get_canvas_view()->get_ui_interface()->error(_("Unable to create layer"));
 			group.cancel();
+			increment_id();
 			//refresh_ducks();
 			return Smach::RESULT_ERROR;
 		}
@@ -967,6 +1054,7 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline
 		//refresh_ducks();
 	}
 
+	increment_id();
 	last_stroke=value_node;
 	return Smach::RESULT_ACCEPT;
 }
