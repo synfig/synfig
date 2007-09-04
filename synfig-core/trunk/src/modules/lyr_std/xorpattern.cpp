@@ -49,7 +49,7 @@
 /* === G L O B A L S ======================================================= */
 
 SYNFIG_LAYER_INIT(XORPattern);
-SYNFIG_LAYER_SET_NAME(XORPattern,"XORPattern");
+SYNFIG_LAYER_SET_NAME(XORPattern,"xor_pattern");
 SYNFIG_LAYER_SET_LOCAL_NAME(XORPattern,_("XOR Pattern"));
 SYNFIG_LAYER_SET_CATEGORY(XORPattern,_("Other"));
 SYNFIG_LAYER_SET_VERSION(XORPattern,"0.1");
@@ -93,7 +93,10 @@ XORPattern::get_color(Context context, const Point &point)const
 	unsigned char gindex=(a^(~b))*4;
 	unsigned char bindex=~(a^b)*2;
 
-	return Color((Color::value_type)rindex/(Color::value_type)255.0,(Color::value_type)gindex/(Color::value_type)255.0,(Color::value_type)bindex/(Color::value_type)255.0,1.0);
+	return Color((Color::value_type)rindex/(Color::value_type)255.0,
+				 (Color::value_type)gindex/(Color::value_type)255.0,
+				 (Color::value_type)bindex/(Color::value_type)255.0,
+				 1.0);
 }
 
 Layer::Vocab
