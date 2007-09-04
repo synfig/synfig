@@ -58,7 +58,7 @@ bool freetype_constructor(synfig::ProgressCallback *cb)
 	if(cb)cb->task("Initializing FreeType...");
 	if ( (error = FT_Init_FreeType( &ft_library )) )
 	{
-		if(cb)cb->error(strprintf("lyr_freetype: FreeType initialization failed. (err=%d)",error));
+		if(cb)cb->error(strprintf("Layer_Freetype: FreeType initialization failed. (err=%d)",error));
 		return false;
 	}
 	return true;
@@ -84,7 +84,7 @@ MODULE_DESC_END
 
 MODULE_INVENTORY_BEGIN(liblyr_freetype)
 	BEGIN_LAYERS
-		LAYER(lyr_freetype)
-		LAYER_ALIAS(lyr_freetype,"Text")
+		LAYER(Layer_Freetype)
+		LAYER_ALIAS(Layer_Freetype,"Text")
 	END_LAYERS
 MODULE_INVENTORY_END

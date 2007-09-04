@@ -60,12 +60,12 @@ using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
-SYNFIG_LAYER_INIT(lyr_freetype);
-SYNFIG_LAYER_SET_NAME(lyr_freetype,"text");
-SYNFIG_LAYER_SET_LOCAL_NAME(lyr_freetype,_("Simple Text"));
-SYNFIG_LAYER_SET_CATEGORY(lyr_freetype,_("Typography"));
-SYNFIG_LAYER_SET_VERSION(lyr_freetype,"0.2");
-SYNFIG_LAYER_SET_CVS_ID(lyr_freetype,"$Id$");
+SYNFIG_LAYER_INIT(Layer_Freetype);
+SYNFIG_LAYER_SET_NAME(Layer_Freetype,"text");
+SYNFIG_LAYER_SET_LOCAL_NAME(Layer_Freetype,_("Simple Text"));
+SYNFIG_LAYER_SET_CATEGORY(Layer_Freetype,_("Typography"));
+SYNFIG_LAYER_SET_VERSION(Layer_Freetype,"0.2");
+SYNFIG_LAYER_SET_CVS_ID(Layer_Freetype,"$Id$");
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -88,7 +88,7 @@ TextLine::clear_and_free()
 
 /* === M E T H O D S ======================================================= */
 
-lyr_freetype::lyr_freetype()
+Layer_Freetype::Layer_Freetype()
 {
 	face=0;
 
@@ -113,14 +113,14 @@ lyr_freetype::lyr_freetype()
 	invert=false;
 }
 
-lyr_freetype::~lyr_freetype()
+Layer_Freetype::~Layer_Freetype()
 {
 	if(face)
 		FT_Done_Face(face);
 }
 
 void
-lyr_freetype::new_font(const synfig::String &family, int style, int weight)
+Layer_Freetype::new_font(const synfig::String &family, int style, int weight)
 {
 	if(
 		!new_font_(family,style,weight) &&
@@ -135,7 +135,7 @@ lyr_freetype::new_font(const synfig::String &family, int style, int weight)
 }
 
 bool
-lyr_freetype::new_font_(const synfig::String &font_fam_, int style, int weight)
+Layer_Freetype::new_font_(const synfig::String &font_fam_, int style, int weight)
 {
 	synfig::String font_fam(font_fam_);
 
@@ -325,7 +325,7 @@ void fss2path(char *path, FSSpec *fss)
 #endif
 
 bool
-lyr_freetype::new_face(const String &newfont)
+Layer_Freetype::new_face(const String &newfont)
 {
 	int error;
 	FT_Long face_index=0;
@@ -380,7 +380,7 @@ lyr_freetype::new_face(const String &newfont)
 		FcResult result;
 		if( !FcInit() )
 		{
-			synfig::warning("lyr_freetype: fontconfig: %s",_("unable to initialise"));
+			synfig::warning("Layer_Freetype: fontconfig: %s",_("unable to initialise"));
 			error = 1;
 		} else {
 			FcPattern* pat = FcNameParse((FcChar8 *) newfont.c_str());
@@ -399,7 +399,7 @@ lyr_freetype::new_face(const String &newfont)
 					error=FT_New_Face(ft_library,(const char*)file,face_index,&face);
 				FcFontSetDestroy(fs);
 			} else
-				synfig::warning("lyr_freetype: fontconfig: %s",_("empty font set"));
+				synfig::warning("Layer_Freetype: fontconfig: %s",_("empty font set"));
 		}
 	}
 #endif
@@ -434,7 +434,7 @@ lyr_freetype::new_face(const String &newfont)
 #endif
 	if(error)
 	{
-		//synfig::error(strprintf("lyr_freetype:%s (err=%d)",_("Unable to open face."),error));
+		//synfig::error(strprintf("Layer_Freetype:%s (err=%d)",_("Unable to open face."),error));
 		return false;
 	}
 
@@ -445,7 +445,7 @@ lyr_freetype::new_face(const String &newfont)
 }
 
 bool
-lyr_freetype::set_param(const String & param, const ValueBase &value)
+Layer_Freetype::set_param(const String & param, const ValueBase &value)
 {
 	Mutex::Lock lock(mutex);
 /*
@@ -474,7 +474,7 @@ lyr_freetype::set_param(const String & param, const ValueBase &value)
 }
 
 ValueBase
-lyr_freetype::get_param(const String& param)const
+Layer_Freetype::get_param(const String& param)const
 {
 	EXPORT(font);
 	EXPORT(family);
@@ -498,7 +498,7 @@ lyr_freetype::get_param(const String& param)const
 }
 
 Layer::Vocab
-lyr_freetype::get_param_vocab(void)const
+Layer_Freetype::get_param_vocab(void)const
 {
 	Layer::Vocab ret(Layer_Composite::get_param_vocab());
 
@@ -589,7 +589,7 @@ lyr_freetype::get_param_vocab(void)const
 }
 
 void
-lyr_freetype::sync()
+Layer_Freetype::sync()
 {
 	needs_sync_=false;
 
@@ -599,10 +599,10 @@ lyr_freetype::sync()
 }
 
 Color
-lyr_freetype::get_color(Context context, const synfig::Point &pos)const
+Layer_Freetype::get_color(Context context, const synfig::Point &pos)const
 {
 	if(needs_sync_)
-		const_cast<lyr_freetype*>(this)->sync();
+		const_cast<Layer_Freetype*>(this)->sync();
 
 	if(!face)
 		return context.get_color(pos);
@@ -610,18 +610,18 @@ lyr_freetype::get_color(Context context, const synfig::Point &pos)const
 }
 
 bool
-lyr_freetype::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
+Layer_Freetype::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
 	static synfig::RecMutex freetype_mutex;
 
 	if(needs_sync_)
-		const_cast<lyr_freetype*>(this)->sync();
+		const_cast<Layer_Freetype*>(this)->sync();
 
 
 
 
 	int error;
-	Vector size(lyr_freetype::size*2);
+	Vector size(Layer_Freetype::size*2);
 
 	if(!context.accelerated_render(surface,quality,renddesc,cb))
 		return false;
@@ -632,11 +632,11 @@ lyr_freetype::accelerated_render(Context context,Surface *surface,int quality, c
 	// If there is no font loaded, just bail
 	if(!face)
 	{
-		if(cb)cb->warning(string("lyr_freetype:")+_("No face loaded, no text will be rendered."));
+		if(cb)cb->warning(string("Layer_Freetype:")+_("No face loaded, no text will be rendered."));
 		return true;
 	}
 
-	String text(lyr_freetype::text);
+	String text(Layer_Freetype::text);
 	if(text=="@_FILENAME_@" && get_canvas() && !get_canvas()->get_file_name().empty())
 	{
 		text=basename(get_canvas()->get_file_name());
@@ -658,7 +658,7 @@ lyr_freetype::accelerated_render(Context context,Surface *surface,int quality, c
     // If the font is the size of a pixel, don't bother rendering any text
 	if(w<=1 || h<=1)
 	{
-		if(cb)cb->warning(string("lyr_freetype:")+_("Text too small, no text will be rendered."));
+		if(cb)cb->warning(string("Layer_Freetype:")+_("Text too small, no text will be rendered."));
 		return true;
 	}
 
@@ -677,12 +677,12 @@ lyr_freetype::accelerated_render(Context context,Surface *surface,int quality, c
 	const float xerror(abs(size[0]*pw)/(float)face->size->metrics.x_ppem/1.13f/0.996);
 	const float yerror(abs(size[1]*ph)/(float)face->size->metrics.y_ppem/1.13f/0.996);
 	//synfig::info("xerror=%f, yerror=%f",xerror,yerror);
-	const float compress(lyr_freetype::compress*xerror);
-	const float vcompress(lyr_freetype::vcompress*yerror);
+	const float compress(Layer_Freetype::compress*xerror);
+	const float vcompress(Layer_Freetype::vcompress*yerror);
 
 	if(error)
 	{
-		if(cb)cb->warning(string("lyr_freetype:")+_("Unable to set face size.")+strprintf(" (err=%d)",error));
+		if(cb)cb->warning(string("Layer_Freetype:")+_("Unable to set face size.")+strprintf(" (err=%d)",error));
 	}
 
 	FT_GlyphSlot  slot = face->glyph;  // a small shortcut
@@ -866,10 +866,10 @@ lyr_freetype::accelerated_render(Context context,Surface *surface,int quality, c
 }
 
 synfig::Rect
-lyr_freetype::get_bounding_rect()const
+Layer_Freetype::get_bounding_rect()const
 {
 	if(needs_sync_)
-		const_cast<lyr_freetype*>(this)->sync();
+		const_cast<Layer_Freetype*>(this)->sync();
 //	if(!is_disabled())
 		return synfig::Rect::full_plane();
 }

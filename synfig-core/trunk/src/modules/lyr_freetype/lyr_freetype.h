@@ -106,7 +106,7 @@ struct TextLine
 };
 
 
-class lyr_freetype : public synfig::Layer_Composite, public synfig::Layer_NoDeform
+class Layer_Freetype : public synfig::Layer_Composite, public synfig::Layer_NoDeform
 {
 	SYNFIG_LAYER_MODULE_EXT
 private:
@@ -136,8 +136,8 @@ private:
 	mutable synfig::Mutex mutex;
 
 public:
-	lyr_freetype();
-	virtual ~lyr_freetype();
+	Layer_Freetype();
+	virtual ~Layer_Freetype();
 
 	virtual bool set_param(const String & param, const synfig::ValueBase &value);
 	virtual ValueBase get_param(const String & param)const;
