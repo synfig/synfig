@@ -60,6 +60,7 @@ SYNFIG_LAYER_SET_CVS_ID(XORPattern,"$Id$");
 /* === M E T H O D S ======================================================= */
 
 XORPattern::XORPattern():
+	Layer_Composite	(1.0,Color::BLEND_STRAIGHT),
 	pos(0.125,0.125),
 	size(0.25,0.25)
 {
@@ -70,7 +71,8 @@ XORPattern::set_param(const String & param, const ValueBase &value)
 {
 	IMPORT(pos);
 	IMPORT(size);
-	return false;
+
+	return Layer_Composite::set_param(param,value);
 }
 
 ValueBase
@@ -82,27 +84,36 @@ XORPattern::get_param(const String & param)const
 	EXPORT_NAME();
 	EXPORT_VERSION();
 
-	return ValueBase();
+	return Layer_Composite::get_param(param);
 }
 
 Color
 XORPattern::get_color(Context context, const Point &point)const
 {
+	if(get_amount()==0.0)
+		return context.get_color(point);
+
 	unsigned int a=(unsigned int)floor((point[0]-pos[0])/size[0]), b=(unsigned int)floor((point[1]-pos[1])/size[1]);
 	unsigned char rindex=(a^b);
 	unsigned char gindex=(a^(~b))*4;
 	unsigned char bindex=~(a^b)*2;
 
-	return Color((Color::value_type)rindex/(Color::value_type)255.0,
-				 (Color::value_type)gindex/(Color::value_type)255.0,
-				 (Color::value_type)bindex/(Color::value_type)255.0,
-				 1.0);
+	Color color((Color::value_type)rindex/(Color::value_type)255.0,
+				(Color::value_type)gindex/(Color::value_type)255.0,
+				(Color::value_type)bindex/(Color::value_type)255.0,
+				1.0);
+
+	if(get_amount() == 1 && get_blend_method() == Color::BLEND_STRAIGHT)
+		return color;
+	else
+		return Color::blend(color,context.get_color(point),get_amount(),get_blend_method());
+
 }
 
 Layer::Vocab
 XORPattern::get_param_vocab()const
 {
-	Layer::Vocab ret;
+	Layer::Vocab ret(Layer_Composite::get_param_vocab());
 
 	ret.push_back(ParamDesc("pos")
 		.set_local_name(_("Offset"))
@@ -113,4 +124,27 @@ XORPattern::get_param_vocab()const
 	);
 
 	return ret;
+}
+
+synfig::Layer::Handle
+XORPattern::hit_check(synfig::Context context, const synfig::Point &getpos)const
+{
+	// if we have a zero amount
+	if(get_amount()==0.0)
+		// then the click passes down to our context
+		return context.hit_check(getpos);
+
+	synfig::Layer::Handle tmp;
+	// if we are behind the context, and the click hits something in the context
+	if(get_blend_method()==Color::BLEND_BEHIND && (tmp=context.hit_check(getpos)))
+		// then return the thing it hit in the context
+		return tmp;
+
+	// if we're using an 'onto' blend method and the click missed the context
+	if(Color::is_onto(get_blend_method()) && !(tmp=context.hit_check(getpos)))
+		// then it misses everything
+		return 0;
+
+	// otherwise the click hit us, since we're the size of the whole plane
+	return const_cast<XORPattern*>(this);
 }

@@ -29,7 +29,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <synfig/layer.h>
+#include <synfig/layer_composite.h>
 #include <synfig/color.h>
 #include <synfig/context.h>
 #include <synfig/vector.h>
@@ -44,7 +44,7 @@ using namespace synfig;
 using namespace std;
 using namespace etl;
 
-class XORPattern : public Layer
+class XORPattern : public synfig::Layer_Composite, public synfig::Layer_NoDeform
 {
 	SYNFIG_LAYER_MODULE_EXT
 
@@ -60,6 +60,7 @@ public:
 	virtual ValueBase get_param(const String &param)const;
 	virtual Color get_color(Context context, const Point &pos)const;
 	virtual Vocab get_param_vocab()const;
+	virtual synfig::Layer::Handle hit_check(synfig::Context context, const synfig::Point &point)const;
 };
 
 /* === E N D =============================================================== */
