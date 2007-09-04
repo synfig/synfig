@@ -88,7 +88,7 @@ XORPattern::get_param(const String & param)const
 Color
 XORPattern::get_color(Context context, const Point &point)const
 {
-	unsigned int a=(unsigned int)floor((point[0]+pos[0])/size[0]), b=(unsigned int)floor((point[1]+pos[1])/size[1]);
+	unsigned int a=(unsigned int)floor((point[0]-pos[0])/size[0]), b=(unsigned int)floor((point[1]-pos[1])/size[1]);
 	unsigned char rindex=(a^b);
 	unsigned char gindex=(a^(~b))*4;
 	unsigned char bindex=~(a^b)*2;
