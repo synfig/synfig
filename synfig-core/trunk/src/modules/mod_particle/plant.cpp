@@ -356,7 +356,7 @@ Plant::get_param_vocab()const
 	);
 
 	ret.push_back(ParamDesc("size_as_alpha")
-		.set_local_name(_("SizeAsAlpha"))
+		.set_local_name(_("Size As Alpha"))
 	);
 
 	ret.push_back(ParamDesc("step")
