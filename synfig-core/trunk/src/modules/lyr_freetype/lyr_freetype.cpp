@@ -537,7 +537,7 @@ Layer_Freetype::get_param_vocab(void)const
 		.add_enum_value(900, "heavy" ,_("Heavy"))
 	);
 	ret.push_back(ParamDesc("compress")
-		.set_local_name(_("Hozontal Spacing"))
+		.set_local_name(_("Horizontal Spacing"))
 		.set_description(_("Describes how close glyphs are horizontally"))
 	);
 
