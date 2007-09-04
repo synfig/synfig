@@ -53,7 +53,7 @@ using namespace etl;
 
 SYNFIG_LAYER_INIT(CheckerBoard);
 SYNFIG_LAYER_SET_NAME(CheckerBoard,"checker_board");
-SYNFIG_LAYER_SET_LOCAL_NAME(CheckerBoard,_("CheckerBoard"));
+SYNFIG_LAYER_SET_LOCAL_NAME(CheckerBoard,_("Checkerboard"));
 SYNFIG_LAYER_SET_CATEGORY(CheckerBoard,_("Geometry"));
 SYNFIG_LAYER_SET_VERSION(CheckerBoard,"0.1");
 SYNFIG_LAYER_SET_CVS_ID(CheckerBoard,"$Id$");
