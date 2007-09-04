@@ -125,7 +125,7 @@ RadialGradient::get_param_vocab()const
 	);
 
 	ret.push_back(ParamDesc("zigzag")
-		.set_local_name(_("Zig-Zag"))
+		.set_local_name(_("ZigZag"))
 	);
 
 	return ret;
