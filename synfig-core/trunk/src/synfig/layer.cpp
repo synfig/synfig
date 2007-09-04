@@ -98,11 +98,10 @@ Layer::subsys_init()
 #define INCLUDE_LAYER(class)  	synfig::Layer::book()[synfig::String(class::name__)]=BookEntry(class::create,class::name__,class::local_name__,class::category__,class::cvs_id__,class::version__)
 #define LAYER_ALIAS(class,alias)  	synfig::Layer::book()[synfig::String(alias)]=synfig::Layer::BookEntry(class::create,alias,alias,_("Do Not Use"),class::cvs_id__,class::version__);
 
-	INCLUDE_LAYER(Layer_SolidColor);
-	INCLUDE_LAYER(Layer_PasteCanvas);
-	INCLUDE_LAYER(Layer_Polygon);
-	LAYER_ALIAS(Layer_Polygon,"Polygon");
-	INCLUDE_LAYER(Layer_MotionBlur);
+	INCLUDE_LAYER(Layer_SolidColor);	LAYER_ALIAS(Layer_SolidColor,"SolidColor");
+	INCLUDE_LAYER(Layer_PasteCanvas);	LAYER_ALIAS(Layer_PasteCanvas,"PasteCanvas");
+	INCLUDE_LAYER(Layer_Polygon);		LAYER_ALIAS(Layer_Polygon,"Polygon");
+	INCLUDE_LAYER(Layer_MotionBlur);	LAYER_ALIAS(Layer_MotionBlur,"MotionBlur");
 
 #undef INCLUDE_LAYER
 

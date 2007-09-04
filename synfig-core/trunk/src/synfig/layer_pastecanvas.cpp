@@ -69,7 +69,7 @@ public:
 /* === G L O B A L S ======================================================= */
 
 SYNFIG_LAYER_INIT(Layer_PasteCanvas);
-SYNFIG_LAYER_SET_NAME(Layer_PasteCanvas,"PasteCanvas");
+SYNFIG_LAYER_SET_NAME(Layer_PasteCanvas,"paste_canvas");
 SYNFIG_LAYER_SET_LOCAL_NAME(Layer_PasteCanvas,_("Paste Canvas"));
 SYNFIG_LAYER_SET_CATEGORY(Layer_PasteCanvas,_("Other"));
 SYNFIG_LAYER_SET_VERSION(Layer_PasteCanvas,"0.1");
