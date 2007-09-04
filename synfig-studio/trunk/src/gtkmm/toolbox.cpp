@@ -557,12 +557,20 @@ Toolbox::on_recent_files_changed()
 		recent_files_menu->remove(**recent_files_menu->get_children().begin());
 
 	list<string>::const_iterator iter;
-	// Check to see if the file is already on the list.
-	// If it is, then remove it from the list
 	for(iter=App::get_recent_files().begin();iter!=App::get_recent_files().end();iter++)
-		recent_files_menu->items().push_back(Gtk::Menu_Helpers::MenuElem(basename(*iter),
+	{
+		string raw = basename(*iter), quoted;
+		size_t pos = 0, last_pos = 0;
+
+		// replace _ in filenames by __ or it won't show up in the menu
+		for (pos = last_pos = 0; (pos = raw.find('_', pos)) != string::npos; last_pos = pos)
+			quoted += raw.substr(last_pos, ++pos - last_pos) + '_';
+		quoted += raw.substr(last_pos);
+
+		recent_files_menu->items().push_back(Gtk::Menu_Helpers::MenuElem(quoted,
 			sigc::hide_return(sigc::bind(sigc::ptr_fun(&App::open),*iter))
 		));
+	}
 
 	// HACK
 	show();
