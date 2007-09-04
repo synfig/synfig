@@ -487,9 +487,9 @@ CanvasInterface::import(const synfig::String &filename, bool copy)
 		if(!outside_canvas)
 			throw String(_("Unable to open this composition"));
 
-		Layer::Handle layer(add_layer_to("PasteCanvas",get_canvas()));
+		Layer::Handle layer(add_layer_to("paste_canvas",get_canvas()));
 		if(!layer)
-			throw String(_("Unable to create \"PasteCanvas\" layer"));
+			throw String(_("Unable to create \"Paste Canvas\" layer"));
 		if(!layer->set_param("canvas",ValueBase(outside_canvas)))
 			throw int();
 

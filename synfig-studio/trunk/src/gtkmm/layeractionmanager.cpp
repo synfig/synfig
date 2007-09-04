@@ -280,7 +280,7 @@ LayerActionManager::refresh()
 				}
 			}
 
-			if(!multiple_selected && layer->get_name()=="PasteCanvas")
+			if(!multiple_selected && layer->get_name()=="paste_canvas")
 			{
 				action_group_->add(Gtk::Action::create(
 					"select-all-child-layers",

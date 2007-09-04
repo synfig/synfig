@@ -1718,7 +1718,7 @@ CanvasView::popup_layer_menu(synfig::Layer::Handle layer)
 
 	//parammenu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("New Layer"),*newlayers));
 
-	if(layer->get_name()=="PasteCanvas")
+	if(layer->get_name()=="paste_canvas")
 	{
 		menu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Select All Children"),
 			sigc::bind(
@@ -2146,7 +2146,7 @@ CanvasView::on_layer_user_click(int button, Gtk::TreeRow row, LayerTree::ColumnI
 				build_new_layer_menu(*newlayers);
 
 				parammenu.items().push_back(Gtk::Menu_Helpers::MenuElem("New Layer",*newlayers));
-				if(!multiple_selected && layer->get_name()=="PasteCanvas")
+				if(!multiple_selected && layer->get_name()=="paste_canvas")
 				{
 					parammenu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("Select All Children"),
 						sigc::bind(
@@ -2626,7 +2626,7 @@ CanvasView::rebuild_ducks_layer_(synfig::TransformStack& transform_stack, Canvas
 
 		// If this is a paste canvas layer, then we need to
 		// descend into it
-		if(layer_name=="PasteCanvas")
+		if(layer_name=="paste_canvas")
 		{
 			Vector scale;
 			scale[0]=scale[1]=exp(layer->get_param("zoom").get(Real()));

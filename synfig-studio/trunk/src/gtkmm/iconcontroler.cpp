@@ -150,7 +150,7 @@ IconControler::IconControler(const synfig::String& basepath)
 	INIT_STOCK_ICON(saveall,"saveall_icon."IMAGE_EXT,_("Save All"));
 	INIT_STOCK_ICON(bool,"bool_icon."IMAGE_EXT,_("Bool"));
 	INIT_STOCK_ICON(layer,"layer_icon."IMAGE_EXT,_("Layer"));
-	INIT_STOCK_ICON(layer_pastecanvas,"pastecanvas_icon."IMAGE_EXT,_("PasteCanvas"));
+	INIT_STOCK_ICON(layer_pastecanvas,"pastecanvas_icon."IMAGE_EXT,_("Paste Canvas"));
 	INIT_STOCK_ICON(group,"group_icon."IMAGE_EXT,_("Group"));
 	INIT_STOCK_ICON(grid_enable,"grid_enable_icon."IMAGE_EXT,_("Show Grid"));
 	INIT_STOCK_ICON(grid_disable,"grid_disable_icon."IMAGE_EXT,_("Hide Grid"));
@@ -355,7 +355,7 @@ studio::get_action_stock_id(const synfigapp::Action::BookEntry& action)
 Gtk::StockID
 studio::layer_icon(const synfig::String &layer)
 {
-	if(layer=="PasteCanvas" || layer=="pastecanvas")
+	if(layer=="PasteCanvas" || layer=="pastecanvas" || layer=="paste_canvas")
 		return Gtk::StockID("synfig-layer_pastecanvas");
 	else if(layer=="rotate")
 		return Gtk::StockID("synfig-rotate");
