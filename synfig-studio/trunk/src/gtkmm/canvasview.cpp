@@ -1305,7 +1305,7 @@ CanvasView::init_menus()
 		action=Gtk::Action::create("seek-prev-frame", Gtk::Stock::GO_BACK,_("Prev Frame"),_("Prev Frame"));
 		action_group->add( action, sigc::bind(sigc::mem_fun(*canvas_interface().get(), &synfigapp::CanvasInterface::seek_frame),-1));
 
-		action=Gtk::Action::create("seek-next-second", Gtk::Stock::GO_FORWARD,_("Seek Foward"),_("Seek Foward"));
+		action=Gtk::Action::create("seek-next-second", Gtk::Stock::GO_FORWARD,_("Seek Forward"),_("Seek Forward"));
 		action_group->add(action,sigc::bind(sigc::mem_fun(*canvas_interface().get(), &synfigapp::CanvasInterface::seek_time),Time(1)));
 		action=Gtk::Action::create("seek-prev-second", Gtk::Stock::GO_BACK,_("Seek Backward"),_("Seek Backward"));
 		action_group->add( action, sigc::bind(sigc::mem_fun(*canvas_interface().get(), &synfigapp::CanvasInterface::seek_time),Time(-1)));
