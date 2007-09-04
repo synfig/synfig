@@ -71,7 +71,7 @@ public:
 SYNFIG_LAYER_INIT(Layer_PasteCanvas);
 SYNFIG_LAYER_SET_NAME(Layer_PasteCanvas,"PasteCanvas");
 SYNFIG_LAYER_SET_LOCAL_NAME(Layer_PasteCanvas,_("Paste Canvas"));
-SYNFIG_LAYER_SET_CATEGORY(Layer_PasteCanvas,_("Default"));
+SYNFIG_LAYER_SET_CATEGORY(Layer_PasteCanvas,_("Other"));
 SYNFIG_LAYER_SET_VERSION(Layer_PasteCanvas,"0.1");
 SYNFIG_LAYER_SET_CVS_ID(Layer_PasteCanvas,"$Id$");
 
