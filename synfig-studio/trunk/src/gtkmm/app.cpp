@@ -1239,15 +1239,16 @@ App::App(int *argc, char ***argv):
 
 		state_manager->add_state(&state_zoom);
 
-		// Disabled this tool because it should be
-		// considered deprecated. Use the bline tool instead.
-		if(getenv("SYNFIG_ENABLE_POLYGON")) state_manager->add_state(&state_polygon);
+		// Enabled - it's useful to be able to work with polygons without tangent ducks getting in the way.
+		// I know we can switch tangent ducks off, but why not allow this kind of layer as well?
+		if(!getenv("SYNFIG_DISABLE_POLYGON")) state_manager->add_state(&state_polygon);
 
-		// These tools are disabled by default for now,
-		// because they tend to confuse users.
-		if(getenv("SYNFIG_ENABLE_DRAW"  )) state_manager->add_state(&state_draw);
-		if(getenv("SYNFIG_ENABLE_SKETCH")) state_manager->add_state(&state_sketch);
-		if(getenv("SYNFIG_ENABLE_WIDTH" )) state_manager->add_state(&state_width);
+		// Enabled for now.  Let's see whether they're good enough yet.
+		if(!getenv("SYNFIG_DISABLE_DRAW"   )) state_manager->add_state(&state_draw);
+		if(!getenv("SYNFIG_DISABLE_SKETCH" )) state_manager->add_state(&state_sketch);
+
+		// Disabled by default - it doesn't work properly?
+		if(getenv("SYNFIG_ENABLE_WIDTH"    )) state_manager->add_state(&state_width);
 
 		studio_init_cb.task("Init ModPalette...");
 		module_list_.push_back(new ModPalette()); module_list_.back()->start();
