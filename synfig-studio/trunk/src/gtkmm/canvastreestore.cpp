@@ -75,7 +75,7 @@ CanvasTreeStore::~CanvasTreeStore()
 }
 
 void
-CanvasTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& iter, int column, Glib::ValueBase& value)const
+CanvasTreeStore::get_value_vfunc(const Gtk::TreeModel::iterator& iter, int column, Glib::ValueBase& value)const
 {
 	if(column==model.value.index())
 	{
@@ -325,11 +325,6 @@ CanvasTreeStore::find_next_value_desc(const synfigapp::ValueDesc& value_desc, Gt
 	} while(iter && value_desc!=(*iter)[model.value_desc]);
 	return (bool)iter && value_desc==(*iter)[model.value_desc];
 }
-
-
-
-
-
 
 bool
 CanvasTreeStore::find_first_value_node(const ValueNode::Handle& value_node, Gtk::TreeIter& iter)
