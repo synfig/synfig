@@ -261,8 +261,9 @@ ValueNode_Subtract::link_local_name(int i)const
 			return _("RHS");
 		case 2:
 			return _("Scalar");
+		default:
+			return String();
 	}
-	return String();
 }
 
 String

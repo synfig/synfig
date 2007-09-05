@@ -168,8 +168,9 @@ ValueNode_GradientRotate::link_local_name(int i)const
 			return _("Gradient");
 		case 1:
 			return _("Offset");
+		default:
+			return String();
 	}
-	return String();
 }
 
 String

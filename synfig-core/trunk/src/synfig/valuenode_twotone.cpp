@@ -160,8 +160,9 @@ ValueNode_TwoTone::link_local_name(int i)const
 			return _("Color1");
 		case 1:
 			return _("Color2");
+		default:
+			return String();
 	}
-	return String();
 }
 
 String

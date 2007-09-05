@@ -221,8 +221,9 @@ ValueNode_Stripes::link_local_name(int i)const
 			return _("Stripe Count");
 		case 3:
 			return _("Width");
+		default:
+			return String();
 	}
-	return String();
 }
 
 String

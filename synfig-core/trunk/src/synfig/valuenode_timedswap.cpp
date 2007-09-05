@@ -290,8 +290,9 @@ ValueNode_TimedSwap::link_local_name(int i)const
 		return _("Swap Time");
 	case 3:
 		return _("Swap Duration");
+	default:
+		return 0;
 	}
-	return 0;
 }
 
 String
