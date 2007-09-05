@@ -298,9 +298,8 @@ ValueNode_Composite::link_local_name(int i)const
 				return _("Tangent 2");
 
 		default:
-			break;
+			return etl::strprintf(_("C%d"),i+1);
 	}
-	return etl::strprintf(_("C%d"),i+1);
 }
 
 
