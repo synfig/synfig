@@ -297,7 +297,7 @@ void
 ChildrenTreeStore::on_value_node_changed(etl::handle<ValueNode> value_node)
 {
 
-	if(value_node->get_name()=="constant" || !value_node->is_exported())
+	if(!value_node->is_exported())
 		return;
 	changed_connection.disconnect();
 //	if(!execute_changed_queued())
