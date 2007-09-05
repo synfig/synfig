@@ -101,7 +101,7 @@ ValueNode_SegCalcTangent::get_name()const
 String
 ValueNode_SegCalcTangent::get_local_name()const
 {
-	return _("Seg Calc Tangent");
+	return _("Segment Tangent");
 }
 
 bool

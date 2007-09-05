@@ -95,7 +95,7 @@ ValueNode_SegCalcVertex::get_name()const
 String
 ValueNode_SegCalcVertex::get_local_name()const
 {
-	return _("Seg Calc Vertex");
+	return _("Segment Vertex");
 }
 
 bool

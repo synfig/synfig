@@ -96,8 +96,8 @@ ValueNode::subsys_init()
 	ADD_VALUENODE(ValueNode_RadialComposite,"radial_composite",	_("Radial Composite")	);
 	ADD_VALUENODE(ValueNode_Reference,		"reference",		_("Reference")			);
 	ADD_VALUENODE(ValueNode_Scale,			"scale",			_("Scale")				);
-	ADD_VALUENODE(ValueNode_SegCalcTangent,	"segcalctangent",	_("Seg Calc Tangent")	);
-	ADD_VALUENODE(ValueNode_SegCalcVertex,	"segcalcvertex",	_("Seg Calc Vertex")	);
+	ADD_VALUENODE(ValueNode_SegCalcTangent,	"segcalctangent",	_("Segment Tangent")	);
+	ADD_VALUENODE(ValueNode_SegCalcVertex,	"segcalcvertex",	_("Segment Vertex")		);
 	ADD_VALUENODE(ValueNode_Stripes,		"stripes",			_("Stripes")			);
 	ADD_VALUENODE(ValueNode_Subtract,		"subtract",			_("Subtract")			);
 	//ADD_VALUENODE(ValueNode_TimedSwap,	"timed_swap",		_("Timed Swap")			);
