@@ -265,7 +265,7 @@ ValueNode_RadialComposite::get_name()const
 String
 ValueNode_RadialComposite::get_local_name()const
 {
-	return _("RadialComposite");
+	return _("Radial Composite");
 }
 
 bool

@@ -88,26 +88,28 @@ ValueNode::subsys_init()
 {
 	book_=new LinkableValueNode::Book();
 
-#define ADD_VALUENODE(c,n) (*book_)[n].factory=reinterpret_cast<LinkableValueNode::Factory>(&c::create); (*book_)[n].check_type=&c::check_type;(*book_)[n].local_name=n
-#define ADD_VALUENODE2(c,n) (*book_)[n].factory=reinterpret_cast<LinkableValueNode::Factory>(&c::create_from); (*book_)[n].check_type=&c::check_type;(*book_)[n].local_name=n
+#define ADD_VALUENODE(c,n,l)  (*book_)[n].factory=reinterpret_cast<LinkableValueNode::Factory>(&c::create);      (*book_)[n].check_type=&c::check_type;(*book_)[n].local_name=l
+#define ADD_VALUENODE2(c,n,l) (*book_)[n].factory=reinterpret_cast<LinkableValueNode::Factory>(&c::create_from); (*book_)[n].check_type=&c::check_type;(*book_)[n].local_name=l
 
-	ADD_VALUENODE(ValueNode_Linear,"linear");
-	ADD_VALUENODE(ValueNode_Composite,"composite");
-	ADD_VALUENODE(ValueNode_RadialComposite,"radial_composite");
-	ADD_VALUENODE(ValueNode_Reference,"reference");
-	ADD_VALUENODE(ValueNode_Scale,"scale");
-	ADD_VALUENODE(ValueNode_SegCalcTangent,"segcalctangent");
-	ADD_VALUENODE(ValueNode_SegCalcVertex,"segcalcvertex");
-	ADD_VALUENODE(ValueNode_Stripes,"stripes");
-	ADD_VALUENODE(ValueNode_Subtract,"subtract");
-	//ADD_VALUENODE(ValueNode_TimedSwap,"timed_swap");
-	ADD_VALUENODE(ValueNode_TwoTone,"twotone");
-	ADD_VALUENODE(ValueNode_BLine,"bline");
-	ADD_VALUENODE2(ValueNode_DynamicList,"dynamic_list");
-	ADD_VALUENODE(ValueNode_GradientRotate,"gradient_rotate");
-	ADD_VALUENODE(ValueNode_Sine,"sine");
+	ADD_VALUENODE(ValueNode_Linear,			"linear",			_("Linear")				);x
+	ADD_VALUENODE(ValueNode_Composite,		"composite",		_("Composite")			);x
+	ADD_VALUENODE(ValueNode_RadialComposite,"radial_composite",	_("Radial Composite")	);x
+	ADD_VALUENODE(ValueNode_Reference,		"reference",		_("Reference")			);x
+	ADD_VALUENODE(ValueNode_Scale,			"scale",			_("Scale")				);x
+	ADD_VALUENODE(ValueNode_SegCalcTangent,	"segcalctangent",	_("Seg Calc Tangent")	);x
+	ADD_VALUENODE(ValueNode_SegCalcVertex,	"segcalcvertex",	_("Seg Calc Vertex")	);x
+	ADD_VALUENODE(ValueNode_Stripes,		"stripes",			_("Stripes")			);x
+	ADD_VALUENODE(ValueNode_Subtract,		"subtract",			_("Subtract")			);x
+	//ADD_VALUENODE(ValueNode_TimedSwap,	"timed_swap",		_("Timed Swap")			);x
+	ADD_VALUENODE(ValueNode_TwoTone,		"twotone",			_("Two-Tone")			);x
+	ADD_VALUENODE(ValueNode_BLine,			"bline",			_("BLine")				);x
+	ADD_VALUENODE2(ValueNode_DynamicList,	"dynamic_list",		_("Dynamic List")		);x
+	ADD_VALUENODE(ValueNode_GradientRotate,	"gradient_rotate",	_("Gradient Rotate")	);x
+	ADD_VALUENODE(ValueNode_Sine,			"sine",				_("Sine")				);x
 
 #undef ADD_VALUENODE
+#undef ADD_VALUENODE2
+
 	return true;
 }
 
