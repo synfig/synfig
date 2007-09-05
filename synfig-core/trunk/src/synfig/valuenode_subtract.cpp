@@ -278,8 +278,9 @@ ValueNode_Subtract::link_name(int i)const
 			return "rhs";
 		case 2:
 			return "scalar";
+		default:
+			return String();
 	}
-	return String();
 }
 
 int

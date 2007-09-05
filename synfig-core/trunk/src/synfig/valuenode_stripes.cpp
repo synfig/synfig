@@ -240,8 +240,9 @@ ValueNode_Stripes::link_name(int i)const
 			return "stripes";
 		case 3:
 			return "width";
+		default:
+			return String();
 	}
-	return String();
 }
 
 int

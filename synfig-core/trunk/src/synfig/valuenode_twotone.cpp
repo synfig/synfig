@@ -175,8 +175,9 @@ ValueNode_TwoTone::link_name(int i)const
 			return "color1";
 		case 1:
 			return "color2";
+		default:
+			return String();
 	}
-	return String();
 }
 
 int

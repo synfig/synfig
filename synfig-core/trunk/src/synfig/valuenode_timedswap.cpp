@@ -309,8 +309,9 @@ ValueNode_TimedSwap::link_name(int i)const
 		return "time";
 	case 3:
 		return "length";
+	default:
+		return String();
 	}
-	return 0;
 }
 
 int
