@@ -210,9 +210,8 @@ ValueNode_RadialComposite::link_local_name(int i)const
 			break;
 
 		default:
-			break;
+			return etl::strprintf(_("C%d"),i+1);
 	}
-	return etl::strprintf(_("C%d"),i+1);
 }
 
 
