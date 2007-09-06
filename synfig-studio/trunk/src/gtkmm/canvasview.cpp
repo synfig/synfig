@@ -44,59 +44,23 @@
 #include <gtk/gtktreestore.h>
 #include <gtk/gtkversion.h>
 
-#include <synfig/valuenode_reference.h>
-#include <synfig/valuenode_subtract.h>
-#include <synfig/valuenode_linear.h>
-#include <synfig/valuenode_timedswap.h>
-#include <synfig/valuenode_scale.h>
 #include <synfig/valuenode_dynamiclist.h>
-#include <synfig/valuenode_twotone.h>
-#include <synfig/valuenode_stripes.h>
 #include <synfig/layer.h>
 
 #include <synfigapp/uimanager.h>
 #include <synfigapp/canvasinterface.h>
 #include <synfigapp/selectionmanager.h>
-//#include <synfigapp/action_setwaypoint.h>
-//#include <synfigapp/action_deletewaypoint.h>
 
 #include <sigc++/retype_return.h>
 #include <sigc++/retype.h>
-//#include <sigc++/hide.h>
 
 #include "canvasview.h"
 #include "instance.h"
 #include "app.h"
-#include "cellrenderer_value.h"
 #include "cellrenderer_timetrack.h"
-#include "workarea.h"
-#include "dialog_color.h"
 #include "eventkey.h"
 
-#include "state_polygon.h"
-#include "state_bline.h"
-#include "state_normal.h"
-#include "state_eyedrop.h"
-#include "state_draw.h"
-
-#include "ducktransform_scale.h"
-#include "ducktransform_translate.h"
-#include "ducktransform_rotate.h"
-
-#include "event_mouse.h"
-#include "event_layerclick.h"
-
-#include "toolbox.h"
-
-#include "dialog_preview.h"
-#include "dialog_soundselect.h"
-
-#include "preview.h"
-#include "audiocontainer.h"
 #include "widget_timeslider.h"
-
-#include <synfigapp/main.h>
-#include <synfigapp/inputdevice.h>
 
 #endif
 
