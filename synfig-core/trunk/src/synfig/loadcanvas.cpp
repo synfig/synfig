@@ -1784,9 +1784,6 @@ CanvasParser::parse_value_node(xmlpp::Element *element,Canvas::Handle canvas)
 	if(element->get_name()=="bline") // This is not a typo. The dynamic list parser will parse a bline.
 		value_node=parse_dynamic_list(element,canvas);
 	else
-//	if(element->get_name()=="timed_swap")
-//		value_node=parse_timedswap(element,canvas);
-//	else
 	if(LinkableValueNode::book().count(element->get_name()))
 		value_node=parse_linkable_value_node(element,canvas);
 	else
