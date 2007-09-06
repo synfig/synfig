@@ -35,11 +35,7 @@
 #include "valuenode_subtract.h"
 #include "valuenode_animated.h"
 #include "valuenode_composite.h"
-#include "valuenode_const.h"
-#include "valuenode_linear.h"
 #include "valuenode_dynamiclist.h"
-#include "valuenode_reference.h"
-#include "valuenode_timedswap.h"
 #include "keyframe.h"
 #include "guid.h"
 
