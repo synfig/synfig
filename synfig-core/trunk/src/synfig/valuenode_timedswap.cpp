@@ -56,14 +56,6 @@ ValueNode_TimedSwap::ValueNode_TimedSwap(const ValueBase &value):
 {
 	switch(get_type())
 	{
-	case ValueBase::TYPE_REAL:
-		set_link("before",ValueNode_Const::create(value.get(Real())));
-		set_link("after",ValueNode_Const::create(value.get(Real())));
-		break;
-	case ValueBase::TYPE_VECTOR:
-		set_link("before",ValueNode_Const::create(value.get(Vector())));
-		set_link("after",ValueNode_Const::create(value.get(Vector())));
-		break;
 	case ValueBase::TYPE_ANGLE:
 		set_link("before",ValueNode_Const::create(value.get(Angle())));
 		set_link("after",ValueNode_Const::create(value.get(Angle())));
@@ -76,9 +68,17 @@ ValueNode_TimedSwap::ValueNode_TimedSwap(const ValueBase &value):
 		set_link("before",ValueNode_Const::create(value.get(int())));
 		set_link("after",ValueNode_Const::create(value.get(int())));
 		break;
+	case ValueBase::TYPE_REAL:
+		set_link("before",ValueNode_Const::create(value.get(Real())));
+		set_link("after",ValueNode_Const::create(value.get(Real())));
+		break;
 	case ValueBase::TYPE_TIME:
 		set_link("before",ValueNode_Const::create(value.get(Time())));
 		set_link("after",ValueNode_Const::create(value.get(Time())));
+		break;
+	case ValueBase::TYPE_VECTOR:
+		set_link("before",ValueNode_Const::create(value.get(Vector())));
+		set_link("after",ValueNode_Const::create(value.get(Vector())));
 		break;
 	default:
 		throw Exception::BadType(ValueBase::type_name(get_type()));
@@ -202,18 +202,6 @@ synfig::ValueNode_TimedSwap::operator()(Time t)const
 
 		switch(get_type())
 		{
-		case ValueBase::TYPE_REAL:
-			{
-				Real a=(*after)(t).get(Real());
-				Real b=(*before)(t).get(Real());
-				return (b-a)*amount+a;
-			}
-		case ValueBase::TYPE_VECTOR:
-			{
-				Vector a=(*after)(t).get(Vector());
-				Vector b=(*before)(t).get(Vector());
-				return (b-a)*amount+a;
-			}
 		case ValueBase::TYPE_ANGLE:
 			{
 				Angle a=(*after)(t).get(Angle());
@@ -233,10 +221,22 @@ synfig::ValueNode_TimedSwap::operator()(Time t)const
 				float b=(float)(*before)(t).get(int());
 				return static_cast<int>((b-a)*amount+a+0.5f);
 			}
+		case ValueBase::TYPE_REAL:
+			{
+				Real a=(*after)(t).get(Real());
+				Real b=(*before)(t).get(Real());
+				return (b-a)*amount+a;
+			}
 		case ValueBase::TYPE_TIME:
 			{
 				Time a=(*after)(t).get(Time());
 				Time b=(*before)(t).get(Time());
+				return (b-a)*amount+a;
+			}
+		case ValueBase::TYPE_VECTOR:
+			{
+				Vector a=(*after)(t).get(Vector());
+				Vector b=(*before)(t).get(Vector());
 				return (b-a)*amount+a;
 			}
 		default:
@@ -342,10 +342,10 @@ bool
 ValueNode_TimedSwap::check_type(ValueBase::Type type)
 {
 	return
-		type==ValueBase::TYPE_REAL ||
-		type==ValueBase::TYPE_VECTOR ||
 		type==ValueBase::TYPE_ANGLE ||
 		type==ValueBase::TYPE_COLOR ||
 		type==ValueBase::TYPE_INTEGER ||
-		type==ValueBase::TYPE_TIME;
+		type==ValueBase::TYPE_REAL ||
+		type==ValueBase::TYPE_TIME ||
+		type==ValueBase::TYPE_VECTOR;
 }

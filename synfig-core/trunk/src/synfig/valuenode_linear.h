@@ -40,7 +40,7 @@ class ValueNode_Linear : public LinkableValueNode
 	ValueNode::RHandle m_;
 	ValueNode::RHandle b_;
 
-	ValueNode_Linear(const ValueBase::Type &x);
+	ValueNode_Linear(const ValueBase &value);
 
 public:
 

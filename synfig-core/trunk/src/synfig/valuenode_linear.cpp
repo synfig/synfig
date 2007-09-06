@@ -32,6 +32,7 @@
 #include "valuenode_linear.h"
 #include "valuenode_const.h"
 #include "general.h"
+#include "color.h"
 
 #endif
 
@@ -49,29 +50,37 @@ using namespace synfig;
 
 /* === M E T H O D S ======================================================= */
 
-ValueNode_Linear::ValueNode_Linear(const ValueBase::Type &x):
-	LinkableValueNode(x)
+ValueNode_Linear::ValueNode_Linear(const ValueBase &value):
+	LinkableValueNode(value.get_type())
 {
-	switch(x)
+	switch(get_type())
 	{
+	case ValueBase::TYPE_ANGLE:
+		set_link("slope",ValueNode_Const::create(Angle::deg(0)));
+		set_link("offset",ValueNode_Const::create(value.get(Angle())));
+		break;
+	case ValueBase::TYPE_COLOR:
+		set_link("slope",ValueNode_Const::create(Color(0,0,0,0)));
+		set_link("offset",ValueNode_Const::create(value.get(Color())));
+		break;
+	case ValueBase::TYPE_INTEGER:
+		set_link("slope",ValueNode_Const::create(int(0)));
+		set_link("offset",ValueNode_Const::create(value.get(int())));
+		break;
 	case ValueBase::TYPE_REAL:
-		set_link("slope",ValueNode_Const::create(Real(1)));
-		set_link("offset",ValueNode_Const::create(Real(0)));
+		set_link("slope",ValueNode_Const::create(Real(0)));
+		set_link("offset",ValueNode_Const::create(value.get(Real())));
 		break;
 	case ValueBase::TYPE_TIME:
-		set_link("slope",ValueNode_Const::create(Time(1)));
-		set_link("offset",ValueNode_Const::create(Time(0)));
+		set_link("slope",ValueNode_Const::create(Time(0)));
+		set_link("offset",ValueNode_Const::create(value.get(Time())));
 		break;
 	case ValueBase::TYPE_VECTOR:
-		set_link("slope",ValueNode_Const::create(Vector(1.0,1.0)));
-		set_link("offset",ValueNode_Const::create(Vector(0.0,0.0)));
-		break;
-	case ValueBase::TYPE_ANGLE:
-		set_link("slope",ValueNode_Const::create(Angle::deg(90)));
-		set_link("offset",ValueNode_Const::create(Angle::deg(0)));
+		set_link("slope",ValueNode_Const::create(Vector(0,0)));
+		set_link("offset",ValueNode_Const::create(value.get(Vector())));
 		break;
 	default:
-		throw Exception::BadType(ValueBase::type_name(x));
+		throw Exception::BadType(ValueBase::type_name(get_type()));
 	}
 
 	DCAST_HACK_ENABLE();
@@ -80,7 +89,7 @@ ValueNode_Linear::ValueNode_Linear(const ValueBase::Type &x):
 ValueNode_Linear*
 ValueNode_Linear::create(const ValueBase &x)
 {
-	return new ValueNode_Linear(x.get_type());
+	return new ValueNode_Linear(x);
 }
 
 ValueNode_Linear::~ValueNode_Linear()
@@ -93,14 +102,18 @@ ValueNode_Linear::operator()(Time t)const
 {
 	switch(get_type())
 	{
-	case ValueBase::TYPE_TIME:
-		return (*m_)(t).get(Time())*t+(*b_)(t).get(Time());
+	case ValueBase::TYPE_ANGLE:
+		return (*m_)(t).get( Angle())*t+(*b_)(t).get( Angle());
+	case ValueBase::TYPE_COLOR:
+		return (*m_)(t).get( Color())*t+(*b_)(t).get( Color());
+	case ValueBase::TYPE_INTEGER:
+		return static_cast<int>((*m_)(t).get(int())*t+(*b_)(t).get(int()) + 0.5f);
 	case ValueBase::TYPE_REAL:
-		return (*m_)(t).get(Real())*t+(*b_)(t).get(Real());
+		return (*m_)(t).get(  Real())*t+(*b_)(t).get(  Real());
+	case ValueBase::TYPE_TIME:
+		return (*m_)(t).get(  Time())*t+(*b_)(t).get(  Time());
 	case ValueBase::TYPE_VECTOR:
 		return (*m_)(t).get(Vector())*t+(*b_)(t).get(Vector());
-	case ValueBase::TYPE_ANGLE:
-		return (*m_)(t).get(Angle())*t+(*b_)(t).get(Angle());
 	default:
 		assert(0);
 		break;
@@ -124,10 +137,13 @@ ValueNode_Linear::get_local_name()const
 bool
 ValueNode_Linear::check_type(ValueBase::Type type)
 {
-	return type==ValueBase::TYPE_REAL
-		|| type==ValueBase::TYPE_VECTOR
-		|| type==ValueBase::TYPE_TIME
-		|| type==ValueBase::TYPE_ANGLE;
+	return
+		type==ValueBase::TYPE_ANGLE		||
+		type==ValueBase::TYPE_COLOR		||
+		type==ValueBase::TYPE_INTEGER	||
+		type==ValueBase::TYPE_REAL		||
+		type==ValueBase::TYPE_TIME		||
+		type==ValueBase::TYPE_VECTOR	;
 }
 
 bool
@@ -153,11 +169,8 @@ ValueNode::LooseHandle
 ValueNode_Linear::get_link_vfunc(int i)const
 {
 	assert(i==0 || i==1);
-	if(i==0)
-		return m_;
-	if(i==1)
-		return b_;
-
+	if(i==0) return m_;
+	if(i==1) return b_;
 	return 0;
 }
 
@@ -171,10 +184,8 @@ String
 ValueNode_Linear::link_name(int i)const
 {
 	assert(i==0 || i==1);
-	if(i==0)
-		return "slope";
-	if(i==1)
-		return "offset";
+	if(i==0) return "slope";
+	if(i==1) return "offset";
 	return String();
 }
 
@@ -185,10 +196,13 @@ ValueNode_Linear::link_local_name(int i)const
 	if(i==0)
 		switch(get_type())
 		{
+		case ValueBase::TYPE_ANGLE:
+		case ValueBase::TYPE_COLOR:
+		case ValueBase::TYPE_INTEGER:
 		case ValueBase::TYPE_REAL:
 		case ValueBase::TYPE_TIME:
-		case ValueBase::TYPE_ANGLE:
 			return _("Rate");
+		case ValueBase::TYPE_VECTOR:
 		default:
 			return _("Slope");
 		}
@@ -200,10 +214,8 @@ ValueNode_Linear::link_local_name(int i)const
 int
 ValueNode_Linear::get_link_index_from_name(const String &name)const
 {
-	if(name=="slope")
-		return 0;
-	if(name=="offset")
-		return 1;
+	if(name=="slope")  return 0;
+	if(name=="offset") return 1;
 
 	throw Exception::BadLinkName(name);
 }

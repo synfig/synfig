@@ -60,11 +60,9 @@ public:
 	bool set_after(const ValueNode::Handle &a);
 	ValueNode::Handle get_after()const;
 
-	void set_swap_time_real(Time x);
 	bool set_swap_time(const ValueNode::Handle &x);
 	ValueNode::Handle get_swap_time()const;
 
-	void set_swap_length_real(Time x);
 	bool set_swap_length(const ValueNode::Handle &x);
 	ValueNode::Handle get_swap_length()const;
 
