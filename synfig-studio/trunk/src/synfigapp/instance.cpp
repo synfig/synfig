@@ -60,7 +60,6 @@ bool
 synfigapp::is_editable(synfig::ValueNode::Handle value_node)
 {
 	if(ValueNode_Const::Handle::cast_dynamic(value_node)
-		|| ValueNode_TimedSwap::Handle::cast_dynamic(value_node)
 		|| ValueNode_Animated::Handle::cast_dynamic(value_node)
 		|| ValueNode_Composite::Handle::cast_dynamic(value_node)
 		|| ValueNode_RadialComposite::Handle::cast_dynamic(value_node)
