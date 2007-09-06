@@ -204,6 +204,11 @@ public:
 	{
 		const Type testtype(get_type(x));
 
+		return same_type_as(testtype);
+	}
+
+	bool same_type_as(const Type testtype)const
+	{
 		if(testtype==type)return true;
 		if(	(type==TYPE_REAL || type==TYPE_TIME) &&
 			(testtype==TYPE_REAL || testtype==TYPE_TIME) )
