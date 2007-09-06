@@ -1042,31 +1042,6 @@ CanvasParser::parse_animated(xmlpp::Element *element,Canvas::Handle canvas)
 	return value_node;
 }
 
-// This function is a phase-out hack for the timed swap value node
-etl::handle<ValueNode_Animated>
-CanvasParser::parse_timedswap(xmlpp::Element *node,Canvas::Handle canvas)
-{
-	ValueNode_TimedSwap::Handle timed_swap(parse_linkable_value_node(node,canvas));
-
-	assert(timed_swap);
-
-	ValueNode_Animated::Handle animated(ValueNode_Animated::create(timed_swap->get_type()));
-
-	animated->set_root_canvas(canvas->get_root());
-
-	assert(animated);
-
-	Time swap_time, swap_length;
-	(*timed_swap->get_swap_time())(0).put(&swap_time);
-	(*timed_swap->get_swap_length())(0).put(&swap_length);
-
-	animated->new_waypoint(swap_time-swap_length,timed_swap->get_before());
-	animated->new_waypoint(swap_time,timed_swap->get_after());
-
-	return animated;
-}
-
-
 handle<ValueNode_Subtract>
 CanvasParser::parse_subtract(xmlpp::Element *element,Canvas::Handle canvas)
 {
