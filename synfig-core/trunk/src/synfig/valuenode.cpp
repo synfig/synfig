@@ -88,8 +88,15 @@ ValueNode::subsys_init()
 {
 	book_=new LinkableValueNode::Book();
 
-#define ADD_VALUENODE(c,n,l)  (*book_)[n].factory=reinterpret_cast<LinkableValueNode::Factory>(&c::create);      (*book_)[n].check_type=&c::check_type;(*book_)[n].local_name=l
-#define ADD_VALUENODE2(c,n,l) (*book_)[n].factory=reinterpret_cast<LinkableValueNode::Factory>(&c::create_from); (*book_)[n].check_type=&c::check_type;(*book_)[n].local_name=l
+#define ADD_VALUENODE(class,name,local)															\
+	(*book_)[name].factory=reinterpret_cast<LinkableValueNode::Factory>(&class::create);		\
+	(*book_)[name].check_type=&class::check_type;												\
+	(*book_)[name].local_name=local
+
+#define ADD_VALUENODE2(class,name,local)														\
+	(*book_)[name].factory=reinterpret_cast<LinkableValueNode::Factory>(&class::create_from);	\
+	(*book_)[name].check_type=&class::check_type;												\
+	(*book_)[name].local_name=local
 
 	ADD_VALUENODE(ValueNode_Linear,			"linear",			_("Linear")				);
 	ADD_VALUENODE(ValueNode_Composite,		"composite",		_("Composite")			);
