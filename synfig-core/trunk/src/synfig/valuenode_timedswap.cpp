@@ -51,13 +51,41 @@ using namespace synfig;
 
 /* === M E T H O D S ======================================================= */
 
-ValueNode_TimedSwap::ValueNode_TimedSwap(ValueBase::Type type):
-	LinkableValueNode(type)
+ValueNode_TimedSwap::ValueNode_TimedSwap(const ValueBase &value):
+	LinkableValueNode(value.get_type())
 {
-	set_before(ValueNode_Const::create(type));
-	set_after(ValueNode_Const::create(type));
-	set_swap_time_real(1.0);
-	set_swap_length_real(1.0);
+	switch(get_type())
+	{
+	case ValueBase::TYPE_REAL:
+		set_link("before",ValueNode_Const::create(value.get(Real())));
+		set_link("after",ValueNode_Const::create(value.get(Real())));
+		break;
+	case ValueBase::TYPE_VECTOR:
+		set_link("before",ValueNode_Const::create(value.get(Vector())));
+		set_link("after",ValueNode_Const::create(value.get(Vector())));
+		break;
+	case ValueBase::TYPE_ANGLE:
+		set_link("before",ValueNode_Const::create(value.get(Angle())));
+		set_link("after",ValueNode_Const::create(value.get(Angle())));
+		break;
+	case ValueBase::TYPE_COLOR:
+		set_link("before",ValueNode_Const::create(value.get(Color())));
+		set_link("after",ValueNode_Const::create(value.get(Color())));
+		break;
+	case ValueBase::TYPE_INTEGER:
+		set_link("before",ValueNode_Const::create(value.get(int())));
+		set_link("after",ValueNode_Const::create(value.get(int())));
+		break;
+	case ValueBase::TYPE_TIME:
+		set_link("before",ValueNode_Const::create(value.get(Time())));
+		set_link("after",ValueNode_Const::create(value.get(Time())));
+		break;
+	default:
+		throw Exception::BadType(ValueBase::type_name(get_type()));
+	}
+
+	set_link("time",ValueNode_Const::create(Time(2)));
+	set_link("length",ValueNode_Const::create(Time(1)));
 
 	DCAST_HACK_ENABLE();
 }
@@ -65,7 +93,7 @@ ValueNode_TimedSwap::ValueNode_TimedSwap(ValueBase::Type type):
 ValueNode_TimedSwap*
 ValueNode_TimedSwap::create(const ValueBase& x)
 {
-	return new ValueNode_TimedSwap(x.get_type());
+	return new ValueNode_TimedSwap(x);
 }
 
 
@@ -121,20 +149,13 @@ ValueNode_TimedSwap::get_after()const
 }
 
 
-void
-ValueNode_TimedSwap::set_swap_time_real(Time x)
-{
-	set_swap_time(ValueNode_Const::create(x));
-}
-
 bool
 ValueNode_TimedSwap::set_swap_time(const ValueNode::Handle &x)
 {
-	if(!x
-		|| !ValueBase(ValueBase::TYPE_TIME).same_type_as(x->get_type())
-		&& !PlaceholderValueNode::Handle::cast_dynamic(x)
-	)
+	if(!x || (!ValueBase(x->get_type()).same_type_as(ValueBase::TYPE_TIME) &&
+			  !PlaceholderValueNode::Handle::cast_dynamic(x)))
 		return false;
+
 	swap_time=x;
 	return true;
 }
@@ -145,21 +166,13 @@ ValueNode_TimedSwap::get_swap_time()const
 	return swap_time;
 }
 
-void
-ValueNode_TimedSwap::set_swap_length_real(Time x)
-{
-	set_swap_length(ValueNode_Const::create(x));
-}
-
 bool
 ValueNode_TimedSwap::set_swap_length(const ValueNode::Handle &x)
 {
-	if(!x || (
-		!ValueBase(ValueBase::TYPE_TIME).same_type_as(x->get_type())
-		&& !PlaceholderValueNode::Handle::cast_dynamic(x)
-		)
-	)
+	if(!x || (!ValueBase(x->get_type()).same_type_as(ValueBase::TYPE_TIME) &&
+			  !PlaceholderValueNode::Handle::cast_dynamic(x)))
 		return false;
+
 	swap_length=x;
 	return true;
 }
@@ -220,6 +233,12 @@ synfig::ValueNode_TimedSwap::operator()(Time t)const
 				float b=(float)(*before)(t).get(int());
 				return static_cast<int>((b-a)*amount+a+0.5f);
 			}
+		case ValueBase::TYPE_TIME:
+			{
+				Time a=(*after)(t).get(Time());
+				Time b=(*before)(t).get(Time());
+				return (b-a)*amount+a;
+			}
 		default:
 			break;
 		}
@@ -240,16 +259,12 @@ ValueNode_TimedSwap::set_link_vfunc(int i,ValueNode::Handle x)
 	assert(i>=0 && i<4);
 	switch(i)
 	{
-	case 0:
-		return set_before(x);
-	case 1:
-		return set_after(x);
-	case 2:
-		return set_swap_time(x);
-	case 3:
-		return set_swap_length(x);
+	case 0: return set_before(x);
+	case 1: return set_after(x);
+	case 2: return set_swap_time(x);
+	case 3: return set_swap_length(x);
 	}
-	return 0;
+	return false;
 }
 
 ValueNode::LooseHandle
@@ -258,14 +273,10 @@ ValueNode_TimedSwap::get_link_vfunc(int i)const
 	assert(i>=0 && i<4);
 	switch(i)
 	{
-	case 0:
-		return get_before();
-	case 1:
-		return get_after();
-	case 2:
-		return get_swap_time();
-	case 3:
-		return get_swap_length();
+	case 0: return get_before();
+	case 1: return get_after();
+	case 2: return get_swap_time();
+	case 3: return get_swap_length();
 	}
 	return 0;
 }
@@ -282,16 +293,11 @@ ValueNode_TimedSwap::link_local_name(int i)const
 	assert(i>=0 && i<4);
 	switch(i)
 	{
-	case 0:
-		return _("Before");
-	case 1:
-		return _("After");
-	case 2:
-		return _("Swap Time");
-	case 3:
-		return _("Swap Duration");
-	default:
-		return 0;
+	case 0: return _("Before");
+	case 1: return _("After");
+	case 2: return _("Swap Time");
+	case 3: return _("Swap Duration");
+	default:return String();
 	}
 }
 
@@ -301,30 +307,21 @@ ValueNode_TimedSwap::link_name(int i)const
 	assert(i>=0 && i<4);
 	switch(i)
 	{
-	case 0:
-		return "before";
-	case 1:
-		return "after";
-	case 2:
-		return "time";
-	case 3:
-		return "length";
-	default:
-		return String();
+	case 0: return "before";
+	case 1: return "after";
+	case 2: return "time";
+	case 3: return "length";
+	default:return String();
 	}
 }
 
 int
 ValueNode_TimedSwap::get_link_index_from_name(const String &name)const
 {
-	if(name=="before")
-		return 0;
-	if(name=="after")
-		return 1;
-	if(name=="time")
-		return 2;
-	if(name=="length")
-		return 3;
+	if(name=="before")	return 0;
+	if(name=="after")	return 1;
+	if(name=="time")	return 2;
+	if(name=="length")	return 3;
 
 	throw Exception::BadLinkName(name);
 }
@@ -344,7 +341,11 @@ ValueNode_TimedSwap::get_local_name()const
 bool
 ValueNode_TimedSwap::check_type(ValueBase::Type type)
 {
-	if(!type)
-		return false;
-	return true;
+	return
+		type==ValueBase::TYPE_REAL ||
+		type==ValueBase::TYPE_VECTOR ||
+		type==ValueBase::TYPE_ANGLE ||
+		type==ValueBase::TYPE_COLOR ||
+		type==ValueBase::TYPE_INTEGER ||
+		type==ValueBase::TYPE_TIME;
 }

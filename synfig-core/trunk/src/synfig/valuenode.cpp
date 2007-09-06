@@ -107,7 +107,7 @@ ValueNode::subsys_init()
 	ADD_VALUENODE(ValueNode_SegCalcVertex,	"segcalcvertex",	_("Segment Vertex")		);
 	ADD_VALUENODE(ValueNode_Stripes,		"stripes",			_("Stripes")			);
 	ADD_VALUENODE(ValueNode_Subtract,		"subtract",			_("Subtract")			);
-	//ADD_VALUENODE(ValueNode_TimedSwap,	"timed_swap",		_("Timed Swap")			);
+	ADD_VALUENODE(ValueNode_TimedSwap,	"timed_swap",		_("Timed Swap")			);
 	ADD_VALUENODE(ValueNode_TwoTone,		"twotone",			_("Two-Tone")			);
 	ADD_VALUENODE(ValueNode_BLine,			"bline",			_("BLine")				);
 	ADD_VALUENODE2(ValueNode_DynamicList,	"dynamic_list",		_("Dynamic List")		);

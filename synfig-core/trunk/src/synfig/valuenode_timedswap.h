@@ -47,7 +47,7 @@ private:
 	ValueNode::RHandle swap_time;
 	ValueNode::RHandle swap_length;
 
-	ValueNode_TimedSwap(ValueBase::Type id);
+	ValueNode_TimedSwap(const ValueBase &value);
 
 public:
 
