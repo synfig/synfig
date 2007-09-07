@@ -84,7 +84,8 @@ NoiseDistort::color_func(const Point &point, float supersample,Context context)c
 	int i;
 	Time time;
 	time=speed*curr_time;
-	int smooth((!speed && smooth==3)?5:smooth);
+	int temp_smooth(smooth);
+	int smooth((!speed && temp_smooth==3)?5:temp_smooth);
 
 	{
 		Vector vect(0,0);
