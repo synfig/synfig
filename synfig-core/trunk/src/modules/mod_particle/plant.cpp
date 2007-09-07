@@ -145,7 +145,7 @@ Plant::calc_bounding_rect()const
 	bounding_rect=Rect::zero();
 
 	// Bline must have at least 2 points in it
-	if(bline.size()<=2)
+	if(bline.size()<2)
 		return;
 
 	next=bline.begin();
@@ -177,7 +177,7 @@ Plant::sync()const
 	bounding_rect=Rect::zero();
 
 	// Bline must have at least 2 points in it
-	if(bline.size()<=2)
+	if(bline.size()<2)
 		return;
 
 	std::vector<synfig::BLinePoint>::const_iterator iter,next;
