@@ -758,11 +758,11 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline
 	bool extend_start=false,extend_finish=false,complete_loop=false;
 	bool extend_start_join_same=false,extend_start_join_different=false;
 	bool extend_finish_join_same=false,extend_finish_join_different=false;
-	int start_duck_index,finish_duck_index;
+	int start_duck_index = 0,finish_duck_index = 0; // initialised to keep the compiler happy; shouldn't be needed though
 	ValueNode_BLine::Handle start_duck_value_node_bline=NULL,finish_duck_value_node_bline=NULL;
 
 	// Find any ducks at the start or end that we might attach to
-	// (this used to only run if we aren't a loop - ie. !loop_bline_flag
+	// (this used to only run if we didn't just draw a loop - ie. !loop_bline_flag
 	// but having loops auto-connect can be useful as well)
 	if(get_auto_extend_flag() || get_auto_link_flag())
 	{
@@ -776,14 +776,15 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline
 		if(start_duck)do
 		{
 			if(!(start_duck_value_desc=start_duck->get_value_desc()))break;
-			if(loop_bline_flag)break;
+			if(loop_bline_flag)break; // loops don't extend anything
 			if(!start_duck_value_desc.parent_is_value_node())break;
-			start_duck_index=start_duck_value_desc.get_index();
+			start_duck_index=start_duck_value_desc.get_index(); // which point on the line did we start drawing at
 			start_duck_value_node_bline=ValueNode_BLine::Handle::cast_dynamic(start_duck_value_desc.get_parent_value_node());
 			if(!get_auto_extend_flag())break;
 
 			// don't extend looped blines
 			if(start_duck_value_node_bline&&!start_duck_value_node_bline->get_loop()&&
+			   // did we start drawing at either end of the line?
 			   (start_duck_index==0||start_duck_index==start_duck_value_node_bline->link_count()-1))
 			{
 				extend_start=true;
@@ -909,11 +910,11 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline
 
 	Smach::event_result result;
 	synfig::ValueNode_DynamicList::ListEntry source;
-	int target_index;
 
 	// the new line's start extends an existing line
 	if(extend_start)
 	{
+		int target_offset = 0;
 		if(complete_loop)trans_bline.pop_back();
 		trans_bline.pop_front();
 		if(start_duck_index==0)
@@ -921,13 +922,12 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline
 			reverse_bline(trans_bline);
 			result=extend_bline_from_begin(start_duck_value_node_bline,trans_bline,complete_loop);
 			source=start_duck_value_node_bline->list.front();
-			target_index=trans_bline.size()+finish_duck_index;
+			target_offset=trans_bline.size();
 		}
 		else
 		{
 			result=extend_bline_from_end(start_duck_value_node_bline,trans_bline,complete_loop);
 			source=start_duck_value_node_bline->list.back();
-			target_index=finish_duck_index;
 		}
 
 		if(extend_start_join_different)
@@ -936,26 +936,26 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline
 		else if(extend_start_join_same)
 			LinkableValueNode::Handle::cast_dynamic(source.value_node)->
 				set_link(0,synfigapp::ValueDesc(LinkableValueNode::Handle::cast_dynamic(start_duck_value_node_bline->
-													list[target_index].value_node),0).get_value_node());
+													list[target_offset+finish_duck_index].value_node),0).get_value_node());
 		return result;
 	}
 
 	// the new line's end extends an existing line
 	if(extend_finish)
-	{	// SPECIAL CASE -- EXTENSION
+	{
+		int target_offset = 0;
 		trans_bline.pop_back();
 		if(finish_duck_index==0)
 		{
 			result=extend_bline_from_begin(finish_duck_value_node_bline,trans_bline,false);
 			source=finish_duck_value_node_bline->list.front();
-			target_index=trans_bline.size()+start_duck_index;
+			target_offset=trans_bline.size();
 		}
 		else
 		{	// We need to reverse the BLine first.
 			reverse_bline(trans_bline);
 			result=extend_bline_from_end(finish_duck_value_node_bline,trans_bline,false);
 			source=finish_duck_value_node_bline->list.back();
-			target_index=start_duck_index;
 		}
 
 		if(extend_finish_join_different)
@@ -964,7 +964,7 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline
 		else if(extend_finish_join_same)
 			LinkableValueNode::Handle::cast_dynamic(source.value_node)->
 				set_link(0,synfigapp::ValueDesc(LinkableValueNode::Handle::cast_dynamic(finish_duck_value_node_bline->
-													list[target_index].value_node),0).get_value_node());
+													list[target_offset+start_duck_index].value_node),0).get_value_node());
 		return result;
 	}
 
