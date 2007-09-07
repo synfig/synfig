@@ -346,7 +346,7 @@ CanvasParser::parse_color(xmlpp::Element *element,Canvas::Handle canvas)
 		return Color();
 	}
 
-	Color color;
+	Color color(0);
 
 	xmlpp::Element::NodeList list = element->get_children();
 	for(xmlpp::Element::NodeList::iterator iter = list.begin(); iter != list.end(); ++iter)
