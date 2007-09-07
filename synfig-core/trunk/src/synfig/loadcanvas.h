@@ -140,18 +140,18 @@ private:
 
 	// ValueBase Parsing Functions
 
-	Real parse_real(xmlpp::Element *node,Canvas::Handle canvas);
+	Real parse_real(xmlpp::Element *node);
 	Time parse_time(xmlpp::Element *node,Canvas::Handle canvas);
-	int parse_integer(xmlpp::Element *node,Canvas::Handle canvas);
-	Vector parse_vector(xmlpp::Element *node,Canvas::Handle canvas);
-	Color parse_color(xmlpp::Element *node,Canvas::Handle canvas);
-	Angle parse_angle(xmlpp::Element *node,Canvas::Handle canvas);
-	String parse_string(xmlpp::Element *node,Canvas::Handle canvas);
-	bool parse_bool(xmlpp::Element *node,Canvas::Handle canvas);
-	Segment parse_segment(xmlpp::Element *node,Canvas::Handle canvas);
+	int parse_integer(xmlpp::Element *node);
+	Vector parse_vector(xmlpp::Element *node);
+	Color parse_color(xmlpp::Element *node);
+	Angle parse_angle(xmlpp::Element *node);
+	String parse_string(xmlpp::Element *node);
+	bool parse_bool(xmlpp::Element *node);
+	Segment parse_segment(xmlpp::Element *node);
 	ValueBase parse_list(xmlpp::Element *node,Canvas::Handle canvas);
-	Gradient parse_gradient(xmlpp::Element *node,Canvas::Handle canvas);
-	BLinePoint parse_bline_point(xmlpp::Element *node,Canvas::Handle canvas);
+	Gradient parse_gradient(xmlpp::Element *node);
+	BLinePoint parse_bline_point(xmlpp::Element *node);
 
 	Keyframe parse_keyframe(xmlpp::Element *node,Canvas::Handle canvas);
 

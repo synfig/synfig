@@ -234,7 +234,7 @@ CanvasParser::parse_keyframe(xmlpp::Element *element,Canvas::Handle canvas)
 
 
 Real
-CanvasParser::parse_real(xmlpp::Element *element,Canvas::Handle canvas)
+CanvasParser::parse_real(xmlpp::Element *element)
 {
 	assert(element->get_name()=="real");
 
@@ -272,7 +272,7 @@ CanvasParser::parse_time(xmlpp::Element *element,Canvas::Handle canvas)
 }
 
 int
-CanvasParser::parse_integer(xmlpp::Element *element,Canvas::Handle canvas)
+CanvasParser::parse_integer(xmlpp::Element *element)
 {
 	assert(element->get_name()=="integer");
 
@@ -291,7 +291,7 @@ CanvasParser::parse_integer(xmlpp::Element *element,Canvas::Handle canvas)
 }
 
 Vector
-CanvasParser::parse_vector(xmlpp::Element *element,Canvas::Handle canvas)
+CanvasParser::parse_vector(xmlpp::Element *element)
 {
 	assert(element->get_name()=="vector");
 
@@ -336,7 +336,7 @@ CanvasParser::parse_vector(xmlpp::Element *element,Canvas::Handle canvas)
 }
 
 Color
-CanvasParser::parse_color(xmlpp::Element *element,Canvas::Handle canvas)
+CanvasParser::parse_color(xmlpp::Element *element)
 {
 	assert(element->get_name()=="color");
 
@@ -402,7 +402,7 @@ CanvasParser::parse_color(xmlpp::Element *element,Canvas::Handle canvas)
 }
 
 synfig::String
-CanvasParser::parse_string(xmlpp::Element *element,Canvas::Handle canvas)
+CanvasParser::parse_string(xmlpp::Element *element)
 {
 	assert(element->get_name()=="string");
 
@@ -422,7 +422,7 @@ CanvasParser::parse_string(xmlpp::Element *element,Canvas::Handle canvas)
 }
 
 bool
-CanvasParser::parse_bool(xmlpp::Element *element,Canvas::Handle canvas)
+CanvasParser::parse_bool(xmlpp::Element *element)
 {
 	assert(element->get_name()=="bool");
 
@@ -448,7 +448,7 @@ CanvasParser::parse_bool(xmlpp::Element *element,Canvas::Handle canvas)
 }
 
 Gradient
-CanvasParser::parse_gradient(xmlpp::Element *node,Canvas::Handle canvas)
+CanvasParser::parse_gradient(xmlpp::Element *node)
 {
 	assert(node->get_name()=="gradient");
 	Gradient ret;
@@ -462,7 +462,7 @@ CanvasParser::parse_gradient(xmlpp::Element *node,Canvas::Handle canvas)
 		else
 		{
 			Gradient::CPoint cpoint;
-			cpoint.color=parse_color(child,canvas);
+			cpoint.color=parse_color(child);
 
 			if(!child->get_attribute("pos"))
 			{
@@ -505,7 +505,7 @@ CanvasParser::parse_list(xmlpp::Element *element,Canvas::Handle canvas)
 }
 
 Segment
-CanvasParser::parse_segment(xmlpp::Element *element,Canvas::Handle canvas)
+CanvasParser::parse_segment(xmlpp::Element *element)
 {
 	assert(element->get_name()=="segment");
 
@@ -545,7 +545,7 @@ CanvasParser::parse_segment(xmlpp::Element *element,Canvas::Handle canvas)
 				continue;
 			}
 
-			seg.p1=parse_vector(dynamic_cast<xmlpp::Element*>(*iter),canvas);
+			seg.p1=parse_vector(dynamic_cast<xmlpp::Element*>(*iter));
 		}
 		else
 		if(child->get_name()=="t1")
@@ -569,7 +569,7 @@ CanvasParser::parse_segment(xmlpp::Element *element,Canvas::Handle canvas)
 				continue;
 			}
 
-			seg.t1=parse_vector(dynamic_cast<xmlpp::Element*>(*iter),canvas);
+			seg.t1=parse_vector(dynamic_cast<xmlpp::Element*>(*iter));
 		}
 		else
 		if(child->get_name()=="p2")
@@ -593,7 +593,7 @@ CanvasParser::parse_segment(xmlpp::Element *element,Canvas::Handle canvas)
 				continue;
 			}
 
-			seg.p2=parse_vector(dynamic_cast<xmlpp::Element*>(*iter),canvas);
+			seg.p2=parse_vector(dynamic_cast<xmlpp::Element*>(*iter));
 		}
 		else
 		if(child->get_name()=="t2")
@@ -617,7 +617,7 @@ CanvasParser::parse_segment(xmlpp::Element *element,Canvas::Handle canvas)
 				continue;
 			}
 
-			seg.t2=parse_vector(dynamic_cast<xmlpp::Element*>(*iter),canvas);
+			seg.t2=parse_vector(dynamic_cast<xmlpp::Element*>(*iter));
 		}
 		else
 			error_unexpected_element(child,child->get_name());
@@ -626,7 +626,7 @@ CanvasParser::parse_segment(xmlpp::Element *element,Canvas::Handle canvas)
 }
 
 BLinePoint
-CanvasParser::parse_bline_point(xmlpp::Element *element,Canvas::Handle canvas)
+CanvasParser::parse_bline_point(xmlpp::Element *element)
 {
 	assert(element->get_name()=="bline_point");
 	if(element->get_children().empty())
@@ -667,7 +667,7 @@ CanvasParser::parse_bline_point(xmlpp::Element *element,Canvas::Handle canvas)
 				continue;
 			}
 
-			ret.set_vertex(parse_vector(dynamic_cast<xmlpp::Element*>(*iter),canvas));
+			ret.set_vertex(parse_vector(dynamic_cast<xmlpp::Element*>(*iter)));
 		}
 		else
 		// Tangent 1
@@ -692,7 +692,7 @@ CanvasParser::parse_bline_point(xmlpp::Element *element,Canvas::Handle canvas)
 				continue;
 			}
 
-			ret.set_tangent1(parse_vector(dynamic_cast<xmlpp::Element*>(*iter),canvas));
+			ret.set_tangent1(parse_vector(dynamic_cast<xmlpp::Element*>(*iter)));
 		}
 		else
 		// Tangent 2
@@ -717,7 +717,7 @@ CanvasParser::parse_bline_point(xmlpp::Element *element,Canvas::Handle canvas)
 				continue;
 			}
 
-			ret.set_tangent2(parse_vector(dynamic_cast<xmlpp::Element*>(*iter),canvas));
+			ret.set_tangent2(parse_vector(dynamic_cast<xmlpp::Element*>(*iter)));
 			ret.set_split_tangent_flag(true);
 		}
 		else
@@ -743,7 +743,7 @@ CanvasParser::parse_bline_point(xmlpp::Element *element,Canvas::Handle canvas)
 				continue;
 			}
 
-			ret.set_width(parse_real(dynamic_cast<xmlpp::Element*>(*iter),canvas));
+			ret.set_width(parse_real(dynamic_cast<xmlpp::Element*>(*iter)));
 		}
 		else
 		// origin
@@ -768,7 +768,7 @@ CanvasParser::parse_bline_point(xmlpp::Element *element,Canvas::Handle canvas)
 				continue;
 			}
 
-			ret.set_origin(parse_real(dynamic_cast<xmlpp::Element*>(*iter),canvas));
+			ret.set_origin(parse_real(dynamic_cast<xmlpp::Element*>(*iter)));
 		}
 		else
 			error_unexpected_element(child,child->get_name());
@@ -777,7 +777,7 @@ CanvasParser::parse_bline_point(xmlpp::Element *element,Canvas::Handle canvas)
 }
 
 Angle
-CanvasParser::parse_angle(xmlpp::Element *element,Canvas::Handle canvas)
+CanvasParser::parse_angle(xmlpp::Element *element)
 {
 	assert(element->get_name()=="angle");
 
@@ -799,45 +799,43 @@ ValueBase
 CanvasParser::parse_value(xmlpp::Element *element,Canvas::Handle canvas)
 {
 	if(element->get_name()=="real")
-		return parse_real(element,canvas);
+		return parse_real(element);
 	else
 	if(element->get_name()=="time")
 		return parse_time(element,canvas);
 	else
 	if(element->get_name()=="integer")
-		return parse_integer(element,canvas);
+		return parse_integer(element);
 	else
 	if(element->get_name()=="string")
-		return parse_string(element,canvas);
+		return parse_string(element);
 	else
 	if(element->get_name()=="vector")
-	{
-		return parse_vector(element,canvas);
-	}
+		return parse_vector(element);
 	else
 	if(element->get_name()=="color")
-		return parse_color(element,canvas);
+		return parse_color(element);
 	else
 	if(element->get_name()=="segment")
-		return parse_segment(element,canvas);
+		return parse_segment(element);
 	else
 	if(element->get_name()=="list")
 		return parse_list(element,canvas);
 	else
 	if(element->get_name()=="gradient")
-		return parse_gradient(element,canvas);
+		return parse_gradient(element);
 	else
 	if(element->get_name()=="bool")
-		return parse_bool(element,canvas);
+		return parse_bool(element);
 	else
 	//if(element->get_name()=="canvas")
 	//	return parse_canvas(element,canvas,true);	// inline canvas
 	//else
 	if(element->get_name()=="angle" || element->get_name()=="degrees" || element->get_name()=="radians" || element->get_name()=="rotations")
-		return parse_angle(element,canvas);
+		return parse_angle(element);
 	else
 	if(element->get_name()=="bline_point")
-		return parse_bline_point(element,canvas);
+		return parse_bline_point(element);
 	else
 	if(element->get_name()=="canvas")
 		return ValueBase(parse_canvas(element,canvas,true));
