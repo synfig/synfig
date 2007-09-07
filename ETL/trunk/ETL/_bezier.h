@@ -607,7 +607,7 @@ public:
 	*/
 	void subdivide(bezier *left, bezier *right, const time_type &time = (time_type)0.5) const
 	{
-		time_type t=(t-get_r())/get_dt();
+		time_type t=(time-get_r())/get_dt();
 		bezier lt,rt;
 
 		value_type temp;
