@@ -296,7 +296,7 @@ Mandelbrot::get_color(Context context, const Point &pos)const
 		zr_hold;
 
 	ColorReal
-		depth, mag;
+		depth, mag(0);
 
 	Color
 		ret;
