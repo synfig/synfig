@@ -413,7 +413,7 @@ Plant::accelerated_render(Context context,Surface *surface,int quality, const Re
 
 	std::vector<Particle>::reverse_iterator iter;
 	const float size_factor(1);
-	float radius(size_factor*size*sqrt(1.0f/(abs(pw)*abs(ph))));
+	float radius(size_factor*size*sqrt(1.0f/(abs(pw)*abs(ph)))), temp_radius;
 
 	if(radius>1.0f)
 	{
@@ -421,7 +421,8 @@ Plant::accelerated_render(Context context,Surface *surface,int quality, const Re
 		int x1,y1,x2,y2;
 		for(iter=particle_list.rbegin();iter!=particle_list.rend();++iter)
 		{
-			float radius(radius);
+			temp_radius = radius;
+			float radius(temp_radius);
 			Color color(iter->color);
 			if(size_as_alpha)
 			{
@@ -469,7 +470,8 @@ Plant::accelerated_render(Context context,Surface *surface,int quality, const Re
 		float a,b,c,d;
 		for(iter=particle_list.rbegin();iter!=particle_list.rend();++iter)
 		{
-			float radius(radius);
+			temp_radius = radius;
+			float radius(temp_radius);
 			Color color(iter->color);
 			if(size_as_alpha)
 			{
