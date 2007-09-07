@@ -345,6 +345,7 @@ KeyframeTreeStore::set_value_impl(const Gtk::TreeModel::iterator& row, int colum
 				// Bad old delta
 				return;
 			}
+			// row(row) on the next line is bad - don't use it, because it leaves 'row' uninitialised
 			//Gtk::TreeModel::iterator row(row);
 			//row++;
 			//if(!row)return;
