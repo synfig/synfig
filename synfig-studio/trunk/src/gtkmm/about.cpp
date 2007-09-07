@@ -203,7 +203,7 @@ About::About():
 	Pango::FontDescription fd = Pango::FontDescription("Sans, 11");
 	l->set_font_description(fd);
 	l->set_justify(Pango::ALIGN_CENTER);
-	fd.set_size(size*Pango::SCALE);
+	fd.set_size(int(size*Pango::SCALE));
 	l->set_font_description(fd);
 	l->get_pixel_size(width,height);
 	while( width >= image_w-6 ){
@@ -248,7 +248,7 @@ About::About():
 	fd = Pango::FontDescription("Sans, 11");
 	l->set_font_description(fd);
 	l->set_justify(Pango::ALIGN_CENTER);
-	fd.set_size(size*Pango::SCALE);
+	fd.set_size(int(size*Pango::SCALE));
 	l->set_font_description(fd);
 	l->get_pixel_size(width,height);
 	while( width >= image_w-6 ){
