@@ -57,6 +57,10 @@ Random::set_seed(int x)
 	t_mask=rand()+rand()*RAND_MAX;
 }
 
+// this picks one of the POOL_SIZE (256) preset values out of the pool
+// and scales it to be in the range (-1, 1).  is that what it was
+// intended to do?  the distribution is pretty terrible, too, with
+// some elements being picked a hundred times more often than others
 float
 Random::operator()(const int salt,const int x,const int y,const int t)const
 {
