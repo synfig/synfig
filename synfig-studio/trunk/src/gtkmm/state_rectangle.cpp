@@ -129,7 +129,7 @@ public:
 	void reset();
 	void increment_id();
 	bool no_egress_on_selection_change;
-	Smach::event_result event_layer_selection_changed_handler(const Smach::event& x)
+	Smach::event_result event_layer_selection_changed_handler(const Smach::event& /*x*/)
 	{
 		if(!no_egress_on_selection_change)
 			throw Smach::egress_exception();
@@ -302,7 +302,7 @@ StateRectangle_Context::refresh_tool_options()
 }
 
 Smach::event_result
-StateRectangle_Context::event_refresh_tool_options(const Smach::event& x)
+StateRectangle_Context::event_refresh_tool_options(const Smach::event& /*x*/)
 {
 	refresh_tool_options();
 	return Smach::RESULT_ACCEPT;
@@ -332,13 +332,13 @@ StateRectangle_Context::~StateRectangle_Context()
 }
 
 Smach::event_result
-StateRectangle_Context::event_stop_handler(const Smach::event& x)
+StateRectangle_Context::event_stop_handler(const Smach::event& /*x*/)
 {
 	throw Smach::egress_exception();
 }
 
 Smach::event_result
-StateRectangle_Context::event_refresh_handler(const Smach::event& x)
+StateRectangle_Context::event_refresh_handler(const Smach::event& /*x*/)
 {
 	refresh_ducks();
 	return Smach::RESULT_ACCEPT;

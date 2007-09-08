@@ -185,7 +185,7 @@ Widget_Color::on_event(GdkEvent *event)
 }
 
 bool
-Widget_Color::redraw(GdkEventExpose*bleh)
+Widget_Color::redraw(GdkEventExpose */*bleh*/)
 {
 	//Glib::RefPtr<Gdk::GC> gc(Gdk::GC::create(get_window()));
 

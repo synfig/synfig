@@ -79,7 +79,7 @@ Noise::Noise():
 
 
 inline Color
-Noise::color_func(const Point &point, float pixel_size,Context context)const
+Noise::color_func(const Point &point, float pixel_size,Context /*context*/)const
 {
 	Color ret(0,0,0,0);
 
@@ -169,7 +169,7 @@ Noise::color_func(const Point &point, float pixel_size,Context context)const
 }
 
 inline float
-Noise::calc_supersample(const synfig::Point &x, float pw,float ph)const
+Noise::calc_supersample(const synfig::Point &/*x*/, float /*pw*/,float /*ph*/)const
 {
 	return 0.0f;
 }

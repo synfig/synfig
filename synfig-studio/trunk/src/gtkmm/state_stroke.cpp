@@ -144,19 +144,19 @@ StateStroke_Context::~StateStroke_Context()
 }
 
 Smach::event_result
-StateStroke_Context::event_refresh_tool_options(const Smach::event& x)
+StateStroke_Context::event_refresh_tool_options(const Smach::event& /*x*/)
 {
 	return Smach::RESULT_ACCEPT;
 }
 
 Smach::event_result
-StateStroke_Context::event_stop_handler(const Smach::event& x)
+StateStroke_Context::event_stop_handler(const Smach::event& /*x*/)
 {
 	throw Smach::pop_exception();
 }
 
 Smach::event_result
-StateStroke_Context::event_refresh_handler(const Smach::event& x)
+StateStroke_Context::event_refresh_handler(const Smach::event& /*x*/)
 {
 	return Smach::RESULT_ACCEPT;
 }

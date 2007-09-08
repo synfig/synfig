@@ -81,7 +81,11 @@ const double delay_factor = 3;
 struct FSOUND_SAMPLE;
 using studio::AudioContainer;
 
+#ifdef WITH_FMOD
 bool build_profile(FSOUND_SAMPLE *sample, double &samplerate, std::vector<char> &samples)
+#else
+bool build_profile(FSOUND_SAMPLE */*sample*/, double &/*samplerate*/, std::vector<char> &/*samples*/)
+#endif
 {
 #ifdef WITH_FMOD
 
@@ -685,7 +689,11 @@ struct studio::AudioContainer::AudioImp
 	scrubinfo			*scrptr;
 
 	bool is_scrubbing() const {return scrptr != 0;}
+#ifdef WITH_FMOD
 	void set_scrubbing(bool s)
+#else
+	void set_scrubbing(bool /*s*/)
+#endif
 	{
 		#ifdef WITH_FMOD
 		if(s)
@@ -790,7 +798,11 @@ public: //forward interface
 	}
 
 	//Will override the parameter timevalue if the sound is running, and not if it's not...
+#ifdef WITH_FMOD
 	bool get_current_time(double &out)
+#else
+	bool get_current_time(double &/*out*/)
+#endif
 	{
 		if(isRunning())
 		{
@@ -850,7 +862,11 @@ bool studio::AudioContainer::load(const string &filename,const string &filedirec
 	return imp->load(filename,filedirectory);
 }
 
+#ifdef WITH_FMOD
 handle<studio::AudioProfile> studio::AudioContainer::get_profile(float samplerate)
+#else
+handle<studio::AudioProfile> studio::AudioContainer::get_profile(float /*samplerate*/)
+#endif
 {
 	#ifdef WITH_FMOD
 
@@ -985,8 +1001,13 @@ bool AudioContainer::isPaused() const
 
 //----------- Audio imp information -------------------
 
+#ifdef WITH_FMOD
 bool studio::AudioContainer::AudioImp::load(const std::string &filename,
 											const std::string &filedirectory)
+#else
+bool studio::AudioContainer::AudioImp::load(const std::string &/*filename*/,
+											const std::string &/*filedirectory*/)
+#endif
 {
 	clear();
 
@@ -1074,7 +1095,11 @@ error:
 	#endif
 }
 
+#ifdef WITH_FMOD
 void studio::AudioContainer::AudioImp::play(double t)
+#else
+void studio::AudioContainer::AudioImp::play(double /*t*/)
+#endif
 {
 	#ifdef WITH_FMOD
 	if(!sample) return;
@@ -1161,7 +1186,11 @@ void studio::AudioContainer::AudioImp::clear()
 	playing = false;
 }
 
+#ifdef WITH_FMOD
 void AudioContainer::AudioImp::start_scrubbing(double t)
+#else
+void AudioContainer::AudioImp::start_scrubbing(double /*t*/)
+#endif
 {
 	//synfig::info("Start scrubbing: %lf", t);
 	if(playing) stop();
@@ -1233,7 +1262,11 @@ void AudioContainer::AudioImp::stop_scrubbing()
 	curscrubpos = 0;
 }
 
+#ifdef WITH_FMOD
 void AudioContainer::AudioImp::scrub(double t)
+#else
+void AudioContainer::AudioImp::scrub(double /*t*/)
+#endif
 {
 	#ifdef WITH_FMOD
 	//synfig::info("Scrub to %lf",t);

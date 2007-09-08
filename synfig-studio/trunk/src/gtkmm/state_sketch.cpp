@@ -448,27 +448,27 @@ StateSketch_Context::refresh_tool_options()
 }
 
 Smach::event_result
-StateSketch_Context::event_refresh_tool_options(const Smach::event& x)
+StateSketch_Context::event_refresh_tool_options(const Smach::event& /*x*/)
 {
 	refresh_tool_options();
 	return Smach::RESULT_ACCEPT;
 }
 
 Smach::event_result
-StateSketch_Context::event_yield_tool_options(const Smach::event& x)
+StateSketch_Context::event_yield_tool_options(const Smach::event& /*x*/)
 {
 	yield_tool_options();
 	return Smach::RESULT_ACCEPT;
 }
 
 Smach::event_result
-StateSketch_Context::event_stop_handler(const Smach::event& x)
+StateSketch_Context::event_stop_handler(const Smach::event& /*x*/)
 {
 	throw Smach::egress_exception();
 }
 
 Smach::event_result
-StateSketch_Context::event_refresh_handler(const Smach::event& x)
+StateSketch_Context::event_refresh_handler(const Smach::event& /*x*/)
 {
 	return Smach::RESULT_ACCEPT;
 }

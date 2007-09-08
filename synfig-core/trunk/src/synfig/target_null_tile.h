@@ -49,14 +49,14 @@ class Target_Null_Tile : public Target_Tile
 public:
 
 	~Target_Null_Tile() {  }
-	virtual bool add_tile(const synfig::Surface &surface, int x, int y) { return true; }
+	virtual bool add_tile(const synfig::Surface &/*surface*/, int /*x*/, int /*y*/) { return true; }
 
-	virtual bool start_frame(ProgressCallback *cb=NULL)
+	virtual bool start_frame(ProgressCallback */*cb*/=NULL)
 		{ return true; }
 
 	virtual void end_frame() { return; }
 
-	static Target* create(const char *filename=0) { return new Target_Null_Tile(); }
+	static Target* create(const char */*filename*/=0) { return new Target_Null_Tile(); }
 }; // END of class Target_Null_Tile
 
 }; // END of namespace synfig

@@ -52,16 +52,16 @@ public:
 
 	~Target_Null() { delete buffer; }
 
-	virtual bool start_frame(ProgressCallback *cb=NULL)
+	virtual bool start_frame(ProgressCallback */*cb*/=NULL)
 		{ delete buffer; buffer=new Color[desc.get_w()*sizeof(Color)]; return true; }
 
 	virtual void end_frame() { delete buffer; buffer=0; return; }
 
-	virtual Color * start_scanline(int scanline) { return buffer; }
+	virtual Color * start_scanline(int /*scanline*/) { return buffer; }
 
 	virtual bool end_scanline() { return true; }
 
-	static Target* create(const char *filename=0) { return new Target_Null(); }
+	static Target* create(const char */*filename*/=0) { return new Target_Null(); }
 }; // END of class Target_Null
 
 }; // END of namespace synfig

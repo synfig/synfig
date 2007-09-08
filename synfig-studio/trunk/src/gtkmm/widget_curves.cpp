@@ -454,7 +454,7 @@ Widget_Curves::on_event(GdkEvent *event)
 }
 
 bool
-Widget_Curves::redraw(GdkEventExpose*bleh)
+Widget_Curves::redraw(GdkEventExpose */*bleh*/)
 {
 	const int h(get_height());
 	const int w(get_width());

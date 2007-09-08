@@ -54,7 +54,7 @@ public:
 	class lock
 	{
 	public:
-		lock(mutex_null &x) { }
+		lock(mutex_null &/*x*/) { }
 	};
 
 	void lock_mutex(){}

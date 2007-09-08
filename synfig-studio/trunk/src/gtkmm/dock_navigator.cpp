@@ -255,7 +255,7 @@ static double zoom_to_unit(double f)
 	}else return -999999.0;
 }
 
-bool studio::Widget_NavView::on_expose_draw(GdkEventExpose *exp)
+bool studio::Widget_NavView::on_expose_draw(GdkEventExpose */*exp*/)
 {
 	//print out the zoom
 	//HACK kind of...

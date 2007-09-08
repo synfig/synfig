@@ -119,7 +119,7 @@ Widget_Gradient::~Widget_Gradient()
 
 #define CONTROL_HEIGHT		16
 bool
-Widget_Gradient::redraw(GdkEventExpose*bleh)
+Widget_Gradient::redraw(GdkEventExpose */*bleh*/)
 {
 	const int h(get_height());
 	const int w(get_width());

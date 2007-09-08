@@ -294,9 +294,9 @@ public:
 	static const Type get_type(const etl::loose_handle<Canvas>&)
 		{ return TYPE_CANVAS; }
 	static const Type get_type(const list_type&) { return TYPE_LIST; }
-	template <class T> static const Type get_type(const std::vector<T> &x)
+	template <class T> static const Type get_type(const std::vector<T> &/*x*/)
 		{ return TYPE_LIST; }
-	template <class T> static const Type get_type(const std::list<T> &x)
+	template <class T> static const Type get_type(const std::list<T> &/*x*/)
 		{ return TYPE_LIST; }
 	// ========================================================================
 

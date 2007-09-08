@@ -221,7 +221,7 @@ png_trgt::start_frame(synfig::ProgressCallback *callback)
 }
 
 Color *
-png_trgt::start_scanline(int scanline)
+png_trgt::start_scanline(int /*scanline*/)
 {
 	return color_buffer;
 }

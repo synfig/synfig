@@ -72,7 +72,7 @@ imagemagick_mptr::~imagemagick_mptr()
 }
 
 bool
-imagemagick_mptr::get_frame(synfig::Surface &surface,Time time, synfig::ProgressCallback *cb)
+imagemagick_mptr::get_frame(synfig::Surface &surface,Time /*time*/, synfig::ProgressCallback *cb)
 {
 //#define HAS_LIBPNG 1
 

@@ -93,7 +93,7 @@ yuv::set_rend_desc(RendDesc *given_desc)
 }
 
 bool
-yuv::start_frame(synfig::ProgressCallback *callback)
+yuv::start_frame(synfig::ProgressCallback */*callback*/)
 {
 	return static_cast<bool>(file);
 }

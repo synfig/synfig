@@ -308,7 +308,7 @@ Context::set_time(Time time)const
 }
 
 void
-Context::set_time(Time time,const Vector &pos)const
+Context::set_time(Time time,const Vector &/*pos*/)const
 {
 	set_time(time);
 /*

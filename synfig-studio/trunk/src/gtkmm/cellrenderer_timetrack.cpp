@@ -199,10 +199,10 @@ void
 CellRenderer_TimeTrack::render_vfunc(
 		const Glib::RefPtr<Gdk::Drawable>& window,
 		Gtk::Widget& widget,
-		const Gdk::Rectangle& background_area,
+		const Gdk::Rectangle& /*background_area*/,
 		const Gdk::Rectangle& area_,
-		const Gdk::Rectangle& expose_area,
-		Gtk::CellRendererState flags)
+		const Gdk::Rectangle& /*expose_area*/,
+		Gtk::CellRendererState /*flags*/)
 {
 	if(!window)
 		return;
@@ -529,7 +529,7 @@ CellRenderer_TimeTrack::render_vfunc(
 }
 
 synfig::ValueNode_Animated::WaypointList::iterator
-CellRenderer_TimeTrack::find_waypoint(const synfig::Time& t,const synfig::Time& scope)
+CellRenderer_TimeTrack::find_waypoint(const synfig::Time& /*t*/,const synfig::Time& scope)
 {
 	synfig::ValueNode_Animated *value_node=dynamic_cast<synfig::ValueNode_Animated*>(property_value_desc().get_value().get_value_node().get());
 
@@ -564,11 +564,11 @@ CellRenderer_TimeTrack::find_waypoint(const synfig::Time& t,const synfig::Time& 
 bool
 CellRenderer_TimeTrack::activate_vfunc(
 	GdkEvent* event,
-	Gtk::Widget& widget,
+	Gtk::Widget& /*widget*/,
 	const Glib::ustring& treepath,
-	const Gdk::Rectangle& background_area,
+	const Gdk::Rectangle& /*background_area*/,
 	const Gdk::Rectangle& cell_area,
-	Gtk::CellRendererState flags)
+	Gtk::CellRendererState /*flags*/)
 {
 	path=treepath;
 	synfig::ValueNode_Animated::WaypointList::iterator iter;

@@ -134,7 +134,7 @@ ppm::start_frame(synfig::ProgressCallback *callback)
 }
 
 Color *
-ppm::start_scanline(int scanline)
+ppm::start_scanline(int /*scanline*/)
 {
 	return color_buffer;
 }

@@ -108,14 +108,14 @@ Layer::Vocab BooleanCurve::get_param_vocab()const
 	return ret;
 }
 
-Color BooleanCurve::get_color(Context context, const Point &pos)const
+Color BooleanCurve::get_color(Context /*context*/, const Point &/*pos*/)const
 {
 	Color c(Color::alpha());
 
 	return c;
 }
 
-bool BooleanCurve::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
+bool BooleanCurve::accelerated_render(Context /*context*/,Surface */*surface*/,int /*quality*/, const RendDesc &/*renddesc*/, ProgressCallback */*cb*/)const
 {
 	return false;
 }

@@ -109,7 +109,7 @@ StateEyedrop_Context::~StateEyedrop_Context()
 }
 
 Smach::event_result
-StateEyedrop_Context::event_stop_handler(const Smach::event& x)
+StateEyedrop_Context::event_stop_handler(const Smach::event& /*x*/)
 {
 	synfig::info("STATE EYEDROP: Received Stop Event");
 	throw Smach::egress_exception();
@@ -118,7 +118,7 @@ StateEyedrop_Context::event_stop_handler(const Smach::event& x)
 }
 
 Smach::event_result
-StateEyedrop_Context::event_refresh_handler(const Smach::event& x)
+StateEyedrop_Context::event_refresh_handler(const Smach::event& /*x*/)
 {
 	synfig::info("STATE EYEDROP: Received Refresh Event");
 	canvas_view->work_area->queue_render_preview();

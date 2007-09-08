@@ -180,7 +180,7 @@ jpeg_trgt::end_frame()
 }
 
 Color *
-jpeg_trgt::start_scanline(int scanline)
+jpeg_trgt::start_scanline(int /*scanline*/)
 {
 	return color_buffer;
 }

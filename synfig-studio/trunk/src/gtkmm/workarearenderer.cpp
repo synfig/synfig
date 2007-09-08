@@ -91,15 +91,15 @@ WorkAreaRenderer::set_work_area(WorkArea* x)
 
 void
 WorkAreaRenderer::render_vfunc(
-	const Glib::RefPtr<Gdk::Drawable>& window,
-	const Gdk::Rectangle& expose_area
+	const Glib::RefPtr<Gdk::Drawable>& /*window*/,
+	const Gdk::Rectangle& /*expose_area*/
 )
 {
 }
 
 bool
 WorkAreaRenderer::event_vfunc(
-	GdkEvent* event
+	GdkEvent* /*event*/
 )
 {
 	return false;

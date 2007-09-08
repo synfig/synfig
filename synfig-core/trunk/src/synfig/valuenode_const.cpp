@@ -85,7 +85,7 @@ ValueNode_Const::~ValueNode_Const()
 
 
 ValueBase
-ValueNode_Const::operator()(Time t)const
+ValueNode_Const::operator()(Time /*t*/)const
 {
 	return value;
 }
@@ -126,6 +126,6 @@ ValueNode_Const::get_local_name()const
 	return _("Constant");
 }
 
-void ValueNode_Const::get_times_vfunc(Node::time_set &set) const
+void ValueNode_Const::get_times_vfunc(Node::time_set &/*set*/) const
 {
 }

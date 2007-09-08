@@ -262,7 +262,7 @@ public:
 	}
 
 
-	virtual bool start_frame(synfig::ProgressCallback *cb)
+	virtual bool start_frame(synfig::ProgressCallback */*cb*/)
 	{
 		synfig::Mutex::Lock lock(mutex);
 
@@ -506,7 +506,7 @@ public:
 	}
 
 
-	virtual bool start_frame(synfig::ProgressCallback *cb)
+	virtual bool start_frame(synfig::ProgressCallback */*cb*/)
 	{
 		return true;
 	}
@@ -1781,7 +1781,7 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 }
 
 bool
-WorkArea::on_hruler_event(GdkEvent *event)
+WorkArea::on_hruler_event(GdkEvent */*event*/)
 {
 /*
 	switch(event->type)
@@ -1838,7 +1838,7 @@ WorkArea::on_hruler_event(GdkEvent *event)
 }
 
 bool
-WorkArea::on_vruler_event(GdkEvent *event)
+WorkArea::on_vruler_event(GdkEvent */*event*/)
 {
 /*
 	switch(event->type)
@@ -1932,7 +1932,7 @@ WorkArea::screen_to_comp_coords(synfig::Point pos)const
 }
 
 synfig::Point
-WorkArea::comp_to_screen_coords(synfig::Point pos)const
+WorkArea::comp_to_screen_coords(synfig::Point /*pos*/)const
 {
 	synfig::warning("WorkArea::comp_to_screen_coords: Not yet implemented");
 	return synfig::Point();

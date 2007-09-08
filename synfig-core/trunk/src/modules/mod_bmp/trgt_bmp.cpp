@@ -245,7 +245,7 @@ bmp::start_frame(synfig::ProgressCallback *callback)
 }
 
 Color *
-bmp::start_scanline(int scanline)
+bmp::start_scanline(int /*scanline*/)
 {
 	return color_buffer;
 }

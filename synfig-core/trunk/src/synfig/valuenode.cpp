@@ -430,7 +430,7 @@ PlaceholderValueNode::create(ValueBase::Type type)
 }
 
 ValueBase
-PlaceholderValueNode::operator()(Time t)const
+PlaceholderValueNode::operator()(Time /*t*/)const
 {
 	assert(0);
 	return ValueBase();

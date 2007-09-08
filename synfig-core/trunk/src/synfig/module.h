@@ -75,14 +75,14 @@
 	synfig::Module* _##x##_LTX_new_instance(synfig::ProgressCallback *cb) \
 	{ if(SYNFIG_CHECK_VERSION()){x##_modclass *mod=new x##_modclass(cb); mod->constructor_(cb); return mod; }\
 	if(cb)cb->error(#x": Unable to load module due to version mismatch."); return NULL; } \
-	}; x##_modclass::x##_modclass(synfig::ProgressCallback *cb) {
+	}; x##_modclass::x##_modclass(synfig::ProgressCallback */*cb*/) {
 #else
 //! Marks the start of a module's inventory
 #define MODULE_INVENTORY_BEGIN(x)  extern "C" {		\
 	synfig::Module* x##_LTX_new_instance(synfig::ProgressCallback *cb) \
 	{ if(SYNFIG_CHECK_VERSION()){x##_modclass *mod=new x##_modclass(cb); mod->constructor_(cb); return mod; }\
 	if(cb)cb->error(#x": Unable to load module due to version mismatch."); return NULL; } \
-	}; x##_modclass::x##_modclass(synfig::ProgressCallback *cb) {
+	}; x##_modclass::x##_modclass(synfig::ProgressCallback */*cb*/) {
 #endif
 
 //! Marks the start of the layers in the module's inventory
@@ -133,7 +133,7 @@ class ProgressCallback;
 class Module : public etl::shared_object
 {
 public:
-	bool constructor_(synfig::ProgressCallback *cb) { return true; }
+	bool constructor_(synfig::ProgressCallback */*cb*/) { return true; }
 	virtual void destructor_() { }
 
 	typedef etl::handle<Module> Handle;

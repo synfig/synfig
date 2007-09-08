@@ -367,7 +367,7 @@ LayerTreeStore::set_value_impl(const Gtk::TreeModel::iterator& iter, int column,
 
 
 bool
-LayerTreeStore::row_draggable_vfunc (const TreeModel::Path& path)const
+LayerTreeStore::row_draggable_vfunc (const TreeModel::Path& /*path*/)const
 {
 	//if(!get_iter(path)) return false;
 //	Gtk::TreeModel::Row row(*get_iter(path));
@@ -421,7 +421,7 @@ LayerTreeStore::drag_data_get_vfunc (const TreeModel::Path& path, Gtk::Selection
 }
 
 bool
-LayerTreeStore::drag_data_delete_vfunc (const TreeModel::Path& path)
+LayerTreeStore::drag_data_delete_vfunc (const TreeModel::Path& /*path*/)
 {
 	return true;
 }
@@ -837,7 +837,7 @@ LayerTreeStore::on_layer_inserted(synfig::Layer::Handle handle,int depth)
 }
 
 void
-LayerTreeStore::on_layer_status_changed(synfig::Layer::Handle handle,bool x)
+LayerTreeStore::on_layer_status_changed(synfig::Layer::Handle handle,bool /*x*/)
 {
 	Gtk::TreeModel::Children::iterator iter;
 	if(find_layer_row(handle,iter))
@@ -906,7 +906,7 @@ LayerTreeStore::on_layer_raised(synfig::Layer::Handle layer)
 }
 
 void
-LayerTreeStore::on_layer_moved(synfig::Layer::Handle layer,int depth, synfig::Canvas::Handle canvas)
+LayerTreeStore::on_layer_moved(synfig::Layer::Handle layer,int depth, synfig::Canvas::Handle /*canvas*/)
 {
 	on_layer_removed(layer);
 	on_layer_inserted(layer,depth);
@@ -1022,7 +1022,7 @@ LayerTreeStore::find_canvas_row(synfig::Canvas::Handle canvas, Gtk::TreeModel::C
 
 
 bool
-LayerTreeStore::find_layer_row_(const synfig::Layer::Handle &layer, synfig::Canvas::Handle canvas, Gtk::TreeModel::Children layers, Gtk::TreeModel::Children::iterator &iter, Gtk::TreeModel::Children::iterator &prev)
+LayerTreeStore::find_layer_row_(const synfig::Layer::Handle &layer, synfig::Canvas::Handle /*canvas*/, Gtk::TreeModel::Children layers, Gtk::TreeModel::Children::iterator &iter, Gtk::TreeModel::Children::iterator &prev)
 {
 	assert(layer);
 

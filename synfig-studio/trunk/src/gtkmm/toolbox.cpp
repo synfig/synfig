@@ -577,7 +577,7 @@ Toolbox::on_recent_files_changed()
 }
 
 void
-Toolbox::on_drop_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, const Gtk::SelectionData& selection_data_, guint info, guint time)
+Toolbox::on_drop_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& context, int /*x*/, int /*y*/, const Gtk::SelectionData& selection_data_, guint /*info*/, guint time)
 {
 	// We will make this true once we have a solid drop
 	bool success(false);

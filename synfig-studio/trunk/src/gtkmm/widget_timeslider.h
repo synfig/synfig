@@ -84,7 +84,7 @@ protected: //implementation that other interfaces can see
 	virtual bool on_button_press_event(GdkEventButton *event); //for clicking
 	virtual bool on_button_release_event(GdkEventButton *event); //for clicking
 
-	virtual bool on_expose_event(GdkEventExpose *event) {redraw(); return true;}//for drawing
+	virtual bool on_expose_event(GdkEventExpose */*event*/) {redraw(); return true;}//for drawing
 
 	virtual bool redraw(bool doublebuffer = false);
 

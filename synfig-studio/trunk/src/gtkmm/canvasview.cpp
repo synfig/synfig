@@ -553,13 +553,13 @@ public:
 	}
 
 	//! Sets which value_nodes should be selected
-	virtual void set_selected_children(const ChildrenList &children_list)
+	virtual void set_selected_children(const ChildrenList &/*children_list*/)
 	{
 		return;
 	}
 
 	//! Sets which value_node should be selected. Empty handle if none.
-	virtual void set_selected_child(const ChildrenList::value_type &child)
+	virtual void set_selected_child(const ChildrenList::value_type &/*child*/)
 	{
 		return;
 	}
@@ -610,12 +610,12 @@ public:
 		return get_selected_layer_parameters().front();
 	}
 
-	void set_selected_layer_parameters(const LayerParamList &layer_param_list)
+	void set_selected_layer_parameters(const LayerParamList &/*layer_param_list*/)
 	{
 		return;
 	}
 
-	void set_selected_layer_param(const LayerParam &layer_param)
+	void set_selected_layer_param(const LayerParam &/*layer_param*/)
 	{
 		return;
 	}
@@ -1737,7 +1737,7 @@ CanvasView::popup_layer_menu(synfig::Layer::Handle layer)
 }
 
 void
-CanvasView::register_layer_type(synfig::Layer::Book::value_type &lyr,std::map<synfig::String,Gtk::Menu*>* category_map)
+CanvasView::register_layer_type(synfig::Layer::Book::value_type &/*lyr*/,std::map<synfig::String,Gtk::Menu*>* /*category_map*/)
 {
 /*	if(lyr.second.category==_("Do Not Use"))
 		return;
@@ -1757,7 +1757,7 @@ CanvasView::register_layer_type(synfig::Layer::Book::value_type &lyr,std::map<sy
 }
 
 void
-CanvasView::build_new_layer_menu(Gtk::Menu &menu)
+CanvasView::build_new_layer_menu(Gtk::Menu &/*menu*/)
 {
 /*
 	std::map<synfig::String,Gtk::Menu*> category_map;
@@ -2079,7 +2079,7 @@ CanvasView::add_actions_to_menu(Gtk::Menu *menu, const synfigapp::Action::ParamL
 }
 
 bool
-CanvasView::on_layer_user_click(int button, Gtk::TreeRow row, LayerTree::ColumnID column_id)
+CanvasView::on_layer_user_click(int button, Gtk::TreeRow /*row*/, LayerTree::ColumnID /*column_id*/)
 {
 	switch(button)
 	{
@@ -3009,7 +3009,7 @@ CanvasView::on_waypoint_delete()
 }
 
 void
-CanvasView::on_drop_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, const Gtk::SelectionData& selection_data_, guint info, guint time)
+CanvasView::on_drop_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& context, int /*x*/, int /*y*/, const Gtk::SelectionData& selection_data_, guint /*info*/, guint time)
 {
 	// We will make this true once we have a solid drop
 	bool success(false);

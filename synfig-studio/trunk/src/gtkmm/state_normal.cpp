@@ -135,14 +135,14 @@ StateNormal_Context::refresh_tool_options()
 }
 
 Smach::event_result
-StateNormal_Context::event_refresh_tool_options(const Smach::event& x)
+StateNormal_Context::event_refresh_tool_options(const Smach::event& /*x*/)
 {
 	refresh_tool_options();
 	return Smach::RESULT_ACCEPT;
 }
 
 Smach::event_result
-StateNormal_Context::event_stop_handler(const Smach::event& x)
+StateNormal_Context::event_stop_handler(const Smach::event& /*x*/)
 {
 	synfig::info("STATE NORMAL: Received Stop Event");
 	canvas_view->stop();
@@ -150,7 +150,7 @@ StateNormal_Context::event_stop_handler(const Smach::event& x)
 }
 
 Smach::event_result
-StateNormal_Context::event_refresh_handler(const Smach::event& x)
+StateNormal_Context::event_refresh_handler(const Smach::event& /*x*/)
 {
 	synfig::info("STATE NORMAL: Received Refresh Event");
 	canvas_view->rebuild_tables();
@@ -159,7 +159,7 @@ StateNormal_Context::event_refresh_handler(const Smach::event& x)
 }
 
 Smach::event_result
-StateNormal_Context::event_refresh_ducks_handler(const Smach::event& x)
+StateNormal_Context::event_refresh_ducks_handler(const Smach::event& /*x*/)
 {
 	synfig::info("STATE NORMAL: Received Refresh Ducks");
 	canvas_view->queue_rebuild_ducks();
@@ -167,7 +167,7 @@ StateNormal_Context::event_refresh_ducks_handler(const Smach::event& x)
 }
 
 Smach::event_result
-StateNormal_Context::event_undo_handler(const Smach::event& x)
+StateNormal_Context::event_undo_handler(const Smach::event& /*x*/)
 {
 	synfig::info("STATE NORMAL: Received Undo Event");
 	canvas_view->get_instance()->undo();
@@ -175,7 +175,7 @@ StateNormal_Context::event_undo_handler(const Smach::event& x)
 }
 
 Smach::event_result
-StateNormal_Context::event_redo_handler(const Smach::event& x)
+StateNormal_Context::event_redo_handler(const Smach::event& /*x*/)
 {
 	synfig::info("STATE NORMAL: Received Redo Event");
 	canvas_view->get_instance()->redo();
@@ -363,7 +363,7 @@ StateNormal_Context::edit_several_waypoints(std::list<synfigapp::ValueDesc> valu
 */
 
 Smach::event_result
-StateNormal_Context::event_multiple_ducks_clicked_handler(const Smach::event& x)
+StateNormal_Context::event_multiple_ducks_clicked_handler(const Smach::event& /*x*/)
 {
 	synfig::info("STATE NORMAL: Received multiple duck click event");
 

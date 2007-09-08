@@ -90,7 +90,7 @@ target2surface::set_rend_desc(synfig::RendDesc *newdesc)
 }
 
 bool
-target2surface::start_frame(synfig::ProgressCallback *cb)
+target2surface::start_frame(synfig::ProgressCallback */*cb*/)
 {
 	if(surface->get_w() != desc.get_w() || surface->get_h() != desc.get_h())
 	{

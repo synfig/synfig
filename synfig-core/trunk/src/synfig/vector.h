@@ -271,7 +271,7 @@ public:
 	{ return (&a)[i]; }
 
 	//! Bezier curve intersection function
-	time_type intersect(const bezier_base<value_type,time_type> &x, time_type near=0.0)const
+	time_type intersect(const bezier_base<value_type,time_type> &/*x*/, time_type /*near*/=0.0)const
 	{
 		return 0;
 	}

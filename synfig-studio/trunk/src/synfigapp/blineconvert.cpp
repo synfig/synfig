@@ -246,7 +246,7 @@ void GetFirstDerivatives(const std::vector<synfig::Point> &f, unsigned int left,
 
 void GetSimpleDerivatives(const std::vector<synfig::Point> &f, int left, int right,
 							std::vector<synfig::Point> &df, int outleft,
-							const std::vector<synfig::Real> &di)
+							const std::vector<synfig::Real> &/*di*/)
 {
 	int i1,i2,i;
 	int offset = 2; //df = 1/2 (f[i+o]-f[i-o])

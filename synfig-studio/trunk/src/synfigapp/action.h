@@ -199,7 +199,7 @@ public:
 	//! This function will throw an Action::Error() on failure
 	virtual void perform()=0;
 
-	virtual bool set_param(const synfig::String& name, const Param &) { return false; }
+	virtual bool set_param(const synfig::String& /*name*/, const Param &) { return false; }
 	virtual bool is_ready()const=0;
 
 	virtual synfig::String get_name()const =0;
@@ -322,7 +322,7 @@ public:
 
 	virtual void prepare() { };
 
-	virtual bool set_param(const synfig::String& name, const Param &)const { return false; }
+	virtual bool set_param(const synfig::String& /*name*/, const Param &)const { return false; }
 	virtual bool is_ready()const { return ready_; }
 
 	void set_name(std::string&x) { name_=x; }

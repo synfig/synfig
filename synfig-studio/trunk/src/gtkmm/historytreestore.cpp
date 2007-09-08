@@ -103,7 +103,7 @@ HistoryTreeStore::rebuild()
 }
 
 void
-HistoryTreeStore::insert_action(Gtk::TreeRow row,etl::handle<synfigapp::Action::Undoable> action, bool is_active, bool is_undo, bool is_redo)
+HistoryTreeStore::insert_action(Gtk::TreeRow row,etl::handle<synfigapp::Action::Undoable> action, bool /*is_active*/, bool is_undo, bool is_redo)
 {
 	assert(action);
 

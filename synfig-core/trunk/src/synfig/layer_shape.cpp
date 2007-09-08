@@ -316,7 +316,7 @@ struct CurveArray
 		degrees.push_back(2);
 	}
 
-	static int intersect_conic(Real x, Real y, Point *p, int level = 0)
+	static int intersect_conic(Real x, Real y, Point *p, int /*level*/ = 0)
 	{
 		Real ymin,ymax,xmin,xmax;
 		int intersects = 0;
@@ -471,7 +471,7 @@ struct CurveArray
 		}
 	}
 
-	static int intersect_cubic(Real x, Real y, Point *p, int level = 0)
+	static int intersect_cubic(Real x, Real y, Point *p, int /*level*/ = 0)
 	{
 		const Real INVALIDROOT = -FLT_MAX;
 		Real ymin,ymax,xmin,xmax;
@@ -2614,7 +2614,7 @@ Layer_Shape::accelerated_render(Context context,Surface *surface,int quality, co
 }
 
 bool
-Layer_Shape::render_shape(Surface *surface,bool useblend,int quality,
+Layer_Shape::render_shape(Surface *surface,bool useblend,int /*quality*/,
 							const RendDesc &renddesc, ProgressCallback *cb)const
 {
 	int tmp(0);
@@ -2854,8 +2854,8 @@ Layer_Shape::render_shape(Surface *surface,bool useblend,int quality,
 }
 
 bool
-Layer_Shape::render_shape(surface<float> *surface,int quality,
-							const RendDesc &renddesc, ProgressCallback *cb)const
+Layer_Shape::render_shape(surface<float> *surface,int /*quality*/,
+							const RendDesc &renddesc, ProgressCallback */*cb*/)const
 {
 	// If our amount is set to zero, no need to render anything
 	if(!get_amount())

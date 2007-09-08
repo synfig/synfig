@@ -137,7 +137,7 @@ void studio::Widget_Sound::draw()
 	on_expose_event();
 }
 
-bool studio::Widget_Sound::on_expose_event(GdkEventExpose *heh)
+bool studio::Widget_Sound::on_expose_event(GdkEventExpose */*heh*/)
 {
 	if(!get_window()) return false;
 

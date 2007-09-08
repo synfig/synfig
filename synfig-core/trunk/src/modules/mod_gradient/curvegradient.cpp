@@ -386,7 +386,7 @@ CurveGradient::color_func(const Point &point_, int quality, float supersample)co
 }
 
 float
-CurveGradient::calc_supersample(const synfig::Point &x, float pw,float ph)const
+CurveGradient::calc_supersample(const synfig::Point &/*x*/, float pw,float /*ph*/)const
 {
 	return pw;
 }

@@ -114,7 +114,7 @@ ColorSlider::adjust_color(Type type, Color &color, float amount)
 }
 
 bool
-ColorSlider::redraw(GdkEventExpose*bleh)
+ColorSlider::redraw(GdkEventExpose */*bleh*/)
 {
 	Color color(color_);
 

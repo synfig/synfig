@@ -76,7 +76,7 @@ Renderer_Dragbox::get_enabled_vfunc()const
 void
 Renderer_Dragbox::render_vfunc(
 	const Glib::RefPtr<Gdk::Drawable>& drawable,
-	const Gdk::Rectangle& expose_area
+	const Gdk::Rectangle& /*expose_area*/
 )
 {
 	assert(get_work_area());

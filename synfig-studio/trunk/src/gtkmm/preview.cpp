@@ -104,7 +104,7 @@ public:
 		return false;
 	}
 
-	virtual bool start_frame(ProgressCallback *cb=NULL)
+	virtual bool start_frame(ProgressCallback */*cb*/=NULL)
 	{
 		return true;
 	}
@@ -514,7 +514,7 @@ void studio::Widget_Preview::preview_draw()
 	draw_area.queue_draw();//on_expose_event();
 }
 
-bool studio::Widget_Preview::redraw(GdkEventExpose *heh)
+bool studio::Widget_Preview::redraw(GdkEventExpose */*heh*/)
 {
 	//And render the drawing area
 	Glib::RefPtr<Gdk::Pixbuf> pxnew, px = currentbuf;

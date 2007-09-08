@@ -149,7 +149,7 @@ ConsoleUIInterface::warning(const std::string &task)
 }
 
 bool
-ConsoleUIInterface::amount_complete(int current, int total)
+ConsoleUIInterface::amount_complete(int /*current*/, int /*total*/)
 {
 	return true;
 }

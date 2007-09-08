@@ -192,7 +192,7 @@ StateScale_Context::refresh_tool_options()
 }
 
 Smach::event_result
-StateScale_Context::event_refresh_tool_options(const Smach::event& x)
+StateScale_Context::event_refresh_tool_options(const Smach::event& /*x*/)
 {
 	refresh_tool_options();
 	return Smach::RESULT_ACCEPT;

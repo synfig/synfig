@@ -118,7 +118,7 @@ LinearGradient::color_func(const Point &point, float supersample)const
 }
 
 float
-LinearGradient::calc_supersample(const synfig::Point &x, float pw,float ph)const
+LinearGradient::calc_supersample(const synfig::Point &/*x*/, float pw,float /*ph*/)const
 {
 	return pw/(p2-p1).mag();
 }

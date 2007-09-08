@@ -519,43 +519,43 @@ LayerParamTreeStore::set_row(Gtk::TreeRow row,synfigapp::ValueDesc value_desc)
 }
 
 void
-LayerParamTreeStore::on_value_node_added(ValueNode::Handle value_node)
+LayerParamTreeStore::on_value_node_added(ValueNode::Handle /*value_node*/)
 {
 //	queue_refresh();
 }
 
 void
-LayerParamTreeStore::on_value_node_deleted(etl::handle<ValueNode> value_node)
+LayerParamTreeStore::on_value_node_deleted(etl::handle<ValueNode> /*value_node*/)
 {
 //	queue_refresh();
 }
 
 void
-LayerParamTreeStore::on_value_node_child_added(synfig::ValueNode::Handle value_node,synfig::ValueNode::Handle child)
+LayerParamTreeStore::on_value_node_child_added(synfig::ValueNode::Handle /*value_node*/,synfig::ValueNode::Handle /*child*/)
 {
 	queue_rebuild();
 }
 
 void
-LayerParamTreeStore::on_value_node_child_removed(synfig::ValueNode::Handle value_node,synfig::ValueNode::Handle child)
+LayerParamTreeStore::on_value_node_child_removed(synfig::ValueNode::Handle /*value_node*/,synfig::ValueNode::Handle /*child*/)
 {
 	rebuild();
 }
 
 void
-LayerParamTreeStore::on_value_node_changed(etl::handle<ValueNode> value_node)
+LayerParamTreeStore::on_value_node_changed(etl::handle<ValueNode> /*value_node*/)
 {
 	queue_refresh();
 }
 
 void
-LayerParamTreeStore::on_value_node_replaced(synfig::ValueNode::Handle replaced_value_node,synfig::ValueNode::Handle new_value_node)
+LayerParamTreeStore::on_value_node_replaced(synfig::ValueNode::Handle /*replaced_value_node*/,synfig::ValueNode::Handle /*new_value_node*/)
 {
 	queue_rebuild();
 }
 
 void
-LayerParamTreeStore::on_layer_param_changed(synfig::Layer::Handle handle,synfig::String param_name)
+LayerParamTreeStore::on_layer_param_changed(synfig::Layer::Handle /*handle*/,synfig::String /*param_name*/)
 {
 	queue_refresh();
 }

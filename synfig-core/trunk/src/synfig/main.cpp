@@ -147,7 +147,7 @@ synfig::check_version_(int version,int vec_size, int color_size,int canvas_size,
 	return ret;
 }
 
-static void broken_pipe_signal (int sig)  {
+static void broken_pipe_signal (int /*sig*/)  {
 	synfig::warning("Broken Pipe...");
 }
 

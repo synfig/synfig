@@ -207,7 +207,7 @@ StateRotate_Context::refresh_tool_options()
 }
 
 Smach::event_result
-StateRotate_Context::event_refresh_tool_options(const Smach::event& x)
+StateRotate_Context::event_refresh_tool_options(const Smach::event& /*x*/)
 {
 	refresh_tool_options();
 	return Smach::RESULT_ACCEPT;

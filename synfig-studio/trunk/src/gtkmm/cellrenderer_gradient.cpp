@@ -72,11 +72,11 @@ CellRenderer_Gradient::~CellRenderer_Gradient()
 void
 CellRenderer_Gradient::render_vfunc(
 		const Glib::RefPtr<Gdk::Drawable>& window,
-		Gtk::Widget& widget,
-		const Gdk::Rectangle& background_area,
+		Gtk::Widget& /*widget*/,
+		const Gdk::Rectangle& /*background_area*/,
 		const Gdk::Rectangle& ca,
-		const Gdk::Rectangle& expose_area,
-		Gtk::CellRendererState flags)
+		const Gdk::Rectangle& /*expose_area*/,
+		Gtk::CellRendererState /*flags*/)
 {
 	if(!window)
 		return;
@@ -86,12 +86,12 @@ CellRenderer_Gradient::render_vfunc(
 
 Gtk::CellEditable*
 CellRenderer_Gradient::start_editing_vfunc(
-	GdkEvent* event,
-	Gtk::Widget& widget,
-	const Glib::ustring& path,
-	const Gdk::Rectangle& background_area,
-	const Gdk::Rectangle& cell_area,
-	Gtk::CellRendererState flags)
+	GdkEvent* /*event*/,
+	Gtk::Widget& /*widget*/,
+	const Glib::ustring& /*path*/,
+	const Gdk::Rectangle& /*background_area*/,
+	const Gdk::Rectangle& /*cell_area*/,
+	Gtk::CellRendererState /*flags*/)
 {
 	return 0;
 }

@@ -122,7 +122,7 @@ public:
 	}
 
 	virtual bool
-	amount_complete(int current, int total)
+	amount_complete(int /*current*/, int /*total*/)
 	{
 		return true;
 	}

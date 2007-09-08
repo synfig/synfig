@@ -59,40 +59,40 @@ public:
 class DefaultUIInterface : public UIInterface
 {
 public:
-	Response yes_no(const std::string &title, const std::string &message,Response dflt)
+	Response yes_no(const std::string &/*title*/, const std::string &/*message*/,Response dflt)
 		{ return dflt; }
-	Response yes_no_cancel(const std::string &title, const std::string &message,Response dflt)
+	Response yes_no_cancel(const std::string &/*title*/, const std::string &/*message*/,Response dflt)
 		{ return dflt; }
-	Response ok_cancel(const std::string &title, const std::string &message,Response dflt)
+	Response ok_cancel(const std::string &/*title*/, const std::string &/*message*/,Response dflt)
 		{ return dflt; }
 
-	bool task(const std::string &task)
+	bool task(const std::string &/*task*/)
 		{ return true; }
-	bool error(const std::string &task)
+	bool error(const std::string &/*task*/)
 		{ return true; }
-	bool warning(const std::string &task)
+	bool warning(const std::string &/*task*/)
 		{ return true; }
-	bool amount_complete(int current, int total)
+	bool amount_complete(int /*current*/, int /*total*/)
 		{ return true; }
 };
 
 class ConfidentUIInterface : public UIInterface
 {
 public:
-	Response yes_no(const std::string &title, const std::string &message,Response dflt)
+	Response yes_no(const std::string &/*title*/, const std::string &/*message*/,Response /*dflt*/)
 		{ return RESPONSE_YES; }
-	Response yes_no_cancel(const std::string &title, const std::string &message,Response dflt)
+	Response yes_no_cancel(const std::string &/*title*/, const std::string &/*message*/,Response /*dflt*/)
 		{ return RESPONSE_YES; }
-	Response ok_cancel(const std::string &title, const std::string &message,Response dflt)
+	Response ok_cancel(const std::string &/*title*/, const std::string &/*message*/,Response /*dflt*/)
 		{ return RESPONSE_OK; }
 
-	bool task(const std::string &task)
+	bool task(const std::string &/*task*/)
 		{ return true; }
-	bool error(const std::string &task)
+	bool error(const std::string &/*task*/)
 		{ return true; }
-	bool warning(const std::string &task)
+	bool warning(const std::string &/*task*/)
 		{ return true; }
-	bool amount_complete(int current, int total)
+	bool amount_complete(int /*current*/, int /*total*/)
 		{ return true; }
 };
 

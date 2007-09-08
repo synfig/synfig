@@ -91,7 +91,7 @@ Renderer_Canvas::get_rendering()const
 void
 Renderer_Canvas::render_vfunc(
 	const Glib::RefPtr<Gdk::Drawable>& drawable,
-	const Gdk::Rectangle& expose_area
+	const Gdk::Rectangle& /*expose_area*/
 )
 {
 	assert(get_work_area());

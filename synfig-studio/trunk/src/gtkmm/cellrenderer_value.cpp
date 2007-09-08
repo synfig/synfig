@@ -154,7 +154,7 @@ public:
 		if(parent)parent->grab_focus();
 		Gtk::CellEditable::on_remove_widget();
 	}
-	void start_editing_vfunc(GdkEvent *event)
+	void start_editing_vfunc(GdkEvent */*event*/)
 	{
 		valuewidget->signal_activate().connect(sigc::mem_fun(*this, &studio::ValueBase_Entry::editing_done));
 		show();

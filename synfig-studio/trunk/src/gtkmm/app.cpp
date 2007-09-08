@@ -352,7 +352,7 @@ public:
 	}
 
 	virtual bool
-	amount_complete(int current, int total)
+	amount_complete(int /*current*/, int /*total*/)
 	{
 		while(studio::App::events_pending())studio::App::iteration(false);
 		return true;
@@ -458,7 +458,15 @@ int v_key_check(const char* key, U32* serial, U32 appid)
 }
 
 
+#ifdef _WIN32
+# ifdef LICENSE_KEY_REQUIRED
 int check_license(String basedir)
+# else
+int check_license(String /*basedir*/)
+# endif
+#else
+int check_license(String /*basedir*/)
+#endif
 {
 #ifdef LICENSE_KEY_REQUIRED
 	String key;
@@ -1628,8 +1636,8 @@ App::show_setup()
 	dialog_setup->show();
 }
 
-gint Signal_Open_Ok(GtkWidget *widget, int *val){*val=1;return 0;}
-gint Signal_Open_Cancel(GtkWidget *widget, int *val){*val=2;return 0;}
+gint Signal_Open_Ok(GtkWidget */*widget*/, int *val){*val=1;return 0;}
+gint Signal_Open_Cancel(GtkWidget */*widget*/, int *val){*val=2;return 0;}
 
 //#ifdef WIN32
 //#define USE_WIN32_FILE_DIALOGS 1

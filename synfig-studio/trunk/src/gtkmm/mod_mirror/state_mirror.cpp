@@ -216,7 +216,7 @@ StateMirror_Context::refresh_tool_options()
 }
 
 Smach::event_result
-StateMirror_Context::event_refresh_tool_options(const Smach::event& x)
+StateMirror_Context::event_refresh_tool_options(const Smach::event& /*x*/)
 {
 	refresh_tool_options();
 	return Smach::RESULT_ACCEPT;
@@ -247,7 +247,7 @@ DuckDrag_Mirror::DuckDrag_Mirror():
 #endif
 
 void
-DuckDrag_Mirror::begin_duck_drag(Duckmatic* duckmatic, const synfig::Vector& offset)
+DuckDrag_Mirror::begin_duck_drag(Duckmatic* duckmatic, const synfig::Vector& /*offset*/)
 {
 
 

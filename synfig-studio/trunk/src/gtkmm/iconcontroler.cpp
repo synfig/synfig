@@ -72,7 +72,11 @@ using namespace synfig;
 
 static Glib::RefPtr<Gdk::Pixbuf> _tree_pixbuf_table_value_type[(int)synfig::ValueBase::TYPE_END];
 
+#ifdef WIN32
 IconControler::IconControler(const synfig::String& basepath)
+#else
+IconControler::IconControler(const synfig::String& /*basepath*/)
+#endif
 {
 	Gtk::IconSource icon_source;
 	icon_source.set_direction_wildcarded();

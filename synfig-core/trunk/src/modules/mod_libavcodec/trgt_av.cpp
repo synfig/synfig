@@ -454,7 +454,7 @@ public:
 		return true;
 	}
 
-	void close(AVFormatContext *formatc, AVStream *stream)
+	void close(AVFormatContext */*formatc*/, AVStream *stream)
 	{
 		if(stream)
 			avcodec_close(stream->codec);
@@ -745,7 +745,7 @@ public:
 	}
 
 	// add an audio output stream
-	AVStream *add_audio_stream(int codec_id,const AudioInfo &aInfo)
+	AVStream *add_audio_stream(int codec_id,const AudioInfo &/*aInfo*/)
 	{
 		AVCodecContext *context;
 		AVStream *stream;
@@ -905,7 +905,7 @@ Target_LibAVCodec::end_frame()
 }
 
 bool
-Target_LibAVCodec::start_frame(synfig::ProgressCallback *callback)
+Target_LibAVCodec::start_frame(synfig::ProgressCallback */*callback*/)
 {
 	//prepare all the color buffer stuff, etc.
 

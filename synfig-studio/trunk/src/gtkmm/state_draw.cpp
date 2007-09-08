@@ -515,7 +515,7 @@ StateDraw_Context::refresh_tool_options()
 }
 
 Smach::event_result
-StateDraw_Context::event_refresh_tool_options(const Smach::event& x)
+StateDraw_Context::event_refresh_tool_options(const Smach::event& /*x*/)
 {
 	refresh_tool_options();
 	return Smach::RESULT_ACCEPT;
@@ -550,13 +550,13 @@ StateDraw_Context::~StateDraw_Context()
 }
 
 Smach::event_result
-StateDraw_Context::event_stop_handler(const Smach::event& x)
+StateDraw_Context::event_stop_handler(const Smach::event& /*x*/)
 {
 	throw Smach::egress_exception();
 }
 
 Smach::event_result
-StateDraw_Context::event_refresh_handler(const Smach::event& x)
+StateDraw_Context::event_refresh_handler(const Smach::event& /*x*/)
 {
 	refresh_ducks();
 	return Smach::RESULT_ACCEPT;

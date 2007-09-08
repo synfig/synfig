@@ -119,23 +119,23 @@ public:
 	int get_selected_layer_count()const { return 0; }
 	LayerList get_selected_layers()const { return LayerList(); }
 	synfig::Layer::Handle get_selected_layer()const { return 0; }
-	void set_selected_layers(const LayerList &layer_list) { return; }
-	void set_selected_layer(const synfig::Layer::Handle &layer) { return; }
+	void set_selected_layers(const LayerList &/*layer_list*/) { return; }
+	void set_selected_layer(const synfig::Layer::Handle &/*layer*/) { return; }
 	void clear_selected_layers() { return; }
 
 
 	int get_selected_children_count()const { return 0; }
 	ChildrenList get_selected_children()const { return ChildrenList(); }
 	ChildrenList::value_type get_selected_child()const { return ChildrenList::value_type(); }
-	void set_selected_children(const ChildrenList &children_list) { return; }
-	void set_selected_child(const ChildrenList::value_type &child) { return; }
+	void set_selected_children(const ChildrenList &/*children_list*/) { return; }
+	void set_selected_child(const ChildrenList::value_type &/*child*/) { return; }
 	void clear_selected_children() { return; }
 
 	int get_selected_layer_parameter_count()const { return 0; }
 	LayerParamList get_selected_layer_parameters()const { return LayerParamList(); }
 	LayerParam get_selected_layer_parameter()const { return LayerParam(); }
-	void set_selected_layer_parameters(const LayerParamList &layer_param_list) { return; }
-	void set_selected_layer_param(const LayerParam &layer_param) { return; }
+	void set_selected_layer_parameters(const LayerParamList &/*layer_param_list*/) { return; }
+	void set_selected_layer_param(const LayerParam &/*layer_param*/) { return; }
 	void clear_selected_layer_parameters() { return; }
 
 }; // END of class NullSelectionManager

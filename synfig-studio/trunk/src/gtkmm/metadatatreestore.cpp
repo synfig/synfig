@@ -79,7 +79,7 @@ MetaDataTreeStore::create(etl::loose_handle<synfigapp::CanvasInterface> canvas_i
 }
 
 void
-MetaDataTreeStore::meta_data_changed(synfig::String key)
+MetaDataTreeStore::meta_data_changed(synfig::String /*key*/)
 {
 	rebuild();
 }

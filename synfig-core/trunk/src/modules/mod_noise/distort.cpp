@@ -74,7 +74,7 @@ NoiseDistort::NoiseDistort():
 }
 
 inline Color
-NoiseDistort::color_func(const Point &point, float supersample,Context context)const
+NoiseDistort::color_func(const Point &point, float /*supersample*/,Context context)const
 {
 	Color ret(0,0,0,0);
 
@@ -121,7 +121,7 @@ NoiseDistort::color_func(const Point &point, float supersample,Context context)c
 }
 
 inline float
-NoiseDistort::calc_supersample(const synfig::Point &x, float pw,float ph)const
+NoiseDistort::calc_supersample(const synfig::Point &/*x*/, float /*pw*/,float /*ph*/)const
 {
 	return 0.0f;
 }

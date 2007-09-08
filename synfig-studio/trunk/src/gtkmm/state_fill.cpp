@@ -116,7 +116,7 @@ StateFill_Context::~StateFill_Context()
 }
 
 Smach::event_result
-StateFill_Context::event_stop_handler(const Smach::event& x)
+StateFill_Context::event_stop_handler(const Smach::event& /*x*/)
 {
 	synfig::info("STATE FILL: Received Stop Event");
 	throw Smach::egress_exception();
@@ -125,7 +125,7 @@ StateFill_Context::event_stop_handler(const Smach::event& x)
 }
 
 Smach::event_result
-StateFill_Context::event_refresh_handler(const Smach::event& x)
+StateFill_Context::event_refresh_handler(const Smach::event& /*x*/)
 {
 	synfig::info("STATE FILL: Received Refresh Event");
 	canvas_view->work_area->queue_render_preview();

@@ -109,7 +109,7 @@ ValueNode_Reference::link_local_name(int i)const
 }
 
 String
-ValueNode_Reference::link_name(int i)const
+ValueNode_Reference::link_name(int /*i*/)const
 {
 	return "link";
 }

@@ -163,7 +163,7 @@ public:
 	Smach::event_result event_mouse_motion_handler(const Smach::event& x);
 	Smach::event_result event_refresh_tool_options(const Smach::event& x);
 
-	Smach::event_result event_hijack(const Smach::event& x) { return Smach::RESULT_ACCEPT; }
+	Smach::event_result event_hijack(const Smach::event& /*x*/) { return Smach::RESULT_ACCEPT; }
 
 	void refresh_tool_options();
 
@@ -187,7 +187,7 @@ public:
 	bool run();
 
 	bool no_egress_on_selection_change;
-	Smach::event_result event_layer_selection_changed_handler(const Smach::event& x)
+	Smach::event_result event_layer_selection_changed_handler(const Smach::event& /*x*/)
 	{
 		if(!no_egress_on_selection_change)
 			throw Smach::egress_exception();
@@ -409,7 +409,7 @@ StateBLine_Context::refresh_tool_options()
 }
 
 Smach::event_result
-StateBLine_Context::event_refresh_tool_options(const Smach::event& x)
+StateBLine_Context::event_refresh_tool_options(const Smach::event& /*x*/)
 {
 	refresh_tool_options();
 	return Smach::RESULT_ACCEPT;
@@ -442,7 +442,7 @@ StateBLine_Context::~StateBLine_Context()
 }
 
 Smach::event_result
-StateBLine_Context::event_stop_handler(const Smach::event& x)
+StateBLine_Context::event_stop_handler(const Smach::event& /*x*/)
 {
 	synfig::info("STATE RotoBLine: Received Stop Event");
 //	run();
@@ -453,7 +453,7 @@ StateBLine_Context::event_stop_handler(const Smach::event& x)
 }
 
 Smach::event_result
-StateBLine_Context::event_refresh_handler(const Smach::event& x)
+StateBLine_Context::event_refresh_handler(const Smach::event& /*x*/)
 {
 	synfig::info("STATE RotoBLine: Received Refresh Event");
 	refresh_ducks();
@@ -730,7 +730,7 @@ StateBLine_Context::event_mouse_motion_handler(const Smach::event& x)
 }
 
 Smach::event_result
-StateBLine_Context::event_mouse_release_handler(const Smach::event& x)
+StateBLine_Context::event_mouse_release_handler(const Smach::event& /*x*/)
 {
 	if(curr_duck)
 	{

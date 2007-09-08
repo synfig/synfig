@@ -50,7 +50,7 @@ using namespace synfig;
 
 /* === E N T R Y P O I N T ================================================= */
 
-studio::Dialog_SoundSelect::Dialog_SoundSelect(Gtk::Window &parent, etl::handle<synfigapp::CanvasInterface> ci)
+studio::Dialog_SoundSelect::Dialog_SoundSelect(Gtk::Window &/*parent*/, etl::handle<synfigapp::CanvasInterface> ci)
 :Dialog(_("Sound Select")),
 okbutton(_("Ok")),
 canvas_interface(ci)

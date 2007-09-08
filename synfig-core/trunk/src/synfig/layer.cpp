@@ -425,7 +425,7 @@ Layer::get_version()const
 }
 
 bool
-Layer::set_version(const String &ver)
+Layer::set_version(const String &/*ver*/)
 {
 	return false;
 }
@@ -466,7 +466,7 @@ Layer::hit_check(synfig::Context context, const synfig::Point &pos)const
 **	is anything but accelerated...
 */
 bool
-Layer::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)  const
+Layer::accelerated_render(Context context,Surface *surface,int /*quality*/, const RendDesc &renddesc, ProgressCallback *cb)  const
 {
 	handle<Target> target=surface_target(surface);
 	if(!target)

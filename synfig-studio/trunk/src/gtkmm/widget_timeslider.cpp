@@ -402,7 +402,7 @@ void Widget_Timeslider::refresh()
 	}
 }*/
 
-bool Widget_Timeslider::redraw(bool doublebuffer)
+bool Widget_Timeslider::redraw(bool /*doublebuffer*/)
 {
 	Glib::RefPtr<Gdk::Window> window = get_window();
 

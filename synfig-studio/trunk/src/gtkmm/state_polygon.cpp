@@ -119,7 +119,7 @@ public:
 	void reset();
 	void increment_id();
 	bool no_egress_on_selection_change;
-	Smach::event_result event_layer_selection_changed_handler(const Smach::event& x)
+	Smach::event_result event_layer_selection_changed_handler(const Smach::event& /*x*/)
 	{
 		if(!no_egress_on_selection_change)
 			throw Smach::egress_exception();
@@ -289,7 +289,7 @@ StatePolygon_Context::refresh_tool_options()
 }
 
 Smach::event_result
-StatePolygon_Context::event_refresh_tool_options(const Smach::event& x)
+StatePolygon_Context::event_refresh_tool_options(const Smach::event& /*x*/)
 {
 	refresh_tool_options();
 	return Smach::RESULT_ACCEPT;
@@ -320,7 +320,7 @@ StatePolygon_Context::~StatePolygon_Context()
 }
 
 Smach::event_result
-StatePolygon_Context::event_stop_handler(const Smach::event& x)
+StatePolygon_Context::event_stop_handler(const Smach::event& /*x*/)
 {
 	synfig::info("STATE RotoPolygon: Received Stop Event");
 	//throw Smach::egress_exception();
@@ -330,7 +330,7 @@ StatePolygon_Context::event_stop_handler(const Smach::event& x)
 }
 
 Smach::event_result
-StatePolygon_Context::event_refresh_handler(const Smach::event& x)
+StatePolygon_Context::event_refresh_handler(const Smach::event& /*x*/)
 {
 	synfig::info("STATE RotoPolygon: Received Refresh Event");
 	refresh_ducks();

@@ -463,7 +463,7 @@ CanvasInterface::jump_to_prev_keyframe()
 }
 
 bool
-CanvasInterface::import(const synfig::String &filename, bool copy)
+CanvasInterface::import(const synfig::String &filename, bool /*copy*/)
 {
 	Action::PassiveGrouper group(get_instance().get(),_("Import Image"));
 
@@ -617,7 +617,7 @@ CanvasInterface::waypoint_remove(synfigapp::ValueDesc value_desc,synfig::Waypoin
 
 
 void
-CanvasInterface::auto_export(ValueNode::Handle value_node)
+CanvasInterface::auto_export(ValueNode::Handle /*value_node*/)
 {
 /*
 	// Check to see if we are already exported.
@@ -643,7 +643,7 @@ CanvasInterface::auto_export(ValueNode::Handle value_node)
 }
 
 void
-CanvasInterface::auto_export(const ValueDesc& value_desc)
+CanvasInterface::auto_export(const ValueDesc& /*value_desc*/)
 {
 	// THIS FUNCTION IS DEPRECATED, AND IS NOW A STUB.
 #if 0

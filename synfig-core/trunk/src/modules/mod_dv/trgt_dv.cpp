@@ -151,7 +151,7 @@ dv_trgt::end_frame()
 }
 
 bool
-dv_trgt::start_frame(synfig::ProgressCallback *callback)
+dv_trgt::start_frame(synfig::ProgressCallback */*callback*/)
 {
 	int w=desc.get_w(),h=desc.get_h();
 
@@ -172,7 +172,7 @@ dv_trgt::start_frame(synfig::ProgressCallback *callback)
 }
 
 Color *
-dv_trgt::start_scanline(int scanline)
+dv_trgt::start_scanline(int /*scanline*/)
 {
 	return color_buffer;
 }

@@ -67,7 +67,7 @@ SYNFIG_IMPORTER_SET_CVS_ID(png_mptr,"$Id$");
 /* === M E T H O D S ======================================================= */
 
 void
-png_mptr::png_out_error(png_struct *png_data,const char *msg)
+png_mptr::png_out_error(png_struct */*png_data*/,const char *msg)
 {
 	//png_mptr *me=(png_mptr*)png_data->error_ptr;
 	synfig::error(strprintf("png_mptr: error: %s",msg));
@@ -75,7 +75,7 @@ png_mptr::png_out_error(png_struct *png_data,const char *msg)
 }
 
 void
-png_mptr::png_out_warning(png_struct *png_data,const char *msg)
+png_mptr::png_out_warning(png_struct */*png_data*/,const char *msg)
 {
 	//png_mptr *me=(png_mptr*)png_data->error_ptr;
 	synfig::warning(strprintf("png_mptr: warning: %s",msg));
@@ -83,7 +83,7 @@ png_mptr::png_out_warning(png_struct *png_data,const char *msg)
 }
 
 int
-png_mptr::read_chunk_callback(png_struct *png_data, png_unknown_chunkp chunk)
+png_mptr::read_chunk_callback(png_struct */*png_data*/, png_unknown_chunkp /*chunk*/)
 {
 	/* The unknown chunk structure contains your
 	  chunk data: */
@@ -326,7 +326,7 @@ png_mptr::~png_mptr()
 }
 
 bool
-png_mptr::get_frame(synfig::Surface &surface,Time, synfig::ProgressCallback *cb)
+png_mptr::get_frame(synfig::Surface &surface,Time, synfig::ProgressCallback */*cb*/)
 {
 	surface.mirror(surface_buffer);
 //	surface=surface_buffer;

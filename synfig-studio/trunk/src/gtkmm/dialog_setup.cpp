@@ -337,7 +337,7 @@ GammaPattern::refresh()
 }
 
 bool
-GammaPattern::redraw(GdkEventExpose*bleh)
+GammaPattern::redraw(GdkEventExpose */*bleh*/)
 {
 	static const char hlines[] = { 3, 0 };
 
@@ -410,7 +410,7 @@ BlackLevelSelector::~BlackLevelSelector()
 }
 
 bool
-BlackLevelSelector::redraw(GdkEventExpose*bleh)
+BlackLevelSelector::redraw(GdkEventExpose */*bleh*/)
 {
 	const int w(get_width()),h(get_height());
 
@@ -535,7 +535,7 @@ RedBlueLevelSelector::~RedBlueLevelSelector()
 }
 
 bool
-RedBlueLevelSelector::redraw(GdkEventExpose*bleh)
+RedBlueLevelSelector::redraw(GdkEventExpose */*bleh*/)
 {
 	const int w(get_width()),h(get_height());
 

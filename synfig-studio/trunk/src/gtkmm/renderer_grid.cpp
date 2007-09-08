@@ -69,7 +69,7 @@ Renderer_Grid::get_grid_size()const
 void
 Renderer_Grid::render_vfunc(
 	const Glib::RefPtr<Gdk::Drawable>& drawable,
-	const Gdk::Rectangle& expose_area
+	const Gdk::Rectangle& /*expose_area*/
 )
 {
 	assert(get_work_area());

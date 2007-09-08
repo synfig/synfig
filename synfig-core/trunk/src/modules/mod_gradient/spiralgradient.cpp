@@ -170,7 +170,7 @@ SpiralGradient::color_func(const Point &pos, float supersample)const
 }
 
 float
-SpiralGradient::calc_supersample(const synfig::Point &x, float pw,float ph)const
+SpiralGradient::calc_supersample(const synfig::Point &x, float pw,float /*ph*/)const
 {
 	return (1.41421*pw/radius+(1.41421*pw/Point(x-center).mag())/(PI*2))*0.5;
 }

@@ -173,7 +173,7 @@ public:
 public:
 
 	//! Returns the value of the ValueNode at time \a t
-	virtual ValueBase operator()(Time t)const
+	virtual ValueBase operator()(Time /*t*/)const
 		{ return ValueBase(); }
 
 	//! \internal Sets the id of the ValueNode
@@ -256,7 +256,7 @@ public:
 	static Handle create(ValueBase::Type type=ValueBase::TYPE_NIL);
 
 protected:
-	virtual void get_times_vfunc(Node::time_set &set) const {}
+	virtual void get_times_vfunc(Node::time_set &/*set*/) const {}
 }; // END of class PlaceholderValueNode
 
 

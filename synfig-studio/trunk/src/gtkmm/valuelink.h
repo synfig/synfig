@@ -45,7 +45,7 @@ class ValueBaseLink : public synfig::LinkableValueNode
 
 protected:
 	//stuff I don't want
-	virtual bool set_link_vfunc(int i,synfig::ValueNode::Handle x) {return false;}
+	virtual bool set_link_vfunc(int /*i*/,synfig::ValueNode::Handle /*x*/) {return false;}
 	virtual LinkableValueNode* create_new()const {return 0;}
 
 	//new stuff I need

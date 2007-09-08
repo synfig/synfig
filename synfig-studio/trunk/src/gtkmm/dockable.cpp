@@ -201,7 +201,7 @@ Dockable::on_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& context, i
 }
 
 void
-Dockable::on_drag_end(const Glib::RefPtr<Gdk::DragContext>&context)
+Dockable::on_drag_end(const Glib::RefPtr<Gdk::DragContext>&/*context*/)
 {
 	if(!dnd_success_)
 	{
@@ -211,13 +211,13 @@ Dockable::on_drag_end(const Glib::RefPtr<Gdk::DragContext>&context)
 }
 
 void
-Dockable::on_drag_begin(const Glib::RefPtr<Gdk::DragContext>&context)
+Dockable::on_drag_begin(const Glib::RefPtr<Gdk::DragContext>&/*context*/)
 {
 	dnd_success_=false;
 }
 
 void
-Dockable::on_drag_data_get(const Glib::RefPtr<Gdk::DragContext>&, Gtk::SelectionData& selection_data, guint info, guint time)
+Dockable::on_drag_data_get(const Glib::RefPtr<Gdk::DragContext>&, Gtk::SelectionData& selection_data, guint /*info*/, guint /*time*/)
 {
 	Dockable* tmp(this);
 	dnd_success_=true;

@@ -304,7 +304,7 @@ public:
 		}
 	}
 
-	bool ConstructSet(CurveSet &c, const CurveSet &lhs, const CurveSet &rhs, int type)
+	bool ConstructSet(CurveSet &/*c*/, const CurveSet &lhs, const CurveSet &rhs, int type)
 	{
 		bool in1,in2;
 
@@ -428,7 +428,7 @@ void CurveSet::SetClamp(int &i, int &si)
 	}
 }
 
-void CurveSet::CleanUp(int curve)
+void CurveSet::CleanUp(int /*curve*/)
 {
 }
 
@@ -446,17 +446,17 @@ void CurveSet::CleanUp(int curve)
 	- only works with odd-even rule
 */
 
-CurveSet CurveSet::operator &(const CurveSet &rhs) const
+CurveSet CurveSet::operator &(const CurveSet &/*rhs*/) const
 {
 	return *this;
 }
 
-CurveSet CurveSet::operator |(const CurveSet &rhs) const
+CurveSet CurveSet::operator |(const CurveSet &/*rhs*/) const
 {
 	return *this;
 }
 
-CurveSet CurveSet::operator -(const CurveSet &rhs) const
+CurveSet CurveSet::operator -(const CurveSet &/*rhs*/) const
 {
 	return *this;
 }

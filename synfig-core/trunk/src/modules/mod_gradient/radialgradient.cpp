@@ -172,7 +172,7 @@ RadialGradient::color_func(const Point &point, float supersample)const
 
 
 float
-RadialGradient::calc_supersample(const synfig::Point &x, float pw,float ph)const
+RadialGradient::calc_supersample(const synfig::Point &/*x*/, float pw,float /*ph*/)const
 {
 //	return sqrt(pw*pw+ph*ph)/radius;
 	return 1.2*pw/radius;

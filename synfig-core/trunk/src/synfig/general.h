@@ -83,10 +83,10 @@ class ProgressCallback
 public:
 
 	virtual ~ProgressCallback() { }
-	virtual bool task(const String &task) { return true; }
-	virtual bool error(const String &task) { return true; }
-	virtual bool warning(const String &task) { return true; }
-	virtual bool amount_complete(int current, int total) { return true; }
+	virtual bool task(const String &/*task*/) { return true; }
+	virtual bool error(const String &/*task*/) { return true; }
+	virtual bool warning(const String &/*task*/) { return true; }
+	virtual bool amount_complete(int /*current*/, int /*total*/) { return true; }
 
 	virtual bool valid() const { return true; }
 };

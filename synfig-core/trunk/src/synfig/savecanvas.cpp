@@ -96,7 +96,7 @@ xmlpp::Element* encode_real(xmlpp::Element* root,Real v)
 	return root;
 }
 
-xmlpp::Element* encode_time(xmlpp::Element* root,Time t, float fps=0)
+xmlpp::Element* encode_time(xmlpp::Element* root,Time t, float /*fps*/=0)
 {
 	root->set_name("time");
  	//root->set_attribute("value",t.get_string(fps));

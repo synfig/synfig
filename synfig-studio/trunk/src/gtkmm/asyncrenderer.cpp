@@ -275,7 +275,7 @@ public:
 		alive_flag=false;
 	}
 
-	virtual bool start_frame(synfig::ProgressCallback *cb=0)
+	virtual bool start_frame(synfig::ProgressCallback */*cb*/=0)
 	{
 		return alive_flag;
 	}

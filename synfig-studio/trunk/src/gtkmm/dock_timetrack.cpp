@@ -360,7 +360,7 @@ public:
 	}
 
 	void
-	on_waypoint_clicked(const Glib::ustring &path_string, synfig::Waypoint waypoint,int button)
+	on_waypoint_clicked(const Glib::ustring &/*path_string*/, synfig::Waypoint waypoint,int button)
 	{
 /*
 		Gtk::TreePath path(path_string);

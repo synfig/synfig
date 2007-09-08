@@ -93,13 +93,13 @@ Halftone2::color_func(const Point &point, float supersample,const Color& color)c
 }
 
 inline float
-Halftone2::calc_supersample(const synfig::Point &x, float pw,float ph)const
+Halftone2::calc_supersample(const synfig::Point &/*x*/, float pw,float /*ph*/)const
 {
 	return abs(pw/(halftone.size).mag());
 }
 
 synfig::Layer::Handle
-Halftone2::hit_check(synfig::Context context, const synfig::Point &point)const
+Halftone2::hit_check(synfig::Context /*context*/, const synfig::Point &/*point*/)const
 {
 	return const_cast<Halftone2*>(this);
 }

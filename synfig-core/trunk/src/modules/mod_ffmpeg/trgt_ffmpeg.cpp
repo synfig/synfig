@@ -150,7 +150,7 @@ ffmpeg_trgt::end_frame()
 }
 
 bool
-ffmpeg_trgt::start_frame(synfig::ProgressCallback *callback)
+ffmpeg_trgt::start_frame(synfig::ProgressCallback */*callback*/)
 {
 	int w=desc.get_w(),h=desc.get_h();
 
@@ -170,7 +170,7 @@ ffmpeg_trgt::start_frame(synfig::ProgressCallback *callback)
 }
 
 Color *
-ffmpeg_trgt::start_scanline(int scanline)
+ffmpeg_trgt::start_scanline(int /*scanline*/)
 {
 	return color_buffer;
 }

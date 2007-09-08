@@ -188,7 +188,7 @@ KeyframeTreeStore_Class::init()
 }
 
 void
-KeyframeTreeStore_Class::class_init_function(gpointer g_class, gpointer class_data)
+KeyframeTreeStore_Class::class_init_function(gpointer /*g_class*/, gpointer /*class_data*/)
 {
 	// ???
 }
@@ -258,7 +258,7 @@ KeyframeTreeStore::iterator_sane(const Gtk::TreeModel::iterator& iter)const
 }
 
 inline void
-KeyframeTreeStore::dump_iterator(const GtkTreeIter* gtk_iter, const Glib::ustring &name)const
+KeyframeTreeStore::dump_iterator(const GtkTreeIter* /*gtk_iter*/, const Glib::ustring &/*name*/)const
 {
 #if 0
 	if(!gtk_iter)

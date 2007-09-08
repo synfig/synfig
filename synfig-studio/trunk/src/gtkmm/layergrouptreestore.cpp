@@ -465,7 +465,7 @@ LayerGroupTreeStore::set_value_impl(const Gtk::TreeModel::iterator& iter, int co
 
 
 bool
-LayerGroupTreeStore::row_draggable_vfunc (const TreeModel::Path& path)const
+LayerGroupTreeStore::row_draggable_vfunc (const TreeModel::Path& /*path*/)const
 {
 	//if(!get_iter(path)) return false;
 //	Gtk::TreeModel::Row row(*get_iter(path));
@@ -512,7 +512,7 @@ LayerGroupTreeStore::drag_data_get_vfunc (const TreeModel::Path& path, Gtk::Sele
 }
 
 bool
-LayerGroupTreeStore::drag_data_delete_vfunc (const TreeModel::Path& path)
+LayerGroupTreeStore::drag_data_delete_vfunc (const TreeModel::Path& /*path*/)
 {
 	return true;
 }
@@ -842,7 +842,7 @@ LayerGroupTreeStore::on_group_removed(synfig::String group)
 }
 
 bool
-LayerGroupTreeStore::on_group_changed(synfig::String group)
+LayerGroupTreeStore::on_group_changed(synfig::String /*group*/)
 {
 	//DEBUGPOINT();
 	return true;
@@ -898,7 +898,7 @@ LayerGroupTreeStore::on_activity()
 }
 
 void
-LayerGroupTreeStore::on_layer_status_changed(synfig::Layer::Handle handle,bool x)
+LayerGroupTreeStore::on_layer_status_changed(synfig::Layer::Handle handle,bool /*x*/)
 {
 	Gtk::TreeModel::Children::iterator iter;
 	if(find_layer_row(handle,iter))

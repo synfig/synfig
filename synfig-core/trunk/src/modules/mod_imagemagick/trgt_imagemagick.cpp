@@ -142,7 +142,7 @@ imagemagick_trgt::start_frame(synfig::ProgressCallback *cb)
 }
 
 Color *
-imagemagick_trgt::start_scanline(int scanline)
+imagemagick_trgt::start_scanline(int /*scanline*/)
 {
 	return color_buffer;
 }

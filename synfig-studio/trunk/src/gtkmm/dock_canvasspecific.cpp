@@ -85,17 +85,17 @@ Dock_CanvasSpecific::get_canvas_interface()
 }
 
 void
-Dock_CanvasSpecific::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
+Dock_CanvasSpecific::init_canvas_view_vfunc(etl::loose_handle<CanvasView> /*canvas_view*/)
 {
 }
 
 void
-Dock_CanvasSpecific::init_instance_vfunc(etl::loose_handle<Instance> instance)
+Dock_CanvasSpecific::init_instance_vfunc(etl::loose_handle<Instance> /*instance*/)
 {
 }
 
 void
-Dock_CanvasSpecific::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
+Dock_CanvasSpecific::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> /*canvas_view*/)
 {
 }
 
@@ -109,7 +109,7 @@ Dock_CanvasSpecific::init_instance(etl::handle<Instance> instance)
 }
 
 void
-Dock_CanvasSpecific::delete_instance(etl::handle<Instance> instance)
+Dock_CanvasSpecific::delete_instance(etl::handle<Instance> /*instance*/)
 {
 	changed_canvas_view_vfunc(0);
 }

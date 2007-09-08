@@ -169,7 +169,7 @@ ChildrenTreeStore::refresh_canvases()
 }
 
 void
-ChildrenTreeStore::refresh_row(Gtk::TreeModel::Row &row, bool do_children)
+ChildrenTreeStore::refresh_row(Gtk::TreeModel::Row &row, bool /*do_children*/)
 {
 	CanvasTreeStore::refresh_row(row,false);
 
@@ -204,7 +204,7 @@ ChildrenTreeStore::on_canvas_added(Canvas::Handle canvas)
 }
 
 void
-ChildrenTreeStore::on_canvas_removed(Canvas::Handle canvas)
+ChildrenTreeStore::on_canvas_removed(Canvas::Handle /*canvas*/)
 {
 	rebuild_canvases();
 }
@@ -329,7 +329,7 @@ ChildrenTreeStore::on_value_node_changed(etl::handle<ValueNode> value_node)
 }
 
 void
-ChildrenTreeStore::on_value_node_replaced(synfig::ValueNode::Handle replaced_value_node,synfig::ValueNode::Handle new_value_node)
+ChildrenTreeStore::on_value_node_replaced(synfig::ValueNode::Handle replaced_value_node,synfig::ValueNode::Handle /*new_value_node*/)
 {
 	changed_connection.disconnect();
 	//if(!execute_changed_queued())
