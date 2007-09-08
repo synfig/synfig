@@ -45,6 +45,7 @@ public:
 
 	virtual bool task(const std::string &task) { return true; }
 
+#warning this task(task) thing looks wrong, but the code isn't used, so let's not worry
 	virtual void push_task(const std::string &task,int start=0, int end=100, int total=100)
 		{ task(task); }
 	virtual void pop_task() { return; }
