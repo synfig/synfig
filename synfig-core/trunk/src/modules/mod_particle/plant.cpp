@@ -119,10 +119,10 @@ Plant::branch(int n,int depth,float t, float stunt_growth, synfig::Point positio
 		position[0]+=vel[0]*step;
 		position[1]+=vel[1]*step;
 
-		particle_list.push_back(Particle(
-			position,
-			gradient(t)
-		));
+		particle_list.push_back(Particle(position, gradient(t)));
+		if (particle_list.size() % 1000000 == 0)
+			synfig::info("constructed %d million particles...", particle_list.size()/1000000);
+
 		bounding_rect.expand(position);
 	}
 
@@ -219,6 +219,9 @@ Plant::sync()const
 			Point point(curve(f));
 
 			particle_list.push_back(Particle(point, gradient(0)));
+			if (particle_list.size() % 1000000 == 0)
+				synfig::info("constructed %d million particles...", particle_list.size()/1000000);
+
 			bounding_rect.expand(point);
 
 			Real stunt_growth(random_factor * random(Random::SMOOTH_COSINE,i,f+seg,0.0f,0.0f)/2.0+0.5);
@@ -329,61 +332,72 @@ Plant::get_param_vocab()const
 
 	ret.push_back(ParamDesc("bline")
 		.set_local_name(_("Vertices"))
+		.set_description(_("A list of BLine Points"))
 		//.set_origin("offset")
 		//.set_scalar("width")
-		.set_description(_("A list of BLine Points"))
 	);
 
 	ret.push_back(ParamDesc("gradient")
 		.set_local_name(_("Gradient"))
+		.set_description(_("Gradient to be used for coloring the plant"))
 	);
 
 	ret.push_back(ParamDesc("split_angle")
 		.set_local_name(_("Split Angle"))
+		.set_description(_("Angle by which each split deviates from its parent"))
 	);
 
 	ret.push_back(ParamDesc("gravity")
 		.set_local_name(_("Gravity"))
+		.set_description(_("Direction in which the shoots tend to face"))
 		.set_is_distance()
 	);
 
 	ret.push_back(ParamDesc("velocity")
 		.set_local_name(_("Velocity"))
+		.set_description(_("Amount to which shoots tend to follow the tangent of the BLine"))
 	);
 
 	ret.push_back(ParamDesc("size")
 		.set_local_name(_("Stem Size"))
+		.set_description(_("Size of the stem"))
 		.set_is_distance()
 	);
 
 	ret.push_back(ParamDesc("size_as_alpha")
 		.set_local_name(_("Size As Alpha"))
+		.set_description(_("If enabled, the alpha channel from the gradient is multiplied by the stem size, and an alpha of 1.0 is used when rendering"))
 	);
 
 	ret.push_back(ParamDesc("step")
 		.set_local_name(_("Step"))
+		.set_description(_("Measure of the distance between points when rendering"))
 	);
 
 	ret.push_back(ParamDesc("seed")
 		.set_local_name(_("Seed"))
+		.set_description(_("Used to seed the pseudo-random number generator"))
 	);
 
 	ret.push_back(ParamDesc("splits")
 		.set_local_name(_("Splits"))
+		.set_description(_("Maximum number of times that each sprout can sprout recursively"))
 	);
 
 	ret.push_back(ParamDesc("sprouts")
 		.set_local_name(_("Sprouts"))
+		.set_description(_("Number of places that growth occurs on each bline section"))
 	);
 
 	ret.push_back(ParamDesc("random_factor")
 		.set_local_name(_("Random Factor"))
+		.set_description(_("Used to scale down all random effects.  Set to zero to disable randomness"))
 	);
 
 	ret.push_back(ParamDesc("drag")
 		.set_local_name(_("Drag"))
+		.set_description(_("Drag slows the growth"))
 	);
-
 
 	return ret;
 }
@@ -418,7 +432,7 @@ Plant::accelerated_render(Context context,Surface *surface,int quality, const Re
 
 	if(radius>1.0f)
 	{
-		radius*=1.0;
+		radius*=1.0;			// what does this do?
 		int x1,y1,x2,y2;
 		for(iter=particle_list.rbegin();iter!=particle_list.rend();++iter)
 		{
@@ -431,26 +445,20 @@ Plant::accelerated_render(Context context,Surface *surface,int quality, const Re
 				color.set_a(1);
 			}
 
+			// calculate the box that this particle will be drawn as
 			x1=ceil_to_int((iter->point[0]-tl[0])/pw-(radius*0.5));
 			y1=ceil_to_int((iter->point[1]-tl[1])/ph-(radius*0.5));
 			x2=x1+round_to_int(radius);
 			y2=y1+round_to_int(radius);
 
-			if(x1>=surface->get_w() || y1>=surface->get_h())
-				continue;
+			// if the box is entirely off the canvas, go to the next particle
+			if(x1>=surface->get_w() || y1>=surface->get_h() || x2<0 || y2<0) continue;
 
-			if(x2<0 || y2<0)
-				continue;
-
-			if(x2>=surface->get_w())
-				x2=surface->get_w();
-			if(y2>=surface->get_h())
-				y2=surface->get_h();
-
-			if(x1<0)
-				x1=0;
-			if(y1<0)
-				y1=0;
+			// adjust the box so it's entirely on the canvas
+			if(x2>=surface->get_w()) x2=surface->get_w();
+			if(y2>=surface->get_h()) y2=surface->get_h();
+			if(x1<0) x1=0;
+			if(y1<0) y1=0;
 
 			int w(min(round_to_int(radius),x2-x1));
 			int h(min(round_to_int(radius),y2-y1));
@@ -459,7 +467,6 @@ Plant::accelerated_render(Context context,Surface *surface,int quality, const Re
 				continue;
 
 			Surface::alpha_pen surface_pen(dest_surface.get_pen(x1,y1),1.0f);
-
 			dest_surface.fill(color,surface_pen,w,h);
 		}
 	}
@@ -467,8 +474,6 @@ Plant::accelerated_render(Context context,Surface *surface,int quality, const Re
 	{
 		//radius/=0.01;
 		radius*=sqrt(step)*12.0f;
-		int x,y;
-		float a,b,c,d;
 		for(iter=particle_list.rbegin();iter!=particle_list.rend();++iter)
 		{
 			temp_radius = radius;
@@ -480,32 +485,35 @@ Plant::accelerated_render(Context context,Surface *surface,int quality, const Re
 				color.set_a(1);
 			}
 
-			x=floor_to_int((iter->point[0]-tl[0])/pw-0.5f);
-			y=floor_to_int((iter->point[1]-tl[1])/ph-0.5f);
+			// calculate the point that this particle will be drawn as
+			int x=floor_to_int((iter->point[0]-tl[0])/pw-0.5f);
+			int y=floor_to_int((iter->point[1]-tl[1])/ph-0.5f);
 
-			if(x>=surface->get_w()-1 || y>=surface->get_h()-1 || x<0 || y<0)
-			{
-				continue;
-			}
+			// if the point is off the canvas, go to the next particle
+			// fixme: we're losing a whole row and a whole column of pixels from each tile
+			//        by doing this.  even in the final rendered image there are visible
+			//		  horizontal stripes of damage:
+			//          http://dooglus.rincevent.net/synfig/plant-corruption.png
+			if(x>=surface->get_w()-1 || y>=surface->get_h()-1 || x<0 || y<0) continue;
 
-			a=((iter->point[0]-tl[0])/pw-0.5f-x)*radius;
-			b=((iter->point[1]-tl[1])/ph-0.5f-y)*radius;
-			c=radius-a;
-			d=radius-b;
+			// calculate how much of the point is at (x) and how much at (x+1)
+			float x1=((iter->point[0]-tl[0])/pw-0.5f-x)*radius, x0=radius-x1;
+
+			// calculate how much of the point is at (y) and how much at (y+1)
+			float y1=((iter->point[1]-tl[1])/ph-0.5f-y)*radius, y0=radius-y1;
 
 			Surface::alpha_pen surface_pen(dest_surface.get_pen(x,y),1.0f);
 
-			surface_pen.set_alpha(c*d);
-			surface_pen.put_value(color);
-			surface_pen.inc_x();
-			surface_pen.set_alpha(a*d);
-			surface_pen.put_value(color);
-			surface_pen.inc_y();
-			surface_pen.set_alpha(a*b);
-			surface_pen.put_value(color);
-			surface_pen.dec_x();
-			surface_pen.set_alpha(c*b);
-			surface_pen.put_value(color);
+			//     |  x0 |  x1
+			//  ---+-----+-----
+			//  y0 | 1st | 2nd
+			//  ---+-----+-----
+			//  y1 | 4th | 3rd
+
+			surface_pen.set_alpha(x0*y0); surface_pen.put_value(color); surface_pen.inc_x();
+			surface_pen.set_alpha(x1*y0); surface_pen.put_value(color); surface_pen.inc_y();
+			surface_pen.set_alpha(x1*y1); surface_pen.put_value(color); surface_pen.dec_x();
+			surface_pen.set_alpha(x0*y1); surface_pen.put_value(color);
 		}
 	}
 
