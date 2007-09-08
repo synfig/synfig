@@ -131,10 +131,10 @@ Plant::branch(int n,int depth,float t, float stunt_growth, synfig::Point positio
 	synfig::Real sin_v=synfig::Angle::cos(split_angle).get();
 	synfig::Real cos_v=synfig::Angle::sin(split_angle).get();
 
-	synfig::Vector velocity1(vel[0]*sin_v - vel[1]*cos_v + random_factor*random(2, 30+n+depth, t*splits, 0.0f, 0.0f),
-							 vel[0]*cos_v + vel[1]*sin_v + random_factor*random(2, 32+n+depth, t*splits, 0.0f, 0.0f));
-	synfig::Vector velocity2(vel[0]*sin_v + vel[1]*cos_v + random_factor*random(2, 31+n+depth, t*splits, 0.0f, 0.0f),
-							-vel[0]*cos_v + vel[1]*sin_v + random_factor*random(2, 33+n+depth, t*splits, 0.0f, 0.0f));
+	synfig::Vector velocity1(vel[0]*sin_v - vel[1]*cos_v + random_factor*random(Random::SMOOTH_COSINE, 30+n+depth, t*splits, 0.0f, 0.0f),
+							 vel[0]*cos_v + vel[1]*sin_v + random_factor*random(Random::SMOOTH_COSINE, 32+n+depth, t*splits, 0.0f, 0.0f));
+	synfig::Vector velocity2(vel[0]*sin_v + vel[1]*cos_v + random_factor*random(Random::SMOOTH_COSINE, 31+n+depth, t*splits, 0.0f, 0.0f),
+							-vel[0]*cos_v + vel[1]*sin_v + random_factor*random(Random::SMOOTH_COSINE, 33+n+depth, t*splits, 0.0f, 0.0f));
 
 	Plant::branch(n,depth+1,t,stunt_growth,position,velocity1);
 	Plant::branch(n,depth+1,t,stunt_growth,position,velocity2);
@@ -223,13 +223,13 @@ Plant::sync()const
 
 			bounding_rect.expand(point);
 
-			Real stunt_growth(random(2,i,f+seg,0.0f,0.0f)/2.0+0.5);
+			Real stunt_growth(random(Random::SMOOTH_COSINE,i,f+seg,0.0f,0.0f)/2.0+0.5);
 			stunt_growth*=stunt_growth;
 
 			Vector branch_velocity(deriv(f).norm()*velocity);
 
-			branch_velocity[0]+=random_factor*random(2,1,f*splits,0.0f,0.0f);
-			branch_velocity[1]+=random_factor*random(2,2,f*splits,0.0f,0.0f);
+			branch_velocity[0]+=random_factor*random(Random::SMOOTH_COSINE,1,f*splits,0.0f,0.0f);
+			branch_velocity[1]+=random_factor*random(Random::SMOOTH_COSINE,2,f*splits,0.0f,0.0f);
 
 			if(i%b==0)
 				branch(

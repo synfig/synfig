@@ -48,8 +48,18 @@ public:
 	void set_seed(int x);
 	int get_seed()const { return seed_; }
 
-	float operator()(int subseed,int x,int y=0, int t=0)const;
-	float operator()(int smooth,int subseed,float x,float y=0, float t=0)const;
+	enum SmoothType
+	{
+		SMOOTH_DEFAULT		= 0,
+		SMOOTH_LINEAR		= 1,
+		SMOOTH_COSINE		= 2,
+		SMOOTH_SPLINE		= 3,
+		SMOOTH_CUBIC		= 4,
+		SMOOTH_FAST_SPLINE	= 5,
+	};
+
+	float operator()(int salt,int x,int y=0, int t=0)const;
+	float operator()(SmoothType smooth,int subseed,float x,float y=0, float t=0)const;
 };
 
 /* === E N D =============================================================== */
