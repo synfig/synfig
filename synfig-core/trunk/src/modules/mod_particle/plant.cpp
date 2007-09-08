@@ -102,6 +102,7 @@ Plant::Plant():
 	splits=5;
 	drag=0.1;
 	size=0.015;
+	needs_sync_=true;
 	sync();
 	size_as_alpha=false;
 }
@@ -174,6 +175,8 @@ Plant::calc_bounding_rect()const
 void
 Plant::sync()const
 {
+	Mutex::Lock lock(mutex);
+	if (!needs_sync_) return;
 	particle_list.clear();
 
 	bounding_rect=Rect::zero();

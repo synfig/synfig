@@ -83,6 +83,7 @@ private:
 
 	bool size_as_alpha;
 	mutable bool needs_sync_;
+	mutable synfig::Mutex mutex;
 
 
 	void branch(int n, int depth,float t, float stunt_growth, synfig::Point position,synfig::Vector velocity)const;
