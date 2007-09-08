@@ -183,7 +183,10 @@ Plant::sync()const
 
 	// Bline must have at least 2 points in it
 	if(bline.size()<2)
+	{
+		needs_sync_=false;
 		return;
+	}
 
 	std::vector<synfig::BLinePoint>::const_iterator iter,next;
 
