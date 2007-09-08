@@ -198,11 +198,10 @@ Plant::sync()const
 
 	next=bline.begin();
 
-	if(bline_loop)
-		iter=--bline.end();
-	else
-		iter=next++;
+	if(bline_loop)	iter=--bline.end(); // iter is the last  bline in the list; next is the first  bline in the list
+	else			iter=next++;		// iter is the first bline in the list; next is the second bline in the list
 
+	// loop through the bline; seg counts the blines as we do so; stop before iter is the last bline in the list
 	for(;next!=bline.end();iter=next++,seg++)
 	{
 		curve.p1()=iter->get_vertex();
@@ -213,35 +212,29 @@ Plant::sync()const
 		etl::derivative<etl::hermite<Vector> > deriv(curve);
 
 		Real f;
-		int i(0), b(round_to_int((1.0/step)/(float)sprouts-1));
-		if(b<=0)b=1;
+
+		int i=0, branch_count = 0, steps = round_to_int(1.0/step);
 		for(f=0.0;f<1.0;f+=step,i++)
 		{
 			Point point(curve(f));
 
-			particle_list.push_back(Particle(
-				point,
-				gradient(0)
-			));
-
+			particle_list.push_back(Particle(point, gradient(0)));
 			bounding_rect.expand(point);
 
-			Real stunt_growth(random(Random::SMOOTH_COSINE,i,f+seg,0.0f,0.0f)/2.0+0.5);
+			Real stunt_growth(random_factor * random(Random::SMOOTH_COSINE,i,f+seg,0.0f,0.0f)/2.0+0.5);
 			stunt_growth*=stunt_growth;
 
 			Vector branch_velocity(deriv(f).norm()*velocity);
 
-			branch_velocity[0]+=random_factor*random(Random::SMOOTH_COSINE,1,f*splits,0.0f,0.0f);
-			branch_velocity[1]+=random_factor*random(Random::SMOOTH_COSINE,2,f*splits,0.0f,0.0f);
+			branch_velocity[0] += random_factor * random(Random::SMOOTH_COSINE, 1, f*splits, 0.0f, 0.0f);
+			branch_velocity[1] += random_factor * random(Random::SMOOTH_COSINE, 2, f*splits, 0.0f, 0.0f);
 
-			if(i%b==0)
-				branch(
-					i,
-					0,
-					0,	// time
-					stunt_growth, // stunt growth
-					point,branch_velocity
-				);
+			if((((i+1)*sprouts + steps/2) / steps) > branch_count) {
+				branch_count++;
+				branch(i, 0, 0,		 // time
+					   stunt_growth, // stunt growth
+					   point, branch_velocity);
+			}
 		}
 	}
 
