@@ -1,3 +1,4 @@
+#ifdef THIS_CODE_IS_NOT_USED
 /*! ========================================================================
 ** Extended Template Library
 ** Status Callback Class Implementation
@@ -63,4 +64,4 @@ _ETL_END_NAMESPACE
 /* === E N D =============================================================== */
 
 #endif
-
+#endif /* THIS_CODE_IS_NOT_USED */
