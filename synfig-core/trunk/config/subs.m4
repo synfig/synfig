@@ -16,11 +16,12 @@ AC_DEFUN([AC_ARG_WARNINGS],
 
   gtkmm_warning_flags=''
 
+  # -W is now known as -Wextra, but that's not known by gcc 2 or 3
   case "$gtkmm_enable_warnings" in
     none|no)     gtkmm_warning_flags='';;
-    minimum|yes) gtkmm_warning_flags='-Wall -Wno-unused-parameter';;
-    maximum)     gtkmm_warning_flags='-W -Wall -Wno-unused-parameter';;
-    hardcore)    gtkmm_warning_flags='-W -Wall -Werror -Wno-unused-parameter';;
+    minimum|yes) gtkmm_warning_flags='-Wall';;
+    maximum)     gtkmm_warning_flags='-Wall -W';;
+    hardcore)    gtkmm_warning_flags='-Wall -W -Werror';;
   esac
 
   gtkmm_use_flags=''
