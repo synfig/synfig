@@ -85,14 +85,12 @@ private:
 	mutable bool needs_sync_;
 	mutable synfig::Mutex mutex;
 
-
 	void branch(int n, int depth,float t, float stunt_growth, synfig::Point position,synfig::Vector velocity)const;
+	void sync()const;
 
 public:
 
 	Plant();
-
-	void sync()const;
 
 	void calc_bounding_rect()const;
 
