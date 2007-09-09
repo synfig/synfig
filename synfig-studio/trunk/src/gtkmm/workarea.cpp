@@ -2254,7 +2254,7 @@ studio::WorkArea::async_update_finished()
 	if(!async_renderer)
 		return;
 
-	// If we completed successfuly, then
+	// If we completed successfully, then
 	// we aren't dirty anymore
 	if(async_renderer->has_success())
 	{
@@ -2366,7 +2366,7 @@ again:
 	// it is being displayed correctly
 	drawing_area->queue_draw();
 
-	// If we completed successfuly, then
+	// If we completed successfully, then
 	// we aren't dirty anymore
 	if(ret)
 	{

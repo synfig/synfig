@@ -3042,7 +3042,7 @@ CanvasView::on_drop_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& con
 			if(!get_instance()->perform_action(action))
 				break;
 
-			// Ok, we have successfuly imported at least one item.
+			// Ok, we have successfully imported at least one item.
 			success=true;
 		} while(0); // END of "STRING"
 

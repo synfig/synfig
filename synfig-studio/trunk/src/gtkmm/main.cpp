@@ -116,7 +116,7 @@ int main(int argc, char **argv)
 		throw;
 	}
 
-	std::cerr<<"Application appears to have terminated successfuly"<<std::endl;
+	std::cerr<<"Application appears to have terminated successfully"<<std::endl;
 
 	return 0;
 }
