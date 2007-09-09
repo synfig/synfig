@@ -72,6 +72,7 @@ private:
 	synfig::Angle split_angle;
 	synfig::Vector gravity;
 	synfig::Real velocity;
+	synfig::Real perp_velocity;
 	synfig::Real step;
 	synfig::Real mass;
 	synfig::Real drag;

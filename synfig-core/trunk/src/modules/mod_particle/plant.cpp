@@ -78,6 +78,7 @@ Plant::Plant():
 	split_angle(Angle::deg(10)),
 	gravity(0,-0.1),
 	velocity(0.3),
+	perp_velocity(0.3),
 	step(0.01),
 	sprouts(10)
 {
@@ -227,12 +228,12 @@ Plant::sync()const
 			Real stunt_growth(random_factor * random(Random::SMOOTH_COSINE,i,f+seg,0.0f,0.0f)/2.0+0.5);
 			stunt_growth*=stunt_growth;
 
-			Vector branch_velocity(deriv(f).norm()*velocity);
-
-			branch_velocity[0] += random_factor * random(Random::SMOOTH_COSINE, 1, f*splits, 0.0f, 0.0f);
-			branch_velocity[1] += random_factor * random(Random::SMOOTH_COSINE, 2, f*splits, 0.0f, 0.0f);
-
 			if((((i+1)*sprouts + steps/2) / steps) > branch_count) {
+				Vector branch_velocity(deriv(f).norm()*velocity + deriv(f).perp().norm()*perp_velocity);
+
+				branch_velocity[0] += random_factor * random(Random::SMOOTH_COSINE, 1, f*splits, 0.0f, 0.0f);
+				branch_velocity[1] += random_factor * random(Random::SMOOTH_COSINE, 2, f*splits, 0.0f, 0.0f);
+
 				branch_count++;
 				branch(i, 0, 0,		 // time
 					   stunt_growth, // stunt growth
@@ -265,6 +266,7 @@ Plant::set_param(const String & param, const ValueBase &value)
 	IMPORT_PLUS(gravity,needs_sync_=true);
 	IMPORT_PLUS(gradient,needs_sync_=true);
 	IMPORT_PLUS(velocity,needs_sync_=true);
+	IMPORT_PLUS(perp_velocity,needs_sync_=true);
 	IMPORT_PLUS(step,needs_sync_=true);
 	IMPORT_PLUS(splits,needs_sync_=true);
 	IMPORT_PLUS(sprouts,needs_sync_=true);
@@ -309,6 +311,7 @@ Plant::get_param(const String& param)const
 	EXPORT(split_angle);
 	EXPORT(gravity);
 	EXPORT(velocity);
+	EXPORT(perp_velocity);
 	EXPORT(step);
 	EXPORT(gradient);
 	EXPORT(splits);
@@ -354,8 +357,13 @@ Plant::get_param_vocab()const
 	);
 
 	ret.push_back(ParamDesc("velocity")
-		.set_local_name(_("Velocity"))
-		.set_description(_("Amount to which shoots tend to follow the tangent of the BLine"))
+		.set_local_name(_("Tangential Velocity"))
+		.set_description(_("Amount to which shoots tend to grow along the tangent to the BLine"))
+	);
+
+	ret.push_back(ParamDesc("perp_velocity")
+		.set_local_name(_("Perpendicular Velocity"))
+		.set_description(_("Amount to which shoots tend to grow perpendicular to the tangent to the BLine"))
 	);
 
 	ret.push_back(ParamDesc("size")
