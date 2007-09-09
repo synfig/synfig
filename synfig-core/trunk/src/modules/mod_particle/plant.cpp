@@ -178,6 +178,7 @@ Plant::sync()const
 {
 	Mutex::Lock lock(mutex);
 	if (!needs_sync_) return;
+	time_t start_time; time(&start_time);
 	particle_list.clear();
 
 	bounding_rect=Rect::zero();
@@ -242,6 +243,10 @@ Plant::sync()const
 		}
 	}
 
+	time_t end_time; time(&end_time);
+	if (end_time-start_time > 4)
+		synfig::info("Plant::sync() constructed %d particles in %d seconds\n",
+					 particle_list.size(), int(end_time-start_time));
 	needs_sync_=false;
 }
 
@@ -438,100 +443,180 @@ Plant::accelerated_render(Context context,Surface *surface,int quality, const Re
 		sync();
 
 	std::vector<Particle>::reverse_iterator iter;
-	const float size_factor(1);
-	float radius(size_factor*size*sqrt(1.0f/(abs(pw)*abs(ph)))), temp_radius;
+	float radius(size*sqrt(1.0f/(abs(pw)*abs(ph))));
 
-	if(radius>1.0f)
+	int x1,y1,x2,y2;
+	for(iter=particle_list.rbegin();iter!=particle_list.rend();++iter)
 	{
-		radius*=1.0;			// what does this do?
-		int x1,y1,x2,y2;
-		for(iter=particle_list.rbegin();iter!=particle_list.rend();++iter)
+		float scaled_radius(radius);
+		Color color(iter->color);
+		if(size_as_alpha)
 		{
-			temp_radius = radius;
-			float radius(temp_radius);
-			Color color(iter->color);
-			if(size_as_alpha)
-			{
-				radius*=color.get_a();
-				color.set_a(1);
-			}
-
-			// calculate the box that this particle will be drawn as
-			x1=ceil_to_int((iter->point[0]-tl[0])/pw-(radius*0.5));
-			y1=ceil_to_int((iter->point[1]-tl[1])/ph-(radius*0.5));
-			x2=x1+round_to_int(radius);
-			y2=y1+round_to_int(radius);
-
-			// if the box is entirely off the canvas, go to the next particle
-			if(x1>=surface_width || y1>=surface_height || x2<0 || y2<0) continue;
-
-			// adjust the box so it's entirely on the canvas
-			if(x2>=surface_width) x2=surface_width;
-			if(y2>=surface_height) y2=surface_height;
-			if(x1<0) x1=0;
-			if(y1<0) y1=0;
-
-			int w(min(round_to_int(radius),x2-x1));
-			int h(min(round_to_int(radius),y2-y1));
-
-			if(w<=0 || h<=0)
-				continue;
-
-			Surface::alpha_pen surface_pen(dest_surface.get_pen(x1,y1),1.0f);
-			dest_surface.fill(color,surface_pen,w,h);
+			scaled_radius*=color.get_a();
+			color.set_a(1);
 		}
-	}
-	else
-	{
-		//radius/=0.01;
-		radius*=sqrt(step)*12.0f;
-		for(iter=particle_list.rbegin();iter!=particle_list.rend();++iter)
+
+		// calculate the box that this particle will be drawn as
+		float x1f=(iter->point[0]-tl[0])/pw-(scaled_radius*0.5);
+		float x2f=(iter->point[0]-tl[0])/pw+(scaled_radius*0.5);
+		float y1f=(iter->point[1]-tl[1])/ph-(scaled_radius*0.5);
+		float y2f=(iter->point[1]-tl[1])/ph+(scaled_radius*0.5);
+		x1=ceil_to_int(x1f);
+		x2=ceil_to_int(x2f)-1;
+		y1=ceil_to_int(y1f);
+		y2=ceil_to_int(y2f)-1;
+
+		// if the box is entirely off the canvas, go to the next particle
+		if(x1>surface_width || y1>surface_height || x2<0 || y2<0) continue;
+
+		float x1e=x1-x1f, x2e=x2f-x2, y1e=y1-y1f, y2e=y2f-y2;
+		// printf("x1e %.4f x2e %.4f y1e %.4f y2e %.4f\n", x1e, x2e, y1e, y2e);
+
+		// adjust the box so it's entirely on the canvas
+		if(x1<=0) { x1=0; x1e=0; }
+		if(y1<=0) { y1=0; y1e=0; }
+		if(x2>=surface_width)  { x2=surface_width;  x2e=0; }
+		if(y2>=surface_height) { y2=surface_height; y2e=0; }
+
+		int w(x2-x1), h(y2-y1);
+
+		Surface::alpha_pen surface_pen(dest_surface.get_pen(x1,y1),1.0f);
+		if(w>0 && h>0)
+			dest_surface.fill(color,surface_pen,w,h);
+
+		/* the rectangle doesn't cross any vertical pixel boundaries so we don't
+		 * need to draw any top or bottom edges
+		 */
+		if(x2<x1)
 		{
-			temp_radius = radius;
-			float radius(temp_radius);
-			Color color(iter->color);
-			if(size_as_alpha)
+			// case 1 - a single pixel
+			if(y2<y1)
 			{
-				radius*=color.get_a();
-				color.set_a(1);
+				surface_pen.move_to(x2,y2);
+				surface_pen.set_alpha((x2f-x1f)*(y2f-y1f));
+				surface_pen.put_value(color);
 			}
+			// case 2 - a single vertical column of pixels
+			else
+			{
+				surface_pen.move_to(x2,y1-1);
+				if (y1e!=0)	// maybe draw top pixel
+				{
+					surface_pen.set_alpha(y1e*(x2f-x1f));
+					surface_pen.put_value(color);
+				}
+				surface_pen.inc_y();
+				surface_pen.set_alpha(x2f-x1f);
+				for(int i=y1; i<y2; i++) // maybe draw pixels between
+				{
+					surface_pen.put_value(color);
+					surface_pen.inc_y();
+				}
+				if (y2e!=0)	// maybe draw bottom pixel
+				{
+					surface_pen.set_alpha(y2e*(x2f-x1f));
+					surface_pen.put_value(color);
+				}
+			}
+		}
+		else
+		{
+			// case 3 - a single horizontal row of pixels
+			if(y2<y1)
+			{
+				surface_pen.move_to(x1-1,y2);
+				if (x1e!=0)	// maybe draw left pixel
+				{
+					surface_pen.set_alpha(x1e*(y2f-y1f));
+					surface_pen.put_value(color);
+				}
+				surface_pen.inc_x();
+				surface_pen.set_alpha(y2f-y1f);
+				for(int i=x1; i<x2; i++) // maybe draw pixels between
+				{
+					surface_pen.put_value(color);
+					surface_pen.inc_x();
+				}
+				if (x2e!=0)	// maybe draw right pixel
+				{
+					surface_pen.set_alpha(x2e*(y2f-y1f));
+					surface_pen.put_value(color);
+				}
+			}
+			// case 4 - a proper block of pixels
+			else
+			{
+				if (x1e!=0)	// maybe draw left edge
+				{
+					surface_pen.move_to(x1-1,y1-1);
+					if (y1e!=0)	// maybe draw top left pixel
+					{
+						surface_pen.set_alpha(x1e*y1e);
+						surface_pen.put_value(color);
+					}
+					surface_pen.inc_y();
+					surface_pen.set_alpha(x1e);
+					for(int i=y1; i<y2; i++) // maybe draw pixels along the left edge
+					{
+						surface_pen.put_value(color);
+						surface_pen.inc_y();
+					}
+					if (y2e!=0)	// maybe draw bottom left pixel
+					{
+						surface_pen.set_alpha(x1e*y2e);
+						surface_pen.put_value(color);
+					}
+					surface_pen.inc_x();
+				}
+				else
+					surface_pen.move_to(x1,y2);
 
-			bool top = false, bottom = false, left = false, right = false;
+				if (y2e!=0)	// maybe draw bottom edge
+				{
+					surface_pen.set_alpha(y2e);
+					for(int i=x1; i<x2; i++) // maybe draw pixels along the bottom edge
+					{
+						surface_pen.put_value(color);
+						surface_pen.inc_x();
+					}
+					if (x2e!=0)	// maybe draw bottom right pixel
+					{
+						surface_pen.set_alpha(x2e*y2e);
+						surface_pen.put_value(color);
+					}
+					surface_pen.dec_y();
+				}
+				else
+					surface_pen.move_to(x2,y2-1);
 
-			// calculate the point that this particle will be drawn as
-			int x=ceil_to_int((iter->point[0]-tl[0])/pw-1.499999f);
-			if (x < 0)
-				if (x == -1) left = true; else continue;
-			else  if (x > surface_width-2)
-				if (x == surface_width-1) right = true; else continue;
+				if (x2e!=0)	// maybe draw right edge
+				{
+					surface_pen.set_alpha(x2e);
+					for(int i=y1; i<y2; i++) // maybe draw pixels along the right edge
+					{
+						surface_pen.put_value(color);
+						surface_pen.dec_y();
+					}
+					if (y1e!=0)	// maybe draw top right pixel
+					{
+						surface_pen.set_alpha(x2e*y1e);
+						surface_pen.put_value(color);
+					}
+					surface_pen.dec_x();
+				}
+				else
+					surface_pen.move_to(x2-1,y1-1);
 
-			int y=ceil_to_int((iter->point[1]-tl[1])/ph-1.499999f);
-			if (y < 0)
-				if (y == -1) top = true; else continue;
-			else if (y > surface_height-2)
-				if (y == surface_height-1) bottom = true; else continue;
-
-			// calculate how much of the point is at (x) and how much at (x+1)
-			float x1=((iter->point[0]-tl[0])/pw-0.5f-x)*radius, x0=radius-x1;
-
-			// calculate how much of the point is at (y) and how much at (y+1)
-			float y1=((iter->point[1]-tl[1])/ph-0.5f-y)*radius, y0=radius-y1;
-
-			Surface::alpha_pen surface_pen(dest_surface.get_pen(x,y),1.0f);
-
-			//     |  x0 |  x1
-			//  ---+-----+-----
-			//  y0 | 1st | 2nd
-			//  ---+-----+-----
-			//  y1 | 4th | 3rd
-
-			if (!left  && !top)    { surface_pen.set_alpha(x0*y0); surface_pen.put_value(color); }
-			surface_pen.inc_x();
-			if (!right && !top)    { surface_pen.set_alpha(x1*y0); surface_pen.put_value(color); }
-			surface_pen.inc_y();
-			if (!right && !bottom) { surface_pen.set_alpha(x1*y1); surface_pen.put_value(color); }
-			surface_pen.dec_x();
-			if (!left  && !bottom) { surface_pen.set_alpha(x0*y1); surface_pen.put_value(color); }
+				if (y1e!=0)	// maybe draw top edge
+				{
+					surface_pen.set_alpha(y1e);
+					for(int i=x1; i<x2; i++) // maybe draw pixels along the top edge
+					{
+						surface_pen.put_value(color);
+						surface_pen.dec_x();
+					}
+				}
+			}
 		}
 	}
 
