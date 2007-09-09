@@ -427,6 +427,9 @@ Plant::accelerated_render(Context context,Surface *surface,int quality, const Re
 	const int	w(renddesc.get_w());
 	const int	h(renddesc.get_h());
 
+	const int	surface_width(surface->get_w());
+	const int	surface_height(surface->get_h());
+
 	// Width and Height of a pixel
 	const Real pw = (br[0] - tl[0]) / w;
 	const Real ph = (br[1] - tl[1]) / h;
@@ -460,11 +463,11 @@ Plant::accelerated_render(Context context,Surface *surface,int quality, const Re
 			y2=y1+round_to_int(radius);
 
 			// if the box is entirely off the canvas, go to the next particle
-			if(x1>=surface->get_w() || y1>=surface->get_h() || x2<0 || y2<0) continue;
+			if(x1>=surface_width || y1>=surface_height || x2<0 || y2<0) continue;
 
 			// adjust the box so it's entirely on the canvas
-			if(x2>=surface->get_w()) x2=surface->get_w();
-			if(y2>=surface->get_h()) y2=surface->get_h();
+			if(x2>=surface_width) x2=surface_width;
+			if(y2>=surface_height) y2=surface_height;
 			if(x1<0) x1=0;
 			if(y1<0) y1=0;
 
@@ -493,16 +496,20 @@ Plant::accelerated_render(Context context,Surface *surface,int quality, const Re
 				color.set_a(1);
 			}
 
-			// calculate the point that this particle will be drawn as
-			int x=floor_to_int((iter->point[0]-tl[0])/pw-0.5f);
-			int y=floor_to_int((iter->point[1]-tl[1])/ph-0.5f);
+			bool top = false, bottom = false, left = false, right = false;
 
-			// if the point is off the canvas, go to the next particle
-			// fixme: we're losing a whole row and a whole column of pixels from each tile
-			//        by doing this.  even in the final rendered image there are visible
-			//		  horizontal stripes of damage:
-			//          http://dooglus.rincevent.net/synfig/plant-corruption.png
-			if(x>=surface->get_w()-1 || y>=surface->get_h()-1 || x<0 || y<0) continue;
+			// calculate the point that this particle will be drawn as
+			int x=ceil_to_int((iter->point[0]-tl[0])/pw-1.499999f);
+			if (x < 0)
+				if (x == -1) left = true; else continue;
+			else  if (x > surface_width-2)
+				if (x == surface_width-1) right = true; else continue;
+
+			int y=ceil_to_int((iter->point[1]-tl[1])/ph-1.499999f);
+			if (y < 0)
+				if (y == -1) top = true; else continue;
+			else if (y > surface_height-2)
+				if (y == surface_height-1) bottom = true; else continue;
 
 			// calculate how much of the point is at (x) and how much at (x+1)
 			float x1=((iter->point[0]-tl[0])/pw-0.5f-x)*radius, x0=radius-x1;
@@ -518,10 +525,13 @@ Plant::accelerated_render(Context context,Surface *surface,int quality, const Re
 			//  ---+-----+-----
 			//  y1 | 4th | 3rd
 
-			surface_pen.set_alpha(x0*y0); surface_pen.put_value(color); surface_pen.inc_x();
-			surface_pen.set_alpha(x1*y0); surface_pen.put_value(color); surface_pen.inc_y();
-			surface_pen.set_alpha(x1*y1); surface_pen.put_value(color); surface_pen.dec_x();
-			surface_pen.set_alpha(x0*y1); surface_pen.put_value(color);
+			if (!left  && !top)    { surface_pen.set_alpha(x0*y0); surface_pen.put_value(color); }
+			surface_pen.inc_x();
+			if (!right && !top)    { surface_pen.set_alpha(x1*y0); surface_pen.put_value(color); }
+			surface_pen.inc_y();
+			if (!right && !bottom) { surface_pen.set_alpha(x1*y1); surface_pen.put_value(color); }
+			surface_pen.dec_x();
+			if (!left  && !bottom) { surface_pen.set_alpha(x0*y1); surface_pen.put_value(color); }
 		}
 	}
 
