@@ -225,7 +225,7 @@ Plant::sync()const
 
 			bounding_rect.expand(point);
 
-			Real stunt_growth(random_factor * random(Random::SMOOTH_COSINE,i,f+seg,0.0f,0.0f)/2.0+0.5);
+			Real stunt_growth(random_factor * (random(Random::SMOOTH_COSINE,i,f+seg,0.0f,0.0f)/2.0+0.5));
 			stunt_growth*=stunt_growth;
 
 			if((((i+1)*sprouts + steps/2) / steps) > branch_count) {
