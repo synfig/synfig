@@ -285,17 +285,17 @@ CurveGradient::color_func(const Point &point_, int quality, float supersample)co
 		  else if(quality<=2)search_iterations=10;
 		  else if(quality<=4)search_iterations=8;
 		*/
-		if(!perpendicular)
+		if(perpendicular)
+		{
+			if(quality>7)
+				search_iterations=4;
+		}
+		else
 		{
 			if(quality<=6)search_iterations=7;
 			else if(quality<=7)search_iterations=6;
 			else if(quality<=8)search_iterations=5;
 			else search_iterations=4;
-		}
-		else
-		{
-			if(quality>7)
-				search_iterations=4;
 		}
 
 		// Figure out the closest point on the curve
@@ -304,8 +304,8 @@ CurveGradient::color_func(const Point &point_, int quality, float supersample)co
 
 
 		// Calculate our values
-		p1=curve(t);
-		tangent=deriv(t).norm();
+		p1=curve(t);			// the closest point on the curve
+		tangent=deriv(t).norm(); // the unit tangent at that point
 
 		if(perpendicular)
 		{
@@ -314,22 +314,11 @@ CurveGradient::color_func(const Point &point_, int quality, float supersample)co
 			tangent=-tangent.perp();
 		}
 		else
-		{
+			// the width of the bline at the closest point on the curve
 			thickness=(next->get_width()-iter->get_width())*t+iter->get_width();
-		}
-		//}
 	}
 
-	if(!perpendicular)
-	{
-		diff=tangent.perp()*thickness*width;
-		p1-=diff*0.5;
-		const Real mag(diff.inv_mag());
-		supersample=supersample*mag;
-		diff*=mag*mag;
-		dist=((point_-offset)*diff-p1*diff);
-	}
-	else
+	if(perpendicular)
 	{
 		if(quality>7)
 		{
@@ -349,6 +338,15 @@ CurveGradient::color_func(const Point &point_, int quality, float supersample)co
 			diff*=mag*mag;
 			dist=((point_-offset)*diff-p1*diff);
 		}
+	}
+	else
+	{
+		diff=tangent.perp()*thickness*width;
+		p1-=diff*0.5;
+		const Real mag(diff.inv_mag());
+		supersample=supersample*mag;
+		diff*=mag*mag;
+		dist=((point_-offset)*diff-p1*diff);
 	}
 
 	if(loop)
