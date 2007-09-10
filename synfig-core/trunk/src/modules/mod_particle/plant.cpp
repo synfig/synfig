@@ -78,7 +78,7 @@ Plant::Plant():
 	split_angle(Angle::deg(10)),
 	gravity(0,-0.1),
 	velocity(0.3),
-	perp_velocity(0.3),
+	perp_velocity(0.0),
 	step(0.01),
 	sprouts(10)
 {
