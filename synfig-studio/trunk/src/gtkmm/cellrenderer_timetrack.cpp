@@ -920,6 +920,15 @@ CellRenderer_TimeTrack::show_timepoint_menu(const etl::handle<synfig::Node>& nod
 		Gtk::Menu* interp_menu(manage(new Gtk::Menu()));
 		Waypoint::Model model;
 
+		// note: each of the following 4 'if' blocks provokes these warnings:
+		//  /usr/include/sigc++-2.0/sigc++/adaptors/bound_argument.h:57: warning:
+		//  'model.synfig::Waypoint::Model::temporal_tension' is used uninitialized in this function
+		//	'model.synfig::Waypoint::Model::bias' is used uninitialized in this function
+		//	'model.synfig::Waypoint::Model::continuity' is used uninitialized in this function
+		//	'model.synfig::Waypoint::Model::tension' is used uninitialized in this function
+		//	'model.synfig::Waypoint::Model::priority' is used uninitialized in this function
+		// I don't know if that matters or not.
+
 		if(side==SIDE_LEFT)model.set_before(INTERPOLATION_TCB);
 		else model.set_after(INTERPOLATION_TCB);
 		interp_menu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("TCB"),
