@@ -443,6 +443,7 @@ Plant::accelerated_render(Context context,Surface *surface,int quality, const Re
 		sync();
 
 	std::vector<Particle>::reverse_iterator iter;
+
 	float radius(size*sqrt(1.0f/(abs(pw)*abs(ph))));
 
 	int x1,y1,x2,y2;
@@ -455,6 +456,11 @@ Plant::accelerated_render(Context context,Surface *surface,int quality, const Re
 			scaled_radius*=color.get_a();
 			color.set_a(1);
 		}
+
+		// previously, radius was multiplied by sqrt(step)*12 only if
+		// the radius came out at less than 1 (pixel):
+		//   if (radius<=1.0f) radius*=sqrt(step)*12.0f;
+		// seems a little arbitrary - does it help?
 
 		// calculate the box that this particle will be drawn as
 		float x1f=(iter->point[0]-tl[0])/pw-(scaled_radius*0.5);
