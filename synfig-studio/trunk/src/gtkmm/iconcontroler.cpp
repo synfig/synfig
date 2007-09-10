@@ -96,7 +96,7 @@ IconControler::IconControler(const synfig::String& /*basepath*/)
 		path_to_icons=synfig_root;
 		path_to_icons+=ETL_DIRECTORY_SEPERATOR;
 
-		path_to_icons+="share/pixmaps";
+		path_to_icons+="share/pixmaps/synfigstudio";
 	}
 	path_to_icons+=ETL_DIRECTORY_SEPERATOR;
 
