@@ -128,7 +128,7 @@ Layer_MotionBlur::get_param_vocab()const
 bool
 Layer_MotionBlur::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
-	if(aperture && quality<10)
+	if(aperture && quality<=10)
 	{
 		//int x, y;
 		SuperCallback subimagecb;
@@ -164,13 +164,16 @@ Layer_MotionBlur::accelerated_render(Context context,Surface *surface,int qualit
 				break;
 			case 10: // Rough Quality
             default:
-				samples=1;
+				samples=2;
 				break;
 
 		}
 
+		if (samples == 1) return context.accelerated_render(surface,quality,renddesc,cb);
+
 		Surface tmp;
 		int i;
+		float scale, divisor = 0;
 
 		surface->set_wh(renddesc.get_w(),renddesc.get_h());
 		surface->clear();
@@ -178,16 +181,18 @@ Layer_MotionBlur::accelerated_render(Context context,Surface *surface,int qualit
 		for(i=0;i<samples;i++)
 		{
 			subimagecb=SuperCallback(cb,i*(5000/samples),(i+1)*(5000/samples),5000);
-			context.set_time(time_cur+(aperture/samples)*i-aperture*0.5);
+			context.set_time(time_cur-(aperture*(samples-1-i)/(samples-1)));
 			if(!context.accelerated_render(&tmp,quality,renddesc,&subimagecb))
 				return false;
+			scale = 1.0/(samples-i);
+			divisor += scale;
 			for(int y=0;y<renddesc.get_h();y++)
 				for(int x=0;x<renddesc.get_w();x++)
-					(*surface)[y][x]+=tmp[y][x].premult_alpha();
+					(*surface)[y][x]+=tmp[y][x].premult_alpha()*scale;
 		}
 		for(int y=0;y<renddesc.get_h();y++)
 			for(int x=0;x<renddesc.get_w();x++)
-				(*surface)[y][x]=((*surface)[y][x]/(float)samples).demult_alpha();
+				(*surface)[y][x]=((*surface)[y][x]/divisor).demult_alpha();
 	}
 	else
 		return context.accelerated_render(surface,quality,renddesc,cb);
