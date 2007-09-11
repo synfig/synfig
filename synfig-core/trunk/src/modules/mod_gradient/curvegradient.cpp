@@ -260,7 +260,7 @@ CurveGradient::color_func(const Point &point_, int quality, float supersample)co
 			next=find_closest(fast,bline,point,t,bline_loop,&perp_dist);
 			perp_dist/=curve_length_;
 		}
-		else
+		else					// not perpendicular
 		{
 			next=find_closest(fast,bline,point,t,bline_loop);
 		}
@@ -290,7 +290,7 @@ CurveGradient::color_func(const Point &point_, int quality, float supersample)co
 			if(quality>7)
 				search_iterations=4;
 		}
-		else
+		else					// not perpendicular
 		{
 			if(quality<=6)search_iterations=7;
 			else if(quality<=7)search_iterations=6;
@@ -302,9 +302,8 @@ CurveGradient::color_func(const Point &point_, int quality, float supersample)co
 		if (fast)
 			t = curve.find_closest(fast, point,search_iterations);
 
-
 		// Calculate our values
-		p1=curve(t);			// the closest point on the curve
+		p1=curve(t);			 // the closest point on the curve
 		tangent=deriv(t).norm(); // the unit tangent at that point
 
 		if(perpendicular)
@@ -313,7 +312,7 @@ CurveGradient::color_func(const Point &point_, int quality, float supersample)co
 			p1-=tangent*perp_dist;
 			tangent=-tangent.perp();
 		}
-		else
+		else					// not perpendicular
 			// the width of the bline at the closest point on the curve
 			thickness=(next->get_width()-iter->get_width())*t+iter->get_width();
 	}
@@ -339,7 +338,7 @@ CurveGradient::color_func(const Point &point_, int quality, float supersample)co
 			dist=((point_-offset)*diff-p1*diff);
 		}
 	}
-	else
+	else						// not perpendicular
 	{
 		diff=tangent.perp()*thickness*width;
 		p1-=diff*0.5;
