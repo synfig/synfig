@@ -150,6 +150,9 @@ basename(const std::string &str)
 {
 	std::string::const_iterator iter;
 
+	if(str.size() == 1 && str[0] == ETL_DIRECTORY_SEPERATOR)
+		return str;
+
 	if(str.end()[-1]==ETL_DIRECTORY_SEPERATOR)
 		iter=str.end()-2;
 	else
@@ -159,10 +162,8 @@ basename(const std::string &str)
 		if(*iter==ETL_DIRECTORY_SEPERATOR)
 			break;
 
-	if(iter==str.begin())
-		return str;
-
-	iter++;
+	if (*iter==ETL_DIRECTORY_SEPERATOR)
+		iter++;
 
 	if(str.end()[-1]==ETL_DIRECTORY_SEPERATOR)
 		return std::string(iter,str.end()-1);
@@ -175,6 +176,9 @@ dirname(const std::string &str)
 {
 	std::string::const_iterator iter;
 
+	if(str.size() == 1 && str[0] == ETL_DIRECTORY_SEPERATOR)
+		return str;
+
 	if(str.end()[-1]==ETL_DIRECTORY_SEPERATOR)
 		iter=str.end()-2;
 	else
@@ -185,7 +189,10 @@ dirname(const std::string &str)
 			break;
 
 	if(iter==str.begin())
-		return ".";
+	   if (*iter==ETL_DIRECTORY_SEPERATOR)
+		   return "/";
+	   else
+		   return ".";
 
 	return std::string(str.begin(),iter);
 }
@@ -268,27 +275,26 @@ cleanup_path(std::string path)
 {
 	std::string ret;
 
-	while(basename(path)==".")path=dirname(path);
+	while(basename(path)=="."&&path.size()!=1)path=dirname(path);
 
 	while(!path.empty())
 	{
 		std::string dir(get_root_from_path(path));
 		if((dir=="../" || dir=="..\\") && ret.size())
 		{
-			ret=dirname(ret)+ETL_DIRECTORY_SEPERATOR;
+			ret=dirname(ret);
+			if (*(ret.end()-1)!=ETL_DIRECTORY_SEPERATOR)
+				ret+=ETL_DIRECTORY_SEPERATOR;
 		}
 		else if((dir!="./" && dir!=".\\") && dir!=".")
-		{
 			ret+=dir;
-		}
 		path=remove_root_from_path(path);
 	}
+	if (ret.size()==0)ret+='.';
 
 	// Remove any trailing directory seperators
 	if(ret.size() && ret[ret.size()-1]==ETL_DIRECTORY_SEPERATOR)
-	{
 		ret.erase(ret.begin()+ret.size()-1);
-	}
 	return ret;
 }
 
@@ -301,7 +307,6 @@ absolute_path(std::string path)
 		return cleanup_path(ret);
 	if(is_absolute_path(path))
 		return cleanup_path(path);
-	// TODO: This needs to be written
 	return cleanup_path(ret+ETL_DIRECTORY_SEPERATOR+path);
 }
 
@@ -324,15 +329,11 @@ relative_path(std::string curr_path,std::string dest_path)
 	// If we are on windows and the dest path is on a different drive,
 	// then there is no way to make a relative path to it.
 	if(dest_path.size()>=3 && dest_path[1]==':' && dest_path[0]!=curr_path[0])
-	{
 		return dest_path;
-	}
 #endif
 
 	if(curr_path==dirname(dest_path))
-	{
 		return basename(dest_path);
-	}
 
 	while(!dest_path.empty() && !curr_path.empty() && get_root_from_path(dest_path)==get_root_from_path(curr_path))
 	{
