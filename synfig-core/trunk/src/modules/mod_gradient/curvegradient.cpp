@@ -237,6 +237,7 @@ CurveGradient::color_func(const Point &point_, int quality, float supersample)co
 	Real dist;
 
 	float perp_dist;
+	bool edge_case = false;
 
 	if(bline.size()==0)
 		return Color::alpha();
@@ -306,6 +307,31 @@ CurveGradient::color_func(const Point &point_, int quality, float supersample)co
 		p1=curve(t);			 // the closest point on the curve
 		tangent=deriv(t).norm(); // the unit tangent at that point
 
+		// if the point we're nearest to is at either end of the
+		// bline, our distance from the curve is the distance from the
+		// point on the curve.  we need to know which side of the
+		// curve we're on, so find the average of the two tangents at
+		// this point
+		if (t<0.00001 || t>0.99999)
+		{
+			if (t<0.5)
+			{
+				if (iter->get_split_tangent_flag())
+				{
+					tangent=(iter->get_tangent1().norm()+tangent).norm();
+					edge_case=true;
+				}
+			}
+			else
+			{
+				if (next->get_split_tangent_flag())
+				{
+					tangent=(next->get_tangent2().norm()+tangent).norm();
+					edge_case=true;
+				}
+			}
+		}
+
 		if(perpendicular)
 		{
 			tangent*=curve_length_;
@@ -340,7 +366,15 @@ CurveGradient::color_func(const Point &point_, int quality, float supersample)co
 	}
 	else						// not perpendicular
 	{
-		diff=tangent.perp()*thickness*width;
+		if (edge_case)
+		{
+			diff=(p1-(point_-offset));
+			if(diff*tangent.perp()<0) diff=-diff;
+			diff=diff.norm()*thickness*width;
+		}
+		else
+			diff=tangent.perp()*thickness*width;
+
 		p1-=diff*0.5;
 		const Real mag(diff.inv_mag());
 		supersample=supersample*mag;
