@@ -345,8 +345,8 @@ Layer_Freetype::new_face(const String &newfont)
 
 	if(get_canvas())
 	{
-		if(error)error=FT_New_Face(ft_library,(get_canvas()->get_file_path()+ETL_DIRECTORY_SEPERATOR+newfont).c_str(),face_index,&face);
-		if(error)error=FT_New_Face(ft_library,(get_canvas()->get_file_path()+ETL_DIRECTORY_SEPERATOR+newfont+".ttf").c_str(),face_index,&face);
+		if(error)error=FT_New_Face(ft_library,(get_canvas()->get_file_path()+ETL_DIRECTORY_SEPARATOR+newfont).c_str(),face_index,&face);
+		if(error)error=FT_New_Face(ft_library,(get_canvas()->get_file_path()+ETL_DIRECTORY_SEPARATOR+newfont+".ttf").c_str(),face_index,&face);
 	}
 
 #ifdef USE_MAC_FT_FUNCS

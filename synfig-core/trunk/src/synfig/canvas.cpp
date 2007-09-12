@@ -526,7 +526,7 @@ Canvas::surefind_canvas(const String &id)
 			if(is_absolute_path(file_name))
 				external_canvas=open_canvas(file_name);
 			else
-				external_canvas=open_canvas(get_file_path()+ETL_DIRECTORY_SEPERATOR+file_name);
+				external_canvas=open_canvas(get_file_path()+ETL_DIRECTORY_SEPARATOR+file_name);
 
 			if(!external_canvas)
 				throw Exception::FileNotFound(file_name);
@@ -553,7 +553,7 @@ Canvas::surefind_canvas(const String &id)
 		return new_child_canvas(id);
 	}
 
-	// If the first character is the seperator, then
+	// If the first character is the separator, then
 	// this references the root canvas.
 	if(id[0]==':')
 		return get_root()->surefind_canvas(string(id,1));
@@ -611,7 +611,7 @@ Canvas::find_canvas(const String &id)const
 			if(is_absolute_path(file_name))
 				external_canvas=open_canvas(file_name);
 			else
-				external_canvas=open_canvas(get_file_path()+ETL_DIRECTORY_SEPERATOR+file_name);
+				external_canvas=open_canvas(get_file_path()+ETL_DIRECTORY_SEPARATOR+file_name);
 
 			if(!external_canvas)
 				throw Exception::FileNotFound(file_name);
@@ -636,7 +636,7 @@ Canvas::find_canvas(const String &id)const
 		throw Exception::IDNotFound("Child Canvas in Parent Canvas: (child)"+id);
 	}
 
-	// If the first character is the seperator, then
+	// If the first character is the separator, then
 	// this references the root canvas.
 	if(id.find_first_of(':')==0)
 		return get_root()->find_canvas(string(id,1));

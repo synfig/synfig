@@ -1726,7 +1726,7 @@ App::dialog_open_file(const std::string &title, std::string &filename)
 
 	if(basename(filename)==filename)
 	{
-		gtk_file_selection_set_filename(GTK_FILE_SELECTION(fileselection),(prev_path+ETL_DIRECTORY_SEPERATOR).c_str());
+		gtk_file_selection_set_filename(GTK_FILE_SELECTION(fileselection),(prev_path+ETL_DIRECTORY_SEPARATOR).c_str());
 	}
 	else
 		gtk_file_selection_set_filename(GTK_FILE_SELECTION(fileselection),dirname(filename).c_str());

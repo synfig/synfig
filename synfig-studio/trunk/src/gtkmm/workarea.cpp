@@ -787,7 +787,7 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 		if(!data.empty())
 		{
 			if(!load_sketch(data))
-				load_sketch(dirname(canvas->get_file_name())+ETL_DIRECTORY_SEPERATOR+basename(data));
+				load_sketch(dirname(canvas->get_file_name())+ETL_DIRECTORY_SEPARATOR+basename(data));
 		}
 	}
 

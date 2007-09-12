@@ -63,7 +63,7 @@ ListImporter::ListImporter(const String &filename)
 		return;
 	}
 	String line;
-	String prefix=etl::dirname(filename)+ETL_DIRECTORY_SEPERATOR;
+	String prefix=etl::dirname(filename)+ETL_DIRECTORY_SEPARATOR;
 	while(!stream.eof())
 	{
 		getline(stream,line);

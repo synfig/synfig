@@ -165,18 +165,18 @@ About::About():
 
 	std::string imagepath;
 #ifdef WIN32
-	imagepath=App::get_base_path()+ETL_DIRECTORY_SEPERATOR+IMAGE_DIR;
+	imagepath=App::get_base_path()+ETL_DIRECTORY_SEPARATOR+IMAGE_DIR;
 #else
 	imagepath=IMAGE_DIR;
 #endif
 	char* synfig_root=getenv("SYNFIG_ROOT");
 	if(synfig_root) {
 		imagepath=synfig_root;
-		imagepath+=ETL_DIRECTORY_SEPERATOR;
+		imagepath+=ETL_DIRECTORY_SEPARATOR;
 
 		imagepath+="share/pixmaps";
 	}
-	imagepath+=ETL_DIRECTORY_SEPERATOR;
+	imagepath+=ETL_DIRECTORY_SEPARATOR;
 
 
 	// Create the Logo

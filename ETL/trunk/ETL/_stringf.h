@@ -1,6 +1,6 @@
 /* =========================================================================
 ** Extended Template and Library
-** stringf Prodecure Implementation
+** stringf Procedure Implementation
 ** $Id$
 **
 ** Copyright (c) 2002 Robert B. Quattlebaum Jr.
@@ -49,7 +49,7 @@ _ETL_BEGIN_CDECLS
 #define ETL_NO_THROW throw()
 #endif
 
-#ifdef HAVE_VASPRINTF	// This is the prefered method
+#ifdef HAVE_VASPRINTF	// This is the preferred method
  extern int vasprintf(char **,const char *,va_list)ETL_NO_THROW;
 #else
 
@@ -79,7 +79,7 @@ _ETL_BEGIN_NAMESPACE
 inline std::string
 vstrprintf(const char *format, va_list args)
 {
-#ifdef HAVE_VASPRINTF	// This is the prefered method (and safest)
+#ifdef HAVE_VASPRINTF	// This is the preferred method (and safest)
 	char *buffer;
 	std::string ret;
 	vasprintf(&buffer,format,args);
@@ -150,22 +150,22 @@ basename(const std::string &str)
 {
 	std::string::const_iterator iter;
 
-	if(str.size() == 1 && str[0] == ETL_DIRECTORY_SEPERATOR)
+	if(str.size() == 1 && str[0] == ETL_DIRECTORY_SEPARATOR)
 		return str;
 
-	if(str.end()[-1]==ETL_DIRECTORY_SEPERATOR)
+	if(str.end()[-1]==ETL_DIRECTORY_SEPARATOR)
 		iter=str.end()-2;
 	else
 		iter=str.end()-1;
 
 	for(;iter!=str.begin();iter--)
-		if(*iter==ETL_DIRECTORY_SEPERATOR)
+		if(*iter==ETL_DIRECTORY_SEPARATOR)
 			break;
 
-	if (*iter==ETL_DIRECTORY_SEPERATOR)
+	if (*iter==ETL_DIRECTORY_SEPARATOR)
 		iter++;
 
-	if(str.end()[-1]==ETL_DIRECTORY_SEPERATOR)
+	if(str.end()[-1]==ETL_DIRECTORY_SEPARATOR)
 		return std::string(iter,str.end()-1);
 
 	return std::string(iter,str.end());
@@ -176,20 +176,20 @@ dirname(const std::string &str)
 {
 	std::string::const_iterator iter;
 
-	if(str.size() == 1 && str[0] == ETL_DIRECTORY_SEPERATOR)
+	if(str.size() == 1 && str[0] == ETL_DIRECTORY_SEPARATOR)
 		return str;
 
-	if(str.end()[-1]==ETL_DIRECTORY_SEPERATOR)
+	if(str.end()[-1]==ETL_DIRECTORY_SEPARATOR)
 		iter=str.end()-2;
 	else
 		iter=str.end()-1;
 
 	for(;iter!=str.begin();iter--)
-		if(*iter==ETL_DIRECTORY_SEPERATOR)
+		if(*iter==ETL_DIRECTORY_SEPARATOR)
 			break;
 
 	if(iter==str.begin())
-	   if (*iter==ETL_DIRECTORY_SEPERATOR)
+	   if (*iter==ETL_DIRECTORY_SEPARATOR)
 		   return "/";
 	   else
 		   return ".";
@@ -204,7 +204,7 @@ is_absolute_path(const std::string &path)
 	if(path.size()>=3 && path[1]==':' && (path[2]=='\\' || path[2]=='/'))
 		return true;
 #endif
-	if(!path.empty() && path[0]==ETL_DIRECTORY_SEPERATOR)
+	if(!path.empty() && path[0]==ETL_DIRECTORY_SEPARATOR)
 		return true;
 	return false;
 }
@@ -218,7 +218,7 @@ unix_to_local_path(const std::string &path)
 		switch(*iter)
 		{
 		case '/':
-			ret+=ETL_DIRECTORY_SEPERATOR;
+			ret+=ETL_DIRECTORY_SEPARATOR;
 			break;
 		case '~':
 			ret+='~';
@@ -246,12 +246,12 @@ get_root_from_path(std::string path)
 
 	for(iter=path.begin();iter!=path.end();++iter)
 	{
-		if(*iter==ETL_DIRECTORY_SEPERATOR)
+		if(*iter==ETL_DIRECTORY_SEPARATOR)
 			break;
 		ret+=*iter;
 	}
 	//if(iter!=path.end())
-		ret+=ETL_DIRECTORY_SEPERATOR;
+		ret+=ETL_DIRECTORY_SEPARATOR;
 	return ret;
 }
 
@@ -260,7 +260,7 @@ remove_root_from_path(std::string path)
 {
 	while(!path.empty())
 	{
-		if(path[0]==ETL_DIRECTORY_SEPERATOR)
+		if(path[0]==ETL_DIRECTORY_SEPARATOR)
 		{
 			path.erase(path.begin());
 			return path;
@@ -283,8 +283,8 @@ cleanup_path(std::string path)
 		if((dir=="../" || dir=="..\\") && ret.size())
 		{
 			ret=dirname(ret);
-			if (*(ret.end()-1)!=ETL_DIRECTORY_SEPERATOR)
-				ret+=ETL_DIRECTORY_SEPERATOR;
+			if (*(ret.end()-1)!=ETL_DIRECTORY_SEPARATOR)
+				ret+=ETL_DIRECTORY_SEPARATOR;
 		}
 		else if((dir!="./" && dir!=".\\") && dir!=".")
 			ret+=dir;
@@ -292,8 +292,8 @@ cleanup_path(std::string path)
 	}
 	if (ret.size()==0)ret+='.';
 
-	// Remove any trailing directory seperators
-	if(ret.size() && ret[ret.size()-1]==ETL_DIRECTORY_SEPERATOR)
+	// Remove any trailing directory separators
+	if(ret.size() && ret[ret.size()-1]==ETL_DIRECTORY_SEPARATOR)
 		ret.erase(ret.begin()+ret.size()-1);
 	return ret;
 }
@@ -307,7 +307,7 @@ absolute_path(std::string path)
 		return cleanup_path(ret);
 	if(is_absolute_path(path))
 		return cleanup_path(path);
-	return cleanup_path(ret+ETL_DIRECTORY_SEPERATOR+path);
+	return cleanup_path(ret+ETL_DIRECTORY_SEPARATOR+path);
 }
 
 inline std::string
@@ -343,7 +343,7 @@ relative_path(std::string curr_path,std::string dest_path)
 
 	while(!curr_path.empty())
 	{
-		dest_path=std::string("..")+ETL_DIRECTORY_SEPERATOR+dest_path;
+		dest_path=std::string("..")+ETL_DIRECTORY_SEPARATOR+dest_path;
 		curr_path=remove_root_from_path(curr_path);
 	}
 

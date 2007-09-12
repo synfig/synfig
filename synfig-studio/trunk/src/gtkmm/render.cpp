@@ -180,7 +180,7 @@ RenderSettings::RenderSettings(Gtk::Window& parent,handle<synfigapp::CanvasInter
 
 	try
 	{
-		entry_filename.set_text(Glib::build_filename(Glib::get_home_dir(),Glib::ustring("Desktop")+ETL_DIRECTORY_SEPERATOR+Glib::ustring("output.png")));
+		entry_filename.set_text(Glib::build_filename(Glib::get_home_dir(),Glib::ustring("Desktop")+ETL_DIRECTORY_SEPARATOR+Glib::ustring("output.png")));
 	}
 	catch(...)
 	{

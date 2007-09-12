@@ -94,11 +94,11 @@ IconControler::IconControler(const synfig::String& /*basepath*/)
 	char* synfig_root=getenv("SYNFIG_ROOT");
 	if(synfig_root) {
 		path_to_icons=synfig_root;
-		path_to_icons+=ETL_DIRECTORY_SEPERATOR;
+		path_to_icons+=ETL_DIRECTORY_SEPARATOR;
 
 		path_to_icons+="share/pixmaps/synfigstudio";
 	}
-	path_to_icons+=ETL_DIRECTORY_SEPERATOR;
+	path_to_icons+=ETL_DIRECTORY_SEPARATOR;
 
 	try{
 	Gtk::Window::set_default_icon_from_file(path_to_icons+"synfig_icon."+IMAGE_EXT);

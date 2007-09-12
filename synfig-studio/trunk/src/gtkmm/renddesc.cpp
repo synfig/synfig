@@ -36,7 +36,7 @@
 #include <gtkmm/box.h>
 #include <ETL/misc>
 #include <synfig/general.h>
-//#include <gtkmm/seperator.h>
+//#include <gtkmm/separator.h>
 
 #endif
 

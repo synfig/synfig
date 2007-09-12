@@ -107,7 +107,7 @@ studio::Dock_Info::Dock_Info()
 	table->attach(x,1,2,0,2,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK|Gtk::FILL);
 	table->attach(y,1,2,2,4,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK|Gtk::FILL);
 
-	//seperator
+	//separator
 	table->attach(*manage(new Gtk::VSeparator),2,3,0,4,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK|Gtk::FILL);
 
 	//color label

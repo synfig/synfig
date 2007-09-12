@@ -143,7 +143,7 @@ Import::set_param(const String & param, const ValueBase &value)
 		if(is_absolute_path(newfilename))
 			filename_with_path=newfilename;
 		else
-			filename_with_path=get_canvas()->get_file_path()+ETL_DIRECTORY_SEPERATOR+newfilename;
+			filename_with_path=get_canvas()->get_file_path()+ETL_DIRECTORY_SEPARATOR+newfilename;
 
 		handle<Importer> newimporter;
 
@@ -151,7 +151,7 @@ Import::set_param(const String & param, const ValueBase &value)
 
 		if(!newimporter)
 		{
-			newimporter=Importer::open(get_canvas()->get_file_path()+ETL_DIRECTORY_SEPERATOR+basename(newfilename));
+			newimporter=Importer::open(get_canvas()->get_file_path()+ETL_DIRECTORY_SEPARATOR+basename(newfilename));
 			if(!newimporter)
 			{
 				synfig::error(strprintf("Unable to create an importer object with file \"%s\"",filename_with_path.c_str()));

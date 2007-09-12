@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file general.h
-**	\brief General macros, classes, and prodecure declarations
+**	\brief General macros, classes, and procedure declarations
 **
 **	$Id$
 **

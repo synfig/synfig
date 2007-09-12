@@ -15,9 +15,9 @@
 #endif
 
 #ifdef	WIN32
-#define ETL_DIRECTORY_SEPERATOR		'\\'
+#define ETL_DIRECTORY_SEPARATOR		'\\'
 #else
-#define ETL_DIRECTORY_SEPERATOR		'/'
+#define ETL_DIRECTORY_SEPARATOR		'/'
 #endif
 
 #ifndef ETL_FLAG_NONAMESPACE

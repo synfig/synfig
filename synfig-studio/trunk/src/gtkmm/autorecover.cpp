@@ -159,7 +159,7 @@ AutoRecover::get_shadow_file_name(const synfig::String& filename)
 
 	return Glib::build_filename(get_shadow_directory(),strprintf("%08X-%s",hash1,basename(filename).c_str()));
 
-//	return dirname(filename) + ETL_DIRECTORY_SEPERATOR + ".shadow_" + basename(filename);
+//	return dirname(filename) + ETL_DIRECTORY_SEPARATOR + ".shadow_" + basename(filename);
 }
 
 bool
