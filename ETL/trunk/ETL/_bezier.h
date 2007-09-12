@@ -926,7 +926,7 @@ private:
 	/*
 	 *  NearestPointOnCurve :
 	 *  	Compute the parameter value of the point on a Bezier
-	 *		curve segment closest to some arbtitrary, user-input point.
+	 *		curve segment closest to some arbitrary, user-input point.
 	 *		Return the point on the curve at that parameter value.
 	 *
 	 *    value_type& 	P;			The user-supplied point

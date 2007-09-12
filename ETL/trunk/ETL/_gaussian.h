@@ -52,7 +52,7 @@ typename T::pointer SC3)
 
 	//typename T::iterator_x iter;
 
-	// Setup the row bufers
+	// Setup the row buffers
 	for(x=0;x<w;x++)SC0[x+2]=pen.x()[x]*24;
 	memset(SC1,0,(w+2)*sizeof(typename T::value_type));
 	memset(SC2,0,(w+2)*sizeof(typename T::value_type));
@@ -144,7 +144,7 @@ gaussian_blur_3x3(T pen,int w, int h)
 	typename T::pointer SC0=new typename T::value_type[w+1];
 	typename T::pointer SC1=new typename T::value_type[w+1];
 
-	// Setup the row bufers
+	// Setup the row buffers
 	for(x=0;x<w;x++)SC0[x+1]=pen.x()[x]*4;
 	memset(SC1,0,(w+1)*sizeof(typename T::value_type));
 

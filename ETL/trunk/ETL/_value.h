@@ -73,7 +73,7 @@ class value
 
 	contentholder	*content;
 
-public:	//structor interface
+public:	//constructor interface
 	value()
 		:content(0)
 	{
@@ -134,7 +134,7 @@ private: //implementation interface
 	public: //representation
 		T	obj;
 
-	public: //structor interface
+	public: //constructor interface
 
 		holder(const T &o)
 			:obj(o)

@@ -391,7 +391,7 @@ private:
 		assert(obj);
 		obj->rref();
 
-		// If this is the first reversable handle
+		// If this is the first reversible handle
 		if(!obj->front_)
 		{
 			obj->front_=obj->back_=this;
@@ -411,7 +411,7 @@ private:
 		assert(obj);
 		obj->runref();
 
-		// If this is the last reversable handle
+		// If this is the last reversible handle
 		if(obj->front_==obj->back_)
 		{
 			obj->front_=obj->back_=0;
@@ -556,7 +556,7 @@ public:
 	/*! Uses the default constructor */
 	void spawn() { operator=(handle<value_type>(new T())); }
 
-	//! Returns number of reversable instances
+	//! Returns number of reversible instances
 	count_type
 	rcount()const
 	{

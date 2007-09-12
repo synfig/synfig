@@ -495,7 +495,7 @@ public:
 		if(y0 > y1) std::swap(y0,y1);
 
 		//local variable madness
-		//all things that want to interoperate should provide a default value constructor for = 0
+		//all things that want to inter-operate should provide a default value constructor for = 0
 		accumulator_type acum = 0;
 		int xi=0,yi=0;
 
@@ -561,7 +561,7 @@ public:
 		if(y0 > y1) std::swap(y0,y1);
 
 		//local variable madness
-		//all things that want to interoperate should provide a default value constructor for = 0
+		//all things that want to inter-operate should provide a default value constructor for = 0
 		accumulator_type acum = 0;
 		int xi=0,yi=0;
 

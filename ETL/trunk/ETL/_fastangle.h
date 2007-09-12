@@ -246,7 +246,7 @@ public:
 	bool operator!()const { return v==unit(0); }
 
 	/*
-	** Converstion Classes
+	** Conversion Classes
 	*/
 
 	class radians;
@@ -254,7 +254,7 @@ public:
 	class rotations;
 
 	/*
-	** Trigometric Classes
+	** Trigonometric Classes
 	*/
 
 	class sin;

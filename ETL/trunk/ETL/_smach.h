@@ -38,7 +38,7 @@
 
 #ifdef _MSC_VER
 #pragma warning (disable:4786)
-#pragma warning (disable:4290) // MSVC6 doesnt like function declarations with exception specs
+#pragma warning (disable:4290) // MSVC6 doesn't like function declarations with exception specs
 #endif
 
 //#define ETL_MUTEX_LOCK() 		_mutex::lock lock(mutex)
@@ -338,7 +338,7 @@ public:
 		const state_base *prev_state=default_state;
 
 		// If we are already in a state, leave it and
-		// colapse the state stack
+		// collapse the state stack
 		if(default_state)
 			default_state->leave_state(default_context);
 
@@ -416,7 +416,7 @@ public:
 		const state_base *prev_state=curr_state;
 
 		// If we are already in a state, leave it and
-		// colapse the state stack
+		// collapse the state stack
 		if(curr_state)
 			egress();
 

@@ -110,7 +110,7 @@ public:
 		** few microseconds faster, but a few tests on my
 		** PowerBook G4 have proved otherwise. Indeed I loose
 		** several microseconds using this "optimized" method.
-		** Bizzare.
+		** Bizarre.
 		**	- darco (8-17-2002)
 		{
 			timestamp endtime=get_current_time()+seconds_to_timestamp(length);

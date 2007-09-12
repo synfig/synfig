@@ -239,7 +239,7 @@ private:
 
 public:
 	/*
-	** Converstion Classes
+	** Conversion Classes
 	*/
 
 	class rad;
@@ -247,7 +247,7 @@ public:
 	class rot;
 
 	/*
-	** Trigometric Classes
+	** Trigonometric Classes
 	*/
 
 	class sin;
