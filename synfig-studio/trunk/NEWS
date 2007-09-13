@@ -1,5 +1,14 @@
               synfigstudio releases
 
+ 0.61.07 (SVN ???) - ???? ??, 200? - Bug fixes
+
+  * Fix some tooltips and menu stuff
+  * Allow left-right scrolling in canvas window
+  * Rework mouse interaction with ducks and tangents
+  * Move icons to a subdir
+  * Fix some typos, several crashes and other bugs
+  * Re-enable sketch, draw, polygon by default
+
  0.61.06 (SVN 543) - June 20, 2007 - Bug fixes
  
   * Fix amd64 issues
