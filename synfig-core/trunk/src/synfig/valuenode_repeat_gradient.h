@@ -49,6 +49,10 @@ private:
 	ValueNode::RHandle gradient_;
 	ValueNode::RHandle count_;
 	ValueNode::RHandle width_;
+	ValueNode::RHandle specify_start_;
+	ValueNode::RHandle specify_end_;
+	ValueNode::RHandle start_color_;
+	ValueNode::RHandle end_color_;
 
 public:
 
@@ -63,6 +67,10 @@ public:
 	ValueNode::Handle get_count()const { return count_; }
 
 	bool set_width(ValueNode::Handle x);
+	bool set_specify_start(ValueNode::Handle a);
+	bool set_specify_end(ValueNode::Handle a);
+	bool set_start_color(ValueNode::Handle a);
+	bool set_end_color(ValueNode::Handle a);
 
 
 	virtual bool set_link_vfunc(int i,ValueNode::Handle x);
