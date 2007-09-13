@@ -44,6 +44,7 @@
 #include "valuenode_scale.h"
 #include "valuenode_segcalctangent.h"
 #include "valuenode_segcalcvertex.h"
+#include "valuenode_repeat_gradient.h"
 #include "valuenode_stripes.h"
 #include "valuenode_subtract.h"
 #include "valuenode_timedswap.h"
@@ -102,6 +103,7 @@ ValueNode::subsys_init()
 	ADD_VALUENODE(ValueNode_Composite,		"composite",		_("Composite")			);
 	ADD_VALUENODE(ValueNode_RadialComposite,"radial_composite",	_("Radial Composite")	);
 	ADD_VALUENODE(ValueNode_Reference,		"reference",		_("Reference")			);
+	ADD_VALUENODE(ValueNode_Repeat_Gradient,"repeat_gradient",	_("Repeat Gradient")	);
 	ADD_VALUENODE(ValueNode_Scale,			"scale",			_("Scale")				);
 	ADD_VALUENODE(ValueNode_SegCalcTangent,	"segcalctangent",	_("Segment Tangent")	);
 	ADD_VALUENODE(ValueNode_SegCalcVertex,	"segcalcvertex",	_("Segment Vertex")		);
