@@ -88,31 +88,31 @@ int generic_pen_test(int w, int h)
 
 	if(diff.x!=w || diff.y!=h)
 	{
-		printf("FAILURE! "__FILE__"@%d: pen difference inconsistancy ([%d,%d]!=[%d,%d])\n",__LINE__,diff.x,diff.y,w,h);
+		printf("FAILURE! "__FILE__"@%d: pen difference inconsistency ([%d,%d]!=[%d,%d])\n",__LINE__,diff.x,diff.y,w,h);
 		return 1;
 	}
 
 	if(pen.end_x()-pen.x()!=w-1)
 	{
-		printf("FAILURE! "__FILE__"@%d: iterator_x inconsistancy (%d!=%d)\n",__LINE__,pen.end_x()-pen.x(),w);
+		printf("FAILURE! "__FILE__"@%d: iterator_x inconsistency (%d!=%d)\n",__LINE__,pen.end_x()-pen.x(),w);
 		return 1;
 	}
 
 	if(pen.end_y()-pen.y()!=h-1)
 	{
-		printf("FAILURE! "__FILE__"@%d: iterator_y inconsistancy (%d!=%d)\n",__LINE__,pen.end_y()-pen.y(),h);
+		printf("FAILURE! "__FILE__"@%d: iterator_y inconsistency (%d!=%d)\n",__LINE__,pen.end_y()-pen.y(),h);
 		return 1;
 	}
 
 	if(&pen.end_y()[-1]!=&pen.y()[(h-2)])
 	{
-		printf("FAILURE! "__FILE__"@%d: iterator_y inconsistancy\n",__LINE__);
+		printf("FAILURE! "__FILE__"@%d: iterator_y inconsistency\n",__LINE__);
 		return 1;
 	}
 
 	if(&pen.end_x()[-1]!=&pen.x()[(w-2)])
 	{
-		printf("FAILURE! "__FILE__"@%d: iterator_x inconsistancy\n",__LINE__);
+		printf("FAILURE! "__FILE__"@%d: iterator_x inconsistency\n",__LINE__);
 		return 1;
 	}
 
