@@ -72,7 +72,7 @@ inline float calculate_distance(const synfig::BLinePoint& a,const synfig::BLineP
 #endif
 }
 
-inline float calculate_distance(const std::vector<synfig::BLinePoint>& bline)
+inline float calculate_distance(const std::vector<synfig::BLinePoint>& bline, bool bline_loop)
 {
 	std::vector<synfig::BLinePoint>::const_iterator iter,next,ret;
 	std::vector<synfig::BLinePoint>::const_iterator end(bline.end());
@@ -83,10 +83,10 @@ inline float calculate_distance(const std::vector<synfig::BLinePoint>& bline)
 
 	next=bline.begin();
 
-	//if(loop)
-	//	iter=--bline.end();
-	//else
-	iter=next++;
+	if(bline_loop)
+		iter=--bline.end();
+	else
+		iter=next++;
 
 	for(;next!=end;iter=next++)
 	{
@@ -197,7 +197,7 @@ find_closest(bool fast, const std::vector<synfig::BLinePoint>& bline,const Point
 inline void
 CurveGradient::sync()
 {
-	curve_length_=calculate_distance(bline);
+	curve_length_=calculate_distance(bline, bline_loop);
 }
 
 
