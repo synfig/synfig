@@ -69,13 +69,13 @@ private:
 public:
 	Gradient() { }
 
-	//! Two-Tone Color Gradient Convience Constructor
+	//! Two-Tone Color Gradient Convenience Constructor
 	Gradient(const Color &c1, const Color &c2);
 
-	//! Three-Tone Color Gradient Convience Constructor
+	//! Three-Tone Color Gradient Convenience Constructor
 	Gradient(const Color &c1, const Color &c2, const Color &c3);
 
-	//! Alias for sort (Implemented for consistancy)
+	//! Alias for sort (Implemented for consistency)
 	void sync() { sort(); }
 
 	//! You should call this function after changing stuff.
