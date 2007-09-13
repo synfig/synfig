@@ -1,5 +1,15 @@
               synfig releases
 
+ 0.61.07 (SVN ???) - ???? ??, 200? - Bug fixes
+
+  * Fix importing on amd64 (#1692825)
+  * Fixes for the PasteCanvas layer
+  * Fixes for the curve gradient layer
+  * Fix the plant layer
+  * Fix several other bugs and crashes
+  * Clean up Layer menu and displayed layer names
+  * Use different names for some layers in sifs
+
  0.61.06 (SVN 536) - June 20, 2007 - Bug fixes
 
   * Add fontconfig support
