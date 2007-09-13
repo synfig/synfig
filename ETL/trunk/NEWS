@@ -1,5 +1,10 @@
               ETL releases
 
+ 0.04.10 (SVN ???) - ???? ??, 20?? - Bug fixes
+
+  * Fix dirname for absolute paths (#1793306)
+  * Fix minor issues and typos
+
  0.04.09 (SVN 530) - June 20, 2006 - Bug fixes
 
   * Fix amd64 issue
