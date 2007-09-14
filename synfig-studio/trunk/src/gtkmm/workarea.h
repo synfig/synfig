@@ -235,6 +235,11 @@ private:
 
 	etl::loose_handle<synfig::ValueNode> selected_value_node_;
 
+	bool queued;
+	bool rendering;
+	bool cancel;
+
+	bool curr_guide_is_x;
 
 	/*
  -- ** -- P U B L I C   D A T A -----------------------------------------------
@@ -256,16 +261,17 @@ public:
 	int get_tile_w()const { return tile_w; }
 	int get_tile_h()const { return tile_h; }
 
+	// used in renderer_ducks.cpp
 	bool solid_lines;
-	bool rendering;
+	// used in workarea.cpp
 	bool dirty;
-	bool queued;
-	bool cancel;
+	// used in mod_mirror/state_mirror.cpp
 	bool allow_layer_clicks;
+	// used in state_draw.cpp
 	bool allow_duck_clicks;
 
+	// used in renderer_guides.cpp
 	GuideList::iterator curr_guide;
-	bool curr_guide_is_x;
 
 	/*
  -- ** -- P R I V A T E   M E T H O D S ---------------------------------------
