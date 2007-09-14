@@ -208,8 +208,8 @@ StateWidth_Context::reset()
 StateWidth_Context::StateWidth_Context(CanvasView* canvas_view):
 	canvas_view_(canvas_view),
 	is_working(*canvas_view),
-	prev_workarea_layer_clicking(get_work_area()->allow_layer_clicks),
-	prev_workarea_duck_clicking(get_work_area()->allow_duck_clicks),
+	prev_workarea_layer_clicking(get_work_area()->get_allow_layer_clicks()),
+	prev_workarea_duck_clicking(get_work_area()->get_allow_duck_clicks()),
 	old_duckmask(get_work_area()->get_type_mask()),
 
 	settings(synfigapp::Main::get_selected_input_device()->settings()),
@@ -243,7 +243,7 @@ StateWidth_Context::StateWidth_Context(CanvasView* canvas_view):
 	App::dialog_tool_options->present();
 
 	// Turn off layer clicking
-	get_work_area()->allow_layer_clicks=false;
+	get_work_area()->set_allow_layer_clicks(false);
 
 	// clear out the ducks
 	//get_work_area()->clear_ducks();
@@ -278,7 +278,7 @@ StateWidth_Context::StateWidth_Context(CanvasView* canvas_view):
 	}
 
 	//Disable duck clicking for the maximum coolness :)
-	get_work_area()->allow_duck_clicks = false;
+	get_work_area()->set_allow_duck_clicks(false);
 	get_work_area()->set_type_mask((Duck::Type)((int)Duck::TYPE_WIDTH + (int)Duck::TYPE_RADIUS));
 
 	// Turn the mouse pointer to crosshairs
@@ -327,10 +327,10 @@ StateWidth_Context::~StateWidth_Context()
 	}
 
 	// Restore Duck clicking
-	get_work_area()->allow_duck_clicks = prev_workarea_duck_clicking;
+	get_work_area()->set_allow_duck_clicks(prev_workarea_duck_clicking);
 
 	// Restore layer clicking
-	get_work_area()->allow_layer_clicks = prev_workarea_layer_clicking;
+	get_work_area()->set_allow_layer_clicks(prev_workarea_layer_clicking);
 
 	// Restore the mouse pointer
 	get_work_area()->reset_cursor();

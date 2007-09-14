@@ -386,7 +386,7 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	canvas_view_(canvas_view),
 	is_working(*canvas_view),
 	loop_(false),
-	prev_workarea_layer_status_(get_work_area()->allow_layer_clicks),
+	prev_workarea_layer_status_(get_work_area()->get_allow_layer_clicks()),
 	settings(synfigapp::Main::get_selected_input_device()->settings()),
 	entry_id(),
 	checkbutton_pressure_width(_("Pressure Width")),
@@ -448,10 +448,10 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	get_work_area()->set_type_mask(Duck::TYPE_ALL-Duck::TYPE_TANGENT-Duck::TYPE_WIDTH);
 
 	// Turn off layer clicking
-	get_work_area()->allow_layer_clicks=false;
+	get_work_area()->set_allow_layer_clicks(false);
 
 	// Turn off duck clicking
-	get_work_area()->allow_duck_clicks=false;
+	get_work_area()->set_allow_duck_clicks(false);
 
 	// clear out the ducks
 	//get_work_area()->clear_ducks();
@@ -532,10 +532,10 @@ StateDraw_Context::~StateDraw_Context()
 	get_canvas_view()->work_area->reset_cursor();
 
 	// Restore layer clicking
-	get_work_area()->allow_layer_clicks=prev_workarea_layer_status_;
+	get_work_area()->set_allow_layer_clicks(prev_workarea_layer_status_);
 
 	// Restore duck clicking
-	get_work_area()->allow_duck_clicks=true;
+	get_work_area()->set_allow_duck_clicks(true);
 
 	// Enable the time bar
 	get_canvas_view()->set_sensitive_timebar(true);

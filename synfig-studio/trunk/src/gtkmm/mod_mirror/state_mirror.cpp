@@ -194,7 +194,7 @@ StateMirror_Context::StateMirror_Context(CanvasView* canvas_view):
 	refresh_tool_options();
 	App::dialog_tool_options->present();
 
-	get_work_area()->allow_layer_clicks=true;
+	get_work_area()->set_allow_layer_clicks(true);
 	get_work_area()->set_duck_dragger(duck_dragger_);
 
 //	get_canvas_view()->work_area->set_cursor(Gdk::CROSSHAIR);

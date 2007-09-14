@@ -272,7 +272,7 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	canvas_view_(canvas_view),
 	is_working(*canvas_view),
 	duckmatic_push(get_work_area()),
-	prev_workarea_layer_status_(get_work_area()->allow_layer_clicks),
+	prev_workarea_layer_status_(get_work_area()->get_allow_layer_clicks()),
 	settings(synfigapp::Main::get_selected_input_device()->settings()),
 	entry_id(),
 	adj_feather(0,0,1,0.01,0.1),
@@ -315,7 +315,7 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	App::dialog_tool_options->present();
 
 	// Turn off layer clicking
-	get_work_area()->allow_layer_clicks=false;
+	get_work_area()->set_allow_layer_clicks(false);
 
 	// clear out the ducks
 	get_work_area()->clear_ducks();
@@ -358,7 +358,7 @@ StateCircle_Context::~StateCircle_Context()
 	save_settings();
 
 	// Restore layer clicking
-	get_work_area()->allow_layer_clicks=prev_workarea_layer_status_;
+	get_work_area()->set_allow_layer_clicks(prev_workarea_layer_status_);
 	get_canvas_view()->work_area->reset_cursor();
 
 	App::dialog_tool_options->clear();

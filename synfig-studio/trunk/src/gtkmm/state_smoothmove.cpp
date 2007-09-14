@@ -183,7 +183,7 @@ StateSmoothMove_Context::StateSmoothMove_Context(CanvasView* canvas_view):
 	//App::dialog_tool_options->set_widget(options_table);
 	App::dialog_tool_options->present();
 
-	get_work_area()->allow_layer_clicks=true;
+	get_work_area()->set_allow_layer_clicks(true);
 	get_work_area()->set_duck_dragger(duck_dragger_);
 
 	App::toolbox->refresh();

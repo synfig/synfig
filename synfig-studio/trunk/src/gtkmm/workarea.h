@@ -105,6 +105,7 @@ class WorkArea : public Gtk::Table, public Duckmatic
 	friend class WorkAreaTarget_Full;
 	friend class DirtyTrap;
 	friend class WorkAreaRenderer;
+	friend class WorkAreaProgress;
 
 	/*
  -- ** -- P U B L I C   T Y P E S ---------------------------------------------
@@ -235,11 +236,13 @@ private:
 
 	etl::loose_handle<synfig::ValueNode> selected_value_node_;
 
+	bool allow_duck_clicks;
+	bool allow_layer_clicks;
+	bool cancel;
+	bool curr_guide_is_x;
+	bool dirty;
 	bool queued;
 	bool rendering;
-	bool cancel;
-
-	bool curr_guide_is_x;
 
 	/*
  -- ** -- P U B L I C   D A T A -----------------------------------------------
@@ -261,14 +264,14 @@ public:
 	int get_tile_w()const { return tile_w; }
 	int get_tile_h()const { return tile_h; }
 
+	bool get_allow_layer_clicks() { return allow_layer_clicks; }
+	void set_allow_layer_clicks(bool value) { allow_layer_clicks=value; }
+
+	bool get_allow_duck_clicks() { return allow_duck_clicks; }
+	void set_allow_duck_clicks(bool value) { allow_duck_clicks=value; }
+
 	// used in renderer_ducks.cpp
 	bool solid_lines;
-	// used in workarea.cpp
-	bool dirty;
-	// used in mod_mirror/state_mirror.cpp
-	bool allow_layer_clicks;
-	// used in state_draw.cpp
-	bool allow_duck_clicks;
 
 	// used in renderer_guides.cpp
 	GuideList::iterator curr_guide;

@@ -2119,6 +2119,8 @@ WorkArea::set_quality(int x)
 }
 
 
+namespace studio
+{
 class WorkAreaProgress : public synfig::ProgressCallback
 {
 	WorkArea *work_area;
@@ -2156,6 +2158,7 @@ public:
 		return cb->amount_complete(current,total);
 	}
 };
+}
 
 bool
 studio::WorkArea::async_update_preview()
@@ -2534,7 +2537,12 @@ studio::WorkArea::queue_render_preview()
 	{
 		//synfig::info("queue_render_preview(): (re)queuing...");
 		//render_idle_func_id=g_idle_add_full(G_PRIORITY_DEFAULT,__render_preview,this,NULL);
-		render_idle_func_id=g_timeout_add_full(G_PRIORITY_DEFAULT,queue_time,__render_preview,this,NULL);
+		render_idle_func_id=g_timeout_add_full(
+			G_PRIORITY_DEFAULT,	// priority - 
+			queue_time,			// interval - the time between calls to the function, in milliseconds (1/1000ths of a second)
+			__render_preview,	// function - function to call
+			this,				// data     - data to pass to function
+			NULL);				// notify   - function to call when the idle is removed, or NULL
 		queued=true;
 	}
 /*	else if(rendering)

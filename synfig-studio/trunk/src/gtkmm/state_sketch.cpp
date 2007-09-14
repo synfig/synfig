@@ -230,7 +230,7 @@ StateSketch_Context::StateSketch_Context(CanvasView* canvas_view):
 	action_group(Gtk::ActionGroup::create()),
 	canvas_view_(canvas_view),
 	is_working(*canvas_view),
-	prev_workarea_layer_status_(get_work_area()->allow_layer_clicks),
+	prev_workarea_layer_status_(get_work_area()->get_allow_layer_clicks()),
 	button_clear_sketch(_("Clear Sketch")),
 	button_undo_stroke(_("Undo Stroke")),
 	button_save_sketch(_("Save Sketch")),
@@ -333,12 +333,12 @@ StateSketch_Context::StateSketch_Context(CanvasView* canvas_view):
 	App::dialog_tool_options->present();
 
 	// Turn off layer clicking
-	get_work_area()->allow_layer_clicks=false;
+	get_work_area()->set_allow_layer_clicks(false);
 
 	get_canvas_view()->work_area->set_cursor(Gdk::PENCIL);
 
 	// Turn off duck clicking
-	get_work_area()->allow_duck_clicks=false;
+	get_work_area()->set_allow_duck_clicks(false);
 
 	// clear out the ducks
 	//get_work_area()->clear_ducks();
@@ -366,10 +366,10 @@ StateSketch_Context::~StateSketch_Context()
 	App::dialog_tool_options->clear();
 
 	// Restore layer clicking
-	get_work_area()->allow_layer_clicks=prev_workarea_layer_status_;
+	get_work_area()->set_allow_layer_clicks(prev_workarea_layer_status_);
 
 	// Restore duck clicking
-	get_work_area()->allow_duck_clicks=true;
+	get_work_area()->set_allow_duck_clicks(true);
 
 	// Enable the time bar
 	//get_canvas_view()->set_sensitive_timebar(true);

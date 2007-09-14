@@ -215,7 +215,7 @@ StatePolygon_Context::increment_id()
 StatePolygon_Context::StatePolygon_Context(CanvasView* canvas_view):
 	canvas_view_(canvas_view),
 	is_working(*canvas_view),
-	prev_workarea_layer_status_(get_work_area()->allow_layer_clicks),
+	prev_workarea_layer_status_(get_work_area()->get_allow_layer_clicks()),
 	duckmatic_push(get_work_area()),
 	settings(synfigapp::Main::get_selected_input_device()->settings()),
 	entry_id(),
@@ -235,7 +235,7 @@ StatePolygon_Context::StatePolygon_Context(CanvasView* canvas_view):
 
 
 	// Turn off layer clicking
-	get_work_area()->allow_layer_clicks=false;
+	get_work_area()->set_allow_layer_clicks(false);
 
 	// clear out the ducks
 	get_work_area()->clear_ducks();
@@ -301,7 +301,7 @@ StatePolygon_Context::~StatePolygon_Context()
 
 	save_settings();
 	// Restore layer clicking
-	get_work_area()->allow_layer_clicks=prev_workarea_layer_status_;
+	get_work_area()->set_allow_layer_clicks(prev_workarea_layer_status_);
 
 	App::dialog_tool_options->clear();
 

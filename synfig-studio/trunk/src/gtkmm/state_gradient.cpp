@@ -245,7 +245,7 @@ StateGradient_Context::StateGradient_Context(CanvasView* canvas_view):
 	is_working(*canvas_view),
 	duckmatic_push(get_work_area()),
 	settings(synfigapp::Main::get_selected_input_device()->settings()),
-	prev_workarea_layer_status_(get_work_area()->allow_layer_clicks),
+	prev_workarea_layer_status_(get_work_area()->get_allow_layer_clicks()),
 	entry_id()
 {
 	no_egress_on_selection_change=false;
@@ -277,7 +277,7 @@ StateGradient_Context::StateGradient_Context(CanvasView* canvas_view):
 
 
 	// Turn off layer clicking
-	get_work_area()->allow_layer_clicks=false;
+	get_work_area()->set_allow_layer_clicks(false);
 
 	get_canvas_view()->work_area->set_cursor(Gdk::CROSSHAIR);
 
@@ -322,8 +322,8 @@ StateGradient_Context::~StateGradient_Context()
 	save_settings();
 
 	// Restore layer clicking
-//	get_work_area()->allow_layer_clicks=prev_workarea_layer_status_;
-	get_work_area()->allow_layer_clicks=true;
+//	get_work_area()->set_allow_layer_clicks(prev_workarea_layer_status_);
+	get_work_area()->set_allow_layer_clicks(true);
 	get_canvas_view()->work_area->reset_cursor();
 
 	App::dialog_tool_options->clear();
