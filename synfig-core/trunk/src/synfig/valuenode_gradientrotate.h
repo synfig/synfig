@@ -42,7 +42,7 @@ struct ValueNode_GradientRotate : public LinkableValueNode
 
 protected:
 
-	ValueNode_GradientRotate();
+	ValueNode_GradientRotate(const Gradient& x);
 
 private:
 

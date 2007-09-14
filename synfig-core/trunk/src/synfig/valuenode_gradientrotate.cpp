@@ -51,10 +51,10 @@ using namespace synfig;
 
 /* === M E T H O D S ======================================================= */
 
-synfig::ValueNode_GradientRotate::ValueNode_GradientRotate():
+synfig::ValueNode_GradientRotate::ValueNode_GradientRotate(const Gradient& x):
 	LinkableValueNode(synfig::ValueBase::TYPE_GRADIENT)
 {
-	set_link("gradient",ValueNode_Const::create(Gradient()));
+	set_link("gradient",ValueNode_Const::create(x));
 	set_link("offset",ValueNode_Const::create(Real(0)));
 	DCAST_HACK_ENABLE();
 }
@@ -62,7 +62,7 @@ synfig::ValueNode_GradientRotate::ValueNode_GradientRotate():
 LinkableValueNode*
 ValueNode_GradientRotate::create_new()const
 {
-	return new ValueNode_GradientRotate();
+	return new ValueNode_GradientRotate(Gradient());
 }
 
 ValueNode_GradientRotate*
@@ -75,8 +75,7 @@ ValueNode_GradientRotate::create(const ValueBase& x)
 		throw runtime_error("synfig::ValueNode_GradientRotate:Bad type "+ValueBase::type_name(id));
 	}
 
-	ValueNode_GradientRotate* value_node=new ValueNode_GradientRotate();
-	value_node->set_gradient(ValueNode_Const::create(x.get(Gradient())));
+	ValueNode_GradientRotate* value_node=new ValueNode_GradientRotate(x.get(Gradient()));
 
 	assert(value_node->get_type()==id);
 
