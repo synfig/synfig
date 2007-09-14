@@ -42,7 +42,7 @@ struct ValueNode_Repeat_Gradient : public LinkableValueNode
 
 protected:
 
-	ValueNode_Repeat_Gradient();
+	ValueNode_Repeat_Gradient(const Gradient& x);
 
 private:
 

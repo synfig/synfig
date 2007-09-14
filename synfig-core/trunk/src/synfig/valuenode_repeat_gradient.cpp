@@ -52,9 +52,9 @@ using namespace synfig;
 
 /* === M E T H O D S ======================================================= */
 
-synfig::ValueNode_Repeat_Gradient::ValueNode_Repeat_Gradient():LinkableValueNode(synfig::ValueBase::TYPE_GRADIENT)
+synfig::ValueNode_Repeat_Gradient::ValueNode_Repeat_Gradient(const Gradient& x):LinkableValueNode(synfig::ValueBase::TYPE_GRADIENT)
 {
-	set_link("gradient",ValueNode_Const::create(Gradient()));
+	set_link("gradient",ValueNode_Const::create(x));
 	set_link("count",count_=ValueNode_Const::create(int(3)));
 	set_link("width",ValueNode_Const::create(0.5));
 	set_link("specify_start",ValueNode_Const::create(true));
@@ -66,7 +66,7 @@ synfig::ValueNode_Repeat_Gradient::ValueNode_Repeat_Gradient():LinkableValueNode
 LinkableValueNode*
 ValueNode_Repeat_Gradient::create_new()const
 {
-	return new ValueNode_Repeat_Gradient();
+	return new ValueNode_Repeat_Gradient(Gradient());
 }
 
 ValueNode_Repeat_Gradient*
@@ -80,8 +80,7 @@ ValueNode_Repeat_Gradient::create(const ValueBase& x)
 		throw runtime_error("synfig::ValueNode_Repeat_Gradient:Bad type "+ValueBase::type_name(id));
 	}
 
-	ValueNode_Repeat_Gradient* value_node=new ValueNode_Repeat_Gradient();
-	value_node->set_gradient(ValueNode_Const::create(x.get(Gradient())));
+	ValueNode_Repeat_Gradient* value_node=new ValueNode_Repeat_Gradient(x.get(Gradient()));
 
 	assert(value_node->get_type()==id);
 
