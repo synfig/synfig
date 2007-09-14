@@ -203,6 +203,7 @@ void
 Widget_Gradient::remove_cpoint(float x)
 {
 	gradient_.erase(gradient_.proximity(x));
+	signal_value_changed_();
 	queue_draw();
 }
 
