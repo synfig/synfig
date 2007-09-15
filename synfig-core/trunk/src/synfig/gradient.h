@@ -65,12 +65,13 @@ class Gradient
 {
 public:
 	typedef GradientCPoint CPoint;
-	typedef vector<GradientCPoint>::const_iterator const_iterator;
-	typedef vector<GradientCPoint>::iterator iterator;
-	typedef vector<GradientCPoint>::const_reverse_iterator const_reverse_iterator;
-	typedef vector<GradientCPoint>::reverse_iterator reverse_iterator;
+	typedef vector<CPoint> CPointList;
+	typedef CPointList::const_iterator			const_iterator;
+	typedef CPointList::iterator				iterator;
+	typedef CPointList::const_reverse_iterator	const_reverse_iterator;
+	typedef CPointList::reverse_iterator		reverse_iterator;
 private:
-	vector<GradientCPoint> cpoints;
+	CPointList cpoints;
 public:
 	Gradient() { }
 
@@ -86,7 +87,7 @@ public:
 	//! You should call this function after changing stuff.
 	void sort();
 
-	void push_back(const GradientCPoint cpoint) { cpoints.push_back(cpoint); }
+	void push_back(const CPoint cpoint) { cpoints.push_back(cpoint); }
 	iterator erase(iterator iter) { return cpoints.erase(iter); }
 	bool empty()const { return cpoints.empty(); }
 	size_t size()const { return cpoints.size(); }
@@ -99,6 +100,16 @@ public:
 	const_iterator end()const { return cpoints.end(); }
 	const_reverse_iterator rbegin()const { return cpoints.rbegin(); }
 	const_reverse_iterator rend()const { return cpoints.rend(); }
+
+	Gradient &operator+=(const Gradient &rhs);
+	Gradient &operator-=(const Gradient &rhs);
+	Gradient &operator*=(const float    &rhs);
+	Gradient &operator/=(const float    &rhs);
+
+	Gradient operator+(const Gradient &rhs)const { return Gradient(*this)+=rhs; }
+	Gradient operator-(const Gradient &rhs)const { return Gradient(*this)-=rhs; }
+	Gradient operator*(const float    &rhs)const { return Gradient(*this)*=rhs; }
+	Gradient operator/(const float    &rhs)const { return Gradient(*this)/=rhs; }
 
 	Color operator()(const Real &x, float supersample=0)const;
 
