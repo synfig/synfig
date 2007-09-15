@@ -1027,7 +1027,7 @@ synfig::ValueNode_Animated::create(ValueBase::Type type)
 		case ValueBase::TYPE_STRING:
 			return ValueNode_Animated::Handle(new _Constant<String>);
 		case ValueBase::TYPE_GRADIENT:
-			return ValueNode_Animated::Handle(new _Constant<Gradient>);
+			return ValueNode_Animated::Handle(new _Hermite<Gradient>);
 		case ValueBase::TYPE_BOOL:
 			return ValueNode_Animated::Handle(new _AnimBool);
 		case ValueBase::TYPE_CANVAS:
