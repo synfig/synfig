@@ -140,6 +140,89 @@ supersample_helper(const synfig::Gradient::CPoint &color1, const synfig::Gradien
 //	assert(0);
 }
 
+Gradient &
+synfig::Gradient::operator+=(const Gradient &rhs)
+{
+	CPointList ret;
+	const_iterator iter1 = begin(), iter2 = rhs.begin(), left_same, right_same;
+	CPoint left, right;
+	if (iter1 != end()) left = *iter1;
+	if (iter2 != rhs.end()) right = *iter2;
+	if (iter1 != end() && iter2 != rhs.end())
+		while(true)
+		{
+			if (left.pos < right.pos)
+			{
+				ret.push_back(CPoint(left.pos, left.color + rhs(left.pos)));
+				if(++iter1 == end()) break;
+				left=*iter1;
+			}
+			else if (left.pos > right.pos)
+			{
+				ret.push_back(CPoint(right.pos, right.color + (*this)(right.pos)));
+				if(++iter2 == rhs.end()) break;
+				right=*iter2;
+			}
+			else
+			{
+				for(left_same = iter1++; (*iter1).pos == left.pos; iter1++);
+				for(right_same = iter2++; (*iter2).pos == right.pos; iter2++);
+				if (iter1 == left_same+1 && iter2 == right_same+1)
+					ret.push_back(CPoint(left.pos, left.color + right.color));
+				else
+				{
+					ret.push_back(CPoint(left.pos, left.color + right.color));
+					ret.push_back(CPoint(left.pos, (*(iter1-1)).color + (*(iter2-1)).color));
+				}
+				if (iter1 != end()) left=*iter1;
+				if (iter2 == rhs.end()) break;
+				right = *iter2;
+				if (iter1 == end()) break;
+			}
+		}
+
+	if (iter1 != end())
+		while(true)
+		{
+			ret.push_back(CPoint(left.pos, left.color + rhs(left.pos)));
+			if(++iter1 == end()) break;
+			left = *iter1;
+		}
+
+	if (iter2 != rhs.end())
+		while(true)
+		{
+			ret.push_back(CPoint(right.pos, right.color + (*this)(right.pos)));
+			if(++iter2 == rhs.end()) break;
+			right = *iter2;
+		}
+
+	cpoints = ret;
+	return *this;
+}
+
+Gradient &
+synfig::Gradient::operator-=(const Gradient &rhs)
+{
+	return (*this)+=(rhs*-1);
+}
+
+Gradient &
+synfig::Gradient::operator*=(const float    &rhs)
+{
+	for (iterator iter = cpoints.begin(); iter!=cpoints.end(); iter++)
+		(*iter).color *= rhs;
+	return *this;
+}
+
+Gradient &
+synfig::Gradient::operator/=(const float    &rhs)
+{
+	for (iterator iter = cpoints.begin(); iter!=cpoints.end(); iter++)
+		(*iter).color /= rhs;
+	return *this;
+}
+
 Color
 synfig::Gradient::operator()(const Real &x,float supersample)const
 {
