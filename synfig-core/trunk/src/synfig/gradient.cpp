@@ -143,7 +143,7 @@ supersample_helper(const synfig::Gradient::CPoint &color1, const synfig::Gradien
 Color
 synfig::Gradient::operator()(const Real &x,float supersample)const
 {
-	if(empty())
+	if(cpoints.empty())
 		return Color(0,0,0,0);
 	if(supersample<0)
 		supersample=-supersample;
@@ -153,11 +153,11 @@ synfig::Gradient::operator()(const Real &x,float supersample)const
 	float begin_sample(x-supersample*0.5);
 	float end_sample(x+supersample*0.5);
 
-	if(size()==1 || end_sample<=front().pos || isnan(x))
-		return front().color;
+	if(cpoints.size()==1 || end_sample<=cpoints.front().pos || isnan(x))
+		return cpoints.front().color;
 
-	if(begin_sample>=back().pos)
-		return back().color;
+	if(begin_sample>=cpoints.back().pos)
+		return cpoints.back().color;
 
 	/*
 	if(end_sample>=back().pos)

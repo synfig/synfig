@@ -60,12 +60,17 @@ struct GradientCPoint : public UniqueID
 /*! \class Gradient
 **	\brief Color Gradient Class
 */
-class Gradient : public std::vector<GradientCPoint>
+using namespace std;
+class Gradient
 {
 public:
 	typedef GradientCPoint CPoint;
+	typedef vector<GradientCPoint>::const_iterator const_iterator;
+	typedef vector<GradientCPoint>::iterator iterator;
+	typedef vector<GradientCPoint>::const_reverse_iterator const_reverse_iterator;
+	typedef vector<GradientCPoint>::reverse_iterator reverse_iterator;
 private:
-
+	vector<GradientCPoint> cpoints;
 public:
 	Gradient() { }
 
@@ -80,6 +85,20 @@ public:
 
 	//! You should call this function after changing stuff.
 	void sort();
+
+	void push_back(const GradientCPoint cpoint) { cpoints.push_back(cpoint); }
+	iterator erase(iterator iter) { return cpoints.erase(iter); }
+	bool empty()const { return cpoints.empty(); }
+	size_t size()const { return cpoints.size(); }
+
+	iterator begin() { return cpoints.begin(); }
+	iterator end() { return cpoints.end(); }
+	reverse_iterator rbegin() { return cpoints.rbegin(); }
+	reverse_iterator rend() { return cpoints.rend(); }
+	const_iterator begin()const { return cpoints.begin(); }
+	const_iterator end()const { return cpoints.end(); }
+	const_reverse_iterator rbegin()const { return cpoints.rbegin(); }
+	const_reverse_iterator rend()const { return cpoints.rend(); }
 
 	Color operator()(const Real &x, float supersample=0)const;
 
