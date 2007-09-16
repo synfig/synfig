@@ -210,8 +210,11 @@ synfig::Gradient::operator-=(const Gradient &rhs)
 Gradient &
 synfig::Gradient::operator*=(const float    &rhs)
 {
-	for (iterator iter = cpoints.begin(); iter!=cpoints.end(); iter++)
-		(*iter).color *= rhs;
+	if (rhs == 0)
+		cpoints.clear();
+	else
+		for (iterator iter = cpoints.begin(); iter!=cpoints.end(); iter++)
+			(*iter).color *= rhs;
 	return *this;
 }
 
