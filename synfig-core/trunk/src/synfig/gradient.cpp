@@ -140,40 +140,103 @@ supersample_helper(const synfig::Gradient::CPoint &color1, const synfig::Gradien
 //	assert(0);
 }
 
+static void show_gradient(const Gradient::CPointList x) {
+	int i = 0;
+	for (Gradient::const_iterator iter = x.begin(); iter != x.end(); iter++) {
+		printf("%3d : %.3f %s\n", i++, (*iter).pos, (*iter).color.get_string().c_str());
+	}
+}
+
 Gradient &
 synfig::Gradient::operator+=(const Gradient &rhs)
 {
+	bool print=false;			// for debugging
+	if (print) { printf("\nadding lhs:\n"); show_gradient(this->cpoints); printf("\n"); }
+	if (print) { printf("adding rhs:\n"); show_gradient(rhs.cpoints); printf("\n"); }
 	CPointList ret;
 	const_iterator iter1 = begin(), iter2 = rhs.begin(), left_same, right_same;
 	CPoint left, right;
 	if (iter1 != end()) left = *iter1;
 	if (iter2 != rhs.end()) right = *iter2;
+	int pos1 = 0, pos2 = 0;
+	CPoint old1, old2;
+
+	// if there are cpoints in both gradients run through both until one runs out
 	if (iter1 != end() && iter2 != rhs.end())
 		while(true)
 		{
+			// if the left one has the first cpoint
 			if (left.pos < right.pos)
 			{
+				// add on the right gradient's value at this point
+				if (print) printf("using pos %.2f from left %d in loop\n", left.pos, pos1++);
 				ret.push_back(CPoint(left.pos, left.color + rhs(left.pos)));
 				if(++iter1 == end()) break;
 				left=*iter1;
 			}
+			// if the right one has the first cpoint
 			else if (left.pos > right.pos)
 			{
+				// add on the left gradient's value at this point
+				if (print) printf("using pos %.2f from right %d in loop\n", right.pos, pos2++);
 				ret.push_back(CPoint(right.pos, right.color + (*this)(right.pos)));
 				if(++iter2 == rhs.end()) break;
 				right=*iter2;
 			}
+			// they both have a cpoint at the same time
 			else
 			{
-				for(left_same = iter1++; (*iter1).pos == left.pos; iter1++);
-				for(right_same = iter2++; (*iter2).pos == right.pos; iter2++);
-				if (iter1 == left_same+1 && iter2 == right_same+1)
+				int tpos1 = pos1, tpos2 = pos2;
+				// skip past all cpoints at the same position
+				for(left_same = ++iter1; iter1 != end() && (*iter1).pos == left.pos; iter1++, pos1++)
+				{
+					if (print) printf("skipping past pos %d in left\n", pos1);
+				}
+				for(right_same = ++iter2; iter2 != rhs.end() && (*iter2).pos == right.pos; iter2++, pos2++)
+				{
+					if (print) printf("skipping past pos %d in right\n", pos2);
+				}
+				
+				// if the is only one cpoint at this position in each gradient,
+				// there's only one corresponding cpoint in the sum
+				if (iter1 == left_same && iter2 == right_same) {
+					if (print) printf("two singles at left %d and right %d\n", pos1++, pos2++);
 					ret.push_back(CPoint(left.pos, left.color + right.color));
+				}
+				// otherwise we sum the first in each, and the last in each
 				else
 				{
+					if (print) printf("[copying %d from left %d and %d from right %d at %.2f]\n", iter1-left_same+1, tpos1, iter2-right_same+1, tpos2, left.pos);
+					// merge the front two cpoints
+					if (print) printf("  copy front from left %d right %d\n", tpos1++, tpos2++);
 					ret.push_back(CPoint(left.pos, left.color + right.color));
+
+					// merge the middle pairs points - each middle point merges with its counterpart
+					while(left_same < iter1-1 && right_same < iter2-1)
+					{
+						old1 = *(left_same++);
+						old2 = *(right_same++);
+						if (print) printf("  copy middle from left %d and right %d\n", tpos1++, tpos2++);
+						ret.push_back(CPoint(old1.pos, old1.color+old2.color));
+					}
+					// if one gradient has more middle points than the other, merge the rest with the last point in the other gradient
+					for(old2 = (*(iter2-1)); left_same < iter1-1; left_same++)
+					{
+						old1 = *left_same;
+						if (print) printf("  copy middle from left %d plus end of right\n", tpos1++);
+						ret.push_back(CPoint(old1.pos, old1.color + old2.color));
+					}
+					for(old1 = (*(iter1-1)); right_same < iter2-1; right_same++)
+					{
+						old2 = *right_same;
+						if (print) printf("  copy middle from right %d plus end of left\n", tpos2++);
+						ret.push_back(CPoint(old2.pos, old1.color + old2.color));
+					}
+					// merge the back two cpoints
+					if (print) printf("  copy end from left %d right %d\n", pos1++, pos2++);
 					ret.push_back(CPoint(left.pos, (*(iter1-1)).color + (*(iter2-1)).color));
 				}
+				// make sure we update 'left' and 'right'
 				if (iter1 != end()) left=*iter1;
 				if (iter2 == rhs.end()) break;
 				right = *iter2;
@@ -181,22 +244,27 @@ synfig::Gradient::operator+=(const Gradient &rhs)
 			}
 		}
 
+	// one of the gradients has run out of points
+	// does the left one have points left?
 	if (iter1 != end())
 		while(true)
 		{
+			if (print) printf("finish end from left %d\n", pos1++);
 			ret.push_back(CPoint(left.pos, left.color + rhs(left.pos)));
 			if(++iter1 == end()) break;
 			left = *iter1;
 		}
-
-	if (iter2 != rhs.end())
+	// the left one was empty, so maybe the right one has points left
+	else if (iter2 != rhs.end())
 		while(true)
 		{
+			if (print) printf("finish end from right %d\n", pos2++);
 			ret.push_back(CPoint(right.pos, right.color + (*this)(right.pos)));
 			if(++iter2 == rhs.end()) break;
 			right = *iter2;
 		}
 
+	if (print) { printf("\nsummed ret:\n"); show_gradient(ret); printf("\n"); }
 	cpoints = ret;
 	return *this;
 }

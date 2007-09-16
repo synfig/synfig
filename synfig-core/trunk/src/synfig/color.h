@@ -28,6 +28,11 @@
 /* === H E A D E R S ======================================================= */
 
 
+#include <iostream>
+#include <iomanip>
+#include <sstream>
+#include <string>
+
 //#include <cmath>
 #include <math.h>
 #include <cassert>
@@ -107,9 +112,15 @@ public:
 
 private:
 	value_type a_, r_, g_, b_;
-	static String hex_;
 
 public:
+
+	inline const String get_string(void)const
+	{
+		std::ostringstream o;
+		o << std::fixed << std::setprecision(3) << "#" << get_hex() << " : " << std::setw(6) << a_;
+		return String(o.str().c_str());
+	}
 
 	Color &
 	operator+=(const Color &rhs)
@@ -271,7 +282,7 @@ public:
 	static const String real2hex(ColorReal c);
 
 	//! Returns the color as a 6 character hex sting
-	const String& get_hex()const { return hex_ = real2hex(r_)+real2hex(g_)+real2hex(b_); }
+	const String get_hex()const { return String(real2hex(r_)+real2hex(g_)+real2hex(b_)); }
 
 	//! Sets the color's R, G, and B from a 3 or 6 character hex string
 	void set_hex(String& hex);
