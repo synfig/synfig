@@ -133,10 +133,10 @@ public:
 	void increment_id();
 
 	void make_gradient(const Point& p1, const Point& p2);
-	bool no_egress_on_selection_change;
+	bool egress_on_selection_change;
 	Smach::event_result event_layer_selection_changed_handler(const Smach::event& /*x*/)
 	{
-		if(!no_egress_on_selection_change)
+		if(egress_on_selection_change)
 			throw Smach::egress_exception();
 		return Smach::RESULT_OK;
 	}
@@ -248,7 +248,7 @@ StateGradient_Context::StateGradient_Context(CanvasView* canvas_view):
 	prev_workarea_layer_status_(get_work_area()->get_allow_layer_clicks()),
 	entry_id()
 {
-	no_egress_on_selection_change=false;
+	egress_on_selection_change=true;
 	// Set up the tool options dialog
 	///options_table.attach(*manage(new Gtk::Label(_("Gradient Tool"))), 0, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	options_table.attach(entry_id, 0, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
@@ -429,10 +429,10 @@ StateGradient_Context::make_gradient(const Point& _p1, const Point& _p2)
 	layer->set_description(get_id());
 	get_canvas_interface()->signal_layer_new_description()(layer,layer->get_description());
 
-	no_egress_on_selection_change=true;
+	egress_on_selection_change=false;
 	get_canvas_interface()->get_selection_manager()->clear_selected_layers();
 	get_canvas_interface()->get_selection_manager()->set_selected_layer(layer);
-	no_egress_on_selection_change=false;
+	egress_on_selection_change=true;
 
 	reset();
 	increment_id();

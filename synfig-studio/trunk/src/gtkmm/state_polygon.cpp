@@ -118,10 +118,10 @@ public:
 	void save_settings();
 	void reset();
 	void increment_id();
-	bool no_egress_on_selection_change;
+	bool egress_on_selection_change;
 	Smach::event_result event_layer_selection_changed_handler(const Smach::event& /*x*/)
 	{
-		if(!no_egress_on_selection_change)
+		if(egress_on_selection_change)
 			throw Smach::egress_exception();
 		return Smach::RESULT_OK;
 	}
@@ -221,7 +221,7 @@ StatePolygon_Context::StatePolygon_Context(CanvasView* canvas_view):
 	entry_id(),
 	button_make(_("Make"))
 {
-	no_egress_on_selection_change=false;
+	egress_on_selection_change=true;
 	load_settings();
 
 	// Set up the tool options dialog
@@ -390,10 +390,10 @@ StatePolygon_Context::run()
 					return;
 				}
 			}
-			no_egress_on_selection_change=true;
+			egress_on_selection_change=false;
 			get_canvas_interface()->get_selection_manager()->clear_selected_layers();
 			get_canvas_interface()->get_selection_manager()->set_selected_layer(layer);
-			no_egress_on_selection_change=false;
+			egress_on_selection_change=true;
 			//get_canvas_interface()->signal_dirty_preview()();
 		}
 /*

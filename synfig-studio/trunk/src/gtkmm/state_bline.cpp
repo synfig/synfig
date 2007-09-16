@@ -186,10 +186,10 @@ public:
 	bool run_();
 	bool run();
 
-	bool no_egress_on_selection_change;
+	bool egress_on_selection_change;
 	Smach::event_result event_layer_selection_changed_handler(const Smach::event& /*x*/)
 	{
-		if(!no_egress_on_selection_change)
+		if(egress_on_selection_change)
 			throw Smach::egress_exception();
 		return Smach::RESULT_OK;
 	}
@@ -338,7 +338,7 @@ StateBLine_Context::StateBLine_Context(CanvasView* canvas_view):
 	spin_feather(adj_feather,0.01,4)
 {
 	depth=-1;
-	no_egress_on_selection_change=false;
+	egress_on_selection_change=true;
 	load_settings();
 
 	// Set up the tool options dialog
@@ -695,10 +695,10 @@ StateBLine_Context::run_()
 			}*/
 		}
 
-		no_egress_on_selection_change=true;
+		egress_on_selection_change=false;
 		get_canvas_interface()->get_selection_manager()->clear_selected_layers();
 		get_canvas_interface()->get_selection_manager()->set_selected_layers(layer_selection);
-		no_egress_on_selection_change=false;
+		egress_on_selection_change=true;
 
 		//if(finish_bline_dialog.get_region_flag() || finish_bline_dialog.get_bline_flag())
 		//	get_canvas_interface()->signal_dirty_preview()();
