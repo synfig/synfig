@@ -75,19 +75,22 @@ ValueNode_Subtract::create(const ValueBase& x)
 	{
 	case ValueBase::TYPE_NIL:
 		return value_node;
-	case ValueBase::TYPE_VECTOR:
-	case ValueBase::TYPE_REAL:
-	case ValueBase::TYPE_INTEGER:
 	case ValueBase::TYPE_ANGLE:
-		value_node->set_link("rhs",ValueNode_Const::create(ValueBase(id)));
+	case ValueBase::TYPE_COLOR:
+	case ValueBase::TYPE_INTEGER:
+	case ValueBase::TYPE_REAL:
+	case ValueBase::TYPE_VECTOR:
 		value_node->set_link("lhs",ValueNode_Const::create(ValueBase(id)));
-		assert(value_node->get_rhs()->get_type()==id);
-		assert(value_node->get_lhs()->get_type()==id);
+		value_node->set_link("rhs",ValueNode_Const::create(ValueBase(id)));
 		break;
 	default:
 		assert(0);
 		throw runtime_error("synfig::ValueNode_Subtract:Bad type "+ValueBase::type_name(id));
 	}
+
+	assert(value_node->get_lhs()->get_type()==id);
+	assert(value_node->get_rhs()->get_type()==id);
+
 	assert(value_node->get_type()==id);
 
 	return value_node;
@@ -124,20 +127,20 @@ synfig::ValueNode_Subtract::set_lhs(ValueNode::Handle a)
 	if(!ref_a || !ref_b)
 		set_type(ValueBase::TYPE_NIL);
 	else
-	if(ref_a->get_type()==ValueBase::TYPE_VECTOR && ref_a->get_type()==ValueBase::TYPE_VECTOR)
-		set_type(ValueBase::TYPE_VECTOR);
-	else
-	if(ref_a->get_type()==ValueBase::TYPE_REAL && ref_a->get_type()==ValueBase::TYPE_REAL)
-		set_type(ValueBase::TYPE_REAL);
-	else
-	if(ref_a->get_type()==ValueBase::TYPE_INTEGER && ref_a->get_type()==ValueBase::TYPE_INTEGER)
-		set_type(ValueBase::TYPE_INTEGER);
-	else
 	if(ref_a->get_type()==ValueBase::TYPE_ANGLE && ref_a->get_type()==ValueBase::TYPE_ANGLE)
 		set_type(ValueBase::TYPE_ANGLE);
 	else
 	if(ref_a->get_type()==ValueBase::TYPE_COLOR && ref_a->get_type()==ValueBase::TYPE_COLOR)
 		set_type(ValueBase::TYPE_COLOR);
+	else
+	if(ref_a->get_type()==ValueBase::TYPE_INTEGER && ref_a->get_type()==ValueBase::TYPE_INTEGER)
+		set_type(ValueBase::TYPE_INTEGER);
+	else
+	if(ref_a->get_type()==ValueBase::TYPE_REAL && ref_a->get_type()==ValueBase::TYPE_REAL)
+		set_type(ValueBase::TYPE_REAL);
+	else
+	if(ref_a->get_type()==ValueBase::TYPE_VECTOR && ref_a->get_type()==ValueBase::TYPE_VECTOR)
+		set_type(ValueBase::TYPE_VECTOR);
 	else
 	{
 		synfig::warning(get_id()+":(set_a):"+strprintf(_("Types seem to be off for ValueNodes %s and %s"),ref_a->get_id().c_str(),ref_b->get_id().c_str()));
@@ -158,20 +161,20 @@ synfig::ValueNode_Subtract::set_rhs(ValueNode::Handle b)
 	if(!ref_a || !ref_b)
 		set_type(ValueBase::TYPE_NIL);
 	else
-	if(ref_a->get_type()==ValueBase::TYPE_VECTOR && ref_a->get_type()==ValueBase::TYPE_VECTOR)
-		set_type(ValueBase::TYPE_VECTOR);
-	else
-	if(ref_a->get_type()==ValueBase::TYPE_REAL && ref_a->get_type()==ValueBase::TYPE_REAL)
-		set_type(ValueBase::TYPE_REAL);
-	else
-	if(ref_a->get_type()==ValueBase::TYPE_INTEGER && ref_a->get_type()==ValueBase::TYPE_INTEGER)
-		set_type(ValueBase::TYPE_INTEGER);
-	else
 	if(ref_a->get_type()==ValueBase::TYPE_ANGLE && ref_a->get_type()==ValueBase::TYPE_ANGLE)
 		set_type(ValueBase::TYPE_ANGLE);
 	else
 	if(ref_a->get_type()==ValueBase::TYPE_COLOR && ref_a->get_type()==ValueBase::TYPE_COLOR)
 		set_type(ValueBase::TYPE_COLOR);
+	else
+	if(ref_a->get_type()==ValueBase::TYPE_INTEGER && ref_a->get_type()==ValueBase::TYPE_INTEGER)
+		set_type(ValueBase::TYPE_INTEGER);
+	else
+	if(ref_a->get_type()==ValueBase::TYPE_REAL && ref_a->get_type()==ValueBase::TYPE_REAL)
+		set_type(ValueBase::TYPE_REAL);
+	else
+	if(ref_a->get_type()==ValueBase::TYPE_VECTOR && ref_a->get_type()==ValueBase::TYPE_VECTOR)
+		set_type(ValueBase::TYPE_VECTOR);
 	else
 	{
 		synfig::warning(get_id()+":(set_b):"+strprintf(_("Types seem to be off for ValueNodes %s and %s"),ref_a->get_id().c_str(),ref_b->get_id().c_str()));
@@ -186,21 +189,16 @@ synfig::ValueNode_Subtract::operator()(Time t)const
 {
 	if(!ref_a || !ref_b)
 		throw runtime_error(strprintf("ValueNode_Subtract: %s",_("One or both of my parameters aren't set!")));
-	else
-	if(get_type()==ValueBase::TYPE_VECTOR)
-		return ((*ref_a)(t).get(Vector())-(*ref_b)(t).get(Vector()))*(*scalar)(t).get(Real());
-	else
-	if(get_type()==ValueBase::TYPE_REAL)
-		return ((*ref_a)(t).get(Vector::value_type())-(*ref_b)(t).get(Vector::value_type()))*(*scalar)(t).get(Real());
-	else
-	if(get_type()==ValueBase::TYPE_INTEGER)
-		return ((*ref_a)(t).get(int())-(*ref_b)(t).get(int()))*(*scalar)(t).get(Real());
-	else
 	if(get_type()==ValueBase::TYPE_ANGLE)
 		return ((*ref_a)(t).get(Angle())-(*ref_b)(t).get(Angle()))*(*scalar)(t).get(Real());
-	else
 	if(get_type()==ValueBase::TYPE_COLOR)
 		return ((*ref_a)(t).get(Color())-(*ref_b)(t).get(Color()))*(*scalar)(t).get(Real());
+	if(get_type()==ValueBase::TYPE_INTEGER)
+		return ((*ref_a)(t).get(int())-(*ref_b)(t).get(int()))*(*scalar)(t).get(Real());
+	if(get_type()==ValueBase::TYPE_REAL)
+		return ((*ref_a)(t).get(Vector::value_type())-(*ref_b)(t).get(Vector::value_type()))*(*scalar)(t).get(Real());
+	if(get_type()==ValueBase::TYPE_VECTOR)
+		return ((*ref_a)(t).get(Vector())-(*ref_b)(t).get(Vector()))*(*scalar)(t).get(Real());
 
 	synfig::error(get_id()+':'+strprintf(_("Cannot subtract types of %s and %s"),ValueBase::type_name(ref_a->get_type()).c_str(),ValueBase::type_name(ref_b->get_type()).c_str()));
 	return ValueBase();
@@ -310,9 +308,9 @@ ValueNode_Subtract::get_local_name()const
 bool
 ValueNode_Subtract::check_type(ValueBase::Type type)
 {
-	return type==ValueBase::TYPE_VECTOR
-		|| type==ValueBase::TYPE_REAL
-		|| type==ValueBase::TYPE_INTEGER
+	return type==ValueBase::TYPE_ANGLE
 		|| type==ValueBase::TYPE_COLOR
-		|| type==ValueBase::TYPE_ANGLE;
+		|| type==ValueBase::TYPE_INTEGER
+		|| type==ValueBase::TYPE_REAL
+		|| type==ValueBase::TYPE_VECTOR;
 }
