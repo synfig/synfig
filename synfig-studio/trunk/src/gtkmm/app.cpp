@@ -1700,13 +1700,14 @@ App::dialog_open_file(const std::string &title, std::string &filename)
 	synfig::String prev_path;
 	if(!_preferences.get_value("curr_path",prev_path))
 		prev_path=".";
+	prev_path = absolute_path(prev_path);
 
     Gtk::FileChooserDialog *dialog=new Gtk::FileChooserDialog(title,Gtk::FILE_CHOOSER_ACTION_OPEN);
     dialog->set_current_folder(prev_path);
     dialog->add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
     dialog->add_button(Gtk::Stock::OPEN,   Gtk::RESPONSE_ACCEPT);
     if(!filename.empty())
-        dialog->set_filename(filename);
+        dialog->set_filename(prev_path + ETL_DIRECTORY_SEPARATOR + filename);
     if(dialog->run()==GTK_RESPONSE_ACCEPT) {
         filename=dialog->get_filename();
         delete dialog;
@@ -1809,13 +1810,14 @@ App::dialog_save_file(const std::string &title, std::string &filename)
 	synfig::String prev_path;
 	if(!_preferences.get_value("curr_path",prev_path))
 		prev_path=".";
+	prev_path = absolute_path(prev_path);
 
     Gtk::FileChooserDialog *dialog=new Gtk::FileChooserDialog(title,Gtk::FILE_CHOOSER_ACTION_SAVE);
     dialog->set_current_folder(prev_path);
     dialog->add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
     dialog->add_button(Gtk::Stock::SAVE,   Gtk::RESPONSE_ACCEPT);
     if(!filename.empty())
-        dialog->set_filename(filename);
+		dialog->set_filename(prev_path + ETL_DIRECTORY_SEPARATOR + filename);
     if(dialog->run()==GTK_RESPONSE_ACCEPT) {
         filename=dialog->get_filename();
         delete dialog;
@@ -1875,13 +1877,14 @@ App::dialog_saveas_file(const std::string &title, std::string &filename)
 	synfig::String prev_path;
 	if(!_preferences.get_value("curr_path",prev_path))
 		prev_path=".";
+	prev_path = absolute_path(prev_path);
 
     Gtk::FileChooserDialog *dialog=new Gtk::FileChooserDialog(title,Gtk::FILE_CHOOSER_ACTION_SAVE);
     dialog->set_current_folder(prev_path);
     dialog->add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
     dialog->add_button(Gtk::Stock::SAVE,   Gtk::RESPONSE_ACCEPT);
     if(!filename.empty())
-        dialog->set_filename(filename);
+		dialog->set_filename(prev_path + ETL_DIRECTORY_SEPARATOR + filename);
     if(dialog->run()==GTK_RESPONSE_ACCEPT) {
         filename=dialog->get_filename();
         delete dialog;
