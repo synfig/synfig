@@ -75,8 +75,11 @@ ValueNode_Subtract::create(const ValueBase& x)
 	{
 	case ValueBase::TYPE_NIL:
 		return value_node;
-	case ValueBase::TYPE_ANGLE:
 	case ValueBase::TYPE_COLOR:
+		value_node->set_link("lhs",ValueNode_Const::create(x.get(Color())));
+		value_node->set_link("rhs",ValueNode_Const::create(Color(0,0,0,0)));
+		break;
+	case ValueBase::TYPE_ANGLE:
 	case ValueBase::TYPE_INTEGER:
 	case ValueBase::TYPE_REAL:
 	case ValueBase::TYPE_VECTOR:
