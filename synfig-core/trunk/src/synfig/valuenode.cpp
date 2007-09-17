@@ -235,9 +235,12 @@ ValueNode::~ValueNode()
 void
 ValueNode::on_changed()
 {
-	if(get_parent_canvas())
-		get_parent_canvas()->signal_value_node_changed()(this);
-	else if(get_root_canvas() && get_parent_canvas())
+	etl::loose_handle<Canvas> parent_canvas = get_parent_canvas();
+	if(parent_canvas)
+		do						// signal to all the ancestor canvases
+			parent_canvas->signal_value_node_changed()(this);
+		while (parent_canvas = parent_canvas->parent());
+	else if(get_root_canvas())
 		get_root_canvas()->signal_value_node_changed()(this);
 
 	Node::on_changed();
