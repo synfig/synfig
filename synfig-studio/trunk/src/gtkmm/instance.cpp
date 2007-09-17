@@ -265,7 +265,8 @@ studio::Instance::dialog_save_as()
 		if(find(filename.begin(),filename.end(),'*')!=filename.end())
 			continue;
 
-		if(find(filename.begin(),filename.end(),'.')==filename.end())
+		std::string base = basename(filename);
+		if(find(base.begin(),base.end(),'.')==base.end())
 			filename+=".sifz";
 
 		try
