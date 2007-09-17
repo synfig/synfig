@@ -2821,7 +2821,9 @@ CanvasView::play()
 		if(!work_area->sync_render_preview())
 			break;
 
-		studio::App::iteration(false);
+		// wait for the workarea to refresh itself
+		while (studio::App::events_pending())
+			studio::App::iteration(false);
 
 		if(get_cancel_status())
 			return;
