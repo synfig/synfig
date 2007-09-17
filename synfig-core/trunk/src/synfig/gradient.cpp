@@ -140,11 +140,11 @@ supersample_helper(const synfig::Gradient::CPoint &color1, const synfig::Gradien
 //	assert(0);
 }
 
-static void show_gradient(const Gradient::CPointList x) {
+static void show_gradient(const Gradient::CPointList x)
+{
 	int i = 0;
-	for (Gradient::const_iterator iter = x.begin(); iter != x.end(); iter++) {
+	for (Gradient::const_iterator iter = x.begin(); iter != x.end(); iter++)
 		printf("%3d : %.3f %s\n", i++, (*iter).pos, (*iter).color.get_string().c_str());
-	}
 }
 
 Gradient &
@@ -164,7 +164,6 @@ synfig::Gradient::operator+=(const Gradient &rhs)
 	// if there are cpoints in both gradients run through both until one runs out
 	if (iter1 != end() && iter2 != rhs.end())
 		while(true)
-		{
 			// if the left one has the first cpoint
 			if (left.pos < right.pos)
 			{
@@ -189,17 +188,14 @@ synfig::Gradient::operator+=(const Gradient &rhs)
 				int tpos1 = pos1, tpos2 = pos2;
 				// skip past all cpoints at the same position
 				for(left_same = ++iter1; iter1 != end() && (*iter1).pos == left.pos; iter1++, pos1++)
-				{
 					if (print) printf("skipping past pos %d in left\n", pos1);
-				}
 				for(right_same = ++iter2; iter2 != rhs.end() && (*iter2).pos == right.pos; iter2++, pos2++)
-				{
 					if (print) printf("skipping past pos %d in right\n", pos2);
-				}
-				
+
 				// if there is only one cpoint at this position in each gradient,
 				// there's only one corresponding cpoint in the sum
-				if (iter1 == left_same && iter2 == right_same) {
+				if (iter1 == left_same && iter2 == right_same)
+				{
 					if (print) printf("two singles at left %d and right %d\n", pos1++, pos2++);
 					ret.push_back(CPoint(left.pos, left.color + right.color));
 				}
@@ -242,7 +238,6 @@ synfig::Gradient::operator+=(const Gradient &rhs)
 				right = *iter2;
 				if (iter1 == end()) break;
 			}
-		}
 
 	// one of the gradients has run out of points
 	// does the left one have points left?
