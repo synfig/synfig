@@ -185,17 +185,6 @@ Instance::set_redo_status(bool x)
 }
 
 bool
-studio::Instance::save_as(const synfig::String &file_name)const
-{
-	if(synfigapp::Instance::save_as(file_name))
-	{
-		App::add_recent_file(file_name);
-		return true;
-	}
-	return false;
-}
-
-bool
 studio::Instance::save_as(const synfig::String &file_name)
 {
 	if(synfigapp::Instance::save_as(file_name))

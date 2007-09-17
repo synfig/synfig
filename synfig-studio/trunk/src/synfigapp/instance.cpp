@@ -148,18 +148,6 @@ Instance::save()const
 }
 
 bool
-Instance::save_as(const std::string &file_name)const
-{
-	bool ret=save_canvas(file_name,canvas_);
-	if(ret)
-	{
-		reset_action_count();
-		const_cast<sigc::signal<void>& >(signal_saved_)();
-	}
-	return ret;
-}
-
-bool
 Instance::save_as(const std::string &file_name)
 {
 	bool ret;
@@ -176,9 +164,7 @@ Instance::save_as(const std::string &file_name)
 		signal_saved_();
 	}
 	else
-	{
 		set_file_name(old_file_name);
-	}
 
 	signal_filename_changed_();
 

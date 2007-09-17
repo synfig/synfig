@@ -108,8 +108,6 @@ public:
 	//! Saves the instance to filename_
 	bool save()const;
 
-	bool save_as(const synfig::String &filename)const;
-
 	bool save_as(const synfig::String &filename);
 
 public:	// Interfaces to internal information

@@ -167,8 +167,6 @@ public:
 
 	const CanvasViewList & canvas_view_list()const { return canvas_view_list_; }
 
-	bool save_as(const synfig::String &filename)const;
-
 	bool save_as(const synfig::String &filename);
 
 	//! Opens a "Save As" dialog, and then saves the composition to that file
