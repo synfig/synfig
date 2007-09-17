@@ -306,7 +306,6 @@ public:
 
 	static bool dialog_open_file(const std::string &title, std::string &filename);
 	static bool dialog_save_file(const std::string &title, std::string &filename);
-	static bool dialog_saveas_file(const std::string &title, std::string &filename);
 
 	static void dialog_error_blocking(const std::string &title, const std::string &message);
 

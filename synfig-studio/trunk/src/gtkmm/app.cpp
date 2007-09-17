@@ -1768,76 +1768,6 @@ App::dialog_open_file(const std::string &title, std::string &filename)
 bool
 App::dialog_save_file(const std::string &title, std::string &filename)
 {
-#ifdef USE_WIN32_FILE_DIALOGS
-	static TCHAR szFilter[] = TEXT ("All Files (*.*)\0*.*\0\0") ;
-
-	GdkWindow *gdkWinPtr=toolbox->get_window()->gobj();
-	HINSTANCE hInstance=static_cast<HINSTANCE>(GetModuleHandle(NULL));
-	HWND hWnd=static_cast<HWND>(GDK_WINDOW_HWND(gdkWinPtr));
-
-	ofn.lStructSize=sizeof(OPENFILENAME);
-	ofn.hwndOwner = hWnd;
-	ofn.hInstance = hInstance;
-	ofn.lpstrFilter = szFilter;
-//	ofn.lpstrCustomFilter=NULL;
-//	ofn.nMaxCustFilter=0;
-//	ofn.nFilterIndex=0;
-//	ofn.lpstrFile=NULL;
-	ofn.nMaxFile=MAX_PATH;
-//	ofn.lpstrFileTitle=NULL;
-//	ofn.lpstrInitialDir=NULL;
-//	ofn.lpstrTitle=NULL;
-	ofn.Flags=OFN_OVERWRITEPROMPT;
-//	ofn.nFileOffset=0;
-//	ofn.nFileExtension=0;
-	ofn.lpstrDefExt=TEXT("sif");
-//	ofn.lCustData = 0l;
-	ofn.lpfnHook=NULL;
-//	ofn.lpTemplateName=NULL;
-
-	CHAR szFilename[MAX_PATH];
-	CHAR szTitle[500];
-	strcpy(szFilename,filename.c_str());
-	strcpy(szTitle,title.c_str());
-
-	ofn.lpstrFile=szFilename;
-	ofn.lpstrFileTitle=szTitle;
-
-	if(GetSaveFileName(&ofn))
-	{
-		filename=szFilename;
-		return true;
-	}
-	return false;
-#else
-	synfig::String prev_path;
-	if(!_preferences.get_value("curr_path",prev_path))
-		prev_path=".";
-	prev_path = absolute_path(prev_path);
-
-    Gtk::FileChooserDialog *dialog=new Gtk::FileChooserDialog(title,Gtk::FILE_CHOOSER_ACTION_SAVE);
-    dialog->set_current_folder(prev_path);
-    dialog->add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
-    dialog->add_button(Gtk::Stock::SAVE,   Gtk::RESPONSE_ACCEPT);
-    if(!filename.empty())
-		if (is_absolute_path(filename))
-			dialog->set_filename(filename);
-		else
-			dialog->set_filename(prev_path + ETL_DIRECTORY_SEPARATOR + filename);
-    if(dialog->run()==GTK_RESPONSE_ACCEPT) {
-        filename=dialog->get_filename();
-        delete dialog;
-        return true;
-    }
-    delete dialog;
-    return false;
-//	return dialog_open_file(title, filename);
-#endif
-}
-
-bool
-App::dialog_saveas_file(const std::string &title, std::string &filename)
-{
 #if USE_WIN32_FILE_DIALOGS
 	static TCHAR szFilter[] = TEXT ("All Files (*.*)\0*.*\0\0") ;
 
@@ -2009,6 +1939,9 @@ App::open(std::string filename)
 	return open_as(filename,filename);
 }
 
+// this is called from autorecover.cpp:
+//   App::open_as(get_shadow_file_name(filename),filename)
+// other than that, 'filename' and 'as' are the same
 bool
 App::open_as(std::string filename,std::string as)
 {

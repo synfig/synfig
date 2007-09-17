@@ -253,12 +253,12 @@ studio::Instance::dialog_save_as()
 	}
 
 	// show the canvas' name if it has one, else its ID
-	while(App::dialog_saveas_file(_("Choose a Filename to Save As") +
-								  String(" (") +
-								  (canvas->get_name().empty()
-								   ? canvas->get_id()
-								   : canvas->get_name()) +
-								  ") ...", filename))
+	while(App::dialog_save_file(_("Choose a Filename to Save As") +
+								String(" (") +
+								(canvas->get_name().empty()
+								 ? canvas->get_id()
+								 : canvas->get_name()) +
+								") ...", filename))
 	{
 		// If the filename still has wildcards, then we should
 		// continue looking for the file we want
