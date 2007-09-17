@@ -2318,7 +2318,6 @@ again:
 	dirty=false;
 	get_canvas_view()->reset_cancel_status();
 
-	bool ret=false;
 	RendDesc desc=get_canvas()->rend_desc();
 	//newdesc->set_flags(RendDesc::PX_ASPECT|RendDesc::IM_SPAN);
 
@@ -2345,7 +2344,7 @@ again:
 	if(cb)
 		cb->task(strprintf("Rendering canvas %s...",get_canvas()->get_name().c_str()));
 
-	target->render(cb);
+	bool ret = target->render(cb);
 
 	if(!ret && !get_canvas_view()->get_cancel_status() && dirty)
 	{
