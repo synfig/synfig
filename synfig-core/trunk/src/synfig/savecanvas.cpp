@@ -57,6 +57,10 @@
 #include "gradient.h"
 #include <errno.h>
 
+extern "C" {
+#include <libxml/tree.h>
+}
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -746,6 +750,11 @@ synfig::save_canvas(const String &filename, Canvas::ConstHandle canvas)
     ChangeLocale change_locale(LC_NUMERIC, "C");
 
 	synfig::String tmp_filename(filename+".TMP");
+
+	if (String(filename.begin() + filename.find_last_of('.')+1, filename.end()) == "sifz")
+		xmlSetCompressMode(9);
+	else
+		xmlSetCompressMode(0);
 
 	try
 	{
