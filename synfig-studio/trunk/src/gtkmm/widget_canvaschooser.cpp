@@ -137,6 +137,13 @@ Widget_CanvasChooser::chooser_menu()
 		return;
 	}
 
+	if (canvas_name == "")
+	{
+		App::dialog_error_blocking(_("Error"),_("No canvas name was specified"));
+		set_value_(canvas);
+		return;
+	}
+		
 	Canvas::Handle new_canvas;
 	try
 	{
