@@ -1806,6 +1806,7 @@ App::dialog_save_file(const std::string &title, std::string &filename)
 	if(GetSaveFileName(&ofn))
 	{
 		filename=szFilename;
+		_preferences.set_value("curr_path",dirname(filename));
 		return true;
 	}
 	return false;
@@ -1827,6 +1828,7 @@ App::dialog_save_file(const std::string &title, std::string &filename)
     if(dialog->run()==GTK_RESPONSE_ACCEPT) {
         filename=dialog->get_filename();
         delete dialog;
+		_preferences.set_value("curr_path",dirname(filename));
         return true;
     }
     delete dialog;
