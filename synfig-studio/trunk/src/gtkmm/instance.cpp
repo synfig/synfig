@@ -266,7 +266,7 @@ studio::Instance::dialog_save_as()
 			continue;
 
 		if(find(filename.begin(),filename.end(),'.')==filename.end())
-			filename+=".sif";
+			filename+=".sifz";
 
 		try
 		{
