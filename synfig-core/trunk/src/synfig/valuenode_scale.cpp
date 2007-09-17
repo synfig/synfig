@@ -55,7 +55,8 @@ using namespace synfig;
 
 /* === M E T H O D S ======================================================= */
 
-ValueNode_Scale::ValueNode_Scale():LinkableValueNode(synfig::ValueBase::TYPE_NIL)
+ValueNode_Scale::ValueNode_Scale():
+	LinkableValueNode(synfig::ValueBase::TYPE_NIL)
 {
 	set_scalar(1.0);
 }
@@ -177,8 +178,8 @@ synfig::ValueNode_Scale::operator()(Time t)const
 		Color ret((*value_node)(t).get(Color()));
 		Real s((*scalar)(t).get(Real()));
 		ret.set_r(ret.get_r()*s);
-		ret.set_g(ret.get_r()*s);
-		ret.set_b(ret.get_r()*s);
+		ret.set_g(ret.get_g()*s);
+		ret.set_b(ret.get_b()*s);
 		return ret;
 	}
 
