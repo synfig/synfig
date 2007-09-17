@@ -1707,7 +1707,10 @@ App::dialog_open_file(const std::string &title, std::string &filename)
     dialog->add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
     dialog->add_button(Gtk::Stock::OPEN,   Gtk::RESPONSE_ACCEPT);
     if(!filename.empty())
-        dialog->set_filename(prev_path + ETL_DIRECTORY_SEPARATOR + filename);
+		if (is_absolute_path(filename))
+			dialog->set_filename(filename);
+		else
+			dialog->set_filename(prev_path + ETL_DIRECTORY_SEPARATOR + filename);
     if(dialog->run()==GTK_RESPONSE_ACCEPT) {
         filename=dialog->get_filename();
         delete dialog;
@@ -1817,7 +1820,10 @@ App::dialog_save_file(const std::string &title, std::string &filename)
     dialog->add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
     dialog->add_button(Gtk::Stock::SAVE,   Gtk::RESPONSE_ACCEPT);
     if(!filename.empty())
-		dialog->set_filename(prev_path + ETL_DIRECTORY_SEPARATOR + filename);
+		if (is_absolute_path(filename))
+			dialog->set_filename(filename);
+		else
+			dialog->set_filename(prev_path + ETL_DIRECTORY_SEPARATOR + filename);
     if(dialog->run()==GTK_RESPONSE_ACCEPT) {
         filename=dialog->get_filename();
         delete dialog;
@@ -1884,7 +1890,10 @@ App::dialog_saveas_file(const std::string &title, std::string &filename)
     dialog->add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
     dialog->add_button(Gtk::Stock::SAVE,   Gtk::RESPONSE_ACCEPT);
     if(!filename.empty())
-		dialog->set_filename(prev_path + ETL_DIRECTORY_SEPARATOR + filename);
+		if (is_absolute_path(filename))
+			dialog->set_filename(filename);
+		else
+			dialog->set_filename(prev_path + ETL_DIRECTORY_SEPARATOR + filename);
     if(dialog->run()==GTK_RESPONSE_ACCEPT) {
         filename=dialog->get_filename();
         delete dialog;
