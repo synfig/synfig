@@ -197,7 +197,7 @@ synfig::Gradient::operator+=(const Gradient &rhs)
 					if (print) printf("skipping past pos %d in right\n", pos2);
 				}
 				
-				// if the is only one cpoint at this position in each gradient,
+				// if there is only one cpoint at this position in each gradient,
 				// there's only one corresponding cpoint in the sum
 				if (iter1 == left_same && iter2 == right_same) {
 					if (print) printf("two singles at left %d and right %d\n", pos1++, pos2++);
@@ -211,7 +211,7 @@ synfig::Gradient::operator+=(const Gradient &rhs)
 					if (print) printf("  copy front from left %d right %d\n", tpos1++, tpos2++);
 					ret.push_back(CPoint(left.pos, left.color + right.color));
 
-					// merge the middle pairs points - each middle point merges with its counterpart
+					// merge the middle pairs of points - each middle point merges with its counterpart
 					while(left_same < iter1-1 && right_same < iter2-1)
 					{
 						old1 = *(left_same++);
