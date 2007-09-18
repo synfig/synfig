@@ -44,7 +44,7 @@ private:
 	ValueNode::RHandle value_node;
 	ValueNode::RHandle scalar;
 
-	ValueNode_Scale();
+	ValueNode_Scale(const ValueBase &value);
 
 public:
 
