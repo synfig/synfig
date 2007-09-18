@@ -174,7 +174,11 @@ synfig::ValueNode_Scale::operator()(Time t)const
 		return (*value_node)(t).get(Time())*(*scalar)(t).get(Time());
 	else
 	if(get_type()==ValueBase::TYPE_INTEGER)
-		return (*value_node)(t).get(int())*(*scalar)(t).get(Real());
+	{
+		Real ret = (*value_node)(t).get(int())*(*scalar)(t).get(Real()) + 0.5f;
+		if (ret < 0) return static_cast<int>(ret-1);
+		return static_cast<int>(ret);
+	}
 	else
 	if(get_type()==ValueBase::TYPE_ANGLE)
 		return (*value_node)(t).get(Angle())*(*scalar)(t).get(Real());
