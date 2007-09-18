@@ -86,6 +86,12 @@ ValueNode_Linear::ValueNode_Linear(const ValueBase &value):
 	DCAST_HACK_ENABLE();
 }
 
+LinkableValueNode*
+ValueNode_Linear::create_new()const
+{
+	return new ValueNode_Linear(get_type());
+}
+
 ValueNode_Linear*
 ValueNode_Linear::create(const ValueBase &x)
 {
@@ -107,7 +113,11 @@ ValueNode_Linear::operator()(Time t)const
 	case ValueBase::TYPE_COLOR:
 		return (*m_)(t).get( Color())*t+(*b_)(t).get( Color());
 	case ValueBase::TYPE_INTEGER:
-		return static_cast<int>((*m_)(t).get(int())*t+(*b_)(t).get(int()) + 0.5f);
+	{
+		Real ret = (*m_)(t).get(int())*t+(*b_)(t).get(int()) + 0.5f;
+		if (ret < 0) return static_cast<int>(ret-1);
+		return static_cast<int>(ret);
+	}
 	case ValueBase::TYPE_REAL:
 		return (*m_)(t).get(  Real())*t+(*b_)(t).get(  Real());
 	case ValueBase::TYPE_TIME:
@@ -218,10 +228,4 @@ ValueNode_Linear::get_link_index_from_name(const String &name)const
 	if(name=="offset") return 1;
 
 	throw Exception::BadLinkName(name);
-}
-
-LinkableValueNode*
-ValueNode_Linear::create_new()const
-{
-	return new ValueNode_Linear(get_type());
 }
