@@ -1036,7 +1036,7 @@ synfig::optimize_layers(Context context, Canvas::Handle op_canvas)
 			continue;
 
 		Layer_PasteCanvas* paste_canvas(static_cast<Layer_PasteCanvas*>(layer.get()));
-		if(layer->get_name()=="paste_canvas" && paste_canvas->get_time_offset()==0)
+		if(layer->get_name()=="PasteCanvas" && paste_canvas->get_time_offset()==0)
 		{
 			Canvas::Handle sub_canvas(Canvas::create_inline(op_canvas));
 			Canvas::Handle paste_sub_canvas = paste_canvas->get_sub_canvas();
@@ -1076,7 +1076,7 @@ synfig::optimize_layers(Context context, Canvas::Handle op_canvas)
 				continue;
 			}catch(int) { }
 #endif
-			Layer::Handle new_layer(Layer::create("paste_canvas"));
+			Layer::Handle new_layer(Layer::create("PasteCanvas"));
 			dynamic_cast<Layer_PasteCanvas*>(new_layer.get())->set_muck_with_time(false);
 			Layer::ParamList param_list(paste_canvas->get_param_list());
 			//param_list.erase("canvas");
