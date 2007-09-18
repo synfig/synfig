@@ -58,20 +58,13 @@ public:
 
 	virtual ~ValueNode_Repeat_Gradient();
 
-//	static Handle create(ValueBase::Type id=ValueBase::TYPE_GRADIENT);
-
 	bool set_gradient(ValueNode::Handle a);
-	ValueNode::Handle get_gradient()const { return gradient_; }
-
 	bool set_count(ValueNode::Handle b);
-	ValueNode::Handle get_count()const { return count_; }
-
 	bool set_width(ValueNode::Handle x);
 	bool set_specify_start(ValueNode::Handle a);
 	bool set_specify_end(ValueNode::Handle a);
 	bool set_start_color(ValueNode::Handle a);
 	bool set_end_color(ValueNode::Handle a);
-
 
 	virtual bool set_link_vfunc(int i,ValueNode::Handle x);
 
