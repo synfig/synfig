@@ -256,11 +256,8 @@ Duckmatic::is_duck_group_selectable(const etl::handle<Duck>& x)const
 			layer_name=="curve_gradient"
 		)
 			return false;
-		if(
-			(layer_name=="PasteCanvas"||
-			layer_name=="paste_canvas")
-			&& !layer->get_param("children_lock").get(bool())
-		)
+		if((layer_name=="PasteCanvas"|| layer_name=="paste_canvas") &&
+		   !layer->get_param("children_lock").get(bool()))
 			return false;
 	}
 	return true;
