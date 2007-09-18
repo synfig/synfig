@@ -40,7 +40,7 @@ class ValueNode_Sine : public LinkableValueNode
 	ValueNode::RHandle angle_;
 	ValueNode::RHandle amp_;
 
-	ValueNode_Sine(const ValueBase::Type &x);
+	ValueNode_Sine(const ValueBase &value);
 
 public:
 

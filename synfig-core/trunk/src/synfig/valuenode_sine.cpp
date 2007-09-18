@@ -49,26 +49,32 @@ using namespace synfig;
 
 /* === M E T H O D S ======================================================= */
 
-ValueNode_Sine::ValueNode_Sine(const ValueBase::Type &x):
-	LinkableValueNode(x)
+ValueNode_Sine::ValueNode_Sine(const ValueBase &value):
+	LinkableValueNode(value.get_type())
 {
-	switch(x)
+	switch(value.get_type())
 	{
 	case ValueBase::TYPE_REAL:
-		set_link("angle",ValueNode_Const::create(Angle::zero()));
-		set_link("amp",ValueNode_Const::create(Real(1)));
+		set_link("angle",ValueNode_Const::create(Angle::deg(90)));
+		set_link("amp",ValueNode_Const::create(value.get(Real())));
 		break;
 	default:
-		throw Exception::BadType(ValueBase::type_name(x));
+		throw Exception::BadType(ValueBase::type_name(value.get_type()));
 	}
 
 	DCAST_HACK_ENABLE();
 }
 
+LinkableValueNode*
+ValueNode_Sine::create_new()const
+{
+	return new ValueNode_Sine(get_type());
+}
+
 ValueNode_Sine*
 ValueNode_Sine::create(const ValueBase &x)
 {
-	return new ValueNode_Sine(x.get_type());
+	return new ValueNode_Sine(x);
 }
 
 ValueNode_Sine::~ValueNode_Sine()
@@ -173,10 +179,4 @@ ValueNode_Sine::get_link_index_from_name(const String &name)const
 		return 1;
 
 	throw Exception::BadLinkName(name);
-}
-
-LinkableValueNode*
-ValueNode_Sine::create_new()const
-{
-	return new ValueNode_Sine(get_type());
 }
