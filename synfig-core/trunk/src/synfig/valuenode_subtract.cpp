@@ -54,49 +54,56 @@ using namespace synfig;
 
 /* === M E T H O D S ======================================================= */
 
-synfig::ValueNode_Subtract::ValueNode_Subtract():LinkableValueNode(synfig::ValueBase::TYPE_NIL)
+synfig::ValueNode_Subtract::ValueNode_Subtract(const ValueBase &value):
+	LinkableValueNode(value.get_type())
 {
 	set_scalar(1.0);
-}
+	ValueBase::Type id(value.get_type());
 
-LinkableValueNode*
-ValueNode_Subtract::create_new()const
-{
-	return new ValueNode_Subtract();
-}
-
-ValueNode_Subtract*
-ValueNode_Subtract::create(const ValueBase& x)
-{
-	ValueBase::Type id(x.get_type());
-
-	ValueNode_Subtract* value_node=new ValueNode_Subtract();
 	switch(id)
 	{
-	case ValueBase::TYPE_NIL:
-		return value_node;
-	case ValueBase::TYPE_COLOR:
-		value_node->set_link("lhs",ValueNode_Const::create(x.get(Color())));
-		value_node->set_link("rhs",ValueNode_Const::create(Color(0,0,0,0)));
-		break;
 	case ValueBase::TYPE_ANGLE:
+		set_link("lhs",ValueNode_Const::create(value.get(Angle())));
+		set_link("rhs",ValueNode_Const::create(Angle::deg(0)));
+		break;
+	case ValueBase::TYPE_COLOR:
+		set_link("lhs",ValueNode_Const::create(value.get(Color())));
+		set_link("rhs",ValueNode_Const::create(Color(0,0,0,0)));
+		break;
 	case ValueBase::TYPE_INTEGER:
+		set_link("lhs",ValueNode_Const::create(value.get(int())));
+		set_link("rhs",ValueNode_Const::create(int(0)));
+		break;
 	case ValueBase::TYPE_REAL:
+		set_link("lhs",ValueNode_Const::create(value.get(Real())));
+		set_link("rhs",ValueNode_Const::create(Real(0)));
+		break;
 	case ValueBase::TYPE_VECTOR:
-		value_node->set_link("lhs",ValueNode_Const::create(ValueBase(id)));
-		value_node->set_link("rhs",ValueNode_Const::create(ValueBase(id)));
+		set_link("lhs",ValueNode_Const::create(value.get(Vector())));
+		set_link("rhs",ValueNode_Const::create(Vector(0,0)));
 		break;
 	default:
 		assert(0);
 		throw runtime_error("synfig::ValueNode_Subtract:Bad type "+ValueBase::type_name(id));
 	}
 
-	assert(value_node->get_lhs()->get_type()==id);
-	assert(value_node->get_rhs()->get_type()==id);
+	assert(get_lhs()->get_type()==id);
+	assert(get_rhs()->get_type()==id);
+	assert(get_type()==id);
 
-	assert(value_node->get_type()==id);
+	DCAST_HACK_ENABLE();
+}
 
-	return value_node;
+LinkableValueNode*
+ValueNode_Subtract::create_new()const
+{
+	return new ValueNode_Subtract(get_type());
+}
+
+ValueNode_Subtract*
+ValueNode_Subtract::create(const ValueBase& value)
+{
+	return new ValueNode_Subtract(value);
 }
 
 synfig::ValueNode_Subtract::~ValueNode_Subtract()
@@ -105,84 +112,46 @@ synfig::ValueNode_Subtract::~ValueNode_Subtract()
 }
 
 void
-ValueNode_Subtract::set_scalar(Real x)
+ValueNode_Subtract::set_scalar(Real value)
 {
-	set_link("scalar",ValueNode_Const::create(x));
+	set_link("scalar",ValueNode_Const::create(value));
 }
 
 bool
-synfig::ValueNode_Subtract::set_scalar(ValueNode::Handle x)
+synfig::ValueNode_Subtract::set_scalar(ValueNode::Handle value)
 {
-	if(x->get_type()!=ValueBase::TYPE_REAL&& !PlaceholderValueNode::Handle::cast_dynamic(x))
+	if(value->get_type()!=ValueBase::TYPE_REAL&& !PlaceholderValueNode::Handle::cast_dynamic(value))
 		return false;
-	scalar=x;
+	scalar=value;
 	return true;
 }
 
 bool
-synfig::ValueNode_Subtract::set_lhs(ValueNode::Handle a)
+synfig::ValueNode_Subtract::set_lhs(ValueNode::Handle x)
 {
-	ref_a=a;
+	assert(get_type());
 
-	if(PlaceholderValueNode::Handle::cast_dynamic(a))
-		return true;
+	if(!x ||
+	   (get_type()==ValueBase::TYPE_NIL && !check_type(x->get_type())) ||
+	   (get_type()!=ValueBase::TYPE_NIL && x->get_type()!=get_type() && !PlaceholderValueNode::Handle::cast_dynamic(x)))
+		return false;
 
-	if(!ref_a || !ref_b)
-		set_type(ValueBase::TYPE_NIL);
-	else
-	if(ref_a->get_type()==ValueBase::TYPE_ANGLE && ref_a->get_type()==ValueBase::TYPE_ANGLE)
-		set_type(ValueBase::TYPE_ANGLE);
-	else
-	if(ref_a->get_type()==ValueBase::TYPE_COLOR && ref_a->get_type()==ValueBase::TYPE_COLOR)
-		set_type(ValueBase::TYPE_COLOR);
-	else
-	if(ref_a->get_type()==ValueBase::TYPE_INTEGER && ref_a->get_type()==ValueBase::TYPE_INTEGER)
-		set_type(ValueBase::TYPE_INTEGER);
-	else
-	if(ref_a->get_type()==ValueBase::TYPE_REAL && ref_a->get_type()==ValueBase::TYPE_REAL)
-		set_type(ValueBase::TYPE_REAL);
-	else
-	if(ref_a->get_type()==ValueBase::TYPE_VECTOR && ref_a->get_type()==ValueBase::TYPE_VECTOR)
-		set_type(ValueBase::TYPE_VECTOR);
-	else
-	{
-		synfig::warning(get_id()+":(set_a):"+strprintf(_("Types seem to be off for ValueNodes %s and %s"),ref_a->get_id().c_str(),ref_b->get_id().c_str()));
-		set_type(ValueBase::TYPE_NIL);
-	}
+	ref_a=x;
 
 	return true;
 }
 
 bool
-synfig::ValueNode_Subtract::set_rhs(ValueNode::Handle b)
+synfig::ValueNode_Subtract::set_rhs(ValueNode::Handle x)
 {
-	ref_b=b;
+	assert(get_type());
 
-	if(PlaceholderValueNode::Handle::cast_dynamic(b))
-		return true;
+	if(!x ||
+	   (get_type()==ValueBase::TYPE_NIL && !check_type(x->get_type())) ||
+	   (get_type()!=ValueBase::TYPE_NIL && x->get_type()!=get_type() && !PlaceholderValueNode::Handle::cast_dynamic(x)))
+		return false;
 
-	if(!ref_a || !ref_b)
-		set_type(ValueBase::TYPE_NIL);
-	else
-	if(ref_a->get_type()==ValueBase::TYPE_ANGLE && ref_a->get_type()==ValueBase::TYPE_ANGLE)
-		set_type(ValueBase::TYPE_ANGLE);
-	else
-	if(ref_a->get_type()==ValueBase::TYPE_COLOR && ref_a->get_type()==ValueBase::TYPE_COLOR)
-		set_type(ValueBase::TYPE_COLOR);
-	else
-	if(ref_a->get_type()==ValueBase::TYPE_INTEGER && ref_a->get_type()==ValueBase::TYPE_INTEGER)
-		set_type(ValueBase::TYPE_INTEGER);
-	else
-	if(ref_a->get_type()==ValueBase::TYPE_REAL && ref_a->get_type()==ValueBase::TYPE_REAL)
-		set_type(ValueBase::TYPE_REAL);
-	else
-	if(ref_a->get_type()==ValueBase::TYPE_VECTOR && ref_a->get_type()==ValueBase::TYPE_VECTOR)
-		set_type(ValueBase::TYPE_VECTOR);
-	else
-	{
-		synfig::warning(get_id()+":(set_b):"+strprintf(_("Types seem to be off for ValueNodes %s and %s"),ref_a->get_id().c_str(),ref_b->get_id().c_str()));
-		set_type(ValueBase::TYPE_NIL);
-	}
+	ref_b=x;
 
 	return true;
 }
@@ -216,19 +185,19 @@ synfig::ValueNode_Subtract::operator()(Time t)const
 }
 
 bool
-ValueNode_Subtract::set_link_vfunc(int i,ValueNode::Handle x)
+ValueNode_Subtract::set_link_vfunc(int i,ValueNode::Handle value)
 {
 	assert(i>=0 && i<3);
 	switch(i)
 	{
 		case 0:
-			if(set_lhs(x)) { signal_child_changed()(i);signal_value_changed()(); return true; }
-			else { return false; }
+			if(set_lhs(value)) { signal_child_changed()(i);signal_value_changed()(); return true; }
+			return false;
 		case 1:
-			if(set_rhs(x)) { signal_child_changed()(i);signal_value_changed()(); return true; }
-			else { return false; }
+			if(set_rhs(value)) { signal_child_changed()(i);signal_value_changed()(); return true; }
+			return false;
 		case 2:
-			scalar=x;
+			scalar=value;
 			signal_child_changed()(i);signal_value_changed()();
 			return true;
 	}
@@ -242,14 +211,11 @@ ValueNode_Subtract::get_link_vfunc(int i)const
 	assert(i>=0 && i<3);
 	switch(i)
 	{
-		case 0:
-			return ref_a;
-		case 1:
-			return ref_b;
-		case 2:
-			return scalar;
+		case 0: return ref_a;
+		case 1: return ref_b;
+		case 2: return scalar;
+		default: return 0;
 	}
-	return 0;
 }
 
 int
@@ -264,14 +230,10 @@ ValueNode_Subtract::link_local_name(int i)const
 	assert(i>=0 && i<3);
 	switch(i)
 	{
-		case 0:
-			return _("LHS");
-		case 1:
-			return _("RHS");
-		case 2:
-			return _("Scalar");
-		default:
-			return String();
+		case 0: return _("LHS");
+		case 1: return _("RHS");
+		case 2: return _("Scalar");
+		default: return String();
 	}
 }
 
@@ -281,26 +243,20 @@ ValueNode_Subtract::link_name(int i)const
 	assert(i>=0 && i<3);
 	switch(i)
 	{
-		case 0:
-			return "lhs";
-		case 1:
-			return "rhs";
-		case 2:
-			return "scalar";
-		default:
-			return String();
+		case 0: return "lhs";
+		case 1: return "rhs";
+		case 2: return "scalar";
+		default: return String();
 	}
 }
 
 int
 ValueNode_Subtract::get_link_index_from_name(const String &name)const
 {
-	if(name=="lhs")
-		return 0;
-	if(name=="rhs")
-		return 1;
-	if(name=="scalar")
-		return 2;
+	printf("%s:%d link_index_from_name\n", __FILE__, __LINE__);
+	if(name=="lhs") return 0;
+	if(name=="rhs") return 1;
+	if(name=="scalar") return 2;
 	throw Exception::BadLinkName(name);
 }
 

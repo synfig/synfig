@@ -42,7 +42,7 @@ struct ValueNode_Subtract : public LinkableValueNode
 
 protected:
 
-	ValueNode_Subtract();
+	ValueNode_Subtract(const ValueBase &value);
 
 private:
 
@@ -99,7 +99,7 @@ public:
 	using synfig::LinkableValueNode::get_link_vfunc;
 	using synfig::LinkableValueNode::set_link_vfunc;
 	static bool check_type(ValueBase::Type type);
-	static ValueNode_Subtract* create(const ValueBase &x=ValueBase());
+	static ValueNode_Subtract* create(const ValueBase &value=ValueBase());
 }; // END of class ValueNode_Subtract
 
 }; // END of namespace synfig
