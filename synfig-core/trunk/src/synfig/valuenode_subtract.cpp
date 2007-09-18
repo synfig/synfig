@@ -192,22 +192,26 @@ synfig::ValueNode_Subtract::operator()(Time t)const
 {
 	if(!ref_a || !ref_b)
 		throw runtime_error(strprintf("ValueNode_Subtract: %s",_("One or both of my parameters aren't set!")));
-	if(get_type()==ValueBase::TYPE_ANGLE)
-		return ((*ref_a)(t).get(Angle())-(*ref_b)(t).get(Angle()))*(*scalar)(t).get(Real());
-	if(get_type()==ValueBase::TYPE_COLOR)
-		return ((*ref_a)(t).get(Color())-(*ref_b)(t).get(Color()))*(*scalar)(t).get(Real());
-	if(get_type()==ValueBase::TYPE_INTEGER)
+	switch(get_type())
 	{
-		Real value = ((*ref_a)(t).get(int())-(*ref_b)(t).get(int()))*(*scalar)(t).get(Real()) + 0.5f;
-		if (value < 0) return static_cast<int>(value-1);
-		return static_cast<int>(value);
+	case ValueBase::TYPE_ANGLE:
+		return ((*ref_a)(t).get(Angle())-(*ref_b)(t).get(Angle()))*(*scalar)(t).get(Real());
+	case ValueBase::TYPE_COLOR:
+		return ((*ref_a)(t).get(Color())-(*ref_b)(t).get(Color()))*(*scalar)(t).get(Real());
+	case ValueBase::TYPE_INTEGER:
+	{
+		Real ret = ((*ref_a)(t).get(int())-(*ref_b)(t).get(int()))*(*scalar)(t).get(Real()) + 0.5f;
+		if (ret < 0) return static_cast<int>(ret-1);
+		return static_cast<int>(ret); 
 	}
-	if(get_type()==ValueBase::TYPE_REAL)
+	case ValueBase::TYPE_REAL:
 		return ((*ref_a)(t).get(Vector::value_type())-(*ref_b)(t).get(Vector::value_type()))*(*scalar)(t).get(Real());
-	if(get_type()==ValueBase::TYPE_VECTOR)
+	case ValueBase::TYPE_VECTOR:
 		return ((*ref_a)(t).get(Vector())-(*ref_b)(t).get(Vector()))*(*scalar)(t).get(Real());
-
-	synfig::error(get_id()+':'+strprintf(_("Cannot subtract types of %s and %s"),ValueBase::type_name(ref_a->get_type()).c_str(),ValueBase::type_name(ref_b->get_type()).c_str()));
+	default:
+		assert(0);
+		break;
+	}
 	return ValueBase();
 }
 
