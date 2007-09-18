@@ -197,7 +197,11 @@ synfig::ValueNode_Subtract::operator()(Time t)const
 	if(get_type()==ValueBase::TYPE_COLOR)
 		return ((*ref_a)(t).get(Color())-(*ref_b)(t).get(Color()))*(*scalar)(t).get(Real());
 	if(get_type()==ValueBase::TYPE_INTEGER)
-		return static_cast<int>(((*ref_a)(t).get(int())-(*ref_b)(t).get(int()))*(*scalar)(t).get(Real()) + 0.5f);
+	{
+		Real value = ((*ref_a)(t).get(int())-(*ref_b)(t).get(int()))*(*scalar)(t).get(Real()) + 0.5f;
+		if (value < 0) return static_cast<int>(value-1);
+		return static_cast<int>(value);
+	}
 	if(get_type()==ValueBase::TYPE_REAL)
 		return ((*ref_a)(t).get(Vector::value_type())-(*ref_b)(t).get(Vector::value_type()))*(*scalar)(t).get(Real());
 	if(get_type()==ValueBase::TYPE_VECTOR)
