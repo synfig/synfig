@@ -198,7 +198,7 @@ studio::Instance::save_as(const synfig::String &file_name)
 bool
 studio::Instance::save()
 {
-	if(basename(get_file_name()).find("untitled")==0)
+	if(basename(get_file_name()).find("Synfig Animation")==0)
 	{
 		dialog_save_as();
 		return true;
@@ -211,8 +211,7 @@ studio::Instance::save()
 void
 studio::Instance::dialog_save_as()
 {
-	string filename="*.sif";
-
+	string filename=basename(get_file_name());
 	Canvas::Handle canvas(get_canvas());
 
 	{

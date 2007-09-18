@@ -1821,10 +1821,20 @@ App::dialog_save_file(const std::string &title, std::string &filename)
     dialog->add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
     dialog->add_button(Gtk::Stock::SAVE,   Gtk::RESPONSE_ACCEPT);
     if(!filename.empty())
+	{
+		std::string full_path;
 		if (is_absolute_path(filename))
-			dialog->set_filename(filename);
+			full_path = filename;
 		else
-			dialog->set_filename(prev_path + ETL_DIRECTORY_SEPARATOR + filename);
+			full_path = prev_path + ETL_DIRECTORY_SEPARATOR + filename;
+		// select the file if it exists
+		dialog->set_filename(full_path);
+
+		// if the file doesn't exist, put its name into the filename box
+		struct stat s;
+		if(stat(full_path.c_str(),&s) == -1 && errno == ENOENT)
+			dialog->set_current_name(basename(filename));
+	}
     if(dialog->run()==GTK_RESPONSE_ACCEPT) {
         filename=dialog->get_filename();
         delete dialog;
@@ -1999,9 +2009,9 @@ void
 App::new_instance()
 {
 	handle<synfig::Canvas> canvas=synfig::Canvas::create();
-	canvas->set_name(strprintf("Untitled%d",Instance::get_count()));
+	canvas->set_name(strprintf("Synfig Animation %d",Instance::get_count()+1));
 
-	String file_name(strprintf("untitled%d.sif",Instance::get_count()));
+	String file_name(strprintf("Synfig Animation %d.sifz",Instance::get_count()+1));
 
 	canvas->rend_desc().set_frame_rate(24.0);
 	canvas->rend_desc().set_time_start(0.0);
