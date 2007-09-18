@@ -55,43 +55,52 @@ using namespace synfig;
 
 /* === M E T H O D S ======================================================= */
 
-ValueNode_Scale::ValueNode_Scale():
-	LinkableValueNode(synfig::ValueBase::TYPE_NIL)
+ValueNode_Scale::ValueNode_Scale(const ValueBase &value):
+	LinkableValueNode(value.get_type())
 {
 	set_scalar(1.0);
-}
+	ValueBase::Type id(value.get_type());
 
-ValueNode_Scale*
-ValueNode_Scale::create(const ValueBase& x)
-{
-	ValueNode_Scale* value_node;
-	switch(x.get_type())
+	switch(id)
 	{
-	case ValueBase::TYPE_VECTOR:
-	case ValueBase::TYPE_REAL:
-	case ValueBase::TYPE_TIME:
-	case ValueBase::TYPE_INTEGER:
 	case ValueBase::TYPE_ANGLE:
+		set_link("link",ValueNode_Const::create(value.get(Angle())));
+		break;
 	case ValueBase::TYPE_COLOR:
-		value_node=new ValueNode_Scale();
-		if(!value_node->set_value_node(ValueNode_Const::create(x)))
-			return 0;
-		assert(value_node->get_value_node()->get_type()==x.get_type());
+		set_link("link",ValueNode_Const::create(value.get(Color())));
+		break;
+	case ValueBase::TYPE_INTEGER:
+		set_link("link",ValueNode_Const::create(value.get(int())));
+		break;
+	case ValueBase::TYPE_REAL:
+		set_link("link",ValueNode_Const::create(value.get(Real())));
+		break;
+	case ValueBase::TYPE_TIME:
+		set_link("link",ValueNode_Const::create(value.get(Time())));
+		break;
+	case ValueBase::TYPE_VECTOR:
+		set_link("link",ValueNode_Const::create(value.get(Vector())));
 		break;
 	default:
 		assert(0);
-		throw runtime_error("synfig::ValueNode_Scale:Bad type "+ValueBase::type_name(x.get_type()));
+		throw runtime_error("synfig::ValueNode_Scale:Bad type "+ValueBase::type_name(value.get_type()));
 	}
-	assert(value_node);
-	assert(value_node->get_type()==x.get_type());
 
-	return value_node;
+	assert(value_node);
+	assert(get_value_node()->get_type()==id);
+	assert(get_type()==id);
 }
 
 LinkableValueNode*
 ValueNode_Scale::create_new()const
 {
-	return new ValueNode_Scale();
+	return new ValueNode_Scale(get_type());
+}
+
+ValueNode_Scale*
+ValueNode_Scale::create(const ValueBase& value)
+{
+	return new ValueNode_Scale(value);
 }
 
 synfig::ValueNode_Scale::~ValueNode_Scale()
@@ -126,21 +135,18 @@ ValueNode_Scale::get_scalar()const
 bool
 ValueNode_Scale::set_value_node(const ValueNode::Handle &x)
 {
-	if(!x
-		|| ( get_type()==ValueBase::TYPE_NIL
-			&& !check_type(x->get_type()) )
-		|| ( get_type()!=ValueBase::TYPE_NIL
-			&& x->get_type()!=get_type() ) &&
-		!PlaceholderValueNode::Handle::cast_dynamic(x)
-	)
+	assert(get_type());
+
+	// if this isn't a proper value
+	if(!x ||
+	   // or we don't have a type, and this value isn't one of the types we accept
+	   (get_type()==ValueBase::TYPE_NIL && !check_type(x->get_type())) ||
+	   // or we have a type and this value is a different type and (placeholder?)
+	   (get_type()!=ValueBase::TYPE_NIL && x->get_type()!=get_type() && !PlaceholderValueNode::Handle::cast_dynamic(x)))
+		// then fail to set the value
 		return false;
 
-	assert(!(PlaceholderValueNode::Handle::cast_dynamic(x) && !get_type()));
-
 	value_node=x;
-
-	if(!get_type())
-		set_type(x->get_type());
 
 	return true;
 }
