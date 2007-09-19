@@ -198,14 +198,16 @@ studio::Instance::save_as(const synfig::String &file_name)
 bool
 studio::Instance::save()
 {
-	if(basename(get_file_name()).find("Synfig Animation")==0)
+	// the filename will be set to "Synfig Animation 1" or some such when first created
+	// and will be changed to an absolute path once it has been saved
+	// so if it still begins with "Synfig Animation " then we need to ask where to save it
+	if(get_file_name().find(DEFAULT_FILENAME_PREFIX)==0)
 	{
 		dialog_save_as();
 		return true;
 	}
 
 	return synfigapp::Instance::save();
-
 }
 
 void

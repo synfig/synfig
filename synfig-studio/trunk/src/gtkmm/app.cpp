@@ -2009,9 +2009,9 @@ void
 App::new_instance()
 {
 	handle<synfig::Canvas> canvas=synfig::Canvas::create();
-	canvas->set_name(strprintf("Synfig Animation %d",Instance::get_count()+1));
+	canvas->set_name(strprintf("%s%d", DEFAULT_FILENAME_PREFIX, Instance::get_count()+1));
 
-	String file_name(strprintf("Synfig Animation %d.sifz",Instance::get_count()+1));
+	String file_name(strprintf("%s%d.sifz", DEFAULT_FILENAME_PREFIX, Instance::get_count()+1));
 
 	canvas->rend_desc().set_frame_rate(24.0);
 	canvas->rend_desc().set_time_start(0.0);

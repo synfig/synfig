@@ -37,6 +37,7 @@
 #include <synfig/canvas.h>
 
 /* === M A C R O S ========================================================= */
+#define DEFAULT_FILENAME_PREFIX _("Synfig Animation ") // will be followed by a different number for each document
 
 /* === T Y P E D E F S ===================================================== */
 
