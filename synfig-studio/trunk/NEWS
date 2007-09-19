@@ -2,12 +2,21 @@
 
  0.61.07 (SVN ???) - ???? ??, 200? - Bug fixes
 
-  * Fix some tooltips and menu stuff
+  * Fix some tooltips and menu stuff (#1787437)
   * Allow left-right scrolling in canvas window
   * Rework mouse interaction with ducks and tangents
   * Move icons to a subdir
-  * Fix some typos, several crashes and other bugs
+  * Fix some typos, several crashes (#1780016, #1785598) and other bugs
   * Re-enable sketch, draw, polygon by default
+  * Add keyboard shortcuts for all tools ( http://wiki.synfig.com/Keyboard_Shortcuts )
+  * Fix crash when setting canvas resolution to zero (#1779616)
+  * Add 'auto-export' checkbox and layer name box to the draw tool
+  * Various GUI fixes (#1794006, #1796110)
+  * File-selector fixes (#1383736)
+  * Fix the View>Play menu entry to allow playback inside the workarea
+  * Save to .sifz (compressed) format by default if no extension is given
+  * Remember the path used when saving a document and default to it in future
+  * Call new documents "Synfig Animation <n>" by default, rather than "untitled0"
 
  0.61.06 (SVN 543) - June 20, 2007 - Bug fixes
  
