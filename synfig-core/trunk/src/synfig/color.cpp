@@ -34,6 +34,7 @@
 #include <cstdio>
 #include <sstream>
 #include <iostream>
+#include <iomanip>
 
 #endif
 
@@ -107,6 +108,14 @@ Color::set_hex(String& hex)
 		printf("caught <%s>\n", s.c_str());
 		return;
 	}
+}
+
+const String
+Color::get_string(void)const
+{
+	std::ostringstream o;
+	o << std::fixed << std::setprecision(3) << "#" << get_hex() << " : " << std::setw(6) << a_;
+	return String(o.str().c_str());
 }
 
 #if 0

@@ -28,11 +28,6 @@
 /* === H E A D E R S ======================================================= */
 
 
-#include <iostream>
-#include <iomanip>
-#include <sstream>
-#include <string>
-
 //#include <cmath>
 #include <math.h>
 #include <cassert>
@@ -115,12 +110,7 @@ private:
 
 public:
 
-	inline const String get_string(void)const
-	{
-		std::ostringstream o;
-		o << std::fixed << std::setprecision(3) << "#" << get_hex() << " : " << std::setw(6) << a_;
-		return String(o.str().c_str());
-	}
+	const String get_string(void)const;
 
 	Color &
 	operator+=(const Color &rhs)
