@@ -54,7 +54,7 @@ using namespace etl;
 
 SYNFIG_LAYER_INIT(Import);
 SYNFIG_LAYER_SET_NAME(Import,"import");
-SYNFIG_LAYER_SET_LOCAL_NAME(Import,_("Import"));
+SYNFIG_LAYER_SET_LOCAL_NAME(Import,_("Import Image"));
 SYNFIG_LAYER_SET_CATEGORY(Import,_("Other"));
 SYNFIG_LAYER_SET_VERSION(Import,"0.1");
 SYNFIG_LAYER_SET_CVS_ID(Import,"$Id$");
