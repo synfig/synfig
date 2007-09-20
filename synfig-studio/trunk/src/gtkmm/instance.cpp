@@ -202,15 +202,12 @@ studio::Instance::save()
 	// and will be changed to an absolute path once it has been saved
 	// so if it still begins with "Synfig Animation " then we need to ask where to save it
 	if(get_file_name().find(DEFAULT_FILENAME_PREFIX)==0)
-	{
-		dialog_save_as();
-		return true;
-	}
+		return dialog_save_as();
 
 	return synfigapp::Instance::save();
 }
 
-void
+bool
 studio::Instance::dialog_save_as()
 {
 	string filename=basename(get_file_name());
@@ -234,7 +231,7 @@ studio::Instance::dialog_save_as()
 						"other files first before trying to use \"SaveAs\"."
 					);
 
-					return;
+					return false;
 				}
 				if(parent_layer)
 					break;
@@ -287,10 +284,12 @@ studio::Instance::dialog_save_as()
 		}
 
 		if(save_as(filename))
-			break;
+			return true;
 
 		App::dialog_error_blocking("SaveAs - Error","Unable to save file");
 	}
+
+	return false;
 }
 
 void

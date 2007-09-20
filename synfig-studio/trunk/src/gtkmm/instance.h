@@ -171,7 +171,8 @@ public:
 	bool save_as(const synfig::String &filename);
 
 	//! Opens a "Save As" dialog, and then saves the composition to that file
-	void dialog_save_as();
+	//! returns true if the save was successful
+	bool dialog_save_as();
 
 	bool save();
 
