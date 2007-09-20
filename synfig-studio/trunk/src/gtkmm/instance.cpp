@@ -626,14 +626,17 @@ Instance::safe_close()
 	uim=find_canvas_view(get_canvas())->get_ui_interface();
 
 	if(get_action_count())
-	{
-		string str=strprintf(_("Would you like to save your changes to %s?"),basename(get_file_name()).c_str() );
-		int answer=uim->yes_no_cancel(get_canvas()->get_name(),str,synfigapp::UIInterface::RESPONSE_YES);
-		if(answer==synfigapp::UIInterface::RESPONSE_YES)
-			save();
-		if(answer==synfigapp::UIInterface::RESPONSE_CANCEL)
-			return false;
-	}
+		do
+		{
+			string str=strprintf(_("Would you like to save your changes to %s?"),basename(get_file_name()).c_str() );
+			int answer=uim->yes_no_cancel(get_canvas()->get_name(),str,synfigapp::UIInterface::RESPONSE_YES);
+			if(answer==synfigapp::UIInterface::RESPONSE_YES)
+				if (save()) break;
+			if(answer==synfigapp::UIInterface::RESPONSE_NO)
+				break;
+			if(answer==synfigapp::UIInterface::RESPONSE_CANCEL)
+				return false;
+		} while (true);
 
 	if(is_modified())
 	{
