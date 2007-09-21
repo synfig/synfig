@@ -177,22 +177,44 @@ RenderSettings::RenderSettings(Gtk::Window& parent,handle<synfigapp::CanvasInter
 	toggle_single_frame.set_active(true);
 	widget_rend_desc.disable_time_section();
 
-
-	try
-	{
-		entry_filename.set_text(Glib::build_filename(Glib::get_home_dir(),Glib::ustring("Desktop")+ETL_DIRECTORY_SEPARATOR+Glib::ustring("output.png")));
-	}
-	catch(...)
-	{
-		synfig::warning("Averted crash!");
-		entry_filename.set_text("output.png");
-	}
+	set_entry_filename();
 
 	get_vbox()->show_all();
 }
 
 RenderSettings::~RenderSettings()
 {
+}
+
+void
+RenderSettings::set_entry_filename()
+{
+	String filename(canvas_interface_->get_canvas()->get_file_name());
+
+	// if the basename of the filename has an extension, remove it
+	String base = basename(filename);
+	if(find(base.begin(),base.end(),'.')!=base.end())
+		filename = String(filename.begin(), filename.begin()+filename.find_last_of('.'));
+
+	// if this isn't the root canvas, append (<canvasname>) to the filename
+	etl::handle<synfig::Canvas> canvas = canvas_interface_->get_canvas();
+	if (!canvas->is_root())
+		if(canvas->get_name().empty())
+			filename+=" ("+canvas->get_id()+')';
+		else
+			filename+=" ("+canvas->get_name()+')';
+
+	filename += ".png";
+
+	try
+	{
+		entry_filename.set_text((filename));
+	}
+	catch(...)
+	{
+		synfig::warning("Averted crash!");
+		entry_filename.set_text("output.png");
+	}
 }
 
 void
