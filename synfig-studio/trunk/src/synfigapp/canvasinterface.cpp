@@ -508,8 +508,6 @@ CanvasInterface::import(const synfig::String &filename, bool /*copy*/)
 		return false;
 	}
 
-
-
 	if(!Importer::book().count(ext))
 	{
 		get_ui_interface()->error(_("I don't know how to open images of this type -- ")+ext);
