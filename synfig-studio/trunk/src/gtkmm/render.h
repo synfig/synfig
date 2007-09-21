@@ -82,9 +82,11 @@ class RenderSettings : public Gtk::Dialog
 public:
 	RenderSettings(Gtk::Window& parent,etl::handle<synfigapp::CanvasInterface> canvas_interface);
 	~RenderSettings();
+	void present();
 
 private:
 
+	void set_entry_filename();
 	void on_rend_desc_changed();
 	void on_single_frame_toggle();
 	void on_choose_pressed();
