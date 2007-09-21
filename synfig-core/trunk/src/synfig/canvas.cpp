@@ -700,24 +700,22 @@ Canvas::insert(iterator iter,etl::handle<Layer> x)
 	//while(correct_canvas->is_inline())correct_canvas=correct_canvas->parent();
 	Layer::LooseHandle loose_layer(x);
 
-	x->signal_added_to_group().connect(
-		sigc::bind(
-			sigc::mem_fun(
-				*correct_canvas,
-				&Canvas::add_group_pair
-			),
-			loose_layer
-		)
-	);
-	x->signal_removed_from_group().connect(
-		sigc::bind(
-			sigc::mem_fun(
-				*correct_canvas,
-				&Canvas::remove_group_pair
-			),
-			loose_layer
-		)
-	);
+	add_connection(x,
+				   sigc::connection::connection(
+					   x->signal_added_to_group().connect(
+						   sigc::bind(
+							   sigc::mem_fun(
+								   *correct_canvas,
+								   &Canvas::add_group_pair),
+							   loose_layer))));
+	add_connection(x,
+				   sigc::connection::connection(
+					   x->signal_removed_from_group().connect(
+						   sigc::bind(
+							   sigc::mem_fun(
+								   *correct_canvas,
+								   &Canvas::remove_group_pair),
+							   loose_layer))));
 
 
 	if(!x->get_group().empty())
@@ -749,8 +747,10 @@ Canvas::erase(Canvas::iterator iter)
 	// is using these signals, so I'll just
 	// leave these next two lines like they
 	// are for now - darco 07-30-2004
-	(*iter)->signal_added_to_group().clear();
-	(*iter)->signal_removed_from_group().clear();
+
+	// so don't wipe them out entirely
+	// - dooglus 09-21-2007
+	disconnect_connections(*iter);
 
 	if(!op_flag_)remove_child(iter->get());
 
@@ -1176,6 +1176,21 @@ Canvas::remove_group_pair(String group, etl::handle<Layer> layer)
 
 	if(is_inline() && parent_)
 		return parent_->remove_group_pair(group,layer);
+}
+
+void
+Canvas::add_connection(etl::handle<Layer> layer, sigc::connection connection)
+{
+	connections_[layer].push_back(connection);
+}
+
+void
+Canvas::disconnect_connections(etl::handle<Layer> layer)
+{
+	std::vector<sigc::connection>::iterator iter;
+	for(iter=connections_[layer].begin();iter!=connections_[layer].end();++iter)
+		iter->disconnect();
+	connections_[layer].clear();
 }
 
 void
