@@ -70,7 +70,7 @@ public:
 
 private:
 
-}; // END of class RenderSettings
+}; // END of class Dialog_Keyframe
 
 }; // END of namespace studio
 
