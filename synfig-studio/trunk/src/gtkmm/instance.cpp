@@ -189,6 +189,10 @@ studio::Instance::save_as(const synfig::String &file_name)
 {
 	if(synfigapp::Instance::save_as(file_name))
 	{
+		// after changing the filename, update the render settings with the new filename
+		list<handle<CanvasView> >::iterator iter;
+		for(iter=canvas_view_list().begin();iter!=canvas_view_list().end();iter++)
+			(*iter)->render_settings.set_entry_filename();
 		App::add_recent_file(file_name);
 		return true;
 	}
