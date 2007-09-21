@@ -131,7 +131,7 @@ save_selected_instance()
 		return;
 	}
 
-	if(!studio::App::get_selected_instance()->save())
+	if(studio::App::get_selected_instance()->save() == studio::Instance::STATUS_ERROR)
 		App::dialog_error_blocking("Save - Error","Unable to save file");
 }
 

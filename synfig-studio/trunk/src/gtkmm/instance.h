@@ -55,6 +55,13 @@ class Instance : public synfigapp::Instance
 public:
 	typedef std::list< etl::handle<CanvasView> > CanvasViewList;
 
+	enum Status
+	{
+		STATUS_OK,
+		STATUS_ERROR,
+		STATUS_CANCEL
+	};
+
 	class CanvasTreeModel : public Gtk::TreeModel::ColumnRecord
 	{
 	public:
@@ -174,7 +181,7 @@ public:
 	//! returns true if the save was successful
 	bool dialog_save_as();
 
-	bool save();
+	Status save();
 
 	void dialog_cvs_commit();
 

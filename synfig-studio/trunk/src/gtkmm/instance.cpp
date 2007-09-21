@@ -199,16 +199,22 @@ studio::Instance::save_as(const synfig::String &file_name)
 	return false;
 }
 
-bool
+Instance::Status
 studio::Instance::save()
 {
 	// the filename will be set to "Synfig Animation 1" or some such when first created
 	// and will be changed to an absolute path once it has been saved
 	// so if it still begins with "Synfig Animation " then we need to ask where to save it
 	if(get_file_name().find(DEFAULT_FILENAME_PREFIX)==0)
-		return dialog_save_as();
+		if (dialog_save_as())
+			return STATUS_OK;
+		else
+			return STATUS_CANCEL;
 
-	return synfigapp::Instance::save();
+	if (synfigapp::Instance::save())
+		return STATUS_OK;
+	else
+		return STATUS_ERROR;
 }
 
 bool
@@ -635,7 +641,11 @@ Instance::safe_close()
 			string str=strprintf(_("Would you like to save your changes to %s?"),basename(get_file_name()).c_str() );
 			int answer=uim->yes_no_cancel(get_canvas()->get_name(),str,synfigapp::UIInterface::RESPONSE_YES);
 			if(answer==synfigapp::UIInterface::RESPONSE_YES)
-				if (save()) break;
+			{
+				enum Status status = save();
+				if (status == STATUS_OK) break;
+				else if (status == STATUS_CANCEL) return false;
+			}
 			if(answer==synfigapp::UIInterface::RESPONSE_NO)
 				break;
 			if(answer==synfigapp::UIInterface::RESPONSE_CANCEL)
