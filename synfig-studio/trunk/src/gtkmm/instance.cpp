@@ -213,8 +213,9 @@ studio::Instance::save()
 
 	if (synfigapp::Instance::save())
 		return STATUS_OK;
-	else
-		return STATUS_ERROR;
+
+	App::dialog_error_blocking("Save - Error","Unable to save to '" + get_file_name() + "'");
+	return STATUS_ERROR;
 }
 
 bool
@@ -282,9 +283,19 @@ studio::Instance::dialog_save_as()
 
 		{
 			struct stat	s;
-			// if stat() succeeds, or it fails with something other than 'file doesn't exist', the file exists
+			int stat_return = stat(filename.c_str(), &s);
+
+			// if stat() fails with something other than 'file doesn't exist', there's been a real
+			// error of some kind.  let's give up now and ask for a new path.
+			if (stat_return == -1 && errno != ENOENT)
+			{
+				perror(filename.c_str());
+				App::dialog_error_blocking("SaveAs - Error","Unable to check whether '" + filename + "' exists.");
+				continue;
+			}
+
 			// if the file exists and the user doesn't want to overwrite it, keep prompting for a filename
-			if ((stat(filename.c_str(), &s) != -1 || errno != ENOENT) &&
+			if ((stat_return == 0) &&
 				!App::dialog_yes_no("File exists",
 									"A file named '" +
 									filename +
@@ -296,7 +307,7 @@ studio::Instance::dialog_save_as()
 		if(save_as(filename))
 			return true;
 
-		App::dialog_error_blocking("SaveAs - Error","Unable to save file");
+		App::dialog_error_blocking("SaveAs - Error","Unable to save to '" + filename + "'");
 	}
 
 	return false;
