@@ -700,7 +700,7 @@ Canvas::insert(iterator iter,etl::handle<Layer> x)
 	//while(correct_canvas->is_inline())correct_canvas=correct_canvas->parent();
 	Layer::LooseHandle loose_layer(x);
 
-	add_connection(x,
+	add_connection(loose_layer,
 				   sigc::connection::connection(
 					   x->signal_added_to_group().connect(
 						   sigc::bind(
@@ -708,7 +708,7 @@ Canvas::insert(iterator iter,etl::handle<Layer> x)
 								   *correct_canvas,
 								   &Canvas::add_group_pair),
 							   loose_layer))));
-	add_connection(x,
+	add_connection(loose_layer,
 				   sigc::connection::connection(
 					   x->signal_removed_from_group().connect(
 						   sigc::bind(
@@ -1179,13 +1179,13 @@ Canvas::remove_group_pair(String group, etl::handle<Layer> layer)
 }
 
 void
-Canvas::add_connection(etl::handle<Layer> layer, sigc::connection connection)
+Canvas::add_connection(Layer::LooseHandle layer, sigc::connection connection)
 {
 	connections_[layer].push_back(connection);
 }
 
 void
-Canvas::disconnect_connections(etl::handle<Layer> layer)
+Canvas::disconnect_connections(Layer::LooseHandle layer)
 {
 	std::vector<sigc::connection>::iterator iter;
 	for(iter=connections_[layer].begin();iter!=connections_[layer].end();++iter)

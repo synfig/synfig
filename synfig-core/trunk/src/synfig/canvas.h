@@ -143,7 +143,7 @@ private:
 	std::map<String,std::set<etl::handle<Layer> > > group_db_;
 
 	//! Layer Connection database
-	std::map<etl::handle<Layer>,std::vector<sigc::connection> > connections_;
+	std::map<etl::loose_handle<Layer>,std::vector<sigc::connection> > connections_;
 
 	/*
  -- ** -- S I G N A L S -------------------------------------------------------
@@ -473,8 +473,8 @@ public:
 private:
 	void add_group_pair(String group, etl::handle<Layer> layer);
 	void remove_group_pair(String group, etl::handle<Layer> layer);
-	void add_connection(etl::handle<Layer> layer, sigc::connection connection);
-	void disconnect_connections(etl::handle<Layer> layer);
+	void add_connection(etl::loose_handle<Layer> layer, sigc::connection connection);
+	void disconnect_connections(etl::loose_handle<Layer> layer);
 
 protected:
 	virtual void on_changed();
