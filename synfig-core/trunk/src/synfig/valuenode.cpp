@@ -54,6 +54,7 @@
 #include "valuenode_radialcomposite.h"
 #include "valuenode_gradientrotate.h"
 #include "valuenode_sine.h"
+#include "valuenode_exp.h"
 
 #include "layer.h"
 
@@ -115,6 +116,7 @@ ValueNode::subsys_init()
 	ADD_VALUENODE2(ValueNode_DynamicList,	"dynamic_list",		_("Dynamic List")		);
 	ADD_VALUENODE(ValueNode_GradientRotate,	"gradient_rotate",	_("Gradient Rotate")	);
 	ADD_VALUENODE(ValueNode_Sine,			"sine",				_("Sine")				);
+	ADD_VALUENODE(ValueNode_Exp,			"exp",				_("Exponential")		);
 
 #undef ADD_VALUENODE
 #undef ADD_VALUENODE2

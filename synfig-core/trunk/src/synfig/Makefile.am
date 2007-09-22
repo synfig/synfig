@@ -16,8 +16,8 @@ TARGETSOURCES=target_scanline.cpp target_tile.cpp target_multi.cpp target_null.c
 IMPORTERHEADERS=listimporter.h
 IMPORTERSOURCES=listimporter.cpp
 
-VALUENODEHEADERS=valuenode_sine.h valuenode_radialcomposite.h valuenode_bline.h valuenode_segcalcvertex.h valuenode_segcalctangent.h valuenode_twotone.h valuenode_repeat_gradient.h valuenode_stripes.h valuenode_subtract.h valuenode_const.h valuenode_reference.h valuenode_linear.h valuenode_composite.h valuenode_dynamiclist.h valuenode_animated.h valuenode_scale.h valuenode_timedswap.h valuenode_gradientrotate.h
-VALUENODESOURCES=valuenode_sine.cpp valuenode_radialcomposite.cpp valuenode_bline.cpp valuenode_segcalcvertex.cpp valuenode_segcalctangent.cpp valuenode_twotone.cpp valuenode_repeat_gradient.cpp valuenode_stripes.cpp valuenode_subtract.cpp valuenode_const.cpp valuenode_reference.cpp valuenode_linear.cpp valuenode_composite.cpp valuenode_dynamiclist.cpp valuenode_animated.cpp valuenode_scale.cpp valuenode_timedswap.cpp valuenode_gradientrotate.cpp
+VALUENODEHEADERS=valuenode_exp.h valuenode_sine.h valuenode_radialcomposite.h valuenode_bline.h valuenode_segcalcvertex.h valuenode_segcalctangent.h valuenode_twotone.h valuenode_repeat_gradient.h valuenode_stripes.h valuenode_subtract.h valuenode_const.h valuenode_reference.h valuenode_linear.h valuenode_composite.h valuenode_dynamiclist.h valuenode_animated.h valuenode_scale.h valuenode_timedswap.h valuenode_gradientrotate.h
+VALUENODESOURCES=valuenode_exp.cpp valuenode_sine.cpp valuenode_radialcomposite.cpp valuenode_bline.cpp valuenode_segcalcvertex.cpp valuenode_segcalctangent.cpp valuenode_twotone.cpp valuenode_repeat_gradient.cpp valuenode_stripes.cpp valuenode_subtract.cpp valuenode_const.cpp valuenode_reference.cpp valuenode_linear.cpp valuenode_composite.cpp valuenode_dynamiclist.cpp valuenode_animated.cpp valuenode_scale.cpp valuenode_timedswap.cpp valuenode_gradientrotate.cpp
 
 VALUEHEADERS=blinepoint.h gradient.h value.h
 VALUESOURCES=blinepoint.cpp gradient.cpp value.cpp
