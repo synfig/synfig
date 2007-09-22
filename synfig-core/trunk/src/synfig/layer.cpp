@@ -313,7 +313,7 @@ Layer::clone(const GUID& deriv_guid) const
 	ret->set_guid(get_guid()^deriv_guid);
 
 	//ret->set_param_list(get_param_list());
-	// Process the parameter list sothat
+	// Process the parameter list so that
 	// we can duplicate any inline canvases
 	ParamList param_list(get_param_list());
 	for(ParamList::const_iterator iter(param_list.begin()); iter != param_list.end(); ++iter)
