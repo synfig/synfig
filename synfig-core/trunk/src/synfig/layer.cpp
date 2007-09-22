@@ -314,7 +314,7 @@ Layer::clone(const GUID& deriv_guid) const
 
 	//ret->set_param_list(get_param_list());
 	// Process the parameter list sothat
-	// we can duplicate any inlinecanvases
+	// we can duplicate any inline canvases
 	ParamList param_list(get_param_list());
 	for(ParamList::const_iterator iter(param_list.begin()); iter != param_list.end(); ++iter)
 	{
@@ -325,8 +325,8 @@ Layer::clone(const GUID& deriv_guid) const
 			Canvas::Handle canvas(iter->second.get(Canvas::Handle()));
 			if(canvas && canvas->is_inline())
 			{
-				// This parameter is an inlinecanvas! we need to clone it
-				// before we set it as aparameter.
+				// This parameter is an inline canvas! we need to clone it
+				// before we set it as a parameter.
 				Canvas::Handle new_canvas(canvas->clone(deriv_guid));
 				ValueBase value(new_canvas);
 				ret->set_param(iter->first, value);
@@ -342,7 +342,7 @@ Layer::clone(const GUID& deriv_guid) const
 	DynamicParamList::const_iterator iter;
 	for(iter=dynamic_param_list().begin();iter!=dynamic_param_list().end();++iter)
 	{
-		// Make sure we clone inlinecanvases
+		// Make sure we clone inline canvases
 		if(iter->second->get_type()==ValueBase::TYPE_CANVAS)
 		{
 			Canvas::Handle canvas((*iter->second)(0).get(Canvas::Handle()));
