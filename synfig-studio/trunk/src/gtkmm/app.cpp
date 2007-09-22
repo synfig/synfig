@@ -757,7 +757,7 @@ init_ui_manager()
 	DEFINE_ACTION("quality-09", _("Use Quality Level 9"));
 	DEFINE_ACTION("quality-10", _("Use Quality Level 10"));
 	DEFINE_ACTION("play", _("Play"));
-	DEFINE_ACTION("pause", _("Pause"));
+	// DEFINE_ACTION("pause", _("Pause"));
 	DEFINE_ACTION("stop", _("Stop"));
 	DEFINE_ACTION("toggle-grid-show", _("Toggle Grid Show"));
 	DEFINE_ACTION("toggle-grid-snap", _("Toggle Grid Snap"));
@@ -885,7 +885,7 @@ init_ui_manager()
 "		</menu>"
 "		<separator name='bleh08'/>"
 "		<menuitem action='play'/>"
-"		<menuitem action='pause'/>"
+//"		<menuitem action='pause'/>"
 "		<menuitem action='stop'/>"
 "		<menuitem action='dialog-flipbook'/>"
 "		<separator name='bleh09'/>"
@@ -1040,6 +1040,7 @@ init_ui_manager()
 	ACCEL2(Gtk::AccelKey('>',Gdk::CONTROL_MASK,"<Actions>//seek-next-second"));
 	ACCEL2(Gtk::AccelKey('<',Gdk::CONTROL_MASK,"<Actions>//seek-prev-second"));
 	ACCEL2(Gtk::AccelKey('o',Gdk::CONTROL_MASK,"<Actions>//toggle-onion-skin"));
+	ACCEL("<Actions>//play",              "<Control>p");
 	ACCEL("<Actions>//seek-begin","Home");
 	ACCEL("<Actions>//seek-end","End");
 
