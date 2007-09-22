@@ -643,9 +643,17 @@ Instance::safe_revert()
 bool
 Instance::safe_close()
 {
-	handle<synfigapp::UIInterface> uim;
-	uim=find_canvas_view(get_canvas())->get_ui_interface();
+	handle<CanvasView> canvas_view = find_canvas_view(get_canvas());
+	handle<synfigapp::UIInterface> uim=canvas_view->get_ui_interface();
 
+	// if the animation is currently playing, closing the window will cause a crash,
+	// so don't allow it
+	if (canvas_view->is_playing())
+	{
+		canvas_view->present();
+		App::dialog_error_blocking("Close Error", "The animation is currently playing so the window cannot be closed.");
+		return false;
+	}
 	if(get_action_count())
 		do
 		{

@@ -589,6 +589,8 @@ public:
 
 	void present();
 
+	bool is_playing() { return is_playing_; }
+
 	/*
  -- ** -- S I G N A L   T E R M I N A L S -------------------------------------
 	*/
