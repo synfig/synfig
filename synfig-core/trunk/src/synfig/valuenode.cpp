@@ -110,7 +110,7 @@ ValueNode::subsys_init()
 	ADD_VALUENODE(ValueNode_SegCalcTangent,	"segcalctangent",	_("Segment Tangent")	);
 	ADD_VALUENODE(ValueNode_SegCalcVertex,	"segcalcvertex",	_("Segment Vertex")		);
 	ADD_VALUENODE(ValueNode_Stripes,		"stripes",			_("Stripes")			);
-	ADD_VALUENODE(ValueNode_Subtract,		"add",				_("Add")				);
+	ADD_VALUENODE(ValueNode_Add,			"add",				_("Add")				);
 	ADD_VALUENODE(ValueNode_Subtract,		"subtract",			_("Subtract")			);
 	ADD_VALUENODE(ValueNode_TimedSwap,		"timed_swap",		_("Timed Swap")			);
 	ADD_VALUENODE(ValueNode_TwoTone,		"twotone",			_("Two-Tone")			);
