@@ -46,6 +46,7 @@
 #include "valuenode_segcalcvertex.h"
 #include "valuenode_repeat_gradient.h"
 #include "valuenode_stripes.h"
+#include "valuenode_add.h"
 #include "valuenode_subtract.h"
 #include "valuenode_timedswap.h"
 #include "valuenode_twotone.h"
@@ -109,6 +110,7 @@ ValueNode::subsys_init()
 	ADD_VALUENODE(ValueNode_SegCalcTangent,	"segcalctangent",	_("Segment Tangent")	);
 	ADD_VALUENODE(ValueNode_SegCalcVertex,	"segcalcvertex",	_("Segment Vertex")		);
 	ADD_VALUENODE(ValueNode_Stripes,		"stripes",			_("Stripes")			);
+	ADD_VALUENODE(ValueNode_Subtract,		"add",				_("Add")				);
 	ADD_VALUENODE(ValueNode_Subtract,		"subtract",			_("Subtract")			);
 	ADD_VALUENODE(ValueNode_TimedSwap,		"timed_swap",		_("Timed Swap")			);
 	ADD_VALUENODE(ValueNode_TwoTone,		"twotone",			_("Two-Tone")			);
