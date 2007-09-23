@@ -57,7 +57,7 @@ using namespace synfig;
 ValueNode_BLineCalcTangent::ValueNode_BLineCalcTangent(const ValueBase::Type &x):
 	LinkableValueNode(x)
 {
-	if(x!=ValueBase::TYPE_VECTOR)
+	if(x!=ValueBase::TYPE_ANGLE && x!=ValueBase::TYPE_VECTOR)
 		throw Exception::BadType(ValueBase::type_name(x));
 
 	ValueNode_BLine* value_node(new ValueNode_BLine());
@@ -69,7 +69,7 @@ ValueNode_BLineCalcTangent::ValueNode_BLineCalcTangent(const ValueBase::Type &x)
 LinkableValueNode*
 ValueNode_BLineCalcTangent::create_new()const
 {
-	return new ValueNode_BLineCalcTangent(ValueBase::TYPE_VECTOR);
+	return new ValueNode_BLineCalcTangent(get_type());
 }
 
 ValueNode_BLineCalcTangent*
@@ -95,7 +95,13 @@ ValueNode_BLineCalcTangent::operator()(Time t)const
 	BLinePoint blinepoint0, blinepoint1;
 
 	if (!looped) size--;
-	if (size < 1) return Vector();
+	if (size < 1)
+		switch (get_type())
+		{
+			case ValueBase::TYPE_ANGLE:  return Angle();
+			case ValueBase::TYPE_VECTOR: return Vector();
+			default: assert(0); return ValueBase();
+		}
 	if (loop)
 	{
 		amount = amount - int(amount);
@@ -121,9 +127,19 @@ ValueNode_BLineCalcTangent::operator()(Time t)const
 	etl::derivative< etl::hermite<Vector> > deriv(curve);
 
 #ifdef ETL_FIXED_DERIVATIVE
-	return deriv(amount-from_vertex)*(0.5);
+	switch (get_type())
+	{
+		case ValueBase::TYPE_ANGLE:  return (deriv(amount-from_vertex)*(0.5)).angle();
+		case ValueBase::TYPE_VECTOR: return deriv(amount-from_vertex)*(0.5);
+		default: assert(0); return ValueBase();
+	}
 #else
-	return deriv(amount-from_vertex)*(-0.5);
+	switch (get_type())
+	{
+		case ValueBase::TYPE_ANGLE:  return (deriv(amount-from_vertex)*(-0.5)).angle();
+		case ValueBase::TYPE_VECTOR: return deriv(amount-from_vertex)*(-0.5);
+		default: assert(0); return ValueBase();
+	}
 #endif
 }
 
@@ -219,5 +235,6 @@ ValueNode_BLineCalcTangent::get_link_index_from_name(const String &name)const
 bool
 ValueNode_BLineCalcTangent::check_type(ValueBase::Type type)
 {
-	return type==ValueBase::TYPE_VECTOR;
+	return (type==ValueBase::TYPE_ANGLE ||
+			type==ValueBase::TYPE_VECTOR);
 }

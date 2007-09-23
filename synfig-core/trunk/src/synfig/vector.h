@@ -27,6 +27,7 @@
 
 /* === H E A D E R S ======================================================= */
 
+#include "angle.h"
 #include "real.h"
 #include <math.h>
 
@@ -168,6 +169,9 @@ public:
 	//! Returns a perpendicular version of the vector
 	Vector perp()const
 		{ return Vector(_y,-_x); }
+
+	Angle angle()const
+		{ return Angle::rad(atan2(_y, _x)); }
 
 	bool is_equal_to(const Vector& rhs)const
 	{
