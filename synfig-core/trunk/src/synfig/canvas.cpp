@@ -1082,31 +1082,31 @@ synfig::optimize_layers(Context context, Canvas::Handle op_canvas, bool seen_mot
 		Layer_PasteCanvas* paste_canvas(static_cast<Layer_PasteCanvas*>(layer.get()));
 		if(layer->get_name()=="PasteCanvas" && paste_canvas->get_time_offset()==0)
 		{
+			// we need to blur the sub canvas if:
+			// our parent is blurred,
+			// or the child is lower than a local blur,
+			// or the child is at the same z_depth as a local blur, but later in the context
+
+#if 0 // DEBUG
+			if (seen_motion_blur_in_parent)					synfig::info("seen BLUR in parent\n");
+			else if (seen_motion_blur_locally)
+				if (z_depth > motion_blur_z_depth)			synfig::info("paste is deeper than BLUR\n");
+				else if (z_depth == motion_blur_z_depth) {	synfig::info("paste is same depth as BLUR\n");
+					if (i > motion_blur_i)					synfig::info("paste is physically deeper than BLUR\n");
+					else									synfig::info("paste is less physically deep than BLUR\n");
+				} else										synfig::info("paste is less deep than BLUR\n");
+			else											synfig::info("no BLUR at all\n");
+#endif	// DEBUG
+
+			motion_blurred = (seen_motion_blur_in_parent ||
+							  (seen_motion_blur_locally &&
+							   (z_depth > motion_blur_z_depth ||
+								(z_depth == motion_blur_z_depth && i > motion_blur_i))));
+
 			Canvas::Handle sub_canvas(Canvas::create_inline(op_canvas));
 			Canvas::Handle paste_sub_canvas = paste_canvas->get_sub_canvas();
 			if(paste_sub_canvas)
-			{
-				// we need to blur the sub canvas if:
-				// our parent is blurred,
-				// or the child is lower than a local blur,
-				// or the child is at the same z_depth as a local blur, but later in the context
-#if 0 // DEBUG
-				if (seen_motion_blur_in_parent)					synfig::info("seen BLUR in parent\n");
-				else if (seen_motion_blur_locally)
-					if (z_depth > motion_blur_z_depth)			synfig::info("paste is deeper than BLUR\n");
-					else if (z_depth == motion_blur_z_depth) {	synfig::info("paste is same depth as BLUR\n");
-						if (i > motion_blur_i)					synfig::info("paste is physically deeper than BLUR\n");
-						else									synfig::info("paste is less physically deep than BLUR\n");
-					} else										synfig::info("paste is less deep than BLUR\n");
-				else											synfig::info("no BLUR at all\n");
-#endif	// DEBUG
-
-				motion_blurred = (seen_motion_blur_in_parent ||
-								  (seen_motion_blur_locally &&
-								   (z_depth > motion_blur_z_depth ||
-									(z_depth == motion_blur_z_depth && i > motion_blur_i))));
 				optimize_layers(paste_sub_canvas->get_context(),sub_canvas,motion_blurred);
-			}
 //#define SYNFIG_OPTIMIZE_PASTE_CANVAS 1
 
 #ifdef SYNFIG_OPTIMIZE_PASTE_CANVAS
