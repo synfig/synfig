@@ -1013,7 +1013,7 @@ Canvas::get_meta_data_keys()const
 }
 
 void
-synfig::optimize_layers(Context context, Canvas::Handle op_canvas)
+synfig::optimize_layers(Context context, Canvas::Handle op_canvas, bool seen_motion_blur)
 {
 	Context iter;
 
@@ -1035,13 +1035,16 @@ synfig::optimize_layers(Context context, Canvas::Handle op_canvas)
 		if(value.get_type()==ValueBase::TYPE_REAL && value.get(Real())==0)
 			continue;
 
+		if(layer->get_name()=="MotionBlur")
+			seen_motion_blur = true;
+
 		Layer_PasteCanvas* paste_canvas(static_cast<Layer_PasteCanvas*>(layer.get()));
 		if(layer->get_name()=="PasteCanvas" && paste_canvas->get_time_offset()==0)
 		{
 			Canvas::Handle sub_canvas(Canvas::create_inline(op_canvas));
 			Canvas::Handle paste_sub_canvas = paste_canvas->get_sub_canvas();
 			if(paste_sub_canvas)
-				optimize_layers(paste_sub_canvas->get_context(),sub_canvas);
+				optimize_layers(paste_sub_canvas->get_context(),sub_canvas,seen_motion_blur);
 //#define SYNFIG_OPTIMIZE_PASTE_CANVAS 1
 
 #ifdef SYNFIG_OPTIMIZE_PASTE_CANVAS
@@ -1078,6 +1081,12 @@ synfig::optimize_layers(Context context, Canvas::Handle op_canvas)
 #endif
 			Layer::Handle new_layer(Layer::create("PasteCanvas"));
 			dynamic_cast<Layer_PasteCanvas*>(new_layer.get())->set_muck_with_time(false);
+			if (seen_motion_blur)
+			{
+				Layer::DynamicParamList dynamic_param_list(paste_canvas->dynamic_param_list());
+				for(Layer::DynamicParamList::const_iterator iter(dynamic_param_list.begin()); iter != dynamic_param_list.end(); ++iter)
+					new_layer->connect_dynamic_param(iter->first, iter->second);
+			}
 			Layer::ParamList param_list(paste_canvas->get_param_list());
 			//param_list.erase("canvas");
 			new_layer->set_param_list(param_list);

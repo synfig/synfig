@@ -69,7 +69,7 @@ public:
 
 	typedef std::list<Handle> Children;
 
-	friend void synfig::optimize_layers(Context, Canvas::Handle);
+	friend void synfig::optimize_layers(Context, Canvas::Handle, bool seen_motion_blur);
 
 	/*
  --	** -- D A T A -------------------------------------------------------------
@@ -481,7 +481,7 @@ protected:
 	virtual void get_times_vfunc(Node::time_set &set) const;
 }; // END of class Canvas
 
-void optimize_layers(Context context, Canvas::Handle op_canvas);
+void optimize_layers(Context context, Canvas::Handle op_canvas, bool seen_motion_blur=false);
 
 
 }; // END of namespace synfig
