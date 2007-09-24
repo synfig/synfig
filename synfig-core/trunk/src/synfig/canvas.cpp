@@ -1013,12 +1013,56 @@ Canvas::get_meta_data_keys()const
 }
 
 void
-synfig::optimize_layers(Context context, Canvas::Handle op_canvas, bool seen_motion_blur)
+synfig::optimize_layers(Context context, Canvas::Handle op_canvas, bool seen_motion_blur_in_parent)
 {
 	Context iter;
 
 	std::vector< std::pair<float,Layer::Handle> > sort_list;
-	int i;
+	int i, motion_blur_i;		// motion_blur_i is for resolving which layer comes first in the event of a z_depth tie
+	float motion_blur_z_depth;	// the z_depth of the least deep motion blur layer in this context
+	bool seen_motion_blur_locally = false;
+	bool motion_blurred;		// the final result - is this layer blurred or not?
+
+	// If the parent didn't cause us to already be motion blurred,
+	// check whether there's a motion blur in this context,
+	// and if so, calculate its z_depth.
+	if (!seen_motion_blur_in_parent)
+		for(iter=context,i=0;*iter;iter++,i++)
+		{
+			Layer::Handle layer=*iter;
+
+			// If the layer isn't active, don't worry about it
+			if(!layer->active())
+				continue;
+
+			// Any layer with an amount of zero is implicitly disabled.
+			ValueBase value(layer->get_param("amount"));
+			if(value.get_type()==ValueBase::TYPE_REAL && value.get(Real())==0)
+				continue;
+
+			if(layer->get_name()=="MotionBlur")
+			{
+				float z_depth(layer->get_z_depth()*1.0001+i);
+
+				// If we've seen a motion blur before in this context...
+				if (seen_motion_blur_locally)
+				{
+					// ... then we're only interested in this one if it's less deep...
+					if (z_depth < motion_blur_z_depth)
+					{
+						motion_blur_z_depth = z_depth;
+						motion_blur_i = i;
+					}
+				}
+				// ... otherwise we're always interested in it.
+				else
+				{
+					motion_blur_z_depth = z_depth;
+					motion_blur_i = i;
+					seen_motion_blur_locally = true;
+				}
+			}
+		}
 
 	// Go ahead and start romping through the canvas to paste
 	for(iter=context,i=0;*iter;iter++,i++)
@@ -1035,16 +1079,34 @@ synfig::optimize_layers(Context context, Canvas::Handle op_canvas, bool seen_mot
 		if(value.get_type()==ValueBase::TYPE_REAL && value.get(Real())==0)
 			continue;
 
-		if(layer->get_name()=="MotionBlur")
-			seen_motion_blur = true;
-
 		Layer_PasteCanvas* paste_canvas(static_cast<Layer_PasteCanvas*>(layer.get()));
 		if(layer->get_name()=="PasteCanvas" && paste_canvas->get_time_offset()==0)
 		{
 			Canvas::Handle sub_canvas(Canvas::create_inline(op_canvas));
 			Canvas::Handle paste_sub_canvas = paste_canvas->get_sub_canvas();
 			if(paste_sub_canvas)
-				optimize_layers(paste_sub_canvas->get_context(),sub_canvas,seen_motion_blur);
+			{
+				// we need to blur the sub canvas if:
+				// our parent is blurred,
+				// or the child is lower than a local blur,
+				// or the child is at the same z_depth as a local blur, but later in the context
+#if 0 // DEBUG
+				if (seen_motion_blur_in_parent)					synfig::info("seen BLUR in parent\n");
+				else if (seen_motion_blur_locally)
+					if (z_depth > motion_blur_z_depth)			synfig::info("paste is deeper than BLUR\n");
+					else if (z_depth == motion_blur_z_depth) {	synfig::info("paste is same depth as BLUR\n");
+						if (i > motion_blur_i)					synfig::info("paste is physically deeper than BLUR\n");
+						else									synfig::info("paste is less physically deep than BLUR\n");
+					} else										synfig::info("paste is less deep than BLUR\n");
+				else											synfig::info("no BLUR at all\n");
+#endif	// DEBUG
+
+				motion_blurred = (seen_motion_blur_in_parent ||
+								  (seen_motion_blur_locally &&
+								   (z_depth > motion_blur_z_depth ||
+									(z_depth == motion_blur_z_depth && i > motion_blur_i))));
+				optimize_layers(paste_sub_canvas->get_context(),sub_canvas,motion_blurred);
+			}
 //#define SYNFIG_OPTIMIZE_PASTE_CANVAS 1
 
 #ifdef SYNFIG_OPTIMIZE_PASTE_CANVAS
@@ -1081,7 +1143,7 @@ synfig::optimize_layers(Context context, Canvas::Handle op_canvas, bool seen_mot
 #endif
 			Layer::Handle new_layer(Layer::create("PasteCanvas"));
 			dynamic_cast<Layer_PasteCanvas*>(new_layer.get())->set_muck_with_time(false);
-			if (seen_motion_blur)
+			if (motion_blurred)
 			{
 				Layer::DynamicParamList dynamic_param_list(paste_canvas->dynamic_param_list());
 				for(Layer::DynamicParamList::const_iterator iter(dynamic_param_list.begin()); iter != dynamic_param_list.end(); ++iter)
