@@ -62,8 +62,6 @@ private:
 
 	mutable Time curr_time;
 
-	bool optimize_layers(synfig::Context context,synfig::CanvasBase&)const;
-
 	bool muck_with_time_;
 
 	bool children_lock;
