@@ -157,38 +157,18 @@ ColorSlider::redraw(GdkEventExpose */*bleh*/)
 	int i;
 	for(i=width-1;i>=0;i--)
 	{
-		color_func(color,float(i)/float(width));
+		color_func(color,gamma_out(float(i)/float(width)));
 		const Color c1(Color::blend(color,bg1,1.0).clamped());
 		const Color c2(Color::blend(color,bg2,1.0).clamped());
 		assert(c1.is_valid());
 		assert(c2.is_valid());
 
-		gushort r1;
-		gushort g1;
-		gushort b1;
-		gushort r2;
-		gushort g2;
-		gushort b2;
-
-		if(use_colorspace_gamma() && (type<TYPE_U))
-		{
-			r1=(256*App::gamma.r_F32_to_U8(gamma_out(c1.get_r())));
-			g1=(256*App::gamma.g_F32_to_U8(gamma_out(c1.get_g())));
-			b1=(256*App::gamma.b_F32_to_U8(gamma_out(c1.get_b())));
-			r2=(256*App::gamma.r_F32_to_U8(gamma_out(c2.get_r())));
-			g2=(256*App::gamma.g_F32_to_U8(gamma_out(c2.get_g())));
-			b2=(256*App::gamma.b_F32_to_U8(gamma_out(c2.get_b())));
-		}
-		else
-		{
-			r1=(256*App::gamma.r_F32_to_U8(c1.get_r()));
-			g1=(256*App::gamma.g_F32_to_U8(c1.get_g()));
-			b1=(256*App::gamma.b_F32_to_U8(c1.get_b()));
-			r2=(256*App::gamma.r_F32_to_U8(c2.get_r()));
-			g2=(256*App::gamma.g_F32_to_U8(c2.get_g()));
-			b2=(256*App::gamma.b_F32_to_U8(c2.get_b()));
-		}
-
+		gushort r1=256*App::gamma.r_F32_to_U8(c1.get_r());
+		gushort g1=256*App::gamma.g_F32_to_U8(c1.get_g());
+		gushort b1=256*App::gamma.b_F32_to_U8(c1.get_b());
+		gushort r2=256*App::gamma.r_F32_to_U8(c2.get_r());
+		gushort g2=256*App::gamma.g_F32_to_U8(c2.get_g());
+		gushort b2=256*App::gamma.b_F32_to_U8(c2.get_b());
 
 		if((i*2/height)&1)
 		{
