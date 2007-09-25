@@ -153,7 +153,6 @@ ColorSlider::redraw(GdkEventExpose */*bleh*/)
 	Glib::RefPtr<Gdk::GC> gc(Gdk::GC::create(get_window()));
 	const Color bg1(0.75, 0.75, 0.75);
 	const Color bg2(0.5, 0.5, 0.5);
-	Gdk::Color gdk_c;
 	int i;
 	for(i=width-1;i>=0;i--)
 	{
@@ -163,31 +162,20 @@ ColorSlider::redraw(GdkEventExpose */*bleh*/)
 		assert(c1.is_valid());
 		assert(c2.is_valid());
 
-		gushort r1=256*App::gamma.r_F32_to_U8(c1.get_r());
-		gushort g1=256*App::gamma.g_F32_to_U8(c1.get_g());
-		gushort b1=256*App::gamma.b_F32_to_U8(c1.get_b());
-		gushort r2=256*App::gamma.r_F32_to_U8(c2.get_r());
-		gushort g2=256*App::gamma.g_F32_to_U8(c2.get_g());
-		gushort b2=256*App::gamma.b_F32_to_U8(c2.get_b());
-
 		if((i*2/height)&1)
 		{
-			gdk_c.set_rgb(r1,g1,b1);
-			gc->set_rgb_fg_color(gdk_c);
+			gc->set_rgb_fg_color(colorconv_synfig2gdk(c1));
 			get_window()->draw_rectangle(gc, true, ca.get_x()+i, ca.get_y(), 1, height/2);
 
-			gdk_c.set_rgb(r2,g2,b2);
-			gc->set_rgb_fg_color(gdk_c);
+			gc->set_rgb_fg_color(colorconv_synfig2gdk(c2));
 			get_window()->draw_rectangle(gc, true, ca.get_x()+i, ca.get_y()+height/2, 1, height/2);
 		}
 		else
 		{
-			gdk_c.set_rgb(r2,g2,b2);
-			gc->set_rgb_fg_color(gdk_c);
+			gc->set_rgb_fg_color(colorconv_synfig2gdk(c2));
 			get_window()->draw_rectangle(gc, true, ca.get_x()+i, ca.get_y(), 1, height/2);
 
-			gdk_c.set_rgb(r1,g1,b1);
-			gc->set_rgb_fg_color(gdk_c);
+			gc->set_rgb_fg_color(colorconv_synfig2gdk(c1));
 			get_window()->draw_rectangle(gc, true, ca.get_x()+i, ca.get_y()+height/2, 1, height/2);
 		}
 	}
