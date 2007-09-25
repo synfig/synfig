@@ -65,11 +65,6 @@ using namespace studio;
 
 #define DIGITS		15
 
-#define use_colorspace_gamma()	App::use_colorspace_gamma
-#define colorspace_gamma()	(2.2f)
-#define gamma_in(x)		pow((float)x,1.0f/colorspace_gamma())
-#define gamma_out(x)	pow((float)x,colorspace_gamma())
-
 /* === G L O B A L S ======================================================= */
 
 class studio::ValueBase_Entry : public Gtk::EventBox, public Gtk::CellEditable
