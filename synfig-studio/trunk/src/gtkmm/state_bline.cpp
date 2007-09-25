@@ -113,6 +113,7 @@ class studio::StateBLine_Context : public sigc::trackable
 	Gtk::CheckButton checkbutton_layer_region;
 	Gtk::CheckButton checkbutton_layer_bline;
 	Gtk::CheckButton checkbutton_layer_curve_gradient;
+	Gtk::CheckButton checkbutton_layer_link_offsets;
 	Gtk::CheckButton checkbutton_auto_export;
 	Gtk::Button button_make;
 	Gtk::Button button_clear;
@@ -148,6 +149,9 @@ public:
 
 	bool get_layer_curve_gradient_flag()const { return checkbutton_layer_curve_gradient.get_active(); }
 	void set_layer_curve_gradient_flag(bool x) { return checkbutton_layer_curve_gradient.set_active(x); }
+
+	bool get_layer_link_offsets_flag()const { return checkbutton_layer_link_offsets.get_active(); }
+	void set_layer_link_offsets_flag(bool x) { return checkbutton_layer_link_offsets.set_active(x); }
 
 	Real get_feather() const { return adj_feather.get_value(); }
 	void set_feather(Real x) { return adj_feather.set_value(x); }
@@ -237,6 +241,11 @@ StateBLine_Context::load_settings()
 	else
 		set_layer_curve_gradient_flag(false);
 
+	if(settings.get_value("bline.layer_link_offsets",value) && value=="0")
+		set_layer_link_offsets_flag(false);
+	else
+		set_layer_link_offsets_flag(true);
+
 	if(settings.get_value("bline.auto_export",value) && value=="1")
 		set_auto_export_flag(true);
 	else
@@ -263,6 +272,7 @@ StateBLine_Context::save_settings()
 	settings.set_value("bline.layer_bline",get_layer_bline_flag()?"1":"0");
 	settings.set_value("bline.layer_region",get_layer_region_flag()?"1":"0");
 	settings.set_value("bline.layer_curve_gradient",get_layer_curve_gradient_flag()?"1":"0");
+	settings.set_value("bline.layer_link_offsets",get_layer_link_offsets_flag()?"1":"0");
 	settings.set_value("bline.auto_export",get_auto_export_flag()?"1":"0");
 	settings.set_value("bline.id",get_id().c_str());
 	settings.set_value("bline.feather",strprintf("%f",get_feather()));
@@ -331,6 +341,7 @@ StateBLine_Context::StateBLine_Context(CanvasView* canvas_view):
 	checkbutton_layer_region(_("Fill")),
 	checkbutton_layer_bline(_("Outline")),
 	checkbutton_layer_curve_gradient(_("Gradient")),
+	checkbutton_layer_link_offsets(_("Link Offsets")),
 	checkbutton_auto_export(_("Auto Export")),
 	button_make(_("Make")),
 	button_clear(_("Clear")),
@@ -343,13 +354,14 @@ StateBLine_Context::StateBLine_Context(CanvasView* canvas_view):
 
 	// Set up the tool options dialog
 	//options_table.attach(*manage(new Gtk::Label(_("BLine Tool"))), 0, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(entry_id, 0, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(checkbutton_layer_region, 0, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(checkbutton_layer_bline, 0, 2, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(checkbutton_layer_curve_gradient, 0, 2, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(entry_id,								0, 2,  1,  2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(checkbutton_layer_region,				0, 2,  2,  3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(checkbutton_layer_bline,				0, 2,  3,  4, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(checkbutton_layer_curve_gradient,		0, 2,  4,  5, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(checkbutton_layer_link_offsets,		0, 2,  5,  6, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(checkbutton_auto_export,				0, 2,  6,  7, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	options_table.attach(*manage(new Gtk::Label(_("Feather"))), 0, 1, 10, 11, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(spin_feather, 1, 2, 10, 11, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(checkbutton_auto_export, 0, 2, 11, 12, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(spin_feather,							1, 2, 10, 11, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	//options_table.attach(button_make, 0, 2, 5, 6, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	//button_make.signal_pressed().connect(sigc::mem_fun(*this,&StateBLine_Context::run));
 	options_table.show_all();
@@ -533,8 +545,10 @@ StateBLine_Context::run_()
 		}
 
 		ValueNode_BLine::Handle value_node_bline(ValueNode_BLine::create(new_list));
-
 		assert(value_node_bline);
+
+		ValueNode_Const::Handle value_node_offset(ValueNode_Const::create(Vector()));
+		assert(value_node_offset);
 
 		// Set the looping flag
 		value_node_bline->set_loop(loop_);
@@ -575,8 +589,8 @@ StateBLine_Context::run_()
 			synfigapp::PushMode push_mode(get_canvas_interface(),synfigapp::MODE_NORMAL);
 
 			Layer::Handle layer(get_canvas_interface()->add_layer_to("region",canvas,depth));
-			layer_selection.push_back(layer);
 			assert(layer);
+			layer_selection.push_back(layer);
 			layer->set_description(get_id()+_(" Region"));
 			get_canvas_interface()->signal_layer_new_description()(layer,layer->get_description());
 
@@ -589,24 +603,49 @@ StateBLine_Context::run_()
 			if(get_layer_bline_flag())
 				layer->set_param("color",synfigapp::Main::get_background_color());
 
-			synfigapp::Action::Handle action(synfigapp::Action::create("layer_param_connect"));
-
-			assert(action);
-
-			action->set_param("canvas",get_canvas());
-			action->set_param("canvas_interface",get_canvas_interface());
-			action->set_param("layer",layer);
-			if(!action->set_param("param",String("bline")))
-				synfig::error("LayerParamConnect didn't like \"param\"");
-			if(!action->set_param("value_node",ValueNode::Handle(value_node_bline)))
-				synfig::error("LayerParamConnect didn't like \"value_node\"");
-
-			if(!get_canvas_interface()->get_instance()->perform_action(action))
+			// I don't know if it's safe to reuse the same layer_param_connect action, so I'm
+			// using 2 separate ones.
 			{
-				//get_canvas_view()->get_ui_interface()->error(_("Unable to create Region layer"));
-				group.cancel();
-				throw String(_("Unable to create Region layer"));
-				return false;
+				synfigapp::Action::Handle action(synfigapp::Action::create("layer_param_connect"));
+				assert(action);
+
+				action->set_param("canvas",get_canvas());
+				action->set_param("canvas_interface",get_canvas_interface());
+				action->set_param("layer",layer);
+				if(!action->set_param("param",String("bline")))
+					synfig::error("LayerParamConnect didn't like \"param\"");
+				if(!action->set_param("value_node",ValueNode::Handle(value_node_bline)))
+					synfig::error("LayerParamConnect didn't like \"value_node\"");
+
+				if(!get_canvas_interface()->get_instance()->perform_action(action))
+				{
+					//get_canvas_view()->get_ui_interface()->error(_("Unable to create Region layer"));
+					group.cancel();
+					throw String(_("Unable to create Region layer"));
+					return false;
+				}
+			}
+
+			if (get_layer_link_offsets_flag())
+			{
+				synfigapp::Action::Handle action(synfigapp::Action::create("layer_param_connect"));
+				assert(action);
+
+				action->set_param("canvas",get_canvas());
+				action->set_param("canvas_interface",get_canvas_interface());
+				action->set_param("layer",layer);
+				if(!action->set_param("param",String("offset")))
+					synfig::error("LayerParamConnect didn't like \"param\"");
+				if(!action->set_param("value_node",ValueNode::Handle(value_node_offset)))
+					synfig::error("LayerParamConnect didn't like \"value_node\"");
+
+				if(!get_canvas_interface()->get_instance()->perform_action(action))
+				{
+					//get_canvas_view()->get_ui_interface()->error(_("Unable to create Region layer"));
+					group.cancel();
+					throw String(_("Unable to create Region layer"));
+					return false;
+				}
 			}
 		}
 
@@ -616,6 +655,7 @@ StateBLine_Context::run_()
 			synfigapp::PushMode push_mode(get_canvas_interface(),synfigapp::MODE_NORMAL);
 
 			Layer::Handle layer(get_canvas_interface()->add_layer_to("outline",canvas,depth));
+			assert(layer);
 			layer_selection.push_back(layer);
 			layer->set_description(get_id()+_(" Outline"));
 			get_canvas_interface()->signal_layer_new_description()(layer,layer->get_description());
@@ -625,27 +665,47 @@ StateBLine_Context::run_()
 				get_canvas_interface()->signal_layer_param_changed()(layer,"feather");
 			}
 
-			assert(layer);
-
-
-			synfigapp::Action::Handle action(synfigapp::Action::create("layer_param_connect"));
-
-			assert(action);
-
-			action->set_param("canvas",get_canvas());
-			action->set_param("canvas_interface",get_canvas_interface());
-			action->set_param("layer",layer);
-			if(!action->set_param("param",String("bline")))
-				synfig::error("LayerParamConnect didn't like \"param\"");
-			if(!action->set_param("value_node",ValueNode::Handle(value_node_bline)))
-				synfig::error("LayerParamConnect didn't like \"value_node\"");
-
-			if(!get_canvas_interface()->get_instance()->perform_action(action))
 			{
-				//get_canvas_view()->get_ui_interface()->error(_("Unable to create BLine layer"));
-				group.cancel();
-				throw String(_("Unable to create Outline layer"));
-				return false;
+				synfigapp::Action::Handle action(synfigapp::Action::create("layer_param_connect"));
+				assert(action);
+
+				action->set_param("canvas",get_canvas());
+				action->set_param("canvas_interface",get_canvas_interface());
+				action->set_param("layer",layer);
+				if(!action->set_param("param",String("bline")))
+					synfig::error("LayerParamConnect didn't like \"param\"");
+				if(!action->set_param("value_node",ValueNode::Handle(value_node_bline)))
+					synfig::error("LayerParamConnect didn't like \"value_node\"");
+
+				if(!get_canvas_interface()->get_instance()->perform_action(action))
+				{
+					//get_canvas_view()->get_ui_interface()->error(_("Unable to create BLine layer"));
+					group.cancel();
+					throw String(_("Unable to create Outline layer"));
+					return false;
+				}
+			}
+
+			if (get_layer_link_offsets_flag())
+			{
+				synfigapp::Action::Handle action(synfigapp::Action::create("layer_param_connect"));
+				assert(action);
+
+				action->set_param("canvas",get_canvas());
+				action->set_param("canvas_interface",get_canvas_interface());
+				action->set_param("layer",layer);
+				if(!action->set_param("param",String("offset")))
+					synfig::error("LayerParamConnect didn't like \"param\"");
+				if(!action->set_param("value_node",ValueNode::Handle(value_node_offset)))
+					synfig::error("LayerParamConnect didn't like \"value_node\"");
+
+				if(!get_canvas_interface()->get_instance()->perform_action(action))
+				{
+					//get_canvas_view()->get_ui_interface()->error(_("Unable to create BLine layer"));
+					group.cancel();
+					throw String(_("Unable to create Outline layer"));
+					return false;
+				}
 			}
 
 			/*if(get_layer_region_flag() && !get_auto_export_flag())
@@ -662,31 +722,52 @@ StateBLine_Context::run_()
 			synfigapp::PushMode push_mode(get_canvas_interface(),synfigapp::MODE_NORMAL);
 
 			Layer::Handle layer(get_canvas_interface()->add_layer_to("curve_gradient",canvas,depth));
+			assert(layer);
 			layer_selection.push_back(layer);
 			layer->set_description(get_id()+_(" Gradient"));
 			get_canvas_interface()->signal_layer_new_description()(layer,layer->get_description());
 
-			assert(layer);
-
-
-			synfigapp::Action::Handle action(synfigapp::Action::create("layer_param_connect"));
-
-			assert(action);
-
-			action->set_param("canvas",get_canvas());
-			action->set_param("canvas_interface",get_canvas_interface());
-			action->set_param("layer",layer);
-			if(!action->set_param("param",String("bline")))
-				synfig::error("LayerParamConnect didn't like \"param\"");
-			if(!action->set_param("value_node",ValueNode::Handle(value_node_bline)))
-				synfig::error("LayerParamConnect didn't like \"value_node\"");
-
-			if(!get_canvas_interface()->get_instance()->perform_action(action))
 			{
-				//get_canvas_view()->get_ui_interface()->error(_("Unable to create BLine layer"));
-				group.cancel();
-				throw String(_("Unable to create Gradient layer"));
-				return false;
+				synfigapp::Action::Handle action(synfigapp::Action::create("layer_param_connect"));
+				assert(action);
+
+				action->set_param("canvas",get_canvas());
+				action->set_param("canvas_interface",get_canvas_interface());
+				action->set_param("layer",layer);
+				if(!action->set_param("param",String("bline")))
+					synfig::error("LayerParamConnect didn't like \"param\"");
+				if(!action->set_param("value_node",ValueNode::Handle(value_node_bline)))
+					synfig::error("LayerParamConnect didn't like \"value_node\"");
+
+				if(!get_canvas_interface()->get_instance()->perform_action(action))
+				{
+					//get_canvas_view()->get_ui_interface()->error(_("Unable to create BLine layer"));
+					group.cancel();
+					throw String(_("Unable to create Gradient layer"));
+					return false;
+				}
+			}
+
+			if (get_layer_link_offsets_flag())
+			{
+				synfigapp::Action::Handle action(synfigapp::Action::create("layer_param_connect"));
+				assert(action);
+
+				action->set_param("canvas",get_canvas());
+				action->set_param("canvas_interface",get_canvas_interface());
+				action->set_param("layer",layer);
+				if(!action->set_param("param",String("offset")))
+					synfig::error("LayerParamConnect didn't like \"param\"");
+				if(!action->set_param("value_node",ValueNode::Handle(value_node_offset)))
+					synfig::error("LayerParamConnect didn't like \"value_node\"");
+
+				if(!get_canvas_interface()->get_instance()->perform_action(action))
+				{
+					//get_canvas_view()->get_ui_interface()->error(_("Unable to create BLine layer"));
+					group.cancel();
+					throw String(_("Unable to create Gradient layer"));
+					return false;
+				}
 			}
 
 			/*if(get_layer_region_flag() && !get_auto_export_flag())
