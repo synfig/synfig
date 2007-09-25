@@ -1519,19 +1519,7 @@ App::load_settings()
 			//if(!synfigapp::Main::settings().load_from_file(filename))
 			{
 				gamma.set_gamma(1.0/2.2);
-				synfigapp::Main::settings().set_value("dock.dialog.1.comp_selector","1");
-				synfigapp::Main::settings().set_value("dock.dialog.1.contents","navigator - info pal_edit pal_browse - tool_options history canvases - layers groups");
-				synfigapp::Main::settings().set_value("dock.dialog.1.contents_size","225 167 207");
-				synfigapp::Main::settings().set_value("dock.dialog.1.pos","1057 32");
-				synfigapp::Main::settings().set_value("dock.dialog.1.size","208 1174");
-				synfigapp::Main::settings().set_value("dock.dialog.2.comp_selector","0");
-				synfigapp::Main::settings().set_value("dock.dialog.2.contents","params children keyframes | timetrack curves meta_data");
-				synfigapp::Main::settings().set_value("dock.dialog.2.contents_size","263");
-				synfigapp::Main::settings().set_value("dock.dialog.2.pos","0 973");
-				synfigapp::Main::settings().set_value("dock.dialog.2.size","1045 235");
-				synfigapp::Main::settings().set_value("pref.distance_system","pt");
-				synfigapp::Main::settings().set_value("pref.use_colorspace_gamma","1");
-				synfigapp::Main::settings().set_value("window.toolbox.pos","4 4");
+				reset_initial_window_configuration();
 			}
 		}
 	setlocale(LC_NUMERIC,old_locale);
@@ -1540,6 +1528,24 @@ App::load_settings()
 	{
 		synfig::warning("Caught exception when attempting to load settings.");
 	}
+}
+
+void
+App::reset_initial_window_configuration()
+{
+	synfigapp::Main::settings().set_value("dock.dialog.1.comp_selector","1");
+	synfigapp::Main::settings().set_value("dock.dialog.1.contents","navigator - info pal_edit pal_browse - tool_options history canvases - layers groups");
+	synfigapp::Main::settings().set_value("dock.dialog.1.contents_size","225 167 207");
+	synfigapp::Main::settings().set_value("dock.dialog.1.pos","1057 32");
+	synfigapp::Main::settings().set_value("dock.dialog.1.size","208 1174");
+	synfigapp::Main::settings().set_value("dock.dialog.2.comp_selector","0");
+	synfigapp::Main::settings().set_value("dock.dialog.2.contents","params children keyframes | timetrack curves meta_data");
+	synfigapp::Main::settings().set_value("dock.dialog.2.contents_size","263");
+	synfigapp::Main::settings().set_value("dock.dialog.2.pos","0 973");
+	synfigapp::Main::settings().set_value("dock.dialog.2.size","1045 235");
+	synfigapp::Main::settings().set_value("pref.distance_system","pt");
+	synfigapp::Main::settings().set_value("pref.use_colorspace_gamma","1");
+	synfigapp::Main::settings().set_value("window.toolbox.pos","4 4");
 }
 
 bool

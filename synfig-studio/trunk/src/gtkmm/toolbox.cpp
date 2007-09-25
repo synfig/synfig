@@ -217,6 +217,8 @@ Toolbox::Toolbox():
 	dock_dialogs->items().push_back(Gtk::Menu_Helpers::MenuElem("Canvases, History",sigc::ptr_fun(_create_stock_dialog1)));
 	dock_dialogs->items().push_back(Gtk::Menu_Helpers::MenuElem("Layers, Children, Params",sigc::ptr_fun(_create_stock_dialog2)));
 	dock_dialogs->items().push_back(Gtk::Menu_Helpers::SeparatorElem());
+	dock_dialogs->items().push_back(Gtk::Menu_Helpers::MenuElem("Reset Windows to Original Layout",sigc::ptr_fun(App::reset_initial_window_configuration)));
+	dock_dialogs->items().push_back(Gtk::Menu_Helpers::SeparatorElem());
 
 
 	filemenu->items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::Stock::NEW,
