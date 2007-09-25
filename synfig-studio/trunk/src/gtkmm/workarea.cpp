@@ -2067,17 +2067,22 @@ WorkArea::refresh(GdkEventExpose*event)
 	// If we are in animate mode, draw a red border around the screen
 	if(canvas_interface->get_mode()&synfigapp::MODE_ANIMATE)
 	{
-		/*gc->set_rgb_fg_color(Gdk::Color("#FF0000"));
+#ifdef USE_FRAME_BACKGROUND_TO_SHOW_EDIT_MODE
+		// This method of drawing the red border doesn't work on any
+		// Gtk theme which uses the crux-engine, hcengine, industrial,
+		// mist, or ubuntulooks engine, such as the default ubuntu
+		// 'Human' theme.
+		drawing_frame->modify_bg(Gtk::STATE_NORMAL,Gdk::Color("#FF0000"));
+#else
+		// So let's do it in a more primitive fashion.
+		gc->set_rgb_fg_color(Gdk::Color("#FF0000"));
 		gc->set_line_attributes(1,Gdk::LINE_SOLID,Gdk::CAP_BUTT,Gdk::JOIN_MITER);
 		drawing_area->get_window()->draw_rectangle(
 			gc,
 			false,	// Fill?
 			0,0,	// x,y
-			drawing_area->get_width()-1,drawing_area->get_height()-1	//w,h
-		);
-		*/
-		drawing_frame->modify_bg(Gtk::STATE_NORMAL,Gdk::Color("#FF0000"));
-		//get_window()->set_background(Gdk::Color("#FF0000"));
+			drawing_area->get_width()-1,drawing_area->get_height()-1); // w,h
+#endif
 	}
 	else
 		drawing_frame->unset_bg(Gtk::STATE_NORMAL);
