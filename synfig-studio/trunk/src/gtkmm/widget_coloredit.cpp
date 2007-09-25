@@ -50,11 +50,6 @@ using namespace studio;
 
 /* === M A C R O S ========================================================= */
 
-#define use_colorspace_gamma()	App::use_colorspace_gamma
-#define colorspace_gamma()	(2.2f)
-#define gamma_in(x)		((x>=0)?pow((float)x,1.0f/colorspace_gamma()):-pow((float)-x,1.0f/colorspace_gamma()))
-#define gamma_out(x)	((x>=0)?pow((float)x,colorspace_gamma()):-pow((float)-x,colorspace_gamma()))
-
 /* === G L O B A L S ======================================================= */
 
 /* === P R O C E D U R E S ================================================= */
