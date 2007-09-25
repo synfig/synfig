@@ -1,0 +1,113 @@
+*.deps
+*.h1
+*.keys
+*.la
+*.libs
+*.lo
+*.mime
+*.nsi
+*.o
+*.orig
+*.pc
+*.rej
+*.spec
+*.xml
+
+# ------------------------------------------------------------------------
+# ignore the symlinks I put in place to skip 'trunk'
+# ------------------------------------------------------------------------
+
+ETL/ETL
+synfig-core/src
+synfig-studio/src
+
+# ------------------------------------------------------------------------
+
+# generated in ETL, core and studio
+aclocal.m4
+config.*
+configure
+*-config
+depcomp
+install-sh
+libtool
+ltmain.sh
+missing
+stamp-h1
+
+# ------------------------------------------------------------------------
+
+ETL/trunk/ETL.pc.in
+ETL/trunk/ETL/etl_profile.h
+ETL/trunk/ETL/etl_profile_.h
+
+synfig-core/trunk/libltdl
+synfig-core/trunk/pkg-info/macosx/synfig-core.info
+synfig-core/trunk/src/modules/synfig_modules.cfg
+synfig-core/trunk/src/synfig/proto/nodebase.h
+synfig-core/trunk/src/tool/synfig
+synfig-core/trunk/synfig.pc.in
+
+synfig-studio/trunk/pkg-info/macosx/synfig-studio.info
+synfig-studio/trunk/src/gtkmm/synfigstudio
+synfig-studio/trunk/synfigstudio-thumbnailer.schemas
+synfig-studio/trunk/synfigstudio.desktop
+synfig-studio/trunk/images/*.png
+synfig-studio/trunk/images/images.nsh
+synfig-studio/trunk/images/unimages.nsh
+
+# ------------------------------------------------------------------------
+
+# files we used to check in, but don't any more
+COPYING
+ChangeLog
+doxygen.cfg
+INSTALL
+Makefile.in
+Makefile
+# !*/trunk/Makefile
+# ETL/trunk/Makefile
+# synfig-core/trunk/Makefile
+# synfig-studio/trunk/Makefile
+
+# ------------------------------------------------------------------------
+
+
+# don't track .sif and .sifz files:
+*.sif
+*.sifz
+
+# except for the ones we know about - core examples, core examples/walk and studio images:
+!synfig-core/tags/*/examples/*.sif
+!synfig-core/tags/*/*/examples/*.sif
+!synfig-core/trunk/examples/*.sifz
+
+!synfig-core/tags/*/examples/walk/*.sif
+!synfig-core/tags/*/*/examples/walk/*.sif
+!synfig-core/trunk/examples/walk/*.sifz
+
+!synfig-studio/tags/*/images/*.sif
+!synfig-studio/tags/*/*/images/*.sif
+!synfig-studio/trunk/images/*.sif
+
+# ------------------------------------------------------------------------
+
+# !gtkmm-osx/trunk/*/configure
+# !gtkmm-osx/trunk/jpeg-6b/config.guess
+# !gtkmm-osx/trunk/jpeg-6b/config.sub
+# !gtkmm-osx/trunk/jpeg-6b/install-sh
+# !gtkmm-osx/trunk/jpeg-6b/ltmain.sh
+# !gtkmm-osx/trunk/libpng-1.2.5/libpng-config
+# !gtkmm-osx/trunk/libpng-1.2.5/libpng-config
+# !gtkmm-osx/trunk/libpng-1.2.5/libpng.pc
+# !synfig-core/trunk/synfig-core.xcodeproj/config.h
+
+# ------------------------------------------------------------------------
+
+Backup
+build-from-scratch.sh
+core
+.#*
+\#*#
+svn.log
+TAGS

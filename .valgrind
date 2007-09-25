@@ -1,0 +1,133 @@
+{
+   <_X11TransWrite>
+   Memcheck:Param
+   write(buf)
+   obj:*
+   fun:_X11TransWrite
+}
+{
+   <_X11TransWritev>
+   Memcheck:Param
+   writev(vector[...])
+   obj:*
+   obj:*
+   fun:_X11TransWritev
+}
+{
+   <__libc_dlopen_mode>
+   Memcheck:Addr4
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   fun:__libc_dlopen_mode
+}
+{
+   <__libc_dlopen_mode>
+   Memcheck:Addr4
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   fun:__libc_dlopen_mode
+}
+{
+   <_dl_sym>
+   Memcheck:Addr4
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   fun:_dl_sym
+}
+{
+   <_dl_sym>
+   Memcheck:Cond
+   obj:*
+   obj:*
+   fun:_dl_sym
+}
+{
+   <dlopen>
+   Memcheck:Addr4
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   fun:dlopen
+}
+{
+   <dlopen>
+   Memcheck:Addr4
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   fun:dlopen
+}
+{
+   <dlopen>
+   Memcheck:Addr4
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   fun:dlopen
+}
+{
+   <dlopen>
+   Memcheck:Addr4
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   fun:dlopen
+}
+{
+   <dlopen>
+   Memcheck:Addr4
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   obj:*
+   fun:dlopen
+}
