@@ -912,6 +912,10 @@ CanvasView::~CanvasView()
 
 	hide();
 
+	// don't be calling on_dirty_preview once this object has been deleted;
+	// this was causing a crash before
+	canvas_interface()->signal_dirty_preview().clear();
+
 	synfig::info("CanvasView:~CanvasView(): Destructor Finished");
 }
 
