@@ -131,3 +131,13 @@
    obj:*
    fun:dlopen
 }
+{
+   <deflate>
+   Memcheck:Cond
+   obj:*
+   obj:*
+   fun:deflate
+   fun:gzclose
+   obj:*
+   fun:xmlOutputBufferClose
+}
