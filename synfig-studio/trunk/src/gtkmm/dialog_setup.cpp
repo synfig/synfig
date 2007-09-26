@@ -255,18 +255,20 @@ Dialog_Setup::on_red_blue_level_change()
 void
 Dialog_Setup::refresh()
 {
+	// Refresh the temporary gamma; do this before adjusting the sliders,
+	// or variables will be used before their initialisation.
+	gamma_pattern.set_gamma_r(App::gamma.get_gamma_r());
+	gamma_pattern.set_gamma_g(App::gamma.get_gamma_g());
+	gamma_pattern.set_gamma_b(App::gamma.get_gamma_b());
+	gamma_pattern.set_black_level(App::gamma.get_black_level());
+	gamma_pattern.set_red_blue_level(App::gamma.get_red_blue_level());
+
 	adj_gamma_r.set_value(1.0/App::gamma.get_gamma_r());
 	adj_gamma_g.set_value(1.0/App::gamma.get_gamma_g());
 	adj_gamma_b.set_value(1.0/App::gamma.get_gamma_b());
 	black_level_selector.set_value(App::gamma.get_black_level());
 	red_blue_level_selector.set_value(App::gamma.get_red_blue_level());
 
-	// Refresh the temporary gamma
-	gamma_pattern.set_gamma_r(1.0/adj_gamma_r.get_value());
-	gamma_pattern.set_gamma_g(1.0/adj_gamma_g.get_value());
-	gamma_pattern.set_gamma_b(1.0/adj_gamma_b.get_value());
-	gamma_pattern.set_black_level(black_level_selector.get_value());
-	gamma_pattern.set_red_blue_level(red_blue_level_selector.get_value());
 	gamma_pattern.refresh();
 
 	adj_recent_files.set_value(App::get_max_recent_files());
@@ -278,7 +280,6 @@ Dialog_Setup::refresh()
 
 	// Refresh the status of the use_colorspace_gamma flag
 	toggle_use_colorspace_gamma.set_active(App::use_colorspace_gamma);
-
 }
 
 GammaPattern::GammaPattern():
