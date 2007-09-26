@@ -373,24 +373,12 @@ synfig::Main::~Main()
 	Importer::subsys_stop();
 	Target::subsys_stop();
 	Layer::subsys_stop();
-
-	/*! \fixme For some reason, uncommenting the next
-	**	line will cause things to crash. This needs to be
-	**	looked into at some point. */
-	//Module::subsys_stop();
+	Module::subsys_stop();
 
 #if defined(HAVE_SIGNAL_H) && defined(SIGPIPE)
 	signal(SIGPIPE, SIG_DFL);
 #endif
 }
-
-
-
-
-
-
-
-
 
 void
 synfig::error(const char *format,...)
