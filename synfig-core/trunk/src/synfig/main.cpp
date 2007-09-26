@@ -369,12 +369,18 @@ synfig::Main::~Main()
 		}
 	}
 
+	synfig::info("ValueNode::subsys_stop()");
 	ValueNode::subsys_stop();
+	synfig::info("Importer::subsys_stop()");
 	Importer::subsys_stop();
+	synfig::info("Target::subsys_stop()");
 	Target::subsys_stop();
+	synfig::info("Layer::subsys_stop()");
 	Layer::subsys_stop();
+	synfig::info("Module::subsys_stop()");
 	Module::subsys_stop();
-
+	synfig::info("Exiting");
+	
 #if defined(HAVE_SIGNAL_H) && defined(SIGPIPE)
 	signal(SIGPIPE, SIG_DFL);
 #endif
