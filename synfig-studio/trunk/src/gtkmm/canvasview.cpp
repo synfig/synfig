@@ -796,6 +796,13 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 	int h=get_canvas()->rend_desc().get_h()+70;
 	while(w>700 || h>600)
 	{
+		// Minor hack:
+		//   zoom_out() =>
+		//	   WorkArea::async_update_preview() =>
+		//	     WorkArea::set_zoom(float) =>
+		//		   WorkArea::async_update_preview() =>
+		//			 desc.set_time(cur_time), where cur_time isn't initialised
+		work_area->set_time(0);
 		work_area->zoom_out();
 		w=round_to_int(get_canvas()->rend_desc().get_w()*work_area->get_zoom()+70);
 		h=round_to_int(get_canvas()->rend_desc().get_h()*work_area->get_zoom()+70);
