@@ -2048,7 +2048,6 @@ WorkArea::refresh(GdkEventExpose*event)
 		}
 	}
 
-
 	// Calculate the window coordinates of the top-left
 	// corner of the canvas.
 	//const synfig::Vector::value_type
@@ -2062,11 +2061,10 @@ WorkArea::refresh(GdkEventExpose*event)
 
 	Glib::RefPtr<Gdk::GC> gc=Gdk::GC::create(drawing_area->get_window());
 
-
-
 	// If we are in animate mode, draw a red border around the screen
 	if(canvas_interface->get_mode()&synfigapp::MODE_ANIMATE)
 	{
+// #define USE_FRAME_BACKGROUND_TO_SHOW_EDIT_MODE
 #ifdef USE_FRAME_BACKGROUND_TO_SHOW_EDIT_MODE
 		// This method of drawing the red border doesn't work on any
 		// Gtk theme which uses the crux-engine, hcengine, industrial,
@@ -2084,10 +2082,10 @@ WorkArea::refresh(GdkEventExpose*event)
 			drawing_area->get_width()-1,drawing_area->get_height()-1); // w,h
 #endif
 	}
+#ifdef USE_FRAME_BACKGROUND_TO_SHOW_EDIT_MODE
 	else
 		drawing_frame->unset_bg(Gtk::STATE_NORMAL);
-
-
+#endif
 
 	previous_focus=get_focus_point();
 
