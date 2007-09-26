@@ -800,6 +800,15 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 WorkArea::~WorkArea()
 {
 //	delete [] buffer;
+
+	// don't leave the render function queued if we are about to vanish;
+	// that causes crashes
+	if(render_idle_func_id)
+	{
+		synfig::info("g_source_remove() returns %d", g_source_remove(render_idle_func_id));
+		render_idle_func_id=0;
+	} else
+		synfig::info("no render_idle_func_id to clear\n");
 }
 
 void
@@ -2497,8 +2506,10 @@ studio::WorkArea::zoom_norm()
 gboolean
 studio::WorkArea::__render_preview(gpointer data)
 {
-
 	WorkArea *work_area(static_cast<WorkArea*>(data));
+
+	// there's no point anyone trying to cancel the timer now - it's gone off already
+	work_area->render_idle_func_id = 0;
 
 	work_area->queued=false;
 	work_area->async_render_preview(work_area->get_canvas_view()->get_time());
