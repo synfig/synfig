@@ -80,7 +80,7 @@ synfig::ValueNode_Subtract::ValueNode_Subtract(const ValueBase &value):
 		break;
 	case ValueBase::TYPE_TIME:
 		set_link("lhs",ValueNode_Const::create(value.get(Time())));
-		set_link("rhs",ValueNode_Const::create(Time(0,0)));
+		set_link("rhs",ValueNode_Const::create(Time(0)));
 		break;
 	case ValueBase::TYPE_VECTOR:
 		set_link("lhs",ValueNode_Const::create(value.get(Vector())));
