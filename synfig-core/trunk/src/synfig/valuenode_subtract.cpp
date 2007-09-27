@@ -78,6 +78,10 @@ synfig::ValueNode_Subtract::ValueNode_Subtract(const ValueBase &value):
 		set_link("lhs",ValueNode_Const::create(value.get(Real())));
 		set_link("rhs",ValueNode_Const::create(Real(0)));
 		break;
+	case ValueBase::TYPE_TIME:
+		set_link("lhs",ValueNode_Const::create(value.get(Time())));
+		set_link("rhs",ValueNode_Const::create(Time(0,0)));
+		break;
 	case ValueBase::TYPE_VECTOR:
 		set_link("lhs",ValueNode_Const::create(value.get(Vector())));
 		set_link("rhs",ValueNode_Const::create(Vector(0,0)));
@@ -175,6 +179,8 @@ synfig::ValueNode_Subtract::operator()(Time t)const
 	}
 	case ValueBase::TYPE_REAL:
 		return ((*ref_a)(t).get(Vector::value_type())-(*ref_b)(t).get(Vector::value_type()))*(*scalar)(t).get(Real());
+	case ValueBase::TYPE_TIME:
+		return ((*ref_a)(t).get(Time())-(*ref_b)(t).get(Time()))*(*scalar)(t).get(Real());
 	case ValueBase::TYPE_VECTOR:
 		return ((*ref_a)(t).get(Vector())-(*ref_b)(t).get(Vector()))*(*scalar)(t).get(Real());
 	default:
@@ -279,5 +285,6 @@ ValueNode_Subtract::check_type(ValueBase::Type type)
 		|| type==ValueBase::TYPE_COLOR
 		|| type==ValueBase::TYPE_INTEGER
 		|| type==ValueBase::TYPE_REAL
+		|| type==ValueBase::TYPE_TIME
 		|| type==ValueBase::TYPE_VECTOR;
 }
