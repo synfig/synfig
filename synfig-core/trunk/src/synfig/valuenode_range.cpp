@@ -75,6 +75,11 @@ synfig::ValueNode_Range::ValueNode_Range(const ValueBase &value):
 		set_link("max",ValueNode_Const::create(value.get(Real())));
 		set_link("link",ValueNode_Const::create(value.get(Real())));
 		break;
+	case ValueBase::TYPE_TIME:
+		set_link("min",ValueNode_Const::create(value.get(Time())));
+		set_link("max",ValueNode_Const::create(value.get(Time())));
+		set_link("link",ValueNode_Const::create(value.get(Time())));
+		break;
 	default:
 		assert(0);
 		throw runtime_error("synfig::ValueNode_Range:Bad type "+ValueBase::type_name(id));
@@ -123,6 +128,8 @@ synfig::ValueNode_Range::operator()(Time t)const
 		return range((*min_)(t).get(int()),   (*max_)(t).get(int()),   (*link_)(t).get(int()));
 	case ValueBase::TYPE_REAL:
 		return range((*min_)(t).get(Real()),  (*max_)(t).get(Real()),  (*link_)(t).get(Real()));
+	case ValueBase::TYPE_TIME:
+		return range((*min_)(t).get(Time()),  (*max_)(t).get(Time()),  (*link_)(t).get(Time()));
 	default:
 		assert(0);
 		break;
@@ -225,5 +232,6 @@ ValueNode_Range::check_type(ValueBase::Type type)
 {
 	return type==ValueBase::TYPE_ANGLE
 		|| type==ValueBase::TYPE_INTEGER
-		|| type==ValueBase::TYPE_REAL;
+		|| type==ValueBase::TYPE_REAL
+		|| type==ValueBase::TYPE_TIME;
 }
