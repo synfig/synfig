@@ -7,7 +7,7 @@
 dnl AM_PATH_XML([MINIMUM-VERSION, [ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND]]])
 dnl Test for XML, and define XML_CFLAGS and XML_LIBS
 dnl
-AC_DEFUN(AM_PATH_XML,[ 
+AC_DEFUN([AM_PATH_XML],[ 
 AC_ARG_WITH(xml-prefix,
             [  --with-xml-prefix=PFX   Prefix where libxml is installed (optional)],
             xml_config_prefix="$withval", xml_config_prefix="")
@@ -202,7 +202,7 @@ main()
 dnl AM_PATH_XML2([MINIMUM-VERSION, [ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND]]])
 dnl Test for XML, and define XML_CFLAGS and XML_LIBS
 dnl
-AC_DEFUN(AM_PATH_XML2,[ 
+AC_DEFUN([AM_PATH_XML2],[ 
 AC_ARG_WITH(xml-prefix,
             [  --with-xml-prefix=PFX   Prefix where libxml is installed (optional)],
             xml_config_prefix="$withval", xml_config_prefix="")

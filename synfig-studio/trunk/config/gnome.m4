@@ -67,7 +67,7 @@ fi])
 dnl PKG_CHECK_MODULES(GSTUFF, gtk+-2.0 >= 1.3 glib = 1.3.4, action-if, action-not)
 dnl defines GSTUFF_LIBS, GSTUFF_CFLAGS, see pkg-config man page
 dnl also defines GSTUFF_PKG_ERRORS on error
-AC_DEFUN(PKG_CHECK_MODULES, [
+AC_DEFUN([PKG_CHECK_MODULES], [
   succeeded=no
 
   if test -z "$PKG_CONFIG"; then
@@ -191,7 +191,7 @@ AC_SUBST($1)dnl
 
 # serial 5
 
-AC_DEFUN(AM_GLIB_WITH_NLS,
+AC_DEFUN([AM_GLIB_WITH_NLS],
   dnl NLS is obligatory
   [USE_NLS=yes
     AC_SUBST(USE_NLS)
@@ -323,7 +323,7 @@ AC_DEFUN(AM_GLIB_WITH_NLS,
     AC_SUBST(POSUB)
   ])
 
-AC_DEFUN(AM_GLIB_GNU_GETTEXT,
+AC_DEFUN([AM_GLIB_GNU_GETTEXT],
   [AC_REQUIRE([AC_PROG_MAKE_SET])dnl
    AC_REQUIRE([AC_PROG_CC])dnl
    AC_REQUIRE([AC_PROG_RANLIB])dnl
