@@ -208,7 +208,6 @@ ValueNode_Range::link_name(int i)const
 int
 ValueNode_Range::get_link_index_from_name(const String &name)const
 {
-	printf("%s:%d link_index_from_name\n", __FILE__, __LINE__);
 	if(name=="min") return 0;
 	if(name=="max") return 1;
 	if(name=="link") return 2;

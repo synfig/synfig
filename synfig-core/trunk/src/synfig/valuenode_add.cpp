@@ -259,7 +259,6 @@ ValueNode_Add::link_name(int i)const
 int
 ValueNode_Add::get_link_index_from_name(const String &name)const
 {
-	printf("%s:%d link_index_from_name\n", __FILE__, __LINE__);
 	if(name=="lhs") return 0;
 	if(name=="rhs") return 1;
 	if(name=="scalar") return 2;
