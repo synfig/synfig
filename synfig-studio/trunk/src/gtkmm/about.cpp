@@ -158,7 +158,7 @@ public:
 /* === M E T H O D S ======================================================= */
 
 About::About():
-	Gtk::Window(Gtk::WINDOW_POPUP),
+	Gtk::Window(getenv("SYNFIG_DISABLE_POPUP_WINDOWS") ? Gtk::WINDOW_TOPLEVEL : Gtk::WINDOW_POPUP),
 	can_self_destruct(true)
 {
 	int image_w=300,image_h=350;
