@@ -79,11 +79,11 @@ public:
 
 	value_type &
 	operator[](const int& i)
-	{ return (&_x)[i] ; }
+	{ return i?_y:_x; }
 
 	const value_type &
 	operator[](const int& i) const
-	{ return (&_x)[i] ; }
+	{ return i?_y:_x; }
 
 	const Vector &
 	operator+=(const Vector &rhs)
