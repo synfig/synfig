@@ -1,3 +1,4 @@
+#include <stdio.h>
 /* ========================================================================
 ** Extended Template and Library
 ** Angle Abstraction Class Implementation
@@ -131,16 +132,14 @@ public:
 		right-hand side is clockwise */
 	bool
 	operator<(const angle &rhs)const
-	{ return v<rhs.v; }
-//	{ return dist(rhs).v<(value_type)0.0; }
+		{ return dist(rhs).v<(value_type)0.0; }
 
 	/*! Returns true if the shortest
 		angle between the left-hand and
 		right-hand side is counter-clockwise */
 	bool
 	operator>(const angle &rhs)const
-	{ return v>rhs.v; }
-//	{ return dist(rhs).v>(value_type)0.0; }
+		{ return dist(rhs).v>(value_type)0.0; }
 
 	/*! Returns true if the shortest
 		angle between the left-hand and
@@ -149,8 +148,7 @@ public:
 		point on the unit circle. */
 	bool
 	operator<=(const angle &rhs)const
-	{ return v<=rhs.v; }
-//	{ return dist(rhs).v<=(value_type)0.0; }
+		{ return dist(rhs).v<=(value_type)0.0; }
 
 	/*! Returns true if the shortest
 		angle between the left-hand and
@@ -159,24 +157,21 @@ public:
 		point on the unit circle. */
 	bool
 	operator>=(const angle &rhs)const
-	{ return v>=rhs.v; }
-//	{ return dist(rhs).v>=(value_type)0.0; }
+		{ return dist(rhs).v>=(value_type)0.0; }
 
 	/*! Returns true if the angles
 		are refer to the same point
 		on the unit circle. */
 	bool
 	operator==(const angle &rhs)const
-	{ return v==rhs.v; }
-//	{ return dist(rhs).v==(value_type)0.0; }
+		{ return dist(rhs).v==(value_type)0.0; }
 
 	/*! Returns false if the angles
 		are refer to the same point
 		on the unit circle. */
 	bool
 	operator!=(const angle &rhs)const
-	{ return v!=rhs.v; }
-//	{ return dist(rhs).v!=(value_type)0.0; }
+		{ return dist(rhs).v!=(value_type)0.0; }
 
 	//! Angle Difference Function
 	/*! This function will return the
