@@ -225,7 +225,7 @@ public:
 		return ret;
 	}
 
-	bool operator!()const { return v==0; }
+	bool operator!()const { return std::abs(mod().v) < epsilon; }
 
 private:
 
