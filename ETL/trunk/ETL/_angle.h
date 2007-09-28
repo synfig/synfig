@@ -164,14 +164,14 @@ public:
 		on the unit circle. */
 	bool
 	operator==(const angle &rhs)const
-		{ return dist(rhs).v==(value_type)0.0; }
+		{ return std::abs(dist(rhs).v)<epsilon; }
 
 	/*! Returns false if the angles
 		are refer to the same point
 		on the unit circle. */
 	bool
 	operator!=(const angle &rhs)const
-		{ return dist(rhs).v!=(value_type)0.0; }
+		{ return std::abs(dist(rhs).v)>epsilon; }
 
 	//! Angle Difference Function
 	/*! This function will return the
@@ -231,6 +231,8 @@ private:
 
 	static value_type rot_floor(value_type x)
 	{ return static_cast<value_type>(std::floor(x/(PI*2))*PI*2); }
+
+	static const value_type epsilon = 1.0e-6;
 
 public:
 	/*
