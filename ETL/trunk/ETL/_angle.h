@@ -40,6 +40,8 @@
 # define HALF_PI (PI/2)
 #endif
 
+#define ANGLE_EPSILON (1.0e-6)
+
 /* === T Y P E D E F S ===================================================== */
 
 /* === C L A S S E S & S T R U C T S ======================================= */
@@ -164,14 +166,14 @@ public:
 		on the unit circle. */
 	bool
 	operator==(const angle &rhs)const
-	{ return std::abs(dist(rhs).v)<epsilon; }
+	{ return std::abs(dist(rhs).v)<ANGLE_EPSILON; }
 
 	/*! Returns false if the angles
 		are refer to the same point
 		on the unit circle. */
 	bool
 	operator!=(const angle &rhs)const
-	{ return std::abs(dist(rhs).v)>epsilon; }
+	{ return std::abs(dist(rhs).v)>ANGLE_EPSILON; }
 
 	//! Absolute Angle Function
 	/*! This function will return the
@@ -236,14 +238,12 @@ public:
 		return ret;
 	}
 
-	bool operator!()const { return std::abs(mod().v) < epsilon; }
+	bool operator!()const { return std::abs(mod().v) < ANGLE_EPSILON; }
 
 private:
 
 	static value_type rot_floor(value_type x)
 	{ return static_cast<value_type>(std::floor(x/(PI*2))*PI*2); }
-
-	static const value_type epsilon = 1.0e-6;
 
 public:
 	/*
