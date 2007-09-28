@@ -110,10 +110,6 @@ synfig::ValueNode_Range::~ValueNode_Range()
 	unlink_all();
 }
 
-#define min(x,y) (x>y ? y : x)
-#define max(x,y) (x>y ? x : y)
-#define range(low,high,input) (min(high,max(low,input)))
-
 synfig::ValueBase
 synfig::ValueNode_Range::operator()(Time t)const
 {
@@ -138,11 +134,11 @@ synfig::ValueNode_Range::operator()(Time t)const
 			return maximum;
 	}
 	case ValueBase::TYPE_INTEGER:
-		return range((*min_)(t).get(int()),   (*max_)(t).get(int()),   (*link_)(t).get(int()));
+		return std::max((*min_)(t).get(int()),  std::min((*max_)(t).get(int()),  (*link_)(t).get(int())));
 	case ValueBase::TYPE_REAL:
-		return range((*min_)(t).get(Real()),  (*max_)(t).get(Real()),  (*link_)(t).get(Real()));
+		return std::max((*min_)(t).get(Real()), std::min((*max_)(t).get(Real()), (*link_)(t).get(Real())));
 	case ValueBase::TYPE_TIME:
-		return range((*min_)(t).get(Time()),  (*max_)(t).get(Time()),  (*link_)(t).get(Time()));
+		return std::max((*min_)(t).get(Time()), std::min((*max_)(t).get(Time()), (*link_)(t).get(Time())));
 	default:
 		assert(0);
 		break;
