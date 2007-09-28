@@ -366,10 +366,10 @@ public:
 	cos(const angle &a):angle(a) { }
 	cos	mod()const { return angle::mod(); }
 	cos dist(const angle &rhs)const { return angle::dist(rhs); }
-	operator value_type()const ETL_DEPRECATED_FUNCTION;
 #ifndef ETL_NO_DEPRECATED
-	value_type get()const { return (value_type)std::cos(v); }
+	operator value_type()const ETL_DEPRECATED_FUNCTION;
 #endif
+	value_type get()const { return (value_type)std::cos(v); }
 }; // END of class angle::cos
 inline angle::cos::operator angle::value_type()const { return get(); }
 
