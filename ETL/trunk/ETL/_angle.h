@@ -198,6 +198,7 @@ public:
 		return ret;
 	}
 
+	//! Zero Rotation (0 degrees)
 	static angle
 	zero()
 	{
@@ -206,19 +207,21 @@ public:
 		return ret;
 	}
 
+	//! One Complete Rotation (360 degrees)
 	static angle
 	one()
 	{
 		angle ret;
-		ret.v=PI;
+		ret.v=PI*2;
 		return ret;
 	}
 
+	//! One Half Rotation (180 degrees)
 	static angle
 	half()
 	{
 		angle ret;
-		ret.v=PI*0.5;
+		ret.v=PI;
 		return ret;
 	}
 
