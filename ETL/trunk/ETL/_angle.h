@@ -59,7 +59,7 @@ public:
 protected:
 	typedef value_type unit;
 
-	unit v;	//! Stored in rotations
+	unit v;	//! Stored in radians
 
 public:
 
