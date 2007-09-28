@@ -70,41 +70,41 @@ public:
 
 	const angle	&
 	operator+=(const angle &rhs)
-		{ v+=rhs.v; return *this; }
+	{ v+=rhs.v; return *this; }
 
 	const angle	&
 	operator-=(const angle &rhs)
-		{ v-=rhs.v; return *this; }
+	{ v-=rhs.v; return *this; }
 
 	const angle	&
 	operator*=(const unit &rhs)
-		{ v*=rhs; return *this; }
+	{ v*=rhs; return *this; }
 
 	const angle	&
 	operator/=(const unit &rhs)
-		{ v/=rhs; return *this; }
+	{ v/=rhs; return *this; }
 
 	//! Angle Addition Operator
 	angle
 	operator+(const angle &rhs)const
-		{ return angle(*this)+=rhs; }
+	{ return angle(*this)+=rhs; }
 
 	//! Angle Subtraction Operator
 	/*! \sa angle dist(const angle &) */
 	angle
 	operator-(const angle &rhs)const
-		{ return angle(*this)-=rhs; }
+	{ return angle(*this)-=rhs; }
 
 	//! Angle Scalar Multiplication Operator
 	/*! This operator will multiply the given
 		angle by the given scalar value. */
 	angle
 	operator*(const unit &rhs)const
-		{ return angle(*this)*=rhs; }
+	{ return angle(*this)*=rhs; }
 
 	angle
 	operator/(const unit &rhs)const
-		{ return angle(*this)/=rhs; }
+	{ return angle(*this)/=rhs; }
 
 	//! Angle Negation
 	angle
@@ -132,14 +132,14 @@ public:
 		right-hand side is clockwise */
 	bool
 	operator<(const angle &rhs)const
-		{ return dist(rhs).v<(value_type)0.0; }
+	{ return dist(rhs).v<(value_type)0.0; }
 
 	/*! Returns true if the shortest
 		angle between the left-hand and
 		right-hand side is counter-clockwise */
 	bool
 	operator>(const angle &rhs)const
-		{ return dist(rhs).v>(value_type)0.0; }
+	{ return dist(rhs).v>(value_type)0.0; }
 
 	/*! Returns true if the shortest
 		angle between the left-hand and
@@ -148,7 +148,7 @@ public:
 		point on the unit circle. */
 	bool
 	operator<=(const angle &rhs)const
-		{ return dist(rhs).v<=(value_type)0.0; }
+	{ return dist(rhs).v<=(value_type)0.0; }
 
 	/*! Returns true if the shortest
 		angle between the left-hand and
@@ -157,21 +157,21 @@ public:
 		point on the unit circle. */
 	bool
 	operator>=(const angle &rhs)const
-		{ return dist(rhs).v>=(value_type)0.0; }
+	{ return dist(rhs).v>=(value_type)0.0; }
 
 	/*! Returns true if the angles
 		are refer to the same point
 		on the unit circle. */
 	bool
 	operator==(const angle &rhs)const
-		{ return std::abs(dist(rhs).v)<epsilon; }
+	{ return std::abs(dist(rhs).v)<epsilon; }
 
 	/*! Returns false if the angles
 		are refer to the same point
 		on the unit circle. */
 	bool
 	operator!=(const angle &rhs)const
-		{ return std::abs(dist(rhs).v)>epsilon; }
+	{ return std::abs(dist(rhs).v)>epsilon; }
 
 	//! Angle Difference Function
 	/*! This function will return the
@@ -182,11 +182,8 @@ public:
 	dist(const angle &rhs)const
 	{
 		angle ret;
-
 		ret.v=v-rhs.v;
-
 		ret.v-=rot_floor(ret.v+PI);
-
 		return ret;
 	}
 
@@ -431,7 +428,6 @@ struct distance_func<etl::angle> : public std::binary_function<etl::angle, etl::
 	etl::angle cook(const etl::angle &x)const { return x; }
 	etl::angle uncook(const etl::angle &x)const { return x; }
 };
-
 
 /* === E N D =============================================================== */
 
