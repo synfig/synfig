@@ -504,19 +504,14 @@ bool Layer_SphereDistort::accelerated_render(Context context,Surface *surface,in
 			}
 
 			//sample at that pixel location based on the quality
-			if(quality <= 4) //cubic
-			{
+			if(quality <= 4)	// cubic
 				p.put_value(background.cubic_sample(xs,ys));
-			}else if(quality <= 5) //cosine
-			{
+			else if(quality <= 5) // cosine
 				p.put_value(background.cosine_sample(xs,ys));
-			}else if(quality <= 6) //linear
-			{
+			else if(quality <= 6) // linear
 				p.put_value(background.linear_sample(xs,ys));
-			}else //nearest
-			{
+			else				// nearest
 				p.put_value(background[round_to_int(ys)][round_to_int(xs)]);
-			}
 		}
 		p.dec_x(w);
 	}
@@ -555,16 +550,14 @@ Layer_SphereDistort::get_bounding_rect()const
 	switch(type)
 	{
 		case TYPE_NORMAL:
-			bounds=Rect(
-				center[0]+(radius),
-				center[1]+(radius),
-				center[0]-(radius),
-				center[1]-(radius)
-			);
+			bounds=Rect(center[0]+radius, center[1]+radius),
+						center[0]-radius, center[1]-radius));
 			break;
 		case TYPE_DISTH:
+			bounds = Rect::vertical_strip(center[0]-radius, center[0]+radius);
 			break;
 		case TYPE_DISTV:
+			bounds = Rect::horizontal_strip(center[1]-radius, center[1]+radius);
 			break;
 		default:
 			break;
@@ -572,4 +565,3 @@ Layer_SphereDistort::get_bounding_rect()const
 
 	return bounds;
 }
-
