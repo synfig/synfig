@@ -123,7 +123,20 @@ synfig::ValueNode_Range::operator()(Time t)const
 	switch(get_type())
 	{
 	case ValueBase::TYPE_ANGLE:
-		return range((*min_)(t).get(Angle()), (*max_)(t).get(Angle()), (*link_)(t).get(Angle()));
+	{
+		Angle minimum = (* min_)(t).get(Angle());
+		Angle maximum = (* max_)(t).get(Angle());
+		Angle link    = (*link_)(t).get(Angle());
+
+		// if link is between min and max, use it
+		if (Angle::deg((link-minimum).mod()).get() < Angle::deg((maximum-minimum).mod()).get())
+			return link;
+		// otherwise use whichever of min and max is closest to link
+		else if (link.dist(minimum).abs() < link.dist(maximum).abs())
+			return minimum;
+		else
+			return maximum;
+	}
 	case ValueBase::TYPE_INTEGER:
 		return range((*min_)(t).get(int()),   (*max_)(t).get(int()),   (*link_)(t).get(int()));
 	case ValueBase::TYPE_REAL:
