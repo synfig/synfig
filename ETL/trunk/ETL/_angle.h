@@ -173,6 +173,17 @@ public:
 	operator!=(const angle &rhs)const
 	{ return std::abs(dist(rhs).v)>epsilon; }
 
+	//! Absolute Angle Function
+	/*! This function will return the
+		absolute value of the angle. */
+	angle
+	abs()const
+	{
+		angle ret;
+		ret.v=std::abs(v);
+		return ret;
+	}
+
 	//! Angle Difference Function
 	/*! This function will return the
 		shortest physical distance between
