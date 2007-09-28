@@ -51,6 +51,9 @@ public:
 
 	static Rect full_plane();
 
+	static Rect horizontal_strip(const value_type &y1, const value_type &y2);
+	static Rect vertical_strip(const value_type &x1, const value_type &x2);
+
 	static Rect zero()
 	{
 		return Rect(
