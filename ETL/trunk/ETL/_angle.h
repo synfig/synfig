@@ -122,8 +122,8 @@ public:
 	operator~()const
 	{
 		angle ret;
-		ret.v=(value_type)std::floor(v+0.5f);
-		return ret;
+		ret.v = v+PI;
+		return ret.mod();
 	}
 
 	/*! Returns true if the shortest
