@@ -60,7 +60,7 @@ public:
 protected:
 	typedef value_type unit;
 
-	unit v;	//! Stored in radians
+	unit v;	//! Stored in radians; positive values indicate counter-clockwise.
 
 public:
 
@@ -128,22 +128,22 @@ public:
 	}
 
 	/*! Returns true if the shortest
-		angle between the left-hand and
-		right-hand side is clockwise */
+		angle from the left-hand to the
+		right-hand side is counter-clockwise */
 	bool
 	operator<(const angle &rhs)const
 	{ return dist(rhs).v<(value_type)0.0; }
 
 	/*! Returns true if the shortest
-		angle between the left-hand and
-		right-hand side is counter-clockwise */
+		angle from the left-hand to the
+		right-hand side is clockwise */
 	bool
 	operator>(const angle &rhs)const
 	{ return dist(rhs).v>(value_type)0.0; }
 
 	/*! Returns true if the shortest
-		angle between the left-hand and
-		right-hand side is clockwise,
+		angle from the left-hand to the
+		right-hand side is counter-clockwise,
 		or if the angles are refer to the same
 		point on the unit circle. */
 	bool
@@ -151,8 +151,8 @@ public:
 	{ return dist(rhs).v<=(value_type)0.0; }
 
 	/*! Returns true if the shortest
-		angle between the left-hand and
-		right-hand side is counter-clockwise,
+		angle from the left-hand to the
+		right-hand side is clockwise,
 		or if the angles are refer to the same
 		point on the unit circle. */
 	bool
