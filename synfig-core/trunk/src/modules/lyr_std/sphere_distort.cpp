@@ -550,8 +550,8 @@ Layer_SphereDistort::get_bounding_rect()const
 	switch(type)
 	{
 		case TYPE_NORMAL:
-			bounds=Rect(center[0]+radius, center[1]+radius),
-						center[0]-radius, center[1]-radius));
+			bounds=Rect(center[0]+radius, center[1]+radius,
+						center[0]-radius, center[1]-radius);
 			break;
 		case TYPE_DISTH:
 			bounds = Rect::vertical_strip(center[0]-radius, center[0]+radius);
