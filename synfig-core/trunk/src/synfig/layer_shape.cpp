@@ -233,7 +233,7 @@ struct MonoSegment
 
 	int intersect(Real x,Real y) const
 	{
-		if((y < aabb.miny) || (y > aabb.maxy) || (x < aabb.minx)) return 0;
+		if((y < aabb.miny+EPSILON) || (y > aabb.maxy) || (x < aabb.minx)) return 0;
 		if(x > aabb.maxx) return ydir;
 
 		//int i = 0;
