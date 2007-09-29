@@ -32,6 +32,7 @@
 #include "dock_info.h"
 #include "canvasview.h"
 #include "workarea.h"
+#include "color.h"				// for gamma_in()
 
 #include <synfig/canvas.h>
 #include <synfig/context.h>
