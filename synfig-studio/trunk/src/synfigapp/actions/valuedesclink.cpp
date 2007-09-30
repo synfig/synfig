@@ -59,9 +59,8 @@ ACTION_SET_CVS_ID(Action::ValueDescLink,"$Id$");
 
 /* === M E T H O D S ======================================================= */
 
-Action::ValueDescLink::ValueDescLink()
+Action::ValueDescLink::ValueDescLink(): poison(false), status_level(0)
 {
-	poison=false;
 }
 
 Action::ParamVocab
@@ -92,6 +91,9 @@ Action::ValueDescLink::set_param(const synfig::String& name, const Action::Param
 		return true;
 	}
 
+	// don't bother looking for the best value to use if there's already been an error
+	if (poison==true) return false;
+
 	if(name=="value_desc" && param.get_type()==Param::TYPE_VALUEDESC)
 	{
 		ValueDesc value_desc(param.get_value_desc());
@@ -104,61 +106,109 @@ Action::ValueDescLink::set_param(const synfig::String& name, const Action::Param
 			if(link_value_node && link_value_node->is_exported())
 			{
 				poison=true;
+				status_message = (_("Cannot link two different exported values ('") +
+								  value_desc.get_value_node()->get_id() + _("' and '") +
+								  link_value_node->get_id()) + _("')");
 				return false;
 			}
 
 			link_value_node=value_desc.get_value_node();
+			status_message = _("Used exported ValueNode ('") + link_value_node->get_id() + _("').");
 		}
 		else if(value_desc.is_value_node())
 		{
 			if(!link_value_node)
 			{
+				status_level = 1;
+				status_message = _("Using the only available ValueNode.");
 				link_value_node=value_desc.get_value_node();
 			}
-
-			// Use the one that is referenced more
-			else if(link_value_node->rcount()<value_desc.get_value_node()->rcount())
+			else if(link_value_node->is_exported())
 			{
-				link_value_node=value_desc.get_value_node();
+				// we've already seen an exported value, so use that rather than the current value
 			}
-
+			// Use the one that is referenced more
+			else if(link_value_node->rcount()!=value_desc.get_value_node()->rcount())
+			{
+				if(link_value_node->rcount()<value_desc.get_value_node()->rcount())
+				{
+					status_level = 2;
+					status_message = _("Using the most referenced ValueNode.");
+					link_value_node=value_desc.get_value_node();
+				}
+				else if (status_level <= 2)
+				{
+					status_level = 2;
+					status_message = _("Using the most referenced ValueNode.");
+				}
+			}
 			// If the current link value node is a constant and
 			// this one isn't, then give preference to the exotic
 			else if(ValueNode_Const::Handle::cast_dynamic(link_value_node) && !ValueNode_Const::Handle::cast_dynamic(value_desc.get_value_node()))
 			{
+				status_level = 3;
+				status_message = _("There's a tie for most referenced; using the animated ValueNode.");
 				link_value_node=value_desc.get_value_node();
 			}
-
-			// If both are animated, and this one has more waypoints,
-			// then use the one with more waypoints
-			else if(
-					ValueNode_Animated::Handle::cast_dynamic(link_value_node)
-				&&	ValueNode_Animated::Handle::cast_dynamic(value_desc.get_value_node())
-				&& (
-					ValueNode_Animated::Handle::cast_dynamic(link_value_node)->waypoint_list().size()
-				<	ValueNode_Animated::Handle::cast_dynamic(value_desc.get_value_node())->waypoint_list().size()
-				)
-			)
+			else if(ValueNode_Const::Handle::cast_dynamic(value_desc.get_value_node()) && !ValueNode_Const::Handle::cast_dynamic(link_value_node))
 			{
-				link_value_node=value_desc.get_value_node();
+				if (status_level <= 3)
+				{
+					status_level = 3;
+					status_message = _("There's a tie for most referenced; using the animated ValueNode.");
+				}
 			}
-
-			/*
-			// Use the one that was most recently changed
-			else if(link_value_node->get_time_last_changed()<value_desc.get_value_node()->get_time_last_changed())
+			// If both are animated, and this one has more waypoints, then use the one with more waypoints
+			else if(ValueNode_Animated::Handle::cast_dynamic(link_value_node) &&
+					ValueNode_Animated::Handle::cast_dynamic(value_desc.get_value_node()) &&
+					ValueNode_Animated::Handle::cast_dynamic(link_value_node)->waypoint_list().size() !=
+					ValueNode_Animated::Handle::cast_dynamic(value_desc.get_value_node())->waypoint_list().size())
 			{
-				link_value_node=value_desc.get_value_node();
+				if (ValueNode_Animated::Handle::cast_dynamic(link_value_node)->waypoint_list().size() <
+					ValueNode_Animated::Handle::cast_dynamic(value_desc.get_value_node())->waypoint_list().size())
+				{
+					status_level = 4;
+					status_message = _("There's a tie for most referenced, and both are animated; using the one with the most waypoints.");
+					link_value_node=value_desc.get_value_node();
+				}
+				else if (status_level <= 4)
+				{
+					status_level = 4;
+					status_message = _("There's a tie for most referenced, and both are animated; using the one with the most waypoints.");
+				}
 			}
-			*/
+			// Use the one that was least recently changed
+			else if(link_value_node->get_time_last_changed()!=value_desc.get_value_node()->get_time_last_changed())
+			{
+				if(link_value_node->get_time_last_changed()>value_desc.get_value_node()->get_time_last_changed())
+				{
+					status_level = 5;
+					status_message = _("Everything is tied; using the least recently modified value.");
+					link_value_node=value_desc.get_value_node();
+				}
+				else if (status_level <= 5)
+				{
+					status_level = 5;
+					status_message = _("Everything is tied; using the least recently modified value.");
+				}
+			}
+			else
+			{
+				status_level = 6;
+				status_message = _("Absolutely everything is tied.");
+			}
 		}
-
 
 		if(value_desc_list.size() && value_desc.get_value_type()!=value_desc_list.front().get_value_type())
 		{
 			// Everything must be of the same type
 			poison=true;
+			status_message = (_("Cannot link two values of different types ('") +
+							  value_desc.get_value().type_name() + _("' and '") +
+							  value_desc_list.front().get_value().type_name() +_("')"));
 			return false;
 		}
+
 		value_desc_list.push_back(value_desc);
 
 		return true;
@@ -170,7 +220,9 @@ Action::ValueDescLink::set_param(const synfig::String& name, const Action::Param
 bool
 Action::ValueDescLink::is_ready()const
 {
-	if(poison || value_desc_list.size()<=1)
+	if(poison)
+		return true;
+	if(value_desc_list.size()<=1)
 		return false;
 	return Action::CanvasSpecific::is_ready();
 }
@@ -178,13 +230,17 @@ Action::ValueDescLink::is_ready()const
 void
 Action::ValueDescLink::prepare()
 {
-	if(poison || value_desc_list.empty())
+	if(poison)
+		throw Error(status_message.c_str());
+
+	if(value_desc_list.empty())
 		throw Error(Error::TYPE_NOTREADY);
 
 	clear();
 
 	if(!link_value_node)
 	{
+		status_message = _("No ValueNodes were available, so one was created.");
 		ValueDesc& value_desc(value_desc_list.front());
 
 		link_value_node=ValueNode_Const::create(value_desc.get_value(time));
@@ -226,9 +282,6 @@ Action::ValueDescLink::prepare()
 	{
 		ValueDesc& value_desc(*iter);
 
-		if(value_desc.is_value_node() && value_desc.get_value_node()==link_value_node)
-			continue;
-
 		Action::Handle action(Action::create("value_desc_connect"));
 
 		action->set_param("canvas",get_canvas());
@@ -242,4 +295,6 @@ Action::ValueDescLink::prepare()
 
 		add_action_front(action);
 	}
+
+	synfig::info(status_message);
 }

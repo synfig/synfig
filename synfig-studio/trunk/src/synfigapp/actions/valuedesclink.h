@@ -49,6 +49,8 @@ private:
 	std::list<ValueDesc> value_desc_list;
 	synfig::ValueNode::Handle link_value_node;
 	bool poison;
+	int status_level;
+	synfig::String status_message;
 	synfig::Time time;
 public:
 
