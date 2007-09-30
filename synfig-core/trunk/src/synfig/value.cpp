@@ -289,6 +289,7 @@ ValueBase::clear()
 String
 ValueBase::type_name(Type id)
 {
+	// don't internationalize these type names - they're using in .sif files
 	switch(id)
 	{
 	case TYPE_REAL:
