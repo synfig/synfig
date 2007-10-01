@@ -1327,7 +1327,7 @@ void Layer_Shape::PolySpan::line_to(Real x, Real y)
 			//generate data for the ending clipped info
 			if(y > window.maxy)
 			{
-				//intial line to intersection (and degenerate)
+				//initial line to intersection (and degenerate)
 				n[2] = x + (window.maxy - y) * dx / dy;
 
 				//intersect coords
@@ -1351,7 +1351,7 @@ void Layer_Shape::PolySpan::line_to(Real x, Real y)
 			//generate data for the ending clipped info
 			if(y < window.miny)
 			{
-				//intial line to intersection (and degenerate)
+				//initial line to intersection (and degenerate)
 				n[2] = x + (window.miny - y) * dx / dy;
 
 				//intersect coords
@@ -1401,7 +1401,7 @@ void Layer_Shape::PolySpan::line_to(Real x, Real y)
 				//generate data for the ending clipped info
 				if(x > window.maxx)
 				{
-					//intial line to intersection (and degenerate)
+					//initial line to intersection (and degenerate)
 					n[2] = y + (window.maxx - x) * dy / dx;
 
 					n[0] = window.maxx;
@@ -1430,7 +1430,7 @@ void Layer_Shape::PolySpan::line_to(Real x, Real y)
 				//generate data for the ending clipped info
 				if(x < window.minx)
 				{
-					//intial line to intersection (and degenerate)
+					//initial line to intersection (and degenerate)
 					n[2] = y + (window.minx - x) * dy / dx;
 
 					n[0] = window.minx;
