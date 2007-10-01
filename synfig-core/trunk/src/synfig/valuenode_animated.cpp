@@ -455,17 +455,16 @@ public:
 					// Adjust for time
 					const float timeadjust(0.5);
 
-					if(!curve_list.empty())
-						curve.second.t1()*=(curve.second.get_dt()*(timeadjust+1))/(curve.second.get_dt()*timeadjust+curve_list.back().second.get_dt());
-					if(after_next!=waypoint_list_.end())
-						curve.second.t2()*=(curve.second.get_dt()*(timeadjust+1))/(curve.second.get_dt()*timeadjust+(after_next->get_time()-next->get_time()));
-
 					if(iter_get_after==INTERPOLATION_HALT)
 						curve.second.t1()*=0;
+					else if(iter_get_after != INTERPOLATION_LINEAR && !curve_list.empty())
+						curve.second.t1()*=(curve.second.get_dt()*(timeadjust+1))/(curve.second.get_dt()*timeadjust+curve_list.back().second.get_dt());
 
 					if(next_get_before==INTERPOLATION_HALT)
 						curve.second.t2()*=0;
-				}
+					else if(next_get_before != INTERPOLATION_LINEAR && after_next!=waypoint_list_.end())
+						curve.second.t2()*=(curve.second.get_dt()*(timeadjust+1))/(curve.second.get_dt()*timeadjust+(after_next->get_time()-next->get_time()));
+				} // not CONSTANT
 			}
 
 			// Set up the time to the default stuff
