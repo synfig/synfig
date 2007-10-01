@@ -2470,6 +2470,7 @@ WorkArea::queue_scroll()
 		drawing_area->queue_draw_area(4-dx, 4-dy, 4-dx+timecode_width, 4-dy+timecode_height);
 	}
 
+#ifndef USE_FRAME_BACKGROUND_TO_SHOW_EDIT_MODE
 	if(canvas_interface->get_mode()&synfigapp::MODE_ANIMATE)
 	{
 		int maxx = drawing_area->get_width()-1;
@@ -2496,6 +2497,7 @@ WorkArea::queue_scroll()
 			drawing_area->queue_draw_area(0,     -dy, maxx,     -dy);
 		}
 	}
+#endif // USE_FRAME_BACKGROUND_TO_SHOW_EDIT_MODE
 
 	last_focus_point=focus_point;
 }
