@@ -634,7 +634,9 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	dragging(DRAG_NONE),
 	show_grid(false),
 	tile_w(128),
-	tile_h(128)
+	tile_h(128),
+	timecode_width(0),
+	timecode_height(0)
 {
 	show_guides=true;
 	curr_input_device=0;
@@ -2462,13 +2464,39 @@ WorkArea::queue_scroll()
 
 	drawing_area->get_window()->scroll(-dx,-dy);
 
-	/*drawing_area->queue_draw_area(
-		0,
-		0,
-		128,
-		64
-	);
-	*/
+	if (timecode_width && timecode_height)
+	{
+		drawing_area->queue_draw_area(4,       4,    4+timecode_width,    4+timecode_height);
+		drawing_area->queue_draw_area(4-dx, 4-dy, 4-dx+timecode_width, 4-dy+timecode_height);
+	}
+
+	if(canvas_interface->get_mode()&synfigapp::MODE_ANIMATE)
+	{
+		int maxx = drawing_area->get_width()-1;
+		int maxy = drawing_area->get_height()-1;
+
+		if (dx > 0)
+		{
+			drawing_area->queue_draw_area(      0, 0,       1, maxy);
+			drawing_area->queue_draw_area(maxx-dx, 0, maxx-dx, maxy);
+		}
+		else if (dx < 0) 
+		{
+			drawing_area->queue_draw_area(   maxx, 0,    maxx, maxy);
+			drawing_area->queue_draw_area(    -dx, 0,     -dx, maxy);
+		}
+		if (dy > 0)
+		{
+			drawing_area->queue_draw_area(0,       0, maxx,       1);
+			drawing_area->queue_draw_area(0, maxy-dy, maxx, maxy-dy);
+		}
+		else if (dy < 0) 
+		{
+			drawing_area->queue_draw_area(0,    maxy, maxx,    maxy);
+			drawing_area->queue_draw_area(0,     -dy, maxx,     -dy);
+		}
+	}
+
 	last_focus_point=focus_point;
 }
 

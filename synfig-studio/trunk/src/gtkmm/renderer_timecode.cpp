@@ -146,10 +146,15 @@ Renderer_Timecode::render_vfunc(
 		gc->set_rgb_fg_color(Gdk::Color("#5f0000"));
 		try
 		{
+			int w, h;
 			layout->set_text(canvas->keyframe_list().find(cur_time)->get_description());
+			layout->get_size(w, h);
+			get_work_area()->timecode_width = int(w*1.0/Pango::SCALE);
+			get_work_area()->timecode_height = int(h*1.0/Pango::SCALE);
 		}
 		catch(synfig::Exception::NotFound)
 		{
+			get_work_area()->timecode_width = get_work_area()->timecode_height = 0;
 			return;
 		}
 		catch(...) {
