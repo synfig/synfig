@@ -428,7 +428,8 @@ public:
 						value_type Pn; Pn=after_next->get_value().get(T());	// P_{i+1}
 
 						// TCB
-						value_type vect(static_cast<value_type>(subtract_func(Pc,Pp)*(((1.0-t)*(1.0-c)*(1.0+b))/2.0)+(Pn-Pc)*(((1.0-t)*(1.0+c)*(1.0-b))/2.0)));
+						value_type vect(static_cast<value_type>(subtract_func(Pc,Pp) * (((1.0-t)*(1.0-c)*(1.0+b))/2.0) +
+																			 (Pn-Pc) * (((1.0-t)*(1.0+c)*(1.0-b))/2.0)));
 
 						// Tension Only
 						//value_type vect((value_type)((Pn-Pp)*(1.0-t)));
