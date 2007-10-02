@@ -231,7 +231,7 @@ Layer_PasteCanvas::set_time(Context context, Time time)const
 	context.set_time(time);
 	if(canvas)
 	{
-		canvas->set_time(time);
+		canvas->set_time(time+time_offset);
 
 		bounds=(canvas->get_context().get_full_bounding_rect()-canvas->rend_desc().get_focus())*exp(zoom)+origin+canvas->rend_desc().get_focus();
 	}
