@@ -239,7 +239,7 @@ void
 DockManager::register_dockable(Dockable& x)
 {
 	dockable_list_.push_back(&x);
-	synfig::info("DockManager::register_dockable(): Registered dockable \"%s\"",dockable_list_.back()->get_name().c_str());
+	// synfig::info("DockManager::register_dockable(): Registered dockable \"%s\"",dockable_list_.back()->get_name().c_str());
 	signal_dockable_registered()(&x);
 }
 
