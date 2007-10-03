@@ -376,7 +376,7 @@ synfigapp::Main::select_input_device(InputDevice::Handle input_device)
 {
 	assert(input_device);
 
-	synfig::info("Input device changed to \"%s\"",input_device->get_id().c_str());
+	// synfig::info("Input device changed to \"%s\"",input_device->get_id().c_str());
 
 	selected_input_device_=input_device;
 
