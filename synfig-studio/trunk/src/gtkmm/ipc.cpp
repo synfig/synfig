@@ -329,7 +329,7 @@ IPC::make_connection()
 		ret=SmartFILE(fdopen(fd,"w"));
 
 #ifdef _DEBUG
-	synfig::info("uplink fd=%d",fd);
+	// synfig::info("uplink fd=%d",fd);
 #endif
 
 	return ret;
