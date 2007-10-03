@@ -194,7 +194,8 @@ Settings::save_to_file(const synfig::String& filename)const
 			for(iter=key_list.begin();iter!=key_list.end();++iter)
 			{
 				if(!file)return false;
-				file<<*iter<<'='<<get_value(*iter)<<endl;
+				String ret = get_value(*iter);
+				if (ret != String()) file<<*iter<<'='<<ret<<endl;
 			}
 		}
 
