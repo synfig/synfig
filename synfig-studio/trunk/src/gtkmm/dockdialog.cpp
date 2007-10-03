@@ -144,8 +144,6 @@ DockDialog::~DockDialog()
 
 	is_deleting=true;
 
-	DEBUGPOINT();
-
 	// Remove all of the dock books
 	for(;!dock_book_list.empty();dock_book_list.pop_front())
 	{
@@ -180,8 +178,6 @@ DockDialog::~DockDialog()
 	}
 
 	delete widget_comp_select;
-
-	DEBUGPOINT();
 }
 
 void
