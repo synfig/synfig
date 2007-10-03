@@ -119,7 +119,6 @@ Dock_PalEdit::Dock_PalEdit():
 	table(2,2,false)
 {
 	action_group=Gtk::ActionGroup::create();
-	DEBUGPOINT();
 	action_group->add(Gtk::Action::create(
 		"palette-add-color",
 		Gtk::StockID("gtk-add"),
