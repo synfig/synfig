@@ -129,7 +129,7 @@ SectionEnd
 
 Section "Examples"
 	SetOutPath $INSTDIR\examples
-	File "@srcdir@\examples\*.sif"
+	File "@srcdir@\examples\*.sifz"
 
 	SetShellVarContext All
 	CreateDirectory "$SMPROGRAMS\Voria"
@@ -137,7 +137,7 @@ Section "Examples"
 SectionEnd
 
 Section "un.Examples"
-	Delete "$INSTDIR\examples\*.sif"
+	Delete "$INSTDIR\examples\*.sifz"
 	RMDir "$INSTDIR\examples"
 
 	SetShellVarContext All
