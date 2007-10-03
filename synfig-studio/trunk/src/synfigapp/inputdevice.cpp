@@ -91,7 +91,6 @@ public:
 
 	virtual bool set_value(const synfig::String& key,const synfig::String& value)
 	{
-			DEBUGPOINT();
 		if(key=="state")
 		{
 			input_device->set_state(value);
