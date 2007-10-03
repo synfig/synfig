@@ -238,7 +238,7 @@ KeyframeActionManager::refresh()
 			action->set_sensitive(false);
 	}
 
-	ui_info="<ui><menubar action='menu-main'><menu action='menu-keyframe'>"+ui_info+"</menu></menubar></ui>";
+	ui_info="<ui><popup action='menu-main'><menu action='menu-keyframe'>"+ui_info+"</menu></popup></ui>";
 	popup_id_=get_ui_manager()->add_ui_from_string(ui_info);
 #ifdef ONE_ACTION_GROUP
 #else

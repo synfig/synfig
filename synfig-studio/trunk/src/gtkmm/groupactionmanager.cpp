@@ -230,7 +230,7 @@ GroupActionManager::refresh()
 
 	if(true)
 	{
-		ui_info="<ui><menubar action='menu-main'><menu action='menu-group'>"+ui_info+"</menu></menubar></ui>";
+		ui_info="<ui><popup action='menu-main'><menu action='menu-group'>"+ui_info+"</menu></popup></ui>";
 		popup_id_=get_ui_manager()->add_ui_from_string(ui_info);
 	}
 	else
