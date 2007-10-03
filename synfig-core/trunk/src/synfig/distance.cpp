@@ -81,7 +81,7 @@ Distance::operator=(const synfig::String& str)
 	int i(0);
 	float val;
 	int ret(strscanf(str,"%f%n",&val,&i));
-	synfig::info("Distance::Distance(): ret=%d, val=%f",ret,val);
+	// synfig::info("Distance::Distance(): ret=%d, val=%f",ret,val);
 
 	if(ret<=0)
 	{
