@@ -311,7 +311,7 @@ studio::render_time_point_to_window(
 /* === M E T H O D S ======================================================= */
 
 /* === E N T R Y P O I N T ================================================= */
-double defaultfps = 0;
+double defaultfps = 24;
 const int fullheight = 20;
 
 Widget_Timeslider::Widget_Timeslider()
