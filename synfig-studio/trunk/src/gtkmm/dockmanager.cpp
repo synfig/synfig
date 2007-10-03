@@ -229,7 +229,7 @@ DockManager::~DockManager()
 	while(!dockable_list_.empty())
 	{
 		Dockable* dockable(dockable_list_.back());
-		synfig::info("DockManager::~DockManager(): Deleting dockable \"%s\"",dockable->get_name().c_str());
+		// synfig::info("DockManager::~DockManager(): Deleting dockable \"%s\"",dockable->get_name().c_str());
 		dockable_list_.pop_back();
 		delete dockable;
 	}
