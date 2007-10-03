@@ -1275,7 +1275,7 @@ CanvasView::init_menus()
 		}
 	}
 
-	action_group->add( Gtk::Action::create("play", Gtk::StockID("synfig-play")),
+	action_group->add( Gtk::Action::create("play", Gtk::Stock::MEDIA_PLAY),
 		sigc::mem_fun(*this, &studio::CanvasView::play)
 	);
 
@@ -1583,7 +1583,7 @@ CanvasView::init_menus()
 		viewmenu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("Preview Quality"),qualitymenu));
 	}
 
-	viewmenu.items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::StockID("synfig-play"),
+	viewmenu.items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::Stock::MEDIA_PLAY,
 		sigc::mem_fun(*this, &studio::CanvasView::play)));
 	viewmenu.items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::StockID("Flipbook Dialog"),
 		sigc::mem_fun(*preview_dialog, &studio::Dialog_Preview::present)));
