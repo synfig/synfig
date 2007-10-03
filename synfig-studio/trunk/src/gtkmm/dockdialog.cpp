@@ -299,7 +299,7 @@ DockDialog::erase_dock_book(DockBook* dock_book)
 void
 DockDialog::refresh()
 {
-	synfig::info("dock_book_list.size()=%d",dock_book_list.size());
+	// synfig::info("dock_book_list.size()=%d",dock_book_list.size());
 	//remove();
 
 	if(dock_book_list.empty())
