@@ -2837,7 +2837,10 @@ CanvasView::play()
 			studio::App::iteration(false);
 
 		if(get_cancel_status())
+		{
+			is_playing_=false;
 			return;
+		}
 	}
 	is_playing_=false;
 
