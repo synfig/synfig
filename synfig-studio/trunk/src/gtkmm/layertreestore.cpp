@@ -96,7 +96,7 @@ LayerTreeStore::LayerTreeStore(etl::loose_handle<synfigapp::CanvasInterface> can
 
 LayerTreeStore::~LayerTreeStore()
 {
-	synfig::info("LayerTreeStore::~LayerTreeStore()q: Deleted");
+	synfig::info("LayerTreeStore::~LayerTreeStore(): Deleted");
 
 }
 
