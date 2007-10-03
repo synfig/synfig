@@ -149,7 +149,7 @@ DockDialog::~DockDialog()
 	{
 		dock_book_list.front()->clear();
 
-		// UGLY HACK
+		//! \fixme: UGLY HACK
 		// The following line really should be uncommented,
 		// but it causes crashes. Without it, a small
 		// memory hole is created--but at least it doesn't crash
@@ -158,8 +158,14 @@ DockDialog::~DockDialog()
 		// Oddly enough, the following line should
 		// theoreticly do the same thing after this
 		// class is destroyed, but it doesn't seem to
-		// caues a crash.
-		manage(dock_book_list.front());
+		// cause a crash.  It does, however, trigger this warning:
+		//
+		//   A floating object was finalized. This means that someone
+		//   called g_object_unref() on an object that had only a
+		//   floating reference; the initial floating reference is not
+		//   owned by anyone and must be removed with g_object_ref_sink().
+		//
+		// manage(dock_book_list.front());
 	}
 
 	// Remove us from the dock manager
