@@ -696,7 +696,7 @@ Instance::add_actions_to_group(const Glib::RefPtr<Gtk::ActionGroup>& action_grou
 	candidate_list.sort();
 
 	if(candidate_list.empty())
-		synfig::warning("Action CandidateList is empty!");
+		synfig::warning("%s:%d Action CandidateList is empty!", __FILE__, __LINE__);
 
 	for(iter=candidate_list.begin();iter!=candidate_list.end();++iter)
 	{
@@ -736,7 +736,7 @@ Instance::add_actions_to_menu(Gtk::Menu *menu, const synfigapp::Action::ParamLis
 	candidate_list.sort();
 
 	if(candidate_list.empty())
-		synfig::warning("Action CandidateList is empty!");
+		synfig::warning("%s:%d Action CandidateList is empty!", __FILE__, __LINE__);
 
 	for(iter=candidate_list.begin();iter!=candidate_list.end();++iter)
 	{
@@ -805,9 +805,9 @@ Instance::add_actions_to_menu(Gtk::Menu *menu, const synfigapp::Action::ParamLis
 	candidate_list.sort();
 
 	if(candidate_list.empty())
-		synfig::warning("Action CandidateList is empty!");
+		synfig::warning("%s:%d Action CandidateList is empty!", __FILE__, __LINE__);
 	if(candidate_list2.empty())
-		synfig::warning("Action CandidateList2 is empty!");
+		synfig::warning("%s:%d Action CandidateList2 is empty!", __FILE__, __LINE__);
 
 	// Seperate out the candidate lists so that there are no conflicts
 	for(iter=candidate_list.begin();iter!=candidate_list.end();++iter)
