@@ -1265,7 +1265,7 @@ CanvasView::init_menus()
 		{
 			Glib::RefPtr<Gtk::RadioAction> action(Gtk::RadioAction::create(quality_group,strprintf("quality-%02d",i), strprintf("Set Quality to %d",i)));
 			if(i==10)
-				action->property_value()=10;
+				action->set_active();
 			action_group->add( action,
 				sigc::bind(
 					sigc::mem_fun(*work_area, &studio::WorkArea::set_quality),
