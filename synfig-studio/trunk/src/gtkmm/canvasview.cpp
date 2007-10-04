@@ -446,7 +446,7 @@ public:
 	{
 //		assert(view->layer_tree);
 
-		if(!view->layer_tree) { DEBUGPOINT(); synfig::error("canvas_view.layer_tree not defined!?"); return LayerList(); }
+		if(!view->layer_tree) { DEBUGPOINT(); synfig::error("%s:%d canvas_view.layer_tree not defined!?", __FILE__, __LINE__); return LayerList(); }
 		return view->layer_tree->get_selected_layers();
 	}
 
@@ -455,7 +455,7 @@ public:
 	{
 //		assert(view->layer_tree);
 
-		if(!view->layer_tree) { DEBUGPOINT(); synfig::error("canvas_view.layer_tree not defined!?"); return 0; }
+		if(!view->layer_tree) { DEBUGPOINT(); synfig::error("%s:%d canvas_view.layer_tree not defined!?", __FILE__, __LINE__); return 0; }
 		return view->layer_tree->get_selected_layer();
 	}
 
@@ -464,7 +464,7 @@ public:
 	{
 //		assert(view->layer_tree);
 
-		if(!view->layer_tree) { DEBUGPOINT(); synfig::error("canvas_view.layer_tree not defined!?"); return; }
+		if(!view->layer_tree) { DEBUGPOINT(); synfig::error("%s:%d canvas_view.layer_tree not defined!?", __FILE__, __LINE__); return; }
 		view->layer_tree->select_layers(layer_list);
 		//view->get_smach().process_event(EVENT_REFRESH_DUCKS);
 
@@ -3415,7 +3415,7 @@ CanvasView::on_audio_offset_notify()
 	sound_dialog->set_offset(t);
 	disp_audio->queue_draw();
 
-	synfig::info("CanvasView::on_audio_offset_notify(): offset time set to %s",t.get_string(get_canvas()->rend_desc().get_frame_rate()).c_str());
+	// synfig::info("CanvasView::on_audio_offset_notify(): offset time set to %s",t.get_string(get_canvas()->rend_desc().get_frame_rate()).c_str());
 }
 
 void
