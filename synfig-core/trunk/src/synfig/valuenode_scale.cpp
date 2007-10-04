@@ -163,27 +163,9 @@ synfig::ValueNode_Scale::operator()(Time t)const
 {
 	if(!value_node || !scalar)
 		throw runtime_error(strprintf("ValueNode_Scale: %s",_("One or both of my parameters aren't set!")));
-	else
-	if(get_type()==ValueBase::TYPE_VECTOR)
-		return (*value_node)(t).get(Vector())*(*scalar)(t).get(Real());
-	else
-	if(get_type()==ValueBase::TYPE_REAL)
-		return (*value_node)(t).get(Real())*(*scalar)(t).get(Real());
-	else
-	if(get_type()==ValueBase::TYPE_TIME)
-		return (*value_node)(t).get(Time())*(*scalar)(t).get(Time());
-	else
-	if(get_type()==ValueBase::TYPE_INTEGER)
-	{
-		Real ret = (*value_node)(t).get(int())*(*scalar)(t).get(Real()) + 0.5f;
-		if (ret < 0) return static_cast<int>(ret-1);
-		return static_cast<int>(ret);
-	}
-	else
-	if(get_type()==ValueBase::TYPE_ANGLE)
+	else if(get_type()==ValueBase::TYPE_ANGLE)
 		return (*value_node)(t).get(Angle())*(*scalar)(t).get(Real());
-	else
-	if(get_type()==ValueBase::TYPE_COLOR)
+	else if(get_type()==ValueBase::TYPE_COLOR)
 	{
 		Color ret((*value_node)(t).get(Color()));
 		Real s((*scalar)(t).get(Real()));
@@ -192,6 +174,18 @@ synfig::ValueNode_Scale::operator()(Time t)const
 		ret.set_b(ret.get_b()*s);
 		return ret;
 	}
+	else if(get_type()==ValueBase::TYPE_INTEGER)
+	{
+		Real ret = (*value_node)(t).get(int())*(*scalar)(t).get(Real()) + 0.5f;
+		if (ret < 0) return static_cast<int>(ret-1);
+		return static_cast<int>(ret);
+	}
+	else if(get_type()==ValueBase::TYPE_REAL)
+		return (*value_node)(t).get(Real())*(*scalar)(t).get(Real());
+	else if(get_type()==ValueBase::TYPE_TIME)
+		return (*value_node)(t).get(Time())*(*scalar)(t).get(Time());
+	else if(get_type()==ValueBase::TYPE_VECTOR)
+		return (*value_node)(t).get(Vector())*(*scalar)(t).get(Real());
 
 	assert(0);
 	return ValueBase();
@@ -281,9 +275,10 @@ bool
 ValueNode_Scale::check_type(ValueBase::Type type)
 {
 	return
-		type==ValueBase::TYPE_VECTOR ||
-		type==ValueBase::TYPE_REAL ||
-		type==ValueBase::TYPE_INTEGER ||
+		type==ValueBase::TYPE_ANGLE ||
 		type==ValueBase::TYPE_COLOR ||
-		type==ValueBase::TYPE_ANGLE;
+		type==ValueBase::TYPE_INTEGER ||
+		type==ValueBase::TYPE_REAL ||
+		type==ValueBase::TYPE_TIME ||
+		type==ValueBase::TYPE_VECTOR;
 }
