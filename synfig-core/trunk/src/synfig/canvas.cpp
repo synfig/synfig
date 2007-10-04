@@ -1018,10 +1018,10 @@ synfig::optimize_layers(Context context, Canvas::Handle op_canvas, bool seen_mot
 	Context iter;
 
 	std::vector< std::pair<float,Layer::Handle> > sort_list;
-	int i, motion_blur_i;		// motion_blur_i is for resolving which layer comes first in the event of a z_depth tie
-	float motion_blur_z_depth;	// the z_depth of the least deep motion blur layer in this context
+	int i, motion_blur_i=0;	// motion_blur_i is for resolving which layer comes first in the event of a z_depth tie
+	float motion_blur_z_depth=0; // the z_depth of the least deep motion blur layer in this context
 	bool seen_motion_blur_locally = false;
-	bool motion_blurred;		// the final result - is this layer blurred or not?
+	bool motion_blurred; // the final result - is this layer blurred or not?
 
 	// If the parent didn't cause us to already be motion blurred,
 	// check whether there's a motion blur in this context,
