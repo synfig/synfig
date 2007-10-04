@@ -365,10 +365,7 @@ Instance::close()
 		studio::App::set_selected_instance(0);
 	}
 	else
-	{
-		studio::App::set_selected_canvas_view(studio::App::instance_list.front()->canvas_view_list().front());
-		//studio::App::set_selected_instance(studio::App::instance_list.front());
-	}
+		studio::App::instance_list.front()->canvas_view_list().front()->present();
 }
 
 
