@@ -806,11 +806,7 @@ WorkArea::~WorkArea()
 	// don't leave the render function queued if we are about to vanish;
 	// that causes crashes
 	if(render_idle_func_id)
-	{
-		synfig::info("g_source_remove() returns %d", g_source_remove(render_idle_func_id));
 		render_idle_func_id=0;
-	} else
-		synfig::info("no render_idle_func_id to clear\n");
 }
 
 void
