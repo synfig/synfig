@@ -79,9 +79,7 @@ void
 DockBook::clear()
 {
 	while(get_n_pages())
-	{
 		remove(static_cast<Dockable&>(*get_nth_page(get_n_pages()-1)));
-	}
 }
 
 void
