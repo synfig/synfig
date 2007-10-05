@@ -15,12 +15,16 @@
   * Extend the 'Linear' valuenode conversion to work with colors and integers.
   * Enable basic motion blur display at all qualities
   * Fix an artifact on the curve gradient layer (#1792063, r663)
-  * Add the 'Repeat Gradient' valuenode conversion
+  * Add the 'Range', 'Repeat Gradient', 'Add', 'Exponent', 'BLine Vector', and 'BLine Tangent' valuenode conversions (#1781903)
   * Fix various problems with valuenode conversion  (#1794374, #1795913, #1795922, #1796068, #1797488)
   * Allow gradients to be animated (#1568818, #1795802)
   * Stop TCB angle waypoints changing to type Linear on load (#1778930)
   * Use compression when saving to files with .sifz extension
   * Compressed example .sif files to .sifz to save space
+  * Fixed Motion Blur layer (#1800783)
+  * Allow building studio with gcc -O2 (#1509627)
+  * Allow encapsulated layers to animate their z-depth, even when time-shifted (#1806852)
+  * Fixed the Radial Blur layer.  It previously wasn't working when zooming in on the canvas (#1807709)
 
  0.61.06 (SVN 536) - June 20, 2007 - Bug fixes
 
