@@ -133,25 +133,57 @@ RadialBlur::accelerated_render(Context context,Surface *surface,int quality, con
 		return false;
 
 	Surface tmp_surface;
+	const Point tl(renddesc.get_tl()), br(renddesc.get_br());
+	const int w(renddesc.get_w()), h(renddesc.get_h());
+	const Real pw(renddesc.get_pw()),ph(renddesc.get_ph());
 
-	if(!context.accelerated_render(surface,quality,renddesc,cb))
+	Rect rect(tl, br);
+	Point pos;
+
+	// find how far towards the origin of the blur we are going to
+	// wander for each of the 4 corners of our tile, expanding the
+	// render description for each of them if necessary
+	int x, y;
+	for(y=0,pos[1]=tl[1];y<h;y+=(h-1),pos[1]+=ph*(h-1))
+		for(x=0,pos[0]=tl[0];x<w;x+=(w-1),pos[0]+=pw*(w-1))
+			rect.expand((pos-origin)*(1.0f-size) + origin);
+
+	// round out to the nearest pixel
+	Point tmp_surface_tl = Point(tl[0] - pw*(int((tl[0]-rect.get_min()[0])/pw+1-1e-6)),
+								 tl[1] - ph*(int((tl[1]-rect.get_max()[1])/ph+1-1e-6)));
+	Point tmp_surface_br = Point(br[0] + pw*(int((rect.get_max()[0]-br[0])/pw+2-1e-6)),
+								 br[1] + ph*(int((rect.get_min()[1]-br[1])/ph+2-1e-6)));
+
+	// round to nearest integer width and height (should be very
+	// nearly whole numbers already, but dont want to round 5.99999
+	// down to 5)
+	int tmp_surface_width = int((tmp_surface_br[0]-tmp_surface_tl[0])/pw + 0.5);
+	int tmp_surface_height = int((tmp_surface_br[1]-tmp_surface_tl[1])/ph + 0.5);
+
+	RendDesc desc(renddesc);
+	desc.clear_flags();
+	desc.set_wh(tmp_surface_width,tmp_surface_height);
+	desc.set_tl(tmp_surface_tl);
+	desc.set_br(tmp_surface_br);
+
+	// render the layers beneath us
+	if(!context.accelerated_render(&tmp_surface,quality,desc,cb))
 		return false;
 
-	tmp_surface=*surface;
-
-	int x,y;
-
-	const Point tl(renddesc.get_tl());
-	Point pos;
-	const int w(surface->get_w());
-	const int h(surface->get_h());
-	const Real pw(renddesc.get_pw()),ph(renddesc.get_ph());
+	// copy the part of the layers beneath us that corresponds to this tile
+	surface->set_wh(w, h);
+	Surface::pen pen(surface->get_pen(0, 0));
+	tmp_surface.blit_to(pen,
+						int((tl[0] - tmp_surface_tl[0])/pw + 0.5),
+						int((tl[1] - tmp_surface_tl[1])/ph + 0.5),
+						w, h);
 
 	Surface::alpha_pen apen(surface->begin());
 
 	apen.set_alpha(get_amount());
 	apen.set_blend_method(get_blend_method());
 
+/*
 	int steps(5);
 
 	if(quality>=9)steps=20;
@@ -159,15 +191,17 @@ RadialBlur::accelerated_render(Context context,Surface *surface,int quality, con
 	else if(quality>=4)steps=60;
 	else if(quality>=3)steps=100;
 	else steps=120;
+*/
 
 	Surface::value_prep_type cooker;
 
+	// loop through the pixels
 	for(y=0,pos[1]=tl[1];y<h;y++,apen.inc_y(),apen.dec_x(x),pos[1]+=ph)
 		for(x=0,pos[0]=tl[0];x<w;x++,apen.inc_x(),pos[0]+=pw)
 		{
 			Point
-				begin(pos-tl),
-				end((pos-origin)*(1.0f-size)+origin-tl);
+				begin(pos-tmp_surface_tl),
+				end((pos-origin)*(1.0f-size) + origin-tmp_surface_tl);
 			begin[0]/=pw;begin[1]/=ph;
 			end[0]/=pw;end[1]/=ph;
 
@@ -184,7 +218,7 @@ RadialBlur::accelerated_render(Context context,Surface *surface,int quality, con
 			int sx, sy;  /* step positive or negative (1 or -1) */
 			int dx, dy;  /* delta (difference in X and Y between points) */
 			int e;
-			int w(tmp_surface.get_w()),h(tmp_surface.get_h());
+			int w(tmp_surface_width), h(tmp_surface_height);
 
 			dx = abs(x1 - x0);
 			sx = ((x1 - x0) > 0) ? 1 : -1;
@@ -219,7 +253,8 @@ RadialBlur::accelerated_render(Context context,Surface *surface,int quality, con
 							pool+=cooker.cook(tmp_surface[x0][y0]);
 						poolsize+=1;
 					}
-				}
+				} else
+					printf("%s:%d unexpected %d >= %d or %d >= %d?\n", __FILE__, __LINE__, x0, w, y0, h);
 
 				while (e >= 0)
 				{
@@ -260,6 +295,22 @@ RadialBlur::accelerated_render(Context context,Surface *surface,int quality, con
 
 
 	if(cb && !cb->amount_complete(10000,10000)) return false;
+
+// #define DRAW_TILE_OUTLINES
+#ifdef DRAW_TILE_OUTLINES
+	// draw red lines to show tiles
+	{
+		int x, y;
+		if (w != 0 && h != 0) {
+			Surface::alpha_pen apen(surface->begin());
+			apen.set_alpha(get_amount());
+			apen.set_blend_method(get_blend_method());
+			apen.set_value(Color(1, 0, 0, .1));
+			for (x = 0; x < w; x++) { apen.put_value(); apen.inc_x(); } apen.dec_x(w);
+			for (y = 0; y < h; y++) { apen.put_value(); apen.inc_y(); } apen.dec_y(h);
+		}
+	}
+#endif // DRAW_TILE_OUTLINES
 
 	return true;
 }
