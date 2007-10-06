@@ -86,8 +86,8 @@ PKG_CHECK_MODULES(GTKMM, gtkmm-2.4 gthread-2.0,[],[
 AC_SUBST(GTKMM_CFLAGS)
 AC_SUBST(GTKMM_LIBS)
 
-PKG_CHECK_MODULES(SYNFIG, [synfig >= 0.61.06] [ETL >= 0.04.09] sigc++-2.0,,[
-	AC_MSG_ERROR([ ** Unable to set up dependent libraries (synfig >= 0.61.06, ETL >= 0.04.09)])
+PKG_CHECK_MODULES(SYNFIG, [synfig >= 0.61.07] [ETL >= 0.04.10] sigc++-2.0,,[
+	AC_MSG_ERROR([ ** Unable to set up dependent libraries (synfig >= 0.61.07, ETL >= 0.04.10)])
 ])
 AC_SUBST(SYNFIG_CFLAGS)
 AC_SUBST(SYNFIG_LIBS)
