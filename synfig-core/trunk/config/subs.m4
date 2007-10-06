@@ -102,10 +102,10 @@ AC_DEFUN([AC_ARG_OPTIMIZATION],
 [
 	AC_MSG_CHECKING([for optimization flags])
 
-	AC_ARG_ENABLE(optimization,[  --enable-optimization=[[0,1,2,3,4]] Select optimization level (default=1)],[
+	AC_ARG_ENABLE(optimization,[  --enable-optimization=[[0,1,2,3,4]] Select optimization level (default=2)],[
 		optimization=$enableval
 	],[
-		optimization="1"
+		optimization="2"
 	])
 	optimization_flags=''
 	case "$optimization" in
