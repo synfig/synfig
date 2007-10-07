@@ -62,7 +62,7 @@ public:
 	~Layer_Polygon();
 
 	//! Adds a polygon to the layer
-	/*!	The edge data is automaticly added to the
+	/*!	The edge data is automatically added to the
 	**	EdgeTable, so there is no need to call sync()
 	**	after adding a polygon using this function.
 	**	\param point_list A list containing the
