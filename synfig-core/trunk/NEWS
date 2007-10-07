@@ -4,9 +4,6 @@
 
   * Fix importing on amd64 (#1692825)
   * Fixes for the PasteCanvas layer (#1356449)
-  * Fixes for the curve gradient layer
-  * Fix the plant layer
-  * Fix several other bugs and crashes
   * Clean up Layer menu and displayed layer names
   * Allow exported canvases to be used in more than one place within a canvas (#1785296)
   * Fix, extend, and enable the 'XOR Pattern' layer
@@ -25,6 +22,7 @@
   * Allow building studio with gcc -O2 (#1509627)
   * Allow encapsulated layers to animate their z-depth, even when time-shifted (#1806852)
   * Fixed the Radial Blur layer.  It previously wasn't working when zooming in on the canvas (#1807709)
+  * Fix several other bugs and crashes
 
  0.61.06 (SVN 536) - June 20, 2007 - Bug fixes
 

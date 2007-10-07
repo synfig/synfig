@@ -3,7 +3,7 @@
  0.61.07 (SVN ???) - ???? ??, 200? - Bug fixes
 
   * Fix some tooltips and menu stuff (#1787437)
-  * Allow left-right scrolling in canvas window
+  * Allow left-right scrolling in canvas window with shift + mouse-wheel
   * Rework mouse interaction with ducks and tangents
   * Move icons to a subdir
   * Fix some typos, several crashes (#1780016, #1785598) and other bugs
