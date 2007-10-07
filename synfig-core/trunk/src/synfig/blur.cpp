@@ -717,7 +717,7 @@ bool Blur::operator ()(const Surface &surface,
 			   is necessary to insure consistant
 			   results when rendered to different
 			   resolutions.
-			   Unfortunately, this automaticly
+			   Unfortunately, this automatically
 			   squares our rendertime.
 			   There has got to be a faster way...
 			*/
@@ -1091,7 +1091,7 @@ bool Blur::operator ()(const surface<float> &surface,
 			   is necessary to insure consistant
 			   results when rendered to different
 			   resolutions.
-			   Unfortunately, this automaticly
+			   Unfortunately, this automatically
 			   squares our rendertime.
 			   There has got to be a faster way...
 			*/
