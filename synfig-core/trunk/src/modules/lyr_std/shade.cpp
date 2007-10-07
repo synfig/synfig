@@ -53,9 +53,7 @@ using namespace std;
 
 /*#define TYPE_BOX			0
 #define TYPE_FASTGUASSIAN	1
-#define TYPE_FASTGAUSSIAN	1
 #define TYPE_CROSS			2
-#define TYPE_GUASSIAN		3
 #define TYPE_GAUSSIAN		3
 #define TYPE_DISC			4
 */
