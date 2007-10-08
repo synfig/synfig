@@ -1,6 +1,6 @@
               synfigstudio releases
 
- 0.61.07 (SVN ???) - ???? ??, 200? - Bug fixes
+ 0.61.07 (SVN ???) - October ??, 2007 - Bug fixes
 
   * Fix some tooltips and menu stuff (#1787437)
   * Allow left-right scrolling in canvas window with shift + mouse-wheel
@@ -21,9 +21,9 @@
   * Remember the filename the animation was last rendered to, and default to it (#1799250)
   * Improved the 'Groups' function a little (#1368694).  It's still quite broken
   * Fixed the colors displayed on the sliders in the Color Editor dialog
-  * Added option (on by default) to Bline Tool to allow position of regions and outlines to be automatically linked (#1776156)
+  * Added option to Bline Tool to allow positions to be automatically linked (#1776156)
   * Added menu entry to restore all dialogs to their default positions
-  * Change the way the red frame indicating Animate Editing Mode is displayed, so it shows up in all themes (#1801220)
+  * Fix red "Animate Editing Mode" frame so it shows up in all themes (#1801220)
   * Allow user to "export SYNFIG_DISABLE_POPUP_WINDOWS=1" to make splash screen etc. less obtrusive
   * Fixed the logic used to decide which value to use when linking values together
   * Update child canvas time sliders when parent time slider is moved
