@@ -103,6 +103,50 @@ Makefile
 # !synfig-core/trunk/synfig-core.xcodeproj/config.h
 
 # ------------------------------------------------------------------------
+# These are executables produced by 'make check' in ETL/trunk
+# ------------------------------------------------------------------------
+
+ETL/trunk/test/angle
+ETL/trunk/test/benchmark
+ETL/trunk/test/clock
+ETL/trunk/test/fixed
+ETL/trunk/test/handle
+ETL/trunk/test/hermite
+ETL/trunk/test/pen
+ETL/trunk/test/random
+ETL/trunk/test/smach
+ETL/trunk/test/smart_ptr
+ETL/trunk/test/stringf
+ETL/trunk/test/surface
+
+# ------------------------------------------------------------------------
+# I have symlinks in the top level that I don't want tracked
+# ------------------------------------------------------------------------
+
+# etl		-> ETL/trunk/ETL
+/etl
+
+# core		-> synfig-core/trunk
+/core
+###  modules	->   core/src/modules
+/modules
+### synfig	->   core/src/synfig
+/synfig
+### tool	->   core/src/tool
+/tool
+### examples	->   core/examples
+/examples
+
+# studio	-> synfig-studio/trunk
+/studio
+### gtkmm	->   studio/src/gtkmm
+/gtkmm
+### synfigapp	->   studio/src/synfigapp
+/synfigapp
+### images	->   studio/images
+/images
+
+# ------------------------------------------------------------------------
 
 Backup
 build-from-scratch.sh
