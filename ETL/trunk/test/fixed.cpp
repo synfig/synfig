@@ -291,6 +291,11 @@ int char_test(void)
 
 int main()
 {
+	fprintf(stderr, "\n***\n");
+	fprintf(stderr, "*** tests in fixed.cpp fail - see http://wiki.synfig.com/Source:ETL_make_check for an explanation ***\n");
+	fprintf(stderr, "***\n\n");
+	sleep(5);
+
 	int error=0;
 
 	error+=basic_test();
