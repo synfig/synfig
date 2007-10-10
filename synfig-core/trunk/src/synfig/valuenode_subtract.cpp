@@ -38,6 +38,7 @@
 #include "vector.h"
 #include "angle.h"
 #include "real.h"
+#include <ETL/misc>
 
 #endif
 
@@ -173,11 +174,7 @@ synfig::ValueNode_Subtract::operator()(Time t)const
 	case ValueBase::TYPE_COLOR:
 		return ((*ref_a)(t).get(Color())-(*ref_b)(t).get(Color()))*(*scalar)(t).get(Real());
 	case ValueBase::TYPE_INTEGER:
-	{
-		Real ret = ((*ref_a)(t).get(int())-(*ref_b)(t).get(int()))*(*scalar)(t).get(Real()) + 0.5f;
-		if (ret < 0) return static_cast<int>(ret-1);
-		return static_cast<int>(ret); 
-	}
+		return round_to_int(((*ref_a)(t).get(int())-(*ref_b)(t).get(int()))*(*scalar)(t).get(Real()));
 	case ValueBase::TYPE_REAL:
 		return ((*ref_a)(t).get(Vector::value_type())-(*ref_b)(t).get(Vector::value_type()))*(*scalar)(t).get(Real());
 	case ValueBase::TYPE_TIME:

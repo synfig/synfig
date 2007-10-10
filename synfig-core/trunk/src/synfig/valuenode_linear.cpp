@@ -34,6 +34,7 @@
 #include "valuenode_const.h"
 #include "general.h"
 #include "color.h"
+#include <ETL/misc>
 
 #endif
 
@@ -114,11 +115,7 @@ ValueNode_Linear::operator()(Time t)const
 	case ValueBase::TYPE_COLOR:
 		return (*m_)(t).get( Color())*t+(*b_)(t).get( Color());
 	case ValueBase::TYPE_INTEGER:
-	{
-		Real ret = (*m_)(t).get(int())*t+(*b_)(t).get(int()) + 0.5f;
-		if (ret < 0) return static_cast<int>(ret-1);
-		return static_cast<int>(ret);
-	}
+		return round_to_int((*m_)(t).get(int())*t+(*b_)(t).get(int()));
 	case ValueBase::TYPE_REAL:
 		return (*m_)(t).get(  Real())*t+(*b_)(t).get(  Real());
 	case ValueBase::TYPE_TIME:

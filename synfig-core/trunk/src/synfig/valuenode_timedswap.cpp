@@ -35,6 +35,7 @@
 #include "valuenode_const.h"
 #include <stdexcept>
 #include "color.h"
+#include <ETL/misc>
 
 #endif
 
@@ -220,7 +221,7 @@ synfig::ValueNode_TimedSwap::operator()(Time t)const
 			{
 				float a=(float)(*after)(t).get(int());
 				float b=(float)(*before)(t).get(int());
-				return static_cast<int>((b-a)*amount+a+0.5f);
+				return round_to_int((b-a)*amount+a);
 			}
 		case ValueBase::TYPE_REAL:
 			{

@@ -39,6 +39,7 @@
 #include "vector.h"
 #include "time.h"
 #include "angle.h"
+#include <ETL/misc>
 
 #endif
 
@@ -176,11 +177,7 @@ synfig::ValueNode_Scale::operator()(Time t)const
 		return ret;
 	}
 	else if(get_type()==ValueBase::TYPE_INTEGER)
-	{
-		Real ret = (*value_node)(t).get(int())*(*scalar)(t).get(Real()) + 0.5f;
-		if (ret < 0) return static_cast<int>(ret-1);
-		return static_cast<int>(ret);
-	}
+		return round_to_int((*value_node)(t).get(int())*(*scalar)(t).get(Real()));
 	else if(get_type()==ValueBase::TYPE_REAL)
 		return (*value_node)(t).get(Real())*(*scalar)(t).get(Real());
 	else if(get_type()==ValueBase::TYPE_TIME)
