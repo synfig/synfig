@@ -42,7 +42,8 @@
 
 /* === M A C R O S ========================================================= */
 
-#define SINGLE_THREADED
+// uncomment to use a single thread, and hopefully get more stability
+// #define SINGLE_THREADED
 
 /* === T Y P E D E F S ===================================================== */
 
