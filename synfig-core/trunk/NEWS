@@ -1,6 +1,6 @@
               synfig releases
 
- 0.61.07 (SVN ???) - October ??, 2007 - Bug fixes
+ 0.61.07 (SVN 878) - October 10, 2007 - Bug fixes
 
   * Fix importing on amd64 (#1692825)
   * Fixes for the PasteCanvas layer (#1356449)
