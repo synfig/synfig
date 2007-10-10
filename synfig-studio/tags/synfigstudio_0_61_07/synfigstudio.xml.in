@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mime-info xmlns="http://www.freedesktop.org/standards/shared-mime-info">
+  <mime-type type="image/sif"><comment>Synfig Animation File</comment>
+  <glob pattern="*.sif"/></mime-type>
+</mime-info> 
