@@ -359,7 +359,9 @@ Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quali
 
 		Surface pastesurface;
 
-		if(area.area()<=0.000001 || desc.get_w()==0 || desc.get_h()==0)
+		// \todo this used to also have "area.area()<=0.000001 || " - is it useful?
+		//		 it was causing bug #1809480 (Zoom in beyond 8.75 in nested canvases fails)
+		if(desc.get_w()==0 || desc.get_h()==0)
 		{
 			if(cb && !cb->amount_complete(10000,10000)) return false;
 
