@@ -88,9 +88,7 @@ public:
 		}
 	};
 	std::list<tile_t> tile_queue;
-#ifndef SINGLE_THREADED
 	Glib::Mutex mutex;
-#endif // SINGLE_THREADED
 
 #ifndef GLIB_DISPATCHER_BROKEN
 	Glib::Dispatcher tile_ready_signal;
@@ -125,9 +123,8 @@ public:
 	}
 	void set_dead()
 	{
-#ifndef SINGLE_THREADED
-		Glib::Mutex::Lock lock(mutex);
-#endif // SINGLE_THREADED
+		Glib::Mutex::Lock lock(mutex, NotLock);
+		if (!single_threaded()) lock.acquire();
 		alive_flag=false;
 	}
 
@@ -163,9 +160,8 @@ public:
 		assert(surface);
 		if(!alive_flag)
 			return false;
-#ifndef SINGLE_THREADED
-		Glib::Mutex::Lock lock(mutex);
-#endif // SINGLE_THREADED
+		Glib::Mutex::Lock lock(mutex, NotLock);
+		if (!single_threaded()) lock.acquire();
 		tile_queue.push_back(tile_t(surface,gx,gy));
 		if(tile_queue.size()==1)
 		{
@@ -187,9 +183,8 @@ public:
 
 	void tile_ready()
 	{
-#ifndef SINGLE_THREADED
-		Glib::Mutex::Lock lock(mutex);
-#endif // SINGLE_THREADED
+		Glib::Mutex::Lock lock(mutex, NotLock);
+		if (!single_threaded()) lock.acquire();
 		if(!alive_flag)
 		{
 			tile_queue.clear();
@@ -209,20 +204,22 @@ public:
 
 	virtual void end_frame()
 	{
-#ifndef SINGLE_THREADED
-		while(alive_flag)
+		if (!single_threaded())
 		{
-			Glib::Mutex::Lock lock(mutex);
-			if(!tile_queue.empty() && alive_flag)
+			while(alive_flag)
 			{
-				if(cond_tile_queue_empty.timed_wait(mutex,Glib::TimeVal(0,BOREDOM_TIMEOUT)))
+				Glib::Mutex::Lock lock(mutex);
+				if(!tile_queue.empty() && alive_flag)
+				{
+					if(cond_tile_queue_empty.timed_wait(mutex,Glib::TimeVal(0,BOREDOM_TIMEOUT)))
+						break;
+				}
+				else
 					break;
 			}
-			else
-				break;
 		}
-		Glib::Mutex::Lock lock(mutex);
-#endif // SINGLE_THREADED
+		Glib::Mutex::Lock lock(mutex, NotLock);
+		if (!single_threaded()) lock.acquire();
 		if(!alive_flag)
 			return;
 		return warm_target->end_frame();
@@ -239,9 +236,7 @@ public:
 	int scanline_;
 	Surface surface;
 
-#ifndef SINGLE_THREADED
 	Glib::Mutex mutex;
-#endif // SINGLE_THREADED
 
 #ifndef GLIB_DISPATCHER_BROKEN
 	Glib::Dispatcher frame_ready_signal;
@@ -284,9 +279,8 @@ public:
 
 	void set_dead()
 	{
-#ifndef SINGLE_THREADED
-		Glib::Mutex::Lock lock(mutex);
-#endif // SINGLE_THREADED
+		Glib::Mutex::Lock lock(mutex, NotLock);
+		if (!single_threaded()) lock.acquire();
 		alive_flag=false;
 	}
 
@@ -298,9 +292,8 @@ public:
 	virtual void end_frame()
 	{
 		{
-#ifndef SINGLE_THREADED
-			Glib::Mutex::Lock lock(mutex);
-#endif // SINGLE_THREADED
+			Glib::Mutex::Lock lock(mutex, NotLock);
+			if (!single_threaded()) lock.acquire();
 
 			if(!alive_flag)
 				return;
@@ -317,24 +310,22 @@ public:
 #else
 			frame_ready_signal();
 #endif
-			}
-
-#ifndef SINGLE_THREADED
-		while(alive_flag && !ready_next)
-		{
-			Glib::Mutex::Lock lock(mutex);
-			if(cond_frame_queue_empty.timed_wait(mutex,Glib::TimeVal(0,BOREDOM_TIMEOUT)))
-				break;
 		}
-#endif // SINGLE_THREADED
+
+		if (!single_threaded())
+			while(alive_flag && !ready_next)
+			{
+				Glib::Mutex::Lock lock(mutex);
+				if(cond_frame_queue_empty.timed_wait(mutex,Glib::TimeVal(0,BOREDOM_TIMEOUT)))
+					break;
+			}
 	}
 
 
 	virtual Color * start_scanline(int scanline)
 	{
-#ifndef SINGLE_THREADED
-		Glib::Mutex::Lock lock(mutex);
-#endif // SINGLE_THREADED
+		Glib::Mutex::Lock lock(mutex, NotLock);
+		if (!single_threaded()) lock.acquire();
 
 		return surface[scanline];
 	}
@@ -346,12 +337,11 @@ public:
 
 	void frame_ready()
 	{
-#ifndef SINGLE_THREADED
-		Glib::Mutex::Lock lock(mutex);
-#endif // SINGLE_THREADED
+		Glib::Mutex::Lock lock(mutex, NotLock);
+		if (!single_threaded()) lock.acquire();
 		if(alive_flag)
 			alive_flag=warm_target->add_frame(&surface);
-		cond_frame_queue_empty.signal();
+		if (!single_threaded()) cond_frame_queue_empty.signal();
 		ready_next=true;
 	}
 };
@@ -365,10 +355,8 @@ public:
 AsyncRenderer::AsyncRenderer(etl::handle<synfig::Target> target_,synfig::ProgressCallback *cb):
 	error(false),
 	success(false),
-	cb(cb)
-#ifdef SINGLE_THREADED
-	, updating(false)
-#endif // SINGLE_THREADED
+	cb(cb),
+	updating(false)
 {
 	render_thread=0;
 	if(etl::handle<synfig::Target_Tile>::cast_dynamic(target_))
@@ -405,19 +393,16 @@ AsyncRenderer::stop()
 {
 	if(target)
 	{
-#ifndef SINGLE_THREADED
-		Glib::Mutex::Lock lock(mutex);
-#endif // SINGLE_THREADED
+		Glib::Mutex::Lock lock(mutex, NotLock);
+		if (!single_threaded()) lock.acquire();
 		done_connection.disconnect();
 
 		if(render_thread)
 		{
 			signal_stop_();
 
-#ifndef SINGLE_THREADED
 #if REJOIN_ON_STOP
-			render_thread->join();
-#endif
+			if (!single_threaded()) render_thread->join();
 #endif
 
 			// Make sure all the dispatch crap is cleared out
@@ -456,7 +441,6 @@ AsyncRenderer::start()
 	);
 }
 
-#ifdef SINGLE_THREADED
 void
 AsyncRenderer::rendering_progress()
 {
@@ -464,7 +448,6 @@ AsyncRenderer::rendering_progress()
 	while(studio::App::events_pending()) studio::App::iteration(false);
 	updating = false;
 }
-#endif // SINGLE_THREADED
 
 void
 AsyncRenderer::start_()
@@ -476,22 +459,25 @@ AsyncRenderer::start_()
 		done_connection=signal_done_.connect(mem_fun(*this,&AsyncRenderer::stop));
 #endif
 
-#ifdef SINGLE_THREADED
-		synfig::info("%s:%d rendering in the same thread", __FILE__, __LINE__);
-		target->signal_progress().connect(sigc::mem_fun(this,&AsyncRenderer::rendering_progress));
-		render_thread = (Glib::Thread*)1;
-		render_target();
-#else // SINGLE_THREADED
-		render_thread=Glib::Thread::create(
-			sigc::mem_fun(*this,&AsyncRenderer::render_target),
+		if (single_threaded())
+		{
+			synfig::info("%s:%d rendering in the same thread", __FILE__, __LINE__);
+			target->signal_progress().connect(sigc::mem_fun(this,&AsyncRenderer::rendering_progress));
+			render_thread = (Glib::Thread*)1;
+			render_target();
+		}
+		else
+		{
+			render_thread=Glib::Thread::create(
+				sigc::mem_fun(*this,&AsyncRenderer::render_target),
 #if REJOIN_ON_STOP
-			true
+				true
 #else
-			false
+				false
 #endif
-		);
-		assert(render_thread);
-#endif // SINGLE_THREADED
+				);
+			assert(render_thread);
+		}
 	}
 	else
 	{
@@ -516,9 +502,7 @@ AsyncRenderer::render_target()
 #endif
 	}
 
-#ifndef SINGLE_THREADED
-	if(mutex.trylock())
-#endif // SINGLE_THREADED
+	if (single_threaded() || mutex.trylock())
 	{
 #ifdef GLIB_DISPATCHER_BROKEN
 		done_connection=Glib::signal_timeout().connect(
@@ -531,8 +515,6 @@ AsyncRenderer::render_target()
 #else
 		signal_done_.emit();
 #endif
-#ifndef SINGLE_THREADED
-		mutex.unlock();
-#endif // SINGLE_THREADED
+		if (!single_threaded()) mutex.unlock();
 	}
 }

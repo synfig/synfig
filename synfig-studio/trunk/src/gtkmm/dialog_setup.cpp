@@ -65,7 +65,8 @@ Dialog_Setup::Dialog_Setup():
 	adj_gamma_b(2.2,0.1,3.0,0.025,0.025,0.025),
 	adj_recent_files(15,1,50,1,1,1),
 	adj_undo_depth(100,10,5000,1,1,1),
-	toggle_use_colorspace_gamma(_("Visually Linear Color Selection"))
+	toggle_use_colorspace_gamma(_("Visually Linear Color Selection")),
+	toggle_single_threaded(_("Use Only a Single Thread"))
 {
 	// Setup the buttons
 
@@ -180,6 +181,9 @@ Dialog_Setup::Dialog_Setup():
 	// Misc - use_colorspace_gamma
 	misc_table->attach(toggle_use_colorspace_gamma, 0, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 
+	// Misc - single_threaded
+	misc_table->attach(toggle_single_threaded, 0, 2, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+
 	show_all_children();
 }
 
@@ -206,6 +210,9 @@ Dialog_Setup::on_apply_pressed()
 
 	// Set the use_colorspace_gamma flag
 	App::use_colorspace_gamma=toggle_use_colorspace_gamma.get_active();
+
+	// Set the single_threaded flag
+	App::single_threaded=toggle_single_threaded.get_active();
 
 	App::distance_system=Distance::System(widget_enum->get_value());
 
@@ -281,6 +288,9 @@ Dialog_Setup::refresh()
 
 	// Refresh the status of the use_colorspace_gamma flag
 	toggle_use_colorspace_gamma.set_active(App::use_colorspace_gamma);
+
+	// Refresh the status of the single_threaded flag
+	toggle_single_threaded.set_active(App::single_threaded);
 }
 
 GammaPattern::GammaPattern():

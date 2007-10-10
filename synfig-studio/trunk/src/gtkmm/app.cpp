@@ -253,6 +253,7 @@ studio::Dock_Curves* dock_curves;
 std::list< etl::handle< studio::Module > > module_list_;
 
 bool studio::App::use_colorspace_gamma=true;
+bool studio::App::single_threaded=true;
 
 static int max_recent_files_=25;
 int studio::App::get_max_recent_files() { return max_recent_files_; }
@@ -601,6 +602,11 @@ public:
 			value=strprintf("%s",Distance::system_name(App::distance_system).c_str());
 			return true;
 		}
+		if(key=="single_threaded")
+		{
+			value=strprintf("%i",(int)App::single_threaded);
+			return true;
+		}
 		if(key=="auto_recover_backup_interval")
 		{
 			value=strprintf("%i",App::auto_recover->get_timeout());
@@ -656,6 +662,12 @@ public:
 			App::distance_system=Distance::ident_system(value);;
 			return true;
 		}
+		if(key=="single_threaded")
+		{
+			int i(atoi(value.c_str()));
+			App::single_threaded=i;
+			return true;
+		}
 
 		return synfigapp::Settings::set_value(key,value);
 	}
@@ -668,6 +680,7 @@ public:
 		ret.push_back("distance_system");
 		ret.push_back("file_history.size");
 		ret.push_back("use_colorspace_gamma");
+		ret.push_back("single_threaded");
 		ret.push_back("auto_recover_backup_interval");
 		return ret;
 	}
@@ -1546,6 +1559,7 @@ App::reset_initial_window_configuration()
 	synfigapp::Main::settings().set_value("dock.dialog.2.size","1045 235");
 	synfigapp::Main::settings().set_value("pref.distance_system","pt");
 	synfigapp::Main::settings().set_value("pref.use_colorspace_gamma","1");
+	synfigapp::Main::settings().set_value("pref.single_threaded","0");
 	synfigapp::Main::settings().set_value("window.toolbox.pos","4 4");
 }
 

@@ -162,6 +162,7 @@ class Dialog_Setup : public Gtk::Dialog
 	Gtk::Adjustment adj_undo_depth;
 
 	Gtk::CheckButton toggle_use_colorspace_gamma;
+	Gtk::CheckButton toggle_single_threaded;
 
 	synfig::Time::Format time_format;
 

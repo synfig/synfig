@@ -2174,13 +2174,11 @@ public:
 bool
 studio::WorkArea::async_update_preview()
 {
-#ifdef SINGLE_THREADED
-	if (async_renderer && async_renderer->updating == true)
+	if (single_threaded() && async_renderer && async_renderer->updating == true)
 	{
 		async_renderer->stop();
 		return false;
 	}
-#endif // SINGLE_THREADED
 
 	async_renderer=0;
 

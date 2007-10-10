@@ -42,8 +42,8 @@
 
 /* === M A C R O S ========================================================= */
 
-// uncomment to use a single thread, and hopefully get more stability
-// #define SINGLE_THREADED
+#define single_threaded()	App::single_threaded
+#define NotLock Glib::NOT_LOCK
 
 /* === T Y P E D E F S ===================================================== */
 
@@ -86,12 +86,12 @@ public:
 	void stop();
 	void pause();
 	void resume();
+	void rendering_progress();
 
 	bool has_error()const { return error; }
 	bool has_success()const { return success; }
-#ifdef SINGLE_THREADED
+
 	bool updating;
-#endif // SINGLE_THREADED
 
 	sigc::signal<void>& signal_finished() { return signal_finished_; }
 	sigc::signal<void>& signal_success() { return signal_success_; }
@@ -100,7 +100,6 @@ private:
 
 	void render_target();
 	void start_();
-	void rendering_progress();
 
 	/*
  --	** -- C H I L D   M E M B E R S -------------------------------------------

@@ -184,6 +184,8 @@ public:
 
 	static bool use_colorspace_gamma;
 
+	static bool single_threaded;
+
 	/*
  -- ** -- S I G N A L S -------------------------------------------------------
 	*/
