@@ -167,8 +167,8 @@ void studio::Widget_NavView::on_start_render()
 
 		renderer = new AsyncRenderer(targ);
 		renderer->signal_success().connect(sigc::mem_fun(*this,&Widget_NavView::on_finish_render));
-		renderer->start();
 		dirty = false;
+		renderer->start();
 	}
 }
 
