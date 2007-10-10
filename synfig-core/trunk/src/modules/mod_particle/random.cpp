@@ -38,6 +38,8 @@
 
 /* === M A C R O S ========================================================= */
 
+#define PI	(3.1415927)
+
 /* === G L O B A L S ======================================================= */
 
 /* === P R O C E D U R E S ================================================= */
@@ -224,8 +226,8 @@ Random::operator()(SmoothType smooth,int subseed,float xf,float yf,float tf)cons
 		int y((int)floor(yf));
 		float a=xf-x;
 		float b=yf-y;
-		a=(1.0f-cos(a*3.1415927))*0.5f;
-		b=(1.0f-cos(b*3.1415927))*0.5f;
+		a=(1.0f-cos(a*PI))*0.5f;
+		b=(1.0f-cos(b*PI))*0.5f;
 		float c=1.0-a;
 		float d=1.0-b;
 		int x2=x+1,y2=y+1;
@@ -241,12 +243,12 @@ Random::operator()(SmoothType smooth,int subseed,float xf,float yf,float tf)cons
 		float b=yf-y;
 		float c=tf-t;
 
-		a=(1.0f-cos(a*3.1415927))*0.5f;
-		b=(1.0f-cos(b*3.1415927))*0.5f;
+		a=(1.0f-cos(a*PI))*0.5f;
+		b=(1.0f-cos(b*PI))*0.5f;
 
 		// We don't perform this on the time axis, otherwise we won't
 		// get smooth motion
-		//c=(1.0f-cos(c*3.1415927))*0.5f;
+		//c=(1.0f-cos(c*PI))*0.5f;
 
 		float d=1.0-a;
 		float e=1.0-b;
