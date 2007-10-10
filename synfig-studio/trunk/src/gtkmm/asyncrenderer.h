@@ -42,6 +42,8 @@
 
 /* === M A C R O S ========================================================= */
 
+#define SINGLE_THREADED
+
 /* === T Y P E D E F S ===================================================== */
 
 /* === C L A S S E S & S T R U C T S ======================================= */
@@ -86,6 +88,9 @@ public:
 
 	bool has_error()const { return error; }
 	bool has_success()const { return success; }
+#ifdef SINGLE_THREADED
+	bool updating;
+#endif // SINGLE_THREADED
 
 	sigc::signal<void>& signal_finished() { return signal_finished_; }
 	sigc::signal<void>& signal_success() { return signal_success_; }
@@ -94,6 +99,7 @@ private:
 
 	void render_target();
 	void start_();
+	void rendering_progress();
 
 	/*
  --	** -- C H I L D   M E M B E R S -------------------------------------------

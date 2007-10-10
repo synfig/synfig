@@ -276,6 +276,7 @@ synfig::Target_Tile::render_frame_(Context context,ProgressCallback *cb)
 				add_tile_time+=timer();
 			}
 			tile_timer.reset();
+			signal_progress()();
 		}
 	}
 	if(cb && !cb->amount_complete(total_tiles,total_tiles))

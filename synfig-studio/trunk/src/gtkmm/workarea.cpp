@@ -2174,6 +2174,12 @@ public:
 bool
 studio::WorkArea::async_update_preview()
 {
+	if (async_renderer && async_renderer->updating == true)
+	{
+		async_renderer->stop();
+		return false;
+	}
+
 	async_renderer=0;
 
 	queued=false;

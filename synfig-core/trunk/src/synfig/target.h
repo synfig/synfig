@@ -27,6 +27,7 @@
 
 /* === H E A D E R S ======================================================= */
 
+#include <sigc++/signal.h>
 #include "string_decl.h"
 #include <utility>
 //#include <list>
@@ -79,6 +80,27 @@ public:
 	typedef etl::loose_handle<Target> LooseHandle;
 	typedef etl::handle<const Target> ConstHandle;
 
+	/*
+ -- ** -- S I G N A L S -------------------------------------------------------
+	*/
+
+private:
+
+	sigc::signal<void> signal_progress_;
+
+	/*
+ -- ** -- S I G N A L   I N T E R F A C E -------------------------------------
+	*/
+
+public:
+
+	sigc::signal<void>& signal_progress() { return signal_progress_; }
+
+	/*
+ --	** -- C O N S T R U C T O R S ---------------------------------------------
+	*/
+
+public:
 	typedef Target* (*Factory)(const char *filename);
 
 	//! A type for a map of targets, indexed by the name of the Target
