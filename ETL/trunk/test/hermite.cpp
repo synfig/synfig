@@ -25,6 +25,7 @@
 #include <ETL/angle>
 #include <ETL/clock>
 #include <ETL/calculus>
+#include <ETL/fixed>
 #include <stdio.h>
 
 /* === M A C R O S ========================================================= */
