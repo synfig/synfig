@@ -98,7 +98,7 @@ Noise::color_func(const Point &point, float pixel_size,Context /*context*/)const
 	time=speed*curr_time;
 	Random::SmoothType smooth((!speed && Noise::smooth == Random::SMOOTH_SPLINE) ? Random::SMOOTH_FAST_SPLINE : Noise::smooth);
 
-	float t(time);
+	float ftime(time);
 
 	{
 		float amount=0.0f;
@@ -107,15 +107,15 @@ Noise::color_func(const Point &point, float pixel_size,Context /*context*/)const
 		float alpha=0.0f;
 		for(i=0;i<detail;i++)
 		{
-			amount=random(smooth,0+(detail-i)*5,x,y,t)+amount*0.5;
+			amount=random(smooth,0+(detail-i)*5,x,y,ftime)+amount*0.5;
 			if(amount<-1)amount=-1;if(amount>1)amount=1;
 
 			if(super_sample&&pixel_size)
 			{
-				amount2=random(smooth,0+(detail-i)*5,x2,y,t)+amount2*0.5;
+				amount2=random(smooth,0+(detail-i)*5,x2,y,ftime)+amount2*0.5;
 				if(amount2<-1)amount2=-1;if(amount2>1)amount2=1;
 
-				amount3=random(smooth,0+(detail-i)*5,x,y2,t)+amount3*0.5;
+				amount3=random(smooth,0+(detail-i)*5,x,y2,ftime)+amount3*0.5;
 				if(amount3<-1)amount3=-1;if(amount3>1)amount3=1;
 
 				if(turbulent)
@@ -130,7 +130,7 @@ Noise::color_func(const Point &point, float pixel_size,Context /*context*/)const
 
 			if(do_alpha)
 			{
-				alpha=random(smooth,3+(detail-i)*5,x,y,t)+alpha*0.5;
+				alpha=random(smooth,3+(detail-i)*5,x,y,ftime)+alpha*0.5;
 				if(alpha<-1)alpha=-1;if(alpha>1)alpha=1;
 			}
 
@@ -142,7 +142,7 @@ Noise::color_func(const Point &point, float pixel_size,Context /*context*/)const
 
 			x*=0.5f;
 			y*=0.5f;
-			//t*=0.5f;
+			//ftime*=0.5f;
 		}
 
 		if(!turbulent)
