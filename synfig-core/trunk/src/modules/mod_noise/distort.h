@@ -49,7 +49,7 @@ private:
 	synfig::Vector size;
 
 	Random random;
-	int smooth;
+	Random::SmoothType smooth;
 	int detail;
 	synfig::Real speed;
 	bool turbulent;

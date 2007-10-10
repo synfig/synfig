@@ -50,7 +50,7 @@ private:
 	synfig::Vector size;
 
 	Random random;
-	int smooth;
+	Random::SmoothType smooth;
 	int detail;
 	bool do_alpha;
 	synfig::Gradient gradient;

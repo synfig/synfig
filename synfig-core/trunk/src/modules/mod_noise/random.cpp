@@ -71,7 +71,7 @@ Random::operator()(const int salt,const int x,const int y,const int t)const
 }
 
 float
-Random::operator()(int smooth,int subseed,float xf,float yf,float tf)const
+Random::operator()(SmoothType smooth,int subseed,float xf,float yf,float tf)const
 {
 	int x((int)floor(xf));
 	int y((int)floor(yf));
@@ -79,10 +79,11 @@ Random::operator()(int smooth,int subseed,float xf,float yf,float tf)const
 
 	switch(smooth)
 	{
-	case 4:	// cubic
+	case SMOOTH_CUBIC:	// cubic
 		{
 			#define f(j,i,k)	((*this)(subseed,i,j,k))
 			//Using catmull rom interpolation because it doesn't blur at all
+			// ( http://www.gamedev.net/reference/articles/article1497.asp )
 			//bezier curve with intermediate ctrl pts: 0.5/3(p(i+1) - p(i-1)) and similar
 			float xfa [4], tfa[4];
 
@@ -139,7 +140,7 @@ Random::operator()(int smooth,int subseed,float xf,float yf,float tf)const
 		break;
 
 
-	case 5:	// Fast Spline (non-animated)
+	case SMOOTH_FAST_SPLINE:	// Fast Spline (non-animated)
 		{
 #define P(x)	(((x)>0)?((x)*(x)*(x)):0.0f)
 #define R(x)	( P(x+2) - 4.0f*P(x+1) + 6.0f*P(x) - 4.0f*P(x-1) )*(1.0f/6.0f)
@@ -162,7 +163,7 @@ Random::operator()(int smooth,int subseed,float xf,float yf,float tf)const
 		return ret;
 	}
 
-	case 3:	// Spline (animated)
+	case SMOOTH_SPLINE:	// Spline (animated)
 		{
 			float a(xf-x), b(yf-y), c(tf-t);
 
@@ -212,7 +213,7 @@ Random::operator()(int smooth,int subseed,float xf,float yf,float tf)const
 #undef P
 #undef R
 
-	case 2:	// Cosine
+	case SMOOTH_COSINE:
 	if((float)t==tf)
 	{
 		int x((int)floor(xf));
@@ -236,12 +237,12 @@ Random::operator()(int smooth,int subseed,float xf,float yf,float tf)const
 		float b=yf-y;
 		float c=tf-t;
 
-		a=(1.0f-cos(a*3.1415927))*0.5f;
-		b=(1.0f-cos(b*3.1415927))*0.5f;
+		a=(1.0f-cos(a*PI))*0.5f;
+		b=(1.0f-cos(b*PI))*0.5f;
 
 		// We don't perform this on the time axis, otherwise we won't
 		// get smooth motion
-		//c=(1.0f-cos(c*3.1415927))*0.5f;
+		//c=(1.0f-cos(c*PI))*0.5f;
 
 		float d=1.0-a;
 		float e=1.0-b;
@@ -259,7 +260,7 @@ Random::operator()(int smooth,int subseed,float xf,float yf,float tf)const
 			(*this)(subseed,x,y2,t2)*(d*b*c)+
 			(*this)(subseed,x2,y2,t2)*(a*b*c);
 	}
-	case 1: // Linear
+	case SMOOTH_LINEAR:
 	if((float)t==tf)
 	{
 		int x((int)floor(xf));
@@ -299,7 +300,7 @@ Random::operator()(int smooth,int subseed,float xf,float yf,float tf)const
 			(*this)(subseed,x2,y2,t2)*(a*b*c);
 	}
 	default:
-	case 0:
+	case SMOOTH_DEFAULT:
 		return (*this)(subseed,x,y,t);
 	}
 }

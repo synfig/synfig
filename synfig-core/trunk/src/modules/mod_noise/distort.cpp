@@ -66,7 +66,7 @@ NoiseDistort::NoiseDistort():
 	size(1,1)
 {
 	set_blend_method(Color::BLEND_STRAIGHT);
-	smooth=2;
+	smooth=Random::SMOOTH_COSINE;
 	detail=4;
 	speed=0;
 	random.set_seed(time(NULL));
@@ -85,8 +85,8 @@ NoiseDistort::color_func(const Point &point, float /*supersample*/,Context conte
 	int i;
 	Time time;
 	time=speed*curr_time;
-	int temp_smooth(smooth);
-	int smooth((!speed && temp_smooth==3)?5:temp_smooth);
+	Random::SmoothType temp_smooth(smooth);
+	Random::SmoothType smooth((!speed && temp_smooth == Random::SMOOTH_SPLINE) ? Random::SMOOTH_FAST_SPLINE : temp_smooth);
 
 	{
 		Vector vect(0,0);
@@ -207,11 +207,11 @@ NoiseDistort::get_param_vocab()const
 		.set_local_name(_("Interpolation"))
 		.set_description(_("What type of interpolation to use"))
 		.set_hint("enum")
-		.add_enum_value(0,"nearest",_("Nearest Neighbor"))
-		.add_enum_value(1,"linear",_("Linear"))
-		.add_enum_value(2,"cosine",_("Cosine"))
-		.add_enum_value(3,"spline",_("Spline"))
-		.add_enum_value(4,"cubic",_("Cubic"))
+		.add_enum_value(Random::SMOOTH_DEFAULT,	"nearest",	_("Nearest Neighbor"))
+		.add_enum_value(Random::SMOOTH_LINEAR,	"linear",	_("Linear"))
+		.add_enum_value(Random::SMOOTH_COSINE,	"cosine",	_("Cosine"))
+		.add_enum_value(Random::SMOOTH_SPLINE,	"spline",	_("Spline"))
+		.add_enum_value(Random::SMOOTH_CUBIC,	"cubic",	_("Cubic"))
 	);
 	ret.push_back(ParamDesc("detail")
 		.set_local_name(_("Detail"))
