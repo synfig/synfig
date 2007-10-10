@@ -31,7 +31,8 @@
 /* === H E A D E R S ======================================================= */
 
 #include "_curve_func.h"
-#include <ETL/fixed>
+#include <cmath>				// for ldexp
+// #include <ETL/fixed>			// not used
 
 /* === M A C R O S ========================================================= */
 
