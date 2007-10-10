@@ -33,6 +33,10 @@
 
 /* === M A C R O S ========================================================= */
 
+// the "+0.5" code was commented out - maybe to make thing run faster?
+// it can be re-enabled by uncommenting this next line:
+// #define ROUND_TO_NEAREST_INTEGER
+
 #ifndef ETL_FIXED_TYPE
 # define ETL_FIXED_TYPE	int
 #endif
@@ -177,16 +181,25 @@ fixed_base<T,FIXED_BITS>::fixed_base(const _fixed &x):_data(x._data)
 {}
 
 template <class T,unsigned int FIXED_BITS>
-fixed_base<T,FIXED_BITS>::fixed_base(const float &f):_data(static_cast<value_type>(f*_ONE()/*+0.5f*/))
-{}
+fixed_base<T,FIXED_BITS>::fixed_base(const float &f):_data(static_cast<value_type>(f*_ONE()
+#ifdef ROUND_TO_NEAREST_INTEGER
+																				   +0.5f
+#endif
+									)) {}
 
 template <class T,unsigned int FIXED_BITS>
-fixed_base<T,FIXED_BITS>::fixed_base(const double &f):_data(static_cast<value_type>(f*_ONE()/*+0.5*/))
-{}
+fixed_base<T,FIXED_BITS>::fixed_base(const double &f):_data(static_cast<value_type>(f*_ONE()
+#ifdef ROUND_TO_NEAREST_INTEGER
+																					+0.5
+#endif
+									)) {}
 
 template <class T,unsigned int FIXED_BITS>
-fixed_base<T,FIXED_BITS>::fixed_base(const long double &f):_data(static_cast<value_type>(f*_ONE()/*+0.5*/))
-{}
+fixed_base<T,FIXED_BITS>::fixed_base(const long double &f):_data(static_cast<value_type>(f*_ONE()
+#ifdef ROUND_TO_NEAREST_INTEGER
+																						 +0.5
+#endif
+									)) {}
 
 template <class T,unsigned int FIXED_BITS>
 fixed_base<T,FIXED_BITS>::fixed_base(const int &i):_data(i<<FIXED_BITS)
