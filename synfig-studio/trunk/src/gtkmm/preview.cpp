@@ -256,7 +256,7 @@ void studio::Preview::frame_finish(const Preview_Target *targ)
 	if(!buffer)
 		return;
 
-	//convert all the pixles to the pixbuf... buffer... thing...
+	//convert all the pixels to the pixbuf... buffer... thing...
 	//synfig::warning("Converting...");
 	convert_color_format(buffer, surf[0], surf.get_w()*surf.get_h(), pf, App::gamma);
 
