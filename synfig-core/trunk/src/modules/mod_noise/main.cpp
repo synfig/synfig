@@ -41,6 +41,7 @@
 #include "noise.h"
 #include "distort.h"
 #include "random.h"
+#include "valuenode_random.h"
 
 #endif
 
@@ -59,4 +60,8 @@ MODULE_INVENTORY_BEGIN(libmod_noise)
 		LAYER(Noise)
 		LAYER(NoiseDistort)
 	END_LAYERS
+
+	BEGIN_VALUENODES
+		VALUENODE(synfig::ValueNode_Random, "random", _("Random"))
+	END_VALUENODES
 MODULE_INVENTORY_END
