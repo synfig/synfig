@@ -1103,7 +1103,10 @@ App::App(int *argc, char ***argv):
 
 	gdk_rgb_init();
 
-	Glib::thread_init();
+	// don't call thread_init() if threads are already initialised
+	// on some machines bonobo_init() initialised threads before we get here
+	if (!g_thread_supported())
+		Glib::thread_init();
 
 	distance_system=Distance::SYSTEM_UNITS;
 
