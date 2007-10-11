@@ -89,9 +89,7 @@ Random::operator()(SmoothType smooth,int subseed,float xf,float yf,float tf)cons
 
 			//precalculate indices (all clamped) and offset
 			const int xa[] = {x-1,x,x+1,x+2};
-
 			const int ya[] = {y-1,y,y+1,y+2};
-
 			const int ta[] = {t-1,t,t+1,t+2};
 
 			const float dx(xf-x);
