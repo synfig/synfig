@@ -306,7 +306,9 @@ public:
 #endif
 		}
 
-		if (!single_threaded())
+		if (single_threaded())
+			signal_progress()();
+		else
 			while(alive_flag && !ready_next)
 			{
 				Glib::Mutex::Lock lock(mutex);
