@@ -75,16 +75,16 @@ inline int round_to_int(const float x) {
 	/*!	\fixme Isn't there some x86 FPU instruction for quickly
 	**	converting a float to a rounded integer? It's worth
 	**	looking into at some point... */
-	// return static_cast<int>(x+0.5f);		// <-- (a) fast, but rounds -1.333 to 0!
-	// return static_cast<int>(rintf(x));	// <-- (b) slow, but correct
-    if (x>=0) return (int) (x + 0.5);		// <-- slower than (a), but correct, and faster than (b)
-    else      return (int) (x - 0.5);
+	// return static_cast<int>(x+0.5f);			// <-- (a) fast, but rounds -1.333 to 0!
+	// return static_cast<int>(rintf(x));		// <-- (b) slow, but correct
+    if (x>=0) return static_cast<int>(x + 0.5);	// <-- slower than (a), but correct, and faster than (b)
+    else      return static_cast<int>(x - 0.5);
 }
 inline int round_to_int(const double x) {
 	// return static_cast<int>(x+0.5);
 	// return static_cast<int>(rint(x));
-	if (x>=0) return (int) (x + 0.5);
-    else      return (int) (x - 0.5);
+	if (x>=0) return static_cast<int>(x + 0.5);
+    else      return static_cast<int>(x - 0.5);
 }
 
 inline int ceil_to_int(const float x) { return static_cast<int>(ceil(x)); }
