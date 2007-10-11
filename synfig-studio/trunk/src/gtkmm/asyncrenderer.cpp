@@ -123,8 +123,7 @@ public:
 	}
 	void set_dead()
 	{
-		Glib::Mutex::Lock lock(mutex, NotLock);
-		if (!single_threaded()) lock.acquire();
+		Glib::Mutex::Lock lock(mutex);
 		alive_flag=false;
 	}
 
@@ -160,8 +159,7 @@ public:
 		assert(surface);
 		if(!alive_flag)
 			return false;
-		Glib::Mutex::Lock lock(mutex, NotLock);
-		if (!single_threaded()) lock.acquire();
+		Glib::Mutex::Lock lock(mutex);
 		tile_queue.push_back(tile_t(surface,gx,gy));
 		if(tile_queue.size()==1)
 		{
@@ -183,8 +181,7 @@ public:
 
 	void tile_ready()
 	{
-		Glib::Mutex::Lock lock(mutex, NotLock);
-		if (!single_threaded()) lock.acquire();
+		Glib::Mutex::Lock lock(mutex);
 		if(!alive_flag)
 		{
 			tile_queue.clear();
@@ -218,8 +215,7 @@ public:
 					break;
 			}
 		}
-		Glib::Mutex::Lock lock(mutex, NotLock);
-		if (!single_threaded()) lock.acquire();
+		Glib::Mutex::Lock lock(mutex);
 		if(!alive_flag)
 			return;
 		return warm_target->end_frame();
@@ -279,8 +275,7 @@ public:
 
 	void set_dead()
 	{
-		Glib::Mutex::Lock lock(mutex, NotLock);
-		if (!single_threaded()) lock.acquire();
+		Glib::Mutex::Lock lock(mutex);
 		alive_flag=false;
 	}
 
@@ -292,8 +287,7 @@ public:
 	virtual void end_frame()
 	{
 		{
-			Glib::Mutex::Lock lock(mutex, NotLock);
-			if (!single_threaded()) lock.acquire();
+			Glib::Mutex::Lock lock(mutex);
 
 			if(!alive_flag)
 				return;
@@ -324,8 +318,7 @@ public:
 
 	virtual Color * start_scanline(int scanline)
 	{
-		Glib::Mutex::Lock lock(mutex, NotLock);
-		if (!single_threaded()) lock.acquire();
+		Glib::Mutex::Lock lock(mutex);
 
 		return surface[scanline];
 	}
@@ -337,8 +330,7 @@ public:
 
 	void frame_ready()
 	{
-		Glib::Mutex::Lock lock(mutex, NotLock);
-		if (!single_threaded()) lock.acquire();
+		Glib::Mutex::Lock lock(mutex);
 		if(alive_flag)
 			alive_flag=warm_target->add_frame(&surface);
 		if (!single_threaded()) cond_frame_queue_empty.signal();
@@ -393,8 +385,7 @@ AsyncRenderer::stop()
 {
 	if(target)
 	{
-		Glib::Mutex::Lock lock(mutex, NotLock);
-		if (!single_threaded()) lock.acquire();
+		Glib::Mutex::Lock lock(mutex);
 		done_connection.disconnect();
 
 		if(render_thread)
@@ -502,7 +493,7 @@ AsyncRenderer::render_target()
 #endif
 	}
 
-	if (single_threaded() || mutex.trylock())
+	if(mutex.trylock())
 	{
 #ifdef GLIB_DISPATCHER_BROKEN
 		done_connection=Glib::signal_timeout().connect(
@@ -515,6 +506,6 @@ AsyncRenderer::render_target()
 #else
 		signal_done_.emit();
 #endif
-		if (!single_threaded()) mutex.unlock();
+		mutex.unlock();
 	}
 }
