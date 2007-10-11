@@ -60,7 +60,7 @@ ValueNode_Random::ValueNode_Random(const ValueBase &value):
 	set_link("radius",ValueNode_Const::create(Real(1)));
 	set_link("seed",ValueNode_Const::create(random.get_seed()));
 	set_link("speed",ValueNode_Const::create(Real(1)));
-	set_link("smooth",ValueNode_Const::create(int(0)));
+	set_link("smooth",ValueNode_Const::create(int(Random::SMOOTH_CUBIC)));
 
 	switch(get_type())
 	{
