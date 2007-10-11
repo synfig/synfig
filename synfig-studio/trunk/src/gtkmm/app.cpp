@@ -253,7 +253,7 @@ studio::Dock_Curves* dock_curves;
 std::list< etl::handle< studio::Module > > module_list_;
 
 bool studio::App::use_colorspace_gamma=true;
-bool studio::App::single_threaded=true;
+bool studio::App::single_threaded=false;
 
 static int max_recent_files_=25;
 int studio::App::get_max_recent_files() { return max_recent_files_; }
