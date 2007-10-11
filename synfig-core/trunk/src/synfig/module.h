@@ -99,7 +99,11 @@
 //! Marks the start of the targets in the module's inventory
 #define BEGIN_TARGETS {
 
-#define TARGET(x) synfig::Target::book()[synfig::String(x::name__)]=std::pair<synfig::Target::Factory,synfig::String>(x::create,synfig::String(x::ext__));synfig::Target::ext_book()[synfig::String(x::ext__)]=x::name__;
+#define TARGET(x)																				\
+	synfig::Target::book()[synfig::String(x::name__)]=											\
+		std::pair<synfig::Target::Factory,synfig::String>										\
+			(x::create,synfig::String(x::ext__));												\
+	synfig::Target::ext_book()[synfig::String(x::ext__)]=x::name__;
 
 #define TARGET_EXT(x,y) synfig::Target::ext_book()[synfig::String(y)]=x::name__;
 
@@ -115,6 +119,17 @@
 
 //! Marks the end of the importers in the module's inventory
 #define END_IMPORTERS }
+
+//! Marks the start of the valuenodes in the module's inventory
+#define BEGIN_VALUENODES { synfig::LinkableValueNode::Book &book(synfig::LinkableValueNode::book());
+
+#define VALUENODE(class,name,local)																\
+	book[name].factory=reinterpret_cast<synfig::LinkableValueNode::Factory>(&class::create);	\
+	book[name].check_type=&class::check_type;													\
+	book[name].local_name=local;
+
+//! Marks the end of the valuenodes in the module's inventory
+#define END_VALUENODES }
 
 //! Marks the end of a module's inventory
 #define MODULE_INVENTORY_END	}
