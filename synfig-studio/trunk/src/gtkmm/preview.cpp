@@ -859,9 +859,10 @@ void studio::Widget_Preview::repreview()
 void studio::Widget_Preview::stoprender()
 {
 	if(preview)
-	{
-		preview->renderer.detach();
-	}
+		if (preview->renderer->updating)
+			preview->renderer->stop();
+		else
+			preview->renderer.detach();
 }
 
 void studio::Widget_Preview::eraseall()
