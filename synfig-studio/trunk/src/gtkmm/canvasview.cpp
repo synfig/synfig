@@ -1942,7 +1942,16 @@ CanvasView::refresh_rend_desc()
 bool
 CanvasView::close()
 {
-	get_instance()->safe_close();
+	if (get_work_area()->get_updating())
+	{
+		get_work_area()->stop_updating(true); // stop and mark as cancelled
+
+		// give the workarea chances to stop updating
+		Glib::signal_timeout().connect(sigc::mem_fun(*this, &CanvasView::close_instance_when_safe) ,250);
+		return false;
+	}
+
+	close_instance_when_safe();
 	return false;
 }
 
@@ -3547,16 +3556,7 @@ CanvasView::close_instance_when_safe()
 bool
 CanvasView::on_delete_event(GdkEventAny* event)
 {
-	if (get_work_area()->get_updating())
-	{
-		get_work_area()->stop_updating(true); // stop and mark as cancelled
-
-		// give the workarea chances to stop updating
-		Glib::signal_timeout().connect(sigc::mem_fun(*this, &CanvasView::close_instance_when_safe) ,250);
-		return true;
-	}
-
-	close_instance_when_safe();
+	close();
 
 	//! \todo This causes the window to be deleted straight away - but what if we prompt 'save?' and the user cancels?
 	//		  Is there ever any need to pass on the delete event to the window here?
