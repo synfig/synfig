@@ -1969,15 +1969,14 @@ CanvasView::update_title()
 {
 	string title;
 
+	if(get_instance()->synfigapp::Instance::get_action_count())
+		title="*";
 	title+=etl::basename(get_instance()->get_file_name())
 		+" : ";
 	if(get_canvas()->get_name().empty())
 		title+='"'+get_canvas()->get_id()+'"';
 	else
 		title+='"'+get_canvas()->get_name()+'"';
-
-	if(get_instance()->synfigapp::Instance::get_action_count())
-		title+=_(" (Unsaved)");
 
 	if(get_instance()->synfigapp::Instance::in_repository())
 	{
