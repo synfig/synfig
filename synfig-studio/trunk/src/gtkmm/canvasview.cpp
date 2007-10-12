@@ -3539,8 +3539,10 @@ CanvasView::on_delete_event(GdkEventAny* event)
 			,250
 		);
 	}
-	if(event)
-		return Gtk::Window::on_delete_event(event);
+
+	//! \todo This causes the window to be deleted straight away - but what if we prompt 'save?' and the user cancels?
+	//		  Is there ever any need to pass on the delete event to the window here?
+	// if(event) return Gtk::Window::on_delete_event(event);
 
 	return true;
 }
