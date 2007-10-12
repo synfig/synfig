@@ -258,6 +258,11 @@ static double zoom_to_unit(double f)
 
 bool studio::Widget_NavView::on_expose_draw(GdkEventExpose */*exp*/)
 {
+	// don't redraw if the previous redraw is still running single-threaded
+	// or we end up destroying the renderer that's rendering it
+	if (App::single_threaded && renderer && renderer->updating)
+		return false;
+
 	//print out the zoom
 	//HACK kind of...
 	//zoom_print.set_text(strprintf("%.1f%%",100*unit_to_zoom(adj_zoom.get_value())));
