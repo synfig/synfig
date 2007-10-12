@@ -813,7 +813,7 @@ WorkArea::~WorkArea()
 bool
 WorkArea::get_updating()const
 {
-	return App::single_threaded && async_renderer && async_renderer->updating == true;
+	return App::single_threaded && async_renderer && async_renderer->updating;
 }
 
 void
