@@ -678,6 +678,7 @@ private:
 	bool on_audio_scrub();
 
 protected:
+	bool close_instance_when_safe();
 	bool on_delete_event(GdkEventAny* event);
 
 	/*

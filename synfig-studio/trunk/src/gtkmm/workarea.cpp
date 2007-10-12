@@ -810,6 +810,19 @@ WorkArea::~WorkArea()
 		render_idle_func_id=0;
 }
 
+bool
+WorkArea::get_updating()const
+{
+	return App::single_threaded && async_renderer && async_renderer->updating == true;
+}
+
+void
+WorkArea::stop_updating(bool cancel)
+{
+	async_renderer->stop();
+	if (cancel) canceled_=true;
+}
+
 void
 WorkArea::save_meta_data()
 {
@@ -2174,9 +2187,9 @@ public:
 bool
 studio::WorkArea::async_update_preview()
 {
-	if (single_threaded() && async_renderer && async_renderer->updating == true)
+	if (get_updating())
 	{
-		async_renderer->stop();
+		stop_updating();
 		return false;
 	}
 
