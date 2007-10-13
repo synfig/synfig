@@ -60,6 +60,7 @@
 #include "valuenode_gradientrotate.h"
 #include "valuenode_sine.h"
 #include "valuenode_exp.h"
+#include "valuenode_switch.h"
 
 #include "layer.h"
 
@@ -126,6 +127,7 @@ ValueNode::subsys_init()
 	ADD_VALUENODE(ValueNode_GradientRotate,	"gradient_rotate",	_("Gradient Rotate")	);
 	ADD_VALUENODE(ValueNode_Sine,			"sine",				_("Sine")				);
 	ADD_VALUENODE(ValueNode_Exp,			"exp",				_("Exponential")		);
+	ADD_VALUENODE(ValueNode_Switch,			"switch",			_("Switch")				);
 
 #undef ADD_VALUENODE
 #undef ADD_VALUENODE2
