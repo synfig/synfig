@@ -741,7 +741,8 @@ init_ui_manager()
 	DEFINE_ACTION("dialog-flipbook", _("Preview Dialog"));
 	DEFINE_ACTION("sound", _("Sound File"));
 	DEFINE_ACTION("options", _("Options"));
-	DEFINE_ACTION("close", _("Close"));
+	DEFINE_ACTION("close", _("Close View"));
+	DEFINE_ACTION("close-document", _("Close Document"));
 
 
 	DEFINE_ACTION("undo", Gtk::StockID("gtk-undo"));
@@ -861,6 +862,7 @@ init_ui_manager()
 "		<separator name='bleh04'/>"
 "		<menuitem action='options' />"
 "		<menuitem action='close' />"
+"		<menuitem action='close-document' />"
 "	</menu>"
 "	<menu action='menu-edit'>"
 "		<menuitem action='undo'/>"

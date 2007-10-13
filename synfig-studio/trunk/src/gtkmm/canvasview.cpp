@@ -1221,8 +1221,11 @@ CanvasView::init_menus()
 	action_group->add( Gtk::Action::create("options", _("Options")),
 		sigc::mem_fun0(canvas_options,&studio::CanvasOptions::present)
 	);
-	action_group->add( Gtk::Action::create("close", Gtk::StockID("gtk-close")),
-		sigc::hide_return(sigc::mem_fun(*this,&studio::CanvasView::close))
+	action_group->add( Gtk::Action::create("close", Gtk::StockID("gtk-close"), _("Close Window")),
+		sigc::hide_return(sigc::mem_fun(*this,&studio::CanvasView::close_view))
+	);
+	action_group->add( Gtk::Action::create("close-document", Gtk::StockID("gtk-close"), _("Close Document")),
+		sigc::hide_return(sigc::mem_fun(*this,&studio::CanvasView::close_instance))
 	);
 
 	//action_group->add( Gtk::Action::create("undo", Gtk::StockID("gtk-undo")),
@@ -1460,7 +1463,12 @@ CanvasView::init_menus()
 		sigc::mem_fun(canvas_options,&studio::CanvasOptions::present)
 	));
  	filemenu.items().push_back(Gtk::Menu_Helpers::SeparatorElem());
-	filemenu.items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::StockID("gtk-close"),sigc::hide_return(sigc::mem_fun(*this,&studio::CanvasView::close))));
+	filemenu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("Close View"),
+		sigc::hide_return(sigc::mem_fun(*this,&studio::CanvasView::close_view))
+	));
+	filemenu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("Close Document"),
+		sigc::hide_return(sigc::mem_fun(*this,&studio::CanvasView::close_document))
+	));
 
 	editmenu.items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::StockID("gtk-undo"),Gtk::AccelKey('Z',Gdk::CONTROL_MASK),SLOT_EVENT(EVENT_UNDO)));
 	editmenu.items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::StockID("gtk-redo"),Gtk::AccelKey('R',Gdk::CONTROL_MASK),SLOT_EVENT(EVENT_REDO)));
@@ -1940,18 +1948,40 @@ CanvasView::refresh_rend_desc()
 
 
 bool
-CanvasView::close()
+CanvasView::close_view()
+{
+	if(get_instance()->get_visible_canvases()==1)
+		close_instance();
+	else
+		hide();
+	return false;
+}
+
+static bool _close_instance(etl::handle<Instance> instance)
+{
+	etl::handle<Instance> argh(instance);
+	instance->safe_close();
+	synfig::info("closed");
+	return false;
+}
+
+bool
+CanvasView::close_instance()
 {
 	if (get_work_area()->get_updating())
 	{
 		get_work_area()->stop_updating(true); // stop and mark as cancelled
 
 		// give the workarea chances to stop updating
-		Glib::signal_timeout().connect(sigc::mem_fun(*this, &CanvasView::close_instance_when_safe) ,250);
-		return false;
+		Glib::signal_timeout().connect(
+			sigc::mem_fun(*this, &CanvasView::close_instance),
+			250);
 	}
-
-	close_instance_when_safe();
+	else
+		Glib::signal_timeout().connect(
+			sigc::bind(sigc::ptr_fun(_close_instance),
+					   (etl::handle<Instance>)get_instance()),
+			250);
 	return false;
 }
 
@@ -3525,37 +3555,10 @@ CanvasView::set_ext_widget(const synfig::String& x, Gtk::Widget* y)
 		keyframe_tree=dynamic_cast<KeyframeTree*>(y);
 }
 
-static bool _close_instance(etl::handle<Instance> instance)
-{
-	etl::handle<Instance> argh(instance);
-	instance->safe_close();
-	synfig::info("closed");
-	return false;
-}
-
-bool
-CanvasView::close_instance_when_safe()
-{
-	if (get_work_area()->get_updating())
-		return true;
-
-	if(get_instance()->get_visible_canvases()==1)
-		// Schedule a close to occur in a few moments
-		Glib::signal_timeout().connect(
-			sigc::bind(
-				sigc::ptr_fun(_close_instance),
-				(etl::handle<Instance>)get_instance()
-			)
-			,250
-		);
-
-	return false;
-}
-
 bool
 CanvasView::on_delete_event(GdkEventAny* event)
 {
-	close();
+	close_view();
 
 	//! \todo This causes the window to be deleted straight away - but what if we prompt 'save?' and the user cancels?
 	//		  Is there ever any need to pass on the delete event to the window here?

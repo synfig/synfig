@@ -505,8 +505,11 @@ public:
 	//! Updates the title of the window
 	void update_title();
 
+	//! Closes this document
+	bool close_instance();
+
 	//! Closes this canvas view
-	bool close();
+	bool close_view();
 
 	//!	Stops the currently executing action
 	/*! \see get_cancel_status(), reset_cancel_status(), IsWorking */
