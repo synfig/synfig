@@ -327,10 +327,6 @@ png_mptr::png_mptr(const char *file_name)
 
 	DEBUGPOINT();
 
-	// \fixme These shouldn't be uncommented, but for some
-	// reason, they crash the program. I will have to look into this
-	// later. This is a memory leak, but it shouldn't be too bad.
-
 	png_read_end(png_ptr, end_info);
 	png_destroy_read_struct(&png_ptr, &info_ptr, &end_info);
 	fclose(file);
