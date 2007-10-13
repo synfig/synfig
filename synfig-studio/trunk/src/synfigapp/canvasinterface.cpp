@@ -108,8 +108,9 @@ CanvasInterface::set_time(synfig::Time x)
 
 	// update the time in all the child canvases
 	Canvas::Children children = get_canvas()->get_root()->children();
+	handle<CanvasInterface> interface;
 	for (Canvas::Children::iterator iter = children.begin(); iter != children.end(); iter++)
-		if (handle<CanvasInterface> interface = get_instance()->find_canvas_interface(*iter))
+		if ((interface = get_instance()->find_canvas_interface(*iter)) != this)
 			interface->set_time(interface->get_canvas()->get_time());
 
 	signal_time_changed()();
