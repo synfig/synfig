@@ -2190,6 +2190,7 @@ studio::WorkArea::async_update_preview()
 	if (get_updating())
 	{
 		stop_updating();
+		queue_render_preview();
 		return false;
 	}
 
