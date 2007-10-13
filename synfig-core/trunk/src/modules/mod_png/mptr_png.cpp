@@ -162,6 +162,21 @@ png_mptr::png_mptr(const char *file_name)
 	png_init_io(png_ptr, file);
 	png_set_sig_bytes(png_ptr,PNG_CHECK_BYTES);
 
+	png_read_info(png_ptr, info_ptr);
+
+	int bit_depth,color_type,interlace_type, compression_type,filter_method;
+	png_uint_32 width,height;
+
+	png_get_IHDR(png_ptr, info_ptr, &width, &height,
+				 &bit_depth, &color_type, &interlace_type,
+				 &compression_type, &filter_method);
+
+	if (bit_depth == 16)
+		png_set_strip_16(png_ptr);
+
+	if (bit_depth < 8)
+		png_set_packing(png_ptr);
+
 	double fgamma;
 	if (png_get_gAMA(png_ptr, info_ptr, &fgamma))
 	{
@@ -184,18 +199,23 @@ png_mptr::png_mptr(const char *file_name)
 
 	png_set_read_user_chunk_fn(png_ptr, this, &png_mptr::read_chunk_callback);
 
+	// man libpng tells me:
+	//   You must use png_transforms and not call any
+	//   png_set_transform() functions when you use png_read_png().
+	// but we used png_set_gamma(), which may be why we were seeing a crash at the end
+	//   png_read_png(png_ptr, info_ptr, PNG_TRANSFORM_PACKING|PNG_TRANSFORM_STRIP_16, NULL);
 
-	png_read_png(png_ptr, info_ptr, PNG_TRANSFORM_PACKING|PNG_TRANSFORM_STRIP_16, NULL);
+	png_read_update_info(png_ptr, info_ptr);
+	png_uint_32 rowbytes = png_get_rowbytes(png_ptr, info_ptr);
 
-	int bit_depth,color_type,interlace_type, compression_type,filter_method;
-	png_uint_32 width,height;
-
-    png_get_IHDR(png_ptr, info_ptr, &width, &height,
-       &bit_depth, &color_type, &interlace_type,
-       &compression_type, &filter_method);
-
+	// allocate buffer to read image data into
 	png_bytep *row_pointers=new png_bytep[height];
-	row_pointers = png_get_rows(png_ptr, info_ptr);
+	png_byte *data = new png_byte[rowbytes*height];
+	for (png_uint_32 i = 0; i < height; i++)
+		row_pointers[i] = &(data[rowbytes*i]);
+
+	png_read_image(png_ptr, row_pointers);
+
 	int x;
 	int y;
 	surface_buffer.set_wh(width,height);
@@ -311,13 +331,12 @@ png_mptr::png_mptr(const char *file_name)
 	// reason, they crash the program. I will have to look into this
 	// later. This is a memory leak, but it shouldn't be too bad.
 
-	/*
 	png_read_end(png_ptr, end_info);
 	png_destroy_read_struct(&png_ptr, &info_ptr, &end_info);
-	*/
 	fclose(file);
 
 	delete [] row_pointers;
+	delete [] data;
 }
 
 png_mptr::~png_mptr()
