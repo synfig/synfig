@@ -314,8 +314,8 @@ png_mptr::png_mptr(const char *file_name)
 	/*
 	png_read_end(png_ptr, end_info);
 	png_destroy_read_struct(&png_ptr, &info_ptr, &end_info);
-	fclose(file);
 	*/
+	fclose(file);
 
 	delete [] row_pointers;
 }
