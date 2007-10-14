@@ -252,10 +252,17 @@ RenderSettings::on_render_pressed()
 		{
 			String ext(filename_extension(filename));
 			if (ext.size()) ext=ext.substr(1); // skip initial '.'
+			synfig::info("render target filename: '%s'; extension: '%s'", filename.c_str(), ext.c_str());
 			if(Target::ext_book().count(ext))
+			{
 				target_name=Target::ext_book()[ext];
+				synfig::info("'%s' is a known extension - using target '%s'", ext.c_str(), target_name.c_str());
+			}
 			else
+			{
 				target_name=ext;
+				synfig::info("unknown extension");
+			}
 		}
 		catch(std::runtime_error x)
 		{
