@@ -2044,7 +2044,17 @@ CanvasParser::parse_canvas(xmlpp::Element *element,Canvas::Handle parent,bool in
 
 	if(canvas->value_node_list().placeholder_count())
 	{
-		error(element,strprintf(_("Canvas %s has undefined ValueNodes"),canvas->get_id().c_str()));
+		String nodes;
+		for (ValueNodeList::const_iterator iter = canvas->value_node_list().begin(); iter != canvas->value_node_list().end(); iter++)
+			if(PlaceholderValueNode::Handle::cast_dynamic(*iter))
+			{
+				if (nodes != "") nodes += ", ";
+				nodes += "'" + (*iter)->get_id() + "'";
+			}
+		error(element,strprintf(_("Canvas '%s' has undefined %s: %s"),
+								canvas->get_id().c_str(),
+								canvas->value_node_list().placeholder_count() == 1 ? _("ValueNode") : _("ValueNodes"),
+								nodes.c_str()));
 	}
 
 	return canvas;
