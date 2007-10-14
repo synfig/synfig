@@ -198,6 +198,28 @@ dirname(const std::string &str)
 	return std::string(str.begin(),iter);
 }
 
+// filename_extension("/f.e/d.c") => ".c"
+inline std::string
+filename_extension(const std::string &str)
+{
+	std::string base = basename(str);
+	std::string::size_type pos = base.find_last_of('.');
+	if (pos == std::string::npos) return std::string();
+	return base.substr(pos);
+}
+
+// filename_sans_extension("/f.e/d.c") => "/f.e/d"
+inline std::string
+filename_sans_extension(const std::string &str)
+{
+	std::string base = basename(str);
+	std::string::size_type pos = base.find_last_of('.');
+	if (pos == std::string::npos) return str;
+	std::string dir = dirname(str);
+	if (dir == ".") return base.substr(0,pos);
+	return dir + ETL_DIRECTORY_SEPARATOR + base.substr(0,pos);
+}
+
 inline bool
 is_absolute_path(const std::string &path)
 {
