@@ -113,14 +113,10 @@ exr_trgt::start_frame(synfig::ProgressCallback *cb)
 		delete exr_file;
 	if(multi_image)
 	{
-		String
-			newfilename(filename),
-			ext(find(filename.begin(),filename.end(),'.'),filename.end());
-		newfilename.erase(find(newfilename.begin(),newfilename.end(),'.'),newfilename.end());
-
-		newfilename+=etl::strprintf("%04d",imagecount)+ext;
-		frame_name=newfilename;
-		if(cb)cb->task(newfilename);
+		frame_name = (filename_sans_extension(filename) +
+					  etl::strprintf("%04d",imagecount) +
+					  filename_extension(filename));
+		if(cb)cb->task(frame_name);
 	}
 	else
 	{

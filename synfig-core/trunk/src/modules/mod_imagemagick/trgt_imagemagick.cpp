@@ -80,8 +80,7 @@ imagemagick_trgt::~imagemagick_trgt()
 bool
 imagemagick_trgt::set_rend_desc(RendDesc *given_desc)
 {
-	String	ext(find(filename.begin(),filename.end(),'.')+1,filename.end());
-	if(ext=="xpm")
+	if(filename_extension(filename) == ".xpm")
 		pf=PF_RGB;
 	else
 		pf=PF_RGB|PF_A;

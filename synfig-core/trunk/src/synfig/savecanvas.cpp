@@ -752,7 +752,7 @@ synfig::save_canvas(const String &filename, Canvas::ConstHandle canvas)
 
 	synfig::String tmp_filename(filename+".TMP");
 
-	if (String(filename.begin() + filename.find_last_of('.')+1, filename.end()) == "sifz")
+	if (filename_extension(filename) == ".sifz")
 		xmlSetCompressMode(9);
 	else
 		xmlSetCompressMode(0);

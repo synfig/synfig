@@ -264,18 +264,15 @@ studio::Instance::dialog_save_as()
 		if(find(filename.begin(),filename.end(),'*')!=filename.end())
 			continue;
 
-		std::string base = basename(filename);
-		if(find(base.begin(),base.end(),'.')==base.end())
+		if (filename_extension(filename) == "")
 			filename+=".sifz";
 
 		try
 		{
-			String ext(String(filename.begin()+filename.find_last_of('.')+1,filename.end()));
-			if(ext!="sif" && ext!="sifz" && !App::dialog_yes_no(_("Unknown extension"),
+			String ext(filename_extension(filename));
+			if(ext!=".sif" && ext!=".sifz" && !App::dialog_yes_no(_("Unknown extension"),
 				_("You have given the file name an extension\nwhich I do not recognise. Are you sure this is what you want?")))
-			{
 				continue;
-			}
 		}
 		catch(...)
 		{

@@ -175,12 +175,9 @@ bmp::start_frame(synfig::ProgressCallback *callback)
 	rowspan=4*((w*(channels(pf)*8)+31)/32);
 	if(multi_image)
 	{
-		String
-			newfilename(filename),
-			ext(find(filename.begin(),filename.end(),'.'),filename.end());
-		newfilename.erase(find(newfilename.begin(),newfilename.end(),'.'),newfilename.end());
-
-		newfilename+=etl::strprintf("%04d",imagecount)+ext;
+		String newfilename(filename_sans_extension(filename) +
+						   etl::strprintf("%04d",imagecount) +
+						   filename_extension(filename));
 		file=fopen(newfilename.c_str(),"wb");
 		if(callback)callback->task(newfilename+_(" (animated)"));
 	}

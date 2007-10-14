@@ -3137,8 +3137,8 @@ CanvasView::on_drop_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& con
 				// Strip the "file://" part from the filename
 				filename=synfig::String(filename.begin()+sizeof("file://")-1,filename.end());
 
-				String ext;
-				try{ext=(String(filename.begin()+filename.find_last_of('.')+1,filename.end()));}catch(...){continue;}
+				String ext(filename_extension(filename));
+				if (ext.size()) ext = ext.substr(1); // skip initial '.'
 
 				// If this is a SIF file, then we need to do things slightly differently
 				if(ext=="sketch")

@@ -190,12 +190,7 @@ RenderSettings::~RenderSettings()
 void
 RenderSettings::set_entry_filename()
 {
-	String filename(canvas_interface_->get_canvas()->get_file_name());
-
-	// if the basename of the filename has an extension, remove it
-	String base = basename(filename);
-	if(find(base.begin(),base.end(),'.')!=base.end())
-		filename = String(filename.begin(), filename.begin()+filename.find_last_of('.'));
+	String filename(filename_sans_extension(canvas_interface_->get_canvas()->get_file_name()));
 
 	// if this isn't the root canvas, append (<canvasname>) to the filename
 	etl::handle<synfig::Canvas> canvas = canvas_interface_->get_canvas();
@@ -255,7 +250,8 @@ RenderSettings::on_render_pressed()
 	{
 		try
 		{
-			String ext=String(find(filename.begin(),filename.end(),'.')+1,filename.end());
+			String ext(filename_extension(filename));
+			if (ext.size()) ext=ext.substr(1); // skip initial '.'
 			if(Target::ext_book().count(ext))
 				target_name=Target::ext_book()[ext];
 			else

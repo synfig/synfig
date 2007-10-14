@@ -477,14 +477,14 @@ CanvasInterface::import(const synfig::String &filename, bool /*copy*/)
 
 	synfig::info("Attempting to import "+filename);
 
-
-	if(find(filename.begin(),filename.end(),'.')==filename.end())
+	if (filename_extension(filename) == "")
 	{
 		get_ui_interface()->error("Filename must have an extension!");
 		return false;
 	}
 
-	String ext(String(filename.begin()+filename.find_last_of('.')+1,filename.end()));
+	String ext(filename_extension(filename));
+	if (ext.size()) ext = ext.substr(1); // skip initial '.'
 	std::transform(ext.begin(),ext.end(),ext.begin(),&::tolower);
 
 	// If this is a SIF file, then we need to do things slightly differently

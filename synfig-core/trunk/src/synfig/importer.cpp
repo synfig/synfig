@@ -97,13 +97,14 @@ Importer::open(const String &filename)
 		return (*__open_importers)[filename];
 	}
 
-	if(find(filename.begin(),filename.end(),'.')==filename.end())
+	if(filename_extension(filename) == "")
 	{
 		synfig::error(_("Importer::open(): Couldn't find extension"));
 		return 0;
 	}
 
-	String ext=string(filename.begin()+filename.find_last_of('.')+1,filename.end());
+	String ext(filename_extension(filename));
+	if (ext.size()) ext = ext.substr(1); // skip initial '.'
 	std::transform(ext.begin(),ext.end(),ext.begin(),&::tolower);
 
 
