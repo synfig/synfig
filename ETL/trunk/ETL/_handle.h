@@ -31,13 +31,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-// include the next line in an attempt to increase stability
-#define ETL_LOCK_REFCOUNTS
-
 #include <cassert>
-#ifdef ETL_LOCK_REFCOUNTS
-#include <synfig/mutex.h>
-#endif
 
 /* === M A C R O S ========================================================= */
 
@@ -72,9 +66,6 @@ class shared_object
 {
 private:
 	mutable int refcount;
-#ifdef ETL_LOCK_REFCOUNTS
-	mutable synfig::Mutex mutex;
-#endif
 
 protected:
 	shared_object():refcount(0) { }
@@ -87,19 +78,11 @@ protected:
 
 public:
 	void ref()const
-	{
-#ifdef ETL_LOCK_REFCOUNTS
-		synfig::Mutex::Lock lock(mutex);
-#endif
-		assert(refcount>=0); refcount++;
-	}
+		{ assert(refcount>=0); refcount++; }
 
 	//! Returns \c false if object needs to be deleted
 	bool unref()const
 	{
-#ifdef ETL_LOCK_REFCOUNTS
-		synfig::Mutex::Lock lock(mutex);
-#endif
 		assert(refcount>0);
 
 		refcount--;
@@ -107,9 +90,6 @@ public:
 		if(refcount==0) {
 #ifdef ETL_SELF_DELETING_SHARED_OBJECT
 			refcount=-666;
-#ifdef ETL_LOCK_REFCOUNTS
-			mutex.unlock();
-#endif
 			delete this;
 #endif
 			return false;
@@ -119,12 +99,7 @@ public:
 	}
 
 	int count()const
-	{ 
-#ifdef ETL_LOCK_REFCOUNTS
-		synfig::Mutex::Lock lock(mutex);
-#endif
-		return refcount;
-	}
+		{ return refcount; }
 }; // END of class shared_object
 
 // ========================================================================
