@@ -36,7 +36,7 @@
 
 #include <cassert>
 #ifdef ETL_LOCK_REFCOUNTS
-#include <glibmm/thread.h>
+#include <synfig/mutex.h>
 #endif
 
 /* === M A C R O S ========================================================= */
@@ -73,7 +73,7 @@ class shared_object
 private:
 	mutable int refcount;
 #ifdef ETL_LOCK_REFCOUNTS
-	mutable Glib::Mutex mutex;
+	mutable synfig::Mutex mutex;
 #endif
 
 protected:
@@ -89,7 +89,7 @@ public:
 	void ref()const
 	{
 #ifdef ETL_LOCK_REFCOUNTS
-		Glib::Mutex::Lock lock(mutex);
+		synfig::Mutex::Lock lock(mutex);
 #endif
 		assert(refcount>=0); refcount++;
 	}
@@ -98,7 +98,7 @@ public:
 	bool unref()const
 	{
 #ifdef ETL_LOCK_REFCOUNTS
-		Glib::Mutex::Lock lock(mutex);
+		synfig::Mutex::Lock lock(mutex);
 #endif
 		assert(refcount>0);
 
@@ -108,7 +108,7 @@ public:
 #ifdef ETL_SELF_DELETING_SHARED_OBJECT
 			refcount=-666;
 #ifdef ETL_LOCK_REFCOUNTS
-			lock.release();
+			mutex.unlock();
 #endif
 			delete this;
 #endif
@@ -121,7 +121,7 @@ public:
 	int count()const
 	{ 
 #ifdef ETL_LOCK_REFCOUNTS
-		Glib::Mutex::Lock lock(mutex);
+		synfig::Mutex::Lock lock(mutex);
 #endif
 		return refcount;
 	}
