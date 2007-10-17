@@ -70,7 +70,7 @@ ffmpeg_mptr::seek_to(int frame)
 
 		command=strprintf("ffmpeg -i \"%s\" -an -f image2pipe -vcodec ppm -\n",filename.c_str());
 
-		file=popen(command.c_str(),"r");
+		file=popen(command.c_str(),"rb");
 
 		if(!file)
 		{
