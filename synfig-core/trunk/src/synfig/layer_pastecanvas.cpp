@@ -417,9 +417,7 @@ void Layer_PasteCanvas::get_times_vfunc(Node::time_set &set) const
 	//TODO: SOMETHING STILL HAS TO BE DONE WITH THE OTHER DIRECTION
 	//		(recursing down the tree needs to take this into account too...)
 	for(; i != end; ++i)
-	{
-		set.insert(*i + time_offset);
-	}
+		set.insert(*i - time_offset);
 
 	Layer::get_times_vfunc(set);
 }
