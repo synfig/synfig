@@ -543,13 +543,11 @@ CellRenderer_ValueBase::start_editing_vfunc(
 			synfig::String string;
 			string=data.get(string);
 			if(get_paragraph(string))
-			{
 				signal_edited_(path,ValueBase(string));
-			}
 			return NULL;
 		}
-		if(get_param_desc().get_hint()!="filename")
-			return CellRendererText::start_editing_vfunc(event,widget,path,background_area,cell_area,flags);
+		// if(get_param_desc().get_hint()!="filename")
+			// return CellRendererText::start_editing_vfunc(event,widget,path,background_area,cell_area,flags);
 	default:
 		{
 			assert(get_canvas());
