@@ -217,6 +217,7 @@ Plant::sync()const
 		Real f;
 
 		int i=0, branch_count = 0, steps = round_to_int(1.0/step);
+		if (steps < 1) steps = 1;
 		for(f=0.0;f<1.0;f+=step,i++)
 		{
 			Point point(curve(f));
@@ -273,7 +274,15 @@ Plant::set_param(const String & param, const ValueBase &value)
 	IMPORT_PLUS(gradient,needs_sync_=true);
 	IMPORT_PLUS(velocity,needs_sync_=true);
 	IMPORT_PLUS(perp_velocity,needs_sync_=true);
-	IMPORT_PLUS(step,needs_sync_=true);
+	IMPORT_PLUS(step,{
+			needs_sync_ = true;
+			if (step <= 0)
+				step=0.01; // user is probably clueless - give a good default
+			else if (step < 0.00001)
+				step=0.00001; // 100K should be enough for anyone
+			else if (step > 1)
+				step=1;
+		});
 	IMPORT_PLUS(splits,needs_sync_=true);
 	IMPORT_PLUS(sprouts,needs_sync_=true);
 	IMPORT_PLUS(random_factor,needs_sync_=true);
