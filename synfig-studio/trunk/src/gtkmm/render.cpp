@@ -237,6 +237,7 @@ void
 RenderSettings::on_render_pressed()
 {
 	String filename=entry_filename.get_text();
+	synfig::String calculated_target_name(target_name);
 
 	if(filename.empty())
 	{
@@ -246,7 +247,7 @@ RenderSettings::on_render_pressed()
 
 	// If the target type is not yet defined,
 	// try to figure it out from the outfile.
-	if(target_name.empty())
+	if(calculated_target_name.empty())
 	{
 		try
 		{
@@ -255,12 +256,12 @@ RenderSettings::on_render_pressed()
 			synfig::info("render target filename: '%s'; extension: '%s'", filename.c_str(), ext.c_str());
 			if(Target::ext_book().count(ext))
 			{
-				target_name=Target::ext_book()[ext];
-				synfig::info("'%s' is a known extension - using target '%s'", ext.c_str(), target_name.c_str());
+				calculated_target_name=Target::ext_book()[ext];
+				synfig::info("'%s' is a known extension - using target '%s'", ext.c_str(), calculated_target_name.c_str());
 			}
 			else
 			{
-				target_name=ext;
+				calculated_target_name=ext;
 				synfig::info("unknown extension");
 			}
 		}
@@ -271,13 +272,13 @@ RenderSettings::on_render_pressed()
 		}
 	}
 
-	if(filename.empty() && target_name!="null")
+	if(filename.empty() && calculated_target_name!="null")
 	{
 		canvas_interface_->get_ui_interface()->error(_("A filename is required for this target"));
 		return;
 	}
 
-	Target::Handle target=Target::create(target_name,filename);
+	Target::Handle target=Target::create(calculated_target_name,filename);
 	if(!target)
 	{
 		canvas_interface_->get_ui_interface()->error(_("Unable to create target for ")+filename);
