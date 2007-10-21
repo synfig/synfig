@@ -386,7 +386,7 @@ private:
 
 	void add_to_rlist()
 	{
-//		value_type*& obj(handle<T>::obj); // Required to keep gcc 3.4.2 form barfing
+//		value_type*& obj(handle<T>::obj); // Required to keep gcc 3.4.2 from barfing
 
 		assert(obj);
 		obj->rref();
@@ -407,7 +407,7 @@ private:
 
 	void del_from_rlist()
 	{
-//		value_type*& obj(handle<T>::obj); // Required to keep gcc 3.4.2 form barfing
+//		value_type*& obj(handle<T>::obj); // Required to keep gcc 3.4.2 from barfing
 		assert(obj);
 		obj->runref();
 
@@ -438,20 +438,20 @@ public:
 	//! Constructor that constructs from a pointer to new object
 	rhandle(pointer x):handle<T>(x)
 	{
-//		value_type*& obj(handle<T>::obj); // Required to keep gcc 3.4.2 form barfing
+//		value_type*& obj(handle<T>::obj); // Required to keep gcc 3.4.2 from barfing
 		if(obj)add_to_rlist();
 	}
 
 	rhandle(const handle<value_type> &x):handle<T>(x)
 	{
-//		value_type*& obj(handle<T>::obj); // Required to keep gcc 3.4.2 form barfing
+//		value_type*& obj(handle<T>::obj); // Required to keep gcc 3.4.2 from barfing
 		if(obj)add_to_rlist();
 	}
 
 	//! Default copy constructor
 	rhandle(const rhandle<value_type> &x):handle<T>(x)
 	{
-//		value_type*& obj(handle<T>::obj); // Required to keep gcc 3.4.2 form barfing
+//		value_type*& obj(handle<T>::obj); // Required to keep gcc 3.4.2 from barfing
 		if(obj)add_to_rlist();
 	}
 
@@ -485,7 +485,7 @@ public:
 	rhandle<value_type> &
 	operator=(const rhandle<value_type> &x)
 	{
-//		value_type*& obj(handle<T>::obj); // Required to keep gcc 3.4.2 form barfing
+//		value_type*& obj(handle<T>::obj); // Required to keep gcc 3.4.2 from barfing
 		if(x.get()==obj)
 			return *this;
 
@@ -503,7 +503,7 @@ public:
 	rhandle<value_type>&
 	operator=(const handle<value_type> &x)
 	{
-//		value_type*& obj(handle<T>::obj); // Required to keep gcc 3.4.2 form barfing
+//		value_type*& obj(handle<T>::obj); // Required to keep gcc 3.4.2 from barfing
 		if(x.get()==obj)
 			return *this;
 
@@ -521,7 +521,7 @@ public:
 	rhandle<value_type>&
 	operator=(value_type* x)
 	{
-//		value_type*& obj(handle<T>::obj); // Required to keep gcc 3.4.2 form barfing
+//		value_type*& obj(handle<T>::obj); // Required to keep gcc 3.4.2 from barfing
 		if(x==obj)
 			return *this;
 
@@ -541,7 +541,7 @@ public:
 	void
 	detach()
 	{
-//		value_type*& obj(handle<T>::obj); // Required to keep gcc 3.4.2 form barfing
+//		value_type*& obj(handle<T>::obj); // Required to keep gcc 3.4.2 from barfing
 		if(obj)del_from_rlist();
 		handle<value_type>::detach();
 		obj=0;
@@ -560,7 +560,7 @@ public:
 	count_type
 	rcount()const
 	{
-//		value_type*const& obj(handle<T>::obj); // Required to keep gcc 3.4.2 form barfing
+//		value_type*const& obj(handle<T>::obj); // Required to keep gcc 3.4.2 from barfing
 		return obj?obj->rcount():0;
 	}
 
@@ -568,14 +568,14 @@ public:
 	bool
 	runique()const
 	{
-//		value_type*& obj(handle<T>::obj); // Required to keep gcc 3.4.2 form barfing
+//		value_type*& obj(handle<T>::obj); // Required to keep gcc 3.4.2 from barfing
 		assert(obj); return obj->front_==obj->back_;
 	}
 
 	//! \writeme
 	int replace(const handle<value_type> &x)
 	{
-//		value_type*& obj(handle<T>::obj); // Required to keep gcc 3.4.2 form barfing
+//		value_type*& obj(handle<T>::obj); // Required to keep gcc 3.4.2 from barfing
 		assert(obj);
 		assert(x.get()!=obj);
 
