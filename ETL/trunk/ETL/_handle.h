@@ -623,11 +623,6 @@ public:
 }; // END of template class rhandle
 
 
-
-
-
-
-
 // ========================================================================
 /*!	\class	loose_handle _handle.h	ETL/handle
 **	\brief	Loose Object Handle
@@ -763,141 +758,53 @@ public:
 	bool unref() { if(obj && !obj->unref()){ obj=0; return false; } return true; }
 }; // END of template class loose_handle
 
+// cast loose_handle<> -> handle<>
+template <class T> template <class U> handle<T> handle<T>::cast_static	   (const loose_handle<U>& x) { return handle<T>(static_cast	 <T*>(x.get())); }
+template <class T> template <class U> handle<T> handle<T>::cast_dynamic	   (const loose_handle<U>& x) { return handle<T>(dynamic_cast	 <T*>(x.get())); }
+template <class T> template <class U> handle<T> handle<T>::cast_const	   (const loose_handle<U>& x) { return handle<T>(const_cast		 <T*>(x.get())); }
+template <class T> template <class U> handle<T> handle<T>::cast_reinterpret(const loose_handle<U>& x) { return handle<T>(reinterpret_cast<T*>(x.get())); }
 
+// cast rhandle_handle<> -> handle<>
+template <class T> template <class U> handle<T> handle<T>::cast_static	   (const rhandle<U>&	   x) { return handle<T>(static_cast	 <T*>(x.get())); }
+template <class T> template <class U> handle<T> handle<T>::cast_dynamic	   (const rhandle<U>&	   x) { return handle<T>(dynamic_cast	 <T*>(x.get())); }
+template <class T> template <class U> handle<T> handle<T>::cast_const	   (const rhandle<U>&	   x) { return handle<T>(const_cast		 <T*>(x.get())); }
+template <class T> template <class U> handle<T> handle<T>::cast_reinterpret(const rhandle<U>&	   x) { return handle<T>(reinterpret_cast<T*>(x.get())); }
 
+// cast U* -> handle<>
+template <class T> template <class U> handle<T> handle<T>::cast_static	   (U*					   x) { return handle<T>(static_cast	 <T*>(x));		 }
+template <class T> template <class U> handle<T> handle<T>::cast_dynamic	   (U*					   x) { return handle<T>(dynamic_cast	 <T*>(x));		 }
+template <class T> template <class U> handle<T> handle<T>::cast_const	   (U*					   x) { return handle<T>(const_cast		 <T*>(x));		 }
+template <class T> template <class U> handle<T> handle<T>::cast_reinterpret(U*					   x) { return handle<T>(reinterpret_cast<T*>(x));		 }
 
-template<class T> template<class U> handle<T>
-handle<T>::cast_static(const loose_handle<U> &x)
-	{ return handle<T>(static_cast<T*>(x.get())); }
+// operator== for handle<>, loose_handle<> and T*
+template <class T,class U> bool operator==(const handle		 <T>& lhs,const handle		<U>& rhs) { return (lhs.get()==rhs.get()); }
+template <class T,class U> bool operator==(const loose_handle<T>& lhs,const loose_handle<U>& rhs) { return (lhs.get()==rhs.get()); }
+template <class T,class U> bool operator==(const handle		 <T>& lhs,const loose_handle<U>& rhs) { return (lhs.get()==rhs.get()); }
+template <class T,class U> bool operator==(const loose_handle<T>& lhs,const handle		<U>& rhs) { return (lhs.get()==rhs.get()); }
+template <class T>		   bool operator==(const handle<T>&		  lhs,const T*				 rhs) { return (lhs.get()==rhs);	   }
+template <class T>		   bool operator==(const loose_handle<T>& lhs,const T*				 rhs) { return (lhs.get()==rhs);	   }
+template <class T>		   bool operator==(const T*				  lhs,const handle<T>&		 rhs) { return (lhs		 ==rhs.get()); }
+template <class T>		   bool operator==(const T*				  lhs,const loose_handle<T>& rhs) { return (lhs		 ==rhs.get()); }
 
-template <class T> template <class U> handle<T>
-handle<T>::cast_dynamic(const loose_handle<U> &x)
-	{ return handle<T>(dynamic_cast<T*>(x.get())); }
+// operator!= for handle<>, loose_handle<> and T*
+template <class T,class U> bool operator!=(const handle		 <T>& lhs,const handle		<U>& rhs) { return (lhs.get()!=rhs.get()); }
+template <class T,class U> bool operator!=(const loose_handle<T>& lhs,const loose_handle<U>& rhs) { return (lhs.get()!=rhs.get()); }
+template <class T,class U> bool operator!=(const handle		 <T>& lhs,const loose_handle<U>& rhs) { return (lhs.get()!=rhs.get()); }
+template <class T,class U> bool operator!=(const loose_handle<T>& lhs,const handle		<U>& rhs) { return (lhs.get()!=rhs.get()); }
+template <class T>		   bool operator!=(const handle<T>&		  lhs,const T*				 rhs) { return (lhs.get()!=rhs);	   }
+template <class T>		   bool operator!=(const loose_handle<T>& lhs,const T*				 rhs) { return (lhs.get()!=rhs);	   }
+template <class T>		   bool operator!=(const T*				  lhs,const handle<T>&		 rhs) { return (lhs		 !=rhs.get()); }
+template <class T>		   bool operator!=(const T*				  lhs,const loose_handle<T>& rhs) { return (lhs		 !=rhs.get()); }
 
-template <class T> template <class U> handle<T>
-handle<T>::cast_const(const loose_handle<U> &x)
-	{ return handle<T>(const_cast<T*>(x.get())); }
-
-template <class T> template <class U> handle<T>
-handle<T>::cast_reinterpret(const loose_handle<U> &x)
-	{ return handle<T>(reinterpret_cast<T*>(x.get())); }
-
-
-
-template <class T> template <class U> handle<T>
-handle<T>::cast_static(const rhandle<U> &x)
-	{ return handle<T>(static_cast<T*>(x.get())); }
-
-template <class T> template <class U> handle<T>
-handle<T>::cast_dynamic(const rhandle<U> &x)
-	{ return handle<T>(dynamic_cast<T*>(x.get())); }
-
-template <class T> template <class U> handle<T>
-handle<T>::cast_const(const rhandle<U> &x)
-	{ return handle<T>(const_cast<T*>(x.get())); }
-
-template <class T> template <class U> handle<T>
-handle<T>::cast_reinterpret(const rhandle<U> &x)
-	{ return handle<T>(reinterpret_cast<T*>(x.get())); }
-
-
-
-template <class T> template <class U> handle<T>
-handle<T>::cast_static(U* x)
-	{ return handle<T>(static_cast<T*>(x)); }
-
-template <class T> template <class U> handle<T>
-handle<T>::cast_dynamic(U* x)
-	{ return handle<T>(dynamic_cast<T*>(x)); }
-
-template <class T> template <class U> handle<T>
-handle<T>::cast_const(U* x)
-	{ return handle<T>(const_cast<T*>(x)); }
-
-template <class T> template <class U> handle<T>
-handle<T>::cast_reinterpret(U* x)
-	{ return handle<T>(reinterpret_cast<T*>(x)); }
-
-
-
-
-
-template <class T,class U> bool
-operator==(const handle<T> &lhs,const handle<U> &rhs)
-	{ return (lhs.get()==rhs.get()); }
-template <class T,class U> bool
-operator==(const loose_handle<T> &lhs,const loose_handle<U> &rhs)
-	{ return (lhs.get()==rhs.get()); }
-template <class T,class U> bool
-operator==(const handle<T> &lhs,const loose_handle<U> &rhs)
-	{ return (lhs.get()==rhs.get()); }
-template <class T,class U> bool
-operator==(const loose_handle<T> &lhs,const handle<U> &rhs)
-	{ return (lhs.get()==rhs.get()); }
-template <class T> bool
-operator==(const handle<T> &lhs,const T *rhs)
-	{ return (lhs.get()==rhs); }
-template <class T> bool
-operator==(const loose_handle<T> &lhs,const T *rhs)
-	{ return (lhs.get()==rhs); }
-template <class T> bool
-operator==(const T *lhs,const handle<T> &rhs)
-	{ return (lhs==rhs.get()); }
-template <class T> bool
-operator==(const T *lhs,const loose_handle<T> &rhs)
-	{ return (lhs==rhs.get()); }
-
-
-template <class T,class U> bool
-operator!=(const handle<T> &lhs,const handle<U> &rhs)
-	{ return (lhs.get()!=rhs.get()); }
-template <class T,class U> bool
-operator!=(const loose_handle<T> &lhs,const loose_handle<U> &rhs)
-	{ return (lhs.get()!=rhs.get()); }
-template <class T,class U> bool
-operator!=(const handle<T> &lhs,const loose_handle<U> &rhs)
-	{ return (lhs.get()!=rhs.get()); }
-template <class T,class U> bool
-operator!=(const loose_handle<T> &lhs,const handle<U> &rhs)
-	{ return (lhs.get()!=rhs.get()); }
-template <class T> bool
-operator!=(const handle<T> &lhs,const T *rhs)
-	{ return (lhs.get()!=rhs); }
-template <class T> bool
-operator!=(const loose_handle<T> &lhs,const T *rhs)
-	{ return (lhs.get()!=rhs); }
-template <class T> bool
-operator!=(const T *lhs,const handle<T> &rhs)
-	{ return (lhs!=rhs.get()); }
-template <class T> bool
-operator!=(const T *lhs,const loose_handle<T> &rhs)
-	{ return (lhs!=rhs.get()); }
-
-
-template <class T,class U> bool
-operator<(const handle<T> &lhs,const handle<U> &rhs)
-	{ return (lhs.get()<rhs.get()); }
-template <class T,class U> bool
-operator<(const loose_handle<T> &lhs,const loose_handle<U> &rhs)
-	{ return (lhs.get()<rhs.get()); }
-template <class T,class U> bool
-operator<(const handle<T> &lhs,const loose_handle<U> &rhs)
-	{ return (lhs.get()<rhs.get()); }
-template <class T,class U> bool
-operator<(const loose_handle<T> &lhs,const handle<U> &rhs)
-	{ return (lhs.get()<rhs.get()); }
-template <class T> bool
-operator<(const handle<T> &lhs,const T *rhs)
-	{ return (lhs.get()<rhs); }
-template <class T> bool
-operator<(const loose_handle<T> &lhs,const T *rhs)
-	{ return (lhs.get()<rhs); }
-template <class T> bool
-operator<(const T *lhs,const handle<T> &rhs)
-	{ return (lhs<rhs.get()); }
-template <class T> bool
-operator<(const T *lhs,const loose_handle<T> &rhs)
-	{ return (lhs<rhs.get()); }
+// operator< for handle<>, loose_handle<> and T*
+template <class T,class U> bool operator<(const handle<T>&		  lhs,const handle<U>&		 rhs) { return (lhs.get()<rhs.get());  }
+template <class T,class U> bool operator<(const loose_handle<T>&  lhs,const loose_handle<U>& rhs) { return (lhs.get()<rhs.get());  }
+template <class T,class U> bool operator<(const handle<T>&		  lhs,const loose_handle<U>& rhs) { return (lhs.get()<rhs.get());  }
+template <class T,class U> bool operator<(const loose_handle<T>&  lhs,const handle<U>&		 rhs) { return (lhs.get()<rhs.get());  }
+template <class T>		   bool operator<(const handle<T>&		  lhs,const T*				 rhs) { return (lhs.get()<rhs);		   }
+template <class T>		   bool operator<(const loose_handle<T>&  lhs,const T*				 rhs) { return (lhs.get()<rhs);		   }
+template <class T>		   bool operator<(const T*				  lhs,const handle<T>&		 rhs) { return (lhs		 <rhs.get());  }
+template <class T>		   bool operator<(const T*				  lhs,const loose_handle<T>& rhs) { return (lhs		 <rhs.get());  }
 
 _ETL_END_NAMESPACE
 
