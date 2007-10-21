@@ -74,6 +74,9 @@ public:
 inline TimePoint operator+(TimePoint lhs,const Time& rhs)
 	{ lhs.set_time(lhs.get_time()+rhs); return lhs; }
 
+inline TimePoint operator-(TimePoint lhs,const Time& rhs)
+	{ lhs.set_time(lhs.get_time()-rhs); return lhs; }
+
 inline bool operator<(const TimePoint& lhs,const TimePoint& rhs)
 	{ return lhs.get_time()<rhs.get_time(); }
 
