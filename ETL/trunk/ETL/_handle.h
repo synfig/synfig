@@ -264,41 +264,29 @@ public:
 	operator handle<const value_type>()const
 	{ return handle<const value_type>(static_cast<const_pointer>(obj)); }
 
-
 	//! <tt> static_cast\<\> </tt> wrapper
-	template <class U> static
-	handle<T> cast_static(const handle<U> &x)
-	{ return handle<T>(static_cast<T*>(x.get())); }
-
+	template <class U> static handle<T> cast_static		(const handle<U> &x) { return handle<T>(static_cast		<T*>(x.get())); }
 	//! <tt> dynamic_cast\<\> </tt> wrapper
-	template <class U> static
-	handle<T> cast_dynamic(const handle<U> &x)
-	{ return handle<T>(dynamic_cast<T*>(x.get())); }
-
+	template <class U> static handle<T> cast_dynamic	(const handle<U> &x) { return handle<T>(dynamic_cast	<T*>(x.get())); }
 	//! <tt> const_cast\<\> </tt> wrapper
-	template <class U> static
-	handle<T> cast_const(const handle<U> &x)
-	{ return handle<T>(const_cast<T*>(x.get())); }
-
+	template <class U> static handle<T> cast_const		(const handle<U> &x) { return handle<T>(const_cast		<T*>(x.get())); }
 	//! <tt> reinterpret_cast\<\> </tt> wrapper
-	template <class U> static
-	handle<T> cast_reinterpret(const handle<U> &x)
-	{ return handle<T>(reinterpret_cast<T*>(x.get())); }
+	template <class U> static handle<T> cast_reinterpret(const handle<U> &x) { return handle<T>(reinterpret_cast<T*>(x.get())); }
 
-	template<class U> static handle<T> cast_static(const loose_handle<U> &x);
-	template<class U> static handle<T> cast_dynamic(const loose_handle<U> &x);
-	template<class U> static handle<T> cast_const(const loose_handle<U> &x);
-	template<class U> static handle<T> cast_reinterpret(const loose_handle<U> &x);
+	template <class U> static handle<T> cast_static		(const loose_handle<U> &x);
+	template <class U> static handle<T> cast_dynamic	(const loose_handle<U> &x);
+	template <class U> static handle<T> cast_const		(const loose_handle<U> &x);
+	template <class U> static handle<T> cast_reinterpret(const loose_handle<U> &x);
 
-	template<class U> static handle<T> cast_static(const rhandle<U> &x);
-	template<class U> static handle<T> cast_dynamic(const rhandle<U> &x);
-	template<class U> static handle<T> cast_const(const rhandle<U> &x);
-	template<class U> static handle<T> cast_reinterpret(const rhandle<U> &x);
+	template <class U> static handle<T> cast_static		(const rhandle<U> &x);
+	template <class U> static handle<T> cast_dynamic	(const rhandle<U> &x);
+	template <class U> static handle<T> cast_const		(const rhandle<U> &x);
+	template <class U> static handle<T> cast_reinterpret(const rhandle<U> &x);
 
-	template<class U> static handle<T> cast_static(U* x);
-	template<class U> static handle<T> cast_dynamic(U* x);
-	template<class U> static handle<T> cast_const(U* x);
-	template<class U> static handle<T> cast_reinterpret(U* x);
+	template <class U> static handle<T> cast_static		(U* x);
+	template <class U> static handle<T> cast_dynamic	(U* x);
+	template <class U> static handle<T> cast_const		(U* x);
+	template <class U> static handle<T> cast_reinterpret(U* x);
 
 	//! Returns pointer to the object that is being wrapped
 	pointer get()const { return obj; }
