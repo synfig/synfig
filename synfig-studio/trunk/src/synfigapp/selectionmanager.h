@@ -74,16 +74,16 @@ public:
 
 
 
-	//! Returns the number of childrens selected.
+	//! Returns the number of children selected.
 	virtual int get_selected_children_count()const=0;
 
-	//! Returns a list of the currently selected childrens.
+	//! Returns a list of the currently selected children.
 	virtual ChildrenList get_selected_children()const=0;
 
 	//! Returns the first children selected or an empty handle if none are selected.
 	virtual ChildrenList::value_type get_selected_child()const=0;
 
-	//! Sets which childrens should be selected
+	//! Sets which children should be selected
 	virtual void set_selected_children(const ChildrenList &children_list)=0;
 
 	//! Sets which children should be selected. Empty handle if none.

@@ -122,7 +122,7 @@ private:
 	//! \writeme
 	GUID guid_;
 
-	//! cached time values for all the childrens
+	//! cached time values for all the children
 	mutable time_set	times;
 
 	//! \writeme
