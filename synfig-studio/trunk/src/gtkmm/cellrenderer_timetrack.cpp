@@ -652,8 +652,8 @@ CellRenderer_TimeTrack::activate_vfunc(
 
 			/*!	UI specification:
 
-				When nothing is selected, clicking on a point in either normal mode order
-					addative mode will select the time point closest to the click.
+				When nothing is selected, clicking on a point in either normal mode or
+					additive mode will select the time point closest to the click.
 					Subtractive click will do nothing
 
 				When things are already selected, clicking on a selected point does
