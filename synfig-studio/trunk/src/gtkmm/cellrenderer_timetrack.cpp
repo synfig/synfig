@@ -133,7 +133,31 @@ const synfig::Node::time_set *get_times_from_vdesc(const synfigapp::ValueDesc &v
 
 		if(canvasparam)
 		{
+#ifdef ADJUST_WAYPOINTS_FOR_TIME_OFFSET // see node.h
+			synfig::Time::value_type time_offset = 0;
+			if (v.parent_is_layer_param())
+			{
+				synfig::Layer::Handle layer = v.get_layer();
+				if (layer->get_name()=="PasteCanvas")
+					time_offset = layer->get_param("time_offset").get(Time());
+			}
+
+			const Node::time_set *times = &canvasparam->get_times();
+
+			if (time_offset)
+			{
+				//! \todo this is a memory leak - blame the 'kind of hack' above
+				Node::time_set *tmp = new Node::time_set;
+				Node::time_set::iterator i = times->begin(), end = times->end();
+				for (; i != end; ++i)
+					tmp->insert(*i - time_offset);
+				return tmp;
+			}
+
+			return times;
+#else // ADJUST_WAYPOINTS_FOR_TIME_OFFSET
 			return &canvasparam->get_times();
+#endif
 		}
 	}
 

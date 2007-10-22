@@ -37,6 +37,11 @@
 
 /* === M A C R O S ========================================================= */
 
+// When a PasteCanvas layer has a non-zero 'time offset' parameter, should
+// the waypoints shown for the canvas be adjusted?  This currently only
+// partially works - see the TODO at the end of layer_pastecanvas.cpp
+// #define ADJUST_WAYPOINTS_FOR_TIME_OFFSET
+
 /* === T Y P E D E F S ===================================================== */
 
 /* === C L A S S E S & S T R U C T S ======================================= */
