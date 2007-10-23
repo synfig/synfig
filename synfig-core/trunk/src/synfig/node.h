@@ -63,6 +63,10 @@ public:
 	{
 	}
 
+#ifdef _DEBUG
+	const char *c_str()const;
+#endif
+
 	const GUID& get_guid()const { return guid; }
 	const Time& get_time()const { return time; }
 	Interpolation get_before()const { return before; }

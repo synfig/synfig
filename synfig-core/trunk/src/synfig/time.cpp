@@ -270,6 +270,14 @@ Time::round(float fps)const
 		return ceil(time)/fps;
 }
 
+#ifdef _DEBUG
+const char *
+Time::c_str()const
+{
+	return get_string().c_str();
+}
+#endif
+
 //! \writeme
 bool
 Time::is_valid()const

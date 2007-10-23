@@ -98,6 +98,10 @@ public:
 	/*!	\see Format */
 	String get_string(float fps=0, Time::Format format=FORMAT_NORMAL)const;
 
+#ifdef _DEBUG
+	const char *c_str()const;
+#endif
+
 	//! \writeme
 	bool is_valid()const;
 
