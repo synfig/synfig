@@ -246,7 +246,19 @@ Time::get_string(float fps, Time::Format format)const
 		if(format<=FORMAT_FULL || second || !started)
 		{
 			if(abs(second-floor(second))>=epsilon_())
-				ret+=strprintf("%0.8fs",second);
+			{
+				String seconds(strprintf("%0.8f",second));
+
+				// skip trailing zeros
+				int count = 0;
+				for (String::reverse_iterator i = seconds.rbegin(); (*i) == '0'; i++)
+					count++;
+
+				// if we removed too many, go back one place, leaving one zero
+				if (*i < '0' || *i > '9') count--;
+
+				ret += seconds.substr(0, seconds.size()-count) + "s";
+			}
 			else
 				ret+=strprintf("%0.0fs",second);
 		}
