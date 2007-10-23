@@ -738,7 +738,7 @@ CellRenderer_TimeTrack::activate_vfunc(
 					selection=true;
 				}
 			}
-			// Perhaps I sould signal if we selected this activepoint?
+			// Perhaps I should signal if we selected this activepoint?
 		}*/
 
 			if(event->button.button==3)
