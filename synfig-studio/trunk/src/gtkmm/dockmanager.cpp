@@ -133,7 +133,8 @@ public:
 			if(key=="contents_size")
 			{
 				try {
-
+				int width, height;
+				Gtk::IconSize::lookup(Gtk::IconSize(4),width,height);
 				vector<int> data;
 				String::size_type n=0;
 				String value_(value);
@@ -143,6 +144,11 @@ public:
 					if(!strscanf(value_,"%d",&size))
 						break;
 					size=size*screen_h/SCALE_FACTOR;
+
+					// prevent errors like this, by allowing space for at least the dockable's icon:
+					// ** CRITICAL **: clearlooks_style_draw_box_gap: assertion `height >= -1' failed
+					if (size < height + 9) size = height + 9;
+
 					data.push_back(size);
 
 					n=value_.find(" ");
