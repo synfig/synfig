@@ -410,12 +410,11 @@ void Layer_PasteCanvas::get_times_vfunc(Node::time_set &set) const
 	Node::time_set tset;
 	if(canvas) tset = canvas->get_times();
 
-	Node::time_set::iterator 	i = tset.begin(),
-									end = tset.end();
+	Node::time_set::iterator i = tset.begin(), end = tset.end();
 
 	//Make sure we offset the time...
-	//TODO: SOMETHING STILL HAS TO BE DONE WITH THE OTHER DIRECTION
-	//		(recursing down the tree needs to take this into account too...)
+	//! \todo: SOMETHING STILL HAS TO BE DONE WITH THE OTHER DIRECTION
+	//		   (recursing down the tree needs to take this into account too...)
 	for(; i != end; ++i)
 		set.insert(*i
 #ifdef ADJUST_WAYPOINTS_FOR_TIME_OFFSET // see node.h
