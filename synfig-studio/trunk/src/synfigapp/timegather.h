@@ -92,40 +92,36 @@ struct timepoints_ref
 //assumes they're sorted... (incremental advance)
 //checks the intersection of the two sets... might be something better in the stl
 template < typename I1, typename I2 >
-bool check_intersect(I1 b1, I1 end1, I2 b2, I2 end2)
+bool check_intersect(I1 b1, I1 end1, I2 b2, I2 end2, synfig::Time time_offset = 0)
 {
 	if(b1 == end1 || b2 == end2)
 		return false;
 
 	for(; b1 != end1 && b2 != end2;)
 	{
-		if(*b1 < *b2) ++b1;
-		else if(*b2 < *b1) ++b2;
+		if(*b1 < *b2 + time_offset) ++b1;
+		else if(*b2 + time_offset < *b1) ++b2;
 		else
 		{
-			assert(*b1 == *b2);
+			assert(*b1 == *b2 + time_offset);
 			return true;
 		}
 	}
 	return false;
 }
 
-//pointer kind of a hack, gets the accurate times from a value desc
-//	(deals with dynamic list member correctly... i.e. gathers activepoints)
-const synfig::Node::time_set *get_times_from_vdesc(const synfigapp::ValueDesc &v);
-
-//get's the closest time inside the set
+//gets the closest time inside the set
 bool get_closest_time(const synfig::Node::time_set &tset, const synfig::Time &t,
 						const synfig::Time &range, synfig::Time &out);
 
 //recursion functions based on time restrictions (can be expanded later)...
 //builds a list of relevant waypoints and activepoints inside the timepoints_ref structure
 void recurse_valuedesc(synfigapp::ValueDesc valdesc, const std::set<synfig::Time> &tlist,
-								timepoints_ref &vals);
+								timepoints_ref &vals, synfig::Time time = 0);
 void recurse_layer(synfig::Layer::Handle layer, const std::set<synfig::Time> &tlist,
-								timepoints_ref &vals);
+								timepoints_ref &vals, synfig::Time time = 0);
 void recurse_canvas(synfig::Canvas::Handle canvas, const std::set<synfig::Time> &tlist,
-								timepoints_ref &vals);
+								timepoints_ref &vals, synfig::Time time = 0);
 
 
 

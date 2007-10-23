@@ -124,6 +124,30 @@ CellRenderer_TimeTrack::is_selected(const Waypoint& waypoint)const
 	return selected==waypoint;
 }
 
+const synfig::Time get_time_offset_from_vdesc(const synfigapp::ValueDesc &v)
+{
+#ifdef ADJUST_WAYPOINTS_FOR_TIME_OFFSET
+	if(v.get_value_type() != synfig::ValueBase::TYPE_CANVAS)
+		return synfig::Time::zero();
+
+	synfig::Canvas::Handle canvasparam = v.get_value().get(Canvas::Handle());
+	if(!canvasparam)
+		return synfig::Time::zero();
+
+	if (!v.parent_is_layer_param())
+		return synfig::Time::zero();
+
+	synfig::Layer::Handle layer = v.get_layer();
+
+	if (layer->get_name()!="PasteCanvas")
+		return synfig::Time::zero();
+
+	return layer->get_param("time_offset").get(Time());
+#else // ADJUST_WAYPOINTS_FOR_TIME_OFFSET
+	return synfig::Time::zero();
+#endif
+}
+
 //kind of a hack... pointer is ugly
 const synfig::Node::time_set *get_times_from_vdesc(const synfigapp::ValueDesc &v)
 {
@@ -132,33 +156,7 @@ const synfig::Node::time_set *get_times_from_vdesc(const synfigapp::ValueDesc &v
 		synfig::Canvas::Handle canvasparam = v.get_value().get(Canvas::Handle());
 
 		if(canvasparam)
-		{
-#ifdef ADJUST_WAYPOINTS_FOR_TIME_OFFSET // see node.h
-			synfig::Time::value_type time_offset = 0;
-			if (v.parent_is_layer_param())
-			{
-				synfig::Layer::Handle layer = v.get_layer();
-				if (layer->get_name()=="PasteCanvas")
-					time_offset = layer->get_param("time_offset").get(Time());
-			}
-
-			const Node::time_set *times = &canvasparam->get_times();
-
-			if (time_offset)
-			{
-				//! \todo this is a memory leak - blame the 'kind of hack' above
-				Node::time_set *tmp = new Node::time_set;
-				Node::time_set::iterator i = times->begin(), end = times->end();
-				for (; i != end; ++i)
-					tmp->insert(*i - time_offset);
-				return tmp;
-			}
-
-			return times;
-#else // ADJUST_WAYPOINTS_FOR_TIME_OFFSET
 			return &canvasparam->get_times();
-#endif
-		}
 	}
 
 	ValueNode *base_value = v.get_value_node().get();
@@ -287,6 +285,7 @@ CellRenderer_TimeTrack::render_vfunc(
 
 		if(tset)
 		{
+			const synfig::Time time_offset = get_time_offset_from_vdesc(value_desc);
 			synfig::Node::time_set::const_iterator	i = tset->begin(), end = tset->end();
 
 			float 	lower = adjustment->get_lower(),
@@ -308,10 +307,9 @@ CellRenderer_TimeTrack::render_vfunc(
 			for(; i != end; ++i)
 			{
 				//find the coordinate in the drawable space...
-				Time t = i->get_time();
-
-				if(!t.is_valid())
-					continue;
+				Time t_orig = i->get_time();
+				if(!t_orig.is_valid()) continue;
+				Time t = t_orig - time_offset;
 
 				//if it found it... (might want to change comparison, and optimize
 				//					 sel_times.find to not produce an overall nlogn solution)
@@ -321,13 +319,13 @@ CellRenderer_TimeTrack::render_vfunc(
 				//if move dragging draw offset
 				//if copy dragging draw both...
 
-				if(valselected && sel_times.find(t) != sel_times.end())
+				if(valselected && sel_times.find(t_orig) != sel_times.end())
 				{
 					if(dragging) //skip if we're dragging because we'll render it later
 					{
 						if(mode & COPY_MASK) // draw both blue and red moved
 						{
-							drawredafter.push_back((t + diff).round(cfps));
+							drawredafter.push_back(t + diff.round(cfps));
 							gc->set_rgb_fg_color(Gdk::Color("#00EEEE"));
 						}else if(mode & DELETE_MASK) //it's just red...
 						{
@@ -335,7 +333,7 @@ CellRenderer_TimeTrack::render_vfunc(
 							selected=true;
 						}else //move - draw the red on top of the others...
 						{
-							drawredafter.push_back((t + diff).round(cfps));
+							drawredafter.push_back(t + diff.round(cfps));
 							continue;
 						}
 					}else
@@ -358,7 +356,7 @@ CellRenderer_TimeTrack::render_vfunc(
 					area.get_height()-2,
 					area.get_height()-2
 				);
-				render_time_point_to_window(window,area2,*i,selected);
+				render_time_point_to_window(window,area2,*i - time_offset,selected);
 
 				/*window->draw_arc(gc,true,
 				area.get_x() + x - area.get_height()/4,	area.get_y() + area.get_height()/8,
@@ -665,8 +663,9 @@ CellRenderer_TimeTrack::activate_vfunc(
 
 			synfigapp::ValueDesc valdesc = property_value_desc().get_value();
 			const Node::time_set *tset = get_times_from_vdesc(valdesc);
+			const synfig::Time time_offset = get_time_offset_from_vdesc(valdesc);
 
-			bool clickfound = tset && get_closest_time(*tset,actual_time,pixel_width*cell_area.get_height(),stime);
+			bool clickfound = tset && get_closest_time(*tset,actual_time+time_offset,pixel_width*cell_area.get_height(),stime);
 			bool selectmode = mode & SELECT_MASK;
 
 			//NOTE LATER ON WE SHOULD MAKE IT SO MULTIPLE VALUENODES CAN BE SELECTED AT ONCE
@@ -748,7 +747,7 @@ CellRenderer_TimeTrack::activate_vfunc(
 				synfigapp::ValueDesc valdesc = property_value_desc().get_value();
 				const Node::time_set *tset = get_times_from_vdesc(valdesc);
 
-				bool clickfound = tset && get_closest_time(*tset,actual_time,pixel_width*cell_area.get_height(),stime);
+				bool clickfound = tset && get_closest_time(*tset,actual_time+get_time_offset_from_vdesc(valdesc),pixel_width*cell_area.get_height(),stime);
 
 				etl::handle<synfig::Node> node;
 				if(valdesc.get_value(stime).get_type()==ValueBase::TYPE_CANVAS)

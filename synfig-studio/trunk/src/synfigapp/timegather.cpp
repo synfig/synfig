@@ -96,7 +96,7 @@ void synfigapp::timepoints_ref::insert(synfigapp::ValueDesc v, synfig::Activepoi
 
 //recursion functions
 void synfigapp::recurse_canvas(synfig::Canvas::Handle h, const std::set<Time> &tlist,
-								timepoints_ref &vals)
+								timepoints_ref &vals, synfig::Time time_offset)
 {
 
 	//synfig::info("Canvas...\n Recurse through layers");
@@ -107,15 +107,15 @@ void synfigapp::recurse_canvas(synfig::Canvas::Handle h, const std::set<Time> &t
 	for(; i != end; ++i)
 	{
 		const Node::time_set &tset = (*i)->get_times();
-		if(check_intersect(tset.begin(),tset.end(),tlist.begin(),tlist.end()))
+		if(check_intersect(tset.begin(),tset.end(),tlist.begin(),tlist.end(),time_offset))
 		{
-			recurse_layer(*i,tlist,vals);
+			recurse_layer(*i,tlist,vals,time_offset);
 		}
 	}
 }
 
 void synfigapp::recurse_layer(synfig::Layer::Handle h, const std::set<Time> &tlist,
-								timepoints_ref &vals)
+								timepoints_ref &vals, synfig::Time time_offset)
 {
 	// iterate through the layers
 	//check for special case of paste canvas
@@ -128,20 +128,10 @@ void synfigapp::recurse_layer(synfig::Layer::Handle h, const std::set<Time> &tli
 		//synfig::info("We are a paste canvas so go into that");
 		//recurse into the canvas
 		const synfig::Node::time_set &tset = p->get_sub_canvas()->get_times();
+		synfig::Time subcanvas_time_offset(time_offset + p->get_time_offset());
 
-		if(check_intersect(tset.begin(),tset.end(),tlist.begin(),tlist.end()))
-		{
-			//we have to offset the times so it won't wreck havoc if the canvas is imported more than once...
-			// and so we get correct results when offsets are present
-			std::set<Time>	tlistoff;
-			std::set<Time>::iterator i = tlist.begin(), end = tlist.end();
-			for(; i != end; ++i)
-			{
-				tlistoff.insert(*i - p->get_time_offset());
-			}
-
-			recurse_canvas(p->get_sub_canvas(),tlist,vals);
-		}
+		if(check_intersect(tset.begin(),tset.end(),tlist.begin(),tlist.end(),subcanvas_time_offset))
+			recurse_canvas(p->get_sub_canvas(),tlist,vals,subcanvas_time_offset);
 	}
 
 	//check all the valuenodes regardless...
@@ -152,9 +142,9 @@ void synfigapp::recurse_layer(synfig::Layer::Handle h, const std::set<Time> &tli
 	{
 		const synfig::Node::time_set &tset = i->second->get_times();
 
-		if(check_intersect(tset.begin(),tset.end(),tlist.begin(),tlist.end()))
+		if(check_intersect(tset.begin(),tset.end(),tlist.begin(),tlist.end(),time_offset))
 		{
-			recurse_valuedesc(ValueDesc(h,i->first),tlist,vals);
+			recurse_valuedesc(ValueDesc(h,i->first),tlist,vals,time_offset);
 		}
 	}
 }
@@ -174,7 +164,7 @@ static bool sorted(IT i,IT end, const CMP &cmp = CMP())
 }
 
 void synfigapp::recurse_valuedesc(synfigapp::ValueDesc h, const std::set<Time> &tlist,
-								timepoints_ref &vals)
+								timepoints_ref &vals, synfig::Time time_offset)
 {
 	//special cases for Animated, DynamicList, and Linkable
 
@@ -199,11 +189,11 @@ void synfigapp::recurse_valuedesc(synfigapp::ValueDesc h, const std::set<Time> &
 			{
 				//synfig::info("tpair t(%.3f) = %.3f", (float)*j, (float)(i->get_time()));
 
-				if(j->is_equal(i->get_time()))
+				if((*j+time_offset).is_equal(i->get_time()))
 				{
 					vals.insert(p,*i);
 					++i,++j;
-				}else if(*i < *j)
+				}else if(*i < *j+time_offset)
 				{
 					++i;
 				}else ++j;
@@ -234,7 +224,7 @@ void synfigapp::recurse_valuedesc(synfigapp::ValueDesc h, const std::set<Time> &
 
 			for(; j != jend && i != end;)
 			{
-				double it = *i;
+				double it = *i+time_offset;
 				double jt = j->get_time();
 				double diff = (double)(it - jt);
 
@@ -279,9 +269,9 @@ void synfigapp::recurse_valuedesc(synfigapp::ValueDesc h, const std::set<Time> &
 			{
 				const Node::time_set &tset = i->get_times();
 
-				if(check_intersect(tset.begin(),tset.end(),tlist.begin(),tlist.end()))
+				if(check_intersect(tset.begin(),tset.end(),tlist.begin(),tlist.end(),time_offset))
 				{
-					recurse_valuedesc(ValueDesc(p,index),tlist,vals);
+					recurse_valuedesc(ValueDesc(p,index),tlist,vals,time_offset);
 				}
 			}
 			return;
@@ -302,9 +292,9 @@ void synfigapp::recurse_valuedesc(synfigapp::ValueDesc h, const std::set<Time> &
 				ValueNode::Handle v = p->get_link(i);
 				const Node::time_set &tset = v->get_times();
 
-				if(check_intersect(tset.begin(),tset.end(),tlist.begin(),tlist.end()))
+				if(check_intersect(tset.begin(),tset.end(),tlist.begin(),tlist.end(),time_offset))
 				{
-					recurse_valuedesc(ValueDesc(p,i),tlist,vals);
+					recurse_valuedesc(ValueDesc(p,i),tlist,vals,time_offset);
 				}
 			}
 		}
