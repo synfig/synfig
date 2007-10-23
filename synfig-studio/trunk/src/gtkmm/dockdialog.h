@@ -70,7 +70,7 @@ class DockDialog : public Gtk::Window
 private:
 	std::list<DockBook*> dock_book_list;
 
-	std::vector<Gtk::Paned*>	pannels_;
+	std::vector<Gtk::Paned*>	panels_;
 	std::vector<int>			dock_book_sizes_;
 
 

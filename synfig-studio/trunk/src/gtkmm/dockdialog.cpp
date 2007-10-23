@@ -336,7 +336,7 @@ DockDialog::refresh()
 
 	//prepend_button->show();
 	//append_button->show();
-	pannels_.clear();
+	panels_.clear();
 
 	if(dock_book_list.size()==1)
 	{
@@ -346,11 +346,11 @@ DockDialog::refresh()
 	{
 		Gtk::Paned* parent(manage(is_horizontal?(Gtk::Paned*)new Gtk::HPaned:(Gtk::Paned*)new Gtk::VPaned));
 
-		pannels_.push_back(parent);
+		panels_.push_back(parent);
 
-		if(pannels_.size()<=dock_book_sizes_.size())
-			pannels_.back()->set_position(dock_book_sizes_[pannels_.size()-1]);
-		pannels_.back()->property_position().signal_changed().connect(
+		if(panels_.size()<=dock_book_sizes_.size())
+			panels_.back()->set_position(dock_book_sizes_[panels_.size()-1]);
+		panels_.back()->property_position().signal_changed().connect(
 			sigc::mem_fun(*this,&DockDialog::rebuild_sizes)
 		);
 		//parent->show();
@@ -363,11 +363,11 @@ DockDialog::refresh()
 		for(next=dock_book_list.begin(),next++,iter=next++;next!=dock_book_list.end();iter=next++)
 		{
 			Gtk::Paned* current(manage(is_horizontal?(Gtk::Paned*)new Gtk::HPaned:(Gtk::Paned*)new Gtk::VPaned));
-			pannels_.push_back(current);
+			panels_.push_back(current);
 
-			if(pannels_.size()<=dock_book_sizes_.size())
-				pannels_.back()->set_position(dock_book_sizes_[pannels_.size()-1]);
-			pannels_.back()->property_position().signal_changed().connect(
+			if(panels_.size()<=dock_book_sizes_.size())
+				panels_.back()->set_position(dock_book_sizes_[panels_.size()-1]);
+			panels_.back()->property_position().signal_changed().connect(
 				sigc::mem_fun(*this,&DockDialog::rebuild_sizes)
 			);
 
@@ -395,9 +395,9 @@ DockDialog::rebuild_sizes()
 {
 	unsigned int i=0;
 	dock_book_sizes_.clear();
-	for(i=0;i<pannels_.size();i++)
+	for(i=0;i<panels_.size();i++)
 	{
-		dock_book_sizes_.push_back(pannels_[i]->get_position());
+		dock_book_sizes_.push_back(panels_[i]->get_position());
 	}
 }
 
@@ -405,9 +405,9 @@ void
 DockDialog::set_dock_book_sizes(const std::vector<int>& new_sizes)
 {
 	unsigned int i=0;
-	for(i=0;i<pannels_.size() && i<new_sizes.size();i++)
+	for(i=0;i<panels_.size() && i<new_sizes.size();i++)
 	{
-		pannels_[i]->set_position(new_sizes[i]);
+		panels_[i]->set_position(new_sizes[i]);
 	}
 	dock_book_sizes_=new_sizes;
 	//rebuild_sizes();
