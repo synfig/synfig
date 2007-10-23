@@ -247,6 +247,32 @@ guid_cast(const synfig::GUID& guid)
 	return etl::handle<T>::cast_dynamic(synfig::find_node(guid));
 }
 
+#ifdef _DEBUG
+template <typename T>
+synfig::String set_string(T start, T end)
+{
+	synfig::String ret("[");
+	bool started = false;
+
+	while (start != end)
+	{
+		if (started)	ret += ", ";
+		else			started = true;
+
+		ret += synfig::String((*start).c_str());
+		start++;
+	}
+
+	return ret + "]";
+}
+
+template <typename T>
+synfig::String set_string(T set)
+{
+	return set_string(set.begin(), set.end());
+}
+#endif // _DEBUG
+
 typedef etl::handle<Node> NodeHandle;
 
 }; // END of namespace synfig
