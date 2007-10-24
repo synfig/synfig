@@ -832,7 +832,7 @@ Layer_Freetype::accelerated_render(Context context,Surface *surface,int quality,
 			pen.x = bx + iter2->pos.x;
 			pen.y = by + iter2->pos.y;
 
-			//synfig::info("GLYPH: pen.x=%d, pen,y=%d",curr_line,(pen.x+32)>>6,(pen.y+32)>>6);
+			//synfig::info("GLYPH: line %d, pen.x=%d, pen,y=%d",curr_line,(pen.x+32)>>6,(pen.y+32)>>6);
 
 			error = FT_Glyph_To_Bitmap( &image, ft_render_mode_normal,0/*&pen*/, 1 );
 			if(error) { FT_Done_Glyph( image ); continue; }
