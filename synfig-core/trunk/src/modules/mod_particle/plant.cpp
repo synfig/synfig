@@ -284,7 +284,11 @@ Plant::set_param(const String & param, const ValueBase &value)
 			else if (step > 1)
 				step=1;
 		});
-	IMPORT_PLUS(splits,needs_sync_=true);
+	IMPORT_PLUS(splits,{
+			needs_sync_=true;
+			if (splits < 1)
+				splits = 1;
+		});
 	IMPORT_PLUS(sprouts,needs_sync_=true);
 	IMPORT_PLUS(random_factor,needs_sync_=true);
 	IMPORT_PLUS(drag,needs_sync_=true);
