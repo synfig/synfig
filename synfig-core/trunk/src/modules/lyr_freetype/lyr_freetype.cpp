@@ -788,6 +788,11 @@ Layer_Freetype::accelerated_render(Context context,Surface *surface,int quality,
 	float line_height;
 	line_height=vcompress*((float)face->height*(((float)face->size->metrics.y_scale/METRICS_SCALE_ONE)));
 
+	// This module sees to expect pixel height to be negative, as it
+	// usually is.  But rendering to .bmp format causes ph to be
+	// positive, which was causing text to be rendered upside down.
+	if (ph>0) line_height = -line_height;
+
 	int	string_height;
 	string_height=round_to_int(((lines.size()-1)*line_height+lines.back().actual_height()));
 	//synfig::info("string_height=%d",string_height);
@@ -819,6 +824,13 @@ Layer_Freetype::accelerated_render(Context context,Surface *surface,int quality,
 	{
 		bx=round_to_int((pos[0]-renddesc.get_tl()[0])*pw*CHAR_RESOLUTION-orient[0]*iter->width);
 		by=round_to_int((pos[1]-renddesc.get_tl()[1])*ph*CHAR_RESOLUTION+(1.0-orient[1])*string_height-line_height*curr_line);
+
+		// I've no idea why 1.5, but it kind of works.  Otherwise,
+		// rendering to .bmp (which renders from bottom to top, due to
+		// the .bmp format describing the image from bottom to top,
+		// renders text in the wrong place.
+		if (ph>0) by += line_height/1.5;
+
 		//by=round_to_int(vcompress*((pos[1]-renddesc.get_tl()[1])*ph*64+(1.0-orient[1])*string_height-face->size->metrics.height*curr_line));
 		//synfig::info("curr_line=%d, bx=%d, by=%d",curr_line,bx,by);
 
@@ -843,7 +855,7 @@ Layer_Freetype::accelerated_render(Context context,Surface *surface,int quality,
 				for(u=0;u<bit->bitmap.width;u++)
 				{
 					int x=u+((pen.x+32)>>6)+ bit->left;
-					int y=v+((pen.y+32)>>6)- bit->top;
+					int y=((pen.y+32)>>6) + (bit->top - v) * ((ph<0) ? -1 : 1);
 					if(	y>=0 &&
 						x>=0 &&
 						y<surface->get_h() &&
