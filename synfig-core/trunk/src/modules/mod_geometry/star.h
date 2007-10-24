@@ -52,6 +52,7 @@ private:
 	Real radius2;
 	int points;
 	Angle angle;
+	bool regular_polygon;
 public:
 	Star();
 

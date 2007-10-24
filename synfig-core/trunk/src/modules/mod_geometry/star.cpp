@@ -73,7 +73,8 @@ Star::Star():
 	radius1(1.0),
 	radius2(0.38),
 	points(5),
-	angle(Angle::deg(90))
+	angle(Angle::deg(90)),
+	regular_polygon(false)
 {
 	sync();
 }
@@ -90,7 +91,8 @@ Star::sync()
 		Angle dist1(dist_between_points*i+angle);
 		Angle dist2(dist_between_points*i+dist_between_points/2+angle);
 		vector_list.push_back(Point(Angle::cos(dist1).get()*radius1,Angle::sin(dist1).get()*radius1));
-		vector_list.push_back(Point(Angle::cos(dist2).get()*radius2,Angle::sin(dist2).get()*radius2));
+		if (!regular_polygon)
+			vector_list.push_back(Point(Angle::cos(dist2).get()*radius2,Angle::sin(dist2).get()*radius2));
 	}
 	clear();
 	add_polygon(vector_list);
@@ -128,6 +130,13 @@ Star::set_param(const String & param, const ValueBase &value)
 		return true;
 	}
 
+	if(param=="regular_polygon" && value.same_type_as(regular_polygon))
+	{
+		value.put(&regular_polygon);
+		sync();
+		return true;
+	}
+
 	if(param=="vector_list")
 		return false;
 
@@ -141,6 +150,7 @@ Star::get_param(const String& param)const
 	EXPORT(radius2);
 	EXPORT(points);
 	EXPORT(angle);
+	EXPORT(regular_polygon);
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
@@ -182,6 +192,11 @@ Star::get_param_vocab()const
 	ret.push_back(ParamDesc("points")
 		.set_local_name(_("Points"))
 		.set_description(_("The number of points in the star"))
+	);
+
+	ret.push_back(ParamDesc("regular_polygon")
+		.set_local_name(_("Regular Polygon"))
+		.set_description(_("Whether to draw a star or a regular polygon"))
 	);
 
 	return ret;
