@@ -762,7 +762,7 @@ CellRenderer_TimeTrack::activate_vfunc(
 
 				if(clickfound && node)
 				{
-					show_timepoint_menu(node, stime, actual_time+time_offset<stime?SIDE_LEFT:SIDE_RIGHT);
+					show_timepoint_menu(node, stime, time_offset, actual_time+time_offset<stime?SIDE_LEFT:SIDE_RIGHT);
 				}
 			}
 
@@ -931,7 +931,7 @@ set_waypoint_model(std::set<synfig::Waypoint, std::less<UniqueID> > waypoints, W
 }
 
 void
-CellRenderer_TimeTrack::show_timepoint_menu(const etl::handle<synfig::Node>& node, const synfig::Time& time, Side side)
+CellRenderer_TimeTrack::show_timepoint_menu(const etl::handle<synfig::Node>& node, const synfig::Time& time, const synfig::Time& time_offset, Side side)
 {
 	std::set<synfig::Waypoint, std::less<UniqueID> > waypoint_set;
 	int n;
@@ -1013,13 +1013,15 @@ CellRenderer_TimeTrack::show_timepoint_menu(const etl::handle<synfig::Node>& nod
 				*canvas_interface(),
 				&synfigapp::CanvasInterface::set_time
 			),
-			time
+			time - time_offset
 		)
 	));
 
 	if(!waypoint_set.empty())
 	{
-		if(waypoint_set.size()==1)
+		// attempting to locate the valuenode for the clicked waypoint doesn't work if this is a Canvas parameter,
+		// so act as if there were multiple waypoints in that case as a workaround
+		if(waypoint_set.size()==1 && !Canvas::Handle::cast_dynamic(node))
 		{
 			delete menu;
 			menu=0;

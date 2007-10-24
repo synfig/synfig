@@ -173,7 +173,7 @@ public:
 	CellRenderer_TimeTrack();
     ~CellRenderer_TimeTrack();
 
-	void show_timepoint_menu(const etl::handle<synfig::Node>& node, const synfig::Time& time, Side side=SIDE_RIGHT);
+	void show_timepoint_menu(const etl::handle<synfig::Node>& node, const synfig::Time& time, const synfig::Time& time_offset, Side side=SIDE_RIGHT);
 
 	void set_adjustment(Gtk::Adjustment &x);
 	Gtk::Adjustment *get_adjustment();
