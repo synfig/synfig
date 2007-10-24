@@ -746,8 +746,9 @@ CellRenderer_TimeTrack::activate_vfunc(
 				Time stime;
 				synfigapp::ValueDesc valdesc = property_value_desc().get_value();
 				const Node::time_set *tset = get_times_from_vdesc(valdesc);
+				synfig::Time time_offset = get_time_offset_from_vdesc(valdesc);
 
-				bool clickfound = tset && get_closest_time(*tset,actual_time+get_time_offset_from_vdesc(valdesc),pixel_width*cell_area.get_height(),stime);
+				bool clickfound = tset && get_closest_time(*tset,actual_time+time_offset,pixel_width*cell_area.get_height(),stime);
 
 				etl::handle<synfig::Node> node;
 				if(valdesc.get_value(stime).get_type()==ValueBase::TYPE_CANVAS)
@@ -761,7 +762,7 @@ CellRenderer_TimeTrack::activate_vfunc(
 
 				if(clickfound && node)
 				{
-					show_timepoint_menu(node, stime, actual_time<stime?SIDE_LEFT:SIDE_RIGHT);
+					show_timepoint_menu(node, stime, actual_time+time_offset<stime?SIDE_LEFT:SIDE_RIGHT);
 				}
 			}
 
