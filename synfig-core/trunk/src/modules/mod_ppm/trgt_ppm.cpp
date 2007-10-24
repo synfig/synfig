@@ -106,12 +106,12 @@ ppm::start_frame(synfig::ProgressCallback *callback)
 		String newfilename(filename_sans_extension(filename) +
 						   etl::strprintf("%04d",imagecount) +
 						   filename_extension(filename));
-		file=SmartFILE(fopen(newfilename.c_str(),"wb"));
+		file=SmartFILE(fopen(newfilename.c_str(),POPEN_BINARY_WRITE_TYPE));
 		if(callback)callback->task(newfilename);
 	}
 	else
 	{
-		file=SmartFILE(fopen(filename.c_str(),"wb"));
+		file=SmartFILE(fopen(filename.c_str(),POPEN_BINARY_WRITE_TYPE));
 		if(callback)callback->task(filename);
 	}
 

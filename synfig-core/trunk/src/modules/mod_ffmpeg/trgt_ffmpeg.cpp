@@ -128,7 +128,7 @@ ffmpeg_trgt::init()
 
 	command=strprintf("ffmpeg -f image2pipe -vcodec ppm -an -r %f -i pipe: -loop -hq -title \"%s\" -vcodec mpeg1video -y \"%s\"\n",desc.get_frame_rate(),get_canvas()->get_name().c_str(),filename.c_str());
 
-	file=popen(command.c_str(),"wb");
+	file=popen(command.c_str(),POPEN_BINARY_WRITE_TYPE);
 
 	// etl::yield();
 

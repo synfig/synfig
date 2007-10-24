@@ -64,7 +64,7 @@ SYNFIG_TARGET_SET_CVS_ID(yuv,"$Id$");
 
 yuv::yuv(const char *FILENAME):
 	filename(FILENAME),
-	file( (filename=="-")?stdout:fopen(filename.c_str(),"wb") ),
+	file( (filename=="-")?stdout:fopen(filename.c_str(),POPEN_BINARY_WRITE_TYPE) ),
 	dithering(true)
 {
 	// YUV420P doesn't have an alpha channel

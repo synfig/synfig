@@ -40,6 +40,12 @@
 #define ETL_STRPRINTF_MAX_LENGTH	(800)
 #endif
 
+#ifdef WIN32
+#define POPEN_BINARY_WRITE_TYPE "wb"
+#else
+#define POPEN_BINARY_WRITE_TYPE "w"
+#endif
+
 /* === T Y P E D E F S ===================================================== */
 
 _ETL_BEGIN_CDECLS

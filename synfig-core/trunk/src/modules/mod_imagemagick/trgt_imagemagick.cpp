@@ -125,7 +125,7 @@ imagemagick_trgt::start_frame(synfig::ProgressCallback *cb)
 	else
 		command=strprintf("convert -depth 8 -size %dx%d rgb:-[0] -density %dx%d \"%s\"\n",desc.get_w(),desc.get_h(),round_to_int(desc.get_x_res()/39.3700787402),round_to_int(desc.get_y_res()/39.3700787402),filename.c_str());
 
-	file=popen(command.c_str(),"wb");
+	file=popen(command.c_str(),POPEN_BINARY_WRITE_TYPE);
 
 	if(!file)
 	{

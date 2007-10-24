@@ -58,7 +58,7 @@ SYNFIG_TARGET_SET_CVS_ID(gif,"$Id$");
 
 gif::gif(const char *filename_):
 	filename(filename_),
-	file( (filename=="-")?stdout:fopen(filename_,"wb") ),
+	file( (filename=="-")?stdout:fopen(filename_,POPEN_BINARY_WRITE_TYPE) ),
 	imagecount(0),
 
 	lossy(true),

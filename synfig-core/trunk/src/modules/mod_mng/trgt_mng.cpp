@@ -148,7 +148,7 @@ mng_trgt::init(){
 	struct tm* gmt = gmtime(&t);
 	w=desc.get_w(); h=desc.get_h();
 	//synfig::error("mng_trgt: init %d %d",w,h); 
-	file = fopen(filename.c_str(), "wb");
+	file = fopen(filename.c_str(), POPEN_BINARY_WRITE_TYPE);
 	if( file == NULL ) goto cleanup_on_error;
 	mng = mng_initialize((mng_ptr)file, mng_alloc_proc, mng_free_proc, MNG_NULL);
 	if(mng == MNG_NULL) goto cleanup_on_error;

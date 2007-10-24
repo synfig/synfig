@@ -128,7 +128,7 @@ dv_trgt::init()
 		command=strprintf("encodedv - > \"%s\"\n",filename.c_str());
 
 	// Open the pipe to encodedv
-	file=popen(command.c_str(),"wb");
+	file=popen(command.c_str(),POPEN_BINARY_WRITE_TYPE);
 
 	if(!file)
 	{
