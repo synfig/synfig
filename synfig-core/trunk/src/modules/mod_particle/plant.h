@@ -84,6 +84,7 @@ private:
 	Random random;
 
 	bool size_as_alpha;
+	bool reverse;
 	mutable bool needs_sync_;
 	mutable synfig::Mutex mutex;
 
