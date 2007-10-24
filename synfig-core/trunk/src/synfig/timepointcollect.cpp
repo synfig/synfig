@@ -31,6 +31,7 @@
 
 #include "timepointcollect.h"
 #include "valuenode_animated.h"
+#include "layer_pastecanvas.h"
 #include "layer.h"
 #include "canvas.h"
 #include "value.h"
@@ -90,7 +91,13 @@ synfig::waypoint_collect(set<Waypoint, std::less<UniqueID> >& waypoint_set,const
 		ValueBase canvas_value(layer->get_param("canvas"));
 		if(canvas_value.get_type()==ValueBase::TYPE_CANVAS)
 		{
-			ret+=waypoint_collect(waypoint_set,time,Canvas::Handle(canvas_value.get(Canvas::Handle())));
+			etl::handle<Layer_PasteCanvas> p = etl::handle<Layer_PasteCanvas>::cast_dynamic(layer);
+			if (p)
+				ret+=waypoint_collect(waypoint_set, time + p->get_time_offset(),
+									  Canvas::Handle(canvas_value.get(Canvas::Handle())));
+			else
+				ret+=waypoint_collect(waypoint_set, time,
+									  Canvas::Handle(canvas_value.get(Canvas::Handle())));
 		}
 		return ret;
 	}
