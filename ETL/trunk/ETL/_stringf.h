@@ -41,8 +41,10 @@
 #endif
 
 #ifdef WIN32
+#define POPEN_BINARY_READ_TYPE "rb"
 #define POPEN_BINARY_WRITE_TYPE "wb"
 #else
+#define POPEN_BINARY_READ_TYPE "r"
 #define POPEN_BINARY_WRITE_TYPE "w"
 #endif
 

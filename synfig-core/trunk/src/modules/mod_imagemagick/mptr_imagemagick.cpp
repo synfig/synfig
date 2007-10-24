@@ -173,7 +173,7 @@ imagemagick_mptr::get_frame(synfig::Surface &surface,Time /*time*/, synfig::Prog
 
 	command=strprintf("convert \"%s\" -flatten ppm:-\n",filename.c_str());
 
-	file=popen(command.c_str(),"rb");
+	file=popen(command.c_str(),POPEN_BINARY_READ_TYPE);
 
 	if(!file)
 	{
