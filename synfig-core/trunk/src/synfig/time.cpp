@@ -193,7 +193,7 @@ Time::get_string(float fps, Time::Format format)const
 		int second;
 		second=time;time-=second;
 
-		if(fps)
+		if(fps && fps>1)
 		{
 			int frame;
 			frame=round_to_int(time*fps);
@@ -219,7 +219,7 @@ Time::get_string(float fps, Time::Format format)const
 		started = true;
 	}
 
-	if(fps)
+	if(fps && fps>1)
 	{
 		int second;
 		float frame;
