@@ -823,13 +823,13 @@ Layer_Freetype::accelerated_render(Context context,Surface *surface,int quality,
 	for(curr_line=0,iter=lines.begin();iter!=lines.end();++iter,curr_line++)
 	{
 		bx=round_to_int((pos[0]-renddesc.get_tl()[0])*pw*CHAR_RESOLUTION-orient[0]*iter->width);
-		by=round_to_int((pos[1]-renddesc.get_tl()[1])*ph*CHAR_RESOLUTION+(1.0-orient[1])*string_height-line_height*curr_line);
-
 		// I've no idea why 1.5, but it kind of works.  Otherwise,
 		// rendering to .bmp (which renders from bottom to top, due to
 		// the .bmp format describing the image from bottom to top,
 		// renders text in the wrong place.
-		if (ph>0) by += line_height/1.5;
+		by=round_to_int((pos[1]-renddesc.get_tl()[1])*ph*CHAR_RESOLUTION +
+						(1.0-orient[1])*string_height-line_height*curr_line +
+						((ph>0) ? line_height/1.5 : 0));
 
 		//by=round_to_int(vcompress*((pos[1]-renddesc.get_tl()[1])*ph*64+(1.0-orient[1])*string_height-face->size->metrics.height*curr_line));
 		//synfig::info("curr_line=%d, bx=%d, by=%d",curr_line,bx,by);
