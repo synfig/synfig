@@ -147,16 +147,28 @@ Layer_PasteCanvas::set_param(const String & param, const ValueBase &value)
 {
 	IMPORT(origin);
 
+	// IMPORT(canvas);
 	if(param=="canvas" && value.same_type_as(Canvas::Handle()))
 	{
 		set_sub_canvas(value.get(Canvas::Handle()));
 		return true;
 	}
 
-//	IMPORT(canvas);
+	// IMPORT(time_offset);
+	if (param=="time_offset" && value.same_type_as(time_offset))
+	{
+		if (time_offset != value.get(Time()))
+		{
+			value.put(&time_offset);
+			// notify that the time_offset has changed so we can update the
+			// waypoint positions in parent layers
+			changed();
+		}
+		return true;
+	}
+
 	IMPORT(children_lock);
 	IMPORT(zoom);
-	IMPORT(time_offset);
 
 	return Layer_Composite::set_param(param,value);
 }
