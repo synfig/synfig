@@ -113,17 +113,28 @@ imagemagick_trgt::end_frame()
 		pclose(file);
 	}
 	file=NULL;
+	imagecount++;
 }
 
 bool
 imagemagick_trgt::start_frame(synfig::ProgressCallback *cb)
 {
 	string command;
+	string newfilename;
 
-	if(channels(pf)==4)
-		command=strprintf("convert -depth 8 -size %dx%d rgba:-[0] -density %dx%d  \"%s\"\n",desc.get_w(),desc.get_h(),round_to_int(desc.get_x_res()/39.3700787402),round_to_int(desc.get_y_res()/39.3700787402),filename.c_str());
+	if (multi_image)
+		newfilename = (filename_sans_extension(filename) +
+					   etl::strprintf(".%04d",imagecount) +
+					   filename_extension(filename));
 	else
-		command=strprintf("convert -depth 8 -size %dx%d rgb:-[0] -density %dx%d \"%s\"\n",desc.get_w(),desc.get_h(),round_to_int(desc.get_x_res()/39.3700787402),round_to_int(desc.get_y_res()/39.3700787402),filename.c_str());
+		newfilename = filename;
+
+	command=strprintf("convert -depth 8 -size %dx%d rgb%s:-[0] -density %dx%d \"%s\"\n",
+					  desc.get_w(), desc.get_h(),					// size
+					  ((channels(pf) == 4) ? "a" : ""),				// rgba or rgb?
+					  round_to_int(desc.get_x_res()/39.3700787402),	// density
+					  round_to_int(desc.get_y_res()/39.3700787402),
+					  newfilename.c_str());
 
 	file=popen(command.c_str(),POPEN_BINARY_WRITE_TYPE);
 
