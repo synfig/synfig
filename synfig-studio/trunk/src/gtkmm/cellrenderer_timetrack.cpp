@@ -84,7 +84,7 @@ CellRenderer_TimeTrack::CellRenderer_TimeTrack():
 	property_adjustment_(*this,"adjustment",&adjustment_),
 	property_enable_timing_info_(*this,"enable-timing-info", false)
 {
-		dragging=false;
+	dragging=false;
 	selection=false;
 }
 
