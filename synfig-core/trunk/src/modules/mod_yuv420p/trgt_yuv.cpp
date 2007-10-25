@@ -76,6 +76,18 @@ yuv::~yuv()
 }
 
 bool
+yuv::init()
+{
+	if (!file)
+		return false;
+
+	fprintf(file.get(), "YUV4MPEG2 W%d H%d F%d:1 Ip\n",
+			desc.get_w(), desc.get_h(),
+			round_to_int(desc.get_frame_rate()));
+	return true;
+}
+
+bool
 yuv::set_rend_desc(RendDesc *given_desc)
 {
 	given_desc->clear_flags();
@@ -95,6 +107,7 @@ yuv::set_rend_desc(RendDesc *given_desc)
 bool
 yuv::start_frame(synfig::ProgressCallback */*callback*/)
 {
+	fprintf(file.get(), "FRAME\n");
 	return static_cast<bool>(file);
 }
 

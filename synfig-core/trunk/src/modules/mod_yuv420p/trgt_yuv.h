@@ -56,6 +56,7 @@ public:
 	yuv(const char *filename);
 	virtual ~yuv();
 
+	virtual bool init();
 	virtual bool set_rend_desc(synfig::RendDesc *desc);
 	virtual bool start_frame(synfig::ProgressCallback *cb);
 	virtual void end_frame();
