@@ -337,7 +337,7 @@ dnl PKG_CHECK_MODULES(GLIB, glib-2.0,[GLIB="yes"],[GLIB="no"])
 
 TARGET_TIF="yes"
 TARGET_PNG="yes"
-TARGET_MNG="no"
+TARGET_MNG="yes"
 TARGET_JPEG="yes"
 
 if test "$TARGET_TIF" != "disabled" ; then
@@ -371,16 +371,16 @@ AC_CHECK_LIB(png, png_write_row,[
 	],[-lz -L${exec_prefix}/lib])
 ],[-lz -L${exec_prefix}/lib])
 
-#AC_CHECK_LIB(mng, mng_initialize,[
-#	MNG_LIBS="-lmng -lz"
-#	AC_DEFINE(HAVE_LIBMNG,[], [ Define if MNG library is available ] )
-#	AC_SUBST(MNG_LIBS)
-#	AM_CONDITIONAL(HAVE_LIBMNG,true)
-#],[
-#	AC_MSG_RESULT([ *** MNG Output target disabled])
-#	TARGET_MNG="no"
-#	AM_CONDITIONAL(HAVE_LIBMNG,false)
-#],[-lz -L${exec_prefix}/lib])
+AC_CHECK_LIB(mng, mng_initialize,[
+	MNG_LIBS="-lmng -lz"
+	AC_DEFINE(HAVE_LIBMNG,[], [ Define if MNG library is available ] )
+	AC_SUBST(MNG_LIBS)
+	AM_CONDITIONAL(HAVE_LIBMNG,true)
+],[
+	AC_MSG_RESULT([ *** MNG Output target disabled])
+	TARGET_MNG="no"
+	AM_CONDITIONAL(HAVE_LIBMNG,false)
+],[-lz -L${exec_prefix}/lib])
 
 AC_CHECK_LIB(jpeg, main,[
 	JPEG_LIBS="-ljpeg"
@@ -532,8 +532,6 @@ AC_SUBST(synfigincludedir)
 	
 )]
 
-# src/modules/mod_mng/Makefile
-
 AC_OUTPUT(
 synfig-config
 @PACKAGE_TARNAME@.pc
@@ -546,6 +544,7 @@ src/modules/mod_bmp/Makefile
 src/modules/mod_gif/Makefile
 src/modules/mod_ppm/Makefile
 src/modules/mod_png/Makefile
+src/modules/mod_mng/Makefile
 src/modules/mod_jpeg/Makefile
 src/modules/lyr_std/Makefile
 src/modules/mod_geometry/Makefile
