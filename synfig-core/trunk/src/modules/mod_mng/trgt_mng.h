@@ -15,8 +15,6 @@
 **
 ** === N O T E S ===========================================================
 **
-** FIXME: THIS DOES NOT ACTUALLY WORK YET
-**
 ** ========================================================================= */
 
 /* === S T A R T =========================================================== */
@@ -30,8 +28,8 @@
 #include <synfig/string.h>
 #include <cstdio>
 
-#include <png.h>
-#include <jpeglib.h>
+// #include <png.h>
+// #include <jpeglib.h>
 
 #if !defined(MNG_SUPPORT_FULL)
 #define MNG_SUPPORT_FULL 1
