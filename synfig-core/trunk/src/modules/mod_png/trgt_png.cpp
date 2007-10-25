@@ -141,7 +141,7 @@ png_trgt::start_frame(synfig::ProgressCallback *callback)
 	else if(multi_image)
 	{
 		String newfilename(filename_sans_extension(filename) +
-						   etl::strprintf("%04d",imagecount) +
+						   etl::strprintf(".%04d",imagecount) +
 						   filename_extension(filename));
 		file=fopen(newfilename.c_str(),POPEN_BINARY_WRITE_TYPE);
 		if(callback)callback->task(newfilename);

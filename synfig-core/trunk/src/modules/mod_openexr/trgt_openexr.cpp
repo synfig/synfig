@@ -114,7 +114,7 @@ exr_trgt::start_frame(synfig::ProgressCallback *cb)
 	if(multi_image)
 	{
 		frame_name = (filename_sans_extension(filename) +
-					  etl::strprintf("%04d",imagecount) +
+					  etl::strprintf(".%04d",imagecount) +
 					  filename_extension(filename));
 		if(cb)cb->task(frame_name);
 	}
