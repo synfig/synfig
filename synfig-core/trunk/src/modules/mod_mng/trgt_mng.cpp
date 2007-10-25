@@ -63,22 +63,27 @@ SYNFIG_TARGET_SET_CVS_ID(mng_trgt,"$Id$");
 
 /* === M E T H O D S ======================================================= */
 
-static mng_ptr MNG_DECL mng_alloc_proc(mng_size_t size){
+static mng_ptr MNG_DECL
+mng_alloc_proc(mng_size_t size)
+{
 	return (mng_ptr)calloc(1,size);
 }
 
-static void MNG_DECL mng_free_proc(mng_ptr ptr, mng_size_t size)
+static void MNG_DECL
+mng_free_proc(mng_ptr ptr, mng_size_t size)
 {
-  free(ptr); return;
+	free(ptr); return;
 }
 
-static mng_bool MNG_DECL mng_null_proc(mng_handle mng)
+static mng_bool MNG_DECL
+mng_null_proc(mng_handle mng)
 {
 	synfig::error("mng_trgt: error: mng_null_proc");
 	return MNG_TRUE;
 }
 
-static mng_bool MNG_DECL mng_write_proc(mng_handle mng, mng_ptr buf, mng_uint32 size, mng_uint32* written)
+static mng_bool MNG_DECL
+mng_write_proc(mng_handle mng, mng_ptr buf, mng_uint32 size, mng_uint32* written)
 {
 	synfig::error("mng_trgt: error: mng_write_proc");
 	FILE* file = (FILE*)mng_get_userdata (mng);
@@ -86,10 +91,12 @@ static mng_bool MNG_DECL mng_write_proc(mng_handle mng, mng_ptr buf, mng_uint32 
 	return MNG_TRUE;
 }
 
-static mng_bool MNG_DECL mng_error_proc(
-	mng_handle mng, mng_int32 error, mng_int8 severity, mng_chunkid chunkname,
-	mng_uint32 chunkseq, mng_int32 extra1, mng_int32 extra2, mng_pchar errortext){
-	mng_trgt* me = (mng_trgt*)mng_get_userdata (mng);
+static mng_bool MNG_DECL
+mng_error_proc(mng_handle mng, mng_int32 error, mng_int8 severity, mng_chunkid chunkname,
+			   mng_uint32 chunkseq, mng_int32 extra1, mng_int32 extra2, mng_pchar errortext)
+{
+	// mng_trgt* me =
+	(mng_trgt*)mng_get_userdata (mng);
 	fprintf(stderr,"mng_trgt: error: %s",errortext);
 	// me->ready=false;
 	return MNG_TRUE;
@@ -109,9 +116,11 @@ mng_trgt::mng_trgt(const char *Filename):
 mng_trgt::~mng_trgt()
 {
 	synfig::error("mng_trgt: error: ~mng_trgt");
-	if( mng != MNG_NULL){
+	if (mng != MNG_NULL)
+	{
 		mng_putchunk_mend(mng);
-		if( mng_write(mng) != 0 ){
+		if (mng_write(mng) != 0 )
+		{
 			mng_int8 severity;
 			mng_chunkid chunkname;
 			mng_uint32 chunkseq;
@@ -123,10 +132,10 @@ mng_trgt::~mng_trgt()
 		}
 		mng_cleanup (&mng);
 	}
-	if( file != NULL ) fclose(file); file=NULL;
-	if( buffer != NULL ){ delete [] buffer; buffer = NULL; }
-	if( color_buffer != NULL ){ delete [] color_buffer; color_buffer = NULL; }
-	if( zbuffer != NULL ){ free(zbuffer); zbuffer = NULL; zbuffer_len = 0; }
+	if (file != NULL ) fclose(file); file=NULL;
+	if (buffer != NULL ) { delete [] buffer; buffer = NULL; }
+	if (color_buffer != NULL ) { delete [] color_buffer; color_buffer = NULL; }
+	if (zbuffer != NULL ) { free(zbuffer); zbuffer = NULL; zbuffer_len = 0; }
 }
 
 bool
@@ -143,38 +152,40 @@ mng_trgt::set_rend_desc(RendDesc *given_desc)
 
 
 bool
-mng_trgt::init(){
+mng_trgt::init()
+{
 	time_t t = time (NULL);
 	struct tm* gmt = gmtime(&t);
 	w=desc.get_w(); h=desc.get_h();
 	//synfig::error("mng_trgt: init %d %d",w,h); 
 	file = fopen(filename.c_str(), POPEN_BINARY_WRITE_TYPE);
-	if( file == NULL ) goto cleanup_on_error;
+	if (file == NULL ) goto cleanup_on_error;
 	mng = mng_initialize((mng_ptr)file, mng_alloc_proc, mng_free_proc, MNG_NULL);
 	if(mng == MNG_NULL) goto cleanup_on_error;
-	if( mng_setcb_errorproc(mng, mng_error_proc) != 0 ) goto cleanup_on_error;
-	if( mng_setcb_writedata(mng, mng_write_proc) != 0 ) goto cleanup_on_error;
-	if( mng_setcb_openstream(mng, mng_null_proc) != 0 ) goto cleanup_on_error;
-	if( mng_setcb_closestream(mng, mng_null_proc) != 0 ) goto cleanup_on_error;
-	if( mng_create(mng) != 0 ) goto cleanup_on_error;
-	if( mng_putchunk_mhdr(mng, w, h, multi_image?1000:0, 1, desc.get_frame_end()-desc.get_frame_start(), 0, 0) != 0 ) goto cleanup_on_error;
-	if( mng_putchunk_term(mng, MNG_TERMACTION_REPEAT, MNG_ITERACTION_LASTFRAME, 0, 0x7fffffff) != 0 ) goto cleanup_on_error;
-	if( mng_putchunk_text(mng, sizeof(MNG_TEXT_TITLE), MNG_TEXT_TITLE, get_canvas()->get_name().length(), const_cast<char *>(get_canvas()->get_name().c_str()) ) != 0 ) goto cleanup_on_error;
-	if( mng_putchunk_text(mng, sizeof(MNG_TEXT_DESCRIPTION), MNG_TEXT_DESCRIPTION, get_canvas()->get_description().length(), const_cast<char *>(get_canvas()->get_description().c_str()) ) != 0 ) goto cleanup_on_error;
-	if( mng_putchunk_text(mng, sizeof(MNG_TEXT_SOFTWARE), MNG_TEXT_SOFTWARE, sizeof("SYNFIG"), "SYNFIG" ) != 0 ) goto cleanup_on_error;
+	if (mng_setcb_errorproc(mng, mng_error_proc) != 0 ) goto cleanup_on_error;
+	if (mng_setcb_writedata(mng, mng_write_proc) != 0 ) goto cleanup_on_error;
+	if (mng_setcb_openstream(mng, mng_null_proc) != 0 ) goto cleanup_on_error;
+	if (mng_setcb_closestream(mng, mng_null_proc) != 0 ) goto cleanup_on_error;
+	if (mng_create(mng) != 0 ) goto cleanup_on_error;
+	if (mng_putchunk_mhdr(mng, w, h, multi_image?1000:0, 1, desc.get_frame_end()-desc.get_frame_start(), 0, 0) != 0 ) goto cleanup_on_error;
+	if (mng_putchunk_term(mng, MNG_TERMACTION_REPEAT, MNG_ITERACTION_LASTFRAME, 0, 0x7fffffff) != 0 ) goto cleanup_on_error;
+	if (mng_putchunk_text(mng, sizeof(MNG_TEXT_TITLE), MNG_TEXT_TITLE, get_canvas()->get_name().length(), const_cast<char *>(get_canvas()->get_name().c_str()) ) != 0 ) goto cleanup_on_error;
+	if (mng_putchunk_text(mng, sizeof(MNG_TEXT_DESCRIPTION), MNG_TEXT_DESCRIPTION, get_canvas()->get_description().length(), const_cast<char *>(get_canvas()->get_description().c_str()) ) != 0 ) goto cleanup_on_error;
+	if (mng_putchunk_text(mng, sizeof(MNG_TEXT_SOFTWARE), MNG_TEXT_SOFTWARE, sizeof("SYNFIG"), "SYNFIG" ) != 0 ) goto cleanup_on_error;
 	/* FIXME: not sure if this is correct */
-	if( mng_putchunk_gama(mng, MNG_FALSE, (int)(1.0/gamma().get_gamma()*100000)) != 0 ) goto cleanup_on_error;
-	if( mng_putchunk_phyg(mng, MNG_FALSE,round_to_int(desc.get_x_res()),round_to_int(desc.get_y_res()),MNG_UNIT_METER) != 0 ) goto cleanup_on_error;
-	if( mng_putchunk_time(mng, gmt->tm_year + 1900, gmt->tm_mon + 1, gmt->tm_mday, gmt->tm_hour, gmt->tm_min, gmt->tm_sec) != 0 ) goto cleanup_on_error;
+	if (mng_putchunk_gama(mng, MNG_FALSE, (int)(1.0/gamma().get_gamma()*100000)) != 0 ) goto cleanup_on_error;
+	if (mng_putchunk_phyg(mng, MNG_FALSE,round_to_int(desc.get_x_res()),round_to_int(desc.get_y_res()),MNG_UNIT_METER) != 0 ) goto cleanup_on_error;
+	if (mng_putchunk_time(mng, gmt->tm_year + 1900, gmt->tm_mon + 1, gmt->tm_mday, gmt->tm_hour, gmt->tm_min, gmt->tm_sec) != 0 ) goto cleanup_on_error;
 	buffer=new unsigned char[4*w];
-	if( buffer == NULL ) goto cleanup_on_error;
+	if (buffer == NULL ) goto cleanup_on_error;
 	color_buffer=new Color[w];
-	if( color_buffer == NULL ) goto cleanup_on_error;
+	if (color_buffer == NULL ) goto cleanup_on_error;
 	return true;
 	
 cleanup_on_error:
 	ready=false;
-	if( mng != MNG_NULL){
+	if (mng != MNG_NULL)
+	{
 		mng_int8 severity;
 		mng_chunkid chunkname;
 		mng_uint32 chunkseq;
@@ -185,9 +196,9 @@ cleanup_on_error:
 		synfig::error("mng_trgt: libmng: %s",errortext); 
 		mng_cleanup (&mng);
 	}
-	if( file && file!=stdout ) fclose(file); file=NULL;
-	if( buffer != NULL ){ delete [] buffer; buffer = NULL; }
-	if( color_buffer != NULL ){ delete [] color_buffer; color_buffer = NULL; }
+	if (file && file!=stdout ) fclose(file); file=NULL;
+	if (buffer != NULL ) { delete [] buffer; buffer = NULL; }
+	if (color_buffer != NULL ) { delete [] color_buffer; color_buffer = NULL; }
 	return false;	
 }
 
@@ -198,13 +209,14 @@ mng_trgt::end_frame()
 	//synfig::error("mng_trgt: error: endframe");
 	deflate(&zstream,Z_FINISH);
 	deflateEnd(&zstream);
-	if( mng != MNG_NULL ){
-		mng_int8 severity;
-		mng_chunkid chunkname;
-		mng_uint32 chunkseq;
-		mng_int32 extra1;
-		mng_int32 extra2;
-		mng_pchar errortext;
+	if (mng != MNG_NULL )
+	{
+		// mng_int8 severity;
+		// mng_chunkid chunkname;
+		// mng_uint32 chunkseq;
+		// mng_int32 extra1;
+		// mng_int32 extra2;
+		// mng_pchar errortext;
 		mng_putchunk_idat(mng, zbuffer_len, zbuffer);
 		//mng_getlasterror (mng, &severity, &chunkname, &chunkseq, &extra1,&extra2, &errortext);
 		//synfig::error("mng_trgt: libmng: %s %d",errortext,zbuffer_len); 
@@ -261,16 +273,17 @@ mng_trgt::start_frame(synfig::ProgressCallback *callback)
 		mng_uint32       *iCount,
 		mng_uint32p      *pSyncids);
 	*/
-	if( mng == MNG_NULL ) return false;
-	if( mng_putchunk_defi(mng,0,MNG_DONOTSHOW_VISIBLE,MNG_ABSTRACT,MNG_FALSE,0,0,MNG_FALSE,0,0,0,0) != 0) return false;
-	if( mng_putchunk_ihdr(mng,w,h,MNG_BITDEPTH_8,MNG_COLORTYPE_RGBA,MNG_COMPRESSION_DEFLATE, 0/*MNG_FILTER_NO_DIFFERING*/,MNG_INTERLACE_NONE) != 0) return false;
+	if (mng == MNG_NULL ) return false;
+	if (mng_putchunk_defi(mng,0,MNG_DONOTSHOW_VISIBLE,MNG_ABSTRACT,MNG_FALSE,0,0,MNG_FALSE,0,0,0,0) != 0) return false;
+	if (mng_putchunk_ihdr(mng,w,h,MNG_BITDEPTH_8,MNG_COLORTYPE_RGBA,MNG_COMPRESSION_DEFLATE, 0/*MNG_FILTER_NO_DIFFERING*/,MNG_INTERLACE_NONE) != 0) return false;
 	zstream.zalloc = Z_NULL;
 	zstream.zfree = Z_NULL;
 	zstream.opaque = Z_NULL;
 	zstream.data_type = Z_BINARY; 
-	if( deflateInit(&zstream, Z_DEFAULT_COMPRESSION) != Z_OK ) return false;
+	if (deflateInit(&zstream, Z_DEFAULT_COMPRESSION) != Z_OK ) return false;
 	//zbuffer_len = deflateBound(&zstream,4*w*h);
-	if(zbuffer == NULL){
+	if(zbuffer == NULL)
+	{
 		zbuffer_len = 4*w*h;
 		zbuffer = (unsigned char*)realloc(zbuffer, zbuffer_len);
 		zstream.next_out = zbuffer;
@@ -280,7 +293,7 @@ mng_trgt::start_frame(synfig::ProgressCallback *callback)
 	return true;
 }
 
-Color *
+Color*
 mng_trgt::start_scanline(int scanline)
 {
 	//synfig::error("mng_trgt: starts %d %d",w,h); 
