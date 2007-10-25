@@ -183,7 +183,7 @@ mng_trgt::init()
 	if (mng_putchunk_text(mng, sizeof(MNG_TEXT_TITLE), MNG_TEXT_TITLE, get_canvas()->get_name().length(), const_cast<char *>(get_canvas()->get_name().c_str())) != 0) goto cleanup_on_error;
 	if (mng_putchunk_text(mng, sizeof(MNG_TEXT_DESCRIPTION), MNG_TEXT_DESCRIPTION, get_canvas()->get_description().length(), const_cast<char *>(get_canvas()->get_description().c_str())) != 0) goto cleanup_on_error;
 	if (mng_putchunk_text(mng, sizeof(MNG_TEXT_SOFTWARE), MNG_TEXT_SOFTWARE, sizeof("SYNFIG"), "SYNFIG") != 0) goto cleanup_on_error;
-	if (mng_putchunk_gama(mng, MNG_FALSE, (int)(1.0/gamma().get_gamma()*100000)) != 0) goto cleanup_on_error;
+	if (mng_putchunk_gama(mng, MNG_FALSE, (int)(gamma().get_gamma()*100000)) != 0) goto cleanup_on_error;
 	if (mng_putchunk_phys(mng, MNG_FALSE, round_to_int(desc.get_x_res()),round_to_int(desc.get_y_res()), MNG_UNIT_METER) != 0) goto cleanup_on_error;
 	if (mng_putchunk_time(mng, gmt->tm_year + 1900, gmt->tm_mon + 1, gmt->tm_mday, gmt->tm_hour, gmt->tm_min, gmt->tm_sec) != 0) goto cleanup_on_error;
 	buffer=new unsigned char[(4*w)+1];
