@@ -10,6 +10,7 @@ mod_gradient
 mod_imagemagick
 mod_jpeg
 mod_libavcodec
+mod_mng
 mod_noise
 mod_openexr
 mod_particle
