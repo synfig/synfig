@@ -65,7 +65,6 @@ Rect::horizontal_strip(const value_type &y1, const value_type &y2)
 Rect
 Rect::vertical_strip(const value_type &x1, const value_type &x2)
 {
-	int i, j;
 	const double infinity(HUGE_VAL);
 	return Rect(x1, -infinity, x2, infinity);
 }
