@@ -351,7 +351,6 @@ studio::get_action_stock_id(const synfigapp::Action::BookEntry& action)
 	else if(action.task=="move_top")	stock_id=Gtk::Stock::GOTO_TOP;
 	else if(action.task=="raise")		stock_id=Gtk::Stock::GO_UP;
 	else if(action.task=="remove")		stock_id=Gtk::Stock::DELETE;
-	else if(action.task=="remove")		stock_id=Gtk::Stock::DELETE;
 	else if(action.task=="set_off")		stock_id=Gtk::Stock::NO;
 	else if(action.task=="set_on")		stock_id=Gtk::Stock::YES;
 	else								stock_id=Gtk::StockID("synfig-"+
