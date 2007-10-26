@@ -11,7 +11,7 @@ This package contains the renderer used to convert synfig .sif files to
 raster images, videos and other formats. Layer types include geometric,
 gradient, filter, distortion, transformation, fractal and others. Output
 targets include JPEG, PNG, GIF, BMP, PPM, DV, OpenEXR, ffmpeg (MPEG1),
-libavcodec (AVI), imagemagick (MIFF), yuv420p and others. 
+libavcodec (AVI), imagemagick (MIFF), yuv420p, MNG and others. 
 
 Links
 
