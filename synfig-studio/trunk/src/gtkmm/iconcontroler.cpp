@@ -342,20 +342,20 @@ Gtk::StockID
 studio::get_action_stock_id(const synfigapp::Action::BookEntry& action)
 {
 	Gtk::StockID stock_id;
-	if(action.task=="raise")			stock_id=Gtk::Stock::GO_UP;
-	else if(action.task=="lower")		stock_id=Gtk::Stock::GO_DOWN;
-	else if(action.task=="add")			stock_id=Gtk::Stock::ADD;
-	else if(action.task=="insert")		stock_id=Gtk::Stock::ADD;
-	else if(action.task=="move_top")	stock_id=Gtk::Stock::GOTO_TOP;
-	else if(action.task=="move_bottom")	stock_id=Gtk::Stock::GOTO_BOTTOM;
-	else if(action.task=="remove")		stock_id=Gtk::Stock::DELETE;
-	else if(action.task=="set_on")		stock_id=Gtk::Stock::YES;
-	else if(action.task=="set_off")		stock_id=Gtk::Stock::NO;
-	else if(action.task=="remove")		stock_id=Gtk::Stock::DELETE;
+	if(action.task=="add")				stock_id=Gtk::Stock::ADD;
 	else if(action.task=="connect")		stock_id=Gtk::Stock::CONNECT;
 	else if(action.task=="disconnect")	stock_id=Gtk::Stock::DISCONNECT;
-	else								stock_id=Gtk::StockID("synfig-"+action.task);
-
+	else if(action.task=="insert")		stock_id=Gtk::Stock::ADD;
+	else if(action.task=="lower")		stock_id=Gtk::Stock::GO_DOWN;
+	else if(action.task=="move_bottom")	stock_id=Gtk::Stock::GOTO_BOTTOM;
+	else if(action.task=="move_top")	stock_id=Gtk::Stock::GOTO_TOP;
+	else if(action.task=="raise")		stock_id=Gtk::Stock::GO_UP;
+	else if(action.task=="remove")		stock_id=Gtk::Stock::DELETE;
+	else if(action.task=="remove")		stock_id=Gtk::Stock::DELETE;
+	else if(action.task=="set_off")		stock_id=Gtk::Stock::NO;
+	else if(action.task=="set_on")		stock_id=Gtk::Stock::YES;
+	else								stock_id=Gtk::StockID("synfig-"+
+															  action.task);
 	return stock_id;
 }
 
