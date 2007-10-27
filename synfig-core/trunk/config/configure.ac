@@ -164,7 +164,7 @@ if test $with_magickpp = "yes" ; then {
   	AC_DEFINE(HAVE_MAGICKPP,[], [ Define if Magick++ library is available ] )
   	AC_SUBST(MAGICKPP_LIBS)
   	AM_CONDITIONAL(HAVE_LIBMAGICKPP,true)
-	AC_CHECK_LIB(Magick++,OptimizeImageTransparency,[
+	AC_CHECK_LIB(Magick,OptimizeImageTransparency,[
 		AC_DEFINE(HAVE_MAGICK_OPTIMIZE,[], [ Define if Magick++ defines OptimizeImageTransparency() ] )
 		AM_CONDITIONAL(HAVE_MAGICK_OPTIMIZE,true)
 	],[
