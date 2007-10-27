@@ -1,7 +1,5 @@
 # $Id$
 
-# FIXME: THIS DOES NOT ACTUALLY WORK YET
-
 MAINTAINERCLEANFILES=Makefile.in
 INCLUDES = -I$(top_srcdir)/src
 

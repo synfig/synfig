@@ -1,5 +1,3 @@
-; FIXME: THIS DOES NOT ACTUALLY WORK YET
-
 Section "mod_mng" Sec_mod_mng
   SetOutPath "$INSTDIR\lib\synfig\modules"
   File /oname=mod_mng.dll "src\modules\mod_mng\.libs\libmod_mng-0.dll"
