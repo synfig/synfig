@@ -153,6 +153,37 @@ if test $with_imagemagick = "no" ; then {
 
 
 
+AC_ARG_WITH(magickpp,[
+  --without-magickpp        Disable support for Magick++],[
+],[
+	with_magickpp="yes"
+])
+if test $with_magickpp = "yes" ; then {
+  AC_CHECK_HEADER([Magick++.h],[
+  	MAGICKPP_LIBS="-lMagick++"
+  	AC_DEFINE(HAVE_MAGICKPP,[], [ Define if Magick++ library is available ] )
+  	AC_SUBST(MAGICKPP_LIBS)
+  	AM_CONDITIONAL(HAVE_LIBMAGICKPP,true)
+	AC_CHECK_LIB(Magick++,OptimizeImageTransparency,[
+		AC_DEFINE(HAVE_MAGICK_OPTIMIZE,[], [ Define if Magick++ defines OptimizeImageTransparency() ] )
+		AM_CONDITIONAL(HAVE_MAGICK_OPTIMIZE,true)
+	],[
+		AC_MSG_RESULT([ *** OptimizeImageTransparency() not available - need ImageMagick 6.3 or newer ])
+		AM_CONDITIONAL(HAVE_MAGICK_OPTIMIZE,false)
+	])
+  ],[
+	with_magickpp="no"
+  	AC_MSG_RESULT([ *** Magick++ Output target disabled])
+  	TARGET_MAGICKPP="no"
+  	AM_CONDITIONAL(HAVE_LIBMAGICKPP,false)
+  ])
+} else {
+	AM_CONDITIONAL(HAVE_LIBMAGICKPP,false)
+} ; fi
+
+
+
+
 AC_ARG_WITH(ffmpeg,[
   --without-ffmpeg        Disable support for FFMPEG],[
 ],[
@@ -551,6 +582,7 @@ src/modules/mod_gradient/Makefile
 src/modules/mod_imagemagick/Makefile
 src/modules/mod_jpeg/Makefile
 src/modules/mod_libavcodec/Makefile
+src/modules/mod_magickpp/Makefile
 src/modules/mod_mng/Makefile
 src/modules/mod_noise/Makefile
 src/modules/mod_openexr/Makefile
@@ -594,6 +626,7 @@ fontconfig -----------------------> $with_fontconfig
 libavcodec -----------------------> $with_libavcodec
 vImage ---------------------------> $with_vimage
 ImageMagick ----------------------> $with_imagemagick
+Magick++ -------------------------> $with_magickpp
 FFMPEG ---------------------------> $with_ffmpeg
 libdv ----------------------------> $with_libdv
 OpenEXR --------------------------> $with_openexr
