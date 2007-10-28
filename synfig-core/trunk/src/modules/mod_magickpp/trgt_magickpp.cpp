@@ -54,6 +54,29 @@ SYNFIG_TARGET_SET_CVS_ID(magickpp_trgt,"$Id$");
 
 /* === M E T H O D S ======================================================= */
 
+template <class Container>
+MagickLib::Image* copy_image_list(Container& container)
+{
+	typedef typename Container::iterator Iter;
+	MagickLib::Image* previous = 0;
+	MagickLib::Image* first = NULL;
+	MagickLib::ExceptionInfo exceptionInfo;
+	MagickLib::GetExceptionInfo(&exceptionInfo);
+	for (Iter iter = container.begin(); iter != container.end(); ++iter)
+	{
+		MagickLib::Image* current = CloneImage(iter->image(), 0, 0, Magick::MagickTrue, &exceptionInfo);
+		if (!first) first = current;
+
+		current->previous = previous;
+		current->next	  = 0;
+
+		if ( previous != 0) previous->next = current;
+		previous = current;
+	}
+
+	return first;
+}
+
 magickpp_trgt::~magickpp_trgt()
 {
 	MagickLib::ExceptionInfo exceptionInfo;
@@ -68,17 +91,31 @@ magickpp_trgt::~magickpp_trgt()
 	// image.adjoin() tells us whether we can write to a single file
 	if (image.adjoin())
 	{
+		synfig::info("joining images");
 		unsigned int delay = round_to_int(100.0 / desc.get_frame_rate());
 		for_each(images.begin(), images.end(), Magick::animationDelayImage(delay));
 
-		// if we can write multiple images to a single file, optimize
-		// the images (only write the pixels that change from frame to
-		// frame
+		// optimize the images (only write the pixels that change from frame to frame
 #ifdef HAVE_MAGICK_OPTIMIZE
+		// make a completely new image list
+		// this is required because:
+		//   RemoveDuplicateLayers wants a linked list of images, and removes some of them
+		//   when it removes an image, it invalidates it using DeleteImageFromList, but we still have it in our container
+		//   when we destroy our container, the image is re-freed, failing an assertion
+		MagickLib::Image *image_list = copy_image_list(images);
+		images.clear();
+		RemoveDuplicateLayers(&image_list, &exceptionInfo);
+		insertImages(&images, image_list);
+
 		linkImages(images.begin(), images.end());
 		OptimizeImageTransparency(images.begin()->image(),&exceptionInfo);
 		unlinkImages(images.begin(), images.end());
 #else
+		synfig::info("not optimizing images");
+		// DeconstructImages is available in ImageMagic 6.2.* but it doesn't take
+		// the 'dispose' method into account, so for frames with transparency where
+		// nothing is moving, we end up with objects disappearing when they shouldn't
+
 		// linkImages(images.begin(), images.end());
 		// MagickLib::Image* new_images = DeconstructImages(images.begin()->image(),&exceptionInfo);
 		// unlinkImages(images.begin(), images.end());
@@ -87,11 +124,15 @@ magickpp_trgt::~magickpp_trgt()
 #endif
 	}
 	else
+	{
 		// if we can't write multiple images to a file of this type,
 		// include '%04d' in the filename, so the files will be numbered
 		// with a fixed width, '0'-padded number
+		synfig::info("can't join images of this type - numbering instead");
 		filename = (filename_sans_extension(filename) + ".%04d" + filename_extension(filename));
+	}
 
+	synfig::info("writing %d images to %s", images.size(), filename.c_str());
 	Magick::writeImages(images.begin(), images.end(), filename);
 
 	if (buffer != NULL) delete [] buffer;
@@ -129,13 +170,15 @@ void
 magickpp_trgt::end_frame()
 {
 	Magick::Image image(width, height, "RGBA", Magick::CharPixel, buffer);
+	if (transparent) image.gifDisposeMethod(Magick::PreviousDispose);
 	images.push_back(image);
 }
 
 bool
 magickpp_trgt::start_frame(synfig::ProgressCallback *callback)
 {
-	row = 0;
+	buffer_pointer = buffer;
+	transparent = false;
 	return true;
 }
 
@@ -148,6 +191,17 @@ magickpp_trgt::start_scanline(int scanline)
 bool
 magickpp_trgt::end_scanline()
 {
-	convert_color_format(buffer + row++ * width*4, color_buffer, width, PF_RGB|PF_A, gamma());
+	convert_color_format(buffer_pointer, color_buffer, width, PF_RGB|PF_A, gamma());
+
+	if (!transparent)
+		for (int i = 0; i < width; i++)
+			if (buffer[i*4 + 3] < 128)
+			{
+				transparent = true;
+				break;
+			}
+
+	buffer_pointer += 4 * width;
+
 	return true;
 }
