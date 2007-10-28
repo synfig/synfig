@@ -102,14 +102,21 @@ magickpp_trgt::~magickpp_trgt()
 		//   RemoveDuplicateLayers wants a linked list of images, and removes some of them
 		//   when it removes an image, it invalidates it using DeleteImageFromList, but we still have it in our container
 		//   when we destroy our container, the image is re-freed, failing an assertion
-		MagickLib::Image *image_list = copy_image_list(images);
-		images.clear();
-		RemoveDuplicateLayers(&image_list, &exceptionInfo);
-		insertImages(&images, image_list);
 
-		linkImages(images.begin(), images.end());
-		OptimizeImageTransparency(images.begin()->image(),&exceptionInfo);
-		unlinkImages(images.begin(), images.end());
+		synfig::info("copying image list");
+		MagickLib::Image *image_list = copy_image_list(images);
+
+		synfig::info("clearing old image list");
+		images.clear();
+
+		synfig::info("removing duplicate frames");
+		RemoveDuplicateLayers(&image_list, &exceptionInfo);
+
+		synfig::info("optimizing frames");
+		OptimizeImageTransparency(image_list,&exceptionInfo);
+
+		synfig::info("recreating image list");
+		insertImages(&images, image_list);
 #else
 		synfig::info("not optimizing images");
 		// DeconstructImages is available in ImageMagic 6.2.* but it doesn't take
@@ -170,7 +177,8 @@ void
 magickpp_trgt::end_frame()
 {
 	Magick::Image image(width, height, "RGBA", Magick::CharPixel, buffer);
-	if (transparent) image.gifDisposeMethod(Magick::PreviousDispose);
+	if (transparent && images.begin() != images.end())
+		(images.end()-1)->gifDisposeMethod(Magick::BackgroundDispose);
 	images.push_back(image);
 }
 
