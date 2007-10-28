@@ -64,7 +64,16 @@ MagickLib::Image* copy_image_list(Container& container)
 	MagickLib::GetExceptionInfo(&exceptionInfo);
 	for (Iter iter = container.begin(); iter != container.end(); ++iter)
 	{
-		MagickLib::Image* current = CloneImage(iter->image(), 0, 0, Magick::MagickTrue, &exceptionInfo);
+		MagickLib::Image* current;
+
+		try
+		{
+			current = CloneImage(iter->image(), 0, 0, Magick::MagickTrue, &exceptionInfo);
+		}
+		catch(Magick::Warning warning) {
+			synfig::warning("exception '%s'", warning.what());
+		}
+			
 		if (!first) first = current;
 
 		current->previous = previous;
@@ -82,77 +91,119 @@ magickpp_trgt::~magickpp_trgt()
 	MagickLib::ExceptionInfo exceptionInfo;
 	MagickLib::GetExceptionInfo(&exceptionInfo);
 
-	// check whether this file format supports multiple-image files
-	Magick::Image image(*(images.begin()));
-	image.fileName(filename);
-	SetImageInfo(image.imageInfo(),Magick::MagickTrue,&exceptionInfo);
-
-	// the file type is now in image.imageInfo()->magick and
-	// image.adjoin() tells us whether we can write to a single file
-	if (image.adjoin())
+	try
 	{
-		synfig::info("joining images");
-		unsigned int delay = round_to_int(100.0 / desc.get_frame_rate());
-		for_each(images.begin(), images.end(), Magick::animationDelayImage(delay));
+		// check whether this file format supports multiple-image files
+		Magick::Image image(*(images.begin()));
+		image.fileName(filename);
+		try
+		{
+			SetImageInfo(image.imageInfo(),Magick::MagickTrue,&exceptionInfo);
+		}
+		catch(Magick::Warning warning) {
+			synfig::warning("exception '%s'", warning.what());
+		}
 
-		// optimize the images (only write the pixels that change from frame to frame
+		// the file type is now in image.imageInfo()->magick and
+		// image.adjoin() tells us whether we can write to a single file
+		if (image.adjoin())
+		{
+			synfig::info("joining images");
+			unsigned int delay = round_to_int(100.0 / desc.get_frame_rate());
+			for_each(images.begin(), images.end(), Magick::animationDelayImage(delay));
+
+			// optimize the images (only write the pixels that change from frame to frame
 #ifdef HAVE_MAGICK_OPTIMIZE
-		// make a completely new image list
-		// this is required because:
-		//   RemoveDuplicateLayers wants a linked list of images, and removes some of them
-		//   when it removes an image, it invalidates it using DeleteImageFromList, but we still have it in our container
-		//   when we destroy our container, the image is re-freed, failing an assertion
+			// make a completely new image list
+			// this is required because:
+			//   RemoveDuplicateLayers wants a linked list of images, and removes some of them
+			//   when it removes an image, it invalidates it using DeleteImageFromList, but we still have it in our container
+			//   when we destroy our container, the image is re-freed, failing an assertion
 
-		synfig::info("copying image list");
-		MagickLib::Image *image_list = copy_image_list(images);
+			synfig::info("copying image list");
+			MagickLib::Image *image_list = copy_image_list(images);
 
-		synfig::info("clearing old image list");
-		images.clear();
+			synfig::info("clearing old image list");
+			images.clear();
 
-		if (!getenv("SYNFIG_DISABLE_REMOVE_DUPS"))
-		{
-			synfig::info("removing duplicate frames");
-			RemoveDuplicateLayers(&image_list, &exceptionInfo);
-		}
+			if (!getenv("SYNFIG_DISABLE_REMOVE_DUPS"))
+			{
+				synfig::info("removing duplicate frames");
+				try
+				{
+					RemoveDuplicateLayers(&image_list, &exceptionInfo);
+				}
+				catch(Magick::Warning warning) {
+					synfig::warning("exception '%s'", warning.what());
+				}
+			}
 
-		if (!getenv("SYNFIG_DISABLE_OPTIMIZE"))
-		{
-			synfig::info("optimizing layers");
-			image_list = OptimizeImageLayers(image_list,&exceptionInfo);
-		}
+			if (!getenv("SYNFIG_DISABLE_OPTIMIZE"))
+			{
+				synfig::info("optimizing layers");
+				try
+				{
+					image_list = OptimizeImageLayers(image_list,&exceptionInfo);
+				}
+				catch(Magick::Warning warning) {
+					synfig::warning("exception '%s'", warning.what());
+				}
+			}
 
-		if (!getenv("SYNFIG_DISABLE_OPTIMIZE_TRANS"))
-		{
-			synfig::info("optimizing layer transparency");
-			OptimizeImageTransparency(image_list,&exceptionInfo);
-		}
+			if (!getenv("SYNFIG_DISABLE_OPTIMIZE_TRANS"))
+			{
+				synfig::info("optimizing layer transparency");
+				try
+				{
+					OptimizeImageTransparency(image_list,&exceptionInfo);
+				}
+				catch(Magick::Warning warning) {
+					synfig::warning("exception '%s'", warning.what());
+				}
+			}
 
-		synfig::info("recreating image list");
-		insertImages(&images, image_list);
+			synfig::info("recreating image list");
+			insertImages(&images, image_list);
 #else
-		synfig::info("not optimizing images");
-		// DeconstructImages is available in ImageMagic 6.2.* but it doesn't take
-		// the 'dispose' method into account, so for frames with transparency where
-		// nothing is moving, we end up with objects disappearing when they shouldn't
+			synfig::info("not optimizing images");
+			// DeconstructImages is available in ImageMagic 6.2.* but it doesn't take
+			// the 'dispose' method into account, so for frames with transparency where
+			// nothing is moving, we end up with objects disappearing when they shouldn't
 
-		// linkImages(images.begin(), images.end());
-		// MagickLib::Image* new_images = DeconstructImages(images.begin()->image(),&exceptionInfo);
-		// unlinkImages(images.begin(), images.end());
-		// images.clear();
-		// insertImages(&images, new_images);
+			// linkImages(images.begin(), images.end());
+			// MagickLib::Image* new_images = DeconstructImages(images.begin()->image(),&exceptionInfo);
+			// unlinkImages(images.begin(), images.end());
+			// images.clear();
+			// insertImages(&images, new_images);
 #endif
-	}
-	else
-	{
-		// if we can't write multiple images to a file of this type,
-		// include '%04d' in the filename, so the files will be numbered
-		// with a fixed width, '0'-padded number
-		synfig::info("can't join images of this type - numbering instead");
-		filename = (filename_sans_extension(filename) + ".%04d" + filename_extension(filename));
-	}
+		}
+		else
+		{
+			// if we can't write multiple images to a file of this type,
+			// include '%04d' in the filename, so the files will be numbered
+			// with a fixed width, '0'-padded number
+			synfig::info("can't join images of this type - numbering instead");
+			filename = (filename_sans_extension(filename) + ".%04d" + filename_extension(filename));
+		}
 
-	synfig::info("writing %d images to %s", images.size(), filename.c_str());
-	Magick::writeImages(images.begin(), images.end(), filename);
+		synfig::info("writing %d images to %s", images.size(), filename.c_str());
+		try
+		{
+			Magick::writeImages(images.begin(), images.end(), filename);
+		}
+		catch(Magick::Warning warning) {
+			synfig::warning("exception '%s'", warning.what());
+		}
+	}
+	catch(Magick::Warning warning) {
+		synfig::warning("exception '%s'", warning.what());
+	}
+	catch(Magick::Error error) {
+		synfig::error("exception '%s'", error.what());
+	}
+	catch(...) {
+		synfig::error("unknown exception");
+	}
 
 	if (buffer1 != NULL) delete [] buffer1;
 	if (buffer2 != NULL) delete [] buffer2;
