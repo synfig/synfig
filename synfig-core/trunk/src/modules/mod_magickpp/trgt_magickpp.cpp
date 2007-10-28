@@ -109,11 +109,23 @@ magickpp_trgt::~magickpp_trgt()
 		synfig::info("clearing old image list");
 		images.clear();
 
-		synfig::info("removing duplicate frames");
-		RemoveDuplicateLayers(&image_list, &exceptionInfo);
+		if (!getenv("SYNFIG_DISABLE_REMOVE_DUPS"))
+		{
+			synfig::info("removing duplicate frames");
+			RemoveDuplicateLayers(&image_list, &exceptionInfo);
+		}
 
-		synfig::info("optimizing frames");
-		OptimizeImageTransparency(image_list,&exceptionInfo);
+		if (!getenv("SYNFIG_DISABLE_OPTIMIZE"))
+		{
+			synfig::info("optimizing layers");
+			image_list = OptimizeImageLayers(image_list,&exceptionInfo);
+		}
+
+		if (!getenv("SYNFIG_DISABLE_OPTIMIZE_TRANS"))
+		{
+			synfig::info("optimizing layer transparency");
+			OptimizeImageTransparency(image_list,&exceptionInfo);
+		}
 
 		synfig::info("recreating image list");
 		insertImages(&images, image_list);
@@ -142,7 +154,8 @@ magickpp_trgt::~magickpp_trgt()
 	synfig::info("writing %d images to %s", images.size(), filename.c_str());
 	Magick::writeImages(images.begin(), images.end(), filename);
 
-	if (buffer != NULL) delete [] buffer;
+	if (buffer1 != NULL) delete [] buffer1;
+	if (buffer2 != NULL) delete [] buffer2;
 	if (color_buffer != NULL) delete [] color_buffer;
 }
 
@@ -159,14 +172,24 @@ magickpp_trgt::init()
 	width = desc.get_w();
 	height = desc.get_h();
 
-	buffer = new unsigned char[4*width*height];
-	if (buffer == NULL)
+	start_pointer = NULL;
+
+	buffer1 = new unsigned char[4*width*height];
+	if (buffer1 == NULL)
 		return false;
+
+	buffer2 = new unsigned char[4*width*height];
+	if (buffer2 == NULL)
+	{
+		delete [] buffer1;
+		return false;
+	}
 
 	color_buffer = new Color[width];
 	if (color_buffer == NULL)
 	{
-		delete [] buffer;
+		delete [] buffer1;
+		delete [] buffer2;
 		return false;
 	}
 
@@ -176,7 +199,7 @@ magickpp_trgt::init()
 void
 magickpp_trgt::end_frame()
 {
-	Magick::Image image(width, height, "RGBA", Magick::CharPixel, buffer);
+	Magick::Image image(width, height, "RGBA", Magick::CharPixel, start_pointer);
 	if (transparent && images.begin() != images.end())
 		(images.end()-1)->gifDisposeMethod(Magick::BackgroundDispose);
 	images.push_back(image);
@@ -185,7 +208,13 @@ magickpp_trgt::end_frame()
 bool
 magickpp_trgt::start_frame(synfig::ProgressCallback *callback)
 {
-	buffer_pointer = buffer;
+	previous_buffer_pointer = start_pointer;
+
+	if (start_pointer == buffer1)
+		start_pointer = buffer_pointer = buffer2;
+	else
+		start_pointer = buffer_pointer = buffer1;
+
 	transparent = false;
 	return true;
 }
@@ -199,17 +228,23 @@ magickpp_trgt::start_scanline(int scanline)
 bool
 magickpp_trgt::end_scanline()
 {
-	convert_color_format(buffer_pointer, color_buffer, width, PF_RGB|PF_A, gamma());
+	convert_color_format(buffer_pointer, color_buffer,
+						 width, PF_RGB|PF_A, gamma());
 
 	if (!transparent)
 		for (int i = 0; i < width; i++)
-			if (buffer_pointer[i*4 + 3] < 128)
+			if (previous_buffer_pointer &&					// this isn't the first frame
+				buffer_pointer[i*4 + 3] < 128 &&			// our pixel is transparent
+				!(previous_buffer_pointer[i*4 + 3] < 128))	// the previous frame's pixel wasn't
 			{
 				transparent = true;
 				break;
 			}
 
 	buffer_pointer += 4 * width;
+
+	if (previous_buffer_pointer)
+		previous_buffer_pointer += 4 * width;
 
 	return true;
 }

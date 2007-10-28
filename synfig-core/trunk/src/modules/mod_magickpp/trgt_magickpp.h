@@ -46,7 +46,8 @@ private:
 	int width, height;
 
 	synfig::String filename;
-	unsigned char *buffer, *buffer_pointer;
+	unsigned char *buffer1, *start_pointer, *buffer_pointer;
+	unsigned char *buffer2, *previous_buffer_pointer;
 	bool transparent;
 	synfig::Color *color_buffer;
 	std::vector<Magick::Image> images;
