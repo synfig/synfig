@@ -203,7 +203,7 @@ magickpp_trgt::end_scanline()
 
 	if (!transparent)
 		for (int i = 0; i < width; i++)
-			if (buffer[i*4 + 3] < 128)
+			if (buffer_pointer[i*4 + 3] < 128)
 			{
 				transparent = true;
 				break;
