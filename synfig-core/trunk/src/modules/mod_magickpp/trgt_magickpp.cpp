@@ -186,7 +186,7 @@ magickpp_trgt::~magickpp_trgt()
 			filename = (filename_sans_extension(filename) + ".%04d" + filename_extension(filename));
 		}
 
-		synfig::info("writing %d images to %s", images.size(), filename.c_str());
+		synfig::info("writing %d image%s to %s", images.size(), images.size() == 1 ? "" : "s", filename.c_str());
 		try
 		{
 			Magick::writeImages(images.begin(), images.end(), filename);
