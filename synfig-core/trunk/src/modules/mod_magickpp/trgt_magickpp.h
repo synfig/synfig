@@ -43,10 +43,11 @@ class magickpp_trgt : public synfig::Target_Scanline
 	
 private:
 	
-	int width, height, row;
+	int width, height;
 
 	synfig::String filename;
-	unsigned char *buffer;
+	unsigned char *buffer, *buffer_pointer;
+	bool transparent;
 	synfig::Color *color_buffer;
 	std::vector<Magick::Image> images;
 
