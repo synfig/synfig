@@ -389,6 +389,19 @@ synfig::Main::~Main()
 #endif
 }
 
+static const String
+current_time()
+{
+	const int buflen = 50;
+	time_t t;
+	struct tm *lt;
+	char b[buflen];
+	time(&t);
+	lt = localtime(&t);
+	strftime(b, buflen, " [%X] ", lt);
+	return String(b);
+}
+
 void
 synfig::error(const char *format,...)
 {
@@ -401,7 +414,7 @@ void
 synfig::error(const String &str)
 {
 	static Mutex mutex; Mutex::Lock lock(mutex);
-	cerr<<"synfig("<<getpid()<<"): "<<_("error")<<": "+str<<endl;
+	cerr<<"synfig("<<getpid()<<")"<<current_time()<<_("error")<<": "+str<<endl;
 }
 
 void
@@ -416,7 +429,7 @@ void
 synfig::warning(const String &str)
 {
 	static Mutex mutex; Mutex::Lock lock(mutex);
-	cerr<<"synfig("<<getpid()<<"): "<<_("warning")<<": "+str<<endl;
+	cerr<<"synfig("<<getpid()<<")"<<current_time()<<_("warning")<<": "+str<<endl;
 }
 
 void
@@ -431,5 +444,5 @@ void
 synfig::info(const String &str)
 {
 	static Mutex mutex; Mutex::Lock lock(mutex);
-	cerr<<"synfig("<<getpid()<<"): "<<_("info")<<": "+str<<endl;
+	cerr<<"synfig("<<getpid()<<")"<<current_time()<<_("info")<<": "+str<<endl;
 }
