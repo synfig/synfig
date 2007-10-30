@@ -151,7 +151,7 @@ private:
 		}
 
 		// Destructor just deletes any
-		// children and sibblings.
+		// children and siblings.
 		~lzwcode()
 		{
 			if(kids)
