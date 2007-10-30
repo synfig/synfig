@@ -465,5 +465,5 @@ Action::WaypointSetSmart::prepare()
 	}
 	catch(synfig::Exception::NotFound){ } catch(int){ }
 
-	throw Error(_("Unable to determine how to procede. This is a bug."));
+	throw Error(_("Unable to determine how to proceed. This is a bug."));
 }

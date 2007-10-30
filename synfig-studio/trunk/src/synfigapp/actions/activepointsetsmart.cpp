@@ -361,5 +361,5 @@ Action::ActivepointSetSmart::prepare()
 	catch(int){}
 	catch(Exception::NotFound){}
 
-	throw Error(_("Unable to determine how to procede. This is a bug."));
+	throw Error(_("Unable to determine how to proceed. This is a bug."));
 }
