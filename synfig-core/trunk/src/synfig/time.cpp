@@ -101,7 +101,7 @@ Time::Time(const String &str_, float fps):
 	int read;
 	float amount;
 
-	// Now try to read it in the letter-abreviated format
+	// Now try to read it in the letter-abbreviated format
 	while(pos<str.size() && sscanf(String(str,pos).c_str(),"%f%n",&amount,&read))
 	{
 		pos+=read;
