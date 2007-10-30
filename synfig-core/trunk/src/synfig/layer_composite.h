@@ -43,7 +43,7 @@ class Layer_NoDeform {};
 
 
 /*!	\class Layer_Composite
-**	\brief Base class for layers that put stuff ontop of lower layers
+**	\brief Base class for layers that put stuff on top of lower layers
 */
 class Layer_Composite : public Layer
 {
