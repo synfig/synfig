@@ -68,7 +68,7 @@ private:
 				empty();
 		}
 
-		// Emptys out the current pool into
+		// Empties out the current pool into
 		// the buffer. Calls 'dump()' if the
 		// buffer is full.
 		void empty()
