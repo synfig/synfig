@@ -97,7 +97,7 @@ public:
 	Glib::PropertyProxy<synfig::ValueBase> property_value() { return property_value_.get_proxy();}
 	Glib::PropertyProxy<etl::handle<synfig::Canvas> > property_canvas() { return property_canvas_.get_proxy();}
 	Glib::PropertyProxy<synfig::ParamDesc> property_param_desc() { return property_param_desc_.get_proxy(); }
-	Glib::PropertyProxy<bool> property_inconsistant() { return property_foreground_set(); }
+	Glib::PropertyProxy<bool> property_inconsistent() { return property_foreground_set(); }
 
 	etl::handle<synfig::Canvas> get_canvas()const { return property_canvas_; }
 	synfig::ParamDesc get_param_desc()const { return property_param_desc_; }

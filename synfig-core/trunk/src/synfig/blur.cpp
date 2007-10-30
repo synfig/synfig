@@ -714,7 +714,7 @@ bool Blur::operator ()(const Surface &surface,
 			}*/
 
             /* Squaring the pw and ph values
-			   is necessary to insure consistant
+			   is necessary to insure consistent
 			   results when rendered to different
 			   resolutions.
 			   Unfortunately, this automatically
@@ -1088,7 +1088,7 @@ bool Blur::operator ()(const surface<float> &surface,
 			}*/
 
             /* Squaring the pw and ph values
-			   is necessary to insure consistant
+			   is necessary to insure consistent
 			   results when rendered to different
 			   resolutions.
 			   Unfortunately, this automatically

@@ -276,7 +276,7 @@ CellRenderer_ValueBase::CellRenderer_ValueBase():
 	property_attributes()=attr_list;
 
 	property_foreground()=Glib::ustring("#7f7f7f");
-	property_inconsistant()=false;
+	property_inconsistent()=false;
 }
 
 CellRenderer_ValueBase::~CellRenderer_ValueBase()
