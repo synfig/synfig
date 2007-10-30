@@ -784,7 +784,7 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 	refresh_time_window();
 
 	/*! \todo We shouldn't need to do this at construction --
-	**	This should be preformed at the first time the window
+	**	This should be performed at the first time the window
 	** 	becomes visible.
 	*/
 	work_area->queue_render_preview();
