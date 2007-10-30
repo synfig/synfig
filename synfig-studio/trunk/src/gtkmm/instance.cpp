@@ -807,7 +807,7 @@ Instance::add_actions_to_menu(Gtk::Menu *menu, const synfigapp::Action::ParamLis
 	if(candidate_list2.empty())
 		synfig::warning("%s:%d Action CandidateList2 is empty!", __FILE__, __LINE__);
 
-	// Seperate out the candidate lists so that there are no conflicts
+	// Separate out the candidate lists so that there are no conflicts
 	for(iter=candidate_list.begin();iter!=candidate_list.end();++iter)
 	{
 		synfigapp::Action::CandidateList::iterator iter2(candidate_list2.find(iter->name));
