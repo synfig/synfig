@@ -238,6 +238,7 @@ DockBook::tab_button_pressed(GdkEventButton* event, Dockable* dockable)
 		return false;
 
 	Gtk::Menu *tabmenu=manage(new class Gtk::Menu());
+	tabmenu->signal_hide().connect(sigc::bind(sigc::ptr_fun(&delete_widget), tabmenu));
 
 	tabmenu->items().push_back(
 		Gtk::Menu_Helpers::StockMenuElem(Gtk::StockID("gtk-close"),
