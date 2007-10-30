@@ -588,7 +588,7 @@ Toolbox::on_drop_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& contex
 	{
 		synfig::String selection_data((gchar *)(selection_data_.get_data()));
 
-		// For some reason, GTK hands us a list of URL's seperated
+		// For some reason, GTK hands us a list of URLs seperated
 		// by not only Carrage-Returns, but also Line-Feeds.
 		// Line-Feeds will mess us up. Remove all the line-feeds.
 		while(selection_data.find_first_of('\r')!=synfig::String::npos)
