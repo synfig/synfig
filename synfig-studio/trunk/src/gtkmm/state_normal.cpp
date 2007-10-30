@@ -119,7 +119,7 @@ StateNormal::~StateNormal()
 StateNormal_Context::StateNormal_Context(CanvasView *canvas_view):
 	canvas_view(canvas_view)
 {
-	synfig::info("Enterted Normal State");
+	synfig::info("Entered Normal State");
 }
 
 StateNormal_Context::~StateNormal_Context()

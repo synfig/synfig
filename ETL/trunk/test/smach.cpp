@@ -63,7 +63,7 @@ class DefaultStateContext
 {
 	MachineContext *context;
 public:
-	DefaultStateContext(MachineContext *context):context(context) { printf("Enterted Default State\n"); }
+	DefaultStateContext(MachineContext *context):context(context) { printf("Entered Default State\n"); }
 	~DefaultStateContext() { printf("Left Default State\n"); }
 
 	Smach::event_result event1_handler(const Smach::event& x)
@@ -93,7 +93,7 @@ class State1Context
 {
 	MachineContext *context;
 public:
-	State1Context(MachineContext *context):context(context) { printf("Enterted State 1\n"); }
+	State1Context(MachineContext *context):context(context) { printf("Entered State 1\n"); }
 	~State1Context() { printf("Left State 1\n"); }
 
 	Smach::event_result event1_handler(const Smach::event& x)
@@ -121,7 +121,7 @@ class State2Context
 {
 	MachineContext *context;
 public:
-	State2Context(MachineContext *context):context(context) { printf("Enterted State 2\n"); }
+	State2Context(MachineContext *context):context(context) { printf("Entered State 2\n"); }
 	~State2Context() { printf("Left State 2\n"); }
 
 	Smach::event_result event1_handler(const Smach::event& x)

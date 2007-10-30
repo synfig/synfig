@@ -102,7 +102,7 @@ StateFill_Context::StateFill_Context(CanvasView *canvas_view):
 	canvas_view(canvas_view),
 	is_working(*canvas_view)
 {
-	synfig::info("Enterted Fill State");
+	synfig::info("Entered Fill State");
 	canvas_view->work_area->set_cursor(Gdk::CROSSHAIR);
 
 	App::toolbox->refresh();
