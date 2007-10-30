@@ -349,7 +349,7 @@ synfig::Gradient::operator()(const Real &x,float supersample)const
 		//return Color::blend(iterr->color,iterl->color,lambda,Color::BLEND_STRAIGHT);
 	}else
 	{
-		//itegration madness
+		//integration madness
 		const_iterator i = iterl, ie = iterr+1;
 		Real wlast = left;
 
