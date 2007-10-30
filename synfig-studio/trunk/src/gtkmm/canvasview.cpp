@@ -3112,7 +3112,7 @@ CanvasView::on_drop_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& con
 			synfig::String selection_data((gchar *)(selection_data_.get_data()));
 
 			// For some reason, GTK hands us a list of URLs separated
-			// by not only Carrage-Returns, but also Line-Feeds.
+			// by not only Carriage-Returns, but also Line-Feeds.
 			// Line-Feeds will mess us up. Remove all the line-feeds.
 			while(selection_data.find_first_of('\r')!=synfig::String::npos)
 				selection_data.erase(selection_data.begin()+selection_data.find_first_of('\r'));
