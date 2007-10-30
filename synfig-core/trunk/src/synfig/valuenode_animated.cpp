@@ -380,7 +380,7 @@ public:
 						const Real& c(iter->get_continuity());	// Continuity
 						const Real& b(iter->get_bias());			// Bias
 
-						// The folloing line works where the previous line fails.
+						// The following line works where the previous line fails.
 						value_type Pp; Pp=curve_list.back().second.p1();	// P_{i-1}
 
 						const value_type& Pc(curve.second.p1());	// P_i
