@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file state_zoom.cpp
-**	\brief Zoom Toole Implementation File
+**	\brief Zoom Tool Implementation File
 **
 **	$Id$
 **
