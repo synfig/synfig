@@ -39,7 +39,7 @@
 **	Define SYNFIG_LEAN if your plug-in
 **	or program doesn't use the synfig::Angle class
 **	or the rendering subsystem. This can speed up
-**	compiles. You may also wish to individualy
+**	compiles. You may also wish to individually
 **	use the macros SYNFIG_NO_ANGLE and
 **	SYNFIG_NO_RENDER.
 **	\see SYNFIG_NO_ANGLE, SYNFIG_NO_RENDER
