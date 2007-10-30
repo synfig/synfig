@@ -612,7 +612,7 @@ void CIntersect::recurse_intersect(const SCurve &left, const SCurve &right, int 
 	left.Split(l1,r1);	//subdivide left
 	right.Split(l2,r2); //subdivide right
 
-	//Test each cantidate against each other
+	//Test each candidate against each other
 	recurse_intersect(l1,l2);
 	recurse_intersect(l1,r2);
 	recurse_intersect(r1,l2);
