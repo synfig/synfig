@@ -3074,8 +3074,8 @@ CanvasView::on_drop_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& con
 {
 	// We will make this true once we have a solid drop
 	bool success(false);
-	//synfig::info("Droped data of type \"%s\"",selection_data.get_data_type());
-	//synfig::info("Droped data of target \"%s\"",gdk_atom_name(selection_data->target));
+	//synfig::info("Dropped data of type \"%s\"",selection_data.get_data_type());
+	//synfig::info("Dropped data of target \"%s\"",gdk_atom_name(selection_data->target));
 	//synfig::info("selection=\"%s\"",gdk_atom_name(selection_data->selection));
 
 	if ((selection_data_.get_length() >= 0) && (selection_data_.get_format() == 8))
