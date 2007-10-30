@@ -174,7 +174,7 @@ public:
 
 	virtual bool init() { return true; }
 
-	//! Creates a new Target described by \a type, outputing to a file described by \a filename.
+	//! Creates a new Target described by \a type, outputting to a file described by \a filename.
 	static Handle create(const String &type, const String &filename);
 }; // END of class Target
 
