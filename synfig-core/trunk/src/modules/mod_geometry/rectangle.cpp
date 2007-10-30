@@ -490,7 +490,7 @@ Rectangle::accelerated_render(Context context,Surface *surface,int quality, cons
 	right = std::min(w,right);
 */
 
-	// optimisation - if the whole tile is covered by this rectangle,
+	// optimization - if the whole tile is covered by this rectangle,
 	// and the rectangle is a solid color, we don't need to render
 	// what's behind us
 	if (is_solid_color() && top == 0 && left == 0 && bottom == h && right == w)
