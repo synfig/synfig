@@ -186,7 +186,7 @@ public:
    	//! Returns the localized description of the parameter
    	const String &get_description()const { return desc_; }
 
-   	//! Returns the paramater's group
+   	//! Returns the parameter's group
    	const String &get_group()const { return group_; }
 
    	//! Returns a "hint" about the parameter, regarding how it is to be displayed to the user

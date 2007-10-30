@@ -333,7 +333,7 @@ public:
 	//! Returns a string containing the localized name of the Layer
 	virtual String get_local_name()const;
 
-	//! Gets the paramater vocabulary
+	//! Gets the parameter vocabulary
 	virtual Vocab get_param_vocab()const;
 
 	//! Gets the version string for this layer
