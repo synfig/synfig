@@ -155,7 +155,7 @@ public:
 	typedef ChildrenTreeStore::Model ChildrenTreeModel;
 
 	//! Create an instance of this class whenever doing a longer task.
-	/*! Make sure that you check the bool value of this class occasionaly
+	/*! Make sure that you check the bool value of this class occasionally
 	**	to make sure the action has not been canceled. */
 	class IsWorking
 	{
