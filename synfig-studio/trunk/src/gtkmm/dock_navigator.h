@@ -68,7 +68,7 @@ class Widget_NavView : public Gtk::Table
 	//zoom window stuff
 	bool				scrolling;
 
-	//asyncronous rendering stuff
+	//asynchronous rendering stuff
 	etl::handle<AsyncRenderer>	renderer;
 	etl::smart_ptr<synfig::Surface> surface;
 	bool						rendering;
