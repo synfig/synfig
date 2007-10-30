@@ -352,7 +352,7 @@ int intersect(const BezHull &bh, const Point &p, const Vector &v)
 {
 	float mint = 0, maxt = 1e20;
 
-	//polygon cliping
+	//polygon clipping
 	Vector n;
 	Vector::value_type	nv;
 
