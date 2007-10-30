@@ -99,7 +99,7 @@ Point line_intersection(
 
 	float m1,m2;    // the slopes of each line
 
-	// compute slopes, note the cludge for infinity, however, this will
+	// compute slopes, note the kluge for infinity, however, this will
 	// be close enough
 
 	if ((x1-x0)!=0)

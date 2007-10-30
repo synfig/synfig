@@ -406,7 +406,7 @@ public:
 		if( context->coded_frame && context->coded_frame->key_frame)
 			pkt.flags |= PKT_FLAG_KEY;
 
-		//cludge for raw picture format (they said they'd fix)
+		//kluge for raw picture format (they said they'd fix)
 		if (formatc->oformat->flags & AVFMT_RAWPICTURE)
 		{
 			ret = av_write_frame(formatc, &pkt);
