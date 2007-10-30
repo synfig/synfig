@@ -570,7 +570,7 @@ ValueNode_BLine::operator()(Time t)const
 					curr_coord_sys[0]=(begin_pos_at_current_time - end_pos_at_current_time).norm();
 					curr_coord_sys[1]=curr_coord_sys[0].perp();
 
-					// Invert (transpose) the last of these matricies, since we use it for transform back
+					// Invert (transpose) the last of these matrices, since we use it for transform back
 					swap(curr_coord_sys[0][1],curr_coord_sys[1][0]);
 				}
 
