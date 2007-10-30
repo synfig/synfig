@@ -31,7 +31,7 @@
 
 #include "canvastreestore.h"
 #include <synfig/valuenode.h>
-#include "iconcontroler.h"
+#include "iconcontroller.h"
 #include <synfig/valuenode_timedswap.h>
 #include <synfig/valuenode_animated.h>
 #include <gtkmm/button.h>

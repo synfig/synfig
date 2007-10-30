@@ -50,7 +50,7 @@
 #include <synfig/valuenode_composite.h>
 #include "widget_waypointmodel.h"
 #include <gtkmm/actiongroup.h>
-#include "iconcontroler.h"
+#include "iconcontroller.h"
 #include <sys/stat.h>
 #include <errno.h>
 

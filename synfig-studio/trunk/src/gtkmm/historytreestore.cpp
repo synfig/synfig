@@ -31,7 +31,7 @@
 
 #include "historytreestore.h"
 #include <synfig/valuenode.h>
-#include "iconcontroler.h"
+#include "iconcontroller.h"
 #include <synfig/valuenode_timedswap.h>
 #include <gtkmm/button.h>
 #include <synfigapp/action.h>

@@ -30,14 +30,13 @@
 #endif
 
 #include "layertreestore.h"
-#include "iconcontroler.h"
+#include "iconcontroller.h"
 #include <gtkmm/button.h>
 #include <synfig/paramdesc.h>
 #include <synfigapp/action.h>
 #include <synfigapp/instance.h>
 #include "app.h"
 #include "instance.h"
-#include "iconcontroler.h"
 #include <synfigapp/action_system.h>
 
 #include <gtk/gtkversion.h>

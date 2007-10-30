@@ -30,7 +30,7 @@
 #endif
 
 #include "layergrouptreestore.h"
-#include "iconcontroler.h"
+#include "iconcontroller.h"
 #include <gtkmm/button.h>
 #include <synfig/paramdesc.h>
 #include <synfigapp/action.h>
@@ -40,7 +40,6 @@
 #include <synfigapp/action_system.h>
 #include "dockmanager.h"
 #include "dockable.h"
-#include "iconcontroler.h"
 
 #include <gtk/gtkversion.h>
 #include <ETL/clock>

@@ -31,7 +31,7 @@
 #endif
 
 #include "childrentreestore.h"
-#include "iconcontroler.h"
+#include "iconcontroller.h"
 #include <gtkmm/button.h>
 #include <synfig/paramdesc.h>
 #include <ETL/clock>

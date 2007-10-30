@@ -44,7 +44,7 @@
 #include <gtkmm/uimanager.h>
 
 #include <synfigapp/instance.h>
-#include "iconcontroler.h"
+#include "iconcontroller.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -99,9 +99,9 @@ class IPC;
 class Module;
 
 class StateManager;
-class IconControler;
+class IconController;
 
-class App : public Gtk::Main, private IconControler
+class App : public Gtk::Main, private IconController
 {
 	friend class Preferences;
 	friend class Dialog_Setup;

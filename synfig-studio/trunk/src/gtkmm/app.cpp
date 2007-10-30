@@ -1112,7 +1112,7 @@ init_ui_manager()
 
 App::App(int *argc, char ***argv):
 	Gtk::Main(argc,argv),
-	IconControler(etl::dirname((*argv)[0]))
+	IconController(etl::dirname((*argv)[0]))
 {
 	app_base_path_=etl::dirname(etl::dirname((*argv)[0]));
 

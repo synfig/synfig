@@ -2645,12 +2645,12 @@ studio::WorkArea::set_cursor(Gdk::CursorType x)
 	drawing_area->get_window()->set_cursor(Gdk::Cursor(x));
 }
 
-#include "iconcontroler.h"
+#include "iconcontroller.h"
 
 void
 studio::WorkArea::refresh_cursor()
 {
-//	set_cursor(IconControler::get_tool_cursor(canvas_view->get_smach().get_state_name(),drawing_area->get_window()));
+//	set_cursor(IconController::get_tool_cursor(canvas_view->get_smach().get_state_name(),drawing_area->get_window()));
 }
 
 void

@@ -30,7 +30,7 @@
 #endif
 
 #include "layerparamtreestore.h"
-#include "iconcontroler.h"
+#include "iconcontroller.h"
 #include <gtkmm/button.h>
 #include <synfig/paramdesc.h>
 #include "layertree.h"

@@ -206,7 +206,7 @@ private:
 
 	std::auto_ptr<UniversalScrubber> universal_scrubber;
 
-	//! Tooltip controler
+	//! Tooltip controller
 	Gtk::Tooltips tooltips;
 
 	DEBUGPOINT_CLASS(4);
