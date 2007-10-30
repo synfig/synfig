@@ -286,7 +286,7 @@ public:
 class VideoEncoder
 {
 public:
-	AVFrame *encodable;	//for compressiong and output to a file (in compatible pixel format)
+	AVFrame *encodable;	//for compression and output to a file (in compatible pixel format)
 
 	vector<unsigned char>	videobuffer;
 
