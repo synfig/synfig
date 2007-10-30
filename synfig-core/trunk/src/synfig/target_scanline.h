@@ -79,7 +79,7 @@ public:
 
 	//! Marks the end of a scanline
 	/*! Takes the data that was put at the address returned to by start_scanline()
-	**	and does whatever it is supose to do with it.
+	**	and does whatever it is supposed to do with it.
 	**	\return \c true on success, \c false on failure.
 	**	\see start_scanline()
 	*/
