@@ -247,7 +247,7 @@ Color
 SurfaceNew::get_color(int x, int y)const
 {
 	// This operation is rather expensive, as it should be.
-	// I want to discurage people from using it all over the place.
+	// I want to discourage people from using it all over the place.
 
 	Color ret(
 		lock_channel_const(CHAN_R).get_value(x,y),
