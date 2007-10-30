@@ -55,7 +55,7 @@ class ValueNode_BLine;
 **	The problems arise when we introduce the concept of a
 **	Keyframe. Keyframes can be manipulated via the Synfig
 **	Application Library. They allow the user to quickly
-**	and "automagickly" rearange an animation by moving
+**	and "automagically" rearange an animation by moving
 **	the associated keyframes. With the old way that the
 **	"on" and "off" points were handled, this task became
 **	overly complicated.
