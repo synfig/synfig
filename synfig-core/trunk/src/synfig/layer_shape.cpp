@@ -1877,7 +1877,7 @@ void Layer_Shape::PolySpan::draw_line(Real x1, Real y1, Real x2, Real y2)
 
 		mult = (1 - fy1) * dxdy;
 
-		//x interset scanline
+		//x intersect scanline
 		x_from = x1 + mult;
 		draw_scanline(iy1,x1,fy1,x_from,1);
 
@@ -1907,7 +1907,7 @@ void Layer_Shape::PolySpan::draw_line(Real x1, Real y1, Real x2, Real y2)
 
 		mult = fy1 * dxdy;
 
-		//x interset scanline
+		//x intersect scanline
 		x_from = x1 + mult;
 		draw_scanline(iy1,x1,fy1,x_from,0);
 
