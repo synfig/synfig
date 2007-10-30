@@ -221,7 +221,7 @@
 /* Define to the system default library search path. */
 #define LTDL_SYSSEARCHPATH "/usr/local/lib:/lib:/usr/lib"
 
-/* LibLTDL is linked staticly */
+/* LibLTDL is linked statically */
 #define LT_SCOPE extern
 
 /* Define if dlsym() requires a leading underscore in symbol names. */
