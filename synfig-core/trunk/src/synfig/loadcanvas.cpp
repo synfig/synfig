@@ -1989,7 +1989,7 @@ CanvasParser::parse_canvas(xmlpp::Element *element,Canvas::Handle parent,bool in
 
 				// If we don't have any name, warn
 				if(list.empty())
-					warning(child,_("blank \"name\" entitity"));
+					warning(child,_("blank \"name\" entity"));
 
 				string tmp;
 				for(xmlpp::Element::NodeList::iterator iter = list.begin(); iter != list.end(); ++iter)
@@ -2004,7 +2004,7 @@ CanvasParser::parse_canvas(xmlpp::Element *element,Canvas::Handle parent,bool in
 
 				// If we don't have any description, warn
 				if(list.empty())
-					warning(child,_("blank \"desc\" entitity"));
+					warning(child,_("blank \"desc\" entity"));
 
 				string tmp;
 				for(xmlpp::Element::NodeList::iterator iter = list.begin(); iter != list.end(); ++iter)
@@ -2019,7 +2019,7 @@ CanvasParser::parse_canvas(xmlpp::Element *element,Canvas::Handle parent,bool in
 
 				// If we don't have any description, warn
 				if(list.empty())
-					warning(child,_("blank \"author\" entitity"));
+					warning(child,_("blank \"author\" entity"));
 
 				string tmp;
 				for(xmlpp::Element::NodeList::iterator iter = list.begin(); iter != list.end(); ++iter)
