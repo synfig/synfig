@@ -396,7 +396,7 @@ bool Layer_SphereDistort::accelerated_render(Context context,Surface *surface,in
 
 			close = origin[i] + v[i]*t;
 
-			//now get transforms and expand the rectangle to accomodate
+			//now get transforms and expand the rectangle to accommodate
 			Point p = sphtrans(close,center,radius,percent,type);
 			expandr.expand(p[0],p[1]);
 			p = sphtrans(origin[i],center,radius,percent,type);
