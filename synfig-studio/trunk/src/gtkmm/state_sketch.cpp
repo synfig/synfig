@@ -189,14 +189,14 @@ StateSketch_Context::load_sketch()
 void
 StateSketch_Context::clear_sketch()
 {
-	get_work_area()->clear_persistant_strokes();
+	get_work_area()->clear_persistent_strokes();
 
 	// if the sketch is currently shown, make sure it is updated
 	//! \todo is there a better way than this of getting Duckmatic to update its stroke_list_?
 	if (checkbutton_show_sketch.get_active())
 	{
-		get_work_area()->set_show_persistant_strokes(false);
-		get_work_area()->set_show_persistant_strokes(true);
+		get_work_area()->set_show_persistent_strokes(false);
+		get_work_area()->set_show_persistent_strokes(true);
 		get_canvas_view()->get_smach().process_event(EVENT_REFRESH);
 	}
 }
@@ -204,16 +204,16 @@ StateSketch_Context::clear_sketch()
 void
 StateSketch_Context::undo_stroke()
 {
-	if(!get_work_area()->persistant_stroke_list().empty())
+	if(!get_work_area()->persistent_stroke_list().empty())
 	{
-		get_work_area()->persistant_stroke_list().pop_back();
+		get_work_area()->persistent_stroke_list().pop_back();
 
 		// if the sketch is currently shown, make sure it is updated
 		//! \todo is there a better way than this of getting Duckmatic to update its stroke_list_?
 		if (checkbutton_show_sketch.get_active())
 		{
-			get_work_area()->set_show_persistant_strokes(false);
-			get_work_area()->set_show_persistant_strokes(true);
+			get_work_area()->set_show_persistent_strokes(false);
+			get_work_area()->set_show_persistent_strokes(true);
 			get_canvas_view()->get_smach().process_event(EVENT_REFRESH);
 		}
 	}
@@ -222,7 +222,7 @@ StateSketch_Context::undo_stroke()
 void
 StateSketch_Context::toggle_show_sketch()
 {
-	get_work_area()->set_show_persistant_strokes(checkbutton_show_sketch.get_active());
+	get_work_area()->set_show_persistent_strokes(checkbutton_show_sketch.get_active());
 	get_work_area()->queue_draw();
 }
 
@@ -313,7 +313,7 @@ StateSketch_Context::StateSketch_Context(CanvasView* canvas_view):
 	App::ui_manager()->add_ui_from_string(ui_info);
 
 
-	checkbutton_show_sketch.set_active(get_work_area()->get_show_persistant_strokes());
+	checkbutton_show_sketch.set_active(get_work_area()->get_show_persistent_strokes());
 
 	button_clear_sketch.signal_clicked().connect(sigc::mem_fun(*this,&studio::StateSketch_Context::clear_sketch));
 	button_undo_stroke.signal_clicked().connect(sigc::mem_fun(*this,&studio::StateSketch_Context::undo_stroke));
@@ -501,7 +501,7 @@ StateSketch_Context::event_stroke(const Smach::event& x)
 
 	assert(event.stroke_data);
 
-	get_work_area()->add_persistant_stroke(event.stroke_data,synfigapp::Main::get_foreground_color());
+	get_work_area()->add_persistent_stroke(event.stroke_data,synfigapp::Main::get_foreground_color());
 
 	return Smach::RESULT_ACCEPT;
 }

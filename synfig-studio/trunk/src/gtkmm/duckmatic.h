@@ -159,7 +159,7 @@ private:
 
 	std::list<etl::handle<Stroke> > stroke_list_;
 
-	std::list<etl::handle<Stroke> > persistant_stroke_list_;
+	std::list<etl::handle<Stroke> > persistent_stroke_list_;
 
 	synfig::GUIDSet selected_ducks;
 
@@ -206,7 +206,7 @@ protected:
 	/*! \see grid_snap, show_grid */
 	synfig::Vector grid_size;
 
-	bool show_persistant_strokes;
+	bool show_persistent_strokes;
 
 	bool axis_lock;
 
@@ -259,8 +259,8 @@ public:
 
 	synfig::Point snap_point_to_grid(const synfig::Point& x, float radius=0.1)const;
 
-	bool get_show_persistant_strokes()const { return show_persistant_strokes; }
-	void set_show_persistant_strokes(bool x);
+	bool get_show_persistent_strokes()const { return show_persistent_strokes; }
+	void set_show_persistent_strokes(bool x);
 
 	//! Sets the size of the grid
 	void set_grid_size(const synfig::Vector &s);
@@ -285,9 +285,9 @@ public:
 
 	const std::list<etl::handle<Stroke> >& stroke_list()const { return stroke_list_; }
 
-	const std::list<etl::handle<Stroke> >& persistant_stroke_list()const { return persistant_stroke_list_; }
+	const std::list<etl::handle<Stroke> >& persistent_stroke_list()const { return persistent_stroke_list_; }
 
-	std::list<etl::handle<Stroke> >& persistant_stroke_list() { return persistant_stroke_list_; }
+	std::list<etl::handle<Stroke> >& persistent_stroke_list() { return persistent_stroke_list_; }
 
 	//! \todo We should modify this to support multiple selections
 	etl::handle<Duck> get_selected_duck()const;
@@ -328,9 +328,9 @@ public:
 
 	void add_stroke(etl::smart_ptr<std::list<synfig::Point> > stroke_point_list, const synfig::Color& color=synfig::Color(0,0,0));
 
-	void add_persistant_stroke(etl::smart_ptr<std::list<synfig::Point> > stroke_point_list, const synfig::Color& color=synfig::Color(0,0,0));
+	void add_persistent_stroke(etl::smart_ptr<std::list<synfig::Point> > stroke_point_list, const synfig::Color& color=synfig::Color(0,0,0));
 
-	void clear_persistant_strokes();
+	void clear_persistent_strokes();
 
 	void add_duck(const etl::handle<Duck> &duck);
 

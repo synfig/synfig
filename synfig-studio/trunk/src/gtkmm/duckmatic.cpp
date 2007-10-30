@@ -87,7 +87,7 @@ Duckmatic::Duckmatic():
 	grid_snap(false),
 	guide_snap(false),
 	grid_size(1.0/4.0,1.0/4.0),
-	show_persistant_strokes(true)
+	show_persistent_strokes(true)
 {
 	axis_lock=false;
 	drag_offset_=Point(0,0);
@@ -110,8 +110,8 @@ Duckmatic::clear_ducks()
 	bezier_list_.clear();
 	stroke_list_.clear();
 
-	if(show_persistant_strokes)
-		stroke_list_=persistant_stroke_list_;
+	if(show_persistent_strokes)
+		stroke_list_=persistent_stroke_list_;
 }
 
 //! Returns \a true if the given duck is currently selected
@@ -615,26 +615,26 @@ Duckmatic::add_stroke(etl::smart_ptr<std::list<synfig::Point> > stroke_point_lis
 }
 
 void
-Duckmatic::add_persistant_stroke(etl::smart_ptr<std::list<synfig::Point> > stroke_point_list, const synfig::Color& color)
+Duckmatic::add_persistent_stroke(etl::smart_ptr<std::list<synfig::Point> > stroke_point_list, const synfig::Color& color)
 {
 	add_stroke(stroke_point_list,color);
-	persistant_stroke_list_.push_back(stroke_list_.back());
+	persistent_stroke_list_.push_back(stroke_list_.back());
 }
 
 void
-Duckmatic::clear_persistant_strokes()
+Duckmatic::clear_persistent_strokes()
 {
-	persistant_stroke_list_.clear();
+	persistent_stroke_list_.clear();
 }
 
 void
-Duckmatic::set_show_persistant_strokes(bool x)
+Duckmatic::set_show_persistent_strokes(bool x)
 {
-	if(x!=show_persistant_strokes)
+	if(x!=show_persistent_strokes)
 	{
-		show_persistant_strokes=x;
+		show_persistent_strokes=x;
 		if(x)
-			stroke_list_=persistant_stroke_list_;
+			stroke_list_=persistent_stroke_list_;
 		else
 			stroke_list_.clear();
 	}
@@ -827,7 +827,7 @@ Duckmatic::save_sketch(const synfig::String& filename)const
 
 	std::list<etl::handle<Stroke> >::const_iterator iter;
 
-	for(iter=persistant_stroke_list_.begin();iter!=persistant_stroke_list_.end();++iter)
+	for(iter=persistent_stroke_list_.begin();iter!=persistent_stroke_list_.end();++iter)
 	{
 		file<<"C "
 			<<(*iter)->color.get_r()<<' '
@@ -888,7 +888,7 @@ Duckmatic::load_sketch(const synfig::String& filename)
 					synfig::warning("Bad color line \"%s\"",line.c_str());
 					r=0;g=0;b=0;
 				}
-				add_persistant_stroke(stroke_data, synfig::Color(r,g,b));
+				add_persistent_stroke(stroke_data, synfig::Color(r,g,b));
 			}
 			break;
 		case 'V':
@@ -896,7 +896,7 @@ Duckmatic::load_sketch(const synfig::String& filename)
 			if(!stroke_data)
 			{
 				stroke_data.spawn();
-				add_persistant_stroke(stroke_data, synfig::Color(0,0,0));
+				add_persistent_stroke(stroke_data, synfig::Color(0,0,0));
 			}
 			float x,y;
 			if(!strscanf(line,"V %f %f",&x, &y))
