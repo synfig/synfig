@@ -376,14 +376,14 @@ public:
 	virtual ParamList get_param_list()const;
 
 	//! Sets the \a time for the selected Layer and those under it
-	/*!	\param context		Context iterator refering to next Layer.
+	/*!	\param context		Context iterator referring to next Layer.
 	**	\param time			writeme
 	**	\see Handle::set_time()
 	*/
 	virtual void set_time(Context context, Time time)const;
 
 	//! Sets the \a time for the selected Layer and those under it for a specific \a point
-	/*!	\param context		Context iterator refering to next Layer.
+	/*!	\param context		Context iterator referring to next Layer.
 	**	\param time			writeme
 	**	\param point		writeme
 	**	\see Handle::set_time()
@@ -391,14 +391,14 @@ public:
 	virtual void set_time(Context context, Time time, const Point &point)const;
 
 	//! Gets the color of the Canvas at \a pos
-	/*!	\param context		Context iterator refering to next Layer.
+	/*!	\param context		Context iterator referring to next Layer.
 	**	\param pos		Point which indicates where the Color should come from
 	**	\see Handle::get_color()
 	*/
 	virtual Color get_color(Context context, const Point &pos)const;
 
 	//! Renders the Canvas to the given Surface in an accelerated manner
-	/*!	\param context		Context iterator refering to next Layer.
+	/*!	\param context		Context iterator referring to next Layer.
 	**	\param surface		Pointer to Surface to render to.
 	**	\param quality		The requested quality-level to render at.
 	**	\param renddesc		The associated RendDesc.
@@ -409,7 +409,7 @@ public:
 	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 
 	//! Checks to see if a part of the layer is directly under \a point
-	/*!	\param context		Context iterator refering to next Layer.
+	/*!	\param context		Context iterator referring to next Layer.
 	**	\param point		The point to check
 	**	\return 	The handle of the layer under \a point. If there is not
 	**				a layer under \a point, then returns an empty handle. */
