@@ -320,7 +320,7 @@ synfig::Gradient::operator()(const Real &x,float supersample)const
 	const_iterator iter,next;
 
 	/*
-	//optimizize...
+	//optimize...
 	Real 	left = x-supersample/2, right = x+supersample/2;
 
 	if(left < front().pos) left = front().pos;
