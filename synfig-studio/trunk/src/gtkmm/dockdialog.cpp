@@ -157,7 +157,7 @@ DockDialog::~DockDialog()
 		// delete dock_book_list.front();
 
 		// Oddly enough, the following line should
-		// theoreticly do the same thing after this
+		// theoretically do the same thing after this
 		// class is destroyed, but it doesn't seem to
 		// cause a crash.  It does, however, trigger this warning:
 		//
