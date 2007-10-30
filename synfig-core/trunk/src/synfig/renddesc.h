@@ -241,7 +241,7 @@ public:
 	//! Return the antialias amount
 	const int &get_antialias()const;
 
-	//! Set the antilaias amount
+	//! Set the antialias amount
 	RendDesc &set_antialias(const int &x);
 
 	//! Return the distance from the bottom-right to the top-left

@@ -396,7 +396,7 @@ const int &
 RendDesc::get_antialias()const
 { return a; }
 
-//! Set the antilaias amount
+//! Set the antialias amount
 RendDesc &
 RendDesc::set_antialias(const int &x)
 { a=x; return *this; }
