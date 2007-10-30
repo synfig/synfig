@@ -769,7 +769,7 @@ Canvas::clone(const GUID& deriv_guid)const
 	{
 		name=get_id()+"_CLONE";
 
-		throw runtime_error("Cloning of non-inline canvases is not yet suported");
+		throw runtime_error("Cloning of non-inline canvases is not yet supported");
 	}
 
 	Handle canvas(new Canvas(name));

@@ -170,7 +170,7 @@ static void GuassianBlur_3x3(etl::surface<T,AT,VP> &surface)
 	T *SC0=new T[w+1];
 	T *SC1=new T[w+1];
 
-	// Setup the row bufers
+	// Setup the row buffers
 	for(x=0;x<w;x++)SC0[x]=surface[0][x]*4;
 //	memcpy(SC1,surface[0],w*sizeof(T));
 
@@ -218,7 +218,7 @@ inline static void GaussianBlur_5x5_(etl::surface<T,AT,VP> &surface,T *SC0,T *SC
 	w=surface.get_w();
 	h=surface.get_h();
 
-	// Setup the row bufers
+	// Setup the row buffers
 	for(x=0;x<w;x++)SC0[x+2]=surface[0][x]*24;
 //	memset(SC0,0,(w+2)*sizeof(T));
 	memset(SC1,0,(w+2)*sizeof(T));
