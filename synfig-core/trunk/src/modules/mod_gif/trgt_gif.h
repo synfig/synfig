@@ -168,7 +168,7 @@ private:
 	int
 		i,			// General-purpose index
 		codesize,	// Current code size
-		rootsize,	// Size of pixel bits (will be recalculted)
+		rootsize,	// Size of pixel bits (will be recalculated)
 		nextcode;	// Next code to use
 	lzwcode *table,*next,*node;
 
