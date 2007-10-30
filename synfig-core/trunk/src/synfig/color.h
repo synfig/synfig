@@ -723,7 +723,7 @@ enum PixelFormat
 	PF_BGR=(1<<3),			//!< If set, reverse the order of the RGB channels
 	PF_A_START=(1<<4),		//!< If set, alpha channel is before the color data. If clear, it is after.
 	PF_Z_START=(1<<5),		//!< If set, ZDepth channel is before the color data. If clear, it is after.
-	PF_ZA=(1<<6),			//!< If set, the ZDepth channel will be infront of the alpha channel. If clear, they are reversed.
+	PF_ZA=(1<<6),			//!< If set, the ZDepth channel will be in front of the alpha channel. If clear, they are reversed.
 
 	PF_A_INV=(1<<7),		//!< If set, the alpha channel is stored as 1.0-a
 	PF_Z_INV=(1<<8),		//!< If set, the ZDepth channel is stored as 1.0-z
