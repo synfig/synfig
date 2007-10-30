@@ -256,7 +256,7 @@ synfig::render(
 			{
 				// If the callback returns false,
 				// then the render has been aborted.
-				// Exit gracefuly.
+				// Exit gracefully.
 
 				target->end_scanline();
 				target->end_frame();
@@ -432,7 +432,7 @@ synfig::render_threaded(
 			{
 				// If the callback returns false,
 				// then the render has been aborted.
-				// Exit gracefuly.
+				// Exit gracefully.
 
 				target->end_scanline();
 				target->end_frame();
