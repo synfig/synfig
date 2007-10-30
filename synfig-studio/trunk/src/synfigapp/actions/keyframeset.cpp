@@ -375,7 +375,7 @@ Action::KeyframeSet::perform()
 		throw Error(_("Unable to find the given keyframe"));
 	}
 
-	// Check for colisions
+	// Check for collisions
 	if(old_time!=new_time)
 	{
 		try {
