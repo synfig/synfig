@@ -123,7 +123,7 @@ void laguer(Complex a[], int m, Complex *x, int *its)
 		d = f = Complex(0,0); //clear variables for use
 		abx = abs(*x);	//the magnitude of the current root
 
-		//Efficent computation of the polynomial and its first 2 derivatives
+		//Efficient computation of the polynomial and its first 2 derivatives
 		for(j = m-1; j >= 0; --j)
 		{
 			f = (*x)*f + d;
