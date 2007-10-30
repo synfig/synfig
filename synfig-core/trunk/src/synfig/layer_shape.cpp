@@ -1699,7 +1699,7 @@ void Layer_Shape::PolySpan::draw_scanline(int y, Real x1, Real fy1, Real x2, Rea
 	//case all in same pixel
 	if(ix1 == ix2)  //impossible for degenerate case (covered by the previous cases)
 	{
-		current.addcover(dy,(fx1 + fx2)*dy/2); //horizontal trapazoid area
+		current.addcover(dy,(fx1 + fx2)*dy/2); //horizontal trapezoid area
 		return;
 	}
 
@@ -1713,7 +1713,7 @@ void Layer_Shape::PolySpan::draw_scanline(int y, Real x1, Real fy1, Real x2, Rea
 		mult = (1 - fx1)*dydx;	//next y intersection diff value (at 1)
 
 		//first pixel
-		current.addcover(mult,(1 + fx1)*mult/2);	// fx1,fy1,1,fy@1 - starting trapazoidal area
+		current.addcover(mult,(1 + fx1)*mult/2);	// fx1,fy1,1,fy@1 - starting trapezoidal area
 
 		//move to the next pixel
 		fy1 += mult;
@@ -1749,7 +1749,7 @@ void Layer_Shape::PolySpan::draw_scanline(int y, Real x1, Real fy1, Real x2, Rea
 		mult = fx1*dydx;	//next y intersection diff value
 
 		//first pixel
-		current.addcover(mult,fx1*mult/2);	// fx1,fy1,0,fy@0 - starting trapazoidal area
+		current.addcover(mult,fx1*mult/2);	// fx1,fy1,0,fy@0 - starting trapezoidal area
 
 		//move to next pixel
 		fy1 += mult;
