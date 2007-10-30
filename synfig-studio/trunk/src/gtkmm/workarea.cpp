@@ -1495,7 +1495,7 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 
 		signal_cursor_moved_();
 
-		// Guide/Duck hilights on hover
+		// Guide/Duck highlights on hover
 		if(dragging==DRAG_NONE)
 		{
 			GuideList::iterator iter;
