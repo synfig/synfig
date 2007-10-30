@@ -110,7 +110,7 @@ Renderer_Guides::event_vfunc(GdkEvent* event)
 			modifier=Gdk::ModifierType(event->button.state);
 		}
 
-		// Make sure we recognise the device
+		// Make sure we recognize the device
 		/*if(curr_input_device)
 		{
 			if(curr_input_device!=device)

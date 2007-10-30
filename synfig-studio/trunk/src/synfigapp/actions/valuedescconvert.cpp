@@ -220,6 +220,6 @@ Action::ValueDescConvert::prepare()
 
 
 
-	throw Error(_("ValueDesc is not recognised or supported."));
+	throw Error(_("ValueDesc is not recognized or supported."));
 */
 }

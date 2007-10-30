@@ -271,7 +271,7 @@ studio::Instance::dialog_save_as()
 		{
 			String ext(filename_extension(filename));
 			if(ext!=".sif" && ext!=".sifz" && !App::dialog_yes_no(_("Unknown extension"),
-				_("You have given the file name an extension\nwhich I do not recognise. Are you sure this is what you want?")))
+				_("You have given the file name an extension\nwhich I do not recognize. Are you sure this is what you want?")))
 				continue;
 		}
 		catch(...)

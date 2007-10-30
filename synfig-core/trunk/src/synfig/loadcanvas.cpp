@@ -1550,7 +1550,7 @@ CanvasParser::parse_value_node(xmlpp::Element *element,Canvas::Handle canvas)
 			return value_node;
 	}
 
-	// If ValueBase::ident_type() recognises the name, then we know it's a ValueBase
+	// If ValueBase::ident_type() recognizes the name, then we know it's a ValueBase
 	if(element->get_name()!="canvas" && ValueBase::ident_type(element->get_name()))
 	{
 		ValueBase data=parse_value(element,canvas);
@@ -1756,7 +1756,7 @@ CanvasParser::parse_layer(xmlpp::Element *element,Canvas::Handle canvas)
 				continue;
 			}
 
-			// If we recognise the element name as a
+			// If we recognize the element name as a
 			// ValueBase, then treat is at one
 			if(/*(*iter)->get_name()!="canvas" && */ValueBase::ident_type((*iter)->get_name()) && !dynamic_cast<xmlpp::Element*>(*iter)->get_attribute("guid"))
 			{

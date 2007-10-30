@@ -142,7 +142,7 @@ Action::LayerParamConnect::perform()
 
 	old_value=layer->get_param(param_name);
 	if(!old_value.is_valid())
-		throw Error(_("Layer did not recognise parameter name"));
+		throw Error(_("Layer did not recognize parameter name"));
 
 	if(!layer->set_param(param_name,(*value_node)(0)))
 		throw Error(_("Bad connection"));
