@@ -712,7 +712,7 @@ enum PixelFormat
 ** 3	Endian (BGR/RGB)
 ** 4	Alpha Location (Start/End)
 ** 5	ZDepth Location (Start/End)
-** 6	Alpha/ZDepth Arangement (ZA,AZ)
+** 6	Alpha/ZDepth Arrangement (ZA,AZ)
 ** 7	Alpha Range (Inverted,Normal)
 ** 8	Z Range (Inverted,Normal)
 */
