@@ -423,7 +423,7 @@ ValueNode_BLine::operator()(Time t)const
 
 			// Find "end" of dynamic group - ie. search forward along
 			// the bline from the current point until we find a point
-			// which is more 'on'than the current one
+			// which is more 'on' than the current one
 			end_iter=iter;
 //			for(++end_iter;begin_iter!=list.end();++end_iter)
 			for(++end_iter;end_iter!=list.end();++end_iter)
