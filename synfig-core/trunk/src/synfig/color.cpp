@@ -385,7 +385,7 @@ blendfunc_DIVIDE(Color &a,Color &b,float amount)
 	// We add COLOR_EPSILON in order to avoid a divide-by-zero condition.
 	// This causes DIVIDE to bias toward positive values, but the effect is
 	// really negligible. There is a reason why we use COLOR_EPSILON--we
-	// want the change to be imperceptable.
+	// want the change to be imperceptible.
 
 	b.set_r(((b.get_r()/(a.get_r()+COLOR_EPSILON))-b.get_r())*(amount)+b.get_r());
 	b.set_g(((b.get_g()/(a.get_g()+COLOR_EPSILON))-b.get_g())*(amount)+b.get_g());
