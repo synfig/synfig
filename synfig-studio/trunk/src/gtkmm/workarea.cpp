@@ -1061,7 +1061,7 @@ void
 WorkArea::set_focus_point(const synfig::Point &point)
 {
 	// These next three lines try to ensure that we place the
-	// focus on a pixel boundry
+	// focus on a pixel boundary
 	/*Point adjusted(point[0]/abs(get_pw()),point[1]/abs(get_ph()));
 	adjusted[0]=(abs(adjusted[0]-floor(adjusted[0]))<0.5)?floor(adjusted[0])*abs(get_pw()):ceil(adjusted[0])*abs(get_ph());
 	adjusted[1]=(abs(adjusted[1]-floor(adjusted[1]))<0.5)?floor(adjusted[1])*abs(get_ph()):ceil(adjusted[1])*abs(get_ph());
