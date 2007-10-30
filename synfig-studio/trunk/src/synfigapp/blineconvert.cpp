@@ -629,7 +629,7 @@ synfigapp::BLineConverter::operator () (std::list<synfig::BLinePoint> &out, cons
 			//preproceval += timer();
 			//numpre++;
 
-			work.resize(size*2-1); //guarantee that all points will be tessellated correctly (one point inbetween every 2 adjacent points)
+			work.resize(size*2-1); //guarantee that all points will be tessellated correctly (one point in between every 2 adjacent points)
 
 			//if size of work is size*2-1, the step size should be 1/(size*2 - 2)
 			//Real step = 1/(Real)(size*2 - 1);
