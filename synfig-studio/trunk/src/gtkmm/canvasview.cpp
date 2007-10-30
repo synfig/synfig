@@ -2433,7 +2433,7 @@ CanvasView::on_id_changed()
 void
 CanvasView::on_mode_changed(synfigapp::CanvasInterface::Mode mode)
 {
-	// If the aninimate flag was set in mode...
+	// If the animate flag was set in mode...
 	if(mode&synfigapp::MODE_ANIMATE)
 	{
 		Gtk::Image *icon;
