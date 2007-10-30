@@ -132,7 +132,7 @@ gif::init()
 	else
 		fputc((0xF0+(rootsize-1))&~(1<<7),file.get());	// flags
 
-	fputc(0,file.get());		// backgound color
+	fputc(0,file.get());		// background color
 	fputc(0,file.get());		// Pixel Aspect Ratio
 
 	DEBUGPOINT();
