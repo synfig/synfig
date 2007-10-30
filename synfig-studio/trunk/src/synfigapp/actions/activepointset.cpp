@@ -191,7 +191,7 @@ Action::ActivepointSet::perform()
 		}
 	}
 
-	//remove all the points we're supposed to be overwritting
+	//remove all the points we're supposed to be overwriting
 	{
 		vector<Activepoint>::iterator 	oi = overwritten_activepoints.begin(),
 										oend = overwritten_activepoints.end();

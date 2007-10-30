@@ -172,7 +172,7 @@ Action::WaypointSet::perform()
 		}
 	}
 
-	//remove all the points we're supposed to be overwritting
+	//remove all the points we're supposed to be overwriting
 	{
 		vector<Waypoint>::iterator 	oi = overwritten_waypoints.begin(),
 									oend = overwritten_waypoints.end();
