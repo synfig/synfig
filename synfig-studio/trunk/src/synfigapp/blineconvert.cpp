@@ -326,7 +326,7 @@ Real CurveError(const synfig::Point *pts, unsigned int n, std::vector<synfig::Po
 typedef synfigapp::BLineConverter::cpindex cpindex;
 
 //has the index data and the tangent scale data (relevant as it may be)
-int tesselate_curves(const std::vector<cpindex> &inds, const std::vector<Point> &f, const std::vector<synfig::Vector> &df, std::vector<Point> &work)
+int tessellate_curves(const std::vector<cpindex> &inds, const std::vector<Point> &f, const std::vector<synfig::Vector> &df, std::vector<Point> &work)
 {
 	if(inds.size() < 2)
 		return 0;
@@ -341,7 +341,7 @@ int tesselate_curves(const std::vector<cpindex> &inds, const std::vector<Point> 
 	j2 = j++;
 	for(; j != end; j2 = j++)
 	{
-		//if this curve has invalid error (in j) then retesselate its work points (requires reparametrization, etc.)
+		//if this curve has invalid error (in j) then retessellate its work points (requires reparametrization, etc.)
 		if(j->error < 0)
 		{
 			//get the stepsize etc. for the number of points in here
@@ -629,7 +629,7 @@ synfigapp::BLineConverter::operator () (std::list<synfig::BLinePoint> &out, cons
 			//preproceval += timer();
 			//numpre++;
 
-			work.resize(size*2-1); //guarantee that all points will be tesselated correctly (one point inbetween every 2 adjacent points)
+			work.resize(size*2-1); //guarantee that all points will be tessellated correctly (one point inbetween every 2 adjacent points)
 
 			//if size of work is size*2-1, the step size should be 1/(size*2 - 2)
 			//Real step = 1/(Real)(size*2 - 1);
@@ -645,18 +645,18 @@ synfigapp::BLineConverter::operator () (std::list<synfig::BLinePoint> &out, cons
 			//while there are still enough points between us, and the error is too high subdivide (and invalidate neighbors that share tangents)
 			while(!done)
 			{
-				//tesselate all curves with invalid error values
+				//tessellate all curves with invalid error values
 				work[0] = f[i0];
 
 				//timer.reset();
-				/*numtess += */tesselate_curves(curind,f,df,work);
+				/*numtess += */tessellate_curves(curind,f,df,work);
 				//tesseval += timer();
 
 				//now get all error values
 				//timer.reset();
 				for(i = 1; i < (int)curind.size(); ++i)
 				{
-					if(curind[i].error < 0) //must have been retesselated, so now recalculate error value
+					if(curind[i].error < 0) //must have been retessellated, so now recalculate error value
 					{
 						//evaluate error from points (starting at current index)
 						int size = curind[i].curind - curind[i-1].curind + 1;
@@ -667,7 +667,7 @@ synfigapp::BLineConverter::operator () (std::list<synfig::BLinePoint> &out, cons
 						{
 							synfig::info("Holy crap %d-%d error %f",curind[i-1].curind,curind[i].curind,curind[i].error);
 							curind[i].error = -1;
-							numtess += tesselate_curves(curind,f,df,work);
+							numtess += tessellate_curves(curind,f,df,work);
 							curind[i].error = CurveError(&f[curind[i-1].curind], size,
 													 work,0,work.size());//(curind[i-1].curind - i0)*2,(curind[i].curind - i0)*2+1);
 						}*/
@@ -807,7 +807,7 @@ synfigapp::BLineConverter::operator () (std::list<synfig::BLinePoint> &out, cons
 			"\tDistance Calculation:  %f\n"
 			"  Algorithm: (numtimes,totaltime)\n"
 			"\tPreprocess step:      (%d,%f)\n"
-			"\tTesselation step:     (%d,%f)\n"
+			"\tTessellation step:    (%d,%f)\n"
 			"\tError step:           (%d,%f)\n"
 			"\tSplit step:           (%d,%f)\n"
 			"  Num Input: %d, Num Output: %d\n"

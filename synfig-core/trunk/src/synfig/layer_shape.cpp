@@ -1548,7 +1548,7 @@ void Layer_Shape::PolySpan::conic_to(Real x1, Real y1, Real x, Real y)
 	{
 		if(num >= MAX_SUBDIVISION_SIZE)
 		{
-			warning("Curve subdivision somehow ran out of space while tesselating!");
+			warning("Curve subdivision somehow ran out of space while tessellating!");
 
 			//do something...
 			assert(0);
@@ -1621,7 +1621,7 @@ void Layer_Shape::PolySpan::cubic_to(Real x1, Real y1, Real x2, Real y2, Real x,
 	{
 		if(num >= MAX_SUBDIVISION_SIZE)
 		{
-			warning("Curve subdivision somehow ran out of space while tesselating!");
+			warning("Curve subdivision somehow ran out of space while tessellating!");
 
 			//do something...
 			assert(0);
@@ -2640,7 +2640,7 @@ Layer_Shape::render_shape(Surface *surface,bool useblend,int /*quality*/,
 
 	PolySpan	span;
 
-	//optimization for tesselating only inside tiles
+	//optimization for tessellating only inside tiles
 	span.window.minx = 0;
 	span.window.miny = 0;
 	span.window.maxx = w;
@@ -2876,7 +2876,7 @@ Layer_Shape::render_shape(surface<float> *surface,int /*quality*/,
 
 	PolySpan	span;
 
-	//optimization for tesselating only inside tiles
+	//optimization for tessellating only inside tiles
 	span.window.minx = 0;
 	span.window.miny = 0;
 	span.window.maxx = w;
