@@ -286,7 +286,7 @@ Context::set_time(Time time)const
 	// If this layer isn't defined, just return
 	if((context)->empty()) return;
 
-	// Set up a wrter lock
+	// Set up a writer lock
 	RWLock::WriterLock lock((*context)->get_rw_lock());
 
 	//synfig::info("%s: dirty_time=%f",(*context)->get_name().c_str(),(float)(*context)->dirty_time_);
