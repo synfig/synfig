@@ -59,7 +59,7 @@ class Layer_Shape : public Layer_Composite, public Layer_NoDeform
 
 private:
 
-	//internal cacheing
+	//internal caching
 	struct Intersector;
 	Intersector	*edge_table;
 
