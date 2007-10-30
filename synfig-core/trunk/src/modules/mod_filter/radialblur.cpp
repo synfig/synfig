@@ -156,7 +156,7 @@ RadialBlur::accelerated_render(Context context,Surface *surface,int quality, con
 								 br[1] + ph*(int((rect.get_min()[1]-br[1])/ph+2-1e-6)));
 
 	// round to nearest integer width and height (should be very
-	// nearly whole numbers already, but dont want to round 5.99999
+	// nearly whole numbers already, but don't want to round 5.99999
 	// down to 5)
 	int tmp_surface_width = int((tmp_surface_br[0]-tmp_surface_tl[0])/pw + 0.5);
 	int tmp_surface_height = int((tmp_surface_br[1]-tmp_surface_tl[1])/ph + 0.5);
