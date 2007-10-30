@@ -577,7 +577,7 @@ LayerTreeStore::drag_data_received_vfunc (const TreeModel::Path& dest, const Gtk
 			*/
 		}
 	}
-	synfig::info("I suposidly moved %d layers",i);
+	synfig::info("I supposedly moved %d layers",i);
 
 	// Reselect the previously selected layers
 	canvas_interface()->get_selection_manager()->set_selected_layers(selected_layer_list);
