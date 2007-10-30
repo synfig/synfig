@@ -247,7 +247,7 @@ Settings::load_from_file(const synfig::String& filename)
 			}
 			catch(...)
 			{
-				synfig::error("Settings::load_from_file(): Attept to set key \"%s\" with a value of \"%s\" has thrown an exception.",key.c_str(),value.c_str());
+				synfig::error("Settings::load_from_file(): Attempt to set key \"%s\" with a value of \"%s\" has thrown an exception.",key.c_str(),value.c_str());
 				throw;
 			}
 		}
