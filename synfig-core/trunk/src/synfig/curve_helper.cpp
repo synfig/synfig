@@ -612,7 +612,7 @@ void CIntersect::recurse_intersect(const SCurve &left, const SCurve &right, int 
 	left.Split(l1,r1);	//subdivide left
 	right.Split(l2,r2); //subdivide right
 
-	//Test each cantidate against eachother
+	//Test each cantidate against each other
 	recurse_intersect(l1,l2);
 	recurse_intersect(l1,r2);
 	recurse_intersect(r1,l2);
@@ -625,7 +625,7 @@ bool CIntersect::operator()(const bezier<Point> &c1, const bezier<Point> &c2)
 {
 	times.clear();
 
-	//need to subdivide and check recursive bounding regions against eachother
+	//need to subdivide and check recursive bounding regions against each other
 	//so track a list of dirty curves and compare compare compare
 
 

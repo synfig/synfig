@@ -529,7 +529,7 @@ synfigapp::BLineConverter::operator () (std::list<synfig::BLinePoint> &out, cons
 
 		brk.push_back(i);
 
-		//postprocess for breaks too close to eachother
+		//postprocess for breaks too close to each other
 		Real d = 0;
 		Point p = f[brk.front()];
 
