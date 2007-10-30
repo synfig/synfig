@@ -175,7 +175,7 @@ Outline::sync()
 
 	if (!bline.get_list().size())
 	{
-		synfig::warning(string("Outline::sync():")+_("No verticies in outline " + string("\"") + get_description() + string("\"")));
+		synfig::warning(string("Outline::sync():")+_("No vertices in outline " + string("\"") + get_description() + string("\"")));
 		return;
 	}
 		
