@@ -929,7 +929,7 @@ Target_LibAVCodec::end_scanline()
 
 bool Target_LibAVCodec::init()
 {
-	//hardcode test for mpeg
+	//hardcoded test for mpeg
 	if(!data->Initialize(filename.c_str(),NULL))
 	{
 		synfig::warning("Unable to Initialize the audio video encoders");
