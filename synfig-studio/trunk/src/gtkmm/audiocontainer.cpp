@@ -1284,7 +1284,7 @@ void AudioContainer::AudioImp::scrub(double /*t*/)
 
 		curscrubpos = newpos;
 
-		//Ok the sound is running, now we need to tweek it
+		//Ok the sound is running, now we need to tweak it
 		if(newpos > oldpos)
 		{
 			//Outside so completely stopped...
