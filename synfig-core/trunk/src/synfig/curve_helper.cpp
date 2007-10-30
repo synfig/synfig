@@ -530,7 +530,7 @@ static int recurse_intersect(const CIntersect::SCurve &b, const Point &p1, int d
 
 		for(int i = 0; i < 3; ++i)
 		{
-			//intersect line segmentsssss
+			//intersect line segments
 
 			//solve for the y_value
 			Vector v = b.b[i+1] - b.b[i];
@@ -590,7 +590,7 @@ void CIntersect::recurse_intersect(const SCurve &left, const SCurve &right, int 
 		{
 			for(int j = 0; j < 3; ++j)
 			{
-				//intersect line segmentsssss
+				//intersect line segments
 				if(intersect_line_segments(left.b[i],left.b[i+1],t,right.b[j],right.b[j+1],s))
 				{
 					//We got one Jimmy
