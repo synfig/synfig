@@ -461,7 +461,7 @@ StateWidth_Context::event_mouse_handler(const Smach::event& x)
 {
 	const EventMouse& event(*reinterpret_cast<const EventMouse*>(&x));
 
-	//handle ze click
+	//handle the click
 	if( (event.key == EVENT_WORKAREA_MOUSE_BUTTON_DOWN || event.key == EVENT_WORKAREA_MOUSE_BUTTON_DRAG)
 			&& event.button == BUTTON_LEFT )
 	{
