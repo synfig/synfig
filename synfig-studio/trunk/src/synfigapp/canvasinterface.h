@@ -217,13 +217,13 @@ public:
 	//! Changes the ID of the canvas. Undoable.
 	bool set_id(const synfig::String &x);
 
-	//! Convience function to retrieve the name of the canvas
+	//! Convenience function to retrieve the name of the canvas
 	synfig::String get_name()const { return get_canvas()->get_name(); }
 
-	//! Convience function to retrieve the description of the canvas
+	//! Convenience function to retrieve the description of the canvas
 	synfig::String get_description()const { return get_canvas()->get_description(); }
 
-	//! Convience function to retrieve the ID of the canvas
+	//! Convenience function to retrieve the ID of the canvas
 	synfig::String get_id()const { return get_canvas()->get_id(); }
 
 	//! Sets the current time
