@@ -327,6 +327,8 @@ public:
 	static synfig::String get_config_file(const synfig::String& file);
 }; // END of class App
 
+	void delete_widget(Gtk::Widget *widget);
+
 }; // END namespace studio
 
 /* === E N D =============================================================== */

@@ -262,6 +262,25 @@ void studio::App::set_max_recent_files(int x) { max_recent_files_=x; }
 static synfig::String app_base_path_;
 
 namespace studio {
+
+bool
+really_delete_widget(Gtk::Widget *widget)
+{
+	synfig::info("really delete %x", (unsigned int)widget);
+	delete widget;
+	return false;
+}
+
+// nasty workaround - when we've finished with a popup menu, we want to delete it
+// attaching to the signal_hide() signal gets us here before the action on the menu has run,
+// so schedule the real delete to happen in 50ms, giving the action a chance to run
+void
+delete_widget(Gtk::Widget *widget)
+{
+	synfig::info("delete %x", (unsigned int)widget);
+	Glib::signal_timeout().connect(sigc::bind(sigc::ptr_fun(&really_delete_widget), widget), 50);
+}
+
 }; // END of namespace studio
 studio::StateManager* state_manager;
 

@@ -212,6 +212,7 @@ void
 Widget_Gradient::popup_menu(float x)
 {
 	Gtk::Menu* menu(manage(new Gtk::Menu()));
+	menu->signal_hide().connect(sigc::bind(sigc::ptr_fun(&delete_widget), menu));
 
 	menu->items().clear();
 

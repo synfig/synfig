@@ -177,11 +177,13 @@ public:
 						{
 							synfigapp::ValueDesc value_desc(row[model.value_desc]);
 							Gtk::Menu* menu(manage(new Gtk::Menu()));
+							menu->signal_hide().connect(sigc::bind(sigc::ptr_fun(&delete_widget), menu));
 							App::get_instance(param_tree_store_->canvas_interface()->get_canvas())->make_param_menu(menu,param_tree_store_->canvas_interface()->get_canvas(),value_desc,0.5f);
 							menu->popup(event->button.button,gtk_get_current_event_time());
 							return true;
 						}
 						Gtk::Menu* menu(manage(new Gtk::Menu()));
+						menu->signal_hide().connect(sigc::bind(sigc::ptr_fun(&delete_widget), menu));
 						std::list<synfigapp::ValueDesc> value_desc_list;
 						ParamDesc param_desc(row[model.param_desc]);
 						for(;!layer_list.empty();layer_list.pop_back())

@@ -2196,6 +2196,8 @@ CanvasView::on_layer_user_click(int button, Gtk::TreeRow /*row*/, LayerTree::Col
 				parammenu.items().clear();
 
 				Gtk::Menu *newlayers(manage(new Gtk::Menu()));
+				// do we need this?  the code is all #ifdef'ed out anyway
+				// newlayers->signal_hide().connect(sigc::bind(sigc::ptr_fun(&delete_widget), newlayers));
 				build_new_layer_menu(*newlayers);
 
 				parammenu.items().push_back(Gtk::Menu_Helpers::MenuElem("New Layer",*newlayers));
@@ -2990,6 +2992,7 @@ CanvasView::on_waypoint_clicked(synfigapp::ValueDesc value_desc,synfig::Waypoint
 	case 2:
 		{
 			Gtk::Menu* waypoint_menu(manage(new Gtk::Menu()));
+			waypoint_menu->signal_hide().connect(sigc::bind(sigc::ptr_fun(&delete_widget), waypoint_menu));
 
 			waypoint_menu->items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::StockID("gtk-jump-to"),
 				sigc::bind(

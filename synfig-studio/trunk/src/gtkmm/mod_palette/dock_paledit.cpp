@@ -187,6 +187,7 @@ void
 Dock_PalEdit::show_menu(int i)
 {
 	Gtk::Menu* menu(manage(new Gtk::Menu()));
+	menu->signal_hide().connect(sigc::bind(sigc::ptr_fun(&delete_widget), menu));
 
 	menu->items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::StockID("gtk-select-color"),
 		sigc::bind(

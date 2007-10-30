@@ -938,11 +938,13 @@ CellRenderer_TimeTrack::show_timepoint_menu(const etl::handle<synfig::Node>& nod
 	n=synfig::waypoint_collect(waypoint_set,time,node);
 
 	Gtk::Menu* menu(manage(new Gtk::Menu()));
+	menu->signal_hide().connect(sigc::bind(sigc::ptr_fun(&delete_widget), menu));
 
 	// Create the interpolation method menu
 	if(!waypoint_set.empty())
 	{
 		Gtk::Menu* interp_menu(manage(new Gtk::Menu()));
+		// no need to connect to signal_hide for this one - it will be deleted when its parent is deleted
 		Waypoint::Model model;
 
 		// note: each of the following 4 'if' blocks provokes these warnings:

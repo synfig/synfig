@@ -395,6 +395,7 @@ StateNormal_Context::event_multiple_ducks_clicked_handler(const Smach::event& /*
 	}
 
 	Gtk::Menu *menu=manage(new Gtk::Menu());
+	menu->signal_hide().connect(sigc::bind(sigc::ptr_fun(&delete_widget), menu));
 
 	canvas_view->get_instance()->make_param_menu(menu,canvas_view->get_canvas(),value_desc_list);
 
