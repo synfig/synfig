@@ -480,7 +480,7 @@ Instance::dialog_cvs_commit()
 	}
 	catch(...)
 	{
-		App::dialog_error_blocking(_("Error"),_("An error has occured when trying to COMMIT"));
+		App::dialog_error_blocking(_("Error"),_("An error has occurred when trying to COMMIT"));
 	}
 	update_all_titles();
 }
@@ -505,7 +505,7 @@ Instance::dialog_cvs_add()
 	}
 	catch(...)
 	{
-		App::dialog_error_blocking(_("Error"),_("An error has occured when trying to ADD"));
+		App::dialog_error_blocking(_("Error"),_("An error has occurred when trying to ADD"));
 	}
 	update_all_titles();
 }
@@ -546,7 +546,7 @@ Instance::dialog_cvs_update()
 	}
 	catch(...)
 	{
-		App::dialog_error_blocking(_("Error"),_("An error has occured when trying to UPDATE"));
+		App::dialog_error_blocking(_("Error"),_("An error has occurred when trying to UPDATE"));
 	}
 	//update_all_titles();
 }
@@ -582,7 +582,7 @@ Instance::dialog_cvs_revert()
 	}
 	catch(...)
 	{
-		App::dialog_error_blocking(_("Error"),_("An error has occured when trying to UPDATE"));
+		App::dialog_error_blocking(_("Error"),_("An error has occurred when trying to UPDATE"));
 	}
 	//update_all_titles();
 }
