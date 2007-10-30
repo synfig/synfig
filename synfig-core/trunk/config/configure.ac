@@ -176,9 +176,11 @@ if test $with_magickpp = "yes" ; then {
   	AC_MSG_RESULT([ *** Magick++ Output target disabled])
   	TARGET_MAGICKPP="no"
   	AM_CONDITIONAL(HAVE_LIBMAGICKPP,false)
+	AM_CONDITIONAL(HAVE_MAGICK_OPTIMIZE,false)
   ])
 } else {
 	AM_CONDITIONAL(HAVE_LIBMAGICKPP,false)
+	AM_CONDITIONAL(HAVE_MAGICK_OPTIMIZE,false)
 } ; fi
 
 
