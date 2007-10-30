@@ -422,7 +422,7 @@ Rectangle::accelerated_render(Context context,Surface *surface,int quality, cons
 				surface->blit_to(subimage_pen,left,top,right-left,bottom-top);
 			}
 
-			// fill surface with the rectangle's colour
+			// fill surface with the rectangle's color
 			Surface::alpha_pen surface_pen(surface->begin(),get_amount(),get_blend_method());
 			surface->fill(color,surface_pen,w,h);
 
@@ -491,7 +491,7 @@ Rectangle::accelerated_render(Context context,Surface *surface,int quality, cons
 */
 
 	// optimisation - if the whole tile is covered by this rectangle,
-	// and the rectangle is a solid colour, we don't need to render
+	// and the rectangle is a solid color, we don't need to render
 	// what's behind us
 	if (is_solid_color() && top == 0 && left == 0 && bottom == h && right == w)
 	{
