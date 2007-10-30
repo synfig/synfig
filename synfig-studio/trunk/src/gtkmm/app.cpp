@@ -1124,8 +1124,8 @@ App::App(int *argc, char ***argv):
 
 	gdk_rgb_init();
 
-	// don't call thread_init() if threads are already initialised
-	// on some machines bonobo_init() initialised threads before we get here
+	// don't call thread_init() if threads are already initialized
+	// on some machines bonobo_init() initialized threads before we get here
 	if (!g_thread_supported())
 		Glib::thread_init();
 

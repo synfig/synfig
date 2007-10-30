@@ -713,7 +713,7 @@ struct Layer_Shape::Intersector
 {
 	Rect	aabb;
 
-	//! true iff aabb hasn't been initialised yet
+	//! true iff aabb hasn't been initialized yet
 	bool	initaabb;
 
 	int 	flags;

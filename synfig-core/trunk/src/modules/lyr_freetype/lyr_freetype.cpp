@@ -381,7 +381,7 @@ Layer_Freetype::new_face(const String &newfont)
 		FcResult result;
 		if( !FcInit() )
 		{
-			synfig::warning("Layer_Freetype: fontconfig: %s",_("unable to initialise"));
+			synfig::warning("Layer_Freetype: fontconfig: %s",_("unable to initialize"));
 			error = 1;
 		} else {
 			FcPattern* pat = FcNameParse((FcChar8 *) newfont.c_str());

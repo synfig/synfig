@@ -758,7 +758,7 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline
 	bool extend_start=false,extend_finish=false,complete_loop=false;
 	bool extend_start_join_same=false,extend_start_join_different=false;
 	bool extend_finish_join_same=false,extend_finish_join_different=false;
-	int start_duck_index = 0,finish_duck_index = 0; // initialised to keep the compiler happy; shouldn't be needed though
+	int start_duck_index = 0,finish_duck_index = 0; // initialized to keep the compiler happy; shouldn't be needed though
 	ValueNode_BLine::Handle start_duck_value_node_bline=NULL,finish_duck_value_node_bline=NULL;
 
 	// Find any ducks at the start or end that we might attach to

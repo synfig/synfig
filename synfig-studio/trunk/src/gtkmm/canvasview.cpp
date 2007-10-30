@@ -802,7 +802,7 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 		//	   WorkArea::async_update_preview() =>
 		//	     WorkArea::set_zoom(float) =>
 		//		   WorkArea::async_update_preview() =>
-		//			 desc.set_time(cur_time), where cur_time isn't initialised
+		//			 desc.set_time(cur_time), where cur_time isn't initialized
 		work_area->set_time(0);
 		work_area->zoom_out();
 		w=round_to_int(get_canvas()->rend_desc().get_w()*work_area->get_zoom()+70);

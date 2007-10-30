@@ -63,7 +63,7 @@ public:
 	bool operator<(const Time& rhs) { return time<rhs; }
 
 	Activepoint(const Time &time, const bool &state, int p=0): time(time), priority(p),state(state) { }
-	//! \todo Should priority be initialised here, or elsewhere?  This avoids a valgrind warning for now.
+	//! \todo Should priority be initialized here, or elsewhere?  This avoids a valgrind warning for now.
 	Activepoint(): priority(0) { }
 
 	const Time& get_time()const { return time; }

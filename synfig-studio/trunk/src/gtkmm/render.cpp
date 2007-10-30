@@ -298,7 +298,7 @@ RenderSettings::on_render_pressed()
 	target->set_rend_desc(&rend_desc);
 	target->set_quality((int)adjustment_quality.get_value());
 	if( !target->init() ){
-		canvas_interface_->get_ui_interface()->error(_("Target initialisation failure"));
+		canvas_interface_->get_ui_interface()->error(_("Target initialization failure"));
 		return;
 	}
 

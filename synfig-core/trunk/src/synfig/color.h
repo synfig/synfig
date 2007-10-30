@@ -212,7 +212,7 @@ public:
 public:
 	// ETL/trunk/ETL/_gaussian.h does:
 	//   SR1=SR2=SR3=typename T::value_type();
-	// and expects that to give it initialised colors
+	// and expects that to give it initialized colors
 	// Otherwise the 'gaussian' blur type is random.
 	Color() :a_(0), r_(0), g_(0), b_(0) { }
 	Color(const value_type &f) :a_(f),r_(f), g_(f), b_(f) { }

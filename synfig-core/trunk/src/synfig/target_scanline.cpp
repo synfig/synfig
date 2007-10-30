@@ -125,7 +125,7 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 	curr_frame_=0;
 
 	if( !init() ){
-		if(cb) cb->error(_("Target initialisation failure"));
+		if(cb) cb->error(_("Target initialization failure"));
 		return false;
 	}
 

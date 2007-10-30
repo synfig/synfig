@@ -264,7 +264,7 @@ void
 Dialog_Setup::refresh()
 {
 	// Refresh the temporary gamma; do this before adjusting the sliders,
-	// or variables will be used before their initialisation.
+	// or variables will be used before their initialization.
 	gamma_pattern.set_gamma_r(App::gamma.get_gamma_r());
 	gamma_pattern.set_gamma_g(App::gamma.get_gamma_g());
 	gamma_pattern.set_gamma_b(App::gamma.get_gamma_b());

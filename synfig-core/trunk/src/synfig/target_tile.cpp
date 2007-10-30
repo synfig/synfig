@@ -308,7 +308,7 @@ synfig::Target_Tile::render(ProgressCallback *cb)
 	curr_frame_=0;
 	init();
 	if( !init() ){
-		if(cb) cb->error(_("Target initialisation failure"));
+		if(cb) cb->error(_("Target initialization failure"));
 		return false;
 	}
 
