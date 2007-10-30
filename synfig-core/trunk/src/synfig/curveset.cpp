@@ -436,7 +436,7 @@ void CurveSet::CleanUp(int /*curve*/)
 
 	Performance annoyances:
 	1) Recursing down to find an intersection at the end points that doesn't actually exist
-		(can be helped a bit by not including the edges of bounding rectaingles)
+		(can be helped a bit by not including the edges of bounding rectangles)
 	2) Intersecting curves is slow... oh well
 
 	Algorithm:
