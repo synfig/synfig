@@ -2606,7 +2606,7 @@ CanvasView::rebuild_ducks_layer_(synfig::TransformStack& transform_stack, Canvas
 			// do the bounding box thing
 			bbox|=transform_stack.perform(layer->get_bounding_rect());
 
-			// Grab the layer's list pf parameters
+			// Grab the layer's list of parameters
 			Layer::ParamList paramlist(layer->get_param_list());
 
 			// Grab the layer vocabulary

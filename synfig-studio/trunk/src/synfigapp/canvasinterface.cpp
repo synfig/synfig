@@ -206,7 +206,7 @@ CanvasInterface::add_layer_to(String name, Canvas::Handle canvas, int depth)
 	layer->set_param("blend_method",synfigapp::Main::get_blend_method());
 
 	{
-		// Grab the layer's list pf parameters
+		// Grab the layer's list of parameters
 		Layer::ParamList paramlist=layer->get_param_list();
 		Layer::ParamList::iterator iter;
 		for(iter=paramlist.begin();iter!=paramlist.end();++iter)
