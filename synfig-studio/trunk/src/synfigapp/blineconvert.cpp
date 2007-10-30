@@ -165,7 +165,7 @@ void DerivativeApprox(T &df, const T f[], const Real t[], int npoints, int index
 
 				Lpj += mult; //add into the summation
 
-				//since the ks follow the exact patern we need for the divisor (use that too)
+				//since the ks follow the exact pattern we need for the divisor (use that too)
 				div *= tj - t[k];
 			}
 		}
