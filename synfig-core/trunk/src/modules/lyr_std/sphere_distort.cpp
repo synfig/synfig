@@ -408,7 +408,7 @@ bool Layer_SphereDistort::accelerated_render(Context context,Surface *surface,in
 		/*synfig::warning("Spherize: Bounding box (%f,%f)-(%f,%f)",
 							expandr.minx,expandr.miny,expandr.maxx,expandr.maxy);*/
 
-		//now that we have the bouding rectangle of ALL the pixels (should be...)
+		//now that we have the bounding rectangle of ALL the pixels (should be...)
 		//order it so that it's in the same orientation as the tl,br pair
 
 		//synfig::warning("Spherize: Organize like tl,br");
