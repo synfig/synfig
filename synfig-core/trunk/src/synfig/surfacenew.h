@@ -229,7 +229,7 @@ public:
 	//! Converts an old Surface to a SurfaceNew
 	static Handle create(const Surface&);
 
-	//! Dupilcates a surface
+	//! Duplicates a surface
 	static Handle create(HandleConst);
 
 	//! Creates a cropped copy of a surface
