@@ -49,7 +49,7 @@
 #endif
 #endif
 
-// If we could not find outselves a better
+// If we could not find ourselves a better
 // clock description, go ahead and use the
 // standard clock() implementation. 
 // (Better than nothing...)

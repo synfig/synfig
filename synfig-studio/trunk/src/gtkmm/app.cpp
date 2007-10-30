@@ -1444,7 +1444,7 @@ App::add_recent_file(const std::string &file_name)
 	if(basename(filename)[0]=='.')
 		return;
 
-	// If we aren't an absolute path, turn outselves into one
+	// If we aren't an absolute path, turn ourselves into one
 	if(!is_absolute_path(filename))
 		filename=absolute_path(filename);
 
