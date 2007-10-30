@@ -1268,7 +1268,7 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 	// GDK mouse scrolling events
 	else if(event->any.type==GDK_SCROLL)
 	{
-		// GDK information needed to properly interprete mouse
+		// GDK information needed to properly interpret mouse
 		// scrolling events are: scroll.state, scroll.x/scroll.y, and
 		// scroll.direction. The value of scroll.direction will be
 		// obtained later.
