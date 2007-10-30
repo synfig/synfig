@@ -106,7 +106,7 @@ inline void ThreePointddt(T &df, const T &f1, const T &f2, const T &f3, int bias
 	df = (f1 -f2*2 + f3)*(1/2.0f);
 }
 
-// WARNING -- totaly broken
+// WARNING -- totally broken
 template < class T >
 inline void FivePointddt(T &df, const T &f1, const T &f2, const T &f3, int bias)
 {
