@@ -155,6 +155,13 @@ Layer_Stretch::get_transform()const
 bool
 Layer_Stretch::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
+	if (amount[0] == 0 || amount[1] == 0)
+	{
+		surface->set_wh(renddesc.get_w(), renddesc.get_h());
+		surface->clear();
+		return true;
+	}
+
 	RendDesc desc(renddesc);
 	desc.clear_flags();
     // Adjust the top_left and bottom_right points
