@@ -2640,6 +2640,10 @@ Layer_Shape::render_shape(Surface *surface,bool useblend,int /*quality*/,
 
 	PolySpan	span;
 
+	// if the pixels are zero sized then we're too zoomed out to see anything
+	if (pw == 0 || ph == 0)
+		return true;
+
 	//optimization for tessellating only inside tiles
 	span.window.minx = 0;
 	span.window.miny = 0;
