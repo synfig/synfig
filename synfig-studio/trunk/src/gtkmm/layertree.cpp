@@ -356,6 +356,18 @@ LayerTree::create_param_tree()
 		column->set_reorderable();
 		column->set_resizable();
 	}
+	{	// --- T Y P E --------------------------------------------------------
+		const CanvasTreeStore::Model model;
+		int cols_count = get_param_tree_view().append_column(_("Type"),model.type);
+		Gtk::TreeViewColumn* column = get_param_tree_view().get_column(cols_count-1);
+		if(column)
+		{
+			column->set_reorderable();
+			column->set_resizable();
+			column->set_clickable();
+			column->set_sort_column_id(model.type);
+		}
+	}
 	/*{	// --- T I M E   T R A C K --------------------------------------------
 		Gtk::TreeView::Column* column = Gtk::manage( new Gtk::TreeView::Column(_("Time Track")) );
 		column_time_track=column;
