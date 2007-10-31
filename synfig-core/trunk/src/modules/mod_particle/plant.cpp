@@ -461,6 +461,9 @@ Plant::accelerated_render(Context context,Surface *surface,int quality, const Re
 	const Real pw = (br[0] - tl[0]) / w;
 	const Real ph = (br[1] - tl[1]) / h;
 
+	if (isinf(pw) || isinf(ph))
+		return true;
+
 	if(needs_sync_==true)
 		sync();
 
