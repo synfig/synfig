@@ -1525,6 +1525,7 @@ StateDraw_Context::fill_last_stroke()
 	layer=get_canvas_interface()->add_layer("region");
 	assert(layer);
 	layer->set_param("color",synfigapp::Main::get_background_color());
+	layer->set_description(get_id() + _(" Fill"));
 
 	synfigapp::Action::Handle action(synfigapp::Action::create("layer_param_connect"));
 
