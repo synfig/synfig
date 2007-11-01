@@ -39,8 +39,6 @@
 #include <synfig/general.h>
 #include <cassert>
 
-
-
 #endif
 
 /* === U S I N G =========================================================== */
@@ -66,37 +64,23 @@ using namespace synfig;
 template < class T >
 inline void FivePointdt(T &df, const T &f1, const T &f2, const T &f3, const T &f4, const T &f5, int bias)
 {
-	if(bias == 0)
-	{
-		//middle
+	if (bias == 0)				// middle
 		df = (f1 - f2*8 + f4*8 - f5)*(1/12.0f);
-	}else if(bias < 0)
-	{
-		//left
+	else if (bias < 0)			// left
 		df = (-f1*25 + f2*48 - f3*36 + f4*16 - f5*3)*(1/12.0f);
-	}else
-	{
-		//right
+	else						// right
 		df = (f1*3 - f2*16 + f3*36 - f4*48 + f5*25)*(1/12.0f);
-	}
 }
 
 template < class T >
 inline void ThreePointdt(T &df, const T &f1, const T &f2, const T &f3, int bias)
 {
-	if(bias == 0)
-	{
-		//middle
+	if (bias == 0)				// middle
 		df = (-f1 + f3)*(1/2.0f);
-	}else if(bias < 0)
-	{
-		//left
+	else if (bias < 0)			// left
 		df = (-f1*3 + f2*4 - f3)*(1/2.0f);
-	}else
-	{
-		//right
+	else						// right
 		df = (f1 - f2*4 + f3*3)*(1/2.0f);
-	}
 }
 
 // template < class T >
@@ -195,7 +179,7 @@ void GetFirstDerivatives(const std::vector<synfig::Point> &f, unsigned int left,
 
 	if(right - left < 2)
 		return;
-	else if(right - left < 3)
+	else if(right - left == 2)
 	{
 		synfig::Vector v = f[left+1] - f[left];
 
@@ -209,13 +193,11 @@ void GetFirstDerivatives(const std::vector<synfig::Point> &f, unsigned int left,
 	{
 		//left then middle then right
 		ThreePointdt(*(synfig::Vector*)out,f[left+0], f[left+1], f[left+2], -1);
-		current += 1;
+		current++;
 		out += dfstride;
 
 		for(;current < right-1; current++, out += dfstride)
-		{
 			ThreePointdt(*(synfig::Vector*)out,f[current-1], f[current], f[current+1], 0);
-		}
 
 		ThreePointdt(*(synfig::Vector*)out,f[right-3], f[right-2], f[right-1], 1);
 		current++;
@@ -233,9 +215,7 @@ void GetFirstDerivatives(const std::vector<synfig::Point> &f, unsigned int left,
 		current += 2;
 
 		for(;current < right-2; current++, out += dfstride)
-		{
 			FivePointdt(*(synfig::Vector*)out,f[current-2], f[current-1], f[current], f[current+1], f[current+2], 0);
-		}
 
 		FivePointdt(*(synfig::Vector*)out,f[right-5], f[right-4], f[right-3], f[right-2], f[right-1], 1);
 		out += dfstride;
