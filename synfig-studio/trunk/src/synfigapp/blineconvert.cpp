@@ -99,94 +99,95 @@ inline void ThreePointdt(T &df, const T &f1, const T &f2, const T &f3, int bias)
 	}
 }
 
-template < class T >
-inline void ThreePointddt(T &df, const T &f1, const T &f2, const T &f3, int bias)
-{
-	//a 3 point approximation pretends to have constant acceleration, so only one algorithm needed for left, middle, or right
-	df = (f1 -f2*2 + f3)*(1/2.0f);
-}
-
-// WARNING -- totally broken
-template < class T >
-inline void FivePointddt(T &df, const T &f1, const T &f2, const T &f3, int bias)
-{
-	if(bias == 0)
-	{
-		assert(0); // !?
-		//middle
-		//df = (- f1 + f2*16 - f3*30 +  f4*16 - f5)*(1/12.0f);
-	}/*else if(bias < 0)
-	{
-		//left
-		df = (f1*7 - f2*26*4 + f3*19*6 - f4*14*4 + f5*11)*(1/12.0f);
-	}else
-	{
-		//right
-		df = (f1*3 - f2*16 + f3*36 - f4*48 + f5*25)*(1/12.0f);
-	}*/
-	//side ones don't work, use 3 point
-}
-
-//implement an arbitrary derivative
-//dumb algorithm
-template < class T >
-void DerivativeApprox(T &df, const T f[], const Real t[], int npoints, int indexval)
-{
-	/*
-	Lj(x) = PI_i!=j (x - xi) / PI_i!=j (xj - xi)
-
-	so Lj'(x) = SUM_k PI_i!=j|k (x - xi) / PI_i!=j (xj - xi)
-	*/
-
-	unsigned int i,j,k,i0,i1;
-
-	Real Lpj,mult,div,tj;
-	Real tval = t[indexval];
-
-	//sum k
-	for(j=0;j<npoints;++j)
-	{
-		Lpj = 0;
-		div = 1;
-		tj = t[j];
-
-		for(k=0;k<npoints;++k)
-		{
-			if(k != j) //because there is no summand for k == j, since that term is missing from the original equation
-			{
-				//summation for k
-				for(i=0;i<npoints;++i)
-				{
-					if(i != k)
-					{
-						mult *= tval - t[i];
-					}
-				}
-
-				Lpj += mult; //add into the summation
-
-				//since the ks follow the exact pattern we need for the divisor (use that too)
-				div *= tj - t[k];
-			}
-		}
-
-		//get the actual coefficient
-		Lpj /= div;
-
-		//add it in to the equation
-		df += f[j]*Lpj;
-	}
-}
+// template < class T >
+// inline void ThreePointddt(T &df, const T &f1, const T &f2, const T &f3, int bias)
+// {
+// 	// a 3 point approximation pretends to have constant acceleration,
+// 	// so only one algorithm needed for left, middle, or right
+// 	df = (f1 -f2*2 + f3)*(1/2.0f);
+// }
+// 
+// // WARNING -- totally broken
+// template < class T >
+// inline void FivePointddt(T &df, const T &f1, const T &f2, const T &f3, int bias)
+// {
+// 	if(bias == 0)
+// 	{
+// 		assert(0); // !?
+// 		//middle
+// 		//df = (- f1 + f2*16 - f3*30 +  f4*16 - f5)*(1/12.0f);
+// 	}/*else if(bias < 0)
+// 	{
+// 		//left
+// 		df = (f1*7 - f2*26*4 + f3*19*6 - f4*14*4 + f5*11)*(1/12.0f);
+// 	}else
+// 	{
+// 		//right
+// 		df = (f1*3 - f2*16 + f3*36 - f4*48 + f5*25)*(1/12.0f);
+// 	}*/
+// 	//side ones don't work, use 3 point
+// }
+// 
+// //implement an arbitrary derivative
+// //dumb algorithm
+// template < class T >
+// void DerivativeApprox(T &df, const T f[], const Real t[], int npoints, int indexval)
+// {
+// 	/*
+// 	Lj(x) = PI_i!=j (x - xi) / PI_i!=j (xj - xi)
+// 
+// 	so Lj'(x) = SUM_k PI_i!=j|k (x - xi) / PI_i!=j (xj - xi)
+// 	*/
+// 
+// 	unsigned int i,j,k,i0,i1;
+// 
+// 	Real Lpj,mult,div,tj;
+// 	Real tval = t[indexval];
+// 
+// 	//sum k
+// 	for(j=0;j<npoints;++j)
+// 	{
+// 		Lpj = 0;
+// 		div = 1;
+// 		tj = t[j];
+// 
+// 		for(k=0;k<npoints;++k)
+// 		{
+// 			if(k != j) //because there is no summand for k == j, since that term is missing from the original equation
+// 			{
+// 				//summation for k
+// 				for(i=0;i<npoints;++i)
+// 				{
+// 					if(i != k)
+// 					{
+// 						mult *= tval - t[i];
+// 					}
+// 				}
+// 
+// 				Lpj += mult; //add into the summation
+// 
+// 				//since the ks follow the exact pattern we need for the divisor (use that too)
+// 				div *= tj - t[k];
+// 			}
+// 		}
+// 
+// 		//get the actual coefficient
+// 		Lpj /= div;
+// 
+// 		//add it in to the equation
+// 		df += f[j]*Lpj;
+// 	}
+// }
 
 //END numerical derivatives
 
-template < class T >
-inline int sign(T f, T tol)
-{
-	if(f < -tol) return -1;
-	if(f > tol) return 1;
-	return 0;
-}
+// template < class T >
+// inline int sign(T f, T tol)
+// {
+// 	if(f < -tol) return -1;
+// 	if(f > tol) return 1;
+// 	return 0;
+// }
 
 void GetFirstDerivatives(const std::vector<synfig::Point> &f, unsigned int left, unsigned int right, char *out, unsigned int dfstride)
 {
