@@ -1533,7 +1533,7 @@ StateDraw_Context::fill_last_stroke()
 	action->set_param("canvas",get_canvas());
 	action->set_param("canvas_interface",get_canvas_interface());
 	action->set_param("layer",layer);
-	if(!action->set_param("param",String("segment_list")))
+	if(!action->set_param("param",String("bline")))
 		synfig::error("LayerParamConnect didn't like \"param\"");
 	if(!action->set_param("value_node",ValueNode::Handle(last_stroke)))
 		synfig::error("LayerParamConnect didn't like \"value_node\"");
