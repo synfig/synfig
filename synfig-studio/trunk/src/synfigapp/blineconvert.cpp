@@ -422,24 +422,17 @@ synfigapp::BLineConverter::operator () (std::list<synfig::BLinePoint> &out, cons
 		if(in.size() == in_w.size())
 		{
 			for(;i != end; ++i,++iw)
-			{
-				//eliminate duplicate points
-				if(*i != c)
+				if(*i != c)		// eliminate duplicate points
 				{
 					f.push_back(c = *i);
 					f_w.push_back(*iw);
 				}
-			}
-		}else
+		}
+		else
 		{
 			for(;i != end; ++i)
-			{
-				//eliminate duplicate points
-				if(*i != c)
-				{
+				if(*i != c)		// eliminate duplicate points
 					f.push_back(c = *i);
-				}
-			}
 		}
 	}
 	//initialprocess = timer();
@@ -499,7 +492,8 @@ synfigapp::BLineConverter::operator () (std::list<synfig::BLinePoint> &out, cons
 					minc = cvt[i];
 					maxi = i;
 				}
-			}else if(maxi >= 0)
+			}
+			else if(maxi >= 0)
 			{
 				if(maxi >= last + 8)
 				{
@@ -812,10 +806,6 @@ void synfigapp::BLineConverter::EnforceMinWidth(std::list<synfig::BLinePoint> &b
 											end = bline.end();
 
 	for(i = bline.begin(); i != end; ++i)
-	{
 		if(i->get_width() < min_pressure)
-		{
 			i->set_width(min_pressure);
-		}
-	}
 }
