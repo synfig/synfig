@@ -100,6 +100,7 @@ class studio::StateDraw_Context : public sigc::trackable
 	SigC::Connection process_queue_connection;
 
 	ValueNode_BLine::Handle last_stroke;
+	synfig::String last_stroke_id;
 
 	Gtk::Menu menu;
 
@@ -1054,8 +1055,9 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline
 		//refresh_ducks();
 	}
 
-	increment_id();
 	last_stroke=value_node;
+	last_stroke_id=get_id();
+	increment_id();
 	return Smach::RESULT_ACCEPT;
 }
 
@@ -1525,7 +1527,7 @@ StateDraw_Context::fill_last_stroke()
 	layer=get_canvas_interface()->add_layer("region");
 	assert(layer);
 	layer->set_param("color",synfigapp::Main::get_background_color());
-	layer->set_description(get_id() + _(" Fill"));
+	layer->set_description(last_stroke_id + _(" Fill"));
 
 	synfigapp::Action::Handle action(synfigapp::Action::create("layer_param_connect"));
 
