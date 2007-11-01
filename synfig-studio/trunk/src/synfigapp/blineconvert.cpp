@@ -630,7 +630,7 @@ synfigapp::BLineConverter::operator () (std::list<synfig::BLinePoint> &out, cons
 			df.resize(size);
 			GetFirstDerivatives(ftemp,0,size,(char*)&df[0],sizeof(df[0]));
 			//GetSimpleDerivatives(ftemp,0,size,df,0,di);
-			//< don't have to worry about indexing stuff as it is all being taken car of right now
+			//< don't have to worry about indexing stuff as it is all being taken care of right now
 			//preproceval += timer();
 			//numpre++;
 
