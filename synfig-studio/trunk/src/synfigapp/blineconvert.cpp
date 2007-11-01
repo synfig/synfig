@@ -361,8 +361,12 @@ int tessellate_curves(const std::vector<cpindex> &inds, const std::vector<Point>
 			//build hermite curve, it's easier
 			curve.p1() = f[i0];
 			curve.p2() = f[i3];
-			curve.t1() = df[i0]*(df[i0].mag_squared() > 1e-4 ? j2->tangentscale/df[i0].mag() : j2->tangentscale);
-			curve.t2() = df[i3]*(df[i3].mag_squared() > 1e-4 ? j->tangentscale/df[i3].mag() : j->tangentscale);
+			curve.t1() = df[i0-ibase] * (df[i0-ibase].mag_squared() > 1e-4
+										 ? j2->tangentscale/df[i0-ibase].mag()
+										 : j2->tangentscale);
+			curve.t2() = df[i3-ibase] * (df[i3-ibase].mag_squared() > 1e-4
+										 ? j->tangentscale/df[i3-ibase].mag()
+										 : j->tangentscale);
 			curve.sync();
 
 			//MUST include the end point (since we are ignoring left one)
