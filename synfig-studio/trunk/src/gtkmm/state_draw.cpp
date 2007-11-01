@@ -131,7 +131,8 @@ class studio::StateDraw_Context : public sigc::trackable
 	Gtk::CheckButton checkbutton_auto_loop;	  // whether to loop new strokes which start and end in the same place
 	Gtk::CheckButton checkbutton_auto_extend; // whether to extend existing lines
 	Gtk::CheckButton checkbutton_auto_link;	  // whether to link new ducks to existing ducks
-	Gtk::CheckButton checkbutton_region_only;
+	Gtk::CheckButton checkbutton_region;	  // whether to create regions
+	Gtk::CheckButton checkbutton_outline;	  // whether to create outlines
 	Gtk::CheckButton checkbutton_auto_export;
 	Gtk::Button button_fill_last_stroke;
 
@@ -169,8 +170,11 @@ public:
 	bool get_auto_link_flag()const { return checkbutton_auto_link.get_active(); }
 	void set_auto_link_flag(bool x) { return checkbutton_auto_link.set_active(x); }
 
-	bool get_region_only_flag()const { return checkbutton_region_only.get_active(); }
-	void set_region_only_flag(bool x) { return checkbutton_region_only.set_active(x); }
+	bool get_region_flag()const { return checkbutton_region.get_active(); }
+	void set_region_flag(bool x) { return checkbutton_region.set_active(x); }
+
+	bool get_outline_flag()const { return checkbutton_outline.get_active(); }
+	void set_outline_flag(bool x) { return checkbutton_outline.set_active(x); }
 
 	bool get_auto_export_flag()const { return checkbutton_auto_export.get_active(); }
 	void set_auto_export_flag(bool x) { return checkbutton_auto_export.set_active(x); }
@@ -275,10 +279,15 @@ StateDraw_Context::load_settings()
 	else
 		set_auto_link_flag(true);
 
-	if(settings.get_value("draw.region_only",value) && value=="1")
-		set_region_only_flag(true);
+	if(settings.get_value("draw.region",value) && value=="0")
+		set_region_flag(false);
 	else
-		set_region_only_flag(false);
+		set_region_flag(true);
+
+	if(settings.get_value("draw.outline",value) && value=="0")
+		set_outline_flag(false);
+	else
+		set_outline_flag(true);
 
 	if(settings.get_value("draw.auto_export",value) && value=="1")
 		set_auto_export_flag(true);
@@ -330,7 +339,8 @@ StateDraw_Context::save_settings()
 	settings.set_value("draw.auto_loop",get_auto_loop_flag()?"1":"0");
 	settings.set_value("draw.auto_extend",get_auto_extend_flag()?"1":"0");
 	settings.set_value("draw.auto_link",get_auto_link_flag()?"1":"0");
-	settings.set_value("draw.region_only",get_region_only_flag()?"1":"0");
+	settings.set_value("draw.region",get_region_flag()?"1":"0");
+	settings.set_value("draw.outline",get_outline_flag()?"1":"0");
 	settings.set_value("draw.auto_export",get_auto_export_flag()?"1":"0");
 	settings.set_value("draw.min_pressure",strprintf("%f",get_min_pressure()));
 	settings.set_value("draw.feather",strprintf("%f",get_feather()));
@@ -394,7 +404,8 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	checkbutton_auto_loop(_("Auto Loop")),
 	checkbutton_auto_extend(_("Auto Extend")),
 	checkbutton_auto_link(_("Auto Link")),
-	checkbutton_region_only(_("Create Region Only")),
+	checkbutton_region(_("Create Region")),
+	checkbutton_outline(_("Create Outline")),
 	checkbutton_auto_export(_("Auto Export")),
 	button_fill_last_stroke(_("Fill Last Stroke")),
 	adj_min_pressure(0,0,1,0.01,0.1),
@@ -416,23 +427,24 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	UpdateErrorBox();
 
 	//options_table.attach(*manage(new Gtk::Label(_("Draw Tool"))), 0, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(entry_id,					0, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(checkbutton_pressure_width,0, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(checkbutton_auto_loop,		0, 2, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(checkbutton_auto_extend,	0, 2, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(checkbutton_auto_link,		0, 2, 5, 6, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(checkbutton_region_only,	0, 2, 6, 7, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(checkbutton_auto_export,	0, 2, 7, 8, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(entry_id,								0, 2,  1,  2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(checkbutton_region,					0, 2,  2,  3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(checkbutton_outline,					0, 2,  3,  4, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(checkbutton_auto_loop,					0, 2,  4,  5, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(checkbutton_auto_extend,				0, 2,  5,  6, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(checkbutton_auto_link,					0, 2,  6,  7, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(checkbutton_auto_export,				0, 2,  7,  8, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(checkbutton_pressure_width,			0, 2,  8,  9, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(check_localerror,						0, 2,  9, 10, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
-	options_table.attach(check_min_pressure,		0, 2, 8, 9, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(spin_min_pressure,			0, 2, 9, 10, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(check_min_pressure,					0, 1, 10, 11, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(spin_min_pressure,						1, 2, 10, 11, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
-	options_table.attach(*manage(new Gtk::Label(_("Feather"))), 0, 1, 10, 11, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(spin_feather,				1, 2, 10, 11, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(*manage(new Gtk::Label(_("Smooth"))),	0, 1, 11, 12, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(spin_globalthres,						1, 2, 11, 12, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
-	options_table.attach(check_localerror,			0, 2, 11, 12, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(*manage(new Gtk::Label(_("Smooth"))), 0, 1, 12, 13, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(spin_globalthres,			1, 2, 12, 13, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(*manage(new Gtk::Label(_("Feather"))), 0, 1, 12, 13, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(spin_feather,							1, 2, 12, 13, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
 	//options_table.attach(button_fill_last_stroke, 0, 2, 13, 14, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
@@ -1007,15 +1019,16 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline
 
 		synfigapp::PushMode push_mode(get_canvas_interface(),synfigapp::MODE_NORMAL);
 
-		if(get_region_only_flag())
-		{
-			layer=get_canvas_interface()->add_layer_to("region",canvas,depth);
-			layer->set_description(get_id()+_(" Region"));
-		}
-		else
+		// if they're both defined, we'll add the region later
+		if(get_outline_flag())
 		{
 			layer=get_canvas_interface()->add_layer_to("outline",canvas,depth);
 			layer->set_description(get_id()+_(" Outline"));
+		}
+		else
+		{
+			layer=get_canvas_interface()->add_layer_to("region",canvas,depth);
+			layer->set_description(get_id()+_(" Region"));
 		}
 
 		if(get_feather())
@@ -1057,6 +1070,10 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline
 
 	last_stroke=value_node;
 	last_stroke_id=get_id();
+
+	if(get_outline_flag() && get_region_flag())
+		fill_last_stroke();
+
 	increment_id();
 	return Smach::RESULT_ACCEPT;
 }
@@ -1527,7 +1544,7 @@ StateDraw_Context::fill_last_stroke()
 	layer=get_canvas_interface()->add_layer("region");
 	assert(layer);
 	layer->set_param("color",synfigapp::Main::get_background_color());
-	layer->set_description(last_stroke_id + _(" Fill"));
+	layer->set_description(last_stroke_id + _(" Region"));
 
 	synfigapp::Action::Handle action(synfigapp::Action::create("layer_param_connect"));
 
