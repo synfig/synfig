@@ -217,9 +217,9 @@ void GetFirstDerivatives(const std::vector<synfig::Point> &f, unsigned int left,
 		for(;current < right-2; current++, out += dfstride)
 			FivePointdt(*(synfig::Vector*)out,f[current-2], f[current-1], f[current], f[current+1], f[current+2], 0);
 
-		FivePointdt(*(synfig::Vector*)out,f[right-5], f[right-4], f[right-3], f[right-2], f[right-1], 1);
-		out += dfstride;
 		FivePointdt(*(synfig::Vector*)out,f[right-6], f[right-5], f[right-4], f[right-3], f[right-2], 2);
+		out += dfstride;
+		FivePointdt(*(synfig::Vector*)out,f[right-5], f[right-4], f[right-3], f[right-2], f[right-1], 1);
 		out += dfstride;
 		current += 2;
 	}
