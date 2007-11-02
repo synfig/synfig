@@ -1186,8 +1186,8 @@ StateDraw_Context::new_region(std::list<synfig::BLinePoint> bline, synfig::Real 
 			*/
 
 			// Remove duplicate vertices
-			if(value_prev.get_value_node()==value_desc.get_value_node()
-				|| value_desc.get_value_node()==value_next.get_value_node())
+			if(value_prev.get_value_node()==value_desc.get_value_node() ||
+			   value_desc.get_value_node()==value_next.get_value_node())
 			{
 				DEBUGPOINT();
 				vertex_list.erase(iter);
@@ -1202,8 +1202,10 @@ StateDraw_Context::new_region(std::list<synfig::BLinePoint> bline, synfig::Real 
 				break;
 			}
 
-			if(value_desc.parent_is_value_node() && value_next.parent_is_value_node())
-			if(value_desc.get_parent_value_node()==value_next.get_parent_value_node() && (next!=vertex_list.end()))
+			if(value_desc.parent_is_value_node() &&
+			   value_next.parent_is_value_node() &&
+			   value_desc.get_parent_value_node() == value_next.get_parent_value_node() &&
+			   next != vertex_list.end())
 			{
 				// Fill in missing vertices
 				if(value_desc.get_index()<value_next.get_index()-1)
