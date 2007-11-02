@@ -357,16 +357,16 @@ LayerTree::create_param_tree()
 		column->set_resizable();
 	}
 	{	// --- T Y P E --------------------------------------------------------
-		const CanvasTreeStore::Model model;
-		int cols_count = get_param_tree_view().append_column(_("Type"),model.type);
-		Gtk::TreeViewColumn* column = get_param_tree_view().get_column(cols_count-1);
-		if(column)
-		{
-			column->set_reorderable();
-			column->set_resizable();
-			column->set_clickable();
-			column->set_sort_column_id(model.type);
-		}
+		Gtk::TreeView::Column* column = Gtk::manage( new Gtk::TreeView::Column(_("Type")) );
+		Gtk::CellRendererText* text_cellrenderer = Gtk::manage( new Gtk::CellRendererText() );
+		column->pack_start(*text_cellrenderer,false);
+		column->add_attribute(text_cellrenderer->property_text(), param_model.type);
+		text_cellrenderer->property_attributes()=attr_list;
+		get_param_tree_view().append_column(*column);
+		column->set_reorderable();
+		column->set_resizable();
+		column->set_clickable();
+		column->set_sort_column_id(param_model.type);
 	}
 	/*{	// --- T I M E   T R A C K --------------------------------------------
 		Gtk::TreeView::Column* column = Gtk::manage( new Gtk::TreeView::Column(_("Time Track")) );
