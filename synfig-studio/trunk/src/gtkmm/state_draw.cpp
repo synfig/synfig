@@ -1225,9 +1225,9 @@ StateDraw_Context::new_region(std::list<synfig::BLinePoint> bline, synfig::Real 
 			// Ensure that connections
 			// between blines are properly
 			// connected
-			if(value_desc.parent_is_value_node() && value_next.parent_is_value_node())
-			if(value_desc.get_parent_value_node()!=value_next.get_parent_value_node() &&
-				value_desc.get_value_node()!=value_next.get_value_node())
+			if(value_desc.parent_is_value_node() && value_next.parent_is_value_node() &&
+			   value_desc.get_parent_value_node()!=value_next.get_parent_value_node() &&
+			   value_desc.get_value_node()!=value_next.get_value_node())
 			{
 				BLinePoint vertex(value_desc.get_value(get_time()).get(BLinePoint()));
 				BLinePoint vertex_next(value_next.get_value(get_time()).get(BLinePoint()));
