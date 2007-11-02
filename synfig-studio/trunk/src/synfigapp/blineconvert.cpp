@@ -602,7 +602,22 @@ synfigapp::BLineConverter::operator () (std::list<synfig::BLinePoint> &out, cons
 				gaussian_blur_3(ftemp.begin(),ftemp.end(),false);
 
 			df.resize(size);
+
+			// Wondering whether the modification of the df vector
+			// using a char* pointer and pointer arithmetric was safe,
+			// I looked it up...
+			// 
+			// http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2369.pdf tells me:
+			// 
+			//	23.2.5  Class template vector [vector]
+			// 
+			//	[...] The elements of a vector are stored contiguously,
+			//	meaning that if v is a vector<T,Allocator> where T is
+			//	some type other than bool, then it obeys the identity
+			//	&v[n] == &v[0] + n for all 0 <= n < v.size().
+			// 
 			GetFirstDerivatives(ftemp,0,size,(char*)&df[0],sizeof(df[0]));
+
 			//GetSimpleDerivatives(ftemp,0,size,df,0,di);
 			//< don't have to worry about indexing stuff as it is all being taken care of right now
 			//preproceval += timer();
