@@ -2072,7 +2072,10 @@ App::new_instance()
 	canvas->rend_desc().set_flags(RendDesc::PX_ASPECT|RendDesc::IM_SPAN);
 	canvas->set_file_name(file_name);
 
-	Instance::create(canvas)->find_canvas_view(canvas)->canvas_properties.present();
+	handle<Instance> instance = Instance::create(canvas);
+
+	if (!getenv("SYNFIG_DISABLE_NEW_CANVAS_EDIT_PROPERTIES"))
+		instance->find_canvas_view(canvas)->canvas_properties.present();
 }
 
 void
