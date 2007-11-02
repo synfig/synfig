@@ -1202,86 +1202,83 @@ StateDraw_Context::new_region(std::list<synfig::BLinePoint> bline, synfig::Real 
 				break;
 			}
 
-			if(value_desc.parent_is_value_node() &&
-			   value_next.parent_is_value_node() &&
-			   value_desc.get_parent_value_node() == value_next.get_parent_value_node() &&
-			   next != vertex_list.end())
+			if (value_desc.parent_is_value_node() && value_next.parent_is_value_node())
 			{
-				// Fill in missing vertices
-				if(value_desc.get_index()<value_next.get_index()-1)
+				if (value_desc.get_parent_value_node() == value_next.get_parent_value_node())
 				{
-					DEBUGPOINT();
-					vertex_list.insert(next,synfigapp::ValueDesc(value_desc.get_parent_value_node(),value_desc.get_index()+1));
-					done=false;
-					break;
-				}
-				if(value_next.get_index()<value_desc.get_index()-1)
-				{
-					DEBUGPOINT();
-					vertex_list.insert(next,synfigapp::ValueDesc(value_desc.get_parent_value_node(),value_next.get_index()+1));
-					done=false;
-					break;
-				}
-			}
-
-			// Ensure that connections
-			// between blines are properly
-			// connected
-			if(value_desc.parent_is_value_node() && value_next.parent_is_value_node() &&
-			   value_desc.get_parent_value_node()!=value_next.get_parent_value_node() &&
-			   value_desc.get_value_node()!=value_next.get_value_node())
-			{
-				BLinePoint vertex(value_desc.get_value(get_time()).get(BLinePoint()));
-				BLinePoint vertex_next(value_next.get_value(get_time()).get(BLinePoint()));
-
-				//synfig::info("--------");
-				//synfig::info(__FILE__":%d: vertex: [%f, %f]",__LINE__,vertex.get_vertex()[0],vertex.get_vertex()[1]);
-				//synfig::info(__FILE__":%d: vertex_next: [%f, %f]",__LINE__,vertex_next.get_vertex()[0],vertex_next.get_vertex()[1]);
-
-				if((vertex.get_vertex()-vertex_next.get_vertex()).mag_squared()<radius*radius)
-				{
-					DEBUGPOINT();
-					ValueNode_Composite::Handle value_node;
-					ValueNode_Composite::Handle value_node_next;
-					value_node=ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node().clone());
-					value_node_next=ValueNode_Composite::Handle::cast_dynamic(value_next.get_value_node().clone());
-					if(!value_node || !value_node_next)
+					if (next != vertex_list.end())
 					{
-						synfig::info(__FILE__":%d: Unable to properly connect blines.",__LINE__);
-						continue;
+						// Fill in missing vertices
+						if(value_desc.get_index()<value_next.get_index()-1)
+						{
+							DEBUGPOINT();
+							vertex_list.insert(next,synfigapp::ValueDesc(value_desc.get_parent_value_node(),value_desc.get_index()+1));
+							done=false;
+							break;
+						}
+						if(value_next.get_index()<value_desc.get_index()-1)
+						{
+							DEBUGPOINT();
+							vertex_list.insert(next,synfigapp::ValueDesc(value_desc.get_parent_value_node(),value_next.get_index()+1));
+							done=false;
+							break;
+						}
 					}
-					DEBUGPOINT();
-					value_node->set_link(5,value_node_next->get_link(5));
-					value_node->set_link(3,ValueNode_Const::create(true));
-
-					get_canvas_interface()->auto_export(value_node);
-					assert(value_node->is_exported());
-					*iter=synfigapp::ValueDesc(get_canvas(),value_node->get_id());
-					vertex_list.erase(next);
-					done=false;
-					break;
 				}
-				else
+				// Ensure that connections between blines are properly connected
+				else if (value_desc.get_value_node() != value_next.get_value_node())
 				{
-					DEBUGPOINT();
-					bool positive_trend(value_desc.get_index()>value_prev.get_index());
+					BLinePoint vertex(value_desc.get_value(get_time()).get(BLinePoint()));
+					BLinePoint vertex_next(value_next.get_value(get_time()).get(BLinePoint()));
 
-					if(!positive_trend && value_desc.get_index()>0)
+					//synfig::info("--------");
+					//synfig::info(__FILE__":%d: vertex: [%f, %f]",__LINE__,vertex.get_vertex()[0],vertex.get_vertex()[1]);
+					//synfig::info(__FILE__":%d: vertex_next: [%f, %f]",__LINE__,vertex_next.get_vertex()[0],vertex_next.get_vertex()[1]);
+
+					if((vertex.get_vertex()-vertex_next.get_vertex()).mag_squared()<radius*radius)
 					{
 						DEBUGPOINT();
-						vertex_list.insert(next,synfigapp::ValueDesc(value_desc.get_parent_value_node(),value_desc.get_index()-1));
+						ValueNode_Composite::Handle value_node;
+						ValueNode_Composite::Handle value_node_next;
+						value_node=ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node().clone());
+						value_node_next=ValueNode_Composite::Handle::cast_dynamic(value_next.get_value_node().clone());
+						if(!value_node || !value_node_next)
+						{
+							synfig::info(__FILE__":%d: Unable to properly connect blines.",__LINE__);
+							continue;
+						}
+						DEBUGPOINT();
+						value_node->set_link(5,value_node_next->get_link(5));
+						value_node->set_link(3,ValueNode_Const::create(true));
+
+						get_canvas_interface()->auto_export(value_node);
+						assert(value_node->is_exported());
+						*iter=synfigapp::ValueDesc(get_canvas(),value_node->get_id());
+						vertex_list.erase(next);
 						done=false;
 						break;
 					}
-					if(positive_trend && value_desc.get_index()<LinkableValueNode::Handle::cast_static(value_desc.get_value_node())->link_count()-1)
+					else
 					{
 						DEBUGPOINT();
-						vertex_list.insert(next,synfigapp::ValueDesc(value_desc.get_parent_value_node(),value_desc.get_index()+1));
-						done=false;
-						break;
+						bool positive_trend(value_desc.get_index()>value_prev.get_index());
+
+						if(!positive_trend && value_desc.get_index()>0)
+						{
+							DEBUGPOINT();
+							vertex_list.insert(next,synfigapp::ValueDesc(value_desc.get_parent_value_node(),value_desc.get_index()-1));
+							done=false;
+							break;
+						}
+						if(positive_trend && value_desc.get_index()<LinkableValueNode::Handle::cast_static(value_desc.get_value_node())->link_count()-1)
+						{
+							DEBUGPOINT();
+							vertex_list.insert(next,synfigapp::ValueDesc(value_desc.get_parent_value_node(),value_desc.get_index()+1));
+							done=false;
+							break;
+						}
 					}
 				}
-
 			}
 		}
 	}
