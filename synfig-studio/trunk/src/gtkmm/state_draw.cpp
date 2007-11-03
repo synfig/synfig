@@ -1078,6 +1078,169 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline
 	return Smach::RESULT_ACCEPT;
 }
 
+#ifdef _DEBUG
+static void
+debug_show_vertex_list(int iteration, std::list<synfigapp::ValueDesc>& vertex_list,
+					   std::string title, int current)
+{
+	std::list<synfigapp::ValueDesc>::iterator i = vertex_list.begin();
+	printf("\n%s\n  ----- iter %d : ", title.c_str(), iteration);
+	int c = 0;
+	synfig::LinkableValueNode::Handle last = 0;
+	int start = -1;
+	int index;
+	int prev;
+	int dir = 0;
+	bool started = false;
+	for(;i!=vertex_list.end();i++,c++)
+	{
+		synfigapp::ValueDesc value_desc(*i);
+
+		if (value_desc.parent_is_value_node()) {
+			if(value_desc.parent_is_linkable_value_node())
+			{
+				index = value_desc.get_index();
+				// printf("<%d>", index);
+				if (last == synfig::LinkableValueNode::Handle::cast_reinterpret(value_desc.get_parent_value_node()))
+				{
+					// printf("\n%s:%d\n", __FILE__, __LINE__);
+					if (start != -1)
+					{
+						// printf("\n%s:%d\n", __FILE__, __LINE__);
+						if (c == current)
+						{
+							// printf("\n%s:%d\n", __FILE__, __LINE__);
+							if (dir)
+							{
+								if (started) printf(", "); else started = true;
+								printf("%d--%d", start, prev);
+							}
+							else
+							{
+								if (started) printf(", "); else started = true;
+								printf("%d", start);
+							}
+							printf(", *%d*", index);
+							start = -1;
+						}
+						else if (dir == 0)
+						{
+							// printf("\n%s:%d\n", __FILE__, __LINE__);
+							if (index == start + 1)
+							{
+								// printf("\n%s:%d\n", __FILE__, __LINE__);
+								dir = 1;
+								prev = index;
+							}
+							else if (index == start - 1)
+							{
+								// printf("\n%s:%d\n", __FILE__, __LINE__);
+								dir = -1;
+								prev = index;
+							}
+							else
+							{
+								if (started) printf(", "); else started = true;
+								printf("%d", start);
+								start = index;
+							}
+						}
+						else if (index == prev + dir)
+						{
+							// printf("\n%s:%d\n", __FILE__, __LINE__);
+							prev = index;
+						}
+						else
+						{
+							// printf("\n%s:%d\n", __FILE__, __LINE__);
+							if (started) printf(", "); else started = true;
+							if (prev != start)
+								printf("%d--%d", start, prev);
+							else
+								printf("%d", start);
+							// printf("\n%s:%d\n", __FILE__, __LINE__);
+							start = index;
+							dir = 0;
+						}
+					}
+					else
+					{
+						// printf("\n%s:%d\n", __FILE__, __LINE__);
+						if (c == current)
+						{
+							if (started) printf(", "); else started = true;
+							printf("*%d*", index);
+						}
+						else
+						{
+							// printf("\n%s:%d\n", __FILE__, __LINE__);
+							start = index;
+							dir = 0;
+						}
+					}
+				}
+				else
+				{
+					// printf("\n%s:%d\n", __FILE__, __LINE__);
+					if (last)
+					{
+						// printf("\n%s:%d\n", __FILE__, __LINE__);
+						if (start != -1)
+						{
+							if (started) printf(", "); else started = true;
+							if (dir != 0)
+								printf("%d--%d", start, prev);
+							else
+								printf("%d", start);
+						}
+						// printf("\n%s:%d\n", __FILE__, __LINE__);
+						printf(") ");
+					}
+					// printf("\n%s:%d\n", __FILE__, __LINE__);
+					last = synfig::LinkableValueNode::Handle::cast_reinterpret(value_desc.get_parent_value_node());
+					printf("%d:(", synfig::LinkableValueNode::Handle::cast_reinterpret(value_desc.get_parent_value_node())->link_count());
+					started = false;
+					// printf("\n%s:%d\n", __FILE__, __LINE__);
+					if (c == current)
+					{
+						start = -1;
+						printf("*%d*", index);
+					}
+					else
+					{
+						// printf("\n%s:%d\n", __FILE__, __LINE__);
+						start = index;
+						dir = 0;
+					}
+					// printf("\n%s:%d\n", __FILE__, __LINE__);
+				}
+				// printf("\n%s:%d\n", __FILE__, __LINE__);
+			}
+			else if (last)
+				if (last) printf("?!) ");
+		}
+		else
+		{
+			last = 0;
+			printf("? ");
+		}
+	}
+	if (last)
+	{
+		if (started) printf(", "); else started = true;
+		if (start != -1)
+			if (dir != 0)
+				printf("%d--%d", start, prev);
+			else
+				printf("%d", start);
+		printf(")");
+	}
+	printf("\n");
+}
+#else  // _DEBUG
+#define debug_show_vertex_list(a,b,c,d)
+#endif	// _DEBUG
+
 Smach::event_result
 StateDraw_Context::new_region(std::list<synfig::BLinePoint> bline, synfig::Real radius)
 {
@@ -1085,6 +1248,8 @@ StateDraw_Context::new_region(std::list<synfig::BLinePoint> bline, synfig::Real 
 	synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Define Region"));
 
 	std::list<synfigapp::ValueDesc> vertex_list;
+
+	printf("new_region with %d bline points\n", bline.size());
 
 	// First we need to come up with a rough list of
 	// BLinePoints that we are going to be using to
@@ -1100,7 +1265,6 @@ StateDraw_Context::new_region(std::list<synfig::BLinePoint> bline, synfig::Real 
 				synfig::info(__FILE__":%d: Nothing to enclose!",__LINE__);
 				return Smach::RESULT_OK;
 			}
-
 
 			assert(duck->get_type()==Duck::TYPE_VERTEX);
 
@@ -1126,167 +1290,12 @@ StateDraw_Context::new_region(std::list<synfig::BLinePoint> bline, synfig::Real 
 		}
 	}
 
-	if(vertex_list.size()<=2)
-	{
-		synfig::info(__FILE__":%d: Vertex list too small to make region.",__LINE__);
-		return Smach::RESULT_OK;
-	}
-
 	assert(vertex_list.back().is_valid());
+
+	printf("vertex list with %d bline points\n", vertex_list.size());
 
 	// Remove any duplicates
 	{
-	}
-
-	// Now we need to clean the list of vertices up
-	// a bit. This includes inserting missing vertices
-	// and removing extraneous ones.
-	// We can do this in multiple passes.
-	int i=0;
-	for(bool done=false;!done && i<30;i++)
-	{
-		// Set done to "true" for now. If
-		// any updates are performed, we will
-		// change it back to false.
-		done=true;
-
-		std::list<synfigapp::ValueDesc>::iterator prev,iter,next;
-		prev=vertex_list.end();prev--;	// Set prev to the last ValueDesc
-		next=vertex_list.begin();
-		iter=next++; // Set iter to the first value desc, and next to the second
-
-		for(;iter!=vertex_list.end();prev=iter,iter=next++)
-		{
-			synfigapp::ValueDesc value_prev(*prev);
-			synfigapp::ValueDesc value_desc(*iter);
-			synfigapp::ValueDesc value_next((next==vertex_list.end())?vertex_list.front():*next);
-
-			assert(value_desc.is_valid());
-			assert(value_next.is_valid());
-			assert(value_prev.is_valid());
-
-			//synfig::info("-------");
-			//synfig::info(__FILE__":%d: value_prev 0x%08X:%d",__LINE__,value_prev.get_parent_value_node().get(),value_prev.get_index());
-			//synfig::info(__FILE__":%d: value_desc 0x%08X:%d",__LINE__,value_desc.get_parent_value_node().get(),value_desc.get_index());
-			//synfig::info(__FILE__":%d: value_next 0x%08X:%d",__LINE__,value_next.get_parent_value_node().get(),value_next.get_index());
-
-			/*
-			if(value_prev.parent_is_value_node() && value_desc.parent_is_value_node() && value_next.parent_is_value_node())
-			{
-				// Remove random extraneous vertices
-				if(value_prev.get_parent_value_node()==value_next.get_parent_value_node() &&
-					value_prev.get_parent_value_node()!=value_desc.get_parent_value_node())
-				{
-					DEBUGPOINT();
-					vertex_list.erase(iter);
-					done=false;
-					break;
-				}
-			}
-			*/
-
-			// Remove duplicate vertices
-			if(value_prev.get_value_node()==value_desc.get_value_node() ||
-			   value_desc.get_value_node()==value_next.get_value_node())
-			{
-				DEBUGPOINT();
-				vertex_list.erase(iter);
-				done=false;
-				break;
-			}
-			if(value_prev.get_value_node()==value_next.get_value_node())
-			{
-				DEBUGPOINT();
-				vertex_list.erase(prev);
-				done=false;
-				break;
-			}
-
-			if (value_desc.parent_is_value_node() && value_next.parent_is_value_node())
-			{
-				if (value_desc.get_parent_value_node() == value_next.get_parent_value_node())
-				{
-					if (next != vertex_list.end())
-					{
-						// Fill in missing vertices
-						if(value_desc.get_index()<value_next.get_index()-1)
-						{
-							DEBUGPOINT();
-							vertex_list.insert(next,synfigapp::ValueDesc(value_desc.get_parent_value_node(),value_desc.get_index()+1));
-							done=false;
-							break;
-						}
-						if(value_next.get_index()<value_desc.get_index()-1)
-						{
-							DEBUGPOINT();
-							vertex_list.insert(next,synfigapp::ValueDesc(value_desc.get_parent_value_node(),value_next.get_index()+1));
-							done=false;
-							break;
-						}
-					}
-				}
-				// Ensure that connections between blines are properly connected
-				else if (value_desc.get_value_node() != value_next.get_value_node())
-				{
-					BLinePoint vertex(value_desc.get_value(get_time()).get(BLinePoint()));
-					BLinePoint vertex_next(value_next.get_value(get_time()).get(BLinePoint()));
-
-					//synfig::info("--------");
-					//synfig::info(__FILE__":%d: vertex: [%f, %f]",__LINE__,vertex.get_vertex()[0],vertex.get_vertex()[1]);
-					//synfig::info(__FILE__":%d: vertex_next: [%f, %f]",__LINE__,vertex_next.get_vertex()[0],vertex_next.get_vertex()[1]);
-
-					if((vertex.get_vertex()-vertex_next.get_vertex()).mag_squared()<radius*radius)
-					{
-						DEBUGPOINT();
-						ValueNode_Composite::Handle value_node;
-						ValueNode_Composite::Handle value_node_next;
-						value_node=ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node().clone());
-						value_node_next=ValueNode_Composite::Handle::cast_dynamic(value_next.get_value_node().clone());
-						if(!value_node || !value_node_next)
-						{
-							synfig::info(__FILE__":%d: Unable to properly connect blines.",__LINE__);
-							continue;
-						}
-						DEBUGPOINT();
-						value_node->set_link(5,value_node_next->get_link(5));
-						value_node->set_link(3,ValueNode_Const::create(true));
-
-						get_canvas_interface()->auto_export(value_node);
-						assert(value_node->is_exported());
-						*iter=synfigapp::ValueDesc(get_canvas(),value_node->get_id());
-						vertex_list.erase(next);
-						done=false;
-						break;
-					}
-					else
-					{
-						DEBUGPOINT();
-						bool positive_trend(value_desc.get_index()>value_prev.get_index());
-
-						if(!positive_trend && value_desc.get_index()>0)
-						{
-							DEBUGPOINT();
-							vertex_list.insert(next,synfigapp::ValueDesc(value_desc.get_parent_value_node(),value_desc.get_index()-1));
-							done=false;
-							break;
-						}
-						if(positive_trend && value_desc.get_index()<LinkableValueNode::Handle::cast_static(value_desc.get_value_node())->link_count()-1)
-						{
-							DEBUGPOINT();
-							vertex_list.insert(next,synfigapp::ValueDesc(value_desc.get_parent_value_node(),value_desc.get_index()+1));
-							done=false;
-							break;
-						}
-					}
-				}
-			}
-		}
-	}
-
-	if(vertex_list.size()<=2)
-	{
-		synfig::info(__FILE__":%d: Vertex list too small to make region.",__LINE__);
-		return Smach::RESULT_OK;
 	}
 
 	ValueNode_BLine::Handle value_node_bline;
@@ -1310,8 +1319,402 @@ StateDraw_Context::new_region(std::list<synfig::BLinePoint> bline, synfig::Real 
 				break;
 			}
 		}
-		if(trivial_case)
+
+		// \todo - re-enable this code
+		if(trivial_case && false)
+		{
+			synfig::info("all points are on the same bline, so just fill that line");
 			value_node_bline=ValueNode_BLine::Handle::cast_dynamic(trivial_case_value_node);
+
+			synfig::info("the line has %d vertices", value_node_bline->link_count());
+
+			if(value_node_bline->link_count() <= 2)
+			{
+				synfig::info(__FILE__":%d: Vertex list too small to make region.",__LINE__);
+				return Smach::RESULT_OK;
+			}
+		}
+	}
+
+	if(!value_node_bline)
+		if(vertex_list.size()<=2)
+		{
+			synfig::info(__FILE__":%d: Vertex list too small to make region.",__LINE__);
+			return Smach::RESULT_OK;
+		}
+
+	// Now we need to clean the list of vertices up
+	// a bit. This includes inserting missing vertices
+	// and removing extraneous ones.
+	// We can do this in multiple passes.
+	if(!value_node_bline)
+	{
+		debug_show_vertex_list(0, vertex_list, "before shifting stuff", -1);
+		// rearrange the list so that the first and last node are on different blines
+		std::list<synfigapp::ValueDesc>::iterator iter, start;
+		ValueNode::Handle last_value_node = vertex_list.back().get_parent_value_node();
+		for(iter = vertex_list.begin(); iter!=vertex_list.end(); iter++)
+			if (iter->get_parent_value_node() != last_value_node)
+			{
+				vertex_list.insert(vertex_list.end(), vertex_list.begin(), iter);
+				vertex_list.erase(vertex_list.begin(), iter);
+				break;
+			}
+
+		debug_show_vertex_list(0, vertex_list, "before detecting direction and limits", -1);
+		// rearrange the list so that the first and last node are on different blines
+		iter = vertex_list.begin();
+		while (iter!=vertex_list.end())
+		{
+			// make a note of which bline we're looking at
+			ValueNode::Handle parent_value_node = iter->get_parent_value_node();
+			start = iter;
+			int points_in_line = synfig::LinkableValueNode::Handle::cast_reinterpret(parent_value_node)->link_count();
+			bool looped = (*parent_value_node)(get_time()).get_loop();
+			int this_index, last_index = iter->get_index();
+			int min_index = last_index, max_index = last_index;
+			bool whole;
+			int direction = 0;
+
+			// printf("there are %d points in this line - first is index %d\n", points_in_line, last_index);
+
+			// while we're looking at the same bline, keep going
+			iter++;
+			while (iter != vertex_list.end() && iter->get_parent_value_node() == parent_value_node)
+			{
+				this_index = iter->get_index();
+				// printf("index went from %d to %d\n", last_index, this_index);
+				if (looped)
+					if (this_index - last_index > points_in_line/2)
+						while (this_index - last_index > points_in_line/2)
+							this_index -= points_in_line;
+					else if (last_index - this_index > points_in_line/2)
+						while (last_index - this_index > points_in_line/2)
+							this_index += points_in_line;
+
+				if (this_index < min_index) min_index = this_index;
+				if (this_index > max_index) max_index = this_index;
+
+				// printf("so let's imagine index went from %d to %d\n", last_index, this_index);
+				if (this_index > last_index)
+					direction++;
+				else if (this_index < last_index)
+					direction--;
+
+				last_index = this_index;
+				iter++;
+			}
+
+			// printf("min %d and max %d\n", min_index, max_index);
+			whole = max_index - min_index >= points_in_line;
+			min_index = (min_index % points_in_line + points_in_line) % points_in_line;
+			max_index = (max_index % points_in_line + points_in_line) % points_in_line;
+			// they drew around a shape more than once - what's the start/end point?  does it matter?
+			if (whole) min_index = max_index = (min_index + max_index) / 2;
+			// printf("processed min %d max %d whole %d\n", min_index, max_index, whole);
+
+			if (direction < 0)
+			{
+				if (whole)
+				{
+					// printf("whole (down) (%d) ", min_index);
+					for (int i = min_index; i >= 0; i--)
+					{
+						// printf("%d ", i);
+						vertex_list.insert(start, synfigapp::ValueDesc(parent_value_node, i));
+					}
+					for (int i = points_in_line - 1; i >= min_index; i--)
+					{
+						// printf("%d ", i);
+						vertex_list.insert(start, synfigapp::ValueDesc(parent_value_node, i));
+					}
+				}
+				else
+				{
+					// printf("part (down) (%d -> %d) ", max_index, min_index);
+					for (int i = max_index; i != min_index; i--)
+					{
+						if (i == -1) i = points_in_line - 1;
+						// printf("%d ", i);
+						vertex_list.insert(start, synfigapp::ValueDesc(parent_value_node, i));
+					}
+					vertex_list.insert(start, synfigapp::ValueDesc(parent_value_node, min_index));
+				}
+			}
+			else
+			{
+				if (whole)
+				{
+					// printf("whole (%d) ", min_index);
+					for (int i = min_index; i < points_in_line; i++)
+					{
+						// printf("%d ", i);
+						vertex_list.insert(start, synfigapp::ValueDesc(parent_value_node, i));
+					}
+					for (int i = 0; i <= min_index; i++)
+					{
+						// printf("%d ", i);
+						vertex_list.insert(start, synfigapp::ValueDesc(parent_value_node, i));
+					}
+				}
+				else
+				{
+					// printf("part (%d -> %d) ", min_index, max_index);
+					for (int i = min_index; i != max_index; i++)
+					{
+						if (i == points_in_line) i = 0;
+						// printf("%d ", i);
+						vertex_list.insert(start, synfigapp::ValueDesc(parent_value_node, i));
+					}
+					vertex_list.insert(start, synfigapp::ValueDesc(parent_value_node, max_index));
+				}
+			}
+			// printf("\n");
+			// debug_show_vertex_list(0, vertex_list, "after insert", -1);
+			vertex_list.erase(start, iter);
+			// debug_show_vertex_list(0, vertex_list, "after delete", -1);
+		}
+
+		debug_show_vertex_list(0, vertex_list, "continuous vertices", -1);
+
+		// \todo reenable or delete this section
+		int i=100;
+		for(bool done=false;!done && i<30;i++)
+		{
+			debug_show_vertex_list(i, vertex_list, "in big loop", -1);
+
+			// Set done to "true" for now. If
+			// any updates are performed, we will
+			// change it back to false.
+			done=true;
+
+			std::list<synfigapp::ValueDesc>::iterator prev,next;
+			prev=vertex_list.end();prev--;	// Set prev to the last ValueDesc
+			next=vertex_list.begin();
+			iter=next++; // Set iter to the first value desc, and next to the second
+
+			int current = 0;
+			for(;iter!=vertex_list.end();prev=iter,iter++,next++,current++)
+			{
+				// we need to be able to erase(next) and can't do that if next is end()
+				if (next == vertex_list.end()) next = vertex_list.begin();
+				debug_show_vertex_list(i, vertex_list, "in loop around vertices", current);
+				synfigapp::ValueDesc value_prev(*prev);
+				synfigapp::ValueDesc value_desc(*iter);
+				synfigapp::ValueDesc value_next(*next);
+
+				assert(value_desc.is_valid());
+				assert(value_next.is_valid());
+				assert(value_prev.is_valid());
+
+				// synfig::info("-------");
+				// synfig::info(__FILE__":%d: value_prev 0x%08X:%d",__LINE__,value_prev.get_parent_value_node().get(),value_prev.get_index());
+				// synfig::info(__FILE__":%d: value_desc 0x%08X:%d",__LINE__,value_desc.get_parent_value_node().get(),value_desc.get_index());
+				// synfig::info(__FILE__":%d: value_next 0x%08X:%d",__LINE__,value_next.get_parent_value_node().get(),value_next.get_index());
+						
+				/*
+				  if(value_prev.parent_is_value_node() && value_desc.parent_is_value_node() && value_next.parent_is_value_node())
+				  {
+				  // Remove random extraneous vertices
+				  if(value_prev.get_parent_value_node()==value_next.get_parent_value_node() &&
+				  value_prev.get_parent_value_node()!=value_desc.get_parent_value_node())
+				  {
+				  DEBUGPOINT();
+				  vertex_list.erase(iter);
+				  done=false;
+				  break;
+				  }
+				  }
+				*/
+
+				// // Remove duplicate vertices
+
+				// // if previous is the same as current or
+				// //    current is the same as next, remove current
+				// if(value_prev.get_value_node()==value_desc.get_value_node() ||
+				//    value_desc.get_value_node()==value_next.get_value_node())
+				// {
+				// 	// DEBUGPOINT();
+				//	vertex_list.erase(iter);
+				//	done=false;
+				//	printf("erased node - i = %d\n", i);
+				//	break;
+				// }
+
+				// // if previous is the same as next, remove previous?  or next?
+				// if(value_prev.get_value_node()==value_next.get_value_node())
+				// {
+				// 	// DEBUGPOINT();
+				// 	vertex_list.erase(next);
+				// 	// vertex_list.erase(prev);
+				// 	done=false;
+				// 	printf("erased node - i = %d\n", i);
+				// 	break;
+				// }
+
+				// if 'this' and 'next' both have parents
+				if (value_desc.parent_is_value_node() && value_next.parent_is_value_node())
+				{
+					// if they are both on the same bline - this has been handled by new code above
+					if (value_desc.get_parent_value_node() == value_next.get_parent_value_node())
+					{
+						// // if (next != vertex_list.end())
+						// {
+						// 	printf("parent loop is %d and node loop is ??\n",
+						// 		   (*(value_desc.get_parent_value_node()))(get_time()).get_loop()
+						// 		   // value_desc.get_value_node().get_loop(),
+						// 		);
+						// 
+						// 	// Fill in missing vertices
+						// 	// \todo take loops into account: seeing (15, 2, 3, 4) probably means that (0, 1) is missing, not 14 through 3
+						// 	if(value_desc.get_index()<value_next.get_index()-1)
+						// 	{
+						// 		debug_show_vertex_list(i, vertex_list,
+						// 							   strprintf("same parent, different points this %d < next-1 %d",
+						// 										 value_desc.get_index(), ((value_next.get_index()-1))),
+						// 							   current);
+						// 		// DEBUGPOINT();
+						// 		for (int index = value_desc.get_index()+1; index < value_next.get_index(); index++)
+						// 		{
+						// 			printf("inserting up %d\n", index);
+						// 			vertex_list.insert(next, synfigapp::ValueDesc(value_desc.get_parent_value_node(), index));
+						// 		}
+						// 		debug_show_vertex_list(i, vertex_list, "new list", current);
+						// 		done=false;
+						// 		break;
+						// 	}
+						// 	if(value_next.get_index()<value_desc.get_index()-1)
+						// 	{
+						// 		debug_show_vertex_list(i, vertex_list,
+						// 							   strprintf("same parent, different points next %d < this-1 %d",
+						// 										 value_next.get_index(), ((value_desc.get_index()-1))),
+						// 							   current);
+						// 		// DEBUGPOINT();
+						// 		for (int index = value_desc.get_index()-1; index > value_next.get_index(); index--)
+						// 		{
+						// 			printf("inserting down %d\n", index);
+						// 			vertex_list.insert(next, synfigapp::ValueDesc(value_desc.get_parent_value_node(), index));
+						// 		}
+						// 		debug_show_vertex_list(i, vertex_list, "new list", current);
+						// 		done=false;
+						// 		break;
+						// 	}
+						// }
+					}
+					// 'this' and 'next' have different parents
+					else
+					{
+						ValueNode::Handle v1 = value_desc.get_value_node();
+						ValueNode::Handle v2 = value_desc.get_parent_value_node();
+						if (v1 == v2)
+							printf("same\n");
+						else
+							printf("different\n");
+
+						if (value_desc.get_value_node() != value_next.get_value_node())
+						{
+							// Ensure that connections between blines are properly connected
+							BLinePoint vertex(value_desc.get_value(get_time()).get(BLinePoint()));
+							BLinePoint vertex_next(value_next.get_value(get_time()).get(BLinePoint()));
+
+							//synfig::info("--------");
+							//synfig::info(__FILE__":%d: vertex: [%f, %f]",__LINE__,vertex.get_vertex()[0],vertex.get_vertex()[1]);
+							//synfig::info(__FILE__":%d: vertex_next: [%f, %f]",__LINE__,vertex_next.get_vertex()[0],vertex_next.get_vertex()[1]);
+
+							// if this vertex is close to the next one, replace this vertex with a new one
+							// and erase the next one
+							printf("this point is %5.2f from the next point - compare with %5.2f\n",
+								   (vertex.get_vertex()-vertex_next.get_vertex()).mag_squared(),
+								   radius*radius);
+							if((vertex.get_vertex()-vertex_next.get_vertex()).mag_squared()<radius*radius)
+							{
+								printf("in one - it's close\n");
+								// DEBUGPOINT();
+								ValueNode_Composite::Handle value_node;
+								ValueNode_Composite::Handle value_node_next;
+								value_node=ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node().clone());
+								value_node_next=ValueNode_Composite::Handle::cast_dynamic(value_next.get_value_node().clone());
+								if(!value_node || !value_node_next)
+								{
+									synfig::info(__FILE__":%d: Unable to properly connect blines.",__LINE__);
+									continue;
+								}
+								// DEBUGPOINT();
+								// \todo if next isn't split, don't we want to copy its 'Tangent 1' instead?
+								value_node->set_link(5,value_node_next->get_link(5)); // Tangent 2
+								value_node->set_link(3,ValueNode_Const::create(true)); // Split Tangents
+
+								// get_canvas_interface()->auto_export(value_node);
+								printf("exporting\n");
+								get_canvas_interface()->add_value_node(value_node,value_node->get_id() + strprintf("foo %d", rand()));
+
+								assert(value_node->is_exported());
+								// replace 'this' with the new valuenode
+								*iter=synfigapp::ValueDesc(get_canvas(),value_node->get_id());
+								printf("erasing next\n");
+								printf("erasing next point\n");
+								vertex_list.erase(next);
+								done=false;
+								break;
+							} // this vertex isn't close to the next one
+							else if (value_prev.parent_is_value_node())
+							{
+								printf("in two - it's far\n");
+								// DEBUGPOINT();
+								// \todo this only makes sense if prev is on the same bline
+								printf("this is index %d\n", value_desc.get_index());
+								printf("prev is index %d\n", value_prev.get_index());
+								bool positive_trend(value_desc.get_index()>value_prev.get_index());
+
+								if(positive_trend)
+								{
+									printf("positive trend\n");
+									printf("comparing index %d < link_count()-1 = %d-1 = %d\n",
+										   value_desc.get_index(),
+										   LinkableValueNode::Handle::cast_static(value_desc.get_parent_value_node())->link_count(),
+										   LinkableValueNode::Handle::cast_static(value_desc.get_parent_value_node())->link_count()-1);
+									if (value_desc.get_index()<LinkableValueNode::Handle::cast_static(value_desc.get_parent_value_node())->link_count()-1)
+									{
+										printf("in two - b\n");
+										// DEBUGPOINT();
+										printf("inserting node with index %d\n", value_desc.get_index()+1);
+										vertex_list.insert(next,
+														   synfigapp::ValueDesc(value_desc.get_parent_value_node(),
+																				value_desc.get_index()+1));
+										done=false;
+										break;
+									}
+								}
+								else // !positive_trend
+								{
+									printf("negative trend\n");
+									if(value_desc.get_index()>0)
+									{
+										printf("in two - a\n");
+										// DEBUGPOINT();
+										printf("inserting node on this line with index %d\n",
+											   value_desc.get_index()-1);
+										vertex_list.insert(next,
+														   synfigapp::ValueDesc(value_desc.get_parent_value_node(),
+																				value_desc.get_index()-1));
+										done=false;
+										break;
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+		if(vertex_list.size()<=2)
+		{
+			synfig::info(__FILE__":%d: Vertex list too small to make region.",__LINE__);
+			return Smach::RESULT_OK;
+		}
+
+		debug_show_vertex_list(i, vertex_list, "finished tidying list", -1);
 	}
 
 	// If we aren't the trivial case,
@@ -1319,6 +1722,7 @@ StateDraw_Context::new_region(std::list<synfig::BLinePoint> bline, synfig::Real 
 	// BLine value node
 	if(!value_node_bline)
 	{
+		synfig::info("not all points are on the same bline");
 		value_node_bline=ValueNode_BLine::create();
 
 		std::list<synfigapp::ValueDesc>::iterator iter;
