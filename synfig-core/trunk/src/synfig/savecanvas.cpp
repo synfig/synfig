@@ -313,9 +313,7 @@ xmlpp::Element* encode_animated(xmlpp::Element* root,ValueNode_Animated::ConstHa
 			waypoint_node->set_attribute("after","halt");
 			break;
 		case INTERPOLATION_LINEAR:
-			// This is the default value for angles, so don't add a new attribute for them
-			if (value_node->get_type() != ValueBase::TYPE_ANGLE)
-				waypoint_node->set_attribute("after","linear");
+			waypoint_node->set_attribute("after","linear");
 			break;
 		case INTERPOLATION_MANUAL:
 			waypoint_node->set_attribute("after","manual");
@@ -324,9 +322,7 @@ xmlpp::Element* encode_animated(xmlpp::Element* root,ValueNode_Animated::ConstHa
 			waypoint_node->set_attribute("after","constant");
 			break;
 		case INTERPOLATION_TCB:
-			// This is the default value, so don't add a new attribute (unless it's an angle - they default to linear)
-			if (value_node->get_type() == ValueBase::TYPE_ANGLE)
-				waypoint_node->set_attribute("after","auto");
+			waypoint_node->set_attribute("after","auto");
 			break;
 		default:
 			error("Unknown waypoint type for \"after\" attribute");
