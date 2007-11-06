@@ -161,6 +161,7 @@ struct is_angle_type
 	}
 };
 
+#ifdef ANGLES_USE_LINEAR_INTERPOLATION
 template <>
 struct is_angle_type<Angle>
 {
@@ -169,6 +170,7 @@ struct is_angle_type<Angle>
 		return true;
 	}
 };
+#endif	// ANGLES_USE_LINEAR_INTERPOLATION
 
 /* === G L O B A L S ======================================================= */
 
