@@ -2,9 +2,7 @@
 
 # -- I N I T --------------------------------------------------
 
-. $srcdir/config/build.cfg 
-
-AC_INIT(@PACKAGE_NAME@,@PACKAGE_VERSION@,@PACKAGE_BUGREPORT@,@PACKAGE_TARNAME@)
+AC_INIT([Extended Template Library],[0.4.10],[http://sourceforge.net/tracker/?group_id=144022&atid=757416],[ETL])
 AC_REVISION
 
 AC_CONFIG_AUX_DIR(config)
@@ -19,7 +17,7 @@ AM_MAINTAINER_MODE
 
 debug="no"
 
-SVN_REPOSITORY=@SVN_REPOSITORY@
+SVN_REPOSITORY=http://svn.voria.com/code/ETL
 AC_SUBST(SVN_REPOSITORY)
 
 # -- A R G U M E N T S ----------------------------------------
@@ -87,7 +85,9 @@ ETL-config
 Makefile
 ETL/Makefile
 test/Makefile
-@PACKAGE_TARNAME@.pc
+ETL.pc
+ETL.spec
+doxygen.cfg
 )
 
 # -- S U M M A R Y --------------------------------------------

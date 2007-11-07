@@ -1,6 +1,6 @@
 # $Id$
 
-MAINTAINERCLEANFILES=COPYING INSTALL config/config.guess config/config.sub config/ltmain.sh config/install-sh config/mkinstalldirs config/aclocal.m4 config/missing config/texinfo.tex config/depcomp aclocal.m4 config.h.in configure stamp-h.in Makefile.in config.log config.status .doc_stamp .DS_Store @PACKAGE@.spec include/etl_profile.h.in ETL.pc.in doxygen.cfg
+MAINTAINERCLEANFILES=COPYING INSTALL config/config.guess config/config.sub config/ltmain.sh config/install-sh config/mkinstalldirs config/aclocal.m4 config/missing config/texinfo.tex config/depcomp aclocal.m4 config.h.in configure stamp-h.in Makefile.in config.log config.status .doc_stamp .DS_Store ETL.spec include/etl_profile.h.in doxygen.cfg
 
 SUBDIRS=ETL test
 
@@ -12,8 +12,9 @@ pkgconfig_DATA = ETL.pc
 bin_SCRIPTS=ETL-config
 aclocaldir = $(prefix)/share/aclocal
 
+ACLOCAL_AMFLAGS = -I m4
 
-EXTRA_DIST=COPYING bootstrap config/subs.m4 config/depcomp config/cxx_macros.m4 ETL.pbproj/project.pbxproj ETL.pbproj/etl_profile.h ETL.pbproj/frameworkfix.cpp @PACKAGE_TARNAME@.spec config/project.spec.in config/build.cfg ETL-config.in config/ETL.m4 config/doxygen.cfg.in doxygen.cfg config/pkgconfig.pc.in @PACKAGE_TARNAME@.pc.in
+EXTRA_DIST=COPYING bootstrap m4/subs.m4 config/depcomp m4/cxx_macros.m4 ETL.pbproj/project.pbxproj ETL.pbproj/etl_profile.h ETL.pbproj/frameworkfix.cpp ETL.spec ETL.spec.in ETL-config.in m4/ETL.m4 doxygen.cfg.in doxygen.cfg ETL.pc.in
 
 CVS=cvs
 SVN=svn
@@ -63,9 +64,6 @@ listhacks:
 	-@echo
 
 run: check
-
-$(srcdir)/configure:  $(srcdir)/configure.in $(ACLOCAL_M4) $(CONFIGURE_DEPENDENCIES)
-	$(srcdir)/bootstrap
 
 .doc_stamp: doxygen.cfg
 	$(DOXYGEN) doxygen.cfg

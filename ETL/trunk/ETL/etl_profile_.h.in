@@ -1,4 +1,4 @@
-/* ETL/etl_profile_.h.in.  Generated from configure.in by autoheader.  */
+/* ETL/etl_profile_.h.in.  Generated from configure.ac by autoheader.  */
 
 
 // We want to be autoconf/autoheader friendly, so 
