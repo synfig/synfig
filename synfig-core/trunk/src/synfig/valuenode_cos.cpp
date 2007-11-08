@@ -56,7 +56,7 @@ ValueNode_Cos::ValueNode_Cos(const ValueBase &value):
 	switch(value.get_type())
 	{
 	case ValueBase::TYPE_REAL:
-		set_link("angle",ValueNode_Const::create(Angle::deg(90)));
+		set_link("angle",ValueNode_Const::create(Angle::deg(0)));
 		set_link("amp",ValueNode_Const::create(value.get(Real())));
 		break;
 	default:
