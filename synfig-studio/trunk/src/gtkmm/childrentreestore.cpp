@@ -84,6 +84,7 @@ ChildrenTreeStore::ChildrenTreeStore(etl::loose_handle<synfigapp::CanvasInterfac
 
 	// Connect all the signals
 	canvas_interface()->signal_value_node_changed().connect(sigc::mem_fun(*this,&studio::ChildrenTreeStore::on_value_node_changed));
+	canvas_interface()->signal_value_node_renamed().connect(sigc::mem_fun(*this,&studio::ChildrenTreeStore::on_value_node_renamed));
 	canvas_interface()->signal_value_node_added().connect(sigc::mem_fun(*this,&studio::ChildrenTreeStore::on_value_node_added));
 	canvas_interface()->signal_value_node_deleted().connect(sigc::mem_fun(*this,&studio::ChildrenTreeStore::on_value_node_deleted));
 	canvas_interface()->signal_value_node_replaced().connect(sigc::mem_fun(*this,&studio::ChildrenTreeStore::on_value_node_replaced));
@@ -327,6 +328,12 @@ ChildrenTreeStore::on_value_node_changed(etl::handle<ValueNode> value_node)
 		rebuild_value_nodes();
 	}
 	*/
+}
+
+void
+ChildrenTreeStore::on_value_node_renamed(etl::handle<ValueNode> value_node)
+{
+	rebuild_value_nodes();
 }
 
 void

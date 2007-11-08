@@ -92,6 +92,7 @@ private:
 	void on_value_node_added(synfig::ValueNode::Handle value_node);
 	void on_value_node_deleted(synfig::ValueNode::Handle value_node);
 	void on_value_node_changed(synfig::ValueNode::Handle value_node);
+	void on_value_node_renamed(synfig::ValueNode::Handle value_node);
 	void on_value_node_replaced(synfig::ValueNode::Handle replaced_value_node,synfig::ValueNode::Handle new_value_node);
 	void on_canvas_added(synfig::Canvas::Handle canvas);
 	void on_canvas_removed(synfig::Canvas::Handle canvas);

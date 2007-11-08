@@ -189,6 +189,8 @@ private:
 	//!	ValueBasenode Changed
 	sigc::signal<void, etl::handle<ValueNode> > signal_value_node_changed_;
 
+	sigc::signal<void, etl::handle<ValueNode> > signal_value_node_renamed_;
+
 	sigc::signal<void, etl::handle<ValueNode>, etl::handle<ValueNode> > signal_value_node_child_added_;
 
 	sigc::signal<void, etl::handle<ValueNode>, etl::handle<ValueNode> > signal_value_node_child_removed_;
@@ -231,6 +233,8 @@ public:
 
 
 	sigc::signal<void, etl::handle<ValueNode> >& signal_value_node_changed() { return signal_value_node_changed_; }
+
+	sigc::signal<void, etl::handle<ValueNode> >& signal_value_node_renamed() { return signal_value_node_renamed_; }
 
 	//!	Dirty
 	sigc::signal<void>& signal_dirty() { return signal_changed();	}

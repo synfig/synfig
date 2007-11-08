@@ -79,6 +79,7 @@ LayerParamTreeStore::LayerParamTreeStore(etl::loose_handle<synfigapp::CanvasInte
 	queued=false;
 	// Connect all the signals
 	canvas_interface()->signal_value_node_changed().connect(sigc::mem_fun(*this,&studio::LayerParamTreeStore::on_value_node_changed));
+	canvas_interface()->signal_value_node_renamed().connect(sigc::mem_fun(*this,&studio::LayerParamTreeStore::on_value_node_renamed));
 	canvas_interface()->signal_value_node_added().connect(sigc::mem_fun(*this,&studio::LayerParamTreeStore::on_value_node_added));
 	canvas_interface()->signal_value_node_deleted().connect(sigc::mem_fun(*this,&studio::LayerParamTreeStore::on_value_node_deleted));
 	canvas_interface()->signal_value_node_replaced().connect(sigc::mem_fun(*this,&studio::LayerParamTreeStore::on_value_node_replaced));
@@ -546,6 +547,12 @@ void
 LayerParamTreeStore::on_value_node_changed(etl::handle<ValueNode> /*value_node*/)
 {
 	queue_refresh();
+}
+
+void
+LayerParamTreeStore::on_value_node_renamed(synfig::ValueNode::Handle /*value_node*/)
+{
+	rebuild();
 }
 
 void

@@ -144,7 +144,7 @@ Action::ValueNodeRename::perform()
 
 	if(get_canvas_interface())
 	{
-		get_canvas_interface()->signal_value_node_changed()(value_node);
+		get_canvas_interface()->signal_value_node_renamed()(value_node);
 	}
 }
 
@@ -160,6 +160,6 @@ Action::ValueNodeRename::undo()
 
 	if(get_canvas_interface())
 	{
-		get_canvas_interface()->signal_value_node_changed()(value_node);
+		get_canvas_interface()->signal_value_node_renamed()(value_node);
 	}
 }

@@ -121,6 +121,7 @@ private:
 	void on_value_node_added(synfig::ValueNode::Handle value_node);
 	void on_value_node_deleted(synfig::ValueNode::Handle value_node);
 	virtual void on_value_node_changed(synfig::ValueNode::Handle value_node);
+	virtual void on_value_node_renamed(synfig::ValueNode::Handle value_node);
 	void on_value_node_replaced(synfig::ValueNode::Handle replaced_value_node,synfig::ValueNode::Handle new_value_node);
 	void on_layer_param_changed(synfig::Layer::Handle handle,synfig::String param_name);
 

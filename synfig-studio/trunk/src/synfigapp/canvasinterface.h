@@ -85,7 +85,6 @@ private:
 
 	sigc::signal<void,synfig::ValueNode::Handle> signal_value_node_added_;
 	sigc::signal<void,synfig::ValueNode::Handle> signal_value_node_deleted_;
-	sigc::signal<void,synfig::ValueNode::Handle> signal_value_node_changed_;
 	sigc::signal<void,synfig::ValueNode::Handle,synfig::ValueNode::Handle> signal_value_node_replaced_;
 
 	sigc::signal<void,synfig::Keyframe> signal_keyframe_added_;
@@ -151,7 +150,9 @@ public:	// Signal Interface
 
 	//! Signal called when a ValueNode has been changed
 	sigc::signal<void,etl::handle<synfig::ValueNode> >& signal_value_node_changed() { return get_canvas()->signal_value_node_changed(); }
-	//sigc::signal<void,etl::handle<synfig::ValueNode> >& signal_value_node_changed() { return signal_value_node_changed_; }
+
+	//! Signal called when a ValueNode has been renamed
+	sigc::signal<void,etl::handle<synfig::ValueNode> >& signal_value_node_renamed() { return get_canvas()->signal_value_node_renamed(); }
 
 	//! Signal called when the mode has changed
 	sigc::signal<void,Mode> signal_mode_changed() { return signal_mode_changed_; }
