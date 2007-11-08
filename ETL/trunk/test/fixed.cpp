@@ -111,7 +111,7 @@ struct speed_test
 				a=3+i; b=40+i; b/=a; a/=(i%20)+1; acc+= a;
 			}
 
-		fprintf(stderr, "[%1d]...", int(int(a)/1e9)+5); // so the compiler doesn't optimize everything out
+		fprintf(stderr, "[%1d]...", int(int(acc)/1e9)+5); // so the compiler doesn't optimize everything out
 		return MyTimer();
 	}
 };
