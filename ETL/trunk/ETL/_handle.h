@@ -140,6 +140,9 @@ public:
 	typedef int size_type;
 
 protected:
+#ifdef _DEBUG
+public:
+#endif
 	value_type *obj;		//!< Pointer to object
 
 public:
@@ -631,6 +634,9 @@ public:
 	typedef int size_type;
 
 protected:
+#ifdef _DEBUG
+public:
+#endif
 	value_type *obj;		//!< Pointer to object
 
 public:
