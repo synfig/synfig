@@ -1,10 +1,10 @@
 # $Id$
 
-MAINTAINERCLEANFILES=config/ltmain.sh config/config.guess config/config.sub config/ltmain.sh config/install-sh config/mkinstalldirs config/aclocal.m4 config/missing config/texinfo.tex config/depcomp aclocal.m4 config.h.in configure stamp-h.in Makefile.in config.log config.status .doc_stamp .DS_Store @PACKAGE_TARNAME@.spec
+MAINTAINERCLEANFILES=COPYING INSTALL config/ltmain.sh config/config.guess config/config.sub config/ltmain.sh config/install-sh config/mkinstalldirs config/aclocal.m4 config/missing config/texinfo.tex config/depcomp aclocal.m4 config.h.in configure stamp-h.in Makefile.in config.log config.status .doc_stamp .DS_Store synfigstudio.spec
 
 SUBDIRS=src images
 
-EXTRA_DIST=COPYING TODO config/subs.m4 macosxbuild.sh win32build.sh win32inst.nsi.in bootstrap config/package config/depcomp config/cxx_macros.m4 @PACKAGE_TARNAME@.spec config/project.spec.in config/build.cfg config/ETL.m4 ChangeLog.old synfigstudio.xml.in synfigstudio-thumbnailer.schemas.in
+EXTRA_DIST=COPYING TODO m4/subs.m4 macosxbuild.sh win32build.sh win32inst.nsi.in config/package config/depcomp m4/cxx_macros.m4 synfigstudio.spec synfigstudio.spec.in m4/ETL.m4 ChangeLog.old synfigstudio.xml.in synfigstudio-thumbnailer.schemas.in
 
 # Desktop entry
 #desktopdir              = $(datadir)/gnome/apps/Graphics
@@ -22,6 +22,7 @@ mime_DATA            = synfigstudio.keys synfigstudio.mime
 icondir                 = $(datadir)/pixmaps
 icon_DATA               = images/synfig_icon.png images/sif_icon.png
 
+ACLOCAL_AMFLAGS=-I m4
 
 CVS=cvs
 GREP=grep
@@ -76,9 +77,6 @@ listhacks:
 	-@echo
 
 run: check
-
-$(srcdir)/configure:  $(srcdir)/configure.in $(ACLOCAL_M4) $(CONFIGURE_DEPENDENCIES)
-	$(srcdir)/bootstrap
 
 .doc_stamp: doxygen.cfg
 	$(DOXYGEN) doxygen.cfg

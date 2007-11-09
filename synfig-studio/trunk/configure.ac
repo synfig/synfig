@@ -2,9 +2,7 @@
 
 # -- I N I T --------------------------------------------------
 
-. $srcdir/config/build.cfg 
-
-AC_INIT(@PACKAGE_NAME@,@PACKAGE_VERSION@,@PACKAGE_BUGREPORT@,@PACKAGE_TARNAME@)
+AC_INIT([Synfig Studio],[0.61.07],[http://sourceforge.net/tracker/?group_id=144022&atid=757416],[synfigstudio])
 AC_REVISION
 
 AC_CONFIG_AUX_DIR(config)
@@ -15,11 +13,11 @@ dnl AC_CANONICAL_TARGET
 AM_INIT_AUTOMAKE
 AM_MAINTAINER_MODE
 
-API_VERSION=@API_VERSION@
+API_VERSION=0.0
 
 # -- V A R I A B L E S ----------------------------------------
 
-SVN_REPOSITORY=@SVN_REPOSITORY@
+SVN_REPOSITORY=http://svn.voria.com/code/synfig-studio
 
 # -- P R O G R A M S ------------------------------------------
 
@@ -158,13 +156,6 @@ AC_SUBST(SVN_REPOSITORY)
 
 AC_SUBST(API_VERSION)
 
-VERSION_MAJ=@VERSION_MAJ@
-VERSION_MIN=@VERSION_MIN@
-VERSION_REV=@VERSION_REV@
-AC_SUBST(VERSION_MAJ)
-AC_SUBST(VERSION_MIN)
-AC_SUBST(VERSION_REV)
-
 # fmod stuff...
 AC_SUBST(FMOD_LIBS)
 
@@ -176,6 +167,7 @@ AC_SUBST(imagedir)
 
 AC_OUTPUT(
 Makefile
+synfigstudio.spec
 synfigstudio.desktop
 synfigstudio.mime
 synfigstudio.keys
