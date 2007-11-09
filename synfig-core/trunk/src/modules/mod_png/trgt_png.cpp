@@ -198,17 +198,22 @@ png_trgt::start_frame(synfig::ProgressCallback *callback)
 	// Write the physical size
 	png_set_pHYs(png_ptr,info_ptr,round_to_int(desc.get_x_res()),round_to_int(desc.get_y_res()),PNG_RESOLUTION_METER);
 
+	char title      [] = "Title";
+	char description[] = "Description";
+	char software   [] = "Software";
+	char synfig     [] = "SYNFIG";
+//	char copyright  [] = "Copyright";
+//	char voria      [] = "(c) 2004 Voria Studios, LLC";
+
 	// Output any text info along with the file
 	png_text comments[]=
 	{
-		{ PNG_TEXT_COMPRESSION_NONE, "Title", const_cast<char *>(get_canvas()->get_name().c_str()),
+		{ PNG_TEXT_COMPRESSION_NONE, title, const_cast<char *>(get_canvas()->get_name().c_str()),
 		  strlen(get_canvas()->get_name().c_str()) },
-		{ PNG_TEXT_COMPRESSION_NONE, "Description", const_cast<char *>(get_canvas()->get_description().c_str()),
+		{ PNG_TEXT_COMPRESSION_NONE, description, const_cast<char *>(get_canvas()->get_description().c_str()),
 		  strlen(get_canvas()->get_description().c_str()) },
-//		{ PNG_TEXT_COMPRESSION_NONE, "Copyright", "(c) 2004 Voria Studios, LLC",
-//		  strlen("(c) 2004 Voria Studios, LLC") },
-		{ PNG_TEXT_COMPRESSION_NONE, "Software", "SYNFIG",
-		  strlen("SYNFIG") },
+//		{ PNG_TEXT_COMPRESSION_NONE, copyright, voria, strlen(voria) },
+		{ PNG_TEXT_COMPRESSION_NONE, software, synfig, strlen(synfig) },
 	};
 	png_set_text(png_ptr,info_ptr,comments,sizeof(comments)/sizeof(png_text));
 
