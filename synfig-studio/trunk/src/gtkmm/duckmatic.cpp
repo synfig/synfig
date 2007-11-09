@@ -151,8 +151,6 @@ Duckmatic::set_guide_snap(bool x)
 	}
 }
 
-
-
 Duckmatic::GuideList::iterator
 Duckmatic::find_guide_x(synfig::Point pos, float radius)
 {
@@ -382,7 +380,6 @@ Duckmatic::toggle_select_duck(const etl::handle<Duck> &duck)
 		select_duck(duck);
 }
 
-
 void
 Duckmatic::translate_selected_ducks(const synfig::Vector& vector)
 {
@@ -505,25 +502,20 @@ DuckDrag_Translate::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector
 
 	for(i=0,iter=selected_ducks.begin();iter!=selected_ducks.end();++iter,i++)
 	{
-		if((*iter)->get_type()!=Duck::TYPE_VERTEX&&(*iter)->get_type()!=Duck::TYPE_POSITION)continue;
+		if((*iter)->get_type()!=Duck::TYPE_VERTEX &&
+		   (*iter)->get_type()!=Duck::TYPE_POSITION)
+			continue;
 		(*iter)->set_trans_point(positions[i]+vect);
 	}
 	for(i=0,iter=selected_ducks.begin();iter!=selected_ducks.end();++iter,i++)
 	{
-		if((*iter)->get_type()==Duck::TYPE_VERTEX||(*iter)->get_type()==Duck::TYPE_POSITION)continue;
+		if((*iter)->get_type()==Duck::TYPE_VERTEX ||
+		   (*iter)->get_type()==Duck::TYPE_POSITION)
+			continue;
 		(*iter)->set_trans_point(positions[i]+vect);
 	}
 	last_translate_=vect;
 }
-
-
-
-
-
-
-
-
-
 
 void
 Duckmatic::signal_edited_selected_ducks()
@@ -560,10 +552,6 @@ Duckmatic::signal_user_click_selected_ducks(int button)
 		(*iter)->signal_user_click(button)();
 	}
 }
-
-
-
-
 
 void
 Duckmatic::add_duck(const etl::handle<Duck> &duck)
@@ -711,7 +699,6 @@ Duckmatic::last_bezier()const
 	return bezier_list_.back();
 }
 
-
 etl::handle<Duckmatic::Duck>
 Duckmatic::find_duck(synfig::Point point, synfig::Real radius, Duck::Type type)
 {
@@ -814,8 +801,6 @@ Duckmatic::find_bezier(synfig::Point pos, synfig::Real scale, synfig::Real radiu
 	return 0;
 }
 
-
-
 bool
 Duckmatic::save_sketch(const synfig::String& filename)const
 {
@@ -866,7 +851,6 @@ Duckmatic::load_sketch(const synfig::String& filename)
 		return false;
 	}
 
-
 	etl::smart_ptr<std::list<synfig::Point> > stroke_data;
 
 	while(file)
@@ -914,13 +898,6 @@ Duckmatic::load_sketch(const synfig::String& filename)
 	return true;
 }
 
-
-
-
-
-
-
-
 Duckmatic::Push::Push(Duckmatic *duckmatic_):
 	duckmatic_(duckmatic_)
 {
@@ -948,14 +925,6 @@ Duckmatic::Push::restore()
 	duckmatic_->duck_dragger_=duck_dragger_;
 	needs_restore=false;
 }
-
-
-
-
-
-
-
-
 
 inline String guid_string(const synfigapp::ValueDesc& x)
 {
@@ -1210,7 +1179,6 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 			else
 				duck->set_type(Duck::TYPE_POSITION);
 
-
 			duck->signal_edited().clear();
 			duck->signal_edited().connect(
 				sigc::bind(
@@ -1261,7 +1229,6 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				bezier->c1->set_origin(bezier->p1);
 				bezier->c1->set_scalar(TANGENT_BEZIER_SCALE);
 				bezier->c1->set_tangent(true);
-
 
 				if(!add_to_ducks(synfigapp::ValueDesc(value_node,2),canvas_view,transform_stack))
 					return false;
@@ -1348,7 +1315,6 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 		{
 			ValueNode_Composite::Handle value_node;
 			value_node=ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node());
-
 
 			if(!add_to_ducks(synfigapp::ValueDesc(value_node,0),canvas_view,transform_stack))
 				return false;
@@ -1816,7 +1782,6 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 
 		return true;
 	}
-
 
 	break;
 	default:
