@@ -112,7 +112,7 @@ class studio::StateDraw_Context : public sigc::trackable
 
 	Duckmatic::Type old_duckmask;
 
-	void fill_last_stroke();
+	void fill_last_stroke(int depth_offset);
 
 	Smach::event_result new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline_flag,float radius);
 
@@ -448,7 +448,7 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 
 	//options_table.attach(button_fill_last_stroke, 0, 2, 13, 14, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
-	button_fill_last_stroke.signal_pressed().connect(sigc::mem_fun(*this,&StateDraw_Context::fill_last_stroke));
+	button_fill_last_stroke.signal_pressed().connect(sigc::bind(sigc::mem_fun(*this,&StateDraw_Context::fill_last_stroke), 0));
 	check_localerror.signal_toggled().connect(sigc::mem_fun(*this,&StateDraw_Context::UpdateErrorBox));
 
 	options_table.show_all();
@@ -519,12 +519,11 @@ StateDraw_Context::refresh_tool_options()
 		Gtk::StockID("synfig-fill"),
 		_("Fill Last Stroke")
 	)->signal_clicked().connect(
-		sigc::mem_fun(
-			*this,
-			&StateDraw_Context::fill_last_stroke
-		)
-	);
-
+		sigc::bind(
+			sigc::mem_fun(
+				*this,
+				&StateDraw_Context::fill_last_stroke),
+			0));
 }
 
 Smach::event_result
@@ -1014,6 +1013,7 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline
 			depth=layer->get_depth();
 			canvas=layer->get_canvas();
 		}
+		get_canvas_interface()->get_selection_manager()->clear_selected_layers();
 
 		//int number(synfig::UniqueID().get_uid());
 
@@ -1072,7 +1072,7 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline
 	last_stroke_id=get_id();
 
 	if(get_outline_flag() && get_region_flag())
-		fill_last_stroke();
+		fill_last_stroke(1);
 
 	increment_id();
 	return Smach::RESULT_ACCEPT;
@@ -1931,7 +1931,7 @@ StateDraw_Context::reverse_bline(std::list<synfig::BLinePoint> &bline)
 }
 
 void
-StateDraw_Context::fill_last_stroke()
+StateDraw_Context::fill_last_stroke(int depth_offset)
 {
 	if(!last_stroke)
 		return;
@@ -1944,7 +1944,17 @@ StateDraw_Context::fill_last_stroke()
 
 	synfigapp::PushMode push_mode(get_canvas_interface(),synfigapp::MODE_NORMAL);
 
-	layer=get_canvas_interface()->add_layer("region");
+	Canvas::Handle canvas(get_canvas_view()->get_canvas());
+	int depth(0);
+
+	layer=get_canvas_view()->get_selection_manager()->get_selected_layer();
+	if(layer)
+	{
+		depth=layer->get_depth() + depth_offset;
+		canvas=layer->get_canvas();
+	}
+
+	layer=get_canvas_interface()->add_layer_to("region", canvas, depth);
 	assert(layer);
 	layer->set_param("color",synfigapp::Main::get_background_color());
 	layer->set_description(last_stroke_id + _(" Region"));
