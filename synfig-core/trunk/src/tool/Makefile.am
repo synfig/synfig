@@ -3,7 +3,7 @@
 MAINTAINERCLEANFILES=Makefile.in
 EXTRA_DIST=tool.nsh
 
-INCLUDES=-I$(top_srcdir)/src
+INCLUDES=-I$(top_builddir) -I$(top_srcdir)/src
 
 bin_PROGRAMS	=	synfig
 

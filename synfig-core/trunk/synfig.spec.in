@@ -1,8 +1,8 @@
 
 Summary: Voria Extented Template Library
 Name: @PACKAGE_TARNAME@-devel
-Version: @VERSION_MAJ@.@VERSION_MIN@.@VERSION_REV@
-Release: @VERSION_REL@
+Version: @VERSION@
+Release: 1
 Copyright: free (see license), see /usr/share/doc/%{name}-%{version}/license.html
 URL: http://www.synfig.com/
 Packager: Robert B. Quattlebaum Jr. <darco@deepdarc.com>

@@ -1,11 +1,11 @@
 # $Id$
 
-# SUBDIRS=proto
+SUBDIRS=proto
 
-MAINTAINERCLEANFILES=Makefile.in proto/nodebase.h
-INCLUDES = -I$(top_srcdir)/src -I$(top_srcdir)/libltdl
+MAINTAINERCLEANFILES=Makefile.in
+INCLUDES = -I$(top_builddir) -I$(top_srcdir)/src -I$(top_srcdir)/libltdl
 
-EXTRA_DIST=surfacenew.cpp pch.h proto/Makefile proto/nodebase.h proto/nodebase.px proto/proto.m4 synfig.nsh
+EXTRA_DIST=surfacenew.cpp pch.h synfig.nsh
 
 LAYERHEADERS=layer_motionblur.h layer_pastecanvas.h layer_solidcolor.h layer_polygon.h layer_composite.h layer_bitmap.h layer_mime.h layer_shape.h
 LAYERSOURCES=layer_motionblur.cpp layer_pastecanvas.cpp layer_solidcolor.cpp layer_polygon.cpp layer_composite.cpp layer_bitmap.cpp layer_mime.cpp layer_shape.cpp

@@ -1,3 +1,5 @@
+MAINTAINERCLEANFILES=nodebase.h
+EXTRA_DIST=nodebase.h nodebase.px proto.m4
 
 M4=m4
 
@@ -11,8 +13,6 @@ clean:
 	$(RM) $(FILES)
 
 SUFFIXES=.px .h
-
-.SUFFIXES: $(SUFFIXES)
 
 .px.h: proto.m4
 	$(PROTO_PP) $< > $@

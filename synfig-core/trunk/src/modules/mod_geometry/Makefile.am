@@ -2,7 +2,7 @@
 
 
 MAINTAINERCLEANFILES=Makefile.in
-INCLUDES = -I$(top_srcdir)/src
+INCLUDES = -I$(top_builddir) -I$(top_srcdir)/src
 
 # GCC on MacOS X does not take kindly to the -ffastmath optimization
 # in this module for some reason.

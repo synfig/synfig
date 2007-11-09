@@ -1,7 +1,7 @@
 # $Id$
 
 MAINTAINERCLEANFILES=Makefile.in
-INCLUDES = -I$(top_srcdir)/src
+INCLUDES = -I$(top_builddir) -I$(top_srcdir)/src
 AM_CXXFLAGS=@CXXFLAGS@ @FREETYPE_CFLAGS@
 
 moduledir=@MODULE_DIR@

@@ -2,9 +2,7 @@
 
 # -- I N I T --------------------------------------------------
 
-. $srcdir/config/build.cfg 
-
-AC_INIT(@PACKAGE_NAME@,@PACKAGE_VERSION@,@PACKAGE_BUGREPORT@,@PACKAGE_TARNAME@)
+AC_INIT([Synfig Core],[0.61.07],[http://sourceforge.net/tracker/?group_id=144022&atid=757416],[synfig])
 AC_REVISION
 
 AC_CONFIG_AUX_DIR(config)
@@ -12,14 +10,14 @@ AM_CONFIG_HEADER(config.h)
 AC_CANONICAL_HOST
 dnl AC_CANONICAL_TARGET
 
-AM_INIT_AUTOMAKE
+AM_INIT_AUTOMAKE([nostdinc])
 AM_MAINTAINER_MODE
 
 AC_LIBLTDL_INSTALLABLE
 AC_SUBST(INCLTDL)
 AC_SUBST(LIBLTDL)
 
-API_VERSION=@API_VERSION@
+API_VERSION=0.0
 
 
 AC_DEFINE(LT_SCOPE,[extern],[LibLTDL is linked staticly])	
@@ -29,7 +27,7 @@ AC_DEFINE(LT_SCOPE,[extern],[LibLTDL is linked staticly])
 
 # -- V A R I A B L E S ----------------------------------------
 
-SVN_REPOSITORY=@SVN_REPOSITORY@
+SVN_REPOSITORY=http://svn.voria.com/code/synfig-core
 AC_SUBST(SVN_REPOSITORY)
 
 # -- P R O G R A M S ------------------------------------------
@@ -520,14 +518,7 @@ AC_SUBST(CXXFLAGS)
 AC_SUBST(CPPFLAGS)
 AC_SUBST(LDFLAGS)
 
-VERSION_MAJ=@VERSION_MAJ@
-VERSION_MIN=@VERSION_MIN@
-VERSION_REV=@VERSION_REV@
-AC_SUBST(VERSION_MAJ)
-AC_SUBST(VERSION_MIN)
-AC_SUBST(VERSION_REV)
-
-dnl AC_CONFIG_SUBDIRS(libltdl)
+AC_CONFIG_SUBDIRS(libltdl)
 
 CONFIG_LIBS="-lsynfig"
 CONFIG_CFLAGS="$CONFIG_CFLAGS"
@@ -551,26 +542,18 @@ AC_SUBST(OPENEXR_HALF_LIBS)
 
 AC_SUBST(API_VERSION)
 
-synfigincludedir=$includedir/synfig-@API_VERSION@
+synfigincludedir=$includedir/synfig-$API_VERSION
 AC_SUBST(synfigincludedir)
-
-[(
-	[ -d libltdl ] || mkdir libltdl;
-	cd libltdl;
-	
-	echo
-	echo pwd: `pwd`
-	echo ../$srcdir/libltdl/configure $ac_configure_args "'--srcdir="../$srcdir/libltdl"'" --with-auxdir=../$srcdir/config "'CFLAGS=$CFLAGS'" "'LDFLAGS=$LDFLAGS'" "'CC=$CC'" "'CPP=$CPP'" "'CPPFLAGS=$CPPFLAGS'" --disable-shared --enable-static
-	echo ../$srcdir/libltdl/configure $ac_configure_args "'--srcdir="../$srcdir/libltdl"'" --with-auxdir=../$srcdir/config "'CFLAGS=$CFLAGS'" "'LDFLAGS=$LDFLAGS'" "'CC=$CC'" "'CPP=$CPP'" "'CPPFLAGS=$CPPFLAGS'" --disable-shared --enable-static | sh
-	
-)]
 
 AC_OUTPUT(
 synfig-config
-@PACKAGE_TARNAME@.pc
+synfig.pc
+synfig.spec
+doxygen.cfg
 Makefile
 src/Makefile
 src/synfig/Makefile
+src/synfig/proto/Makefile
 src/modules/Makefile
 src/modules/lyr_freetype/Makefile
 src/modules/lyr_std/Makefile
