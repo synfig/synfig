@@ -42,11 +42,11 @@ public:
 
 	//Will maintain all lower constants
 	void degree(unsigned int d, const T & def = (T)0) { resize(d+1,def); }
-	unsigned int degree()const { return size() - 1; }
+	unsigned int degree()const { return this->size() - 1; }
 
 	const Polynomial & operator+=(const Polynomial &p)
 	{
-		if(p.size() > size())
+		if(p.size() > this->size())
 			resize(p.size(), (T)0);
 
 		for(int i = 0; i < p.size(); ++i)
@@ -58,7 +58,7 @@ public:
 
 	const Polynomial & operator-=(const Polynomial &p)
 	{
-		if(p.size() > size())
+		if(p.size() > this->size())
 			resize(p.size(), (T)0);
 
 		for(int i = 0; i < p.size(); ++i)
@@ -72,7 +72,7 @@ public:
 	{
 		if(p.size() < 1)
 		{
-			resize(0);
+			this->resize(0);
 			return *this;
 		}
 
@@ -87,7 +87,7 @@ public:
 
 		if(p.size() < 2) return *this;
 
-		resize(size() + p.degree());
+		this->resize(this->size() + p.degree());
 		for(int i = 0; i < nc.size(); ++i)
 		{
 			for(int j = 1; j < p.size(); ++j)
