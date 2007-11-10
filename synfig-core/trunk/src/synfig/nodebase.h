@@ -27,12 +27,38 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include "../protocol.h"
-#include "../string.h"
-#include "../guid.h"
+#include "protocol.h"
+#include "string.h"
+#include "guid.h"
 #include <sigc++/slot.h>
 
 /* === M A C R O S ========================================================= */
+
+#define PX_DEFINE_DATA(name,type) \
+    PX_DEFINE_FUNC_CONST0(get_##name, type) \
+    PX_DEFINE_FUNC1(set_##name, void, type)
+
+#define PX_DEFINE_FUNC0(name,ret) \
+	sigc::slot< ret > _slot_##name; \
+	ret name() { \
+		return _slot_##name(); \
+	}
+
+#define PX_DEFINE_FUNC1(name,ret,type) \
+	sigc::slot< ret, type > _slot_##name; \
+	ret name(type v1) { \
+		return _slot_##name(v1); \
+	}
+#define PX_DEFINE_FUNC2(name,ret,type1,type2) \
+	sigc::slot< ret, type1, type2 > _slot_##name; \
+	ret name(type1 v1, type2 v2) { \
+		return _slot_##name(v1,v2); \
+	}
+#define PX_DEFINE_FUNC_CONST0(name,ret) \
+	sigc::slot< ret > _slot_##name##_const; \
+	ret name()const { \
+		return _slot_##name##_const(); \
+	}
 
 /* === T Y P E D E F S ===================================================== */
 
@@ -50,19 +76,19 @@ public:
 
 	PX_DEFINE_DATA(guid, GUID)
 
-	PX_DEFINE_FUNC(func_test, float, int, int)
+	PX_DEFINE_FUNC2(func_test, float, int, int)
 
 	PX_DEFINE_DATA(id, String)
 
 	PX_DEFINE_DATA(root, NodeHandle)
 
-	PX_DEFINE_FUNC(signal_changed, sigc::signal<void>)
-	PX_DEFINE_FUNC(signal_deleted, sigc::signal<void>)
+	PX_DEFINE_FUNC0(signal_changed, sigc::signal<void>)
+	PX_DEFINE_FUNC0(signal_deleted, sigc::signal<void>)
 		
-	PX_DEFINE_FUNC_CONST(get_parents, const NodeList)
-	PX_DEFINE_FUNC_CONST(get_children, const NodeList)
+	PX_DEFINE_FUNC_CONST0(get_parents, const NodeList)
+	PX_DEFINE_FUNC_CONST0(get_children, const NodeList)
 
-	PX_DEFINE_FUNC(query_children, NodeList, Query)
+	PX_DEFINE_FUNC1(query_children, NodeList, Query)
 
 }; // END of class Proto::NodeBase
 

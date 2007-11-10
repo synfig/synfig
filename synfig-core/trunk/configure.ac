@@ -553,7 +553,6 @@ doxygen.cfg
 Makefile
 src/Makefile
 src/synfig/Makefile
-src/synfig/proto/Makefile
 src/modules/Makefile
 src/modules/lyr_freetype/Makefile
 src/modules/lyr_std/Makefile
