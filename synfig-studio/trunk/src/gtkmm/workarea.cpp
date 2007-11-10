@@ -1445,19 +1445,15 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 				if(get_selected_ducks().size()<=1)
 					duck->signal_user_click(2)();
 				else
-				{
 					canvas_view->get_smach().process_event(EventMouse(EVENT_WORKAREA_MULTIPLE_DUCKS_CLICKED,BUTTON_RIGHT,mouse_pos,pressure,modifier));
-				}
 				return true;
 			}
-			else
-			if(bezier)
+			else if(bezier)
 			{
 				bezier->signal_user_click(2)(bezier_click_pos);
 				return true;
 			}
-			else
-			if(layer)
+			else if (layer)
 			{
 				if(canvas_view->get_smach().process_event(EventLayerClick(layer,BUTTON_RIGHT,mouse_pos))==Smach::RESULT_OK)
 					return false;
@@ -1546,11 +1542,13 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 
 			drawing_area->queue_draw();
 		}
+
 		if(dragging==DRAG_BOX)
 		{
 			curr_point=mouse_pos;
 			drawing_area->queue_draw();
 		}
+
 		if(dragging==DRAG_GUIDE)
 		{
 			if(curr_guide_is_x)
@@ -1559,30 +1557,34 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 				*curr_guide=mouse_pos[1];
 			drawing_area->queue_draw();
 		}
+
 		if(dragging!=DRAG_WINDOW)
 		{	// Update those triangle things on the rulers
 			const synfig::Point point(mouse_pos);
 			hruler->property_position()=Distance(point[0],Distance::SYSTEM_UNITS).get(App::distance_system,get_canvas()->rend_desc());
 			vruler->property_position()=Distance(point[1],Distance::SYSTEM_UNITS).get(App::distance_system,get_canvas()->rend_desc());
 		}
-		if(dragging==DRAG_WINDOW)
-		{
-			set_focus_point(get_focus_point()+mouse_pos-drag_point);
-		}
-		else
-		if(event->motion.state&GDK_BUTTON1_MASK && canvas_view->get_smach().process_event(EventMouse(EVENT_WORKAREA_MOUSE_BUTTON_DRAG,BUTTON_LEFT,mouse_pos,pressure,modifier))==Smach::RESULT_ACCEPT)
+
+		if(dragging == DRAG_WINDOW)
+			set_focus_point(get_focus_point() + mouse_pos-drag_point);
+		else if (event->motion.state & GDK_BUTTON1_MASK &&
+				canvas_view->get_smach().process_event(EventMouse(EVENT_WORKAREA_MOUSE_BUTTON_DRAG, BUTTON_LEFT,
+																  mouse_pos,pressure,modifier)) == Smach::RESULT_ACCEPT)
 			return true;
-		else
-		if(event->motion.state&GDK_BUTTON2_MASK && canvas_view->get_smach().process_event(EventMouse(EVENT_WORKAREA_MOUSE_BUTTON_DRAG,BUTTON_MIDDLE,mouse_pos,pressure,modifier))==Smach::RESULT_ACCEPT)
+		else if (event->motion.state & GDK_BUTTON2_MASK &&
+				 canvas_view->get_smach().process_event(EventMouse(EVENT_WORKAREA_MOUSE_BUTTON_DRAG, BUTTON_MIDDLE,
+																   mouse_pos, pressure, modifier)) == Smach::RESULT_ACCEPT)
 			return true;
-		else
-		if(event->motion.state&GDK_BUTTON3_MASK && canvas_view->get_smach().process_event(EventMouse(EVENT_WORKAREA_MOUSE_BUTTON_DRAG,BUTTON_RIGHT,mouse_pos,pressure,modifier))==Smach::RESULT_ACCEPT)
+		else if (event->motion.state & GDK_BUTTON3_MASK &&
+				 canvas_view->get_smach().process_event(EventMouse(EVENT_WORKAREA_MOUSE_BUTTON_DRAG, BUTTON_RIGHT,
+																   mouse_pos, pressure, modifier)) == Smach::RESULT_ACCEPT)
 			return true;
-		else
-		if(canvas_view->get_smach().process_event(EventMouse(EVENT_WORKAREA_MOUSE_MOTION,BUTTON_NONE,mouse_pos,pressure,modifier))==Smach::RESULT_ACCEPT)
+		else if(canvas_view->get_smach().process_event(EventMouse(EVENT_WORKAREA_MOUSE_MOTION, BUTTON_NONE,
+																  mouse_pos, pressure,modifier)) == Smach::RESULT_ACCEPT)
 			return true;
 
 		break;
+
 	case GDK_BUTTON_RELEASE:
 	{
 		bool ret(false);
