@@ -107,6 +107,7 @@ private:
 	Type type_;
 
 	synfig::Point point;
+	synfig::Angle rotations;
 
 	etl::smart_ptr<synfig::Point> shared_point;
 

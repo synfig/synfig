@@ -30,6 +30,7 @@
 #endif
 
 #include "duck.h"
+#include <ETL/misc>
 
 #endif
 
@@ -64,6 +65,7 @@ int _DuckCounter::counter(0);
 /* === M E T H O D S ======================================================= */
 
 Duck::Duck():
+	rotations(synfig::Angle::deg(0)),
 	origin(0,0),
 	scalar(1),
 	editable(false),
@@ -74,6 +76,7 @@ Duck::Duck():
 Duck::Duck(const synfig::Point &point):
 	type_(TYPE_NONE),
 	point(point),
+	rotations(synfig::Angle::deg(0)),
 	origin(0,0),
 	scalar(1),
 	guid_(0),
@@ -84,6 +87,7 @@ Duck::Duck(const synfig::Point &point):
 
 Duck::Duck(const synfig::Point &point,const synfig::Point &origin):
 	point(point),
+	rotations(synfig::Angle::deg(0)),
 	origin(origin),
 	scalar(1),
 	guid_(0),
@@ -184,7 +188,20 @@ Duck::get_sub_trans_point()const
 void
 Duck::set_sub_trans_point(const synfig::Point &x)
 {
-	set_point((x-get_sub_trans_origin())/get_scalar());
+	if (get_type() == Duck::TYPE_TANGENT ||
+		get_type() == Duck::TYPE_ANGLE)
+	{
+		Angle old_angle = get_point().angle();
+		set_point((x-get_sub_trans_origin())/get_scalar());
+		Angle new_angle = get_point().angle();
+		int old_quarters = round_to_int(Angle::deg(rotations).get()/90);
+		rotations += new_angle.dist(old_angle);
+		int new_quarters = round_to_int(Angle::deg(rotations).get()/90);
+		if (old_quarters != new_quarters)
+			synfig::info("rotation: %.2f turns", new_quarters/4.0);
+	}
+	else
+		set_point((x-get_sub_trans_origin())/get_scalar());
 }
 
 synfig::Point
