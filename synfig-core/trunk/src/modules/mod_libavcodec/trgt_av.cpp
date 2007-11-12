@@ -642,7 +642,7 @@ public:
 
 	void CleanUp()
 	{
-		int i;
+		unsigned int i;
 
 		if(picture) free_picture(picture);
 
