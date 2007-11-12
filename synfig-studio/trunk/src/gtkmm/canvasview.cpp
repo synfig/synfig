@@ -2556,6 +2556,14 @@ CanvasView::on_duck_changed(const synfig::Point &value,const synfigapp::ValueDes
 	return true;
 }
 
+bool
+CanvasView::on_duck_angle_changed(const synfig::Angle &rotation,const synfigapp::ValueDesc& value_desc)
+{
+	// \todo will this really always be the case?
+	assert(value_desc.get_value_type() == ValueBase::TYPE_ANGLE);
+	return canvas_interface()->change_value(value_desc, value_desc.get_value(get_time()).get(Angle()) + rotation);
+}
+
 void
 CanvasView::selected_layer_color_set(Color color)
 {

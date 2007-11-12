@@ -668,6 +668,7 @@ private:
 	void on_audio_offset_notify();
 
 	bool on_duck_changed(const synfig::Point &value,const synfigapp::ValueDesc& value_desc);
+	bool on_duck_angle_changed(const synfig::Angle &rotation,const synfigapp::ValueDesc& value_desc);
 
 	void on_layer_toggle(synfig::Layer::Handle);
 
