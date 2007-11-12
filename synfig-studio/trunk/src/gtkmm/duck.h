@@ -102,6 +102,7 @@ public:
 private:
 
 	sigc::signal<bool,const synfig::Point &> signal_edited_;
+	sigc::signal<bool,const synfig::Angle &> signal_edited_angle_;
 	sigc::signal<void> signal_user_click_[5];
 
 	Type type_;
@@ -139,6 +140,7 @@ public:
 	~Duck();
 
 	sigc::signal<bool,const synfig::Point &> &signal_edited() { return signal_edited_; }
+	sigc::signal<bool,const synfig::Angle &> &signal_edited_angle() { return signal_edited_angle_; }
 	sigc::signal<void> &signal_user_click(int i=0) { assert(i>=0); assert(i<5); return signal_user_click_[i]; }
 
 	void set_guid(const synfig::GUID& x) { guid_=x; }
@@ -191,6 +193,8 @@ public:
 
 	//! Returns the location of the duck
 	synfig::Point get_point()const { return shared_point?*shared_point:point; }
+
+	synfig::Angle get_rotations()const { return rotations; };
 
 	synfig::Point get_trans_point()const;
 
