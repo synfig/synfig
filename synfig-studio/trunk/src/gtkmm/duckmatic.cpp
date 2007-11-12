@@ -532,10 +532,21 @@ Duckmatic::signal_edited_selected_ducks()
 	// Go ahead and call everyone's signals
 	for(iter=ducks.begin();iter!=ducks.end();++iter)
 	{
-		if(!(*iter)->signal_edited()((*iter)->get_point()))
+		if ((*iter)->get_type() == Duck::TYPE_ANGLE)
 		{
-			selected_ducks=old_set;
-			throw String("Bad edit");
+			if(!(*iter)->signal_edited_angle()((*iter)->get_rotations()))
+			{
+				selected_ducks=old_set;
+				throw String("Bad edit");
+			}
+		}
+		else
+		{
+			if(!(*iter)->signal_edited()((*iter)->get_point()))
+			{
+				selected_ducks=old_set;
+				throw String("Bad edit");
+			}
 		}
 	}
 	selected_ducks=old_set;
@@ -1005,7 +1016,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				duck->set_scalar(param_desc->get_scalar());
 			}
 
-			duck->signal_edited().clear();
+			duck->signal_edited().clear(); // value_desc.get_value_type() == ValueBase::TYPE_REAL:
 			duck->signal_edited().connect(
 				sigc::bind(
 					sigc::mem_fun(
@@ -1081,12 +1092,13 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				duck->set_scalar(param_desc->get_scalar());
 			}
 
-			duck->signal_edited().clear();
-			duck->signal_edited().connect(
+			duck->signal_edited().clear(); // value_desc.get_value_type() == ValueBase::TYPE_ANGLE:
+			duck->signal_edited_angle().clear();
+			duck->signal_edited_angle().connect(
 				sigc::bind(
 					sigc::mem_fun(
 						*canvas_view,
-						&studio::CanvasView::on_duck_changed
+						&studio::CanvasView::on_duck_angle_changed
 					),
 					value_desc
 				)
@@ -1179,7 +1191,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 			else
 				duck->set_type(Duck::TYPE_POSITION);
 
-			duck->signal_edited().clear();
+			duck->signal_edited().clear(); // value_desc.get_value_type() == ValueBase::TYPE_VECTOR:
 			duck->signal_edited().connect(
 				sigc::bind(
 					sigc::mem_fun(
