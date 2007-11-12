@@ -180,9 +180,22 @@ mng_trgt::init()
 	if (mng_create(mng) != 0) goto cleanup_on_error;
 	if (mng_putchunk_mhdr(mng, w, h, frame_rate, num_layers, num_frames, play_time, MNG_SIMPLICITY_VALID|MNG_SIMPLICITY_SIMPLEFEATURES) != 0) goto cleanup_on_error;
 	if (mng_putchunk_term(mng, MNG_TERMACTION_REPEAT, MNG_ITERACTION_LASTFRAME, 0, 0x7fffffff) != 0) goto cleanup_on_error;
-	if (mng_putchunk_text(mng, sizeof(MNG_TEXT_TITLE), MNG_TEXT_TITLE, get_canvas()->get_name().length(), const_cast<char *>(get_canvas()->get_name().c_str())) != 0) goto cleanup_on_error;
-	if (mng_putchunk_text(mng, sizeof(MNG_TEXT_DESCRIPTION), MNG_TEXT_DESCRIPTION, get_canvas()->get_description().length(), const_cast<char *>(get_canvas()->get_description().c_str())) != 0) goto cleanup_on_error;
-	if (mng_putchunk_text(mng, sizeof(MNG_TEXT_SOFTWARE), MNG_TEXT_SOFTWARE, sizeof("SYNFIG"), "SYNFIG") != 0) goto cleanup_on_error;
+	{
+		char title[] = MNG_TEXT_TITLE;
+		if (mng_putchunk_text(mng, sizeof(title), title,
+							  get_canvas()->get_name().length(), const_cast<char *>(get_canvas()->get_name().c_str())) != 0)
+			goto cleanup_on_error;
+
+		char description[] = MNG_TEXT_DESCRIPTION;
+		if (mng_putchunk_text(mng, sizeof(description), description,
+							  get_canvas()->get_description().length(), const_cast<char *>(get_canvas()->get_description().c_str())) != 0)
+			goto cleanup_on_error;
+
+		char software[] = MNG_TEXT_SOFTWARE; char synfig[] = "SYNFIG";
+		if (mng_putchunk_text(mng, sizeof(software), software,
+							  sizeof(synfig), synfig) != 0)
+			goto cleanup_on_error;
+	}
 	if (mng_putchunk_gama(mng, MNG_FALSE, (int)(gamma().get_gamma()*100000)) != 0) goto cleanup_on_error;
 	if (mng_putchunk_phys(mng, MNG_FALSE, round_to_int(desc.get_x_res()),round_to_int(desc.get_y_res()), MNG_UNIT_METER) != 0) goto cleanup_on_error;
 	if (mng_putchunk_time(mng, gmt->tm_year + 1900, gmt->tm_mon + 1, gmt->tm_mday, gmt->tm_hour, gmt->tm_min, gmt->tm_sec) != 0) goto cleanup_on_error;
