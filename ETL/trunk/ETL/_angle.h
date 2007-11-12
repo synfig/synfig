@@ -130,6 +130,7 @@ public:
 		return ret.mod();
 	}
 
+#ifdef ETL_WRAP_ANGLES
 	/*! Returns true if the shortest
 		angle from the left-hand to the
 		right-hand side is counter-clockwise */
@@ -175,6 +176,47 @@ public:
 	bool
 	operator!=(const angle &rhs)const
 	{ return std::abs(dist(rhs).v)>ANGLE_EPSILON; }
+#else // ETL_WRAP_ANGLES
+	/*! Returns true if the left-hand
+		side is less than the
+		right-hand side */
+	bool
+	operator<(const angle &rhs)const
+	{ return v < rhs.v; }
+
+	/*! Returns true if the left-hand
+		side is greater than the
+		right-hand side */
+	bool
+	operator>(const angle &rhs)const
+	{ return v > rhs.v; }
+
+	/*! Returns true if the left-hand
+		side is less or equal to the
+		right-hand side */
+	bool
+	operator<=(const angle &rhs)const
+	{ return v <= rhs.v; }
+
+	/*! Returns true if the left-hand
+		side is greater than or equal
+		to the right-hand side */
+	bool
+	operator>=(const angle &rhs)const
+	{ return v >= rhs.v; }
+
+	/*! Returns true if the angles
+		are the same, or close */
+	bool
+	operator==(const angle &rhs)const
+	{ return std::abs(v - rhs.v)<ANGLE_EPSILON; }
+
+	/*! Returns false if the angles
+		are different */
+	bool
+	operator!=(const angle &rhs)const
+		{ return std::abs(v - rhs.v)>ANGLE_EPSILON; }
+#endif // ETL_WRAP_ANGLES
 
 	//! Absolute Angle Function
 	/*! This function will return the
