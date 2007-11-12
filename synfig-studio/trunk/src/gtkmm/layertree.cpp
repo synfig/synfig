@@ -116,9 +116,6 @@ LayerTree::LayerTree():
 	attach(*layer_amount_hscale, 1, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK, 1, 1);
 	layer_amount_adjustment_.signal_value_changed().connect(sigc::mem_fun(*this, &studio::LayerTree::on_amount_value_changed));
 
-
-
-
 	Gtk::Image *icon;
 	//Gtk::IconSize iconsize(Gtk::IconSize::from_name("synfig-small_icon"));
 	Gtk::IconSize iconsize(Gtk::ICON_SIZE_SMALL_TOOLBAR);
@@ -143,18 +140,13 @@ LayerTree::LayerTree():
 	button_duplicate->set_sensitive(false);
 	button_delete->set_sensitive(false);
 
-
-
-
 	get_selection()->signal_changed().connect(sigc::mem_fun(*this, &studio::LayerTree::on_selection_changed));
-
 
 	get_layer_tree_view().set_reorderable(true);
 	get_selection()->set_mode(Gtk::SELECTION_MULTIPLE);
 	//get_param_tree_view().get_selection()->set_mode(Gtk::SELECTION_MULTIPLE);
 	get_layer_tree_view().show();
 	get_param_tree_view().show();
-
 
 	hbox->show();
 	layer_amount_hscale->show();
@@ -163,10 +155,6 @@ LayerTree::LayerTree():
 	tooltips_.enable();
 	disable_amount_changed_signal=false;
 
-
-
-
-
 	blend_method_widget.set_param_desc(ParamDesc(Color::BlendMethod(),"blend_method"));
 
 	blend_method_widget.set_value((int)Color::BLEND_COMPOSITE);
@@ -174,7 +162,6 @@ LayerTree::LayerTree():
 	blend_method_widget.set_sensitive(false);
 	blend_method_widget.signal_activate().connect(sigc::mem_fun(*this, &studio::LayerTree::on_blend_method_changed));
 }
-
 
 LayerTree::~LayerTree()
 {
@@ -185,7 +172,6 @@ Gtk::Widget*
 LayerTree::create_layer_tree()
 {
 	const LayerTreeStore::Model model;
-
 
 	{	// --- O N / O F F ----------------------------------------------------
 		//int index;
@@ -208,7 +194,6 @@ LayerTree::create_layer_tree()
 		index=get_layer_tree_view().append_column(_("Z"),layer_model.icon);
 		Gtk::TreeView::Column* column = get_layer_tree_view().get_column(index-1);
 		get_layer_tree_view().set_expander_column(*column);
-
 
 		column->set_sort_column_id(layer_model.z_depth);
 		//column->set_reorderable();
@@ -267,7 +252,6 @@ LayerTree::create_layer_tree()
 	listTargets.push_back( Gtk::TargetEntry("LAYER") );
 	get_layer_tree_view().drag_dest_set(listTargets);
 
-
 	// This makes things easier to read.
 	get_layer_tree_view().set_rules_hint();
 
@@ -276,8 +260,6 @@ LayerTree::create_layer_tree()
 
 	get_layer_tree_view().signal_event().connect(sigc::mem_fun(*this, &studio::LayerTree::on_layer_tree_event));
 	get_layer_tree_view().show();
-
-
 
 	Gtk::ScrolledWindow *scroll = manage(new class Gtk::ScrolledWindow());
 	scroll->set_flags(Gtk::CAN_FOCUS);
@@ -389,8 +371,6 @@ LayerTree::create_param_tree()
 		column->set_min_width(200);
 		//get_param_tree_view().append_column(*column);
 	}*/
-
-
 
 	// This makes things easier to read.
 	get_param_tree_view().set_rules_hint();
@@ -522,18 +502,6 @@ LayerTree::clear_selected_layers()
 	get_layer_tree_view().get_selection()->unselect_all();
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
 void
 LayerTree::set_show_timetrack(bool x)
 {
@@ -546,7 +514,6 @@ void
 LayerTree::set_model(Glib::RefPtr<LayerTreeStore> layer_tree_store)
 {
 	layer_tree_store_=layer_tree_store;
-
 
 	if(false)
 	{
@@ -630,7 +597,6 @@ LayerTree::on_selection_changed()
 		}
 	}
 
-
 	{
 		if(!layer_list.empty())
 		{
@@ -642,7 +608,6 @@ LayerTree::on_selection_changed()
 			last_top_selected_layer=0;
 		}
 	}
-
 
 	if(layer_list.empty())
 	{
@@ -690,7 +655,6 @@ LayerTree::on_selection_changed()
 	}
 }
 
-
 void
 LayerTree::on_blend_method_changed()
 {
@@ -719,7 +683,6 @@ LayerTree::on_amount_value_changed()
 	signal_edited_value()(synfigapp::ValueDesc(quick_layer,"amount"),synfig::ValueBase(layer_amount_adjustment_.get_value()));
 	disable_amount_changed_signal=false;
 }
-
 
 void
 LayerTree::on_edited_value(const Glib::ustring&path_string,synfig::ValueBase value)
@@ -842,7 +805,6 @@ LayerTree::on_layer_tree_event(GdkEvent *event)
 	}
 	return false;
 }
-
 
 bool
 LayerTree::on_param_tree_event(GdkEvent *event)
@@ -1074,25 +1036,6 @@ LayerTree::on_delete_pressed()
 	layer_tree_store_->canvas_interface()->get_instance()->perform_action(action);
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /*
 void
 LayerTree::on_drag_data_get(const Glib::RefPtr<Gdk::DragContext>&context, Gtk::SelectionData& selection_data, guint info, guint time)
@@ -1148,7 +1091,6 @@ LayerTree::on_drop_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& cont
 		dropped_on_specific_row=true;
 
 	Gtk::TreeRow row = *(get_model()->get_iter(path));
-
 
 	if ((selection_data.get_length() >= 0) && (selection_data.get_format() == 8))
 	{
