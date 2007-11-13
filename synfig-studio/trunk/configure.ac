@@ -63,7 +63,7 @@ AC_LIBTOOL_PATCH
 ALL_LINGUAS=""
 AM_GNU_GETTEXT([external])
 # This is here so autoreconf will run autopoint
-AM_GNU_GETTEXT_VERSION([0.16.1])
+AM_GNU_GETTEXT_VERSION([0.15])
 
 case "$host" in
 	*mingw* | *cygwin*)
