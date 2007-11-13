@@ -189,8 +189,6 @@ fi
 AC_SUBST($1)dnl
 ])
 
-# serial 5
-
 AC_DEFUN([AM_GLIB_WITH_NLS],
   dnl NLS is obligatory
   [USE_NLS=yes
