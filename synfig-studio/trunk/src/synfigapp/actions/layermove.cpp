@@ -32,6 +32,8 @@
 #include "layermove.h"
 #include <synfigapp/canvasinterface.h>
 
+#include <synfigapp/general.h>
+
 #endif
 
 using namespace std;
@@ -44,7 +46,7 @@ using namespace Action;
 
 ACTION_INIT(Action::LayerMove);
 ACTION_SET_NAME(Action::LayerMove,"layer_move");
-ACTION_SET_LOCAL_NAME(Action::LayerMove,_("Move Layer"));
+ACTION_SET_LOCAL_NAME(Action::LayerMove,N_("Move Layer"));
 ACTION_SET_TASK(Action::LayerMove,"move");
 ACTION_SET_CATEGORY(Action::LayerMove,Action::CATEGORY_LAYER);
 ACTION_SET_PRIORITY(Action::LayerMove,0);

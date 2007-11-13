@@ -40,6 +40,8 @@
 #include <gtkmm/table.h>
 #include <gtk/gtk.h>
 
+#include "general.h"
+
 #endif
 
 /* === U S I N G =========================================================== */

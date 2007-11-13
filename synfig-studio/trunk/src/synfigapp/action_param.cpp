@@ -33,6 +33,8 @@
 #include "action.h"
 #include "canvasinterface.h"
 
+#include "general.h"
+
 #endif
 
 using namespace std;

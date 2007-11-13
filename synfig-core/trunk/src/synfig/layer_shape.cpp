@@ -60,8 +60,8 @@ using namespace etl;
 
 SYNFIG_LAYER_INIT(Layer_Shape);
 SYNFIG_LAYER_SET_NAME(Layer_Shape,"shape");
-SYNFIG_LAYER_SET_LOCAL_NAME(Layer_Shape,_("Shape"));
-SYNFIG_LAYER_SET_CATEGORY(Layer_Shape,_("Internal"));
+SYNFIG_LAYER_SET_LOCAL_NAME(Layer_Shape,N_("Shape"));
+SYNFIG_LAYER_SET_CATEGORY(Layer_Shape,N_("Internal"));
 SYNFIG_LAYER_SET_VERSION(Layer_Shape,"0.1");
 SYNFIG_LAYER_SET_CVS_ID(Layer_Shape,"$Id$");
 

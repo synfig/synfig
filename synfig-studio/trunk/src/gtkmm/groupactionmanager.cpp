@@ -36,6 +36,8 @@
 #include "instance.h"
 #include <gtkmm/stock.h>
 
+#include "general.h"
+
 #endif
 
 /* === U S I N G =========================================================== */

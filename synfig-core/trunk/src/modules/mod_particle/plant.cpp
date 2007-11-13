@@ -65,8 +65,8 @@ using namespace etl;
 
 SYNFIG_LAYER_INIT(Plant);
 SYNFIG_LAYER_SET_NAME(Plant,"plant");
-SYNFIG_LAYER_SET_LOCAL_NAME(Plant,_("Plant"));
-SYNFIG_LAYER_SET_CATEGORY(Plant,_("Other"));
+SYNFIG_LAYER_SET_LOCAL_NAME(Plant,N_("Plant"));
+SYNFIG_LAYER_SET_CATEGORY(Plant,N_("Other"));
 SYNFIG_LAYER_SET_VERSION(Plant,"0.1");
 SYNFIG_LAYER_SET_CVS_ID(Plant,"$Id$");
 

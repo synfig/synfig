@@ -32,6 +32,8 @@
 #include "canvasrenddescset.h"
 #include <synfigapp/canvasinterface.h>
 
+#include <synfigapp/general.h>
+
 #endif
 
 using namespace std;
@@ -44,7 +46,7 @@ using namespace Action;
 
 ACTION_INIT(Action::CanvasRendDescSet);
 ACTION_SET_NAME(Action::CanvasRendDescSet,"canvas_rend_desc_set");
-ACTION_SET_LOCAL_NAME(Action::CanvasRendDescSet,"Set Canvas RendDesc");
+ACTION_SET_LOCAL_NAME(Action::CanvasRendDescSet,N_("Set Canvas RendDesc"));
 ACTION_SET_TASK(Action::CanvasRendDescSet,"set");
 ACTION_SET_CATEGORY(Action::CanvasRendDescSet,Action::CATEGORY_CANVAS);
 ACTION_SET_PRIORITY(Action::CanvasRendDescSet,0);

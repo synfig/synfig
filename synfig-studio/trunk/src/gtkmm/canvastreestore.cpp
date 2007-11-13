@@ -40,6 +40,8 @@
 #include "cellrenderer_timetrack.h"
 #include <ETL/clock>
 
+#include "general.h"
+
 #endif
 
 /* === U S I N G =========================================================== */

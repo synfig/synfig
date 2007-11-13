@@ -32,6 +32,8 @@
 #include "waypointset.h"
 #include <synfigapp/canvasinterface.h>
 
+#include <synfigapp/general.h>
+
 #endif
 
 using namespace std;
@@ -44,7 +46,7 @@ using namespace Action;
 
 ACTION_INIT(Action::WaypointSet);
 ACTION_SET_NAME(Action::WaypointSet,"waypoint_set");
-ACTION_SET_LOCAL_NAME(Action::WaypointSet,"Set Waypoint");
+ACTION_SET_LOCAL_NAME(Action::WaypointSet,N_("Set Waypoint"));
 ACTION_SET_TASK(Action::WaypointSet,"set");
 ACTION_SET_CATEGORY(Action::WaypointSet,Action::CATEGORY_WAYPOINT);
 ACTION_SET_PRIORITY(Action::WaypointSet,0);

@@ -35,6 +35,8 @@
 #include <gtkmm/alignment.h>
 #include <gtkmm/frame.h>
 #include <gtkmm/box.h>
+#include "general.h"
+
 #endif
 
 /* === U S I N G =========================================================== */

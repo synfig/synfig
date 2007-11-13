@@ -36,6 +36,8 @@
 #include <synfig/paramdesc.h>
 #include <ETL/clock>
 
+#include "general.h"
+
 class Profiler : private etl::clock
 {
 	const std::string name;

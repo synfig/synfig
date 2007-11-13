@@ -35,6 +35,8 @@
 #include <ETL/stringf>
 #include "main.h"
 
+#include "general.h"
+
 #endif
 
 /* === U S I N G =========================================================== */

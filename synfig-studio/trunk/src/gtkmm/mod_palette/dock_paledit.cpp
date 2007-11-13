@@ -44,6 +44,8 @@
 #include "../app.h"
 #include "../dialog_color.h"
 
+#include "../general.h"
+
 #endif
 
 /* === U S I N G =========================================================== */

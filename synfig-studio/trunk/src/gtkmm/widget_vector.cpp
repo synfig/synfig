@@ -34,6 +34,8 @@
 #include "widget_distance.h"
 #include "app.h"
 
+#include "general.h"
+
 #endif
 
 /* === U S I N G =========================================================== */

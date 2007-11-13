@@ -69,8 +69,8 @@ enum
 
 SYNFIG_LAYER_INIT(Layer_SphereDistort);
 SYNFIG_LAYER_SET_NAME(Layer_SphereDistort,"spherize");
-SYNFIG_LAYER_SET_LOCAL_NAME(Layer_SphereDistort,_("Spherize"));
-SYNFIG_LAYER_SET_CATEGORY(Layer_SphereDistort,_("Distortions"));
+SYNFIG_LAYER_SET_LOCAL_NAME(Layer_SphereDistort,N_("Spherize"));
+SYNFIG_LAYER_SET_CATEGORY(Layer_SphereDistort,N_("Distortions"));
 SYNFIG_LAYER_SET_VERSION(Layer_SphereDistort,"0.2");
 SYNFIG_LAYER_SET_CVS_ID(Layer_SphereDistort,"$Id$");
 

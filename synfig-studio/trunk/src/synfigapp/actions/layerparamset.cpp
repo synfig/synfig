@@ -32,6 +32,8 @@
 #include "layerparamset.h"
 #include <synfigapp/canvasinterface.h>
 
+#include <synfigapp/general.h>
+
 #endif
 
 using namespace std;
@@ -44,7 +46,7 @@ using namespace Action;
 
 ACTION_INIT(Action::LayerParamSet);
 ACTION_SET_NAME(Action::LayerParamSet,"layer_param_set");
-ACTION_SET_LOCAL_NAME(Action::LayerParamSet,_("Set Layer Parameter"));
+ACTION_SET_LOCAL_NAME(Action::LayerParamSet,N_("Set Layer Parameter"));
 ACTION_SET_TASK(Action::LayerParamSet,"set");
 ACTION_SET_CATEGORY(Action::LayerParamSet,Action::CATEGORY_LAYER);
 ACTION_SET_PRIORITY(Action::LayerParamSet,0);

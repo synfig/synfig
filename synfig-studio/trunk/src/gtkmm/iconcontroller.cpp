@@ -36,6 +36,8 @@
 #include <gtkmm/window.h>
 #include <synfigapp/action.h>
 
+#include "general.h"
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -46,12 +48,6 @@ using namespace studio;
 using namespace synfig;
 
 /* === M A C R O S ========================================================= */
-
-// Quick hack to keep stuff working until gettext support is added
-#ifndef _
-#define _(x)	(x)
-#define N_(x)	(x)
-#endif
 
 #ifdef WIN32
 #	ifdef IMAGE_DIR

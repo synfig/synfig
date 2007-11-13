@@ -31,6 +31,8 @@
 
 #include "valuelink.h"
 
+#include "general.h"
+
 #endif
 
 /* === U S I N G =========================================================== */

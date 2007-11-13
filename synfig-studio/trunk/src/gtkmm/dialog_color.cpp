@@ -45,6 +45,8 @@
 #include <sigc++/hide.h>
 #include "app.h"
 
+#include "general.h"
+
 #endif
 
 /* === U S I N G =========================================================== */

@@ -35,6 +35,8 @@
 #include <synfigapp/canvasinterface.h>
 #include <synfig/valuenode_const.h>
 
+#include <synfigapp/general.h>
+
 #endif
 
 using namespace std;
@@ -47,7 +49,7 @@ using namespace Action;
 
 ACTION_INIT(Action::ValueDescLink);
 ACTION_SET_NAME(Action::ValueDescLink,"value_desc_link");
-ACTION_SET_LOCAL_NAME(Action::ValueDescLink,"Link");
+ACTION_SET_LOCAL_NAME(Action::ValueDescLink,N_("Link"));
 ACTION_SET_TASK(Action::ValueDescLink,"connect");
 ACTION_SET_CATEGORY(Action::ValueDescLink,Action::CATEGORY_VALUEDESC);
 ACTION_SET_PRIORITY(Action::ValueDescLink,0);

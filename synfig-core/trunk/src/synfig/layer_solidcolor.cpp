@@ -52,8 +52,8 @@ using namespace synfig;
 
 SYNFIG_LAYER_INIT(Layer_SolidColor);
 SYNFIG_LAYER_SET_NAME(Layer_SolidColor,"SolidColor"); // todo: use solid_color
-SYNFIG_LAYER_SET_LOCAL_NAME(Layer_SolidColor,_("Solid Color"));
-SYNFIG_LAYER_SET_CATEGORY(Layer_SolidColor,_("Geometry"));
+SYNFIG_LAYER_SET_LOCAL_NAME(Layer_SolidColor,N_("Solid Color"));
+SYNFIG_LAYER_SET_CATEGORY(Layer_SolidColor,N_("Geometry"));
 SYNFIG_LAYER_SET_VERSION(Layer_SolidColor,"0.1");
 SYNFIG_LAYER_SET_CVS_ID(Layer_SolidColor,"$Id$");
 

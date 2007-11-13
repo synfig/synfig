@@ -46,6 +46,8 @@
 #include "layeractionmanager.h"
 //#include <ETL/ref_count>
 
+#include "general.h"
+
 #endif
 
 /* === U S I N G =========================================================== */

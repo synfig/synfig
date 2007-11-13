@@ -32,6 +32,8 @@
 #include "valuenoderemove.h"
 #include <synfigapp/canvasinterface.h>
 
+#include <synfigapp/general.h>
+
 #endif
 
 using namespace std;
@@ -44,7 +46,7 @@ using namespace Action;
 
 ACTION_INIT(Action::ValueNodeRemove);
 ACTION_SET_NAME(Action::ValueNodeRemove,"value_node_remove");
-ACTION_SET_LOCAL_NAME(Action::ValueNodeRemove,_("Unexport"));
+ACTION_SET_LOCAL_NAME(Action::ValueNodeRemove,N_("Unexport"));
 ACTION_SET_TASK(Action::ValueNodeRemove,"remove");
 ACTION_SET_CATEGORY(Action::ValueNodeRemove,Action::CATEGORY_VALUENODE);
 ACTION_SET_PRIORITY(Action::ValueNodeRemove,0);

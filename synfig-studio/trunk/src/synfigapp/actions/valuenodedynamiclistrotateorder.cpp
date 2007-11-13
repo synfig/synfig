@@ -32,6 +32,8 @@
 #include "valuenodedynamiclistrotateorder.h"
 #include <synfigapp/canvasinterface.h>
 
+#include <synfigapp/general.h>
+
 #endif
 
 using namespace std;
@@ -44,7 +46,7 @@ using namespace Action;
 
 ACTION_INIT(Action::ValueNodeDynamicListRotateOrder);
 ACTION_SET_NAME(Action::ValueNodeDynamicListRotateOrder,"value_node_dynamic_list_rotate_order");
-ACTION_SET_LOCAL_NAME(Action::ValueNodeDynamicListRotateOrder,"Rotate Order");
+ACTION_SET_LOCAL_NAME(Action::ValueNodeDynamicListRotateOrder,N_("Rotate Order"));
 ACTION_SET_TASK(Action::ValueNodeDynamicListRotateOrder,"rotate");
 ACTION_SET_CATEGORY(Action::ValueNodeDynamicListRotateOrder,Action::CATEGORY_VALUEDESC|Action::CATEGORY_VALUENODE);
 ACTION_SET_PRIORITY(Action::ValueNodeDynamicListRotateOrder,0);

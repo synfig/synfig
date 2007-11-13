@@ -99,6 +99,8 @@
 #include <synfigapp/main.h>
 #include <synfigapp/inputdevice.h>
 
+#include "general.h"
+
 #endif
 
 /* === U S I N G =========================================================== */

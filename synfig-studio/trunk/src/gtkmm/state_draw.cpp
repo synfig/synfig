@@ -62,6 +62,8 @@
 #include <gtkmm/scale.h>
 #include <sigc++/connection.h>
 
+#include "general.h"
+
 #endif
 
 /* === U S I N G =========================================================== */

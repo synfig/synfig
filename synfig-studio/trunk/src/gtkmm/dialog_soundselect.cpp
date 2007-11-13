@@ -32,6 +32,8 @@
 #include "dialog_soundselect.h"
 #include <gtkmm/table.h>
 
+#include "general.h"
+
 #endif
 
 /* === U S I N G =========================================================== */

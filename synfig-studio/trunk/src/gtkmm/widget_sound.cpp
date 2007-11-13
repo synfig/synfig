@@ -37,6 +37,8 @@
 #include "widget_sound.h"
 #include "audiocontainer.h"
 
+#include "general.h"
+
 #endif
 
 /* === U S I N G =========================================================== */

@@ -43,6 +43,8 @@
 #include "childrentree.h"
 #include "canvasview.h"
 
+#include "general.h"
+
 #endif
 
 /* === U S I N G =========================================================== */

@@ -55,8 +55,8 @@ using namespace synfig;
 
 SYNFIG_LAYER_INIT(Rectangle);
 SYNFIG_LAYER_SET_NAME(Rectangle,"rectangle");
-SYNFIG_LAYER_SET_LOCAL_NAME(Rectangle,_("Rectangle"));
-SYNFIG_LAYER_SET_CATEGORY(Rectangle,_("Geometry"));
+SYNFIG_LAYER_SET_LOCAL_NAME(Rectangle,N_("Rectangle"));
+SYNFIG_LAYER_SET_CATEGORY(Rectangle,N_("Geometry"));
 SYNFIG_LAYER_SET_VERSION(Rectangle,"0.2");
 SYNFIG_LAYER_SET_CVS_ID(Rectangle,"$Id$");
 

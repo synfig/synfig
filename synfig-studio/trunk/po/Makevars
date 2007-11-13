@@ -1,0 +1,7 @@
+DOMAIN = synfigstudio
+subdir = po
+top_builddir = ..
+XGETTEXT_OPTIONS = --keyword=_ --keyword=N_
+COPYRIGHT_HOLDER = Synfig Contributors
+MSGID_BUGS_ADDRESS = http://www.synfig.com
+EXTRA_LOCALE_CATEGORIES = 

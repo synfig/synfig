@@ -37,6 +37,8 @@
 #include "app.h"
 #include "toolbox.h"
 
+#include "general.h"
+
 #endif
 
 /* === U S I N G =========================================================== */

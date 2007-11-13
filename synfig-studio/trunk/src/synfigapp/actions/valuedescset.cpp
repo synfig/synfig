@@ -42,6 +42,8 @@
 #include <synfig/valuenode_reference.h>
 #include <synfigapp/main.h>
 
+#include <synfigapp/general.h>
+
 #endif
 
 using namespace std;
@@ -57,7 +59,7 @@ using namespace Action;
 
 ACTION_INIT2(Action::ValueDescSet);
 ACTION_SET_NAME(Action::ValueDescSet,"value_desc_set");
-ACTION_SET_LOCAL_NAME(Action::ValueDescSet,"Set ValueDesc");
+ACTION_SET_LOCAL_NAME(Action::ValueDescSet,N_("Set ValueDesc"));
 ACTION_SET_TASK(Action::ValueDescSet,"set");
 ACTION_SET_CATEGORY(Action::ValueDescSet,Action::CATEGORY_VALUEDESC);
 ACTION_SET_PRIORITY(Action::ValueDescSet,0);

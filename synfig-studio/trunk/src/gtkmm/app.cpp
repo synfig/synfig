@@ -123,6 +123,8 @@
 #include <gtkmm/filechooser.h>
 #include <gtkmm/filechooserdialog.h>
 
+#include "general.h"
+
 #endif
 
 /* === U S I N G =========================================================== */

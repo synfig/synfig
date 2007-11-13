@@ -36,6 +36,8 @@
 #include <synfigapp/action.h>
 #include <synfigapp/instance.h>
 
+#include "general.h"
+
 #endif
 
 /* === U S I N G =========================================================== */

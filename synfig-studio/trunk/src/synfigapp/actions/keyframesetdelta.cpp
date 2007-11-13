@@ -36,6 +36,8 @@
 #include "activepointsetsmart.h"
 #include "waypointsetsmart.h"
 
+#include <synfigapp/general.h>
+
 #endif
 
 using namespace std;
@@ -48,7 +50,7 @@ using namespace Action;
 
 ACTION_INIT(Action::KeyframeSetDelta);
 ACTION_SET_NAME(Action::KeyframeSetDelta,"keyframe_set_delta");
-ACTION_SET_LOCAL_NAME(Action::KeyframeSetDelta,"Set Keyframe Delta");
+ACTION_SET_LOCAL_NAME(Action::KeyframeSetDelta,N_("Set Keyframe Delta"));
 ACTION_SET_TASK(Action::KeyframeSetDelta,"set");
 ACTION_SET_CATEGORY(Action::KeyframeSetDelta,Action::CATEGORY_KEYFRAME|Action::CATEGORY_HIDDEN);
 ACTION_SET_PRIORITY(Action::KeyframeSetDelta,0);

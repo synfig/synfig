@@ -33,6 +33,8 @@
 #include "dock_paledit.h"
 #include "mod_palette.h"
 
+#include "../general.h"
+
 #endif
 
 /* === U S I N G =========================================================== */

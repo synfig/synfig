@@ -38,6 +38,8 @@
 #include <gtkmm/optionmenu.h>
 #include "widget_time.h"
 #include "widget_waypointmodel.h"
+#include "general.h"
+
 #endif
 
 using namespace synfig;

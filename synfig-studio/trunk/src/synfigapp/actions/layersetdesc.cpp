@@ -32,6 +32,8 @@
 #include "layersetdesc.h"
 #include <synfigapp/canvasinterface.h>
 
+#include <synfigapp/general.h>
+
 #endif
 
 using namespace std;
@@ -44,7 +46,7 @@ using namespace Action;
 
 ACTION_INIT(Action::LayerSetDesc);
 ACTION_SET_NAME(Action::LayerSetDesc,"layer_set_desc");
-ACTION_SET_LOCAL_NAME(Action::LayerSetDesc,_("Set Layer Description"));
+ACTION_SET_LOCAL_NAME(Action::LayerSetDesc,N_("Set Layer Description"));
 ACTION_SET_TASK(Action::LayerSetDesc,"set_desc");
 ACTION_SET_CATEGORY(Action::LayerSetDesc,Action::CATEGORY_LAYER);
 ACTION_SET_PRIORITY(Action::LayerSetDesc,0);

@@ -64,8 +64,8 @@ using namespace std;
 
 SYNFIG_LAYER_INIT(Layer_Bevel);
 SYNFIG_LAYER_SET_NAME(Layer_Bevel,"bevel");
-SYNFIG_LAYER_SET_LOCAL_NAME(Layer_Bevel,_("Bevel"));
-SYNFIG_LAYER_SET_CATEGORY(Layer_Bevel,_("Stylize"));
+SYNFIG_LAYER_SET_LOCAL_NAME(Layer_Bevel,N_("Bevel"));
+SYNFIG_LAYER_SET_CATEGORY(Layer_Bevel,N_("Stylize"));
 SYNFIG_LAYER_SET_VERSION(Layer_Bevel,"0.2");
 SYNFIG_LAYER_SET_CVS_ID(Layer_Bevel,"$Id$");
 

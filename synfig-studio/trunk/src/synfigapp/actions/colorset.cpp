@@ -38,6 +38,8 @@
 #include <synfigapp/canvasinterface.h>
 #include <synfigapp/main.h>
 
+#include <synfigapp/general.h>
+
 #endif
 
 using namespace std;
@@ -50,7 +52,7 @@ using namespace Action;
 
 ACTION_INIT(Action::ColorSet);
 ACTION_SET_NAME(Action::ColorSet,"color_set");
-ACTION_SET_LOCAL_NAME(Action::ColorSet,"Apply Default Color");
+ACTION_SET_LOCAL_NAME(Action::ColorSet,N_("Apply Default Color"));
 ACTION_SET_TASK(Action::ColorSet,"set");
 ACTION_SET_CATEGORY(Action::ColorSet,Action::CATEGORY_VALUEDESC);
 ACTION_SET_PRIORITY(Action::ColorSet,0);

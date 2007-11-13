@@ -63,8 +63,8 @@ using namespace std;
 
 SYNFIG_LAYER_INIT(Blur_Layer);
 SYNFIG_LAYER_SET_NAME(Blur_Layer,"blur");
-SYNFIG_LAYER_SET_LOCAL_NAME(Blur_Layer,_("Blur"));
-SYNFIG_LAYER_SET_CATEGORY(Blur_Layer,_("Blurs"));
+SYNFIG_LAYER_SET_LOCAL_NAME(Blur_Layer,N_("Blur"));
+SYNFIG_LAYER_SET_CATEGORY(Blur_Layer,N_("Blurs"));
 SYNFIG_LAYER_SET_VERSION(Blur_Layer,"0.2");
 SYNFIG_LAYER_SET_CVS_ID(Blur_Layer,"$Id$");
 

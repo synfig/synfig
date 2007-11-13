@@ -32,6 +32,8 @@
 #include "dock_canvases.h"
 #include "app.h"
 #include "canvasview.h"
+#include "general.h"
+
 #endif
 
 /* === U S I N G =========================================================== */

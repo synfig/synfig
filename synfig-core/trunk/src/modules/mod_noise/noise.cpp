@@ -52,8 +52,8 @@ using namespace etl;
 
 SYNFIG_LAYER_INIT(Noise);
 SYNFIG_LAYER_SET_NAME(Noise,"noise");
-SYNFIG_LAYER_SET_LOCAL_NAME(Noise,_("Noise Gradient"));
-SYNFIG_LAYER_SET_CATEGORY(Noise,_("Gradients"));
+SYNFIG_LAYER_SET_LOCAL_NAME(Noise,N_("Noise Gradient"));
+SYNFIG_LAYER_SET_CATEGORY(Noise,N_("Gradients"));
 SYNFIG_LAYER_SET_VERSION(Noise,"0.0");
 SYNFIG_LAYER_SET_CVS_ID(Noise,"$Id$");
 

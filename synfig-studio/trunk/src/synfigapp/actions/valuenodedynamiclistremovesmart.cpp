@@ -33,6 +33,8 @@
 #include "valuenodedynamiclistremove.h"
 #include <synfigapp/canvasinterface.h>
 
+#include <synfigapp/general.h>
+
 #endif
 
 using namespace std;
@@ -45,7 +47,7 @@ using namespace Action;
 
 ACTION_INIT(Action::ValueNodeDynamicListRemoveSmart);
 ACTION_SET_NAME(Action::ValueNodeDynamicListRemoveSmart,"value_node_dynamic_list_remove_smart");
-ACTION_SET_LOCAL_NAME(Action::ValueNodeDynamicListRemoveSmart,"Remove Item (Smart)");
+ACTION_SET_LOCAL_NAME(Action::ValueNodeDynamicListRemoveSmart,N_("Remove Item (Smart)"));
 ACTION_SET_TASK(Action::ValueNodeDynamicListRemoveSmart,"remove");
 ACTION_SET_CATEGORY(Action::ValueNodeDynamicListRemoveSmart,Action::CATEGORY_VALUEDESC|Action::CATEGORY_VALUENODE);
 ACTION_SET_PRIORITY(Action::ValueNodeDynamicListRemoveSmart,-19);

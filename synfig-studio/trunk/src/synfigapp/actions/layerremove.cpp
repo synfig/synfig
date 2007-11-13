@@ -32,6 +32,8 @@
 #include "layerremove.h"
 #include <synfigapp/canvasinterface.h>
 
+#include <synfigapp/general.h>
+
 #endif
 
 using namespace std;
@@ -44,7 +46,7 @@ using namespace Action;
 
 ACTION_INIT(Action::LayerRemove);
 ACTION_SET_NAME(Action::LayerRemove,"layer_remove");
-ACTION_SET_LOCAL_NAME(Action::LayerRemove,"Remove Layer");
+ACTION_SET_LOCAL_NAME(Action::LayerRemove,N_("Remove Layer"));
 ACTION_SET_TASK(Action::LayerRemove,"remove");
 ACTION_SET_CATEGORY(Action::LayerRemove,Action::CATEGORY_LAYER);
 ACTION_SET_PRIORITY(Action::LayerRemove,0);

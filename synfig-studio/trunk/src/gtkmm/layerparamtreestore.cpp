@@ -39,6 +39,8 @@
 #include "app.h"
 #include <ETL/clock>
 
+#include "general.h"
+
 #endif
 
 /* === U S I N G =========================================================== */

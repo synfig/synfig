@@ -41,6 +41,8 @@
 
 #include <typeinfo>
 
+#include <synfigapp/general.h>
+
 #endif
 
 using namespace std;
@@ -53,7 +55,7 @@ using namespace Action;
 
 ACTION_INIT(Action::TimepointsCopy);
 ACTION_SET_NAME(Action::TimepointsCopy,"timepoint_copy");
-ACTION_SET_LOCAL_NAME(Action::TimepointsCopy,"Copy Time Points");
+ACTION_SET_LOCAL_NAME(Action::TimepointsCopy,N_("Copy Time Points"));
 ACTION_SET_TASK(Action::TimepointsCopy,"copy");
 ACTION_SET_CATEGORY(Action::TimepointsCopy,Action::CATEGORY_WAYPOINT|Action::CATEGORY_ACTIVEPOINT);
 ACTION_SET_PRIORITY(Action::TimepointsCopy,0);

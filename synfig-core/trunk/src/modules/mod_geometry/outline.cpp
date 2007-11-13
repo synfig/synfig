@@ -67,8 +67,8 @@ using namespace etl;
 
 SYNFIG_LAYER_INIT(Outline);
 SYNFIG_LAYER_SET_NAME(Outline,"outline");
-SYNFIG_LAYER_SET_LOCAL_NAME(Outline,_("Outline"));
-SYNFIG_LAYER_SET_CATEGORY(Outline,_("Geometry"));
+SYNFIG_LAYER_SET_LOCAL_NAME(Outline,N_("Outline"));
+SYNFIG_LAYER_SET_CATEGORY(Outline,N_("Geometry"));
 SYNFIG_LAYER_SET_VERSION(Outline,"0.2");
 SYNFIG_LAYER_SET_CVS_ID(Outline,"$Id$");
 
@@ -175,7 +175,7 @@ Outline::sync()
 
 	if (!bline.get_list().size())
 	{
-		synfig::warning(string("Outline::sync():")+_("No vertices in outline " + string("\"") + get_description() + string("\"")));
+		synfig::warning(string("Outline::sync():")+N_("No vertices in outline " + string("\"") + get_description() + string("\"")));
 		return;
 	}
 		

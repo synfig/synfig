@@ -60,6 +60,8 @@
 #include <gtkmm/checkbutton.h>
 #include <gtkmm/actiongroup.h>
 
+#include "general.h"
+
 #endif
 
 /* === U S I N G =========================================================== */

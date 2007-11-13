@@ -32,6 +32,8 @@
 #include "groupremovelayers.h"
 #include <synfigapp/canvasinterface.h>
 
+#include <synfigapp/general.h>
+
 #endif
 
 using namespace std;
@@ -44,7 +46,7 @@ using namespace Action;
 
 ACTION_INIT(Action::GroupRemoveLayers);
 ACTION_SET_NAME(Action::GroupRemoveLayers,"group_remove_layers");
-ACTION_SET_LOCAL_NAME(Action::GroupRemoveLayers,"Remove Layers from a Group");
+ACTION_SET_LOCAL_NAME(Action::GroupRemoveLayers,N_("Remove Layers from a Group"));
 ACTION_SET_TASK(Action::GroupRemoveLayers,"remove");
 ACTION_SET_CATEGORY(Action::GroupRemoveLayers,Action::CATEGORY_LAYER|Action::CATEGORY_GROUP);
 ACTION_SET_PRIORITY(Action::GroupRemoveLayers,0);

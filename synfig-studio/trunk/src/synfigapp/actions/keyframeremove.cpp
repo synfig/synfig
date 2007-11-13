@@ -36,6 +36,8 @@
 #include "activepointremove.h"
 #include "waypointremove.h"
 
+#include <synfigapp/general.h>
+
 #endif
 
 using namespace std;
@@ -48,7 +50,7 @@ using namespace Action;
 
 ACTION_INIT(Action::KeyframeRemove);
 ACTION_SET_NAME(Action::KeyframeRemove,"keyframe_remove");
-ACTION_SET_LOCAL_NAME(Action::KeyframeRemove,"Remove Keyframe");
+ACTION_SET_LOCAL_NAME(Action::KeyframeRemove,N_("Remove Keyframe"));
 ACTION_SET_TASK(Action::KeyframeRemove,"remove");
 ACTION_SET_CATEGORY(Action::KeyframeRemove,Action::CATEGORY_KEYFRAME);
 ACTION_SET_PRIORITY(Action::KeyframeRemove,0);

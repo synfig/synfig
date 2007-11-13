@@ -39,6 +39,8 @@
 #include "valuedescconnect.h"
 #include <synfigapp/canvasinterface.h>
 
+#include <synfigapp/general.h>
+
 #endif
 
 using namespace std;
@@ -51,7 +53,7 @@ using namespace Action;
 
 ACTION_INIT(Action::BLinePointTangentMerge);
 ACTION_SET_NAME(Action::BLinePointTangentMerge,"bline_point_tangent_merge");
-ACTION_SET_LOCAL_NAME(Action::BLinePointTangentMerge,_("Merge Tangents"));
+ACTION_SET_LOCAL_NAME(Action::BLinePointTangentMerge,N_("Merge Tangents"));
 ACTION_SET_TASK(Action::BLinePointTangentMerge,"merge");
 ACTION_SET_CATEGORY(Action::BLinePointTangentMerge,Action::CATEGORY_VALUENODE);
 ACTION_SET_PRIORITY(Action::BLinePointTangentMerge,0);

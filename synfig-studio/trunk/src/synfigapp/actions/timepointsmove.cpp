@@ -41,6 +41,8 @@
 
 #include <typeinfo>
 
+#include <synfigapp/general.h>
+
 #endif
 
 using namespace std;
@@ -53,7 +55,7 @@ using namespace Action;
 
 ACTION_INIT(Action::TimepointsMove);
 ACTION_SET_NAME(Action::TimepointsMove,"timepoint_move");
-ACTION_SET_LOCAL_NAME(Action::TimepointsMove,"Move Time Points");
+ACTION_SET_LOCAL_NAME(Action::TimepointsMove,N_("Move Time Points"));
 ACTION_SET_TASK(Action::TimepointsMove,"move");
 ACTION_SET_CATEGORY(Action::TimepointsMove,Action::CATEGORY_WAYPOINT|Action::CATEGORY_ACTIVEPOINT);
 ACTION_SET_PRIORITY(Action::TimepointsMove,0);

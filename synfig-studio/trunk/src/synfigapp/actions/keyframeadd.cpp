@@ -32,6 +32,8 @@
 #include "keyframeadd.h"
 #include <synfigapp/canvasinterface.h>
 
+#include <synfigapp/general.h>
+
 #endif
 
 using namespace std;
@@ -44,7 +46,7 @@ using namespace Action;
 
 ACTION_INIT(Action::KeyframeAdd);
 ACTION_SET_NAME(Action::KeyframeAdd,"keyframe_add");
-ACTION_SET_LOCAL_NAME(Action::KeyframeAdd,"Add Keyframe");
+ACTION_SET_LOCAL_NAME(Action::KeyframeAdd,N_("Add Keyframe"));
 ACTION_SET_TASK(Action::KeyframeAdd,"add");
 ACTION_SET_CATEGORY(Action::KeyframeAdd,Action::CATEGORY_KEYFRAME);
 ACTION_SET_PRIORITY(Action::KeyframeAdd,0);

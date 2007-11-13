@@ -48,6 +48,8 @@
 #include "about.h"
 #include "app.h"
 
+#include "general.h"
+
 #endif
 
 using namespace std;

@@ -32,6 +32,8 @@
 #include "layeractivate.h"
 #include <synfigapp/canvasinterface.h>
 
+#include <synfigapp/general.h>
+
 #endif
 
 using namespace std;
@@ -47,7 +49,7 @@ using namespace Action;
 
 ACTION_INIT2(Action::LayerActivate);
 ACTION_SET_NAME(Action::LayerActivate,"layer_activate");
-ACTION_SET_LOCAL_NAME(Action::LayerActivate,_("Activate Layer"));
+ACTION_SET_LOCAL_NAME(Action::LayerActivate,N_("Activate Layer"));
 ACTION_SET_TASK(Action::LayerActivate,"activate");
 ACTION_SET_CATEGORY(Action::LayerActivate,Action::CATEGORY_LAYER);
 ACTION_SET_PRIORITY(Action::LayerActivate,0);

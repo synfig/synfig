@@ -32,6 +32,8 @@
 #include "grouprename.h"
 #include <synfigapp/canvasinterface.h>
 
+#include <synfigapp/general.h>
+
 #endif
 
 using namespace std;
@@ -44,7 +46,7 @@ using namespace Action;
 
 ACTION_INIT(Action::GroupRename);
 ACTION_SET_NAME(Action::GroupRename,"group_rename");
-ACTION_SET_LOCAL_NAME(Action::GroupRename,"Rename Group");
+ACTION_SET_LOCAL_NAME(Action::GroupRename,N_("Rename Group"));
 ACTION_SET_TASK(Action::GroupRename,"rename");
 ACTION_SET_CATEGORY(Action::GroupRename,Action::CATEGORY_GROUP);
 ACTION_SET_PRIORITY(Action::GroupRename,0);

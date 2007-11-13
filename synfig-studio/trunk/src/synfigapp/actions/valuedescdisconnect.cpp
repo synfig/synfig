@@ -37,6 +37,8 @@
 #include <synfigapp/canvasinterface.h>
 #include <synfig/valuenode_const.h>
 
+#include <synfigapp/general.h>
+
 #endif
 
 using namespace std;
@@ -49,7 +51,7 @@ using namespace Action;
 
 ACTION_INIT(Action::ValueDescDisconnect);
 ACTION_SET_NAME(Action::ValueDescDisconnect,"value_desc_disconnect");
-ACTION_SET_LOCAL_NAME(Action::ValueDescDisconnect,"Disconnect");
+ACTION_SET_LOCAL_NAME(Action::ValueDescDisconnect,N_("Disconnect"));
 ACTION_SET_TASK(Action::ValueDescDisconnect,"disconnect");
 ACTION_SET_CATEGORY(Action::ValueDescDisconnect,Action::CATEGORY_VALUEDESC);
 ACTION_SET_PRIORITY(Action::ValueDescDisconnect,-100);

@@ -34,6 +34,8 @@
 #include "widget_filename.h"
 #include "app.h"
 
+#include "general.h"
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -44,10 +46,6 @@ using namespace std;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
-
-#if ! defined(_)
-#define _(x)	(x)
-#endif
 
 /* === G L O B A L S ======================================================= */
 

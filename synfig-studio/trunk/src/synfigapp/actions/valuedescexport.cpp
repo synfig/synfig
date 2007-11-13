@@ -38,6 +38,8 @@
 #include <synfigapp/canvasinterface.h>
 #include <synfig/valuenode_const.h>
 
+#include <synfigapp/general.h>
+
 #endif
 
 using namespace std;
@@ -50,7 +52,7 @@ using namespace Action;
 
 ACTION_INIT(Action::ValueDescExport);
 ACTION_SET_NAME(Action::ValueDescExport,"value_desc_export");
-ACTION_SET_LOCAL_NAME(Action::ValueDescExport,"Export");
+ACTION_SET_LOCAL_NAME(Action::ValueDescExport,N_("Export"));
 ACTION_SET_TASK(Action::ValueDescExport,"export");
 ACTION_SET_CATEGORY(Action::ValueDescExport,Action::CATEGORY_VALUEDESC);
 ACTION_SET_PRIORITY(Action::ValueDescExport,0);

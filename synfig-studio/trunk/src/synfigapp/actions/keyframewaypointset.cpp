@@ -36,6 +36,8 @@
 #include "activepointsetsmart.h"
 #include "waypointsetsmart.h"
 
+#include <synfigapp/general.h>
+
 #endif
 
 using namespace std;
@@ -48,7 +50,7 @@ using namespace Action;
 
 ACTION_INIT(Action::KeyframeWaypointSet);
 ACTION_SET_NAME(Action::KeyframeWaypointSet,"keyframe_waypoint_set");
-ACTION_SET_LOCAL_NAME(Action::KeyframeWaypointSet,"Set Waypoints at Keyframe");
+ACTION_SET_LOCAL_NAME(Action::KeyframeWaypointSet,N_("Set Waypoints at Keyframe"));
 ACTION_SET_TASK(Action::KeyframeWaypointSet,"set");
 ACTION_SET_CATEGORY(Action::KeyframeWaypointSet,Action::CATEGORY_KEYFRAME);
 ACTION_SET_PRIORITY(Action::KeyframeWaypointSet,0);

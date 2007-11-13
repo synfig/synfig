@@ -32,6 +32,8 @@
 #include "valuenodeconstset.h"
 #include <synfigapp/canvasinterface.h>
 
+#include <synfigapp/general.h>
+
 #endif
 
 using namespace std;
@@ -44,7 +46,7 @@ using namespace Action;
 
 ACTION_INIT(Action::ValueNodeConstSet);
 ACTION_SET_NAME(Action::ValueNodeConstSet,"value_node_const_set");
-ACTION_SET_LOCAL_NAME(Action::ValueNodeConstSet,_("Set ValueNode_Const"));
+ACTION_SET_LOCAL_NAME(Action::ValueNodeConstSet,N_("Set ValueNode_Const"));
 ACTION_SET_TASK(Action::ValueNodeConstSet,"set");
 ACTION_SET_CATEGORY(Action::ValueNodeConstSet,Action::CATEGORY_VALUENODE);
 ACTION_SET_PRIORITY(Action::ValueNodeConstSet,0);

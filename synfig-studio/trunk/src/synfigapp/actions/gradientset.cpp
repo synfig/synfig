@@ -38,6 +38,8 @@
 #include <synfigapp/canvasinterface.h>
 #include <synfigapp/main.h>
 
+#include <synfigapp/general.h>
+
 #endif
 
 using namespace std;
@@ -50,7 +52,7 @@ using namespace Action;
 
 ACTION_INIT(Action::GradientSet);
 ACTION_SET_NAME(Action::GradientSet,"gradient_set");
-ACTION_SET_LOCAL_NAME(Action::GradientSet,"Apply Default Gradient");
+ACTION_SET_LOCAL_NAME(Action::GradientSet,N_("Apply Default Gradient"));
 ACTION_SET_TASK(Action::GradientSet,"set");
 ACTION_SET_CATEGORY(Action::GradientSet,Action::CATEGORY_VALUEDESC);
 ACTION_SET_PRIORITY(Action::GradientSet,0);

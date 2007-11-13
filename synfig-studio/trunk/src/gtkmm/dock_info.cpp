@@ -41,6 +41,8 @@
 #include <gtkmm/separator.h>
 #include <gtkmm/invisible.h>
 
+#include "general.h"
+
 #endif
 
 /* === U S I N G =========================================================== */

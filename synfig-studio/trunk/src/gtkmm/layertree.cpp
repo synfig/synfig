@@ -41,6 +41,8 @@
 #include "instance.h"
 #include <gtkmm/treemodelsort.h>
 
+#include "general.h"
+
 #endif
 
 /* === U S I N G =========================================================== */

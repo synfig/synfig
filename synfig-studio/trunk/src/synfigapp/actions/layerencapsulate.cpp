@@ -35,6 +35,8 @@
 #include "layerremove.h"
 #include <synfigapp/canvasinterface.h>
 
+#include <synfigapp/general.h>
+
 #endif
 
 using namespace std;
@@ -47,7 +49,7 @@ using namespace Action;
 
 ACTION_INIT(Action::LayerEncapsulate);
 ACTION_SET_NAME(Action::LayerEncapsulate,"layer_encapsulate");
-ACTION_SET_LOCAL_NAME(Action::LayerEncapsulate,"Encapsulate");
+ACTION_SET_LOCAL_NAME(Action::LayerEncapsulate,N_("Encapsulate"));
 ACTION_SET_TASK(Action::LayerEncapsulate,"encapsulate");
 ACTION_SET_CATEGORY(Action::LayerEncapsulate,Action::CATEGORY_LAYER);
 ACTION_SET_PRIORITY(Action::LayerEncapsulate,0);

@@ -39,6 +39,8 @@
 #include "valuedescconnect.h"
 #include <synfigapp/canvasinterface.h>
 
+#include <synfigapp/general.h>
+
 #endif
 
 using namespace std;
@@ -51,7 +53,7 @@ using namespace Action;
 
 ACTION_INIT(Action::ActivepointSetSmart);
 ACTION_SET_NAME(Action::ActivepointSetSmart,"activepoint_set_smart");
-ACTION_SET_LOCAL_NAME(Action::ActivepointSetSmart,_("Set Activepoint (Smart)"));
+ACTION_SET_LOCAL_NAME(Action::ActivepointSetSmart,N_("Set Activepoint (Smart)"));
 ACTION_SET_TASK(Action::ActivepointSetSmart,"set");
 ACTION_SET_CATEGORY(Action::ActivepointSetSmart,Action::CATEGORY_ACTIVEPOINT);
 ACTION_SET_PRIORITY(Action::ActivepointSetSmart,0);

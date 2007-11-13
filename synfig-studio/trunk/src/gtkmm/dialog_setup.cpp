@@ -41,6 +41,8 @@
 
 #include <ETL/stringf>
 #include <ETL/misc>
+#include "general.h"
+
 #endif
 
 /* === U S I N G =========================================================== */

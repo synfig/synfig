@@ -52,8 +52,8 @@ using namespace synfig;
 
 SYNFIG_LAYER_INIT(Twirl);
 SYNFIG_LAYER_SET_NAME(Twirl,"twirl");
-SYNFIG_LAYER_SET_LOCAL_NAME(Twirl,_("Twirl"));
-SYNFIG_LAYER_SET_CATEGORY(Twirl,_("Distortions"));
+SYNFIG_LAYER_SET_LOCAL_NAME(Twirl,N_("Twirl"));
+SYNFIG_LAYER_SET_CATEGORY(Twirl,N_("Distortions"));
 SYNFIG_LAYER_SET_VERSION(Twirl,"0.1");
 SYNFIG_LAYER_SET_CVS_ID(Twirl,"$Id$");
 

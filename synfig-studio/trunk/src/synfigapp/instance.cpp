@@ -40,6 +40,8 @@
 #include <synfig/valuenode_reference.h>
 #include <map>
 
+#include "general.h"
+
 #endif
 
 /* === U S I N G =========================================================== */

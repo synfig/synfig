@@ -43,6 +43,8 @@
 #include <gtkmm/optionmenu.h>
 #include "widget_time.h"
 #include "widget_waypoint.h"
+#include "general.h"
+
 #endif
 
 using namespace synfig;

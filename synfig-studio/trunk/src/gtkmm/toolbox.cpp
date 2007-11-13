@@ -79,6 +79,8 @@
 
 #include <synfigapp/main.h>
 
+#include "general.h"
+
 #endif
 
 using namespace std;

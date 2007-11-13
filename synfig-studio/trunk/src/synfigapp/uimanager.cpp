@@ -33,6 +33,8 @@
 #include <iostream>
 #include <string>
 
+#include "general.h"
+
 #endif
 
 /* === U S I N G =========================================================== */

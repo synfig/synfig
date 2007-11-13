@@ -35,6 +35,8 @@
 #include "../app.h"
 #include "../statemanager.h"
 
+#include "../general.h"
+
 #endif
 
 /* === U S I N G =========================================================== */

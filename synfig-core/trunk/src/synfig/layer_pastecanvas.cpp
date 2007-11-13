@@ -71,8 +71,8 @@ public:
 
 SYNFIG_LAYER_INIT(Layer_PasteCanvas);
 SYNFIG_LAYER_SET_NAME(Layer_PasteCanvas,"PasteCanvas"); // todo: use paste_canvas
-SYNFIG_LAYER_SET_LOCAL_NAME(Layer_PasteCanvas,_("Paste Canvas"));
-SYNFIG_LAYER_SET_CATEGORY(Layer_PasteCanvas,_("Other"));
+SYNFIG_LAYER_SET_LOCAL_NAME(Layer_PasteCanvas,N_("Paste Canvas"));
+SYNFIG_LAYER_SET_CATEGORY(Layer_PasteCanvas,N_("Other"));
 SYNFIG_LAYER_SET_VERSION(Layer_PasteCanvas,"0.1");
 SYNFIG_LAYER_SET_CVS_ID(Layer_PasteCanvas,"$Id$");
 

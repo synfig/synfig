@@ -35,6 +35,8 @@
 #include <gtkmm/accelmap.h>
 #include <gtk/gtkaccelmap.h>
 
+#include "general.h"
+
 #endif
 
 /* === U S I N G =========================================================== */

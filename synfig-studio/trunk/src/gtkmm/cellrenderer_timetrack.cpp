@@ -48,6 +48,8 @@
 
 #include <synfig/timepointcollect.h>
 
+#include "general.h"
+
 #endif
 
 using namespace synfig;

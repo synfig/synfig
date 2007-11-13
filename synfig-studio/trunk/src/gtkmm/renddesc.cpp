@@ -39,6 +39,8 @@
 #include <synfig/general.h>
 //#include <gtkmm/separator.h>
 
+#include "general.h"
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -56,10 +58,6 @@ using namespace studio;
 
 #ifndef SYNFIG_MAX_PIXEL_HEIGHT
 #define SYNFIG_MAX_PIXEL_HEIGHT	(~(1<<31))
-#endif
-
-#if ! defined(_)
-#define _(x)	(x)
 #endif
 
 #ifndef DPM2DPI

@@ -32,6 +32,8 @@
 #include "renderer_bbox.h"
 #include "workarea.h"
 #include "canvasview.h"
+#include "general.h"
+
 #endif
 
 /* === U S I N G =========================================================== */

@@ -32,6 +32,8 @@
 #include "valuenodedynamiclistunloop.h"
 #include <synfigapp/canvasinterface.h>
 
+#include <synfigapp/general.h>
+
 #endif
 
 using namespace std;
@@ -44,7 +46,7 @@ using namespace Action;
 
 ACTION_INIT(Action::ValueNodeDynamicListUnLoop);
 ACTION_SET_NAME(Action::ValueNodeDynamicListUnLoop,"value_node_dynamic_list_unloop");
-ACTION_SET_LOCAL_NAME(Action::ValueNodeDynamicListUnLoop,"Unloop");
+ACTION_SET_LOCAL_NAME(Action::ValueNodeDynamicListUnLoop,N_("Unloop"));
 ACTION_SET_TASK(Action::ValueNodeDynamicListUnLoop,"unloop");
 ACTION_SET_CATEGORY(Action::ValueNodeDynamicListUnLoop,Action::CATEGORY_VALUEDESC|Action::CATEGORY_VALUENODE);
 ACTION_SET_PRIORITY(Action::ValueNodeDynamicListUnLoop,0);

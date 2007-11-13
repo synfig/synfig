@@ -42,6 +42,8 @@
 #include <synfigapp/canvasinterface.h>
 #include <synfig/valuenode_const.h>
 
+#include <synfigapp/general.h>
+
 #endif
 
 using namespace std;
@@ -54,7 +56,7 @@ using namespace Action;
 
 ACTION_INIT(Action::ValueDescConvert);
 ACTION_SET_NAME(Action::ValueDescConvert,"value_desc_convert");
-ACTION_SET_LOCAL_NAME(Action::ValueDescConvert,"Convert");
+ACTION_SET_LOCAL_NAME(Action::ValueDescConvert,N_("Convert"));
 ACTION_SET_TASK(Action::ValueDescConvert,"convert");
 ACTION_SET_CATEGORY(Action::ValueDescConvert,Action::CATEGORY_VALUEDESC);
 ACTION_SET_PRIORITY(Action::ValueDescConvert,0);

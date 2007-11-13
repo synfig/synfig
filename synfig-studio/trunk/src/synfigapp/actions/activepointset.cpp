@@ -32,6 +32,8 @@
 #include "activepointset.h"
 #include <synfigapp/canvasinterface.h>
 
+#include <synfigapp/general.h>
+
 #endif
 
 using namespace std;
@@ -44,7 +46,7 @@ using namespace Action;
 
 ACTION_INIT(Action::ActivepointSet);
 ACTION_SET_NAME(Action::ActivepointSet,"activepoint_set");
-ACTION_SET_LOCAL_NAME(Action::ActivepointSet,"Set Activepoint");
+ACTION_SET_LOCAL_NAME(Action::ActivepointSet,N_("Set Activepoint"));
 ACTION_SET_TASK(Action::ActivepointSet,"set");
 ACTION_SET_CATEGORY(Action::ActivepointSet,Action::CATEGORY_ACTIVEPOINT);
 ACTION_SET_PRIORITY(Action::ActivepointSet,0);

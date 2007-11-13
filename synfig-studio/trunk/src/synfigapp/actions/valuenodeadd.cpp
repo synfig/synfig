@@ -32,6 +32,8 @@
 #include "valuenodeadd.h"
 #include <synfigapp/canvasinterface.h>
 
+#include <synfigapp/general.h>
+
 #endif
 
 using namespace std;
@@ -44,7 +46,7 @@ using namespace Action;
 
 ACTION_INIT(Action::ValueNodeAdd);
 ACTION_SET_NAME(Action::ValueNodeAdd,"value_node_add");
-ACTION_SET_LOCAL_NAME(Action::ValueNodeAdd,"Add ValueNode");
+ACTION_SET_LOCAL_NAME(Action::ValueNodeAdd,N_("Add ValueNode"));
 ACTION_SET_TASK(Action::ValueNodeAdd,"add");
 ACTION_SET_CATEGORY(Action::ValueNodeAdd,Action::CATEGORY_VALUENODE);
 ACTION_SET_PRIORITY(Action::ValueNodeAdd,0);

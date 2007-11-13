@@ -32,6 +32,8 @@
 #include "layerparamconnect.h"
 #include <synfigapp/canvasinterface.h>
 
+#include <synfigapp/general.h>
+
 #endif
 
 using namespace std;
@@ -44,7 +46,7 @@ using namespace Action;
 
 ACTION_INIT(Action::LayerParamConnect);
 ACTION_SET_NAME(Action::LayerParamConnect,"layer_param_connect");
-ACTION_SET_LOCAL_NAME(Action::LayerParamConnect,_("Connect Layer Parameter"));
+ACTION_SET_LOCAL_NAME(Action::LayerParamConnect,N_("Connect Layer Parameter"));
 ACTION_SET_TASK(Action::LayerParamConnect,"connect");
 ACTION_SET_CATEGORY(Action::LayerParamConnect,Action::CATEGORY_LAYER|Action::CATEGORY_VALUENODE);
 ACTION_SET_PRIORITY(Action::LayerParamConnect,0);

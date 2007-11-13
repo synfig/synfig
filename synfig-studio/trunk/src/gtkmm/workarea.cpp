@@ -72,6 +72,8 @@
 
 #include <synfig/mutex.h>
 
+#include "general.h"
+
 #endif
 
 /* === U S I N G =========================================================== */

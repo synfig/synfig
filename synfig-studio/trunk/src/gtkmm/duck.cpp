@@ -32,6 +32,8 @@
 #include "duck.h"
 #include <ETL/misc>
 
+#include "general.h"
+
 #endif
 
 /* === U S I N G =========================================================== */

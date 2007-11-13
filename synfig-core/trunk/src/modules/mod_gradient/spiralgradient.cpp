@@ -52,8 +52,8 @@ using namespace synfig;
 
 SYNFIG_LAYER_INIT(SpiralGradient);
 SYNFIG_LAYER_SET_NAME(SpiralGradient,"spiral_gradient");
-SYNFIG_LAYER_SET_LOCAL_NAME(SpiralGradient,_("Spiral Gradient"));
-SYNFIG_LAYER_SET_CATEGORY(SpiralGradient,_("Gradients"));
+SYNFIG_LAYER_SET_LOCAL_NAME(SpiralGradient,N_("Spiral Gradient"));
+SYNFIG_LAYER_SET_CATEGORY(SpiralGradient,N_("Gradients"));
 SYNFIG_LAYER_SET_VERSION(SpiralGradient,"0.1");
 SYNFIG_LAYER_SET_CVS_ID(SpiralGradient,"$Id$");
 

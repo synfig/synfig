@@ -35,6 +35,8 @@
 #include "app.h"
 #include "widget_time.h"
 
+#include "general.h"
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -45,10 +47,6 @@ using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
-
-#if ! defined(_)
-#define _(x)	(x)
-#endif
 
 /* === G L O B A L S ======================================================= */
 

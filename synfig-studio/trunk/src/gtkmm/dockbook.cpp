@@ -38,6 +38,8 @@
 #include <gtkmm/eventbox.h>
 #include <gtkmm/menu.h>
 
+#include "general.h"
+
 #endif
 
 /* === U S I N G =========================================================== */

@@ -54,6 +54,8 @@
 #include <sys/stat.h>
 #include <errno.h>
 
+#include "general.h"
+
 #endif
 
 using namespace std;

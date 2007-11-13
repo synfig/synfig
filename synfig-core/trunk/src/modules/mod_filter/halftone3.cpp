@@ -54,8 +54,8 @@ using namespace etl;
 
 SYNFIG_LAYER_INIT(Halftone3);
 SYNFIG_LAYER_SET_NAME(Halftone3,"halftone3");
-SYNFIG_LAYER_SET_LOCAL_NAME(Halftone3,_("Halftone 3"));
-SYNFIG_LAYER_SET_CATEGORY(Halftone3,_("Filters"));
+SYNFIG_LAYER_SET_LOCAL_NAME(Halftone3,N_("Halftone 3"));
+SYNFIG_LAYER_SET_CATEGORY(Halftone3,N_("Filters"));
 SYNFIG_LAYER_SET_VERSION(Halftone3,"0.0");
 SYNFIG_LAYER_SET_CVS_ID(Halftone3,"$Id$");
 

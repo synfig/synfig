@@ -43,7 +43,7 @@ synfiglibdir=@synfiglibdir@
 lib_LTLIBRARIES = libsynfigapp.la
 libsynfigapp_la_SOURCES =  $(SYNFIGAPPHH) $(ACTIONCC) blineconvert.cpp cvs.cpp main.cpp action_param.cpp action.cpp action_system.cpp canvasinterface.cpp instance.cpp uimanager.cpp inputdevice.cpp settings.cpp
 libsynfigapp_la_LIBADD = @SYNFIG_LIBS@
-libsynfigapp_la_CXXFLAGS = @SYNFIG_CFLAGS@
+libsynfigapp_la_CXXFLAGS = @SYNFIG_CFLAGS@ "-DLOCALEDIR=\"$(localedir)\""
 libsynfigapp_la_LDFLAGS = -export-dynamic -no-undefined
 
 include_synfigappdir=$(prefix)/include/synfigapp-0.0/synfigapp

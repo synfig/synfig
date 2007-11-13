@@ -32,6 +32,8 @@
 #include "metadatatreestore.h"
 #include <synfigapp/canvasinterface.h>
 
+#include "general.h"
+
 #endif
 
 /* === U S I N G =========================================================== */

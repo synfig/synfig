@@ -34,6 +34,8 @@
 #include "valuenodedynamiclistinsert.h"
 #include <synfigapp/canvasinterface.h>
 
+#include <synfigapp/general.h>
+
 #endif
 
 using namespace std;
@@ -46,7 +48,7 @@ using namespace Action;
 
 ACTION_INIT(Action::ValueNodeDynamicListInsertSmart);
 ACTION_SET_NAME(Action::ValueNodeDynamicListInsertSmart,"value_node_dynamic_list_insert_smart");
-ACTION_SET_LOCAL_NAME(Action::ValueNodeDynamicListInsertSmart,"Insert Item (Smart)");
+ACTION_SET_LOCAL_NAME(Action::ValueNodeDynamicListInsertSmart,N_("Insert Item (Smart)"));
 ACTION_SET_TASK(Action::ValueNodeDynamicListInsertSmart,"insert");
 ACTION_SET_CATEGORY(Action::ValueNodeDynamicListInsertSmart,Action::CATEGORY_VALUEDESC|Action::CATEGORY_VALUENODE);
 ACTION_SET_PRIORITY(Action::ValueNodeDynamicListInsertSmart,-20);

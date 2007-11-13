@@ -49,6 +49,8 @@
 #include "app.h"
 #include "widget_distance.h"
 
+#include "general.h"
+
 #endif
 
 using namespace synfig;

@@ -51,8 +51,8 @@ using namespace etl;
 
 SYNFIG_LAYER_INIT(Circle);
 SYNFIG_LAYER_SET_NAME(Circle,"circle");
-SYNFIG_LAYER_SET_LOCAL_NAME(Circle,_("Circle"));
-SYNFIG_LAYER_SET_CATEGORY(Circle,_("Geometry"));
+SYNFIG_LAYER_SET_LOCAL_NAME(Circle,N_("Circle"));
+SYNFIG_LAYER_SET_CATEGORY(Circle,N_("Geometry"));
 SYNFIG_LAYER_SET_VERSION(Circle,"0.1");
 SYNFIG_LAYER_SET_CVS_ID(Circle,"$Id$");
 

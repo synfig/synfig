@@ -34,6 +34,8 @@
 #include <ETL/stringf>
 #include <synfig/valuenode.h>
 
+#include "general.h"
+
 #endif
 
 /* === U S I N G =========================================================== */

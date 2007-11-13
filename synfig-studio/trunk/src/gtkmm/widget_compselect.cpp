@@ -35,6 +35,8 @@
 #include <synfig/valuenode.h>
 #include "instance.h"
 
+#include "general.h"
+
 #endif
 
 /* === U S I N G =========================================================== */

@@ -32,6 +32,8 @@
 #include "layeradd.h"
 #include <synfigapp/canvasinterface.h>
 
+#include <synfigapp/general.h>
+
 #endif
 
 using namespace std;
@@ -44,7 +46,7 @@ using namespace Action;
 
 ACTION_INIT(Action::LayerAdd);
 ACTION_SET_NAME(Action::LayerAdd,"layer_add");
-ACTION_SET_LOCAL_NAME(Action::LayerAdd,"Add Layer");
+ACTION_SET_LOCAL_NAME(Action::LayerAdd,N_("Add Layer"));
 ACTION_SET_TASK(Action::LayerAdd,"add");
 ACTION_SET_CATEGORY(Action::LayerAdd,Action::CATEGORY_LAYER);
 ACTION_SET_PRIORITY(Action::LayerAdd,0);

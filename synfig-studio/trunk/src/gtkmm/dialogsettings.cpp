@@ -32,6 +32,8 @@
 #include "dialogsettings.h"
 #include <synfigapp/main.h>
 
+#include "general.h"
+
 #endif
 
 /* === U S I N G =========================================================== */

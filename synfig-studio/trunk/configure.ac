@@ -22,6 +22,7 @@ SVN_REPOSITORY=http://svn.voria.com/code/synfig-studio
 # -- P R O G R A M S ------------------------------------------
 
 AC_PROG_CC
+AC_GNU_SOURCE
 AC_PROG_CXX
 AC_PROG_CPP
 AC_PROG_CXXCPP
@@ -56,11 +57,13 @@ AC_PROG_LIBTOOL
 AC_SUBST(LIBTOOL_DEPS)
 AC_LIBTOOL_PATCH
 
-
-
-
-
-dnl AC_PROG_INTLTOOL(0.11)
+## FIXME: add i18n for .desktop and other non-compiled files
+## AM_GLIB_GNU_GETTEXT([external])
+## AC_PROG_INTLTOOL(0.11)
+ALL_LINGUAS="en_AU"
+AM_GNU_GETTEXT([external])
+# This is here so autoreconf will run autopoint
+AM_GNU_GETTEXT_VERSION([0.16.1])
 
 case "$host" in
 	*mingw* | *cygwin*)
@@ -167,6 +170,7 @@ AC_SUBST(imagedir)
 
 AC_OUTPUT(
 Makefile
+po/Makefile.in
 synfigstudio.spec
 synfigstudio.desktop
 synfigstudio.mime

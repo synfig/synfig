@@ -51,8 +51,8 @@ using namespace synfig;
 
 SYNFIG_LAYER_INIT(Layer_Clamp);
 SYNFIG_LAYER_SET_NAME(Layer_Clamp,"clamp");
-SYNFIG_LAYER_SET_LOCAL_NAME(Layer_Clamp,_("Clamp"));
-SYNFIG_LAYER_SET_CATEGORY(Layer_Clamp,_("Filters"));
+SYNFIG_LAYER_SET_LOCAL_NAME(Layer_Clamp,N_("Clamp"));
+SYNFIG_LAYER_SET_CATEGORY(Layer_Clamp,N_("Filters"));
 SYNFIG_LAYER_SET_VERSION(Layer_Clamp,"0.2");
 SYNFIG_LAYER_SET_CVS_ID(Layer_Clamp,"$Id$");
 

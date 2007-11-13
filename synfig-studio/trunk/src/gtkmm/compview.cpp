@@ -43,6 +43,8 @@
 #include "canvasview.h"
 #include <synfigapp/action.h>
 
+#include "general.h"
+
 #endif
 
 /* === M A C R O S ========================================================= */

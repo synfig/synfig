@@ -52,8 +52,8 @@
 
 SYNFIG_LAYER_INIT(SuperSample);
 SYNFIG_LAYER_SET_NAME(SuperSample,"super_sample");
-SYNFIG_LAYER_SET_LOCAL_NAME(SuperSample,_("Super Sample"));
-SYNFIG_LAYER_SET_CATEGORY(SuperSample,_("Other"));
+SYNFIG_LAYER_SET_LOCAL_NAME(SuperSample,N_("Super Sample"));
+SYNFIG_LAYER_SET_CATEGORY(SuperSample,N_("Other"));
 SYNFIG_LAYER_SET_VERSION(SuperSample,"0.1");
 SYNFIG_LAYER_SET_CVS_ID(SuperSample,"$Id$");
 

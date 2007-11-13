@@ -51,8 +51,8 @@
 
 SYNFIG_LAYER_INIT(Rotate);
 SYNFIG_LAYER_SET_NAME(Rotate,"rotate");
-SYNFIG_LAYER_SET_LOCAL_NAME(Rotate,_("Rotate"));
-SYNFIG_LAYER_SET_CATEGORY(Rotate,_("Transform"));
+SYNFIG_LAYER_SET_LOCAL_NAME(Rotate,N_("Rotate"));
+SYNFIG_LAYER_SET_CATEGORY(Rotate,N_("Transform"));
 SYNFIG_LAYER_SET_VERSION(Rotate,"0.1");
 SYNFIG_LAYER_SET_CVS_ID(Rotate,"$Id$");
 

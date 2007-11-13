@@ -33,6 +33,7 @@ AC_SUBST(SVN_REPOSITORY)
 # -- P R O G R A M S ------------------------------------------
 
 AC_PROG_CC
+AC_GNU_SOURCE
 AC_PROG_CXX
 AC_PROG_CPP
 AC_PROG_CXXCPP
@@ -336,6 +337,12 @@ if test $use_openexr_half = yes ; then {
 
 AC_LIB_LTDL
 
+ALL_LINGUAS="en_AU"
+AM_GNU_GETTEXT([external])
+# This is here so autoreconf will run autopoint
+AM_GNU_GETTEXT_VERSION([0.16.1])
+localedir="$datadir/locale"
+
 PKG_CHECK_MODULES(ETL, [ETL >= 0.04.10],,[
 	AC_MSG_ERROR([ ** You need to install the ETL (version 0.04.10 or greater).])
 ])
@@ -527,8 +534,8 @@ AC_SUBST(CONFIG_CFLAGS)
 AC_SUBST(CONFIG_DEPS)
 AC_SUBST(ETL_CFLAGS)
 
-SYNFIG_LIBS="$VIMAGE_LIBS $LIBXMLPP_LIBS $ETL_LIBS $LIBSIGC_LIBS"
-SYNFIG_CFLAGS="$LIBXMLPP_CFLAGS $ETL_CFLAGS $LIBSIGC_CFLAGS $CONFIG_CFLAGS -DSYNFIG_NO_DEPRECATED"
+SYNFIG_LIBS="$VIMAGE_LIBS $LIBXMLPP_LIBS $ETL_LIBS $LIBSIGC_LIBS $LTLIBINTL"
+SYNFIG_CFLAGS="$LIBXMLPP_CFLAGS $ETL_CFLAGS $LIBSIGC_CFLAGS $CONFIG_CFLAGS -DSYNFIG_NO_DEPRECATED -DLOCALEDIR=\\\"$localedir\\\""
 
 CONFIG_CFLAGS="`echo $CONFIG_CFLAGS | sed s/-mno-cygwin//g | sed s/-mwindows//g`"
 SYNFIG_CFLAGS="`echo $SYNFIG_CFLAGS | sed s/-mno-cygwin//g | sed s/-mwindows//g`"
@@ -551,6 +558,7 @@ synfig.pc
 synfig.spec
 doxygen.cfg
 Makefile
+po/Makefile.in
 src/Makefile
 src/synfig/Makefile
 src/modules/Makefile

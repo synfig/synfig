@@ -31,15 +31,13 @@
 #include "string.h"
 #include "version.h"
 #include <locale.h>
+#include <libintl.h>
 
 /* === M A C R O S ========================================================= */
 
-// Quick hack to keep stuff working until gettext support is added
-#ifndef _
-#define _(x)		(x)
-#define N_(x)		(x)
-//#define gettext(x)	(x)
-#endif
+#define _(x) dgettext("synfig",x)
+#define gettext_noop(x) x
+#define N_(x) gettext_noop(x)
 
 #define SYNFIG_COPYRIGHT "Copyright (c) 2001-2005 Robert B. Quattlebaum Jr., Adrian Bentley"
 

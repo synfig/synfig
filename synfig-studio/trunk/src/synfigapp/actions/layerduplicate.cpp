@@ -33,6 +33,8 @@
 #include "layeradd.h"
 #include <synfigapp/canvasinterface.h>
 
+#include <synfigapp/general.h>
+
 #endif
 
 using namespace std;
@@ -45,7 +47,7 @@ using namespace Action;
 
 ACTION_INIT(Action::LayerDuplicate);
 ACTION_SET_NAME(Action::LayerDuplicate,"layer_duplicate");
-ACTION_SET_LOCAL_NAME(Action::LayerDuplicate,"Duplicate Layer");
+ACTION_SET_LOCAL_NAME(Action::LayerDuplicate,N_("Duplicate Layer"));
 ACTION_SET_TASK(Action::LayerDuplicate,"duplicate");
 ACTION_SET_CATEGORY(Action::LayerDuplicate,Action::CATEGORY_LAYER);
 ACTION_SET_PRIORITY(Action::LayerDuplicate,0);

@@ -40,6 +40,8 @@
 #include "valuedescconnect.h"
 #include <synfigapp/canvasinterface.h>
 
+#include <synfigapp/general.h>
+
 #endif
 
 using namespace std;
@@ -52,7 +54,7 @@ using namespace Action;
 
 ACTION_INIT(Action::ActivepointSetOn);
 ACTION_SET_NAME(Action::ActivepointSetOn,"activepoint_set_on");
-ACTION_SET_LOCAL_NAME(Action::ActivepointSetOn,_("Mark Activepoint as \"On\""));
+ACTION_SET_LOCAL_NAME(Action::ActivepointSetOn,N_("Mark Activepoint as \"On\""));
 ACTION_SET_TASK(Action::ActivepointSetOn,"set_on");
 ACTION_SET_CATEGORY(Action::ActivepointSetOn,Action::CATEGORY_ACTIVEPOINT|Action::CATEGORY_VALUEDESC);
 ACTION_SET_PRIORITY(Action::ActivepointSetOn,-10);

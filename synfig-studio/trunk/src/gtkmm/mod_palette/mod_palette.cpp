@@ -36,6 +36,8 @@
 #include "../app.h"
 #include "../dockmanager.h"
 
+#include "../general.h"
+
 #endif
 
 /* === U S I N G =========================================================== */

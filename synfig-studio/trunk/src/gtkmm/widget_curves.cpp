@@ -38,6 +38,8 @@
 #include <ETL/misc>
 #include <sigc++/object.h>
 
+#include "general.h"
+
 #endif
 
 /* === U S I N G =========================================================== */

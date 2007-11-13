@@ -32,6 +32,8 @@
 #include "valuenodedynamiclistloop.h"
 #include <synfigapp/canvasinterface.h>
 
+#include <synfigapp/general.h>
+
 #endif
 
 using namespace std;
@@ -44,7 +46,7 @@ using namespace Action;
 
 ACTION_INIT(Action::ValueNodeDynamicListLoop);
 ACTION_SET_NAME(Action::ValueNodeDynamicListLoop,"value_node_dynamic_list_loop");
-ACTION_SET_LOCAL_NAME(Action::ValueNodeDynamicListLoop,"Loop");
+ACTION_SET_LOCAL_NAME(Action::ValueNodeDynamicListLoop,N_("Loop"));
 ACTION_SET_TASK(Action::ValueNodeDynamicListLoop,"loop");
 ACTION_SET_CATEGORY(Action::ValueNodeDynamicListLoop,Action::CATEGORY_VALUEDESC|Action::CATEGORY_VALUENODE);
 ACTION_SET_PRIORITY(Action::ValueNodeDynamicListLoop,0);

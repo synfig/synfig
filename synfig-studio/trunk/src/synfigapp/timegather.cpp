@@ -34,6 +34,8 @@
 
 #include <synfig/layer_pastecanvas.h>
 
+#include "general.h"
+
 #endif
 
 /* === U S I N G =========================================================== */

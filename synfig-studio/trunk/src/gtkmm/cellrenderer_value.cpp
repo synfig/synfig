@@ -54,6 +54,8 @@
 #include "dialog_color.h"
 #include <gtkmm/textview.h>
 
+#include "general.h"
+
 #endif
 
 using namespace synfig;

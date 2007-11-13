@@ -54,8 +54,8 @@ using namespace etl;
 
 SYNFIG_LAYER_INIT(LumaKey);
 SYNFIG_LAYER_SET_NAME(LumaKey,"lumakey");
-SYNFIG_LAYER_SET_LOCAL_NAME(LumaKey,_("Luma Key"));
-SYNFIG_LAYER_SET_CATEGORY(LumaKey,_("Filters"));
+SYNFIG_LAYER_SET_LOCAL_NAME(LumaKey,N_("Luma Key"));
+SYNFIG_LAYER_SET_CATEGORY(LumaKey,N_("Filters"));
 SYNFIG_LAYER_SET_VERSION(LumaKey,"0.1");
 SYNFIG_LAYER_SET_CVS_ID(LumaKey,"$Id$");
 

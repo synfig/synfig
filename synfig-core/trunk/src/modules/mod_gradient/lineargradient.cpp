@@ -50,8 +50,8 @@
 
 SYNFIG_LAYER_INIT(LinearGradient);
 SYNFIG_LAYER_SET_NAME(LinearGradient,"linear_gradient");
-SYNFIG_LAYER_SET_LOCAL_NAME(LinearGradient,_("Linear Gradient"));
-SYNFIG_LAYER_SET_CATEGORY(LinearGradient,_("Gradients"));
+SYNFIG_LAYER_SET_LOCAL_NAME(LinearGradient,N_("Linear Gradient"));
+SYNFIG_LAYER_SET_CATEGORY(LinearGradient,N_("Gradients"));
 SYNFIG_LAYER_SET_VERSION(LinearGradient,"0.0");
 SYNFIG_LAYER_SET_CVS_ID(LinearGradient,"$Id$");
 

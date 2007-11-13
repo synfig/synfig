@@ -36,6 +36,8 @@
 #include <synfigapp/instance.h>
 #include <gtkmm/scrolledwindow.h>
 
+#include "general.h"
+
 #endif
 
 /* === U S I N G =========================================================== */

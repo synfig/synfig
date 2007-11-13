@@ -33,6 +33,8 @@
 #include "instance.h"
 #include "canvasinterface.h"
 
+#include "general.h"
+
 #endif
 
 /* === U S I N G =========================================================== */

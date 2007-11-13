@@ -39,6 +39,8 @@
 #include "valuedescconnect.h"
 #include <synfigapp/canvasinterface.h>
 
+#include <synfigapp/general.h>
+
 #endif
 
 using namespace std;
@@ -51,7 +53,7 @@ using namespace Action;
 
 ACTION_INIT(Action::BLinePointTangentSplit);
 ACTION_SET_NAME(Action::BLinePointTangentSplit,"bline_point_tangent_split");
-ACTION_SET_LOCAL_NAME(Action::BLinePointTangentSplit,_("Split Tangents"));
+ACTION_SET_LOCAL_NAME(Action::BLinePointTangentSplit,N_("Split Tangents"));
 ACTION_SET_TASK(Action::BLinePointTangentSplit,"split");
 ACTION_SET_CATEGORY(Action::BLinePointTangentSplit,Action::CATEGORY_VALUENODE);
 ACTION_SET_PRIORITY(Action::BLinePointTangentSplit,0);

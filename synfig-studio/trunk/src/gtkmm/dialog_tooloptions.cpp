@@ -33,6 +33,8 @@
 #include <gtkmm/scrolledwindow.h>
 #include <synfig/general.h>
 #include "dialog_tooloptions.h"
+#include "general.h"
+
 #endif
 
 /* === U S I N G =========================================================== */

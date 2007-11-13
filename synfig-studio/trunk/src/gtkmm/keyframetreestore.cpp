@@ -46,6 +46,8 @@
 #include "onemoment.h"
 #include <synfig/exception.h>
 
+#include "general.h"
+
 #endif
 
 /* === U S I N G =========================================================== */

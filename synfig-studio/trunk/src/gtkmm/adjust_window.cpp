@@ -32,6 +32,8 @@
 #include "adjust_window.h"
 #include "app.h"
 
+#include "general.h"
+
 #endif
 
 /* === U S I N G =========================================================== */

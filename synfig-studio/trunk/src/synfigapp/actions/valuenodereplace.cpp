@@ -32,6 +32,8 @@
 #include "valuenodereplace.h"
 #include <synfigapp/canvasinterface.h>
 
+#include <synfigapp/general.h>
+
 #endif
 
 using namespace std;
@@ -44,7 +46,7 @@ using namespace Action;
 
 ACTION_INIT(Action::ValueNodeReplace);
 ACTION_SET_NAME(Action::ValueNodeReplace,"value_node_replace");
-ACTION_SET_LOCAL_NAME(Action::ValueNodeReplace,"Replace ValueNode");
+ACTION_SET_LOCAL_NAME(Action::ValueNodeReplace,N_("Replace ValueNode"));
 ACTION_SET_TASK(Action::ValueNodeReplace,"replace");
 ACTION_SET_CATEGORY(Action::ValueNodeReplace,Action::CATEGORY_VALUENODE|Action::CATEGORY_DRAG);
 ACTION_SET_PRIORITY(Action::ValueNodeReplace,0);

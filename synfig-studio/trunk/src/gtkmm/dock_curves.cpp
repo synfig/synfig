@@ -47,6 +47,8 @@
 #include <gtkmm/scrollbar.h>
 #include "widget_timeslider.h"
 
+#include "general.h"
+
 #endif
 
 /* === U S I N G =========================================================== */

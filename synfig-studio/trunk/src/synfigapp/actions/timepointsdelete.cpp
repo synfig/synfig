@@ -41,6 +41,8 @@
 
 #include <typeinfo>
 
+#include <synfigapp/general.h>
+
 #endif
 
 using namespace std;
@@ -53,7 +55,7 @@ using namespace Action;
 
 ACTION_INIT(Action::TimepointsDelete);
 ACTION_SET_NAME(Action::TimepointsDelete,"timepoint_delete");
-ACTION_SET_LOCAL_NAME(Action::TimepointsDelete,"Delete Time Points");
+ACTION_SET_LOCAL_NAME(Action::TimepointsDelete,N_("Delete Time Points"));
 ACTION_SET_TASK(Action::TimepointsDelete,"delete");
 ACTION_SET_CATEGORY(Action::TimepointsDelete,Action::CATEGORY_WAYPOINT|Action::CATEGORY_ACTIVEPOINT);
 ACTION_SET_PRIORITY(Action::TimepointsDelete,0);

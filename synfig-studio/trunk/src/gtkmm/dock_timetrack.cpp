@@ -44,6 +44,8 @@
 #include "workarea.h"
 #include "widget_timeslider.h"
 #include "layerparamtreestore.h"
+#include "general.h"
+
 #endif
 
 /* === U S I N G =========================================================== */

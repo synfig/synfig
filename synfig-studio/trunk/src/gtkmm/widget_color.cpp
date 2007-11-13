@@ -34,6 +34,8 @@
 #include "app.h"
 #include <gtkmm/drawingarea.h>
 
+#include "general.h"
+
 #endif
 
 /* === U S I N G =========================================================== */

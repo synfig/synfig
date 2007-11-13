@@ -43,6 +43,8 @@
 #include "widget_distance.h"
 #include "widget_enum.h"
 
+#include "general.h"
+
 #endif
 
 /* === U S I N G =========================================================== */

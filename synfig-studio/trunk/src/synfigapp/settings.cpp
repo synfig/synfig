@@ -35,6 +35,8 @@
 #include "settings.h"
 #include <synfig/general.h>
 
+#include "general.h"
+
 #endif
 
 /* === U S I N G =========================================================== */

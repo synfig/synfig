@@ -43,6 +43,8 @@
 #include "canvasview.h"
 #include "keyframeactionmanager.h"
 
+#include "general.h"
+
 #endif
 
 /* === U S I N G =========================================================== */

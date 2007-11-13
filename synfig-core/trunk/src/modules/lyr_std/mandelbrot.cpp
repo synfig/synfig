@@ -53,8 +53,8 @@
 
 SYNFIG_LAYER_INIT(Mandelbrot);
 SYNFIG_LAYER_SET_NAME(Mandelbrot,"mandelbrot");
-SYNFIG_LAYER_SET_LOCAL_NAME(Mandelbrot,_("Mandelbrot Set"));
-SYNFIG_LAYER_SET_CATEGORY(Mandelbrot,_("Fractals"));
+SYNFIG_LAYER_SET_LOCAL_NAME(Mandelbrot,N_("Mandelbrot Set"));
+SYNFIG_LAYER_SET_CATEGORY(Mandelbrot,N_("Fractals"));
 SYNFIG_LAYER_SET_VERSION(Mandelbrot,"0.2");
 SYNFIG_LAYER_SET_CVS_ID(Mandelbrot,"$Id$");
 

@@ -219,6 +219,7 @@ synfig::Main::Main(const synfig::String& basepath,ProgressCallback *cb):
 
 	// Add initialization after this point
 
+	bindtextdomain("synfig", LOCALEDIR);
 
 	CHECK_EXPIRE_TIME();
 

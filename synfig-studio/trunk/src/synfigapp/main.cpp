@@ -39,6 +39,8 @@
 
 #include <list>
 
+#include "general.h"
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -95,6 +97,9 @@ synfigapp::Main::Main(const synfig::String &basepath,ProgressCallback *cb):
 	ref_count_=synfigapp_ref_count_;
 
 	// Add initialization after this point
+
+	bindtextdomain("synfigstudio", LOCALEDIR);
+
 	action_main=new synfigapp::Action::Main();
 
 	settings_.construct();

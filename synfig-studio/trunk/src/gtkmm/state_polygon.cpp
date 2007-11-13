@@ -47,6 +47,8 @@
 #include "dialog_tooloptions.h"
 #include <synfigapp/main.h>
 
+#include "general.h"
+
 #endif
 
 /* === U S I N G =========================================================== */

@@ -38,6 +38,8 @@
 #include <synfigapp/main.h>
 #include <gdkmm/general.h>
 
+#include "general.h"
+
 #endif
 
 /* === U S I N G =========================================================== */

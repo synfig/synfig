@@ -38,6 +38,8 @@
 #include "app.h"
 #include <cassert>
 
+#include "general.h"
+
 #endif
 
 /* === U S I N G =========================================================== */

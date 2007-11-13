@@ -35,6 +35,8 @@
 #include "ipc.h"
 #include <stdexcept>
 
+#include "general.h"
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -56,6 +58,11 @@ using namespace studio;
 
 int main(int argc, char **argv)
 {
+
+	setlocale(LC_ALL, "");
+	bindtextdomain("synfigstudio", LOCALEDIR);
+	textdomain("synfigstudio");
+
 	{
 		SmartFILE file(IPC::make_connection());
 		if(file)

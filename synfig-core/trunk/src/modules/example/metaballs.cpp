@@ -53,8 +53,8 @@ using namespace synfig;
 
 SYNFIG_LAYER_INIT(Metaballs);
 SYNFIG_LAYER_SET_NAME(Metaballs,"metaballs");
-SYNFIG_LAYER_SET_LOCAL_NAME(Metaballs,_("Metaballs"));
-SYNFIG_LAYER_SET_CATEGORY(Metaballs,_("Default"));
+SYNFIG_LAYER_SET_LOCAL_NAME(Metaballs,N_("Metaballs"));
+SYNFIG_LAYER_SET_CATEGORY(Metaballs,N_("Default"));
 SYNFIG_LAYER_SET_VERSION(Metaballs,"0.1");
 SYNFIG_LAYER_SET_CVS_ID(Metaballs,"$Id$");
 

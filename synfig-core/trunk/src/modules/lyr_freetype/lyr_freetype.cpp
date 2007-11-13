@@ -63,8 +63,8 @@ using namespace synfig;
 
 SYNFIG_LAYER_INIT(Layer_Freetype);
 SYNFIG_LAYER_SET_NAME(Layer_Freetype,"text");
-SYNFIG_LAYER_SET_LOCAL_NAME(Layer_Freetype,_("Text"));
-SYNFIG_LAYER_SET_CATEGORY(Layer_Freetype,_("Other"));
+SYNFIG_LAYER_SET_LOCAL_NAME(Layer_Freetype,N_("Text"));
+SYNFIG_LAYER_SET_CATEGORY(Layer_Freetype,N_("Other"));
 SYNFIG_LAYER_SET_VERSION(Layer_Freetype,"0.2");
 SYNFIG_LAYER_SET_CVS_ID(Layer_Freetype,"$Id$");
 

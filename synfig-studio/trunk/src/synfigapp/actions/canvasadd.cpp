@@ -32,6 +32,8 @@
 #include "canvasadd.h"
 #include <synfigapp/canvasinterface.h>
 
+#include <synfigapp/general.h>
+
 #endif
 
 using namespace std;
@@ -44,7 +46,7 @@ using namespace Action;
 
 ACTION_INIT(Action::CanvasAdd);
 ACTION_SET_NAME(Action::CanvasAdd,"canvas_add");
-ACTION_SET_LOCAL_NAME(Action::CanvasAdd,"Add Child Canvas");
+ACTION_SET_LOCAL_NAME(Action::CanvasAdd,N_("Add Child Canvas"));
 ACTION_SET_TASK(Action::CanvasAdd,"add");
 ACTION_SET_CATEGORY(Action::CanvasAdd,Action::CATEGORY_CANVAS);
 ACTION_SET_PRIORITY(Action::CanvasAdd,0);

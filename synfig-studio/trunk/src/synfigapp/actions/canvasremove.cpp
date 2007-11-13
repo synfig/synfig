@@ -32,6 +32,8 @@
 #include "canvasremove.h"
 #include <synfigapp/canvasinterface.h>
 
+#include <synfigapp/general.h>
+
 #endif
 
 using namespace std;
@@ -44,7 +46,7 @@ using namespace Action;
 
 ACTION_INIT(Action::CanvasRemove);
 ACTION_SET_NAME(Action::CanvasRemove,"canvas_remove");
-ACTION_SET_LOCAL_NAME(Action::CanvasRemove,"Remove Canvas");
+ACTION_SET_LOCAL_NAME(Action::CanvasRemove,N_("Remove Canvas"));
 ACTION_SET_TASK(Action::CanvasRemove,"remove");
 ACTION_SET_CATEGORY(Action::CanvasRemove,Action::CATEGORY_CANVAS);
 ACTION_SET_PRIORITY(Action::CanvasRemove,0);

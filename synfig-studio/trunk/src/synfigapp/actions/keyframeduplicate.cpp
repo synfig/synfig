@@ -36,6 +36,8 @@
 #include "activepointsetsmart.h"
 #include "waypointsetsmart.h"
 
+#include <synfigapp/general.h>
+
 #endif
 
 using namespace std;
@@ -48,7 +50,7 @@ using namespace Action;
 
 ACTION_INIT(Action::KeyframeDuplicate);
 ACTION_SET_NAME(Action::KeyframeDuplicate,"keyframe_duplicate");
-ACTION_SET_LOCAL_NAME(Action::KeyframeDuplicate,"Duplicate Keyframe");
+ACTION_SET_LOCAL_NAME(Action::KeyframeDuplicate,N_("Duplicate Keyframe"));
 ACTION_SET_TASK(Action::KeyframeDuplicate,"duplicate");
 ACTION_SET_CATEGORY(Action::KeyframeDuplicate,Action::CATEGORY_KEYFRAME);
 ACTION_SET_PRIORITY(Action::KeyframeDuplicate,0);

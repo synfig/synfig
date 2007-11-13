@@ -32,6 +32,8 @@
 #include "waypointremove.h"
 #include <synfigapp/canvasinterface.h>
 
+#include <synfigapp/general.h>
+
 #endif
 
 using namespace std;
@@ -44,7 +46,7 @@ using namespace Action;
 
 ACTION_INIT(Action::WaypointRemove);
 ACTION_SET_NAME(Action::WaypointRemove,"waypoint_remove");
-ACTION_SET_LOCAL_NAME(Action::WaypointRemove,"Remove Waypoint");
+ACTION_SET_LOCAL_NAME(Action::WaypointRemove,N_("Remove Waypoint"));
 ACTION_SET_TASK(Action::WaypointRemove,"remove");
 ACTION_SET_CATEGORY(Action::WaypointRemove,Action::CATEGORY_WAYPOINT);
 ACTION_SET_PRIORITY(Action::WaypointRemove,0);

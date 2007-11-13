@@ -57,6 +57,9 @@ using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 
+#undef _
+#define _(x) gettext(x)
+
 enum exit_code
 {
 	SYNFIGTOOL_OK				= 0,
@@ -835,6 +838,10 @@ int main(int argc, char *argv[])
 	int i;
 	arg_list_t arg_list;
 	job_list_t job_list;
+
+	setlocale(LC_ALL, "");
+	bindtextdomain("synfig", LOCALEDIR);
+	textdomain("synfig");
 
 	progname=argv[0];
 	Progress p(argv[0]);

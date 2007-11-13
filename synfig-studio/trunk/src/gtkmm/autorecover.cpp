@@ -62,6 +62,8 @@
 #include <unistd.h>
 #endif
 
+#include "general.h"
+
 #endif
 
 /* === U S I N G =========================================================== */
