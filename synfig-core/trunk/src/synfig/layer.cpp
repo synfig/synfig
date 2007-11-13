@@ -500,7 +500,7 @@ Layer::get_name()const
 String
 Layer::get_local_name()const
 {
-	return dgettext("synfig",get_param("local_name__").get(String()));
+	return get_param("local_name__").get(String());
 }
 
 
