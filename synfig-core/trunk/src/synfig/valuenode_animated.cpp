@@ -377,34 +377,36 @@ public:
 						}
 						else
 						{
+							const Real& t(iter->get_tension());		// Tension
+							const Real& c(iter->get_continuity());	// Continuity
+							const Real& b(iter->get_bias());		// Bias
 
-						const Real& t(iter->get_tension());		// Tension
-						const Real& c(iter->get_continuity());	// Continuity
-						const Real& b(iter->get_bias());			// Bias
+							// The following line works where the previous line fails.
+							value_type Pp; Pp=curve_list.back().second.p1();	// P_{i-1}
 
-						// The following line works where the previous line fails.
-						value_type Pp; Pp=curve_list.back().second.p1();	// P_{i-1}
+							const value_type& Pc(curve.second.p1());	// P_i
+							const value_type& Pn(curve.second.p2());	// P_{i+1}
 
-						const value_type& Pc(curve.second.p1());	// P_i
-						const value_type& Pn(curve.second.p2());	// P_{i+1}
+							// TCB
+							value_type vect(static_cast<value_type>
+											(subtract_func(Pc,Pp) *
+											           (((1.0-t) * (1.0+c) * (1.0+b)) / 2.0) +
+											 (Pn-Pc) * (((1.0-t) * (1.0-c) * (1.0-b)) / 2.0)));
 
-						// TCB
-						value_type vect(static_cast<value_type>(subtract_func(Pc,Pp)*(((1.0-t)*(1.0+c)*(1.0+b))/2.0)+(Pn-Pc)*(((1.0-t)*(1.0-c)*(1.0-b))/2.0)));
+							// Tension Only
+							//value_type vect=(value_type)((Pn-Pp)*(1.0-t));
 
-						// Tension Only
-						//value_type vect=(value_type)((Pn-Pp)*(1.0-t));
+							// Linear
+							//value_type vect=(value_type)(Pn-Pc);
 
-						// Linear
-						//value_type vect=(value_type)(Pn-Pc);
+							// Debugging stuff
+							//synfig::info("%d:t1: %s",i,tangent_info(Pp,Pn,vect).c_str());
 
-						// Debugging stuff
-						//synfig::info("%d:t1: %s",i,tangent_info(Pp,Pn,vect).c_str());
+							// Adjust for time
+							//vect=value_type(vect*(curve.second.get_dt()*2.0)/(curve.second.get_dt()+curve_list.back().second.get_dt()));
+							//vect=value_type(vect*(curve.second.get_dt())/(curve_list.back().second.get_dt()));
 
-						// Adjust for time
-						//vect=value_type(vect*(curve.second.get_dt()*2.0)/(curve.second.get_dt()+curve_list.back().second.get_dt()));
-						//vect=value_type(vect*(curve.second.get_dt())/(curve_list.back().second.get_dt()));
-
-						curve.second.t1()=vect;
+							curve.second.t1()=vect;
 						}
 					}
 					else if(
