@@ -118,6 +118,7 @@ public:
 		return ret;
 	}
 
+#ifdef ETL_NOT_USED
 	//! 180 degree rotation operator
 	/*! Returns the angle directly opposite of
 		the given angle, and will yield a result
@@ -129,6 +130,7 @@ public:
 		ret.v = v+PI;
 		return ret.mod();
 	}
+#endif // ETL_NOT_USED
 
 #ifdef ETL_WRAP_ANGLES
 	/*! Returns true if the shortest
@@ -229,6 +231,7 @@ public:
 		return ret;
 	}
 
+#ifdef ETL_WRAP_ANGLES
 	//! Angle Difference Function
 	/*! This function will return the
 		shortest physical distance between
@@ -253,6 +256,26 @@ public:
 		ret.v-=rot_floor(ret.v);
 		return ret;
 	}
+#else // ETL_WRAP_ANGLES
+	//! Angle Difference Function
+	/*! This function will return the
+		difference between
+		two angles, just like
+		\sa angle operator-(const angle &) */
+	angle
+	dist(const angle &rhs)const
+	{ return angle(*this)-=rhs; }
+
+	//! Rotation Modulus
+	/*! This function will return the
+		value of the angle */
+	angle
+	mod()const
+	{
+		angle ret(*this);
+		return ret;
+	}
+#endif // ETL_WRAP_ANGLES
 
 	//! Zero Rotation (0 degrees)
 	static angle
@@ -285,8 +308,10 @@ public:
 
 private:
 
+#ifdef ETL_WRAP_ANGLES
 	static value_type rot_floor(value_type x)
 	{ return static_cast<value_type>(std::floor(x/(PI*2))*PI*2); }
+#endif // ETL_WRAP_ANGLES
 
 public:
 	/*
