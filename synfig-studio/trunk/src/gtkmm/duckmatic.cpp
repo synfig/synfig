@@ -534,7 +534,8 @@ Duckmatic::signal_edited_selected_ducks()
 	// Go ahead and call everyone's signals
 	for(iter=ducks.begin();iter!=ducks.end();++iter)
 	{
-		if ((*iter)->get_type() == Duck::TYPE_ANGLE)
+		if ((*iter)->get_type() == Duck::TYPE_ANGLE ||
+			(*iter)->get_type() == Duck::TYPE_TANGENT)
 		{
 			if(!(*iter)->signal_edited_angle()((*iter)->get_rotations()))
 			{
@@ -1019,6 +1020,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 			}
 
 			duck->signal_edited().clear(); // value_desc.get_value_type() == ValueBase::TYPE_REAL:
+			printf("DESC REAL, DUCK %d\n", int(duck->get_type()));
 			duck->signal_edited().connect(
 				sigc::bind(
 					sigc::mem_fun(
@@ -1095,6 +1097,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 			}
 
 			duck->signal_edited().clear(); // value_desc.get_value_type() == ValueBase::TYPE_ANGLE:
+			printf("DESC ANGLE, DUCK %d\n", int(duck->get_type()));
 			duck->signal_edited_angle().clear();
 			duck->signal_edited_angle().connect(
 				sigc::bind(
@@ -1194,6 +1197,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				duck->set_type(Duck::TYPE_POSITION);
 
 			duck->signal_edited().clear(); // value_desc.get_value_type() == ValueBase::TYPE_VECTOR:
+			printf("DESC VECTOR, DUCK %d\n", int(duck->get_type()));
 			duck->signal_edited().connect(
 				sigc::bind(
 					sigc::mem_fun(
