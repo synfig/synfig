@@ -268,7 +268,7 @@ namespace studio {
 bool
 really_delete_widget(Gtk::Widget *widget)
 {
-	synfig::info("really delete %x", (unsigned int)widget);
+	synfig::info("really delete %p", (void*)widget);
 	delete widget;
 	return false;
 }
@@ -279,7 +279,7 @@ really_delete_widget(Gtk::Widget *widget)
 void
 delete_widget(Gtk::Widget *widget)
 {
-	synfig::info("delete %x", (unsigned int)widget);
+	synfig::info("delete %p", (void*)widget);
 	Glib::signal_timeout().connect(sigc::bind(sigc::ptr_fun(&really_delete_widget), widget), 50);
 }
 
