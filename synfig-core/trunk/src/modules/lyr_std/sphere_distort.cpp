@@ -350,7 +350,14 @@ bool Layer_SphereDistort::accelerated_render(Context context,Surface *surface,in
 			(type == TYPE_DISTV && (sphr.miny >= windr.maxy || windr.miny >= sphr.maxy)) )
 		{
 			//synfig::warning("Spherize: Bounding box reject");
-			return context.accelerated_render(surface,quality,renddesc,cb);
+			if (clip)
+			{
+				surface->set_wh(renddesc.get_w(), renddesc.get_h());
+				surface->clear();
+				return true;
+			}
+			else
+				return context.accelerated_render(surface,quality,renddesc,cb);
 		}
 
 		//synfig::warning("Spherize: Bounding box accept");
@@ -548,6 +555,10 @@ Rect
 Layer_SphereDistort::get_bounding_rect()const
 {
 	Rect bounds(Rect::full_plane());
+
+	if (clip)
+		return bounds;
+
 	switch(type)
 	{
 		case TYPE_NORMAL:
