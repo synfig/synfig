@@ -244,7 +244,7 @@ public:
 		view(view)
 	{
 
-		view->statusbar->push("Idle");
+		view->statusbar->push(_("Idle"));
 	}
 
 	~CanvasViewUIInterface()
@@ -334,7 +334,7 @@ public:
 	virtual bool
 	error(const std::string &err)
 	{
-		view->statusbar->push("ERROR");
+		view->statusbar->push(_("ERROR"));
 
 		// If we are in the process of canceling,
 		// then just go ahead and return false --
@@ -383,7 +383,7 @@ public:
 	void
 	not_implemented()
 	{
-		error("Feature not yet implemented");
+		error(_("Feature not yet implemented"));
 	}
 };
 
@@ -711,9 +711,9 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 
 	//notebook->show();
 
-	//notebook->append_page(*create_layer_tree(),"Layers");
-	//notebook->append_page(*create_children_tree(),"Children");
-	//notebook->append_page(*create_keyframe_tree(),"Keyframes");
+	//notebook->append_page(*create_layer_tree(),_("Layers"));
+	//notebook->append_page(*create_children_tree(),_("Children"));
+	//notebook->append_page(*create_keyframe_tree(),_("Keyframes"));
 
 	//synfig::info("Canvasview: Before big chunk of allocation and tabling stuff");
 	//create all allocated stuff for this canvas
@@ -949,11 +949,11 @@ CanvasView::create_time_bar()
 	//time_scroll->signal_value_changed().connect(sigc::mem_fun(*work_area, &studio::WorkArea::render_preview_hook));
 	//time_scroll->set_update_policy(Gtk::UPDATE_DISCONTINUOUS);
 
-	NORMAL_BUTTON(animatebutton,"gtk-yes","Animate");
+	NORMAL_BUTTON(animatebutton,"gtk-yes",_("Animate"));
 	animatebutton->signal_clicked().connect(sigc::mem_fun(*this, &studio::CanvasView::on_animate_button_pressed));
 	animatebutton->show();
 
-	NORMAL_BUTTON(keyframebutton,"synfig-keyframe_lock_all","All Keyframes Locked");
+	NORMAL_BUTTON(keyframebutton,"synfig-keyframe_lock_all",_("All Keyframes Locked"));
 	keyframebutton->signal_clicked().connect(sigc::mem_fun(*this, &studio::CanvasView::on_keyframe_button_pressed));
 	keyframebutton->show();
 
@@ -1008,11 +1008,11 @@ CanvasView::create_status_bar()
 	Gtk::Table *statusbartable= manage(new class Gtk::Table(7, 1, false));
 //	statusbar = manage(new class Gtk::Statusbar()); // This is already done at construction
 	progressbar =manage(new class Gtk::ProgressBar());
-	SMALL_BUTTON(stopbutton,"gtk-stop","Stop");
-	SMALL_BUTTON(refreshbutton,"gtk-refresh","Refresh");
-	//SMALL_BUTTON(treetogglebutton,"gtk-go-down","Toggle Layer Tree");
-//	NEW_SMALL_BUTTON(raisebutton,"gtk-go-up","Raise Layer");
-//	NEW_SMALL_BUTTON(lowerbutton,"gtk-go-down","Lower Layer");
+	SMALL_BUTTON(stopbutton,"gtk-stop",_("Stop"));
+	SMALL_BUTTON(refreshbutton,"gtk-refresh",_("Refresh"));
+	//SMALL_BUTTON(treetogglebutton,"gtk-go-down",_("Toggle Layer Tree"));
+//	NEW_SMALL_BUTTON(raisebutton,"gtk-go-up",_("Raise Layer"));
+//	NEW_SMALL_BUTTON(lowerbutton,"gtk-go-down",_("Lower Layer"));
 	//statusbartable->attach(*treetogglebutton, 0, 1, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
 //	statusbartable->attach(*lowerbutton, 0, 1, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
 //	statusbartable->attach(*raisebutton, 1, 2, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
@@ -1102,9 +1102,9 @@ CanvasView::create_keyframe_tree()
 	Gtk::Image *icon;
 	Gtk::IconSize iconsize(Gtk::IconSize::from_name("synfig-small_icon"));
 
-	NEW_SMALL_BUTTON(button_add,"gtk-add","New Keyframe");
-	NEW_SMALL_BUTTON(button_duplicate,"synfig-duplicate","Duplicate Keyframe");
-	NEW_SMALL_BUTTON(button_delete,"gtk-delete","Delete Keyframe");
+	NEW_SMALL_BUTTON(button_add,"gtk-add",_("New Keyframe"));
+	NEW_SMALL_BUTTON(button_duplicate,"synfig-duplicate",_("Duplicate Keyframe"));
+	NEW_SMALL_BUTTON(button_delete,"gtk-delete",_("Delete Keyframe"));
 
 	Gtk::HBox *hbox(manage(new Gtk::HBox()));
 	layout_table->attach(*hbox, 0, 1, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK, 0, 0);
@@ -1186,7 +1186,7 @@ CanvasView::init_menus()
 	*/
 	action_group = Gtk::ActionGroup::create();
 
-	//action_group->add( Gtk::Action::create("MenuFile", "_File") );
+	//action_group->add( Gtk::Action::create("MenuFile", _("_File")) );
 	action_group->add( Gtk::Action::create("save", Gtk::Stock::SAVE),
 		hide_return(sigc::mem_fun(*get_instance().get(), &studio::Instance::save))
 	);
@@ -1269,7 +1269,7 @@ CanvasView::init_menus()
 		);
 		for(i=1;i<=10;i++)
 		{
-			Glib::RefPtr<Gtk::RadioAction> action(Gtk::RadioAction::create(quality_group,strprintf("quality-%02d",i), strprintf("Set Quality to %d",i)));
+			Glib::RefPtr<Gtk::RadioAction> action(Gtk::RadioAction::create(quality_group,strprintf("quality-%02d",i), strprintf(_("Set Quality to %d"),i)));
 			if(i==10)
 			{
 				action->set_active();
@@ -1493,7 +1493,7 @@ CanvasView::init_menus()
 	));
 
 	build_new_layer_menu(newlayermenu);
-	layermenu.items().push_back(Gtk::Menu_Helpers::MenuElem("New",newlayermenu));
+	layermenu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("New"),newlayermenu));
 
 
 	{
@@ -1504,7 +1504,7 @@ CanvasView::init_menus()
 	}
 
 
-	//canvasmenu.items().push_back(Gtk::Menu_Helpers::MenuElem("Keyframe Dialog",sigc::mem_fun(keyframe_dialog,&studio::Dialog_Keyframe::present)));
+	//canvasmenu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("Keyframe Dialog"),sigc::mem_fun(keyframe_dialog,&studio::Dialog_Keyframe::present)));
 
 	// Duck Mask Menu
 	if(1)
@@ -1636,21 +1636,21 @@ CanvasView::init_menus()
 		sigc::mem_fun(*canvas_interface().get(), &synfigapp::CanvasInterface::jump_to_prev_keyframe)));
 
 	mainmenu.items().push_back(Gtk::Menu_Helpers::TearoffMenuElem());
-	mainmenu.items().push_back(Gtk::Menu_Helpers::MenuElem("_File",filemenu));
-	mainmenu.items().push_back(Gtk::Menu_Helpers::MenuElem("_Edit",editmenu));
-	mainmenu.items().push_back(Gtk::Menu_Helpers::MenuElem("_View",viewmenu));
-	mainmenu.items().push_back(Gtk::Menu_Helpers::MenuElem("_Canvas",canvasmenu));
-	mainmenu.items().push_back(Gtk::Menu_Helpers::MenuElem("_Layer",layermenu));
+	mainmenu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("_File"),filemenu));
+	mainmenu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("_Edit"),editmenu));
+	mainmenu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("_View"),viewmenu));
+	mainmenu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("_Canvas"),canvasmenu));
+	mainmenu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("_Layer"),layermenu));
 
 	mainmenu.accelerate(*this);
 
 	{
 
-		trackmenu.items().push_back(Gtk::Menu_Helpers::MenuElem("New Waypoint",NOT_IMPLEMENTED_SLOT));
-		trackmenu.items().push_back(Gtk::Menu_Helpers::MenuElem("Delete Waypoint",NOT_IMPLEMENTED_SLOT));
-		trackmenu.items().push_back(Gtk::Menu_Helpers::MenuElem("Export",NOT_IMPLEMENTED_SLOT));
+		trackmenu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("New Waypoint"),NOT_IMPLEMENTED_SLOT));
+		trackmenu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("Delete Waypoint"),NOT_IMPLEMENTED_SLOT));
+		trackmenu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("Export"),NOT_IMPLEMENTED_SLOT));
 		trackmenu.items().push_back(Gtk::Menu_Helpers::SeparatorElem());
-		trackmenu.items().push_back(Gtk::Menu_Helpers::MenuElem("Properties",NOT_IMPLEMENTED_SLOT));
+		trackmenu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("Properties"),NOT_IMPLEMENTED_SLOT));
 	}
 	mainmenu.show();
 	filemenu.show();
@@ -2202,7 +2202,7 @@ CanvasView::on_layer_user_click(int button, Gtk::TreeRow /*row*/, LayerTree::Col
 				// newlayers->signal_hide().connect(sigc::bind(sigc::ptr_fun(&delete_widget), newlayers));
 				build_new_layer_menu(*newlayers);
 
-				parammenu.items().push_back(Gtk::Menu_Helpers::MenuElem("New Layer",*newlayers));
+				parammenu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("New Layer"),*newlayers));
 				if(!multiple_selected && layer->get_name()=="PasteCanvas")
 				{
 					parammenu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("Select All Children"),
@@ -2239,10 +2239,10 @@ CanvasView::on_layer_user_click(int button, Gtk::TreeRow /*row*/, LayerTree::Col
 #warning update me!
 #if 0
 					parammenu.items().clear();
-					parammenu.items().push_back(Gtk::Menu_Helpers::MenuElem("Connect",
+					parammenu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("Connect"),
 						hide_return(sigc::mem_fun(*canvas_interface().get(),&synfigapp::CanvasInterface::connect_selected_layer_params))
 					));
-					parammenu.items().push_back(Gtk::Menu_Helpers::MenuElem("Disconnect",
+					parammenu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("Disconnect"),
 						hide_return(sigc::mem_fun(*canvas_interface().get(),&synfigapp::CanvasInterface::disconnect_selected_layer_params))
 					));
 					parammenu.popup(0,0);

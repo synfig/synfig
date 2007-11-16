@@ -105,7 +105,7 @@ Dock_Canvases::create_canvas_tree()
 	studio::Instance::CanvasTreeModel canvas_tree_model;
 	canvas_tree=manage(new class Gtk::TreeView());
 	{
-		Gtk::TreeView::Column* column = Gtk::manage( new Gtk::TreeView::Column("ID") );
+		Gtk::TreeView::Column* column = Gtk::manage( new Gtk::TreeView::Column(_("ID")) );
 //		Gtk::CellRendererPixbuf* icon_cellrenderer = Gtk::manage( new Gtk::CellRendererPixbuf() );
 
 		//column->pack_start(*icon_cellrenderer,false);

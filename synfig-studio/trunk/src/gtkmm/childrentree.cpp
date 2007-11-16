@@ -186,10 +186,10 @@ ChildrenTree::ChildrenTree()
 	//Gtk::IconSize iconsize(Gtk::IconSize::from_name("synfig-small_icon"));
 	Gtk::IconSize iconsize(Gtk::ICON_SIZE_SMALL_TOOLBAR);
 
-	SMALL_BUTTON(button_raise,"gtk-go-up","Raise");
-	SMALL_BUTTON(button_lower,"gtk-go-down","Lower");
-	SMALL_BUTTON(button_duplicate,"synfig-duplicate","Duplicate");
-	SMALL_BUTTON(button_delete,"gtk-delete","Delete");
+	SMALL_BUTTON(button_raise,"gtk-go-up",_("Raise"));
+	SMALL_BUTTON(button_lower,"gtk-go-down",_("Lower"));
+	SMALL_BUTTON(button_duplicate,"synfig-duplicate",_("Duplicate"));
+	SMALL_BUTTON(button_delete,"gtk-delete",_("Delete"));
 
 	hbox->pack_start(*button_raise,Gtk::PACK_SHRINK);
 	hbox->pack_start(*button_lower,Gtk::PACK_SHRINK);

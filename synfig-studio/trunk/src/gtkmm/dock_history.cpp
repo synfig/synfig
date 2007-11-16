@@ -111,7 +111,7 @@ Dock_History::Dock_History():
 		sigc::ptr_fun(studio::App::redo)
 	);
 
-	action_group->add( Gtk::Action::create("toolbar-history", "History") );
+	action_group->add( Gtk::Action::create("toolbar-history", _("History")) );
 	App::ui_manager()->insert_action_group(action_group);
 
 	Glib::ustring ui_info =
@@ -185,7 +185,7 @@ Dock_History::create_action_tree()
 		action_tree->append_column(*column);
 	}
 	/*{
-		Gtk::TreeView::Column* column = Gtk::manage( new Gtk::TreeView::Column("Canvas") );
+		Gtk::TreeView::Column* column = Gtk::manage( new Gtk::TreeView::Column(_("Canvas")) );
 		Gtk::CellRendererText *text_cr=Gtk::manage(new Gtk::CellRendererText());
 		text_cr->property_foreground()=Glib::ustring("#7f7f7f");
 
@@ -213,7 +213,7 @@ Dock_History::create_action_tree()
 		//column->clicked();
 	}
 	{
-		Gtk::TreeView::Column* column = Gtk::manage( new Gtk::TreeView::Column("Action") );
+		Gtk::TreeView::Column* column = Gtk::manage( new Gtk::TreeView::Column(_("Action")) );
 
 		Gtk::CellRendererText *text_cr=Gtk::manage(new Gtk::CellRendererText());
 		text_cr->property_foreground()=Glib::ustring("#7f7f7f");

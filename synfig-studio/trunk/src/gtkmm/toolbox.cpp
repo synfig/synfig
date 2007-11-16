@@ -130,7 +130,7 @@ save_selected_instance()
 {
 	if(!studio::App::get_selected_instance())
 	{
-		App::dialog_error_blocking("Cannot save","Nothing to save");
+		App::dialog_error_blocking(_("Cannot save"),_("Nothing to save"));
 		return;
 	}
 
@@ -142,7 +142,7 @@ save_as_selected_instance()
 {
 	if(!studio::App::get_selected_instance())
 	{
-		App::dialog_error_blocking("Cannot save as","Nothing to save");
+		App::dialog_error_blocking(_("Cannot save as"),_("Nothing to save"));
 		return;
 	}
 
@@ -164,7 +164,7 @@ close_selected_instance()
 
 	if(!instance)
 	{
-		App::dialog_error_blocking("Cannot close","Nothing to close");
+		App::dialog_error_blocking(_("Cannot close"),_("Nothing to close"));
 		return;
 	}
 
@@ -217,10 +217,10 @@ Toolbox::Toolbox():
 
 	dock_dialogs=manage(new class Gtk::Menu());
 
-	dock_dialogs->items().push_back(Gtk::Menu_Helpers::MenuElem("Canvases, History",sigc::ptr_fun(_create_stock_dialog1)));
-	dock_dialogs->items().push_back(Gtk::Menu_Helpers::MenuElem("Layers, Children, Params",sigc::ptr_fun(_create_stock_dialog2)));
+	dock_dialogs->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Canvases, History"),sigc::ptr_fun(_create_stock_dialog1)));
+	dock_dialogs->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Layers, Children, Params"),sigc::ptr_fun(_create_stock_dialog2)));
 	dock_dialogs->items().push_back(Gtk::Menu_Helpers::SeparatorElem());
-	dock_dialogs->items().push_back(Gtk::Menu_Helpers::MenuElem("Reset Windows to Original Layout",sigc::ptr_fun(App::reset_initial_window_configuration)));
+	dock_dialogs->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Reset Windows to Original Layout"),sigc::ptr_fun(App::reset_initial_window_configuration)));
 	dock_dialogs->items().push_back(Gtk::Menu_Helpers::SeparatorElem());
 
 
@@ -265,22 +265,22 @@ Toolbox::Toolbox():
 		sigc::ptr_fun(studio::App::dialog_about)));
 
 	Gtk::MenuBar *menubar1 = manage(new class Gtk::MenuBar());
-	menubar1->items().push_back(Gtk::Menu_Helpers::MenuElem("_File",*filemenu));
-	menubar1->items().push_back(Gtk::Menu_Helpers::MenuElem("_Help",*helpmenu));
+	menubar1->items().push_back(Gtk::Menu_Helpers::MenuElem(_("_File"),*filemenu));
+	menubar1->items().push_back(Gtk::Menu_Helpers::MenuElem(_("_Help"),*helpmenu));
 
 
 	menubar1->show();
 
 	Gtk::Image *icon;
 
-	ADD_TOOLBOX_BUTTON(button_new,"gtk-new","New...");
-	ADD_TOOLBOX_BUTTON(button_open,"gtk-open","Open...");
-	ADD_TOOLBOX_BUTTON(button_save,"gtk-save","Save");
-	ADD_TOOLBOX_BUTTON(button_saveas,"gtk-save-as","Save as...");
-	ADD_TOOLBOX_BUTTON(button_save_all,"synfig-saveall","Save All");
-	TOOLBOX_BUTTON(button_undo,"gtk-undo","Undo");
-	TOOLBOX_BUTTON(button_redo,"gtk-redo","Redo");
-	ADD_TOOLBOX_BUTTON(button_about,"synfig-about","About Synfig Studio");
+	ADD_TOOLBOX_BUTTON(button_new,"gtk-new",_("New..."));
+	ADD_TOOLBOX_BUTTON(button_open,"gtk-open",_("Open..."));
+	ADD_TOOLBOX_BUTTON(button_save,"gtk-save",_("Save"));
+	ADD_TOOLBOX_BUTTON(button_saveas,"gtk-save-as",_("Save as..."));
+	ADD_TOOLBOX_BUTTON(button_save_all,"synfig-saveall",_("Save All"));
+	TOOLBOX_BUTTON(button_undo,"gtk-undo",_("Undo"));
+	TOOLBOX_BUTTON(button_redo,"gtk-redo",_("Redo"));
+	ADD_TOOLBOX_BUTTON(button_about,"synfig-about",_("About Synfig Studio"));
 
 	button_about->signal_clicked().connect(sigc::ptr_fun(studio::App::dialog_about));
 	button_new->signal_clicked().connect(sigc::ptr_fun(studio::App::new_instance));
@@ -337,7 +337,7 @@ Toolbox::Toolbox():
 
 	// Set the parameters for this window
 	add(*table1);
-	set_title("Synfig Studio");
+	set_title(_("Synfig Studio"));
 	set_modal(false);
 	property_window_position().set_value(Gtk::WIN_POS_NONE);
 	signal_delete_event().connect(sigc::ptr_fun(App::shutdown_request));
@@ -379,7 +379,7 @@ Toolbox::Toolbox():
 Toolbox::~Toolbox()
 {
 	hide();
-	//studio::App::cb.task("Toolbox: I was nailed!");
+	//studio::App::cb.task(_("Toolbox: I was nailed!"));
 	//studio::App::quit();
 
 	if(studio::App::toolbox==this)

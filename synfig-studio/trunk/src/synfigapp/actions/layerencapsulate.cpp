@@ -132,7 +132,7 @@ Action::LayerEncapsulate::prepare()
 		return;
 
 	if(layers.empty())
-		throw Error("No layers to encapsulate");
+		throw Error(_("No layers to encapsulate"));
 
 	// First create the new canvas and layer
 	if(!child_canvas)

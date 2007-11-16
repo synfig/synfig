@@ -86,7 +86,7 @@ Dialog_Keyframe::Dialog_Keyframe(Gtk::Window& parent,handle<synfigapp::CanvasInt
 
 	get_vbox()->pack_start(*table);
 
-	entry_description.set_text("Not yet implemented");
+	entry_description.set_text(_("Not yet implemented"));
 
 	//table->attach(*manage(new Gtk::Label(_("Description"))), 0, 1, 0, 1, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 	//table->attach(entry_description, 1, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);

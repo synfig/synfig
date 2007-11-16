@@ -481,7 +481,7 @@ CanvasInterface::import(const synfig::String &filename, bool /*copy*/)
 
 	if (filename_extension(filename) == "")
 	{
-		get_ui_interface()->error("Filename must have an extension!");
+		get_ui_interface()->error(_("Filename must have an extension!"));
 		return false;
 	}
 

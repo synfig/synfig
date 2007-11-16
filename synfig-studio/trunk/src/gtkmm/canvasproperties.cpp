@@ -177,7 +177,7 @@ void
 CanvasProperties::on_button_meta_data_add()
 {
 	synfig::String key;
-	if(App::dialog_entry("New MetaData Entry", "Please enter the name of the key",key) && !key.empty())
+	if(App::dialog_entry(_("New MetaData Entry"), _("Please enter the name of the key"),key) && !key.empty())
 	{
 		canvas_interface_->set_meta_data(key," ");
 	}

@@ -71,7 +71,7 @@ Dock_LayerGroups::Dock_LayerGroups():
 {
 	group_action_manager->set_ui_manager(App::ui_manager());
 
-	action_group_group_ops->add( Gtk::Action::create("toolbar-groups", "Group Ops") );
+	action_group_group_ops->add( Gtk::Action::create("toolbar-groups", _("Group Ops")) );
 
 	action_group_add=Gtk::Action::create("action-group_add", Gtk::Stock::ADD,_("Add a New Group"),_("Add a New Group"));
 	action_group_group_ops->add(action_group_add);

@@ -530,9 +530,9 @@ Widget_RendDesc::create_time_tab()
 	Gtk::VBox *panelBox = manage(new Gtk::VBox(false, 12)); // for future widgets
 	paddedPanel->add(*panelBox);
 
-	Gtk::Frame *time_frame = manage(new Gtk::Frame("Time Settings"));
+	Gtk::Frame *time_frame = manage(new Gtk::Frame(_("Time Settings")));
 	time_frame->set_shadow_type(Gtk::SHADOW_NONE);
-	((Gtk::Label *) time_frame->get_label_widget())->set_markup("<b>Time Settings</b>");
+	((Gtk::Label *) time_frame->get_label_widget())->set_markup(_("<b>Time Settings</b>"));
 	panelBox->pack_start(*time_frame, false, false, 0);
 
 	Gtk::Alignment *timeFramePadding = manage(new Gtk::Alignment(0, 0, 1, 1));

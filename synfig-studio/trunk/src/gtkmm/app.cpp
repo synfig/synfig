@@ -718,18 +718,18 @@ init_ui_manager()
 
 	Glib::RefPtr<Gtk::ActionGroup> actions_action_group = Gtk::ActionGroup::create();
 
-	menus_action_group->add( Gtk::Action::create("menu-file", "_File") );
-	menus_action_group->add( Gtk::Action::create("menu-edit", "_Edit") );
-	menus_action_group->add( Gtk::Action::create("menu-view", "_View") );
-	menus_action_group->add( Gtk::Action::create("menu-canvas", "_Canvas") );
-	menus_action_group->add( Gtk::Action::create("menu-layer", "_Layer") );
-	menus_action_group->add( Gtk::Action::create("menu-duck-mask", "Show/Hide Ducks") );
-	menus_action_group->add( Gtk::Action::create("menu-preview-quality", "Preview Quality") );
-	menus_action_group->add( Gtk::Action::create("menu-layer-new", "New Layer") );
-	menus_action_group->add( Gtk::Action::create("menu-keyframe", "Keyframe") );
-	menus_action_group->add( Gtk::Action::create("menu-group", "Group") );
-	menus_action_group->add( Gtk::Action::create("menu-state", "State") );
-	menus_action_group->add( Gtk::Action::create("menu-toolbox", "Toolbox") );
+	menus_action_group->add( Gtk::Action::create("menu-file", _("_File")) );
+	menus_action_group->add( Gtk::Action::create("menu-edit", _("_Edit")) );
+	menus_action_group->add( Gtk::Action::create("menu-view", _("_View")) );
+	menus_action_group->add( Gtk::Action::create("menu-canvas", _("_Canvas")) );
+	menus_action_group->add( Gtk::Action::create("menu-layer", _("_Layer")) );
+	menus_action_group->add( Gtk::Action::create("menu-duck-mask", _("Show/Hide Ducks")) );
+	menus_action_group->add( Gtk::Action::create("menu-preview-quality", _("Preview Quality")) );
+	menus_action_group->add( Gtk::Action::create("menu-layer-new", _("New Layer")) );
+	menus_action_group->add( Gtk::Action::create("menu-keyframe", _("Keyframe")) );
+	menus_action_group->add( Gtk::Action::create("menu-group", _("Group")) );
+	menus_action_group->add( Gtk::Action::create("menu-state", _("State")) );
+	menus_action_group->add( Gtk::Action::create("menu-toolbox", _("Toolbox")) );
 
 	// Add the synfigapp actions...
 	synfigapp::Action::Book::iterator iter;
@@ -1186,7 +1186,7 @@ App::App(int *argc, char ***argv):
 	try { synfigapp_main=etl::smart_ptr<synfigapp::Main>(new synfigapp::Main(etl::dirname((*argv)[0]),&synfig_init_cb)); }
 	catch(...)
 	{
-		get_ui_interface()->error("Failed to initialize synfig!");
+		get_ui_interface()->error(_("Failed to initialize synfig!"));
 		throw;
 	}
 
@@ -1195,82 +1195,82 @@ App::App(int *argc, char ***argv):
 
 	try
 	{
-		studio_init_cb.task("Init UI Manager...");
+		studio_init_cb.task(_("Init UI Manager..."));
 		App::ui_manager_=studio::UIManager::create();
 		init_ui_manager();
 
-		studio_init_cb.task("Init Dock Manager...");
+		studio_init_cb.task(_("Init Dock Manager..."));
 		dock_manager=new studio::DockManager();
 
-		studio_init_cb.task("Init State Manager...");
+		studio_init_cb.task(_("Init State Manager..."));
 		state_manager=new StateManager();
 
-		studio_init_cb.task("Init Toolbox...");
+		studio_init_cb.task(_("Init Toolbox..."));
 		toolbox=new studio::Toolbox();
 
-		studio_init_cb.task("Init Tool Options...");
+		studio_init_cb.task(_("Init Tool Options..."));
 		dialog_tool_options=new studio::Dialog_ToolOptions();
 		dock_manager->register_dockable(*dialog_tool_options);
 
-		studio_init_cb.task("Init History...");
+		studio_init_cb.task(_("Init History..."));
 		dock_history=new studio::Dock_History();
 		dock_manager->register_dockable(*dock_history);
 
-		studio_init_cb.task("Init Canvases...");
+		studio_init_cb.task(_("Init Canvases..."));
 		dock_canvases=new studio::Dock_Canvases();
 		dock_manager->register_dockable(*dock_canvases);
 
-		studio_init_cb.task("Init Keyframes...");
+		studio_init_cb.task(_("Init Keyframes..."));
 		dock_keyframes=new studio::Dock_Keyframes();
 		dock_manager->register_dockable(*dock_keyframes);
 
-		studio_init_cb.task("Init Layers...");
+		studio_init_cb.task(_("Init Layers..."));
 		dock_layers=new studio::Dock_Layers();
 		dock_manager->register_dockable(*dock_layers);
 
-		studio_init_cb.task("Init Params...");
+		studio_init_cb.task(_("Init Params..."));
 		dock_params=new studio::Dock_Params();
 		dock_manager->register_dockable(*dock_params);
 
-		studio_init_cb.task("Init MetaData...");
+		studio_init_cb.task(_("Init MetaData..."));
 		dock_meta_data=new studio::Dock_MetaData();
 		dock_manager->register_dockable(*dock_meta_data);
 
-		studio_init_cb.task("Init Children...");
+		studio_init_cb.task(_("Init Children..."));
 		dock_children=new studio::Dock_Children();
 		dock_manager->register_dockable(*dock_children);
 
-		studio_init_cb.task("Init Info...");
+		studio_init_cb.task(_("Init Info..."));
 		dock_info = new studio::Dock_Info();
 		dock_manager->register_dockable(*dock_info);
 
-		studio_init_cb.task("Init Navigator...");
+		studio_init_cb.task(_("Init Navigator..."));
 		dock_navigator = new studio::Dock_Navigator();
 		dock_manager->register_dockable(*dock_navigator);
 
-		studio_init_cb.task("Init Timetrack...");
+		studio_init_cb.task(_("Init Timetrack..."));
 		dock_timetrack = new studio::Dock_Timetrack();
 		dock_manager->register_dockable(*dock_timetrack);
 
-		studio_init_cb.task("Init Curve Editor...");
+		studio_init_cb.task(_("Init Curve Editor..."));
 		dock_curves = new studio::Dock_Curves();
 		dock_manager->register_dockable(*dock_curves);
 
-		studio_init_cb.task("Init Layer Groups...");
+		studio_init_cb.task(_("Init Layer Groups..."));
 		dock_layer_groups = new studio::Dock_LayerGroups();
 		dock_manager->register_dockable(*dock_layer_groups);
 
 
-		studio_init_cb.task("Init Color Dialog...");
+		studio_init_cb.task(_("Init Color Dialog..."));
 		dialog_color=new studio::Dialog_Color();
 
-		studio_init_cb.task("Init Gradient Dialog...");
+		studio_init_cb.task(_("Init Gradient Dialog..."));
 		dialog_gradient=new studio::Dialog_Gradient();
 
-		studio_init_cb.task("Init DeviceTracker...");
+		studio_init_cb.task(_("Init DeviceTracker..."));
 		device_tracker=new studio::DeviceTracker();
 
-		studio_init_cb.task("Init Tools...");
+		studio_init_cb.task(_("Init Tools..."));
 		state_manager->add_state(&state_normal);
 		state_manager->add_state(&state_smooth_move);
 		state_manager->add_state(&state_scale);
@@ -1299,28 +1299,28 @@ App::App(int *argc, char ***argv):
 		// Disabled by default - it doesn't work properly?
 		if(getenv("SYNFIG_ENABLE_WIDTH"    )) state_manager->add_state(&state_width);
 
-		studio_init_cb.task("Init ModPalette...");
+		studio_init_cb.task(_("Init ModPalette..."));
 		module_list_.push_back(new ModPalette()); module_list_.back()->start();
 
-		studio_init_cb.task("Init ModMirror...");
+		studio_init_cb.task(_("Init ModMirror..."));
 		module_list_.push_back(new ModMirror()); module_list_.back()->start();
 
 
-		studio_init_cb.task("Init Setup Dialog...");
+		studio_init_cb.task(_("Init Setup Dialog..."));
 		dialog_setup=new studio::Dialog_Setup();
 
-		studio_init_cb.task("Init Input Dialog...");
+		studio_init_cb.task(_("Init Input Dialog..."));
 		dialog_input=new Gtk::InputDialog();
 		dialog_input->get_close_button()->signal_clicked().connect( sigc::mem_fun( *dialog_input, &Gtk::InputDialog::hide ) );
 		dialog_input->get_save_button()->signal_clicked().connect( sigc::ptr_fun(studio::App::dialog_not_implemented) );
 
-		studio_init_cb.task("Init auto recovery...");
+		studio_init_cb.task(_("Init auto recovery..."));
 		auto_recover=new AutoRecover();
 
 		studio_init_cb.amount_complete(9250,10000);
-		studio_init_cb.task("Loading Settings...");
+		studio_init_cb.task(_("Loading Settings..."));
 		load_settings();
-		studio_init_cb.task("Checking auto-recover...");
+		studio_init_cb.task(_("Checking auto-recover..."));
 
 		studio_init_cb.amount_complete(9900,10000);
 
@@ -1329,11 +1329,11 @@ App::App(int *argc, char ***argv):
 			about_window.hide();
 			if(
 				get_ui_interface()->yes_no(
-					"Auto Recovery",
-					"Synfig Studio seems to have crashed\n"
+					_("Auto Recovery"),
+					_("Synfig Studio seems to have crashed\n"
 					"before you could save all your files.\n"
 					"Would you like to re-open those files\n"
-					"and recover your unsaved changes?"
+					"and recover your unsaved changes?")
 				)==synfigapp::UIInterface::RESPONSE_YES
 			)
 			{
@@ -1357,13 +1357,13 @@ App::App(int *argc, char ***argv):
 		for(;*argc>=1;(*argc)--)
 			if((*argv)[*argc] && (*argv)[*argc][0]!='-')
 			{
-				studio_init_cb.task("Loading files...");
+				studio_init_cb.task(_("Loading files..."));
 				about_window.hide();
 				open((*argv)[*argc]);
 				about_window.show();
 			}
 
-		studio_init_cb.task("Done.");
+		studio_init_cb.task(_("Done."));
 		studio_init_cb.amount_complete(10000,10000);
 
 		toolbox->present();
@@ -1603,10 +1603,10 @@ App::quit()
 	if(shutdown_in_progress)return;
 
 
-	get_ui_interface()->task("Quit Request");
+	get_ui_interface()->task(_("Quit Request"));
 	if(Busy::count)
 	{
-		dialog_error_blocking("Cannot quit!","Tasks are currently running.\nPlease cancel the current tasks and try again");
+		dialog_error_blocking(_("Cannot quit!"),_("Tasks are currently running.\nPlease cancel the current tasks and try again"));
 		return;
 	}
 
@@ -1674,7 +1674,7 @@ App::quit()
 	Gtk::Main::quit();
 	auto_recover->normal_shutdown();
 
-	get_ui_interface()->task("Quit Request sent");
+	get_ui_interface()->task(_("Quit Request sent"));
 }
 
 void
@@ -1953,8 +1953,8 @@ App::dialog_yes_no_cancel(const std::string &title, const std::string &message)
 void
 App::dialog_not_implemented()
 {
-	Gtk::MessageDialog dialog("Feature not available", false, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_CLOSE, true);
-	dialog.set_secondary_text("Sorry, this feature has not yet been implemented.");
+	Gtk::MessageDialog dialog(_("Feature not available"), false, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_CLOSE, true);
+	dialog.set_secondary_text(_("Sorry, this feature has not yet been implemented."));
 	dialog.run();
 }
 

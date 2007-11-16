@@ -85,8 +85,8 @@ CompView::CompView():
 
 	table->attach(*notebook, 0, 1, 1,2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
-	notebook->append_page(*create_canvas_tree(),"Canvases");
-	notebook->append_page(*create_action_tree(),"History");
+	notebook->append_page(*create_canvas_tree(),_("Canvases"));
+	notebook->append_page(*create_action_tree(),_("History"));
 
 
 
@@ -94,7 +94,7 @@ CompView::CompView():
 
 	studio::Instance::ImageColumnModel image_column_model;
 	image_list=manage(new class Gtk::TreeView());
-	image_list->append_column("Name",image_column_model.name);
+	image_list->append_column(_("Name"),image_column_model.name);
 	image_list->signal_row_activated().connect(sigc::mem_fun(*this,&CompView::on_image_activate));
 	image_list->set_rules_hint();
 
@@ -106,10 +106,10 @@ CompView::CompView():
 	image_page->attach(*image_list_scroll, 0, 1, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	Gtk::HBox *image_buttons=manage(new class Gtk::HBox());
 	image_page->attach(*image_buttons, 0, 1, 1,2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK, 0, 0);
-	ADD_TOOLBOX_BUTTON(button_image_new,"gtk-new","Create a new image");
-	ADD_TOOLBOX_BUTTON(button_image_delete,"gtk-delete","Delete image");
-	ADD_TOOLBOX_BUTTON(button_image_rename,"gtk-rename","Rename image");
-	ADD_TOOLBOX_BUTTON(button_image_copy,"gtk-copy","Duplicate image");
+	ADD_TOOLBOX_BUTTON(button_image_new,"gtk-new",_("Create a new image"));
+	ADD_TOOLBOX_BUTTON(button_image_delete,"gtk-delete",_("Delete image"));
+	ADD_TOOLBOX_BUTTON(button_image_rename,"gtk-rename",_("Rename image"));
+	ADD_TOOLBOX_BUTTON(button_image_copy,"gtk-copy",_("Duplicate image"));
 	button_image_new->signal_clicked().connect(sigc::mem_fun(*this,&CompView::new_image));
 	button_image_delete->signal_clicked().connect(sigc::mem_fun(*this,&CompView::delete_image));
 	button_image_rename->signal_clicked().connect(sigc::mem_fun(*this,&CompView::rename_image));
@@ -121,7 +121,7 @@ CompView::CompView():
 
 	studio::Instance::ValueNodeColumnModel valuenode_column_model;
 	valuenode_list=manage(new class Gtk::TreeView());
-	valuenode_list->append_column("Name",valuenode_column_model.name);
+	valuenode_list->append_column(_("Name"),valuenode_column_model.name);
 	valuenode_list->signal_row_activated().connect(sigc::mem_fun(*this,&CompView::on_valuenode_activate));
 	valuenode_list->set_rules_hint();
 
@@ -133,10 +133,10 @@ CompView::CompView():
 	valuenode_page->attach(*valuenode_list_scroll, 0, 1, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	Gtk::HBox *valuenode_buttons=manage(new class Gtk::HBox());
 	valuenode_page->attach(*valuenode_buttons, 0, 1, 1,2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK, 0, 0);
-	ADD_TOOLBOX_BUTTON(button_valuenode_new,"gtk-new","Create a new value_node");
-	ADD_TOOLBOX_BUTTON(button_valuenode_delete,"gtk-delete","Delete value_node");
-	ADD_TOOLBOX_BUTTON(button_valuenode_rename,"gtk-rename","Rename value_node");
-	ADD_TOOLBOX_BUTTON(button_valuenode_copy,"gtk-copy","Duplicate value_node");
+	ADD_TOOLBOX_BUTTON(button_valuenode_new,"gtk-new",_("Create a new value_node"));
+	ADD_TOOLBOX_BUTTON(button_valuenode_delete,"gtk-delete",_("Delete value_node"));
+	ADD_TOOLBOX_BUTTON(button_valuenode_rename,"gtk-rename",_("Rename value_node"));
+	ADD_TOOLBOX_BUTTON(button_valuenode_copy,"gtk-copy",_("Duplicate value_node"));
 	button_valuenode_new->signal_clicked().connect(sigc::mem_fun(*this,&CompView::new_value_node));
 	button_valuenode_delete->signal_clicked().connect(sigc::mem_fun(*this,&CompView::delete_value_node));
 	button_valuenode_rename->signal_clicked().connect(sigc::mem_fun(*this,&CompView::rename_value_node));
@@ -147,8 +147,8 @@ CompView::CompView():
 	valuenode_buttons->pack_start(*button_valuenode_copy);
 
 
-	notebook->append_page(*image_page,"Images");
-	notebook->append_page(*valuenode_page,"ValueNodes");
+	notebook->append_page(*image_page,_("Images"));
+	notebook->append_page(*valuenode_page,_("ValueNodes"));
 
 	image_page->show_all();
 	valuenode_page->show_all();
@@ -163,7 +163,7 @@ CompView::CompView():
 	add(*table);
 
 
-	set_title("Canvas Browser");
+	set_title(_("Canvas Browser"));
 	set_modal(false);
 	set_resizable(true);
 	property_window_position().set_value(Gtk::WIN_POS_NONE);
@@ -186,7 +186,7 @@ CompView::create_canvas_tree()
 	studio::Instance::CanvasTreeModel canvas_tree_model;
 	canvas_tree=manage(new class Gtk::TreeView());
 	{
-		Gtk::TreeView::Column* column = Gtk::manage( new Gtk::TreeView::Column("ID") );
+		Gtk::TreeView::Column* column = Gtk::manage( new Gtk::TreeView::Column(_("ID")) );
 //		Gtk::CellRendererPixbuf* icon_cellrenderer = Gtk::manage( new Gtk::CellRendererPixbuf() );
 
 		//column->pack_start(*icon_cellrenderer,false);
@@ -235,7 +235,7 @@ CompView::create_action_tree()
 		action_tree->append_column(*column);
 	}
 	/*{
-		Gtk::TreeView::Column* column = Gtk::manage( new Gtk::TreeView::Column("Canvas") );
+		Gtk::TreeView::Column* column = Gtk::manage( new Gtk::TreeView::Column(_("Canvas")) );
 		Gtk::CellRendererText *text_cr=Gtk::manage(new Gtk::CellRendererText());
 		text_cr->property_foreground()=Glib::ustring("#7f7f7f");
 
@@ -263,7 +263,7 @@ CompView::create_action_tree()
 		//column->clicked();
 	}
 	{
-		Gtk::TreeView::Column* column = Gtk::manage( new Gtk::TreeView::Column("Action") );
+		Gtk::TreeView::Column* column = Gtk::manage( new Gtk::TreeView::Column(_("Action")) );
 
 		Gtk::CellRendererText *text_cr=Gtk::manage(new Gtk::CellRendererText());
 		text_cr->property_foreground()=Glib::ustring("#7f7f7f");

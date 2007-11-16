@@ -118,7 +118,7 @@ Dockable::Dockable(const synfig::String& name,const synfig::String& local_name,G
 	//	event_box->set_events(Gdk::ALL_EVENTS_MASK); //!< \todo change this to only allow what is necessary for DnD
 
 
-		Gtk::Button* bttn_close(manage(new Gtk::Button("X")));
+		Gtk::Button* bttn_close(manage(new Gtk::Button(_("X"))));
 		//table->attach(*bttn_close, 1, 2, 0,1, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 		header_box_.pack_end(*bttn_close,false,false);
 		bttn_close->show();

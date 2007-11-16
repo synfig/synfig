@@ -66,10 +66,10 @@ public:
 	{
 		Gtk::Image *icon;
 
-		SMALL_BUTTON(zoom_in,"gtk-add","Zoom In");
-		SMALL_BUTTON(zoom_out,"gtk-remove","Zoom Out");
-		SMALL_BUTTON(zoom_fit,"gtk-zoom-fit","Zoom Fit");
-		SMALL_BUTTON(zoom_norm,"gtk-zoom-100","Zoom to 100%");
+		SMALL_BUTTON(zoom_in,"gtk-add",_("Zoom In"));
+		SMALL_BUTTON(zoom_out,"gtk-remove",_("Zoom Out"));
+		SMALL_BUTTON(zoom_fit,"gtk-zoom-fit",_("Zoom Fit"));
+		SMALL_BUTTON(zoom_norm,"gtk-zoom-100",_("Zoom to 100%"));
 
 		attach(*zoom_out, 0, 1, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
 		attach(*zoom_norm, 1, 2, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);

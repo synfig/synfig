@@ -349,19 +349,19 @@ playing(false)
 	hbox = manage(new Gtk::HBox);
 
 	button = &b_loop;
-	IMAGIFY_BUTTON(button,Gtk::Stock::REFRESH,"Toggle Looping");
+	IMAGIFY_BUTTON(button,Gtk::Stock::REFRESH,_("Toggle Looping"));
 	hbox->pack_start(b_loop,Gtk::PACK_SHRINK,0);
 	//attach(b_loop,0,1,2,3,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK);
 
 	button = manage(new Gtk::Button(/*_("Play")*/));
 	button->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Preview::play));
-	IMAGIFY_BUTTON(button,Gtk::Stock::GO_FORWARD,"Play");
+	IMAGIFY_BUTTON(button,Gtk::Stock::GO_FORWARD,_("Play"));
 	hbox->pack_start(*button,Gtk::PACK_SHRINK,0);
 	//attach(*button,1,2,2,3,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK);
 
 	button = manage(new Gtk::Button(/*_("Stop")*/));
 	button->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Preview::stop));
-	IMAGIFY_BUTTON(button,Gtk::Stock::NO,"Stop");
+	IMAGIFY_BUTTON(button,Gtk::Stock::NO,_("Stop"));
 	hbox->pack_start(*button,Gtk::PACK_SHRINK,0);
 	//attach(*button,2,3,2,3,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK);
 
@@ -373,19 +373,19 @@ playing(false)
 
 	button = manage(new Gtk::Button(/*_("Halt Render")*/));
 	button->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Preview::stoprender));
-	IMAGIFY_BUTTON(button,Gtk::Stock::STOP,"Halt Render");
+	IMAGIFY_BUTTON(button,Gtk::Stock::STOP,_("Halt Render"));
 	hbox->pack_start(*button,Gtk::PACK_SHRINK,0);
 	//attach(*button,2,3,3,4,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK);
 
 	button = manage(new Gtk::Button(/*_("Re-Preview")*/));
 	button->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Preview::repreview));
-	IMAGIFY_BUTTON(button,Gtk::Stock::CONVERT,"Re-Preview");
+	IMAGIFY_BUTTON(button,Gtk::Stock::CONVERT,_("Re-Preview"));
 	hbox->pack_start(*button,Gtk::PACK_SHRINK,0);
 	//attach(*button,0,2,4,5,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK);
 
 	button = manage(new Gtk::Button(/*_("Erase All")*/));
 	button->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Preview::eraseall));
-	IMAGIFY_BUTTON(button,Gtk::Stock::DELETE,"Erase All");
+	IMAGIFY_BUTTON(button,Gtk::Stock::DELETE,_("Erase All"));
 	hbox->pack_start(*button,Gtk::PACK_SHRINK,0);
 	//attach(*button,2,3,4,5,Gtk::EXPAND|Gtk::FILL,Gtk::SHRINK);
 
@@ -395,10 +395,10 @@ playing(false)
 	//3rd row
 	hbox = manage(new Gtk::HBox);
 	{
-		Gtk::Label *label = manage(new Gtk::Label("Last Rendered: "));
+		Gtk::Label *label = manage(new Gtk::Label(_("Last Rendered: ")));
 		//label->show();
 		hbox->pack_start(*label,Gtk::PACK_SHRINK,10);
-		//attach(*manage(new Gtk::Label("Last Rendered: ")),0,1,3,4,Gtk::SHRINK,Gtk::SHRINK);
+		//attach(*manage(new Gtk::Label(_("Last Rendered: "))),0,1,3,4,Gtk::SHRINK,Gtk::SHRINK);
 	}
 	//l_lasttime.show();
 	hbox->pack_start(l_lasttime,Gtk::PACK_SHRINK,0);

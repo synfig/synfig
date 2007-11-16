@@ -131,7 +131,7 @@ Dock_Layers::Dock_Layers():
 	}
 
 
-	action_group_layer_ops->add( Gtk::Action::create("toolbar-layer", "Layer Ops") );
+	action_group_layer_ops->add( Gtk::Action::create("toolbar-layer", _("Layer Ops")) );
 	App::ui_manager()->insert_action_group(action_group_layer_ops);
 
 

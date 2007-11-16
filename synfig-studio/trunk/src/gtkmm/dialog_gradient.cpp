@@ -72,7 +72,7 @@ Dialog_Gradient::Dialog_Gradient():
 	set_role("gradient_editor");
 
 	// Setup the buttons
-	Gtk::Button *grab_button(manage(new class Gtk::Button(Gtk::StockID("Grab"))));
+	Gtk::Button *grab_button(manage(new class Gtk::Button(Gtk::StockID(_("Grab")))));
 	grab_button->show();
 	add_action_widget(*grab_button,2);
 	grab_button->signal_clicked().connect(sigc::mem_fun(*this, &Dialog_Gradient::on_grab_pressed));

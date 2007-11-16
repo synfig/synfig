@@ -218,7 +218,7 @@ About::About():
 	CopyrightLabel->modify_font(fd);
 
 	// Create the Version information label
-	Gtk::Label *VersionLabel = manage(new class Gtk::Label("Version"));
+	Gtk::Label *VersionLabel = manage(new class Gtk::Label(_("Version")));
 	VersionLabel->set_size_request(image_w,80);
 	VersionLabel->set_flags(Gtk::CAN_FOCUS);
 	VersionLabel->set_alignment(0.5,0.5);
@@ -271,7 +271,7 @@ About::About():
 	CloseButton = manage(new class Gtk::Button());
 	CloseButton->set_size_request(24,24);
 	CloseButton->set_flags(Gtk::CAN_FOCUS);
-	_tooltips.set_tip(*CloseButton, "Close", "");
+	_tooltips.set_tip(*CloseButton, _("Close"), "");
 	CloseButton->set_relief(Gtk::RELIEF_NONE);
 	CloseButton->add(*image2);
 
