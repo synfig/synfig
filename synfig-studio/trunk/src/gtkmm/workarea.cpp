@@ -2242,8 +2242,11 @@ studio::WorkArea::async_update_preview()
 	// Create the render target
 	handle<Target> target;
 
-	if(w*h>(low_resolution?480*270:480*270/2))
+	// if we have lots of pixels to render and the tile renderer isn't disabled, use it
+	if(w*h>(low_resolution?480*270:480*270/2) &&
+	   !getenv("SYNFIG_DISABLE_TILE_RENDER"))
 	{
+		// do a tile render
 		handle<WorkAreaTarget> trgt(new class WorkAreaTarget(this,w,h));
 
 		trgt->set_rend_desc(&desc);
@@ -2252,6 +2255,7 @@ studio::WorkArea::async_update_preview()
 	}
 	else
 	{
+		// do a scanline render
 		handle<WorkAreaTarget_Full> trgt(new class WorkAreaTarget_Full(this,w,h));
 
 		trgt->set_rend_desc(&desc);
