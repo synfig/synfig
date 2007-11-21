@@ -434,7 +434,7 @@ public:
 	bool is_valid()const { return (bool)stroke_data; }
 
 	sigc::signal<void,float> &signal_user_click(int i=0) { assert(i>=0); assert(i<5); return signal_user_click_[i]; }
-}; // END of struct Duckmatic::Bezier
+}; // END of struct Duckmatic::Stroke
 
 }; // END of namespace studio
 
