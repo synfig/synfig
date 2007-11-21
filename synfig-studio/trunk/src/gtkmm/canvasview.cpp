@@ -1644,6 +1644,7 @@ CanvasView::init_menus()
 
 	mainmenu.accelerate(*this);
 
+/*
 	{
 
 		trackmenu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("New Waypoint"),NOT_IMPLEMENTED_SLOT));
@@ -1652,6 +1653,7 @@ CanvasView::init_menus()
 		trackmenu.items().push_back(Gtk::Menu_Helpers::SeparatorElem());
 		trackmenu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("Properties"),NOT_IMPLEMENTED_SLOT));
 	}
+*/
 	mainmenu.show();
 	filemenu.show();
 	editmenu.show();
