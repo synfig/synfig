@@ -45,6 +45,7 @@
 #include "valuenode_scale.h"
 #include "valuenode_blinecalctangent.h"
 #include "valuenode_blinecalcvertex.h"
+#include "valuenode_blinereversetangent.h"
 #include "valuenode_segcalctangent.h"
 #include "valuenode_segcalcvertex.h"
 #include "valuenode_repeat_gradient.h"
@@ -116,6 +117,7 @@ ValueNode::subsys_init()
 	ADD_VALUENODE(ValueNode_Scale,			"scale",			_("Scale")				);
 	ADD_VALUENODE(ValueNode_BLineCalcTangent,"blinecalctangent",_("BLine Tangent")		);
 	ADD_VALUENODE(ValueNode_BLineCalcVertex,"blinecalcvertex",	_("BLine Vertex")		);
+	ADD_VALUENODE(ValueNode_BLineRevTangent,"blinerevtangent",	_("Reverse Tangent")	);
 	ADD_VALUENODE(ValueNode_SegCalcTangent,	"segcalctangent",	_("Segment Tangent")	);
 	ADD_VALUENODE(ValueNode_SegCalcVertex,	"segcalcvertex",	_("Segment Vertex")		);
 	ADD_VALUENODE(ValueNode_Stripes,		"stripes",			_("Stripes")			);
