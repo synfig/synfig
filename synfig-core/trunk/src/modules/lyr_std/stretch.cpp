@@ -101,6 +101,7 @@ Layer_Stretch::get_param_vocab()const
 
 	ret.push_back(ParamDesc("amount")
 		.set_local_name(_("Amount"))
+		.set_origin("center")
 	);
 
 	ret.push_back(ParamDesc("center")
