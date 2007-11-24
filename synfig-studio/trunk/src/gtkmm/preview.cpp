@@ -861,15 +861,17 @@ void studio::Widget_Preview::repreview()
 
 void studio::Widget_Preview::stoprender()
 {
-	// don't crash if the render has already been stopped
-	if (!preview->renderer)
-		return;
-
 	if(preview)
+	{
+		// don't crash if the render has already been stopped
+		if (!preview->renderer)
+			return;
+
 		if (preview->renderer->updating)
 			preview->renderer->stop();
 		else
 			preview->renderer.detach();
+	}
 }
 
 void studio::Widget_Preview::eraseall()
