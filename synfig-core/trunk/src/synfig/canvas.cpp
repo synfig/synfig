@@ -777,7 +777,11 @@ Canvas::clone(const GUID& deriv_guid)const
 	if(is_inline())
 	{
 		canvas->is_inline_=true;
-		canvas->parent_=0;
+		// \todo this was setting parent_=0 - is there a reason for that?
+		// this was causing bug 1838132, where cloning an inline canvas that contains an imported image fails
+		// it was failing to ascertain the absolute pathname of the imported image, since it needs the pathname
+		// of the canvas to get that, which is stored in the parent canvas
+		canvas->parent_=parent();
 		//canvas->set_inline(parent());
 	}
 
