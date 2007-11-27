@@ -145,6 +145,8 @@ public:
 					int size;
 					if(!strscanf(value_,"%d",&size))
 						break;
+					if (size > SCALE_FACTOR) size = SCALE_FACTOR - 150;
+					if (size < 0) size = 0;
 					size=size*screen_h/SCALE_FACTOR;
 
 					// prevent errors like this, by allowing space for at least the dockable's icon:
@@ -172,6 +174,8 @@ public:
 				int x,y;
 				if(!strscanf(value,"%d %d",&x, &y))
 					return false;
+				if (x > SCALE_FACTOR) x = SCALE_FACTOR - 150; if (x < 0) x = 0;
+				if (y > SCALE_FACTOR) y = SCALE_FACTOR - 150; if (y < 0) y = 0;
 				x=x*screen_w/SCALE_FACTOR;
 				y=y*screen_h/SCALE_FACTOR;
 				dock_dialog.move(x,y);
@@ -182,6 +186,8 @@ public:
 				int x,y;
 				if(!strscanf(value,"%d %d",&x, &y))
 					return false;
+				if (x > SCALE_FACTOR) x = 150; if (x < 0) x = 0;
+				if (y > SCALE_FACTOR) y = 150; if (y < 0) y = 0;
 				x=x*screen_w/SCALE_FACTOR;
 				y=y*screen_h/SCALE_FACTOR;
 				dock_dialog.set_default_size(x,y);

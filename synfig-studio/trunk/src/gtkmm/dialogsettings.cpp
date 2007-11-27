@@ -31,6 +31,7 @@
 
 #include "dialogsettings.h"
 #include <synfigapp/main.h>
+#include <gdkmm/general.h>
 
 #include "general.h"
 
@@ -116,6 +117,9 @@ DialogSettings::get_value(const synfig::String& key, synfig::String& value)const
 bool
 DialogSettings::set_value(const synfig::String& key,const synfig::String& value)
 {
+	int screen_w(Gdk::screen_width());
+	int screen_h(Gdk::screen_height());
+
 	if(value.empty())
 		return false;
 
@@ -124,6 +128,10 @@ DialogSettings::set_value(const synfig::String& key,const synfig::String& value)
 		int x,y;
 		if(!strscanf(value,"%d %d",&x, &y))
 			return false;
+
+		if (x > screen_w) x = screen_w - 150; if (x < 0) x = 0;
+		if (y > screen_h) y = screen_h - 150; if (y < 0) y = 0;
+
 		window->move(x,y);
 		return true;
 	}
@@ -132,6 +140,10 @@ DialogSettings::set_value(const synfig::String& key,const synfig::String& value)
 		int x,y;
 		if(!strscanf(value,"%d %d",&x, &y))
 			return false;
+
+		if (x > screen_w) x = 150; if (x < 0) x = 0;
+		if (y > screen_h) y = 150; if (y < 0) y = 0;
+
 		window->set_default_size(x,y);
 		return true;
 	}
