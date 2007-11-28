@@ -205,7 +205,7 @@ studio::render_time_point_to_window(
 		points.push_back(Gdk::Point(area.get_x()+area.get_width()/2,area.get_y()));
 		points.push_back(Gdk::Point(area.get_x()+area.get_width()/3,area.get_y()));
 		points.push_back(Gdk::Point(area.get_x(),area.get_y()+area.get_height()/3));
-		points.push_back(Gdk::Point(area.get_x(),area.get_y()+area.get_height()*2/3));
+		points.push_back(Gdk::Point(area.get_x(),area.get_y()+area.get_height()-area.get_height()/3));
 		points.push_back(Gdk::Point(area.get_x()+area.get_width()/3,area.get_y()+area.get_height()));
 		points.push_back(Gdk::Point(area.get_x()+area.get_width()/2,area.get_y()+area.get_height()));
 		window->draw_polygon(gc,true,points);
@@ -287,8 +287,8 @@ studio::render_time_point_to_window(
 		points.push_back(Gdk::Point(area.get_x()+area.get_width()/2,area.get_y()));
 		points.push_back(Gdk::Point(area.get_x()+area.get_width(),area.get_y()));
 		points.push_back(Gdk::Point(area.get_x()+area.get_width(),area.get_y()+area.get_height()/2));
-		points.push_back(Gdk::Point(area.get_x()+area.get_width()*3/4,area.get_y()+area.get_height()/2));
-		points.push_back(Gdk::Point(area.get_x()+area.get_width()*3/4,area.get_y()+area.get_height()));
+		points.push_back(Gdk::Point(area.get_x()+area.get_width()-area.get_width()/4,area.get_y()+area.get_height()/2));
+		points.push_back(Gdk::Point(area.get_x()+area.get_width()-area.get_width()/4,area.get_y()+area.get_height()));
 		points.push_back(Gdk::Point(area.get_x()+area.get_width()/2,area.get_y()+area.get_height()));
 		window->draw_polygon(gc,true,points);
 		gc->set_rgb_fg_color(black);
@@ -298,10 +298,10 @@ studio::render_time_point_to_window(
 	case INTERPOLATION_UNDEFINED: default:
 		points.clear();
 		points.push_back(Gdk::Point(area.get_x()+area.get_width()/2,area.get_y()));
-		points.push_back(Gdk::Point(area.get_x()+area.get_width()*2/3,area.get_y()));
+		points.push_back(Gdk::Point(area.get_x()+area.get_width()-area.get_width()/3,area.get_y()));
 		points.push_back(Gdk::Point(area.get_x()+area.get_width(),area.get_y()+area.get_height()/3));
-		points.push_back(Gdk::Point(area.get_x()+area.get_width(),area.get_y()+area.get_height()*2/3));
-		points.push_back(Gdk::Point(area.get_x()+area.get_width()*2/3,area.get_y()+area.get_height()));
+		points.push_back(Gdk::Point(area.get_x()+area.get_width(),area.get_y()+area.get_height()-area.get_height()/3));
+		points.push_back(Gdk::Point(area.get_x()+area.get_width()-area.get_width()/3,area.get_y()+area.get_height()));
 		points.push_back(Gdk::Point(area.get_x()+area.get_width()/2,area.get_y()+area.get_height()));
 		window->draw_polygon(gc,true,points);
 		gc->set_rgb_fg_color(black);
