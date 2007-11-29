@@ -965,7 +965,8 @@ int main(int argc, char *argv[])
 			if(target_name.empty() && !job_list.front().outfilename.empty())
 			{
 				VERBOSE_OUT(3)<<_("Target name undefined, attempting to figure it out")<<endl;
-				string ext=job_list.front().outfilename.substr(job_list.front().outfilename.rfind('.')+1);
+				string ext = filename_extension(job_list.front().outfilename);
+				if (ext.length()) ext = ext.substr(1);
 				if(Target::ext_book().count(ext))
 					target_name=Target::ext_book()[ext];
 				else
@@ -985,9 +986,7 @@ int main(int argc, char *argv[])
 			// given input filename. (ie: change the extension)
 			if(job_list.front().outfilename.empty())
 			{
-				job_list.front().outfilename=job_list.front().filename;
-				job_list.front().outfilename.erase(find(job_list.front().outfilename.begin(),job_list.front().outfilename.end(),'.'),job_list.front().outfilename.end());
-				job_list.front().outfilename+='.';
+				job_list.front().outfilename = filename_sans_extension(job_list.front().filename) + '.';
 				if(Target::book().count(target_name))
 					job_list.front().outfilename+=Target::book()[target_name].second;
 				else
