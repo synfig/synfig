@@ -334,9 +334,14 @@ Action::ValueDescSet::prepare()
 		{
 		case ValueBase::TYPE_VECTOR:
 		{
+			Angle old_angle = (*(ValueNode_RadialComposite::Handle::cast_dynamic(
+									 value_desc.get_value_node())->get_link_vfunc(1)))(time).get(Angle());
 			Vector vect(value.get(Vector()));
 			components[0]=vect.mag();
-			components[1]=Angle(Angle::tan(vect[1],vect[0]));
+			Angle change = Angle(Angle::tan(vect[1],vect[0])) - old_angle;
+			while (change < Angle::deg(-180)) change += Angle::deg(360);
+			while (change > Angle::deg(180)) change -= Angle::deg(360);
+			components[1]=old_angle + change;
 			n_components=2;
 		}
 			break;
