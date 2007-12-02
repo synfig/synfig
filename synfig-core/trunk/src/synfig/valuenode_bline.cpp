@@ -53,6 +53,8 @@ using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 
+#define EPSILON 0.0000001f
+
 /* === G L O B A L S ======================================================= */
 
 /* === P R O C E D U R E S ================================================= */
@@ -351,7 +353,7 @@ ValueNode_BLine::operator()(Time t)const
 		assert(amount<=1.0f);
 
 		// it's fully on
-		if(amount==1.0f)
+		if (amount > 1.0f - EPSILON)
 		{
 			if(first_flag)
 			{
