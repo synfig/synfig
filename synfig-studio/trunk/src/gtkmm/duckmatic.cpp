@@ -817,6 +817,7 @@ Duckmatic::find_bezier(synfig::Point pos, synfig::Real scale, synfig::Real radiu
 bool
 Duckmatic::save_sketch(const synfig::String& filename)const
 {
+	ChangeLocale change_locale(LC_NUMERIC, "C");
 	std::ofstream file(filename.c_str());
 
 	if(!file)return false;
@@ -850,6 +851,7 @@ Duckmatic::save_sketch(const synfig::String& filename)const
 bool
 Duckmatic::load_sketch(const synfig::String& filename)
 {
+	ChangeLocale change_locale(LC_NUMERIC, "C");
 	std::ifstream file(filename.c_str());
 
 	if(!file)
