@@ -112,10 +112,10 @@ ListImporter::get_frame(Surface &surface,Time time, ProgressCallback *cb)
 
 //			DEBUGPOINT();
 	// See if that frame is cached
-	std::list<std::pair<int,Surface> >::iterator iter;
+	std::list<std::pair<String,Surface> >::iterator iter;
 	for(iter=frame_cache.begin();iter!=frame_cache.end();++iter)
 	{
-		if(iter->first==frame)
+		if(iter->first==filename_list[frame])
 		{
 //			DEBUGPOINT();
 			surface.mirror(iter->second);
@@ -150,7 +150,7 @@ ListImporter::get_frame(Surface &surface,Time time, ProgressCallback *cb)
 
 //	DEBUGPOINT();
 
-	frame_cache.push_back(std::pair<int,Surface>(frame,surface));
+	frame_cache.push_back(std::pair<String,Surface>(filename_list[frame],surface));
 
 //	DEBUGPOINT();
 

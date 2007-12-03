@@ -50,7 +50,7 @@ class ListImporter : public Importer
 {
 	float fps;
 	std::vector<String> filename_list;
-	std::list<std::pair<int,Surface> > frame_cache;
+	std::list<std::pair<String,Surface> > frame_cache;
 protected:
 	ListImporter(const String &filename);
 
