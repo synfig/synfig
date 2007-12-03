@@ -194,6 +194,13 @@ public:
 		{
 			tile_t& tile(tile_queue.front());
 
+			if (getenv("SYNFIG_SHOW_TILE_OUTLINES"))
+			{
+				Color red(1,0,0);
+				tile.surface.fill(red, 0, 0, 1, tile.surface.get_h());
+				tile.surface.fill(red, 0, 0, tile.surface.get_w(), 1);
+			}
+
 			alive_flag=warm_target->add_tile(tile.surface,tile.x,tile.y);
 
 			tile_queue.pop_front();
