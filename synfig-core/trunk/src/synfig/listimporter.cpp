@@ -96,7 +96,7 @@ bool
 ListImporter::get_frame(Surface &surface,Time time, ProgressCallback *cb)
 {
 //			DEBUGPOINT();
-	int frame=static_cast<int>(time*fps);
+	int frame=round_to_int(time*fps);
 //			DEBUGPOINT();
 
 	if(!filename_list.size())
