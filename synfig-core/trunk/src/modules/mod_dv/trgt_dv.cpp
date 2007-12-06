@@ -122,18 +122,61 @@ dv_trgt::init()
 
 	string command;
 
-	if(wide_aspect)
-		command=strprintf("encodedv -w 1 - > \"%s\"\n",filename.c_str());
-	else
-		command=strprintf("encodedv - > \"%s\"\n",filename.c_str());
-
-	// Open the pipe to encodedv
-	file=popen(command.c_str(),POPEN_BINARY_WRITE_TYPE);
-
-	if(!file)
-	{
+	int p[2];
+  
+	if (pipe(p)) {
 		synfig::error(_("Unable to open pipe to encodedv"));
 		return false;
+	};
+  
+	pid_t pid = fork();
+  
+	if (pid == -1) {
+		synfig::error(_("Unable to open pipe to encodedv"));
+		return false;
+	}
+  
+	if (pid == 0){
+		// Child process
+		// Dup pipeout to stdin
+		if( dup2( p[0], STDIN_FILENO ) == -1 ){
+			synfig::error(_("Unable to open pipe to encodedv"));
+			return false;
+		}
+		
+		// Open filename to stdout
+		FILE* outfile = fopen(filename.c_str(),"wb");
+		if( outfile == NULL ){
+			synfig::error(_("Unable to open pipe to encodedv"));
+			return false;
+		}
+		int outfilefd = fileno(outfile);
+		if( outfilefd == -1 ){
+			synfig::error(_("Unable to open pipe to encodedv"));
+			return false;
+		}
+		if( dup2( outfilefd, STDOUT_FILENO ) == -1 ){
+			synfig::error(_("Unable to open pipe to encodedv"));
+			return false;
+		}
+		
+		if(wide_aspect)
+			execlp("encodedv", "encodedv", "-w", "1", "-");
+		else
+			execlp("encodedv", "encodedv", "-");
+		// We should never reach here unless the exec failed
+		synfig::error(_("Unable to open pipe to encodedv"));
+		return false;
+	} else {
+		// Parent process
+		// Close pipein, not needed
+		close(p[0]);
+		// Save pipeout to file handle, will write to it later
+		file = fdopen(p[1], "wb");
+		if (file == NULL) {
+			synfig::error(_("Unable to open pipe to encodedv"));
+			return false;
+		}
 	}
 
 	// Sleep for a moment to let the pipe catch up
