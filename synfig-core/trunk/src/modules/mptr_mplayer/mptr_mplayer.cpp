@@ -72,6 +72,9 @@ mplayer_mptr::~mplayer_mptr()
 bool
 mplayer_mptr::GetFrame(Time time, synfig::Surface &surface, synfig::ProgressCallback *)
 {
+
+#error This code has vulnerabilites: arbitrary shell command execution and tmpfile issues
+
 	int ret;
 	ret=system(
 		strprintf("/usr/local/bin/mencoder \"%s\" -ovc rawrgb -ss %f -endpos 0 -nosound -o /tmp/tmp.synfig.rgbdata | grep \"VIDEO\" > /tmp/tmp.synfig.size",
