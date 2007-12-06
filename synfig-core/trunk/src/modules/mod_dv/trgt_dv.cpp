@@ -36,6 +36,8 @@
 #include <ETL/stringf>
 #include "trgt_dv.h"
 #include <stdio.h>
+#include <sys/types.h>
+#include <unistd.h>
 #include <algorithm>
 #include <functional>
 #include <ETL/clock>
