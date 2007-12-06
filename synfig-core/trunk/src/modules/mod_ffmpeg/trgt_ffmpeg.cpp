@@ -124,11 +124,39 @@ ffmpeg_trgt::init()
 	imagecount=desc.get_frame_start();
 	if(desc.get_frame_end()-desc.get_frame_start()>0)
 		multi_image=true;
-	string command;
 
-	command=strprintf("ffmpeg -f image2pipe -vcodec ppm -an -r %f -i pipe: -loop -hq -title \"%s\" -vcodec mpeg1video -y \"%s\"\n",desc.get_frame_rate(),get_canvas()->get_name().c_str(),filename.c_str());
-
-	file=popen(command.c_str(),POPEN_BINARY_WRITE_TYPE);
+	int p[2];
+  
+	if (pipe(p)) {
+		synfig::error(_("Unable to open pipe to ffmpeg"));
+		return false;
+	};
+  
+	pid_t pid = fork();
+  
+	if (pid == -1) {
+		synfig::error(_("Unable to open pipe to ffmpeg"));
+		return false;
+	}
+  
+	if (pid == 0){
+		// Child process
+		// Dup pipeout to stdin
+		if( dup2( p[0], STDIN_FILENO ) == -1 ){
+			synfig::error(_("Unable to open pipe to ffmpeg"));
+			return false;
+		}
+		execlp("ffmpeg", "ffmpeg", "-f", "image2pipe", "-vcodec", "ppm", "-an", "-r", strprintf("%f", desc.get_frame_rate()).c_str(), "-i", "pipe:", "-loop", "-hq", "-title", get_canvas()->get_name().c_str(), "-vcodec", "mpeg1video", "-y", filename.c_str(), (const char *)NULL);
+		// We should never reach here unless the exec failed
+		synfig::error(_("Unable to open pipe to ffmpeg"));
+		return false;
+	} else {
+		// Parent process
+		// Close pipein, not needed
+		close(p[0]);
+		// Save pipeout to file handle, will write to it later
+		file = fdopen(p[1], "wb");
+	}
 
 	// etl::yield();
 
