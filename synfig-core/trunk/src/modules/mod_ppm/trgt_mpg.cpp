@@ -56,6 +56,8 @@ const char bsd_mpeg1::Ext[]="mpg";
 
 /* === M E T H O D S ======================================================= */
 
+#error This code has tmpfile vulnerabilites
+
 Target *
 bsd_mpeg1::New(const char *filename)
 {
