@@ -161,9 +161,9 @@ dv_trgt::init()
 		}
 		
 		if(wide_aspect)
-			execlp("encodedv", "encodedv", "-w", "1", "-");
+			execlp("encodedv", "encodedv", "-w", "1", "-", (const char *)NULL);
 		else
-			execlp("encodedv", "encodedv", "-");
+			execlp("encodedv", "encodedv", "-", (const char *)NULL);
 		// We should never reach here unless the exec failed
 		synfig::error(_("Unable to open pipe to encodedv"));
 		return false;
