@@ -159,6 +159,9 @@ imagemagick_mptr::get_frame(synfig::Surface &surface,Time /*time*/, synfig::Prog
 	return true;
 
 #else
+	
+#error This code contains tempfile and arbitrary shell command execution vulnerabilities
+	
 	if(file)
 		pclose(file);
 

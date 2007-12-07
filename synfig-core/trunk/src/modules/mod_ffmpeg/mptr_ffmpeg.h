@@ -30,6 +30,7 @@
 /* === H E A D E R S ======================================================= */
 
 #include <synfig/importer.h>
+#include <sys/types.h>
 #include <stdio.h>
 #include "string.h"
 #ifdef HAVE_TERMIOS_H
@@ -49,6 +50,7 @@ class ffmpeg_mptr : public synfig::Importer
 	SYNFIG_IMPORTER_MODULE_EXT
 public:
 private:
+	pid_t pid;
 	synfig::String filename;
 	FILE *file;
 	int cur_frame;

@@ -34,6 +34,9 @@
 #include <ETL/stringf>
 #include "mptr_ffmpeg.h"
 #include <stdio.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <unistd.h>
 #include <iostream>
 #include <algorithm>
 #include <functional>
@@ -63,14 +66,47 @@ ffmpeg_mptr::seek_to(int frame)
 	{
 		if(file)
 		{
-			pclose(file);
+			fclose(file);
+			int status;
+			waitpid(pid,&status,0);
 		}
 
-		string command;
-
-		command=strprintf("ffmpeg -i \"%s\" -an -f image2pipe -vcodec ppm -\n",filename.c_str());
-
-		file=popen(command.c_str(),POPEN_BINARY_READ_TYPE);
+		int p[2];
+	  
+		if (pipe(p)) {
+			cerr<<"Unable to open pipe to ffmpeg"<<endl;
+			return false;
+		};
+	  
+		pid = fork();
+	  
+		if (pid == -1) {
+			cerr<<"Unable to open pipe to ffmpeg"<<endl;
+			return false;
+		}
+	  
+		if (pid == 0){
+			// Child process
+			// Close pipein, not needed
+			close(p[0]);
+			// Dup pipein to stdout
+			if( dup2( p[1], STDOUT_FILENO ) == -1 ){
+				cerr<<"Unable to open pipe to ffmpeg"<<endl;
+				return false;
+			}
+			// Close the unneeded pipein
+			close(p[1]);
+			execlp("ffmpeg", "ffmpeg", "-i", filename.c_str(), "-an", "-f", "image2pipe", "-vcodec", "ppm", "-", (const char *)NULL);
+			// We should never reach here unless the exec failed
+			cerr<<"Unable to open pipe to ffmpeg"<<endl;
+			return false;
+		} else {
+			// Parent process
+			// Close pipeout, not needed
+			close(p[1]);
+			// Save pipeout to file handle, will write to it later
+			file = fdopen(p[0], "wb");
+		}
 
 		if(!file)
 		{
@@ -148,6 +184,7 @@ ffmpeg_mptr::grab_frame(void)
 
 ffmpeg_mptr::ffmpeg_mptr(const char *f)
 {
+	pid=-1;
 #ifdef HAVE_TERMIOS_H
 	tcgetattr (0, &oldtty);
 #endif
@@ -160,7 +197,11 @@ ffmpeg_mptr::ffmpeg_mptr(const char *f)
 ffmpeg_mptr::~ffmpeg_mptr()
 {
 	if(file)
-		pclose(file);
+	{
+		fclose(file);
+		int status;
+		waitpid(pid,&status,0);
+	}
 #ifdef HAVE_TERMIOS_H
 	tcsetattr(0,TCSANOW,&oldtty);
 #endif
