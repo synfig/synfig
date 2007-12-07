@@ -34,6 +34,9 @@
 #include <ETL/stringf>
 #include "mptr_imagemagick.h"
 #include <stdio.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <unistd.h>
 #include <algorithm>
 #include <functional>
 #include <ETL/stringf>
@@ -77,11 +80,6 @@ imagemagick_mptr::get_frame(synfig::Surface &surface,Time /*time*/, synfig::Prog
 //#define HAS_LIBPNG 1
 
 #if 1
-	if(file)
-		pclose(file);
-
-	string command;
-
 	if(filename.empty())
 	{
 		if(cb)cb->error(_("No file to load"));
@@ -89,15 +87,27 @@ imagemagick_mptr::get_frame(synfig::Surface &surface,Time /*time*/, synfig::Prog
 		return false;
 	}
 	string temp_file="/tmp/deleteme.png";
+	string output="png32:"+temp_file;
 
-	if(filename.find("psd")!=String::npos)
-		command=strprintf("convert \"%s\" -flatten \"png32:%s\"\n",filename.c_str(),temp_file.c_str());
-	else
-		command=strprintf("convert \"%s\" \"png32:%s\"\n",filename.c_str(),temp_file.c_str());
+	pid_t pid = fork();
+  
+	if (pid == -1) {
+		return false;
+	}
+  
+	if (pid == 0){
+		// Child process
+		if(filename.find("psd")!=String::npos)
+			execlp("convert", "convert", filename.c_str(), "-flatten", output.c_str(), (const char *)NULL);
+		else
+			execlp("convert", "convert", filename.c_str(), output.c_str(), (const char *)NULL);
+		// We should never reach here unless the exec failed
+		return false;
+	}
 
-	synfig::info("command=%s",command.c_str());
-
-	if(system(command.c_str())!=0)
+	int status;
+	waitpid(pid, &status, 0);
+	if( (WIFEXITED(status) && WEXITSTATUS(status) != 0) || !WIFEXITED(status) )
 		return false;
 
 	Importer::Handle importer(Importer::open(temp_file));
