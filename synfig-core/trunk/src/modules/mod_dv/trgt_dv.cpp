@@ -37,6 +37,7 @@
 #include "trgt_dv.h"
 #include <stdio.h>
 #include <sys/types.h>
+#include <sys/wait.h>
 #include <unistd.h>
 #include <algorithm>
 #include <functional>
@@ -63,6 +64,7 @@ SYNFIG_TARGET_SET_CVS_ID(dv_trgt,"$Id$");
 
 dv_trgt::dv_trgt(const char *Filename)
 {
+	pid=-1;
 	file=NULL;
 	filename=Filename;
 	buffer=NULL;
@@ -74,8 +76,11 @@ dv_trgt::dv_trgt(const char *Filename)
 
 dv_trgt::~dv_trgt()
 {
-	if(file)
-		pclose(file);
+	if(file){
+		fclose(file);
+		int status;
+		waitpid(pid,&status,0);
+	}
 	file=NULL;
 	delete [] buffer;
 	delete [] color_buffer;
@@ -140,12 +145,15 @@ dv_trgt::init()
   
 	if (pid == 0){
 		// Child process
+		// Close pipeout, not needed
+		close(p[1]);
 		// Dup pipeout to stdin
 		if( dup2( p[0], STDIN_FILENO ) == -1 ){
 			synfig::error(_("Unable to open pipe to encodedv"));
 			return false;
 		}
-		
+		// Close the unneeded pipeout
+		close(p[0]);
 		// Open filename to stdout
 		FILE* outfile = fopen(filename.c_str(),"wb");
 		if( outfile == NULL ){

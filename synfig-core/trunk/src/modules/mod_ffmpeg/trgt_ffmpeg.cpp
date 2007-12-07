@@ -37,6 +37,7 @@
 #include "trgt_ffmpeg.h"
 #include <stdio.h>
 #include <sys/types.h>
+#include <sys/wait.h>
 #include <unistd.h>
 #include <algorithm>
 #include <functional>
@@ -62,6 +63,7 @@ SYNFIG_TARGET_SET_CVS_ID(ffmpeg_trgt,"$Id$");
 
 ffmpeg_trgt::ffmpeg_trgt(const char *Filename)
 {
+	pid=-1;
 	file=NULL;
 	filename=Filename;
 	multi_image=false;
@@ -76,7 +78,9 @@ ffmpeg_trgt::~ffmpeg_trgt()
 	{
 		etl::yield();
 		sleep(1);
-		pclose(file);
+		fclose(file);
+		int status;
+		waitpid(pid,&status,0);
 	}
 	file=NULL;
 	delete [] buffer;
@@ -134,7 +138,7 @@ ffmpeg_trgt::init()
 		return false;
 	};
   
-	pid_t pid = fork();
+	pid = fork();
   
 	if (pid == -1) {
 		synfig::error(_("Unable to open pipe to ffmpeg"));
@@ -143,11 +147,15 @@ ffmpeg_trgt::init()
   
 	if (pid == 0){
 		// Child process
+		// Close pipeout, not needed
+		close(p[1]);
 		// Dup pipeout to stdin
 		if( dup2( p[0], STDIN_FILENO ) == -1 ){
 			synfig::error(_("Unable to open pipe to ffmpeg"));
 			return false;
 		}
+		// Close the unneeded pipeout
+		close(p[0]);
 		execlp("ffmpeg", "ffmpeg", "-f", "image2pipe", "-vcodec", "ppm", "-an", "-r", strprintf("%f", desc.get_frame_rate()).c_str(), "-i", "pipe:", "-loop", "-hq", "-title", get_canvas()->get_name().c_str(), "-vcodec", "mpeg1video", "-y", "--", filename.c_str(), (const char *)NULL);
 		// We should never reach here unless the exec failed
 		synfig::error(_("Unable to open pipe to ffmpeg"));

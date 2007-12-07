@@ -31,6 +31,7 @@
 
 #include <synfig/target_scanline.h>
 #include <synfig/string.h>
+#include <sys/types.h>
 #include <cstdio>
 
 /* === M A C R O S ========================================================= */
@@ -43,6 +44,7 @@ class ffmpeg_trgt : public synfig::Target_Scanline
 {
 	SYNFIG_TARGET_MODULE_EXT
 private:
+	pid_t pid;
 	int imagecount;
 	bool multi_image;
 	FILE *file;
