@@ -127,8 +127,6 @@ dv_trgt::init()
 {
 	imagecount=desc.get_frame_start();
 
-	string command;
-
 	int p[2];
   
 	if (pipe(p)) {
