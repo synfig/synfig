@@ -36,6 +36,9 @@
 #include <ETL/stringf>
 #include "trgt_imagemagick.h"
 #include <stdio.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <unistd.h>
 #include <algorithm>
 #include <functional>
 #include <ETL/clock>
@@ -61,6 +64,7 @@ SYNFIG_TARGET_SET_CVS_ID(imagemagick_trgt,"$Id$");
 
 imagemagick_trgt::imagemagick_trgt(const char *Filename)
 {
+	pid=-1;
 	file=NULL;
 	filename=Filename;
 	multi_image=false;
@@ -70,8 +74,11 @@ imagemagick_trgt::imagemagick_trgt(const char *Filename)
 
 imagemagick_trgt::~imagemagick_trgt()
 {
-	if(file)
-		pclose(file);
+	if(file){
+		fclose(file);
+		int status;
+		waitpid(pid,&status,0);
+	}
 	file=NULL;
 	delete [] buffer;
 	delete [] color_buffer;
@@ -110,7 +117,9 @@ imagemagick_trgt::end_frame()
 	{
 		fputc(0,file);
 		fflush(file);
-		pclose(file);
+		fclose(file);
+		int status;
+		waitpid(pid,&status,0);
 	}
 	file=NULL;
 	imagecount++;
@@ -119,7 +128,8 @@ imagemagick_trgt::end_frame()
 bool
 imagemagick_trgt::start_frame(synfig::ProgressCallback *cb)
 {
-	string command;
+	const char *msg=_("Unable to open pipe to imagemagick's convert utility");
+
 	string newfilename;
 
 	if (multi_image)
@@ -129,18 +139,55 @@ imagemagick_trgt::start_frame(synfig::ProgressCallback *cb)
 	else
 		newfilename = filename;
 
-	command=strprintf("convert -depth 8 -size %dx%d rgb%s:-[0] -density %dx%d \"%s\"\n",
-					  desc.get_w(), desc.get_h(),					// size
-					  ((channels(pf) == 4) ? "a" : ""),				// rgba or rgb?
-					  round_to_int(desc.get_x_res()/39.3700787402),	// density
-					  round_to_int(desc.get_y_res()/39.3700787402),
-					  newfilename.c_str());
-
-	file=popen(command.c_str(),POPEN_BINARY_WRITE_TYPE);
+	int p[2];
+  
+	if (pipe(p)) {
+		if(cb) cb->error(N_(msg));
+		else synfig::error(N_(msg));
+		return false;
+	};
+  
+	pid = fork();
+  
+	if (pid == -1) {
+		if(cb) cb->error(N_(msg));
+		else synfig::error(N_(msg));
+		return false;
+	}
+	
+	if (pid == 0){
+		// Child process
+		// Close pipeout, not needed
+		close(p[1]);
+		// Dup pipeout to stdin
+		if( dup2( p[0], STDIN_FILENO ) == -1 ){
+			if(cb) cb->error(N_(msg));
+			else synfig::error(N_(msg));
+			return false;
+		}
+		// Close the unneeded pipeout
+		close(p[0]);
+		execlp("convert", "convert",
+			"-depth", "8",
+			"-size", strprintf("%dx%d", desc.get_w(), desc.get_h()).c_str(),
+			((channels(pf) == 4) ? "rgba:-[0]" : "rgb:-[0]"),
+			"-density", strprintf("%dx%d", round_to_int(desc.get_x_res()/39.3700787402), round_to_int(desc.get_y_res()/39.3700787402)).c_str(),
+			newfilename.c_str(),
+			(const char *)NULL);
+		// We should never reach here unless the exec failed
+		if(cb) cb->error(N_(msg));
+		else synfig::error(N_(msg));
+		return false;
+	} else {
+		// Parent process
+		// Close pipein, not needed
+		close(p[0]);
+		// Save pipeout to file handle, will write to it later
+		file = fdopen(p[1], "wb");
+	}
 
 	if(!file)
 	{
-		const char *msg=_("Unable to open pipe to imagemagick's convert utility");
 		if(cb)cb->error(N_(msg));
 		else synfig::error(N_(msg));
 		return false;
