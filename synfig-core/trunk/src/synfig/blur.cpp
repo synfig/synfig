@@ -128,7 +128,7 @@ static inline T zero()
 }
 
 template <>
-static inline Color zero<Color>()
+inline Color zero<Color>()
 {
 	return Color::alpha();
 }

@@ -35,6 +35,7 @@
 #include <list>
 #include <ETL/clock>
 #include <algorithm>
+#include <cstring>
 
 #include <synfig/loadcanvas.h>
 #include <synfig/savecanvas.h>

@@ -32,6 +32,7 @@
 #include "_pen.h"
 #include "_misc.h"
 #include <algorithm>
+#include <cstring>
 
 /* === M A C R O S ========================================================= */
 
