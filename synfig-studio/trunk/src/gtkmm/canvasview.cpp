@@ -1357,8 +1357,8 @@ CanvasView::init_menus()
 	}
 
 
-#define DUCK_MASK(lower,upper)	\
-	duck_mask_##lower=Gtk::ToggleAction::create("mask-" #lower "-ducks", _("Show "#lower" ducks")); \
+#define DUCK_MASK(lower,upper,string)	\
+	duck_mask_##lower=Gtk::ToggleAction::create("mask-" #lower "-ducks", string); \
 	duck_mask_##lower->set_active((bool)(work_area->get_type_mask()&Duck::TYPE_##upper)); \
 	action_group->add( duck_mask_##lower, \
 		sigc::bind( \
@@ -1366,12 +1366,12 @@ CanvasView::init_menus()
 			Duck::TYPE_##upper \
 		) \
 	)
-	DUCK_MASK(position,POSITION);
-	DUCK_MASK(tangent,TANGENT);
-	DUCK_MASK(vertex,VERTEX);
-	DUCK_MASK(radius,RADIUS);
-	DUCK_MASK(width,WIDTH);
-	DUCK_MASK(angle,ANGLE);
+	DUCK_MASK(position,POSITION,_("Show Position Ducks"));
+	DUCK_MASK(tangent,TANGENT,_("Show Tangent Ducks"));
+	DUCK_MASK(vertex,VERTEX,_("Show Vertex Ducks"));
+	DUCK_MASK(radius,RADIUS,_("Show Radius Ducks"));
+	DUCK_MASK(width,WIDTH,_("Show Width Ducks"));
+	DUCK_MASK(angle,ANGLE,_("Show Angle Ducks"));
 #undef DUCK_MASK
 
 	add_accel_group(App::ui_manager()->get_accel_group());
