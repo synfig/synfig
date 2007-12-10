@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file mod_filter/blur.h
-**	\brief Template Header
+**	\brief Header file for implementation of the "Blur" layer
 **
 **	$Id$
 **

@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file conicalgradient.h
-**	\brief Template Header
+**	\brief Header file for implementation of the "Conical Gradient" layer
 **
 **	$Id$
 **

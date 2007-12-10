@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file sphere_distort.h
-**	\brief Sphere Distort Header
+**	\brief Header file for implementation of the "Spherize" layer
 **
 **	$Id$
 **

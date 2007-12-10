@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file plant.h
-**	\brief Template Header
+**	\brief Header file for implementation of the "Plant" layer
 **
 **	$Id$
 **

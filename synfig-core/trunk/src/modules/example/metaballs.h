@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file metaballs.h
-**	\brief Declares information for defining Metaballs.
+**	\brief Header file for implementation of the "Metaballs" layer
 **
 **	$Id$
 **

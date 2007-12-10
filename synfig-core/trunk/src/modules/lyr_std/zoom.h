@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file zoom.h
-**	\brief writeme
+**	\brief Header file for implementation of the "Zoom" layer
 **
 **	$Id$
 **

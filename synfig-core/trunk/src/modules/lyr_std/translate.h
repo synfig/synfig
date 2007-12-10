@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file translate.h
-**	\brief Template Header
+**	\brief Header file for implementation of the "Translate" layer
 **
 **	$Id$
 **

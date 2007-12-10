@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file halftone2.h
-**	\brief Template Header
+**	\brief Header file for implementation of the "Halftone 2" layer
 **
 **	$Id$
 **

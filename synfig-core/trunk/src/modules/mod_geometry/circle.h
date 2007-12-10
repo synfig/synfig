@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file circle.h
-**	\brief Template Header
+**	\brief Header file for implementation of the "Circle" layer
 **
 **	$Id$
 **

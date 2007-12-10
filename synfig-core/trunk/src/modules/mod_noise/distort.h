@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file distort.h
-**	\brief Template Header
+**	\brief Header file for implementation of the "Noise Distort" layer
 **
 **	$Id$
 **

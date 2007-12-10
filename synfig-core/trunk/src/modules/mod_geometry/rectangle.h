@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file rectangle.h
-**	\brief Template Header
+**	\brief Header file for implementation of the "Rectangle" layer
 **
 **	$Id$
 **

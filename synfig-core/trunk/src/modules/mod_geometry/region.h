@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file region.h
-**	\brief Header File
+**	\brief Header file for implementation of the "Region" layer
 **
 **	$Id$
 **

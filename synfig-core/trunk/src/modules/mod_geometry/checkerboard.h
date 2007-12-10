@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file checkerboard.h
-**	\brief Checkerboard Layer
+**	\brief Header file for implementation of the "Checkerboard" layer
 **
 **	$Id$
 **

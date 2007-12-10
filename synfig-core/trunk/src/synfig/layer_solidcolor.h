@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file layer_solidcolor.h
-**	\brief Template Header
+**	\brief Header file for implementation of the "Solid Color" layer
 **
 **	$Id$
 **

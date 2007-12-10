@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file mandelbrot.h
-**	\brief Template Header
+**	\brief Header file for implementation of the "Mandelbrot Set" layer
 **
 **	$Id$
 **

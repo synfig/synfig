@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file lumakey.h
-**	\brief Checkerboard Layer
+**	\brief Header file for implementation of the "Luma Key" layer
 **
 **	$Id$
 **
