@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file simplecircle.cpp
-**	\brief Template Header
+**	\brief Implementation of the "Simple Circle" layer
 **
 **	$Id$
 **

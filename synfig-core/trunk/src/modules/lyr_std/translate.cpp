@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file translate.cpp
-**	\brief Template File
+**	\brief Implementation of the "Translate" layer
 **
 **	$Id$
 **

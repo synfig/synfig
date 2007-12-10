@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file lineargradient.cpp
-**	\brief Template Header
+**	\brief Implementation of the "Linear Gradient" layer
 **
 **	$Id$
 **

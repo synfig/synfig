@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file metaballs.cpp
-**	\brief Implements metaballs
+**	\brief Implementation of the "Metaballs" layer
 **
 **	$Id$
 **

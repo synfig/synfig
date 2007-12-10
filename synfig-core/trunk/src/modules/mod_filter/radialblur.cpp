@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file radialblur.cpp
-**	\brief Template Header
+**	\brief Implementation of the "Radial Blur" layer
 **
 **	$Id$
 **

@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file layer_motionblur.cpp
-**	\brief Template Header
+**	\brief Implementation of the "Motion Blur" layer
 **
 **	$Id$
 **

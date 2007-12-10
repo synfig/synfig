@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file layer_pastecanvas.cpp
-**	\brief Template Header
+**	\brief Implementation of the "Paste Canvas" layer
 **
 **	$Id$
 **

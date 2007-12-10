@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file outline.cpp
-**	\brief Template
+**	\brief Implementation of the "Outline" layer
 **
 **	$Id$
 **

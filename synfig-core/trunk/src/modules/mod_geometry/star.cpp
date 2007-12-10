@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file star.cpp
-**	\brief Template Header
+**	\brief Implementation of the "Star" layer
 **
 **	$Id$
 **

@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file xorpattern.cpp
-**	\brief Template Header
+**	\brief Implementation of the "XOR Pattern" layer
 **
 **	$Id$
 **

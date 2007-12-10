@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file checkerboard.cpp
-**	\brief Template Header
+**	\brief Implementation of the "Checkerboard" layer
 **
 **	$Id$
 **

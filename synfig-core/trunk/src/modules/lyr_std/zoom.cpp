@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file zoom.cpp
-**	\brief writeme
+**	\brief Implementation of the "Zoom" layer
 **
 **	$Id$
 **

@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file rectangle.cpp
-**	\brief Template Header
+**	\brief Implementation of the "Rectangle" layer
 **
 **	$Id$
 **

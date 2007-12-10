@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file insideout.cpp
-**	\brief Template Header
+**	\brief Implementation of the "Inside Out" layer
 **
 **	$Id$
 **

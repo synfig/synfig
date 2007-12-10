@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file colorcorrect.cpp
-**	\brief Template Header
+**	\brief Implementation of the "Color Correct" layer
 **
 **	$Id$
 **

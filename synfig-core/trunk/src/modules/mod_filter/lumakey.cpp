@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file lumakey.cpp
-**	\brief Template Header
+**	\brief Implementation of the "Luma Key" layer
 **
 **	$Id$
 **

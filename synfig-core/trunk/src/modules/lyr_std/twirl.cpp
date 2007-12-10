@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file twirl.cpp
-**	\brief Template Header
+**	\brief Implementation of the "Twirl" layer
 **
 **	$Id$
 **

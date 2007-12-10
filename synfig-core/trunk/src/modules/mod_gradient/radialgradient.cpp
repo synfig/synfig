@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file mod_gradient/radialgradient.cpp
-**	\brief Template Header
+**	\brief Implementation of the "Radial Gradient" layer
 **
 **	$Id$
 **

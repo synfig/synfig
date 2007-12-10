@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file warp.cpp
-**	\brief Template File
+**	\brief Implementation of the "Warp" layer
 **
 **	$Id$
 **

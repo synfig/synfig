@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file lyr_freetype.cpp
-**	\brief Template Header
+**	\brief Implementation of the "Text" layer
 **
 **	$Id$
 **

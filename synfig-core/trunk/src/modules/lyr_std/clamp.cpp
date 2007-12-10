@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file clamp.cpp
-**	\brief Template Header
+**	\brief Implementation of the "Clamp" layer
 **
 **	$Id$
 **

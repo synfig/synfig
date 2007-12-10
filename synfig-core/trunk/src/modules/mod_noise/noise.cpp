@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file noise.cpp
-**	\brief blehh
+**	\brief Implementation of the "Noise Gradient" layer
 **
 **	$Id$
 **

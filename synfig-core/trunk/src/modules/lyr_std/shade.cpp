@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file shade.cpp
-**	\brief Template Header
+**	\brief Implementation of the "Shade" layer
 **
 **	$Id$
 **

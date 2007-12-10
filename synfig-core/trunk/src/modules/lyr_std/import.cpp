@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file import.cpp
-**	\brief Image Import Layer Implementation
+**	\brief Implementation of the "Import Image" layer
 **
 **	$Id$
 **

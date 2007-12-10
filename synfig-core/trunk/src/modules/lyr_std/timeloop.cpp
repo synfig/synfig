@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file timeloop.cpp
-**	\brief Image Layer_TimeLoop Layer Implementation
+**	\brief Implementation of the "Time Loop" layer
 **
 **	$Id$
 **

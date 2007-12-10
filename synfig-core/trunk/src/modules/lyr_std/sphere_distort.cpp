@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file sphere_distort.cpp
-**	\brief Sphere Distort File
+**	\brief Implementation of the "Spherize" layer
 **
 **	$Id$
 **

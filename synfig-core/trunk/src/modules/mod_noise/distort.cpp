@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file distort.cpp
-**	\brief blehh
+**	\brief Implementation of the "Noise Distort" layer
 **
 **	$Id$
 **

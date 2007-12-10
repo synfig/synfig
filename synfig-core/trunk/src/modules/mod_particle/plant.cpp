@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file plant.cpp
-**	\brief Template
+**	\brief Implementation of the "Plant" layer
 **
 **	$Id$
 **

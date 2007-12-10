@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file mod_filter/blur.cpp
-**	\brief Template Header
+**	\brief Implementation of the "Blur" layer
 **
 **	$Id$
 **

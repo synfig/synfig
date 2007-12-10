@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file stretch.cpp
-**	\brief Template Header
+**	\brief Implementation of the "Stretch" layer
 **
 **	$Id$
 **

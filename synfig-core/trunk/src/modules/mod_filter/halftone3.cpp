@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file halftone3.cpp
-**	\brief blehh
+**	\brief Implementation of the "Halftone 3" layer
 **
 **	$Id$
 **

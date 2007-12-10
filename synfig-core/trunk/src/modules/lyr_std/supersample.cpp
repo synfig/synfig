@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file supersample.cpp
-**	\brief Template Header
+**	\brief Implementation of the "Super Sample" layer
 **
 **	$Id$
 **
