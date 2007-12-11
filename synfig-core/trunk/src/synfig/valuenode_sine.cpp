@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file valuenode_sine.cpp
-**	\brief Template File
+**	\brief Implementation of the "Sine" valuenode conversion.
 **
 **	$Id$
 **

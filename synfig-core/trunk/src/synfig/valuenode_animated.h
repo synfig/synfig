@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file valuenode_animated.h
-**	\brief Template Header
+**	\brief Header file for implementation of the "Animated" valuenode conversion.
 **
 **	$Id$
 **

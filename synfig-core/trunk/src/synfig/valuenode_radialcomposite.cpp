@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file valuenode_radialcomposite.cpp
-**	\brief Template File
+**	\brief Implementation of the "Radial Composite" valuenode conversion.
 **
 **	$Id$
 **

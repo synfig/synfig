@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file valuenode_composite.h
-**	\brief Template Header
+**	\brief Header file for implementation of the "Composite" valuenode conversion.
 **
 **	$Id$
 **

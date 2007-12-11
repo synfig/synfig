@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file valuenode_bline.cpp
-**	\brief Template File
+**	\brief Implementation of the "BLine" valuenode conversion.
 **
 **	$Id$
 **

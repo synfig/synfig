@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file valuenode_exp.cpp
-**	\brief Template File
+**	\brief Implementation of the "Exponential" valuenode conversion.
 **
 **	$Id$
 **

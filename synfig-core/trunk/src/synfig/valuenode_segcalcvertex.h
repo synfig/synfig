@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file valuenode_segcalcvertex.h
-**	\brief Template Header
+**	\brief Header file for implementation of the "Segment Vertex" valuenode conversion.
 **
 **	$Id$
 **

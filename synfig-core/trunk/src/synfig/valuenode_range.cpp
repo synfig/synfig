@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file valuenode_range.cpp
-**	\brief Template File
+**	\brief Implementation of the "Range" valuenode conversion.
 **
 **	$Id$
 **

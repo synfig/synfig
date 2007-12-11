@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file valuenode_composite.cpp
-**	\brief Template File
+**	\brief Implementation of the "Composite" valuenode conversion.
 **
 **	$Id$
 **

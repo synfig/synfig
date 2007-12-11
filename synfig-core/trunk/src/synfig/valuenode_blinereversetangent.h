@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file valuenode_blinerevtangent.h
-**	\brief Template Header
+/*!	\file valuenode_blinereversetangent.h
+**	\brief Header file for implementation of the "Reverse Tangent" valuenode conversion.
 **
 **	$Id$
 **

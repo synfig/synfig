@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file valuenode_linear.cpp
-**	\brief Template File
+**	\brief Implementation of the "Linear" valuenode conversion.
 **
 **	$Id$
 **

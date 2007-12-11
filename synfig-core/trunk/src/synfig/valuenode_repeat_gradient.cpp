@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file valuenode_repeat_gradient.cpp
-**	\brief Template File
+**	\brief Implementation of the "Repeat Gradient" valuenode conversion.
 **
 **	$Id: valuenode_repeat_gradient.cpp 604 2007-09-05 14:29:02Z dooglus $
 **

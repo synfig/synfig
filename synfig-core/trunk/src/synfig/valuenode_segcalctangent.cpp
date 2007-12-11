@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file valuenode_segcalctangent.cpp
-**	\brief Template File
+**	\brief Implementation of the "Segment Tangent" valuenode conversion.
 **
 **	$Id$
 **

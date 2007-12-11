@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file valuenode_reference.cpp
-**	\brief Template File
+**	\brief Implementation of the "Reference" valuenode conversion.
 **
 **	$Id$
 **

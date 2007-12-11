@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file valuenode_bline.h
-**	\brief Template Header
+**	\brief Header file for implementation of the "BLine" valuenode conversion.
 **
 **	$Id$
 **

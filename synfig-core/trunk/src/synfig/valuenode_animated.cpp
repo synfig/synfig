@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file valuenode_animated.cpp
-**	\brief Template File
+**	\brief Implementation of the "Animated" valuenode conversion.
 **
 **	$Id$
 **

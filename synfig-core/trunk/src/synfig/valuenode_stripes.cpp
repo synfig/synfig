@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file valuenode_stripes.cpp
-**	\brief Template File
+**	\brief Implementation of the "Stripes" valuenode conversion.
 **
 **	$Id$
 **

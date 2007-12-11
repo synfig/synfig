@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file valuenode_dynamiclist.cpp
-**	\brief Template File
+**	\brief Implementation of the "Dynamic List" valuenode conversion.
 **
 **	$Id$
 **

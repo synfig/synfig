@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file valuenode_twotone.cpp
-**	\brief Template File
+**	\brief Implementation of the "Two-Tone" valuenode conversion.
 **
 **	$Id$
 **

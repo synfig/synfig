@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file valuenode_timedswap.h
-**	\brief Template Header
+**	\brief Header file for implementation of the "Timed Swap" valuenode conversion.
 **
 **	$Id$
 **

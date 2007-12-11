@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file valuenode_switch.cpp
-**	\brief Template File
+**	\brief Implementation of the "Switch" valuenode conversion.
 **
 **	$Id$
 **

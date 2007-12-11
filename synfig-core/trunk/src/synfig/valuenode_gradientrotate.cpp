@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file valuenode_gradientrotate.cpp
-**	\brief Template File
+**	\brief Implementation of the "Gradient Rotate" valuenode conversion.
 **
 **	$Id$
 **

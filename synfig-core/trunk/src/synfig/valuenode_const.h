@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file valuenode_const.h
-**	\brief Template Header
+**	\brief Header file for implementation of the "Constant" valuenode conversion.
 **
 **	$Id$
 **

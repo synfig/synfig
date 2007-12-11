@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file valuenode_blinecalcvertex.cpp
-**	\brief Template File
+**	\brief Implementation of the "BLine Vertex" valuenode conversion.
 **
 **	$Id$
 **

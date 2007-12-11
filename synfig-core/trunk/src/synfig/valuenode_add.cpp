@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file valuenode_add.cpp
-**	\brief Template File
+**	\brief Implementation of the "Add" valuenode conversion.
 **
 **	$Id$
 **

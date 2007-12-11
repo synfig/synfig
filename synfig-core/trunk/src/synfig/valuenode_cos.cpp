@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file valuenode_cos.cpp
-**	\brief Template File
+**	\brief Implementation of the "Cos" valuenode conversion.
 **
 **	$Id$
 **

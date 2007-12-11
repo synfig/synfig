@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file valuenode_timedswap.cpp
-**	\brief Template File
+**	\brief Implementation of the "Timed Swap" valuenode conversion.
 **
 **	$Id$
 **

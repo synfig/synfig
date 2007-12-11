@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file valuenode.cpp
-**	\brief Template File
+**	\brief Implementation of the "Placeholder" valuenode conversion.
 **
 **	$Id$
 **

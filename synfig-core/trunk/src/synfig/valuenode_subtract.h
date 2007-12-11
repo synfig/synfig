@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file valuenode_subtract.h
-**	\brief Template Header
+**	\brief Header file for implementation of the "Subtract" valuenode conversion.
 **
 **	$Id$
 **

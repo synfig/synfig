@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file valuenode_atan2.cpp
-**	\brief Template File
+**	\brief Implementation of the "aTan2" valuenode conversion.
 **
 **	$Id$
 **

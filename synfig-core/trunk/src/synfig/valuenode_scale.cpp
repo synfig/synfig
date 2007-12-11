@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file valuenode_scale.cpp
-**	\brief Template File
+**	\brief Implementation of the "Scale" valuenode conversion.
 **
 **	$Id$
 **

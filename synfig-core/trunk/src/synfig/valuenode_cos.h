@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file valuenode_cos.h
-**	\brief Template Header
+**	\brief Header file for implementation of the "Cos" valuenode conversion.
 **
 **	$Id$
 **

@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file valuenode_blinecalctangent.cpp
-**	\brief Template File
+**	\brief Implementation of the "BLine Tangent" valuenode conversion.
 **
 **	$Id$
 **

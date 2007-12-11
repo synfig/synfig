@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file valuenode_range.h
-**	\brief Template Header
+**	\brief Header file for implementation of the "Range" valuenode conversion.
 **
 **	$Id$
 **
