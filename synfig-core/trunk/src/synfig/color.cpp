@@ -429,7 +429,7 @@ blendfunc_LUMINANCE(Color &a,Color &b,float amount)
 static Color
 blendfunc_BEHIND(Color &a,Color &b,float amount)
 {
-	if(a.get_a()==0)a.set_a(COLOR_EPSILON);		//!< \hack
+	if(a.get_a()==0)a.set_a(COLOR_EPSILON);		//!< \todo this is a hack
 	a.set_a(a.get_a()*amount);
 	return blendfunc_COMPOSITE(b,a,1.0);
 }
