@@ -91,12 +91,6 @@ listwritemes:
 install-bin:
 	make -C src/synfig install-libLTLIBRARIES
 
-win32inst.nsi: $(srcdir)/win32inst.nsi.in
-	./config.status win32inst.nsi
-
-pkg-info/macosx/synfig-core.info: $(srcdir)/pkg-info/macosx/synfig-core.info.in
-	./config.status pkg-info/macosx/synfig-core.info
-
 RMDIR=rm -fr
 
 if WIN32_PKG	
