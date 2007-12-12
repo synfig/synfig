@@ -170,6 +170,7 @@ AC_SUBST(imagedir)
 
 AC_OUTPUT(
 Makefile
+doxygen.cfg
 po/Makefile.in
 synfigstudio.spec
 synfigstudio.desktop
