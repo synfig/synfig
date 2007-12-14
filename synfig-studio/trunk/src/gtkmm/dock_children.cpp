@@ -65,7 +65,11 @@ using namespace studio;
 Dock_Children::Dock_Children():
 	Dock_CanvasSpecific("children",_("Children"),Gtk::StockID("synfig-children"))
 {
-	set_use_scrolled(false);
+    //! \todo the combination of set_use_scrolled(false) and
+	//!       add(*tree_view) causes crashes when
+	//!       Dockable::prev_widget_ is left referencing a
+	//!       ChildrenTree that has already been destroyed.
+	// set_use_scrolled(false);
 /*
 	add(*create_action_tree());
 
