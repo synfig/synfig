@@ -2859,7 +2859,7 @@ Layer_Shape::render_shape(Surface *surface,bool useblend,int /*quality*/,
 }
 
 bool
-Layer_Shape::render_shape(surface<float> *surface,int /*quality*/,
+Layer_Shape::render_shape(etl::surface<float> *surface,int /*quality*/,
 							const RendDesc &renddesc, ProgressCallback */*cb*/)const
 {
 	// If our amount is set to zero, no need to render anything

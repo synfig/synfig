@@ -379,8 +379,8 @@ synfig::Main::~Main()
 	Target::subsys_stop();
 	synfig::info("Layer::subsys_stop()");
 	Layer::subsys_stop();
-	/*! \fixme For some reason, uncommenting the next line will cause things to crash.
-			   This needs to be looked into at some point. */
+	/*! \todo For some reason, uncommenting the next line will cause things to crash.
+			  This needs to be looked into at some point. */
  	// synfig::info("Module::subsys_stop()");
 	// Module::subsys_stop();
 	synfig::info("Exiting");

@@ -477,7 +477,7 @@ public:
 		BLEND_COMPOSITE=0,			//!< Color A is composited onto B (Taking A's alpha into account)
 		BLEND_STRAIGHT=1,			//!< Straight linear interpolation from A->B (Alpha ignored)
 		BLEND_ONTO=13,				//!< Similar to BLEND_COMPOSITE, except that B's alpha is maintained
-		BLEND_STRAIGHT_ONTO=21,		//!< <deprecated> \writeme
+		BLEND_STRAIGHT_ONTO=21,		//!< \deprecated \writeme
 		BLEND_BEHIND=12,			//!< Similar to BLEND_COMPOSITE, except that B is composited onto A.
 		BLEND_SCREEN=16,			//!< \writeme
 		BLEND_OVERLAY=20,			//!< \writeme
@@ -494,9 +494,9 @@ public:
 		BLEND_SATURATION=10,		//!< Preserves the magnitude of the UV Vector of color A
 		BLEND_LUMINANCE=11,			//!< Preserves the Y channel of color A
 
-		BLEND_ALPHA_BRIGHTEN=14,	//!< <deprecated> If A is less opaque than B, use A
-		BLEND_ALPHA_DARKEN=15,		//!< <deprecated> If A is more opaque than B, use B
-		BLEND_ALPHA_OVER=19,		//!< <deprecated> multiply alphas and then straight blends using the amount
+		BLEND_ALPHA_BRIGHTEN=14,	//!< \deprecated If A is less opaque than B, use A
+		BLEND_ALPHA_DARKEN=15,		//!< \deprecated If A is more opaque than B, use B
+		BLEND_ALPHA_OVER=19,		//!< \deprecated multiply alphas and then straight blends using the amount
 
 		BLEND_END=22				//!< \internal
 	};

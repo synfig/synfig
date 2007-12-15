@@ -220,14 +220,14 @@ synfig::Surface::blit_to(alpha_pen& pen, int x, int y, int w, int h)
 		top.data=static_cast<void*>(operator[](y)+x);
 		top.height=h;
 		top.width=w;
-		//top.rowBytes=get_w()*sizeof(Color); //! \fixme this should get the pitch!!
+		//top.rowBytes=get_w()*sizeof(Color); //! \todo this should get the pitch!!
 		top.rowBytes=get_pitch();
 
 		bottom.data=static_cast<void*>(pen.x());
 		bottom.height=h;
 		bottom.width=w;
-		//bottom.rowBytes=pen.get_width()*sizeof(Color); //! \fixme this should get the pitch!!
-		bottom.rowBytes=pen.get_pitch(); //! \fixme this should get the pitch!!
+		//bottom.rowBytes=pen.get_width()*sizeof(Color); //! \todo this should get the pitch!!
+		bottom.rowBytes=pen.get_pitch(); //! \todo this should get the pitch!!
 
 		vImage_Error ret;
 		ret=vImageAlphaBlend_ARGBFFFF(&top,&bottom,&dest,kvImageNoFlags);

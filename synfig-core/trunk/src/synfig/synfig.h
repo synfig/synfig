@@ -33,6 +33,8 @@
 
 /* === M A C R O S ========================================================= */
 
+#define SYNFIG_LEAN
+#undef SYNFIG_LEAN
 /*! \def SYNFIG_LEAN
 **	\brief Define this to remove unused features, speeding up compile time.
 **

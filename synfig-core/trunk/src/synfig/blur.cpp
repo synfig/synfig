@@ -846,9 +846,9 @@ bool Blur::operator ()(const Surface &surface,
 	return true;
 }
 
-bool Blur::operator ()(const surface<float> &surface,
-						const Vector &resolution,
-						surface<float> &out) const
+bool Blur::operator ()(const etl::surface<float> &surface,
+					   const synfig::Vector &resolution,
+					   etl::surface<float> &out) const
 {
 	int w = surface.get_w(),
 		h = surface.get_h();

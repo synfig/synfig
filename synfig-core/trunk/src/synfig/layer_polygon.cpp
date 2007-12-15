@@ -106,7 +106,7 @@ Layer_Polygon::sync()
 }
 
 void
-Layer_Polygon::add_polygon(const vector<Point> &point_list)
+Layer_Polygon::add_polygon(const std::vector<Point> &point_list)
 {
 	int i,pointcount=point_list.size();
 

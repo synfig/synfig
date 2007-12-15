@@ -621,7 +621,7 @@ void CIntersect::recurse_intersect(const SCurve &left, const SCurve &right, int 
 
 
 
-bool CIntersect::operator()(const bezier<Point> &c1, const bezier<Point> &c2)
+bool CIntersect::operator()(const etl::bezier<Point> &c1, const etl::bezier<Point> &c2)
 {
 	times.clear();
 

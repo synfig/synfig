@@ -69,7 +69,7 @@ int _CanvasCounter::counter(0);
 
 /* === M E T H O D S ======================================================= */
 
-Canvas::Canvas(const string &id):
+Canvas::Canvas(const String &id):
 	id_			(id),
 	cur_time_	(0),
 	is_inline_	(false),
@@ -734,7 +734,7 @@ Canvas::push_back_simple(etl::handle<Layer> x)
 }
 
 void
-Canvas::erase(Canvas::iterator iter)
+Canvas::erase(iterator iter)
 {
 	if(!(*iter)->get_group().empty())
 		remove_group_pair((*iter)->get_group(),(*iter));
@@ -1258,13 +1258,13 @@ Canvas::remove_group_pair(String group, etl::handle<Layer> layer)
 }
 
 void
-Canvas::add_connection(Layer::LooseHandle layer, sigc::connection connection)
+Canvas::add_connection(etl::loose_handle<Layer> layer, sigc::connection connection)
 {
 	connections_[layer].push_back(connection);
 }
 
 void
-Canvas::disconnect_connections(Layer::LooseHandle layer)
+Canvas::disconnect_connections(etl::loose_handle<Layer> layer)
 {
 	std::vector<sigc::connection>::iterator iter;
 	for(iter=connections_[layer].begin();iter!=connections_[layer].end();++iter)

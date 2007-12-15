@@ -525,7 +525,7 @@ RendDesc::set_viewport(const Point &__tl, const Point &__br)
 { tl_=__tl; br_=__br; return *this; }
 
 RendDesc &
-RendDesc::set_viewport(Real a,Real b,Real c,Real d)
+RendDesc::set_viewport(Vector::value_type a, Vector::value_type b, Vector::value_type c, Vector::value_type d)
 { tl_=Point(a,b); br_=Point(c,d); return *this; }
 
 Real
