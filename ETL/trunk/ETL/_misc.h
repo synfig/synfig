@@ -72,7 +72,7 @@ binary_find(I begin, I end, const T& value)
 }
 
 inline int round_to_int(const float x) {
-	/*!	\fixme Isn't there some x86 FPU instruction for quickly
+	/*!	\todo Isn't there some x86 FPU instruction for quickly
 	**	converting a float to a rounded integer? It's worth
 	**	looking into at some point... */
 	// return static_cast<int>(x+0.5f);			// <-- (a) fast, but rounds -1.333 to 0!
