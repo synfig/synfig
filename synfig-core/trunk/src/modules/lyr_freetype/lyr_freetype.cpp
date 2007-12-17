@@ -697,6 +697,9 @@ Layer_Freetype::accelerated_render(Context context,Surface *surface,int quality,
  --	** -- CREATE GLYPHS -------------------------------------------------------
 	*/
 
+	mbstate_t ps;
+	memset(&ps, 0, sizeof(ps));
+
 	lines.push_front(TextLine());
 	string::const_iterator iter;
 	for (iter=text.begin(); iter!=text.end(); ++iter)
@@ -716,7 +719,29 @@ Layer_Freetype::accelerated_render(Context context,Surface *surface,int quality,
 			glyph_index = FT_Get_Char_Index( face, ' ' );
 		}
 		else
-			glyph_index = FT_Get_Char_Index( face, *iter );
+		{
+			wchar_t wc;
+			size_t converted = mbrtowc(&wc, &(*iter), text.end() - iter, &ps);
+
+			if(converted == (size_t)(-1))
+			{
+				synfig::warning("Layer_Freetype: multibyte: %s",
+								_("Invalid multibyte sequence - is the locale set?\n"));
+				continue;
+			}
+
+			if(converted == (size_t)(-2))
+			{
+				synfig::warning("Layer_Freetype: multibyte: %s",
+								_("Can't parse multibyte character.\n"));
+				continue;
+			}
+
+			glyph_index = FT_Get_Char_Index( face, wc );
+
+			if(converted > 1)
+				iter += converted - 1;
+		}
 
         // retrieve kerning distance and move pen position
 		if ( FT_HAS_KERNING(face) && use_kerning && previous && glyph_index )
