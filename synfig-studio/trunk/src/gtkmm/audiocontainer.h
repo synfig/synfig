@@ -85,7 +85,7 @@ public: //
 };
 
 /*	Audio container actually implements all the cool stuff
-	Note: May be a bit to monolithic...
+	Note: May be a bit too monolithic...
 */
 class AudioContainer : public sigc::trackable, public etl::shared_object
 {
