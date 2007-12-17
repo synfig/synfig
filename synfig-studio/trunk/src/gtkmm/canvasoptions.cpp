@@ -57,7 +57,7 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
-CanvasOptions::CanvasOptions(loose_handle<studio::CanvasView> canvas_view):
+CanvasOptions::CanvasOptions(etl::loose_handle<CanvasView> canvas_view):
 	Gtk::Dialog(_("Canvas Options"),*canvas_view,false,true),
 	canvas_view_(canvas_view),
 	toggle_grid_snap(_("_Snap to grid"), true),

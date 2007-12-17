@@ -80,7 +80,7 @@ bool KeyMapSettings::set_key(const char *path, guint key, Gdk::ModifierType mod,
 	}
 }
 
-bool KeyMapSettings::get_key(const char *path, AccelKey *key)
+bool KeyMapSettings::get_key(const char *path, Gtk::AccelKey *key)
 {
 	GtkAccelKey	ac;
 	if(gtk_accel_map_lookup_entry(path,&ac))

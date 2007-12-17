@@ -850,7 +850,7 @@ LayerGroupTreeStore::on_group_changed(synfig::String /*group*/)
 }
 
 void
-LayerGroupTreeStore::on_group_pair_added(String group, etl::handle<Layer> layer)
+LayerGroupTreeStore::on_group_pair_added(synfig::String group, etl::handle<synfig::Layer> layer)
 {
 	if(!layer->get_canvas())
 		return;
@@ -865,7 +865,7 @@ LayerGroupTreeStore::on_group_pair_added(String group, etl::handle<Layer> layer)
 }
 
 void
-LayerGroupTreeStore::on_group_pair_removed(String group, etl::handle<Layer> layer)
+LayerGroupTreeStore::on_group_pair_removed(synfig::String group, etl::handle<synfig::Layer> layer)
 {
 	if(!layer->get_canvas())
 		return;
@@ -987,7 +987,7 @@ LayerGroupTreeStore::find_layer_row(const synfig::Layer::Handle &layer, Gtk::Tre
 }
 
 bool
-LayerGroupTreeStore::find_group_row(const String &group, Gtk::TreeModel::Children::iterator &iter)
+LayerGroupTreeStore::find_group_row(const synfig::String &group, Gtk::TreeModel::Children::iterator &iter)
 {
 	Gtk::TreeModel::Children::iterator prev;
 	return find_group_row_(group,children(),iter,prev);

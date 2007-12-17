@@ -62,21 +62,21 @@ Widget_CanvasChooser::~Widget_CanvasChooser()
 }
 
 void
-Widget_CanvasChooser::set_parent_canvas(etl::handle<synfig::Canvas> x)
+Widget_CanvasChooser::set_parent_canvas(synfig::Canvas::Handle x)
 {
 	assert(x);
 	parent_canvas=x;
 }
 
 void
-Widget_CanvasChooser::set_value_(etl::handle<synfig::Canvas> data)
+Widget_CanvasChooser::set_value_(synfig::Canvas::Handle data)
 {
 	set_value(data);
 	activate();
 }
 
 void
-Widget_CanvasChooser::set_value(etl::handle<synfig::Canvas> data)
+Widget_CanvasChooser::set_value(synfig::Canvas::Handle data)
 {
 	assert(parent_canvas);
 	canvas=data;

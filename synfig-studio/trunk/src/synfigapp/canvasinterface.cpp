@@ -79,7 +79,7 @@ using namespace synfigapp;
 
 /* === M E T H O D S ======================================================= */
 
-CanvasInterface::CanvasInterface(loose_handle<Instance> instance,handle<Canvas> canvas):
+CanvasInterface::CanvasInterface(etl::loose_handle<Instance> instance,etl::handle<synfig::Canvas> canvas):
 	instance_(instance),
 	canvas_(canvas),
 	cur_time_(canvas->rend_desc().get_frame_start()),
@@ -134,7 +134,7 @@ CanvasInterface::refresh_current_values()
 }
 
 etl::handle<CanvasInterface>
-CanvasInterface::create(loose_handle<Instance> instance,handle<Canvas> canvas)
+CanvasInterface::create(etl::loose_handle<Instance> instance, etl::handle<synfig::Canvas> canvas)
 {
 	etl::handle<CanvasInterface> intrfc;
 	intrfc=new CanvasInterface(instance,canvas);
@@ -176,7 +176,7 @@ CanvasInterface::get_mode()const
 
 
 Layer::Handle
-CanvasInterface::add_layer_to(String name, Canvas::Handle canvas, int depth)
+CanvasInterface::add_layer_to(synfig::String name, synfig::Canvas::Handle canvas, int depth)
 {
 	synfigapp::Action::PassiveGrouper group(get_instance().get(),_("Add Layer To"));
 
@@ -284,7 +284,7 @@ CanvasInterface::add_layer_to(String name, Canvas::Handle canvas, int depth)
 
 
 bool
-CanvasInterface::convert(ValueDesc value_desc, String type)
+CanvasInterface::convert(ValueDesc value_desc, synfig::String type)
 {
 	Action::Handle 	action(Action::ValueDescConvert::create());
 
@@ -420,7 +420,7 @@ CanvasInterface::set_rend_desc(const synfig::RendDesc &rend_desc)
 }
 
 bool
-CanvasInterface::set_name(const String &x)
+CanvasInterface::set_name(const synfig::String &x)
 {
 	//! \todo This needs to be converted into an action
 	get_canvas()->set_name(x);
@@ -429,7 +429,7 @@ CanvasInterface::set_name(const String &x)
 }
 
 bool
-CanvasInterface::set_description(const String &x)
+CanvasInterface::set_description(const synfig::String &x)
 {
 	//! \todo This needs to be converted into an action
 	get_canvas()->set_description(x);
@@ -437,7 +437,7 @@ CanvasInterface::set_description(const String &x)
 }
 
 bool
-CanvasInterface::set_id(const String &x)
+CanvasInterface::set_id(const synfig::String &x)
 {
 	//! \todo This needs to be converted into an action
 	get_canvas()->set_id(x);
@@ -625,7 +625,7 @@ CanvasInterface::waypoint_remove(synfigapp::ValueDesc value_desc,synfig::Waypoin
 
 
 void
-CanvasInterface::auto_export(ValueNode::Handle /*value_node*/)
+CanvasInterface::auto_export(synfig::ValueNode::Handle /*value_node*/)
 {
 /*
 	// Check to see if we are already exported.

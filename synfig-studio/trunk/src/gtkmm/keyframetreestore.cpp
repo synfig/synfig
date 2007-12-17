@@ -666,7 +666,7 @@ KeyframeTreeStore::unref_node_vfunc (iterator& xiter)const
 }
 
 Gtk::TreeModel::Path
-KeyframeTreeStore::get_path_vfunc (const TreeModel::iterator& gtk_iter)const
+KeyframeTreeStore::get_path_vfunc (const iterator& gtk_iter)const
 {
 	Gtk::TreeModel::Path path;
 
@@ -796,7 +796,7 @@ KeyframeTreeStore::find_row(const synfig::Keyframe &keyframe)
 }
 
 void
-KeyframeTreeStore::add_keyframe(Keyframe keyframe)
+KeyframeTreeStore::add_keyframe(synfig::Keyframe keyframe)
 {
 	try
 	{
@@ -817,7 +817,7 @@ KeyframeTreeStore::add_keyframe(Keyframe keyframe)
 }
 
 void
-KeyframeTreeStore::remove_keyframe(Keyframe keyframe)
+KeyframeTreeStore::remove_keyframe(synfig::Keyframe keyframe)
 {
 	try
 	{
@@ -843,7 +843,7 @@ KeyframeTreeStore::remove_keyframe(Keyframe keyframe)
 }
 
 void
-KeyframeTreeStore::change_keyframe(Keyframe keyframe)
+KeyframeTreeStore::change_keyframe(synfig::Keyframe keyframe)
 {
 	try
 	{

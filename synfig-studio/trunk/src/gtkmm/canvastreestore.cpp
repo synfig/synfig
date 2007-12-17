@@ -329,7 +329,7 @@ CanvasTreeStore::find_next_value_desc(const synfigapp::ValueDesc& value_desc, Gt
 }
 
 bool
-CanvasTreeStore::find_first_value_node(const ValueNode::Handle& value_node, Gtk::TreeIter& iter)
+CanvasTreeStore::find_first_value_node(const synfig::ValueNode::Handle& value_node, Gtk::TreeIter& iter)
 {
 	iter=children().begin();
 	while(iter && value_node!=(ValueNode::Handle)(*iter)[model.value_node])
@@ -353,7 +353,7 @@ CanvasTreeStore::find_first_value_node(const ValueNode::Handle& value_node, Gtk:
 }
 
 bool
-CanvasTreeStore::find_next_value_node(const ValueNode::Handle& value_node, Gtk::TreeIter& iter)
+CanvasTreeStore::find_next_value_node(const synfig::ValueNode::Handle& value_node, Gtk::TreeIter& iter)
 {
 	if(!iter) return find_first_value_node(value_node,iter);
 

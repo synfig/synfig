@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfigstudio/src/synfigapp/general.h
+/*!	\file synfigapp/general.h
 **	\brief Te
 **
 **	$Id$

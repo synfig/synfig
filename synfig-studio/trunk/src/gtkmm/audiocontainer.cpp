@@ -853,7 +853,7 @@ studio::AudioContainer::~AudioContainer()
 	if(imp) delete (imp);
 }
 
-bool studio::AudioContainer::load(const string &filename,const string &filedirectory)
+bool studio::AudioContainer::load(const std::string &filename,const std::string &filedirectory)
 {
 	if(!imp)
 	{
@@ -1189,9 +1189,9 @@ void studio::AudioContainer::AudioImp::clear()
 }
 
 #ifdef WITH_FMOD
-void AudioContainer::AudioImp::start_scrubbing(double t)
+void studio::AudioContainer::AudioImp::start_scrubbing(double t)
 #else
-void AudioContainer::AudioImp::start_scrubbing(double /*t*/)
+void studio::AudioContainer::AudioImp::start_scrubbing(double /*t*/)
 #endif
 {
 	//synfig::info("Start scrubbing: %lf", t);
@@ -1243,7 +1243,7 @@ void AudioContainer::AudioImp::start_scrubbing(double /*t*/)
 	#endif
 }
 
-void AudioContainer::AudioImp::stop_scrubbing()
+void studio::AudioContainer::AudioImp::stop_scrubbing()
 {
 	//synfig::info("Stop scrubbing");
 
@@ -1265,9 +1265,9 @@ void AudioContainer::AudioImp::stop_scrubbing()
 }
 
 #ifdef WITH_FMOD
-void AudioContainer::AudioImp::scrub(double t)
+void studio::AudioContainer::AudioImp::scrub(double t)
 #else
-void AudioContainer::AudioImp::scrub(double /*t*/)
+void studio::AudioContainer::AudioImp::scrub(double /*t*/)
 #endif
 {
 	#ifdef WITH_FMOD

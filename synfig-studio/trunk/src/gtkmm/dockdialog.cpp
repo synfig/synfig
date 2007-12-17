@@ -152,7 +152,7 @@ DockDialog::~DockDialog()
 	{
 		dock_book_list.front()->clear();
 
-		//! \fixme: UGLY HACK
+		//! \todo Fix this UGLY HACK
 		// The following line really should be uncommented,
 		// but it causes crashes. Without it, a small
 		// memory hole is created--but at least it doesn't crash

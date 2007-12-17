@@ -86,7 +86,7 @@ static synfig::Waypoint::Interpolation interpolation_;
 
 /* === M E T H O D S ======================================================= */
 
-synfigapp::Main::Main(const synfig::String &basepath,ProgressCallback *cb):
+synfigapp::Main::Main(const synfig::String &basepath, synfig::ProgressCallback *cb):
 	synfig::Main(basepath,cb),
 	ref_count_(synfigapp_ref_count_)
 {

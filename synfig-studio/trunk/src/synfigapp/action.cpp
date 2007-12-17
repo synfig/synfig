@@ -232,7 +232,7 @@ Action::Book& Action::book() { return *book_; }
 
 
 Action::Handle
-Action::create(const String &name)
+Action::create(const synfig::String &name)
 {
 	if(!book().count(name))
 		return 0; //! \todo perhaps we should throw something instead?
@@ -266,7 +266,7 @@ Action::compile_candidate_list(const ParamList& param_list, Category category)
 }
 
 Action::CandidateList::iterator
-Action::CandidateList::find(const String& x)
+Action::CandidateList::find(const synfig::String& x)
 {
 	iterator iter;
 	for(iter=begin();iter!=end();++iter)
@@ -367,7 +367,7 @@ Super::add_action_front(etl::handle<Undoable> action)
 }
 
 
-Group::Group(const std::string &str):
+Group::Group(const synfig::String &str):
 	name_(str),
 	ready_(true)
 {

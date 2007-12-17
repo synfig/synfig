@@ -66,7 +66,7 @@ Action::System::~System()
 }
 
 bool
-Action::System::perform_action(handle<Action::Base> action)
+Action::System::perform_action(etl::handle<Action::Base> action)
 {
 	handle<UIInterface> uim(get_ui_interface());
 
@@ -209,7 +209,7 @@ Action::System::perform_action(handle<Action::Base> action)
 }
 
 bool
-synfigapp::Action::System::undo_(handle<UIInterface> uim)
+synfigapp::Action::System::undo_(etl::handle<UIInterface> uim)
 {
 	handle<Action::Undoable> action(undo_action_stack().front());
 	most_recent_action_=action;
@@ -308,7 +308,7 @@ synfigapp::Action::System::undo()
 }
 
 bool
-Action::System::redo_(handle<UIInterface> uim)
+Action::System::redo_(etl::handle<UIInterface> uim)
 {
 	handle<Action::Undoable> action(redo_action_stack().front());
 	most_recent_action_=action;
@@ -542,7 +542,7 @@ Action::System::set_action_status(etl::handle<Action::Undoable> action, bool x)
 	return false;
 }
 
-Action::PassiveGrouper::PassiveGrouper(etl::loose_handle<Action::System> instance_,synfig::String name_):
+Action::PassiveGrouper::PassiveGrouper(etl::loose_handle<System> instance_,synfig::String name_):
 	instance_(instance_),
 	name_(name_),
 	redraw_requested_(false),
@@ -553,7 +553,7 @@ Action::PassiveGrouper::PassiveGrouper(etl::loose_handle<Action::System> instanc
 }
 
 void
-Action::PassiveGrouper::request_redraw(handle<CanvasInterface> x)
+Action::PassiveGrouper::request_redraw(etl::handle<CanvasInterface> x)
 {
 /*	DEBUGPOINT();
 	if(instance_->group_stack_.empty())

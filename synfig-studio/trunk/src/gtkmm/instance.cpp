@@ -74,7 +74,7 @@ int studio::Instance::instance_count_=0;
 
 /* === M E T H O D S ======================================================= */
 
-Instance::Instance(Canvas::Handle canvas):
+Instance::Instance(synfig::Canvas::Handle canvas):
 	synfigapp::Instance		(canvas),
 //	canvas_tree_store_		(Gtk::TreeStore::create(CanvasTreeModel())),
 //	canvas_tree_store_		(Gtk::TreeStore::create()),
@@ -122,7 +122,7 @@ Instance::get_visible_canvases()const
 }
 
 handle<Instance>
-Instance::create(Canvas::Handle canvas)
+Instance::create(synfig::Canvas::Handle canvas)
 {
 	// Construct a new instance
 	handle<Instance> instance(new Instance(canvas));
@@ -146,7 +146,7 @@ Instance::create(Canvas::Handle canvas)
 }
 
 handle<CanvasView>
-Instance::find_canvas_view(Canvas::Handle canvas)
+Instance::find_canvas_view(etl::handle<synfig::Canvas> canvas)
 {
 	if(!canvas)
 		return 0;
@@ -164,7 +164,7 @@ Instance::find_canvas_view(Canvas::Handle canvas)
 }
 
 void
-Instance::focus(Canvas::Handle canvas)
+Instance::focus(etl::handle<synfig::Canvas> canvas)
 {
 	handle<CanvasView> canvas_view=find_canvas_view(canvas);
 	assert(canvas_view);
@@ -370,7 +370,7 @@ Instance::close()
 
 
 void
-Instance::insert_canvas(Gtk::TreeRow row,Canvas::Handle canvas)
+Instance::insert_canvas(Gtk::TreeRow row, synfig::Canvas::Handle canvas)
 {
 	CanvasTreeModel canvas_tree_model;
 	assert(canvas);
@@ -920,7 +920,7 @@ Instance::add_actions_to_menu(Gtk::Menu *menu, const synfigapp::Action::ParamLis
 }
 
 void
-Instance::process_action(String name, synfigapp::Action::ParamList param_list)
+Instance::process_action(synfig::String name, synfigapp::Action::ParamList param_list)
 {
 	assert(synfigapp::Action::book().count(name));
 

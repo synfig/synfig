@@ -76,7 +76,7 @@ ConsoleUIInterface::yes_no(const std::string &title, const std::string &message,
 }
 
 UIInterface::Response
-ConsoleUIInterface::yes_no_cancel(const string &title, const string &message,Response dflt)
+ConsoleUIInterface::yes_no_cancel(const std::string &title, const std::string &message, Response dflt)
 {
 	cout<<title<<": "<<message<<' ';
 	if(dflt==RESPONSE_NO)

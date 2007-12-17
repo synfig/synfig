@@ -202,7 +202,7 @@ Widget_Vector::on_value_changed()
 }
 
 void
-Widget_Vector::set_canvas(Canvas::LooseHandle x)
+Widget_Vector::set_canvas(synfig::Canvas::LooseHandle x)
 {
 	canvas_=x;
 	if(x)

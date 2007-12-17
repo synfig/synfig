@@ -388,7 +388,7 @@ Toolbox::~Toolbox()
 }
 
 void
-Toolbox::set_active_state(const String& statename)
+Toolbox::set_active_state(const synfig::String& statename)
 {
 	std::map<synfig::String,Gtk::ToggleButton *>::iterator iter;
 

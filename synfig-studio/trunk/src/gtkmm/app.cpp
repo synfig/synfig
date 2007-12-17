@@ -2149,7 +2149,7 @@ App::set_selected_canvas_view(etl::loose_handle<CanvasView> canvas_view)
 }
 
 etl::loose_handle<Instance>
-App::get_instance(Canvas::Handle canvas)
+App::get_instance(etl::handle<synfig::Canvas> canvas)
 {
 	if(!canvas) return 0;
 	canvas=canvas->get_root();

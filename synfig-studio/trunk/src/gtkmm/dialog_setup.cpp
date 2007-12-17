@@ -501,7 +501,7 @@ BlackLevelSelector::on_event(GdkEvent *event)
 
 
 void
-Dialog_Setup::set_time_format(Time::Format x)
+Dialog_Setup::set_time_format(synfig::Time::Format x)
 {
 	time_format=x;
 	if(x<=Time::FORMAT_VIDEO)

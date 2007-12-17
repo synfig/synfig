@@ -2422,7 +2422,7 @@ again:
 }
 
 void
-studio::WorkArea::async_render_preview(Time time)
+studio::WorkArea::async_render_preview(synfig::Time time)
 {
 	cur_time=time;
 	//tile_book.clear();
@@ -2443,7 +2443,7 @@ WorkArea::async_render_preview()
 }
 
 bool
-studio::WorkArea::sync_render_preview(Time time)
+studio::WorkArea::sync_render_preview(synfig::Time time)
 {
 	cur_time=time;
 	//tile_book.clear();

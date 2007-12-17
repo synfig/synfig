@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfigstudio/src/template.cpp
+/*!	\file template.cpp
 **	\brief Template File
 **
 **	$Id$

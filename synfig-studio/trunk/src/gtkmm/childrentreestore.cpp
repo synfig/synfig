@@ -185,7 +185,7 @@ ChildrenTreeStore::refresh_row(Gtk::TreeModel::Row &row, bool /*do_children*/)
 }
 
 void
-ChildrenTreeStore::on_canvas_added(Canvas::Handle canvas)
+ChildrenTreeStore::on_canvas_added(synfig::Canvas::Handle canvas)
 {
 	Gtk::TreeRow row = *(prepend(canvas_row.children()));
 
@@ -208,13 +208,13 @@ ChildrenTreeStore::on_canvas_added(Canvas::Handle canvas)
 }
 
 void
-ChildrenTreeStore::on_canvas_removed(Canvas::Handle /*canvas*/)
+ChildrenTreeStore::on_canvas_removed(synfig::Canvas::Handle /*canvas*/)
 {
 	rebuild_canvases();
 }
 
 void
-ChildrenTreeStore::on_value_node_added(ValueNode::Handle value_node)
+ChildrenTreeStore::on_value_node_added(synfig::ValueNode::Handle value_node)
 {
 //	if(value_node->get_id().find("Unnamed")!=String::npos)
 //		return;
@@ -225,7 +225,7 @@ ChildrenTreeStore::on_value_node_added(ValueNode::Handle value_node)
 }
 
 void
-ChildrenTreeStore::on_value_node_deleted(etl::handle<ValueNode> value_node)
+ChildrenTreeStore::on_value_node_deleted(synfig::ValueNode::Handle value_node)
 {
 	Gtk::TreeIter iter;
 	//int i(0);
@@ -298,7 +298,7 @@ ChildrenTreeStore::execute_changed_value_nodes()
 }
 
 void
-ChildrenTreeStore::on_value_node_changed(etl::handle<ValueNode> value_node)
+ChildrenTreeStore::on_value_node_changed(synfig::ValueNode::Handle value_node)
 {
 
 	if(!value_node->is_exported())
@@ -333,7 +333,7 @@ ChildrenTreeStore::on_value_node_changed(etl::handle<ValueNode> value_node)
 }
 
 void
-ChildrenTreeStore::on_value_node_renamed(etl::handle<ValueNode> value_node)
+ChildrenTreeStore::on_value_node_renamed(synfig::ValueNode::Handle value_node)
 {
 	rebuild_value_nodes();
 }

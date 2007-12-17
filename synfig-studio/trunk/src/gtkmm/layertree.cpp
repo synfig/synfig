@@ -409,7 +409,7 @@ LayerTree::on_waypoint_changed( synfig::Waypoint waypoint , synfig::ValueNode::H
 }
 
 void
-LayerTree::select_layer(Layer::Handle layer)
+LayerTree::select_layer(synfig::Layer::Handle layer)
 {
 	Gtk::TreeModel::Children::iterator iter;
 	if(layer_tree_store_->find_layer_row(layer,iter))

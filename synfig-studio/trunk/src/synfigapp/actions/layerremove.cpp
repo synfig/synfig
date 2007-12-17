@@ -122,7 +122,7 @@ Action::LayerRemove::perform()
 		// If we couldn't find the layer in the canvas, then bail
 		if(*iter2!=layer)
 		{
-			/*!	\fixme We should really undo all prior removals
+			/*!	\todo We should really undo all prior removals
 			**	before we go throwing shit around */
 			throw Error(_("This layer doesn't exist anymore."));
 		}
@@ -132,7 +132,7 @@ Action::LayerRemove::perform()
 		// bail
 		if(get_canvas()!=subcanvas && !subcanvas->is_inline())
 		{
-			/*!	\fixme We should really undo all prior removals
+			/*!	\todo We should really undo all prior removals
 			**	before we go throwing shit around */
 			throw Error(_("This layer doesn't belong to this canvas anymore"));
 		}

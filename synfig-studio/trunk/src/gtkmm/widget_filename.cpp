@@ -80,7 +80,7 @@ Widget_Filename::set_has_frame(bool x)
 
 
 void
-Widget_Filename::set_value(const string &data)
+Widget_Filename::set_value(const std::string &data)
 {
 	entry_filename->set_text(data);
 }

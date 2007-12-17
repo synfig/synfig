@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfigstudio/src/gtkmm/general.h
+/*!	\file gtkmm/general.h
 **	\brief General header file for synfigstudio
 **
 **	$Id$

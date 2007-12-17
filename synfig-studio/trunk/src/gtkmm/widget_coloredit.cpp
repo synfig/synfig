@@ -72,29 +72,29 @@ void
 ColorSlider::set_type(Type x) { type=x; queue_draw(); }
 
 void
-ColorSlider::set_color(Color x) { color_=x; queue_draw(); }
+ColorSlider::set_color(synfig::Color x) { color_=x; queue_draw(); }
 
 void
-ColorSlider::slider_color_TYPE_R(Color &color, float amount) { color.set_r(amount); }
+ColorSlider::slider_color_TYPE_R(synfig::Color &color, float amount) { color.set_r(amount); }
 void
-ColorSlider::slider_color_TYPE_G(Color &color, float amount) { color.set_g(amount); }
+ColorSlider::slider_color_TYPE_G(synfig::Color &color, float amount) { color.set_g(amount); }
 void
-ColorSlider::slider_color_TYPE_B(Color &color, float amount) { color.set_b(amount); }
+ColorSlider::slider_color_TYPE_B(synfig::Color &color, float amount) { color.set_b(amount); }
 void
-ColorSlider::slider_color_TYPE_Y(Color &color, float amount) { color.set_y(amount); }
+ColorSlider::slider_color_TYPE_Y(synfig::Color &color, float amount) { color.set_y(amount); }
 void
-ColorSlider::slider_color_TYPE_U(Color &color, float amount) { color.set_u(amount-0.5f); }
+ColorSlider::slider_color_TYPE_U(synfig::Color &color, float amount) { color.set_u(amount-0.5f); }
 void
-ColorSlider::slider_color_TYPE_V(Color &color, float amount) { color.set_v(amount-0.5f); }
+ColorSlider::slider_color_TYPE_V(synfig::Color &color, float amount) { color.set_v(amount-0.5f); }
 void
-ColorSlider::slider_color_TYPE_HUE(Color &color, float amount) { color.set_uv_angle(Angle::rot(amount)); }
+ColorSlider::slider_color_TYPE_HUE(synfig::Color &color, float amount) { color.set_uv_angle(Angle::rot(amount)); }
 void
-ColorSlider::slider_color_TYPE_SAT(Color &color, float amount) { color.set_s(amount*0.5f); }
+ColorSlider::slider_color_TYPE_SAT(synfig::Color &color, float amount) { color.set_s(amount*0.5f); }
 void
-ColorSlider::slider_color_TYPE_A(Color &color, float amount) { color.set_a(amount); }
+ColorSlider::slider_color_TYPE_A(synfig::Color &color, float amount) { color.set_a(amount); }
 
 void
-ColorSlider::adjust_color(Type type, Color &color, float amount)
+ColorSlider::adjust_color(Type type, synfig::Color &color, float amount)
 {
 	static const slider_color_func jump_table[int(TYPE_END)] =
 	{

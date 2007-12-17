@@ -701,7 +701,7 @@ void studio::Widget_Preview::disconnect_preview(Preview *prev)
 	}
 }
 
-void studio::Widget_Preview::set_preview(handle<Preview>	prev)
+void studio::Widget_Preview::set_preview(etl::handle<Preview>	prev)
 {
 	preview = prev;
 

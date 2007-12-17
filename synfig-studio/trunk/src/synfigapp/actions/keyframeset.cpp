@@ -147,7 +147,7 @@ Action::KeyframeSet::prepare()
 #define old_2_new(x)	(((x)-old_begin)/(old_end-old_begin)*(new_end-new_begin)+new_begin)
 
 int
-Action::KeyframeSet::scale_activepoints(const synfigapp::ValueDesc& value_desc,const Time& old_begin,const Time& old_end,const Time& new_begin,const Time& new_end)
+Action::KeyframeSet::scale_activepoints(const synfigapp::ValueDesc& value_desc,const synfig::Time& old_begin,const synfig::Time& old_end,const synfig::Time& new_begin,const synfig::Time& new_end)
 {
 	ValueNode_DynamicList::Handle value_node(ValueNode_DynamicList::Handle::cast_static(value_desc.get_parent_value_node()));
 	ValueNode_DynamicList::ListEntry& list_entry(value_node->list[value_desc.get_index()]);
@@ -205,7 +205,7 @@ Action::KeyframeSet::scale_activepoints(const synfigapp::ValueDesc& value_desc,c
 }
 
 int
-Action::KeyframeSet::scale_waypoints(const synfigapp::ValueDesc& value_desc,const Time& old_begin,const Time& old_end,const Time& new_begin,const Time& new_end)
+Action::KeyframeSet::scale_waypoints(const synfigapp::ValueDesc& value_desc,const synfig::Time& old_begin,const synfig::Time& old_end,const synfig::Time& new_begin,const synfig::Time& new_end)
 {
 	ValueNode_Animated::Handle value_node(ValueNode_Animated::Handle::cast_static(value_desc.get_value_node()));
 

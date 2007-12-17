@@ -878,6 +878,10 @@ CellRenderer_TimeTrack::activate_vfunc(
 
 
 
+// The following three functions don't get documented correctly by
+// doxygen 1.5.[23] because of a bug with any function whose name
+// begins with 'property'.  Fixed in doxygen 1.5.4 apparently.  See
+// http://bugzilla.gnome.org/show_bug.cgi?id=471185 .
 Glib::PropertyProxy<synfigapp::ValueDesc>
 CellRenderer_TimeTrack::property_value_desc()
 {

@@ -115,13 +115,13 @@ String ValueBaseLink::link_name(int i)const
 	}else return String();
 }
 
-int ValueBaseLink::get_link_index_from_name(const String &name)const
+int ValueBaseLink::get_link_index_from_name(const synfig::String &name)const
 {
 	throw Exception::BadLinkName(name);
 }
 
 //list management stuff
-ValueBaseLink::list_type::const_iterator ValueBaseLink::findlink(ValueNode::Handle x) const
+ValueBaseLink::list_type::const_iterator ValueBaseLink::findlink(synfig::ValueNode::Handle x) const
 {
 	for(list_type::const_iterator i = list.begin(); i != list.end(); ++i)
 	{
@@ -133,7 +133,7 @@ ValueBaseLink::list_type::const_iterator ValueBaseLink::findlink(ValueNode::Hand
 
 	return list.end();
 }
-ValueBaseLink::list_type::iterator ValueBaseLink::findlink(ValueNode::Handle x)
+ValueBaseLink::list_type::iterator ValueBaseLink::findlink(synfig::ValueNode::Handle x)
 {
 	for(list_type::iterator i = list.begin(); i != list.end(); ++i)
 	{
@@ -146,7 +146,7 @@ ValueBaseLink::list_type::iterator ValueBaseLink::findlink(ValueNode::Handle x)
 	return list.end();
 }
 
-void ValueBaseLink::add(ValueNode::Handle v)
+void ValueBaseLink::add(synfig::ValueNode::Handle v)
 {
 	list_type::iterator i = findlink(v);
 
@@ -156,7 +156,7 @@ void ValueBaseLink::add(ValueNode::Handle v)
 	}
 }
 
-void ValueBaseLink::remove(ValueNode::Handle v)
+void ValueBaseLink::remove(synfig::ValueNode::Handle v)
 {
 	list_type::iterator i = findlink(v);
 

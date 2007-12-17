@@ -522,13 +522,13 @@ LayerParamTreeStore::set_row(Gtk::TreeRow row,synfigapp::ValueDesc value_desc)
 }
 
 void
-LayerParamTreeStore::on_value_node_added(ValueNode::Handle /*value_node*/)
+LayerParamTreeStore::on_value_node_added(synfig::ValueNode::Handle /*value_node*/)
 {
 //	queue_refresh();
 }
 
 void
-LayerParamTreeStore::on_value_node_deleted(etl::handle<ValueNode> /*value_node*/)
+LayerParamTreeStore::on_value_node_deleted(synfig::ValueNode::Handle /*value_node*/)
 {
 //	queue_refresh();
 }
@@ -546,7 +546,7 @@ LayerParamTreeStore::on_value_node_child_removed(synfig::ValueNode::Handle /*val
 }
 
 void
-LayerParamTreeStore::on_value_node_changed(etl::handle<ValueNode> /*value_node*/)
+LayerParamTreeStore::on_value_node_changed(synfig::ValueNode::Handle /*value_node*/)
 {
 	queue_refresh();
 }

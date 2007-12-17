@@ -82,7 +82,7 @@ synfigapp::find_instance(etl::handle<synfig::Canvas> canvas)
 
 /* === M E T H O D S ======================================================= */
 
-Instance::Instance(Canvas::Handle canvas):
+Instance::Instance(etl::handle<synfig::Canvas> canvas):
 	CVSInfo(canvas->get_file_name()),
 	canvas_(canvas)
 {
@@ -94,7 +94,7 @@ Instance::Instance(Canvas::Handle canvas):
 } // END of synfigapp::Instance::Instance()
 
 handle<Instance>
-Instance::create(Canvas::Handle canvas)
+Instance::create(etl::handle<synfig::Canvas> canvas)
 {
 	// Construct a new instance
 	handle<Instance> instance(new Instance(canvas));
@@ -122,7 +122,7 @@ Instance::~Instance()
 } // END of studio::Instance::~Instance()
 
 handle<CanvasInterface>
-Instance::find_canvas_interface(handle<Canvas> canvas)
+Instance::find_canvas_interface(synfig::Canvas::Handle canvas)
 {
 	if(!canvas)
 		return 0;
@@ -151,7 +151,7 @@ Instance::save()const
 }
 
 bool
-Instance::save_as(const std::string &file_name)
+Instance::save_as(const synfig::String &file_name)
 {
 	bool ret;
 

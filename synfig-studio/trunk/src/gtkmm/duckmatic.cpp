@@ -408,7 +408,7 @@ Duckmatic::end_duck_drag()
 }
 
 Point
-Duckmatic::snap_point_to_grid(const Point& x, float radius)const
+Duckmatic::snap_point_to_grid(const synfig::Point& x, float radius)const
 {
 	Point ret(x);
 

@@ -1990,7 +1990,7 @@ CanvasView::close_instance()
 }
 
 handle<CanvasView>
-CanvasView::create(loose_handle<Instance> instance,handle<Canvas> canvas)
+CanvasView::create(etl::loose_handle<Instance> instance, etl::handle<synfig::Canvas> canvas)
 {
 	etl::handle<studio::CanvasView> view(new CanvasView(instance,instance->synfigapp::Instance::find_canvas_interface(canvas)));
 	instance->canvas_view_list().push_front(view);
@@ -2536,7 +2536,7 @@ CanvasView::on_keyframe_button_pressed()
 }
 
 bool
-CanvasView::duck_change_param(const Point &value,synfig::Layer::Handle layer, synfig::String param_name)
+CanvasView::duck_change_param(const synfig::Point &value,synfig::Layer::Handle layer, synfig::String param_name)
 {
 	return canvas_interface()->change_value(synfigapp::ValueDesc(layer,param_name),value);
 }
@@ -2569,7 +2569,7 @@ CanvasView::on_duck_angle_changed(const synfig::Angle &rotation,const synfigapp:
 }
 
 void
-CanvasView::selected_layer_color_set(Color color)
+CanvasView::selected_layer_color_set(synfig::Color color)
 {
 	synfigapp::SelectionManager::LayerList selected_list(get_selection_manager()->get_selected_layers());
 	synfigapp::SelectionManager::LayerList::iterator iter;
@@ -2588,7 +2588,7 @@ CanvasView::selected_layer_color_set(Color color)
 }
 
 void
-CanvasView::rebuild_ducks_layer_(synfig::TransformStack& transform_stack, Canvas::Handle canvas, std::set<synfig::Layer::Handle>& selected_list)
+CanvasView::rebuild_ducks_layer_(synfig::TransformStack& transform_stack, synfig::Canvas::Handle canvas, std::set<synfig::Layer::Handle>& selected_list)
 {
 	int transforms(0);
 	String layer_name;
@@ -3421,7 +3421,7 @@ CanvasView::on_audio_file_change(const std::string &f)
 }
 
 void
-CanvasView::on_audio_offset_change(const Time &t)
+CanvasView::on_audio_offset_change(const synfig::Time &t)
 {
 	canvas_interface()->set_meta_data("audiooffset",t.get_string());
 }

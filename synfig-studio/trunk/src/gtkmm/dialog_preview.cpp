@@ -69,7 +69,7 @@ Dialog_Preview::~Dialog_Preview()
 {
 }
 
-void Dialog_Preview::set_preview(handle<Preview>	prev)
+void Dialog_Preview::set_preview(etl::handle<Preview> prev)
 {
 	get_window().clear();
 	preview.set_preview(prev);
