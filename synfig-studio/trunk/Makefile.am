@@ -82,9 +82,6 @@ run: check
 	$(DOXYGEN) doxygen.cfg
 	touch .doc_stamp
 
-win32inst.nsi: $(srcdir)/win32inst.nsi.in
-	./config.status win32inst.nsi
-
 package-win32: all win32inst.nsi
 	convert images/installer_logo.png bmp3:images/installer_logo.bmp
 	make -C images sif_icon.ico synfig_icon.ico
