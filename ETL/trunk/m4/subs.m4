@@ -176,37 +176,6 @@ AC_DEFUN([AC_ARG_PROFILING],
 	AC_MSG_RESULT([$profiling])	
 ])
 
-AC_DEFUN([AC_ARG_TIMELIMIT],
-[
-	AC_ARG_ENABLE(timelimit,[  --enable-timelimit=[[days]] Set number of usable days(default=forever)],[
-		death_time=$((`date +%s`+$enableval*60*60*24))
-		AC_DEFINE_UNQUOTED(DEATH_TIME,$death_time, [ Describes the time at which the library will stop working ] )
-	],
-	[
-		death_time="no"
-	])
-])
-
-AC_DEFUN([AC_ARG_LICENSE_KEY],
-[
-	AC_ARG_ENABLE(license_key,[  --enable-license-key    Turn on license key requirement],[
-		AC_DEFINE(LICENSE_KEY_REQUIRED,, [ Enables license key checks ] )
-	],
-	[
-	])
-])
-
-AC_DEFUN([AC_ARG_TIMELIMIT],
-[
-	AC_ARG_ENABLE(timelimit,[  --enable-timelimit=[[days]] Set number of usable days(default=forever)],[
-		death_time=$((`date +%s`+$enableval*60*60*24))
-		AC_DEFINE_UNQUOTED(DEATH_TIME,$death_time, [ Describes the time at which the library will stop working ] )
-	],
-	[
-		death_time="no"
-	])
-])
-
 MINGW_FLAGS="-mno-cygwin"
 
 
