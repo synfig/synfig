@@ -384,157 +384,6 @@ public:
 
 /* === P R O C E D U R E S ================================================= */
 
-typedef unsigned char U8;
-typedef unsigned short U16;
-typedef unsigned long U32;
-
-typedef union {
-	struct {
-		U32 serial;
-		U32 checksum;
-	} element;
-	U8	raw[8];
-} V_KeyUnwound;
-
-static inline U32 hash_U32(U32 i)
-{
-	i=i*1664525+1013904223;
-	i=i*1664525+1013904223;
-	i=i*1664525+1013904223;
-	return i;
-}
-
-#ifdef BIG_ENDIAN
-static const int endian_fix_table[8] = { 3, 2, 1, 0, 7, 6, 5, 4 } ;
-#define endian_fix(x) (endian_fix_table[x])
-#else
-#define endian_fix(x) (x)
-#endif
-
-int v_unwind_key(V_KeyUnwound* unwound, const char* key)
-{
-	int i;
-	unwound->element.serial=0;
-	unwound->element.checksum=0;
-
-	for(i=0;i<16;i++)
-	{
-		U8 data;
-
-		switch(key[i])
-		{
-			case '0': data=0; break;
-			case '1': data=1; break;
-			case '2': data=2; break;
-			case '3': data=3; break;
-			case '4': data=4; break;
-			case '5': data=5; break;
-			case '6': data=6; break;
-			case '7': data=7; break;
-			case '8': data=8; break;
-			case '9': data=9; break;
-			case 'a': case 'A':  data=10; break;
-			case 'b': case 'B':  data=11; break;
-			case 'c': case 'C':  data=12; break;
-			case 'd': case 'D':  data=13; break;
-			case 'e': case 'E':  data=14; break;
-			case 'f': case 'F':  data=15; break;
-			default: return 0; break;
-		}
-		int bit=i*2;
-		unwound->element.checksum|=(((U32)data&3)<<bit);
-		unwound->element.serial|=(((U32)(data>>2)&3)<<bit);
-	}
-	return 1;
-}
-
-int v_key_check(const char* key, U32* serial, U32 appid)
-{
-	V_KeyUnwound unwound_key;
-	U32 appid_mask_a=hash_U32(appid);
-	U32 appid_mask_b=hash_U32(appid_mask_a);
-
-	if(!v_unwind_key(&unwound_key, key))
-	{
-		// Invalid characters in key
-		return 0;
-	}
-
-
-	// Undo obfuscation pass
-	{
-		U32 next=hash_U32(unwound_key.raw[endian_fix(7)]);
-		int i;
-		for(i=0;i<7;i++)
-		{
-			next=hash_U32(next);
-			unwound_key.raw[endian_fix(i)]^=(next>>24);
-		}
-	}
-
-	unwound_key.element.serial^=appid_mask_a;
-	unwound_key.element.checksum^=appid_mask_b;
-
-	*serial=unwound_key.element.serial;
-
-	return unwound_key.element.checksum==hash_U32(unwound_key.element.serial);
-}
-
-
-#ifdef _WIN32
-# ifdef LICENSE_KEY_REQUIRED
-int check_license(String basedir)
-# else
-int check_license(String /*basedir*/)
-# endif
-#else
-int check_license(String /*basedir*/)
-#endif
-{
-#ifdef LICENSE_KEY_REQUIRED
-	String key;
-	String license_file;
-
-#ifndef _WIN32
-	license_file="/usr/local/etc/.synfiglicense";
-#else
-	license_file=basedir+"\\etc\\.synfiglicense";
-#endif
-
-	try {
-		key=Glib::file_get_contents(license_file);
-	} catch (Glib::FileError) { }
-	U32 serial(0);
-	if(!v_key_check(key.c_str(),&serial,0xdeadbeef))
-	{
-		while(!v_key_check(key.c_str(),&serial,0xdeadbeef))
-		{
-			key.clear();
-
-			if(!App::dialog_entry(
-				_("Synfig Studio Authentication"),
-				_("Please enter your license key below. You will not\nbe able to use this software without a valid license key."),
-				key
-			))
-				throw String("No License");
-		}
-
-		FILE* file=fopen(license_file.c_str(),"w");
-		if(file)
-		{
-			fprintf(file,"%s",key.c_str());
-			fclose(file);
-		}
-		else
-			synfig::error("Unable to save license key!");
-	}
-	synfig::info("License Authenticated -- Serial #%05d",serial);
-	return serial;
-#else
-	return 1;
-#endif
-}
-
 /*
 void
 studio::UIManager::insert_action_group (const Glib::RefPtr<Gtk::ActionGroup>& action_group, int pos)
@@ -1118,9 +967,6 @@ App::App(int *argc, char ***argv):
 {
 	app_base_path_=etl::dirname(etl::dirname((*argv)[0]));
 
-	int serial_;
-	serial_=check_license(app_base_path_);
-
 
 	ui_interface_=new GlobalUIInterface();
 
@@ -1146,10 +992,8 @@ App::App(int *argc, char ***argv):
 
 	ipc=new IPC();
 
-	try
+	if(!SYNFIG_CHECK_VERSION())
 	{
-		if(!SYNFIG_CHECK_VERSION())
-		{
 		cerr<<"FATAL: Synfig Version Mismatch"<<endl;
 		dialog_error_blocking("Synfig Studio",
 			"This copy of Synfig Studio was compiled against a\n"
@@ -1159,18 +1003,6 @@ App::App(int *argc, char ***argv):
 			"http://www.synfig.com/ "
 		);
 		throw 40;
-		}
-	}
-	catch(synfig::SoftwareExpired)
-	{
-		cerr<<"FATAL: Software Expired"<<endl;
-		dialog_error_blocking("Synfig Studio",
-			"This copy of Synfig Studio has expired.\n"
-			"Please erase this copy, or download and\n"
-			"install the latest copy from the Synfig\n"
-			"website at http://www.synfig.com/ ."
-		);
-		throw 39;
 	}
 	Glib::set_application_name(_("Synfig Studio"));
 

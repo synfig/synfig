@@ -93,11 +93,6 @@ int main(int argc, char **argv)
 
 		app.run();
 	}
-	catch(synfig::SoftwareExpired)
-	{
-		cerr<<"FATAL: Software Expired"<<endl;
-		return 39;
-	}
 	catch(int ret)
 	{
 		std::cerr<<"Application shutdown with errors ("<<ret<<')'<<std::endl;
