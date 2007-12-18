@@ -154,7 +154,8 @@ Layer_PasteCanvas::set_param(const String & param, const ValueBase &value)
 		return true;
 	}
 
-	// IMPORT(time_offset);
+	//! \todo this introduces bug 1844764 if enabled; it was introduced in r954, but I can't see if it's useful
+#if 0
 	if (param=="time_offset" && value.same_type_as(time_offset))
 	{
 		if (time_offset != value.get(Time()))
@@ -166,6 +167,9 @@ Layer_PasteCanvas::set_param(const String & param, const ValueBase &value)
 		}
 		return true;
 	}
+#else
+	IMPORT(time_offset);
+#endif
 
 	IMPORT(children_lock);
 	IMPORT(zoom);
