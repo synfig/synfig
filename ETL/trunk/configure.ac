@@ -78,7 +78,6 @@ Makefile
 ETL/Makefile
 test/Makefile
 ETL.pc
-ETL.spec
 doxygen.cfg
 )
 
