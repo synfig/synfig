@@ -156,7 +156,10 @@ ffmpeg_trgt::init()
 		}
 		// Close the unneeded pipeout
 		close(p[0]);
-		execlp("ffmpeg", "ffmpeg", "-f", "image2pipe", "-vcodec", "ppm", "-an", "-r", strprintf("%f", desc.get_frame_rate()).c_str(), "-i", "pipe:", "-loop", "-hq", "-title", get_canvas()->get_name().c_str(), "-vcodec", "mpeg1video", "-y", "--", filename.c_str(), (const char *)NULL);
+		if( filename.c_str()[0] == '-' )
+			execlp("ffmpeg", "ffmpeg", "-f", "image2pipe", "-vcodec", "ppm", "-an", "-r", strprintf("%f", desc.get_frame_rate()).c_str(), "-i", "pipe:", "-loop", "-hq", "-title", get_canvas()->get_name().c_str(), "-vcodec", "mpeg1video", "-y", "--", filename.c_str(), (const char *)NULL);
+		else
+			execlp("ffmpeg", "ffmpeg", "-f", "image2pipe", "-vcodec", "ppm", "-an", "-r", strprintf("%f", desc.get_frame_rate()).c_str(), "-i", "pipe:", "-loop", "-hq", "-title", get_canvas()->get_name().c_str(), "-vcodec", "mpeg1video", "-y", filename.c_str(), (const char *)NULL);
 		// We should never reach here unless the exec failed
 		synfig::error(_("Unable to open pipe to ffmpeg"));
 		return false;
