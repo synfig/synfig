@@ -3,7 +3,6 @@
 #OPTIONS="--disable-optimization --enable-debug"
 
 OPTIONS="--enable-optimization=1 --disable-debug"
-#OPTIONS="$OPTIONS --enable-timelimit=120"
 
 [ -e configure ] || ./bootstrap || exit 0
 

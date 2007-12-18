@@ -6,7 +6,6 @@ PREFIX=/Users/darco/Projects/Voria/synfig-build
 
 export PKG_CONFIG_PATH=$PREFIX/lib/pkgconfig:/usr/lib/pkgconfig:/usr/X11R6/lib/pkgconfig
 OPTIONS="--prefix=$PREFIX"
-#OPTIONS="$OPTIONS --enable-timelimit=120"
 #OPTIONS="$OPTIONS --enable-optimization=2"
 OPTIONS="$OPTIONS --enable-optimization=3"
 #OPTIONS="$OPTIONS --enable-g5opt"

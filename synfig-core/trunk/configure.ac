@@ -45,14 +45,12 @@ AC_LANG_CPLUSPLUS
 # -- A R G U M E N T S ----------------------------------------
 
 
-AC_ARG_TIMELIMIT
 AC_ARG_DEBUG
 AC_ARG_OPTIMIZATION
 AC_ARG_WARNINGS
 AC_ARG_PROFILING
 AC_ARG_PROFILE_ARCS
 AC_ARG_BRANCH_PROBABILITIES
-dnl AC_ARG_LICENSE_KEY
 
 AC_ARG_ENABLE(g5opt,[
   --enable-g5opt           enable optimizations specific to G5 proc],[
@@ -603,7 +601,6 @@ Install Prefix -------------------> $prefix
 Module directory -----------------> $moduledir
 Build Platform -------------------> $build
 Host Platform --------------------> $host
-Time Limit -----------------------> $death_time
 Arc Profiling --------------------> $profile_arcs
 GProf Profiling ------------------> $profiling
 Debug Mode -----------------------> $debug ($debug_flags)

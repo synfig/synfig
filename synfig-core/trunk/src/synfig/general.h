@@ -117,19 +117,6 @@ public:
 	virtual bool valid() const { return cb != 0; }
 };
 
-/*! \class SoftwareExpired
-**	\brief This class is thrown when the software timeout has been reached.
-*/
-class SoftwareExpired
-{
-}; // END of class SoftwareExpired
-
-
-#ifdef DEATH_TIME
-inline void CHECK_EXPIRE_TIME() { if(time(0)>DEATH_TIME) throw SoftwareExpired(); }
-#else
-#define CHECK_EXPIRE_TIME() while(0){ }
-#endif
 
 /*
 extern bool add_to_module_search_path(const std:string &path);

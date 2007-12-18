@@ -55,10 +55,6 @@
 
 #include "mutex.h"
 
-#ifdef DEATH_TIME
-#include <time.h>
-#endif
-
 #ifdef HAVE_SIGNAL_H
 #include <signal.h>
 #endif
@@ -116,8 +112,6 @@ bool
 synfig::check_version_(int version,int vec_size, int color_size,int canvas_size,int layer_size)
 {
 	bool ret=true;
-
-	CHECK_EXPIRE_TIME();
 
 	if(version!=SYNFIG_LIBRARY_VERSION)
 	{
@@ -220,8 +214,6 @@ synfig::Main::Main(const synfig::String& basepath,ProgressCallback *cb):
 	// Add initialization after this point
 
 	bindtextdomain("synfig", LOCALEDIR);
-
-	CHECK_EXPIRE_TIME();
 
 	String prefix=basepath+"/..";
 	unsigned int i;
@@ -344,8 +336,6 @@ synfig::Main::Main(const synfig::String& basepath,ProgressCallback *cb):
 	}
 
 //	load_modules(cb);
-
-	CHECK_EXPIRE_TIME();
 
 
 	if(cb)cb->amount_complete(100, 100);

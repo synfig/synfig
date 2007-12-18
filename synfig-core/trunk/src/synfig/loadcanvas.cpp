@@ -2069,7 +2069,6 @@ CanvasParser::parse_from_file(const String &file)
 Canvas::Handle
 CanvasParser::parse_from_file_as(const String &file_,const String &as_)
 {
-	CHECK_EXPIRE_TIME();
 	try
 	{
         ChangeLocale change_locale(LC_NUMERIC, "C");
@@ -2130,8 +2129,6 @@ CanvasParser::parse_from_file_as(const String &file_,const String &as_)
 Canvas::Handle
 CanvasParser::parse_from_string(const String &data)
 {
-	CHECK_EXPIRE_TIME();
-
 	try
 	{
         ChangeLocale change_locale(LC_NUMERIC, "C");
