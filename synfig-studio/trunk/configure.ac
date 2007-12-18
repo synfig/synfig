@@ -171,7 +171,6 @@ AC_OUTPUT(
 Makefile
 doxygen.cfg
 po/Makefile.in
-synfigstudio.spec
 synfigstudio.desktop
 synfigstudio.mime
 synfigstudio.keys
