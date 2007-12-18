@@ -553,7 +553,6 @@ AC_SUBST(synfigincludedir)
 AC_OUTPUT(
 synfig-config
 synfig.pc
-synfig.spec
 doxygen.cfg
 Makefile
 po/Makefile.in

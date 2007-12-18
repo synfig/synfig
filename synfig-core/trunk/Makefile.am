@@ -1,6 +1,6 @@
 # $Id$
 
-MAINTAINERCLEANFILES=COPYING INSTALL synfig.pc synfig-$(VERSION).tar.gz doxygen.cfg config/config.guess config/config.sub config/ltmain.sh config/ltmain.sh.orig config/ltmain.sh.rej config/install-sh config/mkinstalldirs config/aclocal.m4 config/missing config/texinfo.tex config/depcomp aclocal.m4 config.h.in configure stamp-h.in Makefile.in config.log config.status .doc_stamp .DS_Store synfig.spec include/etl_profile.h.in libltdl/COPYING.LIB  libltdl/Makefile.in  libltdl/acinclude.m4  libltdl/config-h.in  libltdl/configure.in  libltdl/ltdl.h libltdl/Makefile.am  libltdl/README       libltdl/aclocal.m4    libltdl/configure    libltdl/ltdl.c        libltdl/stamp-h.in
+MAINTAINERCLEANFILES=COPYING INSTALL synfig.pc synfig-$(VERSION).tar.gz doxygen.cfg config/config.guess config/config.sub config/ltmain.sh config/ltmain.sh.orig config/ltmain.sh.rej config/install-sh config/mkinstalldirs config/aclocal.m4 config/missing config/texinfo.tex config/depcomp aclocal.m4 config.h.in configure stamp-h.in Makefile.in config.log config.status .doc_stamp .DS_Store include/etl_profile.h.in libltdl/COPYING.LIB  libltdl/Makefile.in  libltdl/acinclude.m4  libltdl/config-h.in  libltdl/configure.in  libltdl/ltdl.h libltdl/Makefile.am  libltdl/README       libltdl/aclocal.m4    libltdl/configure    libltdl/ltdl.c        libltdl/stamp-h.in
 
 
 SUBDIRS=libltdl src examples po
@@ -13,7 +13,7 @@ bin_SCRIPTS=synfig-config
 
 ACLOCAL_AMFLAGS=-I m4
 
-EXTRA_DIST=ChangeLog.old TODO m4/subs.m4 config/package doc/hw-gfx-mapping.txt win32build.sh macosxbuild.sh win32inst.nsi.in COPYING config/depcomp m4/synfig.m4 m4/cxx_macros.m4 synfig.spec synfig.spec.in synfig.kdevprj synfig-config.in m4/ETL.m4 doxygen.cfg.in doxygen.cfg synfig.pc.in m4/pkgconfig.m4 m4/libxml++.m4 @PACKAGE_TARNAME@.pc.in pkg-info/macosx/core-resources/ReadMe.txt pkg-info/macosx/core-resources/Welcome.txt pkg-info/macosx/core-resources/install.sh
+EXTRA_DIST=ChangeLog.old TODO m4/subs.m4 config/package doc/hw-gfx-mapping.txt win32build.sh macosxbuild.sh win32inst.nsi.in COPYING config/depcomp m4/synfig.m4 m4/cxx_macros.m4 synfig.kdevprj synfig-config.in m4/ETL.m4 doxygen.cfg.in doxygen.cfg synfig.pc.in m4/pkgconfig.m4 m4/libxml++.m4 @PACKAGE_TARNAME@.pc.in pkg-info/macosx/core-resources/ReadMe.txt pkg-info/macosx/core-resources/Welcome.txt pkg-info/macosx/core-resources/install.sh
 
 CVS=cvs
 GREP=grep
