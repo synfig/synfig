@@ -170,13 +170,15 @@ public:
 				{
 					Distance dist(synfigapp::Main::get_bline_width());
 
-					if(event->scroll.direction==GDK_SCROLL_UP)
-					{
-						dist+=DEFAULT_INCREMENT;
-					}
-					else if(event->scroll.direction==GDK_SCROLL_DOWN)
-					{
-						dist-=DEFAULT_INCREMENT;
+					switch(event->scroll.direction){
+						case GDK_SCROLL_UP:
+						case GDK_SCROLL_RIGHT:
+							dist+=DEFAULT_INCREMENT;
+						break;
+						case GDK_SCROLL_DOWN:
+						case GDK_SCROLL_LEFT:
+							dist-=DEFAULT_INCREMENT;
+						break;
 					}
 					synfigapp::Main::set_bline_width(dist);
 					return true;
