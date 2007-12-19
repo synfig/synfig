@@ -707,7 +707,42 @@ bool Widget_Timeslider::on_scroll_event(GdkEventScroll* event) //for zooming
 
 			return true;
 		}
+		
+		case GDK_SCROLL_RIGHT:
+		case GDK_SCROLL_LEFT:
+		{	
+			double t = adj_timescale->get_value();
+			double start = adj_timescale->get_lower();
+			double end = adj_timescale->get_upper();
+			/*
+			FIXME: be more intelligent about how far to scroll
+			Perhaps it should be based on the tickmarks?
+			for e.g. 1/4 of a tick mark per scroll event
+			Obviously this  would need post-rounding to 1/fps
+			*/
+			double adj = 1.0/fps;
 
+			if( event->direction == GDK_SCROLL_RIGHT )
+				t += adj;
+			else
+				t -= adj;
+
+			if( t < start ){
+				adj_timescale->set_lower(t);
+				adj_timescale->set_upper(t+end-start);
+			} else if( t > end ){ 
+				adj_timescale->set_upper(t);
+				adj_timescale->set_lower(t-end+start);
+			}
+
+			if(adj_timescale)
+			{
+				adj_timescale->set_value(t);
+				adj_timescale->value_changed();
+			}
+			return true;
+		}
+		
 		default:
 		{
 			return false;
