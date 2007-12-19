@@ -74,7 +74,7 @@
 */
 #ifdef SYNFIG_TARGET
 # ifdef SYNFIG_NO_RENDER
-#  error You defined SYNFIG_TARGET, but also SYNFIG_NO_RENDER. This doesn't make sense.
+#  error You defined SYNFIG_TARGET, but also SYNFIG_NO_RENDER. This does not make sense.
 # endif
 # ifndef SYNFIG_NO_ANGLE
 #  define SYNFIG_NO_ANGLE
