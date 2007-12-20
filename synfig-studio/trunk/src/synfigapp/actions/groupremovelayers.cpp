@@ -70,14 +70,8 @@ Action::GroupRemoveLayers::get_param_vocab()
 
 	ret.push_back(ParamDesc("layer",Param::TYPE_LAYER)
 		.set_local_name(_("Layer"))
-		.set_desc(_("Layer to be added to group"))
+		.set_desc(_("Layer to be removed from group"))
 		.set_supports_multiple()
-	);
-
-	ret.push_back(ParamDesc("group",Param::TYPE_STRING)
-		.set_local_name(_("Group"))
-		.set_desc(_("Name of the Group to add the Layers to"))
-		.set_user_supplied()
 	);
 
 	return ret;
@@ -101,20 +95,13 @@ Action::GroupRemoveLayers::set_param(const synfig::String& name, const Action::P
 		return true;
 	}
 
-	if(name=="group" && param.get_type()==Param::TYPE_STRING)
-	{
-		group=param.get_string();
-
-		return true;
-	}
-
 	return Action::CanvasSpecific::set_param(name,param);
 }
 
 bool
 Action::GroupRemoveLayers::is_ready()const
 {
-	if(layer_list.empty() || group.empty())
+	if(layer_list.empty())
 		return false;
 	return Action::CanvasSpecific::is_ready();
 }
@@ -126,9 +113,7 @@ Action::GroupRemoveLayers::perform()
 	for(iter=layer_list.begin();iter!=layer_list.end();++iter)
 	{
 		Layer::Handle layer(iter->first);
-		iter->second=layer->get_group();
-
-		layer->remove_from_group(group);
+		layer->remove_from_group(iter->second=layer->get_group());
 	}
 }
 

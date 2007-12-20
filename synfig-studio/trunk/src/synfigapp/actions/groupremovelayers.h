@@ -52,9 +52,6 @@ private:
 	// List contains the layers and their previous groups
 	std::list<std::pair<synfig::Layer::Handle,synfig::String> > layer_list;
 
-	// The name of the new group
-	synfig::String group;
-
 public:
 
 	GroupRemoveLayers();
