@@ -418,8 +418,10 @@ public:
 	//! Duplicates the Layer
 	virtual Handle clone(const GUID& deriv_guid=GUID())const;
 
+#ifdef THIS_CODE_IS_NOT_USED
 	//! Duplicates the Layer without duplicating the value nodes
 	virtual Layer *simple_clone()const;
+#endif /* THIS_CODE_IS_NOT_USED */
 
 protected:
 
