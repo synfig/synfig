@@ -275,3 +275,25 @@ ValueNode_Random::check_type(ValueBase::Type type)
 		type==ValueBase::TYPE_TIME		||
 		type==ValueBase::TYPE_VECTOR	;
 }
+
+ValueNode*
+ValueNode_Random::clone(const GUID& deriv_guid)const
+{
+	ValueNode_Random* ret = (ValueNode_Random*)LinkableValueNode::clone(deriv_guid);
+	ret->randomize_seed();
+	return ret;
+}
+
+void
+ValueNode_Random::randomize_seed()
+{
+	int i = get_link_index_from_name("seed");
+	ValueNode::Handle link = get_link_vfunc(i);
+	if(!link->is_exported() && link->get_name() == "constant")
+	{
+		int seed = time(NULL) + rand();
+		if (seed < 0) seed = -seed;
+		random.set_seed(seed);
+		set_link(i, ValueNode_Const::create(seed));
+	}
+}

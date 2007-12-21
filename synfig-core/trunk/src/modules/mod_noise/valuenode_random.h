@@ -68,6 +68,10 @@ public:
 	virtual String link_local_name(int i)const;
 	virtual int get_link_index_from_name(const String &name)const;
 
+	virtual ValueNode* clone(const GUID& deriv_guid=GUID())const;
+
+	void randomize_seed();
+
 protected:
 	LinkableValueNode* create_new()const;
 	virtual bool set_link_vfunc(int i,ValueNode::Handle x);
