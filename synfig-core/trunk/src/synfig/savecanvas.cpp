@@ -636,7 +636,7 @@ xmlpp::Element* encode_canvas(xmlpp::Element* root,Canvas::ConstHandle canvas)
 	root->set_name("canvas");
 
 	if(canvas->is_root())
-		root->set_attribute("version","0.1");
+		root->set_attribute("version",canvas->get_version());
 
 	if(!canvas->get_id().empty() && !canvas->is_root() && !canvas->is_inline())
 		root->set_attribute("id",canvas->get_id());

@@ -71,6 +71,7 @@ int _CanvasCounter::counter(0);
 
 Canvas::Canvas(const String &id):
 	id_			(id),
+	version_	(CURRENT_CANVAS_VERSION),
 	cur_time_	(0),
 	is_inline_	(false),
 	is_dirty_	(true),

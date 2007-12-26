@@ -45,6 +45,8 @@
 
 /* === M A C R O S ========================================================= */
 
+#define CURRENT_CANVAS_VERSION "0.2"
+
 /* === T Y P E D E F S ===================================================== */
 
 /* === C L A S S E S & S T R U C T S ======================================= */
@@ -89,6 +91,10 @@ private:
 	//! Contains a description of the Canvas
 	/*!	\see set_description(), get_description() */
 	String description_;
+
+	//! Contains the canvas' version string
+	/*!	\see set_version(), get_version() */
+	String version_;
 
 	//! Contains the author's name
 	/*!	\see set_author(), get_author() */
@@ -289,6 +295,12 @@ public:
 
 	//! Sets the name of the canvas
 	void set_name(const String &x);
+
+	//! Gets the version string of the canvas
+	const String get_version()const { return version_; }
+
+	//! Sets the version string of the canvas
+	void set_version(const String &x) { version_ = x; }
 
 	//! Gets the author of the canvas
 	const String & get_author()const { return author_; }

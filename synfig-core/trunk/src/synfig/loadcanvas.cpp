@@ -1051,6 +1051,46 @@ CanvasParser::parse_animated(xmlpp::Element *element,Canvas::Handle canvas)
 		else
 			error_unexpected_element(child,child->get_name());
 	}
+
+	// in canvas version 0.1, angles used to wrap, so to get from -179
+	// degrees to 180 degrees meant a 1 degree change
+	// in canvas version 0.2 they don't, so that's a 359 degree change
+
+	// when loading a version 0.1 canvas, modify constant angle
+	// waypoints to that they are within 180 degrees of the previous
+	// waypoint's value
+	if (type == ValueBase::TYPE_ANGLE) 
+	{
+		Canvas::Handle parent = canvas;
+		while (!parent->is_root())
+			parent = parent->parent();
+
+		if (parent->get_version() == "0.1")
+		{
+			bool first = true;
+			Real angle, prev;
+			WaypointList &wl = value_node->waypoint_list();
+			for (WaypointList::iterator iter = wl.begin(); iter != wl.end(); iter++)
+			{
+				angle = Angle::deg(iter->get_value(iter->get_time()).get(Angle())).get();
+				if (first)
+					first = false;
+				else if (iter->get_value_node()->get_name() == "constant")
+					if (angle - prev > 180)
+					{
+						while (angle - prev > 180) angle -= 360;
+						iter->set_value(Angle::deg(angle));
+					}
+					else if (prev - angle > 180)
+					{
+						while (prev - angle > 180) angle += 360;
+						iter->set_value(Angle::deg(angle));
+					}
+				prev = angle;
+			}
+		}
+	}
+
 	value_node->changed();
 	return value_node;
 }
@@ -1855,6 +1895,9 @@ CanvasParser::parse_canvas(xmlpp::Element *element,Canvas::Handle parent,bool in
 			canvas->set_guid(guid);
 	}
 
+	if(element->get_attribute("version"))
+		canvas->set_version(element->get_attribute("version")->get_value());
+
 	if(element->get_attribute("width"))
 		canvas->rend_desc().set_w(atoi(element->get_attribute("width")->get_value().c_str()));
 
@@ -2057,6 +2100,7 @@ CanvasParser::parse_canvas(xmlpp::Element *element,Canvas::Handle parent,bool in
 								nodes.c_str()));
 	}
 
+	canvas->set_version(CURRENT_CANVAS_VERSION);
 	return canvas;
 }
 
