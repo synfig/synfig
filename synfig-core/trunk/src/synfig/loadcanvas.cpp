@@ -1674,7 +1674,7 @@ CanvasParser::parse_layer(xmlpp::Element *element,Canvas::Handle canvas)
 	{
 		String version(element->get_attribute("version")->get_value());
 		if(version>layer->get_version())
-			warning(element,_("Installed layer version is larger than layer version in file"));
+			warning(element,_("Installed layer version is smaller than layer version in file"));
 		if(version!=layer->get_version())
 			layer->set_version(version);
 	}
