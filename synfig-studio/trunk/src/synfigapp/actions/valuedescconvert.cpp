@@ -71,6 +71,7 @@ ACTION_SET_CVS_ID(Action::ValueDescConvert,"$Id$");
 
 Action::ValueDescConvert::ValueDescConvert()
 {
+	time=(Time::begin()-1);
 }
 
 Action::ParamVocab
@@ -85,6 +86,10 @@ Action::ValueDescConvert::get_param_vocab()
 	ret.push_back(ParamDesc("type",Param::TYPE_STRING)
 		.set_local_name(_("Type"))
 		.set_desc(_("The type of ValueNode that you want to be converted to"))
+	);
+
+	ret.push_back(ParamDesc("time",Param::TYPE_TIME)
+		.set_local_name(_("Time"))
 	);
 
 	return ret;
@@ -113,6 +118,13 @@ Action::ValueDescConvert::set_param(const synfig::String& name, const Action::Pa
 		return true;
 	}
 
+	if(name=="time" && param.get_type()==Param::TYPE_TIME)
+	{
+		time=param.get_time();
+
+		return true;
+	}
+
 	return Action::CanvasSpecific::set_param(name,param);
 }
 
@@ -121,6 +133,11 @@ Action::ValueDescConvert::is_ready()const
 {
 	if(!value_desc || type.empty())
 		return false;
+	if(time==(Time::begin()-1))
+	{
+		synfig::error("Missing time");
+		return false;
+	}
 	return Action::CanvasSpecific::is_ready();
 }
 
@@ -134,7 +151,7 @@ Action::ValueDescConvert::prepare()
 	if(value_desc.is_const())
 		value=value_desc.get_value();
 	else if(value_desc.is_value_node())
-		value=(*value_desc.get_value_node())(0);
+		value=(*value_desc.get_value_node())(time);
 	else
 		throw Error(_("Unable to decipher ValueDesc (Bug?)"));
 

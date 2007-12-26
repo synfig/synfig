@@ -296,6 +296,7 @@ CanvasInterface::convert(ValueDesc value_desc, synfig::String type)
 	action->set_param("canvas_interface",etl::loose_handle<CanvasInterface>(this));
 	action->set_param("value_desc",value_desc);
 	action->set_param("type",type);
+	action->set_param("time",get_time());
 
 	if(!action->is_ready())
 	{
