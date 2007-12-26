@@ -64,6 +64,7 @@
 #include "valuenode_atan2.h"
 #include "valuenode_exp.h"
 #include "valuenode_switch.h"
+#include "valuenode_timeloop.h"
 
 #include "layer.h"
 
@@ -134,6 +135,7 @@ ValueNode::subsys_init()
 	ADD_VALUENODE(ValueNode_Atan2,			"atan2",			_("aTan2")				);
 	ADD_VALUENODE(ValueNode_Exp,			"exp",				_("Exponential")		);
 	ADD_VALUENODE(ValueNode_Switch,			"switch",			_("Switch")				);
+	ADD_VALUENODE(ValueNode_TimeLoop,		"timeloop",			_("Time Loop")			);
 
 #undef ADD_VALUENODE
 #undef ADD_VALUENODE2
@@ -468,7 +470,12 @@ PlaceholderValueNode::PlaceholderValueNode(ValueBase::Type type):
 ValueNode*
 LinkableValueNode::clone(const GUID& deriv_guid)const
 {
-	{ ValueNode* x(find_value_node(get_guid()^deriv_guid).get()); if(x)return x; }
+	// printf("%s:%d clone()\n", __FILE__, __LINE__);
+	{ ValueNode* x(find_value_node(get_guid()^deriv_guid).get()); if(x)
+																  {
+																	  printf("VALUENODE FOUND VALUENODE\n");
+																	  return x;
+																  }}
 
 	int i;
 	LinkableValueNode *ret=create_new();
