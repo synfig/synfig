@@ -60,8 +60,8 @@ ValueNode_TimeLoop::ValueNode_TimeLoop(const ValueNode::Handle &x):
 {
 	set_link("link", x);
 	set_link("link_time",  ValueNode_Const::create(Time(0)));
-	set_link("local_time", ValueNode_Const::create(Time(1)));
-	set_link("duration",   ValueNode_Const::create(Time(0)));
+	set_link("local_time", ValueNode_Const::create(Time(0)));
+	set_link("duration",   ValueNode_Const::create(Time(1)));
 }
 
 ValueNode_TimeLoop*
