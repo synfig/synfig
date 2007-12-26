@@ -163,13 +163,14 @@ ValueNode_TimeLoop::operator()(Time t)const
 	{
 		t -= local_time;
 		t -= floor(t / duration) * duration;
-		t = link_time + t;
+		t  = link_time + t;
 	}
 	else
 	{
+		duration = -duration;
 		t -= local_time;
 		t -= floor(t / duration) * duration;
-		t = link_time + duration - t;
+		t  = link_time - t;
 	}
 
 	return (*link_)(t);
