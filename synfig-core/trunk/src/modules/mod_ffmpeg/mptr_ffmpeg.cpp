@@ -104,8 +104,8 @@ ffmpeg_mptr::seek_to(int frame)
 			// Parent process
 			// Close pipeout, not needed
 			close(p[1]);
-			// Save pipeout to file handle, will write to it later
-			file = fdopen(p[0], "wb");
+			// Save pipein to file handle, will read from it later
+			file = fdopen(p[0], "rb");
 		}
 
 		if(!file)
