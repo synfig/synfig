@@ -1068,7 +1068,7 @@ CanvasParser::parse_animated(xmlpp::Element *element,Canvas::Handle canvas)
 		if (parent->get_version() == "0.1")
 		{
 			bool first = true;
-			Real angle, prev;
+			Real angle, prev = 0;
 			WaypointList &wl = value_node->waypoint_list();
 			for (WaypointList::iterator iter = wl.begin(); iter != wl.end(); iter++)
 			{
