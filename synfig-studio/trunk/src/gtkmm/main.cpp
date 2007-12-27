@@ -59,9 +59,11 @@ using namespace studio;
 int main(int argc, char **argv)
 {
 
+#ifdef ENABLE_NLS
 	setlocale(LC_ALL, "");
 	bindtextdomain("synfigstudio", LOCALEDIR);
 	textdomain("synfigstudio");
+#endif
 
 	{
 		SmartFILE file(IPC::make_connection());

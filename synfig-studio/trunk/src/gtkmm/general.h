@@ -27,16 +27,23 @@
 
 /* === H E A D E R S ======================================================= */
 
+#ifdef ENABLE_NLS
 #include <libintl.h>
+#endif
 
 /* === M A C R O S ========================================================= */
 
 #undef _
 #undef gettext_noop
 #undef N_
+#ifdef ENABLE_NLS
 #define _(x) gettext(x)
 #define gettext_noop(x) x
 #define N_(x) gettext_noop(x)
+#else
+#define _(x) (x)
+#define N_(x) (x)
+#endif
 
 /* === T Y P E D E F S ===================================================== */
 

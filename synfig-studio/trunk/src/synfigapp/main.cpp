@@ -98,7 +98,9 @@ synfigapp::Main::Main(const synfig::String &basepath, synfig::ProgressCallback *
 
 	// Add initialization after this point
 
+#ifdef ENABLE_NLS
 	bindtextdomain("synfigstudio", LOCALEDIR);
+#endif
 
 	action_main=new synfigapp::Action::Main();
 
