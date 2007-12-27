@@ -30,14 +30,22 @@
 #include <ETL/stringf>
 #include "string.h"
 #include "version.h"
-#include <locale.h>
-#include <libintl.h>
+#ifdef ENABLE_NLS
+ #include <locale.h>
+ #include <libintl.h>
+#endif
 
 /* === M A C R O S ========================================================= */
 
+#ifdef ENABLE_NLS
 #define _(x) dgettext("synfig",x)
 #define gettext_noop(x) x
 #define N_(x) gettext_noop(x)
+#else
+#define dgettext(a,x) (x)
+#define _(x) (x)
+#define N_(x) (x)
+#endif
 
 #define SYNFIG_COPYRIGHT "Copyright (c) 2001-2005 Robert B. Quattlebaum Jr., Adrian Bentley"
 

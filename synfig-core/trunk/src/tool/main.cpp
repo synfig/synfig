@@ -58,8 +58,13 @@ using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 
+#ifdef ENABLE_NLS
 #undef _
 #define _(x) gettext(x)
+#else
+#undef _
+#define _(x) (x)
+#endif
 
 enum exit_code
 {
@@ -840,9 +845,11 @@ int main(int argc, char *argv[])
 	arg_list_t arg_list;
 	job_list_t job_list;
 
+#ifdef ENABLE_NLS
 	setlocale(LC_ALL, "");
 	bindtextdomain("synfig", LOCALEDIR);
 	textdomain("synfig");
+#endif
 
 	progname=argv[0];
 	Progress p(argv[0]);

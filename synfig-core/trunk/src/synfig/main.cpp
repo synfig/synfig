@@ -213,7 +213,9 @@ synfig::Main::Main(const synfig::String& basepath,ProgressCallback *cb):
 
 	// Add initialization after this point
 
+#ifdef ENABLE_NLS
 	bindtextdomain("synfig", LOCALEDIR);
+#endif
 
 	String prefix=basepath+"/..";
 	unsigned int i;
