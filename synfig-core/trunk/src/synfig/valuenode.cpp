@@ -65,6 +65,7 @@
 #include "valuenode_exp.h"
 #include "valuenode_switch.h"
 #include "valuenode_timeloop.h"
+#include "valuenode_reciprocal.h"
 
 #include "layer.h"
 
@@ -136,6 +137,7 @@ ValueNode::subsys_init()
 	ADD_VALUENODE(ValueNode_Exp,			"exp",				_("Exponential")		);
 	ADD_VALUENODE(ValueNode_Switch,			"switch",			_("Switch")				);
 	ADD_VALUENODE(ValueNode_TimeLoop,		"timeloop",			_("Time Loop")			);
+	ADD_VALUENODE(ValueNode_Reciprocal,		"reciprocal",		_("Reciprocal")			);
 
 #undef ADD_VALUENODE
 #undef ADD_VALUENODE2
