@@ -472,6 +472,9 @@ esac
 
 # -- H E A D E R S --------------------------------------------
 
+AC_HEADER_SYS_WAIT
+AC_CHECK_HEADERS([process.h io.h fcntl.h])
+
 # -- T Y P E S & S T R U C T S --------------------------------
 
 # -- F U N C T I O N S ----------------------------------------
@@ -483,6 +486,10 @@ dnl ])
 AC_CHECK_FUNCS([fork])
 AC_CHECK_FUNCS([kill])
 AC_CHECK_FUNCS([pipe])
+AC_CHECK_FUNCS([waitpid])
+AC_CHECK_FUNCS([_spawnlp])
+AC_CHECK_FUNCS([_pipe])
+AC_CHECK_FUNCS([cwait])
 
 AC_CHECK_FUNCS(
 	[isnan],

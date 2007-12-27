@@ -35,7 +35,18 @@
 #include "mptr_imagemagick.h"
 #include <stdio.h>
 #include <sys/types.h>
-#include <sys/wait.h>
+#if HAVE_SYS_WAIT_H
+ #include <sys/wait.h>
+#endif
+#if HAVE_IO_H
+ #include <io.h>
+#endif
+#if HAVE_PROCESS_H
+ #include <process.h>
+#endif
+#if HAVE_FCNTL_H
+ #include <fcntl.h>
+#endif
 #include <unistd.h>
 #include <algorithm>
 #include <functional>
@@ -49,6 +60,12 @@
 using namespace synfig;
 using namespace std;
 using namespace etl;
+
+#if defined(HAVE_FORK) && defined(HAVE_PIPE) && defined(HAVE_WAITPID)
+ #define UNIX_PIPE_TO_PROCESSES
+#elif defined(HAVE__SPAWNLP) && defined(HAVE__PIPE) && defined(HAVE_CWAIT)
+ #define WIN32_PIPE_TO_PROCESSES
+#endif
 
 /* === G L O B A L S ======================================================= */
 
@@ -89,6 +106,15 @@ imagemagick_mptr::get_frame(synfig::Surface &surface,Time /*time*/, synfig::Prog
 	string temp_file="/tmp/deleteme.png";
 	string output="png32:"+temp_file;
 
+#if defined(WIN32_PIPE_TO_PROCESSES)
+
+	if(filename.find("psd")!=String::npos)
+		_spawnlp(_P_WAIT, "convert", "convert", filename.c_str(), "-flatten", output.c_str(), (const char *)NULL);
+	else
+		_spawnlp(_P_WAIT, "convert", "convert", filename.c_str(), output.c_str(), (const char *)NULL);
+
+#elif defined(UNIX_PIPE_TO_PROCESSES)
+
 	pid_t pid = fork();
   
 	if (pid == -1) {
@@ -109,6 +135,10 @@ imagemagick_mptr::get_frame(synfig::Surface &surface,Time /*time*/, synfig::Prog
 	waitpid(pid, &status, 0);
 	if( (WIFEXITED(status) && WEXITSTATUS(status) != 0) || !WIFEXITED(status) )
 		return false;
+
+#else
+	#error There are no known APIs for creating child processes
+#endif
 
 	Importer::Handle importer(Importer::open(temp_file));
 
