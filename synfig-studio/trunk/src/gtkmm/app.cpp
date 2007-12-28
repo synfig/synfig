@@ -1200,6 +1200,10 @@ App::App(int *argc, char ***argv):
 
 		toolbox->present();
 	}
+	catch(String x)
+	{
+		get_ui_interface()->error(_("Unknown exception caught when constructing App.\nThis software may be unstable.") + String("\n\n") + x);
+	}
 	catch(...)
 	{
 		get_ui_interface()->error(_("Unknown exception caught when constructing App.\nThis software may be unstable."));
