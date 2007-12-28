@@ -151,6 +151,9 @@ ValueNode_Reciprocal::operator()(Time t)const
 	Real epsilon  = (*epsilon_) (t).get(Real());
 	Real infinite = (*infinite_)(t).get(Real());
 
+	if (epsilon < 0.00000001)
+		epsilon = 0.00000001;
+
 	if (abs(link) < epsilon)
 		if (link < 0)
 			return -infinite;
