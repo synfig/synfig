@@ -201,7 +201,7 @@ class Widget_Preview : public Gtk::Table
 	etl::clock	timer;
 
 	//int		curindex; //for later
-	SigC::Connection	timecon;
+	sigc::connection	timecon;
 
 	void slider_move(); //later to be a time_slider that's cooler
 	bool play_update();

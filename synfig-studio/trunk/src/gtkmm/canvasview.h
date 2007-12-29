@@ -201,8 +201,8 @@ private:
 	etl::handle<AudioContainer>		audio;
 	studio::Widget_Sound			*disp_audio; //should this be put into thing too?
 
-	SigC::Connection				playcon;
-	SigC::Connection				stopcon;
+	sigc::connection				playcon;
+	sigc::connection				stopcon;
 
 	std::auto_ptr<UniversalScrubber> universal_scrubber;
 

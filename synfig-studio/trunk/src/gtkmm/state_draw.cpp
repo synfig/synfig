@@ -99,7 +99,7 @@ class studio::StateDraw_Context : public sigc::trackable
 	bool prev_workarea_layer_status_;
 
 	int nested;
-	SigC::Connection process_queue_connection;
+	sigc::connection process_queue_connection;
 
 	ValueNode_BLine::Handle last_stroke;
 	synfig::String last_stroke_id;

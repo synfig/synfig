@@ -44,7 +44,7 @@ class Instance;
 
 class Dock_CanvasSpecific : public Dockable
 {
-	SigC::Connection canvas_delete_connection;
+	sigc::connection canvas_delete_connection;
 protected:
 	virtual void init_instance_vfunc(etl::loose_handle<Instance> instance);
 

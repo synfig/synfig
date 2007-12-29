@@ -59,7 +59,7 @@ class DockDialog : public Gtk::Window
 	friend class DockManager;
 	friend class DockBook;
 	friend class Dockable;
-	SigC::Connection empty_sig;
+	sigc::connection empty_sig;
 
 	bool composition_selector_;
 

@@ -28,7 +28,6 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <sigc++/compatibility.h>
 #include <sigc++/bind.h>
 
 #include <gtkmm/main.h>

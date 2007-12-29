@@ -47,7 +47,7 @@ class Dock_Info : public Dock_CanvasSpecific
 	Gtk::Label  r,g,b,a;
 	Gtk::Label	x,y;
 
-	SigC::Connection mousecon;
+	sigc::connection mousecon;
 
 	void on_mouse_move();
 

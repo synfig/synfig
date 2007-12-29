@@ -59,7 +59,7 @@ class Dockable : public Gtk::Table
 
 
 	sigc::signal<void> signal_stock_id_changed_;
-	SigC::Connection prev_widget_delete_connection;
+	sigc::connection prev_widget_delete_connection;
 protected:
 
 //	DialogSettings dialog_settings;

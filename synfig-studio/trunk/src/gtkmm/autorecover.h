@@ -42,7 +42,7 @@ namespace studio {
 class AutoRecover
 {
 	int timeout;
-	SigC::Connection auto_backup_connect;
+	sigc::connection auto_backup_connect;
 public:
 	AutoRecover();
 	~AutoRecover();

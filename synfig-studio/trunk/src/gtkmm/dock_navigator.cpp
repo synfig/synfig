@@ -222,7 +222,7 @@ void studio::Widget_NavView::on_finish_render()
 			dw,	// width
 			dh,	// height
 			dw*synfig::channels(pf), // stride (pitch)
-			SigC::slot(freegu8)
+			sigc::ptr_fun(freegu8)
 		);
 	}
 	else
