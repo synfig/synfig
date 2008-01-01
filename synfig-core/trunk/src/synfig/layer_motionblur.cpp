@@ -161,11 +161,11 @@ Layer_MotionBlur::accelerated_render(Context context,Surface *surface,int qualit
 				samples=3;
 				break;
 			case 9:
-				samples=3;
+				samples=2;
 				break;
 			case 10: // Rough Quality
             default:
-				samples=2;
+				samples=1;
 				break;
 
 		}
