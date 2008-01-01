@@ -845,8 +845,9 @@ int main(int argc, char *argv[])
 	arg_list_t arg_list;
 	job_list_t job_list;
 
-#ifdef ENABLE_NLS
 	setlocale(LC_ALL, "");
+
+#ifdef ENABLE_NLS
 	bindtextdomain("synfig", LOCALEDIR);
 	textdomain("synfig");
 #endif
