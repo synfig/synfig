@@ -298,7 +298,7 @@ ffmpeg_mptr::get_frame(synfig::Surface &surface,Time time, synfig::ProgressCallb
 	{
 		if(!seek_to(i))
 			return false;
-		if(!grab_frame());
+		if(!grab_frame())
 			return false;
 	}
 
