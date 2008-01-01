@@ -146,7 +146,7 @@ synfig::activepoint_collect(set<Activepoint, std::less<UniqueID> >& /*activepoin
 	const TimePointSet& timepoint_set(node->get_times());
 
 	// Check to see if there is anything in here at the given time
-	if(timepoint_set.find(time)==timepoint_set.end());
+	if(timepoint_set.find(time)==timepoint_set.end())
 		return 0;
 
 	return 0;
