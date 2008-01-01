@@ -1291,7 +1291,7 @@ Layer_Shape::get_color(Context context, const Point &p)const
 //************** SCANLINE RENDERING *********************
 void Layer_Shape::PolySpan::line_to(Real x, Real y)
 {
-	Real n[4];
+	Real n[4] = {0,0,0,0};
 	bool afterx = false;
 
 	const Real xin(x), yin(y);
