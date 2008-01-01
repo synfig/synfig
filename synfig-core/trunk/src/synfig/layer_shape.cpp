@@ -2477,8 +2477,8 @@ Layer_Shape::accelerated_render(Context context,Surface *surface,int quality, co
 
 		Rect	nrect;
 
-		Real	pixelfeatherx = abs(feather/pw),
-				pixelfeathery = abs(feather/ph);
+		Real	pixelfeatherx = quality == 10 ? 0 : abs(feather/pw),
+				pixelfeathery = quality == 10 ? 0 : abs(feather/ph);
 
 		nrect.set_point((aabb.minx - tl[0])/pw,(aabb.miny - tl[1])/ph);
 		nrect.expand((aabb.maxx - tl[0])/pw,(aabb.maxy - tl[1])/ph);
@@ -2519,7 +2519,7 @@ Layer_Shape::accelerated_render(Context context,Surface *surface,int quality, co
 
 	if(cb && !cb->amount_complete(10000,10001+renddesc.get_h())) return false;
 
-	if(feather)
+	if(feather && quality != 10)
 	{
 		//we have to blur rather than be crappy
 
