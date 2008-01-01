@@ -69,18 +69,18 @@ MagickLib::Image* copy_image_list(Container& container)
 		try
 		{
 			current = CloneImage(iter->image(), 0, 0, Magick::MagickTrue, &exceptionInfo);
+
+			if (!first) first = current;
+
+			current->previous = previous;
+			current->next	  = 0;
+
+			if ( previous != 0) previous->next = current;
+			previous = current;
 		}
 		catch(Magick::Warning warning) {
 			synfig::warning("exception '%s'", warning.what());
 		}
-			
-		if (!first) first = current;
-
-		current->previous = previous;
-		current->next	  = 0;
-
-		if ( previous != 0) previous->next = current;
-		previous = current;
 	}
 
 	return first;
