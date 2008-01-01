@@ -43,8 +43,13 @@ class Layer_TimeLoop : public synfig::Layer
 	SYNFIG_LAYER_MODULE_EXT
 
 private:
+	synfig::Time	link_time;
+	synfig::Time	local_time;
+	synfig::Time	duration;
+
 	synfig::Time	start_time;
 	synfig::Time	end_time;
+	bool			old_version;
 
 protected:
 	Layer_TimeLoop();
@@ -57,6 +62,8 @@ public:
 	virtual synfig::ValueBase get_param(const synfig::String & param)const;
 
 	virtual Vocab get_param_vocab()const;
+	virtual bool set_version(const synfig::String &ver);
+	virtual void reset_version();
 	virtual synfig::Color get_color(synfig::Context context, const synfig::Point &pos)const;
 
 	virtual void set_time(synfig::Context context, synfig::Time time)const;
