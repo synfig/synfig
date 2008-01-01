@@ -441,7 +441,8 @@ Circle::accelerated_render(Context context,Surface *surface,int quality, const R
 
 	// Increasing the feather amount by the size of
 	// a pixel will create an anti-aliased appearance
-	const Real newfeather=feather + (abs(ph)+abs(pw))/4.0;
+	// don't render feathering at all when quality is 10
+	const Real newfeather = (quality == 10) ? 0 : feather + (abs(ph)+abs(pw))/4.0;
 
 	//int u,v;
 	int left = 	(int)	floor( (pos[0] - x_neg*(radius+newfeather) - tl[0]) / pw );
