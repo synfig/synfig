@@ -1269,7 +1269,11 @@ CanvasView::init_menus()
 		);
 		for(i=1;i<=10;i++)
 		{
-			Glib::RefPtr<Gtk::RadioAction> action(Gtk::RadioAction::create(quality_group,strprintf("quality-%02d",i), strprintf(_("Set Quality to %d"),i)));
+			String note;
+			if (i == 1) note = _(" (best)");
+			if (i == 10) note = _(" (fastest)");
+			Glib::RefPtr<Gtk::RadioAction> action(Gtk::RadioAction::create(quality_group,strprintf("quality-%02d",i),
+																		   strprintf(_("Set Quality to %d"),i) + note));
 			if(i==10)
 			{
 				action->set_active();
