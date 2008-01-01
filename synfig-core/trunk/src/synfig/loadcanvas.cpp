@@ -1630,6 +1630,7 @@ CanvasParser::parse_value_node(xmlpp::Element *element,Canvas::Handle canvas)
 	{
 		error_unexpected_element(element,element->get_name());
 		error(element, "Expected a ValueNode");
+		value_node=PlaceholderValueNode::create();
 	}
 
 
