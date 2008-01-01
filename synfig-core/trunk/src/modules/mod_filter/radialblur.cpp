@@ -130,6 +130,10 @@ RadialBlur::get_color(Context context, const Point &p)const
 bool
 RadialBlur::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
+	// don't do anything at quality 10
+	if (quality == 10)
+		return context.accelerated_render(surface,quality,renddesc,cb);
+
 	if(cb && !cb->amount_complete(0,10000))
 		return false;
 
