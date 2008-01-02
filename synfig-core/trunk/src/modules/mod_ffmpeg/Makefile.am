@@ -11,7 +11,7 @@ module_LTLIBRARIES = libmod_ffmpeg.la
 libmod_ffmpeg_la_SOURCES = main.cpp mptr_ffmpeg.cpp mptr_ffmpeg.h trgt_ffmpeg.cpp trgt_ffmpeg.h
 libmod_ffmpeg_la_LDFLAGS = -module -no-undefined
 libmod_ffmpeg_la_CXXFLAGS = @SYNFIG_CFLAGS@
-libmod_ffmpeg_la_LIBADD = -L../../synfig -lsynfig @SYNFIG_LIBS@
+libmod_ffmpeg_la_LIBADD = ../../synfig/libsynfig.la @SYNFIG_LIBS@
 else
 endif
 

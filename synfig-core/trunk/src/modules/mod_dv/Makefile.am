@@ -11,7 +11,7 @@ module_LTLIBRARIES = libmod_dv.la
 libmod_dv_la_SOURCES = main.cpp trgt_dv.cpp trgt_dv.h
 libmod_dv_la_LDFLAGS = -module -no-undefined
 libmod_dv_la_CXXFLAGS = @SYNFIG_CFLAGS@
-libmod_dv_la_LIBADD = -L../../synfig -lsynfig @SYNFIG_LIBS@
+libmod_dv_la_LIBADD = ../../synfig/libsynfig.la @SYNFIG_LIBS@
 else
 endif
 EXTRA_DIST= mod_dv.nsh unmod_dv.nsh
