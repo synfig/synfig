@@ -14,5 +14,5 @@ module_LTLIBRARIES = libmod_geometry.la
 libmod_geometry_la_SOURCES = rectangle.cpp rectangle.h star.h star.cpp checkerboard.cpp checkerboard.h circle.cpp circle.h region.h region.cpp outline.h outline.cpp main.cpp 
 libmod_geometry_la_CXXFLAGS = @SYNFIG_CFLAGS@
 libmod_geometry_la_LIBADD = ../../synfig/libsynfig.la @SYNFIG_LIBS@
-libmod_geometry_la_LDFLAGS = -module -no-undefined
+libmod_geometry_la_LDFLAGS = -module -no-undefined -avoid-version
 EXTRA_DIST= mod_geometry.nsh unmod_geometry.nsh
