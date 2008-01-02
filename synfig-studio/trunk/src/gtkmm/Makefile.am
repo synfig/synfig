@@ -106,6 +106,6 @@ synfigstudio_SOURCES = \
 	$(STATE_CC) $(STATE_HH) $(WIDGET_CC) $(WIDGET_HH) $(CELLRENDERER_HH) $(CELLRENDERER_CC)				\
 	$(DIALOG_HH) $(DIALOG_CC)
 
-synfigstudio_LDADD = -L../synfigapp -lsynfigapp @SYNFIG_LIBS@ @GTKMM_LIBS@ @FMOD_LIBS@
+synfigstudio_LDADD = ../synfigapp/libsynfigapp.la @SYNFIG_LIBS@ @GTKMM_LIBS@ @FMOD_LIBS@
 synfigstudio_LDFLAGS = -dlopen self
 synfigstudio_CXXFLAGS = @SYNFIG_CFLAGS@ @GTKMM_CFLAGS@ -DIMAGE_DIR=\"$(imagedir)\" -DIMAGE_EXT=\"$(imageext)\" "-DLOCALEDIR=\"$(localedir)\""
