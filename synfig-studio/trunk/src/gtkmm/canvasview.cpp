@@ -1770,7 +1770,7 @@ CanvasView::popup_layer_menu(synfig::Layer::Handle layer)
 void
 CanvasView::register_layer_type(synfig::Layer::Book::value_type &/*lyr*/,std::map<synfig::String,Gtk::Menu*>* /*category_map*/)
 {
-/*	if(lyr.second.category==_("Do Not Use"))
+/*	if(lyr.second.category==CATEGORY_DO_NOT_USE)
 		return;
 
 	if(category_map->count(lyr.second.category)==0)

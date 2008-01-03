@@ -82,6 +82,10 @@
 //! \writeme
 #define EXPORT_VERSION()	if(param=="Version" || param=="version" || param=="version__") { return version__; }
 
+//! This is used as the category for layer book entries which represent aliases of layers.
+//! It prevents these layers showing up in the menu.
+#define CATEGORY_DO_NOT_USE "Do Not Use"
+
 /* === T Y P E D E F S ===================================================== */
 
 /* === C L A S S E S & S T R U C T S ======================================= */

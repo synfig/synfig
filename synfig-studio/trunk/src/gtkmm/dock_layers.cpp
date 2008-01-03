@@ -88,7 +88,7 @@ Dock_Layers::Dock_Layers():
 	{
 		synfig::Layer::Book::value_type lyr(*iter);
 
-		if(lyr.second.category==_("Do Not Use"))
+		if(lyr.second.category==CATEGORY_DO_NOT_USE)
 			continue;
 
 		action_group_new_layers->add(Gtk::Action::create(
