@@ -89,7 +89,7 @@
 #define BEGIN_LAYERS {
 
 //! DEPRECATED - use #INCLUDE_LAYER(class)
-#define LAYER(class)  	synfig::Layer::register_in_book(synfig::Layer::BookEntry(class::create,class::name__,class::local_name__,class::category__,class::cvs_id__,class::version__));
+#define LAYER(class)  	synfig::Layer::register_in_book(synfig::Layer::BookEntry(class::create,class::name__,dgettext("synfig",class::local_name__),dgettext("synfig",class::category__),class::cvs_id__,class::version__));
 //#define LAYER(x) synfig::Layer::book()[synfig::String(x::name__)]=x::create;
 #define LAYER_ALIAS(class,alias)  	synfig::Layer::register_in_book(synfig::Layer::BookEntry(class::create,alias,alias,_("Do Not Use"),class::cvs_id__,class::version__));
 
