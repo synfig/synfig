@@ -4,17 +4,17 @@ MAINTAINERCLEANFILES = \
 	Makefile.in
 
 INCLUDES = \
-	-I$(top_builddir) -I$(top_srcdir)/src -I$(top_srcdir)/libltdl
+	-I$(top_builddir) -I$(top_srcdir)/src @INCLTDL@
 
 EXTRA_DIST = \
 	surfacenew.cpp pch.h synfig.nsh
 
 LAYERHEADERS = \
-	layer_bitmap.h	 layer_composite.h   layer_mime.h   layer_motionblur.h	 layer_pastecanvas.h			\
-	layer_polygon.h	  layer_shape.h	  layer_solidcolor.h
+	layer_bitmap.h	 layer_composite.h   layer_duplicate.h	 layer_mime.h	layer_motionblur.h			\
+	layer_pastecanvas.h   layer_polygon.h	layer_shape.h	layer_solidcolor.h
 LAYERSOURCES = \
-	layer_bitmap.cpp layer_composite.cpp layer_mime.cpp layer_motionblur.cpp layer_pastecanvas.cpp			\
-	layer_polygon.cpp layer_shape.cpp layer_solidcolor.cpp
+	layer_bitmap.cpp layer_composite.cpp layer_duplicate.cpp layer_mime.cpp layer_motionblur.cpp			\
+	layer_pastecanvas.cpp layer_polygon.cpp layer_shape.cpp layer_solidcolor.cpp
 
 TARGETHEADERS = \
 	target_multi.h	 target_null.h	 target_null_tile.h   target_scanline.h	  target_tile.h
