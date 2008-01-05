@@ -58,10 +58,10 @@ ValueNode_Duplicate::ValueNode_Duplicate(const ValueBase::Type &x):
 ValueNode_Duplicate::ValueNode_Duplicate(const ValueBase &x):
 	LinkableValueNode(x.get_type())
 {
-	set_link("from", ValueNode_Const::create(int(1)));
-	set_link("to",   ValueNode_Const::create(x.get(int())));
-	set_link("step", ValueNode_Const::create(int(1)));
-	index = 1;
+	set_link("from", ValueNode_Const::create(Real(1.0)));
+	set_link("to",   ValueNode_Const::create(x.get(Real())));
+	set_link("step", ValueNode_Const::create(Real(1.0)));
+	index = 1.0;
 }
 
 ValueNode_Duplicate*
@@ -148,16 +148,16 @@ ValueNode_Duplicate::get_link_index_from_name(const String &name)const
 void
 ValueNode_Duplicate::reset_index(Time t)const
 {
-	int from = (*from_)(t).get(int());
+	Real from = (*from_)(t).get(Real());
 	index = from;
 }
 
 bool
 ValueNode_Duplicate::step(Time t)const
 {
-	int from = (*from_)(t).get(int());
-	int to   = (*to_  )(t).get(int());
-	int step = (*step_)(t).get(int());
+	Real from = (*from_)(t).get(Real());
+	Real to   = (*to_  )(t).get(Real());
+	Real step = (*step_)(t).get(Real());
 
 	if (step == 0) return false;
 
@@ -178,9 +178,9 @@ ValueNode_Duplicate::step(Time t)const
 int
 ValueNode_Duplicate::count_steps(Time t)const
 {
-	int from = (*from_)(t).get(int());
-	int to   = (*to_  )(t).get(int());
-	int step = (*step_)(t).get(int());
+	Real from = (*from_)(t).get(Real());
+	Real to   = (*to_  )(t).get(Real());
+	Real step = (*step_)(t).get(Real());
 
 	if (step == 0) return 1;
 

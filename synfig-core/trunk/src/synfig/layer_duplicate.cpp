@@ -63,7 +63,7 @@ SYNFIG_LAYER_SET_CVS_ID(Layer_Duplicate,"$Id$");
 Layer_Duplicate::Layer_Duplicate():
 	Layer_Composite(1.0,Color::BLEND_COMPOSITE)
 {
-	LinkableValueNode* index_value_node = ValueNode_Duplicate::create(int(3));
+	LinkableValueNode* index_value_node = ValueNode_Duplicate::create(Real(3));
 	connect_dynamic_param("index", index_value_node);
 }
 

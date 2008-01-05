@@ -41,7 +41,7 @@ class ValueNode_Duplicate : public LinkableValueNode
 	ValueNode::RHandle from_;
 	ValueNode::RHandle to_;
 	ValueNode::RHandle step_;
-	mutable int index;
+	mutable Real index;
 
 public:
 	typedef etl::handle<ValueNode_Duplicate> Handle;
