@@ -10,11 +10,11 @@ EXTRA_DIST = \
 	surfacenew.cpp pch.h synfig.nsh
 
 LAYERHEADERS = \
-	layer_bitmap.h	 layer_composite.h   layer_mime.h   layer_motionblur.h	 layer_pastecanvas.h			\
-	layer_polygon.h	  layer_shape.h	  layer_solidcolor.h
+	layer_bitmap.h	 layer_composite.h   layer_duplicate.h	 layer_mime.h	layer_motionblur.h			\
+	layer_pastecanvas.h   layer_polygon.h	layer_shape.h	layer_solidcolor.h
 LAYERSOURCES = \
-	layer_bitmap.cpp layer_composite.cpp layer_mime.cpp layer_motionblur.cpp layer_pastecanvas.cpp			\
-	layer_polygon.cpp layer_shape.cpp layer_solidcolor.cpp
+	layer_bitmap.cpp layer_composite.cpp layer_duplicate.cpp layer_mime.cpp layer_motionblur.cpp			\
+	layer_pastecanvas.cpp layer_polygon.cpp layer_shape.cpp layer_solidcolor.cpp
 
 TARGETHEADERS = \
 	target_multi.h	 target_null.h	 target_null_tile.h   target_scanline.h	  target_tile.h
@@ -29,18 +29,20 @@ IMPORTERSOURCES = \
 VALUENODEHEADERS = \
 	valuenode_add.h	  valuenode_animated.h	 valuenode_atan2.h   valuenode_bline.h	 valuenode_blinecalctangent.h	\
 	valuenode_blinecalcvertex.h   valuenode_blinereversetangent.h	valuenode_composite.h	valuenode_const.h	\
-	valuenode_cos.h	  valuenode_dynamiclist.h   valuenode_exp.h   valuenode_gradientrotate.h   valuenode_linear.h	\
-	valuenode_radialcomposite.h   valuenode_range.h	  valuenode_reciprocal.h   valuenode_reference.h		\
-	valuenode_repeat_gradient.h   valuenode_scale.h	  valuenode_segcalctangent.h   valuenode_segcalcvertex.h	\
-	valuenode_sine.h   valuenode_stripes.h	 valuenode_subtract.h	valuenode_switch.h   valuenode_timedswap.h	\
+	valuenode_cos.h	  valuenode_duplicate.h	  valuenode_dynamiclist.h   valuenode_exp.h				\
+	valuenode_gradientrotate.h   valuenode_integer.h   valuenode_linear.h valuenode_radialcomposite.h		\
+	valuenode_range.h   valuenode_reciprocal.h   valuenode_reference.h   valuenode_repeat_gradient.h		\
+	valuenode_scale.h   valuenode_segcalctangent.h	 valuenode_segcalcvertex.h   valuenode_sine.h			\
+	valuenode_stripes.h   valuenode_subtract.h    valuenode_switch.h   valuenode_timedswap.h			\
 	valuenode_timeloop.h   valuenode_twotone.h
 VALUENODESOURCES = \
 	valuenode_add.cpp valuenode_animated.cpp valuenode_atan2.cpp valuenode_bline.cpp valuenode_blinecalctangent.cpp	\
 	valuenode_blinecalcvertex.cpp valuenode_blinereversetangent.cpp valuenode_composite.cpp valuenode_const.cpp	\
-	valuenode_cos.cpp valuenode_dynamiclist.cpp valuenode_exp.cpp valuenode_gradientrotate.cpp valuenode_linear.cpp	\
-	valuenode_radialcomposite.cpp valuenode_range.cpp valuenode_reciprocal.cpp valuenode_reference.cpp		\
-	valuenode_repeat_gradient.cpp valuenode_scale.cpp valuenode_segcalctangent.cpp valuenode_segcalcvertex.cpp	\
-	valuenode_sine.cpp valuenode_stripes.cpp valuenode_subtract.cpp valuenode_switch.cpp valuenode_timedswap.cpp	\
+	valuenode_cos.cpp valuenode_duplicate.cpp valuenode_dynamiclist.cpp valuenode_exp.cpp				\
+	valuenode_gradientrotate.cpp valuenode_integer.cpp valuenode_linear.cpp valuenode_radialcomposite.cpp		\
+	valuenode_range.cpp valuenode_reciprocal.cpp valuenode_reference.cpp valuenode_repeat_gradient.cpp		\
+	valuenode_scale.cpp valuenode_segcalctangent.cpp valuenode_segcalcvertex.cpp valuenode_sine.cpp			\
+	valuenode_stripes.cpp valuenode_subtract.cpp valuenode_switch.cpp valuenode_timedswap.cpp			\
 	valuenode_timeloop.cpp valuenode_twotone.cpp
 
 VALUEHEADERS = \

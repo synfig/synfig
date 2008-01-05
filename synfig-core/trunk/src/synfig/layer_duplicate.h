@@ -1,0 +1,70 @@
+/* === S Y N F I G ========================================================= */
+/*!	\file layer_duplicate.h
+**	\brief Header file for implementation of the "Duplicate" layer
+**
+**	$Id$
+**
+**	\legal
+**	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
+**
+**	This package is free software; you can redistribute it and/or
+**	modify it under the terms of the GNU General Public License as
+**	published by the Free Software Foundation; either version 2 of
+**	the License, or (at your option) any later version.
+**
+**	This package is distributed in the hope that it will be useful,
+**	but WITHOUT ANY WARRANTY; without even the implied warranty of
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+**	General Public License for more details.
+**	\endlegal
+*/
+/* ========================================================================= */
+
+/* === S T A R T =========================================================== */
+
+#ifndef __SYNFIG_LAYER_DUPLICATE_H__
+#define __SYNFIG_LAYER_DUPLICATE_H__
+
+/* === H E A D E R S ======================================================= */
+
+#include "valuenode_duplicate.h"
+#include "layer_composite.h"
+#include "time.h"
+
+/* === S T R U C T S & C L A S S E S ======================================= */
+
+namespace synfig {
+
+class Layer_Duplicate : public synfig::Layer_Composite
+{
+	SYNFIG_LAYER_MODULE_EXT
+
+private:
+	mutable int index;
+	mutable Time time_cur;
+
+public:
+
+	Layer_Duplicate();
+
+	virtual bool set_param(const String & param, const synfig::ValueBase &value);
+
+	virtual ValueBase get_param(const String & param)const;
+
+	virtual Color get_color(Context context, const Point &pos)const;
+
+	virtual void set_time(Context context, Time time)const;
+
+	virtual void set_time(Context context, Time time, const Point &point)const;
+
+	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
+
+	virtual Vocab get_param_vocab()const;
+
+}; // END of class Layer_Duplicate
+
+}; // END of namespace synfig
+
+/* === E N D =============================================================== */
+
+#endif

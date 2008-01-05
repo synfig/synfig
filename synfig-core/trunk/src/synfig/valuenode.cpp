@@ -66,6 +66,8 @@
 #include "valuenode_switch.h"
 #include "valuenode_timeloop.h"
 #include "valuenode_reciprocal.h"
+#include "valuenode_duplicate.h"
+#include "valuenode_integer.h"
 
 #include "layer.h"
 
@@ -138,6 +140,8 @@ ValueNode::subsys_init()
 	ADD_VALUENODE(ValueNode_Switch,			"switch",			_("Switch")				);
 	ADD_VALUENODE(ValueNode_TimeLoop,		"timeloop",			_("Time Loop")			);
 	ADD_VALUENODE(ValueNode_Reciprocal,		"reciprocal",		_("Reciprocal")			);
+	ADD_VALUENODE(ValueNode_Duplicate,		"duplicate",		_("Duplicate")			);
+	ADD_VALUENODE(ValueNode_Integer,		"fromint",			_("From Integer")		);
 
 #undef ADD_VALUENODE
 #undef ADD_VALUENODE2
