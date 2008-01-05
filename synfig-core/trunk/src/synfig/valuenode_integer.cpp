@@ -183,12 +183,14 @@ ValueNode_Integer::get_local_name()const
 	return _("From Integer");
 }
 
+// don't show this to the user at the moment - maybe it's not very useful
 bool
 ValueNode_Integer::check_type(ValueBase::Type type)
 {
-	return
-		type==ValueBase::TYPE_ANGLE ||
-		type==ValueBase::TYPE_BOOL  ||
-		type==ValueBase::TYPE_REAL  ||
-		type==ValueBase::TYPE_TIME;
+	return false;
+//	return
+//		type==ValueBase::TYPE_ANGLE ||
+//		type==ValueBase::TYPE_BOOL  ||
+//		type==ValueBase::TYPE_REAL  ||
+//		type==ValueBase::TYPE_TIME;
 }
