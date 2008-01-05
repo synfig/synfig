@@ -55,18 +55,19 @@ ValueNode_Duplicate::ValueNode_Duplicate(const ValueBase::Type &x):
 {
 }
 
-ValueNode_Duplicate::ValueNode_Duplicate(const ValueNode::Handle &x):
-	LinkableValueNode(x->get_type())
+ValueNode_Duplicate::ValueNode_Duplicate(const ValueBase &x):
+	LinkableValueNode(x.get_type())
 {
-	set_link("from", ValueNode_Const::create(int(0)));
-	set_link("to",   ValueNode_Const::create(int(3)));
+	set_link("from", ValueNode_Const::create(int(1)));
+	set_link("to",   ValueNode_Const::create(x.get(int())));
 	set_link("step", ValueNode_Const::create(int(1)));
+	index = 1;
 }
 
 ValueNode_Duplicate*
 ValueNode_Duplicate::create(const ValueBase &x)
 {
-	return new ValueNode_Duplicate(ValueNode_Const::create(x));
+	return new ValueNode_Duplicate(x);
 }
 
 LinkableValueNode*

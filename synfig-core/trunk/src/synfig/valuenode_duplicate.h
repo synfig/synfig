@@ -48,7 +48,7 @@ public:
 	typedef etl::handle<const ValueNode_Duplicate> ConstHandle;
 
 	ValueNode_Duplicate(const ValueBase::Type &x);
-	ValueNode_Duplicate(const ValueNode::Handle &x);
+	ValueNode_Duplicate(const ValueBase &x);
 
 	virtual ValueBase operator()(Time t)const;
 	void reset_index(Time t)const;
