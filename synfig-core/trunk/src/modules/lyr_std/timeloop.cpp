@@ -65,6 +65,7 @@ SYNFIG_LAYER_SET_CVS_ID(Layer_TimeLoop,"$Id$");
 
 Layer_TimeLoop::Layer_TimeLoop()
 {
+	old_version=false;
 	link_time=0;
 	local_time=0;
 	duration=1;
