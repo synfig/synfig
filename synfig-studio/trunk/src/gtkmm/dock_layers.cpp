@@ -127,7 +127,17 @@ Dock_Layers::Dock_Layers():
 
 		App::ui_manager()->insert_action_group(action_group_categories);
 		App::ui_manager()->insert_action_group(action_group_new_layers);
-		App::ui_manager()->add_ui_from_string(layer_ui_info);
+
+		try
+		{
+			App::ui_manager()->add_ui_from_string(layer_ui_info);
+		}
+		catch(Glib::MarkupError x)
+		{
+			error("%s:%d caught MarkupError code %d: %s", __FILE__, __LINE__, x.code(), x.what().c_str());
+			error("%s:%d with markup: \"%s\"", __FILE__, __LINE__, layer_ui_info.c_str());
+			exit(1);
+		}
 	}
 
 
