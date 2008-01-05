@@ -208,5 +208,6 @@ ValueNode_Duplicate::get_local_name()const
 bool
 ValueNode_Duplicate::check_type(ValueBase::Type type)
 {
-	return type==ValueBase::TYPE_INTEGER;
+	// never offer this as a choice.  it's used automatically by the 'Duplicate' layer.
+	return false;
 }
