@@ -36,6 +36,7 @@
 #include "valuedescdisconnect.h"
 #include <synfigapp/canvasinterface.h>
 #include <synfig/valuenode_const.h>
+#include <synfig/valuenode_duplicate.h>
 
 #include <synfigapp/general.h>
 
@@ -101,6 +102,12 @@ Action::ValueDescDisconnect::is_candidate(const ParamList &x)
 		if(value_desc.is_const())
 			return false;
 		if(value_desc.is_value_node() && ValueNode_Const::Handle::cast_dynamic(value_desc.get_value_node()))
+			return false;
+		// don't allow Duplicate ValueNodes in the Children dialog to be disconnected
+		if(value_desc.is_value_node() &&
+		   ValueNode_Duplicate::Handle::cast_dynamic(value_desc.get_value_node()) &&
+		   !value_desc.parent_is_layer_param() &&
+		   !value_desc.parent_is_value_node())
 			return false;
 		return true;
 	}
