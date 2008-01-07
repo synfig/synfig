@@ -1006,6 +1006,8 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 	// Populate the convert menu by looping through
 	// the ValueNode book and find the ones that are
 	// relevant.
+	// don't allow the Index parameter of the Duplicate layer to be converted
+	if (!value_desc.parent_is_layer_param() || value_desc.get_layer()->get_name() != "duplicate" || value_desc.get_param_name() != "index")
 	{
 		Gtk::Menu *convert_menu=manage(new Gtk::Menu());
 		LinkableValueNode::Book::const_iterator iter;
