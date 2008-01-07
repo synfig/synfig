@@ -95,15 +95,31 @@ Action::ValueDescConnect::is_candidate(const ParamList &x)
 {
 	if(candidate_check(get_param_vocab(),x))
 	{
+		// don't show the option of connecting to an existing Index parameter of the Duplicate layer
+		if(x.count("dest"))
+		{
+			ValueDesc value_desc=x.find("dest")->second.get_value_desc();
+
+			if (value_desc.parent_is_layer_param() &&
+				value_desc.get_layer()->get_name() == "duplicate" &&
+				value_desc.get_param_name() == "index")
+				return false;
+		}
+
 		if(x.count("src"))
 		{
 			ValueDesc value_desc=x.find("dest")->second.get_value_desc();
 			ValueNode::Handle value_node=x.find("src")->second.get_value_node();
 			if(value_desc.get_value_type()==value_node->get_type())
+			{
+				printf("%s:%d\n", __FILE__, __LINE__);
 				return true;
+			}
 		}
+		printf("%s:%d\n", __FILE__, __LINE__);
 		return true;
 	}
+	printf("%s:%d\n", __FILE__, __LINE__);
 	return false;
 }
 
