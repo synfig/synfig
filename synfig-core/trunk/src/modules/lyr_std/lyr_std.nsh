@@ -7,7 +7,7 @@ Section "lyr_std" Sec_lyr_std
   SetOutPath "$INSTDIR\lib\synfig\modules"
   
   ; Put file there
-  File /oname=lyr_std.dll "src\modules\lyr_std\.libs\liblyr_std-0.dll"
+  File /oname=lyr_std.dll "src\modules\lyr_std\.libs\liblyr_std.dll"
 
 
   FileOpen $0 $INSTDIR\etc\synfig_modules.cfg a

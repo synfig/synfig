@@ -7,7 +7,7 @@ Section "mod_bmp" Sec_mod_bmp
   SetOutPath "$INSTDIR\lib\synfig\modules"
   
   ; Put file there
-  File /oname=mod_bmp.dll "src\modules\mod_bmp\.libs\libmod_bmp-0.dll"
+  File /oname=mod_bmp.dll "src\modules\mod_bmp\.libs\libmod_bmp.dll"
 
 
   FileOpen $0 $INSTDIR\etc\synfig_modules.cfg a

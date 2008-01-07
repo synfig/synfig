@@ -7,7 +7,7 @@ Section "mod_libavcodec" Sec_mod_libavcodec
   SetOutPath "$INSTDIR\lib\synfig\modules"
   
   ; Put file there
-  File /oname=mod_libavcodec.dll "src\modules\mod_libavcodec\.libs\libmod_libavcodec-0.dll"
+  File /oname=mod_libavcodec.dll "src\modules\mod_libavcodec\.libs\libmod_libavcodec.dll"
 
 
   FileOpen $0 $INSTDIR\etc\synfig_modules.cfg a

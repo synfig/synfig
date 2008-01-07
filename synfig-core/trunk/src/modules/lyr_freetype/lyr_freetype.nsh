@@ -7,7 +7,7 @@ Section "lyr_freetype" Sec_lyr_freetype
   SetOutPath "$INSTDIR\lib\synfig\modules"
   
   ; Put file there
-  File /oname=lyr_freetype.dll "src\modules\lyr_freetype\.libs\liblyr_freetype-0.dll"
+  File /oname=lyr_freetype.dll "src\modules\lyr_freetype\.libs\liblyr_freetype.dll"
 
 
   FileOpen $0 $INSTDIR\etc\synfig_modules.cfg a

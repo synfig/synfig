@@ -7,7 +7,7 @@ Section "@MODNAME@" Sec_@MODNAME@
   SetOutPath "$INSTDIR\lib\synfig\modules"
   
   ; Put file there
-  File /oname=@MODNAME@.dll "src\modules\@MODNAME@\.libs\lib@MODNAME@-0.dll"
+  File /oname=@MODNAME@.dll "src\modules\@MODNAME@\.libs\lib@MODNAME@.dll"
 
 
   FileOpen $0 $INSTDIR\etc\synfig_modules.cfg a

@@ -7,7 +7,7 @@ Section "mod_dv" Sec_mod_dv
   SetOutPath "$INSTDIR\lib\synfig\modules"
   
   ; Put file there
-  File /oname=mod_dv.dll "src\modules\mod_dv\.libs\libmod_dv-0.dll"
+  File /oname=mod_dv.dll "src\modules\mod_dv\.libs\libmod_dv.dll"
 
 
   FileOpen $0 $INSTDIR\etc\synfig_modules.cfg a

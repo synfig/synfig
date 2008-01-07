@@ -7,7 +7,7 @@ Section "mod_geometry" Sec_mod_geometry
   SetOutPath "$INSTDIR\lib\synfig\modules"
   
   ; Put file there
-  File /oname=mod_geometry.dll "src\modules\mod_geometry\.libs\libmod_geometry-0.dll"
+  File /oname=mod_geometry.dll "src\modules\mod_geometry\.libs\libmod_geometry.dll"
 
 
   FileOpen $0 $INSTDIR\etc\synfig_modules.cfg a

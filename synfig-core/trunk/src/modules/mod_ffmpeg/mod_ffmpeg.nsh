@@ -7,7 +7,7 @@ Section "mod_ffmpeg" Sec_mod_ffmpeg
   SetOutPath "$INSTDIR\lib\synfig\modules"
   
   ; Put file there
-  File /oname=mod_ffmpeg.dll "src\modules\mod_ffmpeg\.libs\libmod_ffmpeg-0.dll"
+  File /oname=mod_ffmpeg.dll "src\modules\mod_ffmpeg\.libs\libmod_ffmpeg.dll"
 
 
   FileOpen $0 $INSTDIR\etc\synfig_modules.cfg a

@@ -7,7 +7,7 @@ Section "mod_png" Sec_mod_png
   SetOutPath "$INSTDIR\lib\synfig\modules"
   
   ; Put file there
-  File /oname=mod_png.dll "src\modules\mod_png\.libs\libmod_png-0.dll"
+  File /oname=mod_png.dll "src\modules\mod_png\.libs\libmod_png.dll"
 
 
   FileOpen $0 $INSTDIR\etc\synfig_modules.cfg a

@@ -7,7 +7,7 @@ Section "mod_gif" Sec_mod_gif
   SetOutPath "$INSTDIR\lib\synfig\modules"
   
   ; Put file there
-  File /oname=mod_gif.dll "src\modules\mod_gif\.libs\libmod_gif-0.dll"
+  File /oname=mod_gif.dll "src\modules\mod_gif\.libs\libmod_gif.dll"
 
 
   FileOpen $0 $INSTDIR\etc\synfig_modules.cfg a

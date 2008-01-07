@@ -7,7 +7,7 @@ Section "mod_imagemagick" Sec_mod_imagemagick
   SetOutPath "$INSTDIR\lib\synfig\modules"
   
   ; Put file there
-  File /oname=mod_imagemagick.dll "src\modules\mod_imagemagick\.libs\libmod_imagemagick-0.dll"
+  File /oname=mod_imagemagick.dll "src\modules\mod_imagemagick\.libs\libmod_imagemagick.dll"
 
 
   FileOpen $0 $INSTDIR\etc\synfig_modules.cfg a

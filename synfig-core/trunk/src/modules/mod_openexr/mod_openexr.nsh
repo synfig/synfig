@@ -7,7 +7,7 @@ Section "mod_openexr" Sec_mod_openexr
   SetOutPath "$INSTDIR\lib\synfig\modules"
   
   ; Put file there
-  File /oname=mod_openexr.dll "src\modules\mod_openexr\.libs\libmod_openexr-0.dll"
+  File /oname=mod_openexr.dll "src\modules\mod_openexr\.libs\libmod_openexr.dll"
 
   SetOutPath "$INSTDIR\bin"
   File /oname=libHalf-4.dll "src\modules\mod_openexr\.libs\libHalf-4.dll"

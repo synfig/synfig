@@ -7,7 +7,7 @@ Section "mod_ppm" Sec_mod_ppm
   SetOutPath "$INSTDIR\lib\synfig\modules"
   
   ; Put file there
-  File /oname=mod_ppm.dll "src\modules\mod_ppm\.libs\libmod_ppm-0.dll"
+  File /oname=mod_ppm.dll "src\modules\mod_ppm\.libs\libmod_ppm.dll"
 
 
   FileOpen $0 $INSTDIR\etc\synfig_modules.cfg a
