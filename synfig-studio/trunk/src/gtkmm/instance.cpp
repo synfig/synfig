@@ -48,6 +48,7 @@
 #include <sigc++/retype.h>
 //#include <sigc++/hide.h>
 #include <synfig/valuenode_composite.h>
+#include <synfig/valuenode_duplicate.h>
 #include "widget_waypointmodel.h"
 #include <gtkmm/actiongroup.h>
 #include "iconcontroller.h"
@@ -1006,8 +1007,18 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 	// Populate the convert menu by looping through
 	// the ValueNode book and find the ones that are
 	// relevant.
-	// don't allow the Index parameter of the Duplicate layer to be converted
-	if (!value_desc.parent_is_layer_param() || value_desc.get_layer()->get_name() != "duplicate" || value_desc.get_param_name() != "index")
+
+	// show the 'Convert' sub-menu if this valuedesc is anything other than either:
+	//   the 'Index' parameter of a Duplicate layer
+	// or
+	//   a Duplicate ValueNode whose parent is not a (layer or ValueNode)
+	if (!((value_desc.parent_is_layer_param() &&
+		   value_desc.get_layer()->get_name() == "duplicate" &&
+		   value_desc.get_param_name() == "index") ||
+		  (value_desc.is_value_node() &&
+		   ValueNode_Duplicate::Handle::cast_dynamic(value_desc.get_value_node()) &&
+		   !(value_desc.parent_is_layer_param() ||
+			 value_desc.parent_is_value_node()))))
 	{
 		Gtk::Menu *convert_menu=manage(new Gtk::Menu());
 		LinkableValueNode::Book::const_iterator iter;
