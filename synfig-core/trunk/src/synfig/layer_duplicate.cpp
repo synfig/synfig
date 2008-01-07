@@ -67,6 +67,24 @@ Layer_Duplicate::Layer_Duplicate():
 	connect_dynamic_param("index", index_value_node);
 }
 
+Layer::Handle
+Layer_Duplicate::clone(const GUID& deriv_guid)const
+{
+	printf("cloning layer duplicate\n");
+	Layer::Handle ret = (Layer::Handle)Layer_Composite::clone(deriv_guid);
+
+	const DynamicParamList &dpl = dynamic_param_list();
+	DynamicParamList::const_iterator iter = dpl.find("index");
+
+	// if we have a dynamic "index" parameter, make a new one in the clone
+	// it's not good to have two references to the same index valuenode,
+	// or nested duplicatations cause an infinite loop
+	if (iter != dpl.end())
+		ret->connect_dynamic_param(iter->first,iter->second->clone(deriv_guid));
+
+	return ret;
+}
+
 bool
 Layer_Duplicate::set_param(const String &param, const ValueBase &value)
 {
@@ -119,6 +137,16 @@ Layer_Duplicate::get_param_vocab()const
 	return ret;
 }
 
+ValueNode_Duplicate::Handle
+Layer_Duplicate::get_duplicate_param()const
+{
+	const DynamicParamList &dpl = dynamic_param_list();
+	DynamicParamList::const_iterator iter = dpl.find("index");
+	if (iter == dpl.end()) return NULL;
+	etl::rhandle<ValueNode> param(iter->second);
+	return ValueNode_Duplicate::Handle::cast_dynamic(param);
+}
+
 bool
 Layer_Duplicate::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
@@ -136,16 +164,8 @@ Layer_Duplicate::accelerated_render(Context context,Surface *surface,int quality
 	Surface tmp;
 	int i = 0;
 
-	const DynamicParamList &dpl = dynamic_param_list();
-	DynamicParamList::const_iterator iter = dpl.find("index");
-	if (iter == dpl.end())
-		return context.accelerated_render(surface,quality,renddesc,cb);
-
-	etl::rhandle<ValueNode> param(iter->second);
-	handle<ValueNode_Duplicate>	duplicate_param(handle<ValueNode_Duplicate>::cast_dynamic(param));
-
-	if (!duplicate_param)
-		return context.accelerated_render(surface,quality,renddesc,cb);
+	handle<ValueNode_Duplicate> duplicate_param = get_duplicate_param();
+	if (!duplicate_param) return context.accelerated_render(surface,quality,renddesc,cb);
 
 	surface->set_wh(renddesc.get_w(),renddesc.get_h());
 	surface->clear();

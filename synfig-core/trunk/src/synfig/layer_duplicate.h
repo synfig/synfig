@@ -47,6 +47,9 @@ public:
 
 	Layer_Duplicate();
 
+	//! Duplicates the Layer
+	virtual Layer::Handle clone(const GUID& deriv_guid=GUID())const;
+
 	virtual bool set_param(const String & param, const synfig::ValueBase &value);
 
 	virtual ValueBase get_param(const String & param)const;
@@ -56,6 +59,8 @@ public:
 	virtual void set_time(Context context, Time time)const;
 
 	virtual void set_time(Context context, Time time, const Point &point)const;
+
+	virtual ValueNode_Duplicate::Handle get_duplicate_param()const;
 
 	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 
