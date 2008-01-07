@@ -153,5 +153,29 @@ Action::LayerDuplicate::prepare()
 
 			add_action_front(action);
 		}
+
+		// automatically export the Index parameter of Duplicate layers when duplicating
+		if (new_layer->get_name() == "duplicate")
+			for (int i = 1; ; i++)
+			{
+				String name = strprintf(_("Index %d"), i);
+				try
+				{
+					subcanvas->find_value_node(name);
+				}
+				catch (Exception::IDNotFound x)
+				{
+					Action::Handle action(Action::create("value_node_add"));
+
+					action->set_param("canvas",subcanvas);
+					action->set_param("canvas_interface",get_canvas_interface());
+					action->set_param("new",new_layer->dynamic_param_list().find("index")->second);
+					action->set_param("name",name);
+
+					add_action_front(action);
+
+					break;
+				}
+			}
 	}
 }

@@ -414,6 +414,22 @@ LayerActionManager::paste()
 			}
 		}
 		depth++;
+
+		// automatically export the Index parameter of Duplicate layers when pasting
+		if (layer->get_name() == "duplicate")
+			for (int i = 1; ; i++)
+			{
+				String name = strprintf(_("Index %d"), i);
+				try
+				{
+					canvas->find_value_node(name);
+				}
+				catch (Exception::IDNotFound x)
+				{
+					get_canvas_interface()->add_value_node(layer->dynamic_param_list().find("index")->second, name);
+					break;
+				}
+			}
 	}
 	get_canvas_interface()->get_selection_manager()->clear_selected_layers();
 	get_canvas_interface()->get_selection_manager()->set_selected_layers(layer_selection);
