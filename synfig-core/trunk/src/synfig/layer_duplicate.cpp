@@ -127,7 +127,7 @@ Layer::Vocab
 Layer_Duplicate::get_param_vocab()const
 {
 	Layer::Vocab ret;
-	//ret=Layer_Composite::get_param_vocab();
+	ret=Layer_Composite::get_param_vocab();
 
 	ret.push_back(ParamDesc("index")
 		.set_local_name(_("Index"))
