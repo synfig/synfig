@@ -177,7 +177,7 @@ RenderSettings::RenderSettings(Gtk::Window& parent, etl::handle<synfigapp::Canva
 	set_title(_("Render Settings")+String(" - ")+canvas_interface_->get_canvas()->get_name());
 
 
-	toggle_single_frame.set_active(true);
+	toggle_single_frame.set_active(false);
 	widget_rend_desc.disable_time_section();
 
 	set_entry_filename();
