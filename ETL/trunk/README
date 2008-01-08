@@ -4,8 +4,7 @@ ETL is a multi-platform class and template library designed to add
 new datatypes and functions which combine well with the existing
 types and functions from the C++ Standard Template Library (STL).
 
-Web:  http://www.synfig.com/
-Wiki: http://wiki.synfig.com/
+Web:  http://synfig.org/
 SVN:  http://svn.voria.com/code/ETL/
 Proj: http://sf.net/projects/synfig/
 IRC:  irc://irc.freenode.net/synfig
