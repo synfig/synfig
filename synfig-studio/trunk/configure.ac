@@ -2,7 +2,7 @@
 
 # -- I N I T --------------------------------------------------
 
-AC_INIT([Synfig Studio],[0.61.07],[http://sourceforge.net/tracker/?group_id=144022&atid=757416],[synfigstudio])
+AC_INIT([Synfig Studio],[0.61.07],[http://synfig.org/Bugs],[synfigstudio])
 AC_REVISION
 
 AC_CONFIG_AUX_DIR(config)
