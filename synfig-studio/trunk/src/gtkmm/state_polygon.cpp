@@ -385,6 +385,7 @@ StatePolygon_Context::run()
 				action->set_param("canvas_interface",get_canvas_interface());
 				action->set_param("value_desc",value_desc);
 				action->set_param("type","dynamic_list");
+				action->set_param("time",get_canvas_interface()->get_time());
 				if(!get_canvas_interface()->get_instance()->perform_action(action))
 				{
 					group.cancel();
