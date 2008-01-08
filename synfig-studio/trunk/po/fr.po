@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: fr\n"
-"Report-Msgid-Bugs-To: http://www.synfig.com\n"
+"Report-Msgid-Bugs-To: http://synfig.org/Bugs\n"
 "POT-Creation-Date: 2007-12-09 14:04+0100\n"
 "PO-Revision-Date: 2008-01-07 21:55+0100\n"
 "Last-Translator:  <aurore.d@gmail.com>\n"

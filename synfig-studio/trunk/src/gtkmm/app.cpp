@@ -1000,7 +1000,7 @@ App::App(int *argc, char ***argv):
 			"different version of libsynfig than what is currently\n"
 			"installed. Synfig Studio will now abort. Try downloading\n"
 			"the latest version from the Synfig website at\n"
-			"http://www.synfig.com/ "
+			"http://synfig.org/Download"
 		);
 		throw 40;
 	}

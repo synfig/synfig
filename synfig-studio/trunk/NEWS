@@ -8,7 +8,7 @@
   * Move icons to a subdir
   * Fix some typos, several crashes (#1780016, #1785598) and other bugs
   * Re-enable sketch, draw, polygon by default
-  * Add keyboard shortcuts for all tools ( http://wiki.synfig.com/Keyboard_Shortcuts )
+  * Add keyboard shortcuts for all tools ( http://synfig.org/Keyboard_Shortcuts )
   * Fix crash when setting canvas resolution to zero (#1779616)
   * Add 'auto-export' checkbox and layer name box to the draw tool
   * Various GUI fixes (#1794006, #1796110)
