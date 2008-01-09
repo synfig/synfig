@@ -41,65 +41,27 @@ struct ValueNode_Add : public LinkableValueNode
 	typedef etl::handle<const ValueNode_Add> ConstHandle;
 
 protected:
-
 	ValueNode_Add(const ValueBase &value);
 
 private:
-
 	ValueNode::RHandle ref_a;
 	ValueNode::RHandle ref_b;
 	ValueNode::RHandle scalar;
 
 public:
-
+	LinkableValueNode* create_new()const;
+	static ValueNode_Add* create(const ValueBase &value=ValueBase());
 	virtual ~ValueNode_Add();
-
-//	static Handle create(ValueBase::Type id=ValueBase::TYPE_NIL);
-
-	//! Sets the left-hand-side value_node
-	bool set_lhs(ValueNode::Handle a);
-
-	//! Gets the left-hand-side value_node
-	ValueNode::Handle get_lhs()const { return ref_a; }
-
-	//! Sets the right-hand-side value_node
-	bool set_rhs(ValueNode::Handle b);
-
-	//! Gets the right-hand-side value_node
-	ValueNode::Handle get_rhs()const { return ref_b; }
-
-	//! Sets the scalar value_node
-	bool set_scalar(ValueNode::Handle x);
-
-	//! Gets the scalar value_node
-	ValueNode::Handle get_scalar()const { return scalar; }
-
-	void set_scalar(Real x);
-
+	virtual ValueBase operator()(Time t)const;
 	virtual bool set_link_vfunc(int i,ValueNode::Handle x);
-
 	virtual ValueNode::LooseHandle get_link_vfunc(int i)const;
-
 	virtual int link_count()const;
-
 	virtual String link_local_name(int i)const;
 	virtual String link_name(int i)const;
 	virtual int get_link_index_from_name(const String &name)const;
-
-	virtual ValueBase operator()(Time t)const;
-
 	virtual String get_name()const;
 	virtual String get_local_name()const;
-
-//	static bool check_type(const ValueBase::Type &type);
-
-	LinkableValueNode* create_new()const;
-
-public:
-	using synfig::LinkableValueNode::get_link_vfunc;
-	using synfig::LinkableValueNode::set_link_vfunc;
 	static bool check_type(ValueBase::Type type);
-	static ValueNode_Add* create(const ValueBase &value=ValueBase());
 }; // END of class ValueNode_Add
 
 }; // END of namespace synfig
