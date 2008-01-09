@@ -1154,16 +1154,16 @@ StateBLine_Context::popup_vertex_menu(synfig::ValueNode_Const::Handle value_node
 
 	if(loop_)
 	{
-		menu.items().push_back(Gtk::Menu_Helpers::MenuElem("Unloop BLine",
+		menu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("Unloop BLine"),
 				sigc::mem_fun(*this,&studio::StateBLine_Context::unloop_bline)
 		));
 	} else {
-		menu.items().push_back(Gtk::Menu_Helpers::MenuElem("Loop BLine",
+		menu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("Loop BLine"),
 				sigc::mem_fun(*this,&studio::StateBLine_Context::loop_bline)
 		));
 	}
 
-	menu.items().push_back(Gtk::Menu_Helpers::MenuElem("Delete Vertex",
+	menu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("Delete Vertex"),
 		sigc::bind(
 			sigc::mem_fun(*this,&studio::StateBLine_Context::bline_delete_vertex),
 			value_node
@@ -1178,7 +1178,7 @@ StateBLine_Context::popup_bezier_menu(float location, synfig::ValueNode_Const::H
 {
 	menu.items().clear();
 
-	menu.items().push_back(Gtk::Menu_Helpers::MenuElem("Insert Vertex",
+	menu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("Insert Vertex"),
 		sigc::bind(
 			sigc::bind(
 				sigc::mem_fun(*this,&studio::StateBLine_Context::bline_insert_vertex),
@@ -1247,7 +1247,7 @@ StateBLine_Context::bline_insert_vertex(synfig::ValueNode_Const::Handle value_no
 
 	if(iter==bline_point_list.end())
 	{
-		get_canvas_view()->get_ui_interface()->error("Unable to find where to insert vertex, internal error, please report this bug");
+		get_canvas_view()->get_ui_interface()->error(_("Unable to find where to insert vertex, internal error, please report this bug"));
 	}
 
 	refresh_ducks(false);
@@ -1266,7 +1266,7 @@ StateBLine_Context::bline_delete_vertex(synfig::ValueNode_Const::Handle value_no
 		}
 	if(iter==bline_point_list.end())
 	{
-		get_canvas_view()->get_ui_interface()->error("Unable to remove vertex, internal error, please report this bug");
+		get_canvas_view()->get_ui_interface()->error(_("Unable to remove vertex, internal error, please report this bug"));
 	}
 
 	refresh_ducks(false);
@@ -1280,14 +1280,14 @@ StateBLine_Context::popup_handle_menu(synfig::ValueNode_Const::Handle value_node
 	BLinePoint bline_point(value_node->get_value().get(BLinePoint()));
 
 	if(bline_point.get_split_tangent_flag())
-		menu.items().push_back(Gtk::Menu_Helpers::MenuElem("Merge Tangents",
+		menu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("Merge Tangents"),
 			sigc::bind(
 				sigc::mem_fun(*this,&studio::StateBLine_Context::bline_attach_handle),
 				value_node
 			)
 		));
 	else
-		menu.items().push_back(Gtk::Menu_Helpers::MenuElem("Split Tangents",
+		menu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("Split Tangents"),
 			sigc::bind(
 				sigc::mem_fun(*this,&studio::StateBLine_Context::bline_detach_handle),
 				value_node

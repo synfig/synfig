@@ -2280,7 +2280,7 @@ studio::WorkArea::async_update_preview()
 	synfig::ProgressCallback *cb=get_canvas_view()->get_ui_interface().get();
 
 	rendering=true;
-	cb->task("Rendering...");
+	cb->task(_("Rendering..."));
 	rendering=true;
 
 	return true;
@@ -2302,12 +2302,12 @@ studio::WorkArea::async_update_finished()
 	{
 		dirty=false;
 		//queued=false;
-		cb->task("Idle");
+		cb->task(_("Idle"));
 	}
 	else
 	{
 		dirty=true;
-		cb->task("Render Failed");
+		cb->task(_("Render Failed"));
 	}
 	//get_canvas_view()->reset_cancel_status();
 	done_rendering();
@@ -2381,7 +2381,7 @@ again:
 	target->set_avoid_time_sync(true);
 
 	if(cb)
-		cb->task(strprintf("Rendering canvas %s...",get_canvas()->get_name().c_str()));
+		cb->task(strprintf(_("Rendering canvas %s..."),get_canvas()->get_name().c_str()));
 
 	bool ret = target->render(cb);
 
@@ -2397,9 +2397,9 @@ again:
 	if(cb)
 	{
 		if(ret)
-			cb->task("Idle");
+			cb->task(_("Idle"));
 		else
-			cb->task("Render Failed");
+			cb->task(_("Render Failed"));
 		cb->amount_complete(0,1);
 	}
 
