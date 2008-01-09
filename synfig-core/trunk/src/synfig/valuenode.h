@@ -59,6 +59,28 @@
 # define DCAST_HACK_ENABLE()
 #endif
 
+#define CHECK_TYPE_AND_SET_VALUE(variable, type)						\
+	/* I don't think this ever happens - maybe remove this code? */		\
+	if (get_type() == ValueBase::TYPE_NIL) {							\
+		warning("%s:%d get_type() IS nil sometimes!",					\
+				__FILE__, __LINE__);									\
+		return false;													\
+	}																	\
+	if (get_type() != ValueBase::TYPE_NIL &&							\
+		!(ValueBase::same_type_as(value->get_type(), type)) &&			\
+		!PlaceholderValueNode::Handle::cast_dynamic(value)) {			\
+		error("%s:%d wrong type for %s: need %s but got %s",			\
+			  __FILE__, __LINE__,										\
+			  link_local_name(i).c_str(),								\
+			  ValueBase::type_name(type).c_str(),						\
+			  ValueBase::type_name(value->get_type()).c_str());		\
+		return false;													\
+	}																	\
+	variable = value;													\
+	signal_child_changed()(i);											\
+	signal_value_changed()();											\
+	return true
+
 /* === T Y P E D E F S ===================================================== */
 
 /* === C L A S S E S & S T R U C T S ======================================= */
