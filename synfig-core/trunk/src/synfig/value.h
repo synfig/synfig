@@ -205,14 +205,20 @@ public:
 	{
 		const Type testtype(get_type(x));
 
-		return same_type_as(testtype);
+		return same_type_as(type, testtype);
 	}
 
 	bool same_type_as(const Type testtype)const
 	{
-		if(testtype==type)return true;
-		if(	(type==TYPE_REAL || type==TYPE_TIME) &&
-			(testtype==TYPE_REAL || testtype==TYPE_TIME) )
+		return same_type_as(type, testtype);
+	}
+
+	//! Compares two types.  Returns true if they are the same type.
+	static bool same_type_as(const Type type1, const Type type2)
+	{
+		if (type1 == type2) return true;
+		if ((type1 == TYPE_REAL || type1 == TYPE_TIME) &&
+			(type2 == TYPE_REAL || type2 == TYPE_TIME))
 			return true;
 		return false;
 	}
