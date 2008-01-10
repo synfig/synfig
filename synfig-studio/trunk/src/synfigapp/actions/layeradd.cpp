@@ -44,7 +44,7 @@ using namespace Action;
 
 /* === M A C R O S ========================================================= */
 
-ACTION_INIT(Action::LayerAdd);
+ACTION_INIT_NO_GET_LOCAL_NAME(Action::LayerAdd);
 ACTION_SET_NAME(Action::LayerAdd,"layer_add");
 ACTION_SET_LOCAL_NAME(Action::LayerAdd,N_("Add Layer"));
 ACTION_SET_TASK(Action::LayerAdd,"add");
@@ -61,6 +61,15 @@ ACTION_SET_CVS_ID(Action::LayerAdd,"$Id$");
 
 Action::LayerAdd::LayerAdd()
 {
+}
+
+synfig::String
+Action::LayerAdd::get_local_name()const
+{
+	if (layer)
+		return strprintf("%s '%s'", _("Add Layer"), layer->get_local_name().c_str());
+	else
+		return _("Add Layer");
 }
 
 Action::ParamVocab
