@@ -133,23 +133,27 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	stock_##name=Gtk::StockItem(Gtk::StockID("synfig-" #name),desc);   			\
 	Gtk::Stock::add(stock_##name);
 
-	INIT_STOCK_ICON(swap_colors,"swap_colors_icon."IMAGE_EXT,_("Swap Colors"));
-	INIT_STOCK_ICON(canvas,"canvas_icon."IMAGE_EXT,_("Canvas"));
-	INIT_STOCK_ICON(value_node,"valuenode_icon."IMAGE_EXT,_("ValueNode"));
-	INIT_STOCK_ICON(real,"real_icon."IMAGE_EXT,_("Real"));
+	INIT_STOCK_ICON(bool,"bool_icon."IMAGE_EXT,_("Bool"));
 	INIT_STOCK_ICON(integer,"integer_icon."IMAGE_EXT,_("Integer"));
+	INIT_STOCK_ICON(angle,"angle_icon."IMAGE_EXT,_("Angle"));
+	INIT_STOCK_ICON(time,"time_icon."IMAGE_EXT,_("Time"));
+	INIT_STOCK_ICON(real,"real_icon."IMAGE_EXT,_("Real"));
 	INIT_STOCK_ICON(vector,"vector_icon."IMAGE_EXT,_("Vector"));
 	INIT_STOCK_ICON(color,"color_icon."IMAGE_EXT,_("Color"));
-	INIT_STOCK_ICON(angle,"angle_icon."IMAGE_EXT,_("Angle"));
 	INIT_STOCK_ICON(segment,"segment_icon."IMAGE_EXT,_("Segment"));
+	INIT_STOCK_ICON(blinepoint,"blinepoint_icon."IMAGE_EXT,_("BLine Point"));
+	INIT_STOCK_ICON(list,"list_icon."IMAGE_EXT,_("Rename"));
+	INIT_STOCK_ICON(canvas,"canvas_icon."IMAGE_EXT,_("Canvas"));
+	INIT_STOCK_ICON(string,"string_icon."IMAGE_EXT,_("Rename"));
+	INIT_STOCK_ICON(gradient,"gradient_icon."IMAGE_EXT,_("Gradient"));
+
+	INIT_STOCK_ICON(swap_colors,"swap_colors_icon."IMAGE_EXT,_("Swap Colors"));
+	INIT_STOCK_ICON(value_node,"valuenode_icon."IMAGE_EXT,_("ValueNode"));
 	INIT_STOCK_ICON(about,"about_icon."IMAGE_EXT,_("About"));
 	INIT_STOCK_ICON(rename,"rename_icon."IMAGE_EXT,_("Rename"));
-	INIT_STOCK_ICON(list,"list_icon."IMAGE_EXT,_("Rename"));
 	INIT_STOCK_ICON(canvas_pointer,"canvas_pointer_icon."IMAGE_EXT,_("Rename"));
-	INIT_STOCK_ICON(string,"string_icon."IMAGE_EXT,_("Rename"));
 	INIT_STOCK_ICON(canvas_new,"canvas_icon."IMAGE_EXT,_("New Canvas"));
 	INIT_STOCK_ICON(saveall,"saveall_icon."IMAGE_EXT,_("Save All"));
-	INIT_STOCK_ICON(bool,"bool_icon."IMAGE_EXT,_("Bool"));
 	INIT_STOCK_ICON(layer,"layer_icon."IMAGE_EXT,_("Layer"));
 	INIT_STOCK_ICON(layer_pastecanvas,"pastecanvas_icon."IMAGE_EXT,_("Paste Canvas"));
 	INIT_STOCK_ICON(group,"group_icon."IMAGE_EXT,_("Group"));
@@ -158,8 +162,6 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	INIT_STOCK_ICON(grid_snap_enable,"grid_snap_enable_icon."IMAGE_EXT,_("Enable Grid Snap"));
 	INIT_STOCK_ICON(grid_snap_disable,"grid_snap_disable_icon."IMAGE_EXT,_("Disable Grid Snap"));
 	INIT_STOCK_ICON(duplicate,"duplicate_icon."IMAGE_EXT,_("Duplicate"));
-	INIT_STOCK_ICON(gradient,"gradient_icon."IMAGE_EXT,_("Gradient"));
-	INIT_STOCK_ICON(blinepoint,"blinepoint_icon."IMAGE_EXT,_("BLine Point"));
 
 	INIT_STOCK_ICON(clear_undo,"clear_undo_icon."IMAGE_EXT,_("Clear Undo Stack"));
 	INIT_STOCK_ICON(clear_redo,"clear_redo_icon."IMAGE_EXT,_("Clear Redo Stack"));
@@ -279,6 +281,9 @@ studio::value_icon(synfig::ValueBase::Type type)
 			break;
 		case ValueBase::TYPE_ANGLE:
 			return Gtk::StockID("synfig-angle");
+			break;
+		case ValueBase::TYPE_TIME:
+			return Gtk::StockID("synfig-time");
 			break;
 		case ValueBase::TYPE_REAL:
 			return Gtk::StockID("synfig-real");
