@@ -176,6 +176,7 @@ bool
 ValueNode_Random::set_link_vfunc(int i,ValueNode::Handle x)
 {
 	assert(i>=0 && i<link_count());
+
 	switch(i)
 	{
 	case 0:
@@ -206,6 +207,7 @@ ValueNode::LooseHandle
 ValueNode_Random::get_link_vfunc(int i)const
 {
 	assert(i>=0 && i<link_count());
+
 	switch(i)
 	{
 	case 0: return link_;
@@ -227,6 +229,7 @@ String
 ValueNode_Random::link_name(int i)const
 {
 	assert(i>=0 && i<link_count());
+
 	switch(i)
 	{
 	case 0: return "link";
@@ -242,6 +245,7 @@ String
 ValueNode_Random::link_local_name(int i)const
 {
 	assert(i>=0 && i<link_count());
+
 	switch(i)
 	{
 	case 0: return _("Link");
