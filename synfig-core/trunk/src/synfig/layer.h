@@ -77,7 +77,7 @@
 #define EXPORT(x)					EXPORT_AS(x,#x)
 
 //! \writeme
-#define EXPORT_NAME()	if(param=="Name" || param=="name" || param=="name__") { return name__; } if(param=="local_name__") { return local_name__; }
+#define EXPORT_NAME()	if(param=="Name" || param=="name" || param=="name__") { return name__; } if(param=="local_name__") { return dgettext("synfig",local_name__); }
 
 //! \writeme
 #define EXPORT_VERSION()	if(param=="Version" || param=="version" || param=="version__") { return version__; }
