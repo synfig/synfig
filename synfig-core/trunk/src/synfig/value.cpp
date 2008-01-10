@@ -195,15 +195,13 @@ ValueBase::clear()
 		case TYPE_BOOL:			delete static_cast<bool*>(data);		break;
 		case TYPE_INTEGER:		delete static_cast<int*>(data);			break;
 		case TYPE_ANGLE:		delete static_cast<Angle*>(data);		break;
-		case TYPE_VECTOR:		delete static_cast<Vector*>(data);		break;
 		case TYPE_TIME:			delete static_cast<Time*>(data);		break;
 		case TYPE_REAL:			delete static_cast<Real*>(data);		break;
+		case TYPE_VECTOR:		delete static_cast<Vector*>(data);		break;
 		case TYPE_COLOR:		delete static_cast<Color*>(data);		break;
 		case TYPE_SEGMENT:		delete static_cast<Segment*>(data);		break;
 		case TYPE_BLINEPOINT:	delete static_cast<BLinePoint*>(data);	break;
 		case TYPE_LIST:			delete static_cast<list_type*>(data);	break;
-		case TYPE_STRING:		delete static_cast<String*>(data);		break;
-		case TYPE_GRADIENT:		delete static_cast<Gradient*>(data);	break;
 		case TYPE_CANVAS:
 		{
 			etl::handle<Canvas> canvas(get(etl::loose_handle<Canvas>()));
@@ -213,6 +211,8 @@ ValueBase::clear()
 				delete static_cast<etl::loose_handle<Canvas>*>(data);
 			break;
 		}
+		case TYPE_STRING:		delete static_cast<String*>(data);		break;
+		case TYPE_GRADIENT:		delete static_cast<Gradient*>(data);	break;
 		default:
 			break;
 		}
@@ -230,26 +230,46 @@ ValueBase::type_name(Type id)
 	// don't internationalize these type names - they're using in .sif files
 	switch(id)
 	{
-	case TYPE_REAL:			return "real";
-	case TYPE_TIME:			return "time";
-	case TYPE_INTEGER:		return "integer";
-	case TYPE_BOOL:			return "bool";
-	case TYPE_ANGLE:		return "angle";
-	case TYPE_VECTOR:		return "vector";
-	case TYPE_COLOR:		return "color";
-	case TYPE_STRING:		return "string";
-	case TYPE_CANVAS:		return "canvas";
-	case TYPE_LIST:			return "list";
-	case TYPE_SEGMENT:		return "segment";
-	case TYPE_GRADIENT:		return "gradient";
-	case TYPE_BLINEPOINT:	return "bline_point";
-	case TYPE_NIL:			return "nil";
+		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
+	case TYPE_BOOL:			return N_("bool");
+		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
+	case TYPE_INTEGER:		return N_("integer");
+		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
+	case TYPE_ANGLE:		return N_("angle");
+		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
+	case TYPE_TIME:			return N_("time");
+		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
+	case TYPE_REAL:			return N_("real");
+		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
+	case TYPE_VECTOR:		return N_("vector");
+		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
+	case TYPE_COLOR:		return N_("color");
+		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
+	case TYPE_SEGMENT:		return N_("segment");
+		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
+	case TYPE_BLINEPOINT:	return N_("bline_point");
+		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
+	case TYPE_LIST:			return N_("list");
+		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
+	case TYPE_CANVAS:		return N_("canvas");
+		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
+	case TYPE_STRING:		return N_("string");
+		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
+	case TYPE_GRADIENT:		return N_("gradient");
+		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
+	case TYPE_NIL:			return N_("nil");
 	default:
 		break;
 	}
 	synfig::warning("Encountered unknown ValueBase with an Type of %d",id);
 //	assert(0);
 	return "UNKNOWN";
+}
+
+String
+ValueBase::type_local_name(Type id)
+{
+	return dgettext("synfig",type_name(id).c_str());
 }
 
 ValueBase::Type
