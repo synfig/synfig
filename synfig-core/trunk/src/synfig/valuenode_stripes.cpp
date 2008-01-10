@@ -74,7 +74,7 @@ ValueNode_Stripes::create(const ValueBase& x)
 	if(id!=ValueBase::TYPE_GRADIENT)
 	{
 		assert(0);
-		throw runtime_error(_("synfig::ValueNode_Stripes:Bad type ")+ValueBase::type_local_name(id));
+		throw runtime_error(String(_("Stripes"))+_(":Bad type ")+ValueBase::type_local_name(id));
 	}
 
 	ValueNode_Stripes* value_node=new ValueNode_Stripes();

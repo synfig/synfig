@@ -83,7 +83,7 @@ synfig::ValueNode_Range::ValueNode_Range(const ValueBase &value):
 		break;
 	default:
 		assert(0);
-		throw runtime_error(_("synfig::ValueNode_Range:Bad type ")+ValueBase::type_local_name(id));
+		throw runtime_error(get_local_name()+_(":Bad type ")+ValueBase::type_local_name(id));
 	}
 
 	assert(min_->get_type()==id);
