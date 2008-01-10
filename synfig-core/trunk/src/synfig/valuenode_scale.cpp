@@ -34,7 +34,6 @@
 #include "valuenode_scale.h"
 #include "valuenode_const.h"
 #include <stdexcept>
-#include <cassert>
 #include "color.h"
 #include "vector.h"
 #include "time.h"
@@ -193,8 +192,7 @@ synfig::ValueNode_Scale::operator()(Time t)const
 bool
 ValueNode_Scale::set_link_vfunc(int i,ValueNode::Handle x)
 {
-	if(!(i==0 || i==1))
-		return false;
+	assert(i>=0 && i<link_count());
 
 	if(i==0 && !set_value_node(x))
 		return false;
@@ -210,7 +208,8 @@ ValueNode_Scale::set_link_vfunc(int i,ValueNode::Handle x)
 ValueNode::LooseHandle
 ValueNode_Scale::get_link_vfunc(int i)const
 {
-	assert(i==0 || i==1);
+	assert(i>=0 && i<link_count());
+
 	if(i==0)
 		return value_node;
 	else if(i==1)
@@ -227,7 +226,8 @@ ValueNode_Scale::link_count()const
 String
 ValueNode_Scale::link_local_name(int i)const
 {
-	assert(i==0 || i==1);
+	assert(i>=0 && i<link_count());
+
 	if(i==0)
 		return _("Link");
 	else if(i==1)
@@ -238,7 +238,8 @@ ValueNode_Scale::link_local_name(int i)const
 String
 ValueNode_Scale::link_name(int i)const
 {
-	assert(i==0 || i==1);
+	assert(i>=0 && i<link_count());
+
 	if(i==0)
 		return "link";
 	else if(i==1)

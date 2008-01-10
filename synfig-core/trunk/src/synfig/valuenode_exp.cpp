@@ -104,7 +104,8 @@ ValueNode_Exp::get_local_name()const
 bool
 ValueNode_Exp::set_link_vfunc(int i,ValueNode::Handle x)
 {
-	assert(i==0 || i==1);
+	assert(i>=0 && i<link_count());
+
 	if(i==0)
 	{
 		exp_=x;
@@ -123,7 +124,8 @@ ValueNode_Exp::set_link_vfunc(int i,ValueNode::Handle x)
 ValueNode::LooseHandle
 ValueNode_Exp::get_link_vfunc(int i)const
 {
-	assert(i==0 || i==1);
+	assert(i>=0 && i<link_count());
+
 	if(i==0)
 		return exp_;
 	if(i==1)
@@ -141,7 +143,8 @@ ValueNode_Exp::link_count()const
 String
 ValueNode_Exp::link_name(int i)const
 {
-	assert(i==0 || i==1);
+	assert(i>=0 && i<link_count());
+
 	if(i==0)
 		return "exp";
 	if(i==1)
@@ -152,7 +155,8 @@ ValueNode_Exp::link_name(int i)const
 String
 ValueNode_Exp::link_local_name(int i)const
 {
-	assert(i==0 || i==1);
+	assert(i>=0 && i<link_count());
+
 	if(i==0)
 		return _("Exponent");
 	if(i==1)

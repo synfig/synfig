@@ -164,6 +164,7 @@ bool
 ValueNode_Stripes::set_link_vfunc(int i,ValueNode::Handle x)
 {
 	assert(i>=0 && i<link_count());
+
 	switch(i)
 	{
 		case 0:
@@ -187,6 +188,7 @@ ValueNode::LooseHandle
 ValueNode_Stripes::get_link_vfunc(int i)const
 {
 	assert(i>=0 && i<link_count());
+
 	switch(i)
 	{
 		case 0:
@@ -211,6 +213,7 @@ String
 ValueNode_Stripes::link_local_name(int i)const
 {
 	assert(i>=0 && i<link_count());
+
 	switch(i)
 	{
 		case 0:
@@ -230,6 +233,7 @@ String
 ValueNode_Stripes::link_name(int i)const
 {
 	assert(i>=0 && i<link_count());
+
 	switch(i)
 	{
 		case 0:

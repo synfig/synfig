@@ -83,6 +83,7 @@ bool
 ValueNode_Switch::set_link_vfunc(int i,ValueNode::Handle x)
 {
 	assert(i>=0 && i<link_count());
+
 	switch(i)
 	{
 	case 0:
@@ -109,6 +110,7 @@ ValueNode::LooseHandle
 ValueNode_Switch::get_link_vfunc(int i)const
 {
 	assert(i>=0 && i<link_count());
+
 	switch(i)
 	{
 	case 0: return link_off_;
@@ -128,6 +130,7 @@ String
 ValueNode_Switch::link_name(int i)const
 {
 	assert(i>=0 && i<link_count());
+
 	switch(i)
 	{
 	case 0: return "link_off";
@@ -141,6 +144,7 @@ String
 ValueNode_Switch::link_local_name(int i)const
 {
 	assert(i>=0 && i<link_count());
+
 	switch(i)
 	{
 	case 0: return "Link Off";

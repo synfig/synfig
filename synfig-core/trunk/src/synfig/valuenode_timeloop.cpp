@@ -84,7 +84,8 @@ ValueNode_TimeLoop::~ValueNode_TimeLoop()
 bool
 ValueNode_TimeLoop::set_link_vfunc(int i,ValueNode::Handle x)
 {
-	assert(i >= 0 && i < link_count());
+	assert(i>=0 && i<link_count());
+
 	switch(i)
 	{
 	case 0:  link_       = x; break;
@@ -102,7 +103,8 @@ ValueNode_TimeLoop::set_link_vfunc(int i,ValueNode::Handle x)
 ValueNode::LooseHandle
 ValueNode_TimeLoop::get_link_vfunc(int i)const
 {
-	assert(i >= 0 && i < link_count());
+	assert(i>=0 && i<link_count());
+
 	if(i==0) return link_;
 	if(i==1) return link_time_;
 	if(i==2) return local_time_;
@@ -120,7 +122,8 @@ ValueNode_TimeLoop::link_count()const
 String
 ValueNode_TimeLoop::link_local_name(int i)const
 {
-	assert(i >= 0 && i < link_count());
+	assert(i>=0 && i<link_count());
+
 	if(i==0) return _("Link");
 	if(i==1) return _("Link Time");
 	if(i==2) return _("Local Time");
@@ -131,7 +134,8 @@ ValueNode_TimeLoop::link_local_name(int i)const
 String
 ValueNode_TimeLoop::link_name(int i)const
 {
-	assert(i >= 0 && i < link_count());
+	assert(i>=0 && i<link_count());
+
 	if(i==0) return "link";
 	if(i==1) return "link_time";
 	if(i==2) return "local_time";

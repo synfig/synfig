@@ -202,6 +202,7 @@ bool
 ValueNode_Repeat_Gradient::set_link_vfunc(int i,ValueNode::Handle x)
 {
 	assert(i>=0 && i<link_count());
+
 	switch(i)
 	{
 		case 0:
@@ -234,6 +235,7 @@ ValueNode::LooseHandle
 ValueNode_Repeat_Gradient::get_link_vfunc(int i)const
 {
 	assert(i>=0 && i<link_count());
+
 	switch(i)
 	{
 		case 0:  return gradient_;
@@ -257,6 +259,7 @@ String
 ValueNode_Repeat_Gradient::link_local_name(int i)const
 {
 	assert(i>=0 && i<link_count());
+
 	switch(i)
 	{
 		case 0:  return _("Gradient");
@@ -274,6 +277,7 @@ String
 ValueNode_Repeat_Gradient::link_name(int i)const
 {
 	assert(i>=0 && i<link_count());
+
 	switch(i)
 	{
 		case 0:  return "gradient";

@@ -80,7 +80,8 @@ ValueNode_Reference::~ValueNode_Reference()
 bool
 ValueNode_Reference::set_link_vfunc(int i,ValueNode::Handle x)
 {
-	assert(i==0);
+	assert(i>=0 && i<link_count());
+
 	if(x->get_type()!=get_type() && !PlaceholderValueNode::Handle::cast_dynamic(x))
 		return false;
 	link_=x;
@@ -91,7 +92,8 @@ ValueNode_Reference::set_link_vfunc(int i,ValueNode::Handle x)
 ValueNode::LooseHandle
 ValueNode_Reference::get_link_vfunc(int i)const
 {
-	assert(i==0);
+	assert(i>=0 && i<link_count());
+
 	return link_;
 }
 
@@ -104,14 +106,25 @@ ValueNode_Reference::link_count()const
 String
 ValueNode_Reference::link_local_name(int i)const
 {
-	assert(i==0);
-	return _("Link");
+	assert(i>=0 && i<link_count());
+
+	switch(i)
+	{
+	case 0: return _("Link");
+	}
+	return String();
 }
 
 String
-ValueNode_Reference::link_name(int /*i*/)const
+ValueNode_Reference::link_name(int i)const
 {
-	return "link";
+	assert(i>=0 && i<link_count());
+
+	switch(i)
+	{
+	case 0: return "link";
+	}
+	return String();
 }
 
 int

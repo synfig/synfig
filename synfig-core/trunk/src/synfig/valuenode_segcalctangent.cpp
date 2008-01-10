@@ -114,7 +114,8 @@ ValueNode_SegCalcTangent::check_type(ValueBase::Type type)
 bool
 ValueNode_SegCalcTangent::set_link_vfunc(int i,ValueNode::Handle x)
 {
-	assert(i==0 || i==1);
+	assert(i>=0 && i<link_count());
+
 	if(i==0)
 	{
 		segment_=x;
@@ -133,7 +134,8 @@ ValueNode_SegCalcTangent::set_link_vfunc(int i,ValueNode::Handle x)
 ValueNode::LooseHandle
 ValueNode_SegCalcTangent::get_link_vfunc(int i)const
 {
-	assert(i==0 || i==1);
+	assert(i>=0 && i<link_count());
+
 	if(i==0)
 		return segment_;
 	if(i==1)
@@ -151,7 +153,8 @@ ValueNode_SegCalcTangent::link_count()const
 String
 ValueNode_SegCalcTangent::link_name(int i)const
 {
-	assert(i==0 || i==1);
+	assert(i>=0 && i<link_count());
+
 	if(i==0)
 		return "segment";
 	if(i==1)
@@ -162,7 +165,8 @@ ValueNode_SegCalcTangent::link_name(int i)const
 String
 ValueNode_SegCalcTangent::link_local_name(int i)const
 {
-	assert(i==0 || i==1);
+	assert(i>=0 && i<link_count());
+
 	if(i==0)
 		return _("Segment");
 	if(i==1)

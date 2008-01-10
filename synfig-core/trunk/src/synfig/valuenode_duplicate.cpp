@@ -84,7 +84,8 @@ ValueNode_Duplicate::~ValueNode_Duplicate()
 bool
 ValueNode_Duplicate::set_link_vfunc(int i,ValueNode::Handle x)
 {
-	assert(i >= 0 && i < link_count());
+	assert(i>=0 && i<link_count());
+
 	switch(i)
 	{
 	case 0:  from_ = x; break;
@@ -101,7 +102,8 @@ ValueNode_Duplicate::set_link_vfunc(int i,ValueNode::Handle x)
 ValueNode::LooseHandle
 ValueNode_Duplicate::get_link_vfunc(int i)const
 {
-	assert(i >= 0 && i < link_count());
+	assert(i>=0 && i<link_count());
+
 	if(i==0) return from_;
 	if(i==1) return to_;
 	if(i==2) return step_;
@@ -118,7 +120,8 @@ ValueNode_Duplicate::link_count()const
 String
 ValueNode_Duplicate::link_local_name(int i)const
 {
-	assert(i >= 0 && i < link_count());
+	assert(i>=0 && i<link_count());
+
 	if(i==0) return _("From");
 	if(i==1) return _("To");
 	if(i==2) return _("Step");
@@ -128,7 +131,8 @@ ValueNode_Duplicate::link_local_name(int i)const
 String
 ValueNode_Duplicate::link_name(int i)const
 {
-	assert(i >= 0 && i < link_count());
+	assert(i>=0 && i<link_count());
+
 	if(i==0) return "from";
 	if(i==1) return "to";
 	if(i==2) return "step";

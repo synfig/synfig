@@ -150,7 +150,8 @@ synfig::ValueNode_Range::operator()(Time t)const
 bool
 ValueNode_Range::set_link_vfunc(int i,ValueNode::Handle value)
 {
-	assert(i>=0 && i<3);
+	assert(i>=0 && i<link_count());
+
 	switch(i)
 	{
 		case 0:
@@ -173,7 +174,8 @@ ValueNode_Range::set_link_vfunc(int i,ValueNode::Handle value)
 ValueNode::LooseHandle
 ValueNode_Range::get_link_vfunc(int i)const
 {
-	assert(i>=0 && i<3);
+	assert(i>=0 && i<link_count());
+
 	switch(i)
 	{
 		case 0: return min_;
@@ -192,7 +194,8 @@ ValueNode_Range::link_count()const
 String
 ValueNode_Range::link_local_name(int i)const
 {
-	assert(i>=0 && i<3);
+	assert(i>=0 && i<link_count());
+
 	switch(i)
 	{
 		case 0: return _("Min");
@@ -205,7 +208,8 @@ ValueNode_Range::link_local_name(int i)const
 String
 ValueNode_Range::link_name(int i)const
 {
-	assert(i>=0 && i<3);
+	assert(i>=0 && i<link_count());
+
 	switch(i)
 	{
 		case 0: return "min";

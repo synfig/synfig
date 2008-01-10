@@ -112,7 +112,8 @@ ValueNode_Atan2::check_type(ValueBase::Type type)
 bool
 ValueNode_Atan2::set_link_vfunc(int i,ValueNode::Handle x)
 {
-	assert(i==0 || i==1);
+	assert(i>=0 && i<link_count());
+
 	if(i==0)
 	{
 		x_=x;
@@ -131,7 +132,8 @@ ValueNode_Atan2::set_link_vfunc(int i,ValueNode::Handle x)
 ValueNode::LooseHandle
 ValueNode_Atan2::get_link_vfunc(int i)const
 {
-	assert(i==0 || i==1);
+	assert(i>=0 && i<link_count());
+
 	if(i==0)
 		return x_;
 	if(i==1)
@@ -149,7 +151,8 @@ ValueNode_Atan2::link_count()const
 String
 ValueNode_Atan2::link_name(int i)const
 {
-	assert(i==0 || i==1);
+	assert(i>=0 && i<link_count());
+
 	if(i==0)
 		return "x";
 	if(i==1)
@@ -160,7 +163,8 @@ ValueNode_Atan2::link_name(int i)const
 String
 ValueNode_Atan2::link_local_name(int i)const
 {
-	assert(i==0 || i==1);
+	assert(i>=0 && i<link_count());
+
 	if(i==0)
 		return _("X");
 	if(i==1)

@@ -157,7 +157,8 @@ ValueNode_Linear::check_type(ValueBase::Type type)
 bool
 ValueNode_Linear::set_link_vfunc(int i,ValueNode::Handle x)
 {
-	assert(i==0 || i==1);
+	assert(i>=0 && i<link_count());
+
 	if(i==0)
 	{
 		m_=x;
@@ -176,7 +177,8 @@ ValueNode_Linear::set_link_vfunc(int i,ValueNode::Handle x)
 ValueNode::LooseHandle
 ValueNode_Linear::get_link_vfunc(int i)const
 {
-	assert(i==0 || i==1);
+	assert(i>=0 && i<link_count());
+
 	if(i==0) return m_;
 	if(i==1) return b_;
 	return 0;
@@ -191,7 +193,8 @@ ValueNode_Linear::link_count()const
 String
 ValueNode_Linear::link_name(int i)const
 {
-	assert(i==0 || i==1);
+	assert(i>=0 && i<link_count());
+
 	if(i==0) return "slope";
 	if(i==1) return "offset";
 	return String();
@@ -200,7 +203,8 @@ ValueNode_Linear::link_name(int i)const
 String
 ValueNode_Linear::link_local_name(int i)const
 {
-	assert(i==0 || i==1);
+	assert(i>=0 && i<link_count());
+
 	if(i==0)
 		switch(get_type())
 		{

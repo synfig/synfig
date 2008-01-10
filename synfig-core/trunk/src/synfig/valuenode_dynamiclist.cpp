@@ -621,6 +621,7 @@ bool
 ValueNode_DynamicList::set_link_vfunc(int i,ValueNode::Handle x)
 {
 	assert(i>=0);
+
 	if((unsigned)i>=list.size())
 		return false;
 	if(x->get_type()!=container_type)
@@ -633,6 +634,7 @@ ValueNode::LooseHandle
 ValueNode_DynamicList::get_link_vfunc(int i)const
 {
 	assert(i>=0);
+
 	if((unsigned)i>=list.size())
 		return 0;
 	return list[i].value_node;
@@ -647,7 +649,8 @@ ValueNode_DynamicList::link_count()const
 String
 ValueNode_DynamicList::link_local_name(int i)const
 {
-	assert(i>=0 && (unsigned)i<list.size());
+	assert(i>=0 && i<link_count());
+
 	return etl::strprintf(_("Item %03d"),i+1);
 }
 
@@ -719,6 +722,7 @@ LinkableValueNode*
 ValueNode_DynamicList::create_new()const
 {
 	assert(0);
+
 	return 0;
 }
 

@@ -115,7 +115,8 @@ ValueNode_Cos::check_type(ValueBase::Type type)
 bool
 ValueNode_Cos::set_link_vfunc(int i,ValueNode::Handle x)
 {
-	assert(i==0 || i==1);
+	assert(i>=0 && i<link_count());
+
 	if(i==0)
 	{
 		angle_=x;
@@ -134,7 +135,8 @@ ValueNode_Cos::set_link_vfunc(int i,ValueNode::Handle x)
 ValueNode::LooseHandle
 ValueNode_Cos::get_link_vfunc(int i)const
 {
-	assert(i==0 || i==1);
+	assert(i>=0 && i<link_count());
+
 	if(i==0)
 		return angle_;
 	if(i==1)
@@ -152,7 +154,8 @@ ValueNode_Cos::link_count()const
 String
 ValueNode_Cos::link_name(int i)const
 {
-	assert(i==0 || i==1);
+	assert(i>=0 && i<link_count());
+
 	if(i==0)
 		return "angle";
 	if(i==1)
@@ -163,7 +166,8 @@ ValueNode_Cos::link_name(int i)const
 String
 ValueNode_Cos::link_local_name(int i)const
 {
-	assert(i==0 || i==1);
+	assert(i>=0 && i<link_count());
+
 	if(i==0)
 		return _("Angle");
 	if(i==1)

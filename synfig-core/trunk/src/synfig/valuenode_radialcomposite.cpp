@@ -141,8 +141,7 @@ ValueNode_RadialComposite::link_count()const
 bool
 ValueNode_RadialComposite::set_link_vfunc(int i,ValueNode::Handle x)
 {
-	assert(i>=0);
-	assert(i<6);
+	assert(i>=0 && i<link_count());
 
 	if(PlaceholderValueNode::Handle::cast_dynamic(x))
 	{
@@ -153,7 +152,6 @@ ValueNode_RadialComposite::set_link_vfunc(int i,ValueNode::Handle x)
 	switch(get_type())
 	{
 		case ValueBase::TYPE_VECTOR:
-			assert(i<2);
 			if(i==0 && x->get_type()!=ValueBase::TYPE_REAL)
 				return false;
 			if(i==1 && x->get_type()!=ValueBase::TYPE_ANGLE)
@@ -163,7 +161,6 @@ ValueNode_RadialComposite::set_link_vfunc(int i,ValueNode::Handle x)
 			break;
 
 		case ValueBase::TYPE_COLOR:
-			assert(i<4);
 			if((i==0 || i==1 || i==3) && x->get_type()!=ValueBase::TYPE_REAL)
 				return false;
 			if((i==2) && x->get_type()!=ValueBase::TYPE_ANGLE)
@@ -182,14 +179,16 @@ ValueNode_RadialComposite::set_link_vfunc(int i,ValueNode::Handle x)
 ValueNode::LooseHandle
 ValueNode_RadialComposite::get_link_vfunc(int i)const
 {
-	assert(i>=0 && i<6);
+	assert(i>=0 && i<link_count());
+
 	return components[i];
 }
 
 String
 ValueNode_RadialComposite::link_local_name(int i)const
 {
-	assert(i>=0 && i<6);
+	assert(i>=0 && i<link_count());
+
 	switch(get_type())
 	{
 		case ValueBase::TYPE_VECTOR:
@@ -221,7 +220,8 @@ ValueNode_RadialComposite::link_local_name(int i)const
 String
 ValueNode_RadialComposite::link_name(int i)const
 {
-	assert(i>=0 && i<5);
+	assert(i>=0 && i<link_count());
+
 	return strprintf("c%d",i);
 }
 

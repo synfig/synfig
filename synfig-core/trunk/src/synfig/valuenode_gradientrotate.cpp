@@ -124,7 +124,8 @@ synfig::ValueNode_GradientRotate::operator()(Time t)const
 bool
 ValueNode_GradientRotate::set_link_vfunc(int i,ValueNode::Handle x)
 {
-	assert(i>=0 && i<3);
+	assert(i>=0 && i<link_count());
+
 	switch(i)
 	{
 		case 0:
@@ -141,7 +142,8 @@ ValueNode_GradientRotate::set_link_vfunc(int i,ValueNode::Handle x)
 ValueNode::LooseHandle
 ValueNode_GradientRotate::get_link_vfunc(int i)const
 {
-	assert(i>=0 && i<3);
+	assert(i>=0 && i<link_count());
+
 	switch(i)
 	{
 		case 0:
@@ -161,7 +163,8 @@ ValueNode_GradientRotate::link_count()const
 String
 ValueNode_GradientRotate::link_local_name(int i)const
 {
-	assert(i>=0 && i<2);
+	assert(i>=0 && i<link_count());
+
 	switch(i)
 	{
 		case 0:
@@ -176,7 +179,8 @@ ValueNode_GradientRotate::link_local_name(int i)const
 String
 ValueNode_GradientRotate::link_name(int i)const
 {
-	assert(i>=0 && i<2);
+	assert(i>=0 && i<link_count());
+
 	switch(i)
 	{
 		case 0:

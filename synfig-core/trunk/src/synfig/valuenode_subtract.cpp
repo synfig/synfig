@@ -191,7 +191,8 @@ synfig::ValueNode_Subtract::operator()(Time t)const
 bool
 ValueNode_Subtract::set_link_vfunc(int i,ValueNode::Handle value)
 {
-	assert(i>=0 && i<3);
+	assert(i>=0 && i<link_count());
+
 	switch(i)
 	{
 		case 0:
@@ -212,7 +213,8 @@ ValueNode_Subtract::set_link_vfunc(int i,ValueNode::Handle value)
 ValueNode::LooseHandle
 ValueNode_Subtract::get_link_vfunc(int i)const
 {
-	assert(i>=0 && i<3);
+	assert(i>=0 && i<link_count());
+
 	switch(i)
 	{
 		case 0: return ref_a;
@@ -231,7 +233,8 @@ ValueNode_Subtract::link_count()const
 String
 ValueNode_Subtract::link_local_name(int i)const
 {
-	assert(i>=0 && i<3);
+	assert(i>=0 && i<link_count());
+
 	switch(i)
 	{
 		case 0: return _("LHS");
@@ -244,7 +247,8 @@ ValueNode_Subtract::link_local_name(int i)const
 String
 ValueNode_Subtract::link_name(int i)const
 {
-	assert(i>=0 && i<3);
+	assert(i>=0 && i<link_count());
+
 	switch(i)
 	{
 		case 0: return "lhs";

@@ -184,8 +184,7 @@ ValueNode_Composite::link_count()const
 bool
 ValueNode_Composite::set_link_vfunc(int i,ValueNode::Handle x)
 {
-	assert(i>=0);
-	assert(i<6);
+	assert(i>=0 && i<link_count());
 
 	if(PlaceholderValueNode::Handle::cast_dynamic(x))
 	{
@@ -196,7 +195,6 @@ ValueNode_Composite::set_link_vfunc(int i,ValueNode::Handle x)
 	switch(get_type())
 	{
 		case ValueBase::TYPE_VECTOR:
-			assert(i<2);
 			if(x->get_type()==ValueBase(Real()).get_type() || PlaceholderValueNode::Handle::cast_dynamic(x))
 			{
 				components[i]=x;
@@ -205,7 +203,6 @@ ValueNode_Composite::set_link_vfunc(int i,ValueNode::Handle x)
 			break;
 
 		case ValueBase::TYPE_COLOR:
-			assert(i<4);
 			if(x->get_type()==ValueBase(Real()).get_type() || PlaceholderValueNode::Handle::cast_dynamic(x))
 			{
 				components[i]=x;
@@ -214,7 +211,6 @@ ValueNode_Composite::set_link_vfunc(int i,ValueNode::Handle x)
 			break;
 
 		case ValueBase::TYPE_SEGMENT:
-			assert(i<4);
 			if(x->get_type()==ValueBase(Point()).get_type() || PlaceholderValueNode::Handle::cast_dynamic(x))
 			{
 				components[i]=x;
@@ -223,7 +219,6 @@ ValueNode_Composite::set_link_vfunc(int i,ValueNode::Handle x)
 			break;
 
 		case ValueBase::TYPE_BLINEPOINT:
-			assert(i<6);
 			if((i==0 || i==4 || i==5) && x->get_type()==ValueBase(Point()).get_type())
 			{
 				components[i]=x;
@@ -250,14 +245,16 @@ ValueNode_Composite::set_link_vfunc(int i,ValueNode::Handle x)
 ValueNode::LooseHandle
 ValueNode_Composite::get_link_vfunc(int i)const
 {
-	assert(i>=0 && i<6);
+	assert(i>=0 && i<link_count());
+
 	return components[i];
 }
 
 String
 ValueNode_Composite::link_local_name(int i)const
 {
-	assert(i>=0 && i<6);
+	assert(i>=0 && i<link_count());
+
 	switch(get_type())
 	{
 		case ValueBase::TYPE_VECTOR:
@@ -306,7 +303,9 @@ ValueNode_Composite::link_local_name(int i)const
 String
 ValueNode_Composite::link_name(int i)const
 {
-	assert(i>=0 && i<5);
+	assert(i>=0 && i<link_count());
+
+	printf("!!! link_name(%d)\n", i);
 	return strprintf("c%d",i);
 }
 

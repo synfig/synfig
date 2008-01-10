@@ -99,7 +99,8 @@ ValueNode_Integer::~ValueNode_Integer()
 bool
 ValueNode_Integer::set_link_vfunc(int i,ValueNode::Handle x)
 {
-	assert(i >= 0 && i < link_count());
+	assert(i>=0 && i<link_count());
+
 	switch(i)
 	{
 	case 0:  integer_ = x; break;
@@ -114,7 +115,8 @@ ValueNode_Integer::set_link_vfunc(int i,ValueNode::Handle x)
 ValueNode::LooseHandle
 ValueNode_Integer::get_link_vfunc(int i)const
 {
-	assert(i >= 0 && i < link_count());
+	assert(i>=0 && i<link_count());
+
 	if(i==0) return integer_;
 
 	return 0;
@@ -129,7 +131,8 @@ ValueNode_Integer::link_count()const
 String
 ValueNode_Integer::link_local_name(int i)const
 {
-	assert(i >= 0 && i < link_count());
+	assert(i>=0 && i<link_count());
+
 	if(i==0) return _("Integer");
 	return String();
 }
@@ -137,7 +140,8 @@ ValueNode_Integer::link_local_name(int i)const
 String
 ValueNode_Integer::link_name(int i)const
 {
-	assert(i >= 0 && i < link_count());
+	assert(i>=0 && i<link_count());
+
 	if(i==0) return "integer";
 	return String();
 }

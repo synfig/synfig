@@ -258,7 +258,8 @@ synfig::ValueNode_TimedSwap::operator()(Time t)const
 bool
 ValueNode_TimedSwap::set_link_vfunc(int i,ValueNode::Handle x)
 {
-	assert(i>=0 && i<4);
+	assert(i>=0 && i<link_count());
+
 	switch(i)
 	{
 	case 0: return set_before(x);
@@ -272,7 +273,8 @@ ValueNode_TimedSwap::set_link_vfunc(int i,ValueNode::Handle x)
 ValueNode::LooseHandle
 ValueNode_TimedSwap::get_link_vfunc(int i)const
 {
-	assert(i>=0 && i<4);
+	assert(i>=0 && i<link_count());
+
 	switch(i)
 	{
 	case 0: return get_before();
@@ -292,7 +294,8 @@ ValueNode_TimedSwap::link_count()const
 String
 ValueNode_TimedSwap::link_local_name(int i)const
 {
-	assert(i>=0 && i<4);
+	assert(i>=0 && i<link_count());
+
 	switch(i)
 	{
 	case 0: return _("Before");
@@ -306,7 +309,8 @@ ValueNode_TimedSwap::link_local_name(int i)const
 String
 ValueNode_TimedSwap::link_name(int i)const
 {
-	assert(i>=0 && i<4);
+	assert(i>=0 && i<link_count());
+
 	switch(i)
 	{
 	case 0: return "before";
