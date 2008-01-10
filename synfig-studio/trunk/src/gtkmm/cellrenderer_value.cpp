@@ -398,7 +398,7 @@ CellRenderer_ValueBase::render_vfunc(
 		if(data.get(etl::handle<synfig::Canvas>()))
 		{
 			if(data.get(etl::handle<synfig::Canvas>())->is_inline())
-				property_text()="<Inline Canvas>";
+				property_text()=_("<Inline Canvas>");
 			else
 				property_text()=(Glib::ustring)data.get(etl::handle<synfig::Canvas>())->get_id();
 		}

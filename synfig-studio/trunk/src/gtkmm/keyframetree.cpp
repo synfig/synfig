@@ -100,7 +100,7 @@ KeyframeTree::KeyframeTree()
 		Gtk::CellRendererText* cell_renderer_jump=Gtk::manage(new Gtk::CellRendererText());
 		column->pack_start(*cell_renderer_jump,true);
 
-		cell_renderer_jump->property_text()="(JMP)";
+		cell_renderer_jump->property_text()=_("(JMP)");
 		cell_renderer_jump->property_foreground()="#003a7f";
 
 		column->set_reorderable();

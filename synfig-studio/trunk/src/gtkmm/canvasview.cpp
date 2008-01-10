@@ -3020,7 +3020,7 @@ CanvasView::on_waypoint_clicked(synfigapp::ValueDesc value_desc,synfig::Waypoint
 				)
 			));
 
-			waypoint_menu->items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::StockID("Edit Waypoint"),
+			waypoint_menu->items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::StockID(_("Edit Waypoint")),
 				sigc::mem_fun(
 					waypoint_dialog,
 					&Gtk::Widget::show
