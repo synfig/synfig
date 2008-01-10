@@ -83,31 +83,28 @@ Action::ValueDescSet::get_local_name()const
 	{
 	}
 	else if(value_desc.parent_is_layer_param())
-	{
-		if(value_desc.get_layer()->get_description().empty())
-			name=value_desc.get_layer()->get_local_name();
-		else
-			name=value_desc.get_layer()->get_description();
-		name+="->"+value_desc.get_param_name();
-	}
+		name = strprintf(_("'%s' -> %s"),
+						 (value_desc.get_layer()->get_description().empty()
+						  ? value_desc.get_layer()->get_local_name()
+						  : value_desc.get_layer()->get_description()).c_str(),
+						 value_desc.get_param_name().c_str());
 	else if(value_desc.parent_is_value_node())
 	{
 		synfig::LinkableValueNode::Handle value_node(synfig::LinkableValueNode::Handle::cast_reinterpret(value_desc.get_parent_value_node()));
-		name=value_node->link_local_name(value_desc.get_index());
-
 		synfig::Node* node;
 		for(node=value_node.get();!node->parent_set.empty() && !dynamic_cast<Layer*>(node);node=*node->parent_set.begin());
 		Layer::Handle parent_layer(dynamic_cast<Layer*>(node));
 		if(parent_layer)
-		{
-			if(parent_layer->get_description().empty())
-				name=parent_layer->get_local_name()+"=>"+name;
-			else
-				name=parent_layer->get_description()+"=>"+name;
-		}
+			name = strprintf(_("'%s' => %s"),
+							 (parent_layer->get_description().empty()
+							  ? parent_layer->get_local_name()
+							  : parent_layer->get_description()).c_str(),
+							 value_node->link_local_name(value_desc.get_index()).c_str()); 
+		else
+			name = value_node->link_local_name(value_desc.get_index());
 	}
 
-	return strprintf(_("Set %s"),name.c_str());
+	return strprintf(_("Set %s"), name.c_str());
 }
 
 Action::ParamVocab
