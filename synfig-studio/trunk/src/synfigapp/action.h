@@ -77,7 +77,7 @@
 #define ACTION_INIT(class) \
 	Action::Base* class::create() { return new class(); }	\
 	synfig::String class::get_name()const { return name__; }	\
-	synfig::String class::get_local_name()const { return local_name__; }	\
+	synfig::String class::get_local_name()const { return dgettext("synfigstudio",local_name__); }	\
 
 /* === T Y P E D E F S ===================================================== */
 

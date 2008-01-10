@@ -130,7 +130,7 @@ synfigapp::Action::Book *book_;
 
 #define ADD_ACTION(x) { BookEntry &be(book()[x::name__]); \
 	be.name=x::name__; \
-	be.local_name=gettext(x::local_name__); \
+	be.local_name=dgettext("synfigstudio",x::local_name__); \
 	be.version=x::version__; \
 	be.task=x::task__; \
 	be.priority=x::priority__; \
