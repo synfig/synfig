@@ -271,17 +271,17 @@ studio::value_icon(synfig::ValueBase::Type type)
 {
 		switch(type)
 		{
-		case ValueBase::TYPE_REAL:
-			return Gtk::StockID("synfig-real");
+		case ValueBase::TYPE_BOOL:
+			return Gtk::StockID("synfig-bool");
 			break;
 		case ValueBase::TYPE_INTEGER:
 			return Gtk::StockID("synfig-integer");
 			break;
-		case ValueBase::TYPE_BOOL:
-			return Gtk::StockID("synfig-bool");
-			break;
 		case ValueBase::TYPE_ANGLE:
 			return Gtk::StockID("synfig-angle");
+			break;
+		case ValueBase::TYPE_REAL:
+			return Gtk::StockID("synfig-real");
 			break;
 		case ValueBase::TYPE_VECTOR:
 			return Gtk::StockID("synfig-vector");
@@ -289,23 +289,23 @@ studio::value_icon(synfig::ValueBase::Type type)
 		case ValueBase::TYPE_COLOR:
 			return Gtk::StockID("synfig-color");
 			break;
-		case ValueBase::TYPE_STRING:
-			return Gtk::StockID("synfig-string");
+		case ValueBase::TYPE_SEGMENT:
+			return Gtk::StockID("synfig-segment");
 			break;
-		case ValueBase::TYPE_CANVAS:
-			return Gtk::StockID("synfig-canvas_pointer");
+		case ValueBase::TYPE_BLINEPOINT:
+			return Gtk::StockID("synfig-blinepoint");
 			break;
 		case ValueBase::TYPE_LIST:
 			return Gtk::StockID("synfig-list");
 			break;
-		case ValueBase::TYPE_SEGMENT:
-			return Gtk::StockID("synfig-segment");
+		case ValueBase::TYPE_CANVAS:
+			return Gtk::StockID("synfig-canvas_pointer");
+			break;
+		case ValueBase::TYPE_STRING:
+			return Gtk::StockID("synfig-string");
 			break;
 		case ValueBase::TYPE_GRADIENT:
 			return Gtk::StockID("synfig-gradient");
-			break;
-		case ValueBase::TYPE_BLINEPOINT:
-			return Gtk::StockID("synfig-blinepoint");
 			break;
 		case ValueBase::TYPE_NIL:
 		default:
