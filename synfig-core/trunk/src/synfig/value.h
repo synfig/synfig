@@ -280,6 +280,9 @@ public:
 	//!	Returns a string containing the name of the given Type
 	static String type_name(Type id);
 
+	//!	Returns a string containing the translated name of the given Type
+	static String type_local_name(Type id);
+
 	//!	Returns a the corresponding Type of the described type
 	static Type ident_type(const String &str);
 
