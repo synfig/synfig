@@ -889,7 +889,7 @@ CanvasParser::parse_animated(xmlpp::Element *element,Canvas::Handle canvas)
 
 	if(!value_node)
 	{
-		error(element,strprintf(_("Unable to create <animated> with type \"%s\""),ValueBase::type_name(type).c_str()));
+		error(element,strprintf(_("Unable to create <animated> with type \"%s\""),ValueBase::type_local_name(type).c_str()));
 		return ValueNode_Animated::Handle();
 	}
 
@@ -1198,8 +1198,8 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 			else
 			if(!value_node->set_link(index,link))
 			{
-				//error(dynamic_cast<xmlpp::Element*>(*iter),strprintf("Unable to connect value node ('%s' of type '%s') to link %d",link->get_name().c_str(),ValueBase::type_name(link->get_type()).c_str(),index));
-				error(element,strprintf("Unable to connect value node ('%s' of type '%s') to link %d",link->get_name().c_str(),ValueBase::type_name(link->get_type()).c_str(),index));
+				//error(dynamic_cast<xmlpp::Element*>(*iter),strprintf(_("Unable to connect value node ('%s' of type '%s') to link %d"),link->get_name().c_str(),ValueBase::type_local_name(link->get_type()).c_str(),index));
+				error(element,strprintf(_("Unable to connect value node ('%s' of type '%s') to link %d"),link->get_name().c_str(),ValueBase::type_local_name(link->get_type()).c_str(),index));
 			}
 
 			// \todo do a search for more elements and warn if they are found

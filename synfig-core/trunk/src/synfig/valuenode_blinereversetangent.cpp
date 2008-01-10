@@ -64,7 +64,7 @@ ValueNode_BLineRevTangent::ValueNode_BLineRevTangent(const ValueNode::Handle &x)
 	LinkableValueNode(x->get_type())
 {
 	if(x->get_type()!=ValueBase::TYPE_BLINEPOINT)
-		throw Exception::BadType(ValueBase::type_name(x->get_type()));
+		throw Exception::BadType(ValueBase::type_local_name(x->get_type()));
 
 	set_link("reference",x);
 	set_link("reverse",ValueNode_Const::create(bool(false)));

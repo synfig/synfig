@@ -294,7 +294,7 @@ Action::ValueDescSet::prepare()
 			break;
 		}
 		default:
-			throw Error("Bad type for composite (%s)",ValueBase::type_name(value.get_type()).c_str());
+			throw Error(_("Bad type for composite (%s)"),ValueBase::type_local_name(value.get_type()).c_str());
 			break;
 		}
 
@@ -353,7 +353,7 @@ Action::ValueDescSet::prepare()
 			n_components=4;
 			break;
 		default:
-			throw Error(_("Bad type for radial composite (%s)"),ValueBase::type_name(value.get_type()).c_str());
+			throw Error(_("Bad type for radial composite (%s)"),ValueBase::type_local_name(value.get_type()).c_str());
 			break;
 		}
 		for(int i=0;i<n_components;i++)

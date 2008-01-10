@@ -90,7 +90,7 @@ synfig::ValueNode_Subtract::ValueNode_Subtract(const ValueBase &value):
 		break;
 	default:
 		assert(0);
-		throw runtime_error("synfig::ValueNode_Subtract:Bad type "+ValueBase::type_name(id));
+		throw runtime_error(_("synfig::ValueNode_Subtract:Bad type ")+ValueBase::type_local_name(id));
 	}
 
 	assert(get_lhs()->get_type()==id);

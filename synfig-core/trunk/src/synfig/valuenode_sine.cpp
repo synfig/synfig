@@ -60,7 +60,7 @@ ValueNode_Sine::ValueNode_Sine(const ValueBase &value):
 		set_link("amp",ValueNode_Const::create(value.get(Real())));
 		break;
 	default:
-		throw Exception::BadType(ValueBase::type_name(value.get_type()));
+		throw Exception::BadType(ValueBase::type_local_name(value.get_type()));
 	}
 
 	DCAST_HACK_ENABLE();

@@ -72,7 +72,7 @@ ValueNode_TwoTone::create(const ValueBase& x)
 	if(id!=ValueBase::TYPE_GRADIENT)
 	{
 		assert(0);
-		throw runtime_error("synfig::ValueNode_TwoTone:Bad type "+ValueBase::type_name(id));
+		throw runtime_error(_("synfig::ValueNode_TwoTone:Bad type ")+ValueBase::type_local_name(id));
 	}
 
 	ValueNode_TwoTone* value_node=new ValueNode_TwoTone();

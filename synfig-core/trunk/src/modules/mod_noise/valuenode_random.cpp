@@ -83,7 +83,7 @@ ValueNode_Random::ValueNode_Random(const ValueBase &value):
 		set_link("link",ValueNode_Const::create(value.get(Vector())));
 		break;
 	default:
-		throw Exception::BadType(ValueBase::type_name(get_type()));
+		throw Exception::BadType(ValueBase::type_local_name(get_type()));
 	}
 
 	DCAST_HACK_ENABLE();

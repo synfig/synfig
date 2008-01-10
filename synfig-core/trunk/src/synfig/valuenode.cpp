@@ -165,19 +165,19 @@ ValueNode::subsys_stop()
 		for(iter=global_value_node_map.begin();iter!=global_value_node_map.end();++iter)
 		{
 			if(!iter->second->is_exported())
-				synfig::info("%s: count:%d name:%s type:%s",
+				synfig::info(_("%s: count:%d name:%s type:%s"),
 					iter->first.get_string().c_str(),
 					iter->second->count(),
 					iter->second->get_name().c_str(),
-					ValueBase::type_name(iter->second->get_type()).c_str()
+					ValueBase::type_local_name(iter->second->get_type()).c_str()
 				);
 			else
-				synfig::info("%s: id:%s count:%d name:%s type:%s",
+				synfig::info(_("%s: id:%s count:%d name:%s type:%s"),
 					iter->first.get_string().c_str(),
 					iter->second->get_id().c_str(),
 					iter->second->count(),
 					iter->second->get_name().c_str(),
-					ValueBase::type_name(iter->second->get_type()).c_str()
+					ValueBase::type_local_name(iter->second->get_type()).c_str()
 				);
 		}
 	}

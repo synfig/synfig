@@ -206,9 +206,9 @@ Action::ValueDescLink::set_param(const synfig::String& name, const Action::Param
 		{
 			// Everything must be of the same type
 			poison=true;
-			status_message = (_("Cannot link two values of different types ('") +
-							  value_desc.get_value().type_name() + _("' and '") +
-							  value_desc_list.front().get_value().type_name() +_("')"));
+			status_message = (strprintf(_("Cannot link two values of different types ('%s' and '%s')"),
+										ValueBase::type_local_name(value_desc.get_value_type()).c_str(),
+										ValueBase::type_local_name(value_desc_list.front().get_value_type()).c_str()));
 			return false;
 		}
 

@@ -58,7 +58,7 @@ ValueNode_SegCalcVertex::ValueNode_SegCalcVertex(const ValueBase::Type &x):
 	LinkableValueNode(x)
 {
 	if(x!=ValueBase::TYPE_VECTOR)
-		throw Exception::BadType(ValueBase::type_name(x));
+		throw Exception::BadType(ValueBase::type_local_name(x));
 
 	set_link("segment",ValueNode_Const::create(ValueBase::TYPE_SEGMENT));
 	set_link("amount",ValueNode_Const::create(Real(0.5)));

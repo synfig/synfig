@@ -84,7 +84,7 @@ ValueNode_Scale::ValueNode_Scale(const ValueBase &value):
 		break;
 	default:
 		assert(0);
-		throw runtime_error("synfig::ValueNode_Scale:Bad type "+ValueBase::type_name(value.get_type()));
+		throw runtime_error(_("synfig::ValueNode_Scale:Bad type ")+ValueBase::type_local_name(value.get_type()));
 	}
 
 	assert(value_node);

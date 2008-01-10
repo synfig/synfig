@@ -60,7 +60,7 @@ ValueNode_Atan2::ValueNode_Atan2(const ValueBase &value):
 		set_link("y",ValueNode_Const::create(Angle::sin(value.get(Angle())).get()));
 		break;
 	default:
-		throw Exception::BadType(ValueBase::type_name(value.get_type()));
+		throw Exception::BadType(ValueBase::type_local_name(value.get_type()));
 	}
 
 	DCAST_HACK_ENABLE();

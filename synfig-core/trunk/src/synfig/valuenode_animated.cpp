@@ -1054,7 +1054,7 @@ synfig::ValueNode_Animated::create(ValueBase::Type type)
 		default:
 			throw
 				Exception::BadType(strprintf(_("%s: You cannot use a %s in an animated ValueNode"),"synfig::ValueNode_Animated::create()",
-					ValueBase::type_name(type).c_str())
+					ValueBase::type_local_name(type).c_str())
 				);
 			break;
 	}

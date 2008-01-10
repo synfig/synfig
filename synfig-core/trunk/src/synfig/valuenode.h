@@ -69,11 +69,11 @@
 	if (get_type() != ValueBase::TYPE_NIL &&							\
 		!(ValueBase::same_type_as(value->get_type(), type)) &&			\
 		!PlaceholderValueNode::Handle::cast_dynamic(value)) {			\
-		error("%s:%d wrong type for %s: need %s but got %s",			\
+		error(_("%s:%d wrong type for %s: need %s but got %s"),			\
 			  __FILE__, __LINE__,										\
 			  link_local_name(i).c_str(),								\
-			  ValueBase::type_name(type).c_str(),						\
-			  ValueBase::type_name(value->get_type()).c_str());		\
+			  ValueBase::type_local_name(type).c_str(),					\
+			  ValueBase::type_local_name(value->get_type()).c_str());	\
 		return false;													\
 	}																	\
 	variable = value;													\

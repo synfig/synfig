@@ -75,7 +75,7 @@ ValueNode_Integer::ValueNode_Integer(const ValueBase &x):
 		break;
 	default:
 		assert(0);
-		throw runtime_error("synfig::ValueNode_Integer:Bad type "+ValueBase::type_name(x.get_type()));
+		throw runtime_error(_("synfig::ValueNode_Integer:Bad type ")+ValueBase::type_local_name(x.get_type()));
 	}
 }
 
@@ -171,7 +171,7 @@ ValueNode_Integer::operator()(Time t)const
 		return Time(integer);
 	default:
 		assert(0);
-		throw runtime_error("synfig::ValueNode_Integer:Bad type "+ValueBase::type_name(get_type()));
+		throw runtime_error(_("synfig::ValueNode_Integer:Bad type ")+ValueBase::type_local_name(get_type()));
 	}
 }
 

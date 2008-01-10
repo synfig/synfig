@@ -88,7 +88,7 @@ synfig::ValueNode_Composite::ValueNode_Composite(const ValueBase &value):
 		}
 		default:
 			assert(0);
-			throw Exception::BadType(ValueBase::type_name(get_type()));
+			throw Exception::BadType(ValueBase::type_local_name(get_type()));
 	}
 }
 

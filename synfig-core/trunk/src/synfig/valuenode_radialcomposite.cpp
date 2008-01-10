@@ -71,7 +71,7 @@ synfig::ValueNode_RadialComposite::ValueNode_RadialComposite(const ValueBase &va
 			break;
 		default:
 			assert(0);
-			throw Exception::BadType(ValueBase::type_name(get_type()));
+			throw Exception::BadType(ValueBase::type_local_name(get_type()));
 	}
 }
 

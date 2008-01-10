@@ -82,7 +82,7 @@ ValueNode_Linear::ValueNode_Linear(const ValueBase &value):
 		set_link("offset",ValueNode_Const::create(value.get(Vector())));
 		break;
 	default:
-		throw Exception::BadType(ValueBase::type_name(get_type()));
+		throw Exception::BadType(ValueBase::type_local_name(get_type()));
 	}
 
 	DCAST_HACK_ENABLE();

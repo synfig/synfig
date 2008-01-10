@@ -58,7 +58,7 @@ ValueNode_BLineCalcVertex::ValueNode_BLineCalcVertex(const ValueBase::Type &x):
 	LinkableValueNode(x)
 {
 	if(x!=ValueBase::TYPE_VECTOR)
-		throw Exception::BadType(ValueBase::type_name(x));
+		throw Exception::BadType(ValueBase::type_local_name(x));
 
 	ValueNode_BLine* value_node(new ValueNode_BLine());
 	set_link("bline",value_node);

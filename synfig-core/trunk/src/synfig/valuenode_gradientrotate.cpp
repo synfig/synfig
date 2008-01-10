@@ -73,7 +73,7 @@ ValueNode_GradientRotate::create(const ValueBase& x)
 	if(id!=ValueBase::TYPE_GRADIENT)
 	{
 		assert(0);
-		throw runtime_error("synfig::ValueNode_GradientRotate:Bad type "+ValueBase::type_name(id));
+		throw runtime_error(_("synfig::ValueNode_GradientRotate:Bad type ")+ValueBase::type_local_name(id));
 	}
 
 	ValueNode_GradientRotate* value_node=new ValueNode_GradientRotate(x.get(Gradient()));

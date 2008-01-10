@@ -83,7 +83,7 @@ ValueNode_TimedSwap::ValueNode_TimedSwap(const ValueBase &value):
 		set_link("after",ValueNode_Const::create(value.get(Vector())));
 		break;
 	default:
-		throw Exception::BadType(ValueBase::type_name(get_type()));
+		throw Exception::BadType(ValueBase::type_local_name(get_type()));
 	}
 
 	set_link("time",ValueNode_Const::create(Time(2)));

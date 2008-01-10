@@ -248,7 +248,7 @@ xmlpp::Element* encode_value(xmlpp::Element* root,const ValueBase &data,Canvas::
 		root->set_name("nil");
 		return root;
 	default:
-		synfig::error(strprintf("Unknown value(%s), cannot create XML representation!",ValueBase::type_name(data.get_type()).c_str()));
+		synfig::error(strprintf(_("Unknown value(%s), cannot create XML representation!"),ValueBase::type_local_name(data.get_type()).c_str()));
 		root->set_name("nil");
 		return root;
 	}
