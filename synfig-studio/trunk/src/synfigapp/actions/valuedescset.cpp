@@ -53,11 +53,8 @@ using namespace synfigapp;
 using namespace Action;
 
 /* === M A C R O S ========================================================= */
-#define ACTION_INIT2(class) \
-	Action::Base* class::create() { return new class(); }	\
-	synfig::String class::get_name()const { return name__; }
 
-ACTION_INIT2(Action::ValueDescSet);
+ACTION_INIT_NO_GET_LOCAL_NAME(Action::ValueDescSet);
 ACTION_SET_NAME(Action::ValueDescSet,"value_desc_set");
 ACTION_SET_LOCAL_NAME(Action::ValueDescSet,N_("Set ValueDesc"));
 ACTION_SET_TASK(Action::ValueDescSet,"set");

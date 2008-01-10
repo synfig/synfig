@@ -43,11 +43,8 @@ using namespace synfigapp;
 using namespace Action;
 
 /* === M A C R O S ========================================================= */
-#define ACTION_INIT2(class) \
-	Action::Base* class::create() { return new class(); }	\
-	synfig::String class::get_name()const { return name__; }
 
-ACTION_INIT2(Action::LayerActivate);
+ACTION_INIT_NO_GET_LOCAL_NAME(Action::LayerActivate);
 ACTION_SET_NAME(Action::LayerActivate,"layer_activate");
 ACTION_SET_LOCAL_NAME(Action::LayerActivate,N_("Activate Layer"));
 ACTION_SET_TASK(Action::LayerActivate,"activate");
