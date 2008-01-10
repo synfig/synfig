@@ -305,7 +305,6 @@ ValueNode_Composite::link_name(int i)const
 {
 	assert(i>=0 && i<link_count());
 
-	printf("!!! link_name(%d)\n", i);
 	return strprintf("c%d",i);
 }
 
