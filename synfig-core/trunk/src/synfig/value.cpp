@@ -145,6 +145,12 @@ ValueBase::set(const char* x)
 	_set(String(x));
 }
 
+void
+ValueBase::set(char* x)
+{
+	_set(String(x));
+}
+
 bool
 ValueBase::is_valid()const
 {

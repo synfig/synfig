@@ -260,6 +260,7 @@ public:
 	void set(const float &x) { _set(Real(x)); }
 	void set(const list_type &x);
 	void set(const char* x);
+	void set(char* x);
 	void set(Canvas*x);
 	void set(etl::loose_handle<Canvas> x);
 	void set(etl::handle<Canvas> x);
