@@ -76,8 +76,8 @@ Action::LayerActivate::get_local_name()const
 
 	return strprintf("%s '%s'",
 					 new_status
-					 ? _("Activate ")
-					 : _("Deactivate "),
+					 ? _("Activate Layer")
+					 : _("Deactivate Layer"),
 					 name.c_str());
 }
 
