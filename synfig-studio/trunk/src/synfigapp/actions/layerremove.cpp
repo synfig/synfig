@@ -75,14 +75,10 @@ Action::LayerRemove::get_local_name()const
 					(layer_list.size() == 1
 					 ? _("Remove Layer")
 					 : _("Remove Layers")),
-					(layer_list.begin()->first->get_description().empty()
-					 ? layer_list.begin()->first->get_local_name()
-					 : layer_list.begin()->first->get_description()).c_str());
+					layer_list.begin()->first->get_non_empty_description().c_str());
 
 	for(std::list<std::pair<synfig::Layer::Handle,int> >::const_iterator iter=++layer_list.begin(); iter!=layer_list.end(); ++iter)
-		ret += strprintf(", '%s'", (iter->first->get_description().empty()
-									? iter->first->get_local_name()
-									: iter->first->get_description()).c_str());
+		ret += strprintf(", '%s'", (iter->first->get_non_empty_description().c_str()));
 	return ret;
 }
 

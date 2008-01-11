@@ -68,17 +68,12 @@ Action::LayerActivate::get_local_name()const
 {
 	if(!layer)
 		return _("Activate Layer");
-	String name;
-	if(layer->get_description().empty())
-		name=layer->get_local_name();
-	else
-		name=layer->get_description();
 
 	return strprintf("%s '%s'",
 					 new_status
 					 ? _("Activate Layer")
 					 : _("Deactivate Layer"),
-					 name.c_str());
+					 layer->get_non_empty_description().c_str());
 }
 
 Action::ParamVocab

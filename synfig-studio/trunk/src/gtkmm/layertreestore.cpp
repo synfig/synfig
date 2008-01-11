@@ -198,11 +198,7 @@ LayerTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& iter, int colum
 		Glib::Value<Glib::ustring> x;
 		g_value_init(x.gobj(),x.value_type());
 
-
-		if(!layer->get_description().empty())
-			x.set(layer->get_description());
-		else
-			x.set(layer->get_local_name());
+		x.set(layer->get_non_empty_description());
 
 		g_value_init(value.gobj(),x.value_type());
 		//g_value_copy(x.gobj(),value.gobj());

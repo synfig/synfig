@@ -84,9 +84,7 @@ Action::ValueDescSet::get_local_name()const
 	}
 	else if(value_desc.parent_is_layer_param())
 		name = strprintf(_("'%s' -> %s"),
-						 (value_desc.get_layer()->get_description().empty()
-						  ? value_desc.get_layer()->get_local_name()
-						  : value_desc.get_layer()->get_description()).c_str(),
+						 value_desc.get_layer()->get_non_empty_description().c_str(),
 						 value_desc.get_param_name().c_str());
 	else if(value_desc.parent_is_value_node())
 	{
@@ -96,10 +94,8 @@ Action::ValueDescSet::get_local_name()const
 		Layer::Handle parent_layer(dynamic_cast<Layer*>(node));
 		if(parent_layer)
 			name = strprintf(_("'%s' => %s"),
-							 (parent_layer->get_description().empty()
-							  ? parent_layer->get_local_name()
-							  : parent_layer->get_description()).c_str(),
-							 value_node->link_local_name(value_desc.get_index()).c_str()); 
+							 parent_layer->get_non_empty_description().c_str(),
+							 value_node->link_local_name(value_desc.get_index()).c_str());
 		else
 			name = value_node->link_local_name(value_desc.get_index());
 	}
