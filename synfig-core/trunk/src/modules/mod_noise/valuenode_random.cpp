@@ -173,32 +173,17 @@ ValueNode_Random::get_local_name()const
 }
 
 bool
-ValueNode_Random::set_link_vfunc(int i,ValueNode::Handle x)
+ValueNode_Random::set_link_vfunc(int i,ValueNode::Handle value)
 {
 	assert(i>=0 && i<link_count());
 
 	switch(i)
 	{
-	case 0:
-		link_=x;
-		signal_child_changed()(i);signal_value_changed()();
-		return true;
-	case 1:
-		radius_=x;
-		signal_child_changed()(i);signal_value_changed()();
-		return true;
-	case 2:
-		seed_=x;
-		signal_child_changed()(i);signal_value_changed()();
-		return true;
-	case 3:
-		speed_=x;
-		signal_child_changed()(i);signal_value_changed()();
-		return true;
-	case 4:
-		smooth_=x;
-		signal_child_changed()(i);signal_value_changed()();
-		return true;
+	case 0: CHECK_TYPE_AND_SET_VALUE(link_,   get_type());
+	case 1: CHECK_TYPE_AND_SET_VALUE(radius_, ValueBase::TYPE_REAL);
+	case 2: CHECK_TYPE_AND_SET_VALUE(seed_,   ValueBase::TYPE_INTEGER);
+	case 3: CHECK_TYPE_AND_SET_VALUE(speed_,  ValueBase::TYPE_REAL);
+	case 4: CHECK_TYPE_AND_SET_VALUE(smooth_, ValueBase::TYPE_INTEGER);
 	}
 	return false;
 }
