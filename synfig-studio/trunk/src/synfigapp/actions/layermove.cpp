@@ -44,7 +44,7 @@ using namespace Action;
 
 /* === M A C R O S ========================================================= */
 
-ACTION_INIT(Action::LayerMove);
+ACTION_INIT_NO_GET_LOCAL_NAME(Action::LayerMove);
 ACTION_SET_NAME(Action::LayerMove,"layer_move");
 ACTION_SET_LOCAL_NAME(Action::LayerMove,N_("Move Layer"));
 ACTION_SET_TASK(Action::LayerMove,"move");
@@ -64,6 +64,15 @@ static const int nindex=-1;
 Action::LayerMove::LayerMove():
 	new_index(0xdeadbeef)
 {
+}
+
+synfig::String
+Action::LayerMove::get_local_name()const
+{
+	if (layer)
+		return strprintf("%s '%s'", _("Move Layer"), layer->get_non_empty_description().c_str());
+	else
+		return _("Move Layer");
 }
 
 Action::ParamVocab
