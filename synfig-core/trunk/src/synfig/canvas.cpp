@@ -1018,6 +1018,11 @@ Canvas::get_meta_data_keys()const
 	return ret;
 }
 
+/* note - the "Motion Blur" and "Duplicate" layers need the dynamic
+		  parameters of any PasteCanvas layers they loop over to be
+		  maintained.  When the variables in the following function
+		  refer to "motion blur", they mean either of these two
+		  layers. */
 void
 synfig::optimize_layers(Context context, Canvas::Handle op_canvas, bool seen_motion_blur_in_parent)
 {
@@ -1046,7 +1051,7 @@ synfig::optimize_layers(Context context, Canvas::Handle op_canvas, bool seen_mot
 			if(value.get_type()==ValueBase::TYPE_REAL && value.get(Real())==0)
 				continue;
 
-			if(layer->get_name()=="MotionBlur")
+			if(layer->get_name()=="MotionBlur" || layer->get_name()=="duplicate")
 			{
 				float z_depth(layer->get_z_depth()*1.0001+i);
 
