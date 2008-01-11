@@ -74,7 +74,11 @@ Action::LayerActivate::get_local_name()const
 	else
 		name=layer->get_description();
 
-	return (new_status?_("Activate "):_("Deactivate "))+name;
+	return strprintf("%s '%s'",
+					 new_status
+					 ? _("Activate ")
+					 : _("Deactivate "),
+					 name.c_str());
 }
 
 Action::ParamVocab
