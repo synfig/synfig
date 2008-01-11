@@ -44,7 +44,7 @@ using namespace Action;
 
 /* === M A C R O S ========================================================= */
 
-ACTION_INIT(Action::LayerRemove);
+ACTION_INIT_NO_GET_LOCAL_NAME(Action::LayerRemove);
 ACTION_SET_NAME(Action::LayerRemove,"layer_remove");
 ACTION_SET_LOCAL_NAME(Action::LayerRemove,N_("Remove Layer"));
 ACTION_SET_TASK(Action::LayerRemove,"remove");
@@ -61,6 +61,29 @@ ACTION_SET_CVS_ID(Action::LayerRemove,"$Id$");
 
 Action::LayerRemove::LayerRemove()
 {
+}
+
+synfig::String
+Action::LayerRemove::get_local_name()const
+{
+	String ret;
+
+	if (layer_list.empty())
+		return _("Remove Layer");
+
+	ret = strprintf("%s '%s'",
+					(layer_list.size() == 1
+					 ? _("Remove Layer")
+					 : _("Remove Layers")),
+					(layer_list.begin()->first->get_description().empty()
+					 ? layer_list.begin()->first->get_local_name()
+					 : layer_list.begin()->first->get_description()).c_str());
+
+	for(std::list<std::pair<synfig::Layer::Handle,int> >::const_iterator iter=++layer_list.begin(); iter!=layer_list.end(); ++iter)
+		ret += strprintf(", '%s'", (iter->first->get_description().empty()
+									? iter->first->get_local_name()
+									: iter->first->get_description()).c_str());
+	return ret;
 }
 
 Action::ParamVocab
