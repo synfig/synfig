@@ -59,7 +59,7 @@ using namespace synfig;
 synfig::ValueNode_Subtract::ValueNode_Subtract(const ValueBase &value):
 	LinkableValueNode(value.get_type())
 {
-	set_scalar(1.0);
+	set_link("scalar",ValueNode_Const::create(Real(1.0)));
 	ValueBase::Type id(value.get_type());
 
 	switch(id)
@@ -93,8 +93,8 @@ synfig::ValueNode_Subtract::ValueNode_Subtract(const ValueBase &value):
 		throw runtime_error(get_local_name()+_(":Bad type ")+ValueBase::type_local_name(id));
 	}
 
-	assert(get_lhs()->get_type()==id);
-	assert(get_rhs()->get_type()==id);
+	assert(ref_a->get_type()==id);
+	assert(ref_b->get_type()==id);
 	assert(get_type()==id);
 
 	DCAST_HACK_ENABLE();
@@ -115,51 +115,6 @@ ValueNode_Subtract::create(const ValueBase& value)
 synfig::ValueNode_Subtract::~ValueNode_Subtract()
 {
 	unlink_all();
-}
-
-void
-ValueNode_Subtract::set_scalar(Real value)
-{
-	set_link("scalar",ValueNode_Const::create(value));
-}
-
-bool
-synfig::ValueNode_Subtract::set_scalar(ValueNode::Handle value)
-{
-	if(value->get_type()!=ValueBase::TYPE_REAL&& !PlaceholderValueNode::Handle::cast_dynamic(value))
-		return false;
-	scalar=value;
-	return true;
-}
-
-bool
-synfig::ValueNode_Subtract::set_lhs(ValueNode::Handle x)
-{
-	assert(get_type());
-
-	if(!x ||
-	   (get_type()==ValueBase::TYPE_NIL && !check_type(x->get_type())) ||
-	   (get_type()!=ValueBase::TYPE_NIL && x->get_type()!=get_type() && !PlaceholderValueNode::Handle::cast_dynamic(x)))
-		return false;
-
-	ref_a=x;
-
-	return true;
-}
-
-bool
-synfig::ValueNode_Subtract::set_rhs(ValueNode::Handle x)
-{
-	assert(get_type());
-
-	if(!x ||
-	   (get_type()==ValueBase::TYPE_NIL && !check_type(x->get_type())) ||
-	   (get_type()!=ValueBase::TYPE_NIL && x->get_type()!=get_type() && !PlaceholderValueNode::Handle::cast_dynamic(x)))
-		return false;
-
-	ref_b=x;
-
-	return true;
 }
 
 synfig::ValueBase
@@ -195,18 +150,10 @@ ValueNode_Subtract::set_link_vfunc(int i,ValueNode::Handle value)
 
 	switch(i)
 	{
-		case 0:
-			if(set_lhs(value)) { signal_child_changed()(i);signal_value_changed()(); return true; }
-			return false;
-		case 1:
-			if(set_rhs(value)) { signal_child_changed()(i);signal_value_changed()(); return true; }
-			return false;
-		case 2:
-			scalar=value;
-			signal_child_changed()(i);signal_value_changed()();
-			return true;
+	case 0: CHECK_TYPE_AND_SET_VALUE(ref_a,  get_type());
+	case 1: CHECK_TYPE_AND_SET_VALUE(ref_b,  get_type());
+	case 2: CHECK_TYPE_AND_SET_VALUE(scalar, ValueBase::TYPE_REAL);
 	}
-
 	return false;
 }
 
