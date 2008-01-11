@@ -82,21 +82,17 @@ ValueNode_Duplicate::~ValueNode_Duplicate()
 }
 
 bool
-ValueNode_Duplicate::set_link_vfunc(int i,ValueNode::Handle x)
+ValueNode_Duplicate::set_link_vfunc(int i,ValueNode::Handle value)
 {
 	assert(i>=0 && i<link_count());
 
 	switch(i)
 	{
-	case 0:  from_ = x; break;
-	case 1:  to_   = x; break;
-	case 2:  step_ = x; break;
-	default: return false;
+	case 0: CHECK_TYPE_AND_SET_VALUE(from_, ValueBase::TYPE_REAL);
+	case 1: CHECK_TYPE_AND_SET_VALUE(to_,   ValueBase::TYPE_REAL);
+	case 2: CHECK_TYPE_AND_SET_VALUE(step_, ValueBase::TYPE_REAL);
 	}
-
-	signal_child_changed()(i);
-	signal_value_changed()();
-	return true;
+	return false;
 }
 
 ValueNode::LooseHandle

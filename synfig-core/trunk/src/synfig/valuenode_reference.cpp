@@ -78,15 +78,15 @@ ValueNode_Reference::~ValueNode_Reference()
 }
 
 bool
-ValueNode_Reference::set_link_vfunc(int i,ValueNode::Handle x)
+ValueNode_Reference::set_link_vfunc(int i,ValueNode::Handle value)
 {
 	assert(i>=0 && i<link_count());
 
-	if(x->get_type()!=get_type() && !PlaceholderValueNode::Handle::cast_dynamic(x))
-		return false;
-	link_=x;
-	signal_child_changed()(i);signal_value_changed()();
-	return true;
+	switch(i)
+	{
+	case 0: CHECK_TYPE_AND_SET_VALUE(link_, get_type());
+	}
+	return false;
 }
 
 ValueNode::LooseHandle

@@ -88,26 +88,6 @@ synfig::ValueNode_GradientRotate::~ValueNode_GradientRotate()
 	unlink_all();
 }
 
-bool
-synfig::ValueNode_GradientRotate::set_gradient(ValueNode::Handle a)
-{
-	if(a->get_type()!=ValueBase::TYPE_GRADIENT&& !PlaceholderValueNode::Handle::cast_dynamic(a))
-		return false;
-
-	ref_gradient=a;
-
-	return true;
-}
-
-bool
-synfig::ValueNode_GradientRotate::set_offset(ValueNode::Handle b)
-{
-	if(b->get_type()!=ValueBase::TYPE_REAL&& !PlaceholderValueNode::Handle::cast_dynamic(b))
-		return false;
-	ref_offset=b;
-	return true;
-}
-
 synfig::ValueBase
 synfig::ValueNode_GradientRotate::operator()(Time t)const
 {
@@ -122,20 +102,15 @@ synfig::ValueNode_GradientRotate::operator()(Time t)const
 }
 
 bool
-ValueNode_GradientRotate::set_link_vfunc(int i,ValueNode::Handle x)
+ValueNode_GradientRotate::set_link_vfunc(int i,ValueNode::Handle value)
 {
 	assert(i>=0 && i<link_count());
 
 	switch(i)
 	{
-		case 0:
-			if(set_gradient(x)) { signal_child_changed()(i);signal_value_changed()(); return true; }
-			else { return false; }
-		case 1:
-			if(set_offset(x)) { signal_child_changed()(i);signal_value_changed()(); return true; }
-			else { return false; }
+	case 0: CHECK_TYPE_AND_SET_VALUE(ref_gradient, ValueBase::TYPE_GRADIENT);
+	case 1: CHECK_TYPE_AND_SET_VALUE(ref_offset,   ValueBase::TYPE_REAL);
 	}
-
 	return false;
 }
 

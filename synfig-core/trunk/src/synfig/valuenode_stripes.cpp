@@ -89,48 +89,6 @@ synfig::ValueNode_Stripes::~ValueNode_Stripes()
 	unlink_all();
 }
 
-bool
-synfig::ValueNode_Stripes::set_color1(ValueNode::Handle a)
-{
-	if(a->get_type()!=ValueBase::TYPE_COLOR)
-		return false;
-
-	color1_=a;
-
-	return true;
-}
-
-bool
-synfig::ValueNode_Stripes::set_color2(ValueNode::Handle a)
-{
-	if(a->get_type()!=ValueBase::TYPE_COLOR)
-		return false;
-
-	color2_=a;
-
-	return true;
-}
-
-bool
-synfig::ValueNode_Stripes::set_width(ValueNode::Handle x)
-{
-	if(x->get_type()!=ValueBase::TYPE_REAL)
-		return false;
-
-	width_=x;
-
-	return true;
-}
-
-bool
-synfig::ValueNode_Stripes::set_stripes(ValueNode::Handle b)
-{
-	if(b->get_type()!=ValueBase::TYPE_INTEGER)
-		return false;
-	stripes_=b;
-	return true;
-}
-
 synfig::ValueBase
 synfig::ValueNode_Stripes::operator()(Time t)const
 {
@@ -161,26 +119,17 @@ synfig::ValueNode_Stripes::operator()(Time t)const
 }
 
 bool
-ValueNode_Stripes::set_link_vfunc(int i,ValueNode::Handle x)
+ValueNode_Stripes::set_link_vfunc(int i,ValueNode::Handle value)
 {
 	assert(i>=0 && i<link_count());
 
 	switch(i)
 	{
-		case 0:
-			if(set_color1(x)) { signal_child_changed()(i);signal_value_changed()(); return true; }
-			else { return false; }
-		case 1:
-			if(set_color2(x)) { signal_child_changed()(i);signal_value_changed()(); return true; }
-			else { return false; }
-		case 2:
-			if(set_stripes(x)) { signal_child_changed()(i);signal_value_changed()(); return true; }
-			else { return false; }
-		case 3:
-			if(set_width(x)) { signal_child_changed()(i);signal_value_changed()(); return true; }
-			else { return false; }
+	case 0: CHECK_TYPE_AND_SET_VALUE(color1_,  ValueBase::TYPE_COLOR);
+	case 1: CHECK_TYPE_AND_SET_VALUE(color2_,  ValueBase::TYPE_COLOR);
+	case 2: CHECK_TYPE_AND_SET_VALUE(stripes_, ValueBase::TYPE_INTEGER);
+	case 3: CHECK_TYPE_AND_SET_VALUE(width_,   ValueBase::TYPE_REAL);
 	}
-
 	return false;
 }
 

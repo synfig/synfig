@@ -112,21 +112,14 @@ ValueNode_SegCalcTangent::check_type(ValueBase::Type type)
 }
 
 bool
-ValueNode_SegCalcTangent::set_link_vfunc(int i,ValueNode::Handle x)
+ValueNode_SegCalcTangent::set_link_vfunc(int i,ValueNode::Handle value)
 {
 	assert(i>=0 && i<link_count());
 
-	if(i==0)
+	switch(i)
 	{
-		segment_=x;
-		signal_child_changed()(i);signal_value_changed()();
-		return true;
-	}
-	if(i==1)
-	{
-		amount_=x;
-		signal_child_changed()(i);signal_value_changed()();
-		return true;
+	case 0: CHECK_TYPE_AND_SET_VALUE(segment_, ValueBase::TYPE_SEGMENT);
+	case 1: CHECK_TYPE_AND_SET_VALUE(amount_,  ValueBase::TYPE_REAL);
 	}
 	return false;
 }

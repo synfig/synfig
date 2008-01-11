@@ -110,21 +110,14 @@ ValueNode_Atan2::check_type(ValueBase::Type type)
 }
 
 bool
-ValueNode_Atan2::set_link_vfunc(int i,ValueNode::Handle x)
+ValueNode_Atan2::set_link_vfunc(int i,ValueNode::Handle value)
 {
 	assert(i>=0 && i<link_count());
 
-	if(i==0)
+	switch(i)
 	{
-		x_=x;
-		signal_child_changed()(i);signal_value_changed()();
-		return true;
-	}
-	if(i==1)
-	{
-		y_=x;
-		signal_child_changed()(i);signal_value_changed()();
-		return true;
+	case 0: CHECK_TYPE_AND_SET_VALUE(x_, ValueBase::TYPE_REAL);
+	case 1: CHECK_TYPE_AND_SET_VALUE(y_, ValueBase::TYPE_REAL);
 	}
 	return false;
 }

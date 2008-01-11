@@ -59,14 +59,6 @@ public:
 
 	virtual ~ValueNode_Repeat_Gradient();
 
-	bool set_gradient(ValueNode::Handle a);
-	bool set_count(ValueNode::Handle b);
-	bool set_width(ValueNode::Handle x);
-	bool set_specify_start(ValueNode::Handle a);
-	bool set_specify_end(ValueNode::Handle a);
-	bool set_start_color(ValueNode::Handle a);
-	bool set_end_color(ValueNode::Handle a);
-
 	virtual bool set_link_vfunc(int i,ValueNode::Handle x);
 
 	virtual ValueNode::LooseHandle get_link_vfunc(int i)const;

@@ -53,21 +53,6 @@ public:
 
 	virtual ~ValueNode_TwoTone();
 
-//	static Handle create(ValueBase::Type id=ValueBase::TYPE_GRADIENT);
-
-	//! Sets the left-hand-side value_node
-	bool set_lhs(ValueNode::Handle a);
-
-	//! Gets the left-hand-side value_node
-	ValueNode::Handle get_lhs()const { return ref_a; }
-
-	//! Sets the right-hand-side value_node
-	bool set_rhs(ValueNode::Handle b);
-
-	//! Gets the right-hand-side value_node
-	ValueNode::Handle get_rhs()const { return ref_b; }
-
-
 	virtual bool set_link_vfunc(int i,ValueNode::Handle x);
 
 	virtual ValueNode::LooseHandle get_link_vfunc(int i)const;

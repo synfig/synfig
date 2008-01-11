@@ -82,22 +82,18 @@ ValueNode_TimeLoop::~ValueNode_TimeLoop()
 }
 
 bool
-ValueNode_TimeLoop::set_link_vfunc(int i,ValueNode::Handle x)
+ValueNode_TimeLoop::set_link_vfunc(int i,ValueNode::Handle value)
 {
 	assert(i>=0 && i<link_count());
 
 	switch(i)
 	{
-	case 0:  link_       = x; break;
-	case 1:  link_time_  = x; break;
-	case 2:  local_time_ = x; break;
-	case 3:  duration_   = x; break;
-	default: return false;
+	case 0: CHECK_TYPE_AND_SET_VALUE(link_,       get_type());
+	case 1: CHECK_TYPE_AND_SET_VALUE(link_time_,  ValueBase::TYPE_TIME);
+	case 2: CHECK_TYPE_AND_SET_VALUE(local_time_, ValueBase::TYPE_TIME);
+	case 3: CHECK_TYPE_AND_SET_VALUE(duration_,   ValueBase::TYPE_TIME);
 	}
-
-	signal_child_changed()(i);
-	signal_value_changed()();
-	return true;
+	return false;
 }
 
 ValueNode::LooseHandle

@@ -56,18 +56,6 @@ public:
 
 //	static Handle create(ValueBase::Type id=ValueBase::TYPE_GRADIENT);
 
-	//! Sets the left-hand-side value_node
-	bool set_gradient(ValueNode::Handle a);
-
-	//! Gets the left-hand-side value_node
-	ValueNode::Handle get_gradient()const { return ref_gradient; }
-
-	//! Sets the right-hand-side value_node
-	bool set_offset(ValueNode::Handle b);
-
-	//! Gets the right-hand-side value_node
-	ValueNode::Handle get_offset()const { return ref_gradient; }
-
 
 
 	virtual ValueNode::LooseHandle get_link_vfunc(int i)const;

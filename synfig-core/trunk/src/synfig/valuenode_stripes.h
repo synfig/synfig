@@ -55,20 +55,6 @@ public:
 
 	virtual ~ValueNode_Stripes();
 
-//	static Handle create(ValueBase::Type id=ValueBase::TYPE_GRADIENT);
-
-	bool set_color1(ValueNode::Handle a);
-	ValueNode::Handle get_color1()const { return color1_; }
-
-	bool set_color2(ValueNode::Handle a);
-	ValueNode::Handle get_color2()const { return color2_; }
-
-	bool set_stripes(ValueNode::Handle b);
-	ValueNode::Handle get_stripes()const { return stripes_; }
-
-	bool set_width(ValueNode::Handle x);
-
-
 	virtual bool set_link_vfunc(int i,ValueNode::Handle x);
 
 	virtual ValueNode::LooseHandle get_link_vfunc(int i)const;

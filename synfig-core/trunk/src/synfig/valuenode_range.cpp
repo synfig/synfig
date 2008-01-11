@@ -154,20 +154,10 @@ ValueNode_Range::set_link_vfunc(int i,ValueNode::Handle value)
 
 	switch(i)
 	{
-		case 0:
-			min_=value;
-			signal_child_changed()(i);signal_value_changed()();
-			return true;
-		case 1:
-			max_=value;
-			signal_child_changed()(i);signal_value_changed()();
-			return true;
-		case 2:
-			link_=value;
-			signal_child_changed()(i);signal_value_changed()();
-			return true;
+	case 0: CHECK_TYPE_AND_SET_VALUE(min_,  get_type());
+	case 1: CHECK_TYPE_AND_SET_VALUE(max_,  get_type());
+	case 2: CHECK_TYPE_AND_SET_VALUE(link_, get_type());
 	}
-
 	return false;
 }
 

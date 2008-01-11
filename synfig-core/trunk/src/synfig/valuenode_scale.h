@@ -55,21 +55,6 @@ public:
 
 	virtual ~ValueNode_Scale();
 
-	//! \writeme
-	bool set_value_node(const ValueNode::Handle &a);
-
-	//! \writeme
-	ValueNode::Handle get_value_node()const;
-
-	void set_scalar(Real x);
-
-	bool set_scalar(const ValueNode::Handle &x);
-
-	ValueNode::Handle get_scalar()const;
-
-
-
-
 	virtual ValueNode::LooseHandle get_link_vfunc(int i)const;
 
 	virtual int link_count()const;

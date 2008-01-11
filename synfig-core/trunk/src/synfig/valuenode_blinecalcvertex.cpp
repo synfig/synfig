@@ -140,23 +140,15 @@ ValueNode_BLineCalcVertex::get_local_name()const
 }
 
 bool
-ValueNode_BLineCalcVertex::set_link_vfunc(int i,ValueNode::Handle x)
+ValueNode_BLineCalcVertex::set_link_vfunc(int i,ValueNode::Handle value)
 {
 	assert(i>=0 && i<link_count());
+
 	switch(i)
 	{
-		case 0:
-			bline_=x;
-			signal_child_changed()(i);signal_value_changed()();
-			return true;
-		case 1:
-			loop_=x;
-			signal_child_changed()(i);signal_value_changed()();
-			return true;
-		case 2:
-			amount_=x;
-			signal_child_changed()(i);signal_value_changed()();
-			return true;
+	case 0: CHECK_TYPE_AND_SET_VALUE(bline_,  ValueBase::TYPE_LIST);
+	case 1: CHECK_TYPE_AND_SET_VALUE(loop_,   ValueBase::TYPE_BOOL);
+	case 2: CHECK_TYPE_AND_SET_VALUE(amount_, ValueBase::TYPE_REAL);
 	}
 	return false;
 }
@@ -165,6 +157,7 @@ ValueNode::LooseHandle
 ValueNode_BLineCalcVertex::get_link_vfunc(int i)const
 {
 	assert(i>=0 && i<link_count());
+
 	switch(i)
 	{
 		case 0: return bline_;
@@ -185,6 +178,7 @@ String
 ValueNode_BLineCalcVertex::link_name(int i)const
 {
 	assert(i>=0 && i<link_count());
+
 	switch(i)
 	{
 		case 0: return "bline";
@@ -198,6 +192,7 @@ String
 ValueNode_BLineCalcVertex::link_local_name(int i)const
 {
 	assert(i>=0 && i<link_count());
+
 	switch(i)
 	{
 		case 0: return _("BLine");

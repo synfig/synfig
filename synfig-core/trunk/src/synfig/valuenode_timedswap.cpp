@@ -98,94 +98,16 @@ ValueNode_TimedSwap::create(const ValueBase& x)
 	return new ValueNode_TimedSwap(x);
 }
 
-
 LinkableValueNode*
 ValueNode_TimedSwap::create_new()const
 {
 	return new ValueNode_TimedSwap(get_type());
 }
 
-
 synfig::ValueNode_TimedSwap::~ValueNode_TimedSwap()
 {
 	unlink_all();
 }
-
-
-
-bool
-ValueNode_TimedSwap::set_before(const ValueNode::Handle &x)
-{
-	if(!x || x->get_type()!=get_type()
-		&& !PlaceholderValueNode::Handle::cast_dynamic(x))
-		return false;
-
-	before=x;
-
-	return true;
-}
-
-ValueNode::Handle
-ValueNode_TimedSwap::get_before()const
-{
-	return before;
-}
-
-
-bool
-ValueNode_TimedSwap::set_after(const ValueNode::Handle &x)
-{
-	if(!x || x->get_type()!=get_type()
-		&& !PlaceholderValueNode::Handle::cast_dynamic(x))
-		return false;
-
-	after=x;
-
-	return true;
-}
-
-ValueNode::Handle
-ValueNode_TimedSwap::get_after()const
-{
-	return after;
-}
-
-
-bool
-ValueNode_TimedSwap::set_swap_time(const ValueNode::Handle &x)
-{
-	if(!x || (!ValueBase(x->get_type()).same_type_as(ValueBase::TYPE_TIME) &&
-			  !PlaceholderValueNode::Handle::cast_dynamic(x)))
-		return false;
-
-	swap_time=x;
-	return true;
-}
-
-ValueNode::Handle
-ValueNode_TimedSwap::get_swap_time()const
-{
-	return swap_time;
-}
-
-bool
-ValueNode_TimedSwap::set_swap_length(const ValueNode::Handle &x)
-{
-	if(!x || (!ValueBase(x->get_type()).same_type_as(ValueBase::TYPE_TIME) &&
-			  !PlaceholderValueNode::Handle::cast_dynamic(x)))
-		return false;
-
-	swap_length=x;
-	return true;
-}
-
-ValueNode::Handle
-ValueNode_TimedSwap::get_swap_length()const
-{
-	return swap_length;
-}
-
-
 
 synfig::ValueBase
 synfig::ValueNode_TimedSwap::operator()(Time t)const
@@ -246,7 +168,6 @@ synfig::ValueNode_TimedSwap::operator()(Time t)const
 		}
 	}
 
-
 	/*! \todo this should interpolate from
 	**	before to after over the period defined
 	**	by swap_length */
@@ -254,18 +175,17 @@ synfig::ValueNode_TimedSwap::operator()(Time t)const
 	return (*before)(t);
 }
 
-
 bool
-ValueNode_TimedSwap::set_link_vfunc(int i,ValueNode::Handle x)
+ValueNode_TimedSwap::set_link_vfunc(int i,ValueNode::Handle value)
 {
 	assert(i>=0 && i<link_count());
 
 	switch(i)
 	{
-	case 0: return set_before(x);
-	case 1: return set_after(x);
-	case 2: return set_swap_time(x);
-	case 3: return set_swap_length(x);
+	case 0: CHECK_TYPE_AND_SET_VALUE(before,      get_type());
+	case 1: CHECK_TYPE_AND_SET_VALUE(after,       get_type());
+	case 2: CHECK_TYPE_AND_SET_VALUE(swap_time,   ValueBase::TYPE_TIME);
+	case 3: CHECK_TYPE_AND_SET_VALUE(swap_length, ValueBase::TYPE_TIME);
 	}
 	return false;
 }
@@ -277,10 +197,10 @@ ValueNode_TimedSwap::get_link_vfunc(int i)const
 
 	switch(i)
 	{
-	case 0: return get_before();
-	case 1: return get_after();
-	case 2: return get_swap_time();
-	case 3: return get_swap_length();
+	case 0: return before;
+	case 1: return after;
+	case 2: return swap_time;
+	case 3: return swap_length;
 	}
 	return 0;
 }

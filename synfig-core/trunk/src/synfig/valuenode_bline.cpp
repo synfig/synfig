@@ -694,7 +694,8 @@ ValueNode_BLine::operator()(Time t)const
 String
 ValueNode_BLine::link_local_name(int i)const
 {
-	assert(i>=0 && (unsigned)i<list.size());
+	assert(i>=0 && i<list.size());
+
 	return etl::strprintf(_("Vertex %03d"),i+1);
 }
 

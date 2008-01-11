@@ -141,6 +141,7 @@ bool
 ValueNode_Add::set_link_vfunc(int i,ValueNode::Handle value)
 {
 	assert(i>=0 && i<link_count());
+
 	switch(i)
 	{
 	case 0: CHECK_TYPE_AND_SET_VALUE(ref_a,  get_type());
@@ -154,6 +155,7 @@ ValueNode::LooseHandle
 ValueNode_Add::get_link_vfunc(int i)const
 {
 	assert(i>=0 && i<link_count());
+
 	switch(i)
 	{
 		case 0: return ref_a;
@@ -173,6 +175,7 @@ String
 ValueNode_Add::link_local_name(int i)const
 {
 	assert(i>=0 && i<link_count());
+
 	switch(i)
 	{
 		case 0: return _("LHS");
@@ -186,6 +189,7 @@ String
 ValueNode_Add::link_name(int i)const
 {
 	assert(i>=0 && i<link_count());
+
 	switch(i)
 	{
 		case 0: return "lhs";

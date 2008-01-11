@@ -59,7 +59,7 @@ using namespace synfig;
 ValueNode_Scale::ValueNode_Scale(const ValueBase &value):
 	LinkableValueNode(value.get_type())
 {
-	set_scalar(1.0);
+	set_link("scalar",ValueNode::Handle(ValueNode_Const::create(Real(1.0))));
 	ValueBase::Type id(value.get_type());
 
 	switch(id)
@@ -88,7 +88,7 @@ ValueNode_Scale::ValueNode_Scale(const ValueBase &value):
 	}
 
 	assert(value_node);
-	assert(get_value_node()->get_type()==id);
+	assert(value_node->get_type()==id);
 	assert(get_type()==id);
 }
 
@@ -108,56 +108,6 @@ synfig::ValueNode_Scale::~ValueNode_Scale()
 {
 	unlink_all();
 }
-
-void
-ValueNode_Scale::set_scalar(Real x)
-{
-	set_link("scalar",ValueNode::Handle(ValueNode_Const::create(x)));
-}
-
-bool
-ValueNode_Scale::set_scalar(const ValueNode::Handle &x)
-{
-	if(!x
-		|| x->get_type()!=ValueBase::TYPE_REAL
-		&& !PlaceholderValueNode::Handle::cast_dynamic(x)
-	)
-		return false;
-	scalar=x;
-	return true;
-}
-
-ValueNode::Handle
-ValueNode_Scale::get_scalar()const
-{
-	return scalar;
-}
-
-bool
-ValueNode_Scale::set_value_node(const ValueNode::Handle &x)
-{
-	assert(get_type());
-
-	// if this isn't a proper value
-	if(!x ||
-	   // or we don't have a type, and this value isn't one of the types we accept
-	   (get_type()==ValueBase::TYPE_NIL && !check_type(x->get_type())) ||
-	   // or we have a type and this value is a different type and (placeholder?)
-	   (get_type()!=ValueBase::TYPE_NIL && x->get_type()!=get_type() && !PlaceholderValueNode::Handle::cast_dynamic(x)))
-		// then fail to set the value
-		return false;
-
-	value_node=x;
-
-	return true;
-}
-
-ValueNode::Handle
-ValueNode_Scale::get_value_node()const
-{
-	return value_node;
-}
-
 
 synfig::ValueBase
 synfig::ValueNode_Scale::operator()(Time t)const
@@ -190,19 +140,16 @@ synfig::ValueNode_Scale::operator()(Time t)const
 
 
 bool
-ValueNode_Scale::set_link_vfunc(int i,ValueNode::Handle x)
+ValueNode_Scale::set_link_vfunc(int i,ValueNode::Handle value)
 {
 	assert(i>=0 && i<link_count());
 
-	if(i==0 && !set_value_node(x))
-		return false;
-	else
-	if(i==1 && !set_scalar(x))
-		return false;
-
-	signal_child_changed()(i);signal_value_changed()();
-
-	return true;
+	switch(i)
+	{
+	case 0: CHECK_TYPE_AND_SET_VALUE(value_node, get_type());
+	case 1: CHECK_TYPE_AND_SET_VALUE(scalar,     ValueBase::TYPE_REAL);
+	}
+	return false;
 }
 
 ValueNode::LooseHandle

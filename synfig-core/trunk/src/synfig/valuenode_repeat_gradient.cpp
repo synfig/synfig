@@ -93,73 +93,6 @@ synfig::ValueNode_Repeat_Gradient::~ValueNode_Repeat_Gradient()
 	unlink_all();
 }
 
-bool
-synfig::ValueNode_Repeat_Gradient::set_gradient(ValueNode::Handle a)
-{
-	if(a->get_type()!=ValueBase::TYPE_GRADIENT)
-		return false;
-
-	gradient_=a;
-
-	return true;
-}
-
-bool
-synfig::ValueNode_Repeat_Gradient::set_width(ValueNode::Handle x)
-{
-	if(x->get_type()!=ValueBase::TYPE_REAL)
-		return false;
-
-	width_=x;
-
-	return true;
-}
-
-bool
-synfig::ValueNode_Repeat_Gradient::set_count(ValueNode::Handle b)
-{
-	if(b->get_type()!=ValueBase::TYPE_INTEGER)
-		return false;
-	count_=b;
-	return true;
-}
-
-bool
-synfig::ValueNode_Repeat_Gradient::set_specify_start(ValueNode::Handle a)
-{
-	if(a->get_type()!=ValueBase::TYPE_BOOL)
-		return false;
-	specify_start_=a;
-	return true;
-}
-
-bool
-synfig::ValueNode_Repeat_Gradient::set_specify_end(ValueNode::Handle a)
-{
-	if(a->get_type()!=ValueBase::TYPE_BOOL)
-		return false;
-	specify_end_=a;
-	return true;
-}
-
-bool
-synfig::ValueNode_Repeat_Gradient::set_start_color(ValueNode::Handle a)
-{
-	if(a->get_type()!=ValueBase::TYPE_COLOR)
-		return false;
-	start_color_=a;
-	return true;
-}
-
-bool
-synfig::ValueNode_Repeat_Gradient::set_end_color(ValueNode::Handle a)
-{
-	if(a->get_type()!=ValueBase::TYPE_COLOR)
-		return false;
-	end_color_=a;
-	return true;
-}
-
 synfig::ValueBase
 synfig::ValueNode_Repeat_Gradient::operator()(Time t)const
 {
@@ -199,35 +132,20 @@ synfig::ValueNode_Repeat_Gradient::operator()(Time t)const
 }
 
 bool
-ValueNode_Repeat_Gradient::set_link_vfunc(int i,ValueNode::Handle x)
+ValueNode_Repeat_Gradient::set_link_vfunc(int i,ValueNode::Handle value)
 {
 	assert(i>=0 && i<link_count());
 
 	switch(i)
 	{
-		case 0:
-			if(set_gradient(x)) { signal_child_changed()(i);signal_value_changed()(); return true; }
-			else { return false; }
-		case 1:
-			if(set_count(x)) { signal_child_changed()(i);signal_value_changed()(); return true; }
-			else { return false; }
-		case 2:
-			if(set_width(x)) { signal_child_changed()(i);signal_value_changed()(); return true; }
-			else { return false; }
-		case 3:
-			if(set_specify_start(x)) { signal_child_changed()(i);signal_value_changed()(); return true; }
-			else { return false; }
-		case 4:
-			if(set_specify_end(x)) { signal_child_changed()(i);signal_value_changed()(); return true; }
-			else { return false; }
-		case 5:
-			if(set_start_color(x)) { signal_child_changed()(i);signal_value_changed()(); return true; }
-			else { return false; }
-		case 6:
-			if(set_end_color(x)) { signal_child_changed()(i);signal_value_changed()(); return true; }
-			else { return false; }
+	case 0: CHECK_TYPE_AND_SET_VALUE(gradient_,	     get_type());
+	case 1: CHECK_TYPE_AND_SET_VALUE(count_,		 ValueBase::TYPE_INTEGER);
+	case 2: CHECK_TYPE_AND_SET_VALUE(width_,		 ValueBase::TYPE_REAL);
+	case 3: CHECK_TYPE_AND_SET_VALUE(specify_start_, ValueBase::TYPE_BOOL);
+	case 4: CHECK_TYPE_AND_SET_VALUE(specify_end_,   ValueBase::TYPE_BOOL);
+	case 5: CHECK_TYPE_AND_SET_VALUE(start_color_,   ValueBase::TYPE_COLOR);
+	case 6: CHECK_TYPE_AND_SET_VALUE(end_color_,     ValueBase::TYPE_COLOR);
 	}
-
 	return false;
 }
 

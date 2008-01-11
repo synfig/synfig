@@ -87,26 +87,6 @@ synfig::ValueNode_TwoTone::~ValueNode_TwoTone()
 	unlink_all();
 }
 
-bool
-synfig::ValueNode_TwoTone::set_lhs(ValueNode::Handle a)
-{
-	if(a->get_type()!=ValueBase::TYPE_COLOR)
-		return false;
-
-	ref_a=a;
-
-	return true;
-}
-
-bool
-synfig::ValueNode_TwoTone::set_rhs(ValueNode::Handle b)
-{
-	if(b->get_type()!=ValueBase::TYPE_COLOR)
-		return false;
-	ref_b=b;
-	return true;
-}
-
 synfig::ValueBase
 synfig::ValueNode_TwoTone::operator()(Time t)const
 {
@@ -114,20 +94,15 @@ synfig::ValueNode_TwoTone::operator()(Time t)const
 }
 
 bool
-ValueNode_TwoTone::set_link_vfunc(int i,ValueNode::Handle x)
+ValueNode_TwoTone::set_link_vfunc(int i,ValueNode::Handle value)
 {
 	assert(i>=0 && i<link_count());
 
 	switch(i)
 	{
-		case 0:
-			if(set_lhs(x)) { signal_child_changed()(i);signal_value_changed()(); return true; }
-			else { return false; }
-		case 1:
-			if(set_rhs(x)) { signal_child_changed()(i);signal_value_changed()(); return true; }
-			else { return false; }
+	case 0: CHECK_TYPE_AND_SET_VALUE(ref_a, ValueBase::TYPE_COLOR);
+	case 1: CHECK_TYPE_AND_SET_VALUE(ref_b, ValueBase::TYPE_COLOR);
 	}
-
 	return false;
 }
 

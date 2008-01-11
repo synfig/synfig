@@ -126,19 +126,14 @@ ValueNode_BLineRevTangent::get_local_name()const
 }
 
 bool
-ValueNode_BLineRevTangent::set_link_vfunc(int i,ValueNode::Handle x)
+ValueNode_BLineRevTangent::set_link_vfunc(int i,ValueNode::Handle value)
 {
 	assert(i>=0 && i<link_count());
+
 	switch(i)
 	{
-		case 0:
-			reference_=x;
-			signal_child_changed()(i);signal_value_changed()();
-			return true;
-		case 1:
-			reverse_=x;
-			signal_child_changed()(i);signal_value_changed()();
-			return true;
+	case 0: CHECK_TYPE_AND_SET_VALUE(reference_, get_type());
+	case 1: CHECK_TYPE_AND_SET_VALUE(reverse_,   ValueBase::TYPE_BOOL);
 	}
 	return false;
 }
@@ -147,6 +142,7 @@ ValueNode::LooseHandle
 ValueNode_BLineRevTangent::get_link_vfunc(int i)const
 {
 	assert(i>=0 && i<link_count());
+
 	switch(i)
 	{
 		case 0: return reference_;
@@ -166,6 +162,7 @@ String
 ValueNode_BLineRevTangent::link_name(int i)const
 {
 	assert(i>=0 && i<link_count());
+
 	switch(i)
 	{
 		case 0: return "reference";
@@ -178,6 +175,7 @@ String
 ValueNode_BLineRevTangent::link_local_name(int i)const
 {
 	assert(i>=0 && i<link_count());
+
 	switch(i)
 	{
 		case 0: return _("Reference");

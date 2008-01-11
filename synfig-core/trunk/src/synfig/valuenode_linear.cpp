@@ -155,21 +155,14 @@ ValueNode_Linear::check_type(ValueBase::Type type)
 }
 
 bool
-ValueNode_Linear::set_link_vfunc(int i,ValueNode::Handle x)
+ValueNode_Linear::set_link_vfunc(int i,ValueNode::Handle value)
 {
 	assert(i>=0 && i<link_count());
 
-	if(i==0)
+	switch(i)
 	{
-		m_=x;
-		signal_child_changed()(i);signal_value_changed()();
-		return true;
-	}
-	if(i==1)
-	{
-		b_=x;
-		signal_child_changed()(i);signal_value_changed()();
-		return true;
+	case 0: CHECK_TYPE_AND_SET_VALUE(m_, get_type());
+	case 1: CHECK_TYPE_AND_SET_VALUE(b_, get_type());
 	}
 	return false;
 }

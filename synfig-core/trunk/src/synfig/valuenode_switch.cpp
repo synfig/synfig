@@ -80,30 +80,17 @@ ValueNode_Switch::~ValueNode_Switch()
 }
 
 bool
-ValueNode_Switch::set_link_vfunc(int i,ValueNode::Handle x)
+ValueNode_Switch::set_link_vfunc(int i,ValueNode::Handle value)
 {
 	assert(i>=0 && i<link_count());
 
 	switch(i)
 	{
-	case 0:
-		if(x->get_type()!=get_type() && !PlaceholderValueNode::Handle::cast_dynamic(x))
-			return false;
-		link_off_=x;
-		signal_child_changed()(i);signal_value_changed()();
-		return true;
-	case 1:
-		if(x->get_type()!=get_type() && !PlaceholderValueNode::Handle::cast_dynamic(x))
-			return false;
-		link_on_=x;
-		signal_child_changed()(i);signal_value_changed()();
-		return true;
-	case 2:
-		switch_=x;
-		signal_child_changed()(i);signal_value_changed()();
-		return true;
+	case 0: CHECK_TYPE_AND_SET_VALUE(link_off_, get_type());
+	case 1: CHECK_TYPE_AND_SET_VALUE(link_on_,  get_type());
+	case 2: CHECK_TYPE_AND_SET_VALUE(switch_,   ValueBase::TYPE_BOOL);
 	}
-	return true;
+	return false;
 }
 
 ValueNode::LooseHandle

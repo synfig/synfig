@@ -81,21 +81,17 @@ ValueNode_Reciprocal::~ValueNode_Reciprocal()
 }
 
 bool
-ValueNode_Reciprocal::set_link_vfunc(int i,ValueNode::Handle x)
+ValueNode_Reciprocal::set_link_vfunc(int i,ValueNode::Handle value)
 {
 	assert(i>=0 && i<link_count());
 
 	switch(i)
 	{
-	case 0:  link_     = x; break;
-	case 1:  epsilon_  = x; break;
-	case 2:  infinite_ = x; break;
-	default: return false;
+	case 0: CHECK_TYPE_AND_SET_VALUE(link_,     ValueBase::TYPE_REAL);
+	case 1: CHECK_TYPE_AND_SET_VALUE(epsilon_,  ValueBase::TYPE_REAL);
+	case 2: CHECK_TYPE_AND_SET_VALUE(infinite_, ValueBase::TYPE_REAL);
 	}
-
-	signal_child_changed()(i);
-	signal_value_changed()();
-	return true;
+	return false;
 }
 
 ValueNode::LooseHandle

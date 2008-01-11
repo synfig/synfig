@@ -56,18 +56,6 @@ public:
 
 	virtual ~ValueNode_TimedSwap();
 
-	bool set_before(const ValueNode::Handle &a);
-	ValueNode::Handle get_before()const;
-	bool set_after(const ValueNode::Handle &a);
-	ValueNode::Handle get_after()const;
-
-	bool set_swap_time(const ValueNode::Handle &x);
-	ValueNode::Handle get_swap_time()const;
-
-	bool set_swap_length(const ValueNode::Handle &x);
-	ValueNode::Handle get_swap_length()const;
-
-
 	virtual bool set_link_vfunc(int i,ValueNode::Handle x);
 	virtual ValueNode::LooseHandle get_link_vfunc(int i)const;
 	virtual int link_count()const;
