@@ -322,6 +322,9 @@ public:
 	//! \writeme
 	void set_description(const String& x);
 
+	//! Returns the layer's description if it's not empty, else its local name
+	const String get_non_empty_description()const { return get_description().empty() ? get_local_name() : get_description(); }
+
 	/*
  --	** -- V I R T U A L   F U N C T I O N S -----------------------------------
 	*/
