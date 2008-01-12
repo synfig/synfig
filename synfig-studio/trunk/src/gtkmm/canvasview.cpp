@@ -123,13 +123,6 @@ using namespace sigc;
 
 #define DEFAULT_TIME_WINDOW_SIZE		(10.0)
 
-/*
-#ifdef DEBUGPOINT
-#undef DEBUGPOINT
-#endif
-#define DEBUGPOINT()
-*/
-
 #ifndef SMALL_BUTTON
 #define SMALL_BUTTON(button,stockid,tooltip)	\
 	button = manage(new class Gtk::Button());	\
@@ -449,7 +442,7 @@ public:
 	{
 //		assert(view->layer_tree);
 
-		if(!view->layer_tree) { DEBUGPOINT(); synfig::error("%s:%d canvas_view.layer_tree not defined!?", __FILE__, __LINE__); return LayerList(); }
+		if(!view->layer_tree) { synfig::error("%s:%d canvas_view.layer_tree not defined!?", __FILE__, __LINE__); return LayerList(); }
 		return view->layer_tree->get_selected_layers();
 	}
 
@@ -458,7 +451,7 @@ public:
 	{
 //		assert(view->layer_tree);
 
-		if(!view->layer_tree) { DEBUGPOINT(); synfig::error("%s:%d canvas_view.layer_tree not defined!?", __FILE__, __LINE__); return 0; }
+		if(!view->layer_tree) { synfig::error("%s:%d canvas_view.layer_tree not defined!?", __FILE__, __LINE__); return 0; }
 		return view->layer_tree->get_selected_layer();
 	}
 
@@ -467,7 +460,7 @@ public:
 	{
 //		assert(view->layer_tree);
 
-		if(!view->layer_tree) { DEBUGPOINT(); synfig::error("%s:%d canvas_view.layer_tree not defined!?", __FILE__, __LINE__); return; }
+		if(!view->layer_tree) { synfig::error("%s:%d canvas_view.layer_tree not defined!?", __FILE__, __LINE__); return; }
 		view->layer_tree->select_layers(layer_list);
 		//view->get_smach().process_event(EVENT_REFRESH_DUCKS);
 
@@ -479,7 +472,7 @@ public:
 	{
 //		assert(view->layer_tree);
 
-		if(!view->layer_tree) { DEBUGPOINT(); synfig::error("canvas_view.layer_tree not defined!?"); return; }
+		if(!view->layer_tree) { synfig::error("canvas_view.layer_tree not defined!?"); return; }
 		view->layer_tree->select_layer(layer);
 		//view->queue_rebuild_ducks();
 	}

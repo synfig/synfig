@@ -84,13 +84,11 @@ KeyframeList::dump()const
 void
 KeyframeList::sync()
 {
-	//DEBUGPOINT();
 	//synfig::info("PRE-SORT:");
 	//dump();
 	sort(begin(),end());
 	//synfig::info("POST-SORT:");
 	//dump();
-	//DEBUGPOINT();
 }
 
 KeyframeList::iterator

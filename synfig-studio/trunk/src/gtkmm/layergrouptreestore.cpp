@@ -667,12 +667,10 @@ LayerGroupTreeStore::drag_data_received_vfunc (const TreeModel::Path& dest, cons
 				action->set_param("dest_canvas",dest_canvas);
 				if(canvas_interface()->get_instance()->perform_action(action))
 				{
-					DEBUGPOINT();
 					ret=true;
 				}
 				else
 				{
-					DEBUGPOINT();
 					passive_grouper.cancel();
 					return false;
 				}
@@ -827,8 +825,6 @@ LayerGroupTreeStore::on_group_added(synfig::String group)
 bool
 LayerGroupTreeStore::on_group_removed(synfig::String group)
 {
-	//DEBUGPOINT();
-
 	Gtk::TreeModel::Children::iterator iter;
 	if(find_group_row(group,iter) && iter->children().size()==0)
 		erase(iter);
@@ -841,7 +837,6 @@ LayerGroupTreeStore::on_group_removed(synfig::String group)
 bool
 LayerGroupTreeStore::on_group_changed(synfig::String /*group*/)
 {
-	//DEBUGPOINT();
 	return true;
 }
 
@@ -850,7 +845,6 @@ LayerGroupTreeStore::on_group_pair_added(synfig::String group, etl::handle<synfi
 {
 	if(!layer->get_canvas())
 		return;
-	//DEBUGPOINT();
 	Gtk::TreeModel::Children::iterator iter;
 	if(!find_group_row(group, iter))
 		iter=on_group_added(group);
@@ -865,7 +859,6 @@ LayerGroupTreeStore::on_group_pair_removed(synfig::String group, etl::handle<syn
 {
 	if(!layer->get_canvas())
 		return;
-	//DEBUGPOINT();
 	Gtk::TreeModel::Children::iterator iter;
 	if(!find_group_row(group, iter))
 		return;
@@ -948,7 +941,6 @@ LayerGroupTreeStore::find_layer_row_(const synfig::Layer::Handle &layer, synfig:
 		}
 
 		iter=children().end();
-		//DEBUGPOINT();
 		//return false;
 	}
 
@@ -1002,7 +994,6 @@ LayerGroupTreeStore::find_group_row_(const synfig::String &group, Gtk::TreeModel
 		}
 
 		iter=children().end();
-		//DEBUGPOINT();
 		//return false;
 	}
 

@@ -142,16 +142,12 @@ imagemagick_mptr::get_frame(synfig::Surface &surface,Time /*time*/, synfig::Prog
 
 	Importer::Handle importer(Importer::open(temp_file));
 
-	DEBUGPOINT();
-
 	if(!importer)
 	{
 		if(cb)cb->error(_("Unable to open ")+temp_file);
 		else synfig::error(_("Unable to open ")+temp_file);
 		return false;
 	}
-
-	DEBUGPOINT();
 
 	if(!importer->get_frame(surface,0,cb))
 	{
@@ -193,9 +189,7 @@ imagemagick_mptr::get_frame(synfig::Surface &surface,Time /*time*/, synfig::Prog
 	Surface bleh(surface);
 	surface=bleh;
 
-
 	//remove(temp_file.c_str());
-	DEBUGPOINT();
 	return true;
 
 #else

@@ -127,7 +127,6 @@ Action::KeyframeSetDelta::prepare()
 	Time time(get_canvas()->keyframe_list().find(keyframe)->get_time());
 
 	std::vector<synfigapp::ValueDesc>::iterator iter;
-		DEBUGPOINT();
 	for(iter=value_desc_list.begin();iter!=value_desc_list.end();++iter)
 	{
 		ValueDesc& value_desc(*iter);

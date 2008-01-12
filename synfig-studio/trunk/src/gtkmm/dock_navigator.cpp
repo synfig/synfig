@@ -182,7 +182,6 @@ void studio::Widget_NavView::on_finish_render()
 	//synfig::warning("Nav: It hath succeeded!!!");
 
 	//assert(renderer && renderer->has_success());
-	DEBUGPOINT();
 	//synfig::warning("Nav: now we know it really succeeded");
 	if(!*surface)
 	{

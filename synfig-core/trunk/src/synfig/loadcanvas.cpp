@@ -856,7 +856,6 @@ CanvasParser::parse_value(xmlpp::Element *element,Canvas::Handle canvas)
 		return ValueBase(parse_canvas(element,canvas,true));
 	else
 	{
-		DEBUGPOINT();
 		error_unexpected_element(element,element->get_name());
 	}
 

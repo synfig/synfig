@@ -1100,10 +1100,8 @@ edit_several_waypoints(etl::handle<CanvasView> canvas_view, std::list<synfigapp:
 	dialog.add_button(Gtk::StockID("gtk-cancel"),0);
 	dialog.show();
 
-	DEBUGPOINT();
 	if(dialog.run()==0 || widget_waypoint_model.get_waypoint_model().is_trivial())
 		return;
-	DEBUGPOINT();
 	synfigapp::Action::PassiveGrouper group(canvas_interface->get_instance().get(),_("Set Waypoints"));
 
 	std::list<synfigapp::ValueDesc>::iterator iter;

@@ -1522,7 +1522,6 @@ StateDraw_Context::new_region(std::list<synfig::BLinePoint> bline, synfig::Real 
 				  if(value_prev.get_parent_value_node()==value_next.get_parent_value_node() &&
 				  value_prev.get_parent_value_node()!=value_desc.get_parent_value_node())
 				  {
-				  DEBUGPOINT();
 				  vertex_list.erase(iter);
 				  done=false;
 				  break;
@@ -1537,7 +1536,6 @@ StateDraw_Context::new_region(std::list<synfig::BLinePoint> bline, synfig::Real 
 				// if(value_prev.get_value_node()==value_desc.get_value_node() ||
 				//    value_desc.get_value_node()==value_next.get_value_node())
 				// {
-				// 	// DEBUGPOINT();
 				//	vertex_list.erase(iter);
 				//	done=false;
 				//	printf("erased node - i = %d\n", i);
@@ -1547,7 +1545,6 @@ StateDraw_Context::new_region(std::list<synfig::BLinePoint> bline, synfig::Real 
 				// // if previous is the same as next, remove previous?  or next?
 				// if(value_prev.get_value_node()==value_next.get_value_node())
 				// {
-				// 	// DEBUGPOINT();
 				// 	vertex_list.erase(next);
 				// 	// vertex_list.erase(prev);
 				// 	done=false;
@@ -1576,7 +1573,6 @@ StateDraw_Context::new_region(std::list<synfig::BLinePoint> bline, synfig::Real 
 						// 							   strprintf("same parent, different points this %d < next-1 %d",
 						// 										 value_desc.get_index(), ((value_next.get_index()-1))),
 						// 							   current);
-						// 		// DEBUGPOINT();
 						// 		for (int index = value_desc.get_index()+1; index < value_next.get_index(); index++)
 						// 		{
 						// 			printf("inserting up %d\n", index);
@@ -1592,7 +1588,6 @@ StateDraw_Context::new_region(std::list<synfig::BLinePoint> bline, synfig::Real 
 						// 							   strprintf("same parent, different points next %d < this-1 %d",
 						// 										 value_next.get_index(), ((value_desc.get_index()-1))),
 						// 							   current);
-						// 		// DEBUGPOINT();
 						// 		for (int index = value_desc.get_index()-1; index > value_next.get_index(); index--)
 						// 		{
 						// 			printf("inserting down %d\n", index);
@@ -1632,7 +1627,6 @@ StateDraw_Context::new_region(std::list<synfig::BLinePoint> bline, synfig::Real 
 							if((vertex.get_vertex()-vertex_next.get_vertex()).mag_squared()<radius*radius)
 							{
 								printf("in one - it's close\n");
-								// DEBUGPOINT();
 								ValueNode_Composite::Handle value_node;
 								ValueNode_Composite::Handle value_node_next;
 								value_node=ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node().clone());
@@ -1642,7 +1636,6 @@ StateDraw_Context::new_region(std::list<synfig::BLinePoint> bline, synfig::Real 
 									synfig::info(__FILE__":%d: Unable to properly connect blines.",__LINE__);
 									continue;
 								}
-								// DEBUGPOINT();
 								// \todo if next isn't split, don't we want to copy its 'Tangent 1' instead?
 								value_node->set_link(5,value_node_next->get_link(5)); // Tangent 2
 								value_node->set_link(3,ValueNode_Const::create(true)); // Split Tangents
@@ -1663,7 +1656,6 @@ StateDraw_Context::new_region(std::list<synfig::BLinePoint> bline, synfig::Real 
 							else if (value_prev.parent_is_value_node())
 							{
 								printf("in two - it's far\n");
-								// DEBUGPOINT();
 								// \todo this only makes sense if prev is on the same bline
 								printf("this is index %d\n", value_desc.get_index());
 								printf("prev is index %d\n", value_prev.get_index());
@@ -1679,7 +1671,6 @@ StateDraw_Context::new_region(std::list<synfig::BLinePoint> bline, synfig::Real 
 									if (value_desc.get_index()<LinkableValueNode::Handle::cast_static(value_desc.get_parent_value_node())->link_count()-1)
 									{
 										printf("in two - b\n");
-										// DEBUGPOINT();
 										printf("inserting node with index %d\n", value_desc.get_index()+1);
 										vertex_list.insert(next,
 														   synfigapp::ValueDesc(value_desc.get_parent_value_node(),
@@ -1694,7 +1685,6 @@ StateDraw_Context::new_region(std::list<synfig::BLinePoint> bline, synfig::Real 
 									if(value_desc.get_index()>0)
 									{
 										printf("in two - a\n");
-										// DEBUGPOINT();
 										printf("inserting node on this line with index %d\n",
 											   value_desc.get_index()-1);
 										vertex_list.insert(next,

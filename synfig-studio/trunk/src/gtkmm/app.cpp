@@ -411,30 +411,24 @@ studio::add_action_group_to_top(Glib::RefPtr<studio::UIManager> ui_manager, Glib
 {
 	ui_manager->insert_action_group(group,0);
 	return;
-	DEBUGPOINT();
 	std::list<Glib::RefPtr<Gtk::ActionGroup> > prev_groups(ui_manager->get_action_groups());
 	std::list<Glib::RefPtr<Gtk::ActionGroup> >::reverse_iterator iter;
 
-	DEBUGPOINT();
 	for(iter=prev_groups.rbegin();iter!=prev_groups.rend();++iter)
 	{
-		DEBUGPOINT();
 		if(*iter && (*iter)->get_name()!="menus")
 		{
 			synfig::info("Removing action group "+(*iter)->get_name());
 			ui_manager->remove_action_group(*iter);
 		}
 	}
-	DEBUGPOINT();
 	ui_manager->insert_action_group(group,0);
 
-	DEBUGPOINT();
 	for(;!prev_groups.empty();prev_groups.pop_front())
 	{
 		if(prev_groups.front() && prev_groups.front()!=group && prev_groups.front()->get_name()!="menus")
 			ui_manager->insert_action_group(prev_groups.front(),1);
 	}
-	DEBUGPOINT();
 }
 */
 class Preferences : public synfigapp::Settings

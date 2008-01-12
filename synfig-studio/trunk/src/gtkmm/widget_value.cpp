@@ -149,7 +149,6 @@ Widget_ValueBase::~Widget_ValueBase()
 void
 Widget_ValueBase::activate()
 {
-	//DEBUGPOINT();
 	signal_activate()();
 }
 

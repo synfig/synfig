@@ -193,7 +193,6 @@ Action::ValueDescSet::prepare()
 
 		if (value_desc.get_index()==4) {
 			printf("copying change to tangent 2\n");
-			DEBUGPOINT();
 			ValueNode_Composite::Handle parent_value_node;
 			parent_value_node=parent_value_node.cast_dynamic(value_desc.get_parent_value_node());
 
@@ -511,7 +510,6 @@ Action::ValueDescSet::prepare()
 			if(!action->is_ready())
 				throw Error(Error::TYPE_NOTREADY);
 
-				DEBUGPOINT();
 			add_action_front(action);
 		}
 		else
@@ -519,7 +517,6 @@ Action::ValueDescSet::prepare()
 			value_node=value_node.cast_dynamic(value_desc.get_value_node());
 		}
 
-				DEBUGPOINT();
 		if(!value_node)
 			throw Error(_("Direct manipulation of this ValueNode type is not yet supported"));
 
@@ -541,7 +538,6 @@ Action::ValueDescSet::prepare()
 		if(!action->is_ready())
 			throw Error(Error::TYPE_NOTREADY);
 
-				DEBUGPOINT();
 		add_action(action);
 
 		return;

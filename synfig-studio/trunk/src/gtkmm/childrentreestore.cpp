@@ -148,7 +148,6 @@ ChildrenTreeStore::refresh_value_nodes()
 		for(iter = children.begin(); iter != children.end(); ++iter)
 		{
 			Gtk::TreeRow row=*iter;
-			//DEBUGPOINT();
 			refresh_row(row);
 		}
 }
@@ -241,7 +240,6 @@ bool
 ChildrenTreeStore::execute_changed_value_nodes()
 {
 	Profiler profiler("ChildrenTreeStore::execute_changed_value_nodes()");
-	DEBUGPOINT();
 	if(!replaced_set_.empty())
 		rebuild_value_nodes();
 

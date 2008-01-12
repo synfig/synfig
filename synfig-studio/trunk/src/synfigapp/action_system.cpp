@@ -198,7 +198,6 @@ Action::System::perform_action(etl::handle<Action::Base> action)
 		{
 			handle<CanvasInterface> canvas_interface=static_cast<Instance*>(this)->find_canvas_interface(canvas);
 			assert(canvas_interface);
-			DEBUGPOINT();
 			//canvas_interface->signal_dirty_preview()();
 		}
 	}
@@ -299,7 +298,6 @@ synfigapp::Action::System::undo()
 		{
 			handle<CanvasInterface> canvas_interface=static_cast<Instance*>(this)->find_canvas_interface(canvas);
 			assert(canvas_interface);
-			//DEBUGPOINT();
 			//canvas_interface->signal_dirty_preview()();
 		}
 	}
@@ -398,7 +396,6 @@ Action::System::redo()
 		{
 			handle<CanvasInterface> canvas_interface=static_cast<Instance*>(this)->find_canvas_interface(canvas);
 			assert(canvas_interface);
-			//DEBUGPOINT();
 			//canvas_interface->signal_dirty_preview()();
 		}
 	}
@@ -511,7 +508,6 @@ Action::System::set_action_status(etl::handle<Action::Undoable> action, bool x)
 			Canvas::Handle canvas=canvas_specific->get_canvas();
 			handle<CanvasInterface> canvas_interface=static_cast<Instance*>(this)->find_canvas_interface(canvas);
 			assert(canvas_interface);
-			//DEBUGPOINT();
 			//canvas_interface->signal_dirty_preview()();
 		}
 
@@ -532,7 +528,6 @@ Action::System::set_action_status(etl::handle<Action::Undoable> action, bool x)
 			Canvas::Handle canvas=canvas_specific->get_canvas();
 			handle<CanvasInterface> canvas_interface=static_cast<Instance*>(this)->find_canvas_interface(canvas);
 			assert(canvas_interface);
-			DEBUGPOINT();
 			//canvas_interface->signal_dirty_preview()();
 		}
 
@@ -555,12 +550,10 @@ Action::PassiveGrouper::PassiveGrouper(etl::loose_handle<System> instance_,synfi
 void
 Action::PassiveGrouper::request_redraw(etl::handle<CanvasInterface> x)
 {
-/*	DEBUGPOINT();
-	if(instance_->group_stack_.empty())
+/*	if(instance_->group_stack_.empty())
 	{
 		if(x!=canvas_interface_)
 		{
-			DEBUGPOINT();
 			x->signal_dirty_preview()();
 		}
 
@@ -568,21 +561,16 @@ Action::PassiveGrouper::request_redraw(etl::handle<CanvasInterface> x)
 	}
 	else
 	{
-		DEBUGPOINT();
 		if(instance_->group_stack_.back()==this)
 		{
-			DEBUGPOINT();
 			redraw_requested_=true;
 		}
 		else
 		{
-			DEBUGPOINT();
 			instance_->group_stack_.back()->request_redraw(x);
 			redraw_requested_=false;
 		}
-		DEBUGPOINT();
 	}
-	DEBUGPOINT();
 */
 	if(x)
 	{
@@ -678,7 +666,6 @@ Action::PassiveGrouper::~PassiveGrouper()
 		if(instance_->group_stack_.empty())
 		{
 			assert(canvas_interface_);
-			DEBUGPOINT();
 			canvas_interface_->signal_dirty_preview()();
 		}
 		else

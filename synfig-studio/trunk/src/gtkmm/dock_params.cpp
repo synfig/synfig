@@ -89,7 +89,6 @@ Dock_Params::~Dock_Params()
 void
 Dock_Params::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
 {
-	DEBUGPOINT();
 	Gtk::TreeView* tree_view(
 		static_cast<Gtk::TreeView*>(canvas_view->get_ext_widget(get_name()))
 	);

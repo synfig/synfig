@@ -893,25 +893,21 @@ LayerTreeStore::on_layer_param_changed(synfig::Layer::Handle handle,synfig::Stri
 	}
 
 	/*
-	//DEBUGPOINT();
 	Gtk::TreeModel::Children::iterator iter;
 	if(find_layer_row(handle,iter))
 	{
-		//DEBUGPOINT();
 		Gtk::TreeModel::Children children(iter->children());
 
 		for(iter = children.begin(); iter && iter != children.end(); ++iter)
 		{
 			if((Glib::ustring)(*iter)[model.param_name]==param_name)
 			{
-				//DEBUGPOINT();
 				Gtk::TreeRow row=*iter;
 				refresh_row(row);
 				return;
 			}
 		}
 	}
-	//DEBUGPOINT();
 	rebuild();
 	*/
 }
@@ -1004,7 +1000,6 @@ LayerTreeStore::find_layer_row_(const synfig::Layer::Handle &layer, synfig::Canv
 		}
 
 		iter=children().end();
-		//DEBUGPOINT();
 		//return false;
 	}
 

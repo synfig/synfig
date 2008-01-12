@@ -770,7 +770,6 @@ CellRenderer_TimeTrack::activate_vfunc(
 
 		break;
 	case GDK_MOTION_NOTIFY:
-		//DEBUGPOINT();
 		//if(selection && dragging)
 		//	selected_time=((float)event->motion.x-(float)cell_area.get_x())/(float)cell_area.get_width()*(adjustment->get_upper()-adjustment->get_lower())+adjustment->get_lower();
 		return true;
@@ -778,8 +777,6 @@ CellRenderer_TimeTrack::activate_vfunc(
 		break;
 	case GDK_BUTTON_RELEASE:
 		{
-			DEBUGPOINT();
-
 			//selected_time=((float)event->button.x-(float)cell_area.get_x())/(float)cell_area.get_width()*(adjustment->get_upper()-adjustment->get_lower())+adjustment->get_lower();
 			dragging=false;
 

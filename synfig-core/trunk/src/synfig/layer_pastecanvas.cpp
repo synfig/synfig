@@ -297,7 +297,6 @@ Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quali
 
 	if(depth==MAX_DEPTH)
 	{
-		DEBUGPOINT();
 		// if we are at the extent of our depth,
 		// then we should just return whatever is under us.
 		return context.accelerated_render(surface,quality,renddesc,cb);

@@ -140,7 +140,6 @@ Widget_CompSelect::new_instance(etl::handle<studio::Instance> instance)
 void
 Widget_CompSelect::delete_instance(etl::handle<studio::Instance> instance)
 {
-	DEBUGPOINT();
 	refresh();
 
 	if(selected_instance==instance)

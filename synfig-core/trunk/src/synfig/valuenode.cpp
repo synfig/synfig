@@ -255,8 +255,6 @@ ValueNode::~ValueNode()
 	value_node_count--;
 
 	begin_delete();
-
-	//DEBUGPOINT();
 }
 
 void

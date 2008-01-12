@@ -135,18 +135,14 @@ gif::init()
 	fputc(0,file.get());		// background color
 	fputc(0,file.get());		// Pixel Aspect Ratio
 
-	DEBUGPOINT();
-
 	if(!local_palette)
 	{
-	DEBUGPOINT();
 		curr_palette=Palette::grayscale(256/(1<<(8-rootsize))-1);
 		output_curr_palette();
 	}
 
 	if(loop_count && multi_image)
 	{
-	DEBUGPOINT();
 		fputc(33,file.get()); // 33 (hex 0x21) GIF Extension code
 		fputc(255,file.get()); // 255 (hex 0xFF) Application Extension Label
 		fputc(11,file.get()); // 11 (hex (0x0B) Length of Application Block
@@ -157,7 +153,6 @@ gif::init()
 		fputc((loop_count&0x0000ff00)>>8,file.get());
 		fputc(0,file.get()); // 0 (hex 0x00) a Data Sub-block Terminator.
 	}
-	DEBUGPOINT();
 
 	return true;
 }

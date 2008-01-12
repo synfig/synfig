@@ -227,16 +227,11 @@ Gdk::Cursor
 IconController::get_tool_cursor(const Glib::ustring& name,const Glib::RefPtr<Gdk::Window>& window)
 {
 	Glib::RefPtr<Gdk::Pixmap> pixmap;
-	DEBUGPOINT();
 	pixmap=Gdk::Pixmap::create(window, 64, 64, 8);
-	DEBUGPOINT();
 	pixmap->set_colormap(window->get_colormap());
 	//pixmap->set_colormap(Gdk::Colormap::create(pixmap->get_visual(),false));
-	DEBUGPOINT();
 	Glib::RefPtr<Gdk::Pixbuf> pixbuf;
-	DEBUGPOINT();
 	pixbuf=Gtk::Button().render_icon(Gtk::StockID("synfig-"+name),Gtk::ICON_SIZE_SMALL_TOOLBAR);
-	DEBUGPOINT();
 
 	pixbuf->render_to_drawable_alpha(
 		pixmap,
@@ -259,12 +254,10 @@ IconController::get_tool_cursor(const Glib::ustring& name,const Glib::RefPtr<Gdk
 		0,0 // Dither X,Y
 	);
 */
-	DEBUGPOINT();
 
 	Gdk::Color FG("#000000");
 	Gdk::Color BG("#FF00FF");
 
-	DEBUGPOINT();
   	return Gdk::Cursor(pixmap, pixmap, FG, BG, 0, 0);
 }
 

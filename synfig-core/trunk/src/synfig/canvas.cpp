@@ -92,7 +92,6 @@ Canvas::~Canvas()
 {
 	//if(is_inline() && parent_) assert(0);
 	_CanvasCounter::counter--;
-	//DEBUGPOINT();
 	clear();
 	begin_delete();
 }
@@ -413,7 +412,6 @@ Canvas::add_value_node(ValueNode::Handle x, const String &id)
 		return parent_->add_value_node(x,id);
 //		throw runtime_error("You cannot add a ValueNode to an inline Canvas");
 
-	//DEBUGPOINT();
 	if(x->is_exported())
 		throw runtime_error("ValueNode is already exported");
 
@@ -425,16 +423,13 @@ Canvas::add_value_node(ValueNode::Handle x, const String &id)
 
 	try
 	{
-		//DEBUGPOINT();
 		if(PlaceholderValueNode::Handle::cast_dynamic(value_node_list_.find(id)))
 			throw Exception::IDNotFound("add_value_node()");
 
-		//DEBUGPOINT();
 		throw Exception::IDAlreadyExists(id);
 	}
 	catch(Exception::IDNotFound)
 	{
-		//DEBUGPOINT();
 		x->set_id(id);
 
 		x->set_parent_canvas(this);
@@ -444,7 +439,6 @@ Canvas::add_value_node(ValueNode::Handle x, const String &id)
 			synfig::error("Unable to add ValueNode");
 			throw std::runtime_error("Unable to add ValueNode");
 		}
-		//DEBUGPOINT();
 
 		return;
 	}
@@ -664,7 +658,6 @@ Canvas::create()
 void
 Canvas::push_back(etl::handle<Layer> x)
 {
-//	DEBUGPOINT();
 //	int i(x->count());
 	insert(end(),x);
 	//if(x->count()!=i+1)synfig::info("push_back before %d, after %d",i,x->count());
@@ -673,7 +666,6 @@ Canvas::push_back(etl::handle<Layer> x)
 void
 Canvas::push_front(etl::handle<Layer> x)
 {
-//	DEBUGPOINT();
 //	int i(x->count());
 	insert(begin(),x);
 	//if(x->count()!=i+1)synfig::error("push_front before %d, after %d",i,x->count());

@@ -38,8 +38,6 @@
 using namespace std;
 using namespace etl;
 
-#define DEBUGPOINT()	fprintf(stderr,__FILE__":%d: Debugpoint\n",__LINE__)
-
 /* === C L A S S E S ======================================================= */
 
 int generic_pen_test(int w, int h)

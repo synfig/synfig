@@ -265,10 +265,8 @@ StateNormal_Context::edit_several_waypoints(std::list<synfigapp::ValueDesc> valu
 	dialog.add_button(Gtk::StockID("gtk-cancel"),0);
 	dialog.show();
 
-	DEBUGPOINT();
 	if(dialog.run()==0)
 		return;
-	DEBUGPOINT();
 	synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Set Waypoints"));
 
 	std::list<synfigapp::ValueDesc>::iterator iter;

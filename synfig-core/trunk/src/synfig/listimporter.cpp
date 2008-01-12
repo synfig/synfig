@@ -95,9 +95,7 @@ ListImporter::~ListImporter()
 bool
 ListImporter::get_frame(Surface &surface,Time time, ProgressCallback *cb)
 {
-//			DEBUGPOINT();
 	int frame=round_to_int(time*fps);
-//			DEBUGPOINT();
 
 	if(!filename_list.size())
 	{
@@ -106,26 +104,21 @@ ListImporter::get_frame(Surface &surface,Time time, ProgressCallback *cb)
 		return false;
 	}
 
-//			DEBUGPOINT();
 	if(frame<0)frame=0;
 	if(frame>=(signed)filename_list.size())frame=filename_list.size()-1;
 
-//			DEBUGPOINT();
 	// See if that frame is cached
 	std::list<std::pair<String,Surface> >::iterator iter;
 	for(iter=frame_cache.begin();iter!=frame_cache.end();++iter)
 	{
 		if(iter->first==filename_list[frame])
 		{
-//			DEBUGPOINT();
 			surface.mirror(iter->second);
 			return static_cast<bool>(surface);
 		}
 	}
 
 	Importer::Handle importer(Importer::open(filename_list[frame]));
-
-//	DEBUGPOINT();
 
 	if(!importer)
 	{
@@ -134,8 +127,6 @@ ListImporter::get_frame(Surface &surface,Time time, ProgressCallback *cb)
 		return false;
 	}
 
-//	DEBUGPOINT();
-
 	if(!importer->get_frame(surface,0,cb))
 	{
 		if(cb)cb->error(_("Unable to get frame from ")+filename_list[frame]);
@@ -143,20 +134,12 @@ ListImporter::get_frame(Surface &surface,Time time, ProgressCallback *cb)
 		return false;
 	}
 
-//	DEBUGPOINT();
-
 	if(frame_cache.size()>=LIST_IMPORTER_CACHE_SIZE)
 		frame_cache.pop_front();
 
-//	DEBUGPOINT();
-
 	frame_cache.push_back(std::pair<String,Surface>(filename_list[frame],surface));
 
-//	DEBUGPOINT();
-
 	surface.mirror(frame_cache.back().second);
-
-//	DEBUGPOINT();
 
 	return static_cast<bool>(surface);
 }

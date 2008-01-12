@@ -223,7 +223,6 @@ png_mptr::png_mptr(const char *file_name)
 	switch(color_type)
 	{
 	case PNG_COLOR_TYPE_RGB:
-		DEBUGPOINT();
 		for(y=0;y<surface_buffer.get_h();y++)
 			for(x=0;x<surface_buffer.get_w();x++)
 			{
@@ -248,7 +247,6 @@ png_mptr::png_mptr(const char *file_name)
 		break;
 
 	case PNG_COLOR_TYPE_RGB_ALPHA:
-		DEBUGPOINT();
 		for(y=0;y<surface_buffer.get_h();y++)
 			for(x=0;x<surface_buffer.get_w();x++)
 			{
@@ -325,8 +323,6 @@ png_mptr::png_mptr(const char *file_name)
 		return;
 	}
 
-	DEBUGPOINT();
-
 	png_read_end(png_ptr, end_info);
 	png_destroy_read_struct(&png_ptr, &info_ptr, &end_info);
 	fclose(file);
@@ -337,7 +333,6 @@ png_mptr::png_mptr(const char *file_name)
 
 png_mptr::~png_mptr()
 {
-	DEBUGPOINT();
 }
 
 bool

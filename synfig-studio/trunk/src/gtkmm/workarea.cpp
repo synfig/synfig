@@ -1869,10 +1869,8 @@ WorkArea::on_vruler_event(GdkEvent */*event*/)
 	switch(event->type)
     {
 	case GDK_BUTTON_PRESS:
-		DEBUGPOINT();
 		if(dragging==DRAG_NONE)
 		{
-			DEBUGPOINT();
 			dragging=DRAG_GUIDE;
 			curr_guide=get_guide_list_x().insert(get_guide_list_x().begin());
 			curr_guide_is_x=true;
@@ -1880,10 +1878,8 @@ WorkArea::on_vruler_event(GdkEvent */*event*/)
 		return true;
 		break;
 	case GDK_BUTTON_RELEASE:
-		DEBUGPOINT();
 		if(dragging==DRAG_GUIDE && curr_guide_is_x==true)
 		{
-			DEBUGPOINT();
 			dragging=DRAG_NONE;
 			get_guide_list_x().erase(curr_guide);
 		}

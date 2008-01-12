@@ -63,12 +63,6 @@ ACTION_SET_PRIORITY(Action::WaypointSetSmart,0);
 ACTION_SET_VERSION(Action::WaypointSetSmart,"0.0");
 ACTION_SET_CVS_ID(Action::WaypointSetSmart,"$Id$");
 
-
-/*#ifdef DEBUGPOINT
-#undef DEBUGPOINT
-#endif
-#define DEBUGPOINT()
-*/
 /* === G L O B A L S ======================================================= */
 
 /* === P R O C E D U R E S ================================================= */
@@ -132,7 +126,6 @@ Action::WaypointSetSmart::set_param(const synfig::String& name, const Action::Pa
 	if(name=="value_node" && param.get_type()==Param::TYPE_VALUENODE)
 	{
 		value_node=ValueNode_Animated::Handle::cast_dynamic(param.get_value_node());
-		DEBUGPOINT();
 		if(time_set)
 			calc_waypoint();
 
@@ -141,7 +134,6 @@ Action::WaypointSetSmart::set_param(const synfig::String& name, const Action::Pa
 	if(name=="waypoint" && param.get_type()==Param::TYPE_WAYPOINT && !time_set)
 	{
 		waypoint=param.get_waypoint();
-		DEBUGPOINT();
 
 		return true;
 	}
@@ -153,7 +145,6 @@ Action::WaypointSetSmart::set_param(const synfig::String& name, const Action::Pa
 
 		if(value_node)
 			calc_waypoint();
-		DEBUGPOINT();
 
 		return true;
 	}
@@ -191,7 +182,6 @@ Action::WaypointSetSmart::is_ready()const
 void
 Action::WaypointSetSmart::calc_waypoint()
 {
-	DEBUGPOINT();
 	Time time=waypoint.get_time();
 	try
 	{
@@ -238,10 +228,8 @@ Action::WaypointSetSmart::enclose_waypoint(const synfig::Waypoint& waypoint)
 	try {
 		times.insert(value_node->find(waypoint)->get_time());
 //		synfig::info(__FILE__":%d: value_node->find(waypoint)->get_time()=%s",__LINE__,value_node->find(waypoint)->get_time().get_string().c_str());
-//		DEBUGPOINT();
 	}catch (...) { }
 
-//	DEBUGPOINT();
 	// First we need to to add any waypoints necessary to
 	// maintain the integrity of the keyframes.
 	if(get_edit_mode()&MODE_ANIMATE_PAST) try
@@ -257,20 +245,16 @@ Action::WaypointSetSmart::enclose_waypoint(const synfig::Waypoint& waypoint)
 //			synfig::info(__FILE__":%d: prev_keyframe->time=%s",__LINE__,keyframe.get_time().get_string().c_str());
 //			synfig::info(__FILE__":%d: waypoint->time=%s",__LINE__,waypoint.get_time().get_string().c_str());
 
-//			DEBUGPOINT();
 			if(times.count(keyframe.get_time()))
 			{
-//				DEBUGPOINT();
 				throw int();
 			}
 			if(waypoint.get_time().is_equal(keyframe.get_time()))
 			{
-//				DEBUGPOINT();
 				throw int();
 			}
 
 			times.insert(keyframe.get_time());
-//			DEBUGPOINT();
 			try
 			{
 				value_node->find(keyframe.get_time());
@@ -306,12 +290,10 @@ Action::WaypointSetSmart::enclose_waypoint(const synfig::Waypoint& waypoint)
 		}
 	}
 	catch(Error x) { throw x; }
-	catch(synfig::Exception::NotFound) { DEBUGPOINT(); }
-	catch(int) { DEBUGPOINT(); }
-	catch(...) { DEBUGPOINT(); }
-			//DEBUGPOINT();
+	catch(synfig::Exception::NotFound) { }
+	catch(int) { }
+	catch(...) { }
 
-		//DEBUGPOINT();
 	if(get_edit_mode()&MODE_ANIMATE_FUTURE)try
 	{
 		Time curr_time(waypoint.get_time());
@@ -319,19 +301,16 @@ Action::WaypointSetSmart::enclose_waypoint(const synfig::Waypoint& waypoint)
 		//while(value_node->waypoint_list().back().get_time()>=curr_time)
 		{
 
-			//DEBUGPOINT();
 			// Try to find next keyframe
 			//synfig::info("FUTURE waypoint.get_time()=%s",waypoint.get_time().get_string().c_str());
 			Keyframe keyframe(*get_canvas()->keyframe_list().find_next(curr_time));
 			//synfig::info("FUTURE keyframe.get_time()=%s",keyframe.get_time().get_string().c_str());
 			curr_time=keyframe.get_time();
 
-			//DEBUGPOINT();
 			if(times.count(keyframe.get_time())|| waypoint.get_time().is_equal(keyframe.get_time()))
 				throw int();
 			else
 				times.insert(keyframe.get_time());
-			//DEBUGPOINT();
 
 			try
 			{
@@ -368,19 +347,16 @@ Action::WaypointSetSmart::enclose_waypoint(const synfig::Waypoint& waypoint)
 				add_action(action);
 			}
 		}
-			//DEBUGPOINT();
 	}
 	catch(Error x) { throw x; }
-	catch(synfig::Exception::NotFound) { DEBUGPOINT(); }
-	catch(int) { DEBUGPOINT(); }
-	catch(...) { DEBUGPOINT(); }
-		//DEBUGPOINT();
+	catch(synfig::Exception::NotFound) { }
+	catch(int) { }
+	catch(...) { }
 }
 
 void
 Action::WaypointSetSmart::prepare()
 {
-		//DEBUGPOINT();
 	clear();
 	times.clear();
 
@@ -419,7 +395,6 @@ Action::WaypointSetSmart::prepare()
 	try
 	{
 		//synfig::info("WaypointSetSmart: Replace?");
-		//DEBUGPOINT();
 		// Check to see if a waypoint exists at this point in time
 		WaypointList::iterator iter=value_node->find(waypoint.get_time());
 
@@ -447,7 +422,6 @@ Action::WaypointSetSmart::prepare()
 	try
 	{
 		//synfig::info("WaypointSetSmart: Add?");
-		//DEBUGPOINT();
 		// At this point we know that the old waypoint doesn't exist,
 		// so we need to create it.
 		Action::Handle action(WaypointAdd::create());

@@ -1046,24 +1046,19 @@ LayerTree::on_drag_data_get(const Glib::RefPtr<Gdk::DragContext>&context, Gtk::S
 	synfig::info("Dragged data of target \"%s\"",gdk_atom_name(selection_data->target));
 	synfig::info("Dragged selection=\"%s\"",gdk_atom_name(selection_data->selection));
 
-	DEBUGPOINT();
-
 	Gtk::TreeModel::Path path;
 	Gtk::TreeViewColumn *column;
 	int cell_x, cell_y;
 	if(get_selection()
 	Gtk::TreeRow row = *(get_selection()->get_selected());
-	DEBUGPOINT();
 
 	if(synfig::String(gdk_atom_name(selection_data->target))=="LAYER" && (bool)row[model.is_layer])
 	{
-		DEBUGPOINT();
 		Layer* layer(((Layer::Handle)row[model.layer]).get());
 		assert(layer);
 		selection_data.set(8, reinterpret_cast<const guchar*>(&layer), sizeof(layer));
 		return;
 	}
-	DEBUGPOINT();
 }
 
 void

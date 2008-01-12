@@ -837,7 +837,6 @@ KeyframeTreeStore::remove_keyframe(synfig::Keyframe keyframe)
 	}
 	catch(std::exception x)
 	{
-		DEBUGPOINT();
 		g_warning(x.what());
 	}
 }
@@ -856,7 +855,6 @@ KeyframeTreeStore::change_keyframe(synfig::Keyframe keyframe)
 
 		if(iter!=old_keyframe_list.end() && new_index!=old_index)
 		{
-			DEBUGPOINT();
 			std::vector<int> new_order;
 			for(unsigned int i=0;i<old_keyframe_list.size();i++)
 			{
@@ -881,7 +879,6 @@ KeyframeTreeStore::change_keyframe(synfig::Keyframe keyframe)
 	}
 	catch(std::exception x)
 	{
-		DEBUGPOINT();
 		g_warning(x.what());
 	}
 }

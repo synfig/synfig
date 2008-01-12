@@ -126,7 +126,6 @@ public:
 	}
 	~ValueBase_Entry()
 	{
-		DEBUGPOINT();
 	}
 
 	void on_editing_done()
