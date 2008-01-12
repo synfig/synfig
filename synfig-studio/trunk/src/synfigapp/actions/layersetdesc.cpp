@@ -44,7 +44,7 @@ using namespace Action;
 
 /* === M A C R O S ========================================================= */
 
-ACTION_INIT(Action::LayerSetDesc);
+ACTION_INIT_NO_GET_LOCAL_NAME(Action::LayerSetDesc);
 ACTION_SET_NAME(Action::LayerSetDesc,"layer_set_desc");
 ACTION_SET_LOCAL_NAME(Action::LayerSetDesc,N_("Set Layer Description"));
 ACTION_SET_TASK(Action::LayerSetDesc,"set_desc");
@@ -63,6 +63,16 @@ static const int nindex=-1;
 
 Action::LayerSetDesc::LayerSetDesc()
 {
+}
+
+synfig::String
+Action::LayerSetDesc::get_local_name()const
+{
+	return strprintf("%s: '%s' -> '%s'",
+					 _("Set Layer Description"),
+					 /* TRANSLATORS: this is the string used in the history dialog when renaming a layer to/from its default name */
+					 old_description.empty() ? _("[default]") : old_description.c_str(),
+					 new_description.empty() ? _("[default]") : new_description.c_str());
 }
 
 Action::ParamVocab
