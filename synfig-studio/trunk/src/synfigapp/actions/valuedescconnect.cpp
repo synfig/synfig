@@ -111,15 +111,10 @@ Action::ValueDescConnect::is_candidate(const ParamList &x)
 			ValueDesc value_desc=x.find("dest")->second.get_value_desc();
 			ValueNode::Handle value_node=x.find("src")->second.get_value_node();
 			if(value_desc.get_value_type()==value_node->get_type())
-			{
-				printf("%s:%d\n", __FILE__, __LINE__);
 				return true;
-			}
 		}
-		printf("%s:%d\n", __FILE__, __LINE__);
 		return true;
 	}
-	printf("%s:%d\n", __FILE__, __LINE__);
 	return false;
 }
 
