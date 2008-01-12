@@ -225,7 +225,6 @@ struct studio::Widget_Curves::CurveStruct : sigc::trackable
 
 	void clear_all_values()
 	{
-		DEBUGPOINT();
 		std::vector<Channel>::iterator iter;
 		for(iter=channels.begin();iter!=channels.end();++iter)
 			iter->values.clear();
@@ -370,7 +369,6 @@ Widget_Curves::set_value_descs(std::list<synfigapp::ValueDesc> value_descs)
 			curve_list_.push_back(*iter);
 			if(iter->is_value_node())
 			{
-				DEBUGPOINT();
 				iter->get_value_node()->signal_changed().connect(
 					sigc::mem_fun(
 						*this,
@@ -380,7 +378,6 @@ Widget_Curves::set_value_descs(std::list<synfigapp::ValueDesc> value_descs)
 			}
 			if(iter->parent_is_value_node())
 			{
-				DEBUGPOINT();
 				iter->get_parent_value_node()->signal_changed().connect(
 					sigc::mem_fun(
 						*this,
@@ -390,7 +387,6 @@ Widget_Curves::set_value_descs(std::list<synfigapp::ValueDesc> value_descs)
 			}
 			if(iter->parent_is_layer_param())
 			{
-				DEBUGPOINT();
 				iter->get_layer()->signal_changed().connect(
 					sigc::mem_fun(
 						*this,
