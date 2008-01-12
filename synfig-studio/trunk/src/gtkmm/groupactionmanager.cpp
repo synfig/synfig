@@ -145,7 +145,6 @@ GroupActionManager::queue_refresh()
 void
 GroupActionManager::refresh()
 {
-	DEBUGPOINT();
 	if(queued)
 	{
 		queued=false;
