@@ -310,7 +310,6 @@ LayerActionManager::refresh()
 #else
 	get_ui_manager()->insert_action_group(action_group_);
 #endif
-	DEBUGPOINT();
 }
 
 void
