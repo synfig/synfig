@@ -50,7 +50,7 @@ using namespace Action;
 
 /* === M A C R O S ========================================================= */
 
-ACTION_INIT(Action::ValueDescDisconnect);
+ACTION_INIT_NO_GET_LOCAL_NAME(Action::ValueDescDisconnect);
 ACTION_SET_NAME(Action::ValueDescDisconnect,"value_desc_disconnect");
 ACTION_SET_LOCAL_NAME(Action::ValueDescDisconnect,N_("Disconnect"));
 ACTION_SET_TASK(Action::ValueDescDisconnect,"disconnect");
@@ -68,6 +68,16 @@ ACTION_SET_CVS_ID(Action::ValueDescDisconnect,"$Id$");
 Action::ValueDescDisconnect::ValueDescDisconnect():
 	time(0)
 {
+}
+
+synfig::String
+Action::ValueDescDisconnect::get_local_name()const
+{
+  // TRANSLATORS: This is used in the History dialog when a ValueNode is disconnected.
+  return strprintf(_("Disconnect %s"),
+                   value_desc
+                   ? value_desc.get_description().c_str()
+                   : _("ValueDesc"));
 }
 
 Action::ParamVocab
