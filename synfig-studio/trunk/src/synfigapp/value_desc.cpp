@@ -48,16 +48,19 @@ using namespace synfigapp;
 /* === M E T H O D S ======================================================= */
 
 String
-ValueDesc::get_description()const
+ValueDesc::get_description(bool show_exported_name)const
 {
 	String description(_("ValueDesc"));
+
+	if (show_exported_name && !is_exported())
+		show_exported_name = false;
 
 	if (parent_is_layer_param())
 	{
 		description = strprintf("'%s' -> %s", // layer -> parameter
 						 get_layer()->get_non_empty_description().c_str(),
 						 get_param_name().c_str());
-		if (is_exported())
+		if (show_exported_name)
 			description += strprintf(" (%s)", get_value_node()->get_id().c_str());
 	}
 	else if (parent_is_value_node())
@@ -72,10 +75,10 @@ ValueDesc::get_description()const
 							 value_node->link_local_name(get_index()).c_str());
 		else
 			description = value_node->link_local_name(get_index()); // sub-parameter
-		if (is_exported())
+		if (show_exported_name)
 			description += strprintf(" (%s)", get_value_node()->get_id().c_str());
 	}
-	else if (is_exported())
+	else if (show_exported_name)
 		description = strprintf(_("ValueNode (%s)"), get_value_node()->get_id().c_str());
 
 	return description;

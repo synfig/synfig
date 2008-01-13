@@ -177,7 +177,7 @@ public:
 	}
 
 	synfig::String
-	get_description()const;
+	get_description(bool show_exported_name = true)const;
 }; // END of class ValueDesc
 
 }; // END of namespace synfigapp_instance
