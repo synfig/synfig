@@ -77,8 +77,10 @@ Action::ValueDescConvert::ValueDescConvert()
 synfig::String
 Action::ValueDescConvert::get_local_name()const
 {
-	// TRANSLATORS: This is used in the 'history' dialog when a ValueNode is converted.  %s is the local name of the valuenode's type.
-	return strprintf(_("Convert to '%s'"), LinkableValueNode::book()[type].local_name.c_str());
+	// TRANSLATORS: This is used in the 'history' dialog when a ValueNode is converted.  The first %s is what is converted, the 2nd is the local name of the ValueNode's type.
+	return strprintf(_("Convert '%s' to ValueNode type '%s'"),
+					 value_desc.get_description().c_str(),
+					 LinkableValueNode::book()[type].local_name.c_str());
 }
 
 Action::ParamVocab
