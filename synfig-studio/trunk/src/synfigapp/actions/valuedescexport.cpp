@@ -50,7 +50,7 @@ using namespace Action;
 
 /* === M A C R O S ========================================================= */
 
-ACTION_INIT(Action::ValueDescExport);
+ACTION_INIT_NO_GET_LOCAL_NAME(Action::ValueDescExport);
 ACTION_SET_NAME(Action::ValueDescExport,"value_desc_export");
 ACTION_SET_LOCAL_NAME(Action::ValueDescExport,N_("Export"));
 ACTION_SET_TASK(Action::ValueDescExport,"export");
@@ -67,6 +67,15 @@ ACTION_SET_CVS_ID(Action::ValueDescExport,"$Id$");
 
 Action::ValueDescExport::ValueDescExport()
 {
+}
+
+synfig::String
+Action::ValueDescExport::get_local_name()const
+{
+	// TRANSLATORS: This is used in the 'history' dialog when a ValueNode is exported.  The first %s is what is exported, the 2nd is the name it is given.
+	return strprintf(_("Export '%s' as '%s'"),
+					 value_desc.get_description(false).c_str(),
+					 name.c_str());
 }
 
 Action::ParamVocab
