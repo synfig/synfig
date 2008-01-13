@@ -175,6 +175,9 @@ public:
 	{
 		return is_value_node() && get_value_node()->is_exported();
 	}
+
+	synfig::String
+	get_description()const;
 }; // END of class ValueDesc
 
 }; // END of namespace synfigapp_instance
