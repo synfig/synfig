@@ -79,9 +79,16 @@ Color::real2hex(ColorReal c)
 }
 
 void
-Color::set_hex(String& hex)
+Color::set_hex(String& str)
 {
 	value_type r, g, b;
+	String hex;
+
+	// use just the hex characters
+	for (String::const_iterator iter = str.begin(); iter != str.end(); iter++)
+		if (isxdigit(*iter))
+			hex.push_back(*iter);
+
 	try
 	{
 		if (hex.size() == 1)
