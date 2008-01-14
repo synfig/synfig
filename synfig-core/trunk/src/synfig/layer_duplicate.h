@@ -42,6 +42,7 @@ class Layer_Duplicate : public synfig::Layer_Composite
 private:
 	mutable Real index;
 	mutable Time time_cur;
+	mutable synfig::Mutex mutex;
 
 public:
 

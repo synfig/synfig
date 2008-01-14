@@ -173,6 +173,7 @@ Layer_Duplicate::accelerated_render(Context context,Surface *surface,int quality
 	Color::BlendMethod blend_method(get_blend_method());
 	int steps = duplicate_param->count_steps(time_cur);
 
+	Mutex::Lock lock(mutex);
 	duplicate_param->reset_index(time_cur);
 	do
 	{
