@@ -45,7 +45,7 @@ using namespace Action;
 
 /* === M A C R O S ========================================================= */
 
-ACTION_INIT(Action::LayerLower);
+ACTION_INIT_NO_GET_LOCAL_NAME(Action::LayerLower);
 ACTION_SET_NAME(Action::LayerLower,"layer_lower");
 ACTION_SET_LOCAL_NAME(Action::LayerLower,N_("Lower Layer"));
 ACTION_SET_TASK(Action::LayerLower,"lower");
@@ -62,6 +62,25 @@ ACTION_SET_CVS_ID(Action::LayerLower,"$Id$");
 
 Action::LayerLower::LayerLower()
 {
+}
+
+synfig::String
+Action::LayerLower::get_local_name()const
+{
+	String ret;
+
+	if (layers.empty())
+		return _("Lower Layer");
+
+	ret = strprintf("%s '%s'",
+					(layers.size() == 1
+					 ? _("Lower Layer")
+					 : _("Lower Layers")),
+					(*layers.begin())->get_non_empty_description().c_str());
+
+	for(std::list<synfig::Layer::Handle>::const_iterator iter=++layers.begin(); iter!=layers.end(); ++iter)
+		ret += strprintf(", '%s'", ((*iter)->get_non_empty_description().c_str()));
+	return ret;
 }
 
 Action::ParamVocab
