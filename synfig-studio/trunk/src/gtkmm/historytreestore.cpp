@@ -215,3 +215,15 @@ HistoryTreeStore::on_action_status_changed(etl::handle<synfigapp::Action::Undoab
 		}
 	}
 }
+
+bool
+HistoryTreeStore::search_func(const Glib::RefPtr<Gtk::TreeModel>&,int,const Glib::ustring& x,const Gtk::TreeModel::iterator& iter)
+{
+	const Model model;
+
+	Glib::ustring substr(x.uppercase());
+	Glib::ustring name((*iter)[model.name]);
+	name=name.uppercase();
+
+	return name.find(substr)==Glib::ustring::npos;
+}

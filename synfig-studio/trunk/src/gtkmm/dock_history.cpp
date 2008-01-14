@@ -228,6 +228,9 @@ Dock_History::create_action_tree()
 		action_tree->append_column(*column);
 	}
 
+	action_tree->set_enable_search(true);
+	action_tree->set_search_column(history_tree_model.name);
+	action_tree->set_search_equal_func(sigc::ptr_fun(&studio::HistoryTreeStore::search_func));
 
 	action_tree->set_rules_hint();
 //	action_tree->signal_row_activated().connect(sigc::mem_fun(*this,&Dock_History::on_row_activate));

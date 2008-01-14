@@ -136,6 +136,8 @@ public:
 
 	void insert_action(Gtk::TreeRow row,etl::handle<synfigapp::Action::Undoable> action, bool is_active=true, bool is_undo=true, bool is_redo=false);
 
+	static bool search_func(const Glib::RefPtr<TreeModel>&,int,const Glib::ustring&,const TreeModel::iterator&);
+
 	/*
  -- ** -- P R O T E C T E D   M E T H O D S -----------------------------------
 	*/
