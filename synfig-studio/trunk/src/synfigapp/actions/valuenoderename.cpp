@@ -44,7 +44,7 @@ using namespace Action;
 
 /* === M A C R O S ========================================================= */
 
-ACTION_INIT(Action::ValueNodeRename);
+ACTION_INIT_NO_GET_LOCAL_NAME(Action::ValueNodeRename);
 ACTION_SET_NAME(Action::ValueNodeRename,"value_node_rename");
 ACTION_SET_LOCAL_NAME(Action::ValueNodeRename,N_("Rename ValueNode"));
 ACTION_SET_TASK(Action::ValueNodeRename,"rename");
@@ -61,6 +61,15 @@ ACTION_SET_CVS_ID(Action::ValueNodeRename,"$Id$");
 
 Action::ValueNodeRename::ValueNodeRename()
 {
+}
+
+synfig::String
+Action::ValueNodeRename::get_local_name()const
+{
+	// TRANSLATORS: This is used in the 'history' dialog when a ValueNode is renamed.
+	return strprintf(_("Rename ValueNode from '%s' to '%s'"),
+					 old_name.c_str(),
+					 new_name.c_str());
 }
 
 Action::ParamVocab
