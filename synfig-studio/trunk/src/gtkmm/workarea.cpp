@@ -630,14 +630,14 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	canvas(canvas_interface->get_canvas()),
 	scrollx_adjustment(0,-4,4,0.01,0.1),
 	scrolly_adjustment(0,-4,4,0.01,0.1),
-	w(128),
-	h(128),
+	w(TILE_SIZE),
+	h(TILE_SIZE),
 	last_event_time(0),
 	progresscallback(0),
 	dragging(DRAG_NONE),
 	show_grid(false),
-	tile_w(128),
-	tile_h(128),
+	tile_w(TILE_SIZE),
+	tile_h(TILE_SIZE),
 	timecode_width(0),
 	timecode_height(0)
 {
