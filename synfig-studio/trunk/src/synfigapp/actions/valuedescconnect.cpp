@@ -48,7 +48,7 @@ using namespace Action;
 
 /* === M A C R O S ========================================================= */
 
-ACTION_INIT(Action::ValueDescConnect);
+ACTION_INIT_NO_GET_LOCAL_NAME(Action::ValueDescConnect);
 ACTION_SET_NAME(Action::ValueDescConnect,"value_desc_connect");
 ACTION_SET_LOCAL_NAME(Action::ValueDescConnect,N_("Connect"));
 ACTION_SET_TASK(Action::ValueDescConnect,"connect");
@@ -65,6 +65,15 @@ ACTION_SET_CVS_ID(Action::ValueDescConnect,"$Id$");
 
 Action::ValueDescConnect::ValueDescConnect()
 {
+}
+
+synfig::String
+Action::ValueDescConnect::get_local_name()const
+{
+	// TRANSLATORS: This is used in the 'history' dialog when a connection is made.
+	return strprintf(_("Connect '%s' to '%s'"),
+					 value_desc.get_description(false).c_str(),
+					 value_node->get_id().c_str());
 }
 
 Action::ParamVocab
