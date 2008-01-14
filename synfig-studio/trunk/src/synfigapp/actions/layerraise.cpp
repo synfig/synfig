@@ -45,7 +45,7 @@ using namespace Action;
 
 /* === M A C R O S ========================================================= */
 
-ACTION_INIT(Action::LayerRaise);
+ACTION_INIT_NO_GET_LOCAL_NAME(Action::LayerRaise);
 ACTION_SET_NAME(Action::LayerRaise,"layer_raise");
 ACTION_SET_LOCAL_NAME(Action::LayerRaise,N_("Raise Layer"));
 ACTION_SET_TASK(Action::LayerRaise,"raise");
@@ -62,6 +62,25 @@ ACTION_SET_CVS_ID(Action::LayerRaise,"$Id$");
 
 Action::LayerRaise::LayerRaise()
 {
+}
+
+synfig::String
+Action::LayerRaise::get_local_name()const
+{
+	String ret;
+
+	if (layers.empty())
+		return _("Raise Layer");
+
+	ret = strprintf("%s '%s'",
+					(layers.size() == 1
+					 ? _("Raise Layer")
+					 : _("Raise Layers")),
+					(*layers.begin())->get_non_empty_description().c_str());
+
+	for(std::list<synfig::Layer::Handle>::const_iterator iter=++layers.begin(); iter!=layers.end(); ++iter)
+		ret += strprintf(", '%s'", ((*iter)->get_non_empty_description().c_str()));
+	return ret;
 }
 
 Action::ParamVocab
