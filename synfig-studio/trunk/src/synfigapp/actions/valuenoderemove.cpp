@@ -44,7 +44,7 @@ using namespace Action;
 
 /* === M A C R O S ========================================================= */
 
-ACTION_INIT(Action::ValueNodeRemove);
+ACTION_INIT_NO_GET_LOCAL_NAME(Action::ValueNodeRemove);
 ACTION_SET_NAME(Action::ValueNodeRemove,"value_node_remove");
 ACTION_SET_LOCAL_NAME(Action::ValueNodeRemove,N_("Unexport"));
 ACTION_SET_TASK(Action::ValueNodeRemove,"remove");
@@ -61,6 +61,13 @@ ACTION_SET_CVS_ID(Action::ValueNodeRemove,"$Id$");
 
 Action::ValueNodeRemove::ValueNodeRemove()
 {
+}
+
+synfig::String
+Action::ValueNodeRemove::get_local_name()const
+{
+	// TRANSLATORS: This is used in the 'history' dialog when a ValueNode is unexported.
+	return strprintf(_("Unexport '%s'"), old_name.c_str());
 }
 
 Action::ParamVocab
