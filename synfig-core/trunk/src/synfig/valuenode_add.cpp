@@ -35,6 +35,7 @@
 #include "valuenode_const.h"
 #include <stdexcept>
 #include "color.h"
+#include "gradient.h"
 #include "vector.h"
 #include "angle.h"
 #include "real.h"
@@ -71,6 +72,10 @@ synfig::ValueNode_Add::ValueNode_Add(const ValueBase &value):
 	case ValueBase::TYPE_COLOR:
 		set_link("lhs",ValueNode_Const::create(value.get(Color())));
 		set_link("rhs",ValueNode_Const::create(Color(0,0,0,0)));
+		break;
+	case ValueBase::TYPE_GRADIENT:
+		set_link("lhs",ValueNode_Const::create(value.get(Gradient())));
+		set_link("rhs",ValueNode_Const::create(Gradient()));
 		break;
 	case ValueBase::TYPE_INTEGER:
 		set_link("lhs",ValueNode_Const::create(value.get(int())));
@@ -122,6 +127,8 @@ synfig::ValueNode_Add::operator()(Time t)const
 		return ((*ref_a)(t).get(Angle())+(*ref_b)(t).get(Angle()))*(*scalar)(t).get(Real());
 	case ValueBase::TYPE_COLOR:
 		return ((*ref_a)(t).get(Color())+(*ref_b)(t).get(Color()))*(*scalar)(t).get(Real());
+	case ValueBase::TYPE_GRADIENT:
+		return ((*ref_a)(t).get(Gradient())+(*ref_b)(t).get(Gradient()))*(*scalar)(t).get(Real());
 	case ValueBase::TYPE_INTEGER:
 		return round_to_int(((*ref_a)(t).get(int())+(*ref_b)(t).get(int()))*(*scalar)(t).get(Real()));
 	case ValueBase::TYPE_REAL:
@@ -225,6 +232,7 @@ ValueNode_Add::check_type(ValueBase::Type type)
 {
 	return type==ValueBase::TYPE_ANGLE
 		|| type==ValueBase::TYPE_COLOR
+		|| type==ValueBase::TYPE_GRADIENT
 		|| type==ValueBase::TYPE_INTEGER
 		|| type==ValueBase::TYPE_REAL
 		|| type==ValueBase::TYPE_TIME
