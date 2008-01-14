@@ -1976,7 +1976,7 @@ WorkArea::next_unrendered_tile(int refreshes)const
 		x(focus_point[0]/pw+drawing_area->get_width()/2-w/2),
 		y(focus_point[1]/ph+drawing_area->get_height()/2-h/2);
 
-	const int width_in_tiles(w/tile_w+(w%tile_w?1:0));
+	const int width_in_tiles(w/tile_w+((low_resolution?((w/2)%(tile_w/2)):(w%tile_w))?1:0));
 	const int height_in_tiles(h/tile_h+(h%tile_h?1:0));
 
 	int

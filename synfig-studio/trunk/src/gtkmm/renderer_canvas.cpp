@@ -151,7 +151,7 @@ Renderer_Canvas::render_vfunc(
 	}
 	else
 	{
-		const int width_in_tiles(w/tile_w+(w%tile_w?1:0));
+		const int width_in_tiles(w/tile_w+(((get_work_area()->get_low_resolution_flag())?((w/2)%(tile_w/2)):(w%tile_w))?1:0));
 		const int height_in_tiles(h/tile_h+(h%tile_h?1:0));
 
 		int u(0),v(0),tx,ty;
