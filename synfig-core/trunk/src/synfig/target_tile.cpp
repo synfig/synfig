@@ -47,8 +47,8 @@ using namespace etl;
 using namespace synfig;
 
 /* === M A C R O S ========================================================= */
-const unsigned int	DEF_TILE_WIDTH = 64;
-const unsigned int	DEF_TILE_HEIGHT= 64;
+const unsigned int	DEF_TILE_WIDTH = TILE_SIZE / 2;
+const unsigned int	DEF_TILE_HEIGHT= TILE_SIZE / 2;
 
 #define SYNFIG_OPTIMIZE_LAYER_TREE 	1
 #ifdef _DEBUG
