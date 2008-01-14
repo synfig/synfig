@@ -201,6 +201,13 @@ LinkableValueNode::create(const String &name, const ValueBase& x)
 {
 	if(!book().count(name))
 		return 0;
+
+	if (!check_type(name, x.get_type()))
+	{
+		error(_("Bad type: ValueNode '%s' doesn't accept type '%s'"), book()[name].local_name.c_str(), ValueBase::type_local_name(x.get_type()).c_str());
+		return 0;
+	}
+
 	return book()[name].factory(x);
 }
 
