@@ -88,6 +88,8 @@ test_class test_class_instance;
 
 /* === M A C R O S ========================================================= */
 
+#define VALUENODE_COMPATIBILITY_URL "http://synfig.org/Convert#Compatibility"
+
 inline bool is_whitespace(char x) { return ((x)=='\n' || (x)=='\t' || (x)==' '); }
 
 /* === P R O C E D U R E S ================================================= */
@@ -1121,7 +1123,10 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 
 	if(!value_node)
 	{
-		error(element,"Unknown ValueNode type "+element->get_name());
+		error(element, strprintf(_("Error creating ValueNode <%s> with type '%s'.  Refer to '%s'"),
+								 element->get_name().c_str(),
+								 ValueBase::type_local_name(type).c_str(),
+								 VALUENODE_COMPATIBILITY_URL));
 		return 0;
 	}
 
@@ -1621,20 +1626,22 @@ CanvasParser::parse_value_node(xmlpp::Element *element,Canvas::Handle canvas)
 		value_node=parse_dynamic_list(element,canvas);
 	else
 	if(LinkableValueNode::book().count(element->get_name()))
+	{
 		value_node=parse_linkable_value_node(element,canvas);
+		if (!value_node) value_node = PlaceholderValueNode::create();
+	}
 	else
 	if(element->get_name()=="canvas")
 		value_node=ValueNode_Const::create(parse_canvas(element,canvas,true));
 	else
 	{
 		error_unexpected_element(element,element->get_name());
-		error(element, "Expected a ValueNode");
+		error(element, strprintf(_("Expected a ValueNode.  Refer to '%s'"),
+								 VALUENODE_COMPATIBILITY_URL));
 		value_node=PlaceholderValueNode::create();
 	}
 
-
 	value_node->set_root_canvas(canvas->get_root());
-
 
 	// If we were successful, and our element has
 	// an ID attribute, go ahead and add it to the
