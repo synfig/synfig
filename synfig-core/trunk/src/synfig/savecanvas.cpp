@@ -352,7 +352,7 @@ xmlpp::Element* encode_composite(xmlpp::Element* root,ValueNode_Composite::Const
 	int i;
 	for(i=0;i<value_node->link_count();i++)
 	{
-		string name(strprintf("c%d",i+1));
+		string name(value_node->link_name(i));
 		assert(value_node->get_link(i));
 		if(value_node->get_link(i)->is_exported())
 			root->set_attribute(name,value_node->get_link(i)->get_relative_id(canvas));
