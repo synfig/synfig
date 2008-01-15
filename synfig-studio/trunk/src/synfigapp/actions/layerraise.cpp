@@ -67,20 +67,7 @@ Action::LayerRaise::LayerRaise()
 synfig::String
 Action::LayerRaise::get_local_name()const
 {
-	String ret;
-
-	if (layers.empty())
-		return _("Raise Layer");
-
-	ret = strprintf("%s '%s'",
-					(layers.size() == 1
-					 ? _("Raise Layer")
-					 : _("Raise Layers")),
-					(*layers.begin())->get_non_empty_description().c_str());
-
-	for(std::list<synfig::Layer::Handle>::const_iterator iter=++layers.begin(); iter!=layers.end(); ++iter)
-		ret += strprintf(", '%s'", ((*iter)->get_non_empty_description().c_str()));
-	return ret;
+	return get_layer_descriptions(layers, _("Raise Layer"), _("Raise Layers"));
 }
 
 Action::ParamVocab
