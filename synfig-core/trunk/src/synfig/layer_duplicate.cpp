@@ -191,7 +191,5 @@ Layer_Duplicate::accelerated_render(Context context,Surface *surface,int quality
 		i++;
 	} while (duplicate_param->step(time_cur));
 
-	duplicate_param->reset_index(time_cur);
-
 	return true;
 }
