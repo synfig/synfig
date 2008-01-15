@@ -211,6 +211,8 @@ public:
 
 	void set_param_list(const ParamList &);
 
+	static synfig::String get_layer_descriptions(const std::list<synfig::Layer::Handle> layers, synfig::String singular_prefix = "", synfig::String plural_prefix = "");
+	static synfig::String get_layer_descriptions(const std::list<std::pair<synfig::Layer::Handle,int> > layers, synfig::String singular_prefix = "", synfig::String plural_prefix = "");
 }; // END of class Action::Base
 
 typedef Action::Base* (*Factory)();

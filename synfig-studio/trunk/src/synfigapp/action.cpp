@@ -284,6 +284,72 @@ Action::Base::set_param_list(const ParamList &param_list)
 		set_param(iter->first,iter->second);
 }
 
+synfig::String
+Action::Base::get_layer_descriptions(const std::list<synfig::Layer::Handle> layers, synfig::String singular_prefix, synfig::String plural_prefix)
+{
+	String ret;
+	bool first = true;
+
+	if (plural_prefix.empty())
+		plural_prefix = singular_prefix;
+
+	if (layers.empty())
+		return plural_prefix;
+
+	if (layers.size() == 1)
+		ret = singular_prefix;
+	else
+		ret = plural_prefix;
+
+	if (!ret.empty())
+		ret.push_back(' ');
+
+	for(std::list<synfig::Layer::Handle>::const_iterator iter=layers.begin(); iter!=layers.end(); ++iter)
+	{
+		if (first)
+			first = false;
+		else
+			ret += ", ";
+
+		ret += strprintf("'%s'", (*iter)->get_non_empty_description().c_str());
+	}
+
+	return ret;
+}
+
+synfig::String
+Action::Base::get_layer_descriptions(const std::list<std::pair<synfig::Layer::Handle,int> > layers, synfig::String singular_prefix, synfig::String plural_prefix)
+{
+	String ret;
+	bool first = true;
+
+	if (plural_prefix.empty())
+		plural_prefix = singular_prefix;
+
+	if (layers.empty())
+		return plural_prefix;
+
+	if (layers.size() == 1)
+		ret = singular_prefix;
+	else
+		ret = plural_prefix;
+
+	if (!ret.empty())
+		ret.push_back(' ');
+
+	for(std::list<std::pair<synfig::Layer::Handle,int> >::const_iterator iter=layers.begin(); iter!=layers.end(); ++iter)
+	{
+		if (first)
+			first = false;
+		else
+			ret += ", ";
+
+		ret += strprintf("'%s'", iter->first->get_non_empty_description().c_str());
+	}
+
+	return ret;
+}
+
 void
 Super::perform()
 {
