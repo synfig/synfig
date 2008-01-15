@@ -213,7 +213,11 @@ ValueNode_RadialComposite::link_local_name(int i)const
 			break;
 	}
 
-	return etl::strprintf(_("C%d"),i+1);
+	assert(0);
+	// notice that Composite counts from 1 and Radial Composite counts
+	// from 0!  we need to keep it like that to correctly load old
+	// animations, but let's not save "c%d" format link names in future
+	return etl::strprintf(_("C%d"),i);
 }
 
 
@@ -222,6 +226,32 @@ ValueNode_RadialComposite::link_name(int i)const
 {
 	assert(i>=0 && i<link_count());
 
+	switch(get_type())
+	{
+	case ValueBase::TYPE_COLOR:
+		switch(i)
+		{
+		case 0: return "y_luma"; // the 'luma' attribute is recognised by the fact that it starts with a 'y'
+		case 1: return "saturation";
+		case 2: return "hue";
+		case 3: return "alpha";
+		}
+		break;
+	case ValueBase::TYPE_VECTOR:
+		switch(i)
+		{
+		case 0: return "radius";
+		case 1: return "theta";
+		}
+		break;
+	default:
+		break;
+	}
+
+	assert(0);
+	// notice that Composite counts from 1 and Radial Composite counts
+	// from 0!  we need to keep it like that to correctly load old
+	// animations, but let's not save "c%d" format link names in future
 	return strprintf("c%d",i);
 }
 
