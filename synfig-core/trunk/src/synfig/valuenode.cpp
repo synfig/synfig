@@ -37,6 +37,7 @@
 #include "valuenode.h"
 #include "general.h"
 #include "canvas.h"
+#include "paramdesc.h"
 
 #include "valuenode_const.h"
 #include "valuenode_linear.h"
@@ -310,6 +311,15 @@ ValueNode::set_id(const String &x)
 	}
 }
 
+String
+ValueNode::get_description(bool show_exported_name)const
+{
+	if (dynamic_cast<const LinkableValueNode*>(this))
+		return (dynamic_cast<const LinkableValueNode*>(this))->get_description(-1, show_exported_name);
+
+	return "ValueNode";
+}
+
 ValueNodeList::ValueNodeList():
 	placeholder_count_(0)
 {
@@ -554,4 +564,64 @@ void LinkableValueNode::get_times_vfunc(Node::time_set &set) const
 			set.insert(tset.begin(),tset.end());
 		}
 	}
+}
+
+String
+LinkableValueNode::get_description(int index, bool show_exported_name)const
+{
+	String description;
+
+	if (show_exported_name && !is_exported())
+		show_exported_name = false;
+
+	if (index != -1)
+		description = String(":") + link_local_name(index);
+
+	const synfig::Node* node = this;
+	LinkableValueNode::ConstHandle parent_linkable_vn = 0;
+
+	// walk up through the valuenodes trying to find the layer at the top
+	while (!node->parent_set.empty() && !dynamic_cast<const Layer*>(node))
+	{
+		LinkableValueNode::ConstHandle linkable_value_node(dynamic_cast<const LinkableValueNode*>(node));
+		if (linkable_value_node)
+		{
+			String link;
+			int cnt = linkable_value_node->link_count();
+			for (int i = 0; i < cnt; i++)
+				if (linkable_value_node->get_link(i) == parent_linkable_vn)
+				{
+					link = String(":") + linkable_value_node->link_local_name(i);
+					break;
+				}
+
+			description = linkable_value_node->get_local_name() + link + (parent_linkable_vn?">":"") + description;
+		}
+		node = *node->parent_set.begin();
+		parent_linkable_vn = linkable_value_node;
+	}
+
+	Layer::ConstHandle parent_layer(dynamic_cast<const Layer*>(node));
+	if(parent_layer)
+	{
+		String param;
+		const Layer::DynamicParamList &dynamic_param_list(parent_layer->dynamic_param_list());
+		// loop to find the parameter in the dynamic parameter list - this gives us its name
+		for (Layer::DynamicParamList::const_iterator iter = dynamic_param_list.begin(); iter != dynamic_param_list.end(); iter++)
+			if (iter->second == parent_linkable_vn)
+			{
+				String param_local_name(parent_layer->get_param_local_name(iter->first));
+				if (!param_local_name.empty())
+					param = String(":(nu)") + param_local_name;
+			}
+		description = strprintf("(%s)%s>%s",
+								parent_layer->get_non_empty_description().c_str(),
+								param.c_str(),
+								description.c_str());
+	}
+
+	if (show_exported_name)
+		description += strprintf(" (%s)", get_id().c_str());
+
+	return description;
 }

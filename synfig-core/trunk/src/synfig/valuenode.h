@@ -212,6 +212,9 @@ public:
 	//! Returns the localized name of the ValueNode type
 	virtual String get_local_name()const=0;
 
+	//! Return a full description of the ValueNode and its parentage
+	virtual String get_description(bool show_exported_name = true)const;
+
 
 	//! \writeme
 	virtual ValueNode* clone(const GUID& deriv_guid=GUID())const=0;
@@ -345,6 +348,9 @@ public:
 
 	ValueNode::LooseHandle get_link(int i)const;
 	ValueNode::LooseHandle get_link(const String &name)const { return get_link(get_link_index_from_name(name)); }
+
+	String
+	get_description(int index, bool show_exported_name = true)const;
 
 protected:
 	//! Sets the type of the ValueNode
