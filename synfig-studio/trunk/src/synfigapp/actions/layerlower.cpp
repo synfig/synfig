@@ -67,20 +67,7 @@ Action::LayerLower::LayerLower()
 synfig::String
 Action::LayerLower::get_local_name()const
 {
-	String ret;
-
-	if (layers.empty())
-		return _("Lower Layer");
-
-	ret = strprintf("%s '%s'",
-					(layers.size() == 1
-					 ? _("Lower Layer")
-					 : _("Lower Layers")),
-					(*layers.begin())->get_non_empty_description().c_str());
-
-	for(std::list<synfig::Layer::Handle>::const_iterator iter=++layers.begin(); iter!=layers.end(); ++iter)
-		ret += strprintf(", '%s'", ((*iter)->get_non_empty_description().c_str()));
-	return ret;
+	return get_layer_descriptions(layers, _("Lower Layer"), _("Lower Layers"));
 }
 
 Action::ParamVocab
