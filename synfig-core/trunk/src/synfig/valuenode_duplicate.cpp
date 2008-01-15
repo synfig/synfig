@@ -158,6 +158,7 @@ ValueNode_Duplicate::step(Time t)const
 	Real from = (*from_)(t).get(Real());
 	Real to   = (*to_  )(t).get(Real());
 	Real step = (*step_)(t).get(Real());
+	Real prev = index;
 
 	if (step == 0) return false;
 
@@ -165,14 +166,14 @@ ValueNode_Duplicate::step(Time t)const
 
 	if (from < to)
 	{
-		index += step;
-		return index <= to;
+		if ((index += step) <= to) return true;
 	}
 	else
-	{
-		index -= step;
-		return index >= to;
-	}
+		if ((index -= step) >= to) return true;
+
+	// at the end of the loop, leave the index at the last value that was used
+	index = prev;
+	return false;
 }
 
 int
