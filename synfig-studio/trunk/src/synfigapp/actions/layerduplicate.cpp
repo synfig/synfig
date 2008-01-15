@@ -45,7 +45,7 @@ using namespace Action;
 
 /* === M A C R O S ========================================================= */
 
-ACTION_INIT(Action::LayerDuplicate);
+ACTION_INIT_NO_GET_LOCAL_NAME(Action::LayerDuplicate);
 ACTION_SET_NAME(Action::LayerDuplicate,"layer_duplicate");
 ACTION_SET_LOCAL_NAME(Action::LayerDuplicate,N_("Duplicate Layer"));
 ACTION_SET_TASK(Action::LayerDuplicate,"duplicate");
@@ -62,6 +62,12 @@ ACTION_SET_CVS_ID(Action::LayerDuplicate,"$Id$");
 
 Action::LayerDuplicate::LayerDuplicate()
 {
+}
+
+synfig::String
+Action::LayerDuplicate::get_local_name()const
+{
+	return get_layer_descriptions(layers, _("Duplicate Layer"), _("Duplicate Layers"));
 }
 
 Action::ParamVocab
