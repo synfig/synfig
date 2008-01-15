@@ -67,7 +67,7 @@ SYNFIG_LAYER_INIT(Plant);
 SYNFIG_LAYER_SET_NAME(Plant,"plant");
 SYNFIG_LAYER_SET_LOCAL_NAME(Plant,N_("Plant"));
 SYNFIG_LAYER_SET_CATEGORY(Plant,N_("Other"));
-SYNFIG_LAYER_SET_VERSION(Plant,"0.1");
+SYNFIG_LAYER_SET_VERSION(Plant,"0.2");
 SYNFIG_LAYER_SET_CVS_ID(Plant,"$Id$");
 
 /* === P R O C E D U R E S ================================================= */
@@ -81,7 +81,9 @@ Plant::Plant():
 	velocity(0.3),
 	perp_velocity(0.0),
 	step(0.01),
-	sprouts(10)
+	sprouts(10),
+	version(version__),
+	use_width(true)
 {
 	bounding_rect=Rect::zero();
 	random_factor=0.2;
@@ -208,6 +210,9 @@ Plant::sync()const
 	// loop through the bline; seg counts the blines as we do so; stop before iter is the last bline in the list
 	for(;next!=bline.end();iter=next++,seg++)
 	{
+		float iterw=iter->get_width();	// the width value of the iter vertex
+		float nextw=next->get_width();	// the width value of the next vertex
+		float width;					// the width at an intermediate position
 		curve.p1()=iter->get_vertex();
 		curve.t1()=iter->get_tangent2();
 		curve.p2()=next->get_vertex();
@@ -237,6 +242,14 @@ Plant::sync()const
 
 				branch_velocity[0] += random_factor * random(Random::SMOOTH_COSINE, 1, f*splits, 0.0f, 0.0f);
 				branch_velocity[1] += random_factor * random(Random::SMOOTH_COSINE, 2, f*splits, 0.0f, 0.0f);
+
+				if (use_width)
+				{
+					width = iterw+(nextw-iterw)*f; // calculate the width based on the current position
+
+					branch_velocity[0] *= width; // scale the velocity accordingly to the current width
+					branch_velocity[1] *= width;
+				}
 
 				branch_count++;
 				branch(i, 0, 0,		 // time
@@ -345,7 +358,9 @@ Plant::get_param(const String& param)const
 	EXPORT(reverse);
 
 	EXPORT_NAME();
-	EXPORT_VERSION();
+
+	if(param=="Version" || param=="version" || param=="version__")
+		return version;
 
 	return Layer_Composite::get_param(param);
 }
@@ -435,6 +450,17 @@ Plant::get_param_vocab()const
 	);
 
 	return ret;
+}
+
+bool
+Plant::set_version(const String &ver)
+{
+	version = ver;
+
+	if (version == "0.1")
+		use_width = false;
+
+	return true;
 }
 
 bool

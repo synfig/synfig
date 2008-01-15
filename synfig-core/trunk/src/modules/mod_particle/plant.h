@@ -90,6 +90,8 @@ private:
 
 	void branch(int n, int depth,float t, float stunt_growth, synfig::Point position,synfig::Vector velocity)const;
 	void sync()const;
+	String version;
+	bool use_width;
 
 public:
 
@@ -100,6 +102,8 @@ public:
 	virtual bool set_param(const String & param, const synfig::ValueBase &value);
 
 	virtual ValueBase get_param(const String & param)const;
+
+	virtual bool set_version(const synfig::String &ver);
 
 	virtual Vocab get_param_vocab()const;
 
