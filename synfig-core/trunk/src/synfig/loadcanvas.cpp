@@ -1255,7 +1255,7 @@ CanvasParser::parse_composite(xmlpp::Element *element,Canvas::Handle canvas)
 
 	for(i=0;i<value_node->link_count();i++)
 	{
-		string name=strprintf("c%d",i+1);
+		string name=value_node->link_name(i);
 		if(c[i])
 		{
 			error(element,name+" was already defined in <composite>");
@@ -1282,15 +1282,22 @@ CanvasParser::parse_composite(xmlpp::Element *element,Canvas::Handle canvas)
 		xmlpp::Element *child(dynamic_cast<xmlpp::Element*>(*iter));
 		if(!child)
 			continue;
-		else
+
+		string child_name = child->get_name();
 		for(i=0;i<value_node->link_count();i++)
 		{
-			string name=strprintf("c%d",i+1);
-			if(child->get_name()==name)
+			string name=value_node->link_name(i);
+			int old_index = -1;
+
+			if (child_name.size() == 2 && child_name[0] == 'c')
+				old_index = child_name[1] - '1';
+
+			if ((old_index != -1 && old_index == i) ||
+				(old_index == -1 && value_node->get_link_index_from_name(child_name) == i))
 			{
 				if(c[i])
 				{
-					error(child,name+" was already defined in <composite>");
+					error(child,child_name+" was already defined in <composite>");
 					break;
 				}
 
@@ -1303,7 +1310,7 @@ CanvasParser::parse_composite(xmlpp::Element *element,Canvas::Handle canvas)
 
 				if(iter==list.end())
 				{
-					error(child,strprintf(_("<%s> is missing its contents"),name.c_str()));
+					error(child,strprintf(_("<%s> is missing its contents"),child_name.c_str()));
 					break;
 				}
 
@@ -1311,13 +1318,13 @@ CanvasParser::parse_composite(xmlpp::Element *element,Canvas::Handle canvas)
 
 				if(!c[i])
 				{
-					error((*iter),"Parse of "+name+" ValueNode failed");
+					error((*iter),"Parse of "+child_name+" ValueNode failed");
 					break;
 				}
 
 				if(!value_node->set_link(i,c[i]))
 				{
-					error(child,strprintf(_("<%s> has a bad value"),name.c_str()));
+					error(child,strprintf(_("<%s> has a bad value"),child_name.c_str()));
 					break;
 				}
 
@@ -1326,7 +1333,7 @@ CanvasParser::parse_composite(xmlpp::Element *element,Canvas::Handle canvas)
 			}
 		}
 		// somewhat of a hack, but it works
-		if(i==value_node->link_count()) error_unexpected_element(child,child->get_name());
+		if(i==value_node->link_count()) error_unexpected_element(child,child_name);
 	}
 
 	switch(value_node->link_count())
