@@ -51,7 +51,7 @@ using namespace Action;
 
 /* === M A C R O S ========================================================= */
 
-ACTION_INIT(Action::BLinePointTangentMerge);
+ACTION_INIT_NO_GET_LOCAL_NAME(Action::BLinePointTangentMerge);
 ACTION_SET_NAME(Action::BLinePointTangentMerge,"bline_point_tangent_merge");
 ACTION_SET_LOCAL_NAME(Action::BLinePointTangentMerge,N_("Merge Tangents"));
 ACTION_SET_TASK(Action::BLinePointTangentMerge,"merge");
@@ -70,6 +70,12 @@ Action::BLinePointTangentMerge::BLinePointTangentMerge()
 {
 	time=(Time::begin()-1);
 	set_dirty(true);
+}
+
+synfig::String
+Action::BLinePointTangentMerge::get_local_name()const
+{
+	return strprintf(_("Merge Tangents of '%s'"), ((ValueNode::Handle)(value_node))->get_description().c_str());
 }
 
 Action::ParamVocab
