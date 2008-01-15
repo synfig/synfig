@@ -295,6 +295,10 @@ ValueNode_Composite::link_local_name(int i)const
 				return _("Tangent 2");
 
 		default:
+			assert(0);
+			// notice that Composite counts from 1 and Radial Composite counts
+			// from 0!  we need to keep it like that to correctly load old
+			// animations, but let's not save "c%d" format link names in future
 			return etl::strprintf(_("C%d"),i+1);
 	}
 }
@@ -305,7 +309,53 @@ ValueNode_Composite::link_name(int i)const
 {
 	assert(i>=0 && i<link_count());
 
-	return strprintf("c%d",i);
+	switch(get_type())
+	{
+	case ValueBase::TYPE_COLOR:
+		switch(i)
+		{
+		case 0: return "red";
+		case 1: return "green";
+		case 2: return "blue";
+		case 3: return "alpha";
+		}
+		break;
+	case ValueBase::TYPE_SEGMENT:
+		switch(i)
+		{
+		case 0: return "p1";
+		case 1: return "t1";
+		case 2: return "p2";
+		case 3: return "t2";
+		}
+		break;
+	case ValueBase::TYPE_VECTOR:
+		switch(i)
+		{
+		case 0: return "x";
+		case 1: return "y";
+		}
+		break;
+	case ValueBase::TYPE_BLINEPOINT:
+		switch(i)
+		{
+		case 0: return "point";
+		case 1: return "width";
+		case 2: return "origin";
+		case 3: return "split";
+		case 4: return "t1";
+		case 5: return "t2";
+		}
+		break;
+	default:
+		break;
+	}
+
+	assert(0);
+	// notice that Composite counts from 1 and Radial Composite counts
+	// from 0!  we need to keep it like that to correctly load old
+	// animations, but let's not save "c%d" format link names in future
+	return strprintf("c%d",i+1);
 }
 
 int
@@ -315,7 +365,10 @@ ValueNode_Composite::get_link_index_from_name(const String &name)const
 		throw Exception::BadLinkName(name);
 
 	if(name[0]=='c')
-		return name[1]-'0';
+	{
+		warning("%s:%d is this EVER called?", __FILE__, __LINE__);
+		return name[1]-'1';
+	}
 
 	switch(get_type())
 	{
@@ -342,7 +395,7 @@ ValueNode_Composite::get_link_index_from_name(const String &name)const
 			return 0;
 		if(name[0]=='y')
 			return 1;
-		if(name[0]=='z')
+		if(name[0]=='z')		// \todo "z"?  really?
 			return 2;
 	case ValueBase::TYPE_BLINEPOINT:
 		if(name[0]=='p' || name=="v1" || name=="p1")
