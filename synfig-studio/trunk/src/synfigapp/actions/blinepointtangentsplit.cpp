@@ -51,7 +51,7 @@ using namespace Action;
 
 /* === M A C R O S ========================================================= */
 
-ACTION_INIT(Action::BLinePointTangentSplit);
+ACTION_INIT_NO_GET_LOCAL_NAME(Action::BLinePointTangentSplit);
 ACTION_SET_NAME(Action::BLinePointTangentSplit,"bline_point_tangent_split");
 ACTION_SET_LOCAL_NAME(Action::BLinePointTangentSplit,N_("Split Tangents"));
 ACTION_SET_TASK(Action::BLinePointTangentSplit,"split");
@@ -70,6 +70,12 @@ Action::BLinePointTangentSplit::BLinePointTangentSplit()
 {
 	time=(Time::begin()-1);
 	set_dirty(true);
+}
+
+synfig::String
+Action::BLinePointTangentSplit::get_local_name()const
+{
+	return strprintf(_("Split Tangents of '%s'"), ((ValueNode::Handle)(value_node))->get_description().c_str());
 }
 
 Action::ParamVocab
