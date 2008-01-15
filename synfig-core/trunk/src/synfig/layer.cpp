@@ -567,3 +567,14 @@ Layer::get_group()const
 {
 	return group_;
 }
+
+const String
+Layer::get_param_local_name(const String &param_name)const
+{
+	ParamVocab vocab = get_param_vocab();
+	// loop to find the parameter in the parameter vocab - this gives us its local name
+	for (ParamVocab::iterator iter = vocab.begin(); iter != vocab.end(); iter++)
+		if (iter->get_name() == param_name)
+			return iter->get_local_name();
+	return String();
+}

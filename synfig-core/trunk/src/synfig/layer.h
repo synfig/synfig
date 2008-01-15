@@ -325,6 +325,9 @@ public:
 	//! Returns the layer's description if it's not empty, else its local name
 	const String get_non_empty_description()const { return get_description().empty() ? get_local_name() : get_description(); }
 
+	//! Returns the localised version of the given layer parameter
+	const String get_param_local_name(const String &param_name)const;
+
 	/*
  --	** -- V I R T U A L   F U N C T I O N S -----------------------------------
 	*/
