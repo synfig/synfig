@@ -609,11 +609,7 @@ LinkableValueNode::get_description(int index, bool show_exported_name)const
 		// loop to find the parameter in the dynamic parameter list - this gives us its name
 		for (Layer::DynamicParamList::const_iterator iter = dynamic_param_list.begin(); iter != dynamic_param_list.end(); iter++)
 			if (iter->second == parent_linkable_vn)
-			{
-				String param_local_name(parent_layer->get_param_local_name(iter->first));
-				if (!param_local_name.empty())
-					param = String(":(nu)") + param_local_name;
-			}
+				param = String(":") + parent_layer->get_param_local_name(iter->first);
 		description = strprintf("(%s)%s>%s",
 								parent_layer->get_non_empty_description().c_str(),
 								param.c_str(),
