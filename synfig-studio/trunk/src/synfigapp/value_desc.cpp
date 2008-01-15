@@ -57,26 +57,16 @@ ValueDesc::get_description(bool show_exported_name)const
 
 	if (parent_is_layer_param())
 	{
-		description = strprintf("'%s' -> %s", // layer -> parameter
-						 get_layer()->get_non_empty_description().c_str(),
-						 get_param_name().c_str());
+		description = strprintf("(%s):%s", // (layer):parameter
+								get_layer()->get_non_empty_description().c_str(),
+								get_layer()->get_param_local_name(get_param_name()).c_str());
 		if (show_exported_name)
 			description += strprintf(" (%s)", get_value_node()->get_id().c_str());
 	}
 	else if (parent_is_value_node())
 	{
 		synfig::LinkableValueNode::Handle value_node(synfig::LinkableValueNode::Handle::cast_reinterpret(get_parent_value_node()));
-		synfig::Node* node;
-		for(node=value_node.get();!node->parent_set.empty() && !dynamic_cast<Layer*>(node);node=*node->parent_set.begin());
-		Layer::Handle parent_layer(dynamic_cast<Layer*>(node));
-		if(parent_layer)
-			description = strprintf("'%s' => %s", // layer -> sub-parameter
-							 parent_layer->get_non_empty_description().c_str(),
-							 value_node->link_local_name(get_index()).c_str());
-		else
-			description = value_node->link_local_name(get_index()); // sub-parameter
-		if (show_exported_name)
-			description += strprintf(" (%s)", get_value_node()->get_id().c_str());
+		return value_node->get_description(get_index(), show_exported_name);
 	}
 	else if (show_exported_name)
 		description = strprintf(_("ValueNode (%s)"), get_value_node()->get_id().c_str());
