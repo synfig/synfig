@@ -66,20 +66,7 @@ Action::LayerRemove::LayerRemove()
 synfig::String
 Action::LayerRemove::get_local_name()const
 {
-	String ret;
-
-	if (layer_list.empty())
-		return _("Remove Layer");
-
-	ret = strprintf("%s '%s'",
-					(layer_list.size() == 1
-					 ? _("Remove Layer")
-					 : _("Remove Layers")),
-					layer_list.begin()->first->get_non_empty_description().c_str());
-
-	for(std::list<std::pair<synfig::Layer::Handle,int> >::const_iterator iter=++layer_list.begin(); iter!=layer_list.end(); ++iter)
-		ret += strprintf(", '%s'", (iter->first->get_non_empty_description().c_str()));
-	return ret;
+	return get_layer_descriptions(layer_list, _("Remove Layer"), _("Remove Layers"));
 }
 
 Action::ParamVocab
