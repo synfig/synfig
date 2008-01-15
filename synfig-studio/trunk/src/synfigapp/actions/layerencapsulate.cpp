@@ -47,7 +47,7 @@ using namespace Action;
 
 /* === M A C R O S ========================================================= */
 
-ACTION_INIT(Action::LayerEncapsulate);
+ACTION_INIT_NO_GET_LOCAL_NAME(Action::LayerEncapsulate);
 ACTION_SET_NAME(Action::LayerEncapsulate,"layer_encapsulate");
 ACTION_SET_LOCAL_NAME(Action::LayerEncapsulate,N_("Encapsulate"));
 ACTION_SET_TASK(Action::LayerEncapsulate,"encapsulate");
@@ -64,6 +64,12 @@ ACTION_SET_CVS_ID(Action::LayerEncapsulate,"$Id$");
 
 Action::LayerEncapsulate::LayerEncapsulate()
 {
+}
+
+synfig::String
+Action::LayerEncapsulate::get_local_name()const
+{
+	return get_layer_descriptions(layers, _("Encapsulate Layer"), _("Encapsulate Layers"));
 }
 
 Action::ParamVocab
