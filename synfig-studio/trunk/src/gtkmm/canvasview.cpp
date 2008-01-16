@@ -1180,6 +1180,12 @@ CanvasView::init_menus()
 	action_group = Gtk::ActionGroup::create();
 
 	//action_group->add( Gtk::Action::create("MenuFile", _("_File")) );
+	action_group->add( Gtk::Action::create("new", Gtk::Stock::NEW),
+		sigc::hide_return(sigc::ptr_fun(&studio::App::new_instance))
+	);
+	action_group->add( Gtk::Action::create("open", Gtk::Stock::OPEN),
+		sigc::hide_return(sigc::ptr_fun(&studio::App::dialog_open))
+	);
 	action_group->add( Gtk::Action::create("save", Gtk::Stock::SAVE),
 		hide_return(sigc::mem_fun(*get_instance().get(), &studio::Instance::save))
 	);
@@ -1221,6 +1227,9 @@ CanvasView::init_menus()
 	);
 	action_group->add( Gtk::Action::create("close-document", Gtk::StockID("gtk-close"), _("Close Document")),
 		sigc::hide_return(sigc::mem_fun(*this,&studio::CanvasView::close_instance))
+	);
+	action_group->add( Gtk::Action::create("quit", Gtk::StockID("gtk-quit"), _("Quit")),
+		sigc::hide_return(sigc::ptr_fun(&studio::App::quit))
 	);
 
 	//action_group->add( Gtk::Action::create("undo", Gtk::StockID("gtk-undo")),

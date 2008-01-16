@@ -591,6 +591,7 @@ init_ui_manager()
 
 	DEFINE_ACTION2("keyframe-properties", Gtk::StockID("gtk-properties"), _("Keyframe Properties"));
 	DEFINE_ACTION("about", Gtk::StockID("synfig-about"));
+	DEFINE_ACTION("new", Gtk::Stock::NEW);
 	DEFINE_ACTION("open", Gtk::Stock::OPEN);
 	DEFINE_ACTION("save", Gtk::Stock::SAVE);
 	DEFINE_ACTION("save-as", Gtk::Stock::SAVE_AS);
@@ -607,6 +608,7 @@ init_ui_manager()
 	DEFINE_ACTION("options", _("Options"));
 	DEFINE_ACTION("close", _("Close View"));
 	DEFINE_ACTION("close-document", _("Close Document"));
+	DEFINE_ACTION("quit", Gtk::Stock::QUIT);
 
 
 	DEFINE_ACTION("undo", Gtk::StockID("gtk-undo"));
@@ -709,6 +711,8 @@ init_ui_manager()
 "	</popup>"
 "	<popup name='menu-main' action='menu-main'>"
 "	<menu action='menu-file'>"
+"		<menuitem action='new' />"
+"		<menuitem action='open' />"
 "		<menuitem action='save' />"
 "		<menuitem action='save-as' />"
 "		<menuitem action='revert' />"
@@ -727,6 +731,7 @@ init_ui_manager()
 "		<menuitem action='options' />"
 "		<menuitem action='close' />"
 "		<menuitem action='close-document' />"
+"		<menuitem action='quit' />"
 "	</menu>"
 "	<menu action='menu-edit'>"
 "		<menuitem action='undo'/>"
