@@ -305,7 +305,6 @@ void display_help(int amount)
 				cerr<<strprintf(" %s %s %s",flag, arg, spaces+strlen(arg)+strlen(flag)+1)+description<<endl;
 			else
 				cerr<<strprintf(" %s %s",flag,spaces+strlen(flag))+description<<endl;
-
 		}
 	};
 
@@ -327,16 +326,13 @@ void display_help(int amount)
 		Argument("-c","<canvas id>",_("Render the canvas with the given id instead of the root."));
 		Argument("-o","<output file>",_("Specify output filename"));
 		Argument("-T","<# of threads>",_("Enable multithreaded renderer using specified # of threads"));
-
 		Argument("-b",NULL,_("Print Benchmarks"));
-
 		Argument("--fps","<framerate>",_("Set the frame rate"));
 		Argument("--time","<time>",_("Render a single frame at <seconds>"));
 		Argument("--begin-time","<time>",_("Set the starting time"));
 		Argument("--end-time","<time>",_("Set the ending time"));
 		Argument("--dpi","<res>",_("Set the dots-per-inch"));
 		Argument("--append","<filename>",_("Append layers in <filename> to composition"));
-
 		Argument("--layer-info","<layer>",_("Print out layer's description, parameter info, etc."));
 		Argument("--layers",NULL,_("Print out the list of available layers"));
 		Argument("--targets",NULL,_("Print out the list of available targets"));
@@ -377,11 +373,9 @@ int process_global_flags(arg_list_t &arg_list)
 			return SYNFIGTOOL_HELP;
 		}
 
-
 		if(*iter == "--help")
 		{
 			display_help(1);
-
 			return SYNFIGTOOL_HELP;
 		}
 
@@ -457,7 +451,6 @@ int process_global_flags(arg_list_t &arg_list)
 			synfig::Target::Book::iterator iter=synfig::Target::book().begin();
 			for(;iter!=synfig::Target::book().end();iter++)
 				cout<<iter->first<<endl;
-
 			return SYNFIGTOOL_HELP;
 		}
 
@@ -468,7 +461,6 @@ int process_global_flags(arg_list_t &arg_list)
 			synfig::LinkableValueNode::Book::iterator iter=synfig::LinkableValueNode::book().begin();
 			for(;iter!=synfig::LinkableValueNode::book().end();iter++)
 				cout<<iter->first<<endl;
-
 			return SYNFIGTOOL_HELP;
 		}
 
@@ -479,16 +471,13 @@ int process_global_flags(arg_list_t &arg_list)
 			synfig::Importer::Book::iterator iter=synfig::Importer::book().begin();
 			for(;iter!=synfig::Importer::book().end();iter++)
 				cout<<iter->first<<endl;
-
 			return SYNFIGTOOL_HELP;
 		}
 
 		if(*iter == "--version")
 		{
 			cerr<<PACKAGE<<" "<<VERSION<<endl;
-
 			arg_list.erase(iter);
-
 			return SYNFIGTOOL_HELP;
 		}
 
@@ -504,33 +493,26 @@ int process_global_flags(arg_list_t &arg_list)
 **\n\
 **	" << endl << endl;
 			arg_list.erase(iter);
-
 			return SYNFIGTOOL_HELP;
 		}
 
 		if(*iter == "-v")
 		{
 			verbosity++;
-
 			arg_list.erase(iter);
-
 			continue;
 		}
 
 		if(*iter == "-q")
 		{
 			be_quiet=true;
-
 			arg_list.erase(iter);
-
 			continue;
 		}
 		if(*iter == "-b")
 		{
 			print_benchmarks=true;
-
 			arg_list.erase(iter);
-
 			continue;
 		}
 	}
@@ -898,9 +880,8 @@ int main(int argc, char *argv[])
 			  return ret;
 
 			// Open the composition
-			{
-				job_list.front().root=open_canvas(job_list.front().filename);
-			}
+			job_list.front().root=open_canvas(job_list.front().filename);
+
 			if(!job_list.front().root)
 			{
 				cerr<<_("Unable to open ")<<job_list.front().filename<<"."<<endl;
@@ -966,7 +947,7 @@ int main(int argc, char *argv[])
 					}
 					VERBOSE_OUT(2)<<_("Appended contents of ")<<composite_file<<endl;
 				}
-			}while(false);
+			} while(false);
 
 			VERBOSE_OUT(4)<<_("Attempting to determine target/outfile...")<<endl;
 
@@ -1050,8 +1031,6 @@ int main(int argc, char *argv[])
 				job_list.pop_front();
 				continue;
 			}
-			//string bleh;
-			//getline(cin,bleh);
 		}
 	}
 
