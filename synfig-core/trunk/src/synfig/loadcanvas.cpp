@@ -1139,31 +1139,39 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 	value_node->set_root_canvas(canvas->get_root());
 
 	int i;
-	for(i=0;i<value_node->link_count();i++)
+	String id, name;
+	xmlpp::Element::AttributeList attrib_list(element->get_attributes());
+	for(xmlpp::Element::AttributeList::iterator iter = attrib_list.begin(); iter != attrib_list.end(); iter++)
 	{
-		if(element->get_attribute(value_node->link_name(i)))
-		try {
-			String id(element->get_attribute(value_node->link_name(i))->get_value());
+		name = (*iter)->get_name();
+		id = (*iter)->get_value();
 
-			if(!value_node->set_link(i,
-					canvas->surefind_value_node(
-						id
-					)
-				)
-			) error(element,strprintf(_("Unable to set link \"%s\" to ValueNode \"%s\" (link #%d in \"%s\")"),value_node->link_name(i).c_str(),id.c_str(),i,value_node->get_name().c_str()));
+		if (name == "guid" || name == "id" || name == "type")
+			continue;
+
+		try {
+			i = value_node->get_link_index_from_name(name);
+
+			if(!value_node->set_link(i, canvas->surefind_value_node(id)))
+				error(element,strprintf(_("Unable to set link \"%s\" to ValueNode \"%s\" (link #%d in \"%s\")"),value_node->link_name(i).c_str(),id.c_str(),i,value_node->get_name().c_str()));
+			else
+				printf("  composite: set '%s'\n", name.c_str());
+		}
+		catch (Exception::BadLinkName)
+		{
+			error(element,"Bad link name " + name);
 		}
 		catch(Exception::IDNotFound)
 		{
-			error(element,"Unable to resolve "+element->get_attribute(value_node->link_name(i))->get_value());
+			error(element,"Unable to resolve " + id);
 		}
 		catch(Exception::FileNotFound)
 		{
-			error(element,"Unable to open file referenced in "+element->get_attribute(value_node->link_name(i))->get_value());
+			error(element,"Unable to open file referenced in " + id);
 		}
 		catch(...)
 		{
-			error(element,strprintf(_("Unknown Exception thrown when referencing ValueNode \"%s\""),
-				element->get_attribute(value_node->link_name(i))->get_value().c_str()));
+			error(element,strprintf(_("Unknown Exception thrown when referencing ValueNode \"%s\""), id.c_str()));
 			throw;
 		}
 	}
