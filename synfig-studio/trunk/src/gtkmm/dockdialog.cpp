@@ -112,7 +112,7 @@ DockDialog::DockDialog():
 
 	// Set up the window
 	//set_type_hint(Gdk::WINDOW_TYPE_HINT_UTILITY);
-	set_title(_("Dock Dialog"));
+	set_title(_("Dock Panel"));
 
 	// Register with the dock manager
 	App::dock_manager->dock_dialog_list_.push_back(this);
@@ -558,5 +558,5 @@ DockDialog::refresh_title()
 		set_title(title);
 	}
 	else
-		set_title(_("Empty Dock Dialog"));
+		set_title(_("Empty Dock Panel"));
 }

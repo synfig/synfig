@@ -236,7 +236,7 @@ Toolbox::Toolbox():
 	filemenu->items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::Stock::CLOSE,
 		sigc::ptr_fun(close_selected_instance)));
 	filemenu->items().push_back(Gtk::Menu_Helpers::SeparatorElem());
-	filemenu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Dialogs"),*dock_dialogs));
+	filemenu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Panels"),*dock_dialogs));
 
 	//filemenu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Canvas Browser..."),
 	//	sigc::mem_fun(studio::App::show_comp_view)));
