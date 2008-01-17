@@ -667,6 +667,8 @@ int extract_RendDesc(arg_list_t &arg_list,RendDesc &desc)
 			//desc.set_gamma(Gamma(atof(iter->c_str())));
 			arg_list.erase(iter);
 		}
+		else if (flag_requires_value(*iter))
+			iter=next++;
 	}
 	if(w&&h)
 	{
@@ -704,6 +706,8 @@ int extract_quality(arg_list_t &arg_list,int &quality)
 			VERBOSE_OUT(1)<<strprintf(_("Quality set to %d"),quality)<<endl;
 			arg_list.erase(iter);
 		}
+		else if (flag_requires_value(*iter))
+			iter=next++;
 	}
 
 	return SYNFIGTOOL_OK;
@@ -722,6 +726,8 @@ int extract_threads(arg_list_t &arg_list,int &threads)
 			VERBOSE_OUT(1)<<strprintf(_("Threads set to %d"),threads)<<endl;
 			arg_list.erase(iter);
 		}
+		else if (flag_requires_value(*iter))
+			iter=next++;
 	}
 
 	return SYNFIGTOOL_OK;
@@ -741,6 +747,8 @@ int extract_target(arg_list_t &arg_list,string &type)
 			type=*iter;
 			arg_list.erase(iter);
 		}
+		else if (flag_requires_value(*iter))
+			iter=next++;
 	}
 
 	return SYNFIGTOOL_OK;
@@ -760,6 +768,8 @@ int extract_append(arg_list_t &arg_list,string &filename)
 			filename=*iter;
 			arg_list.erase(iter);
 		}
+		else if (flag_requires_value(*iter))
+			iter=next++;
 	}
 
 	return SYNFIGTOOL_OK;
@@ -781,6 +791,8 @@ int extract_outfile(arg_list_t &arg_list,string &outfile)
 			arg_list.erase(iter);
 			ret=SYNFIGTOOL_OK;
 		}
+		else if (flag_requires_value(*iter))
+			iter=next++;
 	}
 
 	return ret;
@@ -800,6 +812,8 @@ int extract_canvasid(arg_list_t &arg_list,string &canvasid)
 			canvasid=*iter;
 			arg_list.erase(iter);
 		}
+		else if (flag_requires_value(*iter))
+			iter=next++;
 	}
 
 	return SYNFIGTOOL_OK;
