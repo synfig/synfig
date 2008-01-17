@@ -308,9 +308,12 @@ void display_help(int amount)
 
 		}
 	};
-	cerr<<_("syntax: ")<<progname<<" [DEFAULT OPTIONS] ([SIF FILE] [SPECIFIC OPTIONS])..."<<endl;
-	cerr<<endl;
-	if(amount>=1)
+
+	cerr << endl << _("syntax: ") << progname << " [DEFAULT OPTIONS] ([SIF FILE] [SPECIFIC OPTIONS])..." << endl << endl;
+
+	if(amount == 0)
+		Argument("--help",NULL,_("Print out usage and syntax info"));
+	else
 	{
 		Argument("-t","<output type>",_("Specify output target (Default:unknown)"));
 		Argument("-w","<pixel width>",_("Set the image width (Use zero for file default)"));
@@ -349,9 +352,7 @@ void display_help(int amount)
 		Argument("--signal-test",NULL,_("Test signal implementation"));
 #endif
 	}
-	else
 
-	Argument("--help",NULL,_("Print out usage and syntax info"));
 	cerr<<endl;
 }
 
