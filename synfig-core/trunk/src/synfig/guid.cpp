@@ -92,7 +92,7 @@ static void (*get_rand_long_long)(uint64_t&)=_set_up_rand_long_long;
 static void _set_up_rand_long_long(uint64_t &x)
 {
 #ifdef _DEBUG
-	synfig::info("Starting up GUID system...");
+	// synfig::info("Starting up GUID system...");
 #endif
 	_a=GUID_RNG(time(0)+clock());
 	_b=GUID_RNG(clock());
@@ -130,7 +130,7 @@ static void (*get_rand_long_long)(uint64_t&)=_set_up_rand_long_long;
 static void _set_up_rand_long_long(uint64_t &x)
 {
 #ifdef _DEBUG
-	synfig::info("Starting up GUID system...");
+	// synfig::info("Starting up GUID system...");
 #endif
 	rand_fd=open("/dev/urandom",O_RDONLY);
 	get_rand_long_long=_get_rand_long_long;
