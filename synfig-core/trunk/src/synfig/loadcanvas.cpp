@@ -1099,27 +1099,23 @@ CanvasParser::parse_animated(xmlpp::Element *element,Canvas::Handle canvas)
 etl::handle<LinkableValueNode>
 CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle canvas)
 {
-	handle<LinkableValueNode> value_node;
-	ValueBase::Type type;
-
 	// Determine the type
-	if(element->get_attribute("type"))
+	if(!element->get_attribute("type"))
 	{
-		type=ValueBase::ident_type(element->get_attribute("type")->get_value());
-
-		if(!type)
-		{
-			error(element,"Bad type in ValueNode");
-			return 0;
-		}
-	}
-	else
-	{
-		error(element,"Missing type in ValueNode");
+		error(element, strprintf(_("Missing attribute \"type\" in <%s>"), element->get_name().c_str()));
 		return 0;
 	}
 
-	value_node=LinkableValueNode::create(element->get_name(),type);
+	ValueBase::Type type=ValueBase::ident_type(element->get_attribute("type")->get_value());
+
+	if(!type)
+	{
+		error(element, strprintf(_("Bad type in <%s>"), element->get_name().c_str()));
+		return 0;
+	}
+
+	handle<LinkableValueNode> value_node=LinkableValueNode::create(element->get_name(),type);
+ 	handle<ValueNode> c[value_node->link_count()];
 
 	if(!value_node)
 	{
@@ -1132,180 +1128,103 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 
 	if(value_node->get_type()!=type)
 	{
-		error(element,"ValueNode did not accept type");
+		error(element, strprintf(_("<%s> did not accept type '%s'"),
+								 element->get_name().c_str(),
+								 ValueBase::type_local_name(type).c_str()));
 		return 0;
 	}
 
 	value_node->set_root_canvas(canvas->get_root());
 
-	int i;
-	String id, name;
-	xmlpp::Element::AttributeList attrib_list(element->get_attributes());
-	for(xmlpp::Element::AttributeList::iterator iter = attrib_list.begin(); iter != attrib_list.end(); iter++)
+	// handle exported valuenodes
 	{
-		name = (*iter)->get_name();
-		id = (*iter)->get_value();
-
-		if (name == "guid" || name == "id" || name == "type")
-			continue;
-
-		try {
-			i = value_node->get_link_index_from_name(name);
-
-			if(!value_node->set_link(i, canvas->surefind_value_node(id)))
-				error(element,strprintf(_("Unable to set link \"%s\" to ValueNode \"%s\" (link #%d in \"%s\")"),value_node->link_name(i).c_str(),id.c_str(),i,value_node->get_name().c_str()));
-			else
-				printf("  composite: set '%s'\n", name.c_str());
-		}
-		catch (Exception::BadLinkName)
+		int index;
+		String id, name;
+		xmlpp::Element::AttributeList attrib_list(element->get_attributes());
+		for(xmlpp::Element::AttributeList::iterator iter = attrib_list.begin(); iter != attrib_list.end(); iter++)
 		{
-			error(element,"Bad link name " + name);
-		}
-		catch(Exception::IDNotFound)
-		{
-			error(element,"Unable to resolve " + id);
-		}
-		catch(Exception::FileNotFound)
-		{
-			error(element,"Unable to open file referenced in " + id);
-		}
-		catch(...)
-		{
-			error(element,strprintf(_("Unknown Exception thrown when referencing ValueNode \"%s\""), id.c_str()));
-			throw;
-		}
-	}
+			name = (*iter)->get_name();
+			id = (*iter)->get_value();
 
-
-
-	xmlpp::Element::NodeList list = element->get_children();
-	for(xmlpp::Element::NodeList::iterator iter = list.begin(); iter != list.end(); ++iter)
-	{
-		xmlpp::Element *child(dynamic_cast<xmlpp::Element*>(*iter));
-		try
-		{
-			if(!child)
+			if (name == "guid" || name == "id" || name == "type")
 				continue;
-			int index=value_node->get_link_index_from_name(child->get_name());
 
-			xmlpp::Element::NodeList list = child->get_children();
-			xmlpp::Element::NodeList::iterator iter;
+			try {
+				index = value_node->get_link_index_from_name(name);
 
-			// Search for the first non-text XML element
-			for(iter = list.begin(); iter != list.end(); ++iter)
-				if(dynamic_cast<xmlpp::Element*>(*iter)) break;
-
-			if(iter==list.end())
-			{
-				error(child,_("element is missing its contents"));
-				continue;
-			}
-
-			ValueNode::Handle link=parse_value_node(dynamic_cast<xmlpp::Element*>(*iter),canvas);
-
-			if(!link)
-			{
-				error((*iter),"Parse of ValueNode failed");
-			}
-			else
-			if(!value_node->set_link(index,link))
-			{
-				//error(dynamic_cast<xmlpp::Element*>(*iter),strprintf(_("Unable to connect value node ('%s' of type '%s') to link %d"),link->get_name().c_str(),ValueBase::type_local_name(link->get_type()).c_str(),index));
-				error(element,strprintf(_("Unable to connect value node ('%s' of type '%s') to link %d"),link->get_name().c_str(),ValueBase::type_local_name(link->get_type()).c_str(),index));
-			}
-
-			// \todo do a search for more elements and warn if they are found
-
-		}
-		catch(Exception::BadLinkName)
-		{
-			error_unexpected_element(child,child->get_name());
-		}
-		catch(...)
-		{
-			error(child,strprintf(_("Unknown Exception thrown when working on element \"%s\""),child->get_name().c_str()));
-			throw;
-		}
-	}
-
-	return value_node;
-}
-
-handle<ValueNode_Composite>
-CanvasParser::parse_composite(xmlpp::Element *element,Canvas::Handle canvas)
-{
-	assert(element->get_name()=="composite");
-
-	if(!element->get_attribute("type"))
-	{
-		error(element,"Missing attribute \"type\" in <composite>");
-		return handle<ValueNode_Composite>();
-	}
-
-	ValueBase::Type type=ValueBase::ident_type(element->get_attribute("type")->get_value());
-
-	if(!type)
-	{
-		error(element,"Bad type in <composite>");
-		return handle<ValueNode_Composite>();
-	}
-
-	handle<ValueNode_Composite> value_node=ValueNode_Composite::create(type);
-	handle<ValueNode> c[6];
-
-	if(!value_node)
-	{
-		error(element,strprintf(_("Unable to create <composite>")));
-		return handle<ValueNode_Composite>();
-	}
-
-	int i;
-
-	for(i=0;i<value_node->link_count();i++)
-	{
-		string name=value_node->link_name(i);
-		if(c[i])
-		{
-			error(element,name+" was already defined in <composite>");
-			continue;
-		}
-		if(element->get_attribute(name))
-		{
-			c[i]=canvas->surefind_value_node(element->get_attribute(name)->get_value());
-			if(c[i])
-			{
-				if(!value_node->set_link(i,c[i]))
+				if(c[index])
 				{
-					error(element,'"'+name+"\" attribute in <composite> has bad type");
+					error(element,strprintf(_("'%s' was already defined in <%s>"),
+											name.c_str(),
+											element->get_name().c_str()));
+					continue;
 				}
+
+				c[index] = canvas->surefind_value_node(id);
+
+				if (!c[index])
+				{
+					error(element, strprintf(_("'%s' attribute in <%s> references unknown ID '%s'"),
+											 name.c_str(),
+											 element->get_name().c_str(),
+											 id.c_str()));
+					continue;
+				}
+
+				if(!value_node->set_link(index, c[index]))
+				{
+					error(element, strprintf(_("Unable to set link '\"%s\" to ValueNode \"%s\" (link #%d in \"%s\")"),
+											 value_node->link_name(index).c_str(),
+											 id.c_str(),
+											 index,
+											 element->get_name().c_str()));
+					continue;
+				}
+
+				// printf("  <%s> set link %d (%s) using exported value\n", element->get_name().c_str(), index, name.c_str());
 			}
-			else
-				error(element,'"'+name+"\" attribute in <composite> references unknown ID");
+			catch (Exception::BadLinkName)
+			{
+				warning(element, strprintf("Bad link name '%s'", name.c_str()));
+			}
+			catch(Exception::IDNotFound)
+			{
+				error(element,"Unable to resolve " + id);
+			}
+			catch(Exception::FileNotFound)
+			{
+				error(element,"Unable to open file referenced in " + id);
+			}
+			catch(...)
+			{
+				error(element,strprintf(_("Unknown Exception thrown when referencing ValueNode \"%s\""), id.c_str()));
+				throw;
+			}
 		}
 	}
 
-	xmlpp::Element::NodeList list = element->get_children();
-	for(xmlpp::Element::NodeList::iterator iter = list.begin(); iter != list.end(); ++iter)
+	// handle inline valuenodes
 	{
-		xmlpp::Element *child(dynamic_cast<xmlpp::Element*>(*iter));
-		if(!child)
-			continue;
-
-		string child_name = child->get_name();
-		for(i=0;i<value_node->link_count();i++)
+		int index;
+		String child_name;
+		xmlpp::Element::NodeList list = element->get_children();
+		for(xmlpp::Element::NodeList::iterator iter = list.begin(); iter != list.end(); ++iter)
 		{
-			string name=value_node->link_name(i);
-			int old_index = -1;
-
-			if (child_name.size() == 2 && child_name[0] == 'c')
-				old_index = child_name[1] - '1';
-
-			if ((old_index != -1 && old_index == i) ||
-				(old_index == -1 && value_node->get_link_index_from_name(child_name) == i))
+			xmlpp::Element *child(dynamic_cast<xmlpp::Element*>(*iter));
+			try
 			{
-				if(c[i])
+				if(!child)
+					continue;
+
+				child_name = child->get_name();
+
+				index = value_node->get_link_index_from_name(child_name);
+
+				if(c[index])
 				{
-					error(child,child_name+" was already defined in <composite>");
+					error(child, strprintf(_("'%s' was already defined in <%s>"),
+										   child_name.c_str(),
+										   element->get_name().c_str()));
 					break;
 				}
 
@@ -1318,63 +1237,60 @@ CanvasParser::parse_composite(xmlpp::Element *element,Canvas::Handle canvas)
 
 				if(iter==list.end())
 				{
-					error(child,strprintf(_("<%s> is missing its contents"),child_name.c_str()));
-					break;
+					error(child,strprintf(_("element <%s> is missing its contents"),
+										  child_name.c_str()));
+					continue;
 				}
 
-				c[i]=parse_value_node(dynamic_cast<xmlpp::Element*>(*iter),canvas);
+				c[index]=parse_value_node(dynamic_cast<xmlpp::Element*>(*iter),canvas);
 
-				if(!c[i])
+				if(!c[index])
 				{
-					error((*iter),"Parse of "+child_name+" ValueNode failed");
-					break;
+					error((*iter),strprintf(_("Parse of '%s' failed"),
+											child_name.c_str()));
+					continue;
 				}
 
-				if(!value_node->set_link(i,c[i]))
+				if(!value_node->set_link(index,c[index]))
 				{
-					error(child,strprintf(_("<%s> has a bad value"),child_name.c_str()));
-					break;
+					error(child,strprintf(_("Unable to connect value node ('%s' of type '%s') to link %d (%s)"),
+										  c[index]->get_name().c_str(),
+										  ValueBase::type_local_name(c[index]->get_type()).c_str(),
+										  index,
+										  value_node->link_name(index).c_str()));
+					continue;
 				}
 
 				// \todo do a search for more elements and warn if they are found
-				break;
+
+				// printf("  <%s> set link %d (%s) using inline value\n", element->get_name().c_str(), index, child_name.c_str());
+			}
+			catch(Exception::BadLinkName)
+			{
+				warning(child, strprintf("Bad link name for <%s>", element->get_name().c_str()));
+			}
+			catch(...)
+			{
+				error(child, strprintf(_("Unknown Exception thrown when working on element \"%s\""),child_name.c_str()));
+				throw;
 			}
 		}
-		// somewhat of a hack, but it works
-		if(i==value_node->link_count()) error_unexpected_element(child,child_name);
 	}
 
-	switch(value_node->link_count())
+	for (int i = 0; i < value_node->link_count(); i++)
 	{
-	case 1:
-		if(!value_node->get_link(0))
+		if (!c[i] &&
+			// the 'width' parameter of <stripes> wasn't always present, so it won't be in old .sif files
+			!(element->get_name() == "stripes" && value_node->link_name(i) == "width"))
 		{
-			error(element,"<composite> is missing parameters");
-			return handle<ValueNode_Composite>();
+			error(element, strprintf(_("<%s> is missing link %d (%s)"),
+									 element->get_name().c_str(),
+									 i,
+									 value_node->link_name(i).c_str()));
+ 			return 0;
 		}
-		break;
-	case 2:
-		if(!value_node->get_link(0) ||!value_node->get_link(1))
-		{
-			error(element,"<composite> is missing parameters");
-			return handle<ValueNode_Composite>();
-		}
-		break;
-	case 3:
-		if(!value_node->get_link(0) ||!value_node->get_link(1) ||!value_node->get_link(2))
-		{
-			error(element,"<composite> is missing parameters");
-			return handle<ValueNode_Composite>();
-		}
-		break;
-	case 4:
-		if(!value_node->get_link(0) ||!value_node->get_link(1) ||!value_node->get_link(2) ||!value_node->get_link(3))
-		{
-			error(element,"<composite> is missing parameters");
-			return handle<ValueNode_Composite>();
-		}
-		break;
-    }
+	}
+
 	return value_node;
 }
 
@@ -1630,9 +1546,6 @@ CanvasParser::parse_value_node(xmlpp::Element *element,Canvas::Handle canvas)
 	else
 	if(element->get_name()=="hermite" || element->get_name()=="animated")
 		value_node=parse_animated(element,canvas);
-	else
-	if(element->get_name()=="composite")
-		value_node=parse_composite(element,canvas);
 	else
 	if(element->get_name()=="dynamic_list")
 		value_node=parse_dynamic_list(element,canvas);

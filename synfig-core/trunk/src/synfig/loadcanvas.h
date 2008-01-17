@@ -161,7 +161,6 @@ private:
 	etl::handle<ValueNode_Animated> parse_animated(xmlpp::Element *node,Canvas::Handle canvas);
 	etl::handle<ValueNode_Subtract> parse_subtract(xmlpp::Element *node,Canvas::Handle canvas);
 	etl::handle<LinkableValueNode> parse_linkable_value_node(xmlpp::Element *node,Canvas::Handle canvas);
-	etl::handle<ValueNode_Composite> parse_composite(xmlpp::Element *node,Canvas::Handle canvas);
 	etl::handle<ValueNode_DynamicList> parse_dynamic_list(xmlpp::Element *node,Canvas::Handle canvas);
 
 }; // END of CanvasParser
