@@ -520,6 +520,15 @@ int process_global_flags(arg_list_t &arg_list)
 	return SYNFIGTOOL_OK;
 }
 
+/* true if the given flag takes an extra parameter */
+bool flag_requires_value(String flag) {
+	return (flag=="-a"	|| flag=="-c"	|| flag=="-g"	|| flag=="-h"	|| flag=="-o" ||
+			flag=="-Q"	|| flag=="-s"	|| flag=="-t"	|| flag=="-T"	|| flag=="-w" ||
+			flag=="--append"	|| flag=="--begin-time"		|| flag=="--dpi"		|| flag=="--dpi-x"	||
+			flag=="--dpi-y"		|| flag=="--end-frame"		|| flag=="--end-time"	|| flag=="--fps"	||
+			flag=="--frame"		|| flag=="--start-frame"	|| flag=="--start-time"	|| flag=="--time"	);
+}
+
 int extract_arg_cluster(arg_list_t &arg_list,arg_list_t &cluster)
 {
 	arg_list_t::iterator iter, next;
@@ -532,29 +541,7 @@ int extract_arg_cluster(arg_list_t &arg_list,arg_list_t &cluster)
 			return SYNFIGTOOL_OK;
 		}
 
-		if(
-			*iter=="-t" ||
-			*iter=="-w" ||
-			*iter=="-h" ||
-			*iter=="-a" ||
-			*iter=="-g" ||
-			*iter=="-o" ||
-			*iter=="-s" ||
-			*iter=="-Q" ||
-			*iter=="-c" ||
-			*iter=="--fps" ||
-			*iter=="--start-time" ||
-			*iter=="--begin-time" ||
-			*iter=="--end-time" ||
-			*iter=="--start-frame" ||
-			*iter=="--end-frame" ||
-			*iter=="--time" ||
-			*iter=="--frame" ||
-			*iter=="--dpi" ||
-			*iter=="--dpi-x" ||
-			*iter=="--dpi-y" ||
-			*iter=="--append" ||
-			*iter=="-T" )
+		if (flag_requires_value(*iter))
 		{
 			cluster.push_back(*iter);
 			arg_list.erase(iter);
