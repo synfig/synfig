@@ -199,8 +199,6 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 			#if USE_PIXELRENDERING_LIMIT
 			if(desc.get_w()*desc.get_h() > PIXEL_RENDERING_LIMIT)
 			{
-				synfig::info("Render BROKEN UP! (%d pixels)", desc.get_w()*desc.get_h());
-
 				Surface surface;
 				int rowheight = PIXEL_RENDERING_LIMIT/desc.get_w();
 				if (!rowheight) rowheight = 1; // TODO: render partial lines to stay within the limit?
@@ -209,7 +207,8 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 
 				rows++;
 
-				synfig::info("\t blockh=%d,remh=%d,totrows=%d", rowheight,lastrowheight,rows);
+				synfig::info("Render broken up into %d block%s %d pixels tall, and a final block %d pixels tall",
+							 rows-1, rows==2?"":"s", rowheight, lastrowheight);
 
 				// loop through all the full rows
 				if(!start_frame())
@@ -334,8 +333,6 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 			#if USE_PIXELRENDERING_LIMIT
 			if(desc.get_w()*desc.get_h() > PIXEL_RENDERING_LIMIT)
 			{
-				synfig::info("Render BROKEN UP! (%d pixels)", desc.get_w()*desc.get_h());
-
 				Surface surface;
 				int totalheight = desc.get_h();
 				int rowheight = PIXEL_RENDERING_LIMIT/desc.get_w();
@@ -345,7 +342,8 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 
 				rows++;
 
-				synfig::info("\t blockh=%d,remh=%d,totrows=%d", rowheight,lastrowheight,rows);
+				synfig::info("Render broken up into %d block%s %d pixels tall, and a final block %d pixels tall",
+							 rows-1, rows==2?"":"s", rowheight, lastrowheight);
 
 				// loop through all the full rows
 				if(!start_frame())
