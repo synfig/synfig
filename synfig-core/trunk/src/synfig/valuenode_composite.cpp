@@ -364,11 +364,8 @@ ValueNode_Composite::get_link_index_from_name(const String &name)const
 	if(name.empty())
 		throw Exception::BadLinkName(name);
 
-	if(name[0]=='c')
-	{
-		warning("%s:%d is this EVER called?", __FILE__, __LINE__);
+	if(name[0]=='c' && name.size() == 2 && name[1]-'1' >= 0 && name[1]-'1' < link_count())
 		return name[1]-'1';
-	}
 
 	switch(get_type())
 	{
