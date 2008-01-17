@@ -363,19 +363,19 @@ synfig::Main::~Main()
 		}
 	}
 
-	synfig::info("ValueNode::subsys_stop()");
+	// synfig::info("ValueNode::subsys_stop()");
 	ValueNode::subsys_stop();
-	synfig::info("Importer::subsys_stop()");
+	// synfig::info("Importer::subsys_stop()");
 	Importer::subsys_stop();
-	synfig::info("Target::subsys_stop()");
+	// synfig::info("Target::subsys_stop()");
 	Target::subsys_stop();
-	synfig::info("Layer::subsys_stop()");
+	// synfig::info("Layer::subsys_stop()");
 	Layer::subsys_stop();
 	/*! \todo For some reason, uncommenting the next line will cause things to crash.
 			  This needs to be looked into at some point. */
  	// synfig::info("Module::subsys_stop()");
 	// Module::subsys_stop();
-	synfig::info("Exiting");
+	// synfig::info("Exiting");
 	
 #if defined(HAVE_SIGNAL_H) && defined(SIGPIPE)
 	signal(SIGPIPE, SIG_DFL);
