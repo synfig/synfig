@@ -422,17 +422,17 @@ int angle_test()
 
 	dist=angle::deg(angle::deg(330).dist(angle::deg(30))).get();
 	printf("angle: angular difference between 330deg and 30deg is %0.1fdeg\n",dist);
-	if(floor(dist+0.5)!=-60)
+	if(floor(dist+0.5)!=300)
 	{
-		printf("angle: error: should be -60deg!\n");
+		printf("angle: error: should be 300deg!\n");
 		ret++;
 	}
 
 	dist=angle::deg(angle::deg(30).dist(angle::deg(330))).get();
 	printf("angle: angular difference between 30deg and 330deg is %0.1fdeg\n",dist);
-	if(floor(dist+0.5)!=60)
+	if(floor(dist+0.5)!=-300)
 	{
-		printf("angle: error: should be 60deg!\n");
+		printf("angle: error: should be -300deg!\n");
 		ret++;
 	}
 
@@ -462,9 +462,9 @@ int angle_test()
 
 	dist=angle::deg(angle::deg(20).dist(angle::deg(205))).get();
 	printf("angle: angular difference between 20deg and 205deg is %0.1fdeg\n",dist);
-	if(floor(dist+0.5)!=175)
+	if(floor(dist+0.5)!=-185)
 	{
-		printf("angle: error: should be 175deg!\n");
+		printf("angle: error: should be -185deg!\n");
 		ret++;
 	}
 
@@ -473,7 +473,7 @@ int angle_test()
 	for(i=-1000;i<1000;i++)
 	{
 		dist=angle::deg(angle::deg(20+i+360).dist(angle::deg(205+i-360))).get();
-		if(floor(dist+0.5)!=175)
+		if(floor(dist+0.5)!=535)
 		{
 			printf("angle: error: Badness at %d!\n",i);
 			ret++;
@@ -484,7 +484,7 @@ int angle_test()
 	for(i=-1000;i<1000;i++)
 	{
 		dist=angle::deg(angle::deg(20+i-360).dist(angle::deg(195+i+360))).get();
-		if(floor(dist+0.5)!=-175)
+		if(floor(dist+0.5)!=-895)
 		{
 			printf("angle: error: Badness at %d!\n",i);
 			ret++;
