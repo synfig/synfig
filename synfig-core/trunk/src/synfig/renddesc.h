@@ -278,7 +278,7 @@ public:
 	//! Returns the height of one pixel
 	Real get_ph()const;
 
-	//! Sets viewport to represent the screen at the give pixel coordinates
+	//! Sets viewport to represent the screen at the given pixel coordinates
 	RendDesc &set_subwindow(int x, int y, int w, int h);
 };	// END of class RendDesc
 
