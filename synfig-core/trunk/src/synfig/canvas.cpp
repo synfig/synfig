@@ -1117,36 +1117,43 @@ synfig::optimize_layers(Context context, Canvas::Handle op_canvas, bool seen_mot
 
 #ifdef SYNFIG_OPTIMIZE_PASTE_CANVAS
 			Canvas::iterator sub_iter;
-			// Determine if we can just remove the paste canvas
-			// altogether
-			if(paste_canvas->get_blend_method()==Color::BLEND_COMPOSITE && paste_canvas->get_amount()==1.0f && paste_canvas->get_zoom()==0 && paste_canvas->get_time_offset()==0 && paste_canvas->get_origin()==Point(0,0))
-			try{
-				for(sub_iter=sub_canvas->begin();sub_iter!=sub_canvas->end();++sub_iter)
-				{
-					Layer* layer=sub_iter->get();
 
-					// any layers that deform end up breaking things
-					// so do things the old way if we run into anything like this
-					if(!dynamic_cast<Layer_NoDeform*>(layer))
-						throw int();
+			// Determine if we can just remove the paste canvas altogether
+			if (paste_canvas->get_blend_method()	== Color::BLEND_COMPOSITE	&&
+				paste_canvas->get_amount()			== 1.0f						&&
+				paste_canvas->get_zoom()			== 0						&&
+				paste_canvas->get_time_offset()		== 0						&&
+				paste_canvas->get_origin()			== Point(0,0)				)
+				try {
+					for(sub_iter=sub_canvas->begin();sub_iter!=sub_canvas->end();++sub_iter)
+					{
+						Layer* layer=sub_iter->get();
 
-					ValueBase value(layer->get_param("blend_method"));
-					if(value.get_type()!=ValueBase::TYPE_INTEGER || value.get(int())!=(int)Color::BLEND_COMPOSITE)
-						throw int();
+						// any layers that deform end up breaking things
+						// so do things the old way if we run into anything like this
+						if(!dynamic_cast<Layer_NoDeform*>(layer))
+							throw int();
+
+						ValueBase value(layer->get_param("blend_method"));
+						if(value.get_type()!=ValueBase::TYPE_INTEGER || value.get(int())!=(int)Color::BLEND_COMPOSITE)
+							throw int();
+					}
+
+					// It has turned out that we don't need a paste canvas
+					// layer, so just go ahead and add all the layers onto
+					// the current stack and be done with it
+					while(sub_canvas->size())
+					{
+						sort_list.push_back(std::pair<float,Layer::Handle>(z_depth,sub_canvas->front()));
+						//op_canvas->push_back_simple(sub_canvas->front());
+						sub_canvas->pop_front();
+					}
+					continue;
 				}
+				catch(int)
+				{ }
+#endif	// SYNFIG_OPTIMIZE_PASTE_CANVAS
 
-				// It has turned out that we don't need a paste canvas
-				// layer, so just go ahead and add all the layers onto
-				// the current stack and be done with it
-				while(sub_canvas->size())
-				{
-					sort_list.push_back(std::pair<float,Layer::Handle>(z_depth,sub_canvas->front()));
-					//op_canvas->push_back_simple(sub_canvas->front());
-					sub_canvas->pop_front();
-				}
-				continue;
-			}catch(int) { }
-#endif
 			Layer::Handle new_layer(Layer::create("PasteCanvas"));
 			dynamic_cast<Layer_PasteCanvas*>(new_layer.get())->set_muck_with_time(false);
 			if (motion_blurred)
