@@ -333,11 +333,25 @@ Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quali
 	Color::BlendMethod blend_method(get_blend_method());
 	const Rect full_bounding_rect(canvas->get_context().get_full_bounding_rect());
 
-	if(context->empty() ||
-	   !etl::intersect(context.get_full_bounding_rect(),full_bounding_rect+origin))
+	if(context->empty())
 	{
 		if (Color::is_onto(blend_method)) return true;
 		if (blend_method==Color::BLEND_COMPOSITE) blend_method=Color::BLEND_STRAIGHT;
+	}
+
+	if (!etl::intersect(context.get_full_bounding_rect(),full_bounding_rect+origin))
+	{
+		if (Color::is_onto(blend_method)) return true;
+
+		/* 'straight' is faster than 'composite' and has the same
+		 * effect if the affected area of the lower layer is
+		 * transparent;  however, if we're not clipping the blit to
+		 * just the bounding rectangle, the affected area is the whole
+		 * tile, so we can't use this optimisation
+		 */
+#ifdef SYNFIG_CLIP_PASTECANVAS
+		if (blend_method==Color::BLEND_COMPOSITE) blend_method=Color::BLEND_STRAIGHT;
+#endif	// SYNFIG_CLIP_PASTECANVAS
 	}
 
 #ifdef SYNFIG_CLIP_PASTECANVAS
