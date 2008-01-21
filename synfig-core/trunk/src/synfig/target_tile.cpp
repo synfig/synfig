@@ -52,7 +52,7 @@ const unsigned int	DEF_TILE_HEIGHT= TILE_SIZE / 2;
 
 #define SYNFIG_OPTIMIZE_LAYER_TREE 	1
 #ifdef _DEBUG
-#define SYNFIG_DISPLAY_EFFICIENCY	1
+// #define SYNFIG_DISPLAY_EFFICIENCY	1
 #endif
 
 /* === G L O B A L S ======================================================= */
