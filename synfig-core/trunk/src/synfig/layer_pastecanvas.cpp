@@ -53,6 +53,7 @@ using namespace synfig;
 
 #define MAX_DEPTH 10
 
+// if this isn't defined, the 'dead heads' in examples/pirates.sifz don't render properly
 #define SYNFIG_CLIP_PASTECANVAS
 
 //#ifdef __APPLE__
