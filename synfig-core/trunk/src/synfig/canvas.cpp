@@ -1082,12 +1082,12 @@ synfig::optimize_layers(Context context, Canvas::Handle op_canvas, bool seen_mot
 		if(value.get_type()==ValueBase::TYPE_REAL && value.get(Real())==0)
 			continue;
 
-		Layer_PasteCanvas* paste_canvas(static_cast<Layer_PasteCanvas*>(layer.get()));
-
 		// note: this used to include "&& paste_canvas->get_time_offset()==0", but then
 		//		 time-shifted layers weren't being sorted by z-depth (bug #1806852)
 		if(layer->get_name()=="PasteCanvas")
 		{
+			Layer_PasteCanvas* paste_canvas(static_cast<Layer_PasteCanvas*>(layer.get()));
+
 			// we need to blur the sub canvas if:
 			// our parent is blurred,
 			// or the child is lower than a local blur,
