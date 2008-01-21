@@ -45,6 +45,37 @@
 
 /* === M A C R O S ========================================================= */
 
+/* version change history:
+ *
+ * 0.1: the original version
+ *
+ *      if a waypoint goes from -179 to 179 degrees, that is a 2
+ *      degree change.  there's no way to express a 720 degree
+ *      rotation with a single pair of waypoints
+ *
+ * 0.2: svn r1227
+ *
+ *      angles no longer wrap at -180 degrees back to 180 degrees; if
+ *      a waypoint goes from -179 to 179 degrees, that is a rotation
+ *      of 358 degrees.  loading a version 0.1 canvas will modify
+ *      constant angle waypoints to that they are within 180 degrees
+ *      of the previous waypoint's value
+ *
+ *      the 'straight' blend method didn't used to work properly.  it
+ *      didn't work at all on transparent pixels in layers other than
+ *      the PasteCanvas layer.  for example, the examples/japan.sifz
+ *      file has a red circle (straight, amount=1.0) on top of a
+ *      striped conical gradient.  if 'straight' was working, the
+ *      conical gradient would be entirely obscured by the circle
+ *      layer (even by its transparent pixels)
+ *
+ * 0.3: not yet implemented
+ *
+ *      the 'straight' blend method was fixed.  loading a version 0.2
+ *      or older canvas will replace the 'straight' blend method in
+ *      non-pastecanvas layers with 'composite'
+ */
+
 #define CURRENT_CANVAS_VERSION "0.2"
 
 /* === T Y P E D E F S ===================================================== */
