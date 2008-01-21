@@ -107,7 +107,7 @@ Dock_CanvasSpecific::init_instance(etl::handle<Instance> instance)
 	etl::clock timer;timer.reset();
 	instance->signal_canvas_view_created().connect(sigc::mem_fun(*this,&Dock_CanvasSpecific::init_canvas_view));
 	init_instance_vfunc(instance);
-	synfig::info("%s init_instance() took %f seconds",get_local_name().c_str(),float(timer()));
+	// synfig::info("%s init_instance() took %f seconds",get_local_name().c_str(),float(timer()));
 }
 
 void
@@ -132,7 +132,7 @@ Dock_CanvasSpecific::init_canvas_view(CanvasView* canvas_view)
 		)
 	);
 	*/
-	synfig::info("%s init_canvas_view() Starting init...",get_local_name().c_str());
+	// synfig::info("%s init_canvas_view() Starting init...",get_local_name().c_str());
 	etl::clock timer;timer.reset();
 	App::signal_canvas_view_focus().connect(
 		sigc::hide(
@@ -143,7 +143,7 @@ Dock_CanvasSpecific::init_canvas_view(CanvasView* canvas_view)
 		)
 	);
 	init_canvas_view_vfunc(canvas_view);
-	synfig::info("%s init_canvas_view() took %f seconds",get_local_name().c_str(),float(timer()));
+	// synfig::info("%s init_canvas_view() took %f seconds",get_local_name().c_str(),float(timer()));
 }
 
 void
