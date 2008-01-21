@@ -185,17 +185,17 @@ private:
 
 	synfig::Rect bbox;
 
-	DEBUGPOINT_CLASS(1);
+	// DEBUGPOINT_CLASS(1);
 
 	//! State Machine
 	Smach smach_;
 
-	DEBUGPOINT_CLASS(2);
+	// DEBUGPOINT_CLASS(2);
 
 	etl::loose_handle<Instance> instance_;
 	etl::handle<synfigapp::CanvasInterface> canvas_interface_;
 
-	DEBUGPOINT_CLASS(3);
+	// DEBUGPOINT_CLASS(3);
 
 	//! Sound and information to play it
 	etl::handle<AudioContainer>		audio;
@@ -209,7 +209,7 @@ private:
 	//! Tooltip controller
 	Gtk::Tooltips tooltips;
 
-	DEBUGPOINT_CLASS(4);
+	// DEBUGPOINT_CLASS(4);
 
 	//! TreeModel for the layers
 	LayerTreeModel layer_tree_model;
@@ -223,7 +223,7 @@ private:
 
 	//Glib::RefPtr<KeyframeTreeStore> keyframe_tree_store_;
 
-	DEBUGPOINT_CLASS(5);
+	// DEBUGPOINT_CLASS(5);
 
 	//std::map<synfig::String,Glib::RefPtr<Gtk::TreeModel> > tree_model_book_;
 	std::map<synfig::String,Glib::RefPtr<Glib::ObjectBase> > ref_obj_book_;
