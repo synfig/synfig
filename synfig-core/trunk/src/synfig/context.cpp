@@ -48,8 +48,8 @@ using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 
-//#define SYNFIG_PROFILE_LAYERS
-//#define SYNFIG_DEBUG_LAYERS
+// #define SYNFIG_PROFILE_LAYERS
+// #define SYNFIG_DEBUG_LAYERS
 
 /* === G L O B A L S ======================================================= */
 
@@ -77,8 +77,7 @@ _print_profile_report()
 	synfig::info("Total Time: %f seconds", total_time);
 	synfig::info("<<<< End of Profile Report");
 }
-
-#endif
+#endif	// SYNFIG_PROFILE_LAYERS
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -165,7 +164,7 @@ Context::get_full_bounding_rect()const
 bool
 Context::accelerated_render(Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb) const
 {
-	#ifdef SYNFIG_PROFILE_LAYERS
+#ifdef SYNFIG_PROFILE_LAYERS
 	String layer_name(curr_layer);
 
 	//sum the pre-work done by layer above us... (curr_layer is layer above us...)
@@ -175,7 +174,7 @@ Context::accelerated_render(Surface *surface,int quality, const RendDesc &rendde
 		//if(run_table.count(curr_layer))run_table[curr_layer]++;
 		//	else run_table[curr_layer]=1;
 	}
-	#endif
+#endif	// SYNFIG_PROFILE_LAYERS
 
 	const Rect bbox(renddesc.get_rect());
 
@@ -208,24 +207,23 @@ Context::accelerated_render(Surface *surface,int quality, const RendDesc &rendde
 	{
 #ifdef SYNFIG_DEBUG_LAYERS
 		synfig::info("Context::accelerated_render(): Hit end of list");
-#endif
+#endif	// SYNFIG_DEBUG_LAYERS
 		surface->set_wh(renddesc.get_w(),renddesc.get_h());
 		surface->clear();
-		#ifdef SYNFIG_PROFILE_LAYERS
+#ifdef SYNFIG_PROFILE_LAYERS
 		profile_timer.reset();
-		#endif
+#endif	// SYNFIG_PROFILE_LAYERS
 		return true;
 	}
 
 #ifdef SYNFIG_DEBUG_LAYERS
 	synfig::info("Context::accelerated_render(): Descending into %s",(*context)->get_name().c_str());
-#endif
+#endif	// SYNFIG_DEBUG_LAYERS
 
 	try {
 		RWLock::ReaderLock lock((*context)->get_rw_lock());
 
-	#ifdef SYNFIG_PROFILE_LAYERS
-
+#ifdef SYNFIG_PROFILE_LAYERS
 	//go down one layer :P
 	depth++;
 	curr_layer=(*context)->get_name();	//make sure the layer inside is referring to the correct layer outside
@@ -244,9 +242,9 @@ Context::accelerated_render(Surface *surface,int quality, const RendDesc &rendde
 	if(depth==0) _print_profile_report(),time_table.clear(),run_table.clear();
 	profile_timer.reset();												//+
 	return ret;
-	#else
+#else  // SYNFIG_PROFILE_LAYERS
 	return (*context)->accelerated_render(context+1,surface,quality,renddesc, cb);
-	#endif
+#endif	// SYNFIG_PROFILE_LAYERS
 
 	}
 	catch(std::bad_alloc)
@@ -254,10 +252,10 @@ Context::accelerated_render(Surface *surface,int quality, const RendDesc &rendde
 		synfig::error("Context::accelerated_render(): Layer \"%s\" threw a bad_alloc exception!",(*context)->get_name().c_str());
 #ifdef _DEBUG
 		return false;
-#else
+#else  // _DEBUG
 		++context;
 		return context.accelerated_render(surface, quality, renddesc, cb);
-#endif
+#endif	// _DEBUG
 	}
 	catch(...)
 	{
