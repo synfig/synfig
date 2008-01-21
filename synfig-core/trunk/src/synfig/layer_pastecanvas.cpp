@@ -298,20 +298,17 @@ Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quali
 	if(cb && !cb->amount_complete(0,10000)) return false;
 
 	if(depth==MAX_DEPTH)
-	{
 		// if we are at the extent of our depth,
 		// then we should just return whatever is under us.
 		return context.accelerated_render(surface,quality,renddesc,cb);
-	}
+
 	depth_counter counter(depth);
 
 	if(!canvas || !get_amount())
 		return context.accelerated_render(surface,quality,renddesc,cb);
 
 	if(muck_with_time_ && curr_time!=Time::begin() && canvas->get_time()!=curr_time+time_offset)
-	{
 		canvas->set_time(curr_time+time_offset);
-	}
 
 	SuperCallback stageone(cb,0,4500,10000);
 	SuperCallback stagetwo(cb,4500,9000,10000);
@@ -324,92 +321,63 @@ Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quali
 	desc.set_br((desc.get_br()-canvas->rend_desc().get_focus()-origin)*zoomfactor+canvas->rend_desc().get_focus());
 	desc.set_flags(RendDesc::PX_ASPECT);
 
-	if(is_solid_color() || context->empty())
+	if (is_solid_color() || context->empty())
 	{
 		surface->set_wh(renddesc.get_w(),renddesc.get_h());
 		surface->clear();
 	}
-	else if(!context.accelerated_render(surface,quality,renddesc,&stageone))
+	else if (!context.accelerated_render(surface,quality,renddesc,&stageone))
 		return false;
-	Color::BlendMethod blend_method(get_blend_method());
 
+	Color::BlendMethod blend_method(get_blend_method());
 	const Rect full_bounding_rect(canvas->get_context().get_full_bounding_rect());
 
-	if(context->empty())
+	if(context->empty() ||
+	   !etl::intersect(context.get_full_bounding_rect(),full_bounding_rect+origin))
 	{
-		if(Color::is_onto(blend_method))
-			return true;
-
-		if(blend_method==Color::BLEND_COMPOSITE)
-			blend_method=Color::BLEND_STRAIGHT;
-	}
-	else
-	if(!etl::intersect(context.get_full_bounding_rect(),full_bounding_rect+origin))
-	{
-		if(Color::is_onto(blend_method))
-			return true;
-
-		if(blend_method==Color::BLEND_COMPOSITE)
-			blend_method=Color::BLEND_STRAIGHT;
+		if (Color::is_onto(blend_method)) return true;
+		if (blend_method==Color::BLEND_COMPOSITE) blend_method=Color::BLEND_STRAIGHT;
 	}
 
 #ifdef SYNFIG_CLIP_PASTECANVAS
+	Rect area(desc.get_rect() & full_bounding_rect);
+
+	Point min(area.get_min());
+	Point max(area.get_max());
+
+	if (desc.get_tl()[0] > desc.get_br()[0]) swap(min[0], max[0]);
+	if (desc.get_tl()[1] > desc.get_br()[1]) swap(min[1], max[1]);
+
+	const int x(floor_to_int((min[0] - desc.get_tl()[0]) / desc.get_pw()));
+	const int y(floor_to_int((min[1] - desc.get_tl()[1]) / desc.get_ph()));
+	const int w( ceil_to_int((max[0] - desc.get_tl()[0]) / desc.get_pw()) - x);
+	const int h( ceil_to_int((max[1] - desc.get_tl()[1]) / desc.get_ph()) - y);
+
+	desc.set_subwindow(x,y,w,h);
+
+	// \todo this used to also have "area.area()<=0.000001 || " - is it useful?
+	//		 it was causing bug #1809480 (Zoom in beyond 8.75 in nested canvases fails)
+	if(desc.get_w()==0 || desc.get_h()==0)
 	{
-		//synfig::info("PasteCanv Clip");
-		Rect area(desc.get_rect()&full_bounding_rect);
-
-		Point min(area.get_min());
-		Point max(area.get_max());
-
-		if(desc.get_tl()[0]>desc.get_br()[0])
-			swap(min[0],max[0]);
-		if(desc.get_tl()[1]>desc.get_br()[1])
-			swap(min[1],max[1]);
-
-		const int
-			x(floor_to_int((min[0]-desc.get_tl()[0])/desc.get_pw())),
-			y(floor_to_int((min[1]-desc.get_tl()[1])/desc.get_ph())),
-			w(ceil_to_int((max[0]-desc.get_tl()[0])/desc.get_pw())-x),
-			h(ceil_to_int((max[1]-desc.get_tl()[1])/desc.get_ph())-y);
-
-		desc.set_subwindow(x,y,w,h);
-
-		Surface pastesurface;
-
-		// \todo this used to also have "area.area()<=0.000001 || " - is it useful?
-		//		 it was causing bug #1809480 (Zoom in beyond 8.75 in nested canvases fails)
-		if(desc.get_w()==0 || desc.get_h()==0)
-		{
-			if(cb && !cb->amount_complete(10000,10000)) return false;
-
-			return true;
-		}
-
-		if(!canvas->get_context().accelerated_render(&pastesurface,quality,desc,&stagetwo))
-			return false;
-
-		Surface::alpha_pen apen(surface->get_pen(x,y));
-
-		apen.set_alpha(get_amount());
-		apen.set_blend_method(blend_method);
-
-		pastesurface.blit_to(apen);
-	}
-#else  // SYNFIG_CLIP_PASTECANVAS
-	{
-		Surface pastesurface;
-
-		if(!canvas->get_context().accelerated_render(&pastesurface,quality,desc,&stagetwo))
-			return false;
-
-		Surface::alpha_pen apen(surface->begin());
-
-		apen.set_alpha(get_amount());
-		apen.set_blend_method(blend_method);
-
-		pastesurface.blit_to(apen);
+		if(cb && !cb->amount_complete(10000,10000)) return false;
+		return true;
 	}
 #endif	// SYNFIG_CLIP_PASTECANVAS
+
+	// render the canvas to be pasted onto pastesurface
+	Surface pastesurface;
+	if(!canvas->get_context().accelerated_render(&pastesurface,quality,desc,&stagetwo))
+		return false;
+
+#ifdef SYNFIG_CLIP_PASTECANVAS
+	Surface::alpha_pen apen(surface->get_pen(x,y));
+#else  // SYNFIG_CLIP_PASTECANVAS
+	Surface::alpha_pen apen(surface->begin());
+#endif	// SYNFIG_CLIP_PASTECANVAS
+
+	apen.set_alpha(get_amount());
+	apen.set_blend_method(blend_method);
+	pastesurface.blit_to(apen);
 
 	if(cb && !cb->amount_complete(10000,10000)) return false;
 
