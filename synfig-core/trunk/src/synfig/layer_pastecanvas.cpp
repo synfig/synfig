@@ -53,8 +53,10 @@ using namespace synfig;
 
 #define MAX_DEPTH 10
 
+#define SYNFIG_CLIP_PASTECANVAS
+
 //#ifdef __APPLE__
-//#define SYNFIG_NO_CLIP
+//#undef SYNFIG_CLIP_PASTECANVAS
 //#endif
 
 /* === C L A S S E S ======================================================= */
@@ -351,7 +353,7 @@ Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quali
 			blend_method=Color::BLEND_STRAIGHT;
 	}
 
-#ifndef SYNFIG_NO_CLIP
+#ifdef SYNFIG_CLIP_PASTECANVAS
 	{
 		//synfig::info("PasteCanv Clip");
 		Rect area(desc.get_rect()&full_bounding_rect);
@@ -393,7 +395,7 @@ Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quali
 
 		pastesurface.blit_to(apen);
 	}
-#else
+#else  // SYNFIG_CLIP_PASTECANVAS
 	{
 		Surface pastesurface;
 
@@ -407,7 +409,7 @@ Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quali
 
 		pastesurface.blit_to(apen);
 	}
-#endif
+#endif	// SYNFIG_CLIP_PASTECANVAS
 
 	if(cb && !cb->amount_complete(10000,10000)) return false;
 
