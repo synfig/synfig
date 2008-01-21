@@ -1113,8 +1113,9 @@ synfig::optimize_layers(Context context, Canvas::Handle op_canvas, bool seen_mot
 			Canvas::Handle paste_sub_canvas = paste_canvas->get_sub_canvas();
 			if(paste_sub_canvas)
 				optimize_layers(paste_sub_canvas->get_context(),sub_canvas,motion_blurred);
-//#define SYNFIG_OPTIMIZE_PASTE_CANVAS 1
 
+// \todo: uncommenting the following breaks the rendering of at least examples/backdrop.sifz quite severely
+// #define SYNFIG_OPTIMIZE_PASTE_CANVAS
 #ifdef SYNFIG_OPTIMIZE_PASTE_CANVAS
 			Canvas::iterator sub_iter;
 
