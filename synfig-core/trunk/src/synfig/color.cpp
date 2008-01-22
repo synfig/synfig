@@ -569,27 +569,27 @@ Color::blend(Color a, Color b,float amount, Color::BlendMethod type)
 
 	const static blendfunc vtable[BLEND_END]=
 	{
-		blendfunc_COMPOSITE,
+		blendfunc_COMPOSITE,	// 0
 		blendfunc_STRAIGHT,
 		blendfunc_BRIGHTEN,
 		blendfunc_DARKEN,
 		blendfunc_ADD,
-		blendfunc_SUBTRACT,
+		blendfunc_SUBTRACT,		// 5
 		blendfunc_MULTIPLY,
 		blendfunc_DIVIDE,
 		blendfunc_COLOR,
 		blendfunc_HUE,
-		blendfunc_SATURATION,
+		blendfunc_SATURATION,	// 10
 		blendfunc_LUMINANCE,
 		blendfunc_BEHIND,
 		blendfunc_ONTO,
 		blendfunc_ALPHA_BRIGHTEN,
-		blendfunc_ALPHA_DARKEN,
+		blendfunc_ALPHA_DARKEN,	// 15
 		blendfunc_SCREEN,
 		blendfunc_HARD_LIGHT,
 		blendfunc_DIFFERENCE,
 		blendfunc_ALPHA_OVER,
-		blendfunc_OVERLAY,
+		blendfunc_OVERLAY,		// 20
 		blendfunc_STRAIGHT_ONTO,
 	};
 
