@@ -1832,6 +1832,8 @@ CanvasParser::parse_canvas(xmlpp::Element *element,Canvas::Handle parent,bool in
 
 	if(element->get_attribute("version"))
 		canvas->set_version(element->get_attribute("version")->get_value());
+	else if(parent)
+		canvas->set_version(parent->get_version());
 
 	if(element->get_attribute("width"))
 		canvas->rend_desc().set_w(atoi(element->get_attribute("width")->get_value().c_str()));
