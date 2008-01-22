@@ -173,7 +173,7 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 
 		#ifdef SYNFIG_OPTIMIZE_LAYER_TREE
 		Canvas::Handle op_canvas(Canvas::create());
-		optimize_layers(canvas->get_context(), op_canvas);
+		optimize_layers(canvas->get_time(), canvas->get_context(), op_canvas);
 		context=op_canvas->get_context();
 		#else
 		context=canvas->get_context();
@@ -307,7 +307,7 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 
 		#ifdef SYNFIG_OPTIMIZE_LAYER_TREE
 		Canvas::Handle op_canvas(Canvas::create());
-		optimize_layers(canvas->get_context(), op_canvas);
+		optimize_layers(canvas->get_time(), canvas->get_context(), op_canvas);
 		context=op_canvas->get_context();
 		#else
 		context=canvas->get_context();

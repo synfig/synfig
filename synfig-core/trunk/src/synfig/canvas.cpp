@@ -1016,7 +1016,7 @@ Canvas::get_meta_data_keys()const
 		  refer to "motion blur", they mean either of these two
 		  layers. */
 void
-synfig::optimize_layers(Context context, Canvas::Handle op_canvas, bool seen_motion_blur_in_parent)
+synfig::optimize_layers(Time time, Context context, Canvas::Handle op_canvas, bool seen_motion_blur_in_parent)
 {
 	Context iter;
 
@@ -1112,7 +1112,7 @@ synfig::optimize_layers(Context context, Canvas::Handle op_canvas, bool seen_mot
 			Canvas::Handle sub_canvas(Canvas::create_inline(op_canvas));
 			Canvas::Handle paste_sub_canvas = paste_canvas->get_sub_canvas();
 			if(paste_sub_canvas)
-				optimize_layers(paste_sub_canvas->get_context(),sub_canvas,motion_blurred);
+				optimize_layers(time, paste_sub_canvas->get_context(),sub_canvas,motion_blurred);
 
 // \todo: uncommenting the following breaks the rendering of at least examples/backdrop.sifz quite severely
 // #define SYNFIG_OPTIMIZE_PASTE_CANVAS

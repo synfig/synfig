@@ -357,7 +357,7 @@ synfig::Target_Tile::render(ProgressCallback *cb)
 
 			#ifdef SYNFIG_OPTIMIZE_LAYER_TREE
 			Canvas::Handle op_canvas(Canvas::create());
-			optimize_layers(canvas->get_context(), op_canvas);
+			optimize_layers(canvas->get_time(), canvas->get_context(), op_canvas);
 			context=op_canvas->get_context();
 			#else
 			context=canvas->get_context();
@@ -369,7 +369,7 @@ synfig::Target_Tile::render(ProgressCallback *cb)
 			Canvas::Handle op_canvas(Canvas::create());
 			// Set the time that we wish to render
 			canvas->set_time(t);
-			optimize_layers(canvas->get_context(), op_canvas);
+			optimize_layers(canvas->get_time(), canvas->get_context(), op_canvas);
 			context=op_canvas->get_context();
 			#else
 			Context context;
@@ -402,7 +402,7 @@ synfig::Target_Tile::render(ProgressCallback *cb)
 
 			#ifdef SYNFIG_OPTIMIZE_LAYER_TREE
 			Canvas::Handle op_canvas(Canvas::create());
-			optimize_layers(canvas->get_context(), op_canvas);
+			optimize_layers(canvas->get_time(), canvas->get_context(), op_canvas);
 			context=op_canvas->get_context();
 			#else
 			context=canvas->get_context();
