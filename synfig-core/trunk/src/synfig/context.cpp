@@ -31,6 +31,7 @@
 
 #include "context.h"
 #include "layer.h"
+#include "layer_composite.h"
 #include "string.h"
 #include "vector.h"
 #include "color.h"
@@ -178,32 +179,54 @@ Context::accelerated_render(Surface *surface,int quality, const RendDesc &rendde
 
 	const Rect bbox(renddesc.get_rect());
 
+	// this is going to be set to true if this layer contributes
+	// nothing, but it's a straight blend with non-zero amount, and so
+	// it has an effect anyway
+	bool straight_and_empty = false;
+	etl::handle<Layer_Composite> composite;
 	Context context(*this);
+
 	for(;!(context)->empty();++context)
 	{
-		// If we are not active
-		// then move on to next layer
+		// If we are not active then move on to next layer
 		if(!(*context)->active())
 			continue;
 
 		const Rect layer_bounds((*context)->get_bounding_rect());
+		composite = etl::handle<Layer_Composite>::cast_dynamic(*context);
 
-		// If the box area is less than zero
-		// then move on to next layer
-		if(layer_bounds.area()<=0.0000000000001)
+		// If the box area is less than zero or the boxes do not
+		// intersect then move on to next layer, unless the layer is
+		// using a straight blend and has a non-zero amount, in which
+		// case it will still affect the result
+		if(layer_bounds.area() <= 0.0000000000001 || !(layer_bounds && bbox))
+		{
+			if (composite &&
+				composite->get_blend_method() == Color::BLEND_STRAIGHT &&
+				composite->get_amount() != 0.0f)
+			{
+				straight_and_empty = true;
+				break;
+			}
 			continue;
+		}
 
-		// If the boxes do not intersect
-		// then move on to next layer
-		if(!(layer_bounds && bbox))
-			continue;
+		// If this layer has Straight as the blend method and amount is 1.0
+		// then we don't want to render the context
+		if (composite && composite->get_blend_method() == Color::BLEND_STRAIGHT &&
+			composite->get_amount() == 1.0f)
+		{
+			Layer::Handle layer = *context;
+			while (!context->empty()) context++; // skip the context
+			return layer->accelerated_render(context,surface,quality,renddesc, cb);
+		}
 
 		// Break out of the loop--we have found a good layer
 		break;
 	}
 
 	// If this layer isn't defined, return alpha
-	if((context)->empty())
+	if (context->empty() || (straight_and_empty && composite->get_amount() == 1.0f))
 	{
 #ifdef SYNFIG_DEBUG_LAYERS
 		synfig::info("Context::accelerated_render(): Hit end of list");
@@ -228,8 +251,33 @@ Context::accelerated_render(Surface *surface,int quality, const RendDesc &rendde
 	depth++;
 	curr_layer=(*context)->get_name();	//make sure the layer inside is referring to the correct layer outside
 	profile_timer.reset(); 										// +
-	bool ret((*context)->accelerated_render(context+1,surface,quality,renddesc, cb));
+#endif	// SYNFIG_PROFILE_LAYERS
 
+	bool ret;
+
+	// this layer doesn't draw anything onto the canvas we're
+	// rendering, but it uses straight blending, so we need to render
+	// the stuff under us and then blit transparent pixels over it
+	// using the appropriate 'amount'
+	if (straight_and_empty)
+	{
+		if (ret = Context((context+1)).accelerated_render(surface,quality,renddesc,cb))
+		{
+			Surface clearsurface;
+			clearsurface.set_wh(renddesc.get_w(),renddesc.get_h());
+			clearsurface.clear();
+
+			Surface::alpha_pen apen(surface->begin());
+			apen.set_alpha(composite->get_amount());
+			apen.set_blend_method(Color::BLEND_STRAIGHT);
+
+			clearsurface.blit_to(apen);
+		}
+	}
+	else
+		ret = (*context)->accelerated_render(context+1,surface,quality,renddesc, cb);
+
+#ifdef SYNFIG_PROFILE_LAYERS
 	//post work for the previous layer
 	time_table[curr_layer]+=profile_timer();							//-
 	if(run_table.count(curr_layer))run_table[curr_layer]++;
@@ -241,11 +289,9 @@ Context::accelerated_render(Surface *surface,int quality, const RendDesc &rendde
 	//print out the table it we're done...
 	if(depth==0) _print_profile_report(),time_table.clear(),run_table.clear();
 	profile_timer.reset();												//+
-	return ret;
-#else  // SYNFIG_PROFILE_LAYERS
-	return (*context)->accelerated_render(context+1,surface,quality,renddesc, cb);
 #endif	// SYNFIG_PROFILE_LAYERS
 
+	return ret;
 	}
 	catch(std::bad_alloc)
 	{

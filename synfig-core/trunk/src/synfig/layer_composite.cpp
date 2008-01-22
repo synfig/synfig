@@ -163,6 +163,22 @@ Layer_Composite::set_param(const String & param, const ValueBase &value)
 			blend_method_ = Color::BLEND_COMPOSITE;
 			return false;
 		}
+
+		if (blend_method_ == Color::BLEND_STRAIGHT)
+		{
+			Canvas::Handle canvas(get_canvas());
+			if (canvas)
+			{
+				String version(canvas->get_version());
+
+				if (version == "0.1" || version == "0.2")
+					if (get_name() == "PasteCanvas")
+						warning("loaded a version %s canvas with a 'Straight' blended PasteCanvas (%s) - check it renders OK",
+								version.c_str(), get_non_empty_description().c_str());
+					else
+						blend_method_ = Color::BLEND_COMPOSITE;
+			}
+		}
 	}
 	else
 		return Layer::set_param(param,value);

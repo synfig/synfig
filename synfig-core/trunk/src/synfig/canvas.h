@@ -76,7 +76,7 @@
  *      non-pastecanvas layers with 'composite'
  */
 
-#define CURRENT_CANVAS_VERSION "0.2"
+#define CURRENT_CANVAS_VERSION "0.3"
 
 /* === T Y P E D E F S ===================================================== */
 

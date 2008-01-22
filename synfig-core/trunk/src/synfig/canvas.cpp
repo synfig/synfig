@@ -1170,6 +1170,30 @@ synfig::optimize_layers(Time time, Context context, Canvas::Handle op_canvas, bo
 			dynamic_cast<Layer_PasteCanvas*>(new_layer.get())->set_muck_with_time(true);
 			layer=new_layer;
 		}
+		else					// not a PasteCanvas - does it use blend method 'Straight'?
+		{
+			/* when we use the 'straight' blend method, every pixel on the layer affects the layers underneath,
+			 * not just the non-transparent pixels; the following workarea wraps non-pastecanvas layers in a
+			 * new pastecanvas to ensure that the straight blend affects the full plane, not just the area
+			 * within the layer's bounding box
+			 */
+
+			// \todo: this code probably needs modification to work properly with motionblur and duplicate
+			etl::handle<Layer_Composite> composite = etl::handle<Layer_Composite>::cast_dynamic(layer);
+			if (composite && composite->get_blend_method() == Color::BLEND_STRAIGHT)
+			{
+				Canvas::Handle sub_canvas(Canvas::create_inline(op_canvas));
+				sub_canvas->push_back(composite = composite->clone());
+				sub_canvas->set_time(time); // region and outline don't calculate their bounding rects until their time is set
+				layer = Layer::create("PasteCanvas");
+				layer->set_description(strprintf("PasteCanvas wrapper for '%s'", composite->get_non_empty_description().c_str()));
+				Layer_PasteCanvas* paste_canvas(static_cast<Layer_PasteCanvas*>(layer.get()));
+				paste_canvas->set_sub_canvas(sub_canvas);
+				paste_canvas->set_blend_method(Color::BLEND_STRAIGHT);
+				paste_canvas->set_amount(composite->get_amount());
+				composite->set_amount(1.0f);
+			}
+		}
 
 		sort_list.push_back(std::pair<float,Layer::Handle>(z_depth,layer));
 		//op_canvas->push_back_simple(layer);

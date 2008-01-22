@@ -202,7 +202,8 @@ Layer_PasteCanvas::set_sub_canvas(etl::handle<synfig::Canvas> x)
 		);
 	*/
 	if(canvas)
-		bounds=(canvas->get_context().get_full_bounding_rect()-canvas->rend_desc().get_focus())*exp(zoom)+origin+canvas->rend_desc().get_focus();
+		bounds = ((canvas->get_context().get_full_bounding_rect() - canvas->rend_desc().get_focus()) * exp(zoom) +
+				  origin + canvas->rend_desc().get_focus());
 
 	if(canvas && muck_with_time_)
 		add_child(canvas.get());
@@ -332,6 +333,7 @@ Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quali
 
 	Color::BlendMethod blend_method(get_blend_method());
 	const Rect full_bounding_rect(canvas->get_context().get_full_bounding_rect());
+	bool blend_using_straight = false; // use 'straight' just for the central blit
 
 	if(context->empty())
 	{
@@ -347,10 +349,14 @@ Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quali
 		 * effect if the affected area of the lower layer is
 		 * transparent;  however, if we're not clipping the blit to
 		 * just the bounding rectangle, the affected area is the whole
-		 * tile, so we can't use this optimisation
+		 * tile, so we can't use this optimisation.  if we are
+		 * clipping, then we can use 'straight' to blit the clipped
+		 * rectangle, but we shouldn't set blend_method to 'straight',
+		 * or the surrounding areas will be blanked, which we don't
+		 * want.
 		 */
 #ifdef SYNFIG_CLIP_PASTECANVAS
-		if (blend_method==Color::BLEND_COMPOSITE) blend_method=Color::BLEND_STRAIGHT;
+		if (blend_method==Color::BLEND_COMPOSITE) blend_using_straight = true;
 #endif	// SYNFIG_CLIP_PASTECANVAS
 	}
 
@@ -368,6 +374,9 @@ Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quali
 	const int w( ceil_to_int((max[0] - desc.get_tl()[0]) / desc.get_pw()) - x);
 	const int h( ceil_to_int((max[1] - desc.get_tl()[1]) / desc.get_ph()) - y);
 
+	const int tw = desc.get_w();
+	const int th = desc.get_h();
+
 	desc.set_subwindow(x,y,w,h);
 
 	// \todo this used to also have "area.area()<=0.000001 || " - is it useful?
@@ -376,6 +385,50 @@ Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quali
 	{
 		if(cb && !cb->amount_complete(10000,10000)) return false;
 		return true;
+	}
+
+	// SYNFIG_CLIP_PASTECANVAS is defined, so we are only touching the
+	// pixels within the affected rectangle.  If the blend method is
+	// 'straight', then we need to blend transparent pixels with the
+	// clipped areas of this tile, because with the 'straight' blend
+	// method, even transparent pixels have an effect on the layers below
+	if (blend_method == Color::BLEND_STRAIGHT)
+	{
+		Surface clearsurface;
+
+		Surface::alpha_pen apen(surface->begin());
+		apen.set_alpha(get_amount());
+		apen.set_blend_method(Color::BLEND_STRAIGHT);
+
+		/* This represents the area we're pasting into the tile,
+		 * within the tile as a whole.	Areas (A), (B), (C) and (D)
+		 * need blending with the underlying context if they're not
+		 * zero-sized:
+		 *
+		 *		 0	   x		 x+w	  tw
+		 *	 0	 +------------------------+
+		 *		 |						  |
+		 *		 |			(A)			  |
+		 *		 |						  |
+		 *	 y	 | - - +----------+ - - - |
+		 *		 |	   |		  |		  |
+		 *		 | (C) |  w by h  |	 (D)  |
+		 *		 |	   |		  |		  |
+		 *	 y+h | - - +----------+ - - - |
+		 *		 |						  |
+		 *		 |			(B)			  |
+		 *		 |						  |
+		 *	 tw	 +------------------------+
+		 */
+
+		if (y > 0)				// draw the full-width strip above the rectangle (A)
+		{ apen.move_to(0,0);   clearsurface.set_wh(tw,y);        clearsurface.clear(); clearsurface.blit_to(apen); }
+		if (y+h < th)			// draw the full-width strip below the rectangle (B)
+		{ apen.move_to(0,y+h); clearsurface.set_wh(tw,th-(y+h)); clearsurface.clear(); clearsurface.blit_to(apen); }
+		if (x > 0)				// draw the box directly left of the rectangle (C)
+		{ apen.move_to(0,y);   clearsurface.set_wh(x,h);         clearsurface.clear(); clearsurface.blit_to(apen); }
+		if (x+w < tw)			// draw the box directly right of the rectangle (D)
+		{ apen.move_to(x+w,y); clearsurface.set_wh(tw-(x+w),h);  clearsurface.clear(); clearsurface.blit_to(apen); }
 	}
 #endif	// SYNFIG_CLIP_PASTECANVAS
 
@@ -391,7 +444,7 @@ Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quali
 #endif	// SYNFIG_CLIP_PASTECANVAS
 
 	apen.set_alpha(get_amount());
-	apen.set_blend_method(blend_method);
+	apen.set_blend_method(blend_using_straight ? Color::BLEND_STRAIGHT : blend_method);
 	pastesurface.blit_to(apen);
 
 	if(cb && !cb->amount_complete(10000,10000)) return false;
