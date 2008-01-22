@@ -69,7 +69,7 @@
  *      conical gradient would be entirely obscured by the circle
  *      layer (even by its transparent pixels)
  *
- * 0.3: not yet implemented
+ * 0.3: svn r1422
  *
  *      the 'straight' blend method was fixed.  loading a version 0.2
  *      or older canvas will replace the 'straight' blend method in
