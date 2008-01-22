@@ -155,16 +155,14 @@ Layer_Composite::set_param(const String & param, const ValueBase &value)
 	else
 	if(param=="blend_method" && value.same_type_as(int()))
 	{
-		Color::BlendMethod blend_method = static_cast<Color::BlendMethod>(value.get(int()));
+		blend_method_ = static_cast<Color::BlendMethod>(value.get(int()));
 
-		if (blend_method < 0 || blend_method >= Color::BLEND_END)
+		if (blend_method_ < 0 || blend_method_ >= Color::BLEND_END)
 		{
-			warning("illegal value (%d) for blend_method - using Composite instead", blend_method);
+			warning("illegal value (%d) for blend_method - using Composite instead", blend_method_);
 			blend_method_ = Color::BLEND_COMPOSITE;
 			return false;
 		}
-
-		blend_method_ = blend_method;
 	}
 	else
 		return Layer::set_param(param,value);
