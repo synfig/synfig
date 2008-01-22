@@ -444,7 +444,9 @@ blendfunc_BEHIND(Color &a,Color &b,float amount)
 static Color
 blendfunc_ALPHA_BRIGHTEN(Color &a,Color &b,float amount)
 {
-	if(a.get_a()<b.get_a()*amount)
+	// \todo can this be right, multiplying amount by *b*'s alpha?
+	// compare with blendfunc_BRIGHTEN where it is multiplied by *a*'s
+	if(a.get_a() < b.get_a()*amount)
 		return a.set_a(a.get_a()*amount);
 	return b;
 }
@@ -452,7 +454,7 @@ blendfunc_ALPHA_BRIGHTEN(Color &a,Color &b,float amount)
 static Color
 blendfunc_ALPHA_DARKEN(Color &a,Color &b,float amount)
 {
-	if(a.get_a()*amount>b.get_a())
+	if(a.get_a()*amount > b.get_a())
 		return a.set_a(a.get_a()*amount);
 	return b;
 }
