@@ -1062,11 +1062,7 @@ CanvasParser::parse_animated(xmlpp::Element *element,Canvas::Handle canvas)
 	// waypoint's value
 	if (type == ValueBase::TYPE_ANGLE) 
 	{
-		Canvas::Handle parent = canvas;
-		while (!parent->is_root())
-			parent = parent->parent();
-
-		if (parent->get_version() == "0.1")
+		if (canvas->get_version() == "0.1")
 		{
 			bool first = true;
 			Real angle, prev = 0;
