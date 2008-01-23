@@ -1180,7 +1180,23 @@ synfig::optimize_layers(Time time, Context context, Canvas::Handle op_canvas, bo
 
 			// \todo: this code probably needs modification to work properly with motionblur and duplicate
 			etl::handle<Layer_Composite> composite = etl::handle<Layer_Composite>::cast_dynamic(layer);
-			if (composite && composite->get_blend_method() == Color::BLEND_STRAIGHT)
+
+			/* this still isn't right; the problem is that some layers
+			 * (such as circle) don't touch pixels that aren't part of
+			 * the circle, so they don't get blended correctly when using
+			 * a straight blend.  so we encapsulate the circle, and the
+			 * encapsulation layer takes care of the transparent pixels
+			 * for us.  if we do that for all layers, however, then the
+			 * distortion layers no longer work, since they have no
+			 * context to work on.  as an approximation to fixing this,
+			 * let's encapsulate only the layers which don't have the
+			 * full plane as their bounding rect.  that tends to catch
+			 * the layers we want to catch, but still isn't quite right
+			 * (consider the circle layer with 'invert' enabled, for
+			 * instance) 
+			 */
+			 if (composite && composite->get_blend_method() == Color::BLEND_STRAIGHT &&
+				layer->get_bounding_rect() != Rect::full_plane())
 			{
 				Canvas::Handle sub_canvas(Canvas::create_inline(op_canvas));
 				sub_canvas->push_back(composite = composite->clone());
