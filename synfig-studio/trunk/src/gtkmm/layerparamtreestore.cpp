@@ -299,7 +299,7 @@ LayerParamTreeStore::set_value_impl(const Gtk::TreeModel::iterator& iter, int co
 void
 LayerParamTreeStore::rebuild()
 {
-	Profiler profiler("LayerParamTreeStore::rebuild()");
+	// Profiler profiler("LayerParamTreeStore::rebuild()");
 	if(queued)queued=false;
 	clear();
 	layer_list=layer_tree->get_selected_layers();

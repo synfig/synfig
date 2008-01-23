@@ -698,7 +698,7 @@ void
 LayerGroupTreeStore::rebuild()
 {
 	rebuilding=true;
-		etl::clock timer;timer.reset();
+	// etl::clock timer;timer.reset();
 	try {
 
 		// Clear out the current list
@@ -731,7 +731,7 @@ LayerGroupTreeStore::rebuild()
 		throw;
 	}
 	rebuilding=false;
-	synfig::info("LayerGroupTreeStore::rebuild() took %f seconds",float(timer()));
+	// synfig::info("LayerGroupTreeStore::rebuild() took %f seconds",float(timer()));
 }
 
 void
