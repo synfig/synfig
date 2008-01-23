@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<canvas version="0.1" width="512" height="512" xres="5905.511856" yres="5905.511856" view-box="-1.499986 1.499986 1.499986 -1.499986" antialias="1" fps="30.000" begin-time="0f" end-time="0f" bgcolor="0.500000 0.500000 0.500000 1.000000">
+<canvas version="0.3" width="512" height="512" xres="5905.511856" yres="5905.511856" view-box="-1.499986 1.499986 1.499986 -1.499986" antialias="1" fps="30.000" begin-time="0f" end-time="0f" bgcolor="0.500000 0.500000 0.500000 1.000000">
   <name>Voria Logo</name>
   <defs>
     <canvas id="WhiteBG" width="644" height="644" xres="5750.000000" yres="5750.000000" bgcolor="0.500000 0.500000 0.500000 1.000000">

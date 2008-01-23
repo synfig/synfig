@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<canvas version="0.1" width="164" height="314" xres="2834.645752" yres="2834.645752" view-box="-2.124667 4.067959 2.124667 -4.067959" antialias="1" fps="24.000" begin-time="0f" end-time="0f" bgcolor="0.500000 0.500000 0.500000 1.000000">
+<canvas version="0.3" width="164" height="314" xres="2834.645752" yres="2834.645752" view-box="-2.124667 4.067959 2.124667 -4.067959" antialias="1" fps="24.000" begin-time="0f" end-time="0f" bgcolor="0.500000 0.500000 0.500000 1.000000">
   <name>Untitled0</name>
   <layer type="linear_gradient" active="true" version="0.0" desc="gradient01">
     <param name="z_depth">
@@ -217,7 +217,7 @@
             <real value="1.0000000000"/>
           </param>
           <param name="blend_method">
-            <integer value="1"/>
+            <integer value="19"/>
           </param>
           <param name="text">
             <string guid="2C5652CF44D19C3FCF2CAE687552F97B">S T U D I O</string>
@@ -227,7 +227,7 @@
               <r>0.000000</r>
               <g>0.000000</g>
               <b>0.000000</b>
-              <a>0.000000</a>
+              <a>1.000000</a>
             </color>
           </param>
           <param name="family">
@@ -359,7 +359,7 @@
             <real value="1.0000000000"/>
           </param>
           <param name="blend_method">
-            <integer value="1"/>
+            <integer value="0"/>
           </param>
           <param name="text">
             <string guid="2C5652CF44D19C3FCF2CAE687552F97B">S T U D I O</string>
@@ -423,7 +423,7 @@
             <real value="1.0000000000"/>
           </param>
           <param name="blend_method">
-            <integer value="1"/>
+            <integer value="0"/>
           </param>
           <param name="color">
             <color>
@@ -460,7 +460,7 @@
             <real value="1.0000000000"/>
           </param>
           <param name="blend_method">
-            <integer value="1"/>
+            <integer value="0"/>
           </param>
           <param name="text">
             <string>S   Y   N   F   I   G</string>

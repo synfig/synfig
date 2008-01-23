@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<canvas version="0.1" width="300" height="350" xres="2952.755900" yres="2952.755900" view-box="-1.500000 2.500000 1.500000 -1.000000" antialias="2" fps="12.000" begin-time="0f" end-time="0f" bgcolor="0.500000 0.500000 0.500000 1.000000">
+<canvas version="0.3" width="300" height="350" xres="2952.755900" yres="2952.755900" view-box="-1.500000 2.500000 1.500000 -1.000000" antialias="2" fps="12.000" begin-time="0f" end-time="0f" bgcolor="0.500000 0.500000 0.500000 1.000000">
   <name>About Dialog Graphic</name>
   <desc>This is the about dialog graphic which is displayed when Synfig Studio starts, and when the about dialog is requested.</desc>
   <meta name="grid_show" content="0"/>
@@ -1948,14 +1948,14 @@
             <real value="1.0000000000"/>
           </param>
           <param name="blend_method">
-            <integer value="1"/>
+            <integer value="19"/>
           </param>
           <param name="color">
             <color>
               <r>0.000000</r>
               <g>0.000000</g>
               <b>0.000000</b>
-              <a>0.000000</a>
+              <a>1.000000</a>
             </color>
           </param>
           <param name="point1">

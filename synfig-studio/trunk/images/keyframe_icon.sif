@@ -187,14 +187,14 @@
       <real value="1.0000000000"/>
     </param>
     <param name="blend_method">
-      <integer value="1"/>
+      <integer value="19"/>
     </param>
     <param name="color">
       <color>
         <r>0.000000</r>
         <g>0.000000</g>
         <b>0.000000</b>
-        <a>0.000000</a>
+        <a>1.000000</a>
       </color>
     </param>
     <param name="radius">
