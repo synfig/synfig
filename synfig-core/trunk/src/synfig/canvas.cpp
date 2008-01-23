@@ -1191,19 +1191,21 @@ synfig::optimize_layers(Time time, Context context, Canvas::Handle op_canvas, bo
 			 * returns true for layers which need to be able to see
 			 * their context.  we can't encapsulate those.
 			 */
-			if (composite && composite->get_blend_method() == Color::BLEND_STRAIGHT &&
+			if (composite &&
+				Color::is_straight(composite->get_blend_method()) &&
 				!composite->reads_context())
 			{
 				Canvas::Handle sub_canvas(Canvas::create_inline(op_canvas));
 				sub_canvas->push_back(composite = composite->clone());
-				sub_canvas->set_time(time); // region and outline don't calculate their bounding rects until their time is set
 				layer = Layer::create("PasteCanvas");
 				layer->set_description(strprintf("PasteCanvas wrapper for '%s'", composite->get_non_empty_description().c_str()));
 				Layer_PasteCanvas* paste_canvas(static_cast<Layer_PasteCanvas*>(layer.get()));
-				paste_canvas->set_sub_canvas(sub_canvas);
-				paste_canvas->set_blend_method(Color::BLEND_STRAIGHT);
+				paste_canvas->set_blend_method(composite->get_blend_method());
 				paste_canvas->set_amount(composite->get_amount());
+				composite->set_blend_method(Color::BLEND_STRAIGHT); // do this before calling set_time() or set_sub_canvas()
 				composite->set_amount(1.0f);
+				sub_canvas->set_time(time); // region and outline don't calculate their bounding rects until their time is set
+				paste_canvas->set_sub_canvas(sub_canvas);
 			}
 		}
 
