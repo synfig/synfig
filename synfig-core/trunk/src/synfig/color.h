@@ -524,6 +524,14 @@ public:
 			|| x==BLEND_HARD_LIGHT
 		;
 	}
+
+	//! a blending method is considered 'straight' if transparent pixels in the upper layer can affect the result of the blend
+	static bool is_straight(BlendMethod x)
+	{
+		return x==BLEND_STRAIGHT
+			|| x==BLEND_STRAIGHT_ONTO
+		;
+	}
 /*protected:
 
 	value_type& operator[](const int i)
