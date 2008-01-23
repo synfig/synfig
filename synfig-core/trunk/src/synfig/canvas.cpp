@@ -1198,13 +1198,14 @@ synfig::optimize_layers(Time time, Context context, Canvas::Handle op_canvas, bo
 				Canvas::Handle sub_canvas(Canvas::create_inline(op_canvas));
 				sub_canvas->push_back(composite = composite->clone());
 				layer = Layer::create("PasteCanvas");
+				composite->set_description(strprintf("Wrapped clone of '%s'", composite->get_non_empty_description().c_str()));
 				layer->set_description(strprintf("PasteCanvas wrapper for '%s'", composite->get_non_empty_description().c_str()));
 				Layer_PasteCanvas* paste_canvas(static_cast<Layer_PasteCanvas*>(layer.get()));
 				paste_canvas->set_blend_method(composite->get_blend_method());
 				paste_canvas->set_amount(composite->get_amount());
-				composite->set_blend_method(Color::BLEND_STRAIGHT); // do this before calling set_time() or set_sub_canvas()
-				composite->set_amount(1.0f);
 				sub_canvas->set_time(time); // region and outline don't calculate their bounding rects until their time is set
+				composite->set_blend_method(Color::BLEND_STRAIGHT); // do this before calling set_sub_canvas(), but after set_time()
+				composite->set_amount(1.0f); // after set_time()
 				paste_canvas->set_sub_canvas(sub_canvas);
 			}
 		}
