@@ -81,8 +81,7 @@ SYNFIG_LAYER_SET_CVS_ID(Layer_SphereDistort,"$Id$");
 /* === E N T R Y P O I N T ================================================= */
 
 Layer_SphereDistort::Layer_SphereDistort()
-:Layer_Composite(1.0,Color::BLEND_STRAIGHT),
-center(0,0),
+:center(0,0),
 radius(1),
 percent(1.0),
 type(TYPE_NORMAL),

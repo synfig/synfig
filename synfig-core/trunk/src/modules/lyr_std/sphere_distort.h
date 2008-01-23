@@ -40,7 +40,7 @@ namespace synfig
 {
 class Spherize_Trans;
 
-class Layer_SphereDistort : public Layer_Composite
+class Layer_SphereDistort : public Layer
 {
 	SYNFIG_LAYER_MODULE_EXT
 	friend class Spherize_Trans;
