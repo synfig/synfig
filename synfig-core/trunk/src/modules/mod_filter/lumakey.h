@@ -59,7 +59,8 @@ public:
 	virtual synfig::Rect get_bounding_rect(synfig::Context context)const;
 
 	virtual bool accelerated_render(synfig::Context context,synfig::Surface *surface,int quality, const synfig::RendDesc &renddesc, synfig::ProgressCallback *cb)const;
-};
+	virtual bool reads_context()const { return true; }
+}; // END of class LumaKey
 
 /* === E N D =============================================================== */
 

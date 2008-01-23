@@ -57,9 +57,9 @@ public:
 
 	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 	virtual Rect get_full_bounding_rect(Context context)const;
-
 	virtual Vocab get_param_vocab()const;
-}; // END of class Blur
+	virtual bool reads_context()const { return true; }
+}; // END of class Layer_Shade
 
 /* -- E X T E R N S --------------------------------------------------------- */
 

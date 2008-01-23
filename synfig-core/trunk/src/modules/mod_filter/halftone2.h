@@ -64,9 +64,9 @@ public:
 	virtual synfig::Color get_color(synfig::Context context, const synfig::Point &pos)const;
 	virtual bool accelerated_render(synfig::Context context,synfig::Surface *surface,int quality, const synfig::RendDesc &renddesc, synfig::ProgressCallback *cb)const;
 	synfig::Layer::Handle hit_check(synfig::Context context, const synfig::Point &point)const;
-
 	virtual Vocab get_param_vocab()const;
-};
+	virtual bool reads_context()const { return true; }
+}; // END of class Halftone2
 
 /* === E N D =============================================================== */
 

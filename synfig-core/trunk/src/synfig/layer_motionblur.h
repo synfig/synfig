@@ -39,29 +39,19 @@ class Layer_MotionBlur : public synfig::Layer_Composite
 	SYNFIG_LAYER_MODULE_EXT
 
 private:
-
 	Time aperture;
-
 	mutable Time time_cur;
 
 public:
-
 	Layer_MotionBlur();
-
 	virtual bool set_param(const String & param, const synfig::ValueBase &value);
-
 	virtual ValueBase get_param(const String & param)const;
-
 	virtual Color get_color(Context context, const Point &pos)const;
-
 	virtual void set_time(Context context, Time time)const;
-
 	virtual void set_time(Context context, Time time, const Point &point)const;
-
 	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
-
 	virtual Vocab get_param_vocab()const;
-
+	virtual bool reads_context()const { return true; }
 }; // END of class Layer_MotionBlur
 
 }; // END of namespace synfig

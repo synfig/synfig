@@ -75,6 +75,7 @@ public:
 
 	virtual Vocab get_param_vocab()const;
 	virtual etl::handle<synfig::Transform> get_transform()const;
+	virtual bool reads_context()const { return true; }
 }; // END of class Twirl
 
 /* === E N D =============================================================== */

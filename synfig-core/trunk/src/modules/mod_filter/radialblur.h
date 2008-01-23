@@ -61,7 +61,8 @@ public:
 	virtual Color get_color(Context context, const Point &pos)const;
 	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 	virtual Vocab get_param_vocab()const;
-};
+	virtual bool reads_context()const { return true; }
+}; // END of class RadialBlur
 
 /* === E N D =============================================================== */
 

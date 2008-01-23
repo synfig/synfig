@@ -73,9 +73,9 @@ public:
 	virtual void set_time(synfig::Context context, synfig::Time time)const;
 	virtual void set_time(synfig::Context context, synfig::Time time, const synfig::Point &point)const;
 	virtual synfig::Rect get_bounding_rect(synfig::Context context)const;
-
 	virtual Vocab get_param_vocab()const;
-};
+	virtual bool reads_context()const { return true; }
+}; // EOF of class NoiseDistort
 
 /* === E N D =============================================================== */
 

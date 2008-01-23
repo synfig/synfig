@@ -56,6 +56,8 @@ public:
 	virtual synfig::Rect get_full_bounding_rect(Context context)const;
 
 	virtual Vocab get_param_vocab()const;
+
+	virtual bool reads_context()const { return true; }
 }; // END of class Blur
 
 /* -- E X T E R N S --------------------------------------------------------- */
