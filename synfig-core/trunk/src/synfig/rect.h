@@ -168,6 +168,8 @@ public:
 
 	bool operator&&(const Rect& rhs)const { return etl::intersect(*this, rhs); }
 
+	bool operator==(const Rect &rhs)const { return get_min() == rhs.get_min() && get_max() == rhs.get_max(); }
+
 	bool is_valid()const { return valid(); }
 }; // END of class Rect
 
