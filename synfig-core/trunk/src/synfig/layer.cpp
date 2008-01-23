@@ -371,6 +371,12 @@ Layer::clone(const GUID& deriv_guid) const
 	return ret;
 }
 
+bool
+Layer::reads_context() const
+{
+	return false;
+}
+
 Rect
 Layer::get_full_bounding_rect(Context context)const
 {

@@ -428,6 +428,14 @@ public:
 	//! Duplicates the Layer
 	virtual Handle clone(const GUID& deriv_guid=GUID())const;
 
+	//! Returns true if the layer needs to be able to examine its context.
+	/*! context to render itself, other than for simple blending.  For
+	**  example, the blur layer will return true - it can't do its job
+	**  if it can't see its context, and the circle layer will return
+	**  false - rendering a circle doesn't depend on the underlying
+	**  context until the final blend operation. */
+	virtual bool reads_context()const;
+
 #ifdef THIS_CODE_IS_NOT_USED
 	//! Duplicates the Layer without duplicating the value nodes
 	virtual Layer *simple_clone()const;
