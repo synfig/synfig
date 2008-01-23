@@ -164,7 +164,7 @@ Layer_Composite::set_param(const String & param, const ValueBase &value)
 			return false;
 		}
 
-		if (blend_method_ == Color::BLEND_STRAIGHT)
+		if (blend_method_ == Color::BLEND_STRAIGHT && !reads_context())
 		{
 			Canvas::Handle canvas(get_canvas());
 			if (canvas)
