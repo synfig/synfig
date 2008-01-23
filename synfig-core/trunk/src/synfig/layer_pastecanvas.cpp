@@ -401,7 +401,10 @@ Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quali
 
 		// the area we're about to blit is transparent, so it doesn't
 		// matter whether we use 'straight' or 'straight onto' here
-		apen.set_blend_method(Color::BLEND_STRAIGHT);
+		if (blend_method == Color::BLEND_ALPHA_BRIGHTEN)
+			apen.set_blend_method(blend_method);
+		else
+			apen.set_blend_method(Color::BLEND_STRAIGHT);
 
 		/* This represents the area we're pasting into the tile,
 		 * within the tile as a whole.	Areas (A), (B), (C) and (D)
