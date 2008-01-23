@@ -1309,7 +1309,7 @@
             <real value="1.0000000000"/>
           </param>
           <param name="blend_method">
-            <integer value="1"/>
+            <integer value="0"/>
           </param>
           <param name="color">
             <color>
@@ -1529,7 +1529,7 @@
             <real value="1.0000000000"/>
           </param>
           <param name="blend_method">
-            <integer value="1"/>
+            <integer value="19"/>
           </param>
           <param name="text">
             <string guid="5FDE2E2EC5F2E563F9AD4CCF6DFC9074">S T U D I O</string>
@@ -1539,7 +1539,7 @@
               <r>0.000000</r>
               <g>0.000000</g>
               <b>0.000000</b>
-              <a>0.000000</a>
+              <a>1.000000</a>
             </color>
           </param>
           <param name="family">
@@ -1671,7 +1671,7 @@
             <real value="1.0000000000"/>
           </param>
           <param name="blend_method">
-            <integer value="1"/>
+            <integer value="0"/>
           </param>
           <param name="text">
             <string guid="5FDE2E2EC5F2E563F9AD4CCF6DFC9074">S T U D I O</string>
@@ -1735,14 +1735,14 @@
             <real value="1.0000000000"/>
           </param>
           <param name="blend_method">
-            <integer value="1"/>
+            <integer value="19"/>
           </param>
           <param name="color">
             <color>
               <r>0.000000</r>
               <g>0.000000</g>
               <b>0.000000</b>
-              <a>0.000000</a>
+              <a>1.000000</a>
             </color>
           </param>
           <param name="point1">
@@ -1772,7 +1772,7 @@
             <real value="1.0000000000"/>
           </param>
           <param name="blend_method">
-            <integer value="1"/>
+            <integer value="0"/>
           </param>
           <param name="text">
             <string>S   Y   N   F   I   G</string>
