@@ -530,6 +530,7 @@ public:
 	{
 		return x==BLEND_STRAIGHT
 			|| x==BLEND_STRAIGHT_ONTO
+			|| x==BLEND_ALPHA_BRIGHTEN
 		;
 	}
 /*protected:
