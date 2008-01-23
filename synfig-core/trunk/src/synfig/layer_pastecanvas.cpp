@@ -392,7 +392,7 @@ Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quali
 	// 'straight', then we need to blend transparent pixels with the
 	// clipped areas of this tile, because with the 'straight' blend
 	// method, even transparent pixels have an effect on the layers below
-	if (blend_method == Color::BLEND_STRAIGHT || blend_method == Color::BLEND_STRAIGHT_ONTO)
+	if (Color::is_straight(blend_method))
 	{
 		Surface clearsurface;
 
