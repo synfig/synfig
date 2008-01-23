@@ -215,7 +215,7 @@ Context::accelerated_render(Surface *surface,int quality, const RendDesc &rendde
 		// is 1.0, and the layer doesn't depend on its context, then
 		// we don't want to render the context
 		if (composite &&
-			Color::is_straight(composite->get_blend_method()) &&
+			composite->get_blend_method() == Color::BLEND_STRAIGHT &&
 			composite->get_amount() == 1.0f &&
 			!composite->reads_context())
 		{
@@ -272,7 +272,7 @@ Context::accelerated_render(Surface *surface,int quality, const RendDesc &rendde
 
 			Surface::alpha_pen apen(surface->begin());
 			apen.set_alpha(composite->get_amount());
-			apen.set_blend_method(Color::BLEND_STRAIGHT);
+			apen.set_blend_method(composite->get_blend_method());
 
 			clearsurface.blit_to(apen);
 		}
