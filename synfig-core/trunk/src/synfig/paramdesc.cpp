@@ -81,8 +81,8 @@ ParamDesc::ParamDesc(synfig::Color::BlendMethod, const String &a):
 	.add_enum_value(Color::BLEND_LUMINANCE,"luminance",_("Luminance"))
 // These are deprecated
 	.add_enum_value(Color::BLEND_ALPHA_OVER,"alphaover",_("Alpha Over"))
-//	.add_enum_value(Color::BLEND_ALPHA_BRIGHTEN,"alphabrighten",_("Alpha Brighten"))
-//	.add_enum_value(Color::BLEND_ALPHA_DARKEN,"alphadarken",_("Alpha Darken"))
+	.add_enum_value(Color::BLEND_ALPHA_BRIGHTEN,"alphabrighten",_("Alpha Brighten (deprecated)"))
+	.add_enum_value(Color::BLEND_ALPHA_DARKEN,"alphadarken",_("Alpha Darken (deprecated)"))
 	; // end of enums
 }
 
