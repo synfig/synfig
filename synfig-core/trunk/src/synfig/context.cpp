@@ -211,15 +211,18 @@ Context::accelerated_render(Surface *surface,int quality, const RendDesc &rendde
 			continue;
 		}
 
-		// If this layer has Straight as the blend method and amount is 1.0
-		// then we don't want to render the context
-		if (composite && composite->get_blend_method() == Color::BLEND_STRAIGHT &&
-			composite->get_amount() == 1.0f)
-		{
-			Layer::Handle layer = *context;
-			while (!context->empty()) context++; // skip the context
-			return layer->accelerated_render(context,surface,quality,renddesc, cb);
-		}
+// the following breaks the blur layer when used with the straight blend method
+// in that case we do want to render the context, to know what to blur
+//
+//		// If this layer has Straight as the blend method and amount is 1.0
+//		// then we don't want to render the context
+//		if (composite && composite->get_blend_method() == Color::BLEND_STRAIGHT &&
+//			composite->get_amount() == 1.0f)
+//		{
+//			Layer::Handle layer = *context;
+//			while (!context->empty()) context++; // skip the context
+//			return layer->accelerated_render(context,surface,quality,renddesc, cb);
+//		}
 
 		// Break out of the loop--we have found a good layer
 		break;
