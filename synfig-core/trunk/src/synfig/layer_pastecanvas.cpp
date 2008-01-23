@@ -392,12 +392,15 @@ Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quali
 	// 'straight', then we need to blend transparent pixels with the
 	// clipped areas of this tile, because with the 'straight' blend
 	// method, even transparent pixels have an effect on the layers below
-	if (blend_method == Color::BLEND_STRAIGHT)
+	if (blend_method == Color::BLEND_STRAIGHT || blend_method == Color::BLEND_STRAIGHT_ONTO)
 	{
 		Surface clearsurface;
 
 		Surface::alpha_pen apen(surface->begin());
 		apen.set_alpha(get_amount());
+
+		// the area we're about to blit is transparent, so it doesn't
+		// matter whether we use 'straight' or 'straight onto' here
 		apen.set_blend_method(Color::BLEND_STRAIGHT);
 
 		/* This represents the area we're pasting into the tile,
