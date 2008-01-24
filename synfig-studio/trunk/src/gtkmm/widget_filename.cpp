@@ -110,6 +110,6 @@ Widget_Filename::on_button_choose_pressed()
 	string filename=entry_filename->get_text();
 	if(filename.empty())
 		filename=".";
-	if(App::dialog_open_file(_("Choose File"),filename))
+	if(App::dialog_open_file(_("Choose File"), filename, MISC_DIR_PREFERENCE))
 		entry_filename->set_text(filename);
 }

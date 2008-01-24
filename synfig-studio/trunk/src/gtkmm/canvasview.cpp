@@ -3317,8 +3317,9 @@ CanvasView::toggle_duck_mask(Duckmatic::Type type)
 void
 CanvasView::image_import()
 {
-	String filename(dirname(get_canvas()->get_file_name()));
-	if(App::dialog_open_file(_("Import Image"), filename))
+	// String filename(dirname(get_canvas()->get_file_name()));
+	String filename("*.*");
+	if(App::dialog_open_file(_("Import Image"), filename, IMAGE_DIR_PREFERENCE))
 		canvas_interface()->import(filename);
 }
 

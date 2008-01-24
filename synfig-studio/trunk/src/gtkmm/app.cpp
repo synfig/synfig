@@ -1535,8 +1535,10 @@ static OPENFILENAME ofn={};
 #endif
 
 bool
-App::dialog_open_file(const std::string &title, std::string &filename)
+App::dialog_open_file(const std::string &title, std::string &filename, std::string preference)
 {
+	info("App::dialog_open_file('%s', '%s', '%s')", title.c_str(), filename.c_str(), preference.c_str());
+
 #ifdef USE_WIN32_FILE_DIALOGS
 	static TCHAR szFilter[] = TEXT ("All Files (*.*)\0*.*\0\0") ;
 
@@ -1581,26 +1583,36 @@ App::dialog_open_file(const std::string &title, std::string &filename)
 
 #else
 	synfig::String prev_path;
-	if(!_preferences.get_value("curr_path",prev_path))
-		prev_path=".";
+
+	if(!_preferences.get_value(preference, prev_path))
+		prev_path = ".";
+
 	prev_path = absolute_path(prev_path);
 
-    Gtk::FileChooserDialog *dialog=new Gtk::FileChooserDialog(title,Gtk::FILE_CHOOSER_ACTION_OPEN);
+    Gtk::FileChooserDialog *dialog = new Gtk::FileChooserDialog(title, Gtk::FILE_CHOOSER_ACTION_OPEN);
+
     dialog->set_current_folder(prev_path);
     dialog->add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
     dialog->add_button(Gtk::Stock::OPEN,   Gtk::RESPONSE_ACCEPT);
-    if(!filename.empty())
-		if (is_absolute_path(filename))
-			dialog->set_filename(filename);
-		else
-			dialog->set_filename(prev_path + ETL_DIRECTORY_SEPARATOR + filename);
-    if(dialog->run()==GTK_RESPONSE_ACCEPT) {
-        filename=dialog->get_filename();
+
+    if (filename.empty())
+		dialog->set_filename(prev_path);
+	else if (is_absolute_path(filename))
+		dialog->set_filename(filename);
+	else
+		dialog->set_filename(prev_path + ETL_DIRECTORY_SEPARATOR + filename);
+
+    if(dialog->run() == GTK_RESPONSE_ACCEPT) {
+        filename = dialog->get_filename();
+		info("Saving preference %s = '%s' in App::dialog_open_file()", preference.c_str(), dirname(filename).c_str());
+		_preferences.set_value(preference, dirname(filename));
         delete dialog;
         return true;
     }
+
     delete dialog;
     return false;
+
     /*
 
 	GtkWidget *ok;
@@ -1635,7 +1647,7 @@ App::dialog_open_file(const std::string &title, std::string &filename)
 	if(val==1)
 	{
 		filename=gtk_file_selection_get_filename(GTK_FILE_SELECTION(fileselection));
-		_preferences.set_value("curr_path",dirname(filename));
+		_preferences.set_value(preference,dirname(filename));
 	}
 	else
 	{
@@ -1649,8 +1661,10 @@ App::dialog_open_file(const std::string &title, std::string &filename)
 }
 
 bool
-App::dialog_save_file(const std::string &title, std::string &filename)
+App::dialog_save_file(const std::string &title, std::string &filename, std::string preference)
 {
+	info("App::dialog_save_file('%s', '%s', '%s')", title.c_str(), filename.c_str(), preference.c_str());
+
 #if USE_WIN32_FILE_DIALOGS
 	static TCHAR szFilter[] = TEXT ("All Files (*.*)\0*.*\0\0") ;
 
@@ -1689,27 +1703,34 @@ App::dialog_save_file(const std::string &title, std::string &filename)
 	if(GetSaveFileName(&ofn))
 	{
 		filename=szFilename;
-		_preferences.set_value("curr_path",dirname(filename));
+		_preferences.set_value(preference,dirname(filename));
 		return true;
 	}
 	return false;
 #else
 	synfig::String prev_path;
-	if(!_preferences.get_value("curr_path",prev_path))
+
+	if(!_preferences.get_value(preference, prev_path))
 		prev_path=".";
+
 	prev_path = absolute_path(prev_path);
 
-    Gtk::FileChooserDialog *dialog=new Gtk::FileChooserDialog(title,Gtk::FILE_CHOOSER_ACTION_SAVE);
+    Gtk::FileChooserDialog *dialog = new Gtk::FileChooserDialog(title, Gtk::FILE_CHOOSER_ACTION_SAVE);
+
     dialog->set_current_folder(prev_path);
     dialog->add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
     dialog->add_button(Gtk::Stock::SAVE,   Gtk::RESPONSE_ACCEPT);
-    if(!filename.empty())
+
+    if (filename.empty())
+		dialog->set_filename(prev_path);
+    else
 	{
 		std::string full_path;
 		if (is_absolute_path(filename))
 			full_path = filename;
 		else
 			full_path = prev_path + ETL_DIRECTORY_SEPARATOR + filename;
+
 		// select the file if it exists
 		dialog->set_filename(full_path);
 
@@ -1718,15 +1739,17 @@ App::dialog_save_file(const std::string &title, std::string &filename)
 		if(stat(full_path.c_str(),&s) == -1 && errno == ENOENT)
 			dialog->set_current_name(basename(filename));
 	}
-    if(dialog->run()==GTK_RESPONSE_ACCEPT) {
-        filename=dialog->get_filename();
+
+    if(dialog->run() == GTK_RESPONSE_ACCEPT) {
+        filename = dialog->get_filename();
+		info("Saving preference %s = '%s' in App::dialog_save_file()", preference.c_str(), dirname(filename).c_str());
+		_preferences.set_value(preference, dirname(filename));
         delete dialog;
-		_preferences.set_value("curr_path",dirname(filename));
         return true;
     }
+
     delete dialog;
     return false;
-//	return dialog_open_file(title, filename);
 #endif
 }
 
@@ -1882,8 +1905,6 @@ App::open_as(std::string filename,std::string as)
 		return false;
 	}
 
-	_preferences.set_value("curr_path",dirname(as));
-
 	return true;
 }
 
@@ -1920,7 +1941,7 @@ App::dialog_open()
 {
 	string filename="*.sif";
 
-	while(dialog_open_file("Open", filename))
+	while(dialog_open_file("Open", filename, ANIMATION_DIR_PREFERENCE))
 	{
 		// If the filename still has wildcards, then we should
 		// continue looking for the file we want

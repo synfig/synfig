@@ -47,6 +47,12 @@
 
 /* === M A C R O S ========================================================= */
 
+#define MISC_DIR_PREFERENCE			"misc_dir"
+#define ANIMATION_DIR_PREFERENCE	"animation_dir"
+#define IMAGE_DIR_PREFERENCE		"image_dir"
+#define SKETCH_DIR_PREFERENCE		"sketch_dir"
+#define RENDER_DIR_PREFERENCE		"render_dir"
+
 /* === T Y P E D E F S ===================================================== */
 
 /* === C L A S S E S & S T R U C T S ======================================= */
@@ -307,8 +313,8 @@ public:
 
 //	static bool dialog_file(const std::string &title, std::string &filename);
 
-	static bool dialog_open_file(const std::string &title, std::string &filename);
-	static bool dialog_save_file(const std::string &title, std::string &filename);
+	static bool dialog_open_file(const std::string &title, std::string &filename, std::string preference);
+	static bool dialog_save_file(const std::string &title, std::string &filename, std::string preference);
 
 	static void dialog_error_blocking(const std::string &title, const std::string &message);
 
