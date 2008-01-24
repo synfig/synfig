@@ -1149,7 +1149,9 @@ Layer_Shape::clear()
 bool
 Layer_Shape::set_param(const String & param, const ValueBase &value)
 {
-	IMPORT(color);
+	IMPORT_PLUS(color, { if (color.get_a() == 0) if (converted_blend_) {
+					set_blend_method(Color::BLEND_ALPHA_OVER);
+					color.set_a(1); } else transparent_color_ = true; });
 	IMPORT(offset);
 	IMPORT(invert);
 	IMPORT(antialias);

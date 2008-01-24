@@ -176,7 +176,16 @@ Layer_Composite::set_param(const String & param, const ValueBase &value)
 						warning("loaded a version %s canvas with a 'Straight' blended PasteCanvas (%s) - check it renders OK",
 								version.c_str(), get_non_empty_description().c_str());
 					else
+					{
 						blend_method_ = Color::BLEND_COMPOSITE;
+						converted_blend_ = true;
+
+						// if this layer has a transparent color, go back and set the color again
+						// now that we know we are converting the blend method as well.  that will
+						// make the color non-transparent, and change the blend method to alpha over
+						if (transparent_color_)
+							set_param("color", get_param("color"));
+					}
 			}
 		}
 	}

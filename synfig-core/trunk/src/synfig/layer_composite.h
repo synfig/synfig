@@ -60,8 +60,13 @@ protected:
 		Color::BlendMethod 	blend_method=Color::BLEND_COMPOSITE
 	):
 		amount_				(amount),
-		blend_method_		(blend_method)
+		blend_method_		(blend_method),
+		converted_blend_	(false),
+		transparent_color_	(false)
 	{ }
+
+	bool converted_blend_;
+	bool transparent_color_;
 
 public:
 
