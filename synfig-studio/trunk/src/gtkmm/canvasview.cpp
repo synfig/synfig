@@ -1298,22 +1298,29 @@ CanvasView::init_menus()
 		sigc::mem_fun0(*preview_dialog, &studio::Dialog_Preview::present)
 	);
 
-	action_group->add( Gtk::Action::create("toggle-grid-show", _("Toggle Grid Show")),
-		sigc::mem_fun(*work_area, &studio::WorkArea::toggle_grid)
-	);
-	action_group->add( Gtk::Action::create("toggle-grid-snap", _("Toggle Grid Snap")),
-		sigc::mem_fun(*work_area, &studio::WorkArea::toggle_grid_snap)
-	);
-	action_group->add( Gtk::Action::create("toggle-guide-show", _("Toggle Guide Show")),
-		sigc::mem_fun(*work_area, &studio::WorkArea::toggle_guide_snap)
-	);
-	action_group->add( Gtk::Action::create("toggle-low-res", _("Toggle Low-Res")),
-		sigc::mem_fun(*work_area, &studio::WorkArea::toggle_low_resolution_flag)
-	);
-	action_group->add( Gtk::Action::create("toggle-onion-skin", _("Toggle Onion Skin")),
-		sigc::mem_fun(*work_area, &studio::WorkArea::toggle_onion_skin)
-	);
+	{
+		Glib::RefPtr<Gtk::ToggleAction> action;
 
+		action = Gtk::ToggleAction::create("toggle-grid-show", _("Show Grid"));
+		action->set_active(work_area->grid_status());
+		action_group->add(action, sigc::mem_fun(*work_area, &studio::WorkArea::toggle_grid));
+
+		action = Gtk::ToggleAction::create("toggle-grid-snap", _("Snap to Grid"));
+		action->set_active(work_area->get_grid_snap());
+		action_group->add(action, sigc::mem_fun(*work_area, &studio::WorkArea::toggle_grid_snap));
+
+		action = Gtk::ToggleAction::create("toggle-guide-show", _("Show Guides"));
+		action->set_active(work_area->get_show_guides());
+		action_group->add(action, sigc::mem_fun(*work_area, &studio::WorkArea::toggle_guide_snap));
+
+		action = Gtk::ToggleAction::create("toggle-low-res", _("Use Low-Res"));
+		action->set_active(work_area->get_low_resolution_flag());
+		action_group->add(action, sigc::mem_fun(*work_area, &studio::WorkArea::toggle_low_resolution_flag));
+
+		action = Gtk::ToggleAction::create("toggle-onion-skin", _("Show Onion Skin"));
+		action->set_active(work_area->get_onion_skin());
+		action_group->add(action, sigc::mem_fun(*work_area, &studio::WorkArea::toggle_onion_skin));
+	}
 
 	action_group->add( Gtk::Action::create("canvas-zoom-fit", Gtk::StockID("gtk-zoom-fit")),
 		sigc::mem_fun(*work_area, &studio::WorkArea::zoom_fit)
