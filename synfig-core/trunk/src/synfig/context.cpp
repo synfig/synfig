@@ -264,7 +264,7 @@ Context::accelerated_render(Surface *surface,int quality, const RendDesc &rendde
 	// using the appropriate 'amount'
 	if (straight_and_empty)
 	{
-		if (ret = Context((context+1)).accelerated_render(surface,quality,renddesc,cb))
+		if ((ret = Context((context+1)).accelerated_render(surface,quality,renddesc,cb)))
 		{
 			Surface clearsurface;
 			clearsurface.set_wh(renddesc.get_w(),renddesc.get_h());
