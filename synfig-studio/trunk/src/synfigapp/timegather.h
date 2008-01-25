@@ -37,10 +37,13 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
+namespace synfig {
+	class Time;
+}
+
 namespace synfigapp {
 
 class ValueDesc;
-class synfig::Time;
 
 struct ValueBaseTimeInfo
 {
