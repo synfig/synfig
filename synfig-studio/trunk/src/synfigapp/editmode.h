@@ -74,9 +74,9 @@ operator&(const EditMode& lhs, const EditMode& rhs)
 //!	Flag Comparison. THIS IS NOT LESS-THAN-OR-EQUAL-TO.
 /*!	This function will return true of all of the flags
 **	in the \a rhs are set in the \a lhs */
-inline bool
-operator<=(const EditMode& lhs, const EditMode& rhs)
-{ return lhs&rhs==int(rhs); }
+// inline bool
+// operator<=(const EditMode& lhs, const EditMode& rhs)
+// { return (lhs&rhs)==int(rhs); }
 
 }; // END if namespace synfigapp
 /* === E N D =============================================================== */
