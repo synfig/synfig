@@ -33,6 +33,7 @@
 #include <fstream>
 #include <iostream>
 #include <locale>
+#include <cstring>
 
 #ifdef HAVE_SYS_ERRNO_H
 #include <sys/errno.h>

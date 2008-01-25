@@ -32,6 +32,7 @@
 
 #include <fstream>
 #include <iostream>
+#include <algorithm>
 #include "settings.h"
 #include <synfig/general.h>
 

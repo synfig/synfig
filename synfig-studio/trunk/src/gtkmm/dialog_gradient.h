@@ -103,7 +103,7 @@ public:
 	Dialog_Gradient();
 	~Dialog_Gradient();
 
-	void edit(const synfigapp::ValueDesc &x, etl::handle<synfigapp::CanvasInterface> canvas_interface, synfig::Time x=0);
+	void edit(const synfigapp::ValueDesc &x, etl::handle<synfigapp::CanvasInterface> canvas_interface, synfig::Time time=0);
 }; // END of Dialog_Gradient
 
 }; // END of namespace studio
