@@ -262,11 +262,17 @@ IPC::process_command(const synfig::String& command_line)
 	if(command_line.empty())
 		return false;
 
-	char cmd=command_line[0];
+	char cmd = command_line[0];
 
 	String args(command_line.begin()+1,command_line.end());
-	while(!args.empty() && args[0]==' ') args.erase(args.begin());
-	while(!args.empty() && args[args.size()-1]=='\n' || args[args.size()-1]==' ') args.erase(args.end()-1);
+
+	// erase leading spaces
+	while (!args.empty() && args[0] == ' ')
+		args.erase(args.begin());
+
+	// erase trailing newlines and spaces
+	while (!args.empty() && (args[args.size()-1] == '\n' || args[args.size()-1] == ' '))
+		args.erase(args.end()-1);
 
 	switch(toupper(cmd))
 	{
