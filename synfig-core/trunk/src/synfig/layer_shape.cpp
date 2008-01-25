@@ -245,11 +245,13 @@ struct MonoSegment
 		//assumes that the rect culled away anything that would be beyond the edges
 		if(ydir > 0)
 		{
-			while(y > (*++p)[1]);
+			while(y > (*++p)[1])
+				;
 		}
 		else
 		{
-			while(y < (*++p)[1]);
+			while(y < (*++p)[1])
+				;
 		}
 
 		//for the loop to break there must have been a slope (straight line would do nothing)
@@ -335,7 +337,7 @@ struct CurveArray
 		if( (y > ymax && y > p[1][1]) || (y < ymin && y < p[1][1]) ) return 0;
 
 		//degenerate line max
-		if(ymin == ymax == p[1][1])
+		if(ymin == ymax && ymax == p[1][1])
 			return 0;
 
 		//degenerate accept - to the right and crossing the base line
@@ -1149,9 +1151,9 @@ Layer_Shape::clear()
 bool
 Layer_Shape::set_param(const String & param, const ValueBase &value)
 {
-	IMPORT_PLUS(color, { if (color.get_a() == 0) if (converted_blend_) {
+	IMPORT_PLUS(color, { if (color.get_a() == 0) { if (converted_blend_) {
 					set_blend_method(Color::BLEND_ALPHA_OVER);
-					color.set_a(1); } else transparent_color_ = true; });
+					color.set_a(1); } else transparent_color_ = true; } });
 	IMPORT(offset);
 	IMPORT(invert);
 	IMPORT(antialias);
