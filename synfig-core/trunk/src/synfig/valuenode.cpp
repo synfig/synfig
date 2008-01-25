@@ -333,7 +333,8 @@ ValueNodeList::count(const String &id)const
 	if(id.empty())
 		return false;
 
-	for(iter=begin();iter!=end() && id!=(*iter)->get_id();++iter);
+	for(iter=begin();iter!=end() && id!=(*iter)->get_id();++iter)
+		;
 
 	if(iter==end())
 		return false;
@@ -349,7 +350,8 @@ ValueNodeList::find(const String &id)
 	if(id.empty())
 		throw Exception::IDNotFound("Empty ID");
 
-	for(iter=begin();iter!=end() && id!=(*iter)->get_id();++iter);
+	for(iter=begin();iter!=end() && id!=(*iter)->get_id();++iter)
+		;
 
 	if(iter==end())
 		throw Exception::IDNotFound("ValueNode in ValueNodeList: "+id);
@@ -365,7 +367,8 @@ ValueNodeList::find(const String &id)const
 	if(id.empty())
 		throw Exception::IDNotFound("Empty ID");
 
-	for(iter=begin();iter!=end() && id!=(*iter)->get_id();++iter);
+	for(iter=begin();iter!=end() && id!=(*iter)->get_id();++iter)
+		;
 
 	if(iter==end())
 		throw Exception::IDNotFound("ValueNode in ValueNodeList: "+id);
