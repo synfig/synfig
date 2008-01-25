@@ -851,7 +851,8 @@ KeyframeTreeStore::change_keyframe(synfig::Keyframe keyframe)
 		unsigned int new_index(get_index_from_model_iter(row));
 		unsigned int old_index(0);
 		synfig::KeyframeList::iterator iter;
-		for(old_index=0,iter=old_keyframe_list.begin();iter!=old_keyframe_list.end() && (UniqueID)*iter!=(UniqueID)keyframe;++iter,old_index++);
+		for(old_index=0,iter=old_keyframe_list.begin();iter!=old_keyframe_list.end() && (UniqueID)*iter!=(UniqueID)keyframe;++iter,old_index++)
+			;
 
 		if(iter!=old_keyframe_list.end() && new_index!=old_index)
 		{

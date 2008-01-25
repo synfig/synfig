@@ -98,7 +98,8 @@ Widget_CompSelect::set_selected_instance(etl::loose_handle<studio::Instance> x)
 	if(x)
 	{
 		int i;
-		for(i=0,iter=studio::App::instance_list.begin();iter!=studio::App::instance_list.end() && ((*iter)!=x);iter++,i++);
+		for(i=0,iter=studio::App::instance_list.begin();iter!=studio::App::instance_list.end() && ((*iter)!=x);iter++,i++)
+			;
 
 		assert(*iter==x);
 

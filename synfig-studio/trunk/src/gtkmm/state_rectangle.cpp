@@ -213,7 +213,10 @@ StateRectangle_Context::increment_id()
 	if(id[id.size()-1]<='9' && id[id.size()-1]>='0')
 	{
 		// figure out how many digits it is
-		for(digits=0;(int)id.size()-1>=digits && id[id.size()-1-digits]<='9' && id[id.size()-1-digits]>='0';digits++)while(false);
+		for (digits = 0;
+			 (int)id.size()-1 >= digits && id[id.size()-1-digits] <= '9' && id[id.size()-1-digits] >= '0';
+			 digits++)
+			;
 
 		String str_number;
 		str_number=String(id,id.size()-digits,id.size());

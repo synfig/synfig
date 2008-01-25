@@ -197,10 +197,12 @@ RenderSettings::set_entry_filename()
 	// if this isn't the root canvas, append (<canvasname>) to the filename
 	etl::handle<synfig::Canvas> canvas = canvas_interface_->get_canvas();
 	if (!canvas->is_root())
+	{
 		if(canvas->get_name().empty())
 			filename+=" ("+canvas->get_id()+')';
 		else
 			filename+=" ("+canvas->get_name()+')';
+	}
 
 	filename += ".png";
 

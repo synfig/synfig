@@ -368,7 +368,10 @@ StateDraw_Context::increment_id()
 	if(id[id.size()-1]<='9' && id[id.size()-1]>='0')
 	{
 		// figure out how many digits it is
-		for(digits=0;(int)id.size()-1>=digits && id[id.size()-1-digits]<='9' && id[id.size()-1-digits]>='0';digits++)while(false);
+		for (digits = 0;
+			 (int)id.size()-1 >= digits && id[id.size()-1-digits] <= '9' && id[id.size()-1-digits] >= '0';
+			 digits++)
+			;
 
 		String str_number;
 		str_number=String(id,id.size()-digits,id.size());
@@ -822,6 +825,7 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline
 			// don't extend looped blines
 			if(finish_duck_value_node_bline&&!finish_duck_value_node_bline->get_loop()&&
 			   (finish_duck_index==0||finish_duck_index==finish_duck_value_node_bline->link_count()-1))
+			{
 				if(extend_start)
 				{
 					// we've started and finished drawing at the end of a bline.  we can't
@@ -834,6 +838,7 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline
 					shift_offset=true;
 					shift_offset_vector=finish_duck->get_origin();
 				}
+			}
 		}while(0);
 
 		// if the new line's start didn't extend an existing line,
@@ -1232,10 +1237,12 @@ debug_show_vertex_list(int iteration, std::list<synfigapp::ValueDesc>& vertex_li
 	{
 		if (started) printf(", "); else started = true;
 		if (start != -1)
+		{
 			if (dir != 0)
 				printf("%d--%d", start, prev);
 			else
 				printf("%d", start);
+		}
 		printf(")");
 	}
 	printf("\n");
@@ -1388,12 +1395,14 @@ StateDraw_Context::new_region(std::list<synfig::BLinePoint> bline, synfig::Real 
 				this_index = iter->get_index();
 				// printf("index went from %d to %d\n", last_index, this_index);
 				if (looped)
+				{
 					if (this_index - last_index > points_in_line/2)
 						while (this_index - last_index > points_in_line/2)
 							this_index -= points_in_line;
 					else if (last_index - this_index > points_in_line/2)
 						while (last_index - this_index > points_in_line/2)
 							this_index += points_in_line;
+				}
 
 				if (this_index < min_index) min_index = this_index;
 				if (this_index > max_index) max_index = this_index;
