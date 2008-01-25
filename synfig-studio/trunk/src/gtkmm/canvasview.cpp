@@ -2530,22 +2530,18 @@ CanvasView::on_keyframe_button_pressed()
 {
 	synfigapp::CanvasInterface::Mode mode(get_mode());
 
+	//   future && past   -->             past
 	if((mode&synfigapp::MODE_ANIMATE_FUTURE) && (mode&synfigapp::MODE_ANIMATE_PAST))
-	{
 		set_mode(get_mode()-synfigapp::MODE_ANIMATE_FUTURE);
-	}
+	//             past   -->   future
 	else if(!(mode&synfigapp::MODE_ANIMATE_FUTURE) && (mode&synfigapp::MODE_ANIMATE_PAST))
-	{
-		set_mode(get_mode()-synfigapp::MODE_ANIMATE_PAST|synfigapp::MODE_ANIMATE_FUTURE);
-	}
+		set_mode((get_mode()-synfigapp::MODE_ANIMATE_PAST)|synfigapp::MODE_ANIMATE_FUTURE);
+	//   future           -->       (nothing)
 	else if((mode&synfigapp::MODE_ANIMATE_FUTURE) && !(mode&synfigapp::MODE_ANIMATE_PAST))
-	{
 		set_mode(get_mode()-synfigapp::MODE_ANIMATE_FUTURE);
-	}
+	//      (nothing)     -->   future && past
 	else if(!(mode&synfigapp::MODE_ANIMATE_FUTURE) && !(mode&synfigapp::MODE_ANIMATE_PAST))
-	{
 		set_mode(get_mode()|synfigapp::MODE_ANIMATE_FUTURE|synfigapp::MODE_ANIMATE_PAST);
-	}
 }
 
 bool
