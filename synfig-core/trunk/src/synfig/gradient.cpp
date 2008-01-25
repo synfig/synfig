@@ -405,7 +405,7 @@ synfig::Gradient::operator()(const Real &x,float supersample)const
 	//! using a binary search.
 	for(;iter<end();iter=next++)
 	{
-		if(next==end() || x>=iter->pos &&  x<next->pos && iter->pos!=next->pos)
+		if(next==end() || (x>=iter->pos && x<next->pos && iter->pos!=next->pos))
 		{
 			// If the supersample region falls square in between
 			// two CPoints, then we don't have to do anything special.
