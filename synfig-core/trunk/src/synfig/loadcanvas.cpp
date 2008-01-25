@@ -1073,6 +1073,7 @@ CanvasParser::parse_animated(xmlpp::Element *element,Canvas::Handle canvas)
 				if (first)
 					first = false;
 				else if (iter->get_value_node()->get_name() == "constant")
+				{
 					if (angle - prev > 180)
 					{
 						while (angle - prev > 180) angle -= 360;
@@ -1083,6 +1084,7 @@ CanvasParser::parse_animated(xmlpp::Element *element,Canvas::Handle canvas)
 						while (prev - angle > 180) angle += 360;
 						iter->set_value(Angle::deg(angle));
 					}
+				}
 				prev = angle;
 			}
 		}
