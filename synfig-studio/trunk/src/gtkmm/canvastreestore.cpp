@@ -286,7 +286,8 @@ CanvasTreeStore::find_first_value_desc(const synfigapp::ValueDesc& value_desc, G
 		if(!iter->children().empty())
 		{
 			Gtk::TreeIter iter2(iter->children().begin());
-			if(iter2 && value_desc==(*iter2)[model.value_desc] || find_next_value_desc(value_desc, iter2))
+			//! \todo confirm that the && should be done before the ||
+			if((iter2 && value_desc==(*iter2)[model.value_desc]) || find_next_value_desc(value_desc, iter2))
 			{
 				iter=iter2;
 				return true;
@@ -310,7 +311,8 @@ CanvasTreeStore::find_next_value_desc(const synfigapp::ValueDesc& value_desc, Gt
 		if(!iter->children().empty())
 		{
 			Gtk::TreeIter iter2(iter->children().begin());
-			if(iter2 && value_desc==(*iter2)[model.value_desc] || find_next_value_desc(value_desc, iter2))
+			//! \todo confirm that the && should be done before the ||
+			if((iter2 && value_desc==(*iter2)[model.value_desc]) || find_next_value_desc(value_desc, iter2))
 			{
 				iter=iter2;
 				return true;
@@ -337,7 +339,8 @@ CanvasTreeStore::find_first_value_node(const synfig::ValueNode::Handle& value_no
 		if(!iter->children().empty())
 		{
 			Gtk::TreeIter iter2(iter->children().begin());
-			if(iter2 && value_node==(ValueNode::Handle)(*iter2)[model.value_node] || find_next_value_node(value_node, iter2))
+			//! \todo confirm that the && should be done before the ||
+			if((iter2 && value_node==(ValueNode::Handle)(*iter2)[model.value_node]) || find_next_value_node(value_node, iter2))
 			{
 				iter=iter2;
 				return true;
@@ -361,7 +364,8 @@ CanvasTreeStore::find_next_value_node(const synfig::ValueNode::Handle& value_nod
 		if(!iter->children().empty())
 		{
 			Gtk::TreeIter iter2(iter->children().begin());
-			if(iter2 && value_node==(ValueNode::Handle)(*iter2)[model.value_node] || find_next_value_node(value_node, iter2))
+			//! \todo confirm that the && should be done before the ||
+			if((iter2 && value_node==(ValueNode::Handle)(*iter2)[model.value_node]) || find_next_value_node(value_node, iter2))
 			{
 				iter=iter2;
 				return true;
@@ -383,7 +387,8 @@ void
 CanvasTreeStore::set_row(Gtk::TreeRow row,synfigapp::ValueDesc value_desc, bool do_children)
 {
 	Gtk::TreeModel::Children children = row.children();
-	while(!children.empty() && erase(children.begin()));
+	while(!children.empty() && erase(children.begin()))
+		;
 
 	row[model.value_desc]=value_desc;
 	try
@@ -564,7 +569,8 @@ CanvasTreeStore::rebuild_row(Gtk::TreeModel::Row &row, bool do_children)
 		row[model.is_value_node] = false;
 		row[model.is_editable] = true;
 		Gtk::TreeModel::Children children = row.children();
-		while(!children.empty() && erase(children.begin()));
+		while(!children.empty() && erase(children.begin()))
+			;
 	}
 	if(!do_children)
 		return;
