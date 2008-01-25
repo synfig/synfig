@@ -559,14 +559,14 @@ CanvasInterface::import(const synfig::String &filename, bool /*copy*/)
 			{
 				x[0]=size[0];
 				x[1]=size[0]/w*h;
-				if(size[0]<0 ^ size[1]<0)
+				if((size[0]<0) ^ (size[1]<0))
 					x[1]=-x[1];
 			}
 			else
 			{
 				x[1]=size[1];
 				x[0]=size[1]/h*w;
-				if(size[0]<0 ^ size[1]<0)
+				if((size[0]<0) ^ (size[1]<0))
 					x[0]=-x[0];
 			}
 			if(!layer->set_param("tl",ValueBase(-x/2)))
