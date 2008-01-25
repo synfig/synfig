@@ -423,7 +423,8 @@ LayerParamTreeStore::rebuild()
 			if(value!=((*iter2)->get_param(iter->get_name())))
 			{
 				row[model.is_inconsistent] = true;
-				while(!row.children().empty() && erase(row.children().begin()));
+				while(!row.children().empty() && erase(row.children().begin()))
+					;
 				break;
 			}
 		}
@@ -494,7 +495,8 @@ LayerParamTreeStore::refresh_row(Gtk::TreeModel::Row &row)
 			if(value!=((*iter2)->get_param(param_desc.get_name())))
 			{
 				row[model.is_inconsistent] = true;
-				while(!row.children().empty() && erase(row.children().begin()));
+				while(!row.children().empty() && erase(row.children().begin()))
+					;
 				return;
 			}
 		}
@@ -512,7 +514,8 @@ void
 LayerParamTreeStore::set_row(Gtk::TreeRow row,synfigapp::ValueDesc value_desc)
 {
 	Gtk::TreeModel::Children children = row.children();
-	while(!children.empty() && erase(children.begin()));
+	while(!children.empty() && erase(children.begin()))
+		;
 
 	CanvasTreeStore::set_row(row,value_desc);
 }
