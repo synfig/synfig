@@ -172,6 +172,7 @@ Layer_Composite::set_param(const String & param, const ValueBase &value)
 				String version(canvas->get_version());
 
 				if (version == "0.1" || version == "0.2")
+				{
 					if (get_name() == "PasteCanvas")
 						warning("loaded a version %s canvas with a 'Straight' blended PasteCanvas (%s) - check it renders OK",
 								version.c_str(), get_non_empty_description().c_str());
@@ -186,6 +187,7 @@ Layer_Composite::set_param(const String & param, const ValueBase &value)
 						if (transparent_color_)
 							set_param("color", get_param("color"));
 					}
+				}
 			}
 		}
 	}
