@@ -87,9 +87,9 @@ Rectangle::Rectangle():
 bool
 Rectangle::set_param(const String & param, const ValueBase &value)
 {
-	IMPORT_PLUS(color, { if (color.get_a() == 0) if (converted_blend_) {
+	IMPORT_PLUS(color, { if (color.get_a() == 0) { if (converted_blend_) {
 					set_blend_method(Color::BLEND_ALPHA_OVER);
-					color.set_a(1); } else transparent_color_ = true; });
+					color.set_a(1); } else transparent_color_ = true; } });
 	IMPORT(point1);
 	IMPORT(point2);
 	IMPORT(expand);
