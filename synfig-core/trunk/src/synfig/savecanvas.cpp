@@ -705,7 +705,8 @@ xmlpp::Element* encode_canvas(xmlpp::Element* root,Canvas::ConstHandle canvas)
 	}
 
 	// Output the <defs> section
-	if(!canvas->is_inline() && !canvas->value_node_list().empty() || !canvas->children().empty())
+	//! \todo check where the parentheses should really go - around the && or the ||?
+	if((!canvas->is_inline() && !canvas->value_node_list().empty()) || !canvas->children().empty())
 	{
 		xmlpp::Element *node=root->add_child("defs");
 		const ValueNodeList &value_node_list(canvas->value_node_list());
