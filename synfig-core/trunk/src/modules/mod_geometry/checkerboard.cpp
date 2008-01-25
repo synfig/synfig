@@ -87,9 +87,9 @@ CheckerBoard::point_test(const synfig::Point& getpos)const
 bool
 CheckerBoard::set_param(const String &param, const ValueBase &value)
 {
-	IMPORT_PLUS(color, { if (color.get_a() == 0) if (converted_blend_) {
+	IMPORT_PLUS(color, { if (color.get_a() == 0) { if (converted_blend_) {
 					set_blend_method(Color::BLEND_ALPHA_OVER);
-					color.set_a(1); } else transparent_color_ = true; });
+					color.set_a(1); } else transparent_color_ = true; } });
 	IMPORT(pos);
 	IMPORT(pos[0]);
 	IMPORT(pos[1]);

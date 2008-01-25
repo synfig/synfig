@@ -463,9 +463,9 @@ Layer_Freetype::set_param(const String & param, const ValueBase &value)
 	IMPORT_PLUS(size, if(old_version){size/=2.0;} needs_sync_=true );
 	IMPORT_PLUS(text,needs_sync_=true);
 	IMPORT_PLUS(pos,needs_sync_=true);
-	IMPORT_PLUS(color, { if (color.get_a() == 0) if (converted_blend_) {
+	IMPORT_PLUS(color, { if (color.get_a() == 0) { if (converted_blend_) {
 					set_blend_method(Color::BLEND_ALPHA_OVER);
-					color.set_a(1); } else transparent_color_ = true; });
+					color.set_a(1); } else transparent_color_ = true; } });
 	IMPORT(invert);
 	IMPORT_PLUS(orient,needs_sync_=true);
 	IMPORT_PLUS(compress,needs_sync_=true);
