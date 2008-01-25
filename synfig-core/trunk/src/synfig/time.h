@@ -62,7 +62,7 @@ public:
 private:
 	value_type value_;
 
-	static const value_type epsilon_() { return static_cast<value_type>(0.0005); }
+	static value_type epsilon_() { return static_cast<value_type>(0.0005); }
 
 public:
 	Time() { }
