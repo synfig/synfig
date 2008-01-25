@@ -170,7 +170,7 @@ SuperSample::accelerated_render(Context context,Surface *surface,int quality, co
 				else
 					pen.put_value(Color::alpha());
 			}
-			if(y&31==0 && cb)
+			if((y&31)==0 && cb)
 			{
 				if(!stagetwo.amount_complete(y,surface->get_h()))
 					return false;
@@ -193,7 +193,7 @@ SuperSample::accelerated_render(Context context,Surface *surface,int quality, co
 				temp_pen.dec_y(v);
 				pen.put_value(pool*multiplier);
 			}
-			if(y&31==0 && cb)
+			if((y&31)==0 && cb)
 			{
 				if(!stagetwo.amount_complete(y,surface->get_h()))
 					return false;
