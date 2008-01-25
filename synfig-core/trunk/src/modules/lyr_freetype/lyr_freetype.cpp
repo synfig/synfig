@@ -148,12 +148,14 @@ Layer_Freetype::new_font_(const synfig::String &font_fam_, int style, int weight
 	//end evil hack
 
 	if(font_fam=="arial black")
+	{
 #ifndef __APPLE__
-	if(new_face("ariblk"))
+		if(new_face("ariblk"))
 			return true;
 		else
 #endif
 		font_fam="sans serif";
+	}
 
 	if(font_fam=="sans serif" || font_fam=="arial")
 	{
