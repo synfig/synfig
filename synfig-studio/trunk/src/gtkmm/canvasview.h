@@ -98,6 +98,10 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
+namespace synfig {
+	class TransformStack;
+}
+
 namespace studio {
 
 class CanvasViewUIInterface;
@@ -121,7 +125,6 @@ class Widget_Time;
 class Dialog_SoundSelect;
 class Dialog_Preview;
 
-class synfig::TransformStack;
 class Dock_Layers;
 class Dock_Children;
 class Dock_Keyframes;
