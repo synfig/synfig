@@ -198,10 +198,12 @@ dirname(const std::string &str)
 			break;
 
 	if(iter==str.begin())
+	{
 	   if (*iter==ETL_DIRECTORY_SEPARATOR)
 		   return "/";
 	   else
 		   return ".";
+	}
 
 	return std::string(str.begin(),iter);
 }
