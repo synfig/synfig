@@ -288,26 +288,26 @@ public:
 
 
 	// === GET TYPE MEMBERS ===================================================
-	static const Type get_type(bool) { return TYPE_BOOL; }
-	static const Type get_type(int) { return TYPE_INTEGER; }
-	static const Type get_type(const Time&) { return TYPE_TIME; }
-	static const Type get_type(const Real&) { return TYPE_REAL; }
-	static const Type get_type(const float&) { return TYPE_REAL; }
-	static const Type get_type(const Vector&) { return TYPE_VECTOR; }
-	static const Type get_type(const Color&) { return TYPE_COLOR; }
-	static const Type get_type(const Segment&) { return TYPE_SEGMENT; }
-	static const Type get_type(const BLinePoint&) { return TYPE_BLINEPOINT; }
-	static const Type get_type(const String&) { return TYPE_STRING; }
-	static const Type get_type(const Gradient&) { return TYPE_GRADIENT; }
-	static const Type get_type(Canvas*) { return TYPE_CANVAS; }
-	static const Type get_type(const etl::handle<Canvas>&)
+	static Type get_type(bool) { return TYPE_BOOL; }
+	static Type get_type(int) { return TYPE_INTEGER; }
+	static Type get_type(const Time&) { return TYPE_TIME; }
+	static Type get_type(const Real&) { return TYPE_REAL; }
+	static Type get_type(const float&) { return TYPE_REAL; }
+	static Type get_type(const Vector&) { return TYPE_VECTOR; }
+	static Type get_type(const Color&) { return TYPE_COLOR; }
+	static Type get_type(const Segment&) { return TYPE_SEGMENT; }
+	static Type get_type(const BLinePoint&) { return TYPE_BLINEPOINT; }
+	static Type get_type(const String&) { return TYPE_STRING; }
+	static Type get_type(const Gradient&) { return TYPE_GRADIENT; }
+	static Type get_type(Canvas*) { return TYPE_CANVAS; }
+	static Type get_type(const etl::handle<Canvas>&)
 		{ return TYPE_CANVAS; }
-	static const Type get_type(const etl::loose_handle<Canvas>&)
+	static Type get_type(const etl::loose_handle<Canvas>&)
 		{ return TYPE_CANVAS; }
-	static const Type get_type(const list_type&) { return TYPE_LIST; }
-	template <class T> static const Type get_type(const std::vector<T> &/*x*/)
+	static Type get_type(const list_type&) { return TYPE_LIST; }
+	template <class T> static Type get_type(const std::vector<T> &/*x*/)
 		{ return TYPE_LIST; }
-	template <class T> static const Type get_type(const std::list<T> &/*x*/)
+	template <class T> static Type get_type(const std::list<T> &/*x*/)
 		{ return TYPE_LIST; }
 	// ========================================================================
 
@@ -341,13 +341,13 @@ public:
 	half get(const half &)const { return get(Real()); }
 	void put(half*x)const { *x=get(Real()); }
 	void set(const half &x) { _set(Real(x)); }
-	static const Type get_type(const half&) { return TYPE_REAL; }
+	static Type get_type(const half&) { return TYPE_REAL; }
 	operator half()const { return get(Real()); }
 #endif
 
 #ifndef SYNFIG_NO_ANGLE
 	operator const Angle&()const { return get(Angle()); }
-	static const Type get_type(const Angle&) { return TYPE_ANGLE; }
+	static Type get_type(const Angle&) { return TYPE_ANGLE; }
 #endif
 
 	template <class T>
