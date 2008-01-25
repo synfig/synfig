@@ -132,74 +132,76 @@ Renderer_Canvas::render_vfunc(
 	Glib::RefPtr<Gdk::GC> gc(Gdk::GC::create(drawable));
 
 	if(!tile_book.empty())
-	if(get_full_frame())
 	{
-		if(tile_book[0].first)
+		if(get_full_frame())
 		{
-			drawable->draw_pixbuf(
-				gc, //GC
-				tile_book[0].first, //pixbuf
-				0, 0,	// Source X and Y
-				round_to_int(x),round_to_int(y),	// Dest X and Y
-				-1,-1,	// Width and Height
-				Gdk::RGB_DITHER_MAX,		// RgbDither
-				2, 2 // Dither offset X and Y
-			);
-		}
-		if(tile_book[0].second!=get_refreshes() && get_canceled()==false && get_rendering()==false && get_queued()==false)
-			get_work_area()->async_update_preview();
-	}
-	else
-	{
-		const int width_in_tiles(w/tile_w+(((get_work_area()->get_low_resolution_flag())?((w/2)%(tile_w/2)):(w%tile_w))?1:0));
-		const int height_in_tiles(h/tile_h+(h%tile_h?1:0));
-
-		int u(0),v(0),tx,ty;
-		int u1(0),v1(0),u2(width_in_tiles), v2(height_in_tiles);
-
-		bool needs_refresh(false);
-
-		u1=int(-x/tile_w);
-		v1=int(-y/tile_h);
-		u2=int((-x+drawable_w)/tile_w+1);
-		v2=int((-y+drawable_h)/tile_h+1);
-		if(u2>width_in_tiles)u2=width_in_tiles;
-		if(v2>height_in_tiles)v2=height_in_tiles;
-		if(u1<0)u1=0;
-		if(v1<0)v1=0;
-
-		for(v=v1;v<v2;v++)
-		{
-			for(u=u1;u<u2;u++)
+			if(tile_book[0].first)
 			{
-				int index=v*width_in_tiles+u;
-				if(int(tile_book.size())>index && tile_book[index].first)
-				{
-					tx=u*tile_w;
-					ty=v*tile_w;
-
-					drawable->draw_pixbuf(
-						gc, //GC
-						tile_book[index].first, //pixbuf
-						0, 0,	// Source X and Y
-						round_to_int(x)+tx,round_to_int(y)+ty,	// Dest X and Y
-						-1,-1,	// Width and Height
-						Gdk::RGB_DITHER_MAX,		// RgbDither
-						2, 2 // Dither offset X and Y
+				drawable->draw_pixbuf(
+					gc, //GC
+					tile_book[0].first, //pixbuf
+					0, 0,	// Source X and Y
+					round_to_int(x),round_to_int(y),	// Dest X and Y
+					-1,-1,	// Width and Height
+					Gdk::RGB_DITHER_MAX,		// RgbDither
+					2, 2 // Dither offset X and Y
 					);
-				}
-				if(tile_book[index].second!=get_refreshes())
-					needs_refresh=true;
 			}
+			if(tile_book[0].second!=get_refreshes() && get_canceled()==false && get_rendering()==false && get_queued()==false)
+				get_work_area()->async_update_preview();
 		}
-		if(needs_refresh==true && get_canceled()==false && get_rendering()==false && get_queued()==false)
+		else
 		{
-			//queue_render_preview();
-			get_work_area()->async_update_preview();
-			//update_preview();
-			//return true;
-		}
+			const int width_in_tiles(w/tile_w+(((get_work_area()->get_low_resolution_flag())?((w/2)%(tile_w/2)):(w%tile_w))?1:0));
+			const int height_in_tiles(h/tile_h+(h%tile_h?1:0));
 
+			int u(0),v(0),tx,ty;
+			int u1(0),v1(0),u2(width_in_tiles), v2(height_in_tiles);
+
+			bool needs_refresh(false);
+
+			u1=int(-x/tile_w);
+			v1=int(-y/tile_h);
+			u2=int((-x+drawable_w)/tile_w+1);
+			v2=int((-y+drawable_h)/tile_h+1);
+			if(u2>width_in_tiles)u2=width_in_tiles;
+			if(v2>height_in_tiles)v2=height_in_tiles;
+			if(u1<0)u1=0;
+			if(v1<0)v1=0;
+
+			for(v=v1;v<v2;v++)
+			{
+				for(u=u1;u<u2;u++)
+				{
+					int index=v*width_in_tiles+u;
+					if(int(tile_book.size())>index && tile_book[index].first)
+					{
+						tx=u*tile_w;
+						ty=v*tile_w;
+
+						drawable->draw_pixbuf(
+							gc, //GC
+							tile_book[index].first, //pixbuf
+							0, 0,	// Source X and Y
+							round_to_int(x)+tx,round_to_int(y)+ty,	// Dest X and Y
+							-1,-1,	// Width and Height
+							Gdk::RGB_DITHER_MAX,		// RgbDither
+							2, 2 // Dither offset X and Y
+							);
+					}
+					if(tile_book[index].second!=get_refreshes())
+						needs_refresh=true;
+				}
+			}
+			if(needs_refresh==true && get_canceled()==false && get_rendering()==false && get_queued()==false)
+			{
+				//queue_render_preview();
+				get_work_area()->async_update_preview();
+				//update_preview();
+				//return true;
+			}
+
+		}
 	}
 
 	// Draw the border around the rendered region
