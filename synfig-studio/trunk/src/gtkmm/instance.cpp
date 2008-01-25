@@ -210,10 +210,12 @@ studio::Instance::save()
 	// and will be changed to an absolute path once it has been saved
 	// so if it still begins with "Synfig Animation " then we need to ask where to save it
 	if(get_file_name().find(DEFAULT_FILENAME_PREFIX)==0)
+	{
 		if (dialog_save_as())
 			return STATUS_OK;
 		else
 			return STATUS_CANCEL;
+	}
 
 	if (synfigapp::Instance::save())
 		return STATUS_OK;
