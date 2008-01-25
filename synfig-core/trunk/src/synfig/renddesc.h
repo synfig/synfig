@@ -303,14 +303,15 @@ inline RendDesc::Lock operator~(RendDesc::Lock rhs)
 	return static_cast<RendDesc::Lock>(~(int)rhs);
 }
 
+//! \todo This code isn't used - so how are flags checked?  Using the FLAGS macro from color.h?
 //! This operator is for checking RendDesc::Lock flags.
 /*! Don't think of it as "less then or equal to", but think of it
 **	like an arrow. Is \a rhs inside of \a lhs ?
 **	\see RendDesc::Lock, RendDesc */
-inline bool operator<=(RendDesc::Lock lhs, RendDesc::Lock rhs)
-{
-	return static_cast<int>(lhs) & static_cast<int>(rhs)==static_cast<int>(rhs);
-}
+// inline bool operator<=(RendDesc::Lock lhs, RendDesc::Lock rhs)
+// {
+// 	return (static_cast<int>(lhs) & static_cast<int>(rhs)) == static_cast<int>(rhs);
+// }
 
 
 }; /* end namespace synfig */
