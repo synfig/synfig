@@ -710,7 +710,7 @@ Warp::accelerated_render(Context context,Surface *surface,int quality, const Ren
 				else
 					(*surface)[y][x]=source.cubic_sample(u,v);
 			}
-			if(y&31==0 && cb)
+			if((y&31)==0 && cb)
 			{
 				if(!stagetwo.amount_complete(y,surface->get_h()))
 					return false;
@@ -744,7 +744,7 @@ Warp::accelerated_render(Context context,Surface *surface,int quality, const Ren
 				else
 					(*surface)[y][x]=source.linear_sample(u,v);
 			}
-			if(y&31==0 && cb)
+			if((y&31)==0 && cb)
 			{
 				if(!stagetwo.amount_complete(y,surface->get_h()))
 					return false;
@@ -778,7 +778,7 @@ Warp::accelerated_render(Context context,Surface *surface,int quality, const Ren
 					//pen.set_value(source[v][u]);
 					(*surface)[y][x]=source[floor_to_int(v)][floor_to_int(u)];
 			}
-			if(y&31==0 && cb)
+			if((y&31)==0 && cb)
 			{
 				if(!stagetwo.amount_complete(y,surface->get_h()))
 					return false;
