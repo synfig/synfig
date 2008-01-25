@@ -256,7 +256,7 @@ Rotate::accelerated_render(Context context,Surface *surface,int quality, const R
 				tmp=Point(cos_val*(point[0]-origin[0])+sin_val*(point[1]-origin[1]),-sin_val*(point[0]-origin[0])+cos_val*(point[1]-origin[1])) +origin;
 				(*surface)[y][x]=source.cubic_sample((tmp[0]-tl[0])*pw,(tmp[1]-tl[1])*ph);
 			}
-			if(y&31==0 && cb)
+			if((y&31)==0 && cb)
 			{
 				if(!stagetwo.amount_complete(y,surface->get_h()))
 					return false;
@@ -276,7 +276,7 @@ Rotate::accelerated_render(Context context,Surface *surface,int quality, const R
 				tmp=Point(cos_val*(point[0]-origin[0])+sin_val*(point[1]-origin[1]),-sin_val*(point[0]-origin[0])+cos_val*(point[1]-origin[1])) +origin;
 				(*surface)[y][x]=source.linear_sample((tmp[0]-tl[0])*pw,(tmp[1]-tl[1])*ph);
 			}
-			if(y&31==0 && cb)
+			if((y&31)==0 && cb)
 			{
 				if(!stagetwo.amount_complete(y,surface->get_h()))
 					return false;
@@ -306,7 +306,7 @@ Rotate::accelerated_render(Context context,Surface *surface,int quality, const R
 				//pen.set_value(source[v][u]);
 				(*surface)[y][x]=source[v][u];
 			}
-			if(y&31==0 && cb)
+			if((y&31)==0 && cb)
 			{
 				if(!stagetwo.amount_complete(y,surface->get_h()))
 					return false;
