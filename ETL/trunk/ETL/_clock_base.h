@@ -99,7 +99,8 @@ public:
 			value_type val;
 			for(val=timer();one_second()<length-val;val=timer())
 				::sleep((int)((length-val)/2.0+0.4));
-			while(timer()<length);
+			while(timer()<length)
+			  ;
 		}
 
 
