@@ -116,7 +116,8 @@ public:
 			t=0;
 		if(t>=_knots.back())
 			t=_knots.back()-0.0001;
-		for(k=0;_knots[k]>t || _knots[k+1]<=t;k++);
+		for(k=0;_knots[k]>t || _knots[k+1]<=t;k++)
+		  ;
 
 		return k;
 	}
