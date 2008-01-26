@@ -86,7 +86,8 @@ void Adjust_Window::set_child_adjustment(Gtk::Adjustment *child)
 
 	adj_child = child;
 
-	synfig::info("Adjust: connecting to child signals");
+	// synfig::info("Adjust: connecting to child signals");
+
 	if(child)
 	{
 		childchanged = child->signal_changed().connect(sigc::mem_fun(*this,&Adjust_Window::update_fromchild));
