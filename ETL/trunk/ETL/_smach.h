@@ -98,7 +98,7 @@ public:
 
 	//! Event definition class
 	template<typename T>
-	class event_def
+	class event_def_internal
 	{
 		// List our friends
 		friend class smach;
@@ -118,11 +118,11 @@ public:
 	public:
 
 		//! Less-than operator for sorting. Based on event_key value.
-		bool operator<(const event_def &rhs)const
+		bool operator<(const event_def_internal &rhs)const
 			{ return id<rhs.id; }
 
 		//! Equal-to operator. Based on event_key value.
-		bool operator==(const event_def &rhs)const
+		bool operator==(const event_def_internal &rhs)const
 			{ return id==rhs.id; }
 
 		//! Less-than operator for finding.
@@ -134,13 +134,13 @@ public:
 			{ return id==rhs; }
 
 		//! Trivial Constructor
-		event_def() { }
+		event_def_internal() { }
 
-		//! Constructor for creating an event_def from the given key and function reference.
-		event_def(event_key a, funcptr b):id(a),handler(b) { }
+		//! Constructor for creating an event_def_internal from the given key and function reference.
+		event_def_internal(event_key a, funcptr b):id(a),handler(b) { }
 
 		//! Copy constructor
-		event_def(const event_def &x):id(x.id),handler(x.handler) { }
+		event_def_internal(const event_def_internal &x):id(x.id),handler(x.handler) { }
 
 	};
 
@@ -168,7 +168,7 @@ public:
 		friend class smach;
 
 	public:
-		typedef event_def<T> event_def;
+		typedef event_def_internal<T> event_def;
 		typedef T state_context_type;
 
 
