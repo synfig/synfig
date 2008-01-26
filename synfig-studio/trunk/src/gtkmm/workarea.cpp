@@ -892,6 +892,8 @@ WorkArea::load_meta_data()
 
 		if(!tmp.empty())
 			gx=stratof(tmp);
+		else
+			synfig::error("WorkArea::load_meta_data(): Unable to parse data for \"grid_size\", which was \"%s\"",data.c_str());
 
 		if(iter==data.end())
 			tmp.clear();
@@ -900,11 +902,11 @@ WorkArea::load_meta_data()
 
 		if(!tmp.empty())
 			gy=stratof(tmp);
+		else
+			synfig::error("WorkArea::load_meta_data(): Unable to parse data for \"grid_size\", which was \"%s\"",data.c_str());
 
 		set_grid_size(Vector(gx,gy));
 	}
-	else
-		synfig::error("WorkArea::load_meta_data(): Unable to parse data for \"grid_size\", which was \"%s\"",data.c_str());
 
 	data=canvas->get_meta_data("grid_show");
 	if(data.size() && (data=="1" || data[0]=='t' || data[0]=='T'))
