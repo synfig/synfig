@@ -109,7 +109,7 @@ ChildrenTreeStore::create(etl::loose_handle<synfigapp::CanvasInterface> canvas_i
 void
 ChildrenTreeStore::rebuild()
 {
-	Profiler profiler("ChildrenTreeStore::rebuild()");
+	// Profiler profiler("ChildrenTreeStore::rebuild()");
 	rebuild_value_nodes();
 	rebuild_canvases();
 }
@@ -117,7 +117,7 @@ ChildrenTreeStore::rebuild()
 void
 ChildrenTreeStore::refresh()
 {
-	Profiler profiler("ChildrenTreeStore::refresh()");
+	// Profiler profiler("ChildrenTreeStore::refresh()");
 	refresh_value_nodes();
 	refresh_canvases();
 }
@@ -239,7 +239,7 @@ ChildrenTreeStore::on_value_node_deleted(synfig::ValueNode::Handle value_node)
 bool
 ChildrenTreeStore::execute_changed_value_nodes()
 {
-	Profiler profiler("ChildrenTreeStore::execute_changed_value_nodes()");
+	// Profiler profiler("ChildrenTreeStore::execute_changed_value_nodes()");
 	if(!replaced_set_.empty())
 		rebuild_value_nodes();
 
