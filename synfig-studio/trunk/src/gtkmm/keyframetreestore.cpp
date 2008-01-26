@@ -61,7 +61,7 @@ using namespace studio;
 
 /* === G L O B A L S ======================================================= */
 
-KeyframeTreeStore_Class KeyframeTreeStore::keyframe_tree_store_class_;
+// KeyframeTreeStore_Class KeyframeTreeStore::keyframe_tree_store_class_;
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
@@ -198,7 +198,8 @@ KeyframeTreeStore_Class::class_init_function(gpointer /*g_class*/, gpointer /*cl
 
 KeyframeTreeStore::KeyframeTreeStore(etl::loose_handle<synfigapp::CanvasInterface> canvas_interface_):
 	Glib::ObjectBase	("KeyframeTreeStore"),
-	Glib::Object		(Glib::ConstructParams(keyframe_tree_store_class_.init(), (char*) 0)),
+	//! \todo what is going on here?  why the need for this KeyframeTreeStore_Class at all?
+	// Glib::Object		(Glib::ConstructParams(keyframe_tree_store_class_.init(), (char*) 0, (char*) 0)),
 	canvas_interface_	(canvas_interface_)
 {
 	reset_stamp();
