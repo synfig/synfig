@@ -698,8 +698,8 @@ Instance::add_actions_to_group(const Glib::RefPtr<Gtk::ActionGroup>& action_grou
 
 	candidate_list.sort();
 
-	if(candidate_list.empty())
-		synfig::warning("%s:%d Action CandidateList is empty!", __FILE__, __LINE__);
+	// if(candidate_list.empty())
+	// 	synfig::warning("%s:%d Action CandidateList is empty!", __FILE__, __LINE__);
 
 	for(iter=candidate_list.begin();iter!=candidate_list.end();++iter)
 	{
