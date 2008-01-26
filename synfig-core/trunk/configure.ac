@@ -478,8 +478,6 @@ AC_CHECK_HEADERS([tr1/unordered_set],[
 
 
 
-CXXFLAGS="$CXXFLAGS -fpermissive"
-
 AC_CHECK_HEADERS(signal.h termios.h sys/errno.h)
 
 
