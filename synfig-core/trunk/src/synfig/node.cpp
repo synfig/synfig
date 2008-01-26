@@ -22,8 +22,6 @@
 
 /* === H E A D E R S ======================================================= */
 
-#define HASH_MAP_H <ext/hash_map>
-
 #ifdef USING_PCH
 #	include "pch.h"
 #else
@@ -36,7 +34,6 @@
 
 #ifdef HASH_MAP_H
 #include HASH_MAP_H
-using namespace __gnu_cxx;
 #else
 #include <map>
 #endif
@@ -83,7 +80,7 @@ extern clock_t _clock();
 /* === G L O B A L S ======================================================= */
 
 #ifdef HASH_MAP_H
-typedef hash_map<GUID,Node*,GUIDHash> GlobalNodeMap;
+typedef HASH_MAP_CLASS<GUID,Node*,GUIDHash> GlobalNodeMap;
 #else
 typedef map<GUID,Node*> GlobalNodeMap;
 #endif

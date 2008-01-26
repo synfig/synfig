@@ -23,7 +23,6 @@
 
 /* === H E A D E R S ======================================================= */
 
-#define HASH_MAP_H <ext/hash_map>
 #define SUBTRACT_RNG_H <ext/functional>
 
 #ifdef USING_PCH
@@ -48,7 +47,6 @@
 
 #ifdef HASH_MAP_H
 #include HASH_MAP_H
-using namespace __gnu_cxx;
 #endif
 
 #ifdef SUBTRACT_RNG_H
@@ -155,7 +153,7 @@ synfig::GUID
 synfig::GUID::hasher(const String& str)
 {
 #ifdef HASH_MAP_H
-	hash<const char*> string_hash_;
+	HASH_MAP_NAMESPACE::hash<const char*> string_hash_;
 	const unsigned int seed(
 		string_hash_(
 			str.c_str()

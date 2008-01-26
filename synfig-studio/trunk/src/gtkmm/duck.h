@@ -44,16 +44,13 @@
 
 /* === M A C R O S ========================================================= */
 
-#define HASH_MAP_H <ext/hash_map>
-#define HASH_SET_H <ext/hash_set>
-
 #ifdef HASH_MAP_H
 #include HASH_MAP_H
 #ifndef __STRING_HASH__
 #define __STRING_HASH__
 class StringHash
 {
-	__gnu_cxx::hash<const char*> hasher_;
+	HASH_MAP_NAMESPACE::hash<const char*> hasher_;
 public:
 	size_t operator()(const synfig::String& x)const
 	{
@@ -251,9 +248,9 @@ operator&(const Duck::Type lhs, const Duck::Type rhs)
 
 class DuckMap : public
 #ifdef HASH_MAP_H
-__gnu_cxx::hash_map<synfig::GUID,etl::handle<studio::Duck>,synfig::GUIDHash>
+HASH_MAP_CLASS<synfig::GUID,etl::handle<studio::Duck>,synfig::GUIDHash>
 {
-	typedef __gnu_cxx::hash_map<synfig::GUID,etl::handle<studio::Duck>,synfig::GUIDHash> PARENT_TYPE;
+	typedef HASH_MAP_CLASS<synfig::GUID,etl::handle<studio::Duck>,synfig::GUIDHash> PARENT_TYPE;
 #else
 std::map<synfig::GUID,etl::handle<studio::Duck> >
 {

@@ -50,15 +50,13 @@
 
 /* === M A C R O S ========================================================= */
 
-#define HASH_MAP_H <ext/hash_map>
-
 #ifdef HASH_MAP_H
 #include HASH_MAP_H
 #ifndef __STRING_HASH__
 #define __STRING_HASH__
 class StringHash
 {
-	__gnu_cxx::hash<const char*> hasher_;
+	HASH_MAP_NAMESPACE::hash<const char*> hasher_;
 public:
 	size_t operator()(const synfig::String& x)const
 	{
@@ -124,7 +122,7 @@ class Duckmatic
 public:
 
 #ifdef HASH_MAP_H
-typedef __gnu_cxx::hash_map<synfig::GUID,etl::smart_ptr<synfig::Point>,synfig::GUIDHash> DuckDataMap;
+typedef HASH_MAP_CLASS<synfig::GUID,etl::smart_ptr<synfig::Point>,synfig::GUIDHash> DuckDataMap;
 #else
 typedef std::map<synfig::GUID,etl::smart_ptr<synfig::Point> > DuckDataMap;
 #endif

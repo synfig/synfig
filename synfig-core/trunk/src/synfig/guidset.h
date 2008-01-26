@@ -25,8 +25,6 @@
 #ifndef __SYNFIG_GUIDSET_H
 #define __SYNFIG_GUIDSET_H
 
-#define HASH_SET_H <ext/hash_set>
-
 /* === H E A D E R S ======================================================= */
 
 #include "guid.h"
@@ -49,7 +47,7 @@ class GUIDSet : public
 #ifdef HASH_SET_H
 std::set<synfig::GUID>
 #else
-std::hash_set<synfig::GUID,synfig::GUIDHash>
+HASH_SET_CLASS<synfig::GUID,synfig::GUIDHash>
 #endif
 {
 }; // END of class GUIDSet
