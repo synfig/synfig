@@ -65,7 +65,7 @@ public:
 	typedef VP value_prep_type;
 
 	typedef alpha_pen<const_pen> const_alpha_pen;
-	typedef alpha_pen<pen> alpha_pen;
+	typedef alpha_pen<pen> non_const_alpha_pen;
 
 	typedef typename pen::difference_type size_type;
 	typedef typename pen::difference_type difference_type;
