@@ -63,17 +63,14 @@ KeyframeTree::KeyframeTree()
 		cell_renderer_time = Gtk::manage( new CellRenderer_Time() );
 		column->pack_start(*cell_renderer_time,true);
 		column->add_attribute(cell_renderer_time->property_time(), model.time);
-
 		cell_renderer_time->signal_edited().connect(sigc::mem_fun(*this,&studio::KeyframeTree::on_edited_time));
 
 		column->set_reorderable();
 		column->set_resizable();
 		column->set_clickable();
-		//column->set_sort_column_id(COLUMNID_TIME);
-		column->set_sort_column_id(model.time);
+		column->set_sort_column(model.time);
 
 		append_column(*column);
-		//column->clicked();
 	}
 	{
 		Gtk::TreeView::Column* column = Gtk::manage( new Gtk::TreeView::Column(_("Length")) );
@@ -81,39 +78,30 @@ KeyframeTree::KeyframeTree()
 		cell_renderer_time_delta = Gtk::manage( new CellRenderer_Time() );
 		column->pack_start(*cell_renderer_time_delta,true);
 		column->add_attribute(cell_renderer_time_delta->property_time(), model.time_delta);
-
 		cell_renderer_time_delta->signal_edited().connect(sigc::mem_fun(*this,&studio::KeyframeTree::on_edited_time_delta));
 
 		column->set_reorderable();
 		column->set_resizable();
-
-		column->set_sort_column_id(model.time_delta);
-
 		column->set_clickable(false);
+		// column->set_sort_column(model.time_delta);
 
 		append_column(*column);
-		//column->clicked();
 	}
 	{
 		Gtk::TreeView::Column* column = Gtk::manage( new Gtk::TreeView::Column(_("Jump")) );
 
 		Gtk::CellRendererText* cell_renderer_jump=Gtk::manage(new Gtk::CellRendererText());
 		column->pack_start(*cell_renderer_jump,true);
-
 		cell_renderer_jump->property_text()=_("(JMP)");
 		cell_renderer_jump->property_foreground()="#003a7f";
 
 		column->set_reorderable();
 		column->set_resizable();
-
-		column->set_sort_column_id(COLUMNID_JUMP);
-
 		column->set_clickable(false);
 
 		append_column(*column);
-		//column->clicked();
 	}
-	//append_column_editable(_("Description"),model.description);
+	// append_column_editable(_("Description"),model.description);
 	{
 		Gtk::TreeView::Column* column = Gtk::manage( new Gtk::TreeView::Column(_("Description")) );
 
@@ -125,8 +113,7 @@ KeyframeTree::KeyframeTree()
 		column->set_reorderable();
 		column->set_resizable();
 		column->set_clickable();
-		//column->set_sort_column_id(COLUMNID_DESCRIPTION);
-		column->set_sort_column_id(model.description);
+		column->set_sort_column(model.description);
 
 		append_column(*column);
 	}
@@ -163,8 +150,9 @@ KeyframeTree::set_model(Glib::RefPtr<KeyframeTreeStore> keyframe_tree_store)
 	{
 		Glib::RefPtr<Gtk::TreeModelSort> sorted_store(Gtk::TreeModelSort::create(keyframe_tree_store_));
 		sorted_store->set_default_sort_func(sigc::ptr_fun(&studio::KeyframeTreeStore::time_sorter));
-		sorted_store->set_sort_func(model.time.index(),sigc::ptr_fun(&studio::KeyframeTreeStore::time_sorter));
-		sorted_store->set_sort_column_id(model.time.index(), Gtk::SORT_ASCENDING);
+		sorted_store->set_sort_column(model.time.index(), Gtk::SORT_ASCENDING);
+		sorted_store->set_sort_func(model.time,			sigc::ptr_fun(&studio::KeyframeTreeStore::time_sorter));
+		sorted_store->set_sort_func(model.description,	sigc::ptr_fun(&studio::KeyframeTreeStore::description_sorter));
 		Gtk::TreeView::set_model(sorted_store);
 	}
 	else
