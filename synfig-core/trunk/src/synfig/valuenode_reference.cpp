@@ -90,7 +90,7 @@ ValueNode_Reference::set_link_vfunc(int i,ValueNode::Handle value)
 }
 
 ValueNode::LooseHandle
-ValueNode_Reference::get_link_vfunc(int i)const
+ValueNode_Reference::get_link_vfunc(int i __attribute__ ((unused)))const
 {
 	assert(i>=0 && i<link_count());
 
