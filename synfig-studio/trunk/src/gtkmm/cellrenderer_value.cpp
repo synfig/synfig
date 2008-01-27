@@ -200,8 +200,11 @@ public:
 	{
 		if(valuewidget)
 			return valuewidget->get_value();
-		return synfig::ValueBase();
+
+		warning("%s:%d this code shouldn't be reached", __FILE__, __LINE__);
+		return *(new synfig::ValueBase());
 	}
+
 	const Glib::ustring &get_path()
 	{
 		return path;
