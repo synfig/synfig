@@ -257,7 +257,7 @@ magickpp_trgt::end_frame()
 }
 
 bool
-magickpp_trgt::start_frame(synfig::ProgressCallback *callback)
+magickpp_trgt::start_frame(synfig::ProgressCallback *callback __attribute__ ((unused)))
 {
 	previous_buffer_pointer = start_pointer;
 
@@ -271,7 +271,7 @@ magickpp_trgt::start_frame(synfig::ProgressCallback *callback)
 }
 
 Color*
-magickpp_trgt::start_scanline(int scanline)
+magickpp_trgt::start_scanline(int scanline __attribute__ ((unused)))
 {
 	return color_buffer;
 }

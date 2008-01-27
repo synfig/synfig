@@ -189,7 +189,7 @@ ValueNode_Duplicate::count_steps(Time t)const
 }
 
 ValueBase
-ValueNode_Duplicate::operator()(Time t)const
+ValueNode_Duplicate::operator()(Time t __attribute__ ((unused)))const
 {
 	return index;
 }
@@ -207,7 +207,7 @@ ValueNode_Duplicate::get_local_name()const
 }
 
 bool
-ValueNode_Duplicate::check_type(ValueBase::Type type)
+ValueNode_Duplicate::check_type(ValueBase::Type type __attribute__ ((unused)))
 {
 	// never offer this as a choice.  it's used automatically by the 'Duplicate' layer.
 	return false;

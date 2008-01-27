@@ -3581,7 +3581,7 @@ CanvasView::set_ext_widget(const synfig::String& x, Gtk::Widget* y)
 }
 
 bool
-CanvasView::on_delete_event(GdkEventAny* event)
+CanvasView::on_delete_event(GdkEventAny* event __attribute__ ((unused)))
 {
 	close_view();
 

@@ -185,7 +185,7 @@ ValueNode_Integer::get_local_name()const
 
 // don't show this to the user at the moment - maybe it's not very useful
 bool
-ValueNode_Integer::check_type(ValueBase::Type type)
+ValueNode_Integer::check_type(ValueBase::Type type __attribute__ ((unused)))
 {
 	return false;
 //	return
