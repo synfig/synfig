@@ -98,7 +98,7 @@ public:
 		mod=offset=0;
 	}
 
-	void seed(const seed_type &x)
+	void seed(const seed_type &x __attribute__ ((unused)))
 	{ pool_index=0; }
 
 	void set_range(const value_type &floor,const value_type &ceil)

@@ -247,7 +247,7 @@ int smart_ptr_inheritance_test(void)
 	return 0;
 }
 
-void test_func(etl::smart_ptr<my_test_obj> smart_ptr)
+void test_func(etl::smart_ptr<my_test_obj> smart_ptr __attribute__ ((unused)))
 {
 }
 
