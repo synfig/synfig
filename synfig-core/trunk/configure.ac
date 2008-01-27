@@ -445,11 +445,19 @@ SYNFIGLIB_DIR=$libdir/synfig
 AC_SUBST(SYNFIGLIB_DIR)
 
 # Check for unordered_map or hash_map headers
-AC_CHECK_HEADERS([tr1/unordered_map],[
+AC_MSG_CHECKING([for unordered_map<int,int>::const_iterator])
+AC_COMPILE_IFELSE([
+	AC_LANG_PROGRAM([
+		[#include <tr1/unordered_map>]
+	],[
+		[std::tr1::unordered_map<int,int>::const_iterator iter;]
+	])],[
+	AC_MSG_RESULT([yes])
 	AC_DEFINE([HASH_MAP_CLASS],[HASH_MAP_NAMESPACE::unordered_map],[The template name for unordered maps.])
 	AC_DEFINE([HASH_MAP_H],[<tr1/unordered_map>],[The header file to include for unordered maps.])
 	AC_DEFINE([HASH_MAP_NAMESPACE],[std::tr1],[The namespace for unordered maps.])
 ],[
+	AC_MSG_RESULT([no])
 	AC_CHECK_HEADERS([ext/hash_map],[
 		AC_DEFINE([HASH_MAP_CLASS],[HASH_MAP_NAMESPACE::hash_map],[The template name for unordered maps.])
 		AC_DEFINE([HASH_MAP_H],[<ext/hash_map>],[The header file to include for unordered maps.])
@@ -460,11 +468,19 @@ AC_CHECK_HEADERS([tr1/unordered_map],[
 ])
 
 # Check for unordered_set or hash_set headers
-AC_CHECK_HEADERS([tr1/unordered_set],[
+AC_MSG_CHECKING([for unordered_set<int,int>::const_iterator])
+AC_COMPILE_IFELSE([
+	AC_LANG_PROGRAM([
+		[#include <tr1/unordered_set>]
+	],[
+		[std::tr1::unordered_set<int,int>::const_iterator iter;]
+	])],[
+	AC_MSG_RESULT([yes])
 	AC_DEFINE([HASH_SET_CLASS],[HASH_SET_NAMESPACE::unordered_set],[The template name for unordered sets.])
 	AC_DEFINE([HASH_SET_H],[<tr1/unordered_set>],[The header file to include for unordered sets.])
 	AC_DEFINE([HASH_SET_NAMESPACE],[std::tr1],[The namespace for unordered sets.])
 ],[
+	AC_MSG_RESULT([no])
 	AC_CHECK_HEADERS([ext/hash_set],[
 		AC_DEFINE([HASH_SET_CLASS],[HASH_SET_NAMESPACE::hash_set],[The template name for unordered sets.])
 		AC_DEFINE([HASH_SET_H],[<ext/hash_set>],[The header file to include for unordered sets.])
