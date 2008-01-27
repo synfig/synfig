@@ -19,8 +19,8 @@ AC_DEFUN([AC_ARG_WARNINGS],
   case "$gtkmm_enable_warnings" in
     none|no)     gtkmm_warning_flags='';;
     minimum|yes) gtkmm_warning_flags='-Wall -Wno-unused-parameter';;
-    maximum)     gtkmm_warning_flags='-W -Wall -Wno-unused-parameter';;
-    hardcore)    gtkmm_warning_flags='-W -Wall -Werror -Wno-unused-parameter';;
+    maximum)     gtkmm_warning_flags='-W -Wall';;
+    hardcore)    gtkmm_warning_flags='-W -Wall -Werror';;
   esac
 
   gtkmm_use_flags=''
