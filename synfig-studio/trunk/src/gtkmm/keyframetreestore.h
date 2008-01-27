@@ -196,6 +196,7 @@ public:
 	static Glib::RefPtr<KeyframeTreeStore> create(etl::loose_handle<synfigapp::CanvasInterface> canvas_interface_);
 
 	static int time_sorter(const Gtk::TreeModel::iterator &rhs,const Gtk::TreeModel::iterator &lhs);
+	static int description_sorter(const Gtk::TreeModel::iterator &rhs,const Gtk::TreeModel::iterator &lhs);
 
 }; // END of class KeyframeTreeStore
 

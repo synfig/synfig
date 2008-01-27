@@ -308,6 +308,20 @@ KeyframeTreeStore::time_sorter(const Gtk::TreeModel::iterator &rhs,const Gtk::Tr
 	return 0;
 }
 
+int
+KeyframeTreeStore::description_sorter(const Gtk::TreeModel::iterator &rhs,const Gtk::TreeModel::iterator &lhs)
+{
+	const Model model;
+
+	_keyframe_iterator *rhs_iter(static_cast<_keyframe_iterator*>(rhs->gobj()->user_data));
+	_keyframe_iterator *lhs_iter(static_cast<_keyframe_iterator*>(lhs->gobj()->user_data));
+
+	int comp = rhs_iter->iter->get_description().compare(lhs_iter->iter->get_description());
+	if (comp > 0) return 1;
+	if (comp < 0) return -1;
+	return 0;
+}
+
 void
 KeyframeTreeStore::set_value_impl(const Gtk::TreeModel::iterator& row, int column, const Glib::ValueBase& value)
 {
