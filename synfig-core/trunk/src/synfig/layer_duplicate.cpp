@@ -184,7 +184,7 @@ Layer_Duplicate::accelerated_render(Context context,Surface *surface,int quality
 		if(!context.accelerated_render(&tmp,quality,renddesc,&subimagecb)) return false;
 
 		Surface::alpha_pen apen(surface->begin());
-		apen.set_alpha(1.0);
+		apen.set_alpha(get_amount());
 		// \todo have a checkbox allowing use of 'behind' to reverse the order?
 		apen.set_blend_method(i ? blend_method : Color::BLEND_COMPOSITE);
 		tmp.blit_to(apen);
