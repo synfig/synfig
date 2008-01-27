@@ -226,7 +226,7 @@ public:
 
 	// === GET MEMBERS ========================================================
 	template <typename T>
-	const T &get(const T& x)const
+	const T &get(const T& x __attribute__ ((unused)))const
 	{
 		assert(is_valid() && same_type_as(x));
 		return *static_cast<const T*>(data);

@@ -494,12 +494,12 @@ CellRenderer_ValueBase::color_edited(synfig::Color color, Glib::ustring path)
 
 Gtk::CellEditable*
 CellRenderer_ValueBase::start_editing_vfunc(
-	GdkEvent* event,
+	GdkEvent* event __attribute__ ((unused)),
 	Gtk::Widget& widget,
 	const Glib::ustring& path,
-	const Gdk::Rectangle& background_area,
-	const Gdk::Rectangle& cell_area,
-	Gtk::CellRendererState flags)
+	const Gdk::Rectangle& background_area __attribute__ ((unused)),
+	const Gdk::Rectangle& cell_area __attribute__ ((unused)),
+	Gtk::CellRendererState flags __attribute__ ((unused)))
 {
 	// If we aren't editable, then there is nothing to do
 	if(!property_editable())
