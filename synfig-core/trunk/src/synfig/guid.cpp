@@ -160,11 +160,11 @@ synfig::GUID::hasher(const String& str)
 		)
 	);
 #else
-	const unsigned int seed(0x3B642879);
-	for(int i=0;i<str.size();i++)
+	unsigned int seed(0x3B642879);
+	for(unsigned int i=0;i<str.size();i++)
 	{
-		seed^=(seed*str[i])*i
-		seed=(seed>>(32-(i%24)))^(seed<<(i%24))
+		seed^=(seed*str[i])*i;
+		seed=(seed>>(32-(i%24)))^(seed<<(i%24));
 	}
 #endif
 
