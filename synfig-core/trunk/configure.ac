@@ -456,12 +456,15 @@ AC_COMPILE_IFELSE([
 	AC_DEFINE([HASH_MAP_CLASS],[HASH_MAP_NAMESPACE::unordered_map],[The template name for unordered maps.])
 	AC_DEFINE([HASH_MAP_H],[<tr1/unordered_map>],[The header file to include for unordered maps.])
 	AC_DEFINE([HASH_MAP_NAMESPACE],[std::tr1],[The namespace for unordered maps.])
+	AC_DEFINE([FUNCTIONAL_H],[<tr1/functional>],[The header file for hash<T>.])
+	AC_DEFINE([FUNCTIONAL_HASH_ON_STRING],[1],[Define to 1 if hash<T> needs to use T=String rather than T=char* to hash strings.])
 ],[
 	AC_MSG_RESULT([no])
 	AC_CHECK_HEADERS([ext/hash_map],[
 		AC_DEFINE([HASH_MAP_CLASS],[HASH_MAP_NAMESPACE::hash_map],[The template name for unordered maps.])
 		AC_DEFINE([HASH_MAP_H],[<ext/hash_map>],[The header file to include for unordered maps.])
 		AC_DEFINE([HASH_MAP_NAMESPACE],[__gnu_cxx],[The namespace for unordered maps.])
+		AC_DEFINE([FUNCTIONAL_H],[<ext/functional>],[The header file for hash<T>.])
 	],[
 		AC_MSG_ERROR([C++ compiler does not seem to support unordered containers])
 	])

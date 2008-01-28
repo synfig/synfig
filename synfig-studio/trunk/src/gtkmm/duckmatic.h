@@ -52,15 +52,25 @@
 
 #ifdef HASH_MAP_H
 #include HASH_MAP_H
+#include FUNCTIONAL_H
+
 #ifndef __STRING_HASH__
 #define __STRING_HASH__
 class StringHash
 {
+# ifdef FUNCTIONAL_HASH_ON_STRING
+	HASH_MAP_NAMESPACE::hash<const synfig::String&> hasher_;
+# else  // FUNCTIONAL_HASH_ON_STRING
 	HASH_MAP_NAMESPACE::hash<const char*> hasher_;
+# endif  // FUNCTIONAL_HASH_ON_STRING
 public:
 	size_t operator()(const synfig::String& x)const
 	{
+# ifdef FUNCTIONAL_HASH_ON_STRING
+		return hasher_(x);
+# else  // FUNCTIONAL_HASH_ON_STRING
 		return hasher_(x.c_str());
+# endif  // FUNCTIONAL_HASH_ON_STRING
 	}
 };
 #endif

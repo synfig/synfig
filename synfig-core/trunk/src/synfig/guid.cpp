@@ -23,8 +23,6 @@
 
 /* === H E A D E R S ======================================================= */
 
-#define SUBTRACT_RNG_H <ext/functional>
-
 #ifdef USING_PCH
 #	include "pch.h"
 #else
@@ -47,11 +45,7 @@
 
 #ifdef HASH_MAP_H
 #include HASH_MAP_H
-#endif
-
-#ifdef SUBTRACT_RNG_H
-#include SUBTRACT_RNG_H
-using namespace __gnu_cxx;
+#include FUNCTIONAL_H
 #endif
 
 #ifdef _WIN32
@@ -153,20 +147,31 @@ synfig::GUID
 synfig::GUID::hasher(const String& str)
 {
 #ifdef HASH_MAP_H
+	/* http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2003/n1456.html says:
+	 *
+	 *   "Some earlier hash table implementations gave char* special
+	 *    treatment: it specialized the default hash function to look
+	 *    at character array being pointed to, rather than the pointer
+	 *    itself. This proposal removes that special treatment."
+	 *
+	 * Unfortunately, the older implementation doesn't seem to want to
+	 * accept Strings, so we're left with this conditional compilation.
+	 */
+# ifdef FUNCTIONAL_HASH_ON_STRING
+	HASH_MAP_NAMESPACE::hash<const String&> string_hash_;
+	const unsigned int seed(string_hash_(str));
+# else  // FUNCTIONAL_HASH_ON_STRING
 	HASH_MAP_NAMESPACE::hash<const char*> string_hash_;
-	const unsigned int seed(
-		string_hash_(
-			str.c_str()
-		)
-	);
-#else
+	const unsigned int seed(string_hash_(str.c_str()));
+# endif  // FUNCTIONAL_HASH_ON_STRING
+#else  // HASH_MAP_H
 	unsigned int seed(0x3B642879);
 	for(unsigned int i=0;i<str.size();i++)
 	{
 		seed^=(seed*str[i])*i;
 		seed=(seed>>(32-(i%24)))^(seed<<(i%24));
 	}
-#endif
+#endif  // HASH_MAP_H
 
 	GUID_RNG random(seed);
 	GUID ret(0);
