@@ -53,7 +53,7 @@
 class StringHash
 {
 # ifdef FUNCTIONAL_HASH_ON_STRING
-	HASH_MAP_NAMESPACE::hash<const synfig::String&> hasher_;
+	HASH_MAP_NAMESPACE::hash<synfig::String> hasher_;
 # else  // FUNCTIONAL_HASH_ON_STRING
 	HASH_MAP_NAMESPACE::hash<const char*> hasher_;
 # endif  // FUNCTIONAL_HASH_ON_STRING

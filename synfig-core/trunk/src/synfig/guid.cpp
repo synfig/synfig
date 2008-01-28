@@ -158,7 +158,7 @@ synfig::GUID::hasher(const String& str)
 	 * accept Strings, so we're left with this conditional compilation.
 	 */
 # ifdef FUNCTIONAL_HASH_ON_STRING
-	HASH_MAP_NAMESPACE::hash<const String&> string_hash_;
+	HASH_MAP_NAMESPACE::hash<String> string_hash_;
 	const unsigned int seed(string_hash_(str));
 # else  // FUNCTIONAL_HASH_ON_STRING
 	HASH_MAP_NAMESPACE::hash<const char*> string_hash_;
