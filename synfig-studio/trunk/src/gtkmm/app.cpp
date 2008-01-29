@@ -925,7 +925,7 @@ init_ui_manager()
 	ACCEL2(Gtk::AccelKey(',',Gdk::CONTROL_MASK,"<Actions>//seek-prev-frame"));
 	ACCEL2(Gtk::AccelKey('>',Gdk::CONTROL_MASK,"<Actions>//seek-next-second"));
 	ACCEL2(Gtk::AccelKey('<',Gdk::CONTROL_MASK,"<Actions>//seek-prev-second"));
-	ACCEL2(Gtk::AccelKey('k',Gdk::CONTROL_MASK,"<Actions>//toggle-onion-skin"));
+	ACCEL2(Gtk::AccelKey('o',Gdk::MOD1_MASK,"<Actions>//toggle-onion-skin"));
 	ACCEL("<Actions>//play",              "<Control>p");
 	ACCEL("<Actions>//seek-begin","Home");
 	ACCEL("<Actions>//seek-end","End");
