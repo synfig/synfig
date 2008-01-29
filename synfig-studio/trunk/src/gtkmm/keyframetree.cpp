@@ -98,6 +98,7 @@ KeyframeTree::KeyframeTree()
 		column->set_reorderable();
 		column->set_resizable();
 		column->set_clickable(false);
+		column->set_sort_column(COLUMNID_JUMP); // without this, (JMP) needs a double click?!
 
 		append_column(*column);
 	}
