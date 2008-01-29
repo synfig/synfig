@@ -1198,7 +1198,7 @@ App::App(int *argc, char ***argv):
 			}
 
 		// if no file was specified to be opened, create a new document to help new users get started more easily
-		if (!opened_any)
+		if (!opened_any && !getenv("SYNFIG_DISABLE_AUTOMATIC_DOCUMENT_CREATION"))
 			new_instance();
 
 		studio_init_cb.task(_("Done."));
