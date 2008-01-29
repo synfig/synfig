@@ -74,7 +74,7 @@ LayerGroupTree::LayerGroupTree()
 		index=append_column_editable(_("Name"),model.label);
 		label_column = get_column(index-1);
 
-		//column->set_sort_column_id(layer_model.index);
+		//column->set_sort_column(layer_model.index);
 
 		//set_expander_column(*column);
 		//column->set_reorderable();
@@ -124,7 +124,7 @@ LayerGroupTree::set_model(Glib::RefPtr<LayerGroupTreeStore> layer_group_tree_sto
 		Glib::RefPtr<Gtk::TreeModelSort> sorted_store(Gtk::TreeModelSort::create(layer_group_tree_store_));
 		sorted_store->set_default_sort_func(sigc::ptr_fun(&studio::LayerGroupTreeStore::time_sorter));
 		sorted_store->set_sort_func(model.time.index(),sigc::ptr_fun(&studio::LayerGroupTreeStore::time_sorter));
-		sorted_store->set_sort_column_id(model.time.index(), Gtk::SORT_ASCENDING);
+		sorted_store->set_sort_column(model.time.index(), Gtk::SORT_ASCENDING);
 		Gtk::TreeView::set_model(sorted_store);
 	}
 #else

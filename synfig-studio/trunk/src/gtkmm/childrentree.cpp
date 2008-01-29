@@ -103,7 +103,7 @@ ChildrenTree::ChildrenTree()
 		column->set_resizable();
 		column->set_clickable();
 		column->set_min_width(150);
-		column->set_sort_column_id(model.label);
+		column->set_sort_column(model.label);
 		tree_view.append_column(*column);
 
 	}
@@ -115,7 +115,7 @@ ChildrenTree::ChildrenTree()
 			column->set_reorderable();
 			column->set_resizable();
 			column->set_clickable();
-			column->set_sort_column_id(model.type);
+			column->set_sort_column(model.type);
 		}
 	}
 	{	// --- V A L U E  -----------------------------------------------------

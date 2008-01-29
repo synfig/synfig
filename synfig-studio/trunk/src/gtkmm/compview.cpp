@@ -257,7 +257,7 @@ CompView::create_action_tree()
 		column->set_resizable();
 		column->set_clickable();
 
-		column->set_sort_column_id(COLUMNID_JUMP);
+		column->set_sort_column(COLUMNID_JUMP);
 
 		action_tree->append_column(*column);
 		//column->clicked();

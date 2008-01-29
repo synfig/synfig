@@ -197,7 +197,7 @@ LayerTree::create_layer_tree()
 		Gtk::TreeView::Column* column = get_layer_tree_view().get_column(index-1);
 		get_layer_tree_view().set_expander_column(*column);
 
-		column->set_sort_column_id(layer_model.z_depth);
+		column->set_sort_column(layer_model.z_depth);
 		//column->set_reorderable();
 		//column->set_resizable();
 		//column->set_clickable();
@@ -223,7 +223,7 @@ LayerTree::create_layer_tree()
 //		index=get_layer_tree_view().append_column_editable(_("Layer"),layer_model.label);
 		//Gtk::TreeView::Column* column = get_layer_tree_view().get_column(index-1);
 
-		//column->set_sort_column_id(layer_model.index);
+		//column->set_sort_column(layer_model.index);
 
 		//get_layer_tree_view().set_expander_column(*column);
 		//column->set_reorderable();
@@ -243,7 +243,7 @@ LayerTree::create_layer_tree()
 		column_z_depth->set_resizable();
 		column_z_depth->set_clickable();
 
-		column_z_depth->set_sort_column_id(layer_model.z_depth);
+		column_z_depth->set_sort_column(layer_model.z_depth);
 	}
 
 	get_layer_tree_view().set_enable_search(true);
@@ -350,7 +350,7 @@ LayerTree::create_param_tree()
 		column->set_reorderable();
 		column->set_resizable();
 		column->set_clickable();
-		column->set_sort_column_id(param_model.type);
+		column->set_sort_column(param_model.type);
 	}
 	/*{	// --- T I M E   T R A C K --------------------------------------------
 		Gtk::TreeView::Column* column = Gtk::manage( new Gtk::TreeView::Column(_("Time Track")) );
@@ -524,7 +524,7 @@ LayerTree::set_model(Glib::RefPtr<LayerTreeStore> layer_tree_store)
 		sorted_layer_tree_store_->set_default_sort_func(sigc::ptr_fun(&studio::LayerTreeStore::z_sorter));
 
 		//sorted_store->set_sort_func(model.time.index(),sigc::mem_fun(&studio::KeyframeTreeStore::time_sorter));
-		//sorted_store->set_sort_column_id(model.time.index(), Gtk::SORT_ASCENDING);
+		//sorted_store->set_sort_column(model.time.index(), Gtk::SORT_ASCENDING);
 
 		get_layer_tree_view().set_model(sorted_layer_tree_store_);
 	}
