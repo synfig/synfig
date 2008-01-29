@@ -1921,7 +1921,7 @@ App::new_instance()
 
 	canvas->rend_desc().set_frame_rate(24.0);
 	canvas->rend_desc().set_time_start(0.0);
-	canvas->rend_desc().set_time_end(00.0);
+	canvas->rend_desc().set_time_end(5.0);
 	canvas->rend_desc().set_x_res(DPI2DPM(72.0f));
 	canvas->rend_desc().set_y_res(DPI2DPM(72.0f));
 	canvas->rend_desc().set_tl(Vector(-4,2.25));
@@ -1934,7 +1934,7 @@ App::new_instance()
 
 	handle<Instance> instance = Instance::create(canvas);
 
-	if (!getenv("SYNFIG_DISABLE_NEW_CANVAS_EDIT_PROPERTIES"))
+	if (getenv("SYNFIG_ENABLE_NEW_CANVAS_EDIT_PROPERTIES"))
 		instance->find_canvas_view(canvas)->canvas_properties.present();
 }
 
