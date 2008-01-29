@@ -1186,14 +1186,20 @@ App::App(int *argc, char ***argv):
 
 		// Look for any files given on the command line,
 		// and load them if found.
+		bool opened_any = false;
 		for(;*argc>=1;(*argc)--)
 			if((*argv)[*argc] && (*argv)[*argc][0]!='-')
 			{
 				studio_init_cb.task(_("Loading files..."));
 				about_window.hide();
 				open((*argv)[*argc]);
+				opened_any = true;
 				about_window.show();
 			}
+
+		// if no file was specified to be opened, create a new document to help new users get started more easily
+		if (!opened_any)
+			new_instance();
 
 		studio_init_cb.task(_("Done."));
 		studio_init_cb.amount_complete(10000,10000);
