@@ -66,6 +66,7 @@ SYNFIG_LAYER_SET_CVS_ID(Layer_TimeLoop,"$Id$");
 Layer_TimeLoop::Layer_TimeLoop()
 {
 	old_version=false;
+	only_for_positive_duration=false;
 	link_time=0;
 	local_time=0;
 	duration=1;
@@ -88,6 +89,7 @@ Layer_TimeLoop::set_param(const String & param, const ValueBase &value)
 		IMPORT(local_time);
 		IMPORT(link_time);
 		IMPORT(duration);
+		IMPORT(only_for_positive_duration);
 	}
 
 	return Layer::set_param(param,value);
@@ -99,6 +101,7 @@ Layer_TimeLoop::get_param(const String & param)const
 	EXPORT(link_time);
 	EXPORT(local_time);
 	EXPORT(duration);
+	EXPORT(only_for_positive_duration);
 	EXPORT_NAME();
 	EXPORT_VERSION();
 
@@ -120,6 +123,10 @@ Layer_TimeLoop::get_param_vocab()const
 
 	ret.push_back(ParamDesc("duration")
 		.set_local_name(_("Duration"))
+	);
+
+	ret.push_back(ParamDesc("only_for_positive_duration")
+		.set_local_name(_("Only For Positive Duration"))
 	);
 
 	return ret;
@@ -155,6 +162,8 @@ Layer_TimeLoop::reset_version()
 	// convert the static parameters
 	local_time = start_time;
 	duration = end_time - start_time;
+	only_for_positive_duration = true;
+
 	//! \todo layer version 0.1 acted differently before start_time was reached - possibly due to a bug
 	link_time = 0;
 
@@ -190,13 +199,14 @@ Layer_TimeLoop::reset_version()
 
 	connect_dynamic_param("local_time", start_time_value_node);
 	connect_dynamic_param("duration",   duration_value_node);
-	connect_dynamic_param("link_time",  ValueNode_Const::create(Time(0)));
 }
 
 void
 Layer_TimeLoop::set_time(Context context, Time t)const
 {
- 	if (duration == 0)
+	if (only_for_positive_duration && duration <= 0)
+		;						// don't change the time
+ 	else if (duration == 0)
 		t = link_time;
 	else if (duration > 0)
 	{

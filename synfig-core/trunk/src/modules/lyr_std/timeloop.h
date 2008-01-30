@@ -50,6 +50,7 @@ private:
 	synfig::Time	start_time;
 	synfig::Time	end_time;
 	bool			old_version;
+	bool			only_for_positive_duration;
 
 protected:
 	Layer_TimeLoop();
