@@ -474,7 +474,10 @@ public:
 		assert(workarea);
 		newdesc->set_flags(RendDesc::PX_ASPECT|RendDesc::IM_SPAN);
 		if(low_res)
-			newdesc->set_wh(w/2,h/2);
+		{
+			int div = 1 << workarea->get_lowrespixel();
+			newdesc->set_wh(w/div,h/div);
+		}
 		else
 			newdesc->set_wh(w,h);
 
@@ -557,8 +560,9 @@ public:
 			int th=workarea->tile_h;
 			if(low_res)
 			{
-				tw/=2;
-				th/=2;
+				int div = 1 << workarea->get_lowrespixel();
+				tw/=div;
+				th/=div;
 			}
 			for(int i=0;i<x;i++)
 				dest=Color2PixelFormat(
@@ -589,9 +593,10 @@ public:
 		if(low_res)
 		{
 			// We need to scale up
+			int div = 1 << workarea->get_lowrespixel();
 			pixbuf=pixbuf->scale_simple(
-				surface.get_w()*2,
-				surface.get_h()*2,
+				surface.get_w()*div,
+				surface.get_h()*div,
 				Gdk::INTERP_NEAREST
 			);
 		}
