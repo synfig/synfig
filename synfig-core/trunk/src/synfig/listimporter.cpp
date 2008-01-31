@@ -64,6 +64,61 @@ ListImporter::ListImporter(const String &filename)
 	}
 	String line;
 	String prefix=etl::dirname(filename)+ETL_DIRECTORY_SEPARATOR;
+	getline(stream,line);		// read first line and check whether it is a Papagayo lip sync file
+
+	if (line == "MohoSwitch1")	// it is a Papagayo lipsync file
+	{
+		String phoneme, prevphoneme, prevext, ext(".jpg"); // default image format
+		int frame, prevframe = -1; // it means that the previous phoneme is not known
+
+		while(!stream.eof())
+		{
+			getline(stream,line);
+
+			if(line.find(String("FPS ")) == 0)
+			{
+				float f = atof(String(line.begin()+4,line.end()).c_str());
+				if (f) fps = f;
+				continue;
+			}
+
+			if (line == "bmp"  ||
+				line == "jpg"  ||
+				line == "png"  ||
+				line == "ppm"  ||
+				line == "tiff" )
+			{
+				ext = String(".") + line;
+				continue;
+			}
+
+			size_t pos = line.find(String(" ")); // find space position. The format is "frame phoneme-name".
+			if(pos != String::npos)
+			{
+				frame = atoi(String(line.begin(),line.begin()+pos).c_str());
+				phoneme = String(line.begin()+pos+1, line.end());
+
+				if (prevframe != -1)
+					while (prevframe < frame)
+					{
+						filename_list.push_back(prefix + prevphoneme + prevext);
+						synfig::info("frame %d, phoneme = %s, path = '%s'", prevframe, prevphoneme.c_str(), (prefix + prevphoneme + prevext).c_str());
+						prevframe++;
+					}
+
+				prevext = ext;
+				prevframe = frame;
+				prevphoneme = phoneme;
+			}
+		}
+
+		filename_list.push_back(prefix + prevphoneme + prevext);	// do it one more time for the last phoneme
+		synfig::info("finally, frame %d, phoneme = %s, path = '%s'", prevframe, prevphoneme.c_str(), (prefix + prevphoneme + prevext).c_str());
+
+		return;
+	}
+
+	stream.seekg(ios_base::beg);
 	while(!stream.eof())
 	{
 		getline(stream,line);
