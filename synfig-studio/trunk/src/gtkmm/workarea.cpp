@@ -171,8 +171,10 @@ public:
 		set_clipping(true);
 		if(low_res)
 		{
-			set_tile_w(workarea->tile_w/2);
-			set_tile_h(workarea->tile_h/2);
+
+			int div = 1 << workarea->get_lowrespixel();
+			set_tile_w(workarea->tile_w/div);
+			set_tile_h(workarea->tile_h/div);
 		}
 		else
 		{
@@ -192,8 +194,10 @@ public:
 	{
 		assert(workarea);
 		newdesc->set_flags(RendDesc::PX_ASPECT|RendDesc::IM_SPAN);
-		if(low_res)
-			newdesc->set_wh(w/2,h/2);
+		if(low_res) {
+			int div = 1 << workarea->get_lowrespixel();
+			newdesc->set_wh(w/div,h/div);
+		}
 		else
 			newdesc->set_wh(w,h);
 
@@ -345,9 +349,11 @@ public:
 		if(low_res)
 		{
 			// We need to scale up
+
+			int div = 1 << workarea->get_lowrespixel();
 			pixbuf=pixbuf->scale_simple(
-				surface.get_w()*2,
-				surface.get_h()*2,
+				surface.get_w()*div,
+				surface.get_h()*div,
 				Gdk::INTERP_NEAREST
 			);
 		}
@@ -649,6 +655,7 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	render_idle_func_id=0;
 	zoom=prev_zoom=1.0;
 	quality=10;
+	lowrespixel=1;
 	rendering=false;
 	canceled_=false;
 	low_resolution=true;
@@ -1978,7 +1985,9 @@ WorkArea::next_unrendered_tile(int refreshes)const
 		x(focus_point[0]/pw+drawing_area->get_width()/2-w/2),
 		y(focus_point[1]/ph+drawing_area->get_height()/2-h/2);
 
-	const int width_in_tiles(w/tile_w+((low_resolution?((w/2)%(tile_w/2)):(w%tile_w))?1:0));
+
+	int div = 1 << lowrespixel;
+	const int width_in_tiles(w/tile_w+((low_resolution?((w/div)%(tile_w/div)):(w%tile_w))?1:0));
 	const int height_in_tiles(h/tile_h+(h%tile_h?1:0));
 
 	int
@@ -2144,6 +2153,17 @@ WorkArea::set_quality(int x)
 	queue_render_preview();
 }
 
+void
+WorkArea::set_lowrespixel(int x)
+{
+	if(x==lowrespixel)
+		return;
+	lowrespixel=x;
+	queue_render_preview();
+}
+
+
+
 
 namespace studio
 {
@@ -2241,7 +2261,8 @@ studio::WorkArea::async_update_preview()
 	handle<Target> target;
 
 	// if we have lots of pixels to render and the tile renderer isn't disabled, use it
-	if(w*h>(low_resolution?480*270:480*270/2) &&
+	int div = 1 << lowrespixel;
+	if(w*h>(low_resolution?480*270:480*270/div) &&
 	   !getenv("SYNFIG_DISABLE_TILE_RENDER"))
 	{
 		// do a tile render

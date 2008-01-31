@@ -569,6 +569,7 @@ init_ui_manager()
 	menus_action_group->add( Gtk::Action::create("menu-layer", _("_Layer")) );
 	menus_action_group->add( Gtk::Action::create("menu-duck-mask", _("Show/Hide Ducks")) );
 	menus_action_group->add( Gtk::Action::create("menu-preview-quality", _("Preview Quality")) );
+	menus_action_group->add( Gtk::Action::create("menu-lowres-pixel", _("Low-Res Pixel Size")) );
 	menus_action_group->add( Gtk::Action::create("menu-layer-new", _("New Layer")) );
 	menus_action_group->add( Gtk::Action::create("menu-keyframe", _("Keyframe")) );
 	menus_action_group->add( Gtk::Action::create("menu-group", _("Group")) );
@@ -638,6 +639,12 @@ init_ui_manager()
 	DEFINE_ACTION("quality-08", _("Use Quality Level 8"));
 	DEFINE_ACTION("quality-09", _("Use Quality Level 9"));
 	DEFINE_ACTION("quality-10", _("Use Quality Level 10"));
+	DEFINE_ACTION("lowres-pixel-01", _("Set Low-Res pixel size to 2^1"));
+	DEFINE_ACTION("lowres-pixel-02", _("Set Low-Res pixel size to 2^2"));
+	DEFINE_ACTION("lowres-pixel-03", _("Set Low-Res pixel size to 2^3"));
+	DEFINE_ACTION("lowres-pixel-04", _("Set Low-Res pixel size to 2^4"));
+	DEFINE_ACTION("lowres-pixel-05", _("Set Low-Res pixel size to 2^5"));
+	DEFINE_ACTION("lowres-pixel-06", _("Set Low-Res pixel size to 2^6"));
 	DEFINE_ACTION("play", _("Play"));
 	// DEFINE_ACTION("pause", _("Pause"));
 	DEFINE_ACTION("stop", _("Stop"));
@@ -768,6 +775,14 @@ init_ui_manager()
 "			<menuitem action='quality-08' />"
 "			<menuitem action='quality-09' />"
 "			<menuitem action='quality-10' />"
+"		</menu>"
+"		<menu action='menu-lowres-pixel'>"
+"			<menuitem action='lowres-pixel-01' />"
+"			<menuitem action='lowres-pixel-02' />"
+"			<menuitem action='lowres-pixel-03' />"
+"			<menuitem action='lowres-pixel-04' />"
+"			<menuitem action='lowres-pixel-05' />"
+"			<menuitem action='lowres-pixel-06' />"
 "		</menu>"
 "		<separator name='bleh08'/>"
 "		<menuitem action='play'/>"

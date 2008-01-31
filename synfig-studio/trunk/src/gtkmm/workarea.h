@@ -227,6 +227,7 @@ private:
 	bool canceled_;
 
 	int quality;
+	int lowrespixel;
 
 	bool dirty_trap_enabled;
 
@@ -406,8 +407,10 @@ public:
 	void popup_menu();
 
 	int get_quality()const { return quality; }
+	int get_lowrespixel()const { return lowrespixel; }
 
 	void set_quality(int x);
+	void set_lowrespixel(int x);
 
 
 	int get_w()const { return w; }

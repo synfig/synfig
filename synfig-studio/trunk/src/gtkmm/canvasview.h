@@ -320,6 +320,7 @@ private:
 	Glib::RefPtr<Gtk::ToggleAction> duck_mask_angle;
 
 	Gtk::RadioButtonGroup quality_group;
+	Gtk::RadioButtonGroup lowrespixel_group;
 
 	Glib::RefPtr<Gtk::ActionGroup> action_group;
 

@@ -1290,6 +1290,28 @@ CanvasView::init_menus()
 		}
 	}
 
+	// Low-Res Quality Menu
+	{
+		int i;
+		for(i=1;i<=6;i++)
+		{
+			Glib::RefPtr<Gtk::RadioAction> action(Gtk::RadioAction::create(quality_group,strprintf("lowres-pixel-%02d",i),
+																		   strprintf(_("Set Low-Res pixel size to 2^%d"),i)));
+			if(i==1)			// default quality
+			{
+				action->set_active();
+				work_area->set_lowrespixel(i);
+			}
+			action_group->add( action,
+				sigc::bind(
+					sigc::mem_fun(*work_area, &studio::WorkArea::set_lowrespixel),
+					i
+				)
+			);
+		}
+	}
+
+
 	action_group->add( Gtk::Action::create("play", Gtk::Stock::MEDIA_PLAY),
 		sigc::mem_fun(*this, &studio::CanvasView::play)
 	);
