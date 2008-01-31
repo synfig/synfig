@@ -2266,9 +2266,9 @@ studio::WorkArea::async_update_preview()
 	handle<Target> target;
 
 	// if we have lots of pixels to render and the tile renderer isn't disabled, use it
-	int div = 1 << lowrespixel;
-	if(w*h>(low_resolution?480*270:480*270/div) &&
-	   !getenv("SYNFIG_DISABLE_TILE_RENDER"))
+	int div;
+	div = low_resolution ? (1 << lowrespixel) : 1;
+	if (w*h > 240*div*135*div && !getenv("SYNFIG_DISABLE_TILE_RENDER"))
 	{
 		// do a tile render
 		handle<WorkAreaTarget> trgt(new class WorkAreaTarget(this,w,h));
