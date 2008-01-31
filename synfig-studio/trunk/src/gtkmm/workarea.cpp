@@ -309,7 +309,10 @@ public:
 			int w(get_tile_w());
 			int h(get_tile_h());
 			int x(surface.get_w()*surface.get_h());
-			//if(low_res) { w/=2,h/=2; }
+			//if(low_res) {
+			//	int div = 1 << workarea->get_lowrespixel();
+			//	w/=div,h/=div;
+			//}
 			Color dark(0.6,0.6,0.6);
 			Color lite(0.8,0.8,0.8);
 			for(int i=0;i<x;i++)
@@ -553,7 +556,10 @@ public:
 			int w(surface.get_w());
 			//int h(surface.get_h());
 			int x(surface.get_w()*surface.get_h());
-			//if(low_res) { w/=2,h/=2; }
+			//if(low_res) {
+			//	int div = 1 << workarea->get_lowrespixel();
+			//	w/=div,h/=div;
+			//}
 			Color dark(0.6,0.6,0.6);
 			Color lite(0.8,0.8,0.8);
 			int tw=workarea->tile_w;
