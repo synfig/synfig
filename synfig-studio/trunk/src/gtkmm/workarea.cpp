@@ -2256,6 +2256,13 @@ studio::WorkArea::async_update_preview()
 	int w=(int)(desc.get_w()*zoom);
 	int h=(int)(desc.get_h()*zoom);
 
+	// ensure that the size we draw is a whole number of pixels in each dimension
+	if (low_resolution)
+	{
+		if (w % low_res_pixel_size) w = (w/low_res_pixel_size+1)*low_res_pixel_size;
+		if (h % low_res_pixel_size) h = (h/low_res_pixel_size+1)*low_res_pixel_size;
+	}
+
 	// Setup the description parameters
 	desc.set_antialias(1);
 	desc.set_time(cur_time);
