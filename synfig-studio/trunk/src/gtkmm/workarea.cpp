@@ -171,7 +171,6 @@ public:
 		set_clipping(true);
 		if(low_res)
 		{
-
 			int div = 1 << workarea->get_lowrespixel();
 			set_tile_w(workarea->tile_w/div);
 			set_tile_h(workarea->tile_h/div);
@@ -352,7 +351,6 @@ public:
 		if(low_res)
 		{
 			// We need to scale up
-
 			int div = 1 << workarea->get_lowrespixel();
 			pixbuf=pixbuf->scale_simple(
 				surface.get_w()*div,
@@ -1996,7 +1994,6 @@ WorkArea::next_unrendered_tile(int refreshes)const
 		x(focus_point[0]/pw+drawing_area->get_width()/2-w/2),
 		y(focus_point[1]/ph+drawing_area->get_height()/2-h/2);
 
-
 	int div = 1 << lowrespixel;
 	const int width_in_tiles(w/tile_w+((low_resolution?((w/div)%(tile_w/div)):(w%tile_w))?1:0));
 	const int height_in_tiles(h/tile_h+(h%tile_h?1:0));
@@ -2172,9 +2169,6 @@ WorkArea::set_lowrespixel(int x)
 	lowrespixel=x;
 	queue_render_preview();
 }
-
-
-
 
 namespace studio
 {

@@ -1311,7 +1311,6 @@ CanvasView::init_menus()
 		}
 	}
 
-
 	action_group->add( Gtk::Action::create("play", Gtk::Stock::MEDIA_PLAY),
 		sigc::mem_fun(*this, &studio::CanvasView::play)
 	);
@@ -1350,7 +1349,6 @@ CanvasView::init_menus()
 	action_group->add( Gtk::Action::create("canvas-zoom-100", Gtk::StockID("gtk-zoom-100")),
 		sigc::mem_fun(*work_area, &studio::WorkArea::zoom_norm)
 	);
-
 
 	{
 		Glib::RefPtr<Gtk::Action> action;
