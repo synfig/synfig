@@ -648,6 +648,8 @@ init_ui_manager()
 	DEFINE_ACTION("toggle-grid-snap", _("Toggle Grid Snap"));
 	DEFINE_ACTION("toggle-guide-show", _("Toggle Guide Show"));
 	DEFINE_ACTION("toggle-low-res", _("Toggle Low-Res"));
+	DEFINE_ACTION("decrease-low-res-pixel-size", _("Decrease Low-Res Pixel Size"));
+	DEFINE_ACTION("increase-low-res-pixel-size", _("Increase Low-Res Pixel Size"));
 	DEFINE_ACTION("toggle-onion-skin", _("Toggle Onion Skin"));
 	DEFINE_ACTION("canvas-zoom-in", Gtk::StockID("gtk-zoom-in"));
 	DEFINE_ACTION("canvas-zoom-out", Gtk::StockID("gtk-zoom-out"));
@@ -772,7 +774,11 @@ init_ui_manager()
 "			<menuitem action='quality-09' />"
 "			<menuitem action='quality-10' />"
 "		</menu>"
-"		<menu action='menu-lowres-pixel'>";
+"		<menu action='menu-lowres-pixel'>"
+"		<menuitem action='decrease-low-res-pixel-size'/>"
+"		<menuitem action='increase-low-res-pixel-size'/>"
+"		<separator name='pixel-size-separator'/>"
+;
 
 	for(list<int>::iterator iter = CanvasView::get_pixel_sizes().begin(); iter != CanvasView::get_pixel_sizes().end(); iter++)
 		ui_info += strprintf("			<menuitem action='lowres-pixel-%d' />", *iter);
@@ -922,6 +928,9 @@ init_ui_manager()
 	ACCEL("<Actions>//time-zoom-in","+");
 	ACCEL("<Actions>//time-zoom-out","_");
 */
+	ACCEL2(Gtk::AccelKey('(',Gdk::CONTROL_MASK,"<Actions>//decrease-low-res-pixel-size"));
+	ACCEL2(Gtk::AccelKey(')',Gdk::CONTROL_MASK,"<Actions>//increase-low-res-pixel-size"));
+
 	ACCEL2(Gtk::AccelKey('(',Gdk::MOD1_MASK|Gdk::CONTROL_MASK,"<Actions>//amount-dec"));
 	ACCEL2(Gtk::AccelKey(')',Gdk::MOD1_MASK|Gdk::CONTROL_MASK,"<Actions>//amount-inc"));
 

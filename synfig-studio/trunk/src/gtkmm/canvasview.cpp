@@ -1320,6 +1320,15 @@ CanvasView::init_menus()
 				)
 			);
 		}
+
+		Glib::RefPtr<Gtk::Action> action;
+
+		action=Gtk::Action::create("decrease-low-res-pixel-size", _("Decrease Low-Res Pixel Size"));
+		action_group->add( action,sigc::mem_fun(this, &studio::CanvasView::decrease_low_res_pixel_size));
+
+		action=Gtk::Action::create("increase-low-res-pixel-size",  _("Increase Low-Res Pixel Size"));
+		action_group->add( action, sigc::mem_fun(this, &studio::CanvasView::increase_low_res_pixel_size));
+
 	}
 
 	action_group->add( Gtk::Action::create("play", Gtk::Stock::MEDIA_PLAY),
@@ -2855,6 +2864,55 @@ CanvasView::rebuild_ducks()
 	}while(0);
 	work_area->refresh_selected_ducks();
 	work_area->queue_draw_preview();
+}
+
+void
+CanvasView::decrease_low_res_pixel_size()
+{
+	list<int> sizes = CanvasView::get_pixel_sizes();
+	int pixel_size = work_area->get_low_res_pixel_size();
+
+	for (list<int>::iterator iter = sizes.begin(); iter != sizes.end(); iter++)
+		if (*iter == pixel_size)
+		{
+			if (iter == sizes.begin())
+				// we already have the smallest low-res pixels possible - turn off low-res instead
+				work_area->set_low_resolution_flag(false);
+			else
+			{
+				iter--;
+				Glib::RefPtr<Gtk::Action> action = action_group->get_action(strprintf("lowres-pixel-%d", *iter));
+				action->activate(); // to make sure the radiobutton in the menu is updated too
+				work_area->set_low_resolution_flag(true);
+			}
+			break;
+		}
+}
+
+void
+CanvasView::increase_low_res_pixel_size()
+{
+	list<int> sizes = CanvasView::get_pixel_sizes();
+	int pixel_size = work_area->get_low_res_pixel_size();
+
+	if (!work_area->get_low_resolution_flag())
+	{
+		work_area->set_low_resolution_flag(true);
+		return;
+	}
+
+	for (list<int>::iterator iter = sizes.begin(); iter != sizes.end(); iter++)
+		if (*iter == pixel_size)
+		{
+			iter++;
+			if (iter != sizes.end())
+			{
+				Glib::RefPtr<Gtk::Action> action = action_group->get_action(strprintf("lowres-pixel-%d", *iter));
+				action->activate(); // to make sure the radiobutton in the menu is updated too
+				work_area->set_low_resolution_flag(true);
+			}
+			break;
+		}
 }
 
 void

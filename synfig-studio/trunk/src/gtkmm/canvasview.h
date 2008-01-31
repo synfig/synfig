@@ -429,6 +429,9 @@ private:
 
 	void rebuild_ducks_layer_(synfig::TransformStack& transform_stack, synfig::Canvas::Handle canvas, std::set<synfig::Layer::Handle>& selected_list);
 
+	void decrease_low_res_pixel_size();
+	void increase_low_res_pixel_size();
+
 	/*
  -- ** -- P U B L I C   M E T H O D S -----------------------------------------
 	*/
