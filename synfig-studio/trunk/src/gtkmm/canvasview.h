@@ -696,6 +696,8 @@ protected:
 public:
 
 	static etl::handle<studio::CanvasView> create(etl::loose_handle<Instance> instance,etl::handle<synfig::Canvas> canvas);
+	static std::list<int>& get_pixel_sizes();
+
 }; // END of class CanvasView
 
 }; // END of namespace studio

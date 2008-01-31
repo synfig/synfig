@@ -639,21 +639,8 @@ init_ui_manager()
 	DEFINE_ACTION("quality-08", _("Use Quality Level 8"));
 	DEFINE_ACTION("quality-09", _("Use Quality Level 9"));
 	DEFINE_ACTION("quality-10", _("Use Quality Level 10"));
-	DEFINE_ACTION("lowres-pixel-2", _("Set Low-Res pixel size to 2"));
-	DEFINE_ACTION("lowres-pixel-3", _("Set Low-Res pixel size to 3"));
-	DEFINE_ACTION("lowres-pixel-4", _("Set Low-Res pixel size to 4"));
-	DEFINE_ACTION("lowres-pixel-5", _("Set Low-Res pixel size to 5"));
-	DEFINE_ACTION("lowres-pixel-6", _("Set Low-Res pixel size to 6"));
-	DEFINE_ACTION("lowres-pixel-8", _("Set Low-Res pixel size to 8"));
-	DEFINE_ACTION("lowres-pixel-10", _("Set Low-Res pixel size to 10"));
-	DEFINE_ACTION("lowres-pixel-12", _("Set Low-Res pixel size to 12"));
-	DEFINE_ACTION("lowres-pixel-15", _("Set Low-Res pixel size to 15"));
-	DEFINE_ACTION("lowres-pixel-20", _("Set Low-Res pixel size to 20"));
-	DEFINE_ACTION("lowres-pixel-24", _("Set Low-Res pixel size to 24"));
-	DEFINE_ACTION("lowres-pixel-30", _("Set Low-Res pixel size to 30"));
-	DEFINE_ACTION("lowres-pixel-40", _("Set Low-Res pixel size to 40"));
-	DEFINE_ACTION("lowres-pixel-60", _("Set Low-Res pixel size to 60"));
-	DEFINE_ACTION("lowres-pixel-120", _("Set Low-Res pixel size to 120"));
+	for(list<int>::iterator iter = CanvasView::get_pixel_sizes().begin(); iter != CanvasView::get_pixel_sizes().end(); iter++)
+		DEFINE_ACTION(strprintf("lowres-pixel-%d", *iter), strprintf(_("Set Low-Res pixel size to %d"), *iter));
 	DEFINE_ACTION("play", _("Play"));
 	// DEFINE_ACTION("pause", _("Pause"));
 	DEFINE_ACTION("stop", _("Stop"));
@@ -785,22 +772,12 @@ init_ui_manager()
 "			<menuitem action='quality-09' />"
 "			<menuitem action='quality-10' />"
 "		</menu>"
-"		<menu action='menu-lowres-pixel'>"
-"			<menuitem action='lowres-pixel-2' />"
-"			<menuitem action='lowres-pixel-3' />"
-"			<menuitem action='lowres-pixel-4' />"
-"			<menuitem action='lowres-pixel-5' />"
-"			<menuitem action='lowres-pixel-6' />"
-"			<menuitem action='lowres-pixel-8' />"
-"			<menuitem action='lowres-pixel-10' />"
-"			<menuitem action='lowres-pixel-12' />"
-"			<menuitem action='lowres-pixel-15' />"
-"			<menuitem action='lowres-pixel-20' />"
-"			<menuitem action='lowres-pixel-24' />"
-"			<menuitem action='lowres-pixel-30' />"
-"			<menuitem action='lowres-pixel-40' />"
-"			<menuitem action='lowres-pixel-60' />"
-"			<menuitem action='lowres-pixel-120' />"
+"		<menu action='menu-lowres-pixel'>";
+
+	for(list<int>::iterator iter = CanvasView::get_pixel_sizes().begin(); iter != CanvasView::get_pixel_sizes().end(); iter++)
+		ui_info += strprintf("			<menuitem action='lowres-pixel-%d' />", *iter);
+
+	ui_info +=
 "		</menu>"
 "		<separator name='bleh08'/>"
 "		<menuitem action='play'/>"

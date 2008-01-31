@@ -917,6 +917,16 @@ CanvasView::~CanvasView()
 
 
 
+std::list<int>&
+CanvasView::get_pixel_sizes()
+{
+	// prime factors of 120 are 2, 2, 2, 3, 5 - see TILE_SIZE in synfig-core/trunk/src/synfig/target_tile.h
+	static int pixel_size_array[] = {2,3,4,5,6,8,10,12,15,20,24,30,40,60,120};
+	static list<int> pixel_sizes = list<int>(pixel_size_array, pixel_size_array + sizeof(pixel_size_array) / sizeof(int));
+
+	return pixel_sizes;
+}
+
 Gtk::Widget *
 CanvasView::create_time_bar()
 {
@@ -1290,14 +1300,10 @@ CanvasView::init_menus()
 		}
 	}
 
-	// prime factors of 120 are 2, 2, 2, 3, 5
-	int pixel_size_array[] = {2,3,4,5,6,8,10,12,15,20,24,30,40,60,120};
-	list<int> pixel_sizes(pixel_size_array, pixel_size_array + sizeof(pixel_size_array) / sizeof(int));
-
 	// Low-Res Quality Menu
 	{
 		int i;
-		for(list<int>::iterator iter = pixel_sizes.begin(); iter != pixel_sizes.end(); iter++)
+		for(list<int>::iterator iter = CanvasView::get_pixel_sizes().begin(); iter != CanvasView::get_pixel_sizes().end(); iter++)
 		{
 			i = *iter;
 			Glib::RefPtr<Gtk::RadioAction> action(Gtk::RadioAction::create(low_res_pixel_size_group,strprintf("lowres-pixel-%d",i),
