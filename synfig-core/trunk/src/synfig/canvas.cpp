@@ -90,6 +90,19 @@ Canvas::on_changed()
 
 Canvas::~Canvas()
 {
+	// we were having a crash where pastecanvas layers were still
+	// refering to a canvas after it had been destroyed;  this code
+	// will stop the pastecanvas layers from refering to the canvas
+	// before the canvas is destroyed
+	for (std::set<Node*>::iterator iter = parent_set.begin(); iter != parent_set.end(); iter++)
+	{
+		Layer_PasteCanvas* paste_canvas = dynamic_cast<Layer_PasteCanvas*>(*iter);
+		if(paste_canvas)
+			paste_canvas->set_sub_canvas(0);
+		else
+			warning("destroyed canvas has a parent that is not a pastecanvas - please report if repeatable");
+	}
+
 	//if(is_inline() && parent_) assert(0);
 	_CanvasCounter::counter--;
 	clear();
