@@ -1290,21 +1290,26 @@ CanvasView::init_menus()
 		}
 	}
 
+	// prime factors of 120 are 2, 2, 2, 3, 5
+	int pixel_size_array[] = {2,3,4,5,6,8,10,12,15,20,24,30,40,60,120};
+	list<int> pixel_sizes(pixel_size_array, pixel_size_array + sizeof(pixel_size_array) / sizeof(int));
+
 	// Low-Res Quality Menu
 	{
 		int i;
-		for(i=1;i<=6;i++)
+		for(list<int>::iterator iter = pixel_sizes.begin(); iter != pixel_sizes.end(); iter++)
 		{
-			Glib::RefPtr<Gtk::RadioAction> action(Gtk::RadioAction::create(quality_group,strprintf("lowres-pixel-%02d",i),
-																		   strprintf(_("Set Low-Res pixel size to 2^%d"),i)));
-			if(i==1)			// default quality
+			i = *iter;
+			Glib::RefPtr<Gtk::RadioAction> action(Gtk::RadioAction::create(low_res_pixel_size_group,strprintf("lowres-pixel-%d",i),
+																		   strprintf(_("Set Low-Res pixel size to %d"),i)));
+			if(i==2)			// default pixel size
 			{
 				action->set_active();
-				work_area->set_lowrespixel(i);
+				work_area->set_low_res_pixel_size(i);
 			}
 			action_group->add( action,
 				sigc::bind(
-					sigc::mem_fun(*work_area, &studio::WorkArea::set_lowrespixel),
+					sigc::mem_fun(*work_area, &studio::WorkArea::set_low_res_pixel_size),
 					i
 				)
 			);

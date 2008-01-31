@@ -171,7 +171,7 @@ public:
 		set_clipping(true);
 		if(low_res)
 		{
-			int div = 1 << workarea->get_lowrespixel();
+			int div = workarea->get_low_res_pixel_size();
 			set_tile_w(workarea->tile_w/div);
 			set_tile_h(workarea->tile_h/div);
 		}
@@ -194,7 +194,7 @@ public:
 		assert(workarea);
 		newdesc->set_flags(RendDesc::PX_ASPECT|RendDesc::IM_SPAN);
 		if(low_res) {
-			int div = 1 << workarea->get_lowrespixel();
+			int div = workarea->get_low_res_pixel_size();
 			newdesc->set_wh(w/div,h/div);
 		}
 		else
@@ -309,7 +309,7 @@ public:
 			int h(get_tile_h());
 			int x(surface.get_w()*surface.get_h());
 			//if(low_res) {
-			//	int div = 1 << workarea->get_lowrespixel();
+			//	int div = workarea->get_low_res_pixel_size();
 			//	w/=div,h/=div;
 			//}
 			Color dark(0.6,0.6,0.6);
@@ -351,7 +351,7 @@ public:
 		if(low_res)
 		{
 			// We need to scale up
-			int div = 1 << workarea->get_lowrespixel();
+			int div = workarea->get_low_res_pixel_size();
 			pixbuf=pixbuf->scale_simple(
 				surface.get_w()*div,
 				surface.get_h()*div,
@@ -476,7 +476,7 @@ public:
 		newdesc->set_flags(RendDesc::PX_ASPECT|RendDesc::IM_SPAN);
 		if(low_res)
 		{
-			int div = 1 << workarea->get_lowrespixel();
+			int div = workarea->get_low_res_pixel_size();
 			newdesc->set_wh(w/div,h/div);
 		}
 		else
@@ -555,7 +555,7 @@ public:
 			//int h(surface.get_h());
 			int x(surface.get_w()*surface.get_h());
 			//if(low_res) {
-			//	int div = 1 << workarea->get_lowrespixel();
+			//	int div = workarea->get_low_res_pixel_size();
 			//	w/=div,h/=div;
 			//}
 			Color dark(0.6,0.6,0.6);
@@ -564,7 +564,7 @@ public:
 			int th=workarea->tile_h;
 			if(low_res)
 			{
-				int div = 1 << workarea->get_lowrespixel();
+				int div = workarea->get_low_res_pixel_size();
 				tw/=div;
 				th/=div;
 			}
@@ -597,7 +597,7 @@ public:
 		if(low_res)
 		{
 			// We need to scale up
-			int div = 1 << workarea->get_lowrespixel();
+			int div = workarea->get_low_res_pixel_size();
 			pixbuf=pixbuf->scale_simple(
 				surface.get_w()*div,
 				surface.get_h()*div,
@@ -664,7 +664,7 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	render_idle_func_id=0;
 	zoom=prev_zoom=1.0;
 	quality=10;
-	lowrespixel=1;
+	low_res_pixel_size=2;
 	rendering=false;
 	canceled_=false;
 	low_resolution=true;
@@ -1994,7 +1994,7 @@ WorkArea::next_unrendered_tile(int refreshes)const
 		x(focus_point[0]/pw+drawing_area->get_width()/2-w/2),
 		y(focus_point[1]/ph+drawing_area->get_height()/2-h/2);
 
-	int div = 1 << lowrespixel;
+	int div = low_res_pixel_size;
 	const int width_in_tiles(w/tile_w+((low_resolution?((w/div)%(tile_w/div)):(w%tile_w))?1:0));
 	const int height_in_tiles(h/tile_h+(h%tile_h?1:0));
 
@@ -2162,11 +2162,11 @@ WorkArea::set_quality(int x)
 }
 
 void
-WorkArea::set_lowrespixel(int x)
+WorkArea::set_low_res_pixel_size(int x)
 {
-	if(x==lowrespixel)
+	if(x==low_res_pixel_size)
 		return;
-	lowrespixel=x;
+	low_res_pixel_size=x;
 	queue_render_preview();
 }
 
@@ -2267,7 +2267,7 @@ studio::WorkArea::async_update_preview()
 
 	// if we have lots of pixels to render and the tile renderer isn't disabled, use it
 	int div;
-	div = low_resolution ? (1 << lowrespixel) : 1;
+	div = low_resolution ? low_res_pixel_size : 1;
 	if (w*h > 240*div*135*div && !getenv("SYNFIG_DISABLE_TILE_RENDER"))
 	{
 		// do a tile render
