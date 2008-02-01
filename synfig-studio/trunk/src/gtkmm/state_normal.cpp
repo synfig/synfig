@@ -126,7 +126,7 @@ StateNormal_Context::StateNormal_Context(CanvasView *canvas_view):
 
 StateNormal_Context::~StateNormal_Context()
 {
-	synfig::info("Left Normal State");
+	// synfig::info("Left Normal State");
 }
 
 void
