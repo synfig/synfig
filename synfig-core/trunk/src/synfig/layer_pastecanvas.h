@@ -70,6 +70,33 @@ private:
 	mutable Rect bounds;
 
 	sigc::connection child_changed_connection;
+
+	// Nasty hack: Remember whether we called an extra ref() when
+	// setting the canvas, so we know whether to call an extra unref()
+	// when finished with the canvas.
+	//
+	// Here's the story:
+	//
+	// The root canvas is destructed first.  That sets the
+	// Layer::canvas_ (the parent canvas) of any PasteCanvas layer it
+	// contains to nil, due to a call to Layer::set_canvas(0),
+	// triggered by the connection made when Layer::set_canvas
+	// originally set its canvas_ member to point to the root canvas.
+	// ~Canvas does begin_delete() which triggers that connection.
+	//
+	// After ~Canvas has run, the members of the root canvas are
+	// freed, including its children_ list.  If this was the last
+	// reference to the child canvas that the pastecanvas uses, that
+	// child canvas will Layer_PasteCanvas::set_sub_canvas(0) on the
+	// PasteCanvas layer to set its canvas (the child, pasted canvas)
+	// not to refer to the soon-to-be destroys child canvas.  But
+	// set_sub_canvas() originally looked at the value of
+	// Layer::canvas_ (the parent canvas, obtained via
+	// Layer::get_canvas()) to decide whether to do an extra ref() on
+	// canvas (the child canvas).  We need to unref() it now if we
+	// did, but we've forgotten whether we did.  So we use this
+	// 'extra_reference' member to store that decision.
+	bool extra_reference;
 public:
 
 	virtual void on_canvas_set();

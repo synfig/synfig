@@ -85,7 +85,8 @@ Layer_PasteCanvas::Layer_PasteCanvas():
 	origin(0,0),
 	depth(0),
 	zoom(0),
-	time_offset(0)
+	time_offset(0),
+	extra_reference(false)
 {
 	children_lock=false;
 	muck_with_time_=true;
@@ -103,6 +104,7 @@ Layer_PasteCanvas::~Layer_PasteCanvas()
 	set_sub_canvas(0);
 
 	//if(canvas && (canvas->is_inline() || !get_canvas() || get_canvas()->get_root()!=canvas->get_root()))
+	//if(extra_reference)
 	//	canvas->unref();
 }
 
@@ -186,7 +188,8 @@ Layer_PasteCanvas::set_sub_canvas(etl::handle<synfig::Canvas> x)
 	if(canvas && muck_with_time_)
 		remove_child(canvas.get());
 
-	if(canvas && (canvas->is_inline() || !get_canvas() || get_canvas()->get_root()!=canvas->get_root()))
+	// if(canvas && (canvas->is_inline() || !get_canvas() || get_canvas()->get_root()!=canvas->get_root()))
+	if (extra_reference)
 		canvas->unref();
 
 	child_changed_connection.disconnect();
@@ -209,7 +212,12 @@ Layer_PasteCanvas::set_sub_canvas(etl::handle<synfig::Canvas> x)
 		add_child(canvas.get());
 
 	if(canvas && (canvas->is_inline() || !get_canvas() || get_canvas()->get_root()!=canvas->get_root()))
+	{
 		canvas->ref();
+		extra_reference = true;
+	}
+	else
+		extra_reference = false;
 
 	if(canvas)
 		on_canvas_set();
