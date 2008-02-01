@@ -377,7 +377,18 @@ CanvasInterface::generate_param_list(const ValueDesc &value_desc)
 		param_list.add("value_node",value_desc.get_value_node());
 
 	if(value_desc.is_const())
-		param_list.add("value",value_desc.get_value());
+	{
+		// Fix 1868911: if we put a ValueBase holding a Canvas handle
+		// into the param_list and then export the canvas, the handle
+		// will miss out of having its reference count reduced,
+		// because by the time the handle is destructed the canvas
+		// will no longer be inline.  So let's not propogate that
+		// ValueBase any further than here.
+		if (value_desc.get_value_type() == ValueBase::TYPE_CANVAS)
+			param_list.add("value",Canvas::LooseHandle(value_desc.get_value().get(Canvas::LooseHandle())));
+		else
+			param_list.add("value",value_desc.get_value());
+	}
 
 	if(value_desc.parent_is_layer_param())
 	{
