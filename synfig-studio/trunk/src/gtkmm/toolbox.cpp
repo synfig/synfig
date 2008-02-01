@@ -306,7 +306,7 @@ Toolbox::Toolbox():
 
 	file_buttons->show();
 
-	tool_table=manage(new class Gtk::Table(4, 4, false));
+	tool_table=manage(new class Gtk::Table());
 	tool_table->show();
 	Gtk::HandleBox* handle_tools(manage(new Gtk::HandleBox()));
 	handle_tools->add(*tool_table);
@@ -497,8 +497,8 @@ Toolbox::add_state(const Smach::state_base *state)
 	icon->show();
 	button->show();
 
-	int row=state_button_map.size()/4;
-	int col=state_button_map.size()%4;
+	int row=state_button_map.size()/5;
+	int col=state_button_map.size()%5;
 
 	tool_table->attach(*button,col,col+1,row,row+1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
 

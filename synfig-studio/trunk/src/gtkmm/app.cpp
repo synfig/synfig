@@ -1128,40 +1128,33 @@ App::App(int *argc, char ***argv):
 		device_tracker=new studio::DeviceTracker();
 
 		studio_init_cb.task(_("Init Tools..."));
+
+		/* row 1 */
 		state_manager->add_state(&state_normal);
 		state_manager->add_state(&state_smooth_move);
 		state_manager->add_state(&state_scale);
 		state_manager->add_state(&state_rotate);
+		studio_init_cb.task(_("Init ModMirror...")); module_list_.push_back(new ModMirror()); module_list_.back()->start();
 
+		/* row 2 */
 		state_manager->add_state(&state_bline);
-
-
 		state_manager->add_state(&state_circle);
 		state_manager->add_state(&state_rectangle);
-
 		state_manager->add_state(&state_gradient);
-		state_manager->add_state(&state_eyedrop);
-		state_manager->add_state(&state_fill);
+		if(!getenv("SYNFIG_DISABLE_POLYGON")) state_manager->add_state(&state_polygon); // Enabled - for working without ducks
 
-		state_manager->add_state(&state_zoom);
-
-		// Enabled - it's useful to be able to work with polygons without tangent ducks getting in the way.
-		// I know we can switch tangent ducks off, but why not allow this kind of layer as well?
-		if(!getenv("SYNFIG_DISABLE_POLYGON")) state_manager->add_state(&state_polygon);
-
-		// Enabled for now.  Let's see whether they're good enough yet.
-		if(!getenv("SYNFIG_DISABLE_DRAW"   )) state_manager->add_state(&state_draw);
+		/* row 3 */
+		if(!getenv("SYNFIG_DISABLE_DRAW"   )) state_manager->add_state(&state_draw); // Enabled for now.  Let's see whether they're good enough yet.
 		if(!getenv("SYNFIG_DISABLE_SKETCH" )) state_manager->add_state(&state_sketch);
+		state_manager->add_state(&state_fill);
+		state_manager->add_state(&state_eyedrop);
+		state_manager->add_state(&state_zoom);
 
 		// Disabled by default - it doesn't work properly?
 		if(getenv("SYNFIG_ENABLE_WIDTH"    )) state_manager->add_state(&state_width);
 
 		studio_init_cb.task(_("Init ModPalette..."));
 		module_list_.push_back(new ModPalette()); module_list_.back()->start();
-
-		studio_init_cb.task(_("Init ModMirror..."));
-		module_list_.push_back(new ModMirror()); module_list_.back()->start();
-
 
 		studio_init_cb.task(_("Init Setup Dialog..."));
 		dialog_setup=new studio::Dialog_Setup();
