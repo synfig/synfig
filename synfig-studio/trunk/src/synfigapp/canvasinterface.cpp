@@ -267,7 +267,8 @@ CanvasInterface::add_layer_to(synfig::String name, synfig::Canvas::Handle canvas
 		return 0;
 	}
 
-	synfig::info("DEPTH=%d",depth);
+	// synfig::info("DEPTH=%d",depth);
+
 	// Action to move the layer (if necessary)
 	if(depth>0)
 	{

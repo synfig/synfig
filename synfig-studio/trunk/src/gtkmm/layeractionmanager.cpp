@@ -383,7 +383,8 @@ LayerActionManager::paste()
 			return;
 		}
 
-		synfig::info("DEPTH=%d",depth);
+		// synfig::info("DEPTH=%d",depth);
+
 		// Action to move the layer (if necessary)
 		if(depth>0)
 		{
