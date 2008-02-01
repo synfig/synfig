@@ -380,13 +380,13 @@ private:
 	CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigapp::CanvasInterface> canvas_interface);
 
 	//! Constructor Helper
-	Gtk::Widget* create_layer_tree();
+	// Gtk::Widget* create_layer_tree();
 
 	//! Constructor Helper
-	Gtk::Widget* create_children_tree();
+	// Gtk::Widget* create_children_tree();
 
 	//! Constructor Helper
-	Gtk::Widget* create_keyframe_tree();
+	// Gtk::Widget* create_keyframe_tree();
 
 	//! Constructor Helper
 	Gtk::Widget* create_status_bar();
