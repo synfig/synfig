@@ -65,7 +65,8 @@ CellRenderer_Time::CellRenderer_Time():
 
 CellRenderer_Time::~CellRenderer_Time()
 {
-	synfig::info("CellRenderer_Time::~CellRenderer_Time(): deleted");
+	if (getenv("SYNFIG_DEBUG_DESTRUCTORS"))
+		synfig::info("CellRenderer_Time::~CellRenderer_Time(): Deleted");
 }
 
 void

@@ -131,7 +131,8 @@ KeyframeTree::KeyframeTree()
 
 KeyframeTree::~KeyframeTree()
 {
-	synfig::info("KeyframeTree::~KeyframeTree(): deleted");
+	if (getenv("SYNFIG_DEBUG_DESTRUCTORS"))
+		synfig::info("KeyframeTree::~KeyframeTree(): Deleted");
 }
 
 void

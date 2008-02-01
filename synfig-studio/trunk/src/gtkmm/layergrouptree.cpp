@@ -110,7 +110,8 @@ LayerGroupTree::LayerGroupTree()
 
 LayerGroupTree::~LayerGroupTree()
 {
-	synfig::info("LayerGroupTree::~LayerGroupTree(): deleted");
+	if (getenv("SYNFIG_DEBUG_DESTRUCTORS"))
+		synfig::info("LayerGroupTree::~LayerGroupTree(): Deleted");
 }
 
 void

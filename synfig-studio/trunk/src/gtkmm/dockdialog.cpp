@@ -444,7 +444,9 @@ DockDialog::refresh_accel_group()
 bool
 DockDialog::close()
 {
-	synfig::info("DockDialog::close(): DELETED!");
+	if (getenv("SYNFIG_DEBUG_DESTRUCTORS"))
+		synfig::info("DockDialog::close(): Deleted");
+
 	empty_sig.disconnect();
 	//get_dock_book().clear();
 	delete this;

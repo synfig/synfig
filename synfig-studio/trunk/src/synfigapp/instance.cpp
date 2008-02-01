@@ -118,8 +118,10 @@ Instance::set_file_name(const synfig::String &name)
 Instance::~Instance()
 {
 	instance_map_.erase(canvas_);
-	synfig::info("studio::Instance::~Instance(): Deleted");
-} // END of studio::Instance::~Instance()
+
+	if (getenv("SYNFIG_DEBUG_DESTRUCTORS"))
+		synfig::info("Instance::~Instance(): Deleted");
+}
 
 handle<CanvasInterface>
 Instance::find_canvas_interface(synfig::Canvas::Handle canvas)

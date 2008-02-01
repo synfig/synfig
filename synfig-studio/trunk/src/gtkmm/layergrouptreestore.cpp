@@ -95,7 +95,9 @@ LayerGroupTreeStore::LayerGroupTreeStore(etl::loose_handle<synfigapp::CanvasInte
 LayerGroupTreeStore::~LayerGroupTreeStore()
 {
 	//clear();
-	synfig::info("LayerGroupTreeStore::~LayerGroupTreeStore(): Deleted");
+
+	if (getenv("SYNFIG_DEBUG_DESTRUCTORS"))
+		synfig::info("LayerGroupTreeStore::~LayerGroupTreeStore(): Deleted");
 }
 
 bool

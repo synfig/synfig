@@ -912,7 +912,8 @@ CanvasView::~CanvasView()
 	// this was causing a crash before
 	canvas_interface()->signal_dirty_preview().clear();
 
-	synfig::info("CanvasView:~CanvasView(): Destructor Finished");
+	if (getenv("SYNFIG_DEBUG_DESTRUCTORS"))
+		synfig::info("CanvasView::~CanvasView(): Deleted");
 }
 
 

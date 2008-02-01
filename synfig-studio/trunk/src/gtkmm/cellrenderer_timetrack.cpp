@@ -92,7 +92,8 @@ CellRenderer_TimeTrack::CellRenderer_TimeTrack():
 
 CellRenderer_TimeTrack::~CellRenderer_TimeTrack()
 {
-	synfig::info("CellRenderer_TimeTrack::~CellRenderer_TimeTrack(): deleted");
+	if (getenv("SYNFIG_DEBUG_DESTRUCTORS"))
+		synfig::info("CellRenderer_TimeTrack::~CellRenderer_TimeTrack(): Deleted");
 }
 
 void
