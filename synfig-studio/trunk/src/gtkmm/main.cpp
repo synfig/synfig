@@ -69,6 +69,10 @@ int main(int argc, char **argv)
 		SmartFILE file(IPC::make_connection());
 		if(file)
 		{
+			cout << endl;
+			cout << "   " << _("synfig studio is already running") << endl << endl;
+			cout << "   " << _("the existing process will be used") << endl << endl;;
+
 			fprintf(file.get(),"F\n");
 
 			// Hey, another copy of us is open!
@@ -88,6 +92,9 @@ int main(int argc, char **argv)
 			return 0;
 		}
 	}
+
+	cout << endl;
+	cout << "   " << _("synfig studio -- starting up application...") << endl << endl;
 
 	try
 	{
