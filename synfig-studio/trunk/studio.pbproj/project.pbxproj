@@ -3827,6 +3827,20 @@
 			path = src/gtkmm/about.h;
 			refType = 4;
 		};
+		F5429FA203A911B301A80006 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = splash.cpp;
+			path = src/gtkmm/splash.cpp;
+			refType = 4;
+		};
+		F5429FA303A911B301A80006 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			name = about.h;
+			path = src/gtkmm/splash.h;
+			refType = 4;
+		};
 		F5429FA403A911B301A80006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
@@ -3930,8 +3944,8 @@
 		F56E5E4503BCF10B01A80006 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
-			name = about_dialog.sif;
-			path = images/about_dialog.sif;
+			name = splash_screen.sif;
+			path = images/splash_screen.sif;
 			refType = 4;
 		};
 		F56E5E4603BCF10B01A80006 = {

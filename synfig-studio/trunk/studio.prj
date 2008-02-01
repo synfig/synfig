@@ -75,6 +75,7 @@ module.include.files=\
 	src/gtkmm/trackview.h\
 	src/gtkmm/workarea.h\
 	src/gtkmm/about.h\
+	src/gtkmm/splash.h\
 	src/gtkmm/datanode.h\
 	src/gtkmm/datatype.h\
 	src/gtkmm/canvasview.h\
@@ -107,6 +108,7 @@ module.source.files=\
 	src/gtkmm/compview.cpp\
 	src/gtkmm/instance.cpp\
 	src/gtkmm/about.cpp\
+	src/gtkmm/splash.cpp\
 	src/actions.cpp\
 	src/app.cpp\
 	src/main.cpp\
@@ -126,7 +128,7 @@ module.pixmap.files=\
 	images/synfig_icon.png\
 	images/about_icon.png\
 	images/canvas_icon.png\
-	images/about_dialog.png
+	images/splash_screen.png
 
 module.data.name=.
 module.data.type=

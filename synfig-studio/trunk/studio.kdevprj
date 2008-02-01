@@ -160,13 +160,13 @@ type=DATA
 
 [images/Makefile.am]
 dist=true
-files=images/studio_about.sif,images/Makefile.am,images/about_dialog.sif,images/about_icon.sif,images/canvas_icon.sif
+files=images/studio_about.sif,images/Makefile.am,images/splash_screen.sif,images/about_icon.sif,images/canvas_icon.sif
 install=false
 install_location=
 sub_dirs=
 type=DATA
 
-[images/about_dialog.sif]
+[images/splash_screen.sif]
 dist=true
 install=false
 install_location=
@@ -248,7 +248,7 @@ type=HEADER
 
 [src/gtkmm/Makefile.am]
 dist=true
-files=src/gtkmm/app.cpp,src/gtkmm/app.h,src/gtkmm/Makefile.am,src/gtkmm/instance.h,src/gtkmm/instance.cpp,src/gtkmm/toolbox.h,src/gtkmm/toolbox.cpp,src/gtkmm/compview.cpp,src/gtkmm/compview.h,src/gtkmm/canvasview.cpp,src/gtkmm/canvasview.h,src/gtkmm/workarea.cpp,src/gtkmm/workarea.h,src/gtkmm/about.h,src/gtkmm/about.cpp
+files=src/gtkmm/app.cpp,src/gtkmm/app.h,src/gtkmm/Makefile.am,src/gtkmm/instance.h,src/gtkmm/instance.cpp,src/gtkmm/toolbox.h,src/gtkmm/toolbox.cpp,src/gtkmm/compview.cpp,src/gtkmm/compview.h,src/gtkmm/canvasview.cpp,src/gtkmm/canvasview.h,src/gtkmm/workarea.cpp,src/gtkmm/workarea.h,src/gtkmm/about.h,src/gtkmm/about.cpp,src/gtkmm/splash.h,src/gtkmm/splash.cpp
 install=false
 install_location=
 sharedlib_LDFLAGS=-version-info 0:0:0
@@ -263,6 +263,18 @@ install_location=
 type=SOURCE
 
 [src/gtkmm/about.h]
+dist=true
+install=false
+install_location=
+type=HEADER
+
+[src/gtkmm/splash.cpp]
+dist=true
+install=false
+install_location=
+type=SOURCE
+
+[src/gtkmm/splash.h]
 dist=true
 install=false
 install_location=

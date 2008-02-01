@@ -55,6 +55,7 @@
 
 #include "app.h"
 #include "about.h"
+#include "splash.h"
 #include "instance.h"
 #include "canvasview.h"
 #include "dialog_setup.h"
@@ -221,6 +222,8 @@ const etl::handle<synfigapp::UIInterface>& App::get_ui_interface() { return ui_i
 
 etl::handle<Instance> App::selected_instance;
 etl::handle<CanvasView> App::selected_canvas_view;
+
+studio::About *studio::App::about=NULL;
 
 studio::Toolbox *studio::App::toolbox=NULL;
 
@@ -1025,13 +1028,13 @@ App::App(int *argc, char ***argv):
 	}
 	Glib::set_application_name(_("Synfig Studio"));
 
-	About about_window;
-	about_window.set_can_self_destruct(false);
-	about_window.show();
+	Splash splash_screen;
+	splash_screen.set_can_self_destruct(false);
+	splash_screen.show();
 
 	shutdown_in_progress=false;
-	SuperCallback synfig_init_cb(about_window.get_callback(),0,9000,10000);
-	SuperCallback studio_init_cb(about_window.get_callback(),9000,10000,10000);
+	SuperCallback synfig_init_cb(splash_screen.get_callback(),0,9000,10000);
+	SuperCallback studio_init_cb(splash_screen.get_callback(),9000,10000,10000);
 
 	// Initialize the Synfig library
 	try { synfigapp_main=etl::smart_ptr<synfigapp::Main>(new synfigapp::Main(etl::dirname((*argv)[0]),&synfig_init_cb)); }
@@ -1058,6 +1061,9 @@ App::App(int *argc, char ***argv):
 
 		studio_init_cb.task(_("Init Toolbox..."));
 		toolbox=new studio::Toolbox();
+
+		studio_init_cb.task(_("Init About Dialog..."));
+		about=new studio::About();
 
 		studio_init_cb.task(_("Init Tool Options..."));
 		dialog_tool_options=new studio::Dialog_ToolOptions();
@@ -1177,7 +1183,7 @@ App::App(int *argc, char ***argv):
 
 		if(auto_recover->recovery_needed())
 		{
-			about_window.hide();
+			splash_screen.hide();
 			if(
 				get_ui_interface()->yes_no(
 					_("Auto Recovery"),
@@ -1200,7 +1206,7 @@ App::App(int *argc, char ***argv):
 					"idea to review them and save them now.")
 				);
 			}
-			about_window.show();
+			splash_screen.show();
 		}
 
 		// Look for any files given on the command line,
@@ -1210,10 +1216,10 @@ App::App(int *argc, char ***argv):
 			if((*argv)[*argc] && (*argv)[*argc][0]!='-')
 			{
 				studio_init_cb.task(_("Loading files..."));
-				about_window.hide();
+				splash_screen.hide();
 				open((*argv)[*argc]);
 				opened_any = true;
-				about_window.show();
+				splash_screen.show();
 			}
 
 		// if no file was specified to be opened, create a new document to help new users get started more easily
@@ -1257,6 +1263,8 @@ App::~App()
 
 	delete auto_recover;
 
+	delete about;
+	
 	toolbox->hide();
 
 //	studio::App::iteration(false);
@@ -2049,7 +2057,8 @@ App::get_instance(etl::handle<synfig::Canvas> canvas)
 void
 App::dialog_about()
 {
-	(new class About())->show();
+	if(about)
+		about->show();
 }
 
 void

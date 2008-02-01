@@ -17,19 +17,19 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Generator: KBabel 1.11.4\n"
 
-#: src/gtkmm/about.cpp:118
+#: src/gtkmm/splash.cpp:118
 msgid "ERROR:"
 msgstr "ERREUR :"
 
-#: src/gtkmm/about.cpp:134
+#: src/gtkmm/splash.cpp:134
 msgid "WARNING:"
 msgstr "AVERTISSEMENT :"
 
-#: src/gtkmm/about.cpp:221
+#: src/gtkmm/splash.cpp:221
 msgid "Version"
 msgstr "Version"
 
-#: src/gtkmm/about.cpp:274
+#: src/gtkmm/splash.cpp:274
 msgid "Close"
 msgstr "Fermer"
 

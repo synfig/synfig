@@ -164,6 +164,8 @@ src/gtkmm/renderer_timecode.cpp
 src/gtkmm/renderer_timecode.h
 src/gtkmm/render.h
 src/gtkmm/smach.h
+src/gtkmm/splash.cpp
+src/gtkmm/splash.h
 src/gtkmm/state_bline.cpp
 src/gtkmm/state_bline.h
 src/gtkmm/state_circle.cpp

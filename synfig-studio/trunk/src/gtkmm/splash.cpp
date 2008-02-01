@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file about.cpp
+/*!	\file splash.cpp
 **	\brief writeme
 **
 **	$Id$
@@ -45,7 +45,7 @@
 
 #include <synfig/general.h>
 
-#include "about.h"
+#include "splash.h"
 #include "app.h"
 
 #include "general.h"
@@ -87,20 +87,20 @@ extern      const guint gtk_interface_age;
 
 /* === P R O C E D U R E S ================================================= */
 
-class studio::AboutProgress : public synfig::ProgressCallback
+class studio::SplashProgress : public synfig::ProgressCallback
 {
-	About &about;
+	Splash &splash;
 
 public:
 
-	AboutProgress(About &about):about(about) { }
+	SplashProgress(Splash &splash):splash(splash) { }
 
 	virtual bool task(const std::string &task)
 	{
-		if(about.tasklabel)
+		if(splash.tasklabel)
 		{
-			about.tasklabel->set_label(task);
-			about.tasklabel->show();
+			splash.tasklabel->set_label(task);
+			splash.tasklabel->show();
 		}
 		else
 		{
@@ -113,10 +113,10 @@ public:
 
 	virtual bool error(const std::string &task)
 	{
-		if(about.tasklabel)
+		if(splash.tasklabel)
 		{
-			about.tasklabel->set_label(_("ERROR:")+task);
-			about.tasklabel->show();
+			splash.tasklabel->set_label(_("ERROR:")+task);
+			splash.tasklabel->show();
 		}
 		else
 		{
@@ -129,10 +129,10 @@ public:
 
 	virtual bool warning(const std::string &task)
 	{
-		if(about.tasklabel)
+		if(splash.tasklabel)
 		{
-			about.tasklabel->set_label(_("WARNING:")+task);
-			about.tasklabel->show();
+			splash.tasklabel->set_label(_("WARNING:")+task);
+			splash.tasklabel->show();
 		}
 		else
 		{
@@ -145,10 +145,10 @@ public:
 
 	virtual bool amount_complete(int current, int total)
 	{
-		if(about.progressbar)
+		if(splash.progressbar)
 		{
-			about.progressbar->set_fraction((float)current/(float)total);
-			about.progressbar->show();
+			splash.progressbar->set_fraction((float)current/(float)total);
+			splash.progressbar->show();
 		}
 		else
 			cerr<<current<<'/'<<total<<endl;
@@ -156,11 +156,11 @@ public:
 		while(studio::App::events_pending())studio::App::iteration(false);
 		return true;
 	}
-}; // END of class AboutProgress
+}; // END of class SplashProgress
 
 /* === M E T H O D S ======================================================= */
 
-About::About():
+Splash::Splash():
 	Gtk::Window(getenv("SYNFIG_DISABLE_POPUP_WINDOWS") ? Gtk::WINDOW_TOPLEVEL : Gtk::WINDOW_POPUP),
 	can_self_destruct(true)
 {
@@ -184,7 +184,7 @@ About::About():
 
 	// Create the Logo
 	Gtk::Image *Logo = manage(new class Gtk::Image());
-	Logo->set(imagepath+"about_dialog."IMAGE_EXT);
+	Logo->set(imagepath+"splash_screen."IMAGE_EXT);
 	Logo->set_size_request(image_w,image_h);
 	Logo->set_alignment(0.5,0.5);
 	Logo->set_padding(0,0);
@@ -309,17 +309,17 @@ About::About():
 	fixed1->show();
 
 	// Connect relevant signals
-	CloseButton->signal_clicked().connect(sigc::mem_fun(*this, &About::close));
+	CloseButton->signal_clicked().connect(sigc::mem_fun(*this, &Splash::close));
 
-	cb=new AboutProgress(*this);
+	cb=new SplashProgress(*this);
 }
 
-About::~About()
+Splash::~Splash()
 {
 	delete cb;
 }
 
-void About::close()
+void Splash::close()
 {
 	hide();
 	if(can_self_destruct)
@@ -327,7 +327,7 @@ void About::close()
 }
 
 void
-About::set_can_self_destruct(bool x)
+Splash::set_can_self_destruct(bool x)
 {
 	can_self_destruct=x;
 	if(x==true)
@@ -337,7 +337,7 @@ About::set_can_self_destruct(bool x)
 }
 
 synfig::ProgressCallback *
-About::get_callback()
+Splash::get_callback()
 {
 	return cb;
 }

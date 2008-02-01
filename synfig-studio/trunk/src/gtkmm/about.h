@@ -1,11 +1,11 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file splash.h
-**	\brief Header File
+/*!	\file about.h
+**	\brief About dialog class
 **
 **	$Id$
 **
 **	\legal
-**	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
+**	Copyright 2008 Paul Wise
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -17,24 +17,17 @@
 **	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 **	General Public License for more details.
 **	\endlegal
-**
-** === N O T E S ===========================================================
-**
-** ========================================================================= */
+*/
+/* ========================================================================= */
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_GTKMM_SPLASH_H
-#define __SYNFIG_GTKMM_SPLASH_H
+#ifndef __SYNFIG_GTKMM_ABOUT_H
+#define __SYNFIG_GTKMM_ABOUT_H
 
 /* === H E A D E R S ======================================================= */
 
-//#include <gtk/gtk.h>
-#include <gtkmm/window.h>
-#include <gtkmm/tooltips.h>
-#include <gtkmm/label.h>
-#include <gtkmm/button.h>
-#include <gtkmm/progressbar.h>
+#include <gtkmm/aboutdialog.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -42,39 +35,19 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace synfig { class ProgressCallback; };
+# 
 
 namespace studio {
 
-class SplashProgress;
-
-class Splash : public Gtk::Window
+class About : public Gtk::AboutDialog
 {
-	friend class SplashProgress;
-
-	SplashProgress *cb;
-
-	Gtk::Tooltips _tooltips;
-
-	Gtk::Label *tasklabel;
-	Gtk::ProgressBar *progressbar;
-	Gtk::Button *CloseButton;
-
-	void close();
-
-	bool can_self_destruct;
-
 public:
 
-	synfig::ProgressCallback *get_callback();
-
-	void set_can_self_destruct(bool x);
-
-	Splash();
-	~Splash();
+	About();
+	void close(int);
 };
-
-}
+	
+}; // END of namespace studio
 
 /* === E N D =============================================================== */
 

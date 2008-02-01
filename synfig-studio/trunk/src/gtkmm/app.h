@@ -76,6 +76,7 @@ namespace studio {
 
 typedef Gtk::UIManager UIManager;
 
+class About;
 class Toolbox;
 class Instance;
 class CanvasView;
@@ -181,6 +182,7 @@ public:
 
 	static synfig::Gamma gamma;
 
+	static About *about;
 	static Toolbox *toolbox;
 
 	static std::list<etl::handle<Instance> > instance_list;

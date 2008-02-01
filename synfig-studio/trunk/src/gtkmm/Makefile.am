@@ -89,12 +89,12 @@ OTHER_HH = compview.h eventkey.h smach.h \
 	about.h	  adjust_window.h   app.h   asyncrenderer.h   audiocontainer.h	 autorecover.h	 canvasoptions.h	\
 	canvasproperties.h   canvasview.h   devicetracker.h   dialogsettings.h	 duckmatic.h   iconcontroller.h		\
 	instance.h   ipc.h   keymapsettings.h	module.h   onemoment.h	 preview.h   renddesc.h	  render.h		\
-	statemanager.h	 toolbox.h   valuelink.h   workarea.h	zoomdial.h						\
+	splash.h statemanager.h	 toolbox.h   valuelink.h   workarea.h	zoomdial.h						\
 OTHER_CC = main.cpp \
 	about.cpp adjust_window.cpp app.cpp asyncrenderer.cpp audiocontainer.cpp autorecover.cpp canvasoptions.cpp	\
 	canvasproperties.cpp canvasview.cpp devicetracker.cpp dialogsettings.cpp duckmatic.cpp iconcontroller.cpp	\
 	instance.cpp ipc.cpp keymapsettings.cpp module.cpp onemoment.cpp preview.cpp renddesc.cpp render.cpp		\
-	statemanager.cpp toolbox.cpp valuelink.cpp workarea.cpp zoomdial.cpp
+	splash.cpp statemanager.cpp toolbox.cpp valuelink.cpp workarea.cpp zoomdial.cpp
 
 INCLUDES = -I$(top_srcdir)/src
 
