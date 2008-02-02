@@ -83,6 +83,7 @@ ListImporter::ListImporter(const String &filename)
 			}
 
 			if (line == "bmp"  ||
+				line == "gif"  ||
 				line == "jpg"  ||
 				line == "png"  ||
 				line == "ppm"  ||
