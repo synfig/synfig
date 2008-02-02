@@ -152,7 +152,6 @@ KeyframeTree::set_model(Glib::RefPtr<KeyframeTreeStore> keyframe_tree_store)
 	{
 		Glib::RefPtr<Gtk::TreeModelSort> sorted_store(Gtk::TreeModelSort::create(keyframe_tree_store_));
 		sorted_store->set_default_sort_func(sigc::ptr_fun(&studio::KeyframeTreeStore::time_sorter));
-		sorted_store->set_sort_column(model.time.index(), Gtk::SORT_ASCENDING);
 		sorted_store->set_sort_func(model.time,			sigc::ptr_fun(&studio::KeyframeTreeStore::time_sorter));
 		sorted_store->set_sort_func(model.description,	sigc::ptr_fun(&studio::KeyframeTreeStore::description_sorter));
 		Gtk::TreeView::set_model(sorted_store);
