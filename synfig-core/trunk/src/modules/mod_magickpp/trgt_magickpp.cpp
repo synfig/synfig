@@ -93,20 +93,27 @@ magickpp_trgt::~magickpp_trgt()
 
 	try
 	{
-		// check whether this file format supports multiple-image files
-		Magick::Image image(*(images.begin()));
-		image.fileName(filename);
-		try
+		bool multiple_images = images.size() != 1;
+		bool can_adjoin = false;
+
+		if (multiple_images)
 		{
-			SetImageInfo(image.imageInfo(),Magick::MagickTrue,&exceptionInfo);
-		}
-		catch(Magick::Warning warning) {
-			synfig::warning("exception '%s'", warning.what());
+			// check whether this file format supports multiple-image files
+			Magick::Image image(*(images.begin()));
+			image.fileName(filename);
+			try
+			{
+				SetImageInfo(image.imageInfo(),Magick::MagickTrue,&exceptionInfo);
+				can_adjoin = image.adjoin();
+			}
+			catch(Magick::Warning warning) {
+				synfig::warning("exception '%s'", warning.what());
+			}
 		}
 
 		// the file type is now in image.imageInfo()->magick and
 		// image.adjoin() tells us whether we can write to a single file
-		if (image.adjoin())
+		if (can_adjoin)
 		{
 			synfig::info("joining images");
 			unsigned int delay = round_to_int(100.0 / desc.get_frame_rate());
@@ -177,7 +184,7 @@ magickpp_trgt::~magickpp_trgt()
 			// insertImages(&images, new_images);
 #endif
 		}
-		else
+		else if (multiple_images)
 		{
 			// if we can't write multiple images to a file of this type,
 			// include '%04d' in the filename, so the files will be numbered
