@@ -11,17 +11,11 @@ install_location=
 type=DATA
 
 [./Makefile.am]
-files=./README,./studio.kdevprj,./INSTALL,./ChangeLog,./bootstrap,
+files=./README,./studio.kdevprj,./INSTALL,./ChangeLog,
 sub_dirs=src,config,
 type=normal
 
 [./README]
-dist=true
-install=false
-install_location=
-type=DATA
-
-[./bootstrap]
 dist=true
 install=false
 install_location=
@@ -87,19 +81,13 @@ groups=Headers,Sources,GNU,Translations,User Interface,Others
 
 [Makefile.am]
 dist=true
-files=bootstrap,ChangeLog,INSTALL,Makefile.am,README
+files=ChangeLog,INSTALL,Makefile.am,README
 install=false
 install_location=
 sub_dirs=src,images
 type=DATA
 
 [README]
-dist=true
-install=false
-install_location=
-type=DATA
-
-[bootstrap]
 dist=true
 install=false
 install_location=

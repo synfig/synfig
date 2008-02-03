@@ -35,7 +35,7 @@ install_location=
 type=DATA
 
 [./Makefile.am]
-files=./ChangeLog,./ETL-config.in,./INSTALL,./README,./bootstrap,./config.log,./ETL.spec,./aclocal.m4,./configure,./ETL.kdevprj,./config.status,./ETL-config,
+files=./ChangeLog,./ETL-config.in,./INSTALL,./README,./config.log,./ETL.spec,./aclocal.m4,./configure,./ETL.kdevprj,./config.status,./ETL-config,
 sub_dirs=ETL,test,ETL.pbproj,config,autom4te-2.53.cache,
 type=normal
 
@@ -46,12 +46,6 @@ install_location=
 type=DATA
 
 [./aclocal.m4]
-dist=true
-install=false
-install_location=
-type=DATA
-
-[./bootstrap]
 dist=true
 install=false
 install_location=

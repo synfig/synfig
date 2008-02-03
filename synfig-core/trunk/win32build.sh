@@ -4,7 +4,7 @@
 
 OPTIONS="--enable-optimization=1 --disable-debug"
 
-[ -e configure ] || ./bootstrap || exit 0
+[ -e configure ] || ( libtoolize --ltdl --copy --force && autoreconf --force --install ) || exit 0
 
 [ -d win32build ] && rm -fr win32build
 

@@ -8,7 +8,7 @@ OPTIONS="$OPTIONS --enable-debug"
 
 BUILDDIR=win32build
 
-[ -e configure ] || ./bootstrap || exit 1
+[ -e configure ] || autoreconf --force --install || exit 1
 
 [ -d $BUILDDIR ] && rm -fr $BUILDDIR
 

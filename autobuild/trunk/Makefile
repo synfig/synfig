@@ -58,7 +58,7 @@ core-src:
 	[ -d $(OUTPUTDIR) ] || mkdir $(OUTPUTDIR)
 	rm -fr $(COREDIR)
 	svn export https://svn.voria.com/code/synfig-core/trunk $(COREDIR) || exit 2
-	cd $(COREDIR) && ./bootstrap && ./configure
+	cd $(COREDIR) && libtoolize --ltdl --copy --force && autoreconf --force --install && ./configure
 	make -C $(COREDIR) dist
 	cp -r $(COREDIR)/*.gz $(OUTPUTDIR)
 
@@ -66,7 +66,7 @@ studio-src:
 	[ -d $(OUTPUTDIR) ] || mkdir $(OUTPUTDIR)
 	rm -fr $(STUDIODIR)
 	svn export https://svn.voria.com/code/synfig-studio/trunk $(STUDIODIR) || exit 2
-	cd $(STUDIODIR) && ./bootstrap && ./configure
+	cd $(STUDIODIR) && autoreconf --force --install && ./configure
 	make -C $(STUDIODIR) dist
 	cp -r $(STUDIODIR)/*.gz $(OUTPUTDIR)
 
@@ -74,7 +74,7 @@ etl-src:
 	[ -d $(OUTPUTDIR) ] || mkdir $(OUTPUTDIR)
 	rm -fr $(ETLDIR)
 	svn export https://svn.voria.com/code/ETL/trunk $(ETLDIR) || exit 2
-	cd $(ETLDIR) && ./bootstrap && ./configure
+	cd $(ETLDIR) && autoreconf --force --install && ./configure
 	make -C $(ETLDIR) dist
 	cp -r $(ETLDIR)/*.gz $(OUTPUTDIR)
 

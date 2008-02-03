@@ -23,7 +23,7 @@ install_location=
 type=DATA
 
 [./Makefile.am]
-files=./aclocal.m4,./config.status,./README,./configure,./config.log,./ETL.spec,./INSTALL,./ChangeLog,./ETL.kdevprj,./bootstrap,
+files=./aclocal.m4,./config.status,./README,./configure,./config.log,./ETL.spec,./INSTALL,./ChangeLog,./ETL.kdevprj,
 sub_dirs=test,config,ETL.pbproj,include,
 type=normal
 
@@ -34,12 +34,6 @@ install_location=
 type=DATA
 
 [./aclocal.m4]
-dist=true
-install=false
-install_location=
-type=DATA
-
-[./bootstrap]
 dist=true
 install=false
 install_location=
@@ -123,19 +117,13 @@ groups=Headers,Sources,GNU,Translations,User Interface,Others
 
 [Makefile.am]
 dist=true
-files=bootstrap,ChangeLog,INSTALL,Makefile.am,README,synfig.kdevprj,synfig-config.in
+files=ChangeLog,INSTALL,Makefile.am,README,synfig.kdevprj,synfig-config.in
 install=false
 install_location=
 sub_dirs=src,config
 type=DATA
 
 [README]
-dist=true
-install=false
-install_location=
-type=DATA
-
-[bootstrap]
 dist=true
 install=false
 install_location=

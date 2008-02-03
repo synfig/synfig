@@ -1892,14 +1892,6 @@
 				F58D9F8F037F14FE01A80006,
 			);
 		};
-		F550016802F0987601000102 = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = text.script.sh;
-			path = bootstrap;
-			refType = 4;
-			sourceTree = "<group>";
-		};
 		F550016A02F0987601000102 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;

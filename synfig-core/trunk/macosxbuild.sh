@@ -37,7 +37,7 @@ CXXCPP="g++ -E"
 
 BUILDDIR=macosxbuild
 
-[ -e configure ] || ./bootstrap || exit 1
+[ -e configure ] || ( libtoolize --ltdl --copy --force && autoreconf --force --install ) || exit 1
 
 [ -d $BUILDDIR ] && rm -fr $BUILDDIR
 

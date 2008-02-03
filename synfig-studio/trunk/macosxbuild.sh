@@ -27,7 +27,7 @@ CPP="gcc -E"
 CXXCPP="g++ -E"
 
 
-[ -e configure ] || ./bootstrap || exit 1
+[ -e configure ] || autoreconf --force --install || exit 1
 
 [ -d $BUILDDIR ] && rm -fr $BUILDDIR
 
