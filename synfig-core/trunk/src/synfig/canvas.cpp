@@ -90,32 +90,24 @@ Canvas::on_changed()
 
 Canvas::~Canvas()
 {
-	bool keep_going = true;
-
 	// we were having a crash where pastecanvas layers were still
 	// refering to a canvas after it had been destroyed;  this code
 	// will stop the pastecanvas layers from refering to the canvas
 	// before the canvas is destroyed
 
 	// the set_sub_canvas(0) ends up deleting the parent-child link,
-	// which modifies the set we're iterating through, invalidating
-	// the set iterator.  the outer while loop makes sure that we
-	// recreate the set iterator each time the set itself is modified
-	while (keep_going)
+	// which deletes the current element from the set we're iterating
+	// through, so we have to make sure we've incremented the iterator
+	// before we mess with the pastecanvas
+	std::set<Node*>::iterator iter = parent_set.begin();
+	while (iter != parent_set.end())
 	{
-		keep_going = false;		// only keep going if we find a pastecanvas parent to clear
-		for (std::set<Node*>::iterator iter = parent_set.begin(); iter != parent_set.end(); iter++)
-		{
-			Layer_PasteCanvas* paste_canvas = dynamic_cast<Layer_PasteCanvas*>(*iter);
-			if(paste_canvas)
-			{
-				paste_canvas->set_sub_canvas(0);
-				keep_going = true;
-				break;			// out of the for loop to the while loop
-			}
-			else
-				warning("destroyed canvas has a parent that is not a pastecanvas - please report if repeatable");
-		}
+		Layer_PasteCanvas* paste_canvas = dynamic_cast<Layer_PasteCanvas*>(*iter);
+		iter++;
+		if(paste_canvas)
+			paste_canvas->set_sub_canvas(0);
+		else
+			warning("destroyed canvas has a parent that is not a pastecanvas - please report if repeatable");
 	}
 
 	//if(is_inline() && parent_) assert(0);
