@@ -314,10 +314,18 @@ ValueNode::set_id(const String &x)
 String
 ValueNode::get_description(bool show_exported_name)const
 {
+	String ret(_("ValueNode"));
+
 	if (dynamic_cast<const LinkableValueNode*>(this))
 		return (dynamic_cast<const LinkableValueNode*>(this))->get_description(-1, show_exported_name);
 
-	return "ValueNode";
+	if (show_exported_name && !is_exported())
+		show_exported_name = false;
+
+	if (show_exported_name)
+		ret += strprintf(" (%s)", get_id().c_str());
+
+	return ret;
 }
 
 ValueNodeList::ValueNodeList():
