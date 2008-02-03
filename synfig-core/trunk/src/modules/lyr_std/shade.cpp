@@ -163,14 +163,12 @@ Layer_Shade::accelerated_render(Context context,Surface *surface,int quality, co
 		(offset_v>0?offset_v:0)+h
 	);
 
-	/*
-	if(quality >=10)
+	if(quality >= 10)
 	{
 		halfsizex=1;
 		halfsizey=1;
-	}else
-	*/
-	if(quality == 9)
+	}
+	else if (quality == 9)
 	{
 		halfsizex/=4;
 		halfsizey/=4;
