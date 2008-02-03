@@ -244,7 +244,7 @@ Action::ValueDescLink::prepare()
 	if(!link_value_node)
 	{
 		status_message = _("No ValueNodes were available, so one was created.");
-		ValueDesc& value_desc(value_desc_list.front());
+		ValueDesc& value_desc(value_desc_list.back());
 
 		link_value_node=ValueNode_Const::create(value_desc.get_value(time));
 
