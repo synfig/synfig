@@ -54,6 +54,7 @@
 #include "iconcontroller.h"
 #include <sys/stat.h>
 #include <errno.h>
+#include <ETL/stringf>
 
 #include "general.h"
 
@@ -255,6 +256,9 @@ studio::Instance::dialog_save_as()
 			}
 		}
 	}
+
+	if (get_file_name().find(DEFAULT_FILENAME_PREFIX) != 0)
+		filename = absolute_path(filename);
 
 	// show the canvas' name if it has one, else its ID
 	while (App::dialog_save_file((_("Choose a Filename to Save As") +
