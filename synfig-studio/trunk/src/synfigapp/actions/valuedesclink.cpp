@@ -299,5 +299,5 @@ Action::ValueDescLink::prepare()
 		add_action_front(action);
 	}
 
-	synfig::info(status_message);
+	synfig::info("http://synfig.org/Linking#Tier_%d : %s", status_level, status_message.c_str());
 }
