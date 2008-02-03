@@ -1288,7 +1288,7 @@ CanvasView::init_menus()
 			if (i == 10) note = _(" (fastest)");
 			Glib::RefPtr<Gtk::RadioAction> action(Gtk::RadioAction::create(quality_group,strprintf("quality-%02d",i),
 																		   strprintf(_("Set Quality to %d"),i) + note));
-			if(i==9)			// default quality
+			if (i==8)			// default quality
 			{
 				action->set_active();
 				work_area->set_quality(i);
