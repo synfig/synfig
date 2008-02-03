@@ -962,7 +962,17 @@ int main(int argc, char *argv[])
 				if(Target::ext_book().count(ext))
 					target_name=Target::ext_book()[ext];
 				else
-					target_name=ext;
+				{
+					string lower_ext(ext);
+
+					for(unsigned int i=0;i<ext.length();i++)
+						lower_ext[i] = tolower(ext[i]);
+
+					if(Target::ext_book().count(lower_ext))
+						target_name=Target::ext_book()[lower_ext];
+					else
+						target_name=ext;
+				}
 			}
 
 			// If the target type is STILL not yet defined, then
