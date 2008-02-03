@@ -285,6 +285,11 @@ Action::ValueDescLink::prepare()
 	{
 		ValueDesc& value_desc(*iter);
 
+		// only one of the selected items can be exported - that's the one we're linking to
+		// don't link it to itself
+		if (value_desc.is_exported())
+			continue;
+
 		Action::Handle action(Action::create("value_desc_connect"));
 
 		action->set_param("canvas",get_canvas());
