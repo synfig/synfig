@@ -274,8 +274,10 @@ public:
 
 
 	void waypoint_duplicate(synfigapp::ValueDesc value_desc,synfig::Waypoint waypoint);
+	void waypoint_duplicate(synfig::ValueNode::Handle value_node,synfig::Waypoint waypoint);
 
 	void waypoint_remove(synfigapp::ValueDesc value_desc,synfig::Waypoint waypoint);
+	void waypoint_remove(synfig::ValueNode::Handle value_node,synfig::Waypoint waypoint);
 
 	bool change_value(synfigapp::ValueDesc value_desc,synfig::ValueBase new_value);
 
