@@ -343,14 +343,21 @@ Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quali
 	const Rect full_bounding_rect(canvas->get_context().get_full_bounding_rect());
 	bool blend_using_straight = false; // use 'straight' just for the central blit
 
+	// we have rendered what's under us, if necessary
 	if(context->empty())
 	{
+		// if there's nothing under us, and we're blending 'onto', then we've finished
 		if (Color::is_onto(blend_method)) return true;
-		if (blend_method==Color::BLEND_COMPOSITE) blend_method=Color::BLEND_STRAIGHT;
+
+		// there's nothing under us, so using straight blending is
+		// faster than and equivalent to using composite, but we don't
+		// want to blank the surrounding areas
+		if (blend_method==Color::BLEND_COMPOSITE) blend_using_straight = true;
 	}
 
 	if (!etl::intersect(context.get_full_bounding_rect(),full_bounding_rect+origin))
 	{
+		// if there's no intersection between the context and our surface, and we're rendering 'onto', then we're done
 		if (Color::is_onto(blend_method)) return true;
 
 		/* 'straight' is faster than 'composite' and has the same
