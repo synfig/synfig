@@ -1191,7 +1191,7 @@ Layer_Shape::get_param_vocab()const
 		.set_description(_("Layer_Shape Color"))
 	);
 	ret.push_back(ParamDesc("offset")
-		.set_local_name(_("Position"))
+		.set_local_name(_("Offset"))
 	);
 	ret.push_back(ParamDesc("invert")
 		.set_local_name(_("Invert"))
