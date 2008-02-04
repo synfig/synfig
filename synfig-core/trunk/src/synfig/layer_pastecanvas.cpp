@@ -341,7 +341,26 @@ Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quali
 
 	Color::BlendMethod blend_method(get_blend_method());
 	const Rect full_bounding_rect(canvas->get_context().get_full_bounding_rect());
+
 	bool blend_using_straight = false; // use 'straight' just for the central blit
+
+	// sometimes the user changes the parameters while we're
+	// rendering, causing our pasted canvas' bounding box to shrink
+	// and no longer overlap with our tile.  if that has happened,
+	// let's just stop now - we'll be refreshing soon anyway
+	//! \todo shouldn't a mutex ensure this isn't needed?
+	// http://synfig.org/images/d/d2/Bbox-change.sifz is an example
+	// that shows this happening - open the encapsulation, select the
+	// 'shade', and toggle the 'invert' parameter quickly.
+	// Occasionally you'll see:
+	//   error: Context::accelerated_render(): Layer "shade" threw a bad_alloc exception!
+	// where the shade layer tries to allocate itself a canvas of
+	// negative proportions, due to changing bounding boxes.
+	if (!etl::intersect(desc.get_rect(), full_bounding_rect))
+	{
+		warning("%s:%d bounding box shrank while rendering?", __FILE__, __LINE__);
+		return true;
+	}
 
 	// we have rendered what's under us, if necessary
 	if(context->empty())
