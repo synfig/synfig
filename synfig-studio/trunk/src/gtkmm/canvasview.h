@@ -594,7 +594,7 @@ public:
 
 	void image_import();
 
-	void on_waypoint_clicked(synfigapp::ValueDesc,synfig::Waypoint, int button);
+	void on_waypoint_clicked_canvasview(synfigapp::ValueDesc,std::set<synfig::Waypoint,std::less<synfig::UniqueID> >, int button, synfig::Waypoint::Side side);
 
 	void preview_option() {on_preview_option();}
 
@@ -680,8 +680,6 @@ private:
 	void on_layer_toggle(synfig::Layer::Handle);
 
 	void on_edited_value(synfigapp::ValueDesc,synfig::ValueBase);
-
-	//void on_waypoint_clicked(synfigapp::ValueDesc,synfig::ValueNode_Animated::WaypointList::iterator, int button);
 
 	void on_drop_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, const Gtk::SelectionData& selection_data, guint info, guint time);
 

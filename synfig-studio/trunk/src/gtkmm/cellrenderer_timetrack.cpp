@@ -46,8 +46,6 @@
 #include <synfigapp/canvasinterface.h>
 #include "instance.h"
 
-#include <synfig/timepointcollect.h>
-
 #include "general.h"
 
 #endif
@@ -765,7 +763,7 @@ CellRenderer_TimeTrack::activate_vfunc(
 
 				if(clickfound && node)
 				{
-					show_timepoint_menu(node, stime, time_offset, actual_time+time_offset<stime?SIDE_LEFT:SIDE_RIGHT);
+					show_timepoint_menu(node, stime, time_offset, actual_time+time_offset<stime?Waypoint::SIDE_LEFT:Waypoint::SIDE_RIGHT);
 				}
 			}
 
@@ -783,7 +781,7 @@ CellRenderer_TimeTrack::activate_vfunc(
 
 			/*if(event->button.button==3 && selection)
 			{
-				signal_waypoint_clicked_(path,*selected_waypoint,event->button.button-1);
+				signal_waypoint_clicked_cellrenderer_(path,*selected_waypoint,event->button.button-1);
 				return true;
 			}
 			*/
@@ -844,7 +842,7 @@ CellRenderer_TimeTrack::activate_vfunc(
 			/*if(value_node && selection)
 			{
 				if(selected_time==drag_time && event->button.button!=3)
-					signal_waypoint_clicked_(path,*selected_waypoint,event->button.button-1);
+					signal_waypoint_clicked_cellrenderer_(path,*selected_waypoint,event->button.button-1);
 				else
 				if(event->button.button==1)
 				{
@@ -904,141 +902,8 @@ CellRenderer_TimeTrack::set_canvas_interface(etl::loose_handle<synfigapp::Canvas
 	canvas_interface_ = h;
 }
 
-static void
-set_waypoint_model(std::set<synfig::Waypoint, std::less<UniqueID> > waypoints, Waypoint::Model model, etl::loose_handle<synfigapp::CanvasInterface> canvas_interface)
-{
-	// Create the action group
-	synfigapp::Action::PassiveGrouper group(canvas_interface->get_instance().get(),_("Change Waypoint Group"));
-
-	std::set<synfig::Waypoint, std::less<UniqueID> >::const_iterator iter;
-	for(iter=waypoints.begin();iter!=waypoints.end();++iter)
-	{
-		Waypoint waypoint(*iter);
-		waypoint.apply_model(model);
-
-		synfigapp::Action::Handle action(synfigapp::Action::create("waypoint_set"));
-
-		assert(action);
-
-		action->set_param("canvas",canvas_interface->get_canvas());
-		action->set_param("canvas_interface",canvas_interface);
-
-		action->set_param("waypoint",waypoint);
-		action->set_param("value_node",waypoint.get_parent_value_node());
-
-		if(!canvas_interface->get_instance()->perform_action(action))
-		{
-			group.cancel();
-			return;
-		}
-	}
-}
-
 void
-CellRenderer_TimeTrack::show_timepoint_menu(const etl::handle<synfig::Node>& node, const synfig::Time& time, const synfig::Time& time_offset, Side side)
+CellRenderer_TimeTrack::show_timepoint_menu(const etl::handle<synfig::Node>& node, const synfig::Time& time, const synfig::Time& time_offset, Waypoint::Side side)
 {
-	std::set<synfig::Waypoint, std::less<UniqueID> > waypoint_set;
-	int n;
-	n=synfig::waypoint_collect(waypoint_set,time,node);
-
-	Gtk::Menu* menu(manage(new Gtk::Menu()));
-	menu->signal_hide().connect(sigc::bind(sigc::ptr_fun(&delete_widget), menu));
-
-	// Create the interpolation method menu
-	if(!waypoint_set.empty())
-	{
-		Gtk::Menu* interp_menu(manage(new Gtk::Menu()));
-		// no need to connect to signal_hide for this one - it will be deleted when its parent is deleted
-		Waypoint::Model model;
-
-		// note: each of the following 4 'if' blocks provokes these warnings:
-		//  /usr/include/sigc++-2.0/sigc++/adaptors/bound_argument.h:57: warning:
-		//  'model.synfig::Waypoint::Model::temporal_tension' is used uninitialized in this function
-		//	'model.synfig::Waypoint::Model::bias' is used uninitialized in this function
-		//	'model.synfig::Waypoint::Model::continuity' is used uninitialized in this function
-		//	'model.synfig::Waypoint::Model::tension' is used uninitialized in this function
-		//	'model.synfig::Waypoint::Model::priority' is used uninitialized in this function
-		// I don't know if that matters or not.
-
-		if(side==SIDE_LEFT)model.set_before(INTERPOLATION_TCB);
-		else model.set_after(INTERPOLATION_TCB);
-		interp_menu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("TCB"),
-			sigc::bind(
-				sigc::ptr_fun(set_waypoint_model),
-				waypoint_set,
-				model,
-				canvas_interface()
-			)
-		));
-
-		if(side==SIDE_LEFT)model.set_before(INTERPOLATION_LINEAR);
-		else model.set_after(INTERPOLATION_LINEAR);
-		interp_menu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Linear"),
-			sigc::bind(
-				sigc::ptr_fun(set_waypoint_model),
-				waypoint_set,
-				model,
-				canvas_interface()
-			)
-		));
-
-		if(side==SIDE_LEFT)model.set_before(INTERPOLATION_HALT);
-		else model.set_after(INTERPOLATION_HALT);
-		interp_menu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Ease"),
-			sigc::bind(
-				sigc::ptr_fun(set_waypoint_model),
-				waypoint_set,
-				model,
-				canvas_interface()
-			)
-		));
-
-		if(side==SIDE_LEFT)model.set_before(INTERPOLATION_CONSTANT);
-		else model.set_after(INTERPOLATION_CONSTANT);
-		interp_menu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Constant"),
-			sigc::bind(
-				sigc::ptr_fun(set_waypoint_model),
-				waypoint_set,
-				model,
-				canvas_interface()
-			)
-		));
-
-
-		menu->items().push_back(
-			Gtk::Menu_Helpers::MenuElem(
-				side==SIDE_LEFT?_("Change \"In\" Interp."):_("Change \"Out\" Interp."),
-				*interp_menu
-			)
-		);
-	}
-
-	menu->items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::StockID("gtk-jump-to"),
-		sigc::bind(
-			sigc::mem_fun(
-				*canvas_interface(),
-				&synfigapp::CanvasInterface::set_time
-			),
-			time - time_offset
-		)
-	));
-
-	if(!waypoint_set.empty())
-	{
-		// attempting to locate the valuenode for the clicked waypoint doesn't work if this is a Canvas parameter,
-		// so act as if there were multiple waypoints in that case as a workaround
-		if(waypoint_set.size()==1 && !Canvas::Handle::cast_dynamic(node))
-		{
-			delete menu;
-			menu=0;
-			signal_waypoint_clicked_(" ",*waypoint_set.begin(),2);
-			return;
-		}
-		else
-			synfig::info("Too many waypoints under me");
-	}
-	else
-		synfig::info("ZERO waypoints under me");
-
-	if(menu)menu->popup(3,gtk_get_current_event_time());
+	signal_waypoint_clicked_cellrenderer_(node,time,time_offset,2,side);
 }

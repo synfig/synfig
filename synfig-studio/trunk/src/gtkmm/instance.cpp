@@ -1065,15 +1065,23 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 
 		try
 		{
+			// try to find a waypoint at the current time - if we
+			// can't, we don't want the menu entry - an exception is thrown
 			WaypointList::iterator iter(value_node->find(canvas->get_time()));
+			std::set<synfig::Waypoint, std::less<UniqueID> > waypoint_set;
+			waypoint_set.insert(*iter);
+
 			parammenu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("Edit Waypoint"),
 				sigc::bind(
 					sigc::bind(
 						sigc::bind(
-							sigc::mem_fun(*find_canvas_view(canvas),&studio::CanvasView::on_waypoint_clicked),
+							sigc::bind(
+								sigc::mem_fun(*find_canvas_view(canvas),&studio::CanvasView::on_waypoint_clicked_canvasview),
+								synfig::Waypoint::SIDE_UNSPECIFIED
+							),
 							-1
 						),
-						*iter
+						waypoint_set
 					),
 					value_desc
 				)

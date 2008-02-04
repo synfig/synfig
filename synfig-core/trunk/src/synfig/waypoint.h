@@ -145,6 +145,13 @@ public:
 		}
 	};
 
+	enum Side
+	{
+		SIDE_UNSPECIFIED, SIDE_LEFT, SIDE_RIGHT,
+
+	    SIDE_END=2				//!< \internal
+	};
+
 	/*
  --	** -- D A T A -------------------------------------------------------------
 	*/

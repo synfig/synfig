@@ -1073,7 +1073,7 @@ CanvasView::on_current_time_widget_changed()
 //		// Connect Signals
 //		if(children_tree)children_tree->signal_edited_value().connect(sigc::mem_fun(*this, &studio::CanvasView::on_edited_value));
 //		if(children_tree)children_tree->signal_user_click().connect(sigc::mem_fun(*this, &studio::CanvasView::on_children_user_click));
-//		if(children_tree)children_tree->signal_waypoint_clicked().connect(sigc::mem_fun(*this, &studio::CanvasView::on_waypoint_clicked));
+//		if(children_tree)children_tree->signal_waypoint_clicked_childrentree().connect(sigc::mem_fun(*this, &studio::CanvasView::on_waypoint_clicked_canvasview));
 //		if(children_tree)children_tree->get_selection()->signal_changed().connect(SLOT_EVENT(EVENT_REFRESH_DUCKS));
 //
 //		return children_tree;
@@ -1155,7 +1155,7 @@ CanvasView::on_current_time_widget_changed()
 //		layer_tree->signal_edited_value().connect(sigc::mem_fun(*this, &studio::CanvasView::on_edited_value));
 //		layer_tree->signal_layer_user_click().connect(sigc::mem_fun(*this, &studio::CanvasView::on_layer_user_click));
 //		layer_tree->signal_param_user_click().connect(sigc::mem_fun(*this, &studio::CanvasView::on_children_user_click));
-//		layer_tree->signal_waypoint_clicked().connect(sigc::mem_fun(*this, &studio::CanvasView::on_waypoint_clicked));
+//		layer_tree->signal_waypoint_clicked_layertree().connect(sigc::mem_fun(*this, &studio::CanvasView::on_waypoint_clicked_canvasview));
 //		layer_tree->get_selection()->signal_changed().connect(SLOT_EVENT(EVENT_REFRESH_DUCKS));
 //
 //		layer_tree->hide();
@@ -3090,66 +3090,160 @@ CanvasView::set_sensitive_timebar(bool sensitive)
 }
 
 
-void
-CanvasView::on_waypoint_clicked(synfigapp::ValueDesc value_desc,synfig::Waypoint waypoint,int button)
+static void
+set_waypoint_model(std::set<synfig::Waypoint, std::less<UniqueID> > waypoints,
+				   Waypoint::Model model,
+				   etl::loose_handle<synfigapp::CanvasInterface> canvas_interface)
 {
-	waypoint_dialog.set_value_desc(value_desc);
-	waypoint_dialog.set_waypoint(waypoint);
+	// Create the action group
+	synfigapp::Action::PassiveGrouper group(canvas_interface->get_instance().get(),_("Change Waypoint Group"));
+
+	std::set<synfig::Waypoint, std::less<UniqueID> >::const_iterator iter;
+	for(iter=waypoints.begin();iter!=waypoints.end();++iter)
+	{
+		Waypoint waypoint(*iter);
+		waypoint.apply_model(model);
+
+		synfigapp::Action::Handle action(synfigapp::Action::create("waypoint_set"));
+
+		assert(action);
+
+		action->set_param("canvas",canvas_interface->get_canvas());
+		action->set_param("canvas_interface",canvas_interface);
+
+		action->set_param("waypoint",waypoint);
+		action->set_param("value_node",waypoint.get_parent_value_node());
+
+		if(!canvas_interface->get_instance()->perform_action(action))
+		{
+			group.cancel();
+			return;
+		}
+	}
+}
+
+static void
+duplicate_waypoints(std::set<synfig::Waypoint, std::less<UniqueID> > waypoints,
+					etl::loose_handle<synfigapp::CanvasInterface> canvas_interface)
+{
+	// Create the action group
+	synfigapp::Action::PassiveGrouper group(canvas_interface->get_instance().get(),_("Duplicate Waypoints"));
+
+	std::set<synfig::Waypoint, std::less<UniqueID> >::const_iterator iter;
+	for (iter = waypoints.begin(); iter != waypoints.end(); iter++)
+	{
+		Waypoint waypoint(*iter);
+		ValueNode::Handle value_node(iter->get_parent_value_node());
+		canvas_interface->waypoint_duplicate(value_node, waypoint);
+	}
+}
+
+static void
+remove_waypoints(std::set<synfig::Waypoint, std::less<UniqueID> > waypoints,
+				 etl::loose_handle<synfigapp::CanvasInterface> canvas_interface)
+{
+	// Create the action group
+	synfigapp::Action::PassiveGrouper group(canvas_interface->get_instance().get(),_("Remove Waypoints"));
+
+	std::set<synfig::Waypoint, std::less<UniqueID> >::const_iterator iter;
+	for (iter = waypoints.begin(); iter != waypoints.end(); iter++)
+	{
+		Waypoint waypoint(*iter);
+		ValueNode::Handle value_node(iter->get_parent_value_node());
+		canvas_interface->waypoint_remove(value_node, waypoint);
+	}
+}
+
+void
+CanvasView::on_waypoint_clicked_canvasview(synfigapp::ValueDesc value_desc,
+										   std::set<synfig::Waypoint, std::less<UniqueID> > waypoint_set,
+										   int button,
+										   synfig::Waypoint::Side side)
+{
+	int size = waypoint_set.size();
+	Waypoint waypoint(*(waypoint_set.begin()));
+	Time time(waypoint.get_time());
+
+	if (size == 1)
+	{
+		waypoint_dialog.set_value_desc(value_desc);
+		waypoint_dialog.set_waypoint(waypoint);
+	}
 
 	switch(button)
 	{
 	case -1:
-		waypoint_dialog.show();
+		if (size == 1)
+			waypoint_dialog.show();
 		break;
 	case 2:
-		{
-			Gtk::Menu* waypoint_menu(manage(new Gtk::Menu()));
-			waypoint_menu->signal_hide().connect(sigc::bind(sigc::ptr_fun(&delete_widget), waypoint_menu));
+	{
+		Gtk::Menu* waypoint_menu(manage(new Gtk::Menu()));
+		waypoint_menu->signal_hide().connect(sigc::bind(sigc::ptr_fun(&delete_widget), waypoint_menu));
 
-			waypoint_menu->items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::StockID("gtk-jump-to"),
-				sigc::bind(
-					sigc::mem_fun(
-						*canvas_interface(),
-						&synfigapp::CanvasInterface::set_time
-					),
-					waypoint.get_time()
-				)
-			));
+		Waypoint::Model model;
+		String side_string(String(" ") + (side==Waypoint::SIDE_LEFT ? _("In") : _("Out")));
 
-			waypoint_menu->items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::StockID(_("Edit Waypoint")),
-				sigc::mem_fun(
-					waypoint_dialog,
-					&Gtk::Widget::show
-				)
-			));
+		// ------------------------------------------------------------------------
+		if(side==Waypoint::SIDE_LEFT)	model.set_before(INTERPOLATION_TCB);
+		else							model.set_after(INTERPOLATION_TCB);
+		waypoint_menu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("_TCB") + side_string,
+			sigc::bind(sigc::ptr_fun(set_waypoint_model), waypoint_set, model, canvas_interface())));
 
-			waypoint_menu->items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::StockID("synfig-duplicate"),
-				sigc::bind(
-					sigc::bind(
-						sigc::mem_fun(
-							*canvas_interface(),
-							&synfigapp::CanvasInterface::waypoint_duplicate
-						),
-						waypoint
-					),
-					value_desc
-				)
-			));
-			waypoint_menu->items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::StockID("gtk-delete"),
-				sigc::bind(
-					sigc::bind(
-						sigc::mem_fun(
-							*canvas_interface(),
-							&synfigapp::CanvasInterface::waypoint_remove
-						),
-						waypoint
-					),
-					value_desc
-				)
-			));
-			waypoint_menu->popup(button+1,gtk_get_current_event_time());
-		}
-		break;
+		if(side==Waypoint::SIDE_LEFT)	model.set_before(INTERPOLATION_LINEAR);
+		else							model.set_after(INTERPOLATION_LINEAR);
+		waypoint_menu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("_Linear") + side_string,
+			sigc::bind(sigc::ptr_fun(set_waypoint_model), waypoint_set, model, canvas_interface())));
+
+		if(side==Waypoint::SIDE_LEFT)	model.set_before(INTERPOLATION_HALT);
+		else							model.set_after(INTERPOLATION_HALT);
+		waypoint_menu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("_Ease") + side_string,
+			sigc::bind(sigc::ptr_fun(set_waypoint_model), waypoint_set, model, canvas_interface())));
+
+		if(side==Waypoint::SIDE_LEFT)	model.set_before(INTERPOLATION_CONSTANT);
+		else							model.set_after(INTERPOLATION_CONSTANT);
+		waypoint_menu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("_Constant") + side_string,
+			sigc::bind(sigc::ptr_fun(set_waypoint_model), waypoint_set, model, canvas_interface())));
+
+		// ------------------------------------------------------------------------
+		waypoint_menu->items().push_back(Gtk::Menu_Helpers::SeparatorElem());
+
+		model.set_after(INTERPOLATION_TCB); model.set_before(INTERPOLATION_TCB);
+		waypoint_menu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("TC_B Both"),
+			sigc::bind(sigc::ptr_fun(set_waypoint_model), waypoint_set, model, canvas_interface())));
+
+		model.set_after(INTERPOLATION_LINEAR); model.set_before(INTERPOLATION_LINEAR);
+		waypoint_menu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Li_near Both"),
+			sigc::bind(sigc::ptr_fun(set_waypoint_model), waypoint_set, model, canvas_interface())));
+
+		model.set_after(INTERPOLATION_HALT); model.set_before(INTERPOLATION_HALT);
+		waypoint_menu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Ea_se Both"),
+			sigc::bind(sigc::ptr_fun(set_waypoint_model), waypoint_set, model, canvas_interface())));
+
+		model.set_after(INTERPOLATION_CONSTANT); model.set_before(INTERPOLATION_CONSTANT);
+		waypoint_menu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("C_onstant Both"),
+			sigc::bind(sigc::ptr_fun(set_waypoint_model), waypoint_set, model, canvas_interface())));
+
+		// ------------------------------------------------------------------------
+		waypoint_menu->items().push_back(Gtk::Menu_Helpers::SeparatorElem());
+
+		waypoint_menu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("_Jump To"),
+			sigc::bind(sigc::mem_fun(*canvas_interface(), &synfigapp::CanvasInterface::set_time), time)));
+
+		waypoint_menu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("_Duplicate"),
+			 sigc::bind(sigc::ptr_fun(duplicate_waypoints), waypoint_set, canvas_interface())));
+
+		waypoint_menu->items().push_back(Gtk::Menu_Helpers::MenuElem((size == 1) ? _("_Remove") : strprintf(_("_Remove %d Waypoints"), size),
+			 sigc::bind(sigc::ptr_fun(remove_waypoints), waypoint_set, canvas_interface())));
+
+		if (size == 1)
+			waypoint_menu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("_Properties"),
+				sigc::mem_fun(waypoint_dialog,&Gtk::Widget::show)));
+
+		waypoint_menu->popup(button+1,gtk_get_current_event_time());
+	}
+	break;
+
 	default:
 		break;
 	}
@@ -3658,13 +3752,13 @@ CanvasView::set_ext_widget(const synfig::String& x, Gtk::Widget* y)
 		layer_tree->get_selection()->signal_changed().connect(SLOT_EVENT(EVENT_REFRESH_DUCKS));
 		layer_tree->signal_layer_user_click().connect(sigc::mem_fun(*this, &studio::CanvasView::on_layer_user_click));
 		layer_tree->signal_param_user_click().connect(sigc::mem_fun(*this, &studio::CanvasView::on_children_user_click));
-		layer_tree->signal_waypoint_clicked().connect(sigc::mem_fun(*this, &studio::CanvasView::on_waypoint_clicked));
+		layer_tree->signal_waypoint_clicked_layertree().connect(sigc::mem_fun(*this, &studio::CanvasView::on_waypoint_clicked_canvasview));
 	}
 	if(x=="children")
 	{
 		children_tree=dynamic_cast<ChildrenTree*>(y);
 		if(children_tree)children_tree->signal_user_click().connect(sigc::mem_fun(*this, &studio::CanvasView::on_children_user_click));
-		if(children_tree)children_tree->signal_waypoint_clicked().connect(sigc::mem_fun(*this, &studio::CanvasView::on_waypoint_clicked));
+		if(children_tree)children_tree->signal_waypoint_clicked_childrentree().connect(sigc::mem_fun(*this, &studio::CanvasView::on_waypoint_clicked_canvasview));
 		if(children_tree)children_tree->get_selection()->signal_changed().connect(SLOT_EVENT(EVENT_REFRESH_DUCKS));
 	}
 	if(x=="keyframes")

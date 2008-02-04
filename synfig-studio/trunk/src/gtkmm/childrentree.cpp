@@ -141,7 +141,7 @@ ChildrenTree::ChildrenTree()
 		// Set up the value-node cell-renderer
 		cellrenderer_time_track=ChildrenTreeStore::add_cell_renderer_value_node(column);
 		cellrenderer_time_track->property_mode()=Gtk::CELL_RENDERER_MODE_ACTIVATABLE;
-		cellrenderer_time_track->signal_waypoint_clicked().connect(sigc::mem_fun(*this, &studio::ChildrenTree::on_waypoint_clicked) );
+		cellrenderer_time_track->signal_waypoint_clicked_cellrenderer().connect(sigc::mem_fun(*this, &studio::ChildrenTree::on_waypoint_clicked_childrentree) );
 		column->add_attribute(cellrenderer_time_track->property_value_desc(), model.value_desc);
 		column->add_attribute(cellrenderer_time_track->property_canvas(), model.canvas);
 
@@ -278,13 +278,16 @@ ChildrenTree::on_edited_value(const Glib::ustring&path_string,synfig::ValueBase 
 }
 
 void
-ChildrenTree::on_waypoint_clicked(const Glib::ustring &path_string, synfig::Waypoint waypoint,int button)
+ChildrenTree::on_waypoint_clicked_childrentree(const etl::handle<synfig::Node>& node __attribute__ ((unused)),
+											   const synfig::Time& time __attribute__ ((unused)),
+											   const synfig::Time& time_offset __attribute__ ((unused)),
+											   int button __attribute__ ((unused)),
+											   synfig::Waypoint::Side side __attribute__ ((unused)))
 {
-	Gtk::TreePath path(path_string);
+	//! \todo writeme
 
-	const Gtk::TreeRow row = *(tree_view.get_model()->get_iter(path));
-
-	signal_waypoint_clicked()(static_cast<synfigapp::ValueDesc>(row[model.value_desc]),waypoint,button);
+	// std::set<synfig::Waypoint, std::less<UniqueID> > waypoint_set;
+	// signal_waypoint_clicked_childrentree()(waypoint_set,button,side);
 }
 
 bool

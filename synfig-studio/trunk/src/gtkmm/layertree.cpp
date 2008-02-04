@@ -360,7 +360,7 @@ LayerTree::create_param_tree()
 		// Set up the value-node cell-renderer
 		cellrenderer_time_track=LayerParamTreeStore::add_cell_renderer_value_node(column);
 		cellrenderer_time_track->property_mode()=Gtk::CELL_RENDERER_MODE_ACTIVATABLE;
-		cellrenderer_time_track->signal_waypoint_clicked().connect(sigc::mem_fun(*this, &studio::LayerTree::on_waypoint_clicked) );
+		cellrenderer_time_track->signal_waypoint_clicked_cellrenderer().connect(sigc::mem_fun(*this, &studio::LayerTree::on_waypoint_clicked_layertree) );
 		cellrenderer_time_track->signal_waypoint_changed().connect(sigc::mem_fun(*this, &studio::LayerTree::on_waypoint_changed) );
 		column->add_attribute(cellrenderer_time_track->property_value_desc(), param_model.value_desc);
 		column->add_attribute(cellrenderer_time_track->property_canvas(), param_model.canvas);
@@ -722,15 +722,17 @@ LayerTree::on_layer_toggle(const Glib::ustring& path_string)
 }
 
 void
-LayerTree::on_waypoint_clicked(const Glib::ustring &path_string, synfig::Waypoint waypoint,int button)
+LayerTree::on_waypoint_clicked_layertree(const etl::handle<synfig::Node>& node __attribute__ ((unused)),
+										 const synfig::Time& time __attribute__ ((unused)),
+										 const synfig::Time& time_offset __attribute__ ((unused)),
+										 int button __attribute__ ((unused)),
+										 synfig::Waypoint::Side side __attribute__ ((unused)))
 {
-	Gtk::TreePath path(path_string);
+	//! \todo writeme
 
-	const Gtk::TreeRow row = *(get_param_tree_view().get_model()->get_iter(path));
-	if(!row)
-		return;
-
-	signal_waypoint_clicked()(static_cast<synfigapp::ValueDesc>(row[param_model.value_desc]),waypoint,button);
+	// synfigapp::ValueDesc value_desc;
+	// std::set<synfig::Waypoint, std::less<UniqueID> > waypoint_set;
+	// signal_waypoint_clicked_layertree()(value_desc,waypoint_set,button,side);
 }
 
 bool

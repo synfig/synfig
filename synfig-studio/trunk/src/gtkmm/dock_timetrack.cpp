@@ -45,6 +45,7 @@
 #include "widget_timeslider.h"
 #include "layerparamtreestore.h"
 #include "general.h"
+#include <synfig/timepointcollect.h>
 
 #endif
 
@@ -68,7 +69,7 @@ class TimeTrackView : public Gtk::TreeView
 	Gtk::TreeView *mimic_tree_view;
 public:
 
-	sigc::signal<void,synfigapp::ValueDesc,synfig::Waypoint,int> signal_waypoint_clicked;
+	sigc::signal<void,synfigapp::ValueDesc,std::set<synfig::Waypoint, std::less<UniqueID> >,int,synfig::Waypoint::Side> signal_waypoint_clicked_timetrackview;
 
 	LayerParamTreeStore::Model model;
 
@@ -88,7 +89,7 @@ public:
 			// Set up the value-node cell-renderer
 			cellrenderer_time_track=LayerParamTreeStore::add_cell_renderer_value_node(column);
 			cellrenderer_time_track->property_mode()=Gtk::CELL_RENDERER_MODE_ACTIVATABLE;
-			cellrenderer_time_track->signal_waypoint_clicked().connect(sigc::mem_fun(*this, &TimeTrackView::on_waypoint_clicked) );
+			cellrenderer_time_track->signal_waypoint_clicked_cellrenderer().connect(sigc::mem_fun(*this, &TimeTrackView::on_waypoint_clicked_timetrackview) );
 			cellrenderer_time_track->signal_waypoint_changed().connect(sigc::mem_fun(*this, &TimeTrackView::on_waypoint_changed) );
 			column->add_attribute(cellrenderer_time_track->property_value_desc(), model.value_desc);
 			column->add_attribute(cellrenderer_time_track->property_canvas(), model.canvas);
@@ -365,32 +366,43 @@ public:
 	}
 
 	void
-	on_waypoint_clicked(const Glib::ustring &/*path_string*/, synfig::Waypoint waypoint,int button)
+	on_waypoint_clicked_timetrackview(const etl::handle<synfig::Node>& node,
+									  const synfig::Time& time,
+									  const synfig::Time& time_offset __attribute__ ((unused)),
+									  int button,
+									  synfig::Waypoint::Side side)
 	{
-/*
-		Gtk::TreePath path(path_string);
+		std::set<synfig::Waypoint, std::less<UniqueID> > waypoint_set;
+		int n=synfig::waypoint_collect(waypoint_set,time,node);
 
-		const Gtk::TreeRow row = *(get_model()->get_iter(path));
-		if(!row)
-			return;
-*/
-
-		ValueNode::Handle value_node(waypoint.get_parent_value_node());
-		assert(value_node);
-
-		Gtk::TreeRow row;
-		if(!param_tree_store_->find_first_value_node(value_node, row))
+		synfigapp::ValueDesc value_desc;
+		bool first = true;
+		if(!waypoint_set.empty())
 		{
-			synfig::error(__FILE__":%d: Unable to find the valuenode",__LINE__);
-			return;
+			for (std::set<synfig::Waypoint, std::less<UniqueID> >::iterator iter = waypoint_set.begin(); iter != waypoint_set.end(); iter++)
+			{
+				ValueNode::Handle value_node(iter->get_parent_value_node());
+				assert(value_node);
+
+				Gtk::TreeRow row;
+				if(!param_tree_store_->find_first_value_node(value_node, row))
+				{
+					synfig::error(__FILE__":%d: Unable to find the valuenode",__LINE__);
+					return;
+				}
+
+				if(!row)
+					return;
+
+				if (first)
+				{
+					value_desc = static_cast<synfigapp::ValueDesc>(row[model.value_desc]);
+					first = false;
+				}
+			}
+
+			signal_waypoint_clicked_timetrackview(value_desc,waypoint_set,button,side);
 		}
-
-		if(!row)
-			return;
-
-		synfigapp::ValueDesc value_desc(static_cast<synfigapp::ValueDesc>(row[model.value_desc]));
-
-		signal_waypoint_clicked(value_desc,waypoint,button);
 	}
 };
 
@@ -442,7 +454,7 @@ Dock_Timetrack::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view
 	Gtk::TreeView* param_tree_view(dynamic_cast<Gtk::TreeView*>(canvas_view->get_ext_widget("params")));
 	tree_view->mimic(param_tree_view);
 
-	tree_view->signal_waypoint_clicked.connect(sigc::mem_fun(*canvas_view, &studio::CanvasView::on_waypoint_clicked));
+	tree_view->signal_waypoint_clicked_timetrackview.connect(sigc::mem_fun(*canvas_view, &studio::CanvasView::on_waypoint_clicked_canvasview));
 
 
 	canvas_view->time_adjustment().signal_value_changed().connect(sigc::mem_fun(*tree_view,&Gtk::TreeView::queue_draw));

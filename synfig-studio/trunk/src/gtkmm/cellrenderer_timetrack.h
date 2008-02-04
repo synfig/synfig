@@ -68,12 +68,6 @@
 namespace studio {
 class Widget_ValueBase;
 
-enum Side
-{
-	SIDE_LEFT,
-	SIDE_RIGHT
-};
-
 /*! \class CellRenderer_TimeTrack
 **	\brief A cell renderer that displays the waypoints for Animated ValueNodes.
 */
@@ -90,7 +84,7 @@ private:
 	Gtk::Adjustment adjustment_;
 
 	//! Signal for when the user clicks on a waypoint
-	sigc::signal<void, const Glib::ustring&,synfig::Waypoint, int> signal_waypoint_clicked_;
+	sigc::signal<void, const etl::handle<synfig::Node>&, const synfig::Time&, const synfig::Time&, int, synfig::Waypoint::Side> signal_waypoint_clicked_cellrenderer_;
 
 	sigc::signal<void, synfig::Waypoint, synfig::ValueNode::Handle> signal_waypoint_changed_;
 
@@ -158,8 +152,8 @@ public:
 
 public:
 
-	sigc::signal<void, const Glib::ustring&,synfig::Waypoint,int> &signal_waypoint_clicked()
-	{return signal_waypoint_clicked_; }
+	sigc::signal<void, const etl::handle<synfig::Node>&, const synfig::Time&, const synfig::Time&, int, synfig::Waypoint::Side> &signal_waypoint_clicked_cellrenderer()
+	{return signal_waypoint_clicked_cellrenderer_; }
 
 	sigc::signal<void, synfig::Waypoint, synfig::ValueNode::Handle> &signal_waypoint_changed()
 	{return signal_waypoint_changed_; }
@@ -173,7 +167,7 @@ public:
 	CellRenderer_TimeTrack();
     ~CellRenderer_TimeTrack();
 
-	void show_timepoint_menu(const etl::handle<synfig::Node>& node, const synfig::Time& time, const synfig::Time& time_offset, Side side=SIDE_RIGHT);
+	void show_timepoint_menu(const etl::handle<synfig::Node>&, const synfig::Time&, const synfig::Time&, synfig::Waypoint::Side side=synfig::Waypoint::SIDE_RIGHT);
 
 	void set_adjustment(Gtk::Adjustment &x);
 	Gtk::Adjustment *get_adjustment();
