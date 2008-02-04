@@ -1,3 +1,5 @@
+mod_gif
+mod_magickpp
 mod_mng
 lyr_std
 mod_gradient
@@ -12,9 +14,7 @@ mod_bmp
 mod_dv
 mod_png
 mod_ppm
-mod_gif
 mod_openexr
 mod_jpeg
 mod_libavcodec
 mod_yuv420p
-mod_magickpp
