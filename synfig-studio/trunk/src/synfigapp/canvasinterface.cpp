@@ -612,6 +612,13 @@ CanvasInterface::import(const synfig::String &filename, bool /*copy*/)
 void
 CanvasInterface::waypoint_duplicate(synfigapp::ValueDesc value_desc,synfig::Waypoint waypoint)
 {
+	ValueNode::Handle value_node();
+	waypoint_duplicate(value_desc.get_value_node(), waypoint);
+}
+
+void
+CanvasInterface::waypoint_duplicate(ValueNode::Handle value_node,synfig::Waypoint waypoint)
+{
 	Action::Handle 	action(Action::create("waypoint_set_smart"));
 
 	assert(action);
@@ -620,8 +627,6 @@ CanvasInterface::waypoint_duplicate(synfigapp::ValueDesc value_desc,synfig::Wayp
 
 	waypoint.make_unique();
 	waypoint.set_time(get_time());
-
-	ValueNode::Handle value_node(value_desc.get_value_node());
 
 	action->set_param("canvas",get_canvas());
 	action->set_param("canvas_interface",etl::loose_handle<CanvasInterface>(this));
@@ -636,13 +641,18 @@ CanvasInterface::waypoint_duplicate(synfigapp::ValueDesc value_desc,synfig::Wayp
 void
 CanvasInterface::waypoint_remove(synfigapp::ValueDesc value_desc,synfig::Waypoint waypoint)
 {
+	ValueNode::Handle value_node();
+	waypoint_remove(value_desc.get_value_node(), waypoint);
+}
+
+void
+CanvasInterface::waypoint_remove(ValueNode::Handle value_node,synfig::Waypoint waypoint)
+{
 	Action::Handle 	action(Action::create("waypoint_remove"));
 
 	assert(action);
 	if(!action)
 		return;
-
-	ValueNode::Handle value_node(value_desc.get_value_node());
 
 	action->set_param("canvas",get_canvas());
 	action->set_param("canvas_interface",etl::loose_handle<CanvasInterface>(this));
