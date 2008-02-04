@@ -57,6 +57,8 @@ private:
 	std::vector<synfig::BLinePoint> bline;
 	bool bline_loop;
 
+	Point offset;
+
 	synfig::Gradient gradient;
 
 	struct Particle
