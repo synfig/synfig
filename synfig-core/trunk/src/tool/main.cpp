@@ -960,7 +960,10 @@ int main(int argc, char *argv[])
 				string ext = filename_extension(job_list.front().outfilename);
 				if (ext.length()) ext = ext.substr(1);
 				if(Target::ext_book().count(ext))
+				{
 					target_name=Target::ext_book()[ext];
+					info("target name not specified - using %s", target_name.c_str());
+				}
 				else
 				{
 					string lower_ext(ext);
@@ -969,7 +972,10 @@ int main(int argc, char *argv[])
 						lower_ext[i] = tolower(ext[i]);
 
 					if(Target::ext_book().count(lower_ext))
+					{
 						target_name=Target::ext_book()[lower_ext];
+						info("target name not specified - using %s", target_name.c_str());
+					}
 					else
 						target_name=ext;
 				}
