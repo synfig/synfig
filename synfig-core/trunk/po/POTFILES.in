@@ -151,8 +151,6 @@ src/modules/mod_png/trgt_png.h
 src/modules/mod_ppm/main.cpp
 src/modules/mod_ppm/mptr_ppm.cpp
 src/modules/mod_ppm/mptr_ppm.h
-src/modules/mod_ppm/trgt_mpg.cpp
-src/modules/mod_ppm/trgt_mpg.h
 src/modules/mod_ppm/trgt_ppm.cpp
 src/modules/mod_ppm/trgt_ppm.h
 src/modules/mod_yuv420p/main.cpp
