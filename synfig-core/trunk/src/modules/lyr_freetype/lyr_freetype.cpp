@@ -39,8 +39,6 @@
 #endif
 
 #include "lyr_freetype.h"
-
-
 #endif
 
 using namespace std;
@@ -54,7 +52,6 @@ using namespace synfig;
 #define PANGO_STYLE_NORMAL (0)
 #define PANGO_STYLE_OBLIQUE (1)
 #define PANGO_STYLE_ITALIC (2)
-
 
 #define WEIGHT_NORMAL (400)
 #define WEIGHT_BOLD (700)
@@ -230,7 +227,6 @@ Layer_Freetype::new_font_(const synfig::String &font_fam_, int style, int weight
 			return true;
 	}
 
-
 	if(font_fam=="sans serif" || font_fam=="luxi sans")
 	{
 		{
@@ -241,7 +237,6 @@ Layer_Freetype::new_font_(const synfig::String &font_fam_, int style, int weight
 				luxi+='r';
 			if(style==PANGO_STYLE_ITALIC||style==PANGO_STYLE_OBLIQUE)
 				luxi+='i';
-
 
 			if(new_face(luxi))
 				return true;
@@ -372,7 +367,6 @@ Layer_Freetype::new_face(const String &newfont)
 			synfig::info(__FILE__":%d: \"%s\" -- ft_error=%d",__LINE__,newfont.c_str(),error);
 			// Unable to generate fs_spec
 		}
-
 	}
 #endif
 
@@ -597,10 +591,15 @@ void
 Layer_Freetype::sync()
 {
 	needs_sync_=false;
+}
 
-
-
-
+inline Color
+Layer_Freetype::color_func(const Point &point_, int quality, float supersample)const
+{
+	if (invert)
+		return color;
+	else
+		return Color::alpha();
 }
 
 Color
@@ -609,9 +608,15 @@ Layer_Freetype::get_color(Context context, const synfig::Point &pos)const
 	if(needs_sync_)
 		const_cast<Layer_Freetype*>(this)->sync();
 
+	const Color color(color_func(pos,0));
+
 	if(!face)
 		return context.get_color(pos);
-	return context.get_color(pos);
+
+	if(get_amount()==1.0 && get_blend_method()==Color::BLEND_STRAIGHT)
+		return color;
+	else
+		return Color::blend(color,context.get_color(pos),get_amount(),get_blend_method());
 }
 
 bool
@@ -621,9 +626,6 @@ Layer_Freetype::accelerated_render(Context context,Surface *surface,int quality,
 
 	if(needs_sync_)
 		const_cast<Layer_Freetype*>(this)->sync();
-
-
-
 
 	int error;
 	Vector size(Layer_Freetype::size*2);
@@ -806,7 +808,6 @@ Layer_Freetype::accelerated_render(Context context,Surface *surface,int quality,
 
 	}
 
-
 	//float	string_height;
 	//string_height=(((lines.size()-1)*face->size->metrics.height+lines.back().actual_height()));
 
@@ -847,62 +848,61 @@ Layer_Freetype::accelerated_render(Context context,Surface *surface,int quality,
 	}
 
 	{
-	std::list<TextLine>::iterator iter;
-	int curr_line;
-	for(curr_line=0,iter=lines.begin();iter!=lines.end();++iter,curr_line++)
-	{
-		bx=round_to_int((pos[0]-renddesc.get_tl()[0])*pw*CHAR_RESOLUTION-orient[0]*iter->width);
-		// I've no idea why 1.5, but it kind of works.  Otherwise,
-		// rendering to .bmp (which renders from bottom to top, due to
-		// the .bmp format describing the image from bottom to top,
-		// renders text in the wrong place.
-		by=round_to_int((pos[1]-renddesc.get_tl()[1])*ph*CHAR_RESOLUTION +
-						(1.0-orient[1])*string_height-line_height*curr_line +
-						((ph>0) ? line_height/1.5 : 0));
-
-		//by=round_to_int(vcompress*((pos[1]-renddesc.get_tl()[1])*ph*64+(1.0-orient[1])*string_height-face->size->metrics.height*curr_line));
-		//synfig::info("curr_line=%d, bx=%d, by=%d",curr_line,bx,by);
-
-		std::vector<Glyph>::iterator iter2;
-		for(iter2=iter->glyph_table.begin();iter2!=iter->glyph_table.end();++iter2)
+		std::list<TextLine>::iterator iter;
+		int curr_line;
+		for(curr_line=0,iter=lines.begin();iter!=lines.end();++iter,curr_line++)
 		{
-			FT_Glyph  image(iter2->glyph);
-			FT_Vector pen;
-			FT_BitmapGlyph  bit;
+			bx=round_to_int((pos[0]-renddesc.get_tl()[0])*pw*CHAR_RESOLUTION-orient[0]*iter->width);
+			// I've no idea why 1.5, but it kind of works.  Otherwise,
+			// rendering to .bmp (which renders from bottom to top, due to
+			// the .bmp format describing the image from bottom to top,
+			// renders text in the wrong place.
+			by=round_to_int((pos[1]-renddesc.get_tl()[1])*ph*CHAR_RESOLUTION +
+							(1.0-orient[1])*string_height-line_height*curr_line +
+							((ph>0) ? line_height/1.5 : 0));
 
-			pen.x = bx + iter2->pos.x;
-			pen.y = by + iter2->pos.y;
+			//by=round_to_int(vcompress*((pos[1]-renddesc.get_tl()[1])*ph*64+(1.0-orient[1])*string_height-face->size->metrics.height*curr_line));
+			//synfig::info("curr_line=%d, bx=%d, by=%d",curr_line,bx,by);
 
-			//synfig::info("GLYPH: line %d, pen.x=%d, pen,y=%d",curr_line,(pen.x+32)>>6,(pen.y+32)>>6);
+			std::vector<Glyph>::iterator iter2;
+			for(iter2=iter->glyph_table.begin();iter2!=iter->glyph_table.end();++iter2)
+			{
+				FT_Glyph  image(iter2->glyph);
+				FT_Vector pen;
+				FT_BitmapGlyph  bit;
 
-			error = FT_Glyph_To_Bitmap( &image, ft_render_mode_normal,0/*&pen*/, 1 );
-			if(error) { FT_Done_Glyph( image ); continue; }
+				pen.x = bx + iter2->pos.x;
+				pen.y = by + iter2->pos.y;
 
-			bit = (FT_BitmapGlyph)image;
+				//synfig::info("GLYPH: line %d, pen.x=%d, pen,y=%d",curr_line,(pen.x+32)>>6,(pen.y+32)>>6);
 
-			for(v=0;v<bit->bitmap.rows;v++)
-				for(u=0;u<bit->bitmap.width;u++)
-				{
-					int x=u+((pen.x+32)>>6)+ bit->left;
-					int y=((pen.y+32)>>6) + (bit->top - v) * ((ph<0) ? -1 : 1);
-					if(	y>=0 &&
-						x>=0 &&
-						y<surface->get_h() &&
-						x<surface->get_w())
+				error = FT_Glyph_To_Bitmap( &image, ft_render_mode_normal,0/*&pen*/, 1 );
+				if(error) { FT_Done_Glyph( image ); continue; }
+
+				bit = (FT_BitmapGlyph)image;
+
+				for(v=0;v<bit->bitmap.rows;v++)
+					for(u=0;u<bit->bitmap.width;u++)
 					{
-						float myamount=(float)bit->bitmap.buffer[v*bit->bitmap.pitch+u]/255.0f;
-						if(invert)
-							myamount=1.0f-myamount;
-						(*surface)[y][x]=Color::blend(color,(*src_surface)[y][x],myamount*get_amount(),get_blend_method());
+						int x=u+((pen.x+32)>>6)+ bit->left;
+						int y=((pen.y+32)>>6) + (bit->top - v) * ((ph<0) ? -1 : 1);
+						if(	y>=0 &&
+							x>=0 &&
+							y<surface->get_h() &&
+							x<surface->get_w())
+						{
+							float myamount=(float)bit->bitmap.buffer[v*bit->bitmap.pitch+u]/255.0f;
+							if(invert)
+								myamount=1.0f-myamount;
+							(*surface)[y][x]=Color::blend(color,(*src_surface)[y][x],myamount*get_amount(),get_blend_method());
+						}
 					}
-				}
 
-			FT_Done_Glyph( image );
+				FT_Done_Glyph( image );
+			}
+			//iter->clear_and_free();
 		}
-		//iter->clear_and_free();
 	}
-	}
-
 
 	return true;
 }
