@@ -68,7 +68,7 @@ ValueDesc::get_description(bool show_exported_name)const
 		if (parent_is_linkable_value_node())
 		{
 			synfig::LinkableValueNode::Handle value_node(synfig::LinkableValueNode::Handle::cast_reinterpret(get_parent_value_node()));
-			description = strprintf("%s %s", _("Value Node "),
+			description = strprintf("%s %s", _("Value Node"),
 									value_node->get_description(get_index(), show_exported_name).c_str());
 		}
 		else
