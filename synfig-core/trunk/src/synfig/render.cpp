@@ -212,7 +212,7 @@ synfig::render(
 
 	assert(target);
 
-	// If we do not have a a target then bail
+	// If we do not have a target then bail
 	if(!target)
 		return false;
 
@@ -378,7 +378,7 @@ synfig::render_threaded(
 
 	assert(target);
 
-	// If we do not have a a target then bail
+	// If we do not have a target then bail
 	if(!target)
 		return false;
 
