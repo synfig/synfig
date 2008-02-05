@@ -143,7 +143,7 @@ public:
 		if(parent_is_layer_param() && layer->dynamic_param_list().count(name))
 			return layer->dynamic_param_list().find(name)->second;
 		if(parent_is_linkable_value_node())
-			return synfig::LinkableValueNode::Handle::cast_reinterpret(parent_value_node)->get_link(index);
+			return (synfig::LinkableValueNode::Handle::cast_reinterpret(parent_value_node))->get_link(index);
 //			return reinterpret_cast<synfig::LinkableValueNode*>(parent_value_node.get())->get_link(index);
 		return 0;
 	}
@@ -152,7 +152,7 @@ public:
 	get_value(synfig::Time time=0)const
 	{
 		// if the value is constant, return that constant value (at *any* time, it doesn't matter which)
-		if(parent_is_value_node_const() && parent_value_node)
+		if(parent_is_value_node_const())
 			return (*parent_value_node)(0);
 		if(is_value_node() && get_value_node())
 			return (*get_value_node())(time);
