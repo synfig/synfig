@@ -582,11 +582,22 @@ LinkableValueNode::get_description(int index, bool show_exported_name)const
 {
 	String description;
 
-	if (show_exported_name && !is_exported())
-		show_exported_name = false;
-
-	if (index != -1)
+	if (index == -1)
+	{
+		if (show_exported_name && is_exported())
+			description += strprintf(" (%s)", get_id().c_str());
+	}
+	else
+	{
 		description = String(":") + link_local_name(index);
+
+		if (show_exported_name)
+		{
+			ValueNode::LooseHandle link(get_link(index));
+			if (link->is_exported())
+				description += strprintf(" (%s)", link->get_id().c_str());
+		}
+	}
 
 	const synfig::Node* node = this;
 	LinkableValueNode::ConstHandle parent_linkable_vn = 0;
@@ -626,9 +637,6 @@ LinkableValueNode::get_description(int index, bool show_exported_name)const
 								param.c_str(),
 								description.c_str());
 	}
-
-	if (show_exported_name)
-		description += strprintf(" (%s)", get_id().c_str());
 
 	return description;
 }
