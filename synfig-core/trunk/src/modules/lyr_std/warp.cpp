@@ -614,16 +614,12 @@ Warp::accelerated_render(Context context,Surface *surface,int quality, const Ren
 	Point min_point(bounding_rect.get_min());
 	Point max_point(bounding_rect.get_max());
 
-	// we're going to divide by the different of these pairs soon;
+	// we're going to divide by the difference of these pairs soon;
 	// if they're the same, we'll be dividing by zero, and we don't
 	// want to do that!
 	// \todo what should we do in this case?
-	if (min_point[0] == max_point[0] || min_point[1] == max_point[1])
-	{
-		surface->set_wh(renddesc.get_w(),renddesc.get_h());
-		surface->clear();
-		return true;
-	}
+	if (min_point[0] == max_point[0]) max_point[0] += 0.001;
+	if (min_point[1] == max_point[1]) max_point[1] += 0.001;
 
 	if(tl[0]>br[0])
 	{
