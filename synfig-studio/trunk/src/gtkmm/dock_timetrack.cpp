@@ -373,36 +373,22 @@ public:
 									  synfig::Waypoint::Side side)
 	{
 		std::set<synfig::Waypoint, std::less<UniqueID> > waypoint_set;
-		int n=synfig::waypoint_collect(waypoint_set,time,node);
+		synfig::waypoint_collect(waypoint_set,time,node);
 
 		synfigapp::ValueDesc value_desc;
-		bool first = true;
-		if(!waypoint_set.empty())
+
+		if (waypoint_set.size() == 1)
 		{
-			for (std::set<synfig::Waypoint, std::less<UniqueID> >::iterator iter = waypoint_set.begin(); iter != waypoint_set.end(); iter++)
-			{
-				ValueNode::Handle value_node(iter->get_parent_value_node());
-				assert(value_node);
+			ValueNode::Handle value_node(waypoint_set.begin()->get_parent_value_node());
+			assert(value_node);
 
-				Gtk::TreeRow row;
-				if(!param_tree_store_->find_first_value_node(value_node, row))
-				{
-					synfig::error(__FILE__":%d: Unable to find the valuenode",__LINE__);
-					return;
-				}
-
-				if(!row)
-					return;
-
-				if (first)
-				{
-					value_desc = static_cast<synfigapp::ValueDesc>(row[model.value_desc]);
-					first = false;
-				}
-			}
-
-			signal_waypoint_clicked_timetrackview(value_desc,waypoint_set,button,side);
+			Gtk::TreeRow row;
+			if (param_tree_store_->find_first_value_node(value_node, row) && row)
+				value_desc = static_cast<synfigapp::ValueDesc>(row[model.value_desc]);
 		}
+
+		if (!waypoint_set.empty())
+			signal_waypoint_clicked_timetrackview(value_desc,waypoint_set,button,side);
 	}
 };
 
