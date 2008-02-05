@@ -50,14 +50,14 @@ using namespace synfigapp;
 String
 ValueDesc::get_description(bool show_exported_name)const
 {
-	String description(_("ValueDesc"));
+	String description;
 
 	if (show_exported_name && !is_exported())
 		show_exported_name = false;
 
 	if (parent_is_layer_param())
 	{
-		description = strprintf("(%s):%s", // (layer):parameter
+		description = strprintf("%s (%s):%s", _("Layer Parameter"),
 								get_layer()->get_non_empty_description().c_str(),
 								get_layer()->get_param_local_name(get_param_name()).c_str());
 		if (show_exported_name)
@@ -65,11 +65,26 @@ ValueDesc::get_description(bool show_exported_name)const
 	}
 	else if (parent_is_value_node())
 	{
-		synfig::LinkableValueNode::Handle value_node(synfig::LinkableValueNode::Handle::cast_reinterpret(get_parent_value_node()));
-		return value_node->get_description(get_index(), show_exported_name);
+		if (parent_is_linkable_value_node())
+		{
+			synfig::LinkableValueNode::Handle value_node(synfig::LinkableValueNode::Handle::cast_reinterpret(get_parent_value_node()));
+			description = strprintf("%s %s", _("Value Node "),
+									value_node->get_description(get_index(), show_exported_name).c_str());
+		}
+		else
+		{
+			warning("%s:%d didn't expect to get here", __FILE__, __LINE__);
+			assert(0);
+		}
 	}
-	else if (show_exported_name)
-		description = strprintf(_("ValueNode (%s)"), get_value_node()->get_id().c_str());
+	else if (parent_is_canvas())
+		description = strprintf("%s (%s)", _("Exported ValueNode"),
+								get_value_node()->get_id().c_str());
+	else
+	{
+		error("Unknown ValueDesc type");
+		assert(0);
+	}
 
 	return description;
 }
