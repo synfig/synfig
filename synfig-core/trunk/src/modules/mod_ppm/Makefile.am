@@ -1,15 +1,14 @@
 # $Id$
 
 
-EXTRADIST=trgt_mpg.cpp trgt_mpg.h
 MAINTAINERCLEANFILES=Makefile.in
 INCLUDES = -I$(top_builddir) -I$(top_srcdir)/src
 
 moduledir=@MODULE_DIR@
 
 module_LTLIBRARIES = libmod_ppm.la
-libmod_ppm_la_SOURCES = main.cpp trgt_ppm.cpp trgt_ppm.h mptr_ppm.cpp mptr_ppm.h # trgt_mpg.cpp trgt_mpg.h
+libmod_ppm_la_SOURCES = main.cpp trgt_ppm.cpp trgt_ppm.h mptr_ppm.cpp mptr_ppm.h
 libmod_ppm_la_LDFLAGS = -module -no-undefined -avoid-version
 libmod_ppm_la_CXXFLAGS = @SYNFIG_CFLAGS@
 libmod_ppm_la_LIBADD = ../../synfig/libsynfig.la @SYNFIG_LIBS@
-EXTRA_DIST= mod_ppm.nsh unmod_ppm.nsh
+EXTRA_DIST= mod_ppm.nsh unmod_ppm.nsh trgt_mpg.cpp trgt_mpg.h
