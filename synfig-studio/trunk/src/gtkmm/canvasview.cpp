@@ -3236,7 +3236,7 @@ CanvasView::on_waypoint_clicked_canvasview(synfigapp::ValueDesc value_desc,
 		waypoint_menu->items().push_back(Gtk::Menu_Helpers::MenuElem((size == 1) ? _("_Remove") : strprintf(_("_Remove %d Waypoints"), size),
 			 sigc::bind(sigc::ptr_fun(remove_waypoints), waypoint_set, canvas_interface())));
 
-		if (size == 1)
+		if (size == 1 && value_desc.is_valid())
 			waypoint_menu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("_Properties"),
 				sigc::mem_fun(waypoint_dialog,&Gtk::Widget::show)));
 
