@@ -151,8 +151,8 @@ public:
 	synfig::ValueBase
 	get_value(synfig::Time time=0)const
 	{
+		// if the value is constant, return that constant value (at *any* time, it doesn't matter which)
 		if(parent_is_value_node_const() && parent_value_node)
-			// \todo "(*parent_value_node)(0)"?  shouldn't that be "(*parent_value_node)(time)"?
 			return (*parent_value_node)(0);
 		if(is_value_node() && get_value_node())
 			return (*get_value_node())(time);
