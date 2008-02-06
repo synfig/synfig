@@ -263,7 +263,8 @@ Widget_Waypoint::get_waypoint()const
 {
 #warning This too!
 	waypoint.set_time(time_widget->get_value());
-	waypoint.set_value(value_widget->get_value());
+	if(waypoint.is_static())
+		waypoint.set_value(value_widget->get_value());
 	//int i;
 
 	waypoint.set_before((synfig::Waypoint::Interpolation)before->get_history());
