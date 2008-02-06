@@ -178,6 +178,10 @@ public:
 				if (y > SCALE_FACTOR) y = SCALE_FACTOR - 150; if (y < 0) y = 0;
 				x=x*screen_w/SCALE_FACTOR;
 				y=y*screen_h/SCALE_FACTOR;
+				if(getenv("SYNFIG_WINDOW_POSITION_X_OFFSET"))
+					x += atoi(getenv("SYNFIG_WINDOW_POSITION_X_OFFSET"));
+				if(getenv("SYNFIG_WINDOW_POSITION_Y_OFFSET"))
+					y += atoi(getenv("SYNFIG_WINDOW_POSITION_Y_OFFSET"));
 				dock_dialog.move(x,y);
 				return true;
 			}
