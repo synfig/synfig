@@ -458,39 +458,57 @@ bool Widget_Timeslider::redraw(bool /*doublebuffer*/)
 	//draw these lines... (always 5 between) maybe 6?
 	const int subdiv = 4;
 
-	//1h 45 30 20 10 5
-	//..., 3m, 2m, 1m30s, 1m, 30s, 20s, 10s, 5s, 3s, 2s, 1s, 0.5s
-	//frames... (how???)
-	double ranges[] =
-	{ 1.0/fps,subdiv/fps,0.25,0.5, 1, 2, 3, 5, 10, 20, 30, 60, 90, 120, 180, 300, 600, 1200, 1800, 2700, 3600 };
-	//{ 3600, 2700, 1800, 1200, 600, 300, 180, 120, 90, 60, 30, 20, 10, 5, 3, 2, 1, 0.5 };
-	const int ranges_size = sizeof(ranges)/sizeof(double);
+	int ifps = round_to_int(fps);
+	if (ifps < 1) ifps = 1;
 
-	double lowerrange = dtdp*75, upperrange = dtdp*150;
+	std::vector<double> ranges;
+
+	unsigned int pos = 0;
+
+	// build a list of all the factors of the frame rate
+	for (int i = 1; i*i <= ifps; i++)
+		if ((ifps%i) == 0)
+		{
+			ranges.insert(ranges.begin()+pos, i/fps);
+			if (i*i != ifps)
+				ranges.insert(ranges.begin()+pos+1, ifps/i/fps);
+			pos++;
+		}
+
+	// fill in any gaps where one factor is more than 2 times the previous
+	std::vector<double>::iterator iter, next;
+	pos = 0;
+	for (pos = 0; pos < ranges.size()-1; pos++)
+	{
+		iter = ranges.begin()+pos;
+		next = iter+1;
+		if (*iter*2 < *next)
+			ranges.insert(next, *iter*2);
+	}
+
+	double more_ranges[] = {
+		2, 3, 5, 10, 20, 30, 60, 90, 120, 180,
+		300, 600, 1200, 1800, 2700, 3600, 3600*2,
+		3600*4, 3600*8, 3600*16, 3600*32, 3600*64,
+		3600*128, 3600*256, 3600*512, 3600*1024 };
+
+	ranges.insert(ranges.end(), more_ranges, more_ranges + sizeof(more_ranges)/sizeof(double));
+
+	double lowerrange = dtdp*140, upperrange = dtdp*280;
 	double midrange = (lowerrange + upperrange)/2;
 
 	//find most ideal scale
-	double scale = ranges[0];
-	{
-		double *val = binary_find(ranges, ranges+ranges_size, midrange);
-		double *after = val+1;
+	double scale;
+	next = binary_find(ranges.begin(), ranges.end(), midrange);
+	iter = next++;
 
-		if(val >= ranges+ranges_size)
-		{
-			val = ranges+ranges_size-1;
-		}
+	if (iter == ranges.end()) iter--;
+	if (next == ranges.end()) next--;
 
-		if(after >= ranges+ranges_size)
-		{
-			after = ranges+ranges_size-1;
-		}
-
-		scale = *val;
-
-		double diff = abs(scale - midrange), diff2 = abs(*after - midrange);
-		if(diff2 < diff)
-			scale = *after;
-	}
+	if (abs(*next - midrange) < abs(*iter - midrange))
+		scale = *next;
+	else
+		scale = *iter;
 
 	//synfig::info("Range found: (l %.2lf,u %.2lf - m %.2lf) -> %.2lf",lowerrange,upperrange,midrange,scale);
 
