@@ -136,6 +136,7 @@ Widget_Waypoint::Widget_Waypoint(etl::handle<synfig::Canvas> canvas):
 	waypointValueLabel->set_mnemonic_widget(*value_widget);
 	waypointTable->attach(*waypointValueLabel, 0, 1, 0, 1, Gtk::SHRINK | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
 	waypointTable->attach(*value_widget, 1, 2, 0, 1, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
+	waypointTable->attach(*value_node_label, 1, 2, 0, 1, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
 
 	Gtk::Label *waypointTimeLabel = manage(new Gtk::Label(_("_Time"), true));
 	waypointTimeLabel->set_alignment(0, 0.5);
