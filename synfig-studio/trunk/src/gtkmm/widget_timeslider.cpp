@@ -221,7 +221,6 @@ studio::render_time_point_to_window(
 	if(selected)color=color_darken(color,1.3f);
 	gc->set_rgb_fg_color(color);
 
-
 	switch(tp.get_after())
 	{
 	case INTERPOLATION_TCB:
@@ -455,9 +454,6 @@ bool Widget_Timeslider::redraw(bool /*doublebuffer*/)
 	//normal line/text color
 	gc->set_rgb_fg_color(Gdk::Color("#333333"));
 
-	//draw these lines... (always 5 between) maybe 6?
-	const int subdiv = 4;
-
 	int ifps = round_to_int(fps);
 	if (ifps < 1) ifps = 1;
 
@@ -506,14 +502,15 @@ bool Widget_Timeslider::redraw(bool /*doublebuffer*/)
 	if (next == ranges.end()) next--;
 
 	if (abs(*next - midrange) < abs(*iter - midrange))
-		scale = *next;
-	else
-		scale = *iter;
+		iter = next;
 
-	//synfig::info("Range found: (l %.2lf,u %.2lf - m %.2lf) -> %.2lf",lowerrange,upperrange,midrange,scale);
+	scale = *iter;
+	if (iter != ranges.begin()) iter--;
+	if (iter != ranges.begin()) iter--;
+	if (iter != ranges.begin()) iter--;
 
-	//search around this area to get the right one
-
+	// subdivide into this many tick marks (8 or less)
+	const int subdiv = round_to_int(scale / *iter);
 
 	//get first valid line and its position in pixel space
 	double time = 0;
@@ -595,7 +592,6 @@ bool Widget_Timeslider::on_motion_notify_event(GdkEventMotion* event) //for drag
 
 		double 	start = adj_timescale->get_lower(),
 				end = adj_timescale->get_upper();
-
 
 		if(dragscroll)
 		{
