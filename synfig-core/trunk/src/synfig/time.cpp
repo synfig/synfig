@@ -209,13 +209,13 @@ Time::get_string(float fps, Time::Format format)const
 
 	if(format<=FORMAT_FULL || hour)
 	{
-		ret+=strprintf(format<=FORMAT_NOSPACES?"%dh":"%dh ",hour);
+		ret+=strprintf("%dh",hour);
 		started = true;
 	}
 
 	if(format<=FORMAT_FULL || minute)
 	{
-		ret+=strprintf(format<=FORMAT_NOSPACES?"%dm":"%dm ",minute);
+		ret+=strprintf(format<=FORMAT_NOSPACES||!started?"%dm":" %dm",minute);
 		started = true;
 	}
 
@@ -227,16 +227,16 @@ Time::get_string(float fps, Time::Format format)const
 		frame=time*fps;
 		if(format<=FORMAT_FULL || second)
 		{
-			ret+=strprintf(format<=FORMAT_NOSPACES?"%ds":"%ds ",(int)second);
+			ret+=strprintf(format<=FORMAT_NOSPACES||!started?"%ds":" %ds",(int)second);
 			started = true;
 		}
 
 		if(format<=FORMAT_FULL || frame || !started)
 		{
 			if(abs(frame-floor(frame)>=epsilon_()))
-				ret+=strprintf("%0.3ff",frame);
+				ret+=strprintf(format<=FORMAT_NOSPACES||!started?"%0.3ff":" %0.3ff",frame);
 			else
-				ret+=strprintf("%0.0ff",frame);
+				ret+=strprintf(format<=FORMAT_NOSPACES||!started?"%0.0ff":" %0.0ff",frame);
 		}
 	}
 	else
