@@ -1057,6 +1057,13 @@ void
 CanvasView::on_current_time_widget_changed()
 {
 	set_time(current_time_widget->get_value());
+
+	// show the value being used - it will have been rounded to nearest frame
+	// this was already being done elsewhere, but only if the time was really changed;
+	// if the current time was 6f and the user edited it to 6.1f, then the 6.1f would
+	// be left in the display without the following line to fix it
+	current_time_widget->set_value(get_time());
+	current_time_widget->set_position(-1); // leave the cursor at the end
 }
 
 //	Gtk::Widget*
