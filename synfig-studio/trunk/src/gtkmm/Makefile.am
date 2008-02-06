@@ -87,9 +87,9 @@ ACTION_MANAGERS_CC = \
 
 OTHER_HH = compview.h eventkey.h smach.h \
 	about.h	  adjust_window.h   app.h   asyncrenderer.h   audiocontainer.h	 autorecover.h	 canvasoptions.h	\
-	canvasproperties.h   canvasview.h   devicetracker.h   dialogsettings.h	 duckmatic.h   iconcontroller.h		\
-	instance.h   ipc.h   keymapsettings.h	module.h   onemoment.h	 preview.h   renddesc.h	  render.h		\
-	splash.h statemanager.h	 toolbox.h   valuelink.h   workarea.h	zoomdial.h
+	canvasproperties.h   canvasview.h   devicetracker.h   dialogsettings.h	 duckmatic.h   general.h                \
+	iconcontroller.h instance.h   ipc.h   keymapsettings.h	module.h onemoment.h preview.h   renddesc.h             \
+	render.h splash.h statemanager.h toolbox.h valuelink.h workarea.h zoomdial.h
 OTHER_CC = main.cpp \
 	about.cpp adjust_window.cpp app.cpp asyncrenderer.cpp audiocontainer.cpp autorecover.cpp canvasoptions.cpp	\
 	canvasproperties.cpp canvasview.cpp devicetracker.cpp dialogsettings.cpp duckmatic.cpp iconcontroller.cpp	\
