@@ -2,7 +2,7 @@
 
 MAINTAINERCLEANFILES=COPYING INSTALL config/ltmain.sh doxygen.cfg config/config.guess config/config.sub config/ltmain.sh config/install-sh config/mkinstalldirs config/aclocal.m4 config/missing config/texinfo.tex config/depcomp aclocal.m4 config.h.in configure stamp-h.in Makefile.in config.log config.status .doc_stamp .DS_Store
 
-SUBDIRS=src images po
+SUBDIRS=build_tools src images po
 
 EXTRA_DIST=COPYING TODO m4/subs.m4 doxygen.cfg.in doxygen.cfg macosxbuild.sh win32build.sh win32inst.nsi.in config/package config/depcomp m4/cxx_macros.m4 m4/ETL.m4 ChangeLog.old synfigstudio.xml.in synfigstudio-thumbnailer.schemas.in
 

@@ -39,6 +39,9 @@
 
 #include <synfig/general.h>
 
+// This is generated at make time from .svn or .git/svn or autorevision.conf
+#include <autorevision.h>
+
 #include "about.h"
 #include "app.h"
 
@@ -179,7 +182,7 @@ About::About()
 	string extra_info = get_comments() + "\n";
 	
 	#ifdef DEVEL_VERSION
-		extra_info += strprintf(_("\nDevelopment version %s %s\n"),VERSION,DEVEL_VERSION);
+		extra_info += strprintf(_("\nDevelopment version:\n%s\n"),DEVEL_VERSION);
 	#endif
 	
 	extra_info += "\n";

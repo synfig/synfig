@@ -32,6 +32,13 @@ AC_LANG_CPLUSPLUS
 
 
 AC_ARG_DEBUG
+
+case "$debug" in
+	yes)
+		AC_DEFINE(SHOW_EXTRA_INFO,[],[Show extra info in the about dialog])
+	;;
+esac
+
 AC_ARG_OPTIMIZATION
 AC_ARG_WARNINGS
 AC_ARG_PROFILE_ARCS
@@ -218,6 +225,7 @@ AC_SUBST(imagedir)
 
 AC_OUTPUT(
 Makefile
+build_tools/Makefile
 doxygen.cfg
 po/Makefile.in
 synfigstudio.desktop
