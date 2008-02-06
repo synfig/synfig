@@ -89,7 +89,7 @@ ACTIONCC = \
 SYNFIGAPPHH = \
 	editmode.h selectionmanager.h \
 	$(ACTIONHH) action.h   action_param.h   action_system.h   blineconvert.h   canvasinterface.h   cvs.h		\
-	inputdevice.h   instance.h   main.h   settings.h   uimanager.h   value_desc.h
+	inputdevice.h   instance.h   main.h   settings.h   uimanager.h   value_desc.h   general.h
 SYNFIGAPPCC = \
 	$(ACTIONCC) action.cpp action_param.cpp action_system.cpp blineconvert.cpp canvasinterface.cpp cvs.cpp		\
 	inputdevice.cpp instance.cpp main.cpp settings.cpp uimanager.cpp value_desc.cpp
