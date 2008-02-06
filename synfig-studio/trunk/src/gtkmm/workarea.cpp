@@ -1199,8 +1199,6 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 	bool is_mouse(false);
 	Gdk::ModifierType modifier(Gdk::ModifierType(0));
 
-	drawing_area->grab_focus();
-
 	// Handle input stuff
 	if(
 		event->any.type==GDK_MOTION_NOTIFY ||
@@ -1220,6 +1218,7 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 		{
 			device=event->button.device;
 			modifier=Gdk::ModifierType(event->button.state);
+			drawing_area->grab_focus();
 		}
 
 		// Make sure we recognize the device

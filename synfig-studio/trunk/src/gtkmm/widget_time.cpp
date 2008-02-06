@@ -133,6 +133,12 @@ Widget_Time::on_event(GdkEvent* event)
 		}
 		return true;
 		break;
+	case GDK_BUTTON_PRESS:
+	case GDK_2BUTTON_PRESS:
+	case GDK_3BUTTON_PRESS:
+		if (!has_focus())
+			grab_focus();
+		break;
 	default:
 		break;
 	}
