@@ -1,6 +1,6 @@
 # $Id$
 
-EXTRADIST = compview.cpp
+EXTRA_DIST = compview.cpp
 MAINTAINERCLEANFILES = Makefile.in $(GLADE_FILES)
 
 CELLRENDERER_HH = \

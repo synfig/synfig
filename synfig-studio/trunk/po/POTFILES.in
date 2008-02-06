@@ -30,7 +30,6 @@ src/gtkmm/childrentree.cpp
 src/gtkmm/childrentree.h
 src/gtkmm/childrentreestore.cpp
 src/gtkmm/childrentreestore.h
-src/gtkmm/compview.cpp
 src/gtkmm/compview.h
 src/gtkmm/devicetracker.cpp
 src/gtkmm/devicetracker.h
