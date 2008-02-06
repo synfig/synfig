@@ -2444,7 +2444,12 @@ CanvasView::on_time_changed()
 void
 CanvasView::time_zoom_in()
 {
+	float frame_rate = get_canvas()->rend_desc().get_frame_rate();
+	Time min_page_size = 2/frame_rate;
+
 	time_window_adjustment().set_page_size(time_window_adjustment().get_page_size()*0.75);
+	if (time_window_adjustment().get_page_size() < min_page_size)
+		time_window_adjustment().set_page_size(min_page_size);
 	time_window_adjustment().changed();
 
 	refresh_time_window();
@@ -2453,7 +2458,12 @@ CanvasView::time_zoom_in()
 void
 CanvasView::time_zoom_out()
 {
+	Time length = (get_canvas()->rend_desc().get_time_end() -
+				   get_canvas()->rend_desc().get_time_start());
+
 	time_window_adjustment().set_page_size(time_window_adjustment().get_page_size()/0.75);
+	if (time_window_adjustment().get_page_size() > length)
+		time_window_adjustment().set_page_size(length);
 	time_window_adjustment().changed();
 
 	refresh_time_window();
