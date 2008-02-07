@@ -1174,37 +1174,38 @@ App::App(int *argc, char ***argv):
 
 		studio_init_cb.amount_complete(9900,10000);
 
+		bool opened_any = false;
 		if(auto_recover->recovery_needed())
 		{
 			splash_screen.hide();
-			if(
-				get_ui_interface()->yes_no(
-					_("Auto Recovery"),
-					_("Synfig Studio seems to have crashed\n"
-					"before you could save all your files.\n"
-					"Would you like to re-open those files\n"
-					"and recover your unsaved changes?")
-				)==synfigapp::UIInterface::RESPONSE_YES
-			)
+			if (get_ui_interface()->yes_no(_("Auto Recovery"),
+										   _("Synfig Studio seems to have crashed\n"
+											 "before you could save all your files.\n"
+											 "Would you like to re-open those files\n"
+											 "and recover your unsaved changes?")) ==
+				synfigapp::UIInterface::RESPONSE_YES)
 			{
-				if(!auto_recover->recover())
-				{
-					get_ui_interface()->error(_("Unable to fully recover from previous crash"));
-				}
+				int number_recovered;
+				if(!auto_recover->recover(number_recovered))
+					if (number_recovered)
+						get_ui_interface()->error(_("Unable to fully recover from previous crash"));
+					else
+						get_ui_interface()->error(_("Unable to recover from previous crash"));
 				else
-				get_ui_interface()->error(
-					_("Synfig Studio has attempted to recover\n"
-					"from a previous crash. The files that it has\n"
-					"recovered are NOT YET SAVED. It would be a good\n"
-					"idea to review them and save them now.")
-				);
+					get_ui_interface()->error(
+						_("Synfig Studio has attempted to recover\n"
+						  "from a previous crash. The files that it has\n"
+						  "recovered are NOT YET SAVED. It would be a good\n"
+						  "idea to review them and save them now."));
+
+				if (number_recovered)
+					opened_any = true;
 			}
 			splash_screen.show();
 		}
 
 		// Look for any files given on the command line,
 		// and load them if found.
-		bool opened_any = false;
 		for(;*argc>=1;(*argc)--)
 			if((*argv)[*argc] && (*argv)[*argc][0]!='-')
 			{
