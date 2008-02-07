@@ -277,10 +277,11 @@ AutoRecover::recovery_needed()const
 }
 
 bool
-AutoRecover::recover()
+AutoRecover::recover(int& number_recovered)
 {
 	std::string filename=App::get_config_file("autorecovery");
 	std::ifstream file(filename.c_str());
+	number_recovered = 0;
 	if(!file)
 		return false;
 	bool success=true;
@@ -300,6 +301,8 @@ AutoRecover::recover()
 
 			// This file isn't saved! mark it as such
 			App::instance_list.back()->inc_action_count();
+
+			number_recovered++;
 		}
 		else
 			success=false;

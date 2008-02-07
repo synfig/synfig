@@ -60,7 +60,7 @@ public:
 	static synfig::String get_shadow_directory();
 
 	bool recovery_needed()const;
-	bool recover();
+	bool recover(int& number_recovered);
 
 	void normal_shutdown();
 
