@@ -35,6 +35,7 @@
 #include <gtkmm/drawingarea.h>
 #include <gtkmm/optionmenu.h>
 #include <gtkmm/checkbutton.h>
+#include <gtkmm/widget_time.h>
 
 #include <synfig/gamma.h>
 #include <synfig/time.h>
@@ -168,6 +169,8 @@ class Dialog_Setup : public Gtk::Dialog
 
 	Gtk::Menu *timestamp_menu;
 	Widget_Enum *widget_enum;
+
+	Widget_Time auto_backup_interval;
 public:
 
 	void set_time_format(synfig::Time::Format time_format);

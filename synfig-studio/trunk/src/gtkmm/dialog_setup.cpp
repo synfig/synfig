@@ -38,6 +38,7 @@
 #include <gtkmm/notebook.h>
 #include <gtkmm/spinbutton.h>
 #include "widget_enum.h"
+#include "autorecover.h"
 
 #include <ETL/stringf>
 #include <ETL/misc>
@@ -186,6 +187,10 @@ Dialog_Setup::Dialog_Setup():
 	// Misc - single_threaded
 	misc_table->attach(toggle_single_threaded, 0, 2, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 
+	// Misc - auto backup interval
+	misc_table->attach(*manage(new Gtk::Label(_("Auto Backup Interval (0 to disable)"))), 0, 1, 5, 6, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+	misc_table->attach(auto_backup_interval, 1, 2, 5, 6, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+
 	show_all_children();
 }
 
@@ -215,6 +220,9 @@ Dialog_Setup::on_apply_pressed()
 
 	// Set the single_threaded flag
 	App::single_threaded=toggle_single_threaded.get_active();
+
+	// Set the auto backup interval
+	App::auto_recover->set_timeout(auto_backup_interval.get_value() * 1000);
 
 	App::distance_system=Distance::System(widget_enum->get_value());
 
@@ -293,6 +301,9 @@ Dialog_Setup::refresh()
 
 	// Refresh the status of the single_threaded flag
 	toggle_single_threaded.set_active(App::single_threaded);
+
+	// Refresh the value of the auto backup interval
+	auto_backup_interval.set_value(App::auto_recover->get_timeout() / 1000);
 }
 
 GammaPattern::GammaPattern():
