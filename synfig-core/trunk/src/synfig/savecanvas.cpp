@@ -342,27 +342,6 @@ xmlpp::Element* encode_animated(xmlpp::Element* root,ValueNode_Animated::ConstHa
 	return root;
 }
 
-xmlpp::Element* encode_composite(xmlpp::Element* root,ValueNode_Composite::ConstHandle value_node,Canvas::ConstHandle canvas=0)
-{
-	assert(value_node);
-	root->set_name("composite");
-
-	root->set_attribute("type",ValueBase::type_name(value_node->get_type()));
-
-	int i;
-	for(i=0;i<value_node->link_count();i++)
-	{
-		string name(value_node->link_name(i));
-		assert(value_node->get_link(i));
-		if(value_node->get_link(i)->is_exported())
-			root->set_attribute(name,value_node->get_link(i)->get_relative_id(canvas));
-		else
-			encode_value_node(root->add_child(name)->add_child("value_node"),value_node->get_link(i).constant(),canvas);
-	}
-
-	return root;
-}
-
 xmlpp::Element* encode_subtract(xmlpp::Element* root,ValueNode_Subtract::ConstHandle value_node,Canvas::ConstHandle canvas=0)
 {
 	assert(value_node);
@@ -516,9 +495,6 @@ xmlpp::Element* encode_value_node(xmlpp::Element* root,ValueNode::ConstHandle va
 
 	if(ValueNode_Animated::ConstHandle::cast_dynamic(value_node))
 		encode_animated(root,ValueNode_Animated::ConstHandle::cast_dynamic(value_node),canvas);
-	else
-	if(ValueNode_Composite::ConstHandle::cast_dynamic(value_node))
-		encode_composite(root,ValueNode_Composite::ConstHandle::cast_dynamic(value_node),canvas);
 	else
 	if(ValueNode_Subtract::ConstHandle::cast_dynamic(value_node))
 		encode_subtract(root,ValueNode_Subtract::ConstHandle::cast_dynamic(value_node),canvas);
