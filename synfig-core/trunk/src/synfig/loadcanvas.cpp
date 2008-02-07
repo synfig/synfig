@@ -1694,7 +1694,9 @@ CanvasParser::parse_layer(xmlpp::Element *element,Canvas::Handle canvas)
 
 				String str=	child->get_attribute("use")->get_value();
 
-				if(layer->get_param(param_name).get_type()==ValueBase::TYPE_CANVAS)
+				if (str.empty())
+					error(child,_("Empty use=\"\" value in <param>"));
+				else if(layer->get_param(param_name).get_type()==ValueBase::TYPE_CANVAS)
 				{
 					if(!layer->set_param(param_name,canvas->surefind_canvas(str)))
 						error((*iter),_("Layer rejected canvas link"));
