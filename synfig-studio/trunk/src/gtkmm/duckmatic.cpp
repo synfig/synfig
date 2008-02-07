@@ -248,20 +248,17 @@ Duckmatic::is_duck_group_selectable(const etl::handle<Duck>& x)const
 	const Type type(get_type_mask());
 
 	if(( x->get_type() && (!(type & x->get_type())) ) )
-	{
 		return false;
-	}
+
 	if(x->get_value_desc().parent_is_layer_param() && type & Duck::TYPE_POSITION)
 	{
 		Layer::Handle layer(x->get_value_desc().get_layer());
 		String layer_name(layer->get_name());
-		if(
-			layer_name=="outline" ||
-			layer_name=="region" ||
-			layer_name=="polygon" ||
-			layer_name=="curve_gradient"
-		)
+
+		if (layer_name == "outline" || layer_name == "region" || layer_name == "plant" ||
+			layer_name == "polygon" || layer_name == "curve_gradient")
 			return false;
+
 		if((layer_name=="PasteCanvas"|| layer_name=="paste_canvas") &&
 		   !layer->get_param("children_lock").get(bool()))
 			return false;
