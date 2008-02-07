@@ -215,7 +215,10 @@ Time::get_string(float fps, Time::Format format)const
 
 	if(format<=FORMAT_FULL || minute)
 	{
-		ret+=strprintf(format<=FORMAT_NOSPACES||!started?"%dm":" %dm",minute);
+		if (!(format<=FORMAT_NOSPACES) && started)
+			ret += " ";
+
+		ret += strprintf("%dm", minute);
 		started = true;
 	}
 
@@ -225,18 +228,25 @@ Time::get_string(float fps, Time::Format format)const
 		float frame;
 		second=time;time-=second;
 		frame=time*fps;
+
 		if(format<=FORMAT_FULL || second)
 		{
-			ret+=strprintf(format<=FORMAT_NOSPACES||!started?"%ds":" %ds",(int)second);
+			if (!(format<=FORMAT_NOSPACES) && started)
+				ret += " ";
+
+			ret += strprintf("%ds", (int)second);
 			started = true;
 		}
 
 		if(format<=FORMAT_FULL || frame || !started)
 		{
-			if(abs(frame-floor(frame)>=epsilon_()))
-				ret+=strprintf(format<=FORMAT_NOSPACES||!started?"%0.3ff":" %0.3ff",frame);
+			if (!(format<=FORMAT_NOSPACES) && started)
+				ret += " ";
+
+			if(abs(frame-floor(frame) >= epsilon_()))
+				ret += strprintf("%0.3ff", frame);
 			else
-				ret+=strprintf(format<=FORMAT_NOSPACES||!started?"%0.0ff":" %0.0ff",frame);
+				ret += strprintf("%0.0ff", frame);
 		}
 	}
 	else
@@ -245,6 +255,9 @@ Time::get_string(float fps, Time::Format format)const
 		second=time;
 		if(format<=FORMAT_FULL || second || !started)
 		{
+			if (!(format<=FORMAT_NOSPACES) && started)
+				ret += " ";
+
 			if(abs(second-floor(second))>=epsilon_())
 			{
 				String seconds(strprintf("%0.8f",second));
