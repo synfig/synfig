@@ -178,8 +178,8 @@ AutoRecover::cleanup_pid(int pid)
 	{
 		synfig::error("Autobackup seems to have failed! (PID=%d)",pid);
 	}
-	else
-		synfig::info("PID=%d has been cleaned up",pid);
+//	else
+//		synfig::info("PID=%d has been cleaned up",pid);
 #endif
 	return false;
 }
@@ -224,8 +224,8 @@ AutoRecover::auto_backup()
 				savecount++;
 			}
 
-			if(savecount)
-				synfig::info("AutoRecover::auto_backup(): %d Files backed up.",savecount);
+//			if(savecount)
+//				synfig::info("AutoRecover::auto_backup(): %d Files backed up.",savecount);
 		}
 		catch(...)
 		{
