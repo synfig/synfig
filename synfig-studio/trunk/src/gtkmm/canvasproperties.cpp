@@ -221,7 +221,7 @@ CanvasProperties::on_rend_desc_changed()
 void
 CanvasProperties::on_apply_pressed()
 {
-	if(entry_id.get_text()!=canvas_interface_->get_canvas()->get_id())
+	if(entry_id.get_text()!=canvas_interface_->get_canvas()->get_id() && !entry_id.get_text().empty())
 		canvas_interface_->set_id(entry_id.get_text());
 	if(entry_name.get_text()!=canvas_interface_->get_canvas()->get_name())
 		canvas_interface_->set_name(entry_name.get_text());
