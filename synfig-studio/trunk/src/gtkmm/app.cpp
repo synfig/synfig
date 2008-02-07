@@ -1906,22 +1906,26 @@ App::open_as(std::string filename,std::string as)
 		if(canvas && get_instance(canvas))
 		{
 			get_instance(canvas)->find_canvas_view(canvas)->present();
-			throw (String)strprintf(_("\"%s\" appears to already be open!"),filename.c_str());
+			info("%s is already open", filename.c_str());
+			// throw (String)strprintf(_("\"%s\" appears to already be open!"),filename.c_str());
 		}
-		if(!canvas)
-			throw (String)strprintf(_("Unable to open file \"%s\""),filename.c_str());
+		else
+		{
+			if(!canvas)
+				throw (String)strprintf(_("Unable to open file \"%s\""),filename.c_str());
 
-		add_recent_file(as);
+			add_recent_file(as);
 
-		handle<Instance> instance(Instance::create(canvas));
+			handle<Instance> instance(Instance::create(canvas));
 
-		if(!instance)
-			throw (String)strprintf(_("Unable to create instance for \"%s\""),filename.c_str());
+			if(!instance)
+				throw (String)strprintf(_("Unable to create instance for \"%s\""),filename.c_str());
 
-		one_moment.hide();
+			one_moment.hide();
 
-		if(instance->is_updated() && App::dialog_yes_no(_("CVS Update"), _("There appears to be a newer version of this file available on the CVS repository.\nWould you like to update now? (It would probably be a good idea)")))
-			instance->dialog_cvs_update();
+			if(instance->is_updated() && App::dialog_yes_no(_("CVS Update"), _("There appears to be a newer version of this file available on the CVS repository.\nWould you like to update now? (It would probably be a good idea)")))
+				instance->dialog_cvs_update();
+		}
 	}
 	catch(String x)
 	{
