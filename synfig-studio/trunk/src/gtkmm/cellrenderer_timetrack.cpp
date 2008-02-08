@@ -128,7 +128,8 @@ CellRenderer_TimeTrack::is_selected(const Waypoint& waypoint)const
 const synfig::Time get_time_offset_from_vdesc(const synfigapp::ValueDesc &v)
 {
 #ifdef ADJUST_WAYPOINTS_FOR_TIME_OFFSET
-	if(v.get_value_type() != synfig::ValueBase::TYPE_CANVAS)
+	if(getenv("SYNFIG_SHOW_CANVAS_PARAM_WAYPOINTS") ||
+	   v.get_value_type() != synfig::ValueBase::TYPE_CANVAS)
 		return synfig::Time::zero();
 
 	synfig::Canvas::Handle canvasparam = v.get_value().get(Canvas::Handle());
@@ -753,7 +754,8 @@ CellRenderer_TimeTrack::activate_vfunc(
 				bool clickfound = tset && get_closest_time(*tset,actual_time+time_offset,pixel_width*cell_area.get_height(),stime);
 
 				etl::handle<synfig::Node> node;
-				if(valdesc.get_value(stime).get_type()==ValueBase::TYPE_CANVAS)
+				if(!getenv("SYNFIG_SHOW_CANVAS_PARAM_WAYPOINTS") &&
+				   valdesc.get_value(stime).get_type()==ValueBase::TYPE_CANVAS)
 				{
 					node=Canvas::Handle(valdesc.get_value(stime).get(Canvas::Handle()));
 				}
@@ -798,7 +800,8 @@ CellRenderer_TimeTrack::activate_vfunc(
 					param_list.add("canvas",canvas_interface()->get_canvas());
 					param_list.add("canvas_interface",canvas_interface());
 
-					if(sel_value.get_value_type() == synfig::ValueBase::TYPE_CANVAS)
+					if(!getenv("SYNFIG_SHOW_CANVAS_PARAM_WAYPOINTS") &&
+					   sel_value.get_value_type() == synfig::ValueBase::TYPE_CANVAS)
 					{
 						param_list.add("addcanvas",sel_value.get_value().get(Canvas::Handle()));
 					}else
