@@ -1752,7 +1752,7 @@ App::dialog_save_file(const std::string &title, std::string &filename, std::stri
     dialog->add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
     dialog->add_button(Gtk::Stock::SAVE,   Gtk::RESPONSE_ACCEPT);
 
-	Widget_Enum *file_type_enum;
+	Widget_Enum *file_type_enum = 0;
 	if (preference == ANIMATION_DIR_PREFERENCE)
 	{
 		file_type_enum = manage(new Widget_Enum());
