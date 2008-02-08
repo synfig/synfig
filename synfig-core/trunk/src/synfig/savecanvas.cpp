@@ -79,7 +79,8 @@ using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
-FileVersion save_canvas_version;
+ReleaseVersion save_canvas_version = ReleaseVersion(RELEASE_VERSION_END-1);
+int valuenode_too_new_count;
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -472,7 +473,26 @@ xmlpp::Element* encode_dynamic_list(xmlpp::Element* root,ValueNode_DynamicList::
 xmlpp::Element* encode_linkable_value_node(xmlpp::Element* root,LinkableValueNode::ConstHandle value_node,Canvas::ConstHandle canvas=0)
 {
 	assert(value_node);
-	root->set_name(value_node->get_name());
+
+	String name(value_node->get_name());
+	ReleaseVersion saving_version(get_file_version());
+	ReleaseVersion feature_version(LinkableValueNode::book()[name].release_version);
+
+	if (saving_version < feature_version)
+	{
+		valuenode_too_new_count++;
+		warning("can't save <%s> valuenodes in this old file format version", name.c_str());
+
+		ValueBase value((*value_node)(0));
+		encode_value(root,value,canvas);
+
+		// ValueNode_Const::ConstHandle const_value(ValueNode_Const::create((*value_node)(0)));
+		// encode_value_node(root,const_value,canvas);
+
+		return root;
+	}
+
+	root->set_name(name);
 
 	root->set_attribute("type",ValueBase::type_name(value_node->get_type()));
 
@@ -716,6 +736,18 @@ xmlpp::Element* encode_canvas(xmlpp::Element* root,Canvas::ConstHandle canvas)
 	return root;
 }
 
+xmlpp::Element* encode_canvas_toplevel(xmlpp::Element* root,Canvas::ConstHandle canvas)
+{
+	valuenode_too_new_count = 0;
+
+	xmlpp::Element* ret = encode_canvas(root, canvas);
+
+	if (valuenode_too_new_count)
+		warning("saved %d valuenodes as constant values in old file format\n", valuenode_too_new_count);
+
+	return ret;
+}
+
 bool
 synfig::save_canvas(const String &filename, Canvas::ConstHandle canvas)
 {
@@ -733,7 +765,7 @@ synfig::save_canvas(const String &filename, Canvas::ConstHandle canvas)
 		assert(canvas);
 		xmlpp::Document document;
 
-		encode_canvas(document.create_root_node("canvas"),canvas);
+		encode_canvas_toplevel(document.create_root_node("canvas"),canvas);
 
 		document.write_to_file_formatted(tmp_filename);
 	}
@@ -771,18 +803,18 @@ synfig::canvas_to_string(Canvas::ConstHandle canvas)
 
 	xmlpp::Document document;
 
-	encode_canvas(document.create_root_node("canvas"),canvas);
+	encode_canvas_toplevel(document.create_root_node("canvas"),canvas);
 
 	return document.write_to_string_formatted();
 }
 
 void
-synfig::set_file_version(FileVersion version)
+synfig::set_file_version(ReleaseVersion version)
 {
 	save_canvas_version = version;
 }
 
-FileVersion
+ReleaseVersion
 synfig::get_file_version()
 {
 	return save_canvas_version;

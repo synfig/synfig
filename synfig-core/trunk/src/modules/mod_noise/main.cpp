@@ -62,6 +62,6 @@ MODULE_INVENTORY_BEGIN(libmod_noise)
 	END_LAYERS
 
 	BEGIN_VALUENODES
-		VALUENODE(synfig::ValueNode_Random, "random", _("Random"))
+		VALUENODE(synfig::ValueNode_Random, "random", _("Random"), synfig::RELEASE_VERSION_0_61_08) // SVN r907
 	END_VALUENODES
 MODULE_INVENTORY_END

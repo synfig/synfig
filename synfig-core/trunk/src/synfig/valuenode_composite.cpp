@@ -310,7 +310,7 @@ ValueNode_Composite::link_name(int i)const
 {
 	assert(i>=0 && i<link_count());
 
-	if (get_file_version() == FILE_VERSION_0_61_07)
+	if (get_file_version() < RELEASE_VERSION_0_61_08)
 		return strprintf("c%d",i+1);
 
 	switch(get_type())

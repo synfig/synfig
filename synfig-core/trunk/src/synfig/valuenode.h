@@ -30,6 +30,7 @@
 #include "vector.h"
 #include "value.h"
 #include "string.h"
+#include "releases.h"
 #include <ETL/handle>
 #include <ETL/stringf>
 #include "exception.h"
@@ -312,6 +313,7 @@ public:
 		String local_name;
 		Factory factory;
 		CheckType check_type;
+		ReleaseVersion release_version; // which version of synfig introduced this valuenode type
 	};
 
 	typedef std::map<String,BookEntry> Book;

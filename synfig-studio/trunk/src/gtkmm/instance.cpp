@@ -42,6 +42,7 @@
 #include <sigc++/adaptors/hide.h>
 #include "toolbox.h"
 #include "onemoment.h"
+#include <synfig/savecanvas.h>
 
 #include "autorecover.h"
 #include <sigc++/retype_return.h>
@@ -312,7 +313,10 @@ studio::Instance::dialog_save_as()
 		}
 
 		if(save_as(filename))
+		{
+			synfig::set_file_version(ReleaseVersion(RELEASE_VERSION_END-1));
 			return true;
+		}
 
 		App::dialog_error_blocking("SaveAs - Error","Unable to save to '" + filename + "'");
 	}

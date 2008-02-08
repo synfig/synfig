@@ -1,11 +1,11 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file savecanvas.h
-**	\brief writeme
+/*!	\file releases.h
+**	\brief Define the synfig releases, for tying to features
 **
 **	$Id$
 **
 **	\legal
-**	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
+**	Copyright (c) 2008 Chris Moore
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -22,34 +22,25 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_SAVECANVAS_H
-#define __SYNFIG_SAVECANVAS_H
+#ifndef __SYNFIG_RELEASE_VERSION_H
+#define __SYNFIG_RELEASE_VERSION_H
 
 /* === H E A D E R S ======================================================= */
 
-#include "string.h"
-#include "canvas.h"
-#include "releases.h"
-
 /* === M A C R O S ========================================================= */
-
-/* === T Y P E D E F S ===================================================== */
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
 namespace synfig {
 
-/* === E X T E R N S ======================================================= */
+	typedef enum
+	{
+		RELEASE_VERSION_0_61_06,
+		RELEASE_VERSION_0_61_07,
+		RELEASE_VERSION_0_61_08,
 
-//!	Saves a canvas to \a filename
-/*!	\return	\c true on success, \c false on error. */
-bool save_canvas(const String &filename, Canvas::ConstHandle canvas);
-
-//! Stores a Canvas in a string in XML format
-String canvas_to_string(Canvas::ConstHandle canvas);
-
-void set_file_version(ReleaseVersion version);
-ReleaseVersion get_file_version();
+		RELEASE_VERSION_END
+	} ReleaseVersion;
 
 }; // END of namespace synfig
 

@@ -1757,9 +1757,10 @@ App::dialog_save_file(const std::string &title, std::string &filename, std::stri
 	{
 		file_type_enum = manage(new Widget_Enum());
 		file_type_enum->set_param_desc(ParamDesc().set_hint("enum")
-									   .add_enum_value(synfig::FILE_VERSION_0_61_08, "0.61.08", strprintf("0.61.08 (%s)", _("current")))
-									   .add_enum_value(synfig::FILE_VERSION_0_61_07, "0.61.07", strprintf("0.61.07 %s", _("and older"))));
-		file_type_enum->set_value(0);
+									   .add_enum_value(synfig::RELEASE_VERSION_0_61_08, "0.61.08", strprintf("0.61.08 (%s)", _("current")))
+									   .add_enum_value(synfig::RELEASE_VERSION_0_61_07, "0.61.07", "0.61.07")
+									   .add_enum_value(synfig::RELEASE_VERSION_0_61_06, "0.61.06", strprintf("0.61.06 %s", _("and older"))));
+		file_type_enum->set_value(RELEASE_VERSION_END-1); // default to the most recent version
 
 		Gtk::HBox *hbox = manage(new Gtk::HBox);
 		hbox->pack_start(*manage(new Gtk::Label(_("File Format Version: "))),Gtk::PACK_SHRINK,0);
@@ -1790,7 +1791,7 @@ App::dialog_save_file(const std::string &title, std::string &filename, std::stri
 
     if(dialog->run() == GTK_RESPONSE_ACCEPT) {
 		if (preference == ANIMATION_DIR_PREFERENCE)
-			set_file_version(synfig::FileVersion(file_type_enum->get_value()));
+			set_file_version(synfig::ReleaseVersion(file_type_enum->get_value()));
         filename = dialog->get_filename();
 		info("Saving preference %s = '%s' in App::dialog_save_file()", preference.c_str(), dirname(filename).c_str());
 		_preferences.set_value(preference, dirname(filename));
