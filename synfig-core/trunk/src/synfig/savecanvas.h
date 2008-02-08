@@ -40,12 +40,21 @@ namespace synfig {
 
 /* === E X T E R N S ======================================================= */
 
+typedef enum
+{
+	FILE_VERSION_0_61_08,
+	FILE_VERSION_0_61_07,
+} FileVersion;
+
 //!	Saves a canvas to \a filename
 /*!	\return	\c true on success, \c false on error. */
 bool save_canvas(const String &filename, Canvas::ConstHandle canvas);
 
 //! Stores a Canvas in a string in XML format
 String canvas_to_string(Canvas::ConstHandle canvas);
+
+void set_file_version(FileVersion version);
+FileVersion get_file_version();
 
 }; // END of namespace synfig
 

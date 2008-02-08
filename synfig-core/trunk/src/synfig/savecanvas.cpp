@@ -79,6 +79,8 @@ using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
+FileVersion save_canvas_version;
+
 /* === P R O C E D U R E S ================================================= */
 
 xmlpp::Element* encode_canvas(xmlpp::Element* root,Canvas::ConstHandle canvas);
@@ -772,4 +774,16 @@ synfig::canvas_to_string(Canvas::ConstHandle canvas)
 	encode_canvas(document.create_root_node("canvas"),canvas);
 
 	return document.write_to_string_formatted();
+}
+
+void
+synfig::set_file_version(FileVersion version)
+{
+	save_canvas_version = version;
+}
+
+FileVersion
+synfig::get_file_version()
+{
+	return save_canvas_version;
 }

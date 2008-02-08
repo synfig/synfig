@@ -52,6 +52,7 @@
 #include <gtk/gtk.h>
 
 #include <synfig/loadcanvas.h>
+#include <synfig/savecanvas.h>
 
 #include "app.h"
 #include "about.h"
@@ -85,6 +86,7 @@
 
 #include "devicetracker.h"
 #include "dialog_tooloptions.h"
+#include "widget_enum.h"
 
 #include "autorecover.h"
 
@@ -1750,6 +1752,24 @@ App::dialog_save_file(const std::string &title, std::string &filename, std::stri
     dialog->add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
     dialog->add_button(Gtk::Stock::SAVE,   Gtk::RESPONSE_ACCEPT);
 
+	Widget_Enum *file_type_enum;
+	if (preference == ANIMATION_DIR_PREFERENCE)
+	{
+		file_type_enum = manage(new Widget_Enum());
+		file_type_enum->set_param_desc(ParamDesc("filetype")
+									   .set_hint("enum")
+									   .add_enum_value(synfig::FILE_VERSION_0_61_08, "0.61.08", "0.61.08")
+									   .add_enum_value(synfig::FILE_VERSION_0_61_07, "0.61.07", "0.61.07"));
+		file_type_enum->set_value(0);
+
+		Gtk::HBox *hbox = manage(new Gtk::HBox);
+		hbox->pack_start(*manage(new Gtk::Label(_("File Type: "))),Gtk::PACK_SHRINK,0);
+		hbox->pack_start(*file_type_enum,Gtk::PACK_EXPAND_WIDGET,0);
+		hbox->show_all();
+
+		dialog->set_extra_widget(*hbox);
+	}
+
     if (filename.empty())
 		dialog->set_filename(prev_path);
     else
@@ -1770,6 +1790,8 @@ App::dialog_save_file(const std::string &title, std::string &filename, std::stri
 	}
 
     if(dialog->run() == GTK_RESPONSE_ACCEPT) {
+		if (preference == ANIMATION_DIR_PREFERENCE)
+			set_file_version(synfig::FileVersion(file_type_enum->get_value()));
         filename = dialog->get_filename();
 		info("Saving preference %s = '%s' in App::dialog_save_file()", preference.c_str(), dirname(filename).c_str());
 		_preferences.set_value(preference, dirname(filename));
