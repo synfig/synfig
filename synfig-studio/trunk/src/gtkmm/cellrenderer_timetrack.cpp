@@ -152,7 +152,8 @@ const synfig::Time get_time_offset_from_vdesc(const synfigapp::ValueDesc &v)
 //kind of a hack... pointer is ugly
 const synfig::Node::time_set *get_times_from_vdesc(const synfigapp::ValueDesc &v)
 {
-	if(v.get_value_type() == synfig::ValueBase::TYPE_CANVAS)
+	if(!getenv("SYNFIG_SHOW_CANVAS_PARAM_WAYPOINTS") &&
+	   v.get_value_type() == synfig::ValueBase::TYPE_CANVAS)
 	{
 		synfig::Canvas::Handle canvasparam = v.get_value().get(Canvas::Handle());
 
