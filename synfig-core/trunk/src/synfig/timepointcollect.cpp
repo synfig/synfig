@@ -54,7 +54,9 @@ using namespace synfig;
 
 //! \writeme
 int
-synfig::waypoint_collect(set<Waypoint, std::less<UniqueID> >& waypoint_set,const Time& time, const etl::handle<Node>& node)
+synfig::waypoint_collect(set<Waypoint, std::less<UniqueID> >	&waypoint_set,
+						 const Time								&time,
+						 const etl::handle<Node>				&node)
 {
 	const TimePointSet& timepoint_set(node->get_times());
 
@@ -70,9 +72,8 @@ synfig::waypoint_collect(set<Waypoint, std::less<UniqueID> >& waypoint_set,const
 		const int link_count(linkable_value_node->link_count());
 		int i,ret(0);
 		for(i=0;i<link_count;i++)
-		{
 			ret+=waypoint_collect(waypoint_set,time,linkable_value_node->get_link(i).get());
-		}
+
 		return ret;
 	}
 
@@ -85,9 +86,8 @@ synfig::waypoint_collect(set<Waypoint, std::less<UniqueID> >& waypoint_set,const
 		Layer::DynamicParamList::const_iterator iter;
 		int ret(0);
 		for(iter=dyn_param_list.begin();iter!=dyn_param_list.end();++iter)
-		{
 			ret+=waypoint_collect(waypoint_set,time,iter->second);
-		}
+
 		ValueBase canvas_value(layer->get_param("canvas"));
 		if(canvas_value.get_type()==ValueBase::TYPE_CANVAS)
 		{
@@ -125,9 +125,8 @@ synfig::waypoint_collect(set<Waypoint, std::less<UniqueID> >& waypoint_set,const
 			// If it is already in the waypoint set, then
 			// don't bother adding it again
 			if(waypoint_set.find(waypoint)!=waypoint_set.end())
-			{
 				return 0;
-			}
+
 			waypoint_set.insert(waypoint);
 			return 1;
 		}catch(...)
