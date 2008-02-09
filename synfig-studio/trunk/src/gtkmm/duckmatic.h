@@ -78,6 +78,9 @@ public:
 #include <map>
 #endif
 
+//! If defined, only allow radius ducks to be in the top right
+//! quadrant of the plane.  This makes it very easy to set the
+//! corresponding parameter to zero (by dragging down and left)
 #define RESTRICT_RADIUS_DUCKS_TO_ONE_QUARTER
 
 /* === T Y P E D E F S ===================================================== */
