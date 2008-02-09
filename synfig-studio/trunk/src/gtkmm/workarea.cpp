@@ -6,7 +6,7 @@
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
-**	Copyright 2006 Yue Shi Lai
+**	Copyright (c) 2006 Yue Shi Lai
 **	Copyright (c) 2007 Chris Moore
 **
 **	This package is free software; you can redistribute it and/or
