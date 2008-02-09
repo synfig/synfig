@@ -87,7 +87,26 @@ case "$host" in
 esac
 # -- L I B R A R I E S ----------------------------------------
 
-PKG_CHECK_MODULES(GTKMM, gtkmm-2.4 gthread-2.0,[],[
+PKG_CHECK_MODULES(GTKMM, gtkmm-2.4 gthread-2.0,[
+	AC_MSG_CHECKING([for Gtk::AboutDialog::set_program_name])
+	CXXFLAGS="$GTKMM_CFLAGS"
+	AC_COMPILE_IFELSE(
+		[
+			AC_LANG_PROGRAM([
+				[#include <gtkmm/aboutdialog.h>]
+			],[
+				[Gtk::AboutDialog about; about.set_program_name(PACKAGE_NAME)]
+			])
+		],[
+			AC_MSG_RESULT([yes])
+			AC_DEFINE(HAVE_GTK_ABOUTDIALOG_SET_PROGRAM_NAME,[],[Define if GTKmm provides Gtk::AboutDialog::set_program_name()] )
+			AM_CONDITIONAL(HAVE_GTK_ABOUTDIALOG_SET_PROGRAM_NAME,true)
+		],[
+			AC_MSG_RESULT([no])
+			AM_CONDITIONAL(HAVE_GTK_ABOUTDIALOG_SET_PROGRAM_NAME,false)
+		]
+	)
+],[
 	AC_MSG_ERROR([ ** Gtkmm-2.4 Is a required library, aborting.])
 ])
 AC_SUBST(GTKMM_CFLAGS)

@@ -95,7 +95,7 @@ extern const guint gtk_interface_age;
 About::About()
 {
 
-#if GTK_CHECK_VERSION (2, 12, 0)
+#ifdef HAVE_GTK_ABOUTDIALOG_SET_PROGRAM_NAME
 	set_program_name(PACKAGE_NAME);
 #else
 	set_name(PACKAGE_NAME);
