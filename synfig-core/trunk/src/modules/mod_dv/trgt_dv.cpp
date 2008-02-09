@@ -64,7 +64,7 @@ using namespace etl;
 
 #if defined(HAVE_FORK) && defined(HAVE_PIPE) && defined(HAVE_WAITPID)
  #define UNIX_PIPE_TO_PROCESSES
-#elif defined(HAVE__SPAWNLP) && defined(HAVE__PIPE) && defined(HAVE_CWAIT)
+#else
  #define WIN32_PIPE_TO_PROCESSES
 #endif
 
@@ -94,11 +94,11 @@ dv_trgt::dv_trgt(const char *Filename)
 dv_trgt::~dv_trgt()
 {
 	if(file){
+#if defined(WIN32_PIPE_TO_PROCESSES)
+		pclose(file);
+#elif defined(UNIX_PIPE_TO_PROCESSES)
 		fclose(file);
 		int status;
-#if defined(WIN32_PIPE_TO_PROCESSES)
-		cwait(&status,pid,0);
-#elif defined(UNIX_PIPE_TO_PROCESSES)
 		waitpid(pid,&status,0);
 #endif
 	}
@@ -150,61 +150,21 @@ dv_trgt::init()
 
 #if defined(WIN32_PIPE_TO_PROCESSES)
 
-	int p[2];
-	int stdin_fileno, stdout_fileno;
-
-	if(_pipe(p, 512, O_BINARY | O_NOINHERIT) < 0) {
-		synfig::error(_("Unable to open pipe to encodedv"));
-		return false;
-	}
-
-	// Save stdin/stdout so we can restore them later
-	stdin_fileno  = _dup(_fileno(stdin));
-	stdout_fileno = _dup(_fileno(stdout));
-
-	// encodedv should read from the pipe
-	if(_dup2(p[0], _fileno(stdin)) != 0) {
-		synfig::error(_("Unable to open pipe to encodedv"));
-		return false;
-	}
-
-	FILE* outfile = fopen(filename.c_str(),"wb");
-	if( outfile == NULL ){
-		synfig::error(_("Unable to open pipe to encodedv"));
-		return false;
-	}
-	if(_dup2(_fileno(outfile), _fileno(stdout)) != 0) {
-		synfig::error(_("Unable to open pipe to encodedv"));
-		return false;
-	}
-
-	if(wide_aspect)
-		pid = _spawnlp(_P_NOWAIT, "encodedv", "encodedv", "-w", "1", "-", (const char *)NULL);
-	else
-		pid = _spawnlp(_P_NOWAIT, "encodedv", "encodedv", "-", (const char *)NULL);
-
-	if( pid < 0) {
-		synfig::error(_("Unable to open pipe to encodedv"));
-		return false;
-	}
-
-	// Restore stdin/stdout
-	if(_dup2(stdin_fileno, _fileno(stdin)) != 0) {
-		synfig::error(_("Unable to open pipe to encodedv"));
-		return false;
-	}
-	if(_dup2(stdout_fileno, _fileno(stdout)) != 0) {
-		synfig::error(_("Unable to open pipe to encodedv"));
-		return false;
-	}
-	close(stdin_fileno);
-	close(stdout_fileno);
-
-	// Close the pipe read end - encodedv uses it
-	close(p[0]);
+	string command;
 	
-	// We write data to the write end of the pipe
-	file = fdopen(p[1], "wb");
+	if(wide_aspect)
+		command=strprintf("encodedv -w 1 - > \"%s\"\n",filename.c_str());
+	else
+		command=strprintf("encodedv - > \"%s\"\n",filename.c_str());
+
+	// Open the pipe to encodedv
+	file=popen(command.c_str(),POPEN_BINARY_WRITE_TYPE);
+
+	if(!file)
+	{
+		synfig::error(_("Unable to open pipe to encodedv"));
+		return false;
+	}
 
 #elif defined(UNIX_PIPE_TO_PROCESSES)
 

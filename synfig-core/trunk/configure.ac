@@ -534,9 +534,6 @@ AC_CHECK_FUNCS([fork])
 AC_CHECK_FUNCS([kill])
 AC_CHECK_FUNCS([pipe])
 AC_CHECK_FUNCS([waitpid])
-AC_CHECK_FUNCS([_spawnlp])
-AC_CHECK_FUNCS([_pipe])
-AC_CHECK_FUNCS([cwait])
 
 AC_CHECK_FUNCS(
 	[isnan],

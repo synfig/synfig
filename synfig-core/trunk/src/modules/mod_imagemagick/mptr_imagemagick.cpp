@@ -63,7 +63,7 @@ using namespace etl;
 
 #if defined(HAVE_FORK) && defined(HAVE_PIPE) && defined(HAVE_WAITPID)
  #define UNIX_PIPE_TO_PROCESSES
-#elif defined(HAVE__SPAWNLP) && defined(HAVE__PIPE) && defined(HAVE_CWAIT)
+#else
  #define WIN32_PIPE_TO_PROCESSES
 #endif
 
@@ -104,16 +104,25 @@ imagemagick_mptr::get_frame(synfig::Surface &surface,Time /*time*/, synfig::Prog
 		return false;
 	}
 	string temp_file="/tmp/deleteme.png";
-	string output="png32:"+temp_file;
 
 #if defined(WIN32_PIPE_TO_PROCESSES)
 
+	if(file)
+		pclose(file);
+
+	string command;
+	
 	if(filename.find("psd")!=String::npos)
-		_spawnlp(_P_WAIT, "convert", "convert", filename.c_str(), "-flatten", output.c_str(), (const char *)NULL);
+		command=strprintf("convert \"%s\" -flatten \"png32:%s\"\n",filename.c_str(),temp_file.c_str());
 	else
-		_spawnlp(_P_WAIT, "convert", "convert", filename.c_str(), output.c_str(), (const char *)NULL);
+		command=strprintf("convert \"%s\" \"png32:%s\"\n",filename.c_str(),temp_file.c_str());
+
+	if(system(command.c_str())!=0)
+		return false;
 
 #elif defined(UNIX_PIPE_TO_PROCESSES)
+
+	string output="png32:"+temp_file;
 
 	pid_t pid = fork();
   

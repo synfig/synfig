@@ -62,7 +62,7 @@ using namespace etl;
 
 #if defined(HAVE_FORK) && defined(HAVE_PIPE) && defined(HAVE_WAITPID)
  #define UNIX_PIPE_TO_PROCESSES
-#elif defined(HAVE__SPAWNLP) && defined(HAVE__PIPE) && defined(HAVE_CWAIT)
+#else
  #define WIN32_PIPE_TO_PROCESSES
 #endif
 
@@ -83,66 +83,22 @@ ffmpeg_mptr::seek_to(int frame)
 	{
 		if(file)
 		{
+#if defined(WIN32_PIPE_TO_PROCESSES)
+			pclose(file);
+#elif defined(UNIX_PIPE_TO_PROCESSES)
 			fclose(file);
 			int status;
-#if defined(WIN32_PIPE_TO_PROCESSES)
-		cwait(&status,pid,0);
-#elif defined(UNIX_PIPE_TO_PROCESSES)
-		waitpid(pid,&status,0);
+			waitpid(pid,&status,0);
 #endif
 		}
 
 #if defined(WIN32_PIPE_TO_PROCESSES)
 
-	int p[2];
-	int stdin_fileno, stdout_fileno;
-
-	if(_pipe(p, 512, O_BINARY | O_NOINHERIT) < 0) {
-		cerr<<"Unable to open pipe to ffmpeg"<<endl;
-		return false;
-	}
-
-	// Save stdin/stdout so we can restore them later
-	stdin_fileno  = _dup(_fileno(stdin));
-	stdout_fileno = _dup(_fileno(stdout));
-
-	// ffmpeg should write to the pipe
-	if(_dup2(p[1], _fileno(stdout)) != 0) {
-		cerr<<"Unable to open pipe to ffmpeg"<<endl;
-		return false;
-	}
-
-	/*
-	ffmpeg accepts the input filename on the command-line
-	if(_dup2(_fileno(input), _fileno(stdin)) != 0) {
-		synfig::error(_("Unable to open pipe to ffmpeg"));
-		return false;
-	}
-	*/
-
-	pid = _spawnlp(_P_NOWAIT, "ffmpeg", "ffmpeg", "-i", filename.c_str(), "-an", "-f", "image2pipe", "-vcodec", "ppm", "-", (const char *)NULL);
-	if( pid < 0) {
-		cerr<<"Unable to open pipe to ffmpeg"<<endl;
-		return false;
-	}
-
-	// Restore stdin/stdout
-	if(_dup2(stdin_fileno, _fileno(stdin)) != 0) {
-		cerr<<"Unable to open pipe to ffmpeg"<<endl;
-		return false;
-	}
-	if(_dup2(stdout_fileno, _fileno(stdout)) != 0) {
-		cerr<<"Unable to open pipe to ffmpeg"<<endl;
-		return false;
-	}
-	close(stdin_fileno);
-	close(stdout_fileno);
-
-	// Close the pipe write end - ffmpeg uses it
-	close(p[1]);
-	
-	// We read data from the read end of the pipe
-	file = fdopen(p[0], "rb");
+		string command;
+		
+		command=strprintf("ffmpeg -i \"%s\" -an -f image2pipe -vcodec ppm -\n",filename.c_str());
+		
+		file=popen(command.c_str(),POPEN_BINARY_READ_TYPE);
 
 #elif defined(UNIX_PIPE_TO_PROCESSES)
 
@@ -277,11 +233,11 @@ ffmpeg_mptr::~ffmpeg_mptr()
 {
 	if(file)
 	{
+#if defined(WIN32_PIPE_TO_PROCESSES)
+		pclose(file);
+#elif defined(UNIX_PIPE_TO_PROCESSES)
 		fclose(file);
 		int status;
-#if defined(WIN32_PIPE_TO_PROCESSES)
-		cwait(&status,pid,0);
-#elif defined(UNIX_PIPE_TO_PROCESSES)
 		waitpid(pid,&status,0);
 #endif
 	}

@@ -64,7 +64,7 @@ using namespace etl;
 
 #if defined(HAVE_FORK) && defined(HAVE_PIPE) && defined(HAVE_WAITPID)
  #define UNIX_PIPE_TO_PROCESSES
-#elif defined(HAVE__SPAWNLP) && defined(HAVE__PIPE) && defined(HAVE_CWAIT)
+#else
  #define WIN32_PIPE_TO_PROCESSES
 #endif
 
@@ -95,11 +95,11 @@ ffmpeg_trgt::~ffmpeg_trgt()
 	{
 		etl::yield();
 		sleep(1);
+#if defined(WIN32_PIPE_TO_PROCESSES)
+		pclose(file);
+#elif defined(UNIX_PIPE_TO_PROCESSES)
 		fclose(file);
 		int status;
-#if defined(WIN32_PIPE_TO_PROCESSES)
-		cwait(&status,pid,0);
-#elif defined(UNIX_PIPE_TO_PROCESSES)
 		waitpid(pid,&status,0);
 #endif
 	}
@@ -154,59 +154,14 @@ ffmpeg_trgt::init()
 
 #if defined(WIN32_PIPE_TO_PROCESSES)
 
-	int p[2];
-	int stdin_fileno, stdout_fileno;
-
-	if(_pipe(p, 512, O_BINARY | O_NOINHERIT) < 0) {
-		synfig::error(_("Unable to open pipe to ffmpeg"));
-		return false;
-	}
-
-	// Save stdin/stdout so we can restore them later
-	stdin_fileno  = _dup(_fileno(stdin));
-	stdout_fileno = _dup(_fileno(stdout));
-
-	// ffmpeg should read from the pipe
-	if(_dup2(p[0], _fileno(stdin)) != 0) {
-		synfig::error(_("Unable to open pipe to ffmpeg"));
-		return false;
-	}
-
-	/*
-	ffmpeg accepts the output filename on the command-line
-	if(_dup2(_fileno(output), _fileno(stdout)) != 0) {
-		synfig::error(_("Unable to open pipe to ffmpeg"));
-		return false;
-	}
-	*/
+	string command;
 
 	if( filename.c_str()[0] == '-' )
-		pid = _spawnlp(_P_NOWAIT, "ffmpeg", "ffmpeg", "-f", "image2pipe", "-vcodec", "ppm", "-an", "-r", strprintf("%f", desc.get_frame_rate()).c_str(), "-i", "pipe:", "-loop", "-hq", "-title", get_canvas()->get_name().c_str(), "-vcodec", "mpeg1video", "-y", "--", filename.c_str(), (const char *)NULL);
+			command=strprintf("ffmpeg -f image2pipe -vcodec ppm -an -r %f -i pipe: -loop -hq -title \"%s\" -vcodec mpeg1video -y -- \"%s\"\n",desc.get_frame_rate(),get_canvas()->get_name().c_str(),filename.c_str());
 	else
-		pid = _spawnlp(_P_NOWAIT, "ffmpeg", "ffmpeg", "-f", "image2pipe", "-vcodec", "ppm", "-an", "-r", strprintf("%f", desc.get_frame_rate()).c_str(), "-i", "pipe:", "-loop", "-hq", "-title", get_canvas()->get_name().c_str(), "-vcodec", "mpeg1video", "-y", filename.c_str(), (const char *)NULL);
-
-	if( pid < 0) {
-		synfig::error(_("Unable to open pipe to ffmpeg"));
-		return false;
-	}
-
-	// Restore stdin/stdout
-	if(_dup2(stdin_fileno, _fileno(stdin)) != 0) {
-		synfig::error(_("Unable to open pipe to ffmpeg"));
-		return false;
-	}
-	if(_dup2(stdout_fileno, _fileno(stdout)) != 0) {
-		synfig::error(_("Unable to open pipe to ffmpeg"));
-		return false;
-	}
-	close(stdin_fileno);
-	close(stdout_fileno);
-
-	// Close the pipe read end - ffmpeg uses it
-	close(p[0]);
-	
-	// We write data to the write end of the pipe
-	file = fdopen(p[1], "wb");
+			command=strprintf("ffmpeg -f image2pipe -vcodec ppm -an -r %f -i pipe: -loop -hq -title \"%s\" -vcodec mpeg1video -y \"%s\"\n",desc.get_frame_rate(),get_canvas()->get_name().c_str(),filename.c_str());
+				
+	file=popen(command.c_str(),POPEN_BINARY_WRITE_TYPE);
 
 #elif defined(UNIX_PIPE_TO_PROCESSES)
 
