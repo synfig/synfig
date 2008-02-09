@@ -89,7 +89,8 @@ esac
 
 PKG_CHECK_MODULES(GTKMM, gtkmm-2.4 gthread-2.0,[
 	AC_MSG_CHECKING([for Gtk::AboutDialog::set_program_name])
-	CXXFLAGS="$GTKMM_CFLAGS"
+	synfigstudio_save_cxxflags="$CXXFLAGS"
+	CXXFLAGS="$GTKMM_CFLAGS $CXXFLAGS"
 	AC_COMPILE_IFELSE(
 		[
 			AC_LANG_PROGRAM([
@@ -106,6 +107,7 @@ PKG_CHECK_MODULES(GTKMM, gtkmm-2.4 gthread-2.0,[
 			AM_CONDITIONAL(HAVE_GTK_ABOUTDIALOG_SET_PROGRAM_NAME,false)
 		]
 	)
+	CXXFLAGS="$synfigstudio_save_cxxflags"
 ],[
 	AC_MSG_ERROR([ ** Gtkmm-2.4 Is a required library, aborting.])
 ])
