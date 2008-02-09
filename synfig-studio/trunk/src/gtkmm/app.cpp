@@ -262,7 +262,7 @@ std::list< etl::handle< studio::Module > > module_list_;
 
 bool studio::App::use_colorspace_gamma=true;
 bool studio::App::single_threaded=false;
-bool studio::App::restrict_radius_ducks=true;
+bool studio::App::restrict_radius_ducks=false;
 
 static int max_recent_files_=25;
 int studio::App::get_max_recent_files() { return max_recent_files_; }
@@ -1465,7 +1465,7 @@ App::reset_initial_window_configuration()
 	synfigapp::Main::settings().set_value("pref.distance_system","pt");
 	synfigapp::Main::settings().set_value("pref.use_colorspace_gamma","1");
 	synfigapp::Main::settings().set_value("pref.single_threaded","0");
-	synfigapp::Main::settings().set_value("pref.restrict_radius_ducks","1");
+	synfigapp::Main::settings().set_value("pref.restrict_radius_ducks","0");
 	synfigapp::Main::settings().set_value("window.toolbox.pos","4 4");
 }
 
