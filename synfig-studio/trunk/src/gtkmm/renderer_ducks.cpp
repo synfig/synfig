@@ -228,6 +228,13 @@ Renderer_Ducks::render_vfunc(
 		origin[0]=(origin[0]-window_startx)/pw;
 		origin[1]=(origin[1]-window_starty)/ph;
 
+#ifdef RESTRICT_RADIUS_DUCKS_TO_ONE_QUARTER
+		if((*iter)->is_radius())
+		{
+			if (point[0] < origin[0]) point[0] = origin[0];
+			if (point[1] > origin[1]) point[1] = origin[1];
+		}
+#endif
 
 		bool selected(get_work_area()->duck_is_selected(*iter));
 		bool hover(*iter==hover_duck);
@@ -374,7 +381,17 @@ Renderer_Ducks::render_vfunc(
 
 			if(hover)
 			{
+#ifdef RESTRICT_RADIUS_DUCKS_TO_ONE_QUARTER
+				Point point2((*iter)->get_trans_point());
+				Point origin2((*iter)->get_trans_origin());
+
+				if ((point2[0] - origin2[0]) * pw < 0) point2[0] = origin2[0];
+				if ((point2[1] - origin2[1]) * ph > 0) point2[1] = origin2[1];
+
+				Distance real_mag((point2-origin2).mag(),Distance::SYSTEM_UNITS);
+#else
 				Distance real_mag(((*iter)->get_trans_point()-(*iter)->get_trans_origin()).mag(),Distance::SYSTEM_UNITS);
+#endif
 				real_mag.convert(App::distance_system,get_work_area()->get_rend_desc());
 				layout->set_text(real_mag.get_string());
 

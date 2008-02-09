@@ -78,6 +78,8 @@ public:
 #include <map>
 #endif
 
+#define RESTRICT_RADIUS_DUCKS_TO_ONE_QUARTER
+
 /* === T Y P E D E F S ===================================================== */
 
 /* === C L A S S E S & S T R U C T S ======================================= */

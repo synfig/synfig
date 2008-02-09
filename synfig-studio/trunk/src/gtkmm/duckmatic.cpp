@@ -556,6 +556,32 @@ Duckmatic::signal_edited_selected_ducks()
 				throw String("Bad edit");
 			}
 		}
+#ifdef RESTRICT_RADIUS_DUCKS_TO_ONE_QUARTER
+		else if ((*iter)->is_radius())
+		{
+			Point point((*iter)->get_point());
+			bool changed = false;
+
+			if (point[0] * (flip_x_ ? -1 : 1) < 0)
+			{
+				point[0] = 0;
+				changed = true;
+			}
+			if (point[1] * (flip_y_ ? -1 : 1) < 0)
+			{
+				point[1] = 0;
+				changed = true;
+			}
+
+			if (changed) (*iter)->set_point(point);
+
+			if(!(*iter)->signal_edited()(point))
+			{
+				selected_ducks=old_set;
+				throw String("Bad edit");
+			}
+		}
+#endif
 		else
 		{
 			if(!(*iter)->signal_edited()((*iter)->get_point()))
