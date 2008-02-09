@@ -5,7 +5,7 @@
 **	$Id$
 **
 **	\legal
-**	Copyright (c) 2007 Chris Moore
+**	Copyright (c) 2007, 2008 Chris Moore
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
