@@ -556,8 +556,8 @@ Duckmatic::signal_edited_selected_ducks()
 				throw String("Bad edit");
 			}
 		}
-#ifdef RESTRICT_RADIUS_DUCKS_TO_ONE_QUARTER
-		else if ((*iter)->is_radius())
+		else if (App::restrict_radius_ducks &&
+				 (*iter)->is_radius())
 		{
 			Point point((*iter)->get_point());
 			bool changed = false;
@@ -581,7 +581,6 @@ Duckmatic::signal_edited_selected_ducks()
 				throw String("Bad edit");
 			}
 		}
-#endif
 		else
 		{
 			if(!(*iter)->signal_edited()((*iter)->get_point()))

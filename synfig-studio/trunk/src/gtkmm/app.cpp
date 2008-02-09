@@ -262,6 +262,7 @@ std::list< etl::handle< studio::Module > > module_list_;
 
 bool studio::App::use_colorspace_gamma=true;
 bool studio::App::single_threaded=false;
+bool studio::App::restrict_radius_ducks=true;
 
 static int max_recent_files_=25;
 int studio::App::get_max_recent_files() { return max_recent_files_; }
@@ -482,6 +483,11 @@ public:
 			value=strprintf("%i",App::auto_recover->get_timeout());
 			return true;
 		}
+		if(key=="restrict_radius_ducks")
+		{
+			value=strprintf("%i",(int)App::restrict_radius_ducks);
+			return true;
+		}
 
 		return synfigapp::Settings::get_value(key,value);
 	}
@@ -538,6 +544,12 @@ public:
 			App::single_threaded=i;
 			return true;
 		}
+		if(key=="restrict_radius_ducks")
+		{
+			int i(atoi(value.c_str()));
+			App::restrict_radius_ducks=i;
+			return true;
+		}
 
 		return synfigapp::Settings::set_value(key,value);
 	}
@@ -552,6 +564,7 @@ public:
 		ret.push_back("use_colorspace_gamma");
 		ret.push_back("single_threaded");
 		ret.push_back("auto_recover_backup_interval");
+		ret.push_back("restrict_radius_ducks");
 		return ret;
 	}
 };
@@ -1452,6 +1465,7 @@ App::reset_initial_window_configuration()
 	synfigapp::Main::settings().set_value("pref.distance_system","pt");
 	synfigapp::Main::settings().set_value("pref.use_colorspace_gamma","1");
 	synfigapp::Main::settings().set_value("pref.single_threaded","0");
+	synfigapp::Main::settings().set_value("pref.restrict_radius_ducks","1");
 	synfigapp::Main::settings().set_value("window.toolbox.pos","4 4");
 }
 

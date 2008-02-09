@@ -69,7 +69,8 @@ Dialog_Setup::Dialog_Setup():
 	adj_recent_files(15,1,50,1,1,1),
 	adj_undo_depth(100,10,5000,1,1,1),
 	toggle_use_colorspace_gamma(_("Visually Linear Color Selection")),
-	toggle_single_threaded(_("Use Only a Single Thread"))
+	toggle_single_threaded(_("Use Only a Single Thread")),
+	toggle_restrict_radius_ducks(_("Restrict Real-Valued Ducks to Top Right Quadrant"))
 {
 	// Setup the buttons
 
@@ -191,6 +192,9 @@ Dialog_Setup::Dialog_Setup():
 	misc_table->attach(*manage(new Gtk::Label(_("Auto Backup Interval (0 to disable)"))), 0, 1, 5, 6, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 	misc_table->attach(auto_backup_interval, 1, 2, 5, 6, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 
+	// Misc - restrict_radius_ducks
+	misc_table->attach(toggle_restrict_radius_ducks, 0, 2, 6, 7, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+
 	show_all_children();
 }
 
@@ -225,6 +229,9 @@ Dialog_Setup::on_apply_pressed()
 	App::auto_recover->set_timeout(auto_backup_interval.get_value() * 1000);
 
 	App::distance_system=Distance::System(widget_enum->get_value());
+
+	// Set the restrict_radius_ducks flag
+	App::restrict_radius_ducks=toggle_restrict_radius_ducks.get_active();
 
 	App::save_settings();
 }
@@ -304,6 +311,9 @@ Dialog_Setup::refresh()
 
 	// Refresh the value of the auto backup interval
 	auto_backup_interval.set_value(App::auto_recover->get_timeout() / 1000);
+
+	// Refresh the status of the restrict_radius_ducks flag
+	toggle_restrict_radius_ducks.set_active(App::restrict_radius_ducks);
 }
 
 GammaPattern::GammaPattern():

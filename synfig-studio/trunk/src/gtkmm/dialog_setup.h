@@ -171,6 +171,8 @@ class Dialog_Setup : public Gtk::Dialog
 	Widget_Enum *widget_enum;
 
 	Widget_Time auto_backup_interval;
+
+	Gtk::CheckButton toggle_restrict_radius_ducks;
 public:
 
 	void set_time_format(synfig::Time::Format time_format);

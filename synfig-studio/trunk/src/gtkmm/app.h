@@ -193,6 +193,8 @@ public:
 
 	static bool single_threaded;
 
+	static bool restrict_radius_ducks;
+
 	/*
  -- ** -- S I G N A L S -------------------------------------------------------
 	*/
