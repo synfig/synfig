@@ -774,6 +774,8 @@ Duckmatic::find_duck(synfig::Point point, synfig::Real radius, Duck::Type type)
 
 		if(duck->get_type()&Duck::TYPE_VERTEX)
 			dist*=1.0001;
+		else if(duck->get_type()&Duck::TYPE_RADIUS)
+			dist*=0.9999;
 
 		if(dist<=closest && !( duck->get_type() && (!(type & duck->get_type())) ) )
 		{
