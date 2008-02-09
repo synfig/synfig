@@ -236,7 +236,7 @@ Renderer_Ducks::render_vfunc(
 		}
 
 		bool selected(get_work_area()->duck_is_selected(*iter));
-		bool hover(*iter==hover_duck);
+		bool hover(*iter==hover_duck || (*iter)->get_hover());
 
 		shadow = selected?Gtk::SHADOW_IN:Gtk::SHADOW_OUT;
 

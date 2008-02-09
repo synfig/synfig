@@ -134,6 +134,7 @@ private:
 	bool editable;
 	bool radius_;
 	bool tangent_;
+	bool hover_;
 
 	synfig::TransformStack transform_stack_;
 
@@ -166,6 +167,12 @@ public:
 
 	//! \writeme
 	bool get_tangent()const { return tangent_; }
+
+	//! Sets whether to show the duck as if it is being hovered over
+	void set_hover(bool h) { hover_=h; }
+
+	//! Retrieves whether to show the duck as if it is being hovered over
+	bool get_hover()const { return hover_; }
 
 	void set_connect_duck(const etl::handle<Duck>& x) { connect_duck=x; }
 	void set_box_duck(const etl::handle<Duck>& x) { box_duck=x; }

@@ -474,6 +474,7 @@ StateCircle_Context::event_mouse_click_handler(const Smach::event& x)
 		point2_duck->set_radius(true);
 		point2_duck->set_scalar(-1);
 		point2_duck->set_type(Duck::TYPE_RADIUS);
+		point2_duck->set_hover(true);
 		get_work_area()->add_duck(point2_duck);
 
 		return Smach::RESULT_ACCEPT;
