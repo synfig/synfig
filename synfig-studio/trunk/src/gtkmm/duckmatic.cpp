@@ -108,6 +108,18 @@ Duckmatic::~Duckmatic()
 }
 
 void
+Duckmatic::set_flip_x(bool flip_x)
+{
+	flip_x_ = flip_x;
+}
+
+void
+Duckmatic::set_flip_y(bool flip_y)
+{
+	flip_y_ = flip_y;
+}
+
+void
 Duckmatic::clear_ducks()
 {
 	duck_data_share_map.clear();
@@ -995,7 +1007,8 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 			duck->set_radius(true);
 			duck->set_type(Duck::TYPE_RADIUS);
 
-			duck->set_point(Point(value_desc.get_value(get_time()).get(Real()),0));
+			// put the duck on the right hand side of the center, whether the display is flipped or not
+			duck->set_point(Point(value_desc.get_value(get_time()).get(Real()) * (flip_x_ ? -1 : 1), 0));
 			duck->set_name(guid_string(value_desc));
 			if(value_desc.is_value_node())
 			{

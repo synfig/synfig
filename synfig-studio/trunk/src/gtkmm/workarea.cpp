@@ -1921,6 +1921,9 @@ WorkArea::refresh_dimension_info()
 	pw=canvaswidth/w;
 	ph=canvasheight/h;
 
+	Duckmatic::set_flip_x(pw < 0);
+	Duckmatic::set_flip_y(ph > 0);
+
 	scrollx_adjustment.set_page_increment(abs(get_grid_size()[0]));
 	scrollx_adjustment.set_step_increment(abs(pw));
 	scrollx_adjustment.set_lower(-abs(canvaswidth));
