@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: es\n"
 "Report-Msgid-Bugs-To: http://synfig.org/Bugs\n"
-"POT-Creation-Date: 2008-01-08 18:49+0930\n"
-"PO-Revision-Date: 2008-01-09 00:01+0100\n"
+"POT-Creation-Date: 2008-02-09 11:41+0100\n"
+"PO-Revision-Date: 2008-02-09 11:45+0100\n"
 "Last-Translator: Carlos López González <carloslopezgonzalez@yahoo.es>\n"
 "Language-Team: Español <en@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,399 +16,486 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 
-#: src/gtkmm/splash.cpp:118
-msgid "ERROR:"
-msgstr "ERROR:"
+#: src/gtkmm/about.cpp:104
+msgid "2D vector animation studio"
+msgstr "Estudio de animación vectorial 2D"
 
-#: src/gtkmm/splash.cpp:134
-msgid "WARNING:"
-msgstr "AVISO:"
+#: src/gtkmm/about.cpp:106
+msgid "Visit the Synfig website"
+msgstr "Visite la web de Synfig"
 
-#: src/gtkmm/splash.cpp:221
-msgid "Version"
-msgstr "Versión"
+#: src/gtkmm/about.cpp:108
+msgid ""
+"Copyright 2001-2008\n"
+"Robert B. Quattlebaum Jr.,\n"
+"Adrian Bentley and Synfig contributors"
+msgstr ""
+"Copyright 2001-2008\n"
+"Robert B. Quattlebaum Jr.,\n"
+"Adrian Bentley y los contribuidores de Synfig"
 
-#: src/gtkmm/splash.cpp:274
-msgid "Close"
-msgstr "Cerrar"
+#. TRANSLATORS: change this to your name, separate multiple names with \n
+#: src/gtkmm/about.cpp:159
+msgid "translator-credits"
+msgstr "Carlos López González (genete)"
 
-#: src/gtkmm/app.cpp:570 src/gtkmm/toolbox.cpp:268
+#: src/gtkmm/about.cpp:185
+#, c-format
+msgid ""
+"\n"
+"Development version:\n"
+"%s\n"
+msgstr ""
+"\n"
+"Versión de desarrollo:\n"
+"%s \n"
+
+#: src/gtkmm/about.cpp:190
+#, c-format
+msgid "Built on %s at %s\n"
+msgstr "Contruido el %s en %s\n"
+
+#: src/gtkmm/about.cpp:194
+msgid "Built with:\n"
+msgstr "Construido con: \n"
+
+#: src/gtkmm/about.cpp:195
+#, c-format
+msgid "ETL %s\n"
+msgstr "ETL %s\n"
+
+#: src/gtkmm/about.cpp:196
+#, c-format
+msgid "Synfig API %s\n"
+msgstr "Synfig API %s\n"
+
+#: src/gtkmm/about.cpp:197
+#, c-format
+msgid "Synfig library %d\n"
+msgstr "Librería Synfig %d\n"
+
+#: src/gtkmm/about.cpp:198
+#, c-format
+msgid "GTK+ %d.%d.%d\n"
+msgstr "GTK+ %d.%d.%d\n"
+
+#: src/gtkmm/about.cpp:200
+#, c-format
+msgid "GNU G++ %d.%d.%d\n"
+msgstr "GNU G++ %d.%d.%d\n"
+
+#: src/gtkmm/about.cpp:205
+msgid "Using:\n"
+msgstr "Usando:\n"
+
+#: src/gtkmm/about.cpp:206
+#, c-format
+msgid "Synfig %s\n"
+msgstr "Synfig %s\n"
+
+#: src/gtkmm/about.cpp:207
+#, c-format
+msgid "GTK+ %d.%d.%d"
+msgstr "GTK+ %d.%d.%d"
+
+#: src/gtkmm/app.cpp:583 src/gtkmm/toolbox.cpp:268
 msgid "_File"
 msgstr "_Archivo"
 
-#: src/gtkmm/app.cpp:571
+#: src/gtkmm/app.cpp:584
 msgid "_Edit"
 msgstr "_Editar"
 
-#: src/gtkmm/app.cpp:572
+#: src/gtkmm/app.cpp:585
 msgid "_View"
 msgstr "_Ver"
 
-#: src/gtkmm/app.cpp:573
+#: src/gtkmm/app.cpp:586
 msgid "_Canvas"
 msgstr "_Lienzo"
 
-#: src/gtkmm/app.cpp:574
+#: src/gtkmm/app.cpp:587
 msgid "_Layer"
 msgstr "_Capa"
 
-#: src/gtkmm/app.cpp:575
+#: src/gtkmm/app.cpp:588
 msgid "Show/Hide Ducks"
 msgstr "Mostrar/Ocultar Patos"
 
-#: src/gtkmm/app.cpp:576
+#: src/gtkmm/app.cpp:589
 msgid "Preview Quality"
 msgstr "Calidad de Previsualiación"
 
-#: src/gtkmm/app.cpp:577 src/gtkmm/canvasview.cpp:2211
-#: src/synfigapp/actions/layeradd.cpp:72
+#: src/gtkmm/app.cpp:590
+msgid "Low-Res Pixel Size"
+msgstr "Tamaño de pixel Baja Resolución"
+
+#: src/gtkmm/app.cpp:591 src/gtkmm/canvasview.cpp:2269
+#: src/synfigapp/actions/layeradd.cpp:81
 msgid "New Layer"
 msgstr "Nueva Capa"
 
-#: src/gtkmm/app.cpp:578 src/synfigapp/actions/keyframeduplicate.cpp:79
+#: src/gtkmm/app.cpp:592 src/synfigapp/actions/keyframeduplicate.cpp:79
 #: src/synfigapp/actions/keyframeremove.cpp:78
 #: src/synfigapp/actions/keyframesetdelta.cpp:79
 #: src/synfigapp/actions/keyframewaypointset.cpp:78
 msgid "Keyframe"
 msgstr "Fotograma Clave"
 
-#: src/gtkmm/app.cpp:579 src/gtkmm/iconcontroller.cpp:155
+#: src/gtkmm/app.cpp:593 src/gtkmm/iconcontroller.cpp:159
 #: src/synfigapp/actions/groupaddlayers.cpp:78
 #: src/synfigapp/actions/groupremove.cpp:72
 msgid "Group"
 msgstr "Grupo"
 
-#: src/gtkmm/app.cpp:580
+#: src/gtkmm/app.cpp:594
 msgid "State"
 msgstr "Estado"
 
-#: src/gtkmm/app.cpp:581
+#: src/gtkmm/app.cpp:595
 msgid "Toolbox"
-msgstr "Caja de Herramienta"
+msgstr "Caja de Herramientas"
 
-#: src/gtkmm/app.cpp:598 src/gtkmm/keyframeactionmanager.cpp:238
+#: src/gtkmm/app.cpp:612 src/gtkmm/keyframeactionmanager.cpp:238
 msgid "Keyframe Properties"
 msgstr "Propiedades del Fotograma Clave"
 
-#: src/gtkmm/app.cpp:608 src/gtkmm/canvasview.cpp:1211
+#: src/gtkmm/app.cpp:623 src/gtkmm/canvasview.cpp:1229
 msgid "Import"
-msgstr "Imprtar"
+msgstr "Importar"
 
-#: src/gtkmm/app.cpp:609 src/gtkmm/canvasview.cpp:1214
+#: src/gtkmm/app.cpp:624 src/gtkmm/canvasview.cpp:1232
 msgid "Render"
 msgstr "Mostrar"
 
-#: src/gtkmm/app.cpp:610 src/gtkmm/canvasview.cpp:1217
+#: src/gtkmm/app.cpp:625 src/gtkmm/canvasview.cpp:1235
 #: src/gtkmm/dialog_preview.cpp:171
 msgid "Preview"
 msgstr "Previsualizar"
 
-#: src/gtkmm/app.cpp:611
+#: src/gtkmm/app.cpp:626
 msgid "Preview Dialog"
 msgstr "Diálogo de Previsualización"
 
-#: src/gtkmm/app.cpp:612 src/gtkmm/canvasview.cpp:1220
+#: src/gtkmm/app.cpp:627 src/gtkmm/canvasview.cpp:1238
 msgid "Sound File"
 msgstr "Archivo de Sonido"
 
-#: src/gtkmm/app.cpp:613 src/gtkmm/canvasoptions.cpp:151
-#: src/gtkmm/canvasview.cpp:1223
+#: src/gtkmm/app.cpp:628 src/gtkmm/canvasoptions.cpp:151
+#: src/gtkmm/canvasview.cpp:1241
 msgid "Options"
 msgstr "Opciones"
 
-#: src/gtkmm/app.cpp:614
+#: src/gtkmm/app.cpp:629
 msgid "Close View"
 msgstr "Cerrar Vista"
 
-#: src/gtkmm/app.cpp:615 src/gtkmm/canvasview.cpp:1229
+#: src/gtkmm/app.cpp:630 src/gtkmm/canvasview.cpp:1247
 msgid "Close Document"
 msgstr "Cerrar Documento"
 
-#: src/gtkmm/app.cpp:623 src/gtkmm/canvasview.cpp:1241
+#: src/gtkmm/app.cpp:639 src/gtkmm/canvasview.cpp:1262
 msgid "Select All Ducks"
 msgstr "Seleccionar todos los Patos"
 
-#: src/gtkmm/app.cpp:624 src/gtkmm/canvasview.cpp:1245
+#: src/gtkmm/app.cpp:640 src/gtkmm/canvasview.cpp:1266
 msgid "Unselect All Layers"
 msgstr "Deseleccionar Todas las Capas"
 
-#: src/gtkmm/app.cpp:625 src/gtkmm/canvasproperties.cpp:195
+#: src/gtkmm/app.cpp:641 src/gtkmm/canvasproperties.cpp:195
 msgid "Properties"
 msgstr "Propiedades"
 
-#: src/gtkmm/app.cpp:627 src/gtkmm/canvasview.cpp:1373
+#: src/gtkmm/app.cpp:643 src/gtkmm/canvasview.cpp:1431
 msgid "Show Position Ducks"
-msgstr "Mostrar la Posición de los Patos"
+msgstr "Mostrar los Patos de Posición"
 
-#: src/gtkmm/app.cpp:628 src/gtkmm/canvasview.cpp:1375
+#: src/gtkmm/app.cpp:644 src/gtkmm/canvasview.cpp:1433
 msgid "Show Vertex Ducks"
 msgstr "Mostrar los Patos de Vértice"
 
-#: src/gtkmm/app.cpp:629 src/gtkmm/canvasview.cpp:1374
+#: src/gtkmm/app.cpp:645 src/gtkmm/canvasview.cpp:1432
 msgid "Show Tangent Ducks"
 msgstr "Mostrar los Patos de Tangente"
 
-#: src/gtkmm/app.cpp:630 src/gtkmm/canvasview.cpp:1376
+#: src/gtkmm/app.cpp:646 src/gtkmm/canvasview.cpp:1434
 msgid "Show Radius Ducks"
 msgstr "Mostrar los Patos de Radio"
 
-#: src/gtkmm/app.cpp:631 src/gtkmm/canvasview.cpp:1377
+#: src/gtkmm/app.cpp:647 src/gtkmm/canvasview.cpp:1435
 msgid "Show Width Ducks"
 msgstr "Mostrar los Patos de Espesor"
 
-#: src/gtkmm/app.cpp:632 src/gtkmm/canvasview.cpp:1378
+#: src/gtkmm/app.cpp:648 src/gtkmm/canvasview.cpp:1436
 msgid "Show Angle Ducks"
 msgstr "Mostrar los Patos de Ángulo"
 
-#: src/gtkmm/app.cpp:633 src/gtkmm/canvasview.cpp:1264
+#: src/gtkmm/app.cpp:649 src/gtkmm/canvasview.cpp:1285
 msgid "Use Parametric Renderer"
 msgstr "Usar Muestreador Paramétrico "
 
-#: src/gtkmm/app.cpp:634
+#: src/gtkmm/app.cpp:650
 msgid "Use Quality Level 1"
 msgstr "Usar Nivel de Calidad 1"
 
-#: src/gtkmm/app.cpp:635
+#: src/gtkmm/app.cpp:651
 msgid "Use Quality Level 2"
 msgstr "Usar Nivel de Calidad 2"
 
-#: src/gtkmm/app.cpp:636
+#: src/gtkmm/app.cpp:652
 msgid "Use Quality Level 3"
 msgstr "Usar Nivel de Calidad 3"
 
-#: src/gtkmm/app.cpp:637
+#: src/gtkmm/app.cpp:653
 msgid "Use Quality Level 4"
 msgstr "Usar Nivel de Calidad 4"
 
-#: src/gtkmm/app.cpp:638
+#: src/gtkmm/app.cpp:654
 msgid "Use Quality Level 5"
 msgstr "Usar Nivel de Calidad 5"
 
-#: src/gtkmm/app.cpp:639
+#: src/gtkmm/app.cpp:655
 msgid "Use Quality Level 6"
 msgstr "Usar Nivel de Calidad 6"
 
-#: src/gtkmm/app.cpp:640
+#: src/gtkmm/app.cpp:656
 msgid "Use Quality Level 7"
 msgstr "Usar Nivel de Calidad 7"
 
-#: src/gtkmm/app.cpp:641
+#: src/gtkmm/app.cpp:657
 msgid "Use Quality Level 8"
 msgstr "Usar Nivel de Calidad 8"
 
-#: src/gtkmm/app.cpp:642
+#: src/gtkmm/app.cpp:658
 msgid "Use Quality Level 9"
 msgstr "Usar Nivel de Calidad 8"
 
-#: src/gtkmm/app.cpp:643
+#: src/gtkmm/app.cpp:659
 msgid "Use Quality Level 10"
 msgstr "Usar Nivel de Calidad 10"
 
-#: src/gtkmm/app.cpp:644 src/gtkmm/preview.cpp:358
+#: src/gtkmm/app.cpp:661 src/gtkmm/canvasview.cpp:1319
+#, c-format
+msgid "Set Low-Res pixel size to %d"
+msgstr "Establecer el tamaño de pixel de Baja Resolución a %d"
+
+#: src/gtkmm/app.cpp:662 src/gtkmm/preview.cpp:358
 msgid "Play"
 msgstr "Reproducir"
 
-#: src/gtkmm/app.cpp:646 src/gtkmm/canvasview.cpp:1011
+#: src/gtkmm/app.cpp:664 src/gtkmm/canvasview.cpp:1015
 #: src/gtkmm/preview.cpp:364
 msgid "Stop"
 msgstr "Parar"
 
-#: src/gtkmm/app.cpp:647 src/gtkmm/canvasview.cpp:1299
+#: src/gtkmm/app.cpp:665
 msgid "Toggle Grid Show"
 msgstr "Alternar Mostrar Rejilla"
 
-#: src/gtkmm/app.cpp:648 src/gtkmm/canvasview.cpp:1302
+#: src/gtkmm/app.cpp:666
 msgid "Toggle Grid Snap"
 msgstr "Alternar Adherir a Rejilla"
 
-#: src/gtkmm/app.cpp:649 src/gtkmm/canvasview.cpp:1305
+#: src/gtkmm/app.cpp:667
 msgid "Toggle Guide Show"
 msgstr "Alternar Mostrar Guía"
 
-#: src/gtkmm/app.cpp:650 src/gtkmm/canvasview.cpp:1308
+#: src/gtkmm/app.cpp:668
 msgid "Toggle Low-Res"
 msgstr "Alternar Baja Resolución"
 
-#: src/gtkmm/app.cpp:651 src/gtkmm/canvasview.cpp:1311
+#: src/gtkmm/app.cpp:669 src/gtkmm/canvasview.cpp:1335
+msgid "Decrease Low-Res Pixel Size"
+msgstr "Disminuir el tamaño de pixel de Baja Resolución"
+
+#: src/gtkmm/app.cpp:670 src/gtkmm/canvasview.cpp:1338
+msgid "Increase Low-Res Pixel Size"
+msgstr "Aumentar  el tamaño de pixel de Baja Resolución"
+
+#: src/gtkmm/app.cpp:671
 msgid "Toggle Onion Skin"
 msgstr "Alternar Piel de Cebolla"
 
-#: src/gtkmm/app.cpp:658 src/gtkmm/canvasview.cpp:1343
+#: src/gtkmm/app.cpp:678 src/gtkmm/canvasview.cpp:1401
 msgid "Jump to Next Keyframe"
 msgstr "Saltar al Fotograma Clave Siguiente"
 
-#: src/gtkmm/app.cpp:659 src/gtkmm/canvasview.cpp:1346
+#: src/gtkmm/app.cpp:679 src/gtkmm/canvasview.cpp:1404
 msgid "Jump to Prev Keyframe"
 msgstr "Saltar al Fotograma Clave Previo"
 
-#: src/gtkmm/app.cpp:660 src/gtkmm/canvasview.cpp:1327
+#: src/gtkmm/app.cpp:680 src/gtkmm/canvasview.cpp:1385
 msgid "Next Frame"
 msgstr "Fotograma Siguiente"
 
-#: src/gtkmm/app.cpp:661 src/gtkmm/canvasview.cpp:1329
+#: src/gtkmm/app.cpp:681 src/gtkmm/canvasview.cpp:1387
 msgid "Prev Frame"
 msgstr "Fotograma Previo"
 
-#: src/gtkmm/app.cpp:662 src/gtkmm/canvasview.cpp:1332
+#: src/gtkmm/app.cpp:682 src/gtkmm/canvasview.cpp:1390
 msgid "Seek Forward"
 msgstr "Avanzar"
 
-#: src/gtkmm/app.cpp:663 src/gtkmm/canvasview.cpp:1334
+#: src/gtkmm/app.cpp:683 src/gtkmm/canvasview.cpp:1392
 msgid "Seek Backward"
 msgstr "Retroceder"
 
-#: src/gtkmm/app.cpp:664 src/gtkmm/canvasview.cpp:1340
+#: src/gtkmm/app.cpp:684 src/gtkmm/canvasview.cpp:1398
 msgid "Seek to Begin"
 msgstr "Retroceder al Principio"
 
-#: src/gtkmm/app.cpp:665 src/gtkmm/canvasview.cpp:1337
+#: src/gtkmm/app.cpp:685 src/gtkmm/canvasview.cpp:1395
 msgid "Seek to End"
 msgstr "Avanzar al Final"
 
-#: src/gtkmm/app.cpp:667
+#: src/gtkmm/app.cpp:687
 msgid "Add group"
-msgstr "Añadir un Grupo"
+msgstr "Añadir grupo"
 
-#: src/gtkmm/app.cpp:669 src/gtkmm/iconcontroller.cpp:150
+#: src/gtkmm/app.cpp:689 src/gtkmm/iconcontroller.cpp:155
 #: src/synfigapp/actions/canvasadd.cpp:73
 msgid "New Canvas"
 msgstr "Nuevo Lienzo"
 
-#: src/gtkmm/app.cpp:671 src/gtkmm/layeractionmanager.cpp:103
+#: src/gtkmm/app.cpp:691 src/gtkmm/layeractionmanager.cpp:103
 #: src/gtkmm/layeractionmanager.cpp:447 src/gtkmm/layeractionmanager.cpp:471
 msgid "Increase Amount"
 msgstr "Incrementar la Cantidad"
 
-#: src/gtkmm/app.cpp:672 src/gtkmm/layeractionmanager.cpp:115
+#: src/gtkmm/app.cpp:692 src/gtkmm/layeractionmanager.cpp:115
 #: src/gtkmm/layeractionmanager.cpp:444 src/gtkmm/layeractionmanager.cpp:468
 msgid "Decrease Amount"
 msgstr "Disminuir la Cantidad"
 
-#: src/gtkmm/app.cpp:1007 src/gtkmm/toolbox.cpp:340
+#: src/gtkmm/app.cpp:1044 src/gtkmm/toolbox.cpp:340
 msgid "Synfig Studio"
 msgstr "Synfig Studio"
 
-#: src/gtkmm/app.cpp:1021
+#: src/gtkmm/app.cpp:1058
 msgid "Failed to initialize synfig!"
-msgstr "Fallo al inizializar Synfig!"
+msgstr "¡Fallo al inizializar Synfig!"
 
-#: src/gtkmm/app.cpp:1030
+#: src/gtkmm/app.cpp:1067
 msgid "Init UI Manager..."
-msgstr "IniciarEncargado de Interfaz de Usuario ..."
+msgstr "Iniciar Encargado de Interfaz de Usuario ..."
 
-#: src/gtkmm/app.cpp:1034
+#: src/gtkmm/app.cpp:1071
 msgid "Init Dock Manager..."
-msgstr "Iniciar Encargado de Solapas..."
+msgstr "Iniciar Encargado de Empotrables..."
 
-#: src/gtkmm/app.cpp:1037
+#: src/gtkmm/app.cpp:1074
 msgid "Init State Manager..."
 msgstr "Iniciar Encargado de Estado..."
 
-#: src/gtkmm/app.cpp:1040
+#: src/gtkmm/app.cpp:1077
 msgid "Init Toolbox..."
 msgstr "Iniciar Caja de Herramientas..."
 
-#: src/gtkmm/app.cpp:1043
+#: src/gtkmm/app.cpp:1080
+msgid "Init About Dialog..."
+msgstr "Iniciar Diálogo Acerca de..."
+
+#: src/gtkmm/app.cpp:1083
 msgid "Init Tool Options..."
 msgstr "Iniciar Opciones de Herramienta..."
 
-#: src/gtkmm/app.cpp:1047
+#: src/gtkmm/app.cpp:1087
 msgid "Init History..."
 msgstr "Iniciar Historial..."
 
-#: src/gtkmm/app.cpp:1051
+#: src/gtkmm/app.cpp:1091
 msgid "Init Canvases..."
 msgstr "Iniciar Lienzos..."
 
-#: src/gtkmm/app.cpp:1055
+#: src/gtkmm/app.cpp:1095
 msgid "Init Keyframes..."
 msgstr "Iniciar Fotogramas Claves..."
 
-#: src/gtkmm/app.cpp:1059
+#: src/gtkmm/app.cpp:1099
 msgid "Init Layers..."
 msgstr "Iniciar Capas..."
 
-#: src/gtkmm/app.cpp:1063
+#: src/gtkmm/app.cpp:1103
 msgid "Init Params..."
 msgstr "Iniciar Parametros..."
 
-#: src/gtkmm/app.cpp:1067
+#: src/gtkmm/app.cpp:1107
 msgid "Init MetaData..."
 msgstr "Iniciar Meta Datos..."
 
-#: src/gtkmm/app.cpp:1071
+#: src/gtkmm/app.cpp:1111
 msgid "Init Children..."
 msgstr "Iniciar Descendientes..."
 
-#: src/gtkmm/app.cpp:1075
+#: src/gtkmm/app.cpp:1115
 msgid "Init Info..."
 msgstr "Iniciar Información..."
 
-#: src/gtkmm/app.cpp:1079
+#: src/gtkmm/app.cpp:1119
 msgid "Init Navigator..."
 msgstr "Iniciar Navegador..."
 
-#: src/gtkmm/app.cpp:1083
+#: src/gtkmm/app.cpp:1123
 msgid "Init Timetrack..."
 msgstr "Iniciar Linea de Tiempo..."
 
-#: src/gtkmm/app.cpp:1087
+#: src/gtkmm/app.cpp:1127
 msgid "Init Curve Editor..."
 msgstr "Iniciar Editor de Curvas..."
 
-#: src/gtkmm/app.cpp:1091
+#: src/gtkmm/app.cpp:1131
 msgid "Init Layer Groups..."
 msgstr "Iniciar Grupos de Capas..."
 
-#: src/gtkmm/app.cpp:1096
+#: src/gtkmm/app.cpp:1136
 msgid "Init Color Dialog..."
 msgstr "Iniciar Diálogo de Color..."
 
-#: src/gtkmm/app.cpp:1099
+#: src/gtkmm/app.cpp:1139
 msgid "Init Gradient Dialog..."
 msgstr "Iniciar Diálogo de Gradiente..."
 
-#: src/gtkmm/app.cpp:1102
+#: src/gtkmm/app.cpp:1142
 msgid "Init DeviceTracker..."
 msgstr "Iniciar Seguimiento Dispositivos..."
 
-#: src/gtkmm/app.cpp:1105
+#: src/gtkmm/app.cpp:1145
 msgid "Init Tools..."
 msgstr "Iniciar Herramientas..."
 
-#: src/gtkmm/app.cpp:1134
-msgid "Init ModPalette..."
-msgstr "Iniciar Paleta..."
-
-#: src/gtkmm/app.cpp:1137
+#: src/gtkmm/app.cpp:1152
 msgid "Init ModMirror..."
 msgstr "Iniciar Espejo..."
 
-#: src/gtkmm/app.cpp:1141
+#: src/gtkmm/app.cpp:1171
+msgid "Init ModPalette..."
+msgstr "Iniciar Paleta..."
+
+#: src/gtkmm/app.cpp:1174
 msgid "Init Setup Dialog..."
 msgstr "Iniciar Diálogo de Atributos..."
 
-#: src/gtkmm/app.cpp:1144
+#: src/gtkmm/app.cpp:1177
 msgid "Init Input Dialog..."
 msgstr "Iniciar Diálogo de Entrada..."
 
-#: src/gtkmm/app.cpp:1149
+#: src/gtkmm/app.cpp:1182
 msgid "Init auto recovery..."
 msgstr "Iniciar Autorecuperación..."
 
-#: src/gtkmm/app.cpp:1153
+#: src/gtkmm/app.cpp:1186
 msgid "Loading Settings..."
 msgstr "Cargando Atributos..."
 
-#: src/gtkmm/app.cpp:1155
+#: src/gtkmm/app.cpp:1188
 msgid "Checking auto-recover..."
 msgstr "Chekeando Autorecuperación..."
 
-#: src/gtkmm/app.cpp:1164
+#: src/gtkmm/app.cpp:1196
 msgid "Auto Recovery"
 msgstr "Autorecuperación"
 
-#: src/gtkmm/app.cpp:1165
+#: src/gtkmm/app.cpp:1197
 msgid ""
 "Synfig Studio seems to have crashed\n"
 "before you could save all your files.\n"
@@ -420,11 +507,15 @@ msgstr ""
 "¿Quiere re-abrir esos ficheros y recuperar\n"
 "los cambios no salvados?"
 
-#: src/gtkmm/app.cpp:1174
+#: src/gtkmm/app.cpp:1206
 msgid "Unable to fully recover from previous crash"
-msgstr "Imposible de recuperar completamente desde el ultimo cierrre"
+msgstr "Imposible recuperar completamente desde el ultimo cierrre"
 
-#: src/gtkmm/app.cpp:1178
+#: src/gtkmm/app.cpp:1208
+msgid "Unable to recover from previous crash"
+msgstr "Imposible recuperar desde el ultimo cierre"
+
+#: src/gtkmm/app.cpp:1211
 msgid ""
 "Synfig Studio has attempted to recover\n"
 "from a previous crash. The files that it has\n"
@@ -434,18 +525,18 @@ msgstr ""
 "Synfig ha intentado recuperarse de\n"
 "un cierre previo. Los archivos que no se\n"
 "han recuperado NO HAN SIDO SALVADOS \n"
-" TODAVÍA. PArece una buena idea recuperarlos\n"
+" TODAVÍA. Parece una buena idea recuperarlos\n"
 "y salvarlos ahora."
 
-#: src/gtkmm/app.cpp:1192
+#: src/gtkmm/app.cpp:1227
 msgid "Loading files..."
 msgstr "Cargando Ficheros..."
 
-#: src/gtkmm/app.cpp:1198
+#: src/gtkmm/app.cpp:1238
 msgid "Done."
 msgstr "Hecho."
 
-#: src/gtkmm/app.cpp:1205 src/gtkmm/app.cpp:1209
+#: src/gtkmm/app.cpp:1245 src/gtkmm/app.cpp:1249
 msgid ""
 "Unknown exception caught when constructing App.\n"
 "This software may be unstable."
@@ -453,15 +544,15 @@ msgstr ""
 "Atrapada excepción desconocida cuando se construía la Aplicación. \n"
 "Este programa puede ser inestable."
 
-#: src/gtkmm/app.cpp:1442
+#: src/gtkmm/app.cpp:1486
 msgid "Quit Request"
 msgstr "Requerimiento de Salida"
 
-#: src/gtkmm/app.cpp:1445
+#: src/gtkmm/app.cpp:1489
 msgid "Cannot quit!"
-msgstr "No puedo Salir!"
+msgstr "¡No puedo Salir!"
 
-#: src/gtkmm/app.cpp:1445
+#: src/gtkmm/app.cpp:1489
 msgid ""
 "Tasks are currently running.\n"
 "Please cancel the current tasks and try again"
@@ -469,39 +560,46 @@ msgstr ""
 "Hay tareas ejecutandose actualmente.\n"
 "Por favor cancelelas e inténtelo de nuevo."
 
-#: src/gtkmm/app.cpp:1513
+#: src/gtkmm/app.cpp:1557
 msgid "Quit Request sent"
 msgstr "Requerimiento de Salida enviado"
 
-#: src/gtkmm/app.cpp:1792
+#: src/gtkmm/app.cpp:1774
+msgid "current"
+msgstr "actual"
+
+#: src/gtkmm/app.cpp:1776
+msgid "and older"
+msgstr "y más antiguo"
+
+#: src/gtkmm/app.cpp:1780
+msgid "File Format Version: "
+msgstr "Versión de Formato de Archivo: "
+
+#: src/gtkmm/app.cpp:1879
 msgid "Feature not available"
 msgstr "Característica no disponible"
 
-#: src/gtkmm/app.cpp:1793
+#: src/gtkmm/app.cpp:1880
 msgid "Sorry, this feature has not yet been implemented."
 msgstr "Lo siento, esta característica no ha sido aún creada"
 
-#: src/gtkmm/app.cpp:1858
-#, c-format
-msgid "\"%s\" appears to already be open!"
-msgstr "\"%s\" parece aún estar abierto!"
-
-#: src/gtkmm/app.cpp:1861
+#: src/gtkmm/app.cpp:1951
 #, c-format
 msgid "Unable to open file \"%s\""
 msgstr "Imposible abrir archivo \"%s\""
 
-#: src/gtkmm/app.cpp:1868
+#: src/gtkmm/app.cpp:1958
 #, c-format
 msgid "Unable to create instance for \"%s\""
 msgstr "Imposible crear instancia para \"%s\""
 
-#: src/gtkmm/app.cpp:1872 src/gtkmm/iconcontroller.cpp:180
-#: src/gtkmm/instance.cpp:536
+#: src/gtkmm/app.cpp:1962 src/gtkmm/iconcontroller.cpp:182
+#: src/gtkmm/instance.cpp:546
 msgid "CVS Update"
 msgstr "Actualización por CVS"
 
-#: src/gtkmm/app.cpp:1872
+#: src/gtkmm/app.cpp:1962
 msgid ""
 "There appears to be a newer version of this file available on the CVS "
 "repository.\n"
@@ -510,22 +608,22 @@ msgstr ""
 "Parece haber una nueva versión de este fichero en el depósito CVS.\n"
 "¿Quiere actualizar ahora? (probablemente sea una buena idea)"
 
-#: src/gtkmm/app.cpp:1877 src/gtkmm/app.cpp:1882 src/gtkmm/instance.cpp:458
-#: src/gtkmm/instance.cpp:474 src/gtkmm/instance.cpp:486
-#: src/gtkmm/instance.cpp:497 src/gtkmm/instance.cpp:511
-#: src/gtkmm/instance.cpp:522 src/gtkmm/instance.cpp:552
-#: src/gtkmm/instance.cpp:563 src/gtkmm/instance.cpp:579
-#: src/gtkmm/instance.cpp:588 src/gtkmm/layerparamtreestore.cpp:247
+#: src/gtkmm/app.cpp:1968 src/gtkmm/app.cpp:1973 src/gtkmm/instance.cpp:468
+#: src/gtkmm/instance.cpp:484 src/gtkmm/instance.cpp:496
+#: src/gtkmm/instance.cpp:507 src/gtkmm/instance.cpp:521
+#: src/gtkmm/instance.cpp:532 src/gtkmm/instance.cpp:562
+#: src/gtkmm/instance.cpp:573 src/gtkmm/instance.cpp:589
+#: src/gtkmm/instance.cpp:598 src/gtkmm/layerparamtreestore.cpp:245
 #: src/gtkmm/widget_canvaschooser.cpp:145
 #: src/gtkmm/widget_canvaschooser.cpp:163
 msgid "Error"
 msgstr "Error"
 
-#: src/gtkmm/app.cpp:1882
+#: src/gtkmm/app.cpp:1973
 msgid "Uncaught error on file open (BUG)"
 msgstr "Error no atrapado al abrir fichero (BUG)"
 
-#: src/gtkmm/app.cpp:1934
+#: src/gtkmm/app.cpp:2023
 msgid "Unable to open file"
 msgstr "Imposible abrir fichero"
 
@@ -553,37 +651,37 @@ msgstr "Rejilla"
 msgid "_Grid size"
 msgstr "_Tamaño de Rejilla"
 
-#: src/gtkmm/canvasoptions.cpp:104 src/gtkmm/keyframetree.cpp:61
-#: src/gtkmm/renddesc.cpp:96 src/gtkmm/renddesc.cpp:404
-#: src/synfigapp/actions/activepointadd.cpp:85
+#: src/gtkmm/canvasoptions.cpp:104 src/gtkmm/iconcontroller.cpp:139
+#: src/gtkmm/keyframetree.cpp:61 src/gtkmm/renddesc.cpp:96
+#: src/gtkmm/renddesc.cpp:404 src/synfigapp/actions/activepointadd.cpp:85
 #: src/synfigapp/actions/activepointsetoff.cpp:92
 #: src/synfigapp/actions/activepointseton.cpp:92
 #: src/synfigapp/actions/activepointsetsmart.cpp:92
-#: src/synfigapp/actions/blinepointtangentmerge.cpp:85
-#: src/synfigapp/actions/blinepointtangentsplit.cpp:85
+#: src/synfigapp/actions/blinepointtangentmerge.cpp:91
+#: src/synfigapp/actions/blinepointtangentsplit.cpp:91
 #: src/synfigapp/actions/colorset.cpp:83
 #: src/synfigapp/actions/gradientset.cpp:83
 #: src/synfigapp/actions/keyframeduplicate.cpp:84
 #: src/synfigapp/actions/layerparamdisconnect.cpp:83
-#: src/synfigapp/actions/valuedescconvert.cpp:92
-#: src/synfigapp/actions/valuedescdisconnect.cpp:83
-#: src/synfigapp/actions/valuedescset.cpp:130
+#: src/synfigapp/actions/valuedescconvert.cpp:101
+#: src/synfigapp/actions/valuedescdisconnect.cpp:93
+#: src/synfigapp/actions/valuedescset.cpp:100
 #: src/synfigapp/actions/valuenodedynamiclistinsert.cpp:79
 #: src/synfigapp/actions/valuenodedynamiclistinsertsmart.cpp:81
 #: src/synfigapp/actions/valuenodedynamiclistremovesmart.cpp:80
 #: src/synfigapp/actions/valuenodelinkdisconnect.cpp:83
 #: src/synfigapp/actions/waypointadd.cpp:86
-#: src/synfigapp/actions/waypointsetsmart.cpp:106
+#: src/synfigapp/actions/waypointsetsmart.cpp:100
 msgid "Time"
 msgstr "Tiempo"
 
-#: src/gtkmm/canvasoptions.cpp:113 src/gtkmm/dialog_setup.cpp:163
+#: src/gtkmm/canvasoptions.cpp:113 src/gtkmm/dialog_setup.cpp:165
 msgid "Units"
 msgstr "Unidades"
 
 #: src/gtkmm/canvasoptions.cpp:114
 msgid "Not yet implemented!"
-msgstr "Aún no creado!"
+msgstr "¡Aún no creado!"
 
 #: src/gtkmm/canvasoptions.cpp:169 src/gtkmm/dialog_keyframe.cpp:89
 msgid "Not yet implemented"
@@ -630,260 +728,272 @@ msgid "Please enter the name of the key"
 msgstr "Por favor introduzca el nombre de la clave"
 
 #: src/gtkmm/canvastreestore.cpp:203 src/gtkmm/canvastreestore.cpp:241
-#: src/gtkmm/childrentreestore.cpp:205 src/gtkmm/iconcontroller.cpp:137
-#: src/synfigapp/action.cpp:389
+#: src/gtkmm/childrentreestore.cpp:204 src/gtkmm/iconcontroller.cpp:146
+#: src/synfigapp/action.cpp:455
 msgid "Canvas"
 msgstr "Lienzo"
 
-#: src/gtkmm/canvastreestore.cpp:240 src/gtkmm/childrentreestore.cpp:202
-#: src/gtkmm/instance.cpp:391
+#: src/gtkmm/canvastreestore.cpp:240 src/gtkmm/childrentreestore.cpp:201
+#: src/gtkmm/instance.cpp:401
 msgid "[Unnamed]"
 msgstr "[Sin Nombre]"
 
-#: src/gtkmm/canvasview.cpp:247
+#: src/gtkmm/canvasview.cpp:240 src/gtkmm/workarea.cpp:2336
+#: src/gtkmm/workarea.cpp:2431
 msgid "Idle"
 msgstr "Inactivo"
 
-#: src/gtkmm/canvasview.cpp:337
+#: src/gtkmm/canvasview.cpp:330
 msgid "ERROR"
 msgstr "ERROR"
 
-#: src/gtkmm/canvasview.cpp:386
+#: src/gtkmm/canvasview.cpp:379
 msgid "Feature not yet implemented"
 msgstr "Característica aún no creada"
 
-#: src/gtkmm/canvasview.cpp:942
+#: src/gtkmm/canvasview.cpp:946
 msgid "Moves the time window"
 msgstr "Mueve la ventana de tiempo"
 
-#: src/gtkmm/canvasview.cpp:943
+#: src/gtkmm/canvasview.cpp:947
 msgid "Changes the current time"
 msgstr "Cambia el tiempo actual"
 
-#: src/gtkmm/canvasview.cpp:952
+#: src/gtkmm/canvasview.cpp:956
 msgid "Animate"
 msgstr "Animar"
 
-#: src/gtkmm/canvasview.cpp:956 src/gtkmm/canvasview.cpp:2472
-#: src/gtkmm/iconcontroller.cpp:174
+#: src/gtkmm/canvasview.cpp:960 src/gtkmm/canvasview.cpp:2540
+#: src/gtkmm/iconcontroller.cpp:176
 msgid "All Keyframes Locked"
 msgstr "Todos los Fotogramas Clave Bloqueados"
 
-#: src/gtkmm/canvasview.cpp:1012
+#: src/gtkmm/canvasview.cpp:1016
 msgid "Refresh"
 msgstr "Refrescar"
 
-#: src/gtkmm/canvasview.cpp:1105 src/synfigapp/actions/keyframeadd.cpp:74
-#: src/synfigapp/actions/keyframeset.cpp:78
-msgid "New Keyframe"
-msgstr "Nuevo Fotograma Clave"
-
-#: src/gtkmm/canvasview.cpp:1106
-#: src/synfigapp/actions/keyframeduplicate.cpp:53
-msgid "Duplicate Keyframe"
-msgstr "Duplicar Fotograma Clave"
-
-#: src/gtkmm/canvasview.cpp:1107
-msgid "Delete Keyframe"
-msgstr "Borrar Fotograma Clave"
-
-#: src/gtkmm/canvasview.cpp:1226
+#: src/gtkmm/canvasview.cpp:1244
 msgid "Close Window"
 msgstr "Cerrar Ventana"
 
-#: src/gtkmm/canvasview.cpp:1273
+#: src/gtkmm/canvasview.cpp:1250
+msgid "Quit"
+msgstr "_Salir"
+
+#: src/gtkmm/canvasview.cpp:1294
 msgid " (best)"
 msgstr "(mejor)"
 
-#: src/gtkmm/canvasview.cpp:1274
+#: src/gtkmm/canvasview.cpp:1295
 msgid " (fastest)"
 msgstr "(el más rápido)"
 
-#: src/gtkmm/canvasview.cpp:1276
+#: src/gtkmm/canvasview.cpp:1297
 #, c-format
 msgid "Set Quality to %d"
 msgstr "Establecer calidad a %d"
 
-#: src/gtkmm/canvasview.cpp:1295
+#: src/gtkmm/canvasview.cpp:1347
 msgid "Flipbook Dialog"
 msgstr "Diálogo de Previsualización"
 
-#: src/gtkmm/canvasview.cpp:1355
+#: src/gtkmm/canvasview.cpp:1354 src/gtkmm/iconcontroller.cpp:160
+msgid "Show Grid"
+msgstr "Mostar Rejilla"
+
+#: src/gtkmm/canvasview.cpp:1358
+msgid "Snap to Grid"
+msgstr "Adherir a la _Rejilla"
+
+#: src/gtkmm/canvasview.cpp:1362
+msgid "Show Guides"
+msgstr "Mostar Guías"
+
+#: src/gtkmm/canvasview.cpp:1366
+msgid "Use Low-Res"
+msgstr "Usar Baja Resolución"
+
+#: src/gtkmm/canvasview.cpp:1370
+msgid "Show Onion Skin"
+msgstr "Mostrar Piel de Cebolla"
+
+#: src/gtkmm/canvasview.cpp:1413
 msgid "Zoom In on Timeline"
 msgstr "Acercar en la Línea de Tiempo"
 
-#: src/gtkmm/canvasview.cpp:1358
+#: src/gtkmm/canvasview.cpp:1416
 msgid "Zoom Out on Timeline"
 msgstr "Alejar de la Linea de Tiempo"
 
-#: src/gtkmm/canvasview.cpp:1754 src/gtkmm/canvasview.cpp:2214
+#: src/gtkmm/canvasview.cpp:1812 src/gtkmm/canvasview.cpp:2272
 msgid "Select All Children"
 msgstr "Seleccionar todos los Descendientes"
 
-#: src/gtkmm/canvasview.cpp:2023
+#: src/gtkmm/canvasview.cpp:2081
 msgid "-MODIFIED"
 msgstr "-MODIFICADO"
 
-#: src/gtkmm/canvasview.cpp:2025
+#: src/gtkmm/canvasview.cpp:2083
 msgid "-UPDATED"
 msgstr "-ACTUALIZADO"
 
-#: src/gtkmm/canvasview.cpp:2030
+#: src/gtkmm/canvasview.cpp:2088
 msgid " (Root)"
 msgstr "(Raíz)"
 
-#: src/gtkmm/canvasview.cpp:2451
+#: src/gtkmm/canvasview.cpp:2519
 msgid "In Animate Editing Mode"
 msgstr "En Modo de Edición de Animación"
 
-#: src/gtkmm/canvasview.cpp:2461
+#: src/gtkmm/canvasview.cpp:2529
 msgid "Not in Animate Editing Mode"
 msgstr "No en Modo de Edición de Animación"
 
-#: src/gtkmm/canvasview.cpp:2482 src/gtkmm/iconcontroller.cpp:176
+#: src/gtkmm/canvasview.cpp:2550 src/gtkmm/iconcontroller.cpp:178
 msgid "Future Keyframes Locked"
 msgstr "Fotogramas Claves Futuros Bloqueados"
 
-#: src/gtkmm/canvasview.cpp:2492 src/gtkmm/iconcontroller.cpp:175
+#: src/gtkmm/canvasview.cpp:2560 src/gtkmm/iconcontroller.cpp:177
 msgid "Past Keyframes Locked"
 msgstr "Fotogramas Clave Pasados Bloqueados"
 
-#: src/gtkmm/canvasview.cpp:2502 src/gtkmm/iconcontroller.cpp:177
+#: src/gtkmm/canvasview.cpp:2570 src/gtkmm/iconcontroller.cpp:179
 msgid "No Keyframes Locked"
 msgstr "Sin Bloquear Fotogramas Clave"
 
-#: src/gtkmm/canvasview.cpp:3319 src/synfigapp/canvasinterface.cpp:495
-msgid "Import Image"
-msgstr "Importar imagen"
-
-#: src/gtkmm/cellrenderer_timetrack.cpp:913
+#: src/gtkmm/canvasview.cpp:3116
 msgid "Change Waypoint Group"
 msgstr "Cambiar Interpolación del Grupo"
 
-#: src/gtkmm/cellrenderer_timetrack.cpp:967 src/gtkmm/widget_defaults.cpp:287
-msgid "TCB"
-msgstr "TCB"
+#: src/gtkmm/canvasview.cpp:3147
+msgid "Duplicate Waypoints"
+msgstr "Duplicar Interpolaciones"
 
-#: src/gtkmm/cellrenderer_timetrack.cpp:978 src/gtkmm/state_circle.cpp:293
-#: src/gtkmm/state_gradient.cpp:262 src/gtkmm/widget_defaults.cpp:290
-msgid "Linear"
-msgstr "Linear"
+#: src/gtkmm/canvasview.cpp:3163
+msgid "Remove Waypoints"
+msgstr "Borrar Interpolaciones"
 
-#: src/gtkmm/cellrenderer_timetrack.cpp:989
-msgid "Ease"
-msgstr "Suave"
+#: src/gtkmm/canvasview.cpp:3202
+msgid "In"
+msgstr "Entrada"
 
-#: src/gtkmm/cellrenderer_timetrack.cpp:1000 src/gtkmm/widget_defaults.cpp:288
-msgid "Constant"
-msgstr "Constante"
+#: src/gtkmm/canvasview.cpp:3202
+msgid "Out"
+msgstr "Salida"
 
-#: src/gtkmm/cellrenderer_timetrack.cpp:1012
-msgid "Change \"In\" Interp."
-msgstr "Cambiar \"In\" Interpolación"
+#: src/gtkmm/canvasview.cpp:3207
+msgid "_TCB"
+msgstr "_TCB"
 
-#: src/gtkmm/cellrenderer_timetrack.cpp:1012
-msgid "Change \"Out\" Interp."
-msgstr "Cambiar \"Out\" Interpolación"
+#: src/gtkmm/canvasview.cpp:3212
+msgid "_Linear"
+msgstr "_Linear"
 
-#: src/gtkmm/cellrenderer_value.cpp:218
+#: src/gtkmm/canvasview.cpp:3217
+msgid "_Ease"
+msgstr "_Suave"
+
+#: src/gtkmm/canvasview.cpp:3222
+msgid "_Constant"
+msgstr "_Constante"
+
+#: src/gtkmm/canvasview.cpp:3229
+msgid "TC_B Both"
+msgstr "TC_B Ámbos"
+
+#: src/gtkmm/canvasview.cpp:3233
+msgid "Li_near Both"
+msgstr "Li_near Ámbos"
+
+#: src/gtkmm/canvasview.cpp:3237
+msgid "Ea_se Both"
+msgstr "Sua_ve ámbos"
+
+#: src/gtkmm/canvasview.cpp:3241
+msgid "C_onstant Both"
+msgstr "C_onstante Ámbos"
+
+#: src/gtkmm/canvasview.cpp:3247
+msgid "_Jump To"
+msgstr "_Saltar A"
+
+#: src/gtkmm/canvasview.cpp:3250
+msgid "_Duplicate"
+msgstr "_Duplicar"
+
+#: src/gtkmm/canvasview.cpp:3253
+msgid "_Remove"
+msgstr "_Borrar"
+
+#: src/gtkmm/canvasview.cpp:3253
+#, c-format
+msgid "_Remove %d Waypoints"
+msgstr "_Borrar %d Interpolación"
+
+#: src/gtkmm/canvasview.cpp:3257
+msgid "_Properties"
+msgstr "_Propiedades"
+
+#: src/gtkmm/canvasview.cpp:3527 src/synfigapp/canvasinterface.cpp:508
+msgid "Import Image"
+msgstr "Importar imagen"
+
+#: src/gtkmm/cellrenderer_value.cpp:220
 msgid "Paragraph"
 msgstr "Párrafo"
 
-#: src/gtkmm/cellrenderer_value.cpp:222
+#: src/gtkmm/cellrenderer_value.cpp:224
 msgid "Enter Paragraph Text Here:"
 msgstr "Introduzca Texto del Párrafo Aquí"
 
-#: src/gtkmm/cellrenderer_value.cpp:431 src/gtkmm/iconcontroller.cpp:144
+#: src/gtkmm/cellrenderer_value.cpp:404
+msgid "<Inline Canvas>"
+msgstr "<Lienzo en Línea>"
+
+#: src/gtkmm/cellrenderer_value.cpp:434 src/gtkmm/iconcontroller.cpp:143
 msgid "Segment"
 msgstr "Segmento"
 
-#: src/gtkmm/cellrenderer_value.cpp:438
+#: src/gtkmm/cellrenderer_value.cpp:441
 msgid "List"
 msgstr "Lista"
 
-#: src/gtkmm/cellrenderer_value.cpp:441 src/gtkmm/iconcontroller.cpp:162
+#: src/gtkmm/cellrenderer_value.cpp:444 src/gtkmm/iconcontroller.cpp:144
 msgid "BLine Point"
 msgstr "Punto Línea Beizer"
 
-#: src/gtkmm/cellrenderer_value.cpp:444
+#: src/gtkmm/cellrenderer_value.cpp:447
 msgid "UNKNOWN"
 msgstr "DESCONOCIDO"
 
-#: src/gtkmm/childrentree.cpp:91 src/gtkmm/compview.cpp:189
-#: src/gtkmm/dock_canvases.cpp:108 src/synfigapp/actions/canvasadd.cpp:78
+#: src/gtkmm/childrentree.cpp:91 src/gtkmm/dock_canvases.cpp:108
+#: src/synfigapp/actions/canvasadd.cpp:78
 msgid "ID"
 msgstr "ID"
 
-#: src/gtkmm/childrentree.cpp:111 src/gtkmm/layertree.cpp:344
-#: src/synfigapp/actions/valuedescconvert.cpp:87
+#: src/gtkmm/childrentree.cpp:111 src/gtkmm/layertree.cpp:345
+#: src/synfigapp/actions/valuedescconvert.cpp:96
 msgid "Type"
 msgstr "Tipo"
 
 #: src/gtkmm/childrentree.cpp:122 src/synfigapp/actions/layerparamset.cpp:80
-#: src/synfigapp/actions/valuedescset.cpp:126
+#: src/synfigapp/actions/valuedescset.cpp:96
 #: src/synfigapp/actions/valuenodeconstset.cpp:77
 msgid "ValueBase"
 msgstr "Valor Base"
 
-#: src/gtkmm/childrentree.cpp:138 src/gtkmm/dock_timetrack.cpp:86
-#: src/gtkmm/iconcontroller.cpp:172
+#: src/gtkmm/childrentree.cpp:138 src/gtkmm/dock_timetrack.cpp:87
+#: src/gtkmm/iconcontroller.cpp:174
 msgid "Time Track"
 msgstr "Pista de Tiempo"
 
-#: src/gtkmm/childrentreestore.cpp:78 src/gtkmm/compview.cpp:88
+#: src/gtkmm/childrentreestore.cpp:78
 msgid "Canvases"
 msgstr "Lienzos"
 
 #: src/gtkmm/childrentreestore.cpp:83
 msgid "ValueBase Nodes"
 msgstr "Nodos de Valor Base"
-
-#: src/gtkmm/compview.cpp:89 src/gtkmm/dock_history.cpp:69
-#: src/gtkmm/dock_history.cpp:114
-msgid "History"
-msgstr "Historial"
-
-#: src/gtkmm/compview.cpp:166 src/gtkmm/dock_canvases.cpp:55
-msgid "Canvas Browser"
-msgstr "Navegador de Lienzos"
-
-#: src/gtkmm/compview.cpp:249 src/gtkmm/dock_history.cpp:199
-#: src/gtkmm/keyframetree.cpp:98
-msgid "Jump"
-msgstr "Saltar"
-
-#: src/gtkmm/compview.cpp:266 src/gtkmm/dock_history.cpp:216
-msgid "Action"
-msgstr "Acción"
-
-#: src/gtkmm/compview.cpp:296
-msgid "Clear Undo"
-msgstr "Borrar Deshacer"
-
-#: src/gtkmm/compview.cpp:299
-msgid "Clear Redo"
-msgstr "Borrar Rehacer"
-
-#: src/gtkmm/compview.cpp:331 src/gtkmm/compview.cpp:340
-#: src/gtkmm/dock_history.cpp:260 src/gtkmm/dock_history.cpp:269
-msgid "Clear History"
-msgstr "Borrar Historial"
-
-#: src/gtkmm/compview.cpp:331 src/gtkmm/dock_history.cpp:260
-msgid ""
-"You will not be able to undo any changes that you have made!\n"
-"Are you sure you want to clear the undo stack?"
-msgstr ""
-"No podrá deshacer cualquier cambio que haya hecho!\n"
-"¿Está seguro de que quieres vaciar la pila de deshacer?"
-
-#: src/gtkmm/compview.cpp:340 src/gtkmm/dock_history.cpp:269
-msgid ""
-"You will not be able to redo any changes that you have made!\n"
-"Are you sure you want to clear the redo stack?"
-msgstr ""
-"No podrá deshacer cualquier cambio que haya hecho!\n"
-"¿Está seguro de que quieres vaciar la pila de rehacer?"
 
 #: src/gtkmm/dialog_color.cpp:68
 msgid "Colors"
@@ -941,77 +1051,85 @@ msgstr "Atributos de Tiempo"
 msgid "<b>Time Settings</b>"
 msgstr "<b>Atributos de Tiempo</b>"
 
-#: src/gtkmm/dialog_setup.cpp:64
+#: src/gtkmm/dialog_setup.cpp:65
 msgid "Synfig Studio Setup"
 msgstr "Atributos de Synfig Studio"
 
-#: src/gtkmm/dialog_setup.cpp:70
+#: src/gtkmm/dialog_setup.cpp:71
 msgid "Visually Linear Color Selection"
 msgstr "Selección del Color de manera Visualmente Linear "
 
-#: src/gtkmm/dialog_setup.cpp:71
+#: src/gtkmm/dialog_setup.cpp:72
 msgid "Use Only a Single Thread"
 msgstr "Usar sólo un Simple Hilo"
 
-#: src/gtkmm/dialog_setup.cpp:98
+#: src/gtkmm/dialog_setup.cpp:73
+msgid "Restrict Real-Valued Ducks to Top Right Quadrant"
+msgstr "Restringir Patos de Valores Reales al Cuadrante Superior Derecho"
+
+#: src/gtkmm/dialog_setup.cpp:100
 msgid "Gamma"
 msgstr "Gamma"
 
-#: src/gtkmm/dialog_setup.cpp:104 src/gtkmm/widget_coloredit.cpp:309
+#: src/gtkmm/dialog_setup.cpp:106 src/gtkmm/widget_coloredit.cpp:309
 msgid "Red"
 msgstr "Rojo"
 
-#: src/gtkmm/dialog_setup.cpp:109 src/gtkmm/widget_coloredit.cpp:311
+#: src/gtkmm/dialog_setup.cpp:111 src/gtkmm/widget_coloredit.cpp:311
 msgid "Green"
 msgstr "Verde"
 
-#: src/gtkmm/dialog_setup.cpp:114 src/gtkmm/widget_coloredit.cpp:313
+#: src/gtkmm/dialog_setup.cpp:116 src/gtkmm/widget_coloredit.cpp:313
 msgid "Blue"
 msgstr "Azul"
 
-#: src/gtkmm/dialog_setup.cpp:118
+#: src/gtkmm/dialog_setup.cpp:120
 msgid "Black Level"
 msgstr "Nivel de Negro"
 
-#: src/gtkmm/dialog_setup.cpp:129
+#: src/gtkmm/dialog_setup.cpp:131
 msgid "Misc."
 msgstr "Misc."
 
-#: src/gtkmm/dialog_setup.cpp:133
+#: src/gtkmm/dialog_setup.cpp:135
 msgid "Timestamp"
 msgstr "Formato Tiempo"
 
-#: src/gtkmm/dialog_setup.cpp:164
+#: src/gtkmm/dialog_setup.cpp:166
 msgid "Pixels"
 msgstr "Pixels"
 
-#: src/gtkmm/dialog_setup.cpp:165
+#: src/gtkmm/dialog_setup.cpp:167
 msgid "Points"
 msgstr "Puntos"
 
-#: src/gtkmm/dialog_setup.cpp:166
+#: src/gtkmm/dialog_setup.cpp:168
 msgid "Inches"
 msgstr "Pulgadas"
 
-#: src/gtkmm/dialog_setup.cpp:167
+#: src/gtkmm/dialog_setup.cpp:169
 msgid "Meters"
 msgstr "Metros"
 
-#: src/gtkmm/dialog_setup.cpp:168
+#: src/gtkmm/dialog_setup.cpp:170
 msgid "Centimeters"
 msgstr "Centímetros"
 
-#: src/gtkmm/dialog_setup.cpp:169
+#: src/gtkmm/dialog_setup.cpp:171
 msgid "Millimeters"
 msgstr "Milímetros"
 
-#: src/gtkmm/dialog_setup.cpp:174
+#: src/gtkmm/dialog_setup.cpp:176
 msgid "Unit System"
 msgstr "Systema de Unidades"
 
-#: src/gtkmm/dialog_setup.cpp:180
+#: src/gtkmm/dialog_setup.cpp:182
 msgid "Recent Files"
 msgstr "Archivos Recientes"
+
+#: src/gtkmm/dialog_setup.cpp:192
+msgid "Auto Backup Interval (0 to disable)"
+msgstr "Intervalo de Copia de Seguridad Automatica (0 para deshabilitar)"
 
 #: src/gtkmm/dialog_soundselect.cpp:56
 msgid "Sound Select"
@@ -1037,23 +1155,31 @@ msgstr "Editor de Interpolación"
 msgid "X"
 msgstr "X"
 
-#: src/gtkmm/dock_children.cpp:66 src/gtkmm/iconcontroller.cpp:167
+#: src/gtkmm/dock_canvases.cpp:55
+msgid "Canvas Browser"
+msgstr "Navegador de Lienzos"
+
+#: src/gtkmm/dock_children.cpp:66 src/gtkmm/iconcontroller.cpp:169
 msgid "Children"
 msgstr "Descendientes"
 
-#: src/gtkmm/dock_curves.cpp:70 src/gtkmm/iconcontroller.cpp:168
+#: src/gtkmm/dock_curves.cpp:70 src/gtkmm/iconcontroller.cpp:170
 msgid "Curves"
 msgstr "Curvas"
 
 #: src/gtkmm/dockdialog.cpp:115
-msgid "Dock Dialog"
-msgstr "Diálogo Empotrable"
+msgid "Dock Panel"
+msgstr "Panel Empotrable"
 
-#: src/gtkmm/dockdialog.cpp:561
-msgid "Empty Dock Dialog"
-msgstr "Limpiar Diálogo Empotrable"
+#: src/gtkmm/dockdialog.cpp:563
+msgid "Empty Dock Panel"
+msgstr "Panel Empotrable Vacío"
 
-#: src/gtkmm/dock_history.cpp:78 src/gtkmm/iconcontroller.cpp:164
+#: src/gtkmm/dock_history.cpp:69 src/gtkmm/dock_history.cpp:114
+msgid "History"
+msgstr "Historial"
+
+#: src/gtkmm/dock_history.cpp:78 src/gtkmm/iconcontroller.cpp:166
 msgid "Clear Undo Stack"
 msgstr "Vaciar Pila de Deshacer"
 
@@ -1061,7 +1187,7 @@ msgstr "Vaciar Pila de Deshacer"
 msgid "Clear the undo stack"
 msgstr "Vaciar la pila de deshacer"
 
-#: src/gtkmm/dock_history.cpp:89 src/gtkmm/iconcontroller.cpp:165
+#: src/gtkmm/dock_history.cpp:89 src/gtkmm/iconcontroller.cpp:167
 msgid "Clear Redo Stack"
 msgstr "Vaciar Pila de Rehacer"
 
@@ -1085,7 +1211,39 @@ msgstr "Rehacer"
 msgid "Redo the previously undone action"
 msgstr "Rehacer la acción previamente deshecha"
 
-#: src/gtkmm/dock_info.cpp:96 src/gtkmm/instance.cpp:527
+#: src/gtkmm/dock_history.cpp:199 src/gtkmm/keyframetree.cpp:91
+msgid "Jump"
+msgstr "Saltar"
+
+#: src/gtkmm/dock_history.cpp:204 src/gtkmm/keyframetree.cpp:95
+msgid "(JMP)"
+msgstr "(SALTA)"
+
+#: src/gtkmm/dock_history.cpp:216
+msgid "Action"
+msgstr "Acción"
+
+#: src/gtkmm/dock_history.cpp:263 src/gtkmm/dock_history.cpp:272
+msgid "Clear History"
+msgstr "Borrar Historial"
+
+#: src/gtkmm/dock_history.cpp:263
+msgid ""
+"You will not be able to undo any changes that you have made!\n"
+"Are you sure you want to clear the undo stack?"
+msgstr ""
+"No podrá deshacer cualquier cambio que haya hecho!\n"
+"¿Está seguro de que quieres vaciar la pila de deshacer?"
+
+#: src/gtkmm/dock_history.cpp:272
+msgid ""
+"You will not be able to redo any changes that you have made!\n"
+"Are you sure you want to clear the redo stack?"
+msgstr ""
+"No podrá deshacer cualquier cambio que haya hecho!\n"
+"¿Está seguro de que quieres vaciar la pila de rehacer?"
+
+#: src/gtkmm/dock_info.cpp:96 src/gtkmm/instance.cpp:537
 msgid "Info"
 msgstr "Información"
 
@@ -1113,7 +1271,7 @@ msgstr "B:"
 msgid "A: "
 msgstr "A:"
 
-#: src/gtkmm/dock_keyframes.cpp:66 src/gtkmm/iconcontroller.cpp:169
+#: src/gtkmm/dock_keyframes.cpp:66 src/gtkmm/iconcontroller.cpp:171
 msgid "Keyframes"
 msgstr "Fotogramas Clave"
 
@@ -1125,8 +1283,8 @@ msgstr "Grupos"
 msgid "Group Ops"
 msgstr "Opciones de Grupo"
 
-#: src/gtkmm/dock_layergroups.cpp:76 src/gtkmm/groupactionmanager.cpp:176
-#: src/gtkmm/groupactionmanager.cpp:177
+#: src/gtkmm/dock_layergroups.cpp:76 src/gtkmm/groupactionmanager.cpp:175
+#: src/gtkmm/groupactionmanager.cpp:176
 msgid "Add a New Group"
 msgstr "Añadir un Nuevo Grupo"
 
@@ -1150,7 +1308,7 @@ msgstr "Añadir una nueva entrada de Meta Dato"
 msgid "Remove selected MetaData entry"
 msgstr "Borra la entrada de Meta Dato seleccionada"
 
-#: src/gtkmm/dock_navigator.cpp:495 src/gtkmm/iconcontroller.cpp:171
+#: src/gtkmm/dock_navigator.cpp:494 src/gtkmm/iconcontroller.cpp:173
 msgid "Navigator"
 msgstr "Navegador"
 
@@ -1158,40 +1316,37 @@ msgstr "Navegador"
 msgid "Params"
 msgstr "Parámetros"
 
-#: src/gtkmm/dock_timetrack.cpp:82 src/gtkmm/layergrouptree.cpp:74
-#: src/gtkmm/layertree.cpp:290 src/synfigapp/actions/valuedescexport.cpp:82
+#: src/gtkmm/dock_timetrack.cpp:83 src/gtkmm/layergrouptree.cpp:74
+#: src/gtkmm/layertree.cpp:212 src/gtkmm/layertree.cpp:291
+#: src/synfigapp/actions/valuedescexport.cpp:91
 #: src/synfigapp/actions/valuenodeadd.cpp:77
-#: src/synfigapp/actions/valuenoderename.cpp:76
+#: src/synfigapp/actions/valuenoderename.cpp:85
 msgid "Name"
 msgstr "Nombre"
 
-#: src/gtkmm/dock_timetrack.cpp:404
+#: src/gtkmm/dock_timetrack.cpp:402
 msgid "Timetrack"
 msgstr "Pista de Tiempo"
 
-#: src/gtkmm/groupactionmanager.cpp:270
+#: src/gtkmm/groupactionmanager.cpp:269
 msgid "UnnamedGroup"
 msgstr "Grupo Sin Nombre"
 
 #: src/gtkmm/iconcontroller.cpp:136
-msgid "Swap Colors"
-msgstr "Intercambiar Colores"
+msgid "Bool"
+msgstr "Booleano"
 
-#: src/gtkmm/iconcontroller.cpp:138
-#: src/synfigapp/actions/layerparamconnect.cpp:80
-#: src/synfigapp/actions/valuenodedynamiclistloop.cpp:72
-#: src/synfigapp/actions/valuenodedynamiclistunloop.cpp:72
-#: src/synfigapp/actions/valuenoderemove.cpp:72
-msgid "ValueNode"
-msgstr "Valor de Nodo"
-
-#: src/gtkmm/iconcontroller.cpp:139
-msgid "Real"
-msgstr "Real"
-
-#: src/gtkmm/iconcontroller.cpp:140
+#: src/gtkmm/iconcontroller.cpp:137
 msgid "Integer"
 msgstr "Entero"
+
+#: src/gtkmm/iconcontroller.cpp:138
+msgid "Angle"
+msgstr "Ángulo"
+
+#: src/gtkmm/iconcontroller.cpp:140
+msgid "Real"
+msgstr "Real"
 
 #: src/gtkmm/iconcontroller.cpp:141
 msgid "Vector"
@@ -1201,164 +1356,164 @@ msgstr "Vector"
 msgid "Color"
 msgstr "Color"
 
-#: src/gtkmm/iconcontroller.cpp:143
-msgid "Angle"
-msgstr "Ángulo"
-
-#: src/gtkmm/iconcontroller.cpp:145
-msgid "About"
-msgstr "Acerca de"
-
-#: src/gtkmm/iconcontroller.cpp:146 src/gtkmm/iconcontroller.cpp:147
-#: src/gtkmm/iconcontroller.cpp:148 src/gtkmm/iconcontroller.cpp:149
+#: src/gtkmm/iconcontroller.cpp:145 src/gtkmm/iconcontroller.cpp:147
+#: src/gtkmm/iconcontroller.cpp:153 src/gtkmm/iconcontroller.cpp:154
 msgid "Rename"
 msgstr "Renombar"
 
-#: src/gtkmm/iconcontroller.cpp:151 src/gtkmm/toolbox.cpp:280
-msgid "Save All"
-msgstr "Salvar Todo"
-
-#: src/gtkmm/iconcontroller.cpp:152
-msgid "Bool"
-msgstr "Booleano"
-
-#: src/gtkmm/iconcontroller.cpp:153 src/gtkmm/layergrouptreestore.cpp:928
-#: src/gtkmm/layertree.cpp:211 src/gtkmm/layertreestore.cpp:936
-#: src/synfigapp/actions/groupaddlayers.cpp:72
-#: src/synfigapp/actions/groupremovelayers.cpp:72
-#: src/synfigapp/actions/layeractivate.cpp:89
-#: src/synfigapp/actions/layerduplicate.cpp:73
-#: src/synfigapp/actions/layerencapsulate.cpp:75
-#: src/synfigapp/actions/layerlower.cpp:73
-#: src/synfigapp/actions/layermove.cpp:75
-#: src/synfigapp/actions/layerparamconnect.cpp:72
-#: src/synfigapp/actions/layerparamdisconnect.cpp:75
-#: src/synfigapp/actions/layerparamset.cpp:72
-#: src/synfigapp/actions/layerraise.cpp:73
-#: src/synfigapp/actions/layerremove.cpp:72
-#: src/synfigapp/actions/layersetdesc.cpp:74
-msgid "Layer"
-msgstr "Capa"
-
-#: src/gtkmm/iconcontroller.cpp:154
-msgid "Paste Canvas"
-msgstr "Lienzo Pegado"
-
-#: src/gtkmm/iconcontroller.cpp:156
-msgid "Show Grid"
-msgstr "Mostar Rejilla"
-
-#: src/gtkmm/iconcontroller.cpp:157
-msgid "Hide Grid"
-msgstr "Ocultar Rejilla"
-
-#: src/gtkmm/iconcontroller.cpp:158
-msgid "Enable Grid Snap"
-msgstr "Habilitar Adherir a Rejilla "
-
-#: src/gtkmm/iconcontroller.cpp:159
-msgid "Disable Grid Snap"
-msgstr "Deshabilitar Adherir a Rejilla"
-
-#: src/gtkmm/iconcontroller.cpp:160
-msgid "Duplicate"
-msgstr "Duplicar"
-
-#: src/gtkmm/iconcontroller.cpp:161 src/gtkmm/state_bline.cpp:346
+#: src/gtkmm/iconcontroller.cpp:148 src/gtkmm/state_bline.cpp:360
 msgid "Gradient"
 msgstr "Gradiente"
 
-#: src/gtkmm/iconcontroller.cpp:170
+#: src/gtkmm/iconcontroller.cpp:150
+msgid "Swap Colors"
+msgstr "Intercambiar Colores"
+
+#: src/gtkmm/iconcontroller.cpp:151
+#: src/synfigapp/actions/layerparamconnect.cpp:80
+#: src/synfigapp/actions/valuenodedynamiclistloop.cpp:72
+#: src/synfigapp/actions/valuenodedynamiclistunloop.cpp:72
+#: src/synfigapp/actions/valuenoderemove.cpp:79
+msgid "ValueNode"
+msgstr "Valor de Nodo"
+
+#: src/gtkmm/iconcontroller.cpp:152
+msgid "About"
+msgstr "Acerca de"
+
+#: src/gtkmm/iconcontroller.cpp:156 src/gtkmm/toolbox.cpp:280
+msgid "Save All"
+msgstr "Salvar Todo"
+
+#: src/gtkmm/iconcontroller.cpp:157 src/gtkmm/layergrouptreestore.cpp:919
+#: src/gtkmm/layertreestore.cpp:929
+#: src/synfigapp/actions/groupaddlayers.cpp:72
+#: src/synfigapp/actions/groupremovelayers.cpp:72
+#: src/synfigapp/actions/layeractivate.cpp:85
+#: src/synfigapp/actions/layerduplicate.cpp:79
+#: src/synfigapp/actions/layerencapsulate.cpp:81
+#: src/synfigapp/actions/layerlower.cpp:79
+#: src/synfigapp/actions/layermove.cpp:84
+#: src/synfigapp/actions/layerparamconnect.cpp:72
+#: src/synfigapp/actions/layerparamdisconnect.cpp:75
+#: src/synfigapp/actions/layerparamset.cpp:72
+#: src/synfigapp/actions/layerraise.cpp:79
+#: src/synfigapp/actions/layerremove.cpp:78
+#: src/synfigapp/actions/layersetdesc.cpp:84
+msgid "Layer"
+msgstr "Capa"
+
+#: src/gtkmm/iconcontroller.cpp:158
+msgid "Paste Canvas"
+msgstr "Lienzo Pegado"
+
+#: src/gtkmm/iconcontroller.cpp:161
+msgid "Hide Grid"
+msgstr "Ocultar Rejilla"
+
+#: src/gtkmm/iconcontroller.cpp:162
+msgid "Enable Grid Snap"
+msgstr "Habilitar Adherir a Rejilla "
+
+#: src/gtkmm/iconcontroller.cpp:163
+msgid "Disable Grid Snap"
+msgstr "Deshabilitar Adherir a Rejilla"
+
+#: src/gtkmm/iconcontroller.cpp:164
+msgid "Duplicate"
+msgstr "Duplicar"
+
+#: src/gtkmm/iconcontroller.cpp:172
 msgid "MetaData"
 msgstr "Meta Dato"
 
-#: src/gtkmm/iconcontroller.cpp:179
+#: src/gtkmm/iconcontroller.cpp:181
 msgid "CVS Add"
 msgstr "Añadir CVS"
 
-#: src/gtkmm/iconcontroller.cpp:181 src/gtkmm/instance.cpp:467
-#: src/gtkmm/instance.cpp:478
+#: src/gtkmm/iconcontroller.cpp:183 src/gtkmm/instance.cpp:477
+#: src/gtkmm/instance.cpp:488
 msgid "CVS Commit"
 msgstr "Entrega CVS"
 
-#: src/gtkmm/iconcontroller.cpp:182 src/gtkmm/instance.cpp:569
+#: src/gtkmm/iconcontroller.cpp:184 src/gtkmm/instance.cpp:579
 msgid "CVS Revert"
 msgstr "Revertir CVS"
 
-#: src/gtkmm/iconcontroller.cpp:185
+#: src/gtkmm/iconcontroller.cpp:187
 msgid "Normal Tool"
 msgstr "Herramienta Normal"
 
-#: src/gtkmm/iconcontroller.cpp:186 src/gtkmm/state_polygon.cpp:269
+#: src/gtkmm/iconcontroller.cpp:188 src/gtkmm/state_polygon.cpp:272
 msgid "Polygon Tool"
 msgstr "Herramienta Polígono"
 
-#: src/gtkmm/iconcontroller.cpp:187 src/gtkmm/state_bline.cpp:402
+#: src/gtkmm/iconcontroller.cpp:189 src/gtkmm/state_bline.cpp:418
 msgid "BLine Tool"
 msgstr "Herramienta Línea Beizer"
 
-#: src/gtkmm/iconcontroller.cpp:188
+#: src/gtkmm/iconcontroller.cpp:190
 msgid "Eyedrop Tool"
 msgstr "Herramienta Recoge Color"
 
-#: src/gtkmm/iconcontroller.cpp:189
+#: src/gtkmm/iconcontroller.cpp:191
 msgid "Fill Tool"
 msgstr "Herramienta de Relleno"
 
-#: src/gtkmm/iconcontroller.cpp:190 src/gtkmm/state_draw.cpp:517
+#: src/gtkmm/iconcontroller.cpp:192 src/gtkmm/state_draw.cpp:520
 msgid "Draw Tool"
 msgstr "Herramienta de Dibujo"
 
-#: src/gtkmm/iconcontroller.cpp:191 src/gtkmm/state_sketch.cpp:400
+#: src/gtkmm/iconcontroller.cpp:193 src/gtkmm/state_sketch.cpp:400
 msgid "Sketch Tool"
 msgstr "Herramienta de Boceto"
 
-#: src/gtkmm/iconcontroller.cpp:192 src/gtkmm/state_circle.cpp:347
+#: src/gtkmm/iconcontroller.cpp:194 src/gtkmm/state_circle.cpp:350
 msgid "Circle Tool"
 msgstr "Herramienta de Círculo"
 
-#: src/gtkmm/iconcontroller.cpp:193 src/gtkmm/state_rectangle.cpp:302
+#: src/gtkmm/iconcontroller.cpp:195 src/gtkmm/state_rectangle.cpp:305
 msgid "Rectangle Tool"
 msgstr "Herramienta de Rectángulo"
 
-#: src/gtkmm/iconcontroller.cpp:194
+#: src/gtkmm/iconcontroller.cpp:196
 msgid "SmoothMove Tool"
 msgstr "Herramienta de Mover Suave"
 
-#: src/gtkmm/iconcontroller.cpp:195 src/gtkmm/state_scale.cpp:192
+#: src/gtkmm/iconcontroller.cpp:197 src/gtkmm/state_scale.cpp:192
 msgid "Scale Tool"
 msgstr "Herramienta de Escalar"
 
-#: src/gtkmm/iconcontroller.cpp:196 src/gtkmm/state_width.cpp:307
+#: src/gtkmm/iconcontroller.cpp:198 src/gtkmm/state_width.cpp:307
 msgid "Width Tool"
 msgstr "Herramienta de Espesor"
 
-#: src/gtkmm/iconcontroller.cpp:197 src/gtkmm/state_rotate.cpp:207
+#: src/gtkmm/iconcontroller.cpp:199 src/gtkmm/state_rotate.cpp:207
 msgid "Rotate Tool"
 msgstr "Heramienta de Rotar"
 
-#: src/gtkmm/iconcontroller.cpp:198 src/gtkmm/state_zoom.cpp:199
+#: src/gtkmm/iconcontroller.cpp:200 src/gtkmm/state_zoom.cpp:199
 msgid "Zoom Tool"
 msgstr "Herramienta de Zoom"
 
-#: src/gtkmm/iconcontroller.cpp:199
+#: src/gtkmm/iconcontroller.cpp:201
 msgid "Info Tool"
 msgstr "Herramienta de Información"
 
-#: src/gtkmm/iconcontroller.cpp:200 src/gtkmm/mod_mirror/state_mirror.cpp:188
+#: src/gtkmm/iconcontroller.cpp:202 src/gtkmm/mod_mirror/state_mirror.cpp:188
 #: src/gtkmm/mod_mirror/state_mirror.cpp:216
 msgid "Mirror Tool"
 msgstr "Herramienta de Espejo"
 
-#: src/gtkmm/instance.cpp:258
+#: src/gtkmm/instance.cpp:265
 msgid "Choose a Filename to Save As"
 msgstr "Elija un Nombre de Archivo para Guardar Como"
 
-#: src/gtkmm/instance.cpp:276
+#: src/gtkmm/instance.cpp:283
 msgid "Unknown extension"
 msgstr "Extensión desconocida"
 
-#: src/gtkmm/instance.cpp:277
+#: src/gtkmm/instance.cpp:284
 msgid ""
 "You have given the file name an extension\n"
 "which I do not recognize. Are you sure this is what you want?"
@@ -1366,15 +1521,15 @@ msgstr ""
 "Ha dado una extensión al archivo desconocida.\n"
 "¿Está seguro que es eso lo que quiere?"
 
-#: src/gtkmm/instance.cpp:458
+#: src/gtkmm/instance.cpp:468
 msgid "You must first add this composition to the repository"
 msgstr "Debe añadir antes esta composición al almacén"
 
-#: src/gtkmm/instance.cpp:467 src/gtkmm/instance.cpp:536
+#: src/gtkmm/instance.cpp:477 src/gtkmm/instance.cpp:546
 msgid "This will save any changes you have made. Are you sure?"
 msgstr "Esto guardará cualquier cambio que haya hecho. ¿Esta seguro?"
 
-#: src/gtkmm/instance.cpp:474
+#: src/gtkmm/instance.cpp:484
 msgid ""
 "The local copy of the file hasn't been changed since the last update.\n"
 "Nothing to commit!"
@@ -1383,46 +1538,43 @@ msgstr ""
 "actualización.\n"
 "!Nada que enviar! "
 
-#: src/gtkmm/instance.cpp:478
+#: src/gtkmm/instance.cpp:488
 msgid "Enter a log message describing the changes you have made"
-msgstr ""
-"Introduzca un mensaje de diario describiendo los cambios que ha realizado"
+msgstr "Introduzca un mensaje de diario describiendo los cambios que ha realizado"
 
-#: src/gtkmm/instance.cpp:486
+#: src/gtkmm/instance.cpp:496
 msgid "An error has occurred when trying to COMMIT"
 msgstr "Ha ocurrido un error intentando ENVIAR"
 
-#: src/gtkmm/instance.cpp:497
+#: src/gtkmm/instance.cpp:507
 msgid "This composition has already been added to the repository"
 msgstr "La composición ya ha sido enviada al almacén"
 
-#: src/gtkmm/instance.cpp:511
+#: src/gtkmm/instance.cpp:521
 msgid "An error has occurred when trying to ADD"
 msgstr "Un error ha ocurrido cuando se intentaba AÑADIR"
 
-#: src/gtkmm/instance.cpp:522
-msgid ""
-"This file is not under version control, so there is nothing to update from!"
+#: src/gtkmm/instance.cpp:532
+msgid "This file is not under version control, so there is nothing to update from!"
 msgstr ""
-"Este archivo no está actualmente bajo control de versión, así que nada que "
+"Este archivo no está actualmente bajo control de versión, así que ¡nada que "
 "actualizar!"
 
-#: src/gtkmm/instance.cpp:527
+#: src/gtkmm/instance.cpp:537
 msgid "This file is up-to-date"
 msgstr "Este archivo está actualizado"
 
-#: src/gtkmm/instance.cpp:552 src/gtkmm/instance.cpp:588
+#: src/gtkmm/instance.cpp:562 src/gtkmm/instance.cpp:598
 msgid "An error has occurred when trying to UPDATE"
 msgstr "Ha ocurrido un error cuando trataba de ACTUALIZAR"
 
-#: src/gtkmm/instance.cpp:563
-msgid ""
-"This file is not under version control, so there is nothing to revert to!"
+#: src/gtkmm/instance.cpp:573
+msgid "This file is not under version control, so there is nothing to revert to!"
 msgstr ""
-"Este archivo no está actualmente bajo control de versión, así que nada que "
+"Este archivo no está actualmente bajo control de versión, así que ¡nada que "
 "desactualizar!"
 
-#: src/gtkmm/instance.cpp:570
+#: src/gtkmm/instance.cpp:580
 msgid ""
 "This will abandon all changes you have made\n"
 "since the last time you performed a commit\n"
@@ -1434,15 +1586,15 @@ msgstr ""
 "¡Esto no se puede deshacer! ¿Está seguro que \n"
 "quiere hacer esto?"
 
-#: src/gtkmm/instance.cpp:579
+#: src/gtkmm/instance.cpp:589
 msgid "Unable to remove previous version"
 msgstr "Imposible eliminar versión anterior"
 
-#: src/gtkmm/instance.cpp:607
+#: src/gtkmm/instance.cpp:617
 msgid "Error: Revert Failed"
 msgstr "Error: Desactualización Fallida"
 
-#: src/gtkmm/instance.cpp:607
+#: src/gtkmm/instance.cpp:617
 msgid ""
 "The revert operation has failed. This can be due to it being\n"
 "referenced by another composition that is already open, or\n"
@@ -1456,11 +1608,11 @@ msgstr ""
 "cerrar cualquier composición que pueda hacer referencia a esta\n"
 " y pruebe de nuevo o reinicie Synfig Studio"
 
-#: src/gtkmm/instance.cpp:635
+#: src/gtkmm/instance.cpp:645
 msgid "Revert to saved"
 msgstr "Descatualizar a Salvado"
 
-#: src/gtkmm/instance.cpp:635
+#: src/gtkmm/instance.cpp:645
 msgid ""
 "You will lose any changes you have made since your last save.\n"
 "Are you sure?"
@@ -1468,12 +1620,12 @@ msgstr ""
 "Se perderán los cambios realizaos hasta la última vex que salvó.\n"
 "¿Está seguro?"
 
-#: src/gtkmm/instance.cpp:658
+#: src/gtkmm/instance.cpp:668
 #, c-format
 msgid "Would you like to save your changes to %s?"
 msgstr "¿Quiere salvar los cambios a %s?"
 
-#: src/gtkmm/instance.cpp:674
+#: src/gtkmm/instance.cpp:684
 #, c-format
 msgid ""
 "%s has changes not yet on the CVS repository.\n"
@@ -1482,27 +1634,27 @@ msgstr ""
 "%s no ha cambiado en el almacén CVS.\n"
 "¿Quiere enviar dichos cambios?"
 
-#: src/gtkmm/instance.cpp:1063
+#: src/gtkmm/instance.cpp:1078
 msgid "Edit Waypoint"
 msgstr "Editar Interpolación"
 
-#: src/gtkmm/instance.cpp:1107
+#: src/gtkmm/instance.cpp:1123
 msgid "Set Waypoints"
 msgstr "Establecer Interpolación"
 
-#: src/gtkmm/instance.cpp:1153
+#: src/gtkmm/instance.cpp:1169
 msgid "Unable to convert to animated waypoint"
 msgstr "Imposible convertir a una interpolación animada"
 
-#: src/gtkmm/instance.cpp:1172
+#: src/gtkmm/instance.cpp:1188
 msgid "Unable to find waypoint_set_smart action"
 msgstr "Imposible encotrar acción de establecer_interpolación_inteligente "
 
-#: src/gtkmm/instance.cpp:1186
+#: src/gtkmm/instance.cpp:1202
 msgid "Unable to set a specific waypoint"
 msgstr "Imposible establecer una interpolación especificada"
 
-#: src/gtkmm/instance.cpp:1214
+#: src/gtkmm/instance.cpp:1230
 msgid "Edit Waypoints"
 msgstr "Editar Interpolaciones"
 
@@ -1514,19 +1666,19 @@ msgstr "Animacion Synfig"
 msgid "Add new Keyframe"
 msgstr "Añadir un nuevo Fotograma Clave"
 
-#: src/gtkmm/keyframetree.cpp:79
+#: src/gtkmm/keyframetree.cpp:76
 msgid "Length"
 msgstr "Longitud"
 
-#: src/gtkmm/keyframetree.cpp:118
+#: src/gtkmm/keyframetree.cpp:107
 msgid "Description"
 msgstr "Descripción"
 
-#: src/gtkmm/keyframetreestore.cpp:779 src/gtkmm/keyframetreestore.cpp:794
+#: src/gtkmm/keyframetreestore.cpp:795 src/gtkmm/keyframetreestore.cpp:810
 msgid "Unable to find Keyframe in table"
 msgstr "Imposible encontrar un Fotograma Clave en la tabla"
 
-#: src/gtkmm/keyframetreestore.cpp:785
+#: src/gtkmm/keyframetreestore.cpp:801
 msgid "There are no keyframes n this canvas"
 msgstr "No hay fotogramas clave en este lienzo"
 
@@ -1538,55 +1690,65 @@ msgstr "Cantidad"
 msgid "Select All Child Layers"
 msgstr "Seleccionar Todas las Capas Decendientes"
 
-#: src/gtkmm/layeractionmanager.cpp:348
+#: src/gtkmm/layeractionmanager.cpp:347
 msgid "Paste"
 msgstr "Pegar"
 
 #: src/gtkmm/layeractionmanager.cpp:422
-#: src/synfigapp/actions/layerduplicate.cpp:161
-#: src/synfigapp/canvasinterface.cpp:200
+#: src/synfigapp/actions/layerduplicate.cpp:167
+#: src/synfigapp/canvasinterface.cpp:201
 #, c-format
 msgid "Index %d"
 msgstr "Índice %d"
 
 #: src/gtkmm/layergrouptree.cpp:63 src/gtkmm/layergrouptree.cpp:68
-#: src/gtkmm/layertree.cpp:183
+#: src/gtkmm/layertree.cpp:184
 msgid " "
 msgstr " "
 
-#: src/gtkmm/layergrouptreestore.cpp:443
-#: src/synfigapp/actions/layeractivate.cpp:80
+#: src/gtkmm/layergrouptreestore.cpp:441
 msgid "Activate "
 msgstr "Activar"
 
-#: src/gtkmm/layergrouptreestore.cpp:443
-#: src/synfigapp/actions/layeractivate.cpp:80
+#: src/gtkmm/layergrouptreestore.cpp:441
 msgid "Deactivate "
 msgstr "Desactivar"
 
-#: src/gtkmm/layergrouptreestore.cpp:567
+#: src/gtkmm/layergrouptreestore.cpp:565
 msgid "Regroup"
 msgstr "Reagrupar"
 
-#: src/gtkmm/layerparamtreestore.cpp:235
+#: src/gtkmm/layerparamtreestore.cpp:233
 msgid "Set Layer Params"
 msgstr "Establecer los Parámetros de Capa"
 
-#: src/gtkmm/layerparamtreestore.cpp:247
+#: src/gtkmm/layerparamtreestore.cpp:245
 msgid "Unable to set all layer parameters."
 msgstr "Imposible establecer todos los parámetros de capa"
 
-#: src/gtkmm/layertree.cpp:196 src/gtkmm/layertree.cpp:239
+#: src/gtkmm/layertree.cpp:197 src/gtkmm/layertree.cpp:240
 msgid "Z"
 msgstr "Z"
 
-#: src/gtkmm/layertree.cpp:324
+#: src/gtkmm/layertree.cpp:325
 msgid "Value"
 msgstr "Valor"
 
-#: src/gtkmm/layertreestore.cpp:464
+#: src/gtkmm/layertreestore.cpp:461
 msgid "Move Layers"
 msgstr "Mover Capas"
+
+#: src/gtkmm/main.cpp:73
+msgid "synfig studio is already running"
+msgstr "Synfig Studio ya está ejecutandose"
+
+#: src/gtkmm/main.cpp:74
+msgid "the existing process will be used"
+msgstr "el proceso existente será usado"
+
+#: src/gtkmm/main.cpp:97
+msgid "synfig studio -- starting up application..."
+msgstr "Synfig Studio: comenzando aplicación..."
 
 #: src/gtkmm/mod_mirror/state_mirror.cpp:184
 msgid "Horizontal"
@@ -1804,213 +1966,282 @@ msgstr "_Calidad"
 msgid "_Anti-Aliasing"
 msgstr "_Anti-Aliasing"
 
-#: src/gtkmm/render.cpp:246
+#: src/gtkmm/render.cpp:248
 msgid "You must supply a filename!"
 msgstr "¡Debe suminstrar un nombre de archivo!"
 
-#: src/gtkmm/render.cpp:272
+#: src/gtkmm/render.cpp:274
 msgid "Unable to determine proper target from filename."
 msgstr "Imposible determinar el objetivo adecuado desde el nombre de archivo."
 
-#: src/gtkmm/render.cpp:279
+#: src/gtkmm/render.cpp:281
 msgid "A filename is required for this target"
 msgstr "Un nombre de archivo es requerido para este objetivo"
 
-#: src/gtkmm/render.cpp:286
+#: src/gtkmm/render.cpp:288
 msgid "Unable to create target for "
 msgstr "Imposible crear objetivo para"
 
-#: src/gtkmm/render.cpp:303
+#: src/gtkmm/render.cpp:305
 msgid "Target initialization failure"
 msgstr "Fallo de inicialización de objetivo"
 
-#: src/gtkmm/render.cpp:307
+#: src/gtkmm/render.cpp:309
 msgid "Rendering "
 msgstr "Mostrando"
 
-#: src/gtkmm/render.cpp:335
+#: src/gtkmm/render.cpp:337
 msgid "File rendered successfully"
 msgstr "Archivo mostrado existosamente"
 
-#: src/gtkmm/state_bline.cpp:344
+#: src/gtkmm/splash.cpp:118
+msgid "ERROR:"
+msgstr "ERROR:"
+
+#: src/gtkmm/splash.cpp:134
+msgid "WARNING:"
+msgstr "AVISO:"
+
+#: src/gtkmm/splash.cpp:221
+msgid "Version"
+msgstr "Versión"
+
+#: src/gtkmm/splash.cpp:274
+msgid "Close"
+msgstr "Cerrar"
+
+#: src/gtkmm/state_bline.cpp:358
 msgid "Fill"
 msgstr "Relleno"
 
-#: src/gtkmm/state_bline.cpp:345
+#: src/gtkmm/state_bline.cpp:359
 msgid "Outline"
 msgstr "Contorno"
 
-#: src/gtkmm/state_bline.cpp:347
+#: src/gtkmm/state_bline.cpp:361
+msgid "Plant"
+msgstr "Planta"
+
+#: src/gtkmm/state_bline.cpp:362
 msgid "Link Offsets"
 msgstr "Enlazar Desfases"
 
-#: src/gtkmm/state_bline.cpp:348 src/gtkmm/state_draw.cpp:411
+#: src/gtkmm/state_bline.cpp:363 src/gtkmm/state_draw.cpp:414
 msgid "Auto Export"
 msgstr "Auto Exportar"
 
-#: src/gtkmm/state_bline.cpp:349 src/gtkmm/state_polygon.cpp:224
+#: src/gtkmm/state_bline.cpp:364 src/gtkmm/state_polygon.cpp:227
 msgid "Make"
 msgstr "Crear"
 
-#: src/gtkmm/state_bline.cpp:350
+#: src/gtkmm/state_bline.cpp:365
 msgid "Clear"
 msgstr "Borrar"
 
-#: src/gtkmm/state_bline.cpp:366 src/gtkmm/state_draw.cpp:448
+#: src/gtkmm/state_bline.cpp:382 src/gtkmm/state_draw.cpp:451
 msgid "Feather"
 msgstr "Desvanecimiento"
 
-#: src/gtkmm/state_bline.cpp:407
+#: src/gtkmm/state_bline.cpp:423
 msgid "Make BLine and/or Region"
-msgstr "Hacer Linea Beizer y/o Region"
+msgstr "Hacer Linea Beizer, Planta y/o Region"
 
-#: src/gtkmm/state_bline.cpp:417
+#: src/gtkmm/state_bline.cpp:433
 msgid "Clear current BLine"
 msgstr "Borrar Línea Beizer actual"
 
-#: src/gtkmm/state_bline.cpp:522
+#: src/gtkmm/state_bline.cpp:538
 msgid "New BLine"
 msgstr "Nueva Línea Beizer"
 
-#: src/gtkmm/state_bline.cpp:565
+#: src/gtkmm/state_bline.cpp:581
 msgid "Unable to add value node"
 msgstr "Imposible añadir valor de nodo"
 
-#: src/gtkmm/state_bline.cpp:597 src/gtkmm/state_draw.cpp:1040
-#: src/gtkmm/state_draw.cpp:1964
-msgid " Region"
-msgstr "Region"
-
-#: src/gtkmm/state_bline.cpp:627 src/gtkmm/state_bline.cpp:649
-#: src/gtkmm/state_draw.cpp:1787 src/gtkmm/state_draw.cpp:1980
-msgid "Unable to create Region layer"
-msgstr "Imposible crear una capa Región"
-
-#: src/gtkmm/state_bline.cpp:663 src/gtkmm/state_draw.cpp:1035
-msgid " Outline"
-msgstr "Contorno"
-
-#: src/gtkmm/state_bline.cpp:687 src/gtkmm/state_bline.cpp:709
-msgid "Unable to create Outline layer"
-msgstr "Imposible crear una Capa Contorno"
-
-#: src/gtkmm/state_bline.cpp:730
+#: src/gtkmm/state_bline.cpp:616
 msgid " Gradient"
 msgstr "Gradiente"
 
-#: src/gtkmm/state_bline.cpp:749 src/gtkmm/state_bline.cpp:771
+#: src/gtkmm/state_bline.cpp:635 src/gtkmm/state_bline.cpp:657
 msgid "Unable to create Gradient layer"
 msgstr "Imposible crear una Capa Gradiente"
 
-#: src/gtkmm/state_circle.cpp:282 src/gtkmm/state_rectangle.cpp:251
+#: src/gtkmm/state_bline.cpp:674
+msgid " Plant"
+msgstr "Planta"
+
+#: src/gtkmm/state_bline.cpp:693 src/gtkmm/state_bline.cpp:716
+msgid "Unable to create Plant layer"
+msgstr "Imposible crear una Capa Planta"
+
+#: src/gtkmm/state_bline.cpp:733 src/gtkmm/state_draw.cpp:1045
+#: src/gtkmm/state_draw.cpp:1963
+msgid " Region"
+msgstr "Region"
+
+#: src/gtkmm/state_bline.cpp:763 src/gtkmm/state_bline.cpp:785
+#: src/gtkmm/state_draw.cpp:1786 src/gtkmm/state_draw.cpp:1979
+msgid "Unable to create Region layer"
+msgstr "Imposible crear una capa Región"
+
+#: src/gtkmm/state_bline.cpp:802 src/gtkmm/state_draw.cpp:1040
+msgid " Outline"
+msgstr "Contorno"
+
+#: src/gtkmm/state_bline.cpp:826 src/gtkmm/state_bline.cpp:848
+msgid "Unable to create Outline layer"
+msgstr "Imposible crear una Capa Contorno"
+
+#: src/gtkmm/state_bline.cpp:1229
+msgid "Unloop BLine"
+msgstr "Quitar Bucle"
+
+#: src/gtkmm/state_bline.cpp:1233
+msgid "Loop BLine"
+msgstr "Hacer Bucle"
+
+#: src/gtkmm/state_bline.cpp:1238
+msgid "Delete Vertex"
+msgstr "Borrar Vértice"
+
+#: src/gtkmm/state_bline.cpp:1253
+msgid "Insert Vertex"
+msgstr "Insertar Vértice"
+
+#: src/gtkmm/state_bline.cpp:1322
+msgid "Unable to find where to insert vertex, internal error, please report this bug"
+msgstr ""
+"Imposible encontrar donde insertar el vértice, error interno, por favor "
+"reporte este bug"
+
+#: src/gtkmm/state_bline.cpp:1341
+msgid "Unable to remove vertex, internal error, please report this bug"
+msgstr "Imposible borrar el vértice, error interno, por favor reporte este bug"
+
+#: src/gtkmm/state_bline.cpp:1355
+#: src/synfigapp/actions/blinepointtangentmerge.cpp:56
+msgid "Merge Tangents"
+msgstr "Mezclar tangentes"
+
+#: src/gtkmm/state_bline.cpp:1362
+#: src/synfigapp/actions/blinepointtangentsplit.cpp:56
+msgid "Split Tangents"
+msgstr "Dividir Tangentes"
+
+#: src/gtkmm/state_circle.cpp:285 src/gtkmm/state_rectangle.cpp:254
 msgid "Invert"
 msgstr "Invertir"
 
-#: src/gtkmm/state_circle.cpp:290
+#: src/gtkmm/state_circle.cpp:293
 msgid "Falloff"
 msgstr "Caída"
 
-#: src/gtkmm/state_circle.cpp:291
+#: src/gtkmm/state_circle.cpp:294
 msgid "Determines the falloff function for the feather"
 msgstr "Determina la funcíon de caída del desvanecimiento"
 
-#: src/gtkmm/state_circle.cpp:294
+#: src/gtkmm/state_circle.cpp:296 src/gtkmm/state_gradient.cpp:265
+#: src/gtkmm/widget_defaults.cpp:290
+msgid "Linear"
+msgstr "Linear"
+
+#: src/gtkmm/state_circle.cpp:297
 msgid "Squared"
 msgstr "Proporcional"
 
-#: src/gtkmm/state_circle.cpp:295
+#: src/gtkmm/state_circle.cpp:298
 msgid "Square Root"
 msgstr "Raíz cuadrada"
 
-#: src/gtkmm/state_circle.cpp:296
+#: src/gtkmm/state_circle.cpp:299
 msgid "Sigmond"
 msgstr "Sigmoidea"
 
-#: src/gtkmm/state_circle.cpp:297
+#: src/gtkmm/state_circle.cpp:300
 msgid "Cosine"
 msgstr "Coseno"
 
-#: src/gtkmm/state_circle.cpp:300 src/gtkmm/state_gradient.cpp:268
+#: src/gtkmm/state_circle.cpp:303 src/gtkmm/state_gradient.cpp:271
 msgid "Blend Method"
 msgstr "Método de Mezcla"
 
-#: src/gtkmm/state_circle.cpp:301
+#: src/gtkmm/state_circle.cpp:304
 msgid "Defines the blend method to be used for circles"
 msgstr "Define el método de mezcla usado para círculos"
 
-#: src/gtkmm/state_circle.cpp:306
+#: src/gtkmm/state_circle.cpp:309
 msgid "Feather:"
 msgstr "Desvanecimiento:"
 
-#: src/gtkmm/state_circle.cpp:396
+#: src/gtkmm/state_circle.cpp:399
 msgid "New Circle"
 msgstr "Nuevo Círculo"
 
-#: src/gtkmm/state_draw.cpp:405
+#: src/gtkmm/state_draw.cpp:408
 msgid "Pressure Width"
 msgstr "Presión del Espesor"
 
-#: src/gtkmm/state_draw.cpp:406
+#: src/gtkmm/state_draw.cpp:409
 msgid "Auto Loop"
 msgstr "Auto Bucle"
 
-#: src/gtkmm/state_draw.cpp:407
+#: src/gtkmm/state_draw.cpp:410
 msgid "Auto Extend"
 msgstr "Auto Extender"
 
-#: src/gtkmm/state_draw.cpp:408
+#: src/gtkmm/state_draw.cpp:411
 msgid "Auto Link"
 msgstr "Auto Enlazar"
 
-#: src/gtkmm/state_draw.cpp:409
+#: src/gtkmm/state_draw.cpp:412
 msgid "Create Region"
 msgstr "Crear Region"
 
-#: src/gtkmm/state_draw.cpp:410
+#: src/gtkmm/state_draw.cpp:413
 msgid "Create Outline"
 msgstr "Crear Contorno"
 
-#: src/gtkmm/state_draw.cpp:412 src/gtkmm/state_draw.cpp:522
+#: src/gtkmm/state_draw.cpp:415 src/gtkmm/state_draw.cpp:525
 msgid "Fill Last Stroke"
 msgstr "Rellenar Último Trazo"
 
-#: src/gtkmm/state_draw.cpp:415
+#: src/gtkmm/state_draw.cpp:418
 msgid "Min Pressure"
 msgstr "Mínima Presión"
 
-#: src/gtkmm/state_draw.cpp:421
+#: src/gtkmm/state_draw.cpp:424
 msgid "LocalError"
 msgstr "Error Local"
 
-#: src/gtkmm/state_draw.cpp:445
+#: src/gtkmm/state_draw.cpp:448
 msgid "Smooth"
 msgstr "Suave"
 
-#: src/gtkmm/state_draw.cpp:765
+#: src/gtkmm/state_draw.cpp:768
 msgid "Sketch BLine"
 msgstr "Esbozar Línea Beizer"
 
-#: src/gtkmm/state_draw.cpp:1070
+#: src/gtkmm/state_draw.cpp:1075
 msgid "Unable to create layer"
 msgstr "Imposible crear capa"
 
-#: src/gtkmm/state_draw.cpp:1251
+#: src/gtkmm/state_draw.cpp:1258
 msgid "Define Region"
 msgstr "Definir Region"
 
-#: src/gtkmm/state_draw.cpp:1821 src/gtkmm/state_draw.cpp:1872
+#: src/gtkmm/state_draw.cpp:1820 src/gtkmm/state_draw.cpp:1871
 msgid "Extend BLine"
 msgstr "Extender Línea Béizer"
 
-#: src/gtkmm/state_draw.cpp:1834 src/gtkmm/state_draw.cpp:1885
+#: src/gtkmm/state_draw.cpp:1833 src/gtkmm/state_draw.cpp:1884
 msgid "Unable to set loop for bline"
 msgstr "Imposible hacer bucle para la línea béizer"
 
-#: src/gtkmm/state_draw.cpp:1858 src/gtkmm/state_draw.cpp:1909
+#: src/gtkmm/state_draw.cpp:1857 src/gtkmm/state_draw.cpp:1908
 msgid "Unable to insert item"
 msgstr "Imposible insertar elemento"
 
-#: src/gtkmm/state_draw.cpp:1942
+#: src/gtkmm/state_draw.cpp:1941
 msgid "Fill Stroke"
 msgstr "Rellenar Trazo"
 
@@ -2022,55 +2253,55 @@ msgstr "No capa aquí"
 msgid "Unable to set layer color"
 msgstr "Imposible establecer color de capa"
 
-#: src/gtkmm/state_gradient.cpp:259
+#: src/gtkmm/state_gradient.cpp:262
 msgid "Gradient Type"
 msgstr "Tipo de Gradiente"
 
-#: src/gtkmm/state_gradient.cpp:260
+#: src/gtkmm/state_gradient.cpp:263
 msgid "Determines the type of Gradient used"
 msgstr "Determina el tipo de Gradiente usado"
 
-#: src/gtkmm/state_gradient.cpp:263
+#: src/gtkmm/state_gradient.cpp:266
 msgid "Radial"
 msgstr "Radial"
 
-#: src/gtkmm/state_gradient.cpp:264
+#: src/gtkmm/state_gradient.cpp:267
 msgid "Conical"
 msgstr "Cónico"
 
-#: src/gtkmm/state_gradient.cpp:265
+#: src/gtkmm/state_gradient.cpp:268
 msgid "Spiral"
 msgstr "Espiral"
 
-#: src/gtkmm/state_gradient.cpp:269
+#: src/gtkmm/state_gradient.cpp:272
 msgid "The blend method the gradient will use"
 msgstr "El método de mezcla que el gradiente usará"
 
-#: src/gtkmm/state_gradient.cpp:311
+#: src/gtkmm/state_gradient.cpp:314
 msgid "Gradient Tool"
 msgstr "Herramienta de Gradiente"
 
-#: src/gtkmm/state_gradient.cpp:365
+#: src/gtkmm/state_gradient.cpp:368
 msgid "New Gradient"
 msgstr "Nuevo Gradiente"
 
-#: src/gtkmm/state_polygon.cpp:274
+#: src/gtkmm/state_polygon.cpp:277
 msgid "Make Polygon"
-msgstr "Crar Polígono"
+msgstr "Crear Polígono"
 
-#: src/gtkmm/state_polygon.cpp:284
+#: src/gtkmm/state_polygon.cpp:287
 msgid "Clear current Polygon"
 msgstr "Borrar Polígono actual"
 
-#: src/gtkmm/state_polygon.cpp:366
+#: src/gtkmm/state_polygon.cpp:369
 msgid "New Polygon"
 msgstr "Nuevo Polígono"
 
-#: src/gtkmm/state_rectangle.cpp:261
+#: src/gtkmm/state_rectangle.cpp:264
 msgid "Expansion:"
 msgstr "Expansión"
 
-#: src/gtkmm/state_rectangle.cpp:352
+#: src/gtkmm/state_rectangle.cpp:355
 msgid "New Rectangle"
 msgstr "Nuevo Rectángulo"
 
@@ -2174,7 +2405,7 @@ msgstr "No puedo cerrar"
 
 #: src/gtkmm/toolbox.cpp:167
 msgid "Nothing to close"
-msgstr "Nata para cerrrar"
+msgstr "Nada para cerrrar"
 
 #: src/gtkmm/toolbox.cpp:220
 msgid "Vertical Dock: Canvases, History"
@@ -2193,8 +2424,8 @@ msgid "Open Recent"
 msgstr "Abrir Reciente"
 
 #: src/gtkmm/toolbox.cpp:239
-msgid "Dialogs"
-msgstr "Diálogos"
+msgid "Panels"
+msgstr "Paneles"
 
 #: src/gtkmm/toolbox.cpp:251
 msgid "Input Devices..."
@@ -2320,6 +2551,14 @@ msgstr "Tamaño de Brocha"
 msgid "Default Blend Method"
 msgstr "Método de Mezcla por Defecto"
 
+#: src/gtkmm/widget_defaults.cpp:287
+msgid "TCB"
+msgstr "TCB"
+
+#: src/gtkmm/widget_defaults.cpp:288
+msgid "Constant"
+msgstr "Constante"
+
 #: src/gtkmm/widget_defaults.cpp:289
 msgid "Ease in/out"
 msgstr "Fácil entrada/salida"
@@ -2371,47 +2610,47 @@ msgstr "<b>Inetrpolación</b>"
 msgid "_Value"
 msgstr "_Valor"
 
-#: src/gtkmm/widget_waypoint.cpp:140
+#: src/gtkmm/widget_waypoint.cpp:141
 msgid "_Time"
 msgstr "_Tiempo"
 
-#: src/gtkmm/widget_waypoint.cpp:146
+#: src/gtkmm/widget_waypoint.cpp:147
 msgid "Interpolation"
 msgstr "Interpolación"
 
-#: src/gtkmm/widget_waypoint.cpp:148
+#: src/gtkmm/widget_waypoint.cpp:149
 msgid "<b>Interpolation</b>"
 msgstr "<b>Interpolación</b>"
 
-#: src/gtkmm/widget_waypoint.cpp:160
+#: src/gtkmm/widget_waypoint.cpp:161
 msgid "_In Interpolation"
 msgstr "Interpolación de _Entrada"
 
-#: src/gtkmm/widget_waypoint.cpp:166
+#: src/gtkmm/widget_waypoint.cpp:167
 msgid "_Out Interpolation"
 msgstr "Interpolación de _Salida"
 
-#: src/gtkmm/widget_waypoint.cpp:172
+#: src/gtkmm/widget_waypoint.cpp:173
 msgid "TCB Parameters"
 msgstr "Parámetros TBC"
 
-#: src/gtkmm/widget_waypoint.cpp:174
+#: src/gtkmm/widget_waypoint.cpp:175
 msgid "<b>TCB Parameter</b>"
 msgstr "<b>Parámetros TBC</b>"
 
-#: src/gtkmm/widget_waypoint.cpp:186
+#: src/gtkmm/widget_waypoint.cpp:187
 msgid "T_ension"
 msgstr "T_ensión"
 
-#: src/gtkmm/widget_waypoint.cpp:193
+#: src/gtkmm/widget_waypoint.cpp:194
 msgid "_Continuity"
 msgstr "_Continuidad"
 
-#: src/gtkmm/widget_waypoint.cpp:200
+#: src/gtkmm/widget_waypoint.cpp:201
 msgid "_Bias"
 msgstr "_Bias"
 
-#: src/gtkmm/widget_waypoint.cpp:207
+#: src/gtkmm/widget_waypoint.cpp:208
 msgid "Te_mporal Tension"
 msgstr "Tensión Te_mporal"
 
@@ -2439,6 +2678,19 @@ msgstr "Bias:"
 msgid "Temporal Tension:"
 msgstr "Tensión Temporal:"
 
+#: src/gtkmm/workarea.cpp:2314
+msgid "Rendering..."
+msgstr "Mostrando..."
+
+#: src/gtkmm/workarea.cpp:2341 src/gtkmm/workarea.cpp:2433
+msgid "Render Failed"
+msgstr "Muestreo Fallido"
+
+#: src/gtkmm/workarea.cpp:2415
+#, c-format
+msgid "Rendering canvas %s..."
+msgstr "Muestreando lienzos %s..."
+
 #: src/gtkmm/zoomdial.h:69
 msgid "Zoom In"
 msgstr "Acercar"
@@ -2455,11 +2707,11 @@ msgstr "Ajustar Acercamiento"
 msgid "Zoom to 100%"
 msgstr "Ajustar al 100%"
 
-#: src/synfigapp/action.cpp:390
+#: src/synfigapp/action.cpp:456
 msgid "Selected Canvas"
 msgstr "Lienzo Seleccionado"
 
-#: src/synfigapp/action.cpp:394 src/synfigapp/action.cpp:395
+#: src/synfigapp/action.cpp:460 src/synfigapp/action.cpp:461
 msgid "Canvas Interface"
 msgstr "Interfase de Lienzo"
 
@@ -2475,10 +2727,12 @@ msgstr "Añadir Punto activo"
 #: src/synfigapp/actions/activepointsetsmart.cpp:82
 #: src/synfigapp/actions/colorset.cpp:79
 #: src/synfigapp/actions/gradientset.cpp:79
-#: src/synfigapp/actions/valuedescconvert.cpp:83
-#: src/synfigapp/actions/valuedescdisconnect.cpp:79
-#: src/synfigapp/actions/valuedescexport.cpp:78
-#: src/synfigapp/actions/valuedescset.cpp:122
+#: src/synfigapp/actions/valuedescconvert.cpp:92
+#: src/synfigapp/actions/valuedescdisconnect.cpp:80
+#: src/synfigapp/actions/valuedescdisconnect.cpp:89
+#: src/synfigapp/actions/valuedescexport.cpp:87
+#: src/synfigapp/actions/valuedescset.cpp:83
+#: src/synfigapp/actions/valuedescset.cpp:92
 #: src/synfigapp/actions/valuenodedynamiclistinsert.cpp:76
 #: src/synfigapp/actions/valuenodedynamiclistinsertsmart.cpp:78
 #: src/synfigapp/actions/valuenodedynamiclistremove.cpp:74
@@ -2555,9 +2809,9 @@ msgid "Set Activepoint (Smart)"
 msgstr "Establecer Punto Activo (Inteligente)"
 
 #: src/synfigapp/actions/activepointsetsmart.cpp:366
-#: src/synfigapp/actions/waypointsetsmart.cpp:470
+#: src/synfigapp/actions/waypointsetsmart.cpp:444
 msgid "Unable to determine how to proceed. This is a bug."
-msgstr "Imposible determinar como proceder. Esto es un error"
+msgstr "Imposible determinar como proceder. Esto es un bug"
 
 #: src/synfigapp/actions/activepointsimpleadd.cpp:49
 #: src/synfigapp/actions/waypointsimpleadd.cpp:49
@@ -2567,32 +2821,34 @@ msgstr "Simplemente Añade una Interpolación"
 #: src/synfigapp/actions/activepointsimpleadd.cpp:74
 #: src/synfigapp/actions/waypointadd.cpp:76
 #: src/synfigapp/actions/waypointset.cpp:73
-#: src/synfigapp/actions/waypointsetsmart.cpp:91
+#: src/synfigapp/actions/waypointsetsmart.cpp:85
 #: src/synfigapp/actions/waypointsimpleadd.cpp:74
 msgid "Destination ValueNode (Animated)"
 msgstr "Valor de Nodo de Destino (Animado)"
 
 #: src/synfigapp/actions/activepointsimpleadd.cpp:169
 msgid "The activepoint to remove no longer exists"
-msgstr "El punto activo a eliminar no existe"
+msgstr "El punto activo a eliminar no existe ya"
 
-#: src/synfigapp/actions/blinepointtangentmerge.cpp:56
-msgid "Merge Tangents"
-msgstr "Mezclar tangentes"
+#: src/synfigapp/actions/blinepointtangentmerge.cpp:78
+#, c-format
+msgid "Merge Tangents of '%s'"
+msgstr "Mezclar tangentes de '%s'"
 
-#: src/synfigapp/actions/blinepointtangentmerge.cpp:81
-#: src/synfigapp/actions/blinepointtangentsplit.cpp:81
+#: src/synfigapp/actions/blinepointtangentmerge.cpp:87
+#: src/synfigapp/actions/blinepointtangentsplit.cpp:87
 msgid "ValueNode of BLinePoint"
 msgstr "Valor de Nodo del Punto de Línea Béizer"
 
-#: src/synfigapp/actions/blinepointtangentmerge.cpp:150
-#: src/synfigapp/actions/blinepointtangentsplit.cpp:150
+#: src/synfigapp/actions/blinepointtangentmerge.cpp:156
+#: src/synfigapp/actions/blinepointtangentsplit.cpp:156
 msgid "Couldn't find action \"value_desc_set\""
 msgstr "No puedo encontrar la acción \"value_desc_set\""
 
-#: src/synfigapp/actions/blinepointtangentsplit.cpp:56
-msgid "Split Tangents"
-msgstr "Dividir Tangentes"
+#: src/synfigapp/actions/blinepointtangentsplit.cpp:78
+#, c-format
+msgid "Split Tangents of '%s'"
+msgstr "Dividir Tangentes de '%s'"
 
 #: src/synfigapp/actions/canvasadd.cpp:49
 msgid "Add Child Canvas"
@@ -2600,7 +2856,7 @@ msgstr "Añadir Lienzo Descendiente"
 
 #: src/synfigapp/actions/canvasadd.cpp:79
 msgid "The name that you want this canvas to be"
-msgstr "El nombre que quieres que sea este lienzo"
+msgstr "El nombre que Ud. quiere que sea este lienzo"
 
 #: src/synfigapp/actions/canvasremove.cpp:49
 msgid "Remove Canvas"
@@ -2695,6 +2951,11 @@ msgstr "¡Un grupo con el nombre \"%s\" ya existe!"
 msgid "Add Keyframe"
 msgstr "Añadir Fotograma Clave"
 
+#: src/synfigapp/actions/keyframeadd.cpp:74
+#: src/synfigapp/actions/keyframeset.cpp:78
+msgid "New Keyframe"
+msgstr "Nuevo Fotograma Clave"
+
 #: src/synfigapp/actions/keyframeadd.cpp:75
 #: src/synfigapp/actions/keyframeset.cpp:79
 msgid "Keyframe to be added"
@@ -2714,13 +2975,17 @@ msgstr "Un Fotograma Clave ya existe en ese punto del tiempo"
 msgid "This keyframe is already in the ValueNode"
 msgstr "Este Fotograma Clave ya está en el Valor de Nodo"
 
+#: src/synfigapp/actions/keyframeduplicate.cpp:53
+msgid "Duplicate Keyframe"
+msgstr "Duplicar Fotograma Clave"
+
 #: src/synfigapp/actions/keyframeduplicate.cpp:80
 msgid "Keyframe to be duplicated"
 msgstr "Fotograma Clave para ser Duplicado"
 
 #: src/synfigapp/actions/keyframeduplicate.cpp:102
 msgid " (Duplicate)"
-msgstr "(Duplicado)"
+msgstr " (Duplicado)"
 
 #: src/synfigapp/actions/keyframeduplicate.cpp:135
 #: src/synfigapp/actions/keyframeremove.cpp:120
@@ -2762,54 +3027,65 @@ msgid "Set Waypoints at Keyframe"
 msgstr "Establecer Interpolaciones en el Fotograma Clave"
 
 #: src/synfigapp/actions/keyframewaypointset.cpp:82
-#: src/synfigapp/actions/waypointsetsmart.cpp:101
+#: src/synfigapp/actions/waypointsetsmart.cpp:95
 msgid "Waypoint Model"
-msgstr "Model de Inerpolación"
+msgstr "Modelo de Inerpolación"
 
-#: src/synfigapp/actions/layeractivate.cpp:52
-#: src/synfigapp/actions/layeractivate.cpp:73
+#: src/synfigapp/actions/layeractivate.cpp:49
+#: src/synfigapp/actions/layeractivate.cpp:70
+#: src/synfigapp/actions/layeractivate.cpp:74
 msgid "Activate Layer"
 msgstr "Activar Capa"
 
-#: src/synfigapp/actions/layeractivate.cpp:93
+#: src/synfigapp/actions/layeractivate.cpp:75
+msgid "Deactivate Layer"
+msgstr "Desactivar Capa"
+
+#: src/synfigapp/actions/layeractivate.cpp:89
 msgid "New Status"
 msgstr "Nuevo Estado"
 
-#: src/synfigapp/actions/layeractivate.cpp:94
+#: src/synfigapp/actions/layeractivate.cpp:90
 msgid "The new status of the layer"
 msgstr "El nuevo estado de la capa"
 
-#: src/synfigapp/actions/layeractivate.cpp:144
-#: src/synfigapp/actions/layeradd.cpp:134
-#: src/synfigapp/actions/layerduplicate.cpp:127
-#: src/synfigapp/actions/layerencapsulate.cpp:185
-#: src/synfigapp/actions/layerlower.cpp:133
-#: src/synfigapp/actions/layermove.cpp:151
-#: src/synfigapp/actions/layermove.cpp:224
-#: src/synfigapp/actions/layerraise.cpp:130
-#: src/synfigapp/actions/layerremove.cpp:127
+#: src/synfigapp/actions/layeractivate.cpp:140
+#: src/synfigapp/actions/layeradd.cpp:143
+#: src/synfigapp/actions/layerduplicate.cpp:133
+#: src/synfigapp/actions/layerencapsulate.cpp:191
+#: src/synfigapp/actions/layerlower.cpp:139
+#: src/synfigapp/actions/layermove.cpp:160
+#: src/synfigapp/actions/layermove.cpp:233
+#: src/synfigapp/actions/layerraise.cpp:136
+#: src/synfigapp/actions/layerremove.cpp:133
 msgid "This layer doesn't exist anymore."
-msgstr "La capa no existe ya"
+msgstr "La capa no existe ya."
 
-#: src/synfigapp/actions/layeradd.cpp:49
+#: src/synfigapp/actions/layeradd.cpp:49 src/synfigapp/actions/layeradd.cpp:70
+#: src/synfigapp/actions/layeradd.cpp:72
 msgid "Add Layer"
 msgstr "Añadir capa"
 
-#: src/synfigapp/actions/layeradd.cpp:73
+#: src/synfigapp/actions/layeradd.cpp:82
 msgid "Layer to be added"
 msgstr "Capa para ser añadida"
 
 #: src/synfigapp/actions/layerduplicate.cpp:50
+#: src/synfigapp/actions/layerduplicate.cpp:70
 msgid "Duplicate Layer"
 msgstr "Duplciar Capa"
 
-#: src/synfigapp/actions/layerduplicate.cpp:74
+#: src/synfigapp/actions/layerduplicate.cpp:70
+msgid "Duplicate Layers"
+msgstr "Duplciar Capas"
+
+#: src/synfigapp/actions/layerduplicate.cpp:80
 msgid "Layer to be duplicated"
 msgstr "Capa para ser duplicada"
 
-#: src/synfigapp/actions/layerduplicate.cpp:133
-#: src/synfigapp/actions/layerencapsulate.cpp:194
-#: src/synfigapp/actions/layerremove.cpp:137
+#: src/synfigapp/actions/layerduplicate.cpp:139
+#: src/synfigapp/actions/layerencapsulate.cpp:200
+#: src/synfigapp/actions/layerremove.cpp:143
 msgid "This layer doesn't belong to this canvas anymore"
 msgstr "La capa ya no pertenece más a este lienzo"
 
@@ -2817,56 +3093,71 @@ msgstr "La capa ya no pertenece más a este lienzo"
 msgid "Encapsulate"
 msgstr "Encapsular"
 
-#: src/synfigapp/actions/layerencapsulate.cpp:76
+#: src/synfigapp/actions/layerencapsulate.cpp:72
+msgid "Encapsulate Layer"
+msgstr "Encapsular Capa"
+
+#: src/synfigapp/actions/layerencapsulate.cpp:72
+msgid "Encapsulate Layers"
+msgstr "Encapsular Capas"
+
+#: src/synfigapp/actions/layerencapsulate.cpp:82
 msgid "Layer to be encapsulated"
 msgstr "Capa para ser encapsulada"
 
-#: src/synfigapp/actions/layerencapsulate.cpp:135
+#: src/synfigapp/actions/layerencapsulate.cpp:141
 msgid "No layers to encapsulate"
 msgstr "Sin capas que encapsular"
 
-#: src/synfigapp/actions/layerencapsulate.cpp:188
+#: src/synfigapp/actions/layerencapsulate.cpp:194
 msgid "This layer doesn't have a parent canvas"
 msgstr "Esta capa no tiene un lienzo ascendiente"
 
-#: src/synfigapp/actions/layerencapsulate.cpp:197
+#: src/synfigapp/actions/layerencapsulate.cpp:203
 msgid "get_canvas()!=subcanvas"
 msgstr "get_canvas()!=subcanvas"
 
 #: src/synfigapp/actions/layerlower.cpp:50
+#: src/synfigapp/actions/layerlower.cpp:70
 msgid "Lower Layer"
 msgstr "Bajar Capa"
 
-#: src/synfigapp/actions/layerlower.cpp:74
+#: src/synfigapp/actions/layerlower.cpp:70
+msgid "Lower Layers"
+msgstr "Bajar Capas"
+
+#: src/synfigapp/actions/layerlower.cpp:80
 msgid "Layer to be lowered"
 msgstr "Capa para ser bajada"
 
 #: src/synfigapp/actions/layermove.cpp:49
+#: src/synfigapp/actions/layermove.cpp:73
+#: src/synfigapp/actions/layermove.cpp:75
 msgid "Move Layer"
 msgstr "Mover capa"
 
-#: src/synfigapp/actions/layermove.cpp:76
-#: src/synfigapp/actions/layersetdesc.cpp:75
+#: src/synfigapp/actions/layermove.cpp:85
+#: src/synfigapp/actions/layersetdesc.cpp:85
 msgid "Layer to be moved"
 msgstr "Capa para ser movida"
 
-#: src/synfigapp/actions/layermove.cpp:80
+#: src/synfigapp/actions/layermove.cpp:89
 msgid "New Index"
 msgstr "Nuevo índice"
 
-#: src/synfigapp/actions/layermove.cpp:81
+#: src/synfigapp/actions/layermove.cpp:90
 msgid "Where the layer is to be moved to"
 msgstr "Donde la capa va a ser movida"
 
-#: src/synfigapp/actions/layermove.cpp:85
+#: src/synfigapp/actions/layermove.cpp:94
 msgid "Destination Canvas"
 msgstr "Lienzo Destino"
 
-#: src/synfigapp/actions/layermove.cpp:86
+#: src/synfigapp/actions/layermove.cpp:95
 msgid "The canvas the layer is to be moved to"
 msgstr "El Iienzo donde la capa va a ser movida"
 
-#: src/synfigapp/actions/layermove.cpp:160
+#: src/synfigapp/actions/layermove.cpp:169
 msgid "You cannot directly move layers across compositions"
 msgstr "No puede mover capas directamente entre composiciones"
 
@@ -2910,30 +3201,47 @@ msgid "Layer did not accept parameter."
 msgstr "Capa no acepta el parámetro"
 
 #: src/synfigapp/actions/layerraise.cpp:50
+#: src/synfigapp/actions/layerraise.cpp:70
 msgid "Raise Layer"
 msgstr "Elevar Capa"
 
-#: src/synfigapp/actions/layerraise.cpp:74
+#: src/synfigapp/actions/layerraise.cpp:70
+msgid "Raise Layers"
+msgstr "Elevar Capas"
+
+#: src/synfigapp/actions/layerraise.cpp:80
 msgid "Layer to be raised"
 msgstr "Capa para ser elevada"
 
 #: src/synfigapp/actions/layerremove.cpp:49
+#: src/synfigapp/actions/layerremove.cpp:69
 msgid "Remove Layer"
 msgstr "Borrar Capa"
 
-#: src/synfigapp/actions/layerremove.cpp:73
+#: src/synfigapp/actions/layerremove.cpp:69
+msgid "Remove Layers"
+msgstr "Borrar Capas"
+
+#: src/synfigapp/actions/layerremove.cpp:79
 msgid "Layer to be deleted"
-msgstr "Capa para er borrada"
+msgstr "Capa para ser borrada"
 
 #: src/synfigapp/actions/layersetdesc.cpp:49
+#: src/synfigapp/actions/layersetdesc.cpp:72
 msgid "Set Layer Description"
 msgstr "Establecer Descripciónd de la Capa"
 
-#: src/synfigapp/actions/layersetdesc.cpp:79
+#. TRANSLATORS: this is the string used in the history dialog when renaming a layer to/from its default name
+#: src/synfigapp/actions/layersetdesc.cpp:74
+#: src/synfigapp/actions/layersetdesc.cpp:75
+msgid "[default]"
+msgstr "[por defecto]"
+
+#: src/synfigapp/actions/layersetdesc.cpp:89
 msgid "New Description"
 msgstr "Nueva Descripción"
 
-#: src/synfigapp/actions/layersetdesc.cpp:80
+#: src/synfigapp/actions/layersetdesc.cpp:90
 msgid "Enter a new description for this layer"
 msgstr "Introduzca una nueva descripción para esta capa"
 
@@ -2975,8 +3283,7 @@ msgstr "Nuevo Valor Base Seleccionado"
 #: src/synfigapp/actions/timepointsdelete.cpp:97
 #: src/synfigapp/actions/timepointsmove.cpp:98
 msgid "A valuenode's description to add to our selected list"
-msgstr ""
-"Una descripción del valor de nodo a añadir a nuestra lista seleccionada"
+msgstr "Una descripción del valor de nodo a añadir a nuestra lista seleccionada"
 
 #: src/synfigapp/actions/timepointscopy.cpp:104
 #: src/synfigapp/actions/timepointsdelete.cpp:103
@@ -3012,37 +3319,49 @@ msgstr "Mover Puntos de Tiempo"
 msgid "Connect"
 msgstr "Connectar"
 
-#: src/synfigapp/actions/valuedescconnect.cpp:76
+#. TRANSLATORS: This is used in the 'history' dialog when a connection is made.
+#: src/synfigapp/actions/valuedescconnect.cpp:74
+#, c-format
+msgid "Connect '%s' to '%s'"
+msgstr "Conectar '%s' a '%s'"
+
+#: src/synfigapp/actions/valuedescconnect.cpp:85
 msgid "Destination ValueDesc"
 msgstr "Descripción del Valor de Destino"
 
-#: src/synfigapp/actions/valuedescconnect.cpp:80
+#: src/synfigapp/actions/valuedescconnect.cpp:89
 #: src/synfigapp/actions/valuenodereplace.cpp:90
 msgid "Source ValueNode"
 msgstr "Valor de Nodo de Origen"
 
-#: src/synfigapp/actions/valuedescconnect.cpp:85
+#: src/synfigapp/actions/valuedescconnect.cpp:94
 msgid "Source ValueNode Name"
 msgstr "Nombre del Valor de Nodo de Origen"
 
-#: src/synfigapp/actions/valuedescconnect.cpp:234
-#: src/synfigapp/actions/valuedescdisconnect.cpp:206
+#: src/synfigapp/actions/valuedescconnect.cpp:238
+#: src/synfigapp/actions/valuedescdisconnect.cpp:216
 msgid "ValueDesc is not recognized or supported."
-msgstr "Descripción del Valor no reconozido o soportado"
+msgstr "Descripción del Valor no reconocido o soportado"
 
 #: src/synfigapp/actions/valuedescconvert.cpp:59
 msgid "Convert"
 msgstr "Convertir"
 
-#: src/synfigapp/actions/valuedescconvert.cpp:88
+#. TRANSLATORS: This is used in the 'history' dialog when a ValueNode is converted.  The first %s is what is converted, the 2nd is the local name of the ValueNode's type.
+#: src/synfigapp/actions/valuedescconvert.cpp:81
+#, c-format
+msgid "Convert '%s' to ValueNode type '%s'"
+msgstr "Convertir '%s' al tipo de Valor de Nodo '%s'"
+
+#: src/synfigapp/actions/valuedescconvert.cpp:97
 msgid "The type of ValueNode that you want to be converted to"
 msgstr "El tipo de Valor de Nodo al que se quiere convertir"
 
-#: src/synfigapp/actions/valuedescconvert.cpp:156
+#: src/synfigapp/actions/valuedescconvert.cpp:165
 msgid "Unable to decipher ValueDesc (Bug?)"
-msgstr "Imposible descifrar La Descripción del Valor (¿Error?)"
+msgstr "Imposible descifrar La Descripción del Valor (¿Bug?)"
 
-#: src/synfigapp/actions/valuedescconvert.cpp:161
+#: src/synfigapp/actions/valuedescconvert.cpp:170
 msgid "Unable to create new value node"
 msgstr "Imposible crear nuevo valor de nodo"
 
@@ -3050,26 +3369,37 @@ msgstr "Imposible crear nuevo valor de nodo"
 msgid "Disconnect"
 msgstr "Desconectar"
 
+#. TRANSLATORS: This is used in the History dialog when a ValueNode is disconnected.
+#: src/synfigapp/actions/valuedescdisconnect.cpp:77
+#, c-format
+msgid "Disconnect %s"
+msgstr "Desconectar %s"
+
 #: src/synfigapp/actions/valuedescexport.cpp:55
 msgid "Export"
 msgstr "Exportar"
 
-#: src/synfigapp/actions/valuedescexport.cpp:83
+#. TRANSLATORS: This is used in the 'history' dialog when a ValueNode is exported.  The first %s is what is exported, the 2nd is the name it is given.
+#: src/synfigapp/actions/valuedescexport.cpp:76
+#, c-format
+msgid "Export '%s' as '%s'"
+msgstr "Exportar '%s' como '%s'"
+
+#: src/synfigapp/actions/valuedescexport.cpp:92
 msgid "The name that you want this value to be exported as"
 msgstr "El nombre con el que quiere que se exporte este valor"
 
-#: src/synfigapp/actions/valuedescexport.cpp:141
+#: src/synfigapp/actions/valuedescexport.cpp:150
 msgid "Can only export Canvas when used as constant parameter"
-msgstr ""
-"Sólo se puede exportar un lienzo cuando se use como parámetro constante"
+msgstr "Sólo se puede exportar un lienzo cuando se use como parámetro constante"
 
-#: src/synfigapp/actions/valuedescexport.cpp:164
+#: src/synfigapp/actions/valuedescexport.cpp:173
 msgid "ValueBase is already exported"
 msgstr "Valor de Base actualmente exportado"
 
-#: src/synfigapp/actions/valuedescexport.cpp:171
+#: src/synfigapp/actions/valuedescexport.cpp:180
 msgid "Unable to export parameter. (Bug?)"
-msgstr "Imposible exportar parámetro. (¿Error?)"
+msgstr "Imposible exportar parámetro. (¿Bug?)"
 
 #: src/synfigapp/actions/valuedesclink.cpp:52
 msgid "Link"
@@ -3077,38 +3407,36 @@ msgstr "Enlazar"
 
 #: src/synfigapp/actions/valuedesclink.cpp:75
 msgid "ValueDesc to link"
-msgstr "Descripción del Calor a enlazar"
+msgstr "Descripción del Valor a enlazar"
 
 #: src/synfigapp/actions/valuedesclink.cpp:112
 msgid "Cannot link two different exported values ('"
 msgstr "No puedo enlazar dos valores exportados diferentes ('"
 
 #: src/synfigapp/actions/valuedesclink.cpp:113
-#: src/synfigapp/actions/valuedesclink.cpp:210
 msgid "' and '"
-msgstr "'y'"
+msgstr "' y '"
 
 #: src/synfigapp/actions/valuedesclink.cpp:114
-#: src/synfigapp/actions/valuedesclink.cpp:211
 msgid "')"
 msgstr "')"
 
 #: src/synfigapp/actions/valuedesclink.cpp:119
 msgid "Used exported ValueNode ('"
-msgstr "Usado Valor de Nodo exportado"
+msgstr "Usado Valor de Nodo exportado ('"
 
 #: src/synfigapp/actions/valuedesclink.cpp:119
 msgid "')."
-msgstr "')"
+msgstr "')."
 
 #: src/synfigapp/actions/valuedesclink.cpp:126
 msgid "Using the only available ValueNode."
-msgstr "Usando el único Valor de Nodo disponible"
+msgstr "Usando el único Valor de Nodo disponible."
 
 #: src/synfigapp/actions/valuedesclink.cpp:139
 #: src/synfigapp/actions/valuedesclink.cpp:145
 msgid "Using the most referenced ValueNode."
-msgstr "Usando el Valor de Nodo más refernciado"
+msgstr "Usando el Valor de Nodo más referenciado"
 
 #: src/synfigapp/actions/valuedesclink.cpp:153
 #: src/synfigapp/actions/valuedesclink.cpp:161
@@ -3127,57 +3455,63 @@ msgstr ""
 #: src/synfigapp/actions/valuedesclink.cpp:189
 #: src/synfigapp/actions/valuedesclink.cpp:195
 msgid "Everything is tied; using the least recently modified value."
-msgstr "Todo esta enlazado; usando el calor más recientemente modificado"
+msgstr "Todo esta enlazado; usando el valor más recientemente modificado."
 
 #: src/synfigapp/actions/valuedesclink.cpp:201
 msgid "Absolutely everything is tied."
-msgstr "Absolutamente todo esta enlazado"
+msgstr "Absolutamente todo esta enlazado."
 
 #: src/synfigapp/actions/valuedesclink.cpp:209
-msgid "Cannot link two values of different types ('"
-msgstr "No puedo enlazar dos valores de tipo diferente ('"
+#, c-format
+msgid "Cannot link two values of different types ('%s' and '%s')"
+msgstr "No puedo enlazar dos valores de tipo diferente ('%s' y '%s')"
 
 #: src/synfigapp/actions/valuedesclink.cpp:246
 msgid "No ValueNodes were available, so one was created."
 msgstr "No hay Valor de Nodo disponible, así que uno fue creado."
 
-#: src/synfigapp/actions/valuedescset.cpp:62
+#: src/synfigapp/actions/valuedescset.cpp:59
 msgid "Set ValueDesc"
 msgstr "Establecer Descripción del Valor"
 
-#: src/synfigapp/actions/valuedescset.cpp:113
+#: src/synfigapp/actions/valuedescset.cpp:80
 #, c-format
 msgid "Set %s"
 msgstr "Establecer %s"
 
-#: src/synfigapp/actions/valuedescset.cpp:215
-#: src/synfigapp/actions/valuedescset.cpp:240
-#: src/synfigapp/actions/valuedescset.cpp:308
-#: src/synfigapp/actions/valuedescset.cpp:366
-#: src/synfigapp/actions/valuedescset.cpp:403
-#: src/synfigapp/actions/valuedescset.cpp:428
-#: src/synfigapp/actions/valuedescset.cpp:446
+#: src/synfigapp/actions/valuedescset.cpp:184
+#: src/synfigapp/actions/valuedescset.cpp:209
+#: src/synfigapp/actions/valuedescset.cpp:277
+#: src/synfigapp/actions/valuedescset.cpp:335
+#: src/synfigapp/actions/valuedescset.cpp:372
+#: src/synfigapp/actions/valuedescset.cpp:397
+#: src/synfigapp/actions/valuedescset.cpp:415
 #: src/synfigapp/actions/valuenodedynamiclistinsertsmart.cpp:185
 msgid "Unable to find action value_desc_set (bug)"
 msgstr "Imposible encontrar acción value_set_desc (error)"
 
-#: src/synfigapp/actions/valuedescset.cpp:356
+#: src/synfigapp/actions/valuedescset.cpp:266
+#, c-format
+msgid "Bad type for composite (%s)"
+msgstr "Mal tipo para composición (%s)"
+
+#: src/synfigapp/actions/valuedescset.cpp:325
 #, c-format
 msgid "Bad type for radial composite (%s)"
 msgstr "Mal tipo para composición radial (%s)"
 
-#: src/synfigapp/actions/valuedescset.cpp:534
-#: src/synfigapp/actions/valuedescset.cpp:582
+#: src/synfigapp/actions/valuedescset.cpp:501
+#: src/synfigapp/actions/valuedescset.cpp:548
 msgid "Direct manipulation of this ValueNode type is not yet supported"
-msgstr "Manipulación directa de este Valor de nodo no esta soportado aún"
+msgstr "Manipulación directa de este tipo de Valor de Nodo no esta soportado aún"
 
-#: src/synfigapp/actions/valuedescset.cpp:580
+#: src/synfigapp/actions/valuedescset.cpp:546
 msgid "You must be in Animate-Editing-Mode to directly manipulate this value"
 msgstr "Debe estar en Modo de Edición de Animación para manipular este valor"
 
-#: src/synfigapp/actions/valuedescset.cpp:602
+#: src/synfigapp/actions/valuedescset.cpp:568
 msgid "Unsupported ValueDesc type"
-msgstr "Tipo de Deescripción de Valor no soportado"
+msgstr "Tipo de Descripción de Valor no soportado"
 
 #: src/synfigapp/actions/valuenodeadd.cpp:49
 msgid "Add ValueNode"
@@ -3201,18 +3535,18 @@ msgstr "Otro Valor Base exportado con este nombre ya existe"
 
 #: src/synfigapp/actions/valuenodeadd.cpp:135
 msgid "Exception caught on Add ValueNode."
-msgstr "Atrapada excepción al Añadir Valor de Nodo"
+msgstr "Atrapada excepción al Añadir Valor de Nodo."
 
 #: src/synfigapp/actions/valuenodeadd.cpp:154
 msgid "Exception caught on Remove ValueNode."
-msgstr "Atrapada excepción al Borrar Valor de Nodo"
+msgstr "Atrapada excepción al Borrar Valor de Nodo."
 
 #: src/synfigapp/actions/valuenodeconstset.cpp:49
 msgid "Set ValueNode_Const"
 msgstr "Establecer Valor de Nodo Constante"
 
 #: src/synfigapp/actions/valuenodeconstset.cpp:73
-#: src/synfigapp/actions/valuenoderename.cpp:72
+#: src/synfigapp/actions/valuenoderename.cpp:81
 msgid "ValueNode_Const"
 msgstr "Valor de Nodo Constante"
 
@@ -3313,21 +3647,33 @@ msgstr "Desconectar el Enlace del Valor de Nodo"
 msgid "Unexport"
 msgstr "Des-exportar"
 
+#. TRANSLATORS: This is used in the 'history' dialog when a ValueNode is unexported.
+#: src/synfigapp/actions/valuenoderemove.cpp:70
+#, c-format
+msgid "Unexport '%s'"
+msgstr "Des-exportar '%s'"
+
 #: src/synfigapp/actions/valuenoderename.cpp:49
 msgid "Rename ValueNode"
 msgstr "Renombrar Valor de Nodo"
 
-#: src/synfigapp/actions/valuenoderename.cpp:77
+#. TRANSLATORS: This is used in the 'history' dialog when a ValueNode is renamed.
+#: src/synfigapp/actions/valuenoderename.cpp:70
+#, c-format
+msgid "Rename ValueNode from '%s' to '%s'"
+msgstr "Renombrar Valor de Nodo desde '%s' a '%s'"
+
+#: src/synfigapp/actions/valuenoderename.cpp:86
 msgid "The new name of the ValueNode"
 msgstr "El nuevo nombre al Valor de Nodo"
 
-#: src/synfigapp/actions/valuenoderename.cpp:141
+#: src/synfigapp/actions/valuenoderename.cpp:150
 msgid "A ValueNode with this ID already exists in this canvas"
 msgstr "Un Valor de Nodo con este ID ya existe en este lienzo"
 
-#: src/synfigapp/actions/valuenoderename.cpp:159
+#: src/synfigapp/actions/valuenoderename.cpp:168
 msgid "A ValueNode with the old ID already exists in this canvas (BUG)"
-msgstr "Un Valor de Nodo con el antiguo ID ya existe en este lienzo (ERROR)"
+msgstr "Un Valor de Nodo con el antiguo ID ya existe en este lienzo (BUG)"
 
 #: src/synfigapp/actions/valuenodereplace.cpp:49
 msgid "Replace ValueNode"
@@ -3358,7 +3704,7 @@ msgstr "¡No puede reemplazar Valore de Nodo de diferentes tipos!"
 #: src/synfigapp/actions/valuenodereplace.cpp:163
 #: src/synfigapp/actions/valuenodereplace.cpp:201
 msgid "Nothing to replace."
-msgstr "Nada a remplazar"
+msgstr "Nada a remplazar."
 
 #: src/synfigapp/actions/valuenodereplace.cpp:170
 #: src/synfigapp/actions/valuenodereplace.cpp:208
@@ -3367,7 +3713,7 @@ msgstr "Acción Fallida. Esto es un error. Por favor informe del mismo."
 
 #: src/synfigapp/actions/valuenodereplace.cpp:188
 msgid "This action cannot be undone under these circumstances."
-msgstr "Esta acción no puede ser deshecha bajo ciertas circunstancias."
+msgstr "Esta acción no puede ser deshecha bajo estas circunstancias."
 
 #: src/synfigapp/actions/valuenodereplace.cpp:213
 msgid ": (Undo) "
@@ -3379,18 +3725,18 @@ msgid "Add Waypoint"
 msgstr "Añadir Interpolación"
 
 #: src/synfigapp/actions/waypointadd.cpp:80
-#: src/synfigapp/actions/waypointsetsmart.cpp:95
+#: src/synfigapp/actions/waypointsetsmart.cpp:89
 msgid "New Waypoint"
 msgstr "Nueva Interpolación"
 
 #: src/synfigapp/actions/waypointadd.cpp:81
-#: src/synfigapp/actions/waypointsetsmart.cpp:96
+#: src/synfigapp/actions/waypointsetsmart.cpp:90
 #: src/synfigapp/actions/waypointsimpleadd.cpp:79
 msgid "Waypoint to be added"
 msgstr "Interpolación para ser añadida"
 
 #: src/synfigapp/actions/waypointadd.cpp:87
-#: src/synfigapp/actions/waypointsetsmart.cpp:107
+#: src/synfigapp/actions/waypointsetsmart.cpp:101
 msgid "Time where waypoint is to be added"
 msgstr "Tiempo donde se va a añadir la interpolación"
 
@@ -3486,75 +3832,75 @@ msgstr "Fallido"
 msgid "Successful"
 msgstr "Éxito"
 
-#: src/synfigapp/action_system.cpp:223 src/synfigapp/action_system.cpp:225
+#: src/synfigapp/action_system.cpp:222 src/synfigapp/action_system.cpp:224
 msgid " (Undo): "
 msgstr "(Deshacer): "
 
-#: src/synfigapp/action_system.cpp:285
+#: src/synfigapp/action_system.cpp:284
 msgid "Failed to undo."
 msgstr "Fallado al deshacer"
 
-#: src/synfigapp/action_system.cpp:322 src/synfigapp/action_system.cpp:324
+#: src/synfigapp/action_system.cpp:320 src/synfigapp/action_system.cpp:322
 msgid " (Redo): "
 msgstr "(Rehacer):"
 
-#: src/synfigapp/action_system.cpp:384
+#: src/synfigapp/action_system.cpp:382
 msgid "Failed to redo."
 msgstr "Fallado al rehacer"
 
-#: src/synfigapp/action_system.cpp:711
+#: src/synfigapp/action_system.cpp:698
 msgid "State restore failure"
 msgstr "Fallo al restaurar estado"
 
-#: src/synfigapp/canvasinterface.cpp:158
+#: src/synfigapp/canvasinterface.cpp:159
 msgid "Action Not Ready, unable to change mode"
 msgstr "Acción no preparada, imposible cambiar el modo"
 
-#: src/synfigapp/canvasinterface.cpp:164
+#: src/synfigapp/canvasinterface.cpp:165
 msgid "Unable to change mode"
 msgstr "Imposible cambiar el modo"
 
-#: src/synfigapp/canvasinterface.cpp:181
+#: src/synfigapp/canvasinterface.cpp:182
 msgid "Add Layer To"
 msgstr "Añadir Capa A"
 
-#: src/synfigapp/canvasinterface.cpp:259 src/synfigapp/canvasinterface.cpp:319
-#: src/synfigapp/canvasinterface.cpp:352
+#: src/synfigapp/canvasinterface.cpp:260 src/synfigapp/canvasinterface.cpp:321
+#: src/synfigapp/canvasinterface.cpp:354
 msgid "Action Not Ready"
 msgstr "Acción No Preparada"
 
-#: src/synfigapp/canvasinterface.cpp:265 src/synfigapp/canvasinterface.cpp:326
-#: src/synfigapp/canvasinterface.cpp:359 src/synfigapp/canvasinterface.cpp:436
-#: src/synfigapp/canvasinterface.cpp:620 src/synfigapp/canvasinterface.cpp:640
-#: src/synfigapp/canvasinterface.cpp:693
+#: src/synfigapp/canvasinterface.cpp:266 src/synfigapp/canvasinterface.cpp:328
+#: src/synfigapp/canvasinterface.cpp:361 src/synfigapp/canvasinterface.cpp:449
+#: src/synfigapp/canvasinterface.cpp:638 src/synfigapp/canvasinterface.cpp:663
+#: src/synfigapp/canvasinterface.cpp:716
 msgid "Action Failed."
-msgstr "Acció Fallida"
+msgstr "Acció Fallida."
 
-#: src/synfigapp/canvasinterface.cpp:286
+#: src/synfigapp/canvasinterface.cpp:288
 msgid "Move Action Not Ready"
 msgstr "Acción Mover No Preparada"
 
-#: src/synfigapp/canvasinterface.cpp:292
+#: src/synfigapp/canvasinterface.cpp:294
 msgid "Move Action Failed."
-msgstr "Acción Mover Falida"
+msgstr "Acción Mover Falida."
 
-#: src/synfigapp/canvasinterface.cpp:335
+#: src/synfigapp/canvasinterface.cpp:337
 msgid "Empty name!"
 msgstr "¡Nombre vacío!"
 
-#: src/synfigapp/canvasinterface.cpp:501
+#: src/synfigapp/canvasinterface.cpp:514
 msgid "Filename must have an extension!"
 msgstr "¡El archivo debe terner una extensión!"
 
-#: src/synfigapp/canvasinterface.cpp:515
+#: src/synfigapp/canvasinterface.cpp:528
 msgid "Unable to open this composition"
 msgstr "Imposible abrir esta composición"
 
-#: src/synfigapp/canvasinterface.cpp:519
+#: src/synfigapp/canvasinterface.cpp:532
 msgid "Unable to create \"Paste Canvas\" layer"
 msgstr "Impsible crear  capa \"Lienzo Pegado\""
 
-#: src/synfigapp/canvasinterface.cpp:534
+#: src/synfigapp/canvasinterface.cpp:547
 msgid ""
 "Uncaught exception when attempting\n"
 "to open this composition -- "
@@ -3562,16 +3908,16 @@ msgstr ""
 "Excepción sin atrapar cuando se intentaba\n"
 "abrir esta composición"
 
-#: src/synfigapp/canvasinterface.cpp:540
+#: src/synfigapp/canvasinterface.cpp:553
 msgid "I don't know how to open images of this type -- "
 msgstr "No se como abrir imágenes de este tipo"
 
-#: src/synfigapp/canvasinterface.cpp:685
+#: src/synfigapp/canvasinterface.cpp:708
 #, c-format
 msgid "Unnamed%08d"
 msgstr "Sin Nombre%08d"
 
-#: src/synfigapp/canvasinterface.cpp:714
+#: src/synfigapp/canvasinterface.cpp:737
 msgid ""
 "The value you are trying to edit is in a composition\n"
 "which doesn't seem to be open. Open that composition and you\n"
@@ -3603,4 +3949,5 @@ msgstr "error:"
 
 #: src/synfigapp/uimanager.cpp:149
 msgid "warning: "
-msgstr "aviso:"
+msgstr "aviso: "
+
