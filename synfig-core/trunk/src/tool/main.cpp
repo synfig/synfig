@@ -331,7 +331,9 @@ void display_help(int amount)
 		Argument("--time","<time>",_("Render a single frame at <seconds>"));
 		Argument("--begin-time","<time>",_("Set the starting time"));
 		Argument("--end-time","<time>",_("Set the ending time"));
-		Argument("--dpi","<res>",_("Set the dots-per-inch"));
+		Argument("--dpi","<res>",_("Set the physical resolution (dots-per-inch)"));
+		Argument("--dpi-x","<res>",_("Set the physical X resolution (dots-per-inch"));
+		Argument("--dpi-y","<res>",_("Set the physical Y resolution (dots-per-inch)"));
 		Argument("--append","<filename>",_("Append layers in <filename> to composition"));
 		Argument("--layer-info","<layer>",_("Print out layer's description, parameter info, etc."));
 		Argument("--layers",NULL,_("Print out the list of available layers"));
