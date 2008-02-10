@@ -42,46 +42,81 @@
 /* === M A C R O S ========================================================= */
 
 //! \writeme
-#define SYNFIG_LAYER_MODULE_EXT public: static const char name__[], version__[], cvs_id__[], local_name__[], category__[]; static Layer *create();
+#define SYNFIG_LAYER_MODULE_EXT															\
+	public:																				\
+	static const char name__[], version__[], cvs_id__[], local_name__[], category__[];	\
+	static Layer *create();
 
 //! Sets the name of the layer
-#define SYNFIG_LAYER_SET_NAME(class,x) const char class::name__[]=x
+#define SYNFIG_LAYER_SET_NAME(class,x)													\
+	const char class::name__[]=x
 
 //! Sets the local name of the layer
-#define SYNFIG_LAYER_SET_LOCAL_NAME(class,x) const char class::local_name__[]=x;
+#define SYNFIG_LAYER_SET_LOCAL_NAME(class,x)											\
+	const char class::local_name__[]=x;
 
 //! Sets the category of the layer
-#define SYNFIG_LAYER_SET_CATEGORY(class,x) const char class::category__[]=x
+#define SYNFIG_LAYER_SET_CATEGORY(class,x)												\
+	const char class::category__[]=x
 
 //! Sets the version string for the layer
-#define SYNFIG_LAYER_SET_VERSION(class,x) const char class::version__[]=x
+#define SYNFIG_LAYER_SET_VERSION(class,x)												\
+	const char class::version__[]=x
 
 //! Sets the CVS ID string for the layer
-#define SYNFIG_LAYER_SET_CVS_ID(class,x) const char class::cvs_id__[]=x
+#define SYNFIG_LAYER_SET_CVS_ID(class,x)												\
+	const char class::cvs_id__[]=x
 
 //! \writeme
-#define SYNFIG_LAYER_INIT(class) synfig::Layer* class::create() { return new class(); }
+#define SYNFIG_LAYER_INIT(class)														\
+	synfig::Layer* class::create()														\
+	{																					\
+		return new class();																\
+	}
 
 //! \writeme
-#define IMPORT_PLUS(x,y) if(param==#x && value.same_type_as(x)) { value.put(&x);{y;}return true;}
+#define IMPORT_PLUS(x,y)																\
+	if (param==#x && value.same_type_as(x))												\
+	{																					\
+		value.put(&x);																	\
+		{																				\
+			y;																			\
+		}																				\
+		return true;																	\
+	}
 
 //! \writeme
-#define IMPORT_AS(x,y) if(param==y && value.same_type_as(x)) { value.put(&x); return true;}
+#define IMPORT_AS(x,y)																	\
+	if (param==y && value.same_type_as(x))												\
+	{																					\
+		value.put(&x);																	\
+		return true;																	\
+	}
 
 //! \writeme
-#define IMPORT(x) IMPORT_AS(x,#x)
+#define IMPORT(x)																		\
+	IMPORT_AS(x,#x)
 
 //! \writeme
-#define EXPORT_AS(x,y) if(param==y) { return ValueBase(x); }
+#define EXPORT_AS(x,y)																	\
+	if (param==y)																		\
+		return ValueBase(x);
 
 //! \writeme
-#define EXPORT(x)					EXPORT_AS(x,#x)
+#define EXPORT(x)																		\
+	EXPORT_AS(x,#x)
 
 //! \writeme
-#define EXPORT_NAME()	if(param=="Name" || param=="name" || param=="name__") { return name__; } if(param=="local_name__") { return dgettext("synfig",local_name__); }
+#define EXPORT_NAME()																	\
+	if (param=="Name" || param=="name" || param=="name__")								\
+		return name__;																	\
+	else if (param=="local_name__")														\
+		return dgettext("synfig",local_name__);
 
 //! \writeme
-#define EXPORT_VERSION()	if(param=="Version" || param=="version" || param=="version__") { return version__; }
+#define EXPORT_VERSION()																\
+	if (param=="Version" || param=="version" || param=="version__")						\
+		return version__;
 
 //! This is used as the category for layer book entries which represent aliases of layers.
 //! It prevents these layers showing up in the menu.
