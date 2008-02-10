@@ -26,7 +26,8 @@
                 changes parameters while rendering.
 
                 Allow zooming furter in to nested PasteCanvas
-                layers. (#1809480)
+                layers.
+				http://sourceforge.net/support/tracker.php?aid=1809480
 
          * Plant Layer
            -----------
@@ -35,7 +36,8 @@
 
                 Fix: Use the 'width' of each blinepoint in the plant
                 layer to affect the velocities.  Patch from
-                genete. (#1831897)
+                genete.
+				http://sourceforge.net/support/tracker.php?aid=1831897
 
                 Add the 'offset' parameter to the Plant layer.
 
@@ -47,7 +49,8 @@
          * Stretch
            -------
                 Prevent a crash when rendering a 'Stretch' layer with
-                zero x or y amount. (#1823082)
+                zero x or y amount.
+				http://sourceforge.net/support/tracker.php?aid=1823082
 
                 Make the 'Stretch' layer's "amount" duck be relative
                 to the center duck.
@@ -55,7 +58,8 @@
          * Text
            ----
                 Allow multibyte characters in the Text layer. Patch by
-                Niki W. Waibel. (#1852208)
+                Niki W. Waibel.
+				http://sourceforge.net/support/tracker.php?aid=1852208
 
                 First step towards fixing the problem of distorted
                 'Text' layers not rendering correctly at tile borders.
@@ -157,7 +161,8 @@
         itself is destroyed.
 
         Encapsulations containing imported images fail to clone
-        properly (#1838132)
+        properly
+				http://sourceforge.net/support/tracker.php?aid=1838132
 
  * SIF Files
    ---------
@@ -185,7 +190,8 @@
 
         Fix: Prevent studio crashing when loading a document that
         contains an unknown valuenode type from a newer version of
-        synfig. Simply refuse to load the document instead. (#1811250)
+        synfig. Simply refuse to load the document instead.
+				http://sourceforge.net/support/tracker.php?aid=1811250
 
  * Misc
    ----
@@ -194,18 +200,21 @@
         radial blur layers when the quality is 10.
 
         New feature: allow importing of lipsynced voice animations
-        from Papagayo (#1879688)
+        from Papagayo
+				http://sourceforge.net/support/tracker.php?aid=1879688
 
         Fix: Inserting a new item into a list in animation mode caused
         unpredicatable renders before the time of
-        insertion. (#1841280)
+        insertion.
+				http://sourceforge.net/support/tracker.php?aid=1841280
 
         Fix: The hex color code parser is much more forgiving now.
         Previously spaces before or after the color code would cause
         it to fail.
 
         Fix: Don't treat the required values of command line flags as
-        flags themselves. (#1695735)
+        flags themselves.
+				http://sourceforge.net/support/tracker.php?aid=1695735
 
         Fix: Initialise the 'time_last_changed' when creating a Node.
         Previously it was being left at a random value.

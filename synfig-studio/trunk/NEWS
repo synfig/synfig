@@ -10,7 +10,8 @@
         Fixed errors and warnings detected by a pre-release version
         of g++ 4.3.
 
-        Fixes to allow sigc++ 2.1 and newer to be used. (#1859663)
+        Fixes to allow sigc++ 2.1 and newer to be used.
+				http://sourceforge.net/support/tracker.php?aid=1859663
 
         Removed the 'bootstrap' script for building.  Use autoreconf
         instead.
@@ -49,19 +50,24 @@
         outlines together.
 
         Fix: When drawing an outline and a region at the same time,
-        put the outline just on top of the region. (#1829172)
+        put the outline just on top of the region.
+				http://sourceforge.net/support/tracker.php?aid=1829172
 
         Fix: Always leave only the newly created layers
-        selected. (#1830245)
+        selected.
+				http://sourceforge.net/support/tracker.php?aid=1830245
 
  * About
    -----
         Fix: Change the about dialog to a splash screen and implement
         a new about dialog based on Gtk::AboutDialog. Still need to
-        connect it up to configure.ac though. (#1678554, #1741220)
+        connect it up to configure.ac though.
+				http://sourceforge.net/support/tracker.php?aid=1678554
+				http://sourceforge.net/support/tracker.php?aid=1741220
 
         Fix: Show the correct SVN revision id in the about
-        dialog. (#1797745)
+        dialog.
+				http://sourceforge.net/support/tracker.php?aid=1797745
 
  * Linking
    -------
@@ -180,7 +186,8 @@
 
         Fix: If the window positions and sizes seem to be corrupted, give
         them sensible values to prevent them being created
-        offscreen. (#1836848)
+        offscreen.
+				http://sourceforge.net/support/tracker.php?aid=1836848
 
          * Console Window
            --------------
@@ -224,19 +231,23 @@
                 environment variable
                 SYNFIG_ENABLE_POPUP_MENU_IN_ALL_TOOLS re-enables the
                 popup menu when set.  Should this be the default?
-                Comments please to the bug report. (#1829182)
+                Comments please to the bug report.
+				http://sourceforge.net/support/tracker.php?aid=1829182
 
                 Fix: Studio was crashing sometimes when closing a
-                document. (#1850637)
+                document.
+				http://sourceforge.net/support/tracker.php?aid=1850637
 
                 Fix: Studio occasionally renders the tiles in the
                 wrong places.  This was happening when the canvas was
                 one pixel greater than an integer number of tiles
                 wide, and low-resolution rendering (the default) was
-                enabled. (#1824437)
+                enabled.
+				http://sourceforge.net/support/tracker.php?aid=1824437
 
                 Don't hide and reshow the workarea window when the
-                user clicks the 'X' button to close it. (#1682008)
+                user clicks the 'X' button to close it.
+				http://sourceforge.net/support/tracker.php?aid=1682008
 
                 Add checkboxes to the toggleable entries in the view
                 menu.
@@ -250,7 +261,8 @@
          * Preview Window
            --------------
                  Fix: Crash closing preview window before using
-                 it. (#1835429)
+                 it.
+				http://sourceforge.net/support/tracker.php?aid=1835429
 
          * Canvas Properties Dialog
            ------------------------
@@ -293,8 +305,8 @@
          * Children Panel
            --------------
                 Renaming exported ValueNodes no longer causes a
-                crash. (#1823053)
-
+                crash.
+				http://sourceforge.net/support/tracker.php?aid=1823053
 
          * History Panel
            -------------
@@ -345,14 +357,17 @@
         rotation, rather than seeing it shortcutting as it was
         previously.  It's also now possible to drag angle ducks around
         their origin multiple times and have the rotations
-        count. (#1827966)
+        count.
+				http://sourceforge.net/support/tracker.php?aid=1827966
 
         Fix: Exported canvases weren't being deleted on shutdown, due
-        to a handle never being released. (#1868911)
+        to a handle never being released.
+				http://sourceforge.net/support/tracker.php?aid=1868911
 
         Fix: Use the 'C' locale when loading and saving
         sketches.  Not doing so was causing load/save failures in
-        Spanish locales. (#1830670)
+        Spanish locales.
+				http://sourceforge.net/support/tracker.php?aid=1830670
 
  0.61.07 (SVN 878) - October 10, 2007 - Bug fixes
 
