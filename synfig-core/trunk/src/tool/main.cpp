@@ -528,9 +528,9 @@ int process_global_flags(arg_list_t &arg_list)
 bool flag_requires_value(String flag) {
 	return (flag=="-a"	|| flag=="-c"	|| flag=="-g"	|| flag=="-h"	|| flag=="-o" ||
 			flag=="-Q"	|| flag=="-s"	|| flag=="-t"	|| flag=="-T"	|| flag=="-w" ||
-			flag=="--append"	|| flag=="--begin-time"		|| flag=="--dpi"		|| flag=="--dpi-x"	||
-			flag=="--dpi-y"		|| flag=="--end-frame"		|| flag=="--end-time"	|| flag=="--fps"	||
-			flag=="--frame"		|| flag=="--start-frame"	|| flag=="--start-time"	|| flag=="--time"	);
+			flag=="--append"	|| flag=="--begin-time"	|| flag=="--dpi"		||
+			flag=="--dpi-x"		|| flag=="--dpi-y"		|| flag=="--end-time"	||
+			flag=="--fps"		|| flag=="--start-time"	|| flag=="--time"		);
 }
 
 int extract_arg_cluster(arg_list_t &arg_list,arg_list_t &cluster)
