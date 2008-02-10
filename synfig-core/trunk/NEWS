@@ -1,5 +1,215 @@
               synfig releases
 
+ 0.61.08 (SVN 1???) - February ??, 2008 - Bug fixes
+
+ * Synfig is now translatable using gettext.  Currently only a Spanish
+   translation exists.
+
+ * Build
+   -----
+        Removed the 'bootstrap' script for building.  Use autoreconf
+        instead.
+
+        Fixed errors and warnings detected by a pre-release version of
+        g++ 4.3.
+
+ * Layers
+   ------
+        New layer, 'Duplicate'.  This is an experimental feature, but
+        seems to work quite well.  It can be used to clone the layers
+        under it multiple times. ( http://synfig.org/Duplicate_Layer )
+
+         * PasteCanvas
+           -----------
+                Prevent a "bad_alloc" error in the 'PasteCanvas' layer
+                caused by the bounding boxes changing when the user
+                changes parameters while rendering.
+
+                Allow zooming furter in to nested PasteCanvas
+                layers. (#1809480)
+
+         * Plant Layer
+           -----------
+                New parameter "reverse" in the Plant layer allows
+                plants to be rendered back-to-front.
+
+                Fix: Use the 'width' of each blinepoint in the plant
+                layer to affect the velocities.  Patch from
+                genete. (#1831897)
+
+                Add the 'offset' parameter to the Plant layer.
+
+                Don't let 'select all' select the green ducks of a
+                plant layer.
+
+                Do some sanity checking on Plant layer parameters.
+
+         * Stretch
+           -------
+                Prevent a crash when rendering a 'Stretch' layer with
+                zero x or y amount. (#1823082)
+
+                Make the 'Stretch' layer's "amount" duck be relative
+                to the center duck.
+
+         * Text
+           ----
+                Allow multibyte characters in the Text layer. Patch by
+                Niki W. Waibel. (#1852208)
+
+                First step towards fixing the problem of distorted
+                'Text' layers not rendering correctly at tile borders.
+
+         * Misc
+           ----
+                Shade: Make the quality of the 'Shade' layer worse at
+                quality 10 than it is at quality 9!
+
+                Shape: Rename the 'Position' parameter to 'Offset' for
+                all the 'Shape' layers.
+
+                Spherize: Fix clipping for tile-based rendering in
+                Spherize layer.
+
+                Star: New parameter "regular polygon" in the 'Star'
+                layer allows regular polygons to be drawn.
+
+                Time Loop: New version 0.2 of the 'Time Loop'
+                layer. It uses the same parameters as the newly added
+                Time Loop ValueNode.
+
+                Warp: Fix a problem with the 'Warp' layer where some
+                tiles weren't being rendered.
+
+ * ValueNodes
+   ----------
+        Add new type: 'Cos', to calculate cosines.
+        ( http://wiki.synfig.com/Convert#Cos )
+
+        Add new type: 'Duplicate', only used by the Duplicate layer.
+        ( http://synfig.org/Convert#Duplicate )
+
+        Add new type: 'From Integer', to convert integers to other
+        types for linking to.  Currently disabled.
+        ( http://synfig.org/Convert#From_Integer )
+
+        Add new type: 'Random', to generate pseudo-random values.
+        ( http://synfig.org/Convert#Random )
+
+        Add new type: 'Reciprocal', to calculate reciprocals.
+        ( http://synfig.org/Convert#Reciprocal )
+
+        Add new type: 'Reverse Tangent', to reverse the direction of
+        tangents. ( http://synfig.org/Convert#Reverse_Tangent )
+
+        Add new type: 'Switch', to switch between two alternative
+        values. ( http://synfig.org/Convert#Switch )
+
+        Add new type: 'Time Loop', to allow individual parameters to
+        be time looped, like the Time Loop layer, but for individual
+        parameters. ( http://synfig.org/Convert#Time_Loop )
+
+        Add new type: 'aTan2', to calculate inverse tangents.
+        ( http://synfig.org/Convert#aTan2 )
+
+        Extended types: 'Add' and 'Subtract' now work with gradients.
+
+ * Targets
+   -------
+        Fix one memory leak and one filehandle leak in target 'png'..
+
+        Fix the ffmpeg/dv/imagemagick targets/importers on Windows.
+
+        Improved the 'imagemagick' target so it can create a series of
+        numbered images.
+
+        Fixed the 'mng' and 'yuv420p' targets.
+
+        Security fixes: arbitrary code execution when rendering
+        specially crafted .sif files.
+
+        Show which output target is used if it has been chosen
+        automatically, not specified by the user.
+
+ * Blend Methods
+   -------------
+        Don't accept illegal values for 'blend_method'.  Use
+        'Composite' instead.
+
+        Re-enable the 'alpha brighten' and 'alpha darken' blend
+        methods.
+
+        Fix the 'straight', 'straight onto' and 'alpha brighten' blend
+        methods.  Even completely transparent pixels in the top layer
+        should affect the result of these blends.  Existing .sif files
+        which relied on the previously broken behavior should still
+        render correctly for the most part.
+
+ * Canvases
+   --------
+        Fix a crash that was happening if we had 2 exported canvases
+        in a .sif file where the 2nd contained a pastecanvas that used
+        the 1st as its canvas.  The canvases are destructed in the
+        order in which they appear in the .sif file, so by the time
+        the 2nd is destroyed, the pastecanvas it contains no longer
+        has a valid canvas parameter.  The fix is to clear the canvas
+        parameter of any pastecanvases using a canvas when the canvas
+        itself is destroyed.
+
+        Encapsulations containing imported images fail to clone
+        properly (#1838132)
+
+ * SIF Files
+   ---------
+        Refer the user to 'http://synfig.org/Convert#Compatibility' if
+        we try to load a .sif file that uses a not-yet-implemented
+        ValueNode type, or that tries using a ValueNode with a type
+        which it doesn't yet support.
+
+        Changed the .sif file format.  'Composite' and 'Radial
+        Composite' ValueNodes used to be saved with obscure XML
+        element names <c1>, <c2>, etc.  Now we use more readable names
+        <point>, <width>, etc.  The old version is still accepted, and
+        can still be written by selecting the old version from the
+        "Save As..." dialog.  The new format will not be accepted by
+        previous releases of Synfig.
+
+        New Feature: Allow saving .sif files in formats that can be
+        read by versions 0.61.07 and older.
+
+        Add information about which valuenode types were added in
+        which release.  Don't save new types in old format files.
+
+        Fix: Prevent a crash when loading a .sif file with 'use=""' in
+        it.
+
+        Fix: Prevent studio crashing when loading a document that
+        contains an unknown valuenode type from a newer version of
+        synfig. Simply refuse to load the document instead. (#1811250)
+
+ * Misc
+   ----
+        Don't render feathering of circles or shapes (ie. outlines,
+        regions, stars, polygons, etc), or motion blur, blur, or
+        radial blur layers when the quality is 10.
+
+        New feature: allow importing of lipsynced voice animations
+        from Papagayo (#1879688)
+
+        Fix: Inserting a new item into a list in animation mode caused
+        unpredicatable renders before the time of
+        insertion. (#1841280)
+
+        Fix: The hex color code parser is much more forgiving now.
+        Previously spaces before or after the color code would cause
+        it to fail.
+
+        Fix: Don't treat the required values of command line flags as
+        flags themselves. (#1695735)
+
+        Fix: Initialise the 'time_last_changed' when creating a Node.
+        Previously it was being left at a random value.
+
  0.61.07 (SVN 878) - October 10, 2007 - Bug fixes
 
   * Fix importing on amd64 (#1692825)

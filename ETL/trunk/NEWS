@@ -1,5 +1,17 @@
               ETL releases
 
+ 0.04.11 (SVN 1???) - February ??, 2008 - Bug fixes
+
+ * Update the website URL to http://synfig.org/ instead of synfig.com.
+
+ * Removed the 'bootstrap' script for building.  Use autoreconf instead.
+
+ * Fixed errors and warnings detected by a pre-release version of g++
+   4.3.
+
+ * Make ETL-config a wrapper around pkg-config. Patch by Ralf
+   Corsepius <rc040203@freenet.de>
+
  0.04.10 (SVN 878) - October 10, 2007 - Bug fixes
 
   * Fix dirname for absolute paths (#1793306)

@@ -1,5 +1,359 @@
               synfigstudio releases
 
+ 0.61.08 (SVN 1???) - February ??, 2008 - Bug fixes
+
+ * Synfig Studio is now translatable using gettext.  Currently Franch
+   and Spanish translations exist.
+
+ * Build
+   -----
+        Fixed errors and warnings detected by a pre-release version
+        of g++ 4.3.
+
+        Fixes to allow sigc++ 2.1 and newer to be used. (#1859663)
+
+        Removed the 'bootstrap' script for building.  Use autoreconf
+        instead.
+
+ * Settings
+   --------
+        Added the option to run everything in the same thread.  It
+        doesn't work very well, and seems to cause more problems than
+        it solves.
+
+        Default 'end time' for new canvases to 5s instead of 0.
+        That's one less thing a new user then needs to edit to start
+        making his first animation.  Also, don't show the intimidating
+        canvas properties dialog when a new composition is created,
+        just use the defaults.  Set environment variable
+        "SYNFIG_ENABLE_NEW_CANVAS_EDIT_PROPERTIES" to revert this
+        change locally.
+
+        If no documents are specified to be loaded on the command line
+        at start-up, create a new empty document so the novice user
+        can get started straight away.  If environment variable
+        SYNFIG_DISABLE_AUTOMATIC_DOCUMENT_CREATION is set, don't
+        create a blank document on startup, even if no documents were
+        specified on the command line.  I'll add proper configuration
+        items within the gui for this and other recent changes soon.
+
+        Add a setting in the gui for the auto-backup interval.
+
+ * Draw Tool
+   ---------
+        Fixed the 'fill last stroke' button in the drawing tool.
+
+        Rearrange the drawing tool options a little.  Instead of
+        'region only' have checkboxes for 'region' and 'fill', like in
+        the bline tool, so now it's possible to draw regions and
+        outlines together.
+
+        Fix: When drawing an outline and a region at the same time,
+        put the outline just on top of the region. (#1829172)
+
+        Fix: Always leave only the newly created layers
+        selected. (#1830245)
+
+ * About
+   -----
+        Fix: Change the about dialog to a splash screen and implement
+        a new about dialog based on Gtk::AboutDialog. Still need to
+        connect it up to configure.ac though. (#1678554, #1741220)
+
+        Fix: Show the correct SVN revision id in the about
+        dialog. (#1797745)
+
+ * Linking
+   -------
+        When linking simple values, use the value from the topmost layer.
+
+        Attempting to link a duck from the Children panel with other ducks
+        was causing an error.  Now it isn't.
+
+ * Quality
+   -------
+        Change the default quality to 8.  It makes shade layers render
+        better without much impact on speed.
+
+        Label the preview qualities "best" and "fastest" because it's
+        not clear that higher numbers mean lower qualities.
+
+ * Files
+   -----
+        When doing a 'Save As', default to saving in the same
+        directory that the file was loaded from, if any.
+
+        Remember separate default directories for opening and writing
+        each of animations, images, sketches, rendered output, and
+        "miscellaneous".
+
+ * BLine Tool
+   ----------
+       Allow the bline tool to draw plants as well as outlines,
+       regions, and curvegradients.
+
+       When the bline tool is creating new layers, arrange the new
+       layers in the order: Outline - Region - Plant - Gradient, so
+       that each layer is at least somewhat visible.  Rename the
+       "*layer_bline*" variables to "*layer_outline*" since they
+       represent outlines specifically.
+
+ * Waypoints
+   ---------
+        Fix ugly waypoint drawing by rounding to integer values
+        symmetrically.  The improvement can be seen in
+        http://dooglus.rincevent.net/synfig/waypoint-symmetry.png .
+
+        Improve the waypoint context menus.  Now it's possible to
+        delete and duplicate complete trees of waypoints at once.  The
+        'change interp' functionality has been extended too, so now
+        it's possible to set the interpolation type for the whole
+        waypoint from the context menu as well as just the side that
+        was clicked on, and it's possible for single waypoints as
+        well.
+
+        Fix a crash when editing a waypoint with a non-static value.
+
+        Attach the "(Non-static value)" label into the waypoint
+        dialog.
+
+        Experimental: "export SYNFIG_SHOW_CANVAS_PARAM_WAYPOINTS=1" to
+        see canvas parameter waypoints, not canvas content waypoints
+        in PasteCanvas layers.  Doesn't work too well - dragging the
+        waypoints doesn't work, for instance.
+
+        When a PasteCanvas' "time offset" parameter shifts the timing
+        of its sub-canvas, the waypoints of that subcanvas are now
+        displayed shifted accordingly.
+
+ * Time
+   ----
+        Allow manual editing of the current time in the workarea
+        window.
+
+        Don't expand time fields to their full format (eg. "1s" -> "0h
+        0m 1s 0f") when they get keyboard focus.  export
+        SYNFIG_SHOW_FULL_TIME_ON_FOCUS=1 will restore the old
+        behaviour.
+
+        Make sure the time entry box shows the correct time - rounded
+        to an integer number of frames.
+
+        Improve the range of different scales used on the timeslider.
+        Previously 3 fps animations were having the timeslider
+        labelled "0.75f, 1.5f, ..." rather than "1f, 2f, ...".
+
+        Subdivide the space between labels on the timeslider sensibly.
+        Don't divide a 5 second gap into 4 parts of 1.25 seconds each,
+        for instance.
+
+        Set minimum and maximum zoom levels for the timescroller.
+
+        Allow the use of horizontal scrolling to adjust the current
+        time in timeslider widgets.
+
+        Improve the algorithm for determining the number of tick marks
+        to put between pairs of labels in the timeslider widgets.
+        It's better to divide 5 minutes into 5 tics of 1 minute each
+        than 6 ticks of 50 seconds each, for example.
+
+        Added a new icon for values of type "Time", thanks to
+        genete.
+
+ * Windows
+   -------
+        Rename "Dialogs" to "Panels" for the dockable windows.
+
+        My panels were drifting one or two pixels each time I started
+        studio.  This seems to be window-manager dependent.  I've
+        added environment variables to allow adjusting the drift to
+        stop it.  SYNFIG_WINDOW_POSITION_X_OFFSET and
+        SYNFIG_WINDOW_POSITION_Y_OFFSET.  Setting them both to 1 stops
+        the drift for me in xfwm4.
+
+        Remember the position and size of the color and gradient
+        dialogs even if they're not displayed when studio exits.
+
+        Applied patch from IL'dar AKHmetgaleev aka AkhIL to allow
+        different pixel sizes in the workarea window.  control-'(' and
+        control-')' make the pixels bigger and smller.
+
+        Fix: If the window positions and sizes seem to be corrupted, give
+        them sensible values to prevent them being created
+        offscreen. (#1836848)
+
+         * Console Window
+           --------------
+                Show a very simple message in the console on start-up so as
+                not to scare people when they see an empty terminal window
+                'doing nothing'.
+
+                Show a similar message in the console on start-up if
+                Studio is already running, to let the user know what
+                is happening.
+
+         * Toolbox Window
+           --------------
+                Allow adjustment of the default brush size using
+                horizontal scrolling over the preview graphic.
+
+                With the re-enabling of 'Alpha Brighten', the toolbox
+                has become a little wider.  Some foreign translations
+                of the blend method could also push it wider.  And
+                since we have 15 tool icons by default, I've made the
+                toolbox 5 icons wide instead of 4, and rearranged them
+                slightly.  The top row is now all for "moving ducks",
+                the middle row for "drawing stuff", and the bottom row
+                is more drawing on the left and looking at stuff
+                (eyedrop, zoom) on the right.
+
+         * Workarea Window
+           ---------------
+                Added environment variable SYNFIG_DISABLE_TILE_RENDER
+                which when set will prevent the tile renderer from
+                being used.
+
+                If environment variable "SYNFIG_SHOW_TILE_OUTLINES" is
+                defined, draw red outlines around tiles as they are
+                rendered.  For debugging purposes.
+
+                Indicate that a canvas is unsaved by putting a '*' in
+                front of its name.
+
+                The popup caret menu was disabled for some tools.  New
+                environment variable
+                SYNFIG_ENABLE_POPUP_MENU_IN_ALL_TOOLS re-enables the
+                popup menu when set.  Should this be the default?
+                Comments please to the bug report. (#1829182)
+
+                Fix: Studio was crashing sometimes when closing a
+                document. (#1850637)
+
+                Fix: Studio occasionally renders the tiles in the
+                wrong places.  This was happening when the canvas was
+                one pixel greater than an integer number of tiles
+                wide, and low-resolution rendering (the default) was
+                enabled. (#1824437)
+
+                Don't hide and reshow the workarea window when the
+                user clicks the 'X' button to close it. (#1682008)
+
+                Add checkboxes to the toggleable entries in the view
+                menu.
+
+                Add 'new', 'open' and 'quit' to the caret>file menu.
+
+                Change the default 'toggle onion skin' keyboard
+                shortcut from control-o (which is the stock binding
+                for 'open') to alt-o.
+
+         * Preview Window
+           --------------
+                 Fix: Crash closing preview window before using
+                 it. (#1835429)
+
+         * Canvas Properties Dialog
+           ------------------------
+                New environment variable:
+                'SYNFIG_DISABLE_NEW_CANVAS_EDIT_PROPERTIES'.  When
+                set, don't pop up the canvas properties dialog when
+                creating a new document.
+
+                Fix a problem with the canvas properties dialog.  It
+                wasn't possible to edit both the 'name' and the
+                renddesc parameters at the same time before.
+
+                By default, set "use current frame" in the render
+                dialog to off.  When "use current frame" is on,
+                disable the Time tab's frame.
+
+		Disable the 'Time' tab when "use current frame" is
+		checked.
+
+                Don't allow the user to set the 'ID' of exported
+                canvases to be empty.
+
+         * Layers Panel
+           ------------
+                Allow the layer panel to be sorted by layer name.
+                Resize the layer name column to fit the layer names.
+                Rename the "Layer" column to "Name".
+
+         * Groups Panel
+           ------------
+                Allow layers to be removed from groups without the
+                user having to type the name of the group they are in.
+
+         * Params Panel
+           ------------
+                Added a 'Type' column to the parameter dialog so it's
+                possible to tell an 'Add' from a 'Subtract' convert
+                for example.
+
+         * Children Panel
+           --------------
+                Renaming exported ValueNodes no longer causes a
+                crash. (#1823053)
+
+
+         * History Panel
+           -------------
+                The entries that appear in the History panel are now
+                more explicit; they mostly now give details of the
+                operation rather than just a generic fixed string,
+                making it easier to navigate through the history.  For
+                example "Remove Layer 'left leg'" will show up rather
+                than just "Remove Layer".
+
+                When the user types in the History dialog, search for
+                any text in the 'name' column that matches the text.
+                Previously it was only searching for names matching at
+                the beginning.
+
+ * Targets
+   -------
+        Fix the 'auto' render target selection, so it automatically
+        choses the target type each time based on the filename.
+
+        Added new target 'magick++' for rendering multiple images to a
+        single file using Magick++.
+
+ * Ducks
+   -----
+        Always draw 'real' ducks on the right hand side of the circle
+        they define.  Previously, canvases with a negative horizontal
+        pixel width were drawing it on the left.
+
+        Add an option to restrict 'radius' ducks to the top right
+        corner of the plane.  This allows us to easily set their value
+        to zero by dragging down and left.  Thanks to Zelgadis on IRC
+        for the suggestion.  See "Toolbox > File > Setup > Misc >
+        Restrict Real-Valued Ducks...".
+
+        Show the size of circles as they are drawn using the draw
+        tool.
+
+        Give slight priority to radius ducks.  That way, it's possible
+        to select the radius duck for a circle with radius zero.
+        Previously the position duck would usually be selected
+        instead.
+
+ * Misc
+   ----
+        New feature: Angles are not wrapped modulo 360 degrees.  It's
+        possible to animate from 0 to 361 degrees and see a full
+        rotation, rather than seeing it shortcutting as it was
+        previously.  It's also now possible to drag angle ducks around
+        their origin multiple times and have the rotations
+        count. (#1827966)
+
+        Fix: Exported canvases weren't being deleted on shutdown, due
+        to a handle never being released. (#1868911)
+
+        Fix: Use the 'C' locale when loading and saving
+        sketches.  Not doing so was causing load/save failures in
+        Spanish locales. (#1830670)
+
  0.61.07 (SVN 878) - October 10, 2007 - Bug fixes
 
   * Fix some tooltips and menu stuff (#1787437)
