@@ -330,6 +330,7 @@ void display_help(int amount)
 		Argument("--fps","<framerate>",_("Set the frame rate"));
 		Argument("--time","<time>",_("Render a single frame at <seconds>"));
 		Argument("--begin-time","<time>",_("Set the starting time"));
+		Argument("--start-time","<time>",_("Set the starting time"));
 		Argument("--end-time","<time>",_("Set the ending time"));
 		Argument("--dpi","<res>",_("Set the physical resolution (dots-per-inch)"));
 		Argument("--dpi-x","<res>",_("Set the physical X resolution (dots-per-inch"));
