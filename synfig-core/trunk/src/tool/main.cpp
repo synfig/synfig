@@ -418,6 +418,10 @@ int process_global_flags(arg_list_t &arg_list)
 			Progress p(PACKAGE);
 			synfig::Main synfig_main(dirname(progname),&p);
 			iter=next++;
+			if (iter==arg_list.end()) {
+				error("The `%s' flag requires a value.  Use --help for a list of options.", "--layer-info");
+				return SYNFIGTOOL_MISSINGARGUMENT;
+			}
 			Layer::Handle layer=synfig::Layer::create(*iter);
 			cout<<"Layer Name: "<<layer->get_name()<<endl;
 			cout<<"Localized Layer Name: "<<layer->get_local_name()<<endl;
@@ -526,11 +530,10 @@ int process_global_flags(arg_list_t &arg_list)
 
 /* true if the given flag takes an extra parameter */
 bool flag_requires_value(String flag) {
-	return (flag=="-a"	|| flag=="-c"	|| flag=="-g"	|| flag=="-h"	|| flag=="-o" ||
-			flag=="-Q"	|| flag=="-s"	|| flag=="-t"	|| flag=="-T"	|| flag=="-w" ||
-			flag=="--append"	|| flag=="--begin-time"	|| flag=="--dpi"		||
-			flag=="--dpi-x"		|| flag=="--dpi-y"		|| flag=="--end-time"	||
-			flag=="--fps"		|| flag=="--start-time"	|| flag=="--time"		);
+	return (flag=="-a"			|| flag=="-c"			|| flag=="-g"			|| flag=="-h"			|| flag=="-o"		||
+			flag=="-Q"			|| flag=="-s"			|| flag=="-t"			|| flag=="-T"			|| flag=="-w"		||
+			flag=="--append"	|| flag=="--begin-time"	|| flag=="--dpi"		|| flag=="--dpi-x"		|| flag=="--dpi-y"	||
+			flag=="--end-time"	|| flag=="--fps"		|| flag=="--layer-info"	|| flag=="--start-time"	|| flag=="--time"	);
 }
 
 int extract_arg_cluster(arg_list_t &arg_list,arg_list_t &cluster)
