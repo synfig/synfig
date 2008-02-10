@@ -159,7 +159,12 @@ Layer_PasteCanvas::set_param(const String & param, const ValueBase &value)
 		return true;
 	}
 
-	//! \todo this introduces bug 1844764 if enabled; it was introduced in r954, but I can't see if it's useful
+	//! \todo this introduces bug 1844764 if enabled; it was introduced in r954.
+	// http://synfig.org/images/3/3d/Moving-waypoints.sifz is an
+	// example of an animation that has its waypoints displayed
+	// incorrectly without this fix; select the outer layer and drag
+	// the time slider.  The linear waypoints don't take effect until
+	// 5s, but the time slider appears to pass the first one at 3s.
 #if 0
 	if (param=="time_offset" && value.same_type_as(time_offset))
 	{
