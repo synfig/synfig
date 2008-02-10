@@ -404,7 +404,8 @@ int process_global_flags(arg_list_t &arg_list)
 			synfig::Main synfig_main(dirname(progname),&p);
 			synfig::Layer::Book::iterator iter=synfig::Layer::book().begin();
 			for(;iter!=synfig::Layer::book().end();iter++)
-				cout<<iter->first<<endl;
+				if (iter->second.category != CATEGORY_DO_NOT_USE)
+					cout<<iter->first<<endl;
 
 			return SYNFIGTOOL_HELP;
 		}
