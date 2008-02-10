@@ -937,7 +937,7 @@ msgstr "Cuadrícula"
 #: src/modules/mod_geometry/region.cpp:64 src/modules/mod_geometry/star.cpp:62
 #: src/synfig/layer_polygon.cpp:60 src/synfig/layer_solidcolor.cpp:56
 msgid "Geometry"
-msgstr "Geometria"
+msgstr "Geometría"
 
 #: src/modules/mod_geometry/checkerboard.cpp:122
 msgid "Color of checkers"
