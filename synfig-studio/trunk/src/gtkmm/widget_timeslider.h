@@ -61,6 +61,7 @@ protected: //implementation that other interfaces can see
 
 	//HACK - I should not have to see this...
 	Gtk::Adjustment *adj_bounds;
+	double time_per_tickmark;
 
 	//Statistics used for drawing stuff (and making sure we don't if we don't need to)
 	/*double start,end;

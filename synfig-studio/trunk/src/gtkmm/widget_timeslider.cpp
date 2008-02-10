@@ -511,6 +511,7 @@ bool Widget_Timeslider::redraw(bool /*doublebuffer*/)
 
 	// subdivide into this many tick marks (8 or less)
 	const int subdiv = round_to_int(scale / *iter);
+	time_per_tickmark = scale / subdiv;
 
 	//get first valid line and its position in pixel space
 	double time = 0;
@@ -703,50 +704,80 @@ bool Widget_Timeslider::on_scroll_event(GdkEventScroll* event) //for zooming
 
 	//we want to zoom in on the time value if control is held down
 	if(Gdk::ModifierType(event->state) & Gdk::CONTROL_MASK)
-	{
 		center = true;
-	}
 
 	switch(event->direction)
 	{
 		case GDK_SCROLL_UP: //zoom in
-		{
 			zoom_in(center);
-
 			return true;
-		}
+
 		case GDK_SCROLL_DOWN: //zoom out
-		{
 			zoom_out(center);
-
 			return true;
-		}
-		
+
 		case GDK_SCROLL_RIGHT:
 		case GDK_SCROLL_LEFT:
-		{	
+		{
 			double t = adj_timescale->get_value();
+			double orig_t = t;
 			double start = adj_timescale->get_lower();
 			double end = adj_timescale->get_upper();
-			/*
-			FIXME: be more intelligent about how far to scroll
-			Perhaps it should be based on the tickmarks?
-			for e.g. 1/4 of a tick mark per scroll event
-			Obviously this  would need post-rounding to 1/fps
-			*/
-			double adj = 1.0/fps;
+			double lower = adj_bounds->get_lower();
+			double upper = adj_bounds->get_upper();
+			double adj = time_per_tickmark;
 
 			if( event->direction == GDK_SCROLL_RIGHT )
+			{
+				// step forward one tick
 				t += adj;
+
+				// don't go past the end of time
+				if (t > upper)
+					t = upper;
+
+				// if we are already in the right half of the slider
+				if ((t-start)*2 > (end-start))
+				{
+					// if we can't scroll the background left one whole tick, scroll it to the end
+					if (end > upper - (t-orig_t))
+					{
+						adj_timescale->set_lower(upper - (end-start));
+						adj_timescale->set_upper(upper);
+					}
+					// else scroll the background left
+					else
+					{
+						adj_timescale->set_lower(start + (t-orig_t));
+						adj_timescale->set_upper(start + (t-orig_t) + (end-start));
+					}
+				}
+			}
 			else
+			{
+				// step backwards one tick
 				t -= adj;
 
-			if( t < start ){
-				adj_timescale->set_lower(t);
-				adj_timescale->set_upper(t+end-start);
-			} else if( t > end ){ 
-				adj_timescale->set_upper(t);
-				adj_timescale->set_lower(t-end+start);
+				// don't go past the start of time
+				if (t < lower)
+					t = lower;
+
+				// if we are already in the left half of the slider
+				if ((t-start)*2 < (end-start))
+				{
+					// if we can't scroll the background right one whole tick, scroll it to the beginning
+					if (start < lower + (orig_t-t))
+					{
+						adj_timescale->set_lower(lower);
+						adj_timescale->set_upper(lower + (end-start));
+					}
+					// else scroll the background right
+					else
+					{
+						adj_timescale->set_lower(start - (orig_t-t));
+						adj_timescale->set_upper(start - (orig_t-t) + (end-start)); 
+					}
+				}
 			}
 
 			if(adj_timescale)
@@ -756,11 +787,8 @@ bool Widget_Timeslider::on_scroll_event(GdkEventScroll* event) //for zooming
 			}
 			return true;
 		}
-		
 		default:
-		{
 			return false;
-		}
 	}
 }
 
