@@ -73,7 +73,12 @@
  *
  *      the 'straight' blend method was fixed.  loading a version 0.2
  *      or older canvas will replace the 'straight' blend method in
- *      non-pastecanvas layers with 'composite'
+ *      non-pastecanvas layers with 'composite', unless they're
+ *      completely transparent, in which case it will replace them
+ *      with an  'alpha over' blend instead.  Images like
+ *      examples/logo.sifz use transparent straight blends to do
+ *      masking, which no longer works now that 'straight' blending is
+ *      fixed.
  */
 
 #define CURRENT_CANVAS_VERSION "0.3"
