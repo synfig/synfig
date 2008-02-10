@@ -505,12 +505,29 @@ bool Widget_Timeslider::redraw(bool /*doublebuffer*/)
 		iter = next;
 
 	scale = *iter;
-	if (iter != ranges.begin()) iter--;
-	if (iter != ranges.begin()) iter--;
-	if (iter != ranges.begin()) iter--;
 
 	// subdivide into this many tick marks (8 or less)
-	const int subdiv = round_to_int(scale / *iter);
+	int subdiv = round_to_int(scale * ifps);
+
+	if (subdiv > 8)
+	{
+		const int ideal = subdiv;
+
+		// find a number of tick marks that nicely divides the scale
+		// (5 minutes divided by 6 is 50s, but that's not 'nice' -
+		//  5 ticks of 1m each is much simpler than 6 ticks of 50s)
+		for (subdiv = 8; subdiv > 0; subdiv--)
+			if ((ideal <= ifps*2       && (ideal % (subdiv           )) == 0) ||
+				(ideal <= ifps*2*60    && (ideal % (subdiv*ifps      )) == 0) ||
+				(ideal <= ifps*2*60*60 && (ideal % (subdiv*ifps*60   )) == 0) ||
+				(true                  && (ideal % (subdiv*ifps*60*60)) == 0))
+				break;
+
+		// if we didn't find anything, use 4 ticks
+		if (!subdiv)
+			subdiv = 4;
+	}
+
 	time_per_tickmark = scale / subdiv;
 
 	//get first valid line and its position in pixel space
