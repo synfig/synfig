@@ -174,8 +174,18 @@ public:
 		String cvs_id;
 		String version;
 		BookEntry() { }
-		BookEntry(Factory factory, const String& name,const String& local_name,const String& category,const String& cvs_id,const String& version):
-			factory(factory),name(name),local_name(local_name),category(category),cvs_id(cvs_id),version(version) { }
+		BookEntry(Factory		 factory,
+				  const String	&name,
+				  const String	&local_name,
+				  const String	&category,
+				  const String	&cvs_id,
+				  const String	&version):
+			factory(factory),
+			name(name),
+			local_name(local_name),
+			category(category),
+			cvs_id(cvs_id),
+			version(version) { }
 	};
 
 	typedef std::map<String,BookEntry> Book;
