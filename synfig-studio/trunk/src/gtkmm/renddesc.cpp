@@ -401,7 +401,6 @@ Widget_RendDesc::create_widgets()
 	toggle_im_height->set_alignment(0, 0.5);
 	toggle_im_span=manage(new Gtk::CheckButton(_("Image _Span"), true));
 	toggle_im_span->set_alignment(0, 0.5);
-	time_frame=manage(new Gtk::Frame(_("Time")));
 }
 
 void
@@ -530,7 +529,7 @@ Widget_RendDesc::create_time_tab()
 	Gtk::VBox *panelBox = manage(new Gtk::VBox(false, 12)); // for future widgets
 	paddedPanel->add(*panelBox);
 
-	Gtk::Frame *time_frame = manage(new Gtk::Frame(_("Time Settings")));
+	time_frame = manage(new Gtk::Frame(_("Time Settings")));
 	time_frame->set_shadow_type(Gtk::SHADOW_NONE);
 	((Gtk::Label *) time_frame->get_label_widget())->set_markup(_("<b>Time Settings</b>"));
 	panelBox->pack_start(*time_frame, false, false, 0);
