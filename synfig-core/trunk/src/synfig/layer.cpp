@@ -102,7 +102,7 @@ Layer::subsys_init()
 		BookEntry(class::create,								\
 				  class::name__,								\
 				  dgettext("synfig", class::local_name__),		\
-				  dgettext("synfig", class::category__),		\
+				  class::category__,							\
 				  class::cvs_id__,								\
 				  class::version__)
 
