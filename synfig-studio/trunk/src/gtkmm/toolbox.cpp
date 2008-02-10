@@ -227,7 +227,7 @@ Toolbox::Toolbox():
 	filemenu->items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::Stock::NEW,
 		sigc::ptr_fun(&studio::App::new_instance)));
 	filemenu->items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::Stock::OPEN,
-		sigc::ptr_fun(&studio::App::dialog_open)));
+		sigc::bind(sigc::ptr_fun(&studio::App::dialog_open), "")));
 
 	filemenu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Open Recent"),*recent_files_menu));
 
@@ -284,7 +284,7 @@ Toolbox::Toolbox():
 
 	button_about->signal_clicked().connect(sigc::ptr_fun(studio::App::dialog_about));
 	button_new->signal_clicked().connect(sigc::ptr_fun(studio::App::new_instance));
-	button_open->signal_clicked().connect(sigc::ptr_fun(studio::App::dialog_open));
+	button_open->signal_clicked().connect(sigc::bind(sigc::ptr_fun(studio::App::dialog_open), ""));
 	button_save->signal_clicked().connect(sigc::ptr_fun(save_selected_instance));
 	button_saveas->signal_clicked().connect(sigc::ptr_fun(save_as_selected_instance));
 	button_save_all->signal_clicked().connect(sigc::ptr_fun(save_all));

@@ -1203,7 +1203,7 @@ CanvasView::init_menus()
 		sigc::hide_return(sigc::ptr_fun(&studio::App::new_instance))
 	);
 	action_group->add( Gtk::Action::create("open", Gtk::Stock::OPEN),
-		sigc::hide_return(sigc::ptr_fun(&studio::App::dialog_open))
+		sigc::hide_return(sigc::mem_fun(*get_instance().get(), &studio::Instance::open))
 	);
 	action_group->add( Gtk::Action::create("save", Gtk::Stock::SAVE),
 		hide_return(sigc::mem_fun(*get_instance().get(), &studio::Instance::save))

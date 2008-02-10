@@ -295,7 +295,7 @@ public:
 
 	static void new_instance();
 
-	static void dialog_open();
+	static void dialog_open(std::string filename = "");
 
 	static void dialog_about();
 

@@ -182,6 +182,8 @@ public:
 	//! returns true if the save was successful
 	bool dialog_save_as();
 
+	void open();
+
 	Status save();
 
 	void dialog_cvs_commit();

@@ -205,6 +205,12 @@ studio::Instance::save_as(const synfig::String &file_name)
 	return false;
 }
 
+void
+studio::Instance::open()
+{
+	App::dialog_open(get_file_name());
+}
+
 Instance::Status
 studio::Instance::save()
 {

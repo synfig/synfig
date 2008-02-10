@@ -2006,9 +2006,10 @@ App::new_instance()
 }
 
 void
-App::dialog_open()
+App::dialog_open(string filename)
 {
-	string filename="*.sif";
+	if (filename.empty())
+		filename="*.sif";
 
 	while(dialog_open_file("Open", filename, ANIMATION_DIR_PREFERENCE))
 	{
