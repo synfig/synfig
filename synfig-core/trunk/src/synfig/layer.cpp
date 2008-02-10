@@ -97,8 +97,23 @@ Layer::subsys_init()
 {
 	_layer_book=new Book();
 
-#define INCLUDE_LAYER(class)  	synfig::Layer::book()[synfig::String(class::name__)]=BookEntry(class::create,class::name__,dgettext("synfig",class::local_name__),dgettext("synfig",class::category__),class::cvs_id__,class::version__)
-#define LAYER_ALIAS(class,alias)  	synfig::Layer::book()[synfig::String(alias)]=synfig::Layer::BookEntry(class::create,alias,alias,CATEGORY_DO_NOT_USE,class::cvs_id__,class::version__);
+#define INCLUDE_LAYER(class)									\
+	synfig::Layer::book() [synfig::String(class::name__)] =		\
+		BookEntry(class::create,								\
+				  class::name__,								\
+				  dgettext("synfig", class::local_name__),		\
+				  dgettext("synfig", class::category__),		\
+				  class::cvs_id__,								\
+				  class::version__)
+
+#define LAYER_ALIAS(class,alias)								\
+	synfig::Layer::book()[synfig::String(alias)] =				\
+		BookEntry(class::create,								\
+				  alias,										\
+				  alias,										\
+				  CATEGORY_DO_NOT_USE,							\
+				  class::cvs_id__,								\
+				  class::version__)
 
 	INCLUDE_LAYER(Layer_SolidColor);	LAYER_ALIAS(Layer_SolidColor,	"solid_color");
 	INCLUDE_LAYER(Layer_PasteCanvas);	LAYER_ALIAS(Layer_PasteCanvas,	"paste_canvas");
