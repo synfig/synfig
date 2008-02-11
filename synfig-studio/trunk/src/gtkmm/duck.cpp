@@ -86,7 +86,8 @@ Duck::Duck(const synfig::Point &point):
 	guid_(0),
 	editable(false),
 	radius_(false),
-	tangent_(false)
+	tangent_(false),
+	hover_(false)
 { duck_count++; _DuckCounter::counter++;}
 
 Duck::Duck(const synfig::Point &point,const synfig::Point &origin):
@@ -97,7 +98,8 @@ Duck::Duck(const synfig::Point &point,const synfig::Point &origin):
 	guid_(0),
 	editable(false),
 	radius_(true),
-	tangent_(false)
+	tangent_(false),
+	hover_(false)
 { duck_count++; _DuckCounter::counter++;}
 
 Duck::~Duck() { duck_count--; _DuckCounter::counter--;}
