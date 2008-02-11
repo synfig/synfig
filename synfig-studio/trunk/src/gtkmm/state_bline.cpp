@@ -1134,12 +1134,12 @@ StateBLine_Context::refresh_ducks(bool button_down)
 	if(bezier && !loop_)
 	{
 		duck=new WorkArea::Duck(bline_point.get_vertex());
-		duck->set_editable(false);
+		duck->set_ignore(true);
 		duck->set_name("temp");
 
 		// Add the tangent1 duck
 		tduck=new WorkArea::Duck(Vector(0,0));
-		tduck->set_editable(false);
+		tduck->set_ignore(true);
 		tduck->set_name("ttemp");
 		tduck->set_origin(duck);
 		tduck->set_scalar(-0.33333333333333333);

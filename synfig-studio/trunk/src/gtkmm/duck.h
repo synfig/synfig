@@ -136,6 +136,7 @@ private:
 	bool radius_;
 	bool tangent_;
 	bool hover_;
+	bool ignore_;
 
 	synfig::TransformStack transform_stack_;
 
@@ -174,6 +175,12 @@ public:
 
 	//! Retrieves whether to show the duck as if it is being hovered over
 	bool get_hover()const { return hover_; }
+
+	//! Sets whether to ignore the duck when checking for user interaction
+	void set_ignore(bool i) { ignore_=i; }
+
+	//! Retrieves whether to ignore the duck when checking for user interaction
+	bool get_ignore()const { return ignore_; }
 
 	void set_connect_duck(const etl::handle<Duck>& x) { connect_duck=x; }
 	void set_box_duck(const etl::handle<Duck>& x) { box_duck=x; }
