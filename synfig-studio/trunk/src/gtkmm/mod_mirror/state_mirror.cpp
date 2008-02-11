@@ -79,7 +79,6 @@ class DuckDrag_Mirror : public DuckDrag_Base
 
 	std::vector<synfig::Vector> positions;
 
-
 public:
 	Axis axis;
 
@@ -88,7 +87,6 @@ public:
 	bool end_duck_drag(Duckmatic* duckmatic);
 	void duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector);
 };
-
 
 class studio::StateMirror_Context : public sigc::trackable
 {
@@ -99,7 +97,6 @@ class studio::StateMirror_Context : public sigc::trackable
 	etl::handle<DuckDrag_Mirror> duck_dragger_;
 
 	Gtk::Table options_table;
-
 
 	Gtk::CheckButton checkbutton_axis_x;
 	Gtk::CheckButton checkbutton_axis_y;
@@ -236,9 +233,6 @@ StateMirror_Context::~StateMirror_Context()
 	App::toolbox->refresh();
 }
 
-
-
-
 DuckDrag_Mirror::DuckDrag_Mirror():
 	axis(AXIS_X)
 {
@@ -251,8 +245,6 @@ DuckDrag_Mirror::DuckDrag_Mirror():
 void
 DuckDrag_Mirror::begin_duck_drag(Duckmatic* duckmatic, const synfig::Vector& /*offset*/)
 {
-
-
 	const DuckList selected_ducks(duckmatic->get_selected_ducks());
 	DuckList::const_iterator iter;
 
@@ -266,43 +258,40 @@ DuckDrag_Mirror::begin_duck_drag(Duckmatic* duckmatic, const synfig::Vector& /*o
 
 }
 
-
 void
 DuckDrag_Mirror::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector)
 {
 	center=vector;
 	int i;
 
-		const DuckList selected_ducks(duckmatic->get_selected_ducks());
-		DuckList::const_iterator iter;
+	const DuckList selected_ducks(duckmatic->get_selected_ducks());
+	DuckList::const_iterator iter;
+
+	// do the Vertex and Position ducks first
 	for(i=0,iter=selected_ducks.begin();iter!=selected_ducks.end();++iter,i++)
-	{
-		if(((*iter)->get_type()!=Duck::TYPE_VERTEX&&(*iter)->get_type()!=Duck::TYPE_POSITION))continue;
+		if ((*iter)->get_type() == Duck::TYPE_VERTEX ||
+			(*iter)->get_type() == Duck::TYPE_POSITION)
+		{
+			Vector p(positions[i]);
 
-		Vector p(positions[i]);
-		//Point p((*iter)->get_trans_point());
+			if		(axis==AXIS_X) p[0] = -(p[0]-center[0]) + center[0];
+			else if	(axis==AXIS_Y) p[1] = -(p[1]-center[1]) + center[1];
 
-		if(axis==AXIS_X)
-			p[0]=-(p[0]-center[0])+center[0];
-		if(axis==AXIS_Y)
-			p[1]=-(p[1]-center[1])+center[1];
+			(*iter)->set_trans_point(p);
+		}
 
-		(*iter)->set_trans_point(p);
-	}
+	// then do the other ducks
 	for(i=0,iter=selected_ducks.begin();iter!=selected_ducks.end();++iter,i++)
-	{
-		if(!((*iter)->get_type()!=Duck::TYPE_VERTEX&&(*iter)->get_type()!=Duck::TYPE_POSITION))continue;
+		if ((*iter)->get_type() != Duck::TYPE_VERTEX &&
+			(*iter)->get_type() != Duck::TYPE_POSITION)
+		{
+			Vector p(positions[i]);
 
-		Vector p(positions[i]);
-		//Point p((*iter)->get_trans_point());
+			if		(axis==AXIS_X) p[0] = -(p[0]-center[0]) + center[0];
+			else if	(axis==AXIS_Y) p[1] = -(p[1]-center[1]) + center[1];
 
-		if(axis==AXIS_X)
-			p[0]=-(p[0]-center[0])+center[0];
-		if(axis==AXIS_Y)
-			p[1]=-(p[1]-center[1])+center[1];
-
-		(*iter)->set_trans_point(p);
-	}
+			(*iter)->set_trans_point(p);
+		}
 }
 
 bool
