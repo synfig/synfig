@@ -765,9 +765,11 @@ CellRenderer_TimeTrack::activate_vfunc(
 				}
 
 				if(clickfound && node)
-				{
-					show_timepoint_menu(node, stime, time_offset, actual_time+time_offset<stime?Waypoint::SIDE_LEFT:Waypoint::SIDE_RIGHT);
-				}
+					signal_waypoint_clicked_cellrenderer_(node,
+														  stime,
+														  time_offset,
+														  2,
+														  actual_time+time_offset<stime?Waypoint::SIDE_LEFT:Waypoint::SIDE_RIGHT);
 			}
 
 		break;
@@ -904,10 +906,4 @@ void
 CellRenderer_TimeTrack::set_canvas_interface(etl::loose_handle<synfigapp::CanvasInterface>	h)
 {
 	canvas_interface_ = h;
-}
-
-void
-CellRenderer_TimeTrack::show_timepoint_menu(const etl::handle<synfig::Node>& node, const synfig::Time& time, const synfig::Time& time_offset, Waypoint::Side side)
-{
-	signal_waypoint_clicked_cellrenderer_(node,time,time_offset,2,side);
 }

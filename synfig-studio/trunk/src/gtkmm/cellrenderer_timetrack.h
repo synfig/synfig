@@ -168,8 +168,6 @@ public:
 	CellRenderer_TimeTrack();
     ~CellRenderer_TimeTrack();
 
-	void show_timepoint_menu(const etl::handle<synfig::Node>&, const synfig::Time&, const synfig::Time&, synfig::Waypoint::Side side=synfig::Waypoint::SIDE_RIGHT);
-
 	void set_adjustment(Gtk::Adjustment &x);
 	Gtk::Adjustment *get_adjustment();
 	const Gtk::Adjustment *get_adjustment()const;
