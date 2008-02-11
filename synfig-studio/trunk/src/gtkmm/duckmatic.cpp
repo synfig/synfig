@@ -259,7 +259,7 @@ Duckmatic::is_duck_group_selectable(const etl::handle<Duck>& x)const
 {
 	const Type type(get_type_mask());
 
-	if(( x->get_type() && (!(type & x->get_type())) ) )
+	if(( x->get_type() && (!(type & x->get_type())) || !x->get_editable() ) )
 		return false;
 
 	if(x->get_value_desc().parent_is_layer_param() && type & Duck::TYPE_POSITION)
@@ -768,8 +768,6 @@ Duckmatic::find_duck(synfig::Point point, synfig::Real radius, Duck::Type type)
 	{
 		const Duck::Handle& duck(iter->second);
 
-		if(!duck->get_editable())
-			continue;
 		Real dist((duck->get_trans_point()-point).mag_squared());
 
 		if(duck->get_type()&Duck::TYPE_VERTEX)
