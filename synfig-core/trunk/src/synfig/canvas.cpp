@@ -788,6 +788,7 @@ Canvas::clone(const GUID& deriv_guid)const
 		// it was failing to ascertain the absolute pathname of the imported image, since it needs the pathname
 		// of the canvas to get that, which is stored in the parent canvas
 		canvas->parent_=parent();
+		canvas->rend_desc() = rend_desc();
 		//canvas->set_inline(parent());
 	}
 
