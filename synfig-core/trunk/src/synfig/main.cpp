@@ -77,13 +77,6 @@ static etl::reference_counter synfig_ref_count_(0);
 
 /* === M E T H O D S ======================================================= */
 
-
-
-
-
-
-
-
 const char *
 synfig::get_version()
 {
@@ -193,14 +186,8 @@ bool retrieve_modules_to_load(String filename,std::list<String> &modules_to_load
 		}
 	}
 
-
-
 	return true;
 }
-
-
-
-
 
 synfig::Main::Main(const synfig::String& basepath,ProgressCallback *cb):
 	ref_count_(synfig_ref_count_)
@@ -272,8 +259,6 @@ synfig::Main::Main(const synfig::String& basepath,ProgressCallback *cb):
 	// Load up the list importer
 	Importer::book()[String("lst")]=ListImporter::create;
 
-
-
 	// Load up the modules
 	std::list<String> modules_to_load;
 	std::vector<String> locations;
@@ -338,7 +323,6 @@ synfig::Main::Main(const synfig::String& basepath,ProgressCallback *cb):
 	}
 
 //	load_modules(cb);
-
 
 	if(cb)cb->amount_complete(100, 100);
 	if(cb)cb->task(_("DONE"));
