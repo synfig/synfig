@@ -1271,27 +1271,24 @@ StateBLine_Context::bline_insert_vertex(synfig::ValueNode_Const::Handle value_no
 	for(iter=bline_point_list.begin();iter!=bline_point_list.end();++iter)
 		if(*iter==value_node)
 		{
-			list<ValueNode_Const::Handle>::iterator prev(iter);
-			--prev;
-
 			BLinePoint bline_point;
-
 			BLinePoint next_bline_point((*iter)->get_value().get(BLinePoint()));
 			BLinePoint prev_bline_point;
 
-			if(iter!=bline_point_list.begin())
+			list<ValueNode_Const::Handle>::iterator prev(iter);
+			if(iter==bline_point_list.begin())
 			{
-				prev_bline_point=(*prev)->get_value().get(BLinePoint());
+				assert(loop_);
+				prev = bline_point_list.end();
 			}
-			else
-			{
-				prev_bline_point.set_vertex(Point(0,0));
-				prev_bline_point.set_width(next_bline_point.get_width());
-				prev_bline_point.set_origin(0.5);
-				prev_bline_point.set_split_tangent_flag(false);
-			}
+			prev--;
 
-			etl::hermite<Vector> curve(prev_bline_point.get_vertex(),next_bline_point.get_vertex(),prev_bline_point.get_tangent2(),next_bline_point.get_tangent1());
+			prev_bline_point=(*prev)->get_value().get(BLinePoint());
+
+			etl::hermite<Vector> curve(prev_bline_point.get_vertex(),
+									   next_bline_point.get_vertex(),
+									   prev_bline_point.get_tangent2(),
+									   next_bline_point.get_tangent1());
 			etl::derivative< etl::hermite<Vector> > deriv(curve);
 
 			bline_point.set_vertex(curve(origin));
