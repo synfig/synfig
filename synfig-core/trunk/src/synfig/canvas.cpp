@@ -369,7 +369,6 @@ Canvas::_get_relative_id(etl::loose_handle<const Canvas> x)const
 	return id;
 }
 
-
 ValueNode::Handle
 Canvas::find_value_node(const String &id)
 {
@@ -506,7 +505,6 @@ Canvas::remove_value_node(ValueNode::Handle x)
 
 	x->set_id("");
 }
-
 
 etl::handle<Canvas>
 Canvas::surefind_canvas(const String &id)
@@ -668,7 +666,6 @@ Canvas::find_canvas(const String &id)const
 	return child_canvas->find_canvas(string(id,id.find_first_of(':')+1));
 }
 
-
 Canvas::Handle
 Canvas::create()
 {
@@ -706,9 +703,7 @@ Canvas::insert(iterator iter,etl::handle<Layer> x)
 
 	x->set_canvas(this);
 
-
 	add_child(x.get());
-
 
 	LooseHandle correct_canvas(this);
 	//while(correct_canvas->is_inline())correct_canvas=correct_canvas->parent();
@@ -731,10 +726,8 @@ Canvas::insert(iterator iter,etl::handle<Layer> x)
 								   &Canvas::remove_group_pair),
 							   loose_layer))));
 
-
 	if(!x->get_group().empty())
 		add_group_pair(x->get_group(),x);
-
 
 	changed();
 }
@@ -985,7 +978,6 @@ Canvas::get_file_path()const
 		return parent()->get_file_path();
 	return dirname(file_name_);
 }
-
 
 String
 Canvas::get_meta_data(const String& key)const
