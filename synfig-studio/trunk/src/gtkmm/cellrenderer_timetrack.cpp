@@ -765,11 +765,11 @@ CellRenderer_TimeTrack::activate_vfunc(
 				}
 
 				if(clickfound && node)
-					signal_waypoint_clicked_cellrenderer_(node,
-														  stime,
-														  time_offset,
-														  2,
-														  actual_time+time_offset<stime?Waypoint::SIDE_LEFT:Waypoint::SIDE_RIGHT);
+					signal_waypoint_clicked_cellrenderer()(node,
+														   stime,
+														   time_offset,
+														   2,
+														   actual_time+time_offset<stime?Waypoint::SIDE_LEFT:Waypoint::SIDE_RIGHT);
 			}
 
 		break;
@@ -786,7 +786,7 @@ CellRenderer_TimeTrack::activate_vfunc(
 
 			/*if(event->button.button==3 && selection)
 			{
-				signal_waypoint_clicked_cellrenderer_(path,*selected_waypoint,event->button.button-1);
+				signal_waypoint_clicked_cellrenderer()(path,*selected_waypoint,event->button.button-1);
 				return true;
 			}
 			*/
@@ -848,7 +848,7 @@ CellRenderer_TimeTrack::activate_vfunc(
 			/*if(value_node && selection)
 			{
 				if(selected_time==drag_time && event->button.button!=3)
-					signal_waypoint_clicked_cellrenderer_(path,*selected_waypoint,event->button.button-1);
+					signal_waypoint_clicked_cellrenderer()(path,*selected_waypoint,event->button.button-1);
 				else
 				if(event->button.button==1)
 				{
