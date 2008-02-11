@@ -285,6 +285,10 @@ DuckDrag_Mirror::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector)
 		if ((*iter)->get_type() != Duck::TYPE_VERTEX &&
 			(*iter)->get_type() != Duck::TYPE_POSITION)
 		{
+			// we don't need to mirror radius ducks - they're one-dimensional
+			if ((*iter)->is_radius())
+				continue;
+
 			Vector p(positions[i]);
 
 			if		(axis==AXIS_X) p[0] = -(p[0]-center[0]) + center[0];
