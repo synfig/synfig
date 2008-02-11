@@ -268,9 +268,7 @@ void guid_test()
 {
 	cout<<"GUID Test"<<endl;
 	for(int i=20;i;i--)
-	{
 		cout<<synfig::GUID().get_string()<<' '<<synfig::GUID().get_string()<<endl;
-	}
 }
 
 void signal_test_func()
@@ -336,8 +334,10 @@ void display_help(int amount)
 		Argument("--dpi","<res>",_("Set the physical resolution (dots-per-inch)"));
 		Argument("--dpi-x","<res>",_("Set the physical X resolution (dots-per-inch"));
 		Argument("--dpi-y","<res>",_("Set the physical Y resolution (dots-per-inch)"));
+
 		Argument("--list-canvases",NULL,_("List the exported canvases in the composition"));
 		Argument("--append","<filename>",_("Append layers in <filename> to composition"));
+
 		Argument("--layer-info","<layer>",_("Print out layer's description, parameter info, etc."));
 		Argument("--layers",NULL,_("Print out the list of available layers"));
 		Argument("--targets",NULL,_("Print out the list of available targets"));
@@ -420,7 +420,8 @@ int process_global_flags(arg_list_t &arg_list)
 			Progress p(PACKAGE);
 			synfig::Main synfig_main(dirname(progname),&p);
 			iter=next++;
-			if (iter==arg_list.end()) {
+			if (iter==arg_list.end())
+			{
 				error("The `%s' flag requires a value.  Use --help for a list of options.", "--layer-info");
 				return SYNFIGTOOL_MISSINGARGUMENT;
 			}
@@ -531,7 +532,8 @@ int process_global_flags(arg_list_t &arg_list)
 }
 
 /* true if the given flag takes an extra parameter */
-bool flag_requires_value(String flag) {
+bool flag_requires_value(String flag)
+{
 	return (flag=="-a"			|| flag=="-c"			|| flag=="-g"			|| flag=="-h"			|| flag=="-o"		||
 			flag=="-Q"			|| flag=="-s"			|| flag=="-t"			|| flag=="-T"			|| flag=="-w"		||
 			flag=="--append"	|| flag=="--begin-time"	|| flag=="--dpi"		|| flag=="--dpi-x"		|| flag=="--dpi-y"	||
@@ -555,7 +557,8 @@ int extract_arg_cluster(arg_list_t &arg_list,arg_list_t &cluster)
 			cluster.push_back(*iter);
 			arg_list.erase(iter);
 			iter=next++;
-			if (iter==arg_list.end()) {
+			if (iter==arg_list.end())
+			{
 				error("The `%s' flag requires a value.  Use --help for a list of options.", cluster.back().c_str());
 				return SYNFIGTOOL_MISSINGARGUMENT;
 			}
@@ -867,6 +870,7 @@ int main(int argc, char *argv[])
 		cerr<<_("FATAL: Synfig Version Mismatch")<<endl;
 		return SYNFIGTOOL_BADVERSION;
 	}
+
 	if(argc==1)
 	{
 		display_help(0);
@@ -942,7 +946,6 @@ int main(int argc, char *argv[])
 					cerr<<_("Throwing out job...")<<endl;
 					job_list.pop_front();
 					continue;
-
 				}
 			}
 			else
@@ -1035,9 +1038,7 @@ int main(int argc, char *argv[])
 			job_list.front().target=synfig::Target::create(target_name,job_list.front().outfilename);
 
 			if(target_name=="sif")
-			{
 				job_list.front().sifout=true;
-			}
 			else
 			{
 				if(!job_list.front().target)
@@ -1061,9 +1062,7 @@ int main(int argc, char *argv[])
 
 			// Set the threads for the target
 			if(job_list.front().target && Target_Scanline::Handle::cast_dynamic(job_list.front().target))
-			{
 				Target_Scanline::Handle::cast_dynamic(job_list.front().target)->set_threads(threads);
-			}
 
 			if(imageargs.size())
 			{
@@ -1139,9 +1138,7 @@ int main(int argc, char *argv[])
 				return SYNFIGTOOL_RENDERFAILURE;
 			}
 			if(print_benchmarks)
-			{
 				cout<<job_list.front().filename+": Rendered in "<<timer()<<" seconds."<<endl;
-			}
 		}
 	}
 
