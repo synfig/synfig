@@ -258,6 +258,7 @@ struct Job
 
 	int quality;
 	bool sifout;
+	bool list_canvases;
 };
 
 typedef list<String> arg_list_t;
@@ -335,6 +336,7 @@ void display_help(int amount)
 		Argument("--dpi","<res>",_("Set the physical resolution (dots-per-inch)"));
 		Argument("--dpi-x","<res>",_("Set the physical X resolution (dots-per-inch"));
 		Argument("--dpi-y","<res>",_("Set the physical Y resolution (dots-per-inch)"));
+		Argument("--list-canvases",NULL,_("List the exported canvases in the composition"));
 		Argument("--append","<filename>",_("Append layers in <filename> to composition"));
 		Argument("--layer-info","<layer>",_("Print out layer's description, parameter info, etc."));
 		Argument("--layers",NULL,_("Print out the list of available layers"));
@@ -826,6 +828,20 @@ int extract_canvasid(arg_list_t &arg_list,string &canvasid)
 	return SYNFIGTOOL_OK;
 }
 
+int extract_list_canvases(arg_list_t &arg_list,bool &list_canvases)
+{
+	arg_list_t::iterator iter, next;
+
+	for(next=arg_list.begin(),iter=next++;iter!=arg_list.end();iter=next++)
+		if(*iter=="--list-canvases")
+		{
+			list_canvases = true;
+			arg_list.erase(iter);
+		}
+
+	return SYNFIGTOOL_OK;
+}
+
 /* === M E T H O D S ======================================================= */
 
 /* === E N T R Y P O I N T ================================================= */
@@ -897,6 +913,10 @@ int main(int argc, char *argv[])
 				job_list.pop_front();
 				continue;
 			}
+
+			bool list_canvases = false;
+			extract_list_canvases(imageargs, list_canvases);
+			job_list.front().list_canvases = list_canvases;
 
 			job_list.front().root->set_time(0);
 
@@ -1092,7 +1112,22 @@ int main(int argc, char *argv[])
 
 		RenderProgress p;
 		p.task(job_list.front().filename+" ==> "+job_list.front().outfilename);
-		if(!job_list.front().sifout)
+		if(job_list.front().sifout)
+		{
+			if(!save_canvas(job_list.front().outfilename,job_list.front().canvas))
+			{
+				cerr<<"Render Failure."<<endl;
+				return SYNFIGTOOL_RENDERFAILURE;
+			}
+		}
+		else if (job_list.front().list_canvases)
+		{
+			cerr << "Listing Canvases:" << endl;
+			Canvas::Children children(job_list.front().canvas->children());
+			for (Canvas::Children::iterator iter = children.begin(); iter != children.end(); iter++)
+				cout << "  " << job_list.front().filename << "#:" << (*iter)->get_id() << endl;
+		}
+		else
 		{
 			VERBOSE_OUT(1)<<_("Rendering...")<<endl;
 			etl::clock timer;
@@ -1106,14 +1141,6 @@ int main(int argc, char *argv[])
 			if(print_benchmarks)
 			{
 				cout<<job_list.front().filename+": Rendered in "<<timer()<<" seconds."<<endl;
-			}
-		}
-		else
-		{
-			if(!save_canvas(job_list.front().outfilename,job_list.front().canvas))
-			{
-				cerr<<"Render Failure."<<endl;
-				return SYNFIGTOOL_RENDERFAILURE;
 			}
 		}
 	}
