@@ -845,6 +845,16 @@ int extract_list_canvases(arg_list_t &arg_list,bool &list_canvases)
 	return SYNFIGTOOL_OK;
 }
 
+void list_child_canvases(string prefix, Canvas::Handle canvas)
+{
+	Canvas::Children children(canvas->children());
+	for (Canvas::Children::iterator iter = children.begin(); iter != children.end(); iter++)
+	{
+		cout << prefix << ":" << (*iter)->get_id() << endl;
+		list_child_canvases(prefix + ":" + (*iter)->get_id(), *iter);
+	}
+}
+
 /* === M E T H O D S ======================================================= */
 
 /* === E N T R Y P O I N T ================================================= */
@@ -1121,10 +1131,8 @@ int main(int argc, char *argv[])
 		}
 		else if (job_list.front().list_canvases)
 		{
-			cerr << "Listing Canvases:" << endl;
-			Canvas::Children children(job_list.front().canvas->children());
-			for (Canvas::Children::iterator iter = children.begin(); iter != children.end(); iter++)
-				cout << "  " << job_list.front().filename << "#:" << (*iter)->get_id() << endl;
+			list_child_canvases(job_list.front().filename + "#", job_list.front().canvas);
+			cerr << endl;
 		}
 		else
 		{
