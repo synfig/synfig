@@ -115,6 +115,7 @@ class studio::StateDraw_Context : public sigc::trackable
 	Duckmatic::Type old_duckmask;
 
 	void fill_last_stroke();
+	void fill_last_stroke_and_unselect_other_layers();
 
 	Smach::event_result new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline_flag,float radius);
 
@@ -764,6 +765,8 @@ StateDraw_Context::process_stroke(StrokeData stroke_data, WidthData width_data, 
 Smach::event_result
 StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline_flag,float radius)
 {
+	synfigapp::SelectionManager::LayerList layer_list = get_canvas_view()->get_selection_manager()->get_selected_layers();
+
 	// Create the action group
 	synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Sketch BLine"));
 
@@ -1025,7 +1028,7 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline
 
 		// fill_last_stroke() will take care of clearing the selection if we're calling it
 		if(get_outline_flag() && get_region_flag())
-			fill_last_stroke();
+			fill_last_stroke_and_unselect_other_layers();
 		else
 			get_canvas_interface()->get_selection_manager()->clear_selected_layers();
 
@@ -1078,7 +1081,8 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline
 			//refresh_ducks();
 			return Smach::RESULT_ERROR;
 		}
-		get_canvas_view()->get_selection_manager()->set_selected_layer(layer);
+		layer_list.push_back(layer);
+		get_canvas_view()->get_selection_manager()->set_selected_layers(layer_list);
 		//refresh_ducks();
 	}
 
@@ -1933,7 +1937,7 @@ StateDraw_Context::reverse_bline(std::list<synfig::BLinePoint> &bline)
 }
 
 void
-StateDraw_Context::fill_last_stroke()
+StateDraw_Context::fill_last_stroke_and_unselect_other_layers()
 {
 	if(!last_stroke)
 		return;
@@ -1981,4 +1985,15 @@ StateDraw_Context::fill_last_stroke()
 		return;
 	}
 	get_canvas_view()->get_selection_manager()->set_selected_layer(layer);
+}
+
+void
+StateDraw_Context::fill_last_stroke()
+{
+	if(!last_stroke)
+		return;
+
+	synfigapp::SelectionManager::LayerList layer_list = get_canvas_view()->get_selection_manager()->get_selected_layers();
+	fill_last_stroke_and_unselect_other_layers();
+	get_canvas_view()->get_selection_manager()->set_selected_layers(layer_list);
 }
