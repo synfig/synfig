@@ -1347,8 +1347,11 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 
 
 			selected_bezier=find_bezier(mouse_pos,radius,&bezier_click_pos);
-			if(duck && duck->get_editable())
+			if(duck)
 			{
+				if (!duck->get_editable())
+					return true;
+
 				//get_selected_duck()->signal_user_click(0)();
 				//if(clicked_duck)clicked_duck->signal_user_click(0)();
 
