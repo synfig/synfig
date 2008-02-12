@@ -140,6 +140,7 @@ About::About()
 	authors.push_back("David Roden (Bombe)");
 	authors.push_back("Dmitriy Pomerantsev (Atrus)");
 	authors.push_back("Douglas Lau");
+	authors.push_back("Gerald Young (Yoyobuae)");
 	authors.push_back("IL'dar AKHmetgaleev (AkhIL)");
 	authors.push_back("Luka Pravica");
 	authors.push_back("Martin Michlmayr (tbm)");
