@@ -381,8 +381,8 @@ synfigapp::BLineConverter::clear()
 	width_cache.clear();
 	ftemp.clear();
 	deriv.clear();
-	cvt.clear();
-	brk.clear();
+	curvature.clear();
+	break_tangents.clear();
 	cum_dist.clear();
 	this_dist.clear();
 	work.clear();
@@ -401,7 +401,7 @@ synfigapp::BLineConverter::operator()(std::list<synfig::BLinePoint>  &blinepoint
 	etl::clock_realtime timer,total;*/
 
 	//total.reset();
-	if (points_in.size() <= 1)
+	if (points_in.size() < 2)
 		return;
 
 	clear();
@@ -426,9 +426,10 @@ synfigapp::BLineConverter::operator()(std::list<synfig::BLinePoint>  &blinepoint
 
 		if (points_in.size() == widths_in.size())
 		{
-			for(;point_iter != end; ++point_iter,++width_iter)
-				if(*point_iter != c)		// eliminate duplicate points
+			for(bool first = true; point_iter != end; ++point_iter,++width_iter)
+				if (first || *point_iter != c)		// eliminate duplicate points
 				{
+					first = false;
 					point_cache.push_back(c = *point_iter);
 					width_cache.push_back(*width_iter);
 				}
@@ -450,23 +451,21 @@ synfigapp::BLineConverter::operator()(std::list<synfig::BLinePoint>  &blinepoint
 	//timer.reset();
 
 	{
-		int i,i0,i1;
-		synfig::Vector v1,v2;
+		int i_this, i_prev, i_next;
+		synfig::Vector v_prev, v_next;
 
-		cvt.resize(point_cache.size());
+		curvature.resize(point_cache.size());
+		curvature.front() = curvature.back() = 1;
 
-		cvt.front() = 1;
-		cvt.back() = 1;
-
-		for(i = 1; i < (int)point_cache.size()-1; ++i)
+		for (i_this = 1; i_this < (int)point_cache.size()-1; i_this++)
 		{
-			i0 = std::max(0,i - 2);
-			i1 = std::min((int)(point_cache.size()-1),i + 2);
+			i_prev = std::max(0, i_this-2);
+			i_next = std::min((int)(point_cache.size()-1), i_this+2);
 
-			v1 = point_cache[i] - point_cache[i0];
-			v2 = point_cache[i1] - point_cache[i];
+			v_prev = point_cache[i_this] - point_cache[i_prev];
+			v_next = point_cache[i_next] - point_cache[i_this];
 
-			cvt[i] = (v1*v2)/(v1.mag()*v2.mag());
+			curvature[i_this] = (v_prev*v_next) / (v_prev.mag()*v_next.mag());
 		}
 	}
 
@@ -479,68 +478,75 @@ synfigapp::BLineConverter::operator()(std::list<synfig::BLinePoint>  &blinepoint
 		//break at sharp derivative points
 		//TODO tolerance should be set based upon digitization resolution (length dependent index selection)
 		Real	tol = 0;		//break tolerance, for the cosine of the change in angle (really high curvature or something)
-		Real	fixdistsq = 4*width*width; //the distance to ignore breaks at the end points (for fixing stuff)
 		unsigned int i = 0;
 
-		int		maxi = -1, last=0;
-		Real	minc = 1;
+		int		sharpest_i=-1;
+		int		last=0;
+		Real	sharpest_curvature = 1;
 
-		brk.push_back(0);
+		break_tangents.push_back(0);
 
-		for(i = 1; i < cvt.size()-1; ++i)
+		// loop through the curvatures; in each continuous run of
+		// curvatures that exceed the tolerence, find the one with the
+		// sharpest curvature and add its index to the list of indices
+		// at which to split tangents
+		for (i = 1; i < curvature.size()-1; ++i)
 		{
-			//insert if too sharp (we need to break the tangents to insert onto the break list)
-
-			if(cvt[i] < tol)
+			if (curvature[i] < tol)
 			{
-				if(cvt[i] < minc)
+				if(curvature[i] < sharpest_curvature)
 				{
-					minc = cvt[i];
-					maxi = i;
+					sharpest_curvature = curvature[i];
+					sharpest_i = i;
 				}
 			}
-			else if(maxi >= 0)
+			else if (sharpest_i > 0)
 			{
-				if(maxi >= last + 8)
+				// don't have 2 corners too close to each other
+				if (sharpest_i >= last + 8) //! \todo make this configurable
 				{
-					//synfig::info("break: %d-%d",maxi+1,cvt.size());
-					brk.push_back(maxi);
-					last = maxi;
+					//synfig::info("break: %d-%d",sharpest_i+1,curvature.size());
+					break_tangents.push_back(sharpest_i);
+					last = sharpest_i;
 				}
-				maxi = -1;
-				minc = 1;
+				sharpest_i = -1;
+				sharpest_curvature = 1;
 			}
 		}
 
-		brk.push_back(i);
+		break_tangents.push_back(i);
 
+// this section causes bug 1892566 if enabled
+#if 1
 		//postprocess for breaks too close to each other
+		Real	fixdistsq = 4*width*width; //the distance to ignore breaks at the end points (for fixing stuff)
 		Real d = 0;
-		Point p = point_cache[brk.front()];
+		Point p = point_cache[break_tangents.front()];
 
 		//first set
-		for(i = 1; i < brk.size()-1; ++i) //do not want to include end point...
+		for (i = 1; i < break_tangents.size()-1; ++i) //do not want to include end point...
 		{
-			d = (point_cache[brk[i]] - p).mag_squared();
+			d = (point_cache[break_tangents[i]] - p).mag_squared();
 			if(d > fixdistsq) break; //don't want to group breaks if we ever get over the dist...
 		}
 		//want to erase all points before...
 		if(i != 1)
-			brk.erase(brk.begin(),brk.begin()+i-1);
+			break_tangents.erase(break_tangents.begin(),break_tangents.begin()+i-1);
 
 		//end set
-		p = point_cache[brk.back()];
-		for(i = brk.size()-2; i > 0; --i) //start at one in from the end
+		p = point_cache[break_tangents.back()];
+		for(i = break_tangents.size()-2; i > 0; --i) //start at one in from the end
 		{
-			d = (point_cache[brk[i]] - p).mag_squared();
+			d = (point_cache[break_tangents[i]] - p).mag_squared();
 			if(d > fixdistsq) break; //don't want to group breaks if we ever get over the dist
 		}
-		if(i != brk.size()-2)
-			brk.erase(brk.begin()+i+2,brk.end()); //erase all points that we found... found none if i has not advanced
+		if(i != break_tangents.size()-2)
+			break_tangents.erase(break_tangents.begin()+i+2,break_tangents.end()); //erase all points that we found... found none if i has not advanced
 		//must not include the one we ended up on
+#endif
 	}
 	//breakeval = timer();
-	//synfig::info("found break points: %d",brk.size());
+	//synfig::info("found break points: %d",break_tangents.size());
 
 	//get the distance calculation of the entire curve (for tangent scaling)
 
@@ -594,11 +600,11 @@ synfigapp::BLineConverter::operator()(std::list<synfig::BLinePoint>  &blinepoint
 
 		setwidth = (point_cache.size() == width_cache.size());
 
-		for(j = 0; j < (int)brk.size() - 1; ++j)
+		for(j = 0; j < (int)break_tangents.size() - 1; ++j)
 		{
 			//for b[j] to b[j+1] subdivide and stuff
-			i0 = brk[j];
-			i3 = brk[j+1];
+			i0 = break_tangents[j];
+			i3 = break_tangents[j+1];
 
 			unsigned int size = i3-i0+1; //must include the end points
 

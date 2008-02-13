@@ -83,9 +83,9 @@ private:
 	std::vector<synfig::Point>	ftemp;
 
 	std::vector<synfig::Vector>	deriv; //the derivative cache
-	std::vector<synfig::Real>	cvt; //the curvature cache
+	std::vector<synfig::Real>	curvature; //the curvature cache
 
-	std::vector<int>			brk; //the break point cache
+	std::vector<int>			break_tangents; //the break point cache
 
 	std::vector<synfig::Real> 	cum_dist,	//cumulative distance
 								this_dist; //distance between adjacent segments
