@@ -755,8 +755,15 @@ StateDraw_Context::process_stroke(StrokeData stroke_data, WidthData width_data, 
 	}
 
 	// If the bline only has one blinepoint, then there is nothing to do.
-	if(bline.size()<=1)
+	if(bline.size() < 2)
+	{
+		// hide the 'stroke' line we were drawing, unless the user
+		// explicitly requests that they are kept
+		if (!getenv("SYNFIG_KEEP_ABORTED_DRAW_LINES"))
+			refresh_ducks();
+
 		return Smach::RESULT_OK;
+	}
 
 	if(region_flag)
 		return new_region(bline,radius);
