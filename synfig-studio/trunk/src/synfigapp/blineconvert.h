@@ -57,7 +57,7 @@ public:
 		:curind(o.curind), tangentscale(o.tangentscale), error(o.error)
 		{}
 
-		const cpindex & operator = (const cpindex & rhs)
+		const cpindex & operator=(const cpindex & rhs)
 		{
 			curind = rhs.curind;
 			tangentscale = rhs.tangentscale;
@@ -65,7 +65,7 @@ public:
 			return *this;
 		}
 
-		bool operator < (const cpindex &rhs) const
+		bool operator<(const cpindex &rhs) const
 		{
 			return curind < rhs.curind;
 		}
@@ -106,7 +106,7 @@ public:
 	BLineConverter();
 
 	static void EnforceMinWidth(std::list<synfig::BLinePoint> &bline, synfig::Real min_pressure);
-	void operator ()(std::list<synfig::BLinePoint> &out, const std::list<synfig::Point> &in,const std::list<synfig::Real> &in_w);
+	void operator()(std::list<synfig::BLinePoint> &out, const std::list<synfig::Point> &in,const std::list<synfig::Real> &in_w);
 };
 
 }; // END of namespace synfigapp

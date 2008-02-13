@@ -73,16 +73,16 @@ public:
 	Blur(synfig::Real sx, synfig::Real sy, int t, synfig::ProgressCallback *callb = 0): size(sx,sy), type(t), cb(callb) {}
 
 	//Parametric Blur
-	synfig::Point operator ()(const synfig::Point &p) const;
-	synfig::Point operator ()(synfig::Real x, synfig::Real y) const;
+	synfig::Point operator()(const synfig::Point &p) const;
+	synfig::Point operator()(synfig::Real x, synfig::Real y) const;
 
 	//Surface based blur
 	//	input surface can be the same as output surface,
 	//	though both have to be the same size
-	bool operator ()(const synfig::Surface &surface, const synfig::Vector &resolution, synfig::Surface &out) const;
+	bool operator()(const synfig::Surface &surface, const synfig::Vector &resolution, synfig::Surface &out) const;
 
-	bool operator ()(const etl::surface<float> &surface, const synfig::Vector &resolution, etl::surface<float> &out) const;
-	//bool operator ()(const etl::surface<unsigned char> &surface, const synfig::Vector &resolution, etl::surface<unsigned char> &out) const;
+	bool operator()(const etl::surface<float> &surface, const synfig::Vector &resolution, etl::surface<float> &out) const;
+	//bool operator()(const etl::surface<unsigned char> &surface, const synfig::Vector &resolution, etl::surface<unsigned char> &out) const;
 };
 
 /* === E N D =============================================================== */

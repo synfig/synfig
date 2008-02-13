@@ -77,9 +77,9 @@ public:
 		CleanUp(invert);
 	}
 
-	CurveSet operator &(const CurveSet &rhs) const;	//intersect
-	CurveSet operator |(const CurveSet &rhs) const; //union
-	CurveSet operator -(const CurveSet &rhs) const; //subtract
+	CurveSet operator&(const CurveSet &rhs) const;	//intersect
+	CurveSet operator|(const CurveSet &rhs) const; //union
+	CurveSet operator-(const CurveSet &rhs) const; //subtract
 
 
 	//Point containment

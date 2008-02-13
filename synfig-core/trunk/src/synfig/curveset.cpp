@@ -104,7 +104,7 @@ struct ipoint
 		}else return curveindex < rhs.curveindex;
 	}
 
-	bool operator >(const ipoint &rhs) const
+	bool operator>(const ipoint &rhs) const
 	{
 		return rhs < *this;
 	}
@@ -446,17 +446,17 @@ void CurveSet::CleanUp(int /*curve*/)
 	- only works with odd-even rule
 */
 
-CurveSet CurveSet::operator &(const CurveSet &/*rhs*/) const
+CurveSet CurveSet::operator&(const CurveSet &/*rhs*/) const
 {
 	return *this;
 }
 
-CurveSet CurveSet::operator |(const CurveSet &/*rhs*/) const
+CurveSet CurveSet::operator|(const CurveSet &/*rhs*/) const
 {
 	return *this;
 }
 
-CurveSet CurveSet::operator -(const CurveSet &/*rhs*/) const
+CurveSet CurveSet::operator-(const CurveSet &/*rhs*/) const
 {
 	return *this;
 }

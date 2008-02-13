@@ -56,7 +56,7 @@ using namespace synfig;
 /* === P R O C E D U R E S ================================================= */
 
 /* === M E T H O D S ======================================================= */
-Point Blur::operator ()(const Point &pos) const
+Point Blur::operator()(const Point &pos) const
 {
 	Point blurpos(pos);
 
@@ -114,7 +114,7 @@ Point Blur::operator ()(const Point &pos) const
 	return blurpos;
 }
 
-Point Blur::operator ()(synfig::Real x, synfig::Real y) const
+Point Blur::operator()(synfig::Real x, synfig::Real y) const
 {
 	return (*this)(Point(x,y));
 }
@@ -449,9 +449,9 @@ static void GuassianBlur_1x3(etl::surface<T,AT,VP> &surface)
 }
 
 //THE GOOD ONE!!!!!!!!!
-bool Blur::operator ()(const Surface &surface,
-						const Vector &resolution,
-						Surface &out) const
+bool Blur::operator()(const Surface &surface,
+					  const Vector &resolution,
+					  Surface &out) const
 {
 	int w = surface.get_w(),
 		h = surface.get_h();
@@ -846,9 +846,9 @@ bool Blur::operator ()(const Surface &surface,
 	return true;
 }
 
-bool Blur::operator ()(const etl::surface<float> &surface,
-					   const synfig::Vector &resolution,
-					   etl::surface<float> &out) const
+bool Blur::operator()(const etl::surface<float> &surface,
+					  const synfig::Vector &resolution,
+					  etl::surface<float> &out) const
 {
 	int w = surface.get_w(),
 		h = surface.get_h();

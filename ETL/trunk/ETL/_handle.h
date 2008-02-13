@@ -362,8 +362,8 @@ public:
 	using handle<value_type>::unique;
 	using handle<value_type>::operator bool;
 	using handle<value_type>::get;
-	using handle<value_type>::operator *;
-	using handle<value_type>::operator ->;
+	using handle<value_type>::operator*;
+	using handle<value_type>::operator->;
 
 	/*
 	operator const handle<value_type>&()const

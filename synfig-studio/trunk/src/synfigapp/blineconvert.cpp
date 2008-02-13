@@ -390,7 +390,7 @@ synfigapp::BLineConverter::clear()
 }
 
 void
-synfigapp::BLineConverter::operator () (std::list<synfig::BLinePoint> &out, const std::list<synfig::Point> &in,const std::list<synfig::Real> &in_w)
+synfigapp::BLineConverter::operator()(std::list<synfig::BLinePoint> &out, const std::list<synfig::Point> &in,const std::list<synfig::Real> &in_w)
 {
 	//Profiling information
 	/*etl::clock::value_type initialprocess=0, curveval=0, breakeval=0, disteval=0;

@@ -947,7 +947,7 @@ struct PenMark
 	void setcover(Real c, Real a)				{ cover	= c; area = a; }
 	void addcover(Real c, Real a)				{ cover += c; area += a; }
 
-	bool operator < (const PenMark &rhs) const
+	bool operator<(const PenMark &rhs) const
 	{
 		return y == rhs.y ? x < rhs.x : y < rhs.y;
 	}
