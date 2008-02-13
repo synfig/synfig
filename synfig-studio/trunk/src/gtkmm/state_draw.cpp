@@ -716,14 +716,16 @@ StateDraw_Context::process_stroke(StrokeData stroke_data, WidthData width_data, 
 	}
 
 	// If the start and end points are similar, then make them the same point
-	if(get_auto_loop_flag() &&
-	   bline.size()>2&&(bline.front().get_vertex()-bline.back().get_vertex()).mag()<=radius)
+	if (get_auto_loop_flag() &&
+		bline.size() > 2 &&
+		(bline.front().get_vertex() - bline.back().get_vertex()).mag() <= radius)
 	{
 		loop_bline_flag=true;
 		Vector tangent;
 		Real width(0);
 
-		while(bline.size()>2&&(bline.front().get_vertex()-bline.back().get_vertex()).mag()<=radius)
+		while (bline.size() > 2 &&
+			   (bline.front().get_vertex() - bline.back().get_vertex()).mag() <= radius)
 		{
 			tangent=bline.back().get_tangent1();
 			width=bline.back().get_width();
