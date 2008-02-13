@@ -236,7 +236,7 @@ Widget_Waypoint::set_waypoint(synfig::Waypoint &x)
 
 	waypoint=x;
 
-#warning This really needs to be fixed to support value node waypoints!
+	//! \todo This really needs to be fixed to support value node waypoints!
 	if(waypoint.is_static())
 	{
 		value_widget->set_value(waypoint.get_value());
@@ -263,7 +263,7 @@ Widget_Waypoint::set_waypoint(synfig::Waypoint &x)
 const synfig::Waypoint &
 Widget_Waypoint::get_waypoint()const
 {
-#warning This too!
+	//! \todo This too!
 	waypoint.set_time(time_widget->get_value());
 	if(waypoint.is_static())
 		waypoint.set_value(value_widget->get_value());
