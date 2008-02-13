@@ -2,7 +2,7 @@
 
  0.61.08 (SVN 1???) - February ??, 2008 - Bug fixes
 
- * Synfig Studio is now translatable using gettext.  Currently Franch
+ * Synfig Studio is now translatable using gettext.  Currently French
    and Spanish translations exist.
 
  * Build
