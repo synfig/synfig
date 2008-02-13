@@ -377,20 +377,22 @@ synfigapp::BLineConverter::BLineConverter()
 void
 synfigapp::BLineConverter::clear()
 {
-	f.clear();
-	f_w.clear();
+	point_cache.clear();
+	width_cache.clear();
 	ftemp.clear();
-	df.clear();
+	deriv.clear();
 	cvt.clear();
 	brk.clear();
-	di.clear();
-	d_i.clear();
+	cum_dist.clear();
+	this_dist.clear();
 	work.clear();
 	curind.clear();
 }
 
 void
-synfigapp::BLineConverter::operator()(std::list<synfig::BLinePoint> &out, const std::list<synfig::Point> &in,const std::list<synfig::Real> &in_w)
+synfigapp::BLineConverter::operator()(std::list<synfig::BLinePoint>  &blinepoints_out,
+									  const std::list<synfig::Point> &points_in,
+									  const std::list<synfig::Real>  &widths_in)
 {
 	//Profiling information
 	/*etl::clock::value_type initialprocess=0, curveval=0, breakeval=0, disteval=0;
@@ -399,7 +401,7 @@ synfigapp::BLineConverter::operator()(std::list<synfig::BLinePoint> &out, const 
 	etl::clock_realtime timer,total;*/
 
 	//total.reset();
-	if(in.size()<=1)
+	if (points_in.size() <= 1)
 		return;
 
 	clear();
@@ -418,30 +420,31 @@ synfigapp::BLineConverter::operator()(std::list<synfig::BLinePoint> &out, const 
 	//timer.reset();
 
 	{
-		std::list<synfig::Point>::const_iterator i = in.begin(), end = in.end();
-		std::list<synfig::Real>::const_iterator	iw = in_w.begin();
-		synfig::Point 	c;
+		std::list<synfig::Point>::const_iterator point_iter = points_in.begin(), end = points_in.end();
+		std::list<synfig::Real>::const_iterator	width_iter = widths_in.begin();
+		synfig::Point c;
 
-		if(in.size() == in_w.size())
+		if (points_in.size() == widths_in.size())
 		{
-			for(;i != end; ++i,++iw)
-				if(*i != c)		// eliminate duplicate points
+			for(;point_iter != end; ++point_iter,++width_iter)
+				if(*point_iter != c)		// eliminate duplicate points
 				{
-					f.push_back(c = *i);
-					f_w.push_back(*iw);
+					point_cache.push_back(c = *point_iter);
+					width_cache.push_back(*width_iter);
 				}
 		}
 		else
-		{
-			for(;i != end; ++i)
-				if(*i != c)		// eliminate duplicate points
-					f.push_back(c = *i);
-		}
+			for(;point_iter != end; ++point_iter)
+				if(*point_iter != c)		// eliminate duplicate points
+					point_cache.push_back(c = *point_iter);
 	}
 	//initialprocess = timer();
 
-	if(f.size()<=6)
+	if (point_cache.size() < 7)
+	{
+		info("only %d unique points - giving up", point_cache.size());
 		return;
+	}
 
 	//get curvature information
 	//timer.reset();
@@ -450,18 +453,18 @@ synfigapp::BLineConverter::operator()(std::list<synfig::BLinePoint> &out, const 
 		int i,i0,i1;
 		synfig::Vector v1,v2;
 
-		cvt.resize(f.size());
+		cvt.resize(point_cache.size());
 
 		cvt.front() = 1;
 		cvt.back() = 1;
 
-		for(i = 1; i < (int)f.size()-1; ++i)
+		for(i = 1; i < (int)point_cache.size()-1; ++i)
 		{
 			i0 = std::max(0,i - 2);
-			i1 = std::min((int)(f.size()-1),i + 2);
+			i1 = std::min((int)(point_cache.size()-1),i + 2);
 
-			v1 = f[i] - f[i0];
-			v2 = f[i1] - f[i];
+			v1 = point_cache[i] - point_cache[i0];
+			v2 = point_cache[i1] - point_cache[i];
 
 			cvt[i] = (v1*v2)/(v1.mag()*v2.mag());
 		}
@@ -513,12 +516,12 @@ synfigapp::BLineConverter::operator()(std::list<synfig::BLinePoint> &out, const 
 
 		//postprocess for breaks too close to each other
 		Real d = 0;
-		Point p = f[brk.front()];
+		Point p = point_cache[brk.front()];
 
 		//first set
 		for(i = 1; i < brk.size()-1; ++i) //do not want to include end point...
 		{
-			d = (f[brk[i]] - p).mag_squared();
+			d = (point_cache[brk[i]] - p).mag_squared();
 			if(d > fixdistsq) break; //don't want to group breaks if we ever get over the dist...
 		}
 		//want to erase all points before...
@@ -526,10 +529,10 @@ synfigapp::BLineConverter::operator()(std::list<synfig::BLinePoint> &out, const 
 			brk.erase(brk.begin(),brk.begin()+i-1);
 
 		//end set
-		p = f[brk.back()];
+		p = point_cache[brk.back()];
 		for(i = brk.size()-2; i > 0; --i) //start at one in from the end
 		{
-			d = (f[brk[i]] - p).mag_squared();
+			d = (point_cache[brk[i]] - p).mag_squared();
 			if(d > fixdistsq) break; //don't want to group breaks if we ever get over the dist
 		}
 		if(i != brk.size()-2)
@@ -545,17 +548,18 @@ synfigapp::BLineConverter::operator()(std::list<synfig::BLinePoint> &out, const 
 	{
 		synfig::Point p1,p2;
 
-		p1=p2=f[0];
+		p1=p2=point_cache[0];
 
-		di.resize(f.size()); d_i.resize(f.size());
+		cum_dist.resize(point_cache.size()); this_dist.resize(point_cache.size());
 		Real d = 0;
-		for(unsigned int i = 0; i < f.size();)
+		for(unsigned int i = 0; i < point_cache.size();)
 		{
-			d += (d_i[i] = (p2-p1).mag());
-			di[i] = d;
+			d += (this_dist[i] = (p2-p1).mag());
+			cum_dist[i] = d;
 
 			p1=p2;
-			p2=f[++i];
+			//! \todo is this legal?  it reads off the end of the vector
+			p2=point_cache[++i];
 		}
 	}
 	//disteval = timer();
@@ -588,7 +592,7 @@ synfigapp::BLineConverter::operator()(std::list<synfig::BLinePoint> &out, const 
 		//a.set_width(width);
 		a.set_width(1.0f);
 
-		setwidth = (f.size() == f_w.size());
+		setwidth = (point_cache.size() == width_cache.size());
 
 		for(j = 0; j < (int)brk.size() - 1; ++j)
 		{
@@ -600,13 +604,13 @@ synfigapp::BLineConverter::operator()(std::list<synfig::BLinePoint> &out, const 
 
 			//new derivatives
 			//timer.reset();
-			ftemp.assign(f.begin()+i0, f.begin()+i3+1);
+			ftemp.assign(point_cache.begin()+i0, point_cache.begin()+i3+1);
 			for(i=0;i<20;++i)
 				gaussian_blur_3(ftemp.begin(),ftemp.end(),false);
 
-			df.resize(size);
+			deriv.resize(size);
 
-			// Wondering whether the modification of the df vector
+			// Wondering whether the modification of the deriv vector
 			// using a char* pointer and pointer arithmetric was safe,
 			// I looked it up...
 			// 
@@ -619,9 +623,9 @@ synfigapp::BLineConverter::operator()(std::list<synfig::BLinePoint> &out, const 
 			//	some type other than bool, then it obeys the identity
 			//	&v[n] == &v[0] + n for all 0 <= n < v.size().
 			// 
-			GetFirstDerivatives(ftemp,0,size,(char*)&df[0],sizeof(df[0]));
+			GetFirstDerivatives(ftemp,0,size,(char*)&deriv[0],sizeof(deriv[0]));
 
-			//GetSimpleDerivatives(ftemp,0,size,df,0,di);
+			//GetSimpleDerivatives(ftemp,0,size,deriv,0,cum_dist);
 			//< don't have to worry about indexing stuff as it is all being taken care of right now
 			//preproceval += timer();
 			//numpre++;
@@ -633,8 +637,8 @@ synfigapp::BLineConverter::operator()(std::list<synfig::BLinePoint> &out, const 
 
 			//start off with break points as indices
 			curind.clear();
-			curind.push_back(cpindex(i0,di[i3]-di[i0],0)); //0 error because no curve on the left
-			curind.push_back(cpindex(i3,di[i3]-di[i0],-1)); //error needs to be reevaluated
+			curind.push_back(cpindex(i0,cum_dist[i3]-cum_dist[i0],0)); //0 error because no curve on the left
+			curind.push_back(cpindex(i3,cum_dist[i3]-cum_dist[i0],-1)); //error needs to be reevaluated
 			done = false; //we want to loop
 
 			unsigned int dcount = 0;
@@ -643,10 +647,10 @@ synfigapp::BLineConverter::operator()(std::list<synfig::BLinePoint> &out, const 
 			while(!done)
 			{
 				//tessellate all curves with invalid error values
-				work[0] = f[i0];
+				work[0] = point_cache[i0];
 
 				//timer.reset();
-				/*numtess += */tessellate_curves(curind,f,df,work);
+				/*numtess += */tessellate_curves(curind,point_cache,deriv,work);
 				//tesseval += timer();
 
 				//now get all error values
@@ -657,15 +661,15 @@ synfigapp::BLineConverter::operator()(std::list<synfig::BLinePoint> &out, const 
 					{
 						//evaluate error from points (starting at current index)
 						int size = curind[i].curind - curind[i-1].curind + 1;
-						curind[i].error = CurveError(&f[curind[i-1].curind], size,
+						curind[i].error = CurveError(&point_cache[curind[i-1].curind], size,
 													 work,(curind[i-1].curind - i0)*2,(curind[i].curind - i0)*2+1);
 
 						/*if(curind[i].error > 1.0e5)
 						{
 							synfig::info("Holy crap %d-%d error %f",curind[i-1].curind,curind[i].curind,curind[i].error);
 							curind[i].error = -1;
-							numtess += tessellate_curves(curind,f,df,work);
-							curind[i].error = CurveError(&f[curind[i-1].curind], size,
+							numtess += tessellate_curves(curind,f,deriv,work);
+							curind[i].error = CurveError(&point_cache[curind[i-1].curind], size,
 													 work,0,work.size());//(curind[i-1].curind - i0)*2,(curind[i].curind - i0)*2+1);
 						}*/
 						//numerror++;
@@ -702,7 +706,7 @@ synfigapp::BLineConverter::operator()(std::list<synfig::BLinePoint> &out, const 
 									ibreak = (ibase + itop)/2;
 					Real scale, scale2;
 
-					assert(ibreak < f.size());
+					assert(ibreak < point_cache.size());
 
 					//synfig::info("Split %d -%d- %d, error: %f", ibase,ibreak,itop,maxrelerror);
 
@@ -714,15 +718,15 @@ synfigapp::BLineConverter::operator()(std::list<synfig::BLinePoint> &out, const 
 						curind[maxi-1].error = -1;
 						if(maxi+1 < indsize) curind[maxi+1].error = -1; //if there is a curve segment beyond this it will be effected as well
 
-						scale = di[itop] - di[ibreak];
-						scale2 = maxi+1 < indsize ? di[curind[maxi+1].curind] - di[itop] : scale; //to the right valid?
+						scale = cum_dist[itop] - cum_dist[ibreak];
+						scale2 = maxi+1 < indsize ? cum_dist[curind[maxi+1].curind] - cum_dist[itop] : scale; //to the right valid?
 						curind[maxi].tangentscale = std::min(scale, scale2);
 
-						scale = di[ibreak] - di[ibase];
-						scale2 = maxi >= 2 ? di[ibase] - di[curind[maxi-2].curind] : scale; // to the left valid -2 ?
+						scale = cum_dist[ibreak] - cum_dist[ibase];
+						scale2 = maxi >= 2 ? cum_dist[ibase] - cum_dist[curind[maxi-2].curind] : scale; // to the left valid -2 ?
 						curind[maxi-1].tangentscale = std::min(scale, scale2);
 
-						scale = std::min(di[ibreak] - di[ibase], di[itop] - di[ibreak]);
+						scale = std::min(cum_dist[ibreak] - cum_dist[ibase], cum_dist[itop] - cum_dist[ibreak]);
 
 						curind.insert(curind.begin()+maxi,cpindex(ibreak, scale, -1));
 						//curind.push_back(cpindex(ibreak, scale, -1));
@@ -741,7 +745,7 @@ synfigapp::BLineConverter::operator()(std::list<synfig::BLinePoint> &out, const 
 			is = curind[0].curind;
 
 			//first point inherits current tangent status
-			v = df[is - i0];
+			v = deriv[is - i0];
 			if(v.mag_squared() > EPSILON)
 				v *= (curind[0].tangentscale/v.mag());
 
@@ -749,10 +753,10 @@ synfigapp::BLineConverter::operator()(std::list<synfig::BLinePoint> &out, const 
 				a.set_tangent(v);
 			else a.set_tangent2(v);
 
-			a.set_vertex(f[is]);
-			if(setwidth)a.set_width(f_w[is]);
+			a.set_vertex(point_cache[is]);
+			if(setwidth)a.set_width(width_cache[is]);
 
-			out.push_back(a);
+			blinepoints_out.push_back(a);
 			a.set_split_tangent_flag(false); //won't need to break anymore
 			breaktan = false;
 
@@ -761,21 +765,21 @@ synfigapp::BLineConverter::operator()(std::list<synfig::BLinePoint> &out, const 
 				is = curind[i].curind;
 
 				//first point inherits current tangent status
-				v = df[is-i0];
+				v = deriv[is-i0];
 				if(v.mag_squared() > EPSILON)
 					v *= (curind[i].tangentscale/v.mag());
 
 				a.set_tangent(v); // always inside, so guaranteed to be smooth
-				a.set_vertex(f[is]);
-				if(setwidth)a.set_width(f_w[is]);
+				a.set_vertex(point_cache[is]);
+				if(setwidth)a.set_width(width_cache[is]);
 
-				out.push_back(a);
+				blinepoints_out.push_back(a);
 			}
 
 			//set the last point's data
 			is = curind.back().curind; //should already be this
 
-			v = df[is-i0];
+			v = deriv[is-i0];
 			if(v.mag_squared() > EPSILON)
 				v *= (curind.back().tangentscale/v.mag());
 
@@ -786,11 +790,11 @@ synfigapp::BLineConverter::operator()(std::list<synfig::BLinePoint> &out, const 
 			//will get the vertex and tangent 2 from next round
 		}
 
-		a.set_vertex(f[i3]);
+		a.set_vertex(point_cache[i3]);
 		a.set_split_tangent_flag(false);
 		if(setwidth)
-			a.set_width(f_w[i3]);
-		out.push_back(a);
+			a.set_width(width_cache[i3]);
+		blinepoints_out.push_back(a);
 
 		/*etl::clock::value_type totaltime = total(),
 							   misctime = totaltime - initialprocess - curveval - breakeval - disteval
@@ -811,7 +815,7 @@ synfigapp::BLineConverter::operator()(std::list<synfig::BLinePoint> &out, const 
 			"  Total time: %f, Misc time: %f\n",
 			initialprocess, curveval,breakeval,disteval,
 			numpre,preproceval,numtess,tesseval,numerror,erroreval,numsplit,spliteval,
-			in.size(),out.size(),
+			points_in.size(),blinepoints_out.size(),
 			totaltime,misctime);*/
 
 		return;

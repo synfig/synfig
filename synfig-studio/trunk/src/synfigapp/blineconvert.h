@@ -76,19 +76,19 @@ public:
 
 private:
 	//cached data
-	std::vector<synfig::Point>	f;	//the preprocessed input cache
-	std::vector<synfig::Real>	f_w;
+	std::vector<synfig::Point>	point_cache;	//the preprocessed input cache
+	std::vector<synfig::Real>	width_cache;
 
 	//temporary point storage for vector calc
 	std::vector<synfig::Point>	ftemp;
 
-	std::vector<synfig::Vector>	df; //the derivative cache
+	std::vector<synfig::Vector>	deriv; //the derivative cache
 	std::vector<synfig::Real>	cvt; //the curvature cache
 
 	std::vector<int>			brk; //the break point cache
 
-	std::vector<synfig::Real> 	di,	//cumulative distance
-								d_i; //distance between adjacent segments
+	std::vector<synfig::Real> 	cum_dist,	//cumulative distance
+								this_dist; //distance between adjacent segments
 
 	std::vector<synfig::Point>	work; //the working point cache for the entire curve
 	std::vector<cpindex> 		curind;
