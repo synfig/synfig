@@ -47,6 +47,7 @@
 #include "valuenode_scale.h"
 #include "valuenode_blinecalctangent.h"
 #include "valuenode_blinecalcvertex.h"
+#include "valuenode_blinecalcwidth.h"
 #include "valuenode_blinereversetangent.h"
 #include "valuenode_segcalctangent.h"
 #include "valuenode_segcalcvertex.h"
@@ -150,6 +151,7 @@ ValueNode::subsys_init()
 	ADD_VALUENODE(ValueNode_Duplicate,		"duplicate",		_("Duplicate")		 ,RELEASE_VERSION_0_61_08); // SVN r1267
 	ADD_VALUENODE(ValueNode_Integer,		"fromint",			_("From Integer")	 ,RELEASE_VERSION_0_61_08); // SVN r1267
 	ADD_VALUENODE(ValueNode_Step,			"step",				_("Step")			 ,RELEASE_VERSION_0_61_08); // SVN r1691
+	ADD_VALUENODE(ValueNode_BLineCalcWidth, "blinecalcwidth",	_("BLine Width")	 ,RELEASE_VERSION_0_61_08); // SVN r16??
 
 #undef ADD_VALUENODE
 #undef ADD_VALUENODE2
