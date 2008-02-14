@@ -70,6 +70,7 @@
 #include "valuenode_reciprocal.h"
 #include "valuenode_duplicate.h"
 #include "valuenode_integer.h"
+#include "valuenode_step.h"
 
 #include "layer.h"
 
@@ -148,6 +149,7 @@ ValueNode::subsys_init()
 	ADD_VALUENODE(ValueNode_Reciprocal,		"reciprocal",		_("Reciprocal")		 ,RELEASE_VERSION_0_61_08); // SVN r1238
 	ADD_VALUENODE(ValueNode_Duplicate,		"duplicate",		_("Duplicate")		 ,RELEASE_VERSION_0_61_08); // SVN r1267
 	ADD_VALUENODE(ValueNode_Integer,		"fromint",			_("From Integer")	 ,RELEASE_VERSION_0_61_08); // SVN r1267
+	ADD_VALUENODE(ValueNode_Step,			"step",				_("Step")			 ,RELEASE_VERSION_0_61_08); // SVN r1691
 
 #undef ADD_VALUENODE
 #undef ADD_VALUENODE2

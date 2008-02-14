@@ -33,7 +33,7 @@ VALUENODEHEADERS = \
 	valuenode_gradientrotate.h   valuenode_integer.h   valuenode_linear.h valuenode_radialcomposite.h		\
 	valuenode_range.h   valuenode_reciprocal.h   valuenode_reference.h   valuenode_repeat_gradient.h		\
 	valuenode_scale.h   valuenode_segcalctangent.h	 valuenode_segcalcvertex.h   valuenode_sine.h			\
-	valuenode_stripes.h   valuenode_subtract.h    valuenode_switch.h   valuenode_timedswap.h			\
+	valuenode_step.h   valuenode_stripes.h   valuenode_subtract.h    valuenode_switch.h   valuenode_timedswap.h	\
 	valuenode_timeloop.h   valuenode_twotone.h
 VALUENODESOURCES = \
 	valuenode_add.cpp valuenode_animated.cpp valuenode_atan2.cpp valuenode_bline.cpp valuenode_blinecalctangent.cpp	\
@@ -42,7 +42,7 @@ VALUENODESOURCES = \
 	valuenode_gradientrotate.cpp valuenode_integer.cpp valuenode_linear.cpp valuenode_radialcomposite.cpp		\
 	valuenode_range.cpp valuenode_reciprocal.cpp valuenode_reference.cpp valuenode_repeat_gradient.cpp		\
 	valuenode_scale.cpp valuenode_segcalctangent.cpp valuenode_segcalcvertex.cpp valuenode_sine.cpp			\
-	valuenode_stripes.cpp valuenode_subtract.cpp valuenode_switch.cpp valuenode_timedswap.cpp			\
+	valuenode_step.cpp valuenode_stripes.cpp valuenode_subtract.cpp valuenode_switch.cpp valuenode_timedswap.cpp	\
 	valuenode_timeloop.cpp valuenode_twotone.cpp
 
 VALUEHEADERS = \

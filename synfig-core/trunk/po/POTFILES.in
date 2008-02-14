@@ -325,6 +325,8 @@ src/synfig/valuenode_segcalcvertex.cpp
 src/synfig/valuenode_segcalcvertex.h
 src/synfig/valuenode_sine.cpp
 src/synfig/valuenode_sine.h
+src/synfig/valuenode_step.cpp
+src/synfig/valuenode_step.h
 src/synfig/valuenode_stripes.cpp
 src/synfig/valuenode_stripes.h
 src/synfig/valuenode_subtract.cpp
