@@ -38,8 +38,9 @@ namespace synfig {
 class ValueNode_Step : public LinkableValueNode
 {
 	ValueNode::RHandle link_;
-	ValueNode::RHandle width_;
-	ValueNode::RHandle offset_;
+	ValueNode::RHandle duration_;
+	ValueNode::RHandle start_time_;
+	ValueNode::RHandle intersection_;
 
 	ValueNode_Step(const ValueBase &value);
 

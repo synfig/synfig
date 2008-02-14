@@ -54,8 +54,9 @@ using namespace synfig;
 ValueNode_Step::ValueNode_Step(const ValueBase &value):
 	LinkableValueNode(value.get_type())
 {
-	set_link("width",ValueNode_Const::create(Time(1)));
-	set_link("offset",ValueNode_Const::create(Time(0)));
+	set_link("duration",     ValueNode_Const::create(Time(1)));
+	set_link("start_time",   ValueNode_Const::create(Time(0)));
+	set_link("intersection", ValueNode_Const::create(Real(0.5)));
 
 	switch(get_type())
 	{
@@ -104,10 +105,11 @@ ValueNode_Step::~ValueNode_Step()
 ValueBase
 ValueNode_Step::operator()(Time t)const
 {
-	Time width ((*width_ )(t).get(Time()));
-	Time offset((*offset_)(t).get(Time()));
+	Time duration    ((*duration_    )(t).get(Time()));
+	Time start_time  ((*start_time_  )(t).get(Time()));
+	Real intersection((*intersection_)(t).get(Real()));
 
-	t = floor((t - offset) / width) * width + offset;
+	t = (floor((t - start_time) / duration) + intersection) * duration + start_time;
 
 	switch(get_type())
 	{
@@ -155,9 +157,10 @@ ValueNode_Step::set_link_vfunc(int i,ValueNode::Handle value)
 
 	switch(i)
 	{
-	case 0: CHECK_TYPE_AND_SET_VALUE(link_,   get_type());
-	case 1: CHECK_TYPE_AND_SET_VALUE(width_,  ValueBase::TYPE_TIME);
-	case 2: CHECK_TYPE_AND_SET_VALUE(offset_, ValueBase::TYPE_TIME);
+	case 0: CHECK_TYPE_AND_SET_VALUE(link_,         get_type());
+	case 1: CHECK_TYPE_AND_SET_VALUE(duration_,     ValueBase::TYPE_TIME);
+	case 2: CHECK_TYPE_AND_SET_VALUE(start_time_,   ValueBase::TYPE_TIME);
+	case 3: CHECK_TYPE_AND_SET_VALUE(intersection_, ValueBase::TYPE_REAL);
 	}
 	return false;
 }
@@ -170,8 +173,9 @@ ValueNode_Step::get_link_vfunc(int i)const
 	switch(i)
 	{
 	case 0: return link_;
-	case 1: return width_;
-	case 2: return offset_;
+	case 1: return duration_;
+	case 2: return start_time_;
+	case 3: return intersection_;
 	default:
 		return 0;
 	}
@@ -180,7 +184,7 @@ ValueNode_Step::get_link_vfunc(int i)const
 int
 ValueNode_Step::link_count()const
 {
-	return 3;
+	return 4;
 }
 
 String
@@ -191,8 +195,9 @@ ValueNode_Step::link_name(int i)const
 	switch(i)
 	{
 	case 0: return "link";
-	case 1: return "width";
-	case 2: return "offset";
+	case 1: return "duration";
+	case 2: return "start_time";
+	case 3: return "intersection";
 	default:
 		return String();
 	}
@@ -206,8 +211,9 @@ ValueNode_Step::link_local_name(int i)const
 	switch(i)
 	{
 	case 0: return _("Link");
-	case 1: return _("Width");
-	case 2: return _("Offset");
+	case 1: return _("Duration");
+	case 2: return _("Start Time");
+	case 3: return _("Intersection");
 	default:
 		return String();
 	}
@@ -216,9 +222,10 @@ ValueNode_Step::link_local_name(int i)const
 int
 ValueNode_Step::get_link_index_from_name(const String &name)const
 {
-	if(name=="link")  return 0;
-	if(name=="width")  return 1;
-	if(name=="offset")  return 2;
+	if(name=="link")         return 0;
+	if(name=="duration")     return 1;
+	if(name=="start_time")   return 2;
+	if(name=="intersection") return 3;
 
 	throw Exception::BadLinkName(name);
 }
