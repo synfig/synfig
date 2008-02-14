@@ -119,39 +119,39 @@ ValueNode::subsys_init()
 	(*book_)[name].local_name=local;															\
 	(*book_)[name].release_version=version
 
-	ADD_VALUENODE(ValueNode_Linear,			"linear",			_("Linear")			 ,RELEASE_VERSION_0_61_06);
-	ADD_VALUENODE(ValueNode_Composite,		"composite",		_("Composite")		 ,RELEASE_VERSION_0_61_06);
-	ADD_VALUENODE(ValueNode_RadialComposite,"radial_composite",	_("Radial Composite"),RELEASE_VERSION_0_61_06);
-	ADD_VALUENODE(ValueNode_Reference,		"reference",		_("Reference")		 ,RELEASE_VERSION_0_61_06);
-	ADD_VALUENODE(ValueNode_Scale,			"scale",			_("Scale")			 ,RELEASE_VERSION_0_61_06);
-	ADD_VALUENODE(ValueNode_SegCalcTangent,	"segcalctangent",	_("Segment Tangent") ,RELEASE_VERSION_0_61_06);
-	ADD_VALUENODE(ValueNode_SegCalcVertex,	"segcalcvertex",	_("Segment Vertex")	 ,RELEASE_VERSION_0_61_06);
-	ADD_VALUENODE(ValueNode_Stripes,		"stripes",			_("Stripes")		 ,RELEASE_VERSION_0_61_06);
-	ADD_VALUENODE(ValueNode_Subtract,		"subtract",			_("Subtract")		 ,RELEASE_VERSION_0_61_06);
-	ADD_VALUENODE(ValueNode_TwoTone,		"twotone",			_("Two-Tone")		 ,RELEASE_VERSION_0_61_06);
-	ADD_VALUENODE(ValueNode_BLine,			"bline",			_("BLine")			 ,RELEASE_VERSION_0_61_06);
-	ADD_VALUENODE2(ValueNode_DynamicList,	"dynamic_list",		_("Dynamic List")	 ,RELEASE_VERSION_0_61_06);
-	ADD_VALUENODE(ValueNode_GradientRotate,	"gradient_rotate",	_("Gradient Rotate") ,RELEASE_VERSION_0_61_06);
-	ADD_VALUENODE(ValueNode_Sine,			"sine",				_("Sine")			 ,RELEASE_VERSION_0_61_06);
+	ADD_VALUENODE(ValueNode_Linear,			  "linear",			  _("Linear"),			 RELEASE_VERSION_0_61_06);
+	ADD_VALUENODE(ValueNode_Composite,		  "composite",		  _("Composite"),		 RELEASE_VERSION_0_61_06);
+	ADD_VALUENODE(ValueNode_RadialComposite,  "radial_composite", _("Radial Composite"), RELEASE_VERSION_0_61_06);
+	ADD_VALUENODE(ValueNode_Reference,		  "reference",		  _("Reference"),		 RELEASE_VERSION_0_61_06);
+	ADD_VALUENODE(ValueNode_Scale,			  "scale",			  _("Scale"),			 RELEASE_VERSION_0_61_06);
+	ADD_VALUENODE(ValueNode_SegCalcTangent,	  "segcalctangent",	  _("Segment Tangent"),	 RELEASE_VERSION_0_61_06);
+	ADD_VALUENODE(ValueNode_SegCalcVertex,	  "segcalcvertex",	  _("Segment Vertex"),	 RELEASE_VERSION_0_61_06);
+	ADD_VALUENODE(ValueNode_Stripes,		  "stripes",		  _("Stripes"),			 RELEASE_VERSION_0_61_06);
+	ADD_VALUENODE(ValueNode_Subtract,		  "subtract",		  _("Subtract"),		 RELEASE_VERSION_0_61_06);
+	ADD_VALUENODE(ValueNode_TwoTone,		  "twotone",		  _("Two-Tone"),		 RELEASE_VERSION_0_61_06);
+	ADD_VALUENODE(ValueNode_BLine,			  "bline",			  _("BLine"),			 RELEASE_VERSION_0_61_06);
+	ADD_VALUENODE2(ValueNode_DynamicList,	  "dynamic_list",	  _("Dynamic List"),	 RELEASE_VERSION_0_61_06);
+	ADD_VALUENODE(ValueNode_GradientRotate,	  "gradient_rotate",  _("Gradient Rotate"),	 RELEASE_VERSION_0_61_06);
+	ADD_VALUENODE(ValueNode_Sine,			  "sine",			  _("Sine"),			 RELEASE_VERSION_0_61_06);
 
-	ADD_VALUENODE(ValueNode_TimedSwap,		"timed_swap",		_("Timed Swap")		 ,RELEASE_VERSION_0_61_07); // SVN r610
-	ADD_VALUENODE(ValueNode_Repeat_Gradient,"repeat_gradient",	_("Repeat Gradient") ,RELEASE_VERSION_0_61_07); // SVN r666
-	ADD_VALUENODE(ValueNode_Exp,			"exp",				_("Exponential")	 ,RELEASE_VERSION_0_61_07); // SVN r739
-	ADD_VALUENODE(ValueNode_Add,			"add",				_("Add")			 ,RELEASE_VERSION_0_61_07); // SVN r742
-	ADD_VALUENODE(ValueNode_BLineCalcTangent,"blinecalctangent",_("BLine Tangent")	 ,RELEASE_VERSION_0_61_07); // SVN r744
-	ADD_VALUENODE(ValueNode_BLineCalcVertex,"blinecalcvertex",	_("BLine Vertex")	 ,RELEASE_VERSION_0_61_07); // SVN r744
-	ADD_VALUENODE(ValueNode_Range,			"range",			_("Range")			 ,RELEASE_VERSION_0_61_07); // SVN r776
+	ADD_VALUENODE(ValueNode_TimedSwap,		  "timed_swap",		  _("Timed Swap"),		 RELEASE_VERSION_0_61_07); // SVN r610
+	ADD_VALUENODE(ValueNode_Repeat_Gradient,  "repeat_gradient",  _("Repeat Gradient"),	 RELEASE_VERSION_0_61_07); // SVN r666
+	ADD_VALUENODE(ValueNode_Exp,			  "exp",			  _("Exponential"),		 RELEASE_VERSION_0_61_07); // SVN r739
+	ADD_VALUENODE(ValueNode_Add,			  "add",			  _("Add"),				 RELEASE_VERSION_0_61_07); // SVN r742
+	ADD_VALUENODE(ValueNode_BLineCalcTangent, "blinecalctangent", _("BLine Tangent"),	 RELEASE_VERSION_0_61_07); // SVN r744
+	ADD_VALUENODE(ValueNode_BLineCalcVertex,  "blinecalcvertex",  _("BLine Vertex"),	 RELEASE_VERSION_0_61_07); // SVN r744
+	ADD_VALUENODE(ValueNode_Range,			  "range",			  _("Range"),			 RELEASE_VERSION_0_61_07); // SVN r776
 
-	ADD_VALUENODE(ValueNode_Switch,			"switch",			_("Switch")			 ,RELEASE_VERSION_0_61_08); // SVN r923
-	ADD_VALUENODE(ValueNode_Cos,			"cos",				_("Cos")			 ,RELEASE_VERSION_0_61_08); // SVN r1111
-	ADD_VALUENODE(ValueNode_Atan2,			"atan2",			_("aTan2")			 ,RELEASE_VERSION_0_61_08); // SVN r1132
-	ADD_VALUENODE(ValueNode_BLineRevTangent,"blinerevtangent",	_("Reverse Tangent") ,RELEASE_VERSION_0_61_08); // SVN r1162
-	ADD_VALUENODE(ValueNode_TimeLoop,		"timeloop",			_("Time Loop")		 ,RELEASE_VERSION_0_61_08); // SVN r1226
-	ADD_VALUENODE(ValueNode_Reciprocal,		"reciprocal",		_("Reciprocal")		 ,RELEASE_VERSION_0_61_08); // SVN r1238
-	ADD_VALUENODE(ValueNode_Duplicate,		"duplicate",		_("Duplicate")		 ,RELEASE_VERSION_0_61_08); // SVN r1267
-	ADD_VALUENODE(ValueNode_Integer,		"fromint",			_("From Integer")	 ,RELEASE_VERSION_0_61_08); // SVN r1267
-	ADD_VALUENODE(ValueNode_Step,			"step",				_("Step")			 ,RELEASE_VERSION_0_61_08); // SVN r1691
-	ADD_VALUENODE(ValueNode_BLineCalcWidth, "blinecalcwidth",	_("BLine Width")	 ,RELEASE_VERSION_0_61_08); // SVN r16??
+	ADD_VALUENODE(ValueNode_Switch,			  "switch",			  _("Switch"),			 RELEASE_VERSION_0_61_08); // SVN r923
+	ADD_VALUENODE(ValueNode_Cos,			  "cos",			  _("Cos"),				 RELEASE_VERSION_0_61_08); // SVN r1111
+	ADD_VALUENODE(ValueNode_Atan2,			  "atan2",			  _("aTan2"),			 RELEASE_VERSION_0_61_08); // SVN r1132
+	ADD_VALUENODE(ValueNode_BLineRevTangent,  "blinerevtangent",  _("Reverse Tangent"),	 RELEASE_VERSION_0_61_08); // SVN r1162
+	ADD_VALUENODE(ValueNode_TimeLoop,		  "timeloop",		  _("Time Loop"),		 RELEASE_VERSION_0_61_08); // SVN r1226
+	ADD_VALUENODE(ValueNode_Reciprocal,		  "reciprocal",		  _("Reciprocal"),		 RELEASE_VERSION_0_61_08); // SVN r1238
+	ADD_VALUENODE(ValueNode_Duplicate,		  "duplicate",		  _("Duplicate"),		 RELEASE_VERSION_0_61_08); // SVN r1267
+	ADD_VALUENODE(ValueNode_Integer,		  "fromint",		  _("From Integer"),	 RELEASE_VERSION_0_61_08); // SVN r1267
+	ADD_VALUENODE(ValueNode_Step,			  "step",			  _("Step"),			 RELEASE_VERSION_0_61_08); // SVN r1691
+	ADD_VALUENODE(ValueNode_BLineCalcWidth,	  "blinecalcwidth",	  _("BLine Width"),		 RELEASE_VERSION_0_61_08); // SVN r1694
 
 #undef ADD_VALUENODE
 #undef ADD_VALUENODE2
