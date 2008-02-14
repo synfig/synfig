@@ -67,6 +67,9 @@ ValueNode_Random::ValueNode_Random(const ValueBase &value):
 	case ValueBase::TYPE_ANGLE:
 		set_link("link",ValueNode_Const::create(value.get(Angle())));
 		break;
+	case ValueBase::TYPE_BOOL:
+		set_link("link",ValueNode_Const::create(value.get(bool())));
+		break;
 	case ValueBase::TYPE_COLOR:
 		set_link("link",ValueNode_Const::create(value.get(Color())));
 		break;
@@ -123,6 +126,10 @@ ValueNode_Random::operator()(Time t)const
 	case ValueBase::TYPE_ANGLE:
 		return ((*link_)(t).get( Angle()) +
 				Angle::deg(random(Smooth(smooth), 0, 0, 0, speed) * radius));
+
+	case ValueBase::TYPE_BOOL:
+		return round_to_int((*link_)(t).get(  bool()) +
+							random(Smooth(smooth), 0, 0, 0, speed) * radius) > 0;
 
 	case ValueBase::TYPE_COLOR:
 		return (((*link_)(t).get( Color()) +
@@ -258,6 +265,7 @@ ValueNode_Random::check_type(ValueBase::Type type)
 {
 	return
 		type==ValueBase::TYPE_ANGLE		||
+		type==ValueBase::TYPE_BOOL		||
 		type==ValueBase::TYPE_COLOR		||
 		type==ValueBase::TYPE_INTEGER	||
 		type==ValueBase::TYPE_REAL		||
