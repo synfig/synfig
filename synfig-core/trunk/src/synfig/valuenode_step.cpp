@@ -55,33 +55,27 @@ ValueNode_Step::ValueNode_Step(const ValueBase &value):
 	LinkableValueNode(value.get_type())
 {
 	set_link("width",ValueNode_Const::create(Time(1)));
-	set_link("time",ValueNode_Const::create(Time(0)));
+	set_link("offset",ValueNode_Const::create(Time(0)));
 
 	switch(get_type())
 	{
 	case ValueBase::TYPE_ANGLE:
-		set_link("height",ValueNode_Const::create(Angle::deg(0)));
-		set_link("value",ValueNode_Const::create(value.get(Angle())));
+		set_link("link",ValueNode_Const::create(value.get(Angle())));
 		break;
 	case ValueBase::TYPE_COLOR:
-		set_link("height",ValueNode_Const::create(Color(0,0,0,0)));
-		set_link("value",ValueNode_Const::create(value.get(Color())));
+		set_link("link",ValueNode_Const::create(value.get(Color())));
 		break;
 	case ValueBase::TYPE_INTEGER:
-		set_link("height",ValueNode_Const::create(int(0)));
-		set_link("value",ValueNode_Const::create(value.get(int())));
+		set_link("link",ValueNode_Const::create(value.get(int())));
 		break;
 	case ValueBase::TYPE_REAL:
-		set_link("height",ValueNode_Const::create(Real(0)));
-		set_link("value",ValueNode_Const::create(value.get(Real())));
+		set_link("link",ValueNode_Const::create(value.get(Real())));
 		break;
 	case ValueBase::TYPE_TIME:
-		set_link("height",ValueNode_Const::create(Time(0)));
-		set_link("value",ValueNode_Const::create(value.get(Time())));
+		set_link("link",ValueNode_Const::create(value.get(Time())));
 		break;
 	case ValueBase::TYPE_VECTOR:
-		set_link("height",ValueNode_Const::create(Vector(0,0)));
-		set_link("value",ValueNode_Const::create(value.get(Vector())));
+		set_link("link",ValueNode_Const::create(value.get(Vector())));
 		break;
 	default:
 		throw Exception::BadType(ValueBase::type_local_name(get_type()));
@@ -110,17 +104,19 @@ ValueNode_Step::~ValueNode_Step()
 ValueBase
 ValueNode_Step::operator()(Time t)const
 {
-	int step = floor((t - ((*time_)(t).get(Time()))) /
-					 ((*width_)(t).get(Time())));
+	Time width ((*width_ )(t).get(Time()));
+	Time offset((*offset_)(t).get(Time()));
+
+	t = floor((t - offset) / width) * width + offset;
 
 	switch(get_type())
 	{
-	case ValueBase::TYPE_ANGLE:   return (*value_)(t).get( Angle()) + (*height_)(t).get( Angle())*step;
-	case ValueBase::TYPE_COLOR:   return (*value_)(t).get( Color()) + (*height_)(t).get( Color())*step;
-	case ValueBase::TYPE_INTEGER: return (*value_)(t).get(   int()) + (*height_)(t).get(   int())*step;
-	case ValueBase::TYPE_REAL:    return (*value_)(t).get(  Real()) + (*height_)(t).get(  Real())*step;
-	case ValueBase::TYPE_TIME:    return (*value_)(t).get(  Time()) + (*height_)(t).get(  Time())*step;
-	case ValueBase::TYPE_VECTOR:  return (*value_)(t).get(Vector()) + (*height_)(t).get(Vector())*step;
+	case ValueBase::TYPE_ANGLE:   return (*link_)(t).get( Angle());
+	case ValueBase::TYPE_COLOR:   return (*link_)(t).get( Color());
+	case ValueBase::TYPE_INTEGER: return (*link_)(t).get(   int());
+	case ValueBase::TYPE_REAL:    return (*link_)(t).get(  Real());
+	case ValueBase::TYPE_TIME:    return (*link_)(t).get(  Time());
+	case ValueBase::TYPE_VECTOR:  return (*link_)(t).get(Vector());
 	default:
 		assert(0);
 		return ValueBase();
@@ -159,10 +155,9 @@ ValueNode_Step::set_link_vfunc(int i,ValueNode::Handle value)
 
 	switch(i)
 	{
-	case 0: CHECK_TYPE_AND_SET_VALUE(width_,  ValueBase::TYPE_TIME);
-	case 1: CHECK_TYPE_AND_SET_VALUE(height_, get_type());
-	case 2: CHECK_TYPE_AND_SET_VALUE(time_,   ValueBase::TYPE_TIME);
-	case 3: CHECK_TYPE_AND_SET_VALUE(value_,  get_type());
+	case 0: CHECK_TYPE_AND_SET_VALUE(link_,   get_type());
+	case 1: CHECK_TYPE_AND_SET_VALUE(width_,  ValueBase::TYPE_TIME);
+	case 2: CHECK_TYPE_AND_SET_VALUE(offset_, ValueBase::TYPE_TIME);
 	}
 	return false;
 }
@@ -174,10 +169,9 @@ ValueNode_Step::get_link_vfunc(int i)const
 
 	switch(i)
 	{
-	case 0: return width_;
-	case 1: return height_;
-	case 2: return time_;
-	case 3: return value_;
+	case 0: return link_;
+	case 1: return width_;
+	case 2: return offset_;
 	default:
 		return 0;
 	}
@@ -186,7 +180,7 @@ ValueNode_Step::get_link_vfunc(int i)const
 int
 ValueNode_Step::link_count()const
 {
-	return 4;
+	return 3;
 }
 
 String
@@ -196,10 +190,9 @@ ValueNode_Step::link_name(int i)const
 
 	switch(i)
 	{
-	case 0: return "width";
-	case 1: return "height";
-	case 2: return "time";
-	case 3: return "value";
+	case 0: return "link";
+	case 1: return "width";
+	case 2: return "offset";
 	default:
 		return String();
 	}
@@ -212,10 +205,9 @@ ValueNode_Step::link_local_name(int i)const
 
 	switch(i)
 	{
-	case 0: return _("Width");
-	case 1: return _("Height");
-	case 2: return _("Time");
-	case 3: return _("Value");
+	case 0: return _("Link");
+	case 1: return _("Width");
+	case 2: return _("Offset");
 	default:
 		return String();
 	}
@@ -224,10 +216,9 @@ ValueNode_Step::link_local_name(int i)const
 int
 ValueNode_Step::get_link_index_from_name(const String &name)const
 {
-	if(name=="width")  return 0;
-	if(name=="height") return 1;
-	if(name=="time")   return 2;
-	if(name=="value")  return 3;
+	if(name=="link")  return 0;
+	if(name=="width")  return 1;
+	if(name=="offset")  return 2;
 
 	throw Exception::BadLinkName(name);
 }
