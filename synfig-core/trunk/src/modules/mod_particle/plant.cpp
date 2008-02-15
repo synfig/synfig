@@ -377,7 +377,7 @@ Plant::get_param_vocab()const
 		.set_local_name(_("Vertices"))
 		.set_description(_("A list of BLine Points"))
 		.set_origin("offset")
-		//.set_hint("width")
+		.set_hint("width")
 	);
 
 	ret.push_back(ParamDesc("offset")
