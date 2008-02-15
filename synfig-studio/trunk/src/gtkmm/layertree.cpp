@@ -135,12 +135,12 @@ LayerTree::LayerTree():
 	hbox->pack_start(*button_encapsulate,Gtk::PACK_SHRINK);
 	hbox->pack_start(*button_delete,Gtk::PACK_SHRINK);
 
-	button_raise->signal_clicked().connect(sigc::mem_fun(*this, &studio::LayerTree::on_raise_pressed));
-	button_lower->signal_clicked().connect(sigc::mem_fun(*this, &studio::LayerTree::on_lower_pressed));
-	button_duplicate->signal_clicked().connect(sigc::mem_fun(*this, &studio::LayerTree::on_duplicate_pressed));
-	button_encapsulate->signal_clicked().connect(sigc::mem_fun(*this, &studio::LayerTree::on_encapsulate_pressed));
-	button_delete->signal_clicked().connect(sigc::mem_fun(*this, &studio::LayerTree::on_delete_pressed));
-
+	// button_raise->signal_clicked().connect(sigc::mem_fun(*this, &studio::LayerTree::on_raise_pressed));
+	// button_lower->signal_clicked().connect(sigc::mem_fun(*this, &studio::LayerTree::on_lower_pressed));
+	// button_duplicate->signal_clicked().connect(sigc::mem_fun(*this, &studio::LayerTree::on_duplicate_pressed));
+	// button_encapsulate->signal_clicked().connect(sigc::mem_fun(*this, &studio::LayerTree::on_encapsulate_pressed));
+	// button_delete->signal_clicked().connect(sigc::mem_fun(*this, &studio::LayerTree::on_delete_pressed));
+	
 	button_raise->set_sensitive(false);
 	button_lower->set_sensitive(false);
 	button_duplicate->set_sensitive(false);
@@ -966,109 +966,109 @@ LayerTree::on_param_tree_event(GdkEvent *event)
 	return false;
 }
 
-void
-LayerTree::on_raise_pressed()
-{
-	synfigapp::Action::ParamList param_list;
-	param_list.add("time",layer_tree_store_->canvas_interface()->get_time());
-	param_list.add("canvas",layer_tree_store_->canvas_interface()->get_canvas());
-	param_list.add("canvas_interface",layer_tree_store_->canvas_interface());
+// void
+// LayerTree::on_raise_pressed()
+// {
+// 	synfigapp::Action::ParamList param_list;
+// 	param_list.add("time",layer_tree_store_->canvas_interface()->get_time());
+// 	param_list.add("canvas",layer_tree_store_->canvas_interface()->get_canvas());
+// 	param_list.add("canvas_interface",layer_tree_store_->canvas_interface());
+//
+// 	{
+// 		synfigapp::SelectionManager::LayerList layer_list(get_selection_manager()->get_selected_layers());
+// 		synfigapp::SelectionManager::LayerList::iterator iter;
+//
+// 		for(iter=layer_list.begin();iter!=layer_list.end();++iter)
+// 			param_list.add("layer",Layer::Handle(*iter));
+// 	}
+// 	synfigapp::Action::Handle action(synfigapp::Action::create("layer_raise"));
+// 	action->set_param_list(param_list);
+// 	layer_tree_store_->canvas_interface()->get_instance()->perform_action(action);
+// }
 
-	{
-		synfigapp::SelectionManager::LayerList layer_list(get_selection_manager()->get_selected_layers());
-		synfigapp::SelectionManager::LayerList::iterator iter;
+// void
+// LayerTree::on_lower_pressed()
+// {
+// 	synfigapp::Action::ParamList param_list;
+// 	param_list.add("time",layer_tree_store_->canvas_interface()->get_time());
+// 	param_list.add("canvas",layer_tree_store_->canvas_interface()->get_canvas());
+// 	param_list.add("canvas_interface",layer_tree_store_->canvas_interface());
+//
+// 	{
+// 		synfigapp::SelectionManager::LayerList layer_list(get_selection_manager()->get_selected_layers());
+// 		synfigapp::SelectionManager::LayerList::iterator iter;
+//
+// 		for(iter=layer_list.begin();iter!=layer_list.end();++iter)
+// 			param_list.add("layer",Layer::Handle(*iter));
+// 	}
+//
+// 	synfigapp::Action::Handle action(synfigapp::Action::create("layer_lower"));
+// 	action->set_param_list(param_list);
+// 	layer_tree_store_->canvas_interface()->get_instance()->perform_action(action);
+// }
 
-		for(iter=layer_list.begin();iter!=layer_list.end();++iter)
-			param_list.add("layer",Layer::Handle(*iter));
-	}
-	synfigapp::Action::Handle action(synfigapp::Action::create("layer_raise"));
-	action->set_param_list(param_list);
-	layer_tree_store_->canvas_interface()->get_instance()->perform_action(action);
-}
+// void
+// LayerTree::on_duplicate_pressed()
+// {
+// 	synfigapp::Action::ParamList param_list;
+// 	param_list.add("time",layer_tree_store_->canvas_interface()->get_time());
+// 	param_list.add("canvas",layer_tree_store_->canvas_interface()->get_canvas());
+// 	param_list.add("canvas_interface",layer_tree_store_->canvas_interface());
+//
+// 	{
+// 		synfigapp::SelectionManager::LayerList layer_list(get_selection_manager()->get_selected_layers());
+// 		synfigapp::SelectionManager::LayerList::iterator iter;
+//
+// 		for(iter=layer_list.begin();iter!=layer_list.end();++iter)
+// 			param_list.add("layer",Layer::Handle(*iter));
+// 	}
+//
+// 	synfigapp::Action::Handle action(synfigapp::Action::create("layer_duplicate"));
+// 	action->set_param_list(param_list);
+// 	layer_tree_store_->canvas_interface()->get_instance()->perform_action(action);
+// }
 
-void
-LayerTree::on_lower_pressed()
-{
-	synfigapp::Action::ParamList param_list;
-	param_list.add("time",layer_tree_store_->canvas_interface()->get_time());
-	param_list.add("canvas",layer_tree_store_->canvas_interface()->get_canvas());
-	param_list.add("canvas_interface",layer_tree_store_->canvas_interface());
+// void
+// LayerTree::on_encapsulate_pressed()
+// {
+// 	synfigapp::Action::ParamList param_list;
+// 	param_list.add("time",layer_tree_store_->canvas_interface()->get_time());
+// 	param_list.add("canvas",layer_tree_store_->canvas_interface()->get_canvas());
+// 	param_list.add("canvas_interface",layer_tree_store_->canvas_interface());
+//
+// 	{
+// 		synfigapp::SelectionManager::LayerList layer_list(get_selection_manager()->get_selected_layers());
+// 		synfigapp::SelectionManager::LayerList::iterator iter;
+//
+// 		for(iter=layer_list.begin();iter!=layer_list.end();++iter)
+// 			param_list.add("layer",Layer::Handle(*iter));
+// 	}
+//
+// 	synfigapp::Action::Handle action(synfigapp::Action::create("layer_encapsulate"));
+// 	action->set_param_list(param_list);
+// 	layer_tree_store_->canvas_interface()->get_instance()->perform_action(action);
+// }
 
-	{
-		synfigapp::SelectionManager::LayerList layer_list(get_selection_manager()->get_selected_layers());
-		synfigapp::SelectionManager::LayerList::iterator iter;
-
-		for(iter=layer_list.begin();iter!=layer_list.end();++iter)
-			param_list.add("layer",Layer::Handle(*iter));
-	}
-
-	synfigapp::Action::Handle action(synfigapp::Action::create("layer_lower"));
-	action->set_param_list(param_list);
-	layer_tree_store_->canvas_interface()->get_instance()->perform_action(action);
-}
-
-void
-LayerTree::on_duplicate_pressed()
-{
-	synfigapp::Action::ParamList param_list;
-	param_list.add("time",layer_tree_store_->canvas_interface()->get_time());
-	param_list.add("canvas",layer_tree_store_->canvas_interface()->get_canvas());
-	param_list.add("canvas_interface",layer_tree_store_->canvas_interface());
-
-	{
-		synfigapp::SelectionManager::LayerList layer_list(get_selection_manager()->get_selected_layers());
-		synfigapp::SelectionManager::LayerList::iterator iter;
-
-		for(iter=layer_list.begin();iter!=layer_list.end();++iter)
-			param_list.add("layer",Layer::Handle(*iter));
-	}
-
-	synfigapp::Action::Handle action(synfigapp::Action::create("layer_duplicate"));
-	action->set_param_list(param_list);
-	layer_tree_store_->canvas_interface()->get_instance()->perform_action(action);
-}
-
-void
-LayerTree::on_encapsulate_pressed()
-{
-	synfigapp::Action::ParamList param_list;
-	param_list.add("time",layer_tree_store_->canvas_interface()->get_time());
-	param_list.add("canvas",layer_tree_store_->canvas_interface()->get_canvas());
-	param_list.add("canvas_interface",layer_tree_store_->canvas_interface());
-
-	{
-		synfigapp::SelectionManager::LayerList layer_list(get_selection_manager()->get_selected_layers());
-		synfigapp::SelectionManager::LayerList::iterator iter;
-
-		for(iter=layer_list.begin();iter!=layer_list.end();++iter)
-			param_list.add("layer",Layer::Handle(*iter));
-	}
-
-	synfigapp::Action::Handle action(synfigapp::Action::create("layer_encapsulate"));
-	action->set_param_list(param_list);
-	layer_tree_store_->canvas_interface()->get_instance()->perform_action(action);
-}
-
-void
-LayerTree::on_delete_pressed()
-{
-	synfigapp::Action::ParamList param_list;
-	param_list.add("time",layer_tree_store_->canvas_interface()->get_time());
-	param_list.add("canvas",layer_tree_store_->canvas_interface()->get_canvas());
-	param_list.add("canvas_interface",layer_tree_store_->canvas_interface());
-
-	{
-		synfigapp::SelectionManager::LayerList layer_list(get_selection_manager()->get_selected_layers());
-		synfigapp::SelectionManager::LayerList::iterator iter;
-
-		for(iter=layer_list.begin();iter!=layer_list.end();++iter)
-			param_list.add("layer",Layer::Handle(*iter));
-	}
-
-	synfigapp::Action::Handle action(synfigapp::Action::create("layer_remove"));
-	action->set_param_list(param_list);
-	layer_tree_store_->canvas_interface()->get_instance()->perform_action(action);
-}
+// void
+// LayerTree::on_delete_pressed()
+// {
+// 	synfigapp::Action::ParamList param_list;
+// 	param_list.add("time",layer_tree_store_->canvas_interface()->get_time());
+// 	param_list.add("canvas",layer_tree_store_->canvas_interface()->get_canvas());
+// 	param_list.add("canvas_interface",layer_tree_store_->canvas_interface());
+//
+// 	{
+// 		synfigapp::SelectionManager::LayerList layer_list(get_selection_manager()->get_selected_layers());
+// 		synfigapp::SelectionManager::LayerList::iterator iter;
+//
+// 		for(iter=layer_list.begin();iter!=layer_list.end();++iter)
+// 			param_list.add("layer",Layer::Handle(*iter));
+// 	}
+//
+// 	synfigapp::Action::Handle action(synfigapp::Action::create("layer_remove"));
+// 	action->set_param_list(param_list);
+// 	layer_tree_store_->canvas_interface()->get_instance()->perform_action(action);
+// }
 
 /*
 void
