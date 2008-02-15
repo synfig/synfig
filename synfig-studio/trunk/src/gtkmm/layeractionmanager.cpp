@@ -288,16 +288,11 @@ LayerActionManager::refresh()
 				action_group_->add(Gtk::Action::create(
 					"select-all-child-layers",
 					Gtk::StockID("synfig-select_all_child_layers"),
-					_("Select All Child Layers")
-				),
-					sigc::bind(
-						sigc::mem_fun(
-							*layer_tree_,
-							&studio::LayerTree::select_all_children_layers
-						),
-						Layer::LooseHandle(layer)
-					)
-				);
+					_("Select All Child Layers"),
+					_("Select All Child Layers")),
+					sigc::bind(sigc::mem_fun(*layer_tree_,
+											 &studio::LayerTree::select_all_children_layers),
+							   Layer::LooseHandle(layer)));
 				ui_info+="<menuitem action='select-all-child-layers'/>";
 				ui_toolbar_info+="<toolbar action='toolbar-layer'><toolitem action='select-all-child-layers'/></toolbar>";
 			}
