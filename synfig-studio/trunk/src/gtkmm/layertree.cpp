@@ -126,21 +126,25 @@ LayerTree::LayerTree():
 	SMALL_BUTTON(button_raise,"gtk-go-up","Raise");
 	SMALL_BUTTON(button_lower,"gtk-go-down","Lower");
 	SMALL_BUTTON(button_duplicate,"synfig-duplicate","Duplicate");
+	SMALL_BUTTON(button_encapsulate,"synfig-encapsulate","Encapsulate");
 	SMALL_BUTTON(button_delete,"gtk-delete","Delete");
 
 	hbox->pack_start(*button_raise,Gtk::PACK_SHRINK);
 	hbox->pack_start(*button_lower,Gtk::PACK_SHRINK);
 	hbox->pack_start(*button_duplicate,Gtk::PACK_SHRINK);
+	hbox->pack_start(*button_encapsulate,Gtk::PACK_SHRINK);
 	hbox->pack_start(*button_delete,Gtk::PACK_SHRINK);
 
 	button_raise->signal_clicked().connect(sigc::mem_fun(*this, &studio::LayerTree::on_raise_pressed));
 	button_lower->signal_clicked().connect(sigc::mem_fun(*this, &studio::LayerTree::on_lower_pressed));
 	button_duplicate->signal_clicked().connect(sigc::mem_fun(*this, &studio::LayerTree::on_duplicate_pressed));
+	button_encapsulate->signal_clicked().connect(sigc::mem_fun(*this, &studio::LayerTree::on_encapsulate_pressed));
 	button_delete->signal_clicked().connect(sigc::mem_fun(*this, &studio::LayerTree::on_delete_pressed));
 
 	button_raise->set_sensitive(false);
 	button_lower->set_sensitive(false);
 	button_duplicate->set_sensitive(false);
+	button_encapsulate->set_sensitive(false);
 	button_delete->set_sensitive(false);
 
 	get_selection()->signal_changed().connect(sigc::mem_fun(*this, &studio::LayerTree::on_selection_changed));
@@ -618,6 +622,7 @@ LayerTree::on_selection_changed()
 		button_raise->set_sensitive(false);
 		button_lower->set_sensitive(false);
 		button_duplicate->set_sensitive(false);
+		button_encapsulate->set_sensitive(false);
 		button_delete->set_sensitive(false);
 		layer_amount_hscale->set_sensitive(false);
 		blend_method_widget.set_sensitive(false);
@@ -627,6 +632,7 @@ LayerTree::on_selection_changed()
 	button_raise->set_sensitive(true);
 	button_lower->set_sensitive(true);
 	button_duplicate->set_sensitive(true);
+	button_encapsulate->set_sensitive(true);
 	button_delete->set_sensitive(true);
 
 	if(layer_list.size()==1 && (*layer_list.begin())->get_param("amount").is_valid()&& (*layer_list.begin())->get_param("amount").same_type_as(Real()))
@@ -1018,6 +1024,27 @@ LayerTree::on_duplicate_pressed()
 	}
 
 	synfigapp::Action::Handle action(synfigapp::Action::create("layer_duplicate"));
+	action->set_param_list(param_list);
+	layer_tree_store_->canvas_interface()->get_instance()->perform_action(action);
+}
+
+void
+LayerTree::on_encapsulate_pressed()
+{
+	synfigapp::Action::ParamList param_list;
+	param_list.add("time",layer_tree_store_->canvas_interface()->get_time());
+	param_list.add("canvas",layer_tree_store_->canvas_interface()->get_canvas());
+	param_list.add("canvas_interface",layer_tree_store_->canvas_interface());
+
+	{
+		synfigapp::SelectionManager::LayerList layer_list(get_selection_manager()->get_selected_layers());
+		synfigapp::SelectionManager::LayerList::iterator iter;
+
+		for(iter=layer_list.begin();iter!=layer_list.end();++iter)
+			param_list.add("layer",Layer::Handle(*iter));
+	}
+
+	synfigapp::Action::Handle action(synfigapp::Action::create("layer_encapsulate"));
 	action->set_param_list(param_list);
 	layer_tree_store_->canvas_interface()->get_instance()->perform_action(action);
 }

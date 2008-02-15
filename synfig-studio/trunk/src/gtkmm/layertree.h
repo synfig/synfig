@@ -146,6 +146,7 @@ private:
 	Gtk::Button *button_raise;
 	Gtk::Button *button_lower;
 	Gtk::Button *button_duplicate;
+	Gtk::Button *button_encapsulate;
 	Gtk::Button *button_delete;
 
 	Widget_ValueBase blend_method_widget;
@@ -194,6 +195,8 @@ public:
 	void on_lower_pressed();
 
 	void on_duplicate_pressed();
+
+	void on_encapsulate_pressed();
 
 	void on_delete_pressed();
 

@@ -151,6 +151,7 @@ Dock_Layers::Dock_Layers():
 	"	<toolitem action='action-layer_raise' />"
 	"	<toolitem action='action-layer_lower' />"
 	"	<toolitem action='action-layer_duplicate' />"
+	"	<toolitem action='action-layer_encapsulate' />"
 	"	<toolitem action='action-layer_remove' />"
 	"	<toolitem action='cut' />"
 	"	<toolitem action='copy' />"
