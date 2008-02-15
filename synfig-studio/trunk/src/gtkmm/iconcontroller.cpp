@@ -163,6 +163,7 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	INIT_STOCK_ICON(grid_snap_disable,"grid_snap_disable_icon."IMAGE_EXT,_("Disable Grid Snap"));
 	INIT_STOCK_ICON(duplicate,"duplicate_icon."IMAGE_EXT,_("Duplicate"));
 	INIT_STOCK_ICON(encapsulate,"encapsulate_icon."IMAGE_EXT,_("Encapsulate"));
+	INIT_STOCK_ICON(select_all_child_layers,"select_all_child_layers_icon."IMAGE_EXT,_("Select All Child Layers"));
 
 	INIT_STOCK_ICON(clear_undo,"clear_undo_icon."IMAGE_EXT,_("Clear Undo Stack"));
 	INIT_STOCK_ICON(clear_redo,"clear_redo_icon."IMAGE_EXT,_("Clear Redo Stack"));

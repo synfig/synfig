@@ -231,7 +231,7 @@ LayerActionManager::refresh()
 	}
 
 
-	String ui_info;
+	String ui_info, ui_toolbar_info;
 
 	action_paste_->set_sensitive(!clipboard_.empty());
 	action_group_->add(action_paste_);
@@ -287,6 +287,7 @@ LayerActionManager::refresh()
 			{
 				action_group_->add(Gtk::Action::create(
 					"select-all-child-layers",
+					Gtk::StockID("synfig-select_all_child_layers"),
 					_("Select All Child Layers")
 				),
 					sigc::bind(
@@ -298,13 +299,26 @@ LayerActionManager::refresh()
 					)
 				);
 				ui_info+="<menuitem action='select-all-child-layers'/>";
+				ui_toolbar_info+="<toolbar action='toolbar-layer'><toolitem action='select-all-child-layers'/></toolbar>";
 			}
 			handle<studio::Instance>::cast_static(get_canvas_interface()->get_instance())->
 				add_actions_to_group(action_group_, ui_info,   param_list, synfigapp::Action::CATEGORY_LAYER);
 		}
 	}
 
-	ui_info="<ui><popup action='menu-main'><menu action='menu-layer'>"+ui_info+"<separator/><menuitem action='cut' /><menuitem action='copy' /><menuitem action='paste' /><separator/></menu></popup></ui>";
+	ui_info=("<ui>"
+			   "<popup action='menu-main'>"
+			     "<menu action='menu-layer'>" +
+			 	   ui_info +
+				   "<separator/>"
+			       "<menuitem action='cut' />"
+			 	   "<menuitem action='copy' />"
+			 	   "<menuitem action='paste' />"
+			 	   "<separator/>"
+			     "</menu>"
+			   "</popup>" +
+			 ui_toolbar_info +
+			 "</ui>");
 	popup_id_=get_ui_manager()->add_ui_from_string(ui_info);
 #ifdef ONE_ACTION_GROUP
 #else
