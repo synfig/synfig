@@ -1516,8 +1516,9 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 //					add_duck(duck);
 				}
 
-				// Add the width duck only if we have a hint of scale
-				if(param_desc && !param_desc->get_hint().empty())
+				// Add the width duck if it is a parameter with a hint (ie. "width") or if it isn't a parameter
+				if ((param_desc && !param_desc->get_hint().empty()) ||
+					!param_desc)
 				{
 					etl::handle<Duck> width;
 					if(add_to_ducks(synfigapp::ValueDesc(vertex_value_node,1),canvas_view,transform_stack,REAL_COOKIE))
@@ -1526,11 +1527,17 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 						width->set_origin(duck);
 						width->set_type(Duck::TYPE_WIDTH);
 						width->set_name(guid_string(synfigapp::ValueDesc(value_node,i))+".w");
+
+						// if the bline is a layer's parameter, scale the width duck by the layer's "width" parameter
+						if (param_desc)
 						{
 							ValueBase value(synfigapp::ValueDesc(value_desc.get_layer(),param_desc->get_hint()).get_value(get_time()));
 							if(value.same_type_as(synfig::Real()))
 								width->set_scalar(value.get(synfig::Real())*0.5f);
 						}
+						// otherwise just present the raw unscaled width
+						else
+							width->set_scalar(0.5f);
 					}
 					else
 						synfig::error("Unable to add width duck!");
