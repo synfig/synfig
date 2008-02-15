@@ -156,7 +156,6 @@ public:
    	/*! This value determines how the value is to be presented
    	**	to the user when editing visually. */
    	ParamDesc &set_scalar(const Real &n) { scalar_=n; return *this; }
-   	ParamDesc &set_scalar(const String &h) { hint_=h; return *this; }
 
    	//!	Marks the parameter as not necessary for saving or copying
    	ParamDesc &not_critical() { critical_=false; return *this; }
