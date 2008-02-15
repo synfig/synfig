@@ -1534,6 +1534,9 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 							ValueBase value(synfigapp::ValueDesc(value_desc.get_layer(),param_desc->get_hint()).get_value(get_time()));
 							if(value.same_type_as(synfig::Real()))
 								width->set_scalar(value.get(synfig::Real())*0.5f);
+							// if it doesn't have a "width" parameter, scale by 0.5f instead
+							else
+								width->set_scalar(0.5f);
 						}
 						// otherwise just present the raw unscaled width
 						else
