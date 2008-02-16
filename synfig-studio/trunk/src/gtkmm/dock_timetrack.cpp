@@ -224,7 +224,9 @@ public:
 
 				Gtk::TreeRow row = *(get_model()->get_iter(path));
 
-				if((event->motion.state&GDK_BUTTON1_MASK ||event->motion.state&GDK_BUTTON3_MASK) && column && cellrenderer_time_track==column->get_first_cell_renderer())
+				if ((event->motion.state&GDK_BUTTON1_MASK || event->motion.state&GDK_BUTTON3_MASK) &&
+					column &&
+					cellrenderer_time_track == column->get_first_cell_renderer())
 				{
 					Gdk::Rectangle rect;
 					get_cell_area(path,*column,rect);
