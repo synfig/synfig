@@ -739,7 +739,7 @@ LayerTree::on_waypoint_clicked_layertree(const etl::handle<synfig::Node>& node _
 
 	// synfigapp::ValueDesc value_desc;
 	// std::set<synfig::Waypoint, std::less<UniqueID> > waypoint_set;
-	// signal_waypoint_clicked_layertree()(value_desc,waypoint_set,button,side);
+	// signal_waypoint_clicked_layertree()(value_desc,waypoint_set,button);
 }
 
 bool

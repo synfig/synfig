@@ -99,7 +99,7 @@ private:
 
 	sigc::signal<bool, int, Gtk::TreeRow, ColumnID> signal_user_click_;
 
-	sigc::signal<void,synfigapp::ValueDesc,std::set<synfig::Waypoint,std::less<synfig::UniqueID> >,int,synfig::Waypoint::Side> signal_waypoint_clicked_childrentree_;
+	sigc::signal<void,synfigapp::ValueDesc,std::set<synfig::Waypoint,std::less<synfig::UniqueID> >,int> signal_waypoint_clicked_childrentree_;
 
 	Gtk::Button *button_raise;
 	Gtk::Button *button_lower;
@@ -165,7 +165,7 @@ public:
 
 	sigc::signal<bool,int, Gtk::TreeRow, ColumnID>& signal_user_click() { return signal_user_click_; }
 
-	sigc::signal<void,synfigapp::ValueDesc,std::set<synfig::Waypoint,std::less<synfig::UniqueID> >,int,synfig::Waypoint::Side>& signal_waypoint_clicked_childrentree() { return signal_waypoint_clicked_childrentree_; }
+	sigc::signal<void,synfigapp::ValueDesc,std::set<synfig::Waypoint,std::less<synfig::UniqueID> >,int>& signal_waypoint_clicked_childrentree() { return signal_waypoint_clicked_childrentree_; }
 
 	etl::handle<synfigapp::SelectionManager> get_selection_manager() { return children_tree_store_->canvas_interface()->get_selection_manager(); }
 

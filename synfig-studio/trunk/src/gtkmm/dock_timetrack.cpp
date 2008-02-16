@@ -69,7 +69,7 @@ class TimeTrackView : public Gtk::TreeView
 	Gtk::TreeView *mimic_tree_view;
 public:
 
-	sigc::signal<void,synfigapp::ValueDesc,std::set<synfig::Waypoint, std::less<UniqueID> >,int,synfig::Waypoint::Side> signal_waypoint_clicked_timetrackview;
+	sigc::signal<void,synfigapp::ValueDesc,std::set<synfig::Waypoint, std::less<UniqueID> >,int> signal_waypoint_clicked_timetrackview;
 
 	LayerParamTreeStore::Model model;
 
@@ -101,7 +101,6 @@ public:
 			column->set_reorderable();
 			column->set_resizable();
 			column->set_min_width(200);
-
 
 			append_column(*column);
 		}
@@ -346,7 +345,6 @@ public:
 
 	void mimic_resync()
 	{
-
 		if(mimic_tree_view)
 		{
 			Gtk::Adjustment &adjustment(*mimic_tree_view->get_vadjustment());
@@ -388,7 +386,7 @@ public:
 		}
 
 		if (!waypoint_set.empty())
-			signal_waypoint_clicked_timetrackview(value_desc,waypoint_set,button,side);
+			signal_waypoint_clicked_timetrackview(value_desc,waypoint_set,button);
 	}
 };
 
@@ -442,7 +440,6 @@ Dock_Timetrack::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view
 
 	tree_view->signal_waypoint_clicked_timetrackview.connect(sigc::mem_fun(*canvas_view, &studio::CanvasView::on_waypoint_clicked_canvasview));
 
-
 	canvas_view->time_adjustment().signal_value_changed().connect(sigc::mem_fun(*tree_view,&Gtk::TreeView::queue_draw));
 	canvas_view->time_adjustment().signal_changed().connect(sigc::mem_fun(*tree_view,&Gtk::TreeView::queue_draw));
 
@@ -483,7 +480,6 @@ Dock_Timetrack::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_v
 		//widget_timeslider_->unset_adjustment();
 		table_=0;
 	}
-
 
 	if(canvas_view)
 	{

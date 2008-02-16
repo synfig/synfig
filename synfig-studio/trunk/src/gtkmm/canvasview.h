@@ -232,14 +232,12 @@ private:
 	std::map<synfig::String,Glib::RefPtr<Glib::ObjectBase> > ref_obj_book_;
 	std::map<synfig::String,Gtk::Widget*> ext_widget_book_;
 
-
 	//! The time adjustment's scope is defined by the time_window adjustment
 	Gtk::Adjustment time_adjustment_;
 
 	//! The time_window adjustment governs the position of the time window on the whole time line
 	//Gtk::Adjustment time_window_adjustment_;
 	studio::Adjust_Window time_window_adjustment_;
-
 
 	LayerTree *layer_tree;
 
@@ -267,8 +265,6 @@ private:
 	std::auto_ptr<Widget_Timeslider>		timeslider;
 
 	std::list<sigc::connection> duck_changed_connections;
-
-
 
 	Gtk::Button *animatebutton;
 	Gtk::Button *keyframebutton;
@@ -311,7 +307,6 @@ private:
 */
 	Gtk::Menu parammenu;
 
-
 	Glib::RefPtr<Gtk::ToggleAction> duck_mask_position;
 	Glib::RefPtr<Gtk::ToggleAction> duck_mask_vertex;
 	Glib::RefPtr<Gtk::ToggleAction> duck_mask_tangent;
@@ -323,7 +318,6 @@ private:
 	Gtk::RadioButtonGroup low_res_pixel_size_group;
 
 	Glib::RefPtr<Gtk::ActionGroup> action_group;
-
 
 	etl::handle<synfigapp::UIInterface> ui_interface_;
 	etl::handle<synfigapp::SelectionManager> selection_manager_;
@@ -352,7 +346,6 @@ public:
 	int working_depth;
 
 	bool cancel;
-
 
 	/*
  -- ** -- D I A L O G S -------------------------------------------------------
@@ -408,19 +401,14 @@ private:
 
 	Gtk::Widget *create_time_bar();
 
-
-
 	void popup_param_menu_bezier(float location, synfigapp::ValueDesc value_desc)
 	{ popup_param_menu(value_desc,location); }
 
 	void popup_param_menu(synfigapp::ValueDesc value_desc, float location=0);
 
-
 	void workarea_layer_selected(synfig::Layer::Handle layer);
 
 	void selected_layer_color_set(synfig::Color color);
-
-
 
 	void register_layer_type(synfig::Layer::Book::value_type &lyr,std::map<synfig::String,Gtk::Menu*>*);
 
@@ -594,7 +582,7 @@ public:
 
 	void image_import();
 
-	void on_waypoint_clicked_canvasview(synfigapp::ValueDesc,std::set<synfig::Waypoint,std::less<synfig::UniqueID> >, int button, synfig::Waypoint::Side side);
+	void on_waypoint_clicked_canvasview(synfigapp::ValueDesc,std::set<synfig::Waypoint,std::less<synfig::UniqueID> >, int button);
 
 	void preview_option() {on_preview_option();}
 

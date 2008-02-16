@@ -385,7 +385,6 @@ Instance::close()
 		studio::App::instance_list.front()->canvas_view_list().front()->present();
 }
 
-
 void
 Instance::insert_canvas(Gtk::TreeRow row, synfig::Canvas::Handle canvas)
 {
@@ -436,7 +435,6 @@ Instance::insert_canvas(Gtk::TreeRow row, synfig::Canvas::Handle canvas)
 	}
 	*/
 }
-
 
 /*
 void
@@ -700,7 +698,6 @@ Instance::safe_close()
 
 	return true;
 }
-
 
 void
 Instance::add_actions_to_group(const Glib::RefPtr<Gtk::ActionGroup>& action_group, synfig::String& ui_info,   const synfigapp::Action::ParamList &param_list, synfigapp::Action::Category category)const
@@ -1019,7 +1016,6 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 		param_list2.add("origin",location);
 	}
 
-
 	// Populate the convert menu by looping through
 	// the ValueNode book and find the ones that are
 	// relevant.
@@ -1085,10 +1081,7 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 				sigc::bind(
 					sigc::bind(
 						sigc::bind(
-							sigc::bind(
-								sigc::mem_fun(*find_canvas_view(canvas),&studio::CanvasView::on_waypoint_clicked_canvasview),
-								synfig::Waypoint::SIDE_UNSPECIFIED
-							),
+							sigc::mem_fun(*find_canvas_view(canvas),&studio::CanvasView::on_waypoint_clicked_canvasview),
 							-1
 						),
 						waypoint_set
@@ -1118,7 +1111,6 @@ edit_several_waypoints(etl::handle<CanvasView> canvas_view, std::list<synfigapp:
 	widget_waypoint_model.show();
 
 	dialog.get_vbox()->pack_start(widget_waypoint_model);
-
 
 	dialog.add_button(Gtk::StockID("gtk-apply"),1);
 	dialog.add_button(Gtk::StockID("gtk-cancel"),0);
@@ -1169,7 +1161,6 @@ edit_several_waypoints(etl::handle<CanvasView> canvas_view, std::list<synfigapp:
 			action->set_param("canvas",canvas_view->get_canvas());
 			action->set_param("canvas_interface",canvas_interface);
 
-
 			if(!canvas_interface->get_instance()->perform_action(action))
 			{
 				canvas_view->get_ui_interface()->error(_("Unable to convert to animated waypoint"));
@@ -1183,10 +1174,8 @@ edit_several_waypoints(etl::handle<CanvasView> canvas_view, std::list<synfigapp:
 				value_node=ValueNode_Animated::Handle::cast_dynamic(value_desc.get_value_node());
 		}
 
-
 		if(value_node)
 		{
-
 			synfigapp::Action::Handle action(synfigapp::Action::create("waypoint_set_smart"));
 
 			if(!action)
@@ -1195,7 +1184,6 @@ edit_several_waypoints(etl::handle<CanvasView> canvas_view, std::list<synfigapp:
 				group.cancel();
 				return;
 			}
-
 
 			action->set_param("canvas",canvas_view->get_canvas());
 			action->set_param("canvas_interface",canvas_interface);

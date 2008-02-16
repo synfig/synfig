@@ -101,13 +101,9 @@ private:
 	Gtk::Tooltips tooltips_;
 	Gtk::TreePath last_tooltip_path;
 
-
-
 	Gtk::TreeView* layer_tree_view_;
 
 	Gtk::TreeView* param_tree_view_;
-
-
 
 	Gtk::HBox *hbox;
 
@@ -139,7 +135,7 @@ private:
 
 	sigc::signal<bool, int, Gtk::TreeRow, ColumnID> signal_param_user_click_;
 
-	sigc::signal<void,synfigapp::ValueDesc,std::set<synfig::Waypoint,std::less<synfig::UniqueID> >,int,synfig::Waypoint::Side> signal_waypoint_clicked_layertree_;
+	sigc::signal<void,synfigapp::ValueDesc,std::set<synfig::Waypoint,std::less<synfig::UniqueID> >,int> signal_waypoint_clicked_layertree_;
 
 	bool disable_amount_changed_signal;
 
@@ -238,11 +234,9 @@ public:
 
 	sigc::signal<bool,int, Gtk::TreeRow, ColumnID>& signal_param_user_click() { return signal_param_user_click_; }
 
-	sigc::signal<void,synfigapp::ValueDesc,std::set<synfig::Waypoint,std::less<synfig::UniqueID> >,int,synfig::Waypoint::Side>& signal_waypoint_clicked_layertree() { return signal_waypoint_clicked_layertree_; }
+	sigc::signal<void,synfigapp::ValueDesc,std::set<synfig::Waypoint,std::less<synfig::UniqueID> >,int>& signal_waypoint_clicked_layertree() { return signal_waypoint_clicked_layertree_; }
 
 	etl::handle<synfigapp::SelectionManager> get_selection_manager() { return layer_tree_store_->canvas_interface()->get_selection_manager(); }
-
-
 
 	void select_layer(synfig::Layer::Handle layer);
 	void select_layers(const LayerList& layer_list);

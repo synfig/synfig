@@ -176,11 +176,8 @@ ChildrenTree::ChildrenTree()
 
 	attach(*hbox, 0, 1, 1, 2, Gtk::FILL|Gtk::SHRINK, Gtk::SHRINK, 0, 0);
 
-
-
 	tree_view.set_enable_search(true);
 	tree_view.set_search_column(model.label);
-
 
 /*
 	Gtk::Image *icon;
@@ -208,10 +205,7 @@ ChildrenTree::ChildrenTree()
 	button_delete->set_sensitive(false);
 */
 
-
-
 	get_selection()->signal_changed().connect(sigc::mem_fun(*this, &studio::ChildrenTree::on_selection_changed));
-
 
 	tree_view.set_reorderable(true);
 
@@ -222,7 +216,6 @@ ChildrenTree::ChildrenTree()
 
 	//get_selection()->set_mode(Gtk::SELECTION_MULTIPLE);
 }
-
 
 ChildrenTree::~ChildrenTree()
 {
@@ -266,7 +259,6 @@ ChildrenTree::on_selection_changed()
 	}
 }
 
-
 void
 ChildrenTree::on_edited_value(const Glib::ustring&path_string,synfig::ValueBase value)
 {
@@ -288,7 +280,7 @@ ChildrenTree::on_waypoint_clicked_childrentree(const etl::handle<synfig::Node>& 
 	//! \todo writeme
 
 	// std::set<synfig::Waypoint, std::less<UniqueID> > waypoint_set;
-	// signal_waypoint_clicked_childrentree()(waypoint_set,button,side);
+	// signal_waypoint_clicked_childrentree()(waypoint_set,button);
 }
 
 bool
