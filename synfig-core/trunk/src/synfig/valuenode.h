@@ -353,7 +353,7 @@ public:
 	ValueNode::LooseHandle get_link(const String &name)const { return get_link(get_link_index_from_name(name)); }
 
 	String
-	get_description(int index, bool show_exported_name = true)const;
+	get_description(int index = -1, bool show_exported_name = true)const;
 
 protected:
 	//! Sets the type of the ValueNode
