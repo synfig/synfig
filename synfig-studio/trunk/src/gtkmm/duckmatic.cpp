@@ -259,7 +259,8 @@ Duckmatic::is_duck_group_selectable(const etl::handle<Duck>& x)const
 {
 	const Type type(get_type_mask());
 
-	if(( x->get_type() && (!(type & x->get_type())) || !x->get_editable() ) )
+	if (((x->get_type() && (!(type & x->get_type()))) ||
+		 !x->get_editable()))
 		return false;
 
 	if(x->get_value_desc().parent_is_layer_param() && type & Duck::TYPE_POSITION)
