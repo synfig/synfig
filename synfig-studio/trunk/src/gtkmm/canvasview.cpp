@@ -3262,7 +3262,7 @@ CanvasView::on_waypoint_clicked_canvasview(synfigapp::ValueDesc value_desc,
 			 sigc::bind(sigc::ptr_fun(remove_waypoints), waypoint_set, canvas_interface())));
 
 		if (size == 1 && value_desc.is_valid())
-			waypoint_menu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("_Properties"),
+			waypoint_menu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("_Edit"),
 				sigc::mem_fun(waypoint_dialog,&Gtk::Widget::show)));
 
 		waypoint_menu->popup(button+1,gtk_get_current_event_time());
