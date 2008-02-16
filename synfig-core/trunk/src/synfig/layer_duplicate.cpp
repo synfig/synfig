@@ -70,7 +70,6 @@ Layer_Duplicate::Layer_Duplicate():
 Layer::Handle
 Layer_Duplicate::clone(const GUID& deriv_guid)const
 {
-	printf("cloning layer duplicate\n");
 	Layer::Handle ret = (Layer::Handle)Layer_Composite::clone(deriv_guid);
 
 	const DynamicParamList &dpl = dynamic_param_list();
