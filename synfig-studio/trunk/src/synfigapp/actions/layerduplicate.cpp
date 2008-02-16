@@ -32,6 +32,7 @@
 
 #include "layerduplicate.h"
 #include "layeradd.h"
+#include <synfig/context.h>
 #include <synfigapp/canvasinterface.h>
 
 #include <synfigapp/general.h>
@@ -162,27 +163,60 @@ Action::LayerDuplicate::prepare()
 		}
 
 		// automatically export the Index parameter of Duplicate layers when duplicating
-		if (new_layer->get_name() == "duplicate")
-			for (int i = 1; ; i++)
+		int index = 1;
+		export_dup_nodes(new_layer, subcanvas, index);
+	}
+}
+
+void
+Action::LayerDuplicate::export_dup_nodes(synfig::Layer::Handle layer, Canvas::Handle canvas, int &index)
+{
+	// automatically export the Index parameter of Duplicate layers when duplicating
+	if (layer->get_name() == "duplicate")
+		while (true)
+		{
+			String name = strprintf(_("Index %d"), index++);
+			try
 			{
-				String name = strprintf(_("Index %d"), i);
-				try
-				{
-					subcanvas->find_value_node(name);
-				}
-				catch (Exception::IDNotFound x)
-				{
-					Action::Handle action(Action::create("value_node_add"));
+				canvas->find_value_node(name);
+			}
+			catch (Exception::IDNotFound x)
+			{
+				Action::Handle action(Action::create("value_node_add"));
 
-					action->set_param("canvas",subcanvas);
-					action->set_param("canvas_interface",get_canvas_interface());
-					action->set_param("new",new_layer->dynamic_param_list().find("index")->second);
-					action->set_param("name",name);
+				action->set_param("canvas",canvas);
+				action->set_param("canvas_interface",get_canvas_interface());
+				action->set_param("new",layer->dynamic_param_list().find("index")->second);
+				action->set_param("name",name);
 
-					add_action_front(action);
+				add_action_front(action);
 
-					break;
-				}
+				break;
+			}
+		}
+	else
+	{
+		Layer::ParamList param_list(layer->get_param_list());
+		for (Layer::ParamList::const_iterator iter(param_list.begin())
+				 ; iter != param_list.end()
+				 ; iter++)
+			if (layer->dynamic_param_list().count(iter->first)==0 && iter->second.get_type()==ValueBase::TYPE_CANVAS)
+			{
+				Canvas::Handle subcanvas(iter->second.get(Canvas::Handle()));
+				if (subcanvas && subcanvas->is_inline())
+					for (Context iter = subcanvas->get_context(); iter != subcanvas->end(); iter++)
+						export_dup_nodes(*iter, canvas, index);
+			}
+
+		for (Layer::DynamicParamList::const_iterator iter(layer->dynamic_param_list().begin())
+				 ; iter != layer->dynamic_param_list().end()
+				 ; iter++)
+			if (iter->second->get_type()==ValueBase::TYPE_CANVAS)
+			{
+				Canvas::Handle canvas((*iter->second)(0).get(Canvas::Handle()));
+				if (canvas->is_inline())
+					//! \todo do we need to implement this?  and if so, shouldn't we check all canvases, not just the one at t=0s?
+					warning("%s:%d not yet implemented - do we need to export duplicate valuenodes in dynamic canvas parameters?", __FILE__, __LINE__);
 			}
 	}
 }

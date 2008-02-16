@@ -62,6 +62,8 @@ public:
 
 	virtual void prepare();
 
+	void export_dup_nodes(synfig::Layer::Handle, synfig::Canvas::Handle, int &);
+
 	ACTION_MODULE_EXT
 };
 
