@@ -36,6 +36,7 @@
 #include <synfigapp/action.h>
 #include <synfigapp/instance.h>
 #include <gtkmm/scrolledwindow.h>
+#include <synfig/timepointcollect.h>
 
 #include "general.h"
 
@@ -232,6 +233,7 @@ ChildrenTree::set_model(Glib::RefPtr<ChildrenTreeStore> children_tree_store)
 {
 	children_tree_store_=children_tree_store;
 	tree_view.set_model(children_tree_store_);
+	cellrenderer_time_track->set_canvas_interface(children_tree_store_->canvas_interface()); // am I smart people?  (cellrenderer_timetrack.h:176)
 	children_tree_store_->canvas_interface()->signal_dirty_preview().connect(sigc::mem_fun(*this,&studio::ChildrenTree::on_dirty_preview));
 }
 
@@ -277,10 +279,24 @@ ChildrenTree::on_waypoint_clicked_childrentree(const etl::handle<synfig::Node>& 
 											   int button __attribute__ ((unused)),
 											   synfig::Waypoint::Side side __attribute__ ((unused)))
 {
-	//! \todo writeme
+	//! \todo finishme - dragging waypoints causes an assert fail at cellrenderer_timetrack.cpp:803
+	std::set<synfig::Waypoint, std::less<UniqueID> > waypoint_set;
+	synfig::waypoint_collect(waypoint_set,time,node);
 
-	// std::set<synfig::Waypoint, std::less<UniqueID> > waypoint_set;
-	// signal_waypoint_clicked_childrentree()(waypoint_set,button);
+	synfigapp::ValueDesc value_desc;
+
+	if (waypoint_set.size() == 1)
+	{
+		ValueNode::Handle value_node(waypoint_set.begin()->get_parent_value_node());
+		assert(value_node);
+
+		Gtk::TreeRow row;
+		if (children_tree_store_->find_first_value_node(value_node, row) && row)
+			value_desc = static_cast<synfigapp::ValueDesc>(row[model.value_desc]);
+	}
+
+	if (!waypoint_set.empty())
+		signal_waypoint_clicked_childrentree()(value_desc,waypoint_set,button);
 }
 
 bool
@@ -304,7 +320,13 @@ ChildrenTree::on_tree_event(GdkEvent *event)
 
 			if(column->get_first_cell_renderer()==cellrenderer_time_track)
 			{
-				return signal_user_click()(event->button.button,row,COLUMNID_TIME_TRACK);
+				Gdk::Rectangle rect;
+				tree_view.get_cell_area(path,*column,rect);
+				cellrenderer_time_track->property_value_desc()=row[model.value_desc];
+				cellrenderer_time_track->property_canvas()=row[model.canvas];
+				cellrenderer_time_track->activate(event,*this,path.to_string(),rect,rect,Gtk::CellRendererState());
+				queue_draw_area(rect.get_x(),rect.get_y(),rect.get_width(),rect.get_height());
+				return true;
 			}
 			else if(column->get_first_cell_renderer()==cellrenderer_value)
 				return signal_user_click()(event->button.button,row,COLUMNID_VALUE);
@@ -335,6 +357,13 @@ ChildrenTree::on_tree_event(GdkEvent *event)
 			if(cellrenderer_time_track==column->get_first_cell_renderer())
 			{
 				// Movement on TimeLine
+				Gdk::Rectangle rect;
+				tree_view.get_cell_area(path,*column,rect);
+				cellrenderer_time_track->property_value_desc()=row[model.value_desc];
+				cellrenderer_time_track->property_canvas()=row[model.canvas];
+				cellrenderer_time_track->activate(event,*this,path.to_string(),rect,rect,Gtk::CellRendererState());
+				queue_draw();
+				//queue_draw_area(rect.get_x(),rect.get_y(),rect.get_width(),rect.get_height());
 				return true;
 			}
 			else
@@ -352,6 +381,35 @@ ChildrenTree::on_tree_event(GdkEvent *event)
 		}
 		break;
 	case GDK_BUTTON_RELEASE:
+		{
+			Gtk::TreeModel::Path path;
+			Gtk::TreeViewColumn *column;
+			int cell_x, cell_y;
+			if(!tree_view.get_path_at_pos(
+				   (int)event->button.x,(int)event->button.y,	// x, y
+				   path, // TreeModel::Path&
+				   column, //TreeViewColumn*&
+				   cell_x,cell_y //int&cell_x,int&cell_y
+				   )
+				) break;
+
+			if(!tree_view.get_model()->get_iter(path))
+				break;
+
+			Gtk::TreeRow row = *(tree_view.get_model()->get_iter(path));
+
+			if(column && cellrenderer_time_track == column->get_first_cell_renderer())
+			{
+				Gdk::Rectangle rect;
+				tree_view.get_cell_area(path,*column,rect);
+				cellrenderer_time_track->property_value_desc()=row[model.value_desc];
+				cellrenderer_time_track->property_canvas()=row[model.canvas];
+				cellrenderer_time_track->activate(event,*this,path.to_string(),rect,rect,Gtk::CellRendererState());
+				queue_draw();
+				queue_draw_area(rect.get_x(),rect.get_y(),rect.get_width(),rect.get_height());
+				return true;
+			}
+		}
 		break;
 	default:
 		break;
