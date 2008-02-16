@@ -515,12 +515,11 @@ PlaceholderValueNode::PlaceholderValueNode(ValueBase::Type type):
 ValueNode*
 LinkableValueNode::clone(const GUID& deriv_guid)const
 {
-	// printf("%s:%d clone()\n", __FILE__, __LINE__);
-	{ ValueNode* x(find_value_node(get_guid()^deriv_guid).get()); if(x)
-																  {
-																	  printf("VALUENODE FOUND VALUENODE\n");
-																	  return x;
-																  }}
+	{
+		ValueNode* x(find_value_node(get_guid()^deriv_guid).get());
+		if(x)
+			return x;
+	}
 
 	int i;
 	LinkableValueNode *ret=create_new();
