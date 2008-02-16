@@ -78,7 +78,7 @@ Layer_Duplicate::clone(const GUID& deriv_guid)const
 
 	// if we have a dynamic "index" parameter, make a new one in the clone
 	// it's not good to have two references to the same index valuenode,
-	// or nested duplicatations cause an infinite loop
+	// or nested duplications cause an infinite loop
 	if (iter != dpl.end())
 		ret->connect_dynamic_param(iter->first,iter->second->clone(deriv_guid));
 
