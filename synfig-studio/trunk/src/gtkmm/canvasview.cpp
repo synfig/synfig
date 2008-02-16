@@ -3202,56 +3202,51 @@ CanvasView::on_waypoint_clicked_canvasview(synfigapp::ValueDesc value_desc,
 		Gtk::Menu* interp_menu_out(manage(new Gtk::Menu()));
 		Gtk::Menu* interp_menu_both(manage(new Gtk::Menu()));
 
-		waypoint_menu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("_In"), *interp_menu_in));
-		waypoint_menu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("_Out"), *interp_menu_out));
-		waypoint_menu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("_Both"), *interp_menu_both));
+		{
+			Waypoint::Model model;
+
+			model.reset(); model.set_before(INTERPOLATION_TCB);
+			interp_menu_in->items().push_back(Gtk::Menu_Helpers::MenuElem(_("_TCB"),
+				sigc::bind(sigc::ptr_fun(set_waypoint_model), waypoint_set, model, canvas_interface())));
+			model.reset(); model.set_after(INTERPOLATION_TCB);
+			interp_menu_out->items().push_back(Gtk::Menu_Helpers::MenuElem(_("_TCB"),
+				sigc::bind(sigc::ptr_fun(set_waypoint_model), waypoint_set, model, canvas_interface())));
+			model.set_before(INTERPOLATION_TCB);
+			interp_menu_both->items().push_back(Gtk::Menu_Helpers::MenuElem(_("_TCB"),
+				sigc::bind(sigc::ptr_fun(set_waypoint_model), waypoint_set, model, canvas_interface())));
+
+			model.reset(); model.set_before(INTERPOLATION_LINEAR);
+			interp_menu_in->items().push_back(Gtk::Menu_Helpers::MenuElem(_("_Linear"),
+				sigc::bind(sigc::ptr_fun(set_waypoint_model), waypoint_set, model, canvas_interface())));
+			model.reset(); model.set_after(INTERPOLATION_LINEAR);
+			interp_menu_out->items().push_back(Gtk::Menu_Helpers::MenuElem(_("_Linear"),
+				sigc::bind(sigc::ptr_fun(set_waypoint_model), waypoint_set, model, canvas_interface())));
+			model.set_before(INTERPOLATION_LINEAR);
+			interp_menu_both->items().push_back(Gtk::Menu_Helpers::MenuElem(_("_Linear"),
+				sigc::bind(sigc::ptr_fun(set_waypoint_model), waypoint_set, model, canvas_interface())));
+
+			model.reset(); model.set_before(INTERPOLATION_HALT);
+			interp_menu_in->items().push_back(Gtk::Menu_Helpers::MenuElem(_("_Ease In"),
+				sigc::bind(sigc::ptr_fun(set_waypoint_model), waypoint_set, model, canvas_interface())));
+			model.reset(); model.set_after(INTERPOLATION_HALT);
+			interp_menu_out->items().push_back(Gtk::Menu_Helpers::MenuElem(_("_Ease Out"),
+				sigc::bind(sigc::ptr_fun(set_waypoint_model), waypoint_set, model, canvas_interface())));
+			model.set_before(INTERPOLATION_HALT);
+			interp_menu_both->items().push_back(Gtk::Menu_Helpers::MenuElem(_("_Ease In/Out"),
+				sigc::bind(sigc::ptr_fun(set_waypoint_model), waypoint_set, model, canvas_interface())));
+
+			model.reset(); model.set_before(INTERPOLATION_CONSTANT);
+			interp_menu_in->items().push_back(Gtk::Menu_Helpers::MenuElem(_("_Constant"),
+				sigc::bind(sigc::ptr_fun(set_waypoint_model), waypoint_set, model, canvas_interface())));
+			model.reset(); model.set_after(INTERPOLATION_CONSTANT);
+			interp_menu_out->items().push_back(Gtk::Menu_Helpers::MenuElem(_("_Constant"),
+				sigc::bind(sigc::ptr_fun(set_waypoint_model), waypoint_set, model, canvas_interface())));
+			model.set_before(INTERPOLATION_CONSTANT);
+			interp_menu_both->items().push_back(Gtk::Menu_Helpers::MenuElem(_("_Constant"),
+				sigc::bind(sigc::ptr_fun(set_waypoint_model), waypoint_set, model, canvas_interface())));
+		}
 
 		// ------------------------------------------------------------------------
-		Waypoint::Model model;
-
-		model.reset(); model.set_before(INTERPOLATION_TCB);
-		interp_menu_in->items().push_back(Gtk::Menu_Helpers::MenuElem(_("_TCB"),
-			sigc::bind(sigc::ptr_fun(set_waypoint_model), waypoint_set, model, canvas_interface())));
-		model.reset(); model.set_after(INTERPOLATION_TCB);
-		interp_menu_out->items().push_back(Gtk::Menu_Helpers::MenuElem(_("_TCB"),
-			sigc::bind(sigc::ptr_fun(set_waypoint_model), waypoint_set, model, canvas_interface())));
-		model.set_before(INTERPOLATION_TCB);
-		interp_menu_both->items().push_back(Gtk::Menu_Helpers::MenuElem(_("_TCB"),
-			sigc::bind(sigc::ptr_fun(set_waypoint_model), waypoint_set, model, canvas_interface())));
-
-		model.reset(); model.set_before(INTERPOLATION_LINEAR);
-		interp_menu_in->items().push_back(Gtk::Menu_Helpers::MenuElem(_("_Linear"),
-			sigc::bind(sigc::ptr_fun(set_waypoint_model), waypoint_set, model, canvas_interface())));
-		model.reset(); model.set_after(INTERPOLATION_LINEAR);
-		interp_menu_out->items().push_back(Gtk::Menu_Helpers::MenuElem(_("_Linear"),
-			sigc::bind(sigc::ptr_fun(set_waypoint_model), waypoint_set, model, canvas_interface())));
-		model.set_before(INTERPOLATION_LINEAR);
-		interp_menu_both->items().push_back(Gtk::Menu_Helpers::MenuElem(_("_Linear"),
-			sigc::bind(sigc::ptr_fun(set_waypoint_model), waypoint_set, model, canvas_interface())));
-
-		model.reset(); model.set_before(INTERPOLATION_HALT);
-		interp_menu_in->items().push_back(Gtk::Menu_Helpers::MenuElem(_("_Ease In"),
-			sigc::bind(sigc::ptr_fun(set_waypoint_model), waypoint_set, model, canvas_interface())));
-		model.reset(); model.set_after(INTERPOLATION_HALT);
-		interp_menu_out->items().push_back(Gtk::Menu_Helpers::MenuElem(_("_Ease Out"),
-			sigc::bind(sigc::ptr_fun(set_waypoint_model), waypoint_set, model, canvas_interface())));
-		model.set_before(INTERPOLATION_HALT);
-		interp_menu_both->items().push_back(Gtk::Menu_Helpers::MenuElem(_("_Ease In/Out"),
-			sigc::bind(sigc::ptr_fun(set_waypoint_model), waypoint_set, model, canvas_interface())));
-
-		model.reset(); model.set_before(INTERPOLATION_CONSTANT);
-		interp_menu_in->items().push_back(Gtk::Menu_Helpers::MenuElem(_("_Constant"),
-			sigc::bind(sigc::ptr_fun(set_waypoint_model), waypoint_set, model, canvas_interface())));
-		model.reset(); model.set_after(INTERPOLATION_CONSTANT);
-		interp_menu_out->items().push_back(Gtk::Menu_Helpers::MenuElem(_("_Constant"),
-			sigc::bind(sigc::ptr_fun(set_waypoint_model), waypoint_set, model, canvas_interface())));
-		model.set_before(INTERPOLATION_CONSTANT);
-		interp_menu_both->items().push_back(Gtk::Menu_Helpers::MenuElem(_("_Constant"),
-			sigc::bind(sigc::ptr_fun(set_waypoint_model), waypoint_set, model, canvas_interface())));
-
-		// ------------------------------------------------------------------------
-		waypoint_menu->items().push_back(Gtk::Menu_Helpers::SeparatorElem());
-
 		waypoint_menu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("_Jump To"),
 			sigc::bind(sigc::mem_fun(*canvas_interface(), &synfigapp::CanvasInterface::set_time), time)));
 
@@ -3265,6 +3260,15 @@ CanvasView::on_waypoint_clicked_canvasview(synfigapp::ValueDesc value_desc,
 			waypoint_menu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("_Edit"),
 				sigc::mem_fun(waypoint_dialog,&Gtk::Widget::show)));
 
+		// ------------------------------------------------------------------------
+		waypoint_menu->items().push_back(Gtk::Menu_Helpers::SeparatorElem());
+
+		// ------------------------------------------------------------------------
+		waypoint_menu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("_Both"), *interp_menu_both));
+		waypoint_menu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("_In"),   *interp_menu_in));
+		waypoint_menu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("_Out"),  *interp_menu_out));
+
+		// ------------------------------------------------------------------------
 		waypoint_menu->popup(button+1,gtk_get_current_event_time());
 	}
 	break;
