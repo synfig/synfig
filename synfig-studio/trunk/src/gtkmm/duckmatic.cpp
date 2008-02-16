@@ -1733,7 +1733,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 						tduck->set_name(guid_string(synfigapp::ValueDesc(value_node,first))+".t1");
 						//tduck->set_name(strprintf("%x-tangent1",value_node->get_link(first).get()));
 						tduck=add_similar_duck(tduck);
-						tduck->set_guid(calc_duck_guid(synfigapp::ValueDesc(value_node,i),transform_stack)^GUID::hasher(".t1"));
+						tduck->set_guid(calc_duck_guid(synfigapp::ValueDesc(value_node,first),transform_stack)^GUID::hasher(".t1"));
 						//add_duck(duck);
 					}
 
