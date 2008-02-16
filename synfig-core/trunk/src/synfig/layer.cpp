@@ -340,7 +340,6 @@ Layer::clone(const GUID& deriv_guid) const
 	{
 		if(dynamic_param_list().count(iter->first)==0 && iter->second.get_type()==ValueBase::TYPE_CANVAS)
 		{
-
 			// This parameter is a canvas.  We need a close look.
 			Canvas::Handle canvas(iter->second.get(Canvas::Handle()));
 			if(canvas && canvas->is_inline())
