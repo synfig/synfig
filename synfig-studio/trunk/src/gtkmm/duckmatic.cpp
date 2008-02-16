@@ -1589,21 +1589,13 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				else
 				{
 					if(bline_point.get_split_tangent_flag())
-					{
 						tduck=new Duck(bline_point.get_tangent2());
-						tduck->set_transform_stack(transform_stack);
-						//tduck->set_name(strprintf("%x-tangent2",value_node->get_link(i).get()));
-						tduck->set_name(guid_string(synfigapp::ValueDesc(value_node,i))+".t2");
-						tduck->set_guid(calc_duck_guid(synfigapp::ValueDesc(value_node,i),transform_stack)^GUID::hasher(".t2"));
-					}
 					else
-					{
 						tduck=new Duck(bline_point.get_tangent1());
-						tduck->set_transform_stack(transform_stack);
-						//tduck->set_name(strprintf("%x-tangent1",value_node->get_link(i).get()));
-						tduck->set_name(guid_string(synfigapp::ValueDesc(value_node,i))+".t1");
-						tduck->set_guid(calc_duck_guid(synfigapp::ValueDesc(value_node,i),transform_stack)^GUID::hasher(".t1"));
-					}
+
+					tduck->set_transform_stack(transform_stack);
+					tduck->set_name(guid_string(synfigapp::ValueDesc(value_node,i))+".t2");
+					tduck->set_guid(calc_duck_guid(synfigapp::ValueDesc(value_node,i),transform_stack)^GUID::hasher(".t2"));
 					tduck->set_editable(false);
 					tduck=add_similar_duck(tduck);
 //					add_duck(duck);
