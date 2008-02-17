@@ -234,9 +234,27 @@ CanvasInterface::add_layer_to(synfig::String name, synfig::Canvas::Handle canvas
 		{
 			ValueNode::Handle value_node;
 
-			// if we find any which are list values then make them into dynamic list valuenodes
+			// if we find any which are list values then make them
+			// into dynamic list valuenodes, unless every element of
+			// the list is a blinepoint, in which case convert it to a
+			// bline
 			if(iter->second.get_type()==ValueBase::TYPE_LIST)
-				value_node=LinkableValueNode::create("dynamic_list",iter->second);
+			{
+				// check whether it's a list of blinepoints only
+				vector<ValueBase> list(iter->second.get_list());
+				if (list.size())
+				{
+					vector<ValueBase>::iterator iter2;
+					for (iter2 = list.begin(); iter2 != list.end(); iter2++)
+						if (iter2->get_type() != ValueBase::TYPE_BLINEPOINT)
+							break;
+					if (iter2 == list.end())
+						value_node=LinkableValueNode::create("bline",iter->second);
+				}
+
+				if (!value_node)
+					value_node=LinkableValueNode::create("dynamic_list",iter->second);
+			}
 			// otherwise, if it's a type that can be converted to
 			// 'composite' (other than the types that can be radial
 			// composite) then do so
