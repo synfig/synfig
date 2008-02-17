@@ -372,7 +372,13 @@ CellRenderer_ValueBase::render_vfunc(
 			for(iter=enum_list.begin();iter!=enum_list.end();iter++)
 				if(iter->value==data.get(int()))
 				{
-					property_text()=(Glib::ustring)iter->local_name;
+					// don't show the key_board s_hortcut under_scores
+					String local_name = iter->local_name;
+					String::size_type pos = local_name.find_first_of('_');
+					if (pos != String::npos)
+						property_text() = local_name.substr(0,pos) + local_name.substr(pos+1);
+					else
+						property_text() = local_name;
 					break;
 				}
 		}
