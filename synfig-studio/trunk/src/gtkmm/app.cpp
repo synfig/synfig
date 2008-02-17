@@ -1893,25 +1893,13 @@ App::dialog_not_implemented()
 	dialog.run();
 }
 
-void
-App::dialog_help()
-{
-	if (!open_url("http://www.synfig.org/Documentation"))
-	{
-		Gtk::MessageDialog dialog(_("Documentation"), false, Gtk::MESSAGE_INFO, Gtk::BUTTONS_CLOSE, true);
-		dialog.set_secondary_text(_("Documentation for Synfig Studio is available on the website:\n\nhttp://www.synfig.org/Documentation"));
-		dialog.set_title(_("Help"));
-		dialog.run();
-	}
-}
-
-bool
-App::open_url(const std::string &url)
+static bool
+try_open_url(const std::string &url)
 {
 #ifdef WIN32
 	return ShellExecute(GetDesktopWindow(), "open", url.c_str(), NULL, NULL, SW_SHOW);
 #else  // WIN32
-	gchar* argv[3] = {strdup(browser_command.c_str()), strdup(url.c_str()), NULL};
+	gchar* argv[3] = {strdup(App::browser_command.c_str()), strdup(url.c_str()), NULL};
 
 	GError* gerror = NULL;
 	gboolean retval;
@@ -1928,6 +1916,24 @@ App::open_url(const std::string &url)
 
 	return true;
 #endif  // WIN32
+}
+
+void
+App::dialog_help()
+{
+	if (!try_open_url("http://synfig.org/Documentation"))
+	{
+		Gtk::MessageDialog dialog(_("Documentation"), false, Gtk::MESSAGE_INFO, Gtk::BUTTONS_CLOSE, true);
+		dialog.set_secondary_text(_("Documentation for Synfig Studio is available on the website:\n\nhttp://www.synfig.org/Documentation"));
+		dialog.set_title(_("Help"));
+		dialog.run();
+	}
+}
+
+void
+App::open_url(const std::string &url)
+{
+	try_open_url(url);
 }
 
 bool

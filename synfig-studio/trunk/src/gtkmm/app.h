@@ -336,7 +336,7 @@ public:
 
 	static void dialog_help();
 
-	static bool open_url(const std::string &url);
+	static void open_url(const std::string &url);
 
 	static synfig::String get_user_app_directory();
 	static synfig::String get_config_file(const synfig::String& file);
