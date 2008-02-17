@@ -1621,7 +1621,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 									&studio::CanvasView::popup_param_menu),
 								1.0f),
 							synfigapp::ValueDesc(value_node,0)));
-					duck->set_value_desc(synfigapp::ValueDesc(value_node,0));
+					duck->set_value_desc(synfigapp::ValueDesc(value_node,i));
 
 				}
 
