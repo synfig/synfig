@@ -276,7 +276,7 @@ Toolbox::Toolbox():
 	ADD_TOOLBOX_BUTTON(button_new,"gtk-new",_("New..."));
 	ADD_TOOLBOX_BUTTON(button_open,"gtk-open",_("Open..."));
 	ADD_TOOLBOX_BUTTON(button_save,"gtk-save",_("Save"));
-	ADD_TOOLBOX_BUTTON(button_saveas,"gtk-save-as",_("Save as..."));
+	ADD_TOOLBOX_BUTTON(button_saveas,"gtk-save-as",_("Save As..."));
 	ADD_TOOLBOX_BUTTON(button_save_all,"synfig-saveall",_("Save All"));
 	TOOLBOX_BUTTON(button_undo,"gtk-undo",_("Undo"));
 	TOOLBOX_BUTTON(button_redo,"gtk-redo",_("Redo"));
