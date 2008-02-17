@@ -195,6 +195,8 @@ public:
 
 	static bool restrict_radius_ducks;
 
+	static synfig::String browser_command;
+
 	/*
  -- ** -- S I G N A L S -------------------------------------------------------
 	*/

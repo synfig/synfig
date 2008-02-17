@@ -263,6 +263,7 @@ std::list< etl::handle< studio::Module > > module_list_;
 bool studio::App::use_colorspace_gamma=true;
 bool studio::App::single_threaded=false;
 bool studio::App::restrict_radius_ducks=false;
+String studio::App::browser_command("firefox");
 
 static int max_recent_files_=25;
 int studio::App::get_max_recent_files() { return max_recent_files_; }
@@ -488,6 +489,11 @@ public:
 			value=strprintf("%i",(int)App::restrict_radius_ducks);
 			return true;
 		}
+		if(key=="browser_command")
+		{
+			value=App::browser_command;
+			return true;
+		}
 
 		return synfigapp::Settings::get_value(key,value);
 	}
@@ -550,6 +556,11 @@ public:
 			App::restrict_radius_ducks=i;
 			return true;
 		}
+		if(key=="browser_command")
+		{
+			App::browser_command=value;
+			return true;
+		}
 
 		return synfigapp::Settings::set_value(key,value);
 	}
@@ -565,6 +576,7 @@ public:
 		ret.push_back("single_threaded");
 		ret.push_back("auto_recover_backup_interval");
 		ret.push_back("restrict_radius_ducks");
+		ret.push_back("browser_command");
 		return ret;
 	}
 };
@@ -1899,8 +1911,7 @@ App::open_url(const std::string &url)
 #ifdef WIN32
 	return ShellExecute(GetDesktopWindow(), "open", url.c_str(), NULL, NULL, SW_SHOW);
 #else  // WIN32
-	String browser_program("firefox");
-	gchar* argv[3] = {strdup(browser_program.c_str()), strdup(url.c_str()), NULL};
+	gchar* argv[3] = {strdup(browser_command.c_str()), strdup(url.c_str()), NULL};
 
 	GError* gerror = NULL;
 	gboolean retval;

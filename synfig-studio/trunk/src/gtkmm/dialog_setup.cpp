@@ -195,6 +195,10 @@ Dialog_Setup::Dialog_Setup():
 	// Misc - restrict_radius_ducks
 	misc_table->attach(toggle_restrict_radius_ducks, 0, 2, 6, 7, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 
+	// Misc - browser_command
+	misc_table->attach(*manage(new Gtk::Label(_("Browser Command"))), 0, 1, 7, 8, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+	misc_table->attach(textbox_browser_command, 1, 2, 7, 8, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+
 	show_all_children();
 }
 
@@ -232,6 +236,9 @@ Dialog_Setup::on_apply_pressed()
 
 	// Set the restrict_radius_ducks flag
 	App::restrict_radius_ducks=toggle_restrict_radius_ducks.get_active();
+
+	// Set the browser_command textbox
+	App::browser_command=textbox_browser_command.get_text();
 
 	App::save_settings();
 }
@@ -314,6 +321,9 @@ Dialog_Setup::refresh()
 
 	// Refresh the status of the restrict_radius_ducks flag
 	toggle_restrict_radius_ducks.set_active(App::restrict_radius_ducks);
+
+	// Refresh the browser_command textbox
+	textbox_browser_command.set_text(App::browser_command);
 }
 
 GammaPattern::GammaPattern():
