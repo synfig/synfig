@@ -280,9 +280,11 @@ Toolbox::Toolbox():
 	ADD_TOOLBOX_BUTTON(button_save_all,"synfig-saveall",_("Save All"));
 	TOOLBOX_BUTTON(button_undo,"gtk-undo",_("Undo"));
 	TOOLBOX_BUTTON(button_redo,"gtk-redo",_("Redo"));
+	ADD_TOOLBOX_BUTTON(button_setup,"gtk-properties",_("Setup"));
 	ADD_TOOLBOX_BUTTON(button_about,"synfig-about",_("About Synfig Studio"));
 	ADD_TOOLBOX_BUTTON(button_help,"gtk-help",_("Help"));
 
+	button_setup->signal_clicked().connect(sigc::ptr_fun(studio::App::show_setup));
 	button_about->signal_clicked().connect(sigc::ptr_fun(studio::App::dialog_about));
 	button_help->signal_clicked().connect(sigc::ptr_fun(studio::App::dialog_help));
 	button_new->signal_clicked().connect(sigc::ptr_fun(studio::App::new_instance));
@@ -294,16 +296,17 @@ Toolbox::Toolbox():
 	button_redo->signal_clicked().connect(sigc::ptr_fun(studio::App::redo));
 
 	// Create the file button cluster
-	Gtk::Table *file_buttons=manage(new class Gtk::Table(4, 4, false));
+	Gtk::Table *file_buttons=manage(new class Gtk::Table());
 
 	file_buttons->attach(*button_new,      0,1, 0,1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
 	file_buttons->attach(*button_open,     1,2, 0,1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
 	file_buttons->attach(*button_save,     2,3, 0,1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
 	file_buttons->attach(*button_saveas,   3,4, 0,1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
+	file_buttons->attach(*button_save_all, 4,5, 0,1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
 
-	file_buttons->attach(*button_save_all, 0,1, 1,2, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
-	file_buttons->attach(*button_undo,     1,2, 1,2, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
-	file_buttons->attach(*button_redo,     2,3, 1,2, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
+	file_buttons->attach(*button_undo,     0,1, 1,2, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
+	file_buttons->attach(*button_redo,     1,2, 1,2, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
+	file_buttons->attach(*button_setup,    2,3, 1,2, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
 	file_buttons->attach(*button_about,    3,4, 1,2, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
 	file_buttons->attach(*button_help,     4,5, 1,2, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
 
