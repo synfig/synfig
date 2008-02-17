@@ -284,10 +284,10 @@ Widget_Defaults::Widget_Defaults()
 	widget_interpolation->set_param_desc(
 		ParamDesc("interpolation")
 			.set_hint("enum")
-			.add_enum_value(INTERPOLATION_TCB,"auto",_("TCB"))
-			.add_enum_value(INTERPOLATION_CONSTANT,"constant",_("Constant"))
-			.add_enum_value(INTERPOLATION_HALT,"ease",_("Ease in/out"))
-			.add_enum_value(INTERPOLATION_LINEAR,"linear",_("Linear"))
+			.add_enum_value(INTERPOLATION_TCB,"auto",_("_TCB"))
+			.add_enum_value(INTERPOLATION_CONSTANT,"constant",_("_Constant"))
+			.add_enum_value(INTERPOLATION_HALT,"ease",_("_Ease In/Out"))
+			.add_enum_value(INTERPOLATION_LINEAR,"linear",_("_Linear"))
 	);
 	attach(*widget_interpolation,0, 2, 5, 6, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 1, 1);
 	tooltips_.set_tip(*widget_interpolation,_("Default Interpolation"));
