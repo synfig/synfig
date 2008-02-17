@@ -228,15 +228,21 @@ CanvasInterface::add_layer_to(synfig::String name, synfig::Canvas::Handle canvas
 		// Grab the layer's list of parameters
 		Layer::ParamList paramlist=layer->get_param_list();
 		Layer::ParamList::iterator iter;
+
+		// loop through the static parameters
 		for(iter=paramlist.begin();iter!=paramlist.end();++iter)
 		{
 			ValueNode::Handle value_node;
 
+			// if we find any which are list values then make them into dynamic list valuenodes
 			if(iter->second.get_type()==ValueBase::TYPE_LIST)
 				value_node=LinkableValueNode::create("dynamic_list",iter->second);
+			// otherwise, if it's a type that can be converted to
+			// 'composite' (other than the types that can be radial
+			// composite) then do so
 			else if(LinkableValueNode::check_type("composite",iter->second.get_type()) &&
-				(iter->second.get_type()!=ValueBase::TYPE_COLOR && iter->second.get_type()!=ValueBase::TYPE_VECTOR)
-			)
+					 (iter->second.get_type()!=ValueBase::TYPE_COLOR &&
+					  iter->second.get_type()!=ValueBase::TYPE_VECTOR))
 				value_node=LinkableValueNode::create("composite",iter->second);
 
 			if(value_node)
