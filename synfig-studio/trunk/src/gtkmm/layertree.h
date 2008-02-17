@@ -123,9 +123,9 @@ private:
 
 	Glib::RefPtr<Gtk::TreeModelSort> sorted_layer_tree_store_;
 
-#ifdef TIMETRACK_IN_PARAMS_DIALOG
+#ifdef TIMETRACK_IN_PARAMS_PANEL
 	CellRenderer_TimeTrack *cellrenderer_time_track;
-#endif	// TIMETRACK_IN_PARAMS_DIALOG
+#endif	// TIMETRACK_IN_PARAMS_PANEL
 
 	Gtk::TreeView::Column* column_time_track;
 
