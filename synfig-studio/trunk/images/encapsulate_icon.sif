@@ -2374,7 +2374,7 @@
     </param>
     <param name="origin">
       <vector>
-        <x>0.5641025901</x>
+        <x>-0.5282051563</x>
         <y>0.1308913380</y>
       </vector>
     </param>
@@ -2401,7 +2401,7 @@
     </param>
     <param name="origin">
       <vector>
-        <x>0.3692307770</x>
+        <x>-0.3179487288</x>
         <y>0.3411477506</y>
       </vector>
     </param>
@@ -2428,7 +2428,7 @@
     </param>
     <param name="origin">
       <vector>
-        <x>0.1794871837</x>
+        <x>-0.0974358991</x>
         <y>0.5257631540</y>
       </vector>
     </param>
@@ -2455,7 +2455,7 @@
     </param>
     <param name="origin">
       <vector>
-        <x>-0.4375000000</x>
+        <x>0.4307692349</x>
         <y>-0.4687500000</y>
       </vector>
     </param>
@@ -2482,7 +2482,7 @@
     </param>
     <param name="origin">
       <vector>
-        <x>0.0000000000</x>
+        <x>0.2000000030</x>
         <y>0.0000000000</y>
       </vector>
     </param>
@@ -2531,55 +2531,55 @@
             <dynamic_list type="vector">
               <entry>
                 <vector>
-                  <x>0.0395969301</x>
+                  <x>-0.1729302704</x>
                   <y>0.6133797169</y>
                 </vector>
               </entry>
               <entry>
                 <vector>
-                  <x>0.0385383256</x>
+                  <x>-0.1718716621</x>
                   <y>0.4133825302</y>
                 </vector>
               </entry>
               <entry>
                 <vector>
-                  <x>-0.2614574730</x>
+                  <x>0.1281241328</x>
                   <y>0.4149704278</y>
                 </vector>
               </entry>
               <entry>
                 <vector>
-                  <x>-0.2625160813</x>
+                  <x>0.1291827410</x>
                   <y>0.1084988564</y>
                 </vector>
               </entry>
               <entry>
                 <vector>
-                  <x>-0.0625188723</x>
+                  <x>-0.0708144605</x>
                   <y>0.1074402481</y>
                 </vector>
               </entry>
               <entry>
                 <vector>
-                  <x>-0.3641025722</x>
+                  <x>0.2307692319</x>
                   <y>-0.1909676492</y>
                 </vector>
               </entry>
               <entry>
                 <vector>
-                  <x>-0.6625104547</x>
+                  <x>0.5291771293</x>
                   <y>0.1106160656</y>
                 </vector>
               </entry>
               <entry>
                 <vector>
-                  <x>-0.4625132680</x>
+                  <x>0.3291799426</x>
                   <y>0.1095574647</y>
                 </vector>
               </entry>
               <entry>
                 <vector>
-                  <x>-0.4603960514</x>
+                  <x>0.3270627260</x>
                   <y>0.6160262227</y>
                 </vector>
               </entry>
