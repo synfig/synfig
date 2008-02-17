@@ -80,7 +80,7 @@ public:
 		Model():
 			// we don't need to initialise these 5, but the compiler thinks they're used uninitialised if we don't
 			// and this constructor isn't called often, so it's ok
-			priority(0), tension(0), continuity(0), bias(0), temporal_tension(0),
+			priority(0), before(INTERPOLATION_NIL), after(INTERPOLATION_NIL), tension(0), continuity(0), bias(0), temporal_tension(0),
 
 			priority_flag(false),
 			before_flag(false),
