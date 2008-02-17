@@ -47,6 +47,10 @@
 
 /* === M A C R O S ========================================================= */
 
+// comment this out if you don't want the params dialog to have a 'timetrack' column
+// (alternatively, export SYNFIG_DISABLE_PARAMS_PANEL_TIMETRACK=1 in environment at runtime)
+#define TIMETRACK_IN_PARAMS_PANEL
+
 /* === T Y P E D E F S ===================================================== */
 
 /* === C L A S S E S & S T R U C T S ======================================= */
@@ -119,7 +123,9 @@ private:
 
 	Glib::RefPtr<Gtk::TreeModelSort> sorted_layer_tree_store_;
 
-//	CellRenderer_TimeTrack *cellrenderer_time_track;
+#ifdef TIMETRACK_IN_PARAMS_DIALOG
+	CellRenderer_TimeTrack *cellrenderer_time_track;
+#endif	// TIMETRACK_IN_PARAMS_DIALOG
 
 	Gtk::TreeView::Column* column_time_track;
 

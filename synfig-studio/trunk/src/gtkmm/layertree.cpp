@@ -42,6 +42,10 @@
 #include "instance.h"
 #include <gtkmm/treemodelsort.h>
 
+#ifdef TIMETRACK_IN_PARAMS_PANEL
+#  include <synfig/timepointcollect.h>
+#endif	// TIMETRACK_IN_PARAMS_PANEL
+
 #include "general.h"
 
 #endif
@@ -358,7 +362,8 @@ LayerTree::create_param_tree()
 		column->set_clickable();
 		column->set_sort_column(param_model.type);
 	}
-	/*{	// --- T I M E   T R A C K --------------------------------------------
+#ifdef TIMETRACK_IN_PARAMS_PANEL
+	{	// --- T I M E   T R A C K --------------------------------------------
 		Gtk::TreeView::Column* column = Gtk::manage( new Gtk::TreeView::Column(_("Time Track")) );
 		column_time_track=column;
 
@@ -369,16 +374,19 @@ LayerTree::create_param_tree()
 		cellrenderer_time_track->signal_waypoint_changed().connect(sigc::mem_fun(*this, &studio::LayerTree::on_waypoint_changed) );
 		column->add_attribute(cellrenderer_time_track->property_value_desc(), param_model.value_desc);
 		column->add_attribute(cellrenderer_time_track->property_canvas(), param_model.canvas);
-		//column->add_attribute(cellrenderer_time_track->property_visible(), model.is_value_node);
+		column->add_attribute(cellrenderer_time_track->property_visible(), param_model.is_value_node);
 
-		//column->pack_start(*cellrenderer_time_track);
+		column->pack_start(*cellrenderer_time_track);
 
 		// Finish setting up the column
 		column->set_reorderable();
 		column->set_resizable();
 		column->set_min_width(200);
-		//get_param_tree_view().append_column(*column);
-	}*/
+
+		if (!getenv("SYNFIG_DISABLE_PARAMS_PANEL_TIMETRACK"))
+			get_param_tree_view().append_column(*column);
+	}
+#endif	// TIMETRACK_IN_PARAMS_PANEL
 
 	// This makes things easier to read.
 	get_param_tree_view().set_rules_hint();
@@ -553,17 +561,18 @@ LayerTree::set_model(Glib::RefPtr<LayerTreeStore> layer_tree_store)
 		get_param_tree_view().set_model(param_tree_store_);
 	}
 
-/*	if(cellrenderer_time_track && layer_tree_store_ && layer_tree_store_->canvas_interface())
-	{
+#ifdef TIMETRACK_IN_PARAMS_PANEL
+	if(cellrenderer_time_track && layer_tree_store_ && layer_tree_store_->canvas_interface())
 		cellrenderer_time_track->set_canvas_interface(layer_tree_store_->canvas_interface());
-	}
-*/
+#endif	// TIMETRACK_IN_PARAMS_PANEL
 }
 
 void
 LayerTree::set_time_adjustment(Gtk::Adjustment &adjustment)
 {
-	//cellrenderer_time_track->set_adjustment(adjustment);
+#ifdef TIMETRACK_IN_PARAMS_PANEL
+	cellrenderer_time_track->set_adjustment(adjustment);
+#endif	// TIMETRACK_IN_PARAMS_PANEL
 	adjustment.signal_value_changed().connect(sigc::mem_fun(get_param_tree_view(),&Gtk::TreeView::queue_draw));
 	adjustment.signal_changed().connect(sigc::mem_fun(get_param_tree_view(),&Gtk::TreeView::queue_draw));
 }
@@ -728,6 +737,7 @@ LayerTree::on_layer_toggle(const Glib::ustring& path_string)
 	row[layer_model.active]=!active;
 }
 
+#ifdef TIMETRACK_IN_PARAMS_PANEL
 void
 LayerTree::on_waypoint_clicked_layertree(const etl::handle<synfig::Node>& node __attribute__ ((unused)),
 										 const synfig::Time& time __attribute__ ((unused)),
@@ -735,12 +745,25 @@ LayerTree::on_waypoint_clicked_layertree(const etl::handle<synfig::Node>& node _
 										 int button __attribute__ ((unused)),
 										 synfig::Waypoint::Side side __attribute__ ((unused)))
 {
-	//! \todo writeme
+	std::set<synfig::Waypoint, std::less<UniqueID> > waypoint_set;
+	synfig::waypoint_collect(waypoint_set,time,node);
 
-	// synfigapp::ValueDesc value_desc;
-	// std::set<synfig::Waypoint, std::less<UniqueID> > waypoint_set;
-	// signal_waypoint_clicked_layertree()(value_desc,waypoint_set,button);
+	synfigapp::ValueDesc value_desc;
+
+	if (waypoint_set.size() == 1)
+	{
+		ValueNode::Handle value_node(waypoint_set.begin()->get_parent_value_node());
+		assert(value_node);
+
+		Gtk::TreeRow row;
+		if (param_tree_store_->find_first_value_node(value_node, row) && row)
+			value_desc = static_cast<synfigapp::ValueDesc>(row[param_tree_store_->model.value_desc]);
+	}
+
+	if (!waypoint_set.empty())
+		signal_waypoint_clicked_layertree()(value_desc,waypoint_set,button);
 }
+#endif	// TIMETRACK_IN_PARAMS_PANEL
 
 bool
 LayerTree::on_layer_tree_event(GdkEvent *event)
@@ -761,10 +784,12 @@ LayerTree::on_layer_tree_event(GdkEvent *event)
 			) break;
 			const Gtk::TreeRow row = *(get_layer_tree_view().get_model()->get_iter(path));
 
-			//if(column->get_first_cell_renderer()==cellrenderer_time_track)
-			//	return signal_layer_user_click()(event->button.button,row,COLUMNID_TIME_TRACK);
-			//else
-				if(column->get_first_cell_renderer()==cellrenderer_value)
+#ifdef TIMETRACK_IN_PARAMS_PANEL
+			if(column->get_first_cell_renderer()==cellrenderer_time_track)
+				return signal_layer_user_click()(event->button.button,row,COLUMNID_TIME_TRACK);
+			else
+#endif	// TIMETRACK_IN_PARAMS_PANEL
+			if(column->get_first_cell_renderer()==cellrenderer_value)
 				return signal_layer_user_click()(event->button.button,row,COLUMNID_VALUE);
 			else
 				return signal_layer_user_click()(event->button.button,row,COLUMNID_NAME);
@@ -790,14 +815,12 @@ LayerTree::on_layer_tree_event(GdkEvent *event)
 
 			Gtk::TreeRow row = *(get_layer_tree_view().get_model()->get_iter(path));
 
-			/*
+#ifdef TIMETRACK_IN_PARAMS_PANEL
 			if(cellrenderer_time_track==column->get_first_cell_renderer())
-			{
 				// Movement on TimeLine
 				return true;
-			}
 			else
-				*/
+#endif	// TIMETRACK_IN_PARAMS_PANEL
 			if(last_tooltip_path.get_depth()<=0 || path!=last_tooltip_path)
 			{
 				tooltips_.unset_tip(*this);
@@ -838,7 +861,8 @@ LayerTree::on_param_tree_event(GdkEvent *event)
 			) break;
 			const Gtk::TreeRow row = *(get_param_tree_view().get_model()->get_iter(path));
 
-/*			if(column && column->get_first_cell_renderer()==cellrenderer_time_track)
+#ifdef TIMETRACK_IN_PARAMS_PANEL
+			if(column && column->get_first_cell_renderer()==cellrenderer_time_track)
 			{
 				Gdk::Rectangle rect;
 				get_param_tree_view().get_cell_area(path,*column,rect);
@@ -850,7 +874,8 @@ LayerTree::on_param_tree_event(GdkEvent *event)
 				//return signal_param_user_click()(event->button.button,row,COLUMNID_TIME_TRACK);
 			}
 			else
-*/			{
+#endif	// TIMETRACK_IN_PARAMS_PANEL
+			{
 				if(event->button.button==3)
 				{
 					LayerList layer_list(get_selected_layers());
@@ -902,7 +927,8 @@ LayerTree::on_param_tree_event(GdkEvent *event)
 
 			Gtk::TreeRow row = *(get_param_tree_view().get_model()->get_iter(path));
 
-/*			if((event->motion.state&GDK_BUTTON1_MASK ||event->motion.state&GDK_BUTTON3_MASK) && column && cellrenderer_time_track==column->get_first_cell_renderer())
+#ifdef TIMETRACK_IN_PARAMS_PANEL
+			if((event->motion.state&GDK_BUTTON1_MASK ||event->motion.state&GDK_BUTTON3_MASK) && column && cellrenderer_time_track==column->get_first_cell_renderer())
 			{
 				Gdk::Rectangle rect;
 				get_param_tree_view().get_cell_area(path,*column,rect);
@@ -914,7 +940,8 @@ LayerTree::on_param_tree_event(GdkEvent *event)
 				return true;
 			}
 			else
-*/			if(last_tooltip_path.get_depth()<=0 || path!=last_tooltip_path)
+#endif	// TIMETRACK_IN_PARAMS_PANEL
+			if(last_tooltip_path.get_depth()<=0 || path!=last_tooltip_path)
 			{
 				tooltips_.unset_tip(*this);
 				Glib::ustring tooltips_string(row[layer_model.tooltip]);
@@ -945,7 +972,8 @@ LayerTree::on_param_tree_event(GdkEvent *event)
 
 			Gtk::TreeRow row = *(get_param_tree_view().get_model()->get_iter(path));
 
-/*			if(column && cellrenderer_time_track==column->get_first_cell_renderer())
+#ifdef TIMETRACK_IN_PARAMS_PANEL
+			if(column && cellrenderer_time_track==column->get_first_cell_renderer())
 			{
 				Gdk::Rectangle rect;
 				get_param_tree_view().get_cell_area(path,*column,rect);
@@ -957,7 +985,7 @@ LayerTree::on_param_tree_event(GdkEvent *event)
 				return true;
 
 			}
-*/
+#endif	// TIMETRACK_IN_PARAMS_PANEL
 		}
 		break;
 	default:
