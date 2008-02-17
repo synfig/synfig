@@ -122,7 +122,7 @@ private:
 
 	void on_edited_value(const Glib::ustring&path_string,synfig::ValueBase value);
 
-	void on_waypoint_clicked_childrentree(const etl::handle<synfig::Node>& node,const synfig::Time&,const synfig::Time&,int button,synfig::Waypoint::Side side);
+	void on_waypoint_clicked_childrentree(const etl::handle<synfig::Node>& node,const synfig::Time&,const synfig::Time&,int button);
 
 	bool on_tree_event(GdkEvent *event);
 

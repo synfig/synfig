@@ -765,11 +765,7 @@ CellRenderer_TimeTrack::activate_vfunc(
 				}
 
 				if(clickfound && node)
-					signal_waypoint_clicked_cellrenderer()(node,
-														   stime,
-														   time_offset,
-														   2,
-														   actual_time+time_offset<stime?Waypoint::SIDE_LEFT:Waypoint::SIDE_RIGHT);
+					signal_waypoint_clicked_cellrenderer()(node, stime, time_offset, 2);
 			}
 
 		break;

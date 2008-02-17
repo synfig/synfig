@@ -89,7 +89,7 @@ public:
 			// Set up the value-node cell-renderer
 			cellrenderer_time_track=LayerParamTreeStore::add_cell_renderer_value_node(column);
 			cellrenderer_time_track->property_mode()=Gtk::CELL_RENDERER_MODE_ACTIVATABLE;
-			cellrenderer_time_track->signal_waypoint_clicked_cellrenderer().connect(sigc::mem_fun(*this, &TimeTrackView::on_waypoint_clicked_timetrackview) );
+			cellrenderer_time_track->signal_waypoint_clicked_cellrenderer().connect(sigc::mem_fun(*this, &TimeTrackView::on_waypoint_clicked_timetrackview));
 			cellrenderer_time_track->signal_waypoint_changed().connect(sigc::mem_fun(*this, &TimeTrackView::on_waypoint_changed) );
 			column->add_attribute(cellrenderer_time_track->property_value_desc(), model.value_desc);
 			column->add_attribute(cellrenderer_time_track->property_canvas(), model.canvas);
@@ -308,6 +308,9 @@ public:
 	void
 	on_waypoint_changed( synfig::Waypoint waypoint , synfig::ValueNode::Handle value_node)
 	{
+		// is this code used?
+		assert(0);
+
 		synfigapp::Action::ParamList param_list;
 		param_list.add("canvas",param_tree_store_->canvas_interface()->get_canvas());
 		param_list.add("canvas_interface",param_tree_store_->canvas_interface());
@@ -369,8 +372,7 @@ public:
 	on_waypoint_clicked_timetrackview(const etl::handle<synfig::Node>& node,
 									  const synfig::Time& time,
 									  const synfig::Time& time_offset __attribute__ ((unused)),
-									  int button,
-									  synfig::Waypoint::Side side)
+									  int button)
 	{
 		std::set<synfig::Waypoint, std::less<UniqueID> > waypoint_set;
 		synfig::waypoint_collect(waypoint_set,time,node);

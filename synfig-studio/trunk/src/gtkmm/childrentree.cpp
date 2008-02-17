@@ -276,10 +276,8 @@ void
 ChildrenTree::on_waypoint_clicked_childrentree(const etl::handle<synfig::Node>& node __attribute__ ((unused)),
 											   const synfig::Time& time __attribute__ ((unused)),
 											   const synfig::Time& time_offset __attribute__ ((unused)),
-											   int button __attribute__ ((unused)),
-											   synfig::Waypoint::Side side __attribute__ ((unused)))
+											   int button __attribute__ ((unused)))
 {
-	//! \todo finishme - dragging waypoints causes an assert fail at cellrenderer_timetrack.cpp:803
 	std::set<synfig::Waypoint, std::less<UniqueID> > waypoint_set;
 	synfig::waypoint_collect(waypoint_set,time,node);
 

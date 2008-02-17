@@ -85,7 +85,7 @@ private:
 	Gtk::Adjustment adjustment_;
 
 	//! Signal for when the user clicks on a waypoint
-	sigc::signal<void, const etl::handle<synfig::Node>&, const synfig::Time&, const synfig::Time&, int, synfig::Waypoint::Side> signal_waypoint_clicked_cellrenderer_;
+	sigc::signal<void, const etl::handle<synfig::Node>&, const synfig::Time&, const synfig::Time&, int> signal_waypoint_clicked_cellrenderer_;
 
 	sigc::signal<void, synfig::Waypoint, synfig::ValueNode::Handle> signal_waypoint_changed_;
 
@@ -153,7 +153,7 @@ public:
 
 public:
 
-	sigc::signal<void, const etl::handle<synfig::Node>&, const synfig::Time&, const synfig::Time&, int, synfig::Waypoint::Side> &signal_waypoint_clicked_cellrenderer()
+	sigc::signal<void, const etl::handle<synfig::Node>&, const synfig::Time&, const synfig::Time&, int> &signal_waypoint_clicked_cellrenderer()
 	{return signal_waypoint_clicked_cellrenderer_; }
 
 	sigc::signal<void, synfig::Waypoint, synfig::ValueNode::Handle> &signal_waypoint_changed()

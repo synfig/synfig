@@ -174,7 +174,7 @@ private:
 
 	void on_layer_toggle(const Glib::ustring& path_string);
 
-	void on_waypoint_clicked_layertree(const etl::handle<synfig::Node>& node, const synfig::Time&, const synfig::Time&, int button, synfig::Waypoint::Side side);
+	void on_waypoint_clicked_layertree(const etl::handle<synfig::Node>& node, const synfig::Time&, const synfig::Time&, int button);
 
 	void on_waypoint_changed( synfig::Waypoint waypoint , synfig::ValueNode::Handle value_node);
 
