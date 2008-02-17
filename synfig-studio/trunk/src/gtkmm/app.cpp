@@ -1884,10 +1884,39 @@ App::dialog_not_implemented()
 void
 App::dialog_help()
 {
-	Gtk::MessageDialog dialog(_("Documentation"), false, Gtk::MESSAGE_INFO, Gtk::BUTTONS_CLOSE, true);
-	dialog.set_secondary_text(_("Documentation for Synfig Studio is available on the website:\n\nhttp://www.synfig.org/Documentation"));
-	dialog.set_title(_("Help"));
-	dialog.run();
+	if (!open_url("http://www.synfig.org/Documentation"))
+	{
+		Gtk::MessageDialog dialog(_("Documentation"), false, Gtk::MESSAGE_INFO, Gtk::BUTTONS_CLOSE, true);
+		dialog.set_secondary_text(_("Documentation for Synfig Studio is available on the website:\n\nhttp://www.synfig.org/Documentation"));
+		dialog.set_title(_("Help"));
+		dialog.run();
+	}
+}
+
+bool
+App::open_url(const std::string &url)
+{
+#ifdef WIN32
+	return ShellExecute(GetDesktopWindow(), "open", url.c_str(), NULL, NULL, SW_SHOW);
+#else  // WIN32
+	String browser_program("firefox");
+	gchar* argv[3] = {strdup(browser_program.c_str()), strdup(url.c_str()), NULL};
+
+	GError* gerror = NULL;
+	gboolean retval;
+	retval = g_spawn_async(NULL, argv, NULL, G_SPAWN_SEARCH_PATH, NULL, NULL, NULL, &gerror);
+	free(argv[0]);
+	free(argv[1]);
+
+	if (!retval)
+    {
+		error(_("Could not execute specified web browser: %s"), gerror->message);
+		g_error_free(gerror);
+		return false;
+    }
+
+	return true;
+#endif  // WIN32
 }
 
 bool
