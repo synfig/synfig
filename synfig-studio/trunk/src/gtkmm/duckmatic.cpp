@@ -286,6 +286,8 @@ Duckmatic::select_all_ducks()
 	for(iter=duck_map.begin();iter!=duck_map.end();++iter)
 		if(is_duck_group_selectable(iter->second))
 			select_duck(iter->second);
+		else
+			unselect_duck(iter->second);
 }
 
 void
