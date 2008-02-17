@@ -232,7 +232,7 @@ Toolbox::Toolbox():
 	filemenu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Open Recent"),*recent_files_menu));
 
 	filemenu->items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::StockID("synfig-saveall"),
-		sigc::ptr_fun(&studio::App::dialog_not_implemented)));
+		sigc::ptr_fun(save_all)));
 	filemenu->items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::Stock::CLOSE,
 		sigc::ptr_fun(close_selected_instance)));
 	filemenu->items().push_back(Gtk::Menu_Helpers::SeparatorElem());
