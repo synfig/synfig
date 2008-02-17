@@ -281,8 +281,10 @@ Toolbox::Toolbox():
 	TOOLBOX_BUTTON(button_undo,"gtk-undo",_("Undo"));
 	TOOLBOX_BUTTON(button_redo,"gtk-redo",_("Redo"));
 	ADD_TOOLBOX_BUTTON(button_about,"synfig-about",_("About Synfig Studio"));
+	ADD_TOOLBOX_BUTTON(button_help,"gtk-help",_("Help"));
 
 	button_about->signal_clicked().connect(sigc::ptr_fun(studio::App::dialog_about));
+	button_help->signal_clicked().connect(sigc::ptr_fun(studio::App::dialog_help));
 	button_new->signal_clicked().connect(sigc::ptr_fun(studio::App::new_instance));
 	button_open->signal_clicked().connect(sigc::bind(sigc::ptr_fun(studio::App::dialog_open), ""));
 	button_save->signal_clicked().connect(sigc::ptr_fun(save_selected_instance));
@@ -303,6 +305,7 @@ Toolbox::Toolbox():
 	file_buttons->attach(*button_undo,     1,2, 1,2, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
 	file_buttons->attach(*button_redo,     2,3, 1,2, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
 	file_buttons->attach(*button_about,    3,4, 1,2, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
+	file_buttons->attach(*button_help,     4,5, 1,2, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
 
 	file_buttons->show();
 
