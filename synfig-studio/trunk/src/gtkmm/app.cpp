@@ -1881,6 +1881,15 @@ App::dialog_not_implemented()
 	dialog.run();
 }
 
+void
+App::dialog_help()
+{
+	Gtk::MessageDialog dialog(_("Documentation"), false, Gtk::MESSAGE_INFO, Gtk::BUTTONS_CLOSE, true);
+	dialog.set_secondary_text(_("Documentation for Synfig Studio is available on the website:\n\nhttp://www.synfig.org/Documentation"));
+	dialog.set_title(_("Help"));
+	dialog.run();
+}
+
 bool
 App::dialog_entry(const std::string &title, const std::string &message,std::string &text)
 {

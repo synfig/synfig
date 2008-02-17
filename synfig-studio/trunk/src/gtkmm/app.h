@@ -332,6 +332,8 @@ public:
 
 	static void dialog_not_implemented();
 
+	static void dialog_help();
+
 	static synfig::String get_user_app_directory();
 	static synfig::String get_config_file(const synfig::String& file);
 }; // END of class App

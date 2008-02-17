@@ -259,7 +259,7 @@ Toolbox::Toolbox():
 
 	Gtk::Menu	*helpmenu = manage(new class Gtk::Menu());
 	helpmenu->items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::Stock::HELP,
-		sigc::ptr_fun(studio::App::dialog_not_implemented)));
+		sigc::ptr_fun(studio::App::dialog_help)));
 	helpmenu->items().push_back(Gtk::Menu_Helpers::SeparatorElem());
 	helpmenu->items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::StockID("synfig-about"),
 		sigc::ptr_fun(studio::App::dialog_about)));
