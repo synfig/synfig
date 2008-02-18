@@ -376,8 +376,6 @@ LayerTree::create_param_tree()
 		column->add_attribute(cellrenderer_time_track->property_canvas(), param_model.canvas);
 		column->add_attribute(cellrenderer_time_track->property_visible(), param_model.is_value_node);
 
-		column->pack_start(*cellrenderer_time_track);
-
 		// Finish setting up the column
 		column->set_reorderable();
 		column->set_resizable();
