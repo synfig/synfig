@@ -65,7 +65,7 @@ using namespace studio;
 /* === M A C R O S ========================================================= */
 
 // if defined, show the first duck as green while drawing
-//#define DISTINGUISH_FIRST_DUCK
+#define DISTINGUISH_FIRST_DUCK
 
 /* === G L O B A L S ======================================================= */
 
