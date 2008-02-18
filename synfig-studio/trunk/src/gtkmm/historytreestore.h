@@ -93,8 +93,6 @@ public:
 private:
 
 	etl::loose_handle<studio::Instance> instance_;
-
-public:
 	Gtk::TreeIter curr_row;
 
 	/*
