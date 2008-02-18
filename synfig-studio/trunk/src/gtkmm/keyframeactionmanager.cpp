@@ -235,7 +235,8 @@ KeyframeActionManager::refresh()
 	}
 
 	{
-		Glib::RefPtr<Gtk::Action> action(Gtk::Action::create("keyframe-properties", Gtk::StockID("gtk-properties"), _("Keyframe Properties")));
+		Glib::RefPtr<Gtk::Action> action(Gtk::Action::create("keyframe-properties", Gtk::StockID("gtk-properties"),
+															 _("Keyframe Properties"), _("Keyframe Properties")));
 		action_group_->add(action,sigc::mem_fun(*this,&KeyframeActionManager::on_keyframe_properties));
 		if(keyframe_tree_->get_selection()->count_selected_rows()==0)
 			action->set_sensitive(false);
