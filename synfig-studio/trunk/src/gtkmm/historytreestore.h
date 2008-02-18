@@ -93,6 +93,8 @@ public:
 private:
 
 	etl::loose_handle<studio::Instance> instance_;
+
+public:
 	Gtk::TreeIter curr_row;
 
 	/*
@@ -100,6 +102,22 @@ private:
 	*/
 
 private:
+
+	/*
+ -- ** -- P R I V A T E   D A T A ---------------------------------------------
+	*/
+
+private:
+
+	sigc::signal<void> signal_undo_tree_changed_;
+
+	/*
+ -- ** -- S I G N A L   I N T E R F A C E S -----------------------------------
+	*/
+
+public:
+
+	sigc::signal<void>& signal_undo_tree_changed() { return signal_undo_tree_changed_; }
 
 	/*
  -- ** -- S I G N A L   T E R M I N A L S -------------------------------------

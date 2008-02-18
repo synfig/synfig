@@ -104,6 +104,8 @@ HistoryTreeStore::rebuild()
 	{
 		insert_action(*(append()),*iter,true,false,true);
 	}
+
+	signal_undo_tree_changed()();
 }
 
 void
@@ -199,6 +201,8 @@ HistoryTreeStore::on_new_action(etl::handle<synfigapp::Action::Undoable> action)
 	row=*insert(iter);
 
 	insert_action(row,action);
+
+	signal_undo_tree_changed()();
 }
 
 void

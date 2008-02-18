@@ -289,14 +289,48 @@ Dock_History::update_undo_redo()
 }
 
 void
+Dock_History::on_undo_tree_changed()
+{
+	Gtk::TreeModel::Children children(selected_instance->history_tree_store()->children());
+
+	if (!children.size())
+		return;
+
+	studio::HistoryTreeStore::Model model;
+
+	Gtk::TreeModel::Children::iterator iter, prev = children.end();
+	for (iter = children.begin(); iter != children.end(); prev = iter++)
+		if ((*iter)[model.is_redo])
+		{
+			if (prev == children.end())
+				action_tree->get_selection()->unselect_all();
+			else
+			{
+				action_tree->scroll_to_row(Gtk::TreePath(prev), 0.5);
+				action_tree->get_selection()->select(prev);
+			}
+			return;
+		}
+
+	action_tree->scroll_to_row(Gtk::TreePath(prev), 0.5);
+	action_tree->get_selection()->select(prev);
+}
+
+void
 Dock_History::set_selected_instance_(etl::handle<studio::Instance> instance)
 {
 	if(studio::App::shutdown_in_progress)
 		return;
 
+	if (on_undo_tree_changed_connection)
+		on_undo_tree_changed_connection.disconnect();
+
 	selected_instance=instance;
 	if(instance)
 	{
+		on_undo_tree_changed_connection = selected_instance->history_tree_store()->signal_undo_tree_changed().connect(
+			sigc::mem_fun(*this,&Dock_History::on_undo_tree_changed));
+
 		action_tree->set_model(instance->history_tree_store());
 		action_tree->show();
 		update_undo_redo();

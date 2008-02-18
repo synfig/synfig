@@ -47,6 +47,11 @@ class Dock_History : public Dock_CanvasSpecific
 	Gtk::TreeView *action_tree;
 
 	etl::loose_handle<studio::Instance>	selected_instance;
+
+	sigc::connection on_undo_tree_changed_connection;
+
+	void on_undo_tree_changed();
+
 	void set_selected_instance_(etl::handle<studio::Instance> x);
 
 
