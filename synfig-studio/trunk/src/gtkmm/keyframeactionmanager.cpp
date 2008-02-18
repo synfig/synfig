@@ -218,7 +218,7 @@ KeyframeActionManager::refresh()
 		action_group_->add(Gtk::Action::create(
 			"action-keyframe_add",
 			Gtk::StockID("gtk-add"),
-			_("Add new Keyframe"),_("Add new Keyframe")
+			_("Add New Keyframe"),_("Add New Keyframe")
 		),
 			sigc::mem_fun(*this,&KeyframeActionManager::on_add_keyframe)
 		);
