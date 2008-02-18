@@ -95,6 +95,17 @@ Dock_History::Dock_History():
 		)
 	);
 	action_group->add(Gtk::Action::create(
+		"clear-undo-and-redo",
+		Gtk::Stock::CLEAR,
+		_("Clear Undo and Redo Stacks"),
+		_("Clear the undo and redo stacks")
+	),
+		sigc::mem_fun(
+			*this,
+			&Dock_History::clear_undo_and_redo
+		)
+	);
+	action_group->add(Gtk::Action::create(
 		"undo",
 		Gtk::StockID("gtk-undo"),
 		_("Undo"),
@@ -121,6 +132,7 @@ Dock_History::Dock_History():
 	"	<toolitem action='redo' />"
 	"	<toolitem action='clear-undo' />"
 	"	<toolitem action='clear-redo' />"
+	"	<toolitem action='clear-undo-and-redo' />"
 	"	</toolbar>"
 	"</ui>"
 	;
@@ -260,17 +272,26 @@ Dock_History::create_action_tree()
 void
 Dock_History::clear_undo()
 {
-	if(selected_instance && App::dialog_yes_no(_("Clear History"), _("You will not be able to undo any changes that you have made!\nAre you sure you want to clear the undo stack?")))
-	{
+	if(selected_instance && App::dialog_yes_no(_("Clear History"),
+			_("You will not be able to undo any changes that you have made!\nAre you sure you want to clear the undo stack?")))
 		selected_instance->clear_undo_stack();
-	}
 }
 
 void
 Dock_History::clear_redo()
 {
-	if(selected_instance && App::dialog_yes_no(_("Clear History"), _("You will not be able to redo any changes that you have made!\nAre you sure you want to clear the redo stack?")))
+	if(selected_instance && App::dialog_yes_no(_("Clear History"),
+			_("You will not be able to redo any changes that you have made!\nAre you sure you want to clear the redo stack?")))
+		selected_instance->clear_redo_stack();
+}
+
+void
+Dock_History::clear_undo_and_redo()
+{
+	if(selected_instance && App::dialog_yes_no(_("Clear History"),
+			_("You will not be able to undo or redo any changes that you have made!\nAre you sure you want to clear the undo and redo stacks?")))
 	{
+		selected_instance->clear_undo_stack();
 		selected_instance->clear_redo_stack();
 	}
 }
@@ -285,6 +306,7 @@ Dock_History::update_undo_redo()
 		action_group->get_action("clear-undo")->set_sensitive(instance->get_undo_status());
 		action_group->get_action("redo")->set_sensitive(instance->get_redo_status());
 		action_group->get_action("clear-redo")->set_sensitive(instance->get_redo_status());
+		action_group->get_action("clear-undo-and-redo")->set_sensitive(instance->get_undo_status() || instance->get_redo_status());
 	}
 }
 

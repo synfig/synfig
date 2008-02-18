@@ -69,6 +69,7 @@ public:
 
 	void clear_undo();
 	void clear_redo();
+	void clear_undo_and_redo();
 
 	bool on_action_event(GdkEvent *event);
 	void on_action_toggle(const Glib::ustring& path);
