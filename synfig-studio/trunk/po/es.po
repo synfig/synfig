@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: es\n"
 "Report-Msgid-Bugs-To: http://synfig.org/Bugs\n"
 "POT-Creation-Date: 2008-02-19 21:41+0100\n"
-"PO-Revision-Date: 2008-02-19 23:23+0100\n"
+"PO-Revision-Date: 2008-02-20 00:13+0100\n"
 "Last-Translator: Carlos López González <carloslopezgonzalez@yahoo.es>\n"
 "Language-Team: Español <en@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -1075,7 +1075,7 @@ msgstr "Atributos de Synfig Studio"
 
 #: src/gtkmm/dialog_setup.cpp:71
 msgid "Visually Linear Color Selection"
-msgstr "Selección del Color de manera Visualmente Linear "
+msgstr "Selección del Color de manera Visualmente Linear"
 
 #: src/gtkmm/dialog_setup.cpp:72
 msgid "Use Only a Single Thread"
@@ -1288,27 +1288,27 @@ msgstr "Información"
 
 #: src/gtkmm/dock_info.cpp:103
 msgid "X: "
-msgstr "X:"
+msgstr "X: "
 
 #: src/gtkmm/dock_info.cpp:104
 msgid "Y: "
-msgstr "Y:"
+msgstr "Y: "
 
 #: src/gtkmm/dock_info.cpp:114
 msgid "R: "
-msgstr "R:"
+msgstr "R: "
 
 #: src/gtkmm/dock_info.cpp:115
 msgid "G: "
-msgstr "G:"
+msgstr "G: "
 
 #: src/gtkmm/dock_info.cpp:116
 msgid "B: "
-msgstr "B:"
+msgstr "B: "
 
 #: src/gtkmm/dock_info.cpp:117
 msgid "A: "
-msgstr "A:"
+msgstr "A: "
 
 #: src/gtkmm/dock_keyframes.cpp:66 src/gtkmm/iconcontroller.cpp:173
 msgid "Keyframes"
@@ -1452,7 +1452,7 @@ msgstr "Ocultar Rejilla"
 
 #: src/gtkmm/iconcontroller.cpp:162
 msgid "Enable Grid Snap"
-msgstr "Habilitar Adherir a Rejilla "
+msgstr "Habilitar Adherir a Rejilla"
 
 #: src/gtkmm/iconcontroller.cpp:163
 msgid "Disable Grid Snap"
@@ -1584,7 +1584,7 @@ msgid ""
 msgstr ""
 "La copia local del archivo no ha sido cambiado desde la ultima "
 "actualización.\n"
-"!Nada que enviar! "
+"!Nada que enviar!"
 
 #: src/gtkmm/instance.cpp:492
 msgid "Enter a log message describing the changes you have made"
@@ -1696,7 +1696,7 @@ msgstr "Imposible convertir a una interpolación animada"
 
 #: src/gtkmm/instance.cpp:1183
 msgid "Unable to find waypoint_set_smart action"
-msgstr "Imposible encotrar acción de establecer_interpolación_inteligente "
+msgstr "Imposible encotrar acción de establecer_interpolación_inteligente"
 
 #: src/gtkmm/instance.cpp:1196
 msgid "Unable to set a specific waypoint"
@@ -1708,7 +1708,7 @@ msgstr "Editar Interpolaciones"
 
 #: src/gtkmm/instance.h:41
 msgid "Synfig Animation "
-msgstr "Animacion Synfig"
+msgstr "Animación Synfig "
 
 #: src/gtkmm/keyframeactionmanager.cpp:221
 msgid "Add New Keyframe"
@@ -1752,11 +1752,11 @@ msgstr " "
 
 #: src/gtkmm/layergrouptreestore.cpp:442
 msgid "Activate "
-msgstr "Activar"
+msgstr "Activar "
 
 #: src/gtkmm/layergrouptreestore.cpp:442
 msgid "Deactivate "
-msgstr "Desactivar"
+msgstr "Desactivar "
 
 #: src/gtkmm/layergrouptreestore.cpp:566
 msgid "Regroup"
@@ -1848,7 +1848,7 @@ msgstr "Borrar Todo"
 
 #: src/gtkmm/preview.cpp:398
 msgid "Last Rendered: "
-msgstr "Último Muestreo"
+msgstr "Último Muestreo: "
 
 #: src/gtkmm/renddesc.cpp:95
 msgid "Image"
@@ -2024,7 +2024,7 @@ msgstr "Un nombre de archivo es requerido para este objetivo"
 
 #: src/gtkmm/render.cpp:287
 msgid "Unable to create target for "
-msgstr "Imposible crear objetivo para"
+msgstr "Imposible crear objetivo para "
 
 #: src/gtkmm/render.cpp:304
 msgid "Target initialization failure"
@@ -2032,7 +2032,7 @@ msgstr "Fallo de inicialización de objetivo"
 
 #: src/gtkmm/render.cpp:308
 msgid "Rendering "
-msgstr "Mostrando"
+msgstr "Mostrando "
 
 #: src/gtkmm/render.cpp:336
 msgid "File rendered successfully"
@@ -3097,7 +3097,7 @@ msgstr " (Duplicado)"
 #: src/synfigapp/actions/keyframeset.cpp:377
 #: src/synfigapp/actions/keyframewaypointset.cpp:129
 msgid "Unable to find the given keyframe"
-msgstr "Imposible encontrar el fotograma clave dado "
+msgstr "Imposible encontrar el fotograma clave dado"
 
 #: src/synfigapp/actions/keyframeremove.cpp:53
 msgid "Remove Keyframe"
@@ -3818,7 +3818,7 @@ msgstr "Esta acción no puede ser deshecha bajo estas circunstancias."
 
 #: src/synfigapp/actions/valuenodereplace.cpp:213
 msgid ": (Undo) "
-msgstr ":(Deshacer)"
+msgstr ": (Deshacer) "
 
 #: src/synfigapp/actions/waypointadd.cpp:50
 #: src/synfigapp/actions/waypointsetsmart.cpp:59
@@ -3943,7 +3943,7 @@ msgstr "Fallado al deshacer"
 
 #: src/synfigapp/action_system.cpp:320 src/synfigapp/action_system.cpp:322
 msgid " (Redo): "
-msgstr "(Rehacer):"
+msgstr " (Rehacer): "
 
 #: src/synfigapp/action_system.cpp:382
 msgid "Failed to redo."
@@ -4011,7 +4011,7 @@ msgstr ""
 
 #: src/synfigapp/canvasinterface.cpp:581
 msgid "I don't know how to open images of this type -- "
-msgstr "No se como abrir imágenes de este tipo"
+msgstr "No se como abrir imágenes de este tipo -- "
 
 #: src/synfigapp/canvasinterface.cpp:736
 #, c-format
@@ -4046,7 +4046,7 @@ msgstr "(ok/cancelar)"
 
 #: src/synfigapp/uimanager.cpp:142
 msgid "error: "
-msgstr "error:"
+msgstr "error: "
 
 #: src/synfigapp/uimanager.cpp:149
 msgid "warning: "

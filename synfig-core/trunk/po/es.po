@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: es\n"
 "Report-Msgid-Bugs-To: http://synfig.org/Bugs\n"
 "POT-Creation-Date: 2008-02-19 22:27+0100\n"
-"PO-Revision-Date: 2008-02-19 22:30+0100\n"
+"PO-Revision-Date: 2008-02-20 00:07+0100\n"
 "Last-Translator: Carlos López González <carloslopezgonzalez@yahoo.es>\n"
 "Language-Team: Español <en@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -67,7 +67,7 @@ msgstr "Familia de la Fuente"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:521
 msgid "Style"
-msgstr "Estilo "
+msgstr "Estilo"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:523
 #: src/modules/lyr_freetype/lyr_freetype.cpp:533
@@ -112,7 +112,7 @@ msgstr "Espaciado horizontal"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:540
 msgid "Describes how close glyphs are horizontally"
-msgstr "Describe como de juntos estan los glifos horizontalmente "
+msgstr "Describe como de juntos estan los glifos horizontalmente"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:544
 msgid "Vertical Spacing"
@@ -428,7 +428,7 @@ msgstr "Exterior Sólido"
 
 #: src/modules/lyr_std/julia.cpp:345 src/modules/lyr_std/mandelbrot.cpp:267
 msgid "Invert Outside"
-msgstr "Invertir Exterior "
+msgstr "Invertir Exterior"
 
 #: src/modules/lyr_std/julia.cpp:348
 msgid "Color Outside"
@@ -992,7 +992,7 @@ msgstr "Contorno"
 
 #: src/modules/mod_geometry/outline.cpp:178
 msgid "No vertices in outline "
-msgstr "No hay vertices en el contorno"
+msgstr "No hay vértices en el contorno "
 
 #: src/modules/mod_geometry/outline.cpp:799
 #: src/modules/mod_geometry/region.cpp:232
@@ -1205,13 +1205,13 @@ msgstr "Sin archivo a cargar"
 #: src/synfig/listimporter.cpp:182 src/synfig/listimporter.cpp:183
 #: src/tool/main.cpp:925
 msgid "Unable to open "
-msgstr "Imposible abrir"
+msgstr "Imposible abrir "
 
 #: src/modules/mod_imagemagick/mptr_imagemagick.cpp:164
 #: src/modules/mod_imagemagick/mptr_imagemagick.cpp:165
 #: src/synfig/listimporter.cpp:189 src/synfig/listimporter.cpp:190
 msgid "Unable to get frame from "
-msgstr "Imposible obtener fotograma desde"
+msgstr "Imposible obtener fotograma desde "
 
 #: src/modules/mod_imagemagick/mptr_imagemagick.cpp:171
 #: src/modules/mod_imagemagick/mptr_imagemagick.cpp:172
@@ -1226,7 +1226,7 @@ msgstr "Imposible abrir tubería a imagemagick"
 #: src/modules/mod_imagemagick/mptr_imagemagick.cpp:239
 #: src/modules/mod_imagemagick/mptr_imagemagick.cpp:240
 msgid "Reached end of stream without finding PPM header"
-msgstr "Alcanzado fin del flujo sin encontrar cabecera PPM "
+msgstr "Alcanzado fin del flujo sin encontrar cabecera PPM"
 
 #: src/modules/mod_imagemagick/mptr_imagemagick.cpp:248
 #: src/modules/mod_imagemagick/mptr_imagemagick.cpp:249
@@ -1426,9 +1426,7 @@ msgstr "Brotes"
 
 #: src/modules/mod_particle/plant.cpp:446
 msgid "Number of places that growth occurs on each bline section"
-msgstr ""
-"Número de veces que aparece un brote en cada sección de segmento de línea "
-"Beizer"
+msgstr "Número de veces que aparece un brote en cada sección de segmento de línea Beizer"
 
 #: src/modules/mod_particle/plant.cpp:450
 msgid "Random Factor"
@@ -1436,9 +1434,7 @@ msgstr "Factor de Aleatoriedad"
 
 #: src/modules/mod_particle/plant.cpp:451
 msgid "Used to scale down all random effects.  Set to zero to disable randomness"
-msgstr ""
-"Usado para escalar todos los efectos aleatorios. Establecer a cero para "
-"desactivar la aleatoriedad"
+msgstr "Usado para escalar todos los efectos aleatorios. Establecer a cero para desactivar la aleatoriedad"
 
 #: src/modules/mod_particle/plant.cpp:455
 msgid "Drag"
@@ -1487,7 +1483,7 @@ msgstr "Importer::open(): No puede econtrar la extensión"
 
 #: src/synfig/importer.cpp:114
 msgid "Importer::open(): Unknown file type -- "
-msgstr "Importer::open(): Tipo de archivo desconocido"
+msgstr "Importer::open(): Tipo de archivo desconocido -- "
 
 #: src/synfig/layer.cpp:499 src/synfig/layer_composite.cpp:114
 msgid "Unable to create surface target"
@@ -1721,7 +1717,7 @@ msgstr "Perdido atributo \"type\" en <%s>"
 #: src/synfig/loadcanvas.cpp:1111
 #, c-format
 msgid "Bad type in <%s>"
-msgstr "Mal tipo en <%s> "
+msgstr "Mal tipo en <%s>"
 
 #: src/synfig/loadcanvas.cpp:1120
 #, c-format
@@ -1746,7 +1742,7 @@ msgstr "Atributo '%s' en <%s> hace referencia a un ID desconocido '%s'"
 #: src/synfig/loadcanvas.cpp:1174
 #, c-format
 msgid "Unable to set link '\"%s\" to ValueNode \"%s\" (link #%d in \"%s\")"
-msgstr "Imposible enlazar \"%s\" al Valor de Nodo \"%s\" (enlace #%d en \"%s\") "
+msgstr "Imposible enlazar \"%s\" al Valor de Nodo \"%s\" (enlace #%d en \"%s\")"
 
 #: src/synfig/loadcanvas.cpp:1198
 #, c-format
@@ -1761,7 +1757,7 @@ msgstr "El elemento <%s> esta perdiendo su contenido"
 #: src/synfig/loadcanvas.cpp:1247
 #, c-format
 msgid "Parse of '%s' failed"
-msgstr "Interpretación de '%s' falló "
+msgstr "Interpretación de '%s' falló"
 
 #: src/synfig/loadcanvas.cpp:1254
 #, c-format
@@ -1776,7 +1772,7 @@ msgstr "Lanzada excepción desconocida al trabajar con el elemento \"%s\""
 #: src/synfig/loadcanvas.cpp:1284
 #, c-format
 msgid "<%s> is missing link %d (%s)"
-msgstr "<%s>esta perdiendo el enlace %d (%s) "
+msgstr "<%s>esta perdiendo el enlace %d (%s)"
 
 #: src/synfig/loadcanvas.cpp:1338
 msgid "Unable to create <dynamic_list>"
@@ -1789,12 +1785,12 @@ msgstr "<entry> esta perdiendo su contenido o perdiendo el elemento \"use\""
 #: src/synfig/loadcanvas.cpp:1533
 #, c-format
 msgid "Bad data in <%s>"
-msgstr "Mal dato en <%s> "
+msgstr "Mal dato en <%s>"
 
 #: src/synfig/loadcanvas.cpp:1565
 #, c-format
 msgid "Expected a ValueNode.  Refer to '%s'"
-msgstr "Esperado un Valor de Nodo. Refiere a '%s' "
+msgstr "Esperado un Valor de Nodo. Refiere a '%s'"
 
 #: src/synfig/loadcanvas.cpp:1586
 #, c-format
@@ -1835,9 +1831,7 @@ msgstr "Pedido atributo \"name\" para <param>"
 msgid ""
 "Found \"use\" attribute for <param>, but it wasn't empty. Ignoring "
 "contents..."
-msgstr ""
-"Encontrado atributo \"use\" para <param>, pero no estaba vacío. Ingnorando "
-"contenidos..."
+msgstr "Encontrado atributo \"use\" para <param>, pero no estaba vacío. Ingnorando contenidos..."
 
 #: src/synfig/loadcanvas.cpp:1698
 msgid "Empty use=\"\" value in <param>"
@@ -1994,7 +1988,7 @@ msgstr "HECHO"
 
 #: src/synfig/main.cpp:394 src/tool/main.cpp:123 src/tool/main.cpp:164
 msgid "error"
-msgstr "error "
+msgstr "error"
 
 #: src/synfig/main.cpp:409 src/tool/main.cpp:130 src/tool/main.cpp:171
 msgid "warning"
@@ -2091,7 +2085,7 @@ msgstr "_Pantalla"
 
 #: src/synfig/paramdesc.cpp:70
 msgid "Overla_y"
-msgstr "_Solapar "
+msgstr "_Solapar"
 
 #: src/synfig/paramdesc.cpp:71
 msgid "_Hard Light"
@@ -2158,7 +2152,7 @@ msgstr "Osc_urecer Transparencia"
 #: src/synfig/render.cpp:423 src/synfig/render.cpp:424
 #: src/synfig/render.cpp:450 src/synfig/render.cpp:451
 msgid "Target panic"
-msgstr "Pánico en objetivo "
+msgstr "Pánico en objetivo"
 
 #: src/synfig/savecanvas.cpp:254
 #, c-format
@@ -2186,7 +2180,7 @@ msgstr "Imposible poner superficie en el objetivo"
 
 #: src/synfig/target_scanline.cpp:447 src/synfig/target_tile.cpp:423
 msgid "Caught string :"
-msgstr "Cadena cogida: "
+msgstr "Cadena cogida :"
 
 #: src/synfig/target_scanline.cpp:452 src/synfig/target_tile.cpp:428
 msgid "Ran out of memory (Probably a bug)"
@@ -2419,7 +2413,7 @@ msgstr "%s:%d mal tipo para %s: necesito %s pero obtengo %s"
 #: src/synfig/valuenode_scale.cpp:87 src/synfig/valuenode_stripes.cpp:78
 #: src/synfig/valuenode_subtract.cpp:98 src/synfig/valuenode_twotone.cpp:76
 msgid ":Bad type "
-msgstr "Mal tipo"
+msgstr "Mal tipo "
 
 #: src/synfig/valuenode_add.cpp:123 src/synfig/valuenode_scale.cpp:116
 #: src/synfig/valuenode_subtract.cpp:129
@@ -2680,11 +2674,11 @@ msgstr "Línea"
 
 #: src/tool/main.cpp:216
 msgid " of "
-msgstr "de"
+msgstr " de "
 
 #: src/tool/main.cpp:310
 msgid "syntax: "
-msgstr "sintaxis:"
+msgstr "sintaxis: "
 
 #: src/tool/main.cpp:313
 msgid "Print out usage and syntax info"
@@ -2857,7 +2851,7 @@ msgstr "Establecer resolución Y física a %f dpi"
 
 #: src/tool/main.cpp:671
 msgid "Rendering frame at "
-msgstr "Muestreando fotograma en"
+msgstr "Muestreando fotograma en "
 
 #: src/tool/main.cpp:688
 #, c-format
@@ -2903,7 +2897,7 @@ msgstr "Imposible encontrar lienzo con ID \""
 
 #: src/tool/main.cpp:947 src/tool/main.cpp:955
 msgid "\" in "
-msgstr "\" en"
+msgstr "\" en "
 
 #: src/tool/main.cpp:955
 msgid "Invalid canvas name \""
