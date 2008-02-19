@@ -332,7 +332,7 @@ void display_help(int amount)
 		Argument("--start-time","<time>",_("Set the starting time"));
 		Argument("--end-time","<time>",_("Set the ending time"));
 		Argument("--dpi","<res>",_("Set the physical resolution (dots-per-inch)"));
-		Argument("--dpi-x","<res>",_("Set the physical X resolution (dots-per-inch"));
+		Argument("--dpi-x","<res>",_("Set the physical X resolution (dots-per-inch)"));
 		Argument("--dpi-y","<res>",_("Set the physical Y resolution (dots-per-inch)"));
 
 		Argument("--list-canvases",NULL,_("List the exported canvases in the composition"));
