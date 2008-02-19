@@ -41,6 +41,7 @@
 
 namespace synfig {
 class ValueNode_BLine;
+class Canvas;
 
 /*! \class ValueNode_DynamicList
 **	\brief Animated List ValueNode
@@ -196,6 +197,8 @@ public:
 
 	bool get_loop()const { return loop_; }
 	void set_loop(bool x) { loop_=x; }
+
+	void set_member_canvas(etl::loose_handle<Canvas>);
 
 	ValueBase::Type get_contained_type()const;
 

@@ -713,6 +713,13 @@ ValueNode_DynamicList::check_type(ValueBase::Type type)
 	return type==ValueBase::TYPE_LIST;
 }
 
+void
+ValueNode_DynamicList::set_member_canvas(etl::loose_handle<Canvas> canvas)
+{
+	for (vector<ListEntry>::iterator iter = list.begin(); iter != list.end(); iter++)
+		iter->value_node->set_parent_canvas(canvas);
+}
+
 ValueBase::Type
 ValueNode_DynamicList::get_contained_type()const
 {
