@@ -51,9 +51,9 @@ using namespace synfig;
 const unsigned int	DEF_TILE_WIDTH = TILE_SIZE / 2;
 const unsigned int	DEF_TILE_HEIGHT= TILE_SIZE / 2;
 
-#define SYNFIG_OPTIMIZE_LAYER_TREE 	1
+#define SYNFIG_OPTIMIZE_LAYER_TREE
 #ifdef _DEBUG
-// #define SYNFIG_DISPLAY_EFFICIENCY	1
+// #define SYNFIG_DISPLAY_EFFICIENCY
 #endif
 
 /* === G L O B A L S ======================================================= */
@@ -283,7 +283,7 @@ synfig::Target_Tile::render_frame_(Context context,ProgressCallback *cb)
 	if(cb && !cb->amount_complete(total_tiles,total_tiles))
 		return false;
 
-#if SYNFIG_DISPLAY_EFFICIENCY==1
+#ifdef SYNFIG_DISPLAY_EFFICIENCY
 	synfig::info(">>>>>> Render Time: %fsec, Find Tile Time: %fsec, Add Tile Time: %fsec, Total Time: %fsec",work_time,find_tile_time,add_tile_time,total_time());
 	synfig::info(">>>>>> FRAME EFFICIENCY: %f%%",(100.0f*work_time/total_time()));
 #endif

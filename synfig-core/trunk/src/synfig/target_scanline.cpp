@@ -47,7 +47,7 @@ using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 
-#define SYNFIG_OPTIMIZE_LAYER_TREE 1
+#define SYNFIG_OPTIMIZE_LAYER_TREE
 
 #define PIXEL_RENDERING_LIMIT 1500000
 
