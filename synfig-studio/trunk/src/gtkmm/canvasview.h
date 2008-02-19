@@ -307,13 +307,6 @@ private:
 */
 	Gtk::Menu parammenu;
 
-	Glib::RefPtr<Gtk::ToggleAction> duck_mask_position;
-	Glib::RefPtr<Gtk::ToggleAction> duck_mask_vertex;
-	Glib::RefPtr<Gtk::ToggleAction> duck_mask_tangent;
-	Glib::RefPtr<Gtk::ToggleAction> duck_mask_radius;
-	Glib::RefPtr<Gtk::ToggleAction> duck_mask_width;
-	Glib::RefPtr<Gtk::ToggleAction> duck_mask_angle;
-
 	Gtk::RadioButtonGroup quality_group;
 	Gtk::RadioButtonGroup low_res_pixel_size_group;
 

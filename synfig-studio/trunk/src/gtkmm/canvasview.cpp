@@ -1391,22 +1391,26 @@ CanvasView::init_menus()
 
 	}
 
-#define DUCK_MASK(lower,upper,string)	\
-	duck_mask_##lower=Gtk::ToggleAction::create("mask-" #lower "-ducks", string); \
-	duck_mask_##lower->set_active((bool)(work_area->get_type_mask()&Duck::TYPE_##upper)); \
-	action_group->add( duck_mask_##lower, \
-		sigc::bind( \
-			sigc::mem_fun(*this, &studio::CanvasView::toggle_duck_mask), \
-			Duck::TYPE_##upper \
-		) \
-	)
-	DUCK_MASK(position,POSITION,_("Show Position Ducks"));
-	DUCK_MASK(tangent,TANGENT,_("Show Tangent Ducks"));
-	DUCK_MASK(vertex,VERTEX,_("Show Vertex Ducks"));
-	DUCK_MASK(radius,RADIUS,_("Show Radius Ducks"));
-	DUCK_MASK(width,WIDTH,_("Show Width Ducks"));
-	DUCK_MASK(angle,ANGLE,_("Show Angle Ducks"));
+	{
+		Glib::RefPtr<Gtk::ToggleAction> action;
+
+#define DUCK_MASK(lower,upper,string)												\
+		action=Gtk::ToggleAction::create("mask-" #lower "-ducks", string);			\
+		action->set_active((bool)(work_area->get_type_mask()&Duck::TYPE_##upper));	\
+		action_group->add(action,													\
+			sigc::bind(																\
+				sigc::mem_fun(*this, &studio::CanvasView::toggle_duck_mask),		\
+				Duck::TYPE_##upper))
+
+		DUCK_MASK(position,POSITION,_("Show Position Ducks"));
+		DUCK_MASK(tangent,TANGENT,_("Show Tangent Ducks"));
+		DUCK_MASK(vertex,VERTEX,_("Show Vertex Ducks"));
+		DUCK_MASK(radius,RADIUS,_("Show Radius Ducks"));
+		DUCK_MASK(width,WIDTH,_("Show Width Ducks"));
+		DUCK_MASK(angle,ANGLE,_("Show Angle Ducks"));
+
 #undef DUCK_MASK
+	}
 
 	add_accel_group(App::ui_manager()->get_accel_group());
 
@@ -3438,43 +3442,6 @@ void
 CanvasView::toggle_duck_mask(Duckmatic::Type type)
 {
 	bool is_currently_on(work_area->get_type_mask()&type);
-
-	switch(type)
-	{
-	case Duck::TYPE_POSITION:
-		if(duck_mask_position)
-			duck_mask_position->set_active(!is_currently_on);
-		break;
-
-	case Duck::TYPE_VERTEX:
-		if(duck_mask_vertex)
-			duck_mask_vertex->set_active(!is_currently_on);
-		break;
-
-	case Duck::TYPE_TANGENT:
-		if(duck_mask_tangent)
-			duck_mask_tangent->set_active(!is_currently_on);
-		break;
-
-	case Duck::TYPE_RADIUS:
-		if(duck_mask_radius)
-			duck_mask_radius->set_active(!is_currently_on);
-		break;
-
-	case Duck::TYPE_WIDTH:
-		if(duck_mask_width)
-			duck_mask_width->set_active(!is_currently_on);
-		break;
-
-	case Duck::TYPE_ANGLE:
-		if(duck_mask_angle)
-			duck_mask_angle->set_active(!is_currently_on);
-		break;
-
-	default:
-		synfig::warning("CanvasView::toggle_duck_mask():Unknown duck type!");
-		break;
-	}
 
 	if(is_currently_on)
 		work_area->set_type_mask(work_area->get_type_mask()-type);
