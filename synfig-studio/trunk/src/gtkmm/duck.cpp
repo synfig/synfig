@@ -208,7 +208,9 @@ Duck::set_sub_trans_point(const synfig::Point &x)
 		int old_halves = round_to_int(Angle::deg(rotations).get()/180);
 		rotations += change;
 		int new_halves = round_to_int(Angle::deg(rotations).get()/180);
-		if (old_halves != new_halves)
+		if (old_halves != new_halves &&
+			(new_halves > 1 || new_halves < -1 ||
+			 old_halves > 1 || old_halves < -1))
 			synfig::info("rotation: %.2f turns", new_halves/2.0);
 	}
 	else
