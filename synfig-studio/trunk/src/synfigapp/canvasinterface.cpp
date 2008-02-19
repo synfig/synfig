@@ -749,19 +749,22 @@ CanvasInterface::change_value(synfigapp::ValueDesc value_desc,synfig::ValueBase 
 		return true;
 
 	// If this change needs to take place elsewhere, then so be it.
-	if(value_desc.get_canvas() && value_desc.get_canvas()->get_root()!=get_canvas()->get_root())do
+	if(value_desc.get_canvas())
 	{
-		etl::handle<Instance> instance;
-		instance=find_instance(value_desc.get_canvas()->get_root());
-
-		if(instance)
-			return instance->find_canvas_interface(value_desc.get_canvas())->change_value(value_desc,new_value);
-		else
+		if (value_desc.get_canvas()->get_root() != get_canvas()->get_root())
 		{
-			get_ui_interface()->error(_("The value you are trying to edit is in a composition\nwhich doesn't seem to be open. Open that composition and you\nshould be able to edit this value as normal."));
-			return false;
+			etl::handle<Instance> instance;
+			instance=find_instance(value_desc.get_canvas()->get_root());
+
+			if(instance)
+				return instance->find_canvas_interface(value_desc.get_canvas())->change_value(value_desc,new_value);
+			else
+			{
+				get_ui_interface()->error(_("The value you are trying to edit is in a composition\nwhich doesn't seem to be open. Open that composition and you\nshould be able to edit this value as normal."));
+				return false;
+			}
 		}
-	}while(0);
+	}
 #ifdef _DEBUG
 	else
 	{ synfig::warning("Can't get canvas from value desc...?"); }
