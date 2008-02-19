@@ -128,7 +128,12 @@ LayerActionManager::LayerActionManager():
 		_("Amount"),_("Amount")
 	);
 
-
+	action_select_all_child_layers_=Gtk::Action::create(
+		"select-all-child-layers",
+		Gtk::StockID("synfig-select_all_child_layers"),
+		_("Select All Child Layers"),_("Select All Child Layers")
+	);
+	action_select_all_child_layers_->set_sensitive(false);
 }
 
 LayerActionManager::~LayerActionManager()
@@ -231,8 +236,7 @@ LayerActionManager::refresh()
 		return;
 	}
 
-
-	String ui_info, ui_toolbar_info;
+	String ui_info;
 
 	action_paste_->set_sensitive(!clipboard_.empty());
 	action_group_->add(action_paste_);
@@ -286,17 +290,22 @@ LayerActionManager::refresh()
 
 			if(!multiple_selected && layer->get_name()=="PasteCanvas")
 			{
-				action_group_->add(Gtk::Action::create(
-					"select-all-child-layers",
-					Gtk::StockID("synfig-select_all_child_layers"),
-					_("Select All Child Layers"),
-					_("Select All Child Layers")),
+				if (select_all_child_layers_connection)
+					select_all_child_layers_connection.disconnect();
+
+				select_all_child_layers_connection = action_select_all_child_layers_->signal_activate().connect(
 					sigc::bind(sigc::mem_fun(*layer_tree_,
 											 &studio::LayerTree::select_all_children_layers),
 							   Layer::LooseHandle(layer)));
+
+				action_select_all_child_layers_->set_sensitive(true);
+
 				ui_info+="<menuitem action='select-all-child-layers'/>";
-				ui_toolbar_info+="<toolbar action='toolbar-layer'><toolitem action='select-all-child-layers'/></toolbar>";
 			}
+			else
+				action_select_all_child_layers_->set_sensitive(false);
+			action_group_->add(action_select_all_child_layers_);
+
 			handle<studio::Instance>::cast_static(get_canvas_interface()->get_instance())->
 				add_actions_to_group(action_group_, ui_info,   param_list, synfigapp::Action::CATEGORY_LAYER);
 		}
@@ -313,7 +322,6 @@ LayerActionManager::refresh()
 			 	   "<separator/>"
 			     "</menu>"
 			   "</popup>" +
-			 ui_toolbar_info +
 			 "</ui>");
 	popup_id_=get_ui_manager()->add_ui_from_string(ui_info);
 #ifdef ONE_ACTION_GROUP

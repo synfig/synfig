@@ -140,19 +140,23 @@ Dock_Layers::Dock_Layers():
 		}
 	}
 
+	if(layer_action_manager)
+		action_group_layer_ops->add(layer_action_manager->get_action_select_all_child_layers());
 
 	action_group_layer_ops->add( Gtk::Action::create("toolbar-layer", _("Layer Ops")) );
 	App::ui_manager()->insert_action_group(action_group_layer_ops);
-
 
     Glib::ustring ui_info =
 	"<ui>"
 	"	<toolbar action='toolbar-layer'>"
 	"	<toolitem action='action-layer_raise' />"
 	"	<toolitem action='action-layer_lower' />"
+	"	<separator />"
 	"	<toolitem action='action-layer_duplicate' />"
 	"	<toolitem action='action-layer_encapsulate' />"
+	"	<toolitem action='select-all-child-layers' />"
 	"	<toolitem action='action-layer_remove' />"
+	"	<separator />"
 	"	<toolitem action='cut' />"
 	"	<toolitem action='copy' />"
 	"	<toolitem action='paste' />"

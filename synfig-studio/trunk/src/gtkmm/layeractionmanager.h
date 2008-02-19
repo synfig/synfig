@@ -62,9 +62,10 @@ class LayerActionManager
 	Glib::RefPtr<Gtk::Action>	action_amount_dec_;
 	Glib::RefPtr<Gtk::Action>	action_amount_;
 
+	Glib::RefPtr<Gtk::Action>	action_select_all_child_layers_;
+	sigc::connection			select_all_child_layers_connection;
 
 	std::list<synfig::Layer::Handle> clipboard_;
-
 
 	sigc::connection selection_changed_connection;
 
@@ -100,6 +101,8 @@ public:
 
 	void refresh();
 	void clear();
+
+	Glib::RefPtr<Gtk::Action> get_action_select_all_child_layers() { return action_select_all_child_layers_; }
 }; // END of LayerActionManager
 
 }; // END of namespace studio
