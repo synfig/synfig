@@ -144,6 +144,18 @@ Layer_PasteCanvas::get_param_vocab()const
 		.set_local_name(_("Children Lock"))
 	);
 
+	// optimize_layers() in canvas.cpp makes a new PasteCanvas layer
+	// and copies over the parameters of the old layer.  the
+	// 'curr_time' member wasn't being copied, so I've added it as a
+	// hidden, non critical parameter, and now it will be.  this
+	// allows a single exported subcanvas to be used more than once at
+	// a time, with different time offets in each.  see bug #1896557.
+	ret.push_back(ParamDesc("curr_time")
+		.set_local_name(_("Current Time"))
+		.not_critical()
+		.hidden()
+	);
+
 	return ret;
 }
 
@@ -183,6 +195,7 @@ Layer_PasteCanvas::set_param(const String & param, const ValueBase &value)
 
 	IMPORT(children_lock);
 	IMPORT(zoom);
+	IMPORT(curr_time);
 
 	return Layer_Composite::set_param(param,value);
 }
@@ -249,6 +262,7 @@ Layer_PasteCanvas::get_param(const String& param)const
 	EXPORT(zoom);
 	EXPORT(time_offset);
 	EXPORT(children_lock);
+	EXPORT(curr_time);
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
@@ -322,9 +336,6 @@ Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quali
 	if(!canvas || !get_amount())
 		return context.accelerated_render(surface,quality,renddesc,cb);
 
-	if(muck_with_time_ && curr_time!=Time::begin() && canvas->get_time()!=curr_time+time_offset)
-		canvas->set_time(curr_time+time_offset);
-
 	SuperCallback stageone(cb,0,4500,10000);
 	SuperCallback stagetwo(cb,4500,9000,10000);
 	SuperCallback stagethree(cb,9000,9999,10000);
@@ -343,6 +354,9 @@ Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quali
 	}
 	else if (!context.accelerated_render(surface,quality,renddesc,&stageone))
 		return false;
+
+	if(muck_with_time_ && curr_time!=Time::begin() && canvas->get_time()!=curr_time+time_offset)
+		canvas->set_time(curr_time+time_offset);
 
 	Color::BlendMethod blend_method(get_blend_method());
 	const Rect full_bounding_rect(canvas->get_context().get_full_bounding_rect());
