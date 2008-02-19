@@ -478,7 +478,7 @@ StateBLine_Context::~StateBLine_Context()
 Smach::event_result
 StateBLine_Context::event_stop_handler(const Smach::event& /*x*/)
 {
-	synfig::info("STATE RotoBLine: Received Stop Event");
+//	synfig::info("STATE RotoBLine: Received Stop Event");
 //	run();
 	reset();
 //	throw Smach::egress_exception();
@@ -489,7 +489,7 @@ StateBLine_Context::event_stop_handler(const Smach::event& /*x*/)
 Smach::event_result
 StateBLine_Context::event_refresh_handler(const Smach::event& /*x*/)
 {
-	synfig::info("STATE RotoBLine: Received Refresh Event");
+//	synfig::info("STATE RotoBLine: Received Refresh Event");
 	refresh_ducks();
 	return Smach::RESULT_ACCEPT;
 }
