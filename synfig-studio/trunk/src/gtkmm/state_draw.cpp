@@ -425,8 +425,6 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	check_localerror(_("LocalError"))
 
 {
-	synfig::info("STATE SKETCH: entering state");
-
 	nested=0;
 	load_settings();
 
