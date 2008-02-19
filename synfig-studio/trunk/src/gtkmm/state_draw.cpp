@@ -377,7 +377,7 @@ StateDraw_Context::increment_id()
 		String str_number;
 		str_number=String(id,id.size()-digits,id.size());
 		id=String(id,0,id.size()-digits);
-		synfig::info("---------------- \"%s\"",str_number.c_str());
+		// synfig::info("---------------- \"%s\"",str_number.c_str());
 
 		number=atoi(str_number.c_str());
 	}

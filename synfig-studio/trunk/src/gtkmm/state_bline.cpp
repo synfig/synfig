@@ -327,7 +327,7 @@ StateBLine_Context::increment_id()
 		String str_number;
 		str_number=String(id,id.size()-digits,id.size());
 		id=String(id,0,id.size()-digits);
-		synfig::info("---------------- \"%s\"",str_number.c_str());
+		// synfig::info("---------------- \"%s\"",str_number.c_str());
 
 		number=atoi(str_number.c_str());
 	}
@@ -911,7 +911,7 @@ StateBLine_Context::event_mouse_release_handler(const Smach::event& /*x*/)
 Smach::event_result
 StateBLine_Context::event_mouse_click_handler(const Smach::event& x)
 {
-	synfig::info("STATE BLINE: Received mouse button down Event");
+	// synfig::info("STATE BLINE: Received mouse button down Event");
 	const EventMouse& event(*reinterpret_cast<const EventMouse*>(&x));
 	switch(event.button)
 	{
