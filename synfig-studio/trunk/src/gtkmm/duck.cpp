@@ -205,11 +205,11 @@ Duck::set_sub_trans_point(const synfig::Point &x)
 		Angle change = get_point().angle() - old_angle;
 		while (change < Angle::deg(-180)) change += Angle::deg(360);
 		while (change > Angle::deg(180)) change -= Angle::deg(360);
-		int old_quarters = round_to_int(Angle::deg(rotations).get()/90);
+		int old_halves = round_to_int(Angle::deg(rotations).get()/180);
 		rotations += change;
-		int new_quarters = round_to_int(Angle::deg(rotations).get()/90);
-		if (old_quarters != new_quarters)
-			synfig::info("rotation: %.2f turns", new_quarters/4.0);
+		int new_halves = round_to_int(Angle::deg(rotations).get()/180);
+		if (old_halves != new_halves)
+			synfig::info("rotation: %.2f turns", new_halves/2.0);
 	}
 	else
 		set_point((x-get_sub_trans_origin())/get_scalar());
