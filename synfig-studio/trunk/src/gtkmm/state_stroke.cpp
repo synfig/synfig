@@ -130,8 +130,6 @@ StateStroke_Context::StateStroke_Context(CanvasView* canvas_view):
 	stroke_data.spawn();
 
 	get_work_area()->add_stroke(stroke_data, synfigapp::Main::get_foreground_color());
-
-	synfig::info("Now Scribbling...");
 }
 
 StateStroke_Context::~StateStroke_Context()
@@ -139,7 +137,6 @@ StateStroke_Context::~StateStroke_Context()
 	duckmatic_push.restore();
 
 	App::toolbox->refresh();
-	synfig::info("No longer scribbling");
 
 	// Send the stroke data to whatever previously called this state.
 	if(stroke_data->size()>=2)
