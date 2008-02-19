@@ -936,6 +936,11 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline
 			trans_bline.push_back(bline_point);
 		}
 		value_node=ValueNode_BLine::create(synfig::ValueBase(trans_bline,loop_bline_flag));
+
+		Canvas::Handle canvas(get_canvas_view()->get_canvas());
+		Layer::Handle layer(get_canvas_view()->get_selection_manager()->get_selected_layer());
+		if (layer) canvas=layer->get_canvas();
+		value_node->set_member_canvas(canvas);
 	}
 
 	Smach::event_result result;
