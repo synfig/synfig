@@ -173,6 +173,9 @@ public:
 
 	typedef synfigapp::CanvasInterface::Mode Mode;
 
+	void set_grid_snap_toggle(bool flag) { grid_snap_toggle->set_active(flag); }
+	void set_grid_show_toggle(bool flag) { grid_show_toggle->set_active(flag); }
+
 	/*
  -- ** -- P R I V A T E   D A T A ---------------------------------------------
 	*/
@@ -306,6 +309,9 @@ private:
 	Gtk::CheckMenuItem* duck_mask_angle;
 */
 	Gtk::Menu parammenu;
+
+	Glib::RefPtr<Gtk::ToggleAction> grid_snap_toggle;
+	Glib::RefPtr<Gtk::ToggleAction> grid_show_toggle;
 
 	Gtk::RadioButtonGroup quality_group;
 	Gtk::RadioButtonGroup low_res_pixel_size_group;

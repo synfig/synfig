@@ -185,11 +185,13 @@ CanvasOptions::on_grid_show_toggle()
 void
 CanvasOptions::on_apply_pressed()
 {
+	canvas_view_->set_grid_snap_toggle(toggle_grid_snap.get_active());
 	if(toggle_grid_snap.get_active())
 		canvas_view_->work_area->enable_grid_snap();
 	else
 		canvas_view_->work_area->disable_grid_snap();
 
+	canvas_view_->set_grid_show_toggle(toggle_grid_show.get_active());
 	if(toggle_grid_show.get_active())
 		canvas_view_->work_area->enable_grid();
 	else

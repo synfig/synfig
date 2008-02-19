@@ -1324,13 +1324,13 @@ CanvasView::init_menus()
 	{
 		Glib::RefPtr<Gtk::ToggleAction> action;
 
-		action = Gtk::ToggleAction::create("toggle-grid-show", _("Show Grid"));
-		action->set_active(work_area->grid_status());
-		action_group->add(action, sigc::mem_fun(*work_area, &studio::WorkArea::toggle_grid));
+		grid_show_toggle = Gtk::ToggleAction::create("toggle-grid-show", _("Show Grid"));
+		grid_show_toggle->set_active(work_area->grid_status());
+		action_group->add(grid_show_toggle, sigc::mem_fun(*work_area, &studio::WorkArea::toggle_grid));
 
-		action = Gtk::ToggleAction::create("toggle-grid-snap", _("Snap to Grid"));
-		action->set_active(work_area->get_grid_snap());
-		action_group->add(action, sigc::mem_fun(*work_area, &studio::WorkArea::toggle_grid_snap));
+		grid_snap_toggle = Gtk::ToggleAction::create("toggle-grid-snap", _("Snap to Grid"));
+		grid_snap_toggle->set_active(work_area->get_grid_snap());
+		action_group->add(grid_snap_toggle, sigc::mem_fun(*work_area, &studio::WorkArea::toggle_grid_snap));
 
 		action = Gtk::ToggleAction::create("toggle-guide-show", _("Show Guides"));
 		action->set_active(work_area->get_show_guides());
