@@ -304,7 +304,6 @@ LayerActionManager::refresh()
 			}
 			else
 				action_select_all_child_layers_->set_sensitive(false);
-			action_group_->add(action_select_all_child_layers_);
 
 			handle<studio::Instance>::cast_static(get_canvas_interface()->get_instance())->
 				add_actions_to_group(action_group_, ui_info,   param_list, synfigapp::Action::CATEGORY_LAYER);
