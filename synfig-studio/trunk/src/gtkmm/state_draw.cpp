@@ -1011,8 +1011,7 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline
 		LinkableValueNode::Handle::cast_dynamic(value_node->list.back().value_node)->
 		  set_link(0,finish_duck_value_desc.get_value_node());
 
-	if(get_auto_export_flag()) {
-		printf("this is where we would export the new line\n");
+	if(get_auto_export_flag())
 		if (!get_canvas_interface()->add_value_node(value_node,get_id()))
 		{
 			/* it's no big deal, is it?  let's keep the shape anyway */
@@ -1021,7 +1020,6 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline
 			// increment_id();
 			// return Smach::RESULT_ERROR;
 		}
-	}
 
 	last_stroke=value_node;
 	last_stroke_id=get_id();
