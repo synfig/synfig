@@ -41,6 +41,7 @@
 #include <synfig/valuenode_reference.h>
 #include <synfig/valuenode_twotone.h>
 #include <synfig/valuenode_stripes.h>
+#include <synfig/valuenode_bline.h>
 
 #include <synfig/waypoint.h>
 #include <synfig/loadcanvas.h>
@@ -249,7 +250,10 @@ CanvasInterface::add_layer_to(synfig::String name, synfig::Canvas::Handle canvas
 						if (iter2->get_type() != ValueBase::TYPE_BLINEPOINT)
 							break;
 					if (iter2 == list.end())
+					{
 						value_node=LinkableValueNode::create("bline",iter->second);
+						ValueNode_BLine::Handle::cast_dynamic(value_node)->set_member_canvas(canvas);
+					}
 				}
 
 				if (!value_node)
