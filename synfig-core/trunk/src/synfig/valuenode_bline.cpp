@@ -282,7 +282,6 @@ ValueNode_BLine::create(const ValueBase &value)
 		}
 	}
 
-
 	return value_node;
 }
 
@@ -290,7 +289,6 @@ ValueNode_BLine::ListEntry
 ValueNode_BLine::create_list_entry(int index, Time time, Real origin)
 {
 	ValueNode_BLine::ListEntry ret;
-
 
 	synfig::BLinePoint prev,next;
 
@@ -308,7 +306,7 @@ ValueNode_BLine::create_list_entry(int index, Time time, Real origin)
 		next_i=index;
 	prev_i=find_prev_valid_entry(index,time);
 
-	synfig::info("index=%d, next_i=%d, prev_i=%d",index,next_i,prev_i);
+	//synfig::info("index=%d, next_i=%d, prev_i=%d",index,next_i,prev_i);
 
 	next=(*list[next_i].value_node)(time);
 	prev=(*list[prev_i].value_node)(time);
