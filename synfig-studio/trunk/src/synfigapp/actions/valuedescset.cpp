@@ -159,8 +159,6 @@ Action::ValueDescSet::prepare()
 		(value_desc.get_index()==4 || value_desc.get_index()==5) &&
 		(*value_desc.get_parent_value_node())(time).get(BLinePoint()).get_split_tangent_flag()==false)
 	{
-		printf("a tangent got changed - #%d\n", value_desc.get_index()-3);
-
 		{
 			ValueNode_Composite::Handle parent_value_node;
 			parent_value_node=parent_value_node.cast_dynamic(value_desc.get_parent_value_node());
@@ -168,11 +166,9 @@ Action::ValueDescSet::prepare()
 
 			Vector t1((*parent_value_node->get_link("t1"))(time));
 			Vector t2((*parent_value_node->get_link("t2"))(time));
-			printf("current values are: t1(%.2f, %2.f)  t2(%.2f, %.2f)\n", t1[0], t1[1], t2[0], t2[1]);
 		}
 
 		if (value_desc.get_index()==4) {
-			printf("copying change to tangent 2\n");
 			ValueNode_Composite::Handle parent_value_node;
 			parent_value_node=parent_value_node.cast_dynamic(value_desc.get_parent_value_node());
 
