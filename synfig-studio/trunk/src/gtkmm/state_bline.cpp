@@ -603,6 +603,8 @@ StateBLine_Context::run_()
 		if(!canvas)
 			canvas=get_canvas_view()->get_canvas();
 
+		value_node_bline->set_member_canvas(canvas);
+
 		synfigapp::SelectionManager::LayerList layer_selection;
 
 		///////////////////////////////////////////////////////////////////////////
