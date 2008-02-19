@@ -209,8 +209,20 @@ Renderer_Ducks::render_vfunc(
 
 //		Real x,y;
 	//	Gdk::Rectangle area;
-		Point point((*iter)->get_trans_point());
-		Point origin((*iter)->get_trans_origin());
+		Point sub_trans_point((*iter)->get_sub_trans_point());
+		Point sub_trans_origin((*iter)->get_sub_trans_origin());
+
+		if (App::restrict_radius_ducks &&
+			(*iter)->is_radius())
+		{
+			if (sub_trans_point[0] < sub_trans_origin[0])
+				sub_trans_point[0] = sub_trans_origin[0];
+			if (sub_trans_point[1] < sub_trans_origin[1])
+				sub_trans_point[1] = sub_trans_origin[1];
+		}
+
+		Point point((*iter)->get_transform_stack().perform(sub_trans_point));
+		Point origin((*iter)->get_transform_stack().perform(sub_trans_origin));
 
 		point[0]=(point[0]-window_startx)/pw;
 		point[1]=(point[1]-window_starty)/ph;
@@ -228,13 +240,6 @@ Renderer_Ducks::render_vfunc(
 
 		origin[0]=(origin[0]-window_startx)/pw;
 		origin[1]=(origin[1]-window_starty)/ph;
-
-		if (App::restrict_radius_ducks &&
-			(*iter)->is_radius())
-		{
-			if (point[0] < origin[0]) point[0] = origin[0];
-			if (point[1] > origin[1]) point[1] = origin[1];
-		}
 
 		bool selected(get_work_area()->duck_is_selected(*iter));
 		bool hover(*iter==hover_duck || (*iter)->get_hover());
