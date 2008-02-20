@@ -1695,6 +1695,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 			if(value_node->get_contained_type()==ValueBase::TYPE_VECTOR)
 			{
 				Bezier bezier;
+				etl::handle<Duck> first_duck, duck;
 				int first = -1;
 				for(i=0;i<value_node->link_count();i++)
 				{
@@ -1702,11 +1703,14 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 						continue;
 					if(!add_to_ducks(synfigapp::ValueDesc(value_node,i),canvas_view,transform_stack))
 						return false;
-					etl::handle<Duck> duck(last_duck());
+					duck = last_duck();
 
 					// remember the index of the first vertex we didn't skip
 					if (first == -1)
+					{
 						first = i;
+						first_duck = duck;
+					}
 
 					if(param_desc)
 					{
@@ -1740,6 +1744,27 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 									&studio::CanvasView::popup_param_menu_bezier),
 								synfigapp::ValueDesc(value_node,i)));
 					}
+				}
+
+				if (value_node->get_loop() && first != -1 && first_duck != duck)
+				{
+					duck = first_duck;
+
+					bezier.p1=bezier.p2;bezier.c1=bezier.c2;
+					bezier.p2=bezier.c2=duck;
+
+					handle<Bezier> bezier_(new Bezier());
+					bezier_->p1=bezier.p1;
+					bezier_->c1=bezier.c1;
+					bezier_->p2=bezier.p2;
+					bezier_->c2=bezier.c2;
+					add_bezier(bezier_);
+					last_bezier()->signal_user_click(2).connect(
+						sigc::bind(
+							sigc::mem_fun(
+								*canvas_view,
+								&studio::CanvasView::popup_param_menu_bezier),
+							synfigapp::ValueDesc(value_node,first)));
 				}
 			}
 			/*else if(value_node->get_contained_type()==ValueBase::TYPE_SEGMENT)
