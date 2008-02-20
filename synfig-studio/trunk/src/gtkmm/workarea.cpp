@@ -1164,7 +1164,7 @@ WorkArea::on_key_press_event(GdkEventKey* event)
 			break;
 	}
 
-	synfigapp::Action::PassiveGrouper grouper(instance.get(),"Nudge");
+	synfigapp::Action::PassiveGrouper grouper(instance.get(),_("Nudge"));
 
 	// Grid snap does not apply to nudging
 	bool grid_snap_holder(get_grid_snap());
@@ -1620,7 +1620,7 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 		else
 		if(dragging==DRAG_DUCK)
 		{
-			synfigapp::Action::PassiveGrouper grouper(instance.get(),"Move");
+			synfigapp::Action::PassiveGrouper grouper(instance.get(),_("Move"));
 			dragging=DRAG_NONE;
 			//translate_selected_ducks(mouse_pos);
 			set_axis_lock(false);
