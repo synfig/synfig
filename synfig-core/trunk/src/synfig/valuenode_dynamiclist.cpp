@@ -577,6 +577,12 @@ ValueNode_DynamicList::create_from(const ValueBase &value)
 
 	ValueNode_DynamicList* value_node(new ValueNode_DynamicList(value_list.front().get_type()));
 
+	// when creating a list of vectors, start it off being looped.
+	// I think the only time this is used if for creating polygons,
+	// and we want them to be looped by default
+	if (value_node->get_contained_type() == ValueBase::TYPE_VECTOR)
+		value_node->set_loop(true);
+
 	for(iter=value_list.begin();iter!=value_list.end();++iter)
 	{
 		ValueNode::Handle item(ValueNode_Const::create(*iter));
