@@ -328,7 +328,7 @@ Dockable::add_button(const Gtk::StockID& stock_id, const synfig::String& tooltip
 	//ret->set_relief(Gtk::RELIEF_HALF);
 	//ret->set_relief(Gtk::RELIEF_NONE);
 	ret->set_label(tooltip);
-	//toolbar_->get_tooltips_object()->set_tip(*ret,tooltip);
+	toolbar_->get_tooltips_object()->set_tip(*ret,tooltip);
 
 	ret->show();
 	//icon->show();
