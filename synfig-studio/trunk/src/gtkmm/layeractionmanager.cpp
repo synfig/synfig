@@ -491,21 +491,14 @@ LayerActionManager::amount_inc()
 	float adjust(0.1);
 
 	// Create the action group
-	synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Decrease Amount"));
-
-	if(adjust>0)
-		group.set_name(_("Increase Amount"));
-
+	synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Increase Amount"));
 	synfigapp::SelectionManager::LayerList layer_list(layer_tree_->get_selected_layers());
 
-	while(!layer_list.empty())
+	for (; !layer_list.empty(); layer_list.pop_front())
 	{
 		ValueBase value(layer_list.front()->get_param("amount"));
 		if(value.same_type_as(Real()))
-		{
 			get_canvas_interface()->change_value(synfigapp::ValueDesc(layer_list.front(),"amount"),value.get(Real())+adjust);
-		}
-		layer_list.pop_front();
 	}
 }
 
@@ -516,19 +509,12 @@ LayerActionManager::amount_dec()
 
 	// Create the action group
 	synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Decrease Amount"));
-
-	if(adjust>0)
-		group.set_name(_("Increase Amount"));
-
 	synfigapp::SelectionManager::LayerList layer_list(layer_tree_->get_selected_layers());
 
-	while(!layer_list.empty())
+	for (; !layer_list.empty(); layer_list.pop_front())
 	{
 		ValueBase value(layer_list.front()->get_param("amount"));
 		if(value.same_type_as(Real()))
-		{
 			get_canvas_interface()->change_value(synfigapp::ValueDesc(layer_list.front(),"amount"),value.get(Real())+adjust);
-		}
-		layer_list.pop_front();
 	}
 }
