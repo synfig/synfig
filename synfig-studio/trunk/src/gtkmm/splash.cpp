@@ -229,7 +229,7 @@ Splash::Splash():
 
 	// Set the version label to contain the correct information
 	string ver;
-	ver+="Version "VERSION" ("__DATE__" "__TIME__")\n";
+	ver+="Version "VERSION" ("__DATE__ /* " "__TIME__ */ ")\n";
 	ver+="Using Synfig ";
 	ver+=synfig::get_version();
 	#ifdef __GNUC__

@@ -188,7 +188,7 @@ About::About()
 	
 	extra_info += "\n";
 	
-	extra_info += strprintf(_("Built on %s at %s\n"), __DATE__, __TIME__);
+	extra_info += strprintf(_("Built on %s" /* at %s */ "\n"), __DATE__ /* , __TIME__ */ );
 
 	extra_info += "\n";
 
