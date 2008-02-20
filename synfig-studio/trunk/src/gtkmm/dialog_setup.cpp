@@ -61,6 +61,14 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
+static void
+attach_label(Gtk::Table *table, String str, guint col, guint xpadding, guint ypadding)
+{
+	Gtk::Label* label(manage(new Gtk::Label((str + ":").c_str())));
+	label->set_alignment(Gtk::ALIGN_RIGHT, Gtk::ALIGN_CENTER);
+	table->attach(*label, 0, 1, col, col+1, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
+}
+
 Dialog_Setup::Dialog_Setup():
 	Dialog(_("Synfig Studio Setup"),false,true),
 	adj_gamma_r(2.2,0.1,3.0,0.025,0.025,0.025),
@@ -130,15 +138,11 @@ Dialog_Setup::Dialog_Setup():
 	Gtk::Table *misc_table=manage(new Gtk::Table(2,2,false));
 	notebook->append_page(*misc_table,_("Misc."));
 
-	Gtk::Label* label;
-	Gtk::AlignmentEnum xalign(Gtk::ALIGN_RIGHT), yalign(Gtk::ALIGN_CENTER);
 	int xpadding(8), ypadding(8);
 
 	// Misc - Timestamp
 	timestamp_menu=manage(new class Gtk::Menu());
-	label = manage(new Gtk::Label(_("Timestamp:")));
-	label->set_alignment(xalign, yalign);
-	misc_table->attach(*label, 0, 1, 0, 1, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
+	attach_label(misc_table, _("Timestamp"), 0, xpadding, ypadding);
 	misc_table->attach(timestamp_optionmenu, 1, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
 
 #define ADD_TIMESTAMP(desc,x)									\
@@ -175,17 +179,13 @@ Dialog_Setup::Dialog_Setup():
 		widget_enum=manage(new Widget_Enum());
 		widget_enum->set_param_desc(param_desc);
 
-		label = manage(new Gtk::Label(_("Unit System:")));
-		label->set_alignment(xalign, yalign);
-		misc_table->attach(*label, 0, 1, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
+		attach_label(misc_table, _("Unit System"), 1, xpadding, ypadding);
 		misc_table->attach(*widget_enum, 1, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
 	}
 
 	// Misc - recent files
 	Gtk::SpinButton* recent_files_spinbutton(manage(new Gtk::SpinButton(adj_recent_files,1,0)));
-	label = manage(new Gtk::Label(_("Recent Files:")));
-	label->set_alignment(xalign, yalign);
-	misc_table->attach(*label, 0, 1, 2, 3, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
+	attach_label(misc_table, _("Recent Files"), 2, xpadding, ypadding);
 	misc_table->attach(*recent_files_spinbutton, 1, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
 
 	// Misc - use_colorspace_gamma
@@ -195,18 +195,14 @@ Dialog_Setup::Dialog_Setup():
 	misc_table->attach(toggle_single_threaded, 0, 2, 6, 7, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
 
 	// Misc - auto backup interval
-	label = manage(new Gtk::Label(_("Auto Backup Interval (0 to disable):")));
-	label->set_alignment(xalign, yalign);
-	misc_table->attach(*label, 0, 1, 3, 4, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
+	attach_label(misc_table, _("Auto Backup Interval (0 to disable)"), 3, xpadding, ypadding);
 	misc_table->attach(auto_backup_interval, 1, 2, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
 
 	// Misc - restrict_radius_ducks
 	misc_table->attach(toggle_restrict_radius_ducks, 0, 2, 7, 8, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
 
 	// Misc - browser_command
-	label = manage(new Gtk::Label(_("Browser Command:")));
-	label->set_alignment(xalign, yalign);
-	misc_table->attach(*label, 0, 1, 4, 5, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
+	attach_label(misc_table, _("Browser Command"), 4, xpadding, ypadding);
 	misc_table->attach(textbox_browser_command, 1, 2, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
 
 	show_all_children();
