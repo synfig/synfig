@@ -214,10 +214,8 @@ studio::Instance::open()
 Instance::Status
 studio::Instance::save()
 {
-	// the filename will be set to "Synfig Animation 1" or some such when first created
-	// and will be changed to an absolute path once it has been saved
-	// so if it still begins with "Synfig Animation " then we need to ask where to save it
-	if(get_file_name().find(DEFAULT_FILENAME_PREFIX)==0)
+	// if we don't have a real filename yet then we need to ask where to save it
+	if (!has_real_filename())
 	{
 		if (dialog_save_as())
 			return STATUS_OK;
@@ -230,6 +228,15 @@ studio::Instance::save()
 
 	App::dialog_error_blocking("Save - Error","Unable to save to '" + get_file_name() + "'");
 	return STATUS_ERROR;
+}
+
+// the filename will be set to "Synfig Animation 1" or some such when first created
+// and will be changed to an absolute path once it has been saved
+// so if it still begins with "Synfig Animation " then we don't have a real filename yet
+bool
+studio::Instance::has_real_filename()
+{
+	return get_file_name().find(DEFAULT_FILENAME_PREFIX) != 0;
 }
 
 bool
@@ -264,7 +271,7 @@ studio::Instance::dialog_save_as()
 		}
 	}
 
-	if (get_file_name().find(DEFAULT_FILENAME_PREFIX) != 0)
+	if (has_real_filename())
 		filename = absolute_path(filename);
 
 	// show the canvas' name if it has one, else its ID

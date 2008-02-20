@@ -178,6 +178,9 @@ public:
 
 	bool save_as(const synfig::String &filename);
 
+	//! returns true if the instance has a real filename associated with it, rather than the made up "synfig animation 1" or some such
+	bool has_real_filename();
+
 	//! Opens a "Save As" dialog, and then saves the composition to that file
 	//! returns true if the save was successful
 	bool dialog_save_as();
