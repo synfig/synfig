@@ -400,6 +400,7 @@ src/synfigapp/timegather.cpp
 src/synfigapp/timegather.h
 src/synfigapp/uimanager.cpp
 src/synfigapp/uimanager.h
+src/synfigapp/value_desc.cpp
 src/synfigapp/value_desc.h
 # Disabled because they are not built
 # src/template.cpp
