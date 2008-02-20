@@ -494,8 +494,8 @@ StateCircle_Context::event_mouse_click_handler(const Smach::event& x)
 
 		if (App::restrict_radius_ducks)
 		{
-			if ((point[0] - point_holder[0]) * get_work_area()->get_pw() < 0) point[0] = point_holder[0];
-			if ((point[1] - point_holder[1]) * get_work_area()->get_ph() > 0) point[1] = point_holder[1];
+			if ((point[0] - point_holder[0]) < 0) point[0] = point_holder[0];
+			if ((point[1] - point_holder[1]) < 0) point[1] = point_holder[1];
 		}
 
 		make_circle(point_holder, point);

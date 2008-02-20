@@ -193,9 +193,6 @@ private:
 
 	mutable synfig::String sketch_filename_;
 
-	//! whether the display is flipped vertically or horizontally
-	bool flip_x_, flip_y_;
-
 	/*
  -- ** -- P R O T E C T E D   D A T A -----------------------------------------
 	*/
@@ -241,9 +238,6 @@ public:
 
 	Duckmatic();
 	virtual ~Duckmatic();
-
-	void set_flip_x(bool flip_x);
-	void set_flip_y(bool flip_y);
 
 	sigc::signal<void>& signal_duck_selection_changed() { return signal_duck_selection_changed_; }
 	sigc::signal<void>& signal_strokes_changed() { return signal_strokes_changed_; }
