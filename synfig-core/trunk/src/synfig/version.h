@@ -68,8 +68,6 @@ extern const char *get_version();
 
 extern const char *get_build_date();
 
-extern const char *get_build_time();
-
 }; // END of namespace synfig
 
 /* === E N D =============================================================== */

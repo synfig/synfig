@@ -93,14 +93,6 @@ synfig::get_build_date()
 	return __DATE__;
 }
 
-const char *
-synfig::get_build_time()
-{
-	return __TIME__;
-}
-
-extern const char *get_build_time();
-
 bool
 synfig::check_version_(int version,int vec_size, int color_size,int canvas_size,int layer_size)
 {
