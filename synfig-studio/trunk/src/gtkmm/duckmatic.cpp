@@ -1695,6 +1695,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 			if(value_node->get_contained_type()==ValueBase::TYPE_VECTOR)
 			{
 				Bezier bezier;
+				int first = -1;
 				for(i=0;i<value_node->link_count();i++)
 				{
 					if(!value_node->list[i].status_at_time(get_time()))
@@ -1702,6 +1703,10 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 					if(!add_to_ducks(synfigapp::ValueDesc(value_node,i),canvas_view,transform_stack))
 						return false;
 					etl::handle<Duck> duck(last_duck());
+
+					// remember the index of the first vertex we didn't skip
+					if (first == -1)
+						first = i;
 
 					if(param_desc)
 					{
@@ -1720,7 +1725,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 					bezier.p1=bezier.p2;bezier.c1=bezier.c2;
 					bezier.p2=bezier.c2=duck;
 
-					if(i>0)
+					if (first != i)
 					{
 						handle<Bezier> bezier_(new Bezier());
 						bezier_->p1=bezier.p1;
