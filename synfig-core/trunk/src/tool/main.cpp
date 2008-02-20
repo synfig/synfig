@@ -387,7 +387,7 @@ int process_global_flags(arg_list_t &arg_list)
 		if(*iter == "--info")
 		{
 			cout<<PACKAGE"-"VERSION<<endl;
-			cout<<"Compiled on "__DATE__ " at "__TIME__;
+			cout<<"Compiled on "__DATE__ /* " at "__TIME__ */;
 #ifdef __GNUC__
 			cout<<" with GCC "<<__VERSION__;
 #endif
