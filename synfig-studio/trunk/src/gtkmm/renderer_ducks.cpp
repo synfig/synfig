@@ -389,11 +389,16 @@ Renderer_Ducks::render_vfunc(
 				Real mag;
 				if (App::restrict_radius_ducks)
 				{
-					Point point((*iter)->get_trans_point());
-					Point origin((*iter)->get_trans_origin());
+					Point sub_trans_point((*iter)->get_sub_trans_point());
+					Point sub_trans_origin((*iter)->get_sub_trans_origin());
 
-					if ((point[0] - origin[0]) * pw < 0) point[0] = origin[0];
-					if ((point[1] - origin[1]) * ph > 0) point[1] = origin[1];
+					if (sub_trans_point[0] < sub_trans_origin[0])
+						sub_trans_point[0] = sub_trans_origin[0];
+					if (sub_trans_point[1] < sub_trans_origin[1])
+						sub_trans_point[1] = sub_trans_origin[1];
+
+					Point point((*iter)->get_transform_stack().perform(sub_trans_point));
+					Point origin((*iter)->get_transform_stack().perform(sub_trans_origin));
 
 					mag = (point-origin).mag();
 				}
