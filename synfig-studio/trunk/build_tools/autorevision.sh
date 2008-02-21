@@ -20,6 +20,10 @@ get_git_svn_id(){
 	if [ x = "x$REVISION" ] ; then
 		# The extra M at the end is for Modified
 		export REVISION=`cd "$1"; git svn find-rev \`git rev-list --max-count=1 --grep='git-svn-id: ' HEAD\``M
+	else
+		if ! git diff --quiet HEAD ; then
+			export REVISION="$REVISION"M
+		fi	
 	fi
 }
 
