@@ -53,6 +53,8 @@ using namespace studio;
 
 /* === M A C R O S ========================================================= */
 
+#define SPINBUTTON_WIDTH 100
+
 /* === G L O B A L S ======================================================= */
 
 /* === P R O C E D U R E S ================================================= */
@@ -263,7 +265,7 @@ Widget_ColorEdit::Widget_ColorEdit():
 
 	color=Color(0,0,0,0);
 
-	set_size_request(150,-1);
+	set_size_request(200,-1);
 	hold_signals=true;
 
 	Gtk::Label *label;
@@ -300,7 +302,7 @@ Widget_ColorEdit::Widget_ColorEdit():
 #define ATTACH_SPIN_BUTTON(i,n) \
 	spinbutton_##n=manage(new class Gtk::SpinButton(n##_adjustment,1,0)); \
 	spinbutton_##n->set_update_policy(Gtk::UPDATE_ALWAYS); \
-	spinbutton_##n->set_size_request(48,-1); \
+	spinbutton_##n->set_size_request(SPINBUTTON_WIDTH,-1); \
 	spinbutton_##n->show(); \
 	table->attach(*spinbutton_##n, 1, 2, 1+2*i, 3+2*i, Gtk::SHRINK, Gtk::EXPAND, 2, 0)
 
@@ -353,6 +355,7 @@ Widget_ColorEdit::Widget_ColorEdit():
 
 	show_all_children();
 
+	set_digits(1);
 	set_value(color);
 
 	hold_signals=false;
@@ -428,10 +431,10 @@ Widget_ColorEdit::set_has_frame(bool x)
 	spinbutton_G->set_has_frame(x);
 	spinbutton_B->set_has_frame(x);
 	spinbutton_A->set_has_frame(x);
-	spinbutton_R->set_size_request(48,-1);
-	spinbutton_G->set_size_request(48,-1);
-	spinbutton_B->set_size_request(48,-1);
-	spinbutton_A->set_size_request(48,-1);
+	spinbutton_R->set_size_request(SPINBUTTON_WIDTH,-1);
+	spinbutton_G->set_size_request(SPINBUTTON_WIDTH,-1);
+	spinbutton_B->set_size_request(SPINBUTTON_WIDTH,-1);
+	spinbutton_A->set_size_request(SPINBUTTON_WIDTH,-1);
 }
 
 void
@@ -441,10 +444,10 @@ Widget_ColorEdit::set_digits(int x)
 	spinbutton_G->set_digits(x);
 	spinbutton_B->set_digits(x);
 	spinbutton_A->set_digits(x);
-	spinbutton_R->set_size_request(48,-1);
-	spinbutton_G->set_size_request(48,-1);
-	spinbutton_B->set_size_request(48,-1);
-	spinbutton_A->set_size_request(48,-1);
+	spinbutton_R->set_size_request(SPINBUTTON_WIDTH,-1);
+	spinbutton_G->set_size_request(SPINBUTTON_WIDTH,-1);
+	spinbutton_B->set_size_request(SPINBUTTON_WIDTH,-1);
+	spinbutton_A->set_size_request(SPINBUTTON_WIDTH,-1);
 }
 
 void
