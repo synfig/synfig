@@ -32,7 +32,14 @@
 
 /* === H E A D E R S ======================================================= */
 
+// include the next line in an attempt to increase stability
+#define ETL_LOCK_REFCOUNTS
+
 #include <cassert>
+
+#ifdef ETL_LOCK_REFCOUNTS
+#  include "_mutex_simple.h"
+#endif
 
 /* === M A C R O S ========================================================= */
 
@@ -67,6 +74,9 @@ class shared_object
 {
 private:
 	mutable int refcount;
+#ifdef ETL_LOCK_REFCOUNTS
+	mutable etl::mutex mtx;
+#endif
 
 protected:
 	shared_object():refcount(0) { }
@@ -79,28 +89,43 @@ protected:
 
 public:
 	void ref()const
-		{ assert(refcount>=0); refcount++; }
+	{
+#ifdef ETL_LOCK_REFCOUNTS
+		etl::mutex::lock lock(mtx);
+#endif
+		assert(refcount>=0);
+		refcount++;
+	}
 
 	//! Returns \c false if object needs to be deleted
 	bool unref()const
 	{
-		assert(refcount>0);
-
-		refcount--;
-
-		if(refcount==0) {
-#ifdef ETL_SELF_DELETING_SHARED_OBJECT
-			refcount=-666;
-			delete this;
+		bool ret = true;
+		{
+#ifdef ETL_LOCK_REFCOUNTS
+			etl::mutex::lock lock(mtx);
 #endif
-			return false;
+			assert(refcount>0);
+
+			refcount--;
+
+			if(refcount==0) {
+				ret = false;
+#ifdef ETL_SELF_DELETING_SHARED_OBJECT
+				refcount=-666;
+#endif
+			}
 		}
 
-		return true;
+#ifdef ETL_SELF_DELETING_SHARED_OBJECT
+		if (!ret)
+			delete this;
+#endif
+		return ret;
 	}
 
-	int count()const
-		{ return refcount; }
+	int count()const { return refcount; }
+
 }; // END of class shared_object
 
 // ========================================================================
