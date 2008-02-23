@@ -259,8 +259,10 @@ public:
 	bool get_canceled()const { return canceled_; }
 	bool get_queued()const { return queued; }
 	bool get_rendering()const { return rendering; }
+#ifdef SINGLE_THREADED
 	bool get_updating()const;
 	void stop_updating(bool cancel = false);
+#endif
 	bool get_full_frame()const { return full_frame; }
 	//int get_w()const { return w; }
 	//int get_h()const { return h; }

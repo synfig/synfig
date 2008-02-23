@@ -191,7 +191,9 @@ public:
 
 	static bool use_colorspace_gamma;
 
+#ifdef SINGLE_THREADED
 	static bool single_threaded;
+#endif
 
 	static bool restrict_radius_ducks;
 

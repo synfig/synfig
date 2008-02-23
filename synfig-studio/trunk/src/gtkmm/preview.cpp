@@ -867,9 +867,11 @@ void studio::Widget_Preview::stoprender()
 		if (!preview->renderer)
 			return;
 
+#ifdef SINGLE_THREADED
 		if (preview->renderer->updating)
 			preview->renderer->stop();
 		else
+#endif
 			preview->renderer.detach();
 	}
 }

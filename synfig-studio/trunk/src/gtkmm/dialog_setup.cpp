@@ -77,7 +77,9 @@ Dialog_Setup::Dialog_Setup():
 	adj_recent_files(15,1,50,1,1,1),
 	adj_undo_depth(100,10,5000,1,1,1),
 	toggle_use_colorspace_gamma(_("Visually Linear Color Selection")),
+#ifdef SINGLE_THREADED
 	toggle_single_threaded(_("Use Only a Single Thread")),
+#endif
 	toggle_restrict_radius_ducks(_("Restrict Real-Valued Ducks to Top Right Quadrant"))
 {
 	// Setup the buttons
@@ -191,15 +193,17 @@ Dialog_Setup::Dialog_Setup():
 	// Misc - use_colorspace_gamma
 	misc_table->attach(toggle_use_colorspace_gamma, 0, 2, 5, 6, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
 
+#ifdef SINGLE_THREADED
 	// Misc - single_threaded
-	misc_table->attach(toggle_single_threaded, 0, 2, 6, 7, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
+	misc_table->attach(toggle_single_threaded, 0, 2, 7, 8, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
+#endif
 
 	// Misc - auto backup interval
 	attach_label(misc_table, _("Auto Backup Interval (0 to disable)"), 3, xpadding, ypadding);
 	misc_table->attach(auto_backup_interval, 1, 2, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
 
 	// Misc - restrict_radius_ducks
-	misc_table->attach(toggle_restrict_radius_ducks, 0, 2, 7, 8, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
+	misc_table->attach(toggle_restrict_radius_ducks, 0, 2, 6, 7, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
 
 	// Misc - browser_command
 	attach_label(misc_table, _("Browser Command"), 4, xpadding, ypadding);
@@ -232,8 +236,10 @@ Dialog_Setup::on_apply_pressed()
 	// Set the use_colorspace_gamma flag
 	App::use_colorspace_gamma=toggle_use_colorspace_gamma.get_active();
 
+#ifdef SINGLE_THREADED
 	// Set the single_threaded flag
 	App::single_threaded=toggle_single_threaded.get_active();
+#endif
 
 	// Set the auto backup interval
 	App::auto_recover->set_timeout(auto_backup_interval.get_value() * 1000);
@@ -319,8 +325,10 @@ Dialog_Setup::refresh()
 	// Refresh the status of the use_colorspace_gamma flag
 	toggle_use_colorspace_gamma.set_active(App::use_colorspace_gamma);
 
+#ifdef SINGLE_THREADED
 	// Refresh the status of the single_threaded flag
 	toggle_single_threaded.set_active(App::single_threaded);
+#endif
 
 	// Refresh the value of the auto backup interval
 	auto_backup_interval.set_value(App::auto_recover->get_timeout() / 1000);

@@ -259,10 +259,12 @@ static double zoom_to_unit(double f)
 
 bool studio::Widget_NavView::on_expose_draw(GdkEventExpose */*exp*/)
 {
+#ifdef SINGLE_THREADED
 	// don't redraw if the previous redraw is still running single-threaded
 	// or we end up destroying the renderer that's rendering it
 	if (App::single_threaded && renderer && renderer->updating)
 		return false;
+#endif
 
 	//print out the zoom
 	//HACK kind of...

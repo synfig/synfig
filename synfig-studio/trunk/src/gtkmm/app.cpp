@@ -261,7 +261,9 @@ studio::Dock_Curves* dock_curves;
 std::list< etl::handle< studio::Module > > module_list_;
 
 bool studio::App::use_colorspace_gamma=true;
+#ifdef SINGLE_THREADED
 bool studio::App::single_threaded=false;
+#endif
 bool studio::App::restrict_radius_ducks=false;
 String studio::App::browser_command("firefox");
 
@@ -474,11 +476,13 @@ public:
 			value=strprintf("%s",Distance::system_name(App::distance_system).c_str());
 			return true;
 		}
+#ifdef SINGLE_THREADED
 		if(key=="single_threaded")
 		{
 			value=strprintf("%i",(int)App::single_threaded);
 			return true;
 		}
+#endif
 		if(key=="auto_recover_backup_interval")
 		{
 			value=strprintf("%i",App::auto_recover->get_timeout());
@@ -544,12 +548,14 @@ public:
 			App::distance_system=Distance::ident_system(value);;
 			return true;
 		}
+#ifdef SINGLE_THREADED
 		if(key=="single_threaded")
 		{
 			int i(atoi(value.c_str()));
 			App::single_threaded=i;
 			return true;
 		}
+#endif
 		if(key=="restrict_radius_ducks")
 		{
 			int i(atoi(value.c_str()));
@@ -573,7 +579,9 @@ public:
 		ret.push_back("distance_system");
 		ret.push_back("file_history.size");
 		ret.push_back("use_colorspace_gamma");
+#ifdef SINGLE_THREADED
 		ret.push_back("single_threaded");
+#endif
 		ret.push_back("auto_recover_backup_interval");
 		ret.push_back("restrict_radius_ducks");
 		ret.push_back("browser_command");
@@ -1476,7 +1484,9 @@ App::reset_initial_window_configuration()
 	synfigapp::Main::settings().set_value("dock.dialog.2.size","1045 235");
 	synfigapp::Main::settings().set_value("pref.distance_system","pt");
 	synfigapp::Main::settings().set_value("pref.use_colorspace_gamma","1");
+#ifdef SINGLE_THREADED
 	synfigapp::Main::settings().set_value("pref.single_threaded","0");
+#endif
 	synfigapp::Main::settings().set_value("pref.restrict_radius_ducks","0");
 	synfigapp::Main::settings().set_value("window.toolbox.pos","4 4");
 }

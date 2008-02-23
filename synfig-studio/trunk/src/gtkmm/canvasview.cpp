@@ -2004,6 +2004,7 @@ static bool _close_instance(etl::handle<Instance> instance)
 bool
 CanvasView::close_instance()
 {
+#ifdef SINGLE_THREADED
 	if (get_work_area()->get_updating())
 	{
 		get_work_area()->stop_updating(true); // stop and mark as cancelled
@@ -2014,6 +2015,7 @@ CanvasView::close_instance()
 			250);
 	}
 	else
+#endif
 		Glib::signal_timeout().connect(
 			sigc::bind(sigc::ptr_fun(_close_instance),
 					   (etl::handle<Instance>)get_instance()),

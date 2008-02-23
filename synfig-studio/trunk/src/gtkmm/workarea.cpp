@@ -828,18 +828,22 @@ WorkArea::~WorkArea()
 		render_idle_func_id=0;
 }
 
+#ifdef SINGLE_THREADED
 bool
 WorkArea::get_updating()const
 {
 	return App::single_threaded && async_renderer && async_renderer->updating;
 }
+#endif
 
+#ifdef SINGLE_THREADED
 void
 WorkArea::stop_updating(bool cancel)
 {
 	async_renderer->stop();
 	if (cancel) canceled_=true;
 }
+#endif
 
 void
 WorkArea::save_meta_data()
@@ -2216,12 +2220,14 @@ public:
 bool
 studio::WorkArea::async_update_preview()
 {
+#ifdef SINGLE_THREADED
 	if (get_updating())
 	{
 		stop_updating();
 		queue_render_preview();
 		return false;
 	}
+#endif
 
 	async_renderer=0;
 

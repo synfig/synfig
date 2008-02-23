@@ -211,8 +211,10 @@ public:
 
 	virtual void end_frame()
 	{
+#ifdef SINGLE_THREADED
 		if (!single_threaded())
 		{
+#endif
 			while(alive_flag)
 			{
 				Glib::Mutex::Lock lock(mutex);
@@ -224,7 +226,9 @@ public:
 				else
 					break;
 			}
+#ifdef SINGLE_THREADED
 		}
+#endif
 		Glib::Mutex::Lock lock(mutex);
 		if(!alive_flag)
 			return;
@@ -316,9 +320,11 @@ public:
 #endif
 		}
 
+#ifdef SINGLE_THREADED
 		if (single_threaded())
 			signal_progress()();
 		else
+#endif
 			while(alive_flag && !ready_next)
 			{
 				Glib::Mutex::Lock lock(mutex);
@@ -345,7 +351,10 @@ public:
 		Glib::Mutex::Lock lock(mutex);
 		if(alive_flag)
 			alive_flag=warm_target->add_frame(&surface);
-		if (!single_threaded()) cond_frame_queue_empty.signal();
+#ifdef SINGLE_THREADED
+		if (!single_threaded())
+#endif
+			cond_frame_queue_empty.signal();
 		ready_next=true;
 	}
 };
@@ -359,8 +368,10 @@ public:
 AsyncRenderer::AsyncRenderer(etl::handle<synfig::Target> target_,synfig::ProgressCallback *cb):
 	error(false),
 	success(false),
-	cb(cb),
-	updating(false)
+	cb(cb)
+#ifdef SINGLE_THREADED
+	, updating(false)
+#endif
 {
 	render_thread=0;
 	if(etl::handle<synfig::Target_Tile>::cast_dynamic(target_))
@@ -405,7 +416,10 @@ AsyncRenderer::stop()
 			signal_stop_();
 
 #if REJOIN_ON_STOP
-			if (!single_threaded()) render_thread->join();
+#ifdef SINGLE_THREADED
+			if (!single_threaded())
+#endif
+				render_thread->join();
 #endif
 
 			// Make sure all the dispatch crap is cleared out
@@ -444,6 +458,7 @@ AsyncRenderer::start()
 	);
 }
 
+#ifdef SINGLE_THREADED
 void
 AsyncRenderer::rendering_progress()
 {
@@ -451,6 +466,7 @@ AsyncRenderer::rendering_progress()
 	while(studio::App::events_pending()) studio::App::iteration(false);
 	updating = false;
 }
+#endif
 
 void
 AsyncRenderer::start_()
@@ -462,6 +478,7 @@ AsyncRenderer::start_()
 		done_connection=signal_done_.connect(mem_fun(*this,&AsyncRenderer::stop));
 #endif
 
+#ifdef SINGLE_THREADED
 		if (single_threaded())
 		{
 			synfig::info("%s:%d rendering in the same thread", __FILE__, __LINE__);
@@ -470,6 +487,7 @@ AsyncRenderer::start_()
 			render_target();
 		}
 		else
+#endif
 		{
 			render_thread=Glib::Thread::create(
 				sigc::mem_fun(*this,&AsyncRenderer::render_target),
