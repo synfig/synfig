@@ -135,7 +135,7 @@ About::About()
 	authors.push_back("Andreas Jochens");
 	authors.push_back("Carlos López González (genete)");
 	authors.push_back("Chris Moore (dooglus)");
-	authors.push_back("Chris Norman (PXEGeek)");
+	authors.push_back("Chris Norman (pixelgeek)");
 	authors.push_back("Daniel Fort");
 	authors.push_back("David Roden (Bombe)");
 	authors.push_back("Dmitriy Pomerantsev (Atrus)");
@@ -153,7 +153,7 @@ About::About()
 	std::vector<Glib::ustring> artists;
 	artists.push_back("Robert B. Quattlebaum Jr. (darco)");
 	artists.push_back("Carlos López González (genete)");
-	artists.push_back("Chris Norman (PXEGeek)");
+	artists.push_back("Chris Norman (pixelgeek)");
 	set_artists(artists);
 
 	// TRANSLATORS: change this to your name, separate multiple names with \n
