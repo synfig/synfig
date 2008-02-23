@@ -1350,12 +1350,13 @@ App::set_recent_file_window_size(etl::handle<Instance> instance)
 		return;
 
 	synfig::String::size_type current=0;
+	bool seen_root(false), shown_non_root(false);
 
 	while(current != synfig::String::npos)
 	{
 		// find end of first field (canvas) or return
 		synfig::String::size_type separator = canvas_window_size.find_first_of(' ', current);
-		if(separator == synfig::String::npos) return;
+		if(separator == synfig::String::npos) break;
 
 		// find the canvas
 		synfig::Canvas::Handle canvas;
@@ -1372,6 +1373,11 @@ App::set_recent_file_window_size(etl::handle<Instance> instance)
 
 		CanvasView::Handle canvasview = instance->find_canvas_view(canvas);
 		canvasview->present();
+
+		if (canvas->is_root())
+			seen_root = true;
+		else
+			shown_non_root = true;
 
 		// check that we have the tab character the ends this canvas' data or return
 		current = separator+1;
@@ -1404,6 +1410,9 @@ App::set_recent_file_window_size(etl::handle<Instance> instance)
 
 		current = separator+1;
 	}
+
+	if (shown_non_root && !seen_root)
+		instance->find_canvas_view(instance->get_canvas())->hide();
 }
 
 void
