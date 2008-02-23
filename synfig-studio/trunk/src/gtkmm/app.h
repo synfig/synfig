@@ -253,6 +253,7 @@ public:
 	*/
 
 private:
+	static void add_recent_file(const std::string &filename, const std::string &window_size = std::string());
 
 	/*
  -- ** -- P U B L I C   M E T H O D S -----------------------------------------
@@ -273,7 +274,8 @@ public:
 
 	static Glib::RefPtr<UIManager>& ui_manager() { return ui_manager_; }
 
-	static void add_recent_file(const std::string &filename);
+	static void set_recent_file_window_size(etl::handle<Instance> instance);
+	static void add_recent_file(const etl::handle<Instance> instance);
 
 	static synfig::String get_base_path();
 	static void save_settings();

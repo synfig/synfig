@@ -51,6 +51,8 @@
 
 #include <gtk/gtk.h>
 
+#include <gdkmm/general.h>
+
 #include <synfig/loadcanvas.h>
 #include <synfig/savecanvas.h>
 
@@ -202,6 +204,8 @@ App::signal_instance_deleted() { return signal_instance_deleted_; }
 
 static std::list<std::string> recent_files;
 const std::list<std::string>& App::get_recent_files() { return recent_files; }
+
+static std::list<std::string> recent_files_window_size;
 
 int	App::Busy::count;
 bool App::shutdown_in_progress;
@@ -1331,8 +1335,109 @@ App::get_config_file(const synfig::String& file)
 	return Glib::build_filename(get_user_app_directory(),file);
 }
 
+#define SCALE_FACTOR	(1280)
+//! set the \a instance's canvas(es) position and size to be those specified in the first entry of recent_files_window_size
 void
-App::add_recent_file(const std::string &file_name)
+App::set_recent_file_window_size(etl::handle<Instance> instance)
+{
+	int screen_w(Gdk::screen_width());
+	int screen_h(Gdk::screen_height());
+
+	const std::string &canvas_window_size = *recent_files_window_size.begin();
+
+	if(canvas_window_size.empty())
+		return;
+
+	synfig::String::size_type current=0;
+
+	while(current != synfig::String::npos)
+	{
+		// find end of first field (canvas) or return
+		synfig::String::size_type separator = canvas_window_size.find_first_of(' ', current);
+		if(separator == synfig::String::npos) return;
+
+		// find the canvas
+		synfig::Canvas::Handle canvas;
+		try {
+			canvas = instance->get_canvas()->find_canvas(String(canvas_window_size, current, separator-current));
+		}
+		catch(Exception::IDNotFound) {
+			// can't find the canvas; skip to the next canvas or return
+			separator = canvas_window_size.find_first_of('\t', current);
+			if(separator == synfig::String::npos) return;
+			current = separator+1;
+			continue;
+		}
+
+		CanvasView::Handle canvasview = instance->find_canvas_view(canvas);
+		canvasview->present();
+
+		// check that we have the tab character the ends this canvas' data or return
+		current = separator+1;
+		separator = canvas_window_size.find_first_of('\t', current);
+		if(separator == synfig::String::npos) return;
+
+		int x,y,w,h;
+		if(!strscanf(String(canvas_window_size, current, separator-current),"%d %d %d %d",&x, &y, &w, &h))
+		{
+			current = separator+1;
+			continue;
+		}
+
+		if (x > SCALE_FACTOR) x = SCALE_FACTOR - 150; if (x < 0) x = 0;
+		if (y > SCALE_FACTOR) y = SCALE_FACTOR - 150; if (y < 0) y = 0;
+		x=x*screen_w/SCALE_FACTOR;
+		y=y*screen_h/SCALE_FACTOR;
+		if(getenv("SYNFIG_WINDOW_POSITION_X_OFFSET"))
+			x += atoi(getenv("SYNFIG_WINDOW_POSITION_X_OFFSET"));
+		if(getenv("SYNFIG_WINDOW_POSITION_Y_OFFSET"))
+			y += atoi(getenv("SYNFIG_WINDOW_POSITION_Y_OFFSET"));
+		canvasview->move(x,y);
+
+		if (w > SCALE_FACTOR) w = 150; if (w < 0) w = 0;
+		if (h > SCALE_FACTOR) h = 150; if (h < 0) h = 0;
+		w=w*screen_w/SCALE_FACTOR;
+		h=h*screen_h/SCALE_FACTOR;
+		canvasview->set_default_size(w,h);
+		canvasview->set_size_request(w,h);
+
+		current = separator+1;
+	}
+}
+
+void
+App::add_recent_file(const etl::handle<Instance> instance)
+{
+	int screen_w(Gdk::screen_width());
+	int screen_h(Gdk::screen_height());
+
+	std::string canvas_window_size;
+
+	const Instance::CanvasViewList& cview_list = instance->canvas_view_list();
+	Instance::CanvasViewList::const_iterator iter;
+
+	for(iter=cview_list.begin();iter!=cview_list.end();iter++)
+	{
+		if( !((*iter)->is_visible()) )
+			continue;
+
+		etl::handle<synfig::Canvas> canvas = (*iter)->get_canvas();
+		int x_pos, y_pos, x_size, y_size;
+		(*iter)->get_position(x_pos,y_pos);
+		(*iter)->get_size(x_size,y_size);
+
+		canvas_window_size += strprintf("%s %d %d %d %d\t",
+										canvas->get_relative_id(canvas->get_root()).c_str(),
+										x_pos*SCALE_FACTOR/screen_w,  y_pos*SCALE_FACTOR/screen_h,
+										x_size*SCALE_FACTOR/screen_w, y_size*SCALE_FACTOR/screen_h);
+	}
+
+	add_recent_file(absolute_path(instance->get_file_name()), canvas_window_size);
+}
+#undef SCALE_FACTOR
+
+void
+App::add_recent_file(const std::string &file_name, const std::string &window_size)
 {
 	std::string filename(file_name);
 
@@ -1349,23 +1454,35 @@ App::add_recent_file(const std::string &file_name)
 	if(!is_absolute_path(filename))
 		filename=absolute_path(filename);
 
+	std::string old_window_size;
+
 	list<string>::iterator iter;
+	list<string>::iterator iter_wsize;
 	// Check to see if the file is already on the list.
 	// If it is, then remove it from the list
-	for(iter=recent_files.begin();iter!=recent_files.end();iter++)
+	for(iter=recent_files.begin(), iter_wsize=recent_files_window_size.begin();iter!=recent_files.end();iter++, iter_wsize++)
 		if(*iter==filename)
 		{
 			recent_files.erase(iter);
+			old_window_size = *iter_wsize;
+			recent_files_window_size.erase(iter_wsize);
 			break;
 		}
 
 
 	// Push the filename to the front of the list
 	recent_files.push_front(filename);
+	if(window_size.empty())
+		recent_files_window_size.push_front(old_window_size);
+	else
+		recent_files_window_size.push_front(window_size);
 
 	// Clean out the files at the end of the list.
 	while(recent_files.size()>(unsigned)get_max_recent_files())
+	{
 		recent_files.pop_back();
+		recent_files_window_size.pop_back();
+	}
 
 	signal_recent_files_changed_();
 
@@ -1415,7 +1532,23 @@ App::save_settings()
 			for(iter=recent_files.rbegin();iter!=recent_files.rend();iter++)
 				file<<*iter<<endl;
 		}while(0);
+		do{
+			std::string filename=get_config_file("recentfiles")+std::string("_window_size");
 
+			std::ofstream file(filename.c_str());
+
+			if(!file)
+			{
+				synfig::warning("Unable to save %s",filename.c_str());
+				break;
+			}
+
+			list<string>::reverse_iterator iter;
+
+			for(iter=recent_files_window_size.rbegin();iter!=recent_files_window_size.rend();iter++)
+				file<<*iter<<endl;
+
+		}while(0);
 		std::string filename=get_config_file("settings");
 		synfigapp::Main::settings().save_to_file(filename);
 	setlocale(LC_NUMERIC,old_locale);
@@ -1439,16 +1572,41 @@ App::load_settings()
 			Gtk::AccelMap::load(filename);
 		}
 		{
+			bool window_size_broken = false;
+
 			std::string filename=get_config_file("recentfiles");
+			std::string filename_window_size=filename+std::string("_window_size");
 
 			std::ifstream file(filename.c_str());
+			std::ifstream file_window_size(filename_window_size.c_str());
+
+			if(!file_window_size)
+				window_size_broken = true;
 
 			while(file)
 			{
 				std::string recent_file;
+				std::string recent_file_window_size;
 				getline(file,recent_file);
+				if(!window_size_broken)
+					getline(file_window_size,recent_file_window_size);
 				if(!recent_file.empty())
-					add_recent_file(recent_file);
+				{
+					if(!window_size_broken && !file_window_size)
+						window_size_broken = true;
+					if(!window_size_broken)
+						add_recent_file(recent_file,recent_file_window_size);
+					else
+						add_recent_file(recent_file);
+				}
+			}
+			if(!window_size_broken && file_window_size)
+				window_size_broken = true;
+
+			if(window_size_broken)
+			{
+				recent_files_window_size.clear();
+				recent_files_window_size.resize(recent_files.size());
 			}
 		}
 		std::string filename=get_config_file("settings");
@@ -2021,6 +2179,8 @@ App::open_as(std::string filename,std::string as)
 
 			if(!instance)
 				throw (String)strprintf(_("Unable to create instance for \"%s\""),filename.c_str());
+
+			set_recent_file_window_size(instance);
 
 			one_moment.hide();
 

@@ -199,7 +199,7 @@ studio::Instance::save_as(const synfig::String &file_name)
 		list<handle<CanvasView> >::iterator iter;
 		for(iter=canvas_view_list().begin();iter!=canvas_view_list().end();iter++)
 			(*iter)->render_settings.set_entry_filename();
-		App::add_recent_file(file_name);
+		App::add_recent_file(etl::handle<Instance>(this));
 		return true;
 	}
 	return false;
@@ -224,7 +224,10 @@ studio::Instance::save()
 	}
 
 	if (synfigapp::Instance::save())
+	{
+		App::add_recent_file(etl::handle<Instance>(this));
 		return STATUS_OK;
+	}
 
 	App::dialog_error_blocking("Save - Error","Unable to save to '" + get_file_name() + "'");
 	return STATUS_ERROR;
