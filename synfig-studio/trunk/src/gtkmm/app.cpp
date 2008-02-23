@@ -1371,9 +1371,6 @@ App::set_recent_file_window_size(etl::handle<Instance> instance)
 			continue;
 		}
 
-		CanvasView::Handle canvasview = instance->find_canvas_view(canvas);
-		canvasview->present();
-
 		if (canvas->is_root())
 			seen_root = true;
 		else
@@ -1399,14 +1396,14 @@ App::set_recent_file_window_size(etl::handle<Instance> instance)
 			x += atoi(getenv("SYNFIG_WINDOW_POSITION_X_OFFSET"));
 		if(getenv("SYNFIG_WINDOW_POSITION_Y_OFFSET"))
 			y += atoi(getenv("SYNFIG_WINDOW_POSITION_Y_OFFSET"));
-		canvasview->move(x,y);
 
 		if (w > SCALE_FACTOR) w = 150; if (w < 0) w = 0;
 		if (h > SCALE_FACTOR) h = 150; if (h < 0) h = 0;
-		w=w*screen_w/SCALE_FACTOR;
-		h=h*screen_h/SCALE_FACTOR;
-		canvasview->set_default_size(w,h);
-		canvasview->set_size_request(w,h);
+
+		CanvasView::Handle canvasview = instance->find_canvas_view(canvas);
+		canvasview->move(x,y);
+		canvasview->resize(w*screen_w/SCALE_FACTOR,h*screen_h/SCALE_FACTOR);
+		canvasview->present();
 
 		current = separator+1;
 	}
