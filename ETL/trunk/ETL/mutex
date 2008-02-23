@@ -29,7 +29,13 @@
 
 #include "etl_config.h"
 
-#include "_mutex_simple.h"
+#ifdef HAVE_LIBPTHREAD
+#  include "_mutex_pthreads_simple.h"
+#else
+#ifdef _WIN32
+#  include "_mutex_win32.h"
+#endif
+#endif
 
 /* === E N D =============================================================== */
 

@@ -6,6 +6,7 @@
 **
 **	\legal
 **	Copyright (c) 2002 Robert B. Quattlebaum Jr.
+**	Copyright (c) 2008 Chris Moore
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -28,6 +29,13 @@
 /* === H E A D E R S ======================================================= */
 
 #include "etl_config.h"
+
+// include the next line in an attempt to increase stability
+#define ETL_LOCK_REFCOUNTS
+
+#ifdef ETL_LOCK_REFCOUNTS
+#  include "mutex"
+#endif
 
 #include "_handle.h"
 

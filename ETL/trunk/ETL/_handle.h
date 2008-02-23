@@ -6,7 +6,7 @@
 **
 **	\legal
 **	Copyright (c) 2002 Robert B. Quattlebaum Jr.
-**	Copyright (c) 2007 Chris Moore
+**	Copyright (c) 2007, 2008 Chris Moore
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -32,14 +32,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-// include the next line in an attempt to increase stability
-#define ETL_LOCK_REFCOUNTS
-
 #include <cassert>
-
-#ifdef ETL_LOCK_REFCOUNTS
-#  include "_mutex_simple.h"
-#endif
 
 /* === M A C R O S ========================================================= */
 
