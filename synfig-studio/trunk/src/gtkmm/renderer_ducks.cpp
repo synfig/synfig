@@ -320,11 +320,11 @@ Renderer_Ducks::render_vfunc(
 			if(solid_lines)
 			{
 				gc->set_line_attributes(3,Gdk::LINE_SOLID,Gdk::CAP_BUTT,Gdk::JOIN_MITER);
-				gc->set_rgb_fg_color(Gdk::Color("#000000"));
+				gc->set_rgb_fg_color(DUCK_COLOR_CONNECT_OUTSIDE);
 				gc->set_function(Gdk::COPY);
 				drawable->draw_line(gc, (int)origin[0],(int)origin[1],(int)(point[0]),(int)(point[1]));
 				gc->set_line_attributes(1,Gdk::LINE_SOLID,Gdk::CAP_BUTT,Gdk::JOIN_MITER);
-				gc->set_rgb_fg_color(Gdk::Color("#9fefef"));
+				gc->set_rgb_fg_color(DUCK_COLOR_CONNECT_INSIDE);
 				drawable->draw_line(gc, (int)origin[0],(int)origin[1],(int)(point[0]),(int)(point[1]));
 			}
 			else
@@ -333,11 +333,11 @@ Renderer_Ducks::render_vfunc(
 //				gc->set_function(Gdk::INVERT);
 //				drawable->draw_line(gc, (int)origin[0],(int)origin[1],(int)(point[0]),(int)(point[1]));
 				gc->set_line_attributes(1,Gdk::LINE_SOLID,Gdk::CAP_BUTT,Gdk::JOIN_MITER);
-				gc->set_rgb_fg_color(Gdk::Color("#000000"));
+				gc->set_rgb_fg_color(DUCK_COLOR_CONNECT_OUTSIDE);
 				gc->set_function(Gdk::COPY);
 				drawable->draw_line(gc, (int)origin[0],(int)origin[1],(int)(point[0]),(int)(point[1]));
 				gc->set_line_attributes(1,Gdk::LINE_ON_OFF_DASH,Gdk::CAP_BUTT,Gdk::JOIN_MITER);
-				gc->set_rgb_fg_color(Gdk::Color("#9fefef"));
+				gc->set_rgb_fg_color(DUCK_COLOR_CONNECT_INSIDE);
 				drawable->draw_line(gc, (int)origin[0],(int)origin[1],(int)(point[0]),(int)(point[1]));
 			}
 		}
@@ -409,14 +409,14 @@ Renderer_Ducks::render_vfunc(
 				real_mag.convert(App::distance_system,get_work_area()->get_rend_desc());
 				layout->set_text(real_mag.get_string());
 
-				gc->set_rgb_fg_color(Gdk::Color("#000000"));
+				gc->set_rgb_fg_color(DUCK_COLOR_WIDTH_TEXT_1);
 				drawable->draw_layout(
 					gc,
 					round_to_int(point[0])+1+6,
 					round_to_int(point[1])+1-8,
 					layout
 				);
-				gc->set_rgb_fg_color(Gdk::Color("#FF00FF"));
+				gc->set_rgb_fg_color(DUCK_COLOR_WIDTH_TEXT_2);
 				drawable->draw_layout(
 					gc,
 					round_to_int(point[0])+6,

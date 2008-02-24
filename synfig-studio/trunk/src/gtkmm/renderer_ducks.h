@@ -41,7 +41,6 @@
 #define DUCK_COLOR_TANGENT_2	Gdk::Color("#ff0000")
 #define DUCK_COLOR_VERTEX		Gdk::Color("#ff7f00")
 #define DUCK_COLOR_WIDTH		Gdk::Color("#ff00ff")
-
 #define DUCK_COLOR_OTHER		Gdk::Color("#00ff00")
 
 #define DUCK_COLOR_OUTLINE		Gdk::Color("#000000") // the outline around each duck
@@ -53,6 +52,12 @@
 #define DUCK_COLOR_BOX_2		Gdk::Color("#000000")
 
 #define DUCK_COLOR_SELECTED		Gdk::Color("#ff0000") // the color of the box drawn when a valuenode is selected
+
+#define DUCK_COLOR_CONNECT_INSIDE	Gdk::Color("#9fefef") // the color of the inside of the line connecting a vertex duck to the tangent ducks
+#define DUCK_COLOR_CONNECT_OUTSIDE	Gdk::Color("#000000") // the color of the outside of the line connecting a vertex duck to the tangent ducks
+
+#define DUCK_COLOR_WIDTH_TEXT_1	Gdk::Color("#000000") // the color of the text's shadow when hovering over a width duck
+#define DUCK_COLOR_WIDTH_TEXT_2	Gdk::Color("#ff00ff") // the color of the text when hovering over a width duck
 
 /* === T Y P E D E F S ===================================================== */
 
