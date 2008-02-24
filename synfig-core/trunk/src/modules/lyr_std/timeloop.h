@@ -52,6 +52,7 @@ private:
 	synfig::Time	end_time;
 	bool			old_version;
 	bool			only_for_positive_duration;
+	bool			symmetrical; // the 0.1 version of this layer behaved differently before 'start_time' was reached
 
 protected:
 	Layer_TimeLoop();

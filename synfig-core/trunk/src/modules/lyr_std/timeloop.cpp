@@ -67,6 +67,7 @@ Layer_TimeLoop::Layer_TimeLoop()
 {
 	old_version=false;
 	only_for_positive_duration=false;
+	symmetrical=true;
 	link_time=0;
 	local_time=0;
 	duration=1;
@@ -90,6 +91,7 @@ Layer_TimeLoop::set_param(const String & param, const ValueBase &value)
 		IMPORT(link_time);
 		IMPORT(duration);
 		IMPORT(only_for_positive_duration);
+		IMPORT(symmetrical);
 	}
 
 	return Layer::set_param(param,value);
@@ -102,6 +104,7 @@ Layer_TimeLoop::get_param(const String & param)const
 	EXPORT(local_time);
 	EXPORT(duration);
 	EXPORT(only_for_positive_duration);
+	EXPORT(symmetrical);
 	EXPORT_NAME();
 	EXPORT_VERSION();
 
@@ -127,6 +130,10 @@ Layer_TimeLoop::get_param_vocab()const
 
 	ret.push_back(ParamDesc("only_for_positive_duration")
 		.set_local_name(_("Only For Positive Duration"))
+	);
+
+	ret.push_back(ParamDesc("symmetrical")
+		.set_local_name(_("Symmetrical"))
 	);
 
 	return ret;
@@ -163,6 +170,7 @@ Layer_TimeLoop::reset_version()
 	local_time = start_time;
 	duration = end_time - start_time;
 	only_for_positive_duration = true;
+	symmetrical = false;
 
 	//! \todo layer version 0.1 acted differently before start_time was reached - possibly due to a bug
 	link_time = 0;
@@ -204,21 +212,28 @@ Layer_TimeLoop::reset_version()
 void
 Layer_TimeLoop::set_time(Context context, Time t)const
 {
-	if (only_for_positive_duration && duration <= 0)
-		;						// don't change the time
- 	else if (duration == 0)
-		t = link_time;
-	else if (duration > 0)
+	Time time = t;
+
+	if (!only_for_positive_duration || duration > 0)
 	{
-		t -= local_time;
-		t -= floor(t / duration) * duration;
-		t  = link_time + t;
-	}
-	else
-	{
-		t -= local_time;
-		t -= floor(t / -duration) * -duration;
-		t  = link_time - t;
+		if (duration == 0)
+			t = link_time;
+		else if (duration > 0)
+		{
+			t -= local_time;
+			t -= floor(t / duration) * duration;
+			t  = link_time + t;
+		}
+		else
+		{
+			t -= local_time;
+			t -= floor(t / -duration) * -duration;
+			t  = link_time - t;
+		}
+
+		// for compatibility with v0.1 layers; before local_time is reached, take a step back
+		if (!symmetrical && time < local_time)
+			t -= duration;
 	}
 
 	context.set_time(t);
