@@ -768,29 +768,28 @@ synfig::save_canvas(const String &filename, Canvas::ConstHandle canvas)
 		encode_canvas_toplevel(document.create_root_node("canvas"),canvas);
 
 		document.write_to_file_formatted(tmp_filename);
-	}
-	catch(...) { synfig::error("synfig::save_canvas(): Caught unknown exception"); return false; }
-
 
 #ifdef _WIN32
-	// On Win32 platforms, rename() has bad behavior. work around it.
-	char old_file[80]="sif.XXXXXXXX";
-	mktemp(old_file);
-	rename(filename.c_str(),old_file);
-	if(rename(tmp_filename.c_str(),filename.c_str())!=0)
-	{
-		rename(old_file,tmp_filename.c_str());
-		synfig::error("synfig::save_canvas(): Unable to rename file to correct filename, errno=%d",errno);
-		return false;
-	}
-	remove(old_file);
+		// On Win32 platforms, rename() has bad behavior. work around it.
+		char old_file[80]="sif.XXXXXXXX";
+		mktemp(old_file);
+		rename(filename.c_str(),old_file);
+		if(rename(tmp_filename.c_str(),filename.c_str())!=0)
+		{
+			rename(old_file,tmp_filename.c_str());
+			synfig::error("synfig::save_canvas(): Unable to rename file to correct filename, errno=%d",errno);
+			return false;
+		}
+		remove(old_file);
 #else
-	if(rename(tmp_filename.c_str(),filename.c_str())!=0)
-	{
-		synfig::error("synfig::save_canvas(): Unable to rename file to correct filename, errno=%d",errno);
-		return false;
-	}
+		if(rename(tmp_filename.c_str(),filename.c_str())!=0)
+		{
+			synfig::error("synfig::save_canvas(): Unable to rename file to correct filename, errno=%d",errno);
+			return false;
+		}
 #endif
+	}
+	catch(...) { synfig::error("synfig::save_canvas(): Caught unknown exception"); return false; }
 
 	return true;
 }
