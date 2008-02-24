@@ -31,7 +31,10 @@
 #include "etl_config.h"
 
 // include the next line in an attempt to increase stability
+// it seems to make things much *less* stable on MS Windows
+#ifndef _WIN32
 #define ETL_LOCK_REFCOUNTS
+#endif
 
 #ifdef ETL_LOCK_REFCOUNTS
 #  include "mutex"
