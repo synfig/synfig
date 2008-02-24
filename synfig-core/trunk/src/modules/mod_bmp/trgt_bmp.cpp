@@ -55,7 +55,8 @@ SYNFIG_TARGET_SET_VERSION(bmp,"0.1");
 SYNFIG_TARGET_SET_CVS_ID(bmp,"$Id$");
 
 /* === C L A S S E S & S T R U C T S ======================================= */
-
+namespace synfig {
+	
 struct BITMAPFILEHEADER
 {
 	unsigned char	bfType[2];
@@ -80,6 +81,7 @@ struct BITMAPINFOHEADER
 	unsigned long	biClrImportant;
 };
 
+}
 /* === M E T H O D S ======================================================= */
 
 #ifdef WORDS_BIGENDIAN
@@ -195,15 +197,15 @@ bmp::start_frame(synfig::ProgressCallback *callback)
 		return false;
 	}
 
-	BITMAPFILEHEADER fileheader;
-	BITMAPINFOHEADER infoheader;
+	synfig::BITMAPFILEHEADER fileheader;
+	synfig::BITMAPINFOHEADER infoheader;
 
 	fileheader.bfType[0]='B';
 	fileheader.bfType[1]='M';
-	fileheader.bfSize=little_endian(sizeof(BITMAPFILEHEADER)+sizeof(BITMAPINFOHEADER)+rowspan*h);
+	fileheader.bfSize=little_endian(sizeof(synfig::BITMAPFILEHEADER)+sizeof(synfig::BITMAPINFOHEADER)+rowspan*h);
 	fileheader.bfReserved1=0;
 	fileheader.bfReserved2=0;
-	fileheader.bfOffsetBits=little_endian(sizeof(BITMAPFILEHEADER)+sizeof(BITMAPINFOHEADER)-2);
+	fileheader.bfOffsetBits=little_endian(sizeof(synfig::BITMAPFILEHEADER)+sizeof(synfig::BITMAPINFOHEADER)-2);
 
 	infoheader.biSize=little_endian(40);
 	infoheader.biWidth=little_endian(w);
@@ -219,14 +221,14 @@ bmp::start_frame(synfig::ProgressCallback *callback)
 
 	fprintf(file,"BM");
 
-	if(!fwrite(&fileheader.bfSize,sizeof(BITMAPFILEHEADER)-4,1,file))
+	if(!fwrite(&fileheader.bfSize,sizeof(synfig::BITMAPFILEHEADER)-4,1,file))
 	{
 		if(callback)callback->error(_("Unable to write file header to file"));
 		else synfig::error(_("Unable to write file header to file"));
 		return false;
 	}
 
-	if(!fwrite(&infoheader,sizeof(BITMAPINFOHEADER),1,file))
+	if(!fwrite(&infoheader,sizeof(synfig::BITMAPINFOHEADER),1,file))
 	{
 		if(callback)callback->error(_("Unable to write info header"));
 		else synfig::error(_("Unable to write info header"));

@@ -980,13 +980,13 @@ inline String guid_string(const synfigapp::ValueDesc& x)
 		return strprintf("%s",x.get_value_node()->get_guid().get_string().c_str());
 }
 
-inline GUID calc_duck_guid(const synfigapp::ValueDesc& x,const synfig::TransformStack& transform_stack)
+inline synfig::GUID calc_duck_guid(const synfigapp::ValueDesc& x,const synfig::TransformStack& transform_stack)
 {
-	GUID ret(0);
+	synfig::GUID ret(0);
 
 	if(x.parent_is_layer_param())
 	{
-		ret=x.get_layer()->get_guid()^GUID::hasher(x.get_param_name());
+		ret=x.get_layer()->get_guid()^synfig::GUID::hasher(x.get_param_name());
 	}
 	else
 	{
@@ -1001,7 +1001,7 @@ inline GUID calc_duck_guid(const synfigapp::ValueDesc& x,const synfig::Transform
 Duck::Handle
 Duckmatic::create_duck_from(const synfigapp::ValueDesc& value_desc,etl::handle<CanvasView> canvas_view, const synfig::TransformStack& transform_stack, int modifier, synfig::ParamDesc *param_desc)
 {
-	GUID duck_guid(calc_duck_guid(value_desc,transform_stack)^GUID::hasher(modifier));
+	synfig::GUID duck_guid(calc_duck_guid(value_desc,transform_stack)^synfig::GUID::hasher(modifier));
 	etl::handle<Duck> duck=new Duck();
 
 	return duck;
@@ -1070,7 +1070,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 						0.0f),
 					value_desc));
 
-			duck->set_guid(calc_duck_guid(value_desc,transform_stack)^GUID::hasher(multiple));
+			duck->set_guid(calc_duck_guid(value_desc,transform_stack)^synfig::GUID::hasher(multiple));
 
 			add_duck(duck);
 
@@ -1139,7 +1139,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 							&studio::CanvasView::popup_param_menu),
 						0.0f),
 					value_desc));
-			duck->set_guid(calc_duck_guid(value_desc,transform_stack)^GUID::hasher(multiple));
+			duck->set_guid(calc_duck_guid(value_desc,transform_stack)^synfig::GUID::hasher(multiple));
 
 			add_duck(duck);
 
@@ -1176,9 +1176,9 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				{
 					synfigapp::ValueDesc value_desc_origin(value_desc.get_layer(),param_desc->get_connect());
 					Duck::Handle connect_duck;
-					if(duck_map.find(calc_duck_guid(value_desc_origin,transform_stack)^GUID::hasher(0))!=duck_map.end())
+					if(duck_map.find(calc_duck_guid(value_desc_origin,transform_stack)^synfig::GUID::hasher(0))!=duck_map.end())
 					{
-						connect_duck=duck_map[calc_duck_guid(value_desc_origin,transform_stack)^GUID::hasher(0)];
+						connect_duck=duck_map[calc_duck_guid(value_desc_origin,transform_stack)^synfig::GUID::hasher(0)];
 					}
 					else
 					{
@@ -1230,7 +1230,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 							&studio::CanvasView::popup_param_menu),
 						1.0f),
 					value_desc));
-			duck->set_guid(calc_duck_guid(value_desc,transform_stack)^GUID::hasher(multiple));
+			duck->set_guid(calc_duck_guid(value_desc,transform_stack)^synfig::GUID::hasher(multiple));
 			add_duck(duck);
 
 			return true;
@@ -1474,7 +1474,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 */
 						}
 					}
-					duck->set_guid(calc_duck_guid(synfigapp::ValueDesc(value_node,i),transform_stack)^GUID::hasher(".v"));
+					duck->set_guid(calc_duck_guid(synfigapp::ValueDesc(value_node,i),transform_stack)^synfig::GUID::hasher(".v"));
 					duck=add_similar_duck(duck);
 //					add_duck(duck);
 				}
@@ -1528,7 +1528,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 						tduck->set_editable(false);
 						tduck->set_name(guid_string(synfigapp::ValueDesc(value_node,i))+".t1");
 //						tduck->set_name(strprintf("%x-tangent1",value_node->get_link(i).get()));
-						tduck->set_guid(calc_duck_guid(synfigapp::ValueDesc(value_node,i),transform_stack)^GUID::hasher(".t1"));
+						tduck->set_guid(calc_duck_guid(synfigapp::ValueDesc(value_node,i),transform_stack)^synfig::GUID::hasher(".t1"));
 						tduck=add_similar_duck(tduck);
 //						add_duck(duck);
 					}
@@ -1585,7 +1585,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 
 					tduck->set_transform_stack(transform_stack);
 					tduck->set_name(guid_string(synfigapp::ValueDesc(value_node,i))+".t2");
-					tduck->set_guid(calc_duck_guid(synfigapp::ValueDesc(value_node,i),transform_stack)^GUID::hasher(".t2"));
+					tduck->set_guid(calc_duck_guid(synfigapp::ValueDesc(value_node,i),transform_stack)^synfig::GUID::hasher(".t2"));
 					tduck->set_editable(false);
 					tduck=add_similar_duck(tduck);
 //					add_duck(duck);
@@ -1650,7 +1650,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 					tduck->set_name(guid_string(synfigapp::ValueDesc(value_node,first))+".t1");
 					//tduck->set_name(strprintf("%x-tangent1",value_node->get_link(first).get()));
 					tduck=add_similar_duck(tduck);
-					tduck->set_guid(calc_duck_guid(synfigapp::ValueDesc(value_node,first),transform_stack)^GUID::hasher(".t1"));
+					tduck->set_guid(calc_duck_guid(synfigapp::ValueDesc(value_node,first),transform_stack)^synfig::GUID::hasher(".t1"));
 					//add_duck(duck);
 				}
 

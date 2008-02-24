@@ -59,11 +59,11 @@ ACTION_SET_CVS_ID(Action::ValueNodeReplace,"$Id$");
 
 void swap_guid(const ValueNode::Handle& a,const ValueNode::Handle& b)
 {
-	GUID old_a(a->get_guid());
-	a->set_guid(GUID());
+	synfig::GUID old_a(a->get_guid());
+	a->set_guid(synfig::GUID());
 
-	GUID old_b(b->get_guid());
-	b->set_guid(GUID());
+	synfig::GUID old_b(b->get_guid());
+	b->set_guid(synfig::GUID());
 
 	a->set_guid(old_b);
 	b->set_guid(old_a);

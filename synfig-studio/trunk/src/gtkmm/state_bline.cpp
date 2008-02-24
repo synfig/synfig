@@ -1006,7 +1006,7 @@ StateBLine_Context::refresh_ducks(bool button_down)
 		duck->signal_user_click(2).connect(
 			sigc::bind(sigc::mem_fun(*this,&studio::StateBLine_Context::popup_vertex_menu),value_node)
 		);
-		duck->set_guid(value_node->get_guid()^GUID::hasher(0));
+		duck->set_guid(value_node->get_guid()^synfig::GUID::hasher(0));
 
 		get_work_area()->add_duck(duck);
 
@@ -1017,7 +1017,7 @@ StateBLine_Context::refresh_ducks(bool button_down)
 		tduck->set_origin(duck);
 		tduck->set_scalar(-0.33333333333333333);
 		tduck->set_tangent(true);
-		tduck->set_guid(value_node->get_guid()^GUID::hasher(3));
+		tduck->set_guid(value_node->get_guid()^synfig::GUID::hasher(3));
 		tduck->signal_edited().connect(
 			sigc::bind(sigc::mem_fun(*this,&studio::StateBLine_Context::on_tangent1_change),value_node)
 		);
@@ -1080,7 +1080,7 @@ StateBLine_Context::refresh_ducks(bool button_down)
 				sigc::bind(sigc::mem_fun(*this,&studio::StateBLine_Context::on_tangent1_change),value_node)
 			);
 		}
-		tduck->set_guid(value_node->get_guid()^GUID::hasher(4));
+		tduck->set_guid(value_node->get_guid()^synfig::GUID::hasher(4));
 		tduck->signal_user_click(2).connect(
 			sigc::bind(sigc::mem_fun(*this,&studio::StateBLine_Context::popup_handle_menu),value_node)
 		);
@@ -1165,8 +1165,8 @@ StateBLine_Context::refresh_ducks(bool button_down)
 		//get_work_area()->add_duck(bezier->c2);
 		get_work_area()->add_bezier(bezier);
 
-		duck->set_guid(GUID());
-		tduck->set_guid(GUID());
+		duck->set_guid(synfig::GUID());
+		tduck->set_guid(synfig::GUID());
 
 		next_duck=duck;
 	}

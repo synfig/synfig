@@ -333,7 +333,8 @@ studio::get_tree_pixbuf(synfig::ValueBase::Type type)
 	//return Gtk::Button().render_icon(value_icon(type),Gtk::ICON_SIZE_SMALL_TOOLBAR);
 	return _tree_pixbuf_table_value_type[int(type)];
 }
-
+#define TEMPORARY_DELETE_MACRO DELETE
+#undef DELETE
 Gtk::StockID
 studio::get_action_stock_id(const synfigapp::Action::BookEntry& action)
 {
@@ -353,6 +354,8 @@ studio::get_action_stock_id(const synfigapp::Action::BookEntry& action)
 															  action.task);
 	return stock_id;
 }
+#define DELETE TEMPORARY_DELETE_MACRO
+#undef TEMPORARY_DELETE_MACRO
 
 Gtk::StockID
 studio::layer_icon(const synfig::String &layer)

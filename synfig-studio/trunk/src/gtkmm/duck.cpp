@@ -112,16 +112,16 @@ Duck::get_data_guid()const
 {
 	if(value_desc_.is_value_node())
 		return value_desc_.get_value_node()->get_guid();
-	return GUID::hasher(get_name());
+	return synfig::GUID::hasher(get_name());
 }
 
 void
 Duck::set_name(const synfig::String &x)
 {
 	name=x;
-	if(guid_==GUID::zero())
+	if(guid_==synfig::GUID::zero())
 	{
-		guid_=GUID::hasher(name);
+		guid_=synfig::GUID::hasher(name);
 	}
 }
 

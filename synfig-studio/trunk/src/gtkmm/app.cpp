@@ -31,6 +31,11 @@
 #	include <config.h>
 #endif
 
+#ifdef WIN32
+#define WINVER 0x0500
+#include <windows.h>
+#endif
+
 #include <fstream>
 #include <iostream>
 #include <locale>
@@ -122,10 +127,6 @@
 #include <fmod.h>
 #endif
 
-#ifdef WIN32
-#define _WIN32_WINNT 0x0500
-#include <windows.h>
-#endif
 #include <gtkmm/accelmap.h>
 #include <gtkmm/filechooser.h>
 #include <gtkmm/filechooserdialog.h>

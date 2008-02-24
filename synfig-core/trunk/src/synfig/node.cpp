@@ -81,9 +81,9 @@ extern clock_t _clock();
 /* === G L O B A L S ======================================================= */
 
 #ifdef HASH_MAP_H
-typedef HASH_MAP_CLASS<GUID,Node*,GUIDHash> GlobalNodeMap;
+typedef HASH_MAP_CLASS<synfig::GUID,Node*,GUIDHash> GlobalNodeMap;
 #else
-typedef map<GUID,Node*> GlobalNodeMap;
+typedef map<synfig::GUID,Node*> GlobalNodeMap;
 #endif
 
 static GlobalNodeMap* global_node_map_;
@@ -98,7 +98,7 @@ static GlobalNodeMap& global_node_map()
 /* === P R O C E D U R E S ================================================= */
 
 synfig::Node*
-synfig::find_node(const GUID& guid)
+synfig::find_node(const synfig::GUID& guid)
 {
 	if(global_node_map().count(guid)==0)
 		return 0;
@@ -106,7 +106,7 @@ synfig::find_node(const GUID& guid)
 }
 
 static void
-refresh_node(synfig::Node* node, GUID old_guid)
+refresh_node(synfig::Node* node, synfig::GUID old_guid)
 {
 	assert(global_node_map().count(old_guid));
 	global_node_map().erase(old_guid);
@@ -203,13 +203,13 @@ Node::changed()
 
 
 //! Gets the GUID for this value node
-const GUID&
+const synfig::GUID&
 Node::get_guid()const
 {
 #ifdef BE_FRUGAL_WITH_GUIDS
 	if(!guid_)
 	{
-		const_cast<GUID&>(guid_).make_unique();
+		const_cast<synfig::GUID&>(guid_).make_unique();
 		assert(guid_);
 		assert(!global_node_map().count(guid_));
 		global_node_map()[guid_]=const_cast<Node*>(this);
@@ -221,7 +221,7 @@ Node::get_guid()const
 
 //! Sets the GUID for this value node
 void
-Node::set_guid(const GUID& x)
+Node::set_guid(const synfig::GUID& x)
 {
 	assert(x);
 
@@ -236,7 +236,7 @@ Node::set_guid(const GUID& x)
 #endif
 	if(guid_!=x)
 	{
-		GUID oldguid(guid_);
+		synfig::GUID oldguid(guid_);
 		guid_=x;
 		refresh_node(this, oldguid);
 		on_guid_changed(oldguid);
@@ -304,7 +304,7 @@ Node::on_changed()
 }
 
 void
-Node::on_guid_changed(GUID guid)
+Node::on_guid_changed(synfig::GUID guid)
 {
 	signal_guid_changed()(guid);
 }
