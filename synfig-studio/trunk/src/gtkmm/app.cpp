@@ -1328,7 +1328,12 @@ App::~App()
 String
 App::get_user_app_directory()
 {
+//! \todo do we need locale_from_utf8() on non-Windows boxes too?  (bug #1837445)
+#ifdef WIN32
+	return Glib::locale_from_utf8(Glib::build_filename(Glib::get_home_dir(),SYNFIG_USER_APP_DIR));
+#else
 	return Glib::build_filename(Glib::get_home_dir(),SYNFIG_USER_APP_DIR);
+#endif
 }
 
 synfig::String
@@ -1620,7 +1625,7 @@ App::load_settings()
 		std::string filename=get_config_file("settings");
 		if(!synfigapp::Main::settings().load_from_file(filename))
 		{
-			//std::string filename=Glib::build_filename(Glib::get_home_dir(),".synfigrc");
+			//std::string filename=Glib::locale_from_utf8(Glib::build_filename(Glib::get_home_dir(),".synfigrc"));
 			//if(!synfigapp::Main::settings().load_from_file(filename))
 			{
 				gamma.set_gamma(1.0/2.2);
