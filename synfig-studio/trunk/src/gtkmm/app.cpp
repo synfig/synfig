@@ -2167,7 +2167,10 @@ App::open_as(std::string filename,std::string as)
 #ifdef WIN32
     char long_name[1024];
     if(GetLongPathName(as.c_str(),long_name,sizeof(long_name)));
-    as=long_name;
+	// when called from autorecover.cpp, filename doesn't exist, and so long_name is empty
+	// don't use it if that's the case
+	if (long_name[0] != '\0')
+		as=long_name;
 #endif
 
 	try
