@@ -2189,7 +2189,8 @@ App::open_as(std::string filename,std::string as)
 			if(!canvas)
 				throw (String)strprintf(_("Unable to open file \"%s\""),filename.c_str());
 
-			add_recent_file(as);
+			if (as.find(DEFAULT_FILENAME_PREFIX) != 0)
+				add_recent_file(as);
 
 			handle<Instance> instance(Instance::create(canvas));
 
