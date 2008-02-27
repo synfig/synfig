@@ -29,9 +29,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-//#include <gtk/gtk.h>
 #include <gtkmm/window.h>
-#include <gtkmm/tooltips.h>
 #include <gtkmm/label.h>
 #include <gtkmm/button.h>
 #include <gtkmm/progressbar.h>
@@ -54,21 +52,14 @@ class Splash : public Gtk::Window
 
 	SplashProgress *cb;
 
-	Gtk::Tooltips _tooltips;
-
 	Gtk::Label *tasklabel;
 	Gtk::ProgressBar *progressbar;
-	Gtk::Button *CloseButton;
-
-	void close();
-
-	bool can_self_destruct;
 
 public:
 
 	synfig::ProgressCallback *get_callback();
 
-	void set_can_self_destruct(bool x);
+	void enable_startup_notification();
 
 	Splash();
 	~Splash();

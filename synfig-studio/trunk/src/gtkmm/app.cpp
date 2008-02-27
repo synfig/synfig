@@ -1070,7 +1070,6 @@ App::App(int *argc, char ***argv):
 	Glib::set_application_name(_("Synfig Studio"));
 
 	Splash splash_screen;
-	splash_screen.set_can_self_destruct(false);
 	splash_screen.show();
 
 	shutdown_in_progress=false;

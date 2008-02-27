@@ -7,6 +7,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007 Chris Moore
+**	Copyright 2008 Paul Wise
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -38,9 +39,8 @@
 #include <ETL/stringf>
 
 #include <gtkmm/image.h>
-#include <gdkmm/pixbufloader.h>
-#include <gtkmm/button.h>
 #include <gtkmm/label.h>
+#include <gtkmm/frame.h>
 #include <gtkmm/fixed.h>
 
 #include <synfig/general.h>
@@ -79,11 +79,6 @@ using namespace studio;
 #endif
 
 /* === G L O B A L S ======================================================= */
-extern      const guint gtk_major_version;
-extern      const guint gtk_minor_version;
-extern      const guint gtk_micro_version;
-extern      const guint gtk_binary_age;
-extern      const guint gtk_interface_age;
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -161,11 +156,8 @@ public:
 /* === M E T H O D S ======================================================= */
 
 Splash::Splash():
-	Gtk::Window(getenv("SYNFIG_DISABLE_POPUP_WINDOWS") ? Gtk::WINDOW_TOPLEVEL : Gtk::WINDOW_POPUP),
-	can_self_destruct(true)
+	Gtk::Window(getenv("SYNFIG_DISABLE_POPUP_WINDOWS") ? Gtk::WINDOW_TOPLEVEL : Gtk::WINDOW_POPUP)
 {
-	int image_w=300,image_h=350;
-
 	std::string imagepath;
 #ifdef WIN32
 	imagepath=App::get_base_path()+ETL_DIRECTORY_SEPARATOR+IMAGE_DIR;
@@ -176,104 +168,21 @@ Splash::Splash():
 	if(synfig_root) {
 		imagepath=synfig_root;
 		imagepath+=ETL_DIRECTORY_SEPARATOR;
-
-		imagepath+="share/pixmaps";
+		imagepath+="share";
+		imagepath+=ETL_DIRECTORY_SEPARATOR;
+		imagepath+="pixmaps";
 	}
 	imagepath+=ETL_DIRECTORY_SEPARATOR;
 
+	// Create the splash image
+	Gtk::Image* splash_image = manage(new class Gtk::Image());
+	splash_image->set(imagepath+"splash_screen."IMAGE_EXT);
+	splash_image->set_alignment(0.5,0.5);
+	splash_image->set_padding(0,0);
 
-	// Create the Logo
-	Gtk::Image *Logo = manage(new class Gtk::Image());
-	Logo->set(imagepath+"splash_screen."IMAGE_EXT);
-	Logo->set_size_request(image_w,image_h);
-	Logo->set_alignment(0.5,0.5);
-	Logo->set_padding(0,0);
-
-	// Create the Copyright Label
-	Gtk::Label *CopyrightLabel = manage(new class Gtk::Label(SYNFIG_COPYRIGHT));
-	CopyrightLabel->set_size_request(image_w,24);
-	CopyrightLabel->set_alignment(0.5,0.5);
-	CopyrightLabel->set_padding(0,0);
-	CopyrightLabel->set_justify(Gtk::JUSTIFY_CENTER);
-	CopyrightLabel->set_line_wrap(false);
-	CopyrightLabel->modify_fg(Gtk::STATE_NORMAL,Gdk::Color("black"));
-
-	/* Scale the text to fit */
-	int width = 0;
-	int height = 0;
-	float size=11;
-	Glib::RefPtr<Pango::Layout> l = CopyrightLabel->get_layout();
-	Pango::FontDescription fd = Pango::FontDescription("Sans, 11");
-	l->set_font_description(fd);
-	l->set_justify(Pango::ALIGN_CENTER);
-	fd.set_size(int(size*Pango::SCALE));
-	l->set_font_description(fd);
-	l->get_pixel_size(width,height);
-	while( width >= image_w-6 ){
-		size-=0.5;
-		fd.set_size((int)(size*Pango::SCALE));
-		l->set_font_description(fd);
-		l->get_pixel_size(width,height);
-	}
-	CopyrightLabel->modify_font(fd);
-
-	// Create the Version information label
-	Gtk::Label *VersionLabel = manage(new class Gtk::Label(_("Version")));
-	VersionLabel->set_size_request(image_w,80);
-	VersionLabel->set_flags(Gtk::CAN_FOCUS);
-	VersionLabel->set_alignment(0.5,0.5);
-	VersionLabel->set_padding(0,0);
-	VersionLabel->set_justify(Gtk::JUSTIFY_CENTER);
-	VersionLabel->set_line_wrap(false);
-	VersionLabel->modify_fg(Gtk::STATE_NORMAL,Gdk::Color("black"));
-
-	// Set the version label to contain the correct information
-	string ver;
-	ver+="Version "VERSION" ("__DATE__ /* " "__TIME__ */ ")\n";
-	ver+="Using Synfig ";
-	ver+=synfig::get_version();
-	#ifdef __GNUC__
-		ver+=strprintf(" and GNU G++ %d.%d.%d",__GNUC__,__GNUC_MINOR__,__GNUC_PATCHLEVEL__);
-	#endif
-
-	ver+=strprintf("\nGtk+ %d.%d.%d",gtk_major_version,gtk_minor_version,gtk_micro_version);
-
-	#ifdef _DEBUG
-		ver+="\nDEBUG BUILD";
-	#endif
-	VersionLabel->set_text(ver);
-
-	/* Scale the text to fit */
-	width = 0;
-	height = 0;
-	size=11;
-	l = VersionLabel->get_layout();
-	fd = Pango::FontDescription("Sans, 11");
-	l->set_font_description(fd);
-	l->set_justify(Pango::ALIGN_CENTER);
-	fd.set_size(int(size*Pango::SCALE));
-	l->set_font_description(fd);
-	l->get_pixel_size(width,height);
-	while( width >= image_w-6 ){
-		size-=0.5;
-		fd.set_size((int)(size*Pango::SCALE));
-		l->set_font_description(fd);
-		l->get_pixel_size(width,height);
-	}
-	VersionLabel->modify_font(fd);
-
- 	// Create the image that will be used on the close button
- 	Gtk::Image *image2 = manage(new class Gtk::Image(Gtk::StockID("gtk-close"), Gtk::IconSize(4)));
-	image2->set_alignment(0.5,0.5);
-	image2->set_padding(0,0);
-
-	// Create the close button, and attach the image to it
-	CloseButton = manage(new class Gtk::Button());
-	CloseButton->set_size_request(24,24);
-	CloseButton->set_flags(Gtk::CAN_FOCUS);
-	_tooltips.set_tip(*CloseButton, _("Close"), "");
-	CloseButton->set_relief(Gtk::RELIEF_NONE);
-	CloseButton->add(*image2);
+	// Get the image size
+	int image_w = splash_image->get_pixbuf()->get_width();
+	int image_h = splash_image->get_pixbuf()->get_height();
 
 	// Create the progress bar
 	progressbar = manage(new class Gtk::ProgressBar());
@@ -285,31 +194,33 @@ Splash::Splash():
 	tasklabel->set_use_underline(false);
 
 	// Create the Gtk::Fixed container and put all of the widgets into it
-	Gtk::Fixed *fixed1 = manage(new class Gtk::Fixed());
-	fixed1->put(*Logo, 0, 0);
-	fixed1->put(*CopyrightLabel, 0, image_h-25);
-	fixed1->put(*CloseButton, image_w-24, 0);
-	fixed1->put(*VersionLabel, 0, image_h-90);
-	fixed1->put(*progressbar, 0, image_h+24);
-	fixed1->put(*tasklabel, 0, image_h);
+	Gtk::Fixed* fixed = manage(new class Gtk::Fixed());
+	fixed->put(*splash_image, 0, 0);
+	fixed->put(*progressbar, 0, image_h+24);
+	fixed->put(*tasklabel, 0, image_h);
+
+	// Create shadow around the outside of the window
+	Gtk::Frame* frame = manage(new class Gtk::Frame());
+	frame->set_shadow_type(Gtk::SHADOW_OUT);
+  	frame->add(*fixed);
 
 	// Set up the parameters for this pop-up window
 	set_title("Synfig Studio "VERSION);
 	set_modal(false);
 	property_window_position().set_value(Gtk::WIN_POS_CENTER);
 	set_resizable(false);
-	add(*fixed1);
+	set_type_hint(Gdk::WINDOW_TYPE_HINT_SPLASHSCREEN);
+	set_auto_startup_notification(false);
+	set_icon_from_file(imagepath+"synfig_icon."+IMAGE_EXT);
+	add(*frame);
 
 	// show everything off
-	Logo->show();
-	CopyrightLabel->show();
-	image2->show();
-	CloseButton->show();
-	VersionLabel->show();
-	fixed1->show();
+	splash_image->show();
+	fixed->show();
+	frame->show();
 
-	// Connect relevant signals
-	CloseButton->signal_clicked().connect(sigc::mem_fun(*this, &Splash::close));
+	// Once the splash is shown, we want startup stuff to continue as normal
+	signal_map().connect(sigc::mem_fun(*this, &Splash::enable_startup_notification));
 
 	cb=new SplashProgress(*this);
 }
@@ -319,25 +230,13 @@ Splash::~Splash()
 	delete cb;
 }
 
-void Splash::close()
-{
-	hide();
-	if(can_self_destruct)
-		delete this;
-}
-
-void
-Splash::set_can_self_destruct(bool x)
-{
-	can_self_destruct=x;
-	if(x==true)
-		CloseButton->show();
-	else
-		CloseButton->hide();
-}
-
 synfig::ProgressCallback *
 Splash::get_callback()
 {
 	return cb;
+}
+
+void
+Splash::enable_startup_notification(){
+	set_auto_startup_notification(true);
 }
