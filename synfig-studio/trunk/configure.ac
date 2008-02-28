@@ -79,6 +79,7 @@ case "$host" in
 	*darwin*)
 		AM_CONDITIONAL(WIN32_PKG, false)
 		AM_CONDITIONAL(MACOSX_PKG, true)
+		AC_DEFINE(USE_OPEN_FOR_URLS,[],[On MacOS X "open <URL>" works, on Linux it tries to open a virtual console.] )
 	;;
 	*)
 		AM_CONDITIONAL(WIN32_PKG, false)
