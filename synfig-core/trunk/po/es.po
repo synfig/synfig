@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: es\n"
 "Report-Msgid-Bugs-To: http://synfig.org/Bugs\n"
-"POT-Creation-Date: 2008-02-19 22:27+0100\n"
-"PO-Revision-Date: 2008-02-20 00:07+0100\n"
+"POT-Creation-Date: 2008-02-25 21:08+0100\n"
+"PO-Revision-Date: 2008-02-25 21:09+0100\n"
 "Last-Translator: Carlos López González <carloslopezgonzalez@yahoo.es>\n"
 "Language-Team: Español <en@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -642,22 +642,26 @@ msgstr "Estar a salvo de Transparencia"
 msgid "Time Loop"
 msgstr "Bucle de Tiempo"
 
-#: src/modules/lyr_std/timeloop.cpp:117 src/synfig/valuenode_timeloop.cpp:124
+#: src/modules/lyr_std/timeloop.cpp:120 src/synfig/valuenode_timeloop.cpp:124
 msgid "Link Time"
 msgstr "Tiempo del Enlace"
 
-#: src/modules/lyr_std/timeloop.cpp:121 src/synfig/valuenode_timeloop.cpp:125
+#: src/modules/lyr_std/timeloop.cpp:124 src/synfig/valuenode_timeloop.cpp:125
 msgid "Local Time"
 msgstr "Tiempo Local"
 
-#: src/modules/lyr_std/timeloop.cpp:125 src/synfig/valuenode_step.cpp:214
+#: src/modules/lyr_std/timeloop.cpp:128 src/synfig/valuenode_step.cpp:214
 #: src/synfig/valuenode_timeloop.cpp:126
 msgid "Duration"
 msgstr "Duración"
 
-#: src/modules/lyr_std/timeloop.cpp:129
+#: src/modules/lyr_std/timeloop.cpp:132
 msgid "Only For Positive Duration"
 msgstr "Solo para Duración positiva"
+
+#: src/modules/lyr_std/timeloop.cpp:136
+msgid "Symmetrical"
+msgstr "Simétrico"
 
 #: src/modules/lyr_std/translate.cpp:54
 msgid "Translate"
@@ -725,59 +729,59 @@ msgstr "Cantidad de aumento"
 msgid "Point to zoom in to"
 msgstr "Punto donde centrar aumento"
 
-#: src/modules/mod_bmp/mptr_bmp.cpp:130 src/modules/mod_bmp/mptr_bmp.cpp:131
+#: src/modules/mod_bmp/mptr_bmp.cpp:133 src/modules/mod_bmp/mptr_bmp.cpp:134
 #: src/modules/mod_ppm/mptr_ppm.cpp:78
 #, c-format
 msgid "Unable to open %s"
 msgstr "Imposible abrir %s"
 
-#: src/modules/mod_bmp/mptr_bmp.cpp:142 src/modules/mod_bmp/mptr_bmp.cpp:143
+#: src/modules/mod_bmp/mptr_bmp.cpp:145 src/modules/mod_bmp/mptr_bmp.cpp:146
 #, c-format
 msgid "%s is not in BMP format"
 msgstr "%s no está en formato BMP"
 
-#: src/modules/mod_bmp/mptr_bmp.cpp:149
+#: src/modules/mod_bmp/mptr_bmp.cpp:152
 #, c-format
 msgid "Failure while reading BITMAPFILEHEADER from %s"
 msgstr "Falló mientras leía BITMAPFILEHEADER desde %s"
 
-#: src/modules/mod_bmp/mptr_bmp.cpp:157
+#: src/modules/mod_bmp/mptr_bmp.cpp:160
 #, c-format
 msgid "Failure while reading BITMAPINFOHEADER from %s"
 msgstr "Falló mientras leía BITMAPINFOHEADER desde %s"
 
-#: src/modules/mod_bmp/mptr_bmp.cpp:167
+#: src/modules/mod_bmp/mptr_bmp.cpp:170
 #, c-format
 msgid "Bad BITMAPFILEHEADER in %s. (bfOffsetBits=%d, should be %d)"
 msgstr "Mal BITMAPFILEHEADER en %s. (bfOffsetBits=%d, debería ser %d)"
 
-#: src/modules/mod_bmp/mptr_bmp.cpp:175
+#: src/modules/mod_bmp/mptr_bmp.cpp:178
 #, c-format
 msgid "Bad BITMAPINFOHEADER in %s. (biSize=%d, should be 40)"
 msgstr "Mal BITMAPINFOHEADER en %s. (biSize=%d, debería ser 40)"
 
-#: src/modules/mod_bmp/mptr_bmp.cpp:193 src/modules/mod_bmp/mptr_bmp.cpp:194
+#: src/modules/mod_bmp/mptr_bmp.cpp:196 src/modules/mod_bmp/mptr_bmp.cpp:197
 msgid "Reading compressed bitmaps is not supported"
 msgstr "Lectura de bitmaps comprimidos no esta soportado"
 
-#: src/modules/mod_bmp/mptr_bmp.cpp:200 src/modules/mod_bmp/mptr_bmp.cpp:201
+#: src/modules/mod_bmp/mptr_bmp.cpp:203 src/modules/mod_bmp/mptr_bmp.cpp:204
 #, c-format
 msgid "Unsupported bit depth (bit_count=%d, should be 24 or 32)"
 msgstr "Profundidad de bit no soportado (bit_count=%d, debería ser 24 o 32)"
 
-#: src/modules/mod_bmp/trgt_bmp.cpp:183
+#: src/modules/mod_bmp/trgt_bmp.cpp:185
 msgid " (animated)"
 msgstr "(animado)"
 
-#: src/modules/mod_bmp/trgt_bmp.cpp:193 src/modules/mod_bmp/trgt_bmp.cpp:194
+#: src/modules/mod_bmp/trgt_bmp.cpp:195 src/modules/mod_bmp/trgt_bmp.cpp:196
 msgid "Unable to open file"
 msgstr "Imposible abrir archivo"
 
-#: src/modules/mod_bmp/trgt_bmp.cpp:224 src/modules/mod_bmp/trgt_bmp.cpp:225
+#: src/modules/mod_bmp/trgt_bmp.cpp:226 src/modules/mod_bmp/trgt_bmp.cpp:227
 msgid "Unable to write file header to file"
 msgstr "Imposible escribir la cabecera al archivo"
 
-#: src/modules/mod_bmp/trgt_bmp.cpp:231 src/modules/mod_bmp/trgt_bmp.cpp:232
+#: src/modules/mod_bmp/trgt_bmp.cpp:233 src/modules/mod_bmp/trgt_bmp.cpp:234
 msgid "Unable to write info header"
 msgstr "Imposible escribir la información de cabecera"
 
@@ -1426,7 +1430,9 @@ msgstr "Brotes"
 
 #: src/modules/mod_particle/plant.cpp:446
 msgid "Number of places that growth occurs on each bline section"
-msgstr "Número de veces que aparece un brote en cada sección de segmento de línea Beizer"
+msgstr ""
+"Número de veces que aparece un brote en cada sección de segmento de línea "
+"Beizer"
 
 #: src/modules/mod_particle/plant.cpp:450
 msgid "Random Factor"
@@ -1434,7 +1440,9 @@ msgstr "Factor de Aleatoriedad"
 
 #: src/modules/mod_particle/plant.cpp:451
 msgid "Used to scale down all random effects.  Set to zero to disable randomness"
-msgstr "Usado para escalar todos los efectos aleatorios. Establecer a cero para desactivar la aleatoriedad"
+msgstr ""
+"Usado para escalar todos los efectos aleatorios. Establecer a cero para "
+"desactivar la aleatoriedad"
 
 #: src/modules/mod_particle/plant.cpp:455
 msgid "Drag"
@@ -1831,7 +1839,9 @@ msgstr "Pedido atributo \"name\" para <param>"
 msgid ""
 "Found \"use\" attribute for <param>, but it wasn't empty. Ignoring "
 "contents..."
-msgstr "Encontrado atributo \"use\" para <param>, pero no estaba vacío. Ingnorando contenidos..."
+msgstr ""
+"Encontrado atributo \"use\" para <param>, pero no estaba vacío. Ingnorando "
+"contenidos..."
 
 #: src/synfig/loadcanvas.cpp:1698
 msgid "Empty use=\"\" value in <param>"
@@ -1912,89 +1922,89 @@ msgstr "Valores de Nodos"
 msgid "<INTERNAL>"
 msgstr "<INTERNAL>"
 
-#: src/synfig/main.cpp:111
+#: src/synfig/main.cpp:103
 #, c-format
 msgid "API Version mismatch (LIB:%d, PROG:%d)"
 msgstr "Desajuste en la versión API (LIB:%d, PROG:%d)"
 
-#: src/synfig/main.cpp:116
+#: src/synfig/main.cpp:108
 #, c-format
 msgid "Size of Vector mismatch (app:%d, lib:%d)"
 msgstr "Desajuste en el tamaño del Vector (app:%d, lib:%d)"
 
-#: src/synfig/main.cpp:121
+#: src/synfig/main.cpp:113
 #, c-format
 msgid "Size of Color mismatch (app:%d, lib:%d)"
 msgstr "Desajuste en el tamaño del Color (app:%d, lib:%d)"
 
-#: src/synfig/main.cpp:126
+#: src/synfig/main.cpp:118
 #, c-format
 msgid "Size of Canvas mismatch (app:%d, lib:%d)"
 msgstr "Desajuste en el tamaño del Lienzo (app:%d, lib:%d)"
 
-#: src/synfig/main.cpp:131
+#: src/synfig/main.cpp:123
 #, c-format
 msgid "Size of Layer mismatch (app:%d, lib:%d)"
 msgstr "Desajuste en el tamaño de la Capa (app:%d, lib:%d)"
 
-#: src/synfig/main.cpp:221
+#: src/synfig/main.cpp:213
 msgid "Starting Subsystem \"Modules\""
 msgstr "Comenzando Subsistema \"Modules\""
 
-#: src/synfig/main.cpp:223
+#: src/synfig/main.cpp:215
 msgid "Unable to initialize subsystem \"Module\""
 msgstr "Imposible comenzar el subsistema \"Module\""
 
-#: src/synfig/main.cpp:225
+#: src/synfig/main.cpp:217
 msgid "Starting Subsystem \"Layers\""
 msgstr "Comenzando subsistema \"Layers\""
 
-#: src/synfig/main.cpp:229
+#: src/synfig/main.cpp:221
 msgid "Unable to initialize subsystem \"Layers\""
 msgstr "Imposible comenzar el subsistema \"Layers\""
 
-#: src/synfig/main.cpp:232
+#: src/synfig/main.cpp:224
 msgid "Starting Subsystem \"Targets\""
 msgstr "Comenzando subsistema \"Targets\""
 
-#: src/synfig/main.cpp:237
+#: src/synfig/main.cpp:229
 msgid "Unable to initialize subsystem \"Targets\""
 msgstr "Imposible comenzar el subsistema \"Targets\""
 
-#: src/synfig/main.cpp:240
+#: src/synfig/main.cpp:232
 msgid "Starting Subsystem \"Importers\""
 msgstr "Comenzando subsistema \"Importers\""
 
-#: src/synfig/main.cpp:246
+#: src/synfig/main.cpp:238
 msgid "Unable to initialize subsystem \"Importers\""
 msgstr "Imposible comenzar el subsistema \"Importers\""
 
-#: src/synfig/main.cpp:249
+#: src/synfig/main.cpp:241
 msgid "Starting Subsystem \"ValueNodes\""
 msgstr "Comenzando subsistema \"ValueNodes\""
 
-#: src/synfig/main.cpp:256
+#: src/synfig/main.cpp:248
 msgid "Unable to initialize subsystem \"ValueNodes\""
 msgstr "Imposible comenzar el subsistema \"ValueNodes\""
 
-#: src/synfig/main.cpp:315
+#: src/synfig/main.cpp:307
 #, c-format
 msgid "Loading modules from %s"
 msgstr "Cargando módulos desde %s"
 
-#: src/synfig/main.cpp:328 src/tool/main.cpp:243
+#: src/synfig/main.cpp:320 src/tool/main.cpp:243
 msgid "DONE"
 msgstr "HECHO"
 
-#: src/synfig/main.cpp:394 src/tool/main.cpp:123 src/tool/main.cpp:164
+#: src/synfig/main.cpp:386 src/tool/main.cpp:123 src/tool/main.cpp:164
 msgid "error"
 msgstr "error"
 
-#: src/synfig/main.cpp:409 src/tool/main.cpp:130 src/tool/main.cpp:171
+#: src/synfig/main.cpp:401 src/tool/main.cpp:130 src/tool/main.cpp:171
 msgid "warning"
 msgstr "precaución"
 
-#: src/synfig/main.cpp:424
+#: src/synfig/main.cpp:416
 msgid "info"
 msgstr "información"
 
@@ -2322,7 +2332,7 @@ msgstr "Dos Tonos"
 msgid "BLine"
 msgstr "Línea Beizer"
 
-#: src/synfig/valuenode.cpp:133 src/synfig/valuenode_dynamiclist.cpp:707
+#: src/synfig/valuenode.cpp:133 src/synfig/valuenode_dynamiclist.cpp:713
 msgid "Dynamic List"
 msgstr "Lista Dinámica"
 
@@ -2448,11 +2458,11 @@ msgstr "%s: No puede usar %s en un Valor de Nodo animado"
 msgid "Animated"
 msgstr "Animado"
 
-#: src/synfig/valuenode_bline.cpp:684 src/synfig/valuenode_dynamiclist.cpp:613
+#: src/synfig/valuenode_bline.cpp:684 src/synfig/valuenode_dynamiclist.cpp:619
 msgid "No entries in list"
 msgstr "Sin entradas en la lista"
 
-#: src/synfig/valuenode_bline.cpp:687 src/synfig/valuenode_dynamiclist.cpp:616
+#: src/synfig/valuenode_bline.cpp:687 src/synfig/valuenode_dynamiclist.cpp:622
 msgid "No entries in ret_list"
 msgstr "Sin entradas en ret_list"
 
@@ -2531,13 +2541,13 @@ msgstr "Desde"
 msgid "To"
 msgstr "Hasta"
 
-#: src/synfig/valuenode_dynamiclist.cpp:607
+#: src/synfig/valuenode_dynamiclist.cpp:613
 msgid "List type/item type mismatch, throwing away mismatch"
 msgstr ""
 "Typo de lista/Tipo de elemento mal emparejado, lanzando lejos el "
 "desemparejamiento "
 
-#: src/synfig/valuenode_dynamiclist.cpp:655
+#: src/synfig/valuenode_dynamiclist.cpp:661
 #, c-format
 msgid "Item %03d"
 msgstr "Elemento %03d"
