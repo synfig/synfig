@@ -102,6 +102,8 @@ About::About()
 #endif
 	set_version(VERSION);
 	set_comments(_("2D vector animation studio"));
+
+	set_url_hook(sigc::mem_fun(*this, &About::on_link_clicked));
 	set_website("http://www.synfig.org/");
 	set_website_label(_("Visit the Synfig website"));
 
@@ -221,4 +223,9 @@ About::About()
 
 void About::close(int){
 	hide();
+}
+
+void About::on_link_clicked(Gtk::AboutDialog&, const Glib::ustring &url)
+{
+	App::open_url(url);
 }

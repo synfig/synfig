@@ -45,6 +45,7 @@ public:
 
 	About();
 	void close(int);
+	void on_link_clicked(Gtk::AboutDialog&, const Glib::ustring &url);
 };
 	
 }; // END of namespace studio
