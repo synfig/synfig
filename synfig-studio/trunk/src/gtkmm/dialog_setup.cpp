@@ -161,6 +161,7 @@ Dialog_Setup::Dialog_Setup():
 	ADD_TIMESTAMP("(HHhMMmSSs)FFf",		Time::FORMAT_NORMAL	| Time::FORMAT_NOSPACES	);
 	ADD_TIMESTAMP("HHh MMm SSs FFf",	Time::FORMAT_NORMAL	| Time::FORMAT_FULL		);
 	ADD_TIMESTAMP("HHhMMmSSsFFf",		Time::FORMAT_NORMAL	| Time::FORMAT_NOSPACES	| Time::FORMAT_FULL);
+	ADD_TIMESTAMP("FFf",				Time::FORMAT_FRAMES );
 
 	timestamp_optionmenu.set_menu(*timestamp_menu);
 
@@ -549,19 +550,20 @@ void
 Dialog_Setup::set_time_format(synfig::Time::Format x)
 {
 	time_format=x;
-	if(x<=Time::FORMAT_VIDEO)
+	if (x <= Time::FORMAT_VIDEO)
 		timestamp_optionmenu.set_history(0);
+	else if (x == (Time::FORMAT_NORMAL))
+		timestamp_optionmenu.set_history(1);
+	else if (x == (Time::FORMAT_NORMAL | Time::FORMAT_NOSPACES))
+		timestamp_optionmenu.set_history(2);
+	else if (x == (Time::FORMAT_NORMAL | Time::FORMAT_FULL))
+		timestamp_optionmenu.set_history(3);
+	else if (x == (Time::FORMAT_NORMAL | Time::FORMAT_NOSPACES | Time::FORMAT_FULL))
+		timestamp_optionmenu.set_history(4);
+	else if (x == (Time::FORMAT_FRAMES))
+		timestamp_optionmenu.set_history(5);
 	else
-	{
-		if(x==(Time::FORMAT_NOSPACES|Time::FORMAT_FULL))
-			timestamp_optionmenu.set_history(4);
-		else if(x==(Time::FORMAT_FULL))
-			timestamp_optionmenu.set_history(3);
-		else if(x==(Time::FORMAT_NOSPACES))
-			timestamp_optionmenu.set_history(2);
-		else
-			timestamp_optionmenu.set_history(1);
-	}
+		timestamp_optionmenu.set_history(1);
 }
 
 
