@@ -55,7 +55,8 @@ public:
 		FORMAT_NORMAL=0,		//!< Represents the default method of printing the time
 		FORMAT_NOSPACES=(1<<0),	//!< Remove any whitespace
 		FORMAT_FULL=(1<<1),		//!< Do not remove units that have "zero" value
-		FORMAT_VIDEO=(1<<2),	//!< Use the HH:MM:SS.ff format
+		FORMAT_VIDEO=(1<<2),	//!< Use the HH:MM:SS.FF format
+		FORMAT_FRAMES=(1<<3),	//!< Use the FF format (frames only)
 
 		FORMAT_END=(1<<4)		//!< \internal Not used
 	}; // END of enum Format
