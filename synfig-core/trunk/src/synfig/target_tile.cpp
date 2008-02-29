@@ -356,14 +356,20 @@ synfig::Target_Tile::render(ProgressCallback *cb)
 
 			Context context;
 
-			#ifdef SYNFIG_OPTIMIZE_LAYER_TREE
-			Canvas::Handle op_canvas(Canvas::create());
-			op_canvas->set_file_name(canvas->get_file_name());
-			optimize_layers(canvas->get_time(), canvas->get_context(), op_canvas);
-			context=op_canvas->get_context();
-			#else
+#ifdef SYNFIG_OPTIMIZE_LAYER_TREE
+			Canvas::Handle op_canvas;
+			if (!getenv("SYNFIG_DISABLE_OPTIMIZE_LAYER_TREE"))
+			{
+				op_canvas = Canvas::create();
+				op_canvas->set_file_name(canvas->get_file_name());
+				optimize_layers(canvas->get_time(), canvas->get_context(), op_canvas);
+				context=op_canvas->get_context();
+			}
+			else
+				context=canvas->get_context();
+#else
 			context=canvas->get_context();
-			#endif
+#endif
 
 /*
 			#ifdef SYNFIG_OPTIMIZE_LAYER_TREE
@@ -403,14 +409,20 @@ synfig::Target_Tile::render(ProgressCallback *cb)
 
 			Context context;
 
-			#ifdef SYNFIG_OPTIMIZE_LAYER_TREE
-			Canvas::Handle op_canvas(Canvas::create());
-			op_canvas->set_file_name(canvas->get_file_name());
-			optimize_layers(canvas->get_time(), canvas->get_context(), op_canvas);
-			context=op_canvas->get_context();
-			#else
+#ifdef SYNFIG_OPTIMIZE_LAYER_TREE
+			Canvas::Handle op_canvas;
+			if (!getenv("SYNFIG_DISABLE_OPTIMIZE_LAYER_TREE"))
+			{
+				op_canvas = Canvas::create();
+				op_canvas->set_file_name(canvas->get_file_name());
+				optimize_layers(canvas->get_time(), canvas->get_context(), op_canvas);
+				context=op_canvas->get_context();
+			}
+			else
+				context=canvas->get_context();
+#else
 			context=canvas->get_context();
-			#endif
+#endif
 
 			if(!render_frame_(context, cb))
 				return false;
