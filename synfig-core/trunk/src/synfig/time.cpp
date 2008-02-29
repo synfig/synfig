@@ -204,6 +204,14 @@ Time::get_string(float fps, Time::Format format)const
 			return strprintf("%02d:%02d:%02d",hour,minute,second);
 	}
 
+	if (format <= FORMAT_FRAMES)
+	{
+		if (fps && fps>0)
+			return strprintf("%df", round_to_int(time * fps));
+		else
+			return strprintf("%ds", round_to_int(time * 1));
+	}
+
 	String ret;
 	bool started = false;
 
