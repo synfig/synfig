@@ -2123,7 +2123,7 @@ try_open_url(const std::string &url)
 	if( command_line[0] == "kfmclient" ) command_line.push_back("openURL");
 	command_line.push_back(url);
 
-	try { Glib::spawn_async(".", command_line, Glib::SPAWN_SEARCH_PATH); }
+	try { Glib::spawn_async(".", command_line, Glib::SPAWN_SEARCH_PATH); return true; }
 	catch( Glib::SpawnError& exception ){
 
 		while ( !browsers.empty() )
