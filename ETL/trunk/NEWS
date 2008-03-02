@@ -4,7 +4,7 @@ More detailed notes are available on the releases page:
 
 http://synfig.org/Releases
 
- 0.04.11 (SVN 1???) - March ??, 2008 - Bug fixes
+ 0.04.11 (SVN 1837) - March 3, 2008 - Bug fixes
 
  * Update the website URL to synfig.org instead of synfig.com
  * Removed the 'bootstrap' script for building.  Use autoreconf instead
