@@ -4,7 +4,7 @@ More detailed notes are available on the releases page:
 
 http://synfig.org/Releases
 
- 0.61.08 (SVN 1837) - March 3, 2008 - Bug fixes, features
+ 0.61.08 (SVN 1839) - March 3, 2008 - Bug fixes, features
 
   * Update the website URL to synfig.org instead of synfig.com
   * Synfig is now translatable using gettext
