@@ -154,6 +154,7 @@ About::About()
 
 	std::vector<Glib::ustring> artists;
 	artists.push_back("Robert B. Quattlebaum Jr. (darco)");
+	artists.push_back("Aurore D (rore)");
 	artists.push_back("Carlos López González (genete)");
 	artists.push_back("Chris Norman (pixelgeek)");
 	set_artists(artists);
