@@ -15,8 +15,8 @@ http://synfig.org/Releases
  * Fix a crash and use relative ducks with the Stretch layer
  * Allow multibyte characters in the Text layer
  * Misc fixes & features on Shade, Shape, Spherize, Star, Time Loop, Warp layers
- * Add aTan2, Cos, Duplicate, From Integer, Random, Reciprocal, Reverse Tangent,
-   Switch, Time Loop convert types
+ * Add aTan2, Bline Width, Cos, Duplicate, From Integer, Random,
+   Reciprocal, Reverse Tangent, Step, Switch, Time Loop convert types
  * Add and Subtract convert types now work with gradients
  * Security fixes for ffmpeg/dv/imagemagick targets/importers (except on Win32)
  * Add new magick++ target that does better gif rendering with libmagick++ 7.3
