@@ -286,7 +286,7 @@ Action::ActivepointSetSmart::prepare()
 	clear();
 	times.clear();
 
-	// First, we need to to add any activepoints necessary to
+	// First, we need to add any activepoints necessary to
 	// maintain the integrity of the keyframes.
 	enclose_activepoint(activepoint);
 

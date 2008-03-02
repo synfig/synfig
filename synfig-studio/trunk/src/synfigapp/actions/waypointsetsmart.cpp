@@ -230,7 +230,7 @@ Action::WaypointSetSmart::enclose_waypoint(const synfig::Waypoint& waypoint)
 //		synfig::info(__FILE__":%d: value_node->find(waypoint)->get_time()=%s",__LINE__,value_node->find(waypoint)->get_time().get_string().c_str());
 	}catch (...) { }
 
-	// First we need to to add any waypoints necessary to
+	// First we need to add any waypoints necessary to
 	// maintain the integrity of the keyframes.
 	if(get_edit_mode()&MODE_ANIMATE_PAST) try
 	{
@@ -360,7 +360,7 @@ Action::WaypointSetSmart::prepare()
 	clear();
 	times.clear();
 
-	// First we need to to add any waypoints necessary to
+	// First we need to add any waypoints necessary to
 	// maintain the integrity of the keyframes.
 	enclose_waypoint(waypoint);
 
