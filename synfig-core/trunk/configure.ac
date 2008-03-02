@@ -335,7 +335,7 @@ if test $use_openexr_half = yes ; then {
 
 AC_LIB_LTDL
 
-ALL_LINGUAS="es"
+ALL_LINGUAS="es fr"
 AM_GNU_GETTEXT([external])
 # This is here so autoreconf will run autopoint
 AM_GNU_GETTEXT_VERSION([0.14.4])
