@@ -367,7 +367,7 @@ Action::WaypointSetSmart::prepare()
 	try
 	{
 		//synfig::info("WaypointSetSmart: Move/Update?");
-		// Lets try to replace the old waypoint, if it exists
+		// Let's try to replace the old waypoint, if it exists
 		WaypointList::iterator iter(value_node->find(waypoint));
 
 		if(iter == value_node->waypoint_list().end())

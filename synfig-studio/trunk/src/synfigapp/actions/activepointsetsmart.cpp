@@ -295,7 +295,7 @@ Action::ActivepointSetSmart::prepare()
 		if(value_node->list[index].find(activepoint)==value_node->list[index].timing_info.end())
 			throw int();
 
-		// Then, lets try to replace the old activepoint, if it exists
+		// Then, let's try to replace the old activepoint, if it exists
 		enclose_activepoint(*value_node->list[index].find(activepoint));
 
 		Action::Handle action(ActivepointSet::create());
