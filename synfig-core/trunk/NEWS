@@ -6,24 +6,24 @@ http://synfig.org/Releases
 
  0.61.08 (SVN 1839) - March 3, 2008 - Bug fixes, features
 
- * Update the website URL to synfig.org instead of synfig.com
- * Synfig is now translatable using gettext
- * Removed the 'bootstrap' script for building. Use autoreconf instead
- * Fixed errors and warnings detected by a pre-release version of GCC 4.3
- * New Duplicate layer. This is an experimental feature, but works well
- * New reverse, offset parameters and misc fixes for the Plant layer.
- * Fix a crash and use relative ducks with the Stretch layer
- * Allow multibyte characters in the Text layer
- * Misc fixes & features on Shade, Shape, Spherize, Star, Time Loop, Warp layers
- * Add aTan2, Bline Width, Cos, Duplicate, From Integer, Random,
-   Reciprocal, Reverse Tangent, Step, Switch, Time Loop convert types
- * Add and Subtract convert types now work with gradients
- * Security fixes for ffmpeg/dv/imagemagick targets/importers (except on Win32)
- * Add new magick++ target that does better gif rendering with libmagick++ 7.3
- * Misc fixes for the rendering targets, blend methods and canvases
- * Allow importing of lipsynced voice animations from Papagayo
- * Various changes to related to SIF file compatibility
- * Fix typos, several crashes and other issues
+  * Update the website URL to synfig.org instead of synfig.com
+  * Synfig is now translatable using gettext
+  * Removed the 'bootstrap' script for building. Use autoreconf instead
+  * Fixed errors and warnings detected by a pre-release version of GCC 4.3
+  * New Duplicate layer. This is an experimental feature, but works well
+  * New reverse, offset parameters and misc fixes for the Plant layer.
+  * Fix a crash and use relative ducks with the Stretch layer
+  * Allow multibyte characters in the Text layer
+  * Misc fixes & features on Shade, Shape, Spherize, Star, Time Loop, Warp layers
+  * Add aTan2, Bline Width, Cos, Duplicate, From Integer, Random,
+    Reciprocal, Reverse Tangent, Step, Switch, Time Loop convert types
+  * Add and Subtract convert types now work with gradients
+  * Security fixes for ffmpeg/dv/imagemagick targets/importers (except on Win32)
+  * Add new magick++ target that does better gif rendering with libmagick++ 7.3
+  * Misc fixes for the rendering targets, blend methods and canvases
+  * Allow importing of lipsynced voice animations from Papagayo
+  * Various changes to related to SIF file compatibility
+  * Fix typos, several crashes and other issues
 
  0.61.07 (SVN 878) - October 10, 2007 - Bug fixes
 
