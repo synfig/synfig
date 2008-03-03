@@ -123,7 +123,9 @@ About::About()
 		"with this program; if not, write to the Free Software Foundation, Inc., "
 		"51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA or visit: http://www.gnu.org/";
 	set_license(license);
+#ifdef HAVE_GTK_ABOUTDIALOG_SET_WRAP_LICENSE
 	set_wrap_license(true);
+#endif
 
 	std::vector<Glib::ustring> authors;
 	authors.push_back("Original developers:");

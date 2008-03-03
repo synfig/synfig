@@ -109,6 +109,26 @@ PKG_CHECK_MODULES(GTKMM, gtkmm-2.4 gthread-2.0,[
 		]
 	)
 	CXXFLAGS="$synfigstudio_save_cxxflags"
+	AC_MSG_CHECKING([for Gtk::AboutDialog::set_wrap_license])
+	synfigstudio_save_cxxflags="$CXXFLAGS"
+	CXXFLAGS="$GTKMM_CFLAGS $CXXFLAGS"
+	AC_COMPILE_IFELSE(
+		[
+			AC_LANG_PROGRAM([
+				[#include <gtkmm/aboutdialog.h>]
+			],[
+				[Gtk::AboutDialog about; about.set_wrap_license(true)]
+			])
+		],[
+			AC_MSG_RESULT([yes])
+			AC_DEFINE(HAVE_GTK_ABOUTDIALOG_SET_WRAP_LICENSE,[],[Define if GTKmm provides Gtk::AboutDialog::set_wrap_license()] )
+			AM_CONDITIONAL(HAVE_GTK_ABOUTDIALOG_SET_WRAP_LICENSE,true)
+		],[
+			AC_MSG_RESULT([no])
+			AM_CONDITIONAL(HAVE_GTK_ABOUTDIALOG_SET_WRAP_LICENSE,false)
+		]
+	)
+	CXXFLAGS="$synfigstudio_save_cxxflags"
 ],[
 	AC_MSG_ERROR([ ** Gtkmm-2.4 Is a required library, aborting.])
 ])
