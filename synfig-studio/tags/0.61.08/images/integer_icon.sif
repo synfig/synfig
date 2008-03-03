@@ -1,0 +1,66 @@
+<?xml version="1.0"?>
+<canvas version="0.1" width="128" height="128" xres="2952.755900" yres="2952.755900" view-box="-2.000000 2.000000 2.000000 -2.000000" antialias="1" fps="30.000" begin-time="0f" end-time="0f" bgcolor="0.500000 0.500000 0.500000 1.000000">
+  <name>Untitled0</name>
+  <layer type="text" active="true" version="0.2">
+    <param name="z_depth">
+      <real value="0.0000000000"/>
+    </param>
+    <param name="amount">
+      <real value="1.0000000000"/>
+    </param>
+    <param name="blend_method">
+      <integer value="0"/>
+    </param>
+    <param name="text">
+      <string>123
+456</string>
+    </param>
+    <param name="color">
+      <color>
+        <r>0.000000</r>
+        <g>0.000000</g>
+        <b>0.000000</b>
+        <a>1.000000</a>
+      </color>
+    </param>
+    <param name="family">
+      <string>Sans Serif</string>
+    </param>
+    <param name="style">
+      <integer value="0"/>
+    </param>
+    <param name="weight">
+      <integer value="700"/>
+    </param>
+    <param name="compress">
+      <real value="1.0000000000"/>
+    </param>
+    <param name="vcompress">
+      <real value="0.7000000000"/>
+    </param>
+    <param name="size">
+      <vector>
+        <x>1.2656250000</x>
+        <y>1.2968750000</y>
+      </vector>
+    </param>
+    <param name="orient">
+      <vector>
+        <x>0.5000000000</x>
+        <y>0.5000000000</y>
+      </vector>
+    </param>
+    <param name="pos">
+      <vector>
+        <x>0.0000000000</x>
+        <y>0.0000000000</y>
+      </vector>
+    </param>
+    <param name="use_kerning">
+      <bool value="true"/>
+    </param>
+    <param name="grid_fit">
+      <bool value="false"/>
+    </param>
+  </layer>
+</canvas>
