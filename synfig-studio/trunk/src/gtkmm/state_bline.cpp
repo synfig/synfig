@@ -1306,11 +1306,7 @@ StateBLine_Context::bline_insert_vertex(synfig::ValueNode_Const::Handle value_no
 
 			bline_point.set_vertex(curve(origin));
 			bline_point.set_width((next_bline_point.get_width()-prev_bline_point.get_width())*origin+prev_bline_point.get_width());
-#ifdef ETL_FIXED_DERIVATIVE
 			bline_point.set_tangent1(deriv(origin)*std::min(1.0f-origin,origin));
-#else
-			bline_point.set_tangent1(-deriv(origin)*std::min(1.0f-origin,origin));
-#endif
 			bline_point.set_tangent2(bline_point.get_tangent1());
 			bline_point.set_split_tangent_flag(false);
 			bline_point.set_origin(origin);

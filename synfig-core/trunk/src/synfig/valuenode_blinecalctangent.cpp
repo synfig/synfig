@@ -127,21 +127,12 @@ ValueNode_BLineCalcTangent::operator()(Time t)const
 							   blinepoint0.get_tangent2(), blinepoint1.get_tangent1());
 	etl::derivative< etl::hermite<Vector> > deriv(curve);
 
-#ifdef ETL_FIXED_DERIVATIVE
 	switch (get_type())
 	{
 		case ValueBase::TYPE_ANGLE:  return (deriv(amount-from_vertex)*(0.5)).angle();
 		case ValueBase::TYPE_VECTOR: return deriv(amount-from_vertex)*(0.5);
 		default: assert(0); return ValueBase();
 	}
-#else
-	switch (get_type())
-	{
-		case ValueBase::TYPE_ANGLE:  return (deriv(amount-from_vertex)*(-0.5)).angle();
-		case ValueBase::TYPE_VECTOR: return deriv(amount-from_vertex)*(-0.5);
-		default: assert(0); return ValueBase();
-	}
-#endif
 }
 
 String

@@ -34,8 +34,6 @@
 //#define _EPSILON		0.0000001
 //#endif
 
-#define ETL_FIXED_DERIVATIVE 1
-
 /* === T Y P E D E F S ===================================================== */
 
 /* === C L A S S E S & S T R U C T S ======================================= */
@@ -53,11 +51,7 @@ public:
 	typename T::result_type
 	operator()(const typename T::argument_type &x)const
 	{
-#ifdef ETL_FIXED_DERIVATIVE
 		return (func(x+epsilon)-func(x))/epsilon;
-#else
-		return (func(x)-func(x+epsilon))/epsilon;
-#endif
 	}
 };
 
