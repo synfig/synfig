@@ -82,7 +82,7 @@ ValueNode_SegCalcTangent::operator()(Time t)const
 	Segment segment((*segment_)(t).get(Segment()));
 
 	etl::hermite<Vector> curve(segment.p1,segment.p2,segment.t1,segment.t2);
-	etl::derivative< etl::hermite<Vector> > deriv(curve, 0.0001);
+	etl::derivative< etl::hermite<Vector> > deriv(curve);
 
 	return deriv((*amount_)(t).get(Real()));
 }

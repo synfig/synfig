@@ -28,6 +28,8 @@
 
 #include <functional>
 
+#include "hermite"
+
 /* === M A C R O S ========================================================= */
 
 //#ifndef _EPSILON
@@ -52,6 +54,22 @@ public:
 	operator()(const typename T::argument_type &x)const
 	{
 		return (func(x+epsilon)-func(x))/epsilon;
+	}
+};
+
+template <typename T>
+class derivative<hermite<T> > : public std::unary_function<typename hermite<T>::argument_type,typename hermite<T>::result_type>
+{
+	hermite<T> func;
+public:
+	explicit derivative(const hermite<T> &x):func(x) { }
+
+	typename hermite<T>::result_type
+	operator()(const typename hermite<T>::argument_type &x)const
+	{
+		T a = func[0], b = func[1], c = func[2], d = func[3];
+		typename hermite<T>::argument_type y(1-x);
+		return ((b-a)*y*y + (c-b)*x*y*2 + (d-c)*x*x) * 3;
 	}
 };
 

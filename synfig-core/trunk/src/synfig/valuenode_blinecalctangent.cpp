@@ -125,7 +125,7 @@ ValueNode_BLineCalcTangent::operator()(Time t)const
 
 	etl::hermite<Vector> curve(blinepoint0.get_vertex(),   blinepoint1.get_vertex(),
 							   blinepoint0.get_tangent2(), blinepoint1.get_tangent1());
-	etl::derivative< etl::hermite<Vector> > deriv(curve, 0.0001);
+	etl::derivative< etl::hermite<Vector> > deriv(curve);
 
 	switch (get_type())
 	{
