@@ -1289,6 +1289,19 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 		}
 	}
 
+	// pre 0.4 canvases had *calctangent outputs scaled down by 0.5 for some reason
+	if (element->get_name() == "blinecalctangent" || element->get_name() == "segcalctangent")
+	{
+		String version(canvas->get_version());
+		if (version == "0.1" || version == "0.2" || version == "0.3")
+		{
+			handle<LinkableValueNode> scale_value_node=LinkableValueNode::create("scale",type);
+			scale_value_node->set_link(scale_value_node->get_link_index_from_name("link"), value_node);
+			scale_value_node->set_link(scale_value_node->get_link_index_from_name("scalar"), ValueNode_Const::create(Real(0.5)));
+			value_node = scale_value_node;
+		}
+	}
+
 	return value_node;
 }
 

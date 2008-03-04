@@ -79,9 +79,16 @@
  *      examples/logo.sifz use transparent straight blends to do
  *      masking, which no longer works now that 'straight' blending is
  *      fixed.
+ *
+ *      Tangent lengths calculated by the "Segment Tangent" and "BLine
+ *      Tangent" ValueNodes were scaled by a factor of 0.5.
+ *
+ * 0.4: svn r1856
+ *
+ *      Stop scaling tangents by 0.5.
  */
 
-#define CURRENT_CANVAS_VERSION "0.3"
+#define CURRENT_CANVAS_VERSION "0.4"
 
 /* === T Y P E D E F S ===================================================== */
 

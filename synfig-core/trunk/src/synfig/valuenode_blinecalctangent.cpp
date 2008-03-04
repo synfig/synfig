@@ -129,8 +129,8 @@ ValueNode_BLineCalcTangent::operator()(Time t)const
 
 	switch (get_type())
 	{
-		case ValueBase::TYPE_ANGLE:  return (deriv(amount-from_vertex)*(0.5)).angle();
-		case ValueBase::TYPE_VECTOR: return deriv(amount-from_vertex)*(0.5);
+		case ValueBase::TYPE_ANGLE:  return deriv(amount-from_vertex).angle();
+		case ValueBase::TYPE_VECTOR: return deriv(amount-from_vertex);
 		default: assert(0); return ValueBase();
 	}
 }
