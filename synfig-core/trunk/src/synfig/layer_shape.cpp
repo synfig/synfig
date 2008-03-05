@@ -1157,7 +1157,7 @@ Layer_Shape::set_param(const String & param, const ValueBase &value)
 	IMPORT(offset);
 	IMPORT(invert);
 	IMPORT(antialias);
-	IMPORT(feather);
+	IMPORT_PLUS(feather, if(feather<0)feather=0;);
 	IMPORT(blurtype);
 	IMPORT(winding_style);
 
