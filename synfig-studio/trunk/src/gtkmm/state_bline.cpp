@@ -700,7 +700,6 @@ StateBLine_Context::run_()
 				}
 			}
 
-			// plants don't have offsets?
 			if (get_layer_link_offsets_flag())
 			{
 				synfigapp::Action::Handle action(synfigapp::Action::create("layer_param_connect"));
