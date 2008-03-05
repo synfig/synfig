@@ -607,6 +607,13 @@ StateBLine_Context::run_()
 
 		synfigapp::SelectionManager::LayerList layer_selection;
 
+		// count how many layers we're going to be creating
+		int layers_to_create = 0;
+		if (get_layer_curve_gradient_flag())	layers_to_create++;
+		if (get_layer_plant_flag())				layers_to_create++;
+		if (get_layer_region_flag())			layers_to_create++;
+		if (get_layer_outline_flag())			layers_to_create++;
+
 		///////////////////////////////////////////////////////////////////////////
 		//   C U R V E   G R A D I E N T
 		///////////////////////////////////////////////////////////////////////////
@@ -642,7 +649,8 @@ StateBLine_Context::run_()
 				}
 			}
 
-			if (get_layer_link_offsets_flag())
+			// only link the curve gradient's offset parameter if the option is selected and we're creating more than one layer
+			if (get_layer_link_offsets_flag() && layers_to_create > 1)
 			{
 				synfigapp::Action::Handle action(synfigapp::Action::create("layer_param_connect"));
 				assert(action);
@@ -700,7 +708,8 @@ StateBLine_Context::run_()
 				}
 			}
 
-			if (get_layer_link_offsets_flag())
+			// only link the plant's offset parameter if the option is selected and we're creating more than one layer
+			if (get_layer_link_offsets_flag() && layers_to_create > 1)
 			{
 				synfigapp::Action::Handle action(synfigapp::Action::create("layer_param_connect"));
 				assert(action);
@@ -769,7 +778,8 @@ StateBLine_Context::run_()
 				}
 			}
 
-			if (get_layer_link_offsets_flag())
+			// only link the region's offset parameter if the option is selected and we're creating more than one layer
+			if (get_layer_link_offsets_flag() && layers_to_create > 1)
 			{
 				synfigapp::Action::Handle action(synfigapp::Action::create("layer_param_connect"));
 				assert(action);
@@ -832,7 +842,8 @@ StateBLine_Context::run_()
 				}
 			}
 
-			if (get_layer_link_offsets_flag())
+			// only link the outline's offset parameter if the option is selected and we're creating more than one layer
+			if (get_layer_link_offsets_flag() && layers_to_create > 1)
 			{
 				synfigapp::Action::Handle action(synfigapp::Action::create("layer_param_connect"));
 				assert(action);
