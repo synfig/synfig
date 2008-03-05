@@ -36,11 +36,13 @@
 template <class T, class K=float>
 struct affine_combo
 {
+	// from (a) to (x) : x = a(1-t) + b(t)
 	T operator()(const T &a,const T &b,const K &t)const
 	{
 		return T( (b-a)*t+a );
 	}
 
+	// from (x) to (a) : a = (x-b(t)) / (1-t)
 	T reverse(const T &x, const T &b, const K &t)const
 	{
 		return T( (x-t*b)*(static_cast<K>(1)/(static_cast<K>(1)-t)) );
