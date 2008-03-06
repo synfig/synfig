@@ -82,8 +82,8 @@ FilledRect::set_param(const String & param, const ValueBase &value)
 	IMPORT(color);
 	IMPORT(point1);
 	IMPORT(point2);
-	IMPORT(feather_x);
-	IMPORT(feather_y);
+	IMPORT_PLUS(feather_x, if(feather_x<0)feather_x=0;);
+	IMPORT_PLUS(feather_y, if(feather_y<0)feather_y=0;);
 	IMPORT(bevel);
 	IMPORT(bevCircle);
 

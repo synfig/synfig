@@ -78,7 +78,7 @@ Circle::ImportParameters(const String &param, const ValueBase &value)
 					set_blend_method(Color::BLEND_ALPHA_OVER);
 					color.set_a(1); } else transparent_color_ = true; } });
 	IMPORT(radius);
-	IMPORT(feather);
+	IMPORT_PLUS(feather, if(feather<0)feather=0;);
 	IMPORT(invert);
 	IMPORT(pos);
 	IMPORT(falloff);
