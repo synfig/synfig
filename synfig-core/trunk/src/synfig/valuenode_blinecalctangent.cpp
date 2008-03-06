@@ -58,7 +58,7 @@ using namespace synfig;
 ValueNode_BLineCalcTangent::ValueNode_BLineCalcTangent(const ValueBase::Type &x):
 	LinkableValueNode(x)
 {
-	if(x!=ValueBase::TYPE_ANGLE && x!=ValueBase::TYPE_VECTOR)
+	if(x!=ValueBase::TYPE_ANGLE && x!=ValueBase::TYPE_REAL && x!=ValueBase::TYPE_VECTOR)
 		throw Exception::BadType(ValueBase::type_local_name(x));
 
 	ValueNode_BLine* value_node(new ValueNode_BLine());
@@ -100,6 +100,7 @@ ValueNode_BLineCalcTangent::operator()(Time t)const
 		switch (get_type())
 		{
 			case ValueBase::TYPE_ANGLE:  return Angle();
+			case ValueBase::TYPE_REAL:   return Real();
 			case ValueBase::TYPE_VECTOR: return Vector();
 			default: assert(0); return ValueBase();
 		}
@@ -130,6 +131,7 @@ ValueNode_BLineCalcTangent::operator()(Time t)const
 	switch (get_type())
 	{
 		case ValueBase::TYPE_ANGLE:  return deriv(amount-from_vertex).angle();
+		case ValueBase::TYPE_REAL:   return deriv(amount-from_vertex).mag();
 		case ValueBase::TYPE_VECTOR: return deriv(amount-from_vertex);
 		default: assert(0); return ValueBase();
 	}
@@ -223,5 +225,6 @@ bool
 ValueNode_BLineCalcTangent::check_type(ValueBase::Type type)
 {
 	return (type==ValueBase::TYPE_ANGLE ||
+			type==ValueBase::TYPE_REAL  ||
 			type==ValueBase::TYPE_VECTOR);
 }
