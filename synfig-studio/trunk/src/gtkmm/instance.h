@@ -216,7 +216,7 @@ public:
 
 	void process_action(synfig::String name, synfigapp::Action::ParamList param_list);
 
-	void make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfigapp::ValueDesc value_desc, float location=0.5f);
+	void make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfigapp::ValueDesc value_desc, float location=0.5f, bool bezier=false);
 
 	void make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas,const std::list<synfigapp::ValueDesc>& value_desc_list);
 

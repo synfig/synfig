@@ -14,10 +14,10 @@ LAYER_ACTION_CC = \
 
 VALUEDESC_ACTION_HH = \
 	actions/valuedescconnect.h   actions/valuedescconvert.h   actions/valuedescdisconnect.h				\
-	actions/valuedescexport.h   actions/valuedesclink.h   actions/valuedescset.h
+	actions/valuedescexport.h   actions/valuedesclink.h   actions/valuedescblinelink.h   actions/valuedescset.h
 VALUEDESC_ACTION_CC = \
 	actions/valuedescconnect.cpp actions/valuedescconvert.cpp actions/valuedescdisconnect.cpp			\
-	actions/valuedescexport.cpp actions/valuedesclink.cpp actions/valuedescset.cpp
+	actions/valuedescexport.cpp actions/valuedesclink.cpp actions/valuedescblinelink.cpp actions/valuedescset.cpp
 
 VALUENODE_ACTION_HH = \
 	actions/valuenodeadd.h   actions/valuenodeconstset.h   actions/valuenodedynamiclistinsert.h			\

@@ -68,11 +68,13 @@
 #include "actions/valuedescconnect.h"
 #include "actions/valuedescdisconnect.h"
 #include "actions/valuedesclink.h"
+#include "actions/valuedescblinelink.h"
 
 #include "actions/waypointadd.h"
 #include "actions/waypointset.h"
 #include "actions/waypointsetsmart.h"
 #include "actions/waypointremove.h"
+// #include "actions/waypointsimpleadd.h"
 
 #include "actions/activepointadd.h"
 #include "actions/activepointset.h"
@@ -80,6 +82,7 @@
 #include "actions/activepointsetoff.h"
 #include "actions/activepointseton.h"
 #include "actions/activepointremove.h"
+// #include "actions/activepointsimpleadd.h"
 
 #include "actions/keyframeadd.h"
 #include "actions/keyframeset.h"
@@ -180,11 +183,13 @@ Action::Main::Main()
 	ADD_ACTION(Action::ValueDescConnect);
 	ADD_ACTION(Action::ValueDescDisconnect);
 	ADD_ACTION(Action::ValueDescLink);
+	ADD_ACTION(Action::ValueDescBLineLink);
 
 	ADD_ACTION(Action::WaypointAdd);
 	ADD_ACTION(Action::WaypointSet);
 	ADD_ACTION(Action::WaypointSetSmart);
 	ADD_ACTION(Action::WaypointRemove);
+//	ADD_ACTION(Action::WaypointSimpleAdd);
 
 	ADD_ACTION(Action::ActivepointAdd);
 	ADD_ACTION(Action::ActivepointSet);
@@ -192,6 +197,7 @@ Action::Main::Main()
 	ADD_ACTION(Action::ActivepointSetOn);
 	ADD_ACTION(Action::ActivepointSetOff);
 	ADD_ACTION(Action::ActivepointRemove);
+//	ADD_ACTION(Action::ActivepointSimpleAdd);
 
 	ADD_ACTION(Action::KeyframeAdd);
 	ADD_ACTION(Action::KeyframeSet);

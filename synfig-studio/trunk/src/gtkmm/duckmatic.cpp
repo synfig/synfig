@@ -1064,9 +1064,11 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 			duck->signal_user_click(2).connect(
 				sigc::bind(
 					sigc::bind(
-						sigc::mem_fun(
-							*canvas_view,
-							&studio::CanvasView::popup_param_menu),
+						sigc::bind(
+							sigc::mem_fun(
+								*canvas_view,
+								&studio::CanvasView::popup_param_menu),
+							false),
 						0.0f),
 					value_desc));
 
@@ -1134,9 +1136,11 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 			duck->signal_user_click(2).connect(
 				sigc::bind(
 					sigc::bind(
-						sigc::mem_fun(
-							*canvas_view,
-							&studio::CanvasView::popup_param_menu),
+						sigc::bind(
+							sigc::mem_fun(
+								*canvas_view,
+								&studio::CanvasView::popup_param_menu),
+							false),
 						0.0f),
 					value_desc));
 			duck->set_guid(calc_duck_guid(value_desc,transform_stack)^synfig::GUID::hasher(multiple));
@@ -1225,9 +1229,11 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 			duck->signal_user_click(2).connect(
 				sigc::bind(
 					sigc::bind(
-						sigc::mem_fun(
-							*canvas_view,
-							&studio::CanvasView::popup_param_menu),
+						sigc::bind(
+							sigc::mem_fun(
+								*canvas_view,
+								&studio::CanvasView::popup_param_menu),
+							false),
 						1.0f),
 					value_desc));
 			duck->set_guid(calc_duck_guid(value_desc,transform_stack)^synfig::GUID::hasher(multiple));
@@ -1423,9 +1429,11 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 						duck->signal_user_click(2).connect(
 							sigc::bind(
 								sigc::bind(
-									sigc::mem_fun(
-										*canvas_view,
-										&studio::CanvasView::popup_param_menu),
+									sigc::bind(
+										sigc::mem_fun(
+											*canvas_view,
+											&studio::CanvasView::popup_param_menu),
+										false),
 									1.0f),
 								synfigapp::ValueDesc(value_node,i)));
 						duck->set_value_desc(synfigapp::ValueDesc(value_node,i));
@@ -1551,9 +1559,11 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 					duck->signal_user_click(2).connect(
 						sigc::bind(
 							sigc::bind(
-								sigc::mem_fun(
-									*canvas_view,
-									&studio::CanvasView::popup_param_menu),
+								sigc::bind(
+									sigc::mem_fun(
+										*canvas_view,
+										&studio::CanvasView::popup_param_menu),
+									false),
 								1.0f),
 							synfigapp::ValueDesc(value_node,i)));
 					duck->set_value_desc(synfigapp::ValueDesc(value_node,i));
@@ -1606,9 +1616,11 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 					duck->signal_user_click(2).connect(
 						sigc::bind(
 							sigc::bind(
-								sigc::mem_fun(
-									*canvas_view,
-									&studio::CanvasView::popup_param_menu),
+								sigc::bind(
+									sigc::mem_fun(
+										*canvas_view,
+										&studio::CanvasView::popup_param_menu),
+									false),
 								1.0f),
 							synfigapp::ValueDesc(value_node,i)));
 					duck->set_value_desc(synfigapp::ValueDesc(value_node,i));
@@ -1672,9 +1684,11 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				duck->signal_user_click(2).connect(
 					sigc::bind(
 						sigc::bind(
-							sigc::mem_fun(
-								*canvas_view,
-								&studio::CanvasView::popup_param_menu),
+							sigc::bind(
+								sigc::mem_fun(
+									*canvas_view,
+									&studio::CanvasView::popup_param_menu),
+								false),
 							1.0f),
 						synfigapp::ValueDesc(value_node,first)));
 				duck->set_value_desc(synfigapp::ValueDesc(value_node,first));

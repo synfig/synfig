@@ -401,9 +401,9 @@ private:
 	Gtk::Widget *create_time_bar();
 
 	void popup_param_menu_bezier(float location, synfigapp::ValueDesc value_desc)
-	{ popup_param_menu(value_desc,location); }
+	{ popup_param_menu(value_desc,location,true); }
 
-	void popup_param_menu(synfigapp::ValueDesc value_desc, float location=0);
+	void popup_param_menu(synfigapp::ValueDesc value_desc, float location=0, bool bezier=false);
 
 	void workarea_layer_selected(synfig::Layer::Handle layer);
 

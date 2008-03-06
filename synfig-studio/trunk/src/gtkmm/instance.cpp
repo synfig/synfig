@@ -53,6 +53,7 @@
 #include "widget_waypointmodel.h"
 #include <gtkmm/actiongroup.h>
 #include "iconcontroller.h"
+#include "workarea.h"
 #include <sys/stat.h>
 #include <errno.h>
 #include <ETL/stringf>
@@ -1002,7 +1003,7 @@ Instance::process_action(synfig::String name, synfigapp::Action::ParamList param
 }
 
 void
-Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfigapp::ValueDesc value_desc, float location)
+Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfigapp::ValueDesc value_desc, float location, bool bezier)
 {
 	Gtk::Menu& parammenu(*menu);
 
@@ -1065,10 +1066,24 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 		parammenu.items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::Stock::CONVERT,*convert_menu));
 	}
 
+	synfigapp::Action::Category categories = synfigapp::Action::CATEGORY_VALUEDESC|synfigapp::Action::CATEGORY_VALUENODE;
+	if (bezier)
+	{
+		categories = categories|synfigapp::Action::CATEGORY_BEZIER;
+
+		const DuckList selected_ducks(find_canvas_view(canvas)->get_work_area()->get_selected_ducks());
+		for(DuckList::const_iterator iter=selected_ducks.begin();iter!=selected_ducks.end();++iter)
+		{
+			synfigapp::ValueDesc value_desc((*iter)->get_value_desc());
+			if(value_desc.is_valid())
+				param_list.add("selected_value_desc",value_desc);
+		}
+	}
+
 	if(param_list2.empty())
-		add_actions_to_menu(&parammenu, param_list,synfigapp::Action::CATEGORY_VALUEDESC|synfigapp::Action::CATEGORY_VALUENODE);
+		add_actions_to_menu(&parammenu, param_list,categories);
 	else
-		add_actions_to_menu(&parammenu, param_list2,param_list,synfigapp::Action::CATEGORY_VALUEDESC|synfigapp::Action::CATEGORY_VALUENODE);
+		add_actions_to_menu(&parammenu, param_list2,param_list,categories);
 
 	if(value_desc.get_value_type()==ValueBase::TYPE_BLINEPOINT && value_desc.is_value_node() && ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node()))
 	{

@@ -2159,10 +2159,10 @@ CanvasView::on_layer_toggle(synfig::Layer::Handle layer)
 }
 
 void
-CanvasView::popup_param_menu(synfigapp::ValueDesc value_desc, float location)
+CanvasView::popup_param_menu(synfigapp::ValueDesc value_desc, float location, bool bezier)
 {
 	parammenu.items().clear();
-	get_instance()->make_param_menu(&parammenu,get_canvas(),value_desc,location);
+	get_instance()->make_param_menu(&parammenu,get_canvas(),value_desc,location,bezier);
 
 	parammenu.popup(3,gtk_get_current_event_time());
 }
