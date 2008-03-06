@@ -17,7 +17,7 @@
         <y>0.0500000007</y>
       </vector>
     </param>
-    <param name="canvas" use="./././logo.sif#"/>
+    <param name="canvas" use="logo.sif#"/>
     <param name="zoom">
       <real value="0.2750000000"/>
     </param>
