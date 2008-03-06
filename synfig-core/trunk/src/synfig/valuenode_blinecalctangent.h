@@ -40,6 +40,9 @@ class ValueNode_BLineCalcTangent : public LinkableValueNode
 	ValueNode::RHandle bline_;
 	ValueNode::RHandle loop_;
 	ValueNode::RHandle amount_;
+	ValueNode::RHandle offset_;
+	ValueNode::RHandle scale_;
+	ValueNode::RHandle fixed_length_;
 
 	ValueNode_BLineCalcTangent(const ValueBase::Type &x=ValueBase::TYPE_VECTOR);
 

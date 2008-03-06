@@ -86,9 +86,14 @@
  * 0.4: svn r1856
  *
  *      Stop scaling tangents by 0.5.
+ *
+ * 0.5: svn r1863
+ *
+ *      Added "offset", "scale", and "fixed_length" links to the
+ *      "BLine Tangent" ValueNode.
  */
 
-#define CURRENT_CANVAS_VERSION "0.4"
+#define CURRENT_CANVAS_VERSION "0.5"
 
 /* === T Y P E D E F S ===================================================== */
 

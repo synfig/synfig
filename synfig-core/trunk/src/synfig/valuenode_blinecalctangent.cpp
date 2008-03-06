@@ -65,6 +65,9 @@ ValueNode_BLineCalcTangent::ValueNode_BLineCalcTangent(const ValueBase::Type &x)
 	set_link("bline",value_node);
 	set_link("loop",ValueNode_Const::create(bool(false)));
 	set_link("amount",ValueNode_Const::create(Real(0.5)));
+	set_link("offset",ValueNode_Const::create(Angle::deg(0)));
+	set_link("scale",ValueNode_Const::create(Real(1.0)));
+	set_link("fixed_length",ValueNode_Const::create(bool(false)));
 }
 
 LinkableValueNode*
@@ -93,6 +96,9 @@ ValueNode_BLineCalcTangent::operator()(Time t)const
 	int size = bline.size(), from_vertex;
 	bool loop((*loop_)(t).get(bool()));
 	Real amount((*amount_)(t).get(Real()));
+	Angle offset((*offset_)(t).get(Angle()));
+	Real scale((*scale_)(t).get(Real()));
+	bool fixed_length((*fixed_length_)(t).get(bool()));
 	BLinePoint blinepoint0, blinepoint1;
 
 	if (!looped) size--;
@@ -130,9 +136,20 @@ ValueNode_BLineCalcTangent::operator()(Time t)const
 
 	switch (get_type())
 	{
-		case ValueBase::TYPE_ANGLE:  return deriv(amount-from_vertex).angle();
-		case ValueBase::TYPE_REAL:   return deriv(amount-from_vertex).mag();
-		case ValueBase::TYPE_VECTOR: return deriv(amount-from_vertex);
+		case ValueBase::TYPE_ANGLE:  return deriv(amount-from_vertex).angle() + offset;
+		case ValueBase::TYPE_REAL:
+		{
+			if (fixed_length) return scale;
+			return deriv(amount-from_vertex).mag() * scale;
+		}
+		case ValueBase::TYPE_VECTOR:
+		{
+			Vector tangent(deriv(amount-from_vertex));
+			Angle angle(tangent.angle() + offset);
+			Real mag = fixed_length ? scale : (tangent.mag() * scale);
+			return Vector(Angle::cos(angle).get()*mag,
+						  Angle::sin(angle).get()*mag);
+		}
 		default: assert(0); return ValueBase();
 	}
 }
@@ -156,9 +173,12 @@ ValueNode_BLineCalcTangent::set_link_vfunc(int i,ValueNode::Handle value)
 
 	switch(i)
 	{
-	case 0: CHECK_TYPE_AND_SET_VALUE(bline_,  ValueBase::TYPE_LIST);
-	case 1: CHECK_TYPE_AND_SET_VALUE(loop_,   ValueBase::TYPE_BOOL);
-	case 2: CHECK_TYPE_AND_SET_VALUE(amount_, ValueBase::TYPE_REAL);
+	case 0: CHECK_TYPE_AND_SET_VALUE(bline_,		ValueBase::TYPE_LIST);
+	case 1: CHECK_TYPE_AND_SET_VALUE(loop_,			ValueBase::TYPE_BOOL);
+	case 2: CHECK_TYPE_AND_SET_VALUE(amount_,		ValueBase::TYPE_REAL);
+	case 3: CHECK_TYPE_AND_SET_VALUE(offset_,		ValueBase::TYPE_ANGLE);
+	case 4: CHECK_TYPE_AND_SET_VALUE(scale_,		ValueBase::TYPE_REAL);
+	case 5: CHECK_TYPE_AND_SET_VALUE(fixed_length_,	ValueBase::TYPE_BOOL);
 	}
 	return false;
 }
@@ -173,6 +193,9 @@ ValueNode_BLineCalcTangent::get_link_vfunc(int i)const
 		case 0: return bline_;
 		case 1: return loop_;
 		case 2: return amount_;
+		case 3: return offset_;
+		case 4: return scale_;
+		case 5: return fixed_length_;
 	}
 
 	return 0;
@@ -181,7 +204,7 @@ ValueNode_BLineCalcTangent::get_link_vfunc(int i)const
 int
 ValueNode_BLineCalcTangent::link_count()const
 {
-	return 3;
+	return 6;
 }
 
 String
@@ -194,6 +217,9 @@ ValueNode_BLineCalcTangent::link_name(int i)const
 		case 0: return "bline";
 		case 1: return "loop";
 		case 2: return "amount";
+		case 3: return "offset";
+		case 4: return "scale";
+		case 5: return "fixed_length";
 	}
 	return String();
 }
@@ -208,6 +234,9 @@ ValueNode_BLineCalcTangent::link_local_name(int i)const
 		case 0: return _("BLine");
 		case 1: return _("Loop");
 		case 2: return _("Amount");
+		case 3: return _("Offset");
+		case 4: return _("Scale");
+		case 5: return _("Fixed Length");
 	}
 	return String();
 }
@@ -215,9 +244,12 @@ ValueNode_BLineCalcTangent::link_local_name(int i)const
 int
 ValueNode_BLineCalcTangent::get_link_index_from_name(const String &name)const
 {
-	if(name=="bline")  return 0;
-	if(name=="loop")   return 1;
-	if(name=="amount") return 2;
+	if (name=="bline")		  return 0;
+	if (name=="loop")		  return 1;
+	if (name=="amount")		  return 2;
+	if (name=="offset")		  return 3;
+	if (name=="scale")		  return 4;
+	if (name=="fixed_length") return 5;
 	throw Exception::BadLinkName(name);
 }
 

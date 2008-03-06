@@ -1275,12 +1275,23 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 		}
 	}
 
+	String version(canvas->get_version());
 	for (int i = 0; i < value_node->link_count(); i++)
 	{
-		if (!c[i] &&
-			// the 'width' parameter of <stripes> wasn't always present, so it won't be in old .sif files
-			!(element->get_name() == "stripes" && value_node->link_name(i) == "width"))
+		if (!c[i])
 		{
+			// the 'width' parameter of <stripes> wasn't always present in version 0.1 canvases
+			if (version == "0.1" && element->get_name() == "stripes" && value_node->link_name(i) == "width")
+				continue;
+
+			// these 3 blinecalctangent parameters didn't appear until canvas version 0.5
+			if ((version == "0.1" || version == "0.2" || version == "0.3" || version == "0.4") &&
+				element->get_name() == "blinecalctangent" &&
+				(value_node->link_name(i) == "offset" ||
+				 value_node->link_name(i) == "scale" ||
+				 value_node->link_name(i) == "fixed_length"))
+				continue;
+
 			error(element, strprintf(_("<%s> is missing link %d (%s)"),
 									 element->get_name().c_str(),
 									 i,
@@ -1292,7 +1303,6 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 	// pre 0.4 canvases had *calctangent outputs scaled down by 0.5 for some reason
 	if (element->get_name() == "blinecalctangent" || element->get_name() == "segcalctangent")
 	{
-		String version(canvas->get_version());
 		if (version == "0.1" || version == "0.2" || version == "0.3")
 		{
 			handle<LinkableValueNode> scale_value_node=LinkableValueNode::create("scale",type);
