@@ -94,16 +94,11 @@ Action::WaypointAdd::get_param_vocab()
 bool
 Action::WaypointAdd::is_candidate(const ParamList &x)
 {
-	if(candidate_check(get_param_vocab(),x))
-	{
-		if(!ValueNode_Animated::Handle::cast_dynamic(x.find("value_node")->second.get_value_node()))
-			return false;
-
-		// We need either a waypoint or a time.
-		if(x.count("waypoint") || x.count("time"))
-			return true;
-	}
-	return false;
+	return (candidate_check(get_param_vocab(),x) &&
+			// We need an animated valuenode.
+			ValueNode_Animated::Handle::cast_dynamic(x.find("value_node")->second.get_value_node()) &&
+			// We need either a waypoint or a time.
+			(x.count("waypoint") || x.count("time")));
 }
 
 bool

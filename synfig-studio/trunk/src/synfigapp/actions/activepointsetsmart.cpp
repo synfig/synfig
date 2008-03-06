@@ -100,17 +100,16 @@ Action::ActivepointSetSmart::get_param_vocab()
 bool
 Action::ActivepointSetSmart::is_candidate(const ParamList &x)
 {
-	if(candidate_check(get_param_vocab(),x))
-	{
-		ValueDesc value_desc(x.find("value_desc")->second.get_value_desc());
-		if(!value_desc.parent_is_value_node() || !ValueNode_DynamicList::Handle::cast_dynamic(value_desc.get_parent_value_node()))
-			return false;
+	if (!candidate_check(get_param_vocab(),x))
+		return false;
 
-		// We need either a activepoint or a time.
-		if(x.count("activepoint") || x.count("time"))
-			return true;
-	}
-	return false;
+	ValueDesc value_desc(x.find("value_desc")->second.get_value_desc());
+
+	return (value_desc.parent_is_value_node() &&
+			// We need a dynamic list.
+			ValueNode_DynamicList::Handle::cast_dynamic(value_desc.get_parent_value_node()) &&
+			// We need either an activepoint or a time.
+			(x.count("activepoint") || x.count("time")));
 }
 
 bool

@@ -101,28 +101,27 @@ Action::ValueDescDisconnect::get_param_vocab()
 bool
 Action::ValueDescDisconnect::is_candidate(const ParamList &x)
 {
-	if(candidate_check(get_param_vocab(),x))
-	{
-		ValueDesc value_desc(x.find("value_desc")->second.get_value_desc());
+	if (!candidate_check(get_param_vocab(),x))
+		return false;
 
-		// don't allow the Index parameter of the Duplicate layer to be disconnected
-		if(value_desc.parent_is_layer_param() && value_desc.get_layer()->get_name() == "duplicate" && value_desc.get_param_name() == "index")
-			return false;
-		if(!value_desc.parent_is_canvas() && value_desc.is_value_node() && value_desc.get_value_node()->rcount()>1)
-			return true;
-		if(value_desc.is_const())
-			return false;
-		if(value_desc.is_value_node() && ValueNode_Const::Handle::cast_dynamic(value_desc.get_value_node()))
-			return false;
-		// don't allow Duplicate ValueNodes in the Children dialog to be disconnected
-		if(value_desc.is_value_node() &&
-		   ValueNode_Duplicate::Handle::cast_dynamic(value_desc.get_value_node()) &&
-		   !value_desc.parent_is_layer_param() &&
-		   !value_desc.parent_is_value_node())
-			return false;
+	ValueDesc value_desc(x.find("value_desc")->second.get_value_desc());
+
+	// don't allow the Index parameter of the Duplicate layer to be disconnected
+	if(value_desc.parent_is_layer_param() && value_desc.get_layer()->get_name() == "duplicate" && value_desc.get_param_name() == "index")
+		return false;
+	if(!value_desc.parent_is_canvas() && value_desc.is_value_node() && value_desc.get_value_node()->rcount()>1)
 		return true;
-	}
-	return false;
+	if(value_desc.is_const())
+		return false;
+	if(value_desc.is_value_node() && ValueNode_Const::Handle::cast_dynamic(value_desc.get_value_node()))
+		return false;
+	// don't allow Duplicate ValueNodes in the Children dialog to be disconnected
+	if(value_desc.is_value_node() &&
+	   ValueNode_Duplicate::Handle::cast_dynamic(value_desc.get_value_node()) &&
+	   !value_desc.parent_is_layer_param() &&
+	   !value_desc.parent_is_value_node())
+		return false;
+	return true;
 }
 
 bool

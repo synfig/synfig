@@ -78,21 +78,21 @@ Action::ValueNodeDynamicListLoop::get_param_vocab()
 bool
 Action::ValueNodeDynamicListLoop::is_candidate(const ParamList &x)
 {
-	if(candidate_check(get_param_vocab(),x))
-	{
-		ValueNode::Handle value_node;
-		ValueDesc value_desc(x.find("value_desc")->second.get_value_desc());
-		if(value_desc.parent_is_value_node())
-			value_node = value_desc.get_parent_value_node();
-		else
-			value_node = x.find("value_node")->second.get_value_node();
-		if(!ValueNode_DynamicList::Handle::cast_dynamic(value_node))
-			return false;
-		if(ValueNode_DynamicList::Handle::cast_dynamic(value_node)->get_loop()==true)
-			return false;
-		return true;
-	}
-	return false;
+	if (!candidate_check(get_param_vocab(),x))
+		return false;
+
+	ValueNode::Handle value_node;
+	ValueDesc value_desc(x.find("value_desc")->second.get_value_desc());
+
+	if(value_desc.parent_is_value_node())
+		value_node = value_desc.get_parent_value_node();
+	else
+		value_node = x.find("value_node")->second.get_value_node();
+
+	// We need a dynamic list.
+	return (ValueNode_DynamicList::Handle::cast_dynamic(value_node) &&
+			// We need the list not to be looped.
+			!ValueNode_DynamicList::Handle::cast_dynamic(value_node)->get_loop());
 }
 
 bool
