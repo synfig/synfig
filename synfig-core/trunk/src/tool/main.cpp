@@ -682,23 +682,15 @@ int extract_RendDesc(arg_list_t &arg_list,RendDesc &desc)
 		else if (flag_requires_value(*iter))
 			iter=next++;
 	}
-	if(w&&h)
+	if (w||h)
 	{
+		if (!w)
+			w = desc.get_w() * h / desc.get_h();
+		else if (!h)
+			h = desc.get_h() * w / desc.get_w();
+
 		desc.set_wh(w,h);
 		VERBOSE_OUT(1)<<strprintf(_("Resolution set to %dx%d"),w,h)<<endl;
-	}
-	else
-	{
-		if(w)
-		{
-			VERBOSE_OUT(1)<<strprintf(_("Width set to %d pixels"),w)<<endl;
-			desc.set_w(w);
-		}
-		if(h)
-		{
-			VERBOSE_OUT(1)<<strprintf(_("Height set to %d pixels"),h)<<endl;
-			desc.set_h(h);
-		}
 	}
 	if(span)
 		desc.set_span(span);
