@@ -30,13 +30,17 @@
 #	include <config.h>
 #endif
 
+#include "layerparamconnect.h"
 #include "valuenodelinkconnect.h"
+#include "valuenodereplace.h"
 #include "valuedescblinelink.h"
 
 #include <synfigapp/canvasinterface.h>
 #include <synfig/valuenode_const.h>
 #include <synfig/valuenode_composite.h>
+#include <synfig/valuenode_blinecalctangent.h>
 #include <synfig/valuenode_blinecalcvertex.h>
+#include <synfig/valuenode_blinecalcwidth.h>
 
 #include <synfigapp/general.h>
 
@@ -111,29 +115,29 @@ Action::ValueDescBLineLink::is_candidate(const ParamList &x)
 bool
 Action::ValueDescBLineLink::set_param(const synfig::String& name, const Action::Param &param)
 {
-	if(name=="time" && param.get_type()==Param::TYPE_TIME)
+	if (name == "time" && param.get_type() == Param::TYPE_TIME)
 	{
-		time=param.get_time();
+		time = param.get_time();
 		return true;
 	}
 
-	if(name=="value_desc" && param.get_type()==Param::TYPE_VALUEDESC)
+	if (name == "value_desc" && param.get_type() == Param::TYPE_VALUEDESC)
 	{
 		value_desc = param.get_value_desc();
-		index=value_desc.get_index();
+		index = value_desc.get_index();
 		return true;
 	}
 
-	if(name=="selected_value_desc" && param.get_type()==Param::TYPE_VALUEDESC)
+	if (name == "selected_value_desc" && param.get_type() == Param::TYPE_VALUEDESC)
 	{
 		ValueDesc value_desc(param.get_value_desc());
 		value_desc_list.push_back(value_desc);
 		return true;
 	}
 
-	if(name=="origin" && param.get_type()==Param::TYPE_REAL)
+	if (name == "origin" && param.get_type() == Param::TYPE_REAL)
 	{
-		origin=param.get_real();
+		origin = param.get_real();
 		return true;
 	}
 
@@ -143,9 +147,9 @@ Action::ValueDescBLineLink::set_param(const synfig::String& name, const Action::
 bool
 Action::ValueDescBLineLink::is_ready()const
 {
-	if(value_desc_list.size()<1)
+	if (value_desc_list.size()<1)
 		return false;
-	if(!value_desc)
+	if (!value_desc)
 		return false;
 	return Action::CanvasSpecific::is_ready();
 }
@@ -153,7 +157,7 @@ Action::ValueDescBLineLink::is_ready()const
 void
 Action::ValueDescBLineLink::prepare()
 {
-	if(value_desc_list.empty())
+	if (value_desc_list.empty())
 		throw Error(Error::TYPE_NOTREADY);
 
 	clear();
@@ -164,37 +168,98 @@ Action::ValueDescBLineLink::prepare()
 	const std::vector<ValueBase> bline((*bline_value_node)(time));
 	int size = bline.size();
 	Real amount = (index + origin + loop_adjust) / (size + loop_adjust);
+	LinkableValueNode::Handle calculated_value_node;
+	Action::Handle action;
 
-	std::list<ValueDesc>::iterator iter;
-	for(iter=value_desc_list.begin();iter!=value_desc_list.end();++iter)
+	for (std::list<ValueDesc>::iterator iter = value_desc_list.begin(); iter != value_desc_list.end(); ++iter)
 	{
 		ValueDesc& value_desc(*iter);
-		if (value_desc.parent_is_value_node())
+
+		// parent is BLINEPOINT ValueNode
+		if (value_desc.parent_is_linkable_value_node() &&
+			value_desc.get_parent_value_node()->get_type() == ValueBase::TYPE_BLINEPOINT &&
+			ValueNode_Composite::Handle::cast_dynamic(value_desc.get_parent_value_node()))
 		{
-			ValueNode::Handle value_node(value_desc.get_value_node());
-			if (value_desc.get_value_type()==ValueBase::TYPE_BLINEPOINT &&
-				value_desc.is_value_node() &&
-				ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node()))
+			String link_name(synfig::LinkableValueNode::Handle::cast_reinterpret(value_desc.get_parent_value_node())->
+								link_name(value_desc.get_index()));
+			if (link_name == "t1" || link_name == "t2")
+				calculated_value_node = ValueNode_BLineCalcTangent::create(ValueBase::TYPE_VECTOR);
+			else if (link_name == "width")
+				calculated_value_node = ValueNode_BLineCalcWidth::create(ValueBase::TYPE_REAL);
+			else
 			{
-				LinkableValueNode::Handle bline_vertex(ValueNode_BLineCalcVertex::create(ValueBase::TYPE_VECTOR));
-				bline_vertex->set_link("bline", bline_value_node);
-				bline_vertex->set_link("loop", ValueNode_Const::create(loop));
-				bline_vertex->set_link("amount", ValueNode_Const::create(amount));
-
-				Action::Handle action(ValueNodeLinkConnect::create());
-
-				action->set_param("canvas",get_canvas());
-				action->set_param("canvas_interface",get_canvas_interface());
-				action->set_param("parent_value_node",value_node);
-				action->set_param("value_node",ValueNode::Handle(bline_vertex));
-				action->set_param("index",0); // index for 'vertex' in 'composite'
-
-				assert(action->is_ready());
-				if(!action->is_ready())
-					throw Error(Error::TYPE_NOTREADY);
-
-				add_action_front(action);
+				synfig::warning("can't link '%s'", link_name.c_str());
+				continue;
 			}
+
+			action = ValueNodeLinkConnect::create();
+			action->set_param("parent_value_node", value_desc.get_parent_value_node());
+			action->set_param("index", value_desc.get_index());
 		}
+		// BLINEPOINT ValueNode - link its vertex
+		else if (value_desc.is_value_node() &&
+				 value_desc.get_value_type() == ValueBase::TYPE_BLINEPOINT &&
+				 ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node()))
+		{
+			calculated_value_node = ValueNode_BLineCalcVertex::create(ValueBase::TYPE_VECTOR);
+			action = ValueNodeLinkConnect::create();
+			action->set_param("parent_value_node", value_desc.get_value_node());
+			action->set_param("index", 0); // index for 'vertex' in 'composite'
+		}
+		// exported ValueNode
+		else if (value_desc.parent_is_canvas())
+		{
+			if (value_desc.get_value_type() == ValueBase::TYPE_VECTOR)
+				calculated_value_node = ValueNode_BLineCalcVertex::create(ValueBase::TYPE_VECTOR);
+			else if (value_desc.get_value_type() == ValueBase::TYPE_REAL)
+				calculated_value_node = ValueNode_BLineCalcWidth::create(ValueBase::TYPE_REAL);
+			else
+				continue;
+
+			calculated_value_node->set_link("bline",  bline_value_node);
+			calculated_value_node->set_link("loop",   ValueNode_Const::create(loop));
+			calculated_value_node->set_link("amount", ValueNode_Const::create(amount));
+
+			action = ValueNodeReplace::create();
+			action->set_param("canvas", get_canvas());
+			action->set_param("canvas_interface", get_canvas_interface());
+			action->set_param("src", ValueNode::Handle(calculated_value_node));
+			action->set_param("dest", value_desc.get_value_node());
+
+			assert(action->is_ready());
+			if (!action->is_ready()) throw Error(Error::TYPE_NOTREADY);
+			add_action_front(action);
+
+			continue;
+		}
+		else if (value_desc.parent_is_layer_param())
+		{
+			// VECTOR layer parameter
+			if (value_desc.get_value_type() == ValueBase::TYPE_VECTOR)
+				calculated_value_node = ValueNode_BLineCalcVertex::create(ValueBase::TYPE_VECTOR);
+			// REAL layer parameter
+			else if (value_desc.get_value_type() == ValueBase::TYPE_REAL)
+				calculated_value_node = ValueNode_BLineCalcWidth::create(ValueBase::TYPE_REAL);
+			else
+				continue;
+
+			action = LayerParamConnect::create();
+			action->set_param("layer", value_desc.get_layer());
+			action->set_param("param", value_desc.get_param_name());
+		}
+		else
+			continue;
+
+		calculated_value_node->set_link("bline",  bline_value_node);
+		calculated_value_node->set_link("loop",   ValueNode_Const::create(loop));
+		calculated_value_node->set_link("amount", ValueNode_Const::create(amount));
+
+		action->set_param("canvas", get_canvas());
+		action->set_param("canvas_interface", get_canvas_interface());
+		action->set_param("value_node", ValueNode::Handle(calculated_value_node));
+
+		assert(action->is_ready());
+		if (!action->is_ready()) throw Error(Error::TYPE_NOTREADY);
+		add_action_front(action);
 	}
 }
