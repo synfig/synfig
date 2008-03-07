@@ -183,6 +183,14 @@ Outline::sync()
 #if 1
 
 	const bool loop(bline.get_loop());
+
+	ValueNode_BLine::Handle bline_valuenode;
+	if (bline.get_contained_type() == ValueBase::TYPE_SEGMENT)
+	{
+		bline_valuenode = ValueNode_BLine::create(bline);
+		bline = (*bline_valuenode)(0);
+	}
+
 	const vector<synfig::BLinePoint> bline_(bline.get_list().begin(),bline.get_list().end());
 #define bline bline_
 

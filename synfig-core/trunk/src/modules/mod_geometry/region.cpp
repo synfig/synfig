@@ -94,9 +94,9 @@ void
 Region::sync()
 {
 	if(bline.get_contained_type()==ValueBase::TYPE_BLINEPOINT)
-	{
 		segment_list=convert_bline_to_segment_list(bline);
-	}
+	else if(bline.get_contained_type()==ValueBase::TYPE_SEGMENT)
+		segment_list=vector<synfig::Segment>(bline.get_list().begin(), bline.get_list().end());
 	else
 	{
 		synfig::warning("Region: incorrect type on bline, layer disabled");
