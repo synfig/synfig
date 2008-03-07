@@ -40,6 +40,7 @@ class ValueNode_BLineCalcWidth : public LinkableValueNode
 	ValueNode::RHandle bline_;
 	ValueNode::RHandle loop_;
 	ValueNode::RHandle amount_;
+	ValueNode::RHandle scale_;
 
 	ValueNode_BLineCalcWidth(const ValueBase::Type &x=ValueBase::TYPE_REAL);
 

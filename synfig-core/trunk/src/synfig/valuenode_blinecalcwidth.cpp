@@ -65,6 +65,7 @@ ValueNode_BLineCalcWidth::ValueNode_BLineCalcWidth(const ValueBase::Type &x):
 	set_link("bline",value_node);
 	set_link("loop",ValueNode_Const::create(bool(false)));
 	set_link("amount",ValueNode_Const::create(Real(0.5)));
+	set_link("scale",ValueNode_Const::create(Real(1.0)));
 }
 
 LinkableValueNode*
@@ -93,6 +94,7 @@ ValueNode_BLineCalcWidth::operator()(Time t)const
 	int size = bline.size(), from_vertex;
 	bool loop((*loop_)(t).get(bool()));
 	Real amount((*amount_)(t).get(Real()));
+	Real scale((*scale_)(t).get(Real()));
 	BLinePoint blinepoint0, blinepoint1;
 
 	if (!looped) size--;
@@ -120,14 +122,8 @@ ValueNode_BLineCalcWidth::operator()(Time t)const
 	float width0 = blinepoint0.get_width();
 	float width1 = blinepoint1.get_width();
 
-	return Real(width0 + (amount-from_vertex) * (width1-width0));
+	return Real((width0 + (amount-from_vertex) * (width1-width0)) * scale);
 }
-
-
-
-
-
-
 
 String
 ValueNode_BLineCalcWidth::get_name()const
@@ -151,6 +147,7 @@ ValueNode_BLineCalcWidth::set_link_vfunc(int i,ValueNode::Handle value)
 	case 0: CHECK_TYPE_AND_SET_VALUE(bline_,  ValueBase::TYPE_LIST);
 	case 1: CHECK_TYPE_AND_SET_VALUE(loop_,   ValueBase::TYPE_BOOL);
 	case 2: CHECK_TYPE_AND_SET_VALUE(amount_, ValueBase::TYPE_REAL);
+	case 3: CHECK_TYPE_AND_SET_VALUE(scale_,  ValueBase::TYPE_REAL);
 	}
 	return false;
 }
@@ -165,6 +162,7 @@ ValueNode_BLineCalcWidth::get_link_vfunc(int i)const
 		case 0: return bline_;
 		case 1: return loop_;
 		case 2: return amount_;
+		case 3: return scale_;
 	}
 
 	return 0;
@@ -173,7 +171,7 @@ ValueNode_BLineCalcWidth::get_link_vfunc(int i)const
 int
 ValueNode_BLineCalcWidth::link_count()const
 {
-	return 3;
+	return 4;
 }
 
 String
@@ -186,6 +184,7 @@ ValueNode_BLineCalcWidth::link_name(int i)const
 		case 0: return "bline";
 		case 1: return "loop";
 		case 2: return "amount";
+		case 3: return "scale";
 	}
 	return String();
 }
@@ -200,6 +199,7 @@ ValueNode_BLineCalcWidth::link_local_name(int i)const
 		case 0: return _("BLine");
 		case 1: return _("Loop");
 		case 2: return _("Amount");
+		case 3: return _("Scale");
 	}
 	return String();
 }
@@ -210,6 +210,7 @@ ValueNode_BLineCalcWidth::get_link_index_from_name(const String &name)const
 	if(name=="bline")  return 0;
 	if(name=="loop")   return 1;
 	if(name=="amount") return 2;
+	if(name=="scale")  return 3;
 	throw Exception::BadLinkName(name);
 }
 
