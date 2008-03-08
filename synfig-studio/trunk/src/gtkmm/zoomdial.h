@@ -68,7 +68,7 @@ public:
 
 		SMALL_BUTTON(zoom_in,"gtk-add",_("Zoom In"));
 		SMALL_BUTTON(zoom_out,"gtk-remove",_("Zoom Out"));
-		SMALL_BUTTON(zoom_fit,"gtk-zoom-fit",_("Zoom Fit"));
+		SMALL_BUTTON(zoom_fit,"gtk-zoom-fit",_("Zoom to Fit"));
 		SMALL_BUTTON(zoom_norm,"gtk-zoom-100",_("Zoom to 100%"));
 
 		attach(*zoom_out, 0, 1, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
