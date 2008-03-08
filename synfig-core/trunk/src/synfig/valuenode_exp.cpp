@@ -56,7 +56,7 @@ ValueNode_Exp::ValueNode_Exp(const ValueBase &value):
 	switch(value.get_type())
 	{
 	case ValueBase::TYPE_REAL:
-		set_link("exp",ValueNode_Const::create(Real(1)));
+		set_link("exp",ValueNode_Const::create(Real(0)));
 		set_link("scale",ValueNode_Const::create(value.get(Real())));
 		break;
 	default:
