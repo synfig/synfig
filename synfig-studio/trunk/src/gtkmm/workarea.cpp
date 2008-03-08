@@ -2579,20 +2579,18 @@ studio::WorkArea::zoom_out()
 void
 studio::WorkArea::zoom_fit()
 {
-	// This really doesn't zoom to fit. Bug.
-	zoom_norm();
+	float new_zoom(min(drawing_area->get_width() * zoom / w, drawing_area->get_height() * zoom / h));
+	if (zoom == new_zoom) return set_zoom(prev_zoom);
+	prev_zoom = zoom;
+	set_zoom(new_zoom);
 }
 
 void
 studio::WorkArea::zoom_norm()
 {
-	if(zoom==1.0)
-		set_zoom(prev_zoom);
-	else
-	{
-		prev_zoom=zoom;
-		set_zoom(1.0f);
-	}
+	if (zoom == 1.0) return set_zoom(prev_zoom);
+	prev_zoom = zoom;
+	set_zoom(1.0f);
 }
 
 gboolean
