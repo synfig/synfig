@@ -76,6 +76,7 @@
 #include "valuenode_vectorlength.h"
 #include "valuenode_vectorx.h"
 #include "valuenode_vectory.h"
+#include "valuenode_gradientcolor.h"
 
 #include "layer.h"
 
@@ -161,6 +162,7 @@ ValueNode::subsys_init()
 	ADD_VALUENODE(ValueNode_VectorLength,	  "vectorlength",	  _("Vector Length"),	 RELEASE_VERSION_0_61_09); // SVN r1881
 	ADD_VALUENODE(ValueNode_VectorX,		  "vectorx",		  _("Vector X"),		 RELEASE_VERSION_0_61_09); // SVN r1882
 	ADD_VALUENODE(ValueNode_VectorY,		  "vectory",		  _("Vector Y"),		 RELEASE_VERSION_0_61_09); // SVN r1882
+	ADD_VALUENODE(ValueNode_GradientColor,	  "gradientcolor",	  _("Gradient Color"),	 RELEASE_VERSION_0_61_09); // SVN r1885
 
 #undef ADD_VALUENODE
 #undef ADD_VALUENODE2
