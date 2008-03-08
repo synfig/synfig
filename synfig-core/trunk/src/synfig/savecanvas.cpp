@@ -427,19 +427,13 @@ xmlpp::Element* encode_dynamic_list(xmlpp::Element* root,ValueNode_DynamicList::
 				if(entry_iter->state==true)
 				{
 					if(entry_iter->priority)
-					{
-						printf("begin priority is %d\n", entry_iter->priority);
 						begin_sequence+=strprintf("p%d ",entry_iter->priority);
-					}
 					begin_sequence+=entry_iter->time.get_string(fps)+", ";
 				}
 				else
 				{
 					if(entry_iter->priority)
-					{
-						printf("end priority is %d\n", entry_iter->priority);
 						end_sequence+=strprintf("p%d ",entry_iter->priority);
-					}
 					end_sequence+=entry_iter->time.get_string(fps)+", ";
 				}
 
