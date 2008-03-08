@@ -46,8 +46,7 @@ public:
 	typedef etl::handle<ValueNode_Reciprocal> Handle;
 	typedef etl::handle<const ValueNode_Reciprocal> ConstHandle;
 
-	ValueNode_Reciprocal(const ValueBase::Type &x);
-	ValueNode_Reciprocal(const ValueNode::Handle &x);
+	ValueNode_Reciprocal(const ValueBase &x);
 
 	virtual ValueBase operator()(Time t)const;
 

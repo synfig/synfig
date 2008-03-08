@@ -50,23 +50,27 @@ using namespace synfig;
 
 /* === M E T H O D S ======================================================= */
 
-ValueNode_Reciprocal::ValueNode_Reciprocal(const ValueBase::Type &x):
-	LinkableValueNode(x)
+ValueNode_Reciprocal::ValueNode_Reciprocal(const ValueBase &x):
+	LinkableValueNode(x.get_type())
 {
-}
+	Real value(x.get(Real()));
+	Real infinity(999999.0);
+	Real epsilon(0.000001);
 
-ValueNode_Reciprocal::ValueNode_Reciprocal(const ValueNode::Handle &x):
-	LinkableValueNode(x->get_type())
-{
-	set_link("link", x);
-	set_link("epsilon",  ValueNode_Const::create(Real(0.000001)));
-	set_link("infinite", ValueNode_Const::create(Real(999999.0)));
+	if (value == 0)
+		value = infinity;
+	else
+		value = 1.0/value;
+
+	set_link("link",     ValueNode_Const::create(Real(value)));
+	set_link("epsilon",  ValueNode_Const::create(Real(epsilon)));
+	set_link("infinite", ValueNode_Const::create(Real(infinity)));
 }
 
 ValueNode_Reciprocal*
 ValueNode_Reciprocal::create(const ValueBase &x)
 {
-	return new ValueNode_Reciprocal(ValueNode_Const::create(x));
+	return new ValueNode_Reciprocal(x);
 }
 
 LinkableValueNode*
