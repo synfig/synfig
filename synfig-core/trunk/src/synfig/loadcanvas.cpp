@@ -1730,6 +1730,12 @@ CanvasParser::parse_layer(xmlpp::Element *element,Canvas::Handle canvas)
 					handle<ValueNode> value_node=canvas->surefind_value_node(str);
 
 					// Assign the value_node to the dynamic parameter list
+					if (param_name == "segment_list" && (layer->get_name() == "region" || layer->get_name() == "outline"))
+					{
+						synfig::warning("%s: Updated valuenode connection to use the \"bline\" parameter instead of \"segment_list\".",
+										layer->get_name().c_str());
+						param_name = "bline";
+					}
 					layer->connect_dynamic_param(param_name,value_node);
     			}
 				catch(Exception::IDNotFound)
