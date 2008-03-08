@@ -1242,7 +1242,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 			return true;
 		}
 		break;
-/*	case ValueBase::TYPE_SEGMENT:
+	case ValueBase::TYPE_SEGMENT:
 		{
 			etl::handle<Bezier> bezier(new Bezier());
 			ValueNode_Composite::Handle value_node;
@@ -1297,12 +1297,12 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 					name=guid_string(value_desc);
 				}
 
-				duck_p=new class Duck(segment.p1);
+				duck_p=new Duck(segment.p1);
 				duck_p->set_name(name+".P1");
 				duck_p->set_type(Duck::TYPE_VERTEX);
 				add_duck(duck_p);
 
-				duck_c=new class Duck(segment.t1);
+				duck_c=new Duck(segment.t1);
 				duck_c->set_name(name+".T1");
 				duck_c->set_type(Duck::TYPE_TANGENT);
 				add_duck(duck_c);
@@ -1313,12 +1313,12 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				bezier->p1=duck_p;
 				bezier->c1=duck_c;
 
-				duck_p=new class Duck(segment.p2);
+				duck_p=new Duck(segment.p2);
 				duck_p->set_name(name+".P2");
 				duck_p->set_type(Duck::TYPE_VERTEX);
 				add_duck(duck_p);
 
-				duck_c=new class Duck(segment.t2);
+				duck_c=new Duck(segment.t2);
 				duck_c->set_type(Duck::TYPE_TANGENT);
 				duck_c->set_name(name+".T2");
 				add_duck(duck_c);
@@ -1334,7 +1334,6 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 			return true;
 		}
 		break;
-*/
 	case ValueBase::TYPE_BLINEPOINT:
 	{
 
@@ -1781,7 +1780,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 							synfigapp::ValueDesc(value_node,first)));
 				}
 			}
-			/*else if(value_node->get_contained_type()==ValueBase::TYPE_SEGMENT)
+			else if(value_node->get_contained_type()==ValueBase::TYPE_SEGMENT)
 			{
 				for(i=0;i<value_node->link_count();i++)
 				{
@@ -1791,7 +1790,6 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 						return false;
 				}
 			}
-			*/
 			else
 				return false;
 		}
