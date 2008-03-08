@@ -73,6 +73,7 @@
 #include "valuenode_integer.h"
 #include "valuenode_step.h"
 #include "valuenode_vectorangle.h"
+#include "valuenode_vectorlength.h"
 
 #include "layer.h"
 
@@ -154,7 +155,8 @@ ValueNode::subsys_init()
 	ADD_VALUENODE(ValueNode_Step,			  "step",			  _("Step"),			 RELEASE_VERSION_0_61_08); // SVN r1691
 	ADD_VALUENODE(ValueNode_BLineCalcWidth,	  "blinecalcwidth",	  _("BLine Width"),		 RELEASE_VERSION_0_61_08); // SVN r1694
 
-	ADD_VALUENODE(ValueNode_VectorAngle,	  "vectorangle",	  _("Vector Angle"),	 RELEASE_VERSION_0_61_09); // SVN r????
+	ADD_VALUENODE(ValueNode_VectorAngle,	  "vectorangle",	  _("Vector Angle"),	 RELEASE_VERSION_0_61_09); // SVN r1880
+	ADD_VALUENODE(ValueNode_VectorLength,	  "vectorlength",	  _("Vector Length"),	 RELEASE_VERSION_0_61_09); // SVN r1881
 
 #undef ADD_VALUENODE
 #undef ADD_VALUENODE2
