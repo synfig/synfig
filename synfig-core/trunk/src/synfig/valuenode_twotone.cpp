@@ -53,34 +53,31 @@ using namespace synfig;
 
 /* === M E T H O D S ======================================================= */
 
-synfig::ValueNode_TwoTone::ValueNode_TwoTone():LinkableValueNode(synfig::ValueBase::TYPE_GRADIENT)
+synfig::ValueNode_TwoTone::ValueNode_TwoTone(const ValueBase &value):LinkableValueNode(synfig::ValueBase::TYPE_GRADIENT)
 {
-	set_link("color1",ValueNode_Const::create(Color::black()));
-	set_link("color2",ValueNode_Const::create(Color::white()));
+	switch(value.get_type())
+	{
+	case ValueBase::TYPE_GRADIENT:
+		set_link("color1",ValueNode_Const::create(value.get(Gradient())(0)));
+		set_link("color2",ValueNode_Const::create(value.get(Gradient())(1)));
+		break;
+	default:
+		throw Exception::BadType(ValueBase::type_local_name(value.get_type()));
+	}
+
 	DCAST_HACK_ENABLE();
 }
 
 LinkableValueNode*
 ValueNode_TwoTone::create_new()const
 {
-	return new ValueNode_TwoTone();
+	return new ValueNode_TwoTone(get_type());
 }
 
 ValueNode_TwoTone*
 ValueNode_TwoTone::create(const ValueBase& x)
 {
-	ValueBase::Type id(x.get_type());
-	if(id!=ValueBase::TYPE_GRADIENT)
-	{
-		assert(0);
-		throw runtime_error(String(_("Two-Tone"))+_(":Bad type ")+ValueBase::type_local_name(id));
-	}
-
-	ValueNode_TwoTone* value_node=new ValueNode_TwoTone();
-
-	assert(value_node->get_type()==id);
-
-	return value_node;
+	return new ValueNode_TwoTone(x);
 }
 
 synfig::ValueNode_TwoTone::~ValueNode_TwoTone()

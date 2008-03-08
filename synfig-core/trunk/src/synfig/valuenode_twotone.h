@@ -36,25 +36,19 @@
 
 namespace synfig {
 
-struct ValueNode_TwoTone : public LinkableValueNode
+class ValueNode_TwoTone : public LinkableValueNode
 {
-	typedef etl::handle<ValueNode_TwoTone> Handle;
-	typedef etl::handle<const ValueNode_TwoTone> ConstHandle;
-
-protected:
-
-	ValueNode_TwoTone();
-
-private:
-
 	ValueNode::RHandle ref_a;
 	ValueNode::RHandle ref_b;
 
+	ValueNode_TwoTone(const ValueBase &value);
+
 public:
 
-	virtual ~ValueNode_TwoTone();
+	typedef etl::handle<ValueNode_TwoTone> Handle;
+	typedef etl::handle<const ValueNode_TwoTone> ConstHandle;
 
-	virtual bool set_link_vfunc(int i,ValueNode::Handle x);
+	virtual ~ValueNode_TwoTone();
 
 	virtual ValueNode::LooseHandle get_link_vfunc(int i)const;
 
@@ -69,16 +63,16 @@ public:
 	virtual String get_name()const;
 	virtual String get_local_name()const;
 
-//	static bool check_type(const ValueBase::Type &type);
-
+protected:
 	LinkableValueNode* create_new()const;
+	virtual bool set_link_vfunc(int i,ValueNode::Handle x);
 
 public:
 	using synfig::LinkableValueNode::get_link_vfunc;
 
 	using synfig::LinkableValueNode::set_link_vfunc;
 	static bool check_type(ValueBase::Type type);
-	static ValueNode_TwoTone* create(const ValueBase &x=ValueBase::TYPE_GRADIENT);
+	static ValueNode_TwoTone* create(const ValueBase &x);
 }; // END of class ValueNode_TwoTone
 
 }; // END of namespace synfig
