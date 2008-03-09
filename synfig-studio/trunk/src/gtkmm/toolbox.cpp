@@ -271,7 +271,7 @@ Toolbox::Toolbox():
 	/* TRANSLATORS: Help menu entry */ WIKI(_("Get Support"),				/* TRANSLATORS: a wiki page */ _("/Communication")			);
 	/* TRANSLATORS: Help menu entry */ WIKI(_("Keyboard Shortcuts"),		/* TRANSLATORS: a wiki page */ _("/Keyboard_Shortcuts")		);
 	/* TRANSLATORS: Help menu entry */ WIKI(_("Mouse Shortcuts"),			/* TRANSLATORS: a wiki page */ _("/Mouse_Shortcuts")		);
-	/* TRANSLATORS: Help menu entry */ WIKI(_("All Pages"),					/* TRANSLATORS: a wiki page */ _("/Special:Allpages")		);
+	/* TRANSLATORS: Help menu entry */ WIKI(_("All Pages"), "/Special:Allpages" );
 
 	helpmenu->items().push_back(Gtk::Menu_Helpers::SeparatorElem());
 	helpmenu->items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::StockID("synfig-about"),
