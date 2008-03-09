@@ -64,7 +64,7 @@ fi
 
 
 # Abort if the header is newer
-if [ "$COMPARE" -ot "$HEADER" ] ; then return; fi
+if [ "$COMPARE" -ot "$HEADER" ] ; then exit; fi
 
 
 # Set the development version string
