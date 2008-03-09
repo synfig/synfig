@@ -59,6 +59,7 @@ ValueNode_GradientColor::ValueNode_GradientColor(const ValueBase &value):
 	case ValueBase::TYPE_COLOR:
 		set_link("gradient", ValueNode_Const::create(Gradient(value.get(Color()),value.get(Color()))));
 		set_link("index",    ValueNode_Const::create(Real(0.5)));
+		set_link("loop",    ValueNode_Const::create(bool(false)));
 		break;
 	default:
 		throw Exception::BadType(ValueBase::type_local_name(value.get_type()));
@@ -88,6 +89,8 @@ ValueBase
 ValueNode_GradientColor::operator()(Time t)const
 {
 	Real index((*index_)(t).get(Real()));
+	bool loop((*loop_)(t).get(bool()));
+	if (loop) index -= floor(index);
 	return (*gradient_)(t).get(Gradient())(index);
 }
 
@@ -99,8 +102,9 @@ ValueNode_GradientColor::set_link_vfunc(int i,ValueNode::Handle value)
 
 	switch(i)
 	{
-	case 0: CHECK_TYPE_AND_SET_VALUE(gradient_, ValueBase::TYPE_GRADIENT);
-	case 1: CHECK_TYPE_AND_SET_VALUE(index_, ValueBase::TYPE_REAL);
+	case 0: CHECK_TYPE_AND_SET_VALUE(gradient_,	ValueBase::TYPE_GRADIENT);
+	case 1: CHECK_TYPE_AND_SET_VALUE(index_,	ValueBase::TYPE_REAL);
+	case 2: CHECK_TYPE_AND_SET_VALUE(loop_,		ValueBase::TYPE_BOOL);
 	}
 	return false;
 }
@@ -114,6 +118,7 @@ ValueNode_GradientColor::get_link_vfunc(int i)const
 	{
 		case 0: return gradient_;
 		case 1: return index_;
+		case 2: return loop_;
 	}
 
 	return 0;
@@ -122,7 +127,7 @@ ValueNode_GradientColor::get_link_vfunc(int i)const
 int
 ValueNode_GradientColor::link_count()const
 {
-	return 2;
+	return 3;
 }
 
 String
@@ -134,6 +139,7 @@ ValueNode_GradientColor::link_local_name(int i)const
 	{
 		case 0: return _("Gradient");
 		case 1: return _("Index");
+		case 2: return _("Loop");
 	}
 	return String();
 }
@@ -147,6 +153,7 @@ ValueNode_GradientColor::link_name(int i)const
 	{
 		case 0: return "gradient";
 		case 1: return "index";
+		case 2: return "loop";
 	}
 	return String();
 }
@@ -156,6 +163,7 @@ ValueNode_GradientColor::get_link_index_from_name(const String &name)const
 {
 	if (name=="gradient") return 0;
 	if (name=="index")	  return 1;
+	if (name=="loop")	  return 2;
 	throw Exception::BadLinkName(name);
 }
 

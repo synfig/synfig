@@ -40,6 +40,7 @@ class ValueNode_GradientColor : public LinkableValueNode
 {
 	ValueNode::RHandle gradient_;
 	ValueNode::RHandle index_;
+	ValueNode::RHandle loop_;
 
 	ValueNode_GradientColor(const ValueBase &value);
 
