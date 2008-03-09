@@ -56,12 +56,12 @@ ValueNode_DotProduct::ValueNode_DotProduct(const ValueBase &value):
 	switch(value.get_type())
 	{
 	case ValueBase::TYPE_REAL:
-		set_link("lhs",ValueNode_Const::create(Vector(1,0)));
-		set_link("rhs",ValueNode_Const::create(Vector(0,1)));
+		set_link("lhs",ValueNode_Const::create(Vector(value.get(Real()),0)));
+		set_link("rhs",ValueNode_Const::create(Vector(1,0)));
 		break;
 	case ValueBase::TYPE_ANGLE:
-		set_link("lhs",ValueNode_Const::create(Vector(1,0)));
-		set_link("rhs",ValueNode_Const::create(Vector(0,1)));
+		set_link("lhs",ValueNode_Const::create(Vector(Angle::cos(value.get(Angle())).get(), Angle::sin(value.get(Angle())).get())));
+		set_link("rhs",ValueNode_Const::create(Vector(1,0)));
 		break;
 	default:
 		throw Exception::BadType(ValueBase::type_local_name(value.get_type()));
