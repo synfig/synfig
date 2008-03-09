@@ -30,6 +30,8 @@
 #include <gtkmm/tooltips.h>
 #include <gtkmm/button.h>
 
+#include "general.h"
+
 /* === M A C R O S ========================================================= */
 
 #define SMALL_BUTTON(button,stockid,tooltip)	\
