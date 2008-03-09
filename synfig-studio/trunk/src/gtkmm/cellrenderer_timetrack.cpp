@@ -313,6 +313,7 @@ CellRenderer_TimeTrack::render_vfunc(
 				Time t_orig = i->get_time();
 				if(!t_orig.is_valid()) continue;
 				Time t = t_orig - time_offset;
+				if(t<adjustment->get_lower() || t>adjustment->get_upper()) continue;
 
 				//if it found it... (might want to change comparison, and optimize
 				//					 sel_times.find to not produce an overall nlogn solution)
