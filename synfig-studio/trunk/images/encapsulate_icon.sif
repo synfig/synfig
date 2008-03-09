@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <canvas version="0.3" width="128" height="128" xres="2952.755900" yres="2952.755900" view-box="-1.000000 1.000000 1.000000 -1.000000" antialias="1" fps="30.000" begin-time="0f" end-time="0f" bgcolor="0.500000 0.500000 0.500000 1.000000">
-  <name>Untitled1</name>
+  <name>Synfig Studio Encapsulate Icon</name>
+  <desc>Placed in the Public Domain in 2008 by Carlos L&#xF3;pez (Genete)</desc>
   <defs>
     <canvas id="Item" bgcolor="0.500000 0.500000 0.500000 1.000000">
       <layer type="polygon" active="true" version="0.1">
