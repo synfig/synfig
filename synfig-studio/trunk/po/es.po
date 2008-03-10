@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: es\n"
 "Report-Msgid-Bugs-To: http://synfig.org/Bugs\n"
-"POT-Creation-Date: 2008-03-09 19:20+0900\n"
-"PO-Revision-Date: 2008-03-09 10:21+0100\n"
+"POT-Creation-Date: 2008-03-09 17:53+0100\n"
+"PO-Revision-Date: 2008-03-09 17:55+0100\n"
 "Last-Translator: Carlos López González <carloslopezgonzalez@yahoo.es>\n"
 "Language-Team: Español <en@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -104,7 +104,7 @@ msgstr "_Archivo"
 
 #: src/gtkmm/app.cpp:614 src/gtkmm/canvasview.cpp:3227
 msgid "_Edit"
-msgstr "_Editar"
+msgstr "Edi_tar"
 
 #: src/gtkmm/app.cpp:615
 msgid "_View"
@@ -912,15 +912,15 @@ msgstr "_Linear"
 
 #: src/gtkmm/canvasview.cpp:3196
 msgid "_Ease In"
-msgstr "_Entrada Suave"
+msgstr "_Suave"
 
 #: src/gtkmm/canvasview.cpp:3199
 msgid "_Ease Out"
-msgstr "_Salida Suave"
+msgstr "_Suave"
 
 #: src/gtkmm/canvasview.cpp:3202 src/gtkmm/widget_defaults.cpp:289
 msgid "_Ease In/Out"
-msgstr "Sua_ve Entrada/Salida"
+msgstr "_Suave"
 
 #: src/gtkmm/canvasview.cpp:3206 src/gtkmm/canvasview.cpp:3209
 #: src/gtkmm/canvasview.cpp:3212 src/gtkmm/widget_defaults.cpp:288
@@ -929,7 +929,7 @@ msgstr "_Constante"
 
 #: src/gtkmm/canvasview.cpp:3217
 msgid "_Jump To"
-msgstr "_Saltar A"
+msgstr "Sa_ltar A"
 
 #: src/gtkmm/canvasview.cpp:3220
 msgid "_Duplicate"
@@ -946,7 +946,7 @@ msgstr "_Borrar %d Interpolación"
 
 #: src/gtkmm/canvasview.cpp:3234
 msgid "_Both"
-msgstr "_Ámbos"
+msgstr "_Ambos"
 
 #: src/gtkmm/canvasview.cpp:3235
 msgid "_In"
@@ -2799,19 +2799,19 @@ msgstr "Muestreo Fallido"
 msgid "Rendering canvas %s..."
 msgstr "Muestreando lienzos %s..."
 
-#: src/gtkmm/zoomdial.h:69
+#: src/gtkmm/zoomdial.h:71
 msgid "Zoom In"
 msgstr "Acercar"
 
-#: src/gtkmm/zoomdial.h:70
+#: src/gtkmm/zoomdial.h:72
 msgid "Zoom Out"
 msgstr "Alejar"
 
-#: src/gtkmm/zoomdial.h:71
+#: src/gtkmm/zoomdial.h:73
 msgid "Zoom to Fit"
 msgstr "Ajustar a la Ventana"
 
-#: src/gtkmm/zoomdial.h:72
+#: src/gtkmm/zoomdial.h:74
 msgid "Zoom to 100%"
 msgstr "Ajustar al 100%"
 
@@ -4069,6 +4069,3 @@ msgstr "Valor de Nodo"
 #: src/synfigapp/value_desc.cpp:81
 msgid "Exported ValueNode"
 msgstr "Valor de Nodo Exportado"
-
-#~ msgid "/Special:Allpages"
-#~ msgstr "/Special:Allpages"
