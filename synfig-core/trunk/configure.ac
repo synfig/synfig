@@ -371,23 +371,9 @@ dnl PKG_CHECK_MODULES(GLIB, glib-2.0,[GLIB="yes"],[GLIB="no"])
 
 
 
-TARGET_TIF="yes"
 TARGET_PNG="yes"
 TARGET_MNG="yes"
 TARGET_JPEG="yes"
-
-if test "$TARGET_TIF" != "disabled" ; then
-AC_CHECK_LIB(tiff, TIFFClose,[
-	TIF_LIBS="-ltiff"
-	AC_DEFINE(HAVE_LIBTIFF,[], [ Define if TIFF library is available ] )
-	AC_SUBST(TIF_LIBS)
-	AM_CONDITIONAL(HAVE_LIBTIFF,true)
-],[
-	AC_MSG_RESULT([ *** TIFF Output target disabled])
-	TARGET_TIF="no"
-	AM_CONDITIONAL(HAVE_LIBTIFF,false)
-])
-fi
 
 AC_CHECK_LIB(png, png_write_row,[
 	PNG_LIBS="-lpng"
@@ -657,7 +643,6 @@ Debug Mode -----------------------> $debug ($debug_flags)
 Optimization ---------------------> $optimization
 PNG output target support --------> $TARGET_PNG
 MNG output target support --------> $TARGET_MNG
-TIFF output target support -------> $TARGET_TIF
 JPEG output target support -------> $TARGET_JPEG
 ETL_CFLAGS -----------------------> $ETL_CFLAGS
 FreeType2 ------------------------> $with_freetype
