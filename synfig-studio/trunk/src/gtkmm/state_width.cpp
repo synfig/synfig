@@ -151,7 +151,7 @@ public:
 	void save_settings();
 	void reset();
 
-};	// END of class StateGradient_Context
+};	// END of class StateWidth_Context
 
 /* === M E T H O D S ======================================================= */
 

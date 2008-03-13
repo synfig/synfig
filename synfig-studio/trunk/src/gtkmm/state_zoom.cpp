@@ -107,7 +107,7 @@ public:
 
 	//void zoom(const Point& p1, const Point& p2);
 
-};	// END of class StateGradient_Context
+};	// END of class StateZoom_Context
 
 /* === M E T H O D S ======================================================= */
 
