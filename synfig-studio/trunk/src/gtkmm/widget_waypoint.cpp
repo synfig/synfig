@@ -87,14 +87,14 @@ Widget_Waypoint::Widget_Waypoint(etl::handle<synfig::Canvas> canvas):
 	before_options->items().push_back(Gtk::Menu_Helpers::MenuElem("Constant"));
 	before_options->items().push_back(Gtk::Menu_Helpers::MenuElem("Linear"));
 	before_options->items().push_back(Gtk::Menu_Helpers::MenuElem("Ease In"));
-	before_options->items().push_back(Gtk::Menu_Helpers::MenuElem("Manual"));
+	// before_options->items().push_back(Gtk::Menu_Helpers::MenuElem("Manual"));
 
 	after_options=manage(new class Gtk::Menu());
 	after_options->items().push_back(Gtk::Menu_Helpers::MenuElem("TCB Smooth"));
 	after_options->items().push_back(Gtk::Menu_Helpers::MenuElem("Constant"));
 	after_options->items().push_back(Gtk::Menu_Helpers::MenuElem("Linear"));
 	after_options->items().push_back(Gtk::Menu_Helpers::MenuElem("Ease Out"));
-	after_options->items().push_back(Gtk::Menu_Helpers::MenuElem("Manual"));
+	// after_options->items().push_back(Gtk::Menu_Helpers::MenuElem("Manual"));
 
 	before=manage(new class Gtk::OptionMenu());
 	before->show();
