@@ -160,7 +160,7 @@ public:
 
 	void make_circle(const Point& p1, const Point& p2);
 
-};	// END of class StateGradient_Context
+};	// END of class StateCircle_Context
 
 /* === M E T H O D S ======================================================= */
 
