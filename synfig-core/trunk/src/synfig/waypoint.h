@@ -231,8 +231,8 @@ public:
 
 	bool is_static()const;
 
-	float get_time_tension()const { return time_tension; }
-	void set_time_tension(const float& x) { time_tension=x; }
+	float get_temporal_tension()const { return time_tension; }
+	void set_temporal_tension(const float& x) { time_tension=x; }
 	float get_temporal_tension()const { return time_tension; }
 	void set_temporal_tension(const float& x) { time_tension=x; }
 

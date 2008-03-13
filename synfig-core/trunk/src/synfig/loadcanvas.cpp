@@ -995,7 +995,7 @@ CanvasParser::parse_animated(xmlpp::Element *element,Canvas::Handle canvas)
 			if(child->get_attribute("temporal-tension"))
 			{
 				synfig::String str(child->get_attribute("temporal-tension")->get_value());
-				waypoint->set_time_tension(atof(str.c_str()));
+				waypoint->set_temporal_tension(atof(str.c_str()));
 			}
 			if(child->get_attribute("continuity"))
 			{

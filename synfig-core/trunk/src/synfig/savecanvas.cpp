@@ -333,8 +333,8 @@ xmlpp::Element* encode_animated(xmlpp::Element* root,ValueNode_Animated::ConstHa
 
 		if(iter->get_tension()!=0.0)
 			waypoint_node->set_attribute("tension",strprintf("%f",iter->get_tension()));
-		if(iter->get_time_tension()!=0.0)
-			waypoint_node->set_attribute("temporal-tension",strprintf("%f",iter->get_time_tension()));
+		if(iter->get_temporal_tension()!=0.0)
+			waypoint_node->set_attribute("temporal-tension",strprintf("%f",iter->get_temporal_tension()));
 		if(iter->get_continuity()!=0.0)
 			waypoint_node->set_attribute("continuity",strprintf("%f",iter->get_continuity()));
 		if(iter->get_bias()!=0.0)

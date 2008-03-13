@@ -491,8 +491,8 @@ public:
 			curve.first.set_rs(iter->get_time(), next->get_time());
 			curve.first.p1()=iter->get_time();
 			curve.first.p2()=next->get_time();
-			curve.first.t1()=(curve.first.p2()-curve.first.p1())*(1.0f-iter->get_time_tension());
-			curve.first.t2()=(curve.first.p2()-curve.first.p1())*(1.0f-next->get_time_tension());
+			curve.first.t1()=(curve.first.p2()-curve.first.p1())*(1.0f-iter->get_temporal_tension());
+			curve.first.t2()=(curve.first.p2()-curve.first.p1())*(1.0f-next->get_temporal_tension());
 
 
 			curve.first.sync();
