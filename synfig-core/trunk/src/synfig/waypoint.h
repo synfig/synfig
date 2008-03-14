@@ -233,8 +233,6 @@ public:
 
 	float get_temporal_tension()const { return time_tension; }
 	void set_temporal_tension(const float& x) { time_tension=x; }
-	float get_temporal_tension()const { return time_tension; }
-	void set_temporal_tension(const float& x) { time_tension=x; }
 
 	bool operator<(const Waypoint &rhs)const
 	{ return time<rhs.time; }
