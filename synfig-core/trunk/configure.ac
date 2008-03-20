@@ -306,8 +306,6 @@ AC_ARG_WITH(openexr,[
 ])
 if test $with_openexr = "yes" ; then {
 	PKG_CHECK_MODULES(OPENEXR, OpenEXR,[
-		CONFIG_DEPS="$CONFIG_DEPS OpenEXR"
-	
 		AC_DEFINE(HAVE_OPENEXR,[], [ Define if OpenEXR is available ] )
 		AM_CONDITIONAL(WITH_OPENEXR,true)
 	],
@@ -321,6 +319,7 @@ if test $with_openexr = "no" ; then {
 } ; fi
 if test $use_openexr_half = yes ; then {
 	AC_MSG_RESULT([ ** Using OpenEXR Half.])
+	CONFIG_DEPS="$CONFIG_DEPS OpenEXR"
 	CONFIG_CFLAGS="$CONFIG_CFLAGS -DUSE_HALF_TYPE"
 	OPENEXR_HALF_LIBS="-lHalf"
 } else {
