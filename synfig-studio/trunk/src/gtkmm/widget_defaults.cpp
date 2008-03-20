@@ -238,10 +238,13 @@ Widget_Defaults::Widget_Defaults()
 		tooltips_.set_tip(*button_swap,_("Swap Background and\nForeground Colors"));
 
 		// Reset button
-		Gtk::Button* button_reset(manage(new Gtk::Button("R")));
+		Gtk::Button* button_reset(manage(new Gtk::Button()));
 		button_reset->show();
 		button_reset->set_relief(Gtk::RELIEF_NONE);
 		button_reset->set_border_width(0);
+		icon=manage(new Gtk::Image(Gtk::StockID("synfig-reset_colors"),Gtk::IconSize(1)));
+		icon->show();
+		button_reset->add(*icon);
 		dynamic_cast<Gtk::Misc*>(button_reset->get_child())->set_padding(0,0);
 		//button_reset->set_size_request(16/3,16/3);
 		button_reset->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Defaults::on_reset_color_clicked));

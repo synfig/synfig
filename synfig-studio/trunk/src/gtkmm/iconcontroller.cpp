@@ -147,6 +147,7 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	INIT_STOCK_ICON(string,"string_icon."IMAGE_EXT,_("Rename"));
 	INIT_STOCK_ICON(gradient,"gradient_icon."IMAGE_EXT,_("Gradient"));
 
+	INIT_STOCK_ICON(reset_colors,"reset_colors_icon."IMAGE_EXT,_("Reset Colors"));
 	INIT_STOCK_ICON(swap_colors,"swap_colors_icon."IMAGE_EXT,_("Swap Colors"));
 	INIT_STOCK_ICON(value_node,"valuenode_icon."IMAGE_EXT,_("ValueNode"));
 	INIT_STOCK_ICON(about,"about_icon."IMAGE_EXT,_("About"));
