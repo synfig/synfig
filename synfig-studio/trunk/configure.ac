@@ -6,7 +6,7 @@ AC_INIT([Synfig Studio],[0.61.08],[http://synfig.org/Bugs],[synfigstudio])
 AC_REVISION
 
 AC_CONFIG_AUX_DIR(config)
-AM_CONFIG_HEADER(config.h)
+AC_CONFIG_HEADERS([config.h])
 AC_CANONICAL_HOST
 dnl AC_CANONICAL_TARGET
 
@@ -28,7 +28,7 @@ AC_PROG_CPP
 AC_PROG_CXXCPP
 AC_PROG_INSTALL
 
-AC_LANG_CPLUSPLUS
+AC_LANG([C++])
 
 
 AC_ARG_DEBUG
@@ -265,8 +265,7 @@ AC_SUBST(imageext)
 imagedir="${datadir}/pixmaps/synfigstudio"
 AC_SUBST(imagedir)
 
-AC_OUTPUT(
-Makefile
+AC_CONFIG_FILES([Makefile
 build_tools/Makefile
 doxygen.cfg
 po/Makefile.in
@@ -281,7 +280,8 @@ src/synfigapp/Makefile
 images/Makefile
 win32inst.nsi
 pkg-info/macosx/synfig-studio.info
-)
+])
+AC_OUTPUT
 
 # -- S U M M A R Y --------------------------------------------
 

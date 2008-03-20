@@ -6,7 +6,7 @@ AC_INIT([Synfig Core],[0.61.08],[http://synfig.org/Bugs],[synfig])
 AC_REVISION
 
 AC_CONFIG_AUX_DIR(config)
-AM_CONFIG_HEADER(config.h)
+AC_CONFIG_HEADERS([config.h])
 AC_CANONICAL_HOST
 dnl AC_CANONICAL_TARGET
 
@@ -39,7 +39,7 @@ AC_PROG_CPP
 AC_PROG_CXXCPP
 AC_PROG_INSTALL
 
-AC_LANG_CPLUSPLUS
+AC_LANG([C++])
 
 
 # -- A R G U M E N T S ----------------------------------------
@@ -587,8 +587,7 @@ AC_SUBST(API_VERSION)
 synfigincludedir=$includedir/synfig-$API_VERSION
 AC_SUBST(synfigincludedir)
 
-AC_OUTPUT(
-synfig-config
+AC_CONFIG_FILES([synfig-config
 synfig.pc
 doxygen.cfg
 Makefile
@@ -624,7 +623,8 @@ win32inst.nsi
 pkg-info/macosx/synfig-core.info
 dnl src/modules/trgt_mpg/Makefile
 dnl src/modules/mptr_mplayer/Makefile
-)
+])
+AC_OUTPUT
 
 # -- S U M M A R Y --------------------------------------------
 

@@ -6,7 +6,7 @@ AC_INIT([Extended Template Library],[0.04.11],[http://synfig.org/Bugs],[ETL])
 AC_REVISION
 
 AC_CONFIG_AUX_DIR(config)
-AM_CONFIG_HEADER(ETL/etl_profile_.h)
+AC_CONFIG_HEADERS([ETL/etl_profile_.h])
 AC_CANONICAL_HOST
 AC_CANONICAL_TARGET
 
@@ -30,7 +30,7 @@ AC_PROG_CXX
 AC_PROG_INSTALL
 AC_PROG_RANLIB
 
-AC_LANG_CPLUSPLUS
+AC_LANG([C++])
 
 AC_ARG_WARNINGS
 AC_ARG_DEBUG
@@ -72,14 +72,14 @@ AC_SUBST(CFLAGS)
 AC_SUBST(CPPFLAGS)
 AC_SUBST(LDFLAGS)
 
-AC_OUTPUT(
-ETL-config
+AC_CONFIG_FILES([ETL-config
 Makefile
 ETL/Makefile
 test/Makefile
 ETL.pc
 doxygen.cfg
-)
+])
+AC_OUTPUT
 
 # -- S U M M A R Y --------------------------------------------
 
