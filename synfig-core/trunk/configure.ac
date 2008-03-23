@@ -620,9 +620,9 @@ examples/walk/Makefile
 examples/Makefile
 win32inst.nsi
 pkg-info/macosx/synfig-core.info
-dnl src/modules/trgt_mpg/Makefile
-dnl src/modules/mptr_mplayer/Makefile
 ])
+## src/modules/trgt_mpg/Makefile
+## src/modules/mptr_mplayer/Makefile
 AC_OUTPUT
 
 # -- S U M M A R Y --------------------------------------------
