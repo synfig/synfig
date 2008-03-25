@@ -2420,6 +2420,7 @@ CanvasView::time_zoom_in()
 	time_window_adjustment().set_page_size(time_window_adjustment().get_page_size()*0.75);
 	if (time_window_adjustment().get_page_size() < min_page_size)
 		time_window_adjustment().set_page_size(min_page_size);
+	time_window_adjustment().set_page_increment(time_window_adjustment().get_page_size());
 	time_window_adjustment().changed();
 
 	refresh_time_window();
@@ -2434,6 +2435,7 @@ CanvasView::time_zoom_out()
 	time_window_adjustment().set_page_size(time_window_adjustment().get_page_size()/0.75);
 	if (time_window_adjustment().get_page_size() > length)
 		time_window_adjustment().set_page_size(length);
+	time_window_adjustment().set_page_increment(time_window_adjustment().get_page_size());
 	time_window_adjustment().changed();
 
 	refresh_time_window();
