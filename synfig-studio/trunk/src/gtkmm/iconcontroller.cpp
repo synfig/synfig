@@ -188,7 +188,7 @@ IconController::IconController(const synfig::String& /*basepath*/)
 
 	// Tools
 	INIT_STOCK_ICON(normal,"normal_icon."IMAGE_EXT,_("Normal Tool"));
-	INIT_STOCK_ICON(polygon,"polygon_icon."IMAGE_EXT,_("Polygon Tool"));
+	INIT_STOCK_ICON(polygon,"polyline_icon."IMAGE_EXT,_("Polygon Tool"));
 	INIT_STOCK_ICON(bline,"bline_icon."IMAGE_EXT,_("BLine Tool"));
 	INIT_STOCK_ICON(eyedrop,"eyedrop_icon."IMAGE_EXT,_("Eyedrop Tool"));
 	INIT_STOCK_ICON(fill,"fill_icon."IMAGE_EXT,_("Fill Tool"));
