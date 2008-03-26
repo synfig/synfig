@@ -223,6 +223,8 @@ CanvasProperties::on_rend_desc_changed()
 void
 CanvasProperties::on_apply_pressed()
 {
+	synfigapp::Action::PassiveGrouper group(canvas_interface_->get_instance().get(),_("Edit Canvas Properties"));
+
 	// fetch these three values first, because each set_() method refreshes the dialog with currently set values
 	String id = entry_id.get_text();
 	String name = entry_name.get_text();
