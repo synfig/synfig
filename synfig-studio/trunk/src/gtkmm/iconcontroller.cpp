@@ -158,6 +158,7 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	INIT_STOCK_ICON(layer,"layer_icon."IMAGE_EXT,_("Layer"));
 	INIT_STOCK_ICON(layer_pastecanvas,"pastecanvas_icon."IMAGE_EXT,_("Paste Canvas"));
 	INIT_STOCK_ICON(star,"star_icon."IMAGE_EXT,"");
+	INIT_STOCK_ICON(plant,"plant_icon."IMAGE_EXT,"");
 	INIT_STOCK_ICON(group,"group_icon."IMAGE_EXT,_("Group"));
 	INIT_STOCK_ICON(grid_enable,"grid_enable_icon."IMAGE_EXT,_("Show Grid"));
 	INIT_STOCK_ICON(grid_disable,"grid_disable_icon."IMAGE_EXT,_("Hide Grid"));
@@ -387,6 +388,8 @@ studio::layer_icon(const synfig::String &layer)
 		return Gtk::StockID("synfig-rectangle");
 	else if(layer=="star")
 		return Gtk::StockID("synfig-star");
+	else if(layer=="plant")
+		return Gtk::StockID("synfig-plant");
 	else if(layer.find("gradient")!=String::npos)
 		return Gtk::StockID("synfig-gradient");
 	else
