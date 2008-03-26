@@ -223,14 +223,17 @@ CanvasProperties::on_rend_desc_changed()
 void
 CanvasProperties::on_apply_pressed()
 {
-	if(entry_id.get_text()!=canvas_interface_->get_canvas()->get_id() && !entry_id.get_text().empty())
-		canvas_interface_->set_id(entry_id.get_text());
-	if(entry_name.get_text()!=canvas_interface_->get_canvas()->get_name())
-		canvas_interface_->set_name(entry_name.get_text());
-	if(entry_description.get_text()!=canvas_interface_->get_canvas()->get_description())
-		canvas_interface_->set_description(entry_description.get_text());
-	if(dirty_rend_desc)			// do this last, because it causes the dialog to be refreshed with currently set values
-		canvas_interface_->set_rend_desc(widget_rend_desc.get_rend_desc());
+	// fetch these three values first, because each set_() method refreshes the dialog with currently set values
+	String id = entry_id.get_text();
+	String name = entry_name.get_text();
+	String description = entry_description.get_text();
+
+	// do this first, because the other three cause the dialog to be refreshed with currently set values
+	if (dirty_rend_desc) canvas_interface_->set_rend_desc(widget_rend_desc.get_rend_desc());
+
+	if (id != canvas_interface_->get_canvas()->get_id() && !id.empty())		canvas_interface_->set_id(id);
+	if (name != canvas_interface_->get_canvas()->get_name())				canvas_interface_->set_name(name);
+	if (description != canvas_interface_->get_canvas()->get_description())	canvas_interface_->set_description(description);
 
 	dirty_rend_desc=false;
 }
