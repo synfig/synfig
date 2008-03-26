@@ -211,13 +211,13 @@ public:
 	etl::loose_handle<Instance> get_instance()const { return instance_; }
 
 	//! Changes the name of the canvas. Undoable.
-	bool set_name(const synfig::String &x);
+	void set_name(const synfig::String &x);
 
 	//! Changes the description of the canvas. Undoable.
-	bool set_description(const synfig::String &x);
+	void set_description(const synfig::String &x);
 
 	//! Changes the ID of the canvas. Undoable.
-	bool set_id(const synfig::String &x);
+	void set_id(const synfig::String &x);
 
 	//! Convenience function to retrieve the name of the canvas
 	synfig::String get_name()const { return get_canvas()->get_name(); }

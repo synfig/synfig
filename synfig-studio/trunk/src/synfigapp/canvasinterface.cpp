@@ -477,30 +477,59 @@ CanvasInterface::set_rend_desc(const synfig::RendDesc &rend_desc)
 		get_ui_interface()->error(_("Action Failed."));
 }
 
-bool
+void
 CanvasInterface::set_name(const synfig::String &x)
 {
-	//! \todo This needs to be converted into an action
-	get_canvas()->set_name(x);
+	Action::Handle 	action(Action::create("canvas_name_set"));
+
+	assert(action);
+	if(!action)
+		return;
+
+	action->set_param("canvas",get_canvas());
+	action->set_param("canvas_interface",etl::loose_handle<CanvasInterface>(this));
+	action->set_param("name",x);
+
+	if(!get_instance()->perform_action(action))
+		get_ui_interface()->error(_("Action Failed."));
+
 	signal_id_changed_();
-	return true;
 }
 
-bool
+void
 CanvasInterface::set_description(const synfig::String &x)
 {
-	//! \todo This needs to be converted into an action
-	get_canvas()->set_description(x);
-	return true;
+	Action::Handle 	action(Action::create("canvas_description_set"));
+
+	assert(action);
+	if(!action)
+		return;
+
+	action->set_param("canvas",get_canvas());
+	action->set_param("canvas_interface",etl::loose_handle<CanvasInterface>(this));
+	action->set_param("description",x);
+
+	if(!get_instance()->perform_action(action))
+		get_ui_interface()->error(_("Action Failed."));
 }
 
-bool
+void
 CanvasInterface::set_id(const synfig::String &x)
 {
-	//! \todo This needs to be converted into an action
-	get_canvas()->set_id(x);
+	Action::Handle 	action(Action::create("canvas_id_set"));
+
+	assert(action);
+	if(!action)
+		return;
+
+	action->set_param("canvas",get_canvas());
+	action->set_param("canvas_interface",etl::loose_handle<CanvasInterface>(this));
+	action->set_param("id",x);
+
+	if(!get_instance()->perform_action(action))
+		get_ui_interface()->error(_("Action Failed."));
+
 	signal_id_changed_();
-	return true;
 }
 
 

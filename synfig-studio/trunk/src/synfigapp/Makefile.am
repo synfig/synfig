@@ -63,9 +63,11 @@ KEYFRAME_ACTION_CC = \
 	actions/keyframesetdelta.cpp actions/keyframewaypointset.cpp
 
 CANVAS_ACTION_HH = \
-	actions/canvasadd.h   actions/canvasremove.h   actions/canvasrenddescset.h
+	actions/canvasadd.h   actions/canvasdescriptionset.h   actions/canvasidset.h   actions/canvasnameset.h		\
+	actions/canvasremove.h   actions/canvasrenddescset.h
 CANVAS_ACTION_CC = \
-	actions/canvasadd.cpp actions/canvasremove.cpp actions/canvasrenddescset.cpp
+	actions/canvasadd.cpp actions/canvasdescriptionset.cpp actions/canvasidset.cpp actions/canvasnameset.cpp	\
+	actions/canvasremove.cpp actions/canvasrenddescset.cpp
 
 GROUP_ACTION_HH = \
 	actions/groupaddlayers.h   actions/groupremove.h   actions/groupremovelayers.h   actions/grouprename.h

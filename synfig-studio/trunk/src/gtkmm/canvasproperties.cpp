@@ -112,6 +112,7 @@ CanvasProperties::CanvasProperties(Gtk::Window& parent,etl::handle<synfigapp::Ca
 	dialogBox->pack_start(widget_rend_desc, false, false, 0);
 
 	canvas_interface_->signal_rend_desc_changed().connect(sigc::mem_fun(*this,&studio::CanvasProperties::refresh));
+	canvas_interface_->signal_id_changed().connect(sigc::mem_fun(*this,&studio::CanvasProperties::refresh));
 
 	Gtk::Button *ok_button(manage(new class Gtk::Button(Gtk::StockID("gtk-ok"))));
 	ok_button->show();
