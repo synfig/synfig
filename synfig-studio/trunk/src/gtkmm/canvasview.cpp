@@ -53,6 +53,7 @@
 #include <synfig/valuenode_dynamiclist.h>
 #include <synfig/valuenode_twotone.h>
 #include <synfig/valuenode_stripes.h>
+#include <synfig/valuenode_blinecalctangent.h>
 #include <synfig/valuenode_blinecalcvertex.h>
 #include <synfig/valuenode_bline.h>
 #include <synfig/layer.h>
@@ -2585,21 +2586,6 @@ CanvasView::duck_change_param(const synfig::Point &value,synfig::Layer::Handle l
 bool
 CanvasView::on_duck_changed(const synfig::Point &value,const synfigapp::ValueDesc& value_desc)
 {
-	if( ValueNode_BLineCalcVertex::Handle bline_vertex =
-		ValueNode_BLineCalcVertex::Handle::cast_dynamic(value_desc.get_value_node())
-	)
-	{
-		Real radius = 0.0;
-		ValueNode_BLine::Handle bline = ValueNode_BLine::Handle::cast_dynamic(bline_vertex->get_link(bline_vertex->get_link_index_from_name("bline")));
-		Real amount = synfig::find_closest_point( 
-			(*bline)(get_time()),
-			value,
-			radius,
-			bline->get_loop()
-		);
-		return canvas_interface()->change_value(synfigapp::ValueDesc(bline_vertex,bline_vertex->get_link_index_from_name("amount")), amount);
-	}
-
 	switch(value_desc.get_value_type())
 	{
 	case ValueBase::TYPE_REAL:
@@ -2608,7 +2594,25 @@ CanvasView::on_duck_changed(const synfig::Point &value,const synfigapp::ValueDes
 	case ValueBase::TYPE_ANGLE:
 		return canvas_interface()->change_value(value_desc,Angle::tan(value[1],value[0]));
 		break;
-	default:
+	case ValueBase::TYPE_VECTOR:
+		if (ValueNode_BLineCalcTangent::Handle bline_tangent = ValueNode_BLineCalcTangent::Handle::cast_dynamic(value_desc.get_value_node()))
+		{
+			Angle old_angle = (*bline_tangent)(get_time()).get(Vector()).angle();
+			Angle new_angle = value.angle();
+			int offset_index = bline_tangent->get_link_index_from_name("offset");
+			Angle old_offset((*(bline_tangent->get_link(offset_index)))(get_time()).get(Angle()));
+			return canvas_interface()->change_value(synfigapp::ValueDesc(bline_tangent,offset_index), old_offset + new_angle - old_angle);
+		}
+
+		if (ValueNode_BLineCalcVertex::Handle bline_vertex = ValueNode_BLineCalcVertex::Handle::cast_dynamic(value_desc.get_value_node()))
+		{
+			ValueNode_BLine::Handle bline = ValueNode_BLine::Handle::cast_dynamic(bline_vertex->get_link(bline_vertex->get_link_index_from_name("bline")));
+			Real radius = 0.0;
+			Real amount = synfig::find_closest_point((*bline)(get_time()), value, radius, bline->get_loop());
+			return canvas_interface()->change_value(synfigapp::ValueDesc(bline_vertex,bline_vertex->get_link_index_from_name("amount")), amount);
+		}
+	default:					// fall through
+
 		return canvas_interface()->change_value(value_desc,value);
 		break;
 	}
