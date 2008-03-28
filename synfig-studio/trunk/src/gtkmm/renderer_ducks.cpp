@@ -75,11 +75,12 @@ restrict_blinevertex_duck(etl::handle<Duck> duck, WorkArea& w_area, synfig::Poin
 	{
 		synfig::Point closest_point = duck->get_point();
 		synfig::Real radius = 0.0;
+		ValueNode_BLine::Handle bline = ValueNode_BLine::Handle::cast_dynamic(bline_vertex->get_link(bline_vertex->get_link_index_from_name("bline")));
 		synfig::find_closest_point( 
-			( *bline_vertex->get_link(bline_vertex->get_link_index_from_name("bline")) )( w_area.get_time() ),
+			(*bline)(w_area.get_time()),
 			duck->get_point(),
 			radius,
-			( *bline_vertex->get_link(bline_vertex->get_link_index_from_name("loop")) )( w_area.get_time() ).get(bool()),
+			bline->get_loop(),
 			&closest_point
 		);
 
