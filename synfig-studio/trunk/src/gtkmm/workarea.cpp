@@ -2133,8 +2133,6 @@ WorkArea::refresh(GdkEventExpose*event)
 		drawing_frame->unset_bg(Gtk::STATE_NORMAL);
 #endif
 
-	previous_focus=get_focus_point();
-
 	return true;
 }
 
@@ -2580,9 +2578,15 @@ void
 studio::WorkArea::zoom_fit()
 {
 	float new_zoom(min(drawing_area->get_width() * zoom / w, drawing_area->get_height() * zoom / h));
-	if (zoom == new_zoom) return set_zoom(prev_zoom);
+	if (zoom / new_zoom > 0.995 && new_zoom / zoom > 0.995)
+	{
+		set_zoom(prev_zoom);
+		return set_focus_point(previous_focus);
+	}
+	previous_focus = get_focus_point();
 	prev_zoom = zoom;
 	set_zoom(new_zoom);
+	set_focus_point(Point(0,0));
 }
 
 void
