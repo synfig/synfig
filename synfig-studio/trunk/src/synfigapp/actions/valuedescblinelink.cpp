@@ -245,6 +245,9 @@ Action::ValueDescBLineLink::prepare()
 			// REAL layer parameter
 			else if (value_desc.get_value_type() == ValueBase::TYPE_REAL)
 				calculated_value_node = ValueNode_BLineCalcWidth::create(ValueBase::TYPE_REAL);
+			// ANGLE layer parameter
+			else if (value_desc.get_value_type() == ValueBase::TYPE_ANGLE)
+				calculated_value_node = ValueNode_BLineCalcTangent::create(ValueBase::TYPE_ANGLE);
 			else
 				continue;
 
