@@ -53,6 +53,8 @@
 #include <synfig/valuenode_dynamiclist.h>
 #include <synfig/valuenode_twotone.h>
 #include <synfig/valuenode_stripes.h>
+#include <synfig/valuenode_blinecalcvertex.h>
+#include <synfig/valuenode_bline.h>
 #include <synfig/layer.h>
 
 #include <synfigapp/uimanager.h>
@@ -2583,6 +2585,20 @@ CanvasView::duck_change_param(const synfig::Point &value,synfig::Layer::Handle l
 bool
 CanvasView::on_duck_changed(const synfig::Point &value,const synfigapp::ValueDesc& value_desc)
 {
+	if( ValueNode_BLineCalcVertex::Handle bline_vertex =
+		ValueNode_BLineCalcVertex::Handle::cast_dynamic(value_desc.get_value_node())
+	)
+	{
+		Real radius = 0.0;
+		Real amount = synfig::find_closest_point( 
+			( *bline_vertex->get_link(bline_vertex->get_link_index_from_name("bline")) )( get_time() ),
+			value,
+			radius,
+			( *bline_vertex->get_link(bline_vertex->get_link_index_from_name("loop")) )( get_time() ).get(bool())
+		);
+		return canvas_interface()->change_value(synfigapp::ValueDesc(bline_vertex,bline_vertex->get_link_index_from_name("amount")), amount);
+	}
+
 	switch(value_desc.get_value_type())
 	{
 	case ValueBase::TYPE_REAL:

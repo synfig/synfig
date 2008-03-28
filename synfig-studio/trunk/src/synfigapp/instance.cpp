@@ -38,6 +38,7 @@
 #include <synfig/valuenode_composite.h>
 #include <synfig/valuenode_radialcomposite.h>
 #include <synfig/valuenode_reference.h>
+#include <synfig/valuenode_blinecalcvertex.h>
 #include <map>
 
 #include "general.h"
@@ -67,6 +68,7 @@ synfigapp::is_editable(synfig::ValueNode::Handle value_node)
 		|| ValueNode_Composite::Handle::cast_dynamic(value_node)
 		|| ValueNode_RadialComposite::Handle::cast_dynamic(value_node)
 		|| ValueNode_Reference::Handle::cast_dynamic(value_node)
+		|| ValueNode_BLineCalcVertex::Handle::cast_dynamic(value_node)
 	)
 		return true;
 	return false;

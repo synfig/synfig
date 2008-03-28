@@ -1435,7 +1435,6 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 										false),
 									1.0f),
 								synfigapp::ValueDesc(value_node,i)));
-						duck->set_value_desc(synfigapp::ValueDesc(value_node,i));
 
 						if(param_desc)
 						{
@@ -1565,7 +1564,6 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 									false),
 								1.0f),
 							synfigapp::ValueDesc(value_node,i)));
-					duck->set_value_desc(synfigapp::ValueDesc(value_node,i));
 
 					add_bezier(bezier);
 					bezier=0;
@@ -1622,7 +1620,6 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 									false),
 								1.0f),
 							synfigapp::ValueDesc(value_node,i)));
-					duck->set_value_desc(synfigapp::ValueDesc(value_node,i));
 
 				}
 
@@ -1690,7 +1687,6 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 								false),
 							1.0f),
 						synfigapp::ValueDesc(value_node,first)));
-				duck->set_value_desc(synfigapp::ValueDesc(value_node,first));
 
 				add_bezier(bezier);
 				bezier=0;

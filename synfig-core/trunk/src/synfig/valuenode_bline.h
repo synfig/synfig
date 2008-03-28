@@ -49,6 +49,9 @@ ValueBase convert_bline_to_segment_list(const ValueBase &bline);
 //! Converts a list of bline points into a list of widths
 ValueBase convert_bline_to_width_list(const ValueBase &bline);
 
+//! Finds the closest point to pos in bline
+Real find_closest_point(const ValueBase &bline, const Point &pos, Real &radius, bool loop, Point *out_point = 0);
+
 /*! \class ValueNode_BLine
 **	\brief \writeme
 */

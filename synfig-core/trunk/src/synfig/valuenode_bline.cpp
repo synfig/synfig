@@ -42,6 +42,7 @@
 #include <ETL/hermite>
 #include <ETL/calculus>
 #include "segment.h"
+#include "curve_helper.h"
 
 #endif
 
@@ -163,6 +164,118 @@ synfig::convert_bline_to_width_list(const ValueBase& bline)
 	return ValueBase(ret,bline.get_loop());
 }
 
+Real
+synfig::find_closest_point(const ValueBase &bline, const Point &pos, Real &radius, bool loop, Point *out_point)
+{
+	Real d,step;
+	float time = 0;
+	float best_time = 0;
+	int best_index = -1;
+	synfig::Point best_point;
+
+	if(radius==0)radius=10000000;
+	Real closest(10000000);
+
+	int i=0;
+	std::vector<BLinePoint> list(bline.get_list().begin(),bline.get_list().end());
+	typedef std::vector<BLinePoint>::const_iterator iterT;
+	iterT iter, prev, first;
+	for(iter=list.begin(); iter!=list.end(); ++i, ++iter)
+	{
+		if( first == iterT() )
+			first = iter;
+
+		if( prev != iterT() )
+		{
+			bezier<Point>	curve;
+
+			curve[0] = (*prev).get_vertex();
+			curve[1] = curve[0] + (*prev).get_tangent2()/3;
+			curve[3] = (*iter).get_vertex();
+			curve[2] = curve[3] - (*iter).get_tangent1()/3;
+			curve.sync();
+
+			#if 0
+			// I don't know why this doesn't work
+			time=curve.find_closest(pos,6);
+			d=((curve(time)-pos).mag_squared());
+
+			#else
+			//set the step size based on the size of the picture
+			d = (curve[1] - curve[0]).mag() + (curve[2]-curve[1]).mag()	+ (curve[3]-curve[2]).mag();
+
+			step = d/(2*radius); //want to make the distance between lines happy
+
+			step = max(step,0.01); //100 samples should be plenty
+			step = min(step,0.1); //10 is minimum
+
+			d = find_closest(curve,pos,step,&closest,&time);
+			#endif
+
+			if(d < closest)
+			{
+				closest = d;
+				best_time = time;
+				best_index = i;
+				best_point = curve(best_time);
+			}
+
+		}
+
+		prev = iter;
+	}
+
+	// Loop if necessary
+	if( loop && ( first != iterT() ) && ( prev != iterT() ) )
+	{
+		bezier<Point>	curve;
+
+		curve[0] = (*prev).get_vertex();
+		curve[1] = curve[0] + (*prev).get_tangent2()/3;
+		curve[3] = (*first).get_vertex();
+		curve[2] = curve[3] - (*first).get_tangent1()/3;
+		curve.sync();
+
+		#if 0
+		// I don't know why this doesn't work
+		time=curve.find_closest(pos,6);
+		d=((curve(time)-pos).mag_squared());
+
+		#else
+		//set the step size based on the size of the picture
+		d = (curve[1] - curve[0]).mag() + (curve[2]-curve[1]).mag()	+ (curve[3]-curve[2]).mag();
+
+		step = d/(2*radius); //want to make the distance between lines happy
+
+		step = max(step,0.01); //100 samples should be plenty
+		step = min(step,0.1); //10 is minimum
+
+			d = find_closest(curve,pos,step,&closest,&time);
+		#endif
+
+		if(d < closest)
+		{
+			closest = d;
+			best_time = time;
+			best_index = i;
+			best_point = curve(best_time);
+		}
+	}
+
+	if(best_index != -1)
+	{
+		if(out_point)
+			*out_point = best_point;
+
+		int loop_adjust(loop ? 0 : -1);
+		int size = list.size();
+		Real amount = (best_index + best_time + loop_adjust) / (size + loop_adjust);
+		return amount;
+	}
+	
+	return 0.0;
+
+}
 
 /* === M E T H O D S ======================================================= */
 

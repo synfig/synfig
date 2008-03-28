@@ -189,6 +189,8 @@ Action::ValueDescBLineLink::prepare()
 				calculated_value_node = ValueNode_BLineCalcTangent::create(ValueBase::TYPE_VECTOR);
 			else if (link_name == "width")
 				calculated_value_node = ValueNode_BLineCalcWidth::create(ValueBase::TYPE_REAL);
+			else if (link_name == "point")
+				calculated_value_node = ValueNode_BLineCalcVertex::create(ValueBase::TYPE_VECTOR);
 			else
 			{
 				synfig::warning("can't link '%s'", link_name.c_str());
