@@ -257,7 +257,7 @@ synfig::find_closest_point(const ValueBase &bline, const Point &pos, Real &radiu
 		{
 			closest = d;
 			best_time = time;
-			best_index = i;
+			best_index = 0;
 			best_point = curve(best_time);
 		}
 	}
