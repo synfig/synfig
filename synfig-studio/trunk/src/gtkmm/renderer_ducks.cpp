@@ -310,7 +310,9 @@ Renderer_Ducks::render_vfunc(
 		if(get_work_area()->get_selected_value_node())
 		{
 			synfigapp::ValueDesc value_desc((*iter)->get_value_desc());
-			if(value_desc.is_valid() && value_desc.is_value_node() && get_work_area()->get_selected_value_node()==value_desc.get_value_node())
+			if (value_desc.is_valid() &&
+				((value_desc.is_value_node()		&& get_work_area()->get_selected_value_node() == value_desc.get_value_node()) ||
+				 (value_desc.parent_is_value_node()	&& get_work_area()->get_selected_value_node() == value_desc.get_parent_value_node())))
 			{
 				gc->set_function(Gdk::COPY);
 				gc->set_rgb_fg_color(DUCK_COLOR_SELECTED);
