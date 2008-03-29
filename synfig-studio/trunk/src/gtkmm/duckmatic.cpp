@@ -506,20 +506,16 @@ DuckDrag_Translate::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector
 	synfig::Vector vect(duckmatic->snap_point_to_grid(vector)-drag_offset_);
 	int i;
 
+	// drag the vertex and position ducks first
 	for(i=0,iter=selected_ducks.begin();iter!=selected_ducks.end();++iter,i++)
-	{
-		if((*iter)->get_type()!=Duck::TYPE_VERTEX &&
-		   (*iter)->get_type()!=Duck::TYPE_POSITION)
-			continue;
-		(*iter)->set_trans_point(positions[i]+vect);
-	}
+		if((*iter)->get_type() == Duck::TYPE_VERTEX || (*iter)->get_type() == Duck::TYPE_POSITION)
+			(*iter)->set_trans_point(positions[i]+vect);
+
+	// then drag the others
 	for(i=0,iter=selected_ducks.begin();iter!=selected_ducks.end();++iter,i++)
-	{
-		if((*iter)->get_type()==Duck::TYPE_VERTEX ||
-		   (*iter)->get_type()==Duck::TYPE_POSITION)
-			continue;
-		(*iter)->set_trans_point(positions[i]+vect);
-	}
+		if((*iter)->get_type() != Duck::TYPE_VERTEX && (*iter)->get_type() != Duck::TYPE_POSITION)
+			(*iter)->set_trans_point(positions[i]+vect);
+
 	last_translate_=vect;
 }
 
