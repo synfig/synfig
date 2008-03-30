@@ -2596,15 +2596,14 @@ CanvasView::on_duck_changed(const synfig::Point &value,const synfigapp::ValueDes
 			Real new_width(value.mag());
 			int scale_index(bline_width->get_link_index_from_name("scale"));
 			Real scale((*(bline_width->get_link(scale_index)))(get_time()).get(Real()));
-			if (!(canvas_interface()->change_value(synfigapp::ValueDesc(bline_width,scale_index),
-												   new_width * scale / old_width)))
-				return false;
+			return canvas_interface()->change_value(synfigapp::ValueDesc(bline_width,scale_index), new_width * scale / old_width);
 		}
+
 		return canvas_interface()->change_value(value_desc,value.mag());
-		break;
+
 	case ValueBase::TYPE_ANGLE:
 		return canvas_interface()->change_value(value_desc,Angle::tan(value[1],value[0]));
-		break;
+
 	case ValueBase::TYPE_VECTOR:
 		if (ValueNode_BLineCalcTangent::Handle bline_tangent = ValueNode_BLineCalcTangent::Handle::cast_dynamic(value_desc.get_value_node()))
 		{
