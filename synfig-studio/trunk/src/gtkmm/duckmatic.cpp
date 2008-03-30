@@ -44,6 +44,8 @@
 #include <synfig/valuenode_composite.h>
 #include <synfig/valuenode_scale.h>
 #include <synfig/valuenode_bline.h>
+#include <synfig/valuenode_blinecalctangent.h>
+#include <synfig/valuenode_blinecalcvertex.h>
 
 #include <synfig/curve_helper.h>
 
@@ -505,16 +507,89 @@ DuckDrag_Translate::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector
 
 	synfig::Vector vect(duckmatic->snap_point_to_grid(vector)-drag_offset_);
 	int i;
+	Time time(duckmatic->get_time());
 
 	// drag the vertex and position ducks first
-	for(i=0,iter=selected_ducks.begin();iter!=selected_ducks.end();++iter,i++)
-		if((*iter)->get_type() == Duck::TYPE_VERTEX || (*iter)->get_type() == Duck::TYPE_POSITION)
-			(*iter)->set_trans_point(positions[i]+vect);
+	for (i=0,iter=selected_ducks.begin(); iter!=selected_ducks.end(); ++iter,i++)
+	{
+		etl::handle<Duck> duck(*iter);
+		if(duck->get_type() == Duck::TYPE_VERTEX || duck->get_type() == Duck::TYPE_POSITION)
+		{
+			duck->set_trans_point(positions[i]+vect);
+
+			if (ValueNode_BLineCalcVertex::Handle bline_vertex = ValueNode_BLineCalcVertex::Handle::cast_dynamic(duck->get_value_desc().get_value_node()))
+			{
+				synfig::Point closest_point = duck->get_point();
+				synfig::Real radius = 0.0;
+				ValueNode_BLine::Handle bline = ValueNode_BLine::Handle::cast_dynamic(bline_vertex->get_link(bline_vertex->get_link_index_from_name("bline")));
+				synfig::find_closest_point(
+					(*bline)(time),
+					duck->get_point(),
+					radius,
+					bline->get_loop(),
+					&closest_point);
+				duck->set_point(closest_point);
+			}
+		}
+	}
 
 	// then drag the others
-	for(i=0,iter=selected_ducks.begin();iter!=selected_ducks.end();++iter,i++)
-		if((*iter)->get_type() != Duck::TYPE_VERTEX && (*iter)->get_type() != Duck::TYPE_POSITION)
+	for (i=0,iter=selected_ducks.begin(); iter!=selected_ducks.end(); ++iter,i++)
+		if ((*iter)->get_type() != Duck::TYPE_VERTEX && (*iter)->get_type() != Duck::TYPE_POSITION)
 			(*iter)->set_trans_point(positions[i]+vect);
+
+	// then patch up the tangents for the vertices we've moved
+	DuckList duck_list(duckmatic->get_duck_list());
+	for (iter=selected_ducks.begin(); iter!=selected_ducks.end(); ++iter)
+	{
+		etl::handle<Duck> duck(*iter);
+		if ((duck->get_type() == Duck::TYPE_VERTEX || duck->get_type() == Duck::TYPE_POSITION) &&
+			duck->get_value_desc().parent_is_value_node())
+		{
+			ValueNode_BLineCalcVertex::Handle bline_vertex(ValueNode_BLineCalcVertex::Handle::cast_dynamic(duck->get_value_desc().get_value_node()));
+			if (bline_vertex)
+			{
+				ValueNode_Composite::Handle value_node_composite(ValueNode_Composite::Handle::cast_dynamic(duck->get_value_desc().get_parent_value_node()));
+				if (value_node_composite &&
+					value_node_composite->get_type() == ValueBase::TYPE_BLINEPOINT)
+				{
+					int t1_index(value_node_composite->get_link_index_from_name("t1"));
+					int t2_index(value_node_composite->get_link_index_from_name("t2"));
+					ValueNode::Handle t1_value_node(value_node_composite->get_link(t1_index));
+					ValueNode::Handle t2_value_node(value_node_composite->get_link(t2_index));
+					ValueNode_BLineCalcTangent::Handle bline_tangent_1(ValueNode_BLineCalcTangent::Handle::cast_dynamic(t1_value_node));
+					ValueNode_BLineCalcTangent::Handle bline_tangent_2(ValueNode_BLineCalcTangent::Handle::cast_dynamic(t2_value_node));
+
+					if (bline_tangent_1 || bline_tangent_2)
+					{
+						synfig::Real radius = 0.0;
+						ValueNode_BLine::Handle bline(ValueNode_BLine::Handle::cast_dynamic(bline_vertex->get_link(bline_vertex->get_link_index_from_name("bline"))));
+						Real amount = synfig::find_closest_point((*bline)(time), duck->get_point(), radius, bline->get_loop());
+
+						// we need to update the position of the tangent ducks - but how do we find these ducks?
+						// this is a brute force search - but is there a better way to do it?
+						if (bline_tangent_1)
+						{
+							Vector tangent = (*bline_tangent_1)(time, amount).get(Vector());
+							DuckList::iterator iter;
+							for (iter=duck_list.begin(); iter!=duck_list.end(); iter++)
+								if ((*iter)->get_value_desc().get_value_node() == t1_value_node)
+									(*iter)->set_point(tangent);
+						}
+
+						if (bline_tangent_2)
+						{
+							Vector tangent = (*bline_tangent_2)(time, amount).get(Vector());
+							DuckList::iterator iter;
+							for (iter=duck_list.begin(); iter!=duck_list.end(); iter++)
+								if ((*iter)->get_value_desc().get_value_node() == t2_value_node)
+									(*iter)->set_point(tangent);
+						}
+					}
+				}
+			}
+		}
+	}
 
 	last_translate_=vect;
 }

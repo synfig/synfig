@@ -88,14 +88,13 @@ ValueNode_BLineCalcTangent::~ValueNode_BLineCalcTangent()
 }
 
 ValueBase
-ValueNode_BLineCalcTangent::operator()(Time t)const
+ValueNode_BLineCalcTangent::operator()(Time t, Real amount)const
 {
 	const std::vector<ValueBase> bline((*bline_)(t));
 	handle<ValueNode_BLine> bline_value_node(bline_);
 	const bool looped(bline_value_node->get_loop());
 	int size = bline.size(), from_vertex;
 	bool loop((*loop_)(t).get(bool()));
-	Real amount((*amount_)(t).get(Real()));
 	Angle offset((*offset_)(t).get(Angle()));
 	Real scale((*scale_)(t).get(Real()));
 	bool fixed_length((*fixed_length_)(t).get(bool()));
@@ -152,6 +151,13 @@ ValueNode_BLineCalcTangent::operator()(Time t)const
 		}
 		default: assert(0); return ValueBase();
 	}
+}
+
+ValueBase
+ValueNode_BLineCalcTangent::operator()(Time t)const
+{
+	Real amount((*amount_)(t).get(Real()));
+	return (*this)(t, amount);
 }
 
 String

@@ -37,8 +37,6 @@
 #include <ETL/misc>
 #include "widget_color.h"
 #include <synfig/distance.h>
-#include <synfig/valuenode_blinecalcvertex.h>
-#include <synfig/valuenode_bline.h>
 #include "app.h"
 
 #include "general.h"
@@ -59,46 +57,6 @@ using namespace studio;
 /* === P R O C E D U R E S ================================================= */
 
 /* === M E T H O D S ======================================================= */
-
-bool
-restrict_blinevertex_duck(etl::handle<Duck> duck, WorkArea& w_area, synfig::Point *point)
-{
-	synfig::Point sub_trans_origin(duck->get_sub_trans_origin());
-	etl::handle<Duck> origin_duck = duck->get_origin_duck();
-	bool origin_changed = false;
-	if(origin_duck)
-		origin_changed = restrict_blinevertex_duck(origin_duck, w_area, &sub_trans_origin);
-
-	if( ValueNode_BLineCalcVertex::Handle bline_vertex =
-		ValueNode_BLineCalcVertex::Handle::cast_dynamic(duck->get_value_desc().get_value_node())
-	)
-	{
-		synfig::Point closest_point = duck->get_point();
-		synfig::Real radius = 0.0;
-		ValueNode_BLine::Handle bline = ValueNode_BLine::Handle::cast_dynamic(bline_vertex->get_link(bline_vertex->get_link_index_from_name("bline")));
-		synfig::find_closest_point( 
-			(*bline)(w_area.get_time()),
-			duck->get_point(),
-			radius,
-			bline->get_loop(),
-			&closest_point
-		);
-
-		if(closest_point != duck->get_point())
-		{
-			*point = closest_point * duck->get_scalar() + sub_trans_origin;
-			return true;
-		}
-	}
-	
-	if(origin_changed)
-	{
-		*point = duck->get_point() * duck->get_scalar() + sub_trans_origin;
-		return true;
-	}
-	
-	return false;
-}
 
 Renderer_Ducks::~Renderer_Ducks()
 {
@@ -182,22 +140,11 @@ Renderer_Ducks::render_vfunc(
 	// Render the beziers
 	for(std::list<handle<Duckmatic::Bezier> >::const_iterator iter=bezier_list.begin();iter!=bezier_list.end();++iter)
 	{
-		Point sub_trans_p1((*iter)->p1->get_sub_trans_point());
-		Point sub_trans_p2((*iter)->p2->get_sub_trans_point());
-		Point sub_trans_c1((*iter)->c1->get_sub_trans_point());
-		Point sub_trans_c2((*iter)->c2->get_sub_trans_point());
-
-		WorkArea* w_area = get_work_area();
-		restrict_blinevertex_duck((*iter)->p1, *w_area, &sub_trans_p1);
-		restrict_blinevertex_duck((*iter)->p2, *w_area, &sub_trans_p2);
-		restrict_blinevertex_duck((*iter)->c1, *w_area, &sub_trans_c1);
-		restrict_blinevertex_duck((*iter)->c2, *w_area, &sub_trans_c2);
-		
 		Point window_start(window_startx,window_starty);
-		Point p1((*iter)->p1->get_transform_stack().perform(sub_trans_p1)-window_start);
-		Point p2((*iter)->p2->get_transform_stack().perform(sub_trans_p2)-window_start);
-		Point c1((*iter)->c1->get_transform_stack().perform(sub_trans_c1)-window_start);
-		Point c2((*iter)->c2->get_transform_stack().perform(sub_trans_c2)-window_start);
+		Point p1((*iter)->p1->get_trans_point()-window_start);
+		Point p2((*iter)->p2->get_trans_point()-window_start);
+		Point c1((*iter)->c1->get_trans_point()-window_start);
+		Point c2((*iter)->c2->get_trans_point()-window_start);
 		p1[0]/=pw;p1[1]/=ph;
 		p2[0]/=pw;p2[1]/=ph;
 		c1[0]/=pw;c1[1]/=ph;
@@ -264,20 +211,6 @@ Renderer_Ducks::render_vfunc(
 	//	Gdk::Rectangle area;
 		Point sub_trans_point((*iter)->get_sub_trans_point());
 		Point sub_trans_origin((*iter)->get_sub_trans_origin());
-		etl::handle<Duck> origin_duck = (*iter)->get_origin_duck();
-
-		bool has_connect(false);
-		if((*iter)->get_tangent() || (*iter)->get_type()&Duck::TYPE_ANGLE)
-		{
-			has_connect=true;
-		}
-		if((*iter)->get_connect_duck())
-		{
-			has_connect=true;
-			sub_trans_origin = (*iter)->get_connect_duck()->get_sub_trans_point();
-			origin_duck = (*iter)->get_connect_duck();
-		}
-
 
 		if (App::restrict_radius_ducks &&
 			(*iter)->is_radius())
@@ -288,16 +221,22 @@ Renderer_Ducks::render_vfunc(
 				sub_trans_point[1] = sub_trans_origin[1];
 		}
 
-		WorkArea* w_area = get_work_area();
-		restrict_blinevertex_duck((*iter), *w_area, &sub_trans_point);
-		if(origin_duck)
-			restrict_blinevertex_duck(origin_duck, *w_area, &sub_trans_origin);
-
 		Point point((*iter)->get_transform_stack().perform(sub_trans_point));
 		Point origin((*iter)->get_transform_stack().perform(sub_trans_origin));
 
 		point[0]=(point[0]-window_startx)/pw;
 		point[1]=(point[1]-window_starty)/ph;
+
+		bool has_connect(false);
+		if((*iter)->get_tangent() || (*iter)->get_type()&Duck::TYPE_ANGLE)
+		{
+			has_connect=true;
+		}
+		if((*iter)->get_connect_duck())
+		{
+			has_connect=true;
+			origin=(*iter)->get_connect_duck()->get_trans_point();
+		}
 
 		origin[0]=(origin[0]-window_startx)/pw;
 		origin[1]=(origin[1]-window_starty)/ph;

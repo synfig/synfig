@@ -2597,10 +2597,27 @@ CanvasView::on_duck_changed(const synfig::Point &value,const synfigapp::ValueDes
 	case ValueBase::TYPE_VECTOR:
 		if (ValueNode_BLineCalcTangent::Handle bline_tangent = ValueNode_BLineCalcTangent::Handle::cast_dynamic(value_desc.get_value_node()))
 		{
-			Angle old_angle = (*bline_tangent)(get_time()).get(Vector()).angle();
+			Vector old_tangent = (*bline_tangent)(get_time()).get(Vector());
+			Angle old_angle = old_tangent.angle();
+			Real old_length = old_tangent.mag();
 			Angle new_angle = value.angle();
-			int offset_index = bline_tangent->get_link_index_from_name("offset");
+			Real new_length = value.mag();
+			int offset_index(bline_tangent->get_link_index_from_name("offset"));
+			int scale_index(bline_tangent->get_link_index_from_name("scale"));
+			int fixed_length_index(bline_tangent->get_link_index_from_name("fixed_length"));
 			Angle old_offset((*(bline_tangent->get_link(offset_index)))(get_time()).get(Angle()));
+			Real scale((*(bline_tangent->get_link(scale_index)))(get_time()).get(Real()));
+			bool fixed_length((*(bline_tangent->get_link(fixed_length_index)))(get_time()).get(bool()));
+			if (fixed_length)
+			{
+				if (!(canvas_interface()->change_value(synfigapp::ValueDesc(bline_tangent,scale_index),
+													   new_length)))
+					return false;
+			}
+			else if (old_length != 0 &&
+					 !(canvas_interface()->change_value(synfigapp::ValueDesc(bline_tangent,scale_index),
+														new_length * scale / old_length)))
+				return false;
 			return canvas_interface()->change_value(synfigapp::ValueDesc(bline_tangent,offset_index), old_offset + new_angle - old_angle);
 		}
 
