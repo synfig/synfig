@@ -55,6 +55,7 @@
 #include <synfig/valuenode_stripes.h>
 #include <synfig/valuenode_blinecalctangent.h>
 #include <synfig/valuenode_blinecalcvertex.h>
+#include <synfig/valuenode_blinecalcwidth.h>
 #include <synfig/valuenode_bline.h>
 #include <synfig/layer.h>
 
@@ -2589,6 +2590,16 @@ CanvasView::on_duck_changed(const synfig::Point &value,const synfigapp::ValueDes
 	switch(value_desc.get_value_type())
 	{
 	case ValueBase::TYPE_REAL:
+		if (ValueNode_BLineCalcWidth::Handle bline_width = ValueNode_BLineCalcWidth::Handle::cast_dynamic(value_desc.get_value_node()))
+		{
+			Real old_width((*bline_width)(get_time()).get(Real()));
+			Real new_width(value.mag());
+			int scale_index(bline_width->get_link_index_from_name("scale"));
+			Real scale((*(bline_width->get_link(scale_index)))(get_time()).get(Real()));
+			if (!(canvas_interface()->change_value(synfigapp::ValueDesc(bline_width,scale_index),
+												   new_width * scale / old_width)))
+				return false;
+		}
 		return canvas_interface()->change_value(value_desc,value.mag());
 		break;
 	case ValueBase::TYPE_ANGLE:

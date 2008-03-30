@@ -86,14 +86,13 @@ ValueNode_BLineCalcWidth::~ValueNode_BLineCalcWidth()
 }
 
 ValueBase
-ValueNode_BLineCalcWidth::operator()(Time t)const
+ValueNode_BLineCalcWidth::operator()(Time t, Real amount)const
 {
 	const std::vector<ValueBase> bline((*bline_)(t));
 	handle<ValueNode_BLine> bline_value_node(bline_);
 	const bool looped(bline_value_node->get_loop());
 	int size = bline.size(), from_vertex;
 	bool loop((*loop_)(t).get(bool()));
-	Real amount((*amount_)(t).get(Real()));
 	Real scale((*scale_)(t).get(Real()));
 	BLinePoint blinepoint0, blinepoint1;
 
@@ -123,6 +122,13 @@ ValueNode_BLineCalcWidth::operator()(Time t)const
 	float width1 = blinepoint1.get_width();
 
 	return Real((width0 + (amount-from_vertex) * (width1-width0)) * scale);
+}
+
+ValueBase
+ValueNode_BLineCalcWidth::operator()(Time t)const
+{
+	Real amount((*amount_)(t).get(Real()));
+	return (*this)(t, amount);
 }
 
 String

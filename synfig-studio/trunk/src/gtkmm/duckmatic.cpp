@@ -46,6 +46,7 @@
 #include <synfig/valuenode_bline.h>
 #include <synfig/valuenode_blinecalctangent.h>
 #include <synfig/valuenode_blinecalcvertex.h>
+#include <synfig/valuenode_blinecalcwidth.h>
 
 #include <synfig/curve_helper.h>
 
@@ -555,12 +556,17 @@ DuckDrag_Translate::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector
 				{
 					int t1_index(value_node_composite->get_link_index_from_name("t1"));
 					int t2_index(value_node_composite->get_link_index_from_name("t2"));
+					int width_index(value_node_composite->get_link_index_from_name("width"));
+
 					ValueNode::Handle t1_value_node(value_node_composite->get_link(t1_index));
 					ValueNode::Handle t2_value_node(value_node_composite->get_link(t2_index));
+					ValueNode::Handle width_value_node(value_node_composite->get_link(width_index));
+
 					ValueNode_BLineCalcTangent::Handle bline_tangent_1(ValueNode_BLineCalcTangent::Handle::cast_dynamic(t1_value_node));
 					ValueNode_BLineCalcTangent::Handle bline_tangent_2(ValueNode_BLineCalcTangent::Handle::cast_dynamic(t2_value_node));
+					ValueNode_BLineCalcWidth::Handle bline_width(ValueNode_BLineCalcWidth::Handle::cast_dynamic(width_value_node));
 
-					if (bline_tangent_1 || bline_tangent_2)
+					if (bline_tangent_1 || bline_tangent_2 || bline_width)
 					{
 						synfig::Real radius = 0.0;
 						ValueNode_BLine::Handle bline(ValueNode_BLine::Handle::cast_dynamic(bline_vertex->get_link(bline_vertex->get_link_index_from_name("bline"))));
@@ -584,6 +590,15 @@ DuckDrag_Translate::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector
 							for (iter=duck_list.begin(); iter!=duck_list.end(); iter++)
 								if ((*iter)->get_value_desc().get_value_node() == t2_value_node)
 									(*iter)->set_point(tangent);
+						}
+
+						if (bline_width)
+						{
+							Real width = (*bline_width)(time, amount).get(Real());
+							DuckList::iterator iter;
+							for (iter=duck_list.begin(); iter!=duck_list.end(); iter++)
+								if ((*iter)->get_value_desc().get_value_node() == width_value_node)
+									(*iter)->set_point(Point(width, 0));
 						}
 					}
 				}
