@@ -183,8 +183,12 @@ Splash::Splash():
 	splash_image->set_padding(0,0);
 
 	// Get the image size
-	int image_w = splash_image->get_pixbuf()->get_width();
-	int image_h = splash_image->get_pixbuf()->get_height();
+	int image_w = 350; int image_h = 0;
+	Glib::RefPtr<Gdk::Pixbuf> pixbuf = splash_image->get_pixbuf();
+	if( pixbuf ){
+		pixbuf->get_width();
+		pixbuf->get_height();
+	}
 
 	// Create the progress bar
 	progressbar = manage(new class Gtk::ProgressBar());
@@ -197,7 +201,7 @@ Splash::Splash():
 
 	// Create the Gtk::Fixed container and put all of the widgets into it
 	Gtk::Fixed* fixed = manage(new class Gtk::Fixed());
-	fixed->put(*splash_image, 0, 0);
+	if( pixbuf ) fixed->put(*splash_image, 0, 0);
 	fixed->put(*progressbar, 0, image_h+24);
 	fixed->put(*tasklabel, 0, image_h);
 
@@ -213,11 +217,15 @@ Splash::Splash():
 	set_resizable(false);
 	set_type_hint(Gdk::WINDOW_TYPE_HINT_SPLASHSCREEN);
 	set_auto_startup_notification(false);
-	set_icon_from_file(imagepath+"synfig_icon."+IMAGE_EXT);
+	try {
+		set_icon_from_file(imagepath+"synfig_icon."+IMAGE_EXT);
+	} catch(...) {
+		synfig::warning("Unable to open "+imagepath+"synfig_icon."+IMAGE_EXT);
+	}
 	add(*frame);
 
 	// show everything off
-	splash_image->show();
+	if( pixbuf ) splash_image->show();
 	fixed->show();
 	frame->show();
 
