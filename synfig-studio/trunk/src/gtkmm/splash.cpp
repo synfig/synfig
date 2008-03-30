@@ -171,6 +171,8 @@ Splash::Splash():
 		imagepath+="share";
 		imagepath+=ETL_DIRECTORY_SEPARATOR;
 		imagepath+="pixmaps";
+		imagepath+=ETL_DIRECTORY_SEPARATOR;
+		imagepath+="synfigstudio";
 	}
 	imagepath+=ETL_DIRECTORY_SEPARATOR;
 
