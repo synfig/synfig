@@ -174,8 +174,9 @@ About::About()
 	if(synfig_root) {
 		imagepath=synfig_root;
 		imagepath+=ETL_DIRECTORY_SEPARATOR;
-
-		imagepath+="share/pixmaps";
+		imagepath+="share";
+		imagepath+=ETL_DIRECTORY_SEPARATOR;
+		imagepath+="pixmaps";
 	}
 	imagepath+=ETL_DIRECTORY_SEPARATOR;
 

@@ -83,7 +83,7 @@ IconController::IconController(const synfig::String& /*basepath*/)
 
 	std::string path_to_icons;
 #ifdef WIN32
-	path_to_icons=basepath+"/../"+IMAGE_DIR;
+	path_to_icons=basepath+ETL_DIRECTORY_SEPARATOR+".."+ETL_DIRECTORY_SEPARATOR+IMAGE_DIR;
 #else
 	path_to_icons=IMAGE_DIR;
 #endif
@@ -92,8 +92,11 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	if(synfig_root) {
 		path_to_icons=synfig_root;
 		path_to_icons+=ETL_DIRECTORY_SEPARATOR;
-
-		path_to_icons+="share/pixmaps/synfigstudio";
+		path_to_icons+="share";
+		path_to_icons+=ETL_DIRECTORY_SEPARATOR;
+		path_to_icons+="pixmaps";
+		path_to_icons+=ETL_DIRECTORY_SEPARATOR;
+		path_to_icons+="synfigstudio";
 	}
 	path_to_icons+=ETL_DIRECTORY_SEPARATOR;
 
