@@ -186,8 +186,8 @@ Splash::Splash():
 	int image_w = 350; int image_h = 0;
 	Glib::RefPtr<Gdk::Pixbuf> pixbuf = splash_image->get_pixbuf();
 	if( pixbuf ){
-		pixbuf->get_width();
-		pixbuf->get_height();
+		image_w = pixbuf->get_width();
+		image_h = pixbuf->get_height();
 	}
 
 	// Create the progress bar
