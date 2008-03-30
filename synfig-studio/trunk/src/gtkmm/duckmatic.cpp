@@ -566,6 +566,13 @@ DuckDrag_Translate::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector
 					ValueNode_BLineCalcTangent::Handle bline_tangent_2(ValueNode_BLineCalcTangent::Handle::cast_dynamic(t2_value_node));
 					ValueNode_BLineCalcWidth::Handle bline_width(ValueNode_BLineCalcWidth::Handle::cast_dynamic(width_value_node));
 
+					// these 3 are all the same at the moment, but let's play it safe, just in case it changes
+					int tangent_amount_index(bline_tangent_1->get_link_index_from_name("amount"));
+					int vertex_amount_index(bline_vertex->get_link_index_from_name("amount"));
+					int width_amount_index(bline_width->get_link_index_from_name("amount"));
+
+					ValueNode::Handle amount_value_node(bline_vertex->get_link(vertex_amount_index));
+
 					if (bline_tangent_1 || bline_tangent_2 || bline_width)
 					{
 						synfig::Real radius = 0.0;
@@ -574,7 +581,8 @@ DuckDrag_Translate::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector
 
 						// we need to update the position of the tangent ducks - but how do we find these ducks?
 						// this is a brute force search - but is there a better way to do it?
-						if (bline_tangent_1)
+						if (bline_tangent_1 &&
+							bline_tangent_1->get_link(tangent_amount_index) == amount_value_node)
 						{
 							Vector tangent = (*bline_tangent_1)(time, amount).get(Vector());
 							DuckList::iterator iter;
@@ -583,7 +591,8 @@ DuckDrag_Translate::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector
 									(*iter)->set_point(tangent);
 						}
 
-						if (bline_tangent_2)
+						if (bline_tangent_2 &&
+							bline_tangent_2->get_link(tangent_amount_index) == amount_value_node)
 						{
 							Vector tangent = (*bline_tangent_2)(time, amount).get(Vector());
 							DuckList::iterator iter;
@@ -592,7 +601,8 @@ DuckDrag_Translate::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector
 									(*iter)->set_point(tangent);
 						}
 
-						if (bline_width)
+						if (bline_width &&
+							bline_width->get_link(width_amount_index) == amount_value_node)
 						{
 							Real width = (*bline_width)(time, amount).get(Real());
 							DuckList::iterator iter;
