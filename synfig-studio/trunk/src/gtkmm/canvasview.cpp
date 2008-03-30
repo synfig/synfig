@@ -2650,6 +2650,13 @@ CanvasView::on_duck_changed(const synfig::Point &value,const synfigapp::ValueDes
 bool
 CanvasView::on_duck_angle_changed(const synfig::Angle &rotation,const synfigapp::ValueDesc& value_desc)
 {
+	if (ValueNode_BLineCalcTangent::Handle bline_tangent = ValueNode_BLineCalcTangent::Handle::cast_dynamic(value_desc.get_value_node()))
+	{
+		int offset_index(bline_tangent->get_link_index_from_name("offset"));
+		Angle old_offset((*(bline_tangent->get_link(offset_index)))(get_time()).get(Angle()));
+		return canvas_interface()->change_value(synfigapp::ValueDesc(bline_tangent,offset_index), old_offset + rotation);
+	}
+
 	// \todo will this really always be the case?
 	assert(value_desc.get_value_type() == ValueBase::TYPE_ANGLE);
 	return canvas_interface()->change_value(value_desc, value_desc.get_value(get_time()).get(Angle()) + rotation);
