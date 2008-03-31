@@ -83,7 +83,7 @@ AC_DEFUN([AC_ARG_DEBUG],
 			debug_flags="-DNDEBUG -g"
 		;;
 		no|*)
-			debug_flags="-DNDEBUG -Wno-deprecated"
+			debug_flags="-DNDEBUG"
 		;;
 	esac
 
