@@ -608,11 +608,7 @@ StateBLine_Context::run_()
 		synfigapp::SelectionManager::LayerList layer_selection;
 
 		// count how many layers we're going to be creating
-		int layers_to_create = 0;
-		if (get_layer_curve_gradient_flag())	layers_to_create++;
-		if (get_layer_plant_flag())				layers_to_create++;
-		if (get_layer_region_flag())			layers_to_create++;
-		if (get_layer_outline_flag())			layers_to_create++;
+		int layers_to_create = this->layers_to_create();
 
 		///////////////////////////////////////////////////////////////////////////
 		//   C U R V E   G R A D I E N T
