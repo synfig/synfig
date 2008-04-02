@@ -108,8 +108,10 @@ class studio::StateCircle_Context : public sigc::trackable
 
 	Gtk::Adjustment	adj_feather;
 	Gtk::Adjustment	adj_number_of_bline_points;
+	Gtk::Adjustment	adj_bline_point_angle_offset;
 	Gtk::SpinButton	spin_feather;
 	Gtk::SpinButton	spin_number_of_bline_points;
+	Gtk::SpinButton	spin_bline_point_angle_offset;
 
 	Gtk::CheckButton checkbutton_layer_circle;
 	Gtk::CheckButton checkbutton_invert;
@@ -146,6 +148,9 @@ public:
 
 	Real get_number_of_bline_points()const { return adj_number_of_bline_points.get_value(); }
 	void set_number_of_bline_points(Real f) { adj_number_of_bline_points.set_value(f); }
+
+	Real get_bline_point_angle_offset()const { return adj_bline_point_angle_offset.get_value(); }
+	void set_bline_point_angle_offset(Real f) { adj_bline_point_angle_offset.set_value(f); }
 
 	bool get_layer_circle_flag()const { return checkbutton_layer_circle.get_active(); }
 	void set_layer_circle_flag(bool x) { return checkbutton_layer_circle.set_active(x); }
@@ -253,6 +258,11 @@ StateCircle_Context::load_settings()
 	else
 		set_number_of_bline_points(4);
 
+	if(settings.get_value("circle.bline_point_angle_offset",value))
+		set_bline_point_angle_offset(atof(value.c_str()));
+	else
+		set_bline_point_angle_offset(0);
+
 	if(settings.get_value("circle.layer_circle",value) && value=="0")
 		set_layer_circle_flag(false);
 	else
@@ -297,6 +307,7 @@ StateCircle_Context::save_settings()
 	settings.set_value("circle.blend",strprintf("%d",get_blend()));
 	settings.set_value("circle.feather",strprintf("%f",(float)get_feather()));
 	settings.set_value("circle.number_of_bline_points",strprintf("%d",(int)(get_number_of_bline_points() + 0.5)));
+	settings.set_value("circle.bline_point_angle_offset",strprintf("%f",(float)get_bline_point_angle_offset()));
 	settings.set_value("circle.layer_circle",get_layer_circle_flag()?"1":"0");
 	settings.set_value("circle.invert",get_invert()?"1":"0");
 	settings.set_value("circle.layer_outline",get_layer_outline_flag()?"1":"0");
@@ -366,8 +377,10 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	entry_id(),
 	adj_feather(0,0,1,0.01,0.1),
 	adj_number_of_bline_points(4,2,120,1,1,1), // value, lower, upper, step_increment, page_increment, page_size
+	adj_bline_point_angle_offset(0,-360,360,.1,1,1), // value, lower, upper, step_increment, page_increment, page_size
 	spin_feather(adj_feather,0.1,3),
 	spin_number_of_bline_points(adj_number_of_bline_points,1,0),
+	spin_bline_point_angle_offset(adj_bline_point_angle_offset,1,1),
 	checkbutton_layer_circle(_("Create Circle")),
 	checkbutton_invert(_("Invert")),
 	checkbutton_layer_region(_("Create Region BLine")),
@@ -411,6 +424,8 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	options_table.attach(checkbutton_layer_link_offsets,		0, 2, 12, 13, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	options_table.attach(*manage(new Gtk::Label(_("BLine Points:"))), 0, 1, 13, 14, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	options_table.attach(spin_number_of_bline_points, 1, 2, 13, 14, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(*manage(new Gtk::Label(_("Point Angle Offset:"))), 0, 1, 14, 15, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(spin_bline_point_angle_offset, 1, 2, 14, 15, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
 	options_table.show_all();
 
@@ -518,6 +533,7 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 
 	Real radius((p2-p1).mag());
 	int points = get_number_of_bline_points();
+	Angle::deg offset(get_bline_point_angle_offset());
 	Angle::deg angle(360.0/points);
 	Real tangent(4 * ((points == 2)
 					  ? 1
@@ -529,10 +545,10 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 	{
 		new_list.push_back(*(new BLinePoint));
 		new_list[i].set_width(1);
-		new_list[i].set_vertex(Point(radius*Angle::cos(angle*i).get() + x,
-									 radius*Angle::sin(angle*i).get() + y));
-		new_list[i].set_tangent(Point(-radius*tangent*Angle::sin(angle*i).get(),
-									   radius*tangent*Angle::cos(angle*i).get()));
+		new_list[i].set_vertex(Point(radius*Angle::cos(angle*i + offset).get() + x,
+									 radius*Angle::sin(angle*i + offset).get() + y));
+		new_list[i].set_tangent(Point(-radius*tangent*Angle::sin(angle*i + offset).get(),
+									   radius*tangent*Angle::cos(angle*i + offset).get()));
 	}
 
 	ValueNode_BLine::Handle value_node_bline(ValueNode_BLine::create(new_list));
