@@ -519,7 +519,9 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 	Real radius((p2-p1).mag());
 	int points = get_number_of_bline_points();
 	Angle::deg angle(360.0/points);
-	Real tangent(4 * (2 * Angle::cos(angle/2).get() - Angle::cos(angle).get() - 1) / Angle::sin(angle).get());
+	Real tangent(4 * ((points == 2)
+					  ? 1
+					  : ((2 * Angle::cos(angle/2).get() - Angle::cos(angle).get() - 1) / Angle::sin(angle).get())));
 	Real x(p1[0]), y(p1[1]);
 
 	std::vector<BLinePoint> new_list;
