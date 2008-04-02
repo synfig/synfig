@@ -107,7 +107,9 @@ class studio::StateCircle_Context : public sigc::trackable
 	Widget_Enum		enum_blend;
 
 	Gtk::Adjustment	adj_feather;
+	Gtk::Adjustment	adj_number_of_bline_points;
 	Gtk::SpinButton	spin_feather;
+	Gtk::SpinButton	spin_number_of_bline_points;
 
 	Gtk::CheckButton checkbutton_layer_circle;
 	Gtk::CheckButton checkbutton_invert;
@@ -141,6 +143,9 @@ public:
 
 	Real get_feather()const { return adj_feather.get_value(); }
 	void set_feather(Real f) { adj_feather.set_value(f); }
+
+	Real get_number_of_bline_points()const { return adj_number_of_bline_points.get_value(); }
+	void set_number_of_bline_points(Real f) { adj_number_of_bline_points.set_value(f); }
 
 	bool get_layer_circle_flag()const { return checkbutton_layer_circle.get_active(); }
 	void set_layer_circle_flag(bool x) { return checkbutton_layer_circle.set_active(x); }
@@ -243,6 +248,11 @@ StateCircle_Context::load_settings()
 	else
 		set_feather(0);
 
+	if(settings.get_value("circle.number_of_bline_points",value))
+		set_number_of_bline_points(atof(value.c_str()));
+	else
+		set_number_of_bline_points(4);
+
 	if(settings.get_value("circle.layer_circle",value) && value=="0")
 		set_layer_circle_flag(false);
 	else
@@ -286,6 +296,7 @@ StateCircle_Context::save_settings()
 	settings.set_value("circle.fallofftype",strprintf("%d",get_falloff()));
 	settings.set_value("circle.blend",strprintf("%d",get_blend()));
 	settings.set_value("circle.feather",strprintf("%f",(float)get_feather()));
+	settings.set_value("circle.number_of_bline_points",strprintf("%d",(int)(get_number_of_bline_points() + 0.5)));
 	settings.set_value("circle.layer_circle",get_layer_circle_flag()?"1":"0");
 	settings.set_value("circle.invert",get_invert()?"1":"0");
 	settings.set_value("circle.layer_outline",get_layer_outline_flag()?"1":"0");
@@ -354,7 +365,9 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	settings(synfigapp::Main::get_selected_input_device()->settings()),
 	entry_id(),
 	adj_feather(0,0,1,0.01,0.1),
+	adj_number_of_bline_points(4,2,120,1,1,1), // value, lower, upper, step_increment, page_increment, page_size
 	spin_feather(adj_feather,0.1,3),
+	spin_number_of_bline_points(adj_number_of_bline_points,1,0),
 	checkbutton_layer_circle(_("Create Circle")),
 	checkbutton_invert(_("Invert")),
 	checkbutton_layer_region(_("Create Region BLine")),
@@ -396,6 +409,8 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	options_table.attach(checkbutton_layer_plant,				0, 2, 10, 11, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	options_table.attach(checkbutton_layer_curve_gradient,		0, 2, 11, 12, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	options_table.attach(checkbutton_layer_link_offsets,		0, 2, 12, 13, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(*manage(new Gtk::Label(_("BLine Points:"))), 0, 1, 13, 14, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(spin_number_of_bline_points, 1, 2, 13, 14, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
 	options_table.show_all();
 
@@ -501,28 +516,22 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 	const Point p1(transform.unperform(_p1));
 	const Point p2(transform.unperform(_p2));
 
+	Real radius((p2-p1).mag());
+	int points = get_number_of_bline_points();
+	Angle::deg angle(360.0/points);
+	Real tangent(4 * (2 * Angle::cos(angle/2).get() - Angle::cos(angle).get() - 1) / Angle::sin(angle).get());
+	Real x(p1[0]), y(p1[1]);
+
 	std::vector<BLinePoint> new_list;
-	for (int i = 0; i < 4; i++)
+	for (int i = 0; i < points; i++)
 	{
 		new_list.push_back(*(new BLinePoint));
 		new_list[i].set_width(1);
+		new_list[i].set_vertex(Point(radius*Angle::cos(angle*i).get() + x,
+									 radius*Angle::sin(angle*i).get() + y));
+		new_list[i].set_tangent(Point(-radius*tangent*Angle::sin(angle*i).get(),
+									   radius*tangent*Angle::cos(angle*i).get()));
 	}
-
-	Real radius((p2-p1).mag());
-	Real tangent(4*radius*(sqrt(2)-1));
-	Real x(p1[0]), y(p1[1]);
-
-	new_list[0].set_vertex(Point( radius + x,       0 + y));
-	new_list[0].set_tangent(Point(         0,     tangent));
-
-	new_list[1].set_vertex(Point(      0 + x,  radius + y));
-	new_list[1].set_tangent(Point(  -tangent,           0));
-
-	new_list[2].set_vertex(Point(-radius + x,       0 + y));
-	new_list[2].set_tangent(Point(         0,    -tangent));
-
-	new_list[3].set_vertex(Point(      0 + x, -radius + y));
-	new_list[3].set_tangent(Point(   tangent,           0));
 
 	ValueNode_BLine::Handle value_node_bline(ValueNode_BLine::create(new_list));
 	assert(value_node_bline);
