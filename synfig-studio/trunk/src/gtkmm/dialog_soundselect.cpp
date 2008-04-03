@@ -6,6 +6,7 @@
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
+**	Copyright (c) 2008 David Roden
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -30,6 +31,9 @@
 #endif
 
 #include "dialog_soundselect.h"
+#include <gtkmm/alignment.h>
+#include <gtkmm/frame.h>
+#include <gtkmm/label.h>
 #include <gtkmm/table.h>
 
 #include "general.h"
@@ -52,23 +56,48 @@ using namespace synfig;
 
 /* === E N T R Y P O I N T ================================================= */
 
-studio::Dialog_SoundSelect::Dialog_SoundSelect(Gtk::Window &/*parent*/, etl::handle<synfigapp::CanvasInterface> ci)
-:Dialog(_("Sound Select")),
-okbutton(_("Ok")),
+studio::Dialog_SoundSelect::Dialog_SoundSelect(Gtk::Window &parent, etl::handle<synfigapp::CanvasInterface> ci)
+:Dialog(_("Sound Select"), parent, false, true),
 canvas_interface(ci)
 {
-	Gtk::Table *table = manage(new Gtk::Table);
+	Gtk::Alignment *dialogPadding = manage(new Gtk::Alignment(0, 0, 1, 1));
+	dialogPadding->set_padding(12, 12, 12, 12);
+	get_vbox()->pack_start(*dialogPadding, false, false, 0);
 
-	table->attach(soundfile,0,1,0,1);
-	table->attach(offset,1,2,0,1);
-	table->attach(okbutton,0,2,1,2);
+	Gtk::Frame *soundFrame = manage(new Gtk::Frame(_("Sound Parameters")));
+	((Gtk::Label *) soundFrame->get_label_widget())->set_markup(_("<b>Sound Parameters</b>"));
+	soundFrame->set_shadow_type(Gtk::SHADOW_NONE);
+	dialogPadding->add(*soundFrame);
 
-	table->show_all();
-	get_vbox()->pack_start(*table);
+	Gtk::Alignment *framePadding = manage(new Gtk::Alignment(0, 0, 1, 1));
+	framePadding->set_padding(6, 0, 24, 0);
+	soundFrame->add(*framePadding);
+
+	Gtk::Label *fileLabel = manage(new Gtk::Label(_("_Sound File"), true));
+	fileLabel->set_alignment(0, 0.5);
+	fileLabel->set_mnemonic_widget(soundfile);
+	Gtk::Label *offsetLabel = manage(new Gtk::Label(_("Time _Offset"), true));
+	offsetLabel->set_alignment(0, 0.5);
+	offsetLabel->set_mnemonic_widget(offset);
+
+	Gtk::Table *table = manage(new Gtk::Table(2, 2, false));
+	table->set_row_spacings(6);
+	table->set_col_spacings(12);
+	framePadding->add(*table);
+
+	table->attach(*fileLabel, 0, 1, 0, 1, Gtk::SHRINK | Gtk::FILL, Gtk::SHRINK | Gtk::FILL, 0, 0);
+	table->attach(soundfile, 1, 2, 0, 1, Gtk::EXPAND | Gtk::FILL, Gtk::SHRINK | Gtk::FILL, 0, 0);
+	table->attach(*offsetLabel, 0, 1, 1, 2, Gtk::SHRINK | Gtk::FILL, Gtk::SHRINK | Gtk::FILL, 0, 0);
+	table->attach(offset, 1, 2, 1, 2, Gtk::EXPAND | Gtk::FILL, Gtk::SHRINK | Gtk::FILL, 0, 0);
+
+	okbutton = manage(new Gtk::Button(Gtk::StockID("gtk-ok")));
+	add_action_widget(*okbutton, 0);
+
+	get_vbox()->show_all();
 
 	offset.set_value(0);
 
-	okbutton.signal_clicked().connect(sigc::mem_fun(*this,&Dialog_SoundSelect::on_ok));
+	okbutton->signal_clicked().connect(sigc::mem_fun(*this,&Dialog_SoundSelect::on_ok));
 }
 
 studio::Dialog_SoundSelect::~Dialog_SoundSelect()

@@ -6,6 +6,7 @@
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
+**	Copyright (c) 2008 David Roden
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -50,7 +51,7 @@ class Dialog_SoundSelect : public Gtk::Dialog
 {
 	Widget_Filename		soundfile;
 	Widget_Time			offset;
-	Gtk::Button			okbutton;
+	Gtk::Button			*okbutton;
 
 	etl::handle<synfigapp::CanvasInterface> canvas_interface;
 
