@@ -55,11 +55,11 @@ WIDGET_CC = \
 STATE_HH = \
 	state_bline.h	state_circle.h	 state_draw.h	state_eyedrop.h	  state_fill.h	 state_gradient.h		\
 	state_normal.h	 state_polygon.h   state_rectangle.h   state_rotate.h	state_scale.h	state_sketch.h		\
-	state_smoothmove.h   state_stroke.h   state_width.h   state_zoom.h
+	state_smoothmove.h   state_stroke.h   state_text.h   state_width.h   state_zoom.h
 STATE_CC = \
 	state_bline.cpp state_circle.cpp state_draw.cpp state_eyedrop.cpp state_fill.cpp state_gradient.cpp		\
 	state_normal.cpp state_polygon.cpp state_rectangle.cpp state_rotate.cpp state_scale.cpp state_sketch.cpp	\
-	state_smoothmove.cpp state_stroke.cpp state_width.cpp state_zoom.cpp
+	state_smoothmove.cpp state_stroke.cpp state_text.cpp state_width.cpp state_zoom.cpp
 
 TREEVIEW_HH = \
 	childrentree.h	 keyframetree.h	  layergrouptree.h   layertree.h
