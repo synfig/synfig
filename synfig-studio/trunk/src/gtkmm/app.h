@@ -331,6 +331,7 @@ public:
 	static void dialog_warning_blocking(const std::string &title, const std::string &message);
 
 	static bool dialog_entry(const std::string &title, const std::string &message,std::string &text);
+	static bool dialog_paragraph(const std::string &title, const std::string &message,std::string &text);
 
 	static bool dialog_yes_no(const std::string &title, const std::string &message);
 
