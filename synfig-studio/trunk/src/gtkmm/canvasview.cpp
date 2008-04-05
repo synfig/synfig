@@ -2628,6 +2628,7 @@ CanvasView::on_duck_changed(const synfig::Point &value,const synfigapp::ValueDes
 			break;
 
 		case ValueBase::TYPE_VECTOR:
+		{
 			Vector old_tangent = (*bline_tangent)(get_time()).get(Vector());
 			Angle old_angle = old_tangent.angle();
 			Real old_length = old_tangent.mag();
@@ -2647,6 +2648,9 @@ CanvasView::on_duck_changed(const synfig::Point &value,const synfigapp::ValueDes
 			else if (old_length != 0 && !(canvas_interface()->change_value(synfigapp::ValueDesc(bline_tangent,scale_index), new_length * scale / old_length)))
 				return false;
 			return canvas_interface()->change_value(synfigapp::ValueDesc(bline_tangent,offset_index), old_offset + new_angle - old_angle);
+		}
+		default:
+			break;
 		}
 	}
 
