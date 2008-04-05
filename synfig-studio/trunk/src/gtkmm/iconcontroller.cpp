@@ -162,7 +162,6 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	INIT_STOCK_ICON(layer_pastecanvas,"pastecanvas_icon."IMAGE_EXT,_("Paste Canvas"));
 	INIT_STOCK_ICON(star,"star_icon."IMAGE_EXT,"");
 	INIT_STOCK_ICON(plant,"plant_icon."IMAGE_EXT,"");
-	INIT_STOCK_ICON(text,"text_icon."IMAGE_EXT,"");
 	INIT_STOCK_ICON(group,"group_icon."IMAGE_EXT,_("Group"));
 	INIT_STOCK_ICON(grid_enable,"grid_enable_icon."IMAGE_EXT,_("Show Grid"));
 	INIT_STOCK_ICON(grid_disable,"grid_disable_icon."IMAGE_EXT,_("Hide Grid"));
@@ -209,6 +208,7 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	INIT_STOCK_ICON(zoom,"zoom_icon."IMAGE_EXT,_("Zoom Tool"));
 	INIT_STOCK_ICON(info,"info_icon."IMAGE_EXT,_("Info Tool"));
 	INIT_STOCK_ICON(mirror,"mirror_icon."IMAGE_EXT,_("Mirror Tool"));
+	INIT_STOCK_ICON(text,"text_icon."IMAGE_EXT,"Text Tool");
 
 	icon_factory->add_default();
 
