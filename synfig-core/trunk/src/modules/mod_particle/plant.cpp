@@ -241,6 +241,9 @@ Plant::sync()const
 			if((((i+1)*sprouts + steps/2) / steps) > branch_count) {
 				Vector branch_velocity(deriv(f).norm()*velocity + deriv(f).perp().norm()*perp_velocity);
 
+				if (isnan(branch_velocity[0]) || isnan(branch_velocity[1]))
+					continue;
+
 				branch_velocity[0] += random_factor * random(Random::SMOOTH_COSINE, 1, f*splits, 0.0f, 0.0f);
 				branch_velocity[1] += random_factor * random(Random::SMOOTH_COSINE, 2, f*splits, 0.0f, 0.0f);
 
