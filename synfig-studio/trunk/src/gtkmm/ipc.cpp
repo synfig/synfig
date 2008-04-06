@@ -237,7 +237,6 @@ IPC::fifo_activity(Glib::IOCondition cond)
 			synfig::error("IPC::fifo_activity(): IO_NVAL");
 		return false;
 	}
-	synfig::info(__FILE__":%d: fifo activity",__LINE__);
 
 	String command;
 	{
@@ -250,6 +249,7 @@ IPC::fifo_activity(Glib::IOCondition cond)
 		} while(tmp!='\n');
 	}
 
+	synfig::info("%s:%d: fifo activity: '%s'", __FILE__, __LINE__, command.c_str());
 	process_command(command);
 	return true;
 }
