@@ -227,8 +227,6 @@ IPC::fifo_path()
 bool
 IPC::fifo_activity(Glib::IOCondition cond)
 {
-	synfig::info(__FILE__":%d: fifo activity",__LINE__);
-
 	if(cond&(Glib::IO_ERR|Glib::IO_HUP|Glib::IO_NVAL))
 	{
 		if(cond&(Glib::IO_ERR))
