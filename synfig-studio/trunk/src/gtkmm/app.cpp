@@ -1784,7 +1784,7 @@ static OPENFILENAME ofn={};
 bool
 App::dialog_open_file(const std::string &title, std::string &filename, std::string preference)
 {
-	info("App::dialog_open_file('%s', '%s', '%s')", title.c_str(), filename.c_str(), preference.c_str());
+	// info("App::dialog_open_file('%s', '%s', '%s')", title.c_str(), filename.c_str(), preference.c_str());
 
 #ifdef USE_WIN32_FILE_DIALOGS
 	static TCHAR szFilter[] = TEXT ("All Files (*.*)\0*.*\0\0") ;
@@ -1910,7 +1910,7 @@ App::dialog_open_file(const std::string &title, std::string &filename, std::stri
 bool
 App::dialog_save_file(const std::string &title, std::string &filename, std::string preference)
 {
-	info("App::dialog_save_file('%s', '%s', '%s')", title.c_str(), filename.c_str(), preference.c_str());
+	// info("App::dialog_save_file('%s', '%s', '%s')", title.c_str(), filename.c_str(), preference.c_str());
 
 #if USE_WIN32_FILE_DIALOGS
 	static TCHAR szFilter[] = TEXT ("All Files (*.*)\0*.*\0\0") ;
