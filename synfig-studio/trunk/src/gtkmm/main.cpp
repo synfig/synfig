@@ -73,19 +73,15 @@ int main(int argc, char **argv)
 			cout << "   " << _("synfig studio is already running") << endl << endl;
 			cout << "   " << _("the existing process will be used") << endl << endl;;
 
-			fprintf(file.get(),"F\n");
-
 			// Hey, another copy of us is open!
 			// don't bother opening us, just go ahead and
 			// tell the other copy to load it all up
-			if(argc>=1)
-			{
-				for(;argc>=1;(argc)--)
-					if((argv)[argc] && (argv)[argc][0]!='-')
-					{
-						fprintf(file.get(),"O %s\n",etl::absolute_path((argv)[argc]).c_str());
-					}
-			}
+			if (argc>1)
+				fprintf(file.get(),"F\n");
+
+			while(--argc)
+				if((argv)[argc] && (argv)[argc][0]!='-')
+					fprintf(file.get(),"O %s\n",etl::absolute_path((argv)[argc]).c_str());
 
 			fprintf(file.get(),"F\n");
 
