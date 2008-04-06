@@ -514,7 +514,7 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 
 	Layer::Handle layer;
 
-	Canvas::Handle canvas(get_canvas_view()->get_canvas());
+	Canvas::Handle canvas;
 	int depth(0);
 
 	// we are temporarily using the layer to hold something
@@ -559,6 +559,11 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 
 	// Set the looping flag
 	value_node_bline->set_loop(true);
+
+	if(!canvas)
+		canvas=get_canvas_view()->get_canvas();
+
+	value_node_bline->set_member_canvas(canvas);
 
 	// count how many layers we're going to be creating
 	int layers_to_create = this->layers_to_create();
