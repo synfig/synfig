@@ -148,7 +148,6 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	INIT_STOCK_ICON(list,"list_icon."IMAGE_EXT,_("Rename"));
 	INIT_STOCK_ICON(canvas,"canvas_icon."IMAGE_EXT,_("Canvas"));
 	INIT_STOCK_ICON(string,"string_icon."IMAGE_EXT,_("Rename"));
-	INIT_STOCK_ICON(gradient,"gradient_icon."IMAGE_EXT,_("Gradient"));
 
 	INIT_STOCK_ICON(reset_colors,"reset_colors_icon."IMAGE_EXT,_("Reset Colors"));
 	INIT_STOCK_ICON(swap_colors,"swap_colors_icon."IMAGE_EXT,_("Swap Colors"));
@@ -209,6 +208,7 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	INIT_STOCK_ICON(info,"info_icon."IMAGE_EXT,_("Info Tool"));
 	INIT_STOCK_ICON(mirror,"mirror_icon."IMAGE_EXT,_("Mirror Tool"));
 	INIT_STOCK_ICON(text,"text_icon."IMAGE_EXT,"Text Tool");
+	INIT_STOCK_ICON(gradient,"gradient_icon."IMAGE_EXT,_("Gradient Tool"));
 
 	icon_factory->add_default();
 
