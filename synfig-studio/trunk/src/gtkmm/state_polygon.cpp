@@ -398,7 +398,9 @@ StatePolygon_Context::run()
 				}
 			}
 			egress_on_selection_change=false;
-			synfigapp::SelectionManager::LayerList layer_selection(get_canvas_view()->get_selection_manager()->get_selected_layers());
+			synfigapp::SelectionManager::LayerList layer_selection;
+			if (!getenv("SYNFIG_TOOLS_CLEAR_SELECTION"))
+				layer_selection = get_canvas_view()->get_selection_manager()->get_selected_layers();
 			get_canvas_interface()->get_selection_manager()->clear_selected_layers();
 			layer_selection.push_back(layer);
 			get_canvas_interface()->get_selection_manager()->set_selected_layers(layer_selection);
