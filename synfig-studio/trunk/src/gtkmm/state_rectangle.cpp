@@ -34,6 +34,7 @@
 
 #include <synfig/valuenode_dynamiclist.h>
 #include <synfigapp/action_system.h>
+#include <synfig/valuenode_bline.h>
 
 #include "state_rectangle.h"
 #include "canvasview.h"
@@ -94,9 +95,26 @@ class studio::StateRectangle_Context : public sigc::trackable
 	Gtk::Adjustment	adj_expand;
 	Gtk::SpinButton	spin_expand;
 
-	Gtk::CheckButton check_invert;
+	Gtk::CheckButton checkbutton_invert;
+	Gtk::CheckButton checkbutton_layer_rectangle;
+	Gtk::CheckButton checkbutton_layer_region;
+	Gtk::CheckButton checkbutton_layer_outline;
+	Gtk::CheckButton checkbutton_layer_curve_gradient;
+	Gtk::CheckButton checkbutton_layer_plant;
+	Gtk::CheckButton checkbutton_layer_link_offsets;
 
 public:
+
+	// this only counts the layers which use blines - they're the only
+	// ones we link the offsets for
+	int layers_to_create()const
+	{
+		return
+			get_layer_region_flag() +
+			get_layer_outline_flag() +
+			get_layer_curve_gradient_flag() +
+			get_layer_plant_flag();
+	}
 
 	synfig::String get_id()const { return entry_id.get_text(); }
 	void set_id(const synfig::String& x) { return entry_id.set_text(x); }
@@ -104,8 +122,26 @@ public:
 	Real get_expand()const { return adj_expand.get_value(); }
 	void set_expand(Real f) { adj_expand.set_value(f); }
 
-	bool get_invert()const { return check_invert.get_active(); }
-	void set_invert(bool i) { check_invert.set_active(i); }
+	bool get_invert()const { return checkbutton_invert.get_active(); }
+	void set_invert(bool i) { checkbutton_invert.set_active(i); }
+
+	bool get_layer_rectangle_flag()const { return checkbutton_layer_rectangle.get_active(); }
+	void set_layer_rectangle_flag(bool x) { return checkbutton_layer_rectangle.set_active(x); }
+
+	bool get_layer_region_flag()const { return checkbutton_layer_region.get_active(); }
+	void set_layer_region_flag(bool x) { return checkbutton_layer_region.set_active(x); }
+
+	bool get_layer_outline_flag()const { return checkbutton_layer_outline.get_active(); }
+	void set_layer_outline_flag(bool x) { return checkbutton_layer_outline.set_active(x); }
+
+	bool get_layer_curve_gradient_flag()const { return checkbutton_layer_curve_gradient.get_active(); }
+	void set_layer_curve_gradient_flag(bool x) { return checkbutton_layer_curve_gradient.set_active(x); }
+
+	bool get_layer_plant_flag()const { return checkbutton_layer_plant.get_active(); }
+	void set_layer_plant_flag(bool x) { return checkbutton_layer_plant.set_active(x); }
+
+	bool get_layer_link_offsets_flag()const { return checkbutton_layer_link_offsets.get_active(); }
+	void set_layer_link_offsets_flag(bool x) { return checkbutton_layer_link_offsets.set_active(x); }
 
 	void refresh_tool_options(); //to refresh the toolbox
 
@@ -181,6 +217,36 @@ StateRectangle_Context::load_settings()
 		set_invert(true);
 	else
 		set_invert(false);
+
+	if(settings.get_value("rectangle.layer_rectangle",value) && value=="0")
+		set_layer_rectangle_flag(false);
+	else
+		set_layer_rectangle_flag(true);
+
+	if(settings.get_value("rectangle.layer_region",value) && value=="1")
+		set_layer_region_flag(true);
+	else
+		set_layer_region_flag(false);
+
+	if(settings.get_value("rectangle.layer_outline",value) && value=="1")
+		set_layer_outline_flag(true);
+	else
+		set_layer_outline_flag(false);
+
+	if(settings.get_value("rectangle.layer_curve_gradient",value) && value=="1")
+		set_layer_curve_gradient_flag(true);
+	else
+		set_layer_curve_gradient_flag(false);
+
+	if(settings.get_value("rectangle.layer_plant",value) && value=="1")
+		set_layer_plant_flag(true);
+	else
+		set_layer_plant_flag(false);
+
+	if(settings.get_value("rectangle.layer_link_offsets",value) && value=="0")
+		set_layer_link_offsets_flag(false);
+	else
+		set_layer_link_offsets_flag(true);
 }
 
 void
@@ -189,6 +255,12 @@ StateRectangle_Context::save_settings()
 	settings.set_value("rectangle.id",get_id().c_str());
 	settings.set_value("rectangle.expand",strprintf("%f",get_expand()));
 	settings.set_value("rectangle.invert",get_invert()?"1":"0");
+	settings.set_value("rectangle.layer_rectangle",get_layer_rectangle_flag()?"1":"0");
+	settings.set_value("rectangle.layer_outline",get_layer_outline_flag()?"1":"0");
+	settings.set_value("rectangle.layer_region",get_layer_region_flag()?"1":"0");
+	settings.set_value("rectangle.layer_curve_gradient",get_layer_curve_gradient_flag()?"1":"0");
+	settings.set_value("rectangle.layer_plant",get_layer_plant_flag()?"1":"0");
+	settings.set_value("rectangle.layer_link_offsets",get_layer_link_offsets_flag()?"1":"0");
 }
 
 void
@@ -205,7 +277,7 @@ StateRectangle_Context::increment_id()
 	int digits=0;
 
 	if(id.empty())
-		id="Circle";
+		id="Rectangle";
 
 	// If there is a number
 	// already at the end of the
@@ -251,13 +323,19 @@ StateRectangle_Context::StateRectangle_Context(CanvasView* canvas_view):
 	entry_id(),
 	adj_expand(0,0,1,0.01,0.1),
 	spin_expand(adj_expand,0.1,3),
-	check_invert(_("Invert"))
+	checkbutton_invert(_("Invert")),
+	checkbutton_layer_rectangle(_("Create Rectangle Layer")),
+	checkbutton_layer_region(_("Create Region BLine")),
+	checkbutton_layer_outline(_("Create Outline BLine")),
+	checkbutton_layer_curve_gradient(_("Create Curve Gradient BLine")),
+	checkbutton_layer_plant(_("Create Plant BLine")),
+	checkbutton_layer_link_offsets(_("Link BLine Offsets"))
 {
 	egress_on_selection_change=true;
 	load_settings();
 
 	// Set up the tool options dialog
-	//options_table.attach(*manage(new Gtk::Label(_("Circle Tool"))), 0, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	//options_table.attach(*manage(new Gtk::Label(_("Rectangle Tool"))), 0, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	options_table.attach(entry_id, 0, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
 	//expand stuff
@@ -265,7 +343,14 @@ StateRectangle_Context::StateRectangle_Context(CanvasView* canvas_view):
 	options_table.attach(spin_expand, 1, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
 	//invert flag
-	options_table.attach(check_invert, 1, 2, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(checkbutton_invert, 1, 2, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+
+	options_table.attach(checkbutton_layer_rectangle,						0, 2,  7,  8, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(checkbutton_layer_outline,							0, 2,  8,  9, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(checkbutton_layer_region,							0, 2,  9, 10, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(checkbutton_layer_plant,							0, 2, 10, 11, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(checkbutton_layer_curve_gradient,					0, 2, 11, 12, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(checkbutton_layer_link_offsets,					0, 2, 12, 13, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
 	options_table.show_all();
 
@@ -359,7 +444,7 @@ StateRectangle_Context::make_rectangle(const Point& _p1, const Point& _p2)
 
 	Layer::Handle layer;
 
-	Canvas::Handle canvas(get_canvas_view()->get_canvas());
+	Canvas::Handle canvas;
 	int depth(0);
 
 	// we are temporarily using the layer to hold something
@@ -370,35 +455,317 @@ StateRectangle_Context::make_rectangle(const Point& _p1, const Point& _p2)
 		canvas=layer->get_canvas();
 	}
 
-	//create the layer
-	layer=get_canvas_interface()->add_layer_to("rectangle",canvas,depth);
+	synfigapp::SelectionManager::LayerList layer_selection;
+	if (!getenv("SYNFIG_TOOLS_CLEAR_SELECTION"))
+		layer_selection = get_canvas_view()->get_selection_manager()->get_selected_layers();
 
 	const synfig::TransformStack& transform(get_canvas_view()->get_curr_transform_stack());
 	const Point p1(transform.unperform(_p1));
 	const Point p2(transform.unperform(_p2));
+	Real x_min, x_max, y_min, y_max;
+	if (p1[0] < p2[0]) { x_min = p1[0]; x_max = p2[0]; } else { x_min = p2[0]; x_max = p1[0]; }
+	if (p1[1] < p2[1]) { y_min = p1[1]; y_max = p2[1]; } else { y_min = p2[1]; y_max = p1[1]; }
+	x_min -= get_expand(); x_max += get_expand(); y_min -= get_expand(); y_max += get_expand();
 
-	//set all the parameters
-	layer->set_param("point1",p1);
-	get_canvas_interface()->signal_layer_param_changed()(layer,"point1");
-	layer->set_param("point2",p2);
-	get_canvas_interface()->signal_layer_param_changed()(layer,"point2");
+	std::vector<BLinePoint> new_list;
+	for (int i = 0; i < 4; i++)
+	{
+		new_list.push_back(*(new BLinePoint));
+		new_list[i].set_width(1);
+		new_list[i].set_vertex(Point((i==0||i==1)?x_min:x_max,
+									 (i==0||i==3)?y_min:y_max));
+		new_list[i].set_tangent(Point(0,0));
+	}
 
-	layer->set_param("expand",get_expand());
-	get_canvas_interface()->signal_layer_param_changed()(layer,"expand");
+	ValueNode_BLine::Handle value_node_bline(ValueNode_BLine::create(new_list));
+	assert(value_node_bline);
 
-	layer->set_param("invert",get_invert());
-	get_canvas_interface()->signal_layer_param_changed()(layer,"invert");
+	ValueNode_Const::Handle value_node_offset(ValueNode_Const::create(Vector()));
+	assert(value_node_offset);
 
-	//name
-	layer->set_description(get_id());
-	get_canvas_interface()->signal_layer_new_description()(layer,layer->get_description());
+	// Set the looping flag
+	value_node_bline->set_loop(true);
+
+	if(!canvas)
+		canvas=get_canvas_view()->get_canvas();
+
+	value_node_bline->set_member_canvas(canvas);
+
+	// count how many layers we're going to be creating
+	int layers_to_create = this->layers_to_create();
+
+	///////////////////////////////////////////////////////////////////////////
+	//   R E C T A N G L E
+	///////////////////////////////////////////////////////////////////////////
+
+	if (get_layer_rectangle_flag())
+	{
+		layer=get_canvas_interface()->add_layer_to("rectangle",canvas,depth);
+		layer_selection.push_back(layer);
+
+		layer->set_param("point1",p1);
+		get_canvas_interface()->signal_layer_param_changed()(layer,"point1");
+
+		layer->set_param("point2",p2);
+		get_canvas_interface()->signal_layer_param_changed()(layer,"point2");
+
+		layer->set_param("expand",get_expand());
+		get_canvas_interface()->signal_layer_param_changed()(layer,"expand");
+
+		layer->set_param("invert",get_invert());
+		get_canvas_interface()->signal_layer_param_changed()(layer,"invert");
+
+		layer->set_description(get_id());
+		get_canvas_interface()->signal_layer_new_description()(layer,layer->get_description());
+	}
+
+	///////////////////////////////////////////////////////////////////////////
+	//   C U R V E   G R A D I E N T
+	///////////////////////////////////////////////////////////////////////////
+
+	if(get_layer_curve_gradient_flag())
+	{
+		synfigapp::PushMode push_mode(get_canvas_interface(),synfigapp::MODE_NORMAL);
+
+		Layer::Handle layer(get_canvas_interface()->add_layer_to("curve_gradient",canvas,depth));
+		assert(layer);
+		layer_selection.push_back(layer);
+		layer->set_description(get_id()+_(" Gradient"));
+		get_canvas_interface()->signal_layer_new_description()(layer,layer->get_description());
+
+		{
+			synfigapp::Action::Handle action(synfigapp::Action::create("layer_param_connect"));
+			assert(action);
+
+			action->set_param("canvas",get_canvas());
+			action->set_param("canvas_interface",get_canvas_interface());
+			action->set_param("layer",layer);
+			if(!action->set_param("param",String("bline")))
+				synfig::error("LayerParamConnect didn't like \"param\"");
+			if(!action->set_param("value_node",ValueNode::Handle(value_node_bline)))
+				synfig::error("LayerParamConnect didn't like \"value_node\"");
+
+			if(!get_canvas_interface()->get_instance()->perform_action(action))
+			{
+				//get_canvas_view()->get_ui_interface()->error(_("Unable to create BLine layer"));
+				group.cancel();
+				throw String(_("Unable to create Gradient layer"));
+				return;
+			}
+		}
+
+		// only link the curve gradient's offset parameter if the option is selected and we're creating more than one layer
+		if (get_layer_link_offsets_flag() && layers_to_create > 1)
+		{
+			synfigapp::Action::Handle action(synfigapp::Action::create("layer_param_connect"));
+			assert(action);
+
+			action->set_param("canvas",get_canvas());
+			action->set_param("canvas_interface",get_canvas_interface());
+			action->set_param("layer",layer);
+			if(!action->set_param("param",String("offset")))
+				synfig::error("LayerParamConnect didn't like \"param\"");
+			if(!action->set_param("value_node",ValueNode::Handle(value_node_offset)))
+				synfig::error("LayerParamConnect didn't like \"value_node\"");
+
+			if(!get_canvas_interface()->get_instance()->perform_action(action))
+			{
+				//get_canvas_view()->get_ui_interface()->error(_("Unable to create BLine layer"));
+				group.cancel();
+				throw String(_("Unable to create Gradient layer"));
+				return;
+			}
+		}
+	}
+
+	///////////////////////////////////////////////////////////////////////////
+	//   P L A N T
+	///////////////////////////////////////////////////////////////////////////
+
+	if(get_layer_plant_flag())
+	{
+		synfigapp::PushMode push_mode(get_canvas_interface(),synfigapp::MODE_NORMAL);
+
+		Layer::Handle layer(get_canvas_interface()->add_layer_to("plant",canvas,depth));
+		assert(layer);
+		layer_selection.push_back(layer);
+		layer->set_description(get_id()+_(" Plant"));
+		get_canvas_interface()->signal_layer_new_description()(layer,layer->get_description());
+
+		{
+			synfigapp::Action::Handle action(synfigapp::Action::create("layer_param_connect"));
+			assert(action);
+
+			action->set_param("canvas",get_canvas());
+			action->set_param("canvas_interface",get_canvas_interface());
+			action->set_param("layer",layer);
+			if(!action->set_param("param",String("bline")))
+				synfig::error("LayerParamConnect didn't like \"param\"");
+			if(!action->set_param("value_node",ValueNode::Handle(value_node_bline)))
+				synfig::error("LayerParamConnect didn't like \"value_node\"");
+
+			if(!get_canvas_interface()->get_instance()->perform_action(action))
+			{
+				//get_canvas_view()->get_ui_interface()->error(_("Unable to create BLine layer"));
+				group.cancel();
+				throw String(_("Unable to create Plant layer"));
+				return;
+			}
+		}
+
+		// only link the plant's offset parameter if the option is selected and we're creating more than one layer
+		if (get_layer_link_offsets_flag() && layers_to_create > 1)
+		{
+			synfigapp::Action::Handle action(synfigapp::Action::create("layer_param_connect"));
+			assert(action);
+
+			action->set_param("canvas",get_canvas());
+			action->set_param("canvas_interface",get_canvas_interface());
+			action->set_param("layer",layer);
+			if(!action->set_param("param",String("offset")))
+				synfig::error("LayerParamConnect didn't like \"param\"");
+			if(!action->set_param("value_node",ValueNode::Handle(value_node_offset)))
+				synfig::error("LayerParamConnect didn't like \"value_node\"");
+
+			if(!get_canvas_interface()->get_instance()->perform_action(action))
+			{
+				//get_canvas_view()->get_ui_interface()->error(_("Unable to create BLine layer"));
+				group.cancel();
+				throw String(_("Unable to create Plant layer"));
+				return;
+			}
+		}
+	}
+
+	///////////////////////////////////////////////////////////////////////////
+	//   R E G I O N
+	///////////////////////////////////////////////////////////////////////////
+
+	if(get_layer_region_flag())
+	{
+		synfigapp::PushMode push_mode(get_canvas_interface(),synfigapp::MODE_NORMAL);
+
+		Layer::Handle layer(get_canvas_interface()->add_layer_to("region",canvas,depth));
+		assert(layer);
+		layer_selection.push_back(layer);
+		layer->set_description(get_id()+_(" Region"));
+		get_canvas_interface()->signal_layer_new_description()(layer,layer->get_description());
+
+		layer->set_param("invert",get_invert());
+		get_canvas_interface()->signal_layer_param_changed()(layer,"invert");
+
+		if(get_layer_outline_flag())
+			layer->set_param("color",synfigapp::Main::get_background_color());
+
+		// I don't know if it's safe to reuse the same layer_param_connect action, so I'm
+		// using 2 separate ones.
+		{
+			synfigapp::Action::Handle action(synfigapp::Action::create("layer_param_connect"));
+			assert(action);
+
+			action->set_param("canvas",get_canvas());
+			action->set_param("canvas_interface",get_canvas_interface());
+			action->set_param("layer",layer);
+			if(!action->set_param("param",String("bline")))
+				synfig::error("LayerParamConnect didn't like \"param\"");
+			if(!action->set_param("value_node",ValueNode::Handle(value_node_bline)))
+				synfig::error("LayerParamConnect didn't like \"value_node\"");
+
+			if(!get_canvas_interface()->get_instance()->perform_action(action))
+			{
+				//get_canvas_view()->get_ui_interface()->error(_("Unable to create Region layer"));
+				group.cancel();
+				throw String(_("Unable to create Region layer"));
+				return;
+			}
+		}
+
+		// only link the region's offset parameter if the option is selected and we're creating more than one layer
+		if (get_layer_link_offsets_flag() && layers_to_create > 1)
+		{
+			synfigapp::Action::Handle action(synfigapp::Action::create("layer_param_connect"));
+			assert(action);
+
+			action->set_param("canvas",get_canvas());
+			action->set_param("canvas_interface",get_canvas_interface());
+			action->set_param("layer",layer);
+			if(!action->set_param("param",String("offset")))
+				synfig::error("LayerParamConnect didn't like \"param\"");
+			if(!action->set_param("value_node",ValueNode::Handle(value_node_offset)))
+				synfig::error("LayerParamConnect didn't like \"value_node\"");
+
+			if(!get_canvas_interface()->get_instance()->perform_action(action))
+			{
+				//get_canvas_view()->get_ui_interface()->error(_("Unable to create Region layer"));
+				group.cancel();
+				throw String(_("Unable to create Region layer"));
+				return;
+			}
+		}
+	}
+
+	///////////////////////////////////////////////////////////////////////////
+	//   O U T L I N E
+	///////////////////////////////////////////////////////////////////////////
+
+	if (get_layer_outline_flag())
+	{
+		Layer::Handle layer(get_canvas_interface()->add_layer_to("outline",canvas,depth));
+		assert(layer);
+		layer_selection.push_back(layer);
+		layer->set_description(get_id()+_(" Outline"));
+		get_canvas_interface()->signal_layer_new_description()(layer,layer->get_description());
+
+		layer->set_param("invert",get_invert());
+		get_canvas_interface()->signal_layer_param_changed()(layer,"invert");
+
+		{
+			synfigapp::Action::Handle action(synfigapp::Action::create("layer_param_connect"));
+			assert(action);
+
+			action->set_param("canvas",get_canvas());
+			action->set_param("canvas_interface",get_canvas_interface());
+			action->set_param("layer",layer);
+			if(!action->set_param("param",String("bline")))
+				synfig::error("LayerParamConnect didn't like \"param\"");
+			if(!action->set_param("value_node",ValueNode::Handle(value_node_bline)))
+				synfig::error("LayerParamConnect didn't like \"value_node\"");
+
+			if(!get_canvas_interface()->get_instance()->perform_action(action))
+			{
+				//get_canvas_view()->get_ui_interface()->error(_("Unable to create BLine layer"));
+				group.cancel();
+				throw String(_("Unable to create Outline layer"));
+				return;
+			}
+		}
+
+		// only link the outline's offset parameter if the option is selected and we're creating more than one layer
+		if (get_layer_link_offsets_flag() && layers_to_create > 1)
+		{
+			synfigapp::Action::Handle action(synfigapp::Action::create("layer_param_connect"));
+			assert(action);
+
+			action->set_param("canvas",get_canvas());
+			action->set_param("canvas_interface",get_canvas_interface());
+			action->set_param("layer",layer);
+			if(!action->set_param("param",String("offset")))
+				synfig::error("LayerParamConnect didn't like \"param\"");
+			if(!action->set_param("value_node",ValueNode::Handle(value_node_offset)))
+				synfig::error("LayerParamConnect didn't like \"value_node\"");
+
+			if(!get_canvas_interface()->get_instance()->perform_action(action))
+			{
+				//get_canvas_view()->get_ui_interface()->error(_("Unable to create BLine layer"));
+				group.cancel();
+				throw String(_("Unable to create Outline layer"));
+				return;
+			}
+		}
+	}
 
 	egress_on_selection_change=false;
-	synfigapp::SelectionManager::LayerList layer_selection;
-	if (!getenv("SYNFIG_TOOLS_CLEAR_SELECTION"))
-		layer_selection = get_canvas_view()->get_selection_manager()->get_selected_layers();
 	get_canvas_interface()->get_selection_manager()->clear_selected_layers();
-	layer_selection.push_back(layer);
 	get_canvas_interface()->get_selection_manager()->set_selected_layers(layer_selection);
 	egress_on_selection_change=true;
 
