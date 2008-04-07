@@ -98,7 +98,9 @@ class studio::StateGradient_Context : public sigc::trackable
 	Gtk::Table options_table;
 	Gtk::Entry entry_id;
 	Widget_Enum enum_type;
+#ifdef BLEND_METHOD_IN_TOOL_OPTIONS
 	Widget_Enum	enum_blend;
+#endif	// BLEND_METHOD_IN_TOOL_OPTIONS
 
 public:
 	synfig::String get_id()const { return entry_id.get_text(); }
@@ -107,8 +109,10 @@ public:
 	int get_type()const { return enum_type.get_value(); }
 	void set_type(int x) { return enum_type.set_value(x); }
 
+#ifdef BLEND_METHOD_IN_TOOL_OPTIONS
 	int get_blend()const { return enum_blend.get_value(); }
 	void set_blend(int x) { return enum_blend.set_value(x); }
+#endif	// BLEND_METHOD_IN_TOOL_OPTIONS
 
 	Smach::event_result event_stop_handler(const Smach::event& x);
 
@@ -180,10 +184,12 @@ StateGradient_Context::load_settings()
 	else
 		set_type(GRADIENT_INTERPOLATION_LINEAR);
 
+#ifdef BLEND_METHOD_IN_TOOL_OPTIONS
 	if(settings.get_value("gradient.blend",value))
 		set_blend(atoi(value.c_str()));
 	else
 		set_blend(Color::BLEND_COMPOSITE);
+#endif	// BLEND_METHOD_IN_TOOL_OPTIONS
 }
 
 void
@@ -191,7 +197,9 @@ StateGradient_Context::save_settings()
 {
 	settings.set_value("gradient.id",get_id().c_str());
 	settings.set_value("gradient.type",strprintf("%d",get_type()));
+#ifdef BLEND_METHOD_IN_TOOL_OPTIONS
 	settings.set_value("gradient.blend",strprintf("%d",get_blend()));
+#endif	// BLEND_METHOD_IN_TOOL_OPTIONS
 }
 
 void
@@ -267,14 +275,18 @@ StateGradient_Context::StateGradient_Context(CanvasView* canvas_view):
 		.add_enum_value(GRADIENT_CONICAL,"conical",_("Conical"))
 		.add_enum_value(GRADIENT_SPIRAL,"spiral",_("Spiral")));
 
+#ifdef BLEND_METHOD_IN_TOOL_OPTIONS
 	enum_blend.set_param_desc(ParamDesc(Color::BLEND_COMPOSITE,"blend_method")
 		.set_local_name(_("Blend Method"))
 		.set_description(_("The blend method the gradient will use")));
+#endif	// BLEND_METHOD_IN_TOOL_OPTIONS
 
 	load_settings();
 
 	options_table.attach(enum_type, 0, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+#ifdef BLEND_METHOD_IN_TOOL_OPTIONS
 	options_table.attach(enum_blend, 0, 2, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+#endif	// BLEND_METHOD_IN_TOOL_OPTIONS
 
 	options_table.show_all();
 	refresh_tool_options();
@@ -430,8 +442,10 @@ StateGradient_Context::make_gradient(const Point& _p1, const Point& _p2)
 		return;
 	}
 
+#ifdef BLEND_METHOD_IN_TOOL_OPTIONS
 	layer->set_param("blend_method",get_blend());
 	get_canvas_interface()->signal_layer_param_changed()(layer,"blend_method");
+#endif	// BLEND_METHOD_IN_TOOL_OPTIONS
 
 	layer->set_description(get_id());
 	get_canvas_interface()->signal_layer_new_description()(layer,layer->get_description());

@@ -104,7 +104,9 @@ class studio::StateCircle_Context : public sigc::trackable
 	Gtk::Entry		entry_id; //what to name the layer
 
 	Widget_Enum		enum_falloff;
+#ifdef BLEND_METHOD_IN_TOOL_OPTIONS
 	Widget_Enum		enum_blend;
+#endif	// BLEND_METHOD_IN_TOOL_OPTIONS
 
 	Gtk::Adjustment	adj_feather;
 	Gtk::Adjustment	adj_number_of_bline_points;
@@ -140,8 +142,10 @@ public:
 	int get_falloff()const { return enum_falloff.get_value(); }
 	void set_falloff(int x) { return enum_falloff.set_value(x); }
 
+#ifdef BLEND_METHOD_IN_TOOL_OPTIONS
 	int get_blend()const { return enum_blend.get_value(); }
 	void set_blend(int x) { return enum_blend.set_value(x); }
+#endif	// BLEND_METHOD_IN_TOOL_OPTIONS
 
 	Real get_feather()const { return adj_feather.get_value(); }
 	void set_feather(Real f) { adj_feather.set_value(f); }
@@ -243,10 +247,12 @@ StateCircle_Context::load_settings()
 	else
 		set_falloff(2);
 
+#ifdef BLEND_METHOD_IN_TOOL_OPTIONS
 	if(settings.get_value("circle.blend",value) && value != "")
 		set_blend(atoi(value.c_str()));
 	else
 		set_blend(0);//(int)Color::BLEND_COMPOSITE); //0 should be blend composites value
+#endif	// BLEND_METHOD_IN_TOOL_OPTIONS
 
 	if(settings.get_value("circle.feather",value))
 		set_feather(atof(value.c_str()));
@@ -304,7 +310,9 @@ StateCircle_Context::save_settings()
 {
 	settings.set_value("circle.id",get_id());
 	settings.set_value("circle.fallofftype",strprintf("%d",get_falloff()));
+#ifdef BLEND_METHOD_IN_TOOL_OPTIONS
 	settings.set_value("circle.blend",strprintf("%d",get_blend()));
+#endif	// BLEND_METHOD_IN_TOOL_OPTIONS
 	settings.set_value("circle.feather",strprintf("%f",(float)get_feather()));
 	settings.set_value("circle.number_of_bline_points",strprintf("%d",(int)(get_number_of_bline_points() + 0.5)));
 	settings.set_value("circle.bline_point_angle_offset",strprintf("%f",(float)get_bline_point_angle_offset()));
@@ -381,8 +389,8 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	spin_feather(adj_feather,0.1,3),
 	spin_number_of_bline_points(adj_number_of_bline_points,1,0),
 	spin_bline_point_angle_offset(adj_bline_point_angle_offset,1,1),
-	checkbutton_layer_circle(_("Create Circle")),
 	checkbutton_invert(_("Invert")),
+	checkbutton_layer_circle(_("Create Circle Layer")),
 	checkbutton_layer_region(_("Create Region BLine")),
 	checkbutton_layer_outline(_("Create Outline BLine")),
 	checkbutton_layer_curve_gradient(_("Create Curve Gradient BLine")),
@@ -404,9 +412,11 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 		.add_enum_value(CIRCLE_SIGMOND,"sigmond",_("Sigmond"))
 		.add_enum_value(CIRCLE_COSINE,"cosine",_("Cosine")));
 
+#ifdef BLEND_METHOD_IN_TOOL_OPTIONS
 	enum_blend.set_param_desc(ParamDesc(Color::BLEND_COMPOSITE,"blend_method")
 		.set_local_name(_("Blend Method"))
 		.set_description(_("Defines the blend method to be used for circles")));
+#endif	// BLEND_METHOD_IN_TOOL_OPTIONS
 
 	load_settings();
 
@@ -414,9 +424,11 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	options_table.attach(*manage(new Gtk::Label(_("Feather:"))), 0, 1, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	options_table.attach(spin_feather, 1, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	options_table.attach(enum_falloff, 0, 2, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+#ifdef BLEND_METHOD_IN_TOOL_OPTIONS
 	options_table.attach(enum_blend, 0, 2, 5, 6, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(checkbutton_layer_circle,				0, 2,  6,  7, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(checkbutton_invert,					0, 2,  7,  8, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+#endif	// BLEND_METHOD_IN_TOOL_OPTIONS
+	options_table.attach(checkbutton_invert,					0, 2,  6,  7, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(checkbutton_layer_circle,				0, 2,  7,  8, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	options_table.attach(checkbutton_layer_outline,				0, 2,  8,  9, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	options_table.attach(checkbutton_layer_region,				0, 2,  9, 10, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	options_table.attach(checkbutton_layer_plant,				0, 2, 10, 11, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
@@ -597,8 +609,10 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 		layer->set_param("invert",get_invert());
 		get_canvas_interface()->signal_layer_param_changed()(layer,"invert");
 
+#ifdef BLEND_METHOD_IN_TOOL_OPTIONS
 		layer->set_param("blend_method",get_blend());
 		get_canvas_interface()->signal_layer_param_changed()(layer,"blend_method");
+#endif	// BLEND_METHOD_IN_TOOL_OPTIONS
 
 		layer->set_description(get_id());
 		get_canvas_interface()->signal_layer_new_description()(layer,layer->get_description());
@@ -617,6 +631,11 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 		layer_selection.push_back(layer);
 		layer->set_description(get_id()+_(" Gradient"));
 		get_canvas_interface()->signal_layer_new_description()(layer,layer->get_description());
+
+#ifdef BLEND_METHOD_IN_TOOL_OPTIONS
+		layer->set_param("blend_method",get_blend());
+		get_canvas_interface()->signal_layer_param_changed()(layer,"blend_method");
+#endif	// BLEND_METHOD_IN_TOOL_OPTIONS
 
 		{
 			synfigapp::Action::Handle action(synfigapp::Action::create("layer_param_connect"));
@@ -677,6 +696,11 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 		layer->set_description(get_id()+_(" Plant"));
 		get_canvas_interface()->signal_layer_new_description()(layer,layer->get_description());
 
+#ifdef BLEND_METHOD_IN_TOOL_OPTIONS
+		layer->set_param("blend_method",get_blend());
+		get_canvas_interface()->signal_layer_param_changed()(layer,"blend_method");
+#endif	// BLEND_METHOD_IN_TOOL_OPTIONS
+
 		{
 			synfigapp::Action::Handle action(synfigapp::Action::create("layer_param_connect"));
 			assert(action);
@@ -735,6 +759,11 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 		layer_selection.push_back(layer);
 		layer->set_description(get_id()+_(" Region"));
 		get_canvas_interface()->signal_layer_new_description()(layer,layer->get_description());
+
+#ifdef BLEND_METHOD_IN_TOOL_OPTIONS
+		layer->set_param("blend_method",get_blend());
+		get_canvas_interface()->signal_layer_param_changed()(layer,"blend_method");
+#endif	// BLEND_METHOD_IN_TOOL_OPTIONS
 
 		layer->set_param("feather",get_feather());
 		get_canvas_interface()->signal_layer_param_changed()(layer,"feather");
@@ -803,6 +832,11 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 		layer_selection.push_back(layer);
 		layer->set_description(get_id()+_(" Outline"));
 		get_canvas_interface()->signal_layer_new_description()(layer,layer->get_description());
+
+#ifdef BLEND_METHOD_IN_TOOL_OPTIONS
+		layer->set_param("blend_method",get_blend());
+		get_canvas_interface()->signal_layer_param_changed()(layer,"blend_method");
+#endif	// BLEND_METHOD_IN_TOOL_OPTIONS
 
 		layer->set_param("feather",get_feather());
 		get_canvas_interface()->signal_layer_param_changed()(layer,"feather");
