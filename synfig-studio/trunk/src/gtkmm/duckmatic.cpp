@@ -578,6 +578,8 @@ DuckDrag_Translate::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector
 							case ValueBase::TYPE_VECTOR:
 								(*iter)->set_point((*bline_tangent)(time, amount).get(Vector()));
 								break;
+							default:
+								break;
 							}
 						}
 					}
