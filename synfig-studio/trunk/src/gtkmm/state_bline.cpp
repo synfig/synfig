@@ -217,15 +217,15 @@ public:
 StateBLine::StateBLine():
 	Smach::state<StateBLine_Context>("bline")
 {
-	insert(event_def(EVENT_LAYER_SELECTION_CHANGED,&StateBLine_Context::event_layer_selection_changed_handler));
-	insert(event_def(EVENT_STOP,&StateBLine_Context::event_stop_handler));
-	insert(event_def(EVENT_REFRESH,&StateBLine_Context::event_refresh_handler));
-	insert(event_def(EVENT_REFRESH_DUCKS,&StateBLine_Context::event_hijack));
-	insert(event_def(EVENT_WORKAREA_MOUSE_BUTTON_DOWN,&StateBLine_Context::event_mouse_click_handler));
-	insert(event_def(EVENT_WORKAREA_MOUSE_BUTTON_UP,&StateBLine_Context::event_mouse_release_handler));
-	insert(event_def(EVENT_WORKAREA_MOUSE_MOTION,&StateBLine_Context::event_mouse_motion_handler));
-	insert(event_def(EVENT_WORKAREA_MOUSE_BUTTON_DRAG,&StateBLine_Context::event_mouse_motion_handler));
-	insert(event_def(EVENT_REFRESH_TOOL_OPTIONS,&StateBLine_Context::event_refresh_tool_options));
+	insert(event_def(EVENT_LAYER_SELECTION_CHANGED,		&StateBLine_Context::event_layer_selection_changed_handler));
+	insert(event_def(EVENT_STOP,						&StateBLine_Context::event_stop_handler));
+	insert(event_def(EVENT_REFRESH,						&StateBLine_Context::event_refresh_handler));
+	insert(event_def(EVENT_REFRESH_DUCKS,				&StateBLine_Context::event_hijack));
+	insert(event_def(EVENT_WORKAREA_MOUSE_BUTTON_DOWN,	&StateBLine_Context::event_mouse_click_handler));
+	insert(event_def(EVENT_WORKAREA_MOUSE_BUTTON_UP,	&StateBLine_Context::event_mouse_release_handler));
+	insert(event_def(EVENT_WORKAREA_MOUSE_MOTION,		&StateBLine_Context::event_mouse_motion_handler));
+	insert(event_def(EVENT_WORKAREA_MOUSE_BUTTON_DRAG,	&StateBLine_Context::event_mouse_motion_handler));
+	insert(event_def(EVENT_REFRESH_TOOL_OPTIONS,		&StateBLine_Context::event_refresh_tool_options));
 }
 
 StateBLine::~StateBLine()
