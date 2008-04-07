@@ -347,6 +347,8 @@ StateText_Context::~StateText_Context()
 
 	get_work_area()->queue_draw();
 
+	get_canvas_view()->queue_rebuild_ducks();
+
 	App::toolbox->refresh();
 }
 
@@ -382,7 +384,7 @@ StateText_Context::make_text(const Point& _point)
 		canvas=layer->get_canvas();
 	}
 
-	synfigapp::SelectionManager::LayerList layer_selection;
+	synfigapp::SelectionManager::LayerList layer_selection(get_canvas_view()->get_selection_manager()->get_selected_layers());
 
 	const synfig::TransformStack& transform(get_canvas_view()->get_curr_transform_stack());
 	const Point point(transform.unperform(_point));

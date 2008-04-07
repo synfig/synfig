@@ -333,6 +333,8 @@ StateRectangle_Context::~StateRectangle_Context()
 	// Refresh the work area
 	get_work_area()->queue_draw();
 
+	get_canvas_view()->queue_rebuild_ducks();
+
 	App::toolbox->refresh();
 }
 
@@ -392,8 +394,10 @@ StateRectangle_Context::make_rectangle(const Point& _p1, const Point& _p2)
 	get_canvas_interface()->signal_layer_new_description()(layer,layer->get_description());
 
 	egress_on_selection_change=false;
+	synfigapp::SelectionManager::LayerList layer_selection(get_canvas_view()->get_selection_manager()->get_selected_layers());
 	get_canvas_interface()->get_selection_manager()->clear_selected_layers();
-	get_canvas_interface()->get_selection_manager()->set_selected_layer(layer);
+	layer_selection.push_back(layer);
+	get_canvas_interface()->get_selection_manager()->set_selected_layers(layer_selection);
 	egress_on_selection_change=true;
 
 	//post clean up stuff...
