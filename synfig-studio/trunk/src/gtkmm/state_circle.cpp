@@ -115,8 +115,8 @@ class studio::StateCircle_Context : public sigc::trackable
 	Gtk::SpinButton	spin_number_of_bline_points;
 	Gtk::SpinButton	spin_bline_point_angle_offset;
 
-	Gtk::CheckButton checkbutton_layer_circle;
 	Gtk::CheckButton checkbutton_invert;
+	Gtk::CheckButton checkbutton_layer_circle;
 	Gtk::CheckButton checkbutton_layer_region;
 	Gtk::CheckButton checkbutton_layer_outline;
 	Gtk::CheckButton checkbutton_layer_curve_gradient;
