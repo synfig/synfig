@@ -490,6 +490,8 @@ StateCircle_Context::~StateCircle_Context()
 	// Refresh the work area
 	get_work_area()->queue_draw();
 
+	get_canvas_view()->queue_rebuild_ducks();
+
 	App::toolbox->refresh();
 }
 
