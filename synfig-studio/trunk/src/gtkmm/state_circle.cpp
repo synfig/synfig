@@ -156,11 +156,11 @@ public:
 	Real get_bline_point_angle_offset()const { return adj_bline_point_angle_offset.get_value(); }
 	void set_bline_point_angle_offset(Real f) { adj_bline_point_angle_offset.set_value(f); }
 
-	bool get_layer_circle_flag()const { return checkbutton_layer_circle.get_active(); }
-	void set_layer_circle_flag(bool x) { return checkbutton_layer_circle.set_active(x); }
-
 	bool get_invert()const { return checkbutton_invert.get_active(); }
 	void set_invert(bool i) { checkbutton_invert.set_active(i); }
+
+	bool get_layer_circle_flag()const { return checkbutton_layer_circle.get_active(); }
+	void set_layer_circle_flag(bool x) { return checkbutton_layer_circle.set_active(x); }
 
 	bool get_layer_region_flag()const { return checkbutton_layer_region.get_active(); }
 	void set_layer_region_flag(bool x) { return checkbutton_layer_region.set_active(x); }
@@ -269,15 +269,15 @@ StateCircle_Context::load_settings()
 	else
 		set_bline_point_angle_offset(0);
 
-	if(settings.get_value("circle.layer_circle",value) && value=="0")
-		set_layer_circle_flag(false);
-	else
-		set_layer_circle_flag(true);
-
 	if(settings.get_value("circle.invert",value) && value != "0")
 		set_invert(true);
 	else
 		set_invert(false);
+
+	if(settings.get_value("circle.layer_circle",value) && value=="0")
+		set_layer_circle_flag(false);
+	else
+		set_layer_circle_flag(true);
 
 	if(settings.get_value("circle.layer_region",value) && value=="1")
 		set_layer_region_flag(true);
@@ -316,8 +316,8 @@ StateCircle_Context::save_settings()
 	settings.set_value("circle.feather",strprintf("%f",(float)get_feather()));
 	settings.set_value("circle.number_of_bline_points",strprintf("%d",(int)(get_number_of_bline_points() + 0.5)));
 	settings.set_value("circle.bline_point_angle_offset",strprintf("%f",(float)get_bline_point_angle_offset()));
-	settings.set_value("circle.layer_circle",get_layer_circle_flag()?"1":"0");
 	settings.set_value("circle.invert",get_invert()?"1":"0");
+	settings.set_value("circle.layer_circle",get_layer_circle_flag()?"1":"0");
 	settings.set_value("circle.layer_outline",get_layer_outline_flag()?"1":"0");
 	settings.set_value("circle.layer_region",get_layer_region_flag()?"1":"0");
 	settings.set_value("circle.layer_curve_gradient",get_layer_curve_gradient_flag()?"1":"0");
