@@ -736,11 +736,11 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 		layer->set_description(get_id()+_(" Region"));
 		get_canvas_interface()->signal_layer_new_description()(layer,layer->get_description());
 
-		if(get_feather())
-		{
-			layer->set_param("feather",get_feather());
-			get_canvas_interface()->signal_layer_param_changed()(layer,"feather");
-		}
+		layer->set_param("feather",get_feather());
+		get_canvas_interface()->signal_layer_param_changed()(layer,"feather");
+
+		layer->set_param("invert",get_invert());
+		get_canvas_interface()->signal_layer_param_changed()(layer,"invert");
 
 		if(get_layer_outline_flag())
 			layer->set_param("color",synfigapp::Main::get_background_color());
@@ -803,11 +803,12 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 		layer_selection.push_back(layer);
 		layer->set_description(get_id()+_(" Outline"));
 		get_canvas_interface()->signal_layer_new_description()(layer,layer->get_description());
-		if(get_feather())
-		{
-			layer->set_param("feather",get_feather());
-			get_canvas_interface()->signal_layer_param_changed()(layer,"feather");
-		}
+
+		layer->set_param("feather",get_feather());
+		get_canvas_interface()->signal_layer_param_changed()(layer,"feather");
+
+		layer->set_param("invert",get_invert());
+		get_canvas_interface()->signal_layer_param_changed()(layer,"invert");
 
 		{
 			synfigapp::Action::Handle action(synfigapp::Action::create("layer_param_connect"));
