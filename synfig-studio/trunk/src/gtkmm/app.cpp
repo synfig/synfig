@@ -89,6 +89,7 @@
 #include "state_rectangle.h"
 #include "state_smoothmove.h"
 #include "state_scale.h"
+#include "state_star.h"
 #include "state_text.h"
 #include "state_width.h"
 #include "state_rotate.h"
@@ -1020,6 +1021,7 @@ init_ui_manager()
 	ACCEL("<Actions>//state-mirror",      "<Mod1>m");
 
 	ACCEL("<Actions>//state-text",        "<Mod1>x");
+	ACCEL("<Actions>//state-star",        "<Mod1>q");
 
 	ACCEL("<Actions>//canvas-zoom-fit","<Control><Shift>z");
 
@@ -1199,6 +1201,7 @@ App::App(int *argc, char ***argv):
 		state_manager->add_state(&state_zoom);
 
 		state_manager->add_state(&state_text);
+		state_manager->add_state(&state_star);
 
 		// Disabled by default - it doesn't work properly?
 		if(getenv("SYNFIG_ENABLE_WIDTH"    )) state_manager->add_state(&state_width);
