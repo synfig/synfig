@@ -93,7 +93,9 @@ class studio::StateRectangle_Context : public sigc::trackable
 	Gtk::Entry		entry_id; //what to name the layer
 
 	Gtk::Adjustment	adj_expand;
+	Gtk::Adjustment	adj_feather;
 	Gtk::SpinButton	spin_expand;
+	Gtk::SpinButton	spin_feather;
 
 	Gtk::CheckButton checkbutton_invert;
 	Gtk::CheckButton checkbutton_layer_rectangle;
@@ -121,6 +123,9 @@ public:
 
 	Real get_expand()const { return adj_expand.get_value(); }
 	void set_expand(Real f) { adj_expand.set_value(f); }
+
+	Real get_feather()const { return adj_feather.get_value(); }
+	void set_feather(Real f) { adj_feather.set_value(f); }
 
 	bool get_invert()const { return checkbutton_invert.get_active(); }
 	void set_invert(bool i) { checkbutton_invert.set_active(i); }
@@ -213,6 +218,11 @@ StateRectangle_Context::load_settings()
 	else
 		set_expand(0);
 
+	if(settings.get_value("rectangle.feather",value))
+		set_feather(atof(value.c_str()));
+	else
+		set_feather(0);
+
 	if(settings.get_value("rectangle.invert",value) && value != "0")
 		set_invert(true);
 	else
@@ -254,6 +264,7 @@ StateRectangle_Context::save_settings()
 {
 	settings.set_value("rectangle.id",get_id().c_str());
 	settings.set_value("rectangle.expand",strprintf("%f",get_expand()));
+	settings.set_value("rectangle.feather",strprintf("%f",(float)get_feather()));
 	settings.set_value("rectangle.invert",get_invert()?"1":"0");
 	settings.set_value("rectangle.layer_rectangle",get_layer_rectangle_flag()?"1":"0");
 	settings.set_value("rectangle.layer_outline",get_layer_outline_flag()?"1":"0");
@@ -322,7 +333,9 @@ StateRectangle_Context::StateRectangle_Context(CanvasView* canvas_view):
 	settings(synfigapp::Main::get_selected_input_device()->settings()),
 	entry_id(),
 	adj_expand(0,0,1,0.01,0.1),
+	adj_feather(0,0,1,0.01,0.1),
 	spin_expand(adj_expand,0.1,3),
+	spin_feather(adj_feather,0.1,3),
 	checkbutton_invert(_("Invert")),
 	checkbutton_layer_rectangle(_("Create Rectangle Layer")),
 	checkbutton_layer_region(_("Create Region BLine")),
@@ -341,6 +354,10 @@ StateRectangle_Context::StateRectangle_Context(CanvasView* canvas_view):
 	//expand stuff
 	options_table.attach(*manage(new Gtk::Label(_("Expansion:"))), 0, 1, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	options_table.attach(spin_expand, 1, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+
+	//feather stuff
+	options_table.attach(*manage(new Gtk::Label(_("Feather:"))), 0, 1, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(spin_feather, 1, 2, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
 	//invert flag
 	options_table.attach(checkbutton_invert, 1, 2, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
@@ -651,6 +668,9 @@ StateRectangle_Context::make_rectangle(const Point& _p1, const Point& _p2)
 		layer->set_description(get_id()+_(" Region"));
 		get_canvas_interface()->signal_layer_new_description()(layer,layer->get_description());
 
+		layer->set_param("feather",get_feather());
+		get_canvas_interface()->signal_layer_param_changed()(layer,"feather");
+
 		layer->set_param("invert",get_invert());
 		get_canvas_interface()->signal_layer_param_changed()(layer,"invert");
 
@@ -715,6 +735,9 @@ StateRectangle_Context::make_rectangle(const Point& _p1, const Point& _p2)
 		layer_selection.push_back(layer);
 		layer->set_description(get_id()+_(" Outline"));
 		get_canvas_interface()->signal_layer_new_description()(layer,layer->get_description());
+
+		layer->set_param("feather",get_feather());
+		get_canvas_interface()->signal_layer_param_changed()(layer,"feather");
 
 		layer->set_param("invert",get_invert());
 		get_canvas_interface()->signal_layer_param_changed()(layer,"invert");
