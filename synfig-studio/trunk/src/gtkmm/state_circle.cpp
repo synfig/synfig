@@ -616,6 +616,12 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 
 		layer->set_description(get_id());
 		get_canvas_interface()->signal_layer_new_description()(layer,layer->get_description());
+
+		if(get_layer_outline_flag())
+		{
+			layer->set_param("color",synfigapp::Main::get_background_color());
+			get_canvas_interface()->signal_layer_param_changed()(layer,"color");
+		}
 	}
 
 	///////////////////////////////////////////////////////////////////////////
