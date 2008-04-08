@@ -96,9 +96,13 @@ class studio::StateStar_Context : public sigc::trackable
 
 	Gtk::Adjustment	adj_feather;
 	Gtk::Adjustment	adj_number_of_points;
+	Gtk::Adjustment	adj_inner_tangent;
+	Gtk::Adjustment	adj_outer_tangent;
 	Gtk::Adjustment	adj_angle_offset;
 	Gtk::SpinButton	spin_feather;
 	Gtk::SpinButton	spin_number_of_points;
+	Gtk::SpinButton	spin_inner_tangent;
+	Gtk::SpinButton	spin_outer_tangent;
 	Gtk::SpinButton	spin_angle_offset;
 
 	Gtk::CheckButton checkbutton_invert;
@@ -131,6 +135,12 @@ public:
 
 	Real get_number_of_points()const { return adj_number_of_points.get_value(); }
 	void set_number_of_points(Real f) { adj_number_of_points.set_value(f); }
+
+	Real get_inner_tangent()const { return adj_inner_tangent.get_value(); }
+	void set_inner_tangent(Real f) { adj_inner_tangent.set_value(f); }
+
+	Real get_outer_tangent()const { return adj_outer_tangent.get_value(); }
+	void set_outer_tangent(Real f) { adj_outer_tangent.set_value(f); }
 
 	Real get_angle_offset()const { return adj_angle_offset.get_value(); }
 	void set_angle_offset(Real f) { adj_angle_offset.set_value(f); }
@@ -234,6 +244,16 @@ StateStar_Context::load_settings()
 	else
 		set_number_of_points(5);
 
+	if(settings.get_value("star.inner_tangent",value))
+		set_inner_tangent(atof(value.c_str()));
+	else
+		set_inner_tangent(0);
+
+	if(settings.get_value("star.outer_tangent",value))
+		set_outer_tangent(atof(value.c_str()));
+	else
+		set_outer_tangent(0);
+
 	if(settings.get_value("star.angle_offset",value))
 		set_angle_offset(atof(value.c_str()));
 	else
@@ -286,6 +306,8 @@ StateStar_Context::save_settings()
 	settings.set_value("star.id",get_id());
 	settings.set_value("star.feather",strprintf("%f",(float)get_feather()));
 	settings.set_value("star.number_of_points",strprintf("%d",(int)(get_number_of_points() + 0.5)));
+	settings.set_value("star.inner_tangent",strprintf("%f",(float)get_inner_tangent()));
+	settings.set_value("star.outer_tangent",strprintf("%f",(float)get_outer_tangent()));
 	settings.set_value("star.angle_offset",strprintf("%f",(float)get_angle_offset()));
 	settings.set_value("star.invert",get_invert()?"1":"0");
 	settings.set_value("star.regular_polygon",get_regular_polygon()?"1":"0");
@@ -357,9 +379,13 @@ StateStar_Context::StateStar_Context(CanvasView* canvas_view):
 	entry_id(),
 	adj_feather(0,0,1,0.01,0.1),
 	adj_number_of_points(4,2,120,1,1,1), // value, lower, upper, step_increment, page_increment, page_size
+	adj_inner_tangent(0,-3,3,.01,.1,.1),
+	adj_outer_tangent(0,-3,10,.01,.1,.1),
 	adj_angle_offset(0,-360,360,.1,1,1), // value, lower, upper, step_increment, page_increment, page_size
 	spin_feather(adj_feather,0.1,3),
 	spin_number_of_points(adj_number_of_points,1,0),
+	spin_inner_tangent(adj_inner_tangent,1,2),
+	spin_outer_tangent(adj_outer_tangent,1,2),
 	spin_angle_offset(adj_angle_offset,1,1),
 	checkbutton_invert(_("Invert")),
 	checkbutton_regular_polygon(_("Regular Polygon")),
@@ -390,8 +416,12 @@ StateStar_Context::StateStar_Context(CanvasView* canvas_view):
 	options_table.attach(checkbutton_layer_link_offsets,					0, 2, 12, 13, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	options_table.attach(*manage(new Gtk::Label(_("Number of Points:"))),	0, 1, 13, 14, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	options_table.attach(spin_number_of_points,								1, 2, 13, 14, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(*manage(new Gtk::Label(_("Angle Offset:"))),		0, 1, 14, 15, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(spin_angle_offset,									1, 2, 14, 15, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(*manage(new Gtk::Label(_("Inner Tangent:"))),		0, 1, 14, 15, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(spin_inner_tangent,								1, 2, 14, 15, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(*manage(new Gtk::Label(_("Outer Tangent:"))),		0, 1, 15, 16, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(spin_outer_tangent,								1, 2, 15, 16, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(*manage(new Gtk::Label(_("Angle Offset:"))),		0, 1, 16, 17, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(spin_angle_offset,									1, 2, 16, 17, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
 	options_table.show_all();
 
@@ -504,11 +534,12 @@ StateStar_Context::make_star(const Point& _p1, const Point& _p2)
 	Real radius1((p2-p1).mag());
 	Real radius2(radius1/2);
 	int points = get_number_of_points();
+	Real inner_tangent = get_inner_tangent() * radius1;
+	Real outer_tangent = get_outer_tangent() * radius2;
 	Angle::deg offset(get_angle_offset());
 	bool regular(get_regular_polygon());
 	Angle::deg angle(360.0/points);
 	Real x(p1[0]), y(p1[1]);
-	Real tangent(0);
 
 	std::vector<BLinePoint> new_list;
 	int point(0);
@@ -518,7 +549,8 @@ StateStar_Context::make_star(const Point& _p1, const Point& _p2)
 		new_list[point].set_width(1);
 		new_list[point].set_vertex(Point(radius1*Angle::cos(angle*i + offset).get() + x,
 									 radius1*Angle::sin(angle*i + offset).get() + y));
-		new_list[point++].set_tangent(Point(0,0));
+		new_list[point++].set_tangent(Point(-Angle::sin(angle*i + offset).get(),
+											 Angle::cos(angle*i + offset).get()) * outer_tangent);
 
 		if (!regular)
 		{
@@ -526,7 +558,8 @@ StateStar_Context::make_star(const Point& _p1, const Point& _p2)
 			new_list[point].set_width(1);
 			new_list[point].set_vertex(Point(radius2*Angle::cos(angle*i + angle/2 + offset).get() + x,
 											 radius2*Angle::sin(angle*i + angle/2 + offset).get() + y));
-			new_list[point++].set_tangent(Point(0,0));
+			new_list[point++].set_tangent(Point(-Angle::sin(angle*i + angle/2 + offset).get(),
+												 Angle::cos(angle*i + angle/2 + offset).get()) * inner_tangent);
 		}
 	}
 
