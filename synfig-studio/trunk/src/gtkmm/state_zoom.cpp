@@ -41,7 +41,6 @@
 #include "canvasview.h"
 #include "workarea.h"
 #include "app.h"
-#include "dialog_tooloptions.h"
 #include "toolbox.h"
 #include <synfigapp/main.h>
 
@@ -74,21 +73,12 @@ class studio::StateZoom_Context : public sigc::trackable
 
 	bool prev_workarea_layer_status_;
 
-	//Toolbox settings
-	synfigapp::Settings& settings;
-
-	//Toolbox display
-	Gtk::Table options_table;
-
 public:
-
-	void refresh_tool_options(); //to refresh the toolbox
 
 	//events
 	Smach::event_result event_stop_handler(const Smach::event& x);
 	Smach::event_result event_refresh_handler(const Smach::event& x);
 	Smach::event_result event_mouse_click_handler(const Smach::event& x);
-	Smach::event_result event_refresh_tool_options(const Smach::event& x);
 
 	//constructor destructor
 	StateZoom_Context(CanvasView* canvas_view);
@@ -99,11 +89,6 @@ public:
 	etl::handle<synfigapp::CanvasInterface> get_canvas_interface()const{return canvas_view_->canvas_interface();}
 	synfig::Canvas::Handle get_canvas()const{return canvas_view_->get_canvas();}
 	WorkArea * get_work_area()const{return canvas_view_->get_work_area();}
-
-	//Modifying settings etc.
-	void load_settings();
-	void save_settings();
-	void reset();
 
 	//void zoom(const Point& p1, const Point& p2);
 
@@ -121,53 +106,17 @@ StateZoom::StateZoom():
 	insert(event_def(EVENT_WORKAREA_BOX,&StateZoom_Context::event_mouse_click_handler));
 	//insert(event_def(EVENT_WORKAREA_BUTTON_CLICK,&StateZoom_Context::event_mouse_click_handler));
 	insert(event_def(EVENT_WORKAREA_MOUSE_BUTTON_UP,&StateZoom_Context::event_mouse_click_handler));
-	insert(event_def(EVENT_REFRESH_TOOL_OPTIONS,&StateZoom_Context::event_refresh_tool_options));
 }
 
 StateZoom::~StateZoom()
 {
 }
 
-void
-StateZoom_Context::load_settings()
-{
-	String value;
-
-	//parse the arguments yargh!
-	/*if(settings.get_value("circle.feather",value))
-		set_feather(atof(value.c_str()));
-	else
-		set_feather(0);*/
-}
-
-void
-StateZoom_Context::save_settings()
-{
-	//settings.set_value("circle.fallofftype",strprintf("%d",get_falloff()));
-}
-
-void
-StateZoom_Context::reset()
-{
-	//refresh_ducks();
-}
-
 StateZoom_Context::StateZoom_Context(CanvasView* canvas_view):
 	canvas_view_(canvas_view),
 	is_working(*canvas_view),
-	prev_workarea_layer_status_(get_work_area()->get_allow_layer_clicks()),
-	settings(synfigapp::Main::get_selected_input_device()->settings())
+	prev_workarea_layer_status_(get_work_area()->get_allow_layer_clicks())
 {
-	// Set up the tool options dialog
-	//options_table.attach(*manage(new Gtk::Label(_("Zoom Tool"))), 0, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-
-	load_settings();
-
-	options_table.show_all();
-
-	refresh_tool_options();
-	App::dialog_tool_options->present();
-
 	// Turn off layer clicking
 	get_work_area()->set_allow_layer_clicks(false);
 
@@ -191,31 +140,11 @@ StateZoom_Context::StateZoom_Context(CanvasView* canvas_view):
 	App::toolbox->refresh();
 }
 
-void
-StateZoom_Context::refresh_tool_options()
-{
-	App::dialog_tool_options->clear();
-	App::dialog_tool_options->set_widget(options_table);
-	App::dialog_tool_options->set_local_name(_("Zoom Tool"));
-	App::dialog_tool_options->set_name("zoom");
-}
-
-Smach::event_result
-StateZoom_Context::event_refresh_tool_options(const Smach::event& /*x*/)
-{
-	refresh_tool_options();
-	return Smach::RESULT_ACCEPT;
-}
-
 StateZoom_Context::~StateZoom_Context()
 {
-	save_settings();
-
 	// Restore layer clicking
 	get_work_area()->set_allow_layer_clicks(prev_workarea_layer_status_);
 	get_canvas_view()->work_area->reset_cursor();
-
-	App::dialog_tool_options->clear();
 
 	// Enable the time bar
 	//get_canvas_view()->set_sensitive_timebar(true);

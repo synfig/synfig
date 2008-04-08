@@ -177,8 +177,8 @@ StateRotate_Context::StateRotate_Context(CanvasView* canvas_view):
 	duck_dragger_->canvas_view_=get_canvas_view();
 
 	// Set up the tool options dialog
-	//options_table.attach(*manage(new Gtk::Label(_("Rotate Tool"))), 0, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(checkbutton_scale, 0, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(*manage(new Gtk::Label(_("Rotate Tool"))),	0, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(checkbutton_scale,							0, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
 	checkbutton_scale.signal_toggled().connect(sigc::mem_fun(*this,&StateRotate_Context::refresh_scale_flag));
 

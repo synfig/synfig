@@ -397,13 +397,12 @@ StateStar_Context::StateStar_Context(CanvasView* canvas_view):
 	checkbutton_layer_link_offsets(_("Link BLine Offsets"))
 {
 	egress_on_selection_change=true;
-	// Set up the tool options dialog
-	//options_table.attach(*manage(new Gtk::Label(_("Star Tool"))), 0, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(entry_id, 0, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
 	load_settings();
 
-	//feather stuff
+	// Set up the tool options dialog
+	options_table.attach(*manage(new Gtk::Label(_("Star Tool"))),			0, 2,  0,  1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(entry_id,											0, 2,  1,  2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	options_table.attach(*manage(new Gtk::Label(_("Feather:"))),			0, 1,  2,  3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	options_table.attach(spin_feather,										1, 2,  2,  3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	options_table.attach(checkbutton_invert,								0, 2,  5,  6, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);

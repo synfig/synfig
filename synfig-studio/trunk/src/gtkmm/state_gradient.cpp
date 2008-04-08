@@ -263,8 +263,8 @@ StateGradient_Context::StateGradient_Context(CanvasView* canvas_view):
 {
 	egress_on_selection_change=true;
 	// Set up the tool options dialog
-	///options_table.attach(*manage(new Gtk::Label(_("Gradient Tool"))), 0, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(entry_id, 0, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(*manage(new Gtk::Label(_("Gradient Tool"))),	0, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(entry_id,										0, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
 	enum_type.set_param_desc(ParamDesc("type")
 		.set_local_name(_("Gradient Type"))

@@ -399,8 +399,8 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 {
 	egress_on_selection_change=true;
 	// Set up the tool options dialog
-	//options_table.attach(*manage(new Gtk::Label(_("Circle Tool"))), 0, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(entry_id, 0, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(*manage(new Gtk::Label(_("Circle Tool"))),	0, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(entry_id,									0, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
 	enum_falloff.set_param_desc(ParamDesc("falloff")
 		.set_local_name(_("Falloff"))

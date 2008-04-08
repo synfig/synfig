@@ -312,9 +312,7 @@ StateSketch_Context::StateSketch_Context(CanvasView* canvas_view):
 
 	action_group->add( Gtk::Action::create("toolbar-sketch", "Sketch Toolbar") );
 
-
 	App::ui_manager()->add_ui_from_string(ui_info);
-
 
 	checkbutton_show_sketch.set_active(get_work_area()->get_show_persistent_strokes());
 
@@ -323,13 +321,13 @@ StateSketch_Context::StateSketch_Context(CanvasView* canvas_view):
 	button_save_sketch.signal_clicked().connect(sigc::mem_fun(*this,&studio::StateSketch_Context::save_sketch));
 	button_load_sketch.signal_clicked().connect(sigc::mem_fun(*this,&studio::StateSketch_Context::load_sketch));
 	checkbutton_show_sketch.signal_clicked().connect(sigc::mem_fun(*this,&studio::StateSketch_Context::toggle_show_sketch));
-	//options_table.attach(*manage(new Gtk::Label(_("Sketch Tool"))), 0, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(checkbutton_show_sketch, 0, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+
+	options_table.attach(*manage(new Gtk::Label(_("Sketch Tool"))),	0, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(checkbutton_show_sketch,					0, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	//options_table.attach(button_undo_stroke, 0, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	//options_table.attach(button_clear_sketch, 0, 2, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	//options_table.attach(button_save_sketch, 0, 1, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	//options_table.attach(button_load_sketch, 1, 2, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-
 
 	options_table.show_all();
 	refresh_tool_options();
