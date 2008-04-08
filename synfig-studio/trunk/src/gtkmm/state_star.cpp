@@ -383,11 +383,11 @@ StateStar_Context::StateStar_Context(CanvasView* canvas_view):
 	options_table.attach(checkbutton_invert,								0, 2,  5,  6, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	options_table.attach(checkbutton_regular_polygon,						0, 2,  6,  7, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	options_table.attach(checkbutton_layer_star,							0, 2,  7,  8, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-//	options_table.attach(checkbutton_layer_outline,							0, 2,  8,  9, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-//	options_table.attach(checkbutton_layer_region,							0, 2,  9, 10, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-//	options_table.attach(checkbutton_layer_plant,							0, 2, 10, 11, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-//	options_table.attach(checkbutton_layer_curve_gradient,					0, 2, 11, 12, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-//	options_table.attach(checkbutton_layer_link_offsets,					0, 2, 12, 13, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(checkbutton_layer_outline,							0, 2,  8,  9, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(checkbutton_layer_region,							0, 2,  9, 10, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(checkbutton_layer_plant,							0, 2, 10, 11, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(checkbutton_layer_curve_gradient,					0, 2, 11, 12, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(checkbutton_layer_link_offsets,					0, 2, 12, 13, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	options_table.attach(*manage(new Gtk::Label(_("Number of Points:"))),	0, 1, 13, 14, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	options_table.attach(spin_number_of_points,								1, 2, 13, 14, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	options_table.attach(*manage(new Gtk::Label(_("Angle Offset:"))),		0, 1, 14, 15, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
@@ -501,7 +501,8 @@ StateStar_Context::make_star(const Point& _p1, const Point& _p2)
 	const Point p1(transform.unperform(_p1));
 	const Point p2(transform.unperform(_p2));
 
-	Real radius((p2-p1).mag());
+	Real radius1((p2-p1).mag());
+	Real radius2(radius1/2);
 	int points = get_number_of_points();
 	Angle::deg offset(get_angle_offset());
 	bool regular(get_regular_polygon());
@@ -510,14 +511,20 @@ StateStar_Context::make_star(const Point& _p1, const Point& _p2)
 	Real tangent(0);
 
 	std::vector<BLinePoint> new_list;
+	int point(0);
 	for (int i = 0; i < points; i++)
 	{
 		new_list.push_back(*(new BLinePoint));
-		new_list[i].set_width(1);
-		new_list[i].set_vertex(Point(radius*Angle::cos(angle*i + offset).get() + x,
-									 radius*Angle::sin(angle*i + offset).get() + y));
-		new_list[i].set_tangent(Point(-radius*tangent*Angle::sin(angle*i + offset).get(),
-									   radius*tangent*Angle::cos(angle*i + offset).get()));
+		new_list[point].set_width(1);
+		new_list[point].set_vertex(Point(radius1*Angle::cos(angle*i + offset).get() + x,
+									 radius1*Angle::sin(angle*i + offset).get() + y));
+		new_list[point++].set_tangent(Point(0,0));
+
+		new_list.push_back(*(new BLinePoint));
+		new_list[point].set_width(1);
+		new_list[point].set_vertex(Point(radius2*Angle::cos(angle*i + angle/2 + offset).get() + x,
+									 radius2*Angle::sin(angle*i + angle/2 + offset).get() + y));
+		new_list[point++].set_tangent(Point(0,0));
 	}
 
 	ValueNode_BLine::Handle value_node_bline(ValueNode_BLine::create(new_list));
