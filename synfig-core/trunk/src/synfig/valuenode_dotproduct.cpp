@@ -99,6 +99,8 @@ ValueNode_DotProduct::operator()(Time t)const
 		return Angle::cos(lhs * rhs / lhs.mag() / rhs.mag()).mod();
 	case ValueBase::TYPE_REAL:
 		return lhs * rhs;
+	default:
+		break;
 	}
 
 	assert(0);
