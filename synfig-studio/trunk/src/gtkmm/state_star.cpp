@@ -520,11 +520,14 @@ StateStar_Context::make_star(const Point& _p1, const Point& _p2)
 									 radius1*Angle::sin(angle*i + offset).get() + y));
 		new_list[point++].set_tangent(Point(0,0));
 
-		new_list.push_back(*(new BLinePoint));
-		new_list[point].set_width(1);
-		new_list[point].set_vertex(Point(radius2*Angle::cos(angle*i + angle/2 + offset).get() + x,
-									 radius2*Angle::sin(angle*i + angle/2 + offset).get() + y));
-		new_list[point++].set_tangent(Point(0,0));
+		if (!regular)
+		{
+			new_list.push_back(*(new BLinePoint));
+			new_list[point].set_width(1);
+			new_list[point].set_vertex(Point(radius2*Angle::cos(angle*i + angle/2 + offset).get() + x,
+											 radius2*Angle::sin(angle*i + angle/2 + offset).get() + y));
+			new_list[point++].set_tangent(Point(0,0));
+		}
 	}
 
 	ValueNode_BLine::Handle value_node_bline(ValueNode_BLine::create(new_list));
