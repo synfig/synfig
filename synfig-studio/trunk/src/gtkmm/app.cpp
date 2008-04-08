@@ -1002,8 +1002,8 @@ init_ui_manager()
 
 	ACCEL("<Actions>//state-normal",      "<Mod1>a");
 	ACCEL("<Actions>//state-smooth_move", "<Mod1>v");
-	ACCEL("<Actions>//state-scale",       "<Mod1>d");
-	ACCEL("<Actions>//state-rotate",      "<Mod1>s");
+	ACCEL("<Actions>//state-scale",       "<Mod1>s");
+	ACCEL("<Actions>//state-rotate",      "<Mod1>t");
 
 	ACCEL("<Actions>//state-bline",       "<Mod1>b");
 	ACCEL("<Actions>//state-circle",      "<Mod1>c");
@@ -1187,21 +1187,21 @@ App::App(int *argc, char ***argv):
 		studio_init_cb.task(_("Init ModMirror...")); module_list_.push_back(new ModMirror()); module_list_.back()->start();
 
 		/* row 2 */
-		state_manager->add_state(&state_bline);
 		state_manager->add_state(&state_circle);
 		state_manager->add_state(&state_rectangle);
+		state_manager->add_state(&state_star);
 		state_manager->add_state(&state_gradient);
 		if(!getenv("SYNFIG_DISABLE_POLYGON")) state_manager->add_state(&state_polygon); // Enabled - for working without ducks
 
 		/* row 3 */
-		if(!getenv("SYNFIG_DISABLE_DRAW"   )) state_manager->add_state(&state_draw); // Enabled for now.  Let's see whether they're good enough yet.
-		if(!getenv("SYNFIG_DISABLE_SKETCH" )) state_manager->add_state(&state_sketch);
+		state_manager->add_state(&state_bline);
+		state_manager->add_state(&state_text);
 		state_manager->add_state(&state_fill);
 		state_manager->add_state(&state_eyedrop);
 		state_manager->add_state(&state_zoom);
 
-		state_manager->add_state(&state_text);
-		state_manager->add_state(&state_star);
+		if(!getenv("SYNFIG_DISABLE_DRAW"   )) state_manager->add_state(&state_draw); // Enabled for now.  Let's see whether they're good enough yet.
+		if(!getenv("SYNFIG_DISABLE_SKETCH" )) state_manager->add_state(&state_sketch);
 
 		// Disabled by default - it doesn't work properly?
 		if(getenv("SYNFIG_ENABLE_WIDTH"    )) state_manager->add_state(&state_width);
