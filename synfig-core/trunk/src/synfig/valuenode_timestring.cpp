@@ -91,8 +91,8 @@ ValueNode_TimeString::operator()(Time t)const
 	switch (get_type())
 	{
 	case ValueBase::TYPE_STRING:
-		if (get_parent_canvas())
-			return time.get_string(get_parent_canvas()->rend_desc().get_frame_rate());
+		if (get_root_canvas())
+			return time.get_string(get_root_canvas()->rend_desc().get_frame_rate());
 		else
 			return time.get_string();
 	default:
