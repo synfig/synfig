@@ -412,8 +412,8 @@ StateStar_Context::StateStar_Context(CanvasView* canvas_view):
 	entry_id(),
 	adj_feather(0,0,1,0.01,0.1),
 	adj_number_of_points(4,2,120,1,1,1), // value, lower, upper, step_increment, page_increment, page_size
-	adj_inner_tangent(0,-3,3,.01,.1,.1),
-	adj_outer_tangent(0,-3,10,.01,.1,.1),
+	adj_inner_tangent(0,-10,10,.01,.1,.1),
+	adj_outer_tangent(0,-10,10,.01,.1,.1),
 	adj_inner_width(1,-10,10,.01,.1,.1),
 	adj_outer_width(1,-10,10,.01,.1,.1),
 	adj_radius_ratio(0.5,-10,10,.01,.1,.1), // value, lower, upper, step_increment, page_increment, page_size
