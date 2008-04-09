@@ -183,7 +183,7 @@ ValueNode_RealString::link_local_name(int i)const
 		case 0: return _("Real");
 		case 1: return _("Width");
 		case 2: return _("Precision");
-		case 3: return _("Zero Padding");
+		case 3: return _("Zero Padded");
 	}
 	return String();
 }
