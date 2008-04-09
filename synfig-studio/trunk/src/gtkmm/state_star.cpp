@@ -98,11 +98,13 @@ class studio::StateStar_Context : public sigc::trackable
 	Gtk::Adjustment	adj_number_of_points;
 	Gtk::Adjustment	adj_inner_tangent;
 	Gtk::Adjustment	adj_outer_tangent;
+	Gtk::Adjustment	adj_radius_ratio;
 	Gtk::Adjustment	adj_angle_offset;
 	Gtk::SpinButton	spin_feather;
 	Gtk::SpinButton	spin_number_of_points;
 	Gtk::SpinButton	spin_inner_tangent;
 	Gtk::SpinButton	spin_outer_tangent;
+	Gtk::SpinButton	spin_radius_ratio;
 	Gtk::SpinButton	spin_angle_offset;
 
 	Gtk::CheckButton checkbutton_invert;
@@ -141,6 +143,9 @@ public:
 
 	Real get_outer_tangent()const { return adj_outer_tangent.get_value(); }
 	void set_outer_tangent(Real f) { adj_outer_tangent.set_value(f); }
+
+	Real get_radius_ratio()const { return adj_radius_ratio.get_value(); }
+	void set_radius_ratio(Real f) { adj_radius_ratio.set_value(f); }
 
 	Real get_angle_offset()const { return adj_angle_offset.get_value(); }
 	void set_angle_offset(Real f) { adj_angle_offset.set_value(f); }
@@ -254,6 +259,11 @@ StateStar_Context::load_settings()
 	else
 		set_outer_tangent(0);
 
+	if(settings.get_value("star.radius_ratio",value))
+		set_radius_ratio(atof(value.c_str()));
+	else
+		set_radius_ratio(0.5);
+
 	if(settings.get_value("star.angle_offset",value))
 		set_angle_offset(atof(value.c_str()));
 	else
@@ -308,6 +318,7 @@ StateStar_Context::save_settings()
 	settings.set_value("star.number_of_points",strprintf("%d",(int)(get_number_of_points() + 0.5)));
 	settings.set_value("star.inner_tangent",strprintf("%f",(float)get_inner_tangent()));
 	settings.set_value("star.outer_tangent",strprintf("%f",(float)get_outer_tangent()));
+	settings.set_value("star.radius_ratio",strprintf("%f",(float)get_radius_ratio()));
 	settings.set_value("star.angle_offset",strprintf("%f",(float)get_angle_offset()));
 	settings.set_value("star.invert",get_invert()?"1":"0");
 	settings.set_value("star.regular_polygon",get_regular_polygon()?"1":"0");
@@ -381,11 +392,13 @@ StateStar_Context::StateStar_Context(CanvasView* canvas_view):
 	adj_number_of_points(4,2,120,1,1,1), // value, lower, upper, step_increment, page_increment, page_size
 	adj_inner_tangent(0,-3,3,.01,.1,.1),
 	adj_outer_tangent(0,-3,10,.01,.1,.1),
+	adj_radius_ratio(0.5,-10,10,.01,.1,.1), // value, lower, upper, step_increment, page_increment, page_size
 	adj_angle_offset(0,-360,360,.1,1,1), // value, lower, upper, step_increment, page_increment, page_size
 	spin_feather(adj_feather,0.1,3),
 	spin_number_of_points(adj_number_of_points,1,0),
 	spin_inner_tangent(adj_inner_tangent,1,2),
 	spin_outer_tangent(adj_outer_tangent,1,2),
+	spin_radius_ratio(adj_radius_ratio,1,2),
 	spin_angle_offset(adj_angle_offset,1,1),
 	checkbutton_invert(_("Invert")),
 	checkbutton_regular_polygon(_("Regular Polygon")),
@@ -419,8 +432,10 @@ StateStar_Context::StateStar_Context(CanvasView* canvas_view):
 	options_table.attach(spin_inner_tangent,								1, 2, 14, 15, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	options_table.attach(*manage(new Gtk::Label(_("Outer Tangent:"))),		0, 1, 15, 16, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	options_table.attach(spin_outer_tangent,								1, 2, 15, 16, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(*manage(new Gtk::Label(_("Angle Offset:"))),		0, 1, 16, 17, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(spin_angle_offset,									1, 2, 16, 17, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(*manage(new Gtk::Label(_("Radius Ratio:"))),		0, 1, 16, 17, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(spin_radius_ratio,									1, 2, 16, 17, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(*manage(new Gtk::Label(_("Angle Offset:"))),		0, 1, 17, 18, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(spin_angle_offset,									1, 2, 17, 18, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
 	options_table.show_all();
 
@@ -530,8 +545,9 @@ StateStar_Context::make_star(const Point& _p1, const Point& _p2)
 	const Point p1(transform.unperform(_p1));
 	const Point p2(transform.unperform(_p2));
 
+	Real radius_ratio(get_radius_ratio());
 	Real radius1((p2-p1).mag());
-	Real radius2(radius1/2);
+	Real radius2(radius1 * radius_ratio);
 	int points = get_number_of_points();
 	Real inner_tangent = get_inner_tangent() * radius1;
 	Real outer_tangent = get_outer_tangent() * radius2;
