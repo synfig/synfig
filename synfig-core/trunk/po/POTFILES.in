@@ -307,6 +307,8 @@ src/synfig/valuenode_gradientrotate.cpp
 src/synfig/valuenode_gradientrotate.h
 src/synfig/valuenode_integer.cpp
 src/synfig/valuenode_integer.h
+src/synfig/valuenode_join.cpp
+src/synfig/valuenode_join.h
 src/synfig/valuenode_linear.cpp
 src/synfig/valuenode_linear.h
 src/synfig/valuenode_radialcomposite.cpp
