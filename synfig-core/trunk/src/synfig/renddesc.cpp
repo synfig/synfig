@@ -250,7 +250,7 @@ RendDesc::set_y_res(Real y)
 int
 RendDesc::get_frame_start()const
 {
-	return time_begin*frame_rate;
+	return round_to_int(time_begin*frame_rate);
 }
 
 RendDesc &
@@ -262,7 +262,7 @@ RendDesc::set_frame_start(int x)
 int
 RendDesc::get_frame_end()const
 {
-	return time_end*frame_rate;
+	return round_to_int(time_end*frame_rate);
 }
 
 RendDesc &
