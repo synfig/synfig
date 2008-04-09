@@ -360,7 +360,7 @@ StateBLine_Context::StateBLine_Context(CanvasView* canvas_view):
 	entry_id(),
 	checkbutton_layer_region(_("Create Region BLine")),
 	checkbutton_layer_outline(_("Create Outline BLine")),
-	checkbutton_layer_curve_gradient(_("Create Gradient BLine")),
+	checkbutton_layer_curve_gradient(_("Create Curve Gradient BLine")),
 	checkbutton_layer_plant(_("Create Plant BLine")),
 	checkbutton_layer_link_offsets(_("Link Offsets")),
 	checkbutton_auto_export(_("Auto Export")),
