@@ -410,8 +410,8 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	checkbutton_auto_loop(_("Auto Loop")),
 	checkbutton_auto_extend(_("Auto Extend")),
 	checkbutton_auto_link(_("Auto Link")),
-	checkbutton_region(_("Create Region")),
-	checkbutton_outline(_("Create Outline")),
+	checkbutton_region(_("Create Region BLine")),
+	checkbutton_outline(_("Create Outline BLine")),
 	checkbutton_auto_export(_("Auto Export")),
 	button_fill_last_stroke(_("Fill Last Stroke")),
 	adj_min_pressure(0,0,1,0.01,0.1),
@@ -432,8 +432,8 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 
 	options_table.attach(*manage(new Gtk::Label(_("Draw Tool"))),	0, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	options_table.attach(entry_id,									0, 2,  1,  2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(checkbutton_region,						0, 2,  2,  3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(checkbutton_outline,						0, 2,  3,  4, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(checkbutton_outline,						0, 2,  2,  3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(checkbutton_region,						0, 2,  3,  4, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	options_table.attach(checkbutton_auto_loop,						0, 2,  4,  5, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	options_table.attach(checkbutton_auto_extend,					0, 2,  5,  6, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	options_table.attach(checkbutton_auto_link,						0, 2,  6,  7, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
