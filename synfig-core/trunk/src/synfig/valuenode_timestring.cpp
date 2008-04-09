@@ -57,7 +57,7 @@ ValueNode_TimeString::ValueNode_TimeString(const ValueBase &value):
 	switch(value.get_type())
 	{
 	case ValueBase::TYPE_STRING:
-		set_link("time",ValueNode_Const::create(Time()));
+		set_link("time",ValueNode_Const::create(Time(0)));
 		break;
 	default:
 		throw Exception::BadType(ValueBase::type_local_name(value.get_type()));
@@ -91,7 +91,10 @@ ValueNode_TimeString::operator()(Time t)const
 	switch (get_type())
 	{
 	case ValueBase::TYPE_STRING:
-		return time.get_string(get_parent_canvas()->rend_desc().get_frame_rate());
+		if (get_parent_canvas())
+			return time.get_string(get_parent_canvas()->rend_desc().get_frame_rate());
+		else
+			return time.get_string();
 	default:
 		break;
 	}
