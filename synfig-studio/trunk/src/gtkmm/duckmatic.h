@@ -381,6 +381,7 @@ public:
 	Type get_type_mask()const { return type_mask; }
 
 	void select_all_ducks();
+	void unselect_all_ducks();
 
 	void clear_ducks();
 

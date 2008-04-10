@@ -1240,6 +1240,14 @@ CanvasView::init_menus()
 		sigc::mem_fun(*work_area,&studio::WorkArea::select_all_ducks)
 	);
 
+	action_group->add( Gtk::Action::create("unselect-all-ducks", _("Unselect All Ducks")),
+		sigc::mem_fun(*work_area,&studio::WorkArea::unselect_all_ducks)
+	);
+
+	action_group->add( Gtk::Action::create("select-all-layers", _("Select All Layers")),
+		sigc::mem_fun(*this,&CanvasView::on_select_layers)
+	);
+
 	action_group->add( Gtk::Action::create("unselect-all-layers", _("Unselect All Layers")),
 		sigc::mem_fun(*this,&CanvasView::on_unselect_layers)
 	);
@@ -1520,6 +1528,8 @@ CanvasView::init_menus()
 //	editmenu.items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::StockID("gtk-paste"),NOT_IMPLEMENTED_SLOT));
 //	editmenu.items().push_back(Gtk::Menu_Helpers::SeparatorElem());
 //	editmenu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("Select All Ducks"),Gtk::AccelKey('E',Gdk::CONTROL_MASK),sigc::mem_fun(*work_area,&studio::WorkArea::select_all_ducks)));
+//	editmenu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("Unselect All Ducks"),Gtk::AccelKey('E',Gdk::CONTROL_MASK),sigc::mem_fun(*work_area,&studio::WorkArea::unselect_all_ducks)));
+//	editmenu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("Select All Layers"),Gtk::AccelKey('A',Gdk::CONTROL_MASK),sigc::mem_fun(*this,&CanvasView::on_select_layers)));
 //	editmenu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("Unselect All Layers"),Gtk::AccelKey('D',Gdk::CONTROL_MASK),sigc::mem_fun(*this,&CanvasView::on_unselect_layers)));
 //	editmenu.items().push_back(Gtk::Menu_Helpers::SeparatorElem());
 //
@@ -1716,6 +1726,14 @@ CanvasView::init_menus()
 //	viewmenu.set_accel_path("<synfig>/View");
 //	duckmaskmenu.set_accel_path("<synfig>/DuckMask");
 #endif
+}
+
+void
+CanvasView::on_select_layers()
+{
+	Canvas::Handle canvas(get_canvas());
+	for (CanvasBase::iterator iter = canvas->begin(); iter != canvas->end(); iter++)
+		layer_tree->select_all_children_layers(*iter);
 }
 
 void

@@ -670,6 +670,8 @@ init_ui_manager()
 	DEFINE_ACTION("copy", Gtk::StockID("gtk-copy"));
 	DEFINE_ACTION("paste", Gtk::StockID("gtk-paste"));
 	DEFINE_ACTION("select-all-ducks", _("Select All Ducks"));
+	DEFINE_ACTION("unselect-all-ducks", _("Unselect All Ducks"));
+	DEFINE_ACTION("select-all-layers", _("Select All Layers"));
 	DEFINE_ACTION("unselect-all-layers", _("Unselect All Layers"));
 	DEFINE_ACTION("properties", _("Properties"));
 
@@ -798,8 +800,10 @@ init_ui_manager()
 "		<menuitem action='copy'/>"
 "		<menuitem action='paste'/>"
 "		<separator name='bleh06'/>"
-"		<menuitem action='select-all-ducks'/>"
+"		<menuitem action='select-all-layers'/>"
 "		<menuitem action='unselect-all-layers'/>"
+"		<menuitem action='select-all-ducks'/>"
+"		<menuitem action='unselect-all-ducks'/>"
 "		<separator name='bleh07'/>"
 "		<menuitem action='properties'/>"
 "	</menu>"
@@ -938,7 +942,9 @@ init_ui_manager()
 	}
 
 	ACCEL("<Actions>//select-all-ducks","<Control>a");
-	ACCEL("<Actions>//unselect-all-layers","<Control>d");
+	ACCEL("<Actions>//unselect-all-ducks","<Control>d");
+	ACCEL("<Actions>//select-all-layers","<Control><Shift>a");
+	ACCEL("<Actions>//unselect-all-layers","<Control><Shift>d");
 	ACCEL("<Actions>//render","F9");
 	ACCEL("<Actions>//preview","F11");
 	ACCEL("<Actions>//properties","F8");

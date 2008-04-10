@@ -282,6 +282,14 @@ Duckmatic::select_all_ducks()
 }
 
 void
+Duckmatic::unselect_all_ducks()
+{
+	DuckMap::const_iterator iter;
+	for(iter=duck_map.begin();iter!=duck_map.end();++iter)
+		unselect_duck(iter->second);
+}
+
+void
 Duckmatic::toggle_select_ducks_in_box(const synfig::Vector& tl,const synfig::Vector& br)
 {
 	Vector vmin, vmax;

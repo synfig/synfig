@@ -595,6 +595,7 @@ public:
 
 private:
 
+	void on_select_layers();
 	void on_unselect_layers();
 
 	void on_input_device_changed(GdkDevice*);
