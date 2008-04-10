@@ -81,6 +81,8 @@
 #include "valuenode_timestring.h"
 #include "valuenode_realstring.h"
 #include "valuenode_join.h"
+#include "valuenode_anglestring.h"
+#include "valuenode_intstring.h"
 
 #include "layer.h"
 
@@ -171,6 +173,8 @@ ValueNode::subsys_init()
 	ADD_VALUENODE(ValueNode_TimeString,		  "timestring",		  _("Time String"),		 RELEASE_VERSION_0_61_09); // SVN r2000
 	ADD_VALUENODE(ValueNode_RealString,		  "realstring",		  _("Real String"),		 RELEASE_VERSION_0_61_09); // SVN r2003
 	ADD_VALUENODE(ValueNode_Join,			  "join",			  _("Joined List"),		 RELEASE_VERSION_0_61_09); // SVN r2007
+	ADD_VALUENODE(ValueNode_AngleString,	  "anglestring",	  _("Angle String"),	 RELEASE_VERSION_0_61_09); // SVN r2010
+	ADD_VALUENODE(ValueNode_IntString,		  "intstring",		  _("Int String"),		 RELEASE_VERSION_0_61_09); // SVN r2010
 
 #undef ADD_VALUENODE
 #undef ADD_VALUENODE2
