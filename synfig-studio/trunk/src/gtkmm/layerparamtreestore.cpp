@@ -322,6 +322,7 @@ LayerParamTreeStore::rebuild()
 	struct REBUILD_HELPER
 	{
 		ParamVocab vocab;
+		Layer::Handle layer_0;
 
 		static ParamVocab::iterator find_param_desc(ParamVocab& vocab, const synfig::String& x)
 		{
@@ -333,14 +334,17 @@ LayerParamTreeStore::rebuild()
 			return iter;
 		}
 
-		void process_vocab(ParamVocab x)
+		void process_vocab(synfig::Layer::Handle layer_n)
 		{
+			ParamVocab x = layer_n->get_param_vocab();
 			ParamVocab::iterator iter;
 
 			for(iter=vocab.begin();iter!=vocab.end();++iter)
 			{
-				ParamVocab::iterator iter2(find_param_desc(x,iter->get_name()));
-				if(iter2==x.end())
+				String name(iter->get_name());
+				ParamVocab::iterator iter2(find_param_desc(x,name));
+				if(iter2==x.end() ||
+				   layer_0->get_param(name).get_type() != layer_n->get_param(name).get_type())
 				{
 					// remove it and start over
 					vocab.erase(iter);
@@ -357,10 +361,11 @@ LayerParamTreeStore::rebuild()
 	{
 		LayerList::iterator iter(layer_list.begin());
 		rebuild_helper.vocab=(*iter)->get_param_vocab();
+		rebuild_helper.layer_0=*iter;
 
 		for(++iter;iter!=layer_list.end();++iter)
 		{
-			rebuild_helper.process_vocab((*iter)->get_param_vocab());
+			rebuild_helper.process_vocab(*iter);
 			changed_connection_list.push_back(
 				(*iter)->signal_changed().connect(
 					sigc::mem_fun(
