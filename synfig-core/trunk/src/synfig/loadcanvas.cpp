@@ -1776,7 +1776,9 @@ CanvasParser::parse_layer(xmlpp::Element *element,Canvas::Handle canvas)
 				// the layer liked it
 				if(!layer->set_param(param_name,data))
 				{
-					warning((*iter),_("Layer rejected value for <param>"));
+					warning((*iter),strprintf(_("Layer '%s' rejected value for parameter '%s'"),
+											  element->get_attribute("type")->get_value().c_str(),
+											  param_name.c_str()));
 					continue;
 				}
 			}
