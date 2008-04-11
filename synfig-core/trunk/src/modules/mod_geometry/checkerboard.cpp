@@ -66,7 +66,7 @@ SYNFIG_LAYER_SET_CVS_ID(CheckerBoard,"$Id$");
 CheckerBoard::CheckerBoard():
 	Layer_Composite	(1.0,Color::BLEND_STRAIGHT),
 	color			(Color::black()),
-	pos				(Point(0.125,0.125)),
+	origin			(Point(0.125,0.125)),
 	size			(Point(0.25,0.25))
 {
 
@@ -76,10 +76,10 @@ CheckerBoard::CheckerBoard():
 inline bool
 CheckerBoard::point_test(const synfig::Point& getpos)const
 {
-	int val=((int)((getpos[0]-pos[0])/size[0])+(int)((getpos[1]-pos[1])/size[1]));
-	if(getpos[0]-pos[0] < 0.0)
+	int val=((int)((getpos[0]-origin[0])/size[0])+(int)((getpos[1]-origin[1])/size[1]));
+	if(getpos[0]-origin[0] < 0.0)
 		val++;
-	if(getpos[1]-pos[1] < 0.0)
+	if(getpos[1]-origin[1] < 0.0)
 		val++;
 	return val&1;
 }
@@ -90,10 +90,12 @@ CheckerBoard::set_param(const String &param, const ValueBase &value)
 	IMPORT_PLUS(color, { if (color.get_a() == 0) { if (converted_blend_) {
 					set_blend_method(Color::BLEND_ALPHA_OVER);
 					color.set_a(1); } else transparent_color_ = true; } });
-	IMPORT(pos);
-	IMPORT(pos[0]);
-	IMPORT(pos[1]);
+	IMPORT(origin);
 	IMPORT(size);
+
+	IMPORT_AS(origin,"pos");
+	IMPORT_AS(origin[0],"pos[0]");
+	IMPORT_AS(origin[1],"pos[1]");
 
 	return Layer_Composite::set_param(param,value);
 }
@@ -102,9 +104,7 @@ ValueBase
 CheckerBoard::get_param(const String &param)const
 {
 	EXPORT(color);
-	EXPORT(pos);
-	EXPORT(pos[0]);
-	EXPORT(pos[1]);
+	EXPORT(origin);
 	EXPORT(size);
 	EXPORT_NAME();
 	EXPORT_VERSION();
@@ -121,13 +121,13 @@ CheckerBoard::get_param_vocab()const
 		.set_local_name(_("Color"))
 		.set_description(_("Color of checkers"))
 	);
-	ret.push_back(ParamDesc("pos")
-		.set_local_name(_("Offset"))
+	ret.push_back(ParamDesc("origin")
+		.set_local_name(_("Origin"))
 	);
 	ret.push_back(ParamDesc("size")
 		.set_local_name(_("Size"))
 		.set_description(_("Size of checkers"))
-		.set_origin("pos")
+		.set_origin("origin")
 	);
 
 	return ret;

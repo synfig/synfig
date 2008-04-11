@@ -46,7 +46,7 @@ class Circle : public synfig::Layer_Composite, public synfig::Layer_NoDeform
 	SYNFIG_LAYER_MODULE_EXT
 private:
 	synfig::Color color;
-	synfig::Point pos;
+	synfig::Point origin;
 	synfig::Real radius;
 	synfig::Real feather;
 	bool invert;

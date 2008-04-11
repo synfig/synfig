@@ -119,7 +119,7 @@ private:
 	synfig::Vector size;
 	synfig::Vector orient;
 	synfig::Color color;
-	synfig::Point pos;
+	synfig::Point origin;
 	synfig::Real compress;
 	synfig::Real vcompress;
 

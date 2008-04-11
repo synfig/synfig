@@ -93,7 +93,7 @@ Layer_Freetype::Layer_Freetype()
 	size=Vector(0.25,0.25);
 	text=_("Text Layer");
 	color=Color::black();
-	pos=Vector(0,0);
+	origin=Vector(0,0);
 	orient=Vector(0.5,0.5);
 	compress=1.0;
 	vcompress=1.0;
@@ -458,7 +458,7 @@ Layer_Freetype::set_param(const String & param, const ValueBase &value)
 	IMPORT_PLUS(style,new_font(family,style,weight));
 	IMPORT_PLUS(size, if(old_version){size/=2.0;} needs_sync_=true );
 	IMPORT_PLUS(text,needs_sync_=true);
-	IMPORT_PLUS(pos,needs_sync_=true);
+	IMPORT_PLUS(origin,needs_sync_=true);
 	IMPORT_PLUS(color, { if (color.get_a() == 0) { if (converted_blend_) {
 					set_blend_method(Color::BLEND_ALPHA_OVER);
 					color.set_a(1); } else transparent_color_ = true; } });
@@ -468,6 +468,8 @@ Layer_Freetype::set_param(const String & param, const ValueBase &value)
 	IMPORT_PLUS(vcompress,needs_sync_=true);
 	IMPORT_PLUS(use_kerning,needs_sync_=true);
 	IMPORT_PLUS(grid_fit,needs_sync_=true);
+
+	IMPORT_AS(origin,"pos");
 
 	return Layer_Composite::set_param(param,value);
 }
@@ -482,7 +484,7 @@ Layer_Freetype::get_param(const String& param)const
 	EXPORT(size);
 	EXPORT(text);
 	EXPORT(color);
-	EXPORT(pos);
+	EXPORT(origin);
 	EXPORT(orient);
 	EXPORT(compress);
 	EXPORT(vcompress);
@@ -549,7 +551,7 @@ Layer_Freetype::get_param_vocab(void)const
 		.set_local_name(_("Size"))
 		.set_description(_("Size of the text"))
 		.set_hint("size")
-		.set_origin("pos")
+		.set_origin("origin")
 		.set_scalar(1)
 	);
 
@@ -559,8 +561,8 @@ Layer_Freetype::get_param_vocab(void)const
 		.set_invisible_duck()
 	);
 
-	ret.push_back(ParamDesc("pos")
-		.set_local_name(_("Position"))
+	ret.push_back(ParamDesc("origin")
+		.set_local_name(_("Origin"))
 		.set_description(_("Text Position"))
 	);
 
@@ -657,8 +659,8 @@ Layer_Freetype::accelerated_render(Context context,Surface *surface,int quality,
 	int w=abs(round_to_int(size[0]*pw));
 	int h=abs(round_to_int(size[1]*ph));
 
-    //int bx=(int)((pos[0]-renddesc.get_tl()[0])*pw*64+0.5);
-    //int by=(int)((pos[1]-renddesc.get_tl()[1])*ph*64+0.5);
+    //int bx=(int)((origin[0]-renddesc.get_tl()[0])*pw*64+0.5);
+    //int by=(int)((origin[1]-renddesc.get_tl()[1])*ph*64+0.5);
     int bx=0;
     int by=0;
 
@@ -852,16 +854,16 @@ Layer_Freetype::accelerated_render(Context context,Surface *surface,int quality,
 		int curr_line;
 		for(curr_line=0,iter=lines.begin();iter!=lines.end();++iter,curr_line++)
 		{
-			bx=round_to_int((pos[0]-renddesc.get_tl()[0])*pw*CHAR_RESOLUTION-orient[0]*iter->width);
+			bx=round_to_int((origin[0]-renddesc.get_tl()[0])*pw*CHAR_RESOLUTION-orient[0]*iter->width);
 			// I've no idea why 1.5, but it kind of works.  Otherwise,
 			// rendering to .bmp (which renders from bottom to top, due to
 			// the .bmp format describing the image from bottom to top,
 			// renders text in the wrong place.
-			by=round_to_int((pos[1]-renddesc.get_tl()[1])*ph*CHAR_RESOLUTION +
+			by=round_to_int((origin[1]-renddesc.get_tl()[1])*ph*CHAR_RESOLUTION +
 							(1.0-orient[1])*string_height-line_height*curr_line +
 							((ph>0) ? line_height/1.5 : 0));
 
-			//by=round_to_int(vcompress*((pos[1]-renddesc.get_tl()[1])*ph*64+(1.0-orient[1])*string_height-face->size->metrics.height*curr_line));
+			//by=round_to_int(vcompress*((origin[1]-renddesc.get_tl()[1])*ph*64+(1.0-orient[1])*string_height-face->size->metrics.height*curr_line));
 			//synfig::info("curr_line=%d, bx=%d, by=%d",curr_line,bx,by);
 
 			std::vector<Glyph>::iterator iter2;

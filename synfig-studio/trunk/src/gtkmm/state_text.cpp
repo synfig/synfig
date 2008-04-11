@@ -401,8 +401,8 @@ StateText_Context::make_text(const Point& _point)
 	layer=get_canvas_interface()->add_layer_to("text",canvas,depth);
 	layer_selection.push_back(layer);
 
-	layer->set_param("pos",point);
-	get_canvas_interface()->signal_layer_param_changed()(layer,"pos");
+	layer->set_param("origin",point);
+	get_canvas_interface()->signal_layer_param_changed()(layer,"origin");
 
 	layer->set_param("text",text);
 	get_canvas_interface()->signal_layer_param_changed()(layer,"text");

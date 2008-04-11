@@ -51,7 +51,7 @@ class XORPattern : public synfig::Layer_Composite, public synfig::Layer_NoDeform
 
 private:
 
-	Point pos;
+	Point origin;
 	Point size;
 
 public:

@@ -62,7 +62,7 @@ SYNFIG_LAYER_SET_CVS_ID(XORPattern,"$Id$");
 
 XORPattern::XORPattern():
 	Layer_Composite	(1.0,Color::BLEND_STRAIGHT),
-	pos(0.125,0.125),
+	origin(0.125,0.125),
 	size(0.25,0.25)
 {
 }
@@ -70,8 +70,10 @@ XORPattern::XORPattern():
 bool
 XORPattern::set_param(const String & param, const ValueBase &value)
 {
-	IMPORT(pos);
+	IMPORT(origin);
 	IMPORT(size);
+
+	IMPORT_AS(origin,"pos");
 
 	return Layer_Composite::set_param(param,value);
 }
@@ -79,7 +81,7 @@ XORPattern::set_param(const String & param, const ValueBase &value)
 ValueBase
 XORPattern::get_param(const String & param)const
 {
-	EXPORT(pos);
+	EXPORT(origin);
 	EXPORT(size);
 
 	EXPORT_NAME();
@@ -94,7 +96,7 @@ XORPattern::get_color(Context context, const Point &point)const
 	if(get_amount()==0.0)
 		return context.get_color(point);
 
-	unsigned int a=(unsigned int)floor((point[0]-pos[0])/size[0]), b=(unsigned int)floor((point[1]-pos[1])/size[1]);
+	unsigned int a=(unsigned int)floor((point[0]-origin[0])/size[0]), b=(unsigned int)floor((point[1]-origin[1])/size[1]);
 	unsigned char rindex=(a^b);
 	unsigned char gindex=(a^(~b))*4;
 	unsigned char bindex=~(a^b)*2;
@@ -116,12 +118,12 @@ XORPattern::get_param_vocab()const
 {
 	Layer::Vocab ret(Layer_Composite::get_param_vocab());
 
-	ret.push_back(ParamDesc("pos")
-		.set_local_name(_("Offset"))
+	ret.push_back(ParamDesc("origin")
+		.set_local_name(_("Origin"))
 	);
 	ret.push_back(ParamDesc("size")
 		.set_local_name(_("Size"))
-		.set_origin("pos")
+		.set_origin("origin")
 	);
 
 	return ret;

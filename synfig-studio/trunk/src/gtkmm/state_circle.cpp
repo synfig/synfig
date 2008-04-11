@@ -594,8 +594,8 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 		layer=get_canvas_interface()->add_layer_to("circle",canvas,depth);
 		layer_selection.push_back(layer);
 
-		layer->set_param("pos",p1);
-		get_canvas_interface()->signal_layer_param_changed()(layer,"pos");
+		layer->set_param("origin",p1);
+		get_canvas_interface()->signal_layer_param_changed()(layer,"origin");
 
 		layer->set_param("radius",(p2-p1).mag());
 		get_canvas_interface()->signal_layer_param_changed()(layer,"radius");

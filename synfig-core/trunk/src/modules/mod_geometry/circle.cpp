@@ -62,7 +62,7 @@ SYNFIG_LAYER_SET_CVS_ID(Circle,"$Id$");
 Circle::Circle():
 	Layer_Composite	(1.0,Color::BLEND_STRAIGHT),
 	color			(Color::black()),
-	pos				(0,0),
+	origin			(0,0),
 	radius			(1),
 	feather			(0),
 	invert			(false),
@@ -80,8 +80,10 @@ Circle::ImportParameters(const String &param, const ValueBase &value)
 	IMPORT(radius);
 	IMPORT_PLUS(feather, if(feather<0)feather=0;);
 	IMPORT(invert);
-	IMPORT(pos);
+	IMPORT(origin);
 	IMPORT(falloff);
+
+	IMPORT_AS(origin,"pos");
 
 	return Layer_Composite::set_param(param,value);
 }
@@ -105,7 +107,7 @@ Circle::get_param(const String &param)const
 	EXPORT(radius);
 	EXPORT(feather);
 	EXPORT(invert);
-	EXPORT(pos);
+	EXPORT(origin);
 	EXPORT(falloff);
 
 	EXPORT_NAME();
@@ -124,15 +126,15 @@ Circle::get_param_vocab()const
 	);
 	ret.push_back(ParamDesc("radius")
 		.set_local_name(_("Radius"))
-		.set_origin("pos")
+		.set_origin("origin")
 		.set_is_distance()
 	);
 	ret.push_back(ParamDesc("feather")
 		.set_local_name(_("Feather"))
 		.set_is_distance()
 	);
-	ret.push_back(ParamDesc("pos")
-		.set_local_name(_("Center"))
+	ret.push_back(ParamDesc("origin")
+		.set_local_name(_("Origin"))
 	);
 	ret.push_back(ParamDesc("invert")
 		.set_local_name(_("Invert"))
@@ -156,7 +158,7 @@ Circle::get_param_vocab()const
 synfig::Layer::Handle
 Circle::hit_check(synfig::Context context, const synfig::Point &point)const
 {
-	Point temp=pos-point;
+	Point temp=origin-point;
 
 	if(get_amount()==0)
 		return context.hit_check(point);
@@ -308,7 +310,7 @@ Circle::get_color(Context context, const Point &point)const
 		return context.get_color(point);
 
 
-	Point temp=pos-point;
+	Point temp=origin-point;
 
 	/*const Real inner_radius = radius-feather;
 	const Real outer_radius = radius+feather;
@@ -448,10 +450,10 @@ Circle::accelerated_render(Context context,Surface *surface,int quality, const R
 	const Real newfeather = (quality == 10) ? 0 : feather + (abs(ph)+abs(pw))/4.0;
 
 	//int u,v;
-	int left = 	(int)	floor( (pos[0] - x_neg*(radius+newfeather) - tl[0]) / pw );
-	int right = (int)	ceil( (pos[0] + x_neg*(radius+newfeather) - tl[0]) / pw );
-	int top = 	(int)	floor( (pos[1] - y_neg*(radius+newfeather) - tl[1]) / ph );
-	int bottom = (int)	ceil( (pos[1] + y_neg*(radius+newfeather) - tl[1]) / ph );
+	int left = 	(int)	floor( (origin[0] - x_neg*(radius+newfeather) - tl[0]) / pw );
+	int right = (int)	ceil( (origin[0] + x_neg*(radius+newfeather) - tl[0]) / pw );
+	int top = 	(int)	floor( (origin[1] - y_neg*(radius+newfeather) - tl[1]) / ph );
+	int bottom = (int)	ceil( (origin[1] + y_neg*(radius+newfeather) - tl[1]) / ph );
 
 	//clip the rectangle bounds
 	if(left < 0)
@@ -524,10 +526,10 @@ Circle::accelerated_render(Context context,Surface *surface,int quality, const R
 		}
 	}
 
-	if( (pos[0] - tl[0])*(pos[0] - tl[0]) + (pos[1] - tl[1])*(pos[1] - tl[1]) < inner_radius_sqd
-		&& (pos[0] - br[0])*(pos[0] - br[0]) + (pos[1] - br[1])*(pos[1] - br[1]) < inner_radius_sqd
-		&& (pos[0] - tl[0])*(pos[0] - tl[0]) + (pos[1] - br[1])*(pos[1] - br[1]) < inner_radius_sqd
-		&& (pos[0] - br[0])*(pos[0] - br[0]) + (pos[1] - tl[1])*(pos[1] - tl[1]) < inner_radius_sqd	)
+	if( (origin[0] - tl[0])*(origin[0] - tl[0]) + (origin[1] - tl[1])*(origin[1] - tl[1]) < inner_radius_sqd
+		&& (origin[0] - br[0])*(origin[0] - br[0]) + (origin[1] - br[1])*(origin[1] - br[1]) < inner_radius_sqd
+		&& (origin[0] - tl[0])*(origin[0] - tl[0]) + (origin[1] - br[1])*(origin[1] - br[1]) < inner_radius_sqd
+		&& (origin[0] - br[0])*(origin[0] - br[0]) + (origin[1] - tl[1])*(origin[1] - tl[1]) < inner_radius_sqd	)
 	{
 		if(invert)
 		{
@@ -569,8 +571,8 @@ Circle::accelerated_render(Context context,Surface *surface,int quality, const R
 		}
 
 		//make topf and leftf relative to the center of the circle
-		leftf 	-= 	pos[0];
-		topf 	-= 	pos[1];
+		leftf 	-= 	origin[0];
+		topf 	-= 	origin[1];
 
 		j = top;
 		y = topf;
@@ -681,8 +683,8 @@ Circle::accelerated_render(Context context,Surface *surface,int quality, const R
 			}
 		}
 
-		topf -= pos[1];
-		leftf-= pos[0];
+		topf -= origin[1];
+		leftf-= origin[0];
 
 		j = top;
 		y = topf;
@@ -753,10 +755,10 @@ Circle::get_bounding_rect()const
 		return Rect::full_plane();
 
 	Rect bounds(
-		pos[0]+(radius+feather),
-		pos[1]+(radius+feather),
-		pos[0]-(radius+feather),
-		pos[1]-(radius+feather)
+		origin[0]+(radius+feather),
+		origin[1]+(radius+feather),
+		origin[0]-(radius+feather),
+		origin[1]-(radius+feather)
 	);
 
 	return bounds;
@@ -770,10 +772,10 @@ Circle::get_full_bounding_rect(Context context)const
 		if(is_solid_color() && color.get_a()==0)
 		{
 			Rect bounds(
-				pos[0]+(radius+feather),
-				pos[1]+(radius+feather),
-				pos[0]-(radius+feather),
-				pos[1]-(radius+feather)
+				origin[0]+(radius+feather),
+				origin[1]+(radius+feather),
+				origin[0]-(radius+feather),
+				origin[1]-(radius+feather)
 			);
 			return bounds & context.get_full_bounding_rect();
 		}

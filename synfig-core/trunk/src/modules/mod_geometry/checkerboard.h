@@ -44,7 +44,7 @@ class CheckerBoard : public synfig::Layer_Composite, public synfig::Layer_NoDefo
 	SYNFIG_LAYER_MODULE_EXT
 private:
 	synfig::Color color;
-	synfig::Point pos;
+	synfig::Point origin;
 	synfig::Point size;
 
 	bool point_test(const synfig::Point& x)const;
