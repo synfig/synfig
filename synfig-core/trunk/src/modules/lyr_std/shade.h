@@ -44,7 +44,7 @@ private:
 	synfig::Vector 	size;
 	int				type;
 	synfig::Color	color;
-	synfig::Vector	offset;
+	synfig::Vector	origin;
 	bool invert;
 
 public:

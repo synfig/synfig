@@ -75,7 +75,7 @@ Halftone3::Halftone3()
 	{
 		tone[i].size=size;
 		tone[i].type=type;
-		tone[i].offset=(synfig::Point(0,0));
+		tone[i].origin=(synfig::Point(0,0));
 		tone[i].angle=Angle::deg(30.0)*(float)i;
 	}
 
@@ -254,13 +254,17 @@ Halftone3::set_param(const String & param, const ValueBase &value)
 	IMPORT_PLUS(subtractive,sync());
 
 	IMPORT(tone[0].angle);
-	IMPORT(tone[0].offset);
+	IMPORT(tone[0].origin);
 
 	IMPORT(tone[1].angle);
-	IMPORT(tone[1].offset);
+	IMPORT(tone[1].origin);
 
 	IMPORT(tone[2].angle);
-	IMPORT(tone[2].offset);
+	IMPORT(tone[2].origin);
+
+	IMPORT_AS(tone[0].origin,"tone[0].offset");
+	IMPORT_AS(tone[1].origin,"tone[1].offset");
+	IMPORT_AS(tone[2].origin,"tone[2].offset");
 
 	return Layer_Composite::set_param(param,value);
 }
@@ -278,13 +282,13 @@ Halftone3::get_param(const String & param)const
 	EXPORT(subtractive);
 
 	EXPORT(tone[0].angle);
-	EXPORT(tone[0].offset);
+	EXPORT(tone[0].origin);
 
 	EXPORT(tone[1].angle);
-	EXPORT(tone[1].offset);
+	EXPORT(tone[1].origin);
 
 	EXPORT(tone[2].angle);
-	EXPORT(tone[2].offset);
+	EXPORT(tone[2].origin);
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
@@ -321,13 +325,13 @@ Halftone3::get_param_vocab()const
 			.set_local_name(chan_name+_(" Color"))
 		);
 
-		ret.push_back(ParamDesc(strprintf("tone[%d].offset",i))
-			.set_local_name(chan_name+_(" Mask Offset"))
+		ret.push_back(ParamDesc(strprintf("tone[%d].origin",i))
+			.set_local_name(chan_name+_(" Mask Origin"))
 			.set_is_distance()
 		);
 		ret.push_back(ParamDesc(strprintf("tone[%d].angle",i))
 			.set_local_name(chan_name+_(" Mask Angle"))
-			.set_origin(strprintf("tone[%d].offset",i))
+			.set_origin(strprintf("tone[%d].origin",i))
 		);
 	}
 

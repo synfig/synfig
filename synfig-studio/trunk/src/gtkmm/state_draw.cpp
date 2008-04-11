@@ -777,8 +777,8 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline
 	// Create the action group
 	synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Sketch BLine"));
 
-	bool shift_offset = false;
-	Vector shift_offset_vector;
+	bool shift_origin = false;
+	Vector shift_origin_vector;
 	bool join_start_no_extend=false,join_finish_no_extend=false;
 	synfigapp::ValueDesc start_duck_value_desc,finish_duck_value_desc;
 	bool extend_start=false,extend_finish=false,complete_loop=false;
@@ -814,8 +814,8 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline
 			   (start_duck_index==0||start_duck_index==start_duck_value_node_bline->link_count()-1))
 			{
 				extend_start=true;
-				shift_offset=true;
-				shift_offset_vector=start_duck->get_origin();
+				shift_origin=true;
+				shift_origin_vector=start_duck->get_origin();
 			}
 		}while(0);
 
@@ -845,8 +845,8 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline
 						complete_loop=extend_finish=true;
 				}else{
 					extend_finish=true;
-					shift_offset=true;
-					shift_offset_vector=finish_duck->get_origin();
+					shift_origin=true;
+					shift_origin_vector=finish_duck->get_origin();
 				}
 			}
 		}while(0);
@@ -860,10 +860,10 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline
 				start_duck_value_desc=synfigapp::ValueDesc(LinkableValueNode::Handle::cast_dynamic(start_duck_value_desc.get_value_node()),0);
 				// fall through
 			case synfig::ValueBase::TYPE_VECTOR:
-				if (shift_offset && shift_offset_vector != start_duck->get_origin())
+				if (shift_origin && shift_origin_vector != start_duck->get_origin())
 					break;
-				shift_offset = true;
-				shift_offset_vector = start_duck->get_origin();
+				shift_origin = true;
+				shift_origin_vector = start_duck->get_origin();
 				get_canvas_interface()->auto_export(start_duck_value_desc);
 				if (extend_finish)
 					if(start_duck_value_node_bline&&start_duck_value_node_bline==finish_duck_value_node_bline)
@@ -885,10 +885,10 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline
 				finish_duck_value_desc=synfigapp::ValueDesc(LinkableValueNode::Handle::cast_dynamic(finish_duck_value_desc.get_value_node()),0);
 				// fall through
 			case synfig::ValueBase::TYPE_VECTOR:
-				if (shift_offset && shift_offset_vector != finish_duck->get_origin())
+				if (shift_origin && shift_origin_vector != finish_duck->get_origin())
 					break;
-				shift_offset = true;
-				shift_offset_vector = finish_duck->get_origin();
+				shift_origin = true;
+				shift_origin_vector = finish_duck->get_origin();
 				get_canvas_interface()->auto_export(finish_duck_value_desc);
 				if(extend_start)
 					if(finish_duck_value_node_bline&&start_duck_value_node_bline==finish_duck_value_node_bline)
@@ -926,8 +926,8 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline
 				) -new_vertex
 			);
 
-			if (shift_offset)
-				new_vertex=new_vertex-shift_offset_vector;
+			if (shift_origin)
+				new_vertex=new_vertex-shift_origin_vector;
 
 			bline_point.set_vertex(new_vertex);
 
@@ -1067,9 +1067,9 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline
 		//layer->set_description(strprintf("Stroke %d",number));
 		//get_canvas_interface()->signal_layer_new_description()(layer,layer->get_description());
 
-		if (shift_offset)
+		if (shift_origin)
 			get_canvas_interface()->
-			  change_value(synfigapp::ValueDesc(layer,"offset"),shift_offset_vector);
+			  change_value(synfigapp::ValueDesc(layer,"origin"),shift_origin_vector);
 
 		synfigapp::Action::Handle action(synfigapp::Action::create("layer_param_connect"));
 

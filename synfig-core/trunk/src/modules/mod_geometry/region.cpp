@@ -230,7 +230,7 @@ Region::get_param_vocab()const
 
 	ret.push_back(ParamDesc("bline")
 		.set_local_name(_("Vertices"))
-		.set_origin("offset")
+		.set_origin("origin")
 	);
 
 	return ret;

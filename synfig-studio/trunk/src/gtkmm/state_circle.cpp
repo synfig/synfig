@@ -121,12 +121,12 @@ class studio::StateCircle_Context : public sigc::trackable
 	Gtk::CheckButton checkbutton_layer_outline;
 	Gtk::CheckButton checkbutton_layer_curve_gradient;
 	Gtk::CheckButton checkbutton_layer_plant;
-	Gtk::CheckButton checkbutton_layer_link_offsets;
+	Gtk::CheckButton checkbutton_layer_link_origins;
 
 public:
 
 	// this only counts the layers which use blines - they're the only
-	// ones we link the offsets for
+	// ones we link the origins for
 	int layers_to_create()const
 	{
 		return
@@ -174,8 +174,8 @@ public:
 	bool get_layer_plant_flag()const { return checkbutton_layer_plant.get_active(); }
 	void set_layer_plant_flag(bool x) { return checkbutton_layer_plant.set_active(x); }
 
-	bool get_layer_link_offsets_flag()const { return checkbutton_layer_link_offsets.get_active(); }
-	void set_layer_link_offsets_flag(bool x) { return checkbutton_layer_link_offsets.set_active(x); }
+	bool get_layer_link_origins_flag()const { return checkbutton_layer_link_origins.get_active(); }
+	void set_layer_link_origins_flag(bool x) { return checkbutton_layer_link_origins.set_active(x); }
 
 	void refresh_tool_options(); //to refresh the toolbox
 
@@ -299,10 +299,10 @@ StateCircle_Context::load_settings()
 	else
 		set_layer_plant_flag(false);
 
-	if(settings.get_value("circle.layer_link_offsets",value) && value=="0")
-		set_layer_link_offsets_flag(false);
+	if(settings.get_value("circle.layer_link_origins",value) && value=="0")
+		set_layer_link_origins_flag(false);
 	else
-		set_layer_link_offsets_flag(true);
+		set_layer_link_origins_flag(true);
 }
 
 void
@@ -322,7 +322,7 @@ StateCircle_Context::save_settings()
 	settings.set_value("circle.layer_region",get_layer_region_flag()?"1":"0");
 	settings.set_value("circle.layer_curve_gradient",get_layer_curve_gradient_flag()?"1":"0");
 	settings.set_value("circle.layer_plant",get_layer_plant_flag()?"1":"0");
-	settings.set_value("circle.layer_link_offsets",get_layer_link_offsets_flag()?"1":"0");
+	settings.set_value("circle.layer_link_origins",get_layer_link_origins_flag()?"1":"0");
 }
 
 void
@@ -395,7 +395,7 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	checkbutton_layer_outline(_("Create Outline BLine")),
 	checkbutton_layer_curve_gradient(_("Create Curve Gradient BLine")),
 	checkbutton_layer_plant(_("Create Plant BLine")),
-	checkbutton_layer_link_offsets(_("Link BLine Offsets"))
+	checkbutton_layer_link_origins(_("Link BLine Origins"))
 {
 	egress_on_selection_change=true;
 	// Set up the tool options dialog
@@ -433,7 +433,7 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	options_table.attach(checkbutton_layer_region,				0, 2,  9, 10, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	options_table.attach(checkbutton_layer_plant,				0, 2, 10, 11, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	options_table.attach(checkbutton_layer_curve_gradient,		0, 2, 11, 12, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(checkbutton_layer_link_offsets,		0, 2, 12, 13, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(checkbutton_layer_link_origins,		0, 2, 12, 13, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	options_table.attach(*manage(new Gtk::Label(_("BLine Points:"))), 0, 1, 13, 14, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	options_table.attach(spin_number_of_bline_points, 1, 2, 13, 14, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	options_table.attach(*manage(new Gtk::Label(_("Point Angle Offset:"))), 0, 1, 14, 15, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
@@ -570,8 +570,8 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 	ValueNode_BLine::Handle value_node_bline(ValueNode_BLine::create(new_list));
 	assert(value_node_bline);
 
-	ValueNode_Const::Handle value_node_offset(ValueNode_Const::create(Vector()));
-	assert(value_node_offset);
+	ValueNode_Const::Handle value_node_origin(ValueNode_Const::create(Vector()));
+	assert(value_node_origin);
 
 	// Set the looping flag
 	value_node_bline->set_loop(true);
@@ -664,8 +664,8 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 			}
 		}
 
-		// only link the curve gradient's offset parameter if the option is selected and we're creating more than one layer
-		if (get_layer_link_offsets_flag() && layers_to_create > 1)
+		// only link the curve gradient's origin parameter if the option is selected and we're creating more than one layer
+		if (get_layer_link_origins_flag() && layers_to_create > 1)
 		{
 			synfigapp::Action::Handle action(synfigapp::Action::create("layer_param_connect"));
 			assert(action);
@@ -673,9 +673,9 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 			action->set_param("canvas",get_canvas());
 			action->set_param("canvas_interface",get_canvas_interface());
 			action->set_param("layer",layer);
-			if(!action->set_param("param",String("offset")))
+			if(!action->set_param("param",String("origin")))
 				synfig::error("LayerParamConnect didn't like \"param\"");
-			if(!action->set_param("value_node",ValueNode::Handle(value_node_offset)))
+			if(!action->set_param("value_node",ValueNode::Handle(value_node_origin)))
 				synfig::error("LayerParamConnect didn't like \"value_node\"");
 
 			if(!get_canvas_interface()->get_instance()->perform_action(action))
@@ -728,8 +728,8 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 			}
 		}
 
-		// only link the plant's offset parameter if the option is selected and we're creating more than one layer
-		if (get_layer_link_offsets_flag() && layers_to_create > 1)
+		// only link the plant's origin parameter if the option is selected and we're creating more than one layer
+		if (get_layer_link_origins_flag() && layers_to_create > 1)
 		{
 			synfigapp::Action::Handle action(synfigapp::Action::create("layer_param_connect"));
 			assert(action);
@@ -737,9 +737,9 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 			action->set_param("canvas",get_canvas());
 			action->set_param("canvas_interface",get_canvas_interface());
 			action->set_param("layer",layer);
-			if(!action->set_param("param",String("offset")))
+			if(!action->set_param("param",String("origin")))
 				synfig::error("LayerParamConnect didn't like \"param\"");
-			if(!action->set_param("value_node",ValueNode::Handle(value_node_offset)))
+			if(!action->set_param("value_node",ValueNode::Handle(value_node_origin)))
 				synfig::error("LayerParamConnect didn't like \"value_node\"");
 
 			if(!get_canvas_interface()->get_instance()->perform_action(action))
@@ -803,8 +803,8 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 			}
 		}
 
-		// only link the region's offset parameter if the option is selected and we're creating more than one layer
-		if (get_layer_link_offsets_flag() && layers_to_create > 1)
+		// only link the region's origin parameter if the option is selected and we're creating more than one layer
+		if (get_layer_link_origins_flag() && layers_to_create > 1)
 		{
 			synfigapp::Action::Handle action(synfigapp::Action::create("layer_param_connect"));
 			assert(action);
@@ -812,9 +812,9 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 			action->set_param("canvas",get_canvas());
 			action->set_param("canvas_interface",get_canvas_interface());
 			action->set_param("layer",layer);
-			if(!action->set_param("param",String("offset")))
+			if(!action->set_param("param",String("origin")))
 				synfig::error("LayerParamConnect didn't like \"param\"");
-			if(!action->set_param("value_node",ValueNode::Handle(value_node_offset)))
+			if(!action->set_param("value_node",ValueNode::Handle(value_node_origin)))
 				synfig::error("LayerParamConnect didn't like \"value_node\"");
 
 			if(!get_canvas_interface()->get_instance()->perform_action(action))
@@ -871,8 +871,8 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 			}
 		}
 
-		// only link the outline's offset parameter if the option is selected and we're creating more than one layer
-		if (get_layer_link_offsets_flag() && layers_to_create > 1)
+		// only link the outline's origin parameter if the option is selected and we're creating more than one layer
+		if (get_layer_link_origins_flag() && layers_to_create > 1)
 		{
 			synfigapp::Action::Handle action(synfigapp::Action::create("layer_param_connect"));
 			assert(action);
@@ -880,9 +880,9 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 			action->set_param("canvas",get_canvas());
 			action->set_param("canvas_interface",get_canvas_interface());
 			action->set_param("layer",layer);
-			if(!action->set_param("param",String("offset")))
+			if(!action->set_param("param",String("origin")))
 				synfig::error("LayerParamConnect didn't like \"param\"");
-			if(!action->set_param("value_node",ValueNode::Handle(value_node_offset)))
+			if(!action->set_param("value_node",ValueNode::Handle(value_node_origin)))
 				synfig::error("LayerParamConnect didn't like \"value_node\"");
 
 			if(!get_canvas_interface()->get_instance()->perform_action(action))

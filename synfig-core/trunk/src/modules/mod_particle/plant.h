@@ -57,7 +57,7 @@ private:
 	std::vector<synfig::BLinePoint> bline;
 	bool bline_loop;
 
-	Point offset;
+	Point origin;
 
 	synfig::Gradient gradient;
 

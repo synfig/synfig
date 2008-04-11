@@ -47,7 +47,7 @@ class Halftone
 public:
 
 	int type;
-	synfig::Point offset;
+	synfig::Point origin;
 	synfig::Vector size;
 	synfig::Angle angle;
 

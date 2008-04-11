@@ -76,7 +76,7 @@ SYNFIG_LAYER_SET_CVS_ID(Plant,"$Id$");
 
 
 Plant::Plant():
-	offset(0,0),
+	origin(0,0),
 	split_angle(Angle::deg(10)),
 	gravity(0,-0.1),
 	velocity(0.3),
@@ -287,7 +287,7 @@ Plant::set_param(const String & param, const ValueBase &value)
 		needs_sync_=true;
 		return true;
 	}
-	IMPORT(offset);
+	IMPORT(origin);
 	IMPORT_PLUS(split_angle,needs_sync_=true);
 	IMPORT_PLUS(gravity,needs_sync_=true);
 	IMPORT_PLUS(gradient,needs_sync_=true);
@@ -313,6 +313,8 @@ Plant::set_param(const String & param, const ValueBase &value)
 	IMPORT(size);
 	IMPORT(size_as_alpha);
 	IMPORT(reverse);
+
+	IMPORT_AS(origin,"offset");
 
 	return Layer_Composite::set_param(param,value);
 }
@@ -347,7 +349,7 @@ Plant::get_param(const String& param)const
 	if(param=="seed")
 		return random.get_seed();
 	EXPORT(bline);
-	EXPORT(offset);
+	EXPORT(origin);
 	EXPORT(split_angle);
 	EXPORT(gravity);
 	EXPORT(velocity);
@@ -379,12 +381,12 @@ Plant::get_param_vocab()const
 	ret.push_back(ParamDesc("bline")
 		.set_local_name(_("Vertices"))
 		.set_description(_("A list of BLine Points"))
-		.set_origin("offset")
+		.set_origin("origin")
 		.set_hint("width")
 	);
 
-	ret.push_back(ParamDesc("offset")
-		.set_local_name(_("Offset"))
+	ret.push_back(ParamDesc("origin")
+		.set_local_name(_("Origin"))
 	);
 
 	ret.push_back(ParamDesc("gradient")
@@ -484,8 +486,8 @@ Plant::accelerated_render(Context context,Surface *surface,int quality, const Re
 	dest_surface.set_wh(surface->get_w(),surface->get_h());
 	dest_surface.clear();
 
-	const Point	tl(renddesc.get_tl()-offset);
-	const Point br(renddesc.get_br()-offset);
+	const Point	tl(renddesc.get_tl()-origin);
+	const Point br(renddesc.get_br()-origin);
 
 	const int	w(renddesc.get_w());
 	const int	h(renddesc.get_h());

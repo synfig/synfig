@@ -203,7 +203,7 @@ CurveGradient::sync()
 
 
 CurveGradient::CurveGradient():
-	offset(0,0),
+	origin(0,0),
 	width(0.25),
 	gradient(Color::black(), Color::white()),
 	loop(false),
@@ -251,7 +251,7 @@ CurveGradient::color_func(const Point &point_, int quality, float supersample)co
 	else
 	{
 		float t;
-		Point point(point_-offset);
+		Point point(point_-origin);
 
 		std::vector<synfig::BLinePoint>::const_iterator iter,next;
 
@@ -362,14 +362,14 @@ CurveGradient::color_func(const Point &point_, int quality, float supersample)co
 			const Real mag(diff.inv_mag());
 			supersample=supersample*mag;
 			diff*=mag*mag;
-			dist=((point_-offset)*diff-p1*diff);
+			dist=((point_-origin)*diff-p1*diff);
 		}
 	}
 	else						// not perpendicular
 	{
 		if (edge_case)
 		{
-			diff=(p1-(point_-offset));
+			diff=(p1-(point_-origin));
 			if(diff*tangent.perp()<0) diff=-diff;
 			diff=diff.norm()*thickness*width;
 		}
@@ -380,7 +380,7 @@ CurveGradient::color_func(const Point &point_, int quality, float supersample)co
 		const Real mag(diff.inv_mag());
 		supersample=supersample*mag;
 		diff*=mag*mag;
-		dist=((point_-offset)*diff-p1*diff);
+		dist=((point_-origin)*diff-p1*diff);
 	}
 
 	if(loop)
@@ -440,7 +440,7 @@ CurveGradient::set_param(const String & param, const ValueBase &value)
 {
 
 
-	IMPORT(offset);
+	IMPORT(origin);
 	IMPORT(perpendicular);
 	IMPORT(fast);
 
@@ -457,13 +457,16 @@ CurveGradient::set_param(const String & param, const ValueBase &value)
 	IMPORT(gradient);
 	IMPORT(loop);
 	IMPORT(zigzag);
+
+	IMPORT_AS(origin,"offset");
+
 	return Layer_Composite::set_param(param,value);
 }
 
 ValueBase
 CurveGradient::get_param(const String & param)const
 {
-	EXPORT(offset);
+	EXPORT(origin);
 	EXPORT(bline);
 	EXPORT(gradient);
 	EXPORT(loop);
@@ -483,8 +486,8 @@ CurveGradient::get_param_vocab()const
 {
 	Layer::Vocab ret(Layer_Composite::get_param_vocab());
 
-	ret.push_back(ParamDesc("offset")
-				  .set_local_name(_("Offset")));
+	ret.push_back(ParamDesc("origin")
+				  .set_local_name(_("Origin")));
 
 	ret.push_back(ParamDesc("width")
 				  .set_is_distance()
@@ -492,7 +495,7 @@ CurveGradient::get_param_vocab()const
 
 	ret.push_back(ParamDesc("bline")
 				  .set_local_name(_("Vertices"))
-				  .set_origin("offset")
+				  .set_origin("origin")
 				  .set_hint("width")
 				  .set_description(_("A list of BLine Points")));
 

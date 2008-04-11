@@ -67,7 +67,7 @@ Halftone2::Halftone2():
 	color_dark(Color::black()),
 	color_light(Color::white())
 {
-	halftone.offset=(synfig::Point(0,0));
+	halftone.origin=(synfig::Point(0,0));
 	halftone.size=(synfig::Vector(0.25,0.25));
 	halftone.angle=(Angle::zero());
 	halftone.type=TYPE_SYMMETRIC;
@@ -114,7 +114,9 @@ Halftone2::set_param(const String & param, const ValueBase &value)
 	IMPORT_AS(halftone.size,"size");
 	IMPORT_AS(halftone.type,"type");
 	IMPORT_AS(halftone.angle,"angle");
-	IMPORT_AS(halftone.offset,"offset");
+	IMPORT_AS(halftone.origin,"origin");
+
+	IMPORT_AS(halftone.origin,"offset");
 
 	return Layer_Composite::set_param(param,value);
 }
@@ -125,7 +127,7 @@ Halftone2::get_param(const String & param)const
 	EXPORT_AS(halftone.size,"size");
 	EXPORT_AS(halftone.type,"type");
 	EXPORT_AS(halftone.angle,"angle");
-	EXPORT_AS(halftone.offset,"offset");
+	EXPORT_AS(halftone.origin,"origin");
 
 	EXPORT(color_dark);
 	EXPORT(color_light);
@@ -141,18 +143,18 @@ Halftone2::get_param_vocab()const
 {
 	Layer::Vocab ret(Layer_Composite::get_param_vocab());
 
-	ret.push_back(ParamDesc("offset")
-		.set_local_name(_("Mask Offset"))
+	ret.push_back(ParamDesc("origin")
+		.set_local_name(_("Mask Origin"))
 		.set_is_distance()
 	);
 	ret.push_back(ParamDesc("angle")
 		.set_local_name(_("Mask Angle"))
-		.set_origin("offset")
+		.set_origin("origin")
 	);
 	ret.push_back(ParamDesc("size")
 		.set_local_name(_("Mask Size"))
 		.set_is_distance()
-		.set_origin("offset")
+		.set_origin("origin")
 	);
 	ret.push_back(ParamDesc("color_light")
 		.set_local_name(_("Light Color"))

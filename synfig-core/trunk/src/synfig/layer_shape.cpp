@@ -1124,7 +1124,7 @@ Layer_Shape::Layer_Shape(const Real &a, const Color::BlendMethod m):
 	Layer_Composite	(a,m),
 	edge_table		(new Intersector),
 	color			(Color::black()),
-	offset			(0,0),
+	origin			(0,0),
 	invert			(false),
 	antialias		(true),
 	blurtype		(Blur::FASTGAUSSIAN),
@@ -1154,12 +1154,14 @@ Layer_Shape::set_param(const String & param, const ValueBase &value)
 	IMPORT_PLUS(color, { if (color.get_a() == 0) { if (converted_blend_) {
 					set_blend_method(Color::BLEND_ALPHA_OVER);
 					color.set_a(1); } else transparent_color_ = true; } });
-	IMPORT(offset);
+	IMPORT(origin);
 	IMPORT(invert);
 	IMPORT(antialias);
 	IMPORT_PLUS(feather, if(feather<0)feather=0;);
 	IMPORT(blurtype);
 	IMPORT(winding_style);
+
+	IMPORT_AS(origin,"offset");
 
 	return Layer_Composite::set_param(param,value);
 }
@@ -1168,7 +1170,7 @@ ValueBase
 Layer_Shape::get_param(const String &param)const
 {
 	EXPORT(color);
-	EXPORT(offset);
+	EXPORT(origin);
 	EXPORT(invert);
 	EXPORT(antialias);
 	EXPORT(feather);
@@ -1190,8 +1192,8 @@ Layer_Shape::get_param_vocab()const
 		.set_local_name(_("Color"))
 		.set_description(_("Layer_Shape Color"))
 	);
-	ret.push_back(ParamDesc("offset")
-		.set_local_name(_("Offset"))
+	ret.push_back(ParamDesc("origin")
+		.set_local_name(_("Origin"))
 	);
 	ret.push_back(ParamDesc("invert")
 		.set_local_name(_("Invert"))
@@ -1227,7 +1229,7 @@ Layer_Shape::get_param_vocab()const
 synfig::Layer::Handle
 Layer_Shape::hit_check(synfig::Context context, const synfig::Point &p)const
 {
-	Point pos(p-offset);
+	Point pos(p-origin);
 
 	int intercepts = edge_table->intersect(pos[0],pos[1]);
 
@@ -1274,7 +1276,7 @@ Layer_Shape::get_color(Context context, const Point &p)const
 	if(feather)
 		pp = Blur(feather,feather,blurtype)(p);
 
-	Point pos(pp-offset);
+	Point pos(pp-origin);
 
 	int intercepts = edge_table->intersect(pos[0],pos[1]);
 
@@ -2474,7 +2476,7 @@ Layer_Shape::accelerated_render(Context context,Surface *surface,int quality, co
 	if(is_solid_color() && invert)
 	{
 		Rect aabb = edge_table->aabb;
-		Point tl = renddesc.get_tl() - offset;
+		Point tl = renddesc.get_tl() - origin;
 
 		Real	pw = renddesc.get_pw(),
 				ph = renddesc.get_ph();
@@ -2723,9 +2725,9 @@ Layer_Shape::render_shape(Surface *surface,bool useblend,int /*quality*/,
 				case Primitive::MOVE_TO:
 				{
 					x = data[curnum][0];
-					x = (x - tl[0] + offset[0])*pw;
+					x = (x - tl[0] + origin[0])*pw;
 					y = data[curnum][1];
-					y = (y - tl[1] + offset[1])*ph;
+					y = (y - tl[1] + origin[1])*ph;
 
 					if(curnum == 0)
 					{
@@ -2750,9 +2752,9 @@ Layer_Shape::render_shape(Surface *surface,bool useblend,int /*quality*/,
 				case Primitive::LINE_TO:
 				{
 					x = data[curnum][0];
-					x = (x - tl[0] + offset[0])*pw;
+					x = (x - tl[0] + origin[0])*pw;
 					y = data[curnum][1];
-					y = (y - tl[1] + offset[1])*ph;
+					y = (y - tl[1] + origin[1])*ph;
 
 					tangent[0] = x - span.cur_x;
 					tangent[1] = y - span.cur_y;
@@ -2765,14 +2767,14 @@ Layer_Shape::render_shape(Surface *surface,bool useblend,int /*quality*/,
 				case Primitive::CONIC_TO:
 				{
 					x = data[curnum+1][0];
-					x = (x - tl[0] + offset[0])*pw;
+					x = (x - tl[0] + origin[0])*pw;
 					y = data[curnum+1][1];
-					y = (y - tl[1] + offset[1])*ph;
+					y = (y - tl[1] + origin[1])*ph;
 
 					x1 = data[curnum][0];
-					x1 = (x1 - tl[0] + offset[0])*pw;
+					x1 = (x1 - tl[0] + origin[0])*pw;
 					y1 = data[curnum][1];
-					y1 = (y1 - tl[1] + offset[1])*ph;
+					y1 = (y1 - tl[1] + origin[1])*ph;
 
 					tangent[0] = 2*(x - x1);
 					tangent[1] = 2*(y - y1);
@@ -2785,9 +2787,9 @@ Layer_Shape::render_shape(Surface *surface,bool useblend,int /*quality*/,
 				case Primitive::CONIC_TO_SMOOTH:
 				{
 					x = data[curnum][0];
-					x = (x - tl[0] + offset[0])*pw;
+					x = (x - tl[0] + origin[0])*pw;
 					y = data[curnum][1];
-					y = (y - tl[1] + offset[1])*ph;
+					y = (y - tl[1] + origin[1])*ph;
 
 					x1 = span.cur_x + tangent[0]/2;
 					y1 = span.cur_y + tangent[1]/2;
@@ -2804,19 +2806,19 @@ Layer_Shape::render_shape(Surface *surface,bool useblend,int /*quality*/,
 				case Primitive::CUBIC_TO:
 				{
 					x = data[curnum+2][0];
-					x = (x - tl[0] + offset[0])*pw;
+					x = (x - tl[0] + origin[0])*pw;
 					y = data[curnum+2][1];
-					y = (y - tl[1] + offset[1])*ph;
+					y = (y - tl[1] + origin[1])*ph;
 
 					x2 = data[curnum+1][0];
-					x2 = (x2 - tl[0] + offset[0])*pw;
+					x2 = (x2 - tl[0] + origin[0])*pw;
 					y2 = data[curnum+1][1];
-					y2 = (y2 - tl[1] + offset[1])*ph;
+					y2 = (y2 - tl[1] + origin[1])*ph;
 
 					x1 = data[curnum][0];
-					x1 = (x1 - tl[0] + offset[0])*pw;
+					x1 = (x1 - tl[0] + origin[0])*pw;
 					y1 = data[curnum][1];
-					y1 = (y1 - tl[1] + offset[1])*ph;
+					y1 = (y1 - tl[1] + origin[1])*ph;
 
 					tangent[0] = 2*(x - x2);
 					tangent[1] = 2*(y - y2);
@@ -2830,14 +2832,14 @@ Layer_Shape::render_shape(Surface *surface,bool useblend,int /*quality*/,
 				case Primitive::CUBIC_TO_SMOOTH:
 				{
 					x = data[curnum+1][0];
-					x = (x - tl[0] + offset[0])*pw;
+					x = (x - tl[0] + origin[0])*pw;
 					y = data[curnum+1][1];
-					y = (y - tl[1] + offset[1])*ph;
+					y = (y - tl[1] + origin[1])*ph;
 
 					x2 = data[curnum][0];
-					x2 = (x2 - tl[0] + offset[0])*pw;
+					x2 = (x2 - tl[0] + origin[0])*pw;
 					y2 = data[curnum][1];
-					y2 = (y2 - tl[1] + offset[1])*ph;
+					y2 = (y2 - tl[1] + origin[1])*ph;
 
 					x1 = span.cur_x + tangent[0]/3.0;
 					y1 = span.cur_y + tangent[1]/3.0;
@@ -2952,9 +2954,9 @@ Layer_Shape::render_shape(etl::surface<float> *surface,int /*quality*/,
 				case Primitive::MOVE_TO:
 				{
 					x = data[curnum][0];
-					x = (x - tl[0] + offset[0])*pw;
+					x = (x - tl[0] + origin[0])*pw;
 					y = data[curnum][1];
-					y = (y - tl[1] + offset[1])*ph;
+					y = (y - tl[1] + origin[1])*ph;
 
 					if(curnum == 0)
 					{
@@ -2979,9 +2981,9 @@ Layer_Shape::render_shape(etl::surface<float> *surface,int /*quality*/,
 				case Primitive::LINE_TO:
 				{
 					x = data[curnum][0];
-					x = (x - tl[0] + offset[0])*pw;
+					x = (x - tl[0] + origin[0])*pw;
 					y = data[curnum][1];
-					y = (y - tl[1] + offset[1])*ph;
+					y = (y - tl[1] + origin[1])*ph;
 
 					tangent[0] = x - span.cur_x;
 					tangent[1] = y - span.cur_y;
@@ -2994,14 +2996,14 @@ Layer_Shape::render_shape(etl::surface<float> *surface,int /*quality*/,
 				case Primitive::CONIC_TO:
 				{
 					x = data[curnum+1][0];
-					x = (x - tl[0] + offset[0])*pw;
+					x = (x - tl[0] + origin[0])*pw;
 					y = data[curnum+1][1];
-					y = (y - tl[1] + offset[1])*ph;
+					y = (y - tl[1] + origin[1])*ph;
 
 					x1 = data[curnum][0];
-					x1 = (x1 - tl[0] + offset[0])*pw;
+					x1 = (x1 - tl[0] + origin[0])*pw;
 					y1 = data[curnum][1];
-					y1 = (y1 - tl[1] + offset[1])*ph;
+					y1 = (y1 - tl[1] + origin[1])*ph;
 
 					tangent[0] = 2*(x - x1);
 					tangent[1] = 2*(y - y1);
@@ -3014,9 +3016,9 @@ Layer_Shape::render_shape(etl::surface<float> *surface,int /*quality*/,
 				case Primitive::CONIC_TO_SMOOTH:
 				{
 					x = data[curnum][0];
-					x = (x - tl[0] + offset[0])*pw;
+					x = (x - tl[0] + origin[0])*pw;
 					y = data[curnum][1];
-					y = (y - tl[1] + offset[1])*ph;
+					y = (y - tl[1] + origin[1])*ph;
 
 					x1 = span.cur_x + tangent[0]/2;
 					y1 = span.cur_y + tangent[1]/2;
@@ -3033,19 +3035,19 @@ Layer_Shape::render_shape(etl::surface<float> *surface,int /*quality*/,
 				case Primitive::CUBIC_TO:
 				{
 					x = data[curnum+2][0];
-					x = (x - tl[0] + offset[0])*pw;
+					x = (x - tl[0] + origin[0])*pw;
 					y = data[curnum+2][1];
-					y = (y - tl[1] + offset[1])*ph;
+					y = (y - tl[1] + origin[1])*ph;
 
 					x2 = data[curnum+1][0];
-					x2 = (x2 - tl[0] + offset[0])*pw;
+					x2 = (x2 - tl[0] + origin[0])*pw;
 					y2 = data[curnum+1][1];
-					y2 = (y2 - tl[1] + offset[1])*ph;
+					y2 = (y2 - tl[1] + origin[1])*ph;
 
 					x1 = data[curnum][0];
-					x1 = (x1 - tl[0] + offset[0])*pw;
+					x1 = (x1 - tl[0] + origin[0])*pw;
 					y1 = data[curnum][1];
-					y1 = (y1 - tl[1] + offset[1])*ph;
+					y1 = (y1 - tl[1] + origin[1])*ph;
 
 					tangent[0] = 2*(x - x2);
 					tangent[1] = 2*(y - y2);
@@ -3059,14 +3061,14 @@ Layer_Shape::render_shape(etl::surface<float> *surface,int /*quality*/,
 				case Primitive::CUBIC_TO_SMOOTH:
 				{
 					x = data[curnum+1][0];
-					x = (x - tl[0] + offset[0])*pw;
+					x = (x - tl[0] + origin[0])*pw;
 					y = data[curnum+1][1];
-					y = (y - tl[1] + offset[1])*ph;
+					y = (y - tl[1] + origin[1])*ph;
 
 					x2 = data[curnum][0];
-					x2 = (x2 - tl[0] + offset[0])*pw;
+					x2 = (x2 - tl[0] + origin[0])*pw;
 					y2 = data[curnum][1];
-					y2 = (y2 - tl[1] + offset[1])*ph;
+					y2 = (y2 - tl[1] + origin[1])*ph;
 
 					x1 = span.cur_x + tangent[0]/3.0;
 					y1 = span.cur_y + tangent[1]/3.0;
@@ -3098,7 +3100,7 @@ Layer_Shape::get_bounding_rect()const
 	if (edge_table->initaabb)
 		return Rect::zero();
 
-	Rect bounds(edge_table->aabb+offset);
+	Rect bounds(edge_table->aabb+origin);
 	bounds.expand(max((bounds.get_min() - bounds.get_max()).mag()*0.01,
 					  feather));
 

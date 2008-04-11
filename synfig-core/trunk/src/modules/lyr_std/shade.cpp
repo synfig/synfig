@@ -81,7 +81,7 @@ Layer_Shade::Layer_Shade():
 	size(0.1,0.1),
 	type(Blur::FASTGAUSSIAN),
 	color(Color::black()),
-	offset(0.2,-0.2),
+	origin(0.2,-0.2),
 	invert(false)
 {
 }
@@ -94,8 +94,10 @@ Layer_Shade::set_param(const String &param, const ValueBase &value)
 	IMPORT_PLUS(color, { if (color.get_a() == 0) { if (converted_blend_) {
 					set_blend_method(Color::BLEND_ALPHA_OVER);
 					color.set_a(1); } else transparent_color_ = true; } });
-	IMPORT(offset);
+	IMPORT(origin);
 	IMPORT(invert);
+
+	IMPORT_AS(origin,"offset");
 
 	return Layer_Composite::set_param(param,value);
 }
@@ -106,7 +108,7 @@ Layer_Shade::get_param(const String &param)const
 	EXPORT(size);
 	EXPORT(type);
 	EXPORT(color);
-	EXPORT(offset);
+	EXPORT(origin);
 	EXPORT(invert);
 
 	EXPORT_NAME();
@@ -126,9 +128,9 @@ Layer_Shade::get_color(Context context, const Point &pos)const
 	Color shade(color);
 
 	if(!invert)
-		shade.set_a(context.get_color(blurpos-offset).get_a());
+		shade.set_a(context.get_color(blurpos-origin).get_a());
 	else
-		shade.set_a(1.0f-context.get_color(blurpos-offset).get_a());
+		shade.set_a(1.0f-context.get_color(blurpos-origin).get_a());
 
 	return Color::blend(shade,context.get_color(pos),get_amount(),get_blend_method());
 }
@@ -153,15 +155,15 @@ Layer_Shade::accelerated_render(Context context,Surface *surface,int quality, co
 	int	halfsizex = (int) (abs(size[0]*.5/pw) + 3),
 		halfsizey = (int) (abs(size[1]*.5/ph) + 3);
 
-	int offset_u(-round_to_int(offset[0]/pw)),offset_v(-round_to_int(offset[1]/ph));
+	int origin_u(-round_to_int(origin[0]/pw)),origin_v(-round_to_int(origin[1]/ph));
 
-	int offset_w(w+abs(offset_u)),offset_h(h+abs(offset_v));
+	int origin_w(w+abs(origin_u)),origin_h(h+abs(origin_v));
 
 	workdesc.set_subwindow(
-		offset_u<0?offset_u:0,
-		offset_v<0?offset_v:0,
-		(offset_u>0?offset_u:0)+w,
-		(offset_v>0?offset_v:0)+h
+		origin_u<0?origin_u:0,
+		origin_v<0?origin_v:0,
+		(origin_u>0?origin_u:0)+w,
+		(origin_v>0?origin_v:0)+h
 	);
 
 	if(quality >= 10)
@@ -182,7 +184,7 @@ Layer_Shade::accelerated_render(Context context,Surface *surface,int quality, co
 		case Blur::BOX:
 		case Blur::CROSS:
 		{
-			workdesc.set_subwindow(-max(1,halfsizex),-max(1,halfsizey),offset_w+2*max(1,halfsizex),offset_h+2*max(1,halfsizey));
+			workdesc.set_subwindow(-max(1,halfsizex),-max(1,halfsizey),origin_w+2*max(1,halfsizex),origin_h+2*max(1,halfsizey));
 			break;
 		}
 		case Blur::FASTGAUSSIAN:
@@ -192,7 +194,7 @@ Layer_Shade::accelerated_render(Context context,Surface *surface,int quality, co
 				halfsizex*=2;
 				halfsizey*=2;
 			}
-			workdesc.set_subwindow(-max(1,halfsizex),-max(1,halfsizey),offset_w+2*max(1,halfsizex),offset_h+2*max(1,halfsizey));
+			workdesc.set_subwindow(-max(1,halfsizex),-max(1,halfsizey),origin_w+2*max(1,halfsizex),origin_h+2*max(1,halfsizey));
 			break;
 		}
 		case Blur::GAUSSIAN:
@@ -209,7 +211,7 @@ Layer_Shade::accelerated_render(Context context,Surface *surface,int quality, co
 
 			halfsizex = (halfsizex + 1)/2;
 			halfsizey = (halfsizey + 1)/2;
-			workdesc.set_subwindow( -halfsizex, -halfsizey, offset_w+2*halfsizex, offset_h+2*halfsizey );
+			workdesc.set_subwindow( -halfsizex, -halfsizey, origin_w+2*halfsizex, origin_h+2*halfsizey );
 
 			break;
 		}
@@ -260,18 +262,18 @@ Layer_Shade::accelerated_render(Context context,Surface *surface,int quality, co
 		//be sure the surface is of the correct size
 		surface->set_wh(renddesc.get_w(),renddesc.get_h());
 
-		int u = halfsizex-(offset_u<0?offset_u:0), v = halfsizey-(offset_v<0?offset_v:0);
+		int u = halfsizex-(origin_u<0?origin_u:0), v = halfsizey-(origin_v<0?origin_v:0);
 		for(y=0;y<renddesc.get_h();y++,v++)
 		{
-			u = halfsizex-(offset_u<0?offset_u:0);
+			u = halfsizex-(origin_u<0?origin_u:0);
 			for(x=0;x<renddesc.get_w();x++,u++)
 			{
 				Color a(color);
 
 				if(!invert)
-					a.set_a(blurred.linear_sample(offset_u+(float)u,offset_v+(float)v));
+					a.set_a(blurred.linear_sample(origin_u+(float)u,origin_v+(float)v));
 				else
-					a.set_a(1.0f-blurred.linear_sample(offset_u+(float)u,offset_v+(float)v));
+					a.set_a(1.0f-blurred.linear_sample(origin_u+(float)u,origin_v+(float)v));
 
 				if(a.get_a() || get_blend_method()==Color::BLEND_STRAIGHT)
 				{
@@ -333,18 +335,18 @@ Layer_Shade::accelerated_render(Context context,Surface *surface,int quality, co
 		Blur(size,type,&stagetwo)(blurred,workdesc.get_br()-workdesc.get_tl(),blurred);
 
 
-		int u = halfsizex-(offset_u<0?offset_u:0), v = halfsizey-(offset_v<0?offset_v:0);
+		int u = halfsizex-(origin_u<0?origin_u:0), v = halfsizey-(origin_v<0?origin_v:0);
 		for(y=0;y<renddesc.get_h();y++,v++)
 		{
-			u = halfsizex-(offset_u<0?offset_u:0);
+			u = halfsizex-(origin_u<0?origin_u:0);
 			for(x=0;x<renddesc.get_w();x++,u++)
 			{
 				Color a(color);
 
 				if(!invert)
-					a.set_a(blurred.linear_sample(((float)offset_u+(float)u)/(float)fw,((float)offset_v+(float)v)/(float)fh));
+					a.set_a(blurred.linear_sample(((float)origin_u+(float)u)/(float)fw,((float)origin_v+(float)v)/(float)fh));
 				else
-					a.set_a(1.0f-blurred.linear_sample(((float)offset_u+(float)u)/fw,((float)offset_v+(float)v)/(float)fh));
+					a.set_a(1.0f-blurred.linear_sample(((float)origin_u+(float)u)/fw,((float)origin_v+(float)v)/(float)fh));
 
 				if(a.get_a() || get_blend_method()==Color::BLEND_STRAIGHT)
 				{
@@ -372,14 +374,14 @@ Layer_Shade::get_param_vocab(void)const
 	ret.push_back(ParamDesc("color")
 		.set_local_name(_("Color"))
 	);
-	ret.push_back(ParamDesc("offset")
-		.set_local_name(_("Offset"))
+	ret.push_back(ParamDesc("origin")
+		.set_local_name(_("Origin"))
 	);
 	ret.push_back(ParamDesc("size")
 		.set_local_name(_("Size"))
 		.set_description(_("Size of Shade"))
 		.set_is_distance()
-		.set_origin("offset")
+		.set_origin("origin")
 	);
 	ret.push_back(ParamDesc("type")
 		.set_local_name(_("Type"))
@@ -413,7 +415,7 @@ Layer_Shade::get_full_bounding_rect(Context context)const
 	if(Color::is_onto(get_blend_method()))
 		return under;
 
-	Rect bounds((under+offset).expand_x(size[0]).expand_y(size[1]));
+	Rect bounds((under+origin).expand_x(size[0]).expand_y(size[1]));
 
 	if(is_solid_color())
 		return bounds;

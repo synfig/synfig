@@ -66,7 +66,7 @@ private:
 	//exported data
 	Color 					color;
 
-	Point 	offset;
+	Point 	origin;
 	bool	invert;
 	bool	antialias;
 

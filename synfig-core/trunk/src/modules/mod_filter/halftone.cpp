@@ -88,7 +88,7 @@ Halftone::mask(synfig::Point point)const
 	float radius1;
 	float radius2;
 
-	point-=offset;
+	point-=origin;
 
 	{
 		const float	a(Angle::sin(-angle).get()),	b(Angle::cos(-angle).get());

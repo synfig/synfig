@@ -169,7 +169,7 @@ Layer_Polygon::get_param_vocab()const
 
 	ret.push_back(ParamDesc("vector_list")
 		.set_local_name(_("Vector List"))
-		.set_origin("offset")
+		.set_origin("origin")
 	);
 
 	return ret;

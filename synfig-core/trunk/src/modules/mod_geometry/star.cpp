@@ -174,20 +174,20 @@ Star::get_param_vocab()const
 		.set_local_name(_("Outer Radius"))
 		.set_description(_("The radius of the outer points in the star"))
 		.set_is_distance()
-		.set_origin("offset")
+		.set_origin("origin")
 	);
 
 	ret.push_back(ParamDesc("radius2")
 		.set_local_name(_("Inner Radius"))
 		.set_description(_("The radius of the inner points in the star"))
 		.set_is_distance()
-		.set_origin("offset")
+		.set_origin("origin")
 	);
 
 	ret.push_back(ParamDesc("angle")
 		.set_local_name(_("Angle"))
 		.set_description(_("The orientation of the star"))
-		.set_origin("offset")
+		.set_origin("origin")
 	);
 
 	ret.push_back(ParamDesc("points")
