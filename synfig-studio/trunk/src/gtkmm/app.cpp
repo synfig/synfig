@@ -1859,7 +1859,7 @@ App::dialog_open_file(const std::string &title, std::string &filename, std::stri
 
     if(dialog->run() == GTK_RESPONSE_ACCEPT) {
         filename = dialog->get_filename();
-		info("Saving preference %s = '%s' in App::dialog_open_file()", preference.c_str(), dirname(filename).c_str());
+		// info("Saving preference %s = '%s' in App::dialog_open_file()", preference.c_str(), dirname(filename).c_str());
 		_preferences.set_value(preference, dirname(filename));
         delete dialog;
         return true;
@@ -2018,7 +2018,7 @@ App::dialog_save_file(const std::string &title, std::string &filename, std::stri
 		if (preference == ANIMATION_DIR_PREFERENCE)
 			set_file_version(synfig::ReleaseVersion(file_type_enum->get_value()));
         filename = dialog->get_filename();
-		info("Saving preference %s = '%s' in App::dialog_save_file()", preference.c_str(), dirname(filename).c_str());
+		// info("Saving preference %s = '%s' in App::dialog_save_file()", preference.c_str(), dirname(filename).c_str());
 		_preferences.set_value(preference, dirname(filename));
         delete dialog;
         return true;
