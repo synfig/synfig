@@ -254,9 +254,10 @@ Duckmatic::is_duck_group_selectable(const etl::handle<Duck>& x)const
 		 !x->get_editable()))
 		return false;
 
-	if(x->get_value_desc().parent_is_layer_param() && type & Duck::TYPE_POSITION)
+	synfigapp::ValueDesc value_desc(x->get_value_desc());
+	if(value_desc.parent_is_layer_param() && type & Duck::TYPE_POSITION)
 	{
-		Layer::Handle layer(x->get_value_desc().get_layer());
+		Layer::Handle layer(value_desc.get_layer());
 		String layer_name(layer->get_name());
 
 		if (layer_name == "outline" || layer_name == "region" || layer_name == "plant" ||
@@ -266,6 +267,21 @@ Duckmatic::is_duck_group_selectable(const etl::handle<Duck>& x)const
 		if((layer_name=="PasteCanvas"|| layer_name=="paste_canvas") &&
 		   !layer->get_param("children_lock").get(bool()))
 			return false;
+	}
+	else if (value_desc.parent_is_value_node())
+	{
+		if (ValueNode_BLineCalcVertex::Handle::cast_dynamic(value_desc.get_value_node()))
+			return false;
+		if (value_desc.parent_is_linkable_value_node())
+		{
+			LinkableValueNode::Handle parent_value_node(value_desc.get_parent_value_node());
+			if (ValueNode_Composite::Handle::cast_dynamic(parent_value_node) &&
+				parent_value_node->get_type() == ValueBase::TYPE_BLINEPOINT &&
+				ValueNode_BLineCalcVertex::Handle::cast_dynamic(
+					synfigapp::ValueDesc(parent_value_node,
+										 parent_value_node->get_link_index_from_name("point")).get_value_node()))
+				return false;
+		}
 	}
 	return true;
 }
