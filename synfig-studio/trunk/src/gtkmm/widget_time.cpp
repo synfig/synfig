@@ -120,13 +120,13 @@ Widget_Time::on_event(GdkEvent* event)
 	switch(event->type)
 	{
 	case GDK_SCROLL:
-		if(event->scroll.direction==GDK_SCROLL_DOWN)
+		if(event->scroll.direction==GDK_SCROLL_DOWN || event->scroll.direction==GDK_SCROLL_LEFT)
 		{
 			time_-=scroll_amount;
 			refresh_text();
 			signal_value_changed()();
 		}
-		else if(event->scroll.direction==GDK_SCROLL_UP)
+		else if(event->scroll.direction==GDK_SCROLL_UP || event->scroll.direction==GDK_SCROLL_RIGHT)
 		{
 			time_+=scroll_amount;
 			refresh_text();
