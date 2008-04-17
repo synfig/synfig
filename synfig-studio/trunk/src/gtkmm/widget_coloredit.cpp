@@ -213,8 +213,43 @@ ColorSlider::redraw(GdkEventExpose */*bleh*/)
 bool
 ColorSlider::on_event(GdkEvent *event)
 {
-	float pos(event->button.x/(float)get_width());
-	if(pos<0 || event->button.x<=0)pos=0;
+	const int width(get_width());
+	float x = 0;
+	if( GDK_SCROLL == event->type ){
+		Color color(color_);
+		float amount;
+		switch(type)
+		{
+			case TYPE_R: amount=color.get_r(); break;
+			case TYPE_G: amount=color.get_g(); break;
+			case TYPE_B: amount=color.get_b(); break;
+			case TYPE_Y: amount=color.get_y(); break;
+			case TYPE_U: amount=color.get_u()+0.5; break;
+			case TYPE_V: amount=color.get_v()+0.5; break;
+			case TYPE_HUE: amount=Angle::rot(color.get_uv_angle()).get(); amount-=floor(amount); break;
+			case TYPE_SAT: amount=color.get_s()*2.0; break;
+			case TYPE_A: amount=color.get_a(); break;
+			default: amount=0; break;
+		}
+		if(use_colorspace_gamma() && (type<TYPE_U))
+			amount=gamma_in(amount);
+		x = amount*width;
+		switch(event->scroll.direction){
+			case GDK_SCROLL_UP:
+			case GDK_SCROLL_RIGHT:
+				x+=1.0;
+				break;
+			case GDK_SCROLL_DOWN:
+			case GDK_SCROLL_LEFT:
+				x-=1.0;
+				break;
+		}
+	} else {
+		x = float(event->button.x);
+	}
+	
+	float pos(x/width);
+	if(pos<0 || x<=0)pos=0;
 	if(pos>1)pos=1;
 
 	if(use_colorspace_gamma() && (type<TYPE_U))
@@ -224,6 +259,12 @@ ColorSlider::on_event(GdkEvent *event)
 
 	switch(event->type)
 	{
+	case GDK_SCROLL:
+		signal_slider_moved_(type,pos);
+		queue_draw();
+		signal_activated_();
+		return true;
+
 	case GDK_BUTTON_RELEASE:
 		signal_activated_();
 		return true;
