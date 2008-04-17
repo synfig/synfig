@@ -313,6 +313,7 @@ Plant::set_param(const String & param, const ValueBase &value)
 	IMPORT(size);
 	IMPORT(size_as_alpha);
 	IMPORT(reverse);
+	IMPORT(use_width);
 
 	IMPORT_AS(origin,"offset");
 
@@ -361,9 +362,9 @@ Plant::get_param(const String& param)const
 	EXPORT(random_factor);
 	EXPORT(drag);
 	EXPORT(size);
-
 	EXPORT(size_as_alpha);
 	EXPORT(reverse);
+	EXPORT(use_width);
 
 	EXPORT_NAME();
 
@@ -459,6 +460,11 @@ Plant::get_param_vocab()const
 	ret.push_back(ParamDesc("drag")
 		.set_local_name(_("Drag"))
 		.set_description(_("Drag slows the growth"))
+	);
+
+	ret.push_back(ParamDesc("use_width")
+		.set_local_name(_("Use Width"))
+		.set_description(_("Scale the velocity by the bline's width"))
 	);
 
 	return ret;
