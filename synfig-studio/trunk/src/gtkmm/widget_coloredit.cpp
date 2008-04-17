@@ -228,6 +228,7 @@ ColorSlider::on_event(GdkEvent *event)
 		signal_activated_();
 		return true;
 
+	case GDK_BUTTON_PRESS:
 	case GDK_MOTION_NOTIFY:
 //		adjust_color(type,color_,pos);
 		signal_slider_moved_(type,pos);
