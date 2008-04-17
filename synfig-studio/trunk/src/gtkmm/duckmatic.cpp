@@ -275,12 +275,21 @@ Duckmatic::is_duck_group_selectable(const etl::handle<Duck>& x)const
 		if (value_desc.parent_is_linkable_value_node())
 		{
 			LinkableValueNode::Handle parent_value_node(value_desc.get_parent_value_node());
-			if (ValueNode_Composite::Handle::cast_dynamic(parent_value_node) &&
-				parent_value_node->get_type() == ValueBase::TYPE_BLINEPOINT &&
-				ValueNode_BLineCalcVertex::Handle::cast_dynamic(
-					synfigapp::ValueDesc(parent_value_node,
-										 parent_value_node->get_link_index_from_name("point")).get_value_node()))
-				return false;
+			if (ValueNode_Composite::Handle::cast_dynamic(parent_value_node))
+			{
+				if (parent_value_node->get_type() == ValueBase::TYPE_BLINEPOINT &&
+					ValueNode_BLineCalcVertex::Handle::cast_dynamic(
+						parent_value_node->get_link("point")))
+					return false;
+			}
+			else if (ValueNode_BLine::Handle::cast_dynamic(parent_value_node))
+			{
+				ValueNode_Composite::Handle composite(ValueNode_Composite::Handle::cast_dynamic(
+														  value_desc.get_value_node()));
+				if (composite &&
+					ValueNode_BLineCalcVertex::Handle::cast_dynamic(composite->get_link("point")))
+					return false;
+			}
 		}
 	}
 	return true;
@@ -542,7 +551,13 @@ DuckDrag_Translate::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector
 		{
 			duck->set_trans_point(positions[i]+vect);
 
-			if (ValueNode_BLineCalcVertex::Handle bline_vertex = ValueNode_BLineCalcVertex::Handle::cast_dynamic(duck->get_value_desc().get_value_node()))
+			ValueNode_BLineCalcVertex::Handle bline_vertex;
+			ValueNode_Composite::Handle composite;
+
+			if ((bline_vertex = ValueNode_BLineCalcVertex::Handle::cast_dynamic(duck->get_value_desc().get_value_node())) ||
+				((composite = ValueNode_Composite::Handle::cast_dynamic(duck->get_value_desc().get_value_node())) &&
+				 composite->get_type() == ValueBase::TYPE_BLINEPOINT &&
+				 (bline_vertex = ValueNode_BLineCalcVertex::Handle::cast_dynamic(composite->get_link("point")))))
 			{
 				synfig::Point closest_point = duck->get_point();
 				synfig::Real radius = 0.0;
@@ -570,8 +585,13 @@ DuckDrag_Translate::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector
 		etl::handle<Duck> duck(*iter);
 		if (duck->get_type() == Duck::TYPE_VERTEX || duck->get_type() == Duck::TYPE_POSITION)
 		{
-			ValueNode_BLineCalcVertex::Handle bline_vertex(ValueNode_BLineCalcVertex::Handle::cast_dynamic(duck->get_value_desc().get_value_node()));
-			if (bline_vertex)
+			ValueNode_BLineCalcVertex::Handle bline_vertex;
+			ValueNode_Composite::Handle composite;
+
+			if ((bline_vertex = ValueNode_BLineCalcVertex::Handle::cast_dynamic(duck->get_value_desc().get_value_node())) ||
+				((composite = ValueNode_Composite::Handle::cast_dynamic(duck->get_value_desc().get_value_node())) &&
+				 composite->get_type() == ValueBase::TYPE_BLINEPOINT &&
+				 (bline_vertex = ValueNode_BLineCalcVertex::Handle::cast_dynamic(composite->get_link("point")))))
 			{
 				synfig::Real radius = 0.0;
 				ValueNode_BLine::Handle bline(ValueNode_BLine::Handle::cast_dynamic(bline_vertex->get_link(bline_vertex->get_link_index_from_name("bline"))));
@@ -1532,6 +1552,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 										false),
 									1.0f),
 								synfigapp::ValueDesc(value_node,i)));
+						duck->set_value_desc(synfigapp::ValueDesc(value_node,i));
 
 						if(param_desc)
 						{
@@ -1661,6 +1682,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 									false),
 								1.0f),
 							synfigapp::ValueDesc(value_node,i)));
+					duck->set_value_desc(synfigapp::ValueDesc(value_node,i));
 
 					add_bezier(bezier);
 					bezier=0;
@@ -1717,6 +1739,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 									false),
 								1.0f),
 							synfigapp::ValueDesc(value_node,i)));
+					duck->set_value_desc(synfigapp::ValueDesc(value_node,i));
 
 				}
 
@@ -1784,6 +1807,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 								false),
 							1.0f),
 						synfigapp::ValueDesc(value_node,first)));
+				duck->set_value_desc(synfigapp::ValueDesc(value_node,first));
 
 				add_bezier(bezier);
 				bezier=0;
