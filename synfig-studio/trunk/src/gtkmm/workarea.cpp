@@ -1374,7 +1374,7 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 							if (get_canvas_view()->canvas_interface()->
 								change_value(synfigapp::ValueDesc(parent_value_node,
 																  parent_value_node->get_link_index_from_name("split")),
-											 true);
+											 true))
 							{
 								// rebuild the ducks from scratch, so the tangents ducks aren't connected
 								get_canvas_view()->rebuild_ducks();
