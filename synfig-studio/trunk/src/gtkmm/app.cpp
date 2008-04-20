@@ -1624,10 +1624,13 @@ App::load_settings()
 				{
 					if(!window_size_broken && !file_window_size)
 						window_size_broken = true;
-					if(!window_size_broken)
-						add_recent_file(recent_file,recent_file_window_size);
-					else
-						add_recent_file(recent_file);
+					if (std::ifstream(recent_file.c_str()))
+					{
+						if(!window_size_broken)
+							add_recent_file(recent_file,recent_file_window_size);
+						else
+							add_recent_file(recent_file);
+					}
 				}
 			}
 			if(!window_size_broken && file_window_size)
