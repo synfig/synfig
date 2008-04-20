@@ -1371,15 +1371,19 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 						// if the tangent isn't split, then split it
 						if (!((*(parent_value_node->get_link("split")))(get_time()).get(bool())))
 						{
-							get_canvas_view()->canvas_interface()->
+							if (get_canvas_view()->canvas_interface()->
 								change_value(synfigapp::ValueDesc(parent_value_node,
 																  parent_value_node->get_link_index_from_name("split")),
 											 true);
-							// rebuild the ducks from scratch, so the tangents ducks aren't connected
-							get_canvas_view()->rebuild_ducks();
+							{
+								// rebuild the ducks from scratch, so the tangents ducks aren't connected
+								get_canvas_view()->rebuild_ducks();
 
-							// reprocess the mouse click
-							return on_drawing_area_event(event);
+								// reprocess the mouse click
+								return on_drawing_area_event(event);
+							}
+							else
+								return true;
 						}
 					} else {
 						// I don't know how to access the vertex from the tangent duck when originally drawing the bline in the bline tool
