@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: es\n"
 "Report-Msgid-Bugs-To: http://synfig.org/Bugs\n"
-"POT-Creation-Date: 2008-04-22 23:00+0200\n"
-"PO-Revision-Date: 2008-04-22 23:55+0200\n"
+"POT-Creation-Date: 2008-05-04 22:52+0200\n"
+"PO-Revision-Date: 2008-05-05 16:22+0200\n"
 "Last-Translator: Carlos López González <carloslopezgonzalez@yahoo.es>\n"
 "Language-Team: Español <en@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -612,7 +612,8 @@ msgstr "_Ayuda"
 
 #: src/gtkmm/app.cpp:2191
 msgid "No browser was found. Please load this website manually:"
-msgstr "No se ha encontrado navegador. Por favor cargue esta página web manualmente:"
+msgstr ""
+"No se ha encontrado navegador. Por favor cargue esta página web manualmente:"
 
 #: src/gtkmm/app.cpp:2193
 msgid "No browser found"
@@ -1633,7 +1634,8 @@ msgstr ""
 
 #: src/gtkmm/instance.cpp:503
 msgid "Enter a log message describing the changes you have made"
-msgstr "Introduzca un mensaje de diario describiendo los cambios que ha realizado"
+msgstr ""
+"Introduzca un mensaje de diario describiendo los cambios que ha realizado"
 
 #: src/gtkmm/instance.cpp:511
 msgid "An error has occurred when trying to COMMIT"
@@ -1648,7 +1650,8 @@ msgid "An error has occurred when trying to ADD"
 msgstr "Un error ha ocurrido cuando se intentaba AÑADIR"
 
 #: src/gtkmm/instance.cpp:547
-msgid "This file is not under version control, so there is nothing to update from!"
+msgid ""
+"This file is not under version control, so there is nothing to update from!"
 msgstr ""
 "Este archivo no está actualmente bajo control de versión, así que ¡nada que "
 "actualizar!"
@@ -1662,7 +1665,8 @@ msgid "An error has occurred when trying to UPDATE"
 msgstr "Ha ocurrido un error cuando trataba de ACTUALIZAR"
 
 #: src/gtkmm/instance.cpp:588
-msgid "This file is not under version control, so there is nothing to revert to!"
+msgid ""
+"This file is not under version control, so there is nothing to revert to!"
 msgstr ""
 "Este archivo no está actualmente bajo control de versión, así que ¡nada que "
 "desactualizar!"
@@ -2210,7 +2214,8 @@ msgid "Insert Vertex"
 msgstr "Insertar Vértice"
 
 #: src/gtkmm/state_bline.cpp:1336
-msgid "Unable to find where to insert vertex, internal error, please report this bug"
+msgid ""
+"Unable to find where to insert vertex, internal error, please report this bug"
 msgstr ""
 "Imposible encontrar donde insertar el vértice, error interno, por favor "
 "reporte este bug"
@@ -2250,6 +2255,8 @@ msgid "Determines the falloff function for the feather"
 msgstr "Determina la funcíon de caída del desvanecimiento"
 
 #: src/gtkmm/state_circle.cpp:409 src/gtkmm/state_gradient.cpp:273
+#: src/gtkmm/widget_waypoint.cpp:88 src/gtkmm/widget_waypoint.cpp:95
+#: src/gtkmm/widget_waypointmodel.cpp:74 src/gtkmm/widget_waypointmodel.cpp:81
 msgid "Linear"
 msgstr "Linear"
 
@@ -2760,6 +2767,24 @@ msgstr "Quitar CPunto"
 msgid "(Non-static value)"
 msgstr "(Valor no-estático)"
 
+#: src/gtkmm/widget_waypoint.cpp:86 src/gtkmm/widget_waypoint.cpp:93
+#: src/gtkmm/widget_waypointmodel.cpp:72 src/gtkmm/widget_waypointmodel.cpp:79
+msgid "TCB Smooth"
+msgstr "TCB"
+
+#: src/gtkmm/widget_waypoint.cpp:87 src/gtkmm/widget_waypoint.cpp:94
+#: src/gtkmm/widget_waypointmodel.cpp:73 src/gtkmm/widget_waypointmodel.cpp:80
+msgid "Constant"
+msgstr "Constante"
+
+#: src/gtkmm/widget_waypoint.cpp:89 src/gtkmm/widget_waypointmodel.cpp:75
+msgid "Ease In"
+msgstr "Suave"
+
+#: src/gtkmm/widget_waypoint.cpp:96 src/gtkmm/widget_waypointmodel.cpp:82
+msgid "Ease Out"
+msgstr "Suave"
+
 #: src/gtkmm/widget_waypoint.cpp:121
 #: src/synfigapp/actions/waypointremove.cpp:78
 #: src/synfigapp/actions/waypointset.cpp:77
@@ -2797,7 +2822,7 @@ msgstr "Interpolación de _Salida"
 
 #: src/gtkmm/widget_waypoint.cpp:174
 msgid "TCB Parameters"
-msgstr "Parámetros TBC"
+msgstr "Parámetros TCB"
 
 #: src/gtkmm/widget_waypoint.cpp:176
 msgid "<b>TCB Parameter</b>"
@@ -3246,11 +3271,11 @@ msgstr "Capa para ser añadida"
 #: src/synfigapp/actions/layerduplicate.cpp:52
 #: src/synfigapp/actions/layerduplicate.cpp:72
 msgid "Duplicate Layer"
-msgstr "Duplciar Capa"
+msgstr "Duplicar Capa"
 
 #: src/synfigapp/actions/layerduplicate.cpp:72
 msgid "Duplicate Layers"
-msgstr "Duplciar Capas"
+msgstr "Duplicar Capas"
 
 #: src/synfigapp/actions/layerduplicate.cpp:82
 msgid "Layer to be duplicated"
@@ -3452,7 +3477,8 @@ msgstr "Nuevo Valor Base Seleccionado"
 #: src/synfigapp/actions/timepointsdelete.cpp:97
 #: src/synfigapp/actions/timepointsmove.cpp:98
 msgid "A valuenode's description to add to our selected list"
-msgstr "Una descripción del valor de nodo a añadir a nuestra lista seleccionada"
+msgstr ""
+"Una descripción del valor de nodo a añadir a nuestra lista seleccionada"
 
 #: src/synfigapp/actions/timepointscopy.cpp:104
 #: src/synfigapp/actions/timepointsdelete.cpp:103
@@ -3560,7 +3586,8 @@ msgstr "El nombre con el que quiere que se exporte este valor"
 
 #: src/synfigapp/actions/valuedescexport.cpp:151
 msgid "Can only export Canvas when used as constant parameter"
-msgstr "Sólo se puede exportar un lienzo cuando se use como parámetro constante"
+msgstr ""
+"Sólo se puede exportar un lienzo cuando se use como parámetro constante"
 
 #: src/synfigapp/actions/valuedescexport.cpp:174
 msgid "ValueBase is already exported"
@@ -3672,7 +3699,8 @@ msgstr "Mal tipo para composición radial (%s)"
 #: src/synfigapp/actions/valuedescset.cpp:497
 #: src/synfigapp/actions/valuedescset.cpp:544
 msgid "Direct manipulation of this ValueNode type is not yet supported"
-msgstr "Manipulación directa de este tipo de Valor de Nodo no esta soportado aún"
+msgstr ""
+"Manipulación directa de este tipo de Valor de Nodo no esta soportado aún"
 
 #: src/synfigapp/actions/valuedescset.cpp:542
 msgid "You must be in Animate-Editing-Mode to directly manipulate this value"
@@ -4132,4 +4160,3 @@ msgstr "Valor de Nodo"
 #: src/synfigapp/value_desc.cpp:81
 msgid "Exported ValueNode"
 msgstr "Valor de Nodo Exportado"
-
