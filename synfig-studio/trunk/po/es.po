@@ -3,14 +3,15 @@
 # This file is distributed under the same license as the PACKAGE package.
 #
 # Carlos López González <carloslopezgonzalez@yahoo.es>, 2008.
+# Franco Iacomella <yaco@gnu.org>, 2008.
 msgid ""
 msgstr ""
 "Project-Id-Version: es\n"
 "Report-Msgid-Bugs-To: http://synfig.org/Bugs\n"
-"POT-Creation-Date: 2008-05-04 22:52+0200\n"
+"POT-Creation-Date: 2008-05-15 22:06+0800\n"
 "PO-Revision-Date: 2008-05-05 16:22+0200\n"
-"Last-Translator: Carlos López González <carloslopezgonzalez@yahoo.es>\n"
-"Language-Team: Español <en@li.org>\n"
+"Last-Translator: Franco Iacomella <yaco@gnu.org>\n"
+"Language-Team: Español <es@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -37,7 +38,9 @@ msgstr ""
 #. TRANSLATORS: change this to your name, separate multiple names with \n
 #: src/gtkmm/about.cpp:165
 msgid "translator-credits"
-msgstr "Carlos López González (genete)"
+msgstr ""
+"Carlos López González (genete)\n"
+"Franco Iacomella (Yaco)"
 
 #: src/gtkmm/about.cpp:192
 #, c-format
@@ -120,15 +123,15 @@ msgstr "_Capa"
 
 #: src/gtkmm/app.cpp:621
 msgid "Show/Hide Ducks"
-msgstr "Mostrar/Ocultar Patos"
+msgstr "Mostrar/Ocultar Nodos"
 
 #: src/gtkmm/app.cpp:622
 msgid "Preview Quality"
-msgstr "Calidad de Previsualiación"
+msgstr "Calidad de Previsualización"
 
 #: src/gtkmm/app.cpp:623
 msgid "Low-Res Pixel Size"
-msgstr "Tamaño de pixel Baja Resolución"
+msgstr "Tamaño de pixel en Baja Resolución"
 
 #: src/gtkmm/app.cpp:624 src/gtkmm/canvasview.cpp:2265
 #: src/synfigapp/actions/layeradd.cpp:82
@@ -196,11 +199,11 @@ msgstr "Cerrar Documento"
 
 #: src/gtkmm/app.cpp:672 src/gtkmm/canvasview.cpp:1239
 msgid "Select All Ducks"
-msgstr "Seleccionar todos los Patos"
+msgstr "Seleccionar todos los Nodos"
 
 #: src/gtkmm/app.cpp:673 src/gtkmm/canvasview.cpp:1243
 msgid "Unselect All Ducks"
-msgstr "Deseleccionar todos los Patos"
+msgstr "Deseleccionar todos los Nodos"
 
 #: src/gtkmm/app.cpp:674 src/gtkmm/canvasview.cpp:1247
 msgid "Select All Layers"
@@ -216,27 +219,27 @@ msgstr "Propiedades"
 
 #: src/gtkmm/app.cpp:678 src/gtkmm/canvasview.cpp:1417
 msgid "Show Position Ducks"
-msgstr "Mostrar los Patos de Posición"
+msgstr "Mostrar los Nodos de Posición"
 
 #: src/gtkmm/app.cpp:679 src/gtkmm/canvasview.cpp:1419
 msgid "Show Vertex Ducks"
-msgstr "Mostrar los Patos de Vértice"
+msgstr "Mostrar los Nodos de Vértice"
 
 #: src/gtkmm/app.cpp:680 src/gtkmm/canvasview.cpp:1418
 msgid "Show Tangent Ducks"
-msgstr "Mostrar los Patos de Tangente"
+msgstr "Mostrar los Nodos de Tangente"
 
 #: src/gtkmm/app.cpp:681 src/gtkmm/canvasview.cpp:1420
 msgid "Show Radius Ducks"
-msgstr "Mostrar los Patos de Radio"
+msgstr "Mostrar los Nodos de Radio"
 
 #: src/gtkmm/app.cpp:682 src/gtkmm/canvasview.cpp:1421
 msgid "Show Width Ducks"
-msgstr "Mostrar los Patos de Espesor"
+msgstr "Mostrar los Nodos de Espesor"
 
 #: src/gtkmm/app.cpp:683 src/gtkmm/canvasview.cpp:1422
 msgid "Show Angle Ducks"
-msgstr "Mostrar los Patos de Ángulo"
+msgstr "Mostrar los Nodos de Ángulo"
 
 #: src/gtkmm/app.cpp:684 src/gtkmm/canvasview.cpp:1270
 msgid "Use Parametric Renderer"
@@ -381,7 +384,7 @@ msgstr "Synfig Studio"
 
 #: src/gtkmm/app.cpp:1098
 msgid "Failed to initialize synfig!"
-msgstr "¡Fallo al inizializar Synfig!"
+msgstr "¡Fallo al inicializar Synfig!"
 
 #: src/gtkmm/app.cpp:1107
 msgid "Init UI Manager..."
@@ -425,7 +428,7 @@ msgstr "Iniciar Capas..."
 
 #: src/gtkmm/app.cpp:1143
 msgid "Init Params..."
-msgstr "Iniciar Parametros..."
+msgstr "Iniciar Parámetros..."
 
 #: src/gtkmm/app.cpp:1147
 msgid "Init MetaData..."
@@ -445,7 +448,7 @@ msgstr "Iniciar Navegador..."
 
 #: src/gtkmm/app.cpp:1163
 msgid "Init Timetrack..."
-msgstr "Iniciar Linea de Tiempo..."
+msgstr "Iniciar Línea de Tiempo..."
 
 #: src/gtkmm/app.cpp:1167
 msgid "Init Curve Editor..."
@@ -489,7 +492,7 @@ msgstr "Iniciar Diálogo de Entrada..."
 
 #: src/gtkmm/app.cpp:1225
 msgid "Init auto recovery..."
-msgstr "Iniciar Autorecuperación..."
+msgstr "Iniciar Auto Recuperación..."
 
 #: src/gtkmm/app.cpp:1229
 msgid "Loading Settings..."
@@ -497,11 +500,11 @@ msgstr "Cargando Atributos..."
 
 #: src/gtkmm/app.cpp:1231
 msgid "Checking auto-recover..."
-msgstr "Chekeando Autorecuperación..."
+msgstr "Chequeando Auto Recuperación..."
 
 #: src/gtkmm/app.cpp:1239
 msgid "Auto Recovery"
-msgstr "Autorecuperación"
+msgstr "Auto Recuperación"
 
 #: src/gtkmm/app.cpp:1240
 msgid ""
@@ -532,9 +535,9 @@ msgid ""
 msgstr ""
 "Synfig ha intentado recuperarse de\n"
 "un cierre previo. Los archivos que no se\n"
-"han recuperado NO HAN SIDO SALVADOS \n"
+"han recuperado NO HAN SIDO GUARDADOS \n"
 " TODAVÍA. Parece una buena idea recuperarlos\n"
-"y salvarlos ahora."
+"y guardarlos ahora."
 
 #: src/gtkmm/app.cpp:1270
 msgid "Loading files..."
@@ -590,7 +593,7 @@ msgstr "Característica no disponible"
 
 #: src/gtkmm/app.cpp:2094
 msgid "Sorry, this feature has not yet been implemented."
-msgstr "Lo siento, esta característica no ha sido aún creada"
+msgstr "Lo siento, esta funcionalidad no ha sido aún creada"
 
 #: src/gtkmm/app.cpp:2179
 msgid "Documentation"
@@ -788,7 +791,7 @@ msgstr "ERROR"
 
 #: src/gtkmm/canvasview.cpp:380
 msgid "Feature not yet implemented"
-msgstr "Característica aún no creada"
+msgstr "Funcionalidad aún no creada"
 
 #: src/gtkmm/canvasview.cpp:926
 msgid "Moves the time window"
@@ -858,7 +861,7 @@ msgstr "Mostrar Piel de Cebolla"
 
 #: src/gtkmm/canvasview.cpp:1398
 msgid "Zoom In on Timeline"
-msgstr "Acercar en la Línea de Tiempo"
+msgstr "Acercar a la Línea de Tiempo"
 
 #: src/gtkmm/canvasview.cpp:1401
 msgid "Zoom Out on Timeline"
@@ -920,7 +923,7 @@ msgstr "_TCB"
 #: src/gtkmm/canvasview.cpp:3279 src/gtkmm/canvasview.cpp:3282
 #: src/gtkmm/canvasview.cpp:3285 src/gtkmm/widget_defaults.cpp:293
 msgid "_Linear"
-msgstr "_Linear"
+msgstr "_Lineal"
 
 #: src/gtkmm/canvasview.cpp:3289
 msgid "_Ease In"
@@ -994,7 +997,7 @@ msgstr "Lista"
 
 #: src/gtkmm/cellrenderer_value.cpp:451 src/gtkmm/iconcontroller.cpp:147
 msgid "BLine Point"
-msgstr "Punto Línea Beizer"
+msgstr "Punto Línea Bézier"
 
 #: src/gtkmm/cellrenderer_value.cpp:454
 msgid "UNKNOWN"
@@ -1019,7 +1022,7 @@ msgstr "Valor Base"
 #: src/gtkmm/childrentree.cpp:140 src/gtkmm/dock_timetrack.cpp:87
 #: src/gtkmm/iconcontroller.cpp:180 src/gtkmm/layertree.cpp:367
 msgid "Time Track"
-msgstr "Pista de Tiempo"
+msgstr "Línea de Tiempo"
 
 #: src/gtkmm/childrentreestore.cpp:78
 msgid "Canvases"
@@ -1091,7 +1094,7 @@ msgstr "Atributos de Synfig Studio"
 
 #: src/gtkmm/dialog_setup.cpp:79
 msgid "Visually Linear Color Selection"
-msgstr "Selección del Color de manera Visualmente Linear"
+msgstr "Selección del Color de manera Visualmente Lineal"
 
 #: src/gtkmm/dialog_setup.cpp:81
 msgid "Use Only a Single Thread"
@@ -1099,7 +1102,7 @@ msgstr "Usar sólo un Simple Hilo"
 
 #: src/gtkmm/dialog_setup.cpp:83
 msgid "Restrict Real-Valued Ducks to Top Right Quadrant"
-msgstr "Restringir Patos de Valores Reales al Cuadrante Superior Derecho"
+msgstr "Restringir Nodos de Valores Reales al Cuadrante Superior Derecho"
 
 #: src/gtkmm/dialog_setup.cpp:110
 msgid "Gamma"
@@ -1131,7 +1134,7 @@ msgstr "Formato Tiempo"
 
 #: src/gtkmm/dialog_setup.cpp:175
 msgid "Pixels"
-msgstr "Pixels"
+msgstr "Píxeles"
 
 #: src/gtkmm/dialog_setup.cpp:176
 msgid "Points"
@@ -1155,7 +1158,7 @@ msgstr "Milímetros"
 
 #: src/gtkmm/dialog_setup.cpp:185
 msgid "Unit System"
-msgstr "Systema de Unidades"
+msgstr "Sistema de Unidades"
 
 #: src/gtkmm/dialog_setup.cpp:191
 msgid "Recent Files"
@@ -1393,7 +1396,7 @@ msgstr "Nombre"
 
 #: src/gtkmm/dock_timetrack.cpp:404
 msgid "Timetrack"
-msgstr "Pista de Tiempo"
+msgstr "Línea de Tiempo"
 
 #: src/gtkmm/groupactionmanager.cpp:269
 msgid "UnnamedGroup"
@@ -1528,7 +1531,7 @@ msgstr "Herramienta Polígono"
 #: src/gtkmm/iconcontroller.cpp:195 src/gtkmm/state_bline.cpp:377
 #: src/gtkmm/state_bline.cpp:421
 msgid "BLine Tool"
-msgstr "Herramienta Línea Beizer"
+msgstr "Herramienta Línea Bézier"
 
 #: src/gtkmm/iconcontroller.cpp:196
 msgid "Eyedrop Tool"
@@ -1617,20 +1620,20 @@ msgstr ""
 
 #: src/gtkmm/instance.cpp:483
 msgid "You must first add this composition to the repository"
-msgstr "Debe añadir antes esta composición al almacén"
+msgstr "Debe añadir antes esta composición al repositorio"
 
 #: src/gtkmm/instance.cpp:492 src/gtkmm/instance.cpp:561
 msgid "This will save any changes you have made. Are you sure?"
-msgstr "Esto guardará cualquier cambio que haya hecho. ¿Esta seguro?"
+msgstr "Esto guardará cualquier cambio que haya hecho. ¿Está seguro?"
 
 #: src/gtkmm/instance.cpp:499
 msgid ""
 "The local copy of the file hasn't been changed since the last update.\n"
 "Nothing to commit!"
 msgstr ""
-"La copia local del archivo no ha sido cambiado desde la ultima "
+"La copia local del archivo no ha sido cambiado desde la última "
 "actualización.\n"
-"!Nada que enviar!"
+"¡Nada que enviar!"
 
 #: src/gtkmm/instance.cpp:503
 msgid "Enter a log message describing the changes you have made"
@@ -1643,7 +1646,7 @@ msgstr "Ha ocurrido un error intentando ENVIAR"
 
 #: src/gtkmm/instance.cpp:522
 msgid "This composition has already been added to the repository"
-msgstr "La composición ya ha sido enviada al almacén"
+msgstr "La composición ya ha sido enviada al repositorio"
 
 #: src/gtkmm/instance.cpp:536
 msgid "An error has occurred when trying to ADD"
@@ -1700,10 +1703,10 @@ msgid ""
 "again, or restart Synfig Studio."
 msgstr ""
 "La operación de desactualización ha fallado. Esto se puede deber\n"
-" a que está referenciad por otra composición que esta actualmente \n"
+" a que está referenciado por otra composición que esta actualmente \n"
 "abierta o porque hay un error interno en Synfig Studio. Intente\n"
 "cerrar cualquier composición que pueda hacer referencia a esta\n"
-" y pruebe de nuevo o reinicie Synfig Studio"
+" y pruebe de nuevo o reinicie Synfig Studio."
 
 #: src/gtkmm/instance.cpp:660
 msgid "Revert to saved"
@@ -1714,13 +1717,13 @@ msgid ""
 "You will lose any changes you have made since your last save.\n"
 "Are you sure?"
 msgstr ""
-"Se perderán los cambios realizaos hasta la última vex que salvó.\n"
+"Se perderán los cambios realizados hasta la última vez que guardó.\n"
 "¿Está seguro?"
 
 #: src/gtkmm/instance.cpp:683
 #, c-format
 msgid "Would you like to save your changes to %s?"
-msgstr "¿Quiere salvar los cambios a %s?"
+msgstr "¿Quiere guardar los cambios a %s?"
 
 #: src/gtkmm/instance.cpp:699
 #, c-format
@@ -1728,7 +1731,7 @@ msgid ""
 "%s has changes not yet on the CVS repository.\n"
 "Would you like to commit these changes?"
 msgstr ""
-"%s no ha cambiado en el almacén CVS.\n"
+"%s no ha cambiado en el repositorio CVS.\n"
 "¿Quiere enviar dichos cambios?"
 
 #: src/gtkmm/instance.cpp:1105
@@ -1817,7 +1820,7 @@ msgstr "Establecer los Parámetros de Capa"
 
 #: src/gtkmm/layerparamtreestore.cpp:246
 msgid "Unable to set all layer parameters."
-msgstr "Imposible establecer todos los parámetros de capa"
+msgstr "Imposible establecer todos los parámetros de capa."
 
 #: src/gtkmm/layertree.cpp:206 src/gtkmm/layertree.cpp:249
 msgid "Z"
@@ -1841,7 +1844,7 @@ msgstr "el proceso existente será usado"
 
 #: src/gtkmm/main.cpp:93
 msgid "synfig studio -- starting up application..."
-msgstr "Synfig Studio: comenzando aplicación..."
+msgstr "Synfig Studio: iniciando aplicación..."
 
 #: src/gtkmm/mod_mirror/state_mirror.cpp:181
 msgid "Horizontal"
@@ -1885,7 +1888,7 @@ msgstr "Alternar Bucle"
 
 #: src/gtkmm/preview.cpp:376
 msgid "Halt Render"
-msgstr "Parar Muestreo"
+msgstr "Parar Render"
 
 #: src/gtkmm/preview.cpp:382
 msgid "Re-Preview"
@@ -1897,7 +1900,7 @@ msgstr "Borrar Todo"
 
 #: src/gtkmm/preview.cpp:398
 msgid "Last Rendered: "
-msgstr "Último Muestreo: "
+msgstr "Último Render: "
 
 #: src/gtkmm/renddesc.cpp:95
 msgid "Image"
@@ -2029,11 +2032,11 @@ msgstr "Elegir..."
 
 #: src/gtkmm/render.cpp:105
 msgid "Target"
-msgstr "Objetivo"
+msgstr "Tipo"
 
 #: src/gtkmm/render.cpp:107
 msgid "<b>Target</b>"
-msgstr "<b>Objetivo</b>"
+msgstr "<b>Tipo</b>"
 
 #: src/gtkmm/render.cpp:118
 msgid "_Filename"
@@ -2041,7 +2044,7 @@ msgstr "_Nombre Archivo"
 
 #: src/gtkmm/render.cpp:125
 msgid "_Target"
-msgstr "_Objetivo"
+msgstr "_Tipo"
 
 #: src/gtkmm/render.cpp:133
 msgid "Settings"
@@ -2098,7 +2101,7 @@ msgstr "AVISO:"
 #: src/gtkmm/state_bline.cpp:361 src/gtkmm/state_circle.cpp:394
 #: src/gtkmm/state_draw.cpp:413 src/gtkmm/state_rectangle.cpp:341
 msgid "Create Region BLine"
-msgstr "Crear Region"
+msgstr "Crear Región"
 
 #: src/gtkmm/state_bline.cpp:362 src/gtkmm/state_circle.cpp:395
 #: src/gtkmm/state_draw.cpp:414 src/gtkmm/state_rectangle.cpp:342
@@ -2137,15 +2140,15 @@ msgstr "Desvanecimiento"
 
 #: src/gtkmm/state_bline.cpp:426
 msgid "Make BLine and/or Region"
-msgstr "Hacer Linea Beizer, Planta y/o Region"
+msgstr "Hacer Linea Bézier, Planta y/o Región"
 
 #: src/gtkmm/state_bline.cpp:436
 msgid "Clear current BLine"
-msgstr "Borrar Línea Beizer actual"
+msgstr "Borrar Línea Bézier actual"
 
 #: src/gtkmm/state_bline.cpp:541
 msgid "New BLine"
-msgstr "Nueva Línea Beizer"
+msgstr "Nueva Línea Bézier"
 
 #: src/gtkmm/state_bline.cpp:584
 msgid "Unable to add value node"
@@ -2244,7 +2247,7 @@ msgstr "Crear Capa Círculo"
 
 #: src/gtkmm/state_circle.cpp:398 src/gtkmm/state_rectangle.cpp:345
 msgid "Link BLine Origins"
-msgstr "Enlazar Orígenes de Líneas Beizer"
+msgstr "Enlazar Orígenes de Líneas Bézier"
 
 #: src/gtkmm/state_circle.cpp:406
 msgid "Falloff"
@@ -2290,7 +2293,7 @@ msgstr "Desvanecimiento:"
 
 #: src/gtkmm/state_circle.cpp:437
 msgid "BLine Points:"
-msgstr "Punto Línea Beizer:"
+msgstr "Punto Línea Bézier:"
 
 #: src/gtkmm/state_circle.cpp:439
 msgid "Point Angle Offset:"
@@ -2334,7 +2337,7 @@ msgstr "Suave"
 
 #: src/gtkmm/state_draw.cpp:778
 msgid "Sketch BLine"
-msgstr "Esbozar Línea Beizer"
+msgstr "Esbozar Línea Bézier"
 
 #: src/gtkmm/state_draw.cpp:1088
 msgid "Unable to create layer"
@@ -2362,7 +2365,7 @@ msgstr "Rellenar Trazo"
 
 #: src/gtkmm/state_fill.cpp:145
 msgid "No layer here"
-msgstr "No capa aquí"
+msgstr "No hay capa aquí"
 
 #: src/gtkmm/state_fill.cpp:155
 msgid "Unable to set layer color"
@@ -2426,11 +2429,11 @@ msgstr "Permitir Escalar"
 
 #: src/gtkmm/state_rotate.cpp:369
 msgid "Move Duck"
-msgstr "Mover Pato"
+msgstr "Mover Nodo"
 
 #: src/gtkmm/state_rotate.cpp:374
 msgid "Rotate Ducks"
-msgstr "Rotar Patos"
+msgstr "Rotar Nodos"
 
 #: src/gtkmm/state_scale.cpp:163
 msgid "Lock Aspect Ratio"
@@ -2438,11 +2441,11 @@ msgstr "Bloquear Relación de Aspecto"
 
 #: src/gtkmm/state_sketch.cpp:158 src/gtkmm/state_sketch.cpp:239
 msgid "Save Sketch"
-msgstr "Salvar Boceto"
+msgstr "Guardar Boceto"
 
 #: src/gtkmm/state_sketch.cpp:168
 msgid "Unable to save sketch"
-msgstr "Imposible salvar boceto"
+msgstr "Imposible guardar boceto"
 
 #: src/gtkmm/state_sketch.cpp:177 src/gtkmm/state_sketch.cpp:240
 msgid "Load Sketch"
@@ -2472,7 +2475,7 @@ msgstr "Deshacer Último Trazo"
 #: src/gtkmm/state_sketch.cpp:280 src/gtkmm/state_sketch.cpp:281
 #: src/gtkmm/state_sketch.cpp:292 src/gtkmm/state_sketch.cpp:293
 msgid "Save Sketch As..."
-msgstr "Salvar Boceto Como..."
+msgstr "Guardar Boceto Como..."
 
 #: src/gtkmm/state_sketch.cpp:304 src/gtkmm/state_sketch.cpp:305
 msgid "Open a Sketch"
@@ -2504,19 +2507,19 @@ msgstr "Espesor del Boceto"
 
 #: src/gtkmm/toolbox.cpp:133
 msgid "Cannot save"
-msgstr "No puedo salvar"
+msgstr "No se puede Guardar"
 
 #: src/gtkmm/toolbox.cpp:133 src/gtkmm/toolbox.cpp:145
 msgid "Nothing to save"
-msgstr "Nada a salvar"
+msgstr "Nada para Guardar"
 
 #: src/gtkmm/toolbox.cpp:145
 msgid "Cannot save as"
-msgstr "No puedo salvar como"
+msgstr "No se puedo Guardar Como"
 
 #: src/gtkmm/toolbox.cpp:167
 msgid "Cannot close"
-msgstr "No puedo cerrar"
+msgstr "No se puede cerrar"
 
 #: src/gtkmm/toolbox.cpp:167
 msgid "Nothing to close"
@@ -2653,7 +2656,7 @@ msgstr "Elegir Lienzo"
 
 #: src/gtkmm/widget_canvaschooser.cpp:136
 msgid "Enter the relative name of the canvas that you want"
-msgstr "Introduzca el nombre dado al lienzo que desee"
+msgstr "Introduzca el nombre relativo al lienzo que desee"
 
 #: src/gtkmm/widget_canvaschooser.cpp:145
 msgid "No canvas name was specified"
@@ -2794,7 +2797,7 @@ msgstr "Interpolación"
 
 #: src/gtkmm/widget_waypoint.cpp:123
 msgid "<b>Waypoint</b>"
-msgstr "<b>Inetrpolación</b>"
+msgstr "<b>Interpolación</b>"
 
 #: src/gtkmm/widget_waypoint.cpp:135
 msgid "_Value"
@@ -2850,7 +2853,7 @@ msgstr "Salida:"
 
 #: src/gtkmm/widget_waypointmodel.cpp:65
 msgid "In:"
-msgstr "Entrda:"
+msgstr "Entrada:"
 
 #: src/gtkmm/widget_waypointmodel.cpp:66
 msgid "Tension:"
@@ -2878,16 +2881,16 @@ msgstr "Mover"
 
 #: src/gtkmm/workarea.cpp:2322
 msgid "Rendering..."
-msgstr "Mostrando..."
+msgstr "Renderizando..."
 
 #: src/gtkmm/workarea.cpp:2349 src/gtkmm/workarea.cpp:2441
 msgid "Render Failed"
-msgstr "Muestreo Fallido"
+msgstr "El Render Falló"
 
 #: src/gtkmm/workarea.cpp:2423
 #, c-format
 msgid "Rendering canvas %s..."
-msgstr "Muestreando lienzos %s..."
+msgstr "Renderizando lienzos %s..."
 
 #: src/gtkmm/zoomdial.h:71
 msgid "Zoom In"
@@ -3009,7 +3012,7 @@ msgstr "Establecer Punto Activo (Inteligente)"
 #: src/synfigapp/actions/activepointsetsmart.cpp:365
 #: src/synfigapp/actions/waypointsetsmart.cpp:439
 msgid "Unable to determine how to proceed. This is a bug."
-msgstr "Imposible determinar como proceder. Esto es un bug"
+msgstr "Imposible determinar como proceder. Esto es un bug."
 
 #: src/synfigapp/actions/activepointsimpleadd.cpp:49
 #: src/synfigapp/actions/waypointsimpleadd.cpp:49
@@ -3082,11 +3085,11 @@ msgstr "Aplicar Color por Defecto"
 
 #: src/synfigapp/actions/editmodeset.cpp:49
 msgid "Set Edit Mode"
-msgstr "Establecer Modo Edición"
+msgstr "Establecer Modo de Edición"
 
 #: src/synfigapp/actions/editmodeset.cpp:72
 msgid "New Edit Mode"
-msgstr "Nuevo Modo Edición"
+msgstr "Nuevo Modo de Edición"
 
 #: src/synfigapp/actions/gradientset.cpp:55
 msgid "Apply Default Gradient"
@@ -3227,7 +3230,7 @@ msgstr "Establecer Interpolaciones en el Fotograma Clave"
 #: src/synfigapp/actions/keyframewaypointset.cpp:82
 #: src/synfigapp/actions/waypointsetsmart.cpp:95
 msgid "Waypoint Model"
-msgstr "Modelo de Inerpolación"
+msgstr "Modelo de Interpolación"
 
 #: src/synfigapp/actions/layeractivate.cpp:50
 #: src/synfigapp/actions/layeractivate.cpp:71
@@ -3257,7 +3260,7 @@ msgstr "El nuevo estado de la capa"
 #: src/synfigapp/actions/layerraise.cpp:137
 #: src/synfigapp/actions/layerremove.cpp:134
 msgid "This layer doesn't exist anymore."
-msgstr "La capa no existe ya."
+msgstr "La capa ya no existe."
 
 #: src/synfigapp/actions/layeradd.cpp:50 src/synfigapp/actions/layeradd.cpp:71
 #: src/synfigapp/actions/layeradd.cpp:73
@@ -3465,7 +3468,7 @@ msgstr "Nuevo Lienzo Seleccionada"
 #: src/synfigapp/actions/timepointsdelete.cpp:90
 #: src/synfigapp/actions/timepointsmove.cpp:91
 msgid "A canvas to add to our selected list"
-msgstr "Un lienzo a aádir a nuestra lista seleccionada"
+msgstr "Un lienzo a añadir a nuestra lista seleccionada"
 
 #: src/synfigapp/actions/timepointscopy.cpp:97
 #: src/synfigapp/actions/timepointsdelete.cpp:96
@@ -3495,7 +3498,7 @@ msgstr "Un punto de tiempo a añadir a nuestra lista seleccionada"
 #: src/synfigapp/actions/timepointscopy.cpp:110
 #: src/synfigapp/actions/timepointsmove.cpp:110
 msgid "Time adjustment"
-msgstr "Ajsute de TIempo"
+msgstr "Ajuste de Tiempo"
 
 #: src/synfigapp/actions/timepointscopy.cpp:111
 #: src/synfigapp/actions/timepointsmove.cpp:111
@@ -3512,7 +3515,7 @@ msgstr "Mover Puntos de Tiempo"
 
 #: src/synfigapp/actions/valuedescconnect.cpp:54
 msgid "Connect"
-msgstr "Connectar"
+msgstr "Conectar"
 
 #. TRANSLATORS: This is used in the 'history' dialog when a connection is made.
 #: src/synfigapp/actions/valuedescconnect.cpp:75
@@ -3632,12 +3635,12 @@ msgstr "Usando el único Valor de Nodo disponible."
 #: src/synfigapp/actions/valuedesclink.cpp:139
 #: src/synfigapp/actions/valuedesclink.cpp:145
 msgid "Using the most referenced ValueNode."
-msgstr "Usando el Valor de Nodo más referenciado"
+msgstr "Usando el Valor de Nodo más referenciado."
 
 #: src/synfigapp/actions/valuedesclink.cpp:153
 #: src/synfigapp/actions/valuedesclink.cpp:161
 msgid "There's a tie for most referenced; using the animated ValueNode."
-msgstr "Hay un lazo para el más refernciado; usando el Valor de Nodo animado"
+msgstr "Hay un lazo para el más referenciado; usando el Valor de Nodo animado."
 
 #: src/synfigapp/actions/valuedesclink.cpp:174
 #: src/synfigapp/actions/valuedesclink.cpp:180
@@ -3700,7 +3703,7 @@ msgstr "Mal tipo para composición radial (%s)"
 #: src/synfigapp/actions/valuedescset.cpp:544
 msgid "Direct manipulation of this ValueNode type is not yet supported"
 msgstr ""
-"Manipulación directa de este tipo de Valor de Nodo no esta soportado aún"
+"Manipulación directa de este tipo de Valor de Nodo no esta soportada aún"
 
 #: src/synfigapp/actions/valuedescset.cpp:542
 msgid "You must be in Animate-Editing-Mode to directly manipulate this value"
@@ -3728,11 +3731,11 @@ msgstr "El parámetro parece que ya ha sido exportado"
 
 #: src/synfigapp/actions/valuenodeadd.cpp:131
 msgid "Another exported ValueBase with this name already exists"
-msgstr "Otro Valor Base exportado con este nombre ya existe"
+msgstr "Ya existe Otro Valor Base exportado con este nombre"
 
 #: src/synfigapp/actions/valuenodeadd.cpp:135
 msgid "Exception caught on Add ValueNode."
-msgstr "Atrapada excepción al Añadir Valor de Nodo."
+msgstr "excepción atrapada al Añadir Valor de Nodo."
 
 #: src/synfigapp/actions/valuenodeadd.cpp:154
 msgid "Exception caught on Remove ValueNode."
