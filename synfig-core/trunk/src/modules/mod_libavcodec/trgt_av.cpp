@@ -674,7 +674,11 @@ public:
 			if(!(format->flags & AVFMT_NOFILE))
 			{
 				/* close the output file */
+#if LIBAVFORMAT_VERSION_INT >= (52<<16)
+				url_fclose(formatc->pb);
+#else
 				url_fclose(&formatc->pb);
+#endif
 			}
 
 			/* free the stream */
