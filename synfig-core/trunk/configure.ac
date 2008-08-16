@@ -246,6 +246,33 @@ if test $with_libavcodec = "yes" ; then {
 } ; fi
 
 
+if test $with_libavcodec = "yes" ; then {
+	AC_ARG_WITH(libswscale,
+		[AS_HELP_STRING([--without-libswscale],
+			[disable support for libswscale (Default=auto)])],
+		[],
+		[with_libswscale="yes"]
+	)
+
+	if test $with_libswscale != "no" ; then {
+		AC_CHECK_LIB(swscale, sws_getContext, [], [echo no; with_libswscale="no"], [])
+	} ; fi
+
+	if test $with_libswscale = "yes" ; then {
+		LIBAVCODEC_LIBS="$LIBAVCODEC_LIBS -lswscale"
+		AM_CONDITIONAL(HAVE_LIBSWSCALE, true)
+    	} else {
+		AM_CONDITIONAL(HAVE_LIBSWSCALE, false)
+		AC_CHECK_LIB(avcodec, img_convert,
+			[AC_MSG_RESULT([ *** Using deprecated function img_convert.])],
+			[AC_MSG_FAILURE([Neither libswscale nor function img_convert was found.])],
+			[]
+		)
+	} ; fi
+} else {
+	AM_CONDITIONAL(HAVE_LIBSWSCALE, false)
+} ; fi
+
 
 # FREETYPE2 CHECK--------------------
 
@@ -647,6 +674,7 @@ ETL_CFLAGS -----------------------> $ETL_CFLAGS
 FreeType2 ------------------------> $with_freetype
 fontconfig -----------------------> $with_fontconfig
 libavcodec -----------------------> $with_libavcodec
+libswscale -----------------------> $with_libswscale
 vImage ---------------------------> $with_vimage
 ImageMagick ----------------------> $with_imagemagick
 Magick++ -------------------------> $with_magickpp
