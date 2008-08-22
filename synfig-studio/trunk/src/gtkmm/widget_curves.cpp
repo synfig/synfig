@@ -289,6 +289,12 @@ struct studio::Widget_Curves::CurveStruct : sigc::trackable
 
 		return -channels[chan].values[time];
 	}
+
+	static bool is_supported(const synfigapp::ValueDesc& x)
+	{
+		return x.get_value_type() == ValueBase::TYPE_STRING
+			&& x.get_value_type() == ValueBase::TYPE_CANVAS;
+	}
 };
 
 /* === M E T H O D S ======================================================= */
@@ -365,6 +371,9 @@ Widget_Curves::set_value_descs(std::list<synfigapp::ValueDesc> value_descs)
 	std::list<synfigapp::ValueDesc>::iterator iter;
 	for(iter=value_descs.begin();iter!=value_descs.end();++iter)
 	{
+		if (! CurveStruct::is_supported(*iter))
+	        	continue;
+
 		try {
 			curve_list_.push_back(*iter);
 			if(iter->is_value_node())
