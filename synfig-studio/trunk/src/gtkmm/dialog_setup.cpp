@@ -80,8 +80,11 @@ Dialog_Setup::Dialog_Setup():
 #ifdef SINGLE_THREADED
 	toggle_single_threaded(_("Use Only a Single Thread")),
 #endif
-	toggle_restrict_radius_ducks(_("Restrict Real-Valued Ducks to Top Right Quadrant"))
-{
+	toggle_restrict_radius_ducks(_("Restrict Real-Valued Ducks to Top Right Quadrant")),
+	adj_pref_x_size(480,1,10000,1,10,10),
+	adj_pref_y_size(270,1,10000,1,10,10)
+	
+	{
 	// Setup the buttons
 
 	Gtk::Button *ok_button(manage(new class Gtk::Button(Gtk::StockID("gtk-ok"))));
@@ -192,11 +195,11 @@ Dialog_Setup::Dialog_Setup():
 	misc_table->attach(*recent_files_spinbutton, 1, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
 
 	// Misc - use_colorspace_gamma
-	misc_table->attach(toggle_use_colorspace_gamma, 0, 2, 5, 6, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
+	misc_table->attach(toggle_use_colorspace_gamma, 0, 2, 7, 8, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
 
 #ifdef SINGLE_THREADED
 	// Misc - single_threaded
-	misc_table->attach(toggle_single_threaded, 0, 2, 7, 8, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
+	misc_table->attach(toggle_single_threaded, 0, 2, 9, 10, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
 #endif
 
 	// Misc - auto backup interval
@@ -204,11 +207,21 @@ Dialog_Setup::Dialog_Setup():
 	misc_table->attach(auto_backup_interval, 1, 2, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
 
 	// Misc - restrict_radius_ducks
-	misc_table->attach(toggle_restrict_radius_ducks, 0, 2, 6, 7, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
+	misc_table->attach(toggle_restrict_radius_ducks, 0, 2, 8, 9, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
 
 	// Misc - browser_command
 	attach_label(misc_table, _("Browser Command"), 4, xpadding, ypadding);
 	misc_table->attach(textbox_browser_command, 1, 2, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
+
+	// Misc - Preferred x size
+	Gtk::SpinButton* pref_x_size_spinbutton(manage(new Gtk::SpinButton(adj_pref_x_size,1,0)));
+	attach_label(misc_table,_("Preferred Canvas X size"),5, xpadding, ypadding);
+	misc_table->attach(*pref_x_size_spinbutton, 1, 2, 5, 6,Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding); 
+
+	// Misc - Preferred y size
+	Gtk::SpinButton* pref_y_size_spinbutton(manage(new Gtk::SpinButton(adj_pref_y_size,1,0)));
+	attach_label(misc_table,_("Preferred Canvas Y size"),6, xpadding, ypadding);
+	misc_table->attach(*pref_y_size_spinbutton, 1, 2, 6, 7,Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding); 
 
 	show_all_children();
 }
@@ -252,6 +265,12 @@ Dialog_Setup::on_apply_pressed()
 
 	// Set the browser_command textbox
 	App::browser_command=textbox_browser_command.get_text();
+
+	// Set the preferred new canvas x dimension
+	App::preferred_x_size=int(adj_pref_x_size.get_value());
+
+	// Set the preferred new canvas y dimension
+	App::preferred_y_size=int(adj_pref_y_size.get_value());
 
 	App::save_settings();
 }
@@ -339,6 +358,13 @@ Dialog_Setup::refresh()
 
 	// Refresh the browser_command textbox
 	textbox_browser_command.set_text(App::browser_command);
+
+	// Refresh the preferred new canvas y dimension
+	adj_pref_x_size.set_value(App::preferred_x_size);
+	
+	// Refresh the preferred new canvas y dimension
+	adj_pref_y_size.set_value(App::preferred_y_size);
+
 }
 
 GammaPattern::GammaPattern():

@@ -274,6 +274,8 @@ bool studio::App::use_colorspace_gamma=true;
 bool studio::App::single_threaded=false;
 #endif
 bool studio::App::restrict_radius_ducks=false;
+int studio::App::preferred_x_size=480;
+int studio::App::preferred_y_size=270;
 #ifdef USE_OPEN_FOR_URLS
 String studio::App::browser_command("open"); // MacOS only
 #else
@@ -511,7 +513,16 @@ public:
 			value=App::browser_command;
 			return true;
 		}
-
+		if(key=="preferred_x_size")
+		{
+			value=strprintf("%i",App::preferred_x_size);
+			return true;
+		}
+		if(key=="preferred_y_size")
+		{
+			value=strprintf("%i",App::preferred_y_size);
+			return true;
+		}
 		return synfigapp::Settings::get_value(key,value);
 	}
 
@@ -580,7 +591,18 @@ public:
 			App::browser_command=value;
 			return true;
 		}
-
+		if(key=="preferred_x_size")
+		{
+			int i(atoi(value.c_str()));
+			App::preferred_x_size=i;
+			return true;
+		}
+		if(key=="preferred_y_size")
+		{
+			int i(atoi(value.c_str()));
+			App::preferred_y_size=i;
+			return true;
+		}
 		return synfigapp::Settings::set_value(key,value);
 	}
 
@@ -598,6 +620,8 @@ public:
 		ret.push_back("auto_recover_backup_interval");
 		ret.push_back("restrict_radius_ducks");
 		ret.push_back("browser_command");
+		ret.push_back("preferred_x_size");
+		ret.push_back("preferred_y_size");
 		return ret;
 	}
 };
@@ -1679,6 +1703,8 @@ App::reset_initial_window_configuration()
 	synfigapp::Main::settings().set_value("pref.single_threaded","0");
 #endif
 	synfigapp::Main::settings().set_value("pref.restrict_radius_ducks","0");
+	synfigapp::Main::settings().set_value("pref.preferred_x_size","480");
+	synfigapp::Main::settings().set_value("pref.preferred_y_size","270");
 	synfigapp::Main::settings().set_value("window.toolbox.pos","4 4");
 }
 
@@ -2347,8 +2373,8 @@ App::new_instance()
 	canvas->rend_desc().set_y_res(DPI2DPM(72.0f));
 	canvas->rend_desc().set_tl(Vector(-4,2.25));
 	canvas->rend_desc().set_br(Vector(4,-2.25));
-	canvas->rend_desc().set_w(480);
-	canvas->rend_desc().set_h(270);
+	canvas->rend_desc().set_w(preferred_x_size);
+	canvas->rend_desc().set_h(preferred_y_size);
 	canvas->rend_desc().set_antialias(1);
 	canvas->rend_desc().set_flags(RendDesc::PX_ASPECT|RendDesc::IM_SPAN);
 	canvas->set_file_name(file_name);

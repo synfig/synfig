@@ -178,6 +178,8 @@ class Dialog_Setup : public Gtk::Dialog
 	Gtk::CheckButton toggle_restrict_radius_ducks;
 
 	Gtk::Entry textbox_browser_command;
+	Gtk::Adjustment adj_pref_x_size;
+	Gtk::Adjustment adj_pref_y_size;
 public:
 
 	void set_time_format(synfig::Time::Format time_format);

@@ -198,7 +198,8 @@ public:
 	static bool restrict_radius_ducks;
 
 	static synfig::String browser_command;
-
+	static int preferred_x_size;
+	static int preferred_y_size;
 	/*
  -- ** -- S I G N A L S -------------------------------------------------------
 	*/
