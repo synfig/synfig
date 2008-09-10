@@ -179,6 +179,7 @@ class Dialog_Setup : public Gtk::Dialog
 	Gtk::CheckButton toggle_restrict_radius_ducks;
 
 	Gtk::Entry textbox_browser_command;
+	Gtk::Entry textbox_custom_filename_prefix;
 	Gtk::Adjustment adj_pref_x_size;
 	Gtk::Adjustment adj_pref_y_size;
 	Gtk::Tooltips tooltips_;

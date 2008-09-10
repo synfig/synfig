@@ -274,6 +274,7 @@ bool studio::App::use_colorspace_gamma=true;
 bool studio::App::single_threaded=false;
 #endif
 bool studio::App::restrict_radius_ducks=false;
+String studio::App::custom_filename_prefix(DEFAULT_FILENAME_PREFIX);
 int studio::App::preferred_x_size=480;
 int studio::App::preferred_y_size=270;
 #ifdef USE_OPEN_FOR_URLS
@@ -513,6 +514,11 @@ public:
 			value=App::browser_command;
 			return true;
 		}
+		if(key=="custom_filename_prefix")
+		{
+			value=App::custom_filename_prefix;
+			return true;
+		}
 		if(key=="preferred_x_size")
 		{
 			value=strprintf("%i",App::preferred_x_size);
@@ -591,6 +597,11 @@ public:
 			App::browser_command=value;
 			return true;
 		}
+		if(key=="custom_filename_prefix")
+		{
+			App::custom_filename_prefix=value;
+			return true;
+		}
 		if(key=="preferred_x_size")
 		{
 			int i(atoi(value.c_str()));
@@ -620,6 +631,7 @@ public:
 		ret.push_back("auto_recover_backup_interval");
 		ret.push_back("restrict_radius_ducks");
 		ret.push_back("browser_command");
+		ret.push_back("custom_filename_prefix");
 		ret.push_back("preferred_x_size");
 		ret.push_back("preferred_y_size");
 		return ret;
@@ -1703,6 +1715,7 @@ App::reset_initial_window_configuration()
 	synfigapp::Main::settings().set_value("pref.single_threaded","0");
 #endif
 	synfigapp::Main::settings().set_value("pref.restrict_radius_ducks","0");
+	synfigapp::Main::settings().set_value("pref.custom_filename_prefix",DEFAULT_FILENAME_PREFIX);
 	synfigapp::Main::settings().set_value("pref.preferred_x_size","480");
 	synfigapp::Main::settings().set_value("pref.preferred_y_size","270");
 	synfigapp::Main::settings().set_value("window.toolbox.pos","4 4");
@@ -2326,7 +2339,7 @@ App::open_as(std::string filename,std::string as)
 			if(!canvas)
 				throw (String)strprintf(_("Unable to open file \"%s\""),filename.c_str());
 
-			if (as.find(DEFAULT_FILENAME_PREFIX) != 0)
+			if (as.find(custom_filename_prefix.c_str()) != 0)
 				add_recent_file(as);
 
 			handle<Instance> instance(Instance::create(canvas));
@@ -2362,7 +2375,7 @@ App::new_instance()
 {
 	handle<synfig::Canvas> canvas=synfig::Canvas::create();
 
-	String file_name(strprintf("%s%d", DEFAULT_FILENAME_PREFIX, Instance::get_count()+1));
+	String file_name(strprintf("%s%d", App::custom_filename_prefix.c_str(), Instance::get_count()+1));
 	canvas->set_name(file_name);
 	file_name += ".sifz";
 

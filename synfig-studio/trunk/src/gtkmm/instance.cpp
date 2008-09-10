@@ -240,7 +240,7 @@ studio::Instance::save()
 bool
 studio::Instance::has_real_filename()
 {
-	return get_file_name().find(DEFAULT_FILENAME_PREFIX) != 0;
+	return get_file_name().find(App::custom_filename_prefix.c_str()) != 0;
 }
 
 bool

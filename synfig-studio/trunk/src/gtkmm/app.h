@@ -198,6 +198,7 @@ public:
 	static bool restrict_radius_ducks;
 
 	static synfig::String browser_command;
+	static synfig::String custom_filename_prefix;
 	static int preferred_x_size;
 	static int preferred_y_size;
 	/*
