@@ -213,16 +213,22 @@ Dialog_Setup::Dialog_Setup():
 	attach_label(misc_table, _("Browser Command"), 4, xpadding, ypadding);
 	misc_table->attach(textbox_browser_command, 1, 2, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
 
-	// Misc - Preferred x size
+	// Document
+	Gtk::Table *document_table=manage(new Gtk::Table(2,2,false));
+	notebook->append_page(*document_table,_("Document"));
+
+	// Document - New Document X size
 	Gtk::SpinButton* pref_x_size_spinbutton(manage(new Gtk::SpinButton(adj_pref_x_size,1,0)));
-	attach_label(misc_table,_("Preferred Canvas X size"),5, xpadding, ypadding);
-	misc_table->attach(*pref_x_size_spinbutton, 1, 2, 5, 6,Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding); 
-
-	// Misc - Preferred y size
+	attach_label(document_table,_("New Document X size"),0, xpadding, ypadding);
+	document_table->attach(*pref_x_size_spinbutton, 1, 2, 0, 1,Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding); 
+	tooltips_.set_tip(*pref_x_size_spinbutton,_("Width in pixels of the new created document"));
+	
+	// Document - New Document Y size
 	Gtk::SpinButton* pref_y_size_spinbutton(manage(new Gtk::SpinButton(adj_pref_y_size,1,0)));
-	attach_label(misc_table,_("Preferred Canvas Y size"),6, xpadding, ypadding);
-	misc_table->attach(*pref_y_size_spinbutton, 1, 2, 6, 7,Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding); 
-
+	attach_label(document_table,_("New Document Y size"),1, xpadding, ypadding);
+	document_table->attach(*pref_y_size_spinbutton, 1, 2, 1, 2,Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding); 
+	tooltips_.set_tip(*pref_y_size_spinbutton,_("High in pixels of the new created document"));
+	
 	show_all_children();
 }
 
@@ -266,10 +272,10 @@ Dialog_Setup::on_apply_pressed()
 	// Set the browser_command textbox
 	App::browser_command=textbox_browser_command.get_text();
 
-	// Set the preferred new canvas x dimension
+	// Set the preferred new Document x dimension
 	App::preferred_x_size=int(adj_pref_x_size.get_value());
 
-	// Set the preferred new canvas y dimension
+	// Set the preferred new Document y dimension
 	App::preferred_y_size=int(adj_pref_y_size.get_value());
 
 	App::save_settings();
@@ -359,10 +365,10 @@ Dialog_Setup::refresh()
 	// Refresh the browser_command textbox
 	textbox_browser_command.set_text(App::browser_command);
 
-	// Refresh the preferred new canvas y dimension
+	// Refresh the preferred new Document X dimension
 	adj_pref_x_size.set_value(App::preferred_x_size);
 	
-	// Refresh the preferred new canvas y dimension
+	// Refresh the preferred new Document Y dimension
 	adj_pref_y_size.set_value(App::preferred_y_size);
 
 }
