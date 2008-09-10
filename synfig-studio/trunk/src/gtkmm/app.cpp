@@ -277,6 +277,7 @@ bool studio::App::restrict_radius_ducks=false;
 String studio::App::custom_filename_prefix(DEFAULT_FILENAME_PREFIX);
 int studio::App::preferred_x_size=480;
 int studio::App::preferred_y_size=270;
+String studio::App::predefined_size(DEFAULT_PREDEFINED_SIZE);
 #ifdef USE_OPEN_FOR_URLS
 String studio::App::browser_command("open"); // MacOS only
 #else
@@ -529,6 +530,12 @@ public:
 			value=strprintf("%i",App::preferred_y_size);
 			return true;
 		}
+		if(key=="predefined_size")
+		{
+			value=strprintf("%s",App::predefined_size.c_str());
+			return true;
+		}
+		
 		return synfigapp::Settings::get_value(key,value);
 	}
 
@@ -614,6 +621,11 @@ public:
 			App::preferred_y_size=i;
 			return true;
 		}
+		if(key=="predefined_size")
+		{
+			App::predefined_size=value;
+			return true;
+		}
 		return synfigapp::Settings::set_value(key,value);
 	}
 
@@ -634,6 +646,7 @@ public:
 		ret.push_back("custom_filename_prefix");
 		ret.push_back("preferred_x_size");
 		ret.push_back("preferred_y_size");
+		ret.push_back("predefined_size");		
 		return ret;
 	}
 };
@@ -1718,6 +1731,7 @@ App::reset_initial_window_configuration()
 	synfigapp::Main::settings().set_value("pref.custom_filename_prefix",DEFAULT_FILENAME_PREFIX);
 	synfigapp::Main::settings().set_value("pref.preferred_x_size","480");
 	synfigapp::Main::settings().set_value("pref.preferred_y_size","270");
+	synfigapp::Main::settings().set_value("pref.predefined_size",DEFAULT_PREDEFINED_SIZE);
 	synfigapp::Main::settings().set_value("window.toolbox.pos","4 4");
 }
 

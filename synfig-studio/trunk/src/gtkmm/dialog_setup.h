@@ -38,13 +38,16 @@
 #include <gtkmm/checkbutton.h>
 #include <gtkmm/widget_time.h>
 #include <gtkmm/tooltips.h>
+#include <gtkmm/comboboxtext.h>
 
 #include <synfig/gamma.h>
 #include <synfig/time.h>
 #include <algorithm>
 
 /* === M A C R O S ========================================================= */
-
+#ifndef DEFAULT_PREDEFINED_SIZE
+#define DEFAULT_PREDEFINED_SIZE _("Custom Size")
+#endif
 /* === T Y P E D E F S ===================================================== */
 
 /* === C L A S S E S & S T R U C T S ======================================= */
@@ -151,6 +154,7 @@ class Dialog_Setup : public Gtk::Dialog
 	void on_gamma_b_change();
 	void on_black_level_change();
 	void on_red_blue_level_change();
+	void on_size_template_combo_change();
 
 	GammaPattern gamma_pattern;
 	BlackLevelSelector black_level_selector;
@@ -179,6 +183,8 @@ class Dialog_Setup : public Gtk::Dialog
 	Gtk::CheckButton toggle_restrict_radius_ducks;
 
 	Gtk::Entry textbox_browser_command;
+	
+	Gtk::ComboBoxText* size_template_combo;
 	Gtk::Entry textbox_custom_filename_prefix;
 	Gtk::Adjustment adj_pref_x_size;
 	Gtk::Adjustment adj_pref_y_size;

@@ -214,12 +214,12 @@ Dialog_Setup::Dialog_Setup():
 	misc_table->attach(textbox_browser_command, 1, 2, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
 
 	// Document
-	Gtk::Table *document_table=manage(new Gtk::Table(2,2,false));
+	Gtk::Table *document_table=manage(new Gtk::Table(2,4,false));
 	notebook->append_page(*document_table,_("Document"));
 
 	// Document - Preferred file name prefix
 	attach_label(document_table, _("New Document filename prefix"), 0, xpadding, ypadding);
-	document_table->attach(textbox_custom_filename_prefix, 1, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
+	document_table->attach(textbox_custom_filename_prefix, 1, 4, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
 	tooltips_.set_tip(textbox_custom_filename_prefix,_("File name prefix for the new created document"));
 
 	// Document - New Document X size
@@ -233,7 +233,30 @@ Dialog_Setup::Dialog_Setup():
 	attach_label(document_table,_("New Document Y size"),2, xpadding, ypadding);
 	document_table->attach(*pref_y_size_spinbutton, 1, 2, 2, 3,Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding); 
 	tooltips_.set_tip(*pref_y_size_spinbutton,_("High in pixels of the new created document"));
-	
+
+	//Document - Template for predefined sizes of canvases.
+	size_template_combo=Gtk::manage(new Gtk::ComboBoxText());
+	Gtk::Label* label(manage(new Gtk::Label(_("Predefined Resolutions:"))));
+	label->set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	document_table->attach(*label, 2, 3, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
+	document_table->attach(*size_template_combo,2, 3, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
+	size_template_combo->signal_changed().connect(sigc::mem_fun(*this,&studio::Dialog_Setup::on_size_template_combo_change));
+	size_template_combo->prepend_text(_("4096x3112 Full Aperture 4K"));
+	size_template_combo->prepend_text(_("2048x1556 Full Aperture Native 2K"));
+	size_template_combo->prepend_text(_("1920x1080 HDTV 1080p/i"));
+	size_template_combo->prepend_text(_("1280x720  HDTV 720p"));
+	size_template_combo->prepend_text(_("720x576   DVD PAL"));
+	size_template_combo->prepend_text(_("720x480   DVD NTSC"));
+	size_template_combo->prepend_text(_("720x540   Web 720x"));
+	size_template_combo->prepend_text(_("720x405   Web 720x HD"));
+	size_template_combo->prepend_text(_("640x480   Web 640x"));
+	size_template_combo->prepend_text(_("640x360   Web 640x HD"));
+	size_template_combo->prepend_text(_("480x360   Web 480x"));
+	size_template_combo->prepend_text(_("480x270   Web 480x HD"));
+	size_template_combo->prepend_text(_("360x270   Web 360x"));
+	size_template_combo->prepend_text(_("360x203   Web 360x HD"));
+	size_template_combo->prepend_text(DEFAULT_PREDEFINED_SIZE);
+
 	show_all_children();
 }
 
@@ -285,6 +308,9 @@ Dialog_Setup::on_apply_pressed()
 
 	// Set the preferred new Document Y dimension
 	App::preferred_y_size=int(adj_pref_y_size.get_value());
+	
+	// Set the preferred Predefined size
+	App::predefined_size=size_template_combo->get_active_text();
 
 	App::save_settings();
 }
@@ -329,6 +355,24 @@ Dialog_Setup::on_red_blue_level_change()
 	gamma_pattern.queue_draw();
 }
 
+void
+Dialog_Setup::on_size_template_combo_change()
+{
+	String selection(size_template_combo->get_active_text());
+	if(selection==DEFAULT_PREDEFINED_SIZE) 
+	{
+		return;
+	}
+	String::size_type locx=selection.find_first_of("x"); // here should be some comparison with string::npos
+	String::size_type locspace=selection.find_first_of(" ");
+	String x_size(selection.substr(0,locx));
+	String y_size(selection.substr(locx+1,locspace));
+	int x=atoi(x_size.c_str());
+	int y=atoi(y_size.c_str());
+	adj_pref_x_size.set_value(x);
+	adj_pref_y_size.set_value(y);
+	return;
+}
 
 void
 Dialog_Setup::refresh()
@@ -381,7 +425,9 @@ Dialog_Setup::refresh()
 	
 	// Refresh the preferred new Document Y dimension
 	adj_pref_y_size.set_value(App::preferred_y_size);
-
+	
+	// Refresh the preferred Predefined size
+	size_template_combo->set_active_text(App::predefined_size);
 }
 
 GammaPattern::GammaPattern():

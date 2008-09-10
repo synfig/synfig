@@ -201,6 +201,7 @@ public:
 	static synfig::String custom_filename_prefix;
 	static int preferred_x_size;
 	static int preferred_y_size;
+	static synfig::String predefined_size;
 	/*
  -- ** -- S I G N A L S -------------------------------------------------------
 	*/
