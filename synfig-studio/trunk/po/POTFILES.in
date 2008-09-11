@@ -193,8 +193,12 @@ src/gtkmm/state_sketch.cpp
 src/gtkmm/state_sketch.h
 src/gtkmm/state_smoothmove.cpp
 src/gtkmm/state_smoothmove.h
+src/gtkmm/state_star.cpp
+src/gtkmm/state_star.h
 src/gtkmm/state_stroke.cpp
 src/gtkmm/state_stroke.h
+src/gtkmm/state_text.cpp
+src/gtkmm/state_text.h
 src/gtkmm/state_width.cpp
 src/gtkmm/state_width.h
 src/gtkmm/state_zoom.cpp
@@ -268,6 +272,12 @@ src/synfigapp/actions/blinepointtangentsplit.cpp
 src/synfigapp/actions/blinepointtangentsplit.h
 src/synfigapp/actions/canvasadd.cpp
 src/synfigapp/actions/canvasadd.h
+src/synfigapp/actions/canvasdescriptionset.cpp
+src/synfigapp/actions/canvasdescriptionset.h
+src/synfigapp/actions/canvasidset.cpp
+src/synfigapp/actions/canvasidset.h
+src/synfigapp/actions/canvasnameset.cpp
+src/synfigapp/actions/canvasnameset.h
 src/synfigapp/actions/canvasremove.cpp
 src/synfigapp/actions/canvasremove.h
 src/synfigapp/actions/canvasrenddescset.cpp
@@ -328,6 +338,8 @@ src/synfigapp/actions/timepointsdelete.cpp
 src/synfigapp/actions/timepointsdelete.h
 src/synfigapp/actions/timepointsmove.cpp
 src/synfigapp/actions/timepointsmove.h
+src/synfigapp/actions/valuedescblinelink.cpp
+src/synfigapp/actions/valuedescblinelink.h
 src/synfigapp/actions/valuedescconnect.cpp
 src/synfigapp/actions/valuedescconnect.h
 src/synfigapp/actions/valuedescconvert.cpp
