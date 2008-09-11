@@ -2398,8 +2398,10 @@ App::new_instance()
 	canvas->rend_desc().set_time_end(5.0);
 	canvas->rend_desc().set_x_res(DPI2DPM(72.0f));
 	canvas->rend_desc().set_y_res(DPI2DPM(72.0f));
-	canvas->rend_desc().set_tl(Vector(-4,2.25));
-	canvas->rend_desc().set_br(Vector(4,-2.25));
+	// The top left and botton right positions are expressed in units
+	// Original convention is that 1 unit = 60 pixels
+	canvas->rend_desc().set_tl(Vector(-(preferred_x_size/60.0)/2.0,(preferred_y_size/60.0)/2.0));
+	canvas->rend_desc().set_br(Vector((preferred_x_size/60.0)/2.0,-(preferred_y_size/60.0)/2.0));
 	canvas->rend_desc().set_w(preferred_x_size);
 	canvas->rend_desc().set_h(preferred_y_size);
 	canvas->rend_desc().set_antialias(1);
