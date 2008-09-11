@@ -430,7 +430,7 @@ AC_CHECK_LIB(mng, mng_initialize,[
 	AM_CONDITIONAL(HAVE_LIBMNG,false)
 ],[-lz -L${exec_prefix}/lib])
 
-AC_CHECK_LIB(jpeg, main,[
+AC_CHECK_LIB(jpeg, jpeg_CreateCompress,[
 	JPEG_LIBS="-ljpeg"
 	AC_DEFINE(HAVE_LIBJPEG,[], [ Define if JPEG library is available ] )
 	AC_SUBST(JPEG_LIBS)
