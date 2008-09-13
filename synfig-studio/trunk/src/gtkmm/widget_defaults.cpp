@@ -209,7 +209,7 @@ Widget_Defaults::Widget_Defaults()
 		widget_fg_color->show();
 		widget_fg_color->set_size_request(16,16);
 		widget_fg_color->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Defaults::on_fg_color_clicked));
-		subtable->attach(*widget_fg_color, 0, 2, 0, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+		subtable->attach(*widget_fg_color, 0, 4, 0, 4, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 		tooltips_.set_tip(*widget_fg_color,_("Foreground Color"));
 
 		// Background Color
@@ -217,7 +217,7 @@ Widget_Defaults::Widget_Defaults()
 		widget_bg_color->show();
 		widget_bg_color->set_size_request(16,16);
 		widget_bg_color->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Defaults::on_bg_color_clicked));
-		subtable->attach(*widget_bg_color, 1, 3, 1, 3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+		subtable->attach(*widget_bg_color, 3, 7, 3, 7, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 		tooltips_.set_tip(*widget_bg_color,_("Background Color"));
 
 		Gtk::Image* icon;
@@ -234,7 +234,7 @@ Widget_Defaults::Widget_Defaults()
 		//button_swap->set_size_request(16/3,16/3);
 		dynamic_cast<Gtk::Misc*>(button_swap->get_child())->set_padding(0,0);
 		button_swap->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Defaults::on_swap_color_clicked));
-		subtable->attach(*button_swap, 2, 3, 0, 1, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+		subtable->attach(*button_swap, 4, 7, 0, 3, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 		tooltips_.set_tip(*button_swap,_("Swap Background and\nForeground Colors"));
 
 		// Reset button
@@ -248,7 +248,7 @@ Widget_Defaults::Widget_Defaults()
 		dynamic_cast<Gtk::Misc*>(button_reset->get_child())->set_padding(0,0);
 		//button_reset->set_size_request(16/3,16/3);
 		button_reset->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Defaults::on_reset_color_clicked));
-		subtable->attach(*button_reset, 0,1, 2, 3, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+		subtable->attach(*button_reset, 0, 3, 4, 7, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 		tooltips_.set_tip(*button_reset,_("Reset Colors to Black and White"));
 
 
