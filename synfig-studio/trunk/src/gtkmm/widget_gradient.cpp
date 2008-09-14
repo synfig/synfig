@@ -295,6 +295,7 @@ Widget_Gradient::on_event(GdkEvent *event)
 		case GDK_MOTION_NOTIFY:
 			if(editable_ && y>get_height()-CONTROL_HEIGHT)
 			{
+				if(!gradient_.size()) return true;
 				Gradient::iterator iter(gradient_.find(selected_cpoint));
 
 				if(event->button.state&GDK_SHIFT_MASK)
