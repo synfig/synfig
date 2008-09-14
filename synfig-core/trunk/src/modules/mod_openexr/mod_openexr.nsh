@@ -10,10 +10,10 @@ Section "mod_openexr" Sec_mod_openexr
   File /oname=mod_openexr.dll "src\modules\mod_openexr\.libs\libmod_openexr.dll"
 
   SetOutPath "$INSTDIR\bin"
-  File /oname=libHalf-4.dll "src\modules\mod_openexr\.libs\libHalf-4.dll"
-  File /oname=libIlmImf-4.dll "src\modules\mod_openexr\.libs\libIlmImf-4.dll"
-  File /oname=libIlmThread-4.dll "src\modules\mod_openexr\.libs\libIlmThread-4.dll"
-  File /oname=libIex-4.dll "src\modules\mod_openexr\.libs\libIex-4.dll"
+  File "src\modules\mod_openexr\.libs\libHalf*.dll"
+  File "src\modules\mod_openexr\.libs\libIlmImf*.dll"
+  File "src\modules\mod_openexr\.libs\libIlmThread*.dll"
+  File "src\modules\mod_openexr\.libs\libIex*.dll"
 
   FileOpen $0 $INSTDIR\etc\synfig_modules.cfg a
   FileSeek $0 0 END
