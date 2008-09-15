@@ -255,23 +255,20 @@ if test $with_libavcodec = "yes" ; then {
 	)
 
 	if test $with_libswscale != "no" ; then {
-		AC_CHECK_LIB(swscale, sws_getContext, [], [echo no; with_libswscale="no"], [])
+		PKG_CHECK_MODULES(LIBSWSCALE, [libswscale], [], [echo no; with_libswscale="no"])
 	} ; fi
 
 	if test $with_libswscale = "yes" ; then {
-		LIBAVCODEC_LIBS="$LIBAVCODEC_LIBS -lswscale"
-		AM_CONDITIONAL(HAVE_LIBSWSCALE, true)
+		AC_DEFINE(WITH_LIBSWSCALE, [], [enable libswscale support])
     	} else {
-		AM_CONDITIONAL(HAVE_LIBSWSCALE, false)
 		AC_CHECK_LIB(avcodec, img_convert,
 			[AC_MSG_RESULT([ *** Using deprecated function img_convert.])],
 			[AC_MSG_FAILURE([Neither libswscale nor function img_convert was found.])],
 			[]
 		)
 	} ; fi
-} else {
-	AM_CONDITIONAL(HAVE_LIBSWSCALE, false)
 } ; fi
+AM_CONDITIONAL(WITH_LIBSWSCALE, test "x$with_libswscale" = "xyes")
 
 
 # FREETYPE2 CHECK--------------------

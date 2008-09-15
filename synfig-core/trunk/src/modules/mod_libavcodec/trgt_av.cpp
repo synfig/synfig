@@ -36,8 +36,8 @@
 extern "C"
 {
 #include <avformat.h>
-#ifdef HAVE_LIBSWSCALE
-#	include <ffmpeg/swscale.h>
+#ifdef WITH_LIBSWSCALE
+#	include <swscale.h>
 #endif
 }
 
@@ -392,7 +392,7 @@ public:
 		if ( pict && context->pix_fmt != PIX_FMT_RGB24 )
 		{
 			//We're using RGBA at the moment, write custom conversion code later (get less accuracy errors)
-#ifdef HAVE_LIBSWSCALE
+#ifdef WITH_LIBSWSCALE
 			struct SwsContext* img_convert_ctx =
 				sws_getContext(context->width, context->height, PIX_FMT_RGB24,
 					context->width, context->height, context->pix_fmt,
