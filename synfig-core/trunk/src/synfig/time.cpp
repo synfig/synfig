@@ -183,10 +183,11 @@ Time::get_string(float fps, Time::Format format)const
 		time.value_=ceil(time.value_);
 
 	int hour,minute;
-
-	hour=time/3600;time-=hour*3600;
-	minute=time/60;time-=minute*60;
-
+	if(!(format<=FORMAT_FRAMES))
+	{
+		hour=time/3600;time-=hour*3600;
+		minute=time/60;time-=minute*60;
+	}
 	// <= is redefined, so this means "is the FORMAT_VIDEO bit set in the format?"
 	if(format<=FORMAT_VIDEO)
 	{
