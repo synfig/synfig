@@ -43,11 +43,15 @@ using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 
-#define POINTS_PER_INCH	(72.0)
+#define POINTS_PER_INCH		  (72.0)
+#define INCHES_PER_METER	  (39.3700787402)
+#define POINTS_PER_METER	  (POINTS_PER_INCH*INCHES_PER_METER)
+#define CENTIMETERS_PER_METER (100.0)
+#define MILLIMETERS_PER_METER (1000.0)
+
+#define METERS_PER_UNIT		  (rend_desc.get_physical_w()/abs(rend_desc.get_tl()[0]-rend_desc.get_br()[0]))
 
 /* === G L O B A L S ======================================================= */
-
-#define METERS_PER_UNIT  (rend_desc.get_physical_w()/abs(rend_desc.get_tl()[0]-rend_desc.get_br()[0]))
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -130,11 +134,11 @@ Distance::meters()const
 {
 	switch(system_)
 	{
-		case SYSTEM_INCHES: return value_/39.3700787402;
-		case SYSTEM_POINTS: return value_/POINTS_PER_INCH/39.3700787402;
-		case SYSTEM_METERS: return value_;
-		case SYSTEM_CENTIMETERS: return value_/100.0;
-		case SYSTEM_MILLIMETERS: return value_/1000.0;
+		case SYSTEM_INCHES:		 return value_/INCHES_PER_METER;
+		case SYSTEM_POINTS:		 return value_/POINTS_PER_METER;
+		case SYSTEM_METERS:		 return value_;
+		case SYSTEM_CENTIMETERS: return value_/CENTIMETERS_PER_METER;
+		case SYSTEM_MILLIMETERS: return value_/MILLIMETERS_PER_METER;
 		default: throw BadSystem();
 	}
 }
@@ -174,11 +178,11 @@ Distance::meters_to_system(Real x,System target_system)
 {
 	switch(target_system)
 	{
-		case SYSTEM_INCHES: return x*39.3700787402;
-		case SYSTEM_POINTS: return x*39.3700787402*POINTS_PER_INCH;
-		case SYSTEM_METERS: return x;
-		case SYSTEM_CENTIMETERS: return x*100.0;
-		case SYSTEM_MILLIMETERS: return x*1000.0;
+		case SYSTEM_INCHES:		 return x*INCHES_PER_METER;
+		case SYSTEM_POINTS:		 return x*POINTS_PER_METER;
+		case SYSTEM_METERS:		 return x;
+		case SYSTEM_CENTIMETERS: return x*CENTIMETERS_PER_METER;
+		case SYSTEM_MILLIMETERS: return x*MILLIMETERS_PER_METER;
 		default: throw BadSystem();
 	}
 }
