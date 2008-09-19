@@ -395,8 +395,10 @@ Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quali
 
 	if (!etl::intersect(context.get_full_bounding_rect(),full_bounding_rect+origin))
 	{
-		// if there's no intersection between the context and our surface, and we're rendering 'onto', then we're done
-		if (Color::is_onto(blend_method)) return true;
+		// if there's no intersection between the context and our
+		// surface, and we're rendering 'onto', then we're done
+		if (Color::is_onto(blend_method) && !Color::is_straight(blend_method))
+			return true;
 
 		/* 'straight' is faster than 'composite' and has the same
 		 * effect if the affected area of the lower layer is
