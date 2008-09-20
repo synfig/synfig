@@ -306,7 +306,7 @@ Circle::FALLOFF_FUNC *Circle::GetFalloffFunc()const
 Color
 Circle::get_color(Context context, const Point &point)const
 {
-	if(radius==0 || is_disabled())
+	if(is_disabled() || (radius==0 && invert==false && !feather))
 		return context.get_color(point);
 
 
@@ -415,7 +415,7 @@ bool
 Circle::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
 	// trivial case
-	if(is_disabled() || (radius==0 && invert==false))
+	if(is_disabled() || (radius==0 && invert==false && !feather))
 		return context.accelerated_render(surface,quality, renddesc, cb);
 
 	// Another trivial case
