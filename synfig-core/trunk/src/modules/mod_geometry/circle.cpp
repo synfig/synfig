@@ -344,7 +344,7 @@ Circle::get_color(Context context, const Point &point)const
 				return Color::blend(color,context.get_color(point),get_amount(),get_blend_method());
 		}
 		else
-			return context.get_color(point);
+			return Color::blend(Color::alpha(),context.get_color(point),get_amount(),get_blend_method());
 	}
 
 	//inside the circle's solid area (with feathering)
@@ -357,7 +357,7 @@ Circle::get_color(Context context, const Point &point)const
 			else
 				return Color::blend(color,context.get_color(point),get_amount(),get_blend_method());
 		else
-			return context.get_color(point);
+			return Color::blend(Color::alpha(),context.get_color(point),get_amount(),get_blend_method());
 	}
 
 	//If we get here, the pixel is within the feathering area, and is thus subject to falloff
@@ -401,10 +401,7 @@ Circle::get_color(Context context, const Point &point)const
 
 		alpha = falloff_func(cache,mag_squared);
 
-		//Compose falloff value with amount from the composite layer, and that is the blend value
-		alpha *= get_amount();
-
-		return Color::blend(color,context.get_color(point),alpha,get_blend_method());
+		return Color::blend(color*alpha,context.get_color(point),get_amount(),get_blend_method());
 	}
 }
 
