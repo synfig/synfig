@@ -1285,7 +1285,7 @@ Layer_Shape::get_color(Context context, const Point &p)const
 	bool intersect = ((!!intercepts) ^ invert);
 
 	if(!intersect)
-		return context.get_color(pp);
+		return Color::blend(Color::alpha(),context.get_color(pp),get_amount(),get_blend_method());
 
 	//Ok, we're inside... bummmm ba bum buM...
 	if(get_blend_method() == Color::BLEND_STRAIGHT && get_amount() == 1)
