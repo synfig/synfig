@@ -274,27 +274,26 @@ Rectangle::get_color(Context context, const Point &pos)const
 	if(	pos[0]<max[0] && pos[0]>min[0] &&
 		pos[1]<max[1] && pos[1]>min[1] )
 	{
+		// inside the expanded rectangle
 		if(invert)
-			return context.get_color(pos);
-		else
-		{
-			if(is_solid_color())
-				return color;
-			else
-				return Color::blend(color,context.get_color(pos),get_amount(),get_blend_method());
+			return Color::blend(Color::alpha(),context.get_color(pos),get_amount(),get_blend_method());
 
-		}
-	}
-
-	if(invert)
-	{
 		if(is_solid_color())
 			return color;
-		else
-			return Color::blend(color,context.get_color(pos),get_amount(),get_blend_method());
-	}
 
-	return context.get_color(pos);
+		return Color::blend(color,context.get_color(pos),get_amount(),get_blend_method());
+	}
+	else
+	{
+		// outside the expanded rectangle
+		if(!invert)
+			return Color::blend(Color::alpha(),context.get_color(pos),get_amount(),get_blend_method());
+
+		if(is_solid_color())
+			return color;
+
+		return Color::blend(color,context.get_color(pos),get_amount(),get_blend_method());
+	}
 }
 
 bool
