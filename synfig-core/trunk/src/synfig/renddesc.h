@@ -55,23 +55,23 @@ class RendDesc
 public:
 	enum Lock
 	{
-		PX_ASPECT=(1<<0),
-		PX_AREA=(1<<1),
-		PX_W=(1<<2),
-		PX_H=(1<<3),
+		PX_ASPECT=(1<<0),		// "_Pixel Aspect" in Locks and Links
+		PX_AREA=(1<<1),			// not used
+		PX_W=(1<<2),			// "Pi_xel Width" in Locks and Links
+		PX_H=(1<<3),			// "Pix_el Height" in Locks and Links
 
-		IM_ASPECT=(1<<4),
-		IM_SPAN=(1<<5),
-		IM_W=(1<<6),
-		IM_H=(1<<7),
-		IM_ZOOMIN=(1<<8),
-		IM_ZOOMOUT=(1<<9),
+		IM_ASPECT=(1<<4),		// "Image _Aspect" in Locks and Links
+		IM_SPAN=(1<<5),			// "Image _Span" in Locks and Links
+		IM_W=(1<<6),			// "Image _Width" in Locks and Links
+		IM_H=(1<<7),			// "Image _Height" in Locks and Links
+		IM_ZOOMIN=(1<<8),		// not used
+		IM_ZOOMOUT=(1<<9),		// not used
 
-		LINK_PX_ASPECT=(1<<10),
-		LINK_PX_AREA=(1<<11),
-		LINK_IM_ASPECT=(1<<12),
-		LINK_IM_SPAN=(1<<13),
-		LINK_IM_CENTER=(1<<14)
+		LINK_PX_ASPECT=(1<<10),	// not used
+		LINK_PX_AREA=(1<<11),	// not used
+		LINK_IM_ASPECT=(1<<12),	// not used
+		LINK_IM_SPAN=(1<<13),	// not used
+		LINK_IM_CENTER=(1<<14)	// not used
 	};
 
 private:
