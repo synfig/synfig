@@ -2771,7 +2771,7 @@ msgstr "Support"
 
 #. TRANSLATORS: a wiki page
 #: src/gtkmm/toolbox.cpp:271
-msgid "/Communication"
+msgid "/Contact"
 msgstr "/Contact.fr"
 
 #. TRANSLATORS: Help menu entry

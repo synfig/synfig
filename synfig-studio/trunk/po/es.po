@@ -2769,8 +2769,8 @@ msgstr "Obtener Soporte"
 
 #. TRANSLATORS: a wiki page
 #: src/gtkmm/toolbox.cpp:271
-msgid "/Communication"
-msgstr "/Communication.es"
+msgid "/Contact"
+msgstr "/Contact.es"
 
 #. TRANSLATORS: Help menu entry
 #: src/gtkmm/toolbox.cpp:272

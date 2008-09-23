@@ -268,7 +268,7 @@ Toolbox::Toolbox():
 	/* TRANSLATORS: Help menu entry */ WIKI(_("Synfig Wiki"),				/* TRANSLATORS: a wiki page */ _("/Main_Page")				);
 	/* TRANSLATORS: Help menu entry */ WIKI(_("Tutorials"),					/* TRANSLATORS: a wiki page */ _("/Tutorials")				);
 	/* TRANSLATORS: Help menu entry */ WIKI(_("Frequently Asked Questions"),/* TRANSLATORS: a wiki page */ _("/FAQ")					);
-	/* TRANSLATORS: Help menu entry */ WIKI(_("Get Support"),				/* TRANSLATORS: a wiki page */ _("/Communication")			);
+	/* TRANSLATORS: Help menu entry */ WIKI(_("Get Support"),				/* TRANSLATORS: a wiki page */ _("/Contact")			);
 	/* TRANSLATORS: Help menu entry */ WIKI(_("Keyboard Shortcuts"),		/* TRANSLATORS: a wiki page */ _("/Keyboard_Shortcuts")		);
 	/* TRANSLATORS: Help menu entry */ WIKI(_("Mouse Shortcuts"),			/* TRANSLATORS: a wiki page */ _("/Mouse_Shortcuts")		);
 	/* TRANSLATORS: Help menu entry */ WIKI(_("All Pages"), "/Special:Allpages" );

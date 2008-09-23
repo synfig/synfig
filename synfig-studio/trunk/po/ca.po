@@ -2607,8 +2607,8 @@ msgstr "Obtenir suport"
 
 #. TRANSLATORS: a wiki page
 #: src/gtkmm/toolbox.cpp:271
-msgid "/Communication"
-msgstr "/Communication"
+msgid "/Contact"
+msgstr "/Contact"
 
 #. TRANSLATORS: Help menu entry
 #: src/gtkmm/toolbox.cpp:272
