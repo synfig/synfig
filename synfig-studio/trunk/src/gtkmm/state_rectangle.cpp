@@ -829,6 +829,7 @@ StateRectangle_Context::event_mouse_click_handler(const Smach::event& x)
 
 	if(event.key==EVENT_WORKAREA_MOUSE_BUTTON_DRAG && event.button==BUTTON_LEFT)
 	{
+		if (!point2_duck) return Smach::RESULT_OK;
 		point2_duck->set_point(get_work_area()->snap_point_to_grid(event.pos));
 		get_work_area()->queue_draw();
 		return Smach::RESULT_ACCEPT;
