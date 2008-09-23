@@ -91,9 +91,15 @@
  *
  *      Added "offset", "scale", and "fixed_length" links to the
  *      "BLine Tangent" ValueNode.
+ *
+ * 0.6: svn r2067
+ *
+ *      Added "scale" link to the "BLine Width" ValueNode in svn r1872.
+ *
+ *      Added "loop" link to the "Gradient Color" ValueNode in svn r1901.
  */
 
-#define CURRENT_CANVAS_VERSION "0.5"
+#define CURRENT_CANVAS_VERSION "0.6"
 
 /* === T Y P E D E F S ===================================================== */
 

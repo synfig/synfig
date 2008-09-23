@@ -1292,6 +1292,18 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 				 value_node->link_name(i) == "fixed_length"))
 				continue;
 
+			// 'scale' was added while canvas version 0.5 was in use
+			if ((version == "0.3" || version == "0.4" || version == "0.5") &&
+				element->get_name() == "blinecalcwidth" &&
+				value_node->link_name(i) == "scale")
+				continue;
+
+			// 'loop' was added while canvas version 0.5 was in use, as was the 'gradientcolor' node type
+			if (version == "0.5" &&
+				element->get_name() == "gradientcolor" &&
+				value_node->link_name(i) == "loop")
+				continue;
+
 			error(element, strprintf(_("<%s> is missing link %d (%s)"),
 									 element->get_name().c_str(),
 									 i,
