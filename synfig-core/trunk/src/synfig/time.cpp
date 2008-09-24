@@ -247,7 +247,7 @@ Time::get_string(float fps, Time::Format format)const
 			started = true;
 		}
 
-		if(format<=FORMAT_FULL || frame || !started)
+		if(format<=FORMAT_FULL || abs(frame) > epsilon_() || !started)
 		{
 			if (!(format<=FORMAT_NOSPACES) && started)
 				ret += " ";
