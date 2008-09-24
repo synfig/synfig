@@ -549,6 +549,7 @@ bool Widget_Timeslider::redraw(bool /*doublebuffer*/)
 		double t = (time/scale - floor(time/scale))*subdiv; // the difference from the big mark in 0:1
 		//sdindex = (int)floor(t + 0.5); //get how far through the range it is...
 		sdindex = round_to_int(t); //get how far through the range it is...
+		if (sdindex == subdiv) sdindex = 0;
 
 		//synfig::info("Extracted fr %.2lf -> %d", t, sdindex);
 	}
