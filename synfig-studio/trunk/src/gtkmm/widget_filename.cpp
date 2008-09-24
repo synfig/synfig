@@ -34,6 +34,7 @@
 #include <gtkmm/button.h>
 #include "widget_filename.h"
 #include "app.h"
+#include "canvasview.h"
 
 #include "general.h"
 
@@ -111,6 +112,11 @@ Widget_Filename::on_button_choose_pressed()
 	string filename=entry_filename->get_text();
 	if(filename.empty())
 		filename=".";
+	else
+		filename = etl::absolute_path(
+			etl::dirname(App::get_selected_canvas_view()->get_canvas()->get_file_name()) +
+			ETL_DIRECTORY_SEPARATOR +
+			filename);
 	if(App::dialog_open_file(_("Choose File"), filename, MISC_DIR_PREFERENCE))
 		entry_filename->set_text(filename);
 }
