@@ -1719,6 +1719,11 @@ CanvasParser::parse_layer(xmlpp::Element *element,Canvas::Handle canvas)
 
 			String param_name=child->get_attribute("name")->get_value();
 
+			// SVN r2013 and r2014 renamed all 'pos' and 'offset' parameters to 'origin'
+			// 'pos' and 'offset' will appear in old .sif files; handle them correctly
+			if (param_name == "pos" || param_name == "offset")
+				param_name = "origin";
+
 			if(child->get_attribute("use"))
 			{
 				// If the "use" attribute is used, then the
