@@ -88,6 +88,7 @@ ListImporter::ListImporter(const String &filename)
 				line == "jpg"  ||
 				line == "png"  ||
 				line == "ppm"  ||
+				line == "gif"  ||
 				line == "tiff" )
 			{
 				ext = String(".") + line;
