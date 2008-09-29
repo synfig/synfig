@@ -247,6 +247,17 @@ if test $with_libavcodec = "yes" ; then {
 
 
 if test $with_libavcodec = "yes" ; then {
+
+	# Need to check both the new and old locations for the avformat header
+	# Need to save flags, add avformat flags, check headers and restore flags
+	ac_save_CPPFLAGS="$CPPFLAGS"
+	ac_save_CFLAGS="$CFLAGS"
+	CPPFLAGS="${CPPFLAGS} ${LIBAVCODEC_CFLAGS}"
+	CFLAGS="${CFLAGS} ${LIBAVCODEC_CFLAGS}"
+	AC_CHECK_HEADERS(libavformat/avformat.h avformat.h ffmpeg/avformat.h)
+	CPPFLAGS="${ac_save_CPPFLAGS}"
+	CFLAGS="${ac_save_CFLAGS}"
+
 	AC_ARG_WITH(libswscale,
 		[AS_HELP_STRING([--without-libswscale],
 			[disable support for libswscale (Default=auto)])],
@@ -260,6 +271,16 @@ if test $with_libavcodec = "yes" ; then {
 
 	if test $with_libswscale = "yes" ; then {
 		AC_DEFINE(WITH_LIBSWSCALE, [], [enable libswscale support])
+
+		# Need to check both the new and old locations for the swscale header
+		# Need to save flags, add swscale flags, check headers and restore flags
+		ac_save_CPPFLAGS="$CPPFLAGS"
+		ac_save_CFLAGS="$CFLAGS"
+		CPPFLAGS="${CPPFLAGS} ${LIBSWSCALE_CFLAGS}"
+		CFLAGS="${CFLAGS} ${LIBSWSCALE_CFLAGS}"
+		AC_CHECK_HEADERS(libswscale/swscale.h swscale.h ffmpeg/swscale.h)
+		CPPFLAGS="${ac_save_CPPFLAGS}"
+		CFLAGS="${ac_save_CFLAGS}"
     	} else {
 		AC_CHECK_LIB(avcodec, img_convert,
 			[AC_MSG_RESULT([ *** Using deprecated function img_convert.])],

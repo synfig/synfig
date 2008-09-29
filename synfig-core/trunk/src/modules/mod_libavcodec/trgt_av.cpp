@@ -35,10 +35,30 @@
 
 extern "C"
 {
-#include <avformat.h>
-#ifdef WITH_LIBSWSCALE
-#	include <swscale.h>
+
+/*
+	ffmpeg library headers have historically had multiple locations.
+	We should check all of the locations to be more portable.
+*/
+
+#ifdef HAVE_LIBAVFORMAT_AVFORMAT_H
+#	include <libavformat/avformat.h>
+#elif defined(HAVE_AVFORMAT_H)
+#	include <avformat.h>
+#elif defined(HAVE_FFMPEG_AVFORMAT_H)
+#	include <ffmpeg/avformat.h>
 #endif
+
+#ifdef WITH_LIBSWSCALE
+#ifdef HAVE_LIBSWSCALE_SWSCALE_H
+#	include <libswscale/swscale.h>
+#elif defined(HAVE_SWSCALE_H)
+#	include <swscale.h>
+#elif defined(HAVE_FFMPEG_SWSCALE_H)
+#	include <ffmpeg/swscale.h>
+#endif
+#endif
+
 }
 
 #include <synfig/general.h>
