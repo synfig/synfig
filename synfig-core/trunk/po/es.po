@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: es\n"
 "Report-Msgid-Bugs-To: http://synfig.org/Bugs\n"
-"POT-Creation-Date: 2008-08-30 15:40+0200\n"
-"PO-Revision-Date: 2008-08-30 15:41+0200\n"
+"POT-Creation-Date: 2008-09-29 21:46+0200\n"
+"PO-Revision-Date: 2008-10-01 00:16+0200\n"
 "Last-Translator: Carlos López González <carloslopezgonzalez@yahoo.es>\n"
 "Language-Team: Español <es@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -192,7 +192,7 @@ msgstr "Invertir"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:644
 msgid "No face loaded, no text will be rendered."
-msgstr "Niguna cara cargada, no se mostrará ningún texto"
+msgstr "Niguna fuente cargada, no se mostrará ningún texto"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:670
 msgid "Text too small, no text will be rendered."
@@ -200,11 +200,11 @@ msgstr "Texto demasiado pequeño, no se mostrará ningún texto"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:694
 msgid "Unable to set face size."
-msgstr "Imposible establecer el tamaño de cara"
+msgstr "Imposible establecer el tamaño de fuente"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:737
 msgid "Invalid multibyte sequence - is the locale set?\n"
-msgstr "Secuencia multibye inválida - se ha establecido el local?\n"
+msgstr "Secuencia multibye inválida - se ha establecido el lenguaje local?\n"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:744
 msgid "Can't parse multibyte character.\n"
@@ -768,7 +768,7 @@ msgstr "Profundidad de bit no soportado (bit_count=%d, debería ser 24 o 32)"
 
 #: src/modules/mod_bmp/trgt_bmp.cpp:185
 msgid " (animated)"
-msgstr "(animado)"
+msgstr " (animado)"
 
 #: src/modules/mod_bmp/trgt_bmp.cpp:195 src/modules/mod_bmp/trgt_bmp.cpp:196
 msgid "Unable to open file"
@@ -1102,7 +1102,7 @@ msgstr "Ángulo"
 msgid "The orientation of the star"
 msgstr "La orientación de la estrella"
 
-#: src/modules/mod_geometry/star.cpp:194 src/synfig/distance.cpp:243
+#: src/modules/mod_geometry/star.cpp:194 src/synfig/distance.cpp:247
 msgid "Points"
 msgstr "Puntos"
 
@@ -1462,27 +1462,27 @@ msgstr "Escala la velocidad mediante el espesor de línea beizer"
 msgid "%s was not in PPM format"
 msgstr "%s no estaba en formato PPM"
 
-#: src/synfig/distance.cpp:241
+#: src/synfig/distance.cpp:245
 msgid "Units"
 msgstr "Unidades"
 
-#: src/synfig/distance.cpp:242
+#: src/synfig/distance.cpp:246
 msgid "Pixels"
 msgstr "Pixels"
 
-#: src/synfig/distance.cpp:244
+#: src/synfig/distance.cpp:248
 msgid "Inches"
 msgstr "Pulgadas"
 
-#: src/synfig/distance.cpp:245
+#: src/synfig/distance.cpp:249
 msgid "Meters"
 msgstr "Metros"
 
-#: src/synfig/distance.cpp:246
+#: src/synfig/distance.cpp:250
 msgid "Millimeters"
 msgstr "Milimetros"
 
-#: src/synfig/distance.cpp:247
+#: src/synfig/distance.cpp:251
 msgid "Centimeters"
 msgstr "Centímetros"
 
@@ -1782,65 +1782,65 @@ msgstr "Imposible conectar el valor de nodo ('%s' de tipo '%s') para enlazar %d 
 msgid "Unknown Exception thrown when working on element \"%s\""
 msgstr "Lanzada excepción desconocida al trabajar con el elemento \"%s\""
 
-#: src/synfig/loadcanvas.cpp:1295
+#: src/synfig/loadcanvas.cpp:1307
 #, c-format
 msgid "<%s> is missing link %d (%s)"
 msgstr "<%s>esta perdiendo el enlace %d (%s)"
 
-#: src/synfig/loadcanvas.cpp:1361
+#: src/synfig/loadcanvas.cpp:1373
 msgid "Unable to create <dynamic_list>"
 msgstr "Imposible crear <dynamic_list>"
 
-#: src/synfig/loadcanvas.cpp:1511
+#: src/synfig/loadcanvas.cpp:1523
 msgid "<entry> is missing its contents or missing \"use\" element"
 msgstr "<entry> esta perdiendo su contenido o perdiendo el elemento \"use\""
 
-#: src/synfig/loadcanvas.cpp:1556
+#: src/synfig/loadcanvas.cpp:1568
 #, c-format
 msgid "Bad data in <%s>"
 msgstr "Mal dato en <%s>"
 
-#: src/synfig/loadcanvas.cpp:1588
+#: src/synfig/loadcanvas.cpp:1600
 #, c-format
 msgid "Expected a ValueNode.  Refer to '%s'"
 msgstr "Esperado un Valor de Nodo. Refiere a '%s'"
 
-#: src/synfig/loadcanvas.cpp:1609
+#: src/synfig/loadcanvas.cpp:1621
 #, c-format
 msgid "Bad ID \"%s\""
 msgstr "Mal ID \"%s\""
 
-#: src/synfig/loadcanvas.cpp:1614
+#: src/synfig/loadcanvas.cpp:1626
 #, c-format
 msgid "Duplicate ID \"%s\""
 msgstr "Duplicado ID \"%s\""
 
-#: src/synfig/loadcanvas.cpp:1619
+#: src/synfig/loadcanvas.cpp:1631
 #, c-format
 msgid "Unknown Exception thrown when adding ValueNode \"%s\""
 msgstr "Lanzada excepción desconocida al añadir el Valor de Nodo \"%s\""
 
-#: src/synfig/loadcanvas.cpp:1654
+#: src/synfig/loadcanvas.cpp:1666
 msgid "Missing \"type\" attribute to \"layer\" element"
 msgstr "Perdido atributo \"type\" al elemento \"layer\""
 
-#: src/synfig/loadcanvas.cpp:1673
+#: src/synfig/loadcanvas.cpp:1685
 msgid "Installed layer version is smaller than layer version in file"
 msgstr "Versión de capa instalada es menor que la versión de capa en el fichero"
 
-#: src/synfig/loadcanvas.cpp:1693
+#: src/synfig/loadcanvas.cpp:1705
 msgid "<name> entry for <layer> is not yet supported. Ignoring..."
 msgstr "Entrada <name> para <layer> no está aún soportada. Ingorando..."
 
-#: src/synfig/loadcanvas.cpp:1696
+#: src/synfig/loadcanvas.cpp:1708
 msgid "<desc> entry for <layer> is not yet supported. Ignoring..."
 msgstr "Entrada <desc> para <layer> no está aún soportada. Ingorando..."
 
-#: src/synfig/loadcanvas.cpp:1704
+#: src/synfig/loadcanvas.cpp:1716
 msgid "Missing \"name\" attribute for <param>."
 msgstr "Pedido atributo \"name\" para <param>"
 
-#: src/synfig/loadcanvas.cpp:1716
+#: src/synfig/loadcanvas.cpp:1733
 msgid ""
 "Found \"use\" attribute for <param>, but it wasn't empty. Ignoring "
 "contents..."
@@ -1848,83 +1848,83 @@ msgstr ""
 "Encontrado atributo \"use\" para <param>, pero no estaba vacío. Ingnorando "
 "contenidos..."
 
-#: src/synfig/loadcanvas.cpp:1721
+#: src/synfig/loadcanvas.cpp:1738
 msgid "Empty use=\"\" value in <param>"
 msgstr "Uso vacío=\"\" valor en <param>"
 
-#: src/synfig/loadcanvas.cpp:1725
+#: src/synfig/loadcanvas.cpp:1742
 msgid "Layer rejected canvas link"
 msgstr "La capa rechazó el enlace al lienzo"
 
-#: src/synfig/loadcanvas.cpp:1743
+#: src/synfig/loadcanvas.cpp:1760
 #, c-format
 msgid "Unknown ID (%s) referenced in <param>"
 msgstr "Desconocido ID (%s) refernciado en <param>"
 
-#: src/synfig/loadcanvas.cpp:1759
+#: src/synfig/loadcanvas.cpp:1776
 msgid "<param> is either missing its contents, or missing a \"use\" attribute."
 msgstr "<param> esta perdiendo su contenido o perdiendo un atributo \"use\"."
 
-#: src/synfig/loadcanvas.cpp:1771 src/synfig/loadcanvas.cpp:1791
+#: src/synfig/loadcanvas.cpp:1788 src/synfig/loadcanvas.cpp:1808
 msgid "Bad data for <param>"
 msgstr "Mal dato para <param>"
 
-#: src/synfig/loadcanvas.cpp:1779
+#: src/synfig/loadcanvas.cpp:1796
 #, c-format
 msgid "Layer '%s' rejected value for parameter '%s'"
 msgstr "La capa '%s' rechazó el valor para el párametro '%s'"
 
-#: src/synfig/loadcanvas.cpp:1802
+#: src/synfig/loadcanvas.cpp:1819
 #, c-format
 msgid "Unexpected element <%s> after <param> data, ignoring..."
 msgstr "Inesperado elemento <%s> después del dato <param>, ignorando..."
 
-#: src/synfig/loadcanvas.cpp:1957
+#: src/synfig/loadcanvas.cpp:1974
 msgid "Inline canvas cannot have a <defs> section"
 msgstr "Lienzo en línea no puede tener una sección <defs>"
 
-#: src/synfig/loadcanvas.cpp:1965
+#: src/synfig/loadcanvas.cpp:1982
 msgid "Inline canvas cannot have keyframes"
 msgstr "Lienzo en línea no puede tener fotogramas clave"
 
-#: src/synfig/loadcanvas.cpp:1977
+#: src/synfig/loadcanvas.cpp:1994
 msgid "Inline canvases cannot have metadata"
 msgstr "Lienzos en línea no pueden tener meta datos"
 
-#: src/synfig/loadcanvas.cpp:1985
+#: src/synfig/loadcanvas.cpp:2002
 msgid "<meta> must have a name"
 msgstr "<meta> debe tener un nombre"
 
-#: src/synfig/loadcanvas.cpp:1991
+#: src/synfig/loadcanvas.cpp:2008
 msgid "<meta> must have content"
 msgstr "<meta> debe tener conenido"
 
-#: src/synfig/loadcanvas.cpp:2003
+#: src/synfig/loadcanvas.cpp:2020
 msgid "blank \"name\" entity"
 msgstr "entidad \"name\" vacía"
 
-#: src/synfig/loadcanvas.cpp:2018
+#: src/synfig/loadcanvas.cpp:2035
 msgid "blank \"desc\" entity"
 msgstr "entidad \"desc\" vacía"
 
-#: src/synfig/loadcanvas.cpp:2033
+#: src/synfig/loadcanvas.cpp:2050
 msgid "blank \"author\" entity"
 msgstr "entidad \"author\" vacía"
 
-#: src/synfig/loadcanvas.cpp:2065
+#: src/synfig/loadcanvas.cpp:2082
 #, c-format
 msgid "Canvas '%s' has undefined %s: %s"
 msgstr "Lienzo '%s' tiene sin definir '%s':'%s'"
 
-#: src/synfig/loadcanvas.cpp:2067 src/synfig/valuenode.cpp:351
+#: src/synfig/loadcanvas.cpp:2084 src/synfig/valuenode.cpp:351
 msgid "ValueNode"
 msgstr "Valor de Nodo"
 
-#: src/synfig/loadcanvas.cpp:2067
+#: src/synfig/loadcanvas.cpp:2084
 msgid "ValueNodes"
 msgstr "Valores de Nodos"
 
-#: src/synfig/loadcanvas.cpp:2147
+#: src/synfig/loadcanvas.cpp:2164
 msgid "<INTERNAL>"
 msgstr "<INTERNAL>"
 
@@ -2157,11 +2157,11 @@ msgstr "Tr_ansparentar"
 
 #: src/synfig/paramdesc.cpp:85
 msgid "Al_pha Brighten"
-msgstr "_Clarear Transparencia"
+msgstr "_Clarear Transp."
 
 #: src/synfig/paramdesc.cpp:86
 msgid "Al_pha Darken"
-msgstr "Osc_urecer Transparencia"
+msgstr "Osc_urecer Transp."
 
 #: src/synfig/render.cpp:247 src/synfig/render.cpp:248
 #: src/synfig/render.cpp:302 src/synfig/render.cpp:303
@@ -2867,7 +2867,7 @@ msgstr "Establecer la resolución física en Y (puntos por pulgada)"
 
 #: src/tool/main.cpp:350
 msgid "List the exported canvases in the composition"
-msgstr "Lista los lienzos ezportados en la composición"
+msgstr "Lista los lienzos exportados en la composición"
 
 #: src/tool/main.cpp:351
 msgid "Print out specified details of the root canvas"
@@ -3000,7 +3000,7 @@ msgstr "Relación de Aspecto de la Imagen"
 
 #: src/tool/main.cpp:999
 msgid "Pixel Width"
-msgstr "Anxho del Pixel"
+msgstr "Ancho del Pixel"
 
 #: src/tool/main.cpp:1005
 msgid "Pixel Height"
@@ -3040,7 +3040,7 @@ msgstr "Expansión de la diagonal de la Imagen"
 
 #: src/tool/main.cpp:1067
 msgid "Interlaced"
-msgstr "Entrlazado"
+msgstr "Enterlazado"
 
 #: src/tool/main.cpp:1073
 msgid "Antialias"
