@@ -372,6 +372,19 @@ if test $use_openexr_half = yes ; then {
 } ; fi
 
 
+# JPEG CHECK (commandline switch) ------------------------
+AC_ARG_WITH(jpeg,[
+  --without-jpeg        Disable support for JPEG],[
+],[
+	with_jpeg="yes"
+])
+if test $with_jpeg = "no" ; then {
+	AM_CONDITIONAL(WITH_JPEG,false)
+} else {
+	AM_CONDITIONAL(WITH_JPEG,true)
+} ; fi
+
+
 
 
 
@@ -417,7 +430,6 @@ dnl PKG_CHECK_MODULES(GLIB, glib-2.0,[GLIB="yes"],[GLIB="no"])
 
 TARGET_PNG="yes"
 TARGET_MNG="yes"
-TARGET_JPEG="yes"
 
 AC_CHECK_LIB(png, png_write_row,[
 	PNG_LIBS="-lpng"
@@ -448,23 +460,26 @@ AC_CHECK_LIB(mng, mng_initialize,[
 	AM_CONDITIONAL(HAVE_LIBMNG,false)
 ],[-lz -L${exec_prefix}/lib])
 
-AC_CHECK_LIB(jpeg, jpeg_CreateCompress,[
-	JPEG_LIBS="-ljpeg"
-	AC_DEFINE(HAVE_LIBJPEG,[], [ Define if JPEG library is available ] )
-	AC_SUBST(JPEG_LIBS)
-	AM_CONDITIONAL(HAVE_LIBJPEG,true)
-],[
+# check for JPEG availability
+if test $with_jpeg = "yes" ; then {
+	AC_CHECK_LIB(jpeg, jpeg_CreateCompress,[
+		JPEG_LIBS="-ljpeg"
+		AC_DEFINE(HAVE_LIBJPEG,[], [ Define if JPEG library is available ] )
+		AC_SUBST(JPEG_LIBS)
+		TARGET_JPEG="yes"
+		AM_CONDITIONAL(HAVE_LIBJPEG,true)
+	],[
+		AC_MSG_RESULT([ *** JPEG Output target disabled])
+		TARGET_JPEG="no"
+		AM_CONDITIONAL(HAVE_LIBJPEG,false)
+	],[
+		-L${exec_prefix}/lib
+	])
+} else {
 	AC_MSG_RESULT([ *** JPEG Output target disabled])
 	TARGET_JPEG="no"
 	AM_CONDITIONAL(HAVE_LIBJPEG,false)
-],[-L${exec_prefix}/lib])
-
-
-dnl AC_CHECK_HEADERS(jpeglib.h,[],[
-dnl 	AC_MSG_RESULT([ *** JPEG Output target disabled])
-dnl 	TARGET_JPEG="no"
-dnl 	AM_CONDITIONAL(HAVE_LIBJPEG,false)
-dnl ])
+} ; fi
 
 
 
