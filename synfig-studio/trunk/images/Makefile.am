@@ -29,6 +29,7 @@ PNGTOICO=png2ico
 
 clean:
 	$(RM) $(CLEANFILES)
+	$(RM) -r 16x16 22x22 24x24 32x32 48x48 64x64 128x128
 
 .sif.bmp:
 	$(SYNFIG) -q $< -o $@ --time 0
@@ -81,3 +82,61 @@ keyframe_lock_none.$(EXT): $(srcdir)/keyframe_lock_icon.sif
 
 #canvas_icon.$(EXT): canvas_icon.sif
 #	$(SYNFIG) -q canvas_icon.sif -o canvas_icon.$(EXT) -w 128 -h 128 --time 0
+
+if !WIN32_PKG
+if !MACOSX_PKG
+
+16x16/synfig_icon.$(EXT): synfig_icon.sif
+	-mkdir 16x16
+	$(SYNFIG) -q $< -o $@ --time 0 -w 16 -h 16
+
+icons16dir = $(datadir)/icons/hicolor/16x16/apps
+icons16_DATA = 16x16/synfig_icon.$(EXT)
+
+22x22/synfig_icon.$(EXT): synfig_icon.sif
+	-mkdir 22x22
+	$(SYNFIG) -q $< -o $@ --time 0 -w 22 -h 22
+
+icons22dir = $(datadir)/icons/hicolor/22x22/apps
+icons22_DATA = 22x22/synfig_icon.$(EXT)
+
+24x24/synfig_icon.$(EXT): synfig_icon.sif
+	-mkdir 24x24
+	$(SYNFIG) -q $< -o $@ --time 0 -w 24 -h 24
+
+icons24dir = $(datadir)/icons/hicolor/24x24/apps
+icons24_DATA = 24x24/synfig_icon.$(EXT)
+
+32x32/synfig_icon.$(EXT): synfig_icon.sif
+	-mkdir 32x32
+	$(SYNFIG) -q $< -o $@ --time 0 -w 32 -h 32
+
+icons32dir = $(datadir)/icons/hicolor/32x32/apps
+icons32_DATA = 32x32/synfig_icon.$(EXT)
+
+48x48/synfig_icon.$(EXT): synfig_icon.sif
+	-mkdir 48x48
+	$(SYNFIG) -q $< -o $@ --time 0 -w 48 -h 48
+
+icons48dir = $(datadir)/icons/hicolor/48x48/apps
+icons48_DATA = 48x48/synfig_icon.$(EXT)
+
+64x64/synfig_icon.$(EXT): synfig_icon.sif
+	-mkdir 64x64
+	$(SYNFIG) -q $< -o $@ --time 0 -w 64 -h 64
+
+icons64dir = $(datadir)/icons/hicolor/64x64/apps
+icons64_DATA = 64x64/synfig_icon.$(EXT)
+
+128x128/synfig_icon.$(EXT): synfig_icon.sif
+	-mkdir 128x128
+	$(SYNFIG) -q $< -o $@ --time 0 -w 128 -h 128
+
+icons128dir = $(datadir)/icons/hicolor/128x128/apps
+icons128_DATA = 128x128/synfig_icon.$(EXT)
+
+iconsscalabledir = $(datadir)/icons/hicolor/scalable/apps
+iconsscalable_DATA = synfig_icon.svg
+
+endif
+endif
