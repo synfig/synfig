@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: http://synfig.org/Bugs\n"
 "POT-Creation-Date: 2008-09-10 14:52+0200\n"
-"PO-Revision-Date: 2008-09-10 21:28+0200\n"
+"PO-Revision-Date: 2008-10-02 13:48+0200\n"
 "Last-Translator:  <aurore.d@gmail.com>\n"
 "Language-Team:  <en@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -256,11 +256,11 @@ msgstr "Flou circulaire"
 
 #: src/modules/lyr_std/bevel.cpp:367
 msgid "Hi-Color"
-msgstr ""
+msgstr "Éclaircissement"
 
 #: src/modules/lyr_std/bevel.cpp:370
 msgid "Lo-Color"
-msgstr ""
+msgstr "Ombrage"
 
 #: src/modules/lyr_std/bevel.cpp:373
 msgid "Light Angle"
@@ -387,11 +387,11 @@ msgstr "Itérations"
 
 #: src/modules/lyr_std/julia.cpp:314
 msgid "Seed Point"
-msgstr ""
+msgstr "Point graine"
 
 #: src/modules/lyr_std/julia.cpp:317 src/modules/lyr_std/mandelbrot.cpp:216
 msgid "Bailout ValueBase"
-msgstr ""
+msgstr "Valeur d'arrêt"
 
 #: src/modules/lyr_std/julia.cpp:321 src/modules/lyr_std/mandelbrot.cpp:226
 #: src/modules/lyr_std/twirl.cpp:125
@@ -1538,7 +1538,7 @@ msgstr "Index de copie"
 
 #: src/synfig/layer_mime.cpp:86
 msgid "[MIME]"
-msgstr ""
+msgstr "[MIME]"
 
 #: src/synfig/layer_motionblur.cpp:56
 msgid "Motion Blur"
@@ -1602,7 +1602,7 @@ msgstr "Interne"
 
 #: src/synfig/layer_shape.cpp:1193
 msgid "Layer_Shape Color"
-msgstr ""
+msgstr "Couleur du calque forme"
 
 #: src/synfig/layer_shape.cpp:1202
 msgid "Antialiasing"
@@ -2162,11 +2162,11 @@ msgstr "Soustraire l'alpha"
 
 #: src/synfig/paramdesc.cpp:85
 msgid "Al_pha Brighten"
-msgstr ""
+msgstr "Multiplier l'alpha"
 
 #: src/synfig/paramdesc.cpp:86
 msgid "Al_pha Darken"
-msgstr ""
+msgstr "Ajouter l'alpha"
 
 #: src/synfig/render.cpp:247 src/synfig/render.cpp:248
 #: src/synfig/render.cpp:302 src/synfig/render.cpp:303
@@ -2493,11 +2493,11 @@ msgstr "Un ou deux de mes paramètres ne sont pas définis"
 
 #: src/synfig/valuenode_add.cpp:188 src/synfig/valuenode_subtract.cpp:194
 msgid "LHS"
-msgstr ""
+msgstr "LHS"
 
 #: src/synfig/valuenode_add.cpp:189 src/synfig/valuenode_subtract.cpp:195
 msgid "RHS"
-msgstr ""
+msgstr "RHS"
 
 #: src/synfig/valuenode_add.cpp:190 src/synfig/valuenode_scale.cpp:181
 #: src/synfig/valuenode_subtract.cpp:196
@@ -3150,5 +3150,3 @@ msgstr "Rendu en cours ..."
 msgid "Done."
 msgstr "Fini."
 
-
- 	  	 

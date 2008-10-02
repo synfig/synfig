@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: http://synfig.org/Bugs\n"
-"POT-Creation-Date: 2008-09-11 11:40+0200\n"
-"PO-Revision-Date: 2008-09-11 13:29+0200\n"
+"POT-Creation-Date: 2008-09-12 20:28+0200\n"
+"PO-Revision-Date: 2008-10-02 14:10+0200\n"
 "Last-Translator:  <aurore.d@gmail.com>\n"
 "Language-Team:  <en@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -661,7 +661,7 @@ msgstr "Erreur"
 msgid "Uncaught error on file open (BUG)"
 msgstr "Erreur inconnue à l'ouverture du fichier"
 
-#: src/gtkmm/app.cpp:2431
+#: src/gtkmm/app.cpp:2433
 msgid "Unable to open file"
 msgstr "Impossible d'ouvrir le fichier"
 
@@ -1043,7 +1043,7 @@ msgstr "Éditeur de dégradés"
 
 #: src/gtkmm/dialog_gradient.cpp:75
 msgid "Grab"
-msgstr ""
+msgstr "Récupérer"
 
 #: src/gtkmm/dialog_keyframe.cpp:59
 msgid "Keyframe Dialog"
@@ -1103,7 +1103,7 @@ msgstr "Utiliser un seul processus"
 
 #: src/gtkmm/dialog_setup.cpp:83
 msgid "Restrict Real-Valued Ducks to Top Right Quadrant"
-msgstr ""
+msgstr "Restreindre le déplacement des poignées de taille au quart supérieur droit."
 
 #: src/gtkmm/dialog_setup.cpp:113
 msgid "Gamma"
@@ -1207,15 +1207,15 @@ msgstr "Résolutions prédéfinies :"
 
 #: src/gtkmm/dialog_setup.cpp:244
 msgid "4096x3112 Full Aperture 4K"
-msgstr ""
+msgstr "4096x3112 (4K Full Frame)"
 
 #: src/gtkmm/dialog_setup.cpp:245
 msgid "2048x1556 Full Aperture Native 2K"
-msgstr ""
+msgstr "2048x1556 (2K Full Frame)"
 
 #: src/gtkmm/dialog_setup.cpp:246
 msgid "1920x1080 HDTV 1080p/i"
-msgstr ""
+msgstr "1920x1080 HDTV 1080p"
 
 #: src/gtkmm/dialog_setup.cpp:247
 msgid "1280x720  HDTV 720p"
@@ -4396,5 +4396,3 @@ msgstr "Nœud de valeur"
 msgid "Exported ValueNode"
 msgstr "Nœud de valeur exporté"
 
-
- 	  	 
