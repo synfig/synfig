@@ -229,8 +229,8 @@ studio::Instance::save()
 		App::add_recent_file(etl::handle<Instance>(this));
 		return STATUS_OK;
 	}
-
-	App::dialog_error_blocking("Save - Error","Unable to save to '" + get_file_name() + "'");
+	string msg(strprintf(_("Unable to save to '%s'"), get_file_name().c_str()));
+	App::dialog_error_blocking(_("Save - Error"), msg.c_str());
 	return STATUS_ERROR;
 }
 
@@ -260,12 +260,11 @@ studio::Instance::dialog_save_as()
 				Layer::Handle parent_layer(dynamic_cast<Layer*>(node));
 				if(parent_layer && parent_layer->get_canvas()->get_root()!=get_canvas())
 				{
-					App::dialog_error_blocking("SaveAs - Error",
-						"There is currently a bug when using \"SaveAs\"\n"
+					string msg(strprintf(_("There is currently a bug when using \"SaveAs\"\n"
 						"on a composition that is being referenced by other\n"
 						"files that are currently open. Close these\n"
-						"other files first before trying to use \"SaveAs\"."
-					);
+						"other files first before trying to use \"SaveAs\".")));
+					App::dialog_error_blocking(_("SaveAs - Error"), msg.c_str());
 
 					return false;
 				}
@@ -315,17 +314,16 @@ studio::Instance::dialog_save_as()
 			if (stat_return == -1 && errno != ENOENT)
 			{
 				perror(filename.c_str());
-				App::dialog_error_blocking("SaveAs - Error","Unable to check whether '" + filename + "' exists.");
+				string msg(strprintf(_("Unable to check whether '%s' exists."), filename.c_str()));
+				App::dialog_error_blocking(_("SaveAs - Error"),msg.c_str());
 				continue;
 			}
 
 			// if the file exists and the user doesn't want to overwrite it, keep prompting for a filename
+			string msg(strprintf(_("A file named '%s' already exists.\n\n"
+									"Do you want to replace it with the file you are saving?"), filename.c_str()));
 			if ((stat_return == 0) &&
-				!App::dialog_yes_no("File exists",
-									"A file named '" +
-									filename +
-									"' already exists.\n\n"
-									"Do you want to replace it with the file you are saving?"))
+				!App::dialog_yes_no(_("File exists"),msg.c_str()))
 				continue;
 		}
 
@@ -334,8 +332,8 @@ studio::Instance::dialog_save_as()
 			synfig::set_file_version(ReleaseVersion(RELEASE_VERSION_END-1));
 			return true;
 		}
-
-		App::dialog_error_blocking("SaveAs - Error","Unable to save to '" + filename + "'");
+		string msg(strprintf(_("Unable to save to '%s'"), filename.c_str()));
+		App::dialog_error_blocking(_("SaveAs - Error"),msg.c_str());
 	}
 
 	return false;
