@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: es\n"
 "Report-Msgid-Bugs-To: http://synfig.org/Bugs\n"
-"POT-Creation-Date: 2008-09-30 23:32+0200\n"
+"POT-Creation-Date: 2008-10-06 14:28+0800\n"
 "PO-Revision-Date: 2008-10-01 23:50+0200\n"
 "Last-Translator: Carlos López González <carloslopezgonzalez@yahoo.es>\n"
 "Language-Team: Español <es@li.org>\n"
@@ -615,7 +615,8 @@ msgstr "_Ayuda"
 
 #: src/gtkmm/app.cpp:2244
 msgid "No browser was found. Please load this website manually:"
-msgstr "No se ha encontrado navegador. Por favor cargue esta página web manualmente:"
+msgstr ""
+"No se ha encontrado navegador. Por favor cargue esta página web manualmente:"
 
 #: src/gtkmm/app.cpp:2246
 msgid "No browser found"
@@ -632,7 +633,7 @@ msgid "Unable to create instance for \"%s\""
 msgstr "Imposible crear instancia para \"%s\""
 
 #: src/gtkmm/app.cpp:2368 src/gtkmm/iconcontroller.cpp:188
-#: src/gtkmm/instance.cpp:561
+#: src/gtkmm/instance.cpp:559
 msgid "CVS Update"
 msgstr "Actualización por CVS"
 
@@ -645,12 +646,12 @@ msgstr ""
 "Parece haber una nueva versión de este fichero en el depósito CVS.\n"
 "¿Quiere actualizar ahora? (probablemente sea una buena idea)"
 
-#: src/gtkmm/app.cpp:2374 src/gtkmm/app.cpp:2379 src/gtkmm/instance.cpp:483
-#: src/gtkmm/instance.cpp:499 src/gtkmm/instance.cpp:511
-#: src/gtkmm/instance.cpp:522 src/gtkmm/instance.cpp:536
-#: src/gtkmm/instance.cpp:547 src/gtkmm/instance.cpp:577
-#: src/gtkmm/instance.cpp:588 src/gtkmm/instance.cpp:604
-#: src/gtkmm/instance.cpp:613 src/gtkmm/layerparamtreestore.cpp:246
+#: src/gtkmm/app.cpp:2374 src/gtkmm/app.cpp:2379 src/gtkmm/instance.cpp:481
+#: src/gtkmm/instance.cpp:497 src/gtkmm/instance.cpp:509
+#: src/gtkmm/instance.cpp:520 src/gtkmm/instance.cpp:534
+#: src/gtkmm/instance.cpp:545 src/gtkmm/instance.cpp:575
+#: src/gtkmm/instance.cpp:586 src/gtkmm/instance.cpp:602
+#: src/gtkmm/instance.cpp:611 src/gtkmm/layerparamtreestore.cpp:246
 #: src/gtkmm/widget_canvaschooser.cpp:145
 #: src/gtkmm/widget_canvaschooser.cpp:163
 msgid "Error"
@@ -776,7 +777,7 @@ msgid "Canvas"
 msgstr "Lienzo"
 
 #: src/gtkmm/canvastreestore.cpp:241 src/gtkmm/childrentreestore.cpp:201
-#: src/gtkmm/instance.cpp:417
+#: src/gtkmm/instance.cpp:415
 msgid "[Unnamed]"
 msgstr "[Sin Nombre]"
 
@@ -1407,7 +1408,7 @@ msgstr ""
 "No podrá deshacer o rehacer cualquier cambio que haya hecho!\n"
 "¿Está seguro de que quiere vaciar las pilas de deshacer y rehacer?"
 
-#: src/gtkmm/dock_info.cpp:96 src/gtkmm/instance.cpp:552
+#: src/gtkmm/dock_info.cpp:96 src/gtkmm/instance.cpp:550
 msgid "Info"
 msgstr "Información"
 
@@ -1605,12 +1606,12 @@ msgstr "Meta Dato"
 msgid "CVS Add"
 msgstr "Añadir CVS"
 
-#: src/gtkmm/iconcontroller.cpp:189 src/gtkmm/instance.cpp:492
-#: src/gtkmm/instance.cpp:503
+#: src/gtkmm/iconcontroller.cpp:189 src/gtkmm/instance.cpp:490
+#: src/gtkmm/instance.cpp:501
 msgid "CVS Commit"
 msgstr "Entrega CVS"
 
-#: src/gtkmm/iconcontroller.cpp:190 src/gtkmm/instance.cpp:594
+#: src/gtkmm/iconcontroller.cpp:190 src/gtkmm/instance.cpp:592
 msgid "CVS Revert"
 msgstr "Revertir CVS"
 
@@ -1698,15 +1699,41 @@ msgstr "Herramienta de Gradiente"
 msgid "Star Tool"
 msgstr "Herramienta de Estrella"
 
-#: src/gtkmm/instance.cpp:282
+#: src/gtkmm/instance.cpp:232 src/gtkmm/instance.cpp:335
+#, c-format
+msgid "Unable to save to '%s'"
+msgstr "Imposible guardar a '%s'"
+
+#: src/gtkmm/instance.cpp:233
+msgid "Save - Error"
+msgstr "Guardar - Error"
+
+#: src/gtkmm/instance.cpp:263
+msgid ""
+"There is currently a bug when using \"SaveAs\"\n"
+"on a composition that is being referenced by other\n"
+"files that are currently open. Close these\n"
+"other files first before trying to use \"SaveAs\"."
+msgstr ""
+"Actualmente hay un error cuando se usa \"Guardar Como\"\n"
+"en una composición que está siendo refernciada por otro\n"
+"fichero que está abierto en ese momento. Cierre esos\n"
+"ficheros primero antes de intentar usar \"Guardar Como\"."
+
+#: src/gtkmm/instance.cpp:267 src/gtkmm/instance.cpp:318
+#: src/gtkmm/instance.cpp:336
+msgid "SaveAs - Error"
+msgstr "Guardar Como - Error"
+
+#: src/gtkmm/instance.cpp:281
 msgid "Choose a Filename to Save As"
 msgstr "Elija un Nombre de Archivo para Guardar Como"
 
-#: src/gtkmm/instance.cpp:300
+#: src/gtkmm/instance.cpp:299
 msgid "Unknown extension"
 msgstr "Extensión desconocida"
 
-#: src/gtkmm/instance.cpp:301
+#: src/gtkmm/instance.cpp:300
 msgid ""
 "You have given the file name an extension\n"
 "which I do not recognize. Are you sure this is what you want?"
@@ -1714,15 +1741,35 @@ msgstr ""
 "Ha dado una extensión al archivo desconocida.\n"
 "¿Está seguro que es eso lo que quiere?"
 
-#: src/gtkmm/instance.cpp:483
+#: src/gtkmm/instance.cpp:317
+#, c-format
+msgid "Unable to check whether '%s' exists."
+msgstr "Imposible comprobar si '%s' existe."
+
+#: src/gtkmm/instance.cpp:323
+#, c-format
+msgid ""
+"A file named '%s' already exists.\n"
+"\n"
+"Do you want to replace it with the file you are saving?"
+msgstr ""
+"Un fichero llamado '%s' ya existe.\n"
+"\n"
+"Quiere reemplazarlo con el fuchero que está salvando?"
+
+#: src/gtkmm/instance.cpp:326
+msgid "File exists"
+msgstr "El fichero existe"
+
+#: src/gtkmm/instance.cpp:481
 msgid "You must first add this composition to the repository"
 msgstr "Debe añadir antes esta composición al repositorio"
 
-#: src/gtkmm/instance.cpp:492 src/gtkmm/instance.cpp:561
+#: src/gtkmm/instance.cpp:490 src/gtkmm/instance.cpp:559
 msgid "This will save any changes you have made. Are you sure?"
 msgstr "Esto guardará cualquier cambio que haya hecho. ¿Está seguro?"
 
-#: src/gtkmm/instance.cpp:499
+#: src/gtkmm/instance.cpp:497
 msgid ""
 "The local copy of the file hasn't been changed since the last update.\n"
 "Nothing to commit!"
@@ -1731,43 +1778,46 @@ msgstr ""
 "actualización.\n"
 "¡Nada que enviar!"
 
-#: src/gtkmm/instance.cpp:503
+#: src/gtkmm/instance.cpp:501
 msgid "Enter a log message describing the changes you have made"
-msgstr "Introduzca un mensaje de diario describiendo los cambios que ha realizado"
+msgstr ""
+"Introduzca un mensaje de diario describiendo los cambios que ha realizado"
 
-#: src/gtkmm/instance.cpp:511
+#: src/gtkmm/instance.cpp:509
 msgid "An error has occurred when trying to COMMIT"
 msgstr "Ha ocurrido un error intentando ENVIAR"
 
-#: src/gtkmm/instance.cpp:522
+#: src/gtkmm/instance.cpp:520
 msgid "This composition has already been added to the repository"
 msgstr "La composición ya ha sido enviada al repositorio"
 
-#: src/gtkmm/instance.cpp:536
+#: src/gtkmm/instance.cpp:534
 msgid "An error has occurred when trying to ADD"
 msgstr "Un error ha ocurrido cuando se intentaba AÑADIR"
 
-#: src/gtkmm/instance.cpp:547
-msgid "This file is not under version control, so there is nothing to update from!"
+#: src/gtkmm/instance.cpp:545
+msgid ""
+"This file is not under version control, so there is nothing to update from!"
 msgstr ""
 "Este archivo no está actualmente bajo control de versión, así que ¡nada que "
 "actualizar!"
 
-#: src/gtkmm/instance.cpp:552
+#: src/gtkmm/instance.cpp:550
 msgid "This file is up-to-date"
 msgstr "Este archivo está actualizado"
 
-#: src/gtkmm/instance.cpp:577 src/gtkmm/instance.cpp:613
+#: src/gtkmm/instance.cpp:575 src/gtkmm/instance.cpp:611
 msgid "An error has occurred when trying to UPDATE"
 msgstr "Ha ocurrido un error cuando trataba de ACTUALIZAR"
 
-#: src/gtkmm/instance.cpp:588
-msgid "This file is not under version control, so there is nothing to revert to!"
+#: src/gtkmm/instance.cpp:586
+msgid ""
+"This file is not under version control, so there is nothing to revert to!"
 msgstr ""
 "Este archivo no está actualmente bajo control de versión, así que ¡nada que "
 "desactualizar!"
 
-#: src/gtkmm/instance.cpp:595
+#: src/gtkmm/instance.cpp:593
 msgid ""
 "This will abandon all changes you have made\n"
 "since the last time you performed a commit\n"
@@ -1779,15 +1829,15 @@ msgstr ""
 "¡Esto no se puede deshacer! ¿Está seguro que \n"
 "quiere hacer esto?"
 
-#: src/gtkmm/instance.cpp:604
+#: src/gtkmm/instance.cpp:602
 msgid "Unable to remove previous version"
 msgstr "Imposible eliminar versión anterior"
 
-#: src/gtkmm/instance.cpp:632
+#: src/gtkmm/instance.cpp:630
 msgid "Error: Revert Failed"
 msgstr "Error: Desactualización Fallida"
 
-#: src/gtkmm/instance.cpp:632
+#: src/gtkmm/instance.cpp:630
 msgid ""
 "The revert operation has failed. This can be due to it being\n"
 "referenced by another composition that is already open, or\n"
@@ -1801,11 +1851,11 @@ msgstr ""
 "cerrar cualquier composición que pueda hacer referencia a esta\n"
 " y pruebe de nuevo o reinicie Synfig Studio."
 
-#: src/gtkmm/instance.cpp:660
+#: src/gtkmm/instance.cpp:658
 msgid "Revert to saved"
 msgstr "Descatualizar a Salvado"
 
-#: src/gtkmm/instance.cpp:660
+#: src/gtkmm/instance.cpp:658
 msgid ""
 "You will lose any changes you have made since your last save.\n"
 "Are you sure?"
@@ -1813,12 +1863,12 @@ msgstr ""
 "Se perderán los cambios realizados hasta la última vez que guardó.\n"
 "¿Está seguro?"
 
-#: src/gtkmm/instance.cpp:683
+#: src/gtkmm/instance.cpp:681
 #, c-format
 msgid "Would you like to save your changes to %s?"
 msgstr "¿Quiere guardar los cambios a %s?"
 
-#: src/gtkmm/instance.cpp:699
+#: src/gtkmm/instance.cpp:697
 #, c-format
 msgid ""
 "%s has changes not yet on the CVS repository.\n"
@@ -1827,27 +1877,27 @@ msgstr ""
 "%s no ha cambiado en el repositorio CVS.\n"
 "¿Quiere enviar dichos cambios?"
 
-#: src/gtkmm/instance.cpp:1105
+#: src/gtkmm/instance.cpp:1103
 msgid "Edit Waypoint"
 msgstr "Editar Interpolación"
 
-#: src/gtkmm/instance.cpp:1146
+#: src/gtkmm/instance.cpp:1144
 msgid "Set Waypoints"
 msgstr "Establecer Interpolación"
 
-#: src/gtkmm/instance.cpp:1191
+#: src/gtkmm/instance.cpp:1189
 msgid "Unable to convert to animated waypoint"
 msgstr "Imposible convertir a una interpolación animada"
 
-#: src/gtkmm/instance.cpp:1208
+#: src/gtkmm/instance.cpp:1206
 msgid "Unable to find waypoint_set_smart action"
 msgstr "Imposible encotrar acción de establecer_interpolación_inteligente"
 
-#: src/gtkmm/instance.cpp:1221
+#: src/gtkmm/instance.cpp:1219
 msgid "Unable to set a specific waypoint"
 msgstr "Imposible establecer una interpolación especificada"
 
-#: src/gtkmm/instance.cpp:1249
+#: src/gtkmm/instance.cpp:1247
 msgid "Edit Waypoints"
 msgstr "Editar Interpolaciones"
 
@@ -2318,7 +2368,8 @@ msgid "Insert Vertex"
 msgstr "Insertar Vértice"
 
 #: src/gtkmm/state_bline.cpp:1336
-msgid "Unable to find where to insert vertex, internal error, please report this bug"
+msgid ""
+"Unable to find where to insert vertex, internal error, please report this bug"
 msgstr ""
 "Imposible encontrar donde insertar el vértice, error interno, por favor "
 "reporte este bug"
@@ -3693,7 +3744,8 @@ msgstr "Nuevo Valor Base Seleccionado"
 #: src/synfigapp/actions/timepointsdelete.cpp:97
 #: src/synfigapp/actions/timepointsmove.cpp:98
 msgid "A valuenode's description to add to our selected list"
-msgstr "Una descripción del valor de nodo a añadir a nuestra lista seleccionada"
+msgstr ""
+"Una descripción del valor de nodo a añadir a nuestra lista seleccionada"
 
 #: src/synfigapp/actions/timepointscopy.cpp:104
 #: src/synfigapp/actions/timepointsdelete.cpp:103
@@ -3821,7 +3873,8 @@ msgstr "El nombre con el que quiere que se exporte este valor"
 
 #: src/synfigapp/actions/valuedescexport.cpp:151
 msgid "Can only export Canvas when used as constant parameter"
-msgstr "Sólo se puede exportar un lienzo cuando se use como parámetro constante"
+msgstr ""
+"Sólo se puede exportar un lienzo cuando se use como parámetro constante"
 
 #: src/synfigapp/actions/valuedescexport.cpp:174
 msgid "ValueBase is already exported"
@@ -3929,7 +3982,8 @@ msgstr "Mal tipo para composición radial (%s)"
 #: src/synfigapp/actions/valuedescset.cpp:497
 #: src/synfigapp/actions/valuedescset.cpp:544
 msgid "Direct manipulation of this ValueNode type is not yet supported"
-msgstr "Manipulación directa de este tipo de Valor de Nodo no esta soportada aún"
+msgstr ""
+"Manipulación directa de este tipo de Valor de Nodo no esta soportada aún"
 
 #: src/synfigapp/actions/valuedescset.cpp:542
 msgid "You must be in Animate-Editing-Mode to directly manipulate this value"
@@ -4383,4 +4437,3 @@ msgstr "Valor de Nodo"
 #: src/synfigapp/value_desc.cpp:81
 msgid "Exported ValueNode"
 msgstr "Valor de Nodo Exportado"
-
