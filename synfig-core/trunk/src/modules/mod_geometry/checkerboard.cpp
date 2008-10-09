@@ -160,7 +160,7 @@ CheckerBoard::get_color(Context context, const Point &getpos)const
 			return Color::blend(color,context.get_color(getpos),get_amount(),get_blend_method());
 	}
 	else
-		return context.get_color(getpos);
+		return Color::blend(Color::alpha(),context.get_color(getpos),get_amount(),get_blend_method());
 }
 
 bool
