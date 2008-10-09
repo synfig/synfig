@@ -4,6 +4,25 @@ More detailed notes are available on the releases page:
 
 http://synfig.org/Releases
 
+ 0.61.09 (SVN 2???) - October ??, 2008 - Bug fixes, features.
+ 
+  * Segment and Blines tangents are calculated more accurately
+  * Don't allow feather to be negative in any layer.
+  * New Logarithm, Int String, Angle String, Joined List, Real String,
+    Time String, Dot Product, Gradient Color, Vector X, Vector Y, 
+    Vector Length, Vector Angle convert types. 
+  * Remove TENSION from TCB modes as it is the same as TEMPORAL TENSION.
+  * Unless OpenEXR half mode is used, don't ask synfigstudio to depend on it.
+  * Added "Link to Bline" feature.
+  * Fix several bugs: plant layer, libavformat, time format FFf, libswscale
+    straight onto method, eyedrop tool and straight blend method for shape type layers,
+  * Fix some compiler warnings.
+  * Rename 'offset' and 'pos' to 'origin'.
+  * Translations in French and Spanish are available.
+  * Now it is possible that Windows Builds with Open EXR 1.6.1
+  * Jpeg support can be switched on/off now.
+  * Fix typos and other issues.
+
  0.61.08 (SVN 1839) - March 3, 2008 - Bug fixes, features
 
   * Update the website URL to synfig.org instead of synfig.com
