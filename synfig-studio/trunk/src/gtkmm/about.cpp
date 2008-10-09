@@ -160,6 +160,8 @@ About::About()
 	artists.push_back("Carlos López González (genete)");
 	artists.push_back("Chris Norman (pixelgeek)");
 	artists.push_back("Daniel Hornung (rubikcube)");
+	artists.push_back("Franco Iacomella (Yaco)");
+	
 	set_artists(artists);
 
 	// TRANSLATORS: change this to your name, separate multiple names with \n
