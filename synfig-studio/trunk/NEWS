@@ -6,27 +6,27 @@ http://synfig.org/Releases
 
  0.61.09 (SVN 2???) - October ??, 2008 - Bug fixes, features
  
-  * Fix allow to build synfigstudio in fink distribution.
+  * Fix building synfigstudio in the fink distribution
   * Improved plant layer
   * Added new options for Circle and Rectangle tools
-  * Added Text and Star tools. 
-  * Added new plant, text, star and polygon icons.
-  * Synfigstudio is translated to Spanish, French and Catalan.
-  * Added "Link to Bline" feature.
-  * Improved main window zoom behavior and added new zoom icons.
-  * Several fixes and improvements on timetrack slider and waypoints drawing.
-  * Deprecate Manual as interpolation type.
+  * Added Text and Star tools.
+  * Added new plant, text, star and polygon icons
+  * Added Spanish, French and Catalan translations
+  * Added "Link to Bline" feature
+  * Improved main window zoom behaviour and added new zoom icons
+  * Several fixes and improvements on timetrack slider and waypoints drawing
+  * Depreciate Manual as interpolation type
   * Added new icons for reset and swap FG and BG colors. Re-arrange them 
-    to show properly in all GTK themes.
-  * Added some improvements in the Render Description. 
-  * Improved GUI for the sound selection dialog.
-  * When adding layers leave the previously selected layer selected.
-  * Button tools are arranged inthe Tool box.
-  * Added and fixed some keyboard shortcuts.
-  * Show only shared compatible paramters when more than one layer is selected.
-  * Added more funtionality to color and time sliders.
-  * Added new 'Document' tab in Setup dialog for more user preferences.
-  * Fixed some crahses and errors.
+    to show properly in all GTK themes
+  * Added some improvements in the Render Description
+  * Improved GUI for the sound selection dialog
+  * When adding layers leave the previously selected layer selected
+  * Button tools are arranged in the Tool box
+  * Added and fixed some keyboard shortcuts
+  * Show only shared compatible parameters when more than one layer is selected
+  * Added more functionality to colour and time sliders
+  * Added new 'Document' tab in Setup dialog for more user preferences
+  * Fixed some crashes and errors
 
  0.61.08 (SVN 1839) - March 3, 2008 - Bug fixes, features
 
