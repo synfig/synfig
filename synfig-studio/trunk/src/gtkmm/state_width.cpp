@@ -214,10 +214,10 @@ StateWidth_Context::StateWidth_Context(CanvasView* canvas_view):
 
 	settings(synfigapp::Main::get_selected_input_device()->settings()),
 
-	adj_delta(6,0,1,0.001,0.01),
+	adj_delta(6,0,20,0.01,0.1),
 	spin_delta(adj_delta,0.01,3),
 
-	adj_radius(0,0,1e50,1,10),
+	adj_radius(200,0,1e50,1,10),
 	spin_radius(adj_radius,1,1),
 
 	check_relative(_("Relative Growth"))
