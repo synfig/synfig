@@ -184,11 +184,11 @@ StateWidth_Context::load_settings()
 	else
 		set_radius(15);
 
-	//defaults to true
-	if(settings.get_value("width.relative",value) && value == "0")
-		set_relative(false);
-	else
+	//defaults to false
+	if(settings.get_value("width.relative",value) && value == "1")
 		set_relative(true);
+	else
+		set_relative(false);
 }
 
 void
