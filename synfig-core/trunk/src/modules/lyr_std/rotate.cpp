@@ -189,37 +189,40 @@ Rotate::accelerated_render(Context context,Surface *surface,int quality, const R
 
 	Point tl(renddesc.get_tl()-origin);
 	Point br(renddesc.get_br()-origin);
-	Point rot_tl(cos_val*tl[0]+sin_val*tl[1],-sin_val*tl[0]+cos_val*tl[1]);
-	Point rot_br(cos_val*br[0]+sin_val*br[1],-sin_val*br[0]+cos_val*br[1]);
-	Point rot_tr(cos_val*br[0]+sin_val*tl[1],-sin_val*br[0]+cos_val*tl[1]);
-	Point rot_bl(cos_val*tl[0]+sin_val*br[1],-sin_val*tl[0]+cos_val*br[1]);
-	rot_tl+=origin;
-	rot_br+=origin;
-	rot_tr+=origin;
-	rot_bl+=origin;
 
-	Point min_point(min(min(min(rot_tl[0],rot_br[0]),rot_tr[0]),rot_bl[0]),min(min(min(rot_tl[1],rot_br[1]),rot_tr[1]),rot_bl[1]));
-	Point max_point(max(max(max(rot_tl[0],rot_br[0]),rot_tr[0]),rot_bl[0]),max(max(max(rot_tl[1],rot_br[1]),rot_tr[1]),rot_bl[1]));
+	{
+		Point rot_tl(cos_val*tl[0]+sin_val*tl[1],-sin_val*tl[0]+cos_val*tl[1]);
+		Point rot_br(cos_val*br[0]+sin_val*br[1],-sin_val*br[0]+cos_val*br[1]);
+		Point rot_tr(cos_val*br[0]+sin_val*tl[1],-sin_val*br[0]+cos_val*tl[1]);
+		Point rot_bl(cos_val*tl[0]+sin_val*br[1],-sin_val*tl[0]+cos_val*br[1]);
+		rot_tl+=origin;
+		rot_br+=origin;
+		rot_tr+=origin;
+		rot_bl+=origin;
 
-	if(tl[0]>br[0])
-	{
-		tl[0]=max_point[0];
-		br[0]=min_point[0];
-	}
-	else
-	{
-		br[0]=max_point[0];
-		tl[0]=min_point[0];
-	}
-	if(tl[1]>br[1])
-	{
-		tl[1]=max_point[1];
-		br[1]=min_point[1];
-	}
-	else
-	{
-		br[1]=max_point[1];
-		tl[1]=min_point[1];
+		Point min_point(min(min(min(rot_tl[0],rot_br[0]),rot_tr[0]),rot_bl[0]),min(min(min(rot_tl[1],rot_br[1]),rot_tr[1]),rot_bl[1]));
+		Point max_point(max(max(max(rot_tl[0],rot_br[0]),rot_tr[0]),rot_bl[0]),max(max(max(rot_tl[1],rot_br[1]),rot_tr[1]),rot_bl[1]));
+
+		if(tl[0]>br[0])
+		{
+			tl[0]=max_point[0];
+			br[0]=min_point[0];
+		}
+		else
+		{
+			br[0]=max_point[0];
+			tl[0]=min_point[0];
+		}
+		if(tl[1]>br[1])
+		{
+			tl[1]=max_point[1];
+			br[1]=min_point[1];
+		}
+		else
+		{
+			br[1]=max_point[1];
+			tl[1]=min_point[1];
+		}
 	}
 
 	Real pw=(renddesc.get_w())/(renddesc.get_br()[0]-renddesc.get_tl()[0]);
