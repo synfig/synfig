@@ -228,6 +228,11 @@ Rotate::accelerated_render(Context context,Surface *surface,int quality, const R
 	Real pw=(renddesc.get_w())/(renddesc.get_br()[0]-renddesc.get_tl()[0]);
 	Real ph=(renddesc.get_h())/(renddesc.get_br()[1]-renddesc.get_tl()[1]);
 
+	// we're going to round the canvas size to an integer number of pixels, so round the
+	// tl-br rectangle accordingly - otherwise we see the jittering described in bug 2152666
+	br[0] -= (pw*(br[0]-tl[0]) - round_to_int(pw*(br[0]-tl[0]))) / pw;
+	br[1] -= (ph*(br[1]-tl[1]) - round_to_int(ph*(br[1]-tl[1]))) / ph;
+
 	RendDesc desc(renddesc);
 	desc.clear_flags();
 	//desc.set_flags(RendDesc::PX_ASPECT);
