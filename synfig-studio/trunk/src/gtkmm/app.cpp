@@ -1256,9 +1256,7 @@ App::App(int *argc, char ***argv):
 
 		if(!getenv("SYNFIG_DISABLE_DRAW"   )) state_manager->add_state(&state_draw); // Enabled for now.  Let's see whether they're good enough yet.
 		if(!getenv("SYNFIG_DISABLE_SKETCH" )) state_manager->add_state(&state_sketch);
-
-		// Disabled by default - it doesn't work properly?
-		if(getenv("SYNFIG_ENABLE_WIDTH"    )) state_manager->add_state(&state_width);
+		if(!getenv("SYNFIG_DISABLE_WIDTH"  )) state_manager->add_state(&state_width); // Enabled since 0.61.09
 
 		studio_init_cb.task(_("Init ModPalette..."));
 		module_list_.push_back(new ModPalette()); module_list_.back()->start();
