@@ -4,7 +4,7 @@ More detailed notes are available on the releases page:
 
 http://synfig.org/Releases
 
- 0.61.09 (SVN 2???) - October ??, 2008 - Bug fixes, features.
+ 0.61.09 (SVN 2100) - October 14, 2008 - Bug fixes, features.
  
   * Segment and Blines tangents are calculated more accurately
   * Don't allow feather to be negative in any layer
