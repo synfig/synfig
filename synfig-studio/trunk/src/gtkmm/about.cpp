@@ -141,10 +141,12 @@ About::About()
 	authors.push_back("Chris Moore (dooglus)");
 	authors.push_back("Chris Norman (pixelgeek)");
 	authors.push_back("Daniel Fort");
+	authors.push_back("Daniel Hornung (rubikcube)");
 	authors.push_back("David Roden (Bombe)");
 	authors.push_back("Dmitriy Pomerantsev (Atrus)");
 	authors.push_back("Douglas Lau");
 	authors.push_back("Gerald Young (Yoyobuae)");
+	authors.push_back("Gerco Ballintijn");
 	authors.push_back("IL'dar AKHmetgaleev (AkhIL)");
 	authors.push_back("Luka Pravica");
 	authors.push_back("Martin Michlmayr (tbm)");
