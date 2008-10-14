@@ -2,7 +2,7 @@
 
 # -- I N I T --------------------------------------------------
 
-AC_INIT([Extended Template Library],[0.04.11],[http://synfig.org/Bugs],[ETL])
+AC_INIT([Extended Template Library],[0.04.12],[http://synfig.org/Bugs],[ETL])
 AC_REVISION
 
 AC_CONFIG_AUX_DIR(config)
