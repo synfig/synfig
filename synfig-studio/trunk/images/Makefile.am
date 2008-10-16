@@ -7,6 +7,7 @@ IMAGES=installer_logo.$(EXT) installer_logo_osx.$(EXT) mirror_icon.$(EXT) time_i
 
 MAINTAINERCLEANFILES=Makefile.in
 CLEANFILES=$(IMAGES) images.nsh unimages.nsh installer_logo.bmp sif_icon.ico synfig_icon.ico icons.nsh unicons.nsh
+CLEANDIRS=16x16 22x22 24x24 32x32 48x48 64x64 128x128
 
 image_DATA=$(IMAGES)
 
@@ -27,9 +28,8 @@ PNGTOICO=png2ico
 	echo "  File \"images\\$@\"" >>./icons.nsh
 	echo "  Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unicons.nsh
 
-clean:
-	$(RM) $(CLEANFILES)
-	$(RM) -r 16x16 22x22 24x24 32x32 48x48 64x64 128x128
+clean-local:
+	$(RM) -r $(CLEANDIRS)
 
 .sif.bmp:
 	$(SYNFIG) -q $< -o $@ --time 0
