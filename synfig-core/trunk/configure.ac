@@ -27,7 +27,7 @@ AC_DEFINE(LT_SCOPE,[extern],[LibLTDL is linked staticly])
 
 # -- V A R I A B L E S ----------------------------------------
 
-SVN_REPOSITORY=http://svn.voria.com/code/synfig-core
+SVN_REPOSITORY=https://synfig.svn.sourceforge.net/svnroot/synfig/synfig-core
 AC_SUBST(SVN_REPOSITORY)
 
 # -- P R O G R A M S ------------------------------------------
