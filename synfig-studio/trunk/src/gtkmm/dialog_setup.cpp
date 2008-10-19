@@ -75,15 +75,15 @@ Dialog_Setup::Dialog_Setup():
 	adj_gamma_r(2.2,0.1,3.0,0.025,0.025,0.025),
 	adj_gamma_g(2.2,0.1,3.0,0.025,0.025,0.025),
 	adj_gamma_b(2.2,0.1,3.0,0.025,0.025,0.025),
-	adj_recent_files(15,1,50,1,1,1),
+	adj_recent_files(15,1,50,1,1,0),
 	adj_undo_depth(100,10,5000,1,1,1),
 	toggle_use_colorspace_gamma(_("Visually Linear Color Selection")),
 #ifdef SINGLE_THREADED
 	toggle_single_threaded(_("Use Only a Single Thread")),
 #endif
 	toggle_restrict_radius_ducks(_("Restrict Real-Valued Ducks to Top Right Quadrant")),
-	adj_pref_x_size(480,1,10000,1,10,10),
-	adj_pref_y_size(270,1,10000,1,10,10)
+	adj_pref_x_size(480,1,10000,1,10,0),
+	adj_pref_y_size(270,1,10000,1,10,0)
 	
 	{
 	// Setup the buttons

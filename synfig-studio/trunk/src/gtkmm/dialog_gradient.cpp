@@ -64,7 +64,7 @@ using namespace studio;
 Dialog_Gradient::Dialog_Gradient():
 	Dialog(_("Gradient Editor"),false,true),
 	dialog_settings(this,"gradient"),
-	adjustment_pos(0,0.0,1.0,0.001,0.001,0.001)
+	adjustment_pos(0,0.0,1.0,0.001,0.001,0)
 {
 	set_type_hint(Gdk::WINDOW_TYPE_HINT_DIALOG);
 	set_keep_above(false);
