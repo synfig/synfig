@@ -409,15 +409,15 @@ StateStar_Context::StateStar_Context(CanvasView* canvas_view):
 	duckmatic_push(get_work_area()),
 	prev_workarea_layer_status_(get_work_area()->get_allow_layer_clicks()),
 	settings(synfigapp::Main::get_selected_input_device()->settings()),
-	entry_id(),
-	adj_feather(0,0,1,0.01,0.1),
-	adj_number_of_points(4,2,120,1,1,1), // value, lower, upper, step_increment, page_increment, page_size
-	adj_inner_tangent(0,-10,10,.01,.1,.1),
-	adj_outer_tangent(0,-10,10,.01,.1,.1),
-	adj_inner_width(1,-10,10,.01,.1,.1),
-	adj_outer_width(1,-10,10,.01,.1,.1),
-	adj_radius_ratio(0.5,-10,10,.01,.1,.1), // value, lower, upper, step_increment, page_increment, page_size
-	adj_angle_offset(0,-360,360,.1,1,1), // value, lower, upper, step_increment, page_increment, page_size
+	entry_id(),		//   value lower upper  step page
+	adj_feather(			0,    0,    1, 0.01, 0.1),
+	adj_number_of_points(	0,    2,  120, 1   , 1  ),
+	adj_inner_tangent(		0,  -10,   10, 0.01, 0.1),
+	adj_outer_tangent(		0,  -10,   10, 0.01, 0.1),
+	adj_inner_width(		0,  -10,   10, 0.01, 0.1),
+	adj_outer_width(		0,  -10,   10, 0.01, 0.1),
+	adj_radius_ratio(		0,  -10,   10, 0.01, 0.1),
+	adj_angle_offset(		0, -360,  360, 0.1 , 1  ),
 	spin_feather(adj_feather,0.1,3),
 	spin_number_of_points(adj_number_of_points,1,0),
 	spin_inner_tangent(adj_inner_tangent,1,2),

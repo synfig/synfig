@@ -382,10 +382,10 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	duckmatic_push(get_work_area()),
 	prev_workarea_layer_status_(get_work_area()->get_allow_layer_clicks()),
 	settings(synfigapp::Main::get_selected_input_device()->settings()),
-	entry_id(),
-	adj_feather(0,0,1,0.01,0.1),
-	adj_number_of_bline_points(4,2,120,1,1,1), // value, lower, upper, step_increment, page_increment, page_size
-	adj_bline_point_angle_offset(0,-360,360,.1,1,1), // value, lower, upper, step_increment, page_increment, page_size
+	entry_id(),				//   value lower upper  step page
+	adj_feather(					0,    0,    1, 0.01, 0.1),
+	adj_number_of_bline_points(		0,    2,  120, 1   , 1  ),
+	adj_bline_point_angle_offset(	0, -360,  360, 0.1 , 1  ),
 	spin_feather(adj_feather,0.1,3),
 	spin_number_of_bline_points(adj_number_of_bline_points,1,0),
 	spin_bline_point_angle_offset(adj_bline_point_angle_offset,1,1),
