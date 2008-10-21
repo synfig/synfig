@@ -4,7 +4,7 @@ More detailed notes are available on the releases page:
 
 http://synfig.org/Releases
 
- 0.04.12 (SVN 2099) - October 14, 2008 - Bug fixes
+ 0.04.12 (SVN 2112) - October 21, 2008 - Bug fixes
  
   * Improve the derivative class for hermites. 
   * Update configure.ac as suggested by autoupdate.
