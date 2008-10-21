@@ -1,0 +1,14 @@
+Title @PACKAGE_NAME@ @VERSION@
+Version @VERSION@
+Description @PACKAGE_NAME@
+DefaultLocation /usr/local
+DeleteWarning 
+NeedsAuthorization YES
+DisableStop NO
+UseUserMask YES
+Application NO
+Relocatable NO
+Required NO
+InstallOnly NO
+RequiresReboot NO
+InstallFat NO

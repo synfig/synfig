@@ -1,0 +1,32 @@
+## FIXMEs ##
+
+* Install freedesktop.org mime info
+* Install gnome thumbnailer
+
+## General ##
+
+* Re-implement draw tool
+* Re-implement WorkArea class to use OpenGL
+* Migrate toward extensible plug-in architecture
+* Migrate toward scripted architecture
+* Ability for "Auto Recover" feature to recover history
+* Ability to edit curves in the curves tab.
+* Subversion integration
+* Integrated error console tab
+* Clean up crazy confusing console output
+* Implement palette browser feature
+* Move to icon theming so synfig icons can be customised
+* Switch icon naming to Tango and ArtLibreSet
+
+## Wishful Thinking ##
+
+* Visual conflict resolution for version control merging conflicts
+
+## Long Term ##
+
+* Make majority of user-interface components controlled by scripts
+
+## User-requested features ##
+
+http://synfig.org/Wish_list
+http://sf.net/tracker/?group_id=144022&atid=757419
