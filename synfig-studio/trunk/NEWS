@@ -4,7 +4,7 @@ More detailed notes are available on the releases page:
 
 http://synfig.org/Releases
 
- 0.61.09 (SVN 2101) - October 14, 2008 - Bug fixes, features
+ 0.61.09 (SVN 2114) - October 21, 2008 - Bug fixes, features
  
   * Fix building synfigstudio in the fink distribution
   * Improved plant layer
@@ -27,6 +27,7 @@ http://synfig.org/Releases
   * Added more functionality to colour and time sliders
   * Added new 'Document' tab in Setup dialog for more user preferences
   * Fixed some crashes and errors
+  * Width tool returned to the Tool Box by default.
 
  0.61.08 (SVN 1839) - March 3, 2008 - Bug fixes, features
 
