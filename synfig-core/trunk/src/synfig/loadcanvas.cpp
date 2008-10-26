@@ -1886,7 +1886,7 @@ CanvasParser::parse_canvas(xmlpp::Element *element,Canvas::Handle parent,bool in
 	if(element->get_attribute("width"))
 	{
 		int width = atoi(element->get_attribute("width")->get_value().c_str());
-		if (width < -1)
+		if (width < 1)
 			fatal_error(element, _("Canvas with width or height less than one is not allowed"));
 		canvas->rend_desc().set_w(width);
 	}
@@ -1894,7 +1894,7 @@ CanvasParser::parse_canvas(xmlpp::Element *element,Canvas::Handle parent,bool in
 	if(element->get_attribute("height"))
 	{
 		int height = atoi(element->get_attribute("height")->get_value().c_str());
-		if (height < -1)
+		if (height < 1)
 			fatal_error(element, _("Canvas with width or height less than one is not allowed"));
 		canvas->rend_desc().set_h(height);
 	}
