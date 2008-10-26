@@ -596,7 +596,8 @@ Canvas::find_canvas(const String &id)
 Canvas::ConstHandle
 Canvas::find_canvas(const String &id)const
 {
-	if(is_inline() && parent_)return parent_->find_canvas(id);
+	if(is_inline() && parent_)
+		return parent_->find_canvas(id);
 
 	if(id.empty())
 		return this;
@@ -654,7 +655,7 @@ Canvas::find_canvas(const String &id)const
 
 	// If the first character is the separator, then
 	// this references the root canvas.
-	if(id.find_first_of(':')==0)
+	if(id[0]==':')
 		return get_root()->find_canvas(string(id,1));
 
 	// Now we know that the requested Canvas is in a child
