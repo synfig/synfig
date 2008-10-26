@@ -174,7 +174,7 @@ CanvasParser::error(xmlpp::Node *element, const String &text)
 {
 	string str=strprintf("%s:<%s>:%d: error: ",filename.c_str(),element->get_name().c_str(),element->get_line())+text;
 	total_errors_++;
-	errors_text += "  " + str + "\n";
+	errors_text += "  * " + str + "\n";
 	if(!allow_errors_)
 		throw runtime_error(str);
 	cerr<<str<<endl;
@@ -2082,12 +2082,12 @@ CanvasParser::parse_canvas(xmlpp::Element *element,Canvas::Handle parent,bool in
 Canvas::Handle
 CanvasParser::parse_from_file_as(const String &file_,const String &as_,String &errors)
 {
+	ChangeLocale change_locale(LC_NUMERIC, "C");
+	String file(unix_to_local_path(file_));
+	String as(unix_to_local_path(as_));
+
 	try
 	{
-        ChangeLocale change_locale(LC_NUMERIC, "C");
-		String file(unix_to_local_path(file_));
-		String as(unix_to_local_path(as_));
-
 		if(get_open_canvas_map().count(etl::absolute_path(as)))
 			return get_open_canvas_map()[etl::absolute_path(as)];
 
@@ -2123,6 +2123,13 @@ CanvasParser::parse_from_file_as(const String &file_,const String &as_,String &e
 	catch(Exception::FileNotFound) { synfig::error("FileNotFound Thrown"); }
 	catch(Exception::IDNotFound) { synfig::error("IDNotFound Thrown"); }
 	catch(Exception::IDAlreadyExists) { synfig::error("IDAlreadyExists Thrown"); }
+	catch(xmlpp::internal_error x)
+	{
+		printf("caught internal error\n");
+		if (!strcmp(x.what(), "Couldn't create parsing context"))
+			throw runtime_error(String("  * ") + _("Can't open file") + " \"" + file + "\"");
+		throw;
+	}
 	catch(const std::exception& ex)
 	{
 		synfig::error("Standard Exception: "+String(ex.what()));
