@@ -1179,7 +1179,7 @@ int main(int argc, char *argv[])
 
 			if(!job_list.front().root)
 			{
-				cerr<<_("Unable to open ")<<job_list.front().filename<<"."<<endl;
+				cerr<<_("Unable to load '")<<job_list.front().filename<<"'."<<endl;
 				cerr<<_("Throwing out job...")<<endl;
 				job_list.pop_front();
 				continue;
@@ -1238,7 +1238,10 @@ int main(int argc, char *argv[])
 					String errors;
 					Canvas::Handle composite(open_canvas(composite_file, errors));
 					if(!composite)
+					{
+						cerr<<_("Unable to append '")<<composite_file<<"'."<<endl;
 						break;
+					}
 					Canvas::reverse_iterator iter;
 					for(iter=composite->rbegin();iter!=composite->rend();++iter)
 					{
