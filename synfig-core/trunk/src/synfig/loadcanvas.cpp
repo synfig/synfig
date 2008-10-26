@@ -144,21 +144,6 @@ synfig::open_canvas_as(const String &filename,const String &as,String &errors)
 	return canvas;
 }
 
-Canvas::Handle
-synfig::string_to_canvas(const String &data)
-{
-	CanvasParser parser;
-
-	parser.set_allow_errors(true);
-
-	Canvas::Handle canvas=parser.parse_from_string(data);
-
-	if(parser.error_count())
-		return Canvas::Handle();
-
-	return canvas;
-}
-
 /* === M E T H O D S ======================================================= */
 
 void
@@ -2116,8 +2101,6 @@ CanvasParser::parse_from_file_as(const String &file_,const String &as_,String &e
 			canvas->signal_deleted().connect(sigc::bind(sigc::ptr_fun(_remove_from_open_canvas_map),canvas.get()));
 			canvas->signal_file_name_changed().connect(sigc::bind(sigc::ptr_fun(_canvas_file_name_changed),canvas.get()));
 
-
-
 			const ValueNodeList& value_node_list(canvas->value_node_list());
 
 			again:
@@ -2151,58 +2134,6 @@ CanvasParser::parse_from_file_as(const String &file_,const String &as_,String &e
 		cerr<<str<<endl;
 		//	synfig::error(str);
 		errors = str;
-		return Canvas::Handle();
-	}
-	return Canvas::Handle();
-}
-
-Canvas::Handle
-CanvasParser::parse_from_string(const String &data)
-{
-	try
-	{
-        ChangeLocale change_locale(LC_NUMERIC, "C");
-		filename=_("<INTERNAL>");
-		total_warnings_=0;
-		xmlpp::DomParser parser;
-		parser.parse_memory(data);
-		xmlpp::Element *root=parser.get_document()->get_root_node();
-		if(parser)
-		{
-			Canvas::Handle canvas(parse_canvas(root));
-			canvas->signal_deleted().connect(sigc::bind(sigc::ptr_fun(_remove_from_open_canvas_map),canvas.get()));
-			canvas->signal_file_name_changed().connect(sigc::bind(sigc::ptr_fun(_canvas_file_name_changed),canvas.get()));
-
-			const ValueNodeList& value_node_list(canvas->value_node_list());
-			again:
-			ValueNodeList::const_iterator iter;
-			for(iter=value_node_list.begin();iter!=value_node_list.end();++iter)
-			{
-				ValueNode::Handle value_node(*iter);
-				if(value_node->is_exported() && value_node->get_id().find("Unnamed")==0)
-				{
-					canvas->remove_value_node(value_node);
-					goto again;
-				}
-			}
-
-			return canvas;
-		}
-	}
-	catch(Exception::BadLinkName) { synfig::error("BadLinkName Thrown"); }
-	catch(Exception::BadType) { synfig::error("BadType Thrown"); }
-	catch(Exception::FileNotFound) { synfig::error("FileNotFound Thrown"); }
-	catch(Exception::IDNotFound) { synfig::error("IDNotFound Thrown"); }
-	catch(Exception::IDAlreadyExists) { synfig::error("IDAlreadyExists Thrown"); }
-	catch(const std::exception& ex)
-	{
-		synfig::error("Standard Exception: "+String(ex.what()));
-		return Canvas::Handle();
-	}
-	catch(const String& str)
-	{
-		cerr<<str<<endl;
-		//	synfig::error(str);
 		return Canvas::Handle();
 	}
 	return Canvas::Handle();

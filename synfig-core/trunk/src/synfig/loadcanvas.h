@@ -120,9 +120,6 @@ public:
 	//! \todo writeme
 	Canvas::Handle parse_from_file_as(const String &filename,const String &as,String &errors);
 
-	//! \todo writeme
-	Canvas::Handle parse_from_string(const String &data);
-
 private:
 
 	// Error/Warning handling functions
@@ -173,9 +170,6 @@ private:
 /*!	\return	The Canvas's handle on success, an empty handle on failure */
 extern Canvas::Handle open_canvas(const String &filename,String &errors);
 extern Canvas::Handle open_canvas_as(const String &filename,const String &as,String &errors);
-
-//! Retrieves a Canvas from a string in XML format
-extern Canvas::Handle string_to_canvas(const String &data);
 
 std::map<synfig::String, etl::loose_handle<Canvas> >& get_open_canvas_map();
 
