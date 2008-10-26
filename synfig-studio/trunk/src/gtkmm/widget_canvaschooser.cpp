@@ -155,7 +155,7 @@ Widget_CanvasChooser::chooser_menu()
 	}
 	catch(std::runtime_error x)
 	{
-		App::dialog_error_blocking(_("Error:Exception Thrown"),x.what());
+		App::dialog_error_blocking(_("Error:Exception Thrown"),String(_("Error selecting canvas:\n\n")) + x.what());
 		set_value_(canvas);
 	}
 	catch(...)
