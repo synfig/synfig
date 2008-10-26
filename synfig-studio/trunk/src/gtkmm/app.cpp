@@ -2351,7 +2351,7 @@ App::open_as(std::string filename,std::string as)
 		else
 		{
 			if(!canvas)
-				throw (String)strprintf(_("Unable to open file \"%s\":\n\n"),filename.c_str()) + errors;
+				throw (String)strprintf(_("Unable to load \"%s\":\n\n"),filename.c_str()) + errors;
 
 			if (as.find(custom_filename_prefix.c_str()) != 0)
 				add_recent_file(as);
