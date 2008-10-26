@@ -582,7 +582,7 @@ CanvasInterface::import(const synfig::String &filename, bool /*copy*/)
 		String errors;
 		Canvas::Handle outside_canvas(synfig::open_canvas(filename, errors));
 		if(!outside_canvas)
-			throw String(_("Unable to open this composition"));
+			throw String(_("Unable to open this composition")) + ":\n\n" + errors;
 
 		Layer::Handle layer(add_layer_to("PasteCanvas",get_canvas()));
 		if(!layer)
@@ -596,7 +596,7 @@ CanvasInterface::import(const synfig::String &filename, bool /*copy*/)
 	}
 	catch(String x)
 	{
-		get_ui_interface()->error(x+" -- "+filename);
+		get_ui_interface()->error(filename + ": " + x);
 		return false;
 	}
 	catch(...)
