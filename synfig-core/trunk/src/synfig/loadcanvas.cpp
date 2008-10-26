@@ -121,31 +121,25 @@ static void _canvas_file_name_changed(Canvas *x)
 }
 
 Canvas::Handle
-synfig::open_canvas(const String &filename)
+synfig::open_canvas(const String &filename,String &errors)
 {
-	CanvasParser parser;
-
-	parser.set_allow_errors(true);
-
-	Canvas::Handle canvas=parser.parse_from_file(filename);
-
-	if(parser.error_count())
-		return Canvas::Handle();
-
-	return canvas;
+	return open_canvas_as(filename, filename, errors);
 }
 
 Canvas::Handle
-synfig::open_canvas_as(const String &filename,const String &as)
+synfig::open_canvas_as(const String &filename,const String &as,String &errors)
 {
 	CanvasParser parser;
 
 	parser.set_allow_errors(true);
 
-	Canvas::Handle canvas=parser.parse_from_file_as(filename,as);
+	Canvas::Handle canvas=parser.parse_from_file_as(filename,as,errors);
 
 	if(parser.error_count())
+	{
+		errors = parser.get_errors_text();
 		return Canvas::Handle();
+	}
 
 	return canvas;
 }
@@ -195,6 +189,7 @@ CanvasParser::error(xmlpp::Node *element, const String &text)
 {
 	string str=strprintf("%s:<%s>:%d: error: ",filename.c_str(),element->get_name().c_str(),element->get_line())+text;
 	total_errors_++;
+	errors_text += "  " + str + "\n";
 	if(!allow_errors_)
 		throw runtime_error(str);
 	cerr<<str<<endl;
@@ -2100,13 +2095,7 @@ CanvasParser::parse_canvas(xmlpp::Element *element,Canvas::Handle parent,bool in
 }
 
 Canvas::Handle
-CanvasParser::parse_from_file(const String &file)
-{
-	return parse_from_file_as(file,file);
-}
-
-Canvas::Handle
-CanvasParser::parse_from_file_as(const String &file_,const String &as_)
+CanvasParser::parse_from_file_as(const String &file_,const String &as_,String &errors)
 {
 	try
 	{
@@ -2154,12 +2143,14 @@ CanvasParser::parse_from_file_as(const String &file_,const String &as_)
 	catch(const std::exception& ex)
 	{
 		synfig::error("Standard Exception: "+String(ex.what()));
+		errors = ex.what();
 		return Canvas::Handle();
 	}
 	catch(const String& str)
 	{
 		cerr<<str<<endl;
 		//	synfig::error(str);
+		errors = str;
 		return Canvas::Handle();
 	}
 	return Canvas::Handle();

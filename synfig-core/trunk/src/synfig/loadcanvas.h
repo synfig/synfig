@@ -73,6 +73,8 @@ private:
 
 	String path;
 
+	String errors_text;
+
 	GUID guid_;
 
 	/*
@@ -113,10 +115,10 @@ public:
 
 	const synfig::String& get_path()const { return path; }
 
-	//! \todo writeme
-	Canvas::Handle parse_from_file(const String &filename);
+	const synfig::String& get_errors_text()const { return errors_text; }
 
-	Canvas::Handle parse_from_file_as(const String &filename,const String &as);
+	//! \todo writeme
+	Canvas::Handle parse_from_file_as(const String &filename,const String &as,String &errors);
 
 	//! \todo writeme
 	Canvas::Handle parse_from_string(const String &data);
@@ -169,8 +171,8 @@ private:
 
 //!	Loads a canvas from \a filename
 /*!	\return	The Canvas's handle on success, an empty handle on failure */
-extern Canvas::Handle open_canvas(const String &filename);
-extern Canvas::Handle open_canvas_as(const String &filename,const String &as);
+extern Canvas::Handle open_canvas(const String &filename,String &errors);
+extern Canvas::Handle open_canvas_as(const String &filename,const String &as,String &errors);
 
 //! Retrieves a Canvas from a string in XML format
 extern Canvas::Handle string_to_canvas(const String &data);

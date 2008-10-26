@@ -1174,7 +1174,8 @@ int main(int argc, char *argv[])
 			  return ret;
 
 			// Open the composition
-			job_list.front().root=open_canvas(job_list.front().filename);
+			String errors;
+			job_list.front().root=open_canvas(job_list.front().filename, errors);
 
 			if(!job_list.front().root)
 			{
@@ -1234,7 +1235,8 @@ int main(int argc, char *argv[])
 				extract_append(imageargs,composite_file);
 				if(!composite_file.empty())
 				{
-					Canvas::Handle composite(open_canvas(composite_file));
+					String errors;
+					Canvas::Handle composite(open_canvas(composite_file, errors));
 					if(!composite)
 						break;
 					Canvas::reverse_iterator iter;

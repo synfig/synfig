@@ -2339,8 +2339,9 @@ App::open_as(std::string filename,std::string as)
 	try
 	{
 		OneMoment one_moment;
+		String errors;
 
-		etl::handle<synfig::Canvas> canvas(open_canvas_as(filename,as));
+		etl::handle<synfig::Canvas> canvas(open_canvas_as(filename,as,errors));
 		if(canvas && get_instance(canvas))
 		{
 			get_instance(canvas)->find_canvas_view(canvas)->present();
@@ -2350,7 +2351,7 @@ App::open_as(std::string filename,std::string as)
 		else
 		{
 			if(!canvas)
-				throw (String)strprintf(_("Unable to open file \"%s\""),filename.c_str());
+				throw (String)strprintf(_("Unable to open file \"%s\":\n\n"),filename.c_str()) + errors;
 
 			if (as.find(custom_filename_prefix.c_str()) != 0)
 				add_recent_file(as);

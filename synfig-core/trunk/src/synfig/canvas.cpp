@@ -47,7 +47,7 @@ using namespace synfig;
 using namespace etl;
 using namespace std;
 
-namespace synfig { extern Canvas::Handle open_canvas(const String &filename); };
+namespace synfig { extern Canvas::Handle open_canvas(const String &filename, String &errors); };
 
 /* === M A C R O S ========================================================= */
 
@@ -537,10 +537,11 @@ Canvas::surefind_canvas(const String &id)
 			external_canvas=externals_[file_name];
 		else
 		{
+			String errors;
 			if(is_absolute_path(file_name))
-				external_canvas=open_canvas(file_name);
+				external_canvas=open_canvas(file_name, errors);
 			else
-				external_canvas=open_canvas(get_file_path()+ETL_DIRECTORY_SEPARATOR+file_name);
+				external_canvas=open_canvas(get_file_path()+ETL_DIRECTORY_SEPARATOR+file_name, errors);
 
 			if(!external_canvas)
 				throw Exception::FileNotFound(file_name);
@@ -622,10 +623,11 @@ Canvas::find_canvas(const String &id)const
 			external_canvas=externals_[file_name];
 		else
 		{
+			String errors;
 			if(is_absolute_path(file_name))
-				external_canvas=open_canvas(file_name);
+				external_canvas=open_canvas(file_name, errors);
 			else
-				external_canvas=open_canvas(get_file_path()+ETL_DIRECTORY_SEPARATOR+file_name);
+				external_canvas=open_canvas(get_file_path()+ETL_DIRECTORY_SEPARATOR+file_name, errors);
 
 			if(!external_canvas)
 				throw Exception::FileNotFound(file_name);
