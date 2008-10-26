@@ -544,7 +544,7 @@ Canvas::surefind_canvas(const String &id)
 				external_canvas=open_canvas(get_file_path()+ETL_DIRECTORY_SEPARATOR+file_name, errors);
 
 			if(!external_canvas)
-				throw Exception::FileNotFound(file_name);
+				throw runtime_error(errors);
 			externals_[file_name]=external_canvas;
 		}
 
@@ -631,7 +631,7 @@ Canvas::find_canvas(const String &id)const
 				external_canvas=open_canvas(get_file_path()+ETL_DIRECTORY_SEPARATOR+file_name, errors);
 
 			if(!external_canvas)
-				throw Exception::FileNotFound(file_name);
+				throw runtime_error(errors);
 			externals_[file_name]=external_canvas;
 		}
 
