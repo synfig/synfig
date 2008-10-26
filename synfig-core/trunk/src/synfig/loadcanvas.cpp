@@ -1884,10 +1884,20 @@ CanvasParser::parse_canvas(xmlpp::Element *element,Canvas::Handle parent,bool in
 		canvas->set_version(parent->get_version());
 
 	if(element->get_attribute("width"))
-		canvas->rend_desc().set_w(atoi(element->get_attribute("width")->get_value().c_str()));
+	{
+		int width = atoi(element->get_attribute("width")->get_value().c_str());
+		if (width < -1)
+			fatal_error(element, _("Canvas with width or height less than one is not allowed"));
+		canvas->rend_desc().set_w(width);
+	}
 
 	if(element->get_attribute("height"))
-		canvas->rend_desc().set_h(atoi(element->get_attribute("height")->get_value().c_str()));
+	{
+		int height = atoi(element->get_attribute("height")->get_value().c_str());
+		if (height < -1)
+			fatal_error(element, _("Canvas with width or height less than one is not allowed"));
+		canvas->rend_desc().set_h(height);
+	}
 
 	if(element->get_attribute("xres"))
 		canvas->rend_desc().set_x_res(atof(element->get_attribute("xres")->get_value().c_str()));
