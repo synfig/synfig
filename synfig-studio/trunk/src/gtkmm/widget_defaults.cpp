@@ -464,6 +464,7 @@ Widget_Defaults::on_gradient_clicked()
 	App::dialog_gradient->set_gradient(synfigapp::Main::get_gradient());
 	App::dialog_gradient->reset();
 	App::dialog_gradient->signal_edited().connect(sigc::ptr_fun(synfigapp::Main::set_gradient));
+	App::dialog_gradient->grab_button_set_sensitive(false);
 	App::dialog_gradient->present();
 }
 

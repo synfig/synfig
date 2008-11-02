@@ -86,6 +86,7 @@ class Dialog_Gradient : public Gtk::Dialog
 
 	Widget_Gradient* widget_gradient;
 	Widget_ColorEdit* widget_color;
+	Gtk::Button *grab_button;
 
 	void on_changed();
 
@@ -96,6 +97,8 @@ public:
 	void set_gradient(const synfig::Gradient& x);
 
 	const synfig::Gradient& get_gradient()const { return widget_gradient->get_value(); }
+
+	void grab_button_set_sensitive(bool sensitive) { grab_button->set_sensitive(sensitive); }
 
 	void reset();
 
