@@ -2097,6 +2097,7 @@ CanvasParser::parse_from_file_as(const String &file_,const String &as_,String &e
 		if(parser)
 		{
 			Canvas::Handle canvas(parse_canvas(parser.get_document()->get_root_node(),0,false,as));
+			if (!canvas) return canvas;
 			get_open_canvas_map()[etl::absolute_path(as)]=canvas;
 			canvas->signal_deleted().connect(sigc::bind(sigc::ptr_fun(_remove_from_open_canvas_map),canvas.get()));
 			canvas->signal_file_name_changed().connect(sigc::bind(sigc::ptr_fun(_canvas_file_name_changed),canvas.get()));
