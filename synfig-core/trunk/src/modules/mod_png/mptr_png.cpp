@@ -339,7 +339,6 @@ png_mptr::~png_mptr()
 bool
 png_mptr::get_frame(synfig::Surface &surface,Time, synfig::ProgressCallback */*cb*/)
 {
-	surface.mirror(surface_buffer);
-//	surface=surface_buffer;
+	surface=surface_buffer;
 	return true;
 }
