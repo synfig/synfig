@@ -79,7 +79,12 @@ radial_interpolation(const Vector& a, const Vector& b, float c)
 	affine_combo<Angle,float> ang_combo;
 
 	Real mag(mag_combo(a.mag(),b.mag(),c));
-	Angle ang(ang_combo(Angle::tan(a[1],a[0]),Angle::tan(b[1],b[0]),c));
+	Angle angle_a(Angle::tan(a[1],a[0]));
+	Angle angle_b(Angle::tan(b[1],b[0]));
+	float diff = Angle::deg(angle_b - angle_a).get();
+	if (diff < -180) angle_b += Angle::deg(360);
+	else if (diff > 180) angle_a += Angle::deg(360);
+	Angle ang(ang_combo(angle_a, angle_b, c));
 
 	return Point( mag*Angle::cos(ang).get(),mag*Angle::sin(ang).get() );
 }
