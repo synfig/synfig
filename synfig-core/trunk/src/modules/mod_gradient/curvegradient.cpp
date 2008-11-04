@@ -50,6 +50,8 @@
 
 /* === M A C R O S ========================================================= */
 
+#define FAKE_TANGENT_STEP 0.000001
+
 /* === G L O B A L S ======================================================= */
 
 SYNFIG_LAYER_INIT(CurveGradient);
@@ -306,7 +308,7 @@ CurveGradient::color_func(const Point &point_, int quality, float supersample)co
 
 		// Calculate our values
 		p1=curve(t);			 // the closest point on the curve
-		tangent=deriv(t).norm(); // the unit tangent at that point
+		tangent=deriv(t);		 // the tangent at that point
 
 		// if the point we're nearest to is at either end of the
 		// bline, our distance from the curve is the distance from the
@@ -315,23 +317,64 @@ CurveGradient::color_func(const Point &point_, int quality, float supersample)co
 		// this point
 		if (t<0.00001 || t>0.99999)
 		{
+			bool zero_tangent = (tangent[0] == 0 && tangent[1] == 0);
+
 			if (t<0.5)
 			{
-				if (iter->get_split_tangent_flag())
+				if (iter->get_split_tangent_flag() || zero_tangent)
 				{
-					tangent=(iter->get_tangent1().norm()+tangent).norm();
+					// fake the current tangent if we need to
+					if (zero_tangent) tangent = curve(FAKE_TANGENT_STEP) - curve(0);
+
+					// calculate the other tangent
+					Vector other_tangent(iter->get_tangent1());
+					if (other_tangent[0] == 0 && other_tangent[1] == 0)
+					{
+						// find the previous blinepoint
+						std::vector<synfig::BLinePoint>::const_iterator prev;
+						if (iter != bline.begin()) (prev = iter)--;
+						else if (loop) (prev = bline.end())--;
+						else prev = iter;
+
+						etl::hermite<Vector> other_curve(prev->get_vertex(), iter->get_vertex(), prev->get_tangent2(), iter->get_tangent1());
+						other_tangent = other_curve(1) - other_curve(1-FAKE_TANGENT_STEP);
+					}
+
+					// normalise and sum the two tangents
+					tangent=(other_tangent.norm()+tangent.norm());
 					edge_case=true;
 				}
 			}
 			else
 			{
-				if (next->get_split_tangent_flag())
+				if (next->get_split_tangent_flag() || zero_tangent)
 				{
-					tangent=(next->get_tangent2().norm()+tangent).norm();
+					// fake the current tangent if we need to
+					if (zero_tangent) tangent = curve(1) - curve(1-FAKE_TANGENT_STEP);
+
+					// calculate the other tangent
+					Vector other_tangent(next->get_tangent2());
+					if (other_tangent[0] == 0 && other_tangent[1] == 0)
+					{
+						// find the next blinepoint
+						std::vector<synfig::BLinePoint>::const_iterator next2(next);
+						if (++next2 == bline.end())
+						{
+							if (loop) next2 = bline.begin();
+							else next2 = next;
+						}
+
+						etl::hermite<Vector> other_curve(next->get_vertex(), next2->get_vertex(), next->get_tangent2(), next2->get_tangent1());
+						other_tangent = other_curve(FAKE_TANGENT_STEP) - other_curve(0);
+					}
+
+					// normalise and sum the two tangents
+					tangent=(other_tangent.norm()+tangent.norm());
 					edge_case=true;
 				}
 			}
 		}
+		tangent = tangent.norm();
 
 		if(perpendicular)
 		{

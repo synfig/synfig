@@ -553,8 +553,7 @@ public:
 				bezier<V,T>::operator[](1),
 				bezier<V,T>::operator[](2),
 				bezier<V,T>::operator[](3)};
-			float t = NearestPointOnCurve(x, array);
-			return t > 0.999999 ? 0.999999 : t < 0.000001 ? 0.000001 : t;
+			return NearestPointOnCurve(x, array);
 	    }
 	    else
 	    {
