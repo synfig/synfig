@@ -362,7 +362,7 @@ CurveGradient::color_func(const Point &point_, int quality, float supersample)co
 			const Real mag(diff.inv_mag());
 			supersample=supersample*mag;
 			diff*=mag*mag;
-			dist=((point_-origin)*diff-p1*diff);
+			dist=(point_-origin - p1)*diff;
 		}
 	}
 	else						// not perpendicular
@@ -380,7 +380,7 @@ CurveGradient::color_func(const Point &point_, int quality, float supersample)co
 		const Real mag(diff.inv_mag());
 		supersample=supersample*mag;
 		diff*=mag*mag;
-		dist=((point_-origin)*diff-p1*diff);
+		dist=(point_-origin - p1)*diff;
 	}
 
 	if(loop)
