@@ -260,5 +260,5 @@ ffmpeg_mptr::get_frame(synfig::Surface &surface,Time time, synfig::ProgressCallb
 	}
 
 	surface=frame;
-	return false;
+	return true;
 }
