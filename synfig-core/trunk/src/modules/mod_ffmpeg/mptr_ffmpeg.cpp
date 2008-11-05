@@ -178,6 +178,10 @@ ffmpeg_mptr::grab_frame(void)
 	float divisor;
 	char cookie[2];
 	cookie[0]=fgetc(file);
+
+	if(feof(file))
+		return false;
+
 	cookie[1]=fgetc(file);
 
 	if(cookie[0]!='P' || cookie[1]!='6')
