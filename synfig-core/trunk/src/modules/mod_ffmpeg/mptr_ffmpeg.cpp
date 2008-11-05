@@ -77,6 +77,11 @@ SYNFIG_IMPORTER_SET_CVS_ID(ffmpeg_mptr,"$Id$");
 
 /* === M E T H O D S ======================================================= */
 
+bool ffmpeg_mptr::is_animated()
+{
+	return true;
+}
+
 bool
 ffmpeg_mptr::seek_to(int frame)
 {

@@ -67,6 +67,7 @@ public:
 	ffmpeg_mptr(const char *filename);
 	~ffmpeg_mptr();
 
+	virtual bool is_animated();
 
 	virtual bool get_frame(synfig::Surface &surface,synfig::Time time, synfig::ProgressCallback *callback);
 };
