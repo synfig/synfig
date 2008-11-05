@@ -136,7 +136,7 @@ ffmpeg_mptr::seek_to(int frame)
 			execlp("ffmpeg", "ffmpeg", "-i", filename.c_str(), "-an", "-f", "image2pipe", "-vcodec", "ppm", "-", (const char *)NULL);
 			// We should never reach here unless the exec failed
 			cerr<<"Unable to open pipe to ffmpeg"<<endl;
-			return false;
+			_exit(1);
 		} else {
 			// Parent process
 			// Close pipeout, not needed
