@@ -59,12 +59,12 @@ MODULE_INVENTORY_BEGIN(mod_ffmpeg)
 		TARGET_EXT(ffmpeg_trgt,"yuv")
 		TARGET_EXT(ffmpeg_trgt,"rgb")
 	END_TARGETS
-//	BEGIN_IMPORTERS
-//		IMPORTER_EXT(ffmpeg_mptr,"avi")
-//		IMPORTER_EXT(ffmpeg_mptr,"mpg")
-//		IMPORTER_EXT(ffmpeg_mptr,"mpeg")
-//		IMPORTER_EXT(ffmpeg_mptr,"mov")
-//		IMPORTER_EXT(ffmpeg_mptr,"rm")
-//		IMPORTER_EXT(ffmpeg_mptr,"dv")
-//	END_IMPORTERS
+	BEGIN_IMPORTERS
+		IMPORTER_EXT(ffmpeg_mptr,"avi")
+		IMPORTER_EXT(ffmpeg_mptr,"mpg")
+		IMPORTER_EXT(ffmpeg_mptr,"mpeg")
+		IMPORTER_EXT(ffmpeg_mptr,"mov")
+		IMPORTER_EXT(ffmpeg_mptr,"rm")
+		IMPORTER_EXT(ffmpeg_mptr,"dv")
+	END_IMPORTERS
 MODULE_INVENTORY_END
