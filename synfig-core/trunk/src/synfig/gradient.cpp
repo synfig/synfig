@@ -203,7 +203,7 @@ synfig::Gradient::operator+=(const Gradient &rhs)
 				// otherwise we sum the first in each, and the last in each
 				else
 				{
-					if (print) printf("[copying %d from left %d and %d from right %d at %.2f]\n", iter1-left_same+1, tpos1, iter2-right_same+1, tpos2, left.pos);
+					if (print) printf("[copying %ld from left %d and %ld from right %d at %.2f]\n", iter1-left_same+1, tpos1, iter2-right_same+1, tpos2, left.pos);
 					// merge the front two cpoints
 					if (print) printf("  copy front from left %d right %d\n", tpos1++, tpos2++);
 					ret.push_back(CPoint(left.pos, left.color + right.color));
