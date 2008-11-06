@@ -102,7 +102,7 @@ ffmpeg_mptr::seek_to(int frame)
 
 		string command;
 		
-		command=strprintf("ffmpeg -i \"%s\" -an -f image2pipe -vcodec ppm -\n",filename.c_str());
+		command=strprintf("ffmpeg -ss 00:00:00.%d -i \"%s\" -an -f image2pipe -vcodec ppm -\n",frame,filename.c_str());
 		
 		file=popen(command.c_str(),POPEN_BINARY_READ_TYPE);
 
@@ -133,7 +133,8 @@ ffmpeg_mptr::seek_to(int frame)
 			}
 			// Close the unneeded pipein
 			close(p[1]);
-			execlp("ffmpeg", "ffmpeg", "-i", filename.c_str(), "-an", "-f", "image2pipe", "-vcodec", "ppm", "-", (const char *)NULL);
+			string time = strprintf("00:00:00.%d",frame);
+			execlp("ffmpeg", "ffmpeg", "-ss", time.c_str(), "-i", filename.c_str(), "-an", "-f", "image2pipe", "-vcodec", "ppm", "-", (const char *)NULL);
 			// We should never reach here unless the exec failed
 			cerr<<"Unable to open pipe to ffmpeg"<<endl;
 			_exit(1);
