@@ -31,7 +31,7 @@
 #endif
 
 #include "node.h"
-#include "nodebase.h"
+// #include "nodebase.h"		// this defines a bunch of sigc::slots that are never used
 
 #ifdef HASH_MAP_H
 #include HASH_MAP_H
