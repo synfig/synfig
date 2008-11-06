@@ -1980,6 +1980,18 @@ CanvasView::refresh_rend_desc()
 	}
 
 	//clamp time to big bounds...
+	if(time_window_adjustment().get_value() < begin_time)
+	{
+		time_window_adjustment().set_value(begin_time);
+		time_window_adjustment().value_changed();
+	}
+
+	if(time_window_adjustment().get_value() + time_window_adjustment().get_page_size() > end_time)
+	{
+		time_window_adjustment().set_value(end_time - time_window_adjustment().get_page_size());
+		time_window_adjustment().value_changed();
+	}
+
 	if(time_adjustment().get_value() < begin_time)
 	{
 		time_adjustment().set_value(begin_time);
