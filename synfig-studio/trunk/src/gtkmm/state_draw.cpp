@@ -1273,7 +1273,7 @@ StateDraw_Context::new_region(std::list<synfig::BLinePoint> bline, synfig::Real 
 
 	std::list<synfigapp::ValueDesc> vertex_list;
 
-	printf("new_region with %d bline points\n", bline.size());
+	printf("new_region with %zd bline points\n", bline.size());
 
 	// First we need to come up with a rough list of
 	// BLinePoints that we are going to be using to
@@ -1316,7 +1316,7 @@ StateDraw_Context::new_region(std::list<synfig::BLinePoint> bline, synfig::Real 
 
 	assert(vertex_list.back().is_valid());
 
-	printf("vertex list with %d bline points\n", vertex_list.size());
+	printf("vertex list with %zd bline points\n", vertex_list.size());
 
 	// Remove any duplicates
 	{
