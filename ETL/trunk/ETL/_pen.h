@@ -214,9 +214,9 @@ public:
 
 	const_reference get_value_clip_at(int x, int y)const { assert(data_); if(clipped(x,y))return value_type(); return ((pointer)(((char*)data_)+y*pitch_))[x]; }
 
-	value_type get_value_clip()const { assert(data_); if(clipped())return value_type(); return *data_; }
+	const value_type get_value_clip()const { assert(data_); if(clipped())return value_type(); return *data_; }
 
-	value_type get_pen_value()const { return value_; }
+	const value_type get_pen_value()const { return value_; }
 
 	void put_hline(int l,const value_type &v)
 	{for(;l>0;l--,inc_x())put_value(v);}
