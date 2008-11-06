@@ -184,7 +184,7 @@ Time::get_string(float fps, Time::Format format)const
 	if(ceil(time.value_)-time.value_<epsilon_())
 		time.value_=ceil(time.value_);
 
-	int hour,minute;
+	int hour = 0, minute = 0;
 	if(!(format<=FORMAT_FRAMES))
 	{
 		hour=time/3600;time-=hour*3600;
