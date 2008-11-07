@@ -159,7 +159,7 @@ CurveWarp::sync()
 
 CurveWarp::CurveWarp():
 	origin(0,0),
-	width(1),
+	perp_width(1),
 	start_point(-3,-1),
 	end_point(3,1),
 	fast(true)
@@ -306,7 +306,7 @@ CurveWarp::transform(const Point &point_, int quality, float supersample)const
 			synfig::BLinePoint start(bline[0]);
 			// Point a(start.get_vertex());
 			tangent = start.get_tangent1().norm();
-			diff = tangent.perp()*thickness*width;
+			diff = tangent.perp()*thickness*perp_width;
 			len = (point_-origin - p1)*tangent;
 		}
 		else
@@ -315,7 +315,7 @@ CurveWarp::transform(const Point &point_, int quality, float supersample)const
 			iter=bline.end();
 			iter--;
 			tangent = iter->get_tangent2().norm();
-			diff = tangent.perp()*thickness*width;
+			diff = tangent.perp()*thickness*perp_width;
 			len = (point_-origin - p1)*tangent + curve_length_;
 		}
 	}
@@ -323,10 +323,10 @@ CurveWarp::transform(const Point &point_, int quality, float supersample)const
 	{
 		diff=(p1-(point_-origin));
 		if(diff*tangent.perp()<0) diff=-diff;
-		diff=diff.norm()*thickness*width;
+		diff=diff.norm()*thickness*perp_width;
 	}
 	else
-		diff=tangent.perp()*thickness*width;
+		diff=tangent.perp()*thickness*perp_width;
 
 		const Real mag(diff.inv_mag());
 		supersample=supersample*mag;
@@ -357,7 +357,7 @@ CurveWarp::set_param(const String & param, const ValueBase &value)
 	IMPORT(start_point);
 	IMPORT(end_point);
 	IMPORT(fast);
-	IMPORT(width);
+	IMPORT(perp_width);
 
 	if(param=="bline" && value.get_type()==ValueBase::TYPE_LIST)
 	{
@@ -380,7 +380,7 @@ CurveWarp::get_param(const String & param)const
 	EXPORT(end_point);
 	EXPORT(bline);
 	EXPORT(fast);
-	EXPORT(width);
+	EXPORT(perp_width);
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
@@ -396,7 +396,7 @@ CurveWarp::get_param_vocab()const
 	ret.push_back(ParamDesc("origin")
 				  .set_local_name(_("Origin")));
 
-	ret.push_back(ParamDesc("width")
+	ret.push_back(ParamDesc("perp_width")
 				  .set_local_name(_("Width")));
 
 	ret.push_back(ParamDesc("start_point")

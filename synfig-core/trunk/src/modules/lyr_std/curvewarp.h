@@ -53,7 +53,7 @@ private:
 	std::vector<synfig::BLinePoint> bline;
 
 	Point origin;
-	Real width;
+	Real perp_width;
 	Point start_point;
 	Point end_point;
 	Real curve_length_;
