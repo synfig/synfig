@@ -160,16 +160,16 @@ CurveWarp::sync()
 CurveWarp::CurveWarp():
 	origin(0,0),
 	perp_width(1),
-	start_point(-3,-1),
-	end_point(3,1),
+	start_point(-2.5,-0.5),
+	end_point(2.5,-0.3),
 	fast(true)
 {
 	bline.push_back(BLinePoint());
 	bline.push_back(BLinePoint());
 	bline[0].set_vertex(Point(-2.5,0));
-	bline[1].set_vertex(Point(2.5,0));
-	bline[0].set_tangent(Point(1, 1));
-	bline[1].set_tangent(Point(1, -1));
+	bline[1].set_vertex(Point( 2.5,0));
+	bline[0].set_tangent(Point(1,  0.1));
+	bline[1].set_tangent(Point(1, -0.1));
 	bline[0].set_width(1.0f);
 	bline[1].set_width(1.0f);
 
@@ -397,10 +397,12 @@ CurveWarp::get_param_vocab()const
 				  .set_local_name(_("Origin")));
 
 	ret.push_back(ParamDesc("perp_width")
-				  .set_local_name(_("Width")));
+				  .set_local_name(_("Width"))
+				  .set_origin("start_point"));
 
 	ret.push_back(ParamDesc("start_point")
-				  .set_local_name(_("Start Point")));
+				  .set_local_name(_("Start Point"))
+				  .set_connect("end_point"));
 
 	ret.push_back(ParamDesc("end_point")
 				  .set_local_name(_("End Point")));
