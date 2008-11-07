@@ -577,6 +577,7 @@ public:
 	distance_type find_distance(time_type r, time_type s, int steps=7)const
 	{
 		const time_type inc((s-r)/steps);
+		if (!inc) return 0;
 		distance_type ret(0);
 		value_type last(operator()(r));
 
