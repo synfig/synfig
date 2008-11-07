@@ -102,10 +102,8 @@ find_closest_to_bline(bool fast, const std::vector<synfig::BLinePoint>& bline,co
 	bool first = true, last = false;
 	extreme = false;
 
-	// printf("  loop\n");
 	for(;next!=end;iter=next++)
 	{
-		// printf("    top\n");
 		// Setup the curve
 		etl::hermite<Vector> curve(iter->get_vertex(), next->get_vertex(), iter->get_tangent2(), next->get_tangent1());
 		float thisdist(0);
@@ -128,36 +126,24 @@ find_closest_to_bline(bool fast, const std::vector<synfig::BLinePoint>& bline,co
 				dist=thisdist;
 				best_pos = pos;
 				best_curve = curve;
-				// printf("set best_curve\n");
 				best_len = total_len;
 				last = true;
-				// printf("      *last\n");
 			}
 		}
 		total_len += curve.length();
 		first = false;
 	}
-	// printf("  after\n");
 
 	t = best_pos;
 	if (fast)
 	{
 		len = best_len + best_curve.find_distance(0,best_curve.find_closest(fast, p));
-		// printf("fast set len = %f + %f = %f\n", best_len, best_curve.find_distance(0,best_curve.find_closest(fast, p)), len);
 		if (last && t > .99) extreme = true;
 	}
 	else
 	{
 		len = best_len + best_curve.find_distance(0,best_pos);
-		// printf("slow set len = %f + %f = %f\n", best_len, best_curve.find_distance(0,best_pos), len);
-		// printf("find_distance from 0 to %f is %f\n", best_pos, best_curve.find_distance(0,best_pos));
-		// if (last) printf("last\n");
-
-		if (last && t > .999)
-		{
-			extreme = true;
- 			// printf("extreme end\n");
-		}
+		if (last && t == 1) extreme = true;
 	}
 	return ret;
 }
@@ -169,7 +155,6 @@ CurveWarp::sync()
 {
 	curve_length_=calculate_distance(bline);
 	perp_ = (end_point - start_point).perp().norm();
-	// printf("curve_length_ = %f\n", curve_length_);
 }
 
 CurveWarp::CurveWarp():
@@ -350,9 +335,7 @@ CurveWarp::transform(const Point &point_, int quality, float supersample)const
 
 	len /= curve_length_;
 
-	// printf("len %6.2f dist %6.2f\n", len, dist);
-	return ((start_point + (end_point - start_point) * len) +
-			perp_ * dist);
+	return (start_point + (end_point - start_point) * len) + perp_ * dist;
 }
 
 float
