@@ -39,6 +39,7 @@
 #include <cmath>
 #include <cassert>
 #include <algorithm>
+#include <cstdio>
 #include <ctype.h>
 #include <math.h>
 
