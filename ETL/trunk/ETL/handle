@@ -33,7 +33,9 @@
 // include the next line in an attempt to increase stability
 // it seems to make things much *less* stable on MS Windows
 #ifndef _WIN32
+#ifdef HAVE_LIBPTHREAD
 #define ETL_LOCK_REFCOUNTS
+#endif
 #endif
 
 #ifdef ETL_LOCK_REFCOUNTS
