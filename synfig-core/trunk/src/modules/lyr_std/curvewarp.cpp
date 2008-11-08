@@ -34,16 +34,10 @@
 
 #include "curvewarp.h"
 
-#include <synfig/string.h>
-#include <synfig/time.h>
 #include <synfig/context.h>
 #include <synfig/paramdesc.h>
-#include <synfig/renddesc.h>
 #include <synfig/surface.h>
-#include <synfig/value.h>
 #include <synfig/valuenode.h>
-#include <ETL/bezier>
-#include <ETL/hermite>
 #include <ETL/calculus>
 
 #endif
@@ -299,25 +293,22 @@ CurveWarp::transform(const Point &point_, int quality, float supersample)const
 
 	if (extreme)
 	{
-		Vector tangent, perp;
+		Vector tangent;
 
 		if (t < 0.5)
 		{
-			synfig::BLinePoint start(bline[0]);
-			// Point a(start.get_vertex());
-			tangent = start.get_tangent1().norm();
-			diff = tangent.perp()*thickness*perp_width;
-			len = (point_-origin - p1)*tangent;
+			std::vector<synfig::BLinePoint>::const_iterator iter(bline.begin());
+			tangent = iter->get_tangent1().norm();
+			len = 0;
 		}
 		else
 		{
-			std::vector<synfig::BLinePoint>::const_iterator iter;
-			iter=bline.end();
-			iter--;
+			std::vector<synfig::BLinePoint>::const_iterator iter(--bline.end());
 			tangent = iter->get_tangent2().norm();
-			diff = tangent.perp()*thickness*perp_width;
-			len = (point_-origin - p1)*tangent + curve_length_;
+			len = curve_length_;
 		}
+		diff = tangent.perp()*thickness*perp_width;
+		len += (point_-origin - p1)*tangent;
 	}
 	else if (edge_case)
 	{
@@ -328,13 +319,11 @@ CurveWarp::transform(const Point &point_, int quality, float supersample)const
 	else
 		diff=tangent.perp()*thickness*perp_width;
 
-		const Real mag(diff.inv_mag());
-		supersample=supersample*mag;
-		diff*=mag*mag;
-		dist=(point_-origin - p1)*diff;
-
+	const Real mag(diff.inv_mag());
+	supersample=supersample*mag;
+	diff*=mag*mag;
+	dist=(point_-origin - p1)*diff;
 	len /= curve_length_;
-
 	return (start_point + (end_point - start_point) * len) + perp_ * dist;
 }
 
@@ -428,25 +417,125 @@ CurveWarp::get_color(Context context, const Point &point)const
 bool
 CurveWarp::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
-	SuperCallback supercb(cb,0,9500,10000);
-
-	if(!context.accelerated_render(surface,quality,renddesc,&supercb))
-		return false;
+	SuperCallback stageone(cb,0,9000,10000);
+	SuperCallback stagetwo(cb,9000,10000,10000);
 
 	int x,y;
 
 	const Real pw(renddesc.get_pw()),ph(renddesc.get_ph());
-	Point pos;
 	Point tl(renddesc.get_tl());
-	const int w(surface->get_w());
-	const int h(surface->get_h());
+	Point br(renddesc.get_br());
+	const int w(renddesc.get_w());
+	const int h(renddesc.get_h());
 
-	for(y=0,pos[1]=tl[1];y<h;y++,pos[1]+=ph)
-		for(x=0,pos[0]=tl[0];x<w;x++,pos[0]+=pw)
-			if (1)
-				(*surface)[y][x]=context.get_color(transform(pos));
-			else
-				(*surface)[y][x]=context.get_color(transform(pos));
+	// find a bounding rectangle for the context we need to render
+	// todo: find a better way of doing this - this way doesn't work
+	Rect src_rect(transform(tl));
+	Point pos1, pos2;
+
+	// look along the top and bottom edges
+	pos1[0] = pos2[0] = tl[0]; pos1[1] = tl[1]; pos2[1] = br[1];
+	for (x = 0; x < w; x++, pos1[0] += pw, pos2[0] += pw)
+	{
+		src_rect.expand(transform(pos1));
+		src_rect.expand(transform(pos2));
+	}
+
+	// look along the left and right edges
+	pos1[0] = tl[0]; pos2[0] = br[0]; pos1[1] = pos2[1] = tl[1];
+	for (y = 0; y < h; y++, pos1[1] += ph, pos2[1] += ph)
+	{
+		src_rect.expand(transform(pos1));
+		src_rect.expand(transform(pos2));
+	}
+
+	// look at each blinepoint
+	std::vector<synfig::BLinePoint>::const_iterator iter;
+	for (iter=bline.begin(); iter!=bline.end(); iter++)
+		src_rect.expand(transform(iter->get_vertex()+origin));
+
+	Point src_tl(src_rect.get_min());
+	Point src_br(src_rect.get_max());
+	int src_w = w;				// todo: what should we use for src_w
+	int src_h = h;				//       and src_h?
+	Real src_pw((src_br[0] - src_tl[0]) / src_w);
+	Real src_ph((src_br[1] - src_tl[1]) / src_h);
+
+	// this is an attempt to remove artifacts around tile edges - the
+	// cubic interpolation uses at most 2 pixels either side of the
+	// target pixel, so add an extra 2 pixels around the tile on all
+	// sides
+	src_tl -= (Point(src_pw,src_ph)*2);
+	src_br += (Point(src_pw,src_ph)*2);
+	src_w += 4;
+	src_h += 4;
+	src_pw = (src_br[0] - src_tl[0]) / src_w;
+	src_ph = (src_br[1] - src_tl[1]) / src_h;
+
+	// set up a renddesc for the context to render
+	RendDesc src_desc(renddesc);
+	src_desc.clear_flags();
+	src_desc.set_tl(src_tl);
+	src_desc.set_br(src_br);
+	src_desc.set_wh(src_w, src_h);
+
+	// render the context onto a new surface
+	Surface source;
+	source.set_wh(src_w,src_h);
+	if(!context.accelerated_render(&source,quality,src_desc,&stageone))
+		return false;
+
+	float u,v;
+	Point pos, tmp;
+
+	surface->set_wh(w,h);
+	surface->clear();
+
+	if(quality<=4)				// CUBIC
+		for(y=0,pos[1]=tl[1];y<h;y++,pos[1]+=ph)
+		{
+			for(x=0,pos[0]=tl[0];x<w;x++,pos[0]+=pw)
+			{
+				tmp=transform(pos);
+				u=(tmp[0]-src_tl[0])/src_pw;
+				v=(tmp[1]-src_tl[1])/src_ph;
+				if(u<0 || v<0 || u>=src_w || v>=src_h || isnan(u) || isnan(v))
+					(*surface)[y][x]=context.get_color(tmp);
+				else
+					(*surface)[y][x]=source.cubic_sample(u,v);
+			}
+			if((y&31)==0 && cb && !stagetwo.amount_complete(y,h)) return false;
+		}
+	else if (quality<=6)		// INTERPOLATION_LINEAR
+		for(y=0,pos[1]=tl[1];y<h;y++,pos[1]+=ph)
+		{
+			for(x=0,pos[0]=tl[0];x<w;x++,pos[0]+=pw)
+			{
+				tmp=transform(pos);
+				u=(tmp[0]-src_tl[0])/src_pw;
+				v=(tmp[1]-src_tl[1])/src_ph;
+				if(u<0 || v<0 || u>=src_w || v>=src_h || isnan(u) || isnan(v))
+					(*surface)[y][x]=context.get_color(tmp);
+				else
+					(*surface)[y][x]=source.linear_sample(u,v);
+			}
+			if((y&31)==0 && cb && !stagetwo.amount_complete(y,h)) return false;
+		}
+	else						// NEAREST_NEIGHBOR
+		for(y=0,pos[1]=tl[1];y<h;y++,pos[1]+=ph)
+		{
+			for(x=0,pos[0]=tl[0];x<w;x++,pos[0]+=pw)
+			{
+				tmp=transform(pos);
+				u=(tmp[0]-src_tl[0])/src_pw;
+				v=(tmp[1]-src_tl[1])/src_ph;
+				if(u<0 || v<0 || u>=src_w || v>=src_h || isnan(u) || isnan(v))
+					(*surface)[y][x]=context.get_color(tmp);
+				else
+					(*surface)[y][x]=source[floor_to_int(v)][floor_to_int(u)];
+			}
+			if((y&31)==0 && cb && !stagetwo.amount_complete(y,h)) return false;
+		}
 
 	// Mark our progress as finished
 	if(cb && !cb->amount_complete(10000,10000))
