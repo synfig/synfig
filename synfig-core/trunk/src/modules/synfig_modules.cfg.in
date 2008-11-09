@@ -3,11 +3,7 @@ mod_imagemagick
 mod_magickpp
 mod_mng
 lyr_std
-mod_gradient
-mod_geometry
 mod_noise
-mod_particle
-lyr_freetype
 mod_filter
 mod_ffmpeg
 mod_bmp
