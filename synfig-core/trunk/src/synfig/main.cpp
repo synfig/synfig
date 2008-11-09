@@ -133,49 +133,20 @@ static void broken_pipe_signal (int /*sig*/)  {
 
 bool retrieve_modules_to_load(String filename,std::list<String> &modules_to_load)
 {
-	if(filename=="standard")
+	std::ifstream file(filename.c_str());
+
+	if(!file)
 	{
+		// warning("Cannot open "+filename);
 		return false;
-/*
-		if(find(modules_to_load.begin(),modules_to_load.end(),"trgt_bmp")==modules_to_load.end())
-			modules_to_load.push_back("trgt_bmp");
-		if(find(modules_to_load.begin(),modules_to_load.end(),"trgt_gif")==modules_to_load.end())
-			modules_to_load.push_back("trgt_gif");
-		if(find(modules_to_load.begin(),modules_to_load.end(),"trgt_dv")==modules_to_load.end())
-			modules_to_load.push_back("trgt_dv");
-		if(find(modules_to_load.begin(),modules_to_load.end(),"mod_ffmpeg")==modules_to_load.end())
-			modules_to_load.push_back("mod_ffmpeg");
-		if(find(modules_to_load.begin(),modules_to_load.end(),"mod_imagemagick")==modules_to_load.end())
-			modules_to_load.push_back("mod_imagemagick");
-		if(find(modules_to_load.begin(),modules_to_load.end(),"lyr_std")==modules_to_load.end())
-			modules_to_load.push_back("lyr_std");
-		if(find(modules_to_load.begin(),modules_to_load.end(),"lyr_freetype")==modules_to_load.end())
-			modules_to_load.push_back("lyr_freetype");
-#ifdef HAVE_LIBPNG
-		if(find(modules_to_load.begin(),modules_to_load.end(),"trgt_png")==modules_to_load.end())
-			modules_to_load.push_back("trgt_png");
-#endif
-#ifdef HAVE_OPENEXR
-		if(find(modules_to_load.begin(),modules_to_load.end(),"mod_openexr")==modules_to_load.end())
-			modules_to_load.push_back("mod_openexr");
-#endif
-*/
 	}
-	else
+
+	while(file)
 	{
-		std::ifstream file(filename.c_str());
-		if(!file)
-		{
-		//	warning("Cannot open "+filename);
-			return false;
-		}
-		while(file)
-		{
-			String modulename;
-			getline(file,modulename);
-			if(!modulename.empty() && find(modules_to_load.begin(),modules_to_load.end(),modulename)==modules_to_load.end())
-				modules_to_load.push_back(modulename);
-		}
+		String modulename;
+		getline(file,modulename);
+		if(!modulename.empty() && find(modules_to_load.begin(),modules_to_load.end(),modulename)==modules_to_load.end())
+			modules_to_load.push_back(modulename);
 	}
 
 	return true;
@@ -255,17 +226,18 @@ synfig::Main::Main(const synfig::String& basepath,ProgressCallback *cb):
 	std::list<String> modules_to_load;
 	std::vector<String> locations;
 
-	if(!getenv("SYNFIG_MODULE_LIST"))
+	if(getenv("SYNFIG_MODULE_LIST"))
+		locations.push_back(getenv("SYNFIG_MODULE_LIST"));
+	else
 	{
-		locations.push_back("standard");
 		locations.push_back("./"MODULE_LIST_FILENAME);	//1
 		locations.push_back("../etc/"MODULE_LIST_FILENAME);	//1
 		locations.push_back("~/.synfig/"MODULE_LIST_FILENAME); //2
-		locations.push_back(prefix+"/etc/"+MODULE_LIST_FILENAME); //3
-		locations.push_back("/usr/local/etc/"MODULE_LIST_FILENAME);
 	#ifdef SYSCONFDIR
 		locations.push_back(SYSCONFDIR"/"MODULE_LIST_FILENAME);
 	#endif
+		locations.push_back(prefix+"/etc/"+MODULE_LIST_FILENAME); //3
+		locations.push_back("/usr/local/etc/"MODULE_LIST_FILENAME);
 	#ifdef __APPLE__
 		locations.push_back("/Library/Frameworks/synfig.framework/Resources/"MODULE_LIST_FILENAME);
 		locations.push_back("/Library/Synfig/"MODULE_LIST_FILENAME);
@@ -275,36 +247,23 @@ synfig::Main::Main(const synfig::String& basepath,ProgressCallback *cb):
 		locations.push_back("C:\\Program Files\\Synfig\\etc\\"MODULE_LIST_FILENAME);
 	#endif
 	}
-	else
-	{
-		locations.push_back(getenv("SYNFIG_MODULE_LIST"));
-	}
-/*
-	const char *locations[]=
-	{
-		"standard",	//0
-		"./"MODULE_LIST_FILENAME,	//1
-		"../etc/"MODULE_LIST_FILENAME,	//1
-		"~/.synfig/"MODULE_LIST_FILENAME, //2
-		"/usr/local/lib/synfig/modules/"MODULE_LIST_FILENAME, //3
-		"/usr/local/etc/"MODULE_LIST_FILENAME,
-#ifdef SYSCONFDIR
-		SYSCONFDIR"/"MODULE_LIST_FILENAME,
-#endif
-#ifdef __APPLE__
-		"/Library/Frameworks/synfig.framework/Resources/"MODULE_LIST_FILENAME,
-		"/Library/SYNFIG/"MODULE_LIST_FILENAME,
-		"~/Library/SYNFIG/"MODULE_LIST_FILENAME,
-#endif
-#ifdef WIN32
-		"C:\\Program Files\\SYNFIG\\etc\\"MODULE_LIST_FILENAME,
-#endif
-	};
-*/
 
 	for(i=0;i<locations.size();i++)
 		if(retrieve_modules_to_load(locations[i],modules_to_load))
+		{
+			synfig::info(_("Loading modules from %s"), locations[i].c_str());
 			if(cb)cb->task(strprintf(_("Loading modules from %s"),locations[i].c_str()));
+			break;
+		}
+
+	if (i == locations.size())
+	{
+		Importer::subsys_stop();
+		Target::subsys_stop();
+		Layer::subsys_stop();
+		Module::subsys_stop();
+		throw std::runtime_error(strprintf(_("Unable to open module list file '%s'"), MODULE_LIST_FILENAME));
+	}
 
 	std::list<String>::iterator iter;
 
