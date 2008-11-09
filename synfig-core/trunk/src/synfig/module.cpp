@@ -69,7 +69,8 @@ Module::subsys_init(const String &prefix)
 	}
 
 	lt_dladdsearchdir(".");
-	lt_dladdsearchdir("~/.synfig/modules");
+	if(getenv("HOME"))
+		lt_dladdsearchdir(strprintf("%s/.synfig/modules", getenv("HOME")).c_str());
 	lt_dladdsearchdir((prefix+"/lib/synfig/modules").c_str());
 #ifdef LIBDIR
 	lt_dladdsearchdir(LIBDIR"/synfig/modules");
