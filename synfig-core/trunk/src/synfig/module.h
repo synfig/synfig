@@ -182,7 +182,7 @@ public:
 
 	static bool subsys_init(const String &prefix);
 	static bool subsys_stop();
-	static bool register_default_modules();
+	static void register_default_modules(ProgressCallback *cb=NULL);
 
 	static void Register(Handle mod);
 	static bool Register(const String &module_name, ProgressCallback *cb=NULL);

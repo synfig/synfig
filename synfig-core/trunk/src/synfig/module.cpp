@@ -95,10 +95,15 @@ Module::subsys_stop()
 	return true;
 }
 
-bool
-register_default_modules()
+void
+Module::register_default_modules(ProgressCallback *callback)
 {
-	return true;
+	#define REGISTER_MODULE(module) if (!Register(module, callback)) \
+										throw std::runtime_error(strprintf(_("Unable to load module '%s'"), module))
+	REGISTER_MODULE("lyr_freetype");
+	REGISTER_MODULE("mod_geometry");
+	REGISTER_MODULE("mod_gradient");
+	REGISTER_MODULE("mod_particle");
 }
 
 Module::Book&
@@ -184,5 +189,5 @@ synfig::Module::Register(const String &module_name, ProgressCallback *callback)
 	if(callback)callback->task(strprintf(_("Success for \"%s\""),module_name.c_str()));
 
 #endif
-	return false;
+	return true;
 }

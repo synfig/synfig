@@ -308,6 +308,8 @@ synfig::Main::Main(const synfig::String& basepath,ProgressCallback *cb):
 
 	std::list<String>::iterator iter;
 
+	Module::register_default_modules(cb);
+
 	for(i=0,iter=modules_to_load.begin();iter!=modules_to_load.end();++iter,i++)
 	{
 		Module::Register(*iter,cb);
