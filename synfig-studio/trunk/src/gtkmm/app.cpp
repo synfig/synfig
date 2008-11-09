@@ -1143,6 +1143,11 @@ App::App(int *argc, char ***argv):
 
 	// Initialize the Synfig library
 	try { synfigapp_main=etl::smart_ptr<synfigapp::Main>(new synfigapp::Main(etl::dirname((*argv)[0]),&synfig_init_cb)); }
+	catch(std::runtime_error x)
+	{
+		get_ui_interface()->error(strprintf("%s\n\n%s", _("Failed to initialize synfig!"), x.what()));
+		throw;
+	}
 	catch(...)
 	{
 		get_ui_interface()->error(_("Failed to initialize synfig!"));
