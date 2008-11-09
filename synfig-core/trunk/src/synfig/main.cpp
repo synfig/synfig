@@ -230,13 +230,13 @@ synfig::Main::Main(const synfig::String& basepath,ProgressCallback *cb):
 		locations.push_back(getenv("SYNFIG_MODULE_LIST"));
 	else
 	{
-		locations.push_back("./"MODULE_LIST_FILENAME);	//1
-		locations.push_back("../etc/"MODULE_LIST_FILENAME);	//1
-		locations.push_back("~/.synfig/"MODULE_LIST_FILENAME); //2
+		locations.push_back("./"MODULE_LIST_FILENAME);
+		locations.push_back("../etc/"MODULE_LIST_FILENAME);
+		locations.push_back("~/.synfig/"MODULE_LIST_FILENAME);
 	#ifdef SYSCONFDIR
 		locations.push_back(SYSCONFDIR"/"MODULE_LIST_FILENAME);
 	#endif
-		locations.push_back(prefix+"/etc/"+MODULE_LIST_FILENAME); //3
+		locations.push_back(prefix+"/etc/"+MODULE_LIST_FILENAME);
 		locations.push_back("/usr/local/etc/"MODULE_LIST_FILENAME);
 	#ifdef __APPLE__
 		locations.push_back("/Library/Frameworks/synfig.framework/Resources/"MODULE_LIST_FILENAME);
