@@ -50,8 +50,6 @@ public:
 	Main(const synfig::String& basepath,ProgressCallback *cb=0);
 	~Main();
 
-	static void load_modules(ProgressCallback *cb=0);
-
 	const etl::reference_counter& ref_count()const { return ref_count_; }
 }; // END of class Main
 

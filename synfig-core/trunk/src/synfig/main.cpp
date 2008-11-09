@@ -314,8 +314,6 @@ synfig::Main::Main(const synfig::String& basepath,ProgressCallback *cb):
 		if(cb)cb->amount_complete((i+1)*100,modules_to_load.size()*100);
 	}
 
-//	load_modules(cb);
-
 	if(cb)cb->amount_complete(100, 100);
 	if(cb)cb->task(_("DONE"));
 }
