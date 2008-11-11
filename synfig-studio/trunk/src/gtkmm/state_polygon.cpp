@@ -92,12 +92,16 @@ class studio::StatePolygon_Context : public sigc::trackable
 	void refresh_ducks();
 
 	Gtk::Table options_table;
+	Gtk::CheckButton checkbutton_invert;
 	Gtk::Entry entry_id;
 	Gtk::Button button_make;
 
 public:
 	synfig::String get_id()const { return entry_id.get_text(); }
 	void set_id(const synfig::String& x) { return entry_id.set_text(x); }
+
+	bool get_invert()const { return checkbutton_invert.get_active(); }
+	void set_invert(bool i) { checkbutton_invert.set_active(i); }
 
 	Smach::event_result event_stop_handler(const Smach::event& x);
 
@@ -158,12 +162,18 @@ StatePolygon_Context::load_settings()
 		set_id(value);
 	else
 		set_id("Polygon");
+
+	if(settings.get_value("polygon.invert",value) && value != "0")
+		set_invert(true);
+	else
+		set_invert(false);
 }
 
 void
 StatePolygon_Context::save_settings()
 {
 	settings.set_value("polygon.id",get_id().c_str());
+	settings.set_value("polygon.invert",get_invert()?"1":"0");
 }
 
 void
@@ -225,6 +235,7 @@ StatePolygon_Context::StatePolygon_Context(CanvasView* canvas_view):
 	duckmatic_push(get_work_area()),
 	settings(synfigapp::Main::get_selected_input_device()->settings()),
 	entry_id(),
+	checkbutton_invert(_("Invert")),
 	button_make(_("Make"))
 {
 	egress_on_selection_change=true;
@@ -233,6 +244,10 @@ StatePolygon_Context::StatePolygon_Context(CanvasView* canvas_view):
 	// Set up the tool options dialog
 	options_table.attach(*manage(new Gtk::Label(_("Polygon Tool"))),	0, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	options_table.attach(entry_id,										0, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+
+	//invert flag
+	options_table.attach(checkbutton_invert,							0, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+
 	//options_table.attach(button_make, 0, 2, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	button_make.signal_pressed().connect(sigc::mem_fun(*this,&StatePolygon_Context::run));
 	options_table.show_all();
@@ -371,6 +386,10 @@ StatePolygon_Context::run()
 			synfigapp::PushMode push_mode(get_canvas_interface(),synfigapp::MODE_NORMAL);
 
 			Layer::Handle layer(get_canvas_interface()->add_layer_to("polygon",canvas,depth));
+
+			layer->set_param("invert",get_invert());
+			get_canvas_interface()->signal_layer_param_changed()(layer,"invert");
+
 			layer->set_description(get_id());
 			get_canvas_interface()->signal_layer_new_description()(layer,layer->get_description());
 
