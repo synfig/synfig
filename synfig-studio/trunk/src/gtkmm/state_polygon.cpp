@@ -92,18 +92,54 @@ class studio::StatePolygon_Context : public sigc::trackable
 	void refresh_ducks();
 
 	Gtk::Table options_table;
-	Gtk::CheckButton checkbutton_invert;
 	Gtk::Entry entry_id;
+	Gtk::CheckButton checkbutton_invert;
+	Gtk::CheckButton checkbutton_layer_polygon;
+	Gtk::CheckButton checkbutton_layer_region;
+	Gtk::CheckButton checkbutton_layer_outline;
+	Gtk::CheckButton checkbutton_layer_curve_gradient;
+	Gtk::CheckButton checkbutton_layer_plant;
+	Gtk::CheckButton checkbutton_layer_link_origins;
 	Gtk::Button button_make;
 	Gtk::Adjustment	 adj_feather;
 	Gtk::SpinButton  spin_feather;
 
 public:
+
+	// this counts the layers we create - they all have origins we can link
+	int layers_to_create()const
+	{
+		return
+			get_layer_polygon_flag() +
+			get_layer_region_flag() +
+			get_layer_outline_flag() +
+			get_layer_curve_gradient_flag() +
+			get_layer_plant_flag();
+	}
+
 	synfig::String get_id()const { return entry_id.get_text(); }
 	void set_id(const synfig::String& x) { return entry_id.set_text(x); }
 
 	bool get_invert()const { return checkbutton_invert.get_active(); }
 	void set_invert(bool i) { checkbutton_invert.set_active(i); }
+
+	bool get_layer_polygon_flag()const { return checkbutton_layer_polygon.get_active(); }
+	void set_layer_polygon_flag(bool x) { return checkbutton_layer_polygon.set_active(x); }
+
+	bool get_layer_region_flag()const { return checkbutton_layer_region.get_active(); }
+	void set_layer_region_flag(bool x) { return checkbutton_layer_region.set_active(x); }
+
+	bool get_layer_outline_flag()const { return checkbutton_layer_outline.get_active(); }
+	void set_layer_outline_flag(bool x) { return checkbutton_layer_outline.set_active(x); }
+
+	bool get_layer_curve_gradient_flag()const { return checkbutton_layer_curve_gradient.get_active(); }
+	void set_layer_curve_gradient_flag(bool x) { return checkbutton_layer_curve_gradient.set_active(x); }
+
+	bool get_layer_plant_flag()const { return checkbutton_layer_plant.get_active(); }
+	void set_layer_plant_flag(bool x) { return checkbutton_layer_plant.set_active(x); }
+
+	bool get_layer_link_origins_flag()const { return checkbutton_layer_link_origins.get_active(); }
+	void set_layer_link_origins_flag(bool x) { return checkbutton_layer_link_origins.set_active(x); }
 
 	Real get_feather() const { return adj_feather.get_value(); }
 	void set_feather(Real x) { return adj_feather.set_value(x); }
@@ -173,6 +209,36 @@ StatePolygon_Context::load_settings()
 	else
 		set_invert(false);
 
+	if(settings.get_value("polygon.layer_polygon",value) && value=="0")
+		set_layer_polygon_flag(false);
+	else
+		set_layer_polygon_flag(true);
+
+	if(settings.get_value("polygon.layer_region",value) && value=="1")
+		set_layer_region_flag(true);
+	else
+		set_layer_region_flag(false);
+
+	if(settings.get_value("polygon.layer_outline",value) && value=="1")
+		set_layer_outline_flag(true);
+	else
+		set_layer_outline_flag(false);
+
+	if(settings.get_value("polygon.layer_curve_gradient",value) && value=="1")
+		set_layer_curve_gradient_flag(true);
+	else
+		set_layer_curve_gradient_flag(false);
+
+	if(settings.get_value("polygon.layer_plant",value) && value=="1")
+		set_layer_plant_flag(true);
+	else
+		set_layer_plant_flag(false);
+
+	if(settings.get_value("polygon.layer_link_origins",value) && value=="0")
+		set_layer_link_origins_flag(false);
+	else
+		set_layer_link_origins_flag(true);
+
 	if(settings.get_value("polygon.feather",value))
 	{
 		Real n = atof(value.c_str());
@@ -185,6 +251,12 @@ StatePolygon_Context::save_settings()
 {
 	settings.set_value("polygon.id",get_id().c_str());
 	settings.set_value("polygon.invert",get_invert()?"1":"0");
+	settings.set_value("polygon.layer_polygon",get_layer_polygon_flag()?"1":"0");
+	settings.set_value("polygon.layer_outline",get_layer_outline_flag()?"1":"0");
+	settings.set_value("polygon.layer_region",get_layer_region_flag()?"1":"0");
+	settings.set_value("polygon.layer_curve_gradient",get_layer_curve_gradient_flag()?"1":"0");
+	settings.set_value("polygon.layer_plant",get_layer_plant_flag()?"1":"0");
+	settings.set_value("polygon.layer_link_origins",get_layer_link_origins_flag()?"1":"0");
 	settings.set_value("polygon.feather",strprintf("%f",get_feather()));
 }
 
@@ -248,6 +320,12 @@ StatePolygon_Context::StatePolygon_Context(CanvasView* canvas_view):
 	settings(synfigapp::Main::get_selected_input_device()->settings()),
 	entry_id(),
 	checkbutton_invert(_("Invert")),
+	checkbutton_layer_polygon(_("Create Polygon Layer")),
+	checkbutton_layer_region(_("Create Region BLine")),
+	checkbutton_layer_outline(_("Create Outline BLine")),
+	checkbutton_layer_curve_gradient(_("Create Curve Gradient BLine")),
+	checkbutton_layer_plant(_("Create Plant BLine")),
+	checkbutton_layer_link_origins(_("Link Origins")),
 	button_make(_("Make")),
 	adj_feather(0,0,10000,0.01,0.1),
 	spin_feather(adj_feather,0.01,4)
@@ -256,15 +334,22 @@ StatePolygon_Context::StatePolygon_Context(CanvasView* canvas_view):
 	load_settings();
 
 	// Set up the tool options dialog
-	options_table.attach(*manage(new Gtk::Label(_("Polygon Tool"))),	0, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(entry_id,										0, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(*manage(new Gtk::Label(_("Polygon Tool"))),	0, 2, 0,  1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(entry_id,										0, 2, 1,  2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+
+	options_table.attach(checkbutton_layer_polygon,						0, 2, 2,  3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(checkbutton_layer_outline,						0, 2, 3,  4, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(checkbutton_layer_region,						0, 2, 4,  5, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(checkbutton_layer_plant,						0, 2, 5,  6, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(checkbutton_layer_curve_gradient,				0, 2, 6,  7, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(checkbutton_layer_link_origins,				0, 2, 7,  8, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
 	//invert flag
-	options_table.attach(checkbutton_invert,							0, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(checkbutton_invert,							0, 2, 8,  9, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
 	//feather stuff
-	options_table.attach(*manage(new Gtk::Label(_("Feather"))), 		0, 1, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(spin_feather,									1, 2, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(*manage(new Gtk::Label(_("Feather"))), 		0, 1, 9, 10, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(spin_feather,									1, 2, 9, 10, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
 	//options_table.attach(button_make, 0, 2, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	button_make.signal_pressed().connect(sigc::mem_fun(*this,&StatePolygon_Context::run));
