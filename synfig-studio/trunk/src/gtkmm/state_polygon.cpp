@@ -95,6 +95,8 @@ class studio::StatePolygon_Context : public sigc::trackable
 	Gtk::CheckButton checkbutton_invert;
 	Gtk::Entry entry_id;
 	Gtk::Button button_make;
+	Gtk::Adjustment	 adj_feather;
+	Gtk::SpinButton  spin_feather;
 
 public:
 	synfig::String get_id()const { return entry_id.get_text(); }
@@ -102,6 +104,9 @@ public:
 
 	bool get_invert()const { return checkbutton_invert.get_active(); }
 	void set_invert(bool i) { checkbutton_invert.set_active(i); }
+
+	Real get_feather() const { return adj_feather.get_value(); }
+	void set_feather(Real x) { return adj_feather.set_value(x); }
 
 	Smach::event_result event_stop_handler(const Smach::event& x);
 
@@ -167,6 +172,12 @@ StatePolygon_Context::load_settings()
 		set_invert(true);
 	else
 		set_invert(false);
+
+	if(settings.get_value("polygon.feather",value))
+	{
+		Real n = atof(value.c_str());
+		set_feather(n);
+	}
 }
 
 void
@@ -174,6 +185,7 @@ StatePolygon_Context::save_settings()
 {
 	settings.set_value("polygon.id",get_id().c_str());
 	settings.set_value("polygon.invert",get_invert()?"1":"0");
+	settings.set_value("polygon.feather",strprintf("%f",get_feather()));
 }
 
 void
@@ -236,7 +248,9 @@ StatePolygon_Context::StatePolygon_Context(CanvasView* canvas_view):
 	settings(synfigapp::Main::get_selected_input_device()->settings()),
 	entry_id(),
 	checkbutton_invert(_("Invert")),
-	button_make(_("Make"))
+	button_make(_("Make")),
+	adj_feather(0,0,10000,0.01,0.1),
+	spin_feather(adj_feather,0.01,4)
 {
 	egress_on_selection_change=true;
 	load_settings();
@@ -247,6 +261,10 @@ StatePolygon_Context::StatePolygon_Context(CanvasView* canvas_view):
 
 	//invert flag
 	options_table.attach(checkbutton_invert,							0, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+
+	//feather stuff
+	options_table.attach(*manage(new Gtk::Label(_("Feather"))), 		0, 1, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(spin_feather,									1, 2, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
 	//options_table.attach(button_make, 0, 2, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	button_make.signal_pressed().connect(sigc::mem_fun(*this,&StatePolygon_Context::run));
@@ -389,6 +407,12 @@ StatePolygon_Context::run()
 
 			layer->set_param("invert",get_invert());
 			get_canvas_interface()->signal_layer_param_changed()(layer,"invert");
+
+			if(get_feather())
+			{
+				layer->set_param("feather",get_feather());
+				get_canvas_interface()->signal_layer_param_changed()(layer,"feather");
+			}
 
 			layer->set_description(get_id());
 			get_canvas_interface()->signal_layer_new_description()(layer,layer->get_description());
