@@ -45,6 +45,7 @@
 /* === M A C R O S ========================================================= */
 
 #define FAKE_TANGENT_STEP 0.000001
+#define TOO_THIN 0.01
 
 /* === G L O B A L S ======================================================= */
 
@@ -171,13 +172,12 @@ CurveWarp::CurveWarp():
 }
 
 inline Point
-CurveWarp::transform(const Point &point_, int quality, float supersample)const
+CurveWarp::transform(const Point &point_, Real *dist, Real *along, int quality)const
 {
 	Vector tangent;
 	Vector diff;
 	Point p1;
 	Real thickness;
-	Real dist;
 	bool edge_case = false;
 	float len(0);
 	bool extreme;
@@ -291,6 +291,12 @@ CurveWarp::transform(const Point &point_, int quality, float supersample)const
 		thickness=(next->get_width()-iter->get_width())*t+iter->get_width();
 	}
 
+	if (thickness < TOO_THIN && thickness > -TOO_THIN)
+	{
+		if (thickness > 0) thickness = TOO_THIN;
+		else thickness = -TOO_THIN;
+	}
+
 	if (extreme)
 	{
 		Vector tangent;
@@ -307,30 +313,24 @@ CurveWarp::transform(const Point &point_, int quality, float supersample)const
 			tangent = iter->get_tangent2().norm();
 			len = curve_length_;
 		}
-		diff = tangent.perp()*thickness*perp_width;
 		len += (point_-origin - p1)*tangent;
+		diff = tangent.perp();
 	}
 	else if (edge_case)
 	{
 		diff=(p1-(point_-origin));
 		if(diff*tangent.perp()<0) diff=-diff;
-		diff=diff.norm()*thickness*perp_width;
+		diff=diff.norm();
 	}
 	else
-		diff=tangent.perp()*thickness*perp_width;
+		diff=tangent.perp();
 
-	const Real mag(diff.inv_mag());
-	supersample=supersample*mag;
-	diff*=mag*mag;
-	dist=(point_-origin - p1)*diff;
-	len /= curve_length_;
-	return (start_point + (end_point - start_point) * len) + perp_ * dist;
-}
-
-float
-CurveWarp::calc_supersample(const synfig::Point &/*x*/, float pw,float /*ph*/)const
-{
-	return pw;
+	// diff is a unit vector perpendicular to the bline
+	const Real unscaled_distance((point_-origin - p1)*diff);
+	if (dist) *dist = unscaled_distance;
+	if (along) *along = len;
+	return ((start_point + (end_point - start_point) * len / curve_length_) +
+			perp_ * unscaled_distance/(thickness*perp_width));
 }
 
 synfig::Layer::Handle
@@ -432,34 +432,80 @@ CurveWarp::accelerated_render(Context context,Surface *surface,int quality, cons
 	// todo: find a better way of doing this - this way doesn't work
 	Rect src_rect(transform(tl));
 	Point pos1, pos2;
+	Real dist, along;
+	Real min_dist(999999), max_dist(-999999), min_along(999999), max_along(-999999);
+
+#define UPDATE_DIST \
+	if (dist < min_dist) min_dist = dist; \
+	if (dist > max_dist) max_dist = dist; \
+	if (along < min_along) min_along = along; \
+	if (along > max_along) max_along = along
 
 	// look along the top and bottom edges
 	pos1[0] = pos2[0] = tl[0]; pos1[1] = tl[1]; pos2[1] = br[1];
 	for (x = 0; x < w; x++, pos1[0] += pw, pos2[0] += pw)
 	{
-		src_rect.expand(transform(pos1));
-		src_rect.expand(transform(pos2));
+		src_rect.expand(transform(pos1, &dist, &along)); UPDATE_DIST;
+		src_rect.expand(transform(pos2, &dist, &along)); UPDATE_DIST;
 	}
 
 	// look along the left and right edges
 	pos1[0] = tl[0]; pos2[0] = br[0]; pos1[1] = pos2[1] = tl[1];
 	for (y = 0; y < h; y++, pos1[1] += ph, pos2[1] += ph)
 	{
-		src_rect.expand(transform(pos1));
-		src_rect.expand(transform(pos2));
+		src_rect.expand(transform(pos1, &dist, &along)); UPDATE_DIST;
+		src_rect.expand(transform(pos2, &dist, &along)); UPDATE_DIST;
 	}
 
+	// look along the diagonals
+	const int max_wh(std::max(w,h));
+	const Real inc_x((br[0]-tl[0])/max_wh),inc_y((br[1]-tl[1])/max_wh);
+	pos1[0] = pos2[0] = tl[0]; pos1[1] = tl[1]; pos2[1] = br[1];
+	for (x = 0; x < max_wh; x++, pos1[0] += inc_x, pos2[0] = pos1[0], pos1[1]+=inc_y, pos2[1]-=inc_y)
+	{
+		src_rect.expand(transform(pos1, &dist, &along)); UPDATE_DIST;
+		src_rect.expand(transform(pos2, &dist, &along)); UPDATE_DIST;
+	}
+
+#if 0
 	// look at each blinepoint
 	std::vector<synfig::BLinePoint>::const_iterator iter;
 	for (iter=bline.begin(); iter!=bline.end(); iter++)
-		src_rect.expand(transform(iter->get_vertex()+origin));
+		src_rect.expand(transform(iter->get_vertex()+origin, &dist, &along)); UPDATE_DIST;
+#endif
 
 	Point src_tl(src_rect.get_min());
 	Point src_br(src_rect.get_max());
-	int src_w = w;				// todo: what should we use for src_w
-	int src_h = h;				//       and src_h?
+
+	Vector ab((end_point - start_point).norm());
+	Angle::tan ab_angle(ab[1], ab[0]);
+
+	Real used_length = max_along - min_along;
+	Real render_width = max_dist - min_dist;
+
+	int src_w = (abs(used_length*Angle::cos(ab_angle).get()) +
+				 abs(render_width*Angle::sin(ab_angle).get())) / abs(pw);
+	int src_h = (abs(used_length*Angle::sin(ab_angle).get()) +
+				 abs(render_width*Angle::cos(ab_angle).get())) / abs(ph);
+
 	Real src_pw((src_br[0] - src_tl[0]) / src_w);
 	Real src_ph((src_br[1] - src_tl[1]) / src_h);
+
+	if (src_pw > abs(pw))
+	{
+		src_w = int((src_br[0] - src_tl[0]) / abs(pw));
+		src_pw = (src_br[0] - src_tl[0]) / src_w;
+	}
+
+	if (src_ph > abs(ph))
+	{
+		src_h = int((src_br[1] - src_tl[1]) / abs(ph));
+		src_ph = (src_br[1] - src_tl[1]) / src_h;
+	}
+
+#define MAXPIX 10000
+	if (src_w > MAXPIX) src_w = MAXPIX;
+	if (src_h > MAXPIX) src_h = MAXPIX;
 
 	// this is an attempt to remove artifacts around tile edges - the
 	// cubic interpolation uses at most 2 pixels either side of the

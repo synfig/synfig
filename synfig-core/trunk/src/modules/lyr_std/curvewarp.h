@@ -62,16 +62,12 @@ private:
 
 	void sync();
 
-	synfig::Color color_func(const synfig::Point &x, int quality=10, float supersample=0)const;
-
-	float calc_supersample(const synfig::Point &x, float pw,float ph)const;
-
 public:
 	CurveWarp();
 
 	virtual bool set_param(const String &param, const ValueBase &value);
 	virtual ValueBase get_param(const String &param)const;
-	virtual Point transform(const Point &point_, int quality=10, float supersample=0)const;
+	virtual Point transform(const Point &point_, Real *dist=NULL, Real *along=0, int quality=10)const;
 	virtual Color get_color(Context context, const Point &pos)const;
 	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 	synfig::Layer::Handle hit_check(synfig::Context context, const synfig::Point &point)const;
