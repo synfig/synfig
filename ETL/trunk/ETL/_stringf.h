@@ -91,9 +91,12 @@ vstrprintf(const char *format, va_list args)
 #ifdef HAVE_VASPRINTF	// This is the preferred method (and safest)
 	char *buffer;
 	std::string ret;
-	vasprintf(&buffer,format,args);
-	ret=buffer;
-	free(buffer);
+	int i=vasprintf(&buffer,format,args);
+	if (i>-1) 
+	{
+		ret=buffer;
+		free(buffer);
+	}
 	return ret;
 #else
 #ifdef HAVE_VSNPRINTF	// This is the secondary method (Safe, but bulky)
