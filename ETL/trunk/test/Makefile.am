@@ -1,8 +1,8 @@
 # $Id$
 
 MAINTAINERCLEANFILES=Makefile.in
-AM_CXXFLAGS=@CXXFLAGS@ -I$(top_srcdir) -I$(top_builddir)
-DEFAULT_INCLUDES=-I$(top_srcdir) -I$(top_builddir)
+AM_CXXFLAGS=@CXXFLAGS@ -I$(top_srcdir) -I$(top_builddir)/ETL
+DEFAULT_INCLUDES=-I$(top_srcdir) -I$(top_builddir)/ETL
 #TESTS=fixed clock handle angle random hermite stringf pen surface smart_ptr benchmark spline value
 TESTS=fixed clock handle angle random hermite stringf pen surface smart_ptr benchmark
 
