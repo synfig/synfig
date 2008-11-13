@@ -275,6 +275,7 @@ bool studio::App::use_colorspace_gamma=true;
 bool studio::App::single_threaded=false;
 #endif
 bool studio::App::restrict_radius_ducks=false;
+bool studio::App::resize_imported_images=false;
 String studio::App::custom_filename_prefix(DEFAULT_FILENAME_PREFIX);
 int studio::App::preferred_x_size=480;
 int studio::App::preferred_y_size=270;
@@ -511,6 +512,11 @@ public:
 			value=strprintf("%i",(int)App::restrict_radius_ducks);
 			return true;
 		}
+		if(key=="resize_imported_images")
+		{
+			value=strprintf("%i",(int)App::resize_imported_images);
+			return true;
+		}
 		if(key=="browser_command")
 		{
 			value=App::browser_command;
@@ -600,6 +606,12 @@ public:
 			App::restrict_radius_ducks=i;
 			return true;
 		}
+		if(key=="resize_imported_images")
+		{
+			int i(atoi(value.c_str()));
+			App::resize_imported_images=i;
+			return true;
+		}
 		if(key=="browser_command")
 		{
 			App::browser_command=value;
@@ -643,6 +655,7 @@ public:
 #endif
 		ret.push_back("auto_recover_backup_interval");
 		ret.push_back("restrict_radius_ducks");
+		ret.push_back("resize_imported_images");
 		ret.push_back("browser_command");
 		ret.push_back("custom_filename_prefix");
 		ret.push_back("preferred_x_size");
@@ -1732,6 +1745,7 @@ App::reset_initial_window_configuration()
 	synfigapp::Main::settings().set_value("pref.single_threaded","0");
 #endif
 	synfigapp::Main::settings().set_value("pref.restrict_radius_ducks","0");
+	synfigapp::Main::settings().set_value("pref.resize_imported_images","0");
 	synfigapp::Main::settings().set_value("pref.custom_filename_prefix",DEFAULT_FILENAME_PREFIX);
 	synfigapp::Main::settings().set_value("pref.preferred_x_size","480");
 	synfigapp::Main::settings().set_value("pref.preferred_y_size","270");

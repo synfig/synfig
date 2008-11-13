@@ -217,15 +217,14 @@ png_mptr::png_mptr(const char *file_name)
 
 	png_read_image(png_ptr, row_pointers);
 
-	int x;
-	int y;
+	png_uint_32 x, y;
 	surface_buffer.set_wh(width,height);
 
 	switch(color_type)
 	{
 	case PNG_COLOR_TYPE_RGB:
-		for(y=0;y<surface_buffer.get_h();y++)
-			for(x=0;x<surface_buffer.get_w();x++)
+		for(y=0;y<height;y++)
+			for(x=0;x<width;x++)
 			{
 				float r=gamma().r_U8_to_F32((unsigned char)row_pointers[y][x*3+0]);
 				float g=gamma().g_U8_to_F32((unsigned char)row_pointers[y][x*3+1]);
@@ -248,8 +247,8 @@ png_mptr::png_mptr(const char *file_name)
 		break;
 
 	case PNG_COLOR_TYPE_RGB_ALPHA:
-		for(y=0;y<surface_buffer.get_h();y++)
-			for(x=0;x<surface_buffer.get_w();x++)
+		for(y=0;y<height;y++)
+			for(x=0;x<width;x++)
 			{
 				float r=gamma().r_U8_to_F32((unsigned char)row_pointers[y][x*4+0]);
 				float g=gamma().g_U8_to_F32((unsigned char)row_pointers[y][x*4+1]);
@@ -272,8 +271,8 @@ png_mptr::png_mptr(const char *file_name)
 		break;
 
 	case PNG_COLOR_TYPE_GRAY:
-		for(y=0;y<surface_buffer.get_h();y++)
-			for(x=0;x<surface_buffer.get_w();x++)
+		for(y=0;y<height;y++)
+			for(x=0;x<width;x++)
 			{
 				float gray=gamma().g_U8_to_F32((unsigned char)row_pointers[y][x]);
 				//float gray=(float)(unsigned char)row_pointers[y][x]*(1.0/255.0);
@@ -287,8 +286,8 @@ png_mptr::png_mptr(const char *file_name)
 		break;
 
 	case PNG_COLOR_TYPE_GRAY_ALPHA:
-		for(y=0;y<surface_buffer.get_h();y++)
-			for(x=0;x<surface_buffer.get_w();x++)
+		for(y=0;y<height;y++)
+			for(x=0;x<width;x++)
 			{
 				float gray=gamma().g_U8_to_F32((unsigned char)row_pointers[y][x*2]);
 //				float gray=(float)(unsigned char)row_pointers[y][x*2]*(1.0/255.0);
@@ -303,8 +302,8 @@ png_mptr::png_mptr(const char *file_name)
 
 	case PNG_COLOR_TYPE_PALETTE:
 		synfig::warning("png_mptr: Paletted PNGs aren't yet fully supported.");
-		for(y=0;y<surface_buffer.get_h();y++)
-			for(x=0;x<surface_buffer.get_w();x++)
+		for(y=0;y<height;y++)
+			for(x=0;x<width;x++)
 			{
 				float r=gamma().r_U8_to_F32((unsigned char)png_ptr->palette[row_pointers[y][x]].red);
 				float g=gamma().g_U8_to_F32((unsigned char)png_ptr->palette[row_pointers[y][x]].green);
@@ -333,6 +332,75 @@ png_mptr::png_mptr(const char *file_name)
 
 	delete [] row_pointers;
 	delete [] data;
+
+	trim = false;
+
+	if (getenv("SYNFIG_DISABLE_CROP_IMPORTED_IMAGES"))
+		return;
+
+	switch(color_type)
+	{
+	case PNG_COLOR_TYPE_RGB_ALPHA:
+	case PNG_COLOR_TYPE_GRAY_ALPHA:
+	case PNG_COLOR_TYPE_PALETTE:
+		for(y=0;y<height;y++)
+		{
+			for(x=0;x<width;x++)
+				if (surface_buffer[y][x].get_a()) break;
+			if (x != width) break;
+		}
+
+		if (y != height)
+		{
+#define BORDER 1				// don't chop off all the transparent space - leave a border this many pixels wide for the interpolation
+
+			png_uint_32 min_x, min_y, max_x, max_y;
+			if (y>BORDER) min_y = y-BORDER; else min_y = 0;
+
+			for(y=height-1;y>0;y--)
+			{
+				for(x=0;x<width;x++)
+					if (surface_buffer[y][x].get_a()) break;
+				if (x != width) break;
+			}
+			max_y = std::min(y+BORDER,height-1);
+
+			for(x=0;x<width;x++)
+			{
+				for(y=0;y<height;y++)
+					if (surface_buffer[y][x].get_a()) break;
+				if (y != height) break;
+			}
+			if (x>BORDER) min_x = x-BORDER; else min_x = 0;
+
+			for(x=width-1;x>0;x--)
+			{
+				for(y=0;y<height;y++)
+					if (surface_buffer[y][x].get_a()) break;
+				if (y != height) break;
+			}
+			max_x = std::min(x+BORDER,width-1);
+
+			if (min_x != 0 || max_x != width-1 ||
+				min_y != 0 || max_y != height-1)
+			{
+				trim = true;
+				orig_width = width;
+				orig_height = height;
+				trimmed_x = min_x;
+				trimmed_y = min_y;
+				
+				width=max_x-min_x+1;
+				height=max_y-min_y+1;
+				synfig::Surface tmp_buffer;
+				tmp_buffer.set_wh(width,height);
+				for(y=0;y<height;y++)
+					for(x=0;x<width;x++)
+						tmp_buffer[y][x] = surface_buffer[y+min_y][x+min_x];
+				surface_buffer = tmp_buffer;
+			}
+		}
+	}
 }
 
 png_mptr::~png_mptr()
@@ -342,6 +410,23 @@ png_mptr::~png_mptr()
 bool
 png_mptr::get_frame(synfig::Surface &surface,Time, synfig::ProgressCallback */*cb*/)
 {
+	assert(0);					// shouldn't be called?
 	surface=surface_buffer;
+	return true;
+}
+
+bool
+png_mptr::get_frame(synfig::Surface &surface,Time,
+					bool &trimmed, unsigned int &width, unsigned int &height, unsigned int &top, unsigned int &left,
+					synfig::ProgressCallback */*cb*/)
+{
+	surface=surface_buffer;
+	if ((trimmed = trim))
+	{
+		width = orig_width;
+		height = orig_height;
+		top = trimmed_y;
+		left = trimmed_x;
+	}
 	return true;
 }

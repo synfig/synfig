@@ -82,6 +82,7 @@ Dialog_Setup::Dialog_Setup():
 	toggle_single_threaded(_("Use Only a Single Thread")),
 #endif
 	toggle_restrict_radius_ducks(_("Restrict Real-Valued Ducks to Top Right Quadrant")),
+	toggle_resize_imported_images(_("Scale New Imported Images to Fit Canvas")),
 	adj_pref_x_size(480,1,10000,1,10,0),
 	adj_pref_y_size(270,1,10000,1,10,0)
 	
@@ -210,6 +211,9 @@ Dialog_Setup::Dialog_Setup():
 	// Misc - restrict_radius_ducks
 	misc_table->attach(toggle_restrict_radius_ducks, 0, 2, 8, 9, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
 
+	// Misc - resize_imported_images
+	misc_table->attach(toggle_resize_imported_images, 0, 2, 9, 10, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
+
 	// Misc - browser_command
 	attach_label(misc_table, _("Browser Command"), 4, xpadding, ypadding);
 	misc_table->attach(textbox_browser_command, 1, 2, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
@@ -297,6 +301,9 @@ Dialog_Setup::on_apply_pressed()
 
 	// Set the restrict_radius_ducks flag
 	App::restrict_radius_ducks=toggle_restrict_radius_ducks.get_active();
+
+	// Set the resize_imported_images flag
+	App::resize_imported_images=toggle_resize_imported_images.get_active();
 
 	// Set the browser_command textbox
 	App::browser_command=textbox_browser_command.get_text();
@@ -414,6 +421,9 @@ Dialog_Setup::refresh()
 
 	// Refresh the status of the restrict_radius_ducks flag
 	toggle_restrict_radius_ducks.set_active(App::restrict_radius_ducks);
+
+	// Refresh the status of the resize_imported_images flag
+	toggle_resize_imported_images.set_active(App::resize_imported_images);
 
 	// Refresh the browser_command textbox
 	textbox_browser_command.set_text(App::browser_command);

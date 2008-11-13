@@ -51,6 +51,8 @@ public:
 	Point br;
 	int c;
 	mutable Surface surface;
+	mutable bool trimmed;
+	mutable unsigned int width, height, top, left;
 
 	Real gamma_adjust;
 

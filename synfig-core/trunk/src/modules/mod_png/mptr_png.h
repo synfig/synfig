@@ -51,6 +51,9 @@ private:
     png_infop info_ptr;
     png_infop end_info;
 
+	bool trim;
+	unsigned int orig_width, orig_height, trimmed_x, trimmed_y;
+
 	static void png_out_error(png_struct *png_data,const char *msg);
 	static void png_out_warning(png_struct *png_data,const char *msg);
 	static int read_chunk_callback(png_struct *png_data, png_unknown_chunkp chunk);
@@ -60,6 +63,9 @@ public:
 	~png_mptr();
 
 	virtual bool get_frame(synfig::Surface &surface,synfig::Time time, synfig::ProgressCallback *callback);
+	virtual bool get_frame(synfig::Surface &surface,synfig::Time time,
+						   bool &trimmed, unsigned int &width, unsigned int &height, unsigned int &top, unsigned int &left,
+						   synfig::ProgressCallback *callback);
 };
 
 /* === E N D =============================================================== */

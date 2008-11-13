@@ -560,7 +560,7 @@ CanvasInterface::jump_to_prev_keyframe()
 }
 
 bool
-CanvasInterface::import(const synfig::String &filename, bool /*copy*/)
+CanvasInterface::import(const synfig::String &filename, bool resize_image)
 {
 	Action::PassiveGrouper group(get_instance().get(),_("Import Image"));
 
@@ -623,22 +623,34 @@ CanvasInterface::import(const synfig::String &filename, bool /*copy*/)
 		h=layer->get_param("_height").get(int());
 		if(w&&h)
 		{
-			Vector size=ValueBase(get_canvas()->rend_desc().get_br()-get_canvas()->rend_desc().get_tl());
-			Vector x;
-			if(size[0]<size[1])
+			Vector x, size=ValueBase(get_canvas()->rend_desc().get_br()-get_canvas()->rend_desc().get_tl());
+
+			// vector from top left of canvas to bottom right
+			if (resize_image)
 			{
-				x[0]=size[0];
-				x[1]=size[0]/w*h;
-				if((size[0]<0) ^ (size[1]<0))
-					x[1]=-x[1];
+				if(abs(size[0])<abs(size[1]))	// if canvas is tall and thin
+				{
+					x[0]=size[0];	// use full width
+					x[1]=size[0]/w*h; // and scale for height
+					if((size[0]<0) ^ (size[1]<0))
+						x[1]=-x[1];
+				}
+				else				// else canvas is short and fat (or maybe square)
+				{
+					x[1]=size[1];	// use full height
+					x[0]=size[1]/h*w; // and scale for width
+					if((size[0]<0) ^ (size[1]<0))
+						x[0]=-x[0];
+				}
 			}
 			else
 			{
-				x[1]=size[1];
-				x[0]=size[1]/h*w;
-				if((size[0]<0) ^ (size[1]<0))
-					x[0]=-x[0];
+				x[0] = w/60.0;
+				x[1] = h/60.0;
+				if((size[0]<0)) x[0]=-x[0];
+				if((size[1]<0)) x[1]=-x[1];
 			}
+
 			if(!layer->set_param("tl",ValueBase(-x/2)))
 				throw int();
 			if(!layer->set_param("br",ValueBase(x/2)))

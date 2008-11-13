@@ -182,6 +182,7 @@ class Dialog_Setup : public Gtk::Dialog
 	Widget_Time auto_backup_interval;
 
 	Gtk::CheckButton toggle_restrict_radius_ducks;
+	Gtk::CheckButton toggle_resize_imported_images;
 
 	Gtk::Entry textbox_browser_command;
 	

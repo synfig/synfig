@@ -3461,7 +3461,7 @@ CanvasView::on_drop_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& con
 				}
 				else
 				{
-					if(canvas_interface()->import(filename))
+					if(canvas_interface()->import(filename, App::resize_imported_images))
 						success=true;
 				}
 
@@ -3570,7 +3570,7 @@ CanvasView::image_import()
 	// String filename(dirname(get_canvas()->get_file_name()));
 	String filename("*.*");
 	if(App::dialog_open_file(_("Import Image"), filename, IMAGE_DIR_PREFERENCE))
-		canvas_interface()->import(filename);
+		canvas_interface()->import(filename, App::resize_imported_images);
 }
 
 Smach::event_result

@@ -68,6 +68,7 @@ synfig::Layer_Bitmap::Layer_Bitmap():
 	br				(0.5,-0.5),
 	c				(1),
 	surface			(128,128),
+	trimmed			(false),
 	gamma_adjust	(1.0)
 {
 }
@@ -99,10 +100,12 @@ synfig::Layer_Bitmap::get_param(const String & param)const
 
 	if(param=="_width")
 	{
+		if (trimmed) return int(width);
 		return surface.get_w();
 	}
 	if(param=="_height")
 	{
+		if (trimmed) return int(height);
 		return surface.get_h();
 	}
 
@@ -191,8 +194,22 @@ synfig::Layer_Bitmap::get_color(Context context, const Point &pos)const
 		surface_pos[1]/=br[1]-tl[1];
 		if(surface_pos[1]<=1.0 && surface_pos[1]>=0.0)
 		{
-			surface_pos[0]*=surface.get_w();
-			surface_pos[1]*=surface.get_h();
+			if (trimmed)
+			{
+				surface_pos[0]*=width;
+				surface_pos[1]*=height;
+
+				if (surface_pos[0] > left+surface.get_w() || surface_pos[0] < left || surface_pos[1] > top+surface.get_h() || surface_pos[1] < top)
+					return context.get_color(pos);
+
+				surface_pos[0] -= left;
+				surface_pos[1] -= top;
+			}
+			else
+			{
+				surface_pos[0]*=surface.get_w();
+				surface_pos[1]*=surface.get_h();
+			}
 
 			Color ret(Color::alpha());
 
@@ -257,6 +274,7 @@ Layer_Bitmap::accelerated_render(Context context,Surface *out_surface,int qualit
 
 	if(	get_amount()==1 &&
 		get_blend_method()==Color::BLEND_STRAIGHT &&
+		!trimmed &&
 		renddesc.get_tl()==tl &&
 		renddesc.get_br()==br)
 	{
@@ -290,9 +308,6 @@ Layer_Bitmap::accelerated_render(Context context,Surface *out_surface,int qualit
 	//sa = scaling for input (0,1) -> (0,w/h)
 	//sb = scaling for output (0,1) -> (0,w/h)
 
-	float	inwf = br[0] - tl[0];
-	float	inhf = br[1] - tl[1];
-
 	float	outwf = obr[0] - otl[0];
 	float	outhf = obr[1] - otl[1];
 
@@ -302,14 +317,34 @@ Layer_Bitmap::accelerated_render(Context context,Surface *out_surface,int qualit
 	int		outw = renddesc.get_w();
 	int		outh = renddesc.get_h();
 
+	float	inwf, inhf;
+	Point	itl, ibr;
+
+	if (trimmed)
+	{
+		inwf = (br[0] - tl[0])*surface.get_w()/width;
+		inhf = (br[1] - tl[1])*surface.get_h()/height;
+		itl = Point(tl[0] + (br[0]-tl[0])*left/width,
+					tl[1] + (br[1]-tl[1])*top/height);
+		ibr = Point(tl[0] + (br[0]-tl[0])*(left+inw)/width,
+					tl[1] + (br[1]-tl[1])*(top+inh)/height);
+	}
+	else
+	{
+		inwf = br[0] - tl[0];
+		inhf = br[1] - tl[1];
+		itl = tl;
+		ibr = br;
+	}
+
 	//need to get the input coords in output space, so we can clip
 
 	//get the desired corners of the bitmap (in increasing order) in integers
 	//floating point corners
-	float x1f = (tl[0] - otl[0])*outw/outwf;
-	float x2f = (br[0] - otl[0])*outw/outwf;
-	float y1f = (tl[1] - otl[1])*outh/outhf;
-	float y2f = (br[1] - otl[1])*outh/outhf;
+	float x1f = (itl[0] - otl[0])*outw/outwf;
+	float x2f = (ibr[0] - otl[0])*outw/outwf;
+	float y1f = (itl[1] - otl[1])*outh/outhf;
+	float y2f = (ibr[1] - otl[1])*outh/outhf;
 
 	if(x1f > x2f) swap(x1f,x2f);
 	if(y1f > y2f) swap(y1f,y2f);
@@ -325,8 +360,8 @@ Layer_Bitmap::accelerated_render(Context context,Surface *out_surface,int qualit
 
 	// in int -> out float:
 	// Sb(B^-1)A(Sa^-1) x
-	float inx_start = (((x_start/*+0.5f*/)*outwf/outw + otl[0]) - tl[0])*inw/inwf; //may want to bias this (center of pixel)???
-	float iny_start = (((y_start/*+0.5f*/)*outhf/outh + otl[1]) - tl[1])*inh/inhf; //may want to bias this (center of pixel)???
+	float inx_start = (((x_start/*+0.5f*/)*outwf/outw + otl[0]) - itl[0])*inw/inwf; //may want to bias this (center of pixel)???
+	float iny_start = (((y_start/*+0.5f*/)*outhf/outh + otl[1]) - itl[1])*inh/inhf; //may want to bias this (center of pixel)???
 
 	//calculate the delta values in input space for one pixel movement in output space
 	//same matrix but with a vector instead of a point...

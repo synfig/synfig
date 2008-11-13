@@ -271,7 +271,7 @@ public:
 
 	void set_rend_desc(const synfig::RendDesc &rend_desc);
 
-	bool import(const synfig::String &filename, bool copy=false);
+	bool import(const synfig::String &filename, bool resize_image=false);
 
 
 	void waypoint_duplicate(synfigapp::ValueDesc value_desc,synfig::Waypoint waypoint);

@@ -197,6 +197,7 @@ public:
 #endif
 
 	static bool restrict_radius_ducks;
+	static bool resize_imported_images;
 
 	static synfig::String browser_command;
 	static synfig::String custom_filename_prefix;
