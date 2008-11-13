@@ -77,7 +77,7 @@ void make_pattern(generic_pen<float> pen, int w, int h)
 	{
 		for(x=0;x<w;x++,pen.inc_x())
 		{
-			if(x-y<=1 && y-x<=1 || y==h/2 || x==w/2)
+			if( (x-y<=1 && y-x<=1) || y==h/2 || x==w/2)
 				pen.put_value(2);
 			else
 				pen.put_value(0);

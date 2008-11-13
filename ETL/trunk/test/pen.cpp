@@ -92,7 +92,7 @@ int generic_pen_test(int w, int h)
 
 	if(pen.end_x()-pen.x()!=w-1)
 	{
-		printf("FAILURE! "__FILE__"@%d: iterator_x inconsistency (%d!=%d)\n",__LINE__,pen.end_x()-pen.x(),w);
+		printf("FAILURE! "__FILE__"@%d: iterator_x inconsistency (%ld!=%d)\n",__LINE__,pen.end_x()-pen.x(),w);
 		return 1;
 	}
 
@@ -239,7 +239,7 @@ int box_blur_test(void)
 	{
 		for(x=0;x<w;x++,pen.inc_x())
 		{
-			if(x-y<=1 && y-x<=1 || y==h/2 || x==w/2)
+			if( (x-y<=1 && y-x<=1) || y==h/2 || x==w/2)
 				pen.put_value(2);
 			else
 				pen.put_value(0);
@@ -305,7 +305,7 @@ int box_blur_test(void)
 					if(ix < 0) ix = 0;
 					if(ix >= w) ix = w-1;
 
-					if(ix-iy<=1 && iy-ix<=1 || iy==h/2 || ix==w/2)
+					if( (ix-iy<=1 && iy-ix<=1) || iy==h/2 || ix==w/2)
 						f += 2;
 				}
 			}
