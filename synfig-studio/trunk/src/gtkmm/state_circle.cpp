@@ -130,6 +130,7 @@ public:
 	int layers_to_create()const
 	{
 		return
+			get_layer_circle_flag() +
 			get_layer_region_flag() +
 			get_layer_outline_flag() +
 			get_layer_curve_gradient_flag() +
@@ -395,7 +396,7 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	checkbutton_layer_outline(_("Create Outline BLine")),
 	checkbutton_layer_curve_gradient(_("Create Curve Gradient BLine")),
 	checkbutton_layer_plant(_("Create Plant BLine")),
-	checkbutton_layer_link_origins(_("Link BLine Origins"))
+	checkbutton_layer_link_origins(_("Link Origins"))
 {
 	egress_on_selection_change=true;
 
@@ -563,15 +564,14 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 	Real tangent(4 * ((points == 2)
 					  ? 1
 					  : ((2 * Angle::cos(angle/2).get() - Angle::cos(angle).get() - 1) / Angle::sin(angle).get())));
-	Real x(p1[0]), y(p1[1]);
 
 	std::vector<BLinePoint> new_list;
 	for (int i = 0; i < points; i++)
 	{
 		new_list.push_back(*(new BLinePoint));
 		new_list[i].set_width(1);
-		new_list[i].set_vertex(Point(radius*Angle::cos(angle*i + offset).get() + x,
-									 radius*Angle::sin(angle*i + offset).get() + y));
+		new_list[i].set_vertex(Point(radius*Angle::cos(angle*i + offset).get(),
+									 radius*Angle::sin(angle*i + offset).get()));
 		new_list[i].set_tangent(Point(-radius*tangent*Angle::sin(angle*i + offset).get(),
 									   radius*tangent*Angle::cos(angle*i + offset).get()));
 	}
@@ -579,7 +579,7 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 	ValueNode_BLine::Handle value_node_bline(ValueNode_BLine::create(new_list));
 	assert(value_node_bline);
 
-	ValueNode_Const::Handle value_node_origin(ValueNode_Const::create(Vector()));
+	ValueNode_Const::Handle value_node_origin(ValueNode_Const::create(p1));
 	assert(value_node_origin);
 
 	// Set the looping flag
@@ -630,6 +630,34 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 		{
 			layer->set_param("color",synfigapp::Main::get_background_color());
 			get_canvas_interface()->signal_layer_param_changed()(layer,"color");
+		}
+
+		// only link the circle's origin parameter if the option is selected and we're creating more than one layer
+		if (get_layer_link_origins_flag() && layers_to_create > 1)
+		{
+			synfigapp::Action::Handle action(synfigapp::Action::create("layer_param_connect"));
+			assert(action);
+
+			action->set_param("canvas",get_canvas());
+			action->set_param("canvas_interface",get_canvas_interface());
+			action->set_param("layer",layer);
+			if(!action->set_param("param",String("origin")))
+				synfig::error("LayerParamConnect didn't like \"param\"");
+			if(!action->set_param("value_node",ValueNode::Handle(value_node_origin)))
+				synfig::error("LayerParamConnect didn't like \"value_node\"");
+
+			if(!get_canvas_interface()->get_instance()->perform_action(action))
+			{
+				//get_canvas_view()->get_ui_interface()->error(_("Unable to create Circle layer"));
+				group.cancel();
+				throw String(_("Unable to create Circle layer"));
+				return;
+			}
+		}
+		else
+		{
+			layer->set_param("origin",p1);
+			get_canvas_interface()->signal_layer_param_changed()(layer,"origin");
 		}
 	}
 
@@ -695,6 +723,11 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 				return;
 			}
 		}
+		else
+		{
+			layer->set_param("origin",p1);
+			get_canvas_interface()->signal_layer_param_changed()(layer,"origin");
+		}
 	}
 
 	///////////////////////////////////////////////////////////////////////////
@@ -758,6 +791,11 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 				throw String(_("Unable to create Plant layer"));
 				return;
 			}
+		}
+		else
+		{
+			layer->set_param("origin",p1);
+			get_canvas_interface()->signal_layer_param_changed()(layer,"origin");
 		}
 	}
 
@@ -834,6 +872,11 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 				return;
 			}
 		}
+		else
+		{
+			layer->set_param("origin",p1);
+			get_canvas_interface()->signal_layer_param_changed()(layer,"origin");
+		}
 	}
 
 	///////////////////////////////////////////////////////////////////////////
@@ -901,6 +944,11 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 				throw String(_("Unable to create Outline layer"));
 				return;
 			}
+		}
+		else
+		{
+			layer->set_param("origin",p1);
+			get_canvas_interface()->signal_layer_param_changed()(layer,"origin");
 		}
 	}
 
