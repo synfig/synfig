@@ -639,10 +639,10 @@ StateStar_Context::make_star(const Point& _p1, const Point& _p2)
 		layer->set_param("origin",p1);
 		get_canvas_interface()->signal_layer_param_changed()(layer,"origin");
 
-		layer->set_param("radius1",(p2-p1).mag());
+		layer->set_param("radius1",radius1);
 		get_canvas_interface()->signal_layer_param_changed()(layer,"radius1");
 
-		layer->set_param("radius2",(p2-p1).mag()/2);
+		layer->set_param("radius2",radius2);
 		get_canvas_interface()->signal_layer_param_changed()(layer,"radius2");
 
 		layer->set_param("angle",offset);
