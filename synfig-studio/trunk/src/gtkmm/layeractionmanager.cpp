@@ -33,6 +33,7 @@
 #include "layeractionmanager.h"
 #include "layertree.h"
 #include <synfig/context.h>
+#include <synfig/layer_pastecanvas.h>
 #include <synfigapp/action_param.h>
 #include "instance.h"
 #include <synfigapp/selectionmanager.h>
@@ -399,6 +400,9 @@ LayerActionManager::paste()
 		{
 			return;
 		}
+
+		etl::handle<Layer_PasteCanvas> paste = etl::handle<Layer_PasteCanvas>::cast_dynamic(layer);
+		if (paste) paste->update_renddesc();
 
 		// synfig::info("DEPTH=%d",depth);
 

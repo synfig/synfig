@@ -99,6 +99,8 @@ private:
 	bool extra_reference;
 public:
 
+	void update_renddesc();
+
 	virtual void on_canvas_set();
 
 	void set_muck_with_time(bool x=false) { muck_with_time_=x; }

@@ -241,6 +241,24 @@ Layer_PasteCanvas::set_sub_canvas(etl::handle<synfig::Canvas> x)
 		on_canvas_set();
 }
 
+// when a pastecanvas that contains another pastecanvas is copy/pasted
+// from one document to another, only the outermost pastecanvas was
+// getting its renddesc set to match that of its new parent.  this
+// function is used to recurse through the pastecanvas copying its
+// renddesc to any pastecanvases it contains (bug #2116947, svn r2200)
+void
+Layer_PasteCanvas::update_renddesc()
+{
+	if(!get_canvas() || !canvas || !canvas->is_inline()) return;
+
+	canvas->rend_desc()=get_canvas()->rend_desc();
+	for (Context context = canvas->get_context(); !context->empty(); context++)
+	{
+		etl::handle<Layer_PasteCanvas> paste = etl::handle<Layer_PasteCanvas>::cast_dynamic(*context);
+		if (paste) paste->update_renddesc();
+	}
+}
+
 // This is called whenever the parent canvas gets set/changed
 void
 Layer_PasteCanvas::on_canvas_set()
