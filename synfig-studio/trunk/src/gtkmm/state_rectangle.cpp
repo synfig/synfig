@@ -519,6 +519,12 @@ StateRectangle_Context::make_rectangle(const Point& _p1, const Point& _p2)
 	if (get_layer_rectangle_flag())
 	{
 		layer=get_canvas_interface()->add_layer_to("rectangle",canvas,depth);
+		if (!layer)
+		{
+			get_canvas_view()->get_ui_interface()->error(_("Unable to create layer"));
+			group.cancel();
+			return;
+		}
 		layer_selection.push_back(layer);
 
 		layer->set_param("point1",p1);
@@ -552,7 +558,12 @@ StateRectangle_Context::make_rectangle(const Point& _p1, const Point& _p2)
 		synfigapp::PushMode push_mode(get_canvas_interface(),synfigapp::MODE_NORMAL);
 
 		Layer::Handle layer(get_canvas_interface()->add_layer_to("curve_gradient",canvas,depth));
-		assert(layer);
+		if (!layer)
+		{
+			get_canvas_view()->get_ui_interface()->error(_("Unable to create layer"));
+			group.cancel();
+			return;
+		}
 		layer_selection.push_back(layer);
 		layer->set_description(get_id()+_(" Gradient"));
 		get_canvas_interface()->signal_layer_new_description()(layer,layer->get_description());
@@ -611,7 +622,12 @@ StateRectangle_Context::make_rectangle(const Point& _p1, const Point& _p2)
 		synfigapp::PushMode push_mode(get_canvas_interface(),synfigapp::MODE_NORMAL);
 
 		Layer::Handle layer(get_canvas_interface()->add_layer_to("plant",canvas,depth));
-		assert(layer);
+		if (!layer)
+		{
+			get_canvas_view()->get_ui_interface()->error(_("Unable to create layer"));
+			group.cancel();
+			return;
+		}
 		layer_selection.push_back(layer);
 		layer->set_description(get_id()+_(" Plant"));
 		get_canvas_interface()->signal_layer_new_description()(layer,layer->get_description());
@@ -670,7 +686,12 @@ StateRectangle_Context::make_rectangle(const Point& _p1, const Point& _p2)
 		synfigapp::PushMode push_mode(get_canvas_interface(),synfigapp::MODE_NORMAL);
 
 		Layer::Handle layer(get_canvas_interface()->add_layer_to("region",canvas,depth));
-		assert(layer);
+		if (!layer)
+		{
+			get_canvas_view()->get_ui_interface()->error(_("Unable to create layer"));
+			group.cancel();
+			return;
+		}
 		layer_selection.push_back(layer);
 		layer->set_description(get_id()+_(" Region"));
 		get_canvas_interface()->signal_layer_new_description()(layer,layer->get_description());
@@ -738,7 +759,12 @@ StateRectangle_Context::make_rectangle(const Point& _p1, const Point& _p2)
 	if (get_layer_outline_flag())
 	{
 		Layer::Handle layer(get_canvas_interface()->add_layer_to("outline",canvas,depth));
-		assert(layer);
+		if (!layer)
+		{
+			get_canvas_view()->get_ui_interface()->error(_("Unable to create layer"));
+			group.cancel();
+			return;
+		}
 		layer_selection.push_back(layer);
 		layer->set_description(get_id()+_(" Outline"));
 		get_canvas_interface()->signal_layer_new_description()(layer,layer->get_description());

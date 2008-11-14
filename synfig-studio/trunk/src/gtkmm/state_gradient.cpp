@@ -404,6 +404,12 @@ StateGradient_Context::make_gradient(const Point& _p1, const Point& _p2)
 	case GRADIENT_INTERPOLATION_LINEAR:
 
 		layer=get_canvas_interface()->add_layer_to("linear_gradient",canvas,depth);
+		if (!layer)
+		{
+			get_canvas_view()->get_ui_interface()->error(_("Unable to create layer"));
+			group.cancel();
+			return;
+		}
 		layer->set_param("p1",p1);
 		get_canvas_interface()->signal_layer_param_changed()(layer,"p1");
 		layer->set_param("p2",p2);
@@ -411,6 +417,12 @@ StateGradient_Context::make_gradient(const Point& _p1, const Point& _p2)
 		break;
 	case GRADIENT_RADIAL:
 		layer=get_canvas_interface()->add_layer_to("radial_gradient",canvas,depth);
+		if (!layer)
+		{
+			get_canvas_view()->get_ui_interface()->error(_("Unable to create layer"));
+			group.cancel();
+			return;
+		}
 		layer->set_param("center",p1);
 		get_canvas_interface()->signal_layer_param_changed()(layer,"center");
 		layer->set_param("radius",(p2-p1).mag());
@@ -418,6 +430,12 @@ StateGradient_Context::make_gradient(const Point& _p1, const Point& _p2)
 		break;
 	case GRADIENT_CONICAL:
 		layer=get_canvas_interface()->add_layer_to("conical_gradient",canvas,depth);
+		if (!layer)
+		{
+			get_canvas_view()->get_ui_interface()->error(_("Unable to create layer"));
+			group.cancel();
+			return;
+		}
 		layer->set_param("center",p1);
 		get_canvas_interface()->signal_layer_param_changed()(layer,"center");
 		{
@@ -428,6 +446,12 @@ StateGradient_Context::make_gradient(const Point& _p1, const Point& _p2)
 		break;
 	case GRADIENT_SPIRAL:
 		layer=get_canvas_interface()->add_layer_to("spiral_gradient",canvas,depth);
+		if (!layer)
+		{
+			get_canvas_view()->get_ui_interface()->error(_("Unable to create layer"));
+			group.cancel();
+			return;
+		}
 		layer->set_param("center",p1);
 		get_canvas_interface()->signal_layer_param_changed()(layer,"center");
 		layer->set_param("radius",(p2-p1).mag());

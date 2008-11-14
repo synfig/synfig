@@ -621,7 +621,11 @@ StateBLine_Context::run_()
 			synfigapp::PushMode push_mode(get_canvas_interface(),synfigapp::MODE_NORMAL);
 
 			Layer::Handle layer(get_canvas_interface()->add_layer_to("curve_gradient",canvas,depth));
-			assert(layer);
+			if (!layer)
+			{
+				group.cancel();
+				throw String(_("Unable to create layer"));
+			}
 			layer_selection.push_back(layer);
 			layer->set_description(get_id()+_(" Gradient"));
 			get_canvas_interface()->signal_layer_new_description()(layer,layer->get_description());
@@ -680,7 +684,11 @@ StateBLine_Context::run_()
 			synfigapp::PushMode push_mode(get_canvas_interface(),synfigapp::MODE_NORMAL);
 
 			Layer::Handle layer(get_canvas_interface()->add_layer_to("plant",canvas,depth));
-			assert(layer);
+			if (!layer)
+			{
+				group.cancel();
+				throw String(_("Unable to create layer"));
+			}
 			layer_selection.push_back(layer);
 			layer->set_description(get_id()+_(" Plant"));
 			get_canvas_interface()->signal_layer_new_description()(layer,layer->get_description());
@@ -739,7 +747,11 @@ StateBLine_Context::run_()
 			synfigapp::PushMode push_mode(get_canvas_interface(),synfigapp::MODE_NORMAL);
 
 			Layer::Handle layer(get_canvas_interface()->add_layer_to("region",canvas,depth));
-			assert(layer);
+			if (!layer)
+			{
+				group.cancel();
+				throw String(_("Unable to create layer"));
+			}
 			layer_selection.push_back(layer);
 			layer->set_description(get_id()+_(" Region"));
 			get_canvas_interface()->signal_layer_new_description()(layer,layer->get_description());
@@ -809,7 +821,11 @@ StateBLine_Context::run_()
 			synfigapp::PushMode push_mode(get_canvas_interface(),synfigapp::MODE_NORMAL);
 
 			Layer::Handle layer(get_canvas_interface()->add_layer_to("outline",canvas,depth));
-			assert(layer);
+			if (!layer)
+			{
+				group.cancel();
+				throw String(_("Unable to create layer"));
+			}
 			layer_selection.push_back(layer);
 			layer->set_description(get_id()+_(" Outline"));
 			get_canvas_interface()->signal_layer_new_description()(layer,layer->get_description());

@@ -400,6 +400,12 @@ StateText_Context::make_text(const Point& _point)
 		App::dialog_entry(_("Text Entry"), _("Enter text here:"), text);
 
 	layer=get_canvas_interface()->add_layer_to("text",canvas,depth);
+	if (!layer)
+	{
+		get_canvas_view()->get_ui_interface()->error(_("Unable to create layer"));
+		group.cancel();
+		return;
+	}
 	layer_selection.push_back(layer);
 
 	layer->set_param("origin",point);

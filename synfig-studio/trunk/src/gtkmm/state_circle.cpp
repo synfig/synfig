@@ -601,6 +601,12 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 		get_falloff() >= 0 && get_falloff() < CIRCLE_NUM_FALLOFF)
 	{
 		layer=get_canvas_interface()->add_layer_to("circle",canvas,depth);
+		if (!layer)
+		{
+			get_canvas_view()->get_ui_interface()->error(_("Unable to create layer"));
+			group.cancel();
+			return;
+		}
 		layer_selection.push_back(layer);
 
 		layer->set_param("origin",p1);
@@ -670,7 +676,12 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 		synfigapp::PushMode push_mode(get_canvas_interface(),synfigapp::MODE_NORMAL);
 
 		Layer::Handle layer(get_canvas_interface()->add_layer_to("curve_gradient",canvas,depth));
-		assert(layer);
+		if (!layer)
+		{
+			get_canvas_view()->get_ui_interface()->error(_("Unable to create layer"));
+			group.cancel();
+			return;
+		}
 		layer_selection.push_back(layer);
 		layer->set_description(get_id()+_(" Gradient"));
 		get_canvas_interface()->signal_layer_new_description()(layer,layer->get_description());
@@ -739,7 +750,12 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 		synfigapp::PushMode push_mode(get_canvas_interface(),synfigapp::MODE_NORMAL);
 
 		Layer::Handle layer(get_canvas_interface()->add_layer_to("plant",canvas,depth));
-		assert(layer);
+		if (!layer)
+		{
+			get_canvas_view()->get_ui_interface()->error(_("Unable to create layer"));
+			group.cancel();
+			return;
+		}
 		layer_selection.push_back(layer);
 		layer->set_description(get_id()+_(" Plant"));
 		get_canvas_interface()->signal_layer_new_description()(layer,layer->get_description());
@@ -808,7 +824,12 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 		synfigapp::PushMode push_mode(get_canvas_interface(),synfigapp::MODE_NORMAL);
 
 		Layer::Handle layer(get_canvas_interface()->add_layer_to("region",canvas,depth));
-		assert(layer);
+		if (!layer)
+		{
+			get_canvas_view()->get_ui_interface()->error(_("Unable to create layer"));
+			group.cancel();
+			return;
+		}
 		layer_selection.push_back(layer);
 		layer->set_description(get_id()+_(" Region"));
 		get_canvas_interface()->signal_layer_new_description()(layer,layer->get_description());
@@ -886,7 +907,12 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 	if (get_layer_outline_flag())
 	{
 		Layer::Handle layer(get_canvas_interface()->add_layer_to("outline",canvas,depth));
-		assert(layer);
+		if (!layer)
+		{
+			get_canvas_view()->get_ui_interface()->error(_("Unable to create layer"));
+			group.cancel();
+			return;
+		}
 		layer_selection.push_back(layer);
 		layer->set_description(get_id()+_(" Outline"));
 		get_canvas_interface()->signal_layer_new_description()(layer,layer->get_description());

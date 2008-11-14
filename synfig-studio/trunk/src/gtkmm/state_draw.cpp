@@ -115,7 +115,7 @@ class studio::StateDraw_Context : public sigc::trackable
 	Duckmatic::Type old_duckmask;
 
 	void fill_last_stroke();
-	void fill_last_stroke_and_unselect_other_layers();
+	Smach::event_result fill_last_stroke_and_unselect_other_layers();
 
 	Smach::event_result new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline_flag,float radius);
 
@@ -1038,7 +1038,15 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline
 
 		// fill_last_stroke() will take care of clearing the selection if we're calling it
 		if(get_outline_flag() && get_region_flag())
-			fill_last_stroke_and_unselect_other_layers();
+		{
+			if (fill_last_stroke_and_unselect_other_layers() == Smach::RESULT_ERROR)
+			{
+				get_canvas_view()->get_selection_manager()->set_selected_layers(layer_list);
+				get_canvas_view()->get_ui_interface()->error(_("Unable to create layer"));
+				group.cancel();
+				return Smach::RESULT_ERROR;
+			}
+		}
 		else
 			get_canvas_interface()->get_selection_manager()->clear_selected_layers();
 
@@ -1050,11 +1058,25 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline
 		if(get_outline_flag())
 		{
 			layer=get_canvas_interface()->add_layer_to("outline",canvas,depth);
+			if (!layer)
+			{
+				get_canvas_view()->get_selection_manager()->set_selected_layers(layer_list);
+				get_canvas_view()->get_ui_interface()->error(_("Unable to create layer"));
+				group.cancel();
+				return Smach::RESULT_ERROR;
+			}
 			layer->set_description(get_id()+_(" Outline"));
 		}
 		else
 		{
 			layer=get_canvas_interface()->add_layer_to("region",canvas,depth);
+			if (!layer)
+			{
+				get_canvas_view()->get_selection_manager()->set_selected_layers(layer_list);
+				get_canvas_view()->get_ui_interface()->error(_("Unable to create layer"));
+				group.cancel();
+				return Smach::RESULT_ERROR;
+			}
 			layer->set_description(get_id()+_(" Region"));
 		}
 
@@ -1774,7 +1796,12 @@ StateDraw_Context::new_region(std::list<synfig::BLinePoint> bline, synfig::Real 
 		synfigapp::PushMode push_mode(get_canvas_interface(),synfigapp::MODE_NORMAL);
 
 		layer=get_canvas_interface()->add_layer_to("region",canvas,depth);
-		assert(layer);
+		if (!layer)
+		{
+			get_canvas_view()->get_ui_interface()->error(_("Unable to create layer"));
+			group.cancel();
+			return Smach::RESULT_ERROR;
+		}
 		layer->set_param("color",synfigapp::Main::get_background_color());
 		if(get_feather())
 		{
@@ -1946,11 +1973,11 @@ StateDraw_Context::reverse_bline(std::list<synfig::BLinePoint> &bline)
 	}
 }
 
-void
+Smach::event_result
 StateDraw_Context::fill_last_stroke_and_unselect_other_layers()
 {
 	if(!last_stroke)
-		return;
+		return Smach::RESULT_OK;
 
 	synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Fill Stroke"));
 
@@ -1972,7 +1999,7 @@ StateDraw_Context::fill_last_stroke_and_unselect_other_layers()
 
 	get_canvas_interface()->get_selection_manager()->clear_selected_layers();
 	layer=get_canvas_interface()->add_layer_to("region", canvas, depth);
-	assert(layer);
+	if (!layer) return Smach::RESULT_ERROR;
 	layer->set_param("color",synfigapp::Main::get_background_color());
 	layer->set_description(last_stroke_id + _(" Region"));
 
@@ -1992,9 +2019,10 @@ StateDraw_Context::fill_last_stroke_and_unselect_other_layers()
 	{
 		get_canvas_view()->get_ui_interface()->error(_("Unable to create Region layer"));
 		group.cancel();
-		return;
+		return Smach::RESULT_OK;
 	}
 	get_canvas_view()->get_selection_manager()->set_selected_layer(layer);
+	return Smach::RESULT_OK;
 }
 
 void
