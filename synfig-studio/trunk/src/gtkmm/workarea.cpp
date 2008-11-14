@@ -2581,7 +2581,8 @@ studio::WorkArea::zoom_out()
 void
 studio::WorkArea::zoom_fit()
 {
-	float new_zoom(min(drawing_area->get_width() * zoom / w, drawing_area->get_height() * zoom / h));
+	float new_zoom(min(drawing_area->get_width() * zoom / w,
+					   drawing_area->get_height() * zoom / h) * 0.995);
 	if (zoom / new_zoom > 0.995 && new_zoom / zoom > 0.995)
 	{
 		set_zoom(prev_zoom);
