@@ -3461,8 +3461,11 @@ CanvasView::on_drop_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& con
 				}
 				else
 				{
-					if(canvas_interface()->import(filename, App::resize_imported_images))
+					String errors, warnings;
+					if(canvas_interface()->import(filename, errors, warnings, App::resize_imported_images))
 						success=true;
+					if (warnings != "")
+						App::dialog_warning_blocking(_("Warnings"), strprintf("%s:\n\n%s", _("Warnings"), warnings.c_str()));
 				}
 
 				continue;
@@ -3569,8 +3572,13 @@ CanvasView::image_import()
 {
 	// String filename(dirname(get_canvas()->get_file_name()));
 	String filename("*.*");
+	String errors, warnings;
 	if(App::dialog_open_file(_("Import Image"), filename, IMAGE_DIR_PREFERENCE))
-		canvas_interface()->import(filename, App::resize_imported_images);
+	{
+		canvas_interface()->import(filename, errors, warnings, App::resize_imported_images);
+		if (warnings != "")
+			App::dialog_warning_blocking(_("Warnings"), strprintf("%s:\n\n%s", _("Warnings"), warnings.c_str()));
+	}
 }
 
 Smach::event_result

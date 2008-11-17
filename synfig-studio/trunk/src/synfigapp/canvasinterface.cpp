@@ -560,7 +560,7 @@ CanvasInterface::jump_to_prev_keyframe()
 }
 
 bool
-CanvasInterface::import(const synfig::String &filename, bool resize_image)
+CanvasInterface::import(const synfig::String &filename, synfig::String &errors, synfig::String &warnings, bool resize_image)
 {
 	Action::PassiveGrouper group(get_instance().get(),_("Import Image"));
 
@@ -579,7 +579,6 @@ CanvasInterface::import(const synfig::String &filename, bool resize_image)
 	// If this is a SIF file, then we need to do things slightly differently
 	if(ext=="sif" || ext=="sifz")try
 	{
-		String errors, warnings;
 		Canvas::Handle outside_canvas(synfig::open_canvas(filename, errors, warnings));
 		if(!outside_canvas)
 			throw String(_("Unable to open this composition")) + ":\n\n" + errors;
