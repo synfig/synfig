@@ -256,7 +256,7 @@ public:
 	Mode get_mode()const;
 
 	//! Creates a new layer, of type \c id at the top of the layer stack
-	synfig::Layer::Handle add_layer(synfig::String id) { return add_layer_to(id,get_canvas()); }
+	// synfig::Layer::Handle add_layer(synfig::String id) { return add_layer_to(id,get_canvas()); }
 
 	synfig::Layer::Handle add_layer_to(synfig::String id,synfig::Canvas::Handle canvas, int depth=0);
 
