@@ -469,19 +469,19 @@ public:
 	**		If not found, it creates a new Canvas and returns it
 	**		If an error occurs, it returns an empty handle
 	*/
-	Handle surefind_canvas(const String &id);
+	Handle surefind_canvas(const String &id,String &warnings);
 
 	//! Finds a child Canvas in the Canvas with the given \a id
 	/*!	\return If found, returns a handle to the child Canvas.
 	**		Otherwise, returns an empty handle.
 	*/
-	Handle find_canvas(const String &id);
+	Handle find_canvas(const String &id, String &warnings);
 
 	//! Finds a child Canvas in the Canvas with the given \a id
 	/*!	\return If found, returns a handle to the child Canvas.
 	**		Otherwise, returns an empty handle.
 	*/
-	ConstHandle find_canvas(const String &id)const;
+	ConstHandle find_canvas(const String &id, String &warnings)const;
 
 	//! Sets the file path for the Canvas
 	//void set_file_path(const String &);

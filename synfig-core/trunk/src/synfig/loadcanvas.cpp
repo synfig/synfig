@@ -39,6 +39,7 @@
 #include <stdexcept>
 #include <iostream>
 
+#include "layer_pastecanvas.h"
 #include "loadcanvas.h"
 #include "valuenode.h"
 #include "valuenode_subtract.h"
@@ -92,6 +93,8 @@ test_class test_class_instance;
 
 inline bool is_whitespace(char x) { return ((x)=='\n' || (x)=='\t' || (x)==' '); }
 
+std::set<String> CanvasParser::loading_;
+
 /* === P R O C E D U R E S ================================================= */
 
 static std::map<String, Canvas::LooseHandle>* open_canvas_map_(0);
@@ -121,19 +124,44 @@ static void _canvas_file_name_changed(Canvas *x)
 }
 
 Canvas::Handle
-synfig::open_canvas(const String &filename,String &errors)
+synfig::open_canvas(const String &filename,String &errors,String &warnings)
 {
-	return open_canvas_as(filename, filename, errors);
+	return open_canvas_as(filename, filename, errors, warnings);
 }
 
 Canvas::Handle
-synfig::open_canvas_as(const String &filename,const String &as,String &errors)
+synfig::open_canvas_as(const String &filename,const String &as,String &errors,String &warnings)
 {
-	CanvasParser parser;
+	if (CanvasParser::loading_.count(filename))
+	{
+		String warning(strprintf(_("cannot load '%s' recursively"), filename.c_str()));
+		synfig::warning(warning);
+		warnings = "  * " + warning + "\n";
+		Canvas::Handle canvas(Canvas::create());
+		canvas->set_file_name(filename);
+		Layer::Handle paste(Layer_PasteCanvas::create());
+		canvas->push_back(paste);
+		paste->set_description(warning);
+		return canvas;
+	}
 
+	Canvas::Handle canvas;
+	CanvasParser parser;
 	parser.set_allow_errors(true);
 
-	Canvas::Handle canvas=parser.parse_from_file_as(filename,as,errors);
+	try
+	{
+		CanvasParser::loading_.insert(filename);
+		canvas=parser.parse_from_file_as(filename,as,errors);
+	}
+	catch (...)
+	{
+		CanvasParser::loading_.erase(filename);
+		throw;
+	}
+	CanvasParser::loading_.erase(filename);
+
+	warnings = parser.get_warnings_text();
 
 	if(parser.error_count())
 	{
@@ -161,10 +189,13 @@ CanvasParser::error_unexpected_element(xmlpp::Node *element,const String &got)
 void
 CanvasParser::warning(xmlpp::Node *element, const String &text)
 {
-	string str=strprintf("%s:<%s>:%d: warning: ",filename.c_str(),element->get_name().c_str(),element->get_line())+text;
-	//synfig::warning(str);
-	cerr<<str<<endl;
+	string str=strprintf("%s:<%s>:%d: ",filename.c_str(),element->get_name().c_str(),element->get_line())+text;
+
+	synfig::warning(str);
+	// cerr<<str<<endl;
+
 	total_warnings_++;
+	warnings_text += "  * " + str + "\n";
 	if(total_warnings_>=max_warnings_)
 		fatal_error(element, _("Too many warnings"));
 }
@@ -908,7 +939,11 @@ CanvasParser::parse_animated(xmlpp::Element *element,Canvas::Handle canvas)
 				//        <waypoint time="0s" use="mycanvas"/>
 				//      </animated>
 				if (type==ValueBase::TYPE_CANVAS)
-					waypoint_value_node=ValueNode_Const::create(canvas->surefind_canvas(child->get_attribute("use")->get_value()));
+				{
+					String warnings;
+					waypoint_value_node=ValueNode_Const::create(canvas->surefind_canvas(child->get_attribute("use")->get_value(), warnings));
+					warnings_text += warnings;
+				}
 				else
 					waypoint_value_node=canvas->surefind_value_node(child->get_attribute("use")->get_value());
 			}
@@ -1718,7 +1753,11 @@ CanvasParser::parse_layer(xmlpp::Element *element,Canvas::Handle canvas)
 					error(child,_("Empty use=\"\" value in <param>"));
 				else if(layer->get_param(param_name).get_type()==ValueBase::TYPE_CANVAS)
 				{
-					if(!layer->set_param(param_name,canvas->surefind_canvas(str)))
+					String warnings;
+					Canvas::Handle c(canvas->surefind_canvas(str, warnings));
+					warnings_text += warnings;
+					if(!c) error((*iter),strprintf(_("Failed to load subcanvas '%s'"), str.c_str()));
+					if(!layer->set_param(param_name,c))
 						error((*iter),_("Layer rejected canvas link"));
 				}
 				else
@@ -1830,7 +1869,9 @@ CanvasParser::parse_canvas(xmlpp::Element *element,Canvas::Handle parent,bool in
 		{
 			try
 			{
-				canvas=parent->find_canvas(element->get_attribute("id")->get_value());
+				String warnings;
+				canvas=parent->find_canvas(element->get_attribute("id")->get_value(), warnings);
+				warnings_text += warnings;
 			}
 			catch(...)
 			{

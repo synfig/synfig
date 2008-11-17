@@ -1174,8 +1174,8 @@ int main(int argc, char *argv[])
 			  return ret;
 
 			// Open the composition
-			String errors;
-			job_list.front().root=open_canvas(job_list.front().filename, errors);
+			String errors, warnings;
+			job_list.front().root=open_canvas(job_list.front().filename, errors, warnings);
 
 			if(!job_list.front().root)
 			{
@@ -1199,7 +1199,8 @@ int main(int argc, char *argv[])
 			{
 				try
 				{
-					job_list.front().canvas=job_list.front().root->find_canvas(canvasid);
+					String warnings;
+					job_list.front().canvas=job_list.front().root->find_canvas(canvasid, warnings);
 				}
 				catch(Exception::IDNotFound)
 				{
@@ -1235,8 +1236,8 @@ int main(int argc, char *argv[])
 				extract_append(imageargs,composite_file);
 				if(!composite_file.empty())
 				{
-					String errors;
-					Canvas::Handle composite(open_canvas(composite_file, errors));
+					String errors, warnings;
+					Canvas::Handle composite(open_canvas(composite_file, errors, warnings));
 					if(!composite)
 					{
 						cerr<<_("Unable to append '")<<composite_file<<"'."<<endl;

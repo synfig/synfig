@@ -47,7 +47,7 @@ using namespace synfig;
 using namespace etl;
 using namespace std;
 
-namespace synfig { extern Canvas::Handle open_canvas(const String &filename, String &errors); };
+namespace synfig { extern Canvas::Handle open_canvas(const String &filename, String &errors, String &warnings); };
 
 /* === M A C R O S ========================================================= */
 
@@ -399,7 +399,8 @@ Canvas::find_value_node(const String &id)const
 	//synfig::warning("constfind:value_node_id: "+value_node_id);
 	//synfig::warning("constfind:canvas_id: "+canvas_id);
 
-	return find_canvas(canvas_id)->value_node_list_.find(value_node_id);
+	String warnings;
+	return find_canvas(canvas_id, warnings)->value_node_list_.find(value_node_id);
 }
 
 ValueNode::Handle
@@ -421,7 +422,8 @@ Canvas::surefind_value_node(const String &id)
 	if(canvas_id.empty())
 		canvas_id=':';
 
-	return surefind_canvas(canvas_id)->value_node_list_.surefind(value_node_id);
+	String warnings;
+	return surefind_canvas(canvas_id,warnings)->value_node_list_.surefind(value_node_id);
 }
 
 void
@@ -506,11 +508,11 @@ Canvas::remove_value_node(ValueNode::Handle x)
 	x->set_id("");
 }
 
-etl::handle<Canvas>
-Canvas::surefind_canvas(const String &id)
+Canvas::Handle
+Canvas::surefind_canvas(const String &id, String &warnings)
 {
 	if(is_inline() && parent_)
-		return parent_->surefind_canvas(id);
+		return parent_->surefind_canvas(id,warnings);
 
 	if(id.empty())
 		return this;
@@ -522,7 +524,7 @@ Canvas::surefind_canvas(const String &id)
 		// If '#' is the first character, remove it
 		// and attempt to parse the ID again.
 		if(id[0]=='#')
-			return surefind_canvas(String(id,1));
+			return surefind_canvas(String(id,1),warnings);
 
 		//! \todo This needs a lot more optimization
 		String file_name(id,0,id.find_first_of('#'));
@@ -539,16 +541,16 @@ Canvas::surefind_canvas(const String &id)
 		{
 			String errors;
 			if(is_absolute_path(file_name))
-				external_canvas=open_canvas(file_name, errors);
+				external_canvas=open_canvas(file_name, errors, warnings);
 			else
-				external_canvas=open_canvas(get_file_path()+ETL_DIRECTORY_SEPARATOR+file_name, errors);
+				external_canvas=open_canvas(get_file_path()+ETL_DIRECTORY_SEPARATOR+file_name, errors, warnings);
 
 			if(!external_canvas)
 				throw runtime_error(errors);
 			externals_[file_name]=external_canvas;
 		}
 
-		return Handle::cast_const(external_canvas.constant()->find_canvas(external_id));
+		return Handle::cast_const(external_canvas.constant()->find_canvas(external_id, warnings));
 	}
 
 	// If we do not have any resolution, then we assume that the
@@ -571,7 +573,7 @@ Canvas::surefind_canvas(const String &id)
 	// If the first character is the separator, then
 	// this references the root canvas.
 	if(id[0]==':')
-		return get_root()->surefind_canvas(string(id,1));
+		return get_root()->surefind_canvas(string(id,1),warnings);
 
 	// Now we know that the requested Canvas is in a child
 	// of this canvas. We have to find that canvas and
@@ -579,25 +581,25 @@ Canvas::surefind_canvas(const String &id)
 
 	String canvas_name=string(id,0,id.find_first_of(':'));
 
-	Canvas::Handle child_canvas=surefind_canvas(canvas_name);
+	Canvas::Handle child_canvas=surefind_canvas(canvas_name,warnings);
 
-	return child_canvas->surefind_canvas(string(id,id.find_first_of(':')+1));
+	return child_canvas->surefind_canvas(string(id,id.find_first_of(':')+1),warnings);
 }
 
 Canvas::Handle
-Canvas::find_canvas(const String &id)
+Canvas::find_canvas(const String &id, String &warnings)
 {
 	return
 		Canvas::Handle::cast_const(
-			const_cast<const Canvas*>(this)->find_canvas(id)
+			const_cast<const Canvas*>(this)->find_canvas(id, warnings)
 		);
 }
 
 Canvas::ConstHandle
-Canvas::find_canvas(const String &id)const
+Canvas::find_canvas(const String &id, String &warnings)const
 {
 	if(is_inline() && parent_)
-		return parent_->find_canvas(id);
+		return parent_->find_canvas(id, warnings);
 
 	if(id.empty())
 		return this;
@@ -609,7 +611,7 @@ Canvas::find_canvas(const String &id)const
 		// If '#' is the first character, remove it
 		// and attempt to parse the ID again.
 		if(id[0]=='#')
-			return find_canvas(String(id,1));
+			return find_canvas(String(id,1), warnings);
 
 		//! \todo This needs a lot more optimization
 		String file_name(id,0,id.find_first_of('#'));
@@ -624,18 +626,18 @@ Canvas::find_canvas(const String &id)const
 			external_canvas=externals_[file_name];
 		else
 		{
-			String errors;
+			String errors, warnings;
 			if(is_absolute_path(file_name))
-				external_canvas=open_canvas(file_name, errors);
+				external_canvas=open_canvas(file_name, errors, warnings);
 			else
-				external_canvas=open_canvas(get_file_path()+ETL_DIRECTORY_SEPARATOR+file_name, errors);
+				external_canvas=open_canvas(get_file_path()+ETL_DIRECTORY_SEPARATOR+file_name, errors, warnings);
 
 			if(!external_canvas)
 				throw runtime_error(errors);
 			externals_[file_name]=external_canvas;
 		}
 
-		return Handle::cast_const(external_canvas.constant()->find_canvas(external_id));
+		return Handle::cast_const(external_canvas.constant()->find_canvas(external_id, warnings));
 	}
 
 	// If we do not have any resolution, then we assume that the
@@ -656,7 +658,7 @@ Canvas::find_canvas(const String &id)const
 	// If the first character is the separator, then
 	// this references the root canvas.
 	if(id[0]==':')
-		return get_root()->find_canvas(string(id,1));
+		return get_root()->find_canvas(string(id,1), warnings);
 
 	// Now we know that the requested Canvas is in a child
 	// of this canvas. We have to find that canvas and
@@ -664,9 +666,9 @@ Canvas::find_canvas(const String &id)const
 
 	String canvas_name=string(id,0,id.find_first_of(':'));
 
-	Canvas::ConstHandle child_canvas=find_canvas(canvas_name);
+	Canvas::ConstHandle child_canvas=find_canvas(canvas_name, warnings);
 
-	return child_canvas->find_canvas(string(id,id.find_first_of(':')+1));
+	return child_canvas->find_canvas(string(id,id.find_first_of(':')+1), warnings);
 }
 
 Canvas::Handle
@@ -914,7 +916,8 @@ Canvas::add_child_canvas(Canvas::Handle child_canvas, const synfig::String& id)
 
 	try
 	{
-		find_canvas(id);
+		String warnings;
+		find_canvas(id, warnings);
 		throw Exception::IDAlreadyExists(id);
 	}
 	catch(Exception::IDNotFound)

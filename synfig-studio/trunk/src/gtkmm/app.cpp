@@ -1450,7 +1450,8 @@ App::set_recent_file_window_size(etl::handle<Instance> instance)
 		// find the canvas
 		synfig::Canvas::Handle canvas;
 		try {
-			canvas = instance->get_canvas()->find_canvas(String(canvas_window_size, current, separator-current));
+			String warnings;
+			canvas = instance->get_canvas()->find_canvas(String(canvas_window_size, current, separator-current), warnings);
 		}
 		catch(Exception::IDNotFound) {
 			// can't find the canvas; skip to the next canvas or return
@@ -2358,9 +2359,9 @@ App::open_as(std::string filename,std::string as)
 	try
 	{
 		OneMoment one_moment;
-		String errors;
+		String errors, warnings;
 
-		etl::handle<synfig::Canvas> canvas(open_canvas_as(filename,as,errors));
+		etl::handle<synfig::Canvas> canvas(open_canvas_as(filename,as,errors,warnings));
 		if(canvas && get_instance(canvas))
 		{
 			get_instance(canvas)->find_canvas_view(canvas)->present();
@@ -2372,6 +2373,9 @@ App::open_as(std::string filename,std::string as)
 			if(!canvas)
 				throw (String)strprintf(_("Unable to load \"%s\":\n\n"),filename.c_str()) + errors;
 
+			if (warnings != "")
+				dialog_warning_blocking(_("Warnings"), strprintf("%s:\n\n%s", _("Warnings"), warnings.c_str()));
+			
 			if (as.find(custom_filename_prefix.c_str()) != 0)
 				add_recent_file(as);
 

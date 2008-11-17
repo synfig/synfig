@@ -150,7 +150,8 @@ Widget_CanvasChooser::chooser_menu()
 	Canvas::Handle new_canvas;
 	try
 	{
-		new_canvas=parent_canvas->find_canvas(canvas_name);
+		String warnings;
+		new_canvas=parent_canvas->find_canvas(canvas_name, warnings);
 		set_value_(new_canvas);
 	}
 	catch(std::runtime_error x)

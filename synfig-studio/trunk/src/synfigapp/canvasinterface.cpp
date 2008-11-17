@@ -579,8 +579,8 @@ CanvasInterface::import(const synfig::String &filename, bool resize_image)
 	// If this is a SIF file, then we need to do things slightly differently
 	if(ext=="sif" || ext=="sifz")try
 	{
-		String errors;
-		Canvas::Handle outside_canvas(synfig::open_canvas(filename, errors));
+		String errors, warnings;
+		Canvas::Handle outside_canvas(synfig::open_canvas(filename, errors, warnings));
 		if(!outside_canvas)
 			throw String(_("Unable to open this composition")) + ":\n\n" + errors;
 

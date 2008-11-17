@@ -74,6 +74,7 @@ private:
 	String path;
 
 	String errors_text;
+	String warnings_text;
 
 	GUID guid_;
 
@@ -116,9 +117,12 @@ public:
 	const synfig::String& get_path()const { return path; }
 
 	const synfig::String& get_errors_text()const { return errors_text; }
+	const synfig::String& get_warnings_text()const { return warnings_text; }
 
 	//! \todo writeme
 	Canvas::Handle parse_from_file_as(const String &filename,const String &as,String &errors);
+
+	static std::set<String> loading_;
 
 private:
 
@@ -168,8 +172,8 @@ private:
 
 //!	Loads a canvas from \a filename
 /*!	\return	The Canvas's handle on success, an empty handle on failure */
-extern Canvas::Handle open_canvas(const String &filename,String &errors);
-extern Canvas::Handle open_canvas_as(const String &filename,const String &as,String &errors);
+extern Canvas::Handle open_canvas(const String &filename,String &errors,String &warnings);
+extern Canvas::Handle open_canvas_as(const String &filename,const String &as,String &errors,String &warnings);
 
 std::map<synfig::String, etl::loose_handle<Canvas> >& get_open_canvas_map();
 
