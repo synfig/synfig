@@ -144,6 +144,10 @@ Action::WaypointRemove::perform()
 		value_node->replace(value_node_ref);
 		value_node->waypoint_list().clear();
 
+		// fix 2256600 : deleting the last waypoint of an exported valuenode unexported it
+		// if the waypoint's value isn't exported, set its id to be the id of the parent node
+		if (value_node_ref->get_id() == "") value_node_ref->set_id(value_node->get_id());
+
 		if(get_canvas_interface())
 		{
 			get_canvas_interface()->signal_value_node_replaced()(value_node,value_node_ref);
