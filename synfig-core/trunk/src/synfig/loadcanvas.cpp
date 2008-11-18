@@ -2167,7 +2167,6 @@ CanvasParser::parse_from_file_as(const String &file_,const String &as_,String &e
 	catch(Exception::IDAlreadyExists) { synfig::error("IDAlreadyExists Thrown"); }
 	catch(xmlpp::internal_error x)
 	{
-		printf("caught internal error\n");
 		if (!strcmp(x.what(), "Couldn't create parsing context"))
 			throw runtime_error(String("  * ") + _("Can't open file") + " \"" + file + "\"");
 		throw;
