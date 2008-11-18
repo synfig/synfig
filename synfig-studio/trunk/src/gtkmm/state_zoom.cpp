@@ -207,7 +207,7 @@ StateZoom_Context::event_mouse_click_handler(const Smach::event& x)
 			v[1] = abs(v[1])/abs(span[1]);
 
 			float zdiv = max(v[0],v[1]);
-			if(zdiv < 1 && zdiv > 0) //must be zoomable
+			if(zdiv > 0) //must be zoomable
 			{
 				get_work_area()->set_focus_point(newpos);
 				get_work_area()->set_zoom(get_work_area()->get_zoom()/zdiv);
