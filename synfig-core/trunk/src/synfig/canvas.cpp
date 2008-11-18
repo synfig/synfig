@@ -52,6 +52,8 @@ namespace synfig { extern Canvas::Handle open_canvas(const String &filename, Str
 
 /* === M A C R O S ========================================================= */
 
+#define ALLOW_CLONE_NON_INLINE_CANVASES
+
 struct _CanvasCounter
 {
 	static int counter;
@@ -781,7 +783,9 @@ Canvas::clone(const GUID& deriv_guid)const
 	{
 		name=get_id()+"_CLONE";
 
+#ifndef ALLOW_CLONE_NON_INLINE_CANVASES
 		throw runtime_error("Cloning of non-inline canvases is not yet supported");
+#endif	// ALLOW_CLONE_NON_INLINE_CANVASES
 	}
 
 	Handle canvas(new Canvas(name));
