@@ -2397,6 +2397,11 @@ App::open_as(std::string filename,std::string as)
 		dialog_error_blocking(_("Error"), x);
 		return false;
 	}
+	catch(runtime_error x)
+	{
+		dialog_error_blocking(_("Error"), x.what());
+		return false;
+	}
 	catch(...)
 	{
 		dialog_error_blocking(_("Error"), _("Uncaught error on file open (BUG)"));
