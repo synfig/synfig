@@ -39,6 +39,7 @@
 #include "time.h"
 #include "context.h"
 #include "layer_pastecanvas.h"
+#include "loadcanvas.h"
 #include <sigc++/bind.h>
 
 #endif
@@ -956,8 +957,24 @@ Canvas::set_file_name(const String &file_name)
 		parent()->set_file_name(file_name);
 	else
 	{
+		String old_name(file_name_);
 		file_name_=file_name;
-		signal_file_name_changed_();
+
+		// when a canvas is made, its name is ""
+		// then, before it's saved or even edited, it gets a name like "Synfig Animation 23", in the local language
+		// we don't want to register the canvas' filename in the canvas map until it gets a real filename
+		if (old_name != "")
+		{
+			file_name_=file_name;
+			std::map<synfig::String, etl::loose_handle<Canvas> >::iterator iter;
+			for(iter=get_open_canvas_map().begin();iter!=get_open_canvas_map().end();++iter)
+				if(iter->second==this)
+					break;
+			if (iter == get_open_canvas_map().end())
+				CanvasParser::register_canvas_in_map(this, file_name);
+			else
+				signal_file_name_changed_();
+		}
 	}
 }
 

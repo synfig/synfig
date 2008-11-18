@@ -119,6 +119,8 @@ public:
 	const synfig::String& get_errors_text()const { return errors_text; }
 	const synfig::String& get_warnings_text()const { return warnings_text; }
 
+	static void register_canvas_in_map(Canvas::Handle canvas, String as);
+
 	//! \todo writeme
 	Canvas::Handle parse_from_file_as(const String &filename,const String &as,String &errors);
 
