@@ -965,7 +965,7 @@ sigc::signal<void>&
 Canvas::signal_file_name_changed()
 {
 	if(parent())
-		return signal_file_name_changed();
+		return parent()->signal_file_name_changed();
 	else
 		return signal_file_name_changed_;
 }
