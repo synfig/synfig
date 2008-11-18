@@ -979,7 +979,7 @@ Instance::process_action(synfig::String name, synfigapp::Action::ParamList param
 			case synfigapp::Action::Param::TYPE_STRING:
 			{
 				String str;
-				if(!studio::App::dialog_entry(entry.local_name, iter->get_local_name()+":"+iter->get_desc(),str))
+				if(!studio::App::dialog_entry(entry.local_name, iter->get_local_name()+": "+iter->get_desc(),str))
 					return;
 				action->set_param(iter->get_name(),str);
 				break;
