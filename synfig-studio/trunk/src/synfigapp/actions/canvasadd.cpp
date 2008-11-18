@@ -94,7 +94,7 @@ Action::CanvasAdd::set_param(const synfig::String& name, const Action::Param &pa
 {
 	if(name=="src" && param.get_type()==Param::TYPE_CANVAS)
 	{
-		new_canvas=param.get_canvas();
+		new_canvas=param.get_canvas()->clone();
 
 		return true;
 	}
