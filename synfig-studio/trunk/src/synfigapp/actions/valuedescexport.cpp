@@ -147,6 +147,7 @@ Action::ValueDescExport::prepare()
 
 	if(value_desc.get_value_type()==ValueBase::TYPE_CANVAS)
 	{
+		// action: CanvasAdd
 		if(!value_desc.is_const())
 			throw Error(_("Can only export Canvas when used as constant parameter"));
 		Canvas::Handle canvas(value_desc.get_value().get(Canvas::Handle()));
@@ -167,7 +168,6 @@ Action::ValueDescExport::prepare()
 		return;
 	}
 
-
 	if(value_desc.is_value_node())
 	{
 		if(value_desc.get_value_node()->is_exported())
@@ -177,6 +177,7 @@ Action::ValueDescExport::prepare()
 	}
 	else
 	{
+		// action: LayerParamConnect
 		if(!value_desc.parent_is_layer_param())
 			throw Error(_("Unable to export parameter. (Bug?)"));
 
@@ -197,6 +198,7 @@ Action::ValueDescExport::prepare()
 		add_action_front(action);
 	}
 
+	// action: ValueNodeAdd
 	Action::Handle action(ValueNodeAdd::create());
 
 	action->set_param("canvas",get_canvas());
