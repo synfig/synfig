@@ -1175,7 +1175,14 @@ int main(int argc, char *argv[])
 
 			// Open the composition
 			String errors, warnings;
-			job_list.front().root=open_canvas(job_list.front().filename, errors, warnings);
+			try
+			{
+				job_list.front().root=open_canvas(job_list.front().filename, errors, warnings);
+			}
+			catch(runtime_error x)
+			{
+				job_list.front().root = 0;
+			}
 
 			if(!job_list.front().root)
 			{
