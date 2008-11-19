@@ -38,6 +38,7 @@
 #include <synfigapp/instance.h>
 #include "app.h"
 #include "instance.h"
+#include <synfig/layer_pastecanvas.h>
 #include <synfigapp/action_system.h>
 
 #include <gtk/gtkversion.h>
@@ -605,6 +606,12 @@ LayerTreeStore::rebuild()
 {
 	if (queued) queued = false;
 
+	// disconnect any subcanvas_changed connections
+	std::map<synfig::Layer::Handle, sigc::connection>::iterator iter;
+	for (iter = subcanvas_changed_connections.begin(); iter != subcanvas_changed_connections.end(); iter++)
+		iter->second.disconnect();
+	subcanvas_changed_connections.clear();
+
 	//etl::clock timer;timer.reset();
 
 	//synfig::warning("---------rebuilding layer table---------");
@@ -753,6 +760,12 @@ LayerTreeStore::set_row_layer(Gtk::TreeRow &row,synfig::Layer::Handle &handle)
 void
 LayerTreeStore::on_layer_added(synfig::Layer::Handle layer)
 {
+	if (etl::handle<Layer_PasteCanvas>::cast_dynamic(layer))
+		subcanvas_changed_connections[layer] =
+			(etl::handle<Layer_PasteCanvas>::cast_dynamic(layer))->signal_subcanvas_changed().connect(
+				sigc::mem_fun(*this,&studio::LayerTreeStore::queue_rebuild)
+			);
+
 	assert(layer);
 	Gtk::TreeRow row;
 	if(canvas_interface()->get_canvas()==layer->get_canvas())
@@ -775,6 +788,11 @@ LayerTreeStore::on_layer_added(synfig::Layer::Handle layer)
 void
 LayerTreeStore::on_layer_removed(synfig::Layer::Handle handle)
 {
+	if (etl::handle<Layer_PasteCanvas>::cast_dynamic(handle))
+	{
+		subcanvas_changed_connections[handle].disconnect();
+		subcanvas_changed_connections.erase(handle);
+	}
 	Gtk::TreeModel::Children::iterator iter;
 	if(find_layer_row(handle,iter))
 		erase(iter);
