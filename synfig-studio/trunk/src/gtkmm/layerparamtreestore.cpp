@@ -286,7 +286,7 @@ LayerParamTreeStore::set_value_impl(const Gtk::TreeModel::iterator& iter, int co
 	}
 	catch(std::exception x)
 	{
-		g_warning(x.what());
+		g_warning("%s", x.what());
 	}
 }
 

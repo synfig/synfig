@@ -351,7 +351,7 @@ LayerTreeStore::set_value_impl(const Gtk::TreeModel::iterator& iter, int column,
 	}
 	catch(std::exception x)
 	{
-		g_warning(x.what());
+		g_warning("%s", x.what());
 	}
 }
 
