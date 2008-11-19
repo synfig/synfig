@@ -173,11 +173,6 @@ StateStroke_Context::event_mouse_up_handler(const Smach::event& x)
 			throw Smach::pop_exception();
 		}
 
-	case BUTTON_RIGHT: // Intercept the right-button click to short-circuit the pop-up menu
-		printf("%s:%d BUTTON_RIGHT\n", __FILE__, __LINE__);
-		if (!getenv("SYNFIG_ENABLE_POPUP_MENU_IN_ALL_TOOLS"))
-			return Smach::RESULT_ACCEPT;
-
 	default:
 		return Smach::RESULT_OK;
 	}
@@ -196,11 +191,6 @@ StateStroke_Context::event_mouse_draw_handler(const Smach::event& x)
 			get_work_area()->queue_draw();
 			return Smach::RESULT_ACCEPT;
 		}
-
-	case BUTTON_RIGHT: // Intercept the right-button click to short-circuit the pop-up menu
-		printf("%s:%d BUTTON_RIGHT\n", __FILE__, __LINE__);
-		if (!getenv("SYNFIG_ENABLE_POPUP_MENU_IN_ALL_TOOLS"))
-			return Smach::RESULT_ACCEPT;
 
 	default:
 		return Smach::RESULT_OK;

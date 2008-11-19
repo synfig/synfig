@@ -589,10 +589,6 @@ StateDraw_Context::event_mouse_down_handler(const Smach::event& x)
 			return Smach::RESULT_ACCEPT;
 		}
 
-	case BUTTON_RIGHT: // Intercept the right-button click to short-circuit the pop-up menu
-		if (!getenv("SYNFIG_ENABLE_POPUP_MENU_IN_ALL_TOOLS"))
-			return Smach::RESULT_ACCEPT;
-
 	default:
 		return Smach::RESULT_OK;
 	}
