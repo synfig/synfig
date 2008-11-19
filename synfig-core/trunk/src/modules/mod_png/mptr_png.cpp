@@ -301,7 +301,6 @@ png_mptr::png_mptr(const char *file_name)
 		break;
 
 	case PNG_COLOR_TYPE_PALETTE:
-		synfig::warning("png_mptr: Paletted PNGs aren't yet fully supported.");
 		for(y=0;y<height;y++)
 			for(x=0;x<width;x++)
 			{
