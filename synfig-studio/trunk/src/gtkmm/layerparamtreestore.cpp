@@ -79,7 +79,7 @@ LayerParamTreeStore::LayerParamTreeStore(etl::loose_handle<synfigapp::CanvasInte
 	CanvasTreeStore			(canvas_interface_),
 	layer_tree				(layer_tree)
 {
-	queued=false;
+	queued=0;
 	// Connect all the signals
 	canvas_interface()->signal_value_node_changed().connect(sigc::mem_fun(*this,&studio::LayerParamTreeStore::on_value_node_changed));
 	canvas_interface()->signal_value_node_renamed().connect(sigc::mem_fun(*this,&studio::LayerParamTreeStore::on_value_node_renamed));
@@ -303,7 +303,7 @@ void
 LayerParamTreeStore::rebuild()
 {
 	// Profiler profiler("LayerParamTreeStore::rebuild()");
-	if(queued)queued=false;
+	if(queued)queued=0;
 	clear();
 	layer_list=layer_tree->get_selected_layers();
 
@@ -474,7 +474,7 @@ LayerParamTreeStore::queue_rebuild()
 void
 LayerParamTreeStore::refresh()
 {
-	if(queued)queued=false;
+	if(queued)queued=0;
 
 	Gtk::TreeModel::Children children_(children());
 
