@@ -276,8 +276,7 @@ void
 Layer::on_changed()
 {
 	dirty_time_=Time::end();
-	if(active())
-		Node::on_changed();
+	Node::on_changed();
 }
 
 bool
