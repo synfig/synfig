@@ -97,6 +97,23 @@ private:
 	// did, but we've forgotten whether we did.  So we use this
 	// 'extra_reference' member to store that decision.
 	bool extra_reference;
+
+	/*
+ -- ** -- S I G N A L S -------------------------------------------------------
+	*/
+
+private:
+
+	sigc::signal<void> signal_subcanvas_changed_;
+
+	/*
+ -- ** -- S I G N A L   I N T E R F A C E -------------------------------------
+	*/
+
+public:
+
+	sigc::signal<void>& signal_subcanvas_changed() { return signal_subcanvas_changed_; }
+
 public:
 
 	void update_renddesc();

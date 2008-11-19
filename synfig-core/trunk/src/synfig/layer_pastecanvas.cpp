@@ -212,6 +212,8 @@ Layer_PasteCanvas::set_sub_canvas(etl::handle<synfig::Canvas> x)
 
 	child_changed_connection.disconnect();
 
+	if (canvas != x) signal_subcanvas_changed()();
+
 	canvas=x;
 
 	/*if(canvas)
