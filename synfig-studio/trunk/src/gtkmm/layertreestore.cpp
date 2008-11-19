@@ -70,6 +70,7 @@ static LayerTreeStore::Model& ModelHack()
 
 LayerTreeStore::LayerTreeStore(etl::loose_handle<synfigapp::CanvasInterface> canvas_interface_):
 	Gtk::TreeStore			(ModelHack()),
+	queued					(false),
 	canvas_interface_		(canvas_interface_)
 {
 	layer_icon=Gtk::Button().render_icon(Gtk::StockID("synfig-layer"),Gtk::ICON_SIZE_SMALL_TOOLBAR);
@@ -586,8 +587,24 @@ LayerTreeStore::drag_data_received_vfunc (const TreeModel::Path& dest, const Gtk
 }
 
 void
+LayerTreeStore::queue_rebuild()
+{
+	if (queued) return;
+	queued = false;
+	queue_connection.disconnect();
+	queue_connection=Glib::signal_timeout().connect(
+		sigc::bind_return(
+			sigc::mem_fun(*this,&LayerTreeStore::rebuild),
+			false
+		)
+	,150);
+}
+
+void
 LayerTreeStore::rebuild()
 {
+	if (queued) queued = false;
+
 	//etl::clock timer;timer.reset();
 
 	//synfig::warning("---------rebuilding layer table---------");

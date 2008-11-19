@@ -103,6 +103,10 @@ public:
 
 private:
 
+	bool queued;
+
+	sigc::connection queue_connection;
+
 	etl::loose_handle<synfigapp::CanvasInterface> canvas_interface_;
 
 	Glib::RefPtr<Gdk::Pixbuf> layer_icon;
@@ -183,6 +187,8 @@ public:
 	bool find_layer_row(const synfig::Layer::Handle &handle, Gtk::TreeModel::Children::iterator &iter);
 
 	bool find_prev_layer_row(const synfig::Layer::Handle &handle, Gtk::TreeModel::Children::iterator &iter);
+
+	void queue_rebuild();
 
 	void rebuild();
 
