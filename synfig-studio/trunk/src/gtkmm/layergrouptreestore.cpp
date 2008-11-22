@@ -722,7 +722,7 @@ LayerGroupTreeStore::rebuild()
 			}
 		}
 
-		// Go ahead and and add all the layers
+		// Go ahead and add all the layers
 		/*std::for_each(
 			canvas_interface()->get_canvas()->rbegin(), canvas_interface()->get_canvas()->rend(),
 			sigc::mem_fun(*this, &studio::LayerGroupTreeStore::on_layer_added)
