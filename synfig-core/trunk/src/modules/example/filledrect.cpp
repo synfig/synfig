@@ -332,12 +332,12 @@ FilledRect::accelerated_render(Context context,Surface *surface,int quality, con
 	//the bounds of the rectangle
 	Point p[2] = {point1,point2};
 
-	if((p[0][0] > p[1][0]) ^ wpp < 0)
+	if((p[0][0] > p[1][0]) ^ (wpp < 0))
 	{
 		swap(p[0][0],p[1][0]);
 	}
 
-	if((p[0][1] > p[1][1]) ^ hpp < 0)
+	if((p[0][1] > p[1][1]) ^ (hpp < 0))
 	{
 		swap(p[0][1],p[1][1]);
 	}
