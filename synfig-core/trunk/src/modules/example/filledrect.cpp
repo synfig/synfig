@@ -144,6 +144,26 @@ FilledRect::get_param_vocab()const
 	return ret;
 }
 
+synfig::Layer::Handle
+FilledRect::hit_check(synfig::Context context, const synfig::Point &point)const
+{
+	Color 	clr;
+	Real 	amt;
+
+	if (!get_color(point,clr,amt))
+		return context.hit_check(point);
+
+	synfig::Layer::Handle tmp;
+
+	if (get_blend_method()==Color::BLEND_BEHIND && (tmp=context.hit_check(point)))
+		return tmp;
+
+	if (Color::is_onto(get_blend_method()) && !(context.hit_check(point)))
+		return 0;
+
+	return const_cast<FilledRect*>(this);
+}
+
 bool
 FilledRect::get_color(const Point &pos, Color &out, Real &outamount) const
 {
