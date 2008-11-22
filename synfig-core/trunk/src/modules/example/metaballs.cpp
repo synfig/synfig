@@ -66,7 +66,9 @@ SYNFIG_LAYER_SET_CVS_ID(Metaballs,"$Id$");
 
 Metaballs::Metaballs():
 	Layer_Composite(1.0,Color::BLEND_STRAIGHT),
-	gradient(Color::black(), Color::white())
+	gradient(Color::black(), Color::white()),
+	threshold(0),
+	threshold2(1)
 {
 	centers.push_back(Point( 0, -1.5));	radii.push_back(2.5);	weights.push_back(1);
 	centers.push_back(Point(-2,  1));	radii.push_back(2.5);	weights.push_back(1);
@@ -96,6 +98,7 @@ Metaballs::set_param(const String & param, const ValueBase &value)
 
 	IMPORT(gradient);
 	IMPORT(threshold);
+	IMPORT(threshold2);
 
 	return Layer_Composite::set_param(param,value);
 }
@@ -109,6 +112,7 @@ Metaballs::get_param(const String &param)const
 	EXPORT(weights);
 	EXPORT(centers);
 	EXPORT(threshold);
+	EXPORT(threshold2);
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
@@ -138,7 +142,11 @@ Metaballs::get_param_vocab()const
 	);
 
 	ret.push_back(ParamDesc("threshold")
-		.set_local_name(_("Threshold"))
+		.set_local_name(_("Gradient Left"))
+	);
+
+	ret.push_back(ParamDesc("threshold2")
+		.set_local_name(_("Gradient Right"))
 	);
 
 	return ret;
@@ -171,7 +179,7 @@ Metaballs::totaldensity(const Point &pos) const
 	for(unsigned int i=0;i<centers.size();i++)
 		density += weights[i] * densityfunc(pos,centers[i], radii[i]);
 
-	return density;
+	return (density - threshold) / (threshold2 - threshold);
 }
 
 Color

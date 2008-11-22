@@ -51,7 +51,7 @@ private:
 	std::vector<synfig::Real>	weights;
 
 	synfig::Real	threshold;
-	//Real	threshold2;
+	synfig::Real	threshold2;
 
 	synfig::Real totaldensity(const synfig::Point &pos)const;
 
