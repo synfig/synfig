@@ -166,9 +166,7 @@ Metaballs::totaldensity(const Point &pos) const
 
 	//sum up weighted functions
 	for(unsigned int i=0;i<centers.size();i++)
-	{
 		density += weights[i] * densityfunc(pos,centers[i], radii[i]);
-	}
 
 	return density;
 }
@@ -176,9 +174,7 @@ Metaballs::totaldensity(const Point &pos) const
 Color
 Metaballs::get_color(Context context, const Point &pos)const
 {
-	Real dens = totaldensity(pos);
-
-	if(dens >= threshold)
+	if (totaldensity(pos) >= threshold)
 		return color;
 	else
 		return context.get_color(pos);
@@ -188,20 +184,13 @@ bool
 Metaballs::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
 	// Width and Height of a pixel
-	const Point br(renddesc.get_br()),
-				tl(renddesc.get_tl());
-
-	const int 	w = renddesc.get_w(),
-				h = renddesc.get_h();
-
-	Real	pw = renddesc.get_pw();
-	Real	ph = renddesc.get_ph();
+	const Point br(renddesc.get_br()), tl(renddesc.get_tl());
+	const int 	 w(renddesc.get_w()), 	h(renddesc.get_h());
+	const Real	pw(renddesc.get_pw()), ph(renddesc.get_ph());
 
 	SuperCallback supercb(cb,0,9000,10000);
 
 	Point pos(tl[0],tl[1]);
-
-	Real	dens;
 
 	if(!context.accelerated_render(surface,quality,renddesc,&supercb))
 	{
@@ -213,14 +202,8 @@ Metaballs::accelerated_render(Context context,Surface *surface,int quality, cons
 	{
 		pos[0] = tl[0];
 		for(int x = 0; x < w; x++, pos[0] += pw)
-		{
-			dens = totaldensity(pos);
-
-			if(dens >= threshold)
-			{
+			if (totaldensity(pos) >= threshold)
 				(*surface)[y][x] = Color::blend(color,(*surface)[y][x],get_amount(),get_blend_method());
-			}
-		}
 	}
 
 	// Mark our progress as finished
