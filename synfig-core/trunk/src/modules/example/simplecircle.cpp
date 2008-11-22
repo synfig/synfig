@@ -54,7 +54,7 @@ using namespace synfig;
 SYNFIG_LAYER_INIT(SimpleCircle);
 SYNFIG_LAYER_SET_NAME(SimpleCircle,"simple_circle");
 SYNFIG_LAYER_SET_LOCAL_NAME(SimpleCircle,N_("Simple Circle"));
-SYNFIG_LAYER_SET_CATEGORY(SimpleCircle,CATEGORY_DO_NOT_USE);
+SYNFIG_LAYER_SET_CATEGORY(SimpleCircle,N_("Example"));
 SYNFIG_LAYER_SET_VERSION(SimpleCircle,"0.1");
 SYNFIG_LAYER_SET_CVS_ID(SimpleCircle,"$Id$");
 
