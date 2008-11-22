@@ -53,8 +53,8 @@ using namespace synfig;
 /* === G L O B A L S ======================================================= */
 
 SYNFIG_LAYER_INIT(FilledRect);
-SYNFIG_LAYER_SET_NAME(FilledRect,"rectangle");
-SYNFIG_LAYER_SET_LOCAL_NAME(FilledRect,N_("Rectangle"));
+SYNFIG_LAYER_SET_NAME(FilledRect,"filled_rectangle");
+SYNFIG_LAYER_SET_LOCAL_NAME(FilledRect,N_("Filled Rectangle"));
 SYNFIG_LAYER_SET_CATEGORY(FilledRect,N_("Example"));
 SYNFIG_LAYER_SET_VERSION(FilledRect,"0.1");
 SYNFIG_LAYER_SET_CVS_ID(FilledRect,"$Id$");
