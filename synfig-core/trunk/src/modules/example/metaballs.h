@@ -28,7 +28,7 @@
 /* === H E A D E R S ======================================================= */
 
 #include <synfig/layer_composite.h>
-#include <synfig/color.h>
+#include <synfig/gradient.h>
 #include <synfig/vector.h>
 #include <synfig/value.h>
 #include <vector>
@@ -44,7 +44,7 @@ class Metaballs : public synfig::Layer_Composite
 
 private:
 
-	synfig::Color color;
+	synfig::Gradient gradient;
 
 	std::vector<synfig::Point>	centers;
 	std::vector<synfig::Real>	radii;

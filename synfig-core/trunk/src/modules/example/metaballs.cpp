@@ -66,7 +66,7 @@ SYNFIG_LAYER_SET_CVS_ID(Metaballs,"$Id$");
 
 Metaballs::Metaballs():
 	Layer_Composite(1.0,Color::BLEND_STRAIGHT),
-	color(Color::black())
+	gradient(Color::black(), Color::white())
 {
 	centers.push_back(Point( 0, -1.5));	radii.push_back(2.5);	weights.push_back(1);
 	centers.push_back(Point(-2,  1));	radii.push_back(2.5);	weights.push_back(1);
@@ -94,7 +94,7 @@ Metaballs::set_param(const String & param, const ValueBase &value)
 		return true;
 	}
 
-	IMPORT(color);
+	IMPORT(gradient);
 	IMPORT(threshold);
 
 	return Layer_Composite::set_param(param,value);
@@ -103,7 +103,7 @@ Metaballs::set_param(const String & param, const ValueBase &value)
 ValueBase
 Metaballs::get_param(const String &param)const
 {
-	EXPORT(color);
+	EXPORT(gradient);
 
 	EXPORT(radii);
 	EXPORT(weights);
@@ -121,8 +121,8 @@ Metaballs::get_param_vocab()const
 {
 	Layer::Vocab ret(Layer_Composite::get_param_vocab());
 
-	ret.push_back(ParamDesc("color")
-		.set_local_name(_("Color"))
+	ret.push_back(ParamDesc("gradient")
+		.set_local_name(_("Gradient"))
 	);
 
 	ret.push_back(ParamDesc("centers")
@@ -177,15 +177,10 @@ Metaballs::totaldensity(const Point &pos) const
 Color
 Metaballs::get_color(Context context, const Point &pos)const
 {
-	if (totaldensity(pos) >= threshold)
-	{
-		if(get_amount()==1.0 && get_blend_method()==Color::BLEND_STRAIGHT)
-			return color;
-		else
-			return Color::blend(color,context.get_color(pos),get_amount(),get_blend_method());
-	}
+	if(get_amount()==1.0 && get_blend_method()==Color::BLEND_STRAIGHT)
+		return gradient(totaldensity(pos));
 	else
-		return context.get_color(pos);
+		return Color::blend(gradient(totaldensity(pos)),context.get_color(pos),get_amount(),get_blend_method());
 }
 
 bool
@@ -210,8 +205,7 @@ Metaballs::accelerated_render(Context context,Surface *surface,int quality, cons
 	{
 		pos[0] = tl[0];
 		for(int x = 0; x < w; x++, pos[0] += pw)
-			if (totaldensity(pos) >= threshold)
-				(*surface)[y][x] = Color::blend(color,(*surface)[y][x],get_amount(),get_blend_method());
+			(*surface)[y][x] = Color::blend(gradient(totaldensity(pos)),(*surface)[y][x],get_amount(),get_blend_method());
 	}
 
 	// Mark our progress as finished
