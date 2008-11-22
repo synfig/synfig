@@ -68,6 +68,9 @@ Metaballs::Metaballs():
 	Layer_Composite(1.0,Color::BLEND_STRAIGHT),
 	color(Color::black())
 {
+	centers.push_back(Point( 0, -1.5));	radii.push_back(2.5);	weights.push_back(1);
+	centers.push_back(Point(-2,  1));	radii.push_back(2.5);	weights.push_back(1);
+	centers.push_back(Point( 2,  1));	radii.push_back(2.5);	weights.push_back(1);
 }
 
 bool
