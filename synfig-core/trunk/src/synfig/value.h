@@ -320,7 +320,7 @@ public:
 
 	operator const list_type&()const { return get_list(); }
 	//operator const Color&()const { return get(Color()); }
-	//operator const Real&()const { return get(Real()); }
+	operator const Real&()const { return get(Real()); }
 	//operator const Time&()const { return get(Time()); }
 
 	operator const Vector&()const {  return get(Vector()); }
