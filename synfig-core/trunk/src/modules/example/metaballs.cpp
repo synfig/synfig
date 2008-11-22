@@ -68,7 +68,8 @@ Metaballs::Metaballs():
 	Layer_Composite(1.0,Color::BLEND_STRAIGHT),
 	gradient(Color::black(), Color::white()),
 	threshold(0),
-	threshold2(1)
+	threshold2(1),
+	positive(false)
 {
 	centers.push_back(Point( 0, -1.5));	radii.push_back(2.5);	weights.push_back(1);
 	centers.push_back(Point(-2,  1));	radii.push_back(2.5);	weights.push_back(1);
@@ -99,6 +100,7 @@ Metaballs::set_param(const String & param, const ValueBase &value)
 	IMPORT(gradient);
 	IMPORT(threshold);
 	IMPORT(threshold2);
+	IMPORT(positive);
 
 	return Layer_Composite::set_param(param,value);
 }
@@ -113,6 +115,7 @@ Metaballs::get_param(const String &param)const
 	EXPORT(centers);
 	EXPORT(threshold);
 	EXPORT(threshold2);
+	EXPORT(positive);
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
@@ -149,6 +152,10 @@ Metaballs::get_param_vocab()const
 		.set_local_name(_("Gradient Right"))
 	);
 
+	ret.push_back(ParamDesc("positive")
+		.set_local_name(_("Positive Only"))
+	);
+
 	return ret;
 }
 
@@ -158,6 +165,7 @@ static inline Real densityfunc(const synfig::Point &p, const synfig::Point &c, R
 	const Real dy = p[1] - c[1];
 
 	const Real n = (1 - (dx*dx + dy*dy)/(R*R));
+	if (positive && n < 0) return 0;
 	return (n*n*n);
 
 	/*

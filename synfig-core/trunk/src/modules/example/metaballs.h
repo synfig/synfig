@@ -53,6 +53,8 @@ private:
 	synfig::Real	threshold;
 	synfig::Real	threshold2;
 
+	bool positive;
+
 	synfig::Real totaldensity(const synfig::Point &pos)const;
 
 public:
