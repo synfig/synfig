@@ -858,8 +858,7 @@ ValueNode_BLine::get_local_name()const
 LinkableValueNode*
 ValueNode_BLine::create_new()const
 {
-	assert(0);
-	return 0;
+	return new ValueNode_BLine();
 }
 
 bool
