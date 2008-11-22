@@ -680,7 +680,7 @@ ValueNode_DynamicList::clone(const GUID& deriv_guid)const
 			ListEntry list_entry(*iter);
 			//list_entry.value_node=find_value_node(iter->value_node->get_guid()^deriv_guid).get();
 			//if(!list_entry.value_node)
-				list_entry.value_node=iter->value_node->clone(deriv_guid);
+			list_entry.value_node=iter->value_node->clone(deriv_guid);
 			ret->add(list_entry);
 			//ret->list.back().value_node=iter->value_node.clone();
 		}
