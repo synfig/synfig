@@ -482,10 +482,8 @@ public:
 	**  context until the final blend operation. */
 	virtual bool reads_context()const;
 
-#ifdef THIS_CODE_IS_NOT_USED
 	//! Duplicates the Layer without duplicating the value nodes
-	virtual Layer *simple_clone()const;
-#endif /* THIS_CODE_IS_NOT_USED */
+	virtual Handle simple_clone()const;
 
 protected:
 

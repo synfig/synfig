@@ -304,18 +304,20 @@ Layer::get_z_depth(const synfig::Time& t)const
 	return (*dynamic_param_list().find("z_depth")->second)(t).get(Real());
 }
 
-#ifdef THIS_CODE_IS_NOT_USED
-Layer*
+Layer::Handle
 Layer::simple_clone()const
 {
 	if(!book().count(get_name())) return 0;
-	Layer *ret = create(get_name()).get();
-	ret->set_canvas(get_canvas());
+	Handle ret = create(get_name()).get();
+	ret->group_=group_;
+	//ret->set_canvas(get_canvas());
 	ret->set_description(get_description());
+	ret->set_active(active());
 	ret->set_param_list(get_param_list());
+	for(DynamicParamList::const_iterator iter=dynamic_param_list().begin();iter!=dynamic_param_list().end();++iter)
+		ret->connect_dynamic_param(iter->first, iter->second);
 	return ret;
 }
-#endif /* THIS_CODE_IS_NOT_USED */
 
 Layer::Handle
 Layer::clone(const GUID& deriv_guid) const
