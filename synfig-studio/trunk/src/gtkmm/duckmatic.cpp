@@ -1588,13 +1588,13 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 					{
 						if(!param_desc->get_origin().empty())
 						{
-								synfigapp::ValueDesc value_desc_origin(value_desc.get_layer(),param_desc->get_origin());
-								add_to_ducks(value_desc_origin,canvas_view, transform_stack);
-								duck->set_origin(last_duck());
+							synfigapp::ValueDesc value_desc_origin(value_desc.get_layer(),param_desc->get_origin());
+							add_to_ducks(value_desc_origin,canvas_view, transform_stack);
+							duck->set_origin(last_duck());
 /*
-								ValueBase value(synfigapp::ValueDesc(value_desc.get_layer(),param_desc->get_origin()).get_value(get_time()));
-								if(value.same_type_as(synfig::Point()))
-									duck->set_origin(value.get(synfig::Point()));
+							ValueBase value(synfigapp::ValueDesc(value_desc.get_layer(),param_desc->get_origin()).get_value(get_time()));
+							if(value.same_type_as(synfig::Point()))
+								duck->set_origin(value.get(synfig::Point()));
 */
 						}
 					}
@@ -1717,13 +1717,13 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 //					add_duck(duck);
 					if(param_desc)
 					{
-								synfigapp::ValueDesc value_desc_origin(value_desc.get_layer(),param_desc->get_origin());
-								add_to_ducks(value_desc_origin,canvas_view, transform_stack);
-								duck->set_origin(last_duck());
+						synfigapp::ValueDesc value_desc_origin(value_desc.get_layer(),param_desc->get_origin());
+						add_to_ducks(value_desc_origin,canvas_view, transform_stack);
+						duck->set_origin(last_duck());
 /*
-								ValueBase value(synfigapp::ValueDesc(value_desc.get_layer(),param_desc->get_origin()).get_value(get_time()));
-								if(value.same_type_as(synfig::Point()))
-									duck->set_origin(value.get(synfig::Point()));
+						ValueBase value(synfigapp::ValueDesc(value_desc.get_layer(),param_desc->get_origin()).get_value(get_time()));
+						if(value.same_type_as(synfig::Point()))
+							duck->set_origin(value.get(synfig::Point()));
 */
 //						if(!param_desc->get_origin().empty())
 //							duck->set_origin(synfigapp::ValueDesc(value_desc.get_layer(),param_desc->get_origin()).get_value(get_time()).get(synfig::Point()));
@@ -1844,13 +1844,13 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 
 					if(param_desc && !param_desc->get_origin().empty())
 					{
-								synfigapp::ValueDesc value_desc_origin(value_desc.get_layer(),param_desc->get_origin());
-								add_to_ducks(value_desc_origin,canvas_view, transform_stack);
-								duck->set_origin(last_duck());
+						synfigapp::ValueDesc value_desc_origin(value_desc.get_layer(),param_desc->get_origin());
+						add_to_ducks(value_desc_origin,canvas_view, transform_stack);
+						duck->set_origin(last_duck());
 /*
-								ValueBase value(synfigapp::ValueDesc(value_desc.get_layer(),param_desc->get_origin()).get_value(get_time()));
-								if(value.same_type_as(synfig::Point()))
-									duck->set_origin(value.get(synfig::Point()));
+						ValueBase value(synfigapp::ValueDesc(value_desc.get_layer(),param_desc->get_origin()).get_value(get_time()));
+						if(value.same_type_as(synfig::Point()))
+							duck->set_origin(value.get(synfig::Point()));
 */
 //						if(!param_desc->get_origin().empty())
 //							last_duck()->set_origin(synfigapp::ValueDesc(value_desc.get_layer(),param_desc->get_origin()).get_value(get_time()).get(synfig::Point()));
