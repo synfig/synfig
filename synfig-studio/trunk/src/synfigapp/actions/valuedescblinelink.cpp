@@ -165,7 +165,7 @@ Action::ValueDescBLineLink::prepare()
 	ValueNode_DynamicList::Handle bline_value_node(ValueNode_DynamicList::Handle::cast_dynamic(value_desc.get_parent_value_node()));
 	bool loop(bline_value_node->get_loop());
 	int loop_adjust(loop ? 0 : -1);
-	const std::vector<ValueBase> bline((*bline_value_node)(time));
+	const std::vector<ValueBase> bline((*bline_value_node)(time).get_list());
 	int size = bline.size();
 	Real amount = (index + origin + loop_adjust) / (size + loop_adjust);
 	LinkableValueNode::Handle calculated_value_node;

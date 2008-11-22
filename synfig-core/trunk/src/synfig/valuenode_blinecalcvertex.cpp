@@ -87,7 +87,7 @@ ValueNode_BLineCalcVertex::~ValueNode_BLineCalcVertex()
 ValueBase
 ValueNode_BLineCalcVertex::operator()(Time t)const
 {
-	const std::vector<ValueBase> bline((*bline_)(t));
+	const std::vector<ValueBase> bline((*bline_)(t).get_list());
 	handle<ValueNode_BLine> bline_value_node(bline_);
 	const bool looped(bline_value_node->get_loop());
 	int size = bline.size(), from_vertex;

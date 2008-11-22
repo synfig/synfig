@@ -90,7 +90,7 @@ ValueNode_BLineCalcTangent::~ValueNode_BLineCalcTangent()
 ValueBase
 ValueNode_BLineCalcTangent::operator()(Time t, Real amount)const
 {
-	const std::vector<ValueBase> bline((*bline_)(t));
+	const std::vector<ValueBase> bline((*bline_)(t).get_list());
 	handle<ValueNode_BLine> bline_value_node(bline_);
 	const bool looped(bline_value_node->get_loop());
 	int size = bline.size(), from_vertex;
