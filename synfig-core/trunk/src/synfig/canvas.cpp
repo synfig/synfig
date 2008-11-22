@@ -1236,7 +1236,8 @@ synfig::optimize_layers(Time time, Context context, Canvas::Handle op_canvas, bo
 				!composite->reads_context())
 			{
 				Canvas::Handle sub_canvas(Canvas::create_inline(op_canvas));
-				sub_canvas->push_back(composite = composite->clone());
+				// don't use clone() because it re-randomizes the seeds of any random valuenodes
+				sub_canvas->push_back(composite = composite->simple_clone());
 				layer = Layer::create("PasteCanvas");
 				composite->set_description(strprintf("Wrapped clone of '%s'", composite->get_non_empty_description().c_str()));
 				layer->set_description(strprintf("PasteCanvas wrapper for '%s'", composite->get_non_empty_description().c_str()));
