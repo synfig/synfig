@@ -79,8 +79,6 @@ public:
 	virtual String get_name()const;
 	virtual String get_local_name()const;
 
-	virtual ValueNode* clone(const GUID& deriv_guid=GUID())const;
-
 	virtual ListEntry create_list_entry(int index, Time time=0, Real origin=0.5);
 
 protected:

@@ -814,35 +814,6 @@ ValueNode_BLine::link_local_name(int i)const
 	return etl::strprintf(_("Vertex %03d"),i+1);
 }
 
-ValueNode*
-ValueNode_BLine::clone(const GUID& deriv_guid)const
-{
-	{ ValueNode* x(find_value_node(get_guid()^deriv_guid).get()); if(x)return x; }
-
-	ValueNode_BLine* ret=new ValueNode_BLine();
-	ret->set_guid(get_guid()^deriv_guid);
-
-	std::vector<ListEntry>::const_iterator iter;
-
-	for(iter=list.begin();iter!=list.end();++iter)
-	{
-		if(iter->value_node->is_exported())
-			ret->add(*iter);
-		else
-		{
-			ListEntry list_entry(*iter);
-			//list_entry.value_node=find_value_node(iter->value_node->get_guid()^deriv_guid).get();
-			//if(!list_entry.value_node)
-				list_entry.value_node=iter->value_node->clone(deriv_guid);
-			ret->add(list_entry);
-			//ret->list.back().value_node=iter->value_node.clone();
-		}
-	}
-	ret->set_loop(get_loop());
-
-	return ret;
-}
-
 String
 ValueNode_BLine::get_name()const
 {
