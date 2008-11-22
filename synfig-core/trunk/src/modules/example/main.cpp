@@ -54,8 +54,8 @@ MODULE_DESC_END
 
 MODULE_INVENTORY_BEGIN(example)
 	BEGIN_LAYERS
-		//LAYER(SimpleCircle)
-		//LAYER(FilledRect)
-		//LAYER(Metaballs)
+		LAYER(SimpleCircle)
+		LAYER(FilledRect)
+		LAYER(Metaballs)
 	END_LAYERS
 MODULE_INVENTORY_END
