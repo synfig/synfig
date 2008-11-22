@@ -735,9 +735,7 @@ ValueNode_DynamicList::get_contained_type()const
 LinkableValueNode*
 ValueNode_DynamicList::create_new()const
 {
-	assert(0);
-
-	return 0;
+	return new ValueNode_DynamicList(container_type);
 }
 
 int
