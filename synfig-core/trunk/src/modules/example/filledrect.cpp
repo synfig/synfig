@@ -119,6 +119,7 @@ FilledRect::get_param_vocab()const
 
 	ret.push_back(ParamDesc("point1")
 		.set_local_name(_("Point 1"))
+		.set_box("point2")
 	);
 
 	ret.push_back(ParamDesc("point2")
