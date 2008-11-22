@@ -541,6 +541,8 @@ public:
 
 	Handle clone(const GUID& deriv_guid=GUID())const;
 
+	void register_external_canvas(String file, Handle canvas);
+
 private:
 	void add_group_pair(String group, etl::handle<Layer> layer);
 	void remove_group_pair(String group, etl::handle<Layer> layer);

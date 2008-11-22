@@ -1385,3 +1385,10 @@ Canvas::rename_group(const String&old_name,const String&new_name)
 		(*iter)->add_to_group(new_name);
 	}
 }
+
+void
+Canvas::register_external_canvas(String file_name, Handle canvas)
+{
+	if(!is_absolute_path(file_name)) file_name = get_file_path()+ETL_DIRECTORY_SEPARATOR+file_name;
+	externals_[file_name] = canvas;
+}
