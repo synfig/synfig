@@ -199,12 +199,6 @@ Metaballs::accelerated_render(Context context,Surface *surface,int quality, cons
 
 	SuperCallback supercb(cb,0,9000,10000);
 
-	if(!context.accelerated_render(surface,quality,renddesc,&supercb))
-	{
-		if(cb)cb->error(strprintf(__FILE__"%d: Accelerated Renderer Failure",__LINE__));
-		return false;
-	}
-
 	Point pos(tl[0],tl[1]);
 
 	Real	dens;
