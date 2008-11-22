@@ -666,7 +666,7 @@ ValueNode_DynamicList::clone(const GUID& deriv_guid)const
 {
 	{ ValueNode* x(find_value_node(get_guid()^deriv_guid).get()); if(x)return x; }
 
-	ValueNode_DynamicList* ret=new ValueNode_DynamicList(container_type);
+	ValueNode_DynamicList* ret=dynamic_cast<ValueNode_DynamicList*>(create_new());
 	ret->set_guid(get_guid()^deriv_guid);
 
 	std::vector<ListEntry>::const_iterator iter;
