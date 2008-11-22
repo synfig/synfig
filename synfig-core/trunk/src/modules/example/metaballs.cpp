@@ -178,7 +178,12 @@ Color
 Metaballs::get_color(Context context, const Point &pos)const
 {
 	if (totaldensity(pos) >= threshold)
-		return Color::blend(color,context.get_color(pos),get_amount(),get_blend_method());
+	{
+		if(get_amount()==1.0 && get_blend_method()==Color::BLEND_STRAIGHT)
+			return color;
+		else
+			return Color::blend(color,context.get_color(pos),get_amount(),get_blend_method());
+	}
 	else
 		return context.get_color(pos);
 }
