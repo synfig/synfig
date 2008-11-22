@@ -55,6 +55,8 @@ private:
 
 	bool positive;
 
+	synfig::Real densityfunc(const synfig::Point &p, const synfig::Point &c, synfig::Real R)const;
+
 	synfig::Real totaldensity(const synfig::Point &pos)const;
 
 public:
@@ -70,6 +72,8 @@ public:
 	virtual bool accelerated_render(synfig::Context context,synfig::Surface *surface,int quality, const synfig::RendDesc &renddesc, synfig::ProgressCallback *cb)const;
 
 	virtual Vocab get_param_vocab()const;
+
+	virtual synfig::Layer::Handle hit_check(synfig::Context context, const synfig::Point &point)const;
 }; // END of class Metaballs
 
 /* === E N D =============================================================== */

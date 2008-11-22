@@ -159,7 +159,27 @@ Metaballs::get_param_vocab()const
 	return ret;
 }
 
-static inline Real densityfunc(const synfig::Point &p, const synfig::Point &c, Real R)
+synfig::Layer::Handle
+Metaballs::hit_check(synfig::Context context, const synfig::Point &point)const
+{
+	Real density(totaldensity(point));
+
+	if (density <= 0 || density > 1 || get_amount() == 0)
+		return context.hit_check(point);
+
+	synfig::Layer::Handle tmp;
+
+	if (get_blend_method()==Color::BLEND_BEHIND && (tmp=context.hit_check(point)))
+		return tmp;
+
+	if (Color::is_onto(get_blend_method()) && !(context.hit_check(point)))
+		return 0;
+
+	return const_cast<Metaballs*>(this);
+}
+
+Real
+Metaballs::densityfunc(const synfig::Point &p, const synfig::Point &c, Real R)const
 {
 	const Real dx = p[0] - c[0];
 	const Real dy = p[1] - c[1];
@@ -179,7 +199,7 @@ static inline Real densityfunc(const synfig::Point &p, const synfig::Point &c, R
 }
 
 Real
-Metaballs::totaldensity(const Point &pos) const
+Metaballs::totaldensity(const Point &pos)const
 {
 	Real density = 0;
 
