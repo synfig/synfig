@@ -588,6 +588,7 @@ CanvasInterface::import(const synfig::String &filename, synfig::String &errors, 
 			throw String(_("Unable to create \"Paste Canvas\" layer"));
 		if(!layer->set_param("canvas",ValueBase(outside_canvas)))
 			throw int();
+		get_canvas()->register_external_canvas(filename, outside_canvas);
 
 		//layer->set_description(basename(filename));
 		signal_layer_new_description()(layer,filename);
