@@ -1842,7 +1842,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 						first_duck = duck;
 					}
 
-					if(param_desc)
+					if(param_desc && !param_desc->get_origin().empty())
 					{
 								synfigapp::ValueDesc value_desc_origin(value_desc.get_layer(),param_desc->get_origin());
 								add_to_ducks(value_desc_origin,canvas_view, transform_stack);
