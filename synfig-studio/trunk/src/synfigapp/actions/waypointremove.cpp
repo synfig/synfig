@@ -141,12 +141,18 @@ Action::WaypointRemove::perform()
 				throw Error(_("Unable to create ValueNode_Reference"));
 		}
 
+		// fix 2256600 (and 2321845) : deleting the last waypoint of an exported valuenode unexported it
+		// if the waypoint's value isn't exported, set its id to be the id of the parent node
+		if (value_node_ref->get_id() == "" && value_node->get_id() != "")
+		{
+			const String id(value_node->get_id());
+			Canvas::LooseHandle canvas(value_node->get_parent_canvas());
+			canvas->remove_value_node(value_node);
+			canvas->add_value_node(value_node_ref, id);
+		}
+
 		value_node->replace(value_node_ref);
 		value_node->waypoint_list().clear();
-
-		// fix 2256600 : deleting the last waypoint of an exported valuenode unexported it
-		// if the waypoint's value isn't exported, set its id to be the id of the parent node
-		if (value_node_ref->get_id() == "") value_node_ref->set_id(value_node->get_id());
 
 		if(get_canvas_interface())
 		{
@@ -164,6 +170,14 @@ Action::WaypointRemove::undo()
 	{
 		if(value_node->waypoint_list().size()!=0)
 			throw Error(_("This animated value node should be empty, but for some reason it isn't. This is a bug. (1)"));
+
+		if (value_node->get_id() == "" && value_node_ref->get_id() != "")
+		{
+			const String id(value_node_ref->get_id());
+			Canvas::LooseHandle canvas(value_node_ref->get_parent_canvas());
+			canvas->remove_value_node(value_node_ref);
+			canvas->add_value_node(value_node, id);
+		}
 
 		value_node_ref->replace(value_node);
 
