@@ -224,7 +224,7 @@ public:
 	swap(handle<value_type> &x)
 	{
 		pointer ptr=x.obj;
-		x.obj=x.get();
+		x.obj=obj;
 		obj=ptr;
 		return *this;
 	}
@@ -625,7 +625,7 @@ public:
 	{
 		assert(0);
 		pointer ptr=x.obj;
-		x.obj=x.get();
+		x.obj=obj;
 		obj=ptr;
 		return *this;
 	}
@@ -707,7 +707,7 @@ public:
 	swap(loose_handle<value_type> &x)
 	{
 		pointer ptr=x.obj;
-		x.obj=x.get();
+		x.obj=obj;
 		obj=ptr;
 		return *this;
 	}
