@@ -167,6 +167,17 @@ int handle_general_use_test(void)
 		return 1;
 	}
 
+	{
+		obj_handle a(new my_test_obj(27)), b(new my_test_obj(42));
+		a.swap(b);
+		if (a->my_id != 42 || b->my_id != 27)
+		{
+			printf("FAILED!\n");
+			printf(__FILE__":%d: On swap (27,42) gave (%d,%d), should be (42,27).\n",__LINE__,a->my_id,b->my_id);
+			return 1;
+		}
+	}
+
 	my_other_list.clear();
 	if(my_test_obj::instance_count)
 	{
@@ -430,10 +441,21 @@ int loose_handle_test(void)
 		}
 	}
 
-	if(my_test_obj::instance_count!=1)
+	{
+		etl::loose_handle<my_test_obj> a(new my_test_obj(27)), b(new my_test_obj(42));
+		a.swap(b);
+		if (a->my_id != 42 || b->my_id != 27)
+		{
+			printf("FAILED!\n");
+			printf(__FILE__":%d: on loose_handle swap (27,42) gave (%d,%d), should be (42,27).\n",__LINE__,a->my_id,b->my_id);
+			return 1;
+		}
+	}
+
+	if(my_test_obj::instance_count!=3)
 	{
 		printf("FAILED!\n");
-		printf(__FILE__":%d: on create/destroy, instance count=%d, should be 1.\n",__LINE__,my_test_obj::instance_count);
+		printf(__FILE__":%d: on create/destroy, instance count=%d, should be 3.\n",__LINE__,my_test_obj::instance_count);
 		return 1;
 	}
 
