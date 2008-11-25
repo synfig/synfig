@@ -448,7 +448,7 @@ KeyframeTreeStore::set_value_impl(const Gtk::TreeModel::iterator& row, int colum
 	}
 	catch(std::exception x)
 	{
-		g_warning(x.what());
+		g_warning("%s", x.what());
 	}
 }
 
@@ -828,7 +828,7 @@ KeyframeTreeStore::add_keyframe(synfig::Keyframe keyframe)
 	}
 	catch(std::exception x)
 	{
-		g_warning(x.what());
+		g_warning("%s", x.what());
 	}
 }
 
@@ -853,7 +853,7 @@ KeyframeTreeStore::remove_keyframe(synfig::Keyframe keyframe)
 	}
 	catch(std::exception x)
 	{
-		g_warning(x.what());
+		g_warning("%s", x.what());
 	}
 }
 
@@ -896,6 +896,6 @@ KeyframeTreeStore::change_keyframe(synfig::Keyframe keyframe)
 	}
 	catch(std::exception x)
 	{
-		g_warning(x.what());
+		g_warning("%s", x.what());
 	}
 }
