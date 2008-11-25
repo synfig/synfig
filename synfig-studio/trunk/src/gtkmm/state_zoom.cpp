@@ -182,36 +182,33 @@ StateZoom_Context::event_mouse_click_handler(const Smach::event& x)
 
 		if(event.button==BUTTON_LEFT)
 		{
-			//respond to event box...
-
-
-			//Center the new position at the center of the box
-
-			//OH MY GOD HACK - the space is -1* and offset (by the value of the center of the canvas)...
-			Point newpos;
-			{
-				const Point evcenter = (event.p1+event.p2)/2;
-				const Point realcenter = (get_work_area()->get_window_tl() + get_work_area()->get_window_br())/2;
-				newpos = -(evcenter - realcenter) + get_work_area()->get_focus_point();
-			}
-
-			//The zoom will be whatever the required factor to convert current box size to desired box size
 			Point tl = get_work_area()->get_window_tl();
 			Point br = get_work_area()->get_window_br();
+			Vector	window_span = br - tl, window_middle = (br+tl)/2;
+			Vector	box_span = event.p2 - event.p1, box_middle = (event.p1+event.p2)/2;
+			Point newpos;
+			float zoom;
 
-			Vector	span = br - tl;
-			Vector	v = event.p2 - event.p1;
-
-			//get the minimum zoom as long as it's greater than 1...
-			v[0] = abs(v[0])/abs(span[0]);
-			v[1] = abs(v[1])/abs(span[1]);
-
-			float zdiv = max(v[0],v[1]);
-			if(zdiv > 0) //must be zoomable
+			if(event.modifier & Gdk::CONTROL_MASK) //zoom out...
 			{
-				get_work_area()->set_focus_point(newpos);
-				get_work_area()->set_zoom(get_work_area()->get_zoom()/zdiv);
+				if (window_span[0] == 0 || window_span[1] == 0) zoom = 1;
+				else zoom = max(abs(box_span[0]/window_span[0]), abs(box_span[1]/window_span[1]));
+
+				// focus_point is -1 times the real position for some reason...
+				// center the window so the old contents fill the drawn box
+				newpos = -((window_middle - box_middle)/zoom + window_middle);
 			}
+			else				// zoom in
+			{
+				if (box_span[0] == 0 || box_span[1] == 0) zoom = 1;
+				else zoom = min(abs(window_span[0]/box_span[0]), abs(window_span[1]/box_span[1]));
+
+				// center the window at the center of the box
+				newpos = -(-get_work_area()->get_focus_point() + (box_middle - window_middle));
+			}
+
+			get_work_area()->set_focus_point(newpos);
+			get_work_area()->set_zoom(get_work_area()->get_zoom()*zoom);
 
 			return Smach::RESULT_ACCEPT;
 		}
