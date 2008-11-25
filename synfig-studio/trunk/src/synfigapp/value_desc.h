@@ -146,6 +146,8 @@ public:
 		if(parent_is_linkable_value_node())
 			return (synfig::LinkableValueNode::Handle::cast_reinterpret(parent_value_node))->get_link(index);
 //			return reinterpret_cast<synfig::LinkableValueNode*>(parent_value_node.get())->get_link(index);
+		if(parent_is_value_node_const())
+			return parent_value_node;
 		return 0;
 	}
 
