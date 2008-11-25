@@ -537,17 +537,16 @@ Canvas::surefind_canvas(const String &id, String &warnings)
 
 		Canvas::Handle external_canvas;
 
+		if(!is_absolute_path(file_name))
+			file_name = get_file_path()+ETL_DIRECTORY_SEPARATOR+file_name;
+
 		// If the composition is already open, then use it.
 		if(externals_.count(file_name))
 			external_canvas=externals_[file_name];
 		else
 		{
 			String errors;
-			if(is_absolute_path(file_name))
-				external_canvas=open_canvas(file_name, errors, warnings);
-			else
-				external_canvas=open_canvas(get_file_path()+ETL_DIRECTORY_SEPARATOR+file_name, errors, warnings);
-
+			external_canvas=open_canvas(file_name, errors, warnings);
 			if(!external_canvas)
 				throw runtime_error(errors);
 			externals_[file_name]=external_canvas;
@@ -624,17 +623,16 @@ Canvas::find_canvas(const String &id, String &warnings)const
 
 		Canvas::Handle external_canvas;
 
+		if(!is_absolute_path(file_name))
+			file_name = get_file_path()+ETL_DIRECTORY_SEPARATOR+file_name;
+
 		// If the composition is already open, then use it.
 		if(externals_.count(file_name))
 			external_canvas=externals_[file_name];
 		else
 		{
 			String errors, warnings;
-			if(is_absolute_path(file_name))
-				external_canvas=open_canvas(file_name, errors, warnings);
-			else
-				external_canvas=open_canvas(get_file_path()+ETL_DIRECTORY_SEPARATOR+file_name, errors, warnings);
-
+			external_canvas=open_canvas(file_name, errors, warnings);
 			if(!external_canvas)
 				throw runtime_error(errors);
 			externals_[file_name]=external_canvas;
