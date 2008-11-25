@@ -413,7 +413,7 @@ Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quali
 		if (blend_method==Color::BLEND_COMPOSITE) blend_using_straight = true;
 	}
 
-	if (!etl::intersect(context.get_full_bounding_rect(),(full_bounding_rect*exp(zoom))+origin))
+	if (!etl::intersect(context.get_full_bounding_rect(),(full_bounding_rect-canvas->rend_desc().get_focus())*exp(zoom)+origin+canvas->rend_desc().get_focus()))
 	{
 		// if there's no intersection between the context and our
 		// surface, and we're rendering 'onto', then we're done
