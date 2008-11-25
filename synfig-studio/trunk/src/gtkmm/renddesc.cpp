@@ -134,6 +134,7 @@ Widget_RendDesc::refresh()
 	adjustment_span.set_value(rend_desc_.get_span());
 	entry_tl->set_value(rend_desc_.get_tl());
 	entry_br->set_value(rend_desc_.get_br());
+	entry_focus->set_value(rend_desc_.get_focus());
 
 	toggle_px_aspect->set_active((bool)(rend_desc_.get_flags()&RendDesc::PX_ASPECT));
 	toggle_px_width->set_active((bool)(rend_desc_.get_flags()&RendDesc::PX_W));
@@ -315,6 +316,16 @@ Widget_RendDesc::on_br_changed()
 }
 
 void
+Widget_RendDesc::on_focus_changed()
+{
+	if(update_lock)return;
+	UpdateLock lock(update_lock);
+	rend_desc_.set_focus(entry_focus->get_value());
+	refresh();
+	signal_changed()();
+}
+
+void
 Widget_RendDesc::on_span_changed()
 {
 	if(update_lock)return;
@@ -375,6 +386,7 @@ Widget_RendDesc::create_widgets()
 	entry_end_time=manage(new Widget_Time());
 	//entry_start_frame=manage(new Gtk::SpinButton(adjustment_start_frame,1,0));
 	//entry_end_frame=manage(new Gtk::SpinButton(adjustment_end_frame,1,0));
+	entry_focus=manage(new Widget_Vector());
 	toggle_px_aspect=manage(new Gtk::CheckButton(_("_Pixel Aspect"), true));
 	toggle_px_aspect->set_alignment(0, 0.5);
 	toggle_px_width=manage(new Gtk::CheckButton(_("Pi_xel Width"), true));
@@ -408,6 +420,7 @@ Widget_RendDesc::connect_signals()
 	entry_end_time->signal_value_changed().connect(sigc::mem_fun(*this,&studio::Widget_RendDesc::on_end_time_changed));
 	//entry_start_frame->signal_value_changed().connect(sigc::mem_fun(*this,&studio::Widget_RendDesc::on_start_frame_changed));
 	//entry_end_frame->signal_value_changed().connect(sigc::mem_fun(*this,&studio::Widget_RendDesc::on_end_frame_changed));
+	entry_focus->signal_value_changed().connect(sigc::mem_fun(*this,&studio::Widget_RendDesc::on_focus_changed));
 	toggle_px_aspect->signal_toggled().connect(sigc::mem_fun(*this, &studio::Widget_RendDesc::on_lock_changed));
 	toggle_px_width->signal_toggled().connect(sigc::mem_fun(*this, &studio::Widget_RendDesc::on_lock_changed));
 	toggle_px_height->signal_toggled().connect(sigc::mem_fun(*this, &studio::Widget_RendDesc::on_lock_changed));
@@ -580,6 +593,23 @@ Widget_RendDesc::create_other_tab()
 	lockTable->attach(*toggle_px_width, 0, 1, 1, 2, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
 	lockTable->attach(*toggle_px_height, 1, 2, 1, 2, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
 	lockTable->attach(*toggle_px_aspect, 2, 3, 1, 2, Gtk::EXPAND | Gtk::FILL, Gtk::EXPAND | Gtk::FILL, 0, 0);
+
+	Gtk::Frame *focusFrame = manage(new Gtk::Frame(_("Focus Point")));
+	focusFrame->set_shadow_type(Gtk::SHADOW_NONE);
+	((Gtk::Label *) focusFrame->get_label_widget())->set_markup(_("<b>Focus Point</b>"));
+	panelBox->pack_start(*focusFrame, false, false, 0);
+
+	Gtk::Alignment *focusPadding = manage(new Gtk::Alignment(0, 0, 1, 1));
+	focusPadding->set_padding(6, 0, 24, 0);
+	focusFrame->add(*focusPadding);
+
+	Gtk::HBox *focusBox = manage(new Gtk::HBox(false, 12));
+	focusPadding->add(*focusBox);
+
+	Gtk::Label *focusLabel = manage(new Gtk::Label(_("_Focus Point"), 0, 0.5, true));
+	focusLabel->set_mnemonic_widget(*entry_focus);
+	focusBox->pack_start(*focusLabel, false, false, 0);
+	focusBox->pack_start(*entry_focus, true, true, 0);
 
 	paddedPanel->show_all();
 	return paddedPanel;
