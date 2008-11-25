@@ -100,7 +100,7 @@ int smart_ptr_basic_test(void)
 	if(my_test_obj::instance_count!=0)
 	{
 		printf("FAILED!\n");
-		printf(__FILE__":%d: on create/distroy, instance count=%d, should be zero.\n",__LINE__,my_test_obj::instance_count);
+		printf(__FILE__":%d: on create/destroy, instance count=%d, should be zero.\n",__LINE__,my_test_obj::instance_count);
 		return 1;
 	}
 
@@ -121,7 +121,7 @@ int smart_ptr_basic_test(void)
 	if(my_test_obj::instance_count!=0)
 	{
 		printf("FAILED!\n");
-		printf(__FILE__":%d: on create/distroy, instance count=%d, should be zero.\n",__LINE__,my_test_obj::instance_count);
+		printf(__FILE__":%d: on create/destroy, instance count=%d, should be zero.\n",__LINE__,my_test_obj::instance_count);
 		return 1;
 	}
 
