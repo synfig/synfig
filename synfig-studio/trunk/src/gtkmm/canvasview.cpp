@@ -2842,9 +2842,10 @@ CanvasView::rebuild_ducks_layer_(synfig::TransformStack& transform_stack, synfig
 			Vector origin(layer->get_param("origin").get(Vector()));
 
 			Canvas::Handle child_canvas(layer->get_param("canvas").get(Canvas::Handle()));
+			Vector focus(child_canvas->rend_desc().get_focus());
 
 			if(!scale.is_equal_to(Vector(1,1)))
-				transform_stack.push(new Transform_Scale(scale,origin));
+				transform_stack.push(new Transform_Scale(scale,origin+focus));
 			if(!origin.is_equal_to(Vector(0,0)))
 				transform_stack.push(new Transform_Translate(origin));
 
