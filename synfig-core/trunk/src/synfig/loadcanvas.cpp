@@ -2128,6 +2128,24 @@ CanvasParser::register_canvas_in_map(Canvas::Handle canvas, String as)
 	canvas->signal_file_name_changed().connect(sigc::bind(sigc::ptr_fun(_canvas_file_name_changed),canvas.get()));
 }
 
+#ifdef _DEBUG
+void
+CanvasParser::show_canvas_map(String file, int line, String text)
+{
+	return;
+	printf("  .-----\n  |  %s:%d %s\n", file.c_str(), line, text.c_str());
+	std::map<synfig::String, etl::loose_handle<Canvas> > canvas_map(synfig::get_open_canvas_map());
+	std::map<synfig::String, etl::loose_handle<Canvas> >::iterator iter;
+	for (iter = canvas_map.begin(); iter != canvas_map.end(); iter++)
+	{
+		synfig::String first(iter->first);
+		etl::loose_handle<Canvas> second(iter->second);
+		printf("  |    %40s : %lx (%d)\n", first.c_str(), ulong(&*second), second->count());
+	}
+	printf("  `-----\n\n");
+}
+#endif	// _DEBUG
+
 Canvas::Handle
 CanvasParser::parse_from_file_as(const String &file_,const String &as_,String &errors)
 {

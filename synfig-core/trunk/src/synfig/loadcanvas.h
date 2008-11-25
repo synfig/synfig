@@ -121,6 +121,10 @@ public:
 
 	static void register_canvas_in_map(Canvas::Handle canvas, String as);
 
+#ifdef _DEBUG
+	static void show_canvas_map(String file, int line, String text);
+#endif	// _DEBUG
+
 	//! \todo writeme
 	Canvas::Handle parse_from_file_as(const String &filename,const String &as,String &errors);
 
