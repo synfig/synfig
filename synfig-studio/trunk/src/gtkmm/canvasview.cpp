@@ -2845,12 +2845,12 @@ CanvasView::rebuild_ducks_layer_(synfig::TransformStack& transform_stack, synfig
 
 			if(!scale.is_equal_to(Vector(1,1)))
 				transform_stack.push(new Transform_Scale(scale,origin));
-			if(!scale.is_equal_to(Vector(0,0)))
+			if(!origin.is_equal_to(Vector(0,0)))
 				transform_stack.push(new Transform_Translate(origin));
 
 			rebuild_ducks_layer_(transform_stack,child_canvas,selected_list);
 
-			if(!scale.is_equal_to(Vector(0,0)))
+			if(!origin.is_equal_to(Vector(0,0)))
 				transform_stack.pop();
 			if(!scale.is_equal_to(Vector(1,1)))
 				transform_stack.pop();
