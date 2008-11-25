@@ -47,6 +47,12 @@ using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 
+// note that if this isn't defined then the rendering is incorrect for
+// the straight blend method since the optimize_layers() function in
+// canvas.cpp which makes the straight blend method work correctly
+// isn't called.  ie. leave this defined.  to see the problem, draw a
+// small circle over a solid background.  set circle to amount 0.99
+// and blend method 'straight'.  the background should vanish but doesn't
 #define SYNFIG_OPTIMIZE_LAYER_TREE
 
 #define PIXEL_RENDERING_LIMIT 1500000
