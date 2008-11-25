@@ -267,11 +267,18 @@ Action::compile_candidate_list(const ParamList& param_list, Category category)
 		if((iter->second.category&category))
 		{
 			if(iter->second.is_candidate(param_list))
+			{
+				//synfig::info("Action \"%s\" is in",iter->second.name.c_str());
 				ret.push_back(iter->second);
+			}
 			else
 			{
 				//synfig::info("Action \"%s\" is not a candidate",iter->second.name.c_str());
 			}
+		}
+		else
+		{
+			//synfig::info("Action \"%s\" has unsuitable category",iter->second.name.c_str());
 		}
 	}
 
@@ -371,8 +378,10 @@ Super::perform()
 	prepare();
 
 	ActionList::const_iterator iter;
+	//synfig::info("%s:%d actions...", __FILE__, __LINE__);
 	for(iter=action_list_.begin();iter!=action_list_.end();++iter)
 	{
+		//synfig::info("%s:%d action: '%s'", __FILE__, __LINE__, (*iter)->get_name().c_str());
 		try
 		{
 			try
@@ -395,8 +404,10 @@ Super::perform()
 		}
 		catch(Error x)
 		{
+			//synfig::info("%s:%d caught exception", __FILE__, __LINE__);
 			throw Error(x.get_type(),((*iter)->get_name()+": "+x.get_desc()).c_str());
 		}
+		//synfig::info("%s:%d finished action: '%s'", __FILE__, __LINE__, (*iter)->get_name().c_str());
 	}
 }
 
