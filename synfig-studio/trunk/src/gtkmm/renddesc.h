@@ -93,8 +93,6 @@ class Widget_RendDesc : public Gtk::Notebook
 	Widget_Vector *entry_tl;
 	Widget_Vector *entry_br;
 
-	Widget_Vector *entry_focus;
-
 	Widget_Time *entry_start_time;
 	Widget_Time *entry_end_time;
 
@@ -144,7 +142,6 @@ private:
 	//void on_start_frame_changed();
 	//void on_end_frame_changed();
 	void on_lock_changed();
-	void on_focus_changed();
 	void on_span_changed();
 
 	void create_widgets();
