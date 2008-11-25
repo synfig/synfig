@@ -3319,6 +3319,16 @@ CanvasView::on_waypoint_clicked_canvasview(synfigapp::ValueDesc value_desc,
 		}
 
 		// ------------------------------------------------------------------------
+		if (size == 1)
+		{
+			const synfigapp::ValueDesc value_desc(synfig::ValueNode_Animated::Handle::cast_reinterpret(waypoint.get_parent_value_node()), time);
+			get_instance()->make_param_menu(waypoint_menu,canvas_interface()->get_canvas(),value_desc,0.5f);
+
+			// ------------------------------------------------------------------------
+			waypoint_menu->items().push_back(Gtk::Menu_Helpers::SeparatorElem());
+		}
+
+		// ------------------------------------------------------------------------
 		waypoint_menu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("_Jump To"),
 			sigc::bind(sigc::mem_fun(*canvas_interface(), &synfigapp::CanvasInterface::set_time), time)));
 

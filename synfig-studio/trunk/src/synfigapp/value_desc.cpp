@@ -77,6 +77,8 @@ ValueDesc::get_description(bool show_exported_name)const
 			description = strprintf("%s %s", _("Const ValueNode"),
 									value_node->get_description(show_exported_name).c_str());
 		}
+		else if (parent_is_waypoint())
+			description = _("Waypoint");
 		else
 		{
 			warning("%s:%d didn't expect to get here", __FILE__, __LINE__);

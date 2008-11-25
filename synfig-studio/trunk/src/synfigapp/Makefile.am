@@ -36,10 +36,10 @@ VALUENODE_ACTION_CC = \
 
 WAYPOINT_ACTION_HH = \
 	actions/waypointadd.h   actions/waypointremove.h   actions/waypointset.h   actions/waypointsetsmart.h		\
-	actions/waypointsimpleadd.h
+	actions/waypointsimpleadd.h   actions/waypointconnect.h   actions/waypointdisconnect.h
 WAYPOINT_ACTION_CC = \
 	actions/waypointadd.cpp actions/waypointremove.cpp actions/waypointset.cpp actions/waypointsetsmart.cpp		\
-	actions/waypointsimpleadd.cpp
+	actions/waypointsimpleadd.cpp actions/waypointconnect.cpp actions/waypointdisconnect.cpp
 
 TIMEPOINT_ACTION_HH = \
 	actions/timepointscopy.h   actions/timepointsdelete.h   actions/timepointsmove.h   timegather.h

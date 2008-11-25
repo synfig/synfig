@@ -32,6 +32,7 @@
 #include <synfig/string.h>
 #include <synfig/layer.h>
 #include <synfig/value.h>
+#include <synfig/valuenode_animated.h>
 #include <synfig/valuenode_const.h>
 #include <synfig/canvas.h>
 
@@ -51,7 +52,8 @@ class ValueDesc
 
 	// Info for ValueNode parent
 	synfig::ValueNode::Handle parent_value_node;
-	int index;
+	int index;					// -2 if it's a waypoint, -1 if it's const, >=0 if it's LinkableValueNode
+	synfig::Time waypoint_time;
 
 	// Info for exported ValueNode
 	synfig::Canvas::Handle canvas;
@@ -69,7 +71,7 @@ public:
 			return false;
 		if((parent_value_node||rhs.parent_value_node) && parent_value_node!=rhs.parent_value_node)
 			return false;
-		if((index>-1||rhs.index>-1) && index!=rhs.index)
+		if(index!=rhs.index)
 			return false;
 		return true;
 	}
@@ -95,6 +97,11 @@ public:
 //		parent_value_node(parent_value_node),
 //		index(parent_value_node->get_link_index_from_name(param_name)) { }
 
+	ValueDesc(synfig::ValueNode_Animated::Handle parent_value_node,synfig::Time waypoint_time):
+		parent_value_node(parent_value_node),
+		index(-2),
+		waypoint_time(waypoint_time) { }
+
 	ValueDesc(synfig::Canvas::Handle canvas,const synfig::String& name):
 		name(name),
 		canvas(canvas) { }
@@ -112,6 +119,7 @@ public:
 	bool parent_is_value_node()const { return (bool)parent_value_node; }
 	bool parent_is_linkable_value_node()const { return parent_is_value_node() && index>=0; }
 	bool parent_is_value_node_const()const { return parent_is_value_node() && index==-1; }
+	bool parent_is_waypoint()const { return parent_is_value_node() && index==-2; }
 	bool parent_is_canvas()const { return (bool)canvas; }
 
 	bool is_value_node()const { return parent_is_value_node() || parent_is_canvas() || (parent_is_layer_param() && (bool)layer->dynamic_param_list().count(name)); }
@@ -122,6 +130,7 @@ public:
 
 	synfig::ValueNode::Handle get_parent_value_node()const { assert(parent_is_value_node()); return parent_value_node; }
 	int get_index()const { assert(parent_is_linkable_value_node()); return index; }
+	synfig::Time get_waypoint_time()const { assert(parent_is_waypoint()); return waypoint_time; }
 
 	const synfig::String& get_value_node_id()const { assert(parent_is_canvas()); return name; }
 
@@ -148,6 +157,8 @@ public:
 //			return reinterpret_cast<synfig::LinkableValueNode*>(parent_value_node.get())->get_link(index);
 		if(parent_is_value_node_const())
 			return parent_value_node;
+		if(parent_is_waypoint())
+			return (synfig::ValueNode_Animated::Handle::cast_reinterpret(parent_value_node))->find(waypoint_time)->get_value_node();
 		return 0;
 	}
 

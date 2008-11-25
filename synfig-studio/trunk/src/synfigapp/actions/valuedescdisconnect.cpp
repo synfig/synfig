@@ -31,6 +31,7 @@
 #endif
 
 #include "layerparamdisconnect.h"
+#include "waypointdisconnect.h"
 #include "valuenodelinkdisconnect.h"
 #include "valuenodereplace.h"
 
@@ -168,6 +169,24 @@ Action::ValueDescDisconnect::prepare()
 		action->set_param("canvas_interface",get_canvas_interface());
 		action->set_param("src",src_value_node);
 		action->set_param("dest",value_desc.get_value_node());
+
+		assert(action->is_ready());
+		if(!action->is_ready())
+			throw Error(Error::TYPE_NOTREADY);
+
+		add_action_front(action);
+		return;
+	}
+	else
+	if(value_desc.parent_is_waypoint())
+	{
+		Action::Handle action(WaypointDisconnect::create());
+
+		action->set_param("canvas",get_canvas());
+		action->set_param("canvas_interface",get_canvas_interface());
+		action->set_param("parent_value_node",value_desc.get_parent_value_node());
+		action->set_param("waypoint_time",value_desc.get_waypoint_time());
+		action->set_param("time",time);
 
 		assert(action->is_ready());
 		if(!action->is_ready())

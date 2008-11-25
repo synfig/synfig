@@ -31,6 +31,7 @@
 #endif
 
 #include "layerparamconnect.h"
+#include "waypointconnect.h"
 #include "valuenodelinkconnect.h"
 #include "valuenodereplace.h"
 
@@ -200,6 +201,23 @@ Action::ValueDescConnect::prepare()
 		return;
 	}
 	else
+	if(value_desc.parent_is_waypoint())
+	{
+		Action::Handle action(WaypointConnect::create());
+
+		action->set_param("canvas",get_canvas());
+		action->set_param("canvas_interface",get_canvas_interface());
+		action->set_param("parent_value_node",value_desc.get_parent_value_node());
+		action->set_param("value_node", value_node);
+		action->set_param("waypoint_time",value_desc.get_waypoint_time());
+
+		assert(action->is_ready());
+		if(!action->is_ready())
+			throw Error(Error::TYPE_NOTREADY);
+
+		add_action_front(action);
+		return;
+	}
 	if(value_desc.parent_is_linkable_value_node())
 	{
 		Action::Handle action(ValueNodeLinkConnect::create());
