@@ -543,6 +543,10 @@ public:
 
 	void register_external_canvas(String file, Handle canvas);
 
+#ifdef _DEBUG
+	void show_externals(String file, int line, String text) const;
+#endif	// _DEBUG
+
 private:
 	void add_group_pair(String group, etl::handle<Layer> layer);
 	void remove_group_pair(String group, etl::handle<Layer> layer);

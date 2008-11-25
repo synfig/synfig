@@ -1392,3 +1392,19 @@ Canvas::register_external_canvas(String file_name, Handle canvas)
 	if(!is_absolute_path(file_name)) file_name = get_file_path()+ETL_DIRECTORY_SEPARATOR+file_name;
 	externals_[file_name] = canvas;
 }
+
+#ifdef _DEBUG
+void
+Canvas::show_externals(String file, int line, String text) const
+{
+	printf("  .----- (externals for %lx '%s')\n  |  %s:%d %s\n", ulong(this), get_name().c_str(), file.c_str(), line, text.c_str());
+	std::map<String, Handle>::iterator iter;
+	for (iter = externals_.begin(); iter != externals_.end(); iter++)
+	{
+		synfig::String first(iter->first);
+		etl::loose_handle<Canvas> second(iter->second);
+		printf("  |    %40s : %lx (%d)\n", first.c_str(), ulong(&*second), second->count());
+	}
+	printf("  `-----\n\n");
+}
+#endif	// _DEBUG
