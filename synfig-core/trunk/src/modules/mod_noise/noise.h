@@ -34,7 +34,7 @@
 #include <synfig/layer_composite.h>
 #include <synfig/gradient.h>
 #include <synfig/time.h>
-#include "random.h"
+#include "random_noise.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -50,8 +50,8 @@ private:
 
 	synfig::Vector size;
 
-	Random random;
-	Random::SmoothType smooth;
+	RandomNoise random;
+	RandomNoise::SmoothType smooth;
 	int detail;
 	bool do_alpha;
 	synfig::Gradient gradient;

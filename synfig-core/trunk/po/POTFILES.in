@@ -129,8 +129,8 @@ src/modules/mod_noise/distort.h
 src/modules/mod_noise/main.cpp
 src/modules/mod_noise/noise.cpp
 src/modules/mod_noise/noise.h
-src/modules/mod_noise/random.cpp
-src/modules/mod_noise/random.h
+src/modules/mod_noise/random_noise.cpp
+src/modules/mod_noise/random_noise.h
 src/modules/mod_noise/valuenode_random.cpp
 src/modules/mod_noise/valuenode_random.h
 src/modules/mod_openexr/main.cpp

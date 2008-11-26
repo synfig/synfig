@@ -66,7 +66,7 @@ Noise::Noise():
 	size(1,1),
 	gradient(Color::black(), Color::white())
 {
-	smooth=Random::SMOOTH_COSINE;
+	smooth=RandomNoise::SMOOTH_COSINE;
 	detail=4;
 	speed=0;
 	do_alpha=false;
@@ -97,7 +97,7 @@ Noise::color_func(const Point &point, float pixel_size,Context /*context*/)const
 	int i;
 	Time time;
 	time=speed*curr_time;
-	Random::SmoothType smooth((!speed && Noise::smooth == Random::SMOOTH_SPLINE) ? Random::SMOOTH_FAST_SPLINE : Noise::smooth);
+	RandomNoise::SmoothType smooth((!speed && Noise::smooth == RandomNoise::SMOOTH_SPLINE) ? RandomNoise::SMOOTH_FAST_SPLINE : Noise::smooth);
 
 	float ftime(time);
 
@@ -250,7 +250,7 @@ Noise::get_param_vocab()const
 		.set_local_name(_("Gradient"))
 	);
 	ret.push_back(ParamDesc("seed")
-		.set_local_name(_("Random Seed"))
+		.set_local_name(_("RandomNoise Seed"))
 	);
 	ret.push_back(ParamDesc("size")
 		.set_local_name(_("Size"))
@@ -259,11 +259,11 @@ Noise::get_param_vocab()const
 		.set_local_name(_("Interpolation"))
 		.set_description(_("What type of interpolation to use"))
 		.set_hint("enum")
-		.add_enum_value(Random::SMOOTH_DEFAULT,	"nearest",	_("Nearest Neighbor"))
-		.add_enum_value(Random::SMOOTH_LINEAR,	"linear",	_("Linear"))
-		.add_enum_value(Random::SMOOTH_COSINE,	"cosine",	_("Cosine"))
-		.add_enum_value(Random::SMOOTH_SPLINE,	"spline",	_("Spline"))
-		.add_enum_value(Random::SMOOTH_CUBIC,	"cubic",	_("Cubic"))
+		.add_enum_value(RandomNoise::SMOOTH_DEFAULT,	"nearest",	_("Nearest Neighbor"))
+		.add_enum_value(RandomNoise::SMOOTH_LINEAR,	"linear",	_("Linear"))
+		.add_enum_value(RandomNoise::SMOOTH_COSINE,	"cosine",	_("Cosine"))
+		.add_enum_value(RandomNoise::SMOOTH_SPLINE,	"spline",	_("Spline"))
+		.add_enum_value(RandomNoise::SMOOTH_CUBIC,	"cubic",	_("Cubic"))
 	);
 	ret.push_back(ParamDesc("detail")
 		.set_local_name(_("Detail"))

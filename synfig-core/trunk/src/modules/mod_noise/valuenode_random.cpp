@@ -60,7 +60,7 @@ ValueNode_Random::ValueNode_Random(const ValueBase &value):
 	set_link("radius",ValueNode_Const::create(Real(1)));
 	set_link("seed",ValueNode_Const::create(random.get_seed()));
 	set_link("speed",ValueNode_Const::create(Real(1)));
-	set_link("smooth",ValueNode_Const::create(int(Random::SMOOTH_CUBIC)));
+	set_link("smooth",ValueNode_Const::create(int(RandomNoise::SMOOTH_CUBIC)));
 
 	switch(get_type())
 	{
@@ -112,7 +112,7 @@ ValueNode_Random::~ValueNode_Random()
 ValueBase
 ValueNode_Random::operator()(Time t)const
 {
-	typedef const Random::SmoothType Smooth;
+	typedef const RandomNoise::SmoothType Smooth;
 
 	Real	radius	= (*radius_)(t).get(Real());
 	int		seed	= (*seed_)(t).get(int());
@@ -176,7 +176,7 @@ ValueNode_Random::get_name()const
 String
 ValueNode_Random::get_local_name()const
 {
-	return _("Random");
+	return _("RandomNoise");
 }
 
 bool

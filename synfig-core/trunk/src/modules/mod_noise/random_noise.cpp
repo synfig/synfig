@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file mod_noise/random.cpp
+/*!	\file mod_noise/random_noise.cpp
 **	\brief blehh
 **
 **	$Id$
@@ -30,7 +30,7 @@
 #	include <config.h>
 #endif
 
-#include "random.h"
+#include "random_noise.h"
 #include <synfig/quick_rng.h>
 #include <cmath>
 #include <cstdlib>
@@ -47,13 +47,13 @@
 /* === M E T H O D S ======================================================= */
 
 void
-Random::set_seed(int x)
+RandomNoise::set_seed(int x)
 {
 	seed_=x;
 }
 
 float
-Random::operator()(const int salt,const int x,const int y,const int t)const
+RandomNoise::operator()(const int salt,const int x,const int y,const int t)const
 {
 	static const unsigned int a(21870);
 	static const unsigned int b(11213);
@@ -71,7 +71,7 @@ Random::operator()(const int salt,const int x,const int y,const int t)const
 }
 
 float
-Random::operator()(SmoothType smooth,int subseed,float xf,float yf,float tf)const
+RandomNoise::operator()(SmoothType smooth,int subseed,float xf,float yf,float tf)const
 {
 	int x((int)floor(xf));
 	int y((int)floor(yf));

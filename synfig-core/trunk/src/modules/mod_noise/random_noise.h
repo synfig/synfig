@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file mod_noise/random.h
+/*!	\file mod_noise/random_noise.h
 **	\brief Template Header
 **
 **	$Id$
@@ -36,7 +36,7 @@
 
 
 #define POOL_SIZE	(256)
-class Random
+class RandomNoise
 {
 	int seed_;
 public:

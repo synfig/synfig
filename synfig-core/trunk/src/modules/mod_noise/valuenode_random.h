@@ -29,7 +29,7 @@
 /* === H E A D E R S ======================================================= */
 
 #include "synfig/valuenode.h"
-#include "random.h"
+#include "random_noise.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -45,8 +45,8 @@ class ValueNode_Random : public LinkableValueNode
 	ValueNode::RHandle speed_;
 	ValueNode::RHandle smooth_;
 
-	mutable Random random;
-	Random::SmoothType smooth;
+	mutable RandomNoise random;
+	RandomNoise::SmoothType smooth;
 	ValueNode_Random(const ValueBase &value);
 
 public:
