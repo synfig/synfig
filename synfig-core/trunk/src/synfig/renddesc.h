@@ -55,15 +55,15 @@ class RendDesc
 public:
 	enum Lock
 	{
-		PX_ASPECT=(1<<0),		// "_Pixel Aspect" in Locks and Links
+		PX_ASPECT=(1<<0),		// "Pixel Aspect" in Locks and Links
 		PX_AREA=(1<<1),			// not used
-		PX_W=(1<<2),			// "Pi_xel Width" in Locks and Links
-		PX_H=(1<<3),			// "Pix_el Height" in Locks and Links
+		PX_W=(1<<2),			// "Pixel Width" in Locks and Links - not used
+		PX_H=(1<<3),			// "Pixel Height" in Locks and Links - not used
 
-		IM_ASPECT=(1<<4),		// "Image _Aspect" in Locks and Links
-		IM_SPAN=(1<<5),			// "Image _Span" in Locks and Links
-		IM_W=(1<<6),			// "Image _Width" in Locks and Links
-		IM_H=(1<<7),			// "Image _Height" in Locks and Links
+		IM_ASPECT=(1<<4),		// "Image Aspect" in Locks and Links
+		IM_SPAN=(1<<5),			// "Image Span" in Locks and Links
+		IM_W=(1<<6),			// "Image Width" in Locks and Links
+		IM_H=(1<<7),			// "Image Height" in Locks and Links
 		IM_ZOOMIN=(1<<8),		// not used
 		IM_ZOOMOUT=(1<<9),		// not used
 
@@ -303,17 +303,6 @@ inline RendDesc::Lock operator~(RendDesc::Lock rhs)
 {
 	return static_cast<RendDesc::Lock>(~(int)rhs);
 }
-
-//! \todo This code isn't used - so how are flags checked?  Using the FLAGS macro from color.h?
-//! This operator is for checking RendDesc::Lock flags.
-/*! Don't think of it as "less then or equal to", but think of it
-**	like an arrow. Is \a rhs inside of \a lhs ?
-**	\see RendDesc::Lock, RendDesc */
-// inline bool operator<=(RendDesc::Lock lhs, RendDesc::Lock rhs)
-// {
-// 	return (static_cast<int>(lhs) & static_cast<int>(rhs)) == static_cast<int>(rhs);
-// }
-
 
 }; /* end namespace synfig */
 

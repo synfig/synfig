@@ -43,6 +43,9 @@ using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 
+#undef FLAGS
+#define FLAGS(x,y)		(((x)&(y))==(y))
+
 /* === G L O B A L S ======================================================= */
 
 /* === M E T H O D S ======================================================= */
@@ -101,25 +104,25 @@ RendDesc::get_w()const
 RendDesc &
 RendDesc::set_w(int x)
 {
-	if(FLAGS(flags,LINK_PX_ASPECT))
+	if(FLAGS(flags,LINK_PX_ASPECT)) // never set
 	{
 		h_=h_*x/w_;
 		w_=x;
 	}
-	else if(FLAGS(flags,LINK_PX_AREA))
+	else if(FLAGS(flags,LINK_PX_AREA)) // never set
 	{
 		//! \writeme
 		w_=x;
 	}
-	else if(FLAGS(flags,PX_ASPECT))
+	else if(FLAGS(flags,PX_ASPECT)) // "Pixel Aspect"
 	{
 		Vector d=br_-tl_;
 		float old_span=get_span();
 
 		// If we should preserve image width
-		if(		FLAGS(flags,IM_W)
-			|| (FLAGS(flags,IM_ZOOMIN) && d[1]>d[1]/x*w_)
-			|| (FLAGS(flags,IM_ZOOMOUT) && d[1]<d[1]/x*w_))
+		if(		FLAGS(flags,IM_W)							// "Image Width"
+			|| (FLAGS(flags,IM_ZOOMIN) && d[1]>d[1]/x*w_)	// never set
+			|| (FLAGS(flags,IM_ZOOMOUT) && d[1]<d[1]/x*w_)) // never set
 		{
 			br_[1]-=focus[1];
 			br_[1]=br_[1]/x*w_;
@@ -139,10 +142,10 @@ RendDesc::set_w(int x)
 
 		w_=x;
 
-		if(FLAGS(flags,IM_SPAN))
+		if(FLAGS(flags,IM_SPAN)) // "Image Span"
 			set_span(old_span);
 	}
-	else if(FLAGS(flags,PX_AREA))
+	else if(FLAGS(flags,PX_AREA)) // never set
 	{
 		//! \writeme
 		w_=x;
@@ -162,25 +165,25 @@ RendDesc::get_h()const
 RendDesc &
 RendDesc::set_h(int y)
 {
-	if(FLAGS(flags,LINK_PX_ASPECT))
+	if(FLAGS(flags,LINK_PX_ASPECT)) // never set
 	{
 		w_=w_*y/h_;
 		h_=y;
 	}
-	else if(FLAGS(flags,LINK_PX_AREA))
+	else if(FLAGS(flags,LINK_PX_AREA)) // never set
 	{
 		//! \writeme
 		h_=y;
 	}
-	else if(FLAGS(flags,PX_ASPECT))
+	else if(FLAGS(flags,PX_ASPECT)) // "Pixel Aspect"
 	{
 		Vector d=br_-tl_;
 		float old_span=get_span();
 
 		// If we should preserve image width
-		if(		FLAGS(flags,IM_W)
-			|| (FLAGS(flags,IM_ZOOMIN) && d[0]>d[0]/y*h_)
-			|| (FLAGS(flags,IM_ZOOMOUT) && d[0]<d[0]/y*h_))
+		if(		FLAGS(flags,IM_W)							// "Image Width"
+			|| (FLAGS(flags,IM_ZOOMIN) && d[0]>d[0]/y*h_)	// never set
+			|| (FLAGS(flags,IM_ZOOMOUT) && d[0]<d[0]/y*h_)) // never set
 		{
 			br_[0]-=focus[0];
 			br_[0]=br_[0]/y*h_;
@@ -200,10 +203,10 @@ RendDesc::set_h(int y)
 
 		h_=y;
 
-		if(FLAGS(flags,IM_SPAN))
+		if(FLAGS(flags,IM_SPAN)) // "Image Span"
 			set_span(old_span);
 	}
-	else if(FLAGS(flags,PX_AREA))
+	else if(FLAGS(flags,PX_AREA)) // never set
 	{
 		//! \writeme
 		h_=y;
@@ -416,7 +419,10 @@ RendDesc::set_span(const Real &x)
 {
 	Vector::value_type ratio=x/get_span();
 
-	if(!FLAGS(flags,IM_W|IM_H) || FLAGS(flags,IM_ASPECT))
+	//! \todo this looks wrong.  I suspect the intention was to check
+	//		  "(not IM_W) AND (not IM_H)", ie "not(IM_W OR IM_H)" but
+	//		  this check does "not(IM_W AND IM_H)"
+	if(!FLAGS(flags,IM_W|IM_H) || FLAGS(flags,IM_ASPECT)) // (not "Image Width") or (not "Image Height") or "Image Aspect"
 	{
 		br_-=focus;
 		br_=br_*ratio;
@@ -425,7 +431,7 @@ RendDesc::set_span(const Real &x)
 		tl_=tl_*ratio;
 		tl_+=focus;
 	}
-	else if(FLAGS(flags,IM_W))
+	else if(FLAGS(flags,IM_W))	// "Image Width"
 	{
 		//! \writeme or fix me
 		br_-=focus;
@@ -434,7 +440,7 @@ RendDesc::set_span(const Real &x)
 		tl_-=focus;
 		tl_=tl_*ratio;
 		tl_+=focus;
-	}else // IM_H
+	}else // IM_H				// "Image Height"
 	{
 		//! \writeme or fix me
 		br_-=focus;
@@ -479,7 +485,7 @@ RendDesc::get_br()const
 RendDesc &
 RendDesc::set_tl(const Point &x)
 {
-	if(FLAGS(flags,PX_ASPECT))
+	if(FLAGS(flags,PX_ASPECT)) // "Pixel Aspect"
 	{
 		Vector new_size(x-br_);
 		new_size[0]=abs(new_size[0]);
@@ -502,7 +508,7 @@ RendDesc::set_tl(const Point &x)
 RendDesc &
 RendDesc::set_br(const Point &x)
 {
-	if(FLAGS(flags,PX_ASPECT))
+	if(FLAGS(flags,PX_ASPECT)) // "Pixel Aspect"
 	{
 		Vector new_size(x-tl_);
 		new_size[0]=abs(new_size[0]);
