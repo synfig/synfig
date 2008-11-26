@@ -222,3 +222,23 @@ Duck::get_sub_trans_origin()const
 {
 	return origin_duck?origin_duck->get_sub_trans_point():origin;
 }
+
+#ifdef _DEBUG
+synfig::String
+Duck::type_name(Type id)
+{
+	String ret;
+
+	if (id & TYPE_POSITION) { if (!ret.empty()) ret += ", "; ret += "position"; }
+	if (id & TYPE_TANGENT ) { if (!ret.empty()) ret += ", "; ret += "tangent" ; }
+	if (id & TYPE_RADIUS  ) { if (!ret.empty()) ret += ", "; ret += "radius"  ; }
+	if (id & TYPE_WIDTH	  ) { if (!ret.empty()) ret += ", "; ret += "width"   ; }
+	if (id & TYPE_ANGLE	  ) { if (!ret.empty()) ret += ", "; ret += "angle"   ; }
+	if (id & TYPE_VERTEX  ) { if (!ret.empty()) ret += ", "; ret += "vertex"  ; }
+
+	if (ret.empty())
+		ret = "none";
+
+	return ret;
+}
+#endif	// _DEBUG

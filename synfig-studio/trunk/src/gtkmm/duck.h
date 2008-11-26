@@ -251,6 +251,15 @@ public:
 	synfig::String get_name()const { return name; }
 
 	bool operator==(const Duck &rhs)const;
+
+#ifdef _DEBUG
+	//!	Returns a string containing the name of the given Type
+	static synfig::String type_name(Type id);
+
+	//!	Returns a string containing the name of the type
+	synfig::String type_name()const { return type_name(get_type()); }
+#endif	// _DEBUG
+
 }; // END of class Duck
 
 //! Combine Flags
