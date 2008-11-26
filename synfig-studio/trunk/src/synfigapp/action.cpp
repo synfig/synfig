@@ -74,6 +74,8 @@
 #include "actions/waypointset.h"
 #include "actions/waypointsetsmart.h"
 #include "actions/waypointremove.h"
+#include "actions/waypointconnect.h"
+#include "actions/waypointdisconnect.h"
 // #include "actions/waypointsimpleadd.h"
 
 #include "actions/activepointadd.h"
@@ -192,6 +194,8 @@ Action::Main::Main()
 	ADD_ACTION(Action::WaypointSet);
 	ADD_ACTION(Action::WaypointSetSmart);
 	ADD_ACTION(Action::WaypointRemove);
+	ADD_ACTION(Action::WaypointConnect);
+	ADD_ACTION(Action::WaypointDisconnect);
 //	ADD_ACTION(Action::WaypointSimpleAdd);
 
 	ADD_ACTION(Action::ActivepointAdd);
