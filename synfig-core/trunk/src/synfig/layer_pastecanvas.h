@@ -51,6 +51,8 @@ class Layer_PasteCanvas : public Layer_Composite, public Layer_NoDeform
 private:
 
 	Vector origin;
+	Vector focus;
+	Vector junk;
 
 	etl::loose_handle<synfig::Canvas> canvas;
 

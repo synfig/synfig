@@ -83,6 +83,7 @@ SYNFIG_LAYER_SET_CVS_ID(Layer_PasteCanvas,"$Id$");
 
 Layer_PasteCanvas::Layer_PasteCanvas():
 	origin(0,0),
+	focus(0,0),
 	depth(0),
 	zoom(0),
 	time_offset(0),
@@ -144,6 +145,14 @@ Layer_PasteCanvas::get_param_vocab()const
 		.set_local_name(_("Children Lock"))
 	);
 
+	ret.push_back(ParamDesc("focus")
+		.set_local_name(_("Focus Point"))
+		.set_origin("origin")
+		.set_connect("origin")
+		.set_description(_("Point to remain fixed when zooming"))
+	//	.set_invisible_duck()
+	);
+
 	// optimize_layers() in canvas.cpp makes a new PasteCanvas layer
 	// and copies over the parameters of the old layer.  the
 	// 'curr_time' member wasn't being copied, so I've added it as a
@@ -163,6 +172,7 @@ bool
 Layer_PasteCanvas::set_param(const String & param, const ValueBase &value)
 {
 	IMPORT(origin);
+	IMPORT(focus);
 
 	// IMPORT(canvas);
 	if(param=="canvas" && value.same_type_as(Canvas::Handle()))
@@ -225,8 +235,7 @@ Layer_PasteCanvas::set_sub_canvas(etl::handle<synfig::Canvas> x)
 		);
 	*/
 	if(canvas)
-		bounds = ((canvas->get_context().get_full_bounding_rect() - canvas->rend_desc().get_focus()) * exp(zoom) +
-				  origin + canvas->rend_desc().get_focus());
+		bounds = ((canvas->get_context().get_full_bounding_rect() - focus) * exp(zoom) + origin + focus);
 
 	if(canvas && muck_with_time_)
 		add_child(canvas.get());
@@ -278,6 +287,7 @@ ValueBase
 Layer_PasteCanvas::get_param(const String& param)const
 {
 	EXPORT(origin);
+	EXPORT(focus);
 	EXPORT(canvas);
 	EXPORT(zoom);
 	EXPORT(time_offset);
@@ -301,7 +311,7 @@ Layer_PasteCanvas::set_time(Context context, Time time)const
 	{
 		canvas->set_time(time+time_offset);
 
-		bounds=(canvas->get_context().get_full_bounding_rect()-canvas->rend_desc().get_focus())*exp(zoom)+origin+canvas->rend_desc().get_focus();
+		bounds=(canvas->get_context().get_full_bounding_rect()-focus)*exp(zoom)+origin+focus;
 	}
 	else
 		bounds=Rect::zero();
@@ -313,7 +323,7 @@ Layer_PasteCanvas::hit_check(synfig::Context context, const synfig::Point &pos)c
 	if(depth==MAX_DEPTH)return 0;depth_counter counter(depth);
 
 	if (canvas) {
-		Point target_pos=(pos-canvas->rend_desc().get_focus()-origin)/exp(zoom)+canvas->rend_desc().get_focus();
+		Point target_pos=(pos-focus-origin)/exp(zoom)+focus;
 
 		if(canvas && get_amount() && canvas->get_context().get_color(target_pos).get_a()>=0.25)
 		{
@@ -335,7 +345,7 @@ Layer_PasteCanvas::get_color(Context context, const Point &pos)const
 
 	if(depth==MAX_DEPTH)return Color::alpha();depth_counter counter(depth);
 
-	Point target_pos=(pos-canvas->rend_desc().get_focus()-origin)/exp(zoom)+canvas->rend_desc().get_focus();
+	Point target_pos=(pos-focus-origin)/exp(zoom)+focus;
 
 	return Color::blend(canvas->get_context().get_color(target_pos),context.get_color(pos),get_amount(),get_blend_method());
 }
@@ -363,8 +373,8 @@ Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quali
 	RendDesc desc(renddesc);
 	Vector::value_type zoomfactor=1.0/exp(zoom);
 	desc.clear_flags();
-	desc.set_tl((desc.get_tl()-canvas->rend_desc().get_focus()-origin)*zoomfactor+canvas->rend_desc().get_focus());
-	desc.set_br((desc.get_br()-canvas->rend_desc().get_focus()-origin)*zoomfactor+canvas->rend_desc().get_focus());
+	desc.set_tl((desc.get_tl()-focus-origin)*zoomfactor+focus);
+	desc.set_br((desc.get_br()-focus-origin)*zoomfactor+focus);
 	desc.set_flags(RendDesc::PX_ASPECT);
 
 	if (is_solid_color() || context->empty())
@@ -413,7 +423,7 @@ Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quali
 		if (blend_method==Color::BLEND_COMPOSITE) blend_using_straight = true;
 	}
 
-	if (!etl::intersect(context.get_full_bounding_rect(),(full_bounding_rect-canvas->rend_desc().get_focus())*exp(zoom)+origin+canvas->rend_desc().get_focus()))
+	if (!etl::intersect(context.get_full_bounding_rect(),(full_bounding_rect-focus)*exp(zoom)+origin+focus))
 	{
 		// if there's no intersection between the context and our
 		// surface, and we're rendering 'onto', then we're done
