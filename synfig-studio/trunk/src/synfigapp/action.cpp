@@ -382,10 +382,10 @@ Super::perform()
 	prepare();
 
 	ActionList::const_iterator iter;
-	//synfig::info("%s:%d actions...", __FILE__, __LINE__);
 	for(iter=action_list_.begin();iter!=action_list_.end();++iter)
 	{
-		//synfig::info("%s:%d action: '%s'", __FILE__, __LINE__, (*iter)->get_name().c_str());
+		//// debug actions
+		// synfig::info("%s:%d action: '%s'", __FILE__, __LINE__, (*iter)->get_name().c_str());
 		try
 		{
 			try

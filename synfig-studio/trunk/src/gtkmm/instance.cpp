@@ -946,6 +946,9 @@ Instance::add_actions_to_menu(Gtk::Menu *menu, const synfigapp::Action::ParamLis
 void
 Instance::process_action(synfig::String name, synfigapp::Action::ParamList param_list)
 {
+	//// debug actions
+	// synfig::info("%s:%d process_action: '%s'", __FILE__, __LINE__, name.c_str());
+	
 	assert(synfigapp::Action::book().count(name));
 
 	synfigapp::Action::BookEntry entry(synfigapp::Action::book().find(name)->second);
