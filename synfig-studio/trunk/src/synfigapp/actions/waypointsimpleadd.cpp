@@ -126,6 +126,7 @@ Action::WaypointSimpleAdd::perform()
 	{
 		overwritten_wp = *iter.first;
 		time_overwrite = true;
+		value_node->erase(overwritten_wp);
 	}
 
 	//add the value node in since it's safe
