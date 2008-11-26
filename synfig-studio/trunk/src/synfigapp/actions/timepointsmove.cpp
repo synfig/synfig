@@ -254,7 +254,7 @@ Action::TimepointsMove::prepare()
 	//synfig::info("built list of waypoints/activepoints to modify");
 	//synfig::info("\t There are %d waypoint sets and %d activepointsets",
 	//				match.waypointbiglist.size(), match.actpointbiglist.size());
-	//process the hell out of em...
+	//process them...
 	{
 		//must build from both lists
 		timepoints_ref::waytracker::const_iterator 	i = match.waypointbiglist.begin(),

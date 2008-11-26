@@ -586,7 +586,7 @@ synfigapp::BLineConverter::operator()(std::list<synfig::BLinePoint>  &blinepoint
 
 		bool done = false;
 
-		Real errortol = smoothness*pixelwidth; //???? what the hell should this value be
+		Real errortol = smoothness*pixelwidth; //???? what should this value be
 
 		BLinePoint a;
 		synfig::Vector v;

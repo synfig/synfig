@@ -222,7 +222,7 @@ Action::TimepointsDelete::prepare()
 		}
 	}
 
-	//process the hell out of em...
+	//process them...
 	{
 		//must build from both lists
 		timepoints_ref::waytracker::const_iterator 	i = match.waypointbiglist.begin(),
