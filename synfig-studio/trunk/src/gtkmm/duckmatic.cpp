@@ -399,8 +399,14 @@ Duckmatic::get_duck_list()const
 {
 	DuckList ret;
 	DuckMap::const_iterator iter;
+	for(iter=duck_map.begin();iter!=duck_map.end();++iter) if (iter->second->get_type()&Duck::TYPE_POSITION) ret.push_back(iter->second);
+	for(iter=duck_map.begin();iter!=duck_map.end();++iter) if (iter->second->get_type()&Duck::TYPE_VERTEX  ) ret.push_back(iter->second);
+	for(iter=duck_map.begin();iter!=duck_map.end();++iter) if (iter->second->get_type()&Duck::TYPE_TANGENT ) ret.push_back(iter->second);
 	for(iter=duck_map.begin();iter!=duck_map.end();++iter)
-		ret.push_back(iter->second);
+		if (!(iter->second->get_type()&Duck::TYPE_POSITION) &&
+			!(iter->second->get_type()&Duck::TYPE_VERTEX) &&
+			!(iter->second->get_type()&Duck::TYPE_TANGENT))
+			ret.push_back(iter->second);
 	return ret;
 }
 
@@ -881,15 +887,15 @@ Duckmatic::find_duck(synfig::Point point, synfig::Real radius, Duck::Type type)
 
 		if(duck->get_type()&Duck::TYPE_VERTEX)
 			dist*=1.0001;
+		else if(duck->get_type()&Duck::TYPE_TANGENT && duck->get_scalar()>0)
+			dist*=1.00005;
 		else if(duck->get_type()&Duck::TYPE_RADIUS)
 			dist*=0.9999;
 
-		if(dist<=closest && !( duck->get_type() && (!(type & duck->get_type())) ) )
+		if(dist<closest && !( duck->get_type() && (!(type & duck->get_type())) ) )
 		{
-			{
-				closest=dist;
-				ret=duck;
-			}
+			closest=dist;
+			ret=duck;
 		}
 	}
 
