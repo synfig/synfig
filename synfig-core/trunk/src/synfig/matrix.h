@@ -30,7 +30,6 @@
 
 #include "angle.h"
 #include "real.h"
-#include "vector.h"
 #include <math.h>
 
 /* === M A C R O S ========================================================= */
@@ -96,7 +95,7 @@ public:
 
 	//!Constructor from Angle create a rotate matrix
 	Matrix(const Angle &a){
-		(*this).set_rotate(a);
+		(*this).rotate(a);
 		}
 	//!set_identity member. Set an identity matrix
 	Matrix &
@@ -111,7 +110,7 @@ public:
 	//! @param sy Scale by Y axis
 	//! @return A matrix reference filled with the sx, sy values
 	Matrix &
-	set_scale(const value_type &sx, const value_type &sy){
+	set_scale(const value_type &sx, const value_type &sx){
 		m00=sx;  m01=0.0; m02=0.0;
 		m10=0.0; m11=sy;  m12=0.0;
 		m20=0.0; m21=0.0; m22=1.0;
@@ -203,7 +202,6 @@ public:
 		m20+=rhs.m20;
 		m21+=rhs.m21;
 		m22+=rhs.m22;
-		return *this;
 		}
 
 	//! operator *. Multiplication of one matrix by a number
