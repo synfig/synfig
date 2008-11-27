@@ -32,7 +32,21 @@
 /* === T Y P E D E F S ===================================================== */
 
 /* === C L A S S E S & S T R U C T S ======================================= */
+namespace synfig {
 
+class Bone: public UniqueID
+{
+private:
+    Point origin_; // This is the current origin of the bone relative to parent
+    Point origin0_; // This is the
+    Vector tip_;
+    Angle angle_;
+    Scale scale_;
+    Scale length;
+public:
+}; // END of class Bone
+
+} // END of namespace synfig
 /* === E N D =============================================================== */
 
 #endif
