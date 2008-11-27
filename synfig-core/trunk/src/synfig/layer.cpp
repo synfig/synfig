@@ -266,7 +266,19 @@ Layer::disconnect_dynamic_param(const String& param)
 	if(previous)
 	{
 		dynamic_param_list_.erase(param);
-		remove_child(previous.get());
+
+		// fix 2353284: if two parameters in the same layer are
+		// connected to the same valuenode and we disconnect one of
+		// them, the parent-child relationship for the remaining
+		// connection was being deleted.  now we search the parameter
+		// list to see if another parameter uses the same valuenode
+		DynamicParamList::const_iterator iter;
+		for (iter = dynamic_param_list().begin(); iter != dynamic_param_list().end(); iter++)
+			if (iter->second == previous)
+				break;
+		if (iter == dynamic_param_list().end())
+			remove_child(previous.get());
+
 		changed();
 	}
 	return true;
