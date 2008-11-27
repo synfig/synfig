@@ -238,6 +238,10 @@ public:
 		{ return get(etl::loose_handle<Canvas>()); }
 	const char* get(const char*)const;
 	const list_type& get_list()const { return get(list_type()); }
+
+#ifdef _DEBUG
+	String get_string() const;
+#endif	// _DEBUG
 	// ========================================================================
 
 

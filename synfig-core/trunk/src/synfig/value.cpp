@@ -96,6 +96,40 @@ ValueBase::get(const char*)const
 	return get(String()).c_str();
 }
 
+#ifdef _DEBUG
+String
+ValueBase::get_string() const
+{
+	switch(type)
+	{
+	case TYPE_NIL:			return "Nil";
+	case TYPE_BOOL:			return strprintf("Bool (%s)", get(bool()) ? "true" : "false");
+	case TYPE_INTEGER:		return strprintf("Integer (%s)", get(int()));
+	case TYPE_ANGLE:		return strprintf("Angle (%s)", Angle::deg(get(Angle())).get());
+
+		// All types after this point are larger than 32 bits
+
+	case TYPE_TIME:			return strprintf("Time (%s)", get(Time()).get_string().c_str());
+	case TYPE_REAL:			return strprintf("Real (%f)", get(Real()));
+
+		// All types after this point are larger than 64 bits
+
+	case TYPE_VECTOR:		return strprintf("Vector (%f, %f)", get(Vector())[0], get(Vector())[1]);
+	case TYPE_COLOR:		return strprintf("Color (%s)", get(Color()).get_string().c_str());
+	case TYPE_SEGMENT:		return strprintf("Segment ((%f, %f) to (%f, %f))", get(Segment()).p1[0], get(Segment()).p1[1], get(Segment()).p2[0], get(Segment()).p2[1]);
+	case TYPE_BLINEPOINT:	return strprintf("BLinePoint (%s)", get(BLinePoint()).get_vertex()[0], get(BLinePoint()).get_vertex()[1]);
+		
+		// All types after this point require construction/destruction
+
+	case TYPE_LIST:			return strprintf("List (%d elements)", get(list_type()).size());
+	case TYPE_CANVAS:		return strprintf("Canvas (%s)", get(etl::loose_handle<Canvas>())->get_id().c_str());
+	case TYPE_STRING:		return strprintf("String (%s)", get(String()).c_str());
+	case TYPE_GRADIENT:		return strprintf("Gradient (%d cpoints)", get(Gradient()).size());
+	default:				return "Invalid type";
+	}
+}
+#endif	// _DEBUG
+
 void
 ValueBase::set(Canvas* x)
 {
