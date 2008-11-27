@@ -52,7 +52,6 @@ private:
 
 	Vector origin;
 	Vector focus;
-	Vector junk;
 
 	etl::loose_handle<synfig::Canvas> canvas;
 
