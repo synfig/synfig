@@ -57,7 +57,7 @@ VALUESOURCES = \
 	blinepoint.cpp gradient.cpp value.cpp
 
 SYNFIGHEADERS = \
-	angle.h canvasbase.h general.h guidset.h interpolation.h nodebase.h protocol.h quick_rng.h real.h releases.h	\
+	angle.h bone.h canvasbase.h general.h guidset.h interpolation.h nodebase.h protocol.h quick_rng.h real.h releases.h	\
 	segment.h smartfile.h string.h string_decl.h surfacenew.h synfig.h types.h vector.h version.h			\
 	activepoint.h	blur.h	 canvas.h   color.h   context.h	  curve_helper.h   curveset.h	distance.h		\
 	exception.h   gamma.h	guid.h	 importer.h   keyframe.h   layer.h   loadcanvas.h   main.h   matrix.h  module.h		\
@@ -65,7 +65,7 @@ SYNFIGHEADERS = \
 	savecanvas.h   surface.h   target.h   time.h   timepointcollect.h   transform.h	  uniqueid.h   valuenode.h	\
 	waypoint.h
 SYNFIGSOURCES = \
-	activepoint.cpp blur.cpp canvas.cpp color.cpp context.cpp curve_helper.cpp curveset.cpp distance.cpp		\
+	activepoint.cpp bone.cpp blur.cpp canvas.cpp color.cpp context.cpp curve_helper.cpp curveset.cpp distance.cpp		\
 	exception.cpp gamma.cpp guid.cpp importer.cpp keyframe.cpp layer.cpp loadcanvas.cpp main.cpp module.cpp		\
 	mutex.cpp node.cpp palette.cpp paramdesc.cpp polynomial_root.cpp rect.cpp renddesc.cpp render.cpp		\
 	savecanvas.cpp surface.cpp target.cpp time.cpp timepointcollect.cpp transform.cpp uniqueid.cpp valuenode.cpp	\
