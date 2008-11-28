@@ -1058,7 +1058,7 @@ init_ui_manager()
 	ACCEL("<Control>0",													"<Actions>//quality-10"						);
 	ACCEL("<Control>z",													"<Actions>//undo"							);
 	ACCEL("<Control>r",													"<Actions>//redo"							);
-	ACCEL("Delete",														"<Actions>//action-LayerRemove"				);
+	ACCEL2(Gtk::AccelKey(GDK_Delete,Gdk::CONTROL_MASK,					"<Actions>//action-LayerRemove"				));
 	ACCEL2(Gtk::AccelKey('(',Gdk::CONTROL_MASK,							"<Actions>//decrease-low-res-pixel-size"	));
 	ACCEL2(Gtk::AccelKey(')',Gdk::CONTROL_MASK,							"<Actions>//increase-low-res-pixel-size"	));
 	ACCEL2(Gtk::AccelKey('(',Gdk::MOD1_MASK|Gdk::CONTROL_MASK,			"<Actions>//amount-dec"						));
