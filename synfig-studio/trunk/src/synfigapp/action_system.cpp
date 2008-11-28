@@ -74,7 +74,7 @@ Action::System::perform_action(etl::handle<Action::Base> action)
 
 	if(!action->is_ready())
 	{
-		uim->error(action->get_name()+": "+_("Action is not ready."));
+		uim->error(action->get_local_name()+": "+_("Action is not ready."));
 		return false;
 	}
 
@@ -105,7 +105,7 @@ Action::System::perform_action(etl::handle<Action::Base> action)
 	if(!undoable_action)
 	{
 		if(uim->yes_no(
-			action->get_name(),
+			action->get_local_name(),
 			_("This action cannot be undone! Are you sure you want to continue?"),
 			UIInterface::RESPONSE_NO
 			) == UIInterface::RESPONSE_NO
@@ -125,15 +125,15 @@ Action::System::perform_action(etl::handle<Action::Base> action)
 	try { action->perform(); }
 	catch(Action::Error err)
 	{
-		uim->task(action->get_name()+' '+_("Failed"));
+		uim->task(action->get_local_name()+' '+_("Failed"));
 		inuse=false;
 
 		if(err.get_type()!=Action::Error::TYPE_UNABLE)
 		{
 			if(err.get_desc().empty())
-				uim->error(action->get_name()+": "+strprintf("%d",err.get_type()));
+				uim->error(action->get_local_name()+": "+strprintf("%d",err.get_type()));
 			else
-				uim->error(action->get_name()+": "+err.get_desc());
+				uim->error(action->get_local_name()+": "+err.get_desc());
 		}
 
 		// If action failed for whatever reason, just return false and do
@@ -142,10 +142,10 @@ Action::System::perform_action(etl::handle<Action::Base> action)
 	}
 	catch(std::exception err)
 	{
-		uim->task(action->get_name()+' '+_("Failed"));
+		uim->task(action->get_local_name()+' '+_("Failed"));
 		inuse=false;
 
-		uim->error(action->get_name()+": "+err.what());
+		uim->error(action->get_local_name()+": "+err.what());
 
 		// If action failed for whatever reason, just return false and do
 		// not add the action onto the list
@@ -153,7 +153,7 @@ Action::System::perform_action(etl::handle<Action::Base> action)
 	}
 	catch(...)
 	{
-		uim->task(action->get_name()+' '+_("Failed"));
+		uim->task(action->get_local_name()+' '+_("Failed"));
 		inuse=false;
 
 		// If action failed for whatever reason, just return false and do
@@ -186,7 +186,7 @@ Action::System::perform_action(etl::handle<Action::Base> action)
 
 	inuse=false;
 
-	uim->task(action->get_name()+' '+_("Successful"));
+	uim->task(action->get_local_name()+' '+_("Successful"));
 
 	// If the action has "dirtied" the preview, signal it.
 	if(0)if(canvas_specific && canvas_specific->is_dirty())
@@ -219,9 +219,9 @@ synfigapp::Action::System::undo_(etl::handle<UIInterface> uim)
 		if(err.get_type()!=Action::Error::TYPE_UNABLE)
 		{
 			if(err.get_desc().empty())
-				uim->error(action->get_name()+_(" (Undo): ")+strprintf("%d",err.get_type()));
+				uim->error(action->get_local_name()+_(" (Undo): ")+strprintf("%d",err.get_type()));
 			else
-				uim->error(action->get_name()+_(" (Undo): ")+err.get_desc());
+				uim->error(action->get_local_name()+_(" (Undo): ")+err.get_desc());
 		}
 
 		return false;
@@ -281,7 +281,7 @@ synfigapp::Action::System::undo()
 
 	if(!undo_(uim))
 	{
-		uim->error(undo_action_stack_.front()->get_name()+": "+_("Failed to undo."));
+		uim->error(undo_action_stack_.front()->get_local_name()+": "+_("Failed to undo."));
 		inuse=false;
 		return false;
 	}
@@ -317,9 +317,9 @@ Action::System::redo_(etl::handle<UIInterface> uim)
 		if(err.get_type()!=Action::Error::TYPE_UNABLE)
 		{
 			if(err.get_desc().empty())
-				uim->error(action->get_name()+_(" (Redo): ")+strprintf("%d",err.get_type()));
+				uim->error(action->get_local_name()+_(" (Redo): ")+strprintf("%d",err.get_type()));
 			else
-				uim->error(action->get_name()+_(" (Redo): ")+err.get_desc());
+				uim->error(action->get_local_name()+_(" (Redo): ")+err.get_desc());
 		}
 
 		return false;
@@ -379,7 +379,7 @@ Action::System::redo()
 
 	if(!redo_(uim))
 	{
-		uim->error(redo_action_stack_.front()->get_name()+": "+_("Failed to redo."));
+		uim->error(redo_action_stack_.front()->get_local_name()+": "+_("Failed to redo."));
 		inuse=false;
 		return false;
 	}

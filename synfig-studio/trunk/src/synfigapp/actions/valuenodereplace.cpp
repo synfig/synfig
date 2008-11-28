@@ -172,6 +172,8 @@ Action::ValueNodeReplace::perform()
 
 	//src_value_node->parent_set.swap(dest_value_node->parent_set);
 
+	synfig::info(get_local_name()+_(": ")+strprintf(_("Replaced %d ValueNode instances"),replacements));
+
 	// Signal that a layer has been inserted
 	if(get_canvas_interface())
 	{
@@ -210,7 +212,7 @@ Action::ValueNodeReplace::undo()
 
 	//src_value_node->parent_set.swap(dest_value_node->parent_set);
 
-	synfig::info(get_name()+_(": (Undo) ")+strprintf("Replaced %d ValueNode instances",replacements));
+	synfig::info(get_local_name()+_(": (Undo) ")+strprintf(_("Replaced %d ValueNode instances"),replacements));
 
 	src_value_node->set_id(String());
 	src_value_node->set_parent_canvas(0);

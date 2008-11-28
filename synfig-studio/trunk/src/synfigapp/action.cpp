@@ -409,7 +409,7 @@ Super::perform()
 		catch(Error x)
 		{
 			//synfig::info("%s:%d caught exception", __FILE__, __LINE__);
-			throw Error(x.get_type(),((*iter)->get_name()+": "+x.get_desc()).c_str());
+			throw Error(x.get_type(),((*iter)->get_local_name()+": "+x.get_desc()).c_str());
 		}
 		//synfig::info("%s:%d finished action: '%s'", __FILE__, __LINE__, (*iter)->get_name().c_str());
 	}
