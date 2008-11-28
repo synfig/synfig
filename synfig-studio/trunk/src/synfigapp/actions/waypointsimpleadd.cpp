@@ -45,7 +45,7 @@ using namespace Action;
 /* === M A C R O S ========================================================= */
 
 ACTION_INIT(Action::WaypointSimpleAdd);
-ACTION_SET_NAME(Action::WaypointSimpleAdd,"waypoint_simpleadd");
+ACTION_SET_NAME(Action::WaypointSimpleAdd,"WaypointSimpleAdd");
 ACTION_SET_LOCAL_NAME(Action::WaypointSimpleAdd,N_("Simply Add Waypoint"));
 ACTION_SET_TASK(Action::WaypointSimpleAdd,"add");
 ACTION_SET_CATEGORY(Action::WaypointSimpleAdd,Action::CATEGORY_WAYPOINT);

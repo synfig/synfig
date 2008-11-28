@@ -46,7 +46,7 @@ using namespace Action;
 /* === M A C R O S ========================================================= */
 
 ACTION_INIT_NO_GET_LOCAL_NAME(Action::ValueNodeRemove);
-ACTION_SET_NAME(Action::ValueNodeRemove,"value_node_remove");
+ACTION_SET_NAME(Action::ValueNodeRemove,"ValueNodeRemove");
 ACTION_SET_LOCAL_NAME(Action::ValueNodeRemove,N_("Unexport"));
 ACTION_SET_TASK(Action::ValueNodeRemove,"remove");
 ACTION_SET_CATEGORY(Action::ValueNodeRemove,Action::CATEGORY_VALUENODE);

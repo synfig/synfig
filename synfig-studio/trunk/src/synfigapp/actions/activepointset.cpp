@@ -46,7 +46,7 @@ using namespace Action;
 /* === M A C R O S ========================================================= */
 
 ACTION_INIT(Action::ActivepointSet);
-ACTION_SET_NAME(Action::ActivepointSet,"activepoint_set");
+ACTION_SET_NAME(Action::ActivepointSet,"ActivepointSet");
 ACTION_SET_LOCAL_NAME(Action::ActivepointSet,N_("Set Activepoint"));
 ACTION_SET_TASK(Action::ActivepointSet,"set");
 ACTION_SET_CATEGORY(Action::ActivepointSet,Action::CATEGORY_ACTIVEPOINT);

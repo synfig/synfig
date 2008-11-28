@@ -318,7 +318,7 @@ public:
 		param_list.add("waypoint",waypoint);
 	//	param_list.add("time",canvas_interface()->get_time());
 
-		etl::handle<studio::Instance>::cast_static(param_tree_store_->canvas_interface()->get_instance())->process_action("waypoint_set_smart", param_list);
+		etl::handle<studio::Instance>::cast_static(param_tree_store_->canvas_interface()->get_instance())->process_action("WaypointSetSmart", param_list);
 	}
 
 	void mimic(Gtk::TreeView *param_tree_view)

@@ -45,7 +45,7 @@ using namespace Action;
 /* === M A C R O S ========================================================= */
 
 ACTION_INIT(Action::ValueNodeConstSet);
-ACTION_SET_NAME(Action::ValueNodeConstSet,"value_node_const_set");
+ACTION_SET_NAME(Action::ValueNodeConstSet,"ValueNodeConstSet");
 ACTION_SET_LOCAL_NAME(Action::ValueNodeConstSet,N_("Set ValueNode_Const"));
 ACTION_SET_TASK(Action::ValueNodeConstSet,"set");
 ACTION_SET_CATEGORY(Action::ValueNodeConstSet,Action::CATEGORY_VALUENODE);

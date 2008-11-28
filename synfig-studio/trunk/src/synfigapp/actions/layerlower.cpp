@@ -47,7 +47,7 @@ using namespace Action;
 /* === M A C R O S ========================================================= */
 
 ACTION_INIT_NO_GET_LOCAL_NAME(Action::LayerLower);
-ACTION_SET_NAME(Action::LayerLower,"layer_lower");
+ACTION_SET_NAME(Action::LayerLower,"LayerLower");
 ACTION_SET_LOCAL_NAME(Action::LayerLower,N_("Lower Layer"));
 ACTION_SET_TASK(Action::LayerLower,"lower");
 ACTION_SET_CATEGORY(Action::LayerLower,Action::CATEGORY_LAYER);

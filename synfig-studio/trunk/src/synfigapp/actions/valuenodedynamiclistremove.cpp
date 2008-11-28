@@ -46,7 +46,7 @@ using namespace Action;
 /* === M A C R O S ========================================================= */
 
 ACTION_INIT(Action::ValueNodeDynamicListRemove);
-ACTION_SET_NAME(Action::ValueNodeDynamicListRemove,"value_node_dynamic_list_remove");
+ACTION_SET_NAME(Action::ValueNodeDynamicListRemove,"ValueNodeDynamicListRemove");
 ACTION_SET_LOCAL_NAME(Action::ValueNodeDynamicListRemove,N_("Remove Item"));
 ACTION_SET_TASK(Action::ValueNodeDynamicListRemove,"remove");
 ACTION_SET_CATEGORY(Action::ValueNodeDynamicListRemove,Action::CATEGORY_VALUEDESC|Action::CATEGORY_VALUENODE|Action::CATEGORY_HIDDEN);

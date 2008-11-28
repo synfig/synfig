@@ -51,7 +51,7 @@ using namespace Action;
 /* === M A C R O S ========================================================= */
 
 ACTION_INIT(Action::GradientSet);
-ACTION_SET_NAME(Action::GradientSet,"gradient_set");
+ACTION_SET_NAME(Action::GradientSet,"GradientSet");
 ACTION_SET_LOCAL_NAME(Action::GradientSet,N_("Apply Default Gradient"));
 ACTION_SET_TASK(Action::GradientSet,"set");
 ACTION_SET_CATEGORY(Action::GradientSet,Action::CATEGORY_VALUEDESC);
@@ -133,7 +133,7 @@ Action::GradientSet::prepare()
 	clear();
 
 	Action::Handle action;
-	action=Action::create("value_desc_set");
+	action=Action::create("ValueDescSet");
 
 	action->set_param("canvas",get_canvas());
 	action->set_param("canvas_interface",get_canvas_interface());

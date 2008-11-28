@@ -45,7 +45,7 @@ using namespace Action;
 /* === M A C R O S ========================================================= */
 
 ACTION_INIT(Action::CanvasAdd);
-ACTION_SET_NAME(Action::CanvasAdd,"canvas_add");
+ACTION_SET_NAME(Action::CanvasAdd,"CanvasAdd");
 ACTION_SET_LOCAL_NAME(Action::CanvasAdd,N_("Add Child Canvas"));
 ACTION_SET_TASK(Action::CanvasAdd,"add");
 ACTION_SET_CATEGORY(Action::CanvasAdd,Action::CATEGORY_CANVAS);

@@ -51,7 +51,7 @@ using namespace Action;
 /* === M A C R O S ========================================================= */
 
 ACTION_INIT_NO_GET_LOCAL_NAME(Action::ValueDescConnect);
-ACTION_SET_NAME(Action::ValueDescConnect,"value_desc_connect");
+ACTION_SET_NAME(Action::ValueDescConnect,"ValueDescConnect");
 ACTION_SET_LOCAL_NAME(Action::ValueDescConnect,N_("Connect"));
 ACTION_SET_TASK(Action::ValueDescConnect,"connect");
 ACTION_SET_CATEGORY(Action::ValueDescConnect,Action::CATEGORY_VALUEDESC|Action::CATEGORY_VALUENODE);

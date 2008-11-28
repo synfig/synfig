@@ -267,7 +267,7 @@ LayerParamTreeStore::set_value_impl(const Gtk::TreeModel::iterator& iter, int co
 			g_value_init(x.gobj(),model.active.type());
 			g_value_copy(value.gobj(),x.gobj());
 
-			synfigapp::Action::Handle action(synfigapp::Action::create("layer_activate"));
+			synfigapp::Action::Handle action(synfigapp::Action::create("LayerActivate"));
 
 			if(!action)
 				return;

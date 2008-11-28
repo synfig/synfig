@@ -155,7 +155,7 @@ KeyframeActionManager::on_keyframe_properties()
 void
 KeyframeActionManager::on_add_keyframe()
 {
-	synfigapp::Action::Handle action(synfigapp::Action::create("keyframe_add"));
+	synfigapp::Action::Handle action(synfigapp::Action::create("KeyframeAdd"));
 
 	if(!action)
 		return;
@@ -210,13 +210,13 @@ KeyframeActionManager::refresh()
 			synfigapp::Action::CATEGORY_KEYFRAME
 		);
 	}
-	if(action_group_->get_action("action-keyframe_add"))
+	if(action_group_->get_action("action-KeyframeAdd"))
 	{
-		action_group_->remove(action_group_->get_action("action-keyframe_add"));
+		action_group_->remove(action_group_->get_action("action-KeyframeAdd"));
 	}
 
 		action_group_->add(Gtk::Action::create(
-			"action-keyframe_add",
+			"action-KeyframeAdd",
 			Gtk::StockID("gtk-add"),
 			_("Add New Keyframe"),_("Add New Keyframe")
 		),
@@ -226,9 +226,9 @@ KeyframeActionManager::refresh()
 	try
 	{
 		canvas_interface_->get_canvas()->keyframe_list().find(canvas_interface_->get_time());
-		action_group_->get_action("action-keyframe_add")->set_sensitive(false);
-		if(action_group_->get_action("action-keyframe_duplicate"))
-			action_group_->get_action("action-keyframe_duplicate")->set_sensitive(false);
+		action_group_->get_action("action-KeyframeAdd")->set_sensitive(false);
+		if(action_group_->get_action("action-KeyframeDuplicate"))
+			action_group_->get_action("action-KeyframeDuplicate")->set_sensitive(false);
 	}
 	catch(...)
 	{

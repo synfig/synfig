@@ -46,7 +46,7 @@ using namespace Action;
 /* === M A C R O S ========================================================= */
 
 ACTION_INIT_NO_GET_LOCAL_NAME(Action::LayerRemove);
-ACTION_SET_NAME(Action::LayerRemove,"layer_remove");
+ACTION_SET_NAME(Action::LayerRemove,"LayerRemove");
 ACTION_SET_LOCAL_NAME(Action::LayerRemove,N_("Remove Layer"));
 ACTION_SET_TASK(Action::LayerRemove,"remove");
 ACTION_SET_CATEGORY(Action::LayerRemove,Action::CATEGORY_LAYER);

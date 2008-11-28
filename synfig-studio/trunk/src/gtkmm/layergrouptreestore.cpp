@@ -347,7 +347,7 @@ LayerGroupTreeStore::set_value_impl(const Gtk::TreeModel::iterator& iter, int co
 				if(new_desc==layer->get_description())
 					return;
 
-				synfigapp::Action::Handle action(synfigapp::Action::create("layer_set_desc"));
+				synfigapp::Action::Handle action(synfigapp::Action::create("LayerSetDesc"));
 
 				if(!action)
 					return;
@@ -392,7 +392,7 @@ LayerGroupTreeStore::set_value_impl(const Gtk::TreeModel::iterator& iter, int co
 				}
 				else
 				{
-					synfigapp::Action::Handle action(synfigapp::Action::create("group_rename"));
+					synfigapp::Action::Handle action(synfigapp::Action::create("GroupRename"));
 
 					if(!action)
 						return;
@@ -420,7 +420,7 @@ LayerGroupTreeStore::set_value_impl(const Gtk::TreeModel::iterator& iter, int co
 				synfig::Layer::Handle layer((*iter)[model.layer]);
 				if(!layer)return;
 
-				synfigapp::Action::Handle action(synfigapp::Action::create("layer_activate"));
+				synfigapp::Action::Handle action(synfigapp::Action::create("LayerActivate"));
 
 				if(!action)
 					return;
@@ -576,7 +576,7 @@ LayerGroupTreeStore::drag_data_received_vfunc (const TreeModel::Path& dest, cons
 
 		if(synfig::String(selection_data.get_data_type())=="LAYER")
 		{
-			synfigapp::Action::Handle action(synfigapp::Action::create("group_add_layers"));
+			synfigapp::Action::Handle action(synfigapp::Action::create("GroupAddLayers"));
 
 			if(!action)
 				return false;
@@ -610,7 +610,7 @@ LayerGroupTreeStore::drag_data_received_vfunc (const TreeModel::Path& dest, cons
 
 			group=dest_group+GROUP_NEST_CHAR+group;
 
-			synfigapp::Action::Handle action(synfigapp::Action::create("group_rename"));
+			synfigapp::Action::Handle action(synfigapp::Action::create("GroupRename"));
 
 			if(!action)
 				return false;
@@ -662,7 +662,7 @@ LayerGroupTreeStore::drag_data_received_vfunc (const TreeModel::Path& dest, cons
 				if(dest_canvas==src->get_canvas() && dest_layer_depth==src->get_depth())
 					continue;
 
-				synfigapp::Action::Handle action(synfigapp::Action::create("layer_move"));
+				synfigapp::Action::Handle action(synfigapp::Action::create("LayerMove"));
 				action->set_param("canvas",dest_canvas);
 				action->set_param("canvas_interface",canvas_interface());
 				action->set_param("layer",src);
@@ -882,7 +882,7 @@ LayerGroupTreeStore::on_activity()
 	// If we aren't rebuilding and the last action
 	// had something to do with groups, then go
 	// a head and present the groups dialog.
-	if(!rebuilding && canvas_interface()->get_instance()->get_most_recent_action() && canvas_interface()->get_instance()->get_most_recent_action()->get_name().find("group")!=String::npos)
+	if(!rebuilding && canvas_interface()->get_instance()->get_most_recent_action() && canvas_interface()->get_instance()->get_most_recent_action()->get_name().find("Group")!=String::npos)
 	try
 	{
 		App::dock_manager->find_dockable("groups").present();

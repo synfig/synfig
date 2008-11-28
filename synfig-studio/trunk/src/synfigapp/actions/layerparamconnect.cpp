@@ -45,7 +45,7 @@ using namespace Action;
 /* === M A C R O S ========================================================= */
 
 ACTION_INIT(Action::LayerParamConnect);
-ACTION_SET_NAME(Action::LayerParamConnect,"layer_param_connect");
+ACTION_SET_NAME(Action::LayerParamConnect,"LayerParamConnect");
 ACTION_SET_LOCAL_NAME(Action::LayerParamConnect,N_("Connect Layer Parameter"));
 ACTION_SET_TASK(Action::LayerParamConnect,"connect");
 ACTION_SET_CATEGORY(Action::LayerParamConnect,Action::CATEGORY_LAYER|Action::CATEGORY_VALUENODE);

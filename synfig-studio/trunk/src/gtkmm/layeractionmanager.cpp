@@ -334,8 +334,8 @@ void
 LayerActionManager::cut()
 {
 	copy();
-	if(action_group_->get_action("action-layer_remove"))
-		action_group_->get_action("action-layer_remove")->activate();
+	if(action_group_->get_action("action-LayerRemove"))
+		action_group_->get_action("action-LayerRemove")->activate();
 }
 
 void
@@ -381,7 +381,7 @@ LayerActionManager::paste()
 	{
 		layer=(*iter)->clone(guid);
 		layer_selection.push_back(layer);
-		synfigapp::Action::Handle 	action(synfigapp::Action::create("layer_add"));
+		synfigapp::Action::Handle 	action(synfigapp::Action::create("LayerAdd"));
 
 		assert(action);
 		if(!action)
@@ -409,7 +409,7 @@ LayerActionManager::paste()
 		// Action to move the layer (if necessary)
 		if(depth>0)
 		{
-			synfigapp::Action::Handle 	action(synfigapp::Action::create("layer_move"));
+			synfigapp::Action::Handle 	action(synfigapp::Action::create("LayerMove"));
 
 			assert(action);
 			if(!action)

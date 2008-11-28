@@ -52,7 +52,7 @@ using namespace Action;
 /* === M A C R O S ========================================================= */
 
 ACTION_INIT_NO_GET_LOCAL_NAME(Action::BLinePointTangentMerge);
-ACTION_SET_NAME(Action::BLinePointTangentMerge,"bline_point_tangent_merge");
+ACTION_SET_NAME(Action::BLinePointTangentMerge,"BLinePointTangentMerge");
 ACTION_SET_LOCAL_NAME(Action::BLinePointTangentMerge,N_("Merge Tangents"));
 ACTION_SET_TASK(Action::BLinePointTangentMerge,"merge");
 ACTION_SET_CATEGORY(Action::BLinePointTangentMerge,Action::CATEGORY_VALUENODE);
@@ -151,7 +151,7 @@ Action::BLinePointTangentMerge::prepare()
 
 	Action::Handle action;
 
-	action=Action::create("value_desc_set");
+	action=Action::create("ValueDescSet");
 	if(!action)
 		throw Error(_("Couldn't find action \"value_desc_set\""));
 

@@ -45,7 +45,7 @@ using namespace Action;
 /* === M A C R O S ========================================================= */
 
 ACTION_INIT(Action::GroupRename);
-ACTION_SET_NAME(Action::GroupRename,"group_rename");
+ACTION_SET_NAME(Action::GroupRename,"GroupRename");
 ACTION_SET_LOCAL_NAME(Action::GroupRename,N_("Rename Group"));
 ACTION_SET_TASK(Action::GroupRename,"rename");
 ACTION_SET_CATEGORY(Action::GroupRename,Action::CATEGORY_GROUP);

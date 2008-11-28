@@ -46,7 +46,7 @@ using namespace Action;
 /* === M A C R O S ========================================================= */
 
 ACTION_INIT(Action::ValueNodeLinkDisconnect);
-ACTION_SET_NAME(Action::ValueNodeLinkDisconnect,"value_node_link_disconnect");
+ACTION_SET_NAME(Action::ValueNodeLinkDisconnect,"ValueNodeLinkDisconnect");
 ACTION_SET_LOCAL_NAME(Action::ValueNodeLinkDisconnect,N_("Disconnect ValueNode Link"));
 ACTION_SET_TASK(Action::ValueNodeLinkDisconnect,"disconnect");
 ACTION_SET_CATEGORY(Action::ValueNodeLinkDisconnect,Action::CATEGORY_VALUENODE);

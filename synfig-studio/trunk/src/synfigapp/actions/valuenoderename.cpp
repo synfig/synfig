@@ -46,7 +46,7 @@ using namespace Action;
 /* === M A C R O S ========================================================= */
 
 ACTION_INIT_NO_GET_LOCAL_NAME(Action::ValueNodeRename);
-ACTION_SET_NAME(Action::ValueNodeRename,"value_node_rename");
+ACTION_SET_NAME(Action::ValueNodeRename,"ValueNodeRename");
 ACTION_SET_LOCAL_NAME(Action::ValueNodeRename,N_("Rename ValueNode"));
 ACTION_SET_TASK(Action::ValueNodeRename,"rename");
 ACTION_SET_CATEGORY(Action::ValueNodeRename,Action::CATEGORY_VALUENODE);

@@ -48,7 +48,7 @@ using namespace Action;
 /* === M A C R O S ========================================================= */
 
 ACTION_INIT(Action::ValueDescLink);
-ACTION_SET_NAME(Action::ValueDescLink,"value_desc_link");
+ACTION_SET_NAME(Action::ValueDescLink,"ValueDescLink");
 ACTION_SET_LOCAL_NAME(Action::ValueDescLink,N_("Link"));
 ACTION_SET_TASK(Action::ValueDescLink,"connect");
 ACTION_SET_CATEGORY(Action::ValueDescLink,Action::CATEGORY_VALUEDESC);
@@ -248,7 +248,7 @@ Action::ValueDescLink::prepare()
 
 		link_value_node=ValueNode_Const::create(value_desc.get_value(time));
 
-		Action::Handle action(Action::create("value_desc_connect"));
+		Action::Handle action(Action::create("ValueDescConnect"));
 
 		action->set_param("canvas",get_canvas());
 		action->set_param("canvas_interface",get_canvas_interface());
@@ -265,7 +265,7 @@ Action::ValueDescLink::prepare()
 	/*
 	if(!link_value_node->is_exported())
 	{
-		Action::Handle action(Action::create("value_node_add"));
+		Action::Handle action(Action::create("ValueNodeAdd"));
 
 		action->set_param("canvas",get_canvas());
 		action->set_param("canvas_interface",get_canvas_interface());
@@ -290,7 +290,7 @@ Action::ValueDescLink::prepare()
 		if (value_desc.is_exported())
 			continue;
 
-		Action::Handle action(Action::create("value_desc_connect"));
+		Action::Handle action(Action::create("ValueDescConnect"));
 
 		action->set_param("canvas",get_canvas());
 		action->set_param("canvas_interface",get_canvas_interface());

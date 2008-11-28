@@ -45,7 +45,7 @@ using namespace Action;
 /* === M A C R O S ========================================================= */
 
 ACTION_INIT(Action::KeyframeAdd);
-ACTION_SET_NAME(Action::KeyframeAdd,"keyframe_add");
+ACTION_SET_NAME(Action::KeyframeAdd,"KeyframeAdd");
 ACTION_SET_LOCAL_NAME(Action::KeyframeAdd,N_("Add Keyframe"));
 ACTION_SET_TASK(Action::KeyframeAdd,"add");
 ACTION_SET_CATEGORY(Action::KeyframeAdd,Action::CATEGORY_KEYFRAME);

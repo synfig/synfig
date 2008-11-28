@@ -48,7 +48,7 @@ using namespace Action;
 /* === M A C R O S ========================================================= */
 
 ACTION_INIT_NO_GET_LOCAL_NAME(Action::LayerDuplicate);
-ACTION_SET_NAME(Action::LayerDuplicate,"layer_duplicate");
+ACTION_SET_NAME(Action::LayerDuplicate,"LayerDuplicate");
 ACTION_SET_LOCAL_NAME(Action::LayerDuplicate,N_("Duplicate Layer"));
 ACTION_SET_TASK(Action::LayerDuplicate,"duplicate");
 ACTION_SET_CATEGORY(Action::LayerDuplicate,Action::CATEGORY_LAYER);
@@ -143,7 +143,7 @@ Action::LayerDuplicate::prepare()
 		Layer::Handle new_layer(layer->clone(guid));
 
 		{
-			Action::Handle action(Action::create("layer_move"));
+			Action::Handle action(Action::create("LayerMove"));
 
 			action->set_param("canvas",subcanvas);
 			action->set_param("canvas_interface",get_canvas_interface());
@@ -153,7 +153,7 @@ Action::LayerDuplicate::prepare()
 			add_action_front(action);
 		}
 		{
-			Action::Handle action(Action::create("layer_add"));
+			Action::Handle action(Action::create("LayerAdd"));
 
 			action->set_param("canvas",subcanvas);
 			action->set_param("canvas_interface",get_canvas_interface());
@@ -182,7 +182,7 @@ Action::LayerDuplicate::export_dup_nodes(synfig::Layer::Handle layer, Canvas::Ha
 			}
 			catch (Exception::IDNotFound x)
 			{
-				Action::Handle action(Action::create("value_node_add"));
+				Action::Handle action(Action::create("ValueNodeAdd"));
 
 				action->set_param("canvas",canvas);
 				action->set_param("canvas_interface",get_canvas_interface());

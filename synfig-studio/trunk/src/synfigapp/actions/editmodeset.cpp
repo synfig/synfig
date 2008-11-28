@@ -45,7 +45,7 @@ using namespace Action;
 /* === M A C R O S ========================================================= */
 
 ACTION_INIT(Action::EditModeSet);
-ACTION_SET_NAME(Action::EditModeSet,"edit_mode_set");
+ACTION_SET_NAME(Action::EditModeSet,"EditModeSet");
 ACTION_SET_LOCAL_NAME(Action::EditModeSet,N_("Set Edit Mode"));
 ACTION_SET_TASK(Action::EditModeSet,"set");
 ACTION_SET_CATEGORY(Action::EditModeSet,Action::CATEGORY_OTHER);

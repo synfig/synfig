@@ -300,7 +300,7 @@ CanvasInterface::add_layer_to(synfig::String name, synfig::Canvas::Handle canvas
 	// Action to move the layer (if necessary)
 	if(depth>0)
 	{
-		Action::Handle 	action(Action::create("layer_move"));
+		Action::Handle 	action(Action::create("LayerMove"));
 
 		assert(action);
 		if(!action)
@@ -463,7 +463,7 @@ CanvasInterface::generate_param_list(const std::list<synfigapp::ValueDesc> &valu
 void
 CanvasInterface::set_rend_desc(const synfig::RendDesc &rend_desc)
 {
-	Action::Handle 	action(Action::create("canvas_rend_desc_set"));
+	Action::Handle 	action(Action::create("CanvasRendDescSet"));
 
 	assert(action);
 	if(!action)
@@ -480,7 +480,7 @@ CanvasInterface::set_rend_desc(const synfig::RendDesc &rend_desc)
 void
 CanvasInterface::set_name(const synfig::String &x)
 {
-	Action::Handle 	action(Action::create("canvas_name_set"));
+	Action::Handle 	action(Action::create("CanvasNameSet"));
 
 	assert(action);
 	if(!action)
@@ -499,7 +499,7 @@ CanvasInterface::set_name(const synfig::String &x)
 void
 CanvasInterface::set_description(const synfig::String &x)
 {
-	Action::Handle 	action(Action::create("canvas_description_set"));
+	Action::Handle 	action(Action::create("CanvasDescriptionSet"));
 
 	assert(action);
 	if(!action)
@@ -516,7 +516,7 @@ CanvasInterface::set_description(const synfig::String &x)
 void
 CanvasInterface::set_id(const synfig::String &x)
 {
-	Action::Handle 	action(Action::create("canvas_id_set"));
+	Action::Handle 	action(Action::create("CanvasIdSet"));
 
 	assert(action);
 	if(!action)
@@ -688,7 +688,7 @@ CanvasInterface::waypoint_duplicate(synfigapp::ValueDesc value_desc,synfig::Wayp
 void
 CanvasInterface::waypoint_duplicate(ValueNode::Handle value_node,synfig::Waypoint waypoint)
 {
-	Action::Handle 	action(Action::create("waypoint_set_smart"));
+	Action::Handle 	action(Action::create("WaypointSetSmart"));
 
 	assert(action);
 	if(!action)
@@ -717,7 +717,7 @@ CanvasInterface::waypoint_remove(synfigapp::ValueDesc value_desc,synfig::Waypoin
 void
 CanvasInterface::waypoint_remove(ValueNode::Handle value_node,synfig::Waypoint waypoint)
 {
-	Action::Handle 	action(Action::create("waypoint_remove"));
+	Action::Handle 	action(Action::create("WaypointRemove"));
 
 	assert(action);
 	if(!action)
@@ -741,7 +741,7 @@ CanvasInterface::auto_export(synfig::ValueNode::Handle /*value_node*/)
 	if(value_node->is_exported())
 		return;
 
-	Action::Handle 	action(Action::create("value_node_add"));
+	Action::Handle 	action(Action::create("ValueNodeAdd"));
 
 	assert(action);
 	if(!action)
@@ -768,7 +768,7 @@ CanvasInterface::auto_export(const ValueDesc& /*value_desc*/)
 	if(value_desc.is_exported())
 		return;
 
-	Action::Handle 	action(Action::create("value_desc_export"));
+	Action::Handle 	action(Action::create("ValueDescExport"));
 
 	assert(action);
 	if(!action)
@@ -815,7 +815,7 @@ CanvasInterface::change_value(synfigapp::ValueDesc value_desc,synfig::ValueBase 
 	{ synfig::warning("Can't get canvas from value desc...?"); }
 #endif
 
-	synfigapp::Action::Handle action(synfigapp::Action::create("value_desc_set"));
+	synfigapp::Action::Handle action(synfigapp::Action::create("ValueDescSet"));
 	if(!action)
 	{
 		return false;

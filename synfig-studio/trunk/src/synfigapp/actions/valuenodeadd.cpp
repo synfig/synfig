@@ -45,7 +45,7 @@ using namespace Action;
 /* === M A C R O S ========================================================= */
 
 ACTION_INIT(Action::ValueNodeAdd);
-ACTION_SET_NAME(Action::ValueNodeAdd,"value_node_add");
+ACTION_SET_NAME(Action::ValueNodeAdd,"ValueNodeAdd");
 ACTION_SET_LOCAL_NAME(Action::ValueNodeAdd,N_("Add ValueNode"));
 ACTION_SET_TASK(Action::ValueNodeAdd,"add");
 ACTION_SET_CATEGORY(Action::ValueNodeAdd,Action::CATEGORY_VALUENODE);

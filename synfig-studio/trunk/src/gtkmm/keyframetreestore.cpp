@@ -379,7 +379,7 @@ KeyframeTreeStore::set_value_impl(const Gtk::TreeModel::iterator& row, int colum
 
 			{
 				Keyframe keyframe((*row)[model.keyframe]);
-				synfigapp::Action::Handle action(synfigapp::Action::create("keyframe_set_delta"));
+				synfigapp::Action::Handle action(synfigapp::Action::create("KeyframeSetDelta"));
 
 				if(!action)return;
 
@@ -407,7 +407,7 @@ KeyframeTreeStore::set_value_impl(const Gtk::TreeModel::iterator& row, int colum
 			keyframe.set_time(x.get());
 			synfig::info("KeyframeTreeStore::set_value_impl():new_time=%s",keyframe.get_time().get_string().c_str());
 
-			synfigapp::Action::Handle action(synfigapp::Action::create("keyframe_set"));
+			synfigapp::Action::Handle action(synfigapp::Action::create("KeyframeSet"));
 
 			if(!action)
 				return;
@@ -426,7 +426,7 @@ KeyframeTreeStore::set_value_impl(const Gtk::TreeModel::iterator& row, int colum
 			synfig::Keyframe keyframe(*iter->iter);
 			keyframe.set_description(x.get());
 
-			synfigapp::Action::Handle action(synfigapp::Action::create("keyframe_set"));
+			synfigapp::Action::Handle action(synfigapp::Action::create("KeyframeSet"));
 
 			if(!action)
 				return;

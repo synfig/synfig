@@ -52,7 +52,7 @@ using namespace Action;
 /* === M A C R O S ========================================================= */
 
 ACTION_INIT_NO_GET_LOCAL_NAME(Action::ValueDescExport);
-ACTION_SET_NAME(Action::ValueDescExport,"value_desc_export");
+ACTION_SET_NAME(Action::ValueDescExport,"ValueDescExport");
 ACTION_SET_LOCAL_NAME(Action::ValueDescExport,N_("Export"));
 ACTION_SET_TASK(Action::ValueDescExport,"export");
 ACTION_SET_CATEGORY(Action::ValueDescExport,Action::CATEGORY_VALUEDESC);

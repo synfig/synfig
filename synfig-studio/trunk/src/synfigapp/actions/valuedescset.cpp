@@ -55,7 +55,7 @@ using namespace Action;
 /* === M A C R O S ========================================================= */
 
 ACTION_INIT_NO_GET_LOCAL_NAME(Action::ValueDescSet);
-ACTION_SET_NAME(Action::ValueDescSet,"value_desc_set");
+ACTION_SET_NAME(Action::ValueDescSet,"ValueDescSet");
 ACTION_SET_LOCAL_NAME(Action::ValueDescSet,N_("Set ValueDesc"));
 ACTION_SET_TASK(Action::ValueDescSet,"set");
 ACTION_SET_CATEGORY(Action::ValueDescSet,Action::CATEGORY_VALUEDESC);
@@ -174,7 +174,7 @@ Action::ValueDescSet::prepare()
 
 			assert(parent_value_node);
 
-			Action::Handle action(Action::create("value_desc_set"));
+			Action::Handle action(Action::create("ValueDescSet"));
 
 			if(!action)
 				throw Error(_("Unable to find action value_desc_set (bug)"));
@@ -199,7 +199,7 @@ Action::ValueDescSet::prepare()
 	{
 		ValueDesc reference_value_desc(ValueNode_Reference::Handle::cast_dynamic(value_desc.get_value_node()),0);
 
-		Action::Handle action(Action::create("value_desc_set"));
+		Action::Handle action(Action::create("ValueDescSet"));
 
 		if(!action)
 			throw Error(_("Unable to find action value_desc_set (bug)"));
@@ -267,7 +267,7 @@ Action::ValueDescSet::prepare()
 		{
 			ValueDesc component_value_desc(ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node()),i);
 
-			Action::Handle action(Action::create("value_desc_set"));
+			Action::Handle action(Action::create("ValueDescSet"));
 
 			if(!action)
 				throw Error(_("Unable to find action value_desc_set (bug)"));
@@ -325,7 +325,7 @@ Action::ValueDescSet::prepare()
 		{
 			ValueDesc component_value_desc(ValueNode_RadialComposite::Handle::cast_dynamic(value_desc.get_value_node()),i);
 
-			Action::Handle action(Action::create("value_desc_set"));
+			Action::Handle action(Action::create("ValueDescSet"));
 
 			if(!action)
 				throw Error(_("Unable to find action value_desc_set (bug)"));
@@ -362,7 +362,7 @@ Action::ValueDescSet::prepare()
 	    {
 			// we are splitting tangents
 
-			Action::Handle action(Action::create("value_desc_set"));
+			Action::Handle action(Action::create("ValueDescSet"));
 
 			if(!action)
 				throw Error(_("Unable to find action value_desc_set (bug)"));
@@ -387,7 +387,7 @@ Action::ValueDescSet::prepare()
 							   (Vector)((*parent_value_node->get_link("t2"))(time))) / 2);
 
 			{
-				Action::Handle action(Action::create("value_desc_set"));
+				Action::Handle action(Action::create("ValueDescSet"));
 
 				if(!action)
 					throw Error(_("Unable to find action value_desc_set (bug)"));
@@ -405,7 +405,7 @@ Action::ValueDescSet::prepare()
 			}
 
 			{
-				Action::Handle action(Action::create("value_desc_set"));
+				Action::Handle action(Action::create("ValueDescSet"));
 
 				if(!action)
 					throw Error(_("Unable to find action value_desc_set (bug)"));
@@ -475,7 +475,7 @@ Action::ValueDescSet::prepare()
 			}
 			else
 			{
-				action=Action::create("value_node_replace");
+				action=Action::create("ValueNodeReplace");
 				action->set_param("dest",value_desc.get_value_node());
 				action->set_param("src",ValueNode::Handle(value_node));
 			}

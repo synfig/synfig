@@ -641,7 +641,7 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 		// only link the circle's origin parameter if the option is selected and we're creating more than one layer
 		if (get_layer_link_origins_flag() && layers_to_create > 1)
 		{
-			synfigapp::Action::Handle action(synfigapp::Action::create("layer_param_connect"));
+			synfigapp::Action::Handle action(synfigapp::Action::create("LayerParamConnect"));
 			assert(action);
 
 			action->set_param("canvas",get_canvas());
@@ -692,7 +692,7 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 #endif	// BLEND_METHOD_IN_TOOL_OPTIONS
 
 		{
-			synfigapp::Action::Handle action(synfigapp::Action::create("layer_param_connect"));
+			synfigapp::Action::Handle action(synfigapp::Action::create("LayerParamConnect"));
 			assert(action);
 
 			action->set_param("canvas",get_canvas());
@@ -715,7 +715,7 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 		// only link the curve gradient's origin parameter if the option is selected and we're creating more than one layer
 		if (get_layer_link_origins_flag() && layers_to_create > 1)
 		{
-			synfigapp::Action::Handle action(synfigapp::Action::create("layer_param_connect"));
+			synfigapp::Action::Handle action(synfigapp::Action::create("LayerParamConnect"));
 			assert(action);
 
 			action->set_param("canvas",get_canvas());
@@ -766,7 +766,7 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 #endif	// BLEND_METHOD_IN_TOOL_OPTIONS
 
 		{
-			synfigapp::Action::Handle action(synfigapp::Action::create("layer_param_connect"));
+			synfigapp::Action::Handle action(synfigapp::Action::create("LayerParamConnect"));
 			assert(action);
 
 			action->set_param("canvas",get_canvas());
@@ -789,7 +789,7 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 		// only link the plant's origin parameter if the option is selected and we're creating more than one layer
 		if (get_layer_link_origins_flag() && layers_to_create > 1)
 		{
-			synfigapp::Action::Handle action(synfigapp::Action::create("layer_param_connect"));
+			synfigapp::Action::Handle action(synfigapp::Action::create("LayerParamConnect"));
 			assert(action);
 
 			action->set_param("canvas",get_canvas());
@@ -851,7 +851,7 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 		// I don't know if it's safe to reuse the same layer_param_connect action, so I'm
 		// using 2 separate ones.
 		{
-			synfigapp::Action::Handle action(synfigapp::Action::create("layer_param_connect"));
+			synfigapp::Action::Handle action(synfigapp::Action::create("LayerParamConnect"));
 			assert(action);
 
 			action->set_param("canvas",get_canvas());
@@ -874,7 +874,7 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 		// only link the region's origin parameter if the option is selected and we're creating more than one layer
 		if (get_layer_link_origins_flag() && layers_to_create > 1)
 		{
-			synfigapp::Action::Handle action(synfigapp::Action::create("layer_param_connect"));
+			synfigapp::Action::Handle action(synfigapp::Action::create("LayerParamConnect"));
 			assert(action);
 
 			action->set_param("canvas",get_canvas());
@@ -929,7 +929,7 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 		get_canvas_interface()->signal_layer_param_changed()(layer,"invert");
 
 		{
-			synfigapp::Action::Handle action(synfigapp::Action::create("layer_param_connect"));
+			synfigapp::Action::Handle action(synfigapp::Action::create("LayerParamConnect"));
 			assert(action);
 
 			action->set_param("canvas",get_canvas());
@@ -952,7 +952,7 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 		// only link the outline's origin parameter if the option is selected and we're creating more than one layer
 		if (get_layer_link_origins_flag() && layers_to_create > 1)
 		{
-			synfigapp::Action::Handle action(synfigapp::Action::create("layer_param_connect"));
+			synfigapp::Action::Handle action(synfigapp::Action::create("LayerParamConnect"));
 			assert(action);
 
 			action->set_param("canvas",get_canvas());

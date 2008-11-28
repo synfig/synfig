@@ -56,7 +56,7 @@ using namespace Action;
 /* === M A C R O S ========================================================= */
 
 ACTION_INIT_NO_GET_LOCAL_NAME(Action::ValueDescConvert);
-ACTION_SET_NAME(Action::ValueDescConvert,"value_desc_convert");
+ACTION_SET_NAME(Action::ValueDescConvert,"ValueDescConvert");
 ACTION_SET_LOCAL_NAME(Action::ValueDescConvert,N_("Convert"));
 ACTION_SET_TASK(Action::ValueDescConvert,"convert");
 ACTION_SET_CATEGORY(Action::ValueDescConvert,Action::CATEGORY_VALUEDESC);

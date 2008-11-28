@@ -45,7 +45,7 @@ using namespace Action;
 /* === M A C R O S ========================================================= */
 
 ACTION_INIT(Action::ValueNodeLinkConnect);
-ACTION_SET_NAME(Action::ValueNodeLinkConnect,"value_node_link_connect");
+ACTION_SET_NAME(Action::ValueNodeLinkConnect,"ValueNodeLinkConnect");
 ACTION_SET_LOCAL_NAME(Action::ValueNodeLinkConnect,N_("Connect ValueNode Link"));
 ACTION_SET_TASK(Action::ValueNodeLinkConnect,"connect");
 ACTION_SET_CATEGORY(Action::ValueNodeLinkConnect,Action::CATEGORY_LAYER|Action::CATEGORY_VALUENODE);

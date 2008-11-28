@@ -53,7 +53,7 @@ using namespace Action;
 /* === M A C R O S ========================================================= */
 
 ACTION_INIT_NO_GET_LOCAL_NAME(Action::ValueDescDisconnect);
-ACTION_SET_NAME(Action::ValueDescDisconnect,"value_desc_disconnect");
+ACTION_SET_NAME(Action::ValueDescDisconnect,"ValueDescDisconnect");
 ACTION_SET_LOCAL_NAME(Action::ValueDescDisconnect,N_("Disconnect"));
 ACTION_SET_TASK(Action::ValueDescDisconnect,"disconnect");
 ACTION_SET_CATEGORY(Action::ValueDescDisconnect,Action::CATEGORY_VALUEDESC);

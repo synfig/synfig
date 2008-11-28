@@ -46,7 +46,7 @@ using namespace Action;
 /* === M A C R O S ========================================================= */
 
 ACTION_INIT(Action::WaypointConnect);
-ACTION_SET_NAME(Action::WaypointConnect,"waypoint_connect");
+ACTION_SET_NAME(Action::WaypointConnect,"WaypointConnect");
 ACTION_SET_LOCAL_NAME(Action::WaypointConnect,N_("Connect Waypoint"));
 ACTION_SET_TASK(Action::WaypointConnect,"connect");
 ACTION_SET_CATEGORY(Action::WaypointConnect,Action::CATEGORY_WAYPOINT);

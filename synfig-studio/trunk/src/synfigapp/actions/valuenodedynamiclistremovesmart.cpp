@@ -47,7 +47,7 @@ using namespace Action;
 /* === M A C R O S ========================================================= */
 
 ACTION_INIT(Action::ValueNodeDynamicListRemoveSmart);
-ACTION_SET_NAME(Action::ValueNodeDynamicListRemoveSmart,"value_node_dynamic_list_remove_smart");
+ACTION_SET_NAME(Action::ValueNodeDynamicListRemoveSmart,"ValueNodeDynamicListRemoveSmart");
 ACTION_SET_LOCAL_NAME(Action::ValueNodeDynamicListRemoveSmart,N_("Remove Item (Smart)"));
 ACTION_SET_TASK(Action::ValueNodeDynamicListRemoveSmart,"remove");
 ACTION_SET_CATEGORY(Action::ValueNodeDynamicListRemoveSmart,Action::CATEGORY_VALUEDESC|Action::CATEGORY_VALUENODE);
@@ -153,7 +153,7 @@ Action::ValueNodeDynamicListRemoveSmart::prepare()
 	// If we are in animate editing mode
 	if(get_edit_mode()&MODE_ANIMATE)
 	{
-		Action::Handle action(Action::create("activepoint_set_off"));
+		Action::Handle action(Action::create("ActivepointSetOff"));
 
 		if(!action)
 			throw Error(_("Unable to find action (bug)"));
@@ -171,7 +171,7 @@ Action::ValueNodeDynamicListRemoveSmart::prepare()
 	}
 	else
 	{
-		Action::Handle action(Action::create("value_node_dynamic_list_remove"));
+		Action::Handle action(Action::create("ValueNodeDynamicListRemove"));
 
 		if(!action)
 			throw Error(_("Unable to find action (bug)"));

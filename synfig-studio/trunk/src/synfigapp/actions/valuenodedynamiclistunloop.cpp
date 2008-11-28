@@ -46,7 +46,7 @@ using namespace Action;
 /* === M A C R O S ========================================================= */
 
 ACTION_INIT(Action::ValueNodeDynamicListUnLoop);
-ACTION_SET_NAME(Action::ValueNodeDynamicListUnLoop,"value_node_dynamic_list_unloop");
+ACTION_SET_NAME(Action::ValueNodeDynamicListUnLoop,"ValueNodeDynamicListUnLoop");
 ACTION_SET_LOCAL_NAME(Action::ValueNodeDynamicListUnLoop,N_("Unloop"));
 ACTION_SET_TASK(Action::ValueNodeDynamicListUnLoop,"unloop");
 ACTION_SET_CATEGORY(Action::ValueNodeDynamicListUnLoop,Action::CATEGORY_VALUEDESC|Action::CATEGORY_VALUENODE);

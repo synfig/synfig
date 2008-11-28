@@ -46,7 +46,7 @@ using namespace Action;
 /* === M A C R O S ========================================================= */
 
 ACTION_INIT_NO_GET_LOCAL_NAME(Action::LayerMove);
-ACTION_SET_NAME(Action::LayerMove,"layer_move");
+ACTION_SET_NAME(Action::LayerMove,"LayerMove");
 ACTION_SET_LOCAL_NAME(Action::LayerMove,N_("Move Layer"));
 ACTION_SET_TASK(Action::LayerMove,"move");
 ACTION_SET_CATEGORY(Action::LayerMove,Action::CATEGORY_LAYER);

@@ -52,7 +52,7 @@ using namespace Action;
 /* === M A C R O S ========================================================= */
 
 ACTION_INIT_NO_GET_LOCAL_NAME(Action::BLinePointTangentSplit);
-ACTION_SET_NAME(Action::BLinePointTangentSplit,"bline_point_tangent_split");
+ACTION_SET_NAME(Action::BLinePointTangentSplit,"BLinePointTangentSplit");
 ACTION_SET_LOCAL_NAME(Action::BLinePointTangentSplit,N_("Split Tangents"));
 ACTION_SET_TASK(Action::BLinePointTangentSplit,"split");
 ACTION_SET_CATEGORY(Action::BLinePointTangentSplit,Action::CATEGORY_VALUENODE);
@@ -151,7 +151,7 @@ Action::BLinePointTangentSplit::prepare()
 
 	Action::Handle action;
 
-	action=Action::create("value_desc_set");
+	action=Action::create("ValueDescSet");
 	if(!action)
 		throw Error(_("Couldn't find action \"value_desc_set\""));
 

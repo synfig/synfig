@@ -45,7 +45,7 @@ using namespace Action;
 /* === M A C R O S ========================================================= */
 
 ACTION_INIT(Action::LayerParamSet);
-ACTION_SET_NAME(Action::LayerParamSet,"layer_param_set");
+ACTION_SET_NAME(Action::LayerParamSet,"LayerParamSet");
 ACTION_SET_LOCAL_NAME(Action::LayerParamSet,N_("Set Layer Parameter"));
 ACTION_SET_TASK(Action::LayerParamSet,"set");
 ACTION_SET_CATEGORY(Action::LayerParamSet,Action::CATEGORY_LAYER);

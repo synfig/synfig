@@ -147,7 +147,7 @@ StateFill_Context::event_workarea_layer_clicked_handler(const Smach::event& x)
 	}
 
 
-	//synfigapp::Action::Handle action(synfigapp::Action::create("value_desc_set"));
+	//synfigapp::Action::Handle action(synfigapp::Action::create("ValueDescSet"));
 	synfigapp::ValueDesc value_desc(event.layer,"color");
 
 	if(!get_canvas_interface()->change_value(value_desc,ValueBase(synfigapp::Main::get_foreground_color())))

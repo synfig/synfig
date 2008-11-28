@@ -309,7 +309,7 @@ LayerTreeStore::set_value_impl(const Gtk::TreeModel::iterator& iter, int column,
 			if(new_desc==layer->get_description())
 				return;
 
-			synfigapp::Action::Handle action(synfigapp::Action::create("layer_set_desc"));
+			synfigapp::Action::Handle action(synfigapp::Action::create("LayerSetDesc"));
 
 			if(!action)
 				return;
@@ -332,7 +332,7 @@ LayerTreeStore::set_value_impl(const Gtk::TreeModel::iterator& iter, int column,
 			g_value_init(x.gobj(),model.active.type());
 			g_value_copy(value.gobj(),x.gobj());
 
-			synfigapp::Action::Handle action(synfigapp::Action::create("layer_activate"));
+			synfigapp::Action::Handle action(synfigapp::Action::create("LayerActivate"));
 
 			if(!action)
 				return;
@@ -518,7 +518,7 @@ LayerTreeStore::drag_data_received_vfunc (const TreeModel::Path& dest, const Gtk
 				if(dest_canvas==src->get_canvas() && dest_layer_depth==src->get_depth())
 					continue;
 
-				synfigapp::Action::Handle action(synfigapp::Action::create("layer_move"));
+				synfigapp::Action::Handle action(synfigapp::Action::create("LayerMove"));
 				action->set_param("canvas",dest_canvas);
 				action->set_param("canvas_interface",canvas_interface());
 				action->set_param("layer",src);
@@ -537,7 +537,7 @@ LayerTreeStore::drag_data_received_vfunc (const TreeModel::Path& dest, const Gtk
 			{
 
 				synfigapp::Action::Handle action;
-				action=synfigapp::Action::create("layer_remove");
+				action=synfigapp::Action::create("LayerRemove");
 				action->set_param("canvas",Canvas::Handle(src->get_canvas()));
 				if(!action->set_param("canvas_interface",App::get_instance(src->get_canvas())->find_canvas_interface(src->get_canvas())))
 					action->set_param("canvas_interface",canvas_interface());
@@ -549,7 +549,7 @@ LayerTreeStore::drag_data_received_vfunc (const TreeModel::Path& dest, const Gtk
 					return false;
 				}
 
-				action=synfigapp::Action::create("layer_add");
+				action=synfigapp::Action::create("LayerAdd");
 				action->set_param("canvas",dest_canvas);
 				action->set_param("canvas_interface",canvas_interface());
 				action->set_param("new",src);
@@ -562,7 +562,7 @@ LayerTreeStore::drag_data_received_vfunc (const TreeModel::Path& dest, const Gtk
 
 				if(dest_layer_depth!=0)
 				{
-					action=synfigapp::Action::create("layer_move");
+					action=synfigapp::Action::create("LayerMove");
 					action->set_param("canvas",dest_canvas);
 					action->set_param("canvas_interface",canvas_interface());
 					action->set_param("layer",src);

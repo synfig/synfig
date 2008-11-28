@@ -51,7 +51,7 @@ using namespace Action;
 /* === M A C R O S ========================================================= */
 
 ACTION_INIT(Action::ColorSet);
-ACTION_SET_NAME(Action::ColorSet,"color_set");
+ACTION_SET_NAME(Action::ColorSet,"ColorSet");
 ACTION_SET_LOCAL_NAME(Action::ColorSet,N_("Apply Default Color"));
 ACTION_SET_TASK(Action::ColorSet,"set");
 ACTION_SET_CATEGORY(Action::ColorSet,Action::CATEGORY_VALUEDESC);
@@ -133,7 +133,7 @@ Action::ColorSet::prepare()
 	clear();
 
 	Action::Handle action;
-	action=Action::create("value_desc_set");
+	action=Action::create("ValueDescSet");
 
 	action->set_param("canvas",get_canvas());
 	action->set_param("canvas_interface",get_canvas_interface());

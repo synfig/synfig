@@ -46,7 +46,7 @@ using namespace Action;
 /* === M A C R O S ========================================================= */
 
 ACTION_INIT_NO_GET_LOCAL_NAME(Action::LayerAdd);
-ACTION_SET_NAME(Action::LayerAdd,"layer_add");
+ACTION_SET_NAME(Action::LayerAdd,"LayerAdd");
 ACTION_SET_LOCAL_NAME(Action::LayerAdd,N_("Add Layer"));
 ACTION_SET_TASK(Action::LayerAdd,"add");
 ACTION_SET_CATEGORY(Action::LayerAdd,Action::CATEGORY_LAYER);

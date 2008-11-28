@@ -49,7 +49,7 @@ using namespace Action;
 /* === M A C R O S ========================================================= */
 
 ACTION_INIT(Action::KeyframeSet);
-ACTION_SET_NAME(Action::KeyframeSet,"keyframe_set");
+ACTION_SET_NAME(Action::KeyframeSet,"KeyframeSet");
 ACTION_SET_LOCAL_NAME(Action::KeyframeSet,N_("Set Keyframe"));
 ACTION_SET_TASK(Action::KeyframeSet,"set");
 ACTION_SET_CATEGORY(Action::KeyframeSet,Action::CATEGORY_KEYFRAME|Action::CATEGORY_HIDDEN);
@@ -178,7 +178,7 @@ Action::KeyframeSet::scale_activepoints(const synfigapp::ValueDesc& value_desc,c
 		{
 			if(selected.back()->get_time()!=old_2_new(selected.back()->get_time()))
 			{
-				Action::Handle action(Action::create("activepoint_set"));
+				Action::Handle action(Action::create("ActivepointSet"));
 
 				action->set_param("canvas",get_canvas());
 				action->set_param("canvas_interface",get_canvas_interface());
@@ -237,7 +237,7 @@ Action::KeyframeSet::scale_waypoints(const synfigapp::ValueDesc& value_desc,cons
 		{
 			if(selected.back()->get_time()!=old_2_new(selected.back()->get_time()))
 			{
-				Action::Handle action(Action::create("waypoint_set"));
+				Action::Handle action(Action::create("WaypointSet"));
 
 				action->set_param("canvas",get_canvas());
 				action->set_param("canvas_interface",get_canvas_interface());

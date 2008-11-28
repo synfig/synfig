@@ -565,7 +565,7 @@ StateWidth_Context::event_mouse_handler(const Smach::event& x)
 
 			if(	desc.get_value_type() == ValueBase::TYPE_REAL )
 			{
-				Action::Handle action(Action::create("value_desc_set"));
+				Action::Handle action(Action::create("ValueDescSet"));
 				assert(action);
 
 				action->set_param("canvas",get_canvas());

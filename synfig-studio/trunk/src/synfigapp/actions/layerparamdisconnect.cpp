@@ -46,7 +46,7 @@ using namespace Action;
 /* === M A C R O S ========================================================= */
 
 ACTION_INIT(Action::LayerParamDisconnect);
-ACTION_SET_NAME(Action::LayerParamDisconnect,"layer_param_disconnect");
+ACTION_SET_NAME(Action::LayerParamDisconnect,"LayerParamDisconnect");
 ACTION_SET_LOCAL_NAME(Action::LayerParamDisconnect,N_("Disconnect Layer Parameter"));
 ACTION_SET_TASK(Action::LayerParamDisconnect,"disconnect");
 ACTION_SET_CATEGORY(Action::LayerParamDisconnect,Action::CATEGORY_LAYER|Action::CATEGORY_VALUENODE);

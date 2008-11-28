@@ -567,7 +567,7 @@ StatePolygon_Context::run()
 		}
 
 		{
-			synfigapp::Action::Handle action(synfigapp::Action::create("value_desc_convert"));
+			synfigapp::Action::Handle action(synfigapp::Action::create("ValueDescConvert"));
 			synfigapp::ValueDesc value_desc(layer,"vector_list");
 			action->set_param("canvas",get_canvas());
 			action->set_param("canvas_interface",get_canvas_interface());
@@ -585,7 +585,7 @@ StatePolygon_Context::run()
 		// only link the polygon's origin parameter if the option is selected and we're creating more than one layer
 		if (get_layer_link_origins_flag() && layers_to_create > 1)
 		{
-			synfigapp::Action::Handle action(synfigapp::Action::create("layer_param_connect"));
+			synfigapp::Action::Handle action(synfigapp::Action::create("LayerParamConnect"));
 			assert(action);
 
 			action->set_param("canvas",get_canvas());
@@ -626,7 +626,7 @@ StatePolygon_Context::run()
 		get_canvas_interface()->signal_layer_new_description()(layer,layer->get_description());
 
 		{
-			synfigapp::Action::Handle action(synfigapp::Action::create("layer_param_connect"));
+			synfigapp::Action::Handle action(synfigapp::Action::create("LayerParamConnect"));
 			assert(action);
 
 			action->set_param("canvas",get_canvas());
@@ -649,7 +649,7 @@ StatePolygon_Context::run()
 		// only link the curve gradient's origin parameter if the option is selected and we're creating more than one layer
 		if (get_layer_link_origins_flag() && layers_to_create > 1)
 		{
-			synfigapp::Action::Handle action(synfigapp::Action::create("layer_param_connect"));
+			synfigapp::Action::Handle action(synfigapp::Action::create("LayerParamConnect"));
 			assert(action);
 
 			action->set_param("canvas",get_canvas());
@@ -690,7 +690,7 @@ StatePolygon_Context::run()
 		get_canvas_interface()->signal_layer_new_description()(layer,layer->get_description());
 
 		{
-			synfigapp::Action::Handle action(synfigapp::Action::create("layer_param_connect"));
+			synfigapp::Action::Handle action(synfigapp::Action::create("LayerParamConnect"));
 			assert(action);
 
 			action->set_param("canvas",get_canvas());
@@ -713,7 +713,7 @@ StatePolygon_Context::run()
 		// only link the plant's origin parameter if the option is selected and we're creating more than one layer
 		if (get_layer_link_origins_flag() && layers_to_create > 1)
 		{
-			synfigapp::Action::Handle action(synfigapp::Action::create("layer_param_connect"));
+			synfigapp::Action::Handle action(synfigapp::Action::create("LayerParamConnect"));
 			assert(action);
 
 			action->set_param("canvas",get_canvas());
@@ -765,7 +765,7 @@ StatePolygon_Context::run()
 		// I don't know if it's safe to reuse the same layer_param_connect action, so I'm
 		// using 2 separate ones.
 		{
-			synfigapp::Action::Handle action(synfigapp::Action::create("layer_param_connect"));
+			synfigapp::Action::Handle action(synfigapp::Action::create("LayerParamConnect"));
 			assert(action);
 
 			action->set_param("canvas",get_canvas());
@@ -788,7 +788,7 @@ StatePolygon_Context::run()
 		// only link the region's origin parameter if the option is selected and we're creating more than one layer
 		if (get_layer_link_origins_flag() && layers_to_create > 1)
 		{
-			synfigapp::Action::Handle action(synfigapp::Action::create("layer_param_connect"));
+			synfigapp::Action::Handle action(synfigapp::Action::create("LayerParamConnect"));
 			assert(action);
 
 			action->set_param("canvas",get_canvas());
@@ -833,7 +833,7 @@ StatePolygon_Context::run()
 		get_canvas_interface()->signal_layer_param_changed()(layer,"invert");
 
 		{
-			synfigapp::Action::Handle action(synfigapp::Action::create("layer_param_connect"));
+			synfigapp::Action::Handle action(synfigapp::Action::create("LayerParamConnect"));
 			assert(action);
 
 			action->set_param("canvas",get_canvas());
@@ -856,7 +856,7 @@ StatePolygon_Context::run()
 		// only link the outline's origin parameter if the option is selected and we're creating more than one layer
 		if (get_layer_link_origins_flag() && layers_to_create > 1)
 		{
-			synfigapp::Action::Handle action(synfigapp::Action::create("layer_param_connect"));
+			synfigapp::Action::Handle action(synfigapp::Action::create("LayerParamConnect"));
 			assert(action);
 
 			action->set_param("canvas",get_canvas());

@@ -45,7 +45,7 @@ using namespace Action;
 /* === M A C R O S ========================================================= */
 
 ACTION_INIT(Action::CanvasRemove);
-ACTION_SET_NAME(Action::CanvasRemove,"canvas_remove");
+ACTION_SET_NAME(Action::CanvasRemove,"CanvasRemove");
 ACTION_SET_LOCAL_NAME(Action::CanvasRemove,N_("Remove Canvas"));
 ACTION_SET_TASK(Action::CanvasRemove,"remove");
 ACTION_SET_CATEGORY(Action::CanvasRemove,Action::CATEGORY_CANVAS);

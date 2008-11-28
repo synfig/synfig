@@ -45,7 +45,7 @@ using namespace Action;
 /* === M A C R O S ========================================================= */
 
 ACTION_INIT(Action::ValueNodeReplace);
-ACTION_SET_NAME(Action::ValueNodeReplace,"value_node_replace");
+ACTION_SET_NAME(Action::ValueNodeReplace,"ValueNodeReplace");
 ACTION_SET_LOCAL_NAME(Action::ValueNodeReplace,N_("Replace ValueNode"));
 ACTION_SET_TASK(Action::ValueNodeReplace,"replace");
 ACTION_SET_CATEGORY(Action::ValueNodeReplace,Action::CATEGORY_VALUENODE|Action::CATEGORY_DRAG);

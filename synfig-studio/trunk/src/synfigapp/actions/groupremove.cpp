@@ -45,7 +45,7 @@ using namespace Action;
 /* === M A C R O S ========================================================= */
 
 ACTION_INIT(Action::GroupRemove);
-ACTION_SET_NAME(Action::GroupRemove,"group_remove");
+ACTION_SET_NAME(Action::GroupRemove,"GroupRemove");
 ACTION_SET_LOCAL_NAME(Action::GroupRemove,N_("Remove Group"));
 ACTION_SET_TASK(Action::GroupRemove,"remove");
 ACTION_SET_CATEGORY(Action::GroupRemove,Action::CATEGORY_GROUP);

@@ -53,7 +53,7 @@ using namespace Action;
 /* === M A C R O S ========================================================= */
 
 ACTION_INIT(Action::ActivepointSetSmart);
-ACTION_SET_NAME(Action::ActivepointSetSmart,"activepoint_set_smart");
+ACTION_SET_NAME(Action::ActivepointSetSmart,"ActivepointSetSmart");
 ACTION_SET_LOCAL_NAME(Action::ActivepointSetSmart,N_("Set Activepoint (Smart)"));
 ACTION_SET_TASK(Action::ActivepointSetSmart,"set");
 ACTION_SET_CATEGORY(Action::ActivepointSetSmart,Action::CATEGORY_ACTIVEPOINT);

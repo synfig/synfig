@@ -47,7 +47,7 @@ using namespace Action;
 /* === M A C R O S ========================================================= */
 
 ACTION_INIT_NO_GET_LOCAL_NAME(Action::LayerRaise);
-ACTION_SET_NAME(Action::LayerRaise,"layer_raise");
+ACTION_SET_NAME(Action::LayerRaise,"LayerRaise");
 ACTION_SET_LOCAL_NAME(Action::LayerRaise,N_("Raise Layer"));
 ACTION_SET_TASK(Action::LayerRaise,"raise");
 ACTION_SET_CATEGORY(Action::LayerRaise,Action::CATEGORY_LAYER);

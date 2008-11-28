@@ -104,9 +104,9 @@ Dock_Keyframes::Dock_Keyframes():
     Glib::ustring ui_info =
 	"<ui>"
 	"	<toolbar action='toolbar-keyframe'>"
-	"	<toolitem action='action-keyframe_add' />"
-	"	<toolitem action='action-keyframe_duplicate' />"
-	"	<toolitem action='action-keyframe_remove' />"
+	"	<toolitem action='action-KeyframeAdd' />"
+	"	<toolitem action='action-KeyframeDuplicate' />"
+	"	<toolitem action='action-KeyframeRemove' />"
 	"	<toolitem action='keyframe-properties' />"
 	"	</toolbar>"
 	"</ui>"

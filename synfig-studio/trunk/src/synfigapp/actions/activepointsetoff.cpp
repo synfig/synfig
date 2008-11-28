@@ -54,7 +54,7 @@ using namespace Action;
 /* === M A C R O S ========================================================= */
 
 ACTION_INIT(Action::ActivepointSetOff);
-ACTION_SET_NAME(Action::ActivepointSetOff,"activepoint_set_off");
+ACTION_SET_NAME(Action::ActivepointSetOff,"ActivepointSetOff");
 ACTION_SET_LOCAL_NAME(Action::ActivepointSetOff,N_("Mark Activepoint as \"Off\""));
 ACTION_SET_TASK(Action::ActivepointSetOff,"set_off");
 ACTION_SET_CATEGORY(Action::ActivepointSetOff,Action::CATEGORY_ACTIVEPOINT|Action::CATEGORY_VALUEDESC);

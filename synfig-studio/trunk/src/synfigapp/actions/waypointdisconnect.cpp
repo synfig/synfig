@@ -47,7 +47,7 @@ using namespace Action;
 /* === M A C R O S ========================================================= */
 
 ACTION_INIT(Action::WaypointDisconnect);
-ACTION_SET_NAME(Action::WaypointDisconnect,"waypoint_disconnect");
+ACTION_SET_NAME(Action::WaypointDisconnect,"WaypointDisconnect");
 ACTION_SET_LOCAL_NAME(Action::WaypointDisconnect,N_("Disconnect Waypoint"));
 ACTION_SET_TASK(Action::WaypointDisconnect,"disconnect");
 ACTION_SET_CATEGORY(Action::WaypointDisconnect,Action::CATEGORY_WAYPOINT);

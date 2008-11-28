@@ -297,13 +297,13 @@ StateNormal_Context::edit_several_waypoints(std::list<synfigapp::ValueDesc> valu
 
 			if(!value_desc.is_value_node())
 			{
-				action=synfigapp::Action::create("value_desc_connect");
+				action=synfigapp::Action::create("ValueDescConnect");
 				action->set_param("dest",value_desc);
 				action->set_param("src",ValueNode::Handle(value_node));
 			}
 			else
 			{
-				action=synfigapp::Action::create("value_node_replace");
+				action=synfigapp::Action::create("ValueNodeReplace");
 				action->set_param("dest",value_desc.get_value_node());
 				action->set_param("src",ValueNode::Handle(value_node));
 			}
@@ -329,7 +329,7 @@ StateNormal_Context::edit_several_waypoints(std::list<synfigapp::ValueDesc> valu
 		if(value_node)
 		{
 
-			synfigapp::Action::Handle action(synfigapp::Action::create("waypoint_set_smart"));
+			synfigapp::Action::Handle action(synfigapp::Action::create("WaypointSetSmart"));
 
 			if(!action)
 			{

@@ -46,7 +46,7 @@ using namespace Action;
 /* === M A C R O S ========================================================= */
 
 ACTION_INIT(Action::ValueNodeDynamicListInsert);
-ACTION_SET_NAME(Action::ValueNodeDynamicListInsert,"value_node_dynamic_list_insert");
+ACTION_SET_NAME(Action::ValueNodeDynamicListInsert,"ValueNodeDynamicListInsert");
 ACTION_SET_LOCAL_NAME(Action::ValueNodeDynamicListInsert,N_("Insert Item"));
 ACTION_SET_TASK(Action::ValueNodeDynamicListInsert,"insert");
 ACTION_SET_CATEGORY(Action::ValueNodeDynamicListInsert,Action::CATEGORY_VALUEDESC|Action::CATEGORY_VALUENODE|Action::CATEGORY_HIDDEN);

@@ -1089,7 +1089,7 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline
 			get_canvas_interface()->
 			  change_value(synfigapp::ValueDesc(layer,"origin"),shift_origin_vector);
 
-		synfigapp::Action::Handle action(synfigapp::Action::create("layer_param_connect"));
+		synfigapp::Action::Handle action(synfigapp::Action::create("LayerParamConnect"));
 
 		assert(action);
 
@@ -1806,7 +1806,7 @@ StateDraw_Context::new_region(std::list<synfig::BLinePoint> bline, synfig::Real 
 		}
 		get_canvas_interface()->signal_layer_param_changed()(layer,"color");
 
-		synfigapp::Action::Handle action(synfigapp::Action::create("layer_param_connect"));
+		synfigapp::Action::Handle action(synfigapp::Action::create("LayerParamConnect"));
 
 		assert(action);
 
@@ -1858,7 +1858,7 @@ StateDraw_Context::extend_bline_from_begin(ValueNode_BLine::Handle value_node,st
 
 	if (complete_loop)
 	{
-		synfigapp::Action::Handle action(synfigapp::Action::create("value_node_dynamic_list_loop"));
+		synfigapp::Action::Handle action(synfigapp::Action::create("ValueNodeDynamicListLoop"));
 		assert(action);
 
 		action->set_param("canvas",get_canvas());
@@ -1878,7 +1878,7 @@ StateDraw_Context::extend_bline_from_begin(ValueNode_BLine::Handle value_node,st
 	{
 		ValueNode_Composite::Handle composite(ValueNode_Composite::create(*iter));
 
-		synfigapp::Action::Handle action(synfigapp::Action::create("value_node_dynamic_list_insert"));
+		synfigapp::Action::Handle action(synfigapp::Action::create("ValueNodeDynamicListInsert"));
 
 		assert(action);
 		synfigapp::ValueDesc value_desc(value_node,0);
@@ -1909,7 +1909,7 @@ StateDraw_Context::extend_bline_from_end(ValueNode_BLine::Handle value_node,std:
 
 	if (complete_loop)
 	{
-		synfigapp::Action::Handle action(synfigapp::Action::create("value_node_dynamic_list_loop"));
+		synfigapp::Action::Handle action(synfigapp::Action::create("ValueNodeDynamicListLoop"));
 		assert(action);
 
 		action->set_param("canvas",get_canvas());
@@ -1929,7 +1929,7 @@ StateDraw_Context::extend_bline_from_end(ValueNode_BLine::Handle value_node,std:
 	{
 		ValueNode_Composite::Handle composite(ValueNode_Composite::create(*iter));
 
-		synfigapp::Action::Handle action(synfigapp::Action::create("value_node_dynamic_list_insert"));
+		synfigapp::Action::Handle action(synfigapp::Action::create("ValueNodeDynamicListInsert"));
 
 		assert(action);
 		synfigapp::ValueDesc value_desc(value_node,value_node->link_count());
@@ -1999,7 +1999,7 @@ StateDraw_Context::fill_last_stroke_and_unselect_other_layers()
 	layer->set_param("color",synfigapp::Main::get_background_color());
 	layer->set_description(last_stroke_id + _(" Region"));
 
-	synfigapp::Action::Handle action(synfigapp::Action::create("layer_param_connect"));
+	synfigapp::Action::Handle action(synfigapp::Action::create("LayerParamConnect"));
 
 	assert(action);
 

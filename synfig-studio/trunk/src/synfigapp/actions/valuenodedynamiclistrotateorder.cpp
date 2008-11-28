@@ -46,7 +46,7 @@ using namespace Action;
 /* === M A C R O S ========================================================= */
 
 ACTION_INIT(Action::ValueNodeDynamicListRotateOrder);
-ACTION_SET_NAME(Action::ValueNodeDynamicListRotateOrder,"value_node_dynamic_list_rotate_order");
+ACTION_SET_NAME(Action::ValueNodeDynamicListRotateOrder,"ValueNodeDynamicListRotateOrder");
 ACTION_SET_LOCAL_NAME(Action::ValueNodeDynamicListRotateOrder,N_("Rotate Order"));
 ACTION_SET_TASK(Action::ValueNodeDynamicListRotateOrder,"rotate");
 ACTION_SET_CATEGORY(Action::ValueNodeDynamicListRotateOrder,Action::CATEGORY_VALUEDESC|Action::CATEGORY_VALUENODE);
@@ -133,7 +133,7 @@ Action::ValueNodeDynamicListRotateOrder::prepare()
 		ValueNode::Handle child(value_desc.get_value_node());
 
 
-		Action::Handle action(Action::create("value_node_dynamic_list_remove"));
+		Action::Handle action(Action::create("ValueNodeDynamicListRemove"));
 
 		action->set_param("canvas",get_canvas());
 		action->set_param("canvas_interface",get_canvas_interface());
@@ -146,7 +146,7 @@ Action::ValueNodeDynamicListRotateOrder::prepare()
 		add_action(action);
 
 
-		action=Action::create("value_node_dynamic_list_insert");
+		action=Action::create("ValueNodeDynamicListInsert");
 
 		action->set_param("canvas",get_canvas());
 		action->set_param("canvas_interface",get_canvas_interface());

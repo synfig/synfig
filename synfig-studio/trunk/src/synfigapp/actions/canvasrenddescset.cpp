@@ -45,7 +45,7 @@ using namespace Action;
 /* === M A C R O S ========================================================= */
 
 ACTION_INIT(Action::CanvasRendDescSet);
-ACTION_SET_NAME(Action::CanvasRendDescSet,"canvas_rend_desc_set");
+ACTION_SET_NAME(Action::CanvasRendDescSet,"CanvasRendDescSet");
 ACTION_SET_LOCAL_NAME(Action::CanvasRendDescSet,N_("Set Canvas RendDesc"));
 ACTION_SET_TASK(Action::CanvasRendDescSet,"set");
 ACTION_SET_CATEGORY(Action::CanvasRendDescSet,Action::CATEGORY_CANVAS);

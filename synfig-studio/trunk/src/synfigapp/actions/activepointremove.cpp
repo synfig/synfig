@@ -46,7 +46,7 @@ using namespace Action;
 /* === M A C R O S ========================================================= */
 
 ACTION_INIT(Action::ActivepointRemove);
-ACTION_SET_NAME(Action::ActivepointRemove,"activepoint_remove");
+ACTION_SET_NAME(Action::ActivepointRemove,"ActivepointRemove");
 ACTION_SET_LOCAL_NAME(Action::ActivepointRemove,N_("Remove Activepoint"));
 ACTION_SET_TASK(Action::ActivepointRemove,"remove");
 ACTION_SET_CATEGORY(Action::ActivepointRemove,Action::CATEGORY_ACTIVEPOINT);

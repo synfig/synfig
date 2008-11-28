@@ -2173,7 +2173,7 @@ CanvasView::build_tables()
 void
 CanvasView::on_layer_toggle(synfig::Layer::Handle layer)
 {
-	synfigapp::Action::Handle action(synfigapp::Action::create("layer_activate"));
+	synfigapp::Action::Handle action(synfigapp::Action::create("LayerActivate"));
 	assert(action);
 
 	if(!action)
@@ -3195,7 +3195,7 @@ set_waypoint_model(std::set<synfig::Waypoint, std::less<UniqueID> > waypoints,
 		Waypoint waypoint(*iter);
 		waypoint.apply_model(model);
 
-		synfigapp::Action::Handle action(synfigapp::Action::create("waypoint_set"));
+		synfigapp::Action::Handle action(synfigapp::Action::create("WaypointSet"));
 
 		assert(action);
 
@@ -3371,7 +3371,7 @@ CanvasView::on_waypoint_changed()
 	param_list.add("waypoint",waypoint_dialog.get_waypoint());
 //	param_list.add("time",canvas_interface()->get_time());
 
-	get_instance()->process_action("waypoint_set_smart", param_list);
+	get_instance()->process_action("WaypointSetSmart", param_list);
 }
 
 void
@@ -3384,7 +3384,7 @@ CanvasView::on_waypoint_delete()
 	param_list.add("waypoint",waypoint_dialog.get_waypoint());
 //	param_list.add("time",canvas_interface()->get_time());
 
-	get_instance()->process_action("waypoint_remove", param_list);
+	get_instance()->process_action("WaypointRemove", param_list);
 }
 
 void
@@ -3408,7 +3408,7 @@ CanvasView::on_drop_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& con
 			if(!layer->set_param("text",ValueBase(selection_data)))
 				break;
 
-			synfigapp::Action::Handle 	action(synfigapp::Action::create("layer_add"));
+			synfigapp::Action::Handle 	action(synfigapp::Action::create("LayerAdd"));
 
 			assert(action);
 			if(!action)
@@ -3493,7 +3493,7 @@ CanvasView::on_drop_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& con
 void
 CanvasView::on_keyframe_add_pressed()
 {
-	synfigapp::Action::Handle action(synfigapp::Action::create("keyframe_add"));
+	synfigapp::Action::Handle action(synfigapp::Action::create("KeyframeAdd"));
 
 	if(!action)
 	{
@@ -3521,7 +3521,7 @@ CanvasView::on_keyframe_duplicate_pressed()
 	}
 	keyframe=row[model.keyframe];
 
-	synfigapp::Action::Handle action(synfigapp::Action::create("keyframe_duplicate"));
+	synfigapp::Action::Handle action(synfigapp::Action::create("KeyframeDuplicate"));
 
 	if(!action)
 	{
@@ -3550,7 +3550,7 @@ CanvasView::on_keyframe_remove_pressed()
 	}
 	keyframe=row[model.keyframe];
 
-	synfigapp::Action::Handle action(synfigapp::Action::create("keyframe_remove"));
+	synfigapp::Action::Handle action(synfigapp::Action::create("KeyframeRemove"));
 
 	if(!action)
 	{

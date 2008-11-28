@@ -121,7 +121,7 @@ Dialog_Keyframe::on_ok_pressed()
 	if(widget_waypoint_model->get_waypoint_model().is_trivial())
 		return;
 
-	synfigapp::Action::Handle action(synfigapp::Action::create("keyframe_waypoint_set"));
+	synfigapp::Action::Handle action(synfigapp::Action::create("KeyframeWaypointSet"));
 
 	assert(action);
 

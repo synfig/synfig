@@ -46,7 +46,7 @@ using namespace Action;
 /* === M A C R O S ========================================================= */
 
 ACTION_INIT_NO_GET_LOCAL_NAME(Action::LayerSetDesc);
-ACTION_SET_NAME(Action::LayerSetDesc,"layer_set_desc");
+ACTION_SET_NAME(Action::LayerSetDesc,"LayerSetDesc");
 ACTION_SET_LOCAL_NAME(Action::LayerSetDesc,N_("Set Layer Description"));
 ACTION_SET_TASK(Action::LayerSetDesc,"set_desc");
 ACTION_SET_CATEGORY(Action::LayerSetDesc,Action::CATEGORY_LAYER);

@@ -417,7 +417,7 @@ LayerTree::on_waypoint_changed( synfig::Waypoint waypoint , synfig::ValueNode::H
 	param_list.add("waypoint",waypoint);
 //	param_list.add("time",canvas_interface()->get_time());
 
-	etl::handle<studio::Instance>::cast_static(layer_tree_store_->canvas_interface()->get_instance())->process_action("waypoint_set_smart", param_list);
+	etl::handle<studio::Instance>::cast_static(layer_tree_store_->canvas_interface()->get_instance())->process_action("WaypointSetSmart", param_list);
 }
 
 void
@@ -1006,7 +1006,7 @@ LayerTree::on_param_tree_event(GdkEvent *event)
 // 		for(iter=layer_list.begin();iter!=layer_list.end();++iter)
 // 			param_list.add("layer",Layer::Handle(*iter));
 // 	}
-// 	synfigapp::Action::Handle action(synfigapp::Action::create("layer_raise"));
+// 	synfigapp::Action::Handle action(synfigapp::Action::create("LayerRaise"));
 // 	action->set_param_list(param_list);
 // 	layer_tree_store_->canvas_interface()->get_instance()->perform_action(action);
 // }
@@ -1027,7 +1027,7 @@ LayerTree::on_param_tree_event(GdkEvent *event)
 // 			param_list.add("layer",Layer::Handle(*iter));
 // 	}
 //
-// 	synfigapp::Action::Handle action(synfigapp::Action::create("layer_lower"));
+// 	synfigapp::Action::Handle action(synfigapp::Action::create("LayerLower"));
 // 	action->set_param_list(param_list);
 // 	layer_tree_store_->canvas_interface()->get_instance()->perform_action(action);
 // }
@@ -1048,7 +1048,7 @@ LayerTree::on_param_tree_event(GdkEvent *event)
 // 			param_list.add("layer",Layer::Handle(*iter));
 // 	}
 //
-// 	synfigapp::Action::Handle action(synfigapp::Action::create("layer_duplicate"));
+// 	synfigapp::Action::Handle action(synfigapp::Action::create("LayerDuplicate"));
 // 	action->set_param_list(param_list);
 // 	layer_tree_store_->canvas_interface()->get_instance()->perform_action(action);
 // }
@@ -1069,7 +1069,7 @@ LayerTree::on_param_tree_event(GdkEvent *event)
 // 			param_list.add("layer",Layer::Handle(*iter));
 // 	}
 //
-// 	synfigapp::Action::Handle action(synfigapp::Action::create("layer_encapsulate"));
+// 	synfigapp::Action::Handle action(synfigapp::Action::create("LayerEncapsulate"));
 // 	action->set_param_list(param_list);
 // 	layer_tree_store_->canvas_interface()->get_instance()->perform_action(action);
 // }
@@ -1090,7 +1090,7 @@ LayerTree::on_param_tree_event(GdkEvent *event)
 // 			param_list.add("layer",Layer::Handle(*iter));
 // 	}
 //
-// 	synfigapp::Action::Handle action(synfigapp::Action::create("layer_remove"));
+// 	synfigapp::Action::Handle action(synfigapp::Action::create("LayerRemove"));
 // 	action->set_param_list(param_list);
 // 	layer_tree_store_->canvas_interface()->get_instance()->perform_action(action);
 // }
@@ -1171,7 +1171,7 @@ LayerTree::on_drop_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& cont
 				if(!dest_layer || dest_layer==src)
 					break;
 
-				synfigapp::Action::Handle action(synfigapp::Action::create("layer_move"));
+				synfigapp::Action::Handle action(synfigapp::Action::create("LayerMove"));
 				action->set_param("canvas",dest_canvas);
 				action->set_param("canvas_interface",layer_tree_store_->canvas_interface());
 				action->set_param("layer",src);

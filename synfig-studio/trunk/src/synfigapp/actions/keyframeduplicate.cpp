@@ -49,7 +49,7 @@ using namespace Action;
 /* === M A C R O S ========================================================= */
 
 ACTION_INIT(Action::KeyframeDuplicate);
-ACTION_SET_NAME(Action::KeyframeDuplicate,"keyframe_duplicate");
+ACTION_SET_NAME(Action::KeyframeDuplicate,"KeyframeDuplicate");
 ACTION_SET_LOCAL_NAME(Action::KeyframeDuplicate,N_("Duplicate Keyframe"));
 ACTION_SET_TASK(Action::KeyframeDuplicate,"duplicate");
 ACTION_SET_CATEGORY(Action::KeyframeDuplicate,Action::CATEGORY_KEYFRAME);

@@ -82,7 +82,7 @@ Dock_LayerGroups::Dock_LayerGroups():
     Glib::ustring ui_info =
 	"<ui>"
 	"	<toolbar action='toolbar-groups'>"
-	"	<toolitem action='action-group_remove' />"
+	"	<toolitem action='action-GroupRemove' />"
 	"	<toolitem action='action-group_add' />"
 	"	</toolbar>"
 	"</ui>"

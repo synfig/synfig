@@ -55,7 +55,7 @@ using namespace Action;
 /* === M A C R O S ========================================================= */
 
 ACTION_INIT(Action::ValueDescBLineLink);
-ACTION_SET_NAME(Action::ValueDescBLineLink,"value_desc_bline_link");
+ACTION_SET_NAME(Action::ValueDescBLineLink,"ValueDescBLineLink");
 ACTION_SET_LOCAL_NAME(Action::ValueDescBLineLink,N_("Link to BLine"));
 ACTION_SET_TASK(Action::ValueDescBLineLink,"connect");
 ACTION_SET_CATEGORY(Action::ValueDescBLineLink,Action::CATEGORY_BEZIER);

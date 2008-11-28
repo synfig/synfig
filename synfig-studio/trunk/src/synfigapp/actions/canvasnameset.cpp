@@ -46,7 +46,7 @@ using namespace Action;
 /* === M A C R O S ========================================================= */
 
 ACTION_INIT_NO_GET_LOCAL_NAME(Action::CanvasNameSet);
-ACTION_SET_NAME(Action::CanvasNameSet,"canvas_name_set");
+ACTION_SET_NAME(Action::CanvasNameSet,"CanvasNameSet");
 ACTION_SET_LOCAL_NAME(Action::CanvasNameSet,N_("Set Canvas Name"));
 ACTION_SET_TASK(Action::CanvasNameSet,"set");
 ACTION_SET_CATEGORY(Action::CanvasNameSet,Action::CATEGORY_CANVAS);

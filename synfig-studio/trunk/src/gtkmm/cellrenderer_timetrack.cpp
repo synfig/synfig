@@ -824,15 +824,15 @@ CellRenderer_TimeTrack::activate_vfunc(
 					if(mode & COPY_MASK) //copy
 					{
 						etl::handle<studio::Instance>::cast_static(canvas_interface()->get_instance())
-							->process_action("timepoint_copy", param_list);
+							->process_action("TimepointsCopy", param_list);
 					}else if(delmode) //DELETE
 					{
 						etl::handle<studio::Instance>::cast_static(canvas_interface()->get_instance())
-							->process_action("timepoint_delete", param_list);
+							->process_action("TimepointsDelete", param_list);
 					}else //MOVE
 					{
 						etl::handle<studio::Instance>::cast_static(canvas_interface()->get_instance())
-							->process_action("timepoint_move", param_list);
+							->process_action("TimepointsMove", param_list);
 					}
 
 					//now replace all the selected with the new selected

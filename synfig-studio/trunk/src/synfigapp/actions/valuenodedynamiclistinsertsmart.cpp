@@ -47,7 +47,7 @@ using namespace Action;
 /* === M A C R O S ========================================================= */
 
 ACTION_INIT(Action::ValueNodeDynamicListInsertSmart);
-ACTION_SET_NAME(Action::ValueNodeDynamicListInsertSmart,"value_node_dynamic_list_insert_smart");
+ACTION_SET_NAME(Action::ValueNodeDynamicListInsertSmart,"ValueNodeDynamicListInsertSmart");
 ACTION_SET_LOCAL_NAME(Action::ValueNodeDynamicListInsertSmart,N_("Insert Item (Smart)"));
 ACTION_SET_TASK(Action::ValueNodeDynamicListInsertSmart,"insert");
 ACTION_SET_CATEGORY(Action::ValueNodeDynamicListInsertSmart,Action::CATEGORY_VALUEDESC|Action::CATEGORY_VALUENODE);
@@ -178,7 +178,7 @@ Action::ValueNodeDynamicListInsertSmart::prepare()
 
 			ValueDesc item_value_desc(value_node,index);
 
-			Action::Handle action(Action::create("value_desc_set"));
+			Action::Handle action(Action::create("ValueDescSet"));
 
 			if(!action)
 				throw Error(_("Unable to find action value_desc_set (bug)"));
@@ -199,7 +199,7 @@ Action::ValueNodeDynamicListInsertSmart::prepare()
 		{
 			// Ok, not a big deal, we just need to
 			// add a new item
-			Action::Handle action(Action::create("value_node_dynamic_list_insert"));
+			Action::Handle action(Action::create("ValueNodeDynamicListInsert"));
 
 			if(!action)
 				throw Error(_("Unable to find action (bug)"));
@@ -215,7 +215,7 @@ Action::ValueNodeDynamicListInsertSmart::prepare()
 
 			add_action(action);
 
-			action=Action::create("activepoint_set_off");
+			action=Action::create("ActivepointSetOff");
 
 			if(!action)
 				throw Error(_("Unable to find action \"activepoint_set_off\""));
@@ -234,7 +234,7 @@ Action::ValueNodeDynamicListInsertSmart::prepare()
 		}
 
 		// Now we set the activepoint up and then we'll be done
-		Action::Handle action(Action::create("activepoint_set_on"));
+		Action::Handle action(Action::create("ActivepointSetOn"));
 
 		if(!action)
 			throw Error(_("Unable to find action \"activepoint_set_on\""));
@@ -253,7 +253,7 @@ Action::ValueNodeDynamicListInsertSmart::prepare()
 	}
 	else
 	{
-		Action::Handle action(Action::create("value_node_dynamic_list_insert"));
+		Action::Handle action(Action::create("ValueNodeDynamicListInsert"));
 
 		if(!action)
 			throw Error(_("Unable to find action (bug)"));
