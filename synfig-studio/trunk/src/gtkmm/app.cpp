@@ -992,7 +992,7 @@ init_ui_manager()
 	}
 
 	// Add default keyboard accelerators
-#define ACCEL(path,accel)						\
+#define ACCEL(accel,path)						\
 	{											\
 		Gtk::AccelKey accel_key(accel,path);	\
 		Gtk::AccelMap::add_entry(accel_key.get_path(), accel_key.get_key(), accel_key.get_mod());	\
@@ -1004,94 +1004,80 @@ init_ui_manager()
 		Gtk::AccelMap::add_entry(accel_key.get_path(), accel_key.get_key(), accel_key.get_mod());	\
 	}
 
-	ACCEL("<Actions>//select-all-ducks","<Control>a");
-	ACCEL("<Actions>//unselect-all-ducks","<Control>d");
-	ACCEL("<Actions>//select-all-layers","<Control><Shift>a");
-	ACCEL("<Actions>//unselect-all-layers","<Control><Shift>d");
-	ACCEL("<Actions>//render","F9");
-	ACCEL("<Actions>//preview","F11");
-	ACCEL("<Actions>//properties","F8");
-	ACCEL("<Actions>//options","F12");
-	ACCEL("<Actions>//import","<control>i");
-	ACCEL2(Gtk::AccelKey(GDK_Escape,static_cast<Gdk::ModifierType>(0),"<Actions>//stop"));
-	ACCEL("<Actions>//toggle-grid-show","<Control>g");
-	ACCEL("<Actions>//toggle-grid-snap","<Control>l");
-	ACCEL2(Gtk::AccelKey('`',Gdk::CONTROL_MASK,"<Actions>//toggle-low-res"));
-	ACCEL("<Actions>//mask-position-ducks", "<Mod1>1");
-	ACCEL("<Actions>//mask-vertex-ducks", "<Mod1>2");
-	ACCEL("<Actions>//mask-tangent-ducks", "<Mod1>3");
-	ACCEL("<Actions>//mask-radius-ducks", "<Mod1>4");
-	ACCEL("<Actions>//mask-width-ducks", "<Mod1>5");
-	ACCEL("<Actions>//mask-angle-ducks", "<Mod1>6");
+	// the toolbox
+	ACCEL("<Mod1>a",													"<Actions>//state-normal"					);
+	ACCEL("<Mod1>v",													"<Actions>//state-smooth_move"				);
+	ACCEL("<Mod1>s",													"<Actions>//state-scale"					);
+	ACCEL("<Mod1>t",													"<Actions>//state-rotate"					);
+	ACCEL("<Mod1>m",													"<Actions>//state-mirror"					);
+	ACCEL("<Mod1>c",													"<Actions>//state-circle"					);
+	ACCEL("<Mod1>r",													"<Actions>//state-rectangle"				);
+	ACCEL("<Mod1>q",													"<Actions>//state-star"						);
+	ACCEL("<Mod1>g",													"<Actions>//state-gradient"					);
+	ACCEL("<Mod1>p",													"<Actions>//state-polygon"					);
+	ACCEL("<Mod1>b",													"<Actions>//state-bline"					);
+	ACCEL("<Mod1>x",													"<Actions>//state-text"						);
+	ACCEL("<Mod1>f",													"<Actions>//state-fill"						);
+	ACCEL("<Mod1>e",													"<Actions>//state-eyedrop"					);
+	ACCEL("<Mod1>z",													"<Actions>//state-zoom"						);
+	ACCEL("<Mod1>d",													"<Actions>//state-draw"						);
+	ACCEL("<Mod1>k",													"<Actions>//state-sketch"					);
+	ACCEL("<Mod1>w",													"<Actions>//state-width"					);
 
-	ACCEL2(Gtk::AccelKey(GDK_Page_Up,Gdk::SHIFT_MASK,"<Actions>//action-layer_raise"));
-	ACCEL2(Gtk::AccelKey(GDK_Page_Down,Gdk::SHIFT_MASK,"<Actions>//action-layer_lower"));
-
-	ACCEL("<Actions>//quality-01","<Control>1");
-	ACCEL("<Actions>//quality-02","<Control>2");
-	ACCEL("<Actions>//quality-03","<Control>3");
-	ACCEL("<Actions>//quality-04","<Control>4");
-	ACCEL("<Actions>//quality-05","<Control>5");
-	ACCEL("<Actions>//quality-06","<Control>6");
-	ACCEL("<Actions>//quality-07","<Control>7");
-	ACCEL("<Actions>//quality-08","<Control>8");
-	ACCEL("<Actions>//quality-09","<Control>9");
-	ACCEL("<Actions>//quality-10","<Control>0");
-	ACCEL("<Actions>//undo","<Control>z");
-	ACCEL("<Actions>//redo","<Control>r");
-	ACCEL("<Actions>//action-layer_remove","Delete");
-
-/*	ACCEL2(Gtk::AccelKey(']',static_cast<Gdk::ModifierType>(0),"<Actions>//jump-next-keyframe"));
-	ACCEL2(Gtk::AccelKey('[',static_cast<Gdk::ModifierType>(0),"<Actions>//jump-prev-keyframe"));
-	ACCEL2(Gtk::AccelKey('=',static_cast<Gdk::ModifierType>(0),"<Actions>//canvas-zoom-in"));
-	ACCEL2(Gtk::AccelKey('-',static_cast<Gdk::ModifierType>(0),"<Actions>//canvas-zoom-out"));
-	ACCEL("<Actions>//time-zoom-in","+");
-	ACCEL("<Actions>//time-zoom-out","_");
-*/
-	ACCEL2(Gtk::AccelKey('(',Gdk::CONTROL_MASK,"<Actions>//decrease-low-res-pixel-size"));
-	ACCEL2(Gtk::AccelKey(')',Gdk::CONTROL_MASK,"<Actions>//increase-low-res-pixel-size"));
-
-	ACCEL2(Gtk::AccelKey('(',Gdk::MOD1_MASK|Gdk::CONTROL_MASK,"<Actions>//amount-dec"));
-	ACCEL2(Gtk::AccelKey(')',Gdk::MOD1_MASK|Gdk::CONTROL_MASK,"<Actions>//amount-inc"));
-
-	ACCEL2(Gtk::AccelKey(']',Gdk::CONTROL_MASK,"<Actions>//jump-next-keyframe"));
-	ACCEL2(Gtk::AccelKey('[',Gdk::CONTROL_MASK,"<Actions>//jump-prev-keyframe"));
-	ACCEL2(Gtk::AccelKey('=',Gdk::CONTROL_MASK,"<Actions>//canvas-zoom-in"));
-	ACCEL2(Gtk::AccelKey('-',Gdk::CONTROL_MASK,"<Actions>//canvas-zoom-out"));
-	ACCEL2(Gtk::AccelKey('+',Gdk::CONTROL_MASK,"<Actions>//time-zoom-in"));
-	ACCEL2(Gtk::AccelKey('_',Gdk::CONTROL_MASK,"<Actions>//time-zoom-out"));
-	ACCEL2(Gtk::AccelKey('.',Gdk::CONTROL_MASK,"<Actions>//seek-next-frame"));
-	ACCEL2(Gtk::AccelKey(',',Gdk::CONTROL_MASK,"<Actions>//seek-prev-frame"));
-	ACCEL2(Gtk::AccelKey('>',Gdk::CONTROL_MASK,"<Actions>//seek-next-second"));
-	ACCEL2(Gtk::AccelKey('<',Gdk::CONTROL_MASK,"<Actions>//seek-prev-second"));
-	ACCEL2(Gtk::AccelKey('o',Gdk::MOD1_MASK,"<Actions>//toggle-onion-skin"));
-	ACCEL("<Actions>//play",              "<Control>p");
-	ACCEL("<Actions>//seek-begin","Home");
-	ACCEL("<Actions>//seek-end","End");
-
-	ACCEL("<Actions>//state-normal",      "<Mod1>a");
-	ACCEL("<Actions>//state-smooth_move", "<Mod1>v");
-	ACCEL("<Actions>//state-scale",       "<Mod1>s");
-	ACCEL("<Actions>//state-rotate",      "<Mod1>t");
-	ACCEL("<Actions>//state-mirror",      "<Mod1>m");
-
-	ACCEL("<Actions>//state-circle",      "<Mod1>c");
-	ACCEL("<Actions>//state-rectangle",   "<Mod1>r");
-	ACCEL("<Actions>//state-star",        "<Mod1>q");
-	ACCEL("<Actions>//state-gradient",    "<Mod1>g");
-	ACCEL("<Actions>//state-polygon",     "<Mod1>p");
-
-	ACCEL("<Actions>//state-bline",       "<Mod1>b");
-	ACCEL("<Actions>//state-text",        "<Mod1>x");
-	ACCEL("<Actions>//state-fill",        "<Mod1>f");
-	ACCEL("<Actions>//state-eyedrop",     "<Mod1>e");
-	ACCEL("<Actions>//state-zoom",        "<Mod1>z");
-
-	ACCEL("<Actions>//state-draw",        "<Mod1>d");
-	ACCEL("<Actions>//state-sketch",      "<Mod1>k");
-	ACCEL("<Actions>//state-width",       "<Mod1>w");
-
-	ACCEL("<Actions>//canvas-zoom-fit","<Control><Shift>z");
+	// everything else
+	ACCEL("<Control>a",													"<Actions>//select-all-ducks"				);
+	ACCEL("<Control>d",													"<Actions>//unselect-all-ducks"				);
+	ACCEL("<Control><Shift>a",											"<Actions>//select-all-layers"				);
+	ACCEL("<Control><Shift>d",											"<Actions>//unselect-all-layers"			);
+	ACCEL("F9",															"<Actions>//render"							);
+	ACCEL("F11",														"<Actions>//preview"						);
+	ACCEL("F8",															"<Actions>//properties"						);
+	ACCEL("F12",														"<Actions>//options"						);
+	ACCEL("<control>i",													"<Actions>//import"							);
+	ACCEL2(Gtk::AccelKey(GDK_Escape,static_cast<Gdk::ModifierType>(0),	"<Actions>//stop"							));
+	ACCEL("<Control>g",													"<Actions>//toggle-grid-show"				);
+	ACCEL("<Control>l",													"<Actions>//toggle-grid-snap"				);
+	ACCEL2(Gtk::AccelKey('`',Gdk::CONTROL_MASK,							"<Actions>//toggle-low-res"					));
+	ACCEL("<Mod1>1",													"<Actions>//mask-position-ducks"			);
+	ACCEL("<Mod1>2",													"<Actions>//mask-vertex-ducks"				);
+	ACCEL("<Mod1>3",													"<Actions>//mask-tangent-ducks"				);
+	ACCEL("<Mod1>4",													"<Actions>//mask-radius-ducks"				);
+	ACCEL("<Mod1>5",													"<Actions>//mask-width-ducks"				);
+	ACCEL("<Mod1>6",													"<Actions>//mask-angle-ducks"				);
+	ACCEL2(Gtk::AccelKey(GDK_Page_Up,Gdk::SHIFT_MASK,					"<Actions>//action-LayerRaise"				));
+	ACCEL2(Gtk::AccelKey(GDK_Page_Down,Gdk::SHIFT_MASK,					"<Actions>//action-LayerLower"				));
+	ACCEL("<Control>1",													"<Actions>//quality-01"						);
+	ACCEL("<Control>2",													"<Actions>//quality-02"						);
+	ACCEL("<Control>3",													"<Actions>//quality-03"						);
+	ACCEL("<Control>4",													"<Actions>//quality-04"						);
+	ACCEL("<Control>5",													"<Actions>//quality-05"						);
+	ACCEL("<Control>6",													"<Actions>//quality-06"						);
+	ACCEL("<Control>7",													"<Actions>//quality-07"						);
+	ACCEL("<Control>8",													"<Actions>//quality-08"						);
+	ACCEL("<Control>9",													"<Actions>//quality-09"						);
+	ACCEL("<Control>0",													"<Actions>//quality-10"						);
+	ACCEL("<Control>z",													"<Actions>//undo"							);
+	ACCEL("<Control>r",													"<Actions>//redo"							);
+	ACCEL("Delete",														"<Actions>//action-LayerRemove"				);
+	ACCEL2(Gtk::AccelKey('(',Gdk::CONTROL_MASK,							"<Actions>//decrease-low-res-pixel-size"	));
+	ACCEL2(Gtk::AccelKey(')',Gdk::CONTROL_MASK,							"<Actions>//increase-low-res-pixel-size"	));
+	ACCEL2(Gtk::AccelKey('(',Gdk::MOD1_MASK|Gdk::CONTROL_MASK,			"<Actions>//amount-dec"						));
+	ACCEL2(Gtk::AccelKey(')',Gdk::MOD1_MASK|Gdk::CONTROL_MASK,			"<Actions>//amount-inc"						));
+	ACCEL2(Gtk::AccelKey(']',Gdk::CONTROL_MASK,							"<Actions>//jump-next-keyframe"				));
+	ACCEL2(Gtk::AccelKey('[',Gdk::CONTROL_MASK,							"<Actions>//jump-prev-keyframe"				));
+	ACCEL2(Gtk::AccelKey('=',Gdk::CONTROL_MASK,							"<Actions>//canvas-zoom-in"					));
+	ACCEL2(Gtk::AccelKey('-',Gdk::CONTROL_MASK,							"<Actions>//canvas-zoom-out"				));
+	ACCEL2(Gtk::AccelKey('+',Gdk::CONTROL_MASK,							"<Actions>//time-zoom-in"					));
+	ACCEL2(Gtk::AccelKey('_',Gdk::CONTROL_MASK,							"<Actions>//time-zoom-out"					));
+	ACCEL2(Gtk::AccelKey('.',Gdk::CONTROL_MASK,							"<Actions>//seek-next-frame"				));
+	ACCEL2(Gtk::AccelKey(',',Gdk::CONTROL_MASK,							"<Actions>//seek-prev-frame"				));
+	ACCEL2(Gtk::AccelKey('>',Gdk::CONTROL_MASK,							"<Actions>//seek-next-second"				));
+	ACCEL2(Gtk::AccelKey('<',Gdk::CONTROL_MASK,							"<Actions>//seek-prev-second"				));
+	ACCEL2(Gtk::AccelKey('o',Gdk::MOD1_MASK,							"<Actions>//toggle-onion-skin"				));
+	ACCEL("<Control><Shift>z",											"<Actions>//canvas-zoom-fit"				);
+	ACCEL("<Control>p",													"<Actions>//play"							);
+	ACCEL("Home",														"<Actions>//seek-begin"						);
+	ACCEL("End",														"<Actions>//seek-end"						);
 
 #undef ACCEL
 }
