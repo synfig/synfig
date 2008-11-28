@@ -103,8 +103,22 @@ Action::ValueDescExport::is_candidate(const ParamList &x)
 	if(candidate_check(get_param_vocab(),x))
 	{
 		ValueDesc value_desc=x.find("value_desc")->second.get_value_desc();
-		if(!value_desc || value_desc.parent_is_canvas() || (value_desc.is_value_node() && value_desc.get_value_node()->is_exported()))
+		if(!value_desc ||
+		   value_desc.parent_is_canvas() ||
+		   (value_desc.is_value_node() && value_desc.get_value_node()->is_exported()) ||
+		   (value_desc.get_value_type()==ValueBase::TYPE_CANVAS && value_desc.get_value_node()))
+		{
+//			if (!value_desc)
+//				synfig::info("%s:%d no export because no value_desc", __FILE__, __LINE__);
+//			else if (value_desc.parent_is_canvas())
+//				synfig::info("%s:%d no export because parent is canvas", __FILE__, __LINE__);
+//			else if (value_desc.is_value_node() && value_desc.get_value_node()->is_exported())
+//				synfig::info("%s:%d no export because exported value node", __FILE__, __LINE__);
+//			else if (value_desc.get_value_type()==ValueBase::TYPE_CANVAS && value_desc.is_value_node())
+//				synfig::info("%s:%d no export because canvas value node", __FILE__, __LINE__);
+			
 			return false;
+		}
 		return true;
 	}
 	return false;
@@ -151,6 +165,7 @@ Action::ValueDescExport::prepare()
 		if(!value_desc.is_const())
 			throw Error(_("Can only export Canvas when used as constant parameter"));
 		Canvas::Handle canvas(value_desc.get_value().get(Canvas::Handle()));
+		if (canvas) canvas=canvas->clone();
 
 		Action::Handle action(CanvasAdd::create());
 
@@ -164,6 +179,37 @@ Action::ValueDescExport::prepare()
 			throw Error(Error::TYPE_NOTREADY);
 
 		add_action_front(action);
+
+		if(value_desc.is_value_node())
+		{
+			assert(0);			// we shouldn't get here I don't think
+			if(value_desc.get_value_node()->is_exported())
+				throw Error(_("ValueBase is already exported"));
+
+			value_node=value_desc.get_value_node();
+		}
+		else
+		{
+			// action: LayerParamConnect
+			if(!value_desc.parent_is_layer_param())
+				throw Error(_("Unable to export parameter. (Bug?)"));
+
+			value_node=ValueNode_Const::create(canvas);
+
+			Action::Handle action(LayerParamConnect::create());
+
+			action->set_param("canvas",get_canvas());
+			action->set_param("canvas_interface",get_canvas_interface());
+			action->set_param("layer",value_desc.get_layer());
+			action->set_param("param",value_desc.get_param_name());
+			action->set_param("value_node",value_node);
+
+			assert(action->is_ready());
+			if(!action->is_ready())
+				throw Error(Error::TYPE_NOTREADY);
+
+			add_action_front(action);
+		}
 
 		return;
 	}
