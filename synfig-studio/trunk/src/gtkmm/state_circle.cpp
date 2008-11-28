@@ -122,15 +122,15 @@ class studio::StateCircle_Context : public sigc::trackable
 	Gtk::CheckButton checkbutton_layer_curve_gradient;
 	Gtk::CheckButton checkbutton_layer_plant;
 	Gtk::CheckButton checkbutton_layer_link_origins;
+	Gtk::CheckButton checkbutton_layer_origins_at_center;
 
 public:
 
-	// this only counts the layers which use blines - they're the only
-	// ones we link the origins for
+	// this only counts the layers which will have their origins linked
 	int layers_to_create()const
 	{
 		return
-			get_layer_circle_flag() +
+			(get_layer_circle_flag() && get_layer_origins_at_center_flag()) +
 			get_layer_region_flag() +
 			get_layer_outline_flag() +
 			get_layer_curve_gradient_flag() +
@@ -177,6 +177,9 @@ public:
 
 	bool get_layer_link_origins_flag()const { return checkbutton_layer_link_origins.get_active(); }
 	void set_layer_link_origins_flag(bool x) { return checkbutton_layer_link_origins.set_active(x); }
+
+	bool get_layer_origins_at_center_flag()const { return checkbutton_layer_origins_at_center.get_active(); }
+	void set_layer_origins_at_center_flag(bool x) { return checkbutton_layer_origins_at_center.set_active(x); }
 
 	void refresh_tool_options(); //to refresh the toolbox
 
@@ -304,6 +307,11 @@ StateCircle_Context::load_settings()
 		set_layer_link_origins_flag(false);
 	else
 		set_layer_link_origins_flag(true);
+
+	if(settings.get_value("circle.layer_origins_at_center",value) && value=="0")
+		set_layer_origins_at_center_flag(false);
+	else
+		set_layer_origins_at_center_flag(true);
 }
 
 void
@@ -324,6 +332,7 @@ StateCircle_Context::save_settings()
 	settings.set_value("circle.layer_curve_gradient",get_layer_curve_gradient_flag()?"1":"0");
 	settings.set_value("circle.layer_plant",get_layer_plant_flag()?"1":"0");
 	settings.set_value("circle.layer_link_origins",get_layer_link_origins_flag()?"1":"0");
+	settings.set_value("circle.layer_origins_at_center",get_layer_origins_at_center_flag()?"1":"0");
 }
 
 void
@@ -396,7 +405,8 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	checkbutton_layer_outline(_("Create Outline BLine")),
 	checkbutton_layer_curve_gradient(_("Create Curve Gradient BLine")),
 	checkbutton_layer_plant(_("Create Plant BLine")),
-	checkbutton_layer_link_origins(_("Link Origins"))
+	checkbutton_layer_link_origins(_("Link Origins")),
+	checkbutton_layer_origins_at_center(_("BLine Origins at Center"))
 {
 	egress_on_selection_change=true;
 
@@ -428,26 +438,27 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	options_table.attach(checkbutton_layer_plant,						0, 2,  5,  6, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	options_table.attach(checkbutton_layer_curve_gradient,				0, 2,  6,  7, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	options_table.attach(checkbutton_layer_link_origins,				0, 2,  7,  8, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(checkbutton_layer_origins_at_center,			0, 2,  8,  9, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
 	//invert flag
-	options_table.attach(checkbutton_invert,					    	0, 2,  8,  9, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(checkbutton_invert,					    	0, 2,  9, 10, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
-	options_table.attach(*manage(new Gtk::Label(_("Falloff:"))),		0, 1,  9, 10, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(enum_falloff,                              	1, 2,  9, 10, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(*manage(new Gtk::Label(_("Falloff:"))),		0, 1, 10, 11, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(enum_falloff,                              	1, 2, 10, 11, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
 	//feather stuff
-	options_table.attach(*manage(new Gtk::Label(_("Feather:"))),    	0, 1, 10, 11, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-   	options_table.attach(spin_feather, 							    	1, 2, 10, 11, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(*manage(new Gtk::Label(_("Feather:"))),    	0, 1, 11, 12, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+   	options_table.attach(spin_feather, 							    	1, 2, 11, 12, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
 #ifdef BLEND_METHOD_IN_TOOL_OPTIONS
-	options_table.attach(enum_blend,                                	0, 2, 11, 12, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(enum_blend,                                	0, 2, 12, 13, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 #endif	// BLEND_METHOD_IN_TOOL_OPTIONS
 
-	options_table.attach(*manage(new Gtk::Label(_("BLine Points:"))),	0, 1, 12, 13, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(spin_number_of_bline_points,					1, 2, 12, 13, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(*manage(new Gtk::Label(_("BLine Points:"))),	0, 1, 13, 14, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(spin_number_of_bline_points,					1, 2, 13, 14, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
-options_table.attach(*manage(new Gtk::Label(_("Point Angle Offset:"))),	0, 1, 13, 14, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(spin_bline_point_angle_offset,					1, 2, 13, 14, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+options_table.attach(*manage(new Gtk::Label(_("Point Angle Offset:"))),	0, 1, 14, 15, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(spin_bline_point_angle_offset,					1, 2, 14, 15, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
 	options_table.show_all();
 
@@ -564,14 +575,27 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 	Real tangent(4 * ((points == 2)
 					  ? 1
 					  : ((2 * Angle::cos(angle/2).get() - Angle::cos(angle).get() - 1) / Angle::sin(angle).get())));
+	Vector origin;
+	Real x, y;
+
+	if (get_layer_origins_at_center_flag())
+	{
+		x = y = 0;
+		origin = p1;
+	}
+	else
+	{
+		x = p1[0];
+		y = p1[1];
+	}
 
 	std::vector<BLinePoint> new_list;
 	for (int i = 0; i < points; i++)
 	{
 		new_list.push_back(*(new BLinePoint));
 		new_list[i].set_width(1);
-		new_list[i].set_vertex(Point(radius*Angle::cos(angle*i + offset).get(),
-									 radius*Angle::sin(angle*i + offset).get()));
+		new_list[i].set_vertex(Point(radius*Angle::cos(angle*i + offset).get() + x,
+									 radius*Angle::sin(angle*i + offset).get() + y));
 		new_list[i].set_tangent(Point(-radius*tangent*Angle::sin(angle*i + offset).get(),
 									   radius*tangent*Angle::cos(angle*i + offset).get()));
 	}
@@ -579,7 +603,7 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 	ValueNode_BLine::Handle value_node_bline(ValueNode_BLine::create(new_list));
 	assert(value_node_bline);
 
-	ValueNode_Const::Handle value_node_origin(ValueNode_Const::create(p1));
+	ValueNode_Const::Handle value_node_origin(ValueNode_Const::create(origin));
 	assert(value_node_origin);
 
 	// Set the looping flag
@@ -609,9 +633,6 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 		}
 		layer_selection.push_back(layer);
 
-		layer->set_param("origin",p1);
-		get_canvas_interface()->signal_layer_param_changed()(layer,"origin");
-
 		layer->set_param("radius",(p2-p1).mag());
 		get_canvas_interface()->signal_layer_param_changed()(layer,"radius");
 
@@ -638,8 +659,9 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 			get_canvas_interface()->signal_layer_param_changed()(layer,"color");
 		}
 
-		// only link the circle's origin parameter if the option is selected and we're creating more than one layer
-		if (get_layer_link_origins_flag() && layers_to_create > 1)
+		// only link the circle's origin parameter if the option is selected, we're putting bline
+		// origins at their centers, and we're creating more than one layer
+		if (get_layer_link_origins_flag() && get_layer_origins_at_center_flag() && layers_to_create > 1)
 		{
 			synfigapp::Action::Handle action(synfigapp::Action::create("LayerParamConnect"));
 			assert(action);
@@ -736,7 +758,7 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 		}
 		else
 		{
-			layer->set_param("origin",p1);
+			layer->set_param("origin",origin);
 			get_canvas_interface()->signal_layer_param_changed()(layer,"origin");
 		}
 	}
@@ -810,7 +832,7 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 		}
 		else
 		{
-			layer->set_param("origin",p1);
+			layer->set_param("origin",origin);
 			get_canvas_interface()->signal_layer_param_changed()(layer,"origin");
 		}
 	}
@@ -895,7 +917,7 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 		}
 		else
 		{
-			layer->set_param("origin",p1);
+			layer->set_param("origin",origin);
 			get_canvas_interface()->signal_layer_param_changed()(layer,"origin");
 		}
 	}
@@ -973,7 +995,7 @@ StateCircle_Context::make_circle(const Point& _p1, const Point& _p2)
 		}
 		else
 		{
-			layer->set_param("origin",p1);
+			layer->set_param("origin",origin);
 			get_canvas_interface()->signal_layer_param_changed()(layer,"origin");
 		}
 	}

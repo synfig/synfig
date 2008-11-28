@@ -119,15 +119,15 @@ class studio::StateStar_Context : public sigc::trackable
 	Gtk::CheckButton checkbutton_layer_curve_gradient;
 	Gtk::CheckButton checkbutton_layer_plant;
 	Gtk::CheckButton checkbutton_layer_link_origins;
+	Gtk::CheckButton checkbutton_layer_origins_at_center;
 
 public:
 
-	// this only counts the layers which use blines - they're the only
-	// ones we link the origins for
+	// this only counts the layers which will have their origins linked
 	int layers_to_create()const
 	{
 		return
-			get_layer_star_flag() +
+			(get_layer_star_flag() && get_layer_origins_at_center_flag()) +
 			get_layer_region_flag() +
 			get_layer_outline_flag() +
 			get_layer_curve_gradient_flag() +
@@ -184,6 +184,9 @@ public:
 
 	bool get_layer_link_origins_flag()const { return checkbutton_layer_link_origins.get_active(); }
 	void set_layer_link_origins_flag(bool x) { return checkbutton_layer_link_origins.set_active(x); }
+
+	bool get_layer_origins_at_center_flag()const { return checkbutton_layer_origins_at_center.get_active(); }
+	void set_layer_origins_at_center_flag(bool x) { return checkbutton_layer_origins_at_center.set_active(x); }
 
 	void refresh_tool_options(); //to refresh the toolbox
 
@@ -329,6 +332,11 @@ StateStar_Context::load_settings()
 		set_layer_link_origins_flag(false);
 	else
 		set_layer_link_origins_flag(true);
+
+	if(settings.get_value("star.layer_origins_at_center",value) && value=="0")
+		set_layer_origins_at_center_flag(false);
+	else
+		set_layer_origins_at_center_flag(true);
 }
 
 void
@@ -351,6 +359,7 @@ StateStar_Context::save_settings()
 	settings.set_value("star.layer_curve_gradient",get_layer_curve_gradient_flag()?"1":"0");
 	settings.set_value("star.layer_plant",get_layer_plant_flag()?"1":"0");
 	settings.set_value("star.layer_link_origins",get_layer_link_origins_flag()?"1":"0");
+	settings.set_value("star.layer_origins_at_center",get_layer_origins_at_center_flag()?"1":"0");
 }
 
 void
@@ -434,7 +443,8 @@ StateStar_Context::StateStar_Context(CanvasView* canvas_view):
 	checkbutton_layer_outline(_("Create Outline BLine")),
 	checkbutton_layer_curve_gradient(_("Create Curve Gradient BLine")),
 	checkbutton_layer_plant(_("Create Plant BLine")),
-	checkbutton_layer_link_origins(_("Link Origins"))
+	checkbutton_layer_link_origins(_("Link Origins")),
+	checkbutton_layer_origins_at_center(_("BLine Origins at Center"))
 {
 	egress_on_selection_change=true;
 
@@ -449,24 +459,33 @@ StateStar_Context::StateStar_Context(CanvasView* canvas_view):
 	options_table.attach(checkbutton_layer_plant,							0, 2,  5,  6, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	options_table.attach(checkbutton_layer_curve_gradient,					0, 2,  6,  7, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	options_table.attach(checkbutton_layer_link_origins,					0, 2,  7,  8, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(checkbutton_invert,								0, 2,  8,  9, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(checkbutton_regular_polygon,						0, 2,  9, 10, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(*manage(new Gtk::Label(_("Feather:"))),			0, 1, 10, 11, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(spin_feather,										1, 2, 10, 11, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(*manage(new Gtk::Label(_("Number of Points:"))),	0, 1, 11, 12, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(spin_number_of_points,								1, 2, 11, 12, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(*manage(new Gtk::Label(_("Inner Tangent:"))),		0, 1, 12, 13, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(spin_inner_tangent,								1, 2, 12, 13, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(*manage(new Gtk::Label(_("Outer Tangent:"))),		0, 1, 13, 14, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(spin_outer_tangent,								1, 2, 13, 14, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(*manage(new Gtk::Label(_("Inner Width:"))),		0, 1, 14, 15, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(spin_inner_width,									1, 2, 14, 15, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(*manage(new Gtk::Label(_("Outer Width:"))),		0, 1, 15, 16, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(spin_outer_width,									1, 2, 15, 16, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(*manage(new Gtk::Label(_("Radius Ratio:"))),		0, 1, 16, 17, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(spin_radius_ratio,									1, 2, 16, 17, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(*manage(new Gtk::Label(_("Angle Offset:"))),		0, 1, 17, 18, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(spin_angle_offset,									1, 2, 17, 18, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(checkbutton_layer_origins_at_center,				0, 2,  8,  9, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(checkbutton_invert,								0, 2,  9, 10, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(checkbutton_regular_polygon,						0, 2, 10, 11, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+
+	options_table.attach(*manage(new Gtk::Label(_("Feather:"))),			0, 1, 11, 12, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(spin_feather,										1, 2, 11, 12, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+
+	options_table.attach(*manage(new Gtk::Label(_("Number of Points:"))),	0, 1, 12, 13, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(spin_number_of_points,								1, 2, 12, 13, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+
+	options_table.attach(*manage(new Gtk::Label(_("Inner Tangent:"))),		0, 1, 13, 14, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(spin_inner_tangent,								1, 2, 13, 14, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+
+	options_table.attach(*manage(new Gtk::Label(_("Outer Tangent:"))),		0, 1, 14, 15, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(spin_outer_tangent,								1, 2, 14, 15, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+
+	options_table.attach(*manage(new Gtk::Label(_("Inner Width:"))),		0, 1, 15, 16, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(spin_inner_width,									1, 2, 15, 16, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+
+	options_table.attach(*manage(new Gtk::Label(_("Outer Width:"))),		0, 1, 16, 17, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(spin_outer_width,									1, 2, 16, 17, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+
+	options_table.attach(*manage(new Gtk::Label(_("Radius Ratio:"))),		0, 1, 17, 18, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(spin_radius_ratio,									1, 2, 17, 18, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+
+	options_table.attach(*manage(new Gtk::Label(_("Angle Offset:"))),		0, 1, 18, 19, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(spin_angle_offset,									1, 2, 18, 19, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
 	options_table.show_all();
 
@@ -587,6 +606,19 @@ StateStar_Context::make_star(const Point& _p1, const Point& _p2)
 	Angle::deg offset(get_angle_offset());
 	bool regular(get_regular_polygon());
 	Angle::deg angle(360.0/points);
+	Vector origin;
+	Real x, y;
+
+	if (get_layer_origins_at_center_flag())
+	{
+		x = y = 0;
+		origin = p1;
+	}
+	else
+	{
+		x = p1[0];
+		y = p1[1];
+	}
 
 	std::vector<BLinePoint> new_list;
 	int point(0);
@@ -594,8 +626,8 @@ StateStar_Context::make_star(const Point& _p1, const Point& _p2)
 	{
 		new_list.push_back(*(new BLinePoint));
 		new_list[point].set_width(outer_width);
-		new_list[point].set_vertex(Point(radius1*Angle::cos(angle*i + offset).get(),
-									 radius1*Angle::sin(angle*i + offset).get()));
+		new_list[point].set_vertex(Point(radius1*Angle::cos(angle*i + offset).get() + x,
+										 radius1*Angle::sin(angle*i + offset).get() + y));
 		new_list[point++].set_tangent(Point(-Angle::sin(angle*i + offset).get(),
 											 Angle::cos(angle*i + offset).get()) * outer_tangent);
 
@@ -603,8 +635,8 @@ StateStar_Context::make_star(const Point& _p1, const Point& _p2)
 		{
 			new_list.push_back(*(new BLinePoint));
 			new_list[point].set_width(inner_width);
-			new_list[point].set_vertex(Point(radius2*Angle::cos(angle*i + angle/2 + offset).get(),
-											 radius2*Angle::sin(angle*i + angle/2 + offset).get()));
+			new_list[point].set_vertex(Point(radius2*Angle::cos(angle*i + angle/2 + offset).get() + x,
+											 radius2*Angle::sin(angle*i + angle/2 + offset).get() + y));
 			new_list[point++].set_tangent(Point(-Angle::sin(angle*i + angle/2 + offset).get(),
 												 Angle::cos(angle*i + angle/2 + offset).get()) * inner_tangent);
 		}
@@ -613,7 +645,7 @@ StateStar_Context::make_star(const Point& _p1, const Point& _p2)
 	ValueNode_BLine::Handle value_node_bline(ValueNode_BLine::create(new_list));
 	assert(value_node_bline);
 
-	ValueNode_Const::Handle value_node_origin(ValueNode_Const::create(p1));
+	ValueNode_Const::Handle value_node_origin(ValueNode_Const::create(origin));
 	assert(value_node_origin);
 
 	// Set the looping flag
@@ -641,9 +673,6 @@ StateStar_Context::make_star(const Point& _p1, const Point& _p2)
 			return;
 		}
 		layer_selection.push_back(layer);
-
-		layer->set_param("origin",p1);
-		get_canvas_interface()->signal_layer_param_changed()(layer,"origin");
 
 		layer->set_param("radius1",radius1);
 		get_canvas_interface()->signal_layer_param_changed()(layer,"radius1");
@@ -675,8 +704,9 @@ StateStar_Context::make_star(const Point& _p1, const Point& _p2)
 			get_canvas_interface()->signal_layer_param_changed()(layer,"color");
 		}
 
-		// only link the star's origin parameter if the option is selected and we're creating more than one layer
-		if (get_layer_link_origins_flag() && layers_to_create > 1)
+		// only link the star's origin parameter if the option is selected, we're putting bline
+		// origins at their centers, and we're creating more than one layer
+		if (get_layer_link_origins_flag() && get_layer_origins_at_center_flag() && layers_to_create > 1)
 		{
 			synfigapp::Action::Handle action(synfigapp::Action::create("LayerParamConnect"));
 			assert(action);
@@ -768,7 +798,7 @@ StateStar_Context::make_star(const Point& _p1, const Point& _p2)
 		}
 		else
 		{
-			layer->set_param("origin",p1);
+			layer->set_param("origin",origin);
 			get_canvas_interface()->signal_layer_param_changed()(layer,"origin");
 		}
 	}
@@ -837,7 +867,7 @@ StateStar_Context::make_star(const Point& _p1, const Point& _p2)
 		}
 		else
 		{
-			layer->set_param("origin",p1);
+			layer->set_param("origin",origin);
 			get_canvas_interface()->signal_layer_param_changed()(layer,"origin");
 		}
 	}
@@ -917,7 +947,7 @@ StateStar_Context::make_star(const Point& _p1, const Point& _p2)
 		}
 		else
 		{
-			layer->set_param("origin",p1);
+			layer->set_param("origin",origin);
 			get_canvas_interface()->signal_layer_param_changed()(layer,"origin");
 		}
 	}
@@ -990,7 +1020,7 @@ StateStar_Context::make_star(const Point& _p1, const Point& _p2)
 		}
 		else
 		{
-			layer->set_param("origin",p1);
+			layer->set_param("origin",origin);
 			get_canvas_interface()->signal_layer_param_changed()(layer,"origin");
 		}
 	}
