@@ -45,6 +45,7 @@
 #include "valuenode_linear.h"
 #include "valuenode_composite.h"
 #include "valuenode_reference.h"
+#include "valuenode_greyed.h"
 #include "valuenode_scale.h"
 #include "valuenode_blinecalctangent.h"
 #include "valuenode_blinecalcvertex.h"
@@ -178,6 +179,8 @@ ValueNode::subsys_init()
 	ADD_VALUENODE(ValueNode_AngleString,	  "anglestring",	  _("Angle String"),	 RELEASE_VERSION_0_61_09); // SVN r2010
 	ADD_VALUENODE(ValueNode_IntString,		  "intstring",		  _("Int String"),		 RELEASE_VERSION_0_61_09); // SVN r2010
 	ADD_VALUENODE(ValueNode_Logarithm,		  "logarithm",		  _("Logarithm"),		 RELEASE_VERSION_0_61_09); // SVN r2034
+
+	ADD_VALUENODE(ValueNode_Greyed,			  "greyed",			  _("Greyed"),			 RELEASE_VERSION_0_61_10); // SVN r2305
 
 #undef ADD_VALUENODE
 #undef ADD_VALUENODE2
