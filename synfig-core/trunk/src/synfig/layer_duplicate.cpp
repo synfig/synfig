@@ -119,7 +119,23 @@ Layer_Duplicate::set_time(Context context, Time time, const Point &pos)const
 Color
 Layer_Duplicate::get_color(Context context, const Point &pos)const
 {
-	return context.get_color(pos);
+	handle<ValueNode_Duplicate> duplicate_param = get_duplicate_param();
+	if (!duplicate_param) return context.get_color(pos);
+
+	Color::BlendMethod blend_method(get_blend_method());
+	float amount(get_amount());
+	Color color;
+
+	Mutex::Lock lock(mutex);
+	duplicate_param->reset_index(time_cur);
+	do
+	{
+		context.set_time(time_cur+1);
+		context.set_time(time_cur);
+		color = Color::blend(context.get_color(pos),color,amount,blend_method);
+	} while (duplicate_param->step(time_cur));
+
+	return color;
 }
 
 Layer::Vocab
