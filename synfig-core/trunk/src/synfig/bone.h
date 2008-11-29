@@ -37,12 +37,24 @@ namespace synfig {
 class Bone: public UniqueID
 {
 private:
-    Point origin_; // This is the current origin of the bone relative to parent
-    Point origin0_; // This is the
-    Vector tip_;
-    Angle angle_;
-    Scale scale_;
-    Scale length;
+	// This is the current origin of the bone relative to parent
+	Point origin_;
+	// This is the origin of the bone at the setup time
+	Point origin0_;
+	// This is the tip of the bone (calculated) based on
+	// tip=origin+[length,0]*Rotate(alpha)*Scalex(scale)
+	Vector tip_;
+	// This is the current angle if the bone relative to parent.
+	Angle angle_;
+	// This is the angle of the bone at the setup time
+	Angle angle0_;
+	// This is the current scale of the bone.
+	Real scale_;
+//	Real scale0_; // Scale0 is always = 1.0
+	// This is the length at setup time
+	Real length;
+	// A pointer to the parent bone.
+	Bone *parent_;
 public:
 }; // END of class Bone
 
