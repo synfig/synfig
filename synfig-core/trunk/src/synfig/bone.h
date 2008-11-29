@@ -37,25 +37,51 @@ namespace synfig {
 class Bone: public UniqueID
 {
 private:
-	// This is the current origin of the bone relative to parent
+	//!This is the current origin of the bone relative to parent
 	Point origin_;
-	// This is the origin of the bone at the setup time
+	//!This is the origin of the bone at the setup time
 	Point origin0_;
-	// This is the tip of the bone (calculated) based on
-	// tip=origin+[length,0]*Rotate(alpha)*Scalex(scale)
-	Vector tip_;
-	// This is the current angle if the bone relative to parent.
+	//!This is the current angle if the bone relative to parent.
 	Angle angle_;
-	// This is the angle of the bone at the setup time
+	//!This is the angle of the bone at the setup time
 	Angle angle0_;
-	// This is the current scale of the bone.
+	//!This is the current scale of the bone.
 	Real scale_;
 //	Real scale0_; // Scale0 is always = 1.0
-	// This is the length at setup time
+	//!This is the length at setup time
 	Real length;
-	// A pointer to the parent bone.
+	//!A pointer to the parent bone.
 	Bone *parent_;
 public:
+	//!Default constructor
+	Bone();
+	//!Constructor by origin and tip
+	Bone(const Point &origin, const Point &tip);
+	//!Construtor by origin, legth and parent (default no parent)
+	Bone(const Point origin, const Angle angle, const Real length, const Bone* p=0);
+	//!Wrappers for origin_ & origin0_
+	const Point& get_origin() {return origin_;}
+	void set_origin(const Point &x) {origin_=x;}
+	const Point& get_origin0() {return origin0_;}
+	void set_origin0(const Point &x) {origin0_=x;}
+	//!Wrappers for angle_ & angle0_
+	const Angle& get_angle() {return angle_;}
+	void set_origin(const Angle &x) {angle_=x;}
+	const Angle& get_angle0() {return angle0_;}
+	void set_angle0(const Angle &x) {angle0_=x;}
+	//!Wrapper for scale
+	const Real& get_scale() {return scale_;}
+	void set_scale(const Real &x) {scale_=x;}
+	//!Wrapper for lenght. Notice that a length of 0 is not allowed.
+	const Real& get_lenght() {return length_;}
+	void set_length(const Real &x) {x<0.00001:length_=0.00001:length_=x;}
+	//!This gets the calculated tip of the bone based on
+	//!tip=origin+[length,0]*Rotate(alpha)*Scalex(scale)
+	const Point & get_tip();
+	//!Wrapper for parent bone
+	Bone *get_parent() {return parent_;}
+	void set_parent(Bone *p) {parent_=p;}
+
 }; // END of class Bone
 
 } // END of namespace synfig
