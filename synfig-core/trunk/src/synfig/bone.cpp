@@ -87,7 +87,6 @@ Point Bone::get_tip()
 		s.set_scale(scale_,0);
 		r.set_rotate(angle_);
 		sr=s*r;
-		//ret();
 		return (Point)sr.get_transformed(Vector(length_,0));
 	}
 /* === M E T H O D S ======================================================= */
