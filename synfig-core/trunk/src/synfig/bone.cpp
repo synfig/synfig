@@ -51,43 +51,44 @@ origin0_(Point(0,0)),
 angle_(Angle::deg(0.0)),
 angle0_(Angle::deg(0.0)),
 scale_(1.0),
-lenght(1.0),
+length_(1.0),
 parent_(0)
 	{
 	}
 //!Constructor by origin and tip
-Bone::Bone(Point &o, Point &t):
+Bone::Bone(const Point &o, const Point &t):
 origin_(o),
 origin0_(o),
-angle_(v(t-o).angle()),
-angle0_(v(t-o).angle()),
+angle_((t-o).angle()),
+angle0_((t-o).angle()),
 scale_(1.0),
-lenght(1.0),
+length_(1.0),
 parent_(0)
 	{
 	}
-//!Constructor by origin, angle, lenght, parent bone (deault = no parent)
-Bone::Bone(const Point &o, const Angle &a, const Real &l, const Bone *p):
+//!Constructor by origin, angle, length, parent bone (deault = no parent)
+Bone::Bone(const Point &o, const Angle &a, const Real &l, Bone *p):
 origin_(o),
 origin0_(o),
 angle_(a),
 angle0_(a),
 scale_(1.0),
-lenght(l),
+length_(l),
 parent_(p)
 	{
 	}
 //! get_tip() member function
 //!@return The tip Point of the bone (calculated) based on
 //! tip=origin+[length,0]*Scale(scale,0)*Rotate(alpha)
-const Point & Bone::get_tip()
+Point Bone::get_tip()
 	{
-		Point ret;
-		Matrix s, r;
+		Vector ret;
+		Matrix s, r, sr;
 		s.set_scale(scale_,0);
 		r.set_rotate(angle_);
-		ret((s*r).get_transformed(Vector(lenght_,0)));
-		return ret;
+		sr=s*r;
+		//ret();
+		return (Point)sr.get_transformed(Vector(length_,0));
 	}
 /* === M E T H O D S ======================================================= */
 

@@ -27,6 +27,7 @@
 
 /* === H E A D E R S ======================================================= */
 #include "matrix.h"
+#include "uniqueid.h"
 /* === M A C R O S ========================================================= */
 
 /* === T Y P E D E F S ===================================================== */
@@ -49,7 +50,7 @@ private:
 	Real scale_;
 //	Real scale0_; // Scale0 is always = 1.0
 	//!This is the length at setup time
-	Real length;
+	Real length_;
 	//!A pointer to the parent bone.
 	Bone *parent_;
 public:
@@ -58,7 +59,7 @@ public:
 	//!Constructor by origin and tip
 	Bone(const Point &origin, const Point &tip);
 	//!Construtor by origin, legth and parent (default no parent)
-	Bone(const Point origin, const Angle angle, const Real length, const Bone* p=0);
+	Bone(const Point &origin, const Angle &angle, const Real &length, Bone* p=0);
 	//!Wrappers for origin_ & origin0_
 	const Point& get_origin() {return origin_;}
 	void set_origin(const Point &x) {origin_=x;}
@@ -74,17 +75,17 @@ public:
 	void set_scale(const Real &x) {scale_=x;}
 	//!Wrapper for lenght. Notice that a length of 0 is not allowed.
 	const Real& get_lenght() {return length_;}
-	void set_length(const Real &x) {x<0.00001:length_=0.00001:length_=x;}
+	void set_length(const Real &x) {length_=x<0.00001?0.00001:x;}
 	//!This gets the calculated tip of the bone based on
 	//!tip=origin+[length,0]*Rotate(alpha)*Scalex(scale)
-	const Point & get_tip();
+	Point get_tip();
 	//!Wrapper for parent bone
 	Bone *get_parent() {return parent_;}
 	void set_parent(Bone *p) {parent_=p;}
 
 }; // END of class Bone
 
-} // END of namespace synfig
+}; // END of namespace synfig
 /* === E N D =============================================================== */
 
 #endif
