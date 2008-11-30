@@ -131,7 +131,7 @@ Bone::get_animated_matrix()
 	std::vector<Bone*>::const_iterator iter;
 	Matrix s,r,t,banimated;
 	banimated.set_identity();
-	for(iter=parent_tree_.end();iter!=parent_list_.begin();iter--)
+	for(iter=parent_tree_.end();iter!=parent_tree_.begin();iter--)
 	{
 		if(*iter)
 			banimated*=s.set_scale((*iter)->scale_)*r.set_rotate((*iter)->angle_)*t.set_translate((*iter)->origin_);
