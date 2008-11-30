@@ -68,7 +68,7 @@ strength_(1.0),
 parent_(0)
 	{
 	}
-//!Constructor by origin, angle, length, strength, parent bone (deault = no parent)
+//!Constructor by origin, angle, length, strength, parent bone (default = no parent)
 Bone::Bone(const Point &o, const Angle &a, const Real &l, const Real &s, Bone *p):
 origin_(o),
 origin0_(o),
