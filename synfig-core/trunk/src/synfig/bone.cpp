@@ -113,8 +113,7 @@ Bone::get_setup_matrix()
 	while (currparent)
 	{
 		parent_tree_.push_back(currparent);
-		Matrix c=currparent->get_setup_matrix();
-		bparent=bparent*c;
+		bparent*=currparent->get_setup_matrix();
 		currparent=currparent->parent_;
 	}
 	return bparent;
