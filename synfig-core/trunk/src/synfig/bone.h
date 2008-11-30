@@ -69,7 +69,7 @@ public:
 
 	//!Wrappers for angle_ & angle0_
 	const Angle& get_angle() {return angle_;}
-	void set_origin(const Angle &x) {angle_=x;}
+	void set_angle(const Angle &x) {angle_=x;}
 	const Angle& get_angle0() {return angle0_;}
 	void set_angle0(const Angle &x) {angle0_=x;}
 
