@@ -102,7 +102,7 @@ Bone::get_tip()
 //!coordinates calculates the local coordinates of
 //!the point relative to the current bone.
 Matrix
-get_setup_matrix()
+Bone::get_setup_matrix()
 {
 	Matrix t,r,bparent;
 	t.set_translate((Vector)(-origin0_));
@@ -126,7 +126,7 @@ get_setup_matrix()
 //!animated position of the point due the current
 //!bone influence
 Matrix
-get_animated_matrix()
+Bone::get_animated_matrix()
 {
 	std::vector<Bone*>::const_iterator iter;
 	Matrix s,r,t,banimated;
