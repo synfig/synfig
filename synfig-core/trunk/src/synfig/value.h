@@ -67,6 +67,7 @@ class Segment;
 class Gradient;
 class BLinePoint;
 class Color;
+class Bone;
 
 /*!	\class ValueBase
 **	\todo writeme
@@ -106,6 +107,7 @@ public:
 		TYPE_CANVAS,		//!< Canvas
 		TYPE_STRING,		//!< String
 		TYPE_GRADIENT,		//!< Color Gradient
+		TYPE_BONE,			//!< Bone
 
 		TYPE_END			//!< Not a valid type, used for sanity checks
 	};
@@ -303,6 +305,7 @@ public:
 	static Type get_type(const BLinePoint&) { return TYPE_BLINEPOINT; }
 	static Type get_type(const String&) { return TYPE_STRING; }
 	static Type get_type(const Gradient&) { return TYPE_GRADIENT; }
+	static Type get_type(const Bone&) { return TYPE_BONE; }
 	static Type get_type(Canvas*) { return TYPE_CANVAS; }
 	static Type get_type(const etl::handle<Canvas>&)
 		{ return TYPE_CANVAS; }
