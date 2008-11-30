@@ -91,7 +91,7 @@ synfig::ValueNode_Composite::ValueNode_Composite(const ValueBase &value):
 		}
 		case ValueBase::TYPE_BONE:
 		{
-			Bone bone(value);
+			Bone bone(value.get(Bone()));
 			set_link(0,ValueNode_Const::create(bone.get_origin()));
 			set_link(1,ValueNode_Const::create(bone.get_origin0()));
 			set_link(2,ValueNode_Const::create(bone.get_angle()));
@@ -186,7 +186,7 @@ synfig::ValueNode_Composite::operator()(Time t)const
 			ret.set_scale  	 ((*components[4])(t).get(Real()));
 			ret.set_length 	 ((*components[5])(t).get(Real()));
 			ret.set_strength ((*components[6])(t).get(Real()));
-			ret.set_parent   ((*components[7])(t).get(Bone()));
+//			ret.set_parent   ((*components[7])(t).get(Bone()));
 			return ret;
 		}
 		default:
