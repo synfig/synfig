@@ -176,7 +176,7 @@ ValueNode_Random::get_name()const
 String
 ValueNode_Random::get_local_name()const
 {
-	return _("RandomNoise");
+	return _("Random");
 }
 
 bool
