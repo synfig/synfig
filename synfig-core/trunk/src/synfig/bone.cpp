@@ -110,6 +110,18 @@ Matrix get_setup_matrix()
 			}
 		return bparent;
 	}
+
+//!Animated Transformation matrix.
+//!This matrix applied to a setup point in local
+//!coordinates (the one obtained form the Setup
+//! Transformation matrix) would obtain the
+//! animated position of the point due the current
+//!bone influence
+Matrix get_animated_matrix()
+	{
+		//TO BE DONE
+	}
+
 /* === M E T H O D S ======================================================= */
 
 /* === E N T R Y P O I N T ================================================= */
