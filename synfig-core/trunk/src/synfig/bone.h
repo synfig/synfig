@@ -110,7 +110,7 @@ public:
 
 	//!Wrapper for parent bone
 	const Bone &get_parent() {return *parent_;}
-	void set_parent(Bone *p) {parent_=p;}
+	void set_parent(const Bone &p) {parent_=&(p);}
 
 	//!Setup Transformation matrix.
 	//!This matrix applied to a setup point in global
