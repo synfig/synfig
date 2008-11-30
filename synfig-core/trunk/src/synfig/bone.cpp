@@ -108,7 +108,7 @@ Bone::get_setup_matrix()
 	t.set_translate((Vector)(-origin0_));
 	r.set_rotate(-angle0_);
 	bparent=t*r;
-	Bone currparent=parent_;
+	Bone *currparent=parent_;
 	clear_parent_tree();
 	while (currparent)
 	{
