@@ -35,6 +35,7 @@
 #include <ETL/stringf>
 #include "canvas.h"
 #include "gradient.h"
+#include "bone.h"
 
 
 
@@ -80,6 +81,7 @@ ValueBase::ValueBase(Type x):
 	case TYPE_LIST:			data=static_cast<void*>(new list_type());			break;
 	case TYPE_STRING:		data=static_cast<void*>(new String());				break;
 	case TYPE_GRADIENT:		data=static_cast<void*>(new Gradient());			break;
+	case TYPE_BONE:			data=static_cast<void*>(new Bone());				break;
 	case TYPE_CANVAS:		data=static_cast<void*>(new etl::handle<Canvas>());	break;
 	default:																	break;
 	}
@@ -125,6 +127,7 @@ ValueBase::get_string() const
 	case TYPE_CANVAS:		return strprintf("Canvas (%s)", get(etl::loose_handle<Canvas>())->get_id().c_str());
 	case TYPE_STRING:		return strprintf("String (%s)", get(String()).c_str());
 	case TYPE_GRADIENT:		return strprintf("Gradient (%d cpoints)", get(Gradient()).size());
+	case TYPE_BONE:			return strprintf("Bone (todo)");
 	default:				return "Invalid type";
 	}
 }
@@ -247,6 +250,7 @@ ValueBase::clear()
 		}
 		case TYPE_STRING:		delete static_cast<String*>(data);		break;
 		case TYPE_GRADIENT:		delete static_cast<Gradient*>(data);	break;
+		case TYPE_BONE:			delete static_cast<Bone*>(data);		break;
 		default:
 			break;
 		}
@@ -291,6 +295,8 @@ ValueBase::type_name(Type id)
 		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
 	case TYPE_GRADIENT:		return N_("gradient");
 		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
+	case TYPE_BONE:			return N_("bone");
+		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
 	case TYPE_NIL:			return N_("nil");
 	default:
 		break;
@@ -333,6 +339,7 @@ ValueBase::ident_type(const String &str)
 	else if(str=="list")		return TYPE_LIST;
 	else if(str=="segment")		return TYPE_SEGMENT;
 	else if(str=="gradient")	return TYPE_GRADIENT;
+	else if(str=="bone")		return TYPE_BONE;
 	else if(str=="bline_point" ||
 			str=="blinepoint")	return TYPE_BLINEPOINT;
 
@@ -361,6 +368,7 @@ ValueBase::operator==(const ValueBase& rhs)const
 	case TYPE_LIST:			   return get_list()==rhs.get_list();
 	case TYPE_SEGMENT:		// return get(Segment())==rhs.get(Segment());
 	case TYPE_GRADIENT:		// return get(Gradient())==rhs.get(Gradient());
+	case TYPE_BONE:			// return get(Bone())==rhs.get(Bone());
 	case TYPE_BLINEPOINT:	// return get(BLinePoint())==rhs.get(BLinePoint());
 	case TYPE_NIL:
 	default:				   return false;
