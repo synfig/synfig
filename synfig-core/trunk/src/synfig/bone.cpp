@@ -44,74 +44,78 @@ using namespace synfig;
 /* === G L O B A L S ======================================================= */
 
 /* === P R O C E D U R E S ================================================= */
+
 //! Default constructor
 Bone::Bone():
-origin_(Point(0,0)),
-origin0_(Point(0,0)),
-angle_(Angle::deg(0.0)),
-angle0_(Angle::deg(0.0)),
-scale_(1.0),
-length_(1.0),
-strength_(1.0),
-parent_(0)
-	{
-	}
+	origin_(Point(0,0)),
+	origin0_(Point(0,0)),
+	angle_(Angle::deg(0.0)),
+	angle0_(Angle::deg(0.0)),
+	scale_(1.0),
+	length_(1.0),
+	strength_(1.0),
+	parent_(0)
+{
+}
+
 //!Constructor by origin and tip
 Bone::Bone(const Point &o, const Point &t):
-origin_(o),
-origin0_(o),
-angle_((t-o).angle()),
-angle0_((t-o).angle()),
-scale_(1.0),
-length_(1.0),
-strength_(1.0),
-parent_(0)
-	{
-	}
+	origin_(o),
+	origin0_(o),
+	angle_((t-o).angle()),
+	angle0_((t-o).angle()),
+	scale_(1.0),
+	length_(1.0),
+	strength_(1.0),
+	parent_(0)
+{
+}
+
 //!Constructor by origin, angle, length, strength, parent bone (default = no parent)
 Bone::Bone(const Point &o, const Angle &a, const Real &l, const Real &s, Bone *p):
-origin_(o),
-origin0_(o),
-angle_(a),
-angle0_(a),
-scale_(1.0),
-length_(l),
-strength_(s),
-parent_(p)
-	{
-	}
+	origin_(o),
+	origin0_(o),
+	angle_(a),
+	angle0_(a),
+	scale_(1.0),
+	length_(l),
+	strength_(s),
+	parent_(p)
+{
+}
+
 //! get_tip() member function
 //!@return The tip Point of the bone (calculated) based on
 //! tip=origin+[length,0]*Scale(scale,0)*Rotate(alpha)
 Point Bone::get_tip()
-	{
-		Matrix s, r, sr;
-		s.set_scale(scale_,0);
-		r.set_rotate(angle_);
-		sr=s*r;
-		return (Point)sr.get_transformed(Vector(length_,0));
-	}
+{
+	Matrix s, r, sr;
+	s.set_scale(scale_,0);
+	r.set_rotate(angle_);
+	sr=s*r;
+	return (Point)sr.get_transformed(Vector(length_,0));
+}
 
 //!Setup Transformation matrix.
 //!This matrix applied to a setup point in global
 //!coordinates calculates the local coordinates of
 //!the point relative to the current bone.
 Matrix get_setup_matrix()
+{
+	Matrix t,r,bparent;
+	t.set_translate((Vector)(-origin0_));
+	r.set_rotate(-angle0_);
+	bparent=t*r;
+	Bone currparent=parent_;
+	clear_parent_tree();
+	while (currparent)
 	{
-		Matrix t,r,bparent;
-		t.set_translate((Vector)(-origin0_));
-		r.set_rotate(-angle0_);
-		bparent=t*r;
-		Bone currparent=parent_;
-		clear_parent_tree();
-		while (currparent)
-			{
-				parent_tree_.push_front(currparent);
-				bparent*=currparent->get_setup_matrix();
-				currparent=currparent->parent_;
-			}
-		return bparent;
+		parent_tree_.push_front(currparent);
+		bparent*=currparent->get_setup_matrix();
+		currparent=currparent->parent_;
 	}
+	return bparent;
+}
 
 //!Animated Transformation matrix.
 //!This matrix applied to a setup point in local
@@ -120,20 +124,18 @@ Matrix get_setup_matrix()
 //!animated position of the point due the current
 //!bone influence
 Matrix get_animated_matrix()
+{
+	std::vector<Bone*>::const_iterator iter;
+	Matrix s,r,t,banimated;
+	banimated.set_identity();
+	for(iter=parent_tree_.begin();iter!=parent_list_.end();iter++)
 	{
-		std::vector<Bone*>::const_iterator iter;
-		Matrix s,r,t,banimated;
-		banimated.set_identity();
-		for(iter=parent_tree_.begin();iter!=parent_list_.end();iter++)
-			{
-				if(*iter)
-				banimated*=s.set_scale((*iter)->scale_)*r.set_rotate((*iter)->angle_)*t.set_translate((*iter)->origin_);
-			}
-		return banimated;
+		if(*iter)
+			banimated*=s.set_scale((*iter)->scale_)*r.set_rotate((*iter)->angle_)*t.set_translate((*iter)->origin_);
 	}
+	return banimated;
+}
 
 /* === M E T H O D S ======================================================= */
 
 /* === E N T R Y P O I N T ================================================= */
-
-
