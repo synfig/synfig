@@ -171,11 +171,11 @@ public:
 		return Vector(v[0]*m00+v[1]*m10+m20,v[0]*m01+v[1]*m11+m21);
 	}
 
-	//! operator *. Multiplication of one matrix by other
+	//! operator*. Multiplication of one matrix by other
 	//! @param rhs the right hand side of the multiplication operation
 	//! @return the resulting multiplication matrix
 	Matrix
-	operator *(const Matrix &rhs)
+	operator*(const Matrix &rhs)
 	{
 		Matrix ret;
 		ret.m00=m00*rhs.m00 + m01*rhs.m10 + m02*rhs.m20;
@@ -193,11 +193,11 @@ public:
 		return ret;
 	}
 
-	//! operator *=. Multiplication and assign of one matrix by a number
+	//! operator*=. Multiplication and assign of one matrix by a number
 	//! @param rhs the number to multiply by
 	//! @return the modifed resulting multiplicated by number matrix
 	Matrix
-	operator *=(const value_type &rhs)
+	operator*=(const value_type &rhs)
 	{
 		m00*=rhs;
 		m01*=rhs;
@@ -214,11 +214,11 @@ public:
 		return *this;
 	}
 
-	//! operator +=. Sum and assign of two matrixes
+	//! operator+=. Sum and assign of two matrixes
 	//! @param rhs the matrix to sum
 	//! @return modified matrix with the summed matrix
 	Matrix
-	operator +=(const Matrix &rhs)
+	operator+=(const Matrix &rhs)
 	{
 		m00+=rhs.m00;
 		m01+=rhs.m01;
@@ -234,20 +234,20 @@ public:
 		return *this;
 	}
 
-	//! operator *. Multiplication of one matrix by a number
+	//! operator*. Multiplication of one matrix by a number
 	//! @param rhs the number to multiply by
 	//! @return the resulting multiplicated by number matrix
 	Matrix
-	operator *(const value_type &rhs)
+	operator*(const value_type &rhs)
 	{
 		return Matrix(*this)*=rhs;
 	}
 
-	//! operator +=. Sum and assign of two matrixes
+	//! operator+=. Sum and assign of two matrixes
 	//! @param rhs the matrix to sum
 	//! @return modified matrix with the summed matrix
 	Matrix
-	operator +(const Matrix &rhs)
+	operator+(const Matrix &rhs)
 	{
 		return Matrix(*this)+=rhs;
 	}
