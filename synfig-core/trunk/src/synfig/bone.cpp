@@ -87,7 +87,8 @@ Bone::Bone(const Point &o, const Angle &a, const Real &l, const Real &s, Bone *p
 //! get_tip() member function
 //!@return The tip Point of the bone (calculated) based on
 //! tip=origin+[length,0]*Scale(scale,0)*Rotate(alpha)
-Point Bone::get_tip()
+Point
+Bone::get_tip()
 {
 	Matrix s, r, sr;
 	s.set_scale(scale_,0);
@@ -100,7 +101,8 @@ Point Bone::get_tip()
 //!This matrix applied to a setup point in global
 //!coordinates calculates the local coordinates of
 //!the point relative to the current bone.
-Matrix get_setup_matrix()
+Matrix
+get_setup_matrix()
 {
 	Matrix t,r,bparent;
 	t.set_translate((Vector)(-origin0_));
@@ -123,7 +125,8 @@ Matrix get_setup_matrix()
 //!Transformation matrix) would obtain the
 //!animated position of the point due the current
 //!bone influence
-Matrix get_animated_matrix()
+Matrix
+get_animated_matrix()
 {
 	std::vector<Bone*>::const_iterator iter;
 	Matrix s,r,t,banimated;
