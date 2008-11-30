@@ -74,7 +74,7 @@ public:
 	const Real& get_scale() {return scale_;}
 	void set_scale(const Real &x) {scale_=x;}
 	//!Wrapper for lenght. Notice that a length of 0 is not allowed.
-	const Real& get_lenght() {return length_;}
+	const Real& get_length() {return length_;}
 	void set_length(const Real &x) {length_=x<0.00001?0.00001:x;}
 	//!This gets the calculated tip of the bone based on
 	//!tip=origin+[length,0]*Rotate(alpha)*Scalex(scale)
