@@ -108,12 +108,13 @@ Bone::get_setup_matrix()
 	t.set_translate((Vector)(-origin0_));
 	r.set_rotate(-angle0_);
 	bparent=t*r;
-	Bone *currparent=parent_;
+	Bone const *currparent=parent_;
 	clear_parent_tree();
 	while (currparent)
 	{
 		parent_tree_.push_back(currparent);
-		bparent*=currparent->get_setup_matrix();
+		Matrix c=currparent->get_setup_matrix();
+		bparent=bparent*c;
 		currparent=currparent->parent_;
 	}
 	return bparent;

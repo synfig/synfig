@@ -69,9 +69,9 @@ private:
 	//!This is the strength at setup time
 	Real strength_;
 	//!The parent bone.
-	Bone *parent_;
+	Bone const *parent_;
 	//!The geanological tree of parents
-	std::vector<Bone *> parent_tree_;
+	std::vector<Bone const *> parent_tree_;
 public:
 	//!Default constructor
 	Bone();
