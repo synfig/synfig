@@ -31,13 +31,15 @@
 
 /* === M A C R O S ========================================================= */
 
+#define MAX_LINKS 6
+
 /* === C L A S S E S & S T R U C T S ======================================= */
 
 namespace synfig {
 
 class ValueNode_Composite : public LinkableValueNode
 {
-	ValueNode::RHandle components[6];
+	ValueNode::RHandle components[MAX_LINKS];
 	ValueNode_Composite(const ValueBase &value);
 
 public:
