@@ -37,6 +37,18 @@ namespace synfig {
 
 class Bone: public UniqueID
 {
+	/*
+ --	** -- T Y P E S -----------------------------------------------------------
+	*/
+
+public:
+	// typedef etl::handle<Bone> Handle;
+	// typedef etl::loose_handle<Bone> LooseHandle;
+
+	/*
+ --	** -- D A T A -------------------------------------------------------------
+	*/
+
 private:
 	//!This is the current origin of the bone relative to parent
 	Point origin_;
@@ -53,8 +65,8 @@ private:
 	Real length_;
 	//!This is the strength at setup time
 	Real strength_;
-	//!A pointer to the parent bone.
-	Bone *parent_;
+	//!The parent bone.
+	const Bone *parent_;
 public:
 	//!Default constructor
 	Bone();
@@ -91,8 +103,8 @@ public:
 	//!tip=origin+[length,0]*Rotate(alpha)*Scalex(scale)
 	Point get_tip();
 	//!Wrapper for parent bone
-	Bone *get_parent() {return parent_;}
-	void set_parent(Bone *p) {parent_=p;}
+	const Bone &get_parent() {return *parent_;}
+	void set_parent(const Bone &p) {parent_=&p;}
 
 }; // END of class Bone
 
