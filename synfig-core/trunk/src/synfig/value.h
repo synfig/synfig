@@ -40,7 +40,6 @@
 #include "general.h"
 //#include "gradient.h"
 #include "blinepoint.h"
-#include "bone.h"
 #include "exception.h"
 
 #ifdef USE_HALF_TYPE
@@ -337,7 +336,6 @@ public:
 	//operator const String&()const {  return get(String()); }
 	//operator const char *()const {  return get(String()).c_str(); }
 	operator const Segment&()const { return get(Segment()); }
-	operator const Bone&()const {  return get(Bone()); }
 
 
 	/*
