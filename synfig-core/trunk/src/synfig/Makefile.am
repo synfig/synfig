@@ -10,14 +10,14 @@ EXTRA_DIST = \
 	surfacenew.cpp pch.h synfig.nsh
 
 LAYERHEADERS = \
-	layer_bitmap.h	 layer_composite.h   layer_duplicate.h	 layer_mime.h	layer_motionblur.h			\
-	layer_pastecanvas.h   layer_polygon.h	layer_shape.h	layer_solidcolor.h
+	layer_bitmap.h   layer_composite.h   layer_duplicate.h   layer_mime.h   layer_motionblur.h			\
+	layer_pastecanvas.h   layer_polygon.h   layer_shape.h   layer_solidcolor.h
 LAYERSOURCES = \
 	layer_bitmap.cpp layer_composite.cpp layer_duplicate.cpp layer_mime.cpp layer_motionblur.cpp			\
 	layer_pastecanvas.cpp layer_polygon.cpp layer_shape.cpp layer_solidcolor.cpp
 
 TARGETHEADERS = \
-	target_multi.h	 target_null.h	 target_null_tile.h   target_scanline.h	  target_tile.h
+	target_multi.h   target_null.h   target_null_tile.h   target_scanline.h   target_tile.h
 TARGETSOURCES = \
 	target_multi.cpp target_null.cpp target_null_tile.cpp target_scanline.cpp target_tile.cpp
 
@@ -57,15 +57,15 @@ VALUESOURCES = \
 	blinepoint.cpp gradient.cpp value.cpp
 
 SYNFIGHEADERS = \
-	angle.h bone.h canvasbase.h general.h guidset.h interpolation.h nodebase.h protocol.h quick_rng.h real.h releases.h	\
-	segment.h smartfile.h string.h string_decl.h surfacenew.h synfig.h types.h vector.h version.h			\
-	activepoint.h	blur.h	 canvas.h   color.h   context.h	  curve_helper.h   curveset.h	distance.h		\
-	exception.h   gamma.h	guid.h	 importer.h   keyframe.h   layer.h   loadcanvas.h   main.h   matrix.h  module.h		\
-	mutex.h	  node.h   palette.h   paramdesc.h   polynomial_root.h	 rect.h	  renddesc.h   render.h			\
-	savecanvas.h   surface.h   target.h   time.h   timepointcollect.h   transform.h	  uniqueid.h   valuenode.h	\
+	angle.h canvasbase.h general.h guidset.h interpolation.h matrix.h nodebase.h protocol.h quick_rng.h real.h	\
+	releases.h segment.h smartfile.h string.h string_decl.h surfacenew.h synfig.h types.h vector.h version.h	\
+	activepoint.h   blur.h   bone.h   canvas.h   color.h   context.h   curve_helper.h   curveset.h   distance.h	\
+	exception.h   gamma.h   guid.h   importer.h   keyframe.h   layer.h   loadcanvas.h   main.h   module.h		\
+	mutex.h   node.h   palette.h   paramdesc.h   polynomial_root.h   rect.h   renddesc.h   render.h			\
+	savecanvas.h   surface.h   target.h   time.h   timepointcollect.h   transform.h   uniqueid.h   valuenode.h	\
 	waypoint.h
 SYNFIGSOURCES = \
-	activepoint.cpp bone.cpp blur.cpp canvas.cpp color.cpp context.cpp curve_helper.cpp curveset.cpp distance.cpp		\
+	activepoint.cpp blur.cpp bone.cpp canvas.cpp color.cpp context.cpp curve_helper.cpp curveset.cpp distance.cpp	\
 	exception.cpp gamma.cpp guid.cpp importer.cpp keyframe.cpp layer.cpp loadcanvas.cpp main.cpp module.cpp		\
 	mutex.cpp node.cpp palette.cpp paramdesc.cpp polynomial_root.cpp rect.cpp renddesc.cpp render.cpp		\
 	savecanvas.cpp surface.cpp target.cpp time.cpp timepointcollect.cpp transform.cpp uniqueid.cpp valuenode.cpp	\
