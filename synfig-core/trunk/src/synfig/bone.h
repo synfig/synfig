@@ -102,10 +102,16 @@ public:
 	//!This gets the calculated tip of the bone based on
 	//!tip=origin+[length,0]*Rotate(alpha)*Scalex(scale)
 	Point get_tip();
+
 	//!Wrapper for parent bone
 	const Bone &get_parent() {return *parent_;}
 	void set_parent(const Bone &p) {parent_=&p;}
 
+	//!Setup Transfomration matrix.
+	//!This matrix applied to a setup point in global
+	//!coordinates calculates the local coordinates of
+	//!the point relative to the current bone.
+	Matrix get_setup_matrix();
 }; // END of class Bone
 
 }; // END of namespace synfig
