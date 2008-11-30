@@ -92,7 +92,7 @@ Point Bone::get_tip()
 		return (Point)sr.get_transformed(Vector(length_,0));
 	}
 
-//!Setup Transfomration matrix.
+//!Setup Transformation matrix.
 //!This matrix applied to a setup point in global
 //!coordinates calculates the local coordinates of
 //!the point relative to the current bone.
