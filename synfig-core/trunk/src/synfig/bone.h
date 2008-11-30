@@ -69,9 +69,9 @@ private:
 	//!This is the strength at setup time
 	Real strength_;
 	//!The parent bone.
-	Bone const *parent_;
+	Bone *parent_;
 	//!The geanological tree of parents
-	std::vector<Bone const *> parent_tree_;
+	std::vector<Bone *> parent_tree_;
 public:
 	//!Default constructor
 	Bone();
@@ -110,7 +110,7 @@ public:
 
 	//!Wrapper for parent bone
 	const Bone &get_parent() {return *parent_;}
-	void set_parent(const Bone &p) {parent_=&(p);}
+	void set_parent(Bone &p) {parent_=&(p);}
 
 	//!Setup Transformation matrix.
 	//!This matrix applied to a setup point in global
