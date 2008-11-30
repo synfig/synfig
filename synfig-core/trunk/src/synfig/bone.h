@@ -61,21 +61,26 @@ public:
 	//!Construtor by origin, legth and parent (default no parent)
 	Bone(const Point &origin, const Angle &angle, const Real &length, Bone* p=0);
 	//!Wrappers for origin_ & origin0_
+
 	const Point& get_origin() {return origin_;}
 	void set_origin(const Point &x) {origin_=x;}
 	const Point& get_origin0() {return origin0_;}
 	void set_origin0(const Point &x) {origin0_=x;}
+
 	//!Wrappers for angle_ & angle0_
 	const Angle& get_angle() {return angle_;}
 	void set_origin(const Angle &x) {angle_=x;}
 	const Angle& get_angle0() {return angle0_;}
 	void set_angle0(const Angle &x) {angle0_=x;}
+
 	//!Wrapper for scale
 	const Real& get_scale() {return scale_;}
 	void set_scale(const Real &x) {scale_=x;}
+
 	//!Wrapper for lenght. Notice that a length of 0 is not allowed.
 	const Real& get_length() {return length_;}
 	void set_length(const Real &x) {length_=x<0.00001?0.00001:x;}
+
 	//!This gets the calculated tip of the bone based on
 	//!tip=origin+[length,0]*Rotate(alpha)*Scalex(scale)
 	Point get_tip();
