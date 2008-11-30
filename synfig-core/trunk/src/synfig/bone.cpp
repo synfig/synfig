@@ -103,8 +103,10 @@ Matrix get_setup_matrix()
 		r.set_rotate(-angle0_);
 		bparent=t*r;
 		Bone currparent=parent_;
+		clear_parent_tree();
 		while (currparent)
 			{
+				parent_tree_.push_front(currparent);
 				bparent*=currparent->get_setup_matrix();
 				currparent=currparent->parent_;
 			}
@@ -114,12 +116,20 @@ Matrix get_setup_matrix()
 //!Animated Transformation matrix.
 //!This matrix applied to a setup point in local
 //!coordinates (the one obtained form the Setup
-//! Transformation matrix) would obtain the
-//! animated position of the point due the current
+//!Transformation matrix) would obtain the
+//!animated position of the point due the current
 //!bone influence
 Matrix get_animated_matrix()
 	{
-		//TO BE DONE
+		std::vector<Bone*>::const_iterator iter;
+		Matrix s,r,t,banimated;
+		banimated.set_identity();
+		for(iter=parent_tree_.begin();iter!=parent_list_.end();iter++)
+			{
+				if(*iter)
+				banimated*=s.set_scale((*iter)->scale_)*r.set_rotate((*iter)->angle_)*t.set_translate((*iter)->origin_);
+			}
+		return banimated;
 	}
 
 /* === M E T H O D S ======================================================= */
