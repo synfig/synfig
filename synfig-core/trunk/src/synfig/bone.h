@@ -134,3 +134,81 @@ public:
 /* === E N D =============================================================== */
 
 #endif
+/*
+ * Alternative to Bone *parent_
+ * ======================================================================
+ * I think that we can leave the bone as a simple information holder
+ * and only give it the responsability of:
+ * Set and get:
+ * 		-origin, origin0,
+ * 		-angle, angle0,
+ * 		-scale,
+ * 		-lenght
+ * 		-strength,
+ * 		-ParentID: this is new: This is the UniqueID value of the parent bone.
+ * 		Initially it is set to a non valid number (I think that -1 is fine)
+ * 		so it means that it is a root bone. Later an external object can set it
+ * 		to a valid UniqueID to mean that that's the parnent ID.
+ * 		parent_tree is not needed.
+ * 		-Skeletons Pointer (see below)
+ * Also the bone should:
+ * 		-get_setup_matrix
+ * 		-get_animated_matrix
+ * 		-get_tip
+ *
+ * Then it comes the concept of valuenode Skeletons. The Skeletons (notice that
+ * it is plural because there can be more than one root bone) is like the Valuenode_Bline,
+ * a linkable value.
+ * It is like a normal list of bones (like bline is a normal list of blinepoints).
+ * This list of bones has just that, bones. So the skeleton is not a expandble tree with
+ * a potential loop problem; it is just a list of objects.
+ *
+ * The valuenode Skeletons is responsible of:
+ * 1) Calculate the complete setup matrix of a bone based on the hierarchy
+ * 2) Calculate the complete animated matrix of a bone base on the hierarchy
+ * 3) (Re)Parent a bone. Or (Un)Parent it
+ * 4) Remove the bone from the list. It would set the parent UniqueID=-1 and the Skeletons
+ * pointer to be 0.
+ * 5) Add a new bone to the list. The bone constructor would receive a Skeleton pointer and
+ *   eventually a parent UniqueID besides the rest of information to fill the date (origin, etc.).
+ * It would look like that:
+ *
+ * Valuenode Skeletons
+ * 		Bone1 Valuenode Bone
+ * 		Bone2 Valuenode Bone
+ * 		...
+ * 		BoneN Valuenode Bone
+ *
+ * To perform the tasks 1), 2), 3) or 4) the Skeletons Valuenode should perform a seek into the
+ * list of bones by its UniqueID value. For example to calcualte the setup matrix it should
+ * recostruct the bone hierarchy from the current bone to the root parent. Due to that now,
+ * it is only stored the UniqueID of the parent (and not a pointer), it is the skeletons veluenode
+ *  who have to perform all the job: find all the parents and multiply in the correct order its
+ * matrixes. The same happen for the animated matrix.
+ * For reparent it is the same. It is just a modification of the parent UniqueID.
+ * Remove a bone from the list would imply remove all its children form the list. A warning should be triggered.
+ * A bone that has a null pointer to Skeletons means that it is orphan completely. Its parent UniqueID
+ * must be -1 in that case. Anyway the bone like that can be used again in other skeleton. Just need to
+ * insert it in the Skeletons list by modifying the Skeletons pointer and filling the proper parent UniqueID.
+ * The Skeletons pointer is not an animatable valuenode. It can be a Handle if you like. The parent
+ * UniqueID can be animatable.
+ * In this way every computation is slower but would be easier to define, visible to the user
+ * and more consistent with the valuenode concept.
+ *
+ * This variation of concept doens't implies anything new in the VertexBone valuenode.
+ * So the VertexBone Valuenode should look like:
+ * VertexBone Valuenode
+ * 		Vertex Free
+ * 		Vertex Setup
+ * 		Bone_weight_pairs List Valuenode
+ * 			BoneWeightPair
+ * 				Bone Valuenode
+ * 				Weight Real
+ *
+ * AS well as the Bone has a pointer to the Skeletons it is possible to the Valunode VertexBone
+ * to calculate the weighted matrixes as stated in the wiki. It jsut have to retrieve the
+ * Skeleton Valuenode and ask it to perform the known tasks. Later the VertexBone valuenode
+ * would do the weight calculation.
+ *
+ * How does it look?
+ */
