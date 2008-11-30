@@ -51,6 +51,8 @@ private:
 //	Real scale0_; // Scale0 is always = 1.0
 	//!This is the length at setup time
 	Real length_;
+	//!This is the strength at setup time
+	Real strength_;
 	//!A pointer to the parent bone.
 	Bone *parent_;
 public:
@@ -59,9 +61,9 @@ public:
 	//!Constructor by origin and tip
 	Bone(const Point &origin, const Point &tip);
 	//!Construtor by origin, legth and parent (default no parent)
-	Bone(const Point &origin, const Angle &angle, const Real &length, Bone* p=0);
-	//!Wrappers for origin_ & origin0_
+	Bone(const Point &origin, const Angle &angle, const Real &length, const Real &strength, Bone* p=0);
 
+	//!Wrappers for origin_ & origin0_
 	const Point& get_origin() {return origin_;}
 	void set_origin(const Point &x) {origin_=x;}
 	const Point& get_origin0() {return origin0_;}
@@ -80,6 +82,10 @@ public:
 	//!Wrapper for length. Notice that a length of 0 is not allowed.
 	const Real& get_length() {return length_;}
 	void set_length(const Real &x) {length_=x<0.00001?0.00001:x;}
+
+	//!Wrapper for strength
+	const Real& get_strength() {return strength_;}
+	void set_strength(const Real &x) {strength_=x;}
 
 	//!This gets the calculated tip of the bone based on
 	//!tip=origin+[length,0]*Rotate(alpha)*Scalex(scale)

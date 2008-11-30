@@ -52,6 +52,7 @@ angle_(Angle::deg(0.0)),
 angle0_(Angle::deg(0.0)),
 scale_(1.0),
 length_(1.0),
+strength_(1.0),
 parent_(0)
 	{
 	}
@@ -63,17 +64,19 @@ angle_((t-o).angle()),
 angle0_((t-o).angle()),
 scale_(1.0),
 length_(1.0),
+strength_(1.0),
 parent_(0)
 	{
 	}
-//!Constructor by origin, angle, length, parent bone (deault = no parent)
-Bone::Bone(const Point &o, const Angle &a, const Real &l, Bone *p):
+//!Constructor by origin, angle, length, strength, parent bone (deault = no parent)
+Bone::Bone(const Point &o, const Angle &a, const Real &l, const Real &s, Bone *p):
 origin_(o),
 origin0_(o),
 angle_(a),
 angle0_(a),
 scale_(1.0),
 length_(l),
+strength_(s),
 parent_(p)
 	{
 	}
