@@ -77,7 +77,7 @@ public:
 	const Real& get_scale() {return scale_;}
 	void set_scale(const Real &x) {scale_=x;}
 
-	//!Wrapper for lenght. Notice that a length of 0 is not allowed.
+	//!Wrapper for length. Notice that a length of 0 is not allowed.
 	const Real& get_length() {return length_;}
 	void set_length(const Real &x) {length_=x<0.00001?0.00001:x;}
 
