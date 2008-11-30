@@ -85,7 +85,6 @@ parent_(p)
 //! tip=origin+[length,0]*Scale(scale,0)*Rotate(alpha)
 Point Bone::get_tip()
 	{
-		Vector ret;
 		Matrix s, r, sr;
 		s.set_scale(scale_,0);
 		r.set_rotate(angle_);
