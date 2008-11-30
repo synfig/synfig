@@ -108,7 +108,7 @@ Bone::get_setup_matrix()
 	t.set_translate((Vector)(-origin0_));
 	r.set_rotate(-angle0_);
 	bparent=t*r;
-	Bone const *currparent=parent_;
+	Bone *currparent=parent_;
 	clear_parent_tree();
 	while (currparent)
 	{
@@ -128,10 +128,10 @@ Bone::get_setup_matrix()
 Matrix
 Bone::get_animated_matrix()
 {
-	std::vector<Bone*>::const_iterator iter;
+	std::vector<Bone*>::const_reverse_iterator iter;
 	Matrix s,r,t,banimated;
 	banimated.set_identity();
-	for(iter=parent_tree_.end();iter!=parent_tree_.begin();iter--)
+	for(iter=parent_tree_.rbegin();iter!=parent_tree_.rend();iter--)
 	{
 		if(*iter)
 			banimated*=s.set_scale((*iter)->scale_)*r.set_rotate((*iter)->angle_)*t.set_translate((*iter)->origin_);
