@@ -117,6 +117,16 @@ public:
 		m20=0.0; m21=0.0; m22=1.0;
 		 return (*this);
 		}
+	//!set_scale member fucntion. Sets a scale matrix
+	//! @param sxy Scale by X and Y axis
+	//! @return A matrix reference filled with the sxy values
+	Matrix &
+	set_scale(const value_type &sxy){
+		m00=sxy; m01=0.0; m02=0.0;
+		m10=0.0; m11=sxy; m12=0.0;
+		m20=0.0; m21=0.0; m22=1.0;
+		 return (*this);
+		}
 	//!set_rotate member function. Sets a rotate matrix
 	//! @param a Rotation angle counterclock wise
 	//! @return A matrix reference filled with the proper rotation parameters
