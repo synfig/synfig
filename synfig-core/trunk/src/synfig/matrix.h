@@ -171,26 +171,30 @@ public:
 		return Vector(v[0]*m00+v[1]*m10+m20,v[0]*m01+v[1]*m11+m21);
 	}
 
-	//! operator*. Multiplication of one matrix by other
+	//! operator*=. Multiplication and assign of one matrix by another
 	//! @param rhs the right hand side of the multiplication operation
 	//! @return the resulting multiplication matrix
 	Matrix
-	operator*(const Matrix &rhs)
+	operator*=(const Matrix &rhs)
 	{
-		Matrix ret;
-		ret.m00=m00*rhs.m00 + m01*rhs.m10 + m02*rhs.m20;
-		ret.m01=m00*rhs.m01 + m01*rhs.m11 + m02*rhs.m21;
-		ret.m02=m00*rhs.m02 + m01*rhs.m12 + m02*rhs.m22;
+		value_type x, y, z;
 
-		ret.m10=m10*rhs.m00 + m11*rhs.m10 + m12*rhs.m20;
-		ret.m11=m10*rhs.m01 + m11*rhs.m11 + m12*rhs.m21;
-		ret.m12=m10*rhs.m02 + m11*rhs.m12 + m12*rhs.m22;
+		x = m00;    y = m01;    z = m02;
+		m00=x*rhs.m00 + y*rhs.m10 + z*rhs.m20;
+		m01=x*rhs.m01 + y*rhs.m11 + z*rhs.m21;
+		m02=x*rhs.m02 + y*rhs.m12 + z*rhs.m22;
 
-		ret.m20=m20*rhs.m00 + m21*rhs.m10 + m22*rhs.m20;
-		ret.m21=m20*rhs.m01 + m21*rhs.m11 + m22*rhs.m21;
-		ret.m22=m20*rhs.m02 + m21*rhs.m12 + m22*rhs.m22;
+		x = m10;    y = m11;    z = m12;
+		m10=x*rhs.m00 + y*rhs.m10 + z*rhs.m20;
+		m11=x*rhs.m01 + y*rhs.m11 + z*rhs.m21;
+		m12=x*rhs.m02 + y*rhs.m12 + z*rhs.m22;
 
-		return ret;
+		x = m20;    y = m21;    z = m22;
+		m20=x*rhs.m00 + y*rhs.m10 + z*rhs.m20;
+		m21=x*rhs.m01 + y*rhs.m11 + z*rhs.m21;
+		m22=x*rhs.m02 + y*rhs.m12 + z*rhs.m22;
+
+		return *this;
 	}
 
 	//! operator*=. Multiplication and assign of one matrix by a number
@@ -234,6 +238,15 @@ public:
 		return *this;
 	}
 
+	//! operator*. Multiplication of one matrix by another
+	//! @param rhs the right hand side of the multiplication operation
+	//! @return the resulting multiplication matrix
+	Matrix
+	operator*(const Matrix &rhs)
+	{
+		return Matrix(*this)*=rhs;
+	}
+
 	//! operator*. Multiplication of one matrix by a number
 	//! @param rhs the number to multiply by
 	//! @return the resulting multiplicated by number matrix
@@ -243,7 +256,7 @@ public:
 		return Matrix(*this)*=rhs;
 	}
 
-	//! operator+=. Sum and assign of two matrixes
+	//! operator+. Sum two matrixes
 	//! @param rhs the matrix to sum
 	//! @return modified matrix with the summed matrix
 	Matrix
