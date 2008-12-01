@@ -450,6 +450,9 @@ CellRenderer_ValueBase::render_vfunc(
 	case ValueBase::TYPE_BLINEPOINT:
 		property_text()=(Glib::ustring)_("BLine Point");
 		break;
+	case ValueBase::TYPE_BONE:
+		property_text()=(Glib::ustring)_("Bone");
+		break;
 	default:
 		property_text()=static_cast<Glib::ustring>(_("UNKNOWN"));
 		break;
