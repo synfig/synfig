@@ -36,6 +36,7 @@
 #include "valuenode_subtract.h"
 #include "valuenode_animated.h"
 #include "valuenode_composite.h"
+#include "valuenode_staticlist.h"
 #include "valuenode_dynamiclist.h"
 #include "keyframe.h"
 #include "guid.h"
@@ -170,6 +171,7 @@ private:
 	etl::handle<ValueNode_Animated> parse_animated(xmlpp::Element *node,Canvas::Handle canvas);
 	etl::handle<ValueNode_Subtract> parse_subtract(xmlpp::Element *node,Canvas::Handle canvas);
 	etl::handle<LinkableValueNode> parse_linkable_value_node(xmlpp::Element *node,Canvas::Handle canvas);
+	etl::handle<ValueNode_StaticList> parse_static_list(xmlpp::Element *node,Canvas::Handle canvas);
 	etl::handle<ValueNode_DynamicList> parse_dynamic_list(xmlpp::Element *node,Canvas::Handle canvas);
 
 }; // END of CanvasParser

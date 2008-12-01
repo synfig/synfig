@@ -59,6 +59,13 @@
 #include "actions/valuenodedynamiclistloop.h"
 #include "actions/valuenodedynamiclistunloop.h"
 #include "actions/valuenodedynamiclistrotateorder.h"
+#include "actions/valuenodestaticlistinsert.h"
+#include "actions/valuenodestaticlistremove.h"
+#include "actions/valuenodestaticlistinsertsmart.h"
+#include "actions/valuenodestaticlistremovesmart.h"
+#include "actions/valuenodestaticlistloop.h"
+#include "actions/valuenodestaticlistunloop.h"
+#include "actions/valuenodestaticlistrotateorder.h"
 #include "actions/valuenoderename.h"
 #include "actions/valuenoderemove.h"
 
@@ -179,6 +186,13 @@ Action::Main::Main()
 	ADD_ACTION(Action::ValueNodeDynamicListLoop);
 	ADD_ACTION(Action::ValueNodeDynamicListUnLoop);
 	ADD_ACTION(Action::ValueNodeDynamicListRotateOrder);
+	ADD_ACTION(Action::ValueNodeStaticListInsert);
+	ADD_ACTION(Action::ValueNodeStaticListRemove);
+	ADD_ACTION(Action::ValueNodeStaticListInsertSmart);
+	ADD_ACTION(Action::ValueNodeStaticListRemoveSmart);
+	ADD_ACTION(Action::ValueNodeStaticListLoop);
+	ADD_ACTION(Action::ValueNodeStaticListUnLoop);
+	ADD_ACTION(Action::ValueNodeStaticListRotateOrder);
 	ADD_ACTION(Action::ValueNodeRename);
 	ADD_ACTION(Action::ValueNodeRemove);
 

@@ -1,0 +1,314 @@
+/* === S Y N F I G ========================================================= */
+/*!	\file valuenode_staticlist.cpp
+**	\brief Implementation of the "StaticList" valuenode conversion.
+**
+**	$Id$
+**
+**	\legal
+**	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
+**	Copyright (c) 2008 Chris Moore
+**
+**	This package is free software; you can redistribute it and/or
+**	modify it under the terms of the GNU General Public License as
+**	published by the Free Software Foundation; either version 2 of
+**	the License, or (at your option) any later version.
+**
+**	This package is distributed in the hope that it will be useful,
+**	but WITHOUT ANY WARRANTY; without even the implied warranty of
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+**	General Public License for more details.
+**	\endlegal
+*/
+/* ========================================================================= */
+
+/* === H E A D E R S ======================================================= */
+
+#ifdef USING_PCH
+#	include "pch.h"
+#else
+#ifdef HAVE_CONFIG_H
+#	include <config.h>
+#endif
+
+#include "valuenode_staticlist.h"
+#include "valuenode_const.h"
+#include "valuenode_composite.h"
+#include "general.h"
+#include "exception.h"
+#include <vector>
+#include <list>
+#include <algorithm>
+#include "canvas.h"
+
+#endif
+
+/* === U S I N G =========================================================== */
+
+using namespace std;
+using namespace etl;
+using namespace synfig;
+
+/* === M A C R O S ========================================================= */
+
+/* === G L O B A L S ======================================================= */
+
+/* === P R O C E D U R E S ================================================= */
+
+/* === M E T H O D S ======================================================= */
+
+ValueNode_StaticList::ListEntry
+ValueNode_StaticList::create_list_entry(int index, Time time, Real origin) // line 137
+{
+	ValueNode_StaticList::ListEntry ret;
+
+	synfig::ValueBase prev,next;
+
+	index=index%link_count();
+
+	assert(index>=0);
+
+	next=(*list[index])(time);
+
+	if(index!=0)
+		prev=(*list[index-1])(time);
+	else if(get_loop())
+		prev=(*list[link_count()-1])(time);
+	else
+		prev=next;
+
+	switch(get_contained_type())
+	{
+	case ValueBase::TYPE_VECTOR:
+	{
+		Vector a(prev.get(Vector())), b(next.get(Vector()));
+		ret=ValueNode_Const::create((b-a)*origin+a);
+		break;
+	}
+	case ValueBase::TYPE_REAL:
+	{
+		Real a(prev.get(Real())), b(next.get(Real()));
+		ret=ValueNode_Const::create((b-a)*origin+a);
+		break;
+	}
+	case ValueBase::TYPE_COLOR:
+	{
+		Color a(prev.get(Color())), b(next.get(Color()));
+		ret=ValueNode_Composite::create((b-a)*origin+a);
+		break;
+	}
+	case ValueBase::TYPE_ANGLE:
+	{
+		Angle a(prev.get(Angle())), b(next.get(Angle()));
+		ret=ValueNode_Const::create((b-a)*origin+a);
+		break;
+	}
+	case ValueBase::TYPE_TIME:
+	{
+		Time a(prev.get(Time())), b(next.get(Time()));
+		ret=ValueNode_Const::create((b-a)*origin+a);
+		break;
+	}
+	default:
+		ret=ValueNode_Const::create(get_contained_type());
+		break;
+	}
+
+	return ret;
+}
+
+void
+ValueNode_StaticList::add(const ValueNode::Handle &value_node, int index) // line 470
+{
+	if(index<0 || index>=(int)list.size())
+	{
+		list.push_back(value_node);
+	}
+	else
+	{
+		list.insert(list.begin()+index,value_node);
+	}
+
+	add_child(value_node.get());
+	//changed();
+
+	if(get_parent_canvas())
+		get_parent_canvas()->signal_value_node_child_added()(this,value_node);
+	else if(get_root_canvas() && get_parent_canvas())
+		get_root_canvas()->signal_value_node_child_added()(this,value_node);
+}
+
+void
+ValueNode_StaticList::erase(const ListEntry &value_node_) // line 513
+{
+	ValueNode::Handle value_node(value_node_);
+
+	assert(value_node);
+	if(!value_node)
+		throw String("ValueNode_StaticList::erase(): Passed bad value node");
+
+	std::vector<ListEntry>::iterator iter;
+	for(iter=list.begin();iter!=list.end();++iter)
+		if(*iter==value_node)
+		{
+			list.erase(iter);
+			if(value_node)
+			{
+				remove_child(value_node.get());
+				// changed to fix bug 1420091 - it seems that when a .sif file containing a bline layer encapsulated inside
+				// another layer, get_parent_canvas() is false and get_root_canvas() is true, but when we come to erase a
+				// vertex, both are true.  So the signal is sent to the parent, but the signal wasn't sent to the parent
+				// when it was added.  This probably isn't the right fix, but it seems to work for now.  Note that the same
+				// strange "if (X) else if (Y && X)" code is also present in the two previous functions, above.
+
+				// if(get_parent_canvas())
+				// 	get_parent_canvas()->signal_value_node_child_removed()(this,value_node);
+				// else if(get_root_canvas() && get_parent_canvas())
+				//	get_root_canvas()->signal_value_node_child_removed()(this,value_node);
+				if(get_root_canvas())
+					get_root_canvas()->signal_value_node_child_removed()(this,value_node);
+			}
+			break;
+		}
+}
+
+ValueNode_StaticList::ValueNode_StaticList(ValueBase::Type container_type): // line 548
+	LinkableValueNode(ValueBase::TYPE_LIST),
+	container_type	(container_type),
+	loop_(false)
+{
+	DCAST_HACK_ENABLE();
+}
+
+ValueNode_StaticList::Handle
+ValueNode_StaticList::create(ValueBase::Type id) // line 557
+{
+	return new ValueNode_StaticList(id);
+}
+
+ValueNode_StaticList*
+ValueNode_StaticList::create_from(const ValueBase &value) // line 568
+{
+	vector<ValueBase> value_list(value.get_list());
+
+	vector<ValueBase>::iterator iter;
+
+	if(value_list.empty())
+		return 0;
+
+	ValueNode_StaticList* value_node(new ValueNode_StaticList(value_list.front().get_type()));
+
+	// when creating a list of vectors, start it off being looped.
+	// I think the only time this is used if for creating polygons,
+	// and we want them to be looped by default
+	if (value_node->get_contained_type() == ValueBase::TYPE_VECTOR)
+		value_node->set_loop(true);
+
+	for(iter=value_list.begin();iter!=value_list.end();++iter)
+	{
+		ValueNode::Handle item(ValueNode_Const::create(*iter));
+		value_node->add(item);
+	}
+	return value_node;
+}
+
+ValueBase
+ValueNode_StaticList::operator()(Time t)const // line 596
+{
+	std::vector<ValueBase> ret_list;
+	std::vector<ListEntry>::const_iterator iter;
+
+	assert(container_type);
+
+	for(iter=list.begin();iter!=list.end();++iter)
+		if((*iter)->get_type()==container_type)
+			ret_list.push_back((**iter)(t));
+		else
+			synfig::warning(string("ValueNode_StaticList::operator()():")+_("List type/item type mismatch, throwing away mismatch"));
+
+	if(list.empty())
+		synfig::warning(string("ValueNode_StaticList::operator()():")+_("No entries in list"));
+	else
+	if(ret_list.empty())
+		synfig::warning(string("ValueNode_StaticList::operator()():")+_("No entries in ret_list"));
+
+	return ret_list;
+}
+
+bool
+ValueNode_StaticList::set_link_vfunc(int i,ValueNode::Handle x) // line 628
+{
+	assert(i>=0);
+
+	if((unsigned)i>=list.size())
+		return false;
+	if(x->get_type()!=container_type)
+		return false;
+	list[i]=x;
+	return true;
+}
+
+ValueNode::LooseHandle
+ValueNode_StaticList::get_link_vfunc(int i)const // line 641
+{
+	assert(i>=0);
+
+	if((unsigned)i>=list.size())
+		return 0;
+	return list[i];
+}
+
+int
+ValueNode_StaticList::link_count()const // line 651
+{
+	return list.size();
+}
+
+String
+ValueNode_StaticList::link_local_name(int i)const // line 657
+{
+	assert(i>=0 && i<link_count());
+
+	return etl::strprintf(_("Item %03d"),i+1);
+}
+
+String
+ValueNode_StaticList::link_name(int i)const // line 693
+{
+	return strprintf("item%04d",i);
+}
+
+int
+ValueNode_StaticList::get_link_index_from_name(const String &name)const // line 699
+{
+	throw Exception::BadLinkName(name);
+}
+
+String
+ValueNode_StaticList::get_name()const // line 705
+{
+	return "static_list";
+}
+
+String
+ValueNode_StaticList::get_local_name()const // line 711
+{
+	return _("Static List");
+}
+
+bool
+ValueNode_StaticList::check_type(ValueBase::Type type) // line 717
+{
+	return type==ValueBase::TYPE_LIST;
+}
+
+ValueBase::Type
+ValueNode_StaticList::get_contained_type()const // line 730
+{
+	return container_type;
+}
+
+LinkableValueNode*
+ValueNode_StaticList::create_new()const // line 736
+{
+	return new ValueNode_StaticList(container_type);
+}

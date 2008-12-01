@@ -62,6 +62,7 @@
 #include "valuenode_timedswap.h"
 #include "valuenode_twotone.h"
 #include "valuenode_bline.h"
+#include "valuenode_staticlist.h"
 #include "valuenode_dynamiclist.h"
 #include "valuenode_radialcomposite.h"
 #include "valuenode_gradientrotate.h"
@@ -122,17 +123,13 @@ ValueNode::subsys_init()
 {
 	book_=new LinkableValueNode::Book();
 
-#define ADD_VALUENODE(class,name,local,version)													\
+#define ADD_VALUENODE_CREATE(class,name,local,version,create)									\
 	(*book_)[name].factory=reinterpret_cast<LinkableValueNode::Factory>(&class::create);		\
 	(*book_)[name].check_type=&class::check_type;												\
 	(*book_)[name].local_name=local;															\
 	(*book_)[name].release_version=version
-
-#define ADD_VALUENODE2(class,name,local,version)												\
-	(*book_)[name].factory=reinterpret_cast<LinkableValueNode::Factory>(&class::create_from);	\
-	(*book_)[name].check_type=&class::check_type;												\
-	(*book_)[name].local_name=local;															\
-	(*book_)[name].release_version=version
+#define ADD_VALUENODE(class,name,local,version)		ADD_VALUENODE_CREATE(class,name,local,version,create)
+#define ADD_VALUENODE2(class,name,local,version)	ADD_VALUENODE_CREATE(class,name,local,version,create_from)
 
 	ADD_VALUENODE(ValueNode_Linear,			  "linear",			  _("Linear"),			 RELEASE_VERSION_0_61_06);
 	ADD_VALUENODE(ValueNode_Composite,		  "composite",		  _("Composite"),		 RELEASE_VERSION_0_61_06);
@@ -183,6 +180,7 @@ ValueNode::subsys_init()
 
 	ADD_VALUENODE(ValueNode_Greyed,			  "greyed",			  _("Greyed"),			 RELEASE_VERSION_0_61_10); // SVN r2305
 	ADD_VALUENODE(ValueNode_BoneInfluence,	  "boneinfluence",	  _("Bone Influence"),	 RELEASE_VERSION_0_61_10); // SVN r2???
+	ADD_VALUENODE2(ValueNode_StaticList,	  "static_list",	  _("Static List"),		 RELEASE_VERSION_0_61_10); // SVN r2???
 
 #undef ADD_VALUENODE
 #undef ADD_VALUENODE2

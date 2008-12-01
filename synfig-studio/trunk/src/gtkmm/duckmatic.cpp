@@ -47,6 +47,7 @@
 #include <synfig/valuenode_blinecalctangent.h>
 #include <synfig/valuenode_blinecalcvertex.h>
 #include <synfig/valuenode_blinecalcwidth.h>
+#include <synfig/valuenode_staticlist.h>
 
 #include <synfig/curve_helper.h>
 
@@ -1821,6 +1822,98 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				bezier=0;
 			}
 			return true;
+		}
+		else // Check for StaticList
+		if(value_desc.is_value_node() &&
+			ValueNode_StaticList::Handle::cast_dynamic(value_desc.get_value_node()))
+		{
+			ValueNode_StaticList::Handle value_node;
+			value_node=ValueNode_StaticList::Handle::cast_dynamic(value_desc.get_value_node());
+			int i;
+
+			if(value_node->get_contained_type()==ValueBase::TYPE_VECTOR)
+			{
+				Bezier bezier;
+				etl::handle<Duck> first_duck, duck;
+				int first = -1;
+				for(i=0;i<value_node->link_count();i++)
+				{
+					if(!add_to_ducks(synfigapp::ValueDesc(value_node,i),canvas_view,transform_stack))
+						return false;
+					duck = last_duck();
+
+					// remember the index of the first vertex we didn't skip
+					if (first == -1)
+					{
+						first = i;
+						first_duck = duck;
+					}
+
+					if(param_desc && !param_desc->get_origin().empty())
+					{
+						synfigapp::ValueDesc value_desc_origin(value_desc.get_layer(),param_desc->get_origin());
+						add_to_ducks(value_desc_origin,canvas_view, transform_stack);
+						duck->set_origin(last_duck());
+/*
+						ValueBase value(synfigapp::ValueDesc(value_desc.get_layer(),param_desc->get_origin()).get_value(get_time()));
+						if(value.same_type_as(synfig::Point()))
+							duck->set_origin(value.get(synfig::Point()));
+*/
+//						if(!param_desc->get_origin().empty())
+//							last_duck()->set_origin(synfigapp::ValueDesc(value_desc.get_layer(),param_desc->get_origin()).get_value(get_time()).get(synfig::Point()));
+					}
+					duck->set_type(Duck::TYPE_VERTEX);
+					bezier.p1=bezier.p2;bezier.c1=bezier.c2;
+					bezier.p2=bezier.c2=duck;
+
+					if (first != i)
+					{
+						handle<Bezier> bezier_(new Bezier());
+						bezier_->p1=bezier.p1;
+						bezier_->c1=bezier.c1;
+						bezier_->p2=bezier.p2;
+						bezier_->c2=bezier.c2;
+						add_bezier(bezier_);
+						last_bezier()->signal_user_click(2).connect(
+							sigc::bind(
+								sigc::mem_fun(
+									*canvas_view,
+									&studio::CanvasView::popup_param_menu_bezier),
+								synfigapp::ValueDesc(value_node,i)));
+					}
+				}
+
+				if (value_node->get_loop() && first != -1 && first_duck != duck)
+				{
+					duck = first_duck;
+
+					bezier.p1=bezier.p2;bezier.c1=bezier.c2;
+					bezier.p2=bezier.c2=duck;
+
+					handle<Bezier> bezier_(new Bezier());
+					bezier_->p1=bezier.p1;
+					bezier_->c1=bezier.c1;
+					bezier_->p2=bezier.p2;
+					bezier_->c2=bezier.c2;
+					add_bezier(bezier_);
+					last_bezier()->signal_user_click(2).connect(
+						sigc::bind(
+							sigc::mem_fun(
+								*canvas_view,
+								&studio::CanvasView::popup_param_menu_bezier),
+							synfigapp::ValueDesc(value_node,first)));
+				}
+			}
+			else if(value_node->get_contained_type()==ValueBase::TYPE_SEGMENT)
+			{
+				for(i=0;i<value_node->link_count();i++)
+				{
+					if(!add_to_ducks(synfigapp::ValueDesc(value_node,i),canvas_view,transform_stack))
+						return false;
+				}
+			}
+			else
+				return false;
 		}
 		else // Check for DynamicList
 		if(value_desc.is_value_node() &&

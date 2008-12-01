@@ -41,13 +41,8 @@
 
 #include "layer_pastecanvas.h"
 #include "loadcanvas.h"
-#include "valuenode.h"
-#include "valuenode_subtract.h"
-#include "valuenode_animated.h"
-#include "valuenode_composite.h"
 #include "valuenode_const.h"
 #include "valuenode_linear.h"
-#include "valuenode_dynamiclist.h"
 #include "valuenode_reference.h"
 #include "valuenode_scale.h"
 #include "valuenode_timedswap.h"
@@ -58,7 +53,6 @@
 #include "valuenode_bline.h"
 
 #include "layer.h"
-#include "string.h"
 
 #include "exception.h"
 
@@ -1348,6 +1342,94 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 	return value_node;
 }
 
+handle<ValueNode_StaticList>
+CanvasParser::parse_static_list(xmlpp::Element *element,Canvas::Handle canvas)
+{
+	assert(element->get_name()=="static_list");
+
+	if(!element->get_attribute("type"))
+	{
+		error(element,"Missing attribute \"type\" in <list>");
+		return handle<ValueNode_StaticList>();
+	}
+
+	ValueBase::Type type=ValueBase::ident_type(element->get_attribute("type")->get_value());
+
+	if(!type)
+	{
+		error(element,"Bad type in <list>");
+		return handle<ValueNode_StaticList>();
+	}
+
+	handle<ValueNode_StaticList> value_node;
+
+	value_node=ValueNode_StaticList::create(type);
+
+	if(!value_node)
+	{
+		error(element,strprintf(_("Unable to create <list>")));
+		return handle<ValueNode_StaticList>();
+	}
+
+	value_node->set_root_canvas(canvas->get_root());
+
+	xmlpp::Element::NodeList list = element->get_children();
+	for(xmlpp::Element::NodeList::iterator iter = list.begin(); iter != list.end(); ++iter)
+	{
+		xmlpp::Element *child(dynamic_cast<xmlpp::Element*>(*iter));
+		if(!child)
+			continue;
+		else
+		if(child->get_name()=="entry")
+		{
+			ValueNode::Handle list_entry;
+
+			if(child->get_attribute("use"))
+			{
+				// \todo does this need to be able to read 'use="canvas"', like waypoints can now?  (see 'surefind_canvas' in this file)
+				string id=child->get_attribute("use")->get_value();
+				try
+				{
+					list_entry=canvas->surefind_value_node(id);
+				}
+				catch(Exception::IDNotFound)
+				{
+					error(child,"\"use\" attribute in <entry> references unknown ID -- "+id);
+					continue;
+				}
+			}
+			else
+			{
+				xmlpp::Element::NodeList list = child->get_children();
+				xmlpp::Element::NodeList::iterator iter;
+
+				// Search for the first non-text XML element
+				for(iter = list.begin(); iter != list.end(); ++iter)
+					if(dynamic_cast<xmlpp::Element*>(*iter)) break;
+
+				if(iter==list.end())
+				{
+					error(child,strprintf(_("<entry> is missing its contents or missing \"use\" element")));
+					continue;
+				}
+
+				list_entry=parse_value_node(dynamic_cast<xmlpp::Element*>(*iter),canvas);
+
+				if(!list_entry)
+					error((*iter),"Parse of ValueNode failed");
+
+				// \todo do a search for more elements and warn if they are found
+
+			}
+
+			value_node->add(list_entry);
+		}
+		else
+			error_unexpected_element(child,child->get_name());
+	}
+	return value_node;
+}
+
 // This will also parse a bline
 handle<ValueNode_DynamicList>
 CanvasParser::parse_dynamic_list(xmlpp::Element *element,Canvas::Handle canvas)
@@ -1600,6 +1682,9 @@ CanvasParser::parse_value_node(xmlpp::Element *element,Canvas::Handle canvas)
 	else
 	if(element->get_name()=="hermite" || element->get_name()=="animated")
 		value_node=parse_animated(element,canvas);
+	else
+	if(element->get_name()=="static_list")
+		value_node=parse_static_list(element,canvas);
 	else
 	if(element->get_name()=="dynamic_list")
 		value_node=parse_dynamic_list(element,canvas);

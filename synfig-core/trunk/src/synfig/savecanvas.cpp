@@ -42,6 +42,7 @@
 #include "valuenode_composite.h"
 #include "valuenode_const.h"
 #include "valuenode_linear.h"
+#include "valuenode_staticlist.h"
 #include "valuenode_dynamiclist.h"
 #include "valuenode_reference.h"
 #include "valuenode_segcalctangent.h"
@@ -383,6 +384,29 @@ xmlpp::Element* encode_subtract(xmlpp::Element* root,ValueNode_Subtract::ConstHa
 	return root;
 }
 
+xmlpp::Element* encode_static_list(xmlpp::Element* root,ValueNode_StaticList::ConstHandle value_node,Canvas::ConstHandle canvas=0)
+{
+	assert(value_node);
+
+	root->set_name(value_node->get_name());
+
+	root->set_attribute("type",ValueBase::type_name(value_node->get_contained_type()));
+
+	vector<ValueNode::RHandle>::const_iterator iter;
+
+	for(iter=value_node->list.begin();iter!=value_node->list.end();++iter)
+	{
+		xmlpp::Element	*entry_node=root->add_child("entry");
+		assert(*iter);
+		if(!(*iter)->get_id().empty())
+			entry_node->set_attribute("use",(*iter)->get_relative_id(canvas));
+		else
+			encode_value_node(entry_node->add_child("value_node"),*iter,canvas);
+	}
+
+	return root;
+}
+
 xmlpp::Element* encode_dynamic_list(xmlpp::Element* root,ValueNode_DynamicList::ConstHandle value_node,Canvas::ConstHandle canvas=0)
 {
 	assert(value_node);
@@ -514,6 +538,9 @@ xmlpp::Element* encode_value_node(xmlpp::Element* root,ValueNode::ConstHandle va
 	else
 	if(ValueNode_Subtract::ConstHandle::cast_dynamic(value_node))
 		encode_subtract(root,ValueNode_Subtract::ConstHandle::cast_dynamic(value_node),canvas);
+	else
+	if(ValueNode_StaticList::ConstHandle::cast_dynamic(value_node))
+		encode_static_list(root,ValueNode_StaticList::ConstHandle::cast_dynamic(value_node),canvas);
 	else
 	if(ValueNode_DynamicList::ConstHandle::cast_dynamic(value_node))
 		encode_dynamic_list(root,ValueNode_DynamicList::ConstHandle::cast_dynamic(value_node),canvas);

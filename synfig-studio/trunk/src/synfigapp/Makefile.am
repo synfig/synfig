@@ -20,17 +20,27 @@ VALUEDESC_ACTION_CC = \
 	actions/valuedescexport.cpp actions/valuedesclink.cpp actions/valuedescblinelink.cpp actions/valuedescset.cpp
 
 VALUENODE_ACTION_HH = \
-	actions/valuenodeadd.h   actions/valuenodeconstset.h   actions/valuenodedynamiclistinsert.h			\
+	actions/valuenodeadd.h   actions/valuenodeconstset.h								\
+	actions/valuenodedynamiclistinsert.h										\
 	actions/valuenodedynamiclistinsertsmart.h   actions/valuenodedynamiclistloop.h					\
 	actions/valuenodedynamiclistremove.h   actions/valuenodedynamiclistremovesmart.h				\
 	actions/valuenodedynamiclistrotateorder.h   actions/valuenodedynamiclistunloop.h				\
+	actions/valuenodestaticlistinsert.h										\
+	actions/valuenodestaticlistinsertsmart.h   actions/valuenodestaticlistloop.h					\
+	actions/valuenodestaticlistremove.h   actions/valuenodestaticlistremovesmart.h					\
+	actions/valuenodestaticlistrotateorder.h   actions/valuenodestaticlistunloop.h					\
 	actions/valuenodelinkconnect.h   actions/valuenodelinkdisconnect.h   actions/valuenoderemove.h			\
 	actions/valuenoderename.h   actions/valuenodereplace.h
 VALUENODE_ACTION_CC = \
-	actions/valuenodeadd.cpp actions/valuenodeconstset.cpp actions/valuenodedynamiclistinsert.cpp			\
+	actions/valuenodeadd.cpp actions/valuenodeconstset.cpp								\
+	actions/valuenodedynamiclistinsert.cpp										\
 	actions/valuenodedynamiclistinsertsmart.cpp actions/valuenodedynamiclistloop.cpp				\
 	actions/valuenodedynamiclistremove.cpp actions/valuenodedynamiclistremovesmart.cpp				\
 	actions/valuenodedynamiclistrotateorder.cpp actions/valuenodedynamiclistunloop.cpp				\
+	actions/valuenodestaticlistinsert.cpp										\
+	actions/valuenodestaticlistinsertsmart.cpp actions/valuenodestaticlistloop.cpp					\
+	actions/valuenodestaticlistremove.cpp actions/valuenodestaticlistremovesmart.cpp				\
+	actions/valuenodestaticlistrotateorder.cpp actions/valuenodestaticlistunloop.cpp				\
 	actions/valuenodelinkconnect.cpp actions/valuenodelinkdisconnect.cpp actions/valuenoderemove.cpp		\
 	actions/valuenoderename.cpp actions/valuenodereplace.cpp
 

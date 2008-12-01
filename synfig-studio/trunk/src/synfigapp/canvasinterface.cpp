@@ -247,14 +247,20 @@ CanvasInterface::add_layer_to(synfig::String name, synfig::Canvas::Handle canvas
 				vector<ValueBase> list(iter->second.get_list());
 				if (list.size())
 				{
-					vector<ValueBase>::iterator iter2;
-					for (iter2 = list.begin(); iter2 != list.end(); iter2++)
-						if (iter2->get_type() != ValueBase::TYPE_BLINEPOINT)
+					vector<ValueBase>::iterator iter2 = list.begin();
+					ValueBase::Type type(iter2->get_type());
+					for (iter2++; iter2 != list.end(); iter2++)
+						if (iter2->get_type() != type)
 							break;
 					if (iter2 == list.end())
 					{
-						value_node=LinkableValueNode::create("bline",iter->second);
-						ValueNode_BLine::Handle::cast_dynamic(value_node)->set_member_canvas(canvas);
+						if (type == ValueBase::TYPE_BLINEPOINT)
+						{
+							value_node=LinkableValueNode::create("bline",iter->second);
+							ValueNode_BLine::Handle::cast_dynamic(value_node)->set_member_canvas(canvas);
+						}
+						else
+							value_node=LinkableValueNode::create("static_list",iter->second);
 					}
 				}
 
