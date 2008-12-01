@@ -32,6 +32,7 @@
 #include "real.h"
 #include "vector.h"
 #include <math.h>
+#include <iostream>
 
 /* === M A C R O S ========================================================= */
 
@@ -55,6 +56,10 @@ inline bool isnan(float x) { return x != x; }
 #define SYNFIG_ISNAN_FIX 1
 #endif
 
+#define COUT_MATRIX(m)													\
+	cout<<"["<<m.m00<<"]["<<m.m01<<"]["<<m.m02<<"]"<<endl;				\
+	cout<<"["<<m.m10<<"]["<<m.m11<<"]["<<m.m12<<"]"<<endl;				\
+	cout<<"["<<m.m20<<"]["<<m.m21<<"]["<<m.m22<<"]"<<endl
 
 /* === T Y P E D E F S ===================================================== */
 
