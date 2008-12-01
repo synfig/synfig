@@ -72,7 +72,8 @@ Bone::Bone(const Point &o, const Point &t):
 }
 
 //!Constructor by origin, angle, length, strength, parent bone (default = no parent)
-Bone::Bone(const Point &o, const Angle &a, const Real &l, const Real &s, Bone *p):
+Bone::Bone(const String &n, const Point &o, const Angle &a, const Real &l, const Real &s, Bone *p):
+	name_(n),
 	origin_(o),
 	origin0_(o),
 	angle_(a),
