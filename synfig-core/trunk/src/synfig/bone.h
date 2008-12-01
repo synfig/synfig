@@ -30,6 +30,7 @@
 #include "matrix.h"
 #include "uniqueid.h"
 #include <vector>
+#include <ETL/handle>
 
 /* === M A C R O S ========================================================= */
 
@@ -45,7 +46,7 @@ class Bone: public UniqueID
 	*/
 
 public:
-	// typedef etl::handle<Bone> Handle;
+	typedef etl::handle<Bone> Handle;
 	// typedef etl::loose_handle<Bone> LooseHandle;
 
 	/*
@@ -69,7 +70,7 @@ private:
 	//!This is the strength at setup time
 	Real strength_;
 	//!The parent bone.
-	Bone *parent_;
+	Bone const *parent_;
 	//!The geanological tree of parents
 	std::vector<Bone *> parent_tree_;
 public:
@@ -110,13 +111,13 @@ public:
 
 	//!Wrapper for parent bone
 	const Bone &get_parent() {return *parent_;}
-	void set_parent(Bone &p) {parent_=&(p);}
+	void set_parent(const Bone &p) {parent_=&(p);}
 
 	//!Setup Transformation matrix.
 	//!This matrix applied to a setup point in global
 	//!coordinates calculates the local coordinates of
 	//!the point relative to the current bone.
-	Matrix get_setup_matrix();
+	Matrix get_setup_matrix()const;
 
 	//!Animated Transformation matrix.
 	//!This matrix applied to a setup point in local
