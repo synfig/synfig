@@ -33,6 +33,7 @@
 #include "vector.h"
 #include <math.h>
 #include <iostream>
+#include <ETL/stringf>
 
 /* === M A C R O S ========================================================= */
 
@@ -268,6 +269,15 @@ public:
 	operator+(const Matrix &rhs)
 	{
 		return Matrix(*this)+=rhs;
+	}
+
+	//!Get the string of the Matrix
+	//!@return String type. A string representation of the matrix
+	//!components.
+	String
+	get_string()
+	{
+		return strprintf("[%.4f %.4f %.4f][%.4f %.4f %.4f][%.4f %.4f %.4f]", m00, m01, m02, m10, m11, m12, m20, m21, m22);
 	}
 };
 
