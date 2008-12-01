@@ -46,6 +46,7 @@
 #include "layer_pastecanvas.h"
 #include "layer_motionblur.h"
 #include "layer_duplicate.h"
+#include "layer_skeleton.h"
 
 #include "valuenode_const.h"
 
@@ -120,6 +121,7 @@ Layer::subsys_init()
 	INCLUDE_LAYER(Layer_Polygon);		LAYER_ALIAS(Layer_Polygon,		"Polygon");
 	INCLUDE_LAYER(Layer_MotionBlur);	LAYER_ALIAS(Layer_MotionBlur,	"motion_blur");
 	INCLUDE_LAYER(Layer_Duplicate);
+	INCLUDE_LAYER(Layer_Skeleton);
 
 #undef INCLUDE_LAYER
 
