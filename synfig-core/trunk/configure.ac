@@ -620,7 +620,7 @@ AC_SUBST(CPPFLAGS)
 AC_SUBST(LDFLAGS)
 
 # this line is required for libtool 1.5.26 but must not be present for libtool 2.2.4...
-AC_CONFIG_SUBDIRS(libltdl)
+# AC_CONFIG_SUBDIRS(libltdl)
 
 CONFIG_LIBS="-lsynfig"
 CONFIG_CFLAGS="$CONFIG_CFLAGS"
@@ -678,6 +678,7 @@ src/modules/mod_yuv420p/Makefile
 src/modules/example/Makefile
 src/tool/Makefile
 src/modules/synfig_modules.cfg
+test/Makefile
 examples/walk/Makefile
 examples/Makefile
 win32inst.nsi
