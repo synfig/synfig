@@ -397,7 +397,11 @@ private:
 
 		type=newtype;
 		ref_count.reset();
-		data=new T(x);
+
+		if (type == TYPE_BONE && &x == 0)
+			data = 0;
+		else
+			data=new T(x);
 	}
 }; // END of class ValueBase
 
