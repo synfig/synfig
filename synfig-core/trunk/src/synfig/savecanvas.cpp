@@ -184,6 +184,21 @@ xmlpp::Element* encode_bline_point(xmlpp::Element* root,BLinePoint bline_point)
 	return root;
 }
 
+xmlpp::Element* encode_bone(xmlpp::Element* root,Bone bone)
+{
+	root->set_name(ValueBase::type_name(ValueBase::TYPE_BONE));
+
+	encode_vector(root->add_child("origin"  )->add_child("vector"),bone.get_origin());
+	encode_vector(root->add_child("origin0" )->add_child("vector"),bone.get_origin0());
+	encode_angle (root->add_child("angle"   )->add_child("angle"), bone.get_angle());
+	encode_angle (root->add_child("angle0"  )->add_child("angle"), bone.get_angle0());
+	encode_real  (root->add_child("scale"   )->add_child("real"),  bone.get_scale());
+	encode_real  (root->add_child("length"  )->add_child("real"),  bone.get_length());
+	encode_real  (root->add_child("strength")->add_child("real"),  bone.get_strength());
+	encode_real  (root->add_child("parent"  )->add_child("bone"),  bone.get_parent());
+	return root;
+}
+
 xmlpp::Element* encode_gradient(xmlpp::Element* root,Gradient x)
 {
 	root->set_name("gradient");
@@ -241,6 +256,8 @@ xmlpp::Element* encode_value(xmlpp::Element* root,const ValueBase &data,Canvas::
 		return encode_segment(root,data.get(Segment()));
 	case ValueBase::TYPE_BLINEPOINT:
 		return encode_bline_point(root,data.get(BLinePoint()));
+	case ValueBase::TYPE_BONE:
+		return encode_bone(root,data.get(Bone()));
 	case ValueBase::TYPE_GRADIENT:
 		return encode_gradient(root,data.get(Gradient()));
 	case ValueBase::TYPE_LIST:
