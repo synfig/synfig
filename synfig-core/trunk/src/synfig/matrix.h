@@ -277,7 +277,7 @@ public:
 	String
 	get_string()
 	{
-		return strprintf("[%.4f %.4f %.4f][%.4f %.4f %.4f][%.4f %.4f %.4f]", m00, m01, m02, m10, m11, m12, m20, m21, m22);
+		return etl::strprintf("[%.4f %.4f %.4f][%.4f %.4f %.4f][%.4f %.4f %.4f]", m00, m01, m02, m10, m11, m12, m20, m21, m22);
 	}
 };
 
