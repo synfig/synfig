@@ -34,11 +34,11 @@
 #include <ETL/handle>
 
 /* === M A C R O S ========================================================= */
-#define COUT_BONE(bone)
-	cout<<"[name]="<<bone.name_<<endl;
-	cout<<"[origin]="<<bone.origin_<<"[origin0]="<<bone.origin0_<<endl;
-	cout<<"[angle]="<<bone.angle_<<"[angle0]="<<bone.angle0_<<endl;
-	cout<<"[scale]="<<bone.scale_<<"[length]="<<bone.length_<<endl;
+#define COUT_BONE(bone)													\
+	cout<<"[name]="<<bone.name_<<endl;									\
+	cout<<"[origin]="<<bone.origin_<<"[origin0]="<<bone.origin0_<<endl;	\
+	cout<<"[angle]="<<bone.angle_<<"[angle0]="<<bone.angle0_<<endl;		\
+	cout<<"[scale]="<<bone.scale_<<"[length]="<<bone.length_<<endl;		\
 	cout<<"[strength]="<<bone.strength_<<"[parent]="<<bone.parent_<<endl
 /* === T Y P E D E F S ===================================================== */
 
