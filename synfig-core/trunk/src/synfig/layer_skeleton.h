@@ -27,37 +27,27 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <synfig/layer_composite.h>
-#include <synfig/gradient.h>
-#include <synfig/vector.h>
-#include <synfig/value.h>
-#include <vector>
+#include "bone.h"
+#include "layer.h"
+// #include <synfig/value.h>
+// #include <vector>
 
 /* === M A C R O S ========================================================= */
 
 /* === T Y P E D E F S ===================================================== */
 
 /* === C L A S S E S & S T R U C T S ======================================= */
-class Layer_Skeleton : public synfig::Layer_Composite
+
+namespace synfig {
+
+class Layer_Skeleton : public Layer
 {
 	SYNFIG_LAYER_MODULE_EXT
-
 private:
 
-	synfig::Gradient gradient;
+	std::vector<synfig::Bone> bones;
 
-	std::vector<synfig::Point>	centers;
-	std::vector<synfig::Real>	radii;
-	std::vector<synfig::Real>	weights;
-
-	synfig::Real	threshold;
-	synfig::Real	threshold2;
-
-	bool positive;
-
-	synfig::Real densityfunc(const synfig::Point &p, const synfig::Point &c, synfig::Real R)const;
-
-	synfig::Real totaldensity(const synfig::Point &pos)const;
+	synfig::String name;
 
 public:
 
@@ -67,14 +57,13 @@ public:
 
 	virtual synfig::ValueBase get_param(const synfig::String & param)const;
 
-	virtual synfig::Color get_color(synfig::Context context, const synfig::Point &pos)const;
+	virtual Vocab get_param_vocab()const;
 
 	virtual bool accelerated_render(synfig::Context context,synfig::Surface *surface,int quality, const synfig::RendDesc &renddesc, synfig::ProgressCallback *cb)const;
 
-	virtual Vocab get_param_vocab()const;
-
-	virtual synfig::Layer::Handle hit_check(synfig::Context context, const synfig::Point &point)const;
 }; // END of class Layer_Skeleton
+
+}; // END of namespace synfig
 
 /* === E N D =============================================================== */
 
