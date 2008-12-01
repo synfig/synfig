@@ -186,7 +186,7 @@ synfig::ValueNode_Composite::operator()(Time t)const
 			ret.set_scale  	 ((*components[4])(t).get(Real()));
 			ret.set_length 	 ((*components[5])(t).get(Real()));
 			ret.set_strength ((*components[6])(t).get(Real()));
-//			ret.set_parent   ((*components[7])(t).get(Bone()));
+			ret.set_parent   ((*components[7])(t).get(Bone()));
 			return ret;
 		}
 		default:
