@@ -145,7 +145,13 @@ Bone::get_animated_matrix() const
 synfig::String
 Bone::get_string()
 {
-	return strprintf("N=%s O=%.4f O0=%.4f a=%.4f a0=%.4f s=%.4f l=%.4f S=%.4f P=%p", name_, origin_, origin0_, angle_, angle0_, scale_, length_, strength_, parent_);
+	return strprintf("N=%s O=(%.4f %.4f) O0=(%.4f %.4f) a=%.4f a0=%.4f s=%.4f l=%.4f S=%.4f P=%p",
+					 name_.c_str(),
+					 origin_[0], origin_[1],
+					 origin0_[0], origin0_[1],
+					 Angle::deg(angle_).get(),
+					 Angle::deg(angle0_).get(),
+					 scale_, length_, strength_, parent_);
 }
 /* === M E T H O D S ======================================================= */
 
