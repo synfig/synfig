@@ -45,12 +45,12 @@ WIDGET_HH = \
 	widget_canvaschooser.h	 widget_color.h	  widget_coloredit.h   widget_compselect.h   widget_curves.h		\
 	widget_defaults.h   widget_distance.h	widget_enum.h	widget_filename.h   widget_gradient.h			\
 	widget_sound.h	 widget_time.h	 widget_timeslider.h   widget_value.h	widget_vector.h	  widget_waypoint.h	\
-	widget_waypointmodel.h
+	widget_waypointmodel.h   widget_bonechooser.h
 WIDGET_CC = \
 	widget_canvaschooser.cpp widget_color.cpp widget_coloredit.cpp widget_compselect.cpp widget_curves.cpp		\
 	widget_defaults.cpp widget_distance.cpp widget_enum.cpp widget_filename.cpp widget_gradient.cpp			\
 	widget_sound.cpp widget_time.cpp widget_timeslider.cpp widget_value.cpp widget_vector.cpp widget_waypoint.cpp	\
-	widget_waypointmodel.cpp
+	widget_waypointmodel.cpp widget_bonechooser.cpp
 
 STATE_HH = \
 	state_bline.h	state_circle.h	 state_draw.h	state_eyedrop.h	  state_fill.h	 state_gradient.h		\
