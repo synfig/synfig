@@ -3,7 +3,7 @@
 MAINTAINERCLEANFILES=COPYING INSTALL synfig.pc synfig-$(VERSION).tar.gz doxygen.cfg config/config.guess config/config.sub config/ltmain.sh config/ltmain.sh.orig config/ltmain.sh.rej config/install-sh config/mkinstalldirs config/aclocal.m4 config/missing config/texinfo.tex config/depcomp aclocal.m4 config.h.in configure stamp-h.in Makefile.in config.log config.status .doc_stamp .DS_Store include/etl_profile.h.in libltdl/COPYING.LIB  libltdl/Makefile.in  libltdl/acinclude.m4  libltdl/config-h.in  libltdl/configure.in  libltdl/ltdl.h libltdl/Makefile.am  libltdl/README       libltdl/aclocal.m4    libltdl/configure    libltdl/ltdl.c        libltdl/stamp-h.in
 
 
-SUBDIRS=libltdl src examples po
+SUBDIRS=libltdl src examples po test
 
 # Install the pkg-config file:
 pkgconfigdir = $(libdir)/pkgconfig
