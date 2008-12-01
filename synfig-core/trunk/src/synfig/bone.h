@@ -137,6 +137,11 @@ public:
 	//!bone influence
 	Matrix get_animated_matrix() const;
 
+	//!Get the string of the Bone
+	//!@return String type. A string representation of the bone
+	//!components.
+	synfig::String get_string();
+
 }; // END of class Bone
 
 }; // END of namespace synfig
