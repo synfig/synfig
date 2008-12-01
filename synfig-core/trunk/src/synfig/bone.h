@@ -26,7 +26,7 @@
 #define __SYNFIG_BONE_H
 
 /* === H E A D E R S ======================================================= */
-
+#include <iostream>
 #include "matrix.h"
 #include "uniqueid.h"
 #include "string.h"
