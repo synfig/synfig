@@ -102,17 +102,17 @@ Bone::get_tip()
 //!coordinates calculates the local coordinates of
 //!the point relative to the current bone.
 Matrix
-Bone::get_setup_matrix()
+Bone::get_setup_matrix()const
 {
 	Matrix t,r,bparent;
 	t.set_translate((Vector)(-origin0_));
 	r.set_rotate(-angle0_);
 	bparent=t*r;
-	Bone *currparent=parent_;
-	clear_parent_tree();
+	Bone const *currparent=parent_;
+	// clear_parent_tree();
 	while (currparent)
 	{
-		parent_tree_.push_back(currparent);
+		// parent_tree_.push_back(currparent);
 		bparent*=currparent->get_setup_matrix();
 		currparent=currparent->parent_;
 	}
