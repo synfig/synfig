@@ -29,6 +29,7 @@
 
 #include "matrix.h"
 #include "uniqueid.h"
+#include "string.h"
 #include <vector>
 #include <ETL/handle>
 
@@ -54,6 +55,8 @@ public:
 	*/
 
 private:
+	//!This is the name of the bone
+	String name_;
 	//!This is the current origin of the bone relative to parent
 	Point origin_;
 	//!This is the origin of the bone at the setup time
@@ -77,7 +80,11 @@ public:
 	//!Constructor by origin and tip
 	Bone(const Point &origin, const Point &tip);
 	//!Construtor by origin, legth and parent (default no parent)
-	Bone(const Point &origin, const Angle &angle, const Real &length, const Real &strength, Bone* p=0);
+	Bone(const String &name, const Point &origin, const Angle &angle, const Real &length, const Real &strength, Bone* p=0);
+
+	//!Wrappers for name_
+	const String& get_name() {return name_;}
+	void set_name(const String &x) {name_=x;}
 
 	//!Wrappers for origin_ & origin0_
 	const Point& get_origin() {return origin_;}
