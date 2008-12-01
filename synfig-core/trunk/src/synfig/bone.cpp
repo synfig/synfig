@@ -109,10 +109,8 @@ Bone::get_setup_matrix()const
 	r.set_rotate(-angle0_);
 	bparent=t*r;
 	Bone const *currparent=parent_;
-	// clear_parent_tree();
 	while (currparent)
 	{
-		// parent_tree_.push_back(currparent);
 		bparent*=currparent->get_setup_matrix();
 		currparent=currparent->parent_;
 	}
@@ -126,17 +124,19 @@ Bone::get_setup_matrix()const
 //!animated position of the point due the current
 //!bone influence
 Matrix
-Bone::get_animated_matrix()
+Bone::get_animated_matrix() const
 {
-	std::vector<Bone*>::const_reverse_iterator iter;
 	Matrix s,r,t,banimated;
 	banimated.set_identity();
-	for(iter=parent_tree_.rbegin();iter!=parent_tree_.rend();iter--)
+	banimated*=s.set_scale(scale_)*r.set_rotate(angle_)*t.set_translate(origin_);
+	if(parent_)
 	{
-		if(*iter)
-			banimated*=s.set_scale((*iter)->scale_)*r.set_rotate((*iter)->angle_)*t.set_translate((*iter)->origin_);
+
+		return parent_->get_animated_matrix()*banimated;
 	}
-	return banimated;
+	else
+		return banimated;
+
 }
 
 /* === M E T H O D S ======================================================= */

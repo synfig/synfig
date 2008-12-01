@@ -71,8 +71,6 @@ private:
 	Real strength_;
 	//!The parent bone.
 	Bone const *parent_;
-	//!The geanological tree of parents
-	std::vector<Bone *> parent_tree_;
 public:
 	//!Default constructor
 	Bone();
@@ -125,10 +123,8 @@ public:
 	//!Transformation matrix) would obtain the
 	//!animated position of the point due the current
 	//!bone influence
-	Matrix get_animated_matrix();
+	Matrix get_animated_matrix() const;
 
-	//!Clear genealogical tree of parents
-	void clear_parent_tree() {parent_tree_.clear();}
 }; // END of class Bone
 
 }; // END of namespace synfig
