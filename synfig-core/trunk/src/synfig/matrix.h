@@ -31,6 +31,7 @@
 #include "angle.h"
 #include "real.h"
 #include "vector.h"
+#include "string.h"
 #include <math.h>
 #include <iostream>
 #include <ETL/stringf>
