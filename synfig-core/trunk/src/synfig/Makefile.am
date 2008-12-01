@@ -11,10 +11,10 @@ EXTRA_DIST = \
 
 LAYERHEADERS = \
 	layer_bitmap.h   layer_composite.h   layer_duplicate.h   layer_mime.h   layer_motionblur.h			\
-	layer_pastecanvas.h   layer_polygon.h   layer_shape.h   layer_solidcolor.h
+	layer_pastecanvas.h   layer_polygon.h   layer_shape.h   layer_solidcolor.h   layer_skeleton.h
 LAYERSOURCES = \
 	layer_bitmap.cpp layer_composite.cpp layer_duplicate.cpp layer_mime.cpp layer_motionblur.cpp			\
-	layer_pastecanvas.cpp layer_polygon.cpp layer_shape.cpp layer_solidcolor.cpp
+	layer_pastecanvas.cpp layer_polygon.cpp layer_shape.cpp layer_solidcolor.cpp layer_skeleton.cpp
 
 TARGETHEADERS = \
 	target_multi.h   target_null.h   target_null_tile.h   target_scanline.h   target_tile.h
