@@ -64,6 +64,7 @@
 
 namespace studio {
 
+class Widget_BoneChooser;
 class Widget_Color;
 class Widget_ColorEdit;
 class Widget_CanvasChooser;
@@ -88,6 +89,7 @@ class Widget_ValueBase : public Gtk::HBox
 
 	Gtk::CheckButton *bool_widget;
 	//Gtk::ColorSelection *color_widget;
+	Widget_BoneChooser *bone_widget;
 	Widget_ColorEdit *color_widget;
 	Widget_CanvasChooser *canvas_widget;
 	Widget_Enum *enum_widget;
