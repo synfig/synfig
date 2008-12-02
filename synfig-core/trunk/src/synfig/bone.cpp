@@ -168,7 +168,7 @@ Bone::get_string()const
 					 origin0_[0], origin0_[1],
 					 Angle::deg(angle_).get(),
 					 Angle::deg(angle0_).get(),
-					 scale_, length_, strength_, parent_.get_string().c_str());
+					 scale_, length_, strength_, parent_.get_string().substr(0,GUID_PREFIX_LEN).c_str());
 }
 
 bool
