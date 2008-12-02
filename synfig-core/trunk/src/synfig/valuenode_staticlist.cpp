@@ -109,6 +109,11 @@ ValueNode_StaticList::create_list_entry(int index, Time time, Real origin) // li
 		ret=ValueNode_Const::create((b-a)*origin+a);
 		break;
 	}
+	case ValueBase::TYPE_BONE:
+	{
+		ret=ValueNode_Bone::create(ValueBase::TYPE_BONE);
+		break;
+	}
 	default:
 		ret=ValueNode_Const::create(get_contained_type());
 		break;
