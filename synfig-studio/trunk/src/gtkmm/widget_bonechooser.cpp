@@ -53,7 +53,6 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
-#if 0
 Widget_BoneChooser::Widget_BoneChooser()
 {
 }
@@ -63,107 +62,60 @@ Widget_BoneChooser::~Widget_BoneChooser()
 }
 
 void
-Widget_BoneChooser::set_parent_bone(synfig::Bone::Handle x)
+Widget_BoneChooser::set_parent_canvas(synfig::Canvas::Handle x)
 {
 	assert(x);
-	parent_bone=x;
+	parent_canvas=x;
 }
 
 void
-Widget_BoneChooser::set_value_(synfig::Bone::Handle data)
+Widget_BoneChooser::set_value_(synfig::GUID data)
 {
 	set_value(data);
 	activate();
 }
 
 void
-Widget_BoneChooser::set_value(synfig::Bone::Handle data)
+Widget_BoneChooser::set_value(synfig::GUID data)
 {
-	assert(parent_bone);
+	assert(parent_canvas);
 	bone=data;
 
 	bone_menu=manage(new class Gtk::Menu());
 
-	synfig::Bone::Children::iterator iter;
-	synfig::Bone::Children &children(parent_bone->children());
+	synfig::ValueNode_Bone::BoneMap::const_iterator iter;
 	String label;
+	Time time(parent_canvas->get_time());
+	printf("the time is %s\n", time.get_string().c_str());
 
-	if(bone)
+	for(iter=synfig::ValueNode_Bone::map_begin(); iter!=synfig::ValueNode_Bone::map_end(); iter++)
 	{
-		label=bone->get_name().empty()?bone->get_id():bone->get_name();
-		bone_menu->items().push_back(Gtk::Menu_Helpers::MenuElem(label));
+		GUID guid(iter->first);
+		ValueNode_Bone::Handle bone(iter->second);
+		printf("%s:%d got bone %s : %s\n", __FILE__, __LINE__, guid.get_string().c_str(), (*bone)(time).get(Bone()).get_string().c_str());
+
+		// label=(*iter)->get_name().empty()?(*iter)->get_id():(*iter)->get_name();
+		// label=guid.get_string();
+		label=(*(bone->get_link("name")))(time).get(String());
+		if (label.empty()) label=guid.get_string();
+
+		bone_menu->items().push_back(
+			Gtk::Menu_Helpers::MenuElem(label,
+										sigc::bind(
+											sigc::mem_fun(
+												*this,
+												&Widget_BoneChooser::set_value_),
+											guid)));
 	}
 
-	for(iter=children.begin();iter!=children.end();iter++)
-		if(*iter!=bone)
-		{
-			label=(*iter)->get_name().empty()?(*iter)->get_id():(*iter)->get_name();
-			bone_menu->items().push_back(
-				Gtk::Menu_Helpers::MenuElem(
-					label,
-					sigc::bind(
-						sigc::mem_fun(
-							*this,
-							&Widget_BoneChooser::set_value_
-						),
-						*iter
-					)
-				)
-			);
-		}
-	bone_menu->items().push_back(
-		Gtk::Menu_Helpers::MenuElem(
-			_("Other..."),
-			sigc::mem_fun(*this,&Widget_BoneChooser::chooser_menu)
-		)
-	);
 	set_menu(*bone_menu);
 
 	if(bone)
 		set_history(0);
 }
 
-const etl::handle<synfig::Bone> &
+const GUID &
 Widget_BoneChooser::get_value()
 {
 	return bone;
 }
-
-void
-Widget_BoneChooser::chooser_menu()
-{
-	String bone_name;
-
-	if (!App::dialog_entry(_("Choose Bone"),_("Enter the relative name of the bone that you want"),bone_name))
-	{
-		// the user hit 'cancel', so set the parameter back to its previous value
-		set_value_(bone);
-		return;
-	}
-
-	if (bone_name == "")
-	{
-		App::dialog_error_blocking(_("Error"),_("No bone name was specified"));
-		set_value_(bone);
-		return;
-	}
-
-	Bone::Handle new_bone;
-	try
-	{
-		String warnings;
-		new_bone=parent_bone->find_bone(bone_name, warnings);
-		set_value_(new_bone);
-	}
-	catch(std::runtime_error x)
-	{
-		App::dialog_error_blocking(_("Error:Exception Thrown"),String(_("Error selecting bone:\n\n")) + x.what());
-		set_value_(bone);
-	}
-	catch(...)
-	{
-		App::dialog_error_blocking(_("Error"),_("Unknown Exception"));
-		set_value_(bone);
-	}
-}
-#endif
