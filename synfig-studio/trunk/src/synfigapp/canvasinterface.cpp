@@ -259,7 +259,7 @@ CanvasInterface::add_layer_to(synfig::String name, synfig::Canvas::Handle canvas
 							value_node=LinkableValueNode::create("bline",iter->second);
 							ValueNode_BLine::Handle::cast_dynamic(value_node)->set_member_canvas(canvas);
 						}
-						else
+						else if (type == ValueBase::TYPE_BONE)
 							value_node=LinkableValueNode::create("static_list",iter->second);
 					}
 				}
