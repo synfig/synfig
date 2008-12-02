@@ -68,8 +68,8 @@ Action::System::~System()
 bool
 Action::System::perform_action(etl::handle<Action::Base> action)
 {
-	//// debug actions
-	synfig::info("%s:%d perform_action: '%s'", __FILE__, __LINE__, action->get_name().c_str());
+	if (getenv("SYNFIG_DEBUG_ACTIONS"))
+		synfig::info("%s:%d perform_action: '%s'", __FILE__, __LINE__, action->get_name().c_str());
 
 	handle<UIInterface> uim(get_ui_interface());
 
