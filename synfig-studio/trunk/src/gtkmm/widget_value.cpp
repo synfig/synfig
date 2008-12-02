@@ -44,6 +44,7 @@
 #include "widget_filename.h"
 #include "widget_enum.h"
 #include "widget_coloredit.h"
+#include "widget_bonechooser.h"
 #include "widget_canvaschooser.h"
 #include "widget_time.h"
 #include "app.h"
@@ -108,6 +109,9 @@ Widget_ValueBase::Widget_ValueBase():
 	string_widget=manage(new class Gtk::Entry());
 	pack_start(*string_widget);
 
+	bone_widget=manage(new class Widget_BoneChooser());
+	pack_start(*bone_widget);
+
 	canvas_widget=manage(new class Widget_CanvasChooser());
 	pack_start(*canvas_widget);
 
@@ -128,6 +132,7 @@ Widget_ValueBase::Widget_ValueBase():
 	integer_widget->signal_activate().connect(sigc::mem_fun(*this,&Widget_ValueBase::activate));
 	angle_widget->signal_activate().connect(sigc::mem_fun(*this,&Widget_ValueBase::activate));
 	string_widget->signal_activate().connect(sigc::mem_fun(*this,&Widget_ValueBase::activate));
+	bone_widget->signal_activate().connect(sigc::mem_fun(*this,&Widget_ValueBase::activate));
 	canvas_widget->signal_activate().connect(sigc::mem_fun(*this,&Widget_ValueBase::activate));
 	filename_widget->signal_activate().connect(sigc::mem_fun(*this,&Widget_ValueBase::activate));
 	time_widget->signal_activate().connect(sigc::mem_fun(*this,&Widget_ValueBase::activate));
@@ -186,6 +191,7 @@ Widget_ValueBase::set_sensitive(bool x)
 	bool_widget->set_sensitive(x);
     color_widget->set_sensitive(x);
 	string_widget->set_sensitive(x);
+	bone_widget->set_sensitive(x);
 	canvas_widget->set_sensitive(x);
 	enum_widget->set_sensitive(x);
 	angle_widget->set_sensitive(x);
@@ -204,6 +210,7 @@ Widget_ValueBase::set_value(const synfig::ValueBase &data)
 	bool_widget->hide();
     color_widget->hide();
 	string_widget->hide();
+	bone_widget->hide();
 	canvas_widget->hide();
 	enum_widget->hide();
 	angle_widget->hide();
@@ -255,6 +262,12 @@ Widget_ValueBase::set_value(const synfig::ValueBase &data)
 			enum_widget->set_value(value.get(int()));
 			enum_widget->show();
 		}
+		break;
+	case ValueBase::TYPE_GUID:
+		assert(canvas);
+		bone_widget->set_parent_canvas(canvas);
+		bone_widget->set_value(value.get(GUID()));
+		bone_widget->show();
 		break;
 	case ValueBase::TYPE_CANVAS:
 		assert(canvas);
@@ -319,6 +332,9 @@ Widget_ValueBase::get_value()
 		break;
 	case ValueBase::TYPE_ANGLE:
 		value=Angle::deg(angle_widget->get_value());
+		break;
+	case ValueBase::TYPE_GUID:
+		value=bone_widget->get_value();
 		break;
 	case ValueBase::TYPE_CANVAS:
 		value=canvas_widget->get_value();
@@ -391,6 +407,9 @@ Widget_ValueBase::on_grab_focus()
 	case ValueBase::TYPE_ANGLE:
 		angle_widget->grab_focus();
 		break;
+	case ValueBase::TYPE_GUID:
+		bone_widget->grab_focus();
+		break;
 	case ValueBase::TYPE_CANVAS:
 		canvas_widget->grab_focus();
 		break;
@@ -449,6 +468,9 @@ Widget_ValueBase::signal_activate()
 		break;
 	case ValueBase::TYPE_ANGLE:
 		return angle_widget->signal_activate();
+		break;
+	case ValueBase::TYPE_GUID:
+		return bone_widget->signal_activate();
 		break;
 	case ValueBase::TYPE_CANVAS:
 		return canvas_widget->signal_activate();
