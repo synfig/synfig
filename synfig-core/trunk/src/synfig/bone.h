@@ -30,6 +30,7 @@
 #include "matrix.h"
 #include "uniqueid.h"
 #include "string.h"
+#include "guid.h"
 #include <vector>
 #include <ETL/handle>
 
@@ -78,41 +79,40 @@ private:
 	//!This is the strength at setup time
 	Real strength_;
 	//!The parent bone.
-	Bone const *parent_;
+	GUID parent_;
 public:
 	//!Default constructor
 	Bone();
 	//!Constructor by origin and tip
 	Bone(const Point &origin, const Point &tip);
 	//!Construtor by origin, legth and parent (default no parent)
-	Bone(const String &name, const Point &origin, const Angle &angle, const Real &length, const Real &strength, Bone* p=0);
-
+	Bone(const String &name, const Point &origin, const Angle &angle, const Real &length, const Real &strength, GUID p=0);
 	//!Wrappers for name_
-	const String& get_name() {return name_;}
+	const String& get_name()const {return name_;}
 	void set_name(const String &x) {name_=x;}
 
 	//!Wrappers for origin_ & origin0_
-	const Point& get_origin() {return origin_;}
+	const Point& get_origin()const {return origin_;}
 	void set_origin(const Point &x) {origin_=x;}
-	const Point& get_origin0() {return origin0_;}
+	const Point& get_origin0()const {return origin0_;}
 	void set_origin0(const Point &x) {origin0_=x;}
 
 	//!Wrappers for angle_ & angle0_
-	const Angle& get_angle() {return angle_;}
+	const Angle& get_angle()const {return angle_;}
 	void set_angle(const Angle &x) {angle_=x;}
-	const Angle& get_angle0() {return angle0_;}
+	const Angle& get_angle0()const {return angle0_;}
 	void set_angle0(const Angle &x) {angle0_=x;}
 
 	//!Wrapper for scale
-	const Real& get_scale() {return scale_;}
+	const Real& get_scale()const {return scale_;}
 	void set_scale(const Real &x) {scale_=x;}
 
 	//!Wrapper for length. Notice that a length of 0 is not allowed.
-	const Real& get_length() {return length_;}
+	const Real& get_length()const {return length_;}
 	void set_length(const Real &x) {length_=x<0.00001?0.00001:x;}
 
 	//!Wrapper for strength
-	const Real& get_strength() {return strength_;}
+	const Real& get_strength()const {return strength_;}
 	void set_strength(const Real &x) {strength_=x;}
 
 	//!This gets the calculated tip of the bone based on
@@ -120,9 +120,12 @@ public:
 	Point get_tip();
 
 	//!Wrapper for parent bone
-	const Bone &get_parent() {return *parent_;}
-	void set_parent(const Bone &p) {parent_=&(p);}
-	bool has_parent() {return parent_;}
+	// const Bone &get_parent() {return *parent_;}
+	GUID get_parent()const;
+	void set_parent(const GUID g);
+
+	void add_bone_to_map();
+	Bone* find_bone_in_map(int uid);
 
 	//!Setup Transformation matrix.
 	//!This matrix applied to a setup point in global
@@ -141,7 +144,9 @@ public:
 	//!Get the string of the Bone
 	//!@return String type. A string representation of the bone
 	//!components.
-	synfig::String get_string();
+	synfig::String get_string()const;
+
+	bool is_root();
 
 }; // END of class Bone
 
