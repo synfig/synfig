@@ -47,6 +47,7 @@ using namespace synfig;
 /* === G L O B A L S ======================================================= */
 
 static map<GUID, ValueNode_Bone::Handle> bone_map;
+static int bone_counter;
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -71,7 +72,7 @@ ValueNode_Bone::ValueNode_Bone(const ValueBase &value):
 	{
 		printf("%s:%d vvv ValueNode_Bone constructor vvv\n", __FILE__, __LINE__);
 		Bone bone(value.get(Bone()));
-		set_link("name",ValueNode_Const::create(bone.get_name()));
+		set_link("name",ValueNode_Const::create(bone.get_name().empty() ? strprintf(_("Bone %d"), ++bone_counter) : bone.get_name()));
 		set_link("origin",ValueNode_Const::create(bone.get_origin()));
 		set_link("origin0",ValueNode_Const::create(bone.get_origin0()));
 		set_link("angle",ValueNode_Const::create(bone.get_angle()));
