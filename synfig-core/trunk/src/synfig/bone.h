@@ -35,6 +35,9 @@
 #include <ETL/handle>
 
 /* === M A C R O S ========================================================= */
+// how many hex digits of the guid string to show in debug messages
+#define GUID_PREFIX_LEN 6
+
 #define COUT_BONE(bone)													\
 	cout<<"[name]="<<bone.name_<<endl;									\
 	cout<<"[origin]="<<bone.origin_<<"[origin0]="<<bone.origin0_<<endl;	\
