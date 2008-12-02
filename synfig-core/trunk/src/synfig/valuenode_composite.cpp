@@ -38,7 +38,6 @@
 #include "vector.h"
 #include "color.h"
 #include "segment.h"
-#include "bone.h"
 #include "savecanvas.h"
 
 #endif
@@ -87,19 +86,6 @@ synfig::ValueNode_Composite::ValueNode_Composite(const ValueBase &value):
 			set_link(3,ValueNode_Const::create(bline_point.get_split_tangent_flag()));
 			set_link(4,ValueNode_RadialComposite::create(bline_point.get_tangent1()));
 			set_link(5,ValueNode_RadialComposite::create(bline_point.get_tangent2()));
-			break;
-		}
-		case ValueBase::TYPE_BONE:
-		{
-			Bone bone(value.get(Bone()));
-			set_link(0,ValueNode_Const::create(bone.get_origin()));
-			set_link(1,ValueNode_Const::create(bone.get_origin0()));
-			set_link(2,ValueNode_Const::create(bone.get_angle()));
-			set_link(3,ValueNode_Const::create(bone.get_angle0()));
-			set_link(4,ValueNode_Const::create(bone.get_scale()));
-			set_link(5,ValueNode_Const::create(bone.get_length()));
-			set_link(6,ValueNode_Const::create(bone.get_strength()));
-			set_link(7,ValueNode_Const::create(bone.get_parent()));
 			break;
 		}
 		default:
@@ -174,21 +160,6 @@ synfig::ValueNode_Composite::operator()(Time t)const
 				ret.set_tangent2((*components[5])(t).get(Vector()));
 			return ret;
 		}
-		case ValueBase::TYPE_BONE:
-		{
-			Bone ret;
-			assert(components[0] && components[1] && components[2] && components[3] &&
-				   components[4] && components[5] && components[6] && components[7]);
-			ret.set_origin 	 ((*components[0])(t).get(Point()));
-			ret.set_origin0	 ((*components[1])(t).get(Point()));
-			ret.set_angle  	 ((*components[2])(t).get(Angle()));
-			ret.set_angle0 	 ((*components[3])(t).get(Angle()));
-			ret.set_scale  	 ((*components[4])(t).get(Real()));
-			ret.set_length 	 ((*components[5])(t).get(Real()));
-			ret.set_strength ((*components[6])(t).get(Real()));
-			ret.set_parent   ((*components[7])(t).get(Bone()));
-			return ret;
-		}
 		default:
 			synfig::error(string("ValueNode_Composite::operator():")+_("Bad type for composite"));
 			assert(components[0]);
@@ -209,8 +180,6 @@ ValueNode_Composite::link_count()const
 		return 4;
 	case ValueBase::TYPE_BLINEPOINT:
 		return 6;
-	case ValueBase::TYPE_BONE:
-		return 8;
 	default:
 		synfig::warning(string("ValueNode_Composite::component_count():")+_("Bad type for composite"));
 		return 1;
@@ -266,29 +235,6 @@ ValueNode_Composite::set_link_vfunc(int i,ValueNode::Handle x)
 				return true;
 			}
 			if(i==3 && x->get_type()==ValueBase(bool()).get_type())
-			{
-				components[i]=x;
-				return true;
-			}
-			break;
-
-		case ValueBase::TYPE_BONE:
-			if((i==0 || i==1) && x->get_type()==ValueBase(Point()).get_type())
-			{
-				components[i]=x;
-				return true;
-			}
-			if((i==2 || i==3) && x->get_type()==ValueBase(Angle()).get_type())
-			{
-				components[i]=x;
-				return true;
-			}
-			if((i==4 || i==5 || i==6) && x->get_type()==ValueBase(Real()).get_type())
-			{
-				components[i]=x;
-				return true;
-			}
-			if((i==7) && x->get_type()==ValueBase(Bone()).get_type())
 			{
 				components[i]=x;
 				return true;
@@ -353,16 +299,6 @@ ValueNode_Composite::link_local_name(int i)const
 			else if(i==5)
 				return _("Tangent 2");
 
-		case ValueBase::TYPE_BONE:
-			if(i==0)			return _("Origin");
-			else if(i==1)		return _("Origin0");
-			else if(i==2)		return _("Angle");
-			else if(i==3)		return _("Angle0");
-			else if(i==4)		return _("Scale");
-			else if(i==5)		return _("Length");
-			else if(i==6)		return _("Strength");
-			else if(i==7)		return _("Parent");
-
 		default:
 			assert(0);
 			// notice that Composite counts from 1 and Radial Composite counts
@@ -417,19 +353,6 @@ ValueNode_Composite::link_name(int i)const
 		case 3: return "split";
 		case 4: return "t1";
 		case 5: return "t2";
-		}
-		break;
-	case ValueBase::TYPE_BONE:
-		switch(i)
-		{
-		case 0: return "origin";
-		case 1: return "origin0";
-		case 2: return "angle";
-		case 3: return "angle0";
-		case 4: return "scale";
-		case 5: return "length";
-		case 6: return "strength";
-		case 7: return "parent";
 		}
 		break;
 	default:
@@ -492,15 +415,6 @@ ValueNode_Composite::get_link_index_from_name(const String &name)const
 			return 4;
 		if(name=="t2")
 			return 5;
-	case ValueBase::TYPE_BONE:
-		if(name=="origin")			return 0;
-		if(name=="origin0")			return 1;
-		if(name=="angle")			return 2;
-		if(name=="angle0")			return 3;
-		if(name=="scale")			return 4;
-		if(name=="length")			return 5;
-		if(name=="strength")		return 6;
-		if(name=="parent")			return 7;
 	default:
 		break;
 	}
@@ -527,6 +441,5 @@ ValueNode_Composite::check_type(ValueBase::Type type)
 		type==ValueBase::TYPE_SEGMENT ||
 		type==ValueBase::TYPE_VECTOR ||
 		type==ValueBase::TYPE_COLOR ||
-		type==ValueBase::TYPE_BLINEPOINT ||
-		type==ValueBase::TYPE_BONE;
+		type==ValueBase::TYPE_BLINEPOINT;
 }
