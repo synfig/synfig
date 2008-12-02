@@ -30,7 +30,6 @@
 #include <synfigapp/action.h>
 #include <synfig/activepoint.h>
 #include <synfig/valuenode_staticlist.h>
-#include <synfig/valuenode_bline.h>
 
 /* === M A C R O S ========================================================= */
 

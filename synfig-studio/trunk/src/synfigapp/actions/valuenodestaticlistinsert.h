@@ -30,7 +30,6 @@
 #include <synfigapp/action.h>
 #include <synfig/activepoint.h>
 #include <synfig/valuenode_staticlist.h>
-#include <synfig/valuenode_bline.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -51,7 +50,6 @@ class ValueNodeStaticListInsert :
 private:
 
 	synfig::ValueNode_StaticList::Handle value_node;
-	synfig::ValueNode_BLine::Handle value_node_bline;
 	synfig::ValueNode_StaticList::ListEntry list_entry;
 	synfig::ValueNode::Handle item;
 	synfig::Time time;
