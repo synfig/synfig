@@ -33,6 +33,7 @@
 #include "valuenode_staticlist.h"
 #include "valuenode_const.h"
 #include "valuenode_composite.h"
+#include "valuenode_bone.h"
 #include "general.h"
 #include "exception.h"
 #include <vector>
@@ -195,7 +196,8 @@ ValueNode_StaticList::create_from(const ValueBase &value) // line 568
 	if(value_list.empty())
 		return 0;
 
-	ValueNode_StaticList* value_node(new ValueNode_StaticList(value_list.front().get_type()));
+	ValueBase::Type type(value.get_contained_type());
+	ValueNode_StaticList* value_node(new ValueNode_StaticList(type));
 
 	// when creating a list of vectors, start it off being looped.
 	// I think the only time this is used if for creating polygons,
@@ -205,8 +207,16 @@ ValueNode_StaticList::create_from(const ValueBase &value) // line 568
 
 	for(iter=value_list.begin();iter!=value_list.end();++iter)
 	{
-		ValueNode::Handle item(ValueNode_Const::create(*iter));
-		value_node->add(item);
+		if (type == ValueBase::TYPE_BONE)
+		{
+			ValueNode::Handle item(ValueNode_Bone::create(*iter));
+			value_node->add(item);
+		}
+		else
+		{
+			ValueNode::Handle item(ValueNode_Const::create(*iter));
+			value_node->add(item);
+		}
 	}
 	return value_node;
 }
