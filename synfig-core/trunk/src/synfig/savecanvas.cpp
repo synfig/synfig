@@ -188,6 +188,7 @@ xmlpp::Element* encode_bone(xmlpp::Element* root,Bone bone)
 {
 	root->set_name(ValueBase::type_name(ValueBase::TYPE_BONE));
 
+	encode_string(root->add_child("name"    )->add_child("string"),bone.get_name());
 	encode_vector(root->add_child("origin"  )->add_child("vector"),bone.get_origin());
 	encode_vector(root->add_child("origin0" )->add_child("vector"),bone.get_origin0());
 	encode_angle (root->add_child("angle"   )->add_child("angle"), bone.get_angle());
