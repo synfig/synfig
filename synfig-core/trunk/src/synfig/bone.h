@@ -122,6 +122,7 @@ public:
 	//!Wrapper for parent bone
 	const Bone &get_parent() {return *parent_;}
 	void set_parent(const Bone &p) {parent_=&(p);}
+	bool has_parent() {return parent_;}
 
 	//!Setup Transformation matrix.
 	//!This matrix applied to a setup point in global
