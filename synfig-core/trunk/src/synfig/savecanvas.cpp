@@ -195,7 +195,8 @@ xmlpp::Element* encode_bone(xmlpp::Element* root,Bone bone)
 	encode_real  (root->add_child("scale"   )->add_child("real"),  bone.get_scale());
 	encode_real  (root->add_child("length"  )->add_child("real"),  bone.get_length());
 	encode_real  (root->add_child("strength")->add_child("real"),  bone.get_strength());
-	encode_real  (root->add_child("parent"  )->add_child("bone"),  bone.get_parent());
+	if (bone.has_parent())
+		encode_bone  (root->add_child("parent"  )->add_child("bone"),  bone.get_parent());
 	return root;
 }
 
