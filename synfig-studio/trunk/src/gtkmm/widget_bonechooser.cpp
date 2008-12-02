@@ -86,13 +86,11 @@ Widget_BoneChooser::set_value(synfig::GUID data)
 	synfig::ValueNode_Bone::BoneMap::const_iterator iter;
 	String label;
 	Time time(parent_canvas->get_time());
-	printf("the time is %s\n", time.get_string().c_str());
 
 	for(iter=synfig::ValueNode_Bone::map_begin(); iter!=synfig::ValueNode_Bone::map_end(); iter++)
 	{
 		GUID guid(iter->first);
 		ValueNode_Bone::Handle bone(iter->second);
-		printf("%s:%d got bone %s : %s\n", __FILE__, __LINE__, guid.get_string().c_str(), (*bone)(time).get(Bone()).get_string().c_str());
 
 		// label=(*iter)->get_name().empty()?(*iter)->get_id():(*iter)->get_name();
 		// label=guid.get_string();
@@ -107,6 +105,14 @@ Widget_BoneChooser::set_value(synfig::GUID data)
 												&Widget_BoneChooser::set_value_),
 											guid)));
 	}
+
+	bone_menu->items().push_back(
+		Gtk::Menu_Helpers::MenuElem(_("<None>"),
+										sigc::bind(
+											sigc::mem_fun(
+												*this,
+												&Widget_BoneChooser::set_value_),
+											0)));
 
 	set_menu(*bone_menu);
 
