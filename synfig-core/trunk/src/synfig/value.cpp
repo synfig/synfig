@@ -300,7 +300,7 @@ ValueBase::type_name(Type id)
 		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
 	case TYPE_GRADIENT:		return N_("gradient");
 		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
-	case TYPE_BONE:			return N_("bone");
+	case TYPE_BONE:			return N_("bone_object");
 		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
 	case TYPE_NIL:			return N_("nil");
 	default:
@@ -344,7 +344,7 @@ ValueBase::ident_type(const String &str)
 	else if(str=="list")		return TYPE_LIST;
 	else if(str=="segment")		return TYPE_SEGMENT;
 	else if(str=="gradient")	return TYPE_GRADIENT;
-	else if(str=="bone")		return TYPE_BONE;
+	else if(str=="bone_object")	return TYPE_BONE;
 	else if(str=="guid")		return TYPE_GUID;
 	else if(str=="bline_point" ||
 			str=="blinepoint")	return TYPE_BLINEPOINT;
