@@ -798,6 +798,159 @@ CanvasParser::parse_bline_point(xmlpp::Element *element)
 	return ret;
 }
 
+Bone
+CanvasParser::parse_bone(xmlpp::Element *element)
+{
+	assert(element->get_name()=="bone");
+	if(element->get_children().empty())
+	{
+		error(element, "Undefined value in <bone>");
+		return Bone();
+	}
+
+	Bone ret;
+#if 0
+	ret.set_split_tangent_flag(false);
+
+	xmlpp::Element::NodeList list = element->get_children();
+	for(xmlpp::Element::NodeList::iterator iter = list.begin(); iter != list.end(); ++iter)
+	{
+		xmlpp::Element *child(dynamic_cast<xmlpp::Element*>(*iter));
+		if(!child)
+			continue;
+		else
+		// Vertex
+		if(child->get_name()[0]=='v' || child->get_name()=="p1")
+		{
+			xmlpp::Element::NodeList list = child->get_children();
+			xmlpp::Element::NodeList::iterator iter;
+
+			// Search for the first non-text XML element
+			for(iter = list.begin(); iter != list.end(); ++iter)
+				if(dynamic_cast<xmlpp::Element*>(*iter)) break;
+
+			if(iter==list.end())
+			{
+				error(element, "Undefined value in <vertex>");
+				continue;
+			}
+
+			if((*iter)->get_name()!="vector")
+			{
+				error_unexpected_element((*iter),(*iter)->get_name(),"vector");
+				continue;
+			}
+
+			ret.set_vertex(parse_vector(dynamic_cast<xmlpp::Element*>(*iter)));
+		}
+		else
+		// Tangent 1
+		if(child->get_name()=="t1" || child->get_name()=="tangent")
+		{
+			xmlpp::Element::NodeList list = child->get_children();
+			xmlpp::Element::NodeList::iterator iter;
+
+			// Search for the first non-text XML element
+			for(iter = list.begin(); iter != list.end(); ++iter)
+				if(dynamic_cast<xmlpp::Element*>(*iter)) break;
+
+			if(iter==list.end())
+			{
+				error(element, "Undefined value in <t1>");
+				continue;
+			}
+
+			if((*iter)->get_name()!="vector")
+			{
+				error_unexpected_element((*iter),(*iter)->get_name(),"vector");
+				continue;
+			}
+
+			ret.set_tangent1(parse_vector(dynamic_cast<xmlpp::Element*>(*iter)));
+		}
+		else
+		// Tangent 2
+		if(child->get_name()=="t2")
+		{
+			xmlpp::Element::NodeList list = child->get_children();
+			xmlpp::Element::NodeList::iterator iter;
+
+			// Search for the first non-text XML element
+			for(iter = list.begin(); iter != list.end(); ++iter)
+				if(dynamic_cast<xmlpp::Element*>(*iter)) break;
+
+			if(iter==list.end())
+			{
+				error(element, "Undefined value in <t2>");
+				continue;
+			}
+
+			if((*iter)->get_name()!="vector")
+			{
+				error_unexpected_element((*iter),(*iter)->get_name(),"vector");
+				continue;
+			}
+
+			ret.set_tangent2(parse_vector(dynamic_cast<xmlpp::Element*>(*iter)));
+			ret.set_split_tangent_flag(true);
+		}
+		else
+		// width
+		if(child->get_name()=="width")
+		{
+			xmlpp::Element::NodeList list = child->get_children();
+			xmlpp::Element::NodeList::iterator iter;
+
+			// Search for the first non-text XML element
+			for(iter = list.begin(); iter != list.end(); ++iter)
+				if(dynamic_cast<xmlpp::Element*>(*iter)) break;
+
+			if(iter==list.end())
+			{
+				error(element, "Undefined value in <width>");
+				continue;
+			}
+
+			if((*iter)->get_name()!="real")
+			{
+				error_unexpected_element((*iter),(*iter)->get_name(),"real");
+				continue;
+			}
+
+			ret.set_width(parse_real(dynamic_cast<xmlpp::Element*>(*iter)));
+		}
+		else
+		// origin
+		if(child->get_name()=="origin")
+		{
+			xmlpp::Element::NodeList list = child->get_children();
+			xmlpp::Element::NodeList::iterator iter;
+
+			// Search for the first non-text XML element
+			for(iter = list.begin(); iter != list.end(); ++iter)
+				if(dynamic_cast<xmlpp::Element*>(*iter)) break;
+
+			if(iter==list.end())
+			{
+				error(element, "Undefined value in <origin>");
+				continue;
+			}
+
+			if((*iter)->get_name()!="real")
+			{
+				error_unexpected_element((*iter),(*iter)->get_name(),"real");
+				continue;
+			}
+
+			ret.set_origin(parse_real(dynamic_cast<xmlpp::Element*>(*iter)));
+		}
+		else
+			error_unexpected_element(child,child->get_name());
+	}
+#endif
+	return ret;
+}
+
 Angle
 CanvasParser::parse_angle(xmlpp::Element *element)
 {
@@ -858,6 +1011,9 @@ CanvasParser::parse_value(xmlpp::Element *element,Canvas::Handle canvas)
 	else
 	if(element->get_name()=="bline_point")
 		return parse_bline_point(element);
+	else
+	if(element->get_name()=="bone")
+		return parse_bone(element);
 	else
 	if(element->get_name()=="canvas")
 		return ValueBase(parse_canvas(element,canvas,true));
