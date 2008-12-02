@@ -70,7 +70,6 @@ ValueNode_Bone::ValueNode_Bone(const ValueBase &value):
 	{
 	case ValueBase::TYPE_BONE:
 	{
-		printf("%s:%d vvv ValueNode_Bone constructor vvv\n", __FILE__, __LINE__);
 		Bone bone(value.get(Bone()));
 		set_link("name",ValueNode_Const::create(bone.get_name().empty() ? strprintf(_("Bone %d"), ++bone_counter) : bone.get_name()));
 		set_link("origin",ValueNode_Const::create(bone.get_origin()));
@@ -80,13 +79,11 @@ ValueNode_Bone::ValueNode_Bone(const ValueBase &value):
 		set_link("scale",ValueNode_Const::create(bone.get_scale()));
 		set_link("length",ValueNode_Const::create(bone.get_length()));
 		set_link("strength",ValueNode_Const::create(bone.get_strength()));
-		printf("%s:%d set_link parent in ValueNode_Bone constructor\n", __FILE__, __LINE__);
 		set_link("parent",ValueNode_Const::create(bone.get_parent()));
 
 		bone_map[get_guid()] = this;
 		show_bone_map();
 
-		printf("%s:%d ^^^ ValueNode_Bone constructor ^^^\n", __FILE__, __LINE__);
 		break;
 	}
 	default:
@@ -117,7 +114,6 @@ ValueBase
 ValueNode_Bone::operator()(Time t)const
 {
 	Bone ret;
-//	printf("%s:%d vvv Bone op() vvv\n", __FILE__, __LINE__);
 	ret.set_name		((*name_	)(t).get(String()));
 	ret.set_origin		((*origin_	)(t).get(Point()));
 	ret.set_origin0		((*origin0_	)(t).get(Point()));
@@ -126,9 +122,7 @@ ValueNode_Bone::operator()(Time t)const
 	ret.set_scale		((*scale_	)(t).get(Real()));
 	ret.set_length		((*length_	)(t).get(Real()));
 	ret.set_strength	((*strength_)(t).get(Real()));
-//	printf("%s:%d set_parent in ValueNode_Bone operator()\n", __FILE__, __LINE__);
 	ret.set_parent		((*parent_	)(t).get(GUID()));
-//	printf("%s:%d ^^^ Bone op() ^^^\n", __FILE__, __LINE__);
 
 	return ret;
 }
