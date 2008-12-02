@@ -399,7 +399,7 @@ Super::perform()
 	for(iter=action_list_.begin();iter!=action_list_.end();++iter)
 	{
 		//// debug actions
-		// synfig::info("%s:%d action: '%s'", __FILE__, __LINE__, (*iter)->get_name().c_str());
+		synfig::info("%s:%d action: '%s'", __FILE__, __LINE__, (*iter)->get_name().c_str());
 		try
 		{
 			try
