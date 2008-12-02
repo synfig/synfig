@@ -298,6 +298,25 @@ CanvasParser::parse_integer(xmlpp::Element *element)
 	return atoi(val.c_str());
 }
 
+GUID
+CanvasParser::parse_guid(xmlpp::Element *element)
+{
+	assert(element->get_name()=="guid");
+
+	if(!element->get_children().empty())
+		warning(element, strprintf(_("<%s> should not contain anything"),"guid"));
+
+	if(!element->get_attribute("value"))
+	{
+		error(element,strprintf(_("<%s> is missing \"value\" attribute"),"guid"));
+		return false;
+	}
+
+	string val=element->get_attribute("value")->get_value();
+
+	return GUID(val);
+}
+
 // see 'minor hack' at the end of parse_vector() below
 // making this 'static' to give it file local scope
 // stops it working (where working means working around
@@ -809,8 +828,6 @@ CanvasParser::parse_bone(xmlpp::Element *element)
 	}
 
 	Bone ret;
-#if 0
-	ret.set_split_tangent_flag(false);
 
 	xmlpp::Element::NodeList list = element->get_children();
 	for(xmlpp::Element::NodeList::iterator iter = list.begin(); iter != list.end(); ++iter)
@@ -819,8 +836,8 @@ CanvasParser::parse_bone(xmlpp::Element *element)
 		if(!child)
 			continue;
 		else
-		// Vertex
-		if(child->get_name()[0]=='v' || child->get_name()=="p1")
+		// Name
+		if(child->get_name() == "name")
 		{
 			xmlpp::Element::NodeList list = child->get_children();
 			xmlpp::Element::NodeList::iterator iter;
@@ -831,96 +848,20 @@ CanvasParser::parse_bone(xmlpp::Element *element)
 
 			if(iter==list.end())
 			{
-				error(element, "Undefined value in <vertex>");
+				error(element, "Undefined value in <name>");
 				continue;
 			}
 
-			if((*iter)->get_name()!="vector")
+			if((*iter)->get_name()!="string")
 			{
-				error_unexpected_element((*iter),(*iter)->get_name(),"vector");
+				error_unexpected_element((*iter),(*iter)->get_name(),"string");
 				continue;
 			}
 
-			ret.set_vertex(parse_vector(dynamic_cast<xmlpp::Element*>(*iter)));
+			ret.set_name(parse_string(dynamic_cast<xmlpp::Element*>(*iter)));
 		}
 		else
-		// Tangent 1
-		if(child->get_name()=="t1" || child->get_name()=="tangent")
-		{
-			xmlpp::Element::NodeList list = child->get_children();
-			xmlpp::Element::NodeList::iterator iter;
-
-			// Search for the first non-text XML element
-			for(iter = list.begin(); iter != list.end(); ++iter)
-				if(dynamic_cast<xmlpp::Element*>(*iter)) break;
-
-			if(iter==list.end())
-			{
-				error(element, "Undefined value in <t1>");
-				continue;
-			}
-
-			if((*iter)->get_name()!="vector")
-			{
-				error_unexpected_element((*iter),(*iter)->get_name(),"vector");
-				continue;
-			}
-
-			ret.set_tangent1(parse_vector(dynamic_cast<xmlpp::Element*>(*iter)));
-		}
-		else
-		// Tangent 2
-		if(child->get_name()=="t2")
-		{
-			xmlpp::Element::NodeList list = child->get_children();
-			xmlpp::Element::NodeList::iterator iter;
-
-			// Search for the first non-text XML element
-			for(iter = list.begin(); iter != list.end(); ++iter)
-				if(dynamic_cast<xmlpp::Element*>(*iter)) break;
-
-			if(iter==list.end())
-			{
-				error(element, "Undefined value in <t2>");
-				continue;
-			}
-
-			if((*iter)->get_name()!="vector")
-			{
-				error_unexpected_element((*iter),(*iter)->get_name(),"vector");
-				continue;
-			}
-
-			ret.set_tangent2(parse_vector(dynamic_cast<xmlpp::Element*>(*iter)));
-			ret.set_split_tangent_flag(true);
-		}
-		else
-		// width
-		if(child->get_name()=="width")
-		{
-			xmlpp::Element::NodeList list = child->get_children();
-			xmlpp::Element::NodeList::iterator iter;
-
-			// Search for the first non-text XML element
-			for(iter = list.begin(); iter != list.end(); ++iter)
-				if(dynamic_cast<xmlpp::Element*>(*iter)) break;
-
-			if(iter==list.end())
-			{
-				error(element, "Undefined value in <width>");
-				continue;
-			}
-
-			if((*iter)->get_name()!="real")
-			{
-				error_unexpected_element((*iter),(*iter)->get_name(),"real");
-				continue;
-			}
-
-			ret.set_width(parse_real(dynamic_cast<xmlpp::Element*>(*iter)));
-		}
-		else
-		// origin
+		// Origin
 		if(child->get_name()=="origin")
 		{
 			xmlpp::Element::NodeList list = child->get_children();
@@ -936,18 +877,193 @@ CanvasParser::parse_bone(xmlpp::Element *element)
 				continue;
 			}
 
+			if((*iter)->get_name()!="vector")
+			{
+				error_unexpected_element((*iter),(*iter)->get_name(),"vector");
+				continue;
+			}
+
+			ret.set_origin(parse_vector(dynamic_cast<xmlpp::Element*>(*iter)));
+		}
+		else
+		// Origin0
+		if(child->get_name()=="origin0")
+		{
+			xmlpp::Element::NodeList list = child->get_children();
+			xmlpp::Element::NodeList::iterator iter;
+
+			// Search for the first non-text XML element
+			for(iter = list.begin(); iter != list.end(); ++iter)
+				if(dynamic_cast<xmlpp::Element*>(*iter)) break;
+
+			if(iter==list.end())
+			{
+				error(element, "Undefined value in <origin0>");
+				continue;
+			}
+
+			if((*iter)->get_name()!="vector")
+			{
+				error_unexpected_element((*iter),(*iter)->get_name(),"vector");
+				continue;
+			}
+
+			ret.set_origin0(parse_vector(dynamic_cast<xmlpp::Element*>(*iter)));
+		}
+		else
+		// Angle
+		if(child->get_name()=="angle")
+		{
+			xmlpp::Element::NodeList list = child->get_children();
+			xmlpp::Element::NodeList::iterator iter;
+
+			// Search for the first non-text XML element
+			for(iter = list.begin(); iter != list.end(); ++iter)
+				if(dynamic_cast<xmlpp::Element*>(*iter)) break;
+
+			if(iter==list.end())
+			{
+				error(element, "Undefined value in <angle>");
+				continue;
+			}
+
+			if((*iter)->get_name()!="angle")
+			{
+				error_unexpected_element((*iter),(*iter)->get_name(),"angle");
+				continue;
+			}
+
+			ret.set_angle(parse_angle(dynamic_cast<xmlpp::Element*>(*iter)));
+		}
+		else
+		// Angle0
+		if(child->get_name()=="angle0")
+		{
+			xmlpp::Element::NodeList list = child->get_children();
+			xmlpp::Element::NodeList::iterator iter;
+
+			// Search for the first non-text XML element
+			for(iter = list.begin(); iter != list.end(); ++iter)
+				if(dynamic_cast<xmlpp::Element*>(*iter)) break;
+
+			if(iter==list.end())
+			{
+				error(element, "Undefined value in <angle0>");
+				continue;
+			}
+
+			if((*iter)->get_name()!="angle")
+			{
+				error_unexpected_element((*iter),(*iter)->get_name(),"angle");
+				continue;
+			}
+
+			ret.set_angle0(parse_angle(dynamic_cast<xmlpp::Element*>(*iter)));
+		}
+		else
+		// Scale
+		if(child->get_name()=="scale")
+		{
+			xmlpp::Element::NodeList list = child->get_children();
+			xmlpp::Element::NodeList::iterator iter;
+
+			// Search for the first non-text XML element
+			for(iter = list.begin(); iter != list.end(); ++iter)
+				if(dynamic_cast<xmlpp::Element*>(*iter)) break;
+
+			if(iter==list.end())
+			{
+				error(element, "Undefined value in <scale>");
+				continue;
+			}
+
 			if((*iter)->get_name()!="real")
 			{
 				error_unexpected_element((*iter),(*iter)->get_name(),"real");
 				continue;
 			}
 
-			ret.set_origin(parse_real(dynamic_cast<xmlpp::Element*>(*iter)));
+			ret.set_scale(parse_real(dynamic_cast<xmlpp::Element*>(*iter)));
+		}
+		else
+		// Length
+		if(child->get_name()=="length")
+		{
+			xmlpp::Element::NodeList list = child->get_children();
+			xmlpp::Element::NodeList::iterator iter;
+
+			// Search for the first non-text XML element
+			for(iter = list.begin(); iter != list.end(); ++iter)
+				if(dynamic_cast<xmlpp::Element*>(*iter)) break;
+
+			if(iter==list.end())
+			{
+				error(element, "Undefined value in <length>");
+				continue;
+			}
+
+			if((*iter)->get_name()!="real")
+			{
+				error_unexpected_element((*iter),(*iter)->get_name(),"real");
+				continue;
+			}
+
+			ret.set_length(parse_real(dynamic_cast<xmlpp::Element*>(*iter)));
+		}
+		else
+		// Strength
+		if(child->get_name()=="strength")
+		{
+			xmlpp::Element::NodeList list = child->get_children();
+			xmlpp::Element::NodeList::iterator iter;
+
+			// Search for the first non-text XML element
+			for(iter = list.begin(); iter != list.end(); ++iter)
+				if(dynamic_cast<xmlpp::Element*>(*iter)) break;
+
+			if(iter==list.end())
+			{
+				error(element, "Undefined value in <strength>");
+				continue;
+			}
+
+			if((*iter)->get_name()!="real")
+			{
+				error_unexpected_element((*iter),(*iter)->get_name(),"real");
+				continue;
+			}
+
+			ret.set_strength(parse_real(dynamic_cast<xmlpp::Element*>(*iter)));
+		}
+		else
+		// Parent
+		if(child->get_name()=="parent")
+		{
+			xmlpp::Element::NodeList list = child->get_children();
+			xmlpp::Element::NodeList::iterator iter;
+
+			// Search for the first non-text XML element
+			for(iter = list.begin(); iter != list.end(); ++iter)
+				if(dynamic_cast<xmlpp::Element*>(*iter)) break;
+
+			if(iter==list.end())
+			{
+				error(element, "Undefined value in <origin>");
+				continue;
+			}
+
+			if((*iter)->get_name()!="guid")
+			{
+				error_unexpected_element((*iter),(*iter)->get_name(),"guid");
+				continue;
+			}
+
+			ret.set_parent(parse_guid(dynamic_cast<xmlpp::Element*>(*iter)));
 		}
 		else
 			error_unexpected_element(child,child->get_name());
 	}
-#endif
+
 	return ret;
 }
 
@@ -1011,6 +1127,9 @@ CanvasParser::parse_value(xmlpp::Element *element,Canvas::Handle canvas)
 	else
 	if(element->get_name()=="bline_point")
 		return parse_bline_point(element);
+	else
+	if(element->get_name()=="guid")
+		return parse_guid(element);
 	else
 	if(element->get_name()=="bone")
 		return parse_bone(element);

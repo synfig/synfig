@@ -48,6 +48,7 @@
 #include "valuenode_segcalctangent.h"
 #include "valuenode_segcalcvertex.h"
 #include "valuenode_bline.h"
+#include "valuenode_bone.h"
 #include "time.h"
 #include "keyframe.h"
 #include "layer.h"
@@ -184,10 +185,20 @@ xmlpp::Element* encode_bline_point(xmlpp::Element* root,BLinePoint bline_point)
 	return root;
 }
 
+xmlpp::Element* encode_guid(xmlpp::Element* root,GUID guid)
+{
+	printf("%s:%d encode_guid (%s)\n", __FILE__, __LINE__, guid.get_string().c_str());
+	root->set_name(ValueBase::type_name(ValueBase::TYPE_GUID));
+	root->set_attribute("value",guid.get_string());
+	return root;
+}
+
 xmlpp::Element* encode_bone(xmlpp::Element* root,Bone bone)
 {
 	root->set_name(ValueBase::type_name(ValueBase::TYPE_BONE));
 
+	printf("%s:%d encode bone\n", __FILE__, __LINE__);
+	encode_integer(root->add_child("uid"    )->add_child("integer"),bone.get_uid());
 	encode_string(root->add_child("name"    )->add_child("string"),bone.get_name());
 	encode_vector(root->add_child("origin"  )->add_child("vector"),bone.get_origin());
 	encode_vector(root->add_child("origin0" )->add_child("vector"),bone.get_origin0());
@@ -196,8 +207,9 @@ xmlpp::Element* encode_bone(xmlpp::Element* root,Bone bone)
 	encode_real  (root->add_child("scale"   )->add_child("real"),  bone.get_scale());
 	encode_real  (root->add_child("length"  )->add_child("real"),  bone.get_length());
 	encode_real  (root->add_child("strength")->add_child("real"),  bone.get_strength());
-	if (bone.has_parent())
-		encode_bone  (root->add_child("parent"  )->add_child("bone"),  bone.get_parent());
+	encode_guid  (root->add_child("parent"  )->add_child("integer"),  bone.get_parent());
+
+	printf("%s:%d return at end\n", __FILE__, __LINE__);
 	return root;
 }
 
@@ -233,6 +245,7 @@ xmlpp::Element* encode_list(xmlpp::Element* root,std::list<ValueBase> list, Canv
 
 xmlpp::Element* encode_value(xmlpp::Element* root,const ValueBase &data,Canvas::ConstHandle canvas)
 {
+	printf("%s:%d encode_value (type %s)\n", __FILE__, __LINE__, ValueBase::type_name(data.get_type()).c_str());
 	switch(data.get_type())
 	{
 	case ValueBase::TYPE_REAL:
@@ -260,6 +273,8 @@ xmlpp::Element* encode_value(xmlpp::Element* root,const ValueBase &data,Canvas::
 		return encode_bline_point(root,data.get(BLinePoint()));
 	case ValueBase::TYPE_BONE:
 		return encode_bone(root,data.get(Bone()));
+	case ValueBase::TYPE_GUID:
+		return encode_guid(root,data.get(GUID()));
 	case ValueBase::TYPE_GRADIENT:
 		return encode_gradient(root,data.get(Gradient()));
 	case ValueBase::TYPE_LIST:
@@ -536,6 +551,7 @@ xmlpp::Element* encode_linkable_value_node(xmlpp::Element* root,LinkableValueNod
 	int i;
 	for(i=0;i<value_node->link_count();i++)
 	{
+		printf("saving link %d : %s\n", i, value_node->link_local_name(i).c_str());
 		ValueNode::ConstHandle link=value_node->get_link(i).constant();
 		if(!link)
 			throw runtime_error("Bad link");
@@ -581,7 +597,9 @@ xmlpp::Element* encode_value_node(xmlpp::Element* root,ValueNode::ConstHandle va
 	if(!value_node->get_id().empty())
 		root->set_attribute("id",value_node->get_id());
 
-	if(value_node->rcount()>1)
+	if(ValueNode_Bone::ConstHandle::cast_dynamic(value_node))
+		root->set_attribute("guid",value_node->get_guid().get_string());
+	else if(value_node->rcount()>1)
 		root->set_attribute("guid",(value_node->get_guid()^canvas->get_root()->get_guid()).get_string());
 
 	return root;
