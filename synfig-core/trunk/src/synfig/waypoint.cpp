@@ -59,6 +59,7 @@ Waypoint::Waypoint(ValueBase value, Time time):
 	bias(0),
 	time_tension(0.0f)
 {
+	printf("%s:%d new waypoint\n", __FILE__, __LINE__);
 	if(value.get_type()==ValueBase::TYPE_ANGLE)
 		after=before=INTERPOLATION_LINEAR;
 }
@@ -74,6 +75,7 @@ Waypoint::Waypoint(etl::handle<ValueNode> value_node, Time time):
 	bias(0),
 	time_tension(0.0f)
 {
+	printf("%s:%d new waypoint\n", __FILE__, __LINE__);
 	if(value_node->get_type()==ValueBase::TYPE_ANGLE)
 		after=before=INTERPOLATION_LINEAR;
 }
@@ -87,6 +89,7 @@ Waypoint::Waypoint():
 	bias(0),
 	time_tension(0.0f)
 {
+	printf("%s:%d new waypoint\n", __FILE__, __LINE__);
 }
 
 void
