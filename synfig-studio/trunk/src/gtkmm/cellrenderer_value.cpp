@@ -49,6 +49,7 @@
 
 #include "cellrenderer_gradient.h"
 #include "cellrenderer_value.h"
+#include <synfig/valuenode_bone.h>
 
 #include "widget_gradient.h"
 #include "dialog_gradient.h"
@@ -453,6 +454,22 @@ CellRenderer_ValueBase::render_vfunc(
 	case ValueBase::TYPE_BONE:
 		property_text()=(Glib::ustring)_("Bone");
 		break;
+	case ValueBase::TYPE_GUID:
+	{
+		GUID guid(data.get(GUID()));
+		String name(_("No Parent"));
+		if (guid)
+		{
+			ValueNode_Bone::Handle bone_node(ValueNode_Bone::find(guid));
+			assert(bone_node);
+			name = (*(bone_node->get_link("name")))(get_canvas()->get_time()).get(String());
+			if (name.empty())
+				name = guid.get_string();
+		}
+
+		property_text()=(Glib::ustring)(name);
+		break;
+	}
 	default:
 		property_text()=static_cast<Glib::ustring>(_("UNKNOWN"));
 		break;
