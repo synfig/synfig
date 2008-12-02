@@ -64,13 +64,6 @@
 
 namespace studio {
 
-class Widget_Color;
-class Widget_CanvasChooser;
-class Widget_Enum;
-class Widget_Filename;
-class Widget_Vector;
-class Widget_Time;
-
 class ValueBase_Entry;
 
 class CellRenderer_ValueBase : public Gtk::CellRendererText
