@@ -278,6 +278,15 @@ ValueNode_StaticList::link_local_name(int i)const // line 657
 {
 	assert(i>=0 && i<link_count());
 
+#if 1
+	// try showing the bone name in the list instead of "Item 001" - it works, but doesn't update when the bone name changes
+	if (get_contained_type() == ValueBase::TYPE_BONE && get_parent_canvas())
+	{
+		String name((*list[i])(get_parent_canvas()->get_time()).get(Bone()).get_name());
+		if (!name.empty()) return name;
+	}
+#endif
+
 	return etl::strprintf(_("Item %03d"),i+1);
 }
 
