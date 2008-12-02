@@ -27,7 +27,8 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <synfig/bone.h>
+#include <synfig/canvas.h>
+#include <synfig/valuenode_bone.h>
 #include <gtkmm/optionmenu.h>
 
 
@@ -44,20 +45,19 @@ namespace studio {
 class Widget_BoneChooser : public Gtk::OptionMenu
 {
 	Gtk::Menu *bone_menu;
-	synfig::Bone::Handle parent_bone;
+	synfig::Canvas::Handle parent_canvas;
 
-	synfig::Bone::Handle bone;
-	void set_value_(synfig::Bone::Handle data);
+	synfig::GUID bone;
+	void set_value_(synfig::GUID data);
 public:
 
 	Widget_BoneChooser();
 	~Widget_BoneChooser();
 
-	void set_parent_bone(synfig::Bone::Handle x);
-	void set_value(synfig::Bone::Handle data);
-	const synfig::Bone::Handle &get_value();
-private:
-	void chooser_menu();
+	void set_parent_canvas(synfig::Canvas::Handle x);
+	void set_value(synfig::GUID data);
+	const synfig::GUID &get_value();
+
 }; // END of class Widget_BoneChooser
 
 }; // END of namespace studio
