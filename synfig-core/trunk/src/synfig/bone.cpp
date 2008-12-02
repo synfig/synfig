@@ -45,8 +45,6 @@ using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
-static int bone_counter;
-
 /* === P R O C E D U R E S ================================================= */
 
 //! Default constructor
@@ -60,7 +58,6 @@ Bone::Bone():
 	strength_(1.0),
 	parent_(0)
 {
-	set_name(strprintf(_("Bone %d"), ++bone_counter));
 }
 
 //!Constructor by origin and tip
