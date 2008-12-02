@@ -78,6 +78,7 @@ ValueBase::ValueBase(Type x):
 	case TYPE_COLOR:		data=static_cast<void*>(new Color());				break;
 	case TYPE_SEGMENT:		data=static_cast<void*>(new Segment());				break;
 	case TYPE_BLINEPOINT:	data=static_cast<void*>(new BLinePoint());			break;
+	case TYPE_GUID:			data=static_cast<void*>(new GUID());				break;
 	case TYPE_LIST:			data=static_cast<void*>(new list_type());			break;
 	case TYPE_STRING:		data=static_cast<void*>(new String());				break;
 	case TYPE_GRADIENT:		data=static_cast<void*>(new Gradient());			break;
@@ -120,6 +121,7 @@ ValueBase::get_string() const
 	case TYPE_COLOR:		return strprintf("Color (%s)", get(Color()).get_string().c_str());
 	case TYPE_SEGMENT:		return strprintf("Segment ((%f, %f) to (%f, %f))", get(Segment()).p1[0], get(Segment()).p1[1], get(Segment()).p2[0], get(Segment()).p2[1]);
 	case TYPE_BLINEPOINT:	return strprintf("BLinePoint (%s)", get(BLinePoint()).get_vertex()[0], get(BLinePoint()).get_vertex()[1]);
+	case TYPE_GUID:			return strprintf("GUID (%s)", get(GUID()).get_string().c_str());
 
 		// All types after this point require construction/destruction
 
@@ -238,6 +240,7 @@ ValueBase::clear()
 		case TYPE_COLOR:		delete static_cast<Color*>(data);		break;
 		case TYPE_SEGMENT:		delete static_cast<Segment*>(data);		break;
 		case TYPE_BLINEPOINT:	delete static_cast<BLinePoint*>(data);	break;
+		case TYPE_GUID:			delete static_cast<GUID*>(data);		break;
 		case TYPE_LIST:			delete static_cast<list_type*>(data);	break;
 		case TYPE_CANVAS:
 		{
@@ -287,6 +290,8 @@ ValueBase::type_name(Type id)
 		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
 	case TYPE_BLINEPOINT:	return N_("bline_point");
 		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
+	case TYPE_GUID:			return N_("guid");
+		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
 	case TYPE_LIST:			return N_("list");
 		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
 	case TYPE_CANVAS:		return N_("canvas");
@@ -301,7 +306,7 @@ ValueBase::type_name(Type id)
 	default:
 		break;
 	}
-	synfig::warning("Encountered unknown ValueBase with an Type of %d",id);
+	synfig::warning("Encountered unknown ValueBase with a Type of %d",id);
 //	assert(0);
 	return "UNKNOWN";
 }
@@ -340,6 +345,7 @@ ValueBase::ident_type(const String &str)
 	else if(str=="segment")		return TYPE_SEGMENT;
 	else if(str=="gradient")	return TYPE_GRADIENT;
 	else if(str=="bone")		return TYPE_BONE;
+	else if(str=="guid")		return TYPE_GUID;
 	else if(str=="bline_point" ||
 			str=="blinepoint")	return TYPE_BLINEPOINT;
 
@@ -366,6 +372,7 @@ ValueBase::operator==(const ValueBase& rhs)const
 	case TYPE_STRING:		   return get(String())==rhs.get(String());
 	case TYPE_CANVAS:		   return get(Canvas::LooseHandle())==rhs.get(Canvas::LooseHandle());
 	case TYPE_LIST:			   return get_list()==rhs.get_list();
+	case TYPE_GUID:			   return get(GUID())==rhs.get(GUID());
 	case TYPE_SEGMENT:		// return get(Segment())==rhs.get(Segment());
 	case TYPE_GRADIENT:		// return get(Gradient())==rhs.get(Gradient());
 	case TYPE_BONE:			// return get(Bone())==rhs.get(Bone());
