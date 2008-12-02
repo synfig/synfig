@@ -69,6 +69,7 @@ class Gradient;
 class BLinePoint;
 class Color;
 class Bone;
+class GUID;
 
 /*!	\class ValueBase
 **	\todo writeme
@@ -101,6 +102,7 @@ public:
 		TYPE_COLOR,			//!< Color
 		TYPE_SEGMENT,		//!< Segment
 		TYPE_BLINEPOINT,	//!< BLinePoint
+		TYPE_GUID,			//!< GUID
 
 		// All types after this point require construction/destruction
 
@@ -304,6 +306,7 @@ public:
 	static Type get_type(const Color&) { return TYPE_COLOR; }
 	static Type get_type(const Segment&) { return TYPE_SEGMENT; }
 	static Type get_type(const BLinePoint&) { return TYPE_BLINEPOINT; }
+	static Type get_type(const GUID&) { return TYPE_GUID; }
 	static Type get_type(const String&) { return TYPE_STRING; }
 	static Type get_type(const Gradient&) { return TYPE_GRADIENT; }
 	static Type get_type(const Bone&) { return TYPE_BONE; }
