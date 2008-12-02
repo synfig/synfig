@@ -57,7 +57,7 @@ show_bone_map()
 	printf("we now have %d bones:\n", int(bone_map.size()));
 	map<GUID, ValueNode_Bone::Handle>::iterator iter;
 	for (iter = bone_map.begin(); iter != bone_map.end(); iter++)
-		printf("%s : %s\n", iter->first.get_string().c_str(), (*(iter->second))(0).get(Bone()).get_string().substr(0,GUID_PREFIX_LEN).c_str());
+		printf("%s : %s\n", iter->first.get_string().substr(0,GUID_PREFIX_LEN).c_str(), (*(iter->second))(0).get(Bone()).get_string().c_str());
 	printf("\n");
 }
 
