@@ -127,11 +127,23 @@ ValueNode_StaticList::add(const ValueNode::Handle &value_node, int index) // lin
 {
 	if(index<0 || index>=(int)list.size())
 	{
+		if (getenv("SYNFIG_DEBUG_BONE_REFCOUNT"))
+			printf("%s:%d vvv adding valuenode to end of static list\n", __FILE__, __LINE__);
+
 		list.push_back(value_node);
+
+		if (getenv("SYNFIG_DEBUG_BONE_REFCOUNT"))
+			printf("%s:%d ^^^ done adding valuenode\n", __FILE__, __LINE__);
 	}
 	else
 	{
+		if (getenv("SYNFIG_DEBUG_BONE_REFCOUNT"))
+			printf("%s:%d vvv inserting valuenode into static list at %d\n", __FILE__, __LINE__, index);
+
 		list.insert(list.begin()+index,value_node);
+
+		if (getenv("SYNFIG_DEBUG_BONE_REFCOUNT"))
+			printf("%s:%d ^^^ done inserting valuenode\n", __FILE__, __LINE__);
 	}
 
 	add_child(value_node.get());
