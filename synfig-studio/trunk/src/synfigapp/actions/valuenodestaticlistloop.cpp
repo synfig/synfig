@@ -90,10 +90,13 @@ Action::ValueNodeStaticListLoop::is_candidate(const ParamList &x)
 	else
 		value_node = x.find("value_node")->second.get_value_node();
 
-	// We need a static list.
-	return (ValueNode_StaticList::Handle::cast_dynamic(value_node) &&
-			// We need the list not to be looped.
-			!ValueNode_StaticList::Handle::cast_dynamic(value_node)->get_loop());
+	ValueNode_StaticList::Handle static_list;
+	// We need a static list
+	return ((static_list = ValueNode_StaticList::Handle::cast_dynamic(value_node)) &&
+			// We need the list not to be a list of bones
+			static_list->get_contained_type() != ValueBase::TYPE_BONE &&
+			// We need the list not to be looped
+			!static_list->get_loop());
 }
 
 bool
