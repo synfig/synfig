@@ -264,44 +264,27 @@ ValueBase::clear()
 	type=TYPE_NIL;
 }
 
-
 String
 ValueBase::type_name(Type id)
 {
-	// don't internationalize these type names - they're using in .sif files
+	// don't internationalize these type names - they're used in .sif files
 	switch(id)
 	{
-		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
 	case TYPE_BOOL:			return N_("bool");
-		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
 	case TYPE_INTEGER:		return N_("integer");
-		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
 	case TYPE_ANGLE:		return N_("angle");
-		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
 	case TYPE_TIME:			return N_("time");
-		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
 	case TYPE_REAL:			return N_("real");
-		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
 	case TYPE_VECTOR:		return N_("vector");
-		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
 	case TYPE_COLOR:		return N_("color");
-		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
 	case TYPE_SEGMENT:		return N_("segment");
-		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
 	case TYPE_BLINEPOINT:	return N_("bline_point");
-		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
 	case TYPE_GUID:			return N_("guid");
-		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
 	case TYPE_LIST:			return N_("list");
-		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
 	case TYPE_CANVAS:		return N_("canvas");
-		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
 	case TYPE_STRING:		return N_("string");
-		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
 	case TYPE_GRADIENT:		return N_("gradient");
-		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
 	case TYPE_BONE:			return N_("bone_object");
-		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
 	case TYPE_NIL:			return N_("nil");
 	default:
 		break;
@@ -314,7 +297,47 @@ ValueBase::type_name(Type id)
 String
 ValueBase::type_local_name(Type id)
 {
-	return dgettext("synfig",type_name(id).c_str());
+	// don't internationalize these type names - they're using in .sif files
+	switch(id)
+	{
+		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
+	case TYPE_BOOL:			return _("Bool");
+		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
+	case TYPE_INTEGER:		return _("Integer");
+		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
+	case TYPE_ANGLE:		return _("Angle");
+		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
+	case TYPE_TIME:			return _("Time");
+		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
+	case TYPE_REAL:			return _("Real");
+		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
+	case TYPE_VECTOR:		return _("Vector");
+		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
+	case TYPE_COLOR:		return _("Color");
+		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
+	case TYPE_SEGMENT:		return _("Segment");
+		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
+	case TYPE_BLINEPOINT:	return _("Bline Point");
+		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
+	case TYPE_GUID:			return _("Guid");
+		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
+	case TYPE_LIST:			return _("List");
+		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
+	case TYPE_CANVAS:		return _("Canvas");
+		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
+	case TYPE_STRING:		return _("String");
+		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
+	case TYPE_GRADIENT:		return _("Gradient");
+		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
+	case TYPE_BONE:			return _("Bone Object");
+		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
+	case TYPE_NIL:			return _("Nil");
+	default:
+		break;
+	}
+	synfig::warning("Encountered unknown ValueBase with a Type of %d",id);
+//	assert(0);
+	return _("UNKNOWN");
 }
 
 ValueBase::Type
