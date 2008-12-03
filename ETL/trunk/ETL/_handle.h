@@ -342,10 +342,10 @@ protected:
 	rshared_object():rrefcount(0),front_(0),back_(0) { }
 
 public:
-	void rref()const
+	virtual void rref()const
 		{ rrefcount++; }
 
-	void runref()const
+	virtual void runref()const
 	{
 		assert(rrefcount>0);
 		rrefcount--;
