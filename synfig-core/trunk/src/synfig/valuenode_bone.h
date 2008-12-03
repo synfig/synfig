@@ -84,6 +84,12 @@ public:
 	static BoneMap::const_iterator map_begin();
 	static BoneMap::const_iterator map_end();
 	static ValueNode_Bone::Handle find(GUID guid);
+
+#ifdef _DEBUG
+	virtual void rref()const;
+	virtual void runref()const;
+#endif
+
 }; // END of class ValueNode_Bone
 
 }; // END of namespace synfig
