@@ -229,6 +229,9 @@ ValueNode_StaticList::create_from(const ValueBase &value) // line 568
 ValueBase
 ValueNode_StaticList::operator()(Time t)const // line 596
 {
+	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
+		printf("%s:%d operator()\n", __FILE__, __LINE__);
+
 	std::vector<ValueBase> ret_list;
 	std::vector<ListEntry>::const_iterator iter;
 

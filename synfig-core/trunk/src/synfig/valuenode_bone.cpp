@@ -113,6 +113,9 @@ ValueNode_Bone::~ValueNode_Bone()
 ValueBase
 ValueNode_Bone::operator()(Time t)const
 {
+	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
+		printf("%s:%d operator()\n", __FILE__, __LINE__);
+
 	Bone ret;
 	ret.set_name		((*name_	)(t).get(String()));
 	ret.set_origin		((*origin_	)(t).get(Point()));

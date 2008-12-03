@@ -140,6 +140,9 @@ ValueNode_BoneInfluence::get_link_index_from_name(const String &name)const
 ValueBase
 ValueNode_BoneInfluence::operator()(Time t)const
 {
+	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
+		printf("%s:%d operator()\n", __FILE__, __LINE__);
+
 	return (*link_)(t);
 }
 
