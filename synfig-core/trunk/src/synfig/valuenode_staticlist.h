@@ -52,7 +52,8 @@ class ValueNode_StaticList : public LinkableValueNode
 public:
 	typedef etl::handle<ValueNode_StaticList> Handle;
 	typedef etl::handle<const ValueNode_StaticList> ConstHandle;
-	typedef ValueNode::RHandle ListEntry;
+	typedef ValueNode::Handle ListEntry;
+	typedef ValueNode::RHandle ReplaceableListEntry;
 
 protected:
 	ValueNode_StaticList(ValueBase::Type container_type=ValueBase::TYPE_NIL);
@@ -62,7 +63,7 @@ protected:
 	bool loop_;
 
 public:
-	std::vector<ListEntry> list;
+	std::vector<ReplaceableListEntry> list;
 
 public:
 
