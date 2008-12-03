@@ -509,6 +509,7 @@ CellRenderer_ValueBase::start_editing_vfunc(
 	const Gdk::Rectangle& cell_area __attribute__ ((unused)),
 	Gtk::CellRendererState flags __attribute__ ((unused)))
 {
+	edit_value_done_called = false;
 	// If we aren't editable, then there is nothing to do
 	if(!property_editable())
 		return 0;
@@ -581,6 +582,14 @@ CellRenderer_ValueBase::start_editing_vfunc(
 void
 CellRenderer_ValueBase::on_value_editing_done()
 {
+	if (edit_value_done_called)
+	{
+		synfig::error("on_value_editing_done(): Called twice!");
+		return;
+	}
+
+	edit_value_done_called = true;
+
 	if(value_entry)
 	{
 		ValueBase old_value(property_value_.get_value());

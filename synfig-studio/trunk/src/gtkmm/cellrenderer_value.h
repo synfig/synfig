@@ -87,6 +87,7 @@ class CellRenderer_ValueBase : public Gtk::CellRendererText
 	void gradient_edited(synfig::Gradient gradient, Glib::ustring path);
 	void color_edited(synfig::Color color, Glib::ustring path);
 
+	bool edit_value_done_called;
 public:
 	sigc::signal<void, const Glib::ustring&> &signal_secondary_click()
 	{return signal_secondary_click_; }
