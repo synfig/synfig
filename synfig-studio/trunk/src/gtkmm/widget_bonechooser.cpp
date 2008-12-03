@@ -90,11 +90,11 @@ Widget_BoneChooser::set_value(synfig::GUID data)
 	for(iter=synfig::ValueNode_Bone::map_begin(); iter!=synfig::ValueNode_Bone::map_end(); iter++)
 	{
 		GUID guid(iter->first);
-		ValueNode_Bone::Handle bone(iter->second);
+		ValueNode_Bone::Handle bone_value_node(iter->second);
 
 		// label=(*iter)->get_name().empty()?(*iter)->get_id():(*iter)->get_name();
 		// label=guid.get_string();
-		label=(*(bone->get_link("name")))(time).get(String());
+		label=(*(bone_value_node->get_link("name")))(time).get(String());
 		if (label.empty()) label=guid.get_string();
 
 		bone_menu->items().push_back(
