@@ -61,7 +61,7 @@
 # define DCAST_HACK_ENABLE()
 #endif
 
-#define CHECK_TYPE_AND_SET_VALUE(variable, type)						\
+#define VALUENODE_CHECK_TYPE(variable, type)							\
 	/* I don't think this ever happens - maybe remove this code? */		\
 	if (get_type() == ValueBase::TYPE_NIL) {							\
 		warning("%s:%d get_type() IS nil sometimes!",					\
@@ -77,11 +77,17 @@
 			  ValueBase::type_local_name(type).c_str(),					\
 			  ValueBase::type_local_name(value->get_type()).c_str());	\
 		return false;													\
-	}																	\
+	}
+
+#define VALUENODE_SET_VALUE(variable, type)								\
 	variable = value;													\
 	signal_child_changed()(i);											\
 	signal_value_changed()();											\
 	return true
+
+#define CHECK_TYPE_AND_SET_VALUE(variable, type)						\
+	VALUENODE_CHECK_TYPE(variable, type)								\
+	VALUENODE_SET_VALUE(variable, type)
 
 /* === T Y P E D E F S ===================================================== */
 
