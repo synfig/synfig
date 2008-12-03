@@ -1207,7 +1207,7 @@ edit_several_waypoints(etl::handle<CanvasView> canvas_view, std::list<synfigapp:
 
 			if(!action)
 			{
-				canvas_view->get_ui_interface()->error(_("Unable to find waypoint_set_smart action"));
+				canvas_view->get_ui_interface()->error(_("Unable to find WaypointSetSmart action"));
 				group.cancel();
 				return;
 			}

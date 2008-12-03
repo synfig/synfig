@@ -177,7 +177,7 @@ Action::ValueDescSet::prepare()
 			Action::Handle action(Action::create("ValueDescSet"));
 
 			if(!action)
-				throw Error(_("Unable to find action value_desc_set (bug)"));
+				throw Error(_("Unable to find action ValueDescSet (bug)"));
 
 			action->set_param("canvas",get_canvas());
 			action->set_param("canvas_interface",get_canvas_interface());
@@ -202,7 +202,7 @@ Action::ValueDescSet::prepare()
 		Action::Handle action(Action::create("ValueDescSet"));
 
 		if(!action)
-			throw Error(_("Unable to find action value_desc_set (bug)"));
+			throw Error(_("Unable to find action ValueDescSet (bug)"));
 
 		action->set_param("canvas",get_canvas());
 		action->set_param("canvas_interface",get_canvas_interface());
@@ -270,7 +270,7 @@ Action::ValueDescSet::prepare()
 			Action::Handle action(Action::create("ValueDescSet"));
 
 			if(!action)
-				throw Error(_("Unable to find action value_desc_set (bug)"));
+				throw Error(_("Unable to find action ValueDescSet (bug)"));
 
 			action->set_param("canvas",get_canvas());
 			action->set_param("canvas_interface",get_canvas_interface());
@@ -328,7 +328,7 @@ Action::ValueDescSet::prepare()
 			Action::Handle action(Action::create("ValueDescSet"));
 
 			if(!action)
-				throw Error(_("Unable to find action value_desc_set (bug)"));
+				throw Error(_("Unable to find action ValueDescSet (bug)"));
 
 			action->set_param("canvas",get_canvas());
 			action->set_param("canvas_interface",get_canvas_interface());
@@ -365,7 +365,7 @@ Action::ValueDescSet::prepare()
 			Action::Handle action(Action::create("ValueDescSet"));
 
 			if(!action)
-				throw Error(_("Unable to find action value_desc_set (bug)"));
+				throw Error(_("Unable to find action ValueDescSet (bug)"));
 
 			action->set_param("canvas",get_canvas());
 			action->set_param("canvas_interface",get_canvas_interface());
@@ -390,7 +390,7 @@ Action::ValueDescSet::prepare()
 				Action::Handle action(Action::create("ValueDescSet"));
 
 				if(!action)
-					throw Error(_("Unable to find action value_desc_set (bug)"));
+					throw Error(_("Unable to find action ValueDescSet (bug)"));
 
 				action->set_param("canvas",get_canvas());
 				action->set_param("canvas_interface",get_canvas_interface());
@@ -408,7 +408,7 @@ Action::ValueDescSet::prepare()
 				Action::Handle action(Action::create("ValueDescSet"));
 
 				if(!action)
-					throw Error(_("Unable to find action value_desc_set (bug)"));
+					throw Error(_("Unable to find action ValueDescSet (bug)"));
 
 				action->set_param("canvas",get_canvas());
 				action->set_param("canvas_interface",get_canvas_interface());

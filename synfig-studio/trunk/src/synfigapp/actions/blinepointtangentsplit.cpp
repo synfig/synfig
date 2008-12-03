@@ -153,7 +153,7 @@ Action::BLinePointTangentSplit::prepare()
 
 	action=Action::create("ValueDescSet");
 	if(!action)
-		throw Error(_("Couldn't find action \"value_desc_set\""));
+		throw Error(_("Couldn't find action \"ValueDescSet\""));
 
 	action->set_param("canvas",get_canvas());
 	action->set_param("canvas_interface",get_canvas_interface());

@@ -333,7 +333,7 @@ StateNormal_Context::edit_several_waypoints(std::list<synfigapp::ValueDesc> valu
 
 			if(!action)
 			{
-				get_canvas_view()->get_ui_interface()->error(_("Unable to find waypoint_set_smart action"));
+				get_canvas_view()->get_ui_interface()->error(_("Unable to find WaypointSetSmart action"));
 				group.cancel();
 				return;
 			}

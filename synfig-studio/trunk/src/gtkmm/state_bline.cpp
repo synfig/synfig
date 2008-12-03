@@ -765,7 +765,7 @@ StateBLine_Context::run_()
 			if(get_layer_outline_flag())
 				layer->set_param("color",synfigapp::Main::get_background_color());
 
-			// I don't know if it's safe to reuse the same layer_param_connect action, so I'm
+			// I don't know if it's safe to reuse the same LayerParamConnect action, so I'm
 			// using 2 separate ones.
 			{
 				synfigapp::Action::Handle action(synfigapp::Action::create("LayerParamConnect"));
