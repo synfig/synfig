@@ -198,7 +198,7 @@ LayerParamTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& iter, int 
 		g_value_copy(x.gobj(),value.gobj());
 	}
 	else
-	CanvasTreeStore::get_value_vfunc(iter,column,value);
+		CanvasTreeStore::get_value_vfunc(iter,column,value);
 }
 
 
