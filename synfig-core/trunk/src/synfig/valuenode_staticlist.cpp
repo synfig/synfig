@@ -152,7 +152,7 @@ ValueNode_StaticList::erase(const ListEntry &value_node_) // line 513
 	if(!value_node)
 		throw String("ValueNode_StaticList::erase(): Passed bad value node");
 
-	std::vector<ListEntry>::iterator iter;
+	std::vector<ReplaceableListEntry>::iterator iter;
 	for(iter=list.begin();iter!=list.end();++iter)
 		if(*iter==value_node)
 		{
@@ -233,7 +233,7 @@ ValueNode_StaticList::operator()(Time t)const // line 596
 		printf("%s:%d operator()\n", __FILE__, __LINE__);
 
 	std::vector<ValueBase> ret_list;
-	std::vector<ListEntry>::const_iterator iter;
+	std::vector<ReplaceableListEntry>::const_iterator iter;
 
 	assert(container_type);
 
