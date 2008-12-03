@@ -438,21 +438,15 @@ CellRenderer_ValueBase::render_vfunc(
 		//property_text()=(Glib::ustring)" ";
 		return;
 		break;
-	case ValueBase::TYPE_SEGMENT:
-		property_text()=(Glib::ustring)_("Segment");
-		break;
 	case ValueBase::TYPE_GRADIENT:
 		render_gradient_to_window(window,ca,data.get(Gradient()));
 		return;
 		break;
-	case ValueBase::TYPE_LIST:
-		property_text()=(Glib::ustring)_("List");
-		break;
-	case ValueBase::TYPE_BLINEPOINT:
-		property_text()=(Glib::ustring)_("BLine Point");
-		break;
 	case ValueBase::TYPE_BONE:
-		property_text()=(Glib::ustring)_("Bone");
+	case ValueBase::TYPE_SEGMENT:
+	case ValueBase::TYPE_LIST:
+	case ValueBase::TYPE_BLINEPOINT:
+		property_text()=(Glib::ustring)(ValueBase::type_local_name(data.get_type()));
 		break;
 	case ValueBase::TYPE_GUID:
 	{
