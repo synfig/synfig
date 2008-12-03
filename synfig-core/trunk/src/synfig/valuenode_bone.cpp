@@ -132,7 +132,18 @@ ValueNode_Bone::operator()(Time t)const
 	ret.set_scale		((*scale_	)(t).get(Real()));
 	ret.set_length		((*length_	)(t).get(Real()));
 	ret.set_strength	((*strength_)(t).get(Real()));
-	ret.set_parent		((*parent_	)(t).get(GUID()));
+	GUID parentguid =(*parent_)(t).get(GUID()); //proposed new parent for this bone
+	if(parentguid)
+	{
+		ValueNode_Bone::Handle bone_vn_parent=find(parentguid); //the proposed is not root
+		if(bone_vn_parent->is_descendant_of(get_guid(),t)) // but the proposed is descendant of current Valuenode_Bone
+		{
+			ret.set_parent(ret.get_parent());
+			synfig::error("A bone cannot be parent of itself or any of its descendants");
+		}
+	}
+	else // proposed parent is root or not a descendant of current bone
+			ret.set_parent		((*parent_	)(t).get(GUID()));
 
 	return ret;
 }
@@ -276,6 +287,23 @@ ValueNode_Bone::Handle
 ValueNode_Bone::find(GUID guid)
 {
 	return bone_map[guid];
+}
+
+bool
+ValueNode_Bone::is_descendant_of(GUID guid, Time t)
+{
+	ValueNode_Bone::Handle bone_value_node(this);
+	GUID current=get_guid();
+	while (current)
+	{
+		if (guid==current) return true;
+		bone_value_node=find((*parent_)(t).get(GUID()));
+		if (bone_value_node!=NULL)
+			current=bone_value_node->get_guid();
+		else
+			return false;
+	}
+	return false;
 }
 
 #ifdef _DEBUG

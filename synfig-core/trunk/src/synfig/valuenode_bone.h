@@ -84,7 +84,7 @@ public:
 	static BoneMap::const_iterator map_begin();
 	static BoneMap::const_iterator map_end();
 	static ValueNode_Bone::Handle find(GUID guid);
-
+	bool is_descendant_of(GUID guid, Time t);
 #ifdef _DEBUG
 	virtual void rref()const;
 	virtual void runref()const;
