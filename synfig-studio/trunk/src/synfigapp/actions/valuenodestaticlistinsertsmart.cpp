@@ -153,81 +153,19 @@ Action::ValueNodeStaticListInsertSmart::prepare()
 	if(!first_time())
 		return;
 
-	// If we are in animate editing mode
-	if(get_edit_mode()&MODE_ANIMATE)
-	{
-		int index(ValueNodeStaticListInsertSmart::index);
+	Action::Handle action(Action::create("ValueNodeStaticListInsert"));
 
-		{
-			// we just need to add a new item
-			Action::Handle action(Action::create("ValueNodeStaticListInsert"));
+	if(!action)
+		throw Error(_("Unable to find action (bug)"));
 
-			if(!action)
-				throw Error(_("Unable to find action (bug)"));
+	action->set_param("canvas",get_canvas());
+	action->set_param("canvas_interface",get_canvas_interface());
+	action->set_param("time",time);
+	action->set_param("origin",origin);
+	action->set_param("value_desc",ValueDesc(value_node,index));
 
-			action->set_param("canvas",get_canvas());
-			action->set_param("canvas_interface",get_canvas_interface());
-			action->set_param("time",time);
-			action->set_param("origin",origin);
-			action->set_param("value_desc",ValueDesc(value_node,index));
+	if(!action->is_ready())
+		throw Error(Error::TYPE_NOTREADY);
 
-			if(!action->is_ready())
-				throw Error(Error::TYPE_NOTREADY);
-
-			add_action(action);
-
-			action=Action::create("ActivepointSetOff");
-
-			if(!action)
-				throw Error(_("Unable to find action \"ActivepointSetOff\""));
-
-			action->set_param("edit_mode",MODE_ANIMATE);
-			action->set_param("canvas",get_canvas());
-			action->set_param("canvas_interface",get_canvas_interface());
-			action->set_param("time",Time::begin());
-			action->set_param("origin",origin);
-			action->set_param("value_desc",ValueDesc(value_node,index));
-
-			if(!action->is_ready())
-				throw Error(Error::TYPE_NOTREADY);
-
-			add_action(action);
-		}
-
-		// Now we set the activepoint up and then we'll be done
-		Action::Handle action(Action::create("ActivepointSetOn"));
-
-		if(!action)
-			throw Error(_("Unable to find action \"ActivepointSetOn\""));
-
-		action->set_param("edit_mode",get_edit_mode());
-		action->set_param("canvas",get_canvas());
-		action->set_param("canvas_interface",get_canvas_interface());
-		action->set_param("time",time);
-		action->set_param("origin",origin);
-		action->set_param("value_desc",ValueDesc(value_node,index));
-
-		if(!action->is_ready())
-			throw Error(Error::TYPE_NOTREADY);
-
-		add_action(action);
-	}
-	else
-	{
-		Action::Handle action(Action::create("ValueNodeStaticListInsert"));
-
-		if(!action)
-			throw Error(_("Unable to find action (bug)"));
-
-		action->set_param("canvas",get_canvas());
-		action->set_param("canvas_interface",get_canvas_interface());
-		action->set_param("time",time);
-		action->set_param("origin",origin);
-		action->set_param("value_desc",ValueDesc(value_node,index));
-
-		if(!action->is_ready())
-			throw Error(Error::TYPE_NOTREADY);
-
-		add_action(action);
-	}
+	add_action(action);
 }
