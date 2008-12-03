@@ -179,7 +179,7 @@ Action::ValueNodeStaticListInsertSmart::prepare()
 			action=Action::create("ActivepointSetOff");
 
 			if(!action)
-				throw Error(_("Unable to find action \"activepoint_set_off\""));
+				throw Error(_("Unable to find action \"ActivepointSetOff\""));
 
 			action->set_param("edit_mode",MODE_ANIMATE);
 			action->set_param("canvas",get_canvas());
@@ -198,7 +198,7 @@ Action::ValueNodeStaticListInsertSmart::prepare()
 		Action::Handle action(Action::create("ActivepointSetOn"));
 
 		if(!action)
-			throw Error(_("Unable to find action \"activepoint_set_on\""));
+			throw Error(_("Unable to find action \"ActivepointSetOn\""));
 
 		action->set_param("edit_mode",get_edit_mode());
 		action->set_param("canvas",get_canvas());
