@@ -34,6 +34,7 @@
 #include <synfig/valuenode.h>
 #include "iconcontroller.h"
 #include <synfig/valuenode_timedswap.h>
+#include <synfig/valuenode_bone.h>
 #include <synfig/valuenode_animated.h>
 #include <gtkmm/button.h>
 #include <synfigapp/instance.h>
@@ -96,7 +97,27 @@ CanvasTreeStore::get_value_vfunc(const Gtk::TreeModel::iterator& iter, int colum
 			x.set(value_desc.get_value());
 		else
 		if(value_desc.is_value_node())
-			x.set((*value_desc.get_value_node())(canvas_interface()->get_time()));
+			switch(value_desc.get_value_type())
+			{
+			case ValueBase::TYPE_BONE:
+			{
+				ValueNode_Bone::Handle bone;
+				if ((bone = ValueNode_Bone::Handle::cast_dynamic(value_desc.get_value_node())))
+				{
+					x.set(String((*bone->get_link("name"))(canvas_interface()->get_time()).get(String())));
+					break;
+				}
+				// fall through if it's not a ValueNode_Bone and use the type's local name instead
+			}
+			case ValueBase::TYPE_SEGMENT:
+			case ValueBase::TYPE_LIST:
+			case ValueBase::TYPE_BLINEPOINT:
+				x.set(ValueBase::type_local_name(value_desc.get_value_type()));
+				break;
+			default:
+				x.set((*value_desc.get_value_node())(canvas_interface()->get_time()));
+				break;
+			}
 		else
 		{
 			synfig::error(__FILE__":%d: Unable to figure out value",__LINE__);
