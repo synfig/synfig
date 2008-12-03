@@ -277,3 +277,29 @@ ValueNode_Bone::find(GUID guid)
 {
 	return bone_map[guid];
 }
+
+#ifdef _DEBUG
+void
+ValueNode_Bone::rref()const
+{
+	if (getenv("SYNFIG_DEBUG_BONE_REFCOUNT"))
+		printf("%s:%d %s   rref %d -> ", __FILE__, __LINE__, get_guid().get_string().substr(0,GUID_PREFIX_LEN).c_str(), rcount());
+
+	LinkableValueNode::rref();
+
+	if (getenv("SYNFIG_DEBUG_BONE_REFCOUNT"))
+		printf("%d\n", rcount());
+}
+
+void
+ValueNode_Bone::runref()const
+{
+	if (getenv("SYNFIG_DEBUG_BONE_REFCOUNT"))
+		printf("%s:%d %s runref %d -> ", __FILE__, __LINE__, get_guid().get_string().substr(0,GUID_PREFIX_LEN).c_str(), rcount());
+
+	LinkableValueNode::runref();
+
+	if (getenv("SYNFIG_DEBUG_BONE_REFCOUNT"))
+		printf("%d\n", rcount());
+}
+#endif
