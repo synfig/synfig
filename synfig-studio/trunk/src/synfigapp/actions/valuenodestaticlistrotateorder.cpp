@@ -132,35 +132,33 @@ Action::ValueNodeStaticListRotateOrder::prepare()
 		ValueDesc value_desc(value_node,value_node->link_count()-1-i);
 		ValueNode::Handle child(value_desc.get_value_node());
 
+		{
+			Action::Handle action(Action::create("ValueNodeStaticListRemove"));
 
-		Action::Handle action(Action::create("ValueNodeStaticListRemove"));
+			action->set_param("canvas",get_canvas());
+			action->set_param("canvas_interface",get_canvas_interface());
+			action->set_param("value_desc",ValueDesc(value_node,value_node->link_count()-1));
 
-		action->set_param("canvas",get_canvas());
-		action->set_param("canvas_interface",get_canvas_interface());
-		action->set_param("value_desc",ValueDesc(value_node,value_node->link_count()-1));
+			assert(action->is_ready());
+			if(!action->is_ready())
+				throw Error(Error::TYPE_NOTREADY);
 
-		assert(action->is_ready());
-		if(!action->is_ready())
-			throw Error(Error::TYPE_NOTREADY);
+			add_action(action);
+		}
 
-		add_action(action);
+		{
+			Action::Handle action(Action::create("ValueNodeStaticListInsert"));
 
+			action->set_param("canvas",get_canvas());
+			action->set_param("canvas_interface",get_canvas_interface());
+			action->set_param("value_desc",ValueDesc(value_node,0));
+			action->set_param("item",child);
 
-		action=Action::create("ValueNodeStaticListInsert");
+			assert(action->is_ready());
+			if(!action->is_ready())
+				throw Error(Error::TYPE_NOTREADY);
 
-		action->set_param("canvas",get_canvas());
-		action->set_param("canvas_interface",get_canvas_interface());
-		action->set_param("value_desc",ValueDesc(value_node,0));
-		action->set_param("item",child);
-
-		assert(action->is_ready());
-		if(!action->is_ready())
-			throw Error(Error::TYPE_NOTREADY);
-
-		add_action(action);
-
-
-
-
+			add_action(action);
+		}
 	}
 }
