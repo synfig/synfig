@@ -820,7 +820,7 @@ CanvasParser::parse_bline_point(xmlpp::Element *element)
 Bone
 CanvasParser::parse_bone(xmlpp::Element *element)
 {
-	assert(element->get_name()=="bone");
+	assert(element->get_name()=="bone_object");
 	if(element->get_children().empty())
 	{
 		error(element, "Undefined value in <bone>");
@@ -1131,7 +1131,7 @@ CanvasParser::parse_value(xmlpp::Element *element,Canvas::Handle canvas)
 	if(element->get_name()=="guid")
 		return parse_guid(element);
 	else
-	if(element->get_name()=="bone")
+	if(element->get_name()=="bone_object")
 		return parse_bone(element);
 	else
 	if(element->get_name()=="canvas")
