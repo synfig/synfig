@@ -88,8 +88,9 @@ Action::ValueNodeStaticListRotateOrder::is_candidate(const ParamList &x)
 
 	ValueNode_StaticList::Handle static_list;
 	return (value_desc.parent_is_value_node() &&
-			// We need a static list.
+			// We need a static list
 			(static_list = ValueNode_StaticList::Handle::cast_dynamic(value_desc.get_parent_value_node())) &&
+			// We need the list not to be a list of bones
 			static_list->get_contained_type() != ValueBase::TYPE_BONE);
 }
 
