@@ -44,25 +44,44 @@ using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 
+#define GET_NODE_PARENT(node,t) (*node->get_link("parent"))(t).get(GUID())
+#define GET_NODE_PARENT_NODE(node,t) ValueNode_Bone::find(GET_NODE_PARENT(node,t))
+#define GET_NODE_NAME(node,t) (*node->get_link("name"))(t).get(String())
+#define GET_NODE_BONE(node,t) (*node)(t).get(Bone())
+
+#define GET_GUID_CSTR(guid) guid.get_string().substr(0,GUID_PREFIX_LEN).c_str()
+#define GET_NODE_GUID_CSTR(node) GET_GUID_CSTR(node->get_guid())
+#define GET_NODE_NAME_CSTR(node,t) GET_NODE_NAME(node,t).c_str()
+#define GET_NODE_BONE_CSTR(node,t) GET_NODE_BONE(node,t).c_str()
+#define GET_NODE_DESC_CSTR(node,t) (node ? strprintf("%s (%s)", GET_NODE_GUID_CSTR(node), GET_NODE_NAME_CSTR(node,t)) : strprintf("%s <root>", GET_GUID_CSTR(GUID(0)))).c_str()
+#define GET_NODE_PARENT_CSTR(node,t) GET_GUID_CSTR(GET_NODE_PARENT(node,t))
+
 /* === G L O B A L S ======================================================= */
 
 static map<GUID, ValueNode_Bone::Handle> bone_map;
 static int bone_counter;
+static map<ValueNode_Bone::Handle, Matrix> setup_matrix_map;
+static map<ValueNode_Bone::Handle, Matrix> animated_matrix_map;
+static Time last_time = Time::begin();
 
 /* === P R O C E D U R E S ================================================= */
 
 static void
-show_bone_map()
+show_bone_map(const char *file, int line, String text, Time t=0)
 {
-	printf("we now have %d bones:\n", int(bone_map.size()));
+	if (!getenv("SYNFIG_SHOW_BONE_MAP")) return;
+
+	printf("\n  %s:%d %s we now have %d bones:\n", file, line, text.c_str(), int(bone_map.size()));
 	map<GUID, ValueNode_Bone::Handle>::iterator iter;
 	for (iter = bone_map.begin(); iter != bone_map.end(); iter++)
 	{
 		GUID guid(iter->first);
 		ValueNode_Bone::Handle bone(iter->second);
-		printf("%s : %s (%d)\n",
-			   guid.get_string().substr(0,GUID_PREFIX_LEN).c_str(),
-			   (*bone)(0).get(Bone()).get_string().c_str(),
+		ValueNode_Bone::Handle parent(GET_NODE_PARENT_NODE(bone,t));
+//		printf("%s : %s (%d)\n",           		GET_GUID_CSTR(guid), GET_NODE_BONE_CSTR(bone,t), bone->rcount());
+		printf("    %-20s : parent %-20s (%d rrefs)\n",
+			   GET_NODE_DESC_CSTR(bone,t),
+			   GET_NODE_DESC_CSTR(parent,t),
 			   bone->rcount());
 	}
 	printf("\n");
@@ -89,7 +108,8 @@ ValueNode_Bone::ValueNode_Bone(const ValueBase &value):
 		set_link("parent",ValueNode_Const::create(bone.get_parent()));
 
 		bone_map[get_guid()] = this;
-		show_bone_map();
+
+		show_bone_map(__FILE__, __LINE__, "in constructor");
 
 		break;
 	}
@@ -123,6 +143,8 @@ ValueNode_Bone::operator()(Time t)const
 	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
 		printf("%s:%d operator()\n", __FILE__, __LINE__);
 
+	show_bone_map(__FILE__, __LINE__, strprintf("in op() at %s", t.get_string().c_str()), t);
+
 	Bone ret;
 	ret.set_name		((*name_	)(t).get(String()));
 	ret.set_origin		((*origin_	)(t).get(Point()));
@@ -132,18 +154,18 @@ ValueNode_Bone::operator()(Time t)const
 	ret.set_scale		((*scale_	)(t).get(Real()));
 	ret.set_length		((*length_	)(t).get(Real()));
 	ret.set_strength	((*strength_)(t).get(Real()));
-	GUID parentguid =(*parent_)(t).get(GUID()); //proposed new parent for this bone
-	if(parentguid)
+
+	// check if we are an ancestor of the proposed parent
+	ValueNode_Bone::ConstHandle parent(find((*parent_)(t).get(GUID())));
+	if (ValueNode_Bone::ConstHandle result = is_ancestor_of(parent,t))
 	{
-		ValueNode_Bone::Handle bone_vn_parent=find(parentguid); //the proposed is not root
-		if(bone_vn_parent->is_descendant_of(get_guid(),t)) // but the proposed is descendant of current Valuenode_Bone
-		{
-			ret.set_parent(ret.get_parent());
+		if (result == ValueNode_Bone::ConstHandle(this))
 			synfig::error("A bone cannot be parent of itself or any of its descendants");
-		}
+		else
+			synfig::error("A loop was detected in the ancestry at bone %s", GET_NODE_DESC_CSTR(result,t));
 	}
 	else // proposed parent is root or not a descendant of current bone
-			ret.set_parent		((*parent_	)(t).get(GUID()));
+		ret.set_parent((*parent_)(t).get(GUID()));
 
 	return ret;
 }
@@ -286,24 +308,64 @@ ValueNode_Bone::map_end()
 ValueNode_Bone::Handle
 ValueNode_Bone::find(GUID guid)
 {
-	return bone_map[guid];
+	if (!guid) return 0;
+	// printf("looking up bone %s\n", GET_GUID_CSTR(guid));
+	if (bone_map.count(guid))
+	{
+		// check that the bone we find is the one we looked up - this currently isn't the case when we load bones from a .sifz file
+		if (guid != bone_map[guid]->get_guid())
+		{
+			printf("wtf? todo: fix loading so it doesn't damage the guid\n");
+			assert(0);
+		}
+		return bone_map[guid];
+	}
+	else
+	{
+		printf("didn't find bone with guid %s\n", GET_GUID_CSTR(guid));
+		return 0;
+	}
 }
 
-bool
-ValueNode_Bone::is_descendant_of(GUID guid, Time t)
+// checks whether the current object is an ancestor of the supplied bone
+// returns a handle to NULL if it isn't
+// if there's a loop in the ancestry it returns a handle to the valuenode where the loop is detected
+// otherwise it returns the current object
+ValueNode_Bone::ConstHandle
+ValueNode_Bone::is_ancestor_of(ValueNode_Bone::ConstHandle bone, Time t)const
 {
-	ValueNode_Bone::Handle bone_value_node(this);
-	GUID current=get_guid();
-	while (current)
+	ValueNode_Bone::ConstHandle ancestor(this);
+	set<ValueNode_Bone::ConstHandle> seen;
+
+	if (getenv("SYNFIG_DEBUG_ANCESTOR_CHECK"))
+		printf("%s:%d checking whether %s is ancestor of %s\n", __FILE__, __LINE__, GET_NODE_DESC_CSTR(ancestor,t), GET_NODE_DESC_CSTR(bone,t));
+
+	while (bone)
 	{
-		if (guid==current) return true;
-		bone_value_node=find((*parent_)(t).get(GUID()));
-		if (bone_value_node!=NULL)
-			current=bone_value_node->get_guid();
-		else
-			return false;
+		if (bone == ancestor)
+		{
+			if (getenv("SYNFIG_DEBUG_ANCESTOR_CHECK"))
+				printf("%s:%d bone reached us - so we are its ancestor - return true\n", __FILE__, __LINE__);
+			return bone;
+		}
+
+		if (seen.count(bone))
+		{
+			if (getenv("SYNFIG_DEBUG_ANCESTOR_CHECK"))
+				printf("%s:%d stuck in a loop - return true\n", __FILE__, __LINE__);
+			return bone;
+		}
+
+		seen.insert(bone);
+		bone=GET_NODE_PARENT_NODE(bone,t);
+
+		if (getenv("SYNFIG_DEBUG_ANCESTOR_CHECK"))
+			printf("%s:%d step on to parent %s\n", __FILE__, __LINE__, GET_NODE_DESC_CSTR(bone,t));
 	}
-	return false;
+
+	if (getenv("SYNFIG_DEBUG_ANCESTOR_CHECK"))
+		printf("%s:%d reached root - return false\n", __FILE__, __LINE__);
+	return 0;
 }
 
 #ifdef _DEBUG
@@ -311,7 +373,7 @@ void
 ValueNode_Bone::rref()const
 {
 	if (getenv("SYNFIG_DEBUG_BONE_REFCOUNT"))
-		printf("%s:%d %s   rref %d -> ", __FILE__, __LINE__, get_guid().get_string().substr(0,GUID_PREFIX_LEN).c_str(), rcount());
+		printf("%s:%d %s   rref %d -> ", __FILE__, __LINE__, GET_GUID_CSTR(get_guid()), rcount());
 
 	LinkableValueNode::rref();
 
@@ -323,7 +385,7 @@ void
 ValueNode_Bone::runref()const
 {
 	if (getenv("SYNFIG_DEBUG_BONE_REFCOUNT"))
-		printf("%s:%d %s runref %d -> ", __FILE__, __LINE__, get_guid().get_string().substr(0,GUID_PREFIX_LEN).c_str(), rcount());
+		printf("%s:%d %s runref %d -> ", __FILE__, __LINE__, GET_GUID_CSTR(get_guid()), rcount());
 
 	LinkableValueNode::runref();
 
