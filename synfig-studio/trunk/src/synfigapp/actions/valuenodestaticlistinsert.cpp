@@ -126,8 +126,6 @@ Action::ValueNodeStaticListInsert::set_param(const synfig::String& name, const A
 		if(item)
 			list_entry=item;
 
-		assert(list_entry.rcount()==1);
-
 		return true;
 	}
 	if(name=="time" && param.get_type()==Param::TYPE_TIME)
@@ -169,7 +167,6 @@ Action::ValueNodeStaticListInsert::perform()
 		index=value_node->link_count();
 
 	value_node->add(list_entry,index);
-	assert(list_entry.rcount()>=2);
 
 	// Signal that a layer has been inserted
 	value_node->changed();
@@ -183,9 +180,7 @@ Action::ValueNodeStaticListInsert::perform()
 void
 Action::ValueNodeStaticListInsert::undo()
 {
-	assert(list_entry.rcount()>=2);
 	value_node->erase(*(value_node->list.begin()+index));
-	assert(list_entry.rcount()>=1);
 
 	// Signal that a layer has been inserted
 	value_node->changed();
