@@ -30,6 +30,7 @@
 #	include <config.h>
 #endif
 
+#include <cstdlib>
 #include "node.h"
 // #include "nodebase.h"		// this defines a bunch of sigc::slots that are never used
 
