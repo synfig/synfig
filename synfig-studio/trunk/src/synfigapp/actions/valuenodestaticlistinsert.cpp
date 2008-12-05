@@ -105,6 +105,19 @@ Action::ValueNodeStaticListInsert::is_candidate(const ParamList &x)
 			ValueNode_StaticList::Handle::cast_dynamic(value_desc.get_parent_value_node()));
 }
 
+// called from two places - both set 'canvas' and 'canvasinterface', and then:
+//
+//		ValueNodeStaticListRotateOrder::prepare() sets "value_desc", "item"
+//			action->set_param("item",child);									<- sets item=list_entry=child
+//			action->set_param("value_desc",ValueDesc(value_node,0));			<- sets value_node=value_node, index=0, list_entry=item
+//
+//		ValueNodeStaticListInsertSmart::prepare() sets "time", "origin", "value_desc"
+//			action->set_param("time",time);
+//			action->set_param("origin",origin);
+//			action->set_param("value_desc",ValueDesc(value_node,index));		<- sets value_node=value_node, index=index, list_entry=create_list_entry(...)
+//
+// all the perform() does is 	value_node->add(list_entry,index);
+//
 bool
 Action::ValueNodeStaticListInsert::set_param(const synfig::String& name, const Action::Param &param)
 {
