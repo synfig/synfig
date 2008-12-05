@@ -59,7 +59,7 @@ using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
-static map<GUID, ValueNode_Bone::Handle> bone_map;
+static ValueNode_Bone::BoneMap bone_map;
 static int bone_counter;
 static map<ValueNode_Bone::Handle, Matrix> setup_matrix_map;
 static map<ValueNode_Bone::Handle, Matrix> animated_matrix_map;
@@ -67,17 +67,29 @@ static Time last_time = Time::begin();
 
 /* === P R O C E D U R E S ================================================= */
 
+struct compare_bones
+{
+	bool operator() (const ValueNode_Bone::Handle b1, const ValueNode_Bone::Handle b2) const
+	{
+		return GET_NODE_NAME(b1,0) < GET_NODE_NAME(b2,0);
+	}
+};
+
 static void
 show_bone_map(const char *file, int line, String text, Time t=0)
 {
 	if (!getenv("SYNFIG_SHOW_BONE_MAP")) return;
 
 	printf("\n  %s:%d %s we now have %d bones:\n", file, line, text.c_str(), int(bone_map.size()));
-	map<GUID, ValueNode_Bone::Handle>::iterator iter;
-	for (iter = bone_map.begin(); iter != bone_map.end(); iter++)
+
+	set<ValueNode_Bone::Handle, compare_bones> bone_set;
+	for (ValueNode_Bone::BoneMap::iterator iter = bone_map.begin(); iter != bone_map.end(); iter++)
+		bone_set.insert(iter->second);
+
+	for (set<ValueNode_Bone::Handle>::iterator iter = bone_set.begin(); iter != bone_set.end(); iter++)
 	{
-		GUID guid(iter->first);
-		ValueNode_Bone::Handle bone(iter->second);
+		ValueNode_Bone::Handle bone(*iter);
+		GUID guid(bone->get_guid());
 		ValueNode_Bone::Handle parent(GET_NODE_PARENT_NODE(bone,t));
 //		printf("%s : %s (%d)\n",           		GET_GUID_CSTR(guid), GET_NODE_BONE_CSTR(bone,t), bone->rcount());
 		printf("    %-20s : parent %-20s (%d rrefs)\n",
