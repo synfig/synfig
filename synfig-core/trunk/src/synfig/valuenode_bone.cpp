@@ -32,6 +32,7 @@
 
 #include "valuenode_bone.h"
 #include "valuenode_const.h"
+#include "valuenode_animated.h"
 #include "general.h"
 
 #endif
@@ -120,11 +121,36 @@ ValueNode_Bone::ValueNode_Bone(const ValueBase &value):
 	DCAST_HACK_ENABLE();
 }
 
+static ValueNode::Handle
+clone_guid_valuenode(ValueNode::Handle value)
+{
+	if (!value)
+		return 0;
+
+	if (ValueNode_Const::Handle value_node_const = ValueNode_Const::Handle::cast_dynamic(value))
+		return ValueNode_Bone::find(value_node_const->get_value().get(GUID()));
+
+	if (ValueNode_Animated::Handle value_node_animated = ValueNode_Animated::Handle::cast_dynamic(value))
+	{
+		ValueNode_Animated::Handle ret = ValueNode_Animated::create(ValueBase::TYPE_BONE);
+		ValueNode_Animated::WaypointList list(value_node_animated->waypoint_list());
+		for (ValueNode_Animated::WaypointList::iterator iter = list.begin(); iter != list.end(); iter++)
+			if (ValueNode::Handle value_node = clone_guid_valuenode(iter->get_value_node()))
+				ret->new_waypoint(iter->get_time(), value_node);
+		return ret;
+	}
+
+	error("%s:%d BUG: failed to clone ValueNode '%s'", __FILE__, __LINE__, value->get_description().c_str());
+	assert(0);
+	return 0;
+}
+
 void ValueNode_Bone::on_changed()
 {
 	if (getenv("SYNFIG_DEBUG_ON_CHANGED"))
 		printf("%s:%d ValueNode_Bone::on_changed()\n", __FILE__, __LINE__);
 
+	parent_node_ = clone_guid_valuenode(parent_);
 	LinkableValueNode::on_changed();
 }
 
