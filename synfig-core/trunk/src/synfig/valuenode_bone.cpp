@@ -80,11 +80,12 @@ show_bone_map(const char *file, int line, String text, Time t=0)
 {
 	if (!getenv("SYNFIG_SHOW_BONE_MAP")) return;
 
-	printf("\n  %s:%d %s we now have %d bones:\n", file, line, text.c_str(), int(bone_map.size()));
-
 	set<ValueNode_Bone::Handle, compare_bones> bone_set;
 	for (ValueNode_Bone::BoneMap::iterator iter = bone_map.begin(); iter != bone_map.end(); iter++)
-		bone_set.insert(iter->second);
+		if (iter->second->rcount())
+			bone_set.insert(iter->second);
+
+	printf("\n  %s:%d %s we now have %d bones (%d unreachable):\n", file, line, text.c_str(), int(bone_map.size()), int(bone_map.size() - bone_set.size()));
 
 	for (set<ValueNode_Bone::Handle>::iterator iter = bone_set.begin(); iter != bone_set.end(); iter++)
 	{
@@ -434,6 +435,9 @@ ValueNode_Bone::runref()const
 		printf("%s:%d %s runref %d -> ", __FILE__, __LINE__, GET_GUID_CSTR(get_guid()), rcount());
 
 	LinkableValueNode::runref();
+
+//	if (!rcount())
+//		bone_map.erase(get_guid());
 
 	if (getenv("SYNFIG_DEBUG_BONE_REFCOUNT"))
 		printf("%d\n", rcount());
