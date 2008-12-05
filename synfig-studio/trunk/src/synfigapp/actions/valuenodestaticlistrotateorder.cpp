@@ -154,8 +154,8 @@ Action::ValueNodeStaticListRotateOrder::prepare()
 
 			action->set_param("canvas",get_canvas());
 			action->set_param("canvas_interface",get_canvas_interface());
-			action->set_param("value_desc",ValueDesc(value_node,0));
 			action->set_param("item",child);
+			action->set_param("value_desc",ValueDesc(value_node,0));
 
 			assert(action->is_ready());
 			if(!action->is_ready())
