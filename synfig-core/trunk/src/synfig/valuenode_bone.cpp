@@ -120,6 +120,14 @@ ValueNode_Bone::ValueNode_Bone(const ValueBase &value):
 	DCAST_HACK_ENABLE();
 }
 
+void ValueNode_Bone::on_changed()
+{
+	if (getenv("SYNFIG_DEBUG_ON_CHANGED"))
+		printf("%s:%d ValueNode_Bone::on_changed()\n", __FILE__, __LINE__);
+
+	LinkableValueNode::on_changed();
+}
+
 LinkableValueNode*
 ValueNode_Bone::create_new()const
 {
