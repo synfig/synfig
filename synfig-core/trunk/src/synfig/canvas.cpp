@@ -87,6 +87,9 @@ Canvas::Canvas(const String &id):
 void
 Canvas::on_changed()
 {
+	if (getenv("SYNFIG_DEBUG_ON_CHANGED"))
+		printf("%s:%d Canvas::on_changed()\n", __FILE__, __LINE__);
+
 	is_dirty_=true;
 	Node::on_changed();
 }
