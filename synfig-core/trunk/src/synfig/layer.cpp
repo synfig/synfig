@@ -289,6 +289,9 @@ Layer::disconnect_dynamic_param(const String& param)
 void
 Layer::on_changed()
 {
+	if (getenv("SYNFIG_DEBUG_ON_CHANGED"))
+		printf("%s:%d Layer::on_changed()\n", __FILE__, __LINE__);
+
 	dirty_time_=Time::end();
 	Node::on_changed();
 }
