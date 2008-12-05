@@ -89,6 +89,8 @@ public:
 	static ValueNode_Bone::Handle find(GUID guid);
 	ValueNode_Bone::ConstHandle is_ancestor_of(ValueNode_Bone::ConstHandle bone, Time t)const;
 #ifdef _DEBUG
+	virtual void ref()const;
+	virtual bool unref()const;
 	virtual void rref()const;
 	virtual void runref()const;
 #endif
