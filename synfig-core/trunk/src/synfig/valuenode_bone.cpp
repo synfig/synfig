@@ -93,10 +93,10 @@ show_bone_map(const char *file, int line, String text, Time t=0)
 		GUID guid(bone->get_guid());
 		ValueNode_Bone::Handle parent(GET_NODE_PARENT_NODE(bone,t));
 //		printf("%s : %s (%d)\n",           		GET_GUID_CSTR(guid), GET_NODE_BONE_CSTR(bone,t), bone->rcount());
-		printf("    %-20s : parent %-20s (%d rrefs)\n",
+		printf("    %-20s : parent %-20s (%d refs, %d rrefs)\n",
 			   GET_NODE_DESC_CSTR(bone,t),
 			   GET_NODE_DESC_CSTR(parent,t),
-			   bone->rcount());
+			   bone->count(), bone->rcount());
 	}
 	printf("\n");
 }
@@ -420,13 +420,27 @@ ValueNode_Bone::is_ancestor_of(ValueNode_Bone::ConstHandle bone, Time t)const
 void
 ValueNode_Bone::ref()const
 {
+	if (getenv("SYNFIG_DEBUG_BONE_REFCOUNT"))
+		printf("%s:%d %s   ref %d -> ", __FILE__, __LINE__, GET_GUID_CSTR(get_guid()), count());
+
 	LinkableValueNode::ref();
+
+	if (getenv("SYNFIG_DEBUG_BONE_REFCOUNT"))
+		printf("%d\n", count());
 }
 
 bool
 ValueNode_Bone::unref()const
 {
-	return LinkableValueNode::unref();
+	if (getenv("SYNFIG_DEBUG_BONE_REFCOUNT"))
+		printf("%s:%d %s unref %d -> ", __FILE__, __LINE__, GET_GUID_CSTR(get_guid()), count());
+
+	bool ret(LinkableValueNode::unref());
+
+	if (getenv("SYNFIG_DEBUG_BONE_REFCOUNT"))
+		printf("%d\n", count());
+
+	return ret;
 }
 
 void
