@@ -304,6 +304,9 @@ public:
 
 	virtual void on_changed()
 	{
+		if (getenv("SYNFIG_DEBUG_ON_CHANGED"))
+			printf("%s:%d _Hermite::on_changed()\n", __FILE__, __LINE__);
+
 		ValueNode_Animated::on_changed();
 
 		if(waypoint_list_.size()<=1)
@@ -591,6 +594,9 @@ public:
 
 	virtual void on_changed()
 	{
+		if (getenv("SYNFIG_DEBUG_ON_CHANGED"))
+			printf("%s:%d _Constant::on_changed()\n", __FILE__, __LINE__);
+
 		ValueNode_Animated::on_changed();
 
 		if(waypoint_list_.size()<=1)
@@ -690,6 +696,9 @@ public:
 
 	virtual void on_changed()
 	{
+		if (getenv("SYNFIG_DEBUG_ON_CHANGED"))
+			printf("%s:%d _AnimBool::on_changed()\n", __FILE__, __LINE__);
+
 		ValueNode_Animated::on_changed();
 
 		if(waypoint_list_.size()<=1)
