@@ -181,6 +181,7 @@ ValueNode_Bone::create(const ValueBase &x)
 
 ValueNode_Bone::~ValueNode_Bone()
 {
+	printf("%s:%d ~ValueNode_Bone()\n", __FILE__, __LINE__);
 	unlink_all();
 }
 
@@ -416,6 +417,18 @@ ValueNode_Bone::is_ancestor_of(ValueNode_Bone::ConstHandle bone, Time t)const
 }
 
 #ifdef _DEBUG
+void
+ValueNode_Bone::ref()const
+{
+	LinkableValueNode::ref();
+}
+
+bool
+ValueNode_Bone::unref()const
+{
+	return LinkableValueNode::unref();
+}
+
 void
 ValueNode_Bone::rref()const
 {
