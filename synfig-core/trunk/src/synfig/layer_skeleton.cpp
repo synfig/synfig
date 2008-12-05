@@ -67,6 +67,9 @@ Layer_Skeleton::Layer_Skeleton():
 {
 	bones.push_back(Bone());
 	bones.push_back(Bone());
+	bones.push_back(Bone());
+	bones.push_back(Bone());
+	bones.push_back(Bone());
 }
 
 bool
