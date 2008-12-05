@@ -327,6 +327,9 @@ ValueNode::~ValueNode()
 void
 ValueNode::on_changed()
 {
+	if (getenv("SYNFIG_DEBUG_ON_CHANGED"))
+		printf("%s:%d ValueNode::on_changed()\n", __FILE__, __LINE__);
+
 	etl::loose_handle<Canvas> parent_canvas = get_parent_canvas();
 	if(parent_canvas)
 		do						// signal to all the ancestor canvases
