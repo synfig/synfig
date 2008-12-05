@@ -81,7 +81,7 @@ protected:
 #endif
 
 public:
-	void ref()const
+	virtual void ref()const
 	{
 #ifdef ETL_LOCK_REFCOUNTS
 		etl::mutex::lock lock(mtx);
@@ -91,7 +91,7 @@ public:
 	}
 
 	//! Returns \c false if object needs to be deleted
-	bool unref()const
+	virtual bool unref()const
 	{
 		bool ret = true;
 		{
