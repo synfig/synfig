@@ -293,6 +293,9 @@ Node::begin_delete()
 void
 Node::on_changed()
 {
+	if (getenv("SYNFIG_DEBUG_ON_CHANGED"))
+		printf("%s:%d Node::on_changed()\n", __FILE__, __LINE__);
+
 	bchanged = true;
 	signal_changed()();
 
