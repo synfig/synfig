@@ -1056,6 +1056,8 @@ synfig::ValueNode_Animated::create(ValueBase::Type type)
 			return ValueNode_Animated::Handle(new _Constant<String>);
 		case ValueBase::TYPE_GUID:
 			return ValueNode_Animated::Handle(new _Constant<GUID>);
+		case ValueBase::TYPE_BONE:
+			return ValueNode_Animated::Handle(new _Constant<Bone>);
 		case ValueBase::TYPE_GRADIENT:
 			return ValueNode_Animated::Handle(new _Hermite<Gradient>);
 		case ValueBase::TYPE_BOOL:
