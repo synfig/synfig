@@ -75,6 +75,8 @@ protected:
 	LinkableValueNode* create_new()const;
 	virtual bool set_link_vfunc(int i,ValueNode::Handle x);
 
+	virtual void on_changed();
+
 public:
 	using synfig::LinkableValueNode::get_link_vfunc;
 
