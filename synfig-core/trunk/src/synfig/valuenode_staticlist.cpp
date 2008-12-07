@@ -310,6 +310,23 @@ ValueNode_StaticList::link_local_name(int i)const // line 657
 	return etl::strprintf(_("Item %03d"),i+1);
 }
 
+ValueNode*
+ValueNode_StaticList::clone(const GUID& deriv_guid)const
+{
+	{ ValueNode* x(find_value_node(get_guid()^deriv_guid).get()); if(x)return x; }
+
+	ValueNode_StaticList* ret=dynamic_cast<ValueNode_StaticList*>(create_new());
+	ret->set_guid(get_guid()^deriv_guid);
+
+	for(std::vector<ReplaceableListEntry>::const_iterator iter=list.begin();iter!=list.end();++iter)
+		if((*iter)->is_exported())
+			ret->add(*iter);
+		else
+			ret->add((*iter)->clone(deriv_guid));
+	ret->set_loop(get_loop());
+	return ret;
+}
+
 String
 ValueNode_StaticList::link_name(int i)const // line 693
 {
