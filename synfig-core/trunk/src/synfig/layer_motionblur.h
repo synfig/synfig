@@ -45,6 +45,11 @@ private:
 
 public:
 	Layer_MotionBlur();
+
+#ifdef _DEBUG
+	~Layer_MotionBlur();
+#endif
+
 	virtual bool set_param(const String & param, const synfig::ValueBase &value);
 	virtual ValueBase get_param(const String & param)const;
 	virtual Color get_color(Context context, const Point &pos)const;
@@ -53,6 +58,11 @@ public:
 	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 	virtual Vocab get_param_vocab()const;
 	virtual bool reads_context()const { return true; }
+
+#ifdef _DEBUG
+	virtual void ref()const;
+	virtual bool unref()const;
+#endif
 }; // END of class Layer_MotionBlur
 
 }; // END of namespace synfig
