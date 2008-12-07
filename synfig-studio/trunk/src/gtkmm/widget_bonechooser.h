@@ -47,16 +47,16 @@ class Widget_BoneChooser : public Gtk::OptionMenu
 	Gtk::Menu *bone_menu;
 	synfig::Canvas::Handle parent_canvas;
 
-	synfig::GUID bone;
-	void set_value_(synfig::GUID data);
+	synfig::ValueNode_Bone::Handle bone;
+	void set_value_(synfig::ValueNode_Bone::Handle data);
 public:
 
 	Widget_BoneChooser();
 	~Widget_BoneChooser();
 
 	void set_parent_canvas(synfig::Canvas::Handle x);
-	void set_value(synfig::GUID data);
-	const synfig::GUID &get_value();
+	void set_value(synfig::ValueNode_Bone::Handle data);
+	const synfig::ValueNode_Bone::Handle &get_value();
 
 }; // END of class Widget_BoneChooser
 
