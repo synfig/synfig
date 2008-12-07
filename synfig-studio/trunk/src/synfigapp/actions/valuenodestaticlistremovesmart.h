@@ -57,6 +57,9 @@ private:
 public:
 
 	ValueNodeStaticListRemoveSmart();
+#ifdef _DEBUG
+	~ValueNodeStaticListRemoveSmart();
+#endif
 
 	static ParamVocab get_param_vocab();
 	static bool is_candidate(const ParamList &x);
