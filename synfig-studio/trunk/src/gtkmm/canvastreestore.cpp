@@ -420,6 +420,10 @@ CanvasTreeStore::set_row(Gtk::TreeRow row,synfigapp::ValueDesc value_desc, bool 
 		if(value_desc.is_value_node())
 		{
 			ValueNode::Handle value_node=value_desc.get_value_node();
+			// printf("%s:%d value_desc is %s type %s\t\t", __FILE__, __LINE__, value_desc.get_description().c_str(), ValueBase::type_name(value_node->get_type()).c_str());
+			if (value_node->get_type() == ValueBase::TYPE_VALUENODE_BONE)
+				if (ValueNode::Handle bone_node = (*value_node)(0).get(ValueNode_Bone::Handle()))
+					value_node = bone_node;
 
 			assert(value_node);
 
@@ -436,8 +440,10 @@ CanvasTreeStore::set_row(Gtk::TreeRow row,synfigapp::ValueDesc value_desc, bool 
 				row[model.canvas]=canvas_interface()->get_canvas();
 
 			LinkableValueNode::Handle linkable;
+			// printf("%s:%d value_node = %s\n", __FILE__, __LINE__, value_node->get_description().c_str());
 			linkable=LinkableValueNode::Handle::cast_dynamic(value_node);
 
+			// printf("linkable: %d; do_children: %d\n", bool(linkable), bool(do_children));
 			if(linkable && do_children)
 			{
 				row[model.link_count] = linkable->link_count();
