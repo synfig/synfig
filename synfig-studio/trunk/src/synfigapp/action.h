@@ -230,7 +230,11 @@ class Undoable : public Base
 	bool active_;
 
 protected:
-	Undoable():active_(true) { }
+	Undoable();
+
+#ifdef _DEBUG
+	~Undoable();
+#endif
 
 private:
 	void set_active(bool x) { active_=x; }
@@ -242,6 +246,10 @@ public:
 
 	bool is_active()const { return active_; }
 
+#ifdef _DEBUG
+	virtual void ref()const;
+	virtual bool unref()const;
+#endif
 }; // END of class Action::Undoable
 
 //! Action base class for canvas-specific actions
