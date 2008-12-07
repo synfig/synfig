@@ -101,10 +101,12 @@ CanvasTreeStore::get_value_vfunc(const Gtk::TreeModel::iterator& iter, int colum
 			{
 			case ValueBase::TYPE_BONE:
 			{
-				ValueNode_Bone::Handle bone;
-				if ((bone = ValueNode_Bone::Handle::cast_dynamic(value_desc.get_value_node())))
+				if (ValueNode_Bone::Handle bone = ValueNode_Bone::Handle::cast_dynamic(value_desc.get_value_node()))
 				{
-					x.set(String((*bone->get_link("name"))(canvas_interface()->get_time()).get(String())));
+					String display(String((*bone->get_link("name"))(canvas_interface()->get_time()).get(String())));
+					if (ValueNode_Bone::Handle parent = (*bone->get_link("parent"))(canvas_interface()->get_time()).get(ValueNode_Bone::Handle()))
+						display += " <-- " + String((*parent->get_link("name"))(canvas_interface()->get_time()).get(String()));
+					x.set(display);
 					break;
 				}
 				// fall through if it's not a ValueNode_Bone and use the type's local name instead
