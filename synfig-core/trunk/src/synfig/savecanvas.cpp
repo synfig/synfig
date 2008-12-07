@@ -185,15 +185,7 @@ xmlpp::Element* encode_bline_point(xmlpp::Element* root,BLinePoint bline_point)
 	return root;
 }
 
-xmlpp::Element* encode_guid(xmlpp::Element* root,GUID guid)
-{
-	printf("%s:%d encode_guid (%s)\n", __FILE__, __LINE__, guid.get_string().c_str());
-	root->set_name(ValueBase::type_name(ValueBase::TYPE_GUID));
-	root->set_attribute("value",guid.get_string());
-	return root;
-}
-
-xmlpp::Element* encode_bone(xmlpp::Element* root,Bone bone)
+xmlpp::Element* encode_bone(xmlpp::Element* root,Bone bone,Canvas::ConstHandle canvas)
 {
 	root->set_name(ValueBase::type_name(ValueBase::TYPE_BONE));
 
@@ -207,7 +199,7 @@ xmlpp::Element* encode_bone(xmlpp::Element* root,Bone bone)
 	encode_real  (root->add_child("scale"   )->add_child("real"),  bone.get_scale());
 	encode_real  (root->add_child("length"  )->add_child("real"),  bone.get_length());
 	encode_real  (root->add_child("strength")->add_child("real"),  bone.get_strength());
-	encode_guid  (root->add_child("parent"  )->add_child("integer"),  bone.get_parent());
+	encode_value_node(root->add_child("parent")->add_child("value_node"),ValueNode_Bone::find(bone.get_parent()),canvas);
 
 	printf("%s:%d return at end\n", __FILE__, __LINE__);
 	return root;
@@ -272,9 +264,7 @@ xmlpp::Element* encode_value(xmlpp::Element* root,const ValueBase &data,Canvas::
 	case ValueBase::TYPE_BLINEPOINT:
 		return encode_bline_point(root,data.get(BLinePoint()));
 	case ValueBase::TYPE_BONE:
-		return encode_bone(root,data.get(Bone()));
-	case ValueBase::TYPE_GUID:
-		return encode_guid(root,data.get(GUID()));
+		return encode_bone(root,data.get(Bone()),canvas);
 	case ValueBase::TYPE_GRADIENT:
 		return encode_gradient(root,data.get(Gradient()));
 	case ValueBase::TYPE_LIST:
