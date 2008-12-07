@@ -47,7 +47,6 @@ class ValueNode_Bone : public LinkableValueNode
 	ValueNode::RHandle length_;
 	ValueNode::RHandle strength_;
 	ValueNode::RHandle parent_;
-	ValueNode::RHandle parent_node_;
 
 	ValueNode_Bone(const ValueBase &value);
 
