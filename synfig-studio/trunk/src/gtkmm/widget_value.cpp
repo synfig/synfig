@@ -263,10 +263,10 @@ Widget_ValueBase::set_value(const synfig::ValueBase &data)
 			enum_widget->show();
 		}
 		break;
-	case ValueBase::TYPE_GUID:
+	case ValueBase::TYPE_VALUENODE_BONE:
 		assert(canvas);
 		bone_widget->set_parent_canvas(canvas);
-		bone_widget->set_value(value.get(GUID()));
+		bone_widget->set_value(value.get(etl::loose_handle<synfig::ValueNode_Bone>()));
 		bone_widget->show();
 		break;
 	case ValueBase::TYPE_CANVAS:
@@ -333,7 +333,7 @@ Widget_ValueBase::get_value()
 	case ValueBase::TYPE_ANGLE:
 		value=Angle::deg(angle_widget->get_value());
 		break;
-	case ValueBase::TYPE_GUID:
+	case ValueBase::TYPE_VALUENODE_BONE:
 		value=bone_widget->get_value();
 		break;
 	case ValueBase::TYPE_CANVAS:
@@ -407,7 +407,7 @@ Widget_ValueBase::on_grab_focus()
 	case ValueBase::TYPE_ANGLE:
 		angle_widget->grab_focus();
 		break;
-	case ValueBase::TYPE_GUID:
+	case ValueBase::TYPE_VALUENODE_BONE:
 		bone_widget->grab_focus();
 		break;
 	case ValueBase::TYPE_CANVAS:
@@ -469,7 +469,7 @@ Widget_ValueBase::signal_activate()
 	case ValueBase::TYPE_ANGLE:
 		return angle_widget->signal_activate();
 		break;
-	case ValueBase::TYPE_GUID:
+	case ValueBase::TYPE_VALUENODE_BONE:
 		return bone_widget->signal_activate();
 		break;
 	case ValueBase::TYPE_CANVAS:
