@@ -197,6 +197,15 @@ ValueNode_StaticList::ValueNode_StaticList(ValueBase::Type container_type): // l
 	DCAST_HACK_ENABLE();
 }
 
+#ifdef _DEBUG
+ValueNode_StaticList::~ValueNode_StaticList()
+{
+	printf("\n%s:%d ------------------------------------------------------------------------\n", __FILE__, __LINE__);
+	printf("%s:%d ~ValueNode_StaticList()\n", __FILE__, __LINE__);
+	printf("%s:%d ------------------------------------------------------------------------\n\n", __FILE__, __LINE__);
+}
+#endif
+
 ValueNode_StaticList::Handle
 ValueNode_StaticList::create(ValueBase::Type id) // line 557
 {
@@ -342,3 +351,23 @@ ValueNode_StaticList::create_new()const // line 736
 {
 	return new ValueNode_StaticList(container_type);
 }
+
+#ifdef _DEBUG
+void
+ValueNode_StaticList::ref()const
+{
+	if (getenv("SYNFIG_DEBUG_STATICLIST_REFCOUNT"))
+		printf("%s:%d %lx   ref staticlist %*s -> %2d\n", __FILE__, __LINE__, ulong(this), (count()*2), "", count()+1);
+
+	LinkableValueNode::ref();
+}
+
+bool
+ValueNode_StaticList::unref()const
+{
+	if (getenv("SYNFIG_DEBUG_STATICLIST_REFCOUNT"))
+		printf("%s:%d %lx unref staticlist %*s%2d <-\n", __FILE__, __LINE__, ulong(this), ((count()-1)*2), "", count()-1);
+
+	return LinkableValueNode::unref();
+}
+#endif
