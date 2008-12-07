@@ -69,7 +69,7 @@ Layer_MotionBlur::Layer_MotionBlur():
 	printf("%s:%d Layer_MotionBlur() - we now have %d\n", __FILE__, __LINE__, ++motionblur_count);
 }
 
-#ifdef DEBUG
+#ifdef _DEBUG
 Layer_MotionBlur::~Layer_MotionBlur()
 {
 	if (getenv("SYNFIG_DEBUG_DESTRUCTORS"))
