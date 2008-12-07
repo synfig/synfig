@@ -53,6 +53,10 @@ public:
 
 	Layer_Skeleton();
 
+#ifdef _DEBUG
+	~Layer_Skeleton();
+#endif
+
 	virtual bool set_param(const synfig::String & param, const synfig::ValueBase &value);
 
 	virtual synfig::ValueBase get_param(const synfig::String & param)const;
