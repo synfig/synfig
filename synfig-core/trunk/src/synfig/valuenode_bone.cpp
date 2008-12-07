@@ -69,7 +69,7 @@ static Time last_time = Time::begin();
 
 struct compare_bones
 {
-	bool operator() (const ValueNode_Bone::Handle b1, const ValueNode_Bone::Handle b2) const
+	bool operator() (const ValueNode_Bone::LooseHandle b1, const ValueNode_Bone::LooseHandle b2) const
 	{
 		return GET_NODE_NAME(b1,0) < GET_NODE_NAME(b2,0);
 	}
@@ -80,18 +80,17 @@ show_bone_map(const char *file, int line, String text, Time t=0)
 {
 	if (!getenv("SYNFIG_SHOW_BONE_MAP")) return;
 
-	set<ValueNode_Bone::Handle, compare_bones> bone_set;
+	set<ValueNode_Bone::LooseHandle, compare_bones> bone_set;
 	for (ValueNode_Bone::BoneMap::iterator iter = bone_map.begin(); iter != bone_map.end(); iter++)
-		if (iter->second->rcount())
-			bone_set.insert(iter->second);
+		bone_set.insert(iter->second);
 
 	printf("\n  %s:%d %s we now have %d bones (%d unreachable):\n", file, line, text.c_str(), int(bone_map.size()), int(bone_map.size() - bone_set.size()));
 
-	for (set<ValueNode_Bone::Handle>::iterator iter = bone_set.begin(); iter != bone_set.end(); iter++)
+	for (set<ValueNode_Bone::LooseHandle>::iterator iter = bone_set.begin(); iter != bone_set.end(); iter++)
 	{
-		ValueNode_Bone::Handle bone(*iter);
+		ValueNode_Bone::LooseHandle bone(*iter);
 		GUID guid(bone->get_guid());
-		ValueNode_Bone::Handle parent(GET_NODE_PARENT_NODE(bone,t));
+		ValueNode_Bone::LooseHandle parent(GET_NODE_PARENT_NODE(bone,t));
 //		printf("%s : %s (%d)\n",           		GET_GUID_CSTR(guid), GET_NODE_BONE_CSTR(bone,t), bone->rcount());
 		printf("    %-20s : parent %-20s (%d refs, %d rrefs)\n",
 			   GET_NODE_DESC_CSTR(bone,t),
@@ -181,7 +180,14 @@ ValueNode_Bone::create(const ValueBase &x)
 
 ValueNode_Bone::~ValueNode_Bone()
 {
-	printf("%s:%d ~ValueNode_Bone()\n", __FILE__, __LINE__);
+	printf("\n%s:%d ------------------------------------------------------------------------\n", __FILE__, __LINE__);
+	printf("%s:%d --- ~ValueNode_Bone() ---\n", __FILE__, __LINE__);
+	printf("%s:%d ------------------------------------------------------------------------\n\n", __FILE__, __LINE__);
+
+	bone_map.erase(get_guid());
+
+	show_bone_map(__FILE__, __LINE__, "in destructor");
+
 	unlink_all();
 }
 
@@ -421,33 +427,25 @@ void
 ValueNode_Bone::ref()const
 {
 	if (getenv("SYNFIG_DEBUG_BONE_REFCOUNT"))
-		printf("%s:%d %s   ref %d -> ", __FILE__, __LINE__, GET_GUID_CSTR(get_guid()), count());
+		printf("%s:%d %s   ref valuenode_bone %*s -> %2d\n", __FILE__, __LINE__, GET_GUID_CSTR(get_guid()), (count()*2), "", count()+1);
 
 	LinkableValueNode::ref();
-
-	if (getenv("SYNFIG_DEBUG_BONE_REFCOUNT"))
-		printf("%d\n", count());
 }
 
 bool
 ValueNode_Bone::unref()const
 {
 	if (getenv("SYNFIG_DEBUG_BONE_REFCOUNT"))
-		printf("%s:%d %s unref %d -> ", __FILE__, __LINE__, GET_GUID_CSTR(get_guid()), count());
+		printf("%s:%d %s unref valuenode_bone %*s%2d <-\n", __FILE__, __LINE__, GET_GUID_CSTR(get_guid()), ((count()-1)*2), "", count()-1);
 
-	bool ret(LinkableValueNode::unref());
-
-	if (getenv("SYNFIG_DEBUG_BONE_REFCOUNT"))
-		printf("%d\n", count());
-
-	return ret;
+	return LinkableValueNode::unref();
 }
 
 void
 ValueNode_Bone::rref()const
 {
 	if (getenv("SYNFIG_DEBUG_BONE_REFCOUNT"))
-		printf("%s:%d %s   rref %d -> ", __FILE__, __LINE__, GET_GUID_CSTR(get_guid()), rcount());
+		printf("%s:%d %s               rref valuenode_bone %d -> ", __FILE__, __LINE__, GET_GUID_CSTR(get_guid()), rcount());
 
 	LinkableValueNode::rref();
 
@@ -459,12 +457,9 @@ void
 ValueNode_Bone::runref()const
 {
 	if (getenv("SYNFIG_DEBUG_BONE_REFCOUNT"))
-		printf("%s:%d %s runref %d -> ", __FILE__, __LINE__, GET_GUID_CSTR(get_guid()), rcount());
+		printf("%s:%d %s             runref valuenode_bone %d -> ", __FILE__, __LINE__, GET_GUID_CSTR(get_guid()), rcount());
 
 	LinkableValueNode::runref();
-
-//	if (!rcount())
-//		bone_map.erase(get_guid());
 
 	if (getenv("SYNFIG_DEBUG_BONE_REFCOUNT"))
 		printf("%d\n", rcount());
