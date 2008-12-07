@@ -69,7 +69,7 @@ class Gradient;
 class BLinePoint;
 class Color;
 class Bone;
-class GUID;
+class ValueNode_Bone;
 
 /*!	\class ValueBase
 **	\todo writeme
@@ -102,7 +102,6 @@ public:
 		TYPE_COLOR,			//!< Color
 		TYPE_SEGMENT,		//!< Segment
 		TYPE_BLINEPOINT,	//!< BLinePoint
-		TYPE_GUID,			//!< GUID
 
 		// All types after this point require construction/destruction
 
@@ -111,6 +110,7 @@ public:
 		TYPE_STRING,		//!< String
 		TYPE_GRADIENT,		//!< Color Gradient
 		TYPE_BONE,			//!< Bone
+		TYPE_VALUENODE_BONE,//!< ValueNode_Bone
 
 		TYPE_END			//!< Not a valid type, used for sanity checks
 	};
@@ -306,10 +306,11 @@ public:
 	static Type get_type(const Color&) { return TYPE_COLOR; }
 	static Type get_type(const Segment&) { return TYPE_SEGMENT; }
 	static Type get_type(const BLinePoint&) { return TYPE_BLINEPOINT; }
-	static Type get_type(const GUID&) { return TYPE_GUID; }
 	static Type get_type(const String&) { return TYPE_STRING; }
 	static Type get_type(const Gradient&) { return TYPE_GRADIENT; }
 	static Type get_type(const Bone&) { return TYPE_BONE; }
+	static Type get_type(const etl::handle<ValueNode_Bone>&) { return TYPE_VALUENODE_BONE; }
+	static Type get_type(const etl::loose_handle<ValueNode_Bone>&) { return TYPE_VALUENODE_BONE; }
 	static Type get_type(Canvas*) { return TYPE_CANVAS; }
 	static Type get_type(const etl::handle<Canvas>&)
 		{ return TYPE_CANVAS; }
@@ -401,10 +402,10 @@ private:
 		type=newtype;
 		ref_count.reset();
 
-		if (type == TYPE_BONE && &x == 0)
-			data = 0;
-		else
-			data=new T(x);
+//		if (type == TYPE_BONE && &x == 0)
+//			data = 0;
+//		else
+		data=new T(x);
 	}
 }; // END of class ValueBase
 
