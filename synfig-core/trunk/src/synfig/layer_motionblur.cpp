@@ -60,11 +60,26 @@ SYNFIG_LAYER_SET_CVS_ID(Layer_MotionBlur,"$Id$");
 
 /* === M E M B E R S ======================================================= */
 
+static int motionblur_count = 0;
+
 Layer_MotionBlur::Layer_MotionBlur():
 	Layer_Composite	(1.0,Color::BLEND_STRAIGHT),
 	aperture		(0)
 {
+	printf("%s:%d Layer_MotionBlur() - we now have %d\n", __FILE__, __LINE__, ++motionblur_count);
 }
+
+#ifdef DEBUG
+Layer_MotionBlur::~Layer_MotionBlur()
+{
+	if (getenv("SYNFIG_DEBUG_DESTRUCTORS"))
+	{
+		printf("\n========================================================================\n");
+		printf("=== %s:%d ~Layer_MotionBlur() - we now have %d ============\n", __FILE__, __LINE__, --motionblur_count);
+		printf("========================================================================\n\n");
+	}
+}
+#endif
 
 bool
 Layer_MotionBlur::set_param(const String &param, const ValueBase &value)
@@ -200,3 +215,23 @@ Layer_MotionBlur::accelerated_render(Context context,Surface *surface,int qualit
 
 	return true;
 }
+
+#ifdef _DEBUG
+void
+Layer_MotionBlur::ref()const
+{
+	if (getenv("SYNFIG_DEBUG_MOTIONBLUR_REFCOUNT"))
+		printf("%s:%d %lx   ref motion_blur %*s -> %2d (we have %d mblurs)\n", __FILE__, __LINE__, ulong(this), (count()*2), "", count()+1, motionblur_count);
+
+	Layer_Composite::ref();
+}
+
+bool
+Layer_MotionBlur::unref()const
+{
+	if (getenv("SYNFIG_DEBUG_MOTIONBLUR_REFCOUNT"))
+		printf("%s:%d %lx unref motion_blur %*s%2d <- (we have %d mblurs) ***\n", __FILE__, __LINE__, ulong(this), ((count()-1)*2), "", count()-1, motionblur_count);
+
+	return Layer_Composite::unref();
+}
+#endif
