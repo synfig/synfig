@@ -69,6 +69,13 @@ Action::ValueNodeStaticListRemoveSmart::ValueNodeStaticListRemoveSmart()
 	set_dirty(true);
 }
 
+#ifdef _DEBUG
+Action::ValueNodeStaticListRemoveSmart::~ValueNodeStaticListRemoveSmart()
+{
+	printf("%s:%d ~ValueNodeStaticListRemoveSmart()\n", __FILE__, __LINE__);
+}
+#endif
+
 Action::ParamVocab
 Action::ValueNodeStaticListRemoveSmart::get_param_vocab()
 {
