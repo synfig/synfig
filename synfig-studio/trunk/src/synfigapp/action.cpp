@@ -559,3 +559,35 @@ CanvasSpecific::get_edit_mode()const
 
 	return MODE_NORMAL;
 }
+
+static int undoable_count = 0;
+
+Undoable::Undoable():
+	active_(true)
+{
+	//DOO printf("%s:%d Undoable::Undoable() (we have %d)\n", __FILE__, __LINE__, ++undoable_count);
+}
+
+#ifdef _DEBUG
+Undoable::~Undoable() {
+	//DOO printf("%s:%d Undoable::~Undoable() (we now have %d)\n", __FILE__, __LINE__, --undoable_count);
+}
+
+void
+Undoable::ref()const
+{
+	if (getenv("SYNFIG_DEBUG_ACTION_REFCOUNT"))
+		printf("%s:%d %lx   ref undoable %*s -> %2d\n", __FILE__, __LINE__, ulong(this), (count()*2), "", count()+1);
+
+	Base::ref();
+}
+
+bool
+Undoable::unref()const
+{
+	if (getenv("SYNFIG_DEBUG_ACTION_REFCOUNT"))
+		printf("%s:%d %lx unref undoable %*s%2d <-\n", __FILE__, __LINE__, ulong(this), ((count()-1)*2), "", count()-1);
+
+	return Base::unref();
+}
+#endif
