@@ -55,7 +55,8 @@ public:
 
 	typedef etl::handle<ValueNode_Bone> Handle;
 	typedef etl::handle<const ValueNode_Bone> ConstHandle;
-	typedef std::map<synfig::GUID, etl::handle<ValueNode_Bone> > BoneMap;
+	typedef etl::loose_handle<ValueNode_Bone> LooseHandle;
+	typedef std::map<synfig::GUID, LooseHandle> BoneMap;
 
 	virtual ValueBase operator()(Time t)const;
 
