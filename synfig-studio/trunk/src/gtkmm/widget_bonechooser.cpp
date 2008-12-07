@@ -69,14 +69,14 @@ Widget_BoneChooser::set_parent_canvas(synfig::Canvas::Handle x)
 }
 
 void
-Widget_BoneChooser::set_value_(synfig::GUID data)
+Widget_BoneChooser::set_value_(synfig::ValueNode_Bone::Handle data)
 {
 	set_value(data);
 	activate();
 }
 
 void
-Widget_BoneChooser::set_value(synfig::GUID data)
+Widget_BoneChooser::set_value(synfig::ValueNode_Bone::Handle data)
 {
 	assert(parent_canvas);
 	bone=data;
@@ -103,7 +103,7 @@ Widget_BoneChooser::set_value(synfig::GUID data)
 											sigc::mem_fun(
 												*this,
 												&Widget_BoneChooser::set_value_),
-											guid)));
+											bone_value_node)));
 	}
 
 	bone_menu->items().push_back(
@@ -112,7 +112,7 @@ Widget_BoneChooser::set_value(synfig::GUID data)
 											sigc::mem_fun(
 												*this,
 												&Widget_BoneChooser::set_value_),
-											0)));
+											ValueNode_Bone::Handle())));
 
 	set_menu(*bone_menu);
 
@@ -120,7 +120,7 @@ Widget_BoneChooser::set_value(synfig::GUID data)
 		set_history(0);
 }
 
-const GUID &
+const etl::handle<synfig::ValueNode_Bone> &
 Widget_BoneChooser::get_value()
 {
 	return bone;
