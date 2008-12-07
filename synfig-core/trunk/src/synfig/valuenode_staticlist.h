@@ -58,6 +58,10 @@ public:
 protected:
 	ValueNode_StaticList(ValueBase::Type container_type=ValueBase::TYPE_NIL);
 
+#ifdef _DEBUG
+	virtual ~ValueNode_StaticList();
+#endif
+
 	ValueBase::Type container_type;
 
 	bool loop_;
@@ -78,8 +82,6 @@ public:
 	virtual String link_name(int i)const;
 
 	virtual ValueBase operator()(Time t)const;
-
-//	virtual ~ValueNode_StaticList();
 
 	virtual String link_local_name(int i)const;
 	virtual int get_link_index_from_name(const String &name)const;
@@ -128,6 +130,12 @@ public:
 	using synfig::LinkableValueNode::set_link_vfunc;
 	static bool check_type(ValueBase::Type type);
 	static ValueNode_StaticList* create_from(const ValueBase &x=ValueBase::TYPE_GRADIENT);
+
+#ifdef _DEBUG
+	virtual void ref()const;
+	virtual bool unref()const;
+#endif
+
 }; // END of class ValueNode_StaticList
 
 }; // END of namespace synfig
