@@ -1285,7 +1285,7 @@ App::App(int *argc, char ***argv):
 		studio_init_cb.amount_complete(9900,10000);
 
 		bool opened_any = false;
-		if(auto_recover->recovery_needed())
+		if (!getenv("SYNFIG_DISABLE_AUTO_RECOVERY") && auto_recover->recovery_needed())
 		{
 			splash_screen.hide();
 			if (get_ui_interface()->yes_no(_("Auto Recovery"),
@@ -2423,6 +2423,12 @@ App::new_instance()
 	canvas->set_file_name(file_name);
 
 	handle<Instance> instance = Instance::create(canvas);
+
+	if (getenv("SYNFIG_AUTO_ADD_SKELETON_LAYER"))
+		instance->find_canvas_view(canvas)->add_layer("skeleton");
+
+	if (getenv("SYNFIG_AUTO_ADD_MOTIONBLUR_LAYER"))
+		instance->find_canvas_view(canvas)->add_layer("MotionBlur");
 
 	if (getenv("SYNFIG_ENABLE_NEW_CANVAS_EDIT_PROPERTIES"))
 		instance->find_canvas_view(canvas)->canvas_properties.present();
