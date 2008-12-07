@@ -448,17 +448,16 @@ CellRenderer_ValueBase::render_vfunc(
 	case ValueBase::TYPE_BLINEPOINT:
 		property_text()=(Glib::ustring)(ValueBase::type_local_name(data.get_type()));
 		break;
-	case ValueBase::TYPE_GUID:
+	case ValueBase::TYPE_VALUENODE_BONE:
 	{
-		GUID guid(data.get(GUID()));
+		ValueNode_Bone::Handle bone_node(data.get(ValueNode_Bone::Handle()));
 		String name(_("No Parent"));
-		if (guid)
+
+		if (bone_node)
 		{
-			ValueNode_Bone::Handle bone_node(ValueNode_Bone::find(guid));
-			assert(bone_node);
 			name = (*(bone_node->get_link("name")))(get_canvas()->get_time()).get(String());
 			if (name.empty())
-				name = guid.get_string();
+				name = bone_node->get_guid().get_string();
 		}
 
 		property_text()=(Glib::ustring)(name);
