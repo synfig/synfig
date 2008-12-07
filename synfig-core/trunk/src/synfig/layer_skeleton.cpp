@@ -72,6 +72,14 @@ Layer_Skeleton::Layer_Skeleton():
 	bones.push_back(Bone());
 }
 
+#ifdef _DEBUG
+Layer_Skeleton::~Layer_Skeleton()
+{
+	if (getenv("SYNFIG_DEBUG_DESTRUCTORS"))
+		printf("%s:%d ~Layer_Skeleton()\n", __FILE__, __LINE__);
+}
+#endif
+
 bool
 Layer_Skeleton::set_param(const String & param, const ValueBase &value)
 {
