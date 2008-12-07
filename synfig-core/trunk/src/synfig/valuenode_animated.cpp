@@ -48,6 +48,7 @@
 #include "canvas.h"
 #include "general.h"
 #include "valuenode_animated.h"
+#include "valuenode_bone.h"
 #include "valuenode_const.h"
 #include "exception.h"
 #include "gradient.h"
@@ -1054,6 +1055,8 @@ synfig::ValueNode_Animated::create(ValueBase::Type type)
 
 		case ValueBase::TYPE_STRING:
 			return ValueNode_Animated::Handle(new _Constant<String>);
+		case ValueBase::TYPE_VALUENODE_BONE:
+			return ValueNode_Animated::Handle(new _Constant<ValueNode_Bone::LooseHandle>);
 		case ValueBase::TYPE_BONE:
 			return ValueNode_Animated::Handle(new _Constant<Bone>);
 		case ValueBase::TYPE_GRADIENT:
