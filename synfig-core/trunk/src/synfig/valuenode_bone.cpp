@@ -45,8 +45,8 @@ using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 
-#define GET_NODE_PARENT(node,t) (*node->get_link("parent"))(t).get(GUID())
-#define GET_NODE_PARENT_NODE(node,t) ValueNode_Bone::find(GET_NODE_PARENT(node,t))
+#define GET_NODE_PARENT_NODE(node,t) (*node->get_link("parent"))(t).get(ValueNode_Bone::Handle())
+#define GET_NODE_PARENT(node,t) GET_NODE_PARENT_NODE(node,t)->get_guid()
 #define GET_NODE_NAME(node,t) (*node->get_link("name"))(t).get(String())
 #define GET_NODE_BONE(node,t) (*node)(t).get(Bone())
 
@@ -118,11 +118,11 @@ ValueNode_Bone::ValueNode_Bone(const ValueBase &value):
 		set_link("scale",ValueNode_Const::create(bone.get_scale()));
 		set_link("length",ValueNode_Const::create(bone.get_length()));
 		set_link("strength",ValueNode_Const::create(bone.get_strength()));
-		set_link("parent",ValueNode_Const::create(bone.get_parent()));
+		set_link("parent",ValueNode_Const::create(find(bone.get_parent())));
 
 		bone_map[get_guid()] = this;
 
-		show_bone_map(__FILE__, __LINE__, "in constructor");
+		show_bone_map(__FILE__, __LINE__, strprintf("in constructor of %s at %lx", GET_GUID_CSTR(get_guid()), ulong(this)));
 
 		break;
 	}
@@ -133,36 +133,11 @@ ValueNode_Bone::ValueNode_Bone(const ValueBase &value):
 	DCAST_HACK_ENABLE();
 }
 
-static ValueNode::Handle
-clone_guid_valuenode(ValueNode::Handle value)
-{
-	if (!value)
-		return 0;
-
-	if (ValueNode_Const::Handle value_node_const = ValueNode_Const::Handle::cast_dynamic(value))
-		return ValueNode_Bone::find(value_node_const->get_value().get(GUID()));
-
-	if (ValueNode_Animated::Handle value_node_animated = ValueNode_Animated::Handle::cast_dynamic(value))
-	{
-		ValueNode_Animated::Handle ret = ValueNode_Animated::create(ValueBase::TYPE_BONE);
-		ValueNode_Animated::WaypointList list(value_node_animated->waypoint_list());
-		for (ValueNode_Animated::WaypointList::iterator iter = list.begin(); iter != list.end(); iter++)
-			if (ValueNode::Handle value_node = clone_guid_valuenode(iter->get_value_node()))
-				ret->new_waypoint(iter->get_time(), value_node);
-		return ret;
-	}
-
-	error("%s:%d BUG: failed to clone ValueNode '%s'", __FILE__, __LINE__, value->get_description().c_str());
-	assert(0);
-	return 0;
-}
-
 void ValueNode_Bone::on_changed()
 {
 	if (getenv("SYNFIG_DEBUG_ON_CHANGED"))
 		printf("%s:%d ValueNode_Bone::on_changed()\n", __FILE__, __LINE__);
 
-	parent_node_ = clone_guid_valuenode(parent_);
 	LinkableValueNode::on_changed();
 }
 
@@ -181,7 +156,7 @@ ValueNode_Bone::create(const ValueBase &x)
 ValueNode_Bone::~ValueNode_Bone()
 {
 	printf("\n%s:%d ------------------------------------------------------------------------\n", __FILE__, __LINE__);
-	printf("%s:%d --- ~ValueNode_Bone() ---\n", __FILE__, __LINE__);
+	printf("%s:%d --- ~ValueNode_Bone() for %s at %lx---\n", __FILE__, __LINE__, GET_GUID_CSTR(get_guid()), ulong(this));
 	printf("%s:%d ------------------------------------------------------------------------\n\n", __FILE__, __LINE__);
 
 	bone_map.erase(get_guid());
@@ -210,7 +185,7 @@ ValueNode_Bone::operator()(Time t)const
 	ret.set_strength	((*strength_)(t).get(Real()));
 
 	// check if we are an ancestor of the proposed parent
-	ValueNode_Bone::ConstHandle parent(find((*parent_)(t).get(GUID())));
+	ValueNode_Bone::ConstHandle parent((*parent_)(t).get(ValueNode_Bone::Handle()));
 	if (ValueNode_Bone::ConstHandle result = is_ancestor_of(parent,t))
 	{
 		if (result == ValueNode_Bone::ConstHandle(this))
@@ -219,7 +194,13 @@ ValueNode_Bone::operator()(Time t)const
 			synfig::error("A loop was detected in the ancestry at bone %s", GET_NODE_DESC_CSTR(result,t));
 	}
 	else // proposed parent is root or not a descendant of current bone
-		ret.set_parent((*parent_)(t).get(GUID()));
+	{
+		ValueNode_Bone::ConstHandle parent((*parent_)(t).get(ValueNode_Bone::Handle()));
+		if (parent)
+			ret.set_parent(parent->get_guid());
+		else
+			ret.set_parent(0);
+	}
 
 	return ret;
 }
@@ -257,7 +238,7 @@ ValueNode_Bone::set_link_vfunc(int i,ValueNode::Handle value)
 	case 5: CHECK_TYPE_AND_SET_VALUE(scale_,	ValueBase::TYPE_REAL);
 	case 6: CHECK_TYPE_AND_SET_VALUE(length_,	ValueBase::TYPE_REAL);
 	case 7: CHECK_TYPE_AND_SET_VALUE(strength_,	ValueBase::TYPE_REAL);
-	case 8: CHECK_TYPE_AND_SET_VALUE(parent_,	ValueBase::TYPE_GUID);
+	case 8: CHECK_TYPE_AND_SET_VALUE(parent_,	ValueBase::TYPE_VALUENODE_BONE);
 	}
 	return false;
 }
