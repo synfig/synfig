@@ -440,15 +440,7 @@ void
 Action::System::clear_undo_stack()
 {
 	if(undo_action_stack_.empty()) return;
-	{
-		while (!undo_action_stack_.empty())
-		{
-			printf("undo stack has %d entries - erasing one of them\n", int(undo_action_stack_.size()));
-			undo_action_stack_.erase(undo_action_stack_.begin());
-			printf("now stack has %d entries\n", int(undo_action_stack_.size()));
-		}
-		// undo_action_stack_.clear();
-	}
+	undo_action_stack_.clear();
 	signal_undo_status_(false);
 	signal_undo_stack_cleared_();
 }
@@ -457,15 +449,7 @@ void
 Action::System::clear_redo_stack()
 {
 	if(redo_action_stack_.empty()) return;
-	{
-		while (!redo_action_stack_.empty())
-		{
-			printf("redo stack has %d entries - erasing one of them\n", int(redo_action_stack_.size()));
-			redo_action_stack_.erase(redo_action_stack_.begin());
-			printf("now stack has %d entries\n", int(redo_action_stack_.size()));
-		}
-		// redo_action_stack_.clear();
-	}
+	redo_action_stack_.clear();
 	signal_redo_status_(false);
 	signal_redo_stack_cleared_();
 }
