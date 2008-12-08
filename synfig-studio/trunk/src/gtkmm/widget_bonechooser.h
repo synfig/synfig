@@ -30,6 +30,7 @@
 #include <synfig/canvas.h>
 #include <synfig/valuenode_bone.h>
 #include <gtkmm/optionmenu.h>
+#include <synfigapp/value_desc.h>
 
 
 /* === M A C R O S ========================================================= */
@@ -46,6 +47,7 @@ class Widget_BoneChooser : public Gtk::OptionMenu
 {
 	Gtk::Menu *bone_menu;
 	synfig::Canvas::Handle parent_canvas;
+	synfigapp::ValueDesc value_desc;
 
 	synfig::ValueNode_Bone::Handle bone;
 	void set_value_(synfig::ValueNode_Bone::Handle data);
@@ -57,6 +59,9 @@ public:
 	void set_parent_canvas(synfig::Canvas::Handle x);
 	void set_value(synfig::ValueNode_Bone::Handle data);
 	const synfig::ValueNode_Bone::Handle &get_value();
+
+	void set_value_desc(const synfigapp::ValueDesc &x) { value_desc=x; }
+	const synfigapp::ValueDesc &get_value_desc() { return value_desc; }
 
 }; // END of class Widget_BoneChooser
 
