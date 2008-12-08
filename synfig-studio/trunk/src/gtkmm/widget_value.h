@@ -52,6 +52,7 @@
 
 //#include <synfig/synfig.h>
 #include <synfig/paramdesc.h>
+#include <synfigapp/value_desc.h>
 #include <synfig/value.h>
 #include <synfig/canvas.h>
 
@@ -101,6 +102,7 @@ class Widget_ValueBase : public Gtk::HBox
 //	std::string hint;
 
 	synfig::ParamDesc param_desc;
+	synfigapp::ValueDesc value_desc;
 	etl::handle<synfig::Canvas> canvas;
 	sigc::signal<void> signal_value_changed_;
 	sigc::signal<void> signal_activate_;
@@ -119,6 +121,9 @@ public:
 
 	void set_param_desc(const synfig::ParamDesc &x) { param_desc=x; }
 	const synfig::ParamDesc &get_param_desc() { return param_desc; }
+
+	void set_value_desc(const synfigapp::ValueDesc &x) { value_desc=x; }
+	const synfigapp::ValueDesc &get_value_desc() { return value_desc; }
 
 	void set_sensitive(bool x);
 
