@@ -560,7 +560,7 @@ CanvasSpecific::get_edit_mode()const
 	return MODE_NORMAL;
 }
 
-static int undoable_count = 0;
+//DOO static int undoable_count = 0;
 
 Undoable::Undoable():
 	active_(true)
