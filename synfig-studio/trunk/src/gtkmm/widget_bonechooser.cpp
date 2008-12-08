@@ -75,11 +75,85 @@ Widget_BoneChooser::set_value_(synfig::ValueNode_Bone::Handle data)
 	activate();
 }
 
+static set<ValueNode_Bone::Handle>
+get_bones(ValueNode::Handle value)
+{
+	set<ValueNode_Bone::Handle> ret;
+	if (!value)
+	{
+		printf("%s:%d failed?\n", __FILE__, __LINE__);
+		assert(0);
+		return ret;
+	}
+
+	if (ValueNode_Const::Handle value_node_const = ValueNode_Const::Handle::cast_dynamic(value))
+	{
+		ValueNode_Bone::Handle bone(value_node_const->get_value().get(ValueNode_Bone::Handle()));
+		if (bone)
+		{
+			ret = get_bones(bone->get_link("parent"));
+			ret.insert(bone);
+			printf("returning single bone %s\n", value_node_const->get_value().get(ValueNode_Bone::Handle())->get_guid().get_string().substr(0,6).c_str());
+		}
+		else
+			printf("%s:%d single bone is null\n", __FILE__, __LINE__);
+		return ret;
+	}
+
+	if (ValueNode_Animated::Handle value_node_animated = ValueNode_Animated::Handle::cast_dynamic(value))
+	{
+		// ValueNode_Animated::Handle ret = ValueNode_Animated::create(ValueBase::TYPE_BONE);
+		ValueNode_Animated::WaypointList list(value_node_animated->waypoint_list());
+		for (ValueNode_Animated::WaypointList::iterator iter = list.begin(); iter != list.end(); iter++)
+		{
+			printf("%s:%d getting bones from waypoint\n", __FILE__, __LINE__);
+			set<ValueNode_Bone::Handle> ret2 = get_bones(iter->get_value_node());
+			ret.insert(ret2.begin(), ret2.end());
+			printf("added %d bones from waypoint to get %d\n", int(ret2.size()), int(ret.size()));
+		}
+		printf("returning %d bones\n", int(ret.size()));
+		return ret;
+	}
+
+	error("%s:%d BUG: failed to clone ValueNode '%s'", __FILE__, __LINE__, value->get_description().c_str());
+	assert(0);
+	return ret;
+}
+
 void
 Widget_BoneChooser::set_value(synfig::ValueNode_Bone::Handle data)
 {
+	set<Node*> seen;
+	set<ValueNode_Bone*> affected_bones; // which bones are we currently editing the parent of - it can be more than one due to linking
+
 	assert(parent_canvas);
 	bone=data;
+
+	if (get_value_desc().is_value_node())
+	{
+		set<Node*> current_nodes, new_nodes;
+		current_nodes.insert(&*(get_value_desc().get_value_node()));
+		do
+		{
+			for (set<Node*>::iterator iter = current_nodes.begin(); iter != current_nodes.end(); iter++)
+			{
+				set<Node*> node_parents((*iter)->parent_set);
+				for (set<Node*>::iterator iter2 = node_parents.begin(); iter2 != node_parents.end(); iter2++)
+				{
+					Node* node(*iter2);
+					if (!seen.count(node))
+					{
+						if (dynamic_cast<ValueNode_Bone*>(node))
+							affected_bones.insert(dynamic_cast<ValueNode_Bone*>(node));
+						new_nodes.insert(node);
+						seen.insert(node);
+					}
+				}
+			}
+			current_nodes = new_nodes;
+			new_nodes.clear();
+		} while (current_nodes.size());
+	}
 
 	bone_menu=manage(new class Gtk::Menu());
 
@@ -92,8 +166,18 @@ Widget_BoneChooser::set_value(synfig::ValueNode_Bone::Handle data)
 		GUID guid(iter->first);
 		ValueNode_Bone::Handle bone_value_node(iter->second);
 
-		// label=(*iter)->get_name().empty()?(*iter)->get_id():(*iter)->get_name();
-		// label=guid.get_string();
+		if (affected_bones.count(bone_value_node.get()))
+			continue;
+
+		ValueNode::Handle parent(bone_value_node->get_link("parent"));
+		set<ValueNode_Bone::Handle> parents(get_bones(parent));
+		set<ValueNode_Bone::Handle>::iterator iter;
+		for (iter = parents.begin(); iter != parents.end(); iter++)
+			if (affected_bones.count(iter->get()))
+				break;
+		if (iter != parents.end())
+			continue;
+
 		label=(*(bone_value_node->get_link("name")))(time).get(String());
 		if (label.empty()) label=guid.get_string();
 
