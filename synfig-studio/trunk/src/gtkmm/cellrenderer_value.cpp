@@ -198,6 +198,12 @@ public:
 			valuewidget->set_param_desc(data);
 	}
 
+	void set_value_desc(const synfigapp::ValueDesc &data)
+	{
+		if(valuewidget)
+			valuewidget->set_value_desc(data);
+	}
+
 	const synfig::ValueBase &get_value()
 	{
 		if(valuewidget)
@@ -266,7 +272,8 @@ CellRenderer_ValueBase::CellRenderer_ValueBase():
 	Gtk::CellRendererText	(),
 	property_value_	(*this,"value",synfig::ValueBase()),
 	property_canvas_(*this,"canvas",etl::handle<synfig::Canvas>()),
-	property_param_desc_(*this,"param_desc",synfig::ParamDesc())
+	property_param_desc_(*this,"param_desc",synfig::ParamDesc()),
+	property_value_desc_(*this,"value_desc",synfigapp::ValueDesc())
 {
 	CellRendererText::signal_edited().connect(sigc::mem_fun(*this,&CellRenderer_ValueBase::string_edited_));
 	value_entry=new ValueBase_Entry();
@@ -583,6 +590,7 @@ CellRenderer_ValueBase::start_editing_vfunc(
 			value_entry->set_path(path);
 			value_entry->set_canvas(get_canvas());
 			value_entry->set_param_desc(get_param_desc());
+			value_entry->set_value_desc(get_value_desc());
 			value_entry->set_value(data);
 			value_entry->set_parent(&widget);
 			value_entry->signal_editing_done().connect(sigc::mem_fun(*this, &CellRenderer_ValueBase::on_value_editing_done));
