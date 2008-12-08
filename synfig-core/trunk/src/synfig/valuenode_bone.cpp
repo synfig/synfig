@@ -45,6 +45,8 @@ using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 
+#define HIDE_BONE_FIELDS
+
 #define GET_NODE_PARENT_NODE(node,t) (*node->get_link("parent"))(t).get(ValueNode_Bone::Handle())
 #define GET_NODE_PARENT(node,t) GET_NODE_PARENT_NODE(node,t)->get_guid()
 #define GET_NODE_NAME(node,t) (*node->get_link("name"))(t).get(String())
@@ -111,6 +113,7 @@ ValueNode_Bone::ValueNode_Bone(const ValueBase &value):
 	{
 		Bone bone(value.get(Bone()));
 		set_link("name",ValueNode_Const::create(bone.get_name().empty() ? strprintf(_("Bone %d"), ++bone_counter) : bone.get_name()));
+#ifndef HIDE_BONE_FIELDS
 		set_link("origin",ValueNode_Const::create(bone.get_origin()));
 		set_link("origin0",ValueNode_Const::create(bone.get_origin0()));
 		set_link("angle",ValueNode_Const::create(bone.get_angle()));
@@ -118,6 +121,7 @@ ValueNode_Bone::ValueNode_Bone(const ValueBase &value):
 		set_link("scale",ValueNode_Const::create(bone.get_scale()));
 		set_link("length",ValueNode_Const::create(bone.get_length()));
 		set_link("strength",ValueNode_Const::create(bone.get_strength()));
+#endif
 		set_link("parent",ValueNode_Const::create(find(bone.get_parent())));
 
 		bone_map[get_guid()] = this;
@@ -176,6 +180,7 @@ ValueNode_Bone::operator()(Time t)const
 
 	Bone ret;
 	ret.set_name		((*name_	)(t).get(String()));
+#ifndef HIDE_BONE_FIELDS
 	ret.set_origin		((*origin_	)(t).get(Point()));
 	ret.set_origin0		((*origin0_	)(t).get(Point()));
 	ret.set_angle		((*angle_	)(t).get(Angle()));
@@ -183,6 +188,7 @@ ValueNode_Bone::operator()(Time t)const
 	ret.set_scale		((*scale_	)(t).get(Real()));
 	ret.set_length		((*length_	)(t).get(Real()));
 	ret.set_strength	((*strength_)(t).get(Real()));
+#endif
 
 	// check if we are an ancestor of the proposed parent
 	ValueNode_Bone::ConstHandle parent((*parent_)(t).get(ValueNode_Bone::Handle()));
@@ -231,6 +237,9 @@ ValueNode_Bone::set_link_vfunc(int i,ValueNode::Handle value)
 	switch(i)
 	{
 	case 0: CHECK_TYPE_AND_SET_VALUE(name_,		ValueBase::TYPE_STRING);
+#ifdef HIDE_BONE_FIELDS
+	case 1: CHECK_TYPE_AND_SET_VALUE(parent_,	ValueBase::TYPE_VALUENODE_BONE);
+#else
 	case 1: CHECK_TYPE_AND_SET_VALUE(origin_,	ValueBase::TYPE_VECTOR);
 	case 2: CHECK_TYPE_AND_SET_VALUE(origin0_,	ValueBase::TYPE_VECTOR);
 	case 3: CHECK_TYPE_AND_SET_VALUE(angle_,	ValueBase::TYPE_ANGLE);
@@ -239,6 +248,7 @@ ValueNode_Bone::set_link_vfunc(int i,ValueNode::Handle value)
 	case 6: CHECK_TYPE_AND_SET_VALUE(length_,	ValueBase::TYPE_REAL);
 	case 7: CHECK_TYPE_AND_SET_VALUE(strength_,	ValueBase::TYPE_REAL);
 	case 8: CHECK_TYPE_AND_SET_VALUE(parent_,	ValueBase::TYPE_VALUENODE_BONE);
+#endif
 	}
 	return false;
 }
@@ -251,6 +261,9 @@ ValueNode_Bone::get_link_vfunc(int i)const
 	switch(i)
 	{
 	case 0: return name_;
+#ifdef HIDE_BONE_FIELDS
+	case 1: return parent_;
+#else
 	case 1: return origin_;
 	case 2: return origin0_;
 	case 3: return angle_;
@@ -259,6 +272,7 @@ ValueNode_Bone::get_link_vfunc(int i)const
 	case 6: return length_;
 	case 7: return strength_;
 	case 8: return parent_;
+#endif
 	}
 
 	return 0;
@@ -267,7 +281,11 @@ ValueNode_Bone::get_link_vfunc(int i)const
 int
 ValueNode_Bone::link_count()const
 {
+#ifdef HIDE_BONE_FIELDS
+	return 2;
+#else
 	return 9;
+#endif
 }
 
 String
@@ -278,6 +296,9 @@ ValueNode_Bone::link_name(int i)const
 	switch(i)
 	{
 	case 0: return "name";
+#ifdef HIDE_BONE_FIELDS
+	case 1: return "parent";
+#else
 	case 1: return "origin";
 	case 2: return "origin0";
 	case 3: return "angle";
@@ -286,6 +307,7 @@ ValueNode_Bone::link_name(int i)const
 	case 6: return "length";
 	case 7: return "strength";
 	case 8: return "parent";
+#endif
 	}
 
 	return String();
@@ -299,6 +321,9 @@ ValueNode_Bone::link_local_name(int i)const
 	switch(i)
 	{
 	case 0: return _("Name");
+#ifdef HIDE_BONE_FIELDS
+	case 1: return _("Parent");
+#else
 	case 1: return _("Origin");
 	case 2: return _("Origin0");
 	case 3: return _("Angle");
@@ -307,6 +332,7 @@ ValueNode_Bone::link_local_name(int i)const
 	case 6: return _("Length");
 	case 7: return _("Strength");
 	case 8: return _("Parent");
+#endif
 	}
 
 	return String();
@@ -316,6 +342,9 @@ int
 ValueNode_Bone::get_link_index_from_name(const String &name)const
 {
 	if (name == "name") return 0;
+#ifdef HIDE_BONE_FIELDS
+	if (name == "parent") return 1;
+#else
 	if (name == "origin") return 1;
 	if (name == "origin0") return 2;
 	if (name == "angle") return 3;
@@ -324,6 +353,7 @@ ValueNode_Bone::get_link_index_from_name(const String &name)const
 	if (name == "length") return 6;
 	if (name == "strength") return 7;
 	if (name == "parent") return 8;
+#endif
 
 	throw Exception::BadLinkName(name);
 }
