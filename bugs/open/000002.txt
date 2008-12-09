@@ -7,6 +7,6 @@ quote:
 Convert 'Layer Parameter (Skeleton):Bones' to ValueNode type
  'Static List': Unable to create new value node
 
-On the other hand, doing Disconnect instad of delete all the bones
-allows to convert it again to Static List recovering the same bones and
-all the previous parent connection.
+On the other hand, doing Disconnect instead of deleting all the bones
+allows the user to convert it again to Static List recovering the same bones and
+all the previous parent connections.
