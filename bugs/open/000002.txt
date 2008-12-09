@@ -1,0 +1,12 @@
+Subject: Remove all bones from the static list makes it impossible to add a new one.
+
+Add a new skeleton layer, Delete all the Bones (Delete Item Smart)
+The list becomes empty (and not expandable). Converting to Static List fails:
+
+quote:
+Convert 'Layer Parameter (Skeleton):Bones' to ValueNode type
+ 'Static List': Unable to create new value node
+
+On the other hand, doing Disconnect instad of delete all the bones
+allows to convert it again to Static List recovering the same bones and
+all the previous parent connection.
