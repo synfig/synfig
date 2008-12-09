@@ -405,11 +405,13 @@ ValueNode_Bone::get_bones(ValueNode::Handle value)
 
 	if (ValueNode_Const::Handle value_node_const = ValueNode_Const::Handle::cast_dynamic(value))
 	{
-		if (ValueNode_Bone::Handle bone = value_node_const->get_value().get(ValueNode_Bone::Handle()))
-		{
-			ret = get_bones(bone->get_link("parent"));
-			ret.insert(bone);
-		}
+		ValueBase value(value_node_const->get_value());
+		if (value.get_type() == ValueBase::TYPE_VALUENODE_BONE)
+			if (ValueNode_Bone::Handle bone = value.get(ValueNode_Bone::Handle()))
+			{
+				ret = get_bones(bone->get_link("parent"));
+				ret.insert(bone);
+			}
 		return ret;
 	}
 
