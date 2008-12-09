@@ -63,7 +63,9 @@ public:
 	virtual ValueNode* clone(const GUID& deriv_guid=GUID())const;
 
 public:
-	static ValueNode_Const* create(const ValueBase &x=ValueBase());
+	// create a new ValueNode_Const object with the given value.
+	// Unless the given value is a Bone, in which case make a ValueNode_Bone.
+	static ValueNode* create(const ValueBase &x=ValueBase());
 
 protected:
 	virtual void get_times_vfunc(Node::time_set &set) const;

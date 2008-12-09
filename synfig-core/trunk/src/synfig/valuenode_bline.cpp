@@ -342,7 +342,7 @@ ValueNode_BLine::create(const ValueBase &value)
 #define CURR_POINT	curr->get_value().get(BLinePoint())
 				if(iter==segments.begin())
 				{
-					prev=ValueNode_Const::create(ValueBase::TYPE_BLINEPOINT);
+					prev=ValueNode_Const::Handle::cast_dynamic(create(ValueBase::TYPE_BLINEPOINT));
 					{
 						BLinePoint prev_point(PREV_POINT);
 						prev_point.set_vertex(iter->p1);
@@ -368,8 +368,7 @@ ValueNode_BLine::create(const ValueBase &value)
 					continue;
 				}
 
-				ValueNode_Const::Handle curr;
-				curr=ValueNode_Const::create(ValueBase::TYPE_BLINEPOINT);
+				ValueNode_Const::Handle curr(ValueNode_Const::Handle::cast_dynamic(create(ValueBase::TYPE_BLINEPOINT)));
 				{
 					BLinePoint curr_point(CURR_POINT);
 					curr_point.set_vertex(iter->p2);

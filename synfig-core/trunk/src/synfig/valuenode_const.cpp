@@ -30,6 +30,7 @@
 #endif
 
 #include "valuenode_const.h"
+#include "valuenode_bone.h"
 #include "general.h"
 
 #endif
@@ -62,9 +63,12 @@ ValueNode_Const::ValueNode_Const(const ValueBase &x):
 }
 
 
-ValueNode_Const*
+ValueNode*
 ValueNode_Const::create(const ValueBase &x)
 {
+	if (x.get_type() == ValueBase::TYPE_BONE)
+		return ValueNode_Bone::create(x);
+
 	return new ValueNode_Const(x);
 }
 
