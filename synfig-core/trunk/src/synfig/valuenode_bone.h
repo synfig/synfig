@@ -56,6 +56,7 @@ public:
 	typedef etl::handle<const ValueNode_Bone> ConstHandle;
 	typedef etl::loose_handle<ValueNode_Bone> LooseHandle;
 	typedef std::map<synfig::GUID, LooseHandle> BoneMap;
+	typedef std::set<Handle> BoneSet;
 
 	virtual ValueBase operator()(Time t)const;
 
@@ -87,6 +88,7 @@ public:
 	static BoneMap::const_iterator map_begin();
 	static BoneMap::const_iterator map_end();
 	static ValueNode_Bone::Handle find(GUID guid);
+	static BoneSet get_bones(ValueNode::Handle value);
 	ValueNode_Bone::ConstHandle is_ancestor_of(ValueNode_Bone::ConstHandle bone, Time t)const;
 #ifdef _DEBUG
 	virtual void ref()const;

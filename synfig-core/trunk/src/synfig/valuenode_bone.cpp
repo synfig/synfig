@@ -392,6 +392,51 @@ ValueNode_Bone::find(GUID guid)
 	}
 }
 
+ValueNode_Bone::BoneSet
+ValueNode_Bone::get_bones(ValueNode::Handle value)
+{
+	BoneSet ret;
+	if (!value)
+	{
+		printf("%s:%d failed?\n", __FILE__, __LINE__);
+		assert(0);
+		return ret;
+	}
+
+	if (ValueNode_Const::Handle value_node_const = ValueNode_Const::Handle::cast_dynamic(value))
+	{
+		ValueNode_Bone::Handle bone(value_node_const->get_value().get(ValueNode_Bone::Handle()));
+		if (bone)
+		{
+			ret = get_bones(bone->get_link("parent"));
+			ret.insert(bone);
+			printf("returning single bone %s\n", value_node_const->get_value().get(ValueNode_Bone::Handle())->get_guid().get_string().substr(0,6).c_str());
+		}
+		else
+			printf("%s:%d single bone is null\n", __FILE__, __LINE__);
+		return ret;
+	}
+
+	if (ValueNode_Animated::Handle value_node_animated = ValueNode_Animated::Handle::cast_dynamic(value))
+	{
+		// ValueNode_Animated::Handle ret = ValueNode_Animated::create(ValueBase::TYPE_BONE);
+		ValueNode_Animated::WaypointList list(value_node_animated->waypoint_list());
+		for (ValueNode_Animated::WaypointList::iterator iter = list.begin(); iter != list.end(); iter++)
+		{
+			printf("%s:%d getting bones from waypoint\n", __FILE__, __LINE__);
+			BoneSet ret2 = get_bones(iter->get_value_node());
+			ret.insert(ret2.begin(), ret2.end());
+			printf("added %d bones from waypoint to get %d\n", int(ret2.size()), int(ret.size()));
+		}
+		printf("returning %d bones\n", int(ret.size()));
+		return ret;
+	}
+
+	error("%s:%d BUG: failed to clone ValueNode '%s'", __FILE__, __LINE__, value->get_description().c_str());
+	assert(0);
+	return ret;
+}
+
 // checks whether the current object is an ancestor of the supplied bone
 // returns a handle to NULL if it isn't
 // if there's a loop in the ancestry it returns a handle to the valuenode where the loop is detected
