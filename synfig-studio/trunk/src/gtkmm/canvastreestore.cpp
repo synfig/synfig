@@ -259,6 +259,7 @@ CanvasTreeStore::get_value_vfunc(const Gtk::TreeModel::iterator& iter, int colum
 					x.set(canvas->get_name());
 				else
 					x.set(_("[Unnamed]"));
+				// todo: what are the previous 6 lines for if we're going to overwrite it here?
 				x.set(_("Canvas"));
 			}
 			return Gtk::TreeStore::get_value_vfunc(iter,column,value);
