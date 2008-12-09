@@ -255,8 +255,7 @@ CanvasTreeStore::get_value_vfunc(const Gtk::TreeModel::iterator& iter, int colum
 			{
 				if(!canvas->get_id().empty())
 					x.set(canvas->get_id());
-				else
-				if(!canvas->get_name().empty())
+				else if(!canvas->get_name().empty())
 					x.set(canvas->get_name());
 				else
 					x.set(_("[Unnamed]"));
