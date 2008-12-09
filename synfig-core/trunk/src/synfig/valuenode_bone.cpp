@@ -409,7 +409,9 @@ ValueNode_Bone::get_bones(ValueNode::Handle value)
 		if (value.get_type() == ValueBase::TYPE_VALUENODE_BONE)
 			if (ValueNode_Bone::Handle bone = value.get(ValueNode_Bone::Handle()))
 			{
-				ret = get_bones(bone->get_link("parent"));
+				// do we want to check for bone references in other bone fields or just 'parent'?
+				ret = get_bones(bone);
+				// ret = get_bones(bone->get_link("parent"));
 				ret.insert(bone);
 			}
 		return ret;
