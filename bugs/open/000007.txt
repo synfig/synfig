@@ -1,6 +1,6 @@
 Subject: Duplicate a skeleton layer and delete a bone in the duplicated crash
 
-Add skeleton, duplicate the layer, edit the duplciated and try to delete a
+Add skeleton, duplicate the layer, edit the duplicated and try to delete a
 bone, it crashes.
 
 CONSOLE OUTPUT
