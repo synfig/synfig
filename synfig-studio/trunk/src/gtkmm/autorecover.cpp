@@ -124,7 +124,7 @@ AutoRecover::set_timeout(int milliseconds)
 {
 	timeout=milliseconds;
 	auto_backup_connect.disconnect();
-	if(timeout)
+	if(timeout && !getenv("SYNFIG_DISABLE_AUTO_SAVE"))
 		auto_backup_connect=Glib::signal_timeout().connect(sigc::ptr_fun(&AutoRecover::auto_backup),timeout);
 //		auto_backup_connect=App::main.get_context()->signal_timeout().connect(sigc::mem_fun(&AutoRecover::auto_backup),timeout);
 }
