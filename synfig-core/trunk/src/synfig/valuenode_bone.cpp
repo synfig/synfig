@@ -405,15 +405,11 @@ ValueNode_Bone::get_bones(ValueNode::Handle value)
 
 	if (ValueNode_Const::Handle value_node_const = ValueNode_Const::Handle::cast_dynamic(value))
 	{
-		ValueNode_Bone::Handle bone(value_node_const->get_value().get(ValueNode_Bone::Handle()));
-		if (bone)
+		if (ValueNode_Bone::Handle bone = value_node_const->get_value().get(ValueNode_Bone::Handle()))
 		{
 			ret = get_bones(bone->get_link("parent"));
 			ret.insert(bone);
-			printf("returning single bone %s\n", value_node_const->get_value().get(ValueNode_Bone::Handle())->get_guid().get_string().substr(0,6).c_str());
 		}
-		else
-			printf("%s:%d single bone is null\n", __FILE__, __LINE__);
 		return ret;
 	}
 
