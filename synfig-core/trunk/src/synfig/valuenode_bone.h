@@ -88,7 +88,13 @@ public:
 	static BoneMap::const_iterator map_begin();
 	static BoneMap::const_iterator map_end();
 	static ValueNode_Bone::Handle find(GUID guid);
+
+	// return a set of the bones that affect the given valuenode
+	//   recurses through the valuenodes in the waypoints if it's animated,
+	//   through the subnodes if it's linkable,
+	//   and through the 'parent' link if it's a bone
 	static BoneSet get_bones(ValueNode::Handle value);
+
 	ValueNode_Bone::ConstHandle is_ancestor_of(ValueNode_Bone::ConstHandle bone, Time t)const;
 #ifdef _DEBUG
 	virtual void ref()const;
