@@ -233,6 +233,12 @@ public:
 	template <typename T>
 	const T &get(const T& x __attribute__ ((unused)))const
 	{
+#ifdef _DEBUG
+		if (!is_valid())
+			printf("%s:%d !is_valid()\n", __FILE__, __LINE__);
+		else if (!same_type_as(x))
+			printf("%s:%d !'%s'.same_type_as('%s')\n", __FILE__, __LINE__, type_name(type).c_str(), type_name(get_type(x)).c_str());
+#endif
 		assert(is_valid() && same_type_as(x));
 		return *static_cast<const T*>(data);
 	}
