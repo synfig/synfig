@@ -1,0 +1,13 @@
+Subject: Duplicate a skeleton layer and delete a bone in the duplicated crash
+
+Add skeleton, duplicate the layer, edit the duplciated and try to delete a
+bone, it crashes.
+
+CONSOLE OUTPUT
+ss-debug: /home/carlos/Software/Synfig-git/install/include/ETL/_handle.h:280: T* etl::handle<T>::operator->() const [with T = synfig::ValueNode]: Afirmación `obj' fallida.
+Cancelado
+
+Git Revision: "New bug #6"
+(Maybe related with the 000001)
+
+
