@@ -261,6 +261,8 @@ CanvasInterface::add_layer_to(synfig::String name, synfig::Canvas::Handle canvas
 						}
 						else if (type == ValueBase::TYPE_BONE && !getenv("SYNFIG_USE_DYNAMIC_LIST_FOR_BONES"))
 							value_node=LinkableValueNode::create("static_list",iter->second);
+						else if (type == ValueBase::TYPE_VECTOR && getenv("SYNFIG_USE_STATIC_LIST_FOR_VECTORS"))
+							value_node=LinkableValueNode::create("static_list",iter->second);
 					}
 				}
 
