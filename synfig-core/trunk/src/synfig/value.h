@@ -41,6 +41,7 @@
 //#include "gradient.h"
 #include "blinepoint.h"
 #include "bone.h"
+#include "matrix.h"
 #include "exception.h"
 
 #ifdef USE_HALF_TYPE
@@ -70,6 +71,7 @@ class BLinePoint;
 class Color;
 class Bone;
 class ValueNode_Bone;
+class Matrix;
 
 /*!	\class ValueBase
 **	\todo writeme
@@ -102,6 +104,7 @@ public:
 		TYPE_COLOR,			//!< Color
 		TYPE_SEGMENT,		//!< Segment
 		TYPE_BLINEPOINT,	//!< BLinePoint
+		TYPE_MATRIX,		//!< Matrix
 
 		// All types after this point require construction/destruction
 
@@ -312,6 +315,7 @@ public:
 	static Type get_type(const Color&) { return TYPE_COLOR; }
 	static Type get_type(const Segment&) { return TYPE_SEGMENT; }
 	static Type get_type(const BLinePoint&) { return TYPE_BLINEPOINT; }
+	static Type get_type(const Matrix&) {return TYPE_MATRIX;}
 	static Type get_type(const String&) { return TYPE_STRING; }
 	static Type get_type(const Gradient&) { return TYPE_GRADIENT; }
 	static Type get_type(const Bone&) { return TYPE_BONE; }
@@ -343,6 +347,7 @@ public:
 
 	operator const Vector&()const {  return get(Vector()); }
 	operator const BLinePoint&()const {  return get(BLinePoint()); }
+	operator const Matrix&()const { return get(Matrix()); }
 	//operator const int&()const {  return get(int()); }
 	//operator const String&()const {  return get(String()); }
 	//operator const char *()const {  return get(String()).c_str(); }
