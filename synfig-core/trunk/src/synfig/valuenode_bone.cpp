@@ -420,11 +420,21 @@ ValueNode_Bone::get_bones(ValueNode::Handle value)
 		for (ValueNode_Animated::WaypointList::iterator iter = list.begin(); iter != list.end(); iter++)
 		{
 			printf("%s:%d getting bones from waypoint\n", __FILE__, __LINE__);
-			BoneSet ret2 = get_bones(iter->get_value_node());
+			BoneSet ret2(get_bones(iter->get_value_node()));
 			ret.insert(ret2.begin(), ret2.end());
 			printf("added %d bones from waypoint to get %d\n", int(ret2.size()), int(ret.size()));
 		}
 		printf("returning %d bones\n", int(ret.size()));
+		return ret;
+	}
+
+	if (LinkableValueNode::Handle linkable_value_node = LinkableValueNode::Handle::cast_dynamic(value))
+	{
+		for (int i = 0; i < linkable_value_node->link_count(); i++)
+		{
+			BoneSet ret2(get_bones(linkable_value_node->get_link(i)));
+			ret.insert(ret2.begin(), ret2.end());
+		}
 		return ret;
 	}
 
