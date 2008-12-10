@@ -38,7 +38,7 @@ VALUENODEHEADERS = \
 	valuenode_sine.h   valuenode_step.h   valuenode_stripes.h   valuenode_subtract.h   valuenode_switch.h		\
 	valuenode_timedswap.h   valuenode_timeloop.h   valuenode_timestring.h   valuenode_twotone.h			\
 	valuenode_vectorangle.h   valuenode_vectorlength.h   valuenode_vectorx.h   valuenode_vectory.h			\
-	valuenode_boneinfluence.h   valuenode_staticlist.h   valuenode_bone.h
+	valuenode_boneinfluence.h   valuenode_staticlist.h   valuenode_bone.h valuenode_boneweightpair.h
 
 VALUENODESOURCES = \
 	valuenode_add.cpp valuenode_anglestring.cpp valuenode_animated.cpp valuenode_atan2.cpp valuenode_bline.cpp	\
@@ -52,7 +52,7 @@ VALUENODESOURCES = \
 	valuenode_sine.cpp valuenode_step.cpp valuenode_stripes.cpp valuenode_subtract.cpp valuenode_switch.cpp		\
 	valuenode_timedswap.cpp valuenode_timeloop.cpp valuenode_timestring.cpp valuenode_twotone.cpp			\
 	valuenode_vectorangle.cpp valuenode_vectorlength.cpp valuenode_vectorx.cpp valuenode_vectory.cpp		\
-	valuenode_boneinfluence.cpp valuenode_staticlist.cpp valuenode_bone.cpp
+	valuenode_boneinfluence.cpp valuenode_staticlist.cpp valuenode_bone.cpp valuenode_boneweightpair.cpp
 
 VALUEHEADERS = \
 	blinepoint.h   gradient.h   value.h

@@ -46,6 +46,7 @@
 #include "valuenode_composite.h"
 #include "valuenode_reference.h"
 #include "valuenode_boneinfluence.h"
+#include "valuenode_boneweightpair.h"
 #include "valuenode_bone.h"
 #include "valuenode_greyed.h"
 #include "valuenode_scale.h"
@@ -183,6 +184,7 @@ ValueNode::subsys_init()
 	ADD_VALUENODE(ValueNode_BoneInfluence,	  "boneinfluence",	  _("Bone Influence"),	 RELEASE_VERSION_0_61_10); // SVN r2???
 	ADD_VALUENODE(ValueNode_Bone,			  "bone",			  _("Bone"),			 RELEASE_VERSION_0_61_10); // SVN r2???
 	ADD_VALUENODE2(ValueNode_StaticList,	  "static_list",	  _("Static List"),		 RELEASE_VERSION_0_61_10); // SVN r2???
+	ADD_VALUENODE(ValueNode_BoneWeightPair,	  "boneweightpair",	  _("BoneWeightPair"),	 RELEASE_VERSION_0_61_10); // SVN r2???
 
 #undef ADD_VALUENODE
 #undef ADD_VALUENODE2
