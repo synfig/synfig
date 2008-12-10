@@ -98,9 +98,9 @@ ValueNode_BoneWeightPair::operator()(Time t)const
 				b.get_animated_matrix()
 				*
 				(*weight_)(t).get(Real())
-			   )
-	;
+			);
 }
+
 
 
 String
@@ -139,10 +139,11 @@ ValueNode_BoneWeightPair::get_link_vfunc(int i)const
 {
 	assert(i>=0 && i<link_count());
 
-	if(i==0)
-		return bone_;
-	if(i==1)
-		return weight_;
+	switch(i)
+	{
+	case 0:	return bone_;
+	case 1: return weight_;
+	}
 
 	return 0;
 }
@@ -158,10 +159,12 @@ ValueNode_BoneWeightPair::link_name(int i)const
 {
 	assert(i>=0 && i<link_count());
 
-	if(i==0)
-		return "bone";
-	if(i==1)
-		return "weight";
+	switch(i)
+	{
+	case 0:	return "bone";
+	case 1: return "weight";
+	}
+
 	return String();
 }
 
@@ -170,20 +173,20 @@ ValueNode_BoneWeightPair::link_local_name(int i)const
 {
 	assert(i>=0 && i<link_count());
 
-	if(i==0)
-		return _("Bone");
-	if(i==1)
-		return _("Weight");
+	switch(i)
+	{
+	case 0:	return _("Bone");
+	case 1: return _("Weight");
+	}
+
 	return String();
 }
 
 int
 ValueNode_BoneWeightPair::get_link_index_from_name(const String &name)const
 {
-	if(name=="bone")
-		return 0;
-	if(name=="weight")
-		return 1;
+	if(name=="bone") return 0;
+	if(name=="weight") return 1;
 
 	throw Exception::BadLinkName(name);
 }
