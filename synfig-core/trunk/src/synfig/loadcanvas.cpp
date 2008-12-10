@@ -1259,7 +1259,7 @@ CanvasParser::parse_animated(xmlpp::Element *element,Canvas::Handle canvas)
 				**	a feature which is so obscure that we can get
 				**	away with something like this pretty easily.
 				*/
-				waypoint_value_node=waypoint_value_node->clone();
+				waypoint_value_node=waypoint_value_node->clone(canvas);
 
 				// Warn if there is trash after the param value
 				for(iter++; iter != list.end(); ++iter)

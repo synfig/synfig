@@ -140,7 +140,7 @@ Action::LayerParamDisconnect::perform()
 	if(new_value_node || ValueNode_DynamicList::Handle::cast_dynamic(old_value_node))
 	{
 		if(!new_value_node)
-			new_value_node=old_value_node.clone();
+			new_value_node=old_value_node->clone(get_canvas());
 		layer->connect_dynamic_param(param_name,new_value_node);
 	}
 	else

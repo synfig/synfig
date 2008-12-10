@@ -309,6 +309,8 @@ public:
 	//! \writeme
 	sigc::signal<void, etl::handle<ValueNode>, etl::handle<ValueNode> >& signal_value_node_child_removed() { return signal_value_node_child_removed_; }
 
+	void invoke_signal_value_node_child_removed(etl::handle<ValueNode>, etl::handle<ValueNode>);
+
 	/*
  --	** -- C O N S T R U C T O R S ---------------------------------------------
 	*/
@@ -543,7 +545,7 @@ public:
 
 	static Handle create_inline(Handle parent);
 
-	Handle clone(const GUID& deriv_guid=GUID())const;
+	Handle clone(const GUID& deriv_guid=GUID(), bool for_export=false)const;
 
 	void register_external_canvas(String file, Handle canvas);
 

@@ -541,10 +541,11 @@ PlaceholderValueNode::get_local_name()const
 }
 
 ValueNode*
-PlaceholderValueNode::clone(const GUID& deriv_guid)const
+PlaceholderValueNode::clone(Canvas::LooseHandle canvas, const GUID& deriv_guid)const
 {
 	ValueNode* ret(new PlaceholderValueNode());
 	ret->set_guid(get_guid()^deriv_guid);
+	ret->set_parent_canvas(canvas);
 	return ret;
 }
 
@@ -567,7 +568,7 @@ PlaceholderValueNode::PlaceholderValueNode(ValueBase::Type type):
 }
 
 ValueNode*
-LinkableValueNode::clone(const GUID& deriv_guid)const
+LinkableValueNode::clone(Canvas::LooseHandle canvas, const GUID& deriv_guid)const
 {
 	{
 		ValueNode* x(find_value_node(get_guid()^deriv_guid).get());
@@ -586,13 +587,14 @@ LinkableValueNode::clone(const GUID& deriv_guid)const
 		{
 			ValueNode::LooseHandle value_node(find_value_node(link->get_guid()^deriv_guid));
 			if(!value_node)
-				value_node=link->clone(deriv_guid);
+				value_node=link->clone(canvas, deriv_guid);
 			ret->set_link(i,value_node);
 		}
 		else
 			ret->set_link(i,link);
 	}
 
+	ret->set_parent_canvas(canvas);
 	return ret;
 }
 
@@ -611,7 +613,8 @@ ValueNode::get_relative_id(etl::loose_handle<const Canvas> x)const
 void
 ValueNode::set_parent_canvas(etl::loose_handle<Canvas> x)
 {
-	canvas_=x; if(x) root_canvas_=x->get_root();
+	canvas_=x;
+	if(x) set_root_canvas(x);
 }
 
 void

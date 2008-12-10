@@ -74,11 +74,12 @@ ValueNode_Const::create(const ValueBase &x)
 
 
 ValueNode*
-ValueNode_Const::clone(const GUID& deriv_guid)const
+ValueNode_Const::clone(etl::loose_handle<Canvas> canvas, const GUID& deriv_guid)const
 {
 	{ ValueNode* x(find_value_node(get_guid()^deriv_guid).get()); if(x)return x; }
 	ValueNode* ret(new ValueNode_Const(value));
 	ret->set_guid(get_guid()^deriv_guid);
+	ret->set_parent_canvas(canvas);
 	return ret;
 }
 

@@ -140,7 +140,8 @@ Action::LayerDuplicate::prepare()
 		if(get_canvas()!=subcanvas && !subcanvas->is_inline())
 			throw Error(_("This layer doesn't belong to this canvas anymore"));
 
-		Layer::Handle new_layer(layer->clone(guid));
+		// todo: which canvas should we use?  subcanvas is the layer's canvas, get_canvas() is the canvas set in the action
+		Layer::Handle new_layer(layer->clone(subcanvas, guid));
 
 		{
 			Action::Handle action(Action::create("LayerMove"));

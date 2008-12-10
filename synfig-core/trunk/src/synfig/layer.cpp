@@ -337,7 +337,7 @@ Layer::simple_clone()const
 }
 
 Layer::Handle
-Layer::clone(const GUID& deriv_guid) const
+Layer::clone(Canvas::LooseHandle canvas, const GUID& deriv_guid) const
 {
 	if(!book().count(get_name())) return 0;
 
@@ -364,7 +364,10 @@ Layer::clone(const GUID& deriv_guid) const
 			{
 				// This parameter is an inline canvas! we need to clone it
 				// before we set it as a parameter.
+
+				// clone canvas (all code that clones a canvas has this comment)
 				Canvas::Handle new_canvas(canvas->clone(deriv_guid));
+
 				ValueBase value(new_canvas);
 				ret->set_param(iter->first, value);
 				continue;
@@ -385,6 +388,7 @@ Layer::clone(const GUID& deriv_guid) const
 			Canvas::Handle canvas((*iter->second)(0).get(Canvas::Handle()));
 			if(canvas->is_inline())
 			{
+				// clone canvas (all code that clones a canvas has this comment)
 				Canvas::Handle new_canvas(canvas->clone(deriv_guid));
 				ValueBase value(new_canvas);
 				ret->connect_dynamic_param(iter->first,ValueNode_Const::create(value));
@@ -395,7 +399,7 @@ Layer::clone(const GUID& deriv_guid) const
 		if(iter->second->is_exported())
 			ret->connect_dynamic_param(iter->first,iter->second);
 		else
-			ret->connect_dynamic_param(iter->first,iter->second->clone(deriv_guid));
+			ret->connect_dynamic_param(iter->first,iter->second->clone(canvas, deriv_guid));
 	}
 
 	//ret->set_canvas(0);

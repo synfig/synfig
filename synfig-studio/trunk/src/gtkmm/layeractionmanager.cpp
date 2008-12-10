@@ -347,7 +347,7 @@ LayerActionManager::copy()
 
 	while(!layer_list.empty())
 	{
-		clipboard_.push_back(layer_list.front()->clone(guid));
+		clipboard_.push_back(layer_list.front()->clone(0, guid));
 		layer_list.pop_front();
 	}
 
@@ -379,7 +379,7 @@ LayerActionManager::paste()
 
 	for(std::list<synfig::Layer::Handle>::iterator iter=clipboard_.begin();iter!=clipboard_.end();++iter)
 	{
-		layer=(*iter)->clone(guid);
+		layer=(*iter)->clone(canvas, guid);
 		layer_selection.push_back(layer);
 		synfigapp::Action::Handle 	action(synfigapp::Action::create("LayerAdd"));
 

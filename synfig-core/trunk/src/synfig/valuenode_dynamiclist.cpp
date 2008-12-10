@@ -537,7 +537,7 @@ ValueNode_DynamicList::erase(const ValueNode::Handle &value_node_)
 				// else if(get_root_canvas() && get_parent_canvas())
 				//	get_root_canvas()->signal_value_node_child_removed()(this,value_node);
 				if(get_root_canvas())
-					get_root_canvas()->signal_value_node_child_removed()(this,value_node);
+					get_root_canvas()->invoke_signal_value_node_child_removed(this,value_node);
 			}
 			break;
 		}
@@ -665,7 +665,7 @@ ValueNode_DynamicList::link_local_name(int i)const
 }
 
 ValueNode*
-ValueNode_DynamicList::clone(const GUID& deriv_guid)const
+ValueNode_DynamicList::clone(Canvas::LooseHandle canvas, const GUID& deriv_guid)const
 {
 	{ ValueNode* x(find_value_node(get_guid()^deriv_guid).get()); if(x)return x; }
 
@@ -683,12 +683,13 @@ ValueNode_DynamicList::clone(const GUID& deriv_guid)const
 			ListEntry list_entry(*iter);
 			//list_entry.value_node=find_value_node(iter->value_node->get_guid()^deriv_guid).get();
 			//if(!list_entry.value_node)
-			list_entry.value_node=iter->value_node->clone(deriv_guid);
+			list_entry.value_node=iter->value_node->clone(canvas, deriv_guid);
 			ret->add(list_entry);
 			//ret->list.back().value_node=iter->value_node.clone();
 		}
 	}
 	ret->set_loop(get_loop());
+	ret->set_parent_canvas(canvas);
 	return ret;
 }
 

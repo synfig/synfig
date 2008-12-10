@@ -60,7 +60,7 @@ public:
 	virtual String get_name()const;
 	virtual String get_local_name()const;
 
-	virtual ValueNode* clone(const GUID& deriv_guid=GUID())const;
+	virtual ValueNode* clone(etl::loose_handle<Canvas> canvas, const GUID& deriv_guid=GUID())const;
 
 public:
 	// create a new ValueNode_Const object with the given value.

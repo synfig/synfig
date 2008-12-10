@@ -253,7 +253,7 @@ public:
 	bool operator!=(const UniqueID &rhs)const
 	{ return get_uid()!=rhs.get_uid(); }
 
-	Waypoint clone(const GUID& deriv_guid=GUID())const;
+	Waypoint clone(etl::loose_handle<Canvas> canvas, const GUID& deriv_guid=GUID())const;
 
 	GUID get_guid()const;
 }; // END of class Waypoint

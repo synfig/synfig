@@ -225,7 +225,7 @@ public:
 
 
 	//! \writeme
-	virtual ValueNode* clone(const GUID& deriv_guid=GUID())const=0;
+	virtual ValueNode* clone(etl::loose_handle<Canvas> canvas, const GUID& deriv_guid=GUID())const=0;
 
 	//! \writeme
 	bool is_exported()const { return !get_id().empty(); }
@@ -284,7 +284,7 @@ public:
 
 	virtual String get_local_name()const;
 
-	virtual ValueNode* clone(const GUID& deriv_guid=GUID())const;
+	virtual ValueNode* clone(etl::loose_handle<Canvas> canvas, const GUID& deriv_guid=GUID())const;
 
 	static Handle create(ValueBase::Type type=ValueBase::TYPE_NIL);
 
@@ -350,7 +350,7 @@ public:
 
 	virtual int get_link_index_from_name(const String &name)const=0;
 
-	virtual ValueNode* clone(const GUID& deriv_guid=GUID())const;
+	virtual ValueNode* clone(etl::loose_handle<Canvas> canvas, const GUID& deriv_guid=GUID())const;
 
 	bool set_link(int i,ValueNode::Handle x);
 	bool set_link(const String &name,ValueNode::Handle x) {	return set_link(get_link_index_from_name(name),x);	}

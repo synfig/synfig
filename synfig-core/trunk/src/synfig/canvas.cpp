@@ -775,7 +775,7 @@ Canvas::erase(iterator iter)
 }
 
 Canvas::Handle
-Canvas::clone(const GUID& deriv_guid)const
+Canvas::clone(const GUID& deriv_guid, bool for_export)const
 {
 	synfig::String name;
 	if(is_inline())
@@ -791,7 +791,7 @@ Canvas::clone(const GUID& deriv_guid)const
 
 	Handle canvas(new Canvas(name));
 
-	if(is_inline())
+	if(is_inline() && !for_export)
 	{
 		canvas->is_inline_=true;
 		// \todo this was setting parent_=0 - is there a reason for that?
@@ -808,7 +808,7 @@ Canvas::clone(const GUID& deriv_guid)const
 	const_iterator iter;
 	for(iter=begin();iter!=end();++iter)
 	{
-		Layer::Handle layer((*iter)->clone(deriv_guid));
+		Layer::Handle layer((*iter)->clone(canvas, deriv_guid));
 		if(layer)
 		{
 			assert(layer.count()==1);
@@ -1409,3 +1409,56 @@ Canvas::show_externals(String file, int line, String text) const
 	printf("  `-----\n\n");
 }
 #endif	// _DEBUG
+
+// #define DEBUG_INVOKE_SVNCR
+
+// this is only ever called from valuenode_dynamiclist.cpp and valuenode_staticlist.cpp
+// the container is a ValueNode_{Static,Dyanmic}List
+// the content is the entry
+void
+Canvas::invoke_signal_value_node_child_removed(etl::handle<ValueNode> container, etl::handle<ValueNode> content)
+{
+	signal_value_node_child_removed()(container, content);
+	Canvas::Handle canvas(this);
+#ifdef DEBUG_INVOKE_SVNCR
+	printf("%s:%d removed stuff from a canvas %lx with %zd parents\n", __FILE__, __LINE__, ulong(canvas.get()), canvas->parent_set.size());
+#endif
+	for (std::set<Node*>::iterator iter = canvas->parent_set.begin(); iter != canvas->parent_set.end(); iter++)
+	{
+		if (dynamic_cast<Layer*>(*iter))
+		{
+			Layer* layer(dynamic_cast<Layer*>(*iter));
+#ifdef DEBUG_INVOKE_SVNCR
+			printf("it's a layer %lx\n", ulong(layer));
+			printf("%s:%d it's a layer with %zd parents\n", __FILE__, __LINE__, layer->parent_set.size());
+#endif
+			for (std::set<Node*>::iterator iter = layer->parent_set.begin(); iter != layer->parent_set.end(); iter++)
+				if (dynamic_cast<Canvas*>(*iter))
+				{
+					Canvas* canvas(dynamic_cast<Canvas*>(*iter));
+#ifdef DEBUG_INVOKE_SVNCR
+					printf("it's a canvas %lx\n", ulong(canvas));
+#endif
+					if (canvas->get_root())
+					{
+#ifdef DEBUG_INVOKE_SVNCR
+						printf("%s:%d recursively invoking signal vn child removed on root %lx\n", __FILE__, __LINE__, ulong(canvas->get_root().get()));
+#endif
+						canvas->get_root()->invoke_signal_value_node_child_removed(container, content);
+					}
+#ifdef DEBUG_INVOKE_SVNCR
+					else
+						printf("can't get root_canvas\n");
+#endif
+				}
+#ifdef DEBUG_INVOKE_SVNCR
+				else
+					printf("not a canvas\n");
+#endif
+		}
+#ifdef DEBUG_INVOKE_SVNCR
+		else
+			printf("not a layer\n");
+#endif
+	}
+}

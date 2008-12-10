@@ -238,13 +238,14 @@ private:
 	Time r,s;
 
 public:
-	ValueNode* clone(const synfig::GUID& deriv_guid)const
+	ValueNode* clone(Canvas::LooseHandle canvas, const synfig::GUID& deriv_guid)const
 	{
 		{ ValueNode* x(find_value_node(get_guid()^deriv_guid).get()); if(x)return x; }
 		_Hermite<T>* ret(new _Hermite<T>());
 		ret->set_guid(get_guid()^deriv_guid);
 		for(WaypointList::const_iterator iter=waypoint_list().begin();iter!=waypoint_list().end();++iter)
-			ret->add(iter->clone(deriv_guid));
+			ret->add(iter->clone(canvas, deriv_guid));
+		ret->set_parent_canvas(canvas);
 		return ret;
 	}
 
@@ -542,13 +543,14 @@ private:
 	Time r,s;
 
 public:
-	ValueNode* clone(const synfig::GUID& deriv_guid)const
+	ValueNode* clone(Canvas::LooseHandle canvas, const synfig::GUID& deriv_guid)const
 	{
 		{ ValueNode* x(find_value_node(get_guid()^deriv_guid).get()); if(x)return x; }
 		_Constant<T>* ret(new _Constant<T>());
 		ret->set_guid(get_guid()^deriv_guid);
 		for(WaypointList::const_iterator iter=waypoint_list().begin();iter!=waypoint_list().end();++iter)
-			ret->add(iter->clone(deriv_guid));
+			ret->add(iter->clone(canvas, deriv_guid));
+		ret->set_parent_canvas(canvas);
 		return ret;
 	}
 
@@ -643,13 +645,14 @@ private:
 	Time r,s;
 
 public:
-	ValueNode* clone(const synfig::GUID& deriv_guid)const
+	ValueNode* clone(Canvas::LooseHandle canvas, const synfig::GUID& deriv_guid)const
 	{
 		{ ValueNode* x(find_value_node(get_guid()^deriv_guid).get()); if(x)return x; }
 		_AnimBool* ret(new _AnimBool());
 		ret->set_guid(get_guid()^deriv_guid);
 		for(WaypointList::const_iterator iter=waypoint_list().begin();iter!=waypoint_list().end();++iter)
-			ret->add(iter->clone(deriv_guid));
+			ret->add(iter->clone(canvas, deriv_guid));
+		ret->set_parent_canvas(canvas);
 		return ret;
 	}
 

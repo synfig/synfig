@@ -183,7 +183,7 @@ ValueNode_StaticList::erase(const ListEntry &value_node_) // line 513
 				// else if(get_root_canvas() && get_parent_canvas())
 				//	get_root_canvas()->signal_value_node_child_removed()(this,value_node);
 				if(get_root_canvas())
-					get_root_canvas()->signal_value_node_child_removed()(this,value_node);
+					get_root_canvas()->invoke_signal_value_node_child_removed(this,value_node);
 			}
 			break;
 		}
@@ -311,7 +311,7 @@ ValueNode_StaticList::link_local_name(int i)const // line 657
 }
 
 ValueNode*
-ValueNode_StaticList::clone(const GUID& deriv_guid)const
+ValueNode_StaticList::clone(Canvas::LooseHandle canvas, const GUID& deriv_guid)const
 {
 	{ ValueNode* x(find_value_node(get_guid()^deriv_guid).get()); if(x)return x; }
 
@@ -322,8 +322,9 @@ ValueNode_StaticList::clone(const GUID& deriv_guid)const
 		if((*iter)->is_exported())
 			ret->add(*iter);
 		else
-			ret->add((*iter)->clone(deriv_guid));
+			ret->add((*iter)->clone(canvas, deriv_guid));
 	ret->set_loop(get_loop());
+	ret->set_parent_canvas(canvas);
 	return ret;
 }
 

@@ -69,7 +69,7 @@ public:
 	virtual String link_local_name(int i)const;
 	virtual int get_link_index_from_name(const String &name)const;
 
-	virtual ValueNode* clone(const GUID& deriv_guid=GUID())const;
+	virtual ValueNode* clone(etl::loose_handle<Canvas> canvas, const GUID& deriv_guid=GUID())const;
 
 	void randomize_seed();
 

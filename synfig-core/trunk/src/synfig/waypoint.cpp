@@ -132,12 +132,12 @@ Waypoint::apply_model(const Model &x)
 }
 
 Waypoint
-Waypoint::clone(const GUID& deriv_guid)const
+Waypoint::clone(etl::loose_handle<Canvas> canvas, const GUID& deriv_guid)const
 {
 	Waypoint ret(*this);
 	ret.make_unique();
 	if(!ret.value_node->is_exported())
-		ret.value_node=value_node->clone(deriv_guid);
+		ret.value_node=value_node->clone(canvas, deriv_guid);
 	ret.parent_=0;
 	return ret;
 }

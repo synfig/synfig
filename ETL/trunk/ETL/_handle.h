@@ -136,7 +136,6 @@ public:
 	virtual void ref()const=0;
 	virtual bool unref()const=0;
 	virtual int count()const=0;
-	virtual virtual_shared_object *clone()=0;
 }; // END of class virtual_shared_object
 
 // ========================================================================
@@ -255,8 +254,6 @@ public:
 	//! Creates a new instance of a T object and puts it in the handle.
 	/*! Uses the default constructor */
 	void spawn() { operator=(handle(new T())); }
-
-	handle<value_type> clone()const { assert(obj); return static_cast<value_type*>(obj->clone()); }
 
 	//! Returns a constant handle to our object
 	handle<const value_type> constant()const { assert(obj); return *this; }
@@ -721,8 +718,6 @@ public:
 	void reset() { detach(); }
 
 	bool empty()const { return obj==0; }
-
-	handle<value_type> clone()const { assert(obj); return obj->clone(); }
 
 	//! Returns a constant handle to our object
 	loose_handle<const value_type> constant()const { return *this; }
