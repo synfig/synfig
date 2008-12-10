@@ -1,0 +1,13 @@
+Subject: Node::remove_child() is called carelessly
+
+A couple of recent bugs have been caused by remove_child() removing a
+node from the parent_set when it shouldn't have, due to a sibling
+using the same node.  One case was with two layer parameters linked to
+each other, and the other was two sub-parameters of the Switch
+valuenode being linked to each other.
+
+This same type of bug seems to be present in other places too, and
+should be killed.
+
+------------------------------------------------------------------------
+
