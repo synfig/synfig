@@ -1,3 +1,0 @@
-Subject: crash when duplicating a skeleton layer
-
-If I duplicate a skeleton layer, it appears to work, but crashes when I try to edit it.
