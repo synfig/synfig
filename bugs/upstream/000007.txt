@@ -23,3 +23,18 @@ This also happens in the master branch with blines.
 7. remove (smart) the first vertex - it crashes
 
 See sf.net bug #2412776.
+
+------------------------------------------------------------------------
+
+A recent commit mostly fixed the problem, but it still crashes like this:
+
+1. draw a bline outline
+2. encapsulate it
+3. export the canvas parameter
+4. open the new canvas in its own window
+5. focus the new window
+6. copy and paste the outline layer
+7. stretch the params dialog so it's about half the screen width and height
+8. expand the vertices
+9. scroll down so the vertices start towards the top of the params panel
+10. remove (smart) the first vertex - it crashes
