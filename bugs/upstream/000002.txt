@@ -16,3 +16,7 @@ all the previous parent connections.
 This also happens with dynamic lists.
 
 See sf.net bug #2412788.
+
+------------------------------------------------------------------------
+
+Actually, it's a duplicate of #1420091 from long ago.
