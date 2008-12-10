@@ -10,3 +10,9 @@ Convert 'Layer Parameter (Skeleton):Bones' to ValueNode type
 On the other hand, doing Disconnect instead of deleting all the bones
 allows the user to convert it again to Static List recovering the same bones and
 all the previous parent connections.
+
+------------------------------------------------------------------------
+
+This also happens with dynamic lists.
+
+See sf.net bug #2412788.
