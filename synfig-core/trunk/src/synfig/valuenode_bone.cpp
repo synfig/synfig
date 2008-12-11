@@ -83,8 +83,8 @@ struct compare_bones
 	}
 };
 
-static void
-show_bone_map(const char *file, int line, String text, Time t=0)
+void
+ValueNode_Bone::show_bone_map(const char *file, int line, String text, Time t)
 {
 	if (!getenv("SYNFIG_SHOW_BONE_MAP")) return;
 

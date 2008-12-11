@@ -88,6 +88,7 @@ public:
 	static BoneMap::const_iterator map_begin();
 	static BoneMap::const_iterator map_end();
 	static ValueNode_Bone::Handle find(GUID guid);
+	static void show_bone_map(const char *file, int line, String text, Time t=0);
 
 	// return a set of the bones that affect the given valuenode
 	//   recurses through the valuenodes in the waypoints if it's animated,
