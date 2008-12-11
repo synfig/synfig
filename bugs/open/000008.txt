@@ -20,5 +20,5 @@ r2291	 valuenode and we disconnect one of them, the parent-child
 	 uses the same valuenode.
 
 2412072: Don't remove a node from the parent set of a linkable
-r2311?	 valuenode when replacing a link if the link is still in use
+r2311	 valuenode when replacing a link if the link is still in use
 	 by one of the sibling links.
