@@ -31,6 +31,7 @@
 #endif
 
 #include "valuenode_boneinfluence.h"
+#include "valuenode_staticlist.h"
 #include "valuenode_const.h"
 #include "general.h"
 
@@ -58,7 +59,18 @@ ValueNode_BoneInfluence::ValueNode_BoneInfluence(const ValueBase::Type &x):
 ValueNode_BoneInfluence::ValueNode_BoneInfluence(const ValueNode::Handle &x):
 	LinkableValueNode(x->get_type())
 {
-	set_link("link",x);
+	switch(x->get_type())
+	{
+	case ValueBase::TYPE_VECTOR:
+		set_link("vertex_free",		ValueNode_Const::create(Vector()));
+		set_link("vertex_setup",	x);
+		set_link("bone_weight_list",ValueNode_StaticList::create(ValueBase::TYPE_MATRIX));
+		break;
+	default:
+		throw Exception::BadType(ValueBase::type_local_name(x->get_type()));
+	}
+
+	DCAST_HACK_ENABLE();
 }
 
 ValueNode_BoneInfluence*
@@ -78,72 +90,17 @@ ValueNode_BoneInfluence::~ValueNode_BoneInfluence()
 	unlink_all();
 }
 
-bool
-ValueNode_BoneInfluence::set_link_vfunc(int i,ValueNode::Handle value)
-{
-	assert(i>=0 && i<link_count());
-
-	switch(i)
-	{
-	case 0: CHECK_TYPE_AND_SET_VALUE(link_, get_type());
-	}
-	return false;
-}
-
-ValueNode::LooseHandle
-ValueNode_BoneInfluence::get_link_vfunc(int i __attribute__ ((unused)))const
-{
-	assert(i>=0 && i<link_count());
-
-	return link_;
-}
-
-int
-ValueNode_BoneInfluence::link_count()const
-{
-	return 1;
-}
-
-String
-ValueNode_BoneInfluence::link_local_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(i)
-	{
-	case 0: return _("Link");
-	}
-	return String();
-}
-
-String
-ValueNode_BoneInfluence::link_name(int i)const
-{
-	assert(i>=0 && i<link_count());
-
-	switch(i)
-	{
-	case 0: return "link";
-	}
-	return String();
-}
-
-int
-ValueNode_BoneInfluence::get_link_index_from_name(const String &name)const
-{
-	if(name=="link")
-		return 0;
-
-	throw Exception::BadLinkName(name);
-}
-
 ValueBase
 ValueNode_BoneInfluence::operator()(Time t)const
 {
 	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
 		printf("%s:%d operator()\n", __FILE__, __LINE__);
 
-	return (*link_)(t);
+	Vector vertex_free((*vertex_free_)(t).get(Vector()));
+	Vector vertex_setup((*vertex_setup_)(t).get(Vector()));
+	Matrix bone_weight_list((*bone_weight_list_)(t).get(Matrix()));
+
+	return vertex_free + bone_weight_list.get_transformed(vertex_setup);
 }
 
 
@@ -160,9 +117,83 @@ ValueNode_BoneInfluence::get_local_name()const
 }
 
 bool
+ValueNode_BoneInfluence::set_link_vfunc(int i,ValueNode::Handle value)
+{
+	assert(i>=0 && i<link_count());
+
+	switch(i)
+	{
+	case 0: CHECK_TYPE_AND_SET_VALUE(vertex_free_,		ValueBase::TYPE_VECTOR);
+	case 1: CHECK_TYPE_AND_SET_VALUE(vertex_setup_,		ValueBase::TYPE_VECTOR);
+	case 2: CHECK_TYPE_AND_SET_VALUE(bone_weight_list_,	ValueBase::TYPE_MATRIX);
+	}
+
+	return false;
+}
+
+ValueNode::LooseHandle
+ValueNode_BoneInfluence::get_link_vfunc(int i)const
+{
+	assert(i>=0 && i<link_count());
+
+	switch(i)
+	{
+	case 0: return vertex_free_;
+	case 1: return vertex_setup_;
+	case 2: return bone_weight_list_;
+	}
+
+	return 0;
+}
+
+int
+ValueNode_BoneInfluence::link_count()const
+{
+	return 3;
+}
+
+String
+ValueNode_BoneInfluence::link_name(int i)const
+{
+	assert(i>=0 && i<link_count());
+
+	switch(i)
+	{
+	case 0: return _("vertex_free");
+	case 1: return _("vertex_setup");
+	case 2: return _("bone_weight_list");
+	}
+
+	return String();
+}
+
+String
+ValueNode_BoneInfluence::link_local_name(int i)const
+{
+	assert(i>=0 && i<link_count());
+
+	switch(i)
+	{
+	case 0: return _("Vertex Free");
+	case 1: return _("Vertex Setup");
+	case 2: return _("Bone Weight List");
+	}
+
+	return String();
+}
+
+int
+ValueNode_BoneInfluence::get_link_index_from_name(const String &name)const
+{
+	if(name=="vertex_free")			return 0;
+	if(name=="vertex_setup")		return 1;
+	if(name=="bone_weight_list")	return 2;
+
+	throw Exception::BadLinkName(name);
+}
+
+bool
 ValueNode_BoneInfluence::check_type(ValueBase::Type type)
 {
-	if(type)
-		return true;
-	return false;
+	return type==ValueBase::TYPE_VECTOR;
 }
