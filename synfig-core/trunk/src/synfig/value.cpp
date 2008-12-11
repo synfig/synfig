@@ -404,10 +404,10 @@ ValueBase::operator==(const ValueBase& rhs)const
 	case TYPE_STRING:		   return get(String())==rhs.get(String());
 	case TYPE_CANVAS:		   return get(Canvas::LooseHandle())==rhs.get(Canvas::LooseHandle());
 	case TYPE_LIST:			   return get_list()==rhs.get_list();
+	case TYPE_VALUENODE_BONE:  return get(ValueNode_Bone::Handle())==rhs.get(ValueNode_Bone::Handle());
 	case TYPE_SEGMENT:		// return get(Segment())==rhs.get(Segment());
 	case TYPE_GRADIENT:		// return get(Gradient())==rhs.get(Gradient());
 	case TYPE_BONE:			// return get(Bone())==rhs.get(Bone());
-	case TYPE_VALUENODE_BONE:	// return get(Bone())==rhs.get(Bone());
 	case TYPE_BLINEPOINT:	// return get(BLinePoint())==rhs.get(BLinePoint());
 	case TYPE_MATRIX:		// return get(Matrix())==rhs.get(Matrix());
 	case TYPE_NIL:
