@@ -1,0 +1,10 @@
+Subject: Edit a parent parameter waypoint doesn't seems to work
+
+Create a skeleton, go to animation mode, modify the parent paramter of a bone.
+It creates a waypoint. Expand the bone and right click the waypoint.
+It would open a dialog to edit the parent paramter.
+The drop down list doesn't seems to work.
+
+------------------------------------------------------------------------
+
+
