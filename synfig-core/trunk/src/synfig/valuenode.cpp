@@ -269,8 +269,23 @@ LinkableValueNode::set_link(int i,ValueNode::Handle x)
 
 	if(set_link_vfunc(i,x))
 	{
+		// Fix 2412072: remove the previous link from the parent_set unless one of the other links is also
+		// using it when we convert a value to 'switch', both 'on' and 'off' are linked to the same valuenode
+		// if we then disconnect one of the two, the one we disconnect is set to be a new valuenode_const
+		// and the previously shared value is removed from the parent set even though the other is still
+		// using it
 		if(previous)
-			remove_child(previous.get());
+		{
+			int size = link_count(), index;
+			for (index=0; index < size; ++index)
+			{
+				if (i == index) continue;
+				if (get_link(index) == previous)
+					break;
+			}
+			if (index == size)
+				remove_child(previous.get());
+		}
 		add_child(x.get());
 
 		if(!x->is_exported() && get_parent_canvas())
