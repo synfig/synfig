@@ -222,6 +222,7 @@ public:
 
 	RWLock& get_rw_lock()const { return rw_lock_; }
 
+	virtual String get_string()const = 0;
 protected:
 
 	void begin_delete();

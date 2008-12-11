@@ -1518,3 +1518,9 @@ Canvas::show_canvas_ancestry()const
 	else printf("\n");
 }
 #endif
+
+String
+Canvas::get_string()const
+{
+	return String("Canvas: ") + get_description();
+}

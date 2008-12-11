@@ -620,3 +620,9 @@ Layer::get_param_local_name(const String &param_name)const
 			return iter->get_local_name();
 	return String();
 }
+
+String
+Layer::get_string()const
+{
+	return String("Layer: ") + get_description();
+}

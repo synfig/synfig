@@ -223,6 +223,8 @@ public:
 	//! Return a full description of the ValueNode and its parentage
 	virtual String get_description(bool show_exported_name = true)const;
 
+	String get_string()const;
+
 
 	//! \writeme
 	virtual ValueNode* clone(etl::loose_handle<Canvas> canvas, const GUID& deriv_guid=GUID())const=0;

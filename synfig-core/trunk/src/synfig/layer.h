@@ -365,6 +365,8 @@ public:
 	//! \writeme
 	const String& get_description()const { return description_; }
 
+	String get_string()const;
+
 	//! \writeme
 	void set_description(const String& x);
 

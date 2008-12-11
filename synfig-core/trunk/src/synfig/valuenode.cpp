@@ -633,6 +633,12 @@ ValueNode::set_root_canvas(etl::loose_handle<Canvas> x)
 	// printf("now %lx\n", ulong(root_canvas_.get()));
 }
 
+String
+ValueNode::get_string()const
+{
+	return String("ValueNode: ") + get_description();
+}
+
 void LinkableValueNode::get_times_vfunc(Node::time_set &set) const
 {
 	ValueNode::LooseHandle	h;

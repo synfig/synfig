@@ -371,6 +371,8 @@ public:
 	//! Gets the description of the canvas
 	const String & get_description()const { return description_; }
 
+	String get_string()const;
+
 	//! Sets the name of the canvas
 	void set_description(const String &x);
 
