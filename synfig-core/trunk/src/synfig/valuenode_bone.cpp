@@ -73,7 +73,13 @@ struct compare_bones
 {
 	bool operator() (const ValueNode_Bone::LooseHandle b1, const ValueNode_Bone::LooseHandle b2) const
 	{
-		return GET_NODE_NAME(b1,0) < GET_NODE_NAME(b2,0);
+		String n1(GET_NODE_NAME(b1,0));
+		String n2(GET_NODE_NAME(b2,0));
+
+		if (n1 < n2) return true;
+		if (n1 > n2) return false;
+
+		return b1->get_guid() < b2->get_guid();
 	}
 };
 
