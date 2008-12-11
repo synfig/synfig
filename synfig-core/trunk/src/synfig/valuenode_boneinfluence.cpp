@@ -62,9 +62,9 @@ ValueNode_BoneInfluence::ValueNode_BoneInfluence(const ValueNode::Handle &x):
 	switch(x->get_type())
 	{
 	case ValueBase::TYPE_VECTOR:
-		set_link("vertex_free",		ValueNode_Const::create(Vector()));
-		set_link("vertex_setup",	x);
-		set_link("bone_weight_list",ValueNode_StaticList::create(ValueBase::TYPE_MATRIX));
+		set_link("vertex_free",			ValueNode_Const::create(Vector()));
+		set_link("vertex_setup",		x);
+		set_link("bone_weight_list",	ValueNode_StaticList::create(ValueBase::TYPE_MATRIX));
 		break;
 	default:
 		throw Exception::BadType(ValueBase::type_local_name(x->get_type()));
