@@ -1,0 +1,8 @@
+Subject: Edit the parent in animation mode without modification produces uneeded waypoints
+
+Create a skeleton layer, change to animation mode.
+Edit the parent paramter of any bone and select <none>.
+It creates uneeded waypoint
+
+------------------------------------------------------------------------
+
