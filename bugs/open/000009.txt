@@ -1,0 +1,10 @@
+Subject: crash editing bone parent after duplicate & delete
+
+make skeleton layer
+export 1
+in layers: copy, paste, delete
+clear history
+edit bone1's parent
+
+------------------------------------------------------------------------
+
