@@ -313,6 +313,8 @@ ValueNode_StaticList::link_local_name(int i)const // line 657
 ValueNode*
 ValueNode_StaticList::clone(Canvas::LooseHandle canvas, const GUID& deriv_guid)const
 {
+	ValueNode_Bone::show_bone_map(__FILE__, __LINE__, "before cloning staticlist");
+
 	{ ValueNode* x(find_value_node(get_guid()^deriv_guid).get()); if(x)return x; }
 
 	ValueNode_StaticList* ret=dynamic_cast<ValueNode_StaticList*>(create_new());
@@ -325,6 +327,9 @@ ValueNode_StaticList::clone(Canvas::LooseHandle canvas, const GUID& deriv_guid)c
 			ret->add((*iter)->clone(canvas, deriv_guid));
 	ret->set_loop(get_loop());
 	ret->set_parent_canvas(canvas);
+
+	ValueNode_Bone::show_bone_map(__FILE__, __LINE__, "after cloning staticlist");
+
 	return ret;
 }
 
