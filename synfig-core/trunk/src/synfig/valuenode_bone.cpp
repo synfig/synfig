@@ -113,6 +113,10 @@ ValueNode_Bone::show_bone_map(const char *file, int line, String text, Time t)
 ValueNode_Bone::ValueNode_Bone(const ValueBase &value):
 	LinkableValueNode(value.get_type())
 {
+	printf("\n%s:%d ------------------------------------------------------------------------\n", __FILE__, __LINE__);
+	printf("%s:%d --- ValueNode_Bone() for %s at %lx---\n", __FILE__, __LINE__, GET_GUID_CSTR(get_guid()), ulong(this));
+	printf("%s:%d ------------------------------------------------------------------------\n\n", __FILE__, __LINE__);
+
 	switch(value.get_type())
 	{
 	case ValueBase::TYPE_BONE:
