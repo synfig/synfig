@@ -203,6 +203,8 @@ ValueNode_StaticList::~ValueNode_StaticList()
 	printf("\n%s:%d ------------------------------------------------------------------------\n", __FILE__, __LINE__);
 	printf("%s:%d ~ValueNode_StaticList()\n", __FILE__, __LINE__);
 	printf("%s:%d ------------------------------------------------------------------------\n\n", __FILE__, __LINE__);
+
+	ValueNode_Bone::show_bone_map(__FILE__, __LINE__, "deleting staticlist");
 }
 #endif
 
