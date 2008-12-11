@@ -112,7 +112,7 @@ ValueNode_BoneWeightPair::get_name()const
 String
 ValueNode_BoneWeightPair::get_local_name()const
 {
-	return _("BoneWeightPair");
+	return _("Bone Weight Pair");
 }
 
 bool
