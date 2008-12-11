@@ -99,11 +99,14 @@ ValueNode_Bone::show_bone_map(const char *file, int line, String text, Time t)
 		ValueNode_Bone::LooseHandle bone(*iter);
 		GUID guid(bone->get_guid());
 		ValueNode_Bone::LooseHandle parent(GET_NODE_PARENT_NODE(bone,t));
+		String id;
+		if (bone->is_exported()) id = String(" ") + bone->get_id();
 //		printf("%s : %s (%d)\n",           		GET_GUID_CSTR(guid), GET_NODE_BONE_CSTR(bone,t), bone->rcount());
-		printf("    %-20s : parent %-20s (%d refs, %d rrefs)\n",
+		printf("    %-20s : parent %-20s (%d refs, %d rrefs)%s\n",
 			   GET_NODE_DESC_CSTR(bone,t),
 			   GET_NODE_DESC_CSTR(parent,t),
-			   bone->count(), bone->rcount());
+			   bone->count(), bone->rcount(),
+			   id.c_str());
 	}
 	printf("\n");
 }
