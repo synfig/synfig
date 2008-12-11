@@ -197,16 +197,17 @@ ValueNode_StaticList::ValueNode_StaticList(ValueBase::Type container_type): // l
 	DCAST_HACK_ENABLE();
 }
 
-#ifdef _DEBUG
 ValueNode_StaticList::~ValueNode_StaticList()
 {
+#ifdef _DEBUG
 	printf("\n%s:%d ------------------------------------------------------------------------\n", __FILE__, __LINE__);
 	printf("%s:%d ~ValueNode_StaticList()\n", __FILE__, __LINE__);
 	printf("%s:%d ------------------------------------------------------------------------\n\n", __FILE__, __LINE__);
+#endif
 
 	ValueNode_Bone::show_bone_map(__FILE__, __LINE__, "deleting staticlist");
+	unlink_all();
 }
-#endif
 
 ValueNode_StaticList::Handle
 ValueNode_StaticList::create(ValueBase::Type id) // line 557

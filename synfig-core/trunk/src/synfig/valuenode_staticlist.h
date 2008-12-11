@@ -58,9 +58,7 @@ public:
 protected:
 	ValueNode_StaticList(ValueBase::Type container_type=ValueBase::TYPE_NIL);
 
-#ifdef _DEBUG
 	virtual ~ValueNode_StaticList();
-#endif
 
 	ValueBase::Type container_type;
 
