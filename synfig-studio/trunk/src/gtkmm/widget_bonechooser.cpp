@@ -86,18 +86,26 @@ Widget_BoneChooser::set_value(synfig::ValueNode_Bone::Handle data)
 	if (get_value_desc().is_value_node())
 	{
 		set<Node*> seen, current_nodes, new_nodes;
+		int generation = 0;
 		// initialise current_nodes with the node we're editing
 		current_nodes.insert(get_value_desc().get_value_node().get());
 		do
 		{
+			generation++;
+//			printf("generation %d has %zd nodes\n", generation, current_nodes.size());
+
+			int count = 0;
 			// loop through current_nodes
-			for (set<Node*>::iterator iter = current_nodes.begin(); iter != current_nodes.end(); iter++)
+			for (set<Node*>::iterator iter = current_nodes.begin(); iter != current_nodes.end(); iter++, count++)
 			{
 				// loop through the parents of each node in current_nodes
 				set<Node*> node_parents((*iter)->parent_set);
-				for (set<Node*>::iterator iter2 = node_parents.begin(); iter2 != node_parents.end(); iter2++)
+//				printf("%s:%d node %d (%s) has %zd parents\n", __FILE__, __LINE__, count, (*iter)->get_string().c_str(), node_parents.size());
+				int count2 = 0;
+				for (set<Node*>::iterator iter2 = node_parents.begin(); iter2 != node_parents.end(); iter2++, count2++)
 				{
 					Node* node(*iter2);
+//					printf("%s:%d parent %d: %s\n", __FILE__, __LINE__, count2, node->get_string().c_str());
 					// for each parent we've not already seen
 					if (!seen.count(node))
 					{
