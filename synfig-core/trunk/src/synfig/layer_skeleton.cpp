@@ -65,9 +65,17 @@ SYNFIG_LAYER_SET_CVS_ID(Layer_Skeleton,"$Id$");
 Layer_Skeleton::Layer_Skeleton():
 	name("skeleton")
 {
-	bones.push_back(Bone());
-	bones.push_back(Bone());
-	bones.push_back(Bone());
+	int bone_count = 3;
+	if (getenv("SYNFIG_NUMBER_OF_BONES_IN_SKELETON"))
+	{
+		bone_count = atoi(getenv("SYNFIG_NUMBER_OF_BONES_IN_SKELETON"));
+		printf("%s:%d bone_count = \n", __FILE__, __LINE__, bone_count);
+	}
+	if (bone_count < 1) bone_count = 1;
+	if (bone_count > 10) bone_count = 10;
+
+	while (bone_count--)
+		bones.push_back(Bone());
 }
 
 #ifdef _DEBUG
