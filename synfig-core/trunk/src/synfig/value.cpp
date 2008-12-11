@@ -105,7 +105,7 @@ ValueBase::get_string() const
 	case TYPE_NIL:			return "Nil";
 	case TYPE_BOOL:			return strprintf("Bool (%s)", get(bool()) ? "true" : "false");
 	case TYPE_INTEGER:		return strprintf("Integer (%s)", get(int()));
-	case TYPE_ANGLE:		return strprintf("Angle (%s)", Angle::deg(get(Angle())).get());
+	case TYPE_ANGLE:		return strprintf("Angle (%.2f)", Angle::deg(get(Angle())).get());
 
 		// All types after this point are larger than 32 bits
 
