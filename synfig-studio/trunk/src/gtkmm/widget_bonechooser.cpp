@@ -78,7 +78,6 @@ Widget_BoneChooser::set_value_(synfig::ValueNode_Bone::Handle data)
 void
 Widget_BoneChooser::set_value(synfig::ValueNode_Bone::Handle data)
 {
-	set<Node*> seen;
 	set<ValueNode_Bone*> affected_bones; // which bones are we currently editing the parent of - it can be more than one due to linking
 
 	assert(parent_canvas);
@@ -86,22 +85,29 @@ Widget_BoneChooser::set_value(synfig::ValueNode_Bone::Handle data)
 
 	if (get_value_desc().is_value_node())
 	{
-		set<Node*> current_nodes, new_nodes;
-		current_nodes.insert(&*(get_value_desc().get_value_node()));
+		set<Node*> seen, current_nodes, new_nodes;
+		// initialise current_nodes with the node we're editing
+		current_nodes.insert(get_value_desc().get_value_node().get());
 		do
 		{
+			// loop through current_nodes
 			for (set<Node*>::iterator iter = current_nodes.begin(); iter != current_nodes.end(); iter++)
 			{
+				// loop through the parents of each node in current_nodes
 				set<Node*> node_parents((*iter)->parent_set);
 				for (set<Node*>::iterator iter2 = node_parents.begin(); iter2 != node_parents.end(); iter2++)
 				{
 					Node* node(*iter2);
+					// for each parent we've not already seen
 					if (!seen.count(node))
 					{
+						// note that we've seen it now
+						seen.insert(node);
+						// add it to the list of new nodes to loop though in the next iteration
+						new_nodes.insert(node);
+						// and if it's a ValueNode_Bone, add it to affected_bones
 						if (dynamic_cast<ValueNode_Bone*>(node))
 							affected_bones.insert(dynamic_cast<ValueNode_Bone*>(node));
-						new_nodes.insert(node);
-						seen.insert(node);
 					}
 				}
 			}
