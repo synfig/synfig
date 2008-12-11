@@ -239,6 +239,9 @@ public:
 	//! Returns a handle to the parent canvas, if it has one.
 	etl::loose_handle<Canvas> get_root_canvas()const { return root_canvas_; }
 
+	//! Returns a handle to the parent canvas, if it has one.
+	etl::loose_handle<Canvas> get_non_inline_ancestor_canvas()const;
+
 	//! \writeme
 	void set_parent_canvas(etl::loose_handle<Canvas> x);
 

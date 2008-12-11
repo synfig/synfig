@@ -610,17 +610,27 @@ ValueNode::get_relative_id(etl::loose_handle<const Canvas> x)const
 	return canvas_->_get_relative_id(x)+':'+get_id();
 }
 
+etl::loose_handle<Canvas>
+ValueNode::get_non_inline_ancestor_canvas()const
+{
+	return get_parent_canvas()->get_non_inline_ancestor();
+}
+
 void
 ValueNode::set_parent_canvas(etl::loose_handle<Canvas> x)
 {
+	// printf("%s:%d set_parent_canvas of %lx to %lx\n", __FILE__, __LINE__, ulong(this), ulong(x.get()));
 	canvas_=x;
+	// printf("%s:%d now %lx\n", __FILE__, __LINE__, ulong(canvas_.get()));
 	if(x) set_root_canvas(x);
 }
 
 void
 ValueNode::set_root_canvas(etl::loose_handle<Canvas> x)
 {
+	// printf("%s:%d set_root_canvas of %lx to %lx - ", __FILE__, __LINE__, ulong(this), ulong(x.get()));
 	root_canvas_=x->get_root();
+	// printf("now %lx\n", ulong(root_canvas_.get()));
 }
 
 void LinkableValueNode::get_times_vfunc(Node::time_set &set) const

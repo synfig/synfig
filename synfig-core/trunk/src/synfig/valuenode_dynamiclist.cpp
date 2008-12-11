@@ -536,8 +536,8 @@ ValueNode_DynamicList::erase(const ValueNode::Handle &value_node_)
 				// 	get_parent_canvas()->signal_value_node_child_removed()(this,value_node);
 				// else if(get_root_canvas() && get_parent_canvas())
 				//	get_root_canvas()->signal_value_node_child_removed()(this,value_node);
-				if(get_root_canvas())
-					get_root_canvas()->invoke_signal_value_node_child_removed(this,value_node);
+				if(get_non_inline_ancestor_canvas())
+					get_non_inline_ancestor_canvas()->invoke_signal_value_node_child_removed(this,value_node);
 			}
 			break;
 		}

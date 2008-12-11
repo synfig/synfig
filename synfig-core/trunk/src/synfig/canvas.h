@@ -407,6 +407,8 @@ public:
 
 	LooseHandle get_root()const;
 
+	LooseHandle get_non_inline_ancestor()const;
+
 	//! Returns a list of all child canvases in this canvas
 	std::list<Handle> &children() { return children_; }
 
@@ -548,6 +550,11 @@ public:
 	Handle clone(const GUID& deriv_guid=GUID(), bool for_export=false)const;
 
 	void register_external_canvas(String file, Handle canvas);
+
+#if 0
+	void show_canvas_ancestry(String file, int line, String note)const;
+	void show_canvas_ancestry()const;
+#endif
 
 #ifdef _DEBUG
 	void show_externals(String file, int line, String text) const;
