@@ -180,6 +180,17 @@ ValueNode_Bone::~ValueNode_Bone()
 	unlink_all();
 }
 
+void
+ValueNode_Bone::set_guid(const GUID& new_guid)
+{
+	GUID old_guid(get_guid());
+	// show_bone_map(__FILE__, __LINE__, strprintf("before changing guid from %s to %s", GET_GUID_CSTR(old_guid), GET_GUID_CSTR(new_guid)));
+	LinkableValueNode::set_guid(new_guid);
+	bone_map[new_guid] = bone_map[old_guid];
+	bone_map.erase(old_guid);
+	// show_bone_map(__FILE__, __LINE__, strprintf("after changing guid from %s to %s", GET_GUID_CSTR(old_guid), GET_GUID_CSTR(new_guid)));
+}
+
 ValueBase
 ValueNode_Bone::operator()(Time t)const
 {

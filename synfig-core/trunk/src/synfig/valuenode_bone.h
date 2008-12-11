@@ -61,6 +61,7 @@ public:
 	virtual ValueBase operator()(Time t)const;
 
 	virtual ~ValueNode_Bone();
+	void set_guid(const GUID& x);
 
 	virtual String get_name()const;
 	virtual String get_local_name()const;

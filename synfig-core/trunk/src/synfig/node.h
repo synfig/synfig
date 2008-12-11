@@ -208,7 +208,7 @@ public:
 	const GUID& get_guid()const;
 
 	//! Sets the GUID for this value node
-	void set_guid(const GUID& x);
+	virtual void set_guid(const GUID& x);
 
 	int get_time_last_changed()const;
 
