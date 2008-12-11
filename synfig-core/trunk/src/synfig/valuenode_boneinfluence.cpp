@@ -31,6 +31,7 @@
 #endif
 
 #include "valuenode_boneinfluence.h"
+#include "valuenode_boneweightpair.h"
 #include "valuenode_staticlist.h"
 #include "valuenode_const.h"
 #include "general.h"
@@ -62,10 +63,14 @@ ValueNode_BoneInfluence::ValueNode_BoneInfluence(const ValueNode::Handle &x):
 	switch(x->get_type())
 	{
 	case ValueBase::TYPE_VECTOR:
+	{
+		ValueNode_StaticList::Handle bone_weight_list(ValueNode_StaticList::create(ValueBase::TYPE_MATRIX));
+		bone_weight_list->add(ValueNode_BoneWeightPair::create(Matrix()));
 		set_link("vertex_free",			ValueNode_Const::create(Vector()));
 		set_link("vertex_setup",		x);
-		set_link("bone_weight_list",	ValueNode_StaticList::create(ValueBase::TYPE_MATRIX));
+		set_link("bone_weight_list",	bone_weight_list);
 		break;
+	}
 	default:
 		throw Exception::BadType(ValueBase::type_local_name(x->get_type()));
 	}
@@ -98,9 +103,13 @@ ValueNode_BoneInfluence::operator()(Time t)const
 
 	Vector vertex_free((*vertex_free_)(t).get(Vector()));
 	Vector vertex_setup((*vertex_setup_)(t).get(Vector()));
-	Matrix bone_weight_list((*bone_weight_list_)(t).get(Matrix()));
 
-	return vertex_free + bone_weight_list.get_transformed(vertex_setup);
+	Matrix transform;
+	vector<ValueBase> bone_weight_list((*bone_weight_list_)(t).get_list());
+	for (vector<ValueBase>::iterator iter = bone_weight_list.begin(); iter != bone_weight_list.end(); iter++)
+		transform += *iter;
+
+	return vertex_free + transform.get_transformed(vertex_setup);
 }
 
 
@@ -125,7 +134,7 @@ ValueNode_BoneInfluence::set_link_vfunc(int i,ValueNode::Handle value)
 	{
 	case 0: CHECK_TYPE_AND_SET_VALUE(vertex_free_,		ValueBase::TYPE_VECTOR);
 	case 1: CHECK_TYPE_AND_SET_VALUE(vertex_setup_,		ValueBase::TYPE_VECTOR);
-	case 2: CHECK_TYPE_AND_SET_VALUE(bone_weight_list_,	ValueBase::TYPE_MATRIX);
+	case 2: CHECK_TYPE_AND_SET_VALUE(bone_weight_list_,	ValueBase::TYPE_LIST);
 	}
 
 	return false;
