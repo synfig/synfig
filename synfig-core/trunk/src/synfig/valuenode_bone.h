@@ -60,6 +60,8 @@ public:
 
 	virtual ValueBase operator()(Time t)const;
 
+	virtual ValueNode* clone(etl::loose_handle<Canvas> canvas, const GUID& deriv_guid=GUID())const;
+
 	virtual ~ValueNode_Bone();
 	void set_guid(const GUID& x);
 
@@ -89,6 +91,8 @@ public:
 	static BoneMap::const_iterator map_begin();
 	static BoneMap::const_iterator map_end();
 	static ValueNode_Bone::Handle find(GUID guid);
+	static ValueNode_Bone::LooseHandle find(String name);
+	static String unique_name(String name);
 	static void show_bone_map(const char *file, int line, String text, Time t=0);
 
 	ValueNode_Bone::ConstHandle is_ancestor_of(ValueNode_Bone::ConstHandle bone, Time t)const;

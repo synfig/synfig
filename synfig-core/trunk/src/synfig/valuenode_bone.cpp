@@ -34,6 +34,7 @@
 #include "valuenode_const.h"
 #include "valuenode_animated.h"
 #include "general.h"
+#include "canvas.h"
 
 #endif
 
@@ -125,7 +126,14 @@ ValueNode_Bone::ValueNode_Bone(const ValueBase &value):
 	case ValueBase::TYPE_BONE:
 	{
 		Bone bone(value.get(Bone()));
-		set_link("name",ValueNode_Const::create(bone.get_name().empty() ? strprintf(_("Bone %d"), ++bone_counter) : bone.get_name()));
+		String name(bone.get_name());
+
+		if (name.empty())
+			name = strprintf(_("Bone %d"), ++bone_counter);
+
+		name = unique_name(name);
+
+	set_link("name",ValueNode_Const::create(name));
 #ifndef HIDE_BONE_FIELDS
 		set_link("origin",ValueNode_Const::create(bone.get_origin()));
 		set_link("origin0",ValueNode_Const::create(bone.get_origin0()));
@@ -231,6 +239,37 @@ ValueNode_Bone::operator()(Time t)const
 		else
 			ret.set_parent(0);
 	}
+
+	return ret;
+}
+
+ValueNode*
+ValueNode_Bone::clone(Canvas::LooseHandle canvas, const GUID& deriv_guid)const
+{
+	String old_name;
+	ValueNode_Const::Handle const_name_link;
+	ValueNode::Handle name_link(get_link("name"));
+
+	if (!name_link->is_exported())
+	{
+		if (const_name_link = ValueNode_Const::Handle::cast_dynamic(name_link))
+		{
+			String name(old_name = const_name_link->get_value().get(String()));
+//			printf("got old name '%s'\n", name.c_str());
+			name = unique_name(name);
+//			printf("using new name '%s'\n", name.c_str());
+			const_name_link->set_value(name);
+		}
+//		else
+//			printf("%s:%d bone's name is not constant, so not editing\n", __FILE__, __LINE__);
+	}
+//	else
+//		printf("%s:%d cloned bone's name is exported, so not editing\n", __FILE__, __LINE__);
+
+	ValueNode* ret(LinkableValueNode::clone(canvas, deriv_guid));
+
+	if (const_name_link)
+		const_name_link->set_value(old_name);
 
 	return ret;
 }
@@ -421,6 +460,74 @@ ValueNode_Bone::find(GUID guid)
 	}
 }
 
+ValueNode_Bone::LooseHandle
+ValueNode_Bone::find(String name)
+{
+	// printf("%s:%d finding '%s' : ", __FILE__, __LINE__, name.c_str());
+
+	for (ValueNode_Bone::BoneMap::iterator iter =  bone_map.begin(); iter != bone_map.end(); iter++)
+		if ((*iter->second->get_link("name"))(0).get(String()) == name)
+		{
+			// printf("yes\n");
+			return iter->second;
+		}
+
+	// printf("no\n");
+	return 0;
+}
+
+String
+ValueNode_Bone::unique_name(String name)
+{
+	if (!find(name))
+		return name;
+
+	// printf("%s:%d making unique name for '%s'\n", __FILE__, __LINE__, name.c_str());
+
+	size_t last_close(name.size()-1);
+	int number = -1;
+	String prefix;
+
+	do
+	{
+		if (name.substr(last_close) != ")")
+			break;
+
+		size_t last_open(name.rfind('('));
+		if (last_open == String::npos)
+			break;
+
+		if (last_open+2 > last_close)
+			break;
+
+		String between(name.substr(last_open+1, last_close - (last_open+1)));
+		String::iterator iter;
+		for (iter = between.begin(); iter != between.end(); iter++)
+			if (!isdigit(*iter))
+				break;
+
+		if (iter != between.end())
+			break;
+
+		prefix = name.substr(0, last_open);
+		number = atoi(between.c_str());
+	} while (0);
+
+	if (number == -1)
+	{
+		prefix = name + " ";
+		number = 2;
+	}
+
+	do
+	{
+		name = prefix + "(" + strprintf("%d", number++) + ")";
+	} while (find(name));
+
+	// printf("%s:%d unique name is '%s'\n", __FILE__, __LINE__, name.c_str());
+	return name;
+}
+
 // checks whether the current object is an ancestor of the supplied bone
 // returns a handle to NULL if it isn't
 // if there's a loop in the ancestry it returns a handle to the valuenode where the loop is detected
@@ -512,7 +619,7 @@ ValueNode_Bone::get_bones_referenced_by(ValueNode::Handle value)
 		return ret;
 	}
 
-	error("%s:%d BUG: failed to clone ValueNode '%s'", __FILE__, __LINE__, value->get_description().c_str());
+	error("%s:%d BUG: bad type in valuenode '%s'", __FILE__, __LINE__, value->get_description().c_str());
 	assert(0);
 	return ret;
 }
