@@ -576,21 +576,21 @@ ValueNode_Bone::is_ancestor_of(ValueNode_Bone::ConstHandle bone, Time t)const
 }
 
 ValueNode_Bone::BoneSet
-ValueNode_Bone::get_bones_referenced_by(ValueNode::Handle value)
+ValueNode_Bone::get_bones_referenced_by(ValueNode::Handle value_node)
 {
 	BoneSet ret;
-	if (!value)
+	if (!value_node)
 	{
 		printf("%s:%d failed?\n", __FILE__, __LINE__);
 		assert(0);
 		return ret;
 	}
 
-	if (ValueNode_Const::Handle value_node_const = ValueNode_Const::Handle::cast_dynamic(value))
+	if (ValueNode_Const::Handle value_node_const = ValueNode_Const::Handle::cast_dynamic(value_node))
 	{
-		ValueBase value(value_node_const->get_value());
-		if (value.get_type() == ValueBase::TYPE_VALUENODE_BONE)
-			if (ValueNode_Bone::Handle bone = value.get(ValueNode_Bone::Handle()))
+		ValueBase value_node(value_node_const->get_value());
+		if (value_node.get_type() == ValueBase::TYPE_VALUENODE_BONE)
+			if (ValueNode_Bone::Handle bone = value_node.get(ValueNode_Bone::Handle()))
 			{
 				// do we want to check for bone references in other bone fields or just 'parent'?
 				ret = get_bones_referenced_by(bone);
@@ -600,7 +600,7 @@ ValueNode_Bone::get_bones_referenced_by(ValueNode::Handle value)
 		return ret;
 	}
 
-	if (ValueNode_Animated::Handle value_node_animated = ValueNode_Animated::Handle::cast_dynamic(value))
+	if (ValueNode_Animated::Handle value_node_animated = ValueNode_Animated::Handle::cast_dynamic(value_node))
 	{
 		// ValueNode_Animated::Handle ret = ValueNode_Animated::create(ValueBase::TYPE_BONE);
 		ValueNode_Animated::WaypointList list(value_node_animated->waypoint_list());
@@ -615,7 +615,7 @@ ValueNode_Bone::get_bones_referenced_by(ValueNode::Handle value)
 		return ret;
 	}
 
-	if (LinkableValueNode::Handle linkable_value_node = LinkableValueNode::Handle::cast_dynamic(value))
+	if (LinkableValueNode::Handle linkable_value_node = LinkableValueNode::Handle::cast_dynamic(value_node))
 	{
 		for (int i = 0; i < linkable_value_node->link_count(); i++)
 		{
@@ -625,7 +625,7 @@ ValueNode_Bone::get_bones_referenced_by(ValueNode::Handle value)
 		return ret;
 	}
 
-	error("%s:%d BUG: bad type in valuenode '%s'", __FILE__, __LINE__, value->get_description().c_str());
+	error("%s:%d BUG: bad type in valuenode '%s'", __FILE__, __LINE__, value_node->get_description().c_str());
 	assert(0);
 	return ret;
 }

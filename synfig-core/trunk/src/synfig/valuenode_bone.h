@@ -101,7 +101,7 @@ public:
 	//   recurses through the valuenodes in the waypoints if it's animated,
 	//   through the subnodes if it's linkable,
 	//   and through the bone itself it's a bone constant
-	static BoneSet get_bones_referenced_by(ValueNode::Handle value);
+	static BoneSet get_bones_referenced_by(ValueNode::Handle value_node);
 
 	// return a set holding the bones that would be affected if the given ValueNode were edited
 	// value_node is either a ValueNode_Const or a ValueNode_Animated, of type VALUENODE_BONE
