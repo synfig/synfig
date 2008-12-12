@@ -78,54 +78,32 @@ Widget_BoneChooser::set_value_(synfig::ValueNode_Bone::Handle data)
 void
 Widget_BoneChooser::set_value(synfig::ValueNode_Bone::Handle data)
 {
-	ValueNode_Bone::BoneSet affected_bones; // which bones are we currently editing the parent of - it can be more than one due to linking
-
 	assert(parent_canvas);
 	bone=data;
 
-	// the ValueNode is either a ValueNode_Const or a ValueNode_Animated I think
-	if (get_value_desc().is_value_node())
-		affected_bones = ValueNode_Bone::get_bones_affected_by(get_value_desc().get_value_node());
-
 	bone_menu=manage(new class Gtk::Menu());
-
-	synfig::ValueNode_Bone::BoneMap::const_iterator iter;
-	String label;
 	Time time(parent_canvas->get_time());
 
-	// loop through all the bones that exist
-	for(iter=synfig::ValueNode_Bone::map_begin(); iter!=synfig::ValueNode_Bone::map_end(); iter++)
+	if (get_value_desc().is_value_node())
 	{
-		GUID guid(iter->first);
-		ValueNode_Bone::Handle bone_value_node(iter->second);
+		// the ValueNode is either a ValueNode_Const or a ValueNode_Animated I think
+		ValueNode_Bone::BoneSet parent_set(ValueNode_Bone::get_possible_parent_bones(get_value_desc().get_value_node()));
 
-		// if the bone would be affected by our editing, skip it - it would cause a loop if the user selected it
-		if (affected_bones.count(bone_value_node.get()))
-			continue;
-
-		// loop through the list of bones referenced by this bone's parent link;
-		// if any of them would be affected by editing the cell, don't offer this bone in the menu
+		for (ValueNode_Bone::BoneSet::iterator iter=parent_set.begin(); iter!=parent_set.end(); iter++)
 		{
-			ValueNode_Bone::BoneSet parents(ValueNode_Bone::get_bones_referenced_by(bone_value_node->get_link("parent")));
+			ValueNode_Bone::Handle bone_value_node(*iter);
 
-			ValueNode_Bone::BoneSet::iterator iter;
-			for (iter = parents.begin(); iter != parents.end(); iter++)
-				if (affected_bones.count(iter->get()))
-					break;
-			if (iter != parents.end())
-				continue;
+			String label((*(bone_value_node->get_link("name")))(time).get(String()));
+			if (label.empty()) label=bone_value_node->get_guid().get_string();
+
+			bone_menu->items().push_back(
+				Gtk::Menu_Helpers::MenuElem(label,
+											sigc::bind(
+												sigc::mem_fun(
+													*this,
+													&Widget_BoneChooser::set_value_),
+												bone_value_node)));
 		}
-
-		label=(*(bone_value_node->get_link("name")))(time).get(String());
-		if (label.empty()) label=guid.get_string();
-
-		bone_menu->items().push_back(
-			Gtk::Menu_Helpers::MenuElem(label,
-										sigc::bind(
-											sigc::mem_fun(
-												*this,
-												&Widget_BoneChooser::set_value_),
-											bone_value_node)));
 	}
 
 	bone_menu->items().push_back(

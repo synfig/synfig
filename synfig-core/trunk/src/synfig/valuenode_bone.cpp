@@ -681,6 +681,40 @@ ValueNode_Bone::get_bones_affected_by(ValueNode::Handle value_node)
 	return ret;
 }
 
+ValueNode_Bone::BoneSet
+ValueNode_Bone::get_possible_parent_bones(ValueNode::Handle value_node)
+{
+	set<ValueNode_Bone::Handle> ret;
+
+	// which bones are we currently editing the parent of - it can be more than one due to linking
+	ValueNode_Bone::BoneSet affected_bones(ValueNode_Bone::get_bones_affected_by(value_node));
+
+	// loop through all the bones that exist
+	for (ValueNode_Bone::BoneMap::const_iterator iter=synfig::ValueNode_Bone::map_begin(); iter!=synfig::ValueNode_Bone::map_end(); iter++)
+	{
+		ValueNode_Bone::Handle bone_value_node(iter->second);
+
+		// if the bone would be affected by our editing, skip it - it would cause a loop if the user selected it
+		if (affected_bones.count(bone_value_node.get()))
+			continue;
+
+		// loop through the list of bones referenced by this bone's parent link;
+		// if any of them would be affected by editing the cell, don't offer this bone in the menu
+		{
+			ValueNode_Bone::BoneSet parents(ValueNode_Bone::get_bones_referenced_by(bone_value_node->get_link("parent")));
+
+			ValueNode_Bone::BoneSet::iterator iter;
+			for (iter = parents.begin(); iter != parents.end(); iter++)
+				if (affected_bones.count(iter->get()))
+					break;
+			if (iter == parents.end())
+				ret.insert(bone_value_node);
+		}
+	}
+
+	return ret;
+}
+
 #ifdef _DEBUG
 void
 ValueNode_Bone::ref()const
