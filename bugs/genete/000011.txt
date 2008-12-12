@@ -7,4 +7,7 @@ The drop down list doesn't seems to work.
 
 ------------------------------------------------------------------------
 
-
+When I right-click a waypoint, I see a menu, not a dialog.  The menu
+seems to act as it should.  Did you mean 'menu' where you wrote
+'dialog'?  Or did you mean to say that I should click 'Edit' to get
+the edit dialog?  And what exactly doesn't work?
