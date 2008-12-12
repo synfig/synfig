@@ -38,6 +38,7 @@
 #include "gradient.h"
 #include "bone.h"
 #include "matrix.h"
+#include "boneweightpair.h"
 
 
 
@@ -81,6 +82,7 @@ ValueBase::ValueBase(Type x):
 	case TYPE_SEGMENT:		data=static_cast<void*>(new Segment());				break;
 	case TYPE_BLINEPOINT:	data=static_cast<void*>(new BLinePoint());			break;
 	case TYPE_MATRIX:		data=static_cast<void*>(new Matrix());				break;
+	case TYPE_BONE_WEIGHT_PAIR:	data=static_cast<void*>(new BoneWeightPair());	break;
 	case TYPE_LIST:			data=static_cast<void*>(new list_type());			break;
 	case TYPE_STRING:		data=static_cast<void*>(new String());				break;
 	case TYPE_GRADIENT:		data=static_cast<void*>(new Gradient());			break;
@@ -125,6 +127,7 @@ ValueBase::get_string() const
 	case TYPE_SEGMENT:		return strprintf("Segment ((%f, %f) to (%f, %f))", get(Segment()).p1[0], get(Segment()).p1[1], get(Segment()).p2[0], get(Segment()).p2[1]);
 	case TYPE_BLINEPOINT:	return strprintf("BLinePoint (%s)", get(BLinePoint()).get_vertex()[0], get(BLinePoint()).get_vertex()[1]);
 	case TYPE_MATRIX:		return strprintf("Matrix (%s)",get(Matrix().get_string().c_str()));
+	case TYPE_BONE_WEIGHT_PAIR:	return strprintf("Bone Weight Pair (%s)",get(BoneWeightPair().get_string().c_str()));
 
 		// All types after this point require construction/destruction
 
@@ -245,6 +248,7 @@ ValueBase::clear()
 		case TYPE_SEGMENT:		delete static_cast<Segment*>(data);		break;
 		case TYPE_BLINEPOINT:	delete static_cast<BLinePoint*>(data);	break;
 		case TYPE_MATRIX:		delete static_cast<Matrix*>(data);		break;
+		case TYPE_BONE_WEIGHT_PAIR:	delete static_cast<BoneWeightPair*>(data);	break;
 		case TYPE_LIST:			delete static_cast<list_type*>(data);	break;
 		case TYPE_CANVAS:
 		{
@@ -285,6 +289,7 @@ ValueBase::type_name(Type id)
 	case TYPE_SEGMENT:		return N_("segment");
 	case TYPE_BLINEPOINT:	return N_("bline_point");
 	case TYPE_MATRIX:		return N_("matrix");
+	case TYPE_BONE_WEIGHT_PAIR:	return N_("bone_weight_pair");
 	case TYPE_LIST:			return N_("list");
 	case TYPE_CANVAS:		return N_("canvas");
 	case TYPE_STRING:		return N_("string");
@@ -326,6 +331,8 @@ ValueBase::type_local_name(Type id)
 	case TYPE_BLINEPOINT:	return _("Bline Point");
 		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
 	case TYPE_MATRIX:		return _("Matrix");
+		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
+	case TYPE_BONE_WEIGHT_PAIR:	return _("Bone Weight Pair");
 		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
 	case TYPE_LIST:			return _("List");
 		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
@@ -380,6 +387,7 @@ ValueBase::ident_type(const String &str)
 	else if(str=="bline_point" ||
 			str=="blinepoint")	return TYPE_BLINEPOINT;
 	else if(str=="matrix")		return TYPE_MATRIX;
+	else if(str=="bone_weight_pair")	return TYPE_BONE_WEIGHT_PAIR;
 
 	return TYPE_NIL;
 }
@@ -410,6 +418,7 @@ ValueBase::operator==(const ValueBase& rhs)const
 	case TYPE_BONE:			// return get(Bone())==rhs.get(Bone());
 	case TYPE_BLINEPOINT:	// return get(BLinePoint())==rhs.get(BLinePoint());
 	case TYPE_MATRIX:		// return get(Matrix())==rhs.get(Matrix());
+	case TYPE_BONE_WEIGHT_PAIR:	// return get(BoneWeightPair())==rhs.get(BoneWeightPair());
 	case TYPE_NIL:
 	default:				   return false;
 	}

@@ -34,7 +34,7 @@
 #include "valuenode_boneweightpair.h"
 #include "valuenode_const.h"
 #include "general.h"
-#include "matrix.h"
+#include "boneweightpair.h"
 
 #endif
 
@@ -57,7 +57,7 @@ ValueNode_BoneWeightPair::ValueNode_BoneWeightPair(const ValueBase &value):
 {
 	switch(value.get_type())
 	{
-	case ValueBase::TYPE_MATRIX:
+	case ValueBase::TYPE_BONE_WEIGHT_PAIR:
 		set_link("bone",ValueNode_Const::create(Bone()));
 		set_link("weight",ValueNode_Const::create(Real(1.0)));
 		break;
@@ -90,18 +90,10 @@ ValueNode_BoneWeightPair::operator()(Time t)const
 {
 	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
 		printf("%s:%d operator()\n", __FILE__, __LINE__);
-	Bone b(((*bone_)(t).get(Bone())));
-	return
-		Matrix(
-				b.get_setup_matrix()
-				*
-				b.get_animated_matrix()
-				*
-				(*weight_)(t).get(Real())
-			);
+
+	return BoneWeightPair((*  bone_)(t).get(Bone()),
+						  (*weight_)(t).get(Real()));
 }
-
-
 
 String
 ValueNode_BoneWeightPair::get_name()const
@@ -118,7 +110,7 @@ ValueNode_BoneWeightPair::get_local_name()const
 bool
 ValueNode_BoneWeightPair::check_type(ValueBase::Type type)
 {
-	return type==ValueBase::TYPE_MATRIX;
+	return type==ValueBase::TYPE_BONE_WEIGHT_PAIR;
 }
 
 bool

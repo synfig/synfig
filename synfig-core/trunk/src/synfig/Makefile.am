@@ -62,6 +62,7 @@ VALUESOURCES = \
 SYNFIGHEADERS = \
 	angle.h canvasbase.h general.h guidset.h interpolation.h matrix.h nodebase.h protocol.h quick_rng.h real.h	\
 	releases.h segment.h smartfile.h string.h string_decl.h surfacenew.h synfig.h types.h vector.h version.h	\
+	boneweightpair.h												\
 	activepoint.h   blur.h   bone.h   canvas.h   color.h   context.h   curve_helper.h   curveset.h   distance.h	\
 	exception.h   gamma.h   guid.h   importer.h   keyframe.h   layer.h   loadcanvas.h   main.h   module.h		\
 	mutex.h   node.h   palette.h   paramdesc.h   polynomial_root.h   rect.h   renddesc.h   render.h			\

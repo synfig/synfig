@@ -41,6 +41,7 @@
 //#include "gradient.h"
 #include "blinepoint.h"
 #include "bone.h"
+// #include "boneweightpair.h"
 #include "matrix.h"
 #include "exception.h"
 
@@ -72,6 +73,7 @@ class Color;
 class Bone;
 class ValueNode_Bone;
 class Matrix;
+class BoneWeightPair;
 
 /*!	\class ValueBase
 **	\todo writeme
@@ -105,6 +107,7 @@ public:
 		TYPE_SEGMENT,		//!< Segment
 		TYPE_BLINEPOINT,	//!< BLinePoint
 		TYPE_MATRIX,		//!< Matrix
+		TYPE_BONE_WEIGHT_PAIR,	//!< pair<Bone,Real>
 
 		// All types after this point require construction/destruction
 
@@ -316,6 +319,7 @@ public:
 	static Type get_type(const Segment&) { return TYPE_SEGMENT; }
 	static Type get_type(const BLinePoint&) { return TYPE_BLINEPOINT; }
 	static Type get_type(const Matrix&) {return TYPE_MATRIX;}
+	static Type get_type(const BoneWeightPair&) {return TYPE_BONE_WEIGHT_PAIR;}
 	static Type get_type(const String&) { return TYPE_STRING; }
 	static Type get_type(const Gradient&) { return TYPE_GRADIENT; }
 	static Type get_type(const Bone&) { return TYPE_BONE; }
