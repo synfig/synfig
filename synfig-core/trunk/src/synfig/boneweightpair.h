@@ -56,14 +56,14 @@ private:
 
 public:
 	BoneWeightPair() {}
-	// BoneWeightPair(etl::handle<ValueNode_Bone> bone, Real weight);
-	BoneWeightPair(Bone bone, Real weight): bone(bone), weight(weight) {}
+	BoneWeightPair(Bone bone, Real weight): bone(bone), weight(weight) { }
+
+	Real get_weight()const { return weight; }
+	Bone get_bone()const { return bone; }
+
 	//!Get the string of the BoneWeightPair
 	//!@return String type. A string representation of the two components.
-	String get_string()
-	{
-		return etl::strprintf("pair(%s, %.2f)", bone.get_string().c_str(), weight);
-	}
+	String get_string() { return etl::strprintf("pair(%s, %.2f)", bone.get_string().c_str(), weight); }
 };
 
 }; // END of namespace synfig
