@@ -642,6 +642,8 @@ ValueNode_Bone::get_bones_affected_by(ValueNode::Handle value_node)
 	set<const Node*> seen, current_nodes, new_nodes;
 	int generation = 0;
 
+//	printf("getting bones affected by %lx %s\n", ulong(value_node.get()), value_node->get_string().c_str());
+
 	// initialise current_nodes with the node we're editing
 	current_nodes.insert(value_node.get());
 	do
@@ -690,8 +692,11 @@ ValueNode_Bone::get_possible_parent_bones(ValueNode::Handle value_node)
 {
 	BoneSet ret;
 
+//	printf("%s:%d which bones can be parents of %s\n", __FILE__, __LINE__, value_node->get_string().c_str());
+
 	// which bones are we currently editing the parent of - it can be more than one due to linking
 	ValueNode_Bone::BoneSet affected_bones(ValueNode_Bone::get_bones_affected_by(value_node));
+//	printf("%s:%d got %zd affected bones\n", __FILE__, __LINE__, affected_bones.size());
 
 	// loop through all the bones that exist
 	for (ValueNode_Bone::BoneMap::const_iterator iter=synfig::ValueNode_Bone::map_begin(); iter!=synfig::ValueNode_Bone::map_end(); iter++)
@@ -716,6 +721,7 @@ ValueNode_Bone::get_possible_parent_bones(ValueNode::Handle value_node)
 		}
 	}
 
+//	printf("%s:%d returning %zd possible parents\n", __FILE__, __LINE__, ret.size());
 	return ret;
 }
 
