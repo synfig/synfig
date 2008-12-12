@@ -665,7 +665,7 @@ LinkableValueNode::get_description(int index, bool show_exported_name)const
 
 	if (index == -1)
 	{
-		description = "Linkable ValueNode";
+		description = strprintf(" Linkable ValueNode (%s)", get_local_name().c_str());
 		if (show_exported_name && is_exported())
 			description += strprintf(" (%s)", get_id().c_str());
 	}
