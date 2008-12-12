@@ -84,10 +84,29 @@ Widget_BoneChooser::set_value(synfig::ValueNode_Bone::Handle data)
 	bone_menu=manage(new class Gtk::Menu());
 	Time time(parent_canvas->get_time());
 
+	Gtk::Menu_Helpers::MenuElem none(_("<None>"),
+									 sigc::bind(sigc::mem_fun(*this,
+															  &Widget_BoneChooser::set_value_),
+												ValueNode_Bone::Handle()));
+
 	if (get_value_desc().is_value_node())
 	{
 		// the ValueNode is either a ValueNode_Const or a ValueNode_Animated I think
 		ValueNode_Bone::BoneSet parent_set(ValueNode_Bone::get_possible_parent_bones(get_value_desc().get_value_node()));
+
+		// insert the entry for the currently selected value first so that it appears selected
+		if (bone)
+		{
+			parent_set.erase(bone); // erase it from the set so it won't be inserted twice
+			String label((*(bone->get_link("name")))(time).get(String()));
+			if (label.empty()) label=bone->get_guid().get_string();
+			bone_menu->items().push_back(Gtk::Menu_Helpers::MenuElem(label,
+																	 sigc::bind(sigc::mem_fun(*this,
+																							  &Widget_BoneChooser::set_value_),
+																				bone)));
+		}
+		else
+			bone_menu->items().push_back(none);
 
 		for (ValueNode_Bone::BoneSet::iterator iter=parent_set.begin(); iter!=parent_set.end(); iter++)
 		{
@@ -96,23 +115,14 @@ Widget_BoneChooser::set_value(synfig::ValueNode_Bone::Handle data)
 			String label((*(bone_value_node->get_link("name")))(time).get(String()));
 			if (label.empty()) label=bone_value_node->get_guid().get_string();
 
-			bone_menu->items().push_back(
-				Gtk::Menu_Helpers::MenuElem(label,
-											sigc::bind(
-												sigc::mem_fun(
-													*this,
-													&Widget_BoneChooser::set_value_),
-												bone_value_node)));
+			bone_menu->items().push_back(Gtk::Menu_Helpers::MenuElem(label,
+																	 sigc::bind(sigc::mem_fun(*this,
+																							  &Widget_BoneChooser::set_value_),
+																				bone_value_node)));
 		}
 	}
 
-	bone_menu->items().push_back(
-		Gtk::Menu_Helpers::MenuElem(_("<None>"),
-										sigc::bind(
-											sigc::mem_fun(
-												*this,
-												&Widget_BoneChooser::set_value_),
-											ValueNode_Bone::Handle())));
+	if (bone) bone_menu->items().push_back(none);
 
 	set_menu(*bone_menu);
 

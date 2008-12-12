@@ -28,3 +28,6 @@ the edit dialog?  And what exactly doesn't work?
 		   remains unchanged
 
 ------------------------------------------------------------------------
+
+Resolved: it's just a case of putting the currently selected value at
+the top of the menu.
