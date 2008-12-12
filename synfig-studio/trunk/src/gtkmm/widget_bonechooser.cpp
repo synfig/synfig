@@ -78,7 +78,7 @@ Widget_BoneChooser::set_value_(synfig::ValueNode_Bone::Handle data)
 void
 Widget_BoneChooser::set_value(synfig::ValueNode_Bone::Handle data)
 {
-	set<ValueNode_Bone::Handle> affected_bones; // which bones are we currently editing the parent of - it can be more than one due to linking
+	ValueNode_Bone::BoneSet affected_bones; // which bones are we currently editing the parent of - it can be more than one due to linking
 
 	assert(parent_canvas);
 	bone=data;
@@ -93,17 +93,19 @@ Widget_BoneChooser::set_value(synfig::ValueNode_Bone::Handle data)
 	String label;
 	Time time(parent_canvas->get_time());
 
+	// loop through all the bones that exist
 	for(iter=synfig::ValueNode_Bone::map_begin(); iter!=synfig::ValueNode_Bone::map_end(); iter++)
 	{
 		GUID guid(iter->first);
 		ValueNode_Bone::Handle bone_value_node(iter->second);
 
+		// if the bone would be affected by our editing, skip it - it would cause a loop if the user selected it
 		if (affected_bones.count(bone_value_node.get()))
 			continue;
 
 		ValueNode::Handle parent(bone_value_node->get_link("parent"));
-		set<ValueNode_Bone::Handle> parents(ValueNode_Bone::get_bones(parent));
-		set<ValueNode_Bone::Handle>::iterator iter;
+		ValueNode_Bone::BoneSet parents(ValueNode_Bone::get_bones(parent));
+		ValueNode_Bone::BoneSet::iterator iter;
 		for (iter = parents.begin(); iter != parents.end(); iter++)
 			if (affected_bones.count(iter->get()))
 				break;
