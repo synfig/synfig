@@ -606,12 +606,12 @@ ValueNode_Bone::get_bones_referenced_by(ValueNode::Handle value_node)
 		ValueNode_Animated::WaypointList list(value_node_animated->waypoint_list());
 		for (ValueNode_Animated::WaypointList::iterator iter = list.begin(); iter != list.end(); iter++)
 		{
-			printf("%s:%d getting bones from waypoint\n", __FILE__, __LINE__);
+//			printf("%s:%d getting bones from waypoint\n", __FILE__, __LINE__);
 			BoneSet ret2(get_bones_referenced_by(iter->get_value_node()));
 			ret.insert(ret2.begin(), ret2.end());
-			printf("added %d bones from waypoint to get %d\n", int(ret2.size()), int(ret.size()));
+//			printf("added %d bones from waypoint to get %d\n", int(ret2.size()), int(ret.size()));
 		}
-		printf("returning %d bones\n", int(ret.size()));
+//		printf("returning %d bones\n", int(ret.size()));
 		return ret;
 	}
 
@@ -633,7 +633,6 @@ ValueNode_Bone::get_bones_referenced_by(ValueNode::Handle value_node)
 ValueNode_Bone::BoneSet
 ValueNode_Bone::get_bones_affected_by(ValueNode::Handle value_node)
 {
-	printf("%s:%d\n", __FILE__, __LINE__);
 	set<ValueNode_Bone::Handle> ret;
 	set<const Node*> seen, current_nodes, new_nodes;
 	int generation = 0;
@@ -643,7 +642,7 @@ ValueNode_Bone::get_bones_affected_by(ValueNode::Handle value_node)
 	do
 	{
 		generation++;
-		printf("generation %d has %zd nodes\n", generation, current_nodes.size());
+//		printf("generation %d has %zd nodes\n", generation, current_nodes.size());
 
 		int count = 0;
 		// loop through current_nodes
@@ -651,12 +650,12 @@ ValueNode_Bone::get_bones_affected_by(ValueNode::Handle value_node)
 		{
 			// loop through the parents of each node in current_nodes
 			set<Node*> node_parents((*iter)->parent_set);
-			printf("%s:%d node %d %lx (%s) has %zd parents\n", __FILE__, __LINE__, count, ulong(*iter), (*iter)->get_string().c_str(), node_parents.size());
+//			printf("%s:%d node %d %lx (%s) has %zd parents\n", __FILE__, __LINE__, count, ulong(*iter), (*iter)->get_string().c_str(), node_parents.size());
 			int count2 = 0;
 			for (set<Node*>::iterator iter2 = node_parents.begin(); iter2 != node_parents.end(); iter2++, count2++)
 			{
 				Node* node(*iter2);
-				printf("%s:%d parent %d: %lx (%s)\n", __FILE__, __LINE__, count2, ulong(node), node->get_string().c_str());
+//				printf("%s:%d parent %d: %lx (%s)\n", __FILE__, __LINE__, count2, ulong(node), node->get_string().c_str());
 				// for each parent we've not already seen
 				if (!seen.count(node))
 				{
@@ -668,7 +667,7 @@ ValueNode_Bone::get_bones_affected_by(ValueNode::Handle value_node)
 					if (dynamic_cast<ValueNode_Bone*>(node))
 					{
 						ret.insert(dynamic_cast<ValueNode_Bone*>(node));
-						printf("%s:%d it's an affected bone\n", __FILE__, __LINE__);
+//						printf("%s:%d it's an affected bone\n", __FILE__, __LINE__);
 					}
 				}
 			}
@@ -677,7 +676,7 @@ ValueNode_Bone::get_bones_affected_by(ValueNode::Handle value_node)
 		new_nodes.clear();
 	} while (current_nodes.size());
 
-	printf("%s:%d got %zd affected bones\n", __FILE__, __LINE__, ret.size());
+//	printf("%s:%d got %zd affected bones\n", __FILE__, __LINE__, ret.size());
 	return ret;
 }
 
