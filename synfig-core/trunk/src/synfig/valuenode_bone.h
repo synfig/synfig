@@ -98,7 +98,7 @@ public:
 	static BoneSet get_bones(ValueNode::Handle value);
 
 	ValueNode_Bone::ConstHandle is_ancestor_of(ValueNode_Bone::ConstHandle bone, Time t)const;
-	static BoneSet get_affected_bones(ValueNode::Handle value_node);
+	static BoneSet get_bones_affected_by(ValueNode::Handle value_node);
 
 #ifdef _DEBUG
 	virtual void ref()const;

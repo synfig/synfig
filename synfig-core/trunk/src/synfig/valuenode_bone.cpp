@@ -520,7 +520,7 @@ ValueNode_Bone::is_ancestor_of(ValueNode_Bone::ConstHandle bone, Time t)const
 // return a set holding the bones that would be affected if the given ValueNode were edited
 // value_node is either a ValueNode_Const or a ValueNode_Animated, of type VALUENODE_BONE
 ValueNode_Bone::BoneSet
-ValueNode_Bone::get_affected_bones(ValueNode::Handle value_node)
+ValueNode_Bone::get_bones_affected_by(ValueNode::Handle value_node)
 {
 	printf("%s:%d\n", __FILE__, __LINE__);
 	set<ValueNode_Bone::Handle> ret;

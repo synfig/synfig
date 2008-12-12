@@ -85,7 +85,7 @@ Widget_BoneChooser::set_value(synfig::ValueNode_Bone::Handle data)
 
 	// the ValueNode is either a ValueNode_Const or a ValueNode_Animated I think
 	if (get_value_desc().is_value_node())
-		affected_bones = ValueNode_Bone::get_affected_bones(get_value_desc().get_value_node());
+		affected_bones = ValueNode_Bone::get_bones_affected_by(get_value_desc().get_value_node());
 
 	bone_menu=manage(new class Gtk::Menu());
 
