@@ -262,7 +262,12 @@ ValueNode_Bone::set_link_vfunc(int i,ValueNode::Handle value)
 	{
 	case 0: CHECK_TYPE_AND_SET_VALUE(name_,		ValueBase::TYPE_STRING);
 #ifdef HIDE_BONE_FIELDS
-	case 1: CHECK_TYPE_AND_SET_VALUE(parent_,	ValueBase::TYPE_VALUENODE_BONE);
+	case 1:
+	{
+		// CHECK_TYPE_AND_SET_VALUE(parent_,	ValueBase::TYPE_VALUENODE_BONE);
+		VALUENODE_CHECK_TYPE(ValueBase::TYPE_VALUENODE_BONE);
+		VALUENODE_SET_VALUE(parent_);
+	}
 #else
 	case 1: CHECK_TYPE_AND_SET_VALUE(origin_,	ValueBase::TYPE_VECTOR);
 	case 2: CHECK_TYPE_AND_SET_VALUE(origin0_,	ValueBase::TYPE_VECTOR);
@@ -510,6 +515,59 @@ ValueNode_Bone::is_ancestor_of(ValueNode_Bone::ConstHandle bone, Time t)const
 	if (getenv("SYNFIG_DEBUG_ANCESTOR_CHECK"))
 		printf("%s:%d reached root - return false\n", __FILE__, __LINE__);
 	return 0;
+}
+
+// return a set holding the bones that would be affected if the given ValueNode were edited
+// value_node is either a ValueNode_Const or a ValueNode_Animated, of type VALUENODE_BONE
+set<ValueNode_Bone::Handle>
+ValueNode_Bone::get_affected_bones(ValueNode::Handle value_node)
+{
+	printf("%s:%d\n", __FILE__, __LINE__);
+	set<ValueNode_Bone::Handle> ret;
+	set<const Node*> seen, current_nodes, new_nodes;
+	int generation = 0;
+
+	// initialise current_nodes with the node we're editing
+	current_nodes.insert(value_node.get());
+	do
+	{
+		generation++;
+		printf("generation %d has %zd nodes\n", generation, current_nodes.size());
+
+		int count = 0;
+		// loop through current_nodes
+		for (set<const Node*>::iterator iter = current_nodes.begin(); iter != current_nodes.end(); iter++, count++)
+		{
+			// loop through the parents of each node in current_nodes
+			set<Node*> node_parents((*iter)->parent_set);
+			printf("%s:%d node %d %lx (%s) has %zd parents\n", __FILE__, __LINE__, count, ulong(*iter), (*iter)->get_string().c_str(), node_parents.size());
+			int count2 = 0;
+			for (set<Node*>::iterator iter2 = node_parents.begin(); iter2 != node_parents.end(); iter2++, count2++)
+			{
+				Node* node(*iter2);
+				printf("%s:%d parent %d: %lx (%s)\n", __FILE__, __LINE__, count2, ulong(node), node->get_string().c_str());
+				// for each parent we've not already seen
+				if (!seen.count(node))
+				{
+					// note that we've seen it now
+					seen.insert(node);
+					// add it to the list of new nodes to loop though in the next iteration
+					new_nodes.insert(node);
+					// and if it's a ValueNode_Bone, add it to the set to be returned
+					if (dynamic_cast<ValueNode_Bone*>(node))
+					{
+						ret.insert(dynamic_cast<ValueNode_Bone*>(node));
+						printf("%s:%d it's an affected bone\n", __FILE__, __LINE__);
+					}
+				}
+			}
+		}
+		current_nodes = new_nodes;
+		new_nodes.clear();
+	} while (current_nodes.size());
+
+	printf("%s:%d got %zd affected bones\n", __FILE__, __LINE__, ret.size());
+	return ret;
 }
 
 #ifdef _DEBUG
