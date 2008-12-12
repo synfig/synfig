@@ -624,5 +624,5 @@ Layer::get_param_local_name(const String &param_name)const
 String
 Layer::get_string()const
 {
-	return String("Layer: ") + get_description();
+	return String("Layer: ") + get_non_empty_description();
 }
