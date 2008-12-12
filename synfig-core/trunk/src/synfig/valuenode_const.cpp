@@ -134,6 +134,12 @@ ValueNode_Const::get_local_name()const
 	return _("Constant");
 }
 
+String
+ValueNode_Const::get_string()const
+{
+	return "ValueNode_Const";
+}
+
 void ValueNode_Const::get_times_vfunc(Node::time_set &/*set*/) const
 {
 }

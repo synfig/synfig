@@ -1193,6 +1193,12 @@ ValueNode_Animated::find_time(const Time &x)const
  	return f;
 }
 
+String
+ValueNode_Animated::get_string()const
+{
+	return "ValueNode_Animated";
+}
+
 void
 ValueNode_Animated::insert_time(const Time& location, const Time& delta)
 {

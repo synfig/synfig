@@ -101,6 +101,8 @@ public:
 
 	void insert_time(const Time& location, const Time& delta);
 
+	String get_string()const;
+
 protected:
 	ValueNode_Animated();
 
