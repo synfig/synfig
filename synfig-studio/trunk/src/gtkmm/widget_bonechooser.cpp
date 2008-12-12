@@ -103,14 +103,18 @@ Widget_BoneChooser::set_value(synfig::ValueNode_Bone::Handle data)
 		if (affected_bones.count(bone_value_node.get()))
 			continue;
 
-		ValueNode::Handle parent(bone_value_node->get_link("parent"));
-		ValueNode_Bone::BoneSet parents(ValueNode_Bone::get_bones_referenced_by(parent));
-		ValueNode_Bone::BoneSet::iterator iter;
-		for (iter = parents.begin(); iter != parents.end(); iter++)
-			if (affected_bones.count(iter->get()))
-				break;
-		if (iter != parents.end())
-			continue;
+		// loop through the list of bones referenced by this bone's parent link;
+		// if any of them would be affected by editing the cell, don't offer this bone in the menu
+		{
+			ValueNode_Bone::BoneSet parents(ValueNode_Bone::get_bones_referenced_by(bone_value_node->get_link("parent")));
+
+			ValueNode_Bone::BoneSet::iterator iter;
+			for (iter = parents.begin(); iter != parents.end(); iter++)
+				if (affected_bones.count(iter->get()))
+					break;
+			if (iter != parents.end())
+				continue;
+		}
 
 		label=(*(bone_value_node->get_link("name")))(time).get(String());
 		if (label.empty()) label=guid.get_string();
