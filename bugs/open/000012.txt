@@ -8,4 +8,13 @@ Select Connect. The loop is possible and synfigstudio hangs.
 
 ------------------------------------------------------------------------
 
+this crashes too:
 
+  create a skeleton with 1 bone
+  expand the bone list
+  expand the bone
+  export the parent
+  edit the parent
+
+Q: why am I allowed to edit the parent?
+A: because the children panel doesn't have the value_desc of the node being edited.  now fixed.
