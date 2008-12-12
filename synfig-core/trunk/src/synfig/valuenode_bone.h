@@ -91,13 +91,16 @@ public:
 	static ValueNode_Bone::Handle find(GUID guid);
 	static void show_bone_map(const char *file, int line, String text, Time t=0);
 
+	ValueNode_Bone::ConstHandle is_ancestor_of(ValueNode_Bone::ConstHandle bone, Time t)const;
+
 	// return a set of the bones that affect the given valuenode
 	//   recurses through the valuenodes in the waypoints if it's animated,
 	//   through the subnodes if it's linkable,
-	//   and through the 'parent' link if it's a bone
-	static BoneSet get_bones(ValueNode::Handle value);
+	//   and through the bone itself it's a bone constant
+	static BoneSet get_bones_referenced_by(ValueNode::Handle value);
 
-	ValueNode_Bone::ConstHandle is_ancestor_of(ValueNode_Bone::ConstHandle bone, Time t)const;
+	// return a set holding the bones that would be affected if the given ValueNode were edited
+	// value_node is either a ValueNode_Const or a ValueNode_Animated, of type VALUENODE_BONE
 	static BoneSet get_bones_affected_by(ValueNode::Handle value_node);
 
 #ifdef _DEBUG

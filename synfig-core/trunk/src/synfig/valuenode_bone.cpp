@@ -421,61 +421,6 @@ ValueNode_Bone::find(GUID guid)
 	}
 }
 
-ValueNode_Bone::BoneSet
-ValueNode_Bone::get_bones(ValueNode::Handle value)
-{
-	BoneSet ret;
-	if (!value)
-	{
-		printf("%s:%d failed?\n", __FILE__, __LINE__);
-		assert(0);
-		return ret;
-	}
-
-	if (ValueNode_Const::Handle value_node_const = ValueNode_Const::Handle::cast_dynamic(value))
-	{
-		ValueBase value(value_node_const->get_value());
-		if (value.get_type() == ValueBase::TYPE_VALUENODE_BONE)
-			if (ValueNode_Bone::Handle bone = value.get(ValueNode_Bone::Handle()))
-			{
-				// do we want to check for bone references in other bone fields or just 'parent'?
-				ret = get_bones(bone);
-				// ret = get_bones(bone->get_link("parent"));
-				ret.insert(bone);
-			}
-		return ret;
-	}
-
-	if (ValueNode_Animated::Handle value_node_animated = ValueNode_Animated::Handle::cast_dynamic(value))
-	{
-		// ValueNode_Animated::Handle ret = ValueNode_Animated::create(ValueBase::TYPE_BONE);
-		ValueNode_Animated::WaypointList list(value_node_animated->waypoint_list());
-		for (ValueNode_Animated::WaypointList::iterator iter = list.begin(); iter != list.end(); iter++)
-		{
-			printf("%s:%d getting bones from waypoint\n", __FILE__, __LINE__);
-			BoneSet ret2(get_bones(iter->get_value_node()));
-			ret.insert(ret2.begin(), ret2.end());
-			printf("added %d bones from waypoint to get %d\n", int(ret2.size()), int(ret.size()));
-		}
-		printf("returning %d bones\n", int(ret.size()));
-		return ret;
-	}
-
-	if (LinkableValueNode::Handle linkable_value_node = LinkableValueNode::Handle::cast_dynamic(value))
-	{
-		for (int i = 0; i < linkable_value_node->link_count(); i++)
-		{
-			BoneSet ret2(get_bones(linkable_value_node->get_link(i)));
-			ret.insert(ret2.begin(), ret2.end());
-		}
-		return ret;
-	}
-
-	error("%s:%d BUG: failed to clone ValueNode '%s'", __FILE__, __LINE__, value->get_description().c_str());
-	assert(0);
-	return ret;
-}
-
 // checks whether the current object is an ancestor of the supplied bone
 // returns a handle to NULL if it isn't
 // if there's a loop in the ancestry it returns a handle to the valuenode where the loop is detected
@@ -517,8 +462,61 @@ ValueNode_Bone::is_ancestor_of(ValueNode_Bone::ConstHandle bone, Time t)const
 	return 0;
 }
 
-// return a set holding the bones that would be affected if the given ValueNode were edited
-// value_node is either a ValueNode_Const or a ValueNode_Animated, of type VALUENODE_BONE
+ValueNode_Bone::BoneSet
+ValueNode_Bone::get_bones_referenced_by(ValueNode::Handle value)
+{
+	BoneSet ret;
+	if (!value)
+	{
+		printf("%s:%d failed?\n", __FILE__, __LINE__);
+		assert(0);
+		return ret;
+	}
+
+	if (ValueNode_Const::Handle value_node_const = ValueNode_Const::Handle::cast_dynamic(value))
+	{
+		ValueBase value(value_node_const->get_value());
+		if (value.get_type() == ValueBase::TYPE_VALUENODE_BONE)
+			if (ValueNode_Bone::Handle bone = value.get(ValueNode_Bone::Handle()))
+			{
+				// do we want to check for bone references in other bone fields or just 'parent'?
+				ret = get_bones_referenced_by(bone);
+				// ret = get_bones_referenced_by(bone->get_link("parent"));
+				ret.insert(bone);
+			}
+		return ret;
+	}
+
+	if (ValueNode_Animated::Handle value_node_animated = ValueNode_Animated::Handle::cast_dynamic(value))
+	{
+		// ValueNode_Animated::Handle ret = ValueNode_Animated::create(ValueBase::TYPE_BONE);
+		ValueNode_Animated::WaypointList list(value_node_animated->waypoint_list());
+		for (ValueNode_Animated::WaypointList::iterator iter = list.begin(); iter != list.end(); iter++)
+		{
+			printf("%s:%d getting bones from waypoint\n", __FILE__, __LINE__);
+			BoneSet ret2(get_bones_referenced_by(iter->get_value_node()));
+			ret.insert(ret2.begin(), ret2.end());
+			printf("added %d bones from waypoint to get %d\n", int(ret2.size()), int(ret.size()));
+		}
+		printf("returning %d bones\n", int(ret.size()));
+		return ret;
+	}
+
+	if (LinkableValueNode::Handle linkable_value_node = LinkableValueNode::Handle::cast_dynamic(value))
+	{
+		for (int i = 0; i < linkable_value_node->link_count(); i++)
+		{
+			BoneSet ret2(get_bones_referenced_by(linkable_value_node->get_link(i)));
+			ret.insert(ret2.begin(), ret2.end());
+		}
+		return ret;
+	}
+
+	error("%s:%d BUG: failed to clone ValueNode '%s'", __FILE__, __LINE__, value->get_description().c_str());
+	assert(0);
+	return ret;
+}
+
 ValueNode_Bone::BoneSet
 ValueNode_Bone::get_bones_affected_by(ValueNode::Handle value_node)
 {

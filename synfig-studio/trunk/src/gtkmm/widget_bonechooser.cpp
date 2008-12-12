@@ -104,7 +104,7 @@ Widget_BoneChooser::set_value(synfig::ValueNode_Bone::Handle data)
 			continue;
 
 		ValueNode::Handle parent(bone_value_node->get_link("parent"));
-		ValueNode_Bone::BoneSet parents(ValueNode_Bone::get_bones(parent));
+		ValueNode_Bone::BoneSet parents(ValueNode_Bone::get_bones_referenced_by(parent));
 		ValueNode_Bone::BoneSet::iterator iter;
 		for (iter = parents.begin(); iter != parents.end(); iter++)
 			if (affected_bones.count(iter->get()))
