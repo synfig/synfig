@@ -136,7 +136,7 @@ ValueNode_Bone::ValueNode_Bone(const ValueBase &value):
 
 		name = unique_name(name);
 
-	set_link("name",ValueNode_Const::create(name));
+		set_link("name",ValueNode_Const::create(name));
 #ifndef HIDE_BONE_FIELDS
 		set_link("origin",ValueNode_Const::create(bone.get_origin()));
 		set_link("origin0",ValueNode_Const::create(bone.get_origin0()));
@@ -308,11 +308,6 @@ ValueNode_Bone::set_link_vfunc(int i,ValueNode::Handle value)
 	case 0: CHECK_TYPE_AND_SET_VALUE(name_,		ValueBase::TYPE_STRING);
 #ifdef HIDE_BONE_FIELDS
 	case 1:
-	{
-		// CHECK_TYPE_AND_SET_VALUE(parent_,	ValueBase::TYPE_VALUENODE_BONE);
-		VALUENODE_CHECK_TYPE(ValueBase::TYPE_VALUENODE_BONE);
-		VALUENODE_SET_VALUE(parent_);
-	}
 #else
 	case 1: CHECK_TYPE_AND_SET_VALUE(origin_,	ValueBase::TYPE_VECTOR);
 	case 2: CHECK_TYPE_AND_SET_VALUE(origin0_,	ValueBase::TYPE_VECTOR);
@@ -321,8 +316,18 @@ ValueNode_Bone::set_link_vfunc(int i,ValueNode::Handle value)
 	case 5: CHECK_TYPE_AND_SET_VALUE(scale_,	ValueBase::TYPE_REAL);
 	case 6: CHECK_TYPE_AND_SET_VALUE(length_,	ValueBase::TYPE_REAL);
 	case 7: CHECK_TYPE_AND_SET_VALUE(strength_,	ValueBase::TYPE_REAL);
-	case 8: CHECK_TYPE_AND_SET_VALUE(parent_,	ValueBase::TYPE_VALUENODE_BONE);
+	case 8:
 #endif
+	{
+		VALUENODE_CHECK_TYPE(ValueBase::TYPE_VALUENODE_BONE);
+		ValueNode_Bone::BoneSet parents(ValueNode_Bone::get_bones_referenced_by(value));
+		if (parents.count(this))
+		{
+			error("creating potential loops in the bone ancestry isn't allowed");
+			return false;
+		}
+		VALUENODE_SET_VALUE(parent_);
+	}
 	}
 	return false;
 }
@@ -633,7 +638,7 @@ ValueNode_Bone::get_bones_referenced_by(ValueNode::Handle value_node)
 ValueNode_Bone::BoneSet
 ValueNode_Bone::get_bones_affected_by(ValueNode::Handle value_node)
 {
-	set<ValueNode_Bone::Handle> ret;
+	BoneSet ret;
 	set<const Node*> seen, current_nodes, new_nodes;
 	int generation = 0;
 
@@ -683,7 +688,7 @@ ValueNode_Bone::get_bones_affected_by(ValueNode::Handle value_node)
 ValueNode_Bone::BoneSet
 ValueNode_Bone::get_possible_parent_bones(ValueNode::Handle value_node)
 {
-	set<ValueNode_Bone::Handle> ret;
+	BoneSet ret;
 
 	// which bones are we currently editing the parent of - it can be more than one due to linking
 	ValueNode_Bone::BoneSet affected_bones(ValueNode_Bone::get_bones_affected_by(value_node));
