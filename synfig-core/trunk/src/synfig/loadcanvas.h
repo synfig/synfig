@@ -164,7 +164,6 @@ private:
 	Gradient parse_gradient(xmlpp::Element *node);
 	BLinePoint parse_bline_point(xmlpp::Element *node);
 	GUID parse_guid(xmlpp::Element *node);
-	Bone parse_bone(xmlpp::Element *node);
 
 	Keyframe parse_keyframe(xmlpp::Element *node,Canvas::Handle canvas);
 

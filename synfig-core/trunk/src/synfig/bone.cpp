@@ -79,7 +79,7 @@ Bone::Bone(const Point &o, const Point &t):
 }
 
 //!Constructor by origin, angle, length, strength, parent bone (default = no parent)
-Bone::Bone(const String &n, const Point &o, const Angle &a, const Real &l, const Real &s, GUID p):
+Bone::Bone(const String &n, const Point &o, const Angle &a, const Real &l, const Real &s, ValueNode_Bone* p):
 	name_(n),
 	origin_(o),
 	origin0_(o),
@@ -94,16 +94,16 @@ Bone::Bone(const String &n, const Point &o, const Angle &a, const Real &l, const
 		printf("%s:%d new bone\n", __FILE__, __LINE__);
 }
 
-GUID
+const ValueNode_Bone*
 Bone::get_parent()const
 {
 	return parent_;
 }
 
 void
-Bone::set_parent(const GUID g)
+Bone::set_parent(const ValueNode_Bone* parent)
 {
-	parent_ = g;
+	parent_ = parent;
 }
 
 //! get_tip() member function
@@ -125,13 +125,13 @@ Bone::get_tip()
 synfig::String
 Bone::get_string()const
 {
-	return strprintf("N=%s O=(%.4f %.4f) O0=(%.4f %.4f) a=%.4f a0=%.4f s=%.4f l=%.4f S=%.4f P=%s",
+	return strprintf("N=%s O=(%.4f %.4f) O0=(%.4f %.4f) a=%.4f a0=%.4f s=%.4f l=%.4f S=%.4f P=%lx",
 					 name_.c_str(),
 					 origin_[0], origin_[1],
 					 origin0_[0], origin0_[1],
 					 Angle::deg(angle_).get(),
 					 Angle::deg(angle0_).get(),
-					 scale_, length_, strength_, parent_.get_string().substr(0,GUID_PREFIX_LEN).c_str());
+					 scale_, length_, strength_, ulong(parent_));
 }
 
 bool

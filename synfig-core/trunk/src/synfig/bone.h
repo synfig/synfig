@@ -50,6 +50,8 @@
 /* === C L A S S E S & S T R U C T S ======================================= */
 namespace synfig {
 
+class ValueNode_Bone;
+
 class Bone: public UniqueID
 {
 	/*
@@ -83,7 +85,7 @@ private:
 	//!This is the strength at setup time
 	Real strength_;
 	//!The parent bone.
-	GUID parent_;
+	const ValueNode_Bone* parent_;
 
 	Matrix setup_matrix_;
 	Matrix animated_matrix_;
@@ -94,7 +96,7 @@ public:
 	//!Constructor by origin and tip
 	Bone(const Point &origin, const Point &tip);
 	//!Construtor by origin, legth and parent (default no parent)
-	Bone(const String &name, const Point &origin, const Angle &angle, const Real &length, const Real &strength, GUID p=0);
+	Bone(const String &name, const Point &origin, const Angle &angle, const Real &length, const Real &strength, ValueNode_Bone* p=0);
 	//!Wrappers for name_
 	const String& get_name()const {return name_;}
 	void set_name(const String &x) {name_=x;}
@@ -129,8 +131,8 @@ public:
 
 	//!Wrapper for parent bone
 	// const Bone &get_parent() {return *parent_;}
-	GUID get_parent()const;
-	void set_parent(const GUID g);
+	const ValueNode_Bone* get_parent()const;
+	void set_parent(const ValueNode_Bone* parent);
 
 	void add_bone_to_map();
 	Bone* find_bone_in_map(int uid);

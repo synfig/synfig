@@ -88,6 +88,7 @@ int valuenode_too_new_count;
 
 xmlpp::Element* encode_canvas(xmlpp::Element* root,Canvas::ConstHandle canvas);
 xmlpp::Element* encode_value_node(xmlpp::Element* root,ValueNode::ConstHandle value_node,Canvas::ConstHandle canvas);
+xmlpp::Element* encode_value_node_bone(xmlpp::Element* root,ValueNode::ConstHandle value_node,Canvas::ConstHandle canvas);
 
 xmlpp::Element* encode_keyframe(xmlpp::Element* root,const Keyframe &kf, float fps)
 {
@@ -185,26 +186,6 @@ xmlpp::Element* encode_bline_point(xmlpp::Element* root,BLinePoint bline_point)
 	return root;
 }
 
-xmlpp::Element* encode_bone(xmlpp::Element* root,Bone bone,Canvas::ConstHandle canvas)
-{
-	root->set_name(ValueBase::type_name(ValueBase::TYPE_BONE));
-
-	printf("%s:%d encode bone\n", __FILE__, __LINE__);
-	encode_integer(root->add_child("uid"    )->add_child("integer"),bone.get_uid());
-	encode_string(root->add_child("name"    )->add_child("string"),bone.get_name());
-	encode_vector(root->add_child("origin"  )->add_child("vector"),bone.get_origin());
-	encode_vector(root->add_child("origin0" )->add_child("vector"),bone.get_origin0());
-	encode_angle (root->add_child("angle"   )->add_child("angle"), bone.get_angle());
-	encode_angle (root->add_child("angle0"  )->add_child("angle"), bone.get_angle0());
-	encode_real  (root->add_child("scale"   )->add_child("real"),  bone.get_scale());
-	encode_real  (root->add_child("length"  )->add_child("real"),  bone.get_length());
-	encode_real  (root->add_child("strength")->add_child("real"),  bone.get_strength());
-	encode_value_node(root->add_child("parent")->add_child("value_node"),ValueNode_Bone::find(bone.get_parent()),canvas);
-
-	printf("%s:%d return at end\n", __FILE__, __LINE__);
-	return root;
-}
-
 xmlpp::Element* encode_gradient(xmlpp::Element* root,Gradient x)
 {
 	root->set_name("gradient");
@@ -263,14 +244,14 @@ xmlpp::Element* encode_value(xmlpp::Element* root,const ValueBase &data,Canvas::
 		return encode_segment(root,data.get(Segment()));
 	case ValueBase::TYPE_BLINEPOINT:
 		return encode_bline_point(root,data.get(BLinePoint()));
-	case ValueBase::TYPE_BONE:
-		return encode_bone(root,data.get(Bone()),canvas);
 	case ValueBase::TYPE_GRADIENT:
 		return encode_gradient(root,data.get(Gradient()));
 	case ValueBase::TYPE_LIST:
 		return encode_list(root,data,canvas);
 	case ValueBase::TYPE_CANVAS:
 		return encode_canvas(root,data.get(Canvas::Handle()).get());
+	case ValueBase::TYPE_VALUENODE_BONE:
+		return encode_value_node_bone(root,data.get(ValueNode_Bone::Handle()).get(),canvas);
 	case ValueBase::TYPE_NIL:
 		synfig::error("Encountered NIL ValueBase");
 		root->set_name("nil");
@@ -514,6 +495,7 @@ xmlpp::Element* encode_dynamic_list(xmlpp::Element* root,ValueNode_DynamicList::
 // Generic linkable data node entry
 xmlpp::Element* encode_linkable_value_node(xmlpp::Element* root,LinkableValueNode::ConstHandle value_node,Canvas::ConstHandle canvas=0)
 {
+	printf("%s:%d encode_linkable_value_node %s\n", __FILE__, __LINE__, value_node->get_string().c_str());
 	assert(value_node);
 
 	String name(value_node->get_name());
@@ -541,41 +523,59 @@ xmlpp::Element* encode_linkable_value_node(xmlpp::Element* root,LinkableValueNod
 	int i;
 	for(i=0;i<value_node->link_count();i++)
 	{
-		printf("saving link %d : %s\n", i, value_node->link_local_name(i).c_str());
+		// printf("saving link %d : %s\n", i, value_node->link_local_name(i).c_str());
 		ValueNode::ConstHandle link=value_node->get_link(i).constant();
 		if(!link)
 			throw runtime_error("Bad link");
 		if(link->is_exported())
 			root->set_attribute(value_node->link_name(i),link->get_relative_id(canvas));
 		else
+		{
+			if (name == "bone" && value_node->link_name(i) == "parent")
+			{
+				printf("%s:%d saving bone's parent\n", __FILE__, __LINE__);
+			}
 			encode_value_node(root->add_child(value_node->link_name(i))->add_child("value_node"),link,canvas);
+		}
 	}
 
+	printf("%s:%d encode_linkable_value_node %s done\n", __FILE__, __LINE__, value_node->get_string().c_str());
 	return root;
 }
 
 xmlpp::Element* encode_value_node(xmlpp::Element* root,ValueNode::ConstHandle value_node,Canvas::ConstHandle canvas)
 {
+	printf("%s:%d encode_value_node %s\n", __FILE__, __LINE__, value_node->get_string().c_str());
 	assert(value_node);
 
 	if(ValueNode_Animated::ConstHandle::cast_dynamic(value_node))
+	{
+		printf("%s:%d\n", __FILE__, __LINE__);
 		encode_animated(root,ValueNode_Animated::ConstHandle::cast_dynamic(value_node),canvas);
+	}
 	else
 	if(ValueNode_Subtract::ConstHandle::cast_dynamic(value_node))
 		encode_subtract(root,ValueNode_Subtract::ConstHandle::cast_dynamic(value_node),canvas);
 	else
 	if(ValueNode_StaticList::ConstHandle::cast_dynamic(value_node))
+	{
+		printf("%s:%d\n", __FILE__, __LINE__);
 		encode_static_list(root,ValueNode_StaticList::ConstHandle::cast_dynamic(value_node),canvas);
+	}
 	else
 	if(ValueNode_DynamicList::ConstHandle::cast_dynamic(value_node))
 		encode_dynamic_list(root,ValueNode_DynamicList::ConstHandle::cast_dynamic(value_node),canvas);
 	else if(ValueNode_Const::ConstHandle::cast_dynamic(value_node))
 	{
+		printf("%s:%d got ValueNode_Const encoding value\n", __FILE__, __LINE__);
 		encode_value(root,ValueNode_Const::ConstHandle::cast_dynamic(value_node)->get_value(),canvas);
 	}
 	else
 	if(LinkableValueNode::ConstHandle::cast_dynamic(value_node))
+	{
+		printf("%s:%d\n", __FILE__, __LINE__);
 		encode_linkable_value_node(root,LinkableValueNode::ConstHandle::cast_dynamic(value_node),canvas);
+	}
 	else
 	{
 		error(_("Unknown ValueNode Type (%s), cannot create an XML representation"),value_node->get_local_name().c_str());
@@ -592,6 +592,33 @@ xmlpp::Element* encode_value_node(xmlpp::Element* root,ValueNode::ConstHandle va
 	else if(value_node->rcount()>1)
 		root->set_attribute("guid",(value_node->get_guid()^canvas->get_root()->get_guid()).get_string());
 
+	printf("%s:%d encode_value_node %s done\n", __FILE__, __LINE__, value_node->get_string().c_str());
+	return root;
+}
+
+xmlpp::Element* encode_value_node_bone(xmlpp::Element* root,ValueNode::ConstHandle value_node,Canvas::ConstHandle canvas)
+{
+	if (!value_node)
+	{
+		printf("%s:%d null\n", __FILE__, __LINE__);
+		printf("%s:%d encode_value_node_bone null done\n", __FILE__, __LINE__);
+		root->set_attribute("root","true");
+		return root;
+	}
+
+	printf("%s:%d encode_value_node_bone %s\n", __FILE__, __LINE__, value_node->get_string().c_str());
+#if 0
+	encode_value_node(root, value_node, canvas);
+#else
+	if(!value_node->get_id().empty())
+		root->set_attribute("id",value_node->get_id());
+
+	if(ValueNode_Bone::ConstHandle::cast_dynamic(value_node))
+		root->set_attribute("guid",value_node->get_guid().get_string());
+	else if(value_node->rcount()>1)
+		root->set_attribute("guid",(value_node->get_guid()^canvas->get_root()->get_guid()).get_string());
+#endif
+	printf("%s:%d encode_value_node_bone %s done\n", __FILE__, __LINE__, value_node->get_string().c_str());
 	return root;
 }
 

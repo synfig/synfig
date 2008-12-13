@@ -146,7 +146,7 @@ ValueNode_Bone::ValueNode_Bone(const ValueBase &value):
 		set_link("length",ValueNode_Const::create(bone.get_length()));
 		set_link("strength",ValueNode_Const::create(bone.get_strength()));
 #endif
-		set_link("parent",ValueNode_Const::create(find(bone.get_parent())));
+		set_link("parent",ValueNode_Const::create(ValueNode_Bone::Handle::cast_const(bone.get_parent())));
 
 		bone_map[get_guid()] = this;
 
@@ -217,13 +217,13 @@ ValueNode_Bone::get_setup_matrix(Time t)const
 {
 	Point  origin0	((*origin0_	)(t).get(Point()));
 	Angle  angle0	((*angle0_	)(t).get(Angle()));
-	GUID   parent	(get_parent(t));
+	ValueNode_Bone::ConstHandle parent	(get_parent(t));
 
 	return get_setup_matrix(t, origin0, angle0, parent);
 }
 
 Matrix
-ValueNode_Bone::get_setup_matrix(Time t, Point origin0, Angle angle0, GUID parent)const
+ValueNode_Bone::get_setup_matrix(Time t, Point origin0, Angle angle0, ValueNode_Bone::ConstHandle parent)const
 {
 	Matrix translate_matrix, rotate_matrix, ret;
 
@@ -232,7 +232,7 @@ ValueNode_Bone::get_setup_matrix(Time t, Point origin0, Angle angle0, GUID paren
 	ret = translate_matrix * rotate_matrix;
 
 	if (parent)
-		ret = ret * find(parent)->get_setup_matrix(t);
+		ret = ret * parent->get_setup_matrix(t);
 
 	return ret;
 }
@@ -249,13 +249,13 @@ ValueNode_Bone::get_animated_matrix(Time t)const
 	Real   scale	((*scale_	)(t).get(Real ()));
 	Angle  angle	((*angle_	)(t).get(Angle()));
 	Point  origin	((*origin_	)(t).get(Point()));
-	GUID   parent	(get_parent(t));
+	ValueNode_Bone::ConstHandle   parent	(get_parent(t));
 
 	return get_animated_matrix(t, scale, angle, origin, parent);
 }
 
 Matrix
-ValueNode_Bone::get_animated_matrix(Time t, Real scale, Angle angle, Point origin, GUID parent)const
+ValueNode_Bone::get_animated_matrix(Time t, Real scale, Angle angle, Point origin, ValueNode_Bone::ConstHandle parent)const
 {
 	Matrix scale_matrix, rotate_matrix, translate_matrix, ret;
 
@@ -266,12 +266,12 @@ ValueNode_Bone::get_animated_matrix(Time t, Real scale, Angle angle, Point origi
 	ret = scale_matrix * rotate_matrix * translate_matrix;
 
 	if (parent)
-		ret = find(parent)->get_animated_matrix(t) * ret;
+		ret = parent->get_animated_matrix(t) * ret;
 
 	return ret;
 }
 
-GUID
+ValueNode_Bone::ConstHandle
 ValueNode_Bone::get_parent(Time t)const
 {
 	// check if we are an ancestor of the proposed parent
@@ -282,15 +282,11 @@ ValueNode_Bone::get_parent(Time t)const
 			synfig::error("A bone cannot be parent of itself or any of its descendants");
 		else
 			synfig::error("A loop was detected in the ancestry at bone %s", GET_NODE_DESC_CSTR(result,t));
-	}
-	else // proposed parent is root or not a descendant of current bone
-	{
-		ValueNode_Bone::ConstHandle parent((*parent_)(t).get(ValueNode_Bone::Handle()));
-		if (parent)
-			return parent->get_guid();
+		return 0;
 	}
 
-	return 0;
+	// proposed parent is root or not a descendant of current bone
+	return parent;
 }
 
 ValueBase
@@ -301,6 +297,9 @@ ValueNode_Bone::operator()(Time t)const
 
 	show_bone_map(__FILE__, __LINE__, strprintf("in op() at %s", t.get_string().c_str()), t);
 
+	String bone_name			((*name_	)(t).get(String()));
+	ValueNode_Bone::ConstHandle   bone_parent			(get_parent(t));
+#ifndef HIDE_BONE_FIELDS
 	Point  bone_origin			((*origin_	)(t).get(Point()));
 	Point  bone_origin0			((*origin0_	)(t).get(Point()));
 	Angle  bone_angle			((*angle_	)(t).get(Angle()));
@@ -308,13 +307,14 @@ ValueNode_Bone::operator()(Time t)const
 	Real   bone_scale			((*scale_	)(t).get(Real()));
 	Real   bone_length			((*length_	)(t).get(Real()));
 	Real   bone_strength		((*strength_)(t).get(Real()));
-	String bone_name			((*name_	)(t).get(String()));
-	GUID   bone_parent			(get_parent(t));
 	Matrix bone_setup_matrix	(get_setup_matrix   (t, bone_origin0, bone_angle0, bone_parent));
 	Matrix bone_animated_matrix	(get_animated_matrix(t, bone_scale,   bone_angle,  bone_origin, bone_parent));
+#endif
 
 	Bone ret;
+
 	ret.set_name			(bone_name);
+	ret.set_parent			(bone_parent.get());
 #ifndef HIDE_BONE_FIELDS
 	ret.set_origin			(bone_origin);
 	ret.set_origin0			(bone_origin0);
@@ -323,11 +323,9 @@ ValueNode_Bone::operator()(Time t)const
 	ret.set_scale			(bone_scale);
 	ret.set_length			(bone_length);
 	ret.set_strength		(bone_strength);
-#endif
-	ret.set_parent			(bone_parent);
-
 	ret.set_setup_matrix	(bone_setup_matrix);
 	ret.set_animated_matrix	(bone_animated_matrix);
+#endif
 
 	return ret;
 }
@@ -532,6 +530,7 @@ ValueNode_Bone::map_end()
 	return bone_map.end();
 }
 
+#if 0
 ValueNode_Bone::Handle
 ValueNode_Bone::find(GUID guid)
 {
@@ -553,6 +552,7 @@ ValueNode_Bone::find(GUID guid)
 		return 0;
 	}
 }
+#endif
 
 ValueNode_Bone::LooseHandle
 ValueNode_Bone::find(String name)
