@@ -31,6 +31,7 @@
 
 #include "valuenode_const.h"
 #include "valuenode_bone.h"
+#include "valuenode_boneweightpair.h"
 #include "general.h"
 
 #endif
@@ -68,6 +69,9 @@ ValueNode_Const::create(const ValueBase &x)
 {
 	if (x.get_type() == ValueBase::TYPE_BONE)
 		return ValueNode_Bone::create(x);
+
+	if (x.get_type() == ValueBase::TYPE_BONE_WEIGHT_PAIR)
+		return ValueNode_BoneWeightPair::create(x);
 
 	return new ValueNode_Const(x);
 }
