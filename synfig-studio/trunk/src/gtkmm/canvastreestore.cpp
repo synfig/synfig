@@ -35,6 +35,7 @@
 #include "iconcontroller.h"
 #include <synfig/valuenode_timedswap.h>
 #include <synfig/valuenode_bone.h>
+#include <synfig/boneweightpair.h>
 #include <synfig/valuenode_animated.h>
 #include <gtkmm/button.h>
 #include <synfigapp/instance.h>
@@ -107,6 +108,13 @@ CanvasTreeStore::get_value_vfunc(const Gtk::TreeModel::iterator& iter, int colum
 				if (ValueNode_Bone::Handle parent = ValueNode_Bone::find(bone.get_parent()))
 					display += " <-- " + String((*parent->get_link("name"))(time).get(String()));
 				x.set(display);
+				break;
+			}
+			case ValueBase::TYPE_BONE_WEIGHT_PAIR:
+			{
+				Time time(canvas_interface()->get_time());
+				BoneWeightPair bone_weight_pair((*(value_desc.get_value_node()))(time).get(BoneWeightPair()));
+				x.set(bone_weight_pair.get_string());
 				break;
 			}
 			case ValueBase::TYPE_SEGMENT:

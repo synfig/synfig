@@ -63,7 +63,7 @@ public:
 
 	//!Get the string of the BoneWeightPair
 	//!@return String type. A string representation of the two components.
-	String get_string() { return etl::strprintf("pair(%s, %.2f)", bone.get_string().c_str(), weight); }
+	String get_string() { return etl::strprintf("(%.2f) %s", weight, bone.get_name().c_str()); }
 };
 
 }; // END of namespace synfig
