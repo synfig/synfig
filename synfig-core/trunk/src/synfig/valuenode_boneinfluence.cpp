@@ -65,7 +65,7 @@ ValueNode_BoneInfluence::ValueNode_BoneInfluence(const ValueNode::Handle &x):
 	{
 	case ValueBase::TYPE_VECTOR:
 	{
-		ValueNode_StaticList::Handle bone_weight_list(ValueNode_StaticList::create(ValueBase::TYPE_MATRIX));
+		ValueNode_StaticList::Handle bone_weight_list(ValueNode_StaticList::create(ValueBase::TYPE_BONE_WEIGHT_PAIR));
 		bone_weight_list->add(ValueNode_BoneWeightPair::create(BoneWeightPair(Bone(), 1)));
 		set_link("vertex_free",			ValueNode_Const::create(Vector()));
 		set_link("vertex_setup",		x);
