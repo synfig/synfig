@@ -11,4 +11,4 @@ value.h:246 !'matrix'.same_type_as('bone_weight_pair')
 ss-debug: value.h:248: const T& synfig::ValueBase::get(const T&) const [with T = synfig::BoneWeightPair]: Assertion `is_valid() && same_type_as(x)' failed
 
 ------------------------------------------------------------------------
-
+It crashes too if you delete item smart
