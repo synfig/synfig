@@ -90,7 +90,7 @@ public:
 	bool get_loop()const { return loop_; }
 	void set_loop(bool x) { loop_=x; }
 
-//	void set_member_canvas(etl::loose_handle<Canvas>);
+	void set_member_canvas(etl::loose_handle<Canvas>);
 
 	ValueBase::Type get_contained_type()const;
 

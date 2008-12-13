@@ -205,7 +205,7 @@ ValueNode_StaticList::~ValueNode_StaticList()
 	printf("%s:%d ------------------------------------------------------------------------\n\n", __FILE__, __LINE__);
 #endif
 
-	ValueNode_Bone::show_bone_map(__FILE__, __LINE__, "deleting staticlist");
+	ValueNode_Bone::show_bone_map(get_root_canvas(), __FILE__, __LINE__, "deleting staticlist");
 	unlink_all();
 }
 
@@ -316,7 +316,7 @@ ValueNode_StaticList::link_local_name(int i)const // line 657
 ValueNode*
 ValueNode_StaticList::clone(Canvas::LooseHandle canvas, const GUID& deriv_guid)const
 {
-	ValueNode_Bone::show_bone_map(__FILE__, __LINE__, "before cloning staticlist");
+	ValueNode_Bone::show_bone_map(get_root_canvas(), __FILE__, __LINE__, "before cloning staticlist");
 
 	{ ValueNode* x(find_value_node(get_guid()^deriv_guid).get()); if(x)return x; }
 
@@ -331,7 +331,7 @@ ValueNode_StaticList::clone(Canvas::LooseHandle canvas, const GUID& deriv_guid)c
 	ret->set_loop(get_loop());
 	ret->set_parent_canvas(canvas);
 
-	ValueNode_Bone::show_bone_map(__FILE__, __LINE__, "after cloning staticlist");
+	ValueNode_Bone::show_bone_map(get_root_canvas(), __FILE__, __LINE__, "after cloning staticlist");
 
 	return ret;
 }
@@ -364,6 +364,13 @@ bool
 ValueNode_StaticList::check_type(ValueBase::Type type) // line 717
 {
 	return type==ValueBase::TYPE_LIST;
+}
+
+void
+ValueNode_StaticList::set_member_canvas(etl::loose_handle<Canvas> canvas) // line 723
+{
+	for (vector<ReplaceableListEntry>::iterator iter = list.begin(); iter != list.end(); iter++)
+		(*iter)->set_parent_canvas(canvas);
 }
 
 ValueBase::Type

@@ -248,7 +248,7 @@ public:
 	void set_parent_canvas(etl::loose_handle<Canvas> x);
 
 	//! \writeme
-	void set_root_canvas(etl::loose_handle<Canvas> x);
+	virtual void set_root_canvas(etl::loose_handle<Canvas> x);
 
 	//! \writeme
 	String get_relative_id(etl::loose_handle<const Canvas> x)const;

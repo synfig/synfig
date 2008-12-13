@@ -56,6 +56,7 @@ public:
 	typedef etl::handle<const ValueNode_Bone> ConstHandle;
 	typedef etl::loose_handle<ValueNode_Bone> LooseHandle;
 	typedef std::map<synfig::GUID, LooseHandle> BoneMap;
+	typedef std::map<etl::loose_handle<Canvas>, BoneMap> CanvasMap;
 	typedef std::set<LooseHandle> BoneSet;
 
 	virtual ValueBase operator()(Time t)const;
@@ -63,7 +64,8 @@ public:
 	virtual ValueNode* clone(etl::loose_handle<Canvas> canvas, const GUID& deriv_guid=GUID())const;
 
 	virtual ~ValueNode_Bone();
-	void set_guid(const GUID& x);
+	void set_guid(const GUID& new_guid);
+	void set_root_canvas(etl::loose_handle<Canvas> canvas);
 
 	virtual String get_name()const;
 	virtual String get_local_name()const;
@@ -88,12 +90,9 @@ public:
 	using synfig::LinkableValueNode::set_link_vfunc;
 	static bool check_type(ValueBase::Type type);
 	static ValueNode_Bone* create(const ValueBase &x);
-	static BoneMap::const_iterator map_begin();
-	static BoneMap::const_iterator map_end();
-	static ValueNode_Bone::Handle find(GUID guid);
-	static ValueNode_Bone::LooseHandle find(String name);
-	static String unique_name(String name);
-	static void show_bone_map(const char *file, int line, String text, Time t=0);
+	ValueNode_Bone::LooseHandle find(String name)const;
+	String unique_name(String name)const;
+	static void show_bone_map(etl::loose_handle<Canvas> canvas, const char *file, int line, String text, Time t=0);
 
 	ValueNode_Bone::ConstHandle is_ancestor_of(ValueNode_Bone::ConstHandle bone, Time t)const;
 
