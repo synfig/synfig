@@ -46,7 +46,7 @@ using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 
-// #define HIDE_BONE_FIELDS
+#define HIDE_BONE_FIELDS
 
 #define GET_NODE_PARENT_NODE(node,t) (*node->get_link("parent"))(t).get(ValueNode_Bone::Handle())
 #define GET_NODE_PARENT(node,t) GET_NODE_PARENT_NODE(node,t)->get_guid()
@@ -112,6 +112,12 @@ ValueNode_Bone::show_bone_map(Canvas::LooseHandle canvas, const char *file, int 
 			   id.c_str());
 	}
 	printf("\n");
+}
+
+ValueNode_Bone::BoneMap
+ValueNode_Bone::get_bone_map(Canvas::ConstHandle canvas)
+{
+	return canvas_map[canvas];
 }
 
 /* === M E T H O D S ======================================================= */
@@ -695,7 +701,7 @@ ValueNode_Bone::get_bones_referenced_by(ValueNode::Handle value_node)
 		return ret;
 	}
 
-	error("%s:%d BUG: bad type in valuenode '%s'", __FILE__, __LINE__, value_node->get_description().c_str());
+	error("%s:%d BUG: bad type in valuenode '%s'", __FILE__, __LINE__, value_node->get_string().c_str());
 	assert(0);
 	return ret;
 }

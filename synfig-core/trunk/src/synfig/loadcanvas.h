@@ -145,6 +145,7 @@ private:
 
 	Canvas::Handle parse_canvas(xmlpp::Element *node,Canvas::Handle parent=0,bool inline_=false, String path=".");
 	void parse_canvas_defs(xmlpp::Element *node,Canvas::Handle canvas);
+	void parse_canvas_bones(xmlpp::Element *node,Canvas::Handle canvas);
 	etl::handle<Layer> parse_layer(xmlpp::Element *node,Canvas::Handle canvas);
 	ValueBase parse_value(xmlpp::Element *node,Canvas::Handle canvas);
 	etl::handle<ValueNode> parse_value_node(xmlpp::Element *node,Canvas::Handle canvas);

@@ -540,6 +540,12 @@ PlaceholderValueNode::get_local_name()const
 	return _("Placeholder");
 }
 
+String
+PlaceholderValueNode::get_string()const
+{
+	return String("PlaceholderValueNode: ") + get_guid().get_string();
+}
+
 ValueNode*
 PlaceholderValueNode::clone(Canvas::LooseHandle canvas, const GUID& deriv_guid)const
 {

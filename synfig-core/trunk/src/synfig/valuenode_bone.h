@@ -56,7 +56,7 @@ public:
 	typedef etl::handle<const ValueNode_Bone> ConstHandle;
 	typedef etl::loose_handle<ValueNode_Bone> LooseHandle;
 	typedef std::map<synfig::GUID, LooseHandle> BoneMap;
-	typedef std::map<etl::loose_handle<Canvas>, BoneMap> CanvasMap;
+	typedef std::map<etl::loose_handle<const Canvas>, BoneMap> CanvasMap;
 	typedef std::set<LooseHandle> BoneSet;
 
 	virtual ValueBase operator()(Time t)const;
@@ -93,6 +93,7 @@ public:
 	ValueNode_Bone::LooseHandle find(String name)const;
 	String unique_name(String name)const;
 	static void show_bone_map(etl::loose_handle<Canvas> canvas, const char *file, int line, String text, Time t=0);
+	static BoneMap get_bone_map(etl::handle<const Canvas> canvas);
 
 	ValueNode_Bone::ConstHandle is_ancestor_of(ValueNode_Bone::ConstHandle bone, Time t)const;
 

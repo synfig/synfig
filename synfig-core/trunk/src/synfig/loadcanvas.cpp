@@ -1782,6 +1782,24 @@ CanvasParser::parse_canvas_defs(xmlpp::Element *element,Canvas::Handle canvas)
 	}
 }
 
+void
+CanvasParser::parse_canvas_bones(xmlpp::Element *element,Canvas::Handle canvas)
+{
+	assert(element->get_name()=="bones");
+	xmlpp::Element::NodeList list = element->get_children();
+	for(xmlpp::Element::NodeList::iterator iter = list.begin(); iter != list.end(); ++iter)
+	{
+		xmlpp::Element *child(dynamic_cast<xmlpp::Element*>(*iter));
+		if(!child)
+			continue;
+		else
+		if(child->get_name()=="canvas")
+			parse_canvas(child, canvas);
+		else
+			parse_value_node(child,canvas);
+	}
+}
+
 Layer::Handle
 CanvasParser::parse_layer(xmlpp::Element *element,Canvas::Handle canvas)
 {
@@ -2117,6 +2135,13 @@ CanvasParser::parse_canvas(xmlpp::Element *element,Canvas::Handle parent,bool in
 				if(canvas->is_inline())
 					error(child,_("Inline canvas cannot have a <defs> section"));
 				parse_canvas_defs(child, canvas);
+			}
+			else
+			if(child->get_name()=="bones")
+			{
+				if(canvas->is_inline())
+					error(child,_("Inline canvas cannot have a <bones> section"));
+				parse_canvas_bones(child, canvas);
 			}
 			else
 			if(child->get_name()=="keyframe")

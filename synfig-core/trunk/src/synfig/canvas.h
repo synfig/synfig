@@ -38,6 +38,7 @@
 #include "string.h"
 #include "canvasbase.h"
 #include "valuenode.h"
+#include "valuenode_bone.h"
 #include "keyframe.h"
 #include "renddesc.h"
 #include "node.h"
@@ -552,6 +553,8 @@ public:
 	Handle clone(const GUID& deriv_guid=GUID(), bool for_export=false)const;
 
 	void register_external_canvas(String file, Handle canvas);
+
+	ValueNode_Bone::BoneMap get_bone_map()const { return ValueNode_Bone::get_bone_map(this); }
 
 #if 0
 	void show_canvas_ancestry(String file, int line, String note)const;

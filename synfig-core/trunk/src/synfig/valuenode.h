@@ -289,6 +289,8 @@ public:
 
 	virtual String get_local_name()const;
 
+	String get_string()const;
+
 	virtual ValueNode* clone(etl::loose_handle<Canvas> canvas, const GUID& deriv_guid=GUID())const;
 
 	static Handle create(ValueBase::Type type=ValueBase::TYPE_NIL);
