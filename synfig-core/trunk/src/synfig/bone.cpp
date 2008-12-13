@@ -119,50 +119,6 @@ Bone::get_tip()
 	return (Point)sr.get_transformed(Vector(length_,0));
 }
 
-//!Setup Transformation matrix.
-//!This matrix applied to a setup point in global
-//!coordinates calculates the local coordinates of
-//!the point relative to the current bone.
-Matrix
-Bone::get_setup_matrix()const
-{
-	Matrix t,r,bparent;
-	t.set_translate((Vector)(-origin0_));
-	r.set_rotate(-angle0_);
-	bparent=t*r;
-#if 0
-	Bone const *currparent=parent_;
-	while (currparent)
-	{
-		bparent*=currparent->get_setup_matrix();
-		currparent=currparent->parent_;
-	}
-#endif
-	return bparent;
-}
-
-//!Animated Transformation matrix.
-//!This matrix applied to a setup point in local
-//!coordinates (the one obtained form the Setup
-//!Transformation matrix) would obtain the
-//!animated position of the point due the current
-//!bone influence
-Matrix
-Bone::get_animated_matrix() const
-{
-	Matrix s,r,t,banimated;
-	banimated.set_identity();
-	banimated*=s.set_scale(scale_)*r.set_rotate(angle_)*t.set_translate(origin_);
-#if 0
-	if(parent_)
-	{
-		return parent_->get_animated_matrix()*banimated;
-	}
-	else
-#endif
-		return banimated;
-
-}
 //!Get the string of the Bone
 //!@return String type. A string representation of the bone
 //!components.

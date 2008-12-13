@@ -84,6 +84,10 @@ private:
 	Real strength_;
 	//!The parent bone.
 	GUID parent_;
+
+	Matrix setup_matrix_;
+	Matrix animated_matrix_;
+
 public:
 	//!Default constructor
 	Bone();
@@ -135,7 +139,8 @@ public:
 	//!This matrix applied to a setup point in global
 	//!coordinates calculates the local coordinates of
 	//!the point relative to the current bone.
-	Matrix get_setup_matrix()const;
+	Matrix get_setup_matrix() const { return setup_matrix_; }
+	void set_setup_matrix(Matrix x) { setup_matrix_ = x; }
 
 	//!Animated Transformation matrix.
 	//!This matrix applied to a setup point in local
@@ -143,7 +148,8 @@ public:
 	//!Transformation matrix) would obtain the
 	//!animated position of the point due the current
 	//!bone influence
-	Matrix get_animated_matrix() const;
+	Matrix get_animated_matrix() const { return animated_matrix_; }
+	void set_animated_matrix(Matrix x) { animated_matrix_ = x; }
 
 	//!Get the string of the Bone
 	//!@return String type. A string representation of the bone

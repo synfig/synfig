@@ -117,6 +117,13 @@ public:
 	virtual void runref()const;
 #endif
 
+private:
+	Matrix get_setup_matrix(Time t)const;
+	Matrix get_setup_matrix(Time t, Point origin0, Angle angle0, GUID parent)const;
+	Matrix get_animated_matrix(Time t)const;
+	Matrix get_animated_matrix(Time t, Real scale, Angle angle, Point origin, GUID parent)const;
+	GUID get_parent(Time t)const;
+
 }; // END of class ValueNode_Bone
 
 }; // END of namespace synfig

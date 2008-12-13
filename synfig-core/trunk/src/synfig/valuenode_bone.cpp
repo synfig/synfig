@@ -208,26 +208,72 @@ ValueNode_Bone::set_guid(const GUID& new_guid)
 	// show_bone_map(__FILE__, __LINE__, strprintf("after changing guid from %s to %s", GET_GUID_CSTR(old_guid), GET_GUID_CSTR(new_guid)));
 }
 
-ValueBase
-ValueNode_Bone::operator()(Time t)const
+//!Setup Transformation matrix.
+//!This matrix applied to a setup point in global
+//!coordinates calculates the local coordinates of
+//!the point relative to the current bone.
+Matrix
+ValueNode_Bone::get_setup_matrix(Time t)const
 {
-	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
-		printf("%s:%d operator()\n", __FILE__, __LINE__);
+	Point  origin0	((*origin0_	)(t).get(Point()));
+	Angle  angle0	((*angle0_	)(t).get(Angle()));
+	GUID   parent	(get_parent(t));
 
-	show_bone_map(__FILE__, __LINE__, strprintf("in op() at %s", t.get_string().c_str()), t);
+	return get_setup_matrix(t, origin0, angle0, parent);
+}
 
-	Bone ret;
-	ret.set_name		((*name_	)(t).get(String()));
-#ifndef HIDE_BONE_FIELDS
-	ret.set_origin		((*origin_	)(t).get(Point()));
-	ret.set_origin0		((*origin0_	)(t).get(Point()));
-	ret.set_angle		((*angle_	)(t).get(Angle()));
-	ret.set_angle0		((*angle0_	)(t).get(Angle()));
-	ret.set_scale		((*scale_	)(t).get(Real()));
-	ret.set_length		((*length_	)(t).get(Real()));
-	ret.set_strength	((*strength_)(t).get(Real()));
-#endif
+Matrix
+ValueNode_Bone::get_setup_matrix(Time t, Point origin0, Angle angle0, GUID parent)const
+{
+	Matrix translate_matrix, rotate_matrix, ret;
 
+	translate_matrix.set_translate((Vector)(-origin0));
+	rotate_matrix.set_rotate(-angle0);
+	ret = translate_matrix * rotate_matrix;
+
+	if (parent)
+		ret = ret * find(parent)->get_setup_matrix(t);
+
+	return ret;
+}
+
+//!Animated Transformation matrix.
+//!This matrix applied to a setup point in local
+//!coordinates (the one obtained form the Setup
+//!Transformation matrix) would obtain the
+//!animated position of the point due the current
+//!bone influence
+Matrix
+ValueNode_Bone::get_animated_matrix(Time t)const
+{
+	Real   scale	((*scale_	)(t).get(Real ()));
+	Angle  angle	((*angle_	)(t).get(Angle()));
+	Point  origin	((*origin_	)(t).get(Point()));
+	GUID   parent	(get_parent(t));
+
+	return get_animated_matrix(t, scale, angle, origin, parent);
+}
+
+Matrix
+ValueNode_Bone::get_animated_matrix(Time t, Real scale, Angle angle, Point origin, GUID parent)const
+{
+	Matrix scale_matrix, rotate_matrix, translate_matrix, ret;
+
+	scale_matrix.set_scale(scale);
+	rotate_matrix.set_rotate(angle);
+	translate_matrix.set_translate(origin);
+
+	ret = scale_matrix * rotate_matrix * translate_matrix;
+
+	if (parent)
+		ret = find(parent)->get_animated_matrix(t) * ret;
+
+	return ret;
+}
+
+GUID
+ValueNode_Bone::get_parent(Time t)const
+{
 	// check if we are an ancestor of the proposed parent
 	ValueNode_Bone::ConstHandle parent((*parent_)(t).get(ValueNode_Bone::Handle()));
 	if (ValueNode_Bone::ConstHandle result = is_ancestor_of(parent,t))
@@ -241,10 +287,47 @@ ValueNode_Bone::operator()(Time t)const
 	{
 		ValueNode_Bone::ConstHandle parent((*parent_)(t).get(ValueNode_Bone::Handle()));
 		if (parent)
-			ret.set_parent(parent->get_guid());
-		else
-			ret.set_parent(0);
+			return parent->get_guid();
 	}
+
+	return 0;
+}
+
+ValueBase
+ValueNode_Bone::operator()(Time t)const
+{
+	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
+		printf("%s:%d operator()\n", __FILE__, __LINE__);
+
+	show_bone_map(__FILE__, __LINE__, strprintf("in op() at %s", t.get_string().c_str()), t);
+
+	Point  bone_origin			((*origin_	)(t).get(Point()));
+	Point  bone_origin0			((*origin0_	)(t).get(Point()));
+	Angle  bone_angle			((*angle_	)(t).get(Angle()));
+	Angle  bone_angle0			((*angle0_	)(t).get(Angle()));
+	Real   bone_scale			((*scale_	)(t).get(Real()));
+	Real   bone_length			((*length_	)(t).get(Real()));
+	Real   bone_strength		((*strength_)(t).get(Real()));
+	String bone_name			((*name_	)(t).get(String()));
+	GUID   bone_parent			(get_parent(t));
+	Matrix bone_setup_matrix	(get_setup_matrix   (t, bone_origin0, bone_angle0, bone_parent));
+	Matrix bone_animated_matrix	(get_animated_matrix(t, bone_scale,   bone_angle,  bone_origin, bone_parent));
+
+	Bone ret;
+	ret.set_name			(bone_name);
+#ifndef HIDE_BONE_FIELDS
+	ret.set_origin			(bone_origin);
+	ret.set_origin0			(bone_origin0);
+	ret.set_angle			(bone_angle);
+	ret.set_angle0			(bone_angle0);
+	ret.set_scale			(bone_scale);
+	ret.set_length			(bone_length);
+	ret.set_strength		(bone_strength);
+#endif
+	ret.set_parent			(bone_parent);
+
+	ret.set_setup_matrix	(bone_setup_matrix);
+	ret.set_animated_matrix	(bone_animated_matrix);
 
 	return ret;
 }
