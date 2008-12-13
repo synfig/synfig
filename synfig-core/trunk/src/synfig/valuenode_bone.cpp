@@ -46,7 +46,7 @@ using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 
-#define HIDE_BONE_FIELDS
+// #define HIDE_BONE_FIELDS
 
 #define GET_NODE_PARENT_NODE(node,t) (*node->get_link("parent"))(t).get(ValueNode_Bone::Handle())
 #define GET_NODE_PARENT(node,t) GET_NODE_PARENT_NODE(node,t)->get_guid()
