@@ -28,21 +28,15 @@
 
 /* === H E A D E R S ======================================================= */
 
-//#include "vector.h"
-//#include "time.h"
 #include "segment.h"
-//#include "color.h"
 #include "string.h"
 #include <list>
 #include <vector>
 #include <ETL/trivial>
 #include <ETL/handle>
 #include "general.h"
-//#include "gradient.h"
 #include "blinepoint.h"
 #include "bone.h"
-// #include "boneweightpair.h"
-#include "matrix.h"
 #include "exception.h"
 
 #ifdef USE_HALF_TYPE
