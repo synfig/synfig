@@ -106,7 +106,7 @@ CanvasTreeStore::get_value_vfunc(const Gtk::TreeModel::iterator& iter, int colum
 				Bone bone((*(value_desc.get_value_node()))(time).get(Bone()));
 				String display(String(bone.get_name()));
 				if (ValueNode_Bone::ConstHandle parent = bone.get_parent())
-					display += " <-- " + String((*parent->get_link("name"))(time).get(String()));
+					display += " --> " + String((*parent->get_link("name"))(time).get(String()));
 				x.set(display);
 				break;
 			}
