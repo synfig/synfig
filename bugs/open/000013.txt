@@ -1,0 +1,14 @@
+Subject: Insert Item smart in Bone Weight Pair List Crash
+
+Create a Bline, expand a vertex and do right click on the Vertice parameter.
+Convert it to Bone Influence. Expand the convert type and select the first item
+of the Bone Weight Pair list. Do right click "Insert Item Smart".
+It crahses.
+
+Console message:
+synfig(10168) [00:57:16] warning: ValueNode_StaticList::operator()():List type/item type mismatch, throwing away mismatch
+value.h:246 !'matrix'.same_type_as('bone_weight_pair')
+ss-debug: value.h:248: const T& synfig::ValueBase::get(const T&) const [with T = synfig::BoneWeightPair]: Assertion `is_valid() && same_type_as(x)' failed
+
+------------------------------------------------------------------------
+
