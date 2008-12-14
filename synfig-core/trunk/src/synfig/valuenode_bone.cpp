@@ -50,7 +50,7 @@ using namespace synfig;
 
 #define GET_NODE_PARENT_NODE(node,t) (*node->get_link("parent"))(t).get(ValueNode_Bone::Handle())
 #define GET_NODE_PARENT(node,t) GET_NODE_PARENT_NODE(node,t)->get_guid()
-#define GET_NODE_NAME(node,t) (*node->get_link("name"))(t).get(String())
+#define GET_NODE_NAME(node,t) node->get_bone_name(t)
 #define GET_NODE_BONE(node,t) (*node)(t).get(Bone())
 
 #define GET_GUID_CSTR(guid) guid.get_string().substr(0,GUID_PREFIX_LEN).c_str()
@@ -67,6 +67,8 @@ static int bone_counter;
 // static map<ValueNode_Bone::Handle, Matrix> setup_matrix_map;
 // static map<ValueNode_Bone::Handle, Matrix> animated_matrix_map;
 static Time last_time = Time::begin();
+
+static ValueNode_Bone_Root::Handle rooot;
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -101,6 +103,7 @@ ValueNode_Bone::show_bone_map(Canvas::LooseHandle canvas, const char *file, int 
 	{
 		ValueNode_Bone::LooseHandle bone(*iter);
 		GUID guid(bone->get_guid());
+		printf("%s:%d loop 1 get_node_parent_node\n", __FILE__, __LINE__);
 		ValueNode_Bone::LooseHandle parent(GET_NODE_PARENT_NODE(bone,t));
 		String id;
 		if (bone->is_exported()) id = String(" ") + bone->get_id();
@@ -121,6 +124,13 @@ ValueNode_Bone::get_bone_map(Canvas::ConstHandle canvas)
 }
 
 /* === M E T H O D S ======================================================= */
+
+// this should only be used when creating the root bone
+ValueNode_Bone::ValueNode_Bone():
+	LinkableValueNode(ValueBase::TYPE_BONE)
+{
+	printf("%s:%d ValueNode_Bone::ValueNode_Bone() this line should only appear once guid %s\n", __FILE__, __LINE__, get_guid().get_string().c_str());
+}
 
 ValueNode_Bone::ValueNode_Bone(const ValueBase &value):
 	LinkableValueNode(value.get_type())
@@ -154,8 +164,11 @@ ValueNode_Bone::ValueNode_Bone(const ValueBase &value):
 		set_link("length",ValueNode_Const::create(bone.get_length()));
 		set_link("strength",ValueNode_Const::create(bone.get_strength()));
 #endif
-		set_link("parent",ValueNode_Const::create(ValueNode_Bone::Handle::cast_const(bone.get_parent())));
+		ValueNode_Bone::ConstHandle parent(ValueNode_Bone::Handle::cast_const(bone.get_parent()));
+		if (!parent) parent = get_root_bone();
+		set_link("parent",ValueNode_Const::create(ValueNode_Bone::Handle::cast_const(parent)));
 
+		printf("%s:%d adding to canvas_map\n", __FILE__, __LINE__);
 		canvas_map[get_root_canvas()][get_guid()] = this;
 
 		show_bone_map(get_root_canvas(), __FILE__, __LINE__, strprintf("in constructor of %s at %lx", GET_GUID_CSTR(get_guid()), ulong(this)));
@@ -198,6 +211,7 @@ ValueNode_Bone::~ValueNode_Bone()
 		printf("%s:%d ------------------------------------------------------------------------\n\n", __FILE__, __LINE__);
 	}
 
+	printf("%s:%d removing from canvas_map\n", __FILE__, __LINE__);
 	canvas_map[get_root_canvas()].erase(get_guid());
 
 	show_bone_map(get_root_canvas(), __FILE__, __LINE__, "in destructor");
@@ -210,11 +224,11 @@ ValueNode_Bone::set_guid(const GUID& new_guid)
 {
 	GUID old_guid(get_guid());
 	Canvas::LooseHandle canvas(get_root_canvas());
-	// show_bone_map(canvas, __FILE__, __LINE__, strprintf("before changing guid from %s to %s", GET_GUID_CSTR(old_guid), GET_GUID_CSTR(new_guid)));
+	show_bone_map(canvas, __FILE__, __LINE__, strprintf("before changing guid from %s to %s", GET_GUID_CSTR(old_guid), GET_GUID_CSTR(new_guid)));
 	LinkableValueNode::set_guid(new_guid);
 	canvas_map[canvas][new_guid] = canvas_map[canvas][old_guid];
 	canvas_map[canvas].erase(old_guid);
-	// show_bone_map(canvas, __FILE__, __LINE__, strprintf("after changing guid from %s to %s", GET_GUID_CSTR(old_guid), GET_GUID_CSTR(new_guid)));
+	show_bone_map(canvas, __FILE__, __LINE__, strprintf("after changing guid from %s to %s", GET_GUID_CSTR(old_guid), GET_GUID_CSTR(new_guid)));
 }
 
 void
@@ -225,9 +239,14 @@ ValueNode_Bone::set_root_canvas(etl::loose_handle<Canvas> canvas)
 	show_bone_map(old_canvas, __FILE__, __LINE__, strprintf("before changing canvas from %lx to (%lx)", ulong(old_canvas.get()), ulong(canvas.get())));
 	LinkableValueNode::set_root_canvas(canvas);
 	Canvas::LooseHandle new_canvas(get_root_canvas()); // it isn't necessarily what we passed in, because set_root_canvas walks up to the root
-	canvas_map[new_canvas][guid] = canvas_map[old_canvas][guid];
-	canvas_map[old_canvas].erase(guid);
-	show_bone_map(new_canvas, __FILE__, __LINE__, strprintf("after changing canvas from %lx to %lx", ulong(old_canvas.get()), ulong(new_canvas.get())));
+	if (new_canvas != old_canvas)
+	{
+		canvas_map[new_canvas][guid] = canvas_map[old_canvas][guid];
+		canvas_map[old_canvas].erase(guid);
+		show_bone_map(new_canvas, __FILE__, __LINE__, strprintf("after changing canvas from %lx to %lx", ulong(old_canvas.get()), ulong(new_canvas.get())));
+	}
+	else
+		printf("%s:%d canvases are the same\n", __FILE__, __LINE__);
 }
 
 //!Setup Transformation matrix.
@@ -286,7 +305,7 @@ ValueNode_Bone::get_parent(Time t)const
 		else
 			synfig::error("A loop was detected in the ancestry at bone %s", GET_NODE_DESC_CSTR(result,t));
 		printf("%s:%d root 1\n", __FILE__, __LINE__);
-		return new ValueNode_Bone_Root;
+		return get_root_bone();
 	}
 
 	// proposed parent is root or not a descendant of current bone
@@ -295,8 +314,8 @@ ValueNode_Bone::get_parent(Time t)const
 		printf("%s:%d parent\n", __FILE__, __LINE__);
 		return parent;
 	}
-
 	printf("%s:%d root 2\n", __FILE__, __LINE__);
+	assert(0);
 	return ValueNode_Bone::ConstHandle::cast_dynamic(new ValueNode_Bone_Root);
 }
 
@@ -306,10 +325,11 @@ ValueNode_Bone::operator()(Time t)const
 	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
 		printf("%s:%d operator()\n", __FILE__, __LINE__);
 
-	show_bone_map(get_root_canvas(), __FILE__, __LINE__, strprintf("in op() at %s", t.get_string().c_str()), t);
+	printf("%s:%d loop 4\n", __FILE__, __LINE__);
+//	show_bone_map(get_root_canvas(), __FILE__, __LINE__, strprintf("in op() at %s", t.get_string().c_str()), t);
 
 	String bone_name			((*name_	)(t).get(String()));
-	ValueNode_Bone::ConstHandle   bone_parent			(get_parent(t));
+	ValueNode_Bone::ConstHandle   bone_parent			(get_parent(t)); // <-- get ValueNode_Bone_Root here
 #ifndef HIDE_BONE_FIELDS
 	Point  bone_origin			((*origin_	)(t).get(Point()));
 	Point  bone_origin0			((*origin0_	)(t).get(Point()));
@@ -338,7 +358,7 @@ ValueNode_Bone::operator()(Time t)const
 	ret.set_animated_matrix	(bone_animated_matrix);
 #endif
 
-	return ret;
+	return ret;					// <-- lose it here
 }
 
 ValueNode*
@@ -384,6 +404,12 @@ ValueNode_Bone::get_local_name()const
 	return _("Bone");
 }
 
+String
+ValueNode_Bone::get_bone_name(Time t)const
+{
+	return (*get_link("name"))(t).get(String());
+}
+
 bool
 ValueNode_Bone::check_type(ValueBase::Type type)
 {
@@ -411,6 +437,16 @@ ValueNode_Bone::set_link_vfunc(int i,ValueNode::Handle value)
 	case 8:
 #endif
 	{
+		printf("%s:%d trying to link parent to %s\n", __FILE__, __LINE__, value->get_string().c_str());
+
+		if (value->get_type() == ValueBase::TYPE_BONE &&
+			ValueNode_Bone::Handle::cast_dynamic(value))
+		{
+			ValueBase v(ValueNode_Bone::Handle::cast_dynamic(value));
+			value = ValueNode_Const::create(v);
+			printf("%s:%d now, instead, trying to link parent to %s\n", __FILE__, __LINE__, value->get_string().c_str());
+		}
+
 		VALUENODE_CHECK_TYPE(ValueBase::TYPE_VALUENODE_BONE);
 		ValueNode_Bone::BoneSet parents(ValueNode_Bone::get_bones_referenced_by(value));
 		if (parents.count(this))
@@ -612,7 +648,7 @@ ValueNode_Bone::is_ancestor_of(ValueNode_Bone::ConstHandle bone, Time t)const
 	if (getenv("SYNFIG_DEBUG_ANCESTOR_CHECK"))
 		printf("%s:%d checking whether %s is ancestor of %s\n", __FILE__, __LINE__, GET_NODE_DESC_CSTR(ancestor,t), GET_NODE_DESC_CSTR(bone,t));
 
-	while (bone)
+	while (bone != get_root_bone())
 	{
 		if (bone == ancestor)
 		{
@@ -795,6 +831,13 @@ ValueNode_Bone::get_possible_parent_bones(ValueNode::Handle value_node)
 	return ret;
 }
 
+ValueNode_Bone::Handle
+ValueNode_Bone::get_root_bone()
+{
+	if (!rooot) rooot = new ValueNode_Bone_Root();
+	return rooot;
+}
+
 #ifdef _DEBUG
 void
 ValueNode_Bone::ref()const
@@ -839,21 +882,36 @@ ValueNode_Bone::runref()const
 }
 #endif
 
-ValueNode_Bone_Root::ValueNode_Bone_Root():
-	ValueNode_Bone(ValueBase::TYPE_BONE)
+// ------------------------------------------------------------------------
+
+ValueNode_Bone_Root::ValueNode_Bone_Root()
 {
 	printf("%s:%d ValueNode_Bone_Root::ValueNode_Bone_Root()\n", __FILE__, __LINE__);
-}
-
-ValueNode_Bone_Root::ValueNode_Bone_Root(const ValueBase &value):
-	ValueNode_Bone(value.get_type())
-{
-	printf("%s:%d ValueNode_Bone_Root::ValueNode_Bone_Root(value)\n", __FILE__, __LINE__);
 }
 
 ValueNode_Bone_Root::~ValueNode_Bone_Root()
 {
 	printf("%s:%d ValueNode_Bone_Root::~ValueNode_Bone_Root()\n", __FILE__, __LINE__);
+}
+
+void
+ValueNode_Bone_Root::set_guid(const GUID& new_guid)
+{
+	printf("%s:%d bypass set_guid() for root bone\n", __FILE__, __LINE__);
+	LinkableValueNode::set_guid(new_guid);
+}
+
+void
+ValueNode_Bone_Root::set_root_canvas(etl::loose_handle<Canvas> canvas)
+{
+	printf("%s:%d bypass set_root_canvas() for root bone\n", __FILE__, __LINE__);
+	LinkableValueNode::set_root_canvas(canvas);
+}
+
+ValueNode_Bone*
+ValueNode_Bone_Root::create(const ValueBase &x __attribute__ ((unused)))
+{
+	return get_root_bone().get();
 }
 
 String
@@ -865,7 +923,13 @@ ValueNode_Bone_Root::get_name()const
 String
 ValueNode_Bone_Root::get_local_name()const
 {
-	return _("Bone Root");
+	return _("Root Bone");
+}
+
+String
+ValueNode_Bone_Root::get_bone_name(Time t __attribute__ ((unused)))const
+{
+	return get_local_name();
 }
 
 int
@@ -877,7 +941,8 @@ ValueNode_Bone_Root::link_count()const
 LinkableValueNode*
 ValueNode_Bone_Root::create_new()const
 {
-	return new ValueNode_Bone_Root(get_type());
+	assert(0);
+	return rooot.get();
 }
 
 Matrix
@@ -891,3 +956,48 @@ ValueNode_Bone_Root::get_animated_matrix(Time t __attribute__ ((unused)))const
 {
 	return Matrix();
 }
+
+#ifdef _DEBUG
+void
+ValueNode_Bone_Root::ref()const
+{
+	if (getenv("SYNFIG_DEBUG_BONE_REFCOUNT"))
+		printf("%s:%d %s   ref valuenode_bone_root %*s -> %2d\n", __FILE__, __LINE__, GET_GUID_CSTR(get_guid()), (count()*2), "", count()+1);
+
+	LinkableValueNode::ref();
+}
+
+bool
+ValueNode_Bone_Root::unref()const
+{
+	if (getenv("SYNFIG_DEBUG_BONE_REFCOUNT"))
+		printf("%s:%d %s unref valuenode_bone_root %*s%2d <-\n", __FILE__, __LINE__, GET_GUID_CSTR(get_guid()), ((count()-1)*2), "", count()-1);
+
+	return LinkableValueNode::unref();
+}
+
+void
+ValueNode_Bone_Root::rref()const
+{
+	if (getenv("SYNFIG_DEBUG_BONE_REFCOUNT"))
+		printf("%s:%d %s               rref valuenode_bone_root %d -> ", __FILE__, __LINE__, GET_GUID_CSTR(get_guid()), rcount());
+
+	LinkableValueNode::rref();
+
+	if (getenv("SYNFIG_DEBUG_BONE_REFCOUNT"))
+		printf("%d\n", rcount());
+}
+
+void
+ValueNode_Bone_Root::runref()const
+{
+	if (getenv("SYNFIG_DEBUG_BONE_REFCOUNT"))
+		printf("%s:%d %s             runref valuenode_bone_root %d -> ", __FILE__, __LINE__, GET_GUID_CSTR(get_guid()), rcount());
+
+	LinkableValueNode::runref();
+
+	if (getenv("SYNFIG_DEBUG_BONE_REFCOUNT"))
+		printf("%d\n", rcount());
+}
+#endif
+

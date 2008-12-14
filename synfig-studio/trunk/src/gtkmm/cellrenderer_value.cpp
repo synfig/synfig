@@ -460,7 +460,7 @@ CellRenderer_ValueBase::render_vfunc(
 		ValueNode_Bone::Handle bone_node(data.get(ValueNode_Bone::Handle()));
 		String name(_("No Parent"));
 
-		if (bone_node)
+		if (!bone_node->is_root())
 		{
 			name = (*(bone_node->get_link("name")))(get_canvas()->get_time()).get(String());
 			if (name.empty())

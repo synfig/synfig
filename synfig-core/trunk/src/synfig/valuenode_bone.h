@@ -49,6 +49,7 @@ class ValueNode_Bone : public LinkableValueNode
 	ValueNode::RHandle parent_;
 
 protected:
+	ValueNode_Bone();
 	ValueNode_Bone(const ValueBase &value);
 
 public:
@@ -65,12 +66,12 @@ public:
 	virtual ValueNode* clone(etl::loose_handle<Canvas> canvas, const GUID& deriv_guid=GUID())const;
 
 	virtual ~ValueNode_Bone();
-	void set_guid(const GUID& new_guid);
-	void set_root_canvas(etl::loose_handle<Canvas> canvas);
+	virtual void set_guid(const GUID& new_guid);
+	virtual void set_root_canvas(etl::loose_handle<Canvas> canvas);
 
 	virtual String get_name()const;
 	virtual String get_local_name()const;
-
+	virtual String get_bone_name(Time t)const;
 
 	virtual ValueNode::LooseHandle get_link_vfunc(int i)const;
 	virtual int link_count()const;
@@ -97,6 +98,7 @@ public:
 	static BoneMap get_bone_map(etl::handle<const Canvas> canvas);
 
 	ValueNode_Bone::ConstHandle is_ancestor_of(ValueNode_Bone::ConstHandle bone, Time t)const;
+	virtual bool is_root()const { return false; }
 
 	// return a set of the bones that affect the given valuenode
 	//   recurses through the valuenodes in the waypoints if it's animated,
@@ -110,6 +112,8 @@ public:
 
 	// return a set of the bones that can be parents of the given ValueNode without causing loops
 	static BoneSet get_possible_parent_bones(ValueNode::Handle value_node);
+
+	static ValueNode_Bone::Handle get_root_bone();
 
 #ifdef _DEBUG
 	virtual void ref()const;
@@ -133,11 +137,16 @@ public:
 
 	virtual String get_name()const;
 	virtual String get_local_name()const;
+	virtual String get_bone_name(Time t)const;
 
 	ValueNode_Bone_Root();
-	ValueNode_Bone_Root(const ValueBase &value);
 	virtual ~ValueNode_Bone_Root();
+
+	virtual void set_guid(const GUID& new_guid);
+	virtual void set_root_canvas(etl::loose_handle<Canvas> canvas);
+
 	virtual int link_count()const;
+	virtual bool is_root()const { return true; }
 
 private:
 	Matrix get_setup_matrix(Time t)const;
@@ -147,6 +156,15 @@ protected:
 	LinkableValueNode* create_new()const;
 
 public:
+	static ValueNode_Bone* create(const ValueBase &x);
+
+#ifdef _DEBUG
+	virtual void ref()const;
+	virtual bool unref()const;
+	virtual void rref()const;
+	virtual void runref()const;
+#endif
+
 }; // END of class ValueNode_Bone_Root
 
 }; // END of namespace synfig

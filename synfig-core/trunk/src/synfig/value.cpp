@@ -135,8 +135,8 @@ ValueBase::get_string() const
 	case TYPE_CANVAS:		return strprintf("Canvas (%s)", get(etl::loose_handle<Canvas>())->get_id().c_str());
 	case TYPE_STRING:		return strprintf("String (%s)", get(String()).c_str());
 	case TYPE_GRADIENT:		return strprintf("Gradient (%d cpoints)", get(Gradient()).size());
-	case TYPE_BONE:			return strprintf("Bone (todo)");
-	case TYPE_VALUENODE_BONE:	return strprintf("ValueNodeBone (todo)");
+	case TYPE_BONE:			return strprintf("Bone (%s)", get(Bone()).get_string().c_str());
+	case TYPE_VALUENODE_BONE:	return strprintf("ValueNodeBone (%s)", get(ValueNode_Bone::Handle())->get_string().c_str());
 	default:				return "Invalid type";
 	}
 }

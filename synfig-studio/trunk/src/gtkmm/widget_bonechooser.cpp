@@ -71,6 +71,7 @@ Widget_BoneChooser::set_parent_canvas(synfig::Canvas::Handle x)
 void
 Widget_BoneChooser::set_value_(synfig::ValueNode_Bone::Handle data)
 {
+	printf("%s:%d Widget_BoneChooser::set_value_ data = %lx\n", __FILE__, __LINE__, ulong(data.get()));
 	set_value(data);
 	activate();
 }
@@ -78,6 +79,7 @@ Widget_BoneChooser::set_value_(synfig::ValueNode_Bone::Handle data)
 void
 Widget_BoneChooser::set_value(synfig::ValueNode_Bone::Handle data)
 {
+	printf("%s:%d Widget_BoneChooser::set_value data = %lx\n", __FILE__, __LINE__, ulong(data.get()));
 	assert(parent_canvas);
 	bone=data;
 
@@ -87,7 +89,7 @@ Widget_BoneChooser::set_value(synfig::ValueNode_Bone::Handle data)
 	Gtk::Menu_Helpers::MenuElem none(_("<None>"),
 									 sigc::bind(sigc::mem_fun(*this,
 															  &Widget_BoneChooser::set_value_),
-												ValueNode_Bone::Handle()));
+												ValueNode_Bone::get_root_bone()));
 
 	if (get_value_desc().is_value_node())
 	{
@@ -95,7 +97,7 @@ Widget_BoneChooser::set_value(synfig::ValueNode_Bone::Handle data)
 		ValueNode_Bone::BoneSet parent_set(ValueNode_Bone::get_possible_parent_bones(get_value_desc().get_value_node()));
 
 		// insert the entry for the currently selected value first so that it appears selected
-		if (bone)
+		if (!bone->is_root())
 		{
 			parent_set.erase(bone); // erase it from the set so it won't be inserted twice
 			String label((*(bone->get_link("name")))(time).get(String()));

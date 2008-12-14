@@ -67,11 +67,11 @@ ValueNode_Const::ValueNode_Const(const ValueBase &x):
 ValueNode*
 ValueNode_Const::create(const ValueBase &x)
 {
-	if (x.get_type() == ValueBase::TYPE_BONE)
-		return ValueNode_Bone::create(x);
+//	if (x.get_type() == ValueBase::TYPE_BONE)
+//		return ValueNode_Bone::create(x);
 
-	if (x.get_type() == ValueBase::TYPE_BONE_WEIGHT_PAIR)
-		return ValueNode_BoneWeightPair::create(x);
+//	if (x.get_type() == ValueBase::TYPE_BONE_WEIGHT_PAIR)
+//		return ValueNode_BoneWeightPair::create(x);
 
 	return new ValueNode_Const(x);
 }
@@ -141,7 +141,7 @@ ValueNode_Const::get_local_name()const
 String
 ValueNode_Const::get_string()const
 {
-	return "ValueNode_Const";
+	return strprintf("ValueNode_Const (%s)", get_value().get_string().c_str());
 }
 
 void ValueNode_Const::get_times_vfunc(Node::time_set &/*set*/) const

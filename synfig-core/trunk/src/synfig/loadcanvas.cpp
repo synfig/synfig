@@ -1006,7 +1006,7 @@ CanvasParser::parse_animated(xmlpp::Element *element,Canvas::Handle canvas)
 				**	a feature which is so obscure that we can get
 				**	away with something like this pretty easily.
 				*/
-				waypoint_value_node=waypoint_value_node->clone(canvas);
+// doo			waypoint_value_node=waypoint_value_node->clone(canvas);
 
 				// Warn if there is trash after the param value
 				for(iter++; iter != list.end(); ++iter)
@@ -1180,12 +1180,6 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 		for(xmlpp::Element::AttributeList::iterator iter = attrib_list.begin(); iter != attrib_list.end(); iter++)
 		{
 			name = (*iter)->get_name();
-			if (name == "root")
-			{
-				printf("%s:%d name == 'root'\n", __FILE__, __LINE__);
-				printf("%s:%d parse_linkable_value_node done root\n", __FILE__, __LINE__);
-				return LinkableValueNode::create("bone_root", ValueBase::TYPE_BONE);
-			}
 			id = (*iter)->get_value();
 
 			if (name == "guid" || name == "id" || name == "type")
@@ -1259,12 +1253,6 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 					continue;
 
 				child_name = child->get_name();
-				if (child_name == "root")
-				{
-					printf("%s:%d name == 'root' - shouldn't happen\n", __FILE__, __LINE__);
-					assert(0);
-					return 0;
-				}
 
 				index = value_node->get_link_index_from_name(child_name);
 
@@ -1326,6 +1314,8 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 	}
 
 	String version(canvas->get_version());
+	printf("%s:%d link_count() is %d\n", __FILE__, __LINE__, value_node->link_count());
+	printf("%s:%d value_node is %s\n", __FILE__, __LINE__, value_node->get_string().c_str());
 	for (int i = 0; i < value_node->link_count(); i++)
 	{
 		if (!c[i])
@@ -1699,7 +1689,10 @@ CanvasParser::parse_value_node(xmlpp::Element *element,Canvas::Handle canvas)
 
 	if(element->get_attribute("guid"))
 	{
-		guid=GUID(element->get_attribute("guid")->get_value())^canvas->get_root()->get_guid();
+		guid=GUID(element->get_attribute("guid")->get_value())
+			// doo
+			// ^canvas->get_root()->get_guid()
+			;
 		printf("%s:%d got guid %s\n", __FILE__, __LINE__, guid.get_string().c_str());
 		value_node=guid_cast<ValueNode>(guid);
 		if(value_node)
@@ -1814,21 +1807,23 @@ CanvasParser::parse_canvas_defs(xmlpp::Element *element,Canvas::Handle canvas)
 	printf("%s:%d parse_canvas_defs done\n", __FILE__, __LINE__);
 }
 
-void
+std::list<ValueNode::Handle>
 CanvasParser::parse_canvas_bones(xmlpp::Element *element,Canvas::Handle canvas)
 {
 	printf("%s:%d parse_canvas_bones\n", __FILE__, __LINE__);
 	assert(element->get_name()=="bones");
 	xmlpp::Element::NodeList list = element->get_children();
+	std::list<ValueNode::Handle> bone_list;
 	for(xmlpp::Element::NodeList::iterator iter = list.begin(); iter != list.end(); ++iter)
 	{
 		xmlpp::Element *child(dynamic_cast<xmlpp::Element*>(*iter));
 		if(!child)
 			continue;
 		else
-			parse_value_node(child,canvas);
+			bone_list.push_back(parse_value_node(child,canvas));
 	}
 	printf("%s:%d parse_canvas_bones done\n", __FILE__, __LINE__);
+	return bone_list;
 }
 
 Layer::Handle
@@ -2155,6 +2150,7 @@ CanvasParser::parse_canvas(xmlpp::Element *element,Canvas::Handle parent,bool in
 
 	canvas->rend_desc().set_flags(RendDesc::PX_ASPECT|RendDesc::IM_SPAN);
 
+	list<ValueNode::Handle> bone_list;
 	xmlpp::Element::NodeList list = element->get_children();
 	for(xmlpp::Element::NodeList::iterator iter = list.begin(); iter != list.end(); ++iter)
 	{
@@ -2172,7 +2168,7 @@ CanvasParser::parse_canvas(xmlpp::Element *element,Canvas::Handle parent,bool in
 			{
 				if(canvas->is_inline())
 					error(child,_("Inline canvas cannot have a <bones> section"));
-				parse_canvas_bones(child, canvas);
+				bone_list = parse_canvas_bones(child, canvas);
 			}
 			else
 			if(child->get_name()=="keyframe")
