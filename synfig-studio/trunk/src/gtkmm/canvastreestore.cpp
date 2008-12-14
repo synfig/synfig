@@ -107,8 +107,8 @@ CanvasTreeStore::get_value_vfunc(const Gtk::TreeModel::iterator& iter, int colum
 				String display(String(bone.get_name()));
 				printf("%s:%d\n", __FILE__, __LINE__);
 				printf("%lx\n", ulong(bone.get_parent()));
-				printf("%s:%d\n", __FILE__, __LINE__);
-				ValueNode::ConstHandle parent(bone.get_parent());
+				printf("%s:%d\n", __FILE__, __LINE__); // <-- ok
+				ValueNode::ConstHandle parent(bone.get_parent()); // <-- crash
 				printf("%s:%d\n", __FILE__, __LINE__);
 				printf("%lx\n", ulong(parent.get()));
 				printf("%s:%d\n", __FILE__, __LINE__);
