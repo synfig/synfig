@@ -245,18 +245,9 @@ ValueNode_Bone::get_setup_matrix(Time t)const
 }
 
 Matrix
-ValueNode_Bone::get_setup_matrix(Time t, Point origin0, Angle angle0, ValueNode_Bone::ConstHandle parent)const
+ValueNode_Bone::get_setup_matrix(Time t, Point translate, Angle rotate, ValueNode_Bone::ConstHandle parent)const
 {
-	Matrix translate_matrix, rotate_matrix, ret;
-
-	translate_matrix.set_translate((Vector)(-origin0));
-	rotate_matrix.set_rotate(-angle0);
-	ret = translate_matrix * rotate_matrix;
-
-	if (parent)
-		ret = ret * parent->get_setup_matrix(t);
-
-	return ret;
+	return Matrix(-translate) * Matrix(-rotate) * parent->get_setup_matrix(t);
 }
 
 //!Animated Transformation matrix.
@@ -277,20 +268,9 @@ ValueNode_Bone::get_animated_matrix(Time t)const
 }
 
 Matrix
-ValueNode_Bone::get_animated_matrix(Time t, Real scale, Angle angle, Point origin, ValueNode_Bone::ConstHandle parent)const
+ValueNode_Bone::get_animated_matrix(Time t, Real scale, Angle rotate, Point translate, ValueNode_Bone::ConstHandle parent)const
 {
-	Matrix scale_matrix, rotate_matrix, translate_matrix, ret;
-
-	scale_matrix.set_scale(scale);
-	rotate_matrix.set_rotate(angle);
-	translate_matrix.set_translate(origin);
-
-	ret = scale_matrix * rotate_matrix * translate_matrix;
-
-	if (parent)
-		ret = parent->get_animated_matrix(t) * ret;
-
-	return ret;
+	return parent->get_animated_matrix(t) * Matrix(scale) * Matrix(rotate) * Matrix(translate);
 }
 
 ValueNode_Bone::ConstHandle
@@ -304,11 +284,14 @@ ValueNode_Bone::get_parent(Time t)const
 			synfig::error("A bone cannot be parent of itself or any of its descendants");
 		else
 			synfig::error("A loop was detected in the ancestry at bone %s", GET_NODE_DESC_CSTR(result,t));
-		return 0;
+		return new ValueNode_Bone_Root;
 	}
 
 	// proposed parent is root or not a descendant of current bone
-	return parent;
+	if (parent)
+		return parent;
+
+	return new ValueNode_Bone_Root;
 }
 
 ValueBase
@@ -849,3 +832,39 @@ ValueNode_Bone::runref()const
 		printf("%d\n", rcount());
 }
 #endif
+
+String
+ValueNode_Bone_Root::get_name()const
+{
+	return "bone_root";
+}
+
+String
+ValueNode_Bone_Root::get_local_name()const
+{
+	return _("Bone Root");
+}
+
+int
+ValueNode_Bone_Root::link_count()const
+{
+	return 0;
+}
+
+LinkableValueNode*
+ValueNode_Bone_Root::create_new()const
+{
+	return new ValueNode_Bone_Root(get_type());
+}
+
+Matrix
+ValueNode_Bone_Root::get_setup_matrix(Time t __attribute__ ((unused)))const
+{
+	return Matrix();
+}
+
+Matrix
+ValueNode_Bone_Root::get_animated_matrix(Time t __attribute__ ((unused)))const
+{
+	return Matrix();
+}

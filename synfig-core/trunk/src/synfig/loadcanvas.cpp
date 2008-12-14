@@ -1128,10 +1128,13 @@ CanvasParser::parse_animated(xmlpp::Element *element,Canvas::Handle canvas)
 etl::handle<LinkableValueNode>
 CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle canvas)
 {
+	printf("%s:%d parse_linkable_value_node\n", __FILE__, __LINE__);
+
 	// Determine the type
 	if(!element->get_attribute("type"))
 	{
 		error(element, strprintf(_("Missing attribute \"type\" in <%s>"), element->get_name().c_str()));
+		printf("%s:%d parse_linkable_value_node done missing attr\n", __FILE__, __LINE__);
 		return 0;
 	}
 
@@ -1140,9 +1143,11 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 	if(!type)
 	{
 		error(element, strprintf(_("Bad type in <%s>"), element->get_name().c_str()));
+		printf("%s:%d parse_linkable_value_node done bad type\n", __FILE__, __LINE__);
 		return 0;
 	}
 
+	printf("%s:%d creating linkable '%s' type '%s'\n", __FILE__, __LINE__, element->get_name().c_str(), ValueBase::type_name(type).c_str());
 	handle<LinkableValueNode> value_node=LinkableValueNode::create(element->get_name(),type);
  	handle<ValueNode> c[value_node->link_count()];
 
@@ -1152,6 +1157,7 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 								 element->get_name().c_str(),
 								 ValueBase::type_local_name(type).c_str(),
 								 VALUENODE_COMPATIBILITY_URL));
+		printf("%s:%d parse_linkable_value_node done error creating\n", __FILE__, __LINE__);
 		return 0;
 	}
 
@@ -1160,6 +1166,7 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 		error(element, strprintf(_("<%s> did not accept type '%s'"),
 								 element->get_name().c_str(),
 								 ValueBase::type_local_name(type).c_str()));
+		printf("%s:%d parse_linkable_value_node done bad type\n", __FILE__, __LINE__);
 		return 0;
 	}
 
@@ -1173,6 +1180,12 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 		for(xmlpp::Element::AttributeList::iterator iter = attrib_list.begin(); iter != attrib_list.end(); iter++)
 		{
 			name = (*iter)->get_name();
+			if (name == "root")
+			{
+				printf("%s:%d name == 'root'\n", __FILE__, __LINE__);
+				printf("%s:%d parse_linkable_value_node done root\n", __FILE__, __LINE__);
+				return LinkableValueNode::create("bone_root", ValueBase::TYPE_BONE);
+			}
 			id = (*iter)->get_value();
 
 			if (name == "guid" || name == "id" || name == "type")
@@ -1246,6 +1259,12 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 					continue;
 
 				child_name = child->get_name();
+				if (child_name == "root")
+				{
+					printf("%s:%d name == 'root' - shouldn't happen\n", __FILE__, __LINE__);
+					assert(0);
+					return 0;
+				}
 
 				index = value_node->get_link_index_from_name(child_name);
 
@@ -1345,6 +1364,7 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 									 element->get_name().c_str(),
 									 i,
 									 value_node->link_name(i).c_str()));
+			printf("%s:%d parse_linkable_value_node done missing link\n", __FILE__, __LINE__);
  			return 0;
 		}
 	}
@@ -1361,6 +1381,7 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 		}
 	}
 
+	printf("%s:%d parse_linkable_value_node done\n", __FILE__, __LINE__);
 	return value_node;
 }
 
@@ -1670,6 +1691,7 @@ CanvasParser::parse_dynamic_list(xmlpp::Element *element,Canvas::Handle canvas)
 handle<ValueNode>
 CanvasParser::parse_value_node(xmlpp::Element *element,Canvas::Handle canvas)
 {
+	printf("%s:%d parse_value_node\n", __FILE__, __LINE__);
 	handle<ValueNode> value_node;
 	assert(element);
 
@@ -1678,9 +1700,13 @@ CanvasParser::parse_value_node(xmlpp::Element *element,Canvas::Handle canvas)
 	if(element->get_attribute("guid"))
 	{
 		guid=GUID(element->get_attribute("guid")->get_value())^canvas->get_root()->get_guid();
+		printf("%s:%d got guid %s\n", __FILE__, __LINE__, guid.get_string().c_str());
 		value_node=guid_cast<ValueNode>(guid);
 		if(value_node)
+		{
+			printf("%s:%d parse_value_node done early\n", __FILE__, __LINE__);
 			return value_node;
+		}
 	}
 
 	// If ValueBase::ident_type() recognizes the name, then we know it's a ValueBase
@@ -1691,6 +1717,7 @@ CanvasParser::parse_value_node(xmlpp::Element *element,Canvas::Handle canvas)
 		if(!data.is_valid())
 		{
 			error(element,strprintf(_("Bad data in <%s>"),element->get_name().c_str()));
+			printf("%s:%d parse_value_node done bad data\n", __FILE__, __LINE__);
 			return value_node;
 		}
 
@@ -1747,11 +1774,13 @@ CanvasParser::parse_value_node(xmlpp::Element *element,Canvas::Handle canvas)
 		catch(Exception::BadLinkName)
 		{
 			warning(element,strprintf(_("Bad ID \"%s\""),id.c_str()));
+			printf("%s:%d parse_value_node done bad id\n", __FILE__, __LINE__);
 			return value_node;
 		}
 		catch(Exception::IDAlreadyExists)
 		{
 			error(element,strprintf(_("Duplicate ID \"%s\""),id.c_str()));
+			printf("%s:%d parse_value_node done dup id\n", __FILE__, __LINE__);
 			return value_node;
 		}
 		catch(...)
@@ -1761,12 +1790,14 @@ CanvasParser::parse_value_node(xmlpp::Element *element,Canvas::Handle canvas)
 		}
 	}
 	value_node->set_guid(guid);
+	printf("%s:%d parse_value_node done\n", __FILE__, __LINE__);
 	return value_node;
 }
 
 void
 CanvasParser::parse_canvas_defs(xmlpp::Element *element,Canvas::Handle canvas)
 {
+	printf("%s:%d parse_canvas_defs\n", __FILE__, __LINE__);
 	assert(element->get_name()=="defs");
 	xmlpp::Element::NodeList list = element->get_children();
 	for(xmlpp::Element::NodeList::iterator iter = list.begin(); iter != list.end(); ++iter)
@@ -1780,11 +1811,13 @@ CanvasParser::parse_canvas_defs(xmlpp::Element *element,Canvas::Handle canvas)
 		else
 			parse_value_node(child,canvas);
 	}
+	printf("%s:%d parse_canvas_defs done\n", __FILE__, __LINE__);
 }
 
 void
 CanvasParser::parse_canvas_bones(xmlpp::Element *element,Canvas::Handle canvas)
 {
+	printf("%s:%d parse_canvas_bones\n", __FILE__, __LINE__);
 	assert(element->get_name()=="bones");
 	xmlpp::Element::NodeList list = element->get_children();
 	for(xmlpp::Element::NodeList::iterator iter = list.begin(); iter != list.end(); ++iter)
@@ -1793,11 +1826,9 @@ CanvasParser::parse_canvas_bones(xmlpp::Element *element,Canvas::Handle canvas)
 		if(!child)
 			continue;
 		else
-		if(child->get_name()=="canvas")
-			parse_canvas(child, canvas);
-		else
 			parse_value_node(child,canvas);
 	}
+	printf("%s:%d parse_canvas_bones done\n", __FILE__, __LINE__);
 }
 
 Layer::Handle

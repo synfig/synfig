@@ -102,9 +102,21 @@ public:
 	}
 
 	//!Constructor from Angle create a rotate matrix
-	Matrix(const Angle &a)
+	Matrix(const Angle &rotate)
 	{
-		(*this).set_rotate(a);
+		set_rotate(rotate);
+	}
+
+	//!Constructor from Point create a translate matrix
+	Matrix(const Vector &translate)
+	{
+		set_translate(translate);
+	}
+
+	//!Constructor from Real create a scale matrix
+	Matrix(const Real &scale)
+	{
+		set_scale(scale);
 	}
 
 	//!set_identity member. Set an identity matrix

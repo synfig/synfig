@@ -183,6 +183,7 @@ ValueNode::subsys_init()
 	ADD_VALUENODE(ValueNode_Greyed,			  "greyed",			  _("Greyed"),			 RELEASE_VERSION_0_61_10); // SVN r2305
 	ADD_VALUENODE(ValueNode_BoneInfluence,	  "boneinfluence",	  _("Bone Influence"),	 RELEASE_VERSION_0_61_10); // SVN r2???
 	ADD_VALUENODE(ValueNode_Bone,			  "bone",			  _("Bone"),			 RELEASE_VERSION_0_61_10); // SVN r2???
+	ADD_VALUENODE(ValueNode_Bone_Root,		  "bone_root",		  _("Bone Root"),		 RELEASE_VERSION_0_61_10); // SVN r2???
 	ADD_VALUENODE2(ValueNode_StaticList,	  "static_list",	  _("Static List"),		 RELEASE_VERSION_0_61_10); // SVN r2???
 	ADD_VALUENODE(ValueNode_BoneWeightPair,	  "boneweightpair",	  _("Bone Weight Pair"), RELEASE_VERSION_0_61_10); // SVN r2???
 
@@ -558,6 +559,7 @@ PlaceholderValueNode::clone(Canvas::LooseHandle canvas, const GUID& deriv_guid)c
 PlaceholderValueNode::Handle
 PlaceholderValueNode::create(ValueBase::Type type)
 {
+	printf("%s:%d PlaceholderValueNode::create\n", __FILE__, __LINE__);
 	return new PlaceholderValueNode(type);
 }
 

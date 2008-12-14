@@ -48,6 +48,7 @@ class ValueNode_Bone : public LinkableValueNode
 	ValueNode::RHandle strength_;
 	ValueNode::RHandle parent_;
 
+protected:
 	ValueNode_Bone(const ValueBase &value);
 
 public:
@@ -118,13 +119,34 @@ public:
 #endif
 
 private:
-	Matrix get_setup_matrix(Time t)const;
+	virtual Matrix get_setup_matrix(Time t)const;
 	Matrix get_setup_matrix(Time t, Point origin0, Angle angle0, ValueNode_Bone::ConstHandle parent)const;
-	Matrix get_animated_matrix(Time t)const;
+	virtual Matrix get_animated_matrix(Time t)const;
 	Matrix get_animated_matrix(Time t, Real scale, Angle angle, Point origin, ValueNode_Bone::ConstHandle parent)const;
 	ValueNode_Bone::ConstHandle get_parent(Time t)const;
 
 }; // END of class ValueNode_Bone
+
+class ValueNode_Bone_Root : public ValueNode_Bone
+{
+public:
+
+	virtual String get_name()const;
+	virtual String get_local_name()const;
+
+	ValueNode_Bone_Root():ValueNode_Bone(ValueBase::TYPE_BONE){ }
+	ValueNode_Bone_Root(const ValueBase &value):ValueNode_Bone(value.get_type()){ }
+	virtual int link_count()const;
+
+private:
+	Matrix get_setup_matrix(Time t)const;
+	Matrix get_animated_matrix(Time t)const;
+
+protected:
+	LinkableValueNode* create_new()const;
+
+public:
+}; // END of class ValueNode_Bone_Root
 
 }; // END of namespace synfig
 
