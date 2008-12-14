@@ -654,6 +654,9 @@ xmlpp::Element* encode_value_node_bone_guid(xmlpp::Element* root,ValueNode::Cons
 #if 0
 	encode_value_node(root, value_node, canvas);
 #else
+	root->set_name(value_node->get_name());
+	root->set_attribute("type",ValueBase::type_name(value_node->get_type()));
+
 	if(!value_node->get_id().empty())
 		root->set_attribute("id",value_node->get_id());
 
