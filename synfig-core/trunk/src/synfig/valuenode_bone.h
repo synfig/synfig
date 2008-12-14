@@ -134,8 +134,9 @@ public:
 	virtual String get_name()const;
 	virtual String get_local_name()const;
 
-	ValueNode_Bone_Root():ValueNode_Bone(ValueBase::TYPE_BONE){ }
-	ValueNode_Bone_Root(const ValueBase &value):ValueNode_Bone(value.get_type()){ }
+	ValueNode_Bone_Root();
+	ValueNode_Bone_Root(const ValueBase &value);
+	virtual ~ValueNode_Bone_Root();
 	virtual int link_count()const;
 
 private:

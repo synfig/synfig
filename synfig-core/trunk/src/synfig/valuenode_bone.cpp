@@ -276,6 +276,7 @@ ValueNode_Bone::get_animated_matrix(Time t, Real scale, Angle rotate, Point tran
 ValueNode_Bone::ConstHandle
 ValueNode_Bone::get_parent(Time t)const
 {
+	printf("%s:%d get_parent\n", __FILE__, __LINE__);
 	// check if we are an ancestor of the proposed parent
 	ValueNode_Bone::ConstHandle parent((*parent_)(t).get(ValueNode_Bone::Handle()));
 	if (ValueNode_Bone::ConstHandle result = is_ancestor_of(parent,t))
@@ -284,14 +285,19 @@ ValueNode_Bone::get_parent(Time t)const
 			synfig::error("A bone cannot be parent of itself or any of its descendants");
 		else
 			synfig::error("A loop was detected in the ancestry at bone %s", GET_NODE_DESC_CSTR(result,t));
+		printf("%s:%d root 1\n", __FILE__, __LINE__);
 		return new ValueNode_Bone_Root;
 	}
 
 	// proposed parent is root or not a descendant of current bone
 	if (parent)
+	{
+		printf("%s:%d parent\n", __FILE__, __LINE__);
 		return parent;
+	}
 
-	return new ValueNode_Bone_Root;
+	printf("%s:%d root 2\n", __FILE__, __LINE__);
+	return ValueNode_Bone::ConstHandle::cast_dynamic(new ValueNode_Bone_Root);
 }
 
 ValueBase
@@ -832,6 +838,23 @@ ValueNode_Bone::runref()const
 		printf("%d\n", rcount());
 }
 #endif
+
+ValueNode_Bone_Root::ValueNode_Bone_Root():
+	ValueNode_Bone(ValueBase::TYPE_BONE)
+{
+	printf("%s:%d ValueNode_Bone_Root::ValueNode_Bone_Root()\n", __FILE__, __LINE__);
+}
+
+ValueNode_Bone_Root::ValueNode_Bone_Root(const ValueBase &value):
+	ValueNode_Bone(value.get_type())
+{
+	printf("%s:%d ValueNode_Bone_Root::ValueNode_Bone_Root(value)\n", __FILE__, __LINE__);
+}
+
+ValueNode_Bone_Root::~ValueNode_Bone_Root()
+{
+	printf("%s:%d ValueNode_Bone_Root::~ValueNode_Bone_Root()\n", __FILE__, __LINE__);
+}
 
 String
 ValueNode_Bone_Root::get_name()const
