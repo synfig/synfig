@@ -654,11 +654,12 @@ xmlpp::Element* encode_value_node_bone(xmlpp::Element* root,ValueNode::ConstHand
 		root->set_attribute("id",value_node->get_id());
 
 	if(ValueNode_Bone::ConstHandle::cast_dynamic(value_node))
-		root->set_attribute("guid",value_node->get_guid().get_string());
+		root->set_attribute("guid",(value_node->get_guid()^canvas->get_root()->get_guid()).get_string());
 
 	if(value_node->rcount()>1)
 	{
 		// ~/notes/synfig/crash-when-saving.txt is an example of the execution reaching this line
+		printf("%s:%d xxx value_node->rcount() = %d\n", __FILE__, __LINE__, value_node->rcount());
 		root->set_attribute("guid",(value_node->get_guid()^canvas->get_root()->get_guid()).get_string());
 	}
 
@@ -677,7 +678,7 @@ xmlpp::Element* encode_value_node_bone_id(xmlpp::Element* root,ValueNode::ConstH
 	if(ValueNode_Bone::ConstHandle::cast_dynamic(value_node))
 	{
 		printf("%s:%d bone guid case 1 guid %s\n", __FILE__, __LINE__, value_node->get_guid().get_string().c_str());
-		root->set_attribute("guid",value_node->get_guid().get_string());
+		root->set_attribute("guid",(value_node->get_guid()^canvas->get_root()->get_guid()).get_string());
 	}
 
 	if(value_node->rcount()>1)
@@ -844,6 +845,21 @@ xmlpp::Element* encode_canvas(xmlpp::Element* root,Canvas::ConstHandle canvas)
 			encode_keyframe(root->add_child("keyframe"),*iter,canvas->rend_desc().get_frame_rate());
 	}
 
+	// Output the <bones> section
+	if((!canvas->is_inline() && !ValueNode_Bone::get_bone_map(canvas).empty()))
+	{
+		xmlpp::Element *node=root->add_child("bones");
+
+		encode_value_node_bone(node->add_child("value_node"),ValueNode_Bone::get_root_bone(),canvas);
+
+		ValueNode_Bone::BoneList bone_list(ValueNode_Bone::get_ordered_bones(canvas));
+		for(ValueNode_Bone::BoneList::iterator iter=bone_list.begin();iter!=bone_list.end();++iter)
+		{
+			ValueNode_Bone::Handle bone(*iter);
+			encode_value_node_bone(node->add_child("value_node"),bone,canvas);
+		}
+	}
+
 	// Output the <defs> section
 	//! \todo check where the parentheses should really go - around the && or the ||?
 	// I guess it should be the other way - but then, why would an inline canvas have either exported valuenode or child canvases?  it shouldn't, right?
@@ -869,21 +885,6 @@ xmlpp::Element* encode_canvas(xmlpp::Element* root,Canvas::ConstHandle canvas)
 		for(Canvas::Children::const_iterator iter=canvas->children().begin();iter!=canvas->children().end();++iter)
 		{
 			encode_canvas(node->add_child("canvas"),*iter);
-		}
-	}
-
-	// Output the <bones> section
-	if((!canvas->is_inline() && !ValueNode_Bone::get_bone_map(canvas).empty()))
-	{
-		xmlpp::Element *node=root->add_child("bones");
-
-		encode_value_node_bone(node->add_child("value_node"),ValueNode_Bone::get_root_bone(),canvas);
-
-		ValueNode_Bone::BoneList bone_list(ValueNode_Bone::get_ordered_bones(canvas));
-		for(ValueNode_Bone::BoneList::iterator iter=bone_list.begin();iter!=bone_list.end();++iter)
-		{
-			ValueNode_Bone::Handle bone(*iter);
-			encode_value_node_bone(node->add_child("value_node"),bone,canvas);
 		}
 	}
 
