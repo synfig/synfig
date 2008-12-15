@@ -629,18 +629,27 @@ ValueNode::get_non_inline_ancestor_canvas()const
 void
 ValueNode::set_parent_canvas(etl::loose_handle<Canvas> x)
 {
-	// printf("%s:%d set_parent_canvas of %lx to %lx\n", __FILE__, __LINE__, ulong(this), ulong(x.get()));
+	if (getenv("SYNFIG_DEBUG_SET_PARENT_CANVAS"))
+		printf("%s:%d set_parent_canvas of %lx to %lx\n", __FILE__, __LINE__, ulong(this), ulong(x.get()));
+
 	canvas_=x;
-	// printf("%s:%d now %lx\n", __FILE__, __LINE__, ulong(canvas_.get()));
+
+	if (getenv("SYNFIG_DEBUG_SET_PARENT_CANVAS"))
+		printf("%s:%d now %lx\n", __FILE__, __LINE__, ulong(canvas_.get()));
+
 	if(x) set_root_canvas(x);
 }
 
 void
 ValueNode::set_root_canvas(etl::loose_handle<Canvas> x)
 {
-	// printf("%s:%d set_root_canvas of %lx to %lx - ", __FILE__, __LINE__, ulong(this), ulong(x.get()));
+	if (getenv("SYNFIG_DEBUG_SET_PARENT_CANVAS"))
+		printf("%s:%d set_root_canvas of %lx to %lx - ", __FILE__, __LINE__, ulong(this), ulong(x.get()));
+
 	root_canvas_=x->get_root();
-	// printf("now %lx\n", ulong(root_canvas_.get()));
+
+	if (getenv("SYNFIG_DEBUG_SET_PARENT_CANVAS"))
+		printf("now %lx\n", ulong(root_canvas_.get()));
 }
 
 String
