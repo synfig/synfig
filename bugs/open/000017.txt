@@ -6,3 +6,6 @@ Close ss
 Open ss and load the saved file. It fails.
 
 ------------------------------------------------------------------------
+But if you create a skeleton, and link the bones form the Bone Influence
+to exported bones of the skeleton and clear the history (to remove the bones
+form the Bone influence) you can save and load the file properly.
