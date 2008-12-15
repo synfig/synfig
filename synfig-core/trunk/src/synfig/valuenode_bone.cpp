@@ -177,7 +177,7 @@ ValueNode_Bone::get_ordered_bones(etl::handle<const Canvas> canvas)
 				printf("\t\t\t%s:%d user: %s\n", __FILE__, __LINE__, user->get_bone_name(0).c_str());
 
 				// erase (user,bone) from uses
-				printf("%s:%d trying to erase - searching %d\n", __FILE__, __LINE__, uses.count(user));
+				printf("%s:%d trying to erase - searching %zd\n", __FILE__, __LINE__, uses.count(user));
 				std::multimap<ValueNode_Bone::Handle, ValueNode_Bone::Handle>::iterator begin2(uses.lower_bound(user));
 				std::multimap<ValueNode_Bone::Handle, ValueNode_Bone::Handle>::iterator end2(uses.upper_bound(user));
 				std::multimap<ValueNode_Bone::Handle, ValueNode_Bone::Handle>::iterator iter2;
@@ -200,7 +200,7 @@ ValueNode_Bone::get_ordered_bones(etl::handle<const Canvas> canvas)
 					assert(0);
 				}
 
-				printf("%s:%d now there are %d\n", __FILE__, __LINE__, uses.count(user));
+				printf("%s:%d now there are %zd\n", __FILE__, __LINE__, uses.count(user));
 				if (uses.count(user) == 0)
 				{
 					printf("\t\t\t%s:%d adding %s\n", __FILE__, __LINE__, user->get_bone_name(0).c_str());
