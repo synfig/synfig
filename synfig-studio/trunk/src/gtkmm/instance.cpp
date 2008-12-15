@@ -1051,6 +1051,8 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 		LinkableValueNode::Book::const_iterator iter;
 		for(iter=LinkableValueNode::book().begin();iter!=LinkableValueNode::book().end();++iter)
 		{
+			// never show 'Root Bone' in the convert menu - it's for internal use only
+			if(iter->first == "bone_root") continue;
 			if(iter->second.check_type(value_desc.get_value_type()))
 			{
 				convert_menu->items().push_back(Gtk::Menu_Helpers::MenuElem(iter->second.local_name,
