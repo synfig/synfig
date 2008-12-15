@@ -158,7 +158,7 @@ protected:
 	LinkableValueNode* create_new()const;
 
 public:
-	static bool check_type(ValueBase::Type type __attribute__ ((unused))) { return false; }
+	static bool check_type(ValueBase::Type type);
 	static ValueNode_Bone* create(const ValueBase &x);
 
 #ifdef _DEBUG
