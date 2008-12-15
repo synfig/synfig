@@ -60,6 +60,7 @@ public:
 	typedef std::map<synfig::GUID, LooseHandle> BoneMap;
 	typedef std::map<etl::loose_handle<const Canvas>, BoneMap> CanvasMap;
 	typedef std::set<LooseHandle> BoneSet;
+	typedef std::list<LooseHandle> BoneList;
 
 	virtual ValueBase operator()(Time t)const;
 
@@ -96,6 +97,7 @@ public:
 	String unique_name(String name)const;
 	static void show_bone_map(etl::loose_handle<Canvas> canvas, const char *file, int line, String text, Time t=0);
 	static BoneMap get_bone_map(etl::handle<const Canvas> canvas);
+	static BoneList get_ordered_bones(etl::handle<const Canvas> canvas);
 
 	ValueNode_Bone::ConstHandle is_ancestor_of(ValueNode_Bone::ConstHandle bone, Time t)const;
 	virtual bool is_root()const { return false; }
@@ -104,7 +106,7 @@ public:
 	//   recurses through the valuenodes in the waypoints if it's animated,
 	//   through the subnodes if it's linkable,
 	//   and through the bone itself it's a bone constant
-	static BoneSet get_bones_referenced_by(ValueNode::Handle value_node);
+	static BoneSet get_bones_referenced_by(ValueNode::Handle value_node, bool recursive = true);
 
 	// return a set of the bones that would be affected if the given ValueNode were edited
 	// value_node is either a ValueNode_Const or a ValueNode_Animated, of type VALUENODE_BONE

@@ -123,6 +123,72 @@ ValueNode_Bone::get_bone_map(Canvas::ConstHandle canvas)
 	return canvas_map[canvas];
 }
 
+ValueNode_Bone::BoneList
+ValueNode_Bone::get_ordered_bones(etl::handle<const Canvas> canvas)
+{
+	std::multimap<ValueNode_Bone::Handle, ValueNode_Bone::Handle> users;
+	BoneList current_list;
+
+	{
+		BoneMap bone_map(canvas_map[canvas]);
+		for(BoneMap::const_iterator iter=bone_map.begin();iter!=bone_map.end();++iter)
+		{
+			ValueNode_Bone::Handle user(iter->second);
+			BoneSet ref(get_bones_referenced_by(user, false));
+			if (ref.empty())
+			{
+				printf("%s:%d %s doesn't need anybody\n", __FILE__, __LINE__,
+					   user->get_bone_name(0).c_str());
+				current_list.push_back(user);
+			}
+			else
+				for(BoneSet::iterator iter=ref.begin();iter!=ref.end();++iter)
+				{
+					ValueNode_Bone::Handle used(*iter);
+					printf("%s:%d %s is used by %s\n", __FILE__, __LINE__,
+						   used->get_bone_name(0).c_str(),
+						   user->get_bone_name(0).c_str());
+					users.insert(make_pair(used, user));
+				}
+		}
+	}
+
+	BoneList ret;
+	BoneSet seen;
+	BoneList new_list;
+
+	while (current_list.size())
+	{
+		printf("%s:%d current_list has %zd members\n", __FILE__, __LINE__, current_list.size());
+		for(BoneList::iterator iter=current_list.begin();iter!=current_list.end();++iter)
+		{
+			ValueNode_Bone::Handle bone(*iter);
+			printf("%s:%d bone: %s\n", __FILE__, __LINE__, bone->get_bone_name(0).c_str());
+			ret.push_back(bone);
+
+			std::multimap<ValueNode_Bone::Handle, ValueNode_Bone::Handle>::iterator begin(users.lower_bound(bone));
+			std::multimap<ValueNode_Bone::Handle, ValueNode_Bone::Handle>::iterator end(users.upper_bound(bone));
+			for (std::multimap<ValueNode_Bone::Handle, ValueNode_Bone::Handle>::iterator iter = begin; iter != end; iter++)
+			{
+				ValueNode_Bone::Handle bone(iter->second);
+				printf("\t\t\t%s:%d user: %s\n", __FILE__, __LINE__, bone->get_bone_name(0).c_str());
+				if (!seen.count(iter->second))
+				{
+					seen.insert(bone);
+					printf("\t\t\t%s:%d adding\n", __FILE__, __LINE__);
+					new_list.push_back(iter->second);
+				}
+				else
+					printf("\t\t\t%s:%d seen before\n", __FILE__, __LINE__);
+			}
+		}
+		current_list = new_list;
+		new_list.clear();
+	}
+
+	return ret;
+}
+
 /* === M E T H O D S ======================================================= */
 
 // this should only be used when creating the root bone
@@ -677,8 +743,9 @@ ValueNode_Bone::is_ancestor_of(ValueNode_Bone::ConstHandle bone, Time t)const
 }
 
 ValueNode_Bone::BoneSet
-ValueNode_Bone::get_bones_referenced_by(ValueNode::Handle value_node)
+ValueNode_Bone::get_bones_referenced_by(ValueNode::Handle value_node, bool recursive)
 {
+	// printf("%s:%d rec = %d\n", __FILE__, __LINE__,recursive);
 	BoneSet ret;
 	if (!value_node)
 	{
@@ -687,6 +754,7 @@ ValueNode_Bone::get_bones_referenced_by(ValueNode::Handle value_node)
 		return ret;
 	}
 
+	// if it's a ValueNode_Const
 	if (ValueNode_Const::Handle value_node_const = ValueNode_Const::Handle::cast_dynamic(value_node))
 	{
 		ValueBase value_node(value_node_const->get_value());
@@ -694,13 +762,19 @@ ValueNode_Bone::get_bones_referenced_by(ValueNode::Handle value_node)
 			if (ValueNode_Bone::Handle bone = value_node.get(ValueNode_Bone::Handle()))
 			{
 				// do we want to check for bone references in other bone fields or just 'parent'?
-				ret = get_bones_referenced_by(bone);
-				// ret = get_bones_referenced_by(bone->get_link("parent"));
-				ret.insert(bone);
+				if (recursive)
+				{
+					// printf("%s:%d rec\n", __FILE__, __LINE__);
+					ret = get_bones_referenced_by(bone, recursive);
+				}
+				// ret = get_bones_referenced_by(bone->get_link("parent"), recursive);
+				if (!bone->is_root())
+					ret.insert(bone);
 			}
 		return ret;
 	}
 
+	// if it's a ValueNode_Animated
 	if (ValueNode_Animated::Handle value_node_animated = ValueNode_Animated::Handle::cast_dynamic(value_node))
 	{
 		// ValueNode_Animated::Handle ret = ValueNode_Animated::create(ValueBase::TYPE_BONE);
@@ -708,7 +782,7 @@ ValueNode_Bone::get_bones_referenced_by(ValueNode::Handle value_node)
 		for (ValueNode_Animated::WaypointList::iterator iter = list.begin(); iter != list.end(); iter++)
 		{
 //			printf("%s:%d getting bones from waypoint\n", __FILE__, __LINE__);
-			BoneSet ret2(get_bones_referenced_by(iter->get_value_node()));
+			BoneSet ret2(get_bones_referenced_by(iter->get_value_node(), recursive));
 			ret.insert(ret2.begin(), ret2.end());
 //			printf("added %d bones from waypoint to get %d\n", int(ret2.size()), int(ret.size()));
 		}
@@ -716,11 +790,12 @@ ValueNode_Bone::get_bones_referenced_by(ValueNode::Handle value_node)
 		return ret;
 	}
 
+	// if it's a LinkableValueNode
 	if (LinkableValueNode::Handle linkable_value_node = LinkableValueNode::Handle::cast_dynamic(value_node))
 	{
 		for (int i = 0; i < linkable_value_node->link_count(); i++)
 		{
-			BoneSet ret2(get_bones_referenced_by(linkable_value_node->get_link(i)));
+			BoneSet ret2(get_bones_referenced_by(linkable_value_node->get_link(i), recursive));
 			ret.insert(ret2.begin(), ret2.end());
 		}
 		return ret;
@@ -923,7 +998,7 @@ ValueNode_Bone_Root::get_name()const
 String
 ValueNode_Bone_Root::get_local_name()const
 {
-	return _("Root Bone");
+	return _("Root");
 }
 
 String

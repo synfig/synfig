@@ -252,13 +252,9 @@ xmlpp::Element* encode_value(xmlpp::Element* root,const ValueBase &data,Canvas::
 	case ValueBase::TYPE_CANVAS:
 		return encode_canvas(root,data.get(Canvas::Handle()).get());
 	case ValueBase::TYPE_VALUENODE_BONE:
-	{
-		printf("%s:%d this really happens!\n", __FILE__, __LINE__);
-		// assert(0);
-		xmlpp::Element* root2 = encode_value_node_bone_id(root,data.get(ValueNode_Bone::Handle()).get(),canvas);
-		printf("%s:%d this really happens!\n", __FILE__, __LINE__);
-		return root2;
-	}
+		root = encode_value_node_bone_id(root,data.get(ValueNode_Bone::Handle()).get(),canvas);
+		root->set_name("bone_valuenode");
+		return root;
 	case ValueBase::TYPE_NIL:
 		synfig::error("Encountered NIL ValueBase");
 		root->set_name("nil");
@@ -604,9 +600,11 @@ xmlpp::Element* encode_value_node(xmlpp::Element* root,ValueNode::ConstHandle va
 	{
 		encode_dynamic_list(root,ValueNode_DynamicList::ConstHandle::cast_dynamic(value_node),canvas);
 	}
+	// if it's a ValueNode_Const
 	else if(ValueNode_Const::ConstHandle::cast_dynamic(value_node))
 	{
 		printf("%s:%d got ValueNode_Const encoding value\n", __FILE__, __LINE__);
+		// encode its get_value()
 		encode_value(root,ValueNode_Const::ConstHandle::cast_dynamic(value_node)->get_value(),canvas);
 	}
 	else
@@ -638,7 +636,7 @@ xmlpp::Element* encode_value_node_bone(xmlpp::Element* root,ValueNode::ConstHand
 	assert(value_node);
 	printf("%s:%d encode_value_node_bone %s %s\n", __FILE__, __LINE__, value_node->get_string().c_str(), value_node->get_guid().get_string().c_str());
 
-	if(LinkableValueNode::ConstHandle::cast_dynamic(value_node))
+	if(ValueNode_Bone::ConstHandle::cast_dynamic(value_node))
 	{
 		printf("%s:%d\n", __FILE__, __LINE__);
 		encode_linkable_value_node(root,LinkableValueNode::ConstHandle::cast_dynamic(value_node),canvas);
@@ -879,21 +877,14 @@ xmlpp::Element* encode_canvas(xmlpp::Element* root,Canvas::ConstHandle canvas)
 	if((!canvas->is_inline() && !ValueNode_Bone::get_bone_map(canvas).empty()))
 	{
 		xmlpp::Element *node=root->add_child("bones");
-		const ValueNode_Bone::BoneMap bone_map(ValueNode_Bone::get_bone_map(canvas));
 
 		encode_value_node_bone(node->add_child("value_node"),ValueNode_Bone::get_root_bone(),canvas);
-		for(ValueNode_Bone::BoneMap::const_iterator iter=bone_map.begin();iter!=bone_map.end();++iter)
+
+		ValueNode_Bone::BoneList bone_list(ValueNode_Bone::get_ordered_bones(canvas));
+		for(ValueNode_Bone::BoneList::iterator iter=bone_list.begin();iter!=bone_list.end();++iter)
 		{
-			// If the value_node is a constant, then use the shorthand
-			if(handle<ValueNode_Const>::cast_dynamic(iter->second))
-			{
-				printf("%s:%d it's constant?\n", __FILE__, __LINE__);
-				assert(0);
-				ValueNode_Const::Handle value_node(ValueNode_Const::Handle::cast_dynamic(iter->second));
-				reinterpret_cast<xmlpp::Element*>(encode_value(node->add_child("value"),value_node->get_value()))->set_attribute("id",value_node->get_id());
-				continue;
-			}
-			encode_value_node_bone(node->add_child("value_node"),iter->second.get(),canvas);
+			ValueNode_Bone::Handle bone(*iter);
+			encode_value_node_bone(node->add_child("value_node"),bone,canvas);
 		}
 	}
 

@@ -51,6 +51,7 @@
 #include "valuenode_segcalctangent.h"
 #include "valuenode_segcalcvertex.h"
 #include "valuenode_bline.h"
+#include "valuenode_bone.h"
 
 #include "layer.h"
 
@@ -366,7 +367,10 @@ CanvasParser::parse_vector(xmlpp::Element *element)
 			vect[1]=atof(child->get_child_text()->get_content().c_str());
 		}
 		else
+		{
+			printf("%s:%d\n", __FILE__, __LINE__);
 			error_unexpected_element(child,child->get_name());
+		}
 	}
 	// Minor hack - gcc 4.1.2 and earlier think that we're not using
 	// 'vect' and optimize it out at -O2 and higher.  This convinces
@@ -436,7 +440,10 @@ CanvasParser::parse_color(xmlpp::Element *element)
 			color.set_a(atof(child->get_child_text()->get_content().c_str()));
 		}
 		else
+		{
+			printf("%s:%d\n", __FILE__, __LINE__);
 			error_unexpected_element(child,child->get_name());
+		}
 	}
 
 	return color;
@@ -661,7 +668,10 @@ CanvasParser::parse_segment(xmlpp::Element *element)
 			seg.t2=parse_vector(dynamic_cast<xmlpp::Element*>(*iter));
 		}
 		else
+		{
+			printf("%s:%d\n", __FILE__, __LINE__);
 			error_unexpected_element(child,child->get_name());
+		}
 	}
 	return seg;
 }
@@ -812,7 +822,10 @@ CanvasParser::parse_bline_point(xmlpp::Element *element)
 			ret.set_origin(parse_real(dynamic_cast<xmlpp::Element*>(*iter)));
 		}
 		else
+		{
+			printf("%s:%d\n", __FILE__, __LINE__);
 			error_unexpected_element(child,child->get_name());
+		}
 	}
 	return ret;
 }
@@ -885,6 +898,7 @@ CanvasParser::parse_value(xmlpp::Element *element,Canvas::Handle canvas)
 		return ValueBase(parse_canvas(element,canvas,true));
 	else
 	{
+		printf("%s:%d\n", __FILE__, __LINE__);
 		error_unexpected_element(element,element->get_name());
 	}
 
@@ -1081,7 +1095,10 @@ CanvasParser::parse_animated(xmlpp::Element *element,Canvas::Handle canvas)
 
 		}
 		else
+		{
+			printf("%s:%d\n", __FILE__, __LINE__);
 			error_unexpected_element(child,child->get_name());
+		}
 	}
 
 	// in canvas version 0.1, angles used to wrap, so to get from -179
@@ -1166,7 +1183,7 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 		error(element, strprintf(_("<%s> did not accept type '%s'"),
 								 element->get_name().c_str(),
 								 ValueBase::type_local_name(type).c_str()));
-		printf("%s:%d parse_linkable_value_node done bad type\n", __FILE__, __LINE__);
+		printf("%s:%d parse_linkable_value_node unacceptable type\n", __FILE__, __LINE__);
 		return 0;
 	}
 
@@ -1458,7 +1475,10 @@ CanvasParser::parse_static_list(xmlpp::Element *element,Canvas::Handle canvas)
 			value_node->add(list_entry);
 		}
 		else
+		{
+			printf("%s:%d\n", __FILE__, __LINE__);
 			error_unexpected_element(child,child->get_name());
+		}
 	}
 	return value_node;
 }
@@ -1673,7 +1693,10 @@ CanvasParser::parse_dynamic_list(xmlpp::Element *element,Canvas::Handle canvas)
 			value_node->set_link(value_node->link_count()-1,list_entry.value_node);
 		}
 		else
+		{
+			printf("%s:%d\n", __FILE__, __LINE__);
 			error_unexpected_element(child,child->get_name());
+		}
 	}
 	return value_node;
 }
@@ -1694,17 +1717,30 @@ CanvasParser::parse_value_node(xmlpp::Element *element,Canvas::Handle canvas)
 			// ^canvas->get_root()->get_guid()
 			;
 		printf("%s:%d got guid %s\n", __FILE__, __LINE__, guid.get_string().c_str());
+		printf("%s:%d and element name = '%s'\n", __FILE__, __LINE__, element->get_name().c_str());
 		value_node=guid_cast<ValueNode>(guid);
 		if(value_node)
 		{
 			printf("%s:%d parse_value_node done early\n", __FILE__, __LINE__);
+			if(/* element->get_name()!="canvas" && */ ValueBase::ident_type(element->get_name()))
+			{
+				if (element->get_name() != "bone_valuenode")
+				{
+					printf("%s:%d we have guid and a valuebase element name which isn't bone_valuenode\n", __FILE__, __LINE__);
+					assert(0);
+				}
+				ValueNode_Bone::Handle value_node_bone(ValueNode_Bone::Handle::cast_dynamic(value_node));
+				return ValueNode_Const::create(ValueBase(value_node_bone));
+			}
 			return value_node;
 		}
 	}
 
 	// If ValueBase::ident_type() recognizes the name, then we know it's a ValueBase
+	printf("%s:%d element name = '%s'\n", __FILE__, __LINE__, element->get_name().c_str());
 	if(element->get_name()!="canvas" && ValueBase::ident_type(element->get_name()))
 	{
+		printf("%s:%d recognised it\n", __FILE__, __LINE__);
 		ValueBase data=parse_value(element,canvas);
 
 		if(!data.is_valid())
@@ -1744,6 +1780,7 @@ CanvasParser::parse_value_node(xmlpp::Element *element,Canvas::Handle canvas)
 		value_node=ValueNode_Const::create(parse_canvas(element,canvas,true));
 	else
 	{
+		printf("%s:%d\n", __FILE__, __LINE__);
 		error_unexpected_element(element,element->get_name());
 		error(element, strprintf(_("Expected a ValueNode.  Refer to '%s'"),
 								 VALUENODE_COMPATIBILITY_URL));
@@ -1996,7 +2033,10 @@ CanvasParser::parse_layer(xmlpp::Element *element,Canvas::Handle canvas)
 			continue;
 		}
 		else
+		{
+			printf("%s:%d\n", __FILE__, __LINE__);
 			error_unexpected_element(child,child->get_name());
+		}
 	}
 
 	layer->reset_version();
@@ -2259,7 +2299,10 @@ CanvasParser::parse_canvas(xmlpp::Element *element,Canvas::Handle parent,bool in
 					canvas->push_front(parse_layer(child,canvas));
 			}
 			else
+			{
+				printf("%s:%d\n", __FILE__, __LINE__);
 				error_unexpected_element(child,child->get_name());
+			}
 		}
 //		else
 //		if((child->get_name()=="text"||child->get_name()=="comment") && child->has_child_text())
