@@ -126,7 +126,8 @@ ValueNode_Bone::get_bone_map(Canvas::ConstHandle canvas)
 ValueNode_Bone::BoneList
 ValueNode_Bone::get_ordered_bones(etl::handle<const Canvas> canvas)
 {
-	std::multimap<ValueNode_Bone::Handle, ValueNode_Bone::Handle> users;
+	std::multimap<ValueNode_Bone::Handle, ValueNode_Bone::Handle> uses;
+	std::multimap<ValueNode_Bone::Handle, ValueNode_Bone::Handle> is_used_by;
 	BoneList current_list;
 
 	{
@@ -148,7 +149,8 @@ ValueNode_Bone::get_ordered_bones(etl::handle<const Canvas> canvas)
 					printf("%s:%d %s is used by %s\n", __FILE__, __LINE__,
 						   used->get_bone_name(0).c_str(),
 						   user->get_bone_name(0).c_str());
-					users.insert(make_pair(used, user));
+					is_used_by.insert(make_pair(used, user));
+					uses.insert(make_pair(user, used));
 				}
 		}
 	}
@@ -159,32 +161,58 @@ ValueNode_Bone::get_ordered_bones(etl::handle<const Canvas> canvas)
 
 	while (current_list.size())
 	{
-		printf("%s:%d current_list has %zd members\n", __FILE__, __LINE__, current_list.size());
+		printf("%s:%d current_list has %zd members; we have %zd in is_used_by and %zd in uses\n",
+			   __FILE__, __LINE__, current_list.size(), is_used_by.size(), uses.size());
 		for(BoneList::iterator iter=current_list.begin();iter!=current_list.end();++iter)
 		{
 			ValueNode_Bone::Handle bone(*iter);
 			printf("%s:%d bone: %s\n", __FILE__, __LINE__, bone->get_bone_name(0).c_str());
 			ret.push_back(bone);
 
-			std::multimap<ValueNode_Bone::Handle, ValueNode_Bone::Handle>::iterator begin(users.lower_bound(bone));
-			std::multimap<ValueNode_Bone::Handle, ValueNode_Bone::Handle>::iterator end(users.upper_bound(bone));
+			std::multimap<ValueNode_Bone::Handle, ValueNode_Bone::Handle>::iterator begin(is_used_by.lower_bound(bone));
+			std::multimap<ValueNode_Bone::Handle, ValueNode_Bone::Handle>::iterator end(is_used_by.upper_bound(bone));
 			for (std::multimap<ValueNode_Bone::Handle, ValueNode_Bone::Handle>::iterator iter = begin; iter != end; iter++)
 			{
-				ValueNode_Bone::Handle bone(iter->second);
-				printf("\t\t\t%s:%d user: %s\n", __FILE__, __LINE__, bone->get_bone_name(0).c_str());
-				if (!seen.count(iter->second))
+				ValueNode_Bone::Handle user(iter->second);
+				printf("\t\t\t%s:%d user: %s\n", __FILE__, __LINE__, user->get_bone_name(0).c_str());
+
+				// erase (user,bone) from uses
+				printf("%s:%d trying to erase - searching %d\n", __FILE__, __LINE__, uses.count(user));
+				std::multimap<ValueNode_Bone::Handle, ValueNode_Bone::Handle>::iterator begin2(uses.lower_bound(user));
+				std::multimap<ValueNode_Bone::Handle, ValueNode_Bone::Handle>::iterator end2(uses.upper_bound(user));
+				std::multimap<ValueNode_Bone::Handle, ValueNode_Bone::Handle>::iterator iter2;
+				for (iter2 = begin2; iter2 != end2; iter2++)
 				{
-					seen.insert(bone);
-					printf("\t\t\t%s:%d adding\n", __FILE__, __LINE__);
-					new_list.push_back(iter->second);
+					if (iter2->second == bone)
+					{
+						uses.erase(iter2);
+						printf("%s:%d found it\n", __FILE__, __LINE__);
+						break;
+					}
+					else
+					{
+						printf("no\n");
+					}
 				}
-				else
-					printf("\t\t\t%s:%d seen before\n", __FILE__, __LINE__);
+				if (iter2 == end2)
+				{
+					printf("%s:%d didn't find it?!?\n", __FILE__, __LINE__);
+					assert(0);
+				}
+
+				printf("%s:%d now there are %d\n", __FILE__, __LINE__, uses.count(user));
+				if (uses.count(user) == 0)
+				{
+					printf("\t\t\t%s:%d adding %s\n", __FILE__, __LINE__, user->get_bone_name(0).c_str());
+					new_list.push_back(user);
+				}
 			}
 		}
 		current_list = new_list;
 		new_list.clear();
 	}
+
+	assert(uses.empty());
 
 	return ret;
 }
