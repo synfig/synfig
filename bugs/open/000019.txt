@@ -1,6 +1,11 @@
 Subject: Unexport a exported bone crash
 
-I haven't found a recipe but here is a backtrace:
+Recipe:
+Create a new skeleton layer
+Export a parent parameter
+save the file
+unexport the valuenode
+crash
 
 ------------------------------------------------------------------------
 
