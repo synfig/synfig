@@ -658,8 +658,7 @@ xmlpp::Element* encode_value_node_bone(xmlpp::Element* root,ValueNode::ConstHand
 
 	if(value_node->rcount()>1)
 	{
-		printf("%s:%d this happens too\n", __FILE__, __LINE__);
-		assert(0);
+		// ~/notes/synfig/crash-when-saving.txt is an example of the execution reaching this line
 		root->set_attribute("guid",(value_node->get_guid()^canvas->get_root()->get_guid()).get_string());
 	}
 
