@@ -1,0 +1,9 @@
+Subject: Edit context menu entry is not shown for waypoints of parent params
+
+New skeleton, go to animation mode
+animate the parent of any bone
+In the Time track or the param time track
+right click on the waypoint doesn't show the
+"Edit" entry. Before it was shown.
+
+------------------------------------------------------------------------
