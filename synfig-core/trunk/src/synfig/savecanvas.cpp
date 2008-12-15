@@ -252,6 +252,12 @@ xmlpp::Element* encode_value(xmlpp::Element* root,const ValueBase &data,Canvas::
 	case ValueBase::TYPE_CANVAS:
 		return encode_canvas(root,data.get(Canvas::Handle()).get());
 	case ValueBase::TYPE_VALUENODE_BONE:
+		if (!canvas)
+		{
+			printf("%s:%d ------------------------------------------------------------------------\n", __FILE__, __LINE__);
+			printf("%s:%d zero canvas - please fix - report\n", __FILE__, __LINE__);
+			printf("%s:%d ------------------------------------------------------------------------\n", __FILE__, __LINE__);
+		}
 		root = encode_value_node_bone_id(root,data.get(ValueNode_Bone::Handle()).get(),canvas);
 		root->set_name("bone_valuenode");
 		return root;
@@ -875,7 +881,7 @@ xmlpp::Element* encode_canvas(xmlpp::Element* root,Canvas::ConstHandle canvas)
 			if(handle<ValueNode_Const>::cast_dynamic(*iter))
 			{
 				ValueNode_Const::Handle value_node(ValueNode_Const::Handle::cast_dynamic(*iter));
-				reinterpret_cast<xmlpp::Element*>(encode_value(node->add_child("value"),value_node->get_value()))->set_attribute("id",value_node->get_id());
+				reinterpret_cast<xmlpp::Element*>(encode_value(node->add_child("value"),value_node->get_value(),canvas))->set_attribute("id",value_node->get_id());
 				continue;
 			}
 			encode_value_node(node->add_child("value_node"),*iter,canvas);
