@@ -531,16 +531,6 @@ ValueNode_Bone::set_link_vfunc(int i,ValueNode::Handle value)
 	case 8:
 #endif
 	{
-		printf("%s:%d trying to link parent to %s\n", __FILE__, __LINE__, value->get_string().c_str());
-
-		if (value->get_type() == ValueBase::TYPE_BONE &&
-			ValueNode_Bone::Handle::cast_dynamic(value))
-		{
-			ValueBase v(ValueNode_Bone::Handle::cast_dynamic(value));
-			value = ValueNode_Const::create(v);
-			printf("%s:%d now, instead, trying to link parent to %s\n", __FILE__, __LINE__, value->get_string().c_str());
-		}
-
 		VALUENODE_CHECK_TYPE(ValueBase::TYPE_VALUENODE_BONE);
 		ValueNode_Bone::BoneSet parents(ValueNode_Bone::get_bones_referenced_by(value));
 		if (parents.count(this))
