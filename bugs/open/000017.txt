@@ -1,0 +1,8 @@
+Subject: Vertices converted to Bone Influence saved to file doesn't load
+
+Create a bline, convert the Vertex paramterer to Bone Influence
+Save
+Close ss
+Open ss and load the saved file. It fails.
+
+------------------------------------------------------------------------

@@ -1,0 +1,7 @@
+Subject: Convert a parent parameter doesn't work
+
+Select the parent parameter, right click convert.
+Select any convert type. It writes the type correctly but
+doesn't make it expandable (and editable).
+
+------------------------------------------------------------------------

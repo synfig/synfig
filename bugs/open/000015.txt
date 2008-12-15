@@ -1,0 +1,11 @@
+Subject: Inserted bones doesn't offer other parent in the bone choose widget than the <None>
+
+new file,
+new skeleton,
+insert item smart,
+select the inserted and try to change its parent,
+only <None> is offered
+
+------------------------------------------------------------------------
+If you deleted the inserted and then add a new one the deleted is offerd to the new inserted.
+It seems like if they belong to a different canvas?
