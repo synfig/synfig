@@ -621,7 +621,9 @@ ValueNode::get_relative_id(etl::loose_handle<const Canvas> x)const
 etl::loose_handle<Canvas>
 ValueNode::get_non_inline_ancestor_canvas()const
 {
-	return get_parent_canvas()->get_non_inline_ancestor();
+	etl::loose_handle<Canvas> parent(get_parent_canvas());
+	if (parent) return parent->get_non_inline_ancestor();
+	return parent;
 }
 
 void
