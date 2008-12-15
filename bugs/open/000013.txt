@@ -12,3 +12,17 @@ ss-debug: value.h:248: const T& synfig::ValueBase::get(const T&) const [with T =
 
 ------------------------------------------------------------------------
 It crashes too if you delete item smart
+
+------------------------------------------------------------------------
+dooglus, Tue Dec 16 00:13:19 CET 2008
+
+'insert' no longer seems to crash.
+'delete' still crashes.
+in valuenode_staticlist.cpp, the "if(get_non_inline_ancestor_canvas())" fails, so this never runs:
+	get_non_inline_ancestor_canvas()->invoke_signal_value_node_child_removed(this,value_node);
+so the param tree isn't redrawn.  it's the same as this bug:
+	https://sourceforge.net/tracker2/?func=detail&aid=1420091&group_id=144022&atid=757416
+
+the canvas of the static_list is null.
+cloning (copy/paste) or duplicating the bline layer and doing the delete in the new copy doesn't crash
+------------------------------------------------------------------------
