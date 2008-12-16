@@ -334,7 +334,7 @@ public:
 
 	static Book& book();
 
-	static Handle create(const String &name, const ValueBase& x);
+	static Handle create(const String &name, const ValueBase& x, etl::loose_handle<Canvas> canvas /* = 0 */);
 
 	static bool check_type(const String &name, ValueBase::Type x);
 

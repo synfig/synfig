@@ -241,7 +241,7 @@ LinkableValueNode::book()
 }
 
 LinkableValueNode::Handle
-LinkableValueNode::create(const String &name, const ValueBase& x)
+LinkableValueNode::create(const String &name, const ValueBase& x, Canvas::LooseHandle canvas)
 {
 	if(!book().count(name))
 		return 0;

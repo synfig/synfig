@@ -256,19 +256,19 @@ CanvasInterface::add_layer_to(synfig::String name, synfig::Canvas::Handle canvas
 					{
 						if (type == ValueBase::TYPE_BLINEPOINT)
 						{
-							value_node=LinkableValueNode::create("bline",iter->second);
+							value_node=LinkableValueNode::create("bline",iter->second,canvas);
 							ValueNode_BLine::Handle::cast_dynamic(value_node)->set_member_canvas(canvas);
 						}
 						else if (type == ValueBase::TYPE_BONE)
 						{
 							if (getenv("SYNFIG_USE_DYNAMIC_LIST_FOR_BONES"))
 							{
-								value_node=LinkableValueNode::create("dynamic_list",iter->second);
+								value_node=LinkableValueNode::create("dynamic_list",iter->second,canvas);
 								ValueNode_DynamicList::Handle::cast_dynamic(value_node)->set_member_canvas(canvas);
 							}
 							else // this is the default
 							{
-								value_node=LinkableValueNode::create("static_list",iter->second);
+								value_node=LinkableValueNode::create("static_list",iter->second,canvas);
 								ValueNode_StaticList::Handle::cast_dynamic(value_node)->set_member_canvas(canvas);
 							}
 						}
@@ -276,12 +276,12 @@ CanvasInterface::add_layer_to(synfig::String name, synfig::Canvas::Handle canvas
 						{
 							if (getenv("SYNFIG_USE_STATIC_LIST_FOR_VECTORS"))
 							{
-								value_node=LinkableValueNode::create("static_list",iter->second);
+								value_node=LinkableValueNode::create("static_list",iter->second,canvas);
 								ValueNode_StaticList::Handle::cast_dynamic(value_node)->set_member_canvas(canvas);
 							}
 							else // this is the default
 							{
-								value_node=LinkableValueNode::create("dynamic_list",iter->second);
+								value_node=LinkableValueNode::create("dynamic_list",iter->second,canvas);
 								ValueNode_DynamicList::Handle::cast_dynamic(value_node)->set_member_canvas(canvas);
 							}
 						}
@@ -289,7 +289,7 @@ CanvasInterface::add_layer_to(synfig::String name, synfig::Canvas::Handle canvas
 				}
 
 				if (!value_node)
-					value_node=LinkableValueNode::create("dynamic_list",iter->second);
+					value_node=LinkableValueNode::create("dynamic_list",iter->second,canvas);
 			}
 			// otherwise, if it's a type that can be converted to
 			// 'composite' (other than the types that can be radial
@@ -297,7 +297,7 @@ CanvasInterface::add_layer_to(synfig::String name, synfig::Canvas::Handle canvas
 			else if(LinkableValueNode::check_type("composite",iter->second.get_type()) &&
 					 (iter->second.get_type()!=ValueBase::TYPE_COLOR &&
 					  iter->second.get_type()!=ValueBase::TYPE_VECTOR))
-				value_node=LinkableValueNode::create("composite",iter->second);
+				value_node=LinkableValueNode::create("composite",iter->second,canvas);
 
 			if(value_node)
 				layer->connect_dynamic_param(iter->first,value_node);

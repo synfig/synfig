@@ -1165,7 +1165,7 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 	}
 
 	printf("%s:%d creating linkable '%s' type '%s'\n", __FILE__, __LINE__, element->get_name().c_str(), ValueBase::type_name(type).c_str());
-	handle<LinkableValueNode> value_node=LinkableValueNode::create(element->get_name(),type);
+	handle<LinkableValueNode> value_node=LinkableValueNode::create(element->get_name(),type,canvas);
  	handle<ValueNode> c[value_node->link_count()];
 
 	if(!value_node)
@@ -1186,8 +1186,6 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 		printf("%s:%d parse_linkable_value_node unacceptable type\n", __FILE__, __LINE__);
 		return 0;
 	}
-
-	value_node->set_root_canvas(canvas->get_root());
 
 	// handle exported valuenodes
 	{
@@ -1381,7 +1379,7 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 	{
 		if (version == "0.1" || version == "0.2" || version == "0.3")
 		{
-			handle<LinkableValueNode> scale_value_node=LinkableValueNode::create("scale",type);
+			handle<LinkableValueNode> scale_value_node=LinkableValueNode::create("scale",type,canvas);
 			scale_value_node->set_link(scale_value_node->get_link_index_from_name("link"), value_node);
 			scale_value_node->set_link(scale_value_node->get_link_index_from_name("scalar"), ValueNode_Const::create(Real(0.5)));
 			value_node = scale_value_node;
