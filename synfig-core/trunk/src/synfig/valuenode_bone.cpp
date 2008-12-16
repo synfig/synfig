@@ -1066,7 +1066,7 @@ ValueNode_Bone_Root::get_animated_matrix(Time t __attribute__ ((unused)))const
 bool
 ValueNode_Bone_Root::check_type(ValueBase::Type type __attribute__ ((unused)))
 {
-	return type==ValueBase::TYPE_BONE;
+	return false;
 }
 
 #ifdef _DEBUG

@@ -246,11 +246,7 @@ LinkableValueNode::create(const String &name, const ValueBase& x)
 	if(!book().count(name))
 		return 0;
 
-	if (!check_type(name, x.get_type()) &&
-		// the Duplicate ValueNode is an exception - we don't want the
-		// user creating it for themselves, so check_type() fails for
-		// it even when it is valid
-		!(name == "duplicate" && x.get_type() == ValueBase::TYPE_REAL))
+	if (!check_type(name, x.get_type()))
 	{
 		error(_("Bad type: ValueNode '%s' doesn't accept type '%s'"), book()[name].local_name.c_str(), ValueBase::type_local_name(x.get_type()).c_str());
 		return 0;
@@ -262,6 +258,13 @@ LinkableValueNode::create(const String &name, const ValueBase& x)
 bool
 LinkableValueNode::check_type(const String &name, ValueBase::Type x)
 {
+	// the BoneRoot and Duplicate ValueNodes are exceptions - we don't want the
+	// user creating them for themselves, so check_type() fails for
+	// them even when it is valid
+	if((name == "bone_root" && x == ValueBase::TYPE_BONE) ||
+	   (name == "duplicate" && x == ValueBase::TYPE_REAL))
+		return true;
+
 	if(!book().count(name) || !book()[name].check_type)
 		return false;
 	return book()[name].check_type(x);
