@@ -622,10 +622,38 @@ ValueNode::get_relative_id(etl::loose_handle<const Canvas> x)const
 }
 
 etl::loose_handle<Canvas>
+ValueNode::get_parent_canvas()const
+{
+	if (getenv("SYNFIG_DEBUG_GET_PARENT_CANVAS"))
+		printf("%s:%d get_parent_canvas of %lx is %lx\n", __FILE__, __LINE__, ulong(this), ulong(canvas_.get()));
+
+	return canvas_;
+}
+
+etl::loose_handle<Canvas>
+ValueNode::get_root_canvas()const
+{
+	if (getenv("SYNFIG_DEBUG_GET_PARENT_CANVAS"))
+		printf("%s:%d get_root_canvas of %lx is %lx\n", __FILE__, __LINE__, ulong(this), ulong(root_canvas_.get()));
+
+	return root_canvas_;
+}
+
+etl::loose_handle<Canvas>
 ValueNode::get_non_inline_ancestor_canvas()const
 {
 	etl::loose_handle<Canvas> parent(get_parent_canvas());
-	if (parent) return parent->get_non_inline_ancestor();
+
+	if (parent)
+	{
+		etl::loose_handle<Canvas> ret(parent->get_non_inline_ancestor());
+
+		if (getenv("SYNFIG_DEBUG_GET_PARENT_CANVAS"))
+			printf("%s:%d get_non_inline_ancestor_canvas of %lx is %lx\n", __FILE__, __LINE__, ulong(this), ulong(ret.get()));
+
+		return ret;
+	}
+
 	return parent;
 }
 

@@ -236,10 +236,10 @@ public:
 	ValueBase::Type get_type()const { return type; }
 
 	//! Returns a handle to the parent canvas, if it has one.
-	etl::loose_handle<Canvas> get_parent_canvas()const { return canvas_; }
+	etl::loose_handle<Canvas> get_parent_canvas()const;
 
 	//! Returns a handle to the parent canvas, if it has one.
-	etl::loose_handle<Canvas> get_root_canvas()const { return root_canvas_; }
+	etl::loose_handle<Canvas> get_root_canvas()const;
 
 	//! Returns a handle to the parent canvas, if it has one.
 	etl::loose_handle<Canvas> get_non_inline_ancestor_canvas()const;
