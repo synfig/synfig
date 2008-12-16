@@ -93,7 +93,7 @@ private:
 	// m02=0, m12=0 and m22=1 for non projective transformations.
 
 public:
-	//!Deafult constructor makes a identity matrix
+	//!Default constructor makes an identity matrix
 	Matrix()
 	{
 		m00=1.0; m01=0.0; m02=0.0;
@@ -101,19 +101,19 @@ public:
 		m20=0.0; m21=0.0; m22=1.0;
 	}
 
-	//!Constructor from Angle create a rotate matrix
+	//!Constructor from Angle creates a rotate matrix
 	Matrix(const Angle &rotate)
 	{
 		set_rotate(rotate);
 	}
 
-	//!Constructor from Point create a translate matrix
+	//!Constructor from Point creates a translate matrix
 	Matrix(const Vector &translate)
 	{
 		set_translate(translate);
 	}
 
-	//!Constructor from Real create a scale matrix
+	//!Constructor from Real creates a scale matrix
 	Matrix(const Real &scale)
 	{
 		set_scale(scale);
@@ -129,7 +129,7 @@ public:
 		return (*this);
 	}
 
-	//!set_scale member fucntion. Sets a scale matrix
+	//!set_scale member function. Sets a scale matrix
 	//! @param sx Scale by X axis
 	//! @param sy Scale by Y axis
 	//! @return A matrix reference filled with the sx, sy values
@@ -155,7 +155,7 @@ public:
 	}
 
 	//!set_rotate member function. Sets a rotate matrix
-	//! @param a Rotation angle counterclock wise
+	//! @param a Rotation angle counter clockwise
 	//! @return A matrix reference filled with the proper rotation parameters
 	Matrix &
 	set_rotate(const Angle &a)
@@ -186,12 +186,13 @@ public:
 	Vector
 	get_transformed(const Vector &v)
 	{
-		return Vector(v[0]*m00+v[1]*m10+m20,v[0]*m01+v[1]*m11+m21);
+		return Vector(v[0]*m00+v[1]*m10+m20,
+					  v[0]*m01+v[1]*m11+m21);
 	}
 
-	//! operator*=. Multiplication and assign of one matrix by another
+	//! operator*=. Multiplication and assignment of one matrix by another
 	//! @param rhs the right hand side of the multiplication operation
-	//! @return the resulting multiplication matrix
+	//! @return the modified resulting matrix
 	Matrix
 	operator*=(const Matrix &rhs)
 	{
@@ -215,9 +216,9 @@ public:
 		return *this;
 	}
 
-	//! operator*=. Multiplication and assign of one matrix by a number
+	//! operator*=. Multiplication and assignment of one matrix by a scalar
 	//! @param rhs the number to multiply by
-	//! @return the modifed resulting multiplicated by number matrix
+	//! @return the modifed resulting matrix
 	Matrix
 	operator*=(const value_type &rhs)
 	{
@@ -236,7 +237,7 @@ public:
 		return *this;
 	}
 
-	//! operator+=. Sum and assign of two matrixes
+	//! operator+=. Sum and assignment of two matrixes
 	//! @param rhs the matrix to sum
 	//! @return modified matrix with the summed matrix
 	Matrix
@@ -258,7 +259,7 @@ public:
 
 	//! operator*. Multiplication of one matrix by another
 	//! @param rhs the right hand side of the multiplication operation
-	//! @return the resulting multiplication matrix
+	//! @return the resulting matrix
 	Matrix
 	operator*(const Matrix &rhs)
 	{
@@ -267,7 +268,7 @@ public:
 
 	//! operator*. Multiplication of one matrix by a number
 	//! @param rhs the number to multiply by
-	//! @return the resulting multiplicated by number matrix
+	//! @return the resulting matrix
 	Matrix
 	operator*(const value_type &rhs)
 	{
@@ -276,7 +277,7 @@ public:
 
 	//! operator+. Sum two matrixes
 	//! @param rhs the matrix to sum
-	//! @return modified matrix with the summed matrix
+	//! @return the resulting matrix
 	Matrix
 	operator+(const Matrix &rhs)
 	{
