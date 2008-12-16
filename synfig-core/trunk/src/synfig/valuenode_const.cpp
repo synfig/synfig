@@ -69,11 +69,17 @@ ValueNode_Const::create(const ValueBase &x)
 {
 	// this is nasty - shouldn't it be done somewhere else?
 	if (x.get_type() == ValueBase::TYPE_BONE)
+	{
+		printf("%s:%d forcing convert to ValueNode_Bone\n", __FILE__, __LINE__);
 		return ValueNode_Bone::create(x);
+	}
 
 	// this too
 	if (x.get_type() == ValueBase::TYPE_BONE_WEIGHT_PAIR)
+	{
+		printf("%s:%d forcing convert to ValueNode_BoneWeightPair\n", __FILE__, __LINE__);
 		return ValueNode_BoneWeightPair::create(x);
+	}
 
 	return new ValueNode_Const(x);
 }
