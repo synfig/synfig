@@ -365,7 +365,7 @@ Matrix
 ValueNode_Bone::get_setup_matrix(Time t, Point translate, Angle rotate, ValueNode_Bone::ConstHandle parent)const
 {
 	Matrix parent_matrix(parent->get_setup_matrix(t));
-	Matrix ret(Matrix(-translate) * Matrix(-rotate) * parent_matrix);
+	Matrix ret(parent_matrix * Matrix(-translate) * Matrix(-rotate));
 
 	if (getenv("SYNFIG_DEBUG_SETUP_MATRIX_CALCULATION"))
 	{
@@ -399,7 +399,7 @@ Matrix
 ValueNode_Bone::get_animated_matrix(Time t, Real scale, Angle rotate, Point translate, ValueNode_Bone::ConstHandle parent)const
 {
 	Matrix parent_matrix(parent->get_animated_matrix(t));
-	Matrix ret(parent_matrix * Matrix(scale) * Matrix(rotate) * Matrix(translate));
+	Matrix ret(Matrix(scale) * Matrix(rotate) * Matrix(translate) * parent_matrix);
 
 	if (getenv("SYNFIG_DEBUG_ANIMATED_MATRIX_CALCULATION"))
 	{
