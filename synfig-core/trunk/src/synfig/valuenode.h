@@ -318,7 +318,7 @@ public:
 
 
 	//! Type that represents a pointer to a ValueNode's constructor
-	typedef LinkableValueNode* (*Factory)(const ValueBase&);
+	typedef LinkableValueNode* (*Factory)(const ValueBase&, etl::loose_handle<Canvas> canvas);
 
 	typedef bool (*CheckType)(ValueBase::Type);
 

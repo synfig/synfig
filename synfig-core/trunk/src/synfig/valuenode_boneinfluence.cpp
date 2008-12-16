@@ -35,6 +35,7 @@
 #include "valuenode_staticlist.h"
 #include "valuenode_const.h"
 #include "boneweightpair.h"
+#include "canvas.h"
 #include "general.h"
 
 #endif
@@ -58,7 +59,7 @@ ValueNode_BoneInfluence::ValueNode_BoneInfluence(const ValueBase::Type &x):
 {
 }
 
-ValueNode_BoneInfluence::ValueNode_BoneInfluence(const ValueNode::Handle &x):
+ValueNode_BoneInfluence::ValueNode_BoneInfluence(const ValueNode::Handle &x, Canvas::LooseHandle canvas):
 	LinkableValueNode(x->get_type())
 {
 	switch(x->get_type())
@@ -66,10 +67,15 @@ ValueNode_BoneInfluence::ValueNode_BoneInfluence(const ValueNode::Handle &x):
 	case ValueBase::TYPE_VECTOR:
 	{
 		ValueNode_StaticList::Handle bone_weight_list(ValueNode_StaticList::create(ValueBase::TYPE_BONE_WEIGHT_PAIR));
-		bone_weight_list->add(ValueNode_BoneWeightPair::create(BoneWeightPair(Bone(), 1)));
+		bone_weight_list->add(ValueNode_BoneWeightPair::create(BoneWeightPair(Bone(), 1), canvas));
 		set_link("vertex_free",			ValueNode_Const::create(Vector()));
 		set_link("vertex_setup",		x);
 		set_link("bone_weight_list",	bone_weight_list);
+
+		if (getenv("SYNFIG_DEBUG_SET_PARENT_CANVAS"))
+			printf("%s:%d set parent canvas for bone influence to %lx\n", __FILE__, __LINE__, ulong(canvas.get()));
+		set_parent_canvas(canvas);
+
 		break;
 	}
 	default:
@@ -80,9 +86,9 @@ ValueNode_BoneInfluence::ValueNode_BoneInfluence(const ValueNode::Handle &x):
 }
 
 ValueNode_BoneInfluence*
-ValueNode_BoneInfluence::create(const ValueBase &x)
+ValueNode_BoneInfluence::create(const ValueBase &x, Canvas::LooseHandle canvas)
 {
-	return new ValueNode_BoneInfluence(ValueNode_Const::create(x));
+	return new ValueNode_BoneInfluence(ValueNode_Const::create(x, canvas), canvas);
 }
 
 LinkableValueNode*

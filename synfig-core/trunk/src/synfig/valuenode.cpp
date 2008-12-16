@@ -252,7 +252,7 @@ LinkableValueNode::create(const String &name, const ValueBase& x, Canvas::LooseH
 		return 0;
 	}
 
-	return book()[name].factory(x);
+	return book()[name].factory(x,canvas);
 }
 
 bool

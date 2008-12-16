@@ -42,7 +42,7 @@ class ValueNode_BoneWeightPair : public LinkableValueNode
 	ValueNode::RHandle bone_;
 	ValueNode::RHandle weight_;
 
-	ValueNode_BoneWeightPair(const ValueBase &value);
+	ValueNode_BoneWeightPair(const ValueBase &value, etl::loose_handle<Canvas> = 0);
 
 public:
 
@@ -74,7 +74,7 @@ public:
 
 	using synfig::LinkableValueNode::set_link_vfunc;
 	static bool check_type(ValueBase::Type type);
-	static ValueNode_BoneWeightPair* create(const ValueBase &x);
+	static ValueNode_BoneWeightPair* create(const ValueBase &x, etl::loose_handle<Canvas>);
 }; // END of class ValueNode_BoneWeightPair
 
 }; // END of namespace synfig

@@ -32,6 +32,7 @@
 #include "valuenode_const.h"
 #include "valuenode_bone.h"
 #include "valuenode_boneweightpair.h"
+#include "canvas.h"
 #include "general.h"
 
 #endif
@@ -56,32 +57,36 @@ ValueNode_Const::ValueNode_Const()
 }
 
 
-ValueNode_Const::ValueNode_Const(const ValueBase &x):
+ValueNode_Const::ValueNode_Const(const ValueBase &x, Canvas::LooseHandle canvas):
 	ValueNode	(x.get_type()),
 	value		(x)
 {
+	if (getenv("SYNFIG_DEBUG_SET_PARENT_CANVAS"))
+		printf("%s:%d set parent canvas for const %lx to %lx\n", __FILE__, __LINE__, ulong(this), ulong(canvas.get()));
+	set_parent_canvas(canvas);
+
 	DCAST_HACK_ENABLE();
 }
 
 
 ValueNode*
-ValueNode_Const::create(const ValueBase &x)
+ValueNode_Const::create(const ValueBase &x, Canvas::LooseHandle canvas)
 {
 	// this is nasty - shouldn't it be done somewhere else?
 	if (x.get_type() == ValueBase::TYPE_BONE)
 	{
 		printf("%s:%d forcing convert to ValueNode_Bone\n", __FILE__, __LINE__);
-		return ValueNode_Bone::create(x);
+		return ValueNode_Bone::create(x, canvas);
 	}
 
 	// this too
 	if (x.get_type() == ValueBase::TYPE_BONE_WEIGHT_PAIR)
 	{
 		printf("%s:%d forcing convert to ValueNode_BoneWeightPair\n", __FILE__, __LINE__);
-		return ValueNode_BoneWeightPair::create(x);
+		return ValueNode_BoneWeightPair::create(x, canvas);
 	}
 
-	return new ValueNode_Const(x);
+	return new ValueNode_Const(x, canvas);
 }
 
 

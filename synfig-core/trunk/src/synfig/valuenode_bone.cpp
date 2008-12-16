@@ -226,7 +226,7 @@ ValueNode_Bone::ValueNode_Bone():
 	printf("%s:%d ValueNode_Bone::ValueNode_Bone() this line should only appear once guid %s\n", __FILE__, __LINE__, get_guid().get_string().c_str());
 }
 
-ValueNode_Bone::ValueNode_Bone(const ValueBase &value):
+ValueNode_Bone::ValueNode_Bone(const ValueBase &value, etl::loose_handle<Canvas> canvas):
 	LinkableValueNode(value.get_type())
 {
 	if (getenv("SYNFIG_DEBUG_BONE_CONSTRUCTORS"))
@@ -262,6 +262,10 @@ ValueNode_Bone::ValueNode_Bone(const ValueBase &value):
 		if (!parent) parent = get_root_bone();
 		set_link("parent",ValueNode_Const::create(ValueNode_Bone::Handle::cast_const(parent)));
 
+		if (getenv("SYNFIG_DEBUG_SET_PARENT_CANVAS"))
+			printf("%s:%d set parent canvas for bone %lx to %lx\n", __FILE__, __LINE__, ulong(this), ulong(canvas.get()));
+		set_parent_canvas(canvas);
+
 		printf("%s:%d adding to canvas_map\n", __FILE__, __LINE__);
 		canvas_map[get_root_canvas()][get_guid()] = this;
 
@@ -291,9 +295,9 @@ ValueNode_Bone::create_new()const
 }
 
 ValueNode_Bone*
-ValueNode_Bone::create(const ValueBase &x)
+ValueNode_Bone::create(const ValueBase &x, Canvas::LooseHandle canvas)
 {
-	return new ValueNode_Bone(x);
+	return new ValueNode_Bone(x, canvas);
 }
 
 ValueNode_Bone::~ValueNode_Bone()
@@ -877,7 +881,7 @@ ValueNode_Bone::get_possible_parent_bones(ValueNode::Handle value_node)
 {
 	BoneSet ret;
 
-//	printf("%s:%d which bones can be parents of %s\n", __FILE__, __LINE__, value_node->get_string().c_str());
+//	printf("%s:%d which bones can be parents of %lx (%s)\n", __FILE__, __LINE__, ulong(value_node.get()), value_node->get_string().c_str());
 
 	// which bones are we currently editing the parent of - it can be more than one due to linking
 	ValueNode_Bone::BoneSet affected_bones(ValueNode_Bone::get_bones_affected_by(value_node));

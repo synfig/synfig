@@ -46,7 +46,7 @@ public:
 
 	ValueNode_BoneInfluence(const ValueBase::Type &x);
 
-	ValueNode_BoneInfluence(const ValueNode::Handle &x);
+	ValueNode_BoneInfluence(const ValueNode::Handle &x, etl::loose_handle<Canvas> canvas);
 
 //	static Handle create(const ValueBase::Type &x);
 //	static Handle create(const ValueNode::Handle &x);
@@ -77,7 +77,7 @@ protected:
 public:
 	using synfig::LinkableValueNode::set_link_vfunc;
 	static bool check_type(ValueBase::Type type);
-	static ValueNode_BoneInfluence* create(const ValueBase &x);
+	static ValueNode_BoneInfluence* create(const ValueBase &x, etl::loose_handle<Canvas>);
 }; // END of class ValueNode_BoneInfluence
 
 }; // END of namespace synfig

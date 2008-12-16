@@ -34,6 +34,7 @@
 #include "valuenode_boneweightpair.h"
 #include "valuenode_bone.h"
 #include "valuenode_const.h"
+#include "canvas.h"
 #include "general.h"
 #include "boneweightpair.h"
 
@@ -53,7 +54,7 @@ using namespace synfig;
 
 /* === M E T H O D S ======================================================= */
 
-ValueNode_BoneWeightPair::ValueNode_BoneWeightPair(const ValueBase &value):
+ValueNode_BoneWeightPair::ValueNode_BoneWeightPair(const ValueBase &value, Canvas::LooseHandle canvas):
 	LinkableValueNode(value.get_type())
 {
 	switch(value.get_type())
@@ -63,10 +64,14 @@ ValueNode_BoneWeightPair::ValueNode_BoneWeightPair(const ValueBase &value):
 		BoneWeightPair bone_weight_pair(value.get(BoneWeightPair()));
 		ValueBase bone(bone_weight_pair.get_bone());
 		ValueNode_Bone::Handle bone_value_node;
-		bone_value_node = ValueNode_Bone::create(bone);
-		if (!bone_value_node) bone_value_node = ValueNode_Bone::get_root_bone();
-		set_link("bone",ValueNode_Const::create(bone_value_node));
+		bone_value_node = ValueNode_Bone::create(bone, canvas);
+		set_link("bone",ValueNode_Const::create(bone_value_node, canvas));
 		set_link("weight",ValueNode_Const::create(Real(bone_weight_pair.get_weight())));
+
+		if (getenv("SYNFIG_DEBUG_SET_PARENT_CANVAS"))
+			printf("%s:%d set parent canvas for bwp to %lx\n", __FILE__, __LINE__, ulong(canvas.get()));
+		set_parent_canvas(canvas);
+
 		break;
 	}
 	default:
@@ -83,9 +88,9 @@ ValueNode_BoneWeightPair::create_new()const
 }
 
 ValueNode_BoneWeightPair*
-ValueNode_BoneWeightPair::create(const ValueBase &x)
+ValueNode_BoneWeightPair::create(const ValueBase &x, Canvas::LooseHandle canvas)
 {
-	return new ValueNode_BoneWeightPair(x);
+	return new ValueNode_BoneWeightPair(x, canvas);
 }
 
 ValueNode_BoneWeightPair::~ValueNode_BoneWeightPair()

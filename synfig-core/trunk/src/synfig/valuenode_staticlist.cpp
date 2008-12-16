@@ -111,7 +111,7 @@ ValueNode_StaticList::create_list_entry(int index, Time time, Real origin) // li
 	}
 	case ValueBase::TYPE_BONE:
 	{
-		ret=ValueNode_Bone::create(ValueBase::TYPE_BONE);
+		ret=ValueNode_Bone::create(ValueBase::TYPE_BONE, get_parent_canvas());
 		break;
 	}
 	default:
@@ -374,7 +374,11 @@ void
 ValueNode_StaticList::set_member_canvas(etl::loose_handle<Canvas> canvas) // line 723
 {
 	for (vector<ReplaceableListEntry>::iterator iter = list.begin(); iter != list.end(); iter++)
+	{
+		if (getenv("SYNFIG_DEBUG_SET_PARENT_CANVAS"))
+			printf("%s:%d set parent canvas of member (%lx) to (%lx)\n", __FILE__, __LINE__, ulong((*iter).get()), ulong(canvas.get()));
 		(*iter)->set_parent_canvas(canvas);
+	}
 }
 
 ValueBase::Type
