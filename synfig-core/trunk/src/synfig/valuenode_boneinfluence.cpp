@@ -118,13 +118,39 @@ ValueNode_BoneInfluence::operator()(Time t)const
 	{
 		Bone bone(iter->get(BoneWeightPair()).get_bone());
 		Real weight(iter->get(BoneWeightPair()).get_weight());
+
+		if (getenv("SYNFIG_DEBUG_BONE_TRANSFORM_WEIGHTING"))
+		{
+			printf("%s  *\n", bone.get_setup_matrix().get_string(15, "t = setup").c_str());
+			printf("%s  =\n", bone.get_animated_matrix().get_string(15, "animated", strprintf("* %.2f (weight)", weight)).c_str());
+			printf("%s\n",	 (bone.get_setup_matrix() * bone.get_animated_matrix() * weight).get_string(15).c_str());
+		}
+
 		transform += (bone.get_setup_matrix() *
 					  bone.get_animated_matrix() *
 					  weight);
 		total_weight += weight;
 	}
 
+	if (getenv("SYNFIG_DEBUG_BONE_TRANSFORM_WEIGHTING"))
+	{
+		printf("%s:%d transform:\n%s\n", __FILE__, __LINE__, transform.get_string().c_str());
+		printf("%s:%d total_weight: %.2f\n", __FILE__, __LINE__, total_weight);;
+	}
+
 	if (total_weight) transform *= (1/total_weight);
+
+	if (getenv("SYNFIG_DEBUG_BONE_TRANSFORM_WEIGHTING"))
+		printf("%s:%d final transform:\n%s\n", __FILE__, __LINE__, transform.get_string().c_str());
+
+	if (getenv("SYNFIG_DEBUG_BONE_VECTOR_TRANSFORMATION"))
+		printf("%s\n", transform.get_string(35,
+											strprintf("transform (%7.2f %7.2f) using",
+													  vertex_setup[0],
+													  vertex_setup[1]),
+											strprintf("= (%7.2f %7.2f) using",
+													  transform.get_transformed(vertex_setup)[0],
+													  transform.get_transformed(vertex_setup)[1])).c_str());
 
 	return vertex_free + transform.get_transformed(vertex_setup);
 }

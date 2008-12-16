@@ -364,7 +364,18 @@ ValueNode_Bone::get_setup_matrix(Time t)const
 Matrix
 ValueNode_Bone::get_setup_matrix(Time t, Point translate, Angle rotate, ValueNode_Bone::ConstHandle parent)const
 {
-	return Matrix(-translate) * Matrix(-rotate) * parent->get_setup_matrix(t);
+	Matrix parent_matrix(parent->get_setup_matrix(t));
+	Matrix ret(Matrix(-translate) * Matrix(-rotate) * parent_matrix);
+
+	if (getenv("SYNFIG_DEBUG_SETUP_MATRIX_CALCULATION"))
+	{
+		printf("%s  *\n", Matrix(-translate).get_string(18, "setup_matrix = ", strprintf("translate(%7.2f, %7.2f)", -translate[0], -translate[1])).c_str());
+		printf("%s  *\n", Matrix(-rotate).get_string(18, "", strprintf("rotate(%.2f)", Angle::deg(-rotate).get())).c_str());
+		printf("%s  =\n", parent_matrix.get_string(18).c_str());
+		printf("%s\n",	  ret.get_string(18).c_str());
+	}
+
+	return ret;
 }
 
 //!Animated Transformation matrix.
@@ -387,7 +398,19 @@ ValueNode_Bone::get_animated_matrix(Time t)const
 Matrix
 ValueNode_Bone::get_animated_matrix(Time t, Real scale, Angle rotate, Point translate, ValueNode_Bone::ConstHandle parent)const
 {
-	return parent->get_animated_matrix(t) * Matrix(scale) * Matrix(rotate) * Matrix(translate);
+	Matrix parent_matrix(parent->get_animated_matrix(t));
+	Matrix ret(parent_matrix * Matrix(scale) * Matrix(rotate) * Matrix(translate));
+
+	if (getenv("SYNFIG_DEBUG_ANIMATED_MATRIX_CALCULATION"))
+	{
+		printf("%s  *\n", parent_matrix.get_string(18, "animated_matrix = ", "parent").c_str());
+		printf("%s  *\n", Matrix(scale).get_string(18, "", strprintf("scale(%7.2f)", scale)).c_str());
+		printf("%s  *\n", Matrix(rotate).get_string(18, "", strprintf("rotate(%.2f)", Angle::deg(rotate).get())).c_str());
+		printf("%s  =\n", Matrix(translate).get_string(18, "", strprintf("translate(%7.2f, %7.2f)", translate[0], translate[1])).c_str());
+		printf("%s\n",	  ret.get_string(18).c_str());
+	}
+
+	return ret;
 }
 
 ValueNode_Bone::ConstHandle
