@@ -287,9 +287,12 @@ public:
 	//!@return String type. A string representation of the matrix
 	//!components.
 	String
-	get_string()
+	get_string(int spaces = 0, String before = String(), String after = String())
 	{
-		return etl::strprintf("  [%7.2f %7.2f %7.2f]\n  [%7.2f %7.2f %7.2f]\n  [%7.2f %7.2f %7.2f]\n", m00, m01, m02, m10, m11, m12, m20, m21, m22);
+		return etl::strprintf("%*s [%7.2f %7.2f %7.2f] %s\n%*s [%7.2f %7.2f %7.2f]\n%*s [%7.2f %7.2f %7.2f]\n",
+							  spaces, before.c_str(), m00, m01, m02, after.c_str(),
+							  spaces, "",			  m10, m11, m12,
+							  spaces, "",			  m20, m21, m22);
 	}
 };
 
