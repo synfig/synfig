@@ -1714,7 +1714,7 @@ CanvasParser::parse_value_node(xmlpp::Element *element,Canvas::Handle canvas)
 	{
 		guid=GUID(element->get_attribute("guid")->get_value())
 			// doo
-			// ^canvas->get_root()->get_guid()
+			^canvas->get_root()->get_guid()
 			;
 		printf("%s:%d got guid %s\n", __FILE__, __LINE__, guid.get_string().c_str());
 		printf("%s:%d and element name = '%s'\n", __FILE__, __LINE__, element->get_name().c_str());
@@ -1722,15 +1722,13 @@ CanvasParser::parse_value_node(xmlpp::Element *element,Canvas::Handle canvas)
 		if(value_node)
 		{
 			printf("%s:%d parse_value_node done early\n", __FILE__, __LINE__);
-			if(/* element->get_name()!="canvas" && */ ValueBase::ident_type(element->get_name()))
+			if(element->get_name()!="canvas" && ValueBase::ident_type(element->get_name()))
 			{
-				if (element->get_name() != "bone_valuenode")
+				if (element->get_name() == "bone_valuenode")
 				{
-					printf("%s:%d we have guid and a valuebase element name which isn't bone_valuenode\n", __FILE__, __LINE__);
-					assert(0);
+					ValueNode_Bone::Handle value_node_bone(ValueNode_Bone::Handle::cast_dynamic(value_node));
+					return ValueNode_Const::create(ValueBase(value_node_bone));
 				}
-				ValueNode_Bone::Handle value_node_bone(ValueNode_Bone::Handle::cast_dynamic(value_node));
-				return ValueNode_Const::create(ValueBase(value_node_bone));
 			}
 			return value_node;
 		}
