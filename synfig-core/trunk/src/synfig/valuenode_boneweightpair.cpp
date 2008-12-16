@@ -32,6 +32,7 @@
 #endif
 
 #include "valuenode_boneweightpair.h"
+#include "valuenode_bone.h"
 #include "valuenode_const.h"
 #include "general.h"
 #include "boneweightpair.h"
@@ -58,9 +59,16 @@ ValueNode_BoneWeightPair::ValueNode_BoneWeightPair(const ValueBase &value):
 	switch(value.get_type())
 	{
 	case ValueBase::TYPE_BONE_WEIGHT_PAIR:
-		set_link("bone",ValueNode_Const::create(Bone()));
-		set_link("weight",ValueNode_Const::create(Real(1.0)));
+	{
+		BoneWeightPair bone_weight_pair(value.get(BoneWeightPair()));
+		ValueBase bone(bone_weight_pair.get_bone());
+		ValueNode_Bone::Handle bone_value_node;
+		bone_value_node = ValueNode_Bone::create(bone);
+		if (!bone_value_node) bone_value_node = ValueNode_Bone::get_root_bone();
+		set_link("bone",ValueNode_Const::create(bone_value_node));
+		set_link("weight",ValueNode_Const::create(Real(bone_weight_pair.get_weight())));
 		break;
+	}
 	default:
 		throw Exception::BadType(ValueBase::type_local_name(value.get_type()));
 	}
@@ -91,8 +99,10 @@ ValueNode_BoneWeightPair::operator()(Time t)const
 	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
 		printf("%s:%d operator()\n", __FILE__, __LINE__);
 
-	return BoneWeightPair((*  bone_)(t).get(Bone()),
-						  (*weight_)(t).get(Real()));
+	ValueNode_Bone::Handle bone_node((*bone_)(t).get(ValueNode_Bone::Handle()));
+	Bone bone((*bone_node)(t).get(Bone()));
+	Real weight((*weight_)(t).get(Real()));
+	return BoneWeightPair(bone, weight);
 }
 
 String
@@ -120,7 +130,7 @@ ValueNode_BoneWeightPair::set_link_vfunc(int i,ValueNode::Handle value)
 
 	switch(i)
 	{
-	case 0: CHECK_TYPE_AND_SET_VALUE(bone_, ValueBase::TYPE_BONE);
+	case 0: CHECK_TYPE_AND_SET_VALUE(bone_, ValueBase::TYPE_VALUENODE_BONE);
 	case 1: CHECK_TYPE_AND_SET_VALUE(weight_,   ValueBase::TYPE_REAL);
 	}
 	return false;
