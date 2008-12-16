@@ -127,7 +127,7 @@ ValueBase::get_string() const
 	case TYPE_SEGMENT:		return strprintf("Segment ((%f, %f) to (%f, %f))", get(Segment()).p1[0], get(Segment()).p1[1], get(Segment()).p2[0], get(Segment()).p2[1]);
 	case TYPE_BLINEPOINT:	return strprintf("BLinePoint (%s)", get(BLinePoint()).get_vertex()[0], get(BLinePoint()).get_vertex()[1]);
 	case TYPE_MATRIX:		return strprintf("Matrix (%s)",get(Matrix().get_string().c_str()));
-	case TYPE_BONE_WEIGHT_PAIR:	return strprintf("Bone Weight Pair (%s)",get(BoneWeightPair().get_string().c_str()));
+	case TYPE_BONE_WEIGHT_PAIR:	return strprintf("Bone Weight Pair (%s)",get(BoneWeightPair()).get_string().c_str());
 
 		// All types after this point require construction/destruction
 
