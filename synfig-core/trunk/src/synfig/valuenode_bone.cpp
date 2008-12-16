@@ -46,7 +46,7 @@ using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 
-#define HIDE_BONE_FIELDS
+// #define HIDE_BONE_FIELDS
 
 #define GET_NODE_PARENT_NODE(node,t) (*node->get_link("parent"))(t).get(ValueNode_Bone::Handle())
 #define GET_NODE_PARENT(node,t) GET_NODE_PARENT_NODE(node,t)->get_guid()
@@ -532,12 +532,15 @@ ValueNode_Bone::set_link_vfunc(int i,ValueNode::Handle value)
 #endif
 	{
 		VALUENODE_CHECK_TYPE(ValueBase::TYPE_VALUENODE_BONE);
+
+		// check for loops
 		ValueNode_Bone::BoneSet parents(ValueNode_Bone::get_bones_referenced_by(value));
 		if (parents.count(this))
 		{
 			error("creating potential loops in the bone ancestry isn't allowed");
 			return false;
 		}
+
 		VALUENODE_SET_VALUE(parent_);
 	}
 	}
@@ -784,8 +787,8 @@ ValueNode_Bone::get_bones_referenced_by(ValueNode::Handle value_node, bool recur
 				{
 					// printf("%s:%d rec\n", __FILE__, __LINE__);
 					ret = get_bones_referenced_by(bone, recursive);
+					// ret = get_bones_referenced_by(bone->get_link("parent"), recursive);
 				}
-				// ret = get_bones_referenced_by(bone->get_link("parent"), recursive);
 				if (!bone->is_root())
 					ret.insert(bone);
 			}
@@ -816,6 +819,14 @@ ValueNode_Bone::get_bones_referenced_by(ValueNode::Handle value_node, bool recur
 			BoneSet ret2(get_bones_referenced_by(linkable_value_node->get_link(i), recursive));
 			ret.insert(ret2.begin(), ret2.end());
 		}
+		return ret;
+	}
+
+	if (PlaceholderValueNode::Handle linkable_value_node = PlaceholderValueNode::Handle::cast_dynamic(value_node))
+	{
+		// todo: while loading we might be setting up an ancestry loop by ignoring the placeholder valuenode here
+		// can we check for loops in badly formatted .sifz files somehow?
+		printf("%s:%d found a placeholder - skipping loop check\n", __FILE__, __LINE__);
 		return ret;
 	}
 
