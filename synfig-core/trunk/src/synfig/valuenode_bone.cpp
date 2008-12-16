@@ -389,7 +389,6 @@ ValueNode_Bone::get_animated_matrix(Time t, Real scale, Angle rotate, Point tran
 ValueNode_Bone::ConstHandle
 ValueNode_Bone::get_parent(Time t)const
 {
-	printf("%s:%d get_parent\n", __FILE__, __LINE__);
 	// check if we are an ancestor of the proposed parent
 	ValueNode_Bone::ConstHandle parent((*parent_)(t).get(ValueNode_Bone::Handle()));
 	if (ValueNode_Bone::ConstHandle result = is_ancestor_of(parent,t))
@@ -405,10 +404,8 @@ ValueNode_Bone::get_parent(Time t)const
 	// proposed parent is root or not a descendant of current bone
 	if (parent)
 	{
-		printf("%s:%d parent\n", __FILE__, __LINE__);
 		return parent;
 	}
-	printf("%s:%d root 2\n", __FILE__, __LINE__);
 	assert(0);
 	return ValueNode_Bone::ConstHandle::cast_dynamic(new ValueNode_Bone_Root);
 }
@@ -419,7 +416,6 @@ ValueNode_Bone::operator()(Time t)const
 	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
 		printf("%s:%d operator()\n", __FILE__, __LINE__);
 
-	printf("%s:%d loop 4\n", __FILE__, __LINE__);
 //	show_bone_map(get_root_canvas(), __FILE__, __LINE__, strprintf("in op() at %s", t.get_string().c_str()), t);
 
 	String bone_name			((*name_	)(t).get(String()));
@@ -887,9 +883,17 @@ ValueNode_Bone::get_possible_parent_bones(ValueNode::Handle value_node)
 	ValueNode_Bone::BoneSet affected_bones(ValueNode_Bone::get_bones_affected_by(value_node));
 //	printf("%s:%d got %zd affected bones\n", __FILE__, __LINE__, affected_bones.size());
 	Canvas::LooseHandle canvas(value_node->get_root_canvas());
+//	printf("%s:%d canvas %lx\n", __FILE__, __LINE__, ulong(canvas.get()));
 	for (ValueNode_Bone::BoneSet::iterator iter = affected_bones.begin(); iter != affected_bones.end(); iter++)
 	{
-		if (!canvas) canvas = (*iter)->get_root_canvas();
+		if (!canvas)
+		{
+			canvas = (*iter)->get_root_canvas();
+			printf("%s:%d root canvas %lx\n", __FILE__, __LINE__, ulong((*iter)->get_root_canvas().get()));
+			printf("%s:%d parent canvas %lx\n", __FILE__, __LINE__, ulong((*iter)->get_parent_canvas().get()));
+			printf("%s:%d ancestor canvas %lx\n", __FILE__, __LINE__, ulong((*iter)->get_non_inline_ancestor_canvas().get()));
+
+		}
 		if (canvas != (*iter)->get_root_canvas())
 			warning("%s:%d multiple root canvases in affected bones: %lx and %lx", __FILE__, __LINE__,
 					ulong(canvas.get()), ulong((*iter)->get_root_canvas().get()));
@@ -985,6 +989,15 @@ ValueNode_Bone_Root::ValueNode_Bone_Root()
 ValueNode_Bone_Root::~ValueNode_Bone_Root()
 {
 	printf("%s:%d ValueNode_Bone_Root::~ValueNode_Bone_Root()\n", __FILE__, __LINE__);
+}
+
+ValueBase
+ValueNode_Bone_Root::operator()(Time t __attribute__ ((unused)))const
+{
+	Bone ret;
+	ret.set_name			(get_local_name());
+	ret.set_parent			(0);
+	return ret;
 }
 
 void

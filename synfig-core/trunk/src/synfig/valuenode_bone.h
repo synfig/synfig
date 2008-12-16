@@ -137,12 +137,14 @@ class ValueNode_Bone_Root : public ValueNode_Bone
 {
 public:
 
+	ValueNode_Bone_Root();
+	virtual ~ValueNode_Bone_Root();
+
+	virtual ValueBase operator()(Time t)const;
+
 	virtual String get_name()const;
 	virtual String get_local_name()const;
 	virtual String get_bone_name(Time t)const;
-
-	ValueNode_Bone_Root();
-	virtual ~ValueNode_Bone_Root();
 
 	virtual void set_guid(const GUID& new_guid);
 	virtual void set_root_canvas(etl::loose_handle<Canvas> canvas);
