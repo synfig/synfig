@@ -112,6 +112,7 @@ ValueNode_BoneInfluence::operator()(Time t)const
 	Vector vertex_setup((*vertex_setup_)(t).get(Vector()));
 
 	Matrix transform;
+	transform *= 0;
 	vector<ValueBase> bone_weight_list((*bone_weight_list_)(t).get_list());
 	Real total_weight = 0;
 	for (vector<ValueBase>::iterator iter = bone_weight_list.begin(); iter != bone_weight_list.end(); iter++)
