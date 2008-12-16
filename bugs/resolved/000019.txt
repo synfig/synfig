@@ -63,3 +63,7 @@ crash
     at /build/buildd/gtk+2.0-2.14.4/gtk/gtkmain.c:1200
 #24 0x0000000000768cf7 in main (argc=0, argv=0x7fff674608a8) at main.cpp:99
 
+------------------------------------------------------------------------
+dooglus, Tue Dec 16 10:39:29 CET 2008
+
+This seems to have been fixed by the previous commit for #18.
