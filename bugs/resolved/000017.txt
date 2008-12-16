@@ -34,3 +34,8 @@ the bone is created here:
 #8  synfigapp::Action::Super::perform (this=0x2dd50a0) at action.cpp:396
 #9  synfigapp::Action::System::perform_action (this=0x2bebe00, action={obj = 0x7fff0dca1280}) at action_system.cpp:128
 #10 synfigapp::CanvasInterface::convert (... , canvas = {obj = 0x7fff0dca12e0}}, ...) at canvasinterface.cpp:383
+
+------------------------------------------------------------------------
+dooglus, Tue Dec 16 17:37:36 CET 2008
+
+Fixed in the most recent commit.
