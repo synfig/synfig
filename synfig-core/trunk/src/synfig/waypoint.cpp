@@ -147,7 +147,6 @@ Waypoint::get_value()const { return (*value_node)(0); }
 
 ValueBase
 Waypoint::get_value(const Time &t)const {
-	printf("%s:%d loop 3 (%s)\n", __FILE__, __LINE__, value_node->get_string().c_str());
 	return (*value_node)(t);
 }
 
