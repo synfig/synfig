@@ -193,11 +193,17 @@ ValueNode_StaticList::erase(const ListEntry &value_node_) // line 513
 		}
 }
 
-ValueNode_StaticList::ValueNode_StaticList(ValueBase::Type container_type): // line 548
+ValueNode_StaticList::ValueNode_StaticList(ValueBase::Type container_type, Canvas::LooseHandle canvas): // line 548
 	LinkableValueNode(ValueBase::TYPE_LIST),
 	container_type	(container_type),
 	loop_(false)
 {
+	printf("%s:%d ValueNode_StaticList::ValueNode_StaticList() construct %lx\n", __FILE__, __LINE__, ulong(this));
+
+	if (getenv("SYNFIG_DEBUG_SET_PARENT_CANVAS"))
+		printf("%s:%d set parent canvas for static_list %lx to %lx\n", __FILE__, __LINE__, ulong(this), ulong(canvas.get()));
+	set_parent_canvas(canvas);
+
 	DCAST_HACK_ENABLE();
 }
 
@@ -214,9 +220,9 @@ ValueNode_StaticList::~ValueNode_StaticList()
 }
 
 ValueNode_StaticList::Handle
-ValueNode_StaticList::create(ValueBase::Type id) // line 557
+ValueNode_StaticList::create(ValueBase::Type id, Canvas::LooseHandle canvas) // line 557
 {
-	return new ValueNode_StaticList(id);
+	return new ValueNode_StaticList(id, canvas);
 }
 
 ValueNode_StaticList*

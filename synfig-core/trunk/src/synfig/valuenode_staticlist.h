@@ -56,7 +56,7 @@ public:
 	typedef ValueNode::RHandle ReplaceableListEntry;
 
 protected:
-	ValueNode_StaticList(ValueBase::Type container_type=ValueBase::TYPE_NIL);
+	ValueNode_StaticList(ValueBase::Type container_type=ValueBase::TYPE_NIL, etl::loose_handle<Canvas> canvas = 0);
 
 	virtual ~ValueNode_StaticList();
 
@@ -123,7 +123,7 @@ public:
 	**	contains, rather than the type that it will yield
 	**	(which is ValueBase::TYPE_LIST)
 	*/
-	static Handle create(ValueBase::Type id=ValueBase::TYPE_NIL);
+	static Handle create(ValueBase::Type id=ValueBase::TYPE_NIL, etl::loose_handle<Canvas> canvas = 0);
 	using synfig::LinkableValueNode::get_link_vfunc;
 	using synfig::LinkableValueNode::set_link_vfunc;
 	static bool check_type(ValueBase::Type type);

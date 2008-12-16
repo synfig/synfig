@@ -25,3 +25,8 @@ so the param tree isn't redrawn.  it's the same as this bug:
 
 the canvas of the static_list is null.
 cloning (copy/paste) or duplicating the bline layer and doing the delete in the new copy doesn't crash
+
+------------------------------------------------------------------------
+dooglus, Tue Dec 16 17:54:34 CET 2008
+
+Fixed.

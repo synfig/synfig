@@ -2,7 +2,3 @@
 
  000008	fix more in the 'sibling parent link' series
  000014	there's a potential to create loops by connecting
-
-1 remaining 'canvas=0' bug:
-
- 000013	removing a boneweightpair from the list in boneinfluence crashes because CANVAS=0
