@@ -3,7 +3,7 @@ Subject: Insert Item smart in Bone Weight Pair List Crash
 Create a Bline, expand a vertex and do right click on the Vertice parameter.
 Convert it to Bone Influence. Expand the convert type and select the first item
 of the Bone Weight Pair list. Do right click "Insert Item Smart".
-It crahses.
+It crashes.
 
 Console message:
 synfig(10168) [00:57:16] warning: ValueNode_StaticList::operator()():List type/item type mismatch, throwing away mismatch
@@ -25,4 +25,3 @@ so the param tree isn't redrawn.  it's the same as this bug:
 
 the canvas of the static_list is null.
 cloning (copy/paste) or duplicating the bline layer and doing the delete in the new copy doesn't crash
-------------------------------------------------------------------------
