@@ -613,12 +613,8 @@ public:
 
 	virtual ValueBase operator()(Time t)const
 	{
-		printf("%s:%d loop 2a\n", __FILE__, __LINE__);
 		if(waypoint_list_.size()==1)
-		{
-			printf("%s:%d loop 2b\n", __FILE__, __LINE__);
 			return waypoint_list_.front().get_value(t);
-		}
 		if(waypoint_list_.empty())
 			return value_type();
 		if(t<=r)
