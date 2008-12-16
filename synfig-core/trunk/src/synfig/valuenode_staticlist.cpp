@@ -186,6 +186,8 @@ ValueNode_StaticList::erase(const ListEntry &value_node_) // line 513
 				//	get_root_canvas()->signal_value_node_child_removed()(this,value_node);
 				if(get_non_inline_ancestor_canvas())
 					get_non_inline_ancestor_canvas()->invoke_signal_value_node_child_removed(this,value_node);
+				else
+					printf("%s:%d == can't get non_inline_ancestor_canvas - parent canvas = %lx\n", __FILE__, __LINE__, ulong(get_parent_canvas().get()));
 			}
 			break;
 		}
