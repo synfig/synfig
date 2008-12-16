@@ -5,3 +5,4 @@ Select any convert type. It writes the type correctly but
 doesn't make it expandable (and editable).
 
 ------------------------------------------------------------------------
+Fixed.  See code following "SYNFIG_DISABLE_EXPANDABLE_BONE_PARENTS" in canvastreestore.cpp.

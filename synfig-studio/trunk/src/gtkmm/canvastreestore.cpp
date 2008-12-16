@@ -429,11 +429,14 @@ CanvasTreeStore::set_row(Gtk::TreeRow row,synfigapp::ValueDesc value_desc, bool 
 		if(value_desc.is_value_node())
 		{
 			ValueNode::Handle value_node=value_desc.get_value_node();
-			// printf("%s:%d value_desc is %s type %s\t\t", __FILE__, __LINE__, value_desc.get_description().c_str(), ValueBase::type_name(value_node->get_type()).c_str());
-			if (!getenv("SYNFIG_DISABLE_EXPANDABLE_BONE_PARENTS"))
-				if (value_node->get_type() == ValueBase::TYPE_VALUENODE_BONE)
-					if (ValueNode::Handle bone_node = (*value_node)(0).get(ValueNode_Bone::Handle()))
-						value_node = bone_node;
+
+			// todo: if the parent is animated and expanded, and we drag the time slider so that it changes,
+			// it's not updated.  it still shows the previous bone valuenode.
+			if (!getenv("SYNFIG_DISABLE_EXPANDABLE_BONE_PARENTS") &&
+				value_node->get_type() == ValueBase::TYPE_VALUENODE_BONE &&
+				(value_node->get_name() == "constant" || value_node->get_name() == "animated"))
+				if (ValueNode::Handle bone_node = (*value_node)(canvas_interface()->get_time()).get(ValueNode_Bone::Handle()))
+					value_node = bone_node;
 
 			assert(value_node);
 
