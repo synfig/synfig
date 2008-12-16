@@ -149,7 +149,7 @@ ValueNode_BoneInfluence::operator()(Time t)const
 											strprintf("transform (%7.2f %7.2f) using",
 													  vertex_setup[0],
 													  vertex_setup[1]),
-											strprintf("= (%7.2f %7.2f) using",
+											strprintf("= (%7.2f %7.2f)",
 													  transform.get_transformed(vertex_setup)[0],
 													  transform.get_transformed(vertex_setup)[1])).c_str());
 
