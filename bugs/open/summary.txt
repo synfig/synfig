@@ -3,8 +3,7 @@
  000008	fix more in the 'sibling parent link' series
  000014	there's a potential to create loops by connecting
 
-3 'canvas=0' bugs:
+2 'canvas=0' bugs:
 
  000013	removing a boneweightpair from the list in boneinfluence crashes because CANVAS=0
- 000015	new bones inserted into a skeleton have CANVAS=0 so parent menu doesn't show original skeleton bones
  000017	creating to boneinfluence creates a new bone with CANVAS=0 so saving doesn't save the bone

@@ -119,6 +119,8 @@ ValueNode_StaticList::create_list_entry(int index, Time time, Real origin) // li
 		break;
 	}
 
+	ret->set_parent_canvas(get_parent_canvas());
+
 	return ret;
 }
 
