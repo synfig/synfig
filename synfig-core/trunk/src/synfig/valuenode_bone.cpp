@@ -864,15 +864,19 @@ ValueNode_Bone::get_bones_affected_by(ValueNode::Handle value_node)
 	BoneSet ret;
 	set<const Node*> seen, current_nodes, new_nodes;
 	int generation = 0;
+	bool debug(false);
 
-//	printf("getting bones affected by %lx %s\n", ulong(value_node.get()), value_node->get_string().c_str());
+	if (getenv("SYNFIG_DEBUG_SUITABLE_PARENTS"))
+		debug = true;
+
+	if (debug) printf("getting bones affected by %lx %s\n", ulong(value_node.get()), value_node->get_string().c_str());
 
 	// initialise current_nodes with the node we're editing
 	current_nodes.insert(value_node.get());
 	do
 	{
 		generation++;
-//		printf("generation %d has %zd nodes\n", generation, current_nodes.size());
+		if (debug) printf("generation %d has %zd nodes\n", generation, current_nodes.size());
 
 		int count = 0;
 		// loop through current_nodes
@@ -880,12 +884,13 @@ ValueNode_Bone::get_bones_affected_by(ValueNode::Handle value_node)
 		{
 			// loop through the parents of each node in current_nodes
 			set<Node*> node_parents((*iter)->parent_set);
-//			printf("%s:%d node %d %lx (%s) has %zd parents\n", __FILE__, __LINE__, count, ulong(*iter), (*iter)->get_string().c_str(), node_parents.size());
+			if (debug) printf("%s:%d node %d %lx (%s) has %zd parents\n",
+							  __FILE__, __LINE__, count, ulong(*iter), (*iter)->get_string().c_str(), node_parents.size());
 			int count2 = 0;
 			for (set<Node*>::iterator iter2 = node_parents.begin(); iter2 != node_parents.end(); iter2++, count2++)
 			{
 				Node* node(*iter2);
-//				printf("%s:%d parent %d: %lx (%s)\n", __FILE__, __LINE__, count2, ulong(node), node->get_string().c_str());
+				// if (debug) printf("%s:%d parent %d: %lx (%s)\n", __FILE__, __LINE__, count2, ulong(node), node->get_string().c_str());
 				// for each parent we've not already seen
 				if (!seen.count(node))
 				{
@@ -895,10 +900,7 @@ ValueNode_Bone::get_bones_affected_by(ValueNode::Handle value_node)
 					new_nodes.insert(node);
 					// and if it's a ValueNode_Bone, add it to the set to be returned
 					if (dynamic_cast<ValueNode_Bone*>(node))
-					{
 						ret.insert(dynamic_cast<ValueNode_Bone*>(node));
-//						printf("%s:%d it's an affected bone\n", __FILE__, __LINE__);
-					}
 				}
 			}
 		}
@@ -906,7 +908,7 @@ ValueNode_Bone::get_bones_affected_by(ValueNode::Handle value_node)
 		new_nodes.clear();
 	} while (current_nodes.size());
 
-//	printf("%s:%d got %zd affected bones\n", __FILE__, __LINE__, ret.size());
+	if (debug) printf("%s:%d got %zd affected bones\n", __FILE__, __LINE__, ret.size());
 	return ret;
 }
 
@@ -914,14 +916,18 @@ ValueNode_Bone::BoneSet
 ValueNode_Bone::get_possible_parent_bones(ValueNode::Handle value_node)
 {
 	BoneSet ret;
+	bool debug(false);
 
-//	printf("%s:%d which bones can be parents of %lx (%s)\n", __FILE__, __LINE__, ulong(value_node.get()), value_node->get_string().c_str());
+	if (getenv("SYNFIG_DEBUG_SUITABLE_PARENTS"))
+		debug = true;
+
+	if (debug) printf("%s:%d which bones can be parents of %lx (%s)\n", __FILE__, __LINE__, ulong(value_node.get()), value_node->get_string().c_str());
 
 	// which bones are we currently editing the parent of - it can be more than one due to linking
 	ValueNode_Bone::BoneSet affected_bones(ValueNode_Bone::get_bones_affected_by(value_node));
-//	printf("%s:%d got %zd affected bones\n", __FILE__, __LINE__, affected_bones.size());
+	if (debug) printf("%s:%d got %zd affected bones\n", __FILE__, __LINE__, affected_bones.size());
 	Canvas::LooseHandle canvas(value_node->get_root_canvas());
-//	printf("%s:%d canvas %lx\n", __FILE__, __LINE__, ulong(canvas.get()));
+	if (debug) printf("%s:%d canvas %lx\n", __FILE__, __LINE__, ulong(canvas.get()));
 	for (ValueNode_Bone::BoneSet::iterator iter = affected_bones.begin(); iter != affected_bones.end(); iter++)
 	{
 		if (!canvas)
@@ -962,7 +968,7 @@ ValueNode_Bone::get_possible_parent_bones(ValueNode::Handle value_node)
 		}
 	}
 
-//	printf("%s:%d returning %zd possible parents\n", __FILE__, __LINE__, ret.size());
+	if (debug) printf("%s:%d returning %zd possible parents\n", __FILE__, __LINE__, ret.size());
 	return ret;
 }
 
