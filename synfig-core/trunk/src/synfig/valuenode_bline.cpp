@@ -303,7 +303,10 @@ ValueNode_BLine::create(const ValueBase &value, Canvas::LooseHandle canvas)
 	if(value.get_type()!=ValueBase::TYPE_LIST)
 		return 0;
 
-	ValueNode_BLine* value_node(new ValueNode_BLine(canvas));
+	// don't set the parent canvas yet - do it just before returning from this function
+	// otherwise we'll start constructing and destroying handles to the new bline before
+	// we have a permanent handle to it and it will be destroyed
+	ValueNode_BLine* value_node(new ValueNode_BLine());
 
 	if(!value.empty())
 	{
@@ -401,6 +404,8 @@ ValueNode_BLine::create(const ValueBase &value, Canvas::LooseHandle canvas)
 			break;
 		}
 	}
+
+	value_node->set_parent_canvas(canvas);
 
 	return value_node;
 }
