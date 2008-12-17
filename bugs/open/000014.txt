@@ -5,7 +5,7 @@ can potentially converted to be a bone influence type so they can have a bone in
 bone weight pair list. That bone could be linked to the bone itself so it can produce
 a loop.
 That convert types should not be allowed for the vertex type subparams of the bone
-or there must be a checking to prevent link that bone sub-subparam to any other bone reference
+or there must be a checking to prevent that bone sub-subparam being linked to any other bone reference
 that has the bone in question as parent or linked.
 
 ------------------------------------------------------------------------
