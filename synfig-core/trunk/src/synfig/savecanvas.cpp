@@ -295,29 +295,14 @@ xmlpp::Element* encode_animated(xmlpp::Element* root,ValueNode_Animated::ConstHa
 			ValueNode::ConstHandle value_node = iter->get_value_node();
 			if(ValueNode_Const::ConstHandle::cast_dynamic(value_node))
 			{
-				printf("%s:%d waypoint 1\n", __FILE__, __LINE__);
 				const ValueBase data = ValueNode_Const::ConstHandle::cast_dynamic(value_node)->get_value();
 				if (data.get_type() == ValueBase::TYPE_CANVAS)
-				{
-					printf("%s:%d waypoint 2\n", __FILE__, __LINE__);
 					waypoint_node->set_attribute("use",data.get(Canvas::Handle()).get()->get_relative_id(canvas));
-					printf("%s:%d waypoint 2 done\n", __FILE__, __LINE__);
-				}
 				else
-				{
-					printf("%s:%d waypoint 3 guid = %s\n", __FILE__, __LINE__, iter->get_guid().get_string().c_str());
-					printf("%s:%d waypoint 3 valuenode guid = %s\n", __FILE__, __LINE__, iter->get_value_node()->get_guid().get_string().c_str());
 					encode_value_node(waypoint_node->add_child("value_node"),iter->get_value_node(),canvas);
-					printf("%s:%d waypoint 3 done\n", __FILE__, __LINE__);
-				}
 			}
 			else
-			{
-				printf("%s:%d waypoint 4 guid = %s\n", __FILE__, __LINE__, iter->get_guid().get_string().c_str());
-				printf("%s:%d waypoint 4 valuenode guid = %s\n", __FILE__, __LINE__, iter->get_value_node()->get_guid().get_string().c_str());
 				encode_value_node(waypoint_node->add_child("value_node"),iter->get_value_node(),canvas);
-				printf("%s:%d waypoint 4 done\n", __FILE__, __LINE__);
-			}
 		}
 
 		switch(iter->get_before())
@@ -588,10 +573,7 @@ xmlpp::Element* encode_value_node(xmlpp::Element* root,ValueNode::ConstHandle va
 	}
 	else
 	if(ValueNode_Animated::ConstHandle::cast_dynamic(value_node))
-	{
-		printf("%s:%d\n", __FILE__, __LINE__);
 		encode_animated(root,ValueNode_Animated::ConstHandle::cast_dynamic(value_node),canvas);
-	}
 	else
 	if(ValueNode_Subtract::ConstHandle::cast_dynamic(value_node))
 		encode_subtract(root,ValueNode_Subtract::ConstHandle::cast_dynamic(value_node),canvas);
