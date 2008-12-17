@@ -1520,7 +1520,7 @@ CanvasParser::parse_dynamic_list(xmlpp::Element *element,Canvas::Handle canvas)
 
 	if(element->get_name()=="bline")
 	{
-		value_node=bline_value_node=ValueNode_BLine::create();
+		value_node=bline_value_node=ValueNode_BLine::create(ValueBase::TYPE_LIST, canvas);
 		if(element->get_attribute("loop"))
 		{
 			String loop=element->get_attribute("loop")->get_value();

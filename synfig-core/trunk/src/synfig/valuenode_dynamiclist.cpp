@@ -200,6 +200,7 @@ ValueNode_DynamicList::create_list_entry(int index, Time time, Real origin)
 		break;
 	}
 
+	ret.value_node->set_parent_canvas(get_parent_canvas());
 
 	return ret;
 }
@@ -547,18 +548,22 @@ ValueNode_DynamicList::erase(const ValueNode::Handle &value_node_)
 }
 
 
-ValueNode_DynamicList::ValueNode_DynamicList(ValueBase::Type container_type):
+ValueNode_DynamicList::ValueNode_DynamicList(ValueBase::Type container_type, Canvas::LooseHandle canvas):
 	LinkableValueNode(ValueBase::TYPE_LIST),
 	container_type	(container_type),
 	loop_(false)
 {
+	if (getenv("SYNFIG_DEBUG_SET_PARENT_CANVAS"))
+		printf("%s:%d set parent canvas for dynamic_list %lx to %lx\n", __FILE__, __LINE__, ulong(this), ulong(canvas.get()));
+	set_parent_canvas(canvas);
+
 	DCAST_HACK_ENABLE();
 }
 
 ValueNode_DynamicList::Handle
-ValueNode_DynamicList::create(ValueBase::Type id)
+ValueNode_DynamicList::create(ValueBase::Type id, Canvas::LooseHandle canvas)
 {
-	return new ValueNode_DynamicList(id);
+	return new ValueNode_DynamicList(id, canvas);
 }
 
 ValueNode_DynamicList::~ValueNode_DynamicList()

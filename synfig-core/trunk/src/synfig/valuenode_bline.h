@@ -64,7 +64,7 @@ public:
 	typedef etl::handle<const ValueNode_BLine> ConstHandle;
 
 
-	ValueNode_BLine();
+	ValueNode_BLine(etl::loose_handle<Canvas> canvas = 0);
 
 public:
 
@@ -88,7 +88,7 @@ protected:
 public:
 	//using synfig::LinkableValueNode::set_link_vfunc;
 	static bool check_type(ValueBase::Type type);
-	static ValueNode_BLine* create(const ValueBase &x=ValueBase::TYPE_LIST);
+	static ValueNode_BLine* create(const ValueBase &x=ValueBase::TYPE_LIST, etl::loose_handle<Canvas> canvas = 0);
 }; // END of class ValueNode_BLine
 
 typedef ValueNode_BLine::ListEntry::ActivepointList ActivepointList;

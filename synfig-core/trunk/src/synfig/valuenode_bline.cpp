@@ -33,6 +33,7 @@
 #include "valuenode_bline.h"
 #include "valuenode_const.h"
 #include "valuenode_composite.h"
+#include "canvas.h"
 #include "general.h"
 #include "exception.h"
 #include "blinepoint.h"
@@ -285,9 +286,11 @@ synfig::find_closest_point(const ValueBase &bline, const Point &pos, Real &radiu
 /* === M E T H O D S ======================================================= */
 
 
-ValueNode_BLine::ValueNode_BLine():
-	ValueNode_DynamicList(ValueBase::TYPE_BLINEPOINT)
+ValueNode_BLine::ValueNode_BLine(Canvas::LooseHandle canvas):
+	ValueNode_DynamicList(ValueBase::TYPE_BLINEPOINT, canvas)
 {
+	if (getenv("SYNFIG_DEBUG_SET_PARENT_CANVAS"))
+		printf("%s:%d should have already set parent canvas for bline %lx to %lx (using dynamic_list constructor)\n", __FILE__, __LINE__, ulong(this), ulong(canvas.get()));
 }
 
 ValueNode_BLine::~ValueNode_BLine()
@@ -295,12 +298,12 @@ ValueNode_BLine::~ValueNode_BLine()
 }
 
 ValueNode_BLine*
-ValueNode_BLine::create(const ValueBase &value)
+ValueNode_BLine::create(const ValueBase &value, Canvas::LooseHandle canvas)
 {
 	if(value.get_type()!=ValueBase::TYPE_LIST)
 		return 0;
 
-	ValueNode_BLine* value_node(new ValueNode_BLine());
+	ValueNode_BLine* value_node(new ValueNode_BLine(canvas));
 
 	if(!value.empty())
 	{
@@ -439,7 +442,7 @@ ValueNode_BLine::create_list_entry(int index, Time time, Real origin)
 	bline_point.set_split_tangent_flag(false);
 	bline_point.set_origin(origin);
 
-	ret.value_node=ValueNode_Composite::create(bline_point);
+	ret.value_node=ValueNode_Composite::create(bline_point, get_parent_canvas());
 
 	return ret;
 }
