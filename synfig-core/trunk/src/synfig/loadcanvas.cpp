@@ -1365,18 +1365,6 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 				value_node->link_name(i) == "loop")
 				continue;
 
-			// should we accept bones with these links missing?
-			if (getenv("SYNFIG_ALLOW_MISSING_BONE_LINKS") &&
-				element->get_name() == "bone" &&
-				(value_node->link_name(i) == "origin"  ||
-				 value_node->link_name(i) == "origin0" ||
-				 value_node->link_name(i) == "angle"   ||
-				 value_node->link_name(i) == "angle0"  ||
-				 value_node->link_name(i) == "scale"   ||
-				 value_node->link_name(i) == "length"  ||
-				 value_node->link_name(i) == "strength"))
-				continue;
-
 			error(element, strprintf(_("<%s> is missing link %d (%s)"),
 									 element->get_name().c_str(),
 									 i,
