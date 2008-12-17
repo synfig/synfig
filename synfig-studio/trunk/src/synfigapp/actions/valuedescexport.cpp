@@ -107,7 +107,7 @@ Action::ValueDescExport::is_candidate(const ParamList &x)
 		if(!value_desc ||
 		   value_desc.parent_is_canvas() ||
 		   (value_desc.is_value_node() && value_desc.get_value_node()->is_exported()) ||
-		   (value_desc.get_value_type()==ValueBase::TYPE_CANVAS && value_desc.get_value_node()))
+		   (value_desc.get_value_type()==ValueBase::TYPE_CANVAS && !value_desc.get_value().get(Canvas::Handle())->is_inline()))
 		{
 //			if (!value_desc)
 //				synfig::info("%s:%d no export because no value_desc", __FILE__, __LINE__);
@@ -115,8 +115,8 @@ Action::ValueDescExport::is_candidate(const ParamList &x)
 //				synfig::info("%s:%d no export because parent is canvas", __FILE__, __LINE__);
 //			else if (value_desc.is_value_node() && value_desc.get_value_node()->is_exported())
 //				synfig::info("%s:%d no export because exported value node", __FILE__, __LINE__);
-//			else if (value_desc.get_value_type()==ValueBase::TYPE_CANVAS && value_desc.is_value_node())
-//				synfig::info("%s:%d no export because canvas value node", __FILE__, __LINE__);
+//			else if (value_desc.get_value_type()==ValueBase::TYPE_CANVAS && !value_desc.get_value().get(Canvas::Handle())->is_inline())
+//				synfig::info("%s:%d no export because canvas isn't inline", __FILE__, __LINE__);
 			
 			return false;
 		}
