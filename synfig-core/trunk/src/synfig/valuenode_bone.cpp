@@ -138,7 +138,7 @@ ValueNode_Bone::get_ordered_bones(etl::handle<const Canvas> canvas)
 			BoneSet ref(get_bones_referenced_by(user, false));
 			if (ref.empty())
 			{
-				printf("%s:%d %s doesn't need anybody\n", __FILE__, __LINE__,
+				if (getenv("SYNFIG_DEBUG_ORDER_BONES_FOR_SAVE_CANVAS")) printf("%s:%d %s doesn't need anybody\n", __FILE__, __LINE__,
 					   user->get_bone_name(0).c_str());
 				current_list.push_back(user);
 			}
@@ -146,9 +146,9 @@ ValueNode_Bone::get_ordered_bones(etl::handle<const Canvas> canvas)
 				for(BoneSet::iterator iter=ref.begin();iter!=ref.end();++iter)
 				{
 					ValueNode_Bone::Handle used(*iter);
-					printf("%s:%d %s is used by %s\n", __FILE__, __LINE__,
-						   used->get_bone_name(0).c_str(),
-						   user->get_bone_name(0).c_str());
+					if (getenv("SYNFIG_DEBUG_ORDER_BONES_FOR_SAVE_CANVAS")) printf("%s:%d %s is used by %s\n", __FILE__, __LINE__,
+																				   used->get_bone_name(0).c_str(),
+																				   user->get_bone_name(0).c_str());
 					is_used_by.insert(make_pair(used, user));
 					uses.insert(make_pair(user, used));
 				}
@@ -161,12 +161,12 @@ ValueNode_Bone::get_ordered_bones(etl::handle<const Canvas> canvas)
 
 	while (current_list.size())
 	{
-		printf("%s:%d current_list has %zd members; we have %zd in is_used_by and %zd in uses\n",
-			   __FILE__, __LINE__, current_list.size(), is_used_by.size(), uses.size());
+		if (getenv("SYNFIG_DEBUG_ORDER_BONES_FOR_SAVE_CANVAS")) printf("%s:%d current_list has %zd members; we have %zd in is_used_by and %zd in uses\n",
+																	   __FILE__, __LINE__, current_list.size(), is_used_by.size(), uses.size());
 		for(BoneList::iterator iter=current_list.begin();iter!=current_list.end();++iter)
 		{
 			ValueNode_Bone::Handle bone(*iter);
-			printf("%s:%d bone: %s\n", __FILE__, __LINE__, bone->get_bone_name(0).c_str());
+			if (getenv("SYNFIG_DEBUG_ORDER_BONES_FOR_SAVE_CANVAS")) printf("%s:%d bone: %s\n", __FILE__, __LINE__, bone->get_bone_name(0).c_str());
 			ret.push_back(bone);
 
 			std::multimap<ValueNode_Bone::Handle, ValueNode_Bone::Handle>::iterator begin(is_used_by.lower_bound(bone));
@@ -174,10 +174,10 @@ ValueNode_Bone::get_ordered_bones(etl::handle<const Canvas> canvas)
 			for (std::multimap<ValueNode_Bone::Handle, ValueNode_Bone::Handle>::iterator iter = begin; iter != end; iter++)
 			{
 				ValueNode_Bone::Handle user(iter->second);
-				printf("\t\t\t%s:%d user: %s\n", __FILE__, __LINE__, user->get_bone_name(0).c_str());
+				if (getenv("SYNFIG_DEBUG_ORDER_BONES_FOR_SAVE_CANVAS")) printf("\t\t\t%s:%d user: %s\n", __FILE__, __LINE__, user->get_bone_name(0).c_str());
 
 				// erase (user,bone) from uses
-				printf("%s:%d trying to erase - searching %zd\n", __FILE__, __LINE__, uses.count(user));
+				if (getenv("SYNFIG_DEBUG_ORDER_BONES_FOR_SAVE_CANVAS")) printf("%s:%d trying to erase - searching %zd\n", __FILE__, __LINE__, uses.count(user));
 				std::multimap<ValueNode_Bone::Handle, ValueNode_Bone::Handle>::iterator begin2(uses.lower_bound(user));
 				std::multimap<ValueNode_Bone::Handle, ValueNode_Bone::Handle>::iterator end2(uses.upper_bound(user));
 				std::multimap<ValueNode_Bone::Handle, ValueNode_Bone::Handle>::iterator iter2;
@@ -186,24 +186,24 @@ ValueNode_Bone::get_ordered_bones(etl::handle<const Canvas> canvas)
 					if (iter2->second == bone)
 					{
 						uses.erase(iter2);
-						printf("%s:%d found it\n", __FILE__, __LINE__);
+						if (getenv("SYNFIG_DEBUG_ORDER_BONES_FOR_SAVE_CANVAS")) printf("%s:%d found it\n", __FILE__, __LINE__);
 						break;
 					}
 					else
 					{
-						printf("no\n");
+						if (getenv("SYNFIG_DEBUG_ORDER_BONES_FOR_SAVE_CANVAS")) printf("no\n");
 					}
 				}
 				if (iter2 == end2)
 				{
-					printf("%s:%d didn't find it?!?\n", __FILE__, __LINE__);
+					if (getenv("SYNFIG_DEBUG_ORDER_BONES_FOR_SAVE_CANVAS")) printf("%s:%d didn't find it?!?\n", __FILE__, __LINE__);
 					assert(0);
 				}
 
-				printf("%s:%d now there are %zd\n", __FILE__, __LINE__, uses.count(user));
+				if (getenv("SYNFIG_DEBUG_ORDER_BONES_FOR_SAVE_CANVAS")) printf("%s:%d now there are %zd\n", __FILE__, __LINE__, uses.count(user));
 				if (uses.count(user) == 0)
 				{
-					printf("\t\t\t%s:%d adding %s\n", __FILE__, __LINE__, user->get_bone_name(0).c_str());
+					if (getenv("SYNFIG_DEBUG_ORDER_BONES_FOR_SAVE_CANVAS")) printf("\t\t\t%s:%d adding %s\n", __FILE__, __LINE__, user->get_bone_name(0).c_str());
 					new_list.push_back(user);
 				}
 			}
