@@ -4,4 +4,6 @@ New file select bline tool, add some bline points,
 press the gear button, crash
 
 ------------------------------------------------------------------------
+dooglus, Wed Dec 17 22:58:15 CET 2008
 
+Fixed.
