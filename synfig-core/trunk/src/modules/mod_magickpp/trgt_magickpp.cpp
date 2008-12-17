@@ -197,6 +197,7 @@ magickpp_trgt::~magickpp_trgt()
 		try
 		{
 			Magick::writeImages(images.begin(), images.end(), filename);
+			synfig::info("done");
 		}
 		catch(Magick::Warning warning) {
 			synfig::warning("exception '%s'", warning.what());
