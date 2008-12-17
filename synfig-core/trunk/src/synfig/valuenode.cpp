@@ -562,7 +562,8 @@ PlaceholderValueNode::clone(Canvas::LooseHandle canvas, const GUID& deriv_guid)c
 PlaceholderValueNode::Handle
 PlaceholderValueNode::create(ValueBase::Type type)
 {
-	printf("%s:%d PlaceholderValueNode::create\n", __FILE__, __LINE__);
+	if (getenv("SYNFIG_DEBUG_PLACEHOLDER_VALUENODE"))
+		printf("%s:%d PlaceholderValueNode::create\n", __FILE__, __LINE__);
 	return new PlaceholderValueNode(type);
 }
 

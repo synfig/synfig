@@ -223,7 +223,8 @@ ValueNode_Bone::get_ordered_bones(etl::handle<const Canvas> canvas)
 ValueNode_Bone::ValueNode_Bone():
 	LinkableValueNode(ValueBase::TYPE_BONE)
 {
-	printf("%s:%d ValueNode_Bone::ValueNode_Bone() this line should only appear once guid %s\n", __FILE__, __LINE__, get_guid().get_string().c_str());
+	if (getenv("SYNFIG_DEBUG_ROOT_BONE"))
+		printf("%s:%d ValueNode_Bone::ValueNode_Bone() this line should only appear once guid %s\n", __FILE__, __LINE__, get_guid().get_string().c_str());
 }
 
 ValueNode_Bone::ValueNode_Bone(const ValueBase &value, etl::loose_handle<Canvas> canvas):
@@ -266,7 +267,8 @@ ValueNode_Bone::ValueNode_Bone(const ValueBase &value, etl::loose_handle<Canvas>
 			printf("%s:%d set parent canvas for bone %lx to %lx\n", __FILE__, __LINE__, ulong(this), ulong(canvas.get()));
 		set_parent_canvas(canvas);
 
-		printf("%s:%d adding to canvas_map\n", __FILE__, __LINE__);
+		if (getenv("SYNFIG_DEBUG_CANVAS_MAP"))
+			printf("%s:%d adding to canvas_map\n", __FILE__, __LINE__);
 		canvas_map[get_root_canvas()][get_guid()] = this;
 
 		show_bone_map(get_root_canvas(), __FILE__, __LINE__, strprintf("in constructor of %s at %lx", GET_GUID_CSTR(get_guid()), ulong(this)));
@@ -309,7 +311,8 @@ ValueNode_Bone::~ValueNode_Bone()
 		printf("%s:%d ------------------------------------------------------------------------\n\n", __FILE__, __LINE__);
 	}
 
-	printf("%s:%d removing from canvas_map\n", __FILE__, __LINE__);
+	if (getenv("SYNFIG_DEBUG_CANVAS_MAP"))
+		printf("%s:%d removing from canvas_map\n", __FILE__, __LINE__);
 	canvas_map[get_root_canvas()].erase(get_guid());
 
 	show_bone_map(get_root_canvas(), __FILE__, __LINE__, "in destructor");
@@ -344,7 +347,8 @@ ValueNode_Bone::set_root_canvas(etl::loose_handle<Canvas> canvas)
 		show_bone_map(new_canvas, __FILE__, __LINE__, strprintf("after changing canvas from %lx to %lx", ulong(old_canvas.get()), ulong(new_canvas.get())));
 	}
 	else
-		printf("%s:%d canvases are the same\n", __FILE__, __LINE__);
+		if (getenv("SYNFIG_DEBUG_CANVAS_MAP"))
+			printf("%s:%d canvases are the same\n", __FILE__, __LINE__);
 }
 
 //!Setup Transformation matrix.
@@ -849,7 +853,8 @@ ValueNode_Bone::get_bones_referenced_by(ValueNode::Handle value_node, bool recur
 	{
 		// todo: while loading we might be setting up an ancestry loop by ignoring the placeholder valuenode here
 		// can we check for loops in badly formatted .sifz files somehow?
-		printf("%s:%d found a placeholder - skipping loop check\n", __FILE__, __LINE__);
+		if (getenv("SYNFIG_DEBUG_PLACEHOLDER_VALUENODE"))
+			printf("%s:%d found a placeholder - skipping loop check\n", __FILE__, __LINE__);
 		return ret;
 	}
 
@@ -1027,12 +1032,14 @@ ValueNode_Bone::runref()const
 
 ValueNode_Bone_Root::ValueNode_Bone_Root()
 {
-	printf("%s:%d ValueNode_Bone_Root::ValueNode_Bone_Root()\n", __FILE__, __LINE__);
+	if (getenv("SYNFIG_DEBUG_ROOT_BONE"))
+		printf("%s:%d ValueNode_Bone_Root::ValueNode_Bone_Root()\n", __FILE__, __LINE__);
 }
 
 ValueNode_Bone_Root::~ValueNode_Bone_Root()
 {
-	printf("%s:%d ValueNode_Bone_Root::~ValueNode_Bone_Root()\n", __FILE__, __LINE__);
+	if (getenv("SYNFIG_DEBUG_ROOT_BONE"))
+		printf("%s:%d ValueNode_Bone_Root::~ValueNode_Bone_Root()\n", __FILE__, __LINE__);
 }
 
 ValueBase
@@ -1047,14 +1054,16 @@ ValueNode_Bone_Root::operator()(Time t __attribute__ ((unused)))const
 void
 ValueNode_Bone_Root::set_guid(const GUID& new_guid)
 {
-	printf("%s:%d bypass set_guid() for root bone\n", __FILE__, __LINE__);
+	if (getenv("SYNFIG_DEBUG_ROOT_BONE"))
+		printf("%s:%d bypass set_guid() for root bone\n", __FILE__, __LINE__);
 	LinkableValueNode::set_guid(new_guid);
 }
 
 void
 ValueNode_Bone_Root::set_root_canvas(etl::loose_handle<Canvas> canvas)
 {
-	printf("%s:%d bypass set_root_canvas() for root bone\n", __FILE__, __LINE__);
+	if (getenv("SYNFIG_DEBUG_ROOT_BONE"))
+		printf("%s:%d bypass set_root_canvas() for root bone\n", __FILE__, __LINE__);
 	LinkableValueNode::set_root_canvas(canvas);
 }
 
@@ -1156,4 +1165,3 @@ ValueNode_Bone_Root::runref()const
 		printf("%d\n", rcount());
 }
 #endif
-

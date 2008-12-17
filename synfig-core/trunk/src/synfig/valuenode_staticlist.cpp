@@ -193,7 +193,8 @@ ValueNode_StaticList::ValueNode_StaticList(ValueBase::Type container_type, Canva
 	container_type	(container_type),
 	loop_(false)
 {
-	printf("%s:%d ValueNode_StaticList::ValueNode_StaticList() construct %lx\n", __FILE__, __LINE__, ulong(this));
+	if (getenv("SYNFIG_DEBUG_STATICLIST_CONSTRUCTORS"))
+		printf("%s:%d ValueNode_StaticList::ValueNode_StaticList() construct %lx\n", __FILE__, __LINE__, ulong(this));
 
 	if (getenv("SYNFIG_DEBUG_SET_PARENT_CANVAS"))
 		printf("%s:%d set parent canvas for static_list %lx to %lx\n", __FILE__, __LINE__, ulong(this), ulong(canvas.get()));
@@ -205,9 +206,12 @@ ValueNode_StaticList::ValueNode_StaticList(ValueBase::Type container_type, Canva
 ValueNode_StaticList::~ValueNode_StaticList()
 {
 #ifdef _DEBUG
-	printf("\n%s:%d ------------------------------------------------------------------------\n", __FILE__, __LINE__);
-	printf("%s:%d ~ValueNode_StaticList()\n", __FILE__, __LINE__);
-	printf("%s:%d ------------------------------------------------------------------------\n\n", __FILE__, __LINE__);
+	if (getenv("SYNFIG_DEBUG_STATICLIST_CONSTRUCTORS"))
+	{
+		printf("\n%s:%d ------------------------------------------------------------------------\n", __FILE__, __LINE__);
+		printf("%s:%d ~ValueNode_StaticList()\n", __FILE__, __LINE__);
+		printf("%s:%d ------------------------------------------------------------------------\n\n", __FILE__, __LINE__);
+	}
 #endif
 
 	ValueNode_Bone::show_bone_map(get_root_canvas(), __FILE__, __LINE__, "deleting staticlist");
