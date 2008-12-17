@@ -35,6 +35,7 @@
 #include "canvasadd.h"
 #include "valuedescexport.h"
 #include "layerparamconnect.h"
+#include "layerparamset.h"
 
 #include <synfigapp/canvasinterface.h>
 #include <synfig/valuenode_const.h>
@@ -180,29 +181,16 @@ Action::ValueDescExport::prepare()
 
 		add_action_front(action);
 
-		if(value_desc.is_value_node())
+		if(value_desc.parent_is_layer_param() && !value_desc.is_value_node())
 		{
-			assert(0);			// we shouldn't get here I don't think
-			if(value_desc.get_value_node()->is_exported())
-				throw Error(_("ValueBase is already exported"));
-
-			value_node=value_desc.get_value_node();
-		}
-		else
-		{
-			// action: LayerParamConnect
-			if(!value_desc.parent_is_layer_param())
-				throw Error(_("Unable to export parameter. (Bug?)"));
-
-			value_node=ValueNode_Const::create(canvas);
-
-			Action::Handle action(LayerParamConnect::create());
+			// action: LayerParamSet
+			Action::Handle action(LayerParamSet::create());
 
 			action->set_param("canvas",get_canvas());
 			action->set_param("canvas_interface",get_canvas_interface());
 			action->set_param("layer",value_desc.get_layer());
 			action->set_param("param",value_desc.get_param_name());
-			action->set_param("value_node",value_node);
+			action->set_param("new_value",ValueBase(canvas));
 
 			assert(action->is_ready());
 			if(!action->is_ready())
