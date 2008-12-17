@@ -1,0 +1,7 @@
+Subject: Bline tool crahes
+
+New file select bline tool, add some bline points,
+press the gear button, crash
+
+------------------------------------------------------------------------
+
