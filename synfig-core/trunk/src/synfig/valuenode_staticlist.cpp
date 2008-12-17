@@ -115,7 +115,7 @@ ValueNode_StaticList::create_list_entry(int index, Time time, Real origin) // li
 		break;
 	}
 	default:
-		ret=ValueNode_Const::create(get_contained_type());
+		ret=ValueNode_Const::create(get_contained_type(), get_parent_canvas());
 		break;
 	}
 

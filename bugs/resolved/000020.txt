@@ -16,3 +16,8 @@ inside the first automatically created Bone Weight Pair valuenode (from now BWP)
 dooglus, Wed Dec 17 00:46:11 CET 2008
 
 It looks like bones 5 and 6 have a different parent canvas than 1 through 4.
+
+------------------------------------------------------------------------
+dooglus, Wed Dec 17 01:09:59 CET 2008
+
+It's just another case where the canvas wasn't being set.
