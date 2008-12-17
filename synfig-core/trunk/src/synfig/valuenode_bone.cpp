@@ -403,7 +403,7 @@ Matrix
 ValueNode_Bone::get_animated_matrix(Time t, Real scale, Angle rotate, Point translate, ValueNode_Bone::ConstHandle parent)const
 {
 	Matrix parent_matrix(parent->get_animated_matrix(t));
-	Matrix ret(Matrix(scale) * Matrix(rotate) * Matrix(translate) * parent_matrix);
+	Matrix ret(Matrix().set_scale(scale,1) * Matrix(rotate) * Matrix(translate) * parent_matrix);
 
 	if (getenv("SYNFIG_DEBUG_ANIMATED_MATRIX_CALCULATION"))
 	{
