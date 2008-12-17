@@ -89,6 +89,12 @@ public:
 	//using synfig::LinkableValueNode::set_link_vfunc;
 	static bool check_type(ValueBase::Type type);
 	static ValueNode_BLine* create(const ValueBase &x=ValueBase::TYPE_LIST, etl::loose_handle<Canvas> canvas = 0);
+
+#ifdef _DEBUG
+	virtual void ref()const;
+	virtual bool unref()const;
+#endif
+
 }; // END of class ValueNode_BLine
 
 typedef ValueNode_BLine::ListEntry::ActivepointList ActivepointList;

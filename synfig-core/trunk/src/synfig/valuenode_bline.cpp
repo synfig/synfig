@@ -842,3 +842,23 @@ ValueNode_BLine::check_type(ValueBase::Type type)
 {
 	return type==ValueBase::TYPE_LIST;
 }
+
+#ifdef _DEBUG
+void
+ValueNode_BLine::ref()const
+{
+	if (getenv("SYNFIG_DEBUG_BLINE_REFCOUNT"))
+		printf("%s:%d %lx   ref bline %*s -> %2d\n", __FILE__, __LINE__, ulong(this), (count()*2), "", count()+1);
+
+	LinkableValueNode::ref();
+}
+
+bool
+ValueNode_BLine::unref()const
+{
+	if (getenv("SYNFIG_DEBUG_BLINE_REFCOUNT"))
+		printf("%s:%d %lx unref bline %*s%2d <-\n", __FILE__, __LINE__, ulong(this), ((count()-1)*2), "", count()-1);
+
+	return LinkableValueNode::unref();
+}
+#endif
