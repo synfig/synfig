@@ -68,8 +68,7 @@ ValueNode_BoneInfluence::ValueNode_BoneInfluence(const ValueNode::Handle &x, Can
 	{
 		ValueNode_StaticList::Handle bone_weight_list(ValueNode_StaticList::create(ValueBase::TYPE_BONE_WEIGHT_PAIR, canvas));
 		bone_weight_list->add(ValueNode_BoneWeightPair::create(BoneWeightPair(Bone(), 1), canvas));
-		set_link("vertex_free",			ValueNode_Const::create(Vector()));
-		set_link("vertex_setup",		x);
+		set_link("link",				x);
 		set_link("bone_weight_list",	bone_weight_list);
 
 		if (getenv("SYNFIG_DEBUG_SET_PARENT_CANVAS"))
@@ -108,8 +107,7 @@ ValueNode_BoneInfluence::operator()(Time t)const
 	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
 		printf("%s:%d operator()\n", __FILE__, __LINE__);
 
-	Vector vertex_free((*vertex_free_)(t).get(Vector()));
-	Vector vertex_setup((*vertex_setup_)(t).get(Vector()));
+	Vector link((*link_)(t).get(Vector()));
 
 	Matrix transform;
 	transform *= 0;
@@ -147,13 +145,13 @@ ValueNode_BoneInfluence::operator()(Time t)const
 	if (getenv("SYNFIG_DEBUG_BONE_VECTOR_TRANSFORMATION"))
 		printf("%s\n", transform.get_string(35,
 											strprintf("transform (%7.2f %7.2f) using",
-													  vertex_setup[0],
-													  vertex_setup[1]),
+													  link[0],
+													  link[1]),
 											strprintf("= (%7.2f %7.2f)",
-													  transform.get_transformed(vertex_setup)[0],
-													  transform.get_transformed(vertex_setup)[1])).c_str());
+													  transform.get_transformed(link)[0],
+													  transform.get_transformed(link)[1])).c_str());
 
-	return vertex_free + transform.get_transformed(vertex_setup);
+	return transform.get_transformed(link);
 }
 
 
@@ -176,9 +174,8 @@ ValueNode_BoneInfluence::set_link_vfunc(int i,ValueNode::Handle value)
 
 	switch(i)
 	{
-	case 0: CHECK_TYPE_AND_SET_VALUE(vertex_free_,		ValueBase::TYPE_VECTOR);
-	case 1: CHECK_TYPE_AND_SET_VALUE(vertex_setup_,		ValueBase::TYPE_VECTOR);
-	case 2: CHECK_TYPE_AND_SET_VALUE(bone_weight_list_,	ValueBase::TYPE_LIST);
+	case 0: CHECK_TYPE_AND_SET_VALUE(link_,				ValueBase::TYPE_VECTOR);
+	case 1: CHECK_TYPE_AND_SET_VALUE(bone_weight_list_,	ValueBase::TYPE_LIST);
 	}
 
 	return false;
@@ -191,9 +188,8 @@ ValueNode_BoneInfluence::get_link_vfunc(int i)const
 
 	switch(i)
 	{
-	case 0: return vertex_free_;
-	case 1: return vertex_setup_;
-	case 2: return bone_weight_list_;
+	case 0: return link_;
+	case 1: return bone_weight_list_;
 	}
 
 	return 0;
@@ -202,7 +198,7 @@ ValueNode_BoneInfluence::get_link_vfunc(int i)const
 int
 ValueNode_BoneInfluence::link_count()const
 {
-	return 3;
+	return 2;
 }
 
 String
@@ -212,9 +208,8 @@ ValueNode_BoneInfluence::link_name(int i)const
 
 	switch(i)
 	{
-	case 0: return _("vertex_free");
-	case 1: return _("vertex_setup");
-	case 2: return _("bone_weight_list");
+	case 0: return _("link");
+	case 1: return _("bone_weight_list");
 	}
 
 	return String();
@@ -227,9 +222,8 @@ ValueNode_BoneInfluence::link_local_name(int i)const
 
 	switch(i)
 	{
-	case 0: return _("Vertex Free");
-	case 1: return _("Vertex Setup");
-	case 2: return _("Bone Weight List");
+	case 0: return _("Link");
+	case 1: return _("Bone Weight List");
 	}
 
 	return String();
@@ -238,9 +232,9 @@ ValueNode_BoneInfluence::link_local_name(int i)const
 int
 ValueNode_BoneInfluence::get_link_index_from_name(const String &name)const
 {
-	if(name=="vertex_free")			return 0;
-	if(name=="vertex_setup")		return 1;
-	if(name=="bone_weight_list")	return 2;
+	if(name=="link")				return 0;
+	if(name=="vertex_setup")		return 0; // todo: this is what it used to be called - it can be deleted once my files are converted
+	if(name=="bone_weight_list")	return 1;
 
 	throw Exception::BadLinkName(name);
 }

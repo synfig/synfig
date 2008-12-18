@@ -37,8 +37,7 @@ namespace synfig {
 
 class ValueNode_BoneInfluence : public LinkableValueNode
 {
-	ValueNode::RHandle vertex_free_;
-	ValueNode::RHandle vertex_setup_;
+	ValueNode::RHandle link_;
 	ValueNode::RHandle bone_weight_list_;
 public:
 	typedef etl::handle<ValueNode_BoneInfluence> Handle;
