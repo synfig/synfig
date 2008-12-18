@@ -295,7 +295,11 @@ void
 Node::on_changed()
 {
 	if (getenv("SYNFIG_DEBUG_ON_CHANGED"))
-		printf("%s:%d Node::on_changed()\n", __FILE__, __LINE__);
+	{
+		printf("%s:%d Node::on_changed() for %lx (%s); signalling these %zd parents:\n", __FILE__, __LINE__, ulong(this), get_string().c_str(), parent_set.size());
+		for (set<Node*>::iterator iter = parent_set.begin(); iter != parent_set.end(); iter++) printf(" %lx (%s)\n", ulong(*iter), (*iter)->get_string().c_str());
+		printf("\n");
+	}
 
 	bchanged = true;
 	signal_changed()();
