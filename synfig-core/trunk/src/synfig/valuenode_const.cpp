@@ -63,6 +63,10 @@ ValueNode_Const::ValueNode_Const(const ValueBase &x, Canvas::LooseHandle canvas)
 {
 	if (getenv("SYNFIG_DEBUG_SET_PARENT_CANVAS"))
 		printf("%s:%d set parent canvas for const %lx to %lx\n", __FILE__, __LINE__, ulong(this), ulong(canvas.get()));
+
+	if (x.get_type() == ValueBase::TYPE_VALUENODE_BONE)
+		add_child(x.get(ValueNode_Bone::Handle()).get());
+
 	set_parent_canvas(canvas);
 
 	DCAST_HACK_ENABLE();
@@ -133,6 +137,12 @@ ValueNode_Const::set_value(const ValueBase &data)
 {
 	if(data!=value)
 	{
+		if (value.get_type() == ValueBase::TYPE_VALUENODE_BONE)
+			remove_child(value.get(ValueNode_Bone::Handle()).get());
+
+		if (data.get_type() == ValueBase::TYPE_VALUENODE_BONE)
+			add_child(data.get(ValueNode_Bone::Handle()).get());
+
 		value=data;
 		changed();
 	}
