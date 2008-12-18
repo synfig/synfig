@@ -374,7 +374,7 @@ ValueNode_Bone::get_setup_matrix(Time t, Point translate, Angle rotate, ValueNod
 
 	if (getenv("SYNFIG_DEBUG_SETUP_MATRIX_CALCULATION"))
 	{
-		printf("%s  *\n", Matrix(-translate).get_string(18, "setup_matrix = ", strprintf("translate(%7.2f, %7.2f)", -translate[0], -translate[1])).c_str());
+		printf("%s  *\n", Matrix(-translate).get_string(18, "setup_matrix = ", strprintf("translate(%7.2f, %7.2f) (%s)", -translate[0], -translate[1], get_bone_name(t).c_str())).c_str());
 		printf("%s  *\n", Matrix(-rotate).get_string(18, "", strprintf("rotate(%.2f)", Angle::deg(-rotate).get())).c_str());
 		printf("%s  =\n", parent_matrix.get_string(18).c_str());
 		printf("%s\n",	  ret.get_string(18).c_str());
@@ -409,10 +409,10 @@ ValueNode_Bone::get_animated_matrix(Time t, Real scalex, Real scaley, Angle rota
 
 	if (getenv("SYNFIG_DEBUG_ANIMATED_MATRIX_CALCULATION"))
 	{
-		printf("%s  *\n", parent_matrix.get_string(18, "animated_matrix = ", "parent").c_str());
-		printf("%s  *\n", Matrix().set_scale(scalex, scaley).get_string(18, "", strprintf("scale(%7.2f, ^%7.2f)", scalex, scaley)).c_str());
+		printf("%s  *\n", Matrix().set_scale(scalex, scaley).get_string(18, "animated_matrix = ", strprintf("scale(%7.2f, ^%7.2f) (%s)", scalex, scaley, get_bone_name(t).c_str())).c_str());
 		printf("%s  *\n", Matrix(rotate).get_string(18, "", strprintf("rotate(%.2f)", Angle::deg(rotate).get())).c_str());
-		printf("%s  =\n", Matrix(translate).get_string(18, "", strprintf("translate(%7.2f, %7.2f)", translate[0], translate[1])).c_str());
+		printf("%s  *\n", Matrix(translate).get_string(18, "", strprintf("translate(%7.2f, %7.2f)", translate[0], translate[1])).c_str());
+		printf("%s  =\n", parent_matrix.get_string(18, "", "parent").c_str());
 		printf("%s\n",	  ret.get_string(18).c_str());
 	}
 
@@ -462,8 +462,12 @@ ValueNode_Bone::operator()(Time t)const
 	Real   bone_scaley			((*scaley_	)(t).get(Real()));
 	Real   bone_length			((*length_	)(t).get(Real()));
 	Real   bone_strength		((*strength_)(t).get(Real()));
+	if (getenv("SYNFIG_DEBUG_SETUP_MATRIX_CALCULATION")) printf("\n***\n*** %s:%d get_setup_matrix() for %s\n***\n\n", __FILE__, __LINE__, get_bone_name(t).c_str());
 	Matrix bone_setup_matrix	(get_setup_matrix   (t, bone_origin0, bone_angle0, bone_parent));
+	if (getenv("SYNFIG_DEBUG_SETUP_MATRIX_CALCULATION")) printf("\n***\n*** %s:%d get_setup_matrix() for %s done\n***\n\n", __FILE__, __LINE__, get_bone_name(t).c_str());
+	if (getenv("SYNFIG_DEBUG_ANIMATED_MATRIX_CALCULATION")) printf("\n***\n*** %s:%d get_animated_matrix() for %s\n***\n\n", __FILE__, __LINE__, get_bone_name(t).c_str());
 	Matrix bone_animated_matrix	(get_animated_matrix(t, bone_scalex,   bone_scaley,   bone_angle,  bone_origin, bone_parent));
+	if (getenv("SYNFIG_DEBUG_ANIMATED_MATRIX_CALCULATION")) printf("\n***\n*** %s:%d get_animated_matrix() for %s done\n***\n\n", __FILE__, __LINE__, get_bone_name(t).c_str());
 #endif
 
 	Bone ret;
@@ -549,19 +553,7 @@ ValueNode_Bone::set_link_vfunc(int i,ValueNode::Handle value)
 	switch(i)
 	{
 	case 0: CHECK_TYPE_AND_SET_VALUE(name_,		ValueBase::TYPE_STRING);
-#ifdef HIDE_BONE_FIELDS
 	case 1:
-#else
-	case 1: CHECK_TYPE_AND_SET_VALUE(origin_,	ValueBase::TYPE_VECTOR);
-	case 2: CHECK_TYPE_AND_SET_VALUE(origin0_,	ValueBase::TYPE_VECTOR);
-	case 3: CHECK_TYPE_AND_SET_VALUE(angle_,	ValueBase::TYPE_ANGLE);
-	case 4: CHECK_TYPE_AND_SET_VALUE(angle0_,	ValueBase::TYPE_ANGLE);
-	case 5: CHECK_TYPE_AND_SET_VALUE(scalex_,	ValueBase::TYPE_REAL);
-	case 6: CHECK_TYPE_AND_SET_VALUE(scaley_,	ValueBase::TYPE_REAL);
-	case 7: CHECK_TYPE_AND_SET_VALUE(length_,	ValueBase::TYPE_REAL);
-	case 8: CHECK_TYPE_AND_SET_VALUE(strength_,	ValueBase::TYPE_REAL);
-	case 9:
-#endif
 	{
 		VALUENODE_CHECK_TYPE(ValueBase::TYPE_VALUENODE_BONE);
 
@@ -575,6 +567,16 @@ ValueNode_Bone::set_link_vfunc(int i,ValueNode::Handle value)
 
 		VALUENODE_SET_VALUE(parent_);
 	}
+#ifndef HIDE_BONE_FIELDS
+	case 2: CHECK_TYPE_AND_SET_VALUE(origin_,	ValueBase::TYPE_VECTOR);
+	case 3: CHECK_TYPE_AND_SET_VALUE(origin0_,	ValueBase::TYPE_VECTOR);
+	case 4: CHECK_TYPE_AND_SET_VALUE(angle_,	ValueBase::TYPE_ANGLE);
+	case 5: CHECK_TYPE_AND_SET_VALUE(angle0_,	ValueBase::TYPE_ANGLE);
+	case 6: CHECK_TYPE_AND_SET_VALUE(scalex_,	ValueBase::TYPE_REAL);
+	case 7: CHECK_TYPE_AND_SET_VALUE(scaley_,	ValueBase::TYPE_REAL);
+	case 8: CHECK_TYPE_AND_SET_VALUE(length_,	ValueBase::TYPE_REAL);
+	case 9: CHECK_TYPE_AND_SET_VALUE(strength_,	ValueBase::TYPE_REAL);
+#endif
 	}
 	return false;
 }
@@ -587,18 +589,16 @@ ValueNode_Bone::get_link_vfunc(int i)const
 	switch(i)
 	{
 	case 0: return name_;
-#ifdef HIDE_BONE_FIELDS
 	case 1: return parent_;
-#else
-	case 1: return origin_;
-	case 2: return origin0_;
-	case 3: return angle_;
-	case 4: return angle0_;
-	case 5: return scalex_;
-	case 6: return scaley_;
-	case 7: return length_;
-	case 8: return strength_;
-	case 9: return parent_;
+#ifndef HIDE_BONE_FIELDS
+	case 2: return origin_;
+	case 3: return origin0_;
+	case 4: return angle_;
+	case 5: return angle0_;
+	case 6: return scalex_;
+	case 7: return scaley_;
+	case 8: return length_;
+	case 9: return strength_;
 #endif
 	}
 
@@ -623,18 +623,16 @@ ValueNode_Bone::link_name(int i)const
 	switch(i)
 	{
 	case 0: return "name";
-#ifdef HIDE_BONE_FIELDS
 	case 1: return "parent";
-#else
-	case 1: return "origin";
-	case 2: return "origin0";
-	case 3: return "angle";
-	case 4: return "angle0";
-	case 5: return "scalex";
-	case 6: return "scaley";
-	case 7: return "length";
-	case 8: return "strength";
-	case 9: return "parent";
+#ifndef HIDE_BONE_FIELDS
+	case 2: return "origin";
+	case 3: return "origin0";
+	case 4: return "angle";
+	case 5: return "angle0";
+	case 6: return "scalex";
+	case 7: return "scaley";
+	case 8: return "length";
+	case 9: return "strength";
 #endif
 	}
 
@@ -649,18 +647,16 @@ ValueNode_Bone::link_local_name(int i)const
 	switch(i)
 	{
 	case 0: return _("Name");
-#ifdef HIDE_BONE_FIELDS
 	case 1: return _("Parent");
-#else
-	case 1: return _("Origin");
-	case 2: return _("Origin0");
-	case 3: return _("Angle");
-	case 4: return _("Angle0");
-	case 5: return _("Length Scale");
-	case 6: return _("Width Scale");
-	case 7: return _("Length");
-	case 8: return _("Strength");
-	case 9: return _("Parent");
+#ifndef HIDE_BONE_FIELDS
+	case 2: return _("Origin");
+	case 3: return _("Origin0");
+	case 4: return _("Angle");
+	case 5: return _("Angle0");
+	case 6: return _("Length Scale");
+	case 7: return _("Width Scale");
+	case 8: return _("Length");
+	case 9: return _("Strength");
 #endif
 	}
 
@@ -671,18 +667,16 @@ int
 ValueNode_Bone::get_link_index_from_name(const String &name)const
 {
 	if (name == "name")		return 0;
-#ifdef HIDE_BONE_FIELDS
 	if (name == "parent")	return 1;
-#else
-	if (name == "origin")	return 1;
-	if (name == "origin0")	return 2;
-	if (name == "angle")	return 3;
-	if (name == "angle0")	return 4;
-	if (name == "scalex")	return 5;
-	if (name == "scaley")	return 6;
-	if (name == "length")	return 7;
-	if (name == "strength")	return 8;
-	if (name == "parent")	return 9;
+#ifndef HIDE_BONE_FIELDS
+	if (name == "origin")	return 2;
+	if (name == "origin0")	return 3;
+	if (name == "angle")	return 4;
+	if (name == "angle0")	return 5;
+	if (name == "scalex")	return 6;
+	if (name == "scaley")	return 7;
+	if (name == "length")	return 8;
+	if (name == "strength")	return 9;
 #endif
 
 	throw Exception::BadLinkName(name);
