@@ -97,9 +97,13 @@
  *      Added "scale" link to the "BLine Width" ValueNode in svn r1872.
  *
  *      Added "loop" link to the "Gradient Color" ValueNode in svn r1901.
+ *
+ * 0.7: svn r2???
+ *
+ *      Added "loop" link to the "Random" ValueNode in svn r????.
  */
 
-#define CURRENT_CANVAS_VERSION "0.6"
+#define CURRENT_CANVAS_VERSION "0.7"
 
 /* === T Y P E D E F S ===================================================== */
 

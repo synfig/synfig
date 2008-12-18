@@ -30,6 +30,7 @@
 #	include <config.h>
 #endif
 
+#include <synfig/general.h>
 #include "random_noise.h"
 #include <synfig/quick_rng.h>
 #include <cmath>
@@ -71,11 +72,29 @@ RandomNoise::operator()(const int salt,const int x,const int y,const int t)const
 }
 
 float
-RandomNoise::operator()(SmoothType smooth,int subseed,float xf,float yf,float tf)const
+RandomNoise::operator()(SmoothType smooth,int subseed,float xf,float yf,float tf,int loop)const
 {
 	int x((int)floor(xf));
 	int y((int)floor(yf));
 	int t((int)floor(tf));
+	int t_1, t0, t1, t2;
+
+	if (loop)
+	{
+		t0  = t % loop;	if (t0  <  0   ) t0  += loop;
+		t_1 = t0 - 1;	if (t_1 <  0   ) t_1 += loop;
+		t1  = t0 + 1;	if (t1  >= loop) t1  -= loop;
+		t2  = t1 + 1;	if (t2  >= loop) t2  -= loop;
+	}
+	else
+	{
+		t0  = t;
+		t_1 = t - 1;
+		t1  = t + 1;
+		t2  = t + 2;
+	}
+
+	// synfig::info("%s:%d tf %.2f loop %d fraction %.2f ( -1,0,1,2 : %2d %2d %2d %2d)", __FILE__, __LINE__, tf, loop, tf-t, t_1, t0, t1, t2);
 
 	switch(smooth)
 	{
@@ -90,7 +109,7 @@ RandomNoise::operator()(SmoothType smooth,int subseed,float xf,float yf,float tf
 			//precalculate indices (all clamped) and offset
 			const int xa[] = {x-1,x,x+1,x+2};
 			const int ya[] = {y-1,y,y+1,y+2};
-			const int ta[] = {t-1,t,t+1,t+2};
+			const int ta[] = {t_1,t0,t1,t2};
 
 			const float dx(xf-x);
 			const float dy(yf-y);
@@ -140,14 +159,14 @@ RandomNoise::operator()(SmoothType smooth,int subseed,float xf,float yf,float tf
 
 	case SMOOTH_FAST_SPLINE:	// Fast Spline (non-animated)
 		{
-#define P(x)	(((x)>0)?((x)*(x)*(x)):0.0f)
-#define R(x)	( P(x+2) - 4.0f*P(x+1) + 6.0f*P(x) - 4.0f*P(x-1) )*(1.0f/6.0f)
-#define F(i,j)	((*this)(subseed,i+x,j+y)*(R((i)-a)*R(b-(j))))
-#define FT(i,j,k)	((*this)(subseed,i+x,j+y,k+t)*(R((i)-a)*R(b-(j))*R((k)-c)))
-#define Z(i,j) ret+=F(i,j)
-#define ZT(i,j,k) ret+=FT(i,j,k)
-#define X(i,j)	// placeholder... To make box more symmetric
-#define XT(i,j,k)	// placeholder... To make box more symmetric
+#define P(x)		(((x)>0)?((x)*(x)*(x)):0.0f)
+#define R(x)		( P(x+2) - 4.0f*P(x+1) + 6.0f*P(x) - 4.0f*P(x-1) )*(1.0f/6.0f)
+#define F(i,j)		((*this)(subseed,i+x,j+y)*(R((i)-a)*R(b-(j))))
+#define FT(i,j,k,l)	((*this)(subseed,i+x,j+y,l)*(R((i)-a)*R(b-(j))*R((k)-c)))
+#define Z(i,j)		ret+=F(i,j)
+#define ZT(i,j,k,l) ret+=FT(i,j,k,l)
+#define X(i,j)		// placeholder... To make box more symmetric
+#define XT(i,j,k,l)	// placeholder... To make box more symmetric
 
 		float a(xf-x), b(yf-y);
 
@@ -166,26 +185,26 @@ RandomNoise::operator()(SmoothType smooth,int subseed,float xf,float yf,float tf
 			float a(xf-x), b(yf-y), c(tf-t);
 
 			// Interpolate
-			float ret(FT(0,0,0));
-			ZT(-1,-1,-1); ZT(-1, 0,-1); ZT(-1, 1,-1); ZT(-1, 2,-1);
-			ZT( 0,-1,-1); ZT( 0, 0,-1); ZT( 0, 1,-1); ZT( 0, 2,-1);
-			ZT( 1,-1,-1); ZT( 1, 0,-1); ZT( 1, 1,-1); ZT( 1, 2,-1);
-			ZT( 2,-1,-1); ZT( 2, 0,-1); ZT( 2, 1,-1); ZT( 2, 2,-1);
+			float ret(FT(0,0,0,t0));
+			ZT(-1,-1,-1,t_1); ZT(-1, 0,-1,t_1); ZT(-1, 1,-1,t_1); ZT(-1, 2,-1,t_1);
+			ZT( 0,-1,-1,t_1); ZT( 0, 0,-1,t_1); ZT( 0, 1,-1,t_1); ZT( 0, 2,-1,t_1);
+			ZT( 1,-1,-1,t_1); ZT( 1, 0,-1,t_1); ZT( 1, 1,-1,t_1); ZT( 1, 2,-1,t_1);
+			ZT( 2,-1,-1,t_1); ZT( 2, 0,-1,t_1); ZT( 2, 1,-1,t_1); ZT( 2, 2,-1,t_1);
 
-			ZT(-1,-1, 0); ZT(-1, 0, 0); ZT(-1, 1, 0); ZT(-1, 2, 0);
-			ZT( 0,-1, 0); XT( 0, 0, 0); ZT( 0, 1, 0); ZT( 0, 2, 0);
-			ZT( 1,-1, 0); ZT( 1, 0, 0); ZT( 1, 1, 0); ZT( 1, 2, 0);
-			ZT( 2,-1, 0); ZT( 2, 0, 0); ZT( 2, 1, 0); ZT( 2, 2, 0);
+			ZT(-1,-1, 0,t0 ); ZT(-1, 0, 0,t0 ); ZT(-1, 1, 0,t0 ); ZT(-1, 2, 0,t0 );
+			ZT( 0,-1, 0,t0 ); XT( 0, 0, 0,t0 ); ZT( 0, 1, 0,t0 ); ZT( 0, 2, 0,t0 );
+			ZT( 1,-1, 0,t0 ); ZT( 1, 0, 0,t0 ); ZT( 1, 1, 0,t0 ); ZT( 1, 2, 0,t0 );
+			ZT( 2,-1, 0,t0 ); ZT( 2, 0, 0,t0 ); ZT( 2, 1, 0,t0 ); ZT( 2, 2, 0,t0 );
 
-			ZT(-1,-1, 1); ZT(-1, 0, 1); ZT(-1, 1, 1); ZT(-1, 2, 1);
-			ZT( 0,-1, 1); ZT( 0, 0, 1); ZT( 0, 1, 1); ZT( 0, 2, 1);
-			ZT( 1,-1, 1); ZT( 1, 0, 1); ZT( 1, 1, 1); ZT( 1, 2, 1);
-			ZT( 2,-1, 1); ZT( 2, 0, 1); ZT( 2, 1, 1); ZT( 2, 2, 1);
+			ZT(-1,-1, 1,t1 ); ZT(-1, 0, 1,t1 ); ZT(-1, 1, 1,t1 ); ZT(-1, 2, 1,t1 );
+			ZT( 0,-1, 1,t1 ); ZT( 0, 0, 1,t1 ); ZT( 0, 1, 1,t1 ); ZT( 0, 2, 1,t1 );
+			ZT( 1,-1, 1,t1 ); ZT( 1, 0, 1,t1 ); ZT( 1, 1, 1,t1 ); ZT( 1, 2, 1,t1 );
+			ZT( 2,-1, 1,t1 ); ZT( 2, 0, 1,t1 ); ZT( 2, 1, 1,t1 ); ZT( 2, 2, 1,t1 );
 
-			ZT(-1,-1, 2); ZT(-1, 0, 2); ZT(-1, 1, 2); ZT(-1, 2, 2);
-			ZT( 0,-1, 2); ZT( 0, 0, 2); ZT( 0, 1, 2); ZT( 0, 2, 2);
-			ZT( 1,-1, 2); ZT( 1, 0, 2); ZT( 1, 1, 2); ZT( 1, 2, 2);
-			ZT( 2,-1, 2); ZT( 2, 0, 2); ZT( 2, 1, 2); ZT( 2, 2, 2);
+			ZT(-1,-1, 2,t2 ); ZT(-1, 0, 2,t2 ); ZT(-1, 1, 2,t2 ); ZT(-1, 2, 2,t2 );
+			ZT( 0,-1, 2,t2 ); ZT( 0, 0, 2,t2 ); ZT( 0, 1, 2,t2 ); ZT( 0, 2, 2,t2 );
+			ZT( 1,-1, 2,t2 ); ZT( 1, 0, 2,t2 ); ZT( 1, 1, 2,t2 ); ZT( 1, 2, 2,t2 );
+			ZT( 2,-1, 2,t2 ); ZT( 2, 0, 2,t2 ); ZT( 2, 1, 2,t2 ); ZT( 2, 2, 2,t2 );
 
 			return ret;
 
@@ -224,10 +243,10 @@ RandomNoise::operator()(SmoothType smooth,int subseed,float xf,float yf,float tf
 		float d=1.0-b;
 		int x2=x+1,y2=y+1;
 		return
-			(*this)(subseed,x,y,t)*(c*d)+
-			(*this)(subseed,x2,y,t)*(a*d)+
-			(*this)(subseed,x,y2,t)*(c*b)+
-			(*this)(subseed,x2,y2,t)*(a*b);
+			(*this)(subseed,x,y,t0)*(c*d)+
+			(*this)(subseed,x2,y,t0)*(a*d)+
+			(*this)(subseed,x,y2,t0)*(c*b)+
+			(*this)(subseed,x2,y2,t0)*(a*b);
 	}
 	else
 	{
@@ -246,17 +265,17 @@ RandomNoise::operator()(SmoothType smooth,int subseed,float xf,float yf,float tf
 		float e=1.0-b;
 		float f=1.0-c;
 
-		int x2=x+1,y2=y+1,t2=t+1;
+		int x2=x+1,y2=y+1;
 
 		return
-			(*this)(subseed,x,y,t)*(d*e*f)+
-			(*this)(subseed,x2,y,t)*(a*e*f)+
-			(*this)(subseed,x,y2,t)*(d*b*f)+
-			(*this)(subseed,x2,y2,t)*(a*b*f)+
-			(*this)(subseed,x,y,t2)*(d*e*c)+
-			(*this)(subseed,x2,y,t2)*(a*e*c)+
-			(*this)(subseed,x,y2,t2)*(d*b*c)+
-			(*this)(subseed,x2,y2,t2)*(a*b*c);
+			(*this)(subseed,x,y,t0)*(d*e*f)+
+			(*this)(subseed,x2,y,t0)*(a*e*f)+
+			(*this)(subseed,x,y2,t0)*(d*b*f)+
+			(*this)(subseed,x2,y2,t0)*(a*b*f)+
+			(*this)(subseed,x,y,t1)*(d*e*c)+
+			(*this)(subseed,x2,y,t1)*(a*e*c)+
+			(*this)(subseed,x,y2,t1)*(d*b*c)+
+			(*this)(subseed,x2,y2,t1)*(a*b*c);
 	}
 	case SMOOTH_LINEAR:
 	if((float)t==tf)
@@ -269,10 +288,10 @@ RandomNoise::operator()(SmoothType smooth,int subseed,float xf,float yf,float tf
 		float d=1.0-b;
 		int x2=x+1,y2=y+1;
 		return
-			(*this)(subseed,x,y,t)*(c*d)+
-			(*this)(subseed,x2,y,t)*(a*d)+
-			(*this)(subseed,x,y2,t)*(c*b)+
-			(*this)(subseed,x2,y2,t)*(a*b);
+			(*this)(subseed,x,y,t0)*(c*d)+
+			(*this)(subseed,x2,y,t0)*(a*d)+
+			(*this)(subseed,x,y2,t0)*(c*b)+
+			(*this)(subseed,x2,y2,t0)*(a*b);
 	}
 	else
 	{
@@ -285,20 +304,20 @@ RandomNoise::operator()(SmoothType smooth,int subseed,float xf,float yf,float tf
 		float e=1.0-b;
 		float f=1.0-c;
 
-		int x2=x+1,y2=y+1,t2=t+1;
+		int x2=x+1,y2=y+1;
 
 		return
-			(*this)(subseed,x,y,t)*(d*e*f)+
-			(*this)(subseed,x2,y,t)*(a*e*f)+
-			(*this)(subseed,x,y2,t)*(d*b*f)+
-			(*this)(subseed,x2,y2,t)*(a*b*f)+
-			(*this)(subseed,x,y,t2)*(d*e*c)+
-			(*this)(subseed,x2,y,t2)*(a*e*c)+
-			(*this)(subseed,x,y2,t2)*(d*b*c)+
-			(*this)(subseed,x2,y2,t2)*(a*b*c);
+			(*this)(subseed,x,y,t0)*(d*e*f)+
+			(*this)(subseed,x2,y,t0)*(a*e*f)+
+			(*this)(subseed,x,y2,t0)*(d*b*f)+
+			(*this)(subseed,x2,y2,t0)*(a*b*f)+
+			(*this)(subseed,x,y,t1)*(d*e*c)+
+			(*this)(subseed,x2,y,t1)*(a*e*c)+
+			(*this)(subseed,x,y2,t1)*(d*b*c)+
+			(*this)(subseed,x2,y2,t1)*(a*b*c);
 	}
 	default:
 	case SMOOTH_DEFAULT:
-		return (*this)(subseed,x,y,t);
+		return (*this)(subseed,x,y,t0);
 	}
 }

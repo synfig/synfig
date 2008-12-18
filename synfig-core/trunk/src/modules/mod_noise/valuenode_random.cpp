@@ -61,6 +61,7 @@ ValueNode_Random::ValueNode_Random(const ValueBase &value):
 	set_link("seed",ValueNode_Const::create(random.get_seed()));
 	set_link("speed",ValueNode_Const::create(Real(1)));
 	set_link("smooth",ValueNode_Const::create(int(RandomNoise::SMOOTH_CUBIC)));
+	set_link("loop",ValueNode_Const::create(Real(0)));
 
 	switch(get_type())
 	{
@@ -117,7 +118,9 @@ ValueNode_Random::operator()(Time t)const
 	Real	radius	= (*radius_)(t).get(Real());
 	int		seed	= (*seed_)(t).get(int());
 	int		smooth	= (*smooth_)(t).get(int());
-	float	speed	= (*speed_ )(t).get(Real()) * t;
+	float	speed	= (*speed_ )(t).get(Real());
+	int		loop	= int((((*loop_ )(t).get(Real())) * speed) + 0.5);
+	speed *= t;
 
 	random.set_seed(seed);
 
@@ -125,34 +128,34 @@ ValueNode_Random::operator()(Time t)const
 	{
 	case ValueBase::TYPE_ANGLE:
 		return ((*link_)(t).get( Angle()) +
-				Angle::deg(random(Smooth(smooth), 0, 0, 0, speed) * radius));
+				Angle::deg(random(Smooth(smooth), 0, 0, 0, speed, loop) * radius));
 
 	case ValueBase::TYPE_BOOL:
 		return round_to_int((*link_)(t).get(  bool()) +
-							random(Smooth(smooth), 0, 0, 0, speed) * radius) > 0;
+							random(Smooth(smooth), 0, 0, 0, speed, loop) * radius) > 0;
 
 	case ValueBase::TYPE_COLOR:
 		return (((*link_)(t).get( Color()) +
-				 Color(random(Smooth(smooth), 0, 0, 0, speed),
-					   random(Smooth(smooth), 1, 0, 0, speed),
-					   random(Smooth(smooth), 2, 0, 0, speed), 0) * radius).clamped());
+				 Color(random(Smooth(smooth), 0, 0, 0, speed, loop),
+					   random(Smooth(smooth), 1, 0, 0, speed, loop),
+					   random(Smooth(smooth), 2, 0, 0, speed, loop), 0) * radius).clamped());
 
 	case ValueBase::TYPE_INTEGER:
 		return round_to_int((*link_)(t).get(   int()) +
-							random(Smooth(smooth), 0, 0, 0, speed) * radius);
+							random(Smooth(smooth), 0, 0, 0, speed, loop) * radius);
 
 	case ValueBase::TYPE_REAL:
 		return ((*link_)(t).get(  Real()) +
-				random(Smooth(smooth), 0, 0, 0, speed) * radius);
+				random(Smooth(smooth), 0, 0, 0, speed, loop) * radius);
 
 	case ValueBase::TYPE_TIME:
 		return ((*link_)(t).get(  Time()) +
-				random(Smooth(smooth), 0, 0, 0, speed) * radius);
+				random(Smooth(smooth), 0, 0, 0, speed, loop) * radius);
 
 	case ValueBase::TYPE_VECTOR:
 	{
-		float length(random(Smooth(smooth), 0, 0, 0, speed) * radius);
-		Angle::rad angle(random(Smooth(smooth), 1, 0, 0, speed) * PI);
+		float length(random(Smooth(smooth), 0, 0, 0, speed, loop) * radius);
+		Angle::rad angle(random(Smooth(smooth), 1, 0, 0, speed, loop) * PI);
 
 		return ((*link_)(t).get(Vector()) +
 				Vector(Angle::cos(angle).get(), Angle::sin(angle).get()) * length);
@@ -191,6 +194,7 @@ ValueNode_Random::set_link_vfunc(int i,ValueNode::Handle value)
 	case 2: CHECK_TYPE_AND_SET_VALUE(seed_,   ValueBase::TYPE_INTEGER);
 	case 3: CHECK_TYPE_AND_SET_VALUE(speed_,  ValueBase::TYPE_REAL);
 	case 4: CHECK_TYPE_AND_SET_VALUE(smooth_, ValueBase::TYPE_INTEGER);
+	case 5: CHECK_TYPE_AND_SET_VALUE(loop_,  ValueBase::TYPE_REAL);
 	}
 	return false;
 }
@@ -207,6 +211,7 @@ ValueNode_Random::get_link_vfunc(int i)const
 	case 2: return seed_;
 	case 3: return speed_;
 	case 4: return smooth_;
+	case 5: return loop_;
 	}
 	return 0;
 }
@@ -214,7 +219,7 @@ ValueNode_Random::get_link_vfunc(int i)const
 int
 ValueNode_Random::link_count()const
 {
-	return 5;
+	return 6;
 }
 
 String
@@ -229,6 +234,7 @@ ValueNode_Random::link_name(int i)const
 	case 2: return "seed";
 	case 3: return "speed";
 	case 4: return "smooth";
+	case 5: return "loop";
 	}
 	return String();
 }
@@ -245,6 +251,7 @@ ValueNode_Random::link_local_name(int i)const
 	case 2: return _("Seed");
 	case 3: return _("Animation Speed");
 	case 4: return _("Interpolation");
+	case 5: return _("Loop Time");
 	}
 	return String();
 }
@@ -257,6 +264,7 @@ ValueNode_Random::get_link_index_from_name(const String &name)const
 	if(name=="seed"  ) return 2;
 	if(name=="speed" ) return 3;
 	if(name=="smooth") return 4;
+	if(name=="loop"  ) return 5;
 	throw Exception::BadLinkName(name);
 }
 

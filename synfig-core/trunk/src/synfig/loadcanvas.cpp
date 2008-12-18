@@ -1319,6 +1319,12 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 				value_node->link_name(i) == "loop")
 				continue;
 
+			// 'loop' was added while canvas version 0.6 was in use; the 'random' node was added back when 0.1 was in use
+			if ((version == "0.1" || version == "0.2" || version == "0.3" || version == "0.4" || version == "0.5" || version == "0.6") &&
+				element->get_name() == "random" &&
+				value_node->link_name(i) == "loop")
+				continue;
+
 			error(element, strprintf(_("<%s> is missing link %d (%s)"),
 									 element->get_name().c_str(),
 									 i,

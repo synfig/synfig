@@ -44,6 +44,7 @@ class ValueNode_Random : public LinkableValueNode
 	ValueNode::RHandle seed_;
 	ValueNode::RHandle speed_;
 	ValueNode::RHandle smooth_;
+	ValueNode::RHandle loop_;
 
 	mutable RandomNoise random;
 	RandomNoise::SmoothType smooth;
