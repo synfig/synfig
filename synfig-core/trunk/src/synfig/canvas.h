@@ -98,9 +98,9 @@
  *
  *      Added "loop" link to the "Gradient Color" ValueNode in svn r1901.
  *
- * 0.7: svn r2???
+ * 0.7: svn r2315
  *
- *      Added "loop" link to the "Random" ValueNode in svn r????.
+ *      Added "loop" link to the "Random" ValueNode in svn r2315.
  */
 
 #define CURRENT_CANVAS_VERSION "0.7"
