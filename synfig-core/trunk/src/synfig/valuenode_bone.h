@@ -43,7 +43,8 @@ class ValueNode_Bone : public LinkableValueNode
 	ValueNode::RHandle origin0_;
 	ValueNode::RHandle angle_;
 	ValueNode::RHandle angle0_;
-	ValueNode::RHandle scale_;
+	ValueNode::RHandle scalex_;
+	ValueNode::RHandle scaley_;
 	ValueNode::RHandle length_;
 	ValueNode::RHandle strength_;
 	ValueNode::RHandle parent_;
@@ -128,7 +129,7 @@ private:
 	virtual Matrix get_setup_matrix(Time t)const;
 	Matrix get_setup_matrix(Time t, Point origin0, Angle angle0, ValueNode_Bone::ConstHandle parent)const;
 	virtual Matrix get_animated_matrix(Time t)const;
-	Matrix get_animated_matrix(Time t, Real scale, Angle angle, Point origin, ValueNode_Bone::ConstHandle parent)const;
+	Matrix get_animated_matrix(Time t, Real scalex, Real scaley, Angle angle, Point origin, ValueNode_Bone::ConstHandle parent)const;
 	ValueNode_Bone::ConstHandle get_parent(Time t)const;
 
 }; // END of class ValueNode_Bone

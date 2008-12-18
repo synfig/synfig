@@ -255,7 +255,8 @@ ValueNode_Bone::ValueNode_Bone(const ValueBase &value, etl::loose_handle<Canvas>
 		set_link("origin0",ValueNode_Const::create(bone.get_origin0()));
 		set_link("angle",ValueNode_Const::create(bone.get_angle()));
 		set_link("angle0",ValueNode_Const::create(bone.get_angle0()));
-		set_link("scale",ValueNode_Const::create(bone.get_scale()));
+		set_link("scalex",ValueNode_Const::create(bone.get_scalex()));
+		set_link("scaley",ValueNode_Const::create(bone.get_scaley()));
 		set_link("length",ValueNode_Const::create(bone.get_length()));
 		set_link("strength",ValueNode_Const::create(bone.get_strength()));
 #endif
@@ -391,24 +392,25 @@ ValueNode_Bone::get_setup_matrix(Time t, Point translate, Angle rotate, ValueNod
 Matrix
 ValueNode_Bone::get_animated_matrix(Time t)const
 {
-	Real   scale	((*scale_	)(t).get(Real ()));
+	Real   scalex	((*scalex_	)(t).get(Real ()));
+	Real   scaley	((*scaley_	)(t).get(Real ()));
 	Angle  angle	((*angle_	)(t).get(Angle()));
 	Point  origin	((*origin_	)(t).get(Point()));
 	ValueNode_Bone::ConstHandle   parent	(get_parent(t));
 
-	return get_animated_matrix(t, scale, angle, origin, parent);
+	return get_animated_matrix(t, scalex, scaley, angle, origin, parent);
 }
 
 Matrix
-ValueNode_Bone::get_animated_matrix(Time t, Real scale, Angle rotate, Point translate, ValueNode_Bone::ConstHandle parent)const
+ValueNode_Bone::get_animated_matrix(Time t, Real scalex, Real scaley, Angle rotate, Point translate, ValueNode_Bone::ConstHandle parent)const
 {
 	Matrix parent_matrix(parent->get_animated_matrix(t));
-	Matrix ret(Matrix().set_scale(scale,1) * Matrix(rotate) * Matrix(translate) * parent_matrix);
+	Matrix ret(Matrix().set_scale(scalex,scaley) * Matrix(rotate) * Matrix(translate) * parent_matrix);
 
 	if (getenv("SYNFIG_DEBUG_ANIMATED_MATRIX_CALCULATION"))
 	{
 		printf("%s  *\n", parent_matrix.get_string(18, "animated_matrix = ", "parent").c_str());
-		printf("%s  *\n", Matrix(scale).get_string(18, "", strprintf("scale(%7.2f)", scale)).c_str());
+		printf("%s  *\n", Matrix().set_scale(scalex, scaley).get_string(18, "", strprintf("scale(%7.2f, ^%7.2f)", scalex, scaley)).c_str());
 		printf("%s  *\n", Matrix(rotate).get_string(18, "", strprintf("rotate(%.2f)", Angle::deg(rotate).get())).c_str());
 		printf("%s  =\n", Matrix(translate).get_string(18, "", strprintf("translate(%7.2f, %7.2f)", translate[0], translate[1])).c_str());
 		printf("%s\n",	  ret.get_string(18).c_str());
@@ -456,11 +458,12 @@ ValueNode_Bone::operator()(Time t)const
 	Point  bone_origin0			((*origin0_	)(t).get(Point()));
 	Angle  bone_angle			((*angle_	)(t).get(Angle()));
 	Angle  bone_angle0			((*angle0_	)(t).get(Angle()));
-	Real   bone_scale			((*scale_	)(t).get(Real()));
+	Real   bone_scalex			((*scalex_	)(t).get(Real()));
+	Real   bone_scaley			((*scaley_	)(t).get(Real()));
 	Real   bone_length			((*length_	)(t).get(Real()));
 	Real   bone_strength		((*strength_)(t).get(Real()));
 	Matrix bone_setup_matrix	(get_setup_matrix   (t, bone_origin0, bone_angle0, bone_parent));
-	Matrix bone_animated_matrix	(get_animated_matrix(t, bone_scale,   bone_angle,  bone_origin, bone_parent));
+	Matrix bone_animated_matrix	(get_animated_matrix(t, bone_scalex,   bone_scaley,   bone_angle,  bone_origin, bone_parent));
 #endif
 
 	Bone ret;
@@ -472,7 +475,8 @@ ValueNode_Bone::operator()(Time t)const
 	ret.set_origin0			(bone_origin0);
 	ret.set_angle			(bone_angle);
 	ret.set_angle0			(bone_angle0);
-	ret.set_scale			(bone_scale);
+	ret.set_scalex			(bone_scalex);
+	ret.set_scaley			(bone_scaley);
 	ret.set_length			(bone_length);
 	ret.set_strength		(bone_strength);
 	ret.set_setup_matrix	(bone_setup_matrix);
@@ -552,10 +556,11 @@ ValueNode_Bone::set_link_vfunc(int i,ValueNode::Handle value)
 	case 2: CHECK_TYPE_AND_SET_VALUE(origin0_,	ValueBase::TYPE_VECTOR);
 	case 3: CHECK_TYPE_AND_SET_VALUE(angle_,	ValueBase::TYPE_ANGLE);
 	case 4: CHECK_TYPE_AND_SET_VALUE(angle0_,	ValueBase::TYPE_ANGLE);
-	case 5: CHECK_TYPE_AND_SET_VALUE(scale_,	ValueBase::TYPE_REAL);
-	case 6: CHECK_TYPE_AND_SET_VALUE(length_,	ValueBase::TYPE_REAL);
-	case 7: CHECK_TYPE_AND_SET_VALUE(strength_,	ValueBase::TYPE_REAL);
-	case 8:
+	case 5: CHECK_TYPE_AND_SET_VALUE(scalex_,	ValueBase::TYPE_REAL);
+	case 6: CHECK_TYPE_AND_SET_VALUE(scaley_,	ValueBase::TYPE_REAL);
+	case 7: CHECK_TYPE_AND_SET_VALUE(length_,	ValueBase::TYPE_REAL);
+	case 8: CHECK_TYPE_AND_SET_VALUE(strength_,	ValueBase::TYPE_REAL);
+	case 9:
 #endif
 	{
 		VALUENODE_CHECK_TYPE(ValueBase::TYPE_VALUENODE_BONE);
@@ -589,10 +594,11 @@ ValueNode_Bone::get_link_vfunc(int i)const
 	case 2: return origin0_;
 	case 3: return angle_;
 	case 4: return angle0_;
-	case 5: return scale_;
-	case 6: return length_;
-	case 7: return strength_;
-	case 8: return parent_;
+	case 5: return scalex_;
+	case 6: return scaley_;
+	case 7: return length_;
+	case 8: return strength_;
+	case 9: return parent_;
 #endif
 	}
 
@@ -605,7 +611,7 @@ ValueNode_Bone::link_count()const
 #ifdef HIDE_BONE_FIELDS
 	return 2;
 #else
-	return 9;
+	return 10;
 #endif
 }
 
@@ -624,10 +630,11 @@ ValueNode_Bone::link_name(int i)const
 	case 2: return "origin0";
 	case 3: return "angle";
 	case 4: return "angle0";
-	case 5: return "scale";
-	case 6: return "length";
-	case 7: return "strength";
-	case 8: return "parent";
+	case 5: return "scalex";
+	case 6: return "scaley";
+	case 7: return "length";
+	case 8: return "strength";
+	case 9: return "parent";
 #endif
 	}
 
@@ -649,10 +656,11 @@ ValueNode_Bone::link_local_name(int i)const
 	case 2: return _("Origin0");
 	case 3: return _("Angle");
 	case 4: return _("Angle0");
-	case 5: return _("Scale");
-	case 6: return _("Length");
-	case 7: return _("Strength");
-	case 8: return _("Parent");
+	case 5: return _("Length Scale");
+	case 6: return _("Width Scale");
+	case 7: return _("Length");
+	case 8: return _("Strength");
+	case 9: return _("Parent");
 #endif
 	}
 
@@ -662,18 +670,19 @@ ValueNode_Bone::link_local_name(int i)const
 int
 ValueNode_Bone::get_link_index_from_name(const String &name)const
 {
-	if (name == "name") return 0;
+	if (name == "name")		return 0;
 #ifdef HIDE_BONE_FIELDS
-	if (name == "parent") return 1;
+	if (name == "parent")	return 1;
 #else
-	if (name == "origin") return 1;
-	if (name == "origin0") return 2;
-	if (name == "angle") return 3;
-	if (name == "angle0") return 4;
-	if (name == "scale") return 5;
-	if (name == "length") return 6;
-	if (name == "strength") return 7;
-	if (name == "parent") return 8;
+	if (name == "origin")	return 1;
+	if (name == "origin0")	return 2;
+	if (name == "angle")	return 3;
+	if (name == "angle0")	return 4;
+	if (name == "scalex")	return 5;
+	if (name == "scaley")	return 6;
+	if (name == "length")	return 7;
+	if (name == "strength")	return 8;
+	if (name == "parent")	return 9;
 #endif
 
 	throw Exception::BadLinkName(name);

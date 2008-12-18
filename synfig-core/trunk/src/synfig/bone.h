@@ -43,7 +43,8 @@
 	cout<<"[name]="<<bone.name_<<endl;									\
 	cout<<"[origin]="<<bone.origin_<<"[origin0]="<<bone.origin0_<<endl;	\
 	cout<<"[angle]="<<bone.angle_<<"[angle0]="<<bone.angle0_<<endl;		\
-	cout<<"[scale]="<<bone.scale_<<"[length]="<<bone.length_<<endl;		\
+	cout<<"[scalex]="<<bone.scalex_<<"[length]="<<bone.length_<<endl;		\
+	cout<<"[scaley]="<<bone.scaley_<<"[length]="<<bone.length_<<endl;		\
 	cout<<"[strength]="<<bone.strength_<<"[parent]="<<bone.parent_<<endl
 /* === T Y P E D E F S ===================================================== */
 
@@ -77,9 +78,10 @@ private:
 	Angle angle_;
 	//!This is the angle of the bone at the setup time
 	Angle angle0_;
-	//!This is the current scale of the bone.
-	Real scale_;
-//	Real scale0_; // Scale0 is always = 1.0
+	//!This is the current x scale of the bone.
+	Real scalex_;
+	//!This is the current y scale of the bone.
+	Real scaley_;
 	//!This is the length at setup time
 	Real length_;
 	//!This is the strength at setup time
@@ -113,9 +115,13 @@ public:
 	const Angle& get_angle0()const {return angle0_;}
 	void set_angle0(const Angle &x) {angle0_=x;}
 
-	//!Wrapper for scale
-	const Real& get_scale()const {return scale_;}
-	void set_scale(const Real &x) {scale_=x;}
+	//!Wrapper for scalex
+	const Real& get_scalex()const {return scalex_;}
+	void set_scalex(const Real &x) {scalex_=x;}
+
+	//!Wrapper for scaley
+	const Real& get_scaley()const {return scaley_;}
+	void set_scaley(const Real &x) {scaley_=x;}
 
 	//!Wrapper for length. Notice that a length of 0 is not allowed.
 	const Real& get_length()const {return length_;}
@@ -126,7 +132,7 @@ public:
 	void set_strength(const Real &x) {strength_=x;}
 
 	//!This gets the calculated tip of the bone based on
-	//!tip=origin+[length,0]*Rotate(alpha)*Scalex(scale)
+	//!tip=origin+[length,0]*Rotate(alpha)*Scalex(scalex)
 	Point get_tip();
 
 	//!Wrapper for parent bone
@@ -174,7 +180,8 @@ public:
  * Set and get:
  * 		-origin, origin0,
  * 		-angle, angle0,
- * 		-scale,
+ * 		-scalex,
+ * 		-scaley,
  * 		-length
  * 		-strength,
  * 		-ParentID: this is new: This is the UniqueID value of the parent bone.
