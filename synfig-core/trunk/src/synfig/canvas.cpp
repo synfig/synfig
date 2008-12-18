@@ -462,7 +462,7 @@ Canvas::add_value_node(ValueNode::Handle x, const String &id)
 
 	try
 	{
-		if(PlaceholderValueNode::Handle::cast_dynamic(value_node_list_.find(id)))
+		if(PlaceholderValueNode::Handle::cast_dynamic(value_node_list_.find(id, true)))
 			throw Exception::IDNotFound("add_value_node()");
 
 		throw Exception::IDAlreadyExists(id);

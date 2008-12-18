@@ -22,6 +22,11 @@
 */
 /* ========================================================================= */
 
+static void breakpoint()
+{
+	return;
+}
+
 /* === H E A D E R S ======================================================= */
 
 #define SYNFIG_NO_ANGLE
@@ -418,7 +423,7 @@ ValueNodeList::count(const String &id)const
 }
 
 ValueNode::Handle
-ValueNodeList::find(const String &id)
+ValueNodeList::find(const String &id, bool might_fail)
 {
 	iterator iter;
 
@@ -429,13 +434,16 @@ ValueNodeList::find(const String &id)
 		;
 
 	if(iter==end())
+	{
+		if (!might_fail) breakpoint();
 		throw Exception::IDNotFound("ValueNode in ValueNodeList: "+id);
+	}
 
 	return *iter;
 }
 
 ValueNode::ConstHandle
-ValueNodeList::find(const String &id)const
+ValueNodeList::find(const String &id, bool might_fail)const
 {
 	const_iterator iter;
 
@@ -446,7 +454,10 @@ ValueNodeList::find(const String &id)const
 		;
 
 	if(iter==end())
+	{
+		if (!might_fail) breakpoint();
 		throw Exception::IDNotFound("ValueNode in ValueNodeList: "+id);
+	}
 
 	return *iter;
 }
@@ -461,7 +472,7 @@ ValueNodeList::surefind(const String &id)
 
 	try
 	{
-		value_node=find(id);
+		value_node=find(id, true);
 	}
 	catch(Exception::IDNotFound)
 	{
@@ -502,7 +513,7 @@ ValueNodeList::add(ValueNode::Handle value_node)
 
 	try
 	{
-		ValueNode::RHandle other_value_node=find(value_node->get_id());
+		ValueNode::RHandle other_value_node=find(value_node->get_id(), true);
 		if(PlaceholderValueNode::Handle::cast_dynamic(other_value_node))
 		{
 			other_value_node->replace(value_node);
