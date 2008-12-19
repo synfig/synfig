@@ -89,7 +89,7 @@ struct compare_bones
 void
 ValueNode_Bone::show_bone_map(Canvas::LooseHandle canvas, const char *file, int line, String text, Time t)
 {
-	if (!getenv("SYNFIG_SHOW_BONE_MAP")) return;
+	if (!getenv("SYNFIG_DEBUG_BONE_MAP")) return;
 
 	BoneMap bone_map(canvas_map[canvas]);
 
@@ -97,7 +97,7 @@ ValueNode_Bone::show_bone_map(Canvas::LooseHandle canvas, const char *file, int 
 	for (ValueNode_Bone::BoneMap::iterator iter = bone_map.begin(); iter != bone_map.end(); iter++)
 		bone_set.insert(iter->second);
 
-	printf("\n  %s:%d (%lx) %s we now have %d bones (%d unreachable):\n", file, line, ulong(canvas.get()), text.c_str(), int(bone_map.size()), int(bone_map.size() - bone_set.size()));
+	printf("\n  %s:%d (canvas %lx) %s we now have %d bones (%d unreachable):\n", file, line, ulong(canvas.get()), text.c_str(), int(bone_map.size()), int(bone_map.size() - bone_set.size()));
 
 	for (set<ValueNode_Bone::LooseHandle>::iterator iter = bone_set.begin(); iter != bone_set.end(); iter++)
 	{
@@ -266,13 +266,13 @@ ValueNode_Bone::ValueNode_Bone(const ValueBase &value, etl::loose_handle<Canvas>
 		if (!parent) parent = get_root_bone();
 		set_link("parent",ValueNode_Const::create(ValueNode_Bone::Handle::cast_const(parent)));
 
+		if (getenv("SYNFIG_DEBUG_BONE_MAP"))
+			printf("%s:%d adding to canvas_map\n", __FILE__, __LINE__);
+		canvas_map[get_root_canvas()][get_guid()] = this;
+
 		if (getenv("SYNFIG_DEBUG_SET_PARENT_CANVAS"))
 			printf("%s:%d set parent canvas for bone %lx to %lx\n", __FILE__, __LINE__, ulong(this), ulong(canvas.get()));
 		set_parent_canvas(canvas);
-
-		if (getenv("SYNFIG_DEBUG_CANVAS_MAP"))
-			printf("%s:%d adding to canvas_map\n", __FILE__, __LINE__);
-		canvas_map[get_root_canvas()][get_guid()] = this;
 
 		show_bone_map(get_root_canvas(), __FILE__, __LINE__, strprintf("in constructor of %s at %lx", GET_GUID_CSTR(get_guid()), ulong(this)));
 
@@ -314,7 +314,7 @@ ValueNode_Bone::~ValueNode_Bone()
 		printf("%s:%d ------------------------------------------------------------------------\n\n", __FILE__, __LINE__);
 	}
 
-	if (getenv("SYNFIG_DEBUG_CANVAS_MAP"))
+	if (getenv("SYNFIG_DEBUG_BONE_MAP"))
 		printf("%s:%d removing from canvas_map\n", __FILE__, __LINE__);
 	canvas_map[get_root_canvas()].erase(get_guid());
 
@@ -345,12 +345,15 @@ ValueNode_Bone::set_root_canvas(etl::loose_handle<Canvas> canvas)
 	Canvas::LooseHandle new_canvas(get_root_canvas()); // it isn't necessarily what we passed in, because set_root_canvas walks up to the root
 	if (new_canvas != old_canvas)
 	{
+		if (!canvas_map[old_canvas].count(guid))
+			warning("%s:%d the node we're moving (%lx) isn't in the map", __FILE__, __LINE__, ulong(this));
+
 		canvas_map[new_canvas][guid] = canvas_map[old_canvas][guid];
 		canvas_map[old_canvas].erase(guid);
 		show_bone_map(new_canvas, __FILE__, __LINE__, strprintf("after changing canvas from %lx to %lx", ulong(old_canvas.get()), ulong(new_canvas.get())));
 	}
 	else
-		if (getenv("SYNFIG_DEBUG_CANVAS_MAP"))
+		if (getenv("SYNFIG_DEBUG_BONE_MAP"))
 			printf("%s:%d canvases are the same\n", __FILE__, __LINE__);
 }
 
