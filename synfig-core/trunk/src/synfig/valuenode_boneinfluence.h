@@ -39,6 +39,10 @@ class ValueNode_BoneInfluence : public LinkableValueNode
 {
 	ValueNode::RHandle link_;
 	ValueNode::RHandle bone_weight_list_;
+
+	mutable Matrix transform_, inverse_transform_;
+	mutable bool checked_inverse_, has_inverse_;
+
 public:
 	typedef etl::handle<ValueNode_BoneInfluence> Handle;
 	typedef etl::handle<const ValueNode_BoneInfluence> ConstHandle;
@@ -77,6 +81,13 @@ public:
 	using synfig::LinkableValueNode::set_link_vfunc;
 	static bool check_type(ValueBase::Type type);
 	static ValueNode_BoneInfluence* create(const ValueBase &x, etl::loose_handle<Canvas>);
+
+	Matrix calculate_transform(Time t)const;
+	Matrix& get_transform(bool rebuild=false, Time t=0)const;
+	void set_transform(Matrix transform)const { transform_ = transform; checked_inverse_ = false; }
+	bool has_inverse_transform()const;
+	Matrix& get_inverse_transform()const;
+
 }; // END of class ValueNode_BoneInfluence
 
 }; // END of namespace synfig

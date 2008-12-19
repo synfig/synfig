@@ -228,7 +228,10 @@ Action::ValueDescSet::prepare()
 			ValueDesc bone_influence_value_desc(bone_influence_value_node,
 												bone_influence_value_node->get_link_index_from_name("link"));
 
-			info("not yet implemented - will transform using the inverse bone matrix here")
+			if (bone_influence_value_node->has_inverse_transform())
+				value = bone_influence_value_node->get_inverse_transform().get_transformed(value);
+			else
+				throw Error(_("this node isn't editable - in the future it will be greyed to prevent editing"));
 
 			Action::Handle action(Action::create("ValueDescSet"));
 

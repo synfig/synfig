@@ -108,39 +108,7 @@ ValueNode_BoneInfluence::operator()(Time t)const
 		printf("%s:%d operator()\n", __FILE__, __LINE__);
 
 	Vector link((*link_)(t).get(Vector()));
-
-	Matrix transform;
-	transform *= 0;
-	vector<ValueBase> bone_weight_list((*bone_weight_list_)(t).get_list());
-	Real total_weight = 0;
-	for (vector<ValueBase>::iterator iter = bone_weight_list.begin(); iter != bone_weight_list.end(); iter++)
-	{
-		Bone bone(iter->get(BoneWeightPair()).get_bone());
-		Real weight(iter->get(BoneWeightPair()).get_weight());
-
-		if (getenv("SYNFIG_DEBUG_BONE_TRANSFORM_WEIGHTING"))
-		{
-			printf("%s  *\n", bone.get_setup_matrix().get_string(15, "t = setup").c_str());
-			printf("%s  =\n", bone.get_animated_matrix().get_string(15, "animated", strprintf("* %.2f (weight)", weight)).c_str());
-			printf("%s\n",	 (bone.get_setup_matrix() * bone.get_animated_matrix() * weight).get_string(15).c_str());
-		}
-
-		transform += (bone.get_setup_matrix() *
-					  bone.get_animated_matrix() *
-					  weight);
-		total_weight += weight;
-	}
-
-	if (getenv("SYNFIG_DEBUG_BONE_TRANSFORM_WEIGHTING"))
-	{
-		printf("%s:%d transform:\n%s\n", __FILE__, __LINE__, transform.get_string().c_str());
-		printf("%s:%d total_weight: %.2f\n", __FILE__, __LINE__, total_weight);;
-	}
-
-	if (total_weight) transform *= (1/total_weight);
-
-	if (getenv("SYNFIG_DEBUG_BONE_TRANSFORM_WEIGHTING"))
-		printf("%s:%d final transform:\n%s\n", __FILE__, __LINE__, transform.get_string().c_str());
+	Matrix transform(get_transform(true, t));
 
 	if (getenv("SYNFIG_DEBUG_BONE_VECTOR_TRANSFORMATION"))
 		printf("%s\n", transform.get_string(35,
@@ -243,4 +211,80 @@ bool
 ValueNode_BoneInfluence::check_type(ValueBase::Type type)
 {
 	return type==ValueBase::TYPE_VECTOR;
+}
+
+Matrix
+ValueNode_BoneInfluence::calculate_transform(Time t)const
+{
+	Matrix transform;
+	transform *= 0;
+	vector<ValueBase> bone_weight_list((*bone_weight_list_)(t).get_list());
+	Real total_weight = 0;
+	for (vector<ValueBase>::iterator iter = bone_weight_list.begin(); iter != bone_weight_list.end(); iter++)
+	{
+		Bone bone(iter->get(BoneWeightPair()).get_bone());
+		Real weight(iter->get(BoneWeightPair()).get_weight());
+
+		if (getenv("SYNFIG_DEBUG_BONE_TRANSFORM_WEIGHTING"))
+		{
+			printf("%s  *\n", bone.get_setup_matrix().get_string(15, "t = setup").c_str());
+			printf("%s  =\n", bone.get_animated_matrix().get_string(15, "animated", strprintf("* %.2f (weight)", weight)).c_str());
+			printf("%s\n",	 (bone.get_setup_matrix() * bone.get_animated_matrix() * weight).get_string(15).c_str());
+		}
+
+		transform += (bone.get_setup_matrix() *
+					  bone.get_animated_matrix() *
+					  weight);
+		total_weight += weight;
+	}
+
+	if (getenv("SYNFIG_DEBUG_BONE_TRANSFORM_WEIGHTING"))
+	{
+		printf("%s:%d transform:\n%s\n", __FILE__, __LINE__, transform.get_string().c_str());
+		printf("%s:%d total_weight: %.2f\n", __FILE__, __LINE__, total_weight);;
+	}
+
+	if (total_weight) transform *= (1/total_weight);
+
+	if (getenv("SYNFIG_DEBUG_BONE_TRANSFORM_WEIGHTING"))
+		printf("%s:%d final transform:\n%s\n", __FILE__, __LINE__, transform.get_string().c_str());
+
+	return transform;
+}
+
+Matrix&
+ValueNode_BoneInfluence::get_transform(bool rebuild, Time t)const
+{
+	if (rebuild) set_transform(calculate_transform(t));
+
+	return transform_;
+}
+
+bool
+ValueNode_BoneInfluence::has_inverse_transform()const
+{
+	if (checked_inverse_)
+	{
+//		printf("%s:%d returning stored value %d for has_inverse\n", __FILE__, __LINE__, has_inverse_);
+		return has_inverse_;
+	}
+
+	inverse_transform_ = get_transform();
+	if ((has_inverse_ = inverse_transform_.is_invertible()))
+		inverse_transform_.invert();
+
+//	printf("%s:%d returning calculated value %d for has_inverse\n", __FILE__, __LINE__, has_inverse_);
+
+	checked_inverse_ = true;
+	return has_inverse_;
+}
+
+Matrix&
+ValueNode_BoneInfluence::get_inverse_transform()const
+{
+	if (has_inverse_transform())
+		return inverse_transform_;
+	error("get_inverse_transform() called when no inverse is available");
+	assert(0);
+	return inverse_transform_;
 }
