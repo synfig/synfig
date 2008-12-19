@@ -72,6 +72,8 @@ ValueNode_BoneWeightPair::ValueNode_BoneWeightPair(const ValueBase &value, Canva
 			printf("%s:%d set parent canvas for bwp to %lx\n", __FILE__, __LINE__, ulong(canvas.get()));
 		set_parent_canvas(canvas);
 
+		ValueNode_Bone::show_bone_map(canvas, __FILE__, __LINE__, "after making new boneweightpair");
+
 		break;
 	}
 	default:
