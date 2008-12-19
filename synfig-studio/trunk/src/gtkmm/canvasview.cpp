@@ -2742,6 +2742,9 @@ CanvasView::rebuild_ducks_layer_(synfig::TransformStack& transform_stack, synfig
 		synfig::warning("CanvasView::rebuild_ducks_layer_(): Layer doesn't have canvas set");
 		return;
 	}
+
+	// loop through all the layers in the canvas in turn so we can
+	// build up the transform stack
 	for(Canvas::iterator iter(canvas->begin());iter!=canvas->end();++iter)
 	{
 		Layer::Handle layer(*iter);
