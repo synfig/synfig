@@ -1365,6 +1365,11 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 				value_node->link_name(i) == "loop")
 				continue;
 
+			// todo: remove this - it's temporary; accept bones with 'scalel' missing - it's new
+			if (element->get_name() == "bone" &&
+				value_node->link_name(i) == "scalel")
+				continue;
+
 			error(element, strprintf(_("<%s> is missing link %d (%s)"),
 									 element->get_name().c_str(),
 									 i,

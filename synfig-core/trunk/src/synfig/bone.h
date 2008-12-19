@@ -43,8 +43,8 @@
 	cout<<"[name]="<<bone.name_<<endl;									\
 	cout<<"[origin]="<<bone.origin_<<"[origin0]="<<bone.origin0_<<endl;	\
 	cout<<"[angle]="<<bone.angle_<<"[angle0]="<<bone.angle0_<<endl;		\
-	cout<<"[scalex]="<<bone.scalex_<<"[length]="<<bone.length_<<endl;		\
-	cout<<"[scaley]="<<bone.scaley_<<"[length]="<<bone.length_<<endl;		\
+	cout<<"[scalel]="<<bone.scalel_<<"[scalex]="<<bone.scalex_<<endl;	\
+	cout<<"[scaley]="<<bone.scaley_<<"[length]="<<bone.length_<<endl;	\
 	cout<<"[strength]="<<bone.strength_<<"[parent]="<<bone.parent_<<endl
 /* === T Y P E D E F S ===================================================== */
 
@@ -78,9 +78,11 @@ private:
 	Angle angle_;
 	//!This is the angle of the bone at the setup time
 	Angle angle0_;
-	//!This is the current x scale of the bone.
+	//!This is the current local x scale of the bone.
+	Real scalel_;
+	//!This is the current recursive x scale of the bone.
 	Real scalex_;
-	//!This is the current y scale of the bone.
+	//!This is the current recursive y scale of the bone.
 	Real scaley_;
 	//!This is the length at setup time
 	Real length_;
@@ -115,6 +117,10 @@ public:
 	const Angle& get_angle0()const {return angle0_;}
 	void set_angle0(const Angle &x) {angle0_=x;}
 
+	//!Wrapper for scalel
+	const Real& get_scalel()const {return scalel_;}
+	void set_scalel(const Real &x) {scalel_=x;}
+
 	//!Wrapper for scalex
 	const Real& get_scalex()const {return scalex_;}
 	void set_scalex(const Real &x) {scalex_=x;}
@@ -132,7 +138,7 @@ public:
 	void set_strength(const Real &x) {strength_=x;}
 
 	//!This gets the calculated tip of the bone based on
-	//!tip=origin+[length,0]*Rotate(alpha)*Scalex(scalex)
+	//!tip=origin+[length,0]*Rotate(alpha)*Scalex(scalex*scalel)
 	Point get_tip();
 
 	//!Wrapper for parent bone
@@ -180,6 +186,7 @@ public:
  * Set and get:
  * 		-origin, origin0,
  * 		-angle, angle0,
+ * 		-scalel,
  * 		-scalex,
  * 		-scaley,
  * 		-length

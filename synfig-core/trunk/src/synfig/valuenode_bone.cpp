@@ -255,6 +255,7 @@ ValueNode_Bone::ValueNode_Bone(const ValueBase &value, etl::loose_handle<Canvas>
 		set_link("origin0",ValueNode_Const::create(bone.get_origin0()));
 		set_link("angle",ValueNode_Const::create(bone.get_angle()));
 		set_link("angle0",ValueNode_Const::create(bone.get_angle0()));
+		set_link("scalel",ValueNode_Const::create(bone.get_scalel()));
 		set_link("scalex",ValueNode_Const::create(bone.get_scalex()));
 		set_link("scaley",ValueNode_Const::create(bone.get_scaley()));
 		set_link("length",ValueNode_Const::create(bone.get_length()));
@@ -392,6 +393,7 @@ ValueNode_Bone::get_setup_matrix(Time t, Point translate, Angle rotate, ValueNod
 Matrix
 ValueNode_Bone::get_animated_matrix(Time t)const
 {
+	Real   scalel	((*scalel_	)(t).get(Real ()));
 	Real   scalex	((*scalex_	)(t).get(Real ()));
 	Real   scaley	((*scaley_	)(t).get(Real ()));
 	Angle  angle	((*angle_	)(t).get(Angle()));
@@ -458,6 +460,7 @@ ValueNode_Bone::operator()(Time t)const
 	Point  bone_origin0			((*origin0_	)(t).get(Point()));
 	Angle  bone_angle			((*angle_	)(t).get(Angle()));
 	Angle  bone_angle0			((*angle0_	)(t).get(Angle()));
+	Real   bone_scalel			((*scalel_	)(t).get(Real()));
 	Real   bone_scalex			((*scalex_	)(t).get(Real()));
 	Real   bone_scaley			((*scaley_	)(t).get(Real()));
 	Real   bone_length			((*length_	)(t).get(Real()));
@@ -479,6 +482,7 @@ ValueNode_Bone::operator()(Time t)const
 	ret.set_origin0			(bone_origin0);
 	ret.set_angle			(bone_angle);
 	ret.set_angle0			(bone_angle0);
+	ret.set_scalel			(bone_scalel);
 	ret.set_scalex			(bone_scalex);
 	ret.set_scaley			(bone_scaley);
 	ret.set_length			(bone_length);
@@ -572,10 +576,11 @@ ValueNode_Bone::set_link_vfunc(int i,ValueNode::Handle value)
 	case 3: CHECK_TYPE_AND_SET_VALUE(origin0_,	ValueBase::TYPE_VECTOR);
 	case 4: CHECK_TYPE_AND_SET_VALUE(angle_,	ValueBase::TYPE_ANGLE);
 	case 5: CHECK_TYPE_AND_SET_VALUE(angle0_,	ValueBase::TYPE_ANGLE);
-	case 6: CHECK_TYPE_AND_SET_VALUE(scalex_,	ValueBase::TYPE_REAL);
-	case 7: CHECK_TYPE_AND_SET_VALUE(scaley_,	ValueBase::TYPE_REAL);
-	case 8: CHECK_TYPE_AND_SET_VALUE(length_,	ValueBase::TYPE_REAL);
-	case 9: CHECK_TYPE_AND_SET_VALUE(strength_,	ValueBase::TYPE_REAL);
+	case 6: CHECK_TYPE_AND_SET_VALUE(scalel_,	ValueBase::TYPE_REAL);
+	case 7: CHECK_TYPE_AND_SET_VALUE(scalex_,	ValueBase::TYPE_REAL);
+	case 8: CHECK_TYPE_AND_SET_VALUE(scaley_,	ValueBase::TYPE_REAL);
+	case 9: CHECK_TYPE_AND_SET_VALUE(length_,	ValueBase::TYPE_REAL);
+	case 10:CHECK_TYPE_AND_SET_VALUE(strength_,	ValueBase::TYPE_REAL);
 #endif
 	}
 	return false;
@@ -595,10 +600,11 @@ ValueNode_Bone::get_link_vfunc(int i)const
 	case 3: return origin0_;
 	case 4: return angle_;
 	case 5: return angle0_;
-	case 6: return scalex_;
-	case 7: return scaley_;
-	case 8: return length_;
-	case 9: return strength_;
+	case 6: return scalel_;
+	case 7: return scalex_;
+	case 8: return scaley_;
+	case 9: return length_;
+	case 10:return strength_;
 #endif
 	}
 
@@ -611,7 +617,7 @@ ValueNode_Bone::link_count()const
 #ifdef HIDE_BONE_FIELDS
 	return 2;
 #else
-	return 10;
+	return 11;
 #endif
 }
 
@@ -629,10 +635,11 @@ ValueNode_Bone::link_name(int i)const
 	case 3: return "origin0";
 	case 4: return "angle";
 	case 5: return "angle0";
-	case 6: return "scalex";
-	case 7: return "scaley";
-	case 8: return "length";
-	case 9: return "strength";
+	case 6: return "scalel";
+	case 7: return "scalex";
+	case 8: return "scaley";
+	case 9: return "length";
+	case 10:return "strength";
 #endif
 	}
 
@@ -653,10 +660,11 @@ ValueNode_Bone::link_local_name(int i)const
 	case 3: return _("Origin0");
 	case 4: return _("Angle");
 	case 5: return _("Angle0");
-	case 6: return _("Length Scale");
-	case 7: return _("Width Scale");
-	case 8: return _("Length");
-	case 9: return _("Strength");
+	case 6: return _("Scale");
+	case 7: return _("Recursive Length");
+	case 8: return _("Recursive Width");
+	case 9: return _("Length");
+	case 10:return _("Strength");
 #endif
 	}
 
@@ -673,10 +681,11 @@ ValueNode_Bone::get_link_index_from_name(const String &name)const
 	if (name == "origin0")	return 3;
 	if (name == "angle")	return 4;
 	if (name == "angle0")	return 5;
-	if (name == "scalex")	return 6;
-	if (name == "scaley")	return 7;
-	if (name == "length")	return 8;
-	if (name == "strength")	return 9;
+	if (name == "scalel")	return 6;
+	if (name == "scalex")	return 7;
+	if (name == "scaley")	return 8;
+	if (name == "length")	return 9;
+	if (name == "strength")	return 10;
 #endif
 
 	throw Exception::BadLinkName(name);
