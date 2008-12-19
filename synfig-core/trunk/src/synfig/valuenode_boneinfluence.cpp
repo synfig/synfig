@@ -48,6 +48,8 @@ using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 
+#define epsilon 1e-6
+
 /* === G L O B A L S ======================================================= */
 
 /* === P R O C E D U R E S ================================================= */
@@ -244,7 +246,10 @@ ValueNode_BoneInfluence::calculate_transform(Time t)const
 		printf("%s:%d total_weight: %.2f\n", __FILE__, __LINE__, total_weight);;
 	}
 
-	if (total_weight) transform *= (1/total_weight);
+	if (abs(total_weight) > epsilon)
+		transform *= (1/total_weight);
+	else
+		transform = Matrix();
 
 	if (getenv("SYNFIG_DEBUG_BONE_TRANSFORM_WEIGHTING"))
 		printf("%s:%d final transform:\n%s\n", __FILE__, __LINE__, transform.get_string().c_str());
