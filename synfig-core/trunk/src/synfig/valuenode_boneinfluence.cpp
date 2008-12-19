@@ -233,7 +233,7 @@ int
 ValueNode_BoneInfluence::get_link_index_from_name(const String &name)const
 {
 	if(name=="link")				return 0;
-	if(name=="vertex_setup")		return 0; // todo: this is what it used to be called - it can be deleted once my files are converted
+	if(name=="vertex_setup")		{warning("%s:%d removeme", __FILE__, __LINE__); return 0;}
 	if(name=="bone_weight_list")	return 1;
 
 	throw Exception::BadLinkName(name);
