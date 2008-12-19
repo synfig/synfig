@@ -63,6 +63,8 @@ using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 
+#define epsilon 1e-6
+
 /* === G L O B A L S ======================================================= */
 
 /* === M E T H O D S ======================================================= */
@@ -213,7 +215,9 @@ Matrix::operator+(const Matrix &rhs)
 bool
 Matrix::is_invertible()const
 {
-	return m00*m11 != m01*m10;
+	printf("%s:%d Matrix::is_invertible() checking %f * %f != %f*%f\nie. %f != %f\nie. %d\n",
+		   __FILE__, __LINE__, m00,m11, m01,m10, m00*m11, m01*m10, abs(m00*m11 - m01*m10) > epsilon);
+	return abs(m00*m11 - m01*m10) > epsilon;
 }
 
 Matrix&
