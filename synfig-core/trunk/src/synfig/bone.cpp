@@ -54,9 +54,8 @@ Bone::Bone():
 	origin0_(Point(0,0)),
 	angle_(Angle::deg(0.0)),
 	angle0_(Angle::deg(0.0)),
-	scalel_(1.0),
-	scalex_(1.0),
-	scaley_(1.0),
+	scalelx_(1.0), scalely_(1.0),
+	scalex_(1.0),  scaley_(1.0),
 	length_(1.0),
 	strength_(1.0),
 	parent_(0)
@@ -71,9 +70,8 @@ Bone::Bone(const Point &o, const Point &t):
 	origin0_(o),
 	angle_((t-o).angle()),
 	angle0_((t-o).angle()),
-	scalel_(1.0),
-	scalex_(1.0),
-	scaley_(1.0),
+	scalelx_(1.0), scalely_(1.0),
+	scalex_(1.0),  scaley_(1.0),
 	length_(1.0),
 	strength_(1.0),
 	parent_(0)
@@ -89,9 +87,8 @@ Bone::Bone(const String &n, const Point &o, const Angle &a, const Real &l, const
 	origin0_(o),
 	angle_(a),
 	angle0_(a),
-	scalel_(1.0),
-	scalex_(1.0),
-	scaley_(1.0),
+	scalelx_(1.0), scalely_(1.0),
+	scalex_(1.0),  scaley_(1.0),
 	length_(l),
 	strength_(s),
 	parent_(p)
@@ -114,12 +111,12 @@ Bone::set_parent(const ValueNode_Bone* parent)
 
 //! get_tip() member function
 //!@return The tip Point of the bone (calculated) based on
-//! tip=origin+[length,0]*Scalex(scalex*scalel,0)*Rotate(alpha)
+//! tip=origin+[length,0]*Scalex(scalex*scalelx,0)*Rotate(alpha)
 Point
 Bone::get_tip()
 {
 	Matrix s, r, sr;
-	s.set_scale(scalex_*scalel_,0);
+	s.set_scale(scalex_*scalelx_,0);
 	r.set_rotate(angle_);
 	sr=s*r;
 	return (Point)sr.get_transformed(Vector(length_,0));
@@ -131,13 +128,13 @@ Bone::get_tip()
 synfig::String
 Bone::get_string()const
 {
-	return strprintf("N=%s O=(%.4f %.4f) O0=(%.4f %.4f) a=%.4f a0=%.4f sl=%.4f sx=%.4f sy=%.4f l=%.4f S=%.4f P=%lx",
+	return strprintf("N=%s O=(%.4f %.4f) O0=(%.4f %.4f) a=%.4f a0=%.4f slx=%.4f sly=%.4f sx=%.4f sy=%.4f l=%.4f S=%.4f P=%lx",
 					 name_.c_str(),
 					 origin_[0], origin_[1],
 					 origin0_[0], origin0_[1],
 					 Angle::deg(angle_).get(),
 					 Angle::deg(angle0_).get(),
-					 scalel_, scalex_, scaley_, length_, strength_, ulong(parent_));
+					 scalelx_, scalely_, scalex_, scaley_, length_, strength_, ulong(parent_));
 }
 
 bool

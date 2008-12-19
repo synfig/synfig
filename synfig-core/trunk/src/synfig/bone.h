@@ -39,13 +39,14 @@
 // how many hex digits of the guid string to show in debug messages
 #define GUID_PREFIX_LEN 6
 
-#define COUT_BONE(bone)													\
-	cout<<"[name]="<<bone.name_<<endl;									\
-	cout<<"[origin]="<<bone.origin_<<"[origin0]="<<bone.origin0_<<endl;	\
-	cout<<"[angle]="<<bone.angle_<<"[angle0]="<<bone.angle0_<<endl;		\
-	cout<<"[scalel]="<<bone.scalel_<<"[scalex]="<<bone.scalex_<<endl;	\
-	cout<<"[scaley]="<<bone.scaley_<<"[length]="<<bone.length_<<endl;	\
-	cout<<"[strength]="<<bone.strength_<<"[parent]="<<bone.parent_<<endl
+#define COUT_BONE(bone)													  \
+	cout<<"[name]="<<bone.name_<<endl;									  \
+	cout<<"[origin]="<<bone.origin_<<"[origin0]="<<bone.origin0_<<endl;	  \
+	cout<<"[angle]="<<bone.angle_<<"[angle0]="<<bone.angle0_<<endl;		  \
+	cout<<"[scalelx]="<<bone.scalelx_<<"[scalely]="<<bone.scalely_<<endl; \
+	cout<<"[scalex]="<<bone.scalex_<<"[scaley]="<<bone.scaley_<<endl;	  \
+	cout<<"[length]="<<bone.length_<<"[strength]="<<bone.strength_<<endl; \
+	cout<<"[parent]="<<bone.parent_<<endl
 /* === T Y P E D E F S ===================================================== */
 
 /* === C L A S S E S & S T R U C T S ======================================= */
@@ -79,7 +80,9 @@ private:
 	//!This is the angle of the bone at the setup time
 	Angle angle0_;
 	//!This is the current local x scale of the bone.
-	Real scalel_;
+	Real scalelx_;
+	//!This is the current local y scale of the bone.
+	Real scalely_;
 	//!This is the current recursive x scale of the bone.
 	Real scalex_;
 	//!This is the current recursive y scale of the bone.
@@ -117,9 +120,13 @@ public:
 	const Angle& get_angle0()const {return angle0_;}
 	void set_angle0(const Angle &x) {angle0_=x;}
 
-	//!Wrapper for scalel
-	const Real& get_scalel()const {return scalel_;}
-	void set_scalel(const Real &x) {scalel_=x;}
+	//!Wrapper for scalelx
+	const Real& get_scalelx()const {return scalelx_;}
+	void set_scalelx(const Real &x) {scalelx_=x;}
+
+	//!Wrapper for scalely
+	const Real& get_scalely()const {return scalely_;}
+	void set_scalely(const Real &y) {scalely_=y;}
 
 	//!Wrapper for scalex
 	const Real& get_scalex()const {return scalex_;}
@@ -127,7 +134,7 @@ public:
 
 	//!Wrapper for scaley
 	const Real& get_scaley()const {return scaley_;}
-	void set_scaley(const Real &x) {scaley_=x;}
+	void set_scaley(const Real &y) {scaley_=y;}
 
 	//!Wrapper for length. Notice that a length of 0 is not allowed.
 	const Real& get_length()const {return length_;}
@@ -138,7 +145,7 @@ public:
 	void set_strength(const Real &x) {strength_=x;}
 
 	//!This gets the calculated tip of the bone based on
-	//!tip=origin+[length,0]*Rotate(alpha)*Scalex(scalex*scalel)
+	//!tip=origin+[length,0]*Rotate(alpha)*Scalex(scalex*scalelx)
 	Point get_tip();
 
 	//!Wrapper for parent bone
@@ -186,7 +193,8 @@ public:
  * Set and get:
  * 		-origin, origin0,
  * 		-angle, angle0,
- * 		-scalel,
+ * 		-scalelx,
+ * 		-scalely,
  * 		-scalex,
  * 		-scaley,
  * 		-length
