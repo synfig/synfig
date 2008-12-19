@@ -68,8 +68,8 @@ ValueNode_BoneInfluence::ValueNode_BoneInfluence(const ValueNode::Handle &x, Can
 	{
 		ValueNode_StaticList::Handle bone_weight_list(ValueNode_StaticList::create(ValueBase::TYPE_BONE_WEIGHT_PAIR, canvas));
 		bone_weight_list->add(ValueNode_BoneWeightPair::create(BoneWeightPair(Bone(), 1), canvas));
-		set_link("link",				x);
 		set_link("bone_weight_list",	bone_weight_list);
+		set_link("link",				x);
 
 		if (getenv("SYNFIG_DEBUG_SET_PARENT_CANVAS"))
 			printf("%s:%d set parent canvas for bone influence to %lx\n", __FILE__, __LINE__, ulong(canvas.get()));
@@ -107,8 +107,8 @@ ValueNode_BoneInfluence::operator()(Time t)const
 	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
 		printf("%s:%d operator()\n", __FILE__, __LINE__);
 
-	Vector link((*link_)(t).get(Vector()));
 	Matrix transform(get_transform(true, t));
+	Vector link((*link_)(t).get(Vector()));
 
 	if (getenv("SYNFIG_DEBUG_BONE_VECTOR_TRANSFORMATION"))
 		printf("%s\n", transform.get_string(35,
@@ -142,8 +142,8 @@ ValueNode_BoneInfluence::set_link_vfunc(int i,ValueNode::Handle value)
 
 	switch(i)
 	{
-	case 0: CHECK_TYPE_AND_SET_VALUE(link_,				ValueBase::TYPE_VECTOR);
-	case 1: CHECK_TYPE_AND_SET_VALUE(bone_weight_list_,	ValueBase::TYPE_LIST);
+	case 0: CHECK_TYPE_AND_SET_VALUE(bone_weight_list_,	ValueBase::TYPE_LIST);
+	case 1: CHECK_TYPE_AND_SET_VALUE(link_,				ValueBase::TYPE_VECTOR);
 	}
 
 	return false;
@@ -156,8 +156,8 @@ ValueNode_BoneInfluence::get_link_vfunc(int i)const
 
 	switch(i)
 	{
-	case 0: return link_;
-	case 1: return bone_weight_list_;
+	case 0: return bone_weight_list_;
+	case 1: return link_;
 	}
 
 	return 0;
@@ -176,8 +176,8 @@ ValueNode_BoneInfluence::link_name(int i)const
 
 	switch(i)
 	{
-	case 0: return _("link");
-	case 1: return _("bone_weight_list");
+	case 0: return _("bone_weight_list");
+	case 1: return _("link");
 	}
 
 	return String();
@@ -190,8 +190,8 @@ ValueNode_BoneInfluence::link_local_name(int i)const
 
 	switch(i)
 	{
-	case 0: return _("Link");
-	case 1: return _("Bone Weight List");
+	case 0: return _("Bone Weight List");
+	case 1: return _("Link");
 	}
 
 	return String();
@@ -200,9 +200,9 @@ ValueNode_BoneInfluence::link_local_name(int i)const
 int
 ValueNode_BoneInfluence::get_link_index_from_name(const String &name)const
 {
-	if(name=="link")				return 0;
-	if(name=="vertex_setup")		{warning("%s:%d removeme", __FILE__, __LINE__); return 0;}
-	if(name=="bone_weight_list")	return 1;
+	if(name=="bone_weight_list")	return 0;
+	if(name=="link")				return 1;
+	if(name=="vertex_setup")		{warning("%s:%d removeme", __FILE__, __LINE__); return 1;}
 
 	throw Exception::BadLinkName(name);
 }

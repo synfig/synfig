@@ -37,8 +37,8 @@ namespace synfig {
 
 class ValueNode_BoneInfluence : public LinkableValueNode
 {
-	ValueNode::RHandle link_;
 	ValueNode::RHandle bone_weight_list_;
+	ValueNode::RHandle link_;
 
 	mutable Matrix transform_, inverse_transform_;
 	mutable bool checked_inverse_, has_inverse_;
