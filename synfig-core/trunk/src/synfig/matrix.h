@@ -95,225 +95,85 @@ private:
 
 public:
 	//!Default constructor makes an identity matrix
-	Matrix()
-	{
-		m00=1.0; m01=0.0; m02=0.0;
-		m10=0.0; m11=1.0; m12=0.0;
-		m20=0.0; m21=0.0; m22=1.0;
-	}
+	Matrix();
 
 	//!set_identity member. Set an identity matrix
-	Matrix &
-	set_identity()
-	{
-		m00=1.0; m01=0.0; m02=0.0;
-		m10=0.0; m11=1.0; m12=0.0;
-		m20=0.0; m21=0.0; m22=1.0;
-		return (*this);
-	}
+	Matrix &set_identity();
 
 	//!set_scale member function. Sets a scale matrix
 	//! @param sx Scale by X axis
 	//! @param sy Scale by Y axis
 	//! @return A matrix reference filled with the sx, sy values
-	Matrix &
-	set_scale(const value_type &sx, const value_type &sy)
-	{
-		m00=sx;  m01=0.0; m02=0.0;
-		m10=0.0; m11=sy;  m12=0.0;
-		m20=0.0; m21=0.0; m22=1.0;
-		return (*this);
-	}
+	Matrix &set_scale(const value_type &sx, const value_type &sy);
 
 	//!set_scale member fucntion. Sets a scale matrix
 	//! @param sxy Scale by X and Y axis
 	//! @return A matrix reference filled with the sxy values
-	Matrix &
-	set_scale(const value_type &sxy)
-	{
-		m00=sxy; m01=0.0; m02=0.0;
-		m10=0.0; m11=sxy; m12=0.0;
-		m20=0.0; m21=0.0; m22=1.0;
-		return (*this);
-	}
+	Matrix &set_scale(const value_type &sxy);
 
 	//!set_rotate member function. Sets a rotate matrix
 	//! @param a Rotation angle counter clockwise
 	//! @return A matrix reference filled with the proper rotation parameters
-	Matrix &
-	set_rotate(const Angle &a)
-	{
-		value_type c(Angle::cos(a).get());
-		value_type s(Angle::sin(a).get());
-		m00= c;     m01=s;    m02=0.0;
-		m10=-1.0*s; m11=c;    m12=0.0;
-		m20=0.0;    m21=0.0;  m22=1.0;
-		return (*this);
-	}
+	Matrix &set_rotate(const Angle &a);
 
 	//!translate member function. Sets a translate matrix
 	//! @param t Vector that defines the translation
 	//! @return A matrix reference filled with the proper translation parameters
-	Matrix &
-	set_translate(const Vector &t)
-	{
-		return set_translate(t[0], t[1]);
-	}
+	Matrix &set_translate(const Vector &t);
 
 	//!translate member function. Sets a translate matrix
 	//! @param x Scalar that defines the x component of the translation
 	//! @param y Scalar that defines the y component of the translation
 	//! @return A matrix reference filled with the proper translation parameters
-	Matrix &
-	set_translate(value_type x, value_type y)
-	{
-		m00=1.0; m01=0.0; m02=0.0;
-		m10=0.0; m11=1.0; m12=0.0;
-		m20=x  ; m21=y  ; m22=1.0;
-		return (*this);
-	}
+	Matrix &set_translate(value_type x, value_type y);
 
 	//!get_transformed member function.
 	//! @param v 2D Vector to transform
 	//! @return The Vector result
-	Vector
-	get_transformed(const Vector &v)
-	{
-		return Vector(v[0]*m00+v[1]*m10+m20,
-					  v[0]*m01+v[1]*m11+m21);
-	}
+	Vector get_transformed(const Vector &v);
 
 	//! operator*=. Multiplication and assignment of one matrix by another
 	//! @param rhs the right hand side of the multiplication operation
 	//! @return the modified resulting matrix
-	Matrix
-	operator*=(const Matrix &rhs)
-	{
-		value_type x, y, z;
-
-		x = m00;    y = m01;    z = m02;
-		m00=x*rhs.m00 + y*rhs.m10 + z*rhs.m20;
-		m01=x*rhs.m01 + y*rhs.m11 + z*rhs.m21;
-		m02=x*rhs.m02 + y*rhs.m12 + z*rhs.m22;
-
-		x = m10;    y = m11;    z = m12;
-		m10=x*rhs.m00 + y*rhs.m10 + z*rhs.m20;
-		m11=x*rhs.m01 + y*rhs.m11 + z*rhs.m21;
-		m12=x*rhs.m02 + y*rhs.m12 + z*rhs.m22;
-
-		x = m20;    y = m21;    z = m22;
-		m20=x*rhs.m00 + y*rhs.m10 + z*rhs.m20;
-		m21=x*rhs.m01 + y*rhs.m11 + z*rhs.m21;
-		m22=x*rhs.m02 + y*rhs.m12 + z*rhs.m22;
-
-		return *this;
-	}
+	Matrix operator*=(const Matrix &rhs);
 
 	//! operator*=. Multiplication and assignment of one matrix by a scalar
 	//! @param rhs the number to multiply by
 	//! @return the modifed resulting matrix
-	Matrix
-	operator*=(const value_type &rhs)
-	{
-		m00*=rhs;
-		m01*=rhs;
-		m02*=rhs;
-
-		m10*=rhs;
-		m11*=rhs;
-		m12*=rhs;
-
-		m20*=rhs;
-		m21*=rhs;
-		m22*=rhs;
-
-		return *this;
-	}
+	Matrix operator*=(const value_type &rhs);
 
 	//! operator+=. Sum and assignment of two matrixes
 	//! @param rhs the matrix to sum
 	//! @return modified matrix with the summed matrix
-	Matrix
-	operator+=(const Matrix &rhs)
-	{
-		m00+=rhs.m00;
-		m01+=rhs.m01;
-		m02+=rhs.m02;
-
-		m10+=rhs.m10;
-		m11+=rhs.m11;
-		m12+=rhs.m12;
-
-		m20+=rhs.m20;
-		m21+=rhs.m21;
-		m22+=rhs.m22;
-		return *this;
-	}
+	Matrix operator+=(const Matrix &rhs);
 
 	//! operator*. Multiplication of one matrix by another
 	//! @param rhs the right hand side of the multiplication operation
 	//! @return the resulting matrix
-	Matrix
-	operator*(const Matrix &rhs)
-	{
-		return Matrix(*this)*=rhs;
-	}
+	Matrix operator*(const Matrix &rhs);
 
 	//! operator*. Multiplication of one matrix by a number
 	//! @param rhs the number to multiply by
 	//! @return the resulting matrix
-	Matrix
-	operator*(const value_type &rhs)
-	{
-		return Matrix(*this)*=rhs;
-	}
+	Matrix operator*(const value_type &rhs);
 
 	//! operator+. Sum two matrixes
 	//! @param rhs the matrix to sum
 	//! @return the resulting matrix
 	Matrix
-	operator+(const Matrix &rhs)
-	{
-		return Matrix(*this)+=rhs;
-	}
+	operator+(const Matrix &rhs);
 
-	bool
-	is_invertible()const
-	{
-		return m00*m11 != m01*m10;
-	}
+	bool is_invertible()const;
 
 	//         (m00 m01 0)       1               (     m11     )   (    -m01     )   (      0      )
 	// inverse (m10 m11 0)  =  -----          x  (    -m10     )   (     m00     )   (      0      )
 	//         (m20 m21 1)     m00m11-m01m10     (m10m21-m11m20)   (m01m20-m00m21)   (m00m11-m01m10)
-	Matrix &
-	invert()
-	{
-		assert(is_invertible() && !m02 && !m12 && m22==1);
-
-		value_type det(m00*m11-m01*m10);
-		value_type tmp(m20/det);
-		m20=(m10*m21-m11*m20)/det;
-		m21=(m01*tmp-m00*m21)/det;
-		tmp=m00;
-		m00=m11/det;
-		m11=tmp/det;
-		m01=-m01/det;
-		m10=-m10/det;
-		return *this;
-	}
+	Matrix &invert();
 
 	//!Get the string of the Matrix
 	//!@return String type. A string representation of the matrix
 	//!components.
-	String
-	get_string(int spaces = 0, String before = String(), String after = String())
-	{
-		return etl::strprintf("%*s [%7.2f %7.2f %7.2f] %s\n%*s [%7.2f %7.2f %7.2f]\n%*s [%7.2f %7.2f %7.2f]\n",
-							  spaces, before.c_str(), m00, m01, m02, after.c_str(),
-							  spaces, "",			  m10, m11, m12,
-							  spaces, "",			  m20, m21, m22);
-	}
+	String get_string(int spaces = 0, String before = String(), String after = String());
 };
 
 }; // END of namespace synfig
