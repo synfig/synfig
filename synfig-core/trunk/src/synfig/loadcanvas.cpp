@@ -1728,7 +1728,7 @@ CanvasParser::parse_value_node(xmlpp::Element *element,Canvas::Handle canvas)
 					ValueNode_Bone::Handle value_node_bone(ValueNode_Bone::Handle::cast_dynamic(value_node));
 					if (!value_node_bone)
 					{
-						if (getenv("SYNFIG_DEBUG_LOAD_CANVAS")) printf("bone_valuenode isn't a ValueNode_Bone?  It's a placeholder?\n", __FILE__, __LINE__, guid.get_string().c_str());
+						if (getenv("SYNFIG_DEBUG_LOAD_CANVAS")) printf("bone_valuenode isn't a ValueNode_Bone?  It's a placeholder?\n", __FILE__, __LINE__);
 						return value_node;
 					}
 
