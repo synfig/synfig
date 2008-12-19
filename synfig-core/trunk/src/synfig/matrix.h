@@ -31,6 +31,7 @@
 #include "real.h"
 #include "vector.h"
 #include "string.h"
+#include <cassert>
 #include <math.h>
 #include <iostream>
 #include <ETL/stringf>
@@ -274,6 +275,32 @@ public:
 	operator+(const Matrix &rhs)
 	{
 		return Matrix(*this)+=rhs;
+	}
+
+	bool
+	is_invertible()const
+	{
+		return m00*m11 != m01*m10;
+	}
+
+	//         (m00 m01 0)       1               (     m11     )   (    -m01     )   (      0      )
+	// inverse (m10 m11 0)  =  -----          x  (    -m10     )   (     m00     )   (      0      )
+	//         (m20 m21 1)     m00m11-m01m10     (m10m21-m11m20)   (m01m20-m00m21)   (m00m11-m01m10)
+	Matrix &
+	invert()
+	{
+		assert(is_invertible() && !m02 && !m12 && m22==1);
+
+		value_type det(m00*m11-m01*m10);
+		value_type tmp(m20/det);
+		m20=(m10*m21-m11*m20)/det;
+		m21=(m01*tmp-m00*m21)/det;
+		tmp=m00;
+		m00=m11/det;
+		m11=tmp/det;
+		m01=-m01/det;
+		m10=-m10/det;
+		return *this;
 	}
 
 	//!Get the string of the Matrix
