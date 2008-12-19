@@ -362,22 +362,25 @@ ValueNode_Bone::get_setup_matrix(Time t)const
 {
 	Point  origin0	((*origin0_	)(t).get(Point()));
 	Angle  angle0	((*angle0_	)(t).get(Angle()));
-	ValueNode_Bone::ConstHandle parent	(get_parent(t));
 
-	return get_setup_matrix(t, origin0, angle0, parent);
+	return (get_parent(t)->get_setup_matrix(t) *
+			Matrix().set_translate(-origin0) *
+			Matrix().set_rotate(-angle0));
 }
 
 Matrix
 ValueNode_Bone::get_setup_matrix(Time t, Point translate, Angle rotate, ValueNode_Bone::ConstHandle parent)const
 {
 	Matrix parent_matrix(parent->get_setup_matrix(t));
-	Matrix ret(parent_matrix * Matrix(-translate) * Matrix(-rotate));
+	Matrix ret(parent_matrix *
+			   Matrix().set_translate(-translate) *
+			   Matrix().set_rotate(-rotate));
 
 	if (getenv("SYNFIG_DEBUG_SETUP_MATRIX_CALCULATION"))
 	{
-		printf("%s  *\n", Matrix(-translate).get_string(18, "setup_matrix = ", strprintf("translate(%7.2f, %7.2f) (%s)", -translate[0], -translate[1], get_bone_name(t).c_str())).c_str());
-		printf("%s  *\n", Matrix(-rotate).get_string(18, "", strprintf("rotate(%.2f)", Angle::deg(-rotate).get())).c_str());
-		printf("%s  =\n", parent_matrix.get_string(18).c_str());
+		printf("%s  *\n", parent_matrix.get_string(18, "", strprintf("rotate(%.2f)", Angle::deg(-rotate).get())).c_str());
+		printf("%s  *\n", Matrix().set_translate(-translate).get_string(18, "setup_matrix = ", strprintf("translate(%7.2f, %7.2f) (%s)", -translate[0], -translate[1], get_bone_name(t).c_str())).c_str());
+		printf("%s  =\n", Matrix().set_rotate(-rotate).get_string(18).c_str());
 		printf("%s\n",	  ret.get_string(18).c_str());
 	}
 
@@ -391,29 +394,32 @@ ValueNode_Bone::get_setup_matrix(Time t, Point translate, Angle rotate, ValueNod
 //!animated position of the point due the current
 //!bone influence
 Matrix
-ValueNode_Bone::get_animated_matrix(Time t)const
+ValueNode_Bone::get_animated_matrix(Time t, Point child_origin)const
 {
 	Real   scalel	((*scalel_	)(t).get(Real ()));
 	Real   scalex	((*scalex_	)(t).get(Real ()));
 	Real   scaley	((*scaley_	)(t).get(Real ()));
 	Angle  angle	((*angle_	)(t).get(Angle()));
 	Point  origin	((*origin_	)(t).get(Point()));
-	ValueNode_Bone::ConstHandle   parent	(get_parent(t));
 
-	return get_animated_matrix(t, scalex, scaley, angle, origin, parent);
+	return (Matrix().set_translate(scalel*child_origin[0], child_origin[1]) *
+			Matrix().set_scale(scalex,scaley) *
+			Matrix().set_rotate(angle) *
+			get_parent(t)->get_animated_matrix(t, origin));
 }
 
 Matrix
-ValueNode_Bone::get_animated_matrix(Time t, Real scalex, Real scaley, Angle rotate, Point translate, ValueNode_Bone::ConstHandle parent)const
+ValueNode_Bone::get_animated_matrix(Time t, Real scalel, Real scalex, Real scaley, Angle angle, Point origin, ValueNode_Bone::ConstHandle parent)const
 {
-	Matrix parent_matrix(parent->get_animated_matrix(t));
-	Matrix ret(Matrix().set_scale(scalex,scaley) * Matrix(rotate) * Matrix(translate) * parent_matrix);
+	Matrix parent_matrix(parent->get_animated_matrix(t, origin));
+	Matrix ret(Matrix().set_scale(scalex*scalel,scaley) *
+			   Matrix().set_rotate(angle) *
+			   parent_matrix);
 
 	if (getenv("SYNFIG_DEBUG_ANIMATED_MATRIX_CALCULATION"))
 	{
-		printf("%s  *\n", Matrix().set_scale(scalex, scaley).get_string(18, "animated_matrix = ", strprintf("scale(%7.2f, ^%7.2f) (%s)", scalex, scaley, get_bone_name(t).c_str())).c_str());
-		printf("%s  *\n", Matrix(rotate).get_string(18, "", strprintf("rotate(%.2f)", Angle::deg(rotate).get())).c_str());
-		printf("%s  *\n", Matrix(translate).get_string(18, "", strprintf("translate(%7.2f, %7.2f)", translate[0], translate[1])).c_str());
+		printf("%s  *\n", Matrix().set_scale(scalex*scalel, scaley).get_string(18, "animated_matrix = ", strprintf("scale(%7.2f * %7.2f = %7.2f, %7.2f) (%s)", scalex, scalel, scalex*scalel, scaley, get_bone_name(t).c_str())).c_str());
+		printf("%s  *\n", Matrix().set_rotate(angle).get_string(18, "", strprintf("rotate(%.2f)", Angle::deg(angle).get())).c_str());
 		printf("%s  =\n", parent_matrix.get_string(18, "", "parent").c_str());
 		printf("%s\n",	  ret.get_string(18).c_str());
 	}
@@ -469,7 +475,7 @@ ValueNode_Bone::operator()(Time t)const
 	Matrix bone_setup_matrix	(get_setup_matrix   (t, bone_origin0, bone_angle0, bone_parent));
 	if (getenv("SYNFIG_DEBUG_SETUP_MATRIX_CALCULATION")) printf("\n***\n*** %s:%d get_setup_matrix() for %s done\n***\n\n", __FILE__, __LINE__, get_bone_name(t).c_str());
 	if (getenv("SYNFIG_DEBUG_ANIMATED_MATRIX_CALCULATION")) printf("\n***\n*** %s:%d get_animated_matrix() for %s\n***\n\n", __FILE__, __LINE__, get_bone_name(t).c_str());
-	Matrix bone_animated_matrix	(get_animated_matrix(t, bone_scalex,   bone_scaley,   bone_angle,  bone_origin, bone_parent));
+	Matrix bone_animated_matrix	(get_animated_matrix(t, bone_scalel, bone_scalex, bone_scaley, bone_angle, bone_origin, bone_parent));
 	if (getenv("SYNFIG_DEBUG_ANIMATED_MATRIX_CALCULATION")) printf("\n***\n*** %s:%d get_animated_matrix() for %s done\n***\n\n", __FILE__, __LINE__, get_bone_name(t).c_str());
 #endif
 
@@ -1123,9 +1129,9 @@ ValueNode_Bone_Root::get_setup_matrix(Time t __attribute__ ((unused)))const
 }
 
 Matrix
-ValueNode_Bone_Root::get_animated_matrix(Time t __attribute__ ((unused)))const
+ValueNode_Bone_Root::get_animated_matrix(Time t __attribute__ ((unused)), Point child_origin)const
 {
-	return Matrix();
+	return Matrix().set_translate(child_origin);
 }
 
 bool

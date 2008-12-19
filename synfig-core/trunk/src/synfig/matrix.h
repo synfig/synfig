@@ -101,24 +101,6 @@ public:
 		m20=0.0; m21=0.0; m22=1.0;
 	}
 
-	//!Constructor from Angle creates a rotate matrix
-	Matrix(const Angle &rotate)
-	{
-		set_rotate(rotate);
-	}
-
-	//!Constructor from Point creates a translate matrix
-	Matrix(const Vector &translate)
-	{
-		set_translate(translate);
-	}
-
-	//!Constructor from Real creates a scale matrix
-	Matrix(const Real &scale)
-	{
-		set_scale(scale);
-	}
-
 	//!set_identity member. Set an identity matrix
 	Matrix &
 	set_identity()
@@ -168,15 +150,25 @@ public:
 		return (*this);
 	}
 
-	//!traslate member function. Sets a translate matrix
+	//!translate member function. Sets a translate matrix
 	//! @param t Vector that defines the translation
 	//! @return A matrix reference filled with the proper translation parameters
 	Matrix &
 	set_translate(const Vector &t)
 	{
-		m00=1.0;  m01=0.0;  m02=0.0;
-		m10=0.0;  m11=1.0;  m12=0.0;
-		m20=t[0]; m21=t[1]; m22=1.0;
+		return set_translate(t[0], t[1]);
+	}
+
+	//!translate member function. Sets a translate matrix
+	//! @param x Scalar that defines the x component of the translation
+	//! @param y Scalar that defines the y component of the translation
+	//! @return A matrix reference filled with the proper translation parameters
+	Matrix &
+	set_translate(value_type x, value_type y)
+	{
+		m00=1.0; m01=0.0; m02=0.0;
+		m10=0.0; m11=1.0; m12=0.0;
+		m20=x  ; m21=y  ; m22=1.0;
 		return (*this);
 	}
 

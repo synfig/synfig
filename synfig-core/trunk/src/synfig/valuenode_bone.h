@@ -129,8 +129,8 @@ public:
 private:
 	virtual Matrix get_setup_matrix(Time t)const;
 	Matrix get_setup_matrix(Time t, Point origin0, Angle angle0, ValueNode_Bone::ConstHandle parent)const;
-	virtual Matrix get_animated_matrix(Time t)const;
-	Matrix get_animated_matrix(Time t, Real scalex, Real scaley, Angle angle, Point origin, ValueNode_Bone::ConstHandle parent)const;
+	virtual Matrix get_animated_matrix(Time t, Point child_origin)const;
+	Matrix get_animated_matrix(Time t, Real scalel, Real scalex, Real scaley, Angle angle, Point origin, ValueNode_Bone::ConstHandle parent)const;
 	ValueNode_Bone::ConstHandle get_parent(Time t)const;
 
 }; // END of class ValueNode_Bone
@@ -156,7 +156,7 @@ public:
 
 private:
 	Matrix get_setup_matrix(Time t)const;
-	Matrix get_animated_matrix(Time t)const;
+	Matrix get_animated_matrix(Time t, Point child_origin)const;
 
 protected:
 	LinkableValueNode* create_new()const;
