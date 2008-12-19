@@ -1,114 +1,205 @@
 MY IDEA ON HOW THE GUI SHOULD WORK.
 ==================================
 
-
 Principles:
-1) The user should not need to edit the parms directly in the skeleton or the blines unless a fine tuning or animation of the setup is needed.
-2) A skeleton is visible only when the user selects the skeleton layer.
-
+1) The user should not need to edit the parms directly in the skeleton
+   or the blines unless a fine tuning or animation of the setup is
+   needed.
+2) A skeleton is visible only when the user selects the skeleton
+   layer.
 
 BASIC USAGE
 -----------
 
 1) The user draws its stuff using the usual tools (draw & bline basically)
 2) The user creates a skeleton in not animation mode.
-3) The user binds the bline(s) to the bone(s). This can be an automatic process based on setup parameters.
-4) In non animation mode the user "tests" the skeleton: is happy with the current bind of the vertices or do a fine tuning
+3) The user binds the bline(s) to the bone(s). This can be an
+   automatic process based on setup parameters.
+4) In non animation mode the user "tests" the skeleton: is happy with
+   the current bind of the vertices or do a fine tuning
 5) The user changes to animation mode and animate the skeleton.
-6) Eventually the user can animate the parent of the bones, the weight influences values, the setup values, etc.
-
+6) Eventually the user can animate the parent of the bones, the weight
+   influences values, the setup values, etc.
 
 INTERFACE
 ---------
 
-The bones needs a visual feedback for the values it has stored. Let's review the values that are in the bone:
+The bones needs a visual feedback for the values it has stored. Let's
+review the values that are in the bone:
 
-Origin
-Origin0
-Angle
-Angle0
-Length
-Scale
-Strength
-parent
+    Parent
+    Origin
+    Angle
+    Scale (Local Length, Local Width, Recursive Length, Recursive Width)
+    Origin Setup
+    Angle Setup
+    Length Setup
+    Strength Setup
 
-Thinking on synfigstudio current possibilities and trying not to insert more complication to the code I imagine the
-visual interface of the bone in this way:
+Thinking on synfigstudio current possibilities and trying not to
+insert more complication to the code I imagine the visual interface of
+the bone in this way:
 
 Origin --> a duck (later will see the color)
 Origin0 --> a duck
 Angle --> an angle duck which origin lies at the position of the Origin
 Angle0 --> an angle duck which origin lies at the position of the Origin0
-Length --> a position duck represents the tip of the bone and a dashed line connects the origin and the tip.
+Length --> a position duck represents the tip of the bone and a dashed
+           line connects the origin and the tip.
 There are two cases of the tip representation:
 Tip
 Tip0 (tip at setup)
 Tip = length*scale*rotation matrix(Angle)
 Tip0 = length*1*rotation matrix(Angle0)
-Tip and Tip 0 are represented by position ducks.
+Tip and Tip0 are represented by position ducks.
 
-Strength: Strength is like a blob around the line that connects the Origin(0) and the Tip(0). It can be represented by a dashed line like the
-one I draw in the wiki to explain the "distance to a bone": See http://synfig.org/Image:Strength.png.
-So the user, in set up moment can ask to synfigstudio to assign a weight to each bone weight pair based on the distance form the point to the
-bone and the strength of the bone. For instance, if a point is at the same "distance" from a bone1 and form a bone2 but bone1 has higher strength than the bone2 then the weight value of the bone weight pair for that particular point and for bone1 is higher than the weight of the bone weight pair for the bone2. The relationship of the weight and the distance and the strength is given by the formulations written in this page: http://synfig.org/Talk:Bone_Layer. It can be simplified if you want.
-The "binding mode" (Fixed, Flexi-Binded, Region-Linear, Region-parabolic) should be part of the skeleton layer so it can be a parameter from a drop down list. It doesn't make sense this value to produce any waypoint because it is just used in setup mode. Its modification doesn't modify the current values of the weights of the bone weight pairs. Only if the user override the current Vertex Bone conversion and start it over then it can have a new usage.
+Strength: Strength is like a blob around the line that connects the
+Origin(0) and the Tip(0). It can be represented by a dashed line like
+the one I draw in the wiki to explain the "distance to a bone": See
+http://synfig.org/Image:Strength.png.
+
+So the user, in set up moment can ask to synfigstudio to assign a
+weight to each bone weight pair based on the distance form the point
+to the bone and the strength of the bone. For instance, if a point is
+at the same "distance" from bone1 and from bone2 but bone1 has higher
+strength than the bone2 then the weight value of the bone weight pair
+for that particular point and for bone1 is higher than the weight of
+the bone weight pair for the bone2. The relationship of the weight and
+the distance and the strength is given by the formulations written in
+this page: http://synfig.org/Talk:Bone_Layer. It can be simplified if
+you want.
+
+The "binding mode" (Fixed, Flexi-Binded, Region-Linear,
+Region-parabolic) should be part of the skeleton layer so it can be a
+parameter from a drop down list. It doesn't make sense this value to
+produce any waypoint because it is just used in setup mode. Its
+modification doesn't modify the current values of the weights of the
+bone weight pairs. Only if the user override the current Vertex Bone
+conversion and start it over then it can have a new usage.
 
 
 BONE TOOL?
 ---------
 (When I say origin/angle I say origin0/angle0 too).
 
-Defined the bone by three ducks (origin, angle and tip) It seems that it is not needed to add a new bone tool.
+Defined the bone by three ducks (origin, angle and tip) It seems that
+it is not needed to add a new bone tool.
+
 Dragging the origin should translate the bone.
+
 Dragging the angle duck should rotate the bone.
-Dragging the tip/tip0 should modify the bone scale/length. Remember that length==0.0 is not allowed.
 
-There is other kind of manipulation that would need some modification to the normal tool. At the time that the IK were used
-we need that dragging any of the three ducks you just produce angle modifications upstream in the bone chain keeping the distance origin-tip immutable.
+Dragging the tip/tip0 should modify the bone scale/length. Remember
+that length==0.0 is not allowed.
+
+There is other kind of manipulation that would need some modification
+to the normal tool. At the time that the IK were used we need that
+dragging any of the three ducks you just produce angle modifications
+upstream in the bone chain keeping the distance origin-tip immutable.
+
 This can be discussed/implemented later.
-The strength should need a duck also. It can be a real duck (circle) placed at the origin of the bone. The blob can be tangent to it.
 
-So for the moment it seems that there is not need for a new tool.
+The strength should need a duck also. It can be a real duck (circle)
+placed at the origin of the bone. The blob can be tangent to it.
+
+So for the moment it seems that there is no need for a new tool.
 
 PARENT
 -----
 OK, but what about the parent?
-I would like that the user can change the parentship using the mouse. In this way the user should see some visual interface to know what's the parent of a bone without
-expanding the skeleton Bone list. In Anime Studio the parentship is represented by an arrow. The arrow goes form child to parent. So a parent with lots of children
-has a lot of arrows pointing to it. In my opinion this can be done in Synfig too. I think that the arrow should go from child origin to parent origin. There must be a way to show/hide those arrows to allow the user check the parent-child relationship during the animation process. As well as parents are animatable those arrows changes by the time too. For example: ALT-7 can toggle parent arrows.
-The arrow can point form parent to children. It is more consistent and better visually. There is not need to have lots of arrows tips to be overlapping on the parent origin. The arrows tips only goes to the child, so as well as a child can only have a parent the arrows tips doesn't overlap.
+
+I would like that the user can change the parentship using the
+mouse. In this way the user should see some visual interface to know
+what's the parent of a bone without expanding the skeleton Bone
+list. In Anime Studio the parentship is represented by an arrow. The
+arrow goes form child to parent. So a parent with lots of children
+has a lot of arrows pointing to it. In my opinion this can be done in
+Synfig too. I think that the arrow should go from child origin to
+parent origin. There must be a way to show/hide those arrows to allow
+the user check the parent-child relationship during the animation
+process. As well as parents are animatable those arrows changes by the
+time too. For example: ALT-7 can toggle parent arrows.
+
+The arrow can point form parent to children. It is more consistent and
+better visually. There is not need to have lots of arrows tips to be
+overlapping on the parent origin. The arrows tips only goes to the
+child, so as well as a child can only have a parent the arrows tips
+doesn't overlap.
 
 Work flow:
-1) Two bones are not parented and the user want to make one (bone1) the child of other (bone2). Then the user selects the origin of the bone1 and right click the origin
-of the bone2 and select "Make Parent" or similar.
-2) Two bones are parent and child (bone2(child)<--bone1(parent))and you want to unparent the child to select other parent (bone3). The user selects the child (bone2) and do the same than case 1. Then synfigstudio should do it in two steps (unparent bone2 from bone1 and parent bone2 to bone3). The result should be:
-bone2(child)<--bone3(parent)
-3) A bone is child of a parent and want to turn into a root bone. Just select its origin and right click and select "Unparent".
-When the user tries to do illegal things (ie. make parent a child bone or past child bone or future child bone) then the right click doesn't offer the "Make Parent" option and only the "Unparent" one (that is always valid)
+
+1) Two bones are not parented and the user want to make one (bone1)
+   the child of other (bone2). Then the user selects the origin of the
+   bone1 and right click the origin of the bone2 and select "Make
+   Parent" or similar.
+
+2) Two bones are parent and child (bone2(child)<--bone1(parent))and
+   you want to unparent the child to select other parent (bone3). The
+   user selects the child (bone2) and do the same than case 1. Then
+   synfigstudio should do it in two steps (unparent bone2 from bone1
+   and parent bone2 to bone3). The result should be:
+
+	bone2(child)<--bone3(parent)
+
+3) A bone is child of a parent and want to turn into a root bone. Just
+   select its origin and right click and select "Unparent".
+
+When the user tries to do illegal things (ie. make parent a child bone
+or past child bone or future child bone) then the right click doesn't
+offer the "Make Parent" option and only the "Unparent" one (that is
+always valid)
 
 
 SETUP AND ANIMATED SKELETONS/BLINES
 ----------------------------
 
-The user should not want to see both skeletons at the same time. It can be very confusing. So we need a way to toggle between setup and animated skeleton. It can be ALT-8.
+The user should not want to see both skeletons at the same time. It
+can be very confusing. So we need a way to toggle between setup and
+animated skeleton. It can be ALT-8.
+
 (comments below are experimental thoughts)
+
 ................................................
-Also the Vertices have two main representations: Vertex result (VF+VS*MATRIX) and Vertex setup. They are the only two that the user want to see. The first
-is the resulting value and the one where the bline is rendered. The second is just a vertex position that when shown at the same time than the setup skeleton
-gives the "rest" position of the point relative to the bone.
-So the user should toggle between the setup skeleton (and the VS positions) and the animated skeleton (and the animated Vertex result (VF+VS*MATRIX)) by pressing ALT-8.
-When the user moves the Vertex result he is editing just the VF part of the VF+VS*MATRIX because the VS is only modified when the setup skeleton and vertices are shown and the matrix only changes when the bones are animated (setup or animated skeletons).
+Also the Vertices have two main representations: Vertex result
+(VF+VS*MATRIX) and Vertex setup. They are the only two that the user
+want to see. The first is the resulting value and the one where the
+bline is rendered. The second is just a vertex position that when
+shown at the same time than the setup skeleton gives the "rest"
+position of the point relative to the bone.
+
+So the user should toggle between the setup skeleton (and the VS
+positions) and the animated skeleton (and the animated Vertex result
+(VF+VS*MATRIX)) by pressing ALT-8.
+
+When the user moves the Vertex result he is editing just the VF part
+of the VF+VS*MATRIX because the VS is only modified when the setup
+skeleton and vertices are shown and the matrix only changes when the
+bones are animated (setup or animated skeletons).
+
 So normal usage would be:
-1) In non animation mode and with no waypoints, modify the animated skeleton/vertices should modify both setup skeletons/vertices. In this case there is not difference between one skeleton/vertices and the other.
-2) Once you're in animation mode you can modify either one skeleton/vertices or the other. From the first modification both skeletons are separated and distinguished. Toggle both does have effect now.
+
+1) In non animation mode and with no waypoints, modify the animated
+skeleton/vertices should modify both setup skeletons/vertices. In this
+case there is not difference between one skeleton/vertices and the
+other.
+
+2) Once you're in animation mode you can modify either one
+skeleton/vertices or the other. From the first modification both
+skeletons are separated and distinguished. Toggle both does have
+effect now.
 .............................
 
 WEIGHT DUCKS
 ------------
-(10:23:52) Carlos: there is also other thing I didn't mention about the weights
-(10:25:07) Carlos: if you pick a bline and pick a bone too then with ALT-9 you can show a real duck over each vertex (like the width ducks) to allow the user see and modify individual weights)
-(10:25:41) Carlos: in that state you can only pick a bone each time to see only the influence of the bone on the bline
-(10:26:28) Carlos: it is like draw the weights around the vertices like the widths ducks are drawn.
+(10:23:52) Carlos: there is also other thing I didn't mention about
+                   the weights
+(10:25:07) Carlos: if you pick a bline and pick a bone too then with
+                   ALT-9 you can show a real duck over each vertex
+                   (like the width ducks) to allow the user see and
+                   modify individual weights)
+(10:25:41) Carlos: in that state you can only pick a bone each time to
+                   see only the influence of the bone on the bline
+(10:26:28) Carlos: it is like draw the weights around the vertices
+                   like the widths ducks are drawn.
 
 Carlos Dec 14 2008
-
