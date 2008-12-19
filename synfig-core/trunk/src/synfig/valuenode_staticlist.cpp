@@ -34,6 +34,7 @@
 #include "valuenode_const.h"
 #include "valuenode_composite.h"
 #include "valuenode_bone.h"
+#include "boneweightpair.h"
 #include "general.h"
 #include "exception.h"
 #include <vector>
@@ -107,6 +108,11 @@ ValueNode_StaticList::create_list_entry(int index, Time time, Real origin) // li
 	{
 		Time a(prev.get(Time())), b(next.get(Time()));
 		ret=ValueNode_Const::create((b-a)*origin+a);
+		break;
+	}
+	case ValueBase::TYPE_BONE_WEIGHT_PAIR:
+	{
+		ret=ValueNode_Const::create(BoneWeightPair(Bone(), next.get(BoneWeightPair()).get_weight()), get_parent_canvas());
 		break;
 	}
 	default:
