@@ -140,7 +140,7 @@ Bone::get_string()const
 bool
 Bone::is_root()
 {
-	return get_parent();
+	return get_parent()->is_root();
 }
 
 /* === M E T H O D S ======================================================= */
