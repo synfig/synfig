@@ -130,7 +130,7 @@ public:
 	//!get_transformed member function.
 	//! @param v 2D Vector to transform
 	//! @return The Vector result
-	Vector get_transformed(const Vector &v);
+	Vector get_transformed(const Vector &v)const;
 
 	//! operator*=. Multiplication and assignment of one matrix by another
 	//! @param rhs the right hand side of the multiplication operation
