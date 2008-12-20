@@ -203,3 +203,82 @@ WEIGHT DUCKS
                    like the widths ducks are drawn.
 
 Carlos Dec 14 2008
+
+ADD BONE TOOL
+-------------
+It is needed a new Add Bone tool like the Bline tool. That tool would
+add bones and should work in this way:
+
+1) Select the tool
+2) Click where the origin should be.
+3) Drag to where the tip should be.
+
+There are some options in the tool options:
+Text entry: Bone name. It would use on the bone base name, like the layers.
+a) "Force create a new skeleton": if checked it always creates a new
+   skeleton layer regardless any other option.
+b) "Force to set bone to be root": If checked it sets all the bones to
+   be root when added.
+
+CASES:
+a) checked b) checked
+	All the bones are created in a new skeleton layer and all them are
+	root.
+a) checked b) unchekced
+	All the bones are created in a new skeleton layer and bones are
+	children of the previous. The first is root.
+a) unchecked
+	If a skeleton layer is selected:
+		b) unchecked
+			A bone is selected in the bones list:
+				The first bone is child of the selected and the rest are
+				child of the previous.
+			None bone is selected in the bone list
+				The first bone is root and the rest are child of the
+				previous.
+		b) checked
+			All the bones are root
+	If none skeleton layer is selected
+		A new skeleton layer will be created
+			b) unchecked
+				The first bone is root and the rest are child of the
+				previous.
+			b) checked
+				All the bones are root
+
+I suggest to use the code from the bline tool and the draw tool as
+templates to create the new bone tool.
+
+REPARENT A BONE
+---------------
+
+Reparenting a bone in animation mode means that the parent parameter has
+at last two waypoints.
+It has been suggested that the parent animation produces a interpolation
+in the bone effect over the points and over its ducks representation. So
+in the middle of two waypoints that changes the parent of a bone the
+resulting matrixes (setup and animated)are interpolated based on the
+interpolation of the waypoints. In this way the current setup and animated
+parameters of the bone (ie. origin, angle and scale) remains unchanged
+due to the parent change. Only the parent is changuing and consequently
+the matrixes are interpolated based on the change parent waypoints.
+
+REMOVING A BONE
+---------------
+There are two possible options to "remove a bone". One is the classical
+way "remove item smart" that is already coded for the lists (dynamic or
+static) and that DOESN'T DELETE A VALUENODE, it just removed the valuenode
+form the list and keep it alive meanwhile anyone refereces to that
+valuenode. Even the history can keep a valuenode alive if it is not
+cleaned.
+
+So remove an item smart from a list keeps the valuenode in any place
+where it has been used. For example the parent parameter.
+It is reponsability of the user restore the correct parent of the other
+bones if really he doesn't want that the removed bone belongs to the
+skeleton anymore.
+
+There is a secondary option not coded and open for any suggestion:
+"delete a bone".
+If you delete a bone some extra operations can be performed on the
+affected children. This needs further discussion.
