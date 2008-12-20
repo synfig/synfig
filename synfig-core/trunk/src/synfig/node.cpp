@@ -253,12 +253,18 @@ Node::get_time_last_changed()const
 void
 Node::add_child(Node*x)
 {
+	if (getenv("SYNFIG_DEBUG_NODE_PARENT_SET"))
+		printf("%s:%d adding %lx (%s) as parent of %lx (%s)\n", __FILE__, __LINE__, ulong(this), get_string().c_str(), ulong(x), x->get_string().c_str());
+
 	x->parent_set.insert(this);
 }
 
 void
 Node::remove_child(Node*x)
 {
+	if (getenv("SYNFIG_DEBUG_NODE_PARENT_SET"))
+		printf("%s:%d removing %lx from parent set of %lx\n", __FILE__, __LINE__, ulong(this), ulong(x));
+
 	if(x->parent_set.count(this)) x->parent_set.erase(this);
 }
 
