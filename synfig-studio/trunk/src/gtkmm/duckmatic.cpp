@@ -2043,9 +2043,6 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 		GUID guid(bone_value_node->get_guid());
 		Bone bone((*bone_value_node)(get_time()).get(Bone()));
 		Matrix parent_setup, inverted_parent_setup, parent_animated;
-		// printf("\n------------------------------------------------------------------------\n%s:%d bone is %s; is_root() = %d\n", __FILE__, __LINE__, bone.get_name().c_str(), bone.is_root());
-
-		printf("%s:%d showing %s ducks\n", __FILE__, __LINE__, setup ? "setup" : "regular");
 
 		if (!bone.is_root())
 		{
