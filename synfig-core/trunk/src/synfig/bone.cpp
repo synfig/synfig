@@ -58,6 +58,7 @@ Bone::Bone():
 	scalex_(1.0),  scaley_(1.0),
 	length_(1.0),
 	strength_(1.0),
+	setup_(false),
 	parent_(0)
 {
 	if (getenv("SYNFIG_DEBUG_NEW_BONES"))
@@ -74,6 +75,7 @@ Bone::Bone(const Point &o, const Point &t):
 	scalex_(1.0),  scaley_(1.0),
 	length_(1.0),
 	strength_(1.0),
+	setup_(false),
 	parent_(0)
 {
 	if (getenv("SYNFIG_DEBUG_NEW_BONES"))
@@ -91,6 +93,7 @@ Bone::Bone(const String &n, const Point &o, const Angle &a, const Real &l, const
 	scalex_(1.0),  scaley_(1.0),
 	length_(l),
 	strength_(s),
+	setup_(false),
 	parent_(p)
 {
 	if (getenv("SYNFIG_DEBUG_NEW_BONES"))
@@ -128,13 +131,13 @@ Bone::get_tip()
 synfig::String
 Bone::get_string()const
 {
-	return strprintf("N=%s O=(%.4f %.4f) O0=(%.4f %.4f) a=%.4f a0=%.4f slx=%.4f sly=%.4f sx=%.4f sy=%.4f l=%.4f S=%.4f P=%lx",
+	return strprintf("N=%s O=(%.4f %.4f) O0=(%.4f %.4f) a=%.4f a0=%.4f slx=%.4f sly=%.4f sx=%.4f sy=%.4f l=%.4f St=%.4f Se=%d P=%lx",
 					 name_.c_str(),
 					 origin_[0], origin_[1],
 					 origin0_[0], origin0_[1],
 					 Angle::deg(angle_).get(),
 					 Angle::deg(angle0_).get(),
-					 scalelx_, scalely_, scalex_, scaley_, length_, strength_, ulong(parent_));
+					 scalelx_, scalely_, scalex_, scaley_, length_, strength_, setup_, ulong(parent_));
 }
 
 bool

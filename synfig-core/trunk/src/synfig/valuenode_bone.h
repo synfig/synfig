@@ -50,6 +50,7 @@ class ValueNode_Bone : public LinkableValueNode
 	ValueNode::RHandle length_;
 	ValueNode::RHandle strength_;
 	ValueNode::RHandle parent_;
+	bool setup_;
 
 protected:
 	ValueNode_Bone();
@@ -119,6 +120,9 @@ public:
 	static BoneSet get_possible_parent_bones(ValueNode::Handle value_node);
 
 	static ValueNode_Bone::Handle get_root_bone();
+
+	bool get_setup() { return setup_; }
+	void set_setup(bool value) { setup_ = value; changed(); }
 
 #ifdef _DEBUG
 	virtual void ref()const;

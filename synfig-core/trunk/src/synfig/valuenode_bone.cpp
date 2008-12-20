@@ -221,14 +221,16 @@ ValueNode_Bone::get_ordered_bones(etl::handle<const Canvas> canvas)
 
 // this should only be used when creating the root bone
 ValueNode_Bone::ValueNode_Bone():
-	LinkableValueNode(ValueBase::TYPE_BONE)
+	LinkableValueNode(ValueBase::TYPE_BONE),
+	setup_(false)
 {
 	if (getenv("SYNFIG_DEBUG_ROOT_BONE"))
 		printf("%s:%d ValueNode_Bone::ValueNode_Bone() this line should only appear once guid %s\n", __FILE__, __LINE__, get_guid().get_string().c_str());
 }
 
 ValueNode_Bone::ValueNode_Bone(const ValueBase &value, etl::loose_handle<Canvas> canvas):
-	LinkableValueNode(value.get_type())
+	LinkableValueNode(value.get_type()),
+	setup_(false)
 {
 	if (getenv("SYNFIG_DEBUG_BONE_CONSTRUCTORS"))
 	{
@@ -508,6 +510,7 @@ ValueNode_Bone::operator()(Time t)const
 	ret.set_setup_matrix	(bone_setup_matrix);
 	ret.set_animated_matrix	(bone_animated_matrix);
 #endif
+	ret.set_setup			(setup_);
 
 	return ret;
 }

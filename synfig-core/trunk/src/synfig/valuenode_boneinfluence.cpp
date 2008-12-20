@@ -234,6 +234,8 @@ ValueNode_BoneInfluence::calculate_transform(Time t)const
 			printf("%s\n",	 (bone.get_setup_matrix() * bone.get_animated_matrix() * weight).get_string(15).c_str());
 		}
 
+		if (bone.get_setup()) continue;
+
 		transform += (bone.get_setup_matrix() *
 					  bone.get_animated_matrix() *
 					  weight);

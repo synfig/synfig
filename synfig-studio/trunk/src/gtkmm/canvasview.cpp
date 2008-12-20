@@ -57,6 +57,7 @@
 #include <synfig/valuenode_blinecalcvertex.h>
 #include <synfig/valuenode_blinecalcwidth.h>
 #include <synfig/valuenode_bline.h>
+#include <synfig/valuenode_bone.h>
 #include <synfig/layer.h>
 
 #include <synfigapp/uimanager.h>
@@ -3580,7 +3581,14 @@ CanvasView::toggle_duck_mask(Duckmatic::Type type)
 		work_area->set_type_mask(work_area->get_type_mask()|type);
 
 	if (type == Duck::TYPE_BONE_SETUP)
+	{
+		bool value(work_area->get_type_mask() & type);
+		ValueNode_Bone::BoneMap bone_map(ValueNode_Bone::get_bone_map(get_canvas()));
+		for (ValueNode_Bone::BoneMap::iterator iter = bone_map.begin(); iter != bone_map.end(); iter++)
+			iter->second->set_setup(value);
+
 		queue_rebuild_ducks();
+	}
 
 	work_area->queue_draw();
 }

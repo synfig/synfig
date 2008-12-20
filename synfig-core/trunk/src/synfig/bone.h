@@ -91,6 +91,8 @@ private:
 	Real length_;
 	//!This is the strength at setup time
 	Real strength_;
+	//!Whether the bone is currently showing its setup position
+	bool setup_;
 	//!The parent bone.
 	const ValueNode_Bone* parent_;
 
@@ -143,6 +145,10 @@ public:
 	//!Wrapper for strength
 	const Real& get_strength()const {return strength_;}
 	void set_strength(const Real &x) {strength_=x;}
+
+	//!Wrapper for setup
+	const bool& get_setup()const {return setup_;}
+	void set_setup(const bool &x) {setup_=x;}
 
 	//!This gets the calculated tip of the bone based on
 	//!tip=origin+[length,0]*Rotate(alpha)*Scalex(scalex*scalelx)
