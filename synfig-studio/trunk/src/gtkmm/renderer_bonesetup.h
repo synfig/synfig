@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file renderer_timecode.h
+/*!	\file renderer_bonesetup.h
 **	\brief Template Header
 **
 **	$Id$
@@ -22,8 +22,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_RENDERER_TIMECODE_H
-#define __SYNFIG_RENDERER_TIMECODE_H
+#ifndef __SYNFIG_RENDERER_BONESETUP_H
+#define __SYNFIG_RENDERER_BONESETUP_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -32,7 +32,7 @@
 
 /* === M A C R O S ========================================================= */
 
-static const int timecode_x  = 4, timecode_y  =  4;
+static const int bonesetup_x  = 4, bonesetup_y  =  16;
 
 /* === T Y P E D E F S ===================================================== */
 
@@ -40,13 +40,11 @@ static const int timecode_x  = 4, timecode_y  =  4;
 
 namespace studio {
 
-class Renderer_Timecode : public studio::WorkAreaRenderer
+class Renderer_BoneSetup : public studio::WorkAreaRenderer
 {
 
 public:
-	~Renderer_Timecode();
-
-	synfig::Vector get_grid_size()const;
+	~Renderer_BoneSetup();
 
 	void render_vfunc(const Glib::RefPtr<Gdk::Drawable>& drawable,const Gdk::Rectangle& expose_area	);
 

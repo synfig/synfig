@@ -164,6 +164,6 @@ Renderer_Timecode::render_vfunc(
 			assert(0);
 		}
 
-  		drawable->draw_layout(gc, 4, 4, layout);
+		drawable->draw_layout(gc, timecode_x, timecode_y, layout);
 	}
 }

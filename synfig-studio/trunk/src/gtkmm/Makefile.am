@@ -10,10 +10,10 @@ CELLRENDERER_CC = \
 
 WORKAREARENDERER_HH = \
 	renderer_bbox.h	  renderer_canvas.h   renderer_dragbox.h   renderer_ducks.h   renderer_grid.h			\
-	renderer_guides.h   renderer_timecode.h	  workarearenderer.h
+	renderer_guides.h   renderer_timecode.h	  renderer_bonesetup.h   workarearenderer.h
 WORKAREARENDERER_CC = \
 	renderer_bbox.cpp renderer_canvas.cpp renderer_dragbox.cpp renderer_ducks.cpp renderer_grid.cpp			\
-	renderer_guides.cpp renderer_timecode.cpp workarearenderer.cpp
+	renderer_guides.cpp renderer_timecode.cpp renderer_bonesetup.cpp workarearenderer.cpp
 
 PALETTE_HH = \
 	mod_palette/dock_palbrowse.h   mod_palette/dock_paledit.h   mod_palette/mod_palette.h
