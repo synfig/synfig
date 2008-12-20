@@ -107,6 +107,8 @@ ValueNode_Const::clone(etl::loose_handle<Canvas> canvas, const GUID& deriv_guid)
 
 ValueNode_Const::~ValueNode_Const()
 {
+	if (get_value().get_type() == ValueBase::TYPE_VALUENODE_BONE)
+		remove_child(get_value().get(ValueNode_Bone::Handle()).get());
 }
 
 
