@@ -215,8 +215,8 @@ Matrix::operator+(const Matrix &rhs)
 bool
 Matrix::is_invertible()const
 {
-	printf("%s:%d Matrix::is_invertible() checking %f * %f != %f*%f\nie. %f != %f\nie. %d\n",
-		   __FILE__, __LINE__, m00,m11, m01,m10, m00*m11, m01*m10, abs(m00*m11 - m01*m10) > epsilon);
+//	printf("%s:%d Matrix::is_invertible() checking %f * %f != %f*%f\nie. %f != %f\nie. %d\n",
+//		   __FILE__, __LINE__, m00,m11, m01,m10, m00*m11, m01*m10, abs(m00*m11 - m01*m10) > epsilon);
 	return abs(m00*m11 - m01*m10) > epsilon;
 }
 
