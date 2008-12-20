@@ -48,6 +48,7 @@
 #include <synfig/valuenode_blinecalcvertex.h>
 #include <synfig/valuenode_blinecalcwidth.h>
 #include <synfig/valuenode_staticlist.h>
+#include <synfig/valuenode_bone.h>
 
 #include <synfig/curve_helper.h>
 
@@ -56,6 +57,7 @@
 #include <sigc++/hide.h>
 #include <sigc++/bind.h>
 
+#include "ducktransform_matrix.h"
 #include "canvasview.h"
 
 #include "onemoment.h"
@@ -1912,6 +1914,12 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 						return false;
 				}
 			}
+			else if(value_node->get_contained_type()==ValueBase::TYPE_BONE)
+			{
+				for(i=0;i<value_node->link_count();i++)
+					if(!add_to_ducks(synfigapp::ValueDesc(value_node,i),canvas_view,transform_stack))
+						return false;
+			}
 			else
 				return false;
 		}
@@ -2018,7 +2026,95 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 
 		return true;
 	}
+	break;
+	case ValueBase::TYPE_BONE:
+	{
+		assert(value_desc.parent_is_linkable_value_node());
+		ValueNode::Handle value_node(value_desc.get_value_node());
+		ValueNode_Bone::Handle bone_value_node;
+		if (!(bone_value_node = ValueNode_Bone::Handle::cast_dynamic(value_node)))
+		{
+			error("expected a ValueNode_Bone");
+			assert(0);
+		}
+		GUID guid(bone_value_node->get_guid());
+		Bone bone((*bone_value_node)(get_time()).get(Bone()));
+		Matrix parent_setup, parent_animated;
+		// printf("\n------------------------------------------------------------------------\n%s:%d bone is %s; is_root() = %d\n", __FILE__, __LINE__, bone.get_name().c_str(), bone.is_root());
+		if (!bone.is_root())
+		{
+			Bone parent_bone((*bone.get_parent())(get_time()).get(Bone()));
+			// printf("%s:%d parent bone is %s\n", __FILE__, __LINE__, parent_bone.get_name().c_str());
+			// parent_setup = parent_bone.get_setup_matrix();
+			parent_animated = parent_bone.get_animated_matrix();
+		}
 
+		synfig::TransformStack bone_transform_stack(transform_stack);
+		bone_transform_stack.push(new Transform_Matrix(guid, parent_animated));
+
+		// origin
+		{
+			synfigapp::ValueDesc value_desc(bone_value_node, bone_value_node->get_link_index_from_name("origin"));
+
+			etl::handle<Duck> duck=new Duck();
+			duck->set_type(Duck::TYPE_POSITION);
+			duck->set_transform_stack(bone_transform_stack);
+			duck->set_name(guid_string(value_desc));
+			duck->set_value_desc(value_desc);
+
+			duck->set_point(value_desc.get_value(get_time()).get(Point()));
+
+			// duck->set_guid(calc_duck_guid(value_desc,bone_transform_stack)^synfig::GUID::hasher(multiple));
+			duck->set_guid(calc_duck_guid(value_desc,bone_transform_stack)^synfig::GUID::hasher(".origin"));
+
+			// if the ValueNode can be directly manipulated, then set it as so
+			duck->set_editable(!parent_animated.is_invertible() ? false :
+							   !value_desc.is_value_node() ? true :
+							   synfigapp::is_editable(value_desc.get_value_node()));
+
+			duck->signal_edited().clear();
+			duck->signal_edited().connect(sigc::bind(sigc::mem_fun(*canvas_view, &studio::CanvasView::on_duck_changed), value_desc));
+			duck->signal_user_click(2).connect(sigc::bind(sigc::bind(sigc::bind(sigc::mem_fun(*canvas_view,
+																							  &studio::CanvasView::popup_param_menu),
+																				false), // bezier
+																	 0.0f),				// location
+														  value_desc));					// value_desc
+			add_duck(duck);
+		}
+
+		// angle
+		{
+			synfigapp::ValueDesc value_desc(bone_value_node, bone_value_node->get_link_index_from_name("angle"));
+
+			etl::handle<Duck> duck=new Duck();
+			duck->set_type(Duck::TYPE_ANGLE);
+			duck->set_transform_stack(bone_transform_stack);
+			duck->set_name(guid_string(value_desc));
+			duck->set_value_desc(value_desc);
+
+			synfig::Angle angle(value_desc.get_value(get_time()).get(Angle()));
+			duck->set_point(Point(Angle::cos(angle).get(),Angle::sin(angle).get()));
+
+			// duck->set_guid(calc_duck_guid(value_desc,bone_transform_stack)^synfig::GUID::hasher(multiple));
+			duck->set_guid(calc_duck_guid(value_desc,bone_transform_stack)^synfig::GUID::hasher(".angle"));
+
+			// if the ValueNode can be directly manipulated, then set it as so
+			duck->set_editable(!value_desc.is_value_node() ? true :
+							   synfigapp::is_editable(value_desc.get_value_node()));
+
+			duck->signal_edited_angle().clear();
+			duck->signal_edited_angle().connect(sigc::bind(sigc::mem_fun(*canvas_view, &studio::CanvasView::on_duck_angle_changed), value_desc));
+			duck->signal_user_click(2).connect(sigc::bind(sigc::bind(sigc::bind(sigc::mem_fun(*canvas_view,
+																							  &studio::CanvasView::popup_param_menu),
+																				false), // bezier
+																	 0.0f),				// location
+														  value_desc));					// value_desc
+			duck->set_origin(last_duck());
+			add_duck(duck);
+		}
+
+		return true;
+	}
 	break;
 	default:
 		break;
