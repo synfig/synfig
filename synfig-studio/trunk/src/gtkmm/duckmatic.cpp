@@ -91,7 +91,7 @@ using namespace studio;
 /* === E N T R Y P O I N T ================================================= */
 
 Duckmatic::Duckmatic():
-	type_mask(Duck::TYPE_ALL-Duck::TYPE_WIDTH),
+	type_mask(Duck::TYPE_ALL-Duck::TYPE_WIDTH-Duck::TYPE_BONE_SETUP),
 	grid_snap(false),
 	guide_snap(false),
 	grid_size(1.0/4.0,1.0/4.0),
@@ -2029,6 +2029,9 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 	break;
 	case ValueBase::TYPE_BONE:
 	{
+		synfig::TransformStack bone_transform_stack(transform_stack);
+		bool setup(get_type_mask() & Duck::TYPE_BONE_SETUP);
+
 		assert(value_desc.parent_is_linkable_value_node());
 		ValueNode::Handle value_node(value_desc.get_value_node());
 		ValueNode_Bone::Handle bone_value_node;
@@ -2039,22 +2042,22 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 		}
 		GUID guid(bone_value_node->get_guid());
 		Bone bone((*bone_value_node)(get_time()).get(Bone()));
-		Matrix parent_setup, parent_animated;
+		Matrix parent_setup, inverted_parent_setup, parent_animated;
 		// printf("\n------------------------------------------------------------------------\n%s:%d bone is %s; is_root() = %d\n", __FILE__, __LINE__, bone.get_name().c_str(), bone.is_root());
+
+		printf("%s:%d showing %s ducks\n", __FILE__, __LINE__, setup ? "setup" : "regular");
+
 		if (!bone.is_root())
 		{
-			Bone parent_bone((*bone.get_parent())(get_time()).get(Bone()));
-			// printf("%s:%d parent bone is %s\n", __FILE__, __LINE__, parent_bone.get_name().c_str());
-			// parent_setup = parent_bone.get_setup_matrix();
-			parent_animated = parent_bone.get_animated_matrix();
+			if (setup)
+				bone_transform_stack.push(new Transform_Matrix(guid, (*bone.get_parent())(get_time()).get(Bone()).get_setup_matrix().invert()));
+			else
+				bone_transform_stack.push(new Transform_Matrix(guid, (*bone.get_parent())(get_time()).get(Bone()).get_animated_matrix()));
 		}
-
-		synfig::TransformStack bone_transform_stack(transform_stack);
-		bone_transform_stack.push(new Transform_Matrix(guid, parent_animated));
 
 		// origin
 		{
-			synfigapp::ValueDesc value_desc(bone_value_node, bone_value_node->get_link_index_from_name("origin"));
+			synfigapp::ValueDesc value_desc(bone_value_node, bone_value_node->get_link_index_from_name(setup ? "origin0" : "origin"));
 
 			etl::handle<Duck> duck=new Duck();
 			duck->set_type(Duck::TYPE_POSITION);
@@ -2084,7 +2087,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 
 		// angle
 		{
-			synfigapp::ValueDesc value_desc(bone_value_node, bone_value_node->get_link_index_from_name("angle"));
+			synfigapp::ValueDesc value_desc(bone_value_node, bone_value_node->get_link_index_from_name(setup ? "angle0" : "angle"));
 
 			etl::handle<Duck> duck=new Duck();
 			duck->set_type(Duck::TYPE_ANGLE);

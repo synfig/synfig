@@ -1420,6 +1420,7 @@ CanvasView::init_menus()
 		DUCK_MASK(radius,RADIUS,_("Show Radius Ducks"));
 		DUCK_MASK(width,WIDTH,_("Show Width Ducks"));
 		DUCK_MASK(angle,ANGLE,_("Show Angle Ducks"));
+		DUCK_MASK(bone-setup,BONE_SETUP,_("Show Bone Setup Ducks"));
 
 #undef DUCK_MASK
 	}
@@ -3577,6 +3578,9 @@ CanvasView::toggle_duck_mask(Duckmatic::Type type)
 		work_area->set_type_mask(work_area->get_type_mask()-type);
 	else
 		work_area->set_type_mask(work_area->get_type_mask()|type);
+
+	if (type == Duck::TYPE_BONE_SETUP)
+		queue_rebuild_ducks();
 
 	work_area->queue_draw();
 }
