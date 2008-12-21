@@ -65,7 +65,7 @@ SYNFIG_LAYER_SET_CVS_ID(Layer_Skeleton,"$Id$");
 Layer_Skeleton::Layer_Skeleton():
 	name("skeleton")
 {
-	int bone_count = 3;
+	int bone_count = 1;
 	if (getenv("SYNFIG_NUMBER_OF_BONES_IN_SKELETON"))
 		bone_count = atoi(getenv("SYNFIG_NUMBER_OF_BONES_IN_SKELETON"));
 	if (bone_count < 1) bone_count = 1;
