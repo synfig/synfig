@@ -222,6 +222,23 @@ Renderer_Ducks::render_vfunc(
 				sub_trans_point[1] = sub_trans_origin[1];
 		}
 
+		if ((*iter)->is_linear())
+		{
+			Point sub_trans_offset(sub_trans_point - sub_trans_origin);
+			Angle constrained_angle((*iter)->get_linear_angle());
+			Angle difference(Angle::tan(sub_trans_offset[1], sub_trans_offset[0])-constrained_angle);
+			Real length(Angle::cos(difference).get()*sub_trans_offset.mag());
+
+			printf("\n%s:%d angle %.2f\n", __FILE__, __LINE__, Angle::deg(constrained_angle).get());
+			printf("%s:%d sub_trans_point %.2f %.2f\n", __FILE__, __LINE__, sub_trans_point[0], sub_trans_point[1]);
+			printf("%s:%d sub_trans_origin %.2f %.2f\n", __FILE__, __LINE__, sub_trans_origin[0], sub_trans_origin[1]);
+			printf("%s:%d sub_trans_offset %.2f %.2f\n", __FILE__, __LINE__, sub_trans_offset[0], sub_trans_offset[1]);
+
+			if (length < 0) length = 0;
+			sub_trans_point[0] = sub_trans_origin[0] + length * Angle::cos(constrained_angle).get();
+			sub_trans_point[1] = sub_trans_origin[1] + length * Angle::sin(constrained_angle).get();
+		}
+
 		Point point((*iter)->get_transform_stack().perform(sub_trans_point));
 		Point origin((*iter)->get_transform_stack().perform(sub_trans_origin));
 

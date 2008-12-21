@@ -135,9 +135,12 @@ private:
 	// Flags
 	bool editable;
 	bool radius_;
+	bool linear_;
 	bool tangent_;
 	bool hover_;
 	bool ignore_;
+
+	synfig::Angle linear_angle_;
 
 	synfig::TransformStack transform_stack_;
 
@@ -244,6 +247,10 @@ public:
 
 	void set_radius(bool r) { radius_=r; }
 	bool is_radius()const { return radius_; }
+
+	bool is_linear()const { return linear_; }
+	void set_linear(bool r, synfig::Angle a) { linear_=r; linear_angle_=a; }
+	synfig::Angle get_linear_angle() { return linear_angle_; }
 
 	//! Sets the name of the duck
 	void set_name(const synfig::String &x);
