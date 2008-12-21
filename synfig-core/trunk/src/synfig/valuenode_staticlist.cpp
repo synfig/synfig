@@ -110,6 +110,24 @@ ValueNode_StaticList::create_list_entry(int index, Time time, Real origin) // li
 		ret=ValueNode_Const::create((b-a)*origin+a);
 		break;
 	}
+	case ValueBase::TYPE_BONE:
+	{
+		ValueNode::Handle value_node(list[index]);
+		if (ValueNode_Bone::Handle value_node_bone = ValueNode_Bone::Handle::cast_dynamic(value_node))
+		{
+			Bone new_bone;
+			new_bone.set_parent(value_node_bone.get());
+
+			Real length(next.get(Bone()).get_length());
+			new_bone.set_origin(Point(1.1*length,0));
+			new_bone.set_origin0(Point(1.1*length,0));
+
+			ret=ValueNode_Const::create(new_bone, get_parent_canvas());
+		}
+		else
+			ret=ValueNode_Const::create(ValueBase::TYPE_BONE, get_parent_canvas());
+		break;
+	}
 	case ValueBase::TYPE_BONE_WEIGHT_PAIR:
 	{
 		ret=ValueNode_Const::create(BoneWeightPair(Bone(), next.get(BoneWeightPair()).get_weight()), get_parent_canvas());
