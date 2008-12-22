@@ -1,15 +1,32 @@
-PROPOSAL FOR TANGENTS UNDER BONED VERTICES
-==========================================
+THE PROBLEM OF THE TANGENT OF THE BLINES UNDER BONE INFLUENCE
+=============================================================
+Tangents are relative to vertices in any of its definitions (radius, angle)
+or (x,y). As the transformation performed by bones is prepaed to work on
+global coordinates vertices, the tangent transformation can not be directly
+transformed by bones in that way.
 
-     param                                       convert type                    value type
-     -----                                       ------------                    ----------
-1    Tangent                                     TangentByVertice		         Vector
-2        Next                                                                    Vector
-3        Previous                                                                Vector
-4        Scale                                                                   Real
-5        Displacement                                                            Angle
-7        Fixed Length                                                            bool
-8        Fixed Angle                                                             bool
+There are some solutions to solve that:
+1) 	The solution that Anime Studio gives to the tangents: It doesn't
+	have real tangents but calculated ones based on the neighbour vertices
+	position and a parameter called 'curvature'.
+	
+2) 	As well the tangents are relative to the vertex it belongs to, we
+	need to convert the tangent to global coordinates, transform it by the
+	bone(s) influence and then convert it to local coordinates again.
+
+
+
+1) PROPOSAL FOR TANGENTS 'CALCULATED' BASED ON NEIGBOUR VERTICES
+================================================================
+
+    param                      convert type                    value type
+     -----                      ------------                    ----------
+    Tangent                    TangentByVertice		         Vector
+        Next                                                    Vector
+        Previous                                                Vector
+        Link													Vector
+        Fixed Length                                            bool
+        Fixed Angle                                             bool
 
 'Current' is the current vertex in the bline (where the tangent lies) it is not a parameter
 'Next' is the next vertex in the bline relative to Current
@@ -27,12 +44,34 @@ Resulting Tangent (radius, angle) is defined by:
 Let's call: V=Next-Previous
 
 Radius:
-If Fixed Length is on:  radious = Scale
-If Fixed Length is off: radius= |V|*Scale
+If Fixed Length is on:  radious = Link.radius
+If Fixed Length is off: radius= |V|*Link.radius
 
 Angle:
-If Fixed Length is on:  angle = Displacement
-If Fixed Length is off: angle=atan2(V.y,V.x) + Displacement
+If Fixed Length is on:  angle = Link.angle
+If Fixed Length is off: angle=atan2(V.y,V.x) + Link.angle
 
+When the user manipulates the tangent duck it modifies Link as an offset
 
+2) PROPOSAL FOR TANGENTS IN GLOBAL COORDINATES
+==============================================
 
+Given a vertex V and a tangent T and a transformed position of the vertex
+after bone influence V', calculate the transformed position of the tangent.
+
+global position of the tangent:
+TG=V+T
+TG'=V'+T'
+
+T'=TG'-V' = (V+T)' -V' where ' means tranformed by bones.
+
+    param                      	convert type                   	value type
+    -----                      	------------                   	----------
+    Tangent                    	BoneTangent                    	Vector
+   		Bone Weight List		List							Static List
+   		Link (T)												Vector
+   		Vertex (V)												Vector
+
+It is reasonable that the Bone Weight List is the same for both parameters.
+
+When user manipulates the tangent duck it modifies the parameter T.
