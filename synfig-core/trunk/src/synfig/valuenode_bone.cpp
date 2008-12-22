@@ -416,20 +416,17 @@ ValueNode_Bone::get_animated_matrix(Time t, Point child_origin)const
 }
 
 Matrix
-ValueNode_Bone::get_animated_matrix(Time t, Real scalelx, Real scalely, Real scalex, Real scaley, Angle angle, Point origin, ValueNode_Bone::ConstHandle parent)const
+ValueNode_Bone::get_animated_matrix(Time t, Real scalex, Real scaley, Angle angle, Point origin, ValueNode_Bone::ConstHandle parent)const
 {
 	Matrix parent_matrix(parent->get_animated_matrix(t, origin));
-	Matrix ret(Matrix().set_scale(scalex*scalelx,scaley*scalely) *
+	Matrix ret(Matrix().set_scale(scalex,scaley) *
 			   Matrix().set_rotate(angle) *
 			   parent_matrix);
 
 	if (getenv("SYNFIG_DEBUG_ANIMATED_MATRIX_CALCULATION"))
 	{
-		printf("%s  *\n", Matrix().set_scale(scalex*scalelx,
-											 scaley*scalely).get_string(18, "animated_matrix = ",
-																		strprintf("scale(%7.2f * %7.2f = %7.2f, %7.2f * %7.2f = %7.2f) (%s)",
-																				  scalex, scalelx, scalex*scalelx,
-																				  scaley, scalely, scaley*scalely,
+		printf("%s  *\n", Matrix().set_scale(scalex, scaley).get_string(18, "animated_matrix = ",
+																		strprintf("scale(%7.2f, %7.2f) (%s)", scalex, scaley,
 																				  get_bone_name(t).c_str())).c_str());
 		printf("%s  *\n", Matrix().set_rotate(angle).get_string(18, "", strprintf("rotate(%.2f)", Angle::deg(angle).get())).c_str());
 		printf("%s  =\n", parent_matrix.get_string(18, "", "parent").c_str());
@@ -488,8 +485,9 @@ ValueNode_Bone::operator()(Time t)const
 	Matrix bone_setup_matrix	(get_setup_matrix   (t, bone_origin0, bone_angle0, bone_parent));
 	if (getenv("SYNFIG_DEBUG_SETUP_MATRIX_CALCULATION")) printf("\n***\n*** %s:%d get_setup_matrix() for %s done\n***\n\n", __FILE__, __LINE__, get_bone_name(t).c_str());
 	if (getenv("SYNFIG_DEBUG_ANIMATED_MATRIX_CALCULATION")) printf("\n***\n*** %s:%d get_animated_matrix() for %s\n***\n\n", __FILE__, __LINE__, get_bone_name(t).c_str());
-	Matrix bone_animated_matrix	(get_animated_matrix(t, bone_scalelx, bone_scalely, bone_scalex, bone_scaley, bone_angle, bone_origin, bone_parent));
+	Matrix bone_animated_matrix	(get_animated_matrix(t, bone_scalex, bone_scaley, bone_angle, bone_origin, bone_parent));
 	if (getenv("SYNFIG_DEBUG_ANIMATED_MATRIX_CALCULATION")) printf("\n***\n*** %s:%d get_animated_matrix() for %s done\n***\n\n", __FILE__, __LINE__, get_bone_name(t).c_str());
+	Matrix bone_local_scale_matrix	(Matrix().set_scale(bone_scalelx,bone_scalely));
 #endif
 
 	Bone ret;
@@ -509,6 +507,7 @@ ValueNode_Bone::operator()(Time t)const
 	ret.set_strength		(bone_strength);
 	ret.set_setup_matrix	(bone_setup_matrix);
 	ret.set_animated_matrix	(bone_animated_matrix);
+	ret.set_local_scale_matrix	(bone_local_scale_matrix);
 #endif
 	ret.set_setup			(setup_);
 

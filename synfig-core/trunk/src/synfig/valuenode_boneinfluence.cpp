@@ -231,12 +231,13 @@ ValueNode_BoneInfluence::calculate_transform(Time t)const
 		{
 			printf("%s  *\n", bone.get_setup_matrix().get_string(15, "t = setup").c_str());
 			printf("%s  =\n", bone.get_animated_matrix().get_string(15, "animated", strprintf("* %.2f (weight)", weight)).c_str());
-			printf("%s\n",	 (bone.get_setup_matrix() * bone.get_animated_matrix() * weight).get_string(15).c_str());
+			printf("%s\n",	 (bone.get_setup_matrix() * bone.get_local_scale_matrix() * bone.get_animated_matrix() * weight).get_string(15).c_str());
 		}
 
 		if (bone.get_setup()) continue;
 
 		transform += (bone.get_setup_matrix() *
+					  bone.get_local_scale_matrix() *
 					  bone.get_animated_matrix() *
 					  weight);
 		total_weight += weight;
