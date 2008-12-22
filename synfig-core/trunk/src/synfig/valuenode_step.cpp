@@ -105,6 +105,9 @@ ValueNode_Step::~ValueNode_Step()
 ValueBase
 ValueNode_Step::operator()(Time t)const
 {
+	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
+		printf("%s:%d operator()\n", __FILE__, __LINE__);
+
 	Time duration    ((*duration_    )(t).get(Time()));
 	Time start_time  ((*start_time_  )(t).get(Time()));
 	Real intersection((*intersection_)(t).get(Real()));

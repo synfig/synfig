@@ -153,6 +153,9 @@ ValueNode_Integer::get_link_index_from_name(const String &name)const
 ValueBase
 ValueNode_Integer::operator()(Time t)const
 {
+	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
+		printf("%s:%d operator()\n", __FILE__, __LINE__);
+
 	int integer = (*integer_)(t).get(int());
 
 	switch (get_type())

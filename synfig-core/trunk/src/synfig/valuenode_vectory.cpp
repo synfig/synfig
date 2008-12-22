@@ -85,6 +85,9 @@ ValueNode_VectorY::~ValueNode_VectorY()
 ValueBase
 ValueNode_VectorY::operator()(Time t)const
 {
+	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
+		printf("%s:%d operator()\n", __FILE__, __LINE__);
+
 	return (*vector_)(t).get(Vector())[1];
 }
 

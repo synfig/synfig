@@ -445,9 +445,14 @@ ValueNode_BLine::create_list_entry(int index, Time time, Real origin)
 	return ret;
 }
 
+static int instance_count;
+
 ValueBase
 ValueNode_BLine::operator()(Time t)const
 {
+	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
+		printf("%s:%d operator()\n", __FILE__, __LINE__);
+
 	std::vector<BLinePoint> ret_list;
 
 	std::vector<ListEntry>::const_iterator iter,first_iter;

@@ -79,6 +79,9 @@ ValueNode_SegCalcTangent::~ValueNode_SegCalcTangent()
 ValueBase
 ValueNode_SegCalcTangent::operator()(Time t)const
 {
+	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
+		printf("%s:%d operator()\n", __FILE__, __LINE__);
+
 	Segment segment((*segment_)(t).get(Segment()));
 
 	etl::hermite<Vector> curve(segment.p1,segment.p2,segment.t1,segment.t2);

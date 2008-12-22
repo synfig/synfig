@@ -88,6 +88,9 @@ ValueNode_BLineCalcWidth::~ValueNode_BLineCalcWidth()
 ValueBase
 ValueNode_BLineCalcWidth::operator()(Time t, Real amount)const
 {
+	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
+		printf("%s:%d operator()\n", __FILE__, __LINE__);
+
 	const std::vector<ValueBase> bline((*bline_)(t).get_list());
 	handle<ValueNode_BLine> bline_value_node(bline_);
 	const bool looped(bline_value_node->get_loop());

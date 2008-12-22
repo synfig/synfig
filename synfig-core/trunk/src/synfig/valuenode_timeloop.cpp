@@ -153,6 +153,9 @@ ValueNode_TimeLoop::get_link_index_from_name(const String &name)const
 ValueBase
 ValueNode_TimeLoop::operator()(Time t)const
 {
+	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
+		printf("%s:%d operator()\n", __FILE__, __LINE__);
+
 	Time link_time  = (*link_time_) (t).get(Time());
 	Time local_time = (*local_time_)(t).get(Time());
 	Time duration   = (*duration_)  (t).get(Time());

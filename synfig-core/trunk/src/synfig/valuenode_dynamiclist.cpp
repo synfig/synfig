@@ -595,6 +595,9 @@ ValueNode_DynamicList::create_from(const ValueBase &value)
 ValueBase
 ValueNode_DynamicList::operator()(Time t)const
 {
+	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
+		printf("%s:%d operator()\n", __FILE__, __LINE__);
+
 	std::vector<ValueBase> ret_list;
 	std::vector<ListEntry>::const_iterator iter;
 
