@@ -99,6 +99,7 @@ public:
 		TYPE_ANGLE		=	(1<<4),	// 16
 		TYPE_VERTEX		=	(1<<5),	// 32
 		TYPE_BONE_SETUP	=	(1<<6),	// 64
+		TYPE_BONE_RECURSIVE	=	(1<<7),	// 128
 
 		TYPE_ALL		=	(~0),
 

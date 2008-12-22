@@ -1422,8 +1422,14 @@ CanvasView::init_menus()
 		DUCK_MASK(width,WIDTH,_("Show Width Ducks"));
 		DUCK_MASK(angle,ANGLE,_("Show Angle Ducks"));
 		DUCK_MASK(bone-setup,BONE_SETUP,_("Show Bone Setup Ducks"));
+		action_mask_bone_setup_ducks = action;
+		DUCK_MASK(bone-recursive,BONE_RECURSIVE,_("Show Recursive Scale Bone Ducks"));
+		action_mask_bone_recursive_ducks = action;
 
 #undef DUCK_MASK
+
+		action_group->add(Gtk::Action::create("mask-bone-ducks", _("Next Bone Ducks")),
+						  sigc::mem_fun(*this,&CanvasView::mask_bone_ducks));
 	}
 
 	add_accel_group(App::ui_manager()->get_accel_group());
@@ -3589,8 +3595,33 @@ CanvasView::toggle_duck_mask(Duckmatic::Type type)
 
 		queue_rebuild_ducks();
 	}
+	else if (type == Duck::TYPE_BONE_RECURSIVE && !(work_area->get_type_mask()&Duck::TYPE_BONE_SETUP))
+		queue_rebuild_ducks();
 
 	work_area->queue_draw();
+}
+
+void
+CanvasView::mask_bone_ducks()
+{
+	Duck::Type mask(work_area->get_type_mask());
+	bool setup(mask & Duck::TYPE_BONE_SETUP);
+	bool recursive(mask & Duck::TYPE_BONE_RECURSIVE);
+
+	// setup -> none -> recursive -> setup
+	if (setup)
+	{
+		if (recursive)
+			action_mask_bone_recursive_ducks->set_active(false);
+		action_mask_bone_setup_ducks->set_active(false);
+	}
+	else if (recursive)
+	{
+		action_mask_bone_setup_ducks->set_active(true);
+		action_mask_bone_recursive_ducks->set_active(false);
+	}
+	else
+		action_mask_bone_recursive_ducks->set_active(true);
 }
 
 void
