@@ -2106,6 +2106,40 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 			origin_duck = last_duck();
 		}
 
+		// width
+		if (!setup)
+		{
+			synfigapp::ValueDesc value_desc(bone_value_node, bone_value_node->get_link_index_from_name(recursive ? "scaley" : "scalely"));
+//			synfigapp::ValueDesc other_desc(bone_value_node, bone_value_node->get_link_index_from_name(recursive ? "scalely" : "scaley"));
+
+			etl::handle<Duck> duck=new Duck();
+			duck->set_type(Duck::TYPE_WIDTH);
+			duck->set_transform_stack(bone_transform_stack);
+			duck->set_name(guid_string(value_desc));
+			duck->set_value_desc(value_desc);
+			duck->set_radius(true);
+//			duck->set_scalar(other_desc.get_value(time).get(Real())/2);
+			duck->set_point(Point(value_desc.get_value(time).get(Real()),0));
+
+			// duck->set_guid(calc_duck_guid(value_desc,bone_transform_stack)^synfig::GUID::hasher(multiple));
+			duck->set_guid(calc_duck_guid(value_desc,bone_transform_stack)^synfig::GUID::hasher(".scaley"));
+
+			// if the ValueNode can be directly manipulated, then set it as so
+			duck->set_editable(!parent_animated.is_invertible() ? false :
+							   !value_desc.is_value_node() ? true :
+							   synfigapp::is_editable(value_desc.get_value_node()));
+
+			duck->signal_edited().clear();
+			duck->signal_edited().connect(sigc::bind(sigc::mem_fun(*canvas_view, &studio::CanvasView::on_duck_changed), value_desc));
+			duck->signal_user_click(2).connect(sigc::bind(sigc::bind(sigc::bind(sigc::mem_fun(*canvas_view,
+																							  &studio::CanvasView::popup_param_menu),
+																				false), // bezier
+																	 0.0f),				// location
+														  value_desc));					// value_desc
+			duck->set_origin(origin_duck);
+			add_duck(duck);
+		}
+
 		Angle angle;
 		// angle
 		{
