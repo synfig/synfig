@@ -106,7 +106,7 @@ class InsideOut_Trans : public Transform
 {
 	etl::handle<const InsideOut> layer;
 public:
-	InsideOut_Trans(const InsideOut* x):layer(x) { }
+	InsideOut_Trans(const InsideOut* x):Transform(x->get_guid()),layer(x) { }
 
 	synfig::Vector perform(const synfig::Vector& x)const
 	{

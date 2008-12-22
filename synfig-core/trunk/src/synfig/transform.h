@@ -49,7 +49,7 @@ public:
 	typedef etl::handle<Transform> Handle;
 
 protected:
-	Transform(const GUID& guid=GUID(0)):guid_(guid) { }
+	Transform(const GUID& guid=GUID()):guid_(guid) { }
 
 public:
 
