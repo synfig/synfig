@@ -2157,7 +2157,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 			duck->set_guid(calc_duck_guid(value_desc,bone_transform_stack)^synfig::GUID::hasher(".length"));
 
 			// if the ValueNode can be directly manipulated, then set it as so
-			duck->set_editable(// !setup ? false :
+			duck->set_editable(!setup ? false :
 							   !parent_animated.is_invertible() ? false :
 							   !value_desc.is_value_node() ? true :
 							   synfigapp::is_editable(value_desc.get_value_node()));
