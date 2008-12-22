@@ -2051,7 +2051,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 		synfig::TransformStack bone_transform_stack(transform_stack);
 		bool setup(get_type_mask() & Duck::TYPE_BONE_SETUP);
 
-		assert(value_desc.parent_is_linkable_value_node());
+		assert(value_desc.parent_is_linkable_value_node() || value_desc.parent_is_canvas());
 		ValueNode::Handle value_node(value_desc.get_value_node());
 		ValueNode_Bone::Handle bone_value_node;
 		if (!(bone_value_node = ValueNode_Bone::Handle::cast_dynamic(value_node)))
