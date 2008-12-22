@@ -92,8 +92,7 @@ ValueNode_Cos::operator()(Time t)const
 	return
 		Angle::cos(
 			(*angle_)(t).get(Angle())
-		).get() * (*amp_)(t).get(Real())
-	;
+		).get() * (*amp_)(t).get(Real());
 }
 
 
@@ -125,6 +124,7 @@ ValueNode_Cos::set_link_vfunc(int i,ValueNode::Handle value)
 	case 0: CHECK_TYPE_AND_SET_VALUE(angle_, ValueBase::TYPE_ANGLE);
 	case 1: CHECK_TYPE_AND_SET_VALUE(amp_,   ValueBase::TYPE_REAL);
 	}
+
 	return false;
 }
 
@@ -133,10 +133,11 @@ ValueNode_Cos::get_link_vfunc(int i)const
 {
 	assert(i>=0 && i<link_count());
 
-	if(i==0)
-		return angle_;
-	if(i==1)
-		return amp_;
+	switch(i)
+	{
+	case 0: return angle_;
+	case 1: return amp_;
+	}
 
 	return 0;
 }
@@ -152,10 +153,12 @@ ValueNode_Cos::link_name(int i)const
 {
 	assert(i>=0 && i<link_count());
 
-	if(i==0)
-		return "angle";
-	if(i==1)
-		return "amp";
+	switch(i)
+	{
+	case 0: return "angle";
+	case 1: return "amp";
+	}
+
 	return String();
 }
 
@@ -164,20 +167,20 @@ ValueNode_Cos::link_local_name(int i)const
 {
 	assert(i>=0 && i<link_count());
 
-	if(i==0)
-		return _("Angle");
-	if(i==1)
-		return _("Amplitude");
+	switch(i)
+	{
+	case 0: return _("Angle");
+	case 1: return _("Amplitude");
+	}
+
 	return String();
 }
 
 int
 ValueNode_Cos::get_link_index_from_name(const String &name)const
 {
-	if(name=="angle")
-		return 0;
-	if(name=="amp")
-		return 1;
+	if(name=="angle")	return 0;
+	if(name=="amp")		return 1;
 
 	throw Exception::BadLinkName(name);
 }
