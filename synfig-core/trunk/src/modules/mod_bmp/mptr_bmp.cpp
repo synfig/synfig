@@ -232,4 +232,4 @@ bmp_mptr::get_frame(synfig::Surface &surface,Time /*time*/, synfig::ProgressCall
 	fclose(file);
 	return true;
 }
- 
+

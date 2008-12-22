@@ -5,8 +5,8 @@ Copyright 2000, Willem van Schaik.  For conditions of distribution and
 use, see the copyright/license/disclaimer notice in png.h
 
 As a PNG .dll demo VisualPng is finished. More features would only hinder
-the program's objective. However, further extensions (like support for other 
-graphics formats) are in development. To get these, or for pre-compiled 
+the program's objective. However, further extensions (like support for other
+graphics formats) are in development. To get these, or for pre-compiled
 binaries, go to "http://www.schaik.com/png/visualpng.html".
 
 ------------------------------------------------------------------------

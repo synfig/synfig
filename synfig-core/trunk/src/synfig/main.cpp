@@ -313,7 +313,7 @@ synfig::Main::~Main()
  	// synfig::info("Module::subsys_stop()");
 	// Module::subsys_stop();
 	// synfig::info("Exiting");
-	
+
 #if defined(HAVE_SIGNAL_H) && defined(SIGPIPE)
 	signal(SIGPIPE, SIG_DFL);
 #endif

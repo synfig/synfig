@@ -93,7 +93,7 @@ inline void ThreePointdt(T &df, const T &f1, const T &f2, const T &f3, int bias)
 // 	// so only one algorithm needed for left, middle, or right
 // 	df = (f1 -f2*2 + f3)*(1/2.0f);
 // }
-// 
+//
 // // WARNING -- totally broken
 // template < class T >
 // inline void FivePointddt(T &df, const T &f1, const T &f2, const T &f3, int bias)
@@ -114,7 +114,7 @@ inline void ThreePointdt(T &df, const T &f1, const T &f2, const T &f3, int bias)
 // 	}*/
 // 	//side ones don't work, use 3 point
 // }
-// 
+//
 // //implement an arbitrary derivative
 // //dumb algorithm
 // template < class T >
@@ -122,22 +122,22 @@ inline void ThreePointdt(T &df, const T &f1, const T &f2, const T &f3, int bias)
 // {
 // 	/*
 // 	Lj(x) = PI_i!=j (x - xi) / PI_i!=j (xj - xi)
-// 
+//
 // 	so Lj'(x) = SUM_k PI_i!=j|k (x - xi) / PI_i!=j (xj - xi)
 // 	*/
-// 
+//
 // 	unsigned int i,j,k,i0,i1;
-// 
+//
 // 	Real Lpj,mult,div,tj;
 // 	Real tval = t[indexval];
-// 
+//
 // 	//sum k
 // 	for(j=0;j<npoints;++j)
 // 	{
 // 		Lpj = 0;
 // 		div = 1;
 // 		tj = t[j];
-// 
+//
 // 		for(k=0;k<npoints;++k)
 // 		{
 // 			if(k != j) //because there is no summand for k == j, since that term is missing from the original equation
@@ -150,17 +150,17 @@ inline void ThreePointdt(T &df, const T &f1, const T &f2, const T &f3, int bias)
 // 						mult *= tval - t[i];
 // 					}
 // 				}
-// 
+//
 // 				Lpj += mult; //add into the summation
-// 
+//
 // 				//since the ks follow the exact pattern we need for the divisor (use that too)
 // 				div *= tj - t[k];
 // 			}
 // 		}
-// 
+//
 // 		//get the actual coefficient
 // 		Lpj /= div;
-// 
+//
 // 		//add it in to the equation
 // 		df += f[j]*Lpj;
 // 	}
@@ -619,16 +619,16 @@ synfigapp::BLineConverter::operator()(std::list<synfig::BLinePoint>  &blinepoint
 			// Wondering whether the modification of the deriv vector
 			// using a char* pointer and pointer arithmetric was safe,
 			// I looked it up...
-			// 
+			//
 			// http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2369.pdf tells me:
-			// 
+			//
 			//	23.2.5  Class template vector [vector]
-			// 
+			//
 			//	[...] The elements of a vector are stored contiguously,
 			//	meaning that if v is a vector<T,Allocator> where T is
 			//	some type other than bool, then it obeys the identity
 			//	&v[n] == &v[0] + n for all 0 <= n < v.size().
-			// 
+			//
 			GetFirstDerivatives(ftemp,0,size,(char*)&deriv[0],sizeof(deriv[0]));
 
 			//GetSimpleDerivatives(ftemp,0,size,deriv,0,cum_dist);

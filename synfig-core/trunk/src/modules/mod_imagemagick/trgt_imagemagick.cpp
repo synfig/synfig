@@ -181,21 +181,21 @@ imagemagick_trgt::start_frame(synfig::ProgressCallback *cb)
 #elif defined(UNIX_PIPE_TO_PROCESSES)
 
 	int p[2];
-  
+
 	if (pipe(p)) {
 		if(cb) cb->error(N_(msg));
 		else synfig::error(N_(msg));
 		return false;
 	};
-  
+
 	pid = fork();
-  
+
 	if (pid == -1) {
 		if(cb) cb->error(N_(msg));
 		else synfig::error(N_(msg));
 		return false;
 	}
-	
+
 	if (pid == 0){
 		// Child process
 		// Close pipeout, not needed

@@ -63,9 +63,9 @@
 class mng_trgt : public synfig::Target_Scanline
 {
 	SYNFIG_TARGET_MODULE_EXT
-	
+
 private:
-	
+
 	FILE *file;
 	int w,h;
 	mng_handle mng;
@@ -81,7 +81,7 @@ private:
 	unsigned int zbuffer_len;
 
 public:
-	
+
 	mng_trgt(const char *filename);
 	virtual ~mng_trgt();
 

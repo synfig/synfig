@@ -40,9 +40,9 @@
 class magickpp_trgt : public synfig::Target_Scanline
 {
 	SYNFIG_TARGET_MODULE_EXT
-	
+
 private:
-	
+
 	int width, height;
 
 	synfig::String filename;
@@ -53,7 +53,7 @@ private:
 	std::vector<Magick::Image> images;
 
 public:
-	
+
 	magickpp_trgt(const char *filename) : filename(filename) { }
 	virtual ~magickpp_trgt();
 

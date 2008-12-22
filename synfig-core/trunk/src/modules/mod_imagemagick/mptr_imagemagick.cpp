@@ -112,7 +112,7 @@ imagemagick_mptr::get_frame(synfig::Surface &surface,Time /*time*/, synfig::Prog
 		pclose(file);
 
 	string command;
-	
+
 	if(filename.find("psd")!=String::npos)
 		command=strprintf("convert \"%s\" -flatten \"png32:%s\"\n",filename.c_str(),temp_file.c_str());
 	else
@@ -126,11 +126,11 @@ imagemagick_mptr::get_frame(synfig::Surface &surface,Time /*time*/, synfig::Prog
 	string output="png32:"+temp_file;
 
 	pid_t pid = fork();
-  
+
 	if (pid == -1) {
 		return false;
 	}
-  
+
 	if (pid == 0){
 		// Child process
 		if(filename.find("psd")!=String::npos)
@@ -203,9 +203,9 @@ imagemagick_mptr::get_frame(synfig::Surface &surface,Time /*time*/, synfig::Prog
 	return true;
 
 #else
-	
+
 #error This code contains tempfile and arbitrary shell command execution vulnerabilities
-	
+
 	if(file)
 		pclose(file);
 

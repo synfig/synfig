@@ -363,7 +363,7 @@ public:
 				row_height = atoi(getenv("SYNFIG_TIMETRACK_ROW_HEIGHT"));
 			if (row_height < 3)
 				row_height = 18;
-									  
+
 			cellrenderer_time_track->set_fixed_size(-1,row_height);
 		}
 	}

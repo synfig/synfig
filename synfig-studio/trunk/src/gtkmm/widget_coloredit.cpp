@@ -248,7 +248,7 @@ ColorSlider::on_event(GdkEvent *event)
 	} else {
 		x = float(event->button.x);
 	}
-	
+
 	float pos(x/width);
 	if(pos<0 || x<=0)pos=0;
 	if(pos>1)pos=1;

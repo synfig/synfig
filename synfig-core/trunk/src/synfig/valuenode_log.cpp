@@ -59,7 +59,7 @@ ValueNode_Logarithm::ValueNode_Logarithm(const ValueBase &x):
 	Real epsilon(0.000001);
 
 	value = exp(value);
-	
+
 	set_link("link",     ValueNode_Const::create(Real(value)));
 	set_link("epsilon",  ValueNode_Const::create(Real(epsilon)));
 	set_link("infinite", ValueNode_Const::create(Real(infinity)));
@@ -180,4 +180,4 @@ ValueNode_Logarithm::check_type(ValueBase::Type type)
 	return type==ValueBase::TYPE_REAL;
 }
 
- 	  	 
+

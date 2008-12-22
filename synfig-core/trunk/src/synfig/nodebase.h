@@ -85,7 +85,7 @@ public:
 
 	PX_DEFINE_FUNC0(signal_changed, sigc::signal<void>)
 	PX_DEFINE_FUNC0(signal_deleted, sigc::signal<void>)
-		
+
 	PX_DEFINE_FUNC_CONST0(get_parents, NodeList)
 	PX_DEFINE_FUNC_CONST0(get_children, NodeList)
 

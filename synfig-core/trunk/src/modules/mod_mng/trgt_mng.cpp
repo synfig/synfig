@@ -103,8 +103,8 @@ mng_trgt::mng_trgt(const char *Filename) : filename(Filename)
 {
 	file=NULL;
 	buffer=NULL;
-	color_buffer=NULL;	
-	zbuffer=NULL;	
+	color_buffer=NULL;
+	zbuffer=NULL;
 	zbuffer_len=0;
 	ready=false;
 }
@@ -150,7 +150,7 @@ mng_trgt::set_rend_desc(RendDesc *given_desc)
 bool
 mng_trgt::init()
 {
-	// synfig::info("%s:%d mng_trgt::init()", __FILE__, __LINE__); 
+	// synfig::info("%s:%d mng_trgt::init()", __FILE__, __LINE__);
 
 	int frame_rate, num_frames, play_time;
 	int num_layers = 1;
@@ -207,7 +207,7 @@ mng_trgt::init()
 	color_buffer=new Color[w];
 	if (color_buffer == NULL) goto cleanup_on_error;
 	return true;
-	
+
 cleanup_on_error:
 	ready=false;
 	if (mng != MNG_NULL)
@@ -219,7 +219,7 @@ cleanup_on_error:
 		mng_int32 extra2;
 		mng_pchar errortext;
 		mng_getlasterror (mng, &severity, &chunkname, &chunkseq, &extra1,&extra2, &errortext);
-		synfig::error("mng_trgt: libmng: %s",errortext); 
+		synfig::error("mng_trgt: libmng: %s",errortext);
 		mng_cleanup (&mng);
 	}
 
@@ -239,13 +239,13 @@ cleanup_on_error:
 		color_buffer = NULL;
 	}
 
-	return false;	
+	return false;
 }
 
 void
 mng_trgt::end_frame()
 {
-	// synfig::info("%s:%d mng_trgt::end_frame()", __FILE__, __LINE__); 
+	// synfig::info("%s:%d mng_trgt::end_frame()", __FILE__, __LINE__);
 
 	if (deflate(&zstream,Z_FINISH) != Z_STREAM_END)
 	{
@@ -269,7 +269,7 @@ mng_trgt::end_frame()
 bool
 mng_trgt::start_frame(synfig::ProgressCallback *callback __attribute__ ((unused)))
 {
-	// synfig::info("%s:%d mng_trgt::start_frame()", __FILE__, __LINE__); 
+	// synfig::info("%s:%d mng_trgt::start_frame()", __FILE__, __LINE__);
 
 	if (mng == MNG_NULL)
 	{
@@ -282,7 +282,7 @@ mng_trgt::start_frame(synfig::ProgressCallback *callback __attribute__ ((unused)
 		synfig::error("%s:%d mng_putchunk_ihdr()", __FILE__, __LINE__);
 		return false;
 	}
-	
+
 	zstream.zalloc = Z_NULL;
 	zstream.zfree = Z_NULL;
 	zstream.opaque = Z_NULL;

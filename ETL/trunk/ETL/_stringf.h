@@ -92,7 +92,7 @@ vstrprintf(const char *format, va_list args)
 	char *buffer;
 	std::string ret;
 	int i=vasprintf(&buffer,format,args);
-	if (i>-1) 
+	if (i>-1)
 	{
 		ret=buffer;
 		free(buffer);

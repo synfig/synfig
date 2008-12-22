@@ -1555,7 +1555,7 @@ StateDraw_Context::new_region(std::list<synfig::BLinePoint> bline, synfig::Real 
 				// synfig::info(__FILE__":%d: value_prev 0x%08X:%d",__LINE__,value_prev.get_parent_value_node().get(),value_prev.get_index());
 				// synfig::info(__FILE__":%d: value_desc 0x%08X:%d",__LINE__,value_desc.get_parent_value_node().get(),value_desc.get_index());
 				// synfig::info(__FILE__":%d: value_next 0x%08X:%d",__LINE__,value_next.get_parent_value_node().get(),value_next.get_index());
-						
+
 				/*
 				  if(value_prev.parent_is_value_node() && value_desc.parent_is_value_node() && value_next.parent_is_value_node())
 				  {
@@ -1605,7 +1605,7 @@ StateDraw_Context::new_region(std::list<synfig::BLinePoint> bline, synfig::Real 
 						// 		   (*(value_desc.get_parent_value_node()))(get_time()).get_loop()
 						// 		   // value_desc.get_value_node().get_loop(),
 						// 		);
-						// 
+						//
 						// 	// Fill in missing vertices
 						// 	// \todo take loops into account: seeing (15, 2, 3, 4) probably means that (0, 1) is missing, not 14 through 3
 						// 	if(value_desc.get_index()<value_next.get_index()-1)

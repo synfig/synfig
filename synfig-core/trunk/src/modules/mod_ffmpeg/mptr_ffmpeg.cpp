@@ -101,27 +101,27 @@ ffmpeg_mptr::seek_to(int frame)
 #if defined(WIN32_PIPE_TO_PROCESSES)
 
 		string command;
-		
+
 		command=strprintf("ffmpeg -ss 00:00:00.%d -i \"%s\" -an -f image2pipe -vcodec ppm -\n",frame,filename.c_str());
-		
+
 		file=popen(command.c_str(),POPEN_BINARY_READ_TYPE);
 
 #elif defined(UNIX_PIPE_TO_PROCESSES)
 
 		int p[2];
-	  
+
 		if (pipe(p)) {
 			cerr<<"Unable to open pipe to ffmpeg"<<endl;
 			return false;
 		};
-	  
+
 		pid = fork();
-	  
+
 		if (pid == -1) {
 			cerr<<"Unable to open pipe to ffmpeg"<<endl;
 			return false;
 		}
-	  
+
 		if (pid == 0){
 			// Child process
 			// Close pipein, not needed

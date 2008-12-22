@@ -118,7 +118,7 @@ ValueBase::get_string() const
 	case TYPE_COLOR:		return strprintf("Color (%s)", get(Color()).get_string().c_str());
 	case TYPE_SEGMENT:		return strprintf("Segment ((%f, %f) to (%f, %f))", get(Segment()).p1[0], get(Segment()).p1[1], get(Segment()).p2[0], get(Segment()).p2[1]);
 	case TYPE_BLINEPOINT:	return strprintf("BLinePoint (%s)", get(BLinePoint()).get_vertex()[0], get(BLinePoint()).get_vertex()[1]);
-		
+
 		// All types after this point require construction/destruction
 
 	case TYPE_LIST:			return strprintf("List (%d elements)", get(list_type()).size());

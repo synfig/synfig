@@ -13,7 +13,7 @@ Algorithmic - gets colors without sampling textures (exception for function look
 
 Sampling - samples a texture map as part of the color calc process.
 	Behind - use result(s) below to calculate color.
-	Internal - 
+	Internal -
 		Functions/Inputs - CPU generated internal texture maps (uniform)
 		Dependent - GPU generated texture maps (unknown use...)
 
@@ -22,7 +22,7 @@ Parameters:
 	Varying - pixel coordinate (in canv-space), texture coordinates for samplers, etc.
 
 For optimized stuff:
-	For layer constants that aren't simple calculations (i.e. changing the blend type), 
+	For layer constants that aren't simple calculations (i.e. changing the blend type),
 	we can use global constants (however since OpenGL doesn't allow you to define those
 	manually, we can probably do it with #defines or the like)... Just in time compiling
 	(optimized by caching these changes of course) would allow us to operate in an optimal
@@ -53,7 +53,7 @@ rectangle - same thing as the checker_board, but only need to worry about 2 edge
 
 Coverage Map Based: outline,polygon,region,star,text
 and Internal Samplers: import, noise
-	- would require CPU side computation of the coverage map/color map 
+	- would require CPU side computation of the coverage map/color map
 	  (tiling would be a little more difficult... we'll see how effective it would be...)
 
 Modifiers (algorithmic w/ direct below sample): clamp,colorcorrect (blend also classifies as this)

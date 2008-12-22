@@ -542,7 +542,7 @@ public:
 			value=strprintf("%s",App::predefined_size.c_str());
 			return true;
 		}
-		
+
 		return synfigapp::Settings::get_value(key,value);
 	}
 
@@ -660,7 +660,7 @@ public:
 		ret.push_back("custom_filename_prefix");
 		ret.push_back("preferred_x_size");
 		ret.push_back("preferred_y_size");
-		ret.push_back("predefined_size");		
+		ret.push_back("predefined_size");
 		return ret;
 	}
 };
@@ -1368,7 +1368,7 @@ App::~App()
 	delete auto_recover;
 
 	delete about;
-	
+
 	toolbox->hide();
 
 //	studio::App::iteration(false);
@@ -2221,7 +2221,7 @@ try_open_url(const std::string &url)
 			try { Glib::spawn_async(".", command_line, Glib::SPAWN_SEARCH_PATH); }
 			// Failed, move on to the next one
 			catch(Glib::SpawnError& exception){ continue; }
-			return true; // No exception means we succeeded!			
+			return true; // No exception means we succeeded!
 		}
 	}
 
@@ -2361,7 +2361,7 @@ App::open_as(std::string filename,std::string as)
 
 			if (warnings != "")
 				dialog_warning_blocking(_("Warnings"), strprintf("%s:\n\n%s", _("Warnings"), warnings.c_str()));
-			
+
 			if (as.find(custom_filename_prefix.c_str()) != 0)
 				add_recent_file(as);
 

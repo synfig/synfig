@@ -185,7 +185,7 @@ class Dialog_Setup : public Gtk::Dialog
 	Gtk::CheckButton toggle_resize_imported_images;
 
 	Gtk::Entry textbox_browser_command;
-	
+
 	Gtk::ComboBoxText* size_template_combo;
 	Gtk::Entry textbox_custom_filename_prefix;
 	Gtk::Adjustment adj_pref_x_size;

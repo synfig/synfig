@@ -161,25 +161,25 @@ ffmpeg_trgt::init()
 			command=strprintf("ffmpeg -f image2pipe -vcodec ppm -an -r %f -i pipe: -loop -hq -title \"%s\" -vcodec mpeg1video -y -- \"%s\"\n",desc.get_frame_rate(),get_canvas()->get_name().c_str(),filename.c_str());
 	else
 			command=strprintf("ffmpeg -f image2pipe -vcodec ppm -an -r %f -i pipe: -loop -hq -title \"%s\" -vcodec mpeg1video -y \"%s\"\n",desc.get_frame_rate(),get_canvas()->get_name().c_str(),filename.c_str());
-				
+
 	file=popen(command.c_str(),POPEN_BINARY_WRITE_TYPE);
 
 #elif defined(UNIX_PIPE_TO_PROCESSES)
 
 	int p[2];
-  
+
 	if (pipe(p)) {
 		synfig::error(_("Unable to open pipe to ffmpeg"));
 		return false;
 	};
-  
+
 	pid = fork();
-  
+
 	if (pid == -1) {
 		synfig::error(_("Unable to open pipe to ffmpeg"));
 		return false;
 	}
-  
+
 	if (pid == 0){
 		// Child process
 		// Close pipeout, not needed

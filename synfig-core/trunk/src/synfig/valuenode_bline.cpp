@@ -277,7 +277,7 @@ synfig::find_closest_point(const ValueBase &bline, const Point &pos, Real &radiu
 		Real amount = (best_index + best_time + loop_adjust) / (size + loop_adjust);
 		return amount;
 	}
-	
+
 	return 0.0;
 
 }

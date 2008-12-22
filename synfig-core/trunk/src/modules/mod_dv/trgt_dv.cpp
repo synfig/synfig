@@ -152,7 +152,7 @@ dv_trgt::init()
 #if defined(WIN32_PIPE_TO_PROCESSES)
 
 	string command;
-	
+
 	if(wide_aspect)
 		command=strprintf("encodedv -w 1 - > \"%s\"\n",filename.c_str());
 	else
@@ -170,19 +170,19 @@ dv_trgt::init()
 #elif defined(UNIX_PIPE_TO_PROCESSES)
 
 	int p[2];
-  
+
 	if (pipe(p)) {
 		synfig::error(_("Unable to open pipe to encodedv"));
 		return false;
 	};
-  
+
 	pid_t pid = fork();
-  
+
 	if (pid == -1) {
 		synfig::error(_("Unable to open pipe to encodedv"));
 		return false;
 	}
-  
+
 	if (pid == 0){
 		// Child process
 		// Close pipeout, not needed
@@ -209,7 +209,7 @@ dv_trgt::init()
 			synfig::error(_("Unable to open pipe to encodedv"));
 			return false;
 		}
-		
+
 		if(wide_aspect)
 			execlp("encodedv", "encodedv", "-w", "1", "-", (const char *)NULL);
 		else

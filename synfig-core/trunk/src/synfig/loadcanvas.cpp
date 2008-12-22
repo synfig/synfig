@@ -1075,7 +1075,7 @@ CanvasParser::parse_animated(xmlpp::Element *element,Canvas::Handle canvas)
 	// when loading a version 0.1 canvas, modify constant angle
 	// waypoints to that they are within 180 degrees of the previous
 	// waypoint's value
-	if (type == ValueBase::TYPE_ANGLE) 
+	if (type == ValueBase::TYPE_ANGLE)
 	{
 		if (canvas->get_version() == "0.1")
 		{

@@ -35,7 +35,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-# 
+#
 
 namespace studio {
 
@@ -47,7 +47,7 @@ public:
 	void close(int);
 	void on_link_clicked(Gtk::AboutDialog&, const Glib::ustring &url);
 };
-	
+
 }; // END of namespace studio
 
 /* === E N D =============================================================== */

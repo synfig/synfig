@@ -178,7 +178,7 @@ Outline::sync()
 		synfig::warning(string("Outline::sync():")+N_("No vertices in outline " + string("\"") + get_description() + string("\"")));
 		return;
 	}
-		
+
 	try {
 #if 1
 

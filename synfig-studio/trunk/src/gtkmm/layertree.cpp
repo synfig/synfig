@@ -144,7 +144,7 @@ LayerTree::LayerTree():
 	// button_duplicate->signal_clicked().connect(sigc::mem_fun(*this, &studio::LayerTree::on_duplicate_pressed));
 	// button_encapsulate->signal_clicked().connect(sigc::mem_fun(*this, &studio::LayerTree::on_encapsulate_pressed));
 	// button_delete->signal_clicked().connect(sigc::mem_fun(*this, &studio::LayerTree::on_delete_pressed));
-	
+
 	button_raise->set_sensitive(false);
 	button_lower->set_sensitive(false);
 	button_duplicate->set_sensitive(false);

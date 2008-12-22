@@ -793,7 +793,7 @@ bool Widget_Timeslider::on_scroll_event(GdkEventScroll* event) //for zooming
 					else
 					{
 						adj_timescale->set_lower(start - (orig_t-t));
-						adj_timescale->set_upper(start - (orig_t-t) + (end-start)); 
+						adj_timescale->set_upper(start - (orig_t-t) + (end-start));
 					}
 				}
 			}

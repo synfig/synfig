@@ -81,7 +81,7 @@ extern Bool DRICreateSurface(ScreenPtr pScreen,
 			     void (*notify) (void *arg, void *data),
 			     void *notify_data);
 
-extern Bool DRIDestroySurface(ScreenPtr pScreen, 
+extern Bool DRIDestroySurface(ScreenPtr pScreen,
 			      Drawable id,
 			      DrawablePtr pDrawable,
 			      void (*notify) (void *arg, void *data),

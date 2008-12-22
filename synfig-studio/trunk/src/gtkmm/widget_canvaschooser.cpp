@@ -146,7 +146,7 @@ Widget_CanvasChooser::chooser_menu()
 		set_value_(canvas);
 		return;
 	}
-		
+
 	Canvas::Handle new_canvas;
 	try
 	{

@@ -2545,7 +2545,7 @@ WorkArea::queue_scroll()
 			drawing_area->queue_draw_area(      0, 0,       1, maxy);
 			drawing_area->queue_draw_area(maxx-dx, 0, maxx-dx, maxy);
 		}
-		else if (dx < 0) 
+		else if (dx < 0)
 		{
 			drawing_area->queue_draw_area(   maxx, 0,    maxx, maxy);
 			drawing_area->queue_draw_area(    -dx, 0,     -dx, maxy);
@@ -2555,7 +2555,7 @@ WorkArea::queue_scroll()
 			drawing_area->queue_draw_area(0,       0, maxx,       1);
 			drawing_area->queue_draw_area(0, maxy-dy, maxx, maxy-dy);
 		}
-		else if (dy < 0) 
+		else if (dy < 0)
 		{
 			drawing_area->queue_draw_area(0,    maxy, maxx,    maxy);
 			drawing_area->queue_draw_area(0,     -dy, maxx,     -dy);
@@ -2650,7 +2650,7 @@ studio::WorkArea::queue_render_preview()
 		//synfig::info("queue_render_preview(): (re)queuing...");
 		//render_idle_func_id=g_idle_add_full(G_PRIORITY_DEFAULT,__render_preview,this,NULL);
 		render_idle_func_id=g_timeout_add_full(
-			G_PRIORITY_DEFAULT,	// priority - 
+			G_PRIORITY_DEFAULT,	// priority -
 			queue_time,			// interval - the time between calls to the function, in milliseconds (1/1000ths of a second)
 			__render_preview,	// function - function to call
 			this,				// data     - data to pass to function

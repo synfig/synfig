@@ -163,7 +163,7 @@ About::About()
 	artists.push_back("Chris Norman (pixelgeek)");
 	artists.push_back("Daniel Hornung (rubikcube)");
 	artists.push_back("Franco Iacomella (Yaco)");
-	
+
 	set_artists(artists);
 
 	// TRANSLATORS: change this to your name, separate multiple names with \n
@@ -192,13 +192,13 @@ About::About()
 #ifdef SHOW_EXTRA_INFO
 
 	string extra_info = get_comments() + "\n";
-	
+
 	#ifdef DEVEL_VERSION
 		extra_info += strprintf(_("\nDevelopment version:\n%s\n"),DEVEL_VERSION);
 	#endif
-	
+
 	extra_info += "\n";
-	
+
 	extra_info += strprintf(_("Built on %s" /* at %s */ "\n"), __DATE__ /* , __TIME__ */ );
 
 	extra_info += "\n";

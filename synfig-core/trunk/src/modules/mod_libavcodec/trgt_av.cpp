@@ -420,8 +420,8 @@ public:
 					context->width, context->height, context->pix_fmt,
 					SWS_BICUBIC, NULL, NULL, NULL);
 
-			sws_scale(img_convert_ctx, pict->data, pict->linesize, 
-                               
+			sws_scale(img_convert_ctx, pict->data, pict->linesize,
+
 				0, context->height, encodable->data,
 				encodable->linesize);
 

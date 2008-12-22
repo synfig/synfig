@@ -117,7 +117,7 @@ Action::ValueDescExport::is_candidate(const ParamList &x)
 //				synfig::info("%s:%d no export because exported value node", __FILE__, __LINE__);
 //			else if (value_desc.get_value_type()==ValueBase::TYPE_CANVAS && !value_desc.get_value().get(Canvas::Handle())->is_inline())
 //				synfig::info("%s:%d no export because canvas isn't inline", __FILE__, __LINE__);
-			
+
 			return false;
 		}
 		return true;

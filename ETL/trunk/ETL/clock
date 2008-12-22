@@ -51,7 +51,7 @@
 
 // If we could not find ourselves a better
 // clock description, go ahead and use the
-// standard clock() implementation. 
+// standard clock() implementation.
 // (Better than nothing...)
 #include "_clock_system.h"
 #ifndef ETL_CLOCK_DEFAULT_DESC_CLASS
@@ -80,7 +80,7 @@ _ETL_BEGIN_NAMESPACE
 	#else
 		#warning No realtime clock description found.
 	#endif
-	
+
 #else
 	class clock : public _ETL::clock_base<ETL_CLOCK_DEFAULT_DESC_CLASS> { };
 	#ifdef ETL_CLOCK_PROCTIME_DESC_CLASS

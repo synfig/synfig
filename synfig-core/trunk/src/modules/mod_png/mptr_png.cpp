@@ -388,7 +388,7 @@ png_mptr::png_mptr(const char *file_name)
 				orig_height = height;
 				trimmed_x = min_x;
 				trimmed_y = min_y;
-				
+
 				width=max_x-min_x+1;
 				height=max_y-min_y+1;
 				synfig::Surface tmp_buffer;
