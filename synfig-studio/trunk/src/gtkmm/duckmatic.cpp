@@ -2088,14 +2088,27 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 					invertible = transform.is_invertible();
 
 					Vector scale(parent_bone.get_local_scale());
-					bone_transform_stack.push(new Transform_Translate(guid, Point((scale[0]-1)*bone.get_origin()[0], (scale[1]-1)*bone.get_origin()[1])));
+					bone_transform_stack.push(new Transform_Translate(guid, Point((scale[0]-1)*bone.get_origin()[0],
+																				  (scale[1]-1)*bone.get_origin()[1])));
 				}
 
+#ifdef TRY_TO_ALIGN_WIDTH_DUCKS
+				// this stuff doesn't work very well - we can find out
+				// the cumulative angle and so place the duck on the
+				// right of the circle, but recursive scales in the
+				// parent can cause the radius to look wrong, and the
+				// duck to appear off-center
+				printf("%s:%d bone %s:\n", __FILE__, __LINE__, bone.get_name().c_str());
 				while (true) {
+					printf("%s:%d parent_angle = %5.2f + %5.2f = %5.2f\n", __FILE__, __LINE__,
+						   Angle::deg(parent_angle).get(), Angle::deg(setup ? parent_bone.get_angle0() : parent_bone.get_angle()).get(),
+						   Angle::deg(parent_angle + (setup ? parent_bone.get_angle0() : parent_bone.get_angle())).get());
 					parent_angle += setup ? parent_bone.get_angle0() : parent_bone.get_angle();
 					if (parent_bone.is_root()) break;
 					parent_bone = (*parent_bone.get_parent())(time).get(Bone());
-				};
+				}
+				printf("%s:%d finally %5.2f\n\n", __FILE__, __LINE__, Angle::deg(parent_angle).get());
+#endif
 			}
 		}
 
