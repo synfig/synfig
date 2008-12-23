@@ -2173,7 +2173,8 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 			duck->set_value_desc(value_desc);
 
 			angle = value_desc.get_value(time).get(Angle());
-			duck->set_point(Point(Angle::cos(angle).get(),Angle::sin(angle).get())*0.3);
+			Real length(bone.get_length() * (setup ? 1 : bone.get_scalex() * bone.get_scalelx()));
+			duck->set_point(Point(Angle::cos(angle).get(),Angle::sin(angle).get())*0.3*length);
 
 			// duck->set_guid(calc_duck_guid(value_desc,bone_transform_stack)^synfig::GUID::hasher(multiple));
 			duck->set_guid(calc_duck_guid(value_desc,bone_transform_stack)^synfig::GUID::hasher(".angle"));
