@@ -205,7 +205,7 @@ Renderer_Ducks::render_vfunc(
 	{
 
 		// If this type of duck has been masked, then skip it
-		if((*iter)->get_type() && (!(get_work_area()->get_type_mask() & (*iter)->get_type())))
+		if(!(*iter)->get_type() || (!(get_work_area()->get_type_mask() & (*iter)->get_type())))
 			continue;
 
 //		Real x,y;

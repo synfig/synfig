@@ -58,7 +58,9 @@
 #include <sigc++/bind.h>
 
 #include "ducktransform_matrix.h"
+#include "ducktransform_rotate.h"
 #include "ducktransform_translate.h"
+#include "ducktransform_scale.h"
 #include "canvasview.h"
 
 #include "onemoment.h"
@@ -2050,6 +2052,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 	case ValueBase::TYPE_BONE:
 	{
 		Duck::Handle origin_duck;
+		Duck::Handle fake_duck;
 		synfig::TransformStack bone_transform_stack(transform_stack);
 		bool setup(get_type_mask() & Duck::TYPE_BONE_SETUP);
 		bool recursive(get_type_mask() & Duck::TYPE_BONE_RECURSIVE);
@@ -2142,6 +2145,34 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 			origin_duck = last_duck();
 		}
 
+		synfig::TransformStack fake_duck_transform_stack(bone_transform_stack);
+
+		// fake
+		{
+			synfigapp::ValueDesc value_desc(bone_value_node, bone_value_node->get_link_index_from_name("name"));
+
+			fake_duck_transform_stack.push(new Transform_Translate(origin_duck->get_point()));
+			fake_duck_transform_stack.push(new Transform_Rotate(setup ? bone.get_angle0() : bone.get_angle()));
+			Real scale(setup     ? 1 :
+					   recursive ? bone.get_length()*bone.get_scalelx() :
+					               bone.get_length()*bone.get_scalex());
+			fake_duck_transform_stack.push(new Transform_Scale(Point(scale, scale)));
+
+			etl::handle<Duck> duck=new Duck();
+			duck->set_type(Duck::TYPE_NONE);
+			duck->set_transform_stack(fake_duck_transform_stack);
+			duck->set_name(guid_string(value_desc));
+			duck->set_value_desc(value_desc);
+			duck->set_point(Point(0, 0));
+
+			// duck->set_guid(calc_duck_guid(value_desc,fake_duck_transform_stack)^synfig::GUID::hasher(multiple));
+			duck->set_guid(calc_duck_guid(value_desc,fake_duck_transform_stack)^synfig::GUID::hasher(".fake"));
+
+			duck->set_ignore(true);
+			add_duck(duck);
+			fake_duck = last_duck();
+		}
+
 		// width
 		if (!setup)
 		{
@@ -2187,7 +2218,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 
 			angle = value_desc.get_value(time).get(Angle());
 			Real length(bone.get_length() * (setup ? 1 : bone.get_scalex() * bone.get_scalelx()));
-			duck->set_point(Point(Angle::cos(angle).get(),Angle::sin(angle).get())*0.3*length);
+			duck->set_point(Point(Angle::cos(angle).get(),Angle::sin(angle).get())*0.9*length);
 
 			// duck->set_guid(calc_duck_guid(value_desc,bone_transform_stack)^synfig::GUID::hasher(multiple));
 			duck->set_guid(calc_duck_guid(value_desc,bone_transform_stack)^synfig::GUID::hasher(".angle"));
@@ -2213,14 +2244,15 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 
 			etl::handle<Duck> duck=new Duck();
 			duck->set_type(Duck::TYPE_POSITION);
-			duck->set_linear(true, angle);
-			duck->set_transform_stack(bone_transform_stack);
+			duck->set_linear(true, Angle::deg(0));
+			duck->set_transform_stack(fake_duck_transform_stack);
 			duck->set_name(guid_string(value_desc));
 			duck->set_value_desc(value_desc);
-			duck->set_point(Point(Angle::cos(angle).get(), Angle::sin(angle).get()) * value_desc.get_value(time).get(Real()));
+			Real value(value_desc.get_value(time).get(Real()));
+			duck->set_point(Point(value, 0));
 
-			// duck->set_guid(calc_duck_guid(value_desc,bone_transform_stack)^synfig::GUID::hasher(multiple));
-			duck->set_guid(calc_duck_guid(value_desc,bone_transform_stack)^synfig::GUID::hasher(".tip"));
+			// duck->set_guid(calc_duck_guid(value_desc,fake_duck_transform_stack)^synfig::GUID::hasher(multiple));
+			duck->set_guid(calc_duck_guid(value_desc,fake_duck_transform_stack)^synfig::GUID::hasher(".tip"));
 
 			// if the ValueNode can be directly manipulated, then set it as so
 			duck->set_editable(!invertible ? false :
@@ -2234,8 +2266,9 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 																				false), // bezier
 																	 0.0f),				// location
 														  value_desc));					// value_desc
-			duck->set_connect_duck(origin_duck);
-			duck->set_origin(origin_duck);
+			duck->set_origin(fake_duck);
+			// leaves the origin_duck in the wrong place when moved
+			// duck->set_connect_duck(origin_duck);
 			add_duck(duck);
 		}
 
