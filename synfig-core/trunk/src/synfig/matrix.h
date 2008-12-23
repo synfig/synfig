@@ -173,7 +173,7 @@ public:
 	//!Get the string of the Matrix
 	//!@return String type. A string representation of the matrix
 	//!components.
-	String get_string(int spaces = 0, String before = String(), String after = String());
+	String get_string(int spaces = 0, String before = String(), String after = String())const;
 };
 
 }; // END of namespace synfig

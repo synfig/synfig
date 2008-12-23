@@ -238,7 +238,7 @@ Matrix::invert()
 }
 
 String
-Matrix::get_string(int spaces, String before, String after)
+Matrix::get_string(int spaces, String before, String after)const
 {
 	return etl::strprintf("%*s [%7.2f %7.2f %7.2f] %s\n%*s [%7.2f %7.2f %7.2f]\n%*s [%7.2f %7.2f %7.2f]\n",
 						  spaces, before.c_str(), m00, m01, m02, after.c_str(),
