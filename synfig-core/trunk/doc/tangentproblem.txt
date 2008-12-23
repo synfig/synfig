@@ -19,14 +19,14 @@ There are some solutions to solve that:
 1) PROPOSAL FOR TANGENTS 'CALCULATED' BASED ON NEIGBOUR VERTICES
 ================================================================
 
-    param                      convert type                    value type
-     -----                      ------------                    ----------
-    Tangent                    TangentByVertice		         Vector
-        Next                                                    Vector
-        Previous                                                Vector
-        Link													Vector
-        Fixed Length                                            bool
-        Fixed Angle                                             bool
+	param						convert type					value type
+	-----						------------					----------
+	Tangent                    TangentByVertice					Vector
+		Next													Vector
+		Previous												Vector
+		Link													Vector
+		Fixed Length											bool
+		Fixed Angle												bool
 
 'Current' is the current vertex in the bline (where the tangent lies) it is not a parameter
 'Next' is the next vertex in the bline relative to Current
@@ -65,12 +65,12 @@ TG'=V'+T'
 
 T'=TG'-V' = (V+T)' -V' where ' means tranformed by bones.
 
-    param                      	convert type                   	value type
-    -----                      	------------                   	----------
-    Tangent                    	BoneTangent                    	Vector
-   		Bone Weight List		List							Static List
-   		Link (T)												Vector
-   		Vertex (V)												Vector
+	param						convert type					value type
+	-----						------------					----------
+	Tangent						BoneTangent						Vector
+		Bone Weight List		List							Static List
+		Link (T)												Vector
+		Vertex (V)												Vector
 
 It is reasonable that the Bone Weight List is the same for both parameters.
 
