@@ -111,6 +111,11 @@ public:
 	//! @return A matrix reference filled with the sxy values
 	Matrix &set_scale(const value_type &sxy);
 
+	//!set_scale member fucntion. Sets a scale matrix
+	//! @param s Vector that defines the scale
+	//! @return A matrix reference filled with the proper scale parameters
+	Matrix &set_scale(const Vector &s);
+
 	//!set_rotate member function. Sets a rotate matrix
 	//! @param a Rotation angle counter clockwise
 	//! @return A matrix reference filled with the proper rotation parameters

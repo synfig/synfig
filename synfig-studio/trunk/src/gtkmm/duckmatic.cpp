@@ -58,7 +58,7 @@
 #include <sigc++/bind.h>
 
 #include "ducktransform_matrix.h"
-#include "ducktransform_scale.h"
+#include "ducktransform_translate.h"
 #include "canvasview.h"
 
 #include "onemoment.h"
@@ -2077,14 +2077,19 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				Bone parent_bone((*bone.get_parent())(time).get(Bone()));
 
 				if (setup)
+				{
 					transform = parent_bone.get_setup_matrix().invert();
+					bone_transform_stack.push(new Transform_Matrix(guid, transform));
+				}
 				else
 				{
 					transform = parent_bone.get_animated_matrix();
+					bone_transform_stack.push(new Transform_Matrix(guid, transform));
 					invertible = transform.is_invertible();
-				}
 
-				bone_transform_stack.push(new Transform_Matrix(guid, transform));
+					Vector scale(parent_bone.get_local_scale());
+					bone_transform_stack.push(new Transform_Translate(guid, Point((scale[0]-1)*bone.get_origin()[0], (scale[1]-1)*bone.get_origin()[1])));
+				}
 
 				while (true) {
 					parent_angle += setup ? parent_bone.get_angle0() : parent_bone.get_angle();
@@ -2096,7 +2101,6 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 
 		// origin
 		{
-			printf("%s:%d   making origin duck\n", __FILE__, __LINE__);
 			synfigapp::ValueDesc value_desc(bone_value_node, bone_value_node->get_link_index_from_name(setup ? "origin0" : "origin"));
 
 			etl::handle<Duck> duck=new Duck();
@@ -2104,7 +2108,6 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 			duck->set_transform_stack(bone_transform_stack);
 			duck->set_name(guid_string(value_desc));
 			duck->set_value_desc(value_desc);
-
 			duck->set_point(value_desc.get_value(time).get(Point()));
 
 			// duck->set_guid(calc_duck_guid(value_desc,bone_transform_stack)^synfig::GUID::hasher(multiple));
@@ -2127,12 +2130,9 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 		}
 
 		// width
-		if (1)
-		{
 		if (!setup)
 		{
 			synfigapp::ValueDesc value_desc(bone_value_node, bone_value_node->get_link_index_from_name(recursive ? "scaley" : "scalely"));
-//			synfigapp::ValueDesc other_desc(bone_value_node, bone_value_node->get_link_index_from_name(recursive ? "scalely" : "scaley"));
 
 			etl::handle<Duck> duck=new Duck();
 			duck->set_type(Duck::TYPE_WIDTH);
@@ -2140,12 +2140,11 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 			duck->set_name(guid_string(value_desc));
 			duck->set_value_desc(value_desc);
 			duck->set_radius(true);
-			duck->set_scalar(.9);
-//			duck->set_scalar(other_desc.get_value(time).get(Real())/2);
+			duck->set_scalar(1);
 			duck->set_point(Point(Angle::cos(-parent_angle).get(), Angle::sin(-parent_angle).get()) * value_desc.get_value(time).get(Real()));
 
 			// duck->set_guid(calc_duck_guid(value_desc,bone_transform_stack)^synfig::GUID::hasher(multiple));
-			duck->set_guid(calc_duck_guid(value_desc,bone_transform_stack)^synfig::GUID::hasher(".scaley"));
+			duck->set_guid(calc_duck_guid(value_desc,bone_transform_stack)^synfig::GUID::hasher(".width"));
 
 			// if the ValueNode can be directly manipulated, then set it as so
 			duck->set_editable(!invertible ? false :
@@ -2174,7 +2173,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 			duck->set_value_desc(value_desc);
 
 			angle = value_desc.get_value(time).get(Angle());
-			duck->set_point(Point(Angle::cos(angle).get(),Angle::sin(angle).get())*0.75);
+			duck->set_point(Point(Angle::cos(angle).get(),Angle::sin(angle).get())*0.3);
 
 			// duck->set_guid(calc_duck_guid(value_desc,bone_transform_stack)^synfig::GUID::hasher(multiple));
 			duck->set_guid(calc_duck_guid(value_desc,bone_transform_stack)^synfig::GUID::hasher(".angle"));
@@ -2196,26 +2195,21 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 
 		// tip
 		{
-			synfigapp::ValueDesc value_desc(bone_value_node, bone_value_node->get_link_index_from_name("length"));
-
-			synfig::TransformStack tip_transform_stack(bone_transform_stack);
-			if (!setup) tip_transform_stack.push(new Transform_Scale(guid, Point(bone.get_scalex() * bone.get_scalelx(), 1)));
+			synfigapp::ValueDesc value_desc(bone_value_node, bone_value_node->get_link_index_from_name(setup ? "length" : recursive ? "scalex" : "scalelx"));
 
 			etl::handle<Duck> duck=new Duck();
 			duck->set_type(Duck::TYPE_POSITION);
 			duck->set_linear(true, angle);
-			duck->set_transform_stack(tip_transform_stack);
+			duck->set_transform_stack(bone_transform_stack);
 			duck->set_name(guid_string(value_desc));
 			duck->set_value_desc(value_desc);
-
-			duck->set_point(Point(Angle::cos(angle).get(), Angle::sin(angle).get())*bone.get_length());
+			duck->set_point(Point(Angle::cos(angle).get(), Angle::sin(angle).get()) * value_desc.get_value(time).get(Real()));
 
 			// duck->set_guid(calc_duck_guid(value_desc,bone_transform_stack)^synfig::GUID::hasher(multiple));
-			duck->set_guid(calc_duck_guid(value_desc,bone_transform_stack)^synfig::GUID::hasher(".length"));
+			duck->set_guid(calc_duck_guid(value_desc,bone_transform_stack)^synfig::GUID::hasher(".tip"));
 
 			// if the ValueNode can be directly manipulated, then set it as so
-			duck->set_editable(!setup ? false :
-							   !invertible ? false :
+			duck->set_editable(!invertible ? false :
 							   !value_desc.is_value_node() ? true :
 							   synfigapp::is_editable(value_desc.get_value_node()));
 
@@ -2229,7 +2223,6 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 			duck->set_connect_duck(origin_duck);
 			duck->set_origin(origin_duck);
 			add_duck(duck);
-		}
 		}
 
 		return true;

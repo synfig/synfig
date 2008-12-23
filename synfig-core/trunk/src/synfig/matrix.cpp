@@ -71,9 +71,7 @@ using namespace synfig;
 
 Matrix::Matrix()
 {
-	m00=1.0; m01=0.0; m02=0.0;
-	m10=0.0; m11=1.0; m12=0.0;
-	m20=0.0; m21=0.0; m22=1.0;
+	set_identity();
 }
 
 Matrix &
@@ -97,10 +95,13 @@ Matrix::set_scale(const value_type &sx, const value_type &sy)
 Matrix &
 Matrix::set_scale(const value_type &sxy)
 {
-	m00=sxy; m01=0.0; m02=0.0;
-	m10=0.0; m11=sxy; m12=0.0;
-	m20=0.0; m21=0.0; m22=1.0;
-	return (*this);
+	return set_scale(sxy, sxy);
+}
+
+Matrix &
+Matrix::set_scale(const Vector &s)
+{
+	return set_scale(s[0], s[1]);
 }
 
 Matrix &

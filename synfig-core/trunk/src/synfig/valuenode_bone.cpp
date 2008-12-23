@@ -487,7 +487,6 @@ ValueNode_Bone::operator()(Time t)const
 	if (getenv("SYNFIG_DEBUG_ANIMATED_MATRIX_CALCULATION")) printf("\n***\n*** %s:%d get_animated_matrix() for %s\n***\n\n", __FILE__, __LINE__, get_bone_name(t).c_str());
 	Matrix bone_animated_matrix	(get_animated_matrix(t, bone_scalex, bone_scaley, bone_angle, bone_origin, bone_parent));
 	if (getenv("SYNFIG_DEBUG_ANIMATED_MATRIX_CALCULATION")) printf("\n***\n*** %s:%d get_animated_matrix() for %s done\n***\n\n", __FILE__, __LINE__, get_bone_name(t).c_str());
-	Matrix bone_local_scale_matrix	(Matrix().set_scale(bone_scalelx,bone_scalely));
 #endif
 
 	Bone ret;
@@ -507,7 +506,6 @@ ValueNode_Bone::operator()(Time t)const
 	ret.set_strength		(bone_strength);
 	ret.set_setup_matrix	(bone_setup_matrix);
 	ret.set_animated_matrix	(bone_animated_matrix);
-	ret.set_local_scale_matrix	(bone_local_scale_matrix);
 #endif
 	ret.set_setup			(setup_);
 

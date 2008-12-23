@@ -98,7 +98,6 @@ private:
 
 	Matrix setup_matrix_;
 	Matrix animated_matrix_;
-	Matrix local_scale_matrix_;
 
 public:
 	//!Default constructor
@@ -179,8 +178,7 @@ public:
 	Matrix get_animated_matrix() const { return animated_matrix_; }
 	void set_animated_matrix(Matrix x) { animated_matrix_ = x; }
 
-	Matrix get_local_scale_matrix() const { return local_scale_matrix_; }
-	void set_local_scale_matrix(Matrix x) { local_scale_matrix_ = x; }
+	Vector get_local_scale() const { return Vector(scalelx_, scalely_); }
 
 	//!Get the string of the Bone
 	//!@return String type. A string representation of the bone
