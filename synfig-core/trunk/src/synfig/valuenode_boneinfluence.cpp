@@ -67,6 +67,8 @@ ValueNode_BoneInfluence::ValueNode_BoneInfluence(const ValueNode::Handle &x, Can
 	switch(x->get_type())
 	{
 	case ValueBase::TYPE_VECTOR:
+	case ValueBase::TYPE_BLINEPOINT:
+	//case ValueBase::TYPE_BLINE:
 	{
 		ValueNode_StaticList::Handle bone_weight_list(ValueNode_StaticList::create(ValueBase::TYPE_BONE_WEIGHT_PAIR, canvas));
 		bone_weight_list->add(ValueNode_BoneWeightPair::create(BoneWeightPair(Bone(), 1), canvas));
@@ -110,18 +112,43 @@ ValueNode_BoneInfluence::operator()(Time t)const
 		printf("%s:%d operator()\n", __FILE__, __LINE__);
 
 	Matrix transform(get_transform(true, t));
-	Vector link((*link_)(t).get(Vector()));
+	switch(link_->get_type())
+	{
+	case ValueBase::TYPE_VECTOR:
+	{
+		Vector link((*link_)(t).get(Vector()));
 
-	if (getenv("SYNFIG_DEBUG_BONE_VECTOR_TRANSFORMATION"))
-		printf("%s\n", transform.get_string(35,
-											strprintf("transform (%7.2f %7.2f) using",
-													  link[0],
-													  link[1]),
-											strprintf("= (%7.2f %7.2f)",
-													  transform.get_transformed(link)[0],
-													  transform.get_transformed(link)[1])).c_str());
+		if (getenv("SYNFIG_DEBUG_BONE_VECTOR_TRANSFORMATION"))
+			printf("%s\n", transform.get_string(35,
+												strprintf("transform (%7.2f %7.2f) using",
+														  link[0],
+														  link[1]),
+												strprintf("= (%7.2f %7.2f)",
+														  transform.get_transformed(link)[0],
+														  transform.get_transformed(link)[1])).c_str());
 
-	return transform.get_transformed(link);
+		return transform.get_transformed(link);
+	}
+	case ValueBase::TYPE_BLINEPOINT:
+	{
+		BLinePoint link((*link_)(t).get(BLinePoint()));
+		// here goes some debug stuff
+		Point v(link.get_vertex());
+		Point vt(transform.get_transformed(v));
+		Vector t1(link.get_tangent1());
+		Vector t2(link.get_tangent2());
+		Point t1abs(v+t1);
+		Point t2abs(v+t2);
+		Point t1abst(transform.get_transformed(t1abs));
+		Point t2abst(transform.get_transformed(t2abs));
+		Vector t1t(t1abst-vt);
+		Vector t2t(t2abst-vt);
+		link.set_vertex(vt);
+		link.set_tangent1(t1t);
+		link.set_tangent2(t2t);
+		return link;
+	}
+	}
 }
 
 
@@ -145,7 +172,7 @@ ValueNode_BoneInfluence::set_link_vfunc(int i,ValueNode::Handle value)
 	switch(i)
 	{
 	case 0: CHECK_TYPE_AND_SET_VALUE(bone_weight_list_,	ValueBase::TYPE_LIST);
-	case 1: CHECK_TYPE_AND_SET_VALUE(link_,				ValueBase::TYPE_VECTOR);
+	case 1: CHECK_TYPE_AND_SET_VALUE(link_,				get_type());
 	}
 
 	return false;
@@ -212,7 +239,8 @@ ValueNode_BoneInfluence::get_link_index_from_name(const String &name)const
 bool
 ValueNode_BoneInfluence::check_type(ValueBase::Type type)
 {
-	return type==ValueBase::TYPE_VECTOR;
+	return 	type==ValueBase::TYPE_VECTOR ||
+			type==ValueBase::TYPE_BLINEPOINT;
 }
 
 Matrix
