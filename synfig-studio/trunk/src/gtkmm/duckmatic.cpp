@@ -2051,9 +2051,8 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 	break;
 	case ValueBase::TYPE_BONE:
 	{
-		Duck::Handle origin_duck;
 		Duck::Handle fake_duck;
-		synfig::TransformStack bone_transform_stack(transform_stack);
+		synfig::TransformStack origin_transform_stack(transform_stack), bone_transform_stack;
 		bool setup(get_type_mask() & Duck::TYPE_BONE_SETUP);
 		bool recursive(get_type_mask() & Duck::TYPE_BONE_RECURSIVE);
 
@@ -2068,12 +2067,12 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 		GUID guid(bone_value_node->get_guid());
 		Time time(get_time());
 		Bone bone((*bone_value_node)(time).get(Bone()));
-		Matrix transform;
 		bool invertible(true);
 		Angle angle;
 		Angle::deg parent_angle(0);
 
 		{
+			Matrix transform;
 			bool has_parent(!bone.is_root());
 			if (has_parent)
 			{
@@ -2082,17 +2081,21 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				if (setup)
 				{
 					transform = parent_bone.get_setup_matrix().invert();
-					bone_transform_stack.push(new Transform_Matrix(guid, transform));
+					origin_transform_stack.push(new Transform_Matrix(guid, transform));
+					bone_transform_stack = origin_transform_stack;
+					bone_transform_stack.push(new Transform_Translate(guid, bone.get_origin0()));
 				}
 				else
 				{
 					transform = parent_bone.get_animated_matrix();
-					bone_transform_stack.push(new Transform_Matrix(guid, transform));
+					origin_transform_stack.push(new Transform_Matrix(guid, transform));
+					bone_transform_stack = origin_transform_stack;
 					invertible = transform.is_invertible();
 
 					Vector scale(parent_bone.get_local_scale());
-					bone_transform_stack.push(new Transform_Translate(guid, Point((scale[0]-1)*bone.get_origin()[0],
-																				  (scale[1]-1)*bone.get_origin()[1])));
+					bone_transform_stack.push(new Transform_Translate(guid, Point((scale[0])*bone.get_origin()[0],
+																				  (scale[1])*bone.get_origin()[1])));
+					origin_transform_stack.push(new Transform_Scale(guid, scale));
 				}
 
 #ifdef TRY_TO_ALIGN_WIDTH_DUCKS
@@ -2113,7 +2116,14 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				printf("%s:%d finally %5.2f\n\n", __FILE__, __LINE__, Angle::deg(parent_angle).get());
 #endif
 			}
+			else
+			{
+				bone_transform_stack = origin_transform_stack;
+				bone_transform_stack.push(new Transform_Translate(guid, setup ? bone.get_origin0() : bone.get_origin()));
+			}
 		}
+
+		bone_transform_stack.push(new Transform_Rotate(guid, setup ? bone.get_angle0() : bone.get_angle()));
 
 		// origin
 		{
@@ -2121,13 +2131,13 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 
 			etl::handle<Duck> duck=new Duck();
 			duck->set_type(Duck::TYPE_POSITION);
-			duck->set_transform_stack(bone_transform_stack);
+			duck->set_transform_stack(origin_transform_stack);
 			duck->set_name(guid_string(value_desc));
 			duck->set_value_desc(value_desc);
 			duck->set_point(value_desc.get_value(time).get(Point()));
 
-			// duck->set_guid(calc_duck_guid(value_desc,bone_transform_stack)^synfig::GUID::hasher(multiple));
-			duck->set_guid(calc_duck_guid(value_desc,bone_transform_stack)^synfig::GUID::hasher(".origin"));
+			// duck->set_guid(calc_duck_guid(value_desc,origin_transform_stack)^synfig::GUID::hasher(multiple));
+			duck->set_guid(calc_duck_guid(value_desc,origin_transform_stack)^synfig::GUID::hasher(".origin"));
 
 			// if the ValueNode can be directly manipulated, then set it as so
 			duck->set_editable(!invertible ? false :
@@ -2142,27 +2152,21 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 																	 0.0f),				// location
 														  value_desc));					// value_desc
 			add_duck(duck);
-			origin_duck = last_duck();
 		}
-
-		synfig::TransformStack fake_duck_transform_stack(bone_transform_stack);
 
 		// fake
 		{
 			synfigapp::ValueDesc value_desc(bone_value_node, bone_value_node->get_link_index_from_name("name"));
 
-			fake_duck_transform_stack.push(new Transform_Translate(origin_duck->get_point()));
-			fake_duck_transform_stack.push(new Transform_Rotate(setup ? bone.get_angle0() : bone.get_angle()));
-
 			etl::handle<Duck> duck=new Duck();
 			duck->set_type(Duck::TYPE_NONE);
-			duck->set_transform_stack(fake_duck_transform_stack);
+			duck->set_transform_stack(bone_transform_stack);
 			duck->set_name(guid_string(value_desc));
 			duck->set_value_desc(value_desc);
 			duck->set_point(Point(0, 0));
 
-			// duck->set_guid(calc_duck_guid(value_desc,fake_duck_transform_stack)^synfig::GUID::hasher(multiple));
-			duck->set_guid(calc_duck_guid(value_desc,fake_duck_transform_stack)^synfig::GUID::hasher(".fake"));
+			// duck->set_guid(calc_duck_guid(value_desc,bone_transform_stack)^synfig::GUID::hasher(multiple));
+			duck->set_guid(calc_duck_guid(value_desc,bone_transform_stack)^synfig::GUID::hasher(".fake"));
 
 			duck->set_ignore(true);
 			add_duck(duck);
@@ -2181,7 +2185,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 			duck->set_value_desc(value_desc);
 			duck->set_radius(true);
 			duck->set_scalar(1);
-			duck->set_point(Point(Angle::cos(-parent_angle).get(), Angle::sin(-parent_angle).get()) * value_desc.get_value(time).get(Real()));
+			duck->set_point(Point(value_desc.get_value(time).get(Real()), 0));
 
 			// duck->set_guid(calc_duck_guid(value_desc,bone_transform_stack)^synfig::GUID::hasher(multiple));
 			duck->set_guid(calc_duck_guid(value_desc,bone_transform_stack)^synfig::GUID::hasher(".width"));
@@ -2198,7 +2202,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 																				false), // bezier
 																	 0.0f),				// location
 														  value_desc));					// value_desc
-			duck->set_origin(origin_duck);
+			duck->set_origin(fake_duck);
 			add_duck(duck);
 		}
 
@@ -2214,7 +2218,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 
 			angle = value_desc.get_value(time).get(Angle());
 			Real length(bone.get_length() * (setup ? 1 : bone.get_scalex() * bone.get_scalelx()));
-			duck->set_point(Point(Angle::cos(angle).get(),Angle::sin(angle).get())*0.9*length);
+			duck->set_point(Point(length*0.9, 0));
 
 			// duck->set_guid(calc_duck_guid(value_desc,bone_transform_stack)^synfig::GUID::hasher(multiple));
 			duck->set_guid(calc_duck_guid(value_desc,bone_transform_stack)^synfig::GUID::hasher(".angle"));
@@ -2230,7 +2234,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 																				false), // bezier
 																	 0.0f),				// location
 														  value_desc));					// value_desc
-			duck->set_origin(origin_duck);
+			duck->set_origin(fake_duck);
 			add_duck(duck);
 		}
 
@@ -2239,7 +2243,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 			synfigapp::ValueDesc value_desc(bone_value_node, bone_value_node->get_link_index_from_name(setup ? "length" : recursive ? "scalex" : "scalelx"));
 
 			etl::handle<Duck> duck;
-			if (add_to_ducks(value_desc,canvas_view,fake_duck_transform_stack,REAL_COOKIE))
+			if (add_to_ducks(value_desc,canvas_view,bone_transform_stack,REAL_COOKIE))
 			{
 				duck=last_duck();
 				duck->set_origin(fake_duck);
