@@ -112,7 +112,7 @@ ValueBase::get_string() const
 	{
 	case TYPE_NIL:			return "Nil";
 	case TYPE_BOOL:			return strprintf("Bool (%s)", get(bool()) ? "true" : "false");
-	case TYPE_INTEGER:		return strprintf("Integer (%s)", get(int()));
+	case TYPE_INTEGER:		return strprintf("Integer (%d)", get(int()));
 	case TYPE_ANGLE:		return strprintf("Angle (%.2f)", Angle::deg(get(Angle())).get());
 
 		// All types after this point are larger than 32 bits
@@ -125,7 +125,7 @@ ValueBase::get_string() const
 	case TYPE_VECTOR:		return strprintf("Vector (%f, %f)", get(Vector())[0], get(Vector())[1]);
 	case TYPE_COLOR:		return strprintf("Color (%s)", get(Color()).get_string().c_str());
 	case TYPE_SEGMENT:		return strprintf("Segment ((%f, %f) to (%f, %f))", get(Segment()).p1[0], get(Segment()).p1[1], get(Segment()).p2[0], get(Segment()).p2[1]);
-	case TYPE_BLINEPOINT:	return strprintf("BLinePoint (%s)", get(BLinePoint()).get_vertex()[0], get(BLinePoint()).get_vertex()[1]);
+	case TYPE_BLINEPOINT:	return strprintf("BLinePoint (%f, %f)", get(BLinePoint()).get_vertex()[0], get(BLinePoint()).get_vertex()[1]);
 	case TYPE_MATRIX:		return strprintf("Matrix (%s)",get(Matrix().get_string().c_str()));
 	case TYPE_BONE_WEIGHT_PAIR:	return strprintf("Bone Weight Pair (%s)",get(BoneWeightPair()).get_string().c_str());
 
