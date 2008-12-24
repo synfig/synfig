@@ -1730,7 +1730,7 @@ CanvasParser::parse_value_node(xmlpp::Element *element,Canvas::Handle canvas)
 					ValueNode_Bone::Handle value_node_bone(ValueNode_Bone::Handle::cast_dynamic(value_node));
 					if (!value_node_bone)
 					{
-						if (getenv("SYNFIG_DEBUG_LOAD_CANVAS")) printf("bone_valuenode isn't a ValueNode_Bone?  It's a placeholder?\n", __FILE__, __LINE__);
+						if (getenv("SYNFIG_DEBUG_LOAD_CANVAS")) printf("%s:%d bone_valuenode isn't a ValueNode_Bone?  It's a placeholder?\n", __FILE__, __LINE__);
 						return value_node;
 					}
 
@@ -2409,7 +2409,7 @@ CanvasParser::parse_from_file_as(const String &file_,const String &as_,String &e
 				ValueNode::Handle value_node(*iter);
 				if(value_node->is_exported() && value_node->get_id().find("Unnamed")==0)
 				{
-					canvas->remove_value_node(value_node);
+					canvas->remove_value_node(value_node, true);
 					goto again;
 				}
 			}

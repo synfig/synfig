@@ -451,7 +451,7 @@ public:
 	/*!	\return If found, returns a handle to the ValueNode.
 	**		Otherwise, returns an empty handle.
 	*/
-	ValueNode::Handle find_value_node(const String &id);
+	ValueNode::Handle find_value_node(const String &id, bool might_fail);
 
 	//! \internal \writeme
 	ValueNode::Handle surefind_value_node(const String &id);
@@ -460,7 +460,7 @@ public:
 	/*!	\return If found, returns a handle to the ValueNode.
 	**		Otherwise, returns an empty handle.
 	*/
-	ValueNode::ConstHandle find_value_node(const String &id)const;
+	ValueNode::ConstHandle find_value_node(const String &id, bool might_fail)const;
 
 	//! \writeme
 	void add_value_node(ValueNode::Handle x, const String &id);
@@ -469,10 +469,10 @@ public:
 	//void rename_value_node(ValueNode::Handle x, const String &id);
 
 	//! \writeme
-	void remove_value_node(ValueNode::Handle x);
+	void remove_value_node(ValueNode::Handle x, bool might_fail);
 
 	//! \writeme
-	void remove_value_node(const String &id) { remove_value_node(find_value_node(id)); }
+	void remove_value_node(const String &id, bool might_fail) { remove_value_node(find_value_node(id, might_fail), might_fail); }
 
 	//! Finds a child Canvas in the Canvas with the given \a name
 	/*!	\return If found, returns a handle to the child Canvas.

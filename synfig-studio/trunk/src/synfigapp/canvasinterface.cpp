@@ -202,7 +202,7 @@ CanvasInterface::add_layer_to(synfig::String name, synfig::Canvas::Handle canvas
 			String name = strprintf(_("Index %d"), i);
 			try
 			{
-				canvas->find_value_node(name);
+				canvas->find_value_node(name, true);
 			}
 			catch (Exception::IDNotFound x)
 			{

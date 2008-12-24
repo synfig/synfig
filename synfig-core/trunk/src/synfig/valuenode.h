@@ -126,6 +126,8 @@ public:
 
 	static bool subsys_stop();
 
+	static void breakpoint();
+
 	/*
  --	** -- D A T A -------------------------------------------------------------
 	*/
@@ -395,13 +397,13 @@ public:
 	/*!	\return If found, returns a handle to the ValueNode.
 	**		Otherwise, returns an empty handle.
 	*/
-	ValueNode::Handle find(const String &name, bool might_fail=false);
+	ValueNode::Handle find(const String &name, bool might_fail);
 
 	//! Finds the ValueNode in the list with the given \a name
 	/*!	\return If found, returns a handle to the ValueNode.
 	**		Otherwise, returns an empty handle.
 	*/
-	ValueNode::ConstHandle find(const String &name, bool might_fail=false)const;
+	ValueNode::ConstHandle find(const String &name, bool might_fail)const;
 
 	//! Removes the \a value_node from the list
 	bool erase(ValueNode::Handle value_node);

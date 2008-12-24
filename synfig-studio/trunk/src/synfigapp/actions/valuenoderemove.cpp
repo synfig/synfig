@@ -136,7 +136,7 @@ Action::ValueNodeRemove::perform()
 
 	old_name=value_node->get_id();
 	parent_canvas=value_node->get_parent_canvas();
-	parent_canvas->remove_value_node(value_node);
+	parent_canvas->remove_value_node(value_node, false);
 
 	if(get_canvas_interface())
 	{

@@ -22,11 +22,6 @@
 */
 /* ========================================================================= */
 
-static void breakpoint()
-{
-	return;
-}
-
 /* === H E A D E R S ======================================================= */
 
 #define SYNFIG_NO_ANGLE
@@ -124,6 +119,12 @@ synfig::find_value_node(const GUID& guid)
 /* === P R O C E D U R E S ================================================= */
 
 /* === M E T H O D S ======================================================= */
+
+void
+ValueNode::breakpoint()
+{
+	return;
+}
 
 bool
 ValueNode::subsys_init()
@@ -435,7 +436,7 @@ ValueNodeList::find(const String &id, bool might_fail)
 
 	if(iter==end())
 	{
-		if (!might_fail) breakpoint();
+		if (!might_fail) ValueNode::breakpoint();
 		throw Exception::IDNotFound("ValueNode in ValueNodeList: "+id);
 	}
 
@@ -455,7 +456,7 @@ ValueNodeList::find(const String &id, bool might_fail)const
 
 	if(iter==end())
 	{
-		if (!might_fail) breakpoint();
+		if (!might_fail) ValueNode::breakpoint();
 		throw Exception::IDNotFound("ValueNode in ValueNodeList: "+id);
 	}
 

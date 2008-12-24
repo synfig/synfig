@@ -128,7 +128,7 @@ public:
 	get_value_node()const
 	{
 		if(parent_is_canvas())
-			return canvas->find_value_node(name);
+			return canvas->find_value_node(name,false);
 		if(parent_is_layer_param() && layer->dynamic_param_list().count(name))
 			return layer->dynamic_param_list().find(name)->second;
 		if(parent_is_linkable_value_node())

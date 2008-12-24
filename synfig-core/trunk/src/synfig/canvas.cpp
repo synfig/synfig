@@ -388,27 +388,30 @@ Canvas::_get_relative_id(etl::loose_handle<const Canvas> x)const
 }
 
 ValueNode::Handle
-Canvas::find_value_node(const String &id)
+Canvas::find_value_node(const String &id, bool might_fail)
 {
 	return
 		ValueNode::Handle::cast_const(
-			const_cast<const Canvas*>(this)->find_value_node(id)
+			const_cast<const Canvas*>(this)->find_value_node(id, might_fail)
 		);
 }
 
 ValueNode::ConstHandle
-Canvas::find_value_node(const String &id)const
+Canvas::find_value_node(const String &id, bool might_fail)const
 {
 	if(is_inline() && parent_)
-		return parent_->find_value_node(id);
+		return parent_->find_value_node(id, might_fail);
 
 	if(id.empty())
+	{
+		if (!might_fail) ValueNode::breakpoint();
 		throw Exception::IDNotFound("Empty ID");
+	}
 
 	// If we do not have any resolution, then we assume that the
 	// request is for this immediate canvas
 	if(id.find_first_of(':')==string::npos && id.find_first_of('#')==string::npos)
-		return value_node_list_.find(id);
+		return value_node_list_.find(id, might_fail);
 
 	String canvas_id(id,0,id.rfind(':'));
 	String value_node_id(id,id.rfind(':')+1);
@@ -418,7 +421,7 @@ Canvas::find_value_node(const String &id)const
 	//synfig::warning("constfind:canvas_id: "+canvas_id);
 
 	String warnings;
-	return find_canvas(canvas_id, warnings)->value_node_list_.find(value_node_id);
+	return find_canvas(canvas_id, warnings)->value_node_list_.find(value_node_id, might_fail);
 }
 
 ValueNode::Handle
@@ -509,17 +512,23 @@ Canvas::rename_value_node(ValueNode::Handle x, const String &id)
 */
 
 void
-Canvas::remove_value_node(ValueNode::Handle x)
+Canvas::remove_value_node(ValueNode::Handle x, bool might_fail)
 {
 	if(is_inline() && parent_)
-		return parent_->remove_value_node(x);
+		return parent_->remove_value_node(x, might_fail);
 //		throw Exception::IDNotFound("Canvas::remove_value_node() was called from an inline canvas");
 
 	if(!x)
+	{
+		if (!might_fail) ValueNode::breakpoint();
 		throw Exception::IDNotFound("Canvas::remove_value_node() was passed empty handle");
+	}
 
 	if(!value_node_list_.erase(x))
+	{
+		if (!might_fail) ValueNode::breakpoint();
 		throw Exception::IDNotFound("Canvas::remove_value_node(): ValueNode was not found inside of this canvas");
+	}
 
 	//x->set_parent_canvas(0);
 
