@@ -319,7 +319,7 @@ Renderer_Ducks::render_vfunc(
 		else if((*iter)->get_type()&Duck::TYPE_VERTEX)
 			screen_duck.color=DUCK_COLOR_VERTEX;
 		else if((*iter)->get_type()&Duck::TYPE_RADIUS)
-			screen_duck.color=DUCK_COLOR_RADIUS;
+			screen_duck.color=((*iter)->is_linear() ? DUCK_COLOR_LINEAR : DUCK_COLOR_RADIUS);
 		else if((*iter)->get_type()&Duck::TYPE_WIDTH)
 			screen_duck.color=DUCK_COLOR_WIDTH;
 		else if((*iter)->get_type()&Duck::TYPE_ANGLE)
@@ -358,16 +358,37 @@ Renderer_Ducks::render_vfunc(
 
 		if((*iter)->is_radius())
 		{
-			const Real mag((point-origin).mag());
-			const int d(round_to_int(mag*2));
-			const int x(round_to_int(origin[0]-mag));
-			const int y(round_to_int(origin[1]-mag));
-
-			if(solid_lines)
+			if (!(*iter)->is_linear())
 			{
-				gc->set_rgb_fg_color(Gdk::Color("#000000"));
-				gc->set_function(Gdk::COPY);
-				gc->set_line_attributes(3,Gdk::LINE_SOLID,Gdk::CAP_BUTT,Gdk::JOIN_MITER);
+				const Real mag((point-origin).mag());
+				const int d(round_to_int(mag*2));
+				const int x(round_to_int(origin[0]-mag));
+				const int y(round_to_int(origin[1]-mag));
+
+				if(solid_lines)
+				{
+					gc->set_rgb_fg_color(Gdk::Color("#000000"));
+					gc->set_function(Gdk::COPY);
+					gc->set_line_attributes(3,Gdk::LINE_SOLID,Gdk::CAP_BUTT,Gdk::JOIN_MITER);
+					drawable->draw_arc(
+						gc,
+						false,
+						x,
+						y,
+						d,
+						d,
+						0,
+						360*64
+						);
+					gc->set_rgb_fg_color(Gdk::Color("#afafaf"));
+				}
+				else
+				{
+					gc->set_rgb_fg_color(Gdk::Color("#ffffff"));
+					gc->set_function(Gdk::INVERT);
+				}
+				gc->set_line_attributes(1,Gdk::LINE_SOLID,Gdk::CAP_BUTT,Gdk::JOIN_MITER);
+
 				drawable->draw_arc(
 					gc,
 					false,
@@ -377,26 +398,8 @@ Renderer_Ducks::render_vfunc(
 					d,
 					0,
 					360*64
-				);
-				gc->set_rgb_fg_color(Gdk::Color("#afafaf"));
+					);
 			}
-			else
-			{
-				gc->set_rgb_fg_color(Gdk::Color("#ffffff"));
-				gc->set_function(Gdk::INVERT);
-			}
-			gc->set_line_attributes(1,Gdk::LINE_SOLID,Gdk::CAP_BUTT,Gdk::JOIN_MITER);
-
-			drawable->draw_arc(
-				gc,
-				false,
-				x,
-				y,
-				d,
-				d,
-				0,
-				360*64
-			);
 
 			if(hover)
 			{

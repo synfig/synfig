@@ -2153,10 +2153,6 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 
 			fake_duck_transform_stack.push(new Transform_Translate(origin_duck->get_point()));
 			fake_duck_transform_stack.push(new Transform_Rotate(setup ? bone.get_angle0() : bone.get_angle()));
-			Real scale(setup     ? 1 :
-					   recursive ? bone.get_length()*bone.get_scalelx() :
-					               bone.get_length()*bone.get_scalex());
-			fake_duck_transform_stack.push(new Transform_Scale(Point(scale, scale)));
 
 			etl::handle<Duck> duck=new Duck();
 			duck->set_type(Duck::TYPE_NONE);
@@ -2242,34 +2238,20 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 		{
 			synfigapp::ValueDesc value_desc(bone_value_node, bone_value_node->get_link_index_from_name(setup ? "length" : recursive ? "scalex" : "scalelx"));
 
-			etl::handle<Duck> duck=new Duck();
-			duck->set_type(Duck::TYPE_POSITION);
-			duck->set_linear(true, Angle::deg(0));
-			duck->set_transform_stack(fake_duck_transform_stack);
-			duck->set_name(guid_string(value_desc));
-			duck->set_value_desc(value_desc);
-			Real value(value_desc.get_value(time).get(Real()));
-			duck->set_point(Point(value, 0));
+			etl::handle<Duck> duck;
+			if (add_to_ducks(value_desc,canvas_view,fake_duck_transform_stack,REAL_COOKIE))
+			{
+				duck=last_duck();
+				duck->set_origin(fake_duck);
+				duck->set_type(Duck::TYPE_RADIUS);
+				duck->set_name(guid_string(value_desc));
+				duck->set_linear(true, Angle::deg(0));
 
-			// duck->set_guid(calc_duck_guid(value_desc,fake_duck_transform_stack)^synfig::GUID::hasher(multiple));
-			duck->set_guid(calc_duck_guid(value_desc,fake_duck_transform_stack)^synfig::GUID::hasher(".tip"));
-
-			// if the ValueNode can be directly manipulated, then set it as so
-			duck->set_editable(!invertible ? false :
-							   !value_desc.is_value_node() ? true :
-							   synfigapp::is_editable(value_desc.get_value_node()));
-
-			duck->signal_edited().clear();
-			duck->signal_edited().connect(sigc::bind(sigc::mem_fun(*canvas_view, &studio::CanvasView::on_duck_changed), value_desc));
-			duck->signal_user_click(2).connect(sigc::bind(sigc::bind(sigc::bind(sigc::mem_fun(*canvas_view,
-																							  &studio::CanvasView::popup_param_menu),
-																				false), // bezier
-																	 0.0f),				// location
-														  value_desc));					// value_desc
-			duck->set_origin(fake_duck);
-			// leaves the origin_duck in the wrong place when moved
-			// duck->set_connect_duck(origin_duck);
-			add_duck(duck);
+				Real scale();
+				duck->set_scalar(setup     ? 1 :
+								 recursive ? bone.get_length()*bone.get_scalelx() :
+											 bone.get_length()*bone.get_scalex());
+			}
 		}
 
 		return true;
