@@ -542,6 +542,11 @@ public:
 	{
 		return sphtrans(x,layer->center,layer->radius,layer->percent,layer->type);
 	}
+
+	synfig::String get_string()const
+	{
+		return "spheredistort";
+	}
 };
 
 etl::handle<Transform>

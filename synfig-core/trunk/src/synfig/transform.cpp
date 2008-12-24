@@ -63,8 +63,13 @@ TransformStack::perform(const synfig::Vector& x)const
 {
 	synfig::Vector ret(x);
 
+	if (getenv("SYNFIG_DEBUG_TRANSFORM_STACK")) printf("PERFORM: %5.2f %5.2f", ret[0], ret[1]);
 	for(const_reverse_iterator iter(rbegin());iter!=rend();++iter)
+	{
 		ret=(*iter)->perform(ret);
+		if (getenv("SYNFIG_DEBUG_TRANSFORM_STACK")) printf(" (%s) %5.2f %5.2f", (*iter)->get_string().c_str(), ret[0], ret[1]);
+	}
+	if (getenv("SYNFIG_DEBUG_TRANSFORM_STACK")) printf("\n");
 
 	return ret;
 }
@@ -74,8 +79,13 @@ TransformStack::unperform(const synfig::Vector& x)const
 {
 	synfig::Vector ret(x);
 
+	if (getenv("SYNFIG_DEBUG_TRANSFORM_STACK")) printf("UNPERFORM: %5.2f %5.2f", ret[0], ret[1]);
 	for(const_iterator iter(begin());iter!=end();++iter)
+	{
 		ret=(*iter)->unperform(ret);
+		if (getenv("SYNFIG_DEBUG_TRANSFORM_STACK")) printf(" (%s) %5.2f %5.2f", (*iter)->get_string().c_str(), ret[0], ret[1]);
+	}
+	if (getenv("SYNFIG_DEBUG_TRANSFORM_STACK")) printf("\n");
 
 	return ret;
 }

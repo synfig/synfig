@@ -63,6 +63,11 @@ public:
 	{
 		return inverse_transform.get_transformed(x);
 	}
+
+	synfig::String get_string()const
+	{
+		return "duck matrix";
+	}
 };
 
 };

@@ -66,6 +66,11 @@ public:
 		synfig::Point pos(x-origin);
 		return synfig::Point(cos_val*pos[0]+sin_val*pos[1],-sin_val*pos[0]+cos_val*pos[1])+origin;
 	}
+
+	synfig::String get_string()const
+	{
+		return "duck rotate";
+	}
 };
 
 };
