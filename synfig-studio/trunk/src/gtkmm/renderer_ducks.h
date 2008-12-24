@@ -37,11 +37,11 @@
 
 #define DUCK_COLOR_ANGLE		Gdk::Color("#0000ff") // blue
 #define DUCK_COLOR_RADIUS		Gdk::Color("#00ffff") // cyan
+#define DUCK_COLOR_LINEAR		Gdk::Color("#00ffff") // cyan // for linear radius ducks
 #define DUCK_COLOR_TANGENT_1	Gdk::Color("#ffff00") // yellow
 #define DUCK_COLOR_TANGENT_2	Gdk::Color("#ff0000") // red
 #define DUCK_COLOR_VERTEX		Gdk::Color("#ff7f00") // orange
 #define DUCK_COLOR_WIDTH		Gdk::Color("#ff00ff") // magenta
-#define DUCK_COLOR_LINEAR		Gdk::Color("#ffcfcf") // pink
 #define DUCK_COLOR_OTHER		Gdk::Color("#00ff00") // green
 
 #define DUCK_COLOR_OUTLINE		Gdk::Color("#000000") // the outline around each duck
