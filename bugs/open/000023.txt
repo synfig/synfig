@@ -14,4 +14,9 @@ Scale. If you change it from 0.921387 to 1.0 the problem dissapears
 completely.
 Those values are discounted (the vlasue is multiplied by) in some way
 from the drop position of the duck when the mouse is released.
+
 ------------------------------------------------------------------------
+dooglus, Wed Dec 24 02:18:46 CET 2008
+
+in my simplified copy ( ~/Desktop/anim/bones/weird-origin.sifz ) drag
+the top bone's origin to see the bug.
