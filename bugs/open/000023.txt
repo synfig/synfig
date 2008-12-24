@@ -1,0 +1,17 @@
+Subject: origin of a child bone affected badly by Local Length Scale
+& Local Width Scale
+
+Open the file: ~/Animación/bones/weird-origin.sifz
+That file has a skeleton layer, select it
+in local mode try to drag the origin of the child bone a long distance.
+When the origin duck is released it jumps to other position.
+The jump is greater as greater is the duck displacement.
+To avoid that effect just restore the Local Length Scale of the parent
+bone from 0.470404 to 1.0
+When you do that you can drag the origin and it still jumping a little
+amount perpendicualar to the parent bone. It is due to the Loacal Width
+Scale. If you change it from 0.921387 to 1.0 the problem dissapears
+completely.
+Those values are discounted (the vlasue is multiplied by) in some way
+from the drop position of the duck when the mouse is released.
+------------------------------------------------------------------------
