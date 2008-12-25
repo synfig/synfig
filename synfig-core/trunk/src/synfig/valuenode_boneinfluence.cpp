@@ -34,6 +34,7 @@
 #include "valuenode_boneweightpair.h"
 #include "valuenode_staticlist.h"
 #include "valuenode_const.h"
+#include "valuenode_composite.h"
 #include "boneweightpair.h"
 #include "canvas.h"
 #include "general.h"
@@ -91,6 +92,9 @@ ValueNode_BoneInfluence::ValueNode_BoneInfluence(const ValueNode::Handle &x, Can
 ValueNode_BoneInfluence*
 ValueNode_BoneInfluence::create(const ValueBase &x, Canvas::LooseHandle canvas)
 {
+	if (x.get_type() == ValueBase::TYPE_BLINEPOINT)
+		return new ValueNode_BoneInfluence(ValueNode_Composite::create(x, canvas), canvas);
+
 	return new ValueNode_BoneInfluence(ValueNode_Const::create(x, canvas), canvas);
 }
 

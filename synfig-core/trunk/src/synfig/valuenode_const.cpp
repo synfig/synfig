@@ -32,7 +32,6 @@
 #include "valuenode_const.h"
 #include "valuenode_bone.h"
 #include "valuenode_boneweightpair.h"
-#include "valuenode_composite.h"
 #include "canvas.h"
 #include "general.h"
 
@@ -89,13 +88,6 @@ ValueNode_Const::create(const ValueBase &x, Canvas::LooseHandle canvas)
 	{
 		printf("%s:%d forcing convert to ValueNode_BoneWeightPair\n", __FILE__, __LINE__);
 		return ValueNode_BoneWeightPair::create(x, canvas);
-	}
-
-	// this too
-	if (x.get_type() == ValueBase::TYPE_BLINEPOINT)
-	{
-		printf("%s:%d forcing convert blinepoint to ValueNode_Composite\n", __FILE__, __LINE__);
-		return ValueNode_Composite::create(x, canvas);
 	}
 
 	return new ValueNode_Const(x, canvas);
