@@ -132,7 +132,6 @@ ValueNode_BoneInfluence::operator()(Time t)const
 	case ValueBase::TYPE_BLINEPOINT:
 	{
 		BLinePoint link((*link_)(t).get(BLinePoint()));
-		// here goes some debug stuff
 		Point v(link.get_vertex());
 		Point vt(transform.get_transformed(v));
 		Vector t1(link.get_tangent1());
@@ -146,6 +145,19 @@ ValueNode_BoneInfluence::operator()(Time t)const
 		link.set_vertex(vt);
 		link.set_tangent1(t1t);
 		link.set_tangent2(t2t);
+		if (getenv("SYNFIG_DEBUG_BONE_BLINEPOINT_TRANSFORMATION"))
+			printf("%s\n", transform.get_string(35,
+												strprintf("transform v(%7.2f %7.2f) t1(%7.2f %7.2f) using",
+														  v[0],
+														  v[1],
+														  t1[0],
+														  t1[1]),
+												strprintf("= (%7.2f %7.2f) (%7.2f %7.2f)",
+														  vt[0],
+														  vt[1],
+														  t1t[0],
+														  t1t[0]
+														  )).c_str());
 		return link;
 	}
 	}
