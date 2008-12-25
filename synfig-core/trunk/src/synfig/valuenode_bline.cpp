@@ -321,7 +321,7 @@ ValueNode_BLine::create(const ValueBase &value, Canvas::LooseHandle canvas)
 
 			for(iter=bline_points.begin();iter!=bline_points.end();iter++)
 			{
-				value_node->add(ValueNode::Handle(ValueNode_Composite::create(*iter)));
+				value_node->add(ValueNode::Handle(ValueNode_Composite::create(*iter, canvas)));
 			}
 			value_node->set_loop(value.get_loop());
 		}
@@ -348,7 +348,7 @@ ValueNode_BLine::create(const ValueBase &value, Canvas::LooseHandle canvas)
 #define CURR_POINT	curr->get_value().get(BLinePoint())
 				if(iter==segments.begin())
 				{
-					prev=ValueNode_Const::Handle::cast_dynamic(create(ValueBase::TYPE_BLINEPOINT));
+					prev=ValueNode_Const::Handle::cast_dynamic(create(ValueBase::TYPE_BLINEPOINT, canvas));
 					{
 						BLinePoint prev_point(PREV_POINT);
 						prev_point.set_vertex(iter->p1);
@@ -374,7 +374,7 @@ ValueNode_BLine::create(const ValueBase &value, Canvas::LooseHandle canvas)
 					continue;
 				}
 
-				ValueNode_Const::Handle curr(ValueNode_Const::Handle::cast_dynamic(create(ValueBase::TYPE_BLINEPOINT)));
+				ValueNode_Const::Handle curr(ValueNode_Const::Handle::cast_dynamic(create(ValueBase::TYPE_BLINEPOINT, canvas)));
 				{
 					BLinePoint curr_point(CURR_POINT);
 					curr_point.set_vertex(iter->p2);
