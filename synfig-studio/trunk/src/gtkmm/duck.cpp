@@ -80,7 +80,7 @@ Duck::Duck():
 { duck_count++; _DuckCounter::counter++; }
 
 Duck::Duck(const synfig::Point &point):
-	type_(TYPE_NONE),
+	type_(TYPE_POSITION),
 	point(point),
 	rotations(synfig::Angle::deg(0)),
 	origin(0,0),
