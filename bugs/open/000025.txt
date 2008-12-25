@@ -1,0 +1,8 @@
+Subject: BLine Tool doesn't show initial duck when used
+
+New file, click BLine Tool.
+The first vertex clicked duck is not shown.
+There is a duck attached with the mouse cursor (the duck is greyed)
+that represents the new duck to add. It is not shown either.
+
+------------------------------------------------------------------------
