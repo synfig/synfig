@@ -164,7 +164,11 @@ ValueNode_BoneInfluence::operator()(Time t)const
 														  )).c_str());
 		return link;
 	}
+	default:
+		assert(0);
+		break;
 	}
+	return ValueBase();
 }
 
 
