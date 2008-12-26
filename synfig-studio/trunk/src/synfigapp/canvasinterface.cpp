@@ -216,6 +216,8 @@ CanvasInterface::add_layer_to(synfig::String name, synfig::Canvas::Handle canvas
 	// Apply some defaults
 	if(layer->set_param("fg",synfigapp::Main::get_foreground_color()))
 		layer->set_param("bg",synfigapp::Main::get_background_color());
+	else if (name == "SolidColor")
+		layer->set_param("color",synfigapp::Main::get_background_color());
 	else
 		layer->set_param("color",synfigapp::Main::get_foreground_color());
 
