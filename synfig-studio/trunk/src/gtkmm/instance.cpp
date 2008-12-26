@@ -1018,6 +1018,7 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 	param_list=canvas_interface->generate_param_list(value_desc);
 	param_list.add("origin",location);
 
+#ifdef BLINEPOINT_MENU_IS_VERTEX_MENU
 	if(value_desc.get_value_type()==ValueBase::TYPE_BLINEPOINT && value_desc.is_value_node() && ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node()))
 	{
 		param_list2=canvas_interface->generate_param_list(
@@ -1028,6 +1029,7 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 		);
 		param_list2.add("origin",location);
 	}
+#endif	// BLINEPOINT_MENU_IS_VERTEX_MENU
 
 	// Populate the convert menu by looping through
 	// the ValueNode book and find the ones that are
