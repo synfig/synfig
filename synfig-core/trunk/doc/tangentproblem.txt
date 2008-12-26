@@ -21,10 +21,11 @@ There are some solutions to solve that:
 
 	param						convert type					value type
 	-----						------------					----------
-	Tangent                    AverageTangent					Vector
-		Next													Vector
-		Previous												Vector
-		Link													Vector
+	Tangent                     AverageTangent					Vector
+		Current					BoneInfluence					Vector
+		Next					BoneInfluence					Vector
+		Previous				BoneInfluence					Vector
+		Link					Vector							Vector
 
 'Current' is the current vertex in the bline (where the tangent lies) it is not a parameter
 'Next' is the next vertex in the bline relative to Current
@@ -33,14 +34,14 @@ There are some solutions to solve that:
 Resulting Tangent (radius, angle) is defined by:
 
 Let's call: V=Current-(Next+Previous)*0.5
-Let's call: V0 the numerical value of V at setup
+Let's call: V0=Current.Link-(Next.Link+Previous.Link)*0.5
 
 
 Radius:
 radius = Link.radius
 
 Angle:
-angle=atan2(V.y,V.x) - [atan2(V0.y,V0.x) - Link.angle]
+angle=atan2(V.x,V.y) - (atan2(V0.x,V0.y)-Link.angle)
 
 When the user manipulates the tangent duck it modifies Link as an offset.
 
