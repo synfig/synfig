@@ -87,6 +87,13 @@ public:
 
 			return true;
 		}
+		if(key=="bgcolor")
+		{
+			Color c(input_device->get_background_color());
+			value=strprintf("%f %f %f %f",(float)c.get_r(),(float)c.get_g(),(float)c.get_b(),(float)c.get_a());
+
+			return true;
+		}
 
 		return Settings::get_value(key, value);
 	}
@@ -121,6 +128,14 @@ public:
 			input_device->set_foreground_color(synfig::Color(r,g,b,a));
 			return true;
 		}
+		if(key=="bgcolor")
+		{
+			float r=0,g=0,b=0,a=1;
+			if(!strscanf(value,"%f %f %f %f",&r,&g,&b,&a))
+				return false;
+			input_device->set_background_color(synfig::Color(r,g,b,a));
+			return true;
+		}
 
 		return Settings::set_value(key, value);
 	}
@@ -129,6 +144,7 @@ public:
 	{
 		KeyList ret(Settings::get_key_list());
 		ret.push_back("color");
+		ret.push_back("bgcolor");
 		ret.push_back("state");
 		ret.push_back("bline_width");
 		ret.push_back("blend_method");

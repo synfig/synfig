@@ -389,6 +389,7 @@ synfigapp::Main::select_input_device(InputDevice::Handle input_device)
 
 	set_bline_width(input_device->get_bline_width());
 	set_foreground_color(input_device->get_foreground_color());
+	set_background_color(input_device->get_background_color());
 	set_opacity(input_device->get_opacity());
 	set_blend_method(input_device->get_blend_method());
 
