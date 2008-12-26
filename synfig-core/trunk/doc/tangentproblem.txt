@@ -9,7 +9,7 @@ There are some solutions to solve that:
 1) 	The solution that Anime Studio gives to the tangents: It doesn't
 	have real tangents but calculated ones based on the neighbour vertices
 	position and a parameter called 'curvature'.
-	
+
 2) 	As well the tangents are relative to the vertex it belongs to, we
 	need to convert the tangent to global coordinates, transform it by the
 	bone(s) influence and then convert it to local coordinates again.
@@ -21,37 +21,32 @@ There are some solutions to solve that:
 
 	param						convert type					value type
 	-----						------------					----------
-	Tangent                    TangentByVertice					Vector
+	Tangent                    AverageTangent					Vector
 		Next													Vector
 		Previous												Vector
 		Link													Vector
-		Fixed Length											bool
-		Fixed Angle												bool
 
 'Current' is the current vertex in the bline (where the tangent lies) it is not a parameter
 'Next' is the next vertex in the bline relative to Current
 'Previous' it is the previous vertex in the bline relative to Current.
 
-If the bline 'loop' boolean is on:
-	1) If Current is the last vertex in the list, then Next is the first in the list of the bline
-	2) If Current is the first vertex in the list, then Previous is the last in the list of the bline
-
-If the bline 'loop' boolean is off:
-	1) If Current is the last vertex in the list, then Next is Current.
-	2) If Current is the first vertex in the list, then Previous Current.
-
 Resulting Tangent (radius, angle) is defined by:
-Let's call: V=Next-Previous
+
+Let's call: V=Current-(Next+Previous)*0.5
+Let's call: V0 the numerical value of V at setup
+
 
 Radius:
-If Fixed Length is on:  radious = Link.radius
-If Fixed Length is off: radius= |V|*Link.radius
+radius = Link.radius
 
 Angle:
-If Fixed Length is on:  angle = Link.angle
-If Fixed Length is off: angle=atan2(V.y,V.x) + Link.angle
+angle=atan2(V.y,V.x) - [atan2(V0.y,V0.x) - Link.angle]
 
-When the user manipulates the tangent duck it modifies Link as an offset
+When the user manipulates the tangent duck it modifies Link as an offset.
+
+Problems:
+-Insert a vertex
+-Vertex "on", "off"
 
 2) PROPOSAL FOR TANGENTS IN GLOBAL COORDINATES
 ==============================================
