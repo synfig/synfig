@@ -43,7 +43,8 @@ private:
 	synfig::Vector scale;
 	synfig::Vector origin;
 public:
-	Transform_Scale(const synfig::Vector& scale,const synfig::Vector& origin=synfig::Vector(0,0)):scale(scale),origin(origin) { }
+	Transform_Scale(const synfig::GUID& guid, const synfig::Vector& scale,const synfig::Vector& origin=synfig::Vector(0,0)):
+		Transform(guid), scale(scale), origin(origin) { }
 	synfig::Vector perform(const synfig::Vector& x)const { return synfig::Vector((x[0]-origin[0])*scale[0]+origin[0],(x[1]-origin[1])*scale[1]+origin[1]); }
 	synfig::Vector unperform(const synfig::Vector& x)const { return synfig::Vector((x[0]-origin[0])/scale[0]+origin[0],(x[1]-origin[1])/scale[1]+origin[1]); }
 };
