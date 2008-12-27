@@ -138,17 +138,18 @@ ValueNode_BoneInfluence::operator()(Time t)const
 		BLinePoint link((*link_)(t).get(BLinePoint()));
 		Point v(link.get_vertex());
 		Point vt(transform.get_transformed(v));
-		Vector t1(link.get_tangent1());
-		Vector t2(link.get_tangent2());
-		Point t1abs(v+t1);
-		Point t2abs(v+t2);
-		Point t1abst(transform.get_transformed(t1abs));
-		Point t2abst(transform.get_transformed(t2abs));
-		Vector t1t(t1abst-vt);
-		Vector t2t(t2abst-vt);
+//		Vector t1(link.get_tangent1());
+//		Vector t2(link.get_tangent2());
+//		Point t1abs(v+t1);
+//		Point t2abs(v+t2);
+//		Point t1abst(transform.get_transformed(t1abs));
+//		Point t2abst(transform.get_transformed(t2abs));
+//		Vector t1t(t1abst-vt);
+//		Vector t2t(t2abst-vt);
 		link.set_vertex(vt);
-		link.set_tangent1(t1t);
-		link.set_tangent2(t2t);
+		link_set_boned_vertex_flag(true);
+//		link.set_tangent1(t1t);
+//		link.set_tangent2(t2t);
 		if (getenv("SYNFIG_DEBUG_BONE_BLINEPOINT_TRANSFORMATION"))
 			printf("%s\n", transform.get_string(35,
 												strprintf("transform v(%7.2f %7.2f) t1(%7.2f %7.2f) using",
