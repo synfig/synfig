@@ -848,6 +848,55 @@ ValueNode_BLine::check_type(ValueBase::Type type)
 	return type==ValueBase::TYPE_LIST;
 }
 
+BLinePoint
+ValueNode_BLine::get_boned_blinepoint(Time t, std::vector<ListEntry>::const_iterator current)
+{
+	std::vector<ListEntry>::const_iterator next(current), previous(current); //iterators current, next, previous
+	BLinePoint bpcurr,bpprev,bpnext; //BLinePoints current, next, previous
+	Vector t1,t2;
+	Vector tt1,tt2; // Calculated tangents
+	Point v,vn,vp; // Transformed current Vertex, next Vertex, previous Vertex
+	Point vs,vns,vps; // Setup current Vertex, next Vertex, previous Vertex
+	Angle beta1,beta2; //Final angle of tangents (trasformed)
+	Angle beta01,beta02; //Original angle of tangnets (untransformed)
+	Angle alpha;
+
+	next++;
+	if(next==list.end())
+		next=list.begin();
+	if(current==list.begin())
+		previous=list.end();
+	previous--;
+
+
+	bpcurr=(*current->value_node)(t).get(BLinePoint());
+	if(!bpcurr.get_boned_vertex_flag())
+		return bpcurr;
+	bpprev=(*previous->value_node)(t).get(BLinePoint());
+	bpnext=(*next->value_node)(t).get(BLinePoint());
+
+	t1=bpcurr.get_tangent1();
+	t2=bpcurr.get_tangent2();
+	v=bpcurr.get_vertex();
+	vp=bpprev.get_vertex();
+	vn=bpnext.get_vertex();
+	vs=bpcurr.get_vertex_setup();
+	vps=bpprev.get_vertex_setup();
+	vns=bpnext.get_vertex_setup();
+	beta01=t1.angle();
+	beta02=t2.angle();
+	alpha=(v-(vn-vp)*0.5).angle()-(vs-(vns-vps)*0.5).angle();
+	beta1=alpha + beta01;
+	beta2=alpha + beta02;
+	tt1[0]=t1.mag()*Angle::cos(beta1).get();
+	tt1[1]=t1.mag()*Angle::sin(beta1).get();
+	tt2[0]=t2.mag()*Angle::cos(beta2).get();
+	tt2[1]=t2.mag()*Angle::sin(beta2).get();
+	bpcurr.set_tangent1(tt1);
+	bpcurr.set_tangent2(tt2);
+
+	return bpcurr;
+}
 #ifdef _DEBUG
 void
 ValueNode_BLine::ref()const

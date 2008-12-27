@@ -148,6 +148,7 @@ ValueNode_BoneInfluence::operator()(Time t)const
 		Vector t2t(t2abst-vt);
 		link.set_vertex(vt);
 		link.set_boned_vertex_flag(true);
+		link.set_vertex_setup(v);
 //		link.set_tangent1(t1t);
 //		link.set_tangent2(t2t);
 		if (getenv("SYNFIG_DEBUG_BONE_BLINEPOINT_TRANSFORMATION"))
