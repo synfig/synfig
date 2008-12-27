@@ -47,7 +47,7 @@ private:
 	float	width_;
 	float	origin_;
 	bool	split_tangent_;
-	bool	boned_vertex_
+	bool	boned_vertex_;
 
 public:
 
@@ -55,7 +55,7 @@ public:
 		vertex_(Point(0,0)),
 		width_(0.01),
 		origin_(0.0),
-		split_tangent_(false)
+		split_tangent_(false),
 		boned_vertex_(false)
 	{ tangent_[0] = Point(0,0); tangent_[1] = Point(0,0); }
 
