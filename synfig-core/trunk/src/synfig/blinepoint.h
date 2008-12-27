@@ -47,6 +47,7 @@ private:
 	float	width_;
 	float	origin_;
 	bool	split_tangent_;
+	bool	boned_vertex_
 
 public:
 
@@ -55,6 +56,7 @@ public:
 		width_(0.01),
 		origin_(0.0),
 		split_tangent_(false)
+		boned_vertex_(false)
 	{ tangent_[0] = Point(0,0); tangent_[1] = Point(0,0); }
 
 	const Point& get_vertex()const { return vertex_; }
@@ -80,6 +82,9 @@ public:
 
 	const bool& get_split_tangent_flag()const { return split_tangent_; }
 	void set_split_tangent_flag(bool x=true) { split_tangent_=x; }
+
+	const bool& get_boned_vertex_flag()const { return boned_vertex_; }
+	void set_boned_vertex_flag(bool x=true) { boned_vertex_=x; }
 
 	void reverse();
 
