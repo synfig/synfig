@@ -871,7 +871,8 @@ ValueNode_BLine::get_boned_blinepoint(Time t, std::vector<ListEntry>::const_iter
 	Point vs,vns,vps; // Setup current Vertex, next Vertex, previous Vertex
 	Angle beta1,beta2; //Final angle of tangents (trasformed)
 	Angle beta01,beta02; //Original angle of tangnets (untransformed)
-	Angle alpha;
+	Angle alpha,alpham,alphap; //Alpha mid point, alpha perpendicular
+	Real m,p; //mid point distance and perpendicular distance
 
 	next++;
 	if(next==list.end())
@@ -905,8 +906,27 @@ ValueNode_BLine::get_boned_blinepoint(Time t, std::vector<ListEntry>::const_iter
 	// angle of the perpendicular to the next-previous segment
 	// If Next == Previous there is also other ambiguity.
 	// The angle is unkown.
-
-	alpha=(v-(vn+vp)*0.5).angle()-(vs-(vns+vps)*0.5).angle();
+	//alpha=(v-(vn+vp)*0.5).angle()-(vs-(vns+vps)*0.5).angle();
+	// Introducing alpham and alphap can calculating its averaged point
+	// solves both problems.
+	alpham=(v-(vn+vp)*0.5).angle()-(vs-(vns+vps)*0.5).angle();
+	alphap=((vn-vp).perp()).angle()-((vns-vps).perp()).angle();
+	printf("alpham=%f\n",Angle::deg(alpham).get());
+	printf("alphap=%f\n",Angle::deg(alphap).get());
+/*	if( Angle::rad((v-(vn+vp)*0.5).angle()).get()*Angle::rad((vs-(vns+vps)*0.5).angle()).get()<0 )
+		alpham=(-v+(vn+vp)*0.5).angle()-(-vs+(vns+vps)*0.5).angle();*/
+	if( Angle::rad((vn-vp).perp().angle()).get()*Angle::rad((v-(vn+vp)*0.5).angle()).get()<0 )
+		alphap=((vp-vn).perp()).angle()-((vps-vns).perp()).angle();
+		//alphap=-alphap;
+	printf("alpham-later=%f\n",Angle::deg(alpham).get());
+	printf("alphap-later=%f\n",Angle::deg(alphap).get());
+	printf("--------------------\n");
+	m=(v-(vn+vp)*0.5).mag();
+	p=(vn-vp).mag();
+	if((p+m)<EPSILON)
+		alpha = Angle::zero();
+	else
+		alpha = (alpham*m+alphap*p)/(m+p);
 	beta1=alpha + beta01;
 	beta2=alpha + beta02;
 	tt1[0]=t1.mag()*Angle::cos(beta1).get();
@@ -915,7 +935,7 @@ ValueNode_BLine::get_boned_blinepoint(Time t, std::vector<ListEntry>::const_iter
 	tt2[1]=t2.mag()*Angle::sin(beta2).get();
 	bpcurr.set_tangent1(tt1);
 	bpcurr.set_tangent2(tt2);
-
+/*
 	printf("%s\n",strprintf("t1(%7.2f,%7.2f)",t1[0],t1[1]).c_str());
 	printf("%s\n",strprintf("t2(%7.2f,%7.2f)",t2[0],t2[1]).c_str());
 	printf("%s\n",strprintf("v(%7.2f,%7.2f)",v[0],v[1]).c_str());
@@ -924,14 +944,9 @@ ValueNode_BLine::get_boned_blinepoint(Time t, std::vector<ListEntry>::const_iter
 	printf("%s\n",strprintf("vs(%7.2f,%7.2f)",vs[0],vs[1]).c_str());
 	printf("%s\n",strprintf("vps(%7.2f,%7.2f)",vps[0],vps[1]).c_str());
 	printf("%s\n",strprintf("vns(%7.2f,%7.2f)",vns[0],vns[1]).c_str());
-	//Uncommenting any of those three lines would produce ilegal code
-	// I have no idea why...
-	//printf("%s\n",strprintf("beta01(%7.2f)",beta01.mod()).c_str());
-	//printf("%s\n",strprintf("beta02(%7.2f)",beta02.mod()).c_str());
-	//printf("%s\n",strprintf("alpha(%7.2f)",alpha).c_str());
 	printf("%s\n",strprintf("tt1(%7.2f,%7.2f)",tt1[0],tt1[1]).c_str());
 	printf("%s\n",strprintf("tt2(%7.2f,%7.2f)",tt2[0],tt2[1]).c_str());
-
+*/
 	return bpcurr;
 }
 
