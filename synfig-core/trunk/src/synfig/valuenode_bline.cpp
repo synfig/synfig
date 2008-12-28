@@ -484,15 +484,16 @@ ValueNode_BLine::operator()(Time t)const
 			if(first_flag)
 			{
 				first_iter=iter;
-				first=prev=(*iter->value_node)(t).get(prev);
+				//first=prev=(*iter->value_node)(t).get(prev);
+				first=prev=get_boned_blinepoint(t, iter);
 				first_flag=false;
 				ret_list.push_back(first);
 				continue;
 			}
 
 			BLinePoint curr;
-			curr=(*iter->value_node)(t).get(prev);
-
+			//curr=(*iter->value_node)(t).get(prev);
+			curr=get_boned_blinepoint(t,iter);
 			if(next_scale!=1.0f)
 			{
 				ret_list.back().set_split_tangent_flag(true);
@@ -546,7 +547,8 @@ ValueNode_BLine::operator()(Time t)const
 				catch(...) { on_time=Time::end(); }
 			}
 
-			blp_here_on=(*iter->value_node)(on_time).get(blp_here_on);
+			//blp_here_on=(*iter->value_node)(on_time).get(blp_here_on);
+			blp_here_on=get_boned_blinepoint(on_time,iter);
 //			blp_here_on=(*iter->value_node)(t).get(blp_here_on);
 
 			// Find "end" of dynamic group - ie. search forward along
@@ -569,7 +571,8 @@ ValueNode_BLine::operator()(Time t)const
 					end_iter=--list.end();
 			}
 
-			blp_next_off=(*end_iter->value_node)(off_time).get(prev);
+			//blp_next_off=(*end_iter->value_node)(off_time).get(prev);
+			blp_next_off=get_boned_blinepoint(off_time,end_iter);
 
 			// Find "begin" of dynamic group
 			begin_iter=iter;
@@ -593,7 +596,8 @@ ValueNode_BLine::operator()(Time t)const
 
 				if(begin_iter->amount_at_time(t)>amount)
 				{
-					blp_prev_off=(*begin_iter->value_node)(off_time).get(prev);
+					//blp_prev_off=(*begin_iter->value_node)(off_time).get(prev);
+					blp_prev_off=get_boned_blinepoint(off_time,begin_iter);
 					break;
 				}
 			}while(true);
@@ -607,7 +611,8 @@ ValueNode_BLine::operator()(Time t)const
 					begin_iter=list.begin();
 				else
 					begin_iter=first_iter;
-				blp_prev_off=(*begin_iter->value_node)(off_time).get(prev);
+				//blp_prev_off=(*begin_iter->value_node)(off_time).get(prev);
+				blp_prev_off=get_boned_blinepoint(off_time, begin_iter);
 			}
 
 			// this is how the curve looks when we have completely vanished
@@ -640,7 +645,8 @@ ValueNode_BLine::operator()(Time t)const
 			else if(list.end()!=++std::vector<ListEntry>::const_iterator(iter))
 			{
 				BLinePoint next;
-				next=((*(++std::vector<ListEntry>::const_iterator(iter))->value_node)(t).get(prev));
+				//next=((*(++std::vector<ListEntry>::const_iterator(iter))->value_node)(t).get(prev));
+				next=get_boned_blinepoint(t,(++std::vector<ListEntry>::const_iterator(iter)));
 				next_tangent_scalar=linear_interpolation(next.get_origin()-blp_here_on.get_origin(), 1.0f, amount);
 			}
 			else
@@ -680,20 +686,26 @@ ValueNode_BLine::operator()(Time t)const
 				// for each of the 3 systems, the origin is half way between the previous and next active point
 				// and the axes are based on a vector from the next active point to the previous
 				{
-					const Point   end_pos_at_off_time((  *end_iter->value_node)(off_time).get(prev).get_vertex());
-					const Point begin_pos_at_off_time((*begin_iter->value_node)(off_time).get(prev).get_vertex());
+					//const Point   end_pos_at_off_time((  *end_iter->value_node)(off_time).get(prev).get_vertex());
+					const Point   end_pos_at_off_time(get_boned_blinepoint(off_time,  end_iter).get_vertex());
+					//const Point begin_pos_at_off_time((*begin_iter->value_node)(off_time).get(prev).get_vertex());
+					const Point begin_pos_at_off_time(get_boned_blinepoint(off_time,begin_iter).get_vertex());
 					off_coord_origin=(begin_pos_at_off_time + end_pos_at_off_time)/2;
 					off_coord_sys[0]=(begin_pos_at_off_time - end_pos_at_off_time).norm();
 					off_coord_sys[1]=off_coord_sys[0].perp();
 
-					const Point   end_pos_at_on_time((  *end_iter->value_node)(on_time).get(prev).get_vertex());
-					const Point begin_pos_at_on_time((*begin_iter->value_node)(on_time).get(prev).get_vertex());
+					//const Point   end_pos_at_on_time((  *end_iter->value_node)(on_time).get(prev).get_vertex());
+					const Point   end_pos_at_on_time(get_boned_blinepoint(on_time,  end_iter).get_vertex());
+					//const Point begin_pos_at_on_time((*begin_iter->value_node)(on_time).get(prev).get_vertex());
+					const Point begin_pos_at_on_time(get_boned_blinepoint(on_time,begin_iter).get_vertex());
 					on_coord_origin=(begin_pos_at_on_time + end_pos_at_on_time)/2;
 					on_coord_sys[0]=(begin_pos_at_on_time - end_pos_at_on_time).norm();
 					on_coord_sys[1]=on_coord_sys[0].perp();
 
-					const Point   end_pos_at_current_time((  *end_iter->value_node)(t).get(prev).get_vertex());
-					const Point begin_pos_at_current_time((*begin_iter->value_node)(t).get(prev).get_vertex());
+					//const Point   end_pos_at_current_time((  *end_iter->value_node)(t).get(prev).get_vertex());
+					const Point   end_pos_at_current_time(get_boned_blinepoint(t,  end_iter).get_vertex());
+					//const Point begin_pos_at_current_time((*begin_iter->value_node)(t).get(prev).get_vertex());
+					const Point begin_pos_at_current_time(get_boned_blinepoint(t,begin_iter).get_vertex());
 					curr_coord_origin=(begin_pos_at_current_time + end_pos_at_current_time)/2;
 					curr_coord_sys[0]=(begin_pos_at_current_time - end_pos_at_current_time).norm();
 					curr_coord_sys[1]=curr_coord_sys[0].perp();
@@ -849,7 +861,7 @@ ValueNode_BLine::check_type(ValueBase::Type type)
 }
 
 BLinePoint
-ValueNode_BLine::get_boned_blinepoint(Time t, std::vector<ListEntry>::const_iterator current)
+ValueNode_BLine::get_boned_blinepoint(Time t, std::vector<ListEntry>::const_iterator current) const
 {
 	std::vector<ListEntry>::const_iterator next(current), previous(current); //iterators current, next, previous
 	BLinePoint bpcurr,bpprev,bpnext; //BLinePoints current, next, previous
@@ -885,7 +897,16 @@ ValueNode_BLine::get_boned_blinepoint(Time t, std::vector<ListEntry>::const_iter
 	vns=bpnext.get_vertex_setup();
 	beta01=t1.angle();
 	beta02=t2.angle();
-	alpha=(v-(vn-vp)*0.5).angle()-(vs-(vns-vps)*0.5).angle();
+	// alpha is the angle of the vector from the middle point of
+	// the segment next-previous to the current.
+	// If current is aligned with the segment next-previous
+	// there is a ambiguity. The angle is unknown.
+	// To solve that I make the average of this angle with the
+	// angle of the perpendicular to the next-previous segment
+	// If Next == Previous there is also other ambiguity.
+	// The angle is unkown.
+
+	alpha=(v-(vn+vp)*0.5).angle()-(vs-(vns+vps)*0.5).angle();
 	beta1=alpha + beta01;
 	beta2=alpha + beta02;
 	tt1[0]=t1.mag()*Angle::cos(beta1).get();
@@ -895,8 +916,25 @@ ValueNode_BLine::get_boned_blinepoint(Time t, std::vector<ListEntry>::const_iter
 	bpcurr.set_tangent1(tt1);
 	bpcurr.set_tangent2(tt2);
 
+	printf("%s\n",strprintf("t1(%7.2f,%7.2f)",t1[0],t1[1]).c_str());
+	printf("%s\n",strprintf("t2(%7.2f,%7.2f)",t2[0],t2[1]).c_str());
+	printf("%s\n",strprintf("v(%7.2f,%7.2f)",v[0],v[1]).c_str());
+	printf("%s\n",strprintf("vp(%7.2f,%7.2f)",vp[0],vp[1]).c_str());
+	printf("%s\n",strprintf("vn(%7.2f,%7.2f)",vn[0],vn[1]).c_str());
+	printf("%s\n",strprintf("vs(%7.2f,%7.2f)",vs[0],vs[1]).c_str());
+	printf("%s\n",strprintf("vps(%7.2f,%7.2f)",vps[0],vps[1]).c_str());
+	printf("%s\n",strprintf("vns(%7.2f,%7.2f)",vns[0],vns[1]).c_str());
+	//Uncommenting any of those three lines would produce ilegal code
+	// I have no idea why...
+	//printf("%s\n",strprintf("beta01(%7.2f)",beta01.mod()).c_str());
+	//printf("%s\n",strprintf("beta02(%7.2f)",beta02.mod()).c_str());
+	//printf("%s\n",strprintf("alpha(%7.2f)",alpha).c_str());
+	printf("%s\n",strprintf("tt1(%7.2f,%7.2f)",tt1[0],tt1[1]).c_str());
+	printf("%s\n",strprintf("tt2(%7.2f,%7.2f)",tt2[0],tt2[1]).c_str());
+
 	return bpcurr;
 }
+
 #ifdef _DEBUG
 void
 ValueNode_BLine::ref()const
