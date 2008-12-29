@@ -900,9 +900,15 @@ ValueNode_BLine::get_boned_blinepoint(Time t, std::vector<ListEntry>::const_iter
 	beta02=t2.angle();
 	// New aproaching: I calculate the needed relative change of the tangents
 	// in relation to the segment that joins the next and previous vertices.
-	// Then add a compensation due to the modification relative to the mid point
+	// Then add a compensation due to the modification relative to the mid point.
+	// If the blinepoint tangent is not split it is not needed the compensation
+	// in fact the compensation makes it worst so it makes only sense when the
+	// vertex has a particular "shape" by its split tangents.
 	alpha=(vn-vp).angle()-(vns-vps).angle();
-	gamma=((v-(vn+vp)*0.5).angle()-(vn-vp).angle()) - ((vs-(vns+vps)*0.5).angle()-(vns-vps).angle());
+	if (bpcurr.get_split_tangent_flag())
+		gamma=((v-(vn+vp)*0.5).angle()-(vn-vp).angle()) - ((vs-(vns+vps)*0.5).angle()-(vns-vps).angle());
+	else
+		gamma=Angle::zero();
 
 	beta1=alpha + gamma + beta01;
 	beta2=alpha + gamma + beta02;
