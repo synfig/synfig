@@ -871,8 +871,8 @@ ValueNode_BLine::get_boned_blinepoint(Time t, std::vector<ListEntry>::const_iter
 	Point vs,vns,vps; // Setup current Vertex, next Vertex, previous Vertex
 	Angle beta1,beta2; //Final angle of tangents (trasformed)
 	Angle beta01,beta02; //Original angle of tangnets (untransformed)
-	Angle alpha,alpham,alphap; //Alpha mid point, alpha perpendicular
-	Real m,p; //mid point distance and perpendicular distance
+	Angle alpha; // Increment of angle produced in the segment next-previous
+	Angle gamma; // Compensation due to the variation relative to the midpoint.
 
 	next++;
 	if(next==list.end())
@@ -898,55 +898,21 @@ ValueNode_BLine::get_boned_blinepoint(Time t, std::vector<ListEntry>::const_iter
 	vns=bpnext.get_vertex_setup();
 	beta01=t1.angle();
 	beta02=t2.angle();
-	// alpha is the angle of the vector from the middle point of
-	// the segment next-previous to the current.
-	// If current is aligned with the segment next-previous
-	// there is a ambiguity. The angle is unknown.
-	// To solve that I make the average of this angle with the
-	// angle of the perpendicular to the next-previous segment
-	// If Next == Previous there is also other ambiguity.
-	// The angle is unkown.
-	//alpha=(v-(vn+vp)*0.5).angle()-(vs-(vns+vps)*0.5).angle();
-	// Introducing alpham and alphap can calculating its averaged point
-	// solves both problems.
-	alpham=(v-(vn+vp)*0.5).angle()-(vs-(vns+vps)*0.5).angle();
-	alphap=((vn-vp).perp()).angle()-((vns-vps).perp()).angle();
-	printf("alpham=%f\n",Angle::deg(alpham).get());
-	printf("alphap=%f\n",Angle::deg(alphap).get());
-/*	if( Angle::rad((v-(vn+vp)*0.5).angle()).get()*Angle::rad((vs-(vns+vps)*0.5).angle()).get()<0 )
-		alpham=(-v+(vn+vp)*0.5).angle()-(-vs+(vns+vps)*0.5).angle();*/
-	if( Angle::rad((vn-vp).perp().angle()).get()*Angle::rad((v-(vn+vp)*0.5).angle()).get()<0 )
-		alphap=((vp-vn).perp()).angle()-((vps-vns).perp()).angle();
-		//alphap=-alphap;
-	printf("alpham-later=%f\n",Angle::deg(alpham).get());
-	printf("alphap-later=%f\n",Angle::deg(alphap).get());
-	printf("--------------------\n");
-	m=(v-(vn+vp)*0.5).mag();
-	p=(vn-vp).mag();
-	if((p+m)<EPSILON)
-		alpha = Angle::zero();
-	else
-		alpha = (alpham*m+alphap*p)/(m+p);
-	beta1=alpha + beta01;
-	beta2=alpha + beta02;
+	// New aproaching: I calculate the needed relative change of the tangents
+	// in relation to the segment that joins the next and previous vertices.
+	// Then add a compensation due to the modification relative to the mid point
+	alpha=(vn-vp).angle()-(vns-vps).angle();
+	gamma=((v-(vn+vp)*0.5).angle()-(vn-vp).angle()) - ((vs-(vns+vps)*0.5).angle()-(vns-vps).angle());
+
+	beta1=alpha + gamma + beta01;
+	beta2=alpha + gamma + beta02;
 	tt1[0]=t1.mag()*Angle::cos(beta1).get();
 	tt1[1]=t1.mag()*Angle::sin(beta1).get();
 	tt2[0]=t2.mag()*Angle::cos(beta2).get();
 	tt2[1]=t2.mag()*Angle::sin(beta2).get();
 	bpcurr.set_tangent1(tt1);
 	bpcurr.set_tangent2(tt2);
-/*
-	printf("%s\n",strprintf("t1(%7.2f,%7.2f)",t1[0],t1[1]).c_str());
-	printf("%s\n",strprintf("t2(%7.2f,%7.2f)",t2[0],t2[1]).c_str());
-	printf("%s\n",strprintf("v(%7.2f,%7.2f)",v[0],v[1]).c_str());
-	printf("%s\n",strprintf("vp(%7.2f,%7.2f)",vp[0],vp[1]).c_str());
-	printf("%s\n",strprintf("vn(%7.2f,%7.2f)",vn[0],vn[1]).c_str());
-	printf("%s\n",strprintf("vs(%7.2f,%7.2f)",vs[0],vs[1]).c_str());
-	printf("%s\n",strprintf("vps(%7.2f,%7.2f)",vps[0],vps[1]).c_str());
-	printf("%s\n",strprintf("vns(%7.2f,%7.2f)",vns[0],vns[1]).c_str());
-	printf("%s\n",strprintf("tt1(%7.2f,%7.2f)",tt1[0],tt1[1]).c_str());
-	printf("%s\n",strprintf("tt2(%7.2f,%7.2f)",tt2[0],tt2[1]).c_str());
-*/
+
 	return bpcurr;
 }
 
