@@ -156,11 +156,11 @@ ValueNode_BoneInfluence::operator()(Time t)const
 			printf("%s\n", transform.get_string(35,
 												strprintf("transform v(%7.2f %7.2f) using",
 														  v[0],
-														  v[1],
+														  v[1]),
 												strprintf("= (%7.2f %7.2f)",
 														  vt[0],
 														  vt[1]
-														  )).c_str()));
+														  )).c_str());
 		return link;
 	}
 	default:
