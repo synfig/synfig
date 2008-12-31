@@ -92,7 +92,7 @@ public:
 
 	//! Returns the BlinePoint at time t, with the tangents modified if
 	//! the vertex is boned influenced, otherwise returns the Blinepoint at time t.
-	BLinePoint get_boned_blinepoint(Time t, std::vector<ListEntry>::const_iterator current)const;
+	BLinePoint get_blinepoint(std::vector<ListEntry>::const_iterator current, Time t)const;
 
 #ifdef _DEBUG
 	virtual void ref()const;

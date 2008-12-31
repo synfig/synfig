@@ -484,16 +484,15 @@ ValueNode_BLine::operator()(Time t)const
 			if(first_flag)
 			{
 				first_iter=iter;
-				//first=prev=(*iter->value_node)(t).get(prev);
-				first=prev=get_boned_blinepoint(t, iter);
+				first=prev=get_blinepoint(iter, t);
 				first_flag=false;
 				ret_list.push_back(first);
 				continue;
 			}
 
 			BLinePoint curr;
-			//curr=(*iter->value_node)(t).get(prev);
-			curr=get_boned_blinepoint(t,iter);
+			curr=get_blinepoint(iter, t);
+
 			if(next_scale!=1.0f)
 			{
 				ret_list.back().set_split_tangent_flag(true);
@@ -547,8 +546,7 @@ ValueNode_BLine::operator()(Time t)const
 				catch(...) { on_time=Time::end(); }
 			}
 
-			//blp_here_on=(*iter->value_node)(on_time).get(blp_here_on);
-			blp_here_on=get_boned_blinepoint(on_time,iter);
+			blp_here_on=get_blinepoint(iter, on_time);
 //			blp_here_on=(*iter->value_node)(t).get(blp_here_on);
 
 			// Find "end" of dynamic group - ie. search forward along
@@ -571,8 +569,7 @@ ValueNode_BLine::operator()(Time t)const
 					end_iter=--list.end();
 			}
 
-			//blp_next_off=(*end_iter->value_node)(off_time).get(prev);
-			blp_next_off=get_boned_blinepoint(off_time,end_iter);
+			blp_next_off=get_blinepoint(end_iter, off_time);
 
 			// Find "begin" of dynamic group
 			begin_iter=iter;
@@ -596,8 +593,7 @@ ValueNode_BLine::operator()(Time t)const
 
 				if(begin_iter->amount_at_time(t)>amount)
 				{
-					//blp_prev_off=(*begin_iter->value_node)(off_time).get(prev);
-					blp_prev_off=get_boned_blinepoint(off_time,begin_iter);
+					blp_prev_off=get_blinepoint(begin_iter, off_time);
 					break;
 				}
 			}while(true);
@@ -611,8 +607,7 @@ ValueNode_BLine::operator()(Time t)const
 					begin_iter=list.begin();
 				else
 					begin_iter=first_iter;
-				//blp_prev_off=(*begin_iter->value_node)(off_time).get(prev);
-				blp_prev_off=get_boned_blinepoint(off_time, begin_iter);
+				blp_prev_off=get_blinepoint(begin_iter, off_time);
 			}
 
 			// this is how the curve looks when we have completely vanished
@@ -645,8 +640,7 @@ ValueNode_BLine::operator()(Time t)const
 			else if(list.end()!=++std::vector<ListEntry>::const_iterator(iter))
 			{
 				BLinePoint next;
-				//next=((*(++std::vector<ListEntry>::const_iterator(iter))->value_node)(t).get(prev));
-				next=get_boned_blinepoint(t,(++std::vector<ListEntry>::const_iterator(iter)));
+				next=get_blinepoint(++std::vector<ListEntry>::const_iterator(iter), t);
 				next_tangent_scalar=linear_interpolation(next.get_origin()-blp_here_on.get_origin(), 1.0f, amount);
 			}
 			else
@@ -686,26 +680,20 @@ ValueNode_BLine::operator()(Time t)const
 				// for each of the 3 systems, the origin is half way between the previous and next active point
 				// and the axes are based on a vector from the next active point to the previous
 				{
-					//const Point   end_pos_at_off_time((  *end_iter->value_node)(off_time).get(prev).get_vertex());
-					const Point   end_pos_at_off_time(get_boned_blinepoint(off_time,  end_iter).get_vertex());
-					//const Point begin_pos_at_off_time((*begin_iter->value_node)(off_time).get(prev).get_vertex());
-					const Point begin_pos_at_off_time(get_boned_blinepoint(off_time,begin_iter).get_vertex());
+					const Point   end_pos_at_off_time(get_blinepoint(end_iter,   off_time).get_vertex());
+					const Point begin_pos_at_off_time(get_blinepoint(begin_iter, off_time).get_vertex());
 					off_coord_origin=(begin_pos_at_off_time + end_pos_at_off_time)/2;
 					off_coord_sys[0]=(begin_pos_at_off_time - end_pos_at_off_time).norm();
 					off_coord_sys[1]=off_coord_sys[0].perp();
 
-					//const Point   end_pos_at_on_time((  *end_iter->value_node)(on_time).get(prev).get_vertex());
-					const Point   end_pos_at_on_time(get_boned_blinepoint(on_time,  end_iter).get_vertex());
-					//const Point begin_pos_at_on_time((*begin_iter->value_node)(on_time).get(prev).get_vertex());
-					const Point begin_pos_at_on_time(get_boned_blinepoint(on_time,begin_iter).get_vertex());
+					const Point   end_pos_at_on_time(get_blinepoint(end_iter,   on_time).get_vertex());
+					const Point begin_pos_at_on_time(get_blinepoint(begin_iter, on_time).get_vertex());
 					on_coord_origin=(begin_pos_at_on_time + end_pos_at_on_time)/2;
 					on_coord_sys[0]=(begin_pos_at_on_time - end_pos_at_on_time).norm();
 					on_coord_sys[1]=on_coord_sys[0].perp();
 
-					//const Point   end_pos_at_current_time((  *end_iter->value_node)(t).get(prev).get_vertex());
-					const Point   end_pos_at_current_time(get_boned_blinepoint(t,  end_iter).get_vertex());
-					//const Point begin_pos_at_current_time((*begin_iter->value_node)(t).get(prev).get_vertex());
-					const Point begin_pos_at_current_time(get_boned_blinepoint(t,begin_iter).get_vertex());
+					const Point   end_pos_at_current_time(get_blinepoint(end_iter,   t).get_vertex());
+					const Point begin_pos_at_current_time(get_blinepoint(begin_iter, t).get_vertex());
 					curr_coord_origin=(begin_pos_at_current_time + end_pos_at_current_time)/2;
 					curr_coord_sys[0]=(begin_pos_at_current_time - end_pos_at_current_time).norm();
 					curr_coord_sys[1]=curr_coord_sys[0].perp();
@@ -861,10 +849,14 @@ ValueNode_BLine::check_type(ValueBase::Type type)
 }
 
 BLinePoint
-ValueNode_BLine::get_boned_blinepoint(Time t, std::vector<ListEntry>::const_iterator current) const
+ValueNode_BLine::get_blinepoint(std::vector<ListEntry>::const_iterator current, Time t) const
 {
+	BLinePoint bpcurr((*current->value_node)(t).get(BLinePoint()));
+	if(!bpcurr.get_boned_vertex_flag())
+		return bpcurr;
+
 	std::vector<ListEntry>::const_iterator next(current), previous(current); //iterators current, next, previous
-	BLinePoint bpcurr,bpprev,bpnext; //BLinePoints current, next, previous
+	BLinePoint bpprev,bpnext; //BLinePoints next, previous
 	Vector t1,t2;
 	Vector tt1,tt2; // Calculated tangents
 	Point v,vn,vp; // Transformed current Vertex, next Vertex, previous Vertex
@@ -881,10 +873,6 @@ ValueNode_BLine::get_boned_blinepoint(Time t, std::vector<ListEntry>::const_iter
 		previous=list.end();
 	previous--;
 
-
-	bpcurr=(*current->value_node)(t).get(BLinePoint());
-	if(!bpcurr.get_boned_vertex_flag())
-		return bpcurr;
 	bpprev=(*previous->value_node)(t).get(BLinePoint());
 	bpnext=(*next->value_node)(t).get(BLinePoint());
 
