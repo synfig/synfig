@@ -139,8 +139,19 @@ ValueNode_BoneInfluence::operator()(Time t)const
 		Point v(link.get_vertex());
 		Point vt(transform.get_transformed(v));
 		link.set_vertex(vt);
-		link.set_boned_vertex_flag(true);
-		link.set_vertex_setup(v);
+
+		if (getenv("SYNFIG_SIMPLE_TANGENT_BONE_INFLUENCE"))
+		{
+			link.set_tangent1(transform.get_transformed(link.get_tangent1() + v) - vt);
+			if (link.get_split_tangent_flag())
+				link.set_tangent2(transform.get_transformed(link.get_tangent2() + v) - vt);
+		}
+		else
+		{
+			link.set_boned_vertex_flag(true);
+			link.set_vertex_setup(v);
+		}
+
 		if (getenv("SYNFIG_DEBUG_BONE_BLINEPOINT_TRANSFORMATION"))
 			printf("%s\n", transform.get_string(35,
 												strprintf("transform v(%7.2f %7.2f) using",
