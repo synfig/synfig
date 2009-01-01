@@ -140,7 +140,7 @@ ValueNode_BoneInfluence::operator()(Time t)const
 		Point vt(transform.get_transformed(v));
 		link.set_vertex(vt);
 
-		if (getenv("SYNFIG_SIMPLE_TANGENT_BONE_INFLUENCE"))
+		if (!getenv("SYNFIG_COMPLEX_TANGENT_BONE_INFLUENCE"))
 		{
 			link.set_tangent1(transform.get_transformed(link.get_tangent1() + v) - vt);
 			if (link.get_split_tangent_flag())
