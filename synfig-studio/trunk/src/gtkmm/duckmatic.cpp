@@ -49,6 +49,8 @@
 #include <synfig/valuenode_blinecalcwidth.h>
 #include <synfig/valuenode_staticlist.h>
 #include <synfig/valuenode_bone.h>
+#include <synfig/valuenode_boneinfluence.h>
+#include <synfig/valuenode_boneweightpair.h>
 
 #include <synfig/curve_helper.h>
 
@@ -1606,6 +1608,14 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				// else it's not a composite
 				else
 				{
+					if (ValueNode_BoneInfluence::Handle bone_influence_vertex_value_node =
+						ValueNode_BoneInfluence::Handle::cast_dynamic(value_node->get_link(i)))
+					{
+						add_to_ducks(synfigapp::ValueDesc(bone_influence_vertex_value_node,
+														  bone_influence_vertex_value_node->get_link_index_from_name("bone_weight_list")),
+									 canvas_view,transform_stack);
+					}
+
 					duck=new Duck(bline_point.get_vertex());
 					if(i==first)
 						first_duck=duck;
@@ -1853,7 +1863,9 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 			value_node=ValueNode_StaticList::Handle::cast_dynamic(value_desc.get_value_node());
 			int i;
 
-			if(value_node->get_contained_type()==ValueBase::TYPE_VECTOR)
+			switch(value_node->get_contained_type())
+			{
+			case ValueBase::TYPE_VECTOR:
 			{
 				Bezier bezier;
 				etl::handle<Duck> first_duck, duck;
@@ -1925,25 +1937,34 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 								&studio::CanvasView::popup_param_menu_bezier),
 							synfigapp::ValueDesc(value_node,first)));
 				}
+				break;
 			}
-			else if(value_node->get_contained_type()==ValueBase::TYPE_SEGMENT)
-			{
+
+			case ValueBase::TYPE_SEGMENT:
 				for(i=0;i<value_node->link_count();i++)
 				{
 					if(!add_to_ducks(synfigapp::ValueDesc(value_node,i),canvas_view,transform_stack))
 						return false;
 				}
-			}
-			else if(value_node->get_contained_type()==ValueBase::TYPE_BONE)
-			{
+				break;
+
+			case ValueBase::TYPE_BONE:
 				printf("%s:%d adding ducks\n", __FILE__, __LINE__);
 				for(i=0;i<value_node->link_count();i++)
 					if(!add_to_ducks(synfigapp::ValueDesc(value_node,i),canvas_view,transform_stack))
 						return false;
 				printf("%s:%d adding ducks done\n\n", __FILE__, __LINE__);
-			}
-			else
+				break;
+
+			case ValueBase::TYPE_BONE_WEIGHT_PAIR:
+				for(i=0;i<value_node->link_count();i++)
+					if(!add_to_ducks(synfigapp::ValueDesc(value_node,i),canvas_view,transform_stack))
+						return false;
+				break;
+
+			default:
 				return false;
+			}
 		}
 		else // Check for DynamicList
 		if(value_desc.is_value_node() &&
@@ -2050,14 +2071,23 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 	}
 	break;
 	case ValueBase::TYPE_BONE:
+	case ValueBase::TYPE_VALUENODE_BONE:
 	{
+		ValueNode::Handle value_node(value_desc.get_value_node());
+
+		if (type == ValueBase::TYPE_VALUENODE_BONE)
+		{
+			assert(value_desc.parent_is_value_node());
+			value_node = (*value_node)(get_time()).get(ValueNode_Bone::Handle());
+		}
+		else
+			assert(value_desc.parent_is_linkable_value_node() || value_desc.parent_is_canvas());
+
 		Duck::Handle fake_duck;
 		synfig::TransformStack origin_transform_stack(transform_stack), bone_transform_stack;
 		bool setup(get_type_mask() & Duck::TYPE_BONE_SETUP);
 		bool recursive(get_type_mask() & Duck::TYPE_BONE_RECURSIVE);
 
-		assert(value_desc.parent_is_linkable_value_node() || value_desc.parent_is_canvas());
-		ValueNode::Handle value_node(value_desc.get_value_node());
 		ValueNode_Bone::Handle bone_value_node;
 		if (!(bone_value_node = ValueNode_Bone::Handle::cast_dynamic(value_node)))
 		{
@@ -2261,6 +2291,14 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 		return true;
 	}
 	break;
+	case ValueBase::TYPE_BONE_WEIGHT_PAIR:
+	{
+		ValueNode_BoneWeightPair::Handle value_node;
+		if(value_desc.is_value_node() &&
+		   (value_node=ValueNode_BoneWeightPair::Handle::cast_dynamic(value_desc.get_value_node())))
+			add_to_ducks(synfigapp::ValueDesc(value_node, value_node->get_link_index_from_name("bone")), canvas_view, transform_stack);
+		break;
+	}
 	default:
 		break;
 	}
