@@ -1310,6 +1310,13 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 			duck->set_name(guid_string(value_desc));
 			if(value_desc.is_value_node())
 			{
+				// if the vertex is converted to 'bone influence', add the bones' ducks
+				if (ValueNode_BoneInfluence::Handle bone_influence_vertex_value_node =
+					ValueNode_BoneInfluence::Handle::cast_dynamic(value_desc.get_value_node()))
+					add_to_ducks(synfigapp::ValueDesc(bone_influence_vertex_value_node,
+													  bone_influence_vertex_value_node->get_link_index_from_name("bone_weight_list")),
+								 canvas_view, transform_stack);
+
 				//duck->set_name(strprintf("%x",value_desc.get_value_node().get()));
 
 				// If the ValueNode can be directly manipulated,
