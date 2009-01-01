@@ -27,3 +27,14 @@ Bone1 <---------------------------------------------------
 	Scale
 	Strength
 	Parent
+
+------------------------------------------------------------------------
+dooglus, Wed Dec 31 15:47:35 CET 2008
+
+ 1. make a skeleton
+ 2. add a bone to it, set the parent to 'none'
+ 3. convert bone1's origin to bone influence
+ 4. edit the bone in the bwp to be bone2
+ 5. export the bwp list
+ 6. convert bone2's origin to bone influence
+ 7. connect bone2's origin's bwp list to the exported list
