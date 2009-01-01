@@ -282,3 +282,21 @@ There is a secondary option not coded and open for any suggestion:
 "delete a bone".
 If you delete a bone some extra operations can be performed on the
 affected children. This needs further discussion.
+
+
+SOME RANDON IDEAS NEEDS STRUCTURE THEM
+======================================
+(17:14:46) Carlos: when the user creates a skeleton it is "usually" created in setup mode (to see the distances of the bones to the setup position of the vertices).
+(17:15:27) Carlos: if the user modifies the setup skeleton the animated skeleton remains unchanged because he is modifying the ducks at setup position.
+(17:15:47) Chris: I noticed this
+(17:15:54) Chris: whichever you edit, the other stays still
+(17:15:54) Carlos: if the user does it at animated position it happens the same and the setup remains unchanged
+(17:15:58) Carlos: yes
+(17:16:13) Chris: bbl
+(17:16:29) Carlos: so I suggest that IF both are constant then modify both when edit one of them
+(17:17:20) Carlos: only when one of them is not constant (due to the animator modified it in animation mode) the skeleton should diverge
+(17:17:51) Carlos: in this way the skeleton construction/setup is easier for the user
+(17:18:18) Carlos: and eventually the add bone tool can be avoided.
+(17:19:25) Carlos: we would need only an aid to re-parent the bone without need to expand the skeleton or the boneinfluenced vertex/blinepoint
+(17:20:09) Carlos: that can be achieved using a right click context menu when the proper ducks are selected
+(17:22:13) Carlos: it would be good to have an "insert item smart" right click context menu for the origin duck of the bone and a "delete item smart" too.
