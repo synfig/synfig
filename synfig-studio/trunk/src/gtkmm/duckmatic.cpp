@@ -2094,6 +2094,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 			error("expected a ValueNode_Bone");
 			assert(0);
 		}
+
 		GUID guid(bone_value_node->get_guid());
 		Time time(get_time());
 		Bone bone((*bone_value_node)(time).get(Bone()));
@@ -2108,6 +2109,9 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 			{
 				Bone parent_bone((*bone.get_parent())(time).get(Bone()));
 
+				// add the parent's ducks too
+				add_to_ducks(synfigapp::ValueDesc(bone_value_node, bone_value_node->get_link_index_from_name("parent")),canvas_view,transform_stack);
+		
 				if (setup)
 				{
 					transform = parent_bone.get_setup_matrix().invert();
