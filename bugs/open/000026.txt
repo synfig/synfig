@@ -1,6 +1,6 @@
 Subject: edit a valuenode-valued waypoint doesn't trigger update of parent
 
-Example: ~/Desktop/anim/dynamic-waypoints.sifz
+Example: ~chris/Desktop/anim/dynamic-waypoints.sifz
 
 set preview quality to 1 (best) and the time to be 5s
 edit the 'left rate' child node to be 1 instead of 0.
@@ -12,3 +12,12 @@ Usually when a node is edited, the on_changed() methods cause all
 ancestors of the node to update themselves, but waypoints don't
 inherit from Node, and so don't have the concept of a parent_set to
 update when changed.
+
+The use of valuenodes as the value of waypoints is unusual in synfig,
+but the addition of bones makes it more common, since re-parenting
+causes the use of valuenode waypoints.
+
+Example: ~chris/Desktop/anim/bones/test2.sifz
+
+Select either of the 'anim' layers, edit the bone ducks, note that
+nothing gets updated.
