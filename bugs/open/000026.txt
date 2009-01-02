@@ -1,0 +1,14 @@
+Subject: edit a valuenode-valued waypoint doesn't trigger update of parent
+
+Example: ~/Desktop/anim/dynamic-waypoints.sifz
+
+set preview quality to 1 (best) and the time to be 5s
+edit the 'left rate' child node to be 1 instead of 0.
+the workarea doesn't reflect any change.
+move the time slider away from 5s and back to 5s.
+the workarea now reflects the change.
+
+Usually when a node is edited, the on_changed() methods cause all
+ancestors of the node to update themselves, but waypoints don't
+inherit from Node, and so don't have the concept of a parent_set to
+update when changed.
