@@ -21,3 +21,18 @@ Example: ~chris/Desktop/anim/bones/test2.sifz
 
 Select either of the 'anim' layers, edit the bone ducks, note that
 nothing gets updated.
+
+------------------------------------------------------------------------
+dooglus, Fri Jan  2 14:27:07 CET 2009
+
+a simple recipe:
+
+1. new document, make a circle, export the radius as 'r' ('r' is a ValueNode_Const)
+2. disconnect the radius, switch to animate edit mode, edit the radius, creating a waypoint
+3. in the Children tab, select 'r'
+4. in the Timetrack tab, right-click the waypoint
+5. 'connect' (the waypoint now has a ValueNode_Const value)
+6. switch out of animate edit mode
+7. in the Children tab, edit the value of 'r'
+8. watch the circle's radius fail to change
+9. slide the time slider, and see the radius change
