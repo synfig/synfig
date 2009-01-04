@@ -898,8 +898,8 @@ ValueNode_Animated::WaypointList::iterator
 ValueNode_Animated::find(const UniqueID &x)
 {
 	ValueNode_Animated::WaypointList::iterator iter;
-	iter=std::find(waypoint_list().begin(),waypoint_list().end(),x);
-	if(iter==waypoint_list().end() || iter->get_uid()!=x.get_uid())
+	iter=std::find(editable_waypoint_list().begin(),editable_waypoint_list().end(),x);
+	if(iter==editable_waypoint_list().end() || iter->get_uid()!=x.get_uid())
 		throw Exception::NotFound(strprintf("ValueNode_Animated::find(): Can't find UniqueID %d",x.get_uid()));
 	return iter;
 }
@@ -920,9 +920,9 @@ ValueNode_Animated::find(const UniqueID &x)const
 ValueNode_Animated::WaypointList::iterator
 ValueNode_Animated::find(const Time &x)
 {
-	WaypointList::iterator iter(binary_find(waypoint_list().begin(),waypoint_list().end(),x));
+	WaypointList::iterator iter(binary_find(editable_waypoint_list().begin(),editable_waypoint_list().end(),x));
 
-	if(iter!=waypoint_list().end() && x.is_equal(iter->get_time()))
+	if(iter!=editable_waypoint_list().end() && x.is_equal(iter->get_time()))
 		return iter;
 
 	throw Exception::NotFound(strprintf("ValueNode_Animated::find(): Can't find Waypoint at %s",x.get_string().c_str()));
@@ -945,14 +945,14 @@ ValueNode_Animated::find(const Time &x)const
 ValueNode_Animated::WaypointList::iterator
 ValueNode_Animated::find_next(const Time &x)
 {
-	WaypointList::iterator iter(binary_find(waypoint_list().begin(),waypoint_list().end(),x));
+	WaypointList::iterator iter(binary_find(editable_waypoint_list().begin(),editable_waypoint_list().end(),x));
 
-	if(iter!=waypoint_list().end())
+	if(iter!=editable_waypoint_list().end())
 	{
 		if(iter->get_time().is_more_than(x))
 			return iter;
 		++iter;
-		if(iter!=waypoint_list().end() && iter->get_time().is_more_than(x))
+		if(iter!=editable_waypoint_list().end() && iter->get_time().is_more_than(x))
 			return iter;
 	}
 
@@ -982,13 +982,13 @@ ValueNode_Animated::find_next(const Time &x)const
 ValueNode_Animated::WaypointList::iterator
 ValueNode_Animated::find_prev(const Time &x)
 {
-	WaypointList::iterator iter(binary_find(waypoint_list().begin(),waypoint_list().end(),x));
+	WaypointList::iterator iter(binary_find(editable_waypoint_list().begin(),editable_waypoint_list().end(),x));
 
-	if(iter!=waypoint_list().end())
+	if(iter!=editable_waypoint_list().end())
 	{
 		if(iter->get_time().is_less_than(x))
 			return iter;
-		if(iter!=waypoint_list().begin() && (--iter)->get_time().is_less_than(x))
+		if(iter!=editable_waypoint_list().begin() && (--iter)->get_time().is_less_than(x))
 			return iter;
 	}
 
@@ -1031,11 +1031,11 @@ ValueNode_Animated::waypoint_is_only_use_of_valuenode(Waypoint &waypoint)
 void
 ValueNode_Animated::erase(const UniqueID &x)
 {
-	// printf("%s:%d erasing waypoint from %lx\n", __FILE__, __LINE__, ulong(this));
+	printf("%s:%d erasing waypoint from %lx\n", __FILE__, __LINE__, ulong(this));
 	WaypointList::iterator iter(find(x));
 	Waypoint waypoint(*iter);
 	assert(waypoint.get_value_node());
-	waypoint_list().erase(iter);
+	editable_waypoint_list().erase(iter);
 	if (waypoint_is_only_use_of_valuenode(waypoint))
 		remove_child(waypoint.get_value_node().get());
 }

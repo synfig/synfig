@@ -55,7 +55,7 @@ protected:
 	WaypointList waypoint_list_;
 
 public:
-	WaypointList &waypoint_list() { return waypoint_list_; }
+	WaypointList &editable_waypoint_list() { return waypoint_list_; }
 
 	const WaypointList &waypoint_list()const { return waypoint_list_; }
 

@@ -152,7 +152,7 @@ Action::WaypointRemove::perform()
 		}
 
 		value_node->replace(value_node_ref);
-		value_node->waypoint_list().clear();
+		value_node->editable_waypoint_list().clear();
 
 		if(get_canvas_interface())
 		{
