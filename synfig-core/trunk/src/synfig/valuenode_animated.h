@@ -68,6 +68,8 @@ public:
 
 	WaypointList::iterator add(const Waypoint &x);
 
+	bool waypoint_is_only_use_of_valuenode(Waypoint &waypoint);
+
 	void erase(const UniqueID &x);
 
 	//either use find result (return bool and iterator) or

@@ -123,15 +123,7 @@ Waypoint::set_value_node(const etl::handle<ValueNode> &x)
 		return;
 	}
 
-	WaypointList waypoint_list(parent->waypoint_list());
-	WaypointList::iterator iter;
-	for (iter = waypoint_list.begin(); iter != waypoint_list.end(); iter++)
-		if (*iter == *this)
-			continue;
-		else if (iter->get_value_node() == value_node)
-			break;
-
-	if (iter == waypoint_list.end())
+	if (parent->waypoint_is_only_use_of_valuenode(*this))
 		parent->remove_child(value_node.get());
 
 	value_node=x;

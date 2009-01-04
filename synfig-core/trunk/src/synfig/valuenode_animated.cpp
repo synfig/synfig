@@ -1013,10 +1013,31 @@ ValueNode_Animated::find_prev(const Time &x)const
 	*/
 }
 
+bool
+ValueNode_Animated::waypoint_is_only_use_of_valuenode(Waypoint &waypoint)
+{
+	ValueNode::Handle value_node(waypoint.get_value_node());
+	assert(value_node);
+	WaypointList wp_list(waypoint_list());
+	WaypointList::iterator iter;
+	for (iter = wp_list.begin(); iter != wp_list.end(); iter++)
+		if (*iter == waypoint)
+			continue;
+		else if (iter->get_value_node() == value_node)
+			return false;
+	return true;
+}
+
 void
 ValueNode_Animated::erase(const UniqueID &x)
 {
-	waypoint_list().erase(find(x));
+	// printf("%s:%d erasing waypoint from %lx\n", __FILE__, __LINE__, ulong(this));
+	WaypointList::iterator iter(find(x));
+	Waypoint waypoint(*iter);
+	assert(waypoint.get_value_node());
+	waypoint_list().erase(iter);
+	if (waypoint_is_only_use_of_valuenode(waypoint))
+		remove_child(waypoint.get_value_node().get());
 }
 
 ValueNode_Animated::WaypointList::iterator
