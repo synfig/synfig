@@ -102,6 +102,7 @@ Waypoint::set_value(const ValueBase &x)
 void
 Waypoint::set_value_node(const etl::handle<ValueNode> &x)
 {
+	// printf("%s:%d Waypoint::set_value_node(%lx) = %lx (%s)\n", __FILE__, __LINE__, ulong(this), ulong(x), x->get_string().c_str());
 	if(!value_node && x->get_type()==ValueBase::TYPE_ANGLE)
 		after=before=INTERPOLATION_LINEAR;
 
@@ -122,7 +123,6 @@ Waypoint::set_value_node(const etl::handle<ValueNode> &x)
 		return;
 	}
 
-	ValueNode::Handle old(value_node);
 	WaypointList waypoint_list(parent->waypoint_list());
 	WaypointList::iterator iter;
 	for (iter = waypoint_list.begin(); iter != waypoint_list.end(); iter++)
@@ -142,6 +142,7 @@ Waypoint::set_value_node(const etl::handle<ValueNode> &x)
 void
 Waypoint::set_parent_value_node(const etl::loose_handle<ValueNode> &x)
 {
+	// printf("%s:%d Waypoint::set_parent_value_node(%lx) = %lx (%s)\n", __FILE__, __LINE__, ulong(this), ulong(x.get()), x->get_string().c_str());
 	assert(get_value_node());
 
 	if (parent_ == x)
