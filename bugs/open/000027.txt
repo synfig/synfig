@@ -1,0 +1,60 @@
+Subject: Crash when close old file
+
+Open /home/carlos/Animación/donempinado-/synfig/Montaje.sifz
+It complains about some png and jpg missing and that's not the problem
+The file looks fine
+Close the file and ss-debug crash.
+
+------------------------------------------------------------------------
+backtrace:
+
+Program received signal SIGSEGV, Segmentation fault.
+[Switching to Thread 0x7ff0db2da780 (LWP 27987)]
+0x000000000454a470 in ?? ()
+(gdb) where
+#0  0x000000000454a470 in ?? ()
+#1  0x0000000000705572 in handle (this=0x7fffe330f570, x=0x4549b10)
+    at /home/carlos/Software/Synfig-git/install/include/ETL/_handle.h:175
+#2  0x0000000000705593 in etl::loose_handle<synfig::Canvas>::operator etl::handle<synfig::Canvas> (this=0x81ae100)
+    at /home/carlos/Software/Synfig-git/install/include/ETL/_handle.h:748
+#3  0x00007ff0da7db025 in synfig::ValueBase::clear (this=0x81f9888)
+    at value.cpp:255
+#4  0x00007ff0da7db228 in ~ValueBase (this=0x81f9888) at value.cpp:98
+#5  0x00007ff0da8703d6 in ~ValueNode_Const (this=0x81f9700)
+    at valuenode_const.cpp:112
+#6  0x00000000006e4699 in etl::shared_object::unref (this=0x81f9700)
+    at /home/carlos/Software/Synfig-git/install/include/ETL/_handle.h:115
+#7  0x00000000006fd6f3 in etl::handle<synfig::ValueNode>::detach (
+    this=0x83ae908)
+    at /home/carlos/Software/Synfig-git/install/include/ETL/_handle.h:240
+#8  0x0000000000751178 in etl::rhandle<synfig::ValueNode>::detach (
+    this=0x83ae908)
+    at /home/carlos/Software/Synfig-git/install/include/ETL/_handle.h:553
+#9  0x000000000075119e in ~rhandle (this=0x83ae908)
+    at /home/carlos/Software/Synfig-git/install/include/ETL/_handle.h:466
+#10 0x0000000000751456 in ~Waypoint (this=0x83ae8f0)
+    at /home/carlos/Software/Synfig-git/install/include/synfig-0.0/synfig/waypoi---Type <return> to continue, or q <return> to quit---
+nt.h:57
+#11 0x00007ff0dae1b8a8 in std::_Destroy<synfig::Waypoint> (__pointer=0x83ae8f0)
+    at /usr/include/c++/4.3/bits/stl_construct.h:88
+#12 0x00007ff0dae1b8c5 in std::_Destroy<synfig::Waypoint*> (__first=0x83ae8f0,
+    __last=0x83aeab8) at /usr/include/c++/4.3/bits/stl_construct.h:103
+#13 0x00007ff0dae1b8fa in std::_Destroy<synfig::Waypoint*, synfig::Waypoint> (
+    __first=0x83ae8f0, __last=0x83aeab8)
+    at /usr/include/c++/4.3/bits/stl_construct.h:128
+#14 0x00007ff0dae1d397 in ~vector (this=0x8398838)
+    at /usr/include/c++/4.3/bits/stl_vector.h:300
+#15 0x00007ff0da829e35 in ~ValueNode_Animated (this=0x83986b0)
+    at valuenode_animated.cpp:1097
+#16 0x00007ff0da833a4d in ~_Constant (this=0x83986b0)
+    at valuenode_animated.cpp:536
+#17 0x00000000006e4699 in etl::shared_object::unref (this=0x83986b0)
+    at /home/carlos/Software/Synfig-git/install/include/ETL/_handle.h:115
+#18 0x00000000006fd6f3 in etl::handle<synfig::ValueNode>::detach (
+    this=0x81f9bd8)
+    at /home/carlos/Software/Synfig-git/install/include/ETL/_handle.h:240
+#19 0x0000000000751178 in etl::rhandle<synfig::ValueNode>::detach (
+    this=0x81f9bd8)
+    at /home/carlos/Software/Synfig-git/install/include/ETL/_handle.h:553
+#20 0x000000000075119e in ~rhandle (this=0x81f9bd8)
+---Type <return> to continue, or q <return> to quit---
