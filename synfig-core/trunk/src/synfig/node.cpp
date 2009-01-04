@@ -254,18 +254,40 @@ void
 Node::add_child(Node*x)
 {
 	if (getenv("SYNFIG_DEBUG_NODE_PARENT_SET"))
-		printf("%s:%d adding %lx (%s) as parent of %lx (%s)\n", __FILE__, __LINE__, ulong(this), get_string().c_str(), ulong(x), x->get_string().c_str());
+		printf("%s:%d adding %lx (%s) as parent of %lx (%s) (%zd -> ", __FILE__, __LINE__,
+			   ulong(this), get_string().c_str(),
+			   ulong(x), x->get_string().c_str(),
+			   x->parent_set.size());
 
 	x->parent_set.insert(this);
+
+	if (getenv("SYNFIG_DEBUG_NODE_PARENT_SET"))
+		printf("%zd)\n", x->parent_set.size());
 }
 
 void
 Node::remove_child(Node*x)
 {
-	if (getenv("SYNFIG_DEBUG_NODE_PARENT_SET"))
-		printf("%s:%d removing %lx from parent set of %lx\n", __FILE__, __LINE__, ulong(this), ulong(x));
+	if(x->parent_set.count(this) == 0)
+	{
+		if (getenv("SYNFIG_DEBUG_NODE_PARENT_SET"))
+			printf("%s:%d %lx (%s) isn't in parent set of %lx (%s)\n", __FILE__, __LINE__,
+				   ulong(this), get_string().c_str(),
+				   ulong(x), x->get_string().c_str());
 
-	if(x->parent_set.count(this)) x->parent_set.erase(this);
+		return;
+	}
+
+	if (getenv("SYNFIG_DEBUG_NODE_PARENT_SET"))
+		printf("%s:%d removing %lx (%s) from parent set of %lx (%s) (%zd -> ", __FILE__, __LINE__,
+			   ulong(this), get_string().c_str(),
+			   ulong(x), x->get_string().c_str(),
+			   x->parent_set.size());
+
+	x->parent_set.erase(this);
+
+	if (getenv("SYNFIG_DEBUG_NODE_PARENT_SET"))
+		printf("%zd)\n", x->parent_set.size());
 }
 
 int
