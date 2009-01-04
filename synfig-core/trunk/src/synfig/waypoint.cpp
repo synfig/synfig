@@ -31,6 +31,7 @@
 
 #include "waypoint.h"
 #include "valuenode_const.h"
+#include "valuenode_animated.h"
 
 #endif
 
@@ -104,7 +105,58 @@ Waypoint::set_value_node(const etl::handle<ValueNode> &x)
 	if(!value_node && x->get_type()==ValueBase::TYPE_ANGLE)
 		after=before=INTERPOLATION_LINEAR;
 
+	if (value_node == x)
+		return;
+
+	ValueNode::Handle vn_parent(get_parent_value_node());
+	if (!vn_parent)
+	{
+		value_node=x;
+		return;
+	}
+
+	ValueNode_Animated::Handle parent(ValueNode_Animated::Handle::cast_dynamic(vn_parent));
+	if (!parent)
+	{
+		value_node=x;
+		return;
+	}
+
+	ValueNode::Handle old(value_node);
+	WaypointList waypoint_list(parent->waypoint_list());
+	WaypointList::iterator iter;
+	for (iter = waypoint_list.begin(); iter != waypoint_list.end(); iter++)
+		if (*iter == *this)
+			continue;
+		else if (iter->get_value_node() == value_node)
+			break;
+
+	if (iter == waypoint_list.end())
+		parent->remove_child(value_node.get());
+
 	value_node=x;
+	parent->add_child(value_node.get());
+	parent->changed();
+}
+
+void
+Waypoint::set_parent_value_node(const etl::loose_handle<ValueNode> &x)
+{
+	assert(get_value_node());
+
+	if (parent_ == x)
+		return;
+
+	// it seems that the parent is never previously set (unless it was
+	// already set to the same value, in which case the previous test
+	// will have caused this function to return already).  if the
+	// parent was previously set, we may need to call
+	// parent_->remove_child() so assert that it isn't, and fix if it
+	// is...
+	assert(!parent_);
+
+	parent_=x;
+	parent_->add_child(get_value_node().get());
 }
 
 bool

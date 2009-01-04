@@ -228,7 +228,7 @@ public:
 	void set_priority(int x) { priority_=x; }
 
 	const etl::loose_handle<ValueNode> &get_parent_value_node()const { return parent_; }
-	void set_parent_value_node(const etl::loose_handle<ValueNode> &x) { parent_=x; }
+	void set_parent_value_node(const etl::loose_handle<ValueNode> &x);
 
 	bool is_static()const;
 
