@@ -55,6 +55,8 @@ using namespace etl;
 
 /* === M A C R O S ========================================================= */
 
+#define TRY_FIX_FOR_BUG_27
+
 /* === G L O B A L S ======================================================= */
 
 /* === P R O C E D U R E S ================================================= */
@@ -146,7 +148,11 @@ void
 ValueBase::set(Canvas* x)
 {
 	clear();
-	if(x && x->is_inline())
+	if(x
+#ifndef TRY_FIX_FOR_BUG_27
+	   && x->is_inline()
+#endif
+		)
 	{
 		_set(etl::handle<Canvas>(x));
 	}
@@ -161,7 +167,11 @@ void
 ValueBase::set(etl::loose_handle<Canvas> x)
 {
 	clear();
-	if(x && x->is_inline())
+	if(x
+#ifndef TRY_FIX_FOR_BUG_27
+	   && x->is_inline()
+#endif
+		)
 		_set(etl::handle<Canvas>(x));
 	else
 		_set(etl::loose_handle<Canvas>(x));
@@ -172,7 +182,11 @@ void
 ValueBase::set(etl::handle<Canvas> x)
 {
 	clear();
-	if(x && x->is_inline())
+	if(x
+#ifndef TRY_FIX_FOR_BUG_27
+	   && x->is_inline()
+#endif
+		)
 		_set(etl::handle<Canvas>(x));
 	else
 		_set(etl::loose_handle<Canvas>(x));
@@ -253,7 +267,11 @@ ValueBase::clear()
 		case TYPE_CANVAS:
 		{
 			etl::handle<Canvas> canvas(get(etl::loose_handle<Canvas>()));
-			if(canvas && canvas->is_inline())
+			if(canvas
+#ifndef TRY_FIX_FOR_BUG_27
+			   && canvas->is_inline()
+#endif
+				)
 				delete static_cast<etl::handle<Canvas>*>(data);
 			else
 				delete static_cast<etl::loose_handle<Canvas>*>(data);
