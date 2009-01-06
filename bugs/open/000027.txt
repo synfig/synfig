@@ -183,7 +183,7 @@ with this diff:
 +++ b/ETL/trunk/ETL/_handle.h
 @@ -81,7 +81,7 @@ protected:
  #endif
- 
+
  public:
 -	void ref()const
 +	virtual void ref()const
@@ -192,11 +192,16 @@ with this diff:
  		etl::mutex::lock lock(mtx);
 @@ -91,7 +91,7 @@ public:
  	}
- 
+
  	//! Returns \c false if object needs to be deleted
 -	bool unref()const
 +	virtual bool unref()const
  	{
  		bool ret = true;
  		{
+------------------------------------------------------------------------
+I've updated to the patch you proposed at the following git commit:
+606daa09d274196be856a6f7a0fa35f934d00a7f
+and the crash has dissapeared.
+I don't see any "error: 1 canvas(es) not yet deleted!" message.
 ------------------------------------------------------------------------
