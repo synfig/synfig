@@ -1125,6 +1125,7 @@ int main(int argc, char *argv[])
 
 #ifdef ENABLE_NLS
 	bindtextdomain("synfig", LOCALEDIR);
+	bind_textdomain_codeset("synfig", "UTF-8");
 	textdomain("synfig");
 #endif
 

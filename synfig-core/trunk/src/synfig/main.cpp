@@ -165,6 +165,7 @@ synfig::Main::Main(const synfig::String& basepath,ProgressCallback *cb):
 
 #ifdef ENABLE_NLS
 	bindtextdomain("synfig", LOCALEDIR);
+	bind_textdomain_codeset("synfig", "UTF-8");
 #endif
 
 	String prefix=basepath+"/..";
