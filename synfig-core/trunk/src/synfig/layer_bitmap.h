@@ -43,7 +43,7 @@ namespace synfig {
 */
 class Layer_Bitmap : public Layer_Composite, public Layer_NoDeform
 {
-	const Color& filter(const Color& c)const;
+	const Color& filter(Color& c)const;
 public:
 	typedef etl::handle<Layer_Bitmap> Handle;
 

@@ -165,16 +165,14 @@ Layer_Bitmap::hit_check(synfig::Context context, const synfig::Point &pos)const
 
 inline
 const Color&
-synfig::Layer_Bitmap::filter(const Color& c)const
+synfig::Layer_Bitmap::filter(Color& x)const
 {
-	if(gamma_adjust==1.0)
-		return c;
-	static Color x;
-	x=c;
-
-	x.set_r(powf((float)x.get_r(),gamma_adjust));
-	x.set_g(powf((float)x.get_g(),gamma_adjust));
-	x.set_b(powf((float)x.get_b(),gamma_adjust));
+	if(gamma_adjust!=1.0)
+	{
+		x.set_r(powf((float)x.get_r(),gamma_adjust));
+		x.set_g(powf((float)x.get_g(),gamma_adjust));
+		x.set_b(powf((float)x.get_b(),gamma_adjust));
+	}
 	return x;
 }
 
@@ -458,7 +456,8 @@ Layer_Bitmap::accelerated_render(Context context,Surface *out_surface,int qualit
 			inx = inx_start;
 			for(x = x_start; x < x_end; x++, pen.inc_x(), inx += indx)
 			{
-				pen.put_value(filter(surface.linear_sample(inx,iny)));
+				Color col(surface.linear_sample(inx,iny));
+				pen.put_value(filter(col));
 			}
 			pen.dec_x(x_end-x_start);
 
@@ -483,7 +482,8 @@ Layer_Bitmap::accelerated_render(Context context,Surface *out_surface,int qualit
 			inx = inx_start;
 			for(x = x_start; x < x_end; x++, pen.inc_x(), inx += indx)
 			{
-				pen.put_value(filter(surface.cosine_sample(inx,iny)));
+				Color col(surface.cosine_sample(inx,iny));
+				pen.put_value(filter(col));
 			}
 			pen.dec_x(x_end-x_start);
 
@@ -507,7 +507,8 @@ Layer_Bitmap::accelerated_render(Context context,Surface *out_surface,int qualit
 			inx = inx_start;
 			for(x = x_start; x < x_end; x++, pen.inc_x(), inx += indx)
 			{
-				pen.put_value(filter(surface.cubic_sample(inx,iny)));
+				Color col(surface.cubic_sample(inx,iny));
+				pen.put_value(filter(col));
 			}
 			pen.dec_x(x_end-x_start);
 
