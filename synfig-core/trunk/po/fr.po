@@ -2805,7 +2805,7 @@ msgstr ""
 
 #: src/tool/main.cpp:331
 msgid "Set the diagonal size of image window (Span)"
-msgstr "Définir  la diagonale de la fenêtre d'image (Étendue)"
+msgstr "Définir la diagonale de la fenêtre d'image (Étendue)"
 
 #: src/tool/main.cpp:332
 msgid "Set antialias amount for parametric renderer."
@@ -2814,7 +2814,7 @@ msgstr "Définir la valeur d'anticrénelage pour le moteur de rendu paramétriqu
 #: src/tool/main.cpp:333
 #, c-format
 msgid "Specify image quality for accelerated renderer (default=%d)"
-msgstr "Definit la qualité d'image pour accélérer le rendu (défaut = %d )"
+msgstr "Définir la qualité d'image pour accélérer le rendu (défaut = %d )"
 
 #: src/tool/main.cpp:334
 msgid "Gamma (default=2.2)"
@@ -2902,7 +2902,7 @@ msgstr "Afficher la liste des importeurs disponibles"
 
 #: src/tool/main.cpp:358
 msgid "Print out the list of available ValueNodes"
-msgstr "Affichier la liste des nœuds de valeur disponibles"
+msgstr "Afficher la liste des nœuds de valeur disponibles"
 
 #: src/tool/main.cpp:359
 msgid "Print out the list of loaded modules"
