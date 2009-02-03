@@ -125,7 +125,7 @@ public:
 
 private:
 	//! Renders the context to the surface
-	bool render_frame_(Context context,ProgressCallback *cb=0);
+	bool render_frame_(int quality, ProgressCallback *cb=0);
 
 }; // END of class Target_Tile
 

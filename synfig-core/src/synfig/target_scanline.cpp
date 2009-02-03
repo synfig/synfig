@@ -113,6 +113,155 @@ Target_Scanline::next_frame(Time& time)
 
 	return total_frames- curr_frame_+1;
 }
+
+bool
+synfig::Target_Scanline::render_frame_(int quality, ProgressCallback *cb)
+{
+	Context context;
+
+#ifdef SYNFIG_OPTIMIZE_LAYER_TREE
+	Canvas::Handle op_canvas;
+	if (!getenv("SYNFIG_DISABLE_OPTIMIZE_LAYER_TREE"))
+	{
+		op_canvas = Canvas::create();
+		op_canvas->set_file_name(canvas->get_file_name());
+		optimize_layers(canvas->get_time(), canvas->get_context(), op_canvas);
+		context=op_canvas->get_context();
+	}
+	else
+		context=canvas->get_context();
+#else
+	context=canvas->get_context();
+#endif
+
+	if(quality==0)
+	{
+		if(threads_<=0)
+		{
+			if(!synfig::render(context,this,desc,cb))
+				return false;
+		}
+		else
+		{
+			if(!synfig::render_threaded(context,this,desc,cb,threads_))
+				return false;
+		}
+	}
+	else // If quality is set otherwise, then we use the accelerated renderer
+	{
+		#if USE_PIXELRENDERING_LIMIT
+		if(desc.get_w()*desc.get_h() > PIXEL_RENDERING_LIMIT)
+		{
+			Surface surface;
+			int totalheight = desc.get_h();
+			int rowheight = PIXEL_RENDERING_LIMIT/desc.get_w();
+			if (!rowheight) rowheight = 1; // TODO: render partial lines to stay within the limit?
+			int rows = desc.get_h()/rowheight;
+			int lastrowheight = desc.get_h() - rows*rowheight;
+
+			rows++;
+
+			synfig::info("Render broken up into %d block%s %d pixels tall, and a final block %d pixels tall",
+						rows-1, rows==2?"":"s", rowheight, lastrowheight);
+
+			// loop through all the full rows
+			if(!start_frame())
+			{
+				throw(string("add_frame(): target panic on start_frame()"));
+				return false;
+			}
+
+			for(int i=0; i < rows; ++i)
+			{
+				RendDesc	blockrd = desc;
+
+				//render the strip at the normal size unless it's the last one...
+				if(i == rows-1)
+				{
+					if(!lastrowheight) break;
+					blockrd.set_subwindow(0,i*rowheight,desc.get_w(),lastrowheight);
+				}
+				else
+				{
+					blockrd.set_subwindow(0,i*rowheight,desc.get_w(),rowheight);
+				}
+
+				SuperCallback *sc = NULL;
+				if (cb)
+					sc = new SuperCallback(cb, i*rowheight, (i+1)*rowheight, totalheight);
+
+				if(!context.accelerated_render(&surface,quality,blockrd,sc))
+				{
+					if(cb)cb->error(_("Accelerated Renderer Failure"));
+					return false;
+				}else
+				{
+					int y;
+					int rowspan=sizeof(Color)*surface.get_w();
+					Surface::pen pen = surface.begin();
+
+					int yoff = i*rowheight;
+
+					for(y = 0; y < blockrd.get_h(); y++, pen.inc_y())
+					{
+						Color *colordata= start_scanline(y + yoff);
+						if(!colordata)
+						{
+							throw(string("add_frame(): call to start_scanline(y) returned NULL"));
+							return false;
+						}
+
+						if(get_remove_alpha())
+						{
+							for(int i = 0; i < surface.get_w(); i++)
+								colordata[i] = Color::blend(surface[y][i],desc.get_bg_color(),1.0f);
+						}
+						else
+							memcpy(colordata,surface[y],rowspan);
+
+						if(!end_scanline())
+						{
+							throw(string("add_frame(): target panic on end_scanline()"));
+							return false;
+						}
+					}
+				}
+
+				//I'm done with this part
+				if (sc)
+					sc->amount_complete(100,100);
+			}
+
+			end_frame();
+
+		}else //use normal rendering...
+		{
+		#endif
+			Surface surface;
+
+			if(!context.accelerated_render(&surface,quality,desc,cb))
+			{
+				// For some reason, the accelerated renderer failed.
+				if(cb)cb->error(_("Accelerated Renderer Failure"));
+				return false;
+			}
+			else
+			{
+				// Put the surface we renderer
+				// onto the target.
+				if(!add_frame(&surface))
+				{
+					if(cb)cb->error(_("Unable to put surface on target"));
+					return false;
+				}
+			}
+		#if USE_PIXELRENDERING_LIMIT
+		}
+		#endif
+	}
+	return true;
+}
+
 bool
 synfig::Target_Scanline::render(ProgressCallback *cb)
 {
@@ -159,304 +308,34 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 
 	//synfig::info("1time_set_to %s",t.get_string().c_str());
 
-	if(i>1)
-	do{
+	if (i > 1) {
+		do {
+		//if(total_frames>1)
+		//for(i=0,t=time_start;i<total_frames;i++)
+		//{
+			//t=((time_end-time_start)*((Real)i/(Real)total_frames)).round(desc.get_frame_rate())+time_start;
 
-	//if(total_frames>1)
-	//for(i=0,t=time_start;i<total_frames;i++)
-	//{
-		//t=((time_end-time_start)*((Real)i/(Real)total_frames)).round(desc.get_frame_rate())+time_start;
+			// If we have a callback, and it returns
+			// false, go ahead and bail. (it may be a user cancel)
+			if(cb && !cb->amount_complete(total_frames-(i-1),total_frames))
+				return false;
 
-		// If we have a callback, and it returns
-		// false, go ahead and bail. (it may be a user cancel)
-		if(cb && !cb->amount_complete(total_frames-(i-1),total_frames))
+			// Set the time that we wish to render
+			if(!get_avoid_time_sync() || canvas->get_time()!=t)
+				canvas->set_time(t);
+
+			if (!render_frame_(quality, 0))
+				return false;
+		} while((i=next_frame(t)));
+	}
+	else
+	{
+		// Set the time that we wish to render
+		if(!get_avoid_time_sync() || canvas->get_time()!=t)
+			canvas->set_time(t);
+
+		if (!render_frame_(quality, cb))
 			return false;
-
-		// Set the time that we wish to render
-		if(!get_avoid_time_sync() || canvas->get_time()!=t)
-			canvas->set_time(t);
-
-		Context context;
-
-#ifdef SYNFIG_OPTIMIZE_LAYER_TREE
-		Canvas::Handle op_canvas;
-		if (!getenv("SYNFIG_DISABLE_OPTIMIZE_LAYER_TREE"))
-		{
-			op_canvas = Canvas::create();
-			op_canvas->set_file_name(canvas->get_file_name());
-			optimize_layers(canvas->get_time(), canvas->get_context(), op_canvas);
-			context=op_canvas->get_context();
-		}
-		else
-			context=canvas->get_context();
-#else
-		context=canvas->get_context();
-#endif
-
-		// If the quality is set to zero, then we
-		// use the parametric scanline-renderer.
-		if(quality==0)
-		{
-			if(threads_<=0)
-			{
-				if(!synfig::render(context,this,desc,0))
-					return false;
-			}
-			else
-			{
-				if(!synfig::render_threaded(context,this,desc,0,threads_))
-					return false;
-			}
-		}
-		else // If quality is set otherwise, then we use the accelerated renderer
-		{
-			#if USE_PIXELRENDERING_LIMIT
-			if(desc.get_w()*desc.get_h() > PIXEL_RENDERING_LIMIT)
-			{
-				Surface surface;
-				int rowheight = PIXEL_RENDERING_LIMIT/desc.get_w();
-				if (!rowheight) rowheight = 1; // TODO: render partial lines to stay within the limit?
-				int rows = desc.get_h()/rowheight;
-				int lastrowheight = desc.get_h() - rows*rowheight;
-
-				rows++;
-
-				synfig::info("Render broken up into %d block%s %d pixels tall, and a final block %d pixels tall",
-							 rows-1, rows==2?"":"s", rowheight, lastrowheight);
-
-				// loop through all the full rows
-				if(!start_frame())
-				{
-					throw(string("add_frame(): target panic on start_frame()"));
-					return false;
-				}
-
-				for(int i=0; i < rows; ++i)
-				{
-					RendDesc	blockrd = desc;
-
-					//render the strip at the normal size unless it's the last one...
-					if(i == rows-1)
-					{
-						if(!lastrowheight) break;
-						blockrd.set_subwindow(0,i*rowheight,desc.get_w(),lastrowheight);
-					}
-					else
-					{
-						blockrd.set_subwindow(0,i*rowheight,desc.get_w(),rowheight);
-					}
-
-					if(!context.accelerated_render(&surface,quality,blockrd,0))
-					{
-						if(cb)cb->error(_("Accelerated Renderer Failure"));
-						return false;
-					}else
-					{
-						int y;
-						int rowspan=sizeof(Color)*surface.get_w();
-						Surface::pen pen = surface.begin();
-
-						int yoff = i*rowheight;
-
-						for(y = 0; y < blockrd.get_h(); y++, pen.inc_y())
-						{
-							Color *colordata= start_scanline(y + yoff);
-							if(!colordata)
-							{
-								throw(string("add_frame(): call to start_scanline(y) returned NULL"));
-								return false;
-							}
-
-							if(get_remove_alpha())
-							{
-								for(int i = 0; i < surface.get_w(); i++)
-									colordata[i] = Color::blend(surface[y][i],desc.get_bg_color(),1.0f);
-							}
-							else
-								memcpy(colordata,surface[y],rowspan);
-
-							if(!end_scanline())
-							{
-								throw(string("add_frame(): target panic on end_scanline()"));
-								return false;
-							}
-						}
-					}
-				}
-
-				end_frame();
-
-			}else //use normal rendering...
-			{
-			#endif
-				Surface surface;
-
-				if(!context.accelerated_render(&surface,quality,desc,0))
-				{
-					// For some reason, the accelerated renderer failed.
-					if(cb)cb->error(_("Accelerated Renderer Failure"));
-					return false;
-				}
-				else
-				{
-					// Put the surface we renderer
-					// onto the target.
-					if(!add_frame(&surface))
-					{
-						if(cb)cb->error(_("Unable to put surface on target"));
-						return false;
-					}
-				}
-			#if USE_PIXELRENDERING_LIMIT
-			}
-			#endif
-		}
-	}while((i=next_frame(t)));
-    else
-    {
-		// Set the time that we wish to render
-		if(!get_avoid_time_sync() || canvas->get_time()!=t)
-			canvas->set_time(t);
-		Context context;
-
-#ifdef SYNFIG_OPTIMIZE_LAYER_TREE
-		Canvas::Handle op_canvas;
-		if (!getenv("SYNFIG_DISABLE_OPTIMIZE_LAYER_TREE"))
-		{
-			op_canvas = Canvas::create();
-			op_canvas->set_file_name(canvas->get_file_name());
-			optimize_layers(canvas->get_time(), canvas->get_context(), op_canvas);
-			context=op_canvas->get_context();
-		}
-		else
-			context=canvas->get_context();
-#else
-		context=canvas->get_context();
-#endif
-
-		// If the quality is set to zero, then we
-		// use the parametric scanline-renderer.
-		if(quality==0)
-		{
-			if(threads_<=0)
-			{
-				if(!synfig::render(context,this,desc,cb))
-					return false;
-			}
-			else
-			{
-				if(!synfig::render_threaded(context,this,desc,cb,threads_))
-					return false;
-			}
-		}
-		else // If quality is set otherwise, then we use the accelerated renderer
-		{
-			#if USE_PIXELRENDERING_LIMIT
-			if(desc.get_w()*desc.get_h() > PIXEL_RENDERING_LIMIT)
-			{
-				Surface surface;
-				int totalheight = desc.get_h();
-				int rowheight = PIXEL_RENDERING_LIMIT/desc.get_w();
-				if (!rowheight) rowheight = 1; // TODO: render partial lines to stay within the limit?
-				int rows = desc.get_h()/rowheight;
-				int lastrowheight = desc.get_h() - rows*rowheight;
-
-				rows++;
-
-				synfig::info("Render broken up into %d block%s %d pixels tall, and a final block %d pixels tall",
-							 rows-1, rows==2?"":"s", rowheight, lastrowheight);
-
-				// loop through all the full rows
-				if(!start_frame())
-				{
-					throw(string("add_frame(): target panic on start_frame()"));
-					return false;
-				}
-
-				for(int i=0; i < rows; ++i)
-				{
-					RendDesc	blockrd = desc;
-
-					//render the strip at the normal size unless it's the last one...
-					if(i == rows-1)
-					{
-						if(!lastrowheight) break;
-						blockrd.set_subwindow(0,i*rowheight,desc.get_w(),lastrowheight);
-					}
-					else
-					{
-						blockrd.set_subwindow(0,i*rowheight,desc.get_w(),rowheight);
-					}
-
-					SuperCallback	sc(cb, i*rowheight, (i+1)*rowheight, totalheight);
-
-					if(!context.accelerated_render(&surface,quality,blockrd,&sc))
-					{
-						if(cb)cb->error(_("Accelerated Renderer Failure"));
-						return false;
-					}else
-					{
-						int y;
-						int rowspan=sizeof(Color)*surface.get_w();
-						Surface::pen pen = surface.begin();
-
-						int yoff = i*rowheight;
-
-						for(y = 0; y < blockrd.get_h(); y++, pen.inc_y())
-						{
-							Color *colordata= start_scanline(y + yoff);
-							if(!colordata)
-							{
-								throw(string("add_frame(): call to start_scanline(y) returned NULL"));
-								return false;
-							}
-
-							if(get_remove_alpha())
-							{
-								for(int i = 0; i < surface.get_w(); i++)
-									colordata[i] = Color::blend(surface[y][i],desc.get_bg_color(),1.0f);
-							}
-							else
-								memcpy(colordata,surface[y],rowspan);
-
-							if(!end_scanline())
-							{
-								throw(string("add_frame(): target panic on end_scanline()"));
-								return false;
-							}
-						}
-					}
-
-					//I'm done with this part
-					sc.amount_complete(100,100);
-				}
-
-				end_frame();
-
-			}else
-			{
-			#endif
-				Surface surface;
-
-				if(!context.accelerated_render(&surface,quality,desc,cb))
-				{
-					if(cb)cb->error(_("Accelerated Renderer Failure"));
-					return false;
-				}
-				else
-				{
-					// Put the surface we renderer
-					// onto the target.
-					if(!add_frame(&surface))
-					{
-						if(cb)cb->error(_("Unable to put surface on target"));
-						return false;
-					}
-				}
-			#if USE_PIXELRENDERING_LIMIT
-			}
-			#endif
-		}
 	}
 
 	}

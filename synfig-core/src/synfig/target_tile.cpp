@@ -141,8 +141,25 @@ Target_Tile::next_tile(int& x, int& y)
 }
 
 bool
-synfig::Target_Tile::render_frame_(Context context,ProgressCallback *cb)
+synfig::Target_Tile::render_frame_(int quality, ProgressCallback *cb)
 {
+	Context context;
+
+#ifdef SYNFIG_OPTIMIZE_LAYER_TREE
+	Canvas::Handle op_canvas;
+	if (!getenv("SYNFIG_DISABLE_OPTIMIZE_LAYER_TREE"))
+	{
+		op_canvas = Canvas::create();
+		op_canvas->set_file_name(canvas->get_file_name());
+		optimize_layers(canvas->get_time(), canvas->get_context(), op_canvas);
+		context=op_canvas->get_context();
+	}
+	else
+		context=canvas->get_context();
+#else
+	context=canvas->get_context();
+#endif
+
 	if(tile_w_<=0||tile_h_<=0)
 	{
 		if(cb)cb->error(_("Bad Tile Size"));
@@ -159,7 +176,7 @@ synfig::Target_Tile::render_frame_(Context context,ProgressCallback *cb)
 
 	// If the quality is set to zero, then we
 	// use the parametric scanline-renderer.
-	if(get_quality()==0)
+	if(quality==0)
 	{
 		Surface surface;
 
@@ -305,6 +322,7 @@ synfig::Target_Tile::render(ProgressCallback *cb)
 	int
 		i=0,
 		total_frames,
+		quality=get_quality(),
 		frame_start,
 		frame_end;
 	Time
@@ -361,23 +379,6 @@ synfig::Target_Tile::render(ProgressCallback *cb)
 			//if(!get_avoid_time_sync() || canvas->get_time()!=t)
 				canvas->set_time(t);
 
-			Context context;
-
-#ifdef SYNFIG_OPTIMIZE_LAYER_TREE
-			Canvas::Handle op_canvas;
-			if (!getenv("SYNFIG_DISABLE_OPTIMIZE_LAYER_TREE"))
-			{
-				op_canvas = Canvas::create();
-				op_canvas->set_file_name(canvas->get_file_name());
-				optimize_layers(canvas->get_time(), canvas->get_context(), op_canvas);
-				context=op_canvas->get_context();
-			}
-			else
-				context=canvas->get_context();
-#else
-			context=canvas->get_context();
-#endif
-
 /*
 			#ifdef SYNFIG_OPTIMIZE_LAYER_TREE
 			Context context;
@@ -395,7 +396,7 @@ synfig::Target_Tile::render(ProgressCallback *cb)
 			#endif
 */
 
-			if(!render_frame_(context,0))
+			if(!render_frame_(quality,0))
 				return false;
 			end_frame();
 		}while((i=next_frame(t)));
@@ -414,24 +415,7 @@ synfig::Target_Tile::render(ProgressCallback *cb)
 
 			//synfig::info("2time_set_to %s",t.get_string().c_str());
 
-			Context context;
-
-#ifdef SYNFIG_OPTIMIZE_LAYER_TREE
-			Canvas::Handle op_canvas;
-			if (!getenv("SYNFIG_DISABLE_OPTIMIZE_LAYER_TREE"))
-			{
-				op_canvas = Canvas::create();
-				op_canvas->set_file_name(canvas->get_file_name());
-				optimize_layers(canvas->get_time(), canvas->get_context(), op_canvas);
-				context=op_canvas->get_context();
-			}
-			else
-				context=canvas->get_context();
-#else
-			context=canvas->get_context();
-#endif
-
-			if(!render_frame_(context, cb))
+			if(!render_frame_(quality, cb))
 				return false;
 			end_frame();
 		}
