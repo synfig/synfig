@@ -185,6 +185,9 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	INIT_STOCK_ICON(keyframe_lock_future,"keyframe_lock_future."IMAGE_EXT,_("Future Keyframes Locked"));
 	INIT_STOCK_ICON(keyframe_lock_none,"keyframe_lock_none."IMAGE_EXT,_("No Keyframes Locked"));
 
+	INIT_STOCK_ICON(set_fg_color,"set_fg_color."IMAGE_EXT,_("Set as Foreground"));
+	INIT_STOCK_ICON(set_bg_color,"set_bg_color."IMAGE_EXT,_("Set as Background"));
+
 	INIT_STOCK_ICON_CLONE(cvs_add,"gtk-add",_("CVS Add"));
 	INIT_STOCK_ICON_CLONE(cvs_update,"gtk-open",_("CVS Update"));
 	INIT_STOCK_ICON_CLONE(cvs_commit,"gtk-save",_("CVS Commit"));

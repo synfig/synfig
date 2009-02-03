@@ -72,6 +72,27 @@ Dialog_Color::Dialog_Color():
 {
 	set_type_hint(Gdk::WINDOW_TYPE_HINT_UTILITY);
 	// Setup the buttons
+
+	Gtk::Image *icon;
+
+	Gtk::Button *set_fg_color(manage(new class Gtk::Button()));
+	icon = manage(new Gtk::Image(Gtk::StockID("synfig-set_fg_color"), Gtk::IconSize::IconSize(Gtk::ICON_SIZE_BUTTON)));
+	set_fg_color->add(*icon);
+	icon->show();
+	tooltips.set_tip(*set_fg_color, _("Set as Foreground"));
+	set_fg_color->show();
+	add_action_widget(*set_fg_color, 4);
+	set_fg_color->signal_clicked().connect(sigc::mem_fun(*this, &Dialog_Color::on_set_fg_pressed));
+
+	Gtk::Button *set_bg_color(manage(new class Gtk::Button()));
+	icon = manage(new Gtk::Image(Gtk::StockID("synfig-set_bg_color"), Gtk::IconSize::IconSize(Gtk::ICON_SIZE_BUTTON)));
+	set_bg_color->add(*icon);
+	icon->show();
+	tooltips.set_tip(*set_bg_color, _("Set as Background"));
+	set_bg_color->show();
+	add_action_widget(*set_bg_color, 3);
+	set_bg_color->signal_clicked().connect(sigc::mem_fun(*this, &Dialog_Color::on_set_bg_pressed));
+
 	//Gtk::Button *ok_button(manage(new class Gtk::Button(Gtk::StockID("gtk-ok"))));
 	//ok_button->show();
 	//add_action_widget(*ok_button,2);
@@ -127,6 +148,22 @@ Dialog_Color::on_apply_pressed()
 {
 	busy_=true;
 	signal_edited_(get_color());
+	busy_=false;
+}
+
+void
+Dialog_Color::on_set_fg_pressed()
+{
+	busy_=true;
+	synfigapp::Main::set_foreground_color(get_color());
+	busy_=false;
+}
+
+void
+Dialog_Color::on_set_bg_pressed()
+{
+	busy_=true;
+	synfigapp::Main::set_background_color(get_color());
 	busy_=false;
 }
 

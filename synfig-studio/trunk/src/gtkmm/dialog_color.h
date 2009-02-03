@@ -35,6 +35,7 @@
 #include <gtkmm/drawingarea.h>
 #include <gtkmm/optionmenu.h>
 #include <gtkmm/checkbutton.h>
+#include <gtkmm/tooltips.h>
 
 #include <synfig/gamma.h>
 #include <synfig/time.h>
@@ -65,12 +66,15 @@ class Widget_Color;
 class Dialog_Color : public Gtk::Dialog
 {
 	DialogSettings dialog_settings;
+	Gtk::Tooltips tooltips;
 
 	sigc::signal<void,synfig::Color> signal_edited_;
 	//sigc::signal<void,synfig::Color> signal_apply_;
 
 	bool on_close_pressed();
 	void on_apply_pressed();
+	void on_set_fg_pressed();
+	void on_set_bg_pressed();
 	void on_color_changed();
 
 	Widget_ColorEdit* widget_color;
