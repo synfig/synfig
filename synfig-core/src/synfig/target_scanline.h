@@ -85,6 +85,15 @@ public:
 	*/
 	virtual Color * start_scanline(int scanline)=0;
 
+	//! Marks the start of a scanline (using RGBA data)
+	/*!	\param scanline Which scanline is going to be rendered.
+	**	\return The address where the target wants the scanline
+	**		to be written.
+	**	\warning Must be called after start_frame()
+	**	\see end_scanline(), start_frame()
+	*/
+	virtual unsigned char* start_scanline_rgba(int scanline)=0;
+
 	//! Marks the end of a scanline
 	/*! Takes the data that was put at the address returned to by start_scanline()
 	**	and does whatever it is supposed to do with it.
@@ -92,12 +101,22 @@ public:
 	**	\see start_scanline()
 	*/
 	virtual bool end_scanline()=0;
+
+	//! Marks the end of a scanline (using RGBA data)
+	/*! Takes the data that was put at the address returned to by start_scanline_rgba()
+	**	and does whatever it is supposed to do with it.
+	**	\return \c true on success, \c false on failure.
+	**	\see start_scanline()
+	*/
+	virtual bool end_scanline_rgba()=0;
+
 	//! Sets the number of threads
 	void set_threads(int x) { threads_=x; }
 	//! Gets the number of threads
 	int get_threads()const { return threads_; }
 	//! Puts the rendered surface onto the target.
 	bool add_frame(const synfig::Surface *surface);
+	bool add_frame(const unsigned char *data, const unsigned int width, const unsigned int height);
 
 private:
 	bool render_frame_(int quality, ProgressCallback *cb=0);

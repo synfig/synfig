@@ -401,3 +401,45 @@ Target_Scanline::add_frame(const Surface *surface)
 
 	return true;
 }
+
+bool
+Target_Scanline::add_frame(const unsigned char *data, const unsigned int width, const unsigned int height)
+{
+	assert(data);
+
+	if(!start_frame())
+	{
+		throw(string("add_frame(): target panic on start_frame()"));
+		return false;
+	}
+
+	for (unsigned int y = 0; y < height; y++)
+	{
+		unsigned char *colordata= start_scanline_rgba(y);
+		if(!colordata)
+		{
+			throw(string("add_frame(): call to start_scanline(y) returned NULL"));
+			return false;
+		}
+
+		// TODO: Add a fragment shader to remove the alpha (OpenGL)
+		/*if(get_remove_alpha())
+		{
+			for(int i=0;i<surface->get_w();i++)
+				colordata[i]=Color::blend((*surface)[y][i],desc.get_bg_color(),1.0f);
+		}
+		else*/
+			// TODO: If target needs data in other way than RGBA, convert using another fragment shader (OpenGL)
+			memcpy(colordata, data + (width * y), width);
+
+		if(!end_scanline_rgba())
+		{
+			throw(string("add_frame(): target panic on end_scanline()"));
+			return false;
+		}
+	}
+
+	end_frame();
+
+	return true;
+}
