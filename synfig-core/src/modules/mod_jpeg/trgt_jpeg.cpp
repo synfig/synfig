@@ -38,6 +38,7 @@
 #include <cstdio>
 #include <algorithm>
 #include <functional>
+#include <string.h>
 #endif
 
 /* === M A C R O S ========================================================= */
@@ -45,6 +46,9 @@
 using namespace synfig;
 using namespace std;
 using namespace etl;
+
+#define RGB_SIZE	3
+#define RGBA_SIZE	4
 
 /* === G L O B A L S ======================================================= */
 
@@ -58,6 +62,7 @@ SYNFIG_TARGET_SET_CVS_ID(jpeg_trgt,"$Id$");
 
 jpeg_trgt::jpeg_trgt(const char *Filename,
 					 const synfig::TargetParam& /* params */)
+	:rgba_buffer(NULL)
 {
 	file=NULL;
 	filename=Filename;
@@ -80,6 +85,7 @@ jpeg_trgt::~jpeg_trgt()
 		fclose(file);
 	file=NULL;
 	delete [] buffer;
+	delete [] rgba_buffer;
 	delete [] color_buffer;
 }
 
@@ -125,7 +131,10 @@ jpeg_trgt::start_frame(synfig::ProgressCallback *callback)
 		return false;
 
 	delete [] buffer;
-	buffer=new unsigned char[3*w];
+	buffer=new unsigned char[RGB_SIZE * w];
+
+	delete [] rgba_buffer;
+	rgba_buffer=new unsigned char[RGBA_SIZE * w];
 
 	delete [] color_buffer;
 	color_buffer=new Color[w];
@@ -137,7 +146,7 @@ jpeg_trgt::start_frame(synfig::ProgressCallback *callback)
 
 	cinfo.image_width = w; 	/* image width and height, in pixels */
 	cinfo.image_height = h;
-	cinfo.input_components = 3;		/* # of color components per pixel */
+	cinfo.input_components = RGB_SIZE;		/* # of color components per pixel */
 	cinfo.in_color_space = JCS_RGB; 	/* colorspace of input image */
 	/* Now use the library's routine to set default compression parameters.
 	* (You must set at least cinfo.in_color_space before calling this,
@@ -189,6 +198,33 @@ jpeg_trgt::end_scanline()
 		return false;
 
 	convert_color_format(buffer, color_buffer, desc.get_w(), PF_RGB,gamma());
+	JSAMPROW *row_pointer(&buffer);
+	jpeg_write_scanlines(&cinfo, row_pointer, 1);
+
+	return true;
+}
+
+unsigned char*
+jpeg_trgt::start_scanline_rgba(int /*scanline*/)
+{
+	return rgba_buffer;
+}
+
+bool
+jpeg_trgt::end_scanline_rgba()
+{
+	if(!file || !ready)
+		return false;
+
+	int w = desc.get_w();
+	int pos_rgb = 0, pos_rgba = 0;
+
+	// TODO: Check for possible alignment issues!
+	for (int j = w / RGBA_SIZE; j > 0; j--) {
+		memcpy(buffer + pos_rgb, rgba_buffer + pos_rgba, RGB_SIZE);
+		pos_rgb += RGB_SIZE;
+		pos_rgba += RGBA_SIZE;
+	}
 	JSAMPROW *row_pointer(&buffer);
 	jpeg_write_scanlines(&cinfo, row_pointer, 1);
 

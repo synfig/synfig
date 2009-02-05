@@ -59,6 +59,7 @@ private:
 	int imagecount;
 	synfig::String filename;
 	unsigned char *buffer;
+	unsigned char *rgba_buffer;
 	synfig::Color *color_buffer;
 public:
 	jpeg_trgt(const char *filename, const synfig::TargetParam& /* params */);
@@ -70,6 +71,8 @@ public:
 
 	virtual synfig::Color * start_scanline(int scanline);
 	virtual bool end_scanline();
+	virtual unsigned char* start_scanline_rgba(int scanline);
+	virtual bool end_scanline_rgba();
 };
 
 /* === E N D =============================================================== */
