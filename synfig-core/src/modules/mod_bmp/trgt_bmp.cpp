@@ -261,3 +261,21 @@ bmp::end_scanline()
 
 	return true;
 }
+
+unsigned char*
+bmp::start_scanline_rgba(int /*scanline*/)
+{
+	return buffer;
+}
+
+bool
+bmp::end_scanline_rgba()
+{
+	if(!file)
+		return false;
+
+	if(!fwrite(buffer,1,rowspan,file))
+		return false;
+
+	return true;
+}
