@@ -37,6 +37,7 @@
 #include <cstdio>
 #include <algorithm>
 #include <functional>
+#include <string.h>
 #endif
 
 /* === M A C R O S ========================================================= */
@@ -44,6 +45,9 @@
 using namespace synfig;
 using namespace std;
 using namespace etl;
+
+#define RGB_SIZE	3
+#define RGBA_SIZE	4
 
 /* === G L O B A L S ======================================================= */
 
@@ -55,7 +59,7 @@ SYNFIG_TARGET_SET_CVS_ID(ppm,"$Id$");
 
 /* === M E T H O D S ======================================================= */
 
-ppm::ppm(const char *Filename, const synfig::TargetParam& /* params */)
+ppm::ppm(const char *Filename, const synfig::TargetParam& /* params */): rgba_buffer(NULL)
 {
 	filename=Filename;
 	multi_image=false;
@@ -121,7 +125,10 @@ ppm::start_frame(synfig::ProgressCallback *callback)
 	fprintf(file.get(), "%d\n", 255);
 
 	delete [] buffer;
-	buffer=new unsigned char[3*w];
+	buffer=new unsigned char[RGB_SIZE * w];
+
+	delete [] buffer;
+	rgba_buffer=new unsigned char[RGBA_SIZE * w];
 
 	delete [] color_buffer;
 	color_buffer=new Color[desc.get_w()];
@@ -142,6 +149,34 @@ ppm::end_scanline()
 		return false;
 
 	convert_color_format(buffer, color_buffer, desc.get_w(), PF_RGB, gamma());
+
+	if(!fwrite(buffer,1,desc.get_w()*3,file.get()))
+		return false;
+
+	return true;
+}
+
+unsigned char*
+ppm::start_scanline_rgba(int /*scanline*/)
+{
+	return rgba_buffer;
+}
+
+bool
+ppm::end_scanline_rgba()
+{
+	if(!file)
+		return false;
+
+	int w = desc.get_w();
+	int pos_rgb = 0, pos_rgba = 0;
+
+	// TODO: Check for possible alignment issues!
+	for (int j = w / RGBA_SIZE; j > 0; j--) {
+		memcpy(buffer + pos_rgb, rgba_buffer + pos_rgba, RGB_SIZE);
+		pos_rgb += RGB_SIZE;
+		pos_rgba += RGBA_SIZE;
+	}
 
 	if(!fwrite(buffer,1,desc.get_w()*3,file.get()))
 		return false;
