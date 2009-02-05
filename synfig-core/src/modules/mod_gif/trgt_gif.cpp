@@ -45,6 +45,8 @@ using namespace etl;
 
 #define MAX_FRAME_RATE	(20.0)
 
+#define RGBA_SIZE	4
+
 /* === G L O B A L S ======================================================= */
 
 SYNFIG_TARGET_INIT(gif);
@@ -58,6 +60,7 @@ SYNFIG_TARGET_SET_CVS_ID(gif,"$Id$");
 gif::gif(const char *filename_, const synfig::TargetParam& /* params */):
 	filename(filename_),
 	file( (filename=="-")?stdout:fopen(filename_,POPEN_BINARY_WRITE_TYPE) ),
+	curr_buffer(NULL),
 	imagecount(0),
 
 	lossy(true),
@@ -74,6 +77,8 @@ gif::~gif()
 {
 	if(file)
 		fputc(';',file.get());	// Image terminator
+
+	delete [] curr_buffer;
 }
 
 bool
@@ -196,7 +201,8 @@ gif::start_frame(synfig::ProgressCallback *callback)
 
 	if(callback)callback->task(filename+strprintf(" %d",imagecount));
 
-
+	delete [] curr_buffer;
+	curr_buffer = new unsigned char [RGBA_SIZE * desc.get_w()];
 
 	return true;
 }
@@ -451,4 +457,17 @@ gif::end_scanline()
 
 
 	return true;
+}
+
+unsigned char*
+gif::start_scanline_rgba(int scanline)
+{
+	cur_scanline=scanline;
+	return &curr_buffer[scanline * RGBA_SIZE * desc.get_w()];
+}
+
+bool
+gif::end_scanline_rgba()
+{
+	return end_scanline();
 }

@@ -176,6 +176,7 @@ private:
 	synfig::Surface curr_surface;
 	etl::surface<unsigned char> curr_frame;
 	etl::surface<unsigned char> prev_frame;
+	unsigned char* curr_buffer;
 
 	int imagecount;
 	int cur_scanline;
@@ -206,6 +207,8 @@ public:
 
 	virtual synfig::Color * start_scanline(int scanline);
 	virtual bool end_scanline(void);
+	virtual unsigned char* start_scanline_rgba(int scanline);
+	virtual bool end_scanline_rgba(void);
 
 };
 
