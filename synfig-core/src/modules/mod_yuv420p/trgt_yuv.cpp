@@ -51,6 +51,8 @@ using namespace etl;
 #define UV_CEIL		(240)
 #define UV_RANGE (UV_CEIL-UV_FLOOR)
 
+#define RGBA_SIZE	4
+
 /* === G L O B A L S ======================================================= */
 
 SYNFIG_TARGET_INIT(yuv);
@@ -64,6 +66,7 @@ SYNFIG_TARGET_SET_CVS_ID(yuv,"$Id$");
 yuv::yuv(const char *FILENAME, const synfig::TargetParam& /* params */):
 	filename(FILENAME),
 	file( (filename=="-")?stdout:fopen(filename.c_str(),POPEN_BINARY_WRITE_TYPE) ),
+	buffer(NULL),
 	dithering(true)
 {
 	// YUV420P doesn't have an alpha channel
@@ -72,6 +75,7 @@ yuv::yuv(const char *FILENAME, const synfig::TargetParam& /* params */):
 
 yuv::~yuv()
 {
+	delete [] buffer;
 }
 
 bool
@@ -107,6 +111,10 @@ bool
 yuv::start_frame(synfig::ProgressCallback */*callback*/)
 {
 	fprintf(file.get(), "FRAME\n");
+
+	delete [] buffer;
+	buffer=new unsigned char[RGBA_SIZE * desc.get_w()];
+
 	return static_cast<bool>(file);
 }
 
@@ -120,6 +128,18 @@ bool
 yuv::end_scanline()
 {
 	return static_cast<bool>(file);
+}
+
+unsigned char*
+yuv::start_scanline_rgba(int x)
+{
+	return &buffer[x * RGBA_SIZE * desc.get_w()];
+}
+
+bool
+yuv::end_scanline_rgba()
+{
+	return end_scanline();
 }
 
 void
