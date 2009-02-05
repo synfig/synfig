@@ -69,7 +69,8 @@ public:
 
 	virtual synfig::Color * start_scanline(int scanline);
 	virtual bool end_scanline(void);
-
+	virtual unsigned char* start_scanline_rgba(int scanline);
+	virtual bool end_scanline_rgba(void);
 
 	SYNFIG_TARGET_MODULE_EXT
 };

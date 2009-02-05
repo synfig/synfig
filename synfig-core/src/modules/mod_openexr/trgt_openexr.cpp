@@ -187,3 +187,19 @@ exr_trgt::end_scanline()
 
 	return true;
 }
+
+unsigned char*
+exr_trgt::start_scanline_rgba(int i)
+{
+	scanline=i;
+	return reinterpret_cast<unsigned char *>(out_surface[scanline]);
+}
+
+bool
+exr_trgt::end_scanline_rgba()
+{
+	if(!ready())
+		return false;
+
+	return true;
+}
