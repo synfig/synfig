@@ -61,6 +61,8 @@ using namespace synfig;
 using namespace std;
 using namespace etl;
 
+#define RGB_SIZE	3
+
 #if defined(HAVE_FORK) && defined(HAVE_PIPE) && defined(HAVE_WAITPID)
  #define UNIX_PIPE_TO_PROCESSES
 #else
@@ -87,7 +89,8 @@ dv_trgt::dv_trgt(const char *Filename,
 	buffer=NULL;
 	wide_aspect=false;
 	color_buffer=0;
-		set_remove_alpha();
+	target_format_ = PF_RGB | PF_8BITS;
+	set_remove_alpha();
 
 }
 
@@ -282,7 +285,25 @@ dv_trgt::end_scanline()
 
 	convert_color_format(buffer, color_buffer, desc.get_w(), PF_RGB, gamma());
 
-	if(!fwrite(buffer,1,desc.get_w()*3,file))
+	if(!fwrite(buffer,1,desc.get_w()*RGB_SIZE,file))
+		return false;
+
+	return true;
+}
+
+unsigned char*
+dv_trgt::start_scanline_rgba(int /*scanline*/)
+{
+	return buffer;
+}
+
+bool
+dv_trgt::end_scanline_rgba()
+{
+	if(!file)
+		return false;
+
+	if(!fwrite(buffer,1,desc.get_w()*RGB_SIZE,file))
 		return false;
 
 	return true;
