@@ -732,7 +732,16 @@ enum PixelFormat
 
 	PF_A_INV=(1<<7),		//!< If set, the alpha channel is stored as 1.0-a
 	PF_Z_INV=(1<<8),		//!< If set, the ZDepth channel is stored as 1.0-z
-	PF_RAW_COLOR=(1<<9)+(1<<1)	//!< If set, the data represents a raw Color data structure, and all other bits are ignored.
+	PF_RAW_COLOR=(1<<9)+(1<<1),	//!< If set, the data represents a raw Color data structure, and all other bits are ignored.
+
+	PF_8BITS=(1<<16),	//!< If set, each channel is stored as 8 a bit integer
+	PF_16BITS=(1<<17),	//!< If set, each channel is stored as a 16 bit integer
+	PF_32BITS=(1<<18),	//!< If set, each channel is stored as a 32 bit integer
+	PF_INDEX=(1<<19),	//!< If set, each channel is stored as a palette index
+	PF_FLOAT=(1<<20),	//!< If set, each channel is stored as a float
+#ifdef USE_HALF_TYPE
+	PF_HALF=(1<<21)   //!< If set, each channel is stored as a half
+#endif	
 };
 
 inline PixelFormat operator|(PixelFormat lhs, PixelFormat rhs)
