@@ -109,9 +109,9 @@ bool
 imagemagick_trgt::set_rend_desc(RendDesc *given_desc)
 {
 	if(filename_extension(filename) == ".xpm")
-		pf=PF_RGB;
+		target_format_=PF_RGB|PF_8BITS;
 	else
-		pf=PF_RGB|PF_A;
+		target_format_=PF_RGB|PF_A|PF_8BITS;
 
 	desc=*given_desc;
 	return true;
@@ -125,7 +125,7 @@ imagemagick_trgt::init()
 		multi_image=true;
 
 	delete [] buffer;
-	buffer=new unsigned char[channels(pf)*desc.get_w()];
+	buffer=new unsigned char[channels(target_format_)*desc.get_w()];
 	delete [] color_buffer;
 	color_buffer=new Color[desc.get_w()];
 	return true;
@@ -170,7 +170,7 @@ imagemagick_trgt::start_frame(synfig::ProgressCallback *cb)
 
 	command=strprintf("convert -depth 8 -size %dx%d rgb%s:-[0] -density %dx%d \"%s\"\n",
 	                  desc.get_w(), desc.get_h(),                                   // size
-	                  ((channels(pf) == 4) ? "a" : ""),                             // rgba or rgb?
+	                  ((channels(target_format_) == 4) ? "a" : ""),                             // rgba or rgb?
 	                  round_to_int(desc.get_x_res()/39.3700787402), // density
 	                  round_to_int(desc.get_y_res()/39.3700787402),
 	                  newfilename.c_str());
@@ -210,7 +210,7 @@ imagemagick_trgt::start_frame(synfig::ProgressCallback *cb)
 		execlp("convert", "convert",
 			"-depth", "8",
 			"-size", strprintf("%dx%d", desc.get_w(), desc.get_h()).c_str(),
-			((channels(pf) == 4) ? "rgba:-[0]" : "rgb:-[0]"),
+			((channels(target_format_) == 4) ? "rgba:-[0]" : "rgb:-[0]"),
 			"-density", strprintf("%dx%d", round_to_int(desc.get_x_res()/39.3700787402), round_to_int(desc.get_y_res()/39.3700787402)).c_str(),
 			newfilename.c_str(),
 			(const char *)NULL);
@@ -254,9 +254,27 @@ imagemagick_trgt::end_scanline(void)
 	if(!file)
 		return false;
 
-	convert_color_format(buffer, color_buffer, desc.get_w(), pf, gamma());
+	convert_color_format(buffer, color_buffer, desc.get_w(), target_format_, gamma());
 
-	if(!fwrite(buffer,channels(pf),desc.get_w(),file))
+	if(!fwrite(buffer,channels(target_format_),desc.get_w(),file))
+		return false;
+
+	return true;
+}
+
+unsigned char*
+imagemagick_trgt::start_scanline_rgba(int /*scanline*/)
+{
+	return buffer;
+}
+
+bool
+imagemagick_trgt::end_scanline_rgba(void)
+{
+	if(!file)
+		return false;
+
+	if(!fwrite(buffer,channels(target_format_),desc.get_w(),file))
 		return false;
 
 	return true;
