@@ -85,6 +85,7 @@ png_trgt::png_trgt(const char *Filename,
 	buffer=NULL;
 	ready=false;
 	color_buffer=0;
+	target_format_ = PF_RGB | PF_A | PF_8BITS;
 }
 
 png_trgt::~png_trgt()
@@ -94,6 +95,25 @@ png_trgt::~png_trgt()
 	file=NULL;
 	delete [] buffer;
 	delete [] color_buffer;
+}
+
+
+unsigned char*
+png_trgt::start_scanline_rgba(int /*scanline*/)
+{
+	return buffer;
+}
+
+bool
+png_trgt::end_scanline_rgba()
+{
+	if(!file || !ready)
+		return false;
+
+	setjmp(png_jmpbuf(png_ptr));
+	png_write_row(png_ptr,buffer);
+
+	return true;
 }
 
 bool
