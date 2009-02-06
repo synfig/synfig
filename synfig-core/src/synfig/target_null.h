@@ -45,8 +45,9 @@ namespace synfig {
 class Target_Null : public Target_Scanline
 {
 	Color *buffer;
+	unsigned char *rgba_buffer;
 
-	Target_Null():buffer(0) { }
+	Target_Null():buffer(0), rgba_buffer(0) { }
 
 public:
 
@@ -60,6 +61,10 @@ public:
 	virtual Color * start_scanline(int /*scanline*/) { return buffer; }
 
 	virtual bool end_scanline() { return true; }
+
+	virtual unsigned char* start_scanline_rgba(int /*scanline*/) { return rgba_buffer; }
+
+	virtual bool end_scanline_rgba() { return true; }
 
 	static Target* create(const char */*filename*/=0) { return new Target_Null(); }
 }; // END of class Target_Null
