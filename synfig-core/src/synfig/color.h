@@ -739,9 +739,7 @@ enum PixelFormat
 	PF_32BITS=(1<<18),	//!< If set, each channel is stored as a 32 bit integer
 	PF_INDEX=(1<<19),	//!< If set, each channel is stored as a palette index
 	PF_FLOAT=(1<<20),	//!< If set, each channel is stored as a float
-#ifdef USE_HALF_TYPE
 	PF_HALF=(1<<21)   //!< If set, each channel is stored as a half
-#endif	
 };
 
 inline PixelFormat operator|(PixelFormat lhs, PixelFormat rhs)
