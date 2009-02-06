@@ -48,6 +48,9 @@ class Target_Scanline : public Target
 	//! Current frame being rendered
 	int curr_frame_;
 
+protected:
+	PixelFormat target_format_;
+
 public:
 	typedef etl::handle<Target_Scanline> Handle;
 	typedef etl::loose_handle<Target_Scanline> LooseHandle;
