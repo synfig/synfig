@@ -50,6 +50,8 @@ using namespace synfig;
 using namespace std;
 using namespace etl;
 
+#define RGBA_SIZE	4
+
 /* === G L O B A L S ======================================================= */
 
 SYNFIG_TARGET_INIT(mng_trgt);
@@ -107,6 +109,7 @@ mng_trgt::mng_trgt(const char *Filename,
 	zbuffer=NULL;
 	zbuffer_len=0;
 	ready=false;
+	target_format_ = PF_RGB | PF_A | PF_8BITS;
 }
 
 mng_trgt::~mng_trgt()
@@ -202,7 +205,7 @@ mng_trgt::init()
 	if (mng_putchunk_gama(mng, MNG_FALSE, (int)(gamma().get_gamma()*100000)) != 0) goto cleanup_on_error;
 	if (mng_putchunk_phys(mng, MNG_FALSE, round_to_int(desc.get_x_res()),round_to_int(desc.get_y_res()), MNG_UNIT_METER) != 0) goto cleanup_on_error;
 	if (mng_putchunk_time(mng, gmt->tm_year + 1900, gmt->tm_mon + 1, gmt->tm_mday, gmt->tm_hour, gmt->tm_min, gmt->tm_sec) != 0) goto cleanup_on_error;
-	buffer=new unsigned char[(4*w)+1];
+	buffer=new unsigned char[(RGBA_SIZE*w)+1];
 	if (buffer == NULL) goto cleanup_on_error;
 	color_buffer=new Color[w];
 	if (color_buffer == NULL) goto cleanup_on_error;
@@ -295,7 +298,7 @@ mng_trgt::start_frame(synfig::ProgressCallback *callback __attribute__ ((unused)
 
 	if (zbuffer == NULL)
 	{
-		zbuffer_len = deflateBound(&zstream,((4*w)+1)*h); // don't forget the 'filter' byte - one per scanline
+		zbuffer_len = deflateBound(&zstream,((RGBA_SIZE*w)+1)*h); // don't forget the 'filter' byte - one per scanline
 		zbuffer = (unsigned char*)realloc(zbuffer, zbuffer_len);
 	}
 
@@ -323,10 +326,37 @@ mng_trgt::end_scanline()
 	}
 
 	*buffer = MNG_FILTER_NONE;
-	convert_color_format(buffer+1, color_buffer, desc.get_w(), PF_RGB|PF_A, gamma());
+	convert_color_format(buffer+1, color_buffer, desc.get_w(), target_format_, gamma());
 
 	zstream.next_in = buffer;
-	zstream.avail_in = (4*w)+1;
+	zstream.avail_in = (RGBA_SIZE*w)+1;
+
+	if (deflate(&zstream,Z_NO_FLUSH) != Z_OK) {
+		synfig::error("%s:%d deflate()", __FILE__, __LINE__);
+		return false;
+	}
+
+	return true;
+}
+
+unsigned char*
+mng_trgt::start_scanline_rgba(int scanline __attribute__ ((unused)))
+{
+	*buffer = MNG_FILTER_NONE;
+	return buffer + 1;
+}
+
+bool
+mng_trgt::end_scanline_rgba()
+{
+	if (!file || !ready)
+	{
+		synfig::error("%s:%d !file or !ready", __FILE__, __LINE__);
+		return false;
+	}
+
+	zstream.next_in = buffer;
+	zstream.avail_in = (RGBA_SIZE*w)+1;
 
 	if (deflate(&zstream,Z_NO_FLUSH) != Z_OK) {
 		synfig::error("%s:%d deflate()", __FILE__, __LINE__);
