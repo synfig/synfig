@@ -62,6 +62,8 @@ using namespace synfig;
 using namespace std;
 using namespace etl;
 
+#define RGB_SIZE	3
+
 #if defined(HAVE_FORK) && defined(HAVE_PIPE) && defined(HAVE_WAITPID)
  #define UNIX_PIPE_TO_PROCESSES
 #else
@@ -87,6 +89,7 @@ ffmpeg_trgt::ffmpeg_trgt(const char *Filename,
 	multi_image=false;
 	buffer=NULL;
 	color_buffer=0;
+	target_format_ = PF_RGB | PF_8BITS;
 	set_remove_alpha();
 
 	// Set default video codec and bitrate if they weren't given.
@@ -313,7 +316,7 @@ ffmpeg_trgt::start_frame(synfig::ProgressCallback */*callback*/)
 	fprintf(file, "%d\n", 255);
 
 	delete [] buffer;
-	buffer=new unsigned char[3*w];
+	buffer=new unsigned char[RGB_SIZE*w];
 	delete [] color_buffer;
 	color_buffer=new Color[w];
 
@@ -334,7 +337,25 @@ ffmpeg_trgt::end_scanline()
 
 	convert_color_format(buffer, color_buffer, desc.get_w(), PF_RGB, gamma());
 
-	if(!fwrite(buffer,1,desc.get_w()*3,file))
+	if(!fwrite(buffer,1,desc.get_w()*RGB_SIZE,file))
+		return false;
+
+	return true;
+}
+
+unsigned char*
+ffmpeg_trgt::start_scanline_rgba(int /*scanline*/)
+{
+	return buffer;
+}
+
+bool
+ffmpeg_trgt::end_scanline_rgba()
+{
+	if(!file)
+		return false;
+
+	if(!fwrite(buffer,1,desc.get_w()*RGB_SIZE,file))
 		return false;
 
 	return true;
