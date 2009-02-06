@@ -68,6 +68,8 @@ exr_trgt::exr_trgt(const char *Filename,
 	filename(Filename),
 	exr_file(0)
 {
+	target_format_ = PF_RGB | PF_A | PF_HALF;
+
 	buffer=0;
 #ifndef USE_HALF_TYPE
 	buffer_color=0;

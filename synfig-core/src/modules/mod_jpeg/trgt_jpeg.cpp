@@ -48,7 +48,6 @@ using namespace std;
 using namespace etl;
 
 #define RGB_SIZE	3
-#define RGBA_SIZE	4
 
 /* === G L O B A L S ======================================================= */
 
@@ -62,7 +61,6 @@ SYNFIG_TARGET_SET_CVS_ID(jpeg_trgt,"$Id$");
 
 jpeg_trgt::jpeg_trgt(const char *Filename,
 					 const synfig::TargetParam& /* params */)
-	:rgba_buffer(NULL)
 {
 	file=NULL;
 	filename=Filename;
@@ -70,6 +68,7 @@ jpeg_trgt::jpeg_trgt(const char *Filename,
 	ready=false;
 	quality=95;
 	color_buffer=0;
+	target_format_ = PF_RGB | PF_8BITS;
 	set_remove_alpha();
 }
 
@@ -85,7 +84,6 @@ jpeg_trgt::~jpeg_trgt()
 		fclose(file);
 	file=NULL;
 	delete [] buffer;
-	delete [] rgba_buffer;
 	delete [] color_buffer;
 }
 
@@ -132,9 +130,6 @@ jpeg_trgt::start_frame(synfig::ProgressCallback *callback)
 
 	delete [] buffer;
 	buffer=new unsigned char[RGB_SIZE * w];
-
-	delete [] rgba_buffer;
-	rgba_buffer=new unsigned char[RGBA_SIZE * w];
 
 	delete [] color_buffer;
 	color_buffer=new Color[w];
@@ -207,7 +202,7 @@ jpeg_trgt::end_scanline()
 unsigned char*
 jpeg_trgt::start_scanline_rgba(int /*scanline*/)
 {
-	return rgba_buffer;
+	return buffer;
 }
 
 bool
@@ -216,15 +211,6 @@ jpeg_trgt::end_scanline_rgba()
 	if(!file || !ready)
 		return false;
 
-	int w = desc.get_w();
-	int pos_rgb = 0, pos_rgba = 0;
-
-	// TODO: Check for possible alignment issues!
-	for (int j = w / RGBA_SIZE; j > 0; j--) {
-		memcpy(buffer + pos_rgb, rgba_buffer + pos_rgba, RGB_SIZE);
-		pos_rgb += RGB_SIZE;
-		pos_rgba += RGBA_SIZE;
-	}
 	JSAMPROW *row_pointer(&buffer);
 	jpeg_write_scanlines(&cinfo, row_pointer, 1);
 
