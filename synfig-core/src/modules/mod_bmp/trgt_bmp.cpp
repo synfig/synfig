@@ -58,34 +58,34 @@ namespace synfig {
 struct BITMAPFILEHEADER
 {
 	unsigned char	bfType[2];
-	unsigned long	bfSize;
+	unsigned int	bfSize;
 	unsigned short	bfReserved1;
 	unsigned short	bfReserved2;
-	unsigned long	bfOffsetBits;
+	unsigned int	bfOffsetBits;
 };
 
 struct BITMAPINFOHEADER
 {
-	unsigned long	biSize;
-	long			biWidth;
-	long			biHeight;
+	unsigned int	biSize;
+	int				biWidth;
+	int				biHeight;
 	unsigned short	biPlanes;
 	unsigned short	biBitCount;
-	unsigned long	biCompression;
-	unsigned long	biSizeImage;
-	long			biXPelsPerMeter;
-	long			biYPelsPerMeter;
-	unsigned long	biClrUsed;
-	unsigned long	biClrImportant;
+	unsigned int	biCompression;
+	unsigned int	biSizeImage;
+	int				biXPelsPerMeter;
+	int				biYPelsPerMeter;
+	unsigned int	biClrUsed;
+	unsigned int	biClrImportant;
 };
 
 }
 /* === M E T H O D S ======================================================= */
 
 #ifdef WORDS_BIGENDIAN
-inline long little_endian(const long &x)
+inline int little_endian(const long &x)
 {
-	long ret;
+	int ret;
 	char *big_e=(char *)&ret;
 	char *lit_e=(char *)&x;
 	big_e[0]=lit_e[3];
@@ -116,7 +116,7 @@ bmp::bmp(const char *Filename, const synfig::TargetParam& /* params */)
 	buffer=0;
 	color_buffer=0;
 	// We specify an ALPHA to get 4 channels, even if one is discarded
-	target_format_ = PF_BGR | PF_A | PF_8BITS;
+	target_format_ = PF_BGR | PF_8BITS;
 	set_remove_alpha();
 
 }
@@ -203,7 +203,7 @@ bmp::start_frame(synfig::ProgressCallback *callback)
 
 	fileheader.bfType[0]='B';
 	fileheader.bfType[1]='M';
-	fileheader.bfSize=little_endian(sizeof(synfig::BITMAPFILEHEADER)+sizeof(synfig::BITMAPINFOHEADER)+rowspan*h);
+	fileheader.bfSize=little_endian(sizeof(synfig::BITMAPFILEHEADER)+sizeof(synfig::BITMAPINFOHEADER)+rowspan*h - 2);
 	fileheader.bfReserved1=0;
 	fileheader.bfReserved2=0;
 	fileheader.bfOffsetBits=little_endian(sizeof(synfig::BITMAPFILEHEADER)+sizeof(synfig::BITMAPINFOHEADER)-2);
