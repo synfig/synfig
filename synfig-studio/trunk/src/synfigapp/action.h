@@ -183,14 +183,14 @@ inline Category operator|(Category lhs, Category rhs)
 
 
 
-//! Action Base Class
+//! Top-level base class for all actions
 /*!	An action should implement the following functions:
-**	static bool is_candidate(const ParamList &x);
+**	- static bool is_candidate(const ParamList &x);
 **		- 	Checks the ParamList to see if this action could be performed.
-**	static ParamVocab get_param_vocab();
+**	- static ParamVocab get_param_vocab();
 **		-	Yields the ParamVocab object which describes what
 **			this action needs before it can perform the act.
-**	static Action::Base* create();
+**	- static Action::Base* create();
 **		-	Factory for creating this action from a ParamList
 **
 */
