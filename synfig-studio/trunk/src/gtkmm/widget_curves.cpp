@@ -294,7 +294,10 @@ struct studio::Widget_Curves::CurveStruct : sigc::trackable
 	static bool is_not_supported(const synfigapp::ValueDesc& x)
 	{
 		return x.get_value_type() == ValueBase::TYPE_STRING
-			|| x.get_value_type() == ValueBase::TYPE_CANVAS;
+			|| x.get_value_type() == ValueBase::TYPE_CANVAS
+			|| x.get_value_type() == ValueBase::TYPE_GRADIENT
+			|| x.get_value_type() == ValueBase::TYPE_LIST
+			|| x.get_value_type() == ValueBase::TYPE_SEGMENT;
 	}
 };
 
