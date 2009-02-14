@@ -304,70 +304,66 @@ void signal_test()
 
 /* === P R O C E D U R E S ================================================= */
 
-void display_help(int amount)
+void display_help_option(const char *flag, const char *arg, string description)
 {
-	class Argument
-	{
-	public:
-		Argument(const char *flag,const char *arg, string description)
-		{
-			const char spaces[]="                      ";
-			if(arg)
-				cerr<<strprintf(" %s %s %s",flag, arg, spaces+strlen(arg)+strlen(flag)+1)+description<<endl;
-			else
-				cerr<<strprintf(" %s %s",flag,spaces+strlen(flag))+description<<endl;
-		}
-	};
+	const char spaces[]="                      ";
+	if(arg)
+		cerr << strprintf(" %s %s %s", flag, arg, spaces+strlen(arg)+strlen(flag)+1)+description << endl;
+	else
+		cerr << strprintf(" %s %s", flag, spaces+strlen(flag))+description << endl;
+}
 
+void display_help(bool full)
+{
 	cerr << endl << _("syntax: ") << progname << " [DEFAULT OPTIONS] ([SIF FILE] [SPECIFIC OPTIONS])..." << endl << endl;
 
-	if(amount == 0)
-		Argument("--help",NULL,_("Print out usage and syntax info"));
-	else
+	if(full)
 	{
-		Argument("-t","<output type>",_("Specify output target (Default:unknown)"));
-		Argument("-w","<pixel width>",_("Set the image width (Use zero for file default)"));
-		Argument("-h","<pixel height>",_("Set the image height (Use zero for file default)"));
-		Argument("-s","<image dist>",_("Set the diagonal size of image window (Span)"));
-		Argument("-a","<1...30>",_("Set antialias amount for parametric renderer."));
-		Argument("-Q","<0...10>",strprintf(_("Specify image quality for accelerated renderer (default=%d)"),DEFAULT_QUALITY).c_str());
-		Argument("-g","<amount>",_("Gamma (default=2.2)"));
-		Argument("-v",NULL,_("Verbose Output (add more for more verbosity)"));
-		Argument("-q",NULL,_("Quiet mode (No progress/time-remaining display)"));
-		Argument("-c","<canvas id>",_("Render the canvas with the given id instead of the root."));
-		Argument("-o","<output file>",_("Specify output filename"));
-		Argument("-T","<# of threads>",_("Enable multithreaded renderer using specified # of threads"));
-		Argument("-b",NULL,_("Print Benchmarks"));
-		Argument("--fps","<framerate>",_("Set the frame rate"));
-		Argument("--time","<time>",_("Render a single frame at <seconds>"));
-		Argument("--begin-time","<time>",_("Set the starting time"));
-		Argument("--start-time","<time>",_("Set the starting time"));
-		Argument("--end-time","<time>",_("Set the ending time"));
-		Argument("--dpi","<res>",_("Set the physical resolution (dots-per-inch)"));
-		Argument("--dpi-x","<res>",_("Set the physical X resolution (dots-per-inch)"));
-		Argument("--dpi-y","<res>",_("Set the physical Y resolution (dots-per-inch)"));
+		display_help_option("-t", "<output type>", _("Specify output target (Default:unknown)"));
+		display_help_option("-w", "<pixel width>", _("Set the image width (Use zero for file default)"));
+		display_help_option("-h", "<pixel height>", _("Set the image height (Use zero for file default)"));
+		display_help_option("-s", "<image dist>", _("Set the diagonal size of image window (Span)"));
+		display_help_option("-a", "<1...30>", _("Set antialias amount for parametric renderer."));
+		display_help_option("-Q", "<0...10>", strprintf(_("Specify image quality for accelerated renderer (default=%d)"), DEFAULT_QUALITY).c_str());
+		display_help_option("-g", "<amount>", _("Gamma (default=2.2)"));
+		display_help_option("-v", NULL, _("Verbose Output (add more for more verbosity)"));
+		display_help_option("-q", NULL, _("Quiet mode (No progress/time-remaining display)"));
+		display_help_option("-c", "<canvas id>", _("Render the canvas with the given id instead of the root."));
+		display_help_option("-o", "<output file>", _("Specify output filename"));
+		display_help_option("-T", "<# of threads>", _("Enable multithreaded renderer using specified # of threads"));
+		display_help_option("-b", NULL, _("Print Benchmarks"));
+		display_help_option("--fps", "<framerate>", _("Set the frame rate"));
+		display_help_option("--time", "<time>", _("Render a single frame at <seconds>"));
+		display_help_option("--begin-time", "<time>", _("Set the starting time"));
+		display_help_option("--start-time", "<time>", _("Set the starting time"));
+		display_help_option("--end-time", "<time>", _("Set the ending time"));
+		display_help_option("--dpi", "<res>", _("Set the physical resolution (dots-per-inch)"));
+		display_help_option("--dpi-x", "<res>", _("Set the physical X resolution (dots-per-inch)"));
+		display_help_option("--dpi-y", "<res>", _("Set the physical Y resolution (dots-per-inch)"));
 
-		Argument("--list-canvases",NULL,_("List the exported canvases in the composition"));
-		Argument("--canvas-info","<fields>",_("Print out specified details of the root canvas"));
-		Argument("--append","<filename>",_("Append layers in <filename> to composition"));
+		display_help_option("--list-canvases", NULL, _("List the exported canvases in the composition"));
+		display_help_option("--canvas-info", "<fields>", _("Print out specified details of the root canvas"));
+		display_help_option("--append", "<filename>", _("Append layers in <filename> to composition"));
 
-		Argument("--layer-info","<layer>",_("Print out layer's description, parameter info, etc."));
-		Argument("--layers",NULL,_("Print out the list of available layers"));
-		Argument("--targets",NULL,_("Print out the list of available targets"));
-		Argument("--importers",NULL,_("Print out the list of available importers"));
-		Argument("--valuenodes",NULL,_("Print out the list of available ValueNodes"));
-		Argument("--modules",NULL,_("Print out the list of loaded modules"));
-		Argument("--version",NULL,_("Print out version information"));
-		Argument("--info",NULL,_("Print out misc build information"));
-		Argument("--license",NULL,_("Print out license information"));
+		display_help_option("--layer-info", "<layer>", _("Print out layer's description, parameter info, etc."));
+		display_help_option("--layers", NULL, _("Print out the list of available layers"));
+		display_help_option("--targets", NULL, _("Print out the list of available targets"));
+		display_help_option("--importers", NULL, _("Print out the list of available importers"));
+		display_help_option("--valuenodes", NULL, _("Print out the list of available ValueNodes"));
+		display_help_option("--modules", NULL, _("Print out the list of loaded modules"));
+		display_help_option("--version", NULL, _("Print out version information"));
+		display_help_option("--info", NULL, _("Print out misc build information"));
+		display_help_option("--license", NULL, _("Print out license information"));
 
 #ifdef _DEBUG
-		Argument("--guid-test",NULL,_("Test GUID generation"));
-		Argument("--signal-test",NULL,_("Test signal implementation"));
+		display_help_option("--guid-test", NULL, _("Test GUID generation"));
+		display_help_option("--signal-test", NULL, _("Test signal implementation"));
 #endif
 	}
+	else
+		display_help_option("--help", NULL, _("Print out usage and syntax info"));
 
-	cerr<<endl;
+	cerr << endl;
 }
 
 int process_global_flags(arg_list_t &arg_list)
@@ -393,7 +389,7 @@ int process_global_flags(arg_list_t &arg_list)
 
 		if(*iter == "--help")
 		{
-			display_help(1);
+			display_help(true);
 			return SYNFIGTOOL_HELP;
 		}
 
@@ -1140,7 +1136,7 @@ int main(int argc, char *argv[])
 
 	if(argc==1)
 	{
-		display_help(0);
+		display_help(false);
 		return SYNFIGTOOL_BLANK;
 	}
 
