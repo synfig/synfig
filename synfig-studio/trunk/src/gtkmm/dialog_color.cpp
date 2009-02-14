@@ -31,18 +31,9 @@
 
 #include "dialog_color.h"
 #include "widget_color.h"
-#include <gtkmm/frame.h>
-#include <gtkmm/table.h>
-#include <gtkmm/label.h>
 #include <synfig/general.h>
-#include <synfigapp/canvasinterface.h>
-#include <synfigapp/value_desc.h>
-#include "widget_color.h"
-#include <gtkmm/spinbutton.h>
 #include <synfigapp/main.h>
-#include <sigc++/retype_return.h>
-#include <sigc++/retype.h>
-#include <sigc++/hide.h>
+#include <gtkmm/button.h>
 #include "app.h"
 
 #include "general.h"
@@ -65,60 +56,20 @@ using namespace studio;
 /* === M E T H O D S ======================================================= */
 
 Dialog_Color::Dialog_Color():
-	Dialog(_("Colors"),false,true),
-	dialog_settings(this,"color"),
+	Dialog(_("Colors"), false, true),
+	dialog_settings(this, "color"),
 	busy_(false)
-//	adjustment_pos(0,0.0,1.0,0.001,0.001,0.001)
 {
 	set_type_hint(Gdk::WINDOW_TYPE_HINT_UTILITY);
-	// Setup the buttons
 
-	Gtk::Image *icon;
-
-	Gtk::Button *set_fg_color(manage(new class Gtk::Button()));
-	icon = manage(new Gtk::Image(Gtk::StockID("synfig-set_fg_color"), Gtk::IconSize::IconSize(Gtk::ICON_SIZE_BUTTON)));
-	set_fg_color->add(*icon);
-	icon->show();
-	tooltips.set_tip(*set_fg_color, _("Set as Foreground"));
-	set_fg_color->show();
-	add_action_widget(*set_fg_color, 4);
-	set_fg_color->signal_clicked().connect(sigc::mem_fun(*this, &Dialog_Color::on_set_fg_pressed));
-
-	Gtk::Button *set_bg_color(manage(new class Gtk::Button()));
-	icon = manage(new Gtk::Image(Gtk::StockID("synfig-set_bg_color"), Gtk::IconSize::IconSize(Gtk::ICON_SIZE_BUTTON)));
-	set_bg_color->add(*icon);
-	icon->show();
-	tooltips.set_tip(*set_bg_color, _("Set as Background"));
-	set_bg_color->show();
-	add_action_widget(*set_bg_color, 3);
-	set_bg_color->signal_clicked().connect(sigc::mem_fun(*this, &Dialog_Color::on_set_bg_pressed));
-
-	//Gtk::Button *ok_button(manage(new class Gtk::Button(Gtk::StockID("gtk-ok"))));
-	//ok_button->show();
-	//add_action_widget(*ok_button,2);
-	//ok_button->signal_clicked().connect(sigc::mem_fun(*this, &Dialog_Color::on_ok_pressed));
-
-	//Gtk::Button *apply_button(manage(new class Gtk::Button(Gtk::StockID("gtk-apply"))));
-	//apply_button->show();
-	//add_action_widget(*apply_button,1);
-	//apply_button->signal_clicked().connect(sigc::mem_fun(*this, &Dialog_Color::on_apply_pressed));
-
-	Gtk::Button *cancel_button(manage(new class Gtk::Button(Gtk::StockID("gtk-close"))));
-	cancel_button->show();
-	add_action_widget(*cancel_button,0);
-	cancel_button->signal_clicked().connect(sigc::hide_return(sigc::mem_fun(*this, &Dialog_Color::on_close_pressed)));
-	signal_delete_event().connect(sigc::hide(sigc::mem_fun(*this, &Dialog_Color::on_close_pressed)));
-
-	Gtk::Table* table(manage(new Gtk::Table(2,2,false)));
-	get_vbox()->pack_start(*table);
-
-	widget_color=manage(new Widget_ColorEdit());
-	widget_color->signal_value_changed().connect(sigc::mem_fun(*this,&studio::Dialog_Color::on_color_changed));
-	//widget_color->signal_activate().connect(sigc::mem_fun(*this,&studio::Dialog_Color::on_color_changed));
-	table->attach(*widget_color, 0, 1, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	create_color_edit_widget();
+	create_set_color_button("synfig-set_fg_color", _("Set as Foreground"), 0,
+			sigc::mem_fun(*this, &Dialog_Color::on_set_fg_pressed));
+	create_set_color_button("synfig-set_bg_color", _("Set as Background"), 1,
+			sigc::mem_fun(*this, &Dialog_Color::on_set_bg_pressed));
+	create_close_button();
 
 	add_accel_group(App::ui_manager()->get_accel_group());
-
 	show_all_children();
 }
 
@@ -127,16 +78,70 @@ Dialog_Color::~Dialog_Color()
 }
 
 void
-Dialog_Color::reset()
+Dialog_Color::create_color_edit_widget()
 {
-	signal_edited_.clear();
+	color_edit_widget = manage(new Widget_ColorEdit());
+	color_edit_widget->signal_value_changed().connect(sigc::mem_fun(*this,
+			&studio::Dialog_Color::on_color_changed));
+	get_vbox()->pack_start(*color_edit_widget);
+}
+
+void
+Dialog_Color::create_set_color_button(const char *stock_id,
+		const Glib::ustring& tip_text, int index,
+		const sigc::slot0<void>& callback)
+{
+	Gtk::Button *set_color_button = manage(new Gtk::Button());
+	Gtk::Image *set_color_icon = manage(new Gtk::Image(Gtk::StockID(stock_id),
+			Gtk::IconSize::IconSize(Gtk::ICON_SIZE_BUTTON)));
+	set_color_button->add(*set_color_icon);
+	set_color_icon->show();
+	tooltips.set_tip(*set_color_button, tip_text);
+	set_color_button->show();
+	add_action_widget(*set_color_button, index);
+	set_color_button->signal_clicked().connect(callback);
+}
+
+void
+Dialog_Color::create_close_button()
+{
+	Gtk::Button *close_button(manage(new Gtk::Button(Gtk::StockID("gtk-close"))));
+	close_button->show();
+	add_action_widget(*close_button, 2);
+	close_button->signal_clicked().connect(sigc::hide_return(sigc::mem_fun(*this,
+			&Dialog_Color::on_close_pressed)));
+	signal_delete_event().connect(sigc::hide(sigc::mem_fun(*this,
+			&Dialog_Color::on_close_pressed)));
+}
+
+void
+Dialog_Color::on_color_changed()
+{
+	busy_ = true;
+	signal_edited_(get_color());
+	busy_ = false;
+}
+
+void
+Dialog_Color::on_set_fg_pressed()
+{
+	busy_ = true;
+	synfigapp::Main::set_foreground_color(get_color());
+	busy_ = false;
+}
+
+void
+Dialog_Color::on_set_bg_pressed()
+{
+	busy_ = true;
+	synfigapp::Main::set_background_color(get_color());
+	busy_ = false;
 }
 
 bool
 Dialog_Color::on_close_pressed()
 {
-//	signal_edited_(get_color());
-	busy_=false;
+	busy_ = false;
 	grab_focus();
 	reset();
 	hide();
@@ -144,33 +149,7 @@ Dialog_Color::on_close_pressed()
 }
 
 void
-Dialog_Color::on_apply_pressed()
+Dialog_Color::reset()
 {
-	busy_=true;
-	signal_edited_(get_color());
-	busy_=false;
-}
-
-void
-Dialog_Color::on_set_fg_pressed()
-{
-	busy_=true;
-	synfigapp::Main::set_foreground_color(get_color());
-	busy_=false;
-}
-
-void
-Dialog_Color::on_set_bg_pressed()
-{
-	busy_=true;
-	synfigapp::Main::set_background_color(get_color());
-	busy_=false;
-}
-
-void
-Dialog_Color::on_color_changed()
-{
-	busy_=true;
-	signal_edited_(get_color());
-	busy_=false;
+	signal_edited_.clear();
 }
