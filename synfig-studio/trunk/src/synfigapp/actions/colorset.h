@@ -46,23 +46,42 @@ class ColorSet :
 {
 private:
 
-	ValueDesc value_desc;
+	std::list<ValueDesc> value_desc_list;
 	synfig::Color color;
 	synfig::Time time;
+	bool use_fg_color;
 
 public:
 
-	ColorSet();
+	ColorSet(bool use_fg_color);
 
 	static ParamVocab get_param_vocab();
 	static bool is_candidate(const ParamList &x);
 
 	virtual bool set_param(const synfig::String& name, const Param &);
-	virtual bool is_ready()const;
+	virtual bool is_ready() const;
 
 	virtual void prepare();
+};
+
+class ColorSetFromFG : public ColorSet
+{
+public:
+
+	ColorSetFromFG() : ColorSet(true) {}
 
 	ACTION_MODULE_EXT
+
+};
+
+class ColorSetFromBG : public ColorSet
+{
+public:
+
+	ColorSetFromBG() : ColorSet(false) {}
+
+	ACTION_MODULE_EXT
+
 };
 
 }; // END of namespace action

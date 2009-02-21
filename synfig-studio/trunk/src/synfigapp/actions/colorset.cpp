@@ -50,14 +50,23 @@ using namespace Action;
 
 /* === M A C R O S ========================================================= */
 
-ACTION_INIT(Action::ColorSet);
-ACTION_SET_NAME(Action::ColorSet,"ColorSet");
-ACTION_SET_LOCAL_NAME(Action::ColorSet,N_("Apply Default Color"));
-ACTION_SET_TASK(Action::ColorSet,"set");
-ACTION_SET_CATEGORY(Action::ColorSet,Action::CATEGORY_VALUEDESC);
-ACTION_SET_PRIORITY(Action::ColorSet,0);
-ACTION_SET_VERSION(Action::ColorSet,"0.0");
-ACTION_SET_CVS_ID(Action::ColorSet,"$Id$");
+ACTION_INIT(Action::ColorSetFromFG);
+ACTION_SET_NAME(Action::ColorSetFromFG, "ColorSetFromFG");
+ACTION_SET_LOCAL_NAME(Action::ColorSetFromFG, N_("Apply Foreground Color"));
+ACTION_SET_TASK(Action::ColorSetFromFG, "set");
+ACTION_SET_CATEGORY(Action::ColorSetFromFG, Action::CATEGORY_VALUEDESC);
+ACTION_SET_PRIORITY(Action::ColorSetFromFG, 0);
+ACTION_SET_VERSION(Action::ColorSetFromFG, "0.0");
+ACTION_SET_CVS_ID(Action::ColorSetFromFG, "$Id$");
+
+ACTION_INIT(Action::ColorSetFromBG);
+ACTION_SET_NAME(Action::ColorSetFromBG, "ColorSetFromBG");
+ACTION_SET_LOCAL_NAME(Action::ColorSetFromBG, N_("Apply Background Color"));
+ACTION_SET_TASK(Action::ColorSetFromBG, "set");
+ACTION_SET_CATEGORY(Action::ColorSetFromBG, Action::CATEGORY_VALUEDESC);
+ACTION_SET_PRIORITY(Action::ColorSetFromBG, 0);
+ACTION_SET_VERSION(Action::ColorSetFromBG, "0.0");
+ACTION_SET_CVS_ID(Action::ColorSetFromBG, "$Id$");
 
 /* === G L O B A L S ======================================================= */
 
@@ -65,8 +74,8 @@ ACTION_SET_CVS_ID(Action::ColorSet,"$Id$");
 
 /* === M E T H O D S ======================================================= */
 
-Action::ColorSet::ColorSet():
-	time(0)
+Action::ColorSet::ColorSet(bool use_fg_color):
+	time(0), use_fg_color(use_fg_color)
 {
 }
 
@@ -77,6 +86,7 @@ Action::ColorSet::get_param_vocab()
 
 	ret.push_back(ParamDesc("value_desc",Param::TYPE_VALUEDESC)
 		.set_local_name(_("ValueDesc"))
+		.set_supports_multiple()
 	);
 
 	ret.push_back(ParamDesc("time",Param::TYPE_TIME)
@@ -90,40 +100,57 @@ Action::ColorSet::get_param_vocab()
 bool
 Action::ColorSet::is_candidate(const ParamList &x)
 {
-	if(!candidate_check(get_param_vocab(),x))
+	if (!candidate_check(get_param_vocab(), x))
 		return false;
-	return x.find("value_desc")->second.get_value_desc().get_value_type()==ValueBase::TYPE_COLOR;
+
+	std::multimap<synfig::String, Param>::const_iterator iter;
+	for (iter = x.begin(); iter != x.end(); ++iter)
+	{
+		if (iter->first == "value_desc" &&
+				iter->second.get_value_desc().get_value_type() != ValueBase::TYPE_COLOR)
+			return false;
+	}
+
+	return true;
 }
 
 bool
 Action::ColorSet::set_param(const synfig::String& name, const Action::Param &param)
 {
-	if(name=="value_desc" && param.get_type()==Param::TYPE_VALUEDESC)
+	if (name == "value_desc" && param.get_type() == Param::TYPE_VALUEDESC)
 	{
 		// Grab the value_desc
-		value_desc=param.get_value_desc();
+		ValueDesc value_desc = param.get_value_desc();
+		if (value_desc.get_value_type() != ValueBase::TYPE_COLOR)
+			return false;
 
-		// Grab the current color
-		color=synfigapp::Main::get_foreground_color();
+		value_desc_list.push_back(value_desc);
 
-		return value_desc.get_value_type()==ValueBase::TYPE_COLOR;
-	}
-
-	if(name=="time" && param.get_type()==Param::TYPE_TIME)
-	{
-		time=param.get_time();
+		// Grab the current fore- or background color
+		if (use_fg_color)
+			color = synfigapp::Main::get_foreground_color();
+		else
+			color = synfigapp::Main::get_background_color();
 
 		return true;
 	}
 
-	return Action::CanvasSpecific::set_param(name,param);
+	if (name == "time" && param.get_type() == Param::TYPE_TIME)
+	{
+		time = param.get_time();
+
+		return true;
+	}
+
+	return Action::CanvasSpecific::set_param(name, param);
 }
 
 bool
-Action::ColorSet::is_ready()const
+Action::ColorSet::is_ready() const
 {
-	if(!value_desc || value_desc.get_value_type()!=ValueBase::TYPE_COLOR)
+	if (value_desc_list.size() == 0)
 		return false;
+
 	return Action::CanvasSpecific::is_ready();
 }
 
@@ -132,17 +159,21 @@ Action::ColorSet::prepare()
 {
 	clear();
 
-	Action::Handle action;
-	action=Action::create("ValueDescSet");
+	std::list<ValueDesc>::iterator iter;
+	for (iter = value_desc_list.begin(); iter != value_desc_list.end(); ++iter)
+	{
+		ValueDesc& value_desc(*iter);
 
-	action->set_param("canvas",get_canvas());
-	action->set_param("canvas_interface",get_canvas_interface());
-	action->set_param("value_desc",value_desc);
-	action->set_param("new_value",ValueBase(color));
-	action->set_param("time",time);
+		Action::Handle action = Action::create("ValueDescSet");
+		action->set_param("canvas", get_canvas());
+		action->set_param("canvas_interface", get_canvas_interface());
+		action->set_param("value_desc", value_desc);
+		action->set_param("new_value", ValueBase(color));
+		action->set_param("time", time);
 
-	if(!action->is_ready())
-		throw Error(Error::TYPE_NOTREADY);
+		if (!action->is_ready())
+			throw Error(Error::TYPE_NOTREADY);
 
-	add_action_front(action);
+		add_action_front(action);
+	}
 }
