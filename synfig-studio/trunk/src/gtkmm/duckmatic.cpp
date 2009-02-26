@@ -1567,9 +1567,23 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 
 				BLinePoint bline_point((*value_node->get_link(i))(get_time()));
 
+				ValueNode::LooseHandle vertex_valuenode;
+				if (ValueNode_BoneInfluence::Handle bone_influence_vertex_value_node =
+						ValueNode_BoneInfluence::Handle::cast_dynamic(value_node->get_link(i)))
+				{
+					add_to_ducks(synfigapp::ValueDesc(bone_influence_vertex_value_node,
+									  bone_influence_vertex_value_node->get_link_index_from_name("bone_weight_list")),
+						     canvas_view,transform_stack);
+
+					if(get_type_mask() & Duck::TYPE_BONE_SETUP)
+						vertex_valuenode = bone_influence_vertex_value_node->get_link("link");
+				}
+				else
+					vertex_valuenode = value_node->get_link(i);
+
 				// try casting the vertex to Composite - this tells us whether it is composite or not
 				ValueNode_Composite::Handle composite_vertex_value_node(
-					ValueNode_Composite::Handle::cast_dynamic(value_node->get_link(i)));
+					ValueNode_Composite::Handle::cast_dynamic(vertex_valuenode));
 
 				// add the vertex duck - it's a composite
 				if(composite_vertex_value_node)
@@ -1615,14 +1629,6 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				// else it's not a composite
 				else
 				{
-					if (ValueNode_BoneInfluence::Handle bone_influence_vertex_value_node =
-						ValueNode_BoneInfluence::Handle::cast_dynamic(value_node->get_link(i)))
-					{
-						add_to_ducks(synfigapp::ValueDesc(bone_influence_vertex_value_node,
-														  bone_influence_vertex_value_node->get_link_index_from_name("bone_weight_list")),
-									 canvas_view,transform_stack);
-					}
-
 					duck=new Duck(bline_point.get_vertex());
 					if(i==first)
 						first_duck=duck;
