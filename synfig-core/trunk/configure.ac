@@ -395,7 +395,7 @@ AC_LIB_LTDL
 ALL_LINGUAS="es fr ru"
 AM_GNU_GETTEXT([external])
 # This is here so autoreconf will run autopoint
-AM_GNU_GETTEXT_VERSION([0.14.4])
+AM_GNU_GETTEXT_VERSION([0.15])
 localedir="$datadir/locale"
 
 PKG_CHECK_MODULES(ETL, [ETL >= 0.04.12],,[
