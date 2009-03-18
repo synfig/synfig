@@ -123,10 +123,11 @@ public:
 
 		Time time(rend_desc().get_time_start());
 
+		if(!onionskin)
+			return;
 		onion_skin_queue.push_back(time);
 		//onion_skin_queue.push_back(time-1);
 		//onion_skin_queue.push_back(time+1);
-
 		try
 		{
 			onion_skin_queue.push_back(
@@ -419,12 +420,11 @@ public:
 
 		Time time(rend_desc().get_time_start());
 
+		if(!onionskin)
+			return;
 		onion_skin_queue.push_back(time);
 		//onion_skin_queue.push_back(time-1);
 		//onion_skin_queue.push_back(time+1);
-		if(!onionskin)
-			return;
-
 		try
 		{
 			onion_skin_queue.push_back(
