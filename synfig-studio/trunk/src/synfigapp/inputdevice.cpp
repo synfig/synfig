@@ -160,36 +160,13 @@ public:
 InputDevice::InputDevice(const synfig::String id_, Type type_):
 	id_(id_),
 	type_(type_),
-	state_((type_==TYPE_PEN)?"sketch":"normal"),
+	state_((type_==TYPE_PEN)?"draw":"normal"),
 	foreground_color_(Color::black()),
 	background_color_(Color::white()),
 	bline_width_(Distance(1,Distance::SYSTEM_POINTS)),
 	opacity_(1.0f),
 	blend_method_(Color::BLEND_COMPOSITE)
 {
-	switch(type_)
-	{
-		case TYPE_MOUSE:
-			state_="normal";
-			break;
-
-		case TYPE_PEN:
-			state_="draw";
-			break;
-
-		case TYPE_ERASER:
-			state_="normal";
-			break;
-
-		case TYPE_CURSOR:
-			state_="normal";
-			break;
-
-		default:
-			state_="normal";
-			break;
-	}
-
 	device_settings=new DeviceSettings(this);
 	Main::settings().add_domain(device_settings,"input_device."+id_);
 }
