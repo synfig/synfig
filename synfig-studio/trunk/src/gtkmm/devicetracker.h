@@ -27,6 +27,9 @@
 
 /* === H E A D E R S ======================================================= */
 
+#include <synfig/string.h>
+#include <synfigapp/inputdevice.h>
+
 /* === M A C R O S ========================================================= */
 
 /* === T Y P E D E F S ===================================================== */
@@ -41,7 +44,15 @@ public:
 	DeviceTracker();
 	~DeviceTracker();
 
-}; // END of class ToolTracker
+	void save_preferences();
+
+	static void set_device_mode(const synfig::String & id,
+			synfigapp::InputDevice::Mode mode);
+	static void set_device_axes(const synfig::String & id,
+			const std::vector<synfigapp::InputDevice::AxisUse> axes);
+	static void set_device_keys(const synfig::String & id,
+			const std::vector<synfigapp::InputDevice::DeviceKey> keys);
+}; // END of class DeviceTracker
 
 }; // END of namespace studio
 

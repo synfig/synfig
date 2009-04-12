@@ -34,6 +34,7 @@
 #include <cstdio>
 #include <ETL/stringf>
 #include "main.h"
+#include <gtkmm/devicetracker.h>
 
 #include "general.h"
 
@@ -45,6 +46,7 @@ using namespace std;
 using namespace etl;
 using namespace synfig;
 using namespace synfigapp;
+using namespace studio;
 
 /* === M A C R O S ========================================================= */
 
@@ -94,8 +96,51 @@ public:
 
 			return true;
 		}
+		if(key=="mode")
+		{
+			get_mode_value(value);
+			return true;
+		}
+		if(key=="axes")
+		{
+			get_axes_value(value);
+			return true;
+		}
+		if(key=="keys")
+		{
+			get_keys_value(value);
+			return true;
+		}
 
 		return Settings::get_value(key, value);
+	}
+
+	void get_mode_value(synfig::String & value) const
+	{
+		if (input_device->get_mode() == InputDevice::MODE_SCREEN)
+			value = "screen";
+		else if (input_device->get_mode() == InputDevice::MODE_WINDOW)
+			value = "window";
+		else
+			value = "disabled";
+	}
+
+	void get_axes_value(synfig::String & value) const
+	{
+		vector<InputDevice::AxisUse> axes = input_device->get_axes();
+		value = strprintf("%u", axes.size());
+		vector<InputDevice::AxisUse>::const_iterator itr;
+		for (itr = axes.begin(); itr != axes.end(); itr++)
+			value += strprintf(" %u", (unsigned int) *itr);
+	}
+
+	void get_keys_value(synfig::String & value) const
+	{
+		vector<InputDevice::DeviceKey> keys = input_device->get_keys();
+		value = strprintf("%u", keys.size());
+		vector<InputDevice::DeviceKey>::const_iterator itr;
+		for (itr = keys.begin(); itr != keys.end(); itr++)
+			value += strprintf(" %u %u", itr->keyval, itr->modifiers);
 	}
 
 	virtual bool set_value(const synfig::String& key,const synfig::String& value)
@@ -136,8 +181,80 @@ public:
 			input_device->set_background_color(synfig::Color(r,g,b,a));
 			return true;
 		}
+		if(key=="mode")
+		{
+			set_mode_value(value);
+			return true;
+		}
+		if(key=="axes")
+		{
+			set_axes_value(value);
+			return true;
+		}
+		if(key=="keys")
+		{
+			set_keys_value(value);
+			return true;
+		}
 
 		return Settings::set_value(key, value);
+	}
+
+	void set_mode_value(const synfig::String & value)
+	{
+		InputDevice::Mode mode;
+		if (value == "screen")
+			mode = InputDevice::MODE_SCREEN;
+		else if (value == "window")
+			mode = InputDevice::MODE_WINDOW;
+		else
+			mode = InputDevice::MODE_DISABLED;
+
+		input_device->set_mode(mode);
+		DeviceTracker::set_device_mode(input_device->get_id(), mode);
+	}
+
+	void set_axes_value(const synfig::String & value)
+	{
+		std::vector<InputDevice::AxisUse> axes;
+
+		unsigned pos = value.find(' ', 0);
+		if (pos < value.size()) {
+			int num_axes = atoi(value.substr(0, pos).c_str());
+			axes.resize(num_axes);
+
+			for (int axis = 0; axis < num_axes; axis++) {
+				int last = pos;
+				pos = value.find(' ', pos + 1);
+				axes[axis] = InputDevice::AxisUse(atoi(value.substr(last, pos).c_str()));
+			}
+		}
+
+		input_device->set_axes(axes);
+		DeviceTracker::set_device_axes(input_device->get_id(), axes);
+	}
+
+	void set_keys_value(const synfig::String & value)
+	{
+		std::vector<InputDevice::DeviceKey> keys;
+
+		unsigned pos = value.find(' ', 0);
+		if (pos < value.size()) {
+			int num_keys = atoi(value.substr(0, pos).c_str());
+			keys.resize(num_keys);
+
+			for (int key = 0; key < num_keys; key++) {
+				int last = pos;
+				pos = value.find(' ', pos + 1);
+				keys[key].keyval = (unsigned int) atol(value.substr(last, pos).c_str());
+				last = pos;
+				pos = value.find(' ', pos + 1);
+				keys[key].modifiers = (unsigned int) atol(value.substr(last, pos).c_str());
+			}
+		}
+
+		input_device->set_keys(keys);
+		DeviceTracker::set_device_keys(input_device->get_id(), keys);
 	}
 
 	virtual KeyList get_key_list()const
@@ -149,6 +266,9 @@ public:
 		ret.push_back("bline_width");
 		ret.push_back("blend_method");
 		ret.push_back("opacity");
+		ret.push_back("mode");
+		ret.push_back("axes");
+		ret.push_back("keys");
 		return ret;
 	}
 };
@@ -165,7 +285,8 @@ InputDevice::InputDevice(const synfig::String id_, Type type_):
 	background_color_(Color::white()),
 	bline_width_(Distance(1,Distance::SYSTEM_POINTS)),
 	opacity_(1.0f),
-	blend_method_(Color::BLEND_COMPOSITE)
+	blend_method_(Color::BLEND_COMPOSITE),
+	mode_(MODE_DISABLED)
 {
 	device_settings=new DeviceSettings(this);
 	Main::settings().add_domain(device_settings,"input_device."+id_);

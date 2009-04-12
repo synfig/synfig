@@ -6,6 +6,7 @@
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
+**  Copyright (c) 2009 Gerco Ballintijn
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -20,6 +21,10 @@
 */
 /* ========================================================================= */
 
+// FIXME: The code here doesn't use the GTKmm layer but uses GTK+ directly
+// since the GTKmm wrapper for Gdk::Device is incomplete. When the wrapper
+// gets fixed, this code should be updated accoordingly.
+
 /* === H E A D E R S ======================================================= */
 
 #ifdef USING_PCH
@@ -30,7 +35,8 @@
 #endif
 
 #include "devicetracker.h"
-#include <gdkmm/device.h>
+#include <gdk/gdk.h>
+#include <gtk/gtk.h>
 #include <synfigapp/main.h>
 
 #include "general.h"
@@ -42,6 +48,7 @@
 using namespace std;
 using namespace etl;
 using namespace synfig;
+using namespace synfigapp;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
@@ -54,27 +61,97 @@ using namespace studio;
 
 DeviceTracker::DeviceTracker()
 {
-	// FIXME: We no longer do this, but we should figure out why this was being done
-	// By default, set the input mode on devices to
-	// GDK_MODE_SCREEN.
+	GList*	device_list;
+	GList*	iter;
+	device_list=gdk_devices_list();
+
+	for(iter=device_list;iter;iter=g_list_next(iter))
 	{
-		GList*	device_list;
-		GList*	iter;
-		device_list=gdk_devices_list();
+		GdkDevice* device=reinterpret_cast<GdkDevice*>(iter->data);
 
-		for(iter=device_list;iter;iter=g_list_next(iter))
-		{
-			GdkDevice* device=reinterpret_cast<GdkDevice*>(iter->data);
-			//gdk_device_set_mode(device,GDK_MODE_SCREEN);
-
-			synfigapp::InputDevice::Handle input_device;
-			input_device=synfigapp::Main::add_input_device(device->name,synfigapp::InputDevice::Type(device->source));
-			if(input_device->get_type()==synfigapp::InputDevice::TYPE_MOUSE)
-				synfigapp::Main::select_input_device(input_device);
+		synfigapp::InputDevice::Handle input_device;
+		input_device=synfigapp::Main::add_input_device(device->name,synfigapp::InputDevice::Type(device->source));
+		if(input_device->get_type()==synfigapp::InputDevice::TYPE_MOUSE) {
+			input_device->set_mode(synfigapp::InputDevice::MODE_SCREEN);
+			synfigapp::Main::select_input_device(input_device);
 		}
 	}
 }
 
 DeviceTracker::~DeviceTracker()
 {
+}
+
+void
+DeviceTracker::save_preferences()
+{
+	GList * device_list = gdk_devices_list();
+	for (GList * itr = device_list; itr; itr = g_list_next(itr))
+	{
+		GdkDevice * gdk_device = reinterpret_cast<GdkDevice*>(itr->data);
+
+		InputDevice::Handle synfig_device = synfigapp::Main::find_input_device(gdk_device->name);
+		if (synfig_device == NULL)
+			continue;
+
+		synfig_device->set_mode(InputDevice::Mode(gdk_device->mode));
+		if (gdk_device->num_axes > 0) {
+			vector<synfigapp::InputDevice::AxisUse> axes;
+			axes.resize(gdk_device->num_axes);
+			for (int i = 0; i < gdk_device->num_axes; i++)
+				axes[i] = InputDevice::AxisUse(gdk_device->axes[i].use);
+			synfig_device->set_axes(axes);
+		}
+
+		if (gdk_device->num_keys > 0) {
+			vector<synfigapp::InputDevice::DeviceKey> keys;
+			keys.resize(gdk_device->num_keys);
+			for (int i = 0; i < gdk_device->num_keys; i++) {
+				keys[i].keyval = gdk_device->keys[i].keyval;
+				keys[i].modifiers = gdk_device->keys[i].modifiers;
+			}
+			synfig_device->set_keys(keys);
+		}
+	}
+}
+
+void
+DeviceTracker::set_device_mode(const synfig::String & id,
+		InputDevice::Mode mode)
+{
+	for (GList * itr = gdk_devices_list(); itr; itr = g_list_next(itr))
+	{
+		GdkDevice * device = reinterpret_cast<GdkDevice*>(itr->data);
+		if (id == device->name)
+			gdk_device_set_mode(device, GdkInputMode(mode));
+	}
+}
+
+void
+DeviceTracker::set_device_axes(const synfig::String & id,
+		const std::vector<synfigapp::InputDevice::AxisUse> axes)
+{
+	for (GList * itr = gdk_devices_list(); itr; itr = g_list_next(itr))
+	{
+		GdkDevice * device = reinterpret_cast<GdkDevice*>(itr->data);
+		if (id == device->name) {
+			for (int axis = 0; axis < (int) axes.size(); axis++)
+				gdk_device_set_axis_use(device, axis, GdkAxisUse(axes[axis]));
+		}
+	}
+}
+
+void
+DeviceTracker::set_device_keys(const synfig::String & id,
+		const std::vector<synfigapp::InputDevice::DeviceKey> keys)
+{
+	for (GList * itr = gdk_devices_list(); itr; itr = g_list_next(itr))
+	{
+		GdkDevice * device = reinterpret_cast<GdkDevice*>(itr->data);
+		if (id == device->name) {
+			for (int key = 0; key < (int) keys.size(); key++)
+				gdk_device_set_key(device, key, keys[key].keyval,
+						GdkModifierType(keys[key].modifiers));
+		}
+	}
 }

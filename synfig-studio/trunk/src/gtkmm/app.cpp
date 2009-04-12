@@ -1272,7 +1272,7 @@ App::App(int *argc, char ***argv):
 		studio_init_cb.task(_("Init Input Dialog..."));
 		dialog_input=new Gtk::InputDialog();
 		dialog_input->get_close_button()->signal_clicked().connect( sigc::mem_fun( *dialog_input, &Gtk::InputDialog::hide ) );
-		dialog_input->get_save_button()->signal_clicked().connect( sigc::ptr_fun(studio::App::dialog_not_implemented) );
+		dialog_input->get_save_button()->signal_clicked().connect( sigc::mem_fun( *device_tracker, &DeviceTracker::save_preferences) );
 
 		studio_init_cb.task(_("Init auto recovery..."));
 		auto_recover=new AutoRecover();
