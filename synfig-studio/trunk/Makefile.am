@@ -1,17 +1,56 @@
 # $Id$
 
-MAINTAINERCLEANFILES=COPYING INSTALL config/ltmain.sh doxygen.cfg config/config.guess config/config.sub config/ltmain.sh config/install-sh config/mkinstalldirs config/aclocal.m4 config/missing config/texinfo.tex config/depcomp aclocal.m4 config.h.in configure stamp-h.in Makefile.in config.log config.status .doc_stamp .DS_Store
+MAINTAINERCLEANFILES = \
+	COPYING \
+	INSTALL \
+	config/ltmain.sh \
+	doxygen.cfg \
+	config/config.guess \
+	config/config.sub \
+	config/ltmain.sh \
+	config/install-sh \
+	config/mkinstalldirs \
+	config/aclocal.m4 \
+	config/missing \
+	config/texinfo.tex \
+	config/depcomp \
+	aclocal.m4 \
+	config.h.in \
+	configure \
+	stamp-h.in \
+	Makefile.in \
+	config.log \
+	config.status \
+	.doc_stamp \
+	.DS_Store
 
-SUBDIRS=build_tools src images po
+SUBDIRS = \
+	build_tools \
+	src \
+	images \
+	po
 
-EXTRA_DIST=COPYING TODO m4/subs.m4 doxygen.cfg.in doxygen.cfg macosxbuild.sh win32build.sh win32inst.nsi.in config/package config/depcomp m4/cxx_macros.m4 m4/ETL.m4 ChangeLog.old synfigstudio.xml.in synfigstudio-thumbnailer.schemas.in
+EXTRA_DIST = \
+	COPYING \
+	TODO \
+	m4/subs.m4 \
+	doxygen.cfg.in \
+	doxygen.cfg \
+	macosxbuild.sh \
+	win32build.sh \
+	win32inst.nsi.in \
+	config/package \
+	config/depcomp \
+	m4/cxx_macros.m4 \
+	m4/ETL.m4 \
+	ChangeLog.old \
+	synfigstudio.xml.in \
+	synfigstudio-thumbnailer.schemas.in
+
 
 # Desktop entry
-#desktopdir              = $(datadir)/gnome/apps/Graphics
-desktopdir              = $(prefix)/share/applications
-desktop_DATA            = synfigstudio.desktop
-#desktop_in_files        = synfigstudio.desktop.in
-#desktop_DATA            = $(desktop_in_files:.desktop.in=.desktop)
+desktopdir = $(prefix)/share/applications
+desktop_DATA = synfigstudio.desktop
 
 # @INTLTOOL_DESKTOP_RULE@
 
@@ -24,7 +63,6 @@ icon_DATA               = images/synfig_icon.png images/sif_icon.png
 
 ACLOCAL_AMFLAGS=-I m4
 
-CVS=cvs
 GREP=grep
 PRINTF=printf
 SH=sh
@@ -55,12 +93,6 @@ stats:
 	-@$(PRINTF) "Total size: "
 	-@du -hcs $(shell find $(top_srcdir)/src -name '*.[ch]*' | $(GREP) -v libavcodec) | $(GREP) total
 	-@echo 
-
-#tagstable:
-#	$(CVS) tag -F stable
-
-#tagrelease:
-#	$(CVS) tag -F @PACKAGE_TARNAME@_@VERSION_MAJ@_@VERSION_MIN@_@VERSION_REV@
 
 listfixmes:
 	-@echo

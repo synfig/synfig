@@ -1,13 +1,47 @@
 # $Id$
 
-MAINTAINERCLEANFILES=Makefile.in
-AM_CXXFLAGS=@CXXFLAGS@ -I$(top_srcdir) -I$(top_builddir)/ETL
-DEFAULT_INCLUDES=-I$(top_srcdir) -I$(top_builddir)/ETL
-#TESTS=fixed clock handle angle random hermite stringf pen surface smart_ptr benchmark spline value
-TESTS=fixed clock handle angle random hermite stringf pen surface smart_ptr benchmark
+MAINTAINERCLEANFILES = \
+	Makefile.in
 
-#check_PROGRAMS=fixed handle clock angle random hermite stringf pen surface smart_ptr benchmark smach spline value
-check_PROGRAMS=fixed handle clock angle random hermite stringf pen surface smart_ptr benchmark smach
+AM_CXXFLAGS = \
+	@CXXFLAGS@
+	-I$(top_srcdir)
+	-I$(top_builddir)/ETL
+
+DEFAULT_INCLUDES = \
+	-I$(top_srcdir)
+	-I$(top_builddir)/ETL
+
+TESTS = \
+	fixed \
+	clock \
+	handle \
+	angle \
+	random \
+	hermite \
+	stringf \
+	pen \
+	surface \
+	smart_ptr \
+	benchmark
+#	spline \
+#	value
+
+check_PROGRAMS = \
+	fixed \
+	handle \
+	clock \
+	angle \
+	random \
+	hermite \
+	stringf \
+	pen \
+	surface \
+	smart_ptr \
+	benchmark \
+	smach
+#	spline \
+#	value
 
 benchmark_SOURCES=benchmark.cpp
 smart_ptr_SOURCES=smart_ptr.cpp
@@ -25,4 +59,6 @@ stringf_SOURCES=stringf.cpp
 #value_SOURCES=value.cpp
 
 # FIXME: fix compiler errors for the spline and value tests.
-EXTRA_DIST=spline.cpp value.cpp
+EXTRA_DIST = \
+	spline.cpp \
+	value.cpp

@@ -1,15 +1,27 @@
 # $Id$
 
-MAINTAINERCLEANFILES=Makefile.in
-EXTRA_DIST=tool.nsh
+MAINTAINERCLEANFILES = \
+	Makefile.in
 
-INCLUDES=-I$(top_builddir) -I$(top_srcdir)/src
+EXTRA_DIST = \
+	tool.nsh
 
-bin_PROGRAMS	=	synfig
+INCLUDES = \
+	-I$(top_builddir) \
+	-I$(top_srcdir)/src
 
-synfig_SOURCES = main.cpp
-synfig_LDADD = ../synfig/libsynfig.la @SYNFIG_LIBS@ @OPENEXR_HALF_LIBS@
-synfig_CXXFLAGS = @SYNFIG_CFLAGS@
-#synfig_LDFLAGS=-export-dynamic  -dlopen self
-#-dlopen ../modules/example/libexample.la
 
+bin_PROGRAMS = \
+	synfig
+
+
+synfig_SOURCES = \
+	main.cpp
+
+synfig_LDADD = \
+	../synfig/libsynfig.la \
+	@SYNFIG_LIBS@ \
+	@OPENEXR_HALF_LIBS@
+
+synfig_CXXFLAGS = \
+	@SYNFIG_CFLAGS@
