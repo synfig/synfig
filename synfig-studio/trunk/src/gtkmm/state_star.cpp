@@ -698,12 +698,6 @@ StateStar_Context::make_star(const Point& _p1, const Point& _p2)
 		layer->set_description(get_id());
 		get_canvas_interface()->signal_layer_new_description()(layer,layer->get_description());
 
-		if(get_layer_outline_flag())
-		{
-			layer->set_param("color",synfigapp::Main::get_background_color());
-			get_canvas_interface()->signal_layer_param_changed()(layer,"color");
-		}
-
 		// only link the star's origin parameter if the option is selected, we're putting bline
 		// origins at their centers, and we're creating more than one layer
 		if (get_layer_link_origins_flag() && get_layer_origins_at_center_flag() && layers_to_create > 1)
@@ -896,9 +890,6 @@ StateStar_Context::make_star(const Point& _p1, const Point& _p2)
 
 		layer->set_param("invert",get_invert());
 		get_canvas_interface()->signal_layer_param_changed()(layer,"invert");
-
-		if(get_layer_outline_flag())
-			layer->set_param("color",synfigapp::Main::get_background_color());
 
 		// I don't know if it's safe to reuse the same LayerParamConnect action, so I'm
 		// using 2 separate ones.

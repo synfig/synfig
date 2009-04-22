@@ -57,8 +57,8 @@ using namespace synfigapp;
 static etl::reference_counter synfigapp_ref_count_(0);
 static synfigapp::Action::Main* action_main;
 
-static Color foreground_;
-static Color background_;
+static Color outline_;
+static Color fill_;
 static Gradient gradient_;
 static bool gradient_default_colors_;
 
@@ -70,8 +70,8 @@ static Real opacity_;
 static synfigapp::InputDevice::Handle selected_input_device_;
 static list<synfigapp::InputDevice::Handle> input_devices_;
 
-trivial<sigc::signal<void> > signal_foreground_color_changed_;
-trivial<sigc::signal<void> > signal_background_color_changed_;
+trivial<sigc::signal<void> > signal_outline_color_changed_;
+trivial<sigc::signal<void> > signal_fill_color_changed_;
 trivial<sigc::signal<void> > signal_gradient_changed_;
 trivial<sigc::signal<void> > signal_bline_width_changed_;
 trivial<sigc::signal<void> > signal_blend_method_changed_;
@@ -107,15 +107,15 @@ synfigapp::Main::Main(const synfig::String &basepath, synfig::ProgressCallback *
 
 	settings_.construct();
 
-	signal_foreground_color_changed_.construct();
-	signal_background_color_changed_.construct();
+	signal_outline_color_changed_.construct();
+	signal_fill_color_changed_.construct();
 	signal_gradient_changed_.construct();
 	signal_opacity_changed_.construct();
 	signal_blend_method_changed_.construct();
 	signal_interpolation_changed_.construct();
 
-	set_foreground_color(Color::black());
-	set_background_color(Color::white());
+	set_outline_color(Color::black());
+	set_fill_color(Color::white());
 	set_gradient_default_colors();
 	set_bline_width(Distance(1,Distance::SYSTEM_POINTS));
 	set_opacity(1.0);
@@ -137,8 +137,8 @@ synfigapp::Main::~Main()
 	input_devices_.clear();
 
 	settings_.destruct();
-	signal_foreground_color_changed_.destruct();
-	signal_background_color_changed_.destruct();
+	signal_outline_color_changed_.destruct();
+	signal_fill_color_changed_.destruct();
 	signal_gradient_changed_.destruct();
 
 	signal_opacity_changed_.destruct();
@@ -153,15 +153,15 @@ synfigapp::Main::settings()
 }
 
 sigc::signal<void>&
-synfigapp::Main::signal_foreground_color_changed()
+synfigapp::Main::signal_outline_color_changed()
 {
-	return signal_foreground_color_changed_;
+	return signal_outline_color_changed_;
 }
 
 sigc::signal<void>&
-synfigapp::Main::signal_background_color_changed()
+synfigapp::Main::signal_fill_color_changed()
 {
-	return signal_background_color_changed_;
+	return signal_fill_color_changed_;
 }
 
 sigc::signal<void>&
@@ -195,15 +195,15 @@ synfigapp::Main::signal_interpolation_changed()
 }
 
 const synfig::Color&
-synfigapp::Main::get_foreground_color()
+synfigapp::Main::get_outline_color()
 {
-	return foreground_;
+	return outline_;
 }
 
 const synfig::Color&
-synfigapp::Main::get_background_color()
+synfigapp::Main::get_fill_color()
 {
-	return background_;
+	return fill_;
 }
 
 const synfig::Gradient&
@@ -225,31 +225,31 @@ synfigapp::Main::get_blend_method()
 }
 
 void
-synfigapp::Main::set_foreground_color(synfig::Color color)
+synfigapp::Main::set_outline_color(synfig::Color color)
 {
-	foreground_=color;
-	signal_foreground_color_changed()();
+	outline_=color;
+	signal_outline_color_changed()();
 	if(selected_input_device_)
-		selected_input_device_->set_foreground_color(foreground_);
+		selected_input_device_->set_outline_color(outline_);
 	if(gradient_default_colors_)
 	{
-		gradient_=Gradient(foreground_,background_);
+		gradient_=Gradient(fill_,outline_);
 		signal_gradient_changed()();
 	}
 }
 
 void
-synfigapp::Main::set_background_color(synfig::Color color)
+synfigapp::Main::set_fill_color(synfig::Color color)
 {
-	background_=color;
-	signal_background_color_changed()();
+	fill_=color;
+	signal_fill_color_changed()();
 
 	if(selected_input_device_)
-		selected_input_device_->set_background_color(background_);
+		selected_input_device_->set_fill_color(fill_);
 
 	if(gradient_default_colors_)
 	{
-		gradient_=Gradient(foreground_,background_);
+		gradient_=Gradient(fill_,outline_);
 		signal_gradient_changed()();
 	}
 }
@@ -266,29 +266,29 @@ void
 synfigapp::Main::set_gradient_default_colors()
 {
 	gradient_default_colors_=true;
-	gradient_=Gradient(foreground_,background_);
+	gradient_=Gradient(fill_,outline_);
 	signal_gradient_changed()();
 }
 
 void
 synfigapp::Main::color_swap()
 {
-	const Color tmp(foreground_);
-	foreground_=background_;
-	background_=tmp;
+	const Color tmp(outline_);
+	outline_=fill_;
+	fill_=tmp;
 
 	if(selected_input_device_)
 	{
-		selected_input_device_->set_foreground_color(foreground_);
-		selected_input_device_->set_background_color(background_);
+		selected_input_device_->set_outline_color(outline_);
+		selected_input_device_->set_fill_color(fill_);
 	}
 
-	signal_foreground_color_changed()();
-	signal_background_color_changed()();
+	signal_outline_color_changed()();
+	signal_fill_color_changed()();
 
 	if(gradient_default_colors_)
 	{
-		gradient_=Gradient(foreground_,background_);
+		gradient_=Gradient(fill_,outline_);
 		signal_gradient_changed()();
 	}
 }
@@ -389,8 +389,8 @@ synfigapp::Main::select_input_device(InputDevice::Handle input_device)
 	selected_input_device_=input_device;
 
 	set_bline_width(input_device->get_bline_width());
-	set_foreground_color(input_device->get_foreground_color());
-	set_background_color(input_device->get_background_color());
+	set_outline_color(input_device->get_outline_color());
+	set_fill_color(input_device->get_fill_color());
 	set_opacity(input_device->get_opacity());
 	set_blend_method(input_device->get_blend_method());
 

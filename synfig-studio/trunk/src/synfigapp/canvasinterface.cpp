@@ -214,12 +214,12 @@ CanvasInterface::add_layer_to(synfig::String name, synfig::Canvas::Handle canvas
 	layer->set_canvas(canvas);
 
 	// Apply some defaults
-	if(layer->set_param("fg",synfigapp::Main::get_foreground_color()))
-		layer->set_param("bg",synfigapp::Main::get_background_color());
-	else if (name == "SolidColor")
-		layer->set_param("color",synfigapp::Main::get_background_color());
+	if(layer->set_param("fg",synfigapp::Main::get_outline_color()))
+		layer->set_param("bg",synfigapp::Main::get_fill_color());
+	else if (name == "outline")
+		layer->set_param("color",synfigapp::Main::get_outline_color());
 	else
-		layer->set_param("color",synfigapp::Main::get_foreground_color());
+		layer->set_param("color",synfigapp::Main::get_fill_color());
 
 	layer->set_param("width",synfigapp::Main::get_bline_width().units(get_canvas()->rend_desc()));
 	layer->set_param("gradient",synfigapp::Main::get_gradient());

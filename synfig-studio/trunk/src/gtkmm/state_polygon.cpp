@@ -551,13 +551,6 @@ StatePolygon_Context::run()
 		layer->set_description(get_id());
 		get_canvas_interface()->signal_layer_new_description()(layer,layer->get_description());
 
-
-		if(get_layer_outline_flag())
-		{
-			layer->set_param("color",synfigapp::Main::get_background_color());
-			get_canvas_interface()->signal_layer_param_changed()(layer,"color");
-		}
-
 		layer->disconnect_dynamic_param("vector_list");
 		if(!layer->set_param("vector_list",polygon_point_list))
 		{
@@ -758,9 +751,6 @@ StatePolygon_Context::run()
 
 		layer->set_param("invert",get_invert());
 		get_canvas_interface()->signal_layer_param_changed()(layer,"invert");
-
-		if(get_layer_outline_flag())
-			layer->set_param("color",synfigapp::Main::get_background_color());
 
 		// I don't know if it's safe to reuse the same LayerParamConnect action, so I'm
 		// using 2 separate ones.

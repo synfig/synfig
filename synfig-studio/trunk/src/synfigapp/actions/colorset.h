@@ -49,11 +49,11 @@ private:
 	std::list<ValueDesc> value_desc_list;
 	synfig::Color color;
 	synfig::Time time;
-	bool use_fg_color;
+	bool use_outline_color;
 
 public:
 
-	ColorSet(bool use_fg_color);
+	ColorSet(bool use_outline_color);
 
 	static ParamVocab get_param_vocab();
 	static bool is_candidate(const ParamList &x);
@@ -64,21 +64,21 @@ public:
 	virtual void prepare();
 };
 
-class ColorSetFromFG : public ColorSet
+class ColorSetFromOC : public ColorSet
 {
 public:
 
-	ColorSetFromFG() : ColorSet(true) {}
+	ColorSetFromOC() : ColorSet(true) {}
 
 	ACTION_MODULE_EXT
 
 };
 
-class ColorSetFromBG : public ColorSet
+class ColorSetFromFC : public ColorSet
 {
 public:
 
-	ColorSetFromBG() : ColorSet(false) {}
+	ColorSetFromFC() : ColorSet(false) {}
 
 	ACTION_MODULE_EXT
 

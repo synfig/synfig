@@ -51,23 +51,23 @@ class Widget_Enum;
 class Widget_Defaults : public Gtk::Table
 {
 	Widget_Brush *widget_brush;
-	Widget_Color *widget_fg_color;
-	Widget_Color *widget_bg_color;
+	Widget_Color *widget_otln_color;
+	Widget_Color *widget_fill_color;
 	Widget_Distance *widget_bline_width;
 	Widget_Gradient *widget_gradient;
 	Widget_Enum	*widget_blend_method;
 	Widget_Enum	*widget_interpolation;
 	Gtk::HScale *widget_opacity;
 
-	void fg_color_refresh();
-	void bg_color_refresh();
+	void otln_color_refresh();
+	void fill_color_refresh();
 	void gradient_refresh();
 	void bline_width_refresh();
 	void interpolation_refresh();
 
 	void on_bline_width_changed();
-	void on_fg_color_clicked();
-	void on_bg_color_clicked();
+	void on_otln_color_clicked();
+	void on_fill_color_clicked();
 	void on_swap_color_clicked();
 	void on_reset_color_clicked();
 	void on_gradient_clicked();

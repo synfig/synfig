@@ -135,7 +135,7 @@ StateEyedrop_Context::event_workarea_mouse_button_down_handler(const Smach::even
 	if(event.button==BUTTON_LEFT)
 	{
 		Color color(canvas_view->get_canvas()->get_context().get_color(event.pos));
-		synfigapp::Main::set_foreground_color(color);
+		synfigapp::Main::set_outline_color(color);
 		studio::App::dialog_color->set_color(color);
 		return Smach::RESULT_ACCEPT;
 	}

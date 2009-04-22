@@ -50,23 +50,23 @@ using namespace Action;
 
 /* === M A C R O S ========================================================= */
 
-ACTION_INIT(Action::ColorSetFromFG);
-ACTION_SET_NAME(Action::ColorSetFromFG, "ColorSetFromFG");
-ACTION_SET_LOCAL_NAME(Action::ColorSetFromFG, N_("Apply Foreground Color"));
-ACTION_SET_TASK(Action::ColorSetFromFG, "set");
-ACTION_SET_CATEGORY(Action::ColorSetFromFG, Action::CATEGORY_VALUEDESC);
-ACTION_SET_PRIORITY(Action::ColorSetFromFG, 0);
-ACTION_SET_VERSION(Action::ColorSetFromFG, "0.0");
-ACTION_SET_CVS_ID(Action::ColorSetFromFG, "$Id$");
+ACTION_INIT(Action::ColorSetFromOC);
+ACTION_SET_NAME(Action::ColorSetFromOC, "ColorSetFromOC");
+ACTION_SET_LOCAL_NAME(Action::ColorSetFromOC, N_("Apply Outline Color"));
+ACTION_SET_TASK(Action::ColorSetFromOC, "set");
+ACTION_SET_CATEGORY(Action::ColorSetFromOC, Action::CATEGORY_VALUEDESC);
+ACTION_SET_PRIORITY(Action::ColorSetFromOC, 0);
+ACTION_SET_VERSION(Action::ColorSetFromOC, "0.0");
+ACTION_SET_CVS_ID(Action::ColorSetFromOC, "$Id$");
 
-ACTION_INIT(Action::ColorSetFromBG);
-ACTION_SET_NAME(Action::ColorSetFromBG, "ColorSetFromBG");
-ACTION_SET_LOCAL_NAME(Action::ColorSetFromBG, N_("Apply Background Color"));
-ACTION_SET_TASK(Action::ColorSetFromBG, "set");
-ACTION_SET_CATEGORY(Action::ColorSetFromBG, Action::CATEGORY_VALUEDESC);
-ACTION_SET_PRIORITY(Action::ColorSetFromBG, 0);
-ACTION_SET_VERSION(Action::ColorSetFromBG, "0.0");
-ACTION_SET_CVS_ID(Action::ColorSetFromBG, "$Id$");
+ACTION_INIT(Action::ColorSetFromFC);
+ACTION_SET_NAME(Action::ColorSetFromFC, "ColorSetFromFC");
+ACTION_SET_LOCAL_NAME(Action::ColorSetFromFC, N_("Apply Fill Color"));
+ACTION_SET_TASK(Action::ColorSetFromFC, "set");
+ACTION_SET_CATEGORY(Action::ColorSetFromFC, Action::CATEGORY_VALUEDESC);
+ACTION_SET_PRIORITY(Action::ColorSetFromFC, 0);
+ACTION_SET_VERSION(Action::ColorSetFromFC, "0.0");
+ACTION_SET_CVS_ID(Action::ColorSetFromFC, "$Id$");
 
 /* === G L O B A L S ======================================================= */
 
@@ -74,8 +74,8 @@ ACTION_SET_CVS_ID(Action::ColorSetFromBG, "$Id$");
 
 /* === M E T H O D S ======================================================= */
 
-Action::ColorSet::ColorSet(bool use_fg_color):
-	time(0), use_fg_color(use_fg_color)
+Action::ColorSet::ColorSet(bool use_outline_color):
+  time(0), use_outline_color(use_outline_color)
 {
 }
 
@@ -126,11 +126,11 @@ Action::ColorSet::set_param(const synfig::String& name, const Action::Param &par
 
 		value_desc_list.push_back(value_desc);
 
-		// Grab the current fore- or background color
-		if (use_fg_color)
-			color = synfigapp::Main::get_foreground_color();
+		// Grab the current outline or fill color
+		if (use_outline_color)
+			color = synfigapp::Main::get_outline_color();
 		else
-			color = synfigapp::Main::get_background_color();
+			color = synfigapp::Main::get_fill_color();
 
 		return true;
 	}

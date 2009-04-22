@@ -82,16 +82,16 @@ public:
 			value=strprintf("%i",(int)input_device->get_blend_method());
 			return true;
 		}
-		if(key=="color")
+		if(key=="outline_color")
 		{
-			Color c(input_device->get_foreground_color());
+			Color c(input_device->get_outline_color());
 			value=strprintf("%f %f %f %f",(float)c.get_r(),(float)c.get_g(),(float)c.get_b(),(float)c.get_a());
 
 			return true;
 		}
-		if(key=="bgcolor")
+		if(key=="fill_color")
 		{
-			Color c(input_device->get_background_color());
+			Color c(input_device->get_fill_color());
 			value=strprintf("%f %f %f %f",(float)c.get_r(),(float)c.get_g(),(float)c.get_b(),(float)c.get_a());
 
 			return true;
@@ -165,20 +165,20 @@ public:
 			input_device->set_blend_method(Color::BlendMethod(atoi(value.c_str())));
 			return true;
 		}
-		if(key=="color")
+		if(key=="outline_color")
 		{
 			float r=0,g=0,b=0,a=1;
 			if(!strscanf(value,"%f %f %f %f",&r,&g,&b,&a))
 				return false;
-			input_device->set_foreground_color(synfig::Color(r,g,b,a));
+			input_device->set_outline_color(synfig::Color(r,g,b,a));
 			return true;
 		}
-		if(key=="bgcolor")
+		if(key=="fill_color")
 		{
 			float r=0,g=0,b=0,a=1;
 			if(!strscanf(value,"%f %f %f %f",&r,&g,&b,&a))
 				return false;
-			input_device->set_background_color(synfig::Color(r,g,b,a));
+			input_device->set_fill_color(synfig::Color(r,g,b,a));
 			return true;
 		}
 		if(key=="mode")
@@ -260,8 +260,8 @@ public:
 	virtual KeyList get_key_list()const
 	{
 		KeyList ret(Settings::get_key_list());
-		ret.push_back("color");
-		ret.push_back("bgcolor");
+		ret.push_back("outline_color");
+		ret.push_back("fill_color");
 		ret.push_back("state");
 		ret.push_back("bline_width");
 		ret.push_back("blend_method");
@@ -281,8 +281,8 @@ InputDevice::InputDevice(const synfig::String id_, Type type_):
 	id_(id_),
 	type_(type_),
 	state_((type_==TYPE_PEN)?"draw":"normal"),
-	foreground_color_(Color::black()),
-	background_color_(Color::white()),
+	outline_color_(Color::black()),
+	fill_color_(Color::white()),
 	bline_width_(Distance(1,Distance::SYSTEM_POINTS)),
 	opacity_(1.0f),
 	blend_method_(Color::BLEND_COMPOSITE),

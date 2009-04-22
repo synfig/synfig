@@ -499,7 +499,7 @@ StateSketch_Context::event_stroke(const Smach::event& x)
 
 	assert(event.stroke_data);
 
-	get_work_area()->add_persistent_stroke(event.stroke_data,synfigapp::Main::get_foreground_color());
+	get_work_area()->add_persistent_stroke(event.stroke_data,synfigapp::Main::get_outline_color());
 
 	return Smach::RESULT_ACCEPT;
 }

@@ -129,7 +129,7 @@ StateStroke_Context::StateStroke_Context(CanvasView* canvas_view):
 	width_data.spawn();
 	stroke_data.spawn();
 
-	get_work_area()->add_stroke(stroke_data, synfigapp::Main::get_foreground_color());
+	get_work_area()->add_stroke(stroke_data, synfigapp::Main::get_outline_color());
 }
 
 StateStroke_Context::~StateStroke_Context()

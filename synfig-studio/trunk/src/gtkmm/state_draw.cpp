@@ -625,7 +625,7 @@ StateDraw_Context::event_stroke(const Smach::event& x)
 
 	assert(event.stroke_data);
 
-	get_work_area()->add_stroke(event.stroke_data,synfigapp::Main::get_foreground_color());
+	get_work_area()->add_stroke(event.stroke_data,synfigapp::Main::get_outline_color());
 
 	if(nested==0)
 	{
@@ -677,7 +677,7 @@ StateDraw_Context::process_stroke(StrokeData stroke_data, WidthData width_data, 
 		}
 	}
 
-	//get_work_area()->add_stroke(event.stroke_data,synfigapp::Main::get_foreground_color());
+	//get_work_area()->add_stroke(event.stroke_data,synfigapp::Main::get_outline_color());
 	//stroke_list.push_back(event.stroke_data);
 	//refresh_ducks();
 
@@ -1798,7 +1798,7 @@ StateDraw_Context::new_region(std::list<synfig::BLinePoint> bline, synfig::Real 
 			group.cancel();
 			return Smach::RESULT_ERROR;
 		}
-		layer->set_param("color",synfigapp::Main::get_background_color());
+
 		if(get_feather())
 		{
 			layer->set_param("feather",get_feather());
@@ -1996,7 +1996,6 @@ StateDraw_Context::fill_last_stroke_and_unselect_other_layers()
 	get_canvas_interface()->get_selection_manager()->clear_selected_layers();
 	layer=get_canvas_interface()->add_layer_to("region", canvas, depth);
 	if (!layer) return Smach::RESULT_ERROR;
-	layer->set_param("color",synfigapp::Main::get_background_color());
 	layer->set_description(last_stroke_id + _(" Region"));
 
 	synfigapp::Action::Handle action(synfigapp::Action::create("LayerParamConnect"));

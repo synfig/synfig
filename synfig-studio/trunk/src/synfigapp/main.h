@@ -66,8 +66,8 @@ public:
 
 	const etl::reference_counter& ref_count()const { return ref_count_; }
 
-	static const synfig::Color& get_foreground_color();
-	static const synfig::Color& get_background_color();
+	static const synfig::Color& get_outline_color();
+	static const synfig::Color& get_fill_color();
 	static const synfig::Gradient& get_gradient();
 	static const synfig::Distance& get_bline_width();
 	static synfig::Waypoint::Interpolation get_interpolation();
@@ -75,8 +75,8 @@ public:
 
 	static void set_interpolation(synfig::Waypoint::Interpolation x);
 	static void set_bline_width(synfig::Distance x);
-	static void set_foreground_color(synfig::Color color);
-	static void set_background_color(synfig::Color color);
+	static void set_outline_color(synfig::Color color);
+	static void set_fill_color(synfig::Color color);
 	static void set_gradient(synfig::Gradient gradient);
 	static void set_gradient_default_colors();
 	static void color_swap();
@@ -100,8 +100,8 @@ public:
 	static Settings& settings();
 
 	// Signal interfaces
-	static sigc::signal<void>& signal_foreground_color_changed();
-	static sigc::signal<void>& signal_background_color_changed();
+	static sigc::signal<void>& signal_outline_color_changed();
+	static sigc::signal<void>& signal_fill_color_changed();
 	static sigc::signal<void>& signal_gradient_changed();
 	static sigc::signal<void>& signal_bline_width_changed();
 

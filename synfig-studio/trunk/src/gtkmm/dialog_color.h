@@ -63,8 +63,8 @@ class Dialog_Color : public Gtk::Dialog
 	void create_close_button();
 
 	void on_color_changed();
-	void on_set_fg_pressed();
-	void on_set_bg_pressed();
+	void on_set_oc_pressed();
+	void on_set_fc_pressed();
 	bool on_close_pressed();
 
 public:

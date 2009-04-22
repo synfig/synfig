@@ -53,7 +53,7 @@ class Settings;
 **  \see  synfigapp::Settings
 **
 **   The represenation includes both the GDK state (e.g., mode) and synfigstudio
-**   state (e.g., foreground color). An object of this class can be saved and
+**   state (e.g., outline color). An object of this class can be saved and
 **   restored using its Settings object, provided by the settings method.
 */
 class InputDevice : public etl::shared_object
@@ -98,8 +98,8 @@ private:
 	synfig::String id_;
 	Type type_;
 	synfig::String state_;
-	synfig::Color foreground_color_;
-	synfig::Color background_color_;
+	synfig::Color outline_color_;
+	synfig::Color fill_color_;
 	synfig::Distance	bline_width_;
 	synfig::Real opacity_;
 	synfig::Color::BlendMethod blend_method_;
@@ -115,8 +115,8 @@ public:
 
 	const synfig::String& get_id()const { return id_; }
 	const synfig::String& get_state()const { return state_; }
-	const synfig::Color& get_foreground_color()const { return foreground_color_; }
-	const synfig::Color& get_background_color()const { return background_color_; }
+	const synfig::Color& get_outline_color()const { return outline_color_; }
+	const synfig::Color& get_fill_color()const { return fill_color_; }
 	const synfig::Distance& get_bline_width()const { return bline_width_; }
 	const synfig::Real& get_opacity()const { return opacity_; }
 	const synfig::Color::BlendMethod& get_blend_method()const { return blend_method_; }
@@ -126,8 +126,8 @@ public:
 	const std::vector<DeviceKey> & get_keys()const { return keys_; }
 
 	void set_state(const synfig::String& x) { state_=x; }
-	void set_foreground_color(const synfig::Color& x) { foreground_color_=x; }
-	void set_background_color(const synfig::Color& x) { background_color_=x; }
+	void set_outline_color(const synfig::Color& x) { outline_color_=x; }
+	void set_fill_color(const synfig::Color& x) { fill_color_=x; }
 	void set_bline_width(const synfig::Distance& x) { bline_width_=x; }
 	void set_blend_method(const synfig::Color::BlendMethod& x) { blend_method_=x; }
 	void set_opacity(const synfig::Real& x) { opacity_=x; }

@@ -75,8 +75,8 @@ public:
 		add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK);
 		add_events(Gdk::BUTTON1_MOTION_MASK);
 
-		synfigapp::Main::signal_foreground_color_changed().connect(sigc::mem_fun(*this,&studio::Widget_Brush::queue_draw));
-		synfigapp::Main::signal_background_color_changed().connect(sigc::mem_fun(*this,&studio::Widget_Brush::queue_draw));
+		synfigapp::Main::signal_outline_color_changed().connect(sigc::mem_fun(*this,&studio::Widget_Brush::queue_draw));
+		synfigapp::Main::signal_fill_color_changed().connect(sigc::mem_fun(*this,&studio::Widget_Brush::queue_draw));
 		synfigapp::Main::signal_bline_width_changed().connect(sigc::mem_fun(*this,&studio::Widget_Brush::queue_draw));
 		studio::App::signal_instance_selected().connect(sigc::hide(sigc::mem_fun(*this,&studio::Widget_Brush::queue_draw)));
 	}
@@ -100,11 +100,11 @@ public:
 			RendDesc rend_desc;
 			pixelsize=synfigapp::Main::get_bline_width().get(Distance::SYSTEM_PIXELS,rend_desc);
 		}
-		// Fill in the background color
-		render_color_to_window(get_window(),Gdk::Rectangle(0,0,w,h),synfigapp::Main::get_background_color());
+		// Fill in the fill color
+		render_color_to_window(get_window(),Gdk::Rectangle(0,0,w,h),synfigapp::Main::get_fill_color());
 
 /*
-		gc->set_rgb_fg_color(colorconv_synfig2gdk(synfigapp::Main::get_background_color()));
+		gc->set_rgb_fg_color(colorconv_synfig2gdk(synfigapp::Main::get_fill_color()));
 		gc->set_line_attributes(1,Gdk::LINE_SOLID,Gdk::CAP_BUTT,Gdk::JOIN_MITER);
 		get_window()->draw_rectangle(
 			gc,
@@ -115,7 +115,7 @@ public:
 */
 
 		// Draw in the circle
-		gc->set_rgb_fg_color(colorconv_synfig2gdk(synfigapp::Main::get_foreground_color()));
+		gc->set_rgb_fg_color(colorconv_synfig2gdk(synfigapp::Main::get_outline_color()));
 		gc->set_function(Gdk::COPY);
 		gc->set_line_attributes(1,Gdk::LINE_SOLID,Gdk::CAP_BUTT,Gdk::JOIN_MITER);
 		get_window()->draw_arc(
@@ -206,21 +206,21 @@ Widget_Defaults::Widget_Defaults()
 	{
 		Gtk::Table* subtable(manage(new Gtk::Table()));
 
-		// Foreground Color
-		widget_fg_color=manage(new Widget_Color());
-		widget_fg_color->show();
-		widget_fg_color->set_size_request(16,16);
-		widget_fg_color->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Defaults::on_fg_color_clicked));
-		subtable->attach(*widget_fg_color, 0, 4, 0, 4, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-		tooltips_.set_tip(*widget_fg_color,_("Foreground Color"));
+		// Outline Color
+		widget_otln_color=manage(new Widget_Color());
+		widget_otln_color->show();
+		widget_otln_color->set_size_request(16,16);
+		widget_otln_color->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Defaults::on_otln_color_clicked));
+		subtable->attach(*widget_otln_color, 0, 4, 0, 4, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+		tooltips_.set_tip(*widget_otln_color,_("Outline Color"));
 
-		// Background Color
-		widget_bg_color=manage(new Widget_Color());
-		widget_bg_color->show();
-		widget_bg_color->set_size_request(16,16);
-		widget_bg_color->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Defaults::on_bg_color_clicked));
-		subtable->attach(*widget_bg_color, 3, 7, 3, 7, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-		tooltips_.set_tip(*widget_bg_color,_("Background Color"));
+		// Fill Color
+		widget_fill_color=manage(new Widget_Color());
+		widget_fill_color->show();
+		widget_fill_color->set_size_request(16,16);
+		widget_fill_color->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Defaults::on_fill_color_clicked));
+		subtable->attach(*widget_fill_color, 3, 7, 3, 7, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+		tooltips_.set_tip(*widget_fill_color,_("Fill Color"));
 
 		Gtk::Image* icon;
 
@@ -237,7 +237,7 @@ Widget_Defaults::Widget_Defaults()
 		dynamic_cast<Gtk::Misc*>(button_swap->get_child())->set_padding(0,0);
 		button_swap->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Defaults::on_swap_color_clicked));
 		subtable->attach(*button_swap, 4, 7, 0, 3, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-		tooltips_.set_tip(*button_swap,_("Swap Background and\nForeground Colors"));
+		tooltips_.set_tip(*button_swap,_("Swap Fill and\nOutline Colors"));
 
 		// Reset button
 		Gtk::Button* button_reset(manage(new Gtk::Button()));
@@ -316,14 +316,14 @@ Widget_Defaults::Widget_Defaults()
 	// Signals
 	synfigapp::Main::signal_opacity_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::opacity_refresh));
 	synfigapp::Main::signal_bline_width_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::bline_width_refresh));
-	synfigapp::Main::signal_foreground_color_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::fg_color_refresh));
-	synfigapp::Main::signal_background_color_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::bg_color_refresh));
+	synfigapp::Main::signal_outline_color_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::otln_color_refresh));
+	synfigapp::Main::signal_fill_color_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::fill_color_refresh));
 	synfigapp::Main::signal_gradient_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::gradient_refresh));
 	synfigapp::Main::signal_blend_method_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::blend_method_refresh));
 	synfigapp::Main::signal_interpolation_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::interpolation_refresh));
 
-	fg_color_refresh();
-	bg_color_refresh();
+	otln_color_refresh();
+	fill_color_refresh();
 	gradient_refresh();
 	blend_method_refresh();
 	opacity_refresh();
@@ -334,8 +334,8 @@ Widget_Defaults::Widget_Defaults()
 	add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK);
 	add_events(Gdk::BUTTON1_MOTION_MASK);
 
-	synfigapp::Main::signal_foreground_color_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::queue_draw));
-	synfigapp::Main::signal_background_color_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::queue_draw));
+	synfigapp::Main::signal_outline_color_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::queue_draw));
+	synfigapp::Main::signal_fill_color_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::queue_draw));
 	synfigapp::Main::signal_gradient_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::queue_draw));
 	synfigapp::Main::signal_bline_width_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::queue_draw));
 
@@ -348,9 +348,9 @@ Widget_Defaults::Widget_Defaults()
 
 	if(App::dialog_color)
 	{
-		App::dialog_color->set_color(synfigapp::Main::get_foreground_color());
+		App::dialog_color->set_color(synfigapp::Main::get_outline_color());
 		App::dialog_color->reset();
-		App::dialog_color->signal_edited().connect(sigc::mem_fun(synfigapp::Main::set_foreground_color));
+		App::dialog_color->signal_edited().connect(sigc::mem_fun(synfigapp::Main::set_outline_color));
 	}
 */
 }
@@ -360,15 +360,15 @@ Widget_Defaults::~Widget_Defaults()
 }
 
 void
-Widget_Defaults::fg_color_refresh()
+Widget_Defaults::otln_color_refresh()
 {
-	widget_fg_color->set_value(synfigapp::Main::get_foreground_color());
+	widget_otln_color->set_value(synfigapp::Main::get_outline_color());
 }
 
 void
-Widget_Defaults::bg_color_refresh()
+Widget_Defaults::fill_color_refresh()
 {
-	widget_bg_color->set_value(synfigapp::Main::get_background_color());
+	widget_fill_color->set_value(synfigapp::Main::get_fill_color());
 }
 
 void
@@ -426,22 +426,22 @@ Widget_Defaults::on_bline_width_changed()
 }
 
 void
-Widget_Defaults::on_fg_color_clicked()
+Widget_Defaults::on_otln_color_clicked()
 {
-	// Left click on foreground
-	App::dialog_color->set_color(synfigapp::Main::get_foreground_color());
+	// Left click on outline color
+	App::dialog_color->set_color(synfigapp::Main::get_outline_color());
 	App::dialog_color->reset();
-	App::dialog_color->signal_edited().connect(sigc::ptr_fun(synfigapp::Main::set_foreground_color));
+	App::dialog_color->signal_edited().connect(sigc::ptr_fun(synfigapp::Main::set_outline_color));
 	App::dialog_color->present();
 }
 
 void
-Widget_Defaults::on_bg_color_clicked()
+Widget_Defaults::on_fill_color_clicked()
 {
-	// Left click on background
-	App::dialog_color->set_color(synfigapp::Main::get_background_color());
+	// Left click on fill color
+	App::dialog_color->set_color(synfigapp::Main::get_fill_color());
 	App::dialog_color->reset();
-	App::dialog_color->signal_edited().connect(sigc::ptr_fun(synfigapp::Main::set_background_color));
+	App::dialog_color->signal_edited().connect(sigc::ptr_fun(synfigapp::Main::set_fill_color));
 	App::dialog_color->present();
 }
 
@@ -454,8 +454,8 @@ Widget_Defaults::on_swap_color_clicked()
 void
 Widget_Defaults::on_reset_color_clicked()
 {
-	synfigapp::Main::set_background_color(Color::white());
-	synfigapp::Main::set_foreground_color(Color::black());
+	synfigapp::Main::set_fill_color(Color::white());
+	synfigapp::Main::set_outline_color(Color::black());
 }
 
 void
@@ -478,8 +478,8 @@ Widget_Defaults::redraw(GdkEventExpose*bleh)
 	const int w(get_width());
 	const int size=std::min(h-GRADIENT_HEIGHT,w);
 
-	render_color_to_window(get_window(),Gdk::Rectangle(size/4,size/4,size/4*3-1,size/4*3-1),synfigapp::Main::get_background_color());
-	render_color_to_window(get_window(),Gdk::Rectangle(0,0,size/4*3-1,size/4*3-1),synfigapp::Main::get_foreground_color());
+	render_color_to_window(get_window(),Gdk::Rectangle(size/4,size/4,size/4*3-1,size/4*3-1),synfigapp::Main::get_fill_color());
+	render_color_to_window(get_window(),Gdk::Rectangle(0,0,size/4*3-1,size/4*3-1),synfigapp::Main::get_outline_color());
 	render_gradient_to_window(get_window(),Gdk::Rectangle(0,h-GRADIENT_HEIGHT,w,GRADIENT_HEIGHT-1),synfigapp::Main::get_gradient());
 
 
@@ -530,19 +530,19 @@ Widget_Defaults::on_event(GdkEvent *event)
 			{
 				if(x<size*3/4 && y<size*3/4)
 				{
-					// Left click on foreground
-					App::dialog_color->set_color(synfigapp::Main::get_foreground_color());
+					// Left click on outline coloe
+					App::dialog_color->set_color(synfigapp::Main::get_outline_color());
 					App::dialog_color->reset();
-					App::dialog_color->signal_edited().connect(sigc::mem_fun(synfigapp::Main::set_foreground_color));
+					App::dialog_color->signal_edited().connect(sigc::mem_fun(synfigapp::Main::set_outline_color));
 					App::dialog_color->present();
 					return true;
 				}
 				if(x>size*3/4 && y>size/4)
 				{
-					// Left click on background
-					App::dialog_color->set_color(synfigapp::Main::get_background_color());
+					// Left click on fill color
+					App::dialog_color->set_color(synfigapp::Main::get_fill_color());
 					App::dialog_color->reset();
-					App::dialog_color->signal_edited().connect(sigc::mem_fun(synfigapp::Main::set_background_color));
+					App::dialog_color->signal_edited().connect(sigc::mem_fun(synfigapp::Main::set_fill_color));
 					App::dialog_color->present();
 					return true;
 				}

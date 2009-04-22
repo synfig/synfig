@@ -226,8 +226,8 @@ Action::Main::Main()
 	ADD_ACTION(Action::BLinePointTangentSplit);
 
 	ADD_ACTION(Action::GradientSet);
-	ADD_ACTION(Action::ColorSetFromFG);
-	ADD_ACTION(Action::ColorSetFromBG);
+	ADD_ACTION(Action::ColorSetFromOC);
+	ADD_ACTION(Action::ColorSetFromFC);
 
 	ADD_ACTION(Action::TimepointsMove);
 	ADD_ACTION(Action::TimepointsCopy);

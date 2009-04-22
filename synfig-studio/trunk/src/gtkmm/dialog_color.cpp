@@ -63,10 +63,10 @@ Dialog_Color::Dialog_Color():
 	set_type_hint(Gdk::WINDOW_TYPE_HINT_UTILITY);
 
 	create_color_edit_widget();
-	create_set_color_button("synfig-set_fg_color", _("Set as Foreground"), 0,
-			sigc::mem_fun(*this, &Dialog_Color::on_set_fg_pressed));
-	create_set_color_button("synfig-set_bg_color", _("Set as Background"), 1,
-			sigc::mem_fun(*this, &Dialog_Color::on_set_bg_pressed));
+	create_set_color_button("synfig-set_fg_color", _("Set as Outline"), 0,
+			sigc::mem_fun(*this, &Dialog_Color::on_set_oc_pressed));
+	create_set_color_button("synfig-set_bg_color", _("Set as Fill"), 1,
+			sigc::mem_fun(*this, &Dialog_Color::on_set_fc_pressed));
 	create_close_button();
 
 	add_accel_group(App::ui_manager()->get_accel_group());
@@ -123,18 +123,18 @@ Dialog_Color::on_color_changed()
 }
 
 void
-Dialog_Color::on_set_fg_pressed()
+Dialog_Color::on_set_oc_pressed()
 {
 	busy_ = true;
-	synfigapp::Main::set_foreground_color(get_color());
+	synfigapp::Main::set_outline_color(get_color());
 	busy_ = false;
 }
 
 void
-Dialog_Color::on_set_bg_pressed()
+Dialog_Color::on_set_fc_pressed()
 {
 	busy_ = true;
-	synfigapp::Main::set_background_color(get_color());
+	synfigapp::Main::set_fill_color(get_color());
 	busy_ = false;
 }
 

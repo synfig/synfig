@@ -126,7 +126,7 @@ Dock_PalEdit::Dock_PalEdit():
 		"palette-add-color",
 		Gtk::StockID("gtk-add"),
 		_("Add Color"),
-		_("Add current foreground color\nto the palette")
+		_("Add current outline color\nto the palette")
 	),
 		sigc::mem_fun(
 			*this,
@@ -151,7 +151,7 @@ Dock_PalEdit::Dock_PalEdit():
 	/*
 	add_button(
 		Gtk::StockID("gtk-add"),
-		_("Add current foreground color\nto the palette")
+		_("Add current outline color\nto the palette")
 	)->signal_clicked().connect(
 		sigc::mem_fun(
 			*this,
@@ -183,7 +183,7 @@ Dock_PalEdit::set_palette(const synfig::Palette& x)
 void
 Dock_PalEdit::on_add_pressed()
 {
-	add_color(synfigapp::Main::get_foreground_color());
+	add_color(synfigapp::Main::get_outline_color());
 }
 
 void
@@ -296,7 +296,7 @@ Dock_PalEdit::edit_color(int i)
 void
 Dock_PalEdit::select_color(int i)
 {
-	synfigapp::Main::set_foreground_color(get_color(i));
+	synfigapp::Main::set_outline_color(get_color(i));
 }
 
 void

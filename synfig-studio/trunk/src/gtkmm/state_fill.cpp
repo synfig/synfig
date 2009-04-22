@@ -150,7 +150,7 @@ StateFill_Context::event_workarea_layer_clicked_handler(const Smach::event& x)
 	//synfigapp::Action::Handle action(synfigapp::Action::create("ValueDescSet"));
 	synfigapp::ValueDesc value_desc(event.layer,"color");
 
-	if(!get_canvas_interface()->change_value(value_desc,ValueBase(synfigapp::Main::get_foreground_color())))
+	if(!get_canvas_interface()->change_value(value_desc,ValueBase(synfigapp::Main::get_fill_color())))
 	{
 		get_canvas_view()->get_ui_interface()->warning(_("Unable to set layer color"));
 		return Smach::RESULT_ERROR;
@@ -165,8 +165,8 @@ StateFill_Context::event_workarea_layer_clicked_handler(const Smach::event& x)
 	//action->set_param("layer",event.layer);
 	//if(!action->set_param("param",String("color")))
 	//	synfig::error("LayerParamConnect didn't like \"param\"");
-	if(!action->set_param("new_value",ValueBase(synfigapp::Main::get_foreground_color())))
-		synfig::error("LayerParamConnect didn't like \"foreground_color\"");
+	if(!action->set_param("new_value",ValueBase(synfigapp::Main::get_fill_color())))
+		synfig::error("LayerParamConnect didn't like \"fill_color\"");
 
 	if(!get_canvas_interface()->get_instance()->perform_action(action))
 	{
