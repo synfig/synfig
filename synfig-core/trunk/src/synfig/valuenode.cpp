@@ -86,6 +86,7 @@
 #include "valuenode_anglestring.h"
 #include "valuenode_intstring.h"
 #include "valuenode_log.h"
+#include "valuenode_pow.h"
 
 #include "layer.h"
 
@@ -181,6 +182,7 @@ ValueNode::subsys_init()
 	ADD_VALUENODE(ValueNode_Logarithm,		  "logarithm",		  _("Logarithm"),		 RELEASE_VERSION_0_61_09); // SVN r2034
 
 	ADD_VALUENODE(ValueNode_Greyed,			  "greyed",			  _("Greyed"),			 RELEASE_VERSION_0_61_10); // SVN r2305
+	ADD_VALUENODE(ValueNode_Pow,		  "power",		  _("Power"),		 RELEASE_VERSION_0_61_09); // SVN r2362
 
 #undef ADD_VALUENODE
 #undef ADD_VALUENODE2

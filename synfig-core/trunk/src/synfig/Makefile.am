@@ -84,6 +84,7 @@ VALUENODEHEADERS = \
 	valuenode_join.h \
 	valuenode_linear.h \
 	valuenode_log.h \
+	valuenode_pow.h \
 	valuenode_radialcomposite.h \
 	valuenode_range.h \
 	valuenode_realstring.h \
@@ -132,6 +133,7 @@ VALUENODESOURCES = \
 	valuenode_join.cpp \
 	valuenode_linear.cpp \
 	valuenode_log.cpp \
+	valuenode_pow.cpp \
 	valuenode_radialcomposite.cpp \
 	valuenode_range.cpp \
 	valuenode_realstring.cpp \
