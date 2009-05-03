@@ -50,7 +50,8 @@ liblyr_std_la_SOURCES = \
 	translate.cpp \
 	sphere_distort.h \
 	sphere_distort.cpp \
-	curvewarp.cpp
+	curvewarp.cpp \
+	curvewarp.h
 
 liblyr_std_la_CXXFLAGS = \
 	@SYNFIG_CFLAGS@
