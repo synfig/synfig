@@ -61,6 +61,7 @@ IMPORTERSOURCES = \
 
 VALUENODEHEADERS = \
 	valuenode_add.h \
+	valuenode_and.h \
 	valuenode_anglestring.h \
 	valuenode_animated.h \
 	valuenode_atan2.h \
@@ -69,6 +70,7 @@ VALUENODEHEADERS = \
 	valuenode_blinecalcvertex.h \
 	valuenode_blinecalcwidth.h \
 	valuenode_blinereversetangent.h \
+	valuenode_compare.h \
 	valuenode_composite.h \
 	valuenode_const.h \
 	valuenode_cos.h \
@@ -84,6 +86,8 @@ VALUENODEHEADERS = \
 	valuenode_join.h \
 	valuenode_linear.h \
 	valuenode_log.h \
+	valuenode_not.h \
+	valuenode_or.h \
 	valuenode_pow.h \
 	valuenode_radialcomposite.h \
 	valuenode_range.h \
@@ -110,6 +114,7 @@ VALUENODEHEADERS = \
 
 VALUENODESOURCES = \
 	valuenode_add.cpp \
+	valuenode_and.cpp \
 	valuenode_anglestring.cpp \
 	valuenode_animated.cpp \
 	valuenode_atan2.cpp \
@@ -118,6 +123,7 @@ VALUENODESOURCES = \
 	valuenode_blinecalcvertex.cpp \
 	valuenode_blinecalcwidth.cpp \
 	valuenode_blinereversetangent.cpp \
+	valuenode_compare.cpp \
 	valuenode_composite.cpp \
 	valuenode_const.cpp \
 	valuenode_cos.cpp \
@@ -133,6 +139,8 @@ VALUENODESOURCES = \
 	valuenode_join.cpp \
 	valuenode_linear.cpp \
 	valuenode_log.cpp \
+	valuenode_not.cpp \
+	valuenode_or.cpp \
 	valuenode_pow.cpp \
 	valuenode_radialcomposite.cpp \
 	valuenode_range.cpp \

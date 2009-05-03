@@ -281,6 +281,8 @@ src/synfig/valuenode.cpp
 src/synfig/valuenode.h
 src/synfig/valuenode_add.cpp
 src/synfig/valuenode_add.h
+src/synfig/valuenode_and.cpp
+src/synfig/valuenode_and.h
 src/synfig/valuenode_animated.cpp
 src/synfig/valuenode_animated.h
 src/synfig/valuenode_bline.cpp
@@ -295,6 +297,8 @@ src/synfig/valuenode_composite.cpp
 src/synfig/valuenode_composite.h
 src/synfig/valuenode_const.cpp
 src/synfig/valuenode_const.h
+src/synfig/valuenode_compare.cpp
+src/synfig/valuenode_compare.h
 src/synfig/valuenode_cos.cpp
 src/synfig/valuenode_cos.h
 src/synfig/valuenode_duplicate.cpp
@@ -311,6 +315,12 @@ src/synfig/valuenode_join.cpp
 src/synfig/valuenode_join.h
 src/synfig/valuenode_linear.cpp
 src/synfig/valuenode_linear.h
+src/synfig/valuenode_not.cpp
+src/synfig/valuenode_not.h
+src/synfig/valuenode_or.cpp
+src/synfig/valuenode_or.h
+src/synfig/valuenode_pow.cpp
+src/synfig/valuenode_pow.h
 src/synfig/valuenode_radialcomposite.cpp
 src/synfig/valuenode_radialcomposite.h
 src/synfig/valuenode_range.cpp

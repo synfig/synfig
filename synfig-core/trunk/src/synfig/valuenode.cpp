@@ -87,6 +87,10 @@
 #include "valuenode_intstring.h"
 #include "valuenode_log.h"
 #include "valuenode_pow.h"
+#include "valuenode_compare.h"
+#include "valuenode_not.h"
+#include "valuenode_and.h"
+#include "valuenode_or.h"
 
 #include "layer.h"
 
@@ -182,7 +186,11 @@ ValueNode::subsys_init()
 	ADD_VALUENODE(ValueNode_Logarithm,		  "logarithm",		  _("Logarithm"),		 RELEASE_VERSION_0_61_09); // SVN r2034
 
 	ADD_VALUENODE(ValueNode_Greyed,			  "greyed",			  _("Greyed"),			 RELEASE_VERSION_0_61_10); // SVN r2305
-	ADD_VALUENODE(ValueNode_Pow,		  "power",		  _("Power"),		 RELEASE_VERSION_0_61_09); // SVN r2362
+	ADD_VALUENODE(ValueNode_Pow,		      "power",		      _("Power"),		     RELEASE_VERSION_0_61_10); // SVN r2362
+	ADD_VALUENODE(ValueNode_Compare,		  "compare",  	 	  _("Compare"),			 RELEASE_VERSION_0_61_10); // SVN r2364
+	ADD_VALUENODE(ValueNode_Not,		      "not",			  _("Not"),				 RELEASE_VERSION_0_61_10); // SVN r2364
+	ADD_VALUENODE(ValueNode_And,		      "and",			  _("And"),				 RELEASE_VERSION_0_61_10); // SVN r2364
+	ADD_VALUENODE(ValueNode_Or,		          "or",			  _("Or"),					 RELEASE_VERSION_0_61_10); // SVN r2364
 
 #undef ADD_VALUENODE
 #undef ADD_VALUENODE2
