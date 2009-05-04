@@ -22,8 +22,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __FASTANGLE__
-#define __FASTANGLE__
+#ifndef __ETL__FASTANGLE__
+#define __ETL__FASTANGLE__
 
 /* === H E A D E R S ======================================================= */
 

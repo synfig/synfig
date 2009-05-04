@@ -22,8 +22,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __BEZIER__
-#define __BEZIER__
+#ifndef __ETL__BEZIER__
+#define __ETL__BEZIER__
 
 /* === H E A D E R S ======================================================= */
 
@@ -31,7 +31,7 @@
 
 #include "_bezier.h"
 
-#ifdef __ANGLE__
+#ifdef __ETL_ANGLE__
 #include "_bezier_angle.h"
 #endif
 

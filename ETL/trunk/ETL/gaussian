@@ -22,8 +22,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __GAUSSIAN__
-#define __GAUSSIAN__
+#ifndef __ETL__GAUSSIAN__
+#define __ETL__GAUSSIAN__
 
 /* === H E A D E R S ======================================================= */
 

@@ -22,8 +22,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __CALCULUS__
-#define __CALCULUS__
+#ifndef __ETL__CALCULUS__
+#define __ETL__CALCULUS__
 
 /* === H E A D E R S ======================================================= */
 
