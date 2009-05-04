@@ -1,4 +1,3 @@
-#include <stdio.h>
 /* ========================================================================
 ** Extended Template and Library
 ** Angle Abstraction Class Implementation
@@ -31,6 +30,7 @@
 
 /* === H E A D E R S ======================================================= */
 
+#include <cstdio>
 #include <cmath>
 #include <functional>
 
