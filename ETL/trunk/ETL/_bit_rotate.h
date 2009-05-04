@@ -27,8 +27,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __ETL_BIT_ROTATE_H
-#define __ETL_BIT_ROTATE_H
+#ifndef __ETL__BIT_ROTATE_H
+#define __ETL__BIT_ROTATE_H
 
 /* === H E A D E R S ======================================================= */
 

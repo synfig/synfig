@@ -24,8 +24,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __ETL_FASTANGLE_H
-#define __ETL_FASTANGLE_H
+#ifndef __ETL__FASTANGLE_H
+#define __ETL__FASTANGLE_H
 
 /* === H E A D E R S ======================================================= */
 

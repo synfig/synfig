@@ -24,8 +24,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __ETL_HERMITE_H
-#define __ETL_HERMITE_H
+#ifndef __ETL__HERMITE_H
+#define __ETL__HERMITE_H
 
 /* === H E A D E R S ======================================================= */
 

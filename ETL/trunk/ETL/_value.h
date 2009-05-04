@@ -24,8 +24,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __ETL_VALUE_H
-#define __ETL_VALUE_H
+#ifndef __ETL__VALUE_H
+#define __ETL__VALUE_H
 
 /* === H E A D E R S ======================================================= */
 #include <algorithm>

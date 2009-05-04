@@ -25,8 +25,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __ETL_BEZIER_H
-#define __ETL_BEZIER_H
+#ifndef __ETL__BEZIER_H
+#define __ETL__BEZIER_H
 
 /* === H E A D E R S ======================================================= */
 

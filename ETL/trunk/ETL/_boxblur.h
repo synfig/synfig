@@ -24,8 +24,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __ETL_BOXBLUR_H
-#define __ETL_BOXBLUR_H
+#ifndef __ETL__BOXBLUR_H
+#define __ETL__BOXBLUR_H
 
 /* === H E A D E R S ======================================================= */
 

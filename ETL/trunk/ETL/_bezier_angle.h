@@ -24,8 +24,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __ETL_BEZIER_ANGLE_H
-#define __ETL_BEZIER_ANGLE_H
+#ifndef __ETL__BEZIER_ANGLE_H
+#define __ETL__BEZIER_ANGLE_H
 
 /* === H E A D E R S ======================================================= */
 

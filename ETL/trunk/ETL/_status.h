@@ -26,8 +26,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __ETL_STATUS_H
-#define __ETL_STATUS_H
+#ifndef __ETL__STATUS_H
+#define __ETL__STATUS_H
 
 /* === H E A D E R S ======================================================= */
 

@@ -24,8 +24,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __ETL_REF_COUNT_H
-#define __ETL_REF_COUNT_H
+#ifndef __ETL__REF_COUNT_H
+#define __ETL__REF_COUNT_H
 
 /* === H E A D E R S ======================================================= */
 
