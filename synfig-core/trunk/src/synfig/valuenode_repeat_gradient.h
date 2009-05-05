@@ -2,7 +2,7 @@
 /*!	\file valuenode_repeat_gradient.h
 **	\brief Header file for implementation of the "Repeat Gradient" valuenode conversion.
 **
-**	$Id: valuenode_repeat_gradient.h 335 2007-03-16 00:39:09Z dooglus $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley

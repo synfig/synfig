@@ -2,7 +2,7 @@
 /*!	\file quick_rng.h
 **	\brief Template Header
 **
-**	$Id: guid.h 335 2007-03-16 00:39:09Z dooglus $
+**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
