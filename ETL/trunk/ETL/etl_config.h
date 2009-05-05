@@ -10,10 +10,6 @@
 # define ETL_NAMESPACE 			etl
 #endif
 
-#if defined(WORDS_BIGENDIAN) && !defined(ETL_BIGENDIAN)
-#define ETL_BIGENDIAN
-#endif
-
 #ifdef	WIN32
 #define ETL_DIRECTORY_SEPARATOR		'\\'
 #else
