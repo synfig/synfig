@@ -62,9 +62,6 @@ AH_BOTTOM([
 # -- F U N C T I O N S ----------------------------------------
 
 ETL_DEPS
-AC_CHECK_FUNCS([fork])
-AC_CHECK_FUNCS([kill])
-AC_CHECK_FUNCS([pipe])
 
 # -- O U T P U T ----------------------------------------------
 
