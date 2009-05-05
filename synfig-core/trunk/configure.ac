@@ -30,6 +30,8 @@ AC_DEFINE(LT_SCOPE,[extern],[LibLTDL is linked staticly])
 SVN_REPOSITORY=https://synfig.svn.sourceforge.net/svnroot/synfig/synfig-core
 AC_SUBST(SVN_REPOSITORY)
 
+AC_C_BIGENDIAN
+
 # -- P R O G R A M S ------------------------------------------
 
 AC_PROG_CC
