@@ -4,12 +4,12 @@ MAINTAINERCLEANFILES = \
 	Makefile.in
 
 AM_CXXFLAGS = \
-	@CXXFLAGS@
-	-I$(top_srcdir)
+	@CXXFLAGS@ \
+	-I$(top_srcdir) \
 	-I$(top_builddir)/ETL
 
 DEFAULT_INCLUDES = \
-	-I$(top_srcdir)
+	-I$(top_srcdir) \
 	-I$(top_builddir)/ETL
 
 TESTS = \
