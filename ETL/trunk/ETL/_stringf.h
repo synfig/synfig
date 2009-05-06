@@ -30,9 +30,14 @@
 
 /* === H E A D E R S ======================================================= */
 
+#ifndef _GNU_SOURCE
+#define _GNU_SOURCE
+#endif
+
 #include <string>
 #include <cstdarg>
 #include <cstdlib>
+#include <cstdio>
 
 /* === M A C R O S ========================================================= */
 
@@ -58,22 +63,33 @@ _ETL_BEGIN_CDECLS
 #define ETL_NO_THROW throw()
 #endif
 
+// Prefer prototypes from glibc headers, since defining them ourselves
+// works around glibc security mechanisms
+
 #ifdef HAVE_VASPRINTF	// This is the preferred method
- extern int vasprintf(char **,const char *,va_list)ETL_NO_THROW;
+ #ifndef __GLIBC__
+  extern int vasprintf(char **,const char *,va_list)ETL_NO_THROW;
+ #endif
 #else
 
 # ifdef HAVE_VSNPRINTF	// This is the secondary method
- extern int vsnprintf(char *,size_t,const char*,va_list)ETL_NO_THROW;
+ #ifndef __GLIBC__
+  extern int vsnprintf(char *,size_t,const char*,va_list)ETL_NO_THROW;
+ #endif
 # endif
 
 #endif
 
 #ifdef HAVE_VSSCANF
-extern int vsscanf(const char *,const char *,va_list)ETL_NO_THROW;
+ #ifndef __GLIBC__
+  extern int vsscanf(const char *,const char *,va_list)ETL_NO_THROW;
+ #endif
 #else
 #define ETL_NO_VSTRSCANF
 #ifdef HAVE_SSCANF
-extern int sscanf(const char *buf, const char *format, ...)ETL_NO_THROW;
+ #ifndef __GLIBC__
+  extern int sscanf(const char *buf, const char *format, ...)ETL_NO_THROW;
+ #endif
 #endif
 #endif
 
