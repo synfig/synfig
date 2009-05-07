@@ -69,8 +69,8 @@ EXTRA_DIST = \
 	text_icon.sif \
 	polyline_icon.sif \
 	star_icon.sif \
-	set_bg_color.sif \
-	set_fg_color.sif
+	set_fill_color.sif \
+	set_outline_color.sif
 
 
 IMAGES = \
@@ -137,8 +137,8 @@ IMAGES = \
 	text_icon.$(EXT) \
 	polyline_icon.$(EXT) \
 	star_icon.$(EXT) \
-	set_bg_color.$(EXT) \
-	set_fg_color.$(EXT)
+	set_fill_color.$(EXT) \
+	set_outline_color.$(EXT)
 
 
 MAINTAINERCLEANFILES = \
