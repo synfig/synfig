@@ -116,42 +116,26 @@ DeviceTracker::save_preferences()
 }
 
 void
-DeviceTracker::set_device_mode(const synfig::String & id,
-		InputDevice::Mode mode)
+DeviceTracker::load_preferences()
 {
-	for (GList * itr = gdk_devices_list(); itr; itr = g_list_next(itr))
+	GList * device_list = gdk_devices_list();
+	for (GList * itr = device_list; itr; itr = g_list_next(itr))
 	{
-		GdkDevice * device = reinterpret_cast<GdkDevice*>(itr->data);
-		if (id == device->name)
-			gdk_device_set_mode(device, GdkInputMode(mode));
-	}
-}
+		GdkDevice * gdk_device = reinterpret_cast<GdkDevice*>(itr->data);
 
-void
-DeviceTracker::set_device_axes(const synfig::String & id,
-		const std::vector<synfigapp::InputDevice::AxisUse> axes)
-{
-	for (GList * itr = gdk_devices_list(); itr; itr = g_list_next(itr))
-	{
-		GdkDevice * device = reinterpret_cast<GdkDevice*>(itr->data);
-		if (id == device->name) {
-			for (int axis = 0; axis < (int) axes.size(); axis++)
-				gdk_device_set_axis_use(device, axis, GdkAxisUse(axes[axis]));
-		}
-	}
-}
+		InputDevice::Handle synfig_device = synfigapp::Main::find_input_device(gdk_device->name);
+		if (synfig_device == NULL)
+			continue;
 
-void
-DeviceTracker::set_device_keys(const synfig::String & id,
-		const std::vector<synfigapp::InputDevice::DeviceKey> keys)
-{
-	for (GList * itr = gdk_devices_list(); itr; itr = g_list_next(itr))
-	{
-		GdkDevice * device = reinterpret_cast<GdkDevice*>(itr->data);
-		if (id == device->name) {
-			for (int key = 0; key < (int) keys.size(); key++)
-				gdk_device_set_key(device, key, keys[key].keyval,
-						GdkModifierType(keys[key].modifiers));
-		}
+		gdk_device_set_mode(gdk_device, GdkInputMode(synfig_device->get_mode()));
+
+		const std::vector<synfigapp::InputDevice::AxisUse> axes = synfig_device->get_axes();
+		for (int axis = 0; axis < (int) axes.size(); axis++)
+			gdk_device_set_axis_use(gdk_device, axis, GdkAxisUse(axes[axis]));
+
+		const std::vector<synfigapp::InputDevice::DeviceKey> keys = synfig_device->get_keys();
+		for (int key = 0; key < (int) keys.size(); key++)
+			gdk_device_set_key(gdk_device, key, keys[key].keyval,
+					GdkModifierType(keys[key].modifiers));
 	}
 }

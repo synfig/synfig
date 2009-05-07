@@ -1280,6 +1280,8 @@ App::App(int *argc, char ***argv):
 		studio_init_cb.amount_complete(9250,10000);
 		studio_init_cb.task(_("Loading Settings..."));
 		load_settings();
+		device_tracker->load_preferences();
+
 		studio_init_cb.task(_("Checking auto-recover..."));
 
 		studio_init_cb.amount_complete(9900,10000);

@@ -34,7 +34,6 @@
 #include <cstdio>
 #include <ETL/stringf>
 #include "main.h"
-#include <gtkmm/devicetracker.h>
 
 #include "general.h"
 
@@ -46,7 +45,6 @@ using namespace std;
 using namespace etl;
 using namespace synfig;
 using namespace synfigapp;
-using namespace studio;
 
 /* === M A C R O S ========================================================= */
 
@@ -211,7 +209,6 @@ public:
 			mode = InputDevice::MODE_DISABLED;
 
 		input_device->set_mode(mode);
-		DeviceTracker::set_device_mode(input_device->get_id(), mode);
 	}
 
 	void set_axes_value(const synfig::String & value)
@@ -231,7 +228,6 @@ public:
 		}
 
 		input_device->set_axes(axes);
-		DeviceTracker::set_device_axes(input_device->get_id(), axes);
 	}
 
 	void set_keys_value(const synfig::String & value)
@@ -254,7 +250,6 @@ public:
 		}
 
 		input_device->set_keys(keys);
-		DeviceTracker::set_device_keys(input_device->get_id(), keys);
 	}
 
 	virtual KeyList get_key_list()const

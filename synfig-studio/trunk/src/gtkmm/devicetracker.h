@@ -45,13 +45,8 @@ public:
 	~DeviceTracker();
 
 	void save_preferences();
+	void load_preferences();
 
-	static void set_device_mode(const synfig::String & id,
-			synfigapp::InputDevice::Mode mode);
-	static void set_device_axes(const synfig::String & id,
-			const std::vector<synfigapp::InputDevice::AxisUse> axes);
-	static void set_device_keys(const synfig::String & id,
-			const std::vector<synfigapp::InputDevice::DeviceKey> keys);
 }; // END of class DeviceTracker
 
 }; // END of namespace studio
