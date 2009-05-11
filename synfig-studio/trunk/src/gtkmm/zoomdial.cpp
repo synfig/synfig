@@ -29,7 +29,8 @@
 #	include <config.h>
 #endif
 
-//#include "zoomdial.h"
+#include "zoomdial.h"
+#include <gtkmm/image.h>
 
 #include "general.h"
 
@@ -38,6 +39,7 @@
 /* === U S I N G =========================================================== */
 
 using namespace std;
+using namespace studio;
 
 /* === M A C R O S ========================================================= */
 
@@ -46,5 +48,34 @@ using namespace std;
 /* === P R O C E D U R E S ================================================= */
 
 /* === M E T H O D S ======================================================= */
+
+ZoomDial::ZoomDial(Gtk::IconSize & size): Table(3, 1, false)
+{
+	zoom_in = create_icon(size, "gtk-add", _("Zoom In"));
+	zoom_out = create_icon(size, "gtk-remove", _("Zoom Out"));
+	zoom_fit = create_icon(size, "gtk-zoom-fit", _("Zoom to Fit"));
+	zoom_norm = create_icon(size, "gtk-zoom-100", _("Zoom to 100%"));
+
+	attach(*zoom_out, 0, 1, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
+	attach(*zoom_norm, 1, 2, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
+	attach(*zoom_fit, 2, 3, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
+	attach(*zoom_in, 3, 4, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
+}
+
+Gtk::Button *
+ZoomDial::create_icon(Gtk::IconSize size, const char * stockid,
+		const char * tooltip)
+{
+	Gtk::Button *button = manage(new class Gtk::Button());
+	Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID(stockid), size));
+	button->add(*icon);
+	tooltips.set_tip(*button, tooltip);
+	icon->set_padding(0, 0);
+	icon->show();
+	button->set_relief(Gtk::RELIEF_NONE);
+	button->show();
+
+	return button;
+}
 
 
