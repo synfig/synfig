@@ -3,9 +3,10 @@
 MAINTAINERCLEANFILES = \
 	Makefile.in
 
-CLEANFILES = \
-	$(top_builddir)/ETL/etl_profile.h
 
+etlconfigdir = $(libdir)/ETL/include
+
+etlconfig_DATA = $(builddir)/etl_profile.h
 
 etldir = $(includedir)/ETL
 
@@ -55,7 +56,6 @@ etl_HEADERS = \
 	_trivial.h \
 	_fixed.h \
 	etl_config.h \
-	$(top_builddir)/ETL/etl_profile.h \
 	_fastangle_tables.h \
 	bezier \
 	_bezier.h \
@@ -75,10 +75,6 @@ etl_HEADERS = \
 	_clock_win32hpcount.h \
 	mutex \
 	_mutex_pthreads_simple.h
-
-
-$(top_builddir)/ETL/etl_profile.h:$(top_builddir)/ETL/etl_profile_.h
-	sed "s/PACKAGE/ETL/g;" < $(top_builddir)/ETL/etl_profile_.h > $(top_builddir)/ETL/etl_profile.h
 
 
 # FIXME: figure out why this is in SVN, but isn't installed

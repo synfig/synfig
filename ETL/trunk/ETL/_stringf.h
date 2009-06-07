@@ -53,6 +53,13 @@
 #define POPEN_BINARY_WRITE_TYPE "w"
 #endif
 
+#ifdef __ETL_HAS__VSNPRINTF
+#ifndef __ETL_HAS_VSNPRINTF
+#define vnsprintf _vnsprintf
+#define __ETL_HAS_VSNPRINTF
+#endif
+#endif
+
 /* === T Y P E D E F S ===================================================== */
 
 _ETL_BEGIN_CDECLS
@@ -66,13 +73,13 @@ _ETL_BEGIN_CDECLS
 // Prefer prototypes from glibc headers, since defining them ourselves
 // works around glibc security mechanisms
 
-#ifdef HAVE_VASPRINTF	// This is the preferred method
+#ifdef __ETL_HAS_VASPRINTF	// This is the preferred method
  #ifndef __GLIBC__
   extern int vasprintf(char **,const char *,va_list)ETL_NO_THROW;
  #endif
 #else
 
-# ifdef HAVE_VSNPRINTF	// This is the secondary method
+# ifdef __ETL_HAS_VSNPRINTF	// This is the secondary method
  #ifndef __GLIBC__
   extern int vsnprintf(char *,size_t,const char*,va_list)ETL_NO_THROW;
  #endif
@@ -80,13 +87,13 @@ _ETL_BEGIN_CDECLS
 
 #endif
 
-#ifdef HAVE_VSSCANF
+#ifdef __ETL_HAS_VSSCANF
  #ifndef __GLIBC__
   extern int vsscanf(const char *,const char *,va_list)ETL_NO_THROW;
  #endif
 #else
 #define ETL_NO_VSTRSCANF
-#ifdef HAVE_SSCANF
+#ifdef __ETL_HAS_SSCANF
  #ifndef __GLIBC__
   extern int sscanf(const char *buf, const char *format, ...)ETL_NO_THROW;
  #endif
@@ -104,7 +111,7 @@ _ETL_BEGIN_NAMESPACE
 inline std::string
 vstrprintf(const char *format, va_list args)
 {
-#ifdef HAVE_VASPRINTF	// This is the preferred method (and safest)
+#ifdef __ETL_HAS_VASPRINTF	// This is the preferred method (and safest)
 	char *buffer;
 	std::string ret;
 	int i=vasprintf(&buffer,format,args);
@@ -115,7 +122,7 @@ vstrprintf(const char *format, va_list args)
 	}
 	return ret;
 #else
-#ifdef HAVE_VSNPRINTF	// This is the secondary method (Safe, but bulky)
+#ifdef __ETL_HAS_VSNPRINTF	// This is the secondary method (Safe, but bulky)
 #warning etl::vstrprintf() has a maximum size of ETL_STRPRINTF_MAX_LENGTH in this configuration.
 #ifdef ETL_THREAD_SAFE
 	char buffer[ETL_STRPRINTF_MAX_LENGTH];
@@ -164,7 +171,7 @@ strscanf(const std::string &data, const char*format, ...)
 }
 #else
 
-#if defined (HAVE_SSCANF) && defined (__GNUC__)
+#if defined (__ETL_HAS_SSCANF) && defined (__GNUC__)
 #define strscanf(data,format,...) sscanf(data.c_str(),format,__VA_ARGS__)
 #endif
 #endif

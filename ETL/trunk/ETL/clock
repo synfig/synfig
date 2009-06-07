@@ -29,7 +29,7 @@
 
 #include "etl_config.h"
 
-#ifdef HAVE_GETTIMEOFDAY
+#ifdef __ETL_HAS_GETTIMEOFDAY
 #include "_clock_gettimeofday.h"
 #ifndef ETL_CLOCK_DEFAULT_DESC_CLASS
 #define ETL_CLOCK_DEFAULT_DESC_CLASS	_ETL::clock_desc_gettimeofday

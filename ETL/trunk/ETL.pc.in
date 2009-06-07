@@ -8,4 +8,4 @@ Description: @PACKAGE_NAME@
 Requires:
 Version: @VERSION@
 Libs: @LIBS@
-Cflags: -I${includedir}
+Cflags: -I${includedir} -I${libdir}/ETL/include

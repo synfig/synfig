@@ -29,7 +29,7 @@
 
 #include "etl_config.h"
 
-#ifdef HAVE_LIBPTHREAD
+#ifdef __ETL_HAS_LIBPTHREAD
 #  include "_mutex_pthreads_simple.h"
 #else
 #ifdef _WIN32
