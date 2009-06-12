@@ -6,7 +6,7 @@ MAINTAINERCLEANFILES = \
 
 etlconfigdir = $(libdir)/ETL/include
 
-etlconfig_DATA = $(builddir)/etl_profile.h
+etlconfig_DATA = etl_profile.h
 
 etldir = $(includedir)/ETL
 
