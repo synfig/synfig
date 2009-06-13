@@ -1,2 +1,0 @@
-aclocal.m4 config.log configure *.spec Makefile Makefile.in
-config.status ETL-config ETL.pc

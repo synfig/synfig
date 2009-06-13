@@ -1,2 +1,0 @@
-aclocal.m4 config.log configure *.spec Makefile Makefile.in
-etl_profile.h etl_profile_.h stamp-h1
