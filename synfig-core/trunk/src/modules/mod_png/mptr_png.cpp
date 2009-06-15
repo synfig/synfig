@@ -409,7 +409,7 @@ png_mptr::~png_mptr()
 bool
 png_mptr::get_frame(synfig::Surface &surface,Time, synfig::ProgressCallback */*cb*/)
 {
-	assert(0);					// shouldn't be called?
+	//assert(0);					// shouldn't be called?
 	surface=surface_buffer;
 	return true;
 }
