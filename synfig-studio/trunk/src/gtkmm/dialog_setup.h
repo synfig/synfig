@@ -40,6 +40,7 @@
 #include <gtkmm/widget_time.h>
 #include <gtkmm/tooltips.h>
 #include <gtkmm/comboboxtext.h>
+#include <gtkmm/spinbutton.h>
 
 #include <synfig/gamma.h>
 #include <synfig/time.h>
@@ -197,6 +198,7 @@ class Dialog_Setup : public Gtk::Dialog
 	Gtk::Adjustment adj_pref_x_size;
 	Gtk::Adjustment adj_pref_y_size;
 	Gtk::Adjustment adj_pref_fps;
+	Gtk::SpinButton* pref_fps_spinbutton;
 	Gtk::Tooltips tooltips_;
 public:
 

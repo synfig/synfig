@@ -37,7 +37,6 @@
 #include <gtkmm/table.h>
 #include <gtkmm/frame.h>
 #include <gtkmm/notebook.h>
-#include <gtkmm/spinbutton.h>
 #include "widget_enum.h"
 #include "autorecover.h"
 
@@ -281,7 +280,7 @@ Dialog_Setup::Dialog_Setup():
 	fps_template_combo->prepend_text(DEFAULT_PREDEFINED_FPS);
 
 	// Document - New Document FPS
-	Gtk::SpinButton* pref_fps_spinbutton(manage(new Gtk::SpinButton(adj_pref_fps,1,3)));
+	pref_fps_spinbutton=Gtk::manage(new Gtk::SpinButton(adj_pref_fps,1,3));
 	attach_label(document_table,_("New Document FPS"),4, xpadding, ypadding);
 	document_table->attach(*pref_fps_spinbutton, 1, 2, 4, 5,Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
 	tooltips_.set_tip(*pref_fps_spinbutton,_("Frames per second of the new created document"));
@@ -418,9 +417,11 @@ Dialog_Setup::on_fps_template_combo_change()
 	String selection(fps_template_combo->get_active_text());
 	if(selection==DEFAULT_PREDEFINED_FPS)
 	{
+		pref_fps_spinbutton->set_sensitive(true);
 		return;
 	}
 	adj_pref_fps.set_value(atof(selection.c_str()));
+	pref_fps_spinbutton->set_sensitive(false);
 	return;
 }
 
