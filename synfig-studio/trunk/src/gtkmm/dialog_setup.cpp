@@ -228,13 +228,13 @@ Dialog_Setup::Dialog_Setup():
 	tooltips_.set_tip(textbox_custom_filename_prefix,_("File name prefix for the new created document"));
 
 	// Document - New Document X size
-	Gtk::SpinButton* pref_x_size_spinbutton(manage(new Gtk::SpinButton(adj_pref_x_size,1,0)));
+	Gtk::SpinButton* pref_x_size_spinbutton(Gtk::manage(new Gtk::SpinButton(adj_pref_x_size,1,0)));
 	attach_label(document_table,_("New Document X size"),1, xpadding, ypadding);
 	document_table->attach(*pref_x_size_spinbutton, 1, 2, 1, 2,Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
 	tooltips_.set_tip(*pref_x_size_spinbutton,_("Width in pixels of the new created document"));
 
 	// Document - New Document Y size
-	Gtk::SpinButton* pref_y_size_spinbutton(manage(new Gtk::SpinButton(adj_pref_y_size,1,0)));
+	Gtk::SpinButton* pref_y_size_spinbutton(Gtk::manage(new Gtk::SpinButton(adj_pref_y_size,1,0)));
 	attach_label(document_table,_("New Document Y size"),2, xpadding, ypadding);
 	document_table->attach(*pref_y_size_spinbutton, 1, 2, 2, 3,Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
 	tooltips_.set_tip(*pref_y_size_spinbutton,_("High in pixels of the new created document"));
