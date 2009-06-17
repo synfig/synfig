@@ -84,7 +84,8 @@ Dialog_Setup::Dialog_Setup():
 	toggle_restrict_radius_ducks(_("Restrict Real-Valued Ducks to Top Right Quadrant")),
 	toggle_resize_imported_images(_("Scale New Imported Images to Fit Canvas")),
 	adj_pref_x_size(480,1,10000,1,10,0),
-	adj_pref_y_size(270,1,10000,1,10,0)
+	adj_pref_y_size(270,1,10000,1,10,0),
+	adj_pref_fps(24.0,1.0,100,0.1,1,0)
 
 	{
 	// Setup the buttons
@@ -262,6 +263,29 @@ Dialog_Setup::Dialog_Setup():
 	size_template_combo->prepend_text(_("360x203   Web 360x HD"));
 	size_template_combo->prepend_text(DEFAULT_PREDEFINED_SIZE);
 
+	//Document - Template for predefined fps
+	fps_template_combo=Gtk::manage(new Gtk::ComboBoxText());
+	Gtk::Label* label1(manage(new Gtk::Label(_("Predefined FPS:"))));
+	label1->set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	document_table->attach(*label1, 2, 3, 3, 4, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
+	document_table->attach(*fps_template_combo,2, 3, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
+	fps_template_combo->signal_changed().connect(sigc::mem_fun(*this,&studio::Dialog_Setup::on_fps_template_combo_change));
+	fps_template_combo->prepend_text("60,0"); // It seems that the period is a ',' instead of a '.' for GTK.
+	fps_template_combo->prepend_text("50,0");
+	fps_template_combo->prepend_text("30,0");
+	fps_template_combo->prepend_text("25,0");
+	fps_template_combo->prepend_text("24,976");
+	fps_template_combo->prepend_text("24,0");
+	fps_template_combo->prepend_text("15,0");
+	fps_template_combo->prepend_text("12,0");
+	fps_template_combo->prepend_text(DEFAULT_PREDEFINED_FPS);
+
+	// Document - New Document FPS
+	Gtk::SpinButton* pref_fps_spinbutton(manage(new Gtk::SpinButton(adj_pref_fps,1,3)));
+	attach_label(document_table,_("New Document FPS"),4, xpadding, ypadding);
+	document_table->attach(*pref_fps_spinbutton, 1, 2, 4, 5,Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
+	tooltips_.set_tip(*pref_fps_spinbutton,_("Frames per second of the new created document"));
+
 	show_all_children();
 }
 
@@ -319,6 +343,12 @@ Dialog_Setup::on_apply_pressed()
 
 	// Set the preferred Predefined size
 	App::predefined_size=size_template_combo->get_active_text();
+
+	// Set the preferred Predefined fps
+	App::predefined_fps=fps_template_combo->get_active_text();
+
+	// Set the preferred FPS
+	App::preferred_fps=Real(adj_pref_fps.get_value());
 
 	App::save_settings();
 }
@@ -383,6 +413,18 @@ Dialog_Setup::on_size_template_combo_change()
 }
 
 void
+Dialog_Setup::on_fps_template_combo_change()
+{
+	String selection(fps_template_combo->get_active_text());
+	if(selection==DEFAULT_PREDEFINED_FPS)
+	{
+		return;
+	}
+	adj_pref_fps.set_value(atof(selection.c_str()));
+	return;
+}
+
+void
 Dialog_Setup::refresh()
 {
 	// Refresh the temporary gamma; do this before adjusting the sliders,
@@ -439,6 +481,12 @@ Dialog_Setup::refresh()
 
 	// Refresh the preferred Predefined size
 	size_template_combo->set_active_text(App::predefined_size);
+
+	//Refresh the preferred FPS
+	adj_pref_fps.set_value(App::preferred_fps);
+
+	//Refresh the predefined FPS
+	fps_template_combo->set_active_text(App::predefined_fps);
 }
 
 GammaPattern::GammaPattern():
