@@ -199,6 +199,8 @@ class Dialog_Setup : public Gtk::Dialog
 	Gtk::Adjustment adj_pref_y_size;
 	Gtk::Adjustment adj_pref_fps;
 	Gtk::SpinButton* pref_fps_spinbutton;
+	Gtk::SpinButton* pref_y_size_spinbutton;
+	Gtk::SpinButton* pref_x_size_spinbutton;
 	Gtk::Tooltips tooltips_;
 public:
 
