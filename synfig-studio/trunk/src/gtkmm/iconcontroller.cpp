@@ -188,6 +188,11 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	INIT_STOCK_ICON(set_outline_color,"set_outline_color."IMAGE_EXT,_("Set as Outline"));
 	INIT_STOCK_ICON(set_fill_color,"set_fill_color."IMAGE_EXT,_("Set as Fill"));
 
+	INIT_STOCK_ICON(seek_begin,"seek_begin."IMAGE_EXT,_("Seek to Begin"));
+	INIT_STOCK_ICON(seek_prev_frame,"seek_prev_frame."IMAGE_EXT,_("Previous Frame"));
+	INIT_STOCK_ICON(seek_next_frame,"seek_next_frame."IMAGE_EXT,_("Next Frame"));
+	INIT_STOCK_ICON(seek_end,"seek_end."IMAGE_EXT,_("Seek to End"));
+
 	INIT_STOCK_ICON_CLONE(cvs_add,"gtk-add",_("CVS Add"));
 	INIT_STOCK_ICON_CLONE(cvs_update,"gtk-open",_("CVS Update"));
 	INIT_STOCK_ICON_CLONE(cvs_commit,"gtk-save",_("CVS Commit"));

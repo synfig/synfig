@@ -70,7 +70,12 @@ EXTRA_DIST = \
 	polyline_icon.sif \
 	star_icon.sif \
 	set_fill_color.sif \
-	set_outline_color.sif
+	set_outline_color.sif \
+	seek_begin.sif \
+	seek_end.sif \
+	seek_next_frame.sif \
+	seek_prev_frame.sif
+
 
 
 IMAGES = \
@@ -138,7 +143,11 @@ IMAGES = \
 	polyline_icon.$(EXT) \
 	star_icon.$(EXT) \
 	set_fill_color.$(EXT) \
-	set_outline_color.$(EXT)
+	set_outline_color.$(EXT) \
+	seek_begin.$(EXT) \
+	seek_end.$(EXT) \
+	seek_next_frame.$(EXT) \
+	seek_prev_frame.$(EXT)
 
 
 MAINTAINERCLEANFILES = \

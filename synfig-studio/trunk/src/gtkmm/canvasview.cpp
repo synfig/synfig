@@ -99,6 +99,7 @@
 #include "preview.h"
 #include "audiocontainer.h"
 #include "widget_timeslider.h"
+#include "framedial.h"
 
 #include <synfigapp/main.h>
 #include <synfigapp/inputdevice.h>
@@ -941,8 +942,6 @@ CanvasView::create_time_bar()
 	keyframebutton->signal_clicked().connect(sigc::mem_fun(*this, &studio::CanvasView::on_keyframe_button_pressed));
 	keyframebutton->show();
 
-	Gtk::Table *table= manage(new class Gtk::Table(2, 3, false));
-
 	//setup the audio display
 	disp_audio->set_size_request(-1,32); //disp_audio->show();
 	disp_audio->set_time_adjustment(&time_adjustment());
@@ -956,14 +955,32 @@ CanvasView::create_time_bar()
 		sigc::mem_fun(*audio,&AudioContainer::stop_scrubbing)
 	);
 
-	table->attach(*manage(disp_audio), 0, 1, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK);
-	table->attach(*timeslider, 0, 1, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK, 0, 0);
-	table->attach(*time_window_scroll, 0, 1, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK, 0, 0);
+	FrameDial *framedial = manage(new class FrameDial());
+	framedial->signal_seek_begin().connect(
+			sigc::bind(sigc::mem_fun(*canvas_interface().get(), &synfigapp::CanvasInterface::seek_time), Time::begin())
+	);
+	framedial->signal_seek_prev_frame().connect(
+			sigc::bind(sigc::mem_fun(*canvas_interface().get(), &synfigapp::CanvasInterface::seek_frame), -1)
+	);
+	framedial->signal_seek_next_frame().connect(
+			sigc::bind(sigc::mem_fun(*canvas_interface().get(), &synfigapp::CanvasInterface::seek_frame), 1)
+	);
+	framedial->signal_seek_end().connect(
+			sigc::bind(sigc::mem_fun(*canvas_interface().get(), &synfigapp::CanvasInterface::seek_time), Time::end())
+	);
+	framedial->show();
 
-	table->attach(*animatebutton, 1, 2, 0, 3, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
-	table->attach(*keyframebutton, 2, 3, 0, 3, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
-	timebar=table;
+	Gtk::Table *table = manage(new class Gtk::Table(4, 3, false));
+	timebar = table;
+
+	table->attach(*manage(disp_audio), 0, 1, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK);
+	table->attach(*framedial, 0, 1, 1, 2,Gtk::SHRINK, Gtk::SHRINK);
+	table->attach(*timeslider, 1, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK);
+	table->attach(*time_window_scroll, 1, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK);
+	table->attach(*animatebutton, 2, 3, 0, 3, Gtk::SHRINK, Gtk::SHRINK);
+	table->attach(*keyframebutton, 3, 4, 0, 3, Gtk::SHRINK, Gtk::SHRINK);
 	table->show();
+
 	return table;
 }
 
