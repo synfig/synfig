@@ -1,0 +1,339 @@
+<?xml version="1.0"?>
+<canvas version="0.7" width="128" height="128" xres="2952.755928" yres="2952.755928" view-box="-2.000000 2.000000 2.000000 -2.000000" antialias="1" fps="30.000" begin-time="0f" end-time="0f" bgcolor="0.500000 0.500000 0.500000 1.000000">
+  <name>Jump to last frame</name>
+  <layer type="PasteCanvas" active="true" version="0.1" desc="Bar">
+    <param name="z_depth">
+      <real value="0.0000000000"/>
+    </param>
+    <param name="amount">
+      <real value="1.0000000000"/>
+    </param>
+    <param name="blend_method">
+      <integer value="0"/>
+    </param>
+    <param name="origin">
+      <vector>
+        <x>0.0000000000</x>
+        <y>0.0000000000</y>
+      </vector>
+    </param>
+    <param name="canvas">
+      <canvas>
+        <layer type="rectangle" active="true" version="0.2" desc="Bar">
+          <param name="z_depth">
+            <real value="0.0000000000"/>
+          </param>
+          <param name="amount">
+            <real value="1.0000000000"/>
+          </param>
+          <param name="blend_method">
+            <integer value="0"/>
+          </param>
+          <param name="color">
+            <color>
+              <r>0.000000</r>
+              <g>0.000000</g>
+              <b>0.000000</b>
+              <a>1.000000</a>
+            </color>
+          </param>
+          <param name="point1">
+            <vector>
+              <x>1.1147744656</x>
+              <y>1.7167723179</y>
+            </vector>
+          </param>
+          <param name="point2">
+            <vector>
+              <x>0.6465811133</x>
+              <y>-1.6623625755</y>
+            </vector>
+          </param>
+          <param name="expand">
+            <real value="0.0000000000"/>
+          </param>
+          <param name="invert">
+            <bool value="false"/>
+          </param>
+        </layer>
+        <layer type="bevel" active="true" version="0.2">
+          <param name="z_depth">
+            <real value="0.0000000000"/>
+          </param>
+          <param name="amount">
+            <real value="1.0000000000"/>
+          </param>
+          <param name="blend_method">
+            <integer value="13"/>
+          </param>
+          <param name="type">
+            <integer value="1"/>
+          </param>
+          <param name="color1">
+            <color>
+              <r>1.000000</r>
+              <g>1.000000</g>
+              <b>1.000000</b>
+              <a>1.000000</a>
+            </color>
+          </param>
+          <param name="color2">
+            <color>
+              <r>0.000000</r>
+              <g>0.000000</g>
+              <b>0.000000</b>
+              <a>1.000000</a>
+            </color>
+          </param>
+          <param name="angle">
+            <angle value="135.000000"/>
+          </param>
+          <param name="depth">
+            <real value="0.0500000008"/>
+          </param>
+          <param name="softness">
+            <real value="0.0500000008"/>
+          </param>
+          <param name="use_luma">
+            <bool value="false"/>
+          </param>
+          <param name="solid">
+            <bool value="false"/>
+          </param>
+        </layer>
+        <layer type="shade" active="true" version="0.2">
+          <param name="z_depth">
+            <real value="0.0000000000"/>
+          </param>
+          <param name="amount">
+            <real value="1.0000000000"/>
+          </param>
+          <param name="blend_method">
+            <integer value="12"/>
+          </param>
+          <param name="color">
+            <color>
+              <r>0.000000</r>
+              <g>0.000000</g>
+              <b>0.000000</b>
+              <a>1.000000</a>
+            </color>
+          </param>
+          <param name="origin">
+            <vector>
+              <x>0.1000000015</x>
+              <y>-0.1000000015</y>
+            </vector>
+          </param>
+          <param name="size">
+            <vector>
+              <x>0.1000000015</x>
+              <y>0.1000000015</y>
+            </vector>
+          </param>
+          <param name="type">
+            <integer value="1"/>
+          </param>
+          <param name="invert">
+            <bool value="false"/>
+          </param>
+        </layer>
+      </canvas>
+    </param>
+    <param name="zoom">
+      <real value="0.0000000000"/>
+    </param>
+    <param name="time_offset">
+      <time value="0s"/>
+    </param>
+    <param name="children_lock">
+      <bool value="false"/>
+    </param>
+    <param name="focus">
+      <vector>
+        <x>0.0000000000</x>
+        <y>0.0000000000</y>
+      </vector>
+    </param>
+  </layer>
+  <layer type="PasteCanvas" active="true" version="0.1" desc="Triangle">
+    <param name="z_depth">
+      <real value="0.0000000000"/>
+    </param>
+    <param name="amount">
+      <real value="1.0000000000"/>
+    </param>
+    <param name="blend_method">
+      <integer value="0"/>
+    </param>
+    <param name="origin">
+      <vector>
+        <x>0.0000000000</x>
+        <y>0.0000000000</y>
+      </vector>
+    </param>
+    <param name="canvas">
+      <canvas>
+        <layer type="polygon" active="true" version="0.1" desc="Triangle">
+          <param name="z_depth">
+            <real value="0.0000000000"/>
+          </param>
+          <param name="amount">
+            <real value="1.0000000000"/>
+          </param>
+          <param name="blend_method">
+            <integer value="0"/>
+          </param>
+          <param name="color">
+            <color>
+              <r>0.000000</r>
+              <g>0.000000</g>
+              <b>0.000000</b>
+              <a>1.000000</a>
+            </color>
+          </param>
+          <param name="origin">
+            <vector>
+              <x>-0.1781170517</x>
+              <y>0.0458015278</y>
+            </vector>
+          </param>
+          <param name="invert">
+            <bool value="false"/>
+          </param>
+          <param name="antialias">
+            <bool value="true"/>
+          </param>
+          <param name="feather">
+            <real value="0.0000000000"/>
+          </param>
+          <param name="blurtype">
+            <integer value="1"/>
+          </param>
+          <param name="winding_style">
+            <integer value="0"/>
+          </param>
+          <param name="vector_list">
+            <dynamic_list type="vector">
+              <entry>
+                <vector>
+                  <x>-1.0226300955</x>
+                  <y>1.6455254555</y>
+                </vector>
+              </entry>
+              <entry>
+                <vector>
+                  <x>1.0333495140</x>
+                  <y>0.0679172799</y>
+                </vector>
+              </entry>
+              <entry>
+                <vector>
+                  <x>-0.9920957088</x>
+                  <y>-1.6521844864</y>
+                </vector>
+              </entry>
+            </dynamic_list>
+          </param>
+        </layer>
+        <layer type="bevel" active="true" version="0.2">
+          <param name="z_depth">
+            <real value="0.0000000000"/>
+          </param>
+          <param name="amount">
+            <real value="1.0000000000"/>
+          </param>
+          <param name="blend_method">
+            <integer value="13"/>
+          </param>
+          <param name="type">
+            <integer value="1"/>
+          </param>
+          <param name="color1">
+            <color>
+              <r>1.000000</r>
+              <g>1.000000</g>
+              <b>1.000000</b>
+              <a>1.000000</a>
+            </color>
+          </param>
+          <param name="color2">
+            <color>
+              <r>0.000000</r>
+              <g>0.000000</g>
+              <b>0.000000</b>
+              <a>1.000000</a>
+            </color>
+          </param>
+          <param name="angle">
+            <angle value="135.000000"/>
+          </param>
+          <param name="depth">
+            <real value="0.0500000008"/>
+          </param>
+          <param name="softness">
+            <real value="0.0500000008"/>
+          </param>
+          <param name="use_luma">
+            <bool value="false"/>
+          </param>
+          <param name="solid">
+            <bool value="false"/>
+          </param>
+        </layer>
+        <layer type="shade" active="true" version="0.2">
+          <param name="z_depth">
+            <real value="0.0000000000"/>
+          </param>
+          <param name="amount">
+            <real value="1.0000000000"/>
+          </param>
+          <param name="blend_method">
+            <integer value="12"/>
+          </param>
+          <param name="color">
+            <color>
+              <r>0.000000</r>
+              <g>0.000000</g>
+              <b>0.000000</b>
+              <a>1.000000</a>
+            </color>
+          </param>
+          <param name="origin">
+            <vector>
+              <x>0.1000000015</x>
+              <y>-0.1000000015</y>
+            </vector>
+          </param>
+          <param name="size">
+            <vector>
+              <x>0.1000000015</x>
+              <y>0.1000000015</y>
+            </vector>
+          </param>
+          <param name="type">
+            <integer value="1"/>
+          </param>
+          <param name="invert">
+            <bool value="false"/>
+          </param>
+        </layer>
+      </canvas>
+    </param>
+    <param name="zoom">
+      <real value="0.0000000000"/>
+    </param>
+    <param name="time_offset">
+      <time value="0s"/>
+    </param>
+    <param name="children_lock">
+      <bool value="false"/>
+    </param>
+    <param name="focus">
+      <vector>
+        <x>0.0000000000</x>
+        <y>0.0000000000</y>
+      </vector>
+    </param>
+  </layer>
+</canvas>
