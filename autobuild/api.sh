@@ -9,14 +9,22 @@
 # published by the Free Software Foundation; either version 2 of
 # the License, or (at your option) any later version.
 
-USERNAME=your_username #set this to your sf.net username to publish api 
-					   #(you need privilegies for that)
-
-export HTMLDIR=~/synfig/api/html
-export SOURCEDIR=~/synfig/api/source
+export HTMLDIR=$HOME/synfig/api/html
+export SOURCEDIR=$HOME/synfig/api/source
 
 set -e
 
+#check for git and doxygen
+if ! which git > /dev/null 2>&1; then
+	echo "Please install git."
+	exit
+fi
+if ! which doxygen > /dev/null 2>&1; then
+	echo "Please install doxygen."
+	exit
+fi
+
+#fetching sources
 if [ ! -d $SOURCEDIR ]; then
 	mkdir -p `dirname $SOURCEDIR`
 	cd `dirname $SOURCEDIR`
@@ -35,9 +43,11 @@ cd $SOURCEDIR
 git fetch
 git checkout remotes/origin/master
 
+#generating api to htmldir
 for module in ETL synfig-core synfig-studio; do
 cd $module/trunk
-autoreconf --install --force || sed -i 's/^AC_CONFIG_SUBDIRS/# AC_CONFIG_SUBDIRS/' && autoreconf --install --force
+echo "Generating API for $module..."
+autoreconf --install --force || ( sed -i 's/^AC_CONFIG_SUBDIRS/# AC_CONFIG_SUBDIRS/' configure.ac && autoreconf --install --force )
 getversion
 cp -f doxygen.cfg.in doxygen.cfg
 sed -i "s/@VERSION@/$VERSION/" doxygen.cfg
@@ -66,6 +76,9 @@ EOF
 
 #beep (because we asking password)
 echo -e "\a"; sleep 0.2; echo -e "\a"; sleep 0.2; echo -e "\a"
+
+echo -n "Enter your sf.net username: "
+read USERNAME
 
 #push to sf.net
 rsync -avP -e ssh $HTMLDIR/ $USERNAME,synfig@web.sourceforge.net:htdocs/api/
