@@ -248,6 +248,37 @@ public:
 		//view->progressbar->set_fraction(0);
 	}
 
+	virtual Response confirmation(const std::string &title,
+			const std::string &primaryText,
+			const std::string &secondaryText,
+			const std::string &confirmPhrase,
+			const std::string &cancelPhrase,
+			Response defaultResponse=RESPONSE_OK)
+	{
+		view->present();
+		//while(studio::App::events_pending())studio::App::iteration(false);
+		Gtk::MessageDialog dialog(
+			*view,			// Parent
+			primaryText,		// Message
+			false,			// Markup
+			Gtk::MESSAGE_WARNING,	// Type
+			Gtk::BUTTONS_NONE,	// Buttons
+			true			// Modal
+		);
+
+		if (! title.empty())
+			dialog.set_title(title);
+		if (! secondaryText.empty())
+			dialog.set_secondary_text(secondaryText);
+
+		dialog.add_button(cancelPhrase, RESPONSE_CANCEL);
+		dialog.add_button(confirmPhrase, RESPONSE_OK);
+		dialog.set_default_response(defaultResponse);
+
+		dialog.show_all();
+		return (Response) dialog.run();
+	}
+
 	virtual Response yes_no(const std::string &title, const std::string &message,Response dflt=RESPONSE_YES)
 	{
 		view->present();

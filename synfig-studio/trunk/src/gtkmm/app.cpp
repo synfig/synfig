@@ -324,6 +324,34 @@ class GlobalUIInterface : public synfigapp::UIInterface
 {
 public:
 
+	virtual Response confirmation(const std::string &title,
+			const std::string &primaryText,
+			const std::string &secondaryText,
+			const std::string &confirmPhrase,
+			const std::string &cancelPhrase,
+			Response defaultResponse)
+	{
+		Gtk::MessageDialog dialog(
+			primaryText,		// Message
+			false,			// Markup
+			Gtk::MESSAGE_WARNING,	// Type
+			Gtk::BUTTONS_NONE,	// Buttons
+			true			// Modal
+		);
+
+		if (! title.empty())
+			dialog.set_title(title);
+		if (! secondaryText.empty())
+			dialog.set_secondary_text(secondaryText);
+
+		dialog.add_button(cancelPhrase, RESPONSE_CANCEL);
+		dialog.add_button(confirmPhrase, RESPONSE_OK);
+		dialog.set_default_response(defaultResponse);
+
+		dialog.show_all();
+		return (Response) dialog.run();
+	}
+
 	virtual Response yes_no(const std::string &title, const std::string &message,Response dflt=RESPONSE_YES)
 	{
 		Gtk::Dialog dialog(
@@ -1316,12 +1344,13 @@ App::App(int *argc, char ***argv):
 		if(auto_recover->recovery_needed())
 		{
 			splash_screen.hide();
-			if (get_ui_interface()->yes_no(_("Auto Recovery"),
-										   _("Synfig Studio seems to have crashed\n"
-											 "before you could save all your files.\n"
-											 "Would you like to re-open those files\n"
-											 "and recover your unsaved changes?")) ==
-				synfigapp::UIInterface::RESPONSE_YES)
+			if (get_ui_interface()->confirmation("Crash Recovery",
+					_("Auto recovery file found"),
+					_("Synfig Studio seems to have crashed\n"
+					  "before you could save all your files.\n"
+					  "Recover unsaved changes?"),
+					_("Recover"), _("Ignore"))
+				== synfigapp::UIInterface::RESPONSE_OK)
 			{
 				int number_recovered;
 				if(!auto_recover->recover(number_recovered))

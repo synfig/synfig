@@ -49,6 +49,33 @@ using namespace synfigapp;
 /* === M E T H O D S ======================================================= */
 
 UIInterface::Response
+ConsoleUIInterface::confirmation(const std::string &title, const std::string &primaryText,
+		const std::string &secondaryText, const std::string &confirmPhrase,
+		const std::string &cancelPhrase, Response dflt)
+{
+	cout << title << ": " << primaryText << endl;
+	cout << secondaryText;
+
+	if (dflt == RESPONSE_OK)
+		cout << "(" << confirmPhrase << "/" << cancelPhrase << ")" << endl;
+	else
+		cout << "(" << cancelPhrase << "/" << confirmPhrase << ")" << endl;
+
+	string resp;
+	cin >> resp;
+
+	if (dflt == RESPONSE_OK)
+	{
+		if (resp == cancelPhrase)
+			return RESPONSE_CANCEL;
+		return RESPONSE_OK;
+	}
+	if (resp == confirmPhrase)
+		return RESPONSE_OK;
+	return RESPONSE_CANCEL;
+}
+
+UIInterface::Response
 ConsoleUIInterface::yes_no(const std::string &title, const std::string &message,Response dflt)
 {
 	cout<<title<<": "<<message<<' ';
