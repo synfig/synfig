@@ -292,7 +292,8 @@ OTHER_HH = \
 	toolbox.h \
 	valuelink.h \
 	workarea.h \
-	zoomdial.h
+	zoomdial.h \
+	framedial.h
 
 OTHER_CC = \
 	main.cpp \
@@ -322,7 +323,8 @@ OTHER_CC = \
 	toolbox.cpp \
 	valuelink.cpp \
 	workarea.cpp \
-	zoomdial.cpp
+	zoomdial.cpp \
+	framedial.cpp
 
 
 INCLUDES = \
