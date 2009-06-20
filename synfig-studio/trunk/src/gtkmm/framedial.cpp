@@ -52,10 +52,10 @@ FrameDial::FrameDial(): Gtk::Table(3, 1, false)
 {
 	Gtk::IconSize iconsize = Gtk::IconSize::from_name("synfig-small_icon");
 
-	seek_begin = create_icon(iconsize, "synfig-seek_begin", _("Seek to Begin"));
-	seek_prev_frame = create_icon(iconsize, "synfig-seek_prev_frame", _("Previous Frame"));
-	seek_next_frame = create_icon(iconsize, "synfig-seek_next_frame", _("Next Frame"));
-	seek_end = create_icon(iconsize, "synfig-seek_end", _("Seek to End"));
+	seek_begin = create_icon(iconsize, GTK_STOCK_MEDIA_PREVIOUS, _("Seek to Begin"));
+	seek_prev_frame = create_icon(iconsize, GTK_STOCK_MEDIA_REWIND, _("Previous Frame"));
+	seek_next_frame = create_icon(iconsize, GTK_STOCK_MEDIA_FORWARD, _("Next Frame"));
+	seek_end = create_icon(iconsize, GTK_STOCK_MEDIA_NEXT, _("Seek to End"));
 
 	attach(*seek_begin, 0, 1, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
 	attach(*seek_prev_frame, 1, 2, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
