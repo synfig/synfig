@@ -51,10 +51,10 @@ using namespace studio;
 
 ZoomDial::ZoomDial(Gtk::IconSize & size): Table(3, 1, false)
 {
-	zoom_in = create_icon(size, "gtk-add", _("Zoom In"));
-	zoom_out = create_icon(size, "gtk-remove", _("Zoom Out"));
-	zoom_fit = create_icon(size, "gtk-zoom-fit", _("Zoom to Fit"));
-	zoom_norm = create_icon(size, "gtk-zoom-100", _("Zoom to 100%"));
+	zoom_in = create_icon(size, GTK_STOCK_ZOOM_IN, _("Zoom In"));
+	zoom_out = create_icon(size, GTK_STOCK_ZOOM_OUT, _("Zoom Out"));
+	zoom_fit = create_icon(size, GTK_STOCK_ZOOM_FIT, _("Zoom to Fit"));
+	zoom_norm = create_icon(size, GTK_STOCK_ZOOM_100, _("Zoom to 100%"));
 
 	attach(*zoom_out, 0, 1, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
 	attach(*zoom_norm, 1, 2, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
