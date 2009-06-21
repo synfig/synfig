@@ -968,14 +968,16 @@ CanvasView::create_time_bar()
 	//time_scroll->set_update_policy(Gtk::UPDATE_DISCONTINUOUS);
 
 	//Setup the Animation Mode Button and the Keyframe Lock button
-	NORMAL_BUTTON(animatebutton,"gtk-yes",_("Animate"));
+	Gtk::IconSize iconsize=Gtk::IconSize::from_name("synfig-small_icon");
+	SMALL_BUTTON(animatebutton,"gtk-yes",_("Animate"));
 	animatebutton->signal_clicked().connect(sigc::mem_fun(*this, &studio::CanvasView::on_animate_button_pressed));
 	animatebutton->show();
-
+/*
 	NORMAL_BUTTON(keyframebutton,"synfig-keyframe_lock_all",_("All Keyframes Locked"));
 	keyframebutton->signal_clicked().connect(sigc::mem_fun(*this, &studio::CanvasView::on_keyframe_button_pressed));
 	keyframebutton->show();
-
+	keyframebutton->set_relief(Gtk::RELIEF_NONE);
+*/
 	//Setup the audio display
 	disp_audio->set_size_request(-1,32); //disp_audio->show();
 	disp_audio->set_time_adjustment(&time_adjustment());
@@ -1016,7 +1018,9 @@ CanvasView::create_time_bar()
 	KeyFrameDial *keyframedial = Gtk::manage(new class KeyFrameDial());
 	keyframedial->signal_seek_prev_keyframe().connect(sigc::mem_fun(*canvas_interface().get(), &synfigapp::CanvasInterface::jump_to_prev_keyframe));
 	keyframedial->signal_seek_next_keyframe().connect(sigc::mem_fun(*canvas_interface().get(), &synfigapp::CanvasInterface::jump_to_next_keyframe));
+	keyframedial->signal_lock_keyframe().connect(sigc::mem_fun(*this, &studio::CanvasView::on_keyframe_button_pressed));
 	keyframedial->show();
+	keyframebutton=keyframedial->get_lock_button();
 
 	Gtk::Table *table = manage(new class Gtk::Table(4, 4, false));
 	timebar = table;
@@ -1029,7 +1033,7 @@ CanvasView::create_time_bar()
 	table->attach(*time_window_scroll, 1, 4, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK);
 	table->attach(*keyframedial, 0, 1, 3, 4, Gtk::SHRINK, Gtk::SHRINK);
 	table->attach(*animatebutton, 2, 3, 3, 4, Gtk::SHRINK, Gtk::SHRINK);
-	table->attach(*keyframebutton, 1, 2, 3, 4, Gtk::SHRINK, Gtk::SHRINK);
+	//table->attach(*keyframebutton, 1, 2, 3, 4, Gtk::SHRINK, Gtk::SHRINK);
 
 
 	table->show();

@@ -51,6 +51,7 @@ class KeyFrameDial : public Gtk::Table
 
 	Gtk::Button *seek_prev_keyframe;
 	Gtk::Button *seek_next_keyframe;
+	Gtk::Button *lock_keyframe;
 
 	Gtk::Button *create_icon(Gtk::IconSize iconsize, const char * stockid, const char * tooltip);
 
@@ -59,6 +60,8 @@ public:
 	KeyFrameDial();
 	Glib::SignalProxy0<void> signal_seek_prev_keyframe()  { return seek_prev_keyframe->signal_clicked(); }
 	Glib::SignalProxy0<void> signal_seek_next_keyframe()  { return seek_next_keyframe->signal_clicked(); }
+	Glib::SignalProxy0<void> signal_lock_keyframe()  { return lock_keyframe->signal_clicked(); }
+	Gtk::Button *get_lock_button() { return lock_keyframe; }
 
 }; // END of class KeyFrameDial
 
