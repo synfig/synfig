@@ -100,6 +100,7 @@
 #include "audiocontainer.h"
 #include "widget_timeslider.h"
 #include "framedial.h"
+#include "keyframedial.h"
 
 #include <synfigapp/main.h>
 #include <synfigapp/inputdevice.h>
@@ -1011,6 +1012,12 @@ CanvasView::create_time_bar()
 	);
 	framedial->show();
 
+	//Setup the KeyFrameDial widget
+	KeyFrameDial *keyframedial = Gtk::manage(new class KeyFrameDial());
+	keyframedial->signal_seek_prev_keyframe().connect(sigc::mem_fun(*canvas_interface().get(), &synfigapp::CanvasInterface::jump_to_prev_keyframe));
+	keyframedial->signal_seek_next_keyframe().connect(sigc::mem_fun(*canvas_interface().get(), &synfigapp::CanvasInterface::jump_to_next_keyframe));
+	keyframedial->show();
+
 	Gtk::Table *table = manage(new class Gtk::Table(4, 4, false));
 	timebar = table;
 
@@ -1020,8 +1027,9 @@ CanvasView::create_time_bar()
 	table->attach(*current_time_widget, 0, 1, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 	table->attach(*timeslider, 1, 4, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK);
 	table->attach(*time_window_scroll, 1, 4, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK);
-	table->attach(*animatebutton, 2, 3, 3, 4, Gtk::FILL, Gtk::SHRINK);
-	table->attach(*keyframebutton, 3, 4, 3, 4, Gtk::FILL, Gtk::SHRINK);
+	table->attach(*keyframedial, 0, 1, 3, 4, Gtk::SHRINK, Gtk::SHRINK);
+	table->attach(*animatebutton, 2, 3, 3, 4, Gtk::SHRINK, Gtk::SHRINK);
+	table->attach(*keyframebutton, 1, 2, 3, 4, Gtk::SHRINK, Gtk::SHRINK);
 
 
 	table->show();
