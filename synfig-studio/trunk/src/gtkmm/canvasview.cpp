@@ -992,6 +992,8 @@ CanvasView::create_time_bar()
 	current_time_widget->signal_value_changed().connect(
 		sigc::mem_fun(*this,&CanvasView::on_current_time_widget_changed)
 	);
+	current_time_widget->set_size_request(0,-1); // request horizontal shrink
+	current_time_widget->show();
 
 	//Setup the FrameDial widget
 	FrameDial *framedial = manage(new class FrameDial());
@@ -3209,7 +3211,7 @@ void
 CanvasView::show_timebar()
 {
 	timebar->show();
-	current_time_widget->show();
+	//current_time_widget->show(); // not needed now that belongs to the timebar
 
 	//keyframe_tab_child->show();
 	if(layer_tree)
