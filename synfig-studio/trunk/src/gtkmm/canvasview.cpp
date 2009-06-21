@@ -946,6 +946,7 @@ CanvasView::create_time_bar()
 {
 	Gtk::Image *icon;
 
+	//Setup the Time Slider and the Time window scroll
 	Gtk::HScrollbar *time_window_scroll = manage(new class Gtk::HScrollbar(time_window_adjustment()));
 	//Gtk::HScrollbar *time_scroll = manage(new class Gtk::HScrollbar(time_adjustment()));
 	//TIME BAR TEMPORARY POSITION
@@ -965,6 +966,7 @@ CanvasView::create_time_bar()
 	//time_scroll->signal_value_changed().connect(sigc::mem_fun(*work_area, &studio::WorkArea::render_preview_hook));
 	//time_scroll->set_update_policy(Gtk::UPDATE_DISCONTINUOUS);
 
+	//Setup the Animation Mode Button and the Keyframe Lock button
 	NORMAL_BUTTON(animatebutton,"gtk-yes",_("Animate"));
 	animatebutton->signal_clicked().connect(sigc::mem_fun(*this, &studio::CanvasView::on_animate_button_pressed));
 	animatebutton->show();
@@ -973,7 +975,7 @@ CanvasView::create_time_bar()
 	keyframebutton->signal_clicked().connect(sigc::mem_fun(*this, &studio::CanvasView::on_keyframe_button_pressed));
 	keyframebutton->show();
 
-	//setup the audio display
+	//Setup the audio display
 	disp_audio->set_size_request(-1,32); //disp_audio->show();
 	disp_audio->set_time_adjustment(&time_adjustment());
 	disp_audio->signal_start_scrubbing().connect(
@@ -985,7 +987,15 @@ CanvasView::create_time_bar()
 	disp_audio->signal_stop_scrubbing().connect(
 		sigc::mem_fun(*audio,&AudioContainer::stop_scrubbing)
 	);
+	//Setup the current time widget
+	current_time_widget=manage(new Widget_Time);
+	current_time_widget->set_value(get_time());
+	current_time_widget->set_fps(get_canvas()->rend_desc().get_frame_rate());
+	current_time_widget->signal_value_changed().connect(
+		sigc::mem_fun(*this,&CanvasView::on_current_time_widget_changed)
+	);
 
+	//Setup the FrameDial widget
 	FrameDial *framedial = manage(new class FrameDial());
 	framedial->signal_seek_begin().connect(
 			sigc::bind(sigc::mem_fun(*canvas_interface().get(), &synfigapp::CanvasInterface::seek_time), Time::begin())
@@ -1001,15 +1011,19 @@ CanvasView::create_time_bar()
 	);
 	framedial->show();
 
-	Gtk::Table *table = manage(new class Gtk::Table(4, 3, false));
+	Gtk::Table *table = manage(new class Gtk::Table(4, 4, false));
 	timebar = table;
 
-	table->attach(*manage(disp_audio), 0, 1, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK);
-	table->attach(*framedial, 0, 1, 1, 2,Gtk::SHRINK, Gtk::SHRINK);
-	table->attach(*timeslider, 1, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK);
-	table->attach(*time_window_scroll, 1, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK);
-	table->attach(*animatebutton, 2, 3, 0, 3, Gtk::SHRINK, Gtk::SHRINK);
-	table->attach(*keyframebutton, 3, 4, 0, 3, Gtk::SHRINK, Gtk::SHRINK);
+	//Attach widgets to the time bar table
+	table->attach(*manage(disp_audio), 1, 4, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK);
+	table->attach(*framedial, 0, 1, 2, 3,Gtk::SHRINK, Gtk::SHRINK);
+	table->attach(*current_time_widget, 0, 1, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+	table->attach(*timeslider, 1, 4, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK);
+	table->attach(*time_window_scroll, 1, 4, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK);
+	table->attach(*animatebutton, 2, 3, 3, 4, Gtk::FILL, Gtk::SHRINK);
+	table->attach(*keyframebutton, 3, 4, 3, 4, Gtk::FILL, Gtk::SHRINK);
+
+
 	table->show();
 
 	return table;
@@ -1036,7 +1050,7 @@ CanvasView::create_status_bar()
 	cancel=false;
 
 	// Create the status bar at the bottom of the window
-	Gtk::Table *statusbartable= manage(new class Gtk::Table(7, 1, false));
+	Gtk::Table *statusbartable= manage(new class Gtk::Table(5, 1, false));
 //	statusbar = manage(new class Gtk::Statusbar()); // This is already done at construction
 	progressbar =manage(new class Gtk::ProgressBar());
 	SMALL_BUTTON(stopbutton,"gtk-stop",_("Stop"));
@@ -1048,18 +1062,10 @@ CanvasView::create_status_bar()
 //	statusbartable->attach(*lowerbutton, 0, 1, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
 //	statusbartable->attach(*raisebutton, 1, 2, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
 
-	current_time_widget=manage(new Widget_Time);
-	current_time_widget->set_value(get_time());
-	current_time_widget->set_fps(get_canvas()->rend_desc().get_frame_rate());
-	current_time_widget->signal_value_changed().connect(
-		sigc::mem_fun(*this,&CanvasView::on_current_time_widget_changed)
-	);
-
-	statusbartable->attach(*current_time_widget, 0, 1, 0, 1, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-	statusbartable->attach(*statusbar, 3, 4, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	statusbartable->attach(*progressbar, 4, 5, 0, 1, Gtk::SHRINK, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	statusbartable->attach(*refreshbutton, 5, 6, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
-	statusbartable->attach(*stopbutton, 6, 7, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
+	statusbartable->attach(*statusbar, 1, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	statusbartable->attach(*progressbar, 2, 3, 0, 1, Gtk::SHRINK, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	statusbartable->attach(*refreshbutton, 3, 4, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
+	statusbartable->attach(*stopbutton, 4, 5, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
 	statusbar->set_has_resize_grip(false);
 	statusbar->show();
 	stopbutton->show();
@@ -3209,7 +3215,7 @@ void
 CanvasView::hide_timebar()
 {
 	timebar->hide();
-	current_time_widget->hide();
+	//current_time_widget->hide(); // not needed now that belongs to the timebar
 	//keyframe_tab_child->hide();
 	if(layer_tree)
 		layer_tree->set_show_timetrack(false);
@@ -3221,7 +3227,7 @@ void
 CanvasView::set_sensitive_timebar(bool sensitive)
 {
 	timebar->set_sensitive(sensitive);
-	current_time_widget->set_sensitive(sensitive);
+	//current_time_widget->set_sensitive(sensitive); //not needed now that belongs to timebar
 	//keyframe_tab_child->set_sensitive(sensitive);
 	if(layer_tree)
 		layer_tree->set_sensitive(sensitive);
