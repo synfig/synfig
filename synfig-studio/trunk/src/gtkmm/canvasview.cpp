@@ -993,6 +993,7 @@ CanvasView::create_time_bar()
 		sigc::mem_fun(*this,&CanvasView::on_current_time_widget_changed)
 	);
 	current_time_widget->set_size_request(0,-1); // request horizontal shrink
+	tooltips.set_tip(*current_time_widget,_("Current time"));
 	current_time_widget->show();
 
 	//Setup the FrameDial widget
@@ -1019,17 +1020,17 @@ CanvasView::create_time_bar()
 	keyframedial->show();
 	keyframebutton=keyframedial->get_lock_button();
 
-	Gtk::Table *table = manage(new class Gtk::Table(4, 4, false));
+	Gtk::Table *table = manage(new class Gtk::Table(5, 3, false));
 	timebar = table;
 
 	//Attach widgets to the time bar table
-	table->attach(*manage(disp_audio), 1, 4, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK);
+	table->attach(*manage(disp_audio), 1, 5, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK);
 	table->attach(*framedial, 0, 1, 2, 3,Gtk::SHRINK, Gtk::SHRINK);
 	table->attach(*current_time_widget, 0, 1, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-	table->attach(*timeslider, 1, 4, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK);
-	table->attach(*time_window_scroll, 1, 4, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK);
-	table->attach(*keyframedial, 0, 1, 3, 4, Gtk::SHRINK, Gtk::SHRINK);
-	table->attach(*animatebutton, 2, 3, 3, 4, Gtk::SHRINK, Gtk::SHRINK);
+	table->attach(*timeslider, 1, 3, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK);
+	table->attach(*time_window_scroll, 1, 3, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK);
+	table->attach(*keyframedial, 3, 4, 1, 2, Gtk::SHRINK, Gtk::SHRINK);
+	table->attach(*animatebutton, 4, 5, 1, 2, Gtk::SHRINK, Gtk::SHRINK);
 	//table->attach(*keyframebutton, 1, 2, 3, 4, Gtk::SHRINK, Gtk::SHRINK);
 
 
