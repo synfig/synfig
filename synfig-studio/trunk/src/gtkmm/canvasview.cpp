@@ -972,12 +972,7 @@ CanvasView::create_time_bar()
 	SMALL_BUTTON(animatebutton,"gtk-yes",_("Animate"));
 	animatebutton->signal_clicked().connect(sigc::mem_fun(*this, &studio::CanvasView::on_animate_button_pressed));
 	animatebutton->show();
-/*
-	NORMAL_BUTTON(keyframebutton,"synfig-keyframe_lock_all",_("All Keyframes Locked"));
-	keyframebutton->signal_clicked().connect(sigc::mem_fun(*this, &studio::CanvasView::on_keyframe_button_pressed));
-	keyframebutton->show();
-	keyframebutton->set_relief(Gtk::RELIEF_NONE);
-*/
+
 	//Setup the audio display
 	disp_audio->set_size_request(-1,32); //disp_audio->show();
 	disp_audio->set_time_adjustment(&time_adjustment());
