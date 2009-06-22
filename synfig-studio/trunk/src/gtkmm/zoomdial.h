@@ -50,7 +50,7 @@ class ZoomDial : public Gtk::Table
 	Gtk::Button *zoom_fit;
 	Gtk::Button *zoom_norm;
 
-	Gtk::Button *create_icon(Gtk::IconSize size, const char * stockid,
+	Gtk::Button *create_icon(Gtk::IconSize size, const Gtk::BuiltinStockID & stockid,
 			const char * tooltip);
 
 public:

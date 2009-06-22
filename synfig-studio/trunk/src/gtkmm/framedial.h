@@ -53,7 +53,8 @@ class FrameDial : public Gtk::Table
 	Gtk::Button *seek_next_frame;
 	Gtk::Button *seek_end;
 
-	Gtk::Button *create_icon(Gtk::IconSize iconsize, const char * stockid, const char * tooltip);
+	Gtk::Button *create_icon(Gtk::IconSize size, const Gtk::BuiltinStockID & stockid,
+			const char * tooltip);
 
 public:
 	FrameDial();

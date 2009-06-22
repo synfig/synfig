@@ -32,6 +32,7 @@
 
 #include "framedial.h"
 #include <gtkmm/image.h>
+#include <gtkmm/stock.h>
 
 #endif
 
@@ -52,10 +53,14 @@ FrameDial::FrameDial(): Gtk::Table(3, 1, false)
 {
 	Gtk::IconSize iconsize = Gtk::IconSize::from_name("synfig-small_icon");
 
-	seek_begin = create_icon(iconsize, GTK_STOCK_MEDIA_PREVIOUS, _("Seek to Begin"));
-	seek_prev_frame = create_icon(iconsize, GTK_STOCK_MEDIA_REWIND, _("Previous Frame"));
-	seek_next_frame = create_icon(iconsize, GTK_STOCK_MEDIA_FORWARD, _("Next Frame"));
-	seek_end = create_icon(iconsize, GTK_STOCK_MEDIA_NEXT, _("Seek to End"));
+	seek_begin = create_icon(iconsize, Gtk::Stock::MEDIA_PREVIOUS,
+					_("Seek to Begin"));
+	seek_prev_frame = create_icon(iconsize, Gtk::Stock::MEDIA_REWIND,
+					_("Previous Frame"));
+	seek_next_frame = create_icon(iconsize, Gtk::Stock::MEDIA_FORWARD,
+					_("Next Frame"));
+	seek_end = create_icon(iconsize, Gtk::Stock::MEDIA_NEXT,
+					_("Seek to End"));
 
 	attach(*seek_begin, 0, 1, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
 	attach(*seek_prev_frame, 1, 2, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
@@ -64,11 +69,11 @@ FrameDial::FrameDial(): Gtk::Table(3, 1, false)
 }
 
 Gtk::Button *
-FrameDial::create_icon(Gtk::IconSize iconsize, const char * stockid,
+FrameDial::create_icon(Gtk::IconSize size, const Gtk::BuiltinStockID & stockid,
 		const char * tooltip)
 {
 	Gtk::Button *button = manage(new class Gtk::Button());
-	Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID(stockid), iconsize));
+	Gtk::Image *icon = manage(new Gtk::Image(stockid, size));
 	button->add(*icon);
 	tooltips.set_tip(*button, tooltip);
 	icon->set_padding(0, 0);
@@ -78,3 +83,4 @@ FrameDial::create_icon(Gtk::IconSize iconsize, const char * stockid,
 
 	return button;
 }
+
