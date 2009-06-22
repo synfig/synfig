@@ -65,6 +65,7 @@
 
 #include "dialog_waypoint.h"
 #include "dialog_keyframe.h"
+#include "framedial.h"
 
 #include "duckmatic.h"
 #include <gtkmm/scale.h>
@@ -263,6 +264,7 @@ private:
 	Gtk::Widget *timebar;
 	Gtk::Button *animatebutton;
 	Gtk::Button *keyframebutton;
+	FrameDial *framedial;
 
 
 	//! Shows current time and allows edition
@@ -678,6 +680,8 @@ private:
 
 	//void on_audio_play();
 	bool on_audio_scrub();
+
+	void on_play_stop_pressed();
 
 protected:
 	bool close_instance_when_safe();
