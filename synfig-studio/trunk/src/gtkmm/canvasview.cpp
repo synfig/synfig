@@ -959,7 +959,7 @@ CanvasView::create_time_bar()
 	tooltips.set_tip(*timeslider,_("Changes the current time"));
 	time_window_scroll->show();
 	timeslider->show();
-	time_window_scroll->set_flags(Gtk::CAN_FOCUS);
+	//time_window_scroll->set_flags(Gtk::CAN_FOCUS); // Uncomment this produce bad render of the HScroll
 	timeslider->set_flags(Gtk::CAN_FOCUS);
 
 	//time_scroll->signal_value_changed().connect(sigc::mem_fun(*work_area, &studio::WorkArea::render_preview_hook));
