@@ -258,19 +258,21 @@ private:
 
 	Gtk::Button *stopbutton;
 	Gtk::Button *refreshbutton;
-	Gtk::Button *treetogglebutton;
-	Gtk::Notebook *notebook;
+	Gtk::Button *treetogglebutton;  // not used
+	Gtk::Notebook *notebook; // not used
 	Gtk::Widget *timebar;
+	Gtk::Button *animatebutton;
+	Gtk::Button *keyframebutton;
 
+
+	//! Shows current time and allows edition
 	Widget_Time *current_time_widget;
 	void on_current_time_widget_changed();
 
-	std::auto_ptr<Widget_Timeslider>		timeslider;
+	//! Time slider class. Same than the Time track panel
+	std::auto_ptr<Widget_Timeslider> timeslider;
 
 	std::list<sigc::connection> duck_changed_connections;
-
-	Gtk::Button *animatebutton;
-	Gtk::Button *keyframebutton;
 
 /*	DEBUGPOINT_CLASS(8);
 
@@ -308,6 +310,7 @@ private:
 	Gtk::CheckMenuItem* duck_mask_width;
 	Gtk::CheckMenuItem* duck_mask_angle;
 */
+	//! Menu members
 	Gtk::Menu parammenu;
 
 	Glib::RefPtr<Gtk::ToggleAction> grid_snap_toggle;
@@ -400,9 +403,11 @@ private:
 
 	Gtk::Widget *create_time_bar();
 
+	//! Pop up menu for the bezier (bline, draw) tool (?)
 	void popup_param_menu_bezier(float location, synfigapp::ValueDesc value_desc)
 	{ popup_param_menu(value_desc,location,true); }
 
+	//! Pop up menu for the tools but not the bezier ones.
 	void popup_param_menu(synfigapp::ValueDesc value_desc, float location=0, bool bezier=false);
 
 	void workarea_layer_selected(synfig::Layer::Handle layer);
