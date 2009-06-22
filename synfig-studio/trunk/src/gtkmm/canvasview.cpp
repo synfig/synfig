@@ -99,7 +99,6 @@
 #include "preview.h"
 #include "audiocontainer.h"
 #include "widget_timeslider.h"
-#include "framedial.h"
 #include "keyframedial.h"
 
 #include <synfigapp/main.h>
@@ -997,12 +996,15 @@ CanvasView::create_time_bar()
 	current_time_widget->show();
 
 	//Setup the FrameDial widget
-	FrameDial *framedial = manage(new class FrameDial());
+	framedial = manage(new class FrameDial());
 	framedial->signal_seek_begin().connect(
 			sigc::bind(sigc::mem_fun(*canvas_interface().get(), &synfigapp::CanvasInterface::seek_time), Time::begin())
 	);
 	framedial->signal_seek_prev_frame().connect(
 			sigc::bind(sigc::mem_fun(*canvas_interface().get(), &synfigapp::CanvasInterface::seek_frame), -1)
+	);
+	framedial->signal_play_stop().connect(
+			sigc::mem_fun(*this, &studio::CanvasView::on_play_stop_pressed)
 	);
 	framedial->signal_seek_next_frame().connect(
 			sigc::bind(sigc::mem_fun(*canvas_interface().get(), &synfigapp::CanvasInterface::seek_frame), 1)
@@ -3154,8 +3156,8 @@ CanvasView::play()
 			return;
 		}
 	}
+	on_play_stop_pressed();
 	is_playing_=false;
-
 	time_adjustment().set_value(endtime);
 	time_adjustment().value_changed();
 }
@@ -3918,4 +3920,31 @@ CanvasView::on_delete_event(GdkEventAny* event __attribute__ ((unused)))
 	// if(event) return Gtk::Window::on_delete_event(event);
 
 	return true;
+}
+
+//! Modify the play stop button apearence and play stop the animation
+void
+CanvasView::on_play_stop_pressed()
+{
+	Gtk::Image *icon;
+	Gtk::Button *stop_button;
+	stop_button=framedial->get_play_button();
+	bool play_flag;
+	if(!is_playing())
+	{
+		icon = manage(new Gtk::Image(Gtk::Stock::MEDIA_STOP, Gtk::IconSize::from_name("synfig-small_icon")));
+		stop_button->set_relief(Gtk::RELIEF_NORMAL);
+		play_flag=true;
+	}
+	else
+	{
+		icon = manage(new Gtk::Image(Gtk::Stock::MEDIA_PLAY, Gtk::IconSize::from_name("synfig-small_icon")));
+		stop_button->set_relief(Gtk::RELIEF_NONE);
+		play_flag=false;
+	}
+	stop_button->remove();
+	stop_button->add(*icon);
+	icon->set_padding(0, 0);
+	icon->show();
+	if(play_flag) play(); else stop();
 }

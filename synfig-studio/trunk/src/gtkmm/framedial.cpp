@@ -49,7 +49,7 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
-FrameDial::FrameDial(): Gtk::Table(3, 1, false)
+FrameDial::FrameDial(): Gtk::Table(5, 1, false)
 {
 	Gtk::IconSize iconsize = Gtk::IconSize::from_name("synfig-small_icon");
 
@@ -57,6 +57,8 @@ FrameDial::FrameDial(): Gtk::Table(3, 1, false)
 					_("Seek to Begin"));
 	seek_prev_frame = create_icon(iconsize, Gtk::Stock::MEDIA_REWIND,
 					_("Previous Frame"));
+	play_stop = create_icon(iconsize, Gtk::Stock::MEDIA_PLAY,
+					_("Play"));
 	seek_next_frame = create_icon(iconsize, Gtk::Stock::MEDIA_FORWARD,
 					_("Next Frame"));
 	seek_end = create_icon(iconsize, Gtk::Stock::MEDIA_NEXT,
@@ -64,8 +66,9 @@ FrameDial::FrameDial(): Gtk::Table(3, 1, false)
 
 	attach(*seek_begin, 0, 1, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
 	attach(*seek_prev_frame, 1, 2, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
-	attach(*seek_next_frame, 2, 3, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
-	attach(*seek_end, 3, 4, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
+	attach(*play_stop, 2, 3, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
+	attach(*seek_next_frame, 3, 4, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
+	attach(*seek_end, 4, 5, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
 }
 
 Gtk::Button *
