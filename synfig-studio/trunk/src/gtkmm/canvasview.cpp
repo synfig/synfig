@@ -951,7 +951,6 @@ CanvasView::create_time_bar()
 	//Gtk::HScrollbar *time_scroll = manage(new class Gtk::HScrollbar(time_adjustment()));
 	//TIME BAR TEMPORARY POSITION
 	//Widget_Timeslider *time_scroll = manage(new Widget_Timeslider);
-	timeslider->show();
 	timeslider->set_time_adjustment(&time_adjustment());
 	timeslider->set_bounds_adjustment(&time_window_adjustment());
 	//layout_table->attach(*timeslider, 0, 1, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL);
