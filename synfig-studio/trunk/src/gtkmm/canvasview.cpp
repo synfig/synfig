@@ -2580,10 +2580,11 @@ void
 CanvasView::on_mode_changed(synfigapp::CanvasInterface::Mode mode)
 {
 	// If the animate flag was set in mode...
+	Gtk::IconSize iconsize=Gtk::IconSize::from_name("synfig-small_icon");
 	if(mode&synfigapp::MODE_ANIMATE)
 	{
 		Gtk::Image *icon;
-		icon=manage(new Gtk::Image(Gtk::StockID("gtk-no"),Gtk::ICON_SIZE_BUTTON));
+		icon=manage(new Gtk::Image(Gtk::StockID("gtk-no"),iconsize));
 		animatebutton->remove();
 		animatebutton->add(*icon);
 		tooltips.set_tip(*animatebutton,_("In Animate Editing Mode"));
@@ -2593,7 +2594,7 @@ CanvasView::on_mode_changed(synfigapp::CanvasInterface::Mode mode)
 	else
 	{
 		Gtk::Image *icon;
-		icon=manage(new Gtk::Image(Gtk::StockID("gtk-yes"),Gtk::ICON_SIZE_BUTTON));
+		icon=manage(new Gtk::Image(Gtk::StockID("gtk-yes"),iconsize));
 		animatebutton->remove();
 		animatebutton->add(*icon);
 		tooltips.set_tip(*animatebutton,_("Not in Animate Editing Mode"));
