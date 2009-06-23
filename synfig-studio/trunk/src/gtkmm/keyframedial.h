@@ -54,6 +54,7 @@ class KeyFrameDial : public Gtk::Table
 	Gtk::Button *lock_keyframe;
 
 	Gtk::Button *create_icon(Gtk::IconSize iconsize, const char * stockid, const char * tooltip);
+	Gtk::Button *create_icon(Gtk::IconSize iconsize, const Gtk::BuiltinStockID & stockid, const char * tooltip);
 
 public:
 
