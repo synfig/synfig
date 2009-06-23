@@ -100,6 +100,7 @@
 #include "audiocontainer.h"
 #include "widget_timeslider.h"
 #include "keyframedial.h"
+#include "toggleducksdial.h"
 
 #include <synfigapp/main.h>
 #include <synfigapp/inputdevice.h>
@@ -1021,7 +1022,29 @@ CanvasView::create_time_bar()
 	keyframedial->show();
 	keyframebutton=keyframedial->get_lock_button();
 
-	Gtk::Table *table = manage(new class Gtk::Table(5, 3, false));
+	// Setup the ToggleDuckDial widget
+	ToggleDucksDial *toggleducksdial = Gtk::manage(new class ToggleDucksDial());
+	toggleducksdial->signal_ducks_position().connect(
+			sigc::bind(sigc::mem_fun(*this, &studio::CanvasView::toggle_duck_mask),Duck::TYPE_POSITION)
+			);
+	toggleducksdial->signal_ducks_vertex().connect(
+			sigc::bind(sigc::mem_fun(*this, &studio::CanvasView::toggle_duck_mask),Duck::TYPE_VERTEX)
+			);
+	toggleducksdial->signal_ducks_tangent().connect(
+			sigc::bind(sigc::mem_fun(*this, &studio::CanvasView::toggle_duck_mask),Duck::TYPE_TANGENT)
+			);
+	toggleducksdial->signal_ducks_radius().connect(
+			sigc::bind(sigc::mem_fun(*this, &studio::CanvasView::toggle_duck_mask),Duck::TYPE_RADIUS)
+			);
+	toggleducksdial->signal_ducks_width().connect(
+			sigc::bind(sigc::mem_fun(*this, &studio::CanvasView::toggle_duck_mask),Duck::TYPE_WIDTH)
+			);
+	toggleducksdial->signal_ducks_angle().connect(
+			sigc::bind(sigc::mem_fun(*this, &studio::CanvasView::toggle_duck_mask),Duck::TYPE_ANGLE)
+			);
+	toggleducksdial->show();
+
+	Gtk::Table *table = manage(new class Gtk::Table(5, 4, false));
 	timebar = table;
 
 	//Attach widgets to the time bar table
@@ -1033,6 +1056,7 @@ CanvasView::create_time_bar()
 	table->attach(*keyframedial, 3, 4, 1, 2, Gtk::SHRINK, Gtk::SHRINK);
 	table->attach(*animatebutton, 4, 5, 1, 2, Gtk::SHRINK, Gtk::SHRINK);
 	//table->attach(*keyframebutton, 1, 2, 3, 4, Gtk::SHRINK, Gtk::SHRINK);
+	table->attach(*toggleducksdial, 0, 5, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
 
 
 	table->show();
