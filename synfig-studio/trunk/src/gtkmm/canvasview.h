@@ -261,7 +261,7 @@ private:
 	Gtk::Button *refreshbutton;
 	Gtk::Button *treetogglebutton;  // not used
 	Gtk::Notebook *notebook; // not used
-	Gtk::Widget *timebar;
+	Gtk::Table *timebar;
 	Gtk::Button *animatebutton;
 	Gtk::Button *keyframebutton;
 	FrameDial *framedial;

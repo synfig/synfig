@@ -1044,24 +1044,23 @@ CanvasView::create_time_bar()
 			);
 	toggleducksdial->show();
 
-	Gtk::Table *table = manage(new class Gtk::Table(5, 4, false));
-	timebar = table;
+	timebar = manage(new class Gtk::Table(5, 4, false));
 
-	//Attach widgets to the time bar table
-	table->attach(*manage(disp_audio), 1, 5, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK);
-	table->attach(*framedial, 0, 1, 2, 3,Gtk::SHRINK, Gtk::SHRINK);
-	table->attach(*current_time_widget, 0, 1, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-	table->attach(*timeslider, 1, 3, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK);
-	table->attach(*time_window_scroll, 1, 3, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK);
-	table->attach(*keyframedial, 3, 4, 1, 2, Gtk::SHRINK, Gtk::SHRINK);
-	table->attach(*animatebutton, 4, 5, 1, 2, Gtk::SHRINK, Gtk::SHRINK);
-	//table->attach(*keyframebutton, 1, 2, 3, 4, Gtk::SHRINK, Gtk::SHRINK);
-	table->attach(*toggleducksdial, 0, 5, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
+	//Attach widgets to the timebar
+	timebar->attach(*manage(disp_audio), 1, 5, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK);
+	timebar->attach(*framedial, 0, 1, 2, 3,Gtk::SHRINK, Gtk::SHRINK);
+	timebar->attach(*current_time_widget, 0, 1, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+	timebar->attach(*timeslider, 1, 3, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK);
+	timebar->attach(*time_window_scroll, 1, 3, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK);
+	timebar->attach(*keyframedial, 3, 4, 1, 2, Gtk::SHRINK, Gtk::SHRINK);
+	timebar->attach(*animatebutton, 4, 5, 1, 2, Gtk::SHRINK, Gtk::SHRINK);
+	//timebar->attach(*keyframebutton, 1, 2, 3, 4, Gtk::SHRINK, Gtk::SHRINK);
+	timebar->attach(*toggleducksdial, 0, 5, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
 
 
-	table->show();
+	timebar->show();
 
-	return table;
+	return timebar;
 }
 
 Gtk::Widget *
