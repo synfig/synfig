@@ -269,14 +269,18 @@ Dialog_Setup::Dialog_Setup():
 	document_table->attach(*label1, 2, 3, 3, 4, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
 	document_table->attach(*fps_template_combo,2, 3, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
 	fps_template_combo->signal_changed().connect(sigc::mem_fun(*this,&studio::Dialog_Setup::on_fps_template_combo_change));
-	fps_template_combo->prepend_text("60,0"); // It seems that the period is a ',' instead of a '.' for GTK.
-	fps_template_combo->prepend_text("50,0");
-	fps_template_combo->prepend_text("30,0");
-	fps_template_combo->prepend_text("25,0");
-	fps_template_combo->prepend_text("24,976");
-	fps_template_combo->prepend_text("24,0");
-	fps_template_combo->prepend_text("15,0");
-	fps_template_combo->prepend_text("12,0");
+	float f[8];
+	f[0]=60;
+	f[1]=50;
+	f[2]=30;
+	f[3]=25;
+	f[4]=24.967;
+	f[5]=24;
+	f[6]=15;
+	f[7]=12;
+	for (int i=0; i<8; i++)
+		fps_template_combo->prepend_text(strprintf("%5.3f",f[i])); // It seems that the period is a ',' instead of a '.' for GTK.
+
 	fps_template_combo->prepend_text(DEFAULT_PREDEFINED_FPS);
 
 	// Document - New Document FPS
