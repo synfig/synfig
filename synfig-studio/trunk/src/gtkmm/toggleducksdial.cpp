@@ -69,15 +69,15 @@ ToggleDucksDial::ToggleDucksDial(): Gtk::Table(1, 6, false)
 	attach(*ducks_angle, 5, 6, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
 }
 
-Gtk::Button *
+Gtk::ToggleButton *
 ToggleDucksDial::create_label_button(Gtk::IconSize iconsize, const char *label,
 		const char * tooltip)
 {
-	Gtk::Button *button = manage(new class Gtk::Button());
-	button->set_label(label);
-	tooltips.set_tip(*button, tooltip);
-	button->set_relief(Gtk::RELIEF_NONE);
-	button->show();
+	Gtk::ToggleButton *tbutton = manage(new class Gtk::ToggleButton());
+	tbutton->set_label(label);
+	tooltips.set_tip(*tbutton, tooltip);
+	//tbutton->set_relief(Gtk::RELIEF_NONE);
+	tbutton->show();
 
-	return button;
+	return tbutton;
 }

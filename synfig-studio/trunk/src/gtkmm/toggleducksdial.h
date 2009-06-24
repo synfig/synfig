@@ -32,7 +32,7 @@
 
 #include <gtkmm/tooltips.h>
 #include <gtkmm/table.h>
-#include <gtkmm/button.h>
+#include <gtkmm/togglebutton.h>
 
 #include "general.h"
 
@@ -49,24 +49,31 @@ class ToggleDucksDial : public Gtk::Table
 {
 	Gtk::Tooltips tooltips;
 
-	Gtk::Button *ducks_position;
-	Gtk::Button *ducks_vertex;
-	Gtk::Button *ducks_tangent;
-	Gtk::Button *ducks_radius;
-	Gtk::Button *ducks_width;
-	Gtk::Button *ducks_angle;
+	Gtk::ToggleButton *ducks_position;
+	Gtk::ToggleButton *ducks_vertex;
+	Gtk::ToggleButton *ducks_tangent;
+	Gtk::ToggleButton *ducks_radius;
+	Gtk::ToggleButton *ducks_width;
+	Gtk::ToggleButton *ducks_angle;
 
-	Gtk::Button *create_label_button(Gtk::IconSize iconsize, const char * label, const char * tooltip);
+	Gtk::ToggleButton *create_label_button(Gtk::IconSize iconsize, const char * label, const char * tooltip);
 
 public:
 
 	ToggleDucksDial();
-	Glib::SignalProxy0<void> signal_ducks_position()  { return ducks_position->signal_clicked(); }
-	Glib::SignalProxy0<void> signal_ducks_vertex()  { return ducks_vertex->signal_clicked(); }
-	Glib::SignalProxy0<void> signal_ducks_tangent()  { return ducks_tangent->signal_clicked(); }
-	Glib::SignalProxy0<void> signal_ducks_radius()  { return ducks_radius->signal_clicked(); }
-	Glib::SignalProxy0<void> signal_ducks_width()  { return ducks_width->signal_clicked(); }
-	Glib::SignalProxy0<void> signal_ducks_angle()  { return ducks_angle->signal_clicked(); }
+	Glib::SignalProxy0<void> signal_ducks_position()  { return ducks_position->signal_toggled(); }
+	Glib::SignalProxy0<void> signal_ducks_vertex()    { return ducks_vertex->  signal_toggled(); }
+	Glib::SignalProxy0<void> signal_ducks_tangent()   { return ducks_tangent-> signal_toggled(); }
+	Glib::SignalProxy0<void> signal_ducks_radius()    { return ducks_radius->  signal_toggled(); }
+	Glib::SignalProxy0<void> signal_ducks_width()     { return ducks_width->   signal_toggled(); }
+	Glib::SignalProxy0<void> signal_ducks_angle()     { return ducks_angle->   signal_toggled(); }
+
+	Gtk::ToggleButton * get_position_toggle() { return ducks_position; }
+	Gtk::ToggleButton * get_vertex_toggle()   { return ducks_vertex; }
+	Gtk::ToggleButton * get_tangent_toggle()  { return ducks_tangent; }
+	Gtk::ToggleButton * get_radius_toggle()   { return ducks_radius; }
+	Gtk::ToggleButton * get_width_toggle()    { return ducks_width; }
+	Gtk::ToggleButton * get_angle_toggle()    { return ducks_angle; }
 
 }; // END of class ToggleDucksDial
 

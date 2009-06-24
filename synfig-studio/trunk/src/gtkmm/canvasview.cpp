@@ -1024,6 +1024,14 @@ CanvasView::create_time_bar()
 
 	// Setup the ToggleDuckDial widget
 	ToggleDucksDial *toggleducksdial = Gtk::manage(new class ToggleDucksDial());
+
+	toggleducksdial->get_position_toggle()-> set_active(work_area->get_type_mask()&Duck::TYPE_POSITION);
+	toggleducksdial->get_vertex_toggle()  -> set_active(work_area->get_type_mask()&Duck::TYPE_VERTEX);
+	toggleducksdial->get_tangent_toggle() -> set_active(work_area->get_type_mask()&Duck::TYPE_TANGENT);
+	toggleducksdial->get_radius_toggle()  -> set_active(work_area->get_type_mask()&Duck::TYPE_RADIUS);
+	toggleducksdial->get_width_toggle()   -> set_active(work_area->get_type_mask()&Duck::TYPE_WIDTH);
+	toggleducksdial->get_angle_toggle()   -> set_active(work_area->get_type_mask()&Duck::TYPE_ANGLE);
+
 	toggleducksdial->signal_ducks_position().connect(
 			sigc::bind(sigc::mem_fun(*this, &studio::CanvasView::toggle_duck_mask),Duck::TYPE_POSITION)
 			);
