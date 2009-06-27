@@ -63,7 +63,7 @@ class ToggleDucksDial : public Gtk::Table
 public:
 
 	ToggleDucksDial();
-	void initiate_toggles(Duck::Type mask);
+	void update_toggles(Duck::Type mask);
 	Glib::SignalProxy0<void> signal_ducks_position()  { return ducks_position->signal_toggled(); }
 	Glib::SignalProxy0<void> signal_ducks_vertex()    { return ducks_vertex->  signal_toggled(); }
 	Glib::SignalProxy0<void> signal_ducks_tangent()   { return ducks_tangent-> signal_toggled(); }

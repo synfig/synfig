@@ -704,6 +704,7 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 	layer_tree=0;
 	children_tree=0;
 	duck_refresh_flag=true;
+	toggling_ducks_=false;
 
 	smach_.set_default_state(&state_normal);
 
@@ -3660,6 +3661,9 @@ CanvasView::on_keyframe_remove_pressed()
 void
 CanvasView::toggle_duck_mask(Duckmatic::Type type)
 {
+	if(toggling_ducks_)
+		return;
+	toggling_ducks_=true;
 	bool is_currently_on(work_area->get_type_mask()&type);
 
 	if(is_currently_on)
@@ -3668,6 +3672,15 @@ CanvasView::toggle_duck_mask(Duckmatic::Type type)
 		work_area->set_type_mask(work_area->get_type_mask()|type);
 
 	work_area->queue_draw();
+	try
+	{
+		toggleducksdial->update_toggles(work_area->get_type_mask());
+	}
+	catch(...)
+	{
+		toggling_ducks_=false;
+	}
+	toggling_ducks_=false;
 }
 
 void

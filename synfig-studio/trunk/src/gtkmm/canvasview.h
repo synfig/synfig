@@ -267,6 +267,7 @@ private:
 	Gtk::Button *keyframebutton;
 	FrameDial *framedial;
 	ToggleDucksDial *toggleducksdial;
+	bool toggling_ducks_;
 
 
 	//! Shows current time and allows edition

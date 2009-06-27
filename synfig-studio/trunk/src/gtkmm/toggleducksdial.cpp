@@ -83,7 +83,7 @@ ToggleDucksDial::create_label_button(Gtk::IconSize iconsize, const char *label,
 }
 
 void
-ToggleDucksDial::initiate_toggles(Duck::Type mask)
+ToggleDucksDial::update_toggles(Duck::Type mask)
 {
 	ducks_position-> set_active((mask & Duck::TYPE_POSITION));
 	ducks_vertex  -> set_active((mask & Duck::TYPE_VERTEX));
