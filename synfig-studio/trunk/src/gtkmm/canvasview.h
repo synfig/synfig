@@ -66,6 +66,7 @@
 #include "dialog_waypoint.h"
 #include "dialog_keyframe.h"
 #include "framedial.h"
+#include "toggleducksdial.h"
 
 #include "duckmatic.h"
 #include <gtkmm/scale.h>
@@ -265,6 +266,7 @@ private:
 	Gtk::Button *animatebutton;
 	Gtk::Button *keyframebutton;
 	FrameDial *framedial;
+	ToggleDucksDial *toggleducksdial;
 
 
 	//! Shows current time and allows edition

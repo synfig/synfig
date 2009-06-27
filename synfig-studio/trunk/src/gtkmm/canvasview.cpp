@@ -100,7 +100,6 @@
 #include "audiocontainer.h"
 #include "widget_timeslider.h"
 #include "keyframedial.h"
-#include "toggleducksdial.h"
 
 #include <synfigapp/main.h>
 #include <synfigapp/inputdevice.h>
@@ -1023,14 +1022,10 @@ CanvasView::create_time_bar()
 	keyframebutton=keyframedial->get_lock_button();
 
 	// Setup the ToggleDuckDial widget
-	ToggleDucksDial *toggleducksdial = Gtk::manage(new class ToggleDucksDial());
+	toggleducksdial = Gtk::manage(new class ToggleDucksDial());
 
-	toggleducksdial->get_position_toggle()-> set_active(work_area->get_type_mask()&Duck::TYPE_POSITION);
-	toggleducksdial->get_vertex_toggle()  -> set_active(work_area->get_type_mask()&Duck::TYPE_VERTEX);
-	toggleducksdial->get_tangent_toggle() -> set_active(work_area->get_type_mask()&Duck::TYPE_TANGENT);
-	toggleducksdial->get_radius_toggle()  -> set_active(work_area->get_type_mask()&Duck::TYPE_RADIUS);
-	toggleducksdial->get_width_toggle()   -> set_active(work_area->get_type_mask()&Duck::TYPE_WIDTH);
-	toggleducksdial->get_angle_toggle()   -> set_active(work_area->get_type_mask()&Duck::TYPE_ANGLE);
+	Duck::Type m = work_area->get_type_mask();
+	toggleducksdial->update_toggles(m);
 
 	toggleducksdial->signal_ducks_position().connect(
 			sigc::bind(sigc::mem_fun(*this, &studio::CanvasView::toggle_duck_mask),Duck::TYPE_POSITION)
