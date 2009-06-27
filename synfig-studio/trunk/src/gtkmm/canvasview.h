@@ -263,6 +263,7 @@ private:
 	Gtk::Button *treetogglebutton;  // not used
 	Gtk::Notebook *notebook; // not used
 	Gtk::Table *timebar;
+	Gtk::Table *displaybar;
 	Gtk::Button *animatebutton;
 	Gtk::Button *keyframebutton;
 	FrameDial *framedial;
@@ -407,6 +408,8 @@ private:
 	Gtk::Widget *create_work_area();
 
 	Gtk::Widget *create_time_bar();
+
+	Gtk::Widget *create_display_bar();
 
 	//! Pop up menu for the bezier (bline, draw) tool (?)
 	void popup_param_menu_bezier(float location, synfigapp::ValueDesc value_desc)

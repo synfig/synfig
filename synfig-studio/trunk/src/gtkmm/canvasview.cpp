@@ -736,9 +736,10 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 	//create all allocated stuff for this canvas
 	audio = new AudioContainer();
 
-	Gtk::Table *layout_table= manage(new class Gtk::Table(1, 3, false));
+	Gtk::Table *layout_table= manage(new class Gtk::Table(1, 4, false));
 	//layout_table->attach(*vpaned, 0, 1, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	layout_table->attach(*create_work_area(), 0, 1, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	layout_table->attach(*create_display_bar(), 0, 1, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 	init_menus();
 	//layout_table->attach(*App::ui_manager()->get_widget("/menu-main"), 0, 1, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 
@@ -1022,32 +1023,6 @@ CanvasView::create_time_bar()
 	keyframedial->show();
 	keyframebutton=keyframedial->get_lock_button();
 
-	// Setup the ToggleDuckDial widget
-	toggleducksdial = Gtk::manage(new class ToggleDucksDial());
-
-	Duck::Type m = work_area->get_type_mask();
-	toggleducksdial->update_toggles(m);
-
-	toggleducksdial->signal_ducks_position().connect(
-			sigc::bind(sigc::mem_fun(*this, &studio::CanvasView::toggle_duck_mask),Duck::TYPE_POSITION)
-			);
-	toggleducksdial->signal_ducks_vertex().connect(
-			sigc::bind(sigc::mem_fun(*this, &studio::CanvasView::toggle_duck_mask),Duck::TYPE_VERTEX)
-			);
-	toggleducksdial->signal_ducks_tangent().connect(
-			sigc::bind(sigc::mem_fun(*this, &studio::CanvasView::toggle_duck_mask),Duck::TYPE_TANGENT)
-			);
-	toggleducksdial->signal_ducks_radius().connect(
-			sigc::bind(sigc::mem_fun(*this, &studio::CanvasView::toggle_duck_mask),Duck::TYPE_RADIUS)
-			);
-	toggleducksdial->signal_ducks_width().connect(
-			sigc::bind(sigc::mem_fun(*this, &studio::CanvasView::toggle_duck_mask),Duck::TYPE_WIDTH)
-			);
-	toggleducksdial->signal_ducks_angle().connect(
-			sigc::bind(sigc::mem_fun(*this, &studio::CanvasView::toggle_duck_mask),Duck::TYPE_ANGLE)
-			);
-	toggleducksdial->show();
-
 	timebar = manage(new class Gtk::Table(5, 4, false));
 
 	//Attach widgets to the timebar
@@ -1059,8 +1034,6 @@ CanvasView::create_time_bar()
 	timebar->attach(*keyframedial, 3, 4, 1, 2, Gtk::SHRINK, Gtk::SHRINK);
 	timebar->attach(*animatebutton, 4, 5, 1, 2, Gtk::SHRINK, Gtk::SHRINK);
 	//timebar->attach(*keyframebutton, 1, 2, 3, 4, Gtk::SHRINK, Gtk::SHRINK);
-	timebar->attach(*toggleducksdial, 0, 5, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
-
 
 	timebar->show();
 
@@ -1120,6 +1093,43 @@ CanvasView::create_status_bar()
 
 	statusbartable->show_all();
 	return statusbartable;
+}
+
+Gtk::Widget*
+CanvasView::create_display_bar()
+{
+	displaybar = manage(new class Gtk::Table(1, 1, false));
+	// Setup the ToggleDuckDial widget
+	toggleducksdial = Gtk::manage(new class ToggleDucksDial());
+
+	Duck::Type m = work_area->get_type_mask();
+	toggleducksdial->update_toggles(m);
+
+	toggleducksdial->signal_ducks_position().connect(
+			sigc::bind(sigc::mem_fun(*this, &studio::CanvasView::toggle_duck_mask),Duck::TYPE_POSITION)
+			);
+	toggleducksdial->signal_ducks_vertex().connect(
+			sigc::bind(sigc::mem_fun(*this, &studio::CanvasView::toggle_duck_mask),Duck::TYPE_VERTEX)
+			);
+	toggleducksdial->signal_ducks_tangent().connect(
+			sigc::bind(sigc::mem_fun(*this, &studio::CanvasView::toggle_duck_mask),Duck::TYPE_TANGENT)
+			);
+	toggleducksdial->signal_ducks_radius().connect(
+			sigc::bind(sigc::mem_fun(*this, &studio::CanvasView::toggle_duck_mask),Duck::TYPE_RADIUS)
+			);
+	toggleducksdial->signal_ducks_width().connect(
+			sigc::bind(sigc::mem_fun(*this, &studio::CanvasView::toggle_duck_mask),Duck::TYPE_WIDTH)
+			);
+	toggleducksdial->signal_ducks_angle().connect(
+			sigc::bind(sigc::mem_fun(*this, &studio::CanvasView::toggle_duck_mask),Duck::TYPE_ANGLE)
+			);
+	toggleducksdial->show();
+
+	displaybar->attach(*toggleducksdial, 0, 1, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
+	displaybar->show();
+
+	return displaybar;
+
 }
 
 void
