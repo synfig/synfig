@@ -79,6 +79,7 @@ ToggleDucksDial::create_label_button(Gtk::IconSize iconsize, const char *stockid
 	tbutton->add(*icon);
 	icon->set_padding(0, 0);
 	icon->show();
+	tbutton->set_relief(Gtk::RELIEF_NONE);
 	tbutton->show();
 
 	return tbutton;
