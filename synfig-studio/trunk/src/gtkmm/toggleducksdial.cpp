@@ -54,12 +54,12 @@ ToggleDucksDial::ToggleDucksDial(): Gtk::Table(1, 6, false)
 {
 	Gtk::IconSize iconsize = Gtk::IconSize::from_name("synfig-small_icon");
 
-	ducks_position = create_label_button(iconsize, "1", _("Toogle position ducks"));
-	ducks_vertex = create_label_button(iconsize, "2", _("Toogle vertex ducks"));
-	ducks_tangent = create_label_button(iconsize, "3", _("Toogle tangent ducks"));
-	ducks_radius = create_label_button(iconsize, "4", _("Toogle radius ducks"));
-	ducks_width = create_label_button(iconsize, "5", _("Toogle width ducks"));
-	ducks_angle = create_label_button(iconsize, "6", _("Toogle angle ducks"));
+	ducks_position = create_label_button(iconsize, "synfig-toggle_duck_position", _("Toogle position ducks"));
+	ducks_vertex = create_label_button(iconsize, "synfig-toggle_duck_vertex", _("Toogle vertex ducks"));
+	ducks_tangent = create_label_button(iconsize, "synfig-toggle_duck_tangent", _("Toogle tangent ducks"));
+	ducks_radius = create_label_button(iconsize, "synfig-toggle_duck_radius", _("Toogle radius ducks"));
+	ducks_width = create_label_button(iconsize, "synfig-toggle_duck_width", _("Toogle width ducks"));
+	ducks_angle = create_label_button(iconsize, "synfig-toggle_duck_angle", _("Toogle angle ducks"));
 
 	attach(*ducks_position, 0, 1, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
 	attach(*ducks_vertex, 1, 2, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
@@ -70,13 +70,15 @@ ToggleDucksDial::ToggleDucksDial(): Gtk::Table(1, 6, false)
 }
 
 Gtk::ToggleButton *
-ToggleDucksDial::create_label_button(Gtk::IconSize iconsize, const char *label,
+ToggleDucksDial::create_label_button(Gtk::IconSize iconsize, const char *stockid,
 		const char * tooltip)
 {
 	Gtk::ToggleButton *tbutton = manage(new class Gtk::ToggleButton());
-	tbutton->set_label(label);
+	Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID(stockid), iconsize));
 	tooltips.set_tip(*tbutton, tooltip);
-	//tbutton->set_relief(Gtk::RELIEF_NONE);
+	tbutton->add(*icon);
+	icon->set_padding(0, 0);
+	icon->show();
 	tbutton->show();
 
 	return tbutton;

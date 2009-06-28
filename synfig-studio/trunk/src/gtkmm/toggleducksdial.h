@@ -58,7 +58,7 @@ class ToggleDucksDial : public Gtk::Table
 	Gtk::ToggleButton *ducks_width;
 	Gtk::ToggleButton *ducks_angle;
 
-	Gtk::ToggleButton *create_label_button(Gtk::IconSize iconsize, const char * label, const char * tooltip);
+	Gtk::ToggleButton *create_label_button(Gtk::IconSize iconsize, const char * stockid, const char * tooltip);
 
 public:
 

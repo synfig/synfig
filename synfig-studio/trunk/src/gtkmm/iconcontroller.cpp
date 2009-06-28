@@ -193,6 +193,13 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	INIT_STOCK_ICON(seek_next_frame,"seek_next_frame."IMAGE_EXT,_("Next Frame"));
 	INIT_STOCK_ICON(seek_end,"seek_end."IMAGE_EXT,_("Seek to End"));
 
+	INIT_STOCK_ICON(toggle_duck_position,"duck_position_icon."IMAGE_EXT,_("Toogle position ducks"));
+	INIT_STOCK_ICON(toggle_duck_vertex,"duck_vertex_icon."IMAGE_EXT,_("Toogle vertex ducks"));
+	INIT_STOCK_ICON(toggle_duck_tangent,"duck_tangent_icon."IMAGE_EXT,_("Toogle tangent ducks"));
+	INIT_STOCK_ICON(toggle_duck_radius,"duck_radius_icon."IMAGE_EXT,_("Toogle radius ducks"));
+	INIT_STOCK_ICON(toggle_duck_width,"duck_width_icon."IMAGE_EXT,_("Toogle width ducks"));
+	INIT_STOCK_ICON(toggle_duck_angle,"duck_angle_icon."IMAGE_EXT,_("Toogle angle ducks"));
+
 	INIT_STOCK_ICON_CLONE(cvs_add,"gtk-add",_("CVS Add"));
 	INIT_STOCK_ICON_CLONE(cvs_update,"gtk-open",_("CVS Update"));
 	INIT_STOCK_ICON_CLONE(cvs_commit,"gtk-save",_("CVS Commit"));

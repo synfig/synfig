@@ -74,8 +74,13 @@ EXTRA_DIST = \
 	seek_begin.sif \
 	seek_end.sif \
 	seek_next_frame.sif \
-	seek_prev_frame.sif
-
+	seek_prev_frame.sif \
+	duck_position_icon.sif \
+	duck_vertex_icon.sif \
+	duck_tangent_icon.sif \
+	duck_radius_icon.sif \
+	duck_width_icon.sif \
+	duck_angle_icon.sif
 
 
 IMAGES = \
@@ -147,7 +152,13 @@ IMAGES = \
 	seek_begin.$(EXT) \
 	seek_end.$(EXT) \
 	seek_next_frame.$(EXT) \
-	seek_prev_frame.$(EXT)
+	seek_prev_frame.$(EXT) \
+	duck_position_icon.$(EXT) \
+	duck_vertex_icon.$(EXT) \
+	duck_tangent_icon.$(EXT) \
+	duck_radius_icon.$(EXT) \
+	duck_width_icon.$(EXT) \
+	duck_angle_icon.$(EXT)
 
 
 MAINTAINERCLEANFILES = \
