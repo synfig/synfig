@@ -683,6 +683,7 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 	//keyframe_tree_store_	(KeyframeTreeStore::create(canvas_interface_)),
 	time_adjustment_		(0,0,25,0,0,0),
 	time_window_adjustment_	(0,0,25,0,0,0),
+	quality_adjustment_		(8,1,10,1,1,0),
 	statusbar				(manage(new class Gtk::Statusbar())),
 
 	timeslider				(new Widget_Timeslider),
@@ -707,6 +708,7 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 	duck_refresh_flag=true;
 	toggling_ducks_=false;
 	changing_resolution_=false;
+	updating_quality_=false;
 
 	smach_.set_default_state(&state_normal);
 
@@ -1100,7 +1102,7 @@ CanvasView::create_status_bar()
 Gtk::Widget*
 CanvasView::create_display_bar()
 {
-	displaybar = manage(new class Gtk::Table(1, 3, false));
+	displaybar = manage(new class Gtk::Table(1, 5, false));
 
 	// Setup the ToggleDuckDial widget
 	toggleducksdial = Gtk::manage(new class ToggleDucksDial());
@@ -1141,12 +1143,23 @@ CanvasView::create_display_bar()
 	resolutiondial->show();
 
 	// Set up a separator
-	Gtk::VSeparator *separator = Gtk::manage(new class Gtk::VSeparator());
-	separator->show();
+	Gtk::VSeparator *separator1 = Gtk::manage(new class Gtk::VSeparator());
+	separator1->show();
+	Gtk::VSeparator *separator2 = Gtk::manage(new class Gtk::VSeparator());
+	separator2->show();
 
-	displaybar->attach(*resolutiondial, 2, 3, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
+	// Set up quality spin button
+	quality_spin=Gtk::manage(new class Gtk::SpinButton(quality_adjustment_));
+	quality_spin->signal_value_changed().connect(
+			sigc::mem_fun(*this, &studio::CanvasView::update_quality));
+	quality_spin->show();
+
 	displaybar->attach(*toggleducksdial, 0, 1, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
-	displaybar->attach(*separator, 1, 2, 0, 1, Gtk::FILL, Gtk::FILL);
+	displaybar->attach(*separator1, 1, 2, 0, 1, Gtk::FILL, Gtk::FILL);
+	displaybar->attach(*resolutiondial, 2, 3, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
+	displaybar->attach(*separator2, 3, 4, 0, 1, Gtk::FILL, Gtk::FILL);
+	displaybar->attach(*quality_spin, 4, 5, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
+
 	displaybar->show();
 
 	return displaybar;
@@ -3169,6 +3182,16 @@ CanvasView::toggle_low_res_pixel_flag()
 	Glib::RefPtr<Gtk::ToggleAction> action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("toggle-low-res"));
 	action->set_active(work_area->get_low_resolution_flag());
 	changing_resolution_=false;
+}
+
+void
+CanvasView::update_quality()
+{
+	if(updating_quality_)
+		return;
+	updating_quality_=true;
+	work_area->set_quality((int) quality_spin->get_value());
+	updating_quality_=false;
 }
 
 void

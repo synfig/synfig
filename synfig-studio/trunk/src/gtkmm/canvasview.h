@@ -41,6 +41,7 @@
 #include <gtkmm/scrolledwindow.h>
 #include <gtkmm/notebook.h>
 #include <gdkmm/device.h>
+#include <gtkmm/spinbutton.h>
 
 #include <synfigapp/canvasinterface.h>
 #include <synfigapp/selectionmanager.h>
@@ -272,8 +273,9 @@ private:
 	bool toggling_ducks_;
 	ResolutionDial *resolutiondial;
 	bool changing_resolution_;
-
-
+	Gtk::Adjustment quality_adjustment_;
+	Gtk::SpinButton *quality_spin;
+	bool updating_quality_;
 	//! Shows current time and allows edition
 	Widget_Time *current_time_widget;
 	void on_current_time_widget_changed();
@@ -605,6 +607,8 @@ public:
 	void present();
 
 	bool is_playing() { return is_playing_; }
+
+	void update_quality();
 
 	/*
  -- ** -- S I G N A L   T E R M I N A L S -------------------------------------
