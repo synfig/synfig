@@ -41,6 +41,7 @@
 #include <gtkmm/messagedialog.h>
 #include <gtkmm/treemodelsort.h>
 #include <gtkmm/buttonbox.h>
+#include <gtkmm/separator.h>
 
 #include <gtk/gtktreestore.h>
 #include <gtk/gtkversion.h>
@@ -1099,7 +1100,7 @@ CanvasView::create_status_bar()
 Gtk::Widget*
 CanvasView::create_display_bar()
 {
-	displaybar = manage(new class Gtk::Table(1, 1, false));
+	displaybar = manage(new class Gtk::Table(1, 3, false));
 
 	// Setup the ToggleDuckDial widget
 	toggleducksdial = Gtk::manage(new class ToggleDucksDial());
@@ -1128,7 +1129,6 @@ CanvasView::create_display_bar()
 	toggleducksdial->show();
 
 	// Set up the ResolutionDial widget
-
 	resolutiondial=Gtk::manage(new class ResolutionDial());
 
 	resolutiondial->update_lowres(work_area->get_low_resolution_flag());
@@ -1140,8 +1140,13 @@ CanvasView::create_display_bar()
 			sigc::mem_fun(*this, &studio::CanvasView::toggle_low_res_pixel_flag));
 	resolutiondial->show();
 
-	displaybar->attach(*resolutiondial, 1, 2, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
+	// Set up a separator
+	Gtk::VSeparator *separator = Gtk::manage(new class Gtk::VSeparator());
+	separator->show();
+
+	displaybar->attach(*resolutiondial, 2, 3, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
 	displaybar->attach(*toggleducksdial, 0, 1, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
+	displaybar->attach(*separator, 1, 2, 0, 1, Gtk::FILL, Gtk::FILL);
 	displaybar->show();
 
 	return displaybar;
