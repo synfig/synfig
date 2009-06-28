@@ -1423,7 +1423,7 @@ CanvasView::init_menus()
 			}
 			action_group->add( action,
 				sigc::bind(
-					sigc::mem_fun(*work_area, &studio::WorkArea::set_quality),
+					sigc::mem_fun(*this, &studio::CanvasView::set_quality),
 					i
 				)
 			);
@@ -3188,18 +3188,30 @@ void
 CanvasView::update_quality()
 {
 	if(working_depth)
-		{
-			quality_spin->set_sensitive(false);
 			return;
-		}
-	else
-		quality_spin->set_sensitive(true);
 	if(updating_quality_)
 		return;
 	updating_quality_=true;
 	work_area->set_quality((int) quality_spin->get_value());
+	// Update Quality Radio actions
+	Glib::RefPtr<Gtk::RadioAction> action=Glib::RefPtr<Gtk::RadioAction>::cast_dynamic(
+		action_group->get_action(strprintf("quality-%02d",(int) quality_spin->get_value()))
+		);
+	action->set_active();
+
 	updating_quality_=false;
 }
+
+void
+CanvasView::set_quality(int x)
+{
+	if(updating_quality_)
+		return;
+	work_area->set_quality(x);
+	// Update the quality spin button
+	quality_spin->set_value(x);
+}
+
 
 void
 CanvasView::on_dirty_preview()

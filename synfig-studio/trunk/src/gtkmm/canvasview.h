@@ -437,6 +437,7 @@ private:
 	void decrease_low_res_pixel_size();
 	void increase_low_res_pixel_size();
 	void toggle_low_res_pixel_flag();
+	void set_quality(int x);
 
 	/*
  -- ** -- P U B L I C   M E T H O D S -----------------------------------------
