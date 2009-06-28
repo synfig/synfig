@@ -3187,6 +3187,13 @@ CanvasView::toggle_low_res_pixel_flag()
 void
 CanvasView::update_quality()
 {
+	if(working_depth)
+		{
+			quality_spin->set_sensitive(false);
+			return;
+		}
+	else
+		quality_spin->set_sensitive(true);
 	if(updating_quality_)
 		return;
 	updating_quality_=true;
