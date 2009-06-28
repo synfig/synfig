@@ -67,6 +67,7 @@
 #include "dialog_keyframe.h"
 #include "framedial.h"
 #include "toggleducksdial.h"
+#include "resolutiondial.h"
 
 #include "duckmatic.h"
 #include <gtkmm/scale.h>
@@ -269,6 +270,8 @@ private:
 	FrameDial *framedial;
 	ToggleDucksDial *toggleducksdial;
 	bool toggling_ducks_;
+	ResolutionDial *resolutiondial;
+	bool changing_resolution_;
 
 
 	//! Shows current time and allows edition
@@ -431,6 +434,7 @@ private:
 
 	void decrease_low_res_pixel_size();
 	void increase_low_res_pixel_size();
+	void toggle_low_res_pixel_flag();
 
 	/*
  -- ** -- P U B L I C   M E T H O D S -----------------------------------------

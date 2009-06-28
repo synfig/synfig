@@ -705,6 +705,7 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 	children_tree=0;
 	duck_refresh_flag=true;
 	toggling_ducks_=false;
+	changing_resolution_=false;
 
 	smach_.set_default_state(&state_normal);
 
@@ -1099,6 +1100,7 @@ Gtk::Widget*
 CanvasView::create_display_bar()
 {
 	displaybar = manage(new class Gtk::Table(1, 1, false));
+
 	// Setup the ToggleDuckDial widget
 	toggleducksdial = Gtk::manage(new class ToggleDucksDial());
 
@@ -1125,6 +1127,20 @@ CanvasView::create_display_bar()
 			);
 	toggleducksdial->show();
 
+	// Set up the ResolutionDial widget
+
+	resolutiondial=Gtk::manage(new class ResolutionDial());
+
+	resolutiondial->update_lowres(work_area->get_low_resolution_flag());
+	resolutiondial->signal_increase_resolution().connect(
+			sigc::mem_fun(*this, &studio::CanvasView::decrease_low_res_pixel_size));
+	resolutiondial->signal_decrease_resolution().connect(
+			sigc::mem_fun(*this, &studio::CanvasView::increase_low_res_pixel_size));
+	resolutiondial->signal_use_low_resolution().connect(
+			sigc::mem_fun(*this, &studio::CanvasView::toggle_low_res_pixel_flag));
+	resolutiondial->show();
+
+	displaybar->attach(*resolutiondial, 1, 2, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
 	displaybar->attach(*toggleducksdial, 0, 1, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
 	displaybar->show();
 
@@ -1452,7 +1468,7 @@ CanvasView::init_menus()
 
 		action = Gtk::ToggleAction::create("toggle-low-res", _("Use Low-Res"));
 		action->set_active(work_area->get_low_resolution_flag());
-		action_group->add(action, sigc::mem_fun(*work_area, &studio::WorkArea::toggle_low_resolution_flag));
+		action_group->add(action, sigc::mem_fun(*this, &studio::CanvasView::toggle_low_res_pixel_flag));
 
 		action = Gtk::ToggleAction::create("toggle-onion-skin", _("Show Onion Skin"));
 		action->set_active(work_area->get_onion_skin());
@@ -3066,9 +3082,11 @@ CanvasView::rebuild_ducks()
 void
 CanvasView::decrease_low_res_pixel_size()
 {
+	if(changing_resolution_)
+		return;
+	changing_resolution_=true;
 	list<int> sizes = CanvasView::get_pixel_sizes();
 	int pixel_size = work_area->get_low_res_pixel_size();
-
 	for (list<int>::iterator iter = sizes.begin(); iter != sizes.end(); iter++)
 		if (*iter == pixel_size)
 		{
@@ -3084,17 +3102,32 @@ CanvasView::decrease_low_res_pixel_size()
 			}
 			break;
 		}
+	// Update the "toggle-low-res" action
+	Glib::RefPtr<Gtk::ToggleAction> action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("toggle-low-res"));
+	action->set_active(work_area->get_low_resolution_flag());
+	// Update toggle low res button
+	resolutiondial->update_lowres(work_area->get_low_resolution_flag());
+	changing_resolution_=false;
 }
 
 void
 CanvasView::increase_low_res_pixel_size()
 {
+	if(changing_resolution_)
+		return;
+	changing_resolution_=true;
 	list<int> sizes = CanvasView::get_pixel_sizes();
 	int pixel_size = work_area->get_low_res_pixel_size();
-
 	if (!work_area->get_low_resolution_flag())
 	{
+		// We were using "hi res" so change it to low res.
 		work_area->set_low_resolution_flag(true);
+		// Update the "toggle-low-res" action
+		Glib::RefPtr<Gtk::ToggleAction> action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("toggle-low-res"));
+		action->set_active(true);
+		// Update the toggle low res button
+		resolutiondial->update_lowres(true);
+		changing_resolution_=false;
 		return;
 	}
 
@@ -3110,6 +3143,27 @@ CanvasView::increase_low_res_pixel_size()
 			}
 			break;
 		}
+	// Update the "toggle-low-res" action
+	Glib::RefPtr<Gtk::ToggleAction> action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("toggle-low-res"));
+	action->set_active(work_area->get_low_resolution_flag());
+	// Update toggle low res button
+	resolutiondial->update_lowres(work_area->get_low_resolution_flag());
+	changing_resolution_=false;
+}
+
+void
+CanvasView::toggle_low_res_pixel_flag()
+{
+	if(changing_resolution_)
+		return;
+	changing_resolution_=true;
+	work_area->toggle_low_resolution_flag();
+	// Update the toggle low res button
+	resolutiondial->update_lowres(work_area->get_low_resolution_flag());
+	// Update the "toggle-low-res" action
+	Glib::RefPtr<Gtk::ToggleAction> action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("toggle-low-res"));
+	action->set_active(work_area->get_low_resolution_flag());
+	changing_resolution_=false;
 }
 
 void
