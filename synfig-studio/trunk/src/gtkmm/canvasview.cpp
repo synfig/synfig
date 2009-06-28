@@ -1152,6 +1152,7 @@ CanvasView::create_display_bar()
 	quality_spin=Gtk::manage(new class Gtk::SpinButton(quality_adjustment_));
 	quality_spin->signal_value_changed().connect(
 			sigc::mem_fun(*this, &studio::CanvasView::update_quality));
+	tooltips.set_tip(*quality_spin, _("Quality (lower is better)"));
 	quality_spin->show();
 
 	displaybar->attach(*toggleducksdial, 0, 1, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
