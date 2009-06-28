@@ -709,6 +709,7 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 	toggling_ducks_=false;
 	changing_resolution_=false;
 	updating_quality_=false;
+	toggling_show_grid=false;
 
 	smach_.set_default_state(&state_normal);
 
@@ -1102,7 +1103,7 @@ CanvasView::create_status_bar()
 Gtk::Widget*
 CanvasView::create_display_bar()
 {
-	displaybar = manage(new class Gtk::Table(1, 5, false));
+	displaybar = manage(new class Gtk::Table(1, 6, false));
 
 	// Setup the ToggleDuckDial widget
 	toggleducksdial = Gtk::manage(new class ToggleDucksDial());
@@ -1155,11 +1156,24 @@ CanvasView::create_display_bar()
 	tooltips.set_tip(*quality_spin, _("Quality (lower is better)"));
 	quality_spin->show();
 
+	// Set up the show grid check button
+	show_grid = Gtk::manage(new class Gtk::CheckButton());
+	show_grid->set_active(work_area->grid_status());
+	Gtk::Image *icon = manage(new Gtk::Image(Gtk::Stock::REMOVE, Gtk::IconSize::from_name("synfig-small_icon")));
+	icon->set_padding(0, 0);
+	icon->show();
+	show_grid->add(*icon);
+	show_grid->signal_toggled().connect(
+			sigc::mem_fun(*this, &studio::CanvasView::toggle_show_grid));
+	tooltips.set_tip(*show_grid, _("Show grid when enabled"));
+	show_grid->show();
+
 	displaybar->attach(*toggleducksdial, 0, 1, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
 	displaybar->attach(*separator1, 1, 2, 0, 1, Gtk::FILL, Gtk::FILL);
 	displaybar->attach(*resolutiondial, 2, 3, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
 	displaybar->attach(*separator2, 3, 4, 0, 1, Gtk::FILL, Gtk::FILL);
 	displaybar->attach(*quality_spin, 4, 5, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
+	displaybar->attach(*show_grid, 5, 6, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
 
 	displaybar->show();
 
@@ -1475,7 +1489,7 @@ CanvasView::init_menus()
 
 		grid_show_toggle = Gtk::ToggleAction::create("toggle-grid-show", _("Show Grid"));
 		grid_show_toggle->set_active(work_area->grid_status());
-		action_group->add(grid_show_toggle, sigc::mem_fun(*work_area, &studio::WorkArea::toggle_grid));
+		action_group->add(grid_show_toggle, sigc::mem_fun(*this, &studio::CanvasView::toggle_show_grid));
 
 		grid_snap_toggle = Gtk::ToggleAction::create("toggle-grid-snap", _("Snap to Grid"));
 		grid_snap_toggle->set_active(work_area->get_grid_snap());
@@ -3211,6 +3225,20 @@ CanvasView::set_quality(int x)
 	work_area->set_quality(x);
 	// Update the quality spin button
 	quality_spin->set_value(x);
+}
+
+void
+CanvasView::toggle_show_grid()
+{
+	if(toggling_show_grid)
+		return;
+	toggling_show_grid=true;
+	work_area->toggle_grid();
+	// Update the toggle grid show action
+	set_grid_show_toggle(work_area->grid_status());
+	// Update the toggle grid show check button
+	show_grid->set_active(work_area->grid_status());
+	toggling_show_grid=false;
 }
 
 

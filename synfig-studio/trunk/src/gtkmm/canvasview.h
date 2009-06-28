@@ -276,6 +276,8 @@ private:
 	Gtk::Adjustment quality_adjustment_;
 	Gtk::SpinButton *quality_spin;
 	bool updating_quality_;
+	Gtk::CheckButton *show_grid;
+	bool toggling_show_grid;
 	//! Shows current time and allows edition
 	Widget_Time *current_time_widget;
 	void on_current_time_widget_changed();
@@ -438,6 +440,7 @@ private:
 	void increase_low_res_pixel_size();
 	void toggle_low_res_pixel_flag();
 	void set_quality(int x);
+	void toggle_show_grid();
 
 	/*
  -- ** -- P U B L I C   M E T H O D S -----------------------------------------
