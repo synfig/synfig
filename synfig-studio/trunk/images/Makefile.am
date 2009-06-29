@@ -80,7 +80,9 @@ EXTRA_DIST = \
 	duck_tangent_icon.sif \
 	duck_radius_icon.sif \
 	duck_width_icon.sif \
-	duck_angle_icon.sif
+	duck_angle_icon.sif \
+	show_grid_icon.sif \
+	snap_grid_icon.sif
 
 
 IMAGES = \
@@ -158,7 +160,9 @@ IMAGES = \
 	duck_tangent_icon.$(EXT) \
 	duck_radius_icon.$(EXT) \
 	duck_width_icon.$(EXT) \
-	duck_angle_icon.$(EXT)
+	duck_angle_icon.$(EXT) \
+	show_grid_icon.$(EXT) \
+	snap_grid_icon.$(EXT)
 
 
 MAINTAINERCLEANFILES = \
