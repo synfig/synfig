@@ -280,6 +280,8 @@ String studio::App::custom_filename_prefix(DEFAULT_FILENAME_PREFIX);
 int studio::App::preferred_x_size=480;
 int studio::App::preferred_y_size=270;
 String studio::App::predefined_size(DEFAULT_PREDEFINED_SIZE);
+String studio::App::predefined_fps(DEFAULT_PREDEFINED_FPS);
+float studio::App::preferred_fps=24.0;
 #ifdef USE_OPEN_FOR_URLS
 String studio::App::browser_command("open"); // MacOS only
 #else
@@ -570,6 +572,16 @@ public:
 			value=strprintf("%s",App::predefined_size.c_str());
 			return true;
 		}
+		if(key=="preferred_fps")
+		{
+			value=strprintf("%f",App::preferred_fps);
+			return true;
+		}
+		if(key=="predefined_fps")
+		{
+			value=strprintf("%s",App::predefined_fps.c_str());
+			return true;
+		}
 
 		return synfigapp::Settings::get_value(key,value);
 	}
@@ -667,6 +679,18 @@ public:
 			App::predefined_size=value;
 			return true;
 		}
+		if(key=="preferred_fps")
+		{
+			float i(atof(value.c_str()));
+			App::preferred_fps=i;
+			return true;
+		}
+		if(key=="predefined_fps")
+		{
+			App::predefined_fps=value;
+			return true;
+		}
+
 		return synfigapp::Settings::set_value(key,value);
 	}
 
@@ -689,6 +713,8 @@ public:
 		ret.push_back("preferred_x_size");
 		ret.push_back("preferred_y_size");
 		ret.push_back("predefined_size");
+		ret.push_back("preferred_fps");
+		ret.push_back("predefined_fps");
 		return ret;
 	}
 };
@@ -1768,6 +1794,8 @@ App::reset_initial_window_configuration()
 	synfigapp::Main::settings().set_value("pref.preferred_x_size","480");
 	synfigapp::Main::settings().set_value("pref.preferred_y_size","270");
 	synfigapp::Main::settings().set_value("pref.predefined_size",DEFAULT_PREDEFINED_SIZE);
+	synfigapp::Main::settings().set_value("pref.preferred_fps","24.0");
+	synfigapp::Main::settings().set_value("pref.predefined_fps",DEFAULT_PREDEFINED_FPS);
 	synfigapp::Main::settings().set_value("window.toolbox.pos","4 4");
 }
 
@@ -2438,7 +2466,7 @@ App::new_instance()
 	canvas->set_name(file_name);
 	file_name += ".sifz";
 
-	canvas->rend_desc().set_frame_rate(24.0);
+	canvas->rend_desc().set_frame_rate(preferred_fps);
 	canvas->rend_desc().set_time_start(0.0);
 	canvas->rend_desc().set_time_end(5.0);
 	canvas->rend_desc().set_x_res(DPI2DPM(72.0f));
