@@ -24,16 +24,30 @@ synfig-studio/src
 # ------------------------------------------------------------------------
 
 # generated in ETL, core and studio
+*-config
+ABOUT-NLS
+Makefile.in.in
+Makevars.template
+POTFILES
+Rules-quot
 aclocal.m4
+autom4te.cache
+boldquot.sed
 config.*
 configure
-*-config
 depcomp
+en@boldquot.header
+en@quot.header
+insert-header.sin
 install-sh
 libtool
 ltmain.sh
 missing
+quot.sed
+remove-potcdate.sed
+remove-potcdate.sin
 stamp-h1
+stamp-po
 
 # ------------------------------------------------------------------------
 
@@ -43,18 +57,95 @@ ETL/trunk/ETL/etl_profile_.h
 
 synfig-core/trunk/libltdl
 synfig-core/trunk/pkg-info/macosx/synfig-core.info
+synfig-core/trunk/po/*.gmo
+synfig-core/trunk/po/synfig.pot
 synfig-core/trunk/src/modules/synfig_modules.cfg
 synfig-core/trunk/src/synfig/proto/nodebase.h
 synfig-core/trunk/src/tool/synfig
 synfig-core/trunk/synfig.pc.in
 
-synfig-studio/trunk/pkg-info/macosx/synfig-studio.info
-synfig-studio/trunk/src/gtkmm/synfigstudio
-synfig-studio/trunk/synfigstudio-thumbnailer.schemas
-synfig-studio/trunk/synfigstudio.desktop
+synfig-core/trunk/m4/codeset.m4
+synfig-core/trunk/m4/gettext.m4
+synfig-core/trunk/m4/glibc2.m4
+synfig-core/trunk/m4/glibc21.m4
+synfig-core/trunk/m4/iconv.m4
+synfig-core/trunk/m4/intdiv0.m4
+synfig-core/trunk/m4/inttypes.m4
+synfig-core/trunk/m4/inttypes-h.m4
+synfig-core/trunk/m4/inttypes_h.m4
+synfig-core/trunk/m4/inttypes-pri.m4
+synfig-core/trunk/m4/intmax.m4
+synfig-core/trunk/m4/isc-posix.m4
+synfig-core/trunk/m4/lcmessage.m4
+synfig-core/trunk/m4/lib-ld.m4
+synfig-core/trunk/m4/lib-link.m4
+synfig-core/trunk/m4/lib-prefix.m4
+synfig-core/trunk/m4/lock.m4
+synfig-core/trunk/m4/longdouble.m4
+synfig-core/trunk/m4/longlong.m4
+synfig-core/trunk/m4/po.m4
+synfig-core/trunk/m4/progtest.m4
+synfig-core/trunk/m4/nls.m4
+synfig-core/trunk/m4/printf-posix.m4
+synfig-core/trunk/m4/uintmax_t.m4
+synfig-core/trunk/m4/ulonglong.m4
+synfig-core/trunk/m4/signed.m4
+synfig-core/trunk/m4/size_max.m4
+synfig-core/trunk/m4/stdint_h.m4
+synfig-core/trunk/m4/visibility.m4
+synfig-core/trunk/m4/wchar_t.m4
+synfig-core/trunk/m4/wint_t.m4
+synfig-core/trunk/m4/xsize.m4
+
+synfig-studio/trunk/autorevision.h
+synfig-studio/trunk/images/128x128
+synfig-studio/trunk/images/16x16
+synfig-studio/trunk/images/22x22
+synfig-studio/trunk/images/24x24
+synfig-studio/trunk/images/32x32
+synfig-studio/trunk/images/48x48
+synfig-studio/trunk/images/64x64
 synfig-studio/trunk/images/*.png
 synfig-studio/trunk/images/images.nsh
 synfig-studio/trunk/images/unimages.nsh
+synfig-studio/trunk/m4/codeset.m4
+synfig-studio/trunk/m4/gettext.m4
+synfig-studio/trunk/m4/glibc21.m4
+synfig-studio/trunk/m4/glibc2.m4
+synfig-studio/trunk/m4/iconv.m4
+synfig-studio/trunk/m4/intdiv0.m4
+synfig-studio/trunk/m4/intmax.m4
+synfig-studio/trunk/m4/inttypes-h.m4
+synfig-studio/trunk/m4/inttypes_h.m4
+synfig-studio/trunk/m4/inttypes.m4
+synfig-studio/trunk/m4/inttypes-pri.m4
+synfig-studio/trunk/m4/isc-posix.m4
+synfig-studio/trunk/m4/lcmessage.m4
+synfig-studio/trunk/m4/lib-ld.m4
+synfig-studio/trunk/m4/lib-link.m4
+synfig-studio/trunk/m4/lib-prefix.m4
+synfig-studio/trunk/m4/lock.m4
+synfig-studio/trunk/m4/longdouble.m4
+synfig-studio/trunk/m4/longlong.m4
+synfig-studio/trunk/m4/nls.m4
+synfig-studio/trunk/m4/po.m4
+synfig-studio/trunk/m4/printf-posix.m4
+synfig-studio/trunk/m4/progtest.m4
+synfig-studio/trunk/m4/signed.m4
+synfig-studio/trunk/m4/size_max.m4
+synfig-studio/trunk/m4/stdint_h.m4
+synfig-studio/trunk/m4/uintmax_t.m4
+synfig-studio/trunk/m4/ulonglong.m4
+synfig-studio/trunk/m4/visibility.m4
+synfig-studio/trunk/m4/wchar_t.m4
+synfig-studio/trunk/m4/wint_t.m4
+synfig-studio/trunk/m4/xsize.m4
+synfig-studio/trunk/pkg-info/macosx/synfig-studio.info
+synfig-studio/trunk/po/*.gmo
+synfig-studio/trunk/po/synfigstudio.pot
+synfig-studio/trunk/src/gtkmm/synfigstudio
+synfig-studio/trunk/synfigstudio-thumbnailer.schemas
+synfig-studio/trunk/synfigstudio.desktop
 
 # ------------------------------------------------------------------------
 
