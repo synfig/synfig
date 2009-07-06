@@ -8,32 +8,32 @@
 /* define if target is big endian */
 #define WORDS_BIGENDIAN
 
-#ifndef __ETL_HAS_GETTIMEOFDAY
-#define __ETL_HAS_GETTIMEOFDAY
+#ifndef HAVE_GETTIMEOFDAY
+#define HAVE_GETTIMEOFDAY
 #endif
 
-#ifndef __ETL_HAS_PTHREAD_H
-#define __ETL_HAS_PTHREAD_H
+#ifndef HAVE_PTHREAD_H
+#define HAVE_PTHREAD_H
 #endif
 
-#ifndef __ETL_HAS_SCHED_H
-#define __ETL_HAS_SCHED_H
+#ifndef HAVE_SCHED_H
+#define HAVE_SCHED_H
 #endif
 
-#ifndef __ETL_HAS_PTHREAD_CREATE
-#define __ETL_HAS_PTHREAD_CREATE
+#ifndef HAVE_PTHREAD_CREATE
+#define HAVE_PTHREAD_CREATE
 #endif
 
-#ifndef __ETL_HAS_VASPRINTF
-#define __ETL_HAS_VASPRINTF
+#ifndef HAVE_VASPRINTF
+#define HAVE_VASPRINTF
 #endif
 
-#ifndef __ETL_HAS_VSNPRINTF
-#define __ETL_HAS_VSNPRINTF
+#ifndef HAVE_VSNPRINTF
+#define HAVE_VSNPRINTF
 #endif
 
-#ifndef __ETL_HAS_VSPRINTF
-#define __ETL_HAS_VSPRINTF
+#ifndef HAVE_VSPRINTF
+#define HAVE_VSPRINTF
 #endif
 
 #endif // __VETL_CONFIG_H

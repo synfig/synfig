@@ -33,7 +33,7 @@
 
 #include <pthread.h>
 
-#ifdef __ETL_HAS_SCHED_H
+#ifdef HAVE_SCHED_H
 # include <sched.h>
 #endif
 

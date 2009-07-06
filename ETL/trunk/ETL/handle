@@ -33,12 +33,12 @@
 // include the next line in an attempt to increase stability
 // it seems to make things much *less* stable on MS Windows
 #ifndef _WIN32
-#ifdef __ETL_HAS_LIBPTHREAD
-#define __ETL_LOCK_REFCOUNTS
+#ifdef HAVE_LIBPTHREAD
+#define ETL_LOCK_REFCOUNTS
 #endif
 #endif
 
-#ifdef __ETL_LOCK_REFCOUNTS
+#ifdef ETL_LOCK_REFCOUNTS
 #  include "mutex"
 #endif
 
