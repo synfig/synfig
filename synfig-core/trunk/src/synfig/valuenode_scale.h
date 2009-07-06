@@ -65,7 +65,10 @@ public:
 	virtual ValueBase operator()(Time t)const;
 
 	//! Returns the modified Link to match the target value at time t
-	virtual ValueBase operator()(Time t, const synfig::Point &target_value) const;
+	ValueBase get_inverse(Time t, const synfig::Vector &target_value) const;
+	ValueBase get_inverse(Time t, const synfig::Angle &target_value) const;
+
+	bool is_invertible(Time t)const;
 
 	virtual String get_name()const;
 

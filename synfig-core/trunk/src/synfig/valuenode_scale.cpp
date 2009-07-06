@@ -142,20 +142,49 @@ synfig::ValueNode_Scale::operator()(Time t)const
 }
 
 synfig::ValueBase
-synfig::ValueNode_Scale::operator()(Time t, const synfig::Point &target_value)const
+synfig::ValueNode_Scale::get_inverse(Time t, const synfig::Vector &target_value) const
 {
 	Real scalar_value((*scalar)(t).get(Real()));
 	if(scalar_value==0)
-		return (*value_node)(t).get(value_node->get_type());
-	switch (get_type())
-	case ValueBase::TYPE_REAL:
-		return target_value.mag() / scalar_value;
-	case ValueBase::TYPE_ANGLE:
-		return Angle::tan(target_value[1] / scalar_value ,target_value[0] / scalar_value);
-	default:
-		return target_value / scalar_value;
+			throw runtime_error(strprintf("ValueNode_Scale: %s",_("Attempting to get the inverse of a non invertible Valuenode")));
+	else
+		{
+			switch (get_type())
+			{
+				case ValueBase::TYPE_REAL:
+					return target_value.mag() / scalar_value;
+				case ValueBase::TYPE_ANGLE:
+					return Angle::tan(target_value[1] / scalar_value ,target_value[0] / scalar_value);
+				default:
+					return target_value / scalar_value;
+			}
+		}
+	return ValueBase();
 }
 
+synfig::ValueBase
+synfig::ValueNode_Scale::get_inverse(Time t, const synfig::Angle &target_value) const
+{
+	Real scalar_value((*scalar)(t).get(Real()));
+	if(scalar_value==0)
+			throw runtime_error(strprintf("ValueNode_Scale: %s",_("Attempting to get the inverse of a non invertible Valuenode")));
+	else
+		{
+			switch (get_type())
+			{
+					default:
+					return (*value_node)(t).get(Angle()) + target_value / scalar_value;
+			}
+		}
+	return ValueBase();
+}
+
+bool
+synfig::ValueNode_Scale::is_invertible(Time t) const
+{
+	Real scalar_value((*scalar)(t).get(Real()));
+	return (!scalar_value==0);
+}
 
 bool
 ValueNode_Scale::set_link_vfunc(int i,ValueNode::Handle value)

@@ -2890,7 +2890,13 @@ CanvasView::on_duck_changed(const synfig::Point &value,const synfigapp::ValueDes
 	if (ValueNode_Scale::Handle scale_value_node = ValueNode_Scale::Handle::cast_dynamic(value_desc.get_value_node()))
 	{
 		int link_index(scale_value_node->get_link_index_from_name("link"));
-		return canvas_interface()->change_value(synfigapp::ValueDesc(scale_value_node,link_index), scale_value_node(t, value));
+		if(scale_value_node->is_invertible(get_time()))
+			return canvas_interface()->change_value(
+				synfigapp::ValueDesc(scale_value_node,link_index),
+					scale_value_node->get_inverse(get_time(), value)
+					);
+		else
+			return false;
 	}
 
 	switch(value_desc.get_value_type())
@@ -2914,6 +2920,18 @@ CanvasView::on_duck_angle_changed(const synfig::Angle &rotation,const synfigapp:
 		return canvas_interface()->change_value(synfigapp::ValueDesc(bline_tangent,offset_index), old_offset + rotation);
 	}
 
+	if (ValueNode_Scale::Handle scale_value_node = ValueNode_Scale::Handle::cast_dynamic(value_desc.get_value_node()))
+	{
+		int link_index(scale_value_node->get_link_index_from_name("link"));
+		if(scale_value_node->is_invertible(get_time()))
+			return canvas_interface()->change_value(
+				synfigapp::ValueDesc(scale_value_node,link_index),
+					scale_value_node->get_inverse(get_time(), rotation)
+					);
+		else
+			return false;
+
+	}
 	// \todo will this really always be the case?
 	assert(value_desc.get_value_type() == ValueBase::TYPE_ANGLE);
 	return canvas_interface()->change_value(value_desc, value_desc.get_value(get_time()).get(Angle()) + rotation);
