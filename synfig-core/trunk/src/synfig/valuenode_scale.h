@@ -64,6 +64,9 @@ public:
 
 	virtual ValueBase operator()(Time t)const;
 
+	//! Returns the modified Link to match the target value at time t
+	virtual ValueBase operator()(Time t, const synfig::Point &target_value) const;
+
 	virtual String get_name()const;
 
 	virtual String get_local_name()const;

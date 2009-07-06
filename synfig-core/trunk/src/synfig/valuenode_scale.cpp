@@ -141,6 +141,21 @@ synfig::ValueNode_Scale::operator()(Time t)const
 	return ValueBase();
 }
 
+synfig::ValueBase
+synfig::ValueNode_Scale::operator()(Time t, const synfig::Point &target_value)const
+{
+	Real scalar_value((*scalar)(t).get(Real()));
+	if(scalar_value==0)
+		return (*value_node)(t).get(value_node->get_type());
+	switch (get_type())
+	case ValueBase::TYPE_REAL:
+		return target_value.mag() / scalar_value;
+	case ValueBase::TYPE_ANGLE:
+		return Angle::tan(target_value[1] / scalar_value ,target_value[0] / scalar_value);
+	default:
+		return target_value / scalar_value;
+}
+
 
 bool
 ValueNode_Scale::set_link_vfunc(int i,ValueNode::Handle value)

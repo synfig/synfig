@@ -2887,6 +2887,12 @@ CanvasView::on_duck_changed(const synfig::Point &value,const synfigapp::ValueDes
 		}
 	}
 
+	if (ValueNode_Scale::Handle scale_value_node = ValueNode_Scale::Handle::cast_dynamic(value_desc.get_value_node()))
+	{
+		int link_index(scale_value_node->get_link_index_from_name("link"));
+		return canvas_interface()->change_value(synfigapp::ValueDesc(scale_value_node,link_index), scale_value_node(t, value));
+	}
+
 	switch(value_desc.get_value_type())
 	{
 	case ValueBase::TYPE_REAL:
