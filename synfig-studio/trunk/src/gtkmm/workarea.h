@@ -235,6 +235,8 @@ private:
 
 
 	bool onion_skin;
+	//! stores the future [1] and past [0] onion skins based on keyframes
+	int onion_skins[2];
 
 	etl::loose_handle<synfig::ValueNode> selected_value_node_;
 

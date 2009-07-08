@@ -117,7 +117,7 @@ public:
 
 	synfig::Mutex mutex;
 
-	void set_onion_skin(bool x)
+	void set_onion_skin(bool x, int *onions)
 	{
 		onionskin=x;
 
@@ -126,26 +126,29 @@ public:
 		if(!onionskin)
 			return;
 		onion_skin_queue.push_back(time);
-		//onion_skin_queue.push_back(time-1);
-		//onion_skin_queue.push_back(time+1);
+
 		try
 		{
-			onion_skin_queue.push_back(
-				get_canvas()->keyframe_list().find_prev(
-					time
-				)->get_time()
-			);
+		Time thistime=time;
+		for(int i=0; i<onions[0]; i++)
+			{
+				Time keytime=get_canvas()->keyframe_list().find_prev(thistime)->get_time();
+				onion_skin_queue.push_back(keytime);
+				thistime=keytime;
+			}
 		}
 		catch(...)
 		{  }
 
 		try
 		{
-			onion_skin_queue.push_back(
-				get_canvas()->keyframe_list().find_next(
-					time
-				)->get_time()
-			);
+		Time thistime=time;
+		for(int i=0; i<onions[1]; i++)
+			{
+				Time keytime=get_canvas()->keyframe_list().find_next(thistime)->get_time();
+				onion_skin_queue.push_back(keytime);
+				thistime=keytime;
+			}
 		}
 		catch(...)
 		{  }
@@ -414,7 +417,7 @@ public:
 
 	std::list<synfig::Time> onion_skin_queue;
 
-	void set_onion_skin(bool x)
+	void set_onion_skin(bool x, int *onions)
 	{
 		onionskin=x;
 
@@ -427,22 +430,26 @@ public:
 		//onion_skin_queue.push_back(time+1);
 		try
 		{
-			onion_skin_queue.push_back(
-				get_canvas()->keyframe_list().find_prev(
-					time
-				)->get_time()
-			);
+		Time thistime=time;
+		for(int i=0; i<onions[0]; i++)
+			{
+				Time keytime=get_canvas()->keyframe_list().find_prev(thistime)->get_time();
+				onion_skin_queue.push_back(keytime);
+				thistime=keytime;
+			}
 		}
 		catch(...)
 		{  }
 
 		try
 		{
-			onion_skin_queue.push_back(
-				get_canvas()->keyframe_list().find_next(
-					time
-				)->get_time()
-			);
+		Time thistime=time;
+		for(int i=0; i<onions[1]; i++)
+			{
+				Time keytime=get_canvas()->keyframe_list().find_next(thistime)->get_time();
+				onion_skin_queue.push_back(keytime);
+				thistime=keytime;
+			}
 		}
 		catch(...)
 		{  }
@@ -672,6 +679,8 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	ph=0.001;
 	last_focus_point=Point(0,0);
 	onion_skin=false;
+	onion_skins[0]=0;
+	onion_skins[1]=2;
 	queued=false;
 	dirty_trap_enabled=false;
 	solid_lines=true;
@@ -2289,7 +2298,7 @@ studio::WorkArea::async_update_preview()
 		handle<WorkAreaTarget> trgt(new class WorkAreaTarget(this,w,h));
 
 		trgt->set_rend_desc(&desc);
-		trgt->set_onion_skin(get_onion_skin());
+		trgt->set_onion_skin(get_onion_skin(), onion_skins);
 		target=trgt;
 	}
 	else
@@ -2298,7 +2307,7 @@ studio::WorkArea::async_update_preview()
 		handle<WorkAreaTarget_Full> trgt(new class WorkAreaTarget_Full(this,w,h));
 
 		trgt->set_rend_desc(&desc);
-		trgt->set_onion_skin(get_onion_skin());
+		trgt->set_onion_skin(get_onion_skin(), onion_skins);
 		target=trgt;
 	}
 
