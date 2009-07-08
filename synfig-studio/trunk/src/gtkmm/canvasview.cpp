@@ -685,6 +685,8 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 	time_adjustment_		(0,0,25,0,0,0),
 	time_window_adjustment_	(0,0,25,0,0,0),
 	quality_adjustment_		(8,1,10,1,1,0),
+	future_onion_adjustment_ (0,0,2,1,1,0),
+	past_onion_adjustment_  (0,0,2,1,1,0),
 	statusbar				(manage(new class Gtk::Statusbar())),
 
 	timeslider				(new Widget_Timeslider),
@@ -712,6 +714,7 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 	updating_quality_=false;
 	toggling_show_grid=false;
 	toggling_snap_grid=false;
+	toggling_onion_skin=false;
 
 	smach_.set_default_state(&state_normal);
 
@@ -1184,6 +1187,33 @@ CanvasView::create_display_bar()
 	snap_grid->set_relief(Gtk::RELIEF_NONE);
 	snap_grid->show();
 
+	// Set up the onion skin toggle button
+	onion_skin = Gtk::manage(new class Gtk::ToggleButton());
+	onion_skin->set_active(work_area->get_onion_skin());
+	Gtk::Image *icon3 = manage(new Gtk::Image(Gtk::StockID("synfig-toggle_onion_skin"), Gtk::IconSize::from_name("synfig-small_icon")));
+	icon3->set_padding(0, 0);
+	icon3->show();
+	onion_skin->add(*icon3);
+	onion_skin->signal_toggled().connect(
+			sigc::mem_fun(*this, &studio::CanvasView::toggle_onion_skin));
+	tooltips.set_tip(*snap_grid, _("Shows onion skin when enabled"));
+	onion_skin->set_relief(Gtk::RELIEF_NONE);
+	onion_skin->show();
+
+	// Set up past onion skin spin button
+	past_onion_spin=Gtk::manage(new class Gtk::SpinButton(past_onion_adjustment_));
+	past_onion_spin->signal_value_changed().connect(
+			sigc::mem_fun(*this, &studio::CanvasView::set_onion_skins));
+	tooltips.set_tip(*past_onion_spin, _("Past onion skins"));
+	past_onion_spin->show();
+
+	// Set up future onion skin spin button
+	future_onion_spin=Gtk::manage(new class Gtk::SpinButton(future_onion_adjustment_));
+	future_onion_spin->signal_value_changed().connect(
+			sigc::mem_fun(*this, &studio::CanvasView::set_onion_skins));
+	tooltips.set_tip(*future_onion_spin, _("Future onion skins"));
+	future_onion_spin->show();
+
 
 	displaybar->attach(*toggleducksdial, 0, 1, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
 	displaybar->attach(*separator1, 1, 2, 0, 1, Gtk::FILL, Gtk::FILL);
@@ -1192,6 +1222,9 @@ CanvasView::create_display_bar()
 	displaybar->attach(*quality_spin, 4, 5, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
 	displaybar->attach(*show_grid, 5, 6, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
 	displaybar->attach(*snap_grid, 6, 7, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
+	displaybar->attach(*past_onion_spin, 7, 8, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
+	displaybar->attach(*onion_skin, 8, 9, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
+	displaybar->attach(*future_onion_spin, 9, 10, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
 
 	displaybar->show();
 
@@ -1523,7 +1556,7 @@ CanvasView::init_menus()
 
 		action = Gtk::ToggleAction::create("toggle-onion-skin", _("Show Onion Skin"));
 		action->set_active(work_area->get_onion_skin());
-		action_group->add(action, sigc::mem_fun(*work_area, &studio::WorkArea::toggle_onion_skin));
+		action_group->add(action, sigc::mem_fun(*this, &studio::CanvasView::toggle_onion_skin));
 	}
 
 	action_group->add( Gtk::Action::create("canvas-zoom-fit", Gtk::StockID("gtk-zoom-fit")),
@@ -3246,6 +3279,17 @@ CanvasView::set_quality(int x)
 }
 
 void
+CanvasView::set_onion_skins()
+{
+	if(toggling_onion_skin)
+		return;
+	int onion_skins[2];
+	onion_skins[0]=past_onion_spin->get_value();
+	onion_skins[1]=future_onion_spin->get_value();
+	work_area->set_onion_skins(onion_skins);
+}
+
+void
 CanvasView::toggle_show_grid()
 {
 	if(toggling_show_grid)
@@ -3273,7 +3317,20 @@ CanvasView::toggle_snap_grid()
 	toggling_snap_grid=false;
 }
 
-
+void
+CanvasView::toggle_onion_skin()
+{
+	if(toggling_onion_skin)
+		return;
+	toggling_onion_skin=true;
+	work_area->toggle_onion_skin();
+	// Update the toggle onion skin action
+	Glib::RefPtr<Gtk::ToggleAction> action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("toggle-onion-skin"));
+	action->set_active(work_area->get_onion_skin());
+	// Update the toggle grid snap check button
+	onion_skin->set_active(work_area->get_onion_skin());
+	toggling_onion_skin=false;
+}
 
 void
 CanvasView::on_dirty_preview()

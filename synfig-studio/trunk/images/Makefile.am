@@ -82,7 +82,8 @@ EXTRA_DIST = \
 	duck_width_icon.sif \
 	duck_angle_icon.sif \
 	show_grid_icon.sif \
-	snap_grid_icon.sif
+	snap_grid_icon.sif \
+	onion_skin_icon.sif
 
 
 IMAGES = \
@@ -162,7 +163,8 @@ IMAGES = \
 	duck_width_icon.$(EXT) \
 	duck_angle_icon.$(EXT) \
 	show_grid_icon.$(EXT) \
-	snap_grid_icon.$(EXT)
+	snap_grid_icon.$(EXT) \
+	onion_skin_icon.$(EXT)
 
 
 MAINTAINERCLEANFILES = \

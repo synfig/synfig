@@ -205,6 +205,8 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	INIT_STOCK_ICON(toggle_show_grid,"show_grid_icon."IMAGE_EXT,_("Toggle show grid"));
 	INIT_STOCK_ICON(toggle_snap_grid,"snap_grid_icon."IMAGE_EXT,_("Toggle snap grid"));
 
+	INIT_STOCK_ICON(toggle_onion_skin,"onion_skin_icon."IMAGE_EXT,_("Toggle onion skin"));
+
 	INIT_STOCK_ICON_CLONE(cvs_add,"gtk-add",_("CVS Add"));
 	INIT_STOCK_ICON_CLONE(cvs_update,"gtk-open",_("CVS Update"));
 	INIT_STOCK_ICON_CLONE(cvs_commit,"gtk-save",_("CVS Commit"));

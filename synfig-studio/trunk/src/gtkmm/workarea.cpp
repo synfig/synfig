@@ -680,7 +680,7 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	last_focus_point=Point(0,0);
 	onion_skin=false;
 	onion_skins[0]=0;
-	onion_skins[1]=2;
+	onion_skins[1]=0;
 	queued=false;
 	dirty_trap_enabled=false;
 	solid_lines=true;
@@ -1026,6 +1026,14 @@ bool
 WorkArea::get_onion_skin()const
 {
 	return onion_skin;
+}
+
+void WorkArea::set_onion_skins(int *onions)
+{
+	onion_skins[0]=onions[0];
+	onion_skins[1]=onions[1];
+	if(onion_skin)
+		queue_render_preview();
 }
 
 void
