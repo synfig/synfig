@@ -1183,7 +1183,7 @@ CanvasView::create_display_bar()
 	snap_grid->add(*icon2);
 	snap_grid->signal_toggled().connect(
 			sigc::mem_fun(*this, &studio::CanvasView::toggle_snap_grid));
-	tooltips.set_tip(*snap_grid, _("snap grid when enabled"));
+	tooltips.set_tip(*snap_grid, _("Snap grid when enabled"));
 	snap_grid->set_relief(Gtk::RELIEF_NONE);
 	snap_grid->show();
 
@@ -1196,7 +1196,7 @@ CanvasView::create_display_bar()
 	onion_skin->add(*icon3);
 	onion_skin->signal_toggled().connect(
 			sigc::mem_fun(*this, &studio::CanvasView::toggle_onion_skin));
-	tooltips.set_tip(*snap_grid, _("Shows onion skin when enabled"));
+	tooltips.set_tip(*onion_skin, _("Shows onion skin when enabled"));
 	onion_skin->set_relief(Gtk::RELIEF_NONE);
 	onion_skin->show();
 
