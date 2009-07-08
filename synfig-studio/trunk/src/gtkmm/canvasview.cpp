@@ -3253,8 +3253,8 @@ CanvasView::toggle_low_res_pixel_flag()
 void
 CanvasView::update_quality()
 {
-	if(working_depth)
-			return;
+	//if(working_depth)
+	//		return;
 	if(updating_quality_)
 		return;
 	updating_quality_=true;
