@@ -297,7 +297,7 @@ Widget_Gradient::on_event(GdkEvent *event)
 			{
 				if(!gradient_.size()) return true;
 				Gradient::iterator iter(gradient_.find(selected_cpoint));
-
+				//! Use SHIFT to stack two CPoints together.
 				if(event->button.state&GDK_SHIFT_MASK)
 				{
 					float begin(-100000000),end(100000000);
