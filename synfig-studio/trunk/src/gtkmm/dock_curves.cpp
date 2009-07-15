@@ -93,6 +93,7 @@ _curve_selection_changed(Gtk::TreeView* param_tree_view,Widget_Curves* curves)
 	if(!param_tree_view->get_selection()->count_selected_rows())
 	{
 		curves->clear();
+		curves->refresh();
 		return;
 	}
 
