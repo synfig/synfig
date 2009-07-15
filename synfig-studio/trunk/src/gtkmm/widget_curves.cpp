@@ -474,6 +474,9 @@ Widget_Curves::redraw(GdkEventExpose */*bleh*/)
 	if(!time_adjustment_ || !range_adjustment_ || !h || !w)
 		return false;
 
+	if(!curve_list_.size())
+		return false;
+
 	Glib::RefPtr<Gdk::GC> gc(Gdk::GC::create(get_window()));
 
 	const Real t_begin(time_adjustment_->get_lower());
