@@ -501,6 +501,28 @@ Widget_Curves::redraw(GdkEventExpose */*bleh*/)
 	gc->set_rgb_fg_color(Gdk::Color("#0000ff")); // It should be user selectable
 	get_window()->draw_rectangle(gc, false, round_to_int((time_adjustment_->get_value()-t_begin)/dt), 0, 0, h);
 
+	// This is not the best solution but I guess that if the first valuenode
+	// has canvas then show the keyframes. Maybe I can loop all them until I find
+	// a valid canvas and use it for look to the keyframes.
+	synfig::Canvas::Handle canvas(curve_list_.begin()->value_desc.get_canvas());
+	if(canvas)
+	{
+		const synfig::KeyframeList& keyframe_list(canvas->keyframe_list());
+		synfig::KeyframeList::const_iterator iter;
+
+		for(iter=keyframe_list.begin();iter!=keyframe_list.end();++iter)
+		{
+			if(!iter->get_time().is_valid())
+				continue;
+
+			const int x((int)((float)w/(t_end-t_begin)*(iter->get_time()-t_begin)));
+			if(iter->get_time()>=t_begin && iter->get_time()<t_end)
+			{
+				gc->set_rgb_fg_color(Gdk::Color("#a07f7f")); // It should be user selectable
+				get_window()->draw_rectangle(gc, true, x, 0, 1, h);
+			}
+		}
+	}
 	// Draw curves for the valuenodes stored in the curve list
 	for(curve_iter=curve_list_.begin();curve_iter!=curve_list_.end();++curve_iter)
 	{
