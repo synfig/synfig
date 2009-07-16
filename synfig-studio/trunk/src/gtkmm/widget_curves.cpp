@@ -504,12 +504,19 @@ Widget_Curves::redraw(GdkEventExpose */*bleh*/)
 	gc->set_rgb_fg_color(Gdk::Color("#0000ff")); // It should be user selectable
 	get_window()->draw_rectangle(gc, false, round_to_int((time_adjustment_->get_value()-t_begin)/dt), 0, 0, h);
 
-	// This is not the best solution but I guess that if the first valuenode
-	// has canvas then show the keyframes. Maybe I can loop all them until I find
-	// a valid canvas and use it for look to the keyframes.
-	synfig::Canvas::Handle canvas(curve_list_.begin()->value_desc.get_canvas());
+	// This try to find a valid vanvas to show the keyframes of those
+	// valuenodes. If not canvas found then no keyframes marks are shown.
+	synfig::Canvas::Handle canvas=0;
+	for(curve_iter=curve_list_.begin();curve_iter!=curve_list_.end();++curve_iter)
+	{
+		canvas=curve_iter->value_desc.get_canvas();
+		if(canvas)
+			break;
+	}
+
 	if(canvas)
 	{
+	// Draw vertical lines for the keyframes marks.
 		const synfig::KeyframeList& keyframe_list(canvas->keyframe_list());
 		synfig::KeyframeList::const_iterator iter;
 
