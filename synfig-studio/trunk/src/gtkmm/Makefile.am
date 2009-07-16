@@ -294,7 +294,9 @@ OTHER_HH = \
 	workarea.h \
 	zoomdial.h \
 	framedial.h \
-	keyframedial.h
+	keyframedial.h \
+	toggleducksdial.h \
+	resolutiondial.h
 
 OTHER_CC = \
 	main.cpp \
@@ -326,8 +328,9 @@ OTHER_CC = \
 	workarea.cpp \
 	zoomdial.cpp \
 	framedial.cpp \
-	keyframedial.cpp
-
+	keyframedial.cpp \
+	toggleducksdial.cpp \
+	resolutiondial.cpp
 
 INCLUDES = \
 	-I$(top_srcdir)/src

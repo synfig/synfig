@@ -33,6 +33,7 @@
 
 #include "keyframedial.h"
 #include <gtkmm/image.h>
+#include <gtkmm/stock.h>
 
 #endif
 
@@ -53,8 +54,8 @@ KeyFrameDial::KeyFrameDial(): Gtk::Table(1, 3, false)
 {
 	Gtk::IconSize iconsize = Gtk::IconSize::from_name("synfig-small_icon");
 
-	seek_prev_keyframe = create_icon(iconsize, GTK_STOCK_GO_BACK, _("Previous KeyFrame"));
-	seek_next_keyframe = create_icon(iconsize, GTK_STOCK_GO_FORWARD, _("Next KeyFrame"));
+	seek_prev_keyframe = create_icon(iconsize, Gtk::Stock::GO_BACK, _("Previous KeyFrame"));
+	seek_next_keyframe = create_icon(iconsize, Gtk::Stock::GO_FORWARD, _("Next KeyFrame"));
 	lock_keyframe = create_icon(Gtk::ICON_SIZE_BUTTON, "synfig-keyframe_lock_all",_("All Keyframes Locked"));
 
 	attach(*seek_prev_keyframe, 0, 1, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
@@ -68,6 +69,22 @@ KeyFrameDial::create_icon(Gtk::IconSize iconsize, const char * stockid,
 {
 	Gtk::Button *button = manage(new class Gtk::Button());
 	Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID(stockid), iconsize));
+	button->add(*icon);
+	tooltips.set_tip(*button, tooltip);
+	icon->set_padding(0, 0);
+	icon->show();
+	button->set_relief(Gtk::RELIEF_NONE);
+	button->show();
+
+	return button;
+}
+
+Gtk::Button *
+KeyFrameDial::create_icon(Gtk::IconSize iconsize, const Gtk::BuiltinStockID & stockid,
+		const char * tooltip)
+{
+	Gtk::Button *button = manage(new class Gtk::Button());
+	Gtk::Image *icon = manage(new Gtk::Image(stockid, iconsize));
 	button->add(*icon);
 	tooltips.set_tip(*button, tooltip);
 	icon->set_padding(0, 0);

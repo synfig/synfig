@@ -7,6 +7,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
+**	Copyright (c) 2009 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -41,6 +42,7 @@
 #include <gtkmm/scrolledwindow.h>
 #include <gtkmm/notebook.h>
 #include <gdkmm/device.h>
+#include <gtkmm/spinbutton.h>
 
 #include <synfigapp/canvasinterface.h>
 #include <synfigapp/selectionmanager.h>
@@ -66,6 +68,8 @@
 #include "dialog_waypoint.h"
 #include "dialog_keyframe.h"
 #include "framedial.h"
+#include "toggleducksdial.h"
+#include "resolutiondial.h"
 
 #include "duckmatic.h"
 #include <gtkmm/scale.h>
@@ -261,12 +265,28 @@ private:
 	Gtk::Button *refreshbutton;
 	Gtk::Button *treetogglebutton;  // not used
 	Gtk::Notebook *notebook; // not used
-	Gtk::Widget *timebar;
+	Gtk::Table *timebar;
+	Gtk::Table *displaybar;
 	Gtk::Button *animatebutton;
 	Gtk::Button *keyframebutton;
 	FrameDial *framedial;
-
-
+	ToggleDucksDial *toggleducksdial;
+	bool toggling_ducks_;
+	ResolutionDial *resolutiondial;
+	bool changing_resolution_;
+	Gtk::Adjustment quality_adjustment_;
+	Gtk::SpinButton *quality_spin;
+	Gtk::Adjustment past_onion_adjustment_;
+	Gtk::SpinButton *past_onion_spin;
+	Gtk::Adjustment future_onion_adjustment_;
+	Gtk::SpinButton *future_onion_spin;
+	bool updating_quality_;
+	Gtk::ToggleButton *show_grid;
+	Gtk::ToggleButton *snap_grid;
+	Gtk::ToggleButton *onion_skin;
+	bool toggling_show_grid;
+	bool toggling_snap_grid;
+	bool toggling_onion_skin;
 	//! Shows current time and allows edition
 	Widget_Time *current_time_widget;
 	void on_current_time_widget_changed();
@@ -405,6 +425,8 @@ private:
 
 	Gtk::Widget *create_time_bar();
 
+	Gtk::Widget *create_display_bar();
+
 	//! Pop up menu for the bezier (bline, draw) tool (?)
 	void popup_param_menu_bezier(float location, synfigapp::ValueDesc value_desc)
 	{ popup_param_menu(value_desc,location,true); }
@@ -425,6 +447,12 @@ private:
 
 	void decrease_low_res_pixel_size();
 	void increase_low_res_pixel_size();
+	void toggle_low_res_pixel_flag();
+	void set_quality(int x);
+	void set_onion_skins();
+	void toggle_show_grid();
+	void toggle_snap_grid();
+	void toggle_onion_skin();
 
 	/*
  -- ** -- P U B L I C   M E T H O D S -----------------------------------------
@@ -595,6 +623,10 @@ public:
 	void present();
 
 	bool is_playing() { return is_playing_; }
+
+	void update_quality();
+
+
 
 	/*
  -- ** -- S I G N A L   T E R M I N A L S -------------------------------------

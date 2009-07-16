@@ -1,14 +1,13 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file framedial.cpp
+/*!	\file resolutiondial.cpp
 **	\brief Template File
 **
 **	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
-**  Copyright (c) 2008 Chris Moore
-**  Copyright (c) 2009 Gerco Ballintijn
-**	Copyright (c) 2009 Carlos López
+**	Copyright (c) 2009 Gerco Ballintijn
+**	Copyright (c) 2009 Carlos Lopez
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -32,7 +31,7 @@
 #	include <config.h>
 #endif
 
-#include "framedial.h"
+#include "resolutiondial.h"
 #include <gtkmm/image.h>
 #include <gtkmm/stock.h>
 
@@ -51,30 +50,21 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
-FrameDial::FrameDial(): Gtk::Table(5, 1, false)
+ResolutionDial::ResolutionDial(): Gtk::Table(1, 3, false)
 {
 	Gtk::IconSize iconsize = Gtk::IconSize::from_name("synfig-small_icon");
 
-	seek_begin = create_icon(iconsize, Gtk::Stock::MEDIA_PREVIOUS,
-					_("Seek to Begin"));
-	seek_prev_frame = create_icon(iconsize, Gtk::Stock::MEDIA_REWIND,
-					_("Previous Frame"));
-	play_stop = create_icon(iconsize, Gtk::Stock::MEDIA_PLAY,
-					_("Play"));
-	seek_next_frame = create_icon(iconsize, Gtk::Stock::MEDIA_FORWARD,
-					_("Next Frame"));
-	seek_end = create_icon(iconsize, Gtk::Stock::MEDIA_NEXT,
-					_("Seek to End"));
+	increase_resolution = create_icon(iconsize, Gtk::Stock::ADD, _("Increase Display Resolution"));
+	decrease_resolution = create_icon(iconsize, Gtk::Stock::REMOVE, _("Decrease Display Resolution"));
+	use_low_resolution = create_check(_("Low Res"), _("Use Low Resolution when enabled"));
 
-	attach(*seek_begin, 0, 1, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
-	attach(*seek_prev_frame, 1, 2, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
-	attach(*play_stop, 2, 3, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
-	attach(*seek_next_frame, 3, 4, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
-	attach(*seek_end, 4, 5, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
+	attach(*decrease_resolution, 0, 1, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
+	attach(*use_low_resolution, 1, 2, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
+	attach(*increase_resolution, 2, 3, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
 }
 
 Gtk::Button *
-FrameDial::create_icon(Gtk::IconSize size, const Gtk::BuiltinStockID & stockid,
+ResolutionDial::create_icon(Gtk::IconSize size, const Gtk::BuiltinStockID & stockid,
 		const char * tooltip)
 {
 	Gtk::Button *button = manage(new class Gtk::Button());
@@ -89,3 +79,19 @@ FrameDial::create_icon(Gtk::IconSize size, const Gtk::BuiltinStockID & stockid,
 	return button;
 }
 
+Gtk::CheckButton *
+ResolutionDial::create_check(const char *label, const char * tooltip)
+{
+	Gtk::CheckButton *cbutton = manage(new class Gtk::CheckButton());
+	cbutton->set_label(label);
+	tooltips.set_tip(*cbutton, tooltip);
+	cbutton->show();
+
+	return cbutton;
+}
+
+void
+ResolutionDial::update_lowres(bool flag)
+{
+	use_low_resolution->set_active(flag);
+}

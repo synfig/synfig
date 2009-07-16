@@ -1,14 +1,14 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file zoomdial.h
+/*!	\file resolutiondial.h
 **	\brief Template Header
 **
 **	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
-**  Copyright (c) 2008 Chris Moore
-**  Copyright (c) 2009 Gerco Ballintijn
-**	Copyright (c) 2009 Carlos López
+**	Copyright (c) 2008 Chris Moore
+**	Copyright (c) 2009 Gerco Ballintijn
+**	Copyright (c) 2009 Carlos Lopez
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -25,16 +25,18 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_STUDIO_FRAMEDIAL_H
-#define __SYNFIG_STUDIO_FRAMEDIAL_H
+#ifndef __SYNFIG_STUDIO_RESOLUTIONDIAL_H
+#define __SYNFIG_STUDIO_RESOLUTIONDIAL_H
 
 /* === H E A D E R S ======================================================= */
 
 #include <gtkmm/tooltips.h>
 #include <gtkmm/table.h>
-#include <gtkmm/button.h>
+#include <gtkmm/checkbutton.h>
+#include "duckmatic.h"
 
 #include "general.h"
+
 
 /* === M A C R O S ========================================================= */
 
@@ -45,31 +47,27 @@
 namespace studio
 {
 
-class FrameDial : public Gtk::Table
+class ResolutionDial : public Gtk::Table
 {
 	Gtk::Tooltips tooltips;
 
-	Gtk::Button *seek_begin;
-	Gtk::Button *seek_prev_frame;
-	Gtk::Button *play_stop;
-	Gtk::Button *seek_next_frame;
-	Gtk::Button *seek_end;
+	Gtk::Button *increase_resolution;
+	Gtk::Button *decrease_resolution;
+	Gtk::CheckButton *use_low_resolution;
 
-	Gtk::Button *create_icon(Gtk::IconSize size, const Gtk::BuiltinStockID & stockid,
-			const char * tooltip);
+	Gtk::Button *create_icon(Gtk::IconSize size, const Gtk::BuiltinStockID & stockid, const char * tooltip);
+	Gtk::CheckButton *create_check(const char *text, const char *tooltip);
 
 public:
-	FrameDial();
 
-	Glib::SignalProxy0<void> signal_seek_begin()		{ return seek_begin->signal_clicked(); }
-	Glib::SignalProxy0<void> signal_seek_prev_frame()	{ return seek_prev_frame->signal_clicked(); }
-	Glib::SignalProxy0<void> signal_play_stop()			{ return play_stop->signal_clicked(); }
-	Glib::SignalProxy0<void> signal_seek_next_frame()	{ return seek_next_frame->signal_clicked(); }
-	Glib::SignalProxy0<void> signal_seek_end()			{ return seek_end->signal_clicked(); }
+	ResolutionDial();
 
-	Gtk::Button *get_play_button() { return play_stop; }
+	void update_lowres(bool flag);
+	Glib::SignalProxy0<void> signal_increase_resolution()  { return increase_resolution->signal_clicked(); }
+	Glib::SignalProxy0<void> signal_decrease_resolution()  { return decrease_resolution->signal_clicked(); }
+	Glib::SignalProxy0<void> signal_use_low_resolution()   { return use_low_resolution-> signal_toggled(); }
 
-}; // END of class FrameDial
+}; // END of class ResolutionDial
 
 }; // END of namespace studio
 

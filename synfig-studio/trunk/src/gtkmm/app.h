@@ -204,6 +204,8 @@ public:
 	static int preferred_x_size;
 	static int preferred_y_size;
 	static synfig::String predefined_size;
+	static synfig::String predefined_fps;
+	static float preferred_fps;
 	/*
  -- ** -- S I G N A L S -------------------------------------------------------
 	*/

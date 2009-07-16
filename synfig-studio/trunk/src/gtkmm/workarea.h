@@ -235,6 +235,8 @@ private:
 
 
 	bool onion_skin;
+	//! stores the future [1] and past [0] onion skins based on keyframes
+	int onion_skins[2];
 
 	etl::loose_handle<synfig::ValueNode> selected_value_node_;
 
@@ -348,6 +350,7 @@ public:
 	void set_onion_skin(bool x);
 	bool get_onion_skin()const;
 	void toggle_onion_skin() { set_onion_skin(!get_onion_skin()); }
+	void set_onion_skins(int *onions);
 
 	void set_selected_value_node(etl::loose_handle<synfig::ValueNode> x);
 

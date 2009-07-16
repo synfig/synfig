@@ -7,6 +7,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
+**	Copyright (c) 2009 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -41,6 +42,7 @@
 #include <gtkmm/messagedialog.h>
 #include <gtkmm/treemodelsort.h>
 #include <gtkmm/buttonbox.h>
+#include <gtkmm/separator.h>
 
 #include <gtk/gtktreestore.h>
 #include <gtk/gtkversion.h>
@@ -682,6 +684,9 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 	//keyframe_tree_store_	(KeyframeTreeStore::create(canvas_interface_)),
 	time_adjustment_		(0,0,25,0,0,0),
 	time_window_adjustment_	(0,0,25,0,0,0),
+	quality_adjustment_		(8,1,10,1,1,0),
+	future_onion_adjustment_ (0,0,2,1,1,0),
+	past_onion_adjustment_  (0,0,2,1,1,0),
 	statusbar				(manage(new class Gtk::Statusbar())),
 
 	timeslider				(new Widget_Timeslider),
@@ -704,6 +709,12 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 	layer_tree=0;
 	children_tree=0;
 	duck_refresh_flag=true;
+	toggling_ducks_=false;
+	changing_resolution_=false;
+	updating_quality_=false;
+	toggling_show_grid=false;
+	toggling_snap_grid=false;
+	toggling_onion_skin=false;
 
 	smach_.set_default_state(&state_normal);
 
@@ -735,9 +746,10 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 	//create all allocated stuff for this canvas
 	audio = new AudioContainer();
 
-	Gtk::Table *layout_table= manage(new class Gtk::Table(1, 3, false));
+	Gtk::Table *layout_table= manage(new class Gtk::Table(1, 4, false));
 	//layout_table->attach(*vpaned, 0, 1, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	layout_table->attach(*create_work_area(), 0, 1, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	layout_table->attach(*create_display_bar(), 0, 1, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 	init_menus();
 	//layout_table->attach(*App::ui_manager()->get_widget("/menu-main"), 0, 1, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 
@@ -1021,23 +1033,21 @@ CanvasView::create_time_bar()
 	keyframedial->show();
 	keyframebutton=keyframedial->get_lock_button();
 
-	Gtk::Table *table = manage(new class Gtk::Table(5, 3, false));
-	timebar = table;
+	timebar = manage(new class Gtk::Table(5, 4, false));
 
-	//Attach widgets to the time bar table
-	table->attach(*manage(disp_audio), 1, 5, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK);
-	table->attach(*framedial, 0, 1, 2, 3,Gtk::SHRINK, Gtk::SHRINK);
-	table->attach(*current_time_widget, 0, 1, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-	table->attach(*timeslider, 1, 3, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK);
-	table->attach(*time_window_scroll, 1, 3, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK);
-	table->attach(*keyframedial, 3, 4, 1, 2, Gtk::SHRINK, Gtk::SHRINK);
-	table->attach(*animatebutton, 4, 5, 1, 2, Gtk::SHRINK, Gtk::SHRINK);
-	//table->attach(*keyframebutton, 1, 2, 3, 4, Gtk::SHRINK, Gtk::SHRINK);
+	//Attach widgets to the timebar
+	timebar->attach(*manage(disp_audio), 1, 5, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK);
+	timebar->attach(*framedial, 0, 1, 2, 3,Gtk::SHRINK, Gtk::SHRINK);
+	timebar->attach(*current_time_widget, 0, 1, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+	timebar->attach(*timeslider, 1, 3, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK);
+	timebar->attach(*time_window_scroll, 1, 3, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK);
+	timebar->attach(*keyframedial, 3, 4, 1, 2, Gtk::SHRINK, Gtk::SHRINK);
+	timebar->attach(*animatebutton, 4, 5, 1, 2, Gtk::SHRINK, Gtk::SHRINK);
+	//timebar->attach(*keyframebutton, 1, 2, 3, 4, Gtk::SHRINK, Gtk::SHRINK);
 
+	timebar->show();
 
-	table->show();
-
-	return table;
+	return timebar;
 }
 
 Gtk::Widget *
@@ -1093,6 +1103,133 @@ CanvasView::create_status_bar()
 
 	statusbartable->show_all();
 	return statusbartable;
+}
+
+Gtk::Widget*
+CanvasView::create_display_bar()
+{
+	displaybar = manage(new class Gtk::Table(1, 7, false));
+
+	// Setup the ToggleDuckDial widget
+	toggleducksdial = Gtk::manage(new class ToggleDucksDial());
+
+	Duck::Type m = work_area->get_type_mask();
+	toggleducksdial->update_toggles(m);
+
+	toggleducksdial->signal_ducks_position().connect(
+			sigc::bind(sigc::mem_fun(*this, &studio::CanvasView::toggle_duck_mask),Duck::TYPE_POSITION)
+			);
+	toggleducksdial->signal_ducks_vertex().connect(
+			sigc::bind(sigc::mem_fun(*this, &studio::CanvasView::toggle_duck_mask),Duck::TYPE_VERTEX)
+			);
+	toggleducksdial->signal_ducks_tangent().connect(
+			sigc::bind(sigc::mem_fun(*this, &studio::CanvasView::toggle_duck_mask),Duck::TYPE_TANGENT)
+			);
+	toggleducksdial->signal_ducks_radius().connect(
+			sigc::bind(sigc::mem_fun(*this, &studio::CanvasView::toggle_duck_mask),Duck::TYPE_RADIUS)
+			);
+	toggleducksdial->signal_ducks_width().connect(
+			sigc::bind(sigc::mem_fun(*this, &studio::CanvasView::toggle_duck_mask),Duck::TYPE_WIDTH)
+			);
+	toggleducksdial->signal_ducks_angle().connect(
+			sigc::bind(sigc::mem_fun(*this, &studio::CanvasView::toggle_duck_mask),Duck::TYPE_ANGLE)
+			);
+	toggleducksdial->show();
+
+	// Set up the ResolutionDial widget
+	resolutiondial=Gtk::manage(new class ResolutionDial());
+
+	resolutiondial->update_lowres(work_area->get_low_resolution_flag());
+	resolutiondial->signal_increase_resolution().connect(
+			sigc::mem_fun(*this, &studio::CanvasView::decrease_low_res_pixel_size));
+	resolutiondial->signal_decrease_resolution().connect(
+			sigc::mem_fun(*this, &studio::CanvasView::increase_low_res_pixel_size));
+	resolutiondial->signal_use_low_resolution().connect(
+			sigc::mem_fun(*this, &studio::CanvasView::toggle_low_res_pixel_flag));
+	resolutiondial->show();
+
+	// Set up a separator
+	Gtk::VSeparator *separator1 = Gtk::manage(new class Gtk::VSeparator());
+	separator1->show();
+	Gtk::VSeparator *separator2 = Gtk::manage(new class Gtk::VSeparator());
+	separator2->show();
+
+	// Set up quality spin button
+	quality_spin=Gtk::manage(new class Gtk::SpinButton(quality_adjustment_));
+	quality_spin->signal_value_changed().connect(
+			sigc::mem_fun(*this, &studio::CanvasView::update_quality));
+	tooltips.set_tip(*quality_spin, _("Quality (lower is better)"));
+	quality_spin->show();
+
+	// Set up the show grid toggle button
+	show_grid = Gtk::manage(new class Gtk::ToggleButton());
+	show_grid->set_active(work_area->grid_status());
+	Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-toggle_show_grid"), Gtk::IconSize::from_name("synfig-small_icon")));
+	icon->set_padding(0, 0);
+	icon->show();
+	show_grid->add(*icon);
+	show_grid->signal_toggled().connect(
+			sigc::mem_fun(*this, &studio::CanvasView::toggle_show_grid));
+	tooltips.set_tip(*show_grid, _("Show grid when enabled"));
+	show_grid->set_relief(Gtk::RELIEF_NONE);
+	show_grid->show();
+
+	// Set up the snap to grid toggle button
+	snap_grid = Gtk::manage(new class Gtk::ToggleButton());
+	snap_grid->set_active(work_area->grid_status());
+	Gtk::Image *icon2 = manage(new Gtk::Image(Gtk::StockID("synfig-toggle_snap_grid"), Gtk::IconSize::from_name("synfig-small_icon")));
+	icon2->set_padding(0, 0);
+	icon2->show();
+	snap_grid->add(*icon2);
+	snap_grid->signal_toggled().connect(
+			sigc::mem_fun(*this, &studio::CanvasView::toggle_snap_grid));
+	tooltips.set_tip(*snap_grid, _("Snap grid when enabled"));
+	snap_grid->set_relief(Gtk::RELIEF_NONE);
+	snap_grid->show();
+
+	// Set up the onion skin toggle button
+	onion_skin = Gtk::manage(new class Gtk::ToggleButton());
+	onion_skin->set_active(work_area->get_onion_skin());
+	Gtk::Image *icon3 = manage(new Gtk::Image(Gtk::StockID("synfig-toggle_onion_skin"), Gtk::IconSize::from_name("synfig-small_icon")));
+	icon3->set_padding(0, 0);
+	icon3->show();
+	onion_skin->add(*icon3);
+	onion_skin->signal_toggled().connect(
+			sigc::mem_fun(*this, &studio::CanvasView::toggle_onion_skin));
+	tooltips.set_tip(*onion_skin, _("Shows onion skin when enabled"));
+	onion_skin->set_relief(Gtk::RELIEF_NONE);
+	onion_skin->show();
+
+	// Set up past onion skin spin button
+	past_onion_spin=Gtk::manage(new class Gtk::SpinButton(past_onion_adjustment_));
+	past_onion_spin->signal_value_changed().connect(
+			sigc::mem_fun(*this, &studio::CanvasView::set_onion_skins));
+	tooltips.set_tip(*past_onion_spin, _("Past onion skins"));
+	past_onion_spin->show();
+
+	// Set up future onion skin spin button
+	future_onion_spin=Gtk::manage(new class Gtk::SpinButton(future_onion_adjustment_));
+	future_onion_spin->signal_value_changed().connect(
+			sigc::mem_fun(*this, &studio::CanvasView::set_onion_skins));
+	tooltips.set_tip(*future_onion_spin, _("Future onion skins"));
+	future_onion_spin->show();
+
+
+	displaybar->attach(*toggleducksdial, 0, 1, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
+	displaybar->attach(*separator1, 1, 2, 0, 1, Gtk::FILL, Gtk::FILL);
+	displaybar->attach(*resolutiondial, 2, 3, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
+	displaybar->attach(*separator2, 3, 4, 0, 1, Gtk::FILL, Gtk::FILL);
+	displaybar->attach(*quality_spin, 4, 5, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
+	displaybar->attach(*show_grid, 5, 6, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
+	displaybar->attach(*snap_grid, 6, 7, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
+	displaybar->attach(*past_onion_spin, 7, 8, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
+	displaybar->attach(*onion_skin, 8, 9, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
+	displaybar->attach(*future_onion_spin, 9, 10, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
+
+	displaybar->show();
+
+	return displaybar;
+
 }
 
 void
@@ -1352,7 +1489,7 @@ CanvasView::init_menus()
 			}
 			action_group->add( action,
 				sigc::bind(
-					sigc::mem_fun(*work_area, &studio::WorkArea::set_quality),
+					sigc::mem_fun(*this, &studio::CanvasView::set_quality),
 					i
 				)
 			);
@@ -1403,11 +1540,11 @@ CanvasView::init_menus()
 
 		grid_show_toggle = Gtk::ToggleAction::create("toggle-grid-show", _("Show Grid"));
 		grid_show_toggle->set_active(work_area->grid_status());
-		action_group->add(grid_show_toggle, sigc::mem_fun(*work_area, &studio::WorkArea::toggle_grid));
+		action_group->add(grid_show_toggle, sigc::mem_fun(*this, &studio::CanvasView::toggle_show_grid));
 
 		grid_snap_toggle = Gtk::ToggleAction::create("toggle-grid-snap", _("Snap to Grid"));
 		grid_snap_toggle->set_active(work_area->get_grid_snap());
-		action_group->add(grid_snap_toggle, sigc::mem_fun(*work_area, &studio::WorkArea::toggle_grid_snap));
+		action_group->add(grid_snap_toggle, sigc::mem_fun(*this, &studio::CanvasView::toggle_snap_grid));
 
 		action = Gtk::ToggleAction::create("toggle-guide-show", _("Show Guides"));
 		action->set_active(work_area->get_show_guides());
@@ -1415,11 +1552,11 @@ CanvasView::init_menus()
 
 		action = Gtk::ToggleAction::create("toggle-low-res", _("Use Low-Res"));
 		action->set_active(work_area->get_low_resolution_flag());
-		action_group->add(action, sigc::mem_fun(*work_area, &studio::WorkArea::toggle_low_resolution_flag));
+		action_group->add(action, sigc::mem_fun(*this, &studio::CanvasView::toggle_low_res_pixel_flag));
 
 		action = Gtk::ToggleAction::create("toggle-onion-skin", _("Show Onion Skin"));
 		action->set_active(work_area->get_onion_skin());
-		action_group->add(action, sigc::mem_fun(*work_area, &studio::WorkArea::toggle_onion_skin));
+		action_group->add(action, sigc::mem_fun(*this, &studio::CanvasView::toggle_onion_skin));
 	}
 
 	action_group->add( Gtk::Action::create("canvas-zoom-fit", Gtk::StockID("gtk-zoom-fit")),
@@ -2750,6 +2887,18 @@ CanvasView::on_duck_changed(const synfig::Point &value,const synfigapp::ValueDes
 		}
 	}
 
+	if (ValueNode_Scale::Handle scale_value_node = ValueNode_Scale::Handle::cast_dynamic(value_desc.get_value_node()))
+	{
+		int link_index(scale_value_node->get_link_index_from_name("link"));
+		if(scale_value_node->is_invertible(get_time()))
+			return canvas_interface()->change_value(
+				synfigapp::ValueDesc(scale_value_node,link_index),
+					scale_value_node->get_inverse(get_time(), value)
+					);
+		else
+			return false;
+	}
+
 	switch(value_desc.get_value_type())
 	{
 	case ValueBase::TYPE_REAL:
@@ -2771,6 +2920,18 @@ CanvasView::on_duck_angle_changed(const synfig::Angle &rotation,const synfigapp:
 		return canvas_interface()->change_value(synfigapp::ValueDesc(bline_tangent,offset_index), old_offset + rotation);
 	}
 
+	if (ValueNode_Scale::Handle scale_value_node = ValueNode_Scale::Handle::cast_dynamic(value_desc.get_value_node()))
+	{
+		int link_index(scale_value_node->get_link_index_from_name("link"));
+		if(scale_value_node->is_invertible(get_time()))
+			return canvas_interface()->change_value(
+				synfigapp::ValueDesc(scale_value_node,link_index),
+					scale_value_node->get_inverse(get_time(), rotation)
+					);
+		else
+			return false;
+
+	}
 	// \todo will this really always be the case?
 	assert(value_desc.get_value_type() == ValueBase::TYPE_ANGLE);
 	return canvas_interface()->change_value(value_desc, value_desc.get_value(get_time()).get(Angle()) + rotation);
@@ -3029,9 +3190,11 @@ CanvasView::rebuild_ducks()
 void
 CanvasView::decrease_low_res_pixel_size()
 {
+	if(changing_resolution_)
+		return;
+	changing_resolution_=true;
 	list<int> sizes = CanvasView::get_pixel_sizes();
 	int pixel_size = work_area->get_low_res_pixel_size();
-
 	for (list<int>::iterator iter = sizes.begin(); iter != sizes.end(); iter++)
 		if (*iter == pixel_size)
 		{
@@ -3047,17 +3210,32 @@ CanvasView::decrease_low_res_pixel_size()
 			}
 			break;
 		}
+	// Update the "toggle-low-res" action
+	Glib::RefPtr<Gtk::ToggleAction> action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("toggle-low-res"));
+	action->set_active(work_area->get_low_resolution_flag());
+	// Update toggle low res button
+	resolutiondial->update_lowres(work_area->get_low_resolution_flag());
+	changing_resolution_=false;
 }
 
 void
 CanvasView::increase_low_res_pixel_size()
 {
+	if(changing_resolution_)
+		return;
+	changing_resolution_=true;
 	list<int> sizes = CanvasView::get_pixel_sizes();
 	int pixel_size = work_area->get_low_res_pixel_size();
-
 	if (!work_area->get_low_resolution_flag())
 	{
+		// We were using "hi res" so change it to low res.
 		work_area->set_low_resolution_flag(true);
+		// Update the "toggle-low-res" action
+		Glib::RefPtr<Gtk::ToggleAction> action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("toggle-low-res"));
+		action->set_active(true);
+		// Update the toggle low res button
+		resolutiondial->update_lowres(true);
+		changing_resolution_=false;
 		return;
 	}
 
@@ -3073,6 +3251,109 @@ CanvasView::increase_low_res_pixel_size()
 			}
 			break;
 		}
+	// Update the "toggle-low-res" action
+	Glib::RefPtr<Gtk::ToggleAction> action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("toggle-low-res"));
+	action->set_active(work_area->get_low_resolution_flag());
+	// Update toggle low res button
+	resolutiondial->update_lowres(work_area->get_low_resolution_flag());
+	changing_resolution_=false;
+}
+
+void
+CanvasView::toggle_low_res_pixel_flag()
+{
+	if(changing_resolution_)
+		return;
+	changing_resolution_=true;
+	work_area->toggle_low_resolution_flag();
+	// Update the toggle low res button
+	resolutiondial->update_lowres(work_area->get_low_resolution_flag());
+	// Update the "toggle-low-res" action
+	Glib::RefPtr<Gtk::ToggleAction> action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("toggle-low-res"));
+	action->set_active(work_area->get_low_resolution_flag());
+	changing_resolution_=false;
+}
+
+void
+CanvasView::update_quality()
+{
+	//if(working_depth)
+	//		return;
+	if(updating_quality_)
+		return;
+	updating_quality_=true;
+	work_area->set_quality((int) quality_spin->get_value());
+	// Update Quality Radio actions
+	Glib::RefPtr<Gtk::RadioAction> action=Glib::RefPtr<Gtk::RadioAction>::cast_dynamic(
+		action_group->get_action(strprintf("quality-%02d",(int) quality_spin->get_value()))
+		);
+	action->set_active();
+
+	updating_quality_=false;
+}
+
+void
+CanvasView::set_quality(int x)
+{
+	if(updating_quality_)
+		return;
+	work_area->set_quality(x);
+	// Update the quality spin button
+	quality_spin->set_value(x);
+}
+
+void
+CanvasView::set_onion_skins()
+{
+	if(toggling_onion_skin)
+		return;
+	int onion_skins[2];
+	onion_skins[0]=past_onion_spin->get_value();
+	onion_skins[1]=future_onion_spin->get_value();
+	work_area->set_onion_skins(onion_skins);
+}
+
+void
+CanvasView::toggle_show_grid()
+{
+	if(toggling_show_grid)
+		return;
+	toggling_show_grid=true;
+	work_area->toggle_grid();
+	// Update the toggle grid show action
+	set_grid_show_toggle(work_area->grid_status());
+	// Update the toggle grid show check button
+	show_grid->set_active(work_area->grid_status());
+	toggling_show_grid=false;
+}
+
+void
+CanvasView::toggle_snap_grid()
+{
+	if(toggling_snap_grid)
+		return;
+	toggling_snap_grid=true;
+	work_area->toggle_grid_snap();
+	// Update the toggle grid snap action
+	set_grid_snap_toggle(work_area->get_grid_snap());
+	// Update the toggle grid snap check button
+	snap_grid->set_active(work_area->get_grid_snap());
+	toggling_snap_grid=false;
+}
+
+void
+CanvasView::toggle_onion_skin()
+{
+	if(toggling_onion_skin)
+		return;
+	toggling_onion_skin=true;
+	work_area->toggle_onion_skin();
+	// Update the toggle onion skin action
+	Glib::RefPtr<Gtk::ToggleAction> action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("toggle-onion-skin"));
+	action->set_active(work_area->get_onion_skin());
+	// Update the toggle grid snap check button
+	onion_skin->set_active(work_area->get_onion_skin());
+	toggling_onion_skin=false;
 }
 
 void
@@ -3634,6 +3915,9 @@ CanvasView::on_keyframe_remove_pressed()
 void
 CanvasView::toggle_duck_mask(Duckmatic::Type type)
 {
+	if(toggling_ducks_)
+		return;
+	toggling_ducks_=true;
 	bool is_currently_on(work_area->get_type_mask()&type);
 
 	if(is_currently_on)
@@ -3642,6 +3926,30 @@ CanvasView::toggle_duck_mask(Duckmatic::Type type)
 		work_area->set_type_mask(work_area->get_type_mask()|type);
 
 	work_area->queue_draw();
+	try
+	{
+		// Update the toggle ducks actions
+		Glib::RefPtr<Gtk::ToggleAction> action;
+		action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("mask-position-ducks"));
+		action->set_active((bool)(work_area->get_type_mask()&Duck::TYPE_POSITION));
+		action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("mask-tangent-ducks"));
+		action->set_active((bool)(work_area->get_type_mask()&Duck::TYPE_TANGENT));
+		action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("mask-vertex-ducks"));
+		action->set_active((bool)(work_area->get_type_mask()&Duck::TYPE_VERTEX));
+		action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("mask-radius-ducks"));
+		action->set_active((bool)(work_area->get_type_mask()&Duck::TYPE_RADIUS));
+		action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("mask-width-ducks"));
+		action->set_active((bool)(work_area->get_type_mask()&Duck::TYPE_WIDTH));
+		action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("mask-angle-ducks"));
+		action->set_active((bool)(work_area->get_type_mask()&Duck::TYPE_ANGLE));
+		// Update toggle ducks buttons
+		toggleducksdial->update_toggles(work_area->get_type_mask());
+	}
+	catch(...)
+	{
+		toggling_ducks_=false;
+	}
+	toggling_ducks_=false;
 }
 
 void

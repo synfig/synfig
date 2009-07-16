@@ -31,21 +31,21 @@
 
 #define __USE_GNU
 
-#ifdef __ETL_HAS_PTHREAD_H
+#ifdef HAVE_PTHREAD_H
 # include <pthread.h>
 #endif
 
-#ifdef __ETL_HAS_SCHED_H
+#ifdef HAVE_SCHED_H
 # include <sched.h>
 #endif
 
-#ifdef __ETL_HAS_CREATETHREAD
+#ifdef HAVE_CREATETHREAD
 # include <windows.h>
 #endif
 
 /* === M A C R O S ========================================================= */
 
-#if ( defined (__ETL_HAS_PTHREAD_CREATE) || defined (__ETL_HAS_CLONE) || defined (__ETL_HAS_CREATETHREAD) ) && !defined (NO_THREADS)
+#if ( defined (HAVE_PTHREAD_CREATE) || defined (HAVE_CLONE) || defined (HAVE_CREATETHREAD) ) && !defined (NO_THREADS)
 # define CALLISTO_THREADS
 #endif
 
@@ -53,7 +53,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-#if defined(CALLISTO_THREADS) && defined(__ETL_HAS_PTHREAD_CREATE)
+#if defined(CALLISTO_THREADS) && defined(HAVE_PTHREAD_CREATE)
 static inline void Yield(void)
 {
 	sched_yield();
@@ -68,7 +68,7 @@ inline void Yield(void) { }
 
 #ifdef CALLISTO_THREADS
 
-#ifdef __ETL_HAS_PTHREAD_CREATE
+#ifdef HAVE_PTHREAD_CREATE
 
 class Thread
 {
@@ -207,7 +207,7 @@ public:
 	}
 };
 
-#ifdef __ETL_HAS_PTHREAD_RW_LOCK_INIT
+#ifdef HAVE_PTHREAD_RW_LOCK_INIT
 class ReadWriteLock
 {
 	pthread_rwlock_t rwlock;
@@ -290,8 +290,8 @@ public:
 };
 */
 
-#else // if defined __ETL_HAS_PTHREAD_CREATE
-#ifdef __ETL_HAS_CREATETHREAD
+#else // if defined HAVE_PTHREAD
+#ifdef HAVE_CREATETHREAD
 
 
 #ifdef THREAD_ENTRYPOINT
@@ -448,8 +448,8 @@ public:
 };
 
 
-#endif // if defined __ETL_HAS_CREATETHREAD
-#endif // if defined __ETL_HAS_PTHREAD_CREATE
+#endif // if defined HAVE_CREATETHREAD
+#endif // if defined HAVE_PTHREAD_CREATE
 #endif // if defined CALLISTO_THREADS
 
 

@@ -40,6 +40,8 @@
 
 #include "general.h"
 
+#include <fstream>
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -285,6 +287,14 @@ RenderSettings::on_render_pressed()
 	if(!target)
 	{
 		canvas_interface_->get_ui_interface()->error(_("Unable to create target for ")+filename);
+		return;
+	}
+	// This is the only way I've found to avoid send a non writable
+	// filename path to the renderer.
+	fstream filetest (filename.c_str(), fstream::out);
+	if (filetest.fail())
+	{
+		canvas_interface_->get_ui_interface()->error(_("Unable to create file for ")+filename);
 		return;
 	}
 

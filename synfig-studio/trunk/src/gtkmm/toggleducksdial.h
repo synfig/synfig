@@ -1,14 +1,14 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file zoomdial.h
+/*!	\file toggleducksdial.h
 **	\brief Template Header
 **
 **	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
-**  Copyright (c) 2008 Chris Moore
-**  Copyright (c) 2009 Gerco Ballintijn
-**	Copyright (c) 2009 Carlos López
+**	Copyright (c) 2008 Chris Moore
+**	Copyright (c) 2009 Gerco Ballintijn
+**	Copyright (c) 2009 Carlos Lopez
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -25,16 +25,18 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_STUDIO_FRAMEDIAL_H
-#define __SYNFIG_STUDIO_FRAMEDIAL_H
+#ifndef __SYNFIG_STUDIO_TOOGLEDUCKSDIAL_H
+#define __SYNFIG_STUDIO_TOOGLEDUCKSDIAL_H
 
 /* === H E A D E R S ======================================================= */
 
 #include <gtkmm/tooltips.h>
 #include <gtkmm/table.h>
-#include <gtkmm/button.h>
+#include <gtkmm/togglebutton.h>
+#include "duckmatic.h"
 
 #include "general.h"
+
 
 /* === M A C R O S ========================================================= */
 
@@ -45,31 +47,31 @@
 namespace studio
 {
 
-class FrameDial : public Gtk::Table
+class ToggleDucksDial : public Gtk::Table
 {
 	Gtk::Tooltips tooltips;
 
-	Gtk::Button *seek_begin;
-	Gtk::Button *seek_prev_frame;
-	Gtk::Button *play_stop;
-	Gtk::Button *seek_next_frame;
-	Gtk::Button *seek_end;
+	Gtk::ToggleButton *ducks_position;
+	Gtk::ToggleButton *ducks_vertex;
+	Gtk::ToggleButton *ducks_tangent;
+	Gtk::ToggleButton *ducks_radius;
+	Gtk::ToggleButton *ducks_width;
+	Gtk::ToggleButton *ducks_angle;
 
-	Gtk::Button *create_icon(Gtk::IconSize size, const Gtk::BuiltinStockID & stockid,
-			const char * tooltip);
+	Gtk::ToggleButton *create_label_button(Gtk::IconSize iconsize, const char * stockid, const char * tooltip);
 
 public:
-	FrameDial();
 
-	Glib::SignalProxy0<void> signal_seek_begin()		{ return seek_begin->signal_clicked(); }
-	Glib::SignalProxy0<void> signal_seek_prev_frame()	{ return seek_prev_frame->signal_clicked(); }
-	Glib::SignalProxy0<void> signal_play_stop()			{ return play_stop->signal_clicked(); }
-	Glib::SignalProxy0<void> signal_seek_next_frame()	{ return seek_next_frame->signal_clicked(); }
-	Glib::SignalProxy0<void> signal_seek_end()			{ return seek_end->signal_clicked(); }
+	ToggleDucksDial();
+	void update_toggles(Duck::Type mask);
+	Glib::SignalProxy0<void> signal_ducks_position()  { return ducks_position->signal_toggled(); }
+	Glib::SignalProxy0<void> signal_ducks_vertex()    { return ducks_vertex->  signal_toggled(); }
+	Glib::SignalProxy0<void> signal_ducks_tangent()   { return ducks_tangent-> signal_toggled(); }
+	Glib::SignalProxy0<void> signal_ducks_radius()    { return ducks_radius->  signal_toggled(); }
+	Glib::SignalProxy0<void> signal_ducks_width()     { return ducks_width->   signal_toggled(); }
+	Glib::SignalProxy0<void> signal_ducks_angle()     { return ducks_angle->   signal_toggled(); }
 
-	Gtk::Button *get_play_button() { return play_stop; }
-
-}; // END of class FrameDial
+}; // END of class ToggleDucksDial
 
 }; // END of namespace studio
 

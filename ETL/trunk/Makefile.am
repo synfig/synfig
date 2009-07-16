@@ -21,6 +21,7 @@ MAINTAINERCLEANFILES = \
 	config.status \
 	.doc_stamp \
 	.DS_Store \
+	include/etl_profile.h.in \
 	doxygen.cfg
 
 
@@ -45,6 +46,7 @@ EXTRA_DIST = \
 	config/depcomp \
 	m4/cxx_macros.m4 \
 	ETL.pbproj/project.pbxproj \
+	ETL.pbproj/etl_profile.h \
 	ETL.pbproj/frameworkfix.cpp \
 	ETL-config.in \
 	m4/ETL.m4 \

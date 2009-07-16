@@ -8,6 +8,8 @@
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
 **  Copyright (c) 2008 Paul Wise
+**  Copyright (c) 2009 Gerco Ballintijn
+**	Copyright (c) 2009 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -192,6 +194,18 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	INIT_STOCK_ICON(seek_prev_frame,"seek_prev_frame."IMAGE_EXT,_("Previous Frame"));
 	INIT_STOCK_ICON(seek_next_frame,"seek_next_frame."IMAGE_EXT,_("Next Frame"));
 	INIT_STOCK_ICON(seek_end,"seek_end."IMAGE_EXT,_("Seek to End"));
+
+	INIT_STOCK_ICON(toggle_duck_position,"duck_position_icon."IMAGE_EXT,_("Toogle position ducks"));
+	INIT_STOCK_ICON(toggle_duck_vertex,"duck_vertex_icon."IMAGE_EXT,_("Toogle vertex ducks"));
+	INIT_STOCK_ICON(toggle_duck_tangent,"duck_tangent_icon."IMAGE_EXT,_("Toogle tangent ducks"));
+	INIT_STOCK_ICON(toggle_duck_radius,"duck_radius_icon."IMAGE_EXT,_("Toogle radius ducks"));
+	INIT_STOCK_ICON(toggle_duck_width,"duck_width_icon."IMAGE_EXT,_("Toogle width ducks"));
+	INIT_STOCK_ICON(toggle_duck_angle,"duck_angle_icon."IMAGE_EXT,_("Toogle angle ducks"));
+
+	INIT_STOCK_ICON(toggle_show_grid,"show_grid_icon."IMAGE_EXT,_("Toggle show grid"));
+	INIT_STOCK_ICON(toggle_snap_grid,"snap_grid_icon."IMAGE_EXT,_("Toggle snap grid"));
+
+	INIT_STOCK_ICON(toggle_onion_skin,"onion_skin_icon."IMAGE_EXT,_("Toggle onion skin"));
 
 	INIT_STOCK_ICON_CLONE(cvs_add,"gtk-add",_("CVS Add"));
 	INIT_STOCK_ICON_CLONE(cvs_update,"gtk-open",_("CVS Update"));
