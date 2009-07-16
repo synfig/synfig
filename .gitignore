@@ -64,6 +64,7 @@ synfig-core/trunk/src/synfig/proto/nodebase.h
 synfig-core/trunk/src/tool/synfig
 synfig-core/trunk/synfig.pc.in
 
+synfig-core/trunk/autorevision.h
 synfig-core/trunk/m4/codeset.m4
 synfig-core/trunk/m4/gettext.m4
 synfig-core/trunk/m4/glibc2.m4

@@ -43,6 +43,7 @@ MAINTAINERCLEANFILES = \
 
 SUBDIRS = \
 	libltdl \
+	build_tools \
 	src \
 	examples \
 	po
