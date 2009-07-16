@@ -195,12 +195,12 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	INIT_STOCK_ICON(seek_next_frame,"seek_next_frame."IMAGE_EXT,_("Next Frame"));
 	INIT_STOCK_ICON(seek_end,"seek_end."IMAGE_EXT,_("Seek to End"));
 
-	INIT_STOCK_ICON(toggle_duck_position,"duck_position_icon."IMAGE_EXT,_("Toogle position ducks"));
-	INIT_STOCK_ICON(toggle_duck_vertex,"duck_vertex_icon."IMAGE_EXT,_("Toogle vertex ducks"));
-	INIT_STOCK_ICON(toggle_duck_tangent,"duck_tangent_icon."IMAGE_EXT,_("Toogle tangent ducks"));
-	INIT_STOCK_ICON(toggle_duck_radius,"duck_radius_icon."IMAGE_EXT,_("Toogle radius ducks"));
-	INIT_STOCK_ICON(toggle_duck_width,"duck_width_icon."IMAGE_EXT,_("Toogle width ducks"));
-	INIT_STOCK_ICON(toggle_duck_angle,"duck_angle_icon."IMAGE_EXT,_("Toogle angle ducks"));
+	INIT_STOCK_ICON(toggle_duck_position,"duck_position_icon."IMAGE_EXT,_("Toggle position ducks"));
+	INIT_STOCK_ICON(toggle_duck_vertex,"duck_vertex_icon."IMAGE_EXT,_("Toggle vertex ducks"));
+	INIT_STOCK_ICON(toggle_duck_tangent,"duck_tangent_icon."IMAGE_EXT,_("Toggle tangent ducks"));
+	INIT_STOCK_ICON(toggle_duck_radius,"duck_radius_icon."IMAGE_EXT,_("Toggle radius ducks"));
+	INIT_STOCK_ICON(toggle_duck_width,"duck_width_icon."IMAGE_EXT,_("Toggle width ducks"));
+	INIT_STOCK_ICON(toggle_duck_angle,"duck_angle_icon."IMAGE_EXT,_("Toggle angle ducks"));
 
 	INIT_STOCK_ICON(toggle_show_grid,"show_grid_icon."IMAGE_EXT,_("Toggle show grid"));
 	INIT_STOCK_ICON(toggle_snap_grid,"snap_grid_icon."IMAGE_EXT,_("Toggle snap grid"));
