@@ -1,6 +1,7 @@
 #!/bin/sh
 
 # Copyright 2008 Paul Wise
+# Copyright 2009 Konstantin Dmitriev
 #
 # This package is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -12,6 +13,16 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 # General Public License for more details.
 
+get_git_id(){
+	export SCM=git
+	export REVISION_ID=`cd "$1"; git log --no-color -1 | head -n 1 | cut -f 2 -d ' '`
+	export BRANCH=`cd "$1"; git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'`
+	export REVISION=`git-show --pretty=format:%ci HEAD |  head -c 10`
+	REVISION=${REVISION:0:4}${REVISION:5:2}${REVISION:8:2}
+	export COMPARE="$1/.git/"
+	# The extra * at the end is for Modified
+	#REVISION="$REVISION"`cd "$1"; [[ $(git status 2> /dev/null | tail -n1) != "nothing to commit (working directory clean)" ]] && echo "*"`
+}
 
 get_git_svn_id(){
 	export SCM=git-svn
@@ -41,7 +52,9 @@ fi
 
 
 # Extract the revision from SVN/git/etc
-if [ -d "$1/.git/svn" ] ; then
+if [ -e "$1/../../.git/refs/remotes/origin" ] ; then
+	get_git_id "$1/../.."
+elif [ -d "$1/.git/svn" ] ; then
 	get_git_svn_id "$1"
 elif [ -d "$1/../.git/svn" ] ; then
 	get_git_svn_id "$1/.."
@@ -66,7 +79,6 @@ fi
 # Abort if the header is newer
 if [ "$COMPARE" -ot "$HEADER" ] ; then exit; fi
 
-
 # Set the development version string
 if [ x = "x$DEVEL_VERSION" ] ; then
 	if [ x != "x$REVISION" ] ; then
@@ -74,6 +86,8 @@ if [ x = "x$DEVEL_VERSION" ] ; then
 			DEVEL_VERSION="SVN r$REVISION"
 		elif [ $SCM = git-svn ] ; then
 			DEVEL_VERSION="SVN r$REVISION (via git)"
+		elif [ $SCM = git ] ; then
+			DEVEL_VERSION="Revision: $REVISION\\nBranch: ${BRANCH}\\nRevision ID: $REVISION_ID"
 		elif [ $SCM = manual ] ; then
 			DEVEL_VERSION="$REVISION (manually configured)"
 		fi
