@@ -500,10 +500,6 @@ Widget_Curves::redraw(GdkEventExpose */*bleh*/)
 	gc->set_rgb_fg_color(Gdk::Color("#4f4f4f"));
 	get_window()->draw_rectangle(gc, false, 0, round_to_int((0-r_bottom)/dr), w, 0);
 
-	// Draw current time
-	gc->set_rgb_fg_color(Gdk::Color("#0000ff")); // It should be user selectable
-	get_window()->draw_rectangle(gc, false, round_to_int((time_adjustment_->get_value()-t_begin)/dt), 0, 0, h);
-
 	// This try to find a valid vanvas to show the keyframes of those
 	// valuenodes. If not canvas found then no keyframes marks are shown.
 	synfig::Canvas::Handle canvas=0;
@@ -533,6 +529,11 @@ Widget_Curves::redraw(GdkEventExpose */*bleh*/)
 			}
 		}
 	}
+
+	// Draw current time
+	gc->set_rgb_fg_color(Gdk::Color("#0000ff")); // It should be user selectable
+	get_window()->draw_rectangle(gc, false, round_to_int((time_adjustment_->get_value()-t_begin)/dt), 0, 0, h);
+
 	// Draw curves for the valuenodes stored in the curve list
 	for(curve_iter=curve_list_.begin();curve_iter!=curve_list_.end();++curve_iter)
 	{
