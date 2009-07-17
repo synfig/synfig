@@ -651,6 +651,7 @@ synfigincludedir=$includedir/synfig-$API_VERSION
 AC_SUBST(synfigincludedir)
 
 AC_CONFIG_FILES([synfig-config
+build_tools/Makefile
 synfig.pc
 doxygen.cfg
 Makefile
