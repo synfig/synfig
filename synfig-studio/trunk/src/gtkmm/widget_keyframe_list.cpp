@@ -218,7 +218,7 @@ Widget_Keyframe_List::on_event(GdkEvent *event)
 				t = floor(t*fps + 0.5)/fps;
 			}
 		bool stat=perform_move_kf();
-		synfig::info("Dropping keyframe at: %s", t.get_string());
+		synfig::info("Dropping keyframe at: %s", t.get_string().c_str());
 		return stat;
 		}
 	default:
@@ -243,5 +243,16 @@ void Widget_Keyframe_List::set_time_adjustment(Gtk::Adjustment *x)
 	{
 		time_value_change = x->signal_value_changed().connect(sigc::mem_fun(*this,&Widget_Keyframe_List::queue_draw));
 		time_other_change = x->signal_changed().connect(sigc::mem_fun(*this,&Widget_Keyframe_List::queue_draw));
+	}
+}
+
+void
+Widget_Keyframe_List::set_fps(float d)
+{
+	if(fps != d)
+	{
+		fps = d;
+		//update everything since we need to redraw already
+		queue_draw();
 	}
 }

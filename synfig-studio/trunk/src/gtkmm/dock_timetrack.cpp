@@ -43,6 +43,7 @@
 #include "layerparamtreestore.h"
 #include "workarea.h"
 #include "widget_timeslider.h"
+#include "widget_keyframe_list.h"
 #include "layerparamtreestore.h"
 #include "general.h"
 #include <synfig/timepointcollect.h>
@@ -405,6 +406,7 @@ Dock_Timetrack::Dock_Timetrack():
 {
 	table_=0;
 	widget_timeslider_= new Widget_Timeslider();
+	widget_kf_list_= new Widget_Keyframe_List();
 
 	int header_height = 0;
 	if(getenv("SYNFIG_TIMETRACK_HEADER_HEIGHT"))
@@ -413,6 +415,8 @@ Dock_Timetrack::Dock_Timetrack():
 		header_height = 22;
 
 	widget_timeslider_->set_size_request(-1,header_height);
+	widget_kf_list_->set_size_request(-1,header_height);
+
 	hscrollbar_=new Gtk::HScrollbar();
 	vscrollbar_=new Gtk::VScrollbar();
 }
@@ -423,6 +427,7 @@ Dock_Timetrack::~Dock_Timetrack()
 	delete hscrollbar_;
 	delete vscrollbar_;
 	delete widget_timeslider_;
+	delete widget_kf_list_;
 }
 
 void
@@ -493,14 +498,20 @@ Dock_Timetrack::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_v
 
 		assert(tree_view);
 
+
 		widget_timeslider_->set_time_adjustment(&canvas_view->time_adjustment());
 		widget_timeslider_->set_bounds_adjustment(&canvas_view->time_window_adjustment());
 		widget_timeslider_->set_global_fps(canvas_view->get_canvas()->rend_desc().get_frame_rate());
+
+		widget_kf_list_->set_time_adjustment(&canvas_view->time_adjustment());
+		widget_kf_list_->set_fps(canvas_view->get_canvas()->rend_desc().get_frame_rate());
+		widget_kf_list_->set_kf_list(canvas_view->get_canvas()->keyframe_list());
 
 		vscrollbar_->set_adjustment(*tree_view->get_vadjustment());
 		hscrollbar_->set_adjustment(canvas_view->time_window_adjustment());
 		table_=new Gtk::Table(2,2);
 		table_->attach(*widget_timeslider_, 0, 1, 0, 1, Gtk::FILL|Gtk::EXPAND, Gtk::FILL|Gtk::SHRINK);
+		table_->attach(*widget_kf_list_, 0, 1, 0, 1, Gtk::FILL|Gtk::EXPAND, Gtk::FILL|Gtk::SHRINK);
 		table_->attach(*tree_view, 0, 1, 1, 2, Gtk::FILL|Gtk::EXPAND, Gtk::FILL|Gtk::EXPAND);
 		table_->attach(*hscrollbar_, 0, 1, 2, 3, Gtk::FILL|Gtk::EXPAND, Gtk::FILL|Gtk::SHRINK);
 		table_->attach(*vscrollbar_, 1, 2, 0, 2, Gtk::FILL|Gtk::SHRINK, Gtk::FILL|Gtk::EXPAND);

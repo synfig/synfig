@@ -6,6 +6,7 @@
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
+**  Copyright (c) 2009 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -40,12 +41,14 @@
 
 namespace studio {
 class Widget_Timeslider;
+class Widget_Keyframe_List;
 
 class Dock_Timetrack : public Dock_CanvasSpecific
 {
 	Gtk::HScrollbar* hscrollbar_;
 	Gtk::VScrollbar* vscrollbar_;
 	Widget_Timeslider* widget_timeslider_;
+	Widget_Keyframe_List* widget_kf_list_;
 	Gtk::Table* table_;
 
 protected:
@@ -59,7 +62,7 @@ public:
 
 	Dock_Timetrack();
 	~Dock_Timetrack();
-}; // END of Dock_Keyframes
+}; // END of Dock_Timetrack
 
 }; // END of namespace studio
 

@@ -52,7 +52,8 @@ class Widget_Keyframe_List : public Gtk::DrawingArea
 	synfig::KeyframeList kf_list_;
 
 	//! The frames per second of the canvas
-	synfig::Time fps;
+	float fps;
+
 	//!True if it is editable. Keyframes can be moved.
 	bool editable_;
 
@@ -104,6 +105,9 @@ public:
 
 	//! Set the time adjustment and proper connects its change signals
 	void set_time_adjustment(Gtk::Adjustment *x);
+
+	//! Set the fps
+	void set_fps(float x);
 
 	//! Performs the keyframe movement. Returns true if it was sucessful
 	bool perform_move_kf();
