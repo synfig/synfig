@@ -17,6 +17,8 @@ trap writelog INT
 
 init()
 {
+echo "Synfig Crash Monitor is a tool to collect statistics about synfig crashes. All information is collected locally in ~/.synfig/cph directory."
+echo
 echo `date +%H:%M` "Synfig Crash Monitor started."
 STARTED=0
 RUNTIME=0
@@ -105,7 +107,6 @@ mainloop()
 				if [ ! -e $P ]; then
 					P=`which $P`
 				fi
-				echo $P
 				P=`dirname $P`
 				echo "   Assuming synfig installed in $P."
 				VERSION=`$P/synfig --info|head -n 1|cut -d '-' -f 2`
