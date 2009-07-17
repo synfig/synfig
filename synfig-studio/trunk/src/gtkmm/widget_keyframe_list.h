@@ -49,7 +49,8 @@ class Widget_Keyframe_List : public Gtk::DrawingArea
 	Gtk::Adjustment *adj_timescale;
 
 	//!The list of keyframes to be drawn on the widget and moved with mouse
-	synfig::KeyframeList kf_list_;
+	synfig::KeyframeList default_kf_list_;
+	mutable synfig::KeyframeList* kf_list_;
 
 	//! The frames per second of the canvas
 	float fps;
@@ -85,10 +86,10 @@ public:
 	~Widget_Keyframe_List();
 
 	//!Loads a new keyframe list on the widget.
-	void set_kf_list(const synfig::KeyframeList& x);
+	void set_kf_list(synfig::KeyframeList* x);
 
 	//!Member for private data.
-	const synfig::KeyframeList& get_kf_list()const { return kf_list_; }
+	synfig::KeyframeList* get_kf_list()const { return kf_list_; }
 
 	//!Member for private data
 	void set_editable(bool x=true) { editable_=x; }

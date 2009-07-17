@@ -60,7 +60,8 @@ Widget_Keyframe_List::Widget_Keyframe_List():
 	editable_(true),
 	adj_default(0,0,2,1/24,10/24),
 	adj_timescale(0),
-	fps(24)
+	fps(24),
+	kf_list_(&default_kf_list_)
 {
 	set_size_request(-1,64);
 	//!This signal is called when the widget need to be redrawn
@@ -80,6 +81,7 @@ Widget_Keyframe_List::~Widget_Keyframe_List()
 bool
 Widget_Keyframe_List::redraw(GdkEventExpose */*bleh*/)
 {
+	if (kf_list_->empty()) return false;
 	const int h(get_height());
 	const int w(get_width());
 
@@ -98,13 +100,13 @@ Widget_Keyframe_List::redraw(GdkEventExpose */*bleh*/)
 	}
 
 	//! draw a background
-	gc->set_rgb_fg_color(Gdk::Color("#7f7f7f"));
-	get_window()->draw_rectangle(gc, false, 0, 0, w, h);
+	gc->set_rgb_fg_color(Gdk::Color("#FF0000"));
+	get_window()->draw_rectangle(gc, true, 0, 0, w, h);
 
 	//!Loop all the keyframes
 	synfig::KeyframeList::iterator iter,selected_iter;
 	bool show_selected(false);
-	for(iter=kf_list_.begin();iter!=kf_list_.end();iter++)
+	for(iter=kf_list_->begin();iter!=kf_list_->end();iter++)
 	{
 		//!do not draw keyframes out of the widget boundaries
 		if (iter->get_time()>top || iter->get_time()<bottom)
@@ -139,11 +141,11 @@ Widget_Keyframe_List::redraw(GdkEventExpose */*bleh*/)
 
 
 void
-Widget_Keyframe_List::set_kf_list(const synfig::KeyframeList& x)
+Widget_Keyframe_List::set_kf_list(synfig::KeyframeList* x)
 {
 	kf_list_=x;
-	if(kf_list_.size())
-		set_selected_keyframe(*kf_list_.find_next(synfig::Time::zero()));
+	if(kf_list_->size())
+		set_selected_keyframe(*kf_list_->find_next(synfig::Time::zero()));
 }
 
 void
@@ -174,13 +176,21 @@ Widget_Keyframe_List::on_event(GdkEvent *event)
 	if(pos>1.0f)pos=1.0f;
 		//! The time where the event x is
 	synfig::Time t((float)(pos*(top-bottom)));
-		//! here the guts of the event
+
+	//Do not respond mouse events if the list is empty
+	if(!kf_list_->size())
+	{
+		synfig::info("Keyframe list empty");
+		return true;
+	}
+
+	//! here the guts of the event
 	switch(event->type)
 	{
 	case GDK_MOTION_NOTIFY:
 		if(editable_)
 		{
-			if(!kf_list_.size()) return true;
+
 			// stick to integer frames.
 			if(fps)
 				{
@@ -195,10 +205,12 @@ Widget_Keyframe_List::on_event(GdkEvent *event)
 		changed_=false;
 		if(event->button.button==1)
 		{
+			synfig::info("Looking keyframe at  %s", t.get_string().c_str());
+			synfig::info("Total amount of keyframes %i", kf_list_->size());
 			if(editable_)
 			{
 				synfig::KeyframeList::iterator selected;
-				selected = kf_list_.find_next(t);
+				selected = kf_list_->find_next(t);
 				set_selected_keyframe(*selected);
 				queue_draw();
 				return true;
