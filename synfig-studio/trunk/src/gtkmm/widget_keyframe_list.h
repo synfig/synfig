@@ -29,7 +29,10 @@
 /* === H E A D E R S ======================================================= */
 
 #include <gtkmm/drawingarea.h>
+#include <gtkmm/adjustment.h>
 #include <synfig/keyframe.h>
+#include <sigc++/connection.h>
+
 
 /* === M A C R O S ========================================================= */
 
@@ -41,56 +44,77 @@ namespace studio {
 
 class Widget_Keyframe_List : public Gtk::DrawingArea
 {
-	sigc::signal<void> signal_value_changed_;
-	sigc::signal<void> signal_clicked_;
+	//! Time adjustment window
+	Gtk::Adjustment adj_default;
+	Gtk::Adjustment *adj_timescale;
 
-	sigc::signal<void,synfig::Keyframe> signal_keyframe_selected_;
-
+	//!The list of keyframes to be drawn on the widget and moved with mouse
 	synfig::KeyframeList kf_list_;
 
+	//! The frames per second of the canvas
+	synfig::Time fps;
+	//!True if it is editable. Keyframes can be moved.
 	bool editable_;
 
+	//!True if a keyframe is being dragged.
+	bool dragging_;
+
+	//!True if a keyframe has been moved
 	bool changed_;
 
+	//!Holds the selected keyframe of the keyframe list
 	synfig::Keyframe selected_kf;
 
-	void popup_menu(float x);
+	//!The time of the selected keyframe
+	synfig::Time selected_kf_time;
 
-	//void insert_cpoint(float x);
+	//!The time of the selected keyframe during draging
+	synfig::Time dragging_kf_time;
 
-	//void remove_cpoint(float x);
+	//!Connectors for handling the signals of the time adjustment
+	sigc::connection time_value_change;
+	sigc::connection time_other_change;
 
 public:
 
+	//!Default constructor
 	Widget_Keyframe_List();
 
+	//!Destructror
 	~Widget_Keyframe_List();
 
-	sigc::signal<void>& signal_value_changed() { return signal_value_changed_; }
-	sigc::signal<void>& signal_clicked() { return signal_clicked_; }
+	//!Loads a new keyframe list on the widget.
+	void set_kf_list(const synfig::KeyframeList& x);
 
-	sigc::signal<void,synfig::Keyframe>& signal_keyframe_selected() { return signal_keyframe_selected_; }
+	//!Member for private data.
+	const synfig::KeyframeList& get_kf_list()const { return kf_list_; }
 
-	void set_value(const synfig::KeyframeList& x);
-
-	const synfig::KayframeList& get_value()const { return kf_list_; }
-
+	//!Member for private data
 	void set_editable(bool x=true) { editable_=x; }
 
+	//!Member for private data
 	bool get_editable()const { return editable_; }
 
 
-
+	//!Store the selected keyframe value
 	void set_selected_keyframe(const synfig::Keyframe &x);
 
-	const synfig::Kayframe& get_selected_keyframe() { return selected_kf; }
+	//!Returns the selected keyframe
+	const synfig::Keyframe& get_selected_keyframe() { return selected_kf; }
 
-	void update_keyframe(const synfig::Keyframe &x);
+	//! Set the time adjustment and proper connects its change signals
+	void set_time_adjustment(Gtk::Adjustment *x);
+
+	//! Performs the keyframe movement. Returns true if it was sucessful
+	bool perform_move_kf();
 
 
 
+/* ======================= EVENTS HANDLERS ===========================*/
+	//!Redraw event. Should draw all the keyframes +  the selected + the dragged
 	bool redraw(GdkEventExpose*bleh=NULL);
 
+	//!Mouse event handler.
 	bool on_event(GdkEvent *event);
 }; // END of class Keyframe_List
 

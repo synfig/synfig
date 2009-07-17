@@ -138,7 +138,8 @@ WIDGET_HH = \
 	widget_value.h \
 	widget_vector.h \
 	widget_waypoint.h \
-	widget_waypointmodel.h
+	widget_waypointmodel.h \
+	widget_keyframe_list.h
 
 WIDGET_CC = \
 	widget_canvaschooser.cpp \
@@ -157,7 +158,8 @@ WIDGET_CC = \
 	widget_value.cpp \
 	widget_vector.cpp \
 	widget_waypoint.cpp \
-	widget_waypointmodel.cpp
+	widget_waypointmodel.cpp \
+	widget_keyframe_list.cpp
 
 
 STATE_HH = \
