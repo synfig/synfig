@@ -48,6 +48,7 @@ using namespace etl;
 using namespace synfig;
 using namespace studio;
 
+
 /* === M A C R O S ========================================================= */
 
 /* === G L O B A L S ======================================================= */
@@ -165,23 +166,47 @@ void
 Widget_Keyframe_List::set_kf_list(synfig::KeyframeList* x)
 {
 	kf_list_=x;
-	if(kf_list_->size())
-		set_selected_keyframe(selected_none);
+	set_selected_keyframe(selected_none);
+	selected_=false;
+	dragging_=false;
 }
 
 void
 Widget_Keyframe_List::set_selected_keyframe(const synfig::Keyframe &x)
 {
 	selected_kf=x;
+	selected_=true;
 	dragging_kf_time=selected_kf.get_time();
 	//signal_keyframe_selected_(selected_kf);
+	dragging_=false;
 	queue_draw();
 }
 
 bool
 Widget_Keyframe_List::perform_move_kf()
 {
-	return false;
+	if(!selected_)
+		return false;
+	if(dragging_kf_time == selected_kf.get_time())
+		return false;
+	synfigapp::Action::Handle action(synfigapp::Action::create("KeyframeSet"));
+	if(!action)
+		return false;
+	selected_kf.set_time(dragging_kf_time);
+	action->set_param("canvas",canvas_interface_->get_canvas());
+	action->set_param("canvas_interface",canvas_interface_);
+	action->set_param("keyframe",selected_kf);
+	//synfig::info("DELTA: %s", (dragging_kf_time-selected_kf.get_time()).get_string().c_str());
+	try
+	{
+		canvas_interface_->get_instance()->perform_action(action);
+	}
+	catch(...)
+	{
+			return false;
+	}
+	queue_draw();
+	return true;
 }
 
 bool
@@ -243,6 +268,7 @@ Widget_Keyframe_List::on_event(GdkEvent *event)
 					)
 				{
 					set_selected_keyframe(selected_none);
+					selected_=false;
 					synfig::info("Selected keyframe set to none");
 					synfig::info("Distance to prev %s", (t-prev_t).get_string().c_str());
 					synfig::info("Distance to next %s", (next_t-t).get_string().c_str());
@@ -254,6 +280,7 @@ Widget_Keyframe_List::on_event(GdkEvent *event)
 					set_selected_keyframe(*(kf_list_->find_prev(t)));
 					synfig::info("Selected keyframe set to previous");
 					queue_draw();
+					selected_=true;
 					return true;
 				}
 				else
@@ -261,6 +288,7 @@ Widget_Keyframe_List::on_event(GdkEvent *event)
 					set_selected_keyframe(*(kf_list_->find_next(t)));
 					synfig::info("Selected keyframe set to next");
 					queue_draw();
+					selected_=true;
 					return true;
 				}
 
@@ -280,9 +308,12 @@ Widget_Keyframe_List::on_event(GdkEvent *event)
 			{
 				t = floor(t*fps + 0.5)/fps;
 			}
-		bool stat=perform_move_kf();
+		bool stat=false;
+		if(dragging_)
+			stat=perform_move_kf();
 		dragging_=false;
 		synfig::info("Dropping keyframe time at: %s", t.get_string().c_str());
+		synfig::info("perform move result: %i", stat);
 		return stat;
 		}
 	default:
@@ -320,3 +351,16 @@ Widget_Keyframe_List::set_fps(float d)
 		queue_draw();
 	}
 }
+
+void
+Widget_Keyframe_List::set_canvas_interface(etl::loose_handle<synfigapp::CanvasInterface> h)
+{
+	canvas_interface_=h;
+	if (canvas_interface_)
+	{
+		set_fps(canvas_interface_->get_canvas()->rend_desc().get_frame_rate());
+		set_kf_list(&canvas_interface_->get_canvas()->keyframe_list());
+	}
+}
+
+

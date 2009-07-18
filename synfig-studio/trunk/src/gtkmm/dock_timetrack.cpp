@@ -504,8 +504,7 @@ Dock_Timetrack::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_v
 		widget_timeslider_->set_global_fps(canvas_view->get_canvas()->rend_desc().get_frame_rate());
 
 		widget_kf_list_->set_time_adjustment(&canvas_view->time_adjustment());
-		widget_kf_list_->set_fps(canvas_view->get_canvas()->rend_desc().get_frame_rate());
-		widget_kf_list_->set_kf_list(&canvas_view->get_canvas()->keyframe_list());
+		widget_kf_list_->set_canvas_interface(canvas_view->canvas_interface());
 
 		vscrollbar_->set_adjustment(*tree_view->get_vadjustment());
 		hscrollbar_->set_adjustment(canvas_view->time_window_adjustment());

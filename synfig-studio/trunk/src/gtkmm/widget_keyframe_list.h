@@ -32,6 +32,7 @@
 #include <gtkmm/adjustment.h>
 #include <synfig/keyframe.h>
 #include <sigc++/connection.h>
+#include <synfigapp/canvasinterface.h>
 
 
 /* === M A C R O S ========================================================= */
@@ -44,6 +45,9 @@ namespace studio {
 
 class Widget_Keyframe_List : public Gtk::DrawingArea
 {
+	//! The canvas interface being watched
+	etl::loose_handle<synfigapp::CanvasInterface> canvas_interface_;
+
 	//! Time adjustment window
 	Gtk::Adjustment adj_default;
 	Gtk::Adjustment *adj_timescale;
@@ -70,6 +74,7 @@ class Widget_Keyframe_List : public Gtk::DrawingArea
 	//!Holds the selected keyframe of the keyframe list
 	synfig::Keyframe selected_kf;
 	synfig::Keyframe selected_none;
+	bool selected_;
 
 	//!The time of the selected keyframe
 	synfig::Time selected_kf_time;
@@ -114,6 +119,9 @@ public:
 	//! Set the fps
 	void set_fps(float x);
 
+	//! Set the canvas interface
+	void set_canvas_interface(etl::loose_handle<synfigapp::CanvasInterface>	h);
+
 	//! Performs the keyframe movement. Returns true if it was sucessful
 	bool perform_move_kf();
 
@@ -128,6 +136,7 @@ public:
 }; // END of class Keyframe_List
 
 }; // END of namespace studio
+
 
 /* === E N D =============================================================== */
 
