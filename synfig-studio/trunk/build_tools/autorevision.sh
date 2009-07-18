@@ -16,7 +16,14 @@
 get_git_id(){
 	export SCM=git
 	export REVISION_ID=`cd "$1"; git log --no-color -1 | head -n 1 | cut -f 2 -d ' '`
-	export BRANCH=`cd "$1"; git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'`
+	BRANCH=`cd "$1"; git branch -a --no-color --contains HEAD | sed -e s/\*\ // | sed -e s/\(no\ branch\)//`
+	if ( echo $BRANCH | egrep origin/master > /dev/null ); then
+		#give a priority to master branch
+		BRANCH='master'
+	else
+		BRANCH=`echo $BRANCH | cut -d ' ' -f 1`
+		BRANCH=${BRANCH#*/}
+	fi
 	export REVISION=`git-show --pretty=format:%ci HEAD |  head -c 10`
 	REVISION=${REVISION:0:4}${REVISION:5:2}${REVISION:8:2}
 	export COMPARE="$1/.git/"
