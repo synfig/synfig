@@ -414,8 +414,8 @@ Dock_Timetrack::Dock_Timetrack():
 	if (header_height < 3)
 		header_height = 22;
 
-	widget_timeslider_->set_size_request(-1,header_height);
-	widget_kf_list_->set_size_request(-1,header_height);
+	widget_timeslider_->set_size_request(-1,header_height-8);
+	widget_kf_list_->set_size_request(-1,8);
 
 	hscrollbar_=new Gtk::HScrollbar();
 	vscrollbar_=new Gtk::VScrollbar();

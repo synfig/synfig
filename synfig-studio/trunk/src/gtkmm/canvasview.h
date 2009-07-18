@@ -70,6 +70,7 @@
 #include "framedial.h"
 #include "toggleducksdial.h"
 #include "resolutiondial.h"
+#include "widget_keyframe_list.h"
 
 #include "duckmatic.h"
 #include <gtkmm/scale.h>
@@ -293,6 +294,9 @@ private:
 
 	//! Time slider class. Same than the Time track panel
 	std::auto_ptr<Widget_Timeslider> timeslider;
+
+	//!Keyframe list slider
+	std::auto_ptr<Widget_Keyframe_List> widget_kf_list;
 
 	std::list<sigc::connection> duck_changed_connections;
 

@@ -83,7 +83,7 @@ Widget_Keyframe_List::~Widget_Keyframe_List()
 bool
 Widget_Keyframe_List::redraw(GdkEventExpose */*bleh*/)
 {
-	if (kf_list_->empty()) return false;
+
 	const int h(get_height());
 	const int w(get_width());
 
@@ -98,12 +98,15 @@ Widget_Keyframe_List::redraw(GdkEventExpose */*bleh*/)
 
 	if(!editable_)
 	{
-		return true;
+		return true; //needs fixing!
 	}
 
 	//! draw a background
-	gc->set_rgb_fg_color(Gdk::Color("#FF0000"));
+	gc->set_rgb_fg_color(Gdk::Color("#7f7f7f"));
 	get_window()->draw_rectangle(gc, true, 0, 0, w, h);
+
+	//!Returns if there are not keyframes to draw.
+	if (kf_list_->empty()) return false;
 
 	//!Loop all the keyframes
 	synfig::KeyframeList::iterator iter,selected_iter;
@@ -153,11 +156,7 @@ Widget_Keyframe_List::redraw(GdkEventExpose */*bleh*/)
 			Gtk::SHADOW_OUT, area, *this, " ", Gtk::ARROW_DOWN, 1,
 			x-h/2+1, 0, h, h );
 		}
-
-
-
 	}
-
 	return true;
 }
 

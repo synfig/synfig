@@ -576,7 +576,7 @@ bool Widget_Timeslider::redraw(bool /*doublebuffer*/)
 
 			//gc->set_rgb_fg_color(Gdk::Color("#000000"));
 			layout->set_text(timecode);
-			window->draw_layout(gc,xpx+2,heightsmall,layout);
+			window->draw_layout(gc,xpx+2,0,layout);
 		}else
 		{
 			window->draw_line(gc,xpx,0,xpx,heightsmall);
