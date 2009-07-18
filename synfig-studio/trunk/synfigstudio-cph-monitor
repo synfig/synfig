@@ -108,14 +108,14 @@ mainloop()
 					P=`which $P`
 				fi
 				P=`dirname $P`
-				echo "   Assuming synfig installed in $P."
 				VERSION=`$P/synfig --info|head -n 1|cut -d '-' -f 2`
 				RELEASE=`$P/synfig --info|egrep "Development version:"|cut -d ' ' -f 3`
-				BRANCH=`$P/synfig --info|egrep "Branch:"|cut -d ' ' -f 2`
+				BRANCH=`$P/synfig --info|egrep "Branch:"|cut -d ' ' -f 2-3`
 				if [[ $BRANCH == '(no branch)' ]]; then
 					BRANCH=`$P/synfig --info|egrep "Revision ID:"|cut -d ' ' -f 3`
 				fi
 				echo `date +%H:%M` "Synfig $VERSION.$RELEASE.$BRANCH started."
+				echo `date +%H:%M` "Assuming Synfig installed in $P."
 			else
 				let RUNTIME=$RUNTIME+1
 			fi
