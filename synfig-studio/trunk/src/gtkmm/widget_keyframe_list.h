@@ -55,6 +55,9 @@ class Widget_Keyframe_List : public Gtk::DrawingArea
 	//! The frames per second of the canvas
 	float fps;
 
+	//! Time radius to click a keyframe
+	synfig::Time time_ratio;
+
 	//!True if it is editable. Keyframes can be moved.
 	bool editable_;
 
@@ -66,6 +69,7 @@ class Widget_Keyframe_List : public Gtk::DrawingArea
 
 	//!Holds the selected keyframe of the keyframe list
 	synfig::Keyframe selected_kf;
+	synfig::Keyframe selected_none;
 
 	//!The time of the selected keyframe
 	synfig::Time selected_kf_time;

@@ -61,7 +61,8 @@ Widget_Keyframe_List::Widget_Keyframe_List():
 	adj_default(0,0,2,1/24,10/24),
 	adj_timescale(0),
 	fps(24),
-	kf_list_(&default_kf_list_)
+	kf_list_(&default_kf_list_),
+	time_ratio("4f", fps)
 {
 	set_size_request(-1,64);
 	//!This signal is called when the widget need to be redrawn
@@ -117,7 +118,7 @@ Widget_Keyframe_List::redraw(GdkEventExpose */*bleh*/)
 			const int x((int)((float)(iter->get_time()-bottom) * (w/(top-bottom)) ) );
 			get_style()->paint_arrow(get_window(), Gtk::STATE_NORMAL,
 			Gtk::SHADOW_OUT, area, *this, " ", Gtk::ARROW_DOWN, 1,
-			x-h/2, 0, h, h );
+			x-h/2+1, 0, h, h );
 		}
 		else
 		{
@@ -130,10 +131,30 @@ Widget_Keyframe_List::redraw(GdkEventExpose */*bleh*/)
 	// the selected keyframe is shown on top
 	if(show_selected)
 	{
-			const int x((int)((float)(selected_iter->get_time()-bottom) * (w/(top-bottom)) ) );
+		// If not dragging just show the selected keyframe
+		if (!dragging_)
+		{
+			int x((int)((float)(selected_iter->get_time()-bottom) * (w/(top-bottom)) ) );
 			get_style()->paint_arrow(get_window(), Gtk::STATE_SELECTED,
 			Gtk::SHADOW_OUT, area, *this, " ", Gtk::ARROW_DOWN, 1,
+			x-h/2+1, 0, h, h );
+		}
+		// If dragging then show the selected as insensitive and the
+		// dragged as selected
+		else
+		{
+			int x((int)((float)(selected_iter->get_time()-bottom) * (w/(top-bottom)) ) );
+			get_style()->paint_arrow(get_window(), Gtk::STATE_INSENSITIVE,
+			Gtk::SHADOW_OUT, area, *this, " ", Gtk::ARROW_DOWN, 1,
 			x-h/2, 0, h, h );
+			x=(int)((float)(dragging_kf_time-bottom) * (w/(top-bottom)) ) ;
+			get_style()->paint_arrow(get_window(), Gtk::STATE_SELECTED,
+			Gtk::SHADOW_OUT, area, *this, " ", Gtk::ARROW_DOWN, 1,
+			x-h/2+1, 0, h, h );
+		}
+
+
+
 	}
 
 	return true;
@@ -145,13 +166,14 @@ Widget_Keyframe_List::set_kf_list(synfig::KeyframeList* x)
 {
 	kf_list_=x;
 	if(kf_list_->size())
-		set_selected_keyframe(*kf_list_->find_next(synfig::Time::zero()));
+		set_selected_keyframe(selected_none);
 }
 
 void
 Widget_Keyframe_List::set_selected_keyframe(const synfig::Keyframe &x)
 {
 	selected_kf=x;
+	dragging_kf_time=selected_kf.get_time();
 	//signal_keyframe_selected_(selected_kf);
 	queue_draw();
 }
@@ -167,15 +189,15 @@ Widget_Keyframe_List::on_event(GdkEvent *event)
 {
 	const int x(static_cast<int>(event->button.x));
 	const int y(static_cast<int>(event->button.y));
-		//!Boundaries of the drawing area in time units.
+	//!Boundaries of the drawing area in time units.
 	synfig::Time top(adj_timescale->get_upper());
 	synfig::Time bottom(adj_timescale->get_lower());
-		//!pos is the [0,1] relative horizontal place on the widget
-	float pos((float)x/(float)get_width());
+	//!pos is the [0,1] relative horizontal place on the widget
+	float pos((float)x/(get_width()));
 	if(pos<0.0f)pos=0.0f;
 	if(pos>1.0f)pos=1.0f;
-		//! The time where the event x is
-	synfig::Time t((float)(pos*(top-bottom)));
+	//! The time where the event x is
+	synfig::Time t((float)(bottom+pos*(top-bottom)));
 
 	//Do not respond mouse events if the list is empty
 	if(!kf_list_->size())
@@ -190,34 +212,63 @@ Widget_Keyframe_List::on_event(GdkEvent *event)
 	case GDK_MOTION_NOTIFY:
 		if(editable_)
 		{
-
 			// stick to integer frames.
 			if(fps)
 				{
 					t = floor(t*fps + 0.5)/fps;
 				}
 			dragging_kf_time=t;
+			dragging_=true;
 			queue_draw();
 			return true;
 		}
 		break;
 	case GDK_BUTTON_PRESS:
 		changed_=false;
+		dragging_=false;
 		if(event->button.button==1)
 		{
 			synfig::info("Looking keyframe at  %s", t.get_string().c_str());
 			synfig::info("Total amount of keyframes %i", kf_list_->size());
+			synfig::info("Time ratio %s",time_ratio.get_string().c_str());
+			synfig::info("Bottom %s",bottom.get_string().c_str());
+			synfig::info("Top %s",top.get_string().c_str());
 			if(editable_)
 			{
-				synfig::KeyframeList::iterator selected;
-				selected = kf_list_->find_next(t);
-				set_selected_keyframe(*selected);
-				queue_draw();
-				return true;
+				synfig::Time prev_t,next_t;
+				kf_list_->find_prev_next(t, prev_t, next_t);
+				if( (prev_t==Time::begin() 	&& 	next_t==Time::end())
+					||
+					((t-prev_t)>time_ratio 	&& (next_t-t)>time_ratio)
+					)
+				{
+					set_selected_keyframe(selected_none);
+					synfig::info("Selected keyframe set to none");
+					synfig::info("Distance to prev %s", (t-prev_t).get_string().c_str());
+					synfig::info("Distance to next %s", (next_t-t).get_string().c_str());
+					queue_draw();
+					return true;
+				}
+				else if ((t-prev_t)<(next_t-t))
+				{
+					set_selected_keyframe(*(kf_list_->find_prev(t)));
+					synfig::info("Selected keyframe set to previous");
+					queue_draw();
+					return true;
+				}
+				else
+				{
+					set_selected_keyframe(*(kf_list_->find_next(t)));
+					synfig::info("Selected keyframe set to next");
+					queue_draw();
+					return true;
+				}
+
+				return false;
 			}
 			else
 			{
-				return true;
+				return false;
 			}
 		}
 		break;
@@ -230,7 +281,8 @@ Widget_Keyframe_List::on_event(GdkEvent *event)
 				t = floor(t*fps + 0.5)/fps;
 			}
 		bool stat=perform_move_kf();
-		synfig::info("Dropping keyframe at: %s", t.get_string().c_str());
+		dragging_=false;
+		synfig::info("Dropping keyframe time at: %s", t.get_string().c_str());
 		return stat;
 		}
 	default:
