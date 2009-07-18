@@ -196,7 +196,6 @@ Widget_Keyframe_List::perform_move_kf()
 	action->set_param("canvas",canvas_interface_->get_canvas());
 	action->set_param("canvas_interface",canvas_interface_);
 	action->set_param("keyframe",selected_kf);
-	//synfig::info("DELTA: %s", (dragging_kf_time-selected_kf.get_time()).get_string().c_str());
 	try
 	{
 		canvas_interface_->get_instance()->perform_action(action);
@@ -227,7 +226,7 @@ Widget_Keyframe_List::on_event(GdkEvent *event)
 	//Do not respond mouse events if the list is empty
 	if(!kf_list_->size())
 	{
-		synfig::info("Keyframe list empty");
+	//	synfig::info("Keyframe list empty");
 		return true;
 	}
 
@@ -237,7 +236,7 @@ Widget_Keyframe_List::on_event(GdkEvent *event)
 	case GDK_MOTION_NOTIFY:
 		if(editable_)
 		{
-			// stick to integer frames.
+			// stick to integer frames. It can be optional in the future
 			if(fps)
 				{
 					t = floor(t*fps + 0.5)/fps;
@@ -253,11 +252,11 @@ Widget_Keyframe_List::on_event(GdkEvent *event)
 		dragging_=false;
 		if(event->button.button==1)
 		{
-			synfig::info("Looking keyframe at  %s", t.get_string().c_str());
+			/*synfig::info("Looking keyframe at  %s", t.get_string().c_str());
 			synfig::info("Total amount of keyframes %i", kf_list_->size());
 			synfig::info("Time ratio %s",time_ratio.get_string().c_str());
 			synfig::info("Bottom %s",bottom.get_string().c_str());
-			synfig::info("Top %s",top.get_string().c_str());
+			synfig::info("Top %s",top.get_string().c_str());*/
 			if(editable_)
 			{
 				synfig::Time prev_t,next_t;
@@ -269,16 +268,16 @@ Widget_Keyframe_List::on_event(GdkEvent *event)
 				{
 					set_selected_keyframe(selected_none);
 					selected_=false;
-					synfig::info("Selected keyframe set to none");
+					/*synfig::info("Selected keyframe set to none");
 					synfig::info("Distance to prev %s", (t-prev_t).get_string().c_str());
-					synfig::info("Distance to next %s", (next_t-t).get_string().c_str());
+					synfig::info("Distance to next %s", (next_t-t).get_string().c_str());*/
 					queue_draw();
 					return true;
 				}
 				else if ((t-prev_t)<(next_t-t))
 				{
 					set_selected_keyframe(*(kf_list_->find_prev(t)));
-					synfig::info("Selected keyframe set to previous");
+					//synfig::info("Selected keyframe set to previous");
 					queue_draw();
 					selected_=true;
 					return true;
@@ -286,7 +285,7 @@ Widget_Keyframe_List::on_event(GdkEvent *event)
 				else
 				{
 					set_selected_keyframe(*(kf_list_->find_next(t)));
-					synfig::info("Selected keyframe set to next");
+					//synfig::info("Selected keyframe set to next");
 					queue_draw();
 					selected_=true;
 					return true;
@@ -312,8 +311,8 @@ Widget_Keyframe_List::on_event(GdkEvent *event)
 		if(dragging_)
 			stat=perform_move_kf();
 		dragging_=false;
-		synfig::info("Dropping keyframe time at: %s", t.get_string().c_str());
-		synfig::info("perform move result: %i", stat);
+		//synfig::info("Dropping keyframe time at: %s", t.get_string().c_str());
+		//synfig::info("perform move result: %i", stat);
 		return stat;
 		}
 	default:
@@ -356,6 +355,7 @@ void
 Widget_Keyframe_List::set_canvas_interface(etl::loose_handle<synfigapp::CanvasInterface> h)
 {
 	canvas_interface_=h;
+	// Store the values used fomr the canvas interface.
 	if (canvas_interface_)
 	{
 		set_fps(canvas_interface_->get_canvas()->rend_desc().get_frame_rate());
