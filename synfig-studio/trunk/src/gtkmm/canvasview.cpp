@@ -1046,8 +1046,8 @@ CanvasView::create_time_bar()
 	//timebar->attach(*manage(disp_audio), 1, 5, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK);
 	timebar->attach(*current_time_widget, 0, 1, 0, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 	timebar->attach(*framedial, 0, 1, 2, 3, Gtk::SHRINK, Gtk::SHRINK);
-	timebar->attach(*timeslider, 1, 3, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK);
-	timebar->attach(*widget_kf_list, 1, 3, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK);
+	timebar->attach(*timeslider, 1, 3, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL);
+	timebar->attach(*widget_kf_list, 1, 3, 1, 2, Gtk::EXPAND|Gtk::FILL,Gtk::EXPAND|Gtk::FILL);
 	timebar->attach(*time_window_scroll, 1, 3, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK);
 	timebar->attach(*keyframedial, 3, 4, 0, 2, Gtk::SHRINK, Gtk::SHRINK);
 	timebar->attach(*animatebutton, 4, 5, 0, 2, Gtk::SHRINK, Gtk::SHRINK);

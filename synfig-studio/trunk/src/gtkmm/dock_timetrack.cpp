@@ -412,10 +412,10 @@ Dock_Timetrack::Dock_Timetrack():
 	if(getenv("SYNFIG_TIMETRACK_HEADER_HEIGHT"))
 		header_height = atoi(getenv("SYNFIG_TIMETRACK_HEADER_HEIGHT"));
 	if (header_height < 3)
-		header_height = 22;
+		header_height = 24;
 
-	widget_timeslider_->set_size_request(-1,header_height-8);
-	widget_kf_list_->set_size_request(-1,8);
+	widget_timeslider_->set_size_request(-1,header_height-header_height/3+1);
+	widget_kf_list_->set_size_request(-1,header_height/3+1);
 
 	hscrollbar_=new Gtk::HScrollbar();
 	vscrollbar_=new Gtk::VScrollbar();
