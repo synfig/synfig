@@ -17,7 +17,8 @@ trap writelog INT
 
 init()
 {
-echo "Synfig Crash Monitor is a tool to collect statistics about synfig crashes. All information is collected locally in ~/.synfig/cph directory."
+echo "Synfig Crash Monitor is a tool to collect statistics about synfig crashes."
+echo "All information is collected locally in ~/.synfig/cph directory."
 echo
 echo `date +%H:%M` "Synfig Crash Monitor started."
 STARTED=0
@@ -25,6 +26,7 @@ RUNTIME=0
 VERSION=''
 RELEASE=''
 BRANCH=''
+REVISION_ID=''
 CRASH=0
 [ ! -d ~/.synfig/cph ] && mkdir -p ~/.synfig/cph || true
 }
@@ -47,7 +49,7 @@ writelog()
 			fi
 		fi
 		#write log
-		echo $VERSION/$BRANCH/$RELEASE $RUNTIME $CRASH >> ~/.synfig/cph/log
+		echo $VERSION/$BRANCH/$RELEASE/$REVISION_ID $RUNTIME $CRASH >> ~/.synfig/cph/log
 		CRASH=0
 		RUNTIME=0
 	else
@@ -109,12 +111,13 @@ mainloop()
 				fi
 				P=`dirname $P`
 				VERSION=`$P/synfig --info|head -n 1|cut -d '-' -f 2`
-				RELEASE=`$P/synfig --info|egrep "Development version:"|cut -d ' ' -f 3`
+				RELEASE=`$P/synfig --info|egrep "Revision:"|cut -d ' ' -f 2`
 				BRANCH=`$P/synfig --info|egrep "Branch:"|cut -d ' ' -f 2-3`
+				REVISION_ID=`$P/synfig --info|egrep "Revision ID:"|cut -d ' ' -f 3`
 				if [[ $BRANCH == '(no branch)' ]]; then
-					BRANCH=`$P/synfig --info|egrep "Revision ID:"|cut -d ' ' -f 3`
+					BRANCH=$REVISION_ID
 				fi
-				echo `date +%H:%M` "Synfig $VERSION.$RELEASE.$BRANCH started."
+				echo `date +%H:%M` "Synfig $VERSION.$RELEASE.$BRANCH.$REVISION_ID started."
 				echo `date +%H:%M` "Assuming Synfig installed in $P."
 			else
 				let RUNTIME=$RUNTIME+1
