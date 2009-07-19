@@ -24,7 +24,7 @@ get_git_id(){
 		BRANCH=`echo $BRANCH | cut -d ' ' -f 1`
 		BRANCH=${BRANCH#*/}
 	fi
-	export REVISION=`git-show --pretty=format:%ci HEAD |  head -c 10`
+	export REVISION=`git show --pretty=format:%ci HEAD |  head -c 10`
 	REVISION=${REVISION:0:4}${REVISION:5:2}${REVISION:8:2}
 	export COMPARE="$1/.git/"
 	# The extra * at the end is for Modified
