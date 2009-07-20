@@ -72,8 +72,9 @@ Widget_Keyframe_List::Widget_Keyframe_List():
 	//! left button motion
 	add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK);
 	add_events(Gdk::BUTTON1_MOTION_MASK);
+	add_events(Gdk::POINTER_MOTION_MASK);
 	set_time_adjustment(&adj_default);
-
+	queue_draw();
 }
 
 Widget_Keyframe_List::~Widget_Keyframe_List()
@@ -96,15 +97,14 @@ Widget_Keyframe_List::redraw(GdkEventExpose */*bleh*/)
 	//! A rectangle that defines the drawing area.
 	Gdk::Rectangle area(0,0,w,h);
 
+	//! draw a background
+	gc->set_rgb_fg_color(Gdk::Color("#9d9d9d"));
+	get_window()->draw_rectangle(gc, true, 0, 0, w, h);
+
 	if(!editable_)
 	{
 		return true; //needs fixing!
 	}
-
-	//! draw a background
-	gc->set_rgb_fg_color(Gdk::Color("#7f7f7f"));
-	get_window()->draw_rectangle(gc, true, 0, 0, w, h);
-
 	//!Returns if there are not keyframes to draw.
 	if (kf_list_->empty()) return false;
 
@@ -221,13 +221,9 @@ Widget_Keyframe_List::on_event(GdkEvent *event)
 	if(pos>1.0f)pos=1.0f;
 	//! The time where the event x is
 	synfig::Time t((float)(bottom+pos*(top-bottom)));
-
 	//Do not respond mouse events if the list is empty
 	if(!kf_list_->size())
-	{
-	//	synfig::info("Keyframe list empty");
 		return true;
-	}
 
 	//! here the guts of the event
 	switch(event->type)
@@ -235,15 +231,49 @@ Widget_Keyframe_List::on_event(GdkEvent *event)
 	case GDK_MOTION_NOTIFY:
 		if(editable_)
 		{
-			// stick to integer frames. It can be optional in the future
-			if(fps)
+			// here is captured mouse motion
+			// AND left mouse button pressed
+			if (event->motion.state & GDK_BUTTON1_MASK)
+			{
+				// stick to integer frames. It can be optional in the future
+				if(fps) t = floor(t*fps + 0.5)/fps;
+				dragging_kf_time=t;
+				dragging_=true;
+				queue_draw();
+				return true;
+			}
+			// here is captured mouse motion
+			// AND NOT left mouse button pressed
+			else
+			{
+				synfig::Time p_t,n_t;
+				kf_list_->find_prev_next(t, p_t, n_t);
+				if( (p_t==Time::begin() 	&& 	n_t==Time::end())
+				||
+				((t-p_t)>time_ratio 	&& (n_t-t)>time_ratio)
+				)
 				{
-					t = floor(t*fps + 0.5)/fps;
+					Glib::ustring ttip = _("Click and drag keyframes");
+					set_tooltip_text(ttip);
 				}
-			dragging_kf_time=t;
-			dragging_=true;
-			queue_draw();
-			return true;
+				else if ((t-p_t)<(n_t-t))
+				{
+					synfig::Keyframe kf(*kf_list_->find_prev(t));
+					synfig::String kf_name(kf.get_description().c_str());
+					Glib::ustring ttip = kf_name.c_str();
+					set_tooltip_text(ttip);
+				}
+				else
+				{
+					synfig::Keyframe kf(*kf_list_->find_next(t));
+					synfig::String kf_name(kf.get_description().c_str());
+					Glib::ustring ttip = kf_name.c_str();
+					set_tooltip_text(ttip);
+				}
+				dragging_=false;
+				queue_draw();
+				return true;
+			}
 		}
 		break;
 	case GDK_BUTTON_PRESS:
@@ -251,32 +281,23 @@ Widget_Keyframe_List::on_event(GdkEvent *event)
 		dragging_=false;
 		if(event->button.button==1)
 		{
-			/*synfig::info("Looking keyframe at  %s", t.get_string().c_str());
-			synfig::info("Total amount of keyframes %i", kf_list_->size());
-			synfig::info("Time ratio %s",time_ratio.get_string().c_str());
-			synfig::info("Bottom %s",bottom.get_string().c_str());
-			synfig::info("Top %s",top.get_string().c_str());*/
 			if(editable_)
 			{
 				synfig::Time prev_t,next_t;
 				kf_list_->find_prev_next(t, prev_t, next_t);
 				if( (prev_t==Time::begin() 	&& 	next_t==Time::end())
-					||
-					((t-prev_t)>time_ratio 	&& (next_t-t)>time_ratio)
-					)
+				||
+				((t-prev_t)>time_ratio 	&& (next_t-t)>time_ratio)
+				)
 				{
 					set_selected_keyframe(selected_none);
 					selected_=false;
-					/*synfig::info("Selected keyframe set to none");
-					synfig::info("Distance to prev %s", (t-prev_t).get_string().c_str());
-					synfig::info("Distance to next %s", (next_t-t).get_string().c_str());*/
 					queue_draw();
 					return true;
 				}
 				else if ((t-prev_t)<(next_t-t))
 				{
 					set_selected_keyframe(*(kf_list_->find_prev(t)));
-					//synfig::info("Selected keyframe set to previous");
 					queue_draw();
 					selected_=true;
 					return true;
@@ -284,12 +305,10 @@ Widget_Keyframe_List::on_event(GdkEvent *event)
 				else
 				{
 					set_selected_keyframe(*(kf_list_->find_next(t)));
-					//synfig::info("Selected keyframe set to next");
 					queue_draw();
 					selected_=true;
 					return true;
 				}
-
 				return false;
 			}
 			else
@@ -301,24 +320,18 @@ Widget_Keyframe_List::on_event(GdkEvent *event)
 	case GDK_BUTTON_RELEASE:
 		if(editable_ && event->button.button==1)
 		{
-		// stick to integer frames.
-		if(fps)
-			{
-				t = floor(t*fps + 0.5)/fps;
-			}
-		bool stat=false;
-		if(dragging_)
-			stat=perform_move_kf();
-		dragging_=false;
-		//synfig::info("Dropping keyframe time at: %s", t.get_string().c_str());
-		//synfig::info("perform move result: %i", stat);
-		return stat;
+			// stick to integer frames.
+			if(fps)	t = floor(t*fps + 0.5)/fps;
+			bool stat=false;
+			if(dragging_)
+				stat=perform_move_kf();
+			dragging_=false;
+			return stat;
 		}
+		break;
 	default:
 		break;
 	}
-
-
 	return false;
 }
 
