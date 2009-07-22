@@ -50,7 +50,7 @@ using namespace studio;
 
 
 /* === M A C R O S ========================================================= */
-
+#define WIDGET_KEYFRAME_LIST_DEFAULT_FPS 24.0
 /* === G L O B A L S ======================================================= */
 
 /* === P R O C E D U R E S ================================================= */
@@ -58,20 +58,20 @@ using namespace studio;
 /* === M E T H O D S ======================================================= */
 
 Widget_Keyframe_List::Widget_Keyframe_List():
-	editable_(true),
-	adj_default(0,0,2,1/24,10/24),
-	adj_timescale(0),
-	fps(24),
+	adj_default(0,0,2,1/WIDGET_KEYFRAME_LIST_DEFAULT_FPS,10/WIDGET_KEYFRAME_LIST_DEFAULT_FPS),
 	kf_list_(&default_kf_list_),
-	time_ratio("4f", fps)
+	time_ratio("4f", WIDGET_KEYFRAME_LIST_DEFAULT_FPS)
 {
+	adj_timescale=0;
+	editable_=true;
+	fps=WIDGET_KEYFRAME_LIST_DEFAULT_FPS;
 	set_size_request(-1,64);
 	//!This signal is called when the widget need to be redrawn
 	signal_expose_event().connect(sigc::mem_fun(*this, &studio::Widget_Keyframe_List::redraw));
 	//! The widget respond to mouse button press and release and to
 	//! left button motion
 	add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK);
-	add_events(Gdk::BUTTON1_MOTION_MASK);
+	add_events(Gdk::BUTTON1_MOTION_MASK /*| Gdk::BUTTON3_MOTION_MASK*/);
 	add_events(Gdk::POINTER_MOTION_MASK);
 	set_time_adjustment(&adj_default);
 	queue_draw();
@@ -182,27 +182,63 @@ Widget_Keyframe_List::set_selected_keyframe(const synfig::Keyframe &x)
 }
 
 bool
-Widget_Keyframe_List::perform_move_kf()
+Widget_Keyframe_List::perform_move_kf(bool delta=false)
 {
 	if(!selected_)
 		return false;
 	if(dragging_kf_time == selected_kf.get_time())
-		return false;
-	synfigapp::Action::Handle action(synfigapp::Action::create("KeyframeSet"));
-	if(!action)
-		return false;
-	selected_kf.set_time(dragging_kf_time);
-	action->set_param("canvas",canvas_interface_->get_canvas());
-	action->set_param("canvas_interface",canvas_interface_);
-	action->set_param("keyframe",selected_kf);
-	try
-	{
-		canvas_interface_->get_instance()->perform_action(action);
-	}
-	catch(...)
-	{
+		return false; // change this checking if not sticked to integer frames
+	Time selected_kf_time(selected_kf.get_time());
+	Time prev, next;
+	kf_list_->find_prev_next(selected_kf_time, prev, next);
+	// Not possible to set delta to the first keyframe
+	// perform normal movement
+	if (prev==Time::begin()) delta = false;
+
+	if(!delta)
+		{
+			synfigapp::Action::Handle action(synfigapp::Action::create("KeyframeSet"));
+			if(!action)
 			return false;
-	}
+			selected_kf.set_time(dragging_kf_time);
+			action->set_param("canvas",canvas_interface_->get_canvas());
+			action->set_param("canvas_interface",canvas_interface_);
+			action->set_param("keyframe",selected_kf);
+			try
+			{
+				canvas_interface_->get_instance()->perform_action(action);
+			}
+			catch(...)
+			{
+				return false;
+			}
+		}
+	else
+		{
+			Keyframe prev_kf(*kf_list_->find_prev(selected_kf_time));
+			Time prev_kf_time(prev_kf.get_time());
+			if (prev_kf_time >= dragging_kf_time) //Not allowed
+			{
+				synfig::warning(_("Delta set not allowed"));
+				synfig::info(_("Widget_Keyframe_List::perform_move_kf(%i)::prev_kf_time=%s"), delta, prev_kf_time.get_string().c_str());
+				synfig::info(_("Widget_Keyframe_List::perform_move_kf(%i)::dragging_kf_time=%s"), delta, dragging_kf_time.get_string().c_str());
+				return false;
+			}
+			else
+			{
+				Time old_delta_time(selected_kf_time-prev_kf_time);
+				Time new_delta_time(dragging_kf_time-prev_kf_time);
+				Time change_delta(new_delta_time-old_delta_time);
+				synfigapp::Action::Handle action(synfigapp::Action::create("KeyframeSetDelta"));
+				if(!action)
+					return false;
+				action->set_param("canvas",canvas_interface_->get_canvas());
+				action->set_param("canvas_interface",canvas_interface_);
+				action->set_param("keyframe",prev_kf);
+				action->set_param("delta",change_delta);
+				canvas_interface_->get_instance()->perform_action(action);
+			}
+		}
 	queue_draw();
 	return true;
 }
@@ -211,7 +247,7 @@ bool
 Widget_Keyframe_List::on_event(GdkEvent *event)
 {
 	const int x(static_cast<int>(event->button.x));
-	const int y(static_cast<int>(event->button.y));
+	//const int y(static_cast<int>(event->button.y));
 	//!Boundaries of the drawing area in time units.
 	synfig::Time top(adj_timescale->get_upper());
 	synfig::Time bottom(adj_timescale->get_lower());
@@ -232,8 +268,8 @@ Widget_Keyframe_List::on_event(GdkEvent *event)
 		if(editable_)
 		{
 			// here is captured mouse motion
-			// AND left mouse button pressed
-			if (event->motion.state & GDK_BUTTON1_MASK)
+			// AND left or right mouse button pressed
+			if (event->motion.state & (GDK_BUTTON1_MASK /*| GDK_BUTTON3_MASK*/))
 			{
 				// stick to integer frames. It can be optional in the future
 				if(fps) t = floor(t*fps + 0.5)/fps;
@@ -243,7 +279,7 @@ Widget_Keyframe_List::on_event(GdkEvent *event)
 				return true;
 			}
 			// here is captured mouse motion
-			// AND NOT left mouse button pressed
+			// AND NOT left or right mouse button pressed
 			else
 			{
 				synfig::Time p_t,n_t;
@@ -279,7 +315,7 @@ Widget_Keyframe_List::on_event(GdkEvent *event)
 	case GDK_BUTTON_PRESS:
 		changed_=false;
 		dragging_=false;
-		if(event->button.button==1)
+		if(event->button.button==1 /*|| event->button.button==3*/)
 		{
 			if(editable_)
 			{
@@ -293,38 +329,46 @@ Widget_Keyframe_List::on_event(GdkEvent *event)
 					set_selected_keyframe(selected_none);
 					selected_=false;
 					queue_draw();
-					return true;
 				}
 				else if ((t-prev_t)<(next_t-t))
 				{
 					set_selected_keyframe(*(kf_list_->find_prev(t)));
 					queue_draw();
 					selected_=true;
-					return true;
 				}
 				else
 				{
 					set_selected_keyframe(*(kf_list_->find_next(t)));
 					queue_draw();
 					selected_=true;
-					return true;
 				}
-				return false;
+				return true;
 			}
 			else
 			{
 				return false;
 			}
 		}
+
 		break;
 	case GDK_BUTTON_RELEASE:
-		if(editable_ && event->button.button==1)
+		if(editable_ && (event->button.button==1 /*|| event->button.button==3*/))
 		{
 			// stick to integer frames.
 			if(fps)	t = floor(t*fps + 0.5)/fps;
 			bool stat=false;
 			if(dragging_)
-				stat=perform_move_kf();
+				{
+					//if (event->button.button==3)
+					if(event->button.state & GDK_MOD1_MASK)
+					{
+						stat=perform_move_kf(true);
+					}
+					else
+					{
+						stat=perform_move_kf(false);
+					}
+				}
 			dragging_=false;
 			return stat;
 		}

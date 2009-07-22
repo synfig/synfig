@@ -123,7 +123,9 @@ public:
 	void set_canvas_interface(etl::loose_handle<synfigapp::CanvasInterface>	h);
 
 	//! Performs the keyframe movement. Returns true if it was sucessful
-	bool perform_move_kf();
+	//! @return true: if success otherwise false
+	//! |delta=false: permorm normal move. true: perform delta movement
+	bool perform_move_kf(bool delta);
 
 
 
