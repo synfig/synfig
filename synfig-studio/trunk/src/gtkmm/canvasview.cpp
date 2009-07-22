@@ -966,13 +966,11 @@ CanvasView::create_time_bar()
 	//Widget_Timeslider *time_scroll = manage(new Widget_Timeslider);
 	timeslider->set_time_adjustment(&time_adjustment());
 	timeslider->set_bounds_adjustment(&time_window_adjustment());
-	//timeslider->set_size_request(-1,12);
 	//layout_table->attach(*timeslider, 0, 1, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL);
 	//Setup the keyframe list widget
 	widget_kf_list->set_time_adjustment(&time_adjustment());
 	widget_kf_list->set_canvas_interface(canvas_interface());
 	widget_kf_list->show();
-	widget_kf_list->set_size_request(-1,8);
 
 	tooltips.set_tip(*time_window_scroll,_("Moves the time window"));
 	tooltips.set_tip(*timeslider,_("Changes the current time"));
@@ -1042,12 +1040,21 @@ CanvasView::create_time_bar()
 
 	timebar = Gtk::manage(new class Gtk::Table(5, 4, false));
 
+	//Adjust both widgets to be the same as the
+	int header_height = 0;
+	if(getenv("SYNFIG_TIMETRACK_HEADER_HEIGHT"))
+		header_height = atoi(getenv("SYNFIG_TIMETRACK_HEADER_HEIGHT"));
+	if (header_height < 3)
+		header_height = 24;
+	timeslider->set_size_request(-1,header_height-header_height/3+1);
+	widget_kf_list->set_size_request(-1,header_height/3+1);
+
 	//Attach widgets to the timebar
 	//timebar->attach(*manage(disp_audio), 1, 5, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK);
 	timebar->attach(*current_time_widget, 0, 1, 0, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 	timebar->attach(*framedial, 0, 1, 2, 3, Gtk::SHRINK, Gtk::SHRINK);
-	timebar->attach(*timeslider, 1, 3, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL);
-	timebar->attach(*widget_kf_list, 1, 3, 0, 1, Gtk::EXPAND|Gtk::FILL,Gtk::EXPAND|Gtk::FILL);
+	timebar->attach(*timeslider, 1, 3, 1, 2, Gtk::FILL|Gtk::SHRINK, Gtk::FILL|Gtk::SHRINK);
+	timebar->attach(*widget_kf_list, 1, 3, 0, 1, Gtk::FILL|Gtk::EXPAND, Gtk::FILL|Gtk::SHRINK);
 	timebar->attach(*time_window_scroll, 1, 3, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK);
 	timebar->attach(*keyframedial, 3, 4, 0, 2, Gtk::SHRINK, Gtk::SHRINK);
 	timebar->attach(*animatebutton, 4, 5, 0, 2, Gtk::SHRINK, Gtk::SHRINK);
