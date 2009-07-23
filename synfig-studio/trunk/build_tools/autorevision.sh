@@ -16,7 +16,7 @@
 get_git_id(){
 	export SCM=git
 	export REVISION_ID=`cd "$1"; git log --no-color -1 | head -n 1 | cut -f 2 -d ' '`
-	export BRANCH=`cd "$1"; git branch -a --no-color --contains HEAD | sed -e s/\*\ // | sed -e s/\(no\ branch\)// | tr '\n' ' ' | tr -s ' ' | sed s/^' '//`
+	export BRANCH="`cd "$1"; git branch -a --no-color --contains HEAD | sed -e s/\*\ // | sed -e s/\(no\ branch\)// | tr '\n' ' ' | tr -s ' ' | sed s/^' '//`"
 	if ( echo $BRANCH | egrep origin/master > /dev/null ); then
 		#give a priority to master branch
 		BRANCH='master'
@@ -24,8 +24,7 @@ get_git_id(){
 		BRANCH=`echo $BRANCH | cut -d ' ' -f 1`
 		BRANCH=${BRANCH#*/}
 	fi
-	export REVISION=`git show --pretty=format:%ci HEAD |  head -c 10`
-	REVISION=${REVISION:0:4}${REVISION:5:2}${REVISION:8:2}
+	export REVISION=`git show --pretty=format:%ci HEAD |  head -c 10 | tr -d '-'`
 	export COMPARE="$1/.git/"
 	# The extra * at the end is for Modified
 	#REVISION="$REVISION"`cd "$1"; [[ $(git status 2> /dev/null | tail -n1) != "nothing to commit (working directory clean)" ]] && echo "*"`
@@ -94,7 +93,7 @@ if [ x = "x$DEVEL_VERSION" ] ; then
 		elif [ $SCM = git-svn ] ; then
 			DEVEL_VERSION="SVN r$REVISION (via git)"
 		elif [ $SCM = git ] ; then
-			DEVEL_VERSION="Revision: $REVISION\\nBranch: ${BRANCH}\\nRevision ID: $REVISION_ID"
+			DEVEL_VERSION="Revision: ${REVISION}\\\\nBranch: ${BRANCH}\\\\nRevision ID: ${REVISION_ID}"
 		elif [ $SCM = manual ] ; then
 			DEVEL_VERSION="$REVISION (manually configured)"
 		fi
@@ -104,6 +103,6 @@ fi
 
 # Output the header
 if [ x != "x$DEVEL_VERSION" ] ; then
-	echo "#define SHOW_EXTRA_INFO" > "$HEADER"
-	echo "#define DEVEL_VERSION \"$DEVEL_VERSION\"" >> "$HEADER"
+	printf "#define SHOW_EXTRA_INFO\n" > "$HEADER"
+	printf "#define DEVEL_VERSION \"$DEVEL_VERSION\"\n" >> "$HEADER"
 fi
