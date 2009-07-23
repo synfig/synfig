@@ -30,6 +30,7 @@
 
 #include <gtkmm/drawingarea.h>
 #include <gtkmm/adjustment.h>
+#include <gtkmm/tooltips.h>
 #include <synfig/keyframe.h>
 #include <sigc++/connection.h>
 #include <synfigapp/canvasinterface.h>
@@ -45,6 +46,10 @@ namespace studio {
 
 class Widget_Keyframe_List : public Gtk::DrawingArea
 {
+	//! Tooltips class. It is deprecated since gtkmm 2.12
+	//! replace with Tooltip class or use the own tooltip widget's members
+	Gtk::Tooltips tooltips;
+
 	//! The canvas interface being watched
 	etl::loose_handle<synfigapp::CanvasInterface> canvas_interface_;
 

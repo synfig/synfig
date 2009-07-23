@@ -282,6 +282,7 @@ Widget_Keyframe_List::on_event(GdkEvent *event)
 			// AND NOT left or right mouse button pressed
 			else
 			{
+				Glib::ustring ttip="";
 				synfig::Time p_t,n_t;
 				kf_list_->find_prev_next(t, p_t, n_t);
 				if( (p_t==Time::begin() 	&& 	n_t==Time::end())
@@ -289,23 +290,21 @@ Widget_Keyframe_List::on_event(GdkEvent *event)
 				((t-p_t)>time_ratio 	&& (n_t-t)>time_ratio)
 				)
 				{
-					Glib::ustring ttip = _("Click and drag keyframes");
-					set_tooltip_text(ttip);
+					ttip = _("Click and drag keyframes");
 				}
 				else if ((t-p_t)<(n_t-t))
 				{
 					synfig::Keyframe kf(*kf_list_->find_prev(t));
 					synfig::String kf_name(kf.get_description().c_str());
-					Glib::ustring ttip = kf_name.c_str();
-					set_tooltip_text(ttip);
+					ttip = kf_name.c_str();
 				}
 				else
 				{
 					synfig::Keyframe kf(*kf_list_->find_next(t));
 					synfig::String kf_name(kf.get_description().c_str());
-					Glib::ustring ttip = kf_name.c_str();
-					set_tooltip_text(ttip);
+					ttip = kf_name.c_str();
 				}
+				tooltips.set_tip(*this, ttip);
 				dragging_=false;
 				queue_draw();
 				return true;
