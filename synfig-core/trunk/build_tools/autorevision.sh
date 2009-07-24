@@ -25,7 +25,7 @@ get_git_id(){
 		BRANCH=${BRANCH#*/}
 	fi
 	export REVISION=`git show --pretty=format:%ci HEAD |  head -c 10 | tr -d '-'`
-	export COMPARE="$1/.git/"
+	export COMPARE=`git rev-parse --git-dir`
 	# The extra * at the end is for Modified
 	#REVISION="$REVISION"`cd "$1"; [[ $(git status 2> /dev/null | tail -n1) != "nothing to commit (working directory clean)" ]] && echo "*"`
 }
@@ -58,8 +58,8 @@ fi
 
 
 # Extract the revision from SVN/git/etc
-if [ -e "$1/../../.git/refs/remotes/origin" ] ; then
-	get_git_id "$1/../.."
+if git rev-parse --git-dir > /dev/null  2>&1 ; then
+	get_git_id "."
 elif [ -d "$1/.git/svn" ] ; then
 	get_git_svn_id "$1"
 elif [ -d "$1/../.git/svn" ] ; then
