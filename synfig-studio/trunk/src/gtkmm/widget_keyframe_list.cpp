@@ -193,8 +193,12 @@ Widget_Keyframe_List::perform_move_kf(bool delta=false)
 	kf_list_->find_prev_next(selected_kf_time, prev, next);
 	// Not possible to set delta to the first keyframe
 	// perform normal movement
-	if (prev==Time::begin()) delta = false;
-
+	// As suggested by Zelgadis it is better to not perform anything.
+	if (prev==Time::begin() && delta==true)
+	{
+		synfig::info(_("Not possible to ALT-drag the first keyframe"));
+		return false;
+	}
 	if(!delta)
 		{
 			synfigapp::Action::Handle action(synfigapp::Action::create("KeyframeSet"));
