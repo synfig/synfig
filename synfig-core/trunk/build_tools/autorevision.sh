@@ -22,7 +22,7 @@ get_git_id(){
 		BRANCH='master'
 	else
 		BRANCH=`echo $BRANCH | cut -d ' ' -f 1`
-		BRANCH=${BRANCH#*/}
+		BRANCH=${BRANCH##*/}
 	fi
 	export REVISION=`git show --pretty=format:%ci HEAD |  head -c 10 | tr -d '-'`
 	export COMPARE=`git rev-parse --git-dir`
@@ -103,5 +103,5 @@ fi
 
 # Output the header
 if [ x != "x$DEVEL_VERSION" ] ; then
-	printf "#define DEVEL_VERSION \"$DEVEL_VERSION\"\n" >> "$HEADER"
+	printf "#define DEVEL_VERSION \"$DEVEL_VERSION\"\n" > "$HEADER"
 fi

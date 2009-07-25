@@ -22,7 +22,7 @@ get_git_id(){
 		BRANCH='master'
 	else
 		BRANCH=`echo $BRANCH | cut -d ' ' -f 1`
-		BRANCH=${BRANCH#*/}
+		BRANCH=${BRANCH##*/}
 	fi
 	export REVISION=`git show --pretty=format:%ci HEAD |  head -c 10 | tr -d '-'`
 	export COMPARE=`git rev-parse --git-dir`
