@@ -103,6 +103,5 @@ fi
 
 # Output the header
 if [ x != "x$DEVEL_VERSION" ] ; then
-	printf "#define SHOW_EXTRA_INFO\n" > "$HEADER"
-	printf "#define DEVEL_VERSION \"$DEVEL_VERSION\"\n" >> "$HEADER"
+	printf "#define DEVEL_VERSION \"$DEVEL_VERSION\"\n" > "$HEADER"
 fi
