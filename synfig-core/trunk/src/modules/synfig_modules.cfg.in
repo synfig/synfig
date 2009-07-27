@@ -15,3 +15,4 @@ mod_openexr
 mod_jpeg
 mod_libavcodec
 mod_yuv420p
+mod_svg

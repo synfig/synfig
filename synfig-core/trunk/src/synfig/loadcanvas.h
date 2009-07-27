@@ -7,6 +7,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
+**	Copyright (c) 2009 Carlos A. Sosa Navarro
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -127,6 +128,7 @@ public:
 
 	//! \todo writeme
 	Canvas::Handle parse_from_file_as(const String &filename,const String &as,String &errors);
+	Canvas::Handle parse_as(xmlpp::Element* node,String &errors);
 
 	static std::set<String> loading_;
 
@@ -178,6 +180,7 @@ private:
 
 //!	Loads a canvas from \a filename
 /*!	\return	The Canvas's handle on success, an empty handle on failure */
+extern Canvas::Handle open_canvas(xmlpp::Element* node,String &errors,String &warnings);
 extern Canvas::Handle open_canvas(const String &filename,String &errors,String &warnings);
 extern Canvas::Handle open_canvas_as(const String &filename,const String &as,String &errors,String &warnings);
 

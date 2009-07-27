@@ -25,6 +25,7 @@ SUBDIRS = \
 	lyr_freetype \
 	lyr_std \
 	mod_mng \
+	mod_svg \
 	mod_magickpp \
 	example
 
