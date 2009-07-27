@@ -118,18 +118,13 @@ dumpstats()
 mainloop()
 {
 	while true; do
-		export PS=$(ps -f -u `whoami`)
-		if ( ( echo "$PS" |egrep "synfigstudio$" >/dev/null ) || ( echo "$PS" | egrep "synfigstudio " >/dev/null ) ) ; then
+		if ( ps --no-headers -f -Csynfigstudio |egrep "^`whoami`" > /dev/null ) ; then
 			#synfigstudio process exist
 			if [[ $STARTED == 0 ]]; then
 				STARTED=1
 				RUNTIME=0
 				#get version
-				if ( echo "$PS" |egrep "synfigstudio$" >/dev/null ) ; then
-					P=$( echo "$PS" |egrep "synfigstudio$"| tr -s ' '| cut -d ' ' -f 8)
-				else
-					P=$( echo "$PS" |egrep "synfigstudio "| tr -s ' '| cut -d ' ' -f 8)
-				fi
+				P=$(ps --no-headers -f -Csynfigstudio |egrep "^`whoami`" | tr -s ' '| cut -d ' ' -f 8)
 				echo 
 				if [ ! -e $P ]; then
 					P=`which $P`
