@@ -178,7 +178,10 @@ Action::KeyframeSetDelta::perform()
 
 //	Time location(keyframe.get_time());
 	Time location(get_canvas()->keyframe_list().find(keyframe)->get_time());
-	Time delta(delta);
+// 	This line sets delta to 0s regardless to any previous value of delta.
+//	I think it was here for symmetry to the undo() operation.
+//	It was causing that the Set delta operation was faulty. Now works!
+//	Time delta(delta);
 
 	get_canvas()->keyframe_list().insert_time(location,delta);
 

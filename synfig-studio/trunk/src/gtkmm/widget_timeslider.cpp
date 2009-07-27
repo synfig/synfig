@@ -576,7 +576,17 @@ bool Widget_Timeslider::redraw(bool /*doublebuffer*/)
 
 			//gc->set_rgb_fg_color(Gdk::Color("#000000"));
 			layout->set_text(timecode);
-			window->draw_layout(gc,xpx+2,heightsmall,layout);
+			Pango::AttrList attr_list;
+			// Aproximately a font size of 8 pixels.
+			// Pango::SCALE = 1024
+			// create_attr_size waits a number in 1000th of pixels.
+			// Should be user customizable in the future. Now it is fixed to 10
+			Pango::AttrInt pango_size(Pango::Attribute::create_attr_size(Pango::SCALE*10));
+			pango_size.set_start_index(0);
+			pango_size.set_end_index(64);
+			attr_list.change(pango_size);
+			layout->set_attributes(attr_list);
+			window->draw_layout(gc,xpx+2,0,layout);
 		}else
 		{
 			window->draw_line(gc,xpx,0,xpx,heightsmall);
