@@ -17,10 +17,9 @@ trap writelog INT
 
 init()
 {
-echo "Synfig Crash Monitor is a tool to collect statistics about synfig crashes."
+echo "SynfigStudio Crash Monitor is a tool to collect statistics about synfig crashes."
 echo "All information is collected locally in ~/.synfig/cph directory."
 echo
-echo `date +%H:%M` "Synfig Crash Monitor started."
 STARTED=0
 RUNTIME=0
 VERSION=''
@@ -29,6 +28,27 @@ BRANCH=''
 REVISION_ID=''
 CRASH=0
 [ ! -d ~/.synfig/cph ] && mkdir -p ~/.synfig/cph || true
+
+# Detect if crash monitor is already started
+PDIR=${0%`basename $0`}
+LCK_FILE=~/.synfig/cph/`basename $0`.lck
+if [ -f "${LCK_FILE}" ]; then
+	MYPID=`head -n 1 "${LCK_FILE}"`
+	if ! ( ps -p ${MYPID} | grep ${MYPID} >/dev/null ); then
+		# The process is not running
+		# Echo current PID into lock file
+		echo $$ > "${LCK_FILE}"
+	else
+		echo "`basename $0` is already running [${MYPID}]. Aborting."
+		sleep 5
+		exit 0
+	fi
+else
+	# The process is not running
+	# Echo current PID into lock file
+	echo $$ > "${LCK_FILE}"
+fi
+echo `date +%H:%M` "Synfig Crash Monitor started."
 }
 
 writelog()
@@ -142,6 +162,7 @@ mainloop()
 		sleep 1
 	done
 }
+
 
 init
 mainloop
