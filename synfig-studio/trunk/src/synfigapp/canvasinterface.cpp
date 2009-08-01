@@ -7,6 +7,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
+**	Copyright (c) 2009 Carlos A. Sosa Navarro
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -52,6 +53,7 @@
 #include "instance.h"
 
 #include "actions/layeradd.h"
+#include "actions/layerremove.h"
 #include "actions/valuedescconvert.h"
 #include "actions/valuenodeadd.h"
 #include "actions/editmodeset.h"
@@ -577,6 +579,33 @@ CanvasInterface::import(const synfig::String &filename, synfig::String &errors, 
 	String ext(filename_extension(filename));
 	if (ext.size()) ext = ext.substr(1); // skip initial '.'
 	std::transform(ext.begin(),ext.end(),ext.begin(),&::tolower);
+
+	if(ext=="svg"){//I don't like it, but worse is nothing
+		Layer::Handle _new_layer(add_layer_to("PasteCanvas",get_canvas()));
+		Layer::Handle _aux_layer(add_layer_to("svg_layer",get_canvas()));
+		if(_aux_layer){
+			_aux_layer->set_param("filename",ValueBase(filename));
+			_new_layer->set_param("canvas",ValueBase(_aux_layer->get_param("canvas")));
+			//remove aux layer
+			Action::Handle 	action(Action::LayerRemove::create());
+			assert(action);
+			if(!action)
+				return 0;
+			action->set_param("canvas",get_canvas());
+			action->set_param("canvas_interface",etl::loose_handle<CanvasInterface>(this));
+			action->set_param("layer",_aux_layer);
+			if(!action->is_ready()){
+				get_ui_interface()->error(_("Action Not Ready"));
+				return 0;
+			}
+			if(!get_instance()->perform_action(action)){
+				get_ui_interface()->error(_("Action Failed."));
+				return 0;
+			}
+		}
+		signal_layer_new_description()(_new_layer,filename);
+		return true;
+	}
 
 	// If this is a SIF file, then we need to do things slightly differently
 	if(ext=="sif" || ext=="sifz")try

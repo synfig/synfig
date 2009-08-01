@@ -1,12 +1,12 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file dock_timetrack.h
-**	\brief Template Header
+/*!	\file layer_svg.h
+**	\brief Header file for implementation of the Svg Canvas layer
 **
-**	$Id$
+**	$Id:$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
-**  Copyright (c) 2009 Carlos López
+**	Copyright (c) 2009 Carlos A. Sosa Navarro
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -23,15 +23,17 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_STUDIO_DOCK_TIMETRACK_H
-#define __SYNFIG_STUDIO_DOCK_TIMETRACK_H
+#ifndef __SYNFIG_SVG_LAYER_H
+#define __SYNFIG_SVG_LAYER_H
 
 /* === H E A D E R S ======================================================= */
 
-#include "dockable.h"
-#include <gtkmm/treeview.h>
-#include "instance.h"
-#include "dock_canvasspecific.h"
+#include <synfig/color.h>
+#include <synfig/vector.h>
+#include <synfig/layer_pastecanvas.h>
+#include <synfig/value.h>
+
+#include "svg_parser.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -39,33 +41,27 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace studio {
-class Widget_Timeslider;
-class Widget_Keyframe_List;
-
-class Dock_Timetrack : public Dock_CanvasSpecific
+class svg_layer : public synfig::Layer_PasteCanvas
 {
-	Gtk::HScrollbar* hscrollbar_;
-	Gtk::VScrollbar* vscrollbar_;
-	Widget_Timeslider* widget_timeslider_;
-	Widget_Keyframe_List* widget_kf_list_;
-	Gtk::Table* table_;
+	SYNFIG_LAYER_MODULE_EXT
 
-protected:
-	virtual void init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view);
-	virtual void changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view);
+private:
 
-	void refresh_selected_param();
+	synfig::String filename;
+	synfig::String errors,warnings;
 
 public:
 
+	svg_layer();
 
-	Dock_Timetrack();
-	~Dock_Timetrack();
-}; // END of Dock_Timetrack
+	virtual bool set_param(const synfig::String & param, const synfig::ValueBase &value);
 
-}; // END of namespace studio
+	virtual synfig::ValueBase get_param(const synfig::String & param)const;
+
+	virtual Vocab get_param_vocab()const;
+}; // END of class svg_layer
 
 /* === E N D =============================================================== */
 
 #endif
+

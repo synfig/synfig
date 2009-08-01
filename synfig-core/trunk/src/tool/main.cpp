@@ -50,6 +50,7 @@
 #include <synfig/paramdesc.h>
 #include <synfig/main.h>
 #include <synfig/guid.h>
+#include <autorevision.h>
 #endif
 
 using namespace std;
@@ -396,6 +397,9 @@ int process_global_flags(arg_list_t &arg_list)
 		if(*iter == "--info")
 		{
 			cout<<PACKAGE"-"VERSION<<endl;
+			#ifdef DEVEL_VERSION
+				cout<<endl<<DEVEL_VERSION<<endl<<endl;
+			#endif
 			cout<<"Compiled on "__DATE__ /* " at "__TIME__ */;
 #ifdef __GNUC__
 			cout<<" with GCC "<<__VERSION__;
@@ -406,7 +410,6 @@ int process_global_flags(arg_list_t &arg_list)
 #ifdef __TCPLUSPLUS__
 			cout<<" with Borland Turbo C++ "<<(__TCPLUSPLUS__>>8)<<'.'<<((__TCPLUSPLUS__&255)>>4)<<'.'<<(__TCPLUSPLUS__&15);
 #endif
-
 			cout<<endl<<SYNFIG_COPYRIGHT<<endl;
 			cout<<endl;
 			return SYNFIGTOOL_HELP;

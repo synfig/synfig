@@ -651,6 +651,7 @@ synfigincludedir=$includedir/synfig-$API_VERSION
 AC_SUBST(synfigincludedir)
 
 AC_CONFIG_FILES([synfig-config
+build_tools/Makefile
 synfig.pc
 doxygen.cfg
 Makefile
@@ -678,6 +679,7 @@ src/modules/mod_particle/Makefile
 src/modules/mod_png/Makefile
 src/modules/mod_ppm/Makefile
 src/modules/mod_yuv420p/Makefile
+src/modules/mod_svg/Makefile
 src/modules/example/Makefile
 src/tool/Makefile
 src/modules/synfig_modules.cfg

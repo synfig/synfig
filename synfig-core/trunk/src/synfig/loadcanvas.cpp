@@ -7,6 +7,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
+**	Copyright (c) 2009 Carlos A. Sosa Navarro
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -2216,3 +2217,85 @@ CanvasParser::parse_from_file_as(const String &file_,const String &as_,String &e
 	}
 	return Canvas::Handle();
 }
+
+Canvas::Handle
+CanvasParser::parse_as(xmlpp::Element* node,String &errors)
+{
+	ChangeLocale change_locale(LC_NUMERIC, "C");
+	try
+	{
+		total_warnings_=0;
+		if(node)
+		{
+			Canvas::Handle canvas(parse_canvas(node,0,false,""));
+			if (!canvas) return canvas;
+
+			const ValueNodeList& value_node_list(canvas->value_node_list());
+
+			again:
+			ValueNodeList::const_iterator iter;
+			for(iter=value_node_list.begin();iter!=value_node_list.end();++iter)
+			{
+				ValueNode::Handle value_node(*iter);
+				if(value_node->is_exported() && value_node->get_id().find("Unnamed")==0)
+				{
+					canvas->remove_value_node(value_node);
+					goto again;
+				}
+			}
+
+			return canvas;
+		}
+	}
+	catch(Exception::BadLinkName) { synfig::error("BadLinkName Thrown"); }
+	catch(Exception::BadType) { synfig::error("BadType Thrown"); }
+	catch(Exception::FileNotFound) { synfig::error("FileNotFound Thrown"); }
+	catch(Exception::IDNotFound) { synfig::error("IDNotFound Thrown"); }
+	catch(Exception::IDAlreadyExists) { synfig::error("IDAlreadyExists Thrown"); }
+	catch(xmlpp::internal_error x)
+	{
+		if (!strcmp(x.what(), "Couldn't create parsing context"))
+			throw runtime_error(String("  * ") + _("Can't open file") + " \"" + "\"");
+		throw;
+	}
+	catch(const std::exception& ex)
+	{
+		synfig::error("Standard Exception: "+String(ex.what()));
+		errors = ex.what();
+		return Canvas::Handle();
+	}
+	catch(const String& str)
+	{
+		cerr<<str<<endl;
+		errors = str;
+		return Canvas::Handle();
+	}
+	return Canvas::Handle();
+}
+//extern
+Canvas::Handle
+synfig::open_canvas(xmlpp::Element* node,String &errors,String &warnings){
+	Canvas::Handle canvas;
+	CanvasParser parser;
+	parser.set_allow_errors(true);
+	try
+	{
+		canvas=parser.parse_as(node,errors);
+	}
+	catch (...)
+	{
+		synfig::error("open canvas of a node");
+		throw;
+	}
+
+	warnings = parser.get_warnings_text();
+
+	if(parser.error_count())
+	{
+		errors = parser.get_errors_text();
+		return Canvas::Handle();
+	}
+	return canvas;
+}
+
+
