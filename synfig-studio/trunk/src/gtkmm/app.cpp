@@ -741,7 +741,7 @@ init_ui_manager()
 	menus_action_group->add( Gtk::Action::create("menu-layer-new", _("New Layer")) );
 	menus_action_group->add( Gtk::Action::create("menu-keyframe", _("Keyframe")) );
 	menus_action_group->add( Gtk::Action::create("menu-group", _("Group")) );
-	menus_action_group->add( Gtk::Action::create("menu-state", _("State")) );
+	menus_action_group->add( Gtk::Action::create("menu-state", _("Tool")) );
 	menus_action_group->add( Gtk::Action::create("menu-toolbox", _("Toolbox")) );
 
 	// Add the synfigapp actions...
