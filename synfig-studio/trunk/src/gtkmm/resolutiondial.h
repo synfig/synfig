@@ -55,12 +55,12 @@ class ResolutionDial : public Gtk::Table
 	Gtk::Button *decrease_resolution;
 	Gtk::CheckButton *use_low_resolution;
 
-	Gtk::Button *create_icon(Gtk::IconSize size, const Gtk::BuiltinStockID & stockid, const char * tooltip);
+	Gtk::Button *create_icon(Gtk::IconSize size, const Gtk::StockID & stockid, const char * tooltip);
 	Gtk::CheckButton *create_check(const char *text, const char *tooltip);
 
 public:
 
-	ResolutionDial();
+	ResolutionDial(Gtk::IconSize & size);
 
 	void update_lowres(bool flag);
 	Glib::SignalProxy0<void> signal_increase_resolution()  { return increase_resolution->signal_clicked(); }

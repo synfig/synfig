@@ -207,6 +207,9 @@ IconController::IconController(const synfig::String& /*basepath*/)
 
 	INIT_STOCK_ICON(toggle_onion_skin,"onion_skin_icon."IMAGE_EXT,_("Toggle onion skin"));
 
+	INIT_STOCK_ICON(increase_resolution,"incr_resolution_icon."IMAGE_EXT,_("Increase resolution"));
+	INIT_STOCK_ICON(decrease_resolution,"decr_resolution_icon."IMAGE_EXT,_("Decrease resolution"));
+
 	INIT_STOCK_ICON_CLONE(cvs_add,"gtk-add",_("CVS Add"));
 	INIT_STOCK_ICON_CLONE(cvs_update,"gtk-open",_("CVS Update"));
 	INIT_STOCK_ICON_CLONE(cvs_commit,"gtk-save",_("CVS Commit"));
@@ -236,6 +239,8 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	icon_factory->add_default();
 
 	Gtk::IconSize::register_new("synfig-small_icon",12,12);
+	Gtk::IconSize::register_new("synfig-small_icon_16x16",16,16);
+
 	for(int i(0);i<(int)ValueBase::TYPE_END;i++)
 		_tree_pixbuf_table_value_type[i]=Gtk::Button().render_icon(value_icon(ValueBase::Type(i)),Gtk::ICON_SIZE_SMALL_TOOLBAR);
 

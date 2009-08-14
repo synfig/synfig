@@ -50,12 +50,11 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
-ResolutionDial::ResolutionDial(): Gtk::Table(1, 3, false)
+ResolutionDial::ResolutionDial(Gtk::IconSize & size): Gtk::Table(3, 1, false)
 {
-	Gtk::IconSize iconsize = Gtk::IconSize::from_name("synfig-small_icon");
 
-	increase_resolution = create_icon(iconsize, Gtk::Stock::ADD, _("Increase Display Resolution"));
-	decrease_resolution = create_icon(iconsize, Gtk::Stock::REMOVE, _("Decrease Display Resolution"));
+	increase_resolution = create_icon(size, Gtk::StockID("synfig-increase_resolution"), _("Increase Display Resolution"));
+	decrease_resolution = create_icon(size, Gtk::StockID("synfig-decrease_resolution"), _("Decrease Display Resolution"));
 	use_low_resolution = create_check(_("Low Res"), _("Use Low Resolution when enabled"));
 
 	attach(*decrease_resolution, 0, 1, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
@@ -64,7 +63,7 @@ ResolutionDial::ResolutionDial(): Gtk::Table(1, 3, false)
 }
 
 Gtk::Button *
-ResolutionDial::create_icon(Gtk::IconSize size, const Gtk::BuiltinStockID & stockid,
+ResolutionDial::create_icon(Gtk::IconSize size, const Gtk::StockID & stockid,
 		const char * tooltip)
 {
 	Gtk::Button *button = manage(new class Gtk::Button());

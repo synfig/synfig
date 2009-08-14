@@ -50,16 +50,14 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
-ToggleDucksDial::ToggleDucksDial(): Gtk::Table(1, 6, false)
+ToggleDucksDial::ToggleDucksDial(Gtk::IconSize & size): Gtk::Table(1, 6, false)
 {
-	Gtk::IconSize iconsize = Gtk::IconSize::from_name("synfig-small_icon");
-
-	ducks_position = create_label_button(iconsize, "synfig-toggle_duck_position", _("Toggle position ducks"));
-	ducks_vertex = create_label_button(iconsize, "synfig-toggle_duck_vertex", _("Toggle vertex ducks"));
-	ducks_tangent = create_label_button(iconsize, "synfig-toggle_duck_tangent", _("Toggle tangent ducks"));
-	ducks_radius = create_label_button(iconsize, "synfig-toggle_duck_radius", _("Toggle radius ducks"));
-	ducks_width = create_label_button(iconsize, "synfig-toggle_duck_width", _("Toggle width ducks"));
-	ducks_angle = create_label_button(iconsize, "synfig-toggle_duck_angle", _("Toggle angle ducks"));
+	ducks_position = create_label_button(size, "synfig-toggle_duck_position", _("Toggle position ducks"));
+	ducks_vertex = create_label_button(size, "synfig-toggle_duck_vertex", _("Toggle vertex ducks"));
+	ducks_tangent = create_label_button(size, "synfig-toggle_duck_tangent", _("Toggle tangent ducks"));
+	ducks_radius = create_label_button(size, "synfig-toggle_duck_radius", _("Toggle radius ducks"));
+	ducks_width = create_label_button(size, "synfig-toggle_duck_width", _("Toggle width ducks"));
+	ducks_angle = create_label_button(size, "synfig-toggle_duck_angle", _("Toggle angle ducks"));
 
 	attach(*ducks_position, 0, 1, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
 	attach(*ducks_vertex, 1, 2, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);

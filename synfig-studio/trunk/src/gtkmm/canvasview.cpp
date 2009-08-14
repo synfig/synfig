@@ -1123,10 +1123,10 @@ CanvasView::create_status_bar()
 Gtk::Widget*
 CanvasView::create_display_bar()
 {
-	displaybar = manage(new class Gtk::Table(1, 7, false));
-
+	displaybar = manage(new class Gtk::Table(10, 1, false));
+	Gtk::IconSize iconsize=Gtk::IconSize::from_name("synfig-small_icon_16x16");
 	// Setup the ToggleDuckDial widget
-	toggleducksdial = Gtk::manage(new class ToggleDucksDial());
+	toggleducksdial = Gtk::manage(new class ToggleDucksDial(iconsize));
 
 	Duck::Type m = work_area->get_type_mask();
 	toggleducksdial->update_toggles(m);
@@ -1152,7 +1152,7 @@ CanvasView::create_display_bar()
 	toggleducksdial->show();
 
 	// Set up the ResolutionDial widget
-	resolutiondial=Gtk::manage(new class ResolutionDial());
+	resolutiondial=Gtk::manage(new class ResolutionDial(iconsize));
 
 	resolutiondial->update_lowres(work_area->get_low_resolution_flag());
 	resolutiondial->signal_increase_resolution().connect(
@@ -1179,7 +1179,7 @@ CanvasView::create_display_bar()
 	// Set up the show grid toggle button
 	show_grid = Gtk::manage(new class Gtk::ToggleButton());
 	show_grid->set_active(work_area->grid_status());
-	Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-toggle_show_grid"), Gtk::IconSize::from_name("synfig-small_icon")));
+	Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-toggle_show_grid"), iconsize));
 	icon->set_padding(0, 0);
 	icon->show();
 	show_grid->add(*icon);
@@ -1192,7 +1192,7 @@ CanvasView::create_display_bar()
 	// Set up the snap to grid toggle button
 	snap_grid = Gtk::manage(new class Gtk::ToggleButton());
 	snap_grid->set_active(work_area->grid_status());
-	Gtk::Image *icon2 = manage(new Gtk::Image(Gtk::StockID("synfig-toggle_snap_grid"), Gtk::IconSize::from_name("synfig-small_icon")));
+	Gtk::Image *icon2 = manage(new Gtk::Image(Gtk::StockID("synfig-toggle_snap_grid"), iconsize));
 	icon2->set_padding(0, 0);
 	icon2->show();
 	snap_grid->add(*icon2);
@@ -1205,7 +1205,7 @@ CanvasView::create_display_bar()
 	// Set up the onion skin toggle button
 	onion_skin = Gtk::manage(new class Gtk::ToggleButton());
 	onion_skin->set_active(work_area->get_onion_skin());
-	Gtk::Image *icon3 = manage(new Gtk::Image(Gtk::StockID("synfig-toggle_onion_skin"), Gtk::IconSize::from_name("synfig-small_icon")));
+	Gtk::Image *icon3 = manage(new Gtk::Image(Gtk::StockID("synfig-toggle_onion_skin"), iconsize));
 	icon3->set_padding(0, 0);
 	icon3->show();
 	onion_skin->add(*icon3);

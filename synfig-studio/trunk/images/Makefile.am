@@ -83,8 +83,9 @@ EXTRA_DIST = \
 	duck_angle_icon.sif \
 	show_grid_icon.sif \
 	snap_grid_icon.sif \
-	onion_skin_icon.sif
-
+	onion_skin_icon.sif \
+	incr_resolution_icon.sif \
+	decr_resolution_icon.sif
 
 IMAGES = \
 	installer_logo.$(EXT) \
@@ -164,7 +165,9 @@ IMAGES = \
 	duck_angle_icon.$(EXT) \
 	show_grid_icon.$(EXT) \
 	snap_grid_icon.$(EXT) \
-	onion_skin_icon.$(EXT)
+	onion_skin_icon.$(EXT) \
+	incr_resolution_icon.$(EXT) \
+	decr_resolution_icon.$(EXT)
 
 
 MAINTAINERCLEANFILES = \
