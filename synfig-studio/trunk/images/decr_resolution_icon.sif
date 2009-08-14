@@ -1807,7 +1807,7 @@
             <integer value="1"/>
           </param>
         </layer>
-        <layer type="region" active="true" version="0.1" desc="Darker Blue Region">
+        <layer type="region" active="false" version="0.1" desc="Darker Blue Region">
           <param name="z_depth">
             <real value="0.0000000000"/>
           </param>
@@ -1965,8 +1965,8 @@
                 <composite type="bline_point">
                   <point>
                     <vector>
-                      <x>-0.5936067700</x>
-                      <y>0.0558041893</y>
+                      <x>-0.5723207593</x>
+                      <y>-0.3108316958</y>
                     </vector>
                   </point>
                   <width>
