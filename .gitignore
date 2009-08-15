@@ -46,6 +46,7 @@ stamp-po
 ETL/ETL.pc.in
 ETL/ETL/etl_profile.h
 ETL/ETL/etl_profile_.h
+ETL/ETL/etl_profile_.h.in
 
 synfig-core/libltdl
 synfig-core/pkg-info/macosx/synfig-core.info
@@ -89,6 +90,13 @@ synfig-core/m4/visibility.m4
 synfig-core/m4/wchar_t.m4
 synfig-core/m4/wint_t.m4
 synfig-core/m4/xsize.m4
+synfig-core/m4/argz.m4
+synfig-core/m4/libtool.m4
+synfig-core/m4/ltdl.m4
+synfig-core/m4/ltoptions.m4
+synfig-core/m4/ltsugar.m4
+synfig-core/m4/ltversion.m4
+synfig-core/m4/lt~obsolete.m4
 
 synfig-studio/autorevision.h
 synfig-studio/images/128x128
@@ -133,6 +141,12 @@ synfig-studio/m4/visibility.m4
 synfig-studio/m4/wchar_t.m4
 synfig-studio/m4/wint_t.m4
 synfig-studio/m4/xsize.m4
+synfig-studio/m4/libtool.m4
+synfig-studio/m4/ltdl.m4
+synfig-studio/m4/ltoptions.m4
+synfig-studio/m4/ltsugar.m4
+synfig-studio/m4/ltversion.m4
+synfig-studio/m4/lt~obsolete.m4
 synfig-studio/pkg-info/macosx/synfig-studio.info
 synfig-studio/po/*.gmo
 synfig-studio/po/synfigstudio.pot
