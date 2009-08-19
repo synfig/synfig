@@ -81,8 +81,7 @@ tagrelease:
 	$(SVN) copy $(top_srcdir) $(SVN_REPOSITORY)/tags/$(TAG) -m "Release $(TAG)"
 
 ChangeLog:
-	-svn update
-	svn2cl --include-rev || touch ChangeLog
+	../autobuild/git2cl > ChangeLog
 
 stats:
 	-@echo

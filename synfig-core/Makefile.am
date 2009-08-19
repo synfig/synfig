@@ -111,8 +111,7 @@ stats:
 	-@echo 
 
 ChangeLog:
-	-svn update
-	svn2cl --include-rev || touch ChangeLog
+	../autobuild/git2cl > ChangeLog
 
 listfixmes:
 	-@echo
