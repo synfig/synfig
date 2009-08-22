@@ -92,14 +92,6 @@ DOXYGEN=doxygen
 SVN=svn
 TAG=@PACKAGE_TARNAME@_@VERSION_MAJ@_@VERSION_MIN@_@VERSION_REV@
 
-
-tagstable:
-	-$(SVN) delete $(SVN_REPOSITORY)/tags/stable -m "Stable Tag: Removing old tag"
-	$(SVN) copy $(top_srcdir) $(SVN_REPOSITORY)/tags/stable -m "Stable Tag: Copying everything over"
-
-tagrelease:
-	$(SVN) copy $(top_srcdir) $(SVN_REPOSITORY)/tags/$(TAG) -m "Release $(TAG)"
-
 stats:
 	-@echo
 	-@echo  -- Stats
@@ -111,8 +103,7 @@ stats:
 	-@echo 
 
 ChangeLog:
-	-svn update
-	svn2cl --include-rev || touch ChangeLog
+	../autobuild/git2cl > ChangeLog
 
 listfixmes:
 	-@echo
@@ -185,4 +176,4 @@ rtf: .doc_stamp
 
 docs: html
 
-.PHONY: stats tagstable tagrelease listfixmes listhacks check docs pdf html rtf
+.PHONY: stats listfixmes listhacks check docs pdf html rtf

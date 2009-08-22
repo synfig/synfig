@@ -14,14 +14,6 @@
 *.xml
 
 # ------------------------------------------------------------------------
-# ignore the symlinks I put in place to skip 'trunk'
-# ------------------------------------------------------------------------
-
-ETL/ETL
-synfig-core/src
-synfig-studio/src
-
-# ------------------------------------------------------------------------
 
 # generated in ETL, core and studio
 *-config
@@ -51,102 +43,116 @@ stamp-po
 
 # ------------------------------------------------------------------------
 
-ETL/trunk/ETL.pc.in
-ETL/trunk/ETL/etl_profile.h
-ETL/trunk/ETL/etl_profile_.h
+ETL/ETL.pc.in
+ETL/ETL/etl_profile.h
+ETL/ETL/etl_profile_.h
+ETL/ETL/etl_profile_.h.in
 
-synfig-core/trunk/libltdl
-synfig-core/trunk/pkg-info/macosx/synfig-core.info
-synfig-core/trunk/po/*.gmo
-synfig-core/trunk/po/synfig.pot
-synfig-core/trunk/src/modules/synfig_modules.cfg
-synfig-core/trunk/src/synfig/proto/nodebase.h
-synfig-core/trunk/src/tool/synfig
-synfig-core/trunk/synfig.pc.in
+synfig-core/libltdl
+synfig-core/pkg-info/macosx/synfig-core.info
+synfig-core/po/*.gmo
+synfig-core/po/synfig.pot
+synfig-core/src/modules/synfig_modules.cfg
+synfig-core/src/synfig/proto/nodebase.h
+synfig-core/src/tool/synfig
+synfig-core/synfig.pc.in
 
-synfig-core/trunk/autorevision.h
-synfig-core/trunk/m4/codeset.m4
-synfig-core/trunk/m4/gettext.m4
-synfig-core/trunk/m4/glibc2.m4
-synfig-core/trunk/m4/glibc21.m4
-synfig-core/trunk/m4/iconv.m4
-synfig-core/trunk/m4/intdiv0.m4
-synfig-core/trunk/m4/inttypes.m4
-synfig-core/trunk/m4/inttypes-h.m4
-synfig-core/trunk/m4/inttypes_h.m4
-synfig-core/trunk/m4/inttypes-pri.m4
-synfig-core/trunk/m4/intmax.m4
-synfig-core/trunk/m4/isc-posix.m4
-synfig-core/trunk/m4/lcmessage.m4
-synfig-core/trunk/m4/lib-ld.m4
-synfig-core/trunk/m4/lib-link.m4
-synfig-core/trunk/m4/lib-prefix.m4
-synfig-core/trunk/m4/lock.m4
-synfig-core/trunk/m4/longdouble.m4
-synfig-core/trunk/m4/longlong.m4
-synfig-core/trunk/m4/po.m4
-synfig-core/trunk/m4/progtest.m4
-synfig-core/trunk/m4/nls.m4
-synfig-core/trunk/m4/printf-posix.m4
-synfig-core/trunk/m4/uintmax_t.m4
-synfig-core/trunk/m4/ulonglong.m4
-synfig-core/trunk/m4/signed.m4
-synfig-core/trunk/m4/size_max.m4
-synfig-core/trunk/m4/stdint_h.m4
-synfig-core/trunk/m4/visibility.m4
-synfig-core/trunk/m4/wchar_t.m4
-synfig-core/trunk/m4/wint_t.m4
-synfig-core/trunk/m4/xsize.m4
+synfig-core/autorevision.h
+synfig-core/m4/codeset.m4
+synfig-core/m4/gettext.m4
+synfig-core/m4/glibc2.m4
+synfig-core/m4/glibc21.m4
+synfig-core/m4/iconv.m4
+synfig-core/m4/intdiv0.m4
+synfig-core/m4/inttypes.m4
+synfig-core/m4/inttypes-h.m4
+synfig-core/m4/inttypes_h.m4
+synfig-core/m4/inttypes-pri.m4
+synfig-core/m4/intmax.m4
+synfig-core/m4/isc-posix.m4
+synfig-core/m4/lcmessage.m4
+synfig-core/m4/lib-ld.m4
+synfig-core/m4/lib-link.m4
+synfig-core/m4/lib-prefix.m4
+synfig-core/m4/lock.m4
+synfig-core/m4/longdouble.m4
+synfig-core/m4/longlong.m4
+synfig-core/m4/po.m4
+synfig-core/m4/progtest.m4
+synfig-core/m4/nls.m4
+synfig-core/m4/printf-posix.m4
+synfig-core/m4/uintmax_t.m4
+synfig-core/m4/ulonglong.m4
+synfig-core/m4/signed.m4
+synfig-core/m4/size_max.m4
+synfig-core/m4/stdint_h.m4
+synfig-core/m4/visibility.m4
+synfig-core/m4/wchar_t.m4
+synfig-core/m4/wint_t.m4
+synfig-core/m4/xsize.m4
+synfig-core/m4/argz.m4
+synfig-core/m4/libtool.m4
+synfig-core/m4/ltdl.m4
+synfig-core/m4/ltoptions.m4
+synfig-core/m4/ltsugar.m4
+synfig-core/m4/ltversion.m4
+synfig-core/m4/lt~obsolete.m4
 
-synfig-studio/trunk/autorevision.h
-synfig-studio/trunk/images/128x128
-synfig-studio/trunk/images/16x16
-synfig-studio/trunk/images/22x22
-synfig-studio/trunk/images/24x24
-synfig-studio/trunk/images/32x32
-synfig-studio/trunk/images/48x48
-synfig-studio/trunk/images/64x64
-synfig-studio/trunk/images/*.png
-synfig-studio/trunk/images/images.nsh
-synfig-studio/trunk/images/unimages.nsh
-synfig-studio/trunk/m4/codeset.m4
-synfig-studio/trunk/m4/gettext.m4
-synfig-studio/trunk/m4/glibc21.m4
-synfig-studio/trunk/m4/glibc2.m4
-synfig-studio/trunk/m4/iconv.m4
-synfig-studio/trunk/m4/intdiv0.m4
-synfig-studio/trunk/m4/intmax.m4
-synfig-studio/trunk/m4/inttypes-h.m4
-synfig-studio/trunk/m4/inttypes_h.m4
-synfig-studio/trunk/m4/inttypes.m4
-synfig-studio/trunk/m4/inttypes-pri.m4
-synfig-studio/trunk/m4/isc-posix.m4
-synfig-studio/trunk/m4/lcmessage.m4
-synfig-studio/trunk/m4/lib-ld.m4
-synfig-studio/trunk/m4/lib-link.m4
-synfig-studio/trunk/m4/lib-prefix.m4
-synfig-studio/trunk/m4/lock.m4
-synfig-studio/trunk/m4/longdouble.m4
-synfig-studio/trunk/m4/longlong.m4
-synfig-studio/trunk/m4/nls.m4
-synfig-studio/trunk/m4/po.m4
-synfig-studio/trunk/m4/printf-posix.m4
-synfig-studio/trunk/m4/progtest.m4
-synfig-studio/trunk/m4/signed.m4
-synfig-studio/trunk/m4/size_max.m4
-synfig-studio/trunk/m4/stdint_h.m4
-synfig-studio/trunk/m4/uintmax_t.m4
-synfig-studio/trunk/m4/ulonglong.m4
-synfig-studio/trunk/m4/visibility.m4
-synfig-studio/trunk/m4/wchar_t.m4
-synfig-studio/trunk/m4/wint_t.m4
-synfig-studio/trunk/m4/xsize.m4
-synfig-studio/trunk/pkg-info/macosx/synfig-studio.info
-synfig-studio/trunk/po/*.gmo
-synfig-studio/trunk/po/synfigstudio.pot
-synfig-studio/trunk/src/gtkmm/synfigstudio
-synfig-studio/trunk/synfigstudio-thumbnailer.schemas
-synfig-studio/trunk/synfigstudio.desktop
+synfig-studio/autorevision.h
+synfig-studio/images/128x128
+synfig-studio/images/16x16
+synfig-studio/images/22x22
+synfig-studio/images/24x24
+synfig-studio/images/32x32
+synfig-studio/images/48x48
+synfig-studio/images/64x64
+synfig-studio/images/*.png
+synfig-studio/images/images.nsh
+synfig-studio/images/unimages.nsh
+synfig-studio/m4/codeset.m4
+synfig-studio/m4/gettext.m4
+synfig-studio/m4/glibc21.m4
+synfig-studio/m4/glibc2.m4
+synfig-studio/m4/iconv.m4
+synfig-studio/m4/intdiv0.m4
+synfig-studio/m4/intmax.m4
+synfig-studio/m4/inttypes-h.m4
+synfig-studio/m4/inttypes_h.m4
+synfig-studio/m4/inttypes.m4
+synfig-studio/m4/inttypes-pri.m4
+synfig-studio/m4/isc-posix.m4
+synfig-studio/m4/lcmessage.m4
+synfig-studio/m4/lib-ld.m4
+synfig-studio/m4/lib-link.m4
+synfig-studio/m4/lib-prefix.m4
+synfig-studio/m4/lock.m4
+synfig-studio/m4/longdouble.m4
+synfig-studio/m4/longlong.m4
+synfig-studio/m4/nls.m4
+synfig-studio/m4/po.m4
+synfig-studio/m4/printf-posix.m4
+synfig-studio/m4/progtest.m4
+synfig-studio/m4/signed.m4
+synfig-studio/m4/size_max.m4
+synfig-studio/m4/stdint_h.m4
+synfig-studio/m4/uintmax_t.m4
+synfig-studio/m4/ulonglong.m4
+synfig-studio/m4/visibility.m4
+synfig-studio/m4/wchar_t.m4
+synfig-studio/m4/wint_t.m4
+synfig-studio/m4/xsize.m4
+synfig-studio/m4/libtool.m4
+synfig-studio/m4/ltdl.m4
+synfig-studio/m4/ltoptions.m4
+synfig-studio/m4/ltsugar.m4
+synfig-studio/m4/ltversion.m4
+synfig-studio/m4/lt~obsolete.m4
+synfig-studio/pkg-info/macosx/synfig-studio.info
+synfig-studio/po/*.gmo
+synfig-studio/po/synfigstudio.pot
+synfig-studio/src/gtkmm/synfigstudio
+synfig-studio/synfigstudio-thumbnailer.schemas
+synfig-studio/synfigstudio.desktop
 
 # ------------------------------------------------------------------------
 
@@ -157,10 +163,6 @@ doxygen.cfg
 INSTALL
 Makefile.in
 Makefile
-# !*/trunk/Makefile
-# ETL/trunk/Makefile
-# synfig-core/trunk/Makefile
-# synfig-studio/trunk/Makefile
 
 # ------------------------------------------------------------------------
 
@@ -170,80 +172,26 @@ Makefile
 *.sifz
 
 # except for the ones we know about - core examples, core examples/walk and studio images:
-!synfig-core/tags/*/examples/*.sif
-!synfig-core/tags/*/*/examples/*.sif
-!synfig-core/trunk/examples/*.sifz
 
-!synfig-core/tags/*/examples/walk/*.sif
-!synfig-core/tags/*/*/examples/walk/*.sif
-!synfig-core/trunk/examples/walk/*.sifz
+!synfig-core/examples/*.sifz
+!synfig-core/examples/walk/*.sifz
 
-!synfig-studio/tags/*/images/*.sif
-!synfig-studio/tags/*/*/images/*.sif
-!synfig-studio/trunk/images/*.sif
-
-# ------------------------------------------------------------------------
-
-# !gtkmm-osx/trunk/*/configure
-# !gtkmm-osx/trunk/jpeg-6b/config.guess
-# !gtkmm-osx/trunk/jpeg-6b/config.sub
-# !gtkmm-osx/trunk/jpeg-6b/install-sh
-# !gtkmm-osx/trunk/jpeg-6b/ltmain.sh
-# !gtkmm-osx/trunk/libpng-1.2.5/libpng-config
-# !gtkmm-osx/trunk/libpng-1.2.5/libpng-config
-# !gtkmm-osx/trunk/libpng-1.2.5/libpng.pc
-# !synfig-core/trunk/synfig-core.xcodeproj/config.h
+!synfig-studio/images/*.sif
 
 # ------------------------------------------------------------------------
 # These are executables produced by 'make check' in ETL/trunk
 # ------------------------------------------------------------------------
 
-ETL/trunk/test/angle
-ETL/trunk/test/benchmark
-ETL/trunk/test/clock
-ETL/trunk/test/fixed
-ETL/trunk/test/handle
-ETL/trunk/test/hermite
-ETL/trunk/test/pen
-ETL/trunk/test/random
-ETL/trunk/test/smach
-ETL/trunk/test/smart_ptr
-ETL/trunk/test/stringf
-ETL/trunk/test/surface
+ETL/test/angle
+ETL/test/benchmark
+ETL/test/clock
+ETL/test/fixed
+ETL/test/handle
+ETL/test/hermite
+ETL/test/pen
+ETL/test/random
+ETL/test/smach
+ETL/test/smart_ptr
+ETL/test/stringf
+ETL/test/surface
 
-# ------------------------------------------------------------------------
-# I have symlinks in the top level that I don't want tracked
-# ------------------------------------------------------------------------
-
-# etl		-> ETL/trunk/ETL
-/etl
-
-# core		-> synfig-core/trunk
-/core
-###  modules	->   core/src/modules
-/modules
-### synfig	->   core/src/synfig
-/synfig
-### tool	->   core/src/tool
-/tool
-### examples	->   core/examples
-/examples
-
-# studio	-> synfig-studio/trunk
-/studio
-### gtkmm	->   studio/src/gtkmm
-/gtkmm
-### synfigapp	->   studio/src/synfigapp
-/synfigapp
-### images	->   studio/images
-/images
-
-# ------------------------------------------------------------------------
-
-Backup
-build-from-scratch.sh
-core
-.#*
-\#*#
-svn.log
-TAGS

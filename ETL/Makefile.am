@@ -76,16 +76,8 @@ stats:
 	-@du -hcs $(shell find $(top_srcdir)/ETL -name '*.[ch]*') | $(GREP) total
 	-@echo 
 
-tagstable:
-	-$(SVN) delete $(SVN_REPOSITORY)/tags/stable -m "Stable Tag: Removing old tag"
-	$(SVN) copy $(top_srcdir) $(SVN_REPOSITORY)/tags/stable -m "Stable Tag: Copying everything over"
-
-tagrelease:
-	$(SVN) copy $(top_srcdir) $(SVN_REPOSITORY)/tags/$(TAG) -m "Release $(TAG)"
-
 ChangeLog:
-	-svn update
-	svn2cl --include-rev || touch ChangeLog
+	../autobuild/git2cl > ChangeLog
 
 listfixmes:
 	-@echo
@@ -113,4 +105,4 @@ rtf: .doc_stamp
 
 docs: html
 
-.PHONY: stats tagstable tagrelease listfixmes listhacks check docs pdf html rtf
+.PHONY: stats listfixmes listhacks check docs pdf html rtf
