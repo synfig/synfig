@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <canvas version="0.7" width="160" height="160" xres="2834.645752" yres="2834.645752" view-box="-3.245189 3.245189 3.245189 -3.245189" antialias="1" fps="24.000" begin-time="0f" end-time="0f" bgcolor="0.500000 0.500000 0.500000 1.000000">
-  <name>Show Grig Icon</name>
+  <name>Snap Grig Icon</name>
   <desc>Copyright 2009 Carlos L&#xF3;pez. Released under GNU Public License published by the Free Software Foundation version 2.0 of the License or any later version.</desc>
   <meta name="grid_show" content="1"/>
   <meta name="grid_size" content="0.162259 0.162259"/>
