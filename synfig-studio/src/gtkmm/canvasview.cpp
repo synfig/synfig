@@ -1123,7 +1123,7 @@ CanvasView::create_status_bar()
 Gtk::Widget*
 CanvasView::create_display_bar()
 {
-	displaybar = manage(new class Gtk::Table(10, 1, false));
+	displaybar = manage(new class Gtk::Table(16, 1, false));
 	Gtk::IconSize iconsize=Gtk::IconSize::from_name("synfig-small_icon_16x16");
 	// Setup the ToggleDuckDial widget
 	toggleducksdial = Gtk::manage(new class ToggleDucksDial(iconsize));
@@ -1163,11 +1163,17 @@ CanvasView::create_display_bar()
 			sigc::mem_fun(*this, &studio::CanvasView::toggle_low_res_pixel_flag));
 	resolutiondial->show();
 
-	// Set up a separator
+	// Set up some separators
 	Gtk::VSeparator *separator1 = Gtk::manage(new class Gtk::VSeparator());
 	separator1->show();
 	Gtk::VSeparator *separator2 = Gtk::manage(new class Gtk::VSeparator());
 	separator2->show();
+	Gtk::VSeparator *separator3 = Gtk::manage(new class Gtk::VSeparator());
+	separator3->show();
+	Gtk::VSeparator *separator4 = Gtk::manage(new class Gtk::VSeparator());
+	separator4->show();
+	Gtk::VSeparator *separator5 = Gtk::manage(new class Gtk::VSeparator());
+	separator5->show();
 
 	// Set up quality spin button
 	quality_spin=Gtk::manage(new class Gtk::SpinButton(quality_adjustment_));
@@ -1229,17 +1235,46 @@ CanvasView::create_display_bar()
 	tooltips.set_tip(*future_onion_spin, _("Future onion skins"));
 	future_onion_spin->show();
 
+	// Setup render options dialog button
+	render_options_button = Gtk::manage(new class Gtk::Button());
+	Gtk::Image *icon4 = manage(new Gtk::Image(Gtk::StockID("synfig-render_options"), iconsize));
+	icon4->set_padding(0, 0);
+	icon4->show();
+	render_options_button->add(*icon4);
+	render_options_button->signal_clicked().connect(
+			sigc::mem_fun0(render_settings,&studio::RenderSettings::present));
+	tooltips.set_tip(*render_options_button, _("Shows the Render Settings Dialog"));
+	render_options_button->set_relief(Gtk::RELIEF_NONE);
+	render_options_button->show();
+
+	// Setup preview options dialog button
+	preview_options_button = Gtk::manage(new class Gtk::Button());
+	Gtk::Image *icon5 = manage(new Gtk::Image(Gtk::StockID("synfig-preview_options"), iconsize));
+	icon5->set_padding(0, 0);
+	icon5->show();
+	preview_options_button->add(*icon5);
+	preview_options_button->signal_clicked().connect(
+			sigc::mem_fun(*this,&CanvasView::on_preview_option));
+	tooltips.set_tip(*preview_options_button, _("Shows the Preview Settings Dialog"));
+	preview_options_button->set_relief(Gtk::RELIEF_NONE);
+	preview_options_button->show();
+
 
 	displaybar->attach(*toggleducksdial, 0, 1, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
 	displaybar->attach(*separator1, 1, 2, 0, 1, Gtk::FILL, Gtk::FILL);
 	displaybar->attach(*resolutiondial, 2, 3, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
 	displaybar->attach(*separator2, 3, 4, 0, 1, Gtk::FILL, Gtk::FILL);
 	displaybar->attach(*quality_spin, 4, 5, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
-	displaybar->attach(*show_grid, 5, 6, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
-	displaybar->attach(*snap_grid, 6, 7, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
-	displaybar->attach(*past_onion_spin, 7, 8, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
-	displaybar->attach(*onion_skin, 8, 9, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
-	displaybar->attach(*future_onion_spin, 9, 10, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
+	displaybar->attach(*separator3, 5, 6, 0, 1, Gtk::FILL, Gtk::FILL);
+	displaybar->attach(*show_grid, 6, 7, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
+	displaybar->attach(*snap_grid, 7, 8, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
+	displaybar->attach(*separator4, 8, 9, 0, 1, Gtk::FILL, Gtk::FILL);
+	displaybar->attach(*past_onion_spin, 9, 10, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
+	displaybar->attach(*onion_skin, 10, 11, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
+	displaybar->attach(*future_onion_spin, 11, 12, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
+	displaybar->attach(*separator5, 12, 13, 0, 1, Gtk::FILL, Gtk::FILL);
+	displaybar->attach(*render_options_button, 13, 14, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
+	displaybar->attach(*preview_options_button, 14, 15, 0, 1, Gtk::SHRINK, Gtk::SHRINK);
 
 	displaybar->show();
 

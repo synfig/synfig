@@ -285,6 +285,8 @@ private:
 	Gtk::ToggleButton *show_grid;
 	Gtk::ToggleButton *snap_grid;
 	Gtk::ToggleButton *onion_skin;
+	Gtk::Button *render_options_button;
+	Gtk::Button *preview_options_button;
 	bool toggling_show_grid;
 	bool toggling_snap_grid;
 	bool toggling_onion_skin;
