@@ -85,7 +85,9 @@ EXTRA_DIST = \
 	snap_grid_icon.sif \
 	onion_skin_icon.sif \
 	incr_resolution_icon.sif \
-	decr_resolution_icon.sif
+	decr_resolution_icon.sif \
+	render_options_icon.sif \
+	preview_options_icon.sif
 
 IMAGES = \
 	installer_logo.$(EXT) \
@@ -167,7 +169,9 @@ IMAGES = \
 	snap_grid_icon.$(EXT) \
 	onion_skin_icon.$(EXT) \
 	incr_resolution_icon.$(EXT) \
-	decr_resolution_icon.$(EXT)
+	decr_resolution_icon.$(EXT) \
+	render_options_icon.$(EXT) \
+	preview_options_icon.$(EXT)
 
 
 MAINTAINERCLEANFILES = \

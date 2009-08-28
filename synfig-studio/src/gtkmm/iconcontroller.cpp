@@ -210,6 +210,9 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	INIT_STOCK_ICON(increase_resolution,"incr_resolution_icon."IMAGE_EXT,_("Increase resolution"));
 	INIT_STOCK_ICON(decrease_resolution,"decr_resolution_icon."IMAGE_EXT,_("Decrease resolution"));
 
+	INIT_STOCK_ICON(preview_options,"preview_options_icon."IMAGE_EXT,_("Preview Options Dialog"));
+	INIT_STOCK_ICON(render_options,"render_options_icon."IMAGE_EXT,_("Render Options Dialog"));
+
 	INIT_STOCK_ICON_CLONE(cvs_add,"gtk-add",_("CVS Add"));
 	INIT_STOCK_ICON_CLONE(cvs_update,"gtk-open",_("CVS Update"));
 	INIT_STOCK_ICON_CLONE(cvs_commit,"gtk-save",_("CVS Commit"));
