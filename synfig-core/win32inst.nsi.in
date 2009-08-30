@@ -90,8 +90,8 @@ SectionEnd
 Section "Start Menu Shortcuts"
 
   SetShellVarContext All
-  CreateDirectory "$SMPROGRAMS\Voria"
-  CreateShortCut "$SMPROGRAMS\Voria\Uninstall Synfig Core.lnk" "$INSTDIR\uninstall-@PACKAGE_TARNAME@.exe" "" "$INSTDIR\uninstall-@PACKAGE_TARNAME@.exe" 0
+  CreateDirectory "$SMPROGRAMS\Synfig"
+  CreateShortCut "$SMPROGRAMS\Synfig\Uninstall Synfig Core.lnk" "$INSTDIR\uninstall-@PACKAGE_TARNAME@.exe" "" "$INSTDIR\uninstall-@PACKAGE_TARNAME@.exe" 0
   
 SectionEnd
 
@@ -119,8 +119,8 @@ Section "un.Start Menu Shortcuts"
 
   ; Remove shortcuts, if any
   SetShellVarContext All
-  Delete "$SMPROGRAMS\Voria\Uninstall Synfig Core.lnk"
-  RMDir "$SMPROGRAMS\Voria"
+  Delete "$SMPROGRAMS\Synfig\Uninstall Synfig Core.lnk"
+  RMDir "$SMPROGRAMS\Synfig"
 
 SectionEnd
 
@@ -132,8 +132,8 @@ Section "Examples"
 	File "@srcdir@\examples\*.sifz"
 
 	SetShellVarContext All
-	CreateDirectory "$SMPROGRAMS\Voria"
-	CreateShortCut "$SMPROGRAMS\Voria\Examples.lnk" "$INSTDIR\examples" "" "$INSTDIR\examples" 0
+	CreateDirectory "$SMPROGRAMS\Synfig"
+	CreateShortCut "$SMPROGRAMS\Synfig\Examples.lnk" "$INSTDIR\examples" "" "$INSTDIR\examples" 0
 SectionEnd
 
 Section "un.Examples"
@@ -141,8 +141,8 @@ Section "un.Examples"
 	RMDir "$INSTDIR\examples"
 
 	SetShellVarContext All
-	Delete "$SMPROGRAMS\Voria\Examples.lnk"
-	RMDir "$SMPROGRAMS\Voria"
+	Delete "$SMPROGRAMS\Synfig\Examples.lnk"
+	RMDir "$SMPROGRAMS\Synfig"
 SectionEnd
 
 SectionGroup "PlugIns"
