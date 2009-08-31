@@ -233,9 +233,9 @@ if test $with_libdv = "no" ; then {
 # LIBAVCODEC CHECK--------------------
 
 AC_ARG_WITH(libavcodec,[
-  --without-libavcodec         disable support for libavcodec (Default=auto)],[
+  --with-libavcodec         Enable support for libavcodec (Default=no)],[
 ],[
-	with_libavcodec="yes"
+	with_libavcodec="no"
 ])
 
 if test $with_libavcodec != "no" ; then {
