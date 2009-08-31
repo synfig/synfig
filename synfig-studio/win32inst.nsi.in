@@ -105,9 +105,9 @@ SectionEnd
 Section "Start Menu Shortcuts"
 
   SetShellVarContext All
-  CreateDirectory "$SMPROGRAMS\Voria"
-  CreateShortCut "$SMPROGRAMS\Voria\Uninstall Synfig Studio.lnk" "$INSTDIR\uninstall-@PACKAGE_TARNAME@.exe" "" "$INSTDIR\uninstall-@PACKAGE_TARNAME@.exe" 0
-  CreateShortCut "$SMPROGRAMS\Voria\Synfig Studio.lnk" "$INSTDIR\bin\synfigstudio.exe" "" "$INSTDIR\share\pixmaps\synfig_icon.ico" 0
+  CreateDirectory "$SMPROGRAMS\Synfig"
+  CreateShortCut "$SMPROGRAMS\Synfig\Uninstall Synfig Studio.lnk" "$INSTDIR\uninstall-@PACKAGE_TARNAME@.exe" "" "$INSTDIR\uninstall-@PACKAGE_TARNAME@.exe" 0
+  CreateShortCut "$SMPROGRAMS\Synfig\Synfig Studio.lnk" "$INSTDIR\bin\synfigstudio.exe" "" "$INSTDIR\share\pixmaps\synfig_icon.ico" 0
   
 SectionEnd
 
@@ -142,11 +142,11 @@ Section "Uninstall"
 
   ; Remove shortcuts, if any
   SetShellVarContext All
-  Delete "$SMPROGRAMS\Voria\Uninstall Synfig Studio.lnk"
-  Delete "$SMPROGRAMS\Voria\Synfig Studio.lnk"
+  Delete "$SMPROGRAMS\Synfig\Uninstall Synfig Studio.lnk"
+  Delete "$SMPROGRAMS\Synfig\Synfig Studio.lnk"
 
   ; Remove directories used
-  RMDir "$SMPROGRAMS\Voria"
+  RMDir "$SMPROGRAMS\Synfig"
   RMDir "$INSTDIR"
 
 	System::Call 'Shell32::SHChangeNotify(i ${SHCNE_ASSOCCHANGED}, i ${SHCNF_IDLIST}, i 0, i 0)'
