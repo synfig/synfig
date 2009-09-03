@@ -60,7 +60,7 @@ static const guint no_prev_popup((guint)-1);
 /* === M E T H O D S ======================================================= */
 
 GroupActionManager::GroupActionManager():
-	action_group_(Gtk::ActionGroup::create()),
+	action_group_(Gtk::ActionGroup::create("action_group_group_action_manager")),
 	popup_id_(no_prev_popup),
 	queued(false)
 {
@@ -119,7 +119,7 @@ GroupActionManager::clear()
 			action_group_->set_sensitive(true);
 #else
 			get_ui_manager()->remove_action_group(action_group_);
-			action_group_=Gtk::ActionGroup::create();
+			action_group_=Gtk::ActionGroup::create("action_group_group_action_manager");
 #endif
 		}
 	}

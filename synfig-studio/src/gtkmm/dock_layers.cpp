@@ -77,8 +77,8 @@ Dock_Layers::Dock_Layers():
 {
 	if(layer_action_manager)layer_action_manager->set_ui_manager(App::ui_manager());
 
-	action_group_new_layers=Gtk::ActionGroup::create();
-	action_group_layer_ops=Gtk::ActionGroup::create();
+	action_group_new_layers=Gtk::ActionGroup::create("action_group_new_layers");
+	action_group_layer_ops=Gtk::ActionGroup::create("action_group_layer_ops");
 
 	std::map<synfig::String,synfig::String> category_map;
 

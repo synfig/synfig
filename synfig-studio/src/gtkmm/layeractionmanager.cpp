@@ -62,9 +62,9 @@ static const guint no_prev_popup((guint)-1);
 /* === M E T H O D S ======================================================= */
 
 LayerActionManager::LayerActionManager():
-	action_group_(Gtk::ActionGroup::create()),
+	action_group_(Gtk::ActionGroup::create("action_group_layer_action_manager")),
 	popup_id_(no_prev_popup),
-	action_group_copy_paste(Gtk::ActionGroup::create()),
+	action_group_copy_paste(Gtk::ActionGroup::create("action_group_copy_paste")),
 	queued(false)
 {
 	action_cut_=Gtk::Action::create(
@@ -189,7 +189,7 @@ LayerActionManager::clear()
 #ifdef ONE_ACTION_GROUP
 #else
 			if(action_group_)get_ui_manager()->remove_action_group(action_group_);
-			action_group_=Gtk::ActionGroup::create();
+			action_group_=Gtk::ActionGroup::create("action_group_layer_action_manager");
 #endif
 		}
 	}

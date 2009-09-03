@@ -66,7 +66,7 @@ using namespace studio;
 
 Dock_LayerGroups::Dock_LayerGroups():
 	Dock_CanvasSpecific("groups",_("Groups"),Gtk::StockID("synfig-group")),
-	action_group_group_ops(Gtk::ActionGroup::create()),
+	action_group_group_ops(Gtk::ActionGroup::create("action_group_dock_layergroups")),
 	group_action_manager(new GroupActionManager)
 {
 	group_action_manager->set_ui_manager(App::ui_manager());

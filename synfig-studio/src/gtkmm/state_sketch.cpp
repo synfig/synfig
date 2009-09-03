@@ -230,7 +230,7 @@ StateSketch_Context::toggle_show_sketch()
 }
 
 StateSketch_Context::StateSketch_Context(CanvasView* canvas_view):
-	action_group(Gtk::ActionGroup::create()),
+	action_group(Gtk::ActionGroup::create("action_group_state_sketch")),
 	canvas_view_(canvas_view),
 	is_working(*canvas_view),
 	prev_workarea_layer_status_(get_work_area()->get_allow_layer_clicks()),

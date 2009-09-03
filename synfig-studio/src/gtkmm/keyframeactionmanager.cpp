@@ -59,7 +59,7 @@ static const guint no_prev_popup((guint)-1);
 /* === M E T H O D S ======================================================= */
 
 KeyframeActionManager::KeyframeActionManager():
-	action_group_(Gtk::ActionGroup::create()),
+	action_group_(Gtk::ActionGroup::create("action_group_keyframe_action_manager")),
 	popup_id_(no_prev_popup),
 	queued(false)
 {
@@ -123,7 +123,7 @@ KeyframeActionManager::clear()
 			while(!action_group_->get_actions().empty())action_group_->remove(*action_group_->get_actions().begin());
 #else
 			get_ui_manager()->remove_action_group(action_group_);
-			action_group_=Gtk::ActionGroup::create();
+			action_group_=Gtk::ActionGroup::create("action_group_keyframe_action_manager");
 #endif
 		}
 	}

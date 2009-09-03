@@ -64,7 +64,7 @@ using namespace studio;
 
 Dock_Keyframes::Dock_Keyframes():
 	Dock_CanvasSpecific("keyframes",_("Keyframes"),Gtk::StockID("synfig-keyframes")),
-	action_group(Gtk::ActionGroup::create()),
+	action_group(Gtk::ActionGroup::create("action_group_dock_keyframes")),
 	keyframe_action_manager(new KeyframeActionManager)
 {
 	keyframe_action_manager->set_ui_manager(App::ui_manager());

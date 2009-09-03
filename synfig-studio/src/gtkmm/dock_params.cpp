@@ -63,7 +63,7 @@ using namespace studio;
 
 Dock_Params::Dock_Params():
 	Dock_CanvasSpecific("params",_("Params"),Gtk::Stock::INDEX/*Gtk::StockID("synfig-params")*/),
-	action_group(Gtk::ActionGroup::create())
+	action_group(Gtk::ActionGroup::create("action_group_dock_params"))
 {
 /*
 	App::ui_manager()->insert_action_group(action_group_layer_ops);

@@ -57,7 +57,7 @@ using namespace studio;
 /* === M E T H O D S ======================================================= */
 
 StateManager::StateManager():
-	state_group(Gtk::ActionGroup::create()),
+	state_group(Gtk::ActionGroup::create("action_group_state_manager")),
 	merge_id(App::ui_manager()->new_merge_id())
 {
 	App::ui_manager()->insert_action_group(get_action_group());
