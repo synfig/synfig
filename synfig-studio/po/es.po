@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: es\n"
 "Report-Msgid-Bugs-To: http://synfig.org/Bugs\n"
-"POT-Creation-Date: 2009-09-03 16:39+0200\n"
-"PO-Revision-Date: 2009-09-03 17:04+0200\n"
+"POT-Creation-Date: 2009-09-04 19:55+0200\n"
+"PO-Revision-Date: 2009-09-04 19:59+0200\n"
 "Last-Translator: Carlos López González <carloslopezgonzalez@yahoo.es>\n"
 "Language-Team: Español <es@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -290,7 +290,7 @@ msgstr "Usar Nivel de Calidad 10"
 msgid "Set Low-Res pixel size to %d"
 msgstr "Establecer el tamaño de pixel de Baja Resolución a %d"
 
-#: src/gtkmm/app.cpp:814 src/gtkmm/preview.cpp:358
+#: src/gtkmm/app.cpp:814 src/gtkmm/framedial.cpp:63 src/gtkmm/preview.cpp:358
 msgid "Play"
 msgstr "Reproducir"
 
@@ -336,7 +336,7 @@ msgid "Jump to Prev Keyframe"
 msgstr "Saltar al Fotograma Clave Previo"
 
 #: src/gtkmm/app.cpp:832 src/gtkmm/canvasview.cpp:1622
-#: src/gtkmm/iconcontroller.cpp:195
+#: src/gtkmm/framedial.cpp:65 src/gtkmm/iconcontroller.cpp:195
 msgid "Next Frame"
 msgstr "Fotograma Siguiente"
 
@@ -353,12 +353,12 @@ msgid "Seek Backward"
 msgstr "Retroceder"
 
 #: src/gtkmm/app.cpp:836 src/gtkmm/canvasview.cpp:1635
-#: src/gtkmm/iconcontroller.cpp:193
+#: src/gtkmm/framedial.cpp:59 src/gtkmm/iconcontroller.cpp:193
 msgid "Seek to Begin"
 msgstr "Retroceder al Principio"
 
 #: src/gtkmm/app.cpp:837 src/gtkmm/canvasview.cpp:1632
-#: src/gtkmm/iconcontroller.cpp:196
+#: src/gtkmm/framedial.cpp:67 src/gtkmm/iconcontroller.cpp:196
 msgid "Seek to End"
 msgstr "Avanzar al Final"
 
@@ -943,6 +943,7 @@ msgid "Not in Animate Editing Mode"
 msgstr "No en Modo de Edición de Animación"
 
 #: src/gtkmm/canvasview.cpp:2798 src/gtkmm/iconcontroller.cpp:185
+#: src/gtkmm/keyframedial.cpp:59
 msgid "All Keyframes Locked"
 msgstr "Todos los Fotogramas Clave Bloqueados"
 
@@ -1572,6 +1573,10 @@ msgstr "Nombre"
 msgid "Timetrack"
 msgstr "Línea de Tiempo"
 
+#: src/gtkmm/framedial.cpp:61 src/gtkmm/iconcontroller.cpp:194
+msgid "Previous Frame"
+msgstr "Fotograma Previo"
+
 #: src/gtkmm/groupactionmanager.cpp:269
 msgid "UnnamedGroup"
 msgstr "Grupo Sin Nombre"
@@ -1681,31 +1686,27 @@ msgstr "Seleccionar Todas las Capas Decendientes"
 msgid "MetaData"
 msgstr "Meta Dato"
 
-#: src/gtkmm/iconcontroller.cpp:194
-msgid "Previous Frame"
-msgstr "Fotograma Previo"
-
-#: src/gtkmm/iconcontroller.cpp:198
+#: src/gtkmm/iconcontroller.cpp:198 src/gtkmm/toggleducksdial.cpp:55
 msgid "Toggle position ducks"
 msgstr "Alternar los Nodos de Posición"
 
-#: src/gtkmm/iconcontroller.cpp:199
+#: src/gtkmm/iconcontroller.cpp:199 src/gtkmm/toggleducksdial.cpp:56
 msgid "Toggle vertex ducks"
 msgstr "Alternar los Nodos de Vértice"
 
-#: src/gtkmm/iconcontroller.cpp:200
+#: src/gtkmm/iconcontroller.cpp:200 src/gtkmm/toggleducksdial.cpp:57
 msgid "Toggle tangent ducks"
 msgstr "Alternar los Nodos de Tangente"
 
-#: src/gtkmm/iconcontroller.cpp:201
+#: src/gtkmm/iconcontroller.cpp:201 src/gtkmm/toggleducksdial.cpp:58
 msgid "Toggle radius ducks"
 msgstr "Alternar los Nodos de Radio"
 
-#: src/gtkmm/iconcontroller.cpp:202
+#: src/gtkmm/iconcontroller.cpp:202 src/gtkmm/toggleducksdial.cpp:59
 msgid "Toggle width ducks"
 msgstr "Alternar los Nodos de Espesor"
 
-#: src/gtkmm/iconcontroller.cpp:203
+#: src/gtkmm/iconcontroller.cpp:203 src/gtkmm/toggleducksdial.cpp:60
 msgid "Toggle angle ducks"
 msgstr "Alterar los Nodos de Ángulo"
 
@@ -2044,6 +2045,14 @@ msgstr "Animación Synfig "
 msgid "Add New Keyframe"
 msgstr "Añadir un nuevo Fotograma Clave"
 
+#: src/gtkmm/keyframedial.cpp:57
+msgid "Previous KeyFrame"
+msgstr "Fotograma Clave Previo"
+
+#: src/gtkmm/keyframedial.cpp:58
+msgid "Next KeyFrame"
+msgstr "Fotograma Clave Siguiente"
+
 #: src/gtkmm/keyframetree.cpp:77
 msgid "Length"
 msgstr "Longitud"
@@ -2372,6 +2381,22 @@ msgstr "Mostrando "
 #: src/gtkmm/render.cpp:346
 msgid "File rendered successfully"
 msgstr "Archivo mostrado existosamente"
+
+#: src/gtkmm/resolutiondial.cpp:56
+msgid "Increase Display Resolution"
+msgstr "Incrementar la Resolución"
+
+#: src/gtkmm/resolutiondial.cpp:57
+msgid "Decrease Display Resolution"
+msgstr "Disminuir la Resolución"
+
+#: src/gtkmm/resolutiondial.cpp:58
+msgid "Low Res"
+msgstr "Baja Res."
+
+#: src/gtkmm/resolutiondial.cpp:58
+msgid "Use Low Resolution when enabled"
+msgstr "Muestra Baja Resolución si se habilita"
 
 #: src/gtkmm/splash.cpp:113
 msgid "ERROR:"
@@ -3192,6 +3217,18 @@ msgstr "Insertar CPunto"
 #: src/gtkmm/widget_gradient.cpp:235
 msgid "Remove CPoint"
 msgstr "Quitar CPunto"
+
+#: src/gtkmm/widget_keyframe_list.cpp:199
+msgid "Not possible to ALT-drag the first keyframe"
+msgstr "No es posible ALT-arrastrar el primer fotograma clave"
+
+#: src/gtkmm/widget_keyframe_list.cpp:226
+msgid "Delta set not allowed"
+msgstr "Establecer Delta no permitodo"
+
+#: src/gtkmm/widget_keyframe_list.cpp:297
+msgid "Click and drag keyframes"
+msgstr "Click y Arrastrar fotogramas claves"
 
 #: src/gtkmm/widget_waypoint.cpp:77
 msgid "(Non-static value)"
