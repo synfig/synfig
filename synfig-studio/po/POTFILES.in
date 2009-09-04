@@ -95,6 +95,8 @@ src/gtkmm/ducktransform_translate.h
 src/gtkmm/eventkey.h
 src/gtkmm/event_layerclick.h
 src/gtkmm/event_mouse.h
+src/gtkmm/framedial.cpp
+src/gtkmm/framedial.h
 src/gtkmm/groupactionmanager.cpp
 src/gtkmm/groupactionmanager.h
 src/gtkmm/historytreestore.cpp
@@ -107,6 +109,8 @@ src/gtkmm/ipc.cpp
 src/gtkmm/ipc.h
 src/gtkmm/keyframeactionmanager.cpp
 src/gtkmm/keyframeactionmanager.h
+src/gtkmm/keyframedial.cpp
+src/gtkmm/keyframedial.h
 src/gtkmm/keyframetree.cpp
 src/gtkmm/keyframetree.h
 src/gtkmm/keyframetreestore.cpp
@@ -162,6 +166,8 @@ src/gtkmm/renderer_guides.h
 src/gtkmm/renderer_timecode.cpp
 src/gtkmm/renderer_timecode.h
 src/gtkmm/render.h
+src/gtkmm/resolutiondial.cpp
+src/gtkmm/resolutiondial.h
 src/gtkmm/smach.h
 src/gtkmm/splash.cpp
 src/gtkmm/splash.h
@@ -205,6 +211,8 @@ src/gtkmm/state_zoom.cpp
 src/gtkmm/state_zoom.h
 src/gtkmm/toolbox.cpp
 src/gtkmm/toolbox.h
+src/gtkmm/toggleducksdial.cpp
+src/gtkmm/toggleducksdial.h
 src/gtkmm/valuelink.cpp
 src/gtkmm/valuelink.h
 src/gtkmm/widget_canvaschooser.cpp
@@ -227,6 +235,8 @@ src/gtkmm/widget_filename.cpp
 src/gtkmm/widget_filename.h
 src/gtkmm/widget_gradient.cpp
 src/gtkmm/widget_gradient.h
+src/gtkmm/widget_keyframe_list.cpp
+src/gtkmm/widget_keyframe_list.h
 src/gtkmm/widget_sound.cpp
 src/gtkmm/widget_sound.h
 src/gtkmm/widget_time.cpp
