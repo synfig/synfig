@@ -224,8 +224,8 @@ Widget_Keyframe_List::perform_move_kf(bool delta=false)
 			if (prev_kf_time >= dragging_kf_time) //Not allowed
 			{
 				synfig::warning(_("Delta set not allowed"));
-				synfig::info(_("Widget_Keyframe_List::perform_move_kf(%i)::prev_kf_time=%s"), delta, prev_kf_time.get_string().c_str());
-				synfig::info(_("Widget_Keyframe_List::perform_move_kf(%i)::dragging_kf_time=%s"), delta, dragging_kf_time.get_string().c_str());
+				synfig::info("Widget_Keyframe_List::perform_move_kf(%i)::prev_kf_time=%s", delta, prev_kf_time.get_string().c_str());
+				synfig::info("Widget_Keyframe_List::perform_move_kf(%i)::dragging_kf_time=%s", delta, dragging_kf_time.get_string().c_str());
 				return false;
 			}
 			else
