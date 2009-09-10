@@ -51,7 +51,7 @@ using namespace synfig;
 SYNFIG_LAYER_INIT(svg_layer);
 SYNFIG_LAYER_SET_NAME(svg_layer,"svg_layer");
 SYNFIG_LAYER_SET_LOCAL_NAME(svg_layer,N_("Import Svg"));
-SYNFIG_LAYER_SET_CATEGORY(svg_layer,N_("NotVisible"));//this is auxiliar
+SYNFIG_LAYER_SET_CATEGORY(svg_layer,N_("Do Not Use"));//Hide this layer in the menu
 SYNFIG_LAYER_SET_VERSION(svg_layer,"0.1");
 SYNFIG_LAYER_SET_CVS_ID(svg_layer,"$Id: layer_svg.cpp 2240 2008-11-22 15:35:33Z dooglus $");
 
