@@ -1425,7 +1425,7 @@ CanvasView::init_menus()
 	- canvasmenu
 	- viewmenu
 	*/
-	action_group = Gtk::ActionGroup::create("mainmenu");
+	action_group = Gtk::ActionGroup::create("canvasview");
 
 	//action_group->add( Gtk::Action::create("MenuFile", _("_File")) );
 	action_group->add( Gtk::Action::create("new", Gtk::Stock::NEW),
