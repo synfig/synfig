@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Synfig Studio\n"
 "Report-Msgid-Bugs-To: http://synfig.org/Bugs\n"
-"POT-Creation-Date: 2008-11-25 23:51+0100\n"
-"PO-Revision-Date: 2008-11-22 04:25+0300\n"
+"POT-Creation-Date: 2009-09-13 03:33+0400\n"
+"PO-Revision-Date: 2009-09-13 05:23+0300\n"
 "Last-Translator: Alexandre Prokoudine <alexandre.prokoudine@gmail.com>\n"
 "Language-Team: GNOME Cyrillic <gnome-cyr@lists.gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -12,15 +12,15 @@ msgstr ""
 "X-Poedit-Language: Russian\n"
 "X-Poedit-Country: RUSSIAN FEDERATION\n"
 
-#: src/gtkmm/about.cpp:104
+#: ../src/gtkmm/about.cpp:104
 msgid "2D vector animation studio"
 msgstr "Студия двухмерной векторной анимации"
 
-#: src/gtkmm/about.cpp:108
+#: ../src/gtkmm/about.cpp:108
 msgid "Visit the Synfig website"
 msgstr "Посетите сайт Synfig"
 
-#: src/gtkmm/about.cpp:110
+#: ../src/gtkmm/about.cpp:110
 msgid ""
 "Copyright 2001-2008\n"
 "Robert B. Quattlebaum Jr.,\n"
@@ -31,11 +31,11 @@ msgstr ""
 "Adrian Bentley и участники проекта Synfig"
 
 #. TRANSLATORS: change this to your name, separate multiple names with \n
-#: src/gtkmm/about.cpp:170
+#: ../src/gtkmm/about.cpp:170
 msgid "translator-credits"
 msgstr "Александр Прокудин <alexandre.prokoudine@gmail.com>"
 
-#: src/gtkmm/about.cpp:197
+#: ../src/gtkmm/about.cpp:197
 #, c-format
 msgid ""
 "\n"
@@ -46,1652 +46,1929 @@ msgstr ""
 "Нестабильная версия:\n"
 "%s\n"
 
-#: src/gtkmm/about.cpp:202
+#: ../src/gtkmm/about.cpp:202
 #, c-format
 msgid "Built on %s\n"
 msgstr "Собрана %s\n"
 
-#: src/gtkmm/about.cpp:206
+#: ../src/gtkmm/about.cpp:206
 msgid "Built with:\n"
 msgstr "При помощи:\n"
 
-#: src/gtkmm/about.cpp:207
+#: ../src/gtkmm/about.cpp:207
 #, c-format
 msgid "ETL %s\n"
 msgstr "ETL %s\n"
 
-#: src/gtkmm/about.cpp:208
+#: ../src/gtkmm/about.cpp:208
 #, c-format
 msgid "Synfig API %s\n"
 msgstr "Synfig API %s\n"
 
-#: src/gtkmm/about.cpp:209
+#: ../src/gtkmm/about.cpp:209
 #, c-format
 msgid "Synfig library %d\n"
 msgstr "Библиотека Synfig %d\n"
 
-#: src/gtkmm/about.cpp:210
+#: ../src/gtkmm/about.cpp:210
 #, c-format
 msgid "GTK+ %d.%d.%d\n"
 msgstr "GTK+ %d.%d.%d\n"
 
-#: src/gtkmm/about.cpp:212
+#: ../src/gtkmm/about.cpp:212
 #, c-format
 msgid "GNU G++ %d.%d.%d\n"
 msgstr "GNU G++ %d.%d.%d\n"
 
-#: src/gtkmm/about.cpp:217
+#: ../src/gtkmm/about.cpp:217
 msgid "Using:\n"
 msgstr "Использование:\n"
 
-#: src/gtkmm/about.cpp:218
+#: ../src/gtkmm/about.cpp:218
 #, c-format
 msgid "Synfig %s\n"
 msgstr "Synfig %s\n"
 
-#: src/gtkmm/about.cpp:219
+#: ../src/gtkmm/about.cpp:219
 #, c-format
 msgid "GTK+ %d.%d.%d"
 msgstr "GTK+ %d.%d.%d"
 
-#: src/gtkmm/app.cpp:679 src/gtkmm/toolbox.cpp:282
+#: ../src/gtkmm/app.cpp:733
+#: ../src/gtkmm/toolbox.cpp:282
 msgid "_File"
 msgstr "_Файл"
 
-#: src/gtkmm/app.cpp:680 src/gtkmm/canvasview.cpp:3343
+#: ../src/gtkmm/app.cpp:734
+#: ../src/gtkmm/canvasview.cpp:3740
 msgid "_Edit"
 msgstr "_Правка"
 
-#: src/gtkmm/app.cpp:681
+#: ../src/gtkmm/app.cpp:735
 msgid "_View"
 msgstr "_Вид"
 
-#: src/gtkmm/app.cpp:682
+#: ../src/gtkmm/app.cpp:736
 msgid "_Canvas"
 msgstr "_Холст"
 
-#: src/gtkmm/app.cpp:683
+#: ../src/gtkmm/app.cpp:737
 msgid "_Layer"
 msgstr "Сло_й"
 
-#: src/gtkmm/app.cpp:684
+#: ../src/gtkmm/app.cpp:738
 msgid "Show/Hide Ducks"
-msgstr ""
+msgstr "Показать/скрыть ручки"
 
-#: src/gtkmm/app.cpp:685
+#: ../src/gtkmm/app.cpp:739
 msgid "Preview Quality"
 msgstr "Качество предпросмотра"
 
-#: src/gtkmm/app.cpp:686
+#: ../src/gtkmm/app.cpp:740
 msgid "Low-Res Pixel Size"
-msgstr ""
+msgstr "Размер пикселов при низком разрешении"
 
-#: src/gtkmm/app.cpp:687 src/gtkmm/canvasview.cpp:2277
-#: src/synfigapp/actions/layeradd.cpp:82
+#: ../src/gtkmm/app.cpp:741
+#: ../src/gtkmm/canvasview.cpp:2529
+#: ../src/synfigapp/actions/layeradd.cpp:82
 msgid "New Layer"
 msgstr "Создать слой"
 
-#: src/gtkmm/app.cpp:688 src/synfigapp/actions/keyframeduplicate.cpp:79
-#: src/synfigapp/actions/keyframeremove.cpp:78
-#: src/synfigapp/actions/keyframesetdelta.cpp:79
-#: src/synfigapp/actions/keyframewaypointset.cpp:78
+#: ../src/gtkmm/app.cpp:742
+#: ../src/synfigapp/actions/keyframeduplicate.cpp:79
+#: ../src/synfigapp/actions/keyframeremove.cpp:78
+#: ../src/synfigapp/actions/keyframesetdelta.cpp:79
+#: ../src/synfigapp/actions/keyframewaypointset.cpp:78
 msgid "Keyframe"
 msgstr "Ключевой кадр"
 
-#: src/gtkmm/app.cpp:689 src/gtkmm/iconcontroller.cpp:164
-#: src/synfigapp/actions/groupaddlayers.cpp:78
-#: src/synfigapp/actions/groupremove.cpp:72
+#: ../src/gtkmm/app.cpp:743
+#: ../src/gtkmm/iconcontroller.cpp:166
+#: ../src/synfigapp/actions/groupaddlayers.cpp:78
+#: ../src/synfigapp/actions/groupremove.cpp:72
 msgid "Group"
 msgstr "Группа"
 
-#: src/gtkmm/app.cpp:690
-msgid "State"
+#: ../src/gtkmm/app.cpp:744
+msgid "Tool"
 msgstr "Инструменты"
 
-#: src/gtkmm/app.cpp:691
+#: ../src/gtkmm/app.cpp:745
 msgid "Toolbox"
 msgstr "Панель инструментов"
 
-#: src/gtkmm/app.cpp:708 src/gtkmm/keyframeactionmanager.cpp:239
+#: ../src/gtkmm/app.cpp:762
+#: ../src/gtkmm/keyframeactionmanager.cpp:239
 msgid "Keyframe Properties"
 msgstr "Свойства ключевого кадра"
 
-#: src/gtkmm/app.cpp:719 src/gtkmm/canvasview.cpp:1206
+#: ../src/gtkmm/app.cpp:773
+#: ../src/gtkmm/canvasview.cpp:1458
 msgid "Import"
 msgstr "Импортировать"
 
-#: src/gtkmm/app.cpp:720 src/gtkmm/canvasview.cpp:1209
+#: ../src/gtkmm/app.cpp:774
+#: ../src/gtkmm/canvasview.cpp:1461
 msgid "Render"
-msgstr "Рендеринг"
+msgstr "Отрисовка"
 
-#: src/gtkmm/app.cpp:721 src/gtkmm/canvasview.cpp:1212
-#: src/gtkmm/dialog_preview.cpp:171
+#: ../src/gtkmm/app.cpp:775
+#: ../src/gtkmm/canvasview.cpp:1464
+#: ../src/gtkmm/dialog_preview.cpp:171
 msgid "Preview"
 msgstr "Предпросмотр"
 
-#: src/gtkmm/app.cpp:722
+#: ../src/gtkmm/app.cpp:776
 msgid "Preview Dialog"
-msgstr ""
+msgstr "Диалог предпросмотра"
 
-#: src/gtkmm/app.cpp:723 src/gtkmm/canvasview.cpp:1215
+#: ../src/gtkmm/app.cpp:777
+#: ../src/gtkmm/canvasview.cpp:1467
 msgid "Sound File"
 msgstr "Звуковой файл"
 
-#: src/gtkmm/app.cpp:724 src/gtkmm/canvasoptions.cpp:151
-#: src/gtkmm/canvasview.cpp:1218
+#: ../src/gtkmm/app.cpp:778
+#: ../src/gtkmm/canvasoptions.cpp:151
+#: ../src/gtkmm/canvasview.cpp:1470
 msgid "Options"
 msgstr "Параметры"
 
-#: src/gtkmm/app.cpp:725
+#: ../src/gtkmm/app.cpp:779
 msgid "Close View"
 msgstr ""
 
-#: src/gtkmm/app.cpp:726 src/gtkmm/canvasview.cpp:1224
+#: ../src/gtkmm/app.cpp:780
+#: ../src/gtkmm/canvasview.cpp:1476
 msgid "Close Document"
 msgstr "Закрыть документ"
 
-#: src/gtkmm/app.cpp:735 src/gtkmm/canvasview.cpp:1239
+#: ../src/gtkmm/app.cpp:789
+#: ../src/gtkmm/canvasview.cpp:1491
 msgid "Select All Ducks"
-msgstr ""
+msgstr "Выбрать все ручки"
 
-#: src/gtkmm/app.cpp:736 src/gtkmm/canvasview.cpp:1243
+#: ../src/gtkmm/app.cpp:790
+#: ../src/gtkmm/canvasview.cpp:1495
 msgid "Unselect All Ducks"
-msgstr ""
+msgstr "Снять выделение с ручек"
 
-#: src/gtkmm/app.cpp:737 src/gtkmm/canvasview.cpp:1247
+#: ../src/gtkmm/app.cpp:791
+#: ../src/gtkmm/canvasview.cpp:1499
 msgid "Select All Layers"
 msgstr "Выбрать все слои"
 
-#: src/gtkmm/app.cpp:738 src/gtkmm/canvasview.cpp:1251
+#: ../src/gtkmm/app.cpp:792
+#: ../src/gtkmm/canvasview.cpp:1503
 msgid "Unselect All Layers"
 msgstr "Снять выделение со всех слоёв"
 
-#: src/gtkmm/app.cpp:739 src/gtkmm/canvasproperties.cpp:197
+#: ../src/gtkmm/app.cpp:793
+#: ../src/gtkmm/canvasproperties.cpp:197
 msgid "Properties"
 msgstr "Свойства"
 
-#: src/gtkmm/app.cpp:741 src/gtkmm/canvasview.cpp:1417
+#: ../src/gtkmm/app.cpp:795
+#: ../src/gtkmm/canvasview.cpp:1669
 msgid "Show Position Ducks"
-msgstr ""
+msgstr "Показывать ручки положения"
 
-#: src/gtkmm/app.cpp:742 src/gtkmm/canvasview.cpp:1419
+#: ../src/gtkmm/app.cpp:796
+#: ../src/gtkmm/canvasview.cpp:1671
 msgid "Show Vertex Ducks"
-msgstr ""
+msgstr "Показывать ручки вершин"
 
-#: src/gtkmm/app.cpp:743 src/gtkmm/canvasview.cpp:1418
+#: ../src/gtkmm/app.cpp:797
+#: ../src/gtkmm/canvasview.cpp:1670
 msgid "Show Tangent Ducks"
-msgstr ""
+msgstr "Показывать ручки касательных"
 
-#: src/gtkmm/app.cpp:744 src/gtkmm/canvasview.cpp:1420
+#: ../src/gtkmm/app.cpp:798
+#: ../src/gtkmm/canvasview.cpp:1672
 msgid "Show Radius Ducks"
-msgstr ""
+msgstr "Показывать ручки радиусов"
 
-#: src/gtkmm/app.cpp:745 src/gtkmm/canvasview.cpp:1421
+#: ../src/gtkmm/app.cpp:799
+#: ../src/gtkmm/canvasview.cpp:1673
 msgid "Show Width Ducks"
-msgstr ""
+msgstr "Показывать ручки толщины"
 
-#: src/gtkmm/app.cpp:746 src/gtkmm/canvasview.cpp:1422
+#: ../src/gtkmm/app.cpp:800
+#: ../src/gtkmm/canvasview.cpp:1674
 msgid "Show Angle Ducks"
-msgstr ""
+msgstr "Показывать ручки углов"
 
-#: src/gtkmm/app.cpp:747 src/gtkmm/canvasview.cpp:1270
+#: ../src/gtkmm/app.cpp:801
+#: ../src/gtkmm/canvasview.cpp:1522
 msgid "Use Parametric Renderer"
-msgstr ""
+msgstr "Параметрический отрисовщик"
 
-#: src/gtkmm/app.cpp:748
+#: ../src/gtkmm/app.cpp:802
 msgid "Use Quality Level 1"
 msgstr "Использовать уровень качества 1"
 
-#: src/gtkmm/app.cpp:749
+#: ../src/gtkmm/app.cpp:803
 msgid "Use Quality Level 2"
 msgstr "Использовать уровень качества 2"
 
-#: src/gtkmm/app.cpp:750
+#: ../src/gtkmm/app.cpp:804
 msgid "Use Quality Level 3"
 msgstr "Использовать уровень качества 3"
 
-#: src/gtkmm/app.cpp:751
+#: ../src/gtkmm/app.cpp:805
 msgid "Use Quality Level 4"
 msgstr "Использовать уровень качества 4"
 
-#: src/gtkmm/app.cpp:752
+#: ../src/gtkmm/app.cpp:806
 msgid "Use Quality Level 5"
 msgstr "Использовать уровень качества 5"
 
-#: src/gtkmm/app.cpp:753
+#: ../src/gtkmm/app.cpp:807
 msgid "Use Quality Level 6"
 msgstr "Использовать уровень качества 6"
 
-#: src/gtkmm/app.cpp:754
+#: ../src/gtkmm/app.cpp:808
 msgid "Use Quality Level 7"
 msgstr "Использовать уровень качества 7"
 
-#: src/gtkmm/app.cpp:755
+#: ../src/gtkmm/app.cpp:809
 msgid "Use Quality Level 8"
 msgstr "Использовать уровень качества 8"
 
-#: src/gtkmm/app.cpp:756
+#: ../src/gtkmm/app.cpp:810
 msgid "Use Quality Level 9"
 msgstr "Использовать уровень качества 9"
 
-#: src/gtkmm/app.cpp:757
+#: ../src/gtkmm/app.cpp:811
 msgid "Use Quality Level 10"
 msgstr "Использовать уровень качества 10"
 
-#: src/gtkmm/app.cpp:759 src/gtkmm/canvasview.cpp:1304
+#: ../src/gtkmm/app.cpp:813
+#: ../src/gtkmm/canvasview.cpp:1556
 #, c-format
 msgid "Set Low-Res pixel size to %d"
-msgstr ""
+msgstr "Сделать размер равным %dpx"
 
-#: src/gtkmm/app.cpp:760 src/gtkmm/preview.cpp:358
+#: ../src/gtkmm/app.cpp:814
+#: ../src/gtkmm/framedial.cpp:63
+#: ../src/gtkmm/preview.cpp:358
 msgid "Play"
-msgstr ""
+msgstr "Воспроизведение"
 
-#: src/gtkmm/app.cpp:762 src/gtkmm/canvasview.cpp:994
-#: src/gtkmm/preview.cpp:364
+#: ../src/gtkmm/app.cpp:816
+#: ../src/gtkmm/canvasview.cpp:1092
+#: ../src/gtkmm/preview.cpp:364
 msgid "Stop"
 msgstr "Остановить"
 
-#: src/gtkmm/app.cpp:763
+#: ../src/gtkmm/app.cpp:817
 msgid "Toggle Grid Show"
-msgstr ""
+msgstr "Переключить отображение сетки"
 
-#: src/gtkmm/app.cpp:764
+#: ../src/gtkmm/app.cpp:818
 msgid "Toggle Grid Snap"
-msgstr ""
+msgstr "Переключить прилипание к сетке"
 
-#: src/gtkmm/app.cpp:765
+#: ../src/gtkmm/app.cpp:819
 msgid "Toggle Guide Show"
-msgstr ""
+msgstr "Переключить отображение направляющих"
 
-#: src/gtkmm/app.cpp:766
+#: ../src/gtkmm/app.cpp:820
 msgid "Toggle Low-Res"
-msgstr ""
+msgstr "Переключить низкое разрешение"
 
-#: src/gtkmm/app.cpp:767 src/gtkmm/canvasview.cpp:1320
+#: ../src/gtkmm/app.cpp:821
+#: ../src/gtkmm/canvasview.cpp:1572
 msgid "Decrease Low-Res Pixel Size"
-msgstr ""
+msgstr "Уменьшить размер пикселов"
 
-#: src/gtkmm/app.cpp:768 src/gtkmm/canvasview.cpp:1323
+#: ../src/gtkmm/app.cpp:822
+#: ../src/gtkmm/canvasview.cpp:1575
 msgid "Increase Low-Res Pixel Size"
-msgstr ""
+msgstr "Увеличить размер пикселов"
 
-#: src/gtkmm/app.cpp:769
+#: ../src/gtkmm/app.cpp:823
 msgid "Toggle Onion Skin"
-msgstr ""
+msgstr "Переключить кальку"
 
-#: src/gtkmm/app.cpp:776 src/gtkmm/canvasview.cpp:1386
+#: ../src/gtkmm/app.cpp:830
+#: ../src/gtkmm/canvasview.cpp:1638
 msgid "Jump to Next Keyframe"
 msgstr "Перейти к следующему ключевому кадру"
 
-#: src/gtkmm/app.cpp:777 src/gtkmm/canvasview.cpp:1389
+#: ../src/gtkmm/app.cpp:831
+#: ../src/gtkmm/canvasview.cpp:1641
 msgid "Jump to Prev Keyframe"
 msgstr "Перейти к предыдущему ключевому кадру"
 
-#: src/gtkmm/app.cpp:778 src/gtkmm/canvasview.cpp:1370
+#: ../src/gtkmm/app.cpp:832
+#: ../src/gtkmm/canvasview.cpp:1622
+#: ../src/gtkmm/framedial.cpp:65
+#: ../src/gtkmm/iconcontroller.cpp:195
 msgid "Next Frame"
 msgstr "Следующий кадр"
 
-#: src/gtkmm/app.cpp:779 src/gtkmm/canvasview.cpp:1372
+#: ../src/gtkmm/app.cpp:833
+#: ../src/gtkmm/canvasview.cpp:1624
 msgid "Prev Frame"
 msgstr "Предыдущий кадр"
 
-#: src/gtkmm/app.cpp:780 src/gtkmm/canvasview.cpp:1375
+#: ../src/gtkmm/app.cpp:834
+#: ../src/gtkmm/canvasview.cpp:1627
 msgid "Seek Forward"
 msgstr "Перемотать вперед"
 
-#: src/gtkmm/app.cpp:781 src/gtkmm/canvasview.cpp:1377
+#: ../src/gtkmm/app.cpp:835
+#: ../src/gtkmm/canvasview.cpp:1629
 msgid "Seek Backward"
 msgstr "Перемотать назад"
 
-#: src/gtkmm/app.cpp:782 src/gtkmm/canvasview.cpp:1383
+#: ../src/gtkmm/app.cpp:836
+#: ../src/gtkmm/canvasview.cpp:1635
+#: ../src/gtkmm/framedial.cpp:59
+#: ../src/gtkmm/iconcontroller.cpp:193
 msgid "Seek to Begin"
 msgstr "Перемотать к началу"
 
-#: src/gtkmm/app.cpp:783 src/gtkmm/canvasview.cpp:1380
+#: ../src/gtkmm/app.cpp:837
+#: ../src/gtkmm/canvasview.cpp:1632
+#: ../src/gtkmm/framedial.cpp:67
+#: ../src/gtkmm/iconcontroller.cpp:196
 msgid "Seek to End"
 msgstr "Перемотать к концу"
 
-#: src/gtkmm/app.cpp:785
+#: ../src/gtkmm/app.cpp:839
 msgid "Add group"
 msgstr "Добавить группу"
 
-#: src/gtkmm/app.cpp:787 src/gtkmm/iconcontroller.cpp:159
-#: src/synfigapp/actions/canvasadd.cpp:73
+#: ../src/gtkmm/app.cpp:841
+#: ../src/gtkmm/iconcontroller.cpp:161
+#: ../src/synfigapp/actions/canvasadd.cpp:73
 msgid "New Canvas"
-msgstr ""
+msgstr "Новый холст"
 
-#: src/gtkmm/app.cpp:789 src/gtkmm/layeractionmanager.cpp:105
-#: src/gtkmm/layeractionmanager.cpp:498
+#: ../src/gtkmm/app.cpp:843
+#: ../src/gtkmm/layeractionmanager.cpp:105
+#: ../src/gtkmm/layeractionmanager.cpp:498
 msgid "Increase Amount"
-msgstr ""
+msgstr "Увеличить значение"
 
-#: src/gtkmm/app.cpp:790 src/gtkmm/layeractionmanager.cpp:117
-#: src/gtkmm/layeractionmanager.cpp:515
+#: ../src/gtkmm/app.cpp:844
+#: ../src/gtkmm/layeractionmanager.cpp:117
+#: ../src/gtkmm/layeractionmanager.cpp:515
 msgid "Decrease Amount"
-msgstr ""
+msgstr "Уменьшить значение"
 
-#: src/gtkmm/app.cpp:1148 src/gtkmm/toolbox.cpp:360
+#: ../src/gtkmm/app.cpp:1188
+#: ../src/gtkmm/toolbox.cpp:360
 msgid "Synfig Studio"
 msgstr "Synfig Studio"
 
-#: src/gtkmm/app.cpp:1161 src/gtkmm/app.cpp:1166
+#: ../src/gtkmm/app.cpp:1201
+#: ../src/gtkmm/app.cpp:1206
 msgid "Failed to initialize synfig!"
-msgstr ""
+msgstr "Не удалось инициализировать Synfig!"
 
-#: src/gtkmm/app.cpp:1175
+#: ../src/gtkmm/app.cpp:1215
 msgid "Init UI Manager..."
 msgstr "Диспетчер интерфейса..."
 
-#: src/gtkmm/app.cpp:1179
+#: ../src/gtkmm/app.cpp:1219
 msgid "Init Dock Manager..."
 msgstr "Диспетчер панелей..."
 
-#: src/gtkmm/app.cpp:1182
+#: ../src/gtkmm/app.cpp:1222
 msgid "Init State Manager..."
 msgstr "Диспетчер состояния..."
 
-#: src/gtkmm/app.cpp:1185
+#: ../src/gtkmm/app.cpp:1225
 msgid "Init Toolbox..."
 msgstr "Панель инструментов..."
 
-#: src/gtkmm/app.cpp:1188
+#: ../src/gtkmm/app.cpp:1228
 msgid "Init About Dialog..."
 msgstr "Справочный диалог..."
 
-#: src/gtkmm/app.cpp:1191
+#: ../src/gtkmm/app.cpp:1231
 msgid "Init Tool Options..."
 msgstr "Параметры инструментов..."
 
-#: src/gtkmm/app.cpp:1195
+#: ../src/gtkmm/app.cpp:1235
 msgid "Init History..."
 msgstr "История действий..."
 
-#: src/gtkmm/app.cpp:1199
+#: ../src/gtkmm/app.cpp:1239
 msgid "Init Canvases..."
 msgstr "Холсты..."
 
-#: src/gtkmm/app.cpp:1203
+#: ../src/gtkmm/app.cpp:1243
 msgid "Init Keyframes..."
 msgstr "Ключевые кадры..."
 
-#: src/gtkmm/app.cpp:1207
+#: ../src/gtkmm/app.cpp:1247
 msgid "Init Layers..."
 msgstr "Слои..."
 
-#: src/gtkmm/app.cpp:1211
+#: ../src/gtkmm/app.cpp:1251
 msgid "Init Params..."
 msgstr "Параметры..."
 
-#: src/gtkmm/app.cpp:1215
+#: ../src/gtkmm/app.cpp:1255
 msgid "Init MetaData..."
 msgstr "Метаданные..."
 
-#: src/gtkmm/app.cpp:1219
+#: ../src/gtkmm/app.cpp:1259
 msgid "Init Children..."
 msgstr "Потомки..."
 
-#: src/gtkmm/app.cpp:1223
+#: ../src/gtkmm/app.cpp:1263
 msgid "Init Info..."
 msgstr ""
 
-#: src/gtkmm/app.cpp:1227
+#: ../src/gtkmm/app.cpp:1267
 msgid "Init Navigator..."
 msgstr "Навигатор..."
 
-#: src/gtkmm/app.cpp:1231
+#: ../src/gtkmm/app.cpp:1271
 msgid "Init Timetrack..."
 msgstr "Дорожка времени..."
 
-#: src/gtkmm/app.cpp:1235
+#: ../src/gtkmm/app.cpp:1275
 msgid "Init Curve Editor..."
 msgstr "Редактор кривой..."
 
-#: src/gtkmm/app.cpp:1239
+#: ../src/gtkmm/app.cpp:1279
 msgid "Init Layer Groups..."
 msgstr "Группы слоев..."
 
-#: src/gtkmm/app.cpp:1244
+#: ../src/gtkmm/app.cpp:1284
 msgid "Init Color Dialog..."
 msgstr "Диалог выбора цвета..."
 
-#: src/gtkmm/app.cpp:1247
+#: ../src/gtkmm/app.cpp:1287
 msgid "Init Gradient Dialog..."
 msgstr "Редактор градиентов..."
 
-#: src/gtkmm/app.cpp:1250
+#: ../src/gtkmm/app.cpp:1290
 msgid "Init DeviceTracker..."
 msgstr ""
 
-#: src/gtkmm/app.cpp:1253
+#: ../src/gtkmm/app.cpp:1293
 msgid "Init Tools..."
 msgstr "Инструменты..."
 
-#: src/gtkmm/app.cpp:1260
+#: ../src/gtkmm/app.cpp:1300
 msgid "Init ModMirror..."
 msgstr ""
 
-#: src/gtkmm/app.cpp:1280
+#: ../src/gtkmm/app.cpp:1320
 msgid "Init ModPalette..."
 msgstr ""
 
-#: src/gtkmm/app.cpp:1283
+#: ../src/gtkmm/app.cpp:1323
 msgid "Init Setup Dialog..."
 msgstr "Диалог настройки..."
 
-#: src/gtkmm/app.cpp:1286
+#: ../src/gtkmm/app.cpp:1326
 msgid "Init Input Dialog..."
 msgstr "Диалог устройств ввода..."
 
-#: src/gtkmm/app.cpp:1291
+#: ../src/gtkmm/app.cpp:1331
 msgid "Init auto recovery..."
 msgstr "Автовосстановление..."
 
-#: src/gtkmm/app.cpp:1295
+#: ../src/gtkmm/app.cpp:1335
 msgid "Loading Settings..."
 msgstr "Загружаются параметры..."
 
-#: src/gtkmm/app.cpp:1297
+#: ../src/gtkmm/app.cpp:1339
 msgid "Checking auto-recover..."
 msgstr "Нужно ли автовосстановление..."
 
-#: src/gtkmm/app.cpp:1305
-msgid "Auto Recovery"
-msgstr "Автовосстановление"
+#: ../src/gtkmm/app.cpp:1348
+msgid "Auto recovery file found"
+msgstr "Найден восстанавливаемый файл"
 
-#: src/gtkmm/app.cpp:1306
+#: ../src/gtkmm/app.cpp:1349
 msgid ""
 "Synfig Studio seems to have crashed\n"
 "before you could save all your files.\n"
-"Would you like to re-open those files\n"
-"and recover your unsaved changes?"
+"Recover unsaved changes?"
 msgstr ""
-"Кажется, Synfig Studio «упала» прежде,\n"
-"чем вы сохранили данные. Вы хотите \n"
+"Кажется, программа «упала» прежде,\n"
+"чем вы сохранили данные. Вы хотите\n"
 "заново открыть эти файлы и восстановить\n"
-"не сохранившиеся изменения?"
+"несохранившиеся изменения?"
 
-#: src/gtkmm/app.cpp:1315
+#: ../src/gtkmm/app.cpp:1352
+msgid "Recover"
+msgstr "Восстановить"
+
+#: ../src/gtkmm/app.cpp:1352
+msgid "Ignore"
+msgstr "Проигнорировать"
+
+#: ../src/gtkmm/app.cpp:1358
 msgid "Unable to fully recover from previous crash"
 msgstr "Невозможно полностью восстановить данные"
 
-#: src/gtkmm/app.cpp:1317
+#: ../src/gtkmm/app.cpp:1360
 msgid "Unable to recover from previous crash"
 msgstr "Невозможно восстановить данные"
 
-#: src/gtkmm/app.cpp:1320
+#: ../src/gtkmm/app.cpp:1363
 msgid ""
 "Synfig Studio has attempted to recover\n"
 "from a previous crash. The files that it has\n"
 "recovered are NOT YET SAVED. It would be a good\n"
 "idea to review them and save them now."
 msgstr ""
+"Программа попыталась восстановить мультфильм,\n"
+"над которым вы работали, когда программа «упала».\n"
+"Данные восстановлены, но ЕЩЕ НЕ СОХРАНЕНЫ, так что\n"
+"стоит просмотреть их и сохранить прямо сейчас."
 
-#: src/gtkmm/app.cpp:1336
+#: ../src/gtkmm/app.cpp:1379
 msgid "Loading files..."
-msgstr ""
+msgstr "Загружаются файлы..."
 
-#: src/gtkmm/app.cpp:1347
+#: ../src/gtkmm/app.cpp:1390
 msgid "Done."
 msgstr "Готово"
 
-#: src/gtkmm/app.cpp:1354 src/gtkmm/app.cpp:1358
+#: ../src/gtkmm/app.cpp:1397
+#: ../src/gtkmm/app.cpp:1401
 msgid ""
 "Unknown exception caught when constructing App.\n"
 "This software may be unstable."
 msgstr ""
 
-#: src/gtkmm/app.cpp:1771
+#: ../src/gtkmm/app.cpp:1816
 msgid "Quit Request"
 msgstr ""
 
-#: src/gtkmm/app.cpp:1774
+#: ../src/gtkmm/app.cpp:1819
 msgid "Cannot quit!"
-msgstr ""
+msgstr "Не удалось завершить работу с программой!"
 
-#: src/gtkmm/app.cpp:1774
+#: ../src/gtkmm/app.cpp:1819
 msgid ""
 "Tasks are currently running.\n"
 "Please cancel the current tasks and try again"
 msgstr ""
 
-#: src/gtkmm/app.cpp:1842
+#: ../src/gtkmm/app.cpp:1887
 msgid "Quit Request sent"
 msgstr ""
 
-#: src/gtkmm/app.cpp:2059
+#: ../src/gtkmm/app.cpp:2104
 msgid "current"
-msgstr ""
+msgstr "текущая"
 
-#: src/gtkmm/app.cpp:2062
+#: ../src/gtkmm/app.cpp:2107
 msgid "and older"
-msgstr ""
+msgstr "и ранее"
 
-#: src/gtkmm/app.cpp:2066
+#: ../src/gtkmm/app.cpp:2111
 msgid "File Format Version: "
 msgstr "Версия формата файлов:"
 
-#: src/gtkmm/app.cpp:2165
+#: ../src/gtkmm/app.cpp:2210
 msgid "Feature not available"
 msgstr "Функция недоступна"
 
-#: src/gtkmm/app.cpp:2166
+#: ../src/gtkmm/app.cpp:2211
 msgid "Sorry, this feature has not yet been implemented."
-msgstr ""
+msgstr "Извините, пока что эта функция не реализована."
 
-#: src/gtkmm/app.cpp:2251
+#: ../src/gtkmm/app.cpp:2296
 msgid "Documentation"
 msgstr "Документация"
 
-#: src/gtkmm/app.cpp:2252
+#: ../src/gtkmm/app.cpp:2297
 msgid ""
 "Documentation for Synfig Studio is available on the website:\n"
 "\n"
 "http://www.synfig.org/Documentation"
 msgstr ""
+"Документация по Synfig Studio доступна на сайте:\n"
+"\n"
+"http://www.synfig.org/Documentation"
 
-#: src/gtkmm/app.cpp:2253 src/gtkmm/toolbox.cpp:299
+#: ../src/gtkmm/app.cpp:2298
+#: ../src/gtkmm/toolbox.cpp:299
 msgid "Help"
 msgstr "Справка"
 
-#: src/gtkmm/app.cpp:2263
+#: ../src/gtkmm/app.cpp:2308
 msgid "No browser was found. Please load this website manually:"
-msgstr ""
+msgstr "Браузер не найден. Откройте сайт вручную:"
 
-#: src/gtkmm/app.cpp:2265
+#: ../src/gtkmm/app.cpp:2310
 msgid "No browser found"
-msgstr ""
+msgstr "Браузер не найден"
 
-#: src/gtkmm/app.cpp:2374
+#: ../src/gtkmm/app.cpp:2419
 #, c-format
 msgid ""
 "Unable to load \"%s\":\n"
 "\n"
 msgstr ""
+"Не удалось загрузить «%s»:\n"
+"\n"
 
-#: src/gtkmm/app.cpp:2377 src/gtkmm/canvasview.cpp:3479
-#: src/gtkmm/canvasview.cpp:3591
+#: ../src/gtkmm/app.cpp:2422
+#: ../src/gtkmm/canvasview.cpp:3876
+#: ../src/gtkmm/canvasview.cpp:4015
 msgid "Warnings"
-msgstr ""
+msgstr "Предупреждения"
 
-#: src/gtkmm/app.cpp:2385
+#: ../src/gtkmm/app.cpp:2430
 #, c-format
 msgid "Unable to create instance for \"%s\""
 msgstr ""
 
-#: src/gtkmm/app.cpp:2391 src/gtkmm/iconcontroller.cpp:189
-#: src/gtkmm/instance.cpp:560
+#: ../src/gtkmm/app.cpp:2436
+#: ../src/gtkmm/iconcontroller.cpp:217
+#: ../src/gtkmm/instance.cpp:560
 msgid "CVS Update"
-msgstr ""
+msgstr "CVS Update"
 
-#: src/gtkmm/app.cpp:2391
+#: ../src/gtkmm/app.cpp:2436
 msgid ""
-"There appears to be a newer version of this file available on the CVS "
-"repository.\n"
+"There appears to be a newer version of this file available on the CVS repository.\n"
 "Would you like to update now? (It would probably be a good idea)"
 msgstr ""
+"Похоже, что в репозитории CVS есть более новая версия этого файла.\n"
+"Нужно ли обновить этот файл? (Неплохая идея, между прочим.)"
 
-#: src/gtkmm/app.cpp:2397 src/gtkmm/app.cpp:2402 src/gtkmm/app.cpp:2407
-#: src/gtkmm/instance.cpp:482 src/gtkmm/instance.cpp:498
-#: src/gtkmm/instance.cpp:510 src/gtkmm/instance.cpp:521
-#: src/gtkmm/instance.cpp:535 src/gtkmm/instance.cpp:546
-#: src/gtkmm/instance.cpp:576 src/gtkmm/instance.cpp:587
-#: src/gtkmm/instance.cpp:603 src/gtkmm/instance.cpp:612
-#: src/gtkmm/layerparamtreestore.cpp:246
-#: src/gtkmm/widget_canvaschooser.cpp:145
-#: src/gtkmm/widget_canvaschooser.cpp:164
+#: ../src/gtkmm/app.cpp:2442
+#: ../src/gtkmm/app.cpp:2447
+#: ../src/gtkmm/app.cpp:2452
+#: ../src/gtkmm/instance.cpp:482
+#: ../src/gtkmm/instance.cpp:498
+#: ../src/gtkmm/instance.cpp:510
+#: ../src/gtkmm/instance.cpp:521
+#: ../src/gtkmm/instance.cpp:535
+#: ../src/gtkmm/instance.cpp:546
+#: ../src/gtkmm/instance.cpp:576
+#: ../src/gtkmm/instance.cpp:587
+#: ../src/gtkmm/instance.cpp:603
+#: ../src/gtkmm/instance.cpp:612
+#: ../src/gtkmm/layerparamtreestore.cpp:246
+#: ../src/gtkmm/widget_canvaschooser.cpp:145
+#: ../src/gtkmm/widget_canvaschooser.cpp:164
 msgid "Error"
 msgstr "Ошибка"
 
-#: src/gtkmm/app.cpp:2407
+#: ../src/gtkmm/app.cpp:2452
 msgid "Uncaught error on file open (BUG)"
 msgstr ""
 
-#: src/gtkmm/app.cpp:2461
+#: ../src/gtkmm/app.cpp:2506
 msgid "Unable to open file"
-msgstr ""
+msgstr "Не удалось открыть файл"
 
-#: src/gtkmm/canvasoptions.cpp:61
+#: ../src/gtkmm/canvasoptions.cpp:61
 msgid "Canvas Options"
 msgstr "Параметры холста"
 
-#: src/gtkmm/canvasoptions.cpp:63
+#: ../src/gtkmm/canvasoptions.cpp:63
 msgid "_Snap to grid"
 msgstr "Прилипать к _сетке"
 
-#: src/gtkmm/canvasoptions.cpp:64
+#: ../src/gtkmm/canvasoptions.cpp:64
 msgid "S_how grid"
 msgstr "_Показывать сетку"
 
-#: src/gtkmm/canvasoptions.cpp:65
+#: ../src/gtkmm/canvasoptions.cpp:65
 msgid "Snap to _frame"
 msgstr "Прилипать к _кадрам"
 
-#: src/gtkmm/canvasoptions.cpp:80
+#: ../src/gtkmm/canvasoptions.cpp:80
 msgid "Grid"
 msgstr "Сетка"
 
-#: src/gtkmm/canvasoptions.cpp:90
+#: ../src/gtkmm/canvasoptions.cpp:90
 msgid "_Grid size"
 msgstr "_Размер ячейки сетки"
 
-#: src/gtkmm/canvasoptions.cpp:104 src/gtkmm/iconcontroller.cpp:143
-#: src/gtkmm/keyframetree.cpp:62 src/gtkmm/renddesc.cpp:96
-#: src/synfigapp/actions/activepointadd.cpp:86
-#: src/synfigapp/actions/activepointsetoff.cpp:93
-#: src/synfigapp/actions/activepointseton.cpp:93
-#: src/synfigapp/actions/activepointsetsmart.cpp:93
-#: src/synfigapp/actions/blinepointtangentmerge.cpp:91
-#: src/synfigapp/actions/blinepointtangentsplit.cpp:91
-#: src/synfigapp/actions/colorset.cpp:83
-#: src/synfigapp/actions/gradientset.cpp:83
-#: src/synfigapp/actions/keyframeduplicate.cpp:84
-#: src/synfigapp/actions/layerparamdisconnect.cpp:83
-#: src/synfigapp/actions/valuedescblinelink.cpp:89
-#: src/synfigapp/actions/valuedescconvert.cpp:102
-#: src/synfigapp/actions/valuedescdisconnect.cpp:95
-#: src/synfigapp/actions/valuedescset.cpp:100
-#: src/synfigapp/actions/valuenodedynamiclistinsert.cpp:80
-#: src/synfigapp/actions/valuenodedynamiclistinsertsmart.cpp:81
-#: src/synfigapp/actions/valuenodedynamiclistremovesmart.cpp:81
-#: src/synfigapp/actions/valuenodelinkdisconnect.cpp:83
-#: src/synfigapp/actions/waypointadd.cpp:87
-#: src/synfigapp/actions/waypointsetsmart.cpp:100
+#: ../src/gtkmm/canvasoptions.cpp:104
+#: ../src/gtkmm/iconcontroller.cpp:145
+#: ../src/gtkmm/keyframetree.cpp:62
+#: ../src/gtkmm/renddesc.cpp:96
+#: ../src/synfigapp/actions/activepointadd.cpp:86
+#: ../src/synfigapp/actions/activepointsetoff.cpp:93
+#: ../src/synfigapp/actions/activepointseton.cpp:93
+#: ../src/synfigapp/actions/activepointsetsmart.cpp:93
+#: ../src/synfigapp/actions/blinepointtangentmerge.cpp:91
+#: ../src/synfigapp/actions/blinepointtangentsplit.cpp:91
+#: ../src/synfigapp/actions/colorset.cpp:93
+#: ../src/synfigapp/actions/gradientset.cpp:83
+#: ../src/synfigapp/actions/keyframeduplicate.cpp:84
+#: ../src/synfigapp/actions/layerparamdisconnect.cpp:83
+#: ../src/synfigapp/actions/valuedescblinelink.cpp:89
+#: ../src/synfigapp/actions/valuedescconvert.cpp:102
+#: ../src/synfigapp/actions/valuedescdisconnect.cpp:95
+#: ../src/synfigapp/actions/valuedescset.cpp:100
+#: ../src/synfigapp/actions/valuenodedynamiclistinsert.cpp:80
+#: ../src/synfigapp/actions/valuenodedynamiclistinsertsmart.cpp:81
+#: ../src/synfigapp/actions/valuenodedynamiclistremovesmart.cpp:81
+#: ../src/synfigapp/actions/valuenodelinkdisconnect.cpp:83
+#: ../src/synfigapp/actions/waypointadd.cpp:87
+#: ../src/synfigapp/actions/waypointsetsmart.cpp:100
 msgid "Time"
 msgstr "Время"
 
-#: src/gtkmm/canvasoptions.cpp:113 src/gtkmm/dialog_setup.cpp:179
+#: ../src/gtkmm/canvasoptions.cpp:113
+#: ../src/gtkmm/dialog_setup.cpp:179
 msgid "Units"
 msgstr "Единицы"
 
-#: src/gtkmm/canvasoptions.cpp:114
+#: ../src/gtkmm/canvasoptions.cpp:114
 msgid "Not yet implemented!"
 msgstr "Пока не реализовано!"
 
-#: src/gtkmm/canvasoptions.cpp:169 src/gtkmm/dialog_keyframe.cpp:89
+#: ../src/gtkmm/canvasoptions.cpp:169
+#: ../src/gtkmm/dialog_keyframe.cpp:89
 msgid "Not yet implemented"
 msgstr "Пока не реализовано"
 
-#: src/gtkmm/canvasproperties.cpp:64
+#: ../src/gtkmm/canvasproperties.cpp:64
 msgid "Canvas Properties"
 msgstr "Свойства холста"
 
-#: src/gtkmm/canvasproperties.cpp:77
+#: ../src/gtkmm/canvasproperties.cpp:77
 msgid "Canvas Info"
-msgstr ""
+msgstr "О холсте"
 
-#: src/gtkmm/canvasproperties.cpp:79
+#: ../src/gtkmm/canvasproperties.cpp:79
 msgid "<b>Canvas Info</b>"
 msgstr "<b>Данные о холсте</b>"
 
-#: src/gtkmm/canvasproperties.cpp:95
+#: ../src/gtkmm/canvasproperties.cpp:95
 msgid "_ID"
 msgstr "_ID"
 
-#: src/gtkmm/canvasproperties.cpp:101
+#: ../src/gtkmm/canvasproperties.cpp:101
 msgid "_Name"
 msgstr "_Имя"
 
-#: src/gtkmm/canvasproperties.cpp:104
+#: ../src/gtkmm/canvasproperties.cpp:104
 msgid "_Description"
 msgstr "О_писание"
 
-#: src/gtkmm/canvasproperties.cpp:146 src/gtkmm/dock_metadata.cpp:69
+#: ../src/gtkmm/canvasproperties.cpp:146
+#: ../src/gtkmm/dock_metadata.cpp:69
 msgid "Key"
 msgstr "Ключ"
 
-#: src/gtkmm/canvasproperties.cpp:147 src/gtkmm/dock_metadata.cpp:70
+#: ../src/gtkmm/canvasproperties.cpp:147
+#: ../src/gtkmm/dock_metadata.cpp:70
 msgid "Data"
 msgstr "Данные"
 
-#: src/gtkmm/canvasproperties.cpp:182 src/gtkmm/dock_metadata.cpp:134
+#: ../src/gtkmm/canvasproperties.cpp:182
+#: ../src/gtkmm/dock_metadata.cpp:134
 msgid "New MetaData Entry"
 msgstr "Новая запись в метаданных"
 
-#: src/gtkmm/canvasproperties.cpp:182 src/gtkmm/dock_metadata.cpp:134
+#: ../src/gtkmm/canvasproperties.cpp:182
+#: ../src/gtkmm/dock_metadata.cpp:134
 msgid "Please enter the name of the key"
 msgstr "Введите название ключа"
 
-#: src/gtkmm/canvasproperties.cpp:226
+#: ../src/gtkmm/canvasproperties.cpp:226
 msgid "Edit Canvas Properties"
-msgstr ""
+msgstr "Изменить свойства холста"
 
-#: src/gtkmm/canvastreestore.cpp:204 src/gtkmm/canvastreestore.cpp:242
-#: src/gtkmm/childrentreestore.cpp:204 src/gtkmm/iconcontroller.cpp:150
-#: src/synfigapp/action.cpp:479
+#: ../src/gtkmm/canvastreestore.cpp:204
+#: ../src/gtkmm/canvastreestore.cpp:242
+#: ../src/gtkmm/childrentreestore.cpp:204
+#: ../src/gtkmm/iconcontroller.cpp:152
+#: ../src/synfigapp/action.cpp:484
 msgid "Canvas"
 msgstr "Холст"
 
-#: src/gtkmm/canvastreestore.cpp:241 src/gtkmm/childrentreestore.cpp:201
-#: src/gtkmm/instance.cpp:416
+#: ../src/gtkmm/canvastreestore.cpp:241
+#: ../src/gtkmm/childrentreestore.cpp:201
+#: ../src/gtkmm/instance.cpp:416
 msgid "[Unnamed]"
 msgstr ""
 
-#: src/gtkmm/canvasview.cpp:241 src/gtkmm/workarea.cpp:2344
-#: src/gtkmm/workarea.cpp:2439
+#: ../src/gtkmm/canvasview.cpp:244
+#: ../src/gtkmm/workarea.cpp:2361
+#: ../src/gtkmm/workarea.cpp:2456
 msgid "Idle"
 msgstr "Бездействие"
 
-#: src/gtkmm/canvasview.cpp:331
+#: ../src/gtkmm/canvasview.cpp:365
 msgid "ERROR"
 msgstr "ОШИБКА"
 
-#: src/gtkmm/canvasview.cpp:380
+#: ../src/gtkmm/canvasview.cpp:414
 msgid "Feature not yet implemented"
-msgstr ""
+msgstr "Функция пока что не реализована"
 
-#: src/gtkmm/canvasview.cpp:926
+#: ../src/gtkmm/canvasview.cpp:975
 msgid "Moves the time window"
 msgstr ""
 
-#: src/gtkmm/canvasview.cpp:927
+#: ../src/gtkmm/canvasview.cpp:976
 msgid "Changes the current time"
-msgstr ""
+msgstr "Меняет текущее время"
 
-#: src/gtkmm/canvasview.cpp:936
+#: ../src/gtkmm/canvasview.cpp:987
 msgid "Animate"
 msgstr "Анимировать"
 
-#: src/gtkmm/canvasview.cpp:940 src/gtkmm/canvasview.cpp:2545
-#: src/gtkmm/iconcontroller.cpp:183
-msgid "All Keyframes Locked"
-msgstr "Все ключевые кадры заперты"
+#: ../src/gtkmm/canvasview.cpp:1011
+msgid "Current time"
+msgstr "Текущее время"
 
-#: src/gtkmm/canvasview.cpp:995
+#: ../src/gtkmm/canvasview.cpp:1093
 msgid "Refresh"
 msgstr "Обновить"
 
-#: src/gtkmm/canvasview.cpp:1221
+#: ../src/gtkmm/canvasview.cpp:1182
+msgid "Quality (lower is better)"
+msgstr "Качество (чем меньше, тем лучше)"
+
+#: ../src/gtkmm/canvasview.cpp:1194
+msgid "Show grid when enabled"
+msgstr "Показывать сетку"
+
+#: ../src/gtkmm/canvasview.cpp:1207
+msgid "Snap grid when enabled"
+msgstr "Прилипать к сетке"
+
+#: ../src/gtkmm/canvasview.cpp:1220
+msgid "Shows onion skin when enabled"
+msgstr "Если включено, отображается калька"
+
+#: ../src/gtkmm/canvasview.cpp:1228
+msgid "Past onion skins"
+msgstr "Предыдущие кальки"
+
+#: ../src/gtkmm/canvasview.cpp:1235
+msgid "Future onion skins"
+msgstr "Следующие кальки"
+
+#: ../src/gtkmm/canvasview.cpp:1246
+msgid "Shows the Render Settings Dialog"
+msgstr "Открыть диалог параметров отрисовки"
+
+#: ../src/gtkmm/canvasview.cpp:1258
+msgid "Shows the Preview Settings Dialog"
+msgstr "Открыть диалог параметров предпросмотра"
+
+#: ../src/gtkmm/canvasview.cpp:1473
 msgid "Close Window"
 msgstr "Закрыть окно"
 
-#: src/gtkmm/canvasview.cpp:1227
+#: ../src/gtkmm/canvasview.cpp:1479
 msgid "Quit"
-msgstr "Выйти"
+msgstr "Выход"
 
-#: src/gtkmm/canvasview.cpp:1279
+#: ../src/gtkmm/canvasview.cpp:1531
 msgid " (best)"
-msgstr ""
+msgstr " (наилучшее)"
 
-#: src/gtkmm/canvasview.cpp:1280
+#: ../src/gtkmm/canvasview.cpp:1532
 msgid " (fastest)"
-msgstr ""
+msgstr " (быстрейшая отрисовка)"
 
-#: src/gtkmm/canvasview.cpp:1282
+#: ../src/gtkmm/canvasview.cpp:1534
 #, c-format
 msgid "Set Quality to %d"
-msgstr ""
+msgstr "Переключить качество на %d"
 
-#: src/gtkmm/canvasview.cpp:1332
-msgid "Flipbook Dialog"
-msgstr "Диалог кинеографа"
-
-#: src/gtkmm/canvasview.cpp:1339 src/gtkmm/iconcontroller.cpp:165
-msgid "Show Grid"
-msgstr "Показывать сетку"
-
-#: src/gtkmm/canvasview.cpp:1343
-msgid "Snap to Grid"
-msgstr "Прилипать к сетке"
-
-#: src/gtkmm/canvasview.cpp:1347
-msgid "Show Guides"
-msgstr "Показывать направляющие"
-
-#: src/gtkmm/canvasview.cpp:1351
-msgid "Use Low-Res"
-msgstr ""
-
-#: src/gtkmm/canvasview.cpp:1355
-msgid "Show Onion Skin"
-msgstr "Показывать восковку"
-
-#: src/gtkmm/canvasview.cpp:1398
-msgid "Zoom In on Timeline"
-msgstr ""
-
-#: src/gtkmm/canvasview.cpp:1401
-msgid "Zoom Out on Timeline"
-msgstr ""
-
-#: src/gtkmm/canvasview.cpp:1807 src/gtkmm/canvasview.cpp:2280
-msgid "Select All Children"
-msgstr "Выделить всех потомков"
-
-#: src/gtkmm/canvasview.cpp:2093
-msgid "-MODIFIED"
-msgstr ""
-
-#: src/gtkmm/canvasview.cpp:2095
-msgid "-UPDATED"
-msgstr ""
-
-#: src/gtkmm/canvasview.cpp:2100
-msgid " (Root)"
-msgstr ""
-
-#: src/gtkmm/canvasview.cpp:2524
-msgid "In Animate Editing Mode"
-msgstr ""
-
-#: src/gtkmm/canvasview.cpp:2534
-msgid "Not in Animate Editing Mode"
-msgstr ""
-
-#: src/gtkmm/canvasview.cpp:2555 src/gtkmm/iconcontroller.cpp:185
-msgid "Future Keyframes Locked"
-msgstr "Будущие ключевые кадры заперты"
-
-#: src/gtkmm/canvasview.cpp:2565 src/gtkmm/iconcontroller.cpp:184
-msgid "Past Keyframes Locked"
-msgstr "Прошлые ключевые кадры заперты"
-
-#: src/gtkmm/canvasview.cpp:2575 src/gtkmm/iconcontroller.cpp:186
-msgid "No Keyframes Locked"
-msgstr "Нет запертых ключевых кадров"
-
-#: src/gtkmm/canvasview.cpp:3190
-msgid "Change Waypoint Group"
-msgstr ""
-
-#: src/gtkmm/canvasview.cpp:3221
-msgid "Duplicate Waypoints"
-msgstr ""
-
-#: src/gtkmm/canvasview.cpp:3237
-msgid "Remove Waypoints"
-msgstr ""
-
-#: src/gtkmm/canvasview.cpp:3282 src/gtkmm/canvasview.cpp:3285
-#: src/gtkmm/canvasview.cpp:3288 src/gtkmm/widget_defaults.cpp:292
-msgid "_TCB"
-msgstr ""
-
-#: src/gtkmm/canvasview.cpp:3292 src/gtkmm/canvasview.cpp:3295
-#: src/gtkmm/canvasview.cpp:3298 src/gtkmm/widget_defaults.cpp:295
-msgid "_Linear"
-msgstr ""
-
-#: src/gtkmm/canvasview.cpp:3302
-msgid "_Ease In"
-msgstr ""
-
-#: src/gtkmm/canvasview.cpp:3305
-msgid "_Ease Out"
-msgstr ""
-
-#: src/gtkmm/canvasview.cpp:3308 src/gtkmm/widget_defaults.cpp:294
-msgid "_Ease In/Out"
-msgstr ""
-
-#: src/gtkmm/canvasview.cpp:3312 src/gtkmm/canvasview.cpp:3315
-#: src/gtkmm/canvasview.cpp:3318 src/gtkmm/widget_defaults.cpp:293
-msgid "_Constant"
-msgstr ""
-
-#: src/gtkmm/canvasview.cpp:3333
-msgid "_Jump To"
-msgstr ""
-
-#: src/gtkmm/canvasview.cpp:3336
-msgid "_Duplicate"
-msgstr ""
-
-#: src/gtkmm/canvasview.cpp:3339
-msgid "_Remove"
-msgstr ""
-
-#: src/gtkmm/canvasview.cpp:3339
-#, c-format
-msgid "_Remove %d Waypoints"
-msgstr ""
-
-#: src/gtkmm/canvasview.cpp:3350
-msgid "_Both"
-msgstr ""
-
-#: src/gtkmm/canvasview.cpp:3351
-msgid "_In"
-msgstr ""
-
-#: src/gtkmm/canvasview.cpp:3352
-msgid "_Out"
-msgstr ""
-
-#: src/gtkmm/canvasview.cpp:3587 src/synfigapp/canvasinterface.cpp:565
-msgid "Import Image"
-msgstr "Импортировать изображение"
-
-#: src/gtkmm/cellrenderer_value.cpp:221
-msgid "Paragraph"
-msgstr "Абзац"
-
-#: src/gtkmm/cellrenderer_value.cpp:225
-msgid "Enter Paragraph Text Here:"
-msgstr ""
-
-#: src/gtkmm/cellrenderer_value.cpp:411
-msgid "<Inline Canvas>"
-msgstr ""
-
-#: src/gtkmm/cellrenderer_value.cpp:441 src/gtkmm/iconcontroller.cpp:147
-msgid "Segment"
-msgstr ""
-
-#: src/gtkmm/cellrenderer_value.cpp:448
-msgid "List"
-msgstr "Список"
-
-#: src/gtkmm/cellrenderer_value.cpp:451 src/gtkmm/iconcontroller.cpp:148
-msgid "BLine Point"
-msgstr "Узел кривой"
-
-#: src/gtkmm/cellrenderer_value.cpp:454
-msgid "UNKNOWN"
-msgstr "НЕИЗВЕСТНО"
-
-#: src/gtkmm/childrentree.cpp:93 src/gtkmm/dock_canvases.cpp:108
-#: src/synfigapp/actions/canvasadd.cpp:78
-msgid "ID"
-msgstr "ID"
-
-#: src/gtkmm/childrentree.cpp:113 src/gtkmm/layertree.cpp:354
-#: src/synfigapp/actions/valuedescconvert.cpp:97
-msgid "Type"
-msgstr "Тип"
-
-#: src/gtkmm/childrentree.cpp:124 src/synfigapp/actions/layerparamset.cpp:80
-#: src/synfigapp/actions/valuedescset.cpp:96
-#: src/synfigapp/actions/valuenodeconstset.cpp:77
-msgid "ValueBase"
-msgstr ""
-
-#: src/gtkmm/childrentree.cpp:140 src/gtkmm/dock_timetrack.cpp:87
-#: src/gtkmm/iconcontroller.cpp:181 src/gtkmm/layertree.cpp:367
-msgid "Time Track"
-msgstr "Дорожка времени"
-
-#: src/gtkmm/childrentreestore.cpp:78
-msgid "Canvases"
-msgstr "Холсты"
-
-#: src/gtkmm/childrentreestore.cpp:83
-msgid "ValueBase Nodes"
-msgstr ""
-
-#: src/gtkmm/dialog_color.cpp:68
-msgid "Colors"
-msgstr "Цвета"
-
-#: src/gtkmm/dialog_gradient.cpp:65
-msgid "Gradient Editor"
-msgstr "Редактор градиентов"
-
-#: src/gtkmm/dialog_gradient.cpp:75
-msgid "Set as Default"
-msgstr ""
-
-#: src/gtkmm/dialog_keyframe.cpp:59
-msgid "Keyframe Dialog"
-msgstr "Диалог ключевых кадров"
-
-#: src/gtkmm/dialog_preview.cpp:62
+#: ../src/gtkmm/canvasview.cpp:1584
+#: ../src/gtkmm/dialog_preview.cpp:62
 msgid "Preview Window"
 msgstr "Окно предпросмотра"
 
-#: src/gtkmm/dialog_preview.cpp:88
+#: ../src/gtkmm/canvasview.cpp:1591
+#: ../src/gtkmm/iconcontroller.cpp:167
+msgid "Show Grid"
+msgstr "Показывать сетку"
+
+#: ../src/gtkmm/canvasview.cpp:1595
+msgid "Snap to Grid"
+msgstr "Прилипать к сетке"
+
+#: ../src/gtkmm/canvasview.cpp:1599
+msgid "Show Guides"
+msgstr "Показывать направляющие"
+
+#: ../src/gtkmm/canvasview.cpp:1603
+msgid "Use Low-Res"
+msgstr "Низкое разрешение"
+
+#: ../src/gtkmm/canvasview.cpp:1607
+msgid "Show Onion Skin"
+msgstr "Показывать кальку"
+
+#: ../src/gtkmm/canvasview.cpp:1650
+msgid "Zoom In on Timeline"
+msgstr "Приблизить временную шкалу"
+
+#: ../src/gtkmm/canvasview.cpp:1653
+msgid "Zoom Out on Timeline"
+msgstr "Отдалить временную шкалу"
+
+#: ../src/gtkmm/canvasview.cpp:2059
+#: ../src/gtkmm/canvasview.cpp:2532
+msgid "Select All Children"
+msgstr "Выделить всех потомков"
+
+#: ../src/gtkmm/canvasview.cpp:2345
+msgid "-MODIFIED"
+msgstr ""
+
+#: ../src/gtkmm/canvasview.cpp:2347
+msgid "-UPDATED"
+msgstr ""
+
+#: ../src/gtkmm/canvasview.cpp:2352
+msgid " (Root)"
+msgstr ""
+
+#: ../src/gtkmm/canvasview.cpp:2777
+msgid "In Animate Editing Mode"
+msgstr "В режиме анимации"
+
+#: ../src/gtkmm/canvasview.cpp:2787
+msgid "Not in Animate Editing Mode"
+msgstr "Не в режиме анимации"
+
+#: ../src/gtkmm/canvasview.cpp:2798
+#: ../src/gtkmm/iconcontroller.cpp:185
+#: ../src/gtkmm/keyframedial.cpp:59
+msgid "All Keyframes Locked"
+msgstr "Все ключевые кадры заперты"
+
+#: ../src/gtkmm/canvasview.cpp:2808
+#: ../src/gtkmm/iconcontroller.cpp:187
+msgid "Future Keyframes Locked"
+msgstr "Будущие ключевые кадры заперты"
+
+#: ../src/gtkmm/canvasview.cpp:2818
+#: ../src/gtkmm/iconcontroller.cpp:186
+msgid "Past Keyframes Locked"
+msgstr "Прошлые ключевые кадры заперты"
+
+#: ../src/gtkmm/canvasview.cpp:2828
+#: ../src/gtkmm/iconcontroller.cpp:188
+msgid "No Keyframes Locked"
+msgstr "Нет запертых ключевых кадров"
+
+#: ../src/gtkmm/canvasview.cpp:3587
+msgid "Change Waypoint Group"
+msgstr "Изменить группу фиксаторов"
+
+#: ../src/gtkmm/canvasview.cpp:3618
+msgid "Duplicate Waypoints"
+msgstr "Создать копии фиксаторов"
+
+#: ../src/gtkmm/canvasview.cpp:3634
+msgid "Remove Waypoints"
+msgstr "Удалить фиксаторы"
+
+#: ../src/gtkmm/canvasview.cpp:3679
+#: ../src/gtkmm/canvasview.cpp:3682
+#: ../src/gtkmm/canvasview.cpp:3685
+#: ../src/gtkmm/widget_defaults.cpp:292
+msgid "_TCB"
+msgstr ""
+
+#: ../src/gtkmm/canvasview.cpp:3689
+#: ../src/gtkmm/canvasview.cpp:3692
+#: ../src/gtkmm/canvasview.cpp:3695
+#: ../src/gtkmm/widget_defaults.cpp:295
+msgid "_Linear"
+msgstr "_Линейная"
+
+#: ../src/gtkmm/canvasview.cpp:3699
+msgid "_Ease In"
+msgstr ""
+
+#: ../src/gtkmm/canvasview.cpp:3702
+msgid "_Ease Out"
+msgstr ""
+
+#: ../src/gtkmm/canvasview.cpp:3705
+#: ../src/gtkmm/widget_defaults.cpp:294
+msgid "_Ease In/Out"
+msgstr ""
+
+#: ../src/gtkmm/canvasview.cpp:3709
+#: ../src/gtkmm/canvasview.cpp:3712
+#: ../src/gtkmm/canvasview.cpp:3715
+#: ../src/gtkmm/widget_defaults.cpp:293
+msgid "_Constant"
+msgstr "_Постоянная"
+
+#: ../src/gtkmm/canvasview.cpp:3730
+msgid "_Jump To"
+msgstr "_Перейти сюда"
+
+#: ../src/gtkmm/canvasview.cpp:3733
+msgid "_Duplicate"
+msgstr "Про_дублировать"
+
+#: ../src/gtkmm/canvasview.cpp:3736
+msgid "_Remove"
+msgstr "_Удалить"
+
+#: ../src/gtkmm/canvasview.cpp:3736
+#, c-format
+msgid "_Remove %d Waypoints"
+msgstr "_Удалить %d фиксаторов"
+
+#: ../src/gtkmm/canvasview.cpp:3747
+msgid "_Both"
+msgstr "_Оба"
+
+#: ../src/gtkmm/canvasview.cpp:3748
+msgid "_In"
+msgstr "_Вход"
+
+#: ../src/gtkmm/canvasview.cpp:3749
+msgid "_Out"
+msgstr "В_ыход"
+
+#: ../src/gtkmm/canvasview.cpp:4011
+#: ../src/synfigapp/canvasinterface.cpp:569
+msgid "Import Image"
+msgstr "Импортировать изображение"
+
+#: ../src/gtkmm/cellrenderer_value.cpp:221
+msgid "Paragraph"
+msgstr "Абзац"
+
+#: ../src/gtkmm/cellrenderer_value.cpp:225
+msgid "Enter Paragraph Text Here:"
+msgstr "Введите сюда текст абзаца:"
+
+#: ../src/gtkmm/cellrenderer_value.cpp:411
+msgid "<Inline Canvas>"
+msgstr ""
+
+#: ../src/gtkmm/cellrenderer_value.cpp:441
+#: ../src/gtkmm/iconcontroller.cpp:149
+msgid "Segment"
+msgstr "Сегмент"
+
+#: ../src/gtkmm/cellrenderer_value.cpp:448
+msgid "List"
+msgstr "Список"
+
+#: ../src/gtkmm/cellrenderer_value.cpp:451
+#: ../src/gtkmm/iconcontroller.cpp:150
+msgid "BLine Point"
+msgstr "Узел кривой"
+
+#: ../src/gtkmm/cellrenderer_value.cpp:454
+msgid "UNKNOWN"
+msgstr "НЕИЗВЕСТНО"
+
+#: ../src/gtkmm/childrentree.cpp:93
+#: ../src/gtkmm/dock_canvases.cpp:108
+#: ../src/synfigapp/actions/canvasadd.cpp:78
+msgid "ID"
+msgstr "ID"
+
+#: ../src/gtkmm/childrentree.cpp:113
+#: ../src/gtkmm/layertree.cpp:354
+#: ../src/synfigapp/actions/valuedescconvert.cpp:97
+msgid "Type"
+msgstr "Тип"
+
+#: ../src/gtkmm/childrentree.cpp:124
+#: ../src/synfigapp/actions/layerparamset.cpp:80
+#: ../src/synfigapp/actions/valuedescset.cpp:96
+#: ../src/synfigapp/actions/valuenodeconstset.cpp:77
+msgid "ValueBase"
+msgstr ""
+
+#: ../src/gtkmm/childrentree.cpp:140
+#: ../src/gtkmm/dock_timetrack.cpp:88
+#: ../src/gtkmm/iconcontroller.cpp:183
+#: ../src/gtkmm/layertree.cpp:367
+msgid "Time Track"
+msgstr "Дорожка времени"
+
+#: ../src/gtkmm/childrentreestore.cpp:78
+msgid "Canvases"
+msgstr "Холсты"
+
+#: ../src/gtkmm/childrentreestore.cpp:83
+msgid "ValueBase Nodes"
+msgstr ""
+
+#: ../src/gtkmm/dialog_color.cpp:59
+msgid "Colors"
+msgstr "Цвета"
+
+#: ../src/gtkmm/dialog_color.cpp:66
+#: ../src/gtkmm/iconcontroller.cpp:190
+msgid "Set as Outline"
+msgstr "Установить как цвет обводки"
+
+#: ../src/gtkmm/dialog_color.cpp:68
+#: ../src/gtkmm/iconcontroller.cpp:191
+msgid "Set as Fill"
+msgstr "Установить как цвет заливки"
+
+#: ../src/gtkmm/dialog_gradient.cpp:65
+msgid "Gradient Editor"
+msgstr "Редактор градиентов"
+
+#: ../src/gtkmm/dialog_gradient.cpp:75
+msgid "Set as Default"
+msgstr "Использовать далее"
+
+#: ../src/gtkmm/dialog_keyframe.cpp:59
+msgid "Keyframe Dialog"
+msgstr "Параметры ключевого кадра"
+
+#: ../src/gtkmm/dialog_preview.cpp:88
 msgid "Preview Options"
 msgstr "Параметры предпросмотра"
 
-#: src/gtkmm/dialog_preview.cpp:91
+#: ../src/gtkmm/dialog_preview.cpp:91
 msgid "_Begin Time"
 msgstr "Время _начала:"
 
-#: src/gtkmm/dialog_preview.cpp:92 src/gtkmm/renddesc.cpp:556
+#: ../src/gtkmm/dialog_preview.cpp:92
+#: ../src/gtkmm/renddesc.cpp:556
 msgid "_End Time"
 msgstr "_Время конца:"
 
-#: src/gtkmm/dialog_preview.cpp:106
+#: ../src/gtkmm/dialog_preview.cpp:106
 msgid "General Settings"
 msgstr "Общие параметры"
 
-#: src/gtkmm/dialog_preview.cpp:108
+#: ../src/gtkmm/dialog_preview.cpp:108
 msgid "<b>General Settings</b>"
 msgstr "<b>Общие параметры</b>"
 
-#: src/gtkmm/dialog_preview.cpp:120
+#: ../src/gtkmm/dialog_preview.cpp:120
 msgid "_Zoom"
 msgstr "_Масштаб:"
 
-#: src/gtkmm/dialog_preview.cpp:129 src/gtkmm/renddesc.cpp:546
+#: ../src/gtkmm/dialog_preview.cpp:129
+#: ../src/gtkmm/renddesc.cpp:546
 msgid "_Frames per second"
 msgstr "_Кадров/с:"
 
-#: src/gtkmm/dialog_preview.cpp:138 src/gtkmm/renddesc.cpp:532
+#: ../src/gtkmm/dialog_preview.cpp:138
+#: ../src/gtkmm/renddesc.cpp:532
 msgid "Time Settings"
 msgstr "Временные параметры"
 
-#: src/gtkmm/dialog_preview.cpp:140 src/gtkmm/renddesc.cpp:534
+#: ../src/gtkmm/dialog_preview.cpp:140
+#: ../src/gtkmm/renddesc.cpp:534
 msgid "<b>Time Settings</b>"
 msgstr "<b>Временные параметры</b>"
 
-#: src/gtkmm/dialog_setup.cpp:74
+#: ../src/gtkmm/dialog_setup.cpp:73
 msgid "Synfig Studio Setup"
-msgstr ""
+msgstr "Параметры Synfig Studio"
 
-#: src/gtkmm/dialog_setup.cpp:80
+#: ../src/gtkmm/dialog_setup.cpp:79
 msgid "Visually Linear Color Selection"
-msgstr ""
+msgstr "Визуально линейный выбор цвета"
 
-#: src/gtkmm/dialog_setup.cpp:82
+#: ../src/gtkmm/dialog_setup.cpp:81
 msgid "Use Only a Single Thread"
-msgstr ""
+msgstr "Использовать только одну нить"
 
-#: src/gtkmm/dialog_setup.cpp:84
+#: ../src/gtkmm/dialog_setup.cpp:83
 msgid "Restrict Real-Valued Ducks to Top Right Quadrant"
-msgstr ""
+msgstr "Ограничить верхним правым квадрантом ручки с реальным значением"
 
-#: src/gtkmm/dialog_setup.cpp:85
+#: ../src/gtkmm/dialog_setup.cpp:84
 msgid "Scale New Imported Images to Fit Canvas"
-msgstr ""
+msgstr "Вписывать импортируемые изображения в холст"
 
-#: src/gtkmm/dialog_setup.cpp:115
+#: ../src/gtkmm/dialog_setup.cpp:115
 msgid "Gamma"
 msgstr "Гамма"
 
-#: src/gtkmm/dialog_setup.cpp:121 src/gtkmm/widget_coloredit.cpp:354
+#: ../src/gtkmm/dialog_setup.cpp:121
+#: ../src/gtkmm/widget_coloredit.cpp:354
 msgid "Red"
 msgstr "Красный"
 
-#: src/gtkmm/dialog_setup.cpp:126 src/gtkmm/widget_coloredit.cpp:356
+#: ../src/gtkmm/dialog_setup.cpp:126
+#: ../src/gtkmm/widget_coloredit.cpp:356
 msgid "Green"
 msgstr "Зеленый"
 
-#: src/gtkmm/dialog_setup.cpp:131 src/gtkmm/widget_coloredit.cpp:358
+#: ../src/gtkmm/dialog_setup.cpp:131
+#: ../src/gtkmm/widget_coloredit.cpp:358
 msgid "Blue"
 msgstr "Синий"
 
-#: src/gtkmm/dialog_setup.cpp:135
+#: ../src/gtkmm/dialog_setup.cpp:135
 msgid "Black Level"
 msgstr "Уровень черного"
 
-#: src/gtkmm/dialog_setup.cpp:146
+#: ../src/gtkmm/dialog_setup.cpp:146
 msgid "Misc."
 msgstr "Разное"
 
-#: src/gtkmm/dialog_setup.cpp:152
+#: ../src/gtkmm/dialog_setup.cpp:152
 msgid "Timestamp"
-msgstr "Отметка времени"
+msgstr "Формат времени"
 
-#: src/gtkmm/dialog_setup.cpp:180
+#: ../src/gtkmm/dialog_setup.cpp:180
 msgid "Pixels"
 msgstr "Пиксел"
 
-#: src/gtkmm/dialog_setup.cpp:181
+#: ../src/gtkmm/dialog_setup.cpp:181
 msgid "Points"
 msgstr "Пункт"
 
-#: src/gtkmm/dialog_setup.cpp:182
+#: ../src/gtkmm/dialog_setup.cpp:182
 msgid "Inches"
 msgstr "Дюйм"
 
-#: src/gtkmm/dialog_setup.cpp:183
+#: ../src/gtkmm/dialog_setup.cpp:183
 msgid "Meters"
 msgstr "Метр"
 
-#: src/gtkmm/dialog_setup.cpp:184
+#: ../src/gtkmm/dialog_setup.cpp:184
 msgid "Centimeters"
 msgstr "Сантиметр"
 
-#: src/gtkmm/dialog_setup.cpp:185
+#: ../src/gtkmm/dialog_setup.cpp:185
 msgid "Millimeters"
 msgstr "Миллиметр"
 
-#: src/gtkmm/dialog_setup.cpp:190
+#: ../src/gtkmm/dialog_setup.cpp:190
 msgid "Unit System"
 msgstr "Единица измерения"
 
-#: src/gtkmm/dialog_setup.cpp:196
+#: ../src/gtkmm/dialog_setup.cpp:196
 msgid "Recent Files"
 msgstr "Помнить недавних файлов"
 
-#: src/gtkmm/dialog_setup.cpp:208
+#: ../src/gtkmm/dialog_setup.cpp:208
 msgid "Auto Backup Interval (0 to disable)"
-msgstr "Интервал автосохранения (0 отключает)"
+msgstr "Интервал автосохранения"
 
-#: src/gtkmm/dialog_setup.cpp:218
+#: ../src/gtkmm/dialog_setup.cpp:218
 msgid "Browser Command"
 msgstr "Команда браузера"
 
-#: src/gtkmm/dialog_setup.cpp:223
+#: ../src/gtkmm/dialog_setup.cpp:223
 msgid "Document"
 msgstr "Документ"
 
-#: src/gtkmm/dialog_setup.cpp:226
+#: ../src/gtkmm/dialog_setup.cpp:226
 msgid "New Document filename prefix"
-msgstr "Новый префикс имени файлов"
+msgstr "Префикс имён файлов"
 
-#: src/gtkmm/dialog_setup.cpp:228
+#: ../src/gtkmm/dialog_setup.cpp:228
 msgid "File name prefix for the new created document"
-msgstr ""
+msgstr "Префикс имени файлов для новых документов"
 
-#: src/gtkmm/dialog_setup.cpp:232
+#: ../src/gtkmm/dialog_setup.cpp:232
 msgid "New Document X size"
-msgstr "Ширина нового документа"
+msgstr "Ширина новых документов"
 
-#: src/gtkmm/dialog_setup.cpp:234
+#: ../src/gtkmm/dialog_setup.cpp:234
 msgid "Width in pixels of the new created document"
-msgstr "Ширина нового документа в пикселах"
+msgstr "Ширина новых документов в пикселах"
 
-#: src/gtkmm/dialog_setup.cpp:238
+#: ../src/gtkmm/dialog_setup.cpp:238
 msgid "New Document Y size"
-msgstr "Высота нового документа"
+msgstr "Высота новых документов"
 
-#: src/gtkmm/dialog_setup.cpp:240
+#: ../src/gtkmm/dialog_setup.cpp:240
 msgid "High in pixels of the new created document"
-msgstr "Высота нового документа в пикселах"
+msgstr "Высота новых документов в пикселах"
 
-#: src/gtkmm/dialog_setup.cpp:244
+#: ../src/gtkmm/dialog_setup.cpp:244
 msgid "Predefined Resolutions:"
 msgstr "Предустановки:"
 
-#: src/gtkmm/dialog_setup.cpp:249
+#: ../src/gtkmm/dialog_setup.cpp:249
 msgid "4096x3112 Full Aperture 4K"
 msgstr ""
 
-#: src/gtkmm/dialog_setup.cpp:250
+#: ../src/gtkmm/dialog_setup.cpp:250
 msgid "2048x1556 Full Aperture Native 2K"
 msgstr ""
 
-#: src/gtkmm/dialog_setup.cpp:251
+#: ../src/gtkmm/dialog_setup.cpp:251
 msgid "1920x1080 HDTV 1080p/i"
 msgstr "1920x1080 HDTV 1080p/i"
 
-#: src/gtkmm/dialog_setup.cpp:252
+#: ../src/gtkmm/dialog_setup.cpp:252
 msgid "1280x720  HDTV 720p"
 msgstr "1280x720  HDTV 720p"
 
-#: src/gtkmm/dialog_setup.cpp:253
+#: ../src/gtkmm/dialog_setup.cpp:253
 msgid "720x576   DVD PAL"
 msgstr "720x576   DVD PAL"
 
-#: src/gtkmm/dialog_setup.cpp:254
+#: ../src/gtkmm/dialog_setup.cpp:254
 msgid "720x480   DVD NTSC"
 msgstr "720x480   DVD NTSC"
 
-#: src/gtkmm/dialog_setup.cpp:255
+#: ../src/gtkmm/dialog_setup.cpp:255
 msgid "720x540   Web 720x"
 msgstr "720x540   Web 720x"
 
-#: src/gtkmm/dialog_setup.cpp:256
+#: ../src/gtkmm/dialog_setup.cpp:256
 msgid "720x405   Web 720x HD"
 msgstr "720x405   Web 720x HD"
 
-#: src/gtkmm/dialog_setup.cpp:257
+#: ../src/gtkmm/dialog_setup.cpp:257
 msgid "640x480   Web 640x"
 msgstr "640x480   Web 640x"
 
-#: src/gtkmm/dialog_setup.cpp:258
+#: ../src/gtkmm/dialog_setup.cpp:258
 msgid "640x360   Web 640x HD"
 msgstr "640x360   Web 640x HD"
 
-#: src/gtkmm/dialog_setup.cpp:259
+#: ../src/gtkmm/dialog_setup.cpp:259
 msgid "480x360   Web 480x"
 msgstr "480x360   Web 480x"
 
-#: src/gtkmm/dialog_setup.cpp:260
+#: ../src/gtkmm/dialog_setup.cpp:260
 msgid "480x270   Web 480x HD"
 msgstr "480x270   Web 480x HD"
 
-#: src/gtkmm/dialog_setup.cpp:261
+#: ../src/gtkmm/dialog_setup.cpp:261
 msgid "360x270   Web 360x"
 msgstr "360x270   Web 360x"
 
-#: src/gtkmm/dialog_setup.cpp:262
+#: ../src/gtkmm/dialog_setup.cpp:262
 msgid "360x203   Web 360x HD"
 msgstr "360x203   Web 360x HD"
 
-#: src/gtkmm/dialog_setup.h:50
-msgid "Custom Size"
-msgstr ""
+#: ../src/gtkmm/dialog_setup.cpp:267
+msgid "Predefined FPS:"
+msgstr "Количество кадров в секунду:"
 
-#: src/gtkmm/dialog_soundselect.cpp:60
+#: ../src/gtkmm/dialog_setup.cpp:289
+msgid "New Document FPS"
+msgstr "По умолчанию"
+
+#: ../src/gtkmm/dialog_setup.cpp:291
+msgid "Frames per second of the new created document"
+msgstr "Количество кадров в секунду в каждом новом документе"
+
+#: ../src/gtkmm/dialog_setup.h:51
+msgid "Custom Size"
+msgstr "Заказной размер"
+
+#: ../src/gtkmm/dialog_setup.h:54
+msgid "Custom fps"
+msgstr "Заказное количество"
+
+#: ../src/gtkmm/dialog_soundselect.cpp:60
 msgid "Sound Select"
 msgstr "Выбор звукового файла"
 
-#: src/gtkmm/dialog_soundselect.cpp:67
+#: ../src/gtkmm/dialog_soundselect.cpp:67
 msgid "Sound Parameters"
-msgstr ""
+msgstr "Параметры звука"
 
-#: src/gtkmm/dialog_soundselect.cpp:68
+#: ../src/gtkmm/dialog_soundselect.cpp:68
 msgid "<b>Sound Parameters</b>"
 msgstr "<b>Параметры</b>"
 
-#: src/gtkmm/dialog_soundselect.cpp:76
+#: ../src/gtkmm/dialog_soundselect.cpp:76
 msgid "_Sound File"
 msgstr "_Звуковой файл"
 
-#: src/gtkmm/dialog_soundselect.cpp:79
+#: ../src/gtkmm/dialog_soundselect.cpp:79
 msgid "Time _Offset"
 msgstr "_Смещение во времени"
 
-#: src/gtkmm/dialog_tooloptions.cpp:56 src/gtkmm/dialog_tooloptions.cpp:78
+#: ../src/gtkmm/dialog_tooloptions.cpp:56
+#: ../src/gtkmm/dialog_tooloptions.cpp:78
 msgid "Tool Options"
 msgstr "Параметры инструмента"
 
-#: src/gtkmm/dialog_tooloptions.cpp:57
+#: ../src/gtkmm/dialog_tooloptions.cpp:57
 msgid "This tool has no options"
 msgstr "У этого инструмента нет параметров"
 
-#: src/gtkmm/dialog_waypoint.cpp:63
+#: ../src/gtkmm/dialog_waypoint.cpp:63
 msgid "Waypoint Editor"
-msgstr ""
+msgstr "Редактор фиксатора"
 
-#: src/gtkmm/dockable.cpp:121
+#: ../src/gtkmm/dockable.cpp:121
 msgid "X"
-msgstr ""
+msgstr "X"
 
-#: src/gtkmm/dock_canvases.cpp:55
+#: ../src/gtkmm/dock_canvases.cpp:55
 msgid "Canvas Browser"
-msgstr ""
+msgstr "Просмотр холста"
 
-#: src/gtkmm/dock_children.cpp:67 src/gtkmm/iconcontroller.cpp:176
+#: ../src/gtkmm/dock_children.cpp:67
+#: ../src/gtkmm/iconcontroller.cpp:178
 msgid "Children"
 msgstr "Потомки"
 
-#: src/gtkmm/dock_curves.cpp:70 src/gtkmm/iconcontroller.cpp:177
+#: ../src/gtkmm/dock_curves.cpp:70
+#: ../src/gtkmm/iconcontroller.cpp:179
 msgid "Curves"
 msgstr "Кривые"
 
-#: src/gtkmm/dockdialog.cpp:115
+#: ../src/gtkmm/dockdialog.cpp:115
 msgid "Dock Panel"
-msgstr ""
+msgstr "Панель дока"
 
-#: src/gtkmm/dockdialog.cpp:563
+#: ../src/gtkmm/dockdialog.cpp:563
 msgid "Empty Dock Panel"
 msgstr ""
 
-#: src/gtkmm/dock_history.cpp:69 src/gtkmm/dock_history.cpp:125
+#: ../src/gtkmm/dock_history.cpp:69
+#: ../src/gtkmm/dock_history.cpp:125
 msgid "History"
 msgstr "История действий"
 
-#: src/gtkmm/dock_history.cpp:78 src/gtkmm/iconcontroller.cpp:173
+#: ../src/gtkmm/dock_history.cpp:78
+#: ../src/gtkmm/iconcontroller.cpp:175
 msgid "Clear Undo Stack"
-msgstr ""
+msgstr "Забыть историю откатов"
 
-#: src/gtkmm/dock_history.cpp:79
+#: ../src/gtkmm/dock_history.cpp:79
 msgid "Clear the undo stack"
-msgstr ""
+msgstr "Стереть информацию об отменяемых действиях"
 
-#: src/gtkmm/dock_history.cpp:89 src/gtkmm/iconcontroller.cpp:174
+#: ../src/gtkmm/dock_history.cpp:89
+#: ../src/gtkmm/iconcontroller.cpp:176
 msgid "Clear Redo Stack"
-msgstr ""
+msgstr "Забыть историю повторов"
 
-#: src/gtkmm/dock_history.cpp:90
+#: ../src/gtkmm/dock_history.cpp:90
 msgid "Clear the redo stack"
-msgstr ""
+msgstr "Стереть информацию о повторяемых действиях"
 
-#: src/gtkmm/dock_history.cpp:100
+#: ../src/gtkmm/dock_history.cpp:100
 msgid "Clear Undo and Redo Stacks"
-msgstr ""
+msgstr "Забыть откаты и повторы"
 
-#: src/gtkmm/dock_history.cpp:101
+#: ../src/gtkmm/dock_history.cpp:101
 msgid "Clear the undo and redo stacks"
-msgstr ""
+msgstr "Стереть информацию об отменяемых и повторяемых действиях"
 
-#: src/gtkmm/dock_history.cpp:111 src/gtkmm/toolbox.cpp:295
+#: ../src/gtkmm/dock_history.cpp:111
+#: ../src/gtkmm/toolbox.cpp:295
 msgid "Undo"
 msgstr "Отменить"
 
-#: src/gtkmm/dock_history.cpp:112
+#: ../src/gtkmm/dock_history.cpp:112
 msgid "Undo the previous action"
 msgstr "Отменить предыдущее действие"
 
-#: src/gtkmm/dock_history.cpp:119 src/gtkmm/toolbox.cpp:296
+#: ../src/gtkmm/dock_history.cpp:119
+#: ../src/gtkmm/toolbox.cpp:296
 msgid "Redo"
 msgstr "Повторить"
 
-#: src/gtkmm/dock_history.cpp:120
+#: ../src/gtkmm/dock_history.cpp:120
 msgid "Redo the previously undone action"
 msgstr "Повторить отмененное ранее действие"
 
-#: src/gtkmm/dock_history.cpp:211 src/gtkmm/keyframetree.cpp:92
+#: ../src/gtkmm/dock_history.cpp:211
+#: ../src/gtkmm/keyframetree.cpp:92
 msgid "Jump"
-msgstr ""
+msgstr "Переход"
 
-#: src/gtkmm/dock_history.cpp:216 src/gtkmm/keyframetree.cpp:96
+#: ../src/gtkmm/dock_history.cpp:216
+#: ../src/gtkmm/keyframetree.cpp:96
 msgid "(JMP)"
-msgstr ""
+msgstr "(ПХД)"
 
-#: src/gtkmm/dock_history.cpp:228
+#: ../src/gtkmm/dock_history.cpp:228
 msgid "Action"
 msgstr "Действие"
 
-#: src/gtkmm/dock_history.cpp:275 src/gtkmm/dock_history.cpp:283
-#: src/gtkmm/dock_history.cpp:291
+#: ../src/gtkmm/dock_history.cpp:275
+#: ../src/gtkmm/dock_history.cpp:283
+#: ../src/gtkmm/dock_history.cpp:291
 msgid "Clear History"
 msgstr "Очистить историю"
 
-#: src/gtkmm/dock_history.cpp:276
+#: ../src/gtkmm/dock_history.cpp:276
 msgid ""
 "You will not be able to undo any changes that you have made!\n"
 "Are you sure you want to clear the undo stack?"
-msgstr ""
+msgstr "Вы не сможете "
 
-#: src/gtkmm/dock_history.cpp:284
+#: ../src/gtkmm/dock_history.cpp:284
 msgid ""
 "You will not be able to redo any changes that you have made!\n"
 "Are you sure you want to clear the redo stack?"
 msgstr ""
 
-#: src/gtkmm/dock_history.cpp:292
+#: ../src/gtkmm/dock_history.cpp:292
 msgid ""
 "You will not be able to undo or redo any changes that you have made!\n"
 "Are you sure you want to clear the undo and redo stacks?"
 msgstr ""
 
-#: src/gtkmm/dock_info.cpp:96 src/gtkmm/instance.cpp:551
+#: ../src/gtkmm/dock_info.cpp:96
+#: ../src/gtkmm/instance.cpp:551
 msgid "Info"
 msgstr "Инфо"
 
-#: src/gtkmm/dock_info.cpp:103
+#: ../src/gtkmm/dock_info.cpp:103
 msgid "X: "
 msgstr "X: "
 
-#: src/gtkmm/dock_info.cpp:104
+#: ../src/gtkmm/dock_info.cpp:104
 msgid "Y: "
 msgstr "Y: "
 
-#: src/gtkmm/dock_info.cpp:114
+#: ../src/gtkmm/dock_info.cpp:114
 msgid "R: "
 msgstr "R: "
 
-#: src/gtkmm/dock_info.cpp:115
+#: ../src/gtkmm/dock_info.cpp:115
 msgid "G: "
 msgstr "G: "
 
-#: src/gtkmm/dock_info.cpp:116
+#: ../src/gtkmm/dock_info.cpp:116
 msgid "B: "
 msgstr "B: "
 
-#: src/gtkmm/dock_info.cpp:117
+#: ../src/gtkmm/dock_info.cpp:117
 msgid "A: "
 msgstr "A: "
 
-#: src/gtkmm/dock_keyframes.cpp:66 src/gtkmm/iconcontroller.cpp:178
+#: ../src/gtkmm/dock_keyframes.cpp:66
+#: ../src/gtkmm/iconcontroller.cpp:180
 msgid "Keyframes"
 msgstr "Ключевые кадры"
 
-#: src/gtkmm/dock_layergroups.cpp:68
+#: ../src/gtkmm/dock_layergroups.cpp:68
 msgid "Groups"
 msgstr "Группы"
 
-#: src/gtkmm/dock_layergroups.cpp:74
+#: ../src/gtkmm/dock_layergroups.cpp:74
 msgid "Group Ops"
 msgstr ""
 
-#: src/gtkmm/dock_layergroups.cpp:76 src/gtkmm/groupactionmanager.cpp:175
-#: src/gtkmm/groupactionmanager.cpp:176
+#: ../src/gtkmm/dock_layergroups.cpp:76
+#: ../src/gtkmm/groupactionmanager.cpp:175
+#: ../src/gtkmm/groupactionmanager.cpp:176
 msgid "Add a New Group"
 msgstr "Создать новую группу"
 
-#: src/gtkmm/dock_layers.cpp:74
+#: ../src/gtkmm/dock_layers.cpp:74
 msgid "Layers"
 msgstr "Слои"
 
-#: src/gtkmm/dock_layers.cpp:146
+#: ../src/gtkmm/dock_layers.cpp:146
 msgid "Layer Ops"
 msgstr ""
 
-#: src/gtkmm/dock_metadata.cpp:64
+#: ../src/gtkmm/dock_metadata.cpp:64
 msgid "Canvas MetaData"
 msgstr "Метаданные холста"
 
-#: src/gtkmm/dock_metadata.cpp:84
+#: ../src/gtkmm/dock_metadata.cpp:84
 msgid "Add new MetaData entry"
 msgstr "Создать новую запись в метаданных"
 
-#: src/gtkmm/dock_metadata.cpp:94
+#: ../src/gtkmm/dock_metadata.cpp:94
 msgid "Remove selected MetaData entry"
 msgstr ""
 
-#: src/gtkmm/dock_navigator.cpp:496 src/gtkmm/iconcontroller.cpp:180
+#: ../src/gtkmm/dock_navigator.cpp:496
+#: ../src/gtkmm/iconcontroller.cpp:182
 msgid "Navigator"
 msgstr "Навигатор"
 
-#: src/gtkmm/dock_params.cpp:65
+#: ../src/gtkmm/dock_params.cpp:65
 msgid "Params"
 msgstr "Параметры"
 
-#: src/gtkmm/dock_timetrack.cpp:83 src/gtkmm/layergrouptree.cpp:75
-#: src/gtkmm/layertree.cpp:221 src/gtkmm/layertree.cpp:300
-#: src/synfigapp/actions/canvasnameset.cpp:82
-#: src/synfigapp/actions/valuedescexport.cpp:92
-#: src/synfigapp/actions/valuenodeadd.cpp:77
-#: src/synfigapp/actions/valuenoderename.cpp:86
+#: ../src/gtkmm/dock_timetrack.cpp:84
+#: ../src/gtkmm/layergrouptree.cpp:75
+#: ../src/gtkmm/layertree.cpp:221
+#: ../src/gtkmm/layertree.cpp:300
+#: ../src/synfigapp/actions/canvasnameset.cpp:82
+#: ../src/synfigapp/actions/valuedescexport.cpp:93
+#: ../src/synfigapp/actions/valuenodeadd.cpp:77
+#: ../src/synfigapp/actions/valuenoderename.cpp:86
 msgid "Name"
 msgstr "Название"
 
-#: src/gtkmm/dock_timetrack.cpp:404
+#: ../src/gtkmm/dock_timetrack.cpp:405
 msgid "Timetrack"
 msgstr "Дорожка времени"
 
-#: src/gtkmm/groupactionmanager.cpp:269
+#: ../src/gtkmm/framedial.cpp:61
+#: ../src/gtkmm/iconcontroller.cpp:194
+msgid "Previous Frame"
+msgstr "Предыдущий кадр"
+
+#: ../src/gtkmm/groupactionmanager.cpp:269
 msgid "UnnamedGroup"
 msgstr "БезымяннаяГруппа"
 
-#: src/gtkmm/iconcontroller.cpp:140
+#: ../src/gtkmm/iconcontroller.cpp:142
 msgid "Bool"
 msgstr ""
 
-#: src/gtkmm/iconcontroller.cpp:141
+#: ../src/gtkmm/iconcontroller.cpp:143
 msgid "Integer"
 msgstr ""
 
-#: src/gtkmm/iconcontroller.cpp:142
+#: ../src/gtkmm/iconcontroller.cpp:144
 msgid "Angle"
-msgstr ""
+msgstr "Угол"
 
-#: src/gtkmm/iconcontroller.cpp:144
+#: ../src/gtkmm/iconcontroller.cpp:146
 msgid "Real"
 msgstr ""
 
-#: src/gtkmm/iconcontroller.cpp:145
+#: ../src/gtkmm/iconcontroller.cpp:147
 msgid "Vector"
 msgstr ""
 
-#: src/gtkmm/iconcontroller.cpp:146
+#: ../src/gtkmm/iconcontroller.cpp:148
 msgid "Color"
 msgstr "Цвет"
 
-#: src/gtkmm/iconcontroller.cpp:149 src/gtkmm/iconcontroller.cpp:151
-#: src/gtkmm/iconcontroller.cpp:157 src/gtkmm/iconcontroller.cpp:158
+#: ../src/gtkmm/iconcontroller.cpp:151
+#: ../src/gtkmm/iconcontroller.cpp:153
+#: ../src/gtkmm/iconcontroller.cpp:159
+#: ../src/gtkmm/iconcontroller.cpp:160
 msgid "Rename"
 msgstr ""
 
-#: src/gtkmm/iconcontroller.cpp:153
+#: ../src/gtkmm/iconcontroller.cpp:155
 msgid "Reset Colors"
-msgstr ""
+msgstr "Сбросить цвета"
 
-#: src/gtkmm/iconcontroller.cpp:154
+#: ../src/gtkmm/iconcontroller.cpp:156
 msgid "Swap Colors"
-msgstr ""
+msgstr "Поменять цвета местами"
 
-#: src/gtkmm/iconcontroller.cpp:155
-#: src/synfigapp/actions/layerparamconnect.cpp:80
-#: src/synfigapp/actions/valuenodedynamiclistloop.cpp:73
-#: src/synfigapp/actions/valuenodedynamiclistunloop.cpp:73
-#: src/synfigapp/actions/valuenoderemove.cpp:80
-#: src/synfigapp/value_desc.cpp:71
+#: ../src/gtkmm/iconcontroller.cpp:157
+#: ../src/synfigapp/actions/layerparamconnect.cpp:80
+#: ../src/synfigapp/actions/valuenodedynamiclistloop.cpp:73
+#: ../src/synfigapp/actions/valuenodedynamiclistunloop.cpp:73
+#: ../src/synfigapp/actions/valuenoderemove.cpp:80
+#: ../src/synfigapp/value_desc.cpp:71
 msgid "ValueNode"
 msgstr ""
 
-#: src/gtkmm/iconcontroller.cpp:156
+#: ../src/gtkmm/iconcontroller.cpp:158
 msgid "About"
-msgstr ""
+msgstr "О программе"
 
-#: src/gtkmm/iconcontroller.cpp:160 src/gtkmm/toolbox.cpp:294
+#: ../src/gtkmm/iconcontroller.cpp:162
+#: ../src/gtkmm/toolbox.cpp:294
 msgid "Save All"
 msgstr "Сохранить все"
 
-#: src/gtkmm/iconcontroller.cpp:161 src/gtkmm/layergrouptreestore.cpp:920
-#: src/gtkmm/layertreestore.cpp:965
-#: src/synfigapp/actions/groupaddlayers.cpp:72
-#: src/synfigapp/actions/groupremovelayers.cpp:73
-#: src/synfigapp/actions/layeractivate.cpp:86
-#: src/synfigapp/actions/layerduplicate.cpp:81
-#: src/synfigapp/actions/layerencapsulate.cpp:81
-#: src/synfigapp/actions/layerlower.cpp:80
-#: src/synfigapp/actions/layermove.cpp:85
-#: src/synfigapp/actions/layerparamconnect.cpp:72
-#: src/synfigapp/actions/layerparamdisconnect.cpp:75
-#: src/synfigapp/actions/layerparamset.cpp:72
-#: src/synfigapp/actions/layerraise.cpp:80
-#: src/synfigapp/actions/layerremove.cpp:79
-#: src/synfigapp/actions/layersetdesc.cpp:85
+#: ../src/gtkmm/iconcontroller.cpp:163
+#: ../src/gtkmm/layergrouptreestore.cpp:920
+#: ../src/gtkmm/layertreestore.cpp:965
+#: ../src/synfigapp/actions/groupaddlayers.cpp:72
+#: ../src/synfigapp/actions/groupremovelayers.cpp:73
+#: ../src/synfigapp/actions/layeractivate.cpp:86
+#: ../src/synfigapp/actions/layerduplicate.cpp:81
+#: ../src/synfigapp/actions/layerencapsulate.cpp:81
+#: ../src/synfigapp/actions/layerlower.cpp:80
+#: ../src/synfigapp/actions/layermove.cpp:85
+#: ../src/synfigapp/actions/layerparamconnect.cpp:72
+#: ../src/synfigapp/actions/layerparamdisconnect.cpp:75
+#: ../src/synfigapp/actions/layerparamset.cpp:72
+#: ../src/synfigapp/actions/layerraise.cpp:80
+#: ../src/synfigapp/actions/layerremove.cpp:79
+#: ../src/synfigapp/actions/layersetdesc.cpp:85
 msgid "Layer"
 msgstr "Слой"
 
-#: src/gtkmm/iconcontroller.cpp:162
+#: ../src/gtkmm/iconcontroller.cpp:164
 msgid "Paste Canvas"
-msgstr ""
+msgstr "Вставить холст"
 
-#: src/gtkmm/iconcontroller.cpp:166
+#: ../src/gtkmm/iconcontroller.cpp:168
 msgid "Hide Grid"
 msgstr "Скрыть сетку"
 
-#: src/gtkmm/iconcontroller.cpp:167
+#: ../src/gtkmm/iconcontroller.cpp:169
 msgid "Enable Grid Snap"
 msgstr "Включить прилипание к сетке"
 
-#: src/gtkmm/iconcontroller.cpp:168
+#: ../src/gtkmm/iconcontroller.cpp:170
 msgid "Disable Grid Snap"
 msgstr "Отключить прилипание к сетке"
 
-#: src/gtkmm/iconcontroller.cpp:169
+#: ../src/gtkmm/iconcontroller.cpp:171
 msgid "Duplicate"
 msgstr "Продублировать"
 
-#: src/gtkmm/iconcontroller.cpp:170
-#: src/synfigapp/actions/layerencapsulate.cpp:52
+#: ../src/gtkmm/iconcontroller.cpp:172
+#: ../src/synfigapp/actions/layerencapsulate.cpp:52
 msgid "Encapsulate"
-msgstr "Инкапсюлировать"
+msgstr "Изолировать"
 
-#: src/gtkmm/iconcontroller.cpp:171 src/gtkmm/layeractionmanager.cpp:135
+#: ../src/gtkmm/iconcontroller.cpp:173
+#: ../src/gtkmm/layeractionmanager.cpp:135
 msgid "Select All Child Layers"
 msgstr "Выбрать все слои-потомки"
 
-#: src/gtkmm/iconcontroller.cpp:179
+#: ../src/gtkmm/iconcontroller.cpp:181
 msgid "MetaData"
 msgstr "Метаданные"
 
-#: src/gtkmm/iconcontroller.cpp:188
+#: ../src/gtkmm/iconcontroller.cpp:198
+#: ../src/gtkmm/toggleducksdial.cpp:55
+msgid "Toggle position ducks"
+msgstr "Переключить ручки положения"
+
+#: ../src/gtkmm/iconcontroller.cpp:199
+#: ../src/gtkmm/toggleducksdial.cpp:56
+msgid "Toggle vertex ducks"
+msgstr "Переключить ручки вершин"
+
+#: ../src/gtkmm/iconcontroller.cpp:200
+#: ../src/gtkmm/toggleducksdial.cpp:57
+msgid "Toggle tangent ducks"
+msgstr "Переключить ручки касательных"
+
+#: ../src/gtkmm/iconcontroller.cpp:201
+#: ../src/gtkmm/toggleducksdial.cpp:58
+msgid "Toggle radius ducks"
+msgstr "Переключить ручки радиусов"
+
+#: ../src/gtkmm/iconcontroller.cpp:202
+#: ../src/gtkmm/toggleducksdial.cpp:59
+msgid "Toggle width ducks"
+msgstr "Переключить ручки ширины"
+
+#: ../src/gtkmm/iconcontroller.cpp:203
+#: ../src/gtkmm/toggleducksdial.cpp:60
+msgid "Toggle angle ducks"
+msgstr "Переключить ручки углов"
+
+#: ../src/gtkmm/iconcontroller.cpp:205
+msgid "Toggle show grid"
+msgstr "Переключить отображение сетки"
+
+#: ../src/gtkmm/iconcontroller.cpp:206
+msgid "Toggle snap grid"
+msgstr "Переключить прилипание к сетке"
+
+#: ../src/gtkmm/iconcontroller.cpp:208
+msgid "Toggle onion skin"
+msgstr "Переключить кальку"
+
+#: ../src/gtkmm/iconcontroller.cpp:210
+msgid "Increase resolution"
+msgstr "Увеличить разрешение"
+
+#: ../src/gtkmm/iconcontroller.cpp:211
+msgid "Decrease resolution"
+msgstr "Уменьшить разрешение"
+
+#: ../src/gtkmm/iconcontroller.cpp:213
+msgid "Preview Options Dialog"
+msgstr "Параметры предпросмотра"
+
+#: ../src/gtkmm/iconcontroller.cpp:214
+msgid "Render Options Dialog"
+msgstr "Параметры отрисовки"
+
+#: ../src/gtkmm/iconcontroller.cpp:216
 msgid "CVS Add"
 msgstr ""
 
-#: src/gtkmm/iconcontroller.cpp:190 src/gtkmm/instance.cpp:491
-#: src/gtkmm/instance.cpp:502
+#: ../src/gtkmm/iconcontroller.cpp:218
+#: ../src/gtkmm/instance.cpp:491
+#: ../src/gtkmm/instance.cpp:502
 msgid "CVS Commit"
 msgstr ""
 
-#: src/gtkmm/iconcontroller.cpp:191 src/gtkmm/instance.cpp:593
+#: ../src/gtkmm/iconcontroller.cpp:219
+#: ../src/gtkmm/instance.cpp:593
 msgid "CVS Revert"
 msgstr ""
 
-#: src/gtkmm/iconcontroller.cpp:194
+#: ../src/gtkmm/iconcontroller.cpp:222
 msgid "Normal Tool"
 msgstr "Селектор"
 
-#: src/gtkmm/iconcontroller.cpp:195 src/gtkmm/state_polygon.cpp:338
-#: src/gtkmm/state_polygon.cpp:392
+#: ../src/gtkmm/iconcontroller.cpp:223
+#: ../src/gtkmm/state_polygon.cpp:338
+#: ../src/gtkmm/state_polygon.cpp:392
 msgid "Polygon Tool"
 msgstr "Многоугольник"
 
-#: src/gtkmm/iconcontroller.cpp:196 src/gtkmm/state_bline.cpp:377
-#: src/gtkmm/state_bline.cpp:421
+#: ../src/gtkmm/iconcontroller.cpp:224
+#: ../src/gtkmm/state_bline.cpp:377
+#: ../src/gtkmm/state_bline.cpp:421
 msgid "BLine Tool"
 msgstr "Кривые"
 
-#: src/gtkmm/iconcontroller.cpp:197
+#: ../src/gtkmm/iconcontroller.cpp:225
 msgid "Eyedrop Tool"
 msgstr "Пипетка"
 
-#: src/gtkmm/iconcontroller.cpp:198
+#: ../src/gtkmm/iconcontroller.cpp:226
 msgid "Fill Tool"
-msgstr "Плоская заливка"
+msgstr "Сплошная заливка"
 
-#: src/gtkmm/iconcontroller.cpp:199 src/gtkmm/state_draw.cpp:433
-#: src/gtkmm/state_draw.cpp:519
+#: ../src/gtkmm/iconcontroller.cpp:227
+#: ../src/gtkmm/state_draw.cpp:433
+#: ../src/gtkmm/state_draw.cpp:519
 msgid "Draw Tool"
 msgstr "Векторный карандаш"
 
-#: src/gtkmm/iconcontroller.cpp:200 src/gtkmm/state_sketch.cpp:325
-#: src/gtkmm/state_sketch.cpp:399
+#: ../src/gtkmm/iconcontroller.cpp:228
+#: ../src/gtkmm/state_sketch.cpp:325
+#: ../src/gtkmm/state_sketch.cpp:399
 msgid "Sketch Tool"
 msgstr "Растровый карандаш"
 
-#: src/gtkmm/iconcontroller.cpp:201 src/gtkmm/state_circle.cpp:422
-#: src/gtkmm/state_circle.cpp:485
+#: ../src/gtkmm/iconcontroller.cpp:229
+#: ../src/gtkmm/state_circle.cpp:432
+#: ../src/gtkmm/state_circle.cpp:496
 msgid "Circle Tool"
 msgstr "Круги и эллипсы"
 
-#: src/gtkmm/iconcontroller.cpp:202 src/gtkmm/state_rectangle.cpp:352
-#: src/gtkmm/state_rectangle.cpp:408
+#: ../src/gtkmm/iconcontroller.cpp:230
+#: ../src/gtkmm/state_rectangle.cpp:352
+#: ../src/gtkmm/state_rectangle.cpp:408
 msgid "Rectangle Tool"
 msgstr "Прямоугольник"
 
-#: src/gtkmm/iconcontroller.cpp:203 src/gtkmm/state_smoothmove.cpp:177
+#: ../src/gtkmm/iconcontroller.cpp:231
+#: ../src/gtkmm/state_smoothmove.cpp:177
 msgid "SmoothMove Tool"
 msgstr "Перемещение"
 
-#: src/gtkmm/iconcontroller.cpp:204 src/gtkmm/state_scale.cpp:167
-#: src/gtkmm/state_scale.cpp:193
+#: ../src/gtkmm/iconcontroller.cpp:232
+#: ../src/gtkmm/state_scale.cpp:167
+#: ../src/gtkmm/state_scale.cpp:193
 msgid "Scale Tool"
 msgstr "Масштабирование"
 
-#: src/gtkmm/iconcontroller.cpp:205 src/gtkmm/state_width.cpp:229
-#: src/gtkmm/state_width.cpp:305
+#: ../src/gtkmm/iconcontroller.cpp:233
+#: ../src/gtkmm/state_width.cpp:229
+#: ../src/gtkmm/state_width.cpp:305
 msgid "Width Tool"
-msgstr ""
+msgstr "Коррекция толщины"
 
-#: src/gtkmm/iconcontroller.cpp:206 src/gtkmm/state_rotate.cpp:181
-#: src/gtkmm/state_rotate.cpp:208
+#: ../src/gtkmm/iconcontroller.cpp:234
+#: ../src/gtkmm/state_rotate.cpp:181
+#: ../src/gtkmm/state_rotate.cpp:208
 msgid "Rotate Tool"
 msgstr "Вращение"
 
-#: src/gtkmm/iconcontroller.cpp:207
+#: ../src/gtkmm/iconcontroller.cpp:235
 msgid "Zoom Tool"
 msgstr "Лупа"
 
-#: src/gtkmm/iconcontroller.cpp:208
+#: ../src/gtkmm/iconcontroller.cpp:236
 msgid "Info Tool"
 msgstr ""
 
-#: src/gtkmm/iconcontroller.cpp:209 src/gtkmm/mod_mirror/state_mirror.cpp:185
-#: src/gtkmm/mod_mirror/state_mirror.cpp:213
+#: ../src/gtkmm/iconcontroller.cpp:237
+#: ../src/gtkmm/mod_mirror/state_mirror.cpp:185
+#: ../src/gtkmm/mod_mirror/state_mirror.cpp:213
 msgid "Mirror Tool"
 msgstr "Отражение"
 
-#: src/gtkmm/iconcontroller.cpp:211 src/gtkmm/state_gradient.cpp:267
-#: src/gtkmm/state_gradient.cpp:327
+#: ../src/gtkmm/iconcontroller.cpp:239
+#: ../src/gtkmm/state_gradient.cpp:267
+#: ../src/gtkmm/state_gradient.cpp:327
 msgid "Gradient Tool"
 msgstr "Градиентная заливка"
 
-#: src/gtkmm/iconcontroller.cpp:212 src/gtkmm/state_star.cpp:444
-#: src/gtkmm/state_star.cpp:504
+#: ../src/gtkmm/iconcontroller.cpp:240
+#: ../src/gtkmm/state_star.cpp:454
+#: ../src/gtkmm/state_star.cpp:523
 msgid "Star Tool"
 msgstr "Звезда"
 
-#: src/gtkmm/instance.cpp:233 src/gtkmm/instance.cpp:336
+#: ../src/gtkmm/instance.cpp:233
+#: ../src/gtkmm/instance.cpp:336
 #, c-format
 msgid "Unable to save to '%s'"
 msgstr ""
 
-#: src/gtkmm/instance.cpp:234
+#: ../src/gtkmm/instance.cpp:234
 msgid "Save - Error"
-msgstr ""
+msgstr "Ошибка сохранения"
 
-#: src/gtkmm/instance.cpp:264
+#: ../src/gtkmm/instance.cpp:264
 msgid ""
 "There is currently a bug when using \"SaveAs\"\n"
 "on a composition that is being referenced by other\n"
@@ -1699,31 +1976,34 @@ msgid ""
 "other files first before trying to use \"SaveAs\"."
 msgstr ""
 
-#: src/gtkmm/instance.cpp:268 src/gtkmm/instance.cpp:319
-#: src/gtkmm/instance.cpp:337
+#: ../src/gtkmm/instance.cpp:268
+#: ../src/gtkmm/instance.cpp:319
+#: ../src/gtkmm/instance.cpp:337
 msgid "SaveAs - Error"
-msgstr ""
+msgstr "Ошибка сохранения под другим именем"
 
-#: src/gtkmm/instance.cpp:282
+#: ../src/gtkmm/instance.cpp:282
 msgid "Choose a Filename to Save As"
-msgstr ""
+msgstr "Укажите имя сохраняемого файла"
 
-#: src/gtkmm/instance.cpp:300
+#: ../src/gtkmm/instance.cpp:300
 msgid "Unknown extension"
-msgstr ""
+msgstr "Неизвестное расширение"
 
-#: src/gtkmm/instance.cpp:301
+#: ../src/gtkmm/instance.cpp:301
 msgid ""
 "You have given the file name an extension\n"
 "which I do not recognize. Are you sure this is what you want?"
 msgstr ""
+"Указано неизвестное программе расширение файла.\n"
+"Вы уверены в правильности своего выбора?"
 
-#: src/gtkmm/instance.cpp:318
+#: ../src/gtkmm/instance.cpp:318
 #, c-format
 msgid "Unable to check whether '%s' exists."
 msgstr ""
 
-#: src/gtkmm/instance.cpp:324
+#: ../src/gtkmm/instance.cpp:324
 #, c-format
 msgid ""
 "A file named '%s' already exists.\n"
@@ -1731,59 +2011,59 @@ msgid ""
 "Do you want to replace it with the file you are saving?"
 msgstr ""
 
-#: src/gtkmm/instance.cpp:327
+#: ../src/gtkmm/instance.cpp:327
 msgid "File exists"
 msgstr ""
 
-#: src/gtkmm/instance.cpp:482
+#: ../src/gtkmm/instance.cpp:482
 msgid "You must first add this composition to the repository"
 msgstr ""
 
-#: src/gtkmm/instance.cpp:491 src/gtkmm/instance.cpp:560
+#: ../src/gtkmm/instance.cpp:491
+#: ../src/gtkmm/instance.cpp:560
 msgid "This will save any changes you have made. Are you sure?"
 msgstr ""
 
-#: src/gtkmm/instance.cpp:498
+#: ../src/gtkmm/instance.cpp:498
 msgid ""
 "The local copy of the file hasn't been changed since the last update.\n"
 "Nothing to commit!"
 msgstr ""
 
-#: src/gtkmm/instance.cpp:502
+#: ../src/gtkmm/instance.cpp:502
 msgid "Enter a log message describing the changes you have made"
 msgstr ""
 
-#: src/gtkmm/instance.cpp:510
+#: ../src/gtkmm/instance.cpp:510
 msgid "An error has occurred when trying to COMMIT"
 msgstr ""
 
-#: src/gtkmm/instance.cpp:521
+#: ../src/gtkmm/instance.cpp:521
 msgid "This composition has already been added to the repository"
 msgstr ""
 
-#: src/gtkmm/instance.cpp:535
+#: ../src/gtkmm/instance.cpp:535
 msgid "An error has occurred when trying to ADD"
 msgstr ""
 
-#: src/gtkmm/instance.cpp:546
-msgid ""
-"This file is not under version control, so there is nothing to update from!"
+#: ../src/gtkmm/instance.cpp:546
+msgid "This file is not under version control, so there is nothing to update from!"
 msgstr ""
 
-#: src/gtkmm/instance.cpp:551
+#: ../src/gtkmm/instance.cpp:551
 msgid "This file is up-to-date"
 msgstr ""
 
-#: src/gtkmm/instance.cpp:576 src/gtkmm/instance.cpp:612
+#: ../src/gtkmm/instance.cpp:576
+#: ../src/gtkmm/instance.cpp:612
 msgid "An error has occurred when trying to UPDATE"
 msgstr ""
 
-#: src/gtkmm/instance.cpp:587
-msgid ""
-"This file is not under version control, so there is nothing to revert to!"
+#: ../src/gtkmm/instance.cpp:587
+msgid "This file is not under version control, so there is nothing to revert to!"
 msgstr ""
 
-#: src/gtkmm/instance.cpp:594
+#: ../src/gtkmm/instance.cpp:594
 msgid ""
 "This will abandon all changes you have made\n"
 "since the last time you performed a commit\n"
@@ -1791,15 +2071,15 @@ msgid ""
 "you want to do this?"
 msgstr ""
 
-#: src/gtkmm/instance.cpp:603
+#: ../src/gtkmm/instance.cpp:603
 msgid "Unable to remove previous version"
 msgstr ""
 
-#: src/gtkmm/instance.cpp:631
+#: ../src/gtkmm/instance.cpp:631
 msgid "Error: Revert Failed"
 msgstr ""
 
-#: src/gtkmm/instance.cpp:631
+#: ../src/gtkmm/instance.cpp:631
 msgid ""
 "The revert operation has failed. This can be due to it being\n"
 "referenced by another composition that is already open, or\n"
@@ -1808,2623 +2088,2786 @@ msgid ""
 "again, or restart Synfig Studio."
 msgstr ""
 
-#: src/gtkmm/instance.cpp:659
+#: ../src/gtkmm/instance.cpp:659
 msgid "Revert to saved"
 msgstr ""
 
-#: src/gtkmm/instance.cpp:659
+#: ../src/gtkmm/instance.cpp:659
 msgid ""
 "You will lose any changes you have made since your last save.\n"
 "Are you sure?"
 msgstr ""
 
-#: src/gtkmm/instance.cpp:682
+#: ../src/gtkmm/instance.cpp:682
 #, c-format
 msgid "Would you like to save your changes to %s?"
 msgstr "Хотите ли вы сохранить изменения в %s?"
 
-#: src/gtkmm/instance.cpp:698
+#: ../src/gtkmm/instance.cpp:698
 #, c-format
 msgid ""
 "%s has changes not yet on the CVS repository.\n"
 "Would you like to commit these changes?"
 msgstr ""
+"%s содержит изменения, которых нет в репозитории CVS.\n"
+"Внести ли эти изменения в репозиторий?"
 
-#: src/gtkmm/instance.cpp:1104
+#: ../src/gtkmm/instance.cpp:1109
 msgid "Edit Waypoint"
-msgstr ""
+msgstr "Изменить фиксатор"
 
-#: src/gtkmm/instance.cpp:1145
+#: ../src/gtkmm/instance.cpp:1150
 msgid "Set Waypoints"
-msgstr ""
+msgstr "Установить фиксаторы"
 
-#: src/gtkmm/instance.cpp:1190
+#: ../src/gtkmm/instance.cpp:1195
 msgid "Unable to convert to animated waypoint"
+msgstr "Не удалось преобразовать в анимированный фиксатор"
+
+#: ../src/gtkmm/instance.cpp:1212
+msgid "Unable to find WaypointSetSmart action"
 msgstr ""
 
-#: src/gtkmm/instance.cpp:1207
-msgid "Unable to find waypoint_set_smart action"
-msgstr ""
-
-#: src/gtkmm/instance.cpp:1220
+#: ../src/gtkmm/instance.cpp:1225
 msgid "Unable to set a specific waypoint"
-msgstr ""
+msgstr "Невозможно установить специфический фиксатор"
 
-#: src/gtkmm/instance.cpp:1248
+#: ../src/gtkmm/instance.cpp:1253
 msgid "Edit Waypoints"
-msgstr ""
+msgstr "Изменить фиксаторы"
 
-#: src/gtkmm/instance.h:41
+#: ../src/gtkmm/instance.h:41
 msgid "Synfig Animation "
 msgstr "Мультфильм Synfig"
 
-#: src/gtkmm/keyframeactionmanager.cpp:221
+#: ../src/gtkmm/keyframeactionmanager.cpp:221
 msgid "Add New Keyframe"
 msgstr "Добавить новый ключевой кадр"
 
-#: src/gtkmm/keyframetree.cpp:77
+#: ../src/gtkmm/keyframedial.cpp:57
+msgid "Previous KeyFrame"
+msgstr "Предыдущий ключевой кадр"
+
+#: ../src/gtkmm/keyframedial.cpp:58
+msgid "Next KeyFrame"
+msgstr "Следующий ключевой кадр"
+
+#: ../src/gtkmm/keyframetree.cpp:77
 msgid "Length"
 msgstr "Длительность"
 
-#: src/gtkmm/keyframetree.cpp:108
-#: src/synfigapp/actions/canvasdescriptionset.cpp:82
+#: ../src/gtkmm/keyframetree.cpp:108
+#: ../src/synfigapp/actions/canvasdescriptionset.cpp:82
 msgid "Description"
 msgstr "Описание"
 
-#: src/gtkmm/keyframetreestore.cpp:795 src/gtkmm/keyframetreestore.cpp:810
+#: ../src/gtkmm/keyframetreestore.cpp:795
+#: ../src/gtkmm/keyframetreestore.cpp:810
 msgid "Unable to find Keyframe in table"
 msgstr "Не удалось найти ключевой кадр в таблице"
 
-#: src/gtkmm/keyframetreestore.cpp:801
+#: ../src/gtkmm/keyframetreestore.cpp:801
 msgid "There are no keyframes n this canvas"
 msgstr "На этом холсте нет ключевых кадров"
 
-#: src/gtkmm/layeractionmanager.cpp:129
+#: ../src/gtkmm/layeractionmanager.cpp:129
 msgid "Amount"
 msgstr "Число"
 
-#: src/gtkmm/layeractionmanager.cpp:365
+#: ../src/gtkmm/layeractionmanager.cpp:365
 msgid "Paste"
 msgstr "Вставить"
 
-#: src/gtkmm/layeractionmanager.cpp:454
-#: src/synfigapp/actions/layerduplicate.cpp:178
-#: src/synfigapp/canvasinterface.cpp:202
+#: ../src/gtkmm/layeractionmanager.cpp:454
+#: ../src/synfigapp/actions/layerduplicate.cpp:178
+#: ../src/synfigapp/canvasinterface.cpp:204
 #, c-format
 msgid "Index %d"
 msgstr ""
 
-#: src/gtkmm/layergrouptree.cpp:64 src/gtkmm/layergrouptree.cpp:69
-#: src/gtkmm/layertree.cpp:193
+#: ../src/gtkmm/layergrouptree.cpp:64
+#: ../src/gtkmm/layergrouptree.cpp:69
+#: ../src/gtkmm/layertree.cpp:193
 msgid " "
 msgstr " "
 
-#: src/gtkmm/layergrouptreestore.cpp:442
+#: ../src/gtkmm/layergrouptreestore.cpp:442
 msgid "Activate "
 msgstr "Активировать"
 
-#: src/gtkmm/layergrouptreestore.cpp:442
+#: ../src/gtkmm/layergrouptreestore.cpp:442
 msgid "Deactivate "
 msgstr "Деактивировать"
 
-#: src/gtkmm/layergrouptreestore.cpp:566
+#: ../src/gtkmm/layergrouptreestore.cpp:566
 msgid "Regroup"
 msgstr "Перегруппировать"
 
-#: src/gtkmm/layerparamtreestore.cpp:234
+#: ../src/gtkmm/layerparamtreestore.cpp:234
 msgid "Set Layer Params"
 msgstr "Смена параметров слоя"
 
-#: src/gtkmm/layerparamtreestore.cpp:246
+#: ../src/gtkmm/layerparamtreestore.cpp:246
 msgid "Unable to set all layer parameters."
 msgstr ""
 
-#: src/gtkmm/layertree.cpp:206 src/gtkmm/layertree.cpp:249
+#: ../src/gtkmm/layertree.cpp:206
+#: ../src/gtkmm/layertree.cpp:249
 msgid "Z"
-msgstr ""
+msgstr "Z"
 
-#: src/gtkmm/layertree.cpp:334
+#: ../src/gtkmm/layertree.cpp:334
 msgid "Value"
 msgstr "Значение"
 
-#: src/gtkmm/layertreestore.cpp:464
+#: ../src/gtkmm/layertreestore.cpp:464
 msgid "Move Layers"
 msgstr ""
 
-#: src/gtkmm/main.cpp:73
+#: ../src/gtkmm/main.cpp:74
 msgid "synfig studio is already running"
 msgstr ""
 
-#: src/gtkmm/main.cpp:74
+#: ../src/gtkmm/main.cpp:75
 msgid "the existing process will be used"
 msgstr ""
 
-#: src/gtkmm/main.cpp:93
+#: ../src/gtkmm/main.cpp:94
 msgid "synfig studio -- starting up application..."
-msgstr ""
+msgstr "Synfig Studio — запускается приложение..."
 
-#: src/gtkmm/mod_mirror/state_mirror.cpp:181
+#: ../src/gtkmm/mod_mirror/state_mirror.cpp:181
 msgid "Horizontal"
 msgstr "По горизонтали"
 
-#: src/gtkmm/mod_mirror/state_mirror.cpp:182
+#: ../src/gtkmm/mod_mirror/state_mirror.cpp:182
 msgid "Vertical"
 msgstr "По вертикали"
 
-#: src/gtkmm/mod_palette/dock_palbrowse.cpp:56
+#: ../src/gtkmm/mod_palette/dock_palbrowse.cpp:56
 msgid "Palette Browser"
 msgstr "Просмотр палитр"
 
-#: src/gtkmm/mod_palette/dock_paledit.cpp:120
+#: ../src/gtkmm/mod_palette/dock_paledit.cpp:120
 msgid "Palette Editor"
 msgstr "Редактор палитр"
 
-#: src/gtkmm/mod_palette/dock_paledit.cpp:128
+#: ../src/gtkmm/mod_palette/dock_paledit.cpp:128
 msgid "Add Color"
 msgstr "Добавить цвет"
 
-#: src/gtkmm/mod_palette/dock_paledit.cpp:129
+#: ../src/gtkmm/mod_palette/dock_paledit.cpp:129
 msgid ""
-"Add current foreground color\n"
+"Add current outline color\n"
 "to the palette"
 msgstr ""
 "Добавить активный цвет\n"
-"переднего плана в палитру"
+"обводки в палитру"
 
-#: src/gtkmm/mod_palette/dock_paledit.cpp:211
+#: ../src/gtkmm/mod_palette/dock_paledit.cpp:211
 msgid "Load Default Palette"
 msgstr "Загрузить исходную палитру"
 
-#: src/gtkmm/onemoment.cpp:91 src/gtkmm/onemoment.cpp:93
+#: ../src/gtkmm/onemoment.cpp:91
+#: ../src/gtkmm/onemoment.cpp:93
 msgid "One Moment, Please..."
 msgstr "Минуточку, пожалуйста..."
 
-#: src/gtkmm/preview.cpp:352
+#: ../src/gtkmm/preview.cpp:352
 msgid "Toggle Looping"
 msgstr "Включить или выключить зацикленное воспроизведение"
 
-#: src/gtkmm/preview.cpp:376
+#: ../src/gtkmm/preview.cpp:376
 msgid "Halt Render"
-msgstr "Остановить рендеринг"
+msgstr "Остановить отрисовку"
 
-#: src/gtkmm/preview.cpp:382
+#: ../src/gtkmm/preview.cpp:382
 msgid "Re-Preview"
 msgstr "Открыть диалог параметров"
 
-#: src/gtkmm/preview.cpp:388
+#: ../src/gtkmm/preview.cpp:388
 msgid "Erase All"
 msgstr "Стереть все"
 
-#: src/gtkmm/preview.cpp:398
+#: ../src/gtkmm/preview.cpp:398
 msgid "Last Rendered: "
-msgstr ""
+msgstr "Последняя отрисовка:"
 
-#: src/gtkmm/renddesc.cpp:95
+#: ../src/gtkmm/renddesc.cpp:95
 msgid "Image"
 msgstr "Изображение"
 
-#: src/gtkmm/renddesc.cpp:97
+#: ../src/gtkmm/renddesc.cpp:97
 msgid "Other"
-msgstr "Прочие"
+msgstr "Прочее"
 
-#: src/gtkmm/renddesc.cpp:390
+#: ../src/gtkmm/renddesc.cpp:390
 msgid "_Pixel Aspect"
-msgstr "_Соотношение сторон пиксела"
+msgstr "_Соотн. сторон пиксела"
 
-#: src/gtkmm/renddesc.cpp:392
+#: ../src/gtkmm/renddesc.cpp:392
 msgid "Pi_xel Width"
 msgstr "Ширина _пиксела"
 
-#: src/gtkmm/renddesc.cpp:394
+#: ../src/gtkmm/renddesc.cpp:394
 msgid "Pix_el Height"
 msgstr "В_ысота пиксела"
 
-#: src/gtkmm/renddesc.cpp:396
+#: ../src/gtkmm/renddesc.cpp:396
 msgid "Image _Aspect"
-msgstr "Соотношение сторон _изображения"
+msgstr "Соотн. сторон _изображения"
 
-#: src/gtkmm/renddesc.cpp:398
+#: ../src/gtkmm/renddesc.cpp:398
 msgid "Image _Width"
 msgstr "_Ширина изображения"
 
-#: src/gtkmm/renddesc.cpp:400
+#: ../src/gtkmm/renddesc.cpp:400
 msgid "Image _Height"
 msgstr "_Высота изображения"
 
-#: src/gtkmm/renddesc.cpp:402
+#: ../src/gtkmm/renddesc.cpp:402
 msgid "Image _Span"
 msgstr ""
 
-#: src/gtkmm/renddesc.cpp:442
+#: ../src/gtkmm/renddesc.cpp:442
 msgid "Image Size"
 msgstr "Размер изображения"
 
-#: src/gtkmm/renddesc.cpp:444
+#: ../src/gtkmm/renddesc.cpp:444
 msgid "<b>Image Size</b>"
 msgstr "<b>Размер изображения</b>"
 
-#: src/gtkmm/renddesc.cpp:455
+#: ../src/gtkmm/renddesc.cpp:455
 msgid "_Width"
-msgstr "_Ширина"
+msgstr "_Ширина:"
 
-#: src/gtkmm/renddesc.cpp:458
+#: ../src/gtkmm/renddesc.cpp:458
 msgid "_Height"
-msgstr "_Высота"
+msgstr "_Высота:"
 
-#: src/gtkmm/renddesc.cpp:461
+#: ../src/gtkmm/renddesc.cpp:461
 msgid "_XRes"
-msgstr ""
+msgstr "_Разреш. по X:"
 
-#: src/gtkmm/renddesc.cpp:464
+#: ../src/gtkmm/renddesc.cpp:464
 msgid "_YRes"
-msgstr ""
+msgstr "Р_азреш. по Y:"
 
-#: src/gtkmm/renddesc.cpp:467
+#: ../src/gtkmm/renddesc.cpp:467
 msgid "_Physical Width"
-msgstr "_Физическая ширина"
+msgstr "_Физическая ширина:"
 
-#: src/gtkmm/renddesc.cpp:470
+#: ../src/gtkmm/renddesc.cpp:470
 msgid "Phy_sical Height"
-msgstr "Ф_изическая высота"
+msgstr "Ф_изическая высота:"
 
-#: src/gtkmm/renddesc.cpp:473
+#: ../src/gtkmm/renddesc.cpp:473
 msgid "I_mage Span"
 msgstr ""
 
-#: src/gtkmm/renddesc.cpp:494
+#: ../src/gtkmm/renddesc.cpp:494
 msgid "Image Area"
 msgstr "Область изображения"
 
-#: src/gtkmm/renddesc.cpp:496
+#: ../src/gtkmm/renddesc.cpp:496
 msgid "<b>Image Area</b>"
 msgstr "<b>Область изображения</b>"
 
-#: src/gtkmm/renddesc.cpp:508
+#: ../src/gtkmm/renddesc.cpp:508
 msgid "_Top Left"
 msgstr "В_ерхний левый угол:"
 
-#: src/gtkmm/renddesc.cpp:511
+#: ../src/gtkmm/renddesc.cpp:511
 msgid "_Bottom Right"
 msgstr "_Нижний правый угол:"
 
-#: src/gtkmm/renddesc.cpp:551
+#: ../src/gtkmm/renddesc.cpp:551
 msgid "_Start Time"
 msgstr "_Время начала:"
 
-#: src/gtkmm/renddesc.cpp:574
+#: ../src/gtkmm/renddesc.cpp:574
 msgid "Locks and Links"
 msgstr "Запирание и связи"
 
-#: src/gtkmm/renddesc.cpp:576
+#: ../src/gtkmm/renddesc.cpp:576
 msgid "<b>Locks and Links</b>"
 msgstr "<b>Запирание и связи</b>"
 
-#: src/gtkmm/renddesc.cpp:597
+#: ../src/gtkmm/renddesc.cpp:597
 msgid "Focus Point"
 msgstr "Точка фокусировки"
 
-#: src/gtkmm/renddesc.cpp:599
+#: ../src/gtkmm/renddesc.cpp:599
 msgid "<b>Focus Point</b>"
 msgstr "<b>Точка фокусировки</b>"
 
-#: src/gtkmm/renddesc.cpp:609
+#: ../src/gtkmm/renddesc.cpp:609
 msgid "_Focus Point"
 msgstr "_Точка фокусировки"
 
-#: src/gtkmm/render.cpp:61 src/gtkmm/render.cpp:177
+#: ../src/gtkmm/render.cpp:63
+#: ../src/gtkmm/render.cpp:179
 msgid "Render Settings"
-msgstr "Параметры рендеринга"
+msgstr "Параметры отрисовки"
 
-#: src/gtkmm/render.cpp:67
+#: ../src/gtkmm/render.cpp:69
 msgid "Use _current frame"
 msgstr "_Использовать текущий кадр"
 
-#: src/gtkmm/render.cpp:77
+#: ../src/gtkmm/render.cpp:79
 msgid "Auto"
 msgstr "Автоматически"
 
-#: src/gtkmm/render.cpp:101
+#: ../src/gtkmm/render.cpp:103
 msgid "Choose..."
 msgstr "Выбрать..."
 
-#: src/gtkmm/render.cpp:105
+#: ../src/gtkmm/render.cpp:107
 msgid "Target"
 msgstr "Цель"
 
-#: src/gtkmm/render.cpp:107
+#: ../src/gtkmm/render.cpp:109
 msgid "<b>Target</b>"
 msgstr "<b>Цель</b>"
 
-#: src/gtkmm/render.cpp:118
+#: ../src/gtkmm/render.cpp:120
 msgid "_Filename"
 msgstr "_Имя файла:"
 
-#: src/gtkmm/render.cpp:125
+#: ../src/gtkmm/render.cpp:127
 msgid "_Target"
 msgstr "_Цель:"
 
-#: src/gtkmm/render.cpp:133
+#: ../src/gtkmm/render.cpp:135
 msgid "Settings"
 msgstr "Параметры"
 
-#: src/gtkmm/render.cpp:135
+#: ../src/gtkmm/render.cpp:137
 msgid "<b>Settings</b>"
 msgstr "<b>Параметры</b>"
 
-#: src/gtkmm/render.cpp:147
+#: ../src/gtkmm/render.cpp:149
 msgid "_Quality"
 msgstr "_Качество:"
 
-#: src/gtkmm/render.cpp:153
+#: ../src/gtkmm/render.cpp:155
 msgid "_Anti-Aliasing"
 msgstr "_Сглаживание:"
 
-#: src/gtkmm/render.cpp:247
+#: ../src/gtkmm/render.cpp:249
 msgid "You must supply a filename!"
 msgstr "Необходимо указать имя файла!"
 
-#: src/gtkmm/render.cpp:273
+#: ../src/gtkmm/render.cpp:275
 msgid "Unable to determine proper target from filename."
 msgstr ""
 
-#: src/gtkmm/render.cpp:280
+#: ../src/gtkmm/render.cpp:282
 msgid "A filename is required for this target"
 msgstr ""
 
-#: src/gtkmm/render.cpp:287
+#: ../src/gtkmm/render.cpp:289
 msgid "Unable to create target for "
 msgstr ""
 
-#: src/gtkmm/render.cpp:304
+#: ../src/gtkmm/render.cpp:297
+msgid "Unable to create file for "
+msgstr "Не удалось создать файл для "
+
+#: ../src/gtkmm/render.cpp:314
 msgid "Target initialization failure"
 msgstr ""
 
-#: src/gtkmm/render.cpp:308
+#: ../src/gtkmm/render.cpp:318
 msgid "Rendering "
 msgstr ""
 
-#: src/gtkmm/render.cpp:336
+#: ../src/gtkmm/render.cpp:346
 msgid "File rendered successfully"
 msgstr ""
 
-#: src/gtkmm/splash.cpp:113
+#: ../src/gtkmm/resolutiondial.cpp:56
+msgid "Increase Display Resolution"
+msgstr "Увеличить разрешение для просмотра"
+
+#: ../src/gtkmm/resolutiondial.cpp:57
+msgid "Decrease Display Resolution"
+msgstr "Уменьшить разрешение для просмотра"
+
+#: ../src/gtkmm/resolutiondial.cpp:58
+msgid "Low Res"
+msgstr "Низкое разрешение"
+
+#: ../src/gtkmm/resolutiondial.cpp:58
+msgid "Use Low Resolution when enabled"
+msgstr "Если включено, использовать низкое разрешение для получения ускоренной отрисовки"
+
+#: ../src/gtkmm/splash.cpp:113
 msgid "ERROR:"
 msgstr "ОШИБКА:"
 
-#: src/gtkmm/splash.cpp:129
+#: ../src/gtkmm/splash.cpp:129
 msgid "WARNING:"
 msgstr "ПРЕДУПРЕЖДЕНИЕ:"
 
-#: src/gtkmm/state_bline.cpp:361 src/gtkmm/state_circle.cpp:395
-#: src/gtkmm/state_draw.cpp:413 src/gtkmm/state_polygon.cpp:325
-#: src/gtkmm/state_rectangle.cpp:342 src/gtkmm/state_star.cpp:433
+#: ../src/gtkmm/state_bline.cpp:361
+#: ../src/gtkmm/state_circle.cpp:404
+#: ../src/gtkmm/state_draw.cpp:413
+#: ../src/gtkmm/state_polygon.cpp:325
+#: ../src/gtkmm/state_rectangle.cpp:342
+#: ../src/gtkmm/state_star.cpp:442
 msgid "Create Region BLine"
 msgstr "Создать кривую области"
 
-#: src/gtkmm/state_bline.cpp:362 src/gtkmm/state_circle.cpp:396
-#: src/gtkmm/state_draw.cpp:414 src/gtkmm/state_polygon.cpp:326
-#: src/gtkmm/state_rectangle.cpp:343 src/gtkmm/state_star.cpp:434
+#: ../src/gtkmm/state_bline.cpp:362
+#: ../src/gtkmm/state_circle.cpp:405
+#: ../src/gtkmm/state_draw.cpp:414
+#: ../src/gtkmm/state_polygon.cpp:326
+#: ../src/gtkmm/state_rectangle.cpp:343
+#: ../src/gtkmm/state_star.cpp:443
 msgid "Create Outline BLine"
 msgstr "Создать кривую абриса"
 
-#: src/gtkmm/state_bline.cpp:363 src/gtkmm/state_circle.cpp:397
-#: src/gtkmm/state_polygon.cpp:327 src/gtkmm/state_rectangle.cpp:344
-#: src/gtkmm/state_star.cpp:435
+#: ../src/gtkmm/state_bline.cpp:363
+#: ../src/gtkmm/state_circle.cpp:406
+#: ../src/gtkmm/state_polygon.cpp:327
+#: ../src/gtkmm/state_rectangle.cpp:344
+#: ../src/gtkmm/state_star.cpp:444
 msgid "Create Curve Gradient BLine"
-msgstr ""
+msgstr "Создать градиентную кривую"
 
-#: src/gtkmm/state_bline.cpp:364 src/gtkmm/state_circle.cpp:398
-#: src/gtkmm/state_polygon.cpp:328 src/gtkmm/state_rectangle.cpp:345
-#: src/gtkmm/state_star.cpp:436
+#: ../src/gtkmm/state_bline.cpp:364
+#: ../src/gtkmm/state_circle.cpp:407
+#: ../src/gtkmm/state_polygon.cpp:328
+#: ../src/gtkmm/state_rectangle.cpp:345
+#: ../src/gtkmm/state_star.cpp:445
 msgid "Create Plant BLine"
 msgstr "Создать кривую растения"
 
-#: src/gtkmm/state_bline.cpp:365 src/gtkmm/state_circle.cpp:399
-#: src/gtkmm/state_polygon.cpp:329 src/gtkmm/state_star.cpp:437
+#: ../src/gtkmm/state_bline.cpp:365
+#: ../src/gtkmm/state_circle.cpp:408
+#: ../src/gtkmm/state_polygon.cpp:329
+#: ../src/gtkmm/state_star.cpp:446
 msgid "Link Origins"
 msgstr ""
 
-#: src/gtkmm/state_bline.cpp:366 src/gtkmm/state_draw.cpp:415
+#: ../src/gtkmm/state_bline.cpp:366
+#: ../src/gtkmm/state_draw.cpp:415
 msgid "Auto Export"
 msgstr "Автоэкспорт"
 
-#: src/gtkmm/state_bline.cpp:367 src/gtkmm/state_polygon.cpp:330
+#: ../src/gtkmm/state_bline.cpp:367
+#: ../src/gtkmm/state_polygon.cpp:330
 msgid "Make"
 msgstr ""
 
-#: src/gtkmm/state_bline.cpp:368
+#: ../src/gtkmm/state_bline.cpp:368
 msgid "Clear"
-msgstr ""
+msgstr "Очистить"
 
-#: src/gtkmm/state_bline.cpp:385 src/gtkmm/state_draw.cpp:450
-#: src/gtkmm/state_polygon.cpp:352
+#: ../src/gtkmm/state_bline.cpp:385
+#: ../src/gtkmm/state_draw.cpp:450
+#: ../src/gtkmm/state_polygon.cpp:352
 msgid "Feather"
 msgstr "Растушёвка"
 
-#: src/gtkmm/state_bline.cpp:426
+#: ../src/gtkmm/state_bline.cpp:426
 msgid "Make BLine and/or Region"
 msgstr ""
 
-#: src/gtkmm/state_bline.cpp:436
+#: ../src/gtkmm/state_bline.cpp:436
 msgid "Clear current BLine"
 msgstr ""
 
-#: src/gtkmm/state_bline.cpp:541
+#: ../src/gtkmm/state_bline.cpp:541
 msgid "New BLine"
-msgstr ""
+msgstr "Новая кривая"
 
-#: src/gtkmm/state_bline.cpp:584
+#: ../src/gtkmm/state_bline.cpp:584
 msgid "Unable to add value node"
 msgstr ""
 
-#: src/gtkmm/state_bline.cpp:627 src/gtkmm/state_bline.cpp:690
-#: src/gtkmm/state_bline.cpp:753 src/gtkmm/state_bline.cpp:827
-#: src/gtkmm/state_circle.cpp:606 src/gtkmm/state_circle.cpp:681
-#: src/gtkmm/state_circle.cpp:755 src/gtkmm/state_circle.cpp:829
-#: src/gtkmm/state_circle.cpp:912 src/gtkmm/state_draw.cpp:1041
-#: src/gtkmm/state_draw.cpp:1060 src/gtkmm/state_draw.cpp:1072
-#: src/gtkmm/state_draw.cpp:1106 src/gtkmm/state_draw.cpp:1797
-#: src/gtkmm/state_gradient.cpp:409 src/gtkmm/state_gradient.cpp:422
-#: src/gtkmm/state_gradient.cpp:435 src/gtkmm/state_gradient.cpp:451
-#: src/gtkmm/state_polygon.cpp:536 src/gtkmm/state_polygon.cpp:620
-#: src/gtkmm/state_polygon.cpp:684 src/gtkmm/state_polygon.cpp:748
-#: src/gtkmm/state_polygon.cpp:821 src/gtkmm/state_rectangle.cpp:524
-#: src/gtkmm/state_rectangle.cpp:563 src/gtkmm/state_rectangle.cpp:627
-#: src/gtkmm/state_rectangle.cpp:691 src/gtkmm/state_rectangle.cpp:764
-#: src/gtkmm/state_star.cpp:639 src/gtkmm/state_star.cpp:718
-#: src/gtkmm/state_star.cpp:787 src/gtkmm/state_star.cpp:856
-#: src/gtkmm/state_star.cpp:934 src/gtkmm/state_text.cpp:405
+#: ../src/gtkmm/state_bline.cpp:627
+#: ../src/gtkmm/state_bline.cpp:690
+#: ../src/gtkmm/state_bline.cpp:753
+#: ../src/gtkmm/state_bline.cpp:824
+#: ../src/gtkmm/state_circle.cpp:630
+#: ../src/gtkmm/state_circle.cpp:697
+#: ../src/gtkmm/state_circle.cpp:771
+#: ../src/gtkmm/state_circle.cpp:845
+#: ../src/gtkmm/state_circle.cpp:925
+#: ../src/gtkmm/state_draw.cpp:1041
+#: ../src/gtkmm/state_draw.cpp:1060
+#: ../src/gtkmm/state_draw.cpp:1072
+#: ../src/gtkmm/state_draw.cpp:1106
+#: ../src/gtkmm/state_draw.cpp:1797
+#: ../src/gtkmm/state_gradient.cpp:409
+#: ../src/gtkmm/state_gradient.cpp:422
+#: ../src/gtkmm/state_gradient.cpp:435
+#: ../src/gtkmm/state_gradient.cpp:451
+#: ../src/gtkmm/state_polygon.cpp:536
+#: ../src/gtkmm/state_polygon.cpp:613
+#: ../src/gtkmm/state_polygon.cpp:677
+#: ../src/gtkmm/state_polygon.cpp:741
+#: ../src/gtkmm/state_polygon.cpp:811
+#: ../src/gtkmm/state_rectangle.cpp:524
+#: ../src/gtkmm/state_rectangle.cpp:557
+#: ../src/gtkmm/state_rectangle.cpp:621
+#: ../src/gtkmm/state_rectangle.cpp:685
+#: ../src/gtkmm/state_rectangle.cpp:755
+#: ../src/gtkmm/state_star.cpp:671
+#: ../src/gtkmm/state_star.cpp:742
+#: ../src/gtkmm/state_star.cpp:811
+#: ../src/gtkmm/state_star.cpp:880
+#: ../src/gtkmm/state_star.cpp:955
+#: ../src/gtkmm/state_text.cpp:405
 msgid "Unable to create layer"
-msgstr ""
+msgstr "Не удалось создать слой"
 
-#: src/gtkmm/state_bline.cpp:630 src/gtkmm/state_circle.cpp:686
-#: src/gtkmm/state_polygon.cpp:625 src/gtkmm/state_rectangle.cpp:568
-#: src/gtkmm/state_star.cpp:723
+#: ../src/gtkmm/state_bline.cpp:630
+#: ../src/gtkmm/state_circle.cpp:702
+#: ../src/gtkmm/state_polygon.cpp:618
+#: ../src/gtkmm/state_rectangle.cpp:562
+#: ../src/gtkmm/state_star.cpp:747
 msgid " Gradient"
-msgstr ""
+msgstr " Градиент"
 
-#: src/gtkmm/state_bline.cpp:649 src/gtkmm/state_bline.cpp:672
-#: src/gtkmm/state_circle.cpp:710 src/gtkmm/state_circle.cpp:733
-#: src/gtkmm/state_polygon.cpp:644 src/gtkmm/state_polygon.cpp:667
-#: src/gtkmm/state_rectangle.cpp:587 src/gtkmm/state_rectangle.cpp:610
-#: src/gtkmm/state_star.cpp:742 src/gtkmm/state_star.cpp:765
+#: ../src/gtkmm/state_bline.cpp:649
+#: ../src/gtkmm/state_bline.cpp:672
+#: ../src/gtkmm/state_circle.cpp:726
+#: ../src/gtkmm/state_circle.cpp:749
+#: ../src/gtkmm/state_polygon.cpp:637
+#: ../src/gtkmm/state_polygon.cpp:660
+#: ../src/gtkmm/state_rectangle.cpp:581
+#: ../src/gtkmm/state_rectangle.cpp:604
+#: ../src/gtkmm/state_star.cpp:766
+#: ../src/gtkmm/state_star.cpp:789
 msgid "Unable to create Gradient layer"
-msgstr ""
+msgstr "Не удалось создать слой градиентной заливки"
 
-#: src/gtkmm/state_bline.cpp:693 src/gtkmm/state_circle.cpp:760
-#: src/gtkmm/state_polygon.cpp:689 src/gtkmm/state_rectangle.cpp:632
-#: src/gtkmm/state_star.cpp:792
+#: ../src/gtkmm/state_bline.cpp:693
+#: ../src/gtkmm/state_circle.cpp:776
+#: ../src/gtkmm/state_polygon.cpp:682
+#: ../src/gtkmm/state_rectangle.cpp:626
+#: ../src/gtkmm/state_star.cpp:816
 msgid " Plant"
-msgstr ""
+msgstr " Растение"
 
-#: src/gtkmm/state_bline.cpp:712 src/gtkmm/state_bline.cpp:735
-#: src/gtkmm/state_circle.cpp:784 src/gtkmm/state_circle.cpp:807
-#: src/gtkmm/state_polygon.cpp:708 src/gtkmm/state_polygon.cpp:731
-#: src/gtkmm/state_rectangle.cpp:651 src/gtkmm/state_rectangle.cpp:674
-#: src/gtkmm/state_star.cpp:811 src/gtkmm/state_star.cpp:834
+#: ../src/gtkmm/state_bline.cpp:712
+#: ../src/gtkmm/state_bline.cpp:735
+#: ../src/gtkmm/state_circle.cpp:800
+#: ../src/gtkmm/state_circle.cpp:823
+#: ../src/gtkmm/state_polygon.cpp:701
+#: ../src/gtkmm/state_polygon.cpp:724
+#: ../src/gtkmm/state_rectangle.cpp:645
+#: ../src/gtkmm/state_rectangle.cpp:668
+#: ../src/gtkmm/state_star.cpp:835
+#: ../src/gtkmm/state_star.cpp:858
 msgid "Unable to create Plant layer"
-msgstr ""
+msgstr "Не удалось создать слой растения"
 
-#: src/gtkmm/state_bline.cpp:756 src/gtkmm/state_circle.cpp:834
-#: src/gtkmm/state_draw.cpp:1076 src/gtkmm/state_draw.cpp:2000
-#: src/gtkmm/state_polygon.cpp:753 src/gtkmm/state_rectangle.cpp:696
-#: src/gtkmm/state_star.cpp:861
+#: ../src/gtkmm/state_bline.cpp:756
+#: ../src/gtkmm/state_circle.cpp:850
+#: ../src/gtkmm/state_draw.cpp:1076
+#: ../src/gtkmm/state_draw.cpp:1999
+#: ../src/gtkmm/state_polygon.cpp:746
+#: ../src/gtkmm/state_rectangle.cpp:690
+#: ../src/gtkmm/state_star.cpp:885
 msgid " Region"
-msgstr ""
+msgstr " Область"
 
-#: src/gtkmm/state_bline.cpp:786 src/gtkmm/state_bline.cpp:809
-#: src/gtkmm/state_circle.cpp:869 src/gtkmm/state_circle.cpp:892
-#: src/gtkmm/state_draw.cpp:1823 src/gtkmm/state_draw.cpp:2016
-#: src/gtkmm/state_polygon.cpp:783 src/gtkmm/state_polygon.cpp:806
-#: src/gtkmm/state_rectangle.cpp:726 src/gtkmm/state_rectangle.cpp:749
-#: src/gtkmm/state_star.cpp:891 src/gtkmm/state_star.cpp:914
+#: ../src/gtkmm/state_bline.cpp:783
+#: ../src/gtkmm/state_bline.cpp:806
+#: ../src/gtkmm/state_circle.cpp:882
+#: ../src/gtkmm/state_circle.cpp:905
+#: ../src/gtkmm/state_draw.cpp:1823
+#: ../src/gtkmm/state_draw.cpp:2015
+#: ../src/gtkmm/state_polygon.cpp:773
+#: ../src/gtkmm/state_polygon.cpp:796
+#: ../src/gtkmm/state_rectangle.cpp:717
+#: ../src/gtkmm/state_rectangle.cpp:740
+#: ../src/gtkmm/state_star.cpp:912
+#: ../src/gtkmm/state_star.cpp:935
 msgid "Unable to create Region layer"
-msgstr ""
+msgstr "Не удалось создать слой области"
 
-#: src/gtkmm/state_bline.cpp:830 src/gtkmm/state_circle.cpp:917
-#: src/gtkmm/state_draw.cpp:1064 src/gtkmm/state_polygon.cpp:826
-#: src/gtkmm/state_rectangle.cpp:769 src/gtkmm/state_star.cpp:939
+#: ../src/gtkmm/state_bline.cpp:827
+#: ../src/gtkmm/state_circle.cpp:930
+#: ../src/gtkmm/state_draw.cpp:1064
+#: ../src/gtkmm/state_polygon.cpp:816
+#: ../src/gtkmm/state_rectangle.cpp:760
+#: ../src/gtkmm/state_star.cpp:960
 msgid " Outline"
-msgstr ""
+msgstr "Контур"
 
-#: src/gtkmm/state_bline.cpp:854 src/gtkmm/state_bline.cpp:877
-#: src/gtkmm/state_circle.cpp:947 src/gtkmm/state_circle.cpp:970
-#: src/gtkmm/state_polygon.cpp:851 src/gtkmm/state_polygon.cpp:874
-#: src/gtkmm/state_rectangle.cpp:794 src/gtkmm/state_rectangle.cpp:817
-#: src/gtkmm/state_star.cpp:964 src/gtkmm/state_star.cpp:987
+#: ../src/gtkmm/state_bline.cpp:851
+#: ../src/gtkmm/state_bline.cpp:874
+#: ../src/gtkmm/state_circle.cpp:960
+#: ../src/gtkmm/state_circle.cpp:983
+#: ../src/gtkmm/state_polygon.cpp:841
+#: ../src/gtkmm/state_polygon.cpp:864
+#: ../src/gtkmm/state_rectangle.cpp:785
+#: ../src/gtkmm/state_rectangle.cpp:808
+#: ../src/gtkmm/state_star.cpp:985
+#: ../src/gtkmm/state_star.cpp:1008
 msgid "Unable to create Outline layer"
-msgstr ""
+msgstr "Не удалось создать слой контура"
 
-#: src/gtkmm/state_bline.cpp:1262
+#: ../src/gtkmm/state_bline.cpp:1259
 msgid "Unloop BLine"
 msgstr ""
 
-#: src/gtkmm/state_bline.cpp:1266
+#: ../src/gtkmm/state_bline.cpp:1263
 msgid "Loop BLine"
 msgstr ""
 
-#: src/gtkmm/state_bline.cpp:1271
+#: ../src/gtkmm/state_bline.cpp:1268
 msgid "Delete Vertex"
 msgstr "Удалить вершину"
 
-#: src/gtkmm/state_bline.cpp:1286
+#: ../src/gtkmm/state_bline.cpp:1283
 msgid "Insert Vertex"
 msgstr "Вставить вершину"
 
-#: src/gtkmm/state_bline.cpp:1348
-msgid ""
-"Unable to find where to insert vertex, internal error, please report this bug"
+#: ../src/gtkmm/state_bline.cpp:1345
+msgid "Unable to find where to insert vertex, internal error, please report this bug"
 msgstr ""
 
-#: src/gtkmm/state_bline.cpp:1367
+#: ../src/gtkmm/state_bline.cpp:1364
 msgid "Unable to remove vertex, internal error, please report this bug"
 msgstr ""
 
-#: src/gtkmm/state_bline.cpp:1381
-#: src/synfigapp/actions/blinepointtangentmerge.cpp:56
+#: ../src/gtkmm/state_bline.cpp:1378
+#: ../src/synfigapp/actions/blinepointtangentmerge.cpp:56
 msgid "Merge Tangents"
 msgstr "Объединить касательные"
 
-#: src/gtkmm/state_bline.cpp:1388
-#: src/synfigapp/actions/blinepointtangentsplit.cpp:56
+#: ../src/gtkmm/state_bline.cpp:1385
+#: ../src/synfigapp/actions/blinepointtangentsplit.cpp:56
 msgid "Split Tangents"
 msgstr "Разделить касательные"
 
-#: src/gtkmm/state_circle.cpp:393 src/gtkmm/state_polygon.cpp:323
-#: src/gtkmm/state_rectangle.cpp:340 src/gtkmm/state_star.cpp:430
+#: ../src/gtkmm/state_circle.cpp:402
+#: ../src/gtkmm/state_polygon.cpp:323
+#: ../src/gtkmm/state_rectangle.cpp:340
+#: ../src/gtkmm/state_star.cpp:439
 msgid "Invert"
 msgstr "Инвертировать"
 
-#: src/gtkmm/state_circle.cpp:394
+#: ../src/gtkmm/state_circle.cpp:403
 msgid "Create Circle Layer"
 msgstr "Создать слой окружности"
 
-#: src/gtkmm/state_circle.cpp:405
-msgid "Falloff"
-msgstr ""
+#: ../src/gtkmm/state_circle.cpp:409
+#: ../src/gtkmm/state_star.cpp:447
+msgid "BLine Origins at Center"
+msgstr "Начало координат кривой как центр"
 
-#: src/gtkmm/state_circle.cpp:406
+#: ../src/gtkmm/state_circle.cpp:415
+msgid "Falloff"
+msgstr "Спадание"
+
+#: ../src/gtkmm/state_circle.cpp:416
 msgid "Determines the falloff function for the feather"
 msgstr ""
 
-#: src/gtkmm/state_circle.cpp:408 src/gtkmm/state_gradient.cpp:274
-#: src/gtkmm/widget_waypoint.cpp:89 src/gtkmm/widget_waypoint.cpp:96
-#: src/gtkmm/widget_waypointmodel.cpp:75 src/gtkmm/widget_waypointmodel.cpp:82
+#: ../src/gtkmm/state_circle.cpp:418
+#: ../src/gtkmm/state_gradient.cpp:274
+#: ../src/gtkmm/widget_waypoint.cpp:89
+#: ../src/gtkmm/widget_waypoint.cpp:96
+#: ../src/gtkmm/widget_waypointmodel.cpp:75
+#: ../src/gtkmm/widget_waypointmodel.cpp:82
 msgid "Linear"
-msgstr ""
+msgstr "Линейное"
 
-#: src/gtkmm/state_circle.cpp:409
+#: ../src/gtkmm/state_circle.cpp:419
 msgid "Squared"
-msgstr ""
+msgstr "Квадратичное"
 
-#: src/gtkmm/state_circle.cpp:410
+#: ../src/gtkmm/state_circle.cpp:420
 msgid "Square Root"
-msgstr ""
+msgstr "Квадратный корень"
 
-#: src/gtkmm/state_circle.cpp:411
+#: ../src/gtkmm/state_circle.cpp:421
 msgid "Sigmond"
-msgstr ""
+msgstr "Сигмоидальное"
 
-#: src/gtkmm/state_circle.cpp:412
+#: ../src/gtkmm/state_circle.cpp:422
 msgid "Cosine"
-msgstr ""
+msgstr "По косинусу"
 
-#: src/gtkmm/state_circle.cpp:416 src/gtkmm/state_gradient.cpp:281
+#: ../src/gtkmm/state_circle.cpp:426
+#: ../src/gtkmm/state_gradient.cpp:281
 msgid "Blend Method"
-msgstr "Режим наложения"
+msgstr "Режим смешивания"
 
-#: src/gtkmm/state_circle.cpp:417
+#: ../src/gtkmm/state_circle.cpp:427
 msgid "Defines the blend method to be used for circles"
 msgstr ""
 
-#: src/gtkmm/state_circle.cpp:435
+#: ../src/gtkmm/state_circle.cpp:446
 msgid "Falloff:"
-msgstr ""
+msgstr "Спадание:"
 
-#: src/gtkmm/state_circle.cpp:439 src/gtkmm/state_rectangle.cpp:370
-#: src/gtkmm/state_star.cpp:454
+#: ../src/gtkmm/state_circle.cpp:450
+#: ../src/gtkmm/state_rectangle.cpp:370
+#: ../src/gtkmm/state_star.cpp:466
 msgid "Feather:"
 msgstr "Растушёвка:"
 
-#: src/gtkmm/state_circle.cpp:446
+#: ../src/gtkmm/state_circle.cpp:457
 msgid "BLine Points:"
 msgstr "Узлы кривой:"
 
-#: src/gtkmm/state_circle.cpp:449
+#: ../src/gtkmm/state_circle.cpp:460
 msgid "Point Angle Offset:"
 msgstr ""
 
-#: src/gtkmm/state_circle.cpp:536
+#: ../src/gtkmm/state_circle.cpp:547
 msgid "New Circle"
 msgstr "Новая окружность"
 
-#: src/gtkmm/state_circle.cpp:659
-#, fuzzy
+#: ../src/gtkmm/state_circle.cpp:675
 msgid "Unable to create Circle layer"
-msgstr "Создать слой окружности"
+msgstr "Не удалось создать слой окружности"
 
-#: src/gtkmm/state_draw.cpp:409
+#: ../src/gtkmm/state_draw.cpp:409
 msgid "Pressure Width"
 msgstr ""
 
-#: src/gtkmm/state_draw.cpp:410
+#: ../src/gtkmm/state_draw.cpp:410
 msgid "Auto Loop"
 msgstr ""
 
-#: src/gtkmm/state_draw.cpp:411
+#: ../src/gtkmm/state_draw.cpp:411
 msgid "Auto Extend"
-msgstr ""
+msgstr "Авторасширение"
 
-#: src/gtkmm/state_draw.cpp:412
+#: ../src/gtkmm/state_draw.cpp:412
 msgid "Auto Link"
-msgstr ""
+msgstr "Автосвязь"
 
-#: src/gtkmm/state_draw.cpp:416 src/gtkmm/state_draw.cpp:524
+#: ../src/gtkmm/state_draw.cpp:416
+#: ../src/gtkmm/state_draw.cpp:524
 msgid "Fill Last Stroke"
 msgstr ""
 
-#: src/gtkmm/state_draw.cpp:419
+#: ../src/gtkmm/state_draw.cpp:419
 msgid "Min Pressure"
-msgstr ""
+msgstr "Мин. сила нажатия"
 
-#: src/gtkmm/state_draw.cpp:425
+#: ../src/gtkmm/state_draw.cpp:425
 msgid "LocalError"
 msgstr ""
 
-#: src/gtkmm/state_draw.cpp:447
+#: ../src/gtkmm/state_draw.cpp:447
 msgid "Smooth"
 msgstr ""
 
-#: src/gtkmm/state_draw.cpp:774
+#: ../src/gtkmm/state_draw.cpp:774
 msgid "Sketch BLine"
 msgstr ""
 
-#: src/gtkmm/state_draw.cpp:1290
+#: ../src/gtkmm/state_draw.cpp:1290
 msgid "Define Region"
 msgstr ""
 
-#: src/gtkmm/state_draw.cpp:1857 src/gtkmm/state_draw.cpp:1908
+#: ../src/gtkmm/state_draw.cpp:1857
+#: ../src/gtkmm/state_draw.cpp:1908
 msgid "Extend BLine"
 msgstr ""
 
-#: src/gtkmm/state_draw.cpp:1870 src/gtkmm/state_draw.cpp:1921
+#: ../src/gtkmm/state_draw.cpp:1870
+#: ../src/gtkmm/state_draw.cpp:1921
 msgid "Unable to set loop for bline"
 msgstr ""
 
-#: src/gtkmm/state_draw.cpp:1894 src/gtkmm/state_draw.cpp:1945
+#: ../src/gtkmm/state_draw.cpp:1894
+#: ../src/gtkmm/state_draw.cpp:1945
 msgid "Unable to insert item"
 msgstr ""
 
-#: src/gtkmm/state_draw.cpp:1978
+#: ../src/gtkmm/state_draw.cpp:1978
 msgid "Fill Stroke"
 msgstr ""
 
-#: src/gtkmm/state_fill.cpp:145
+#: ../src/gtkmm/state_fill.cpp:145
 msgid "No layer here"
-msgstr ""
+msgstr "Здесь нет слоя"
 
-#: src/gtkmm/state_fill.cpp:155
+#: ../src/gtkmm/state_fill.cpp:155
 msgid "Unable to set layer color"
 msgstr ""
 
-#: src/gtkmm/state_gradient.cpp:271
+#: ../src/gtkmm/state_gradient.cpp:271
 msgid "Gradient Type"
 msgstr "Тип градиент"
 
-#: src/gtkmm/state_gradient.cpp:272
+#: ../src/gtkmm/state_gradient.cpp:272
 msgid "Determines the type of Gradient used"
 msgstr "Определяет тип используемого градиента"
 
-#: src/gtkmm/state_gradient.cpp:275
+#: ../src/gtkmm/state_gradient.cpp:275
 msgid "Radial"
 msgstr "Радиальный"
 
-#: src/gtkmm/state_gradient.cpp:276
+#: ../src/gtkmm/state_gradient.cpp:276
 msgid "Conical"
 msgstr "Конический"
 
-#: src/gtkmm/state_gradient.cpp:277
+#: ../src/gtkmm/state_gradient.cpp:277
 msgid "Spiral"
 msgstr "Спиральный"
 
-#: src/gtkmm/state_gradient.cpp:282
+#: ../src/gtkmm/state_gradient.cpp:282
 msgid "The blend method the gradient will use"
 msgstr ""
 
-#: src/gtkmm/state_gradient.cpp:383
+#: ../src/gtkmm/state_gradient.cpp:383
 msgid "New Gradient"
 msgstr "Новый градиент"
 
-#: src/gtkmm/state_polygon.cpp:324
-#, fuzzy
+#: ../src/gtkmm/state_polygon.cpp:324
 msgid "Create Polygon Layer"
-msgstr "Создать слой окружности"
+msgstr "Создать слой многоугольника"
 
-#: src/gtkmm/state_polygon.cpp:397
+#: ../src/gtkmm/state_polygon.cpp:397
 msgid "Make Polygon"
-msgstr ""
+msgstr "Создать многоугольник"
 
-#: src/gtkmm/state_polygon.cpp:407
+#: ../src/gtkmm/state_polygon.cpp:407
 msgid "Clear current Polygon"
 msgstr "Очистить активный многоугольник"
 
-#: src/gtkmm/state_polygon.cpp:477
+#: ../src/gtkmm/state_polygon.cpp:477
 msgid "New Polygon"
 msgstr "Новый многоугольник"
 
-#: src/gtkmm/state_polygon.cpp:601 src/gtkmm/state_polygon.cpp:603
+#: ../src/gtkmm/state_polygon.cpp:594
+#: ../src/gtkmm/state_polygon.cpp:596
 msgid "Unable to create Polygon layer"
 msgstr ""
 
-#: src/gtkmm/state_rectangle.cpp:341
+#: ../src/gtkmm/state_rectangle.cpp:341
 msgid "Create Rectangle Layer"
-msgstr "Создать слоя прямоугольника"
+msgstr "Создать слой прямоугольника"
 
-#: src/gtkmm/state_rectangle.cpp:346
+#: ../src/gtkmm/state_rectangle.cpp:346
 msgid "Link BLine Origins"
 msgstr "Связать исходные точки кривых"
 
-#: src/gtkmm/state_rectangle.cpp:366
+#: ../src/gtkmm/state_rectangle.cpp:366
 msgid "Expansion:"
 msgstr "Расширение:"
 
-#: src/gtkmm/state_rectangle.cpp:460
+#: ../src/gtkmm/state_rectangle.cpp:460
 msgid "New Rectangle"
 msgstr "Новый прямоугольник"
 
-#: src/gtkmm/state_rotate.cpp:176
+#: ../src/gtkmm/state_rotate.cpp:176
 msgid "Allow Scale"
-msgstr ""
+msgstr "Разрешить масштабирование"
 
-#: src/gtkmm/state_rotate.cpp:370
+#: ../src/gtkmm/state_rotate.cpp:370
 msgid "Move Duck"
 msgstr ""
 
-#: src/gtkmm/state_rotate.cpp:375
+#: ../src/gtkmm/state_rotate.cpp:375
 msgid "Rotate Ducks"
 msgstr ""
 
-#: src/gtkmm/state_scale.cpp:164
+#: ../src/gtkmm/state_scale.cpp:164
 msgid "Lock Aspect Ratio"
 msgstr "Запереть соотношение сторон"
 
-#: src/gtkmm/state_sketch.cpp:158 src/gtkmm/state_sketch.cpp:239
+#: ../src/gtkmm/state_sketch.cpp:158
+#: ../src/gtkmm/state_sketch.cpp:239
 msgid "Save Sketch"
-msgstr ""
+msgstr "Сохранить эскиз"
 
-#: src/gtkmm/state_sketch.cpp:168
+#: ../src/gtkmm/state_sketch.cpp:168
 msgid "Unable to save sketch"
-msgstr ""
+msgstr "Не удалось сохранить эскиз"
 
-#: src/gtkmm/state_sketch.cpp:177 src/gtkmm/state_sketch.cpp:240
+#: ../src/gtkmm/state_sketch.cpp:177
+#: ../src/gtkmm/state_sketch.cpp:240
 msgid "Load Sketch"
-msgstr ""
+msgstr "Загрузить эскиз"
 
-#: src/gtkmm/state_sketch.cpp:187
+#: ../src/gtkmm/state_sketch.cpp:187
 msgid "Unable to load sketch"
-msgstr ""
+msgstr "Не удалось загрузить эскиз"
 
-#: src/gtkmm/state_sketch.cpp:237 src/gtkmm/state_sketch.cpp:268
-#: src/gtkmm/state_sketch.cpp:269
+#: ../src/gtkmm/state_sketch.cpp:237
+#: ../src/gtkmm/state_sketch.cpp:268
+#: ../src/gtkmm/state_sketch.cpp:269
 msgid "Clear Sketch"
-msgstr ""
+msgstr "Очистить эскиз"
 
-#: src/gtkmm/state_sketch.cpp:238
+#: ../src/gtkmm/state_sketch.cpp:238
 msgid "Undo Stroke"
-msgstr ""
+msgstr "Отменить штрих"
 
-#: src/gtkmm/state_sketch.cpp:241
+#: ../src/gtkmm/state_sketch.cpp:241
 msgid "Show Sketch"
-msgstr ""
+msgstr "Показывать эскиз"
 
-#: src/gtkmm/state_sketch.cpp:256 src/gtkmm/state_sketch.cpp:257
+#: ../src/gtkmm/state_sketch.cpp:256
+#: ../src/gtkmm/state_sketch.cpp:257
 msgid "Undo Last Stroke"
-msgstr ""
+msgstr "Отменить последний штрих"
 
-#: src/gtkmm/state_sketch.cpp:280 src/gtkmm/state_sketch.cpp:281
-#: src/gtkmm/state_sketch.cpp:292 src/gtkmm/state_sketch.cpp:293
+#: ../src/gtkmm/state_sketch.cpp:280
+#: ../src/gtkmm/state_sketch.cpp:281
+#: ../src/gtkmm/state_sketch.cpp:292
+#: ../src/gtkmm/state_sketch.cpp:293
 msgid "Save Sketch As..."
-msgstr ""
+msgstr "Очистить эскиз как..."
 
-#: src/gtkmm/state_sketch.cpp:304 src/gtkmm/state_sketch.cpp:305
+#: ../src/gtkmm/state_sketch.cpp:304
+#: ../src/gtkmm/state_sketch.cpp:305
 msgid "Open a Sketch"
-msgstr ""
+msgstr "Открыть эскиз"
 
-#: src/gtkmm/state_smoothmove.cpp:178
+#: ../src/gtkmm/state_smoothmove.cpp:178
 msgid "Radius"
-msgstr ""
+msgstr "Радиус"
 
-#: src/gtkmm/state_smoothmove.cpp:204
+#: ../src/gtkmm/state_smoothmove.cpp:204
 msgid "Smooth Move"
 msgstr ""
 
-#: src/gtkmm/state_star.cpp:431
+#: ../src/gtkmm/state_star.cpp:440
 msgid "Regular Polygon"
 msgstr "Обычный многоугольник"
 
-#: src/gtkmm/state_star.cpp:432
+#: ../src/gtkmm/state_star.cpp:441
 msgid "Create Star Layer"
 msgstr "Создать слой звезды"
 
-#: src/gtkmm/state_star.cpp:456
+#: ../src/gtkmm/state_star.cpp:469
 msgid "Number of Points:"
 msgstr "Количество точек:"
 
-#: src/gtkmm/state_star.cpp:458
+#: ../src/gtkmm/state_star.cpp:472
 msgid "Inner Tangent:"
 msgstr "Внутренняя касательная:"
 
-#: src/gtkmm/state_star.cpp:460
+#: ../src/gtkmm/state_star.cpp:475
 msgid "Outer Tangent:"
 msgstr "Внешняя касательная:"
 
-#: src/gtkmm/state_star.cpp:462
+#: ../src/gtkmm/state_star.cpp:478
 msgid "Inner Width:"
 msgstr "Внутренняя толщина:"
 
-#: src/gtkmm/state_star.cpp:464
+#: ../src/gtkmm/state_star.cpp:481
 msgid "Outer Width:"
 msgstr "Внешняя толщина:"
 
-#: src/gtkmm/state_star.cpp:466
+#: ../src/gtkmm/state_star.cpp:484
 msgid "Radius Ratio:"
 msgstr "Соотношение радиусов:"
 
-#: src/gtkmm/state_star.cpp:468
+#: ../src/gtkmm/state_star.cpp:487
 msgid "Angle Offset:"
 msgstr "Смещение угла:"
 
-#: src/gtkmm/state_star.cpp:555
+#: ../src/gtkmm/state_star.cpp:574
 msgid "New Star"
 msgstr "Новая звезда"
 
-#: src/gtkmm/state_star.cpp:696
-#, fuzzy
+#: ../src/gtkmm/state_star.cpp:720
 msgid "Unable to create Star layer"
-msgstr "Создать слой звезды"
+msgstr "Не удалось создать слой звезды"
 
-#: src/gtkmm/state_text.cpp:275
+#: ../src/gtkmm/state_text.cpp:275
 msgid "Multiline Editor"
 msgstr "Многострочный редактор"
 
-#: src/gtkmm/state_text.cpp:284 src/gtkmm/state_text.cpp:329
+#: ../src/gtkmm/state_text.cpp:284
+#: ../src/gtkmm/state_text.cpp:329
 msgid "Text Tool"
 msgstr "Текст"
 
-#: src/gtkmm/state_text.cpp:287
+#: ../src/gtkmm/state_text.cpp:287
 msgid "Size:"
 msgstr "Кегль"
 
-#: src/gtkmm/state_text.cpp:289
+#: ../src/gtkmm/state_text.cpp:289
 msgid "Orientation:"
 msgstr "Выключка:"
 
-#: src/gtkmm/state_text.cpp:291
+#: ../src/gtkmm/state_text.cpp:291
 msgid "Family:"
 msgstr "Гарнитура:"
 
-#: src/gtkmm/state_text.cpp:373
+#: ../src/gtkmm/state_text.cpp:373
 msgid "New Text"
 msgstr "Новый текст"
 
-#: src/gtkmm/state_text.cpp:398
+#: ../src/gtkmm/state_text.cpp:398
 msgid "Text Paragraph"
 msgstr "Новый абзац"
 
-#: src/gtkmm/state_text.cpp:398 src/gtkmm/state_text.cpp:400
+#: ../src/gtkmm/state_text.cpp:398
+#: ../src/gtkmm/state_text.cpp:400
 msgid "Enter text here:"
 msgstr "Введите сюда текст:"
 
-#: src/gtkmm/state_text.cpp:400
+#: ../src/gtkmm/state_text.cpp:400
 msgid "Text Entry"
 msgstr "Ввод текста"
 
-#: src/gtkmm/state_width.cpp:224
+#: ../src/gtkmm/state_width.cpp:224
 msgid "Relative Growth"
-msgstr "Относительный рост"
+msgstr "Относительное наращивание"
 
-#: src/gtkmm/state_width.cpp:232
+#: ../src/gtkmm/state_width.cpp:232
 msgid "Growth:"
 msgstr "Сила:"
 
-#: src/gtkmm/state_width.cpp:235
+#: ../src/gtkmm/state_width.cpp:235
 msgid "Radius:"
 msgstr "Радиус:"
 
-#: src/gtkmm/state_width.cpp:560
+#: ../src/gtkmm/state_width.cpp:560
 msgid "Sketch Width"
 msgstr ""
 
-#: src/gtkmm/toolbox.cpp:134
+#: ../src/gtkmm/toolbox.cpp:134
 msgid "Cannot save"
 msgstr "Невозможно сохранить"
 
-#: src/gtkmm/toolbox.cpp:134 src/gtkmm/toolbox.cpp:146
+#: ../src/gtkmm/toolbox.cpp:134
+#: ../src/gtkmm/toolbox.cpp:146
 msgid "Nothing to save"
-msgstr ""
+msgstr "Нет сохраняемых изменений"
 
-#: src/gtkmm/toolbox.cpp:146
+#: ../src/gtkmm/toolbox.cpp:146
 msgid "Cannot save as"
-msgstr ""
+msgstr "Невозможно сохранить как"
 
-#: src/gtkmm/toolbox.cpp:168
+#: ../src/gtkmm/toolbox.cpp:168
 msgid "Cannot close"
-msgstr ""
+msgstr "Невозможно закрыть"
 
-#: src/gtkmm/toolbox.cpp:168
+#: ../src/gtkmm/toolbox.cpp:168
 msgid "Nothing to close"
-msgstr ""
+msgstr "Нет закрываемых документов"
 
-#: src/gtkmm/toolbox.cpp:221
+#: ../src/gtkmm/toolbox.cpp:221
 msgid "Vertical Dock: Canvases, History"
-msgstr ""
+msgstr "Вертикальный док: Холсты, История"
 
-#: src/gtkmm/toolbox.cpp:222
+#: ../src/gtkmm/toolbox.cpp:222
 msgid "Horizontal Dock: Layers, Children, Params"
-msgstr ""
+msgstr "Горизонтальный док: Слои, Потомки, Параметры"
 
-#: src/gtkmm/toolbox.cpp:224
+#: ../src/gtkmm/toolbox.cpp:224
 msgid "Reset Windows to Original Layout"
-msgstr ""
+msgstr "Восстановить исходную раскладку окон"
 
-#: src/gtkmm/toolbox.cpp:233
+#: ../src/gtkmm/toolbox.cpp:233
 msgid "Open Recent"
 msgstr "Открыть последние"
 
-#: src/gtkmm/toolbox.cpp:240
+#: ../src/gtkmm/toolbox.cpp:240
 msgid "Panels"
 msgstr "Панели"
 
-#: src/gtkmm/toolbox.cpp:252
+#: ../src/gtkmm/toolbox.cpp:252
 msgid "Input Devices..."
 msgstr "Устройства ввода..."
 
-#: src/gtkmm/toolbox.cpp:254
+#: ../src/gtkmm/toolbox.cpp:254
 msgid "Setup..."
 msgstr "Настроить Synfig..."
 
 #. TRANSLATORS: Help menu entry
-#: src/gtkmm/toolbox.cpp:269
+#: ../src/gtkmm/toolbox.cpp:269
 msgid "Synfig Wiki"
 msgstr "Вики Synfig"
 
 #. TRANSLATORS: a wiki page
-#: src/gtkmm/toolbox.cpp:269
+#: ../src/gtkmm/toolbox.cpp:269
 msgid "/Main_Page"
 msgstr "/Main_Page"
 
 #. TRANSLATORS: Help menu entry
-#: src/gtkmm/toolbox.cpp:270
+#: ../src/gtkmm/toolbox.cpp:270
 msgid "Tutorials"
 msgstr "Уроки"
 
 #. TRANSLATORS: a wiki page
-#: src/gtkmm/toolbox.cpp:270
+#: ../src/gtkmm/toolbox.cpp:270
 msgid "/Tutorials"
 msgstr "/Tutorials"
 
 #. TRANSLATORS: Help menu entry
-#: src/gtkmm/toolbox.cpp:271
+#: ../src/gtkmm/toolbox.cpp:271
 msgid "Frequently Asked Questions"
 msgstr "Часто задаваемые вопросы"
 
 #. TRANSLATORS: a wiki page
-#: src/gtkmm/toolbox.cpp:271
+#: ../src/gtkmm/toolbox.cpp:271
 msgid "/FAQ"
 msgstr "/FAQ"
 
 #. TRANSLATORS: Help menu entry
-#: src/gtkmm/toolbox.cpp:272
+#: ../src/gtkmm/toolbox.cpp:272
 msgid "Get Support"
 msgstr "Техподдержка"
 
 #. TRANSLATORS: a wiki page
-#: src/gtkmm/toolbox.cpp:272
+#: ../src/gtkmm/toolbox.cpp:272
 msgid "/Contact"
 msgstr "/Contact"
 
 #. TRANSLATORS: Help menu entry
-#: src/gtkmm/toolbox.cpp:273
+#: ../src/gtkmm/toolbox.cpp:273
 msgid "Keyboard Shortcuts"
 msgstr "Клавиатурные комбинации"
 
 #. TRANSLATORS: a wiki page
-#: src/gtkmm/toolbox.cpp:273
+#: ../src/gtkmm/toolbox.cpp:273
 msgid "/Keyboard_Shortcuts"
 msgstr "/Keyboard_Shortcuts"
 
 #. TRANSLATORS: Help menu entry
-#: src/gtkmm/toolbox.cpp:274
+#: ../src/gtkmm/toolbox.cpp:274
 msgid "Mouse Shortcuts"
 msgstr "Использование мыши"
 
 #. TRANSLATORS: a wiki page
-#: src/gtkmm/toolbox.cpp:274
+#: ../src/gtkmm/toolbox.cpp:274
 msgid "/Mouse_Shortcuts"
 msgstr "/Mouse_Shortcuts"
 
 #. TRANSLATORS: Help menu entry
-#: src/gtkmm/toolbox.cpp:275
+#: ../src/gtkmm/toolbox.cpp:275
 msgid "All Pages"
 msgstr "Все страницы"
 
-#: src/gtkmm/toolbox.cpp:283
+#: ../src/gtkmm/toolbox.cpp:283
 msgid "_Help"
 msgstr "_Справка"
 
-#: src/gtkmm/toolbox.cpp:290
+#: ../src/gtkmm/toolbox.cpp:290
 msgid "New..."
 msgstr "Создать"
 
-#: src/gtkmm/toolbox.cpp:291
+#: ../src/gtkmm/toolbox.cpp:291
 msgid "Open..."
 msgstr "Открыть"
 
-#: src/gtkmm/toolbox.cpp:292
+#: ../src/gtkmm/toolbox.cpp:292
 msgid "Save"
 msgstr "Сохранить"
 
-#: src/gtkmm/toolbox.cpp:293
+#: ../src/gtkmm/toolbox.cpp:293
 msgid "Save As..."
 msgstr "Сохранить как..."
 
-#: src/gtkmm/toolbox.cpp:297
+#: ../src/gtkmm/toolbox.cpp:297
 msgid "Setup"
 msgstr "Настроить"
 
-#: src/gtkmm/toolbox.cpp:298
+#: ../src/gtkmm/toolbox.cpp:298
 msgid "About Synfig Studio"
 msgstr "О Synfig Studio"
 
-#: src/gtkmm/widget_canvaschooser.cpp:115
+#: ../src/gtkmm/widget_canvaschooser.cpp:115
 msgid "Other..."
 msgstr "Другое..."
 
-#: src/gtkmm/widget_canvaschooser.cpp:136
+#: ../src/gtkmm/widget_canvaschooser.cpp:136
 msgid "Choose Canvas"
 msgstr "Выберите холст"
 
-#: src/gtkmm/widget_canvaschooser.cpp:136
+#: ../src/gtkmm/widget_canvaschooser.cpp:136
 msgid "Enter the relative name of the canvas that you want"
 msgstr ""
 
-#: src/gtkmm/widget_canvaschooser.cpp:145
+#: ../src/gtkmm/widget_canvaschooser.cpp:145
 msgid "No canvas name was specified"
-msgstr ""
+msgstr "Имя холста не указано"
 
-#: src/gtkmm/widget_canvaschooser.cpp:159
+#: ../src/gtkmm/widget_canvaschooser.cpp:159
 msgid "Error:Exception Thrown"
 msgstr ""
 
-#: src/gtkmm/widget_canvaschooser.cpp:159
+#: ../src/gtkmm/widget_canvaschooser.cpp:159
 msgid ""
 "Error selecting canvas:\n"
 "\n"
 msgstr ""
+"Ошибка при выборе холста:\n"
+"\n"
 
-#: src/gtkmm/widget_canvaschooser.cpp:164
+#: ../src/gtkmm/widget_canvaschooser.cpp:164
 msgid "Unknown Exception"
-msgstr ""
+msgstr "Неизвестное прерывание"
 
-#: src/gtkmm/widget_coloredit.cpp:305
+#: ../src/gtkmm/widget_coloredit.cpp:305
 msgid "RGB"
 msgstr "RGB"
 
-#: src/gtkmm/widget_coloredit.cpp:306
+#: ../src/gtkmm/widget_coloredit.cpp:306
 msgid "YUV"
 msgstr "YUV"
 
-#: src/gtkmm/widget_coloredit.cpp:361
+#: ../src/gtkmm/widget_coloredit.cpp:361
 msgid "HTML code"
 msgstr "Код HTML"
 
-#: src/gtkmm/widget_coloredit.cpp:374
+#: ../src/gtkmm/widget_coloredit.cpp:374
 msgid "Luma"
 msgstr "Светимость"
 
-#: src/gtkmm/widget_coloredit.cpp:375
+#: ../src/gtkmm/widget_coloredit.cpp:375
 msgid "Hue"
 msgstr "Тон"
 
-#: src/gtkmm/widget_coloredit.cpp:376
+#: ../src/gtkmm/widget_coloredit.cpp:376
 msgid "Saturation"
 msgstr "Насыщенность"
 
-#: src/gtkmm/widget_coloredit.cpp:377
+#: ../src/gtkmm/widget_coloredit.cpp:377
 msgid "U"
 msgstr "U"
 
-#: src/gtkmm/widget_coloredit.cpp:378
+#: ../src/gtkmm/widget_coloredit.cpp:378
 msgid "V"
 msgstr "V"
 
-#: src/gtkmm/widget_coloredit.cpp:382
+#: ../src/gtkmm/widget_coloredit.cpp:382
 msgid "Alpha"
 msgstr "Альфа"
 
-#: src/gtkmm/widget_defaults.cpp:215
-msgid "Foreground Color"
-msgstr "Цвет переднего плана"
+#: ../src/gtkmm/widget_defaults.cpp:215
+msgid "Outline Color"
+msgstr "Цвет обводки"
 
-#: src/gtkmm/widget_defaults.cpp:223
-msgid "Background Color"
-msgstr "Цвет фона"
+#: ../src/gtkmm/widget_defaults.cpp:223
+msgid "Fill Color"
+msgstr "Цвет заливки"
 
-#: src/gtkmm/widget_defaults.cpp:240
+#: ../src/gtkmm/widget_defaults.cpp:240
 msgid ""
-"Swap Background and\n"
-"Foreground Colors"
-msgstr ""
-"Поменять местами цвета\n"
-"переднего плана и фона"
+"Swap Fill and\n"
+"Outline Colors"
+msgstr "Поменять местами цвета заливки и обводки"
 
-#: src/gtkmm/widget_defaults.cpp:254
+#: ../src/gtkmm/widget_defaults.cpp:254
 msgid "Reset Colors to Black and White"
 msgstr "Сбросить цвета до черного и белого"
 
-#: src/gtkmm/widget_defaults.cpp:266
+#: ../src/gtkmm/widget_defaults.cpp:266
 msgid "Brush Preview"
 msgstr "Предпросмотр кисти"
 
-#: src/gtkmm/widget_defaults.cpp:276
+#: ../src/gtkmm/widget_defaults.cpp:276
 msgid "Brush Size"
 msgstr "Диаметр кисти"
 
-#: src/gtkmm/widget_defaults.cpp:284
+#: ../src/gtkmm/widget_defaults.cpp:284
 msgid "Default Blend Method"
-msgstr "Режим наложения по умолчанию"
+msgstr "Режим смешивания по умолчанию"
 
-#: src/gtkmm/widget_defaults.cpp:298
+#: ../src/gtkmm/widget_defaults.cpp:298
 msgid "Default Interpolation"
 msgstr "Интерполяция по умолчанию"
 
-#: src/gtkmm/widget_defaults.cpp:306
+#: ../src/gtkmm/widget_defaults.cpp:306
 msgid "Default Opacity"
 msgstr "Непрозрачность по умолчанию"
 
-#: src/gtkmm/widget_defaults.cpp:313
+#: ../src/gtkmm/widget_defaults.cpp:313
 msgid "Default Gradient"
 msgstr "Градиент по умолчанию"
 
-#: src/gtkmm/widget_filename.cpp:61
+#: ../src/gtkmm/widget_filename.cpp:61
 msgid "Find"
-msgstr ""
+msgstr "Указать"
 
-#: src/gtkmm/widget_filename.cpp:120
+#: ../src/gtkmm/widget_filename.cpp:120
 msgid "Choose File"
 msgstr "Выберите файл"
 
-#: src/gtkmm/widget_gradient.cpp:223
+#: ../src/gtkmm/widget_gradient.cpp:223
 msgid "Insert CPoint"
-msgstr ""
+msgstr "Вставить опорную точку"
 
-#: src/gtkmm/widget_gradient.cpp:235
+#: ../src/gtkmm/widget_gradient.cpp:235
 msgid "Remove CPoint"
+msgstr "Удалить опорную точку"
+
+#: ../src/gtkmm/widget_keyframe_list.cpp:199
+msgid "Not possible to ALT-drag the first keyframe"
 msgstr ""
 
-#: src/gtkmm/widget_waypoint.cpp:77
+#: ../src/gtkmm/widget_keyframe_list.cpp:226
+msgid "Delta set not allowed"
+msgstr ""
+
+#: ../src/gtkmm/widget_keyframe_list.cpp:297
+msgid "Click and drag keyframes"
+msgstr ""
+
+#: ../src/gtkmm/widget_waypoint.cpp:77
 msgid "(Non-static value)"
-msgstr ""
+msgstr "(нестатическое значение)"
 
-#: src/gtkmm/widget_waypoint.cpp:87 src/gtkmm/widget_waypoint.cpp:94
-#: src/gtkmm/widget_waypointmodel.cpp:73 src/gtkmm/widget_waypointmodel.cpp:80
+#: ../src/gtkmm/widget_waypoint.cpp:87
+#: ../src/gtkmm/widget_waypoint.cpp:94
+#: ../src/gtkmm/widget_waypointmodel.cpp:73
+#: ../src/gtkmm/widget_waypointmodel.cpp:80
 msgid "TCB Smooth"
 msgstr ""
 
-#: src/gtkmm/widget_waypoint.cpp:88 src/gtkmm/widget_waypoint.cpp:95
-#: src/gtkmm/widget_waypointmodel.cpp:74 src/gtkmm/widget_waypointmodel.cpp:81
+#: ../src/gtkmm/widget_waypoint.cpp:88
+#: ../src/gtkmm/widget_waypoint.cpp:95
+#: ../src/gtkmm/widget_waypointmodel.cpp:74
+#: ../src/gtkmm/widget_waypointmodel.cpp:81
 msgid "Constant"
 msgstr ""
 
-#: src/gtkmm/widget_waypoint.cpp:90 src/gtkmm/widget_waypointmodel.cpp:76
+#: ../src/gtkmm/widget_waypoint.cpp:90
+#: ../src/gtkmm/widget_waypointmodel.cpp:76
 msgid "Ease In"
 msgstr ""
 
-#: src/gtkmm/widget_waypoint.cpp:97 src/gtkmm/widget_waypointmodel.cpp:83
+#: ../src/gtkmm/widget_waypoint.cpp:97
+#: ../src/gtkmm/widget_waypointmodel.cpp:83
 msgid "Ease Out"
 msgstr ""
 
-#: src/gtkmm/widget_waypoint.cpp:122
-#: src/synfigapp/actions/waypointremove.cpp:78
-#: src/synfigapp/actions/waypointset.cpp:77
-#: src/synfigapp/actions/waypointsimpleadd.cpp:78
-#: src/synfigapp/value_desc.cpp:81
+#: ../src/gtkmm/widget_waypoint.cpp:122
+#: ../src/synfigapp/actions/waypointremove.cpp:78
+#: ../src/synfigapp/actions/waypointset.cpp:77
+#: ../src/synfigapp/actions/waypointsimpleadd.cpp:78
+#: ../src/synfigapp/value_desc.cpp:81
 msgid "Waypoint"
-msgstr ""
+msgstr "Фиксатор"
 
-#: src/gtkmm/widget_waypoint.cpp:124
+#: ../src/gtkmm/widget_waypoint.cpp:124
 msgid "<b>Waypoint</b>"
-msgstr ""
+msgstr "<b>Фиксатор</b>"
 
-#: src/gtkmm/widget_waypoint.cpp:136
+#: ../src/gtkmm/widget_waypoint.cpp:136
 msgid "_Value"
 msgstr "_Значение"
 
-#: src/gtkmm/widget_waypoint.cpp:143
+#: ../src/gtkmm/widget_waypoint.cpp:143
 msgid "_Time"
 msgstr "_Время"
 
-#: src/gtkmm/widget_waypoint.cpp:149
+#: ../src/gtkmm/widget_waypoint.cpp:149
 msgid "Interpolation"
 msgstr "Интерполяция"
 
-#: src/gtkmm/widget_waypoint.cpp:151
+#: ../src/gtkmm/widget_waypoint.cpp:151
 msgid "<b>Interpolation</b>"
 msgstr "<b>Интерполяция</b>"
 
-#: src/gtkmm/widget_waypoint.cpp:163
+#: ../src/gtkmm/widget_waypoint.cpp:163
 msgid "_In Interpolation"
 msgstr ""
 
-#: src/gtkmm/widget_waypoint.cpp:169
+#: ../src/gtkmm/widget_waypoint.cpp:169
 msgid "_Out Interpolation"
 msgstr ""
 
-#: src/gtkmm/widget_waypoint.cpp:175
+#: ../src/gtkmm/widget_waypoint.cpp:175
 msgid "TCB Parameters"
 msgstr ""
 
-#: src/gtkmm/widget_waypoint.cpp:177
+#: ../src/gtkmm/widget_waypoint.cpp:177
 msgid "<b>TCB Parameter</b>"
 msgstr ""
 
-#: src/gtkmm/widget_waypoint.cpp:189
+#: ../src/gtkmm/widget_waypoint.cpp:189
 msgid "T_ension"
 msgstr ""
 
-#: src/gtkmm/widget_waypoint.cpp:196
+#: ../src/gtkmm/widget_waypoint.cpp:196
 msgid "_Continuity"
 msgstr "_Непрерывность"
 
-#: src/gtkmm/widget_waypoint.cpp:203
+#: ../src/gtkmm/widget_waypoint.cpp:203
 msgid "_Bias"
 msgstr ""
 
-#: src/gtkmm/widget_waypoint.cpp:210
+#: ../src/gtkmm/widget_waypoint.cpp:210
 msgid "Te_mporal Tension"
 msgstr ""
 
-#: src/gtkmm/widget_waypointmodel.cpp:65
+#: ../src/gtkmm/widget_waypointmodel.cpp:65
 msgid "Out:"
-msgstr ""
+msgstr "Выход:"
 
-#: src/gtkmm/widget_waypointmodel.cpp:66
+#: ../src/gtkmm/widget_waypointmodel.cpp:66
 msgid "In:"
-msgstr ""
+msgstr "Вход:"
 
-#: src/gtkmm/widget_waypointmodel.cpp:67
+#: ../src/gtkmm/widget_waypointmodel.cpp:67
 msgid "Tension:"
 msgstr ""
 
-#: src/gtkmm/widget_waypointmodel.cpp:68
+#: ../src/gtkmm/widget_waypointmodel.cpp:68
 msgid "Continuity:"
 msgstr "Непрерывность:"
 
-#: src/gtkmm/widget_waypointmodel.cpp:69
+#: ../src/gtkmm/widget_waypointmodel.cpp:69
 msgid "Bias:"
 msgstr ""
 
-#: src/gtkmm/widget_waypointmodel.cpp:70
+#: ../src/gtkmm/widget_waypointmodel.cpp:70
 msgid "Temporal Tension:"
 msgstr ""
 
-#: src/gtkmm/workarea.cpp:1171
+#: ../src/gtkmm/workarea.cpp:1188
 msgid "Nudge"
-msgstr ""
+msgstr "Толкнуть"
 
-#: src/gtkmm/workarea.cpp:1631
+#: ../src/gtkmm/workarea.cpp:1648
 msgid "Move"
 msgstr ""
 
-#: src/gtkmm/workarea.cpp:2322
+#: ../src/gtkmm/workarea.cpp:2339
 msgid "Rendering..."
-msgstr ""
+msgstr "Отрисовка..."
 
-#: src/gtkmm/workarea.cpp:2349 src/gtkmm/workarea.cpp:2441
+#: ../src/gtkmm/workarea.cpp:2366
+#: ../src/gtkmm/workarea.cpp:2458
 msgid "Render Failed"
-msgstr ""
+msgstr "Не удалось отрисовать"
 
-#: src/gtkmm/workarea.cpp:2423
+#: ../src/gtkmm/workarea.cpp:2440
 #, c-format
 msgid "Rendering canvas %s..."
-msgstr ""
+msgstr "Отрисовка холста %s..."
 
-#: src/gtkmm/zoomdial.h:72
+#: ../src/gtkmm/zoomdial.cpp:55
 msgid "Zoom In"
 msgstr "Приблизить"
 
-#: src/gtkmm/zoomdial.h:73
+#: ../src/gtkmm/zoomdial.cpp:56
 msgid "Zoom Out"
 msgstr "Отдалить"
 
-#: src/gtkmm/zoomdial.h:74
+#: ../src/gtkmm/zoomdial.cpp:57
 msgid "Zoom to Fit"
 msgstr "Уместить"
 
-#: src/gtkmm/zoomdial.h:75
+#: ../src/gtkmm/zoomdial.cpp:58
 msgid "Zoom to 100%"
 msgstr "1:1"
 
-#: src/synfigapp/action.cpp:480
+#: ../src/synfigapp/action.cpp:485
 msgid "Selected Canvas"
-msgstr ""
+msgstr "Выбранный холст"
 
-#: src/synfigapp/action.cpp:484 src/synfigapp/action.cpp:485
+#: ../src/synfigapp/action.cpp:489
+#: ../src/synfigapp/action.cpp:490
 msgid "Canvas Interface"
 msgstr ""
 
-#: src/synfigapp/actions/activepointadd.cpp:50
+#: ../src/synfigapp/actions/activepointadd.cpp:50
 msgid "Add Activepoint"
 msgstr ""
 
-#: src/synfigapp/actions/activepointadd.cpp:76
-#: src/synfigapp/actions/activepointremove.cpp:75
-#: src/synfigapp/actions/activepointset.cpp:74
-#: src/synfigapp/actions/activepointsetoff.cpp:84
-#: src/synfigapp/actions/activepointseton.cpp:84
-#: src/synfigapp/actions/activepointsetsmart.cpp:83
-#: src/synfigapp/actions/colorset.cpp:79
-#: src/synfigapp/actions/gradientset.cpp:79
-#: src/synfigapp/actions/valuedescconvert.cpp:93
-#: src/synfigapp/actions/valuedescdisconnect.cpp:82
-#: src/synfigapp/actions/valuedescdisconnect.cpp:91
-#: src/synfigapp/actions/valuedescexport.cpp:88
-#: src/synfigapp/actions/valuedescset.cpp:83
-#: src/synfigapp/actions/valuedescset.cpp:92
-#: src/synfigapp/actions/valuenodedynamiclistinsert.cpp:77
-#: src/synfigapp/actions/valuenodedynamiclistinsertsmart.cpp:78
-#: src/synfigapp/actions/valuenodedynamiclistremove.cpp:75
-#: src/synfigapp/actions/valuenodedynamiclistremovesmart.cpp:78
-#: src/synfigapp/actions/valuenodedynamiclistrotateorder.cpp:75
+#: ../src/synfigapp/actions/activepointadd.cpp:76
+#: ../src/synfigapp/actions/activepointremove.cpp:75
+#: ../src/synfigapp/actions/activepointset.cpp:74
+#: ../src/synfigapp/actions/activepointsetoff.cpp:84
+#: ../src/synfigapp/actions/activepointseton.cpp:84
+#: ../src/synfigapp/actions/activepointsetsmart.cpp:83
+#: ../src/synfigapp/actions/colorset.cpp:88
+#: ../src/synfigapp/actions/gradientset.cpp:79
+#: ../src/synfigapp/actions/valuedescconvert.cpp:93
+#: ../src/synfigapp/actions/valuedescdisconnect.cpp:82
+#: ../src/synfigapp/actions/valuedescdisconnect.cpp:91
+#: ../src/synfigapp/actions/valuedescexport.cpp:89
+#: ../src/synfigapp/actions/valuedescset.cpp:83
+#: ../src/synfigapp/actions/valuedescset.cpp:92
+#: ../src/synfigapp/actions/valuenodedynamiclistinsert.cpp:77
+#: ../src/synfigapp/actions/valuenodedynamiclistinsertsmart.cpp:78
+#: ../src/synfigapp/actions/valuenodedynamiclistremove.cpp:75
+#: ../src/synfigapp/actions/valuenodedynamiclistremovesmart.cpp:78
+#: ../src/synfigapp/actions/valuenodedynamiclistrotateorder.cpp:75
 msgid "ValueDesc"
 msgstr ""
 
-#: src/synfigapp/actions/activepointadd.cpp:80
-#: src/synfigapp/actions/activepointsetsmart.cpp:87
+#: ../src/synfigapp/actions/activepointadd.cpp:80
+#: ../src/synfigapp/actions/activepointsetsmart.cpp:87
 msgid "New Activepoint"
 msgstr ""
 
-#: src/synfigapp/actions/activepointadd.cpp:81
-#: src/synfigapp/actions/activepointsetsmart.cpp:88
-#: src/synfigapp/actions/activepointsimpleadd.cpp:79
+#: ../src/synfigapp/actions/activepointadd.cpp:81
+#: ../src/synfigapp/actions/activepointsetsmart.cpp:88
+#: ../src/synfigapp/actions/activepointsimpleadd.cpp:79
 msgid "Activepoint to be added"
 msgstr ""
 
-#: src/synfigapp/actions/activepointadd.cpp:87
-#: src/synfigapp/actions/activepointsetsmart.cpp:94
+#: ../src/synfigapp/actions/activepointadd.cpp:87
+#: ../src/synfigapp/actions/activepointsetsmart.cpp:94
 msgid "Time where activepoint is to be added"
 msgstr ""
 
-#: src/synfigapp/actions/activepointadd.cpp:177
-#: src/synfigapp/actions/activepointremove.cpp:163
+#: ../src/synfigapp/actions/activepointadd.cpp:177
+#: ../src/synfigapp/actions/activepointremove.cpp:163
 msgid "A Activepoint already exists at this point in time"
 msgstr ""
 
-#: src/synfigapp/actions/activepointadd.cpp:180
-#: src/synfigapp/actions/activepointremove.cpp:166
+#: ../src/synfigapp/actions/activepointadd.cpp:180
+#: ../src/synfigapp/actions/activepointremove.cpp:166
 msgid "This activepoint is already in the ValueNode"
 msgstr ""
 
-#: src/synfigapp/actions/activepointremove.cpp:50
+#: ../src/synfigapp/actions/activepointremove.cpp:50
 msgid "Remove Activepoint"
 msgstr ""
 
-#: src/synfigapp/actions/activepointremove.cpp:79
-#: src/synfigapp/actions/activepointset.cpp:78
-#: src/synfigapp/actions/activepointsetoff.cpp:88
-#: src/synfigapp/actions/activepointseton.cpp:88
-#: src/synfigapp/actions/activepointsimpleadd.cpp:78
+#: ../src/synfigapp/actions/activepointremove.cpp:79
+#: ../src/synfigapp/actions/activepointset.cpp:78
+#: ../src/synfigapp/actions/activepointsetoff.cpp:88
+#: ../src/synfigapp/actions/activepointseton.cpp:88
+#: ../src/synfigapp/actions/activepointsimpleadd.cpp:78
 msgid "Activepoint"
 msgstr ""
 
-#: src/synfigapp/actions/activepointremove.cpp:80
-#: src/synfigapp/actions/activepointset.cpp:79
+#: ../src/synfigapp/actions/activepointremove.cpp:80
+#: ../src/synfigapp/actions/activepointset.cpp:79
 msgid "Activepoint to be changed"
 msgstr ""
 
-#: src/synfigapp/actions/activepointremove.cpp:144
-#: src/synfigapp/actions/activepointset.cpp:152
-#: src/synfigapp/actions/activepointset.cpp:210
-#: src/synfigapp/actions/activepointset.cpp:256
-#: src/synfigapp/actions/activepointset.cpp:277
+#: ../src/synfigapp/actions/activepointremove.cpp:144
+#: ../src/synfigapp/actions/activepointset.cpp:152
+#: ../src/synfigapp/actions/activepointset.cpp:210
+#: ../src/synfigapp/actions/activepointset.cpp:256
+#: ../src/synfigapp/actions/activepointset.cpp:277
 msgid "Unable to find activepoint"
 msgstr ""
 
-#: src/synfigapp/actions/activepointset.cpp:50
+#: ../src/synfigapp/actions/activepointset.cpp:50
 msgid "Set Activepoint"
 msgstr ""
 
-#: src/synfigapp/actions/activepointsetoff.cpp:58
+#: ../src/synfigapp/actions/activepointsetoff.cpp:58
 msgid "Mark Activepoint as \"Off\""
 msgstr ""
 
-#: src/synfigapp/actions/activepointseton.cpp:58
+#: ../src/synfigapp/actions/activepointseton.cpp:58
 msgid "Mark Activepoint as \"On\""
 msgstr ""
 
-#: src/synfigapp/actions/activepointsetsmart.cpp:57
+#: ../src/synfigapp/actions/activepointsetsmart.cpp:57
 msgid "Set Activepoint (Smart)"
 msgstr ""
 
-#: src/synfigapp/actions/activepointsetsmart.cpp:366
-#: src/synfigapp/actions/waypointsetsmart.cpp:439
+#: ../src/synfigapp/actions/activepointsetsmart.cpp:366
+#: ../src/synfigapp/actions/waypointsetsmart.cpp:439
 msgid "Unable to determine how to proceed. This is a bug."
 msgstr ""
 
-#: src/synfigapp/actions/activepointsimpleadd.cpp:49
-#: src/synfigapp/actions/waypointsimpleadd.cpp:49
+#: ../src/synfigapp/actions/activepointsimpleadd.cpp:49
+#: ../src/synfigapp/actions/waypointsimpleadd.cpp:49
 msgid "Simply Add Waypoint"
-msgstr ""
+msgstr "Просто добавить фиксатор"
 
-#: src/synfigapp/actions/activepointsimpleadd.cpp:74
-#: src/synfigapp/actions/waypointadd.cpp:77
-#: src/synfigapp/actions/waypointset.cpp:73
-#: src/synfigapp/actions/waypointsetsmart.cpp:85
-#: src/synfigapp/actions/waypointsimpleadd.cpp:74
+#: ../src/synfigapp/actions/activepointsimpleadd.cpp:74
+#: ../src/synfigapp/actions/waypointadd.cpp:77
+#: ../src/synfigapp/actions/waypointset.cpp:73
+#: ../src/synfigapp/actions/waypointsetsmart.cpp:85
+#: ../src/synfigapp/actions/waypointsimpleadd.cpp:74
 msgid "Destination ValueNode (Animated)"
 msgstr ""
 
-#: src/synfigapp/actions/activepointsimpleadd.cpp:169
+#: ../src/synfigapp/actions/activepointsimpleadd.cpp:169
 msgid "The activepoint to remove no longer exists"
 msgstr ""
 
-#: src/synfigapp/actions/blinepointtangentmerge.cpp:78
+#: ../src/synfigapp/actions/blinepointtangentmerge.cpp:78
 #, c-format
 msgid "Merge Tangents of '%s'"
 msgstr ""
 
-#: src/synfigapp/actions/blinepointtangentmerge.cpp:87
-#: src/synfigapp/actions/blinepointtangentsplit.cpp:87
+#: ../src/synfigapp/actions/blinepointtangentmerge.cpp:87
+#: ../src/synfigapp/actions/blinepointtangentsplit.cpp:87
 msgid "ValueNode of BLinePoint"
 msgstr ""
 
-#: src/synfigapp/actions/blinepointtangentmerge.cpp:156
-#: src/synfigapp/actions/blinepointtangentsplit.cpp:156
-msgid "Couldn't find action \"value_desc_set\""
+#: ../src/synfigapp/actions/blinepointtangentmerge.cpp:156
+#: ../src/synfigapp/actions/blinepointtangentsplit.cpp:156
+msgid "Couldn't find action \"ValueDescSet\""
 msgstr ""
 
-#: src/synfigapp/actions/blinepointtangentsplit.cpp:78
+#: ../src/synfigapp/actions/blinepointtangentsplit.cpp:78
 #, c-format
 msgid "Split Tangents of '%s'"
 msgstr ""
 
-#: src/synfigapp/actions/canvasadd.cpp:49
+#: ../src/synfigapp/actions/canvasadd.cpp:49
 msgid "Add Child Canvas"
 msgstr ""
 
-#: src/synfigapp/actions/canvasadd.cpp:79
+#: ../src/synfigapp/actions/canvasadd.cpp:79
 msgid "The name that you want this canvas to be"
-msgstr ""
+msgstr "как вы хотите назвать этот холст"
 
-#: src/synfigapp/actions/canvasdescriptionset.cpp:50
+#: ../src/synfigapp/actions/canvasdescriptionset.cpp:50
 msgid "Set Canvas Description"
-msgstr ""
+msgstr "Установить описание холста"
 
 #. TRANSLATORS: This is used in the 'history' dialog when a Canvas has its description changed.
-#: src/synfigapp/actions/canvasdescriptionset.cpp:71
+#: ../src/synfigapp/actions/canvasdescriptionset.cpp:71
 #, c-format
 msgid "Change canvas description from '%s' to '%s'"
-msgstr ""
+msgstr "Смена описания холста с '%s' на '%s'"
 
-#: src/synfigapp/actions/canvasidset.cpp:50
+#: ../src/synfigapp/actions/canvasidset.cpp:50
 msgid "Set Canvas Id"
 msgstr ""
 
 #. TRANSLATORS: This is used in the 'history' dialog when a Canvas has its id changed.
-#: src/synfigapp/actions/canvasidset.cpp:71
+#: ../src/synfigapp/actions/canvasidset.cpp:71
 #, c-format
 msgid "Change canvas id from '%s' to '%s'"
-msgstr ""
+msgstr "ID холста '%s' изменен на '%s'"
 
-#: src/synfigapp/actions/canvasidset.cpp:82
+#: ../src/synfigapp/actions/canvasidset.cpp:82
 msgid "Id"
-msgstr ""
+msgstr "ID"
 
-#: src/synfigapp/actions/canvasnameset.cpp:50
+#: ../src/synfigapp/actions/canvasnameset.cpp:50
 msgid "Set Canvas Name"
-msgstr ""
+msgstr "Указать название холста"
 
 #. TRANSLATORS: This is used in the 'history' dialog when a Canvas has its name changed.
-#: src/synfigapp/actions/canvasnameset.cpp:71
+#: ../src/synfigapp/actions/canvasnameset.cpp:71
 #, c-format
 msgid "Change canvas name from '%s' to '%s'"
-msgstr ""
+msgstr "Холст '%s' переименован в '%s'"
 
-#: src/synfigapp/actions/canvasremove.cpp:49
+#: ../src/synfigapp/actions/canvasremove.cpp:49
 msgid "Remove Canvas"
-msgstr ""
+msgstr "Удалить холст"
 
-#: src/synfigapp/actions/canvasremove.cpp:107
+#: ../src/synfigapp/actions/canvasremove.cpp:107
 msgid "You cannot remove the root canvas!"
-msgstr ""
+msgstr "Вы не можете удалить основной холст!"
 
-#: src/synfigapp/actions/canvasremove.cpp:110
+#: ../src/synfigapp/actions/canvasremove.cpp:110
 msgid "You cannot remove an inline canvas!"
 msgstr ""
 
-#: src/synfigapp/actions/canvasrenddescset.cpp:49
+#: ../src/synfigapp/actions/canvasrenddescset.cpp:49
 msgid "Set Canvas RendDesc"
 msgstr ""
 
-#: src/synfigapp/actions/canvasrenddescset.cpp:73
+#: ../src/synfigapp/actions/canvasrenddescset.cpp:73
 msgid "RendDesc"
 msgstr ""
 
-#: src/synfigapp/actions/colorset.cpp:55
-msgid "Apply Default Color"
-msgstr "Применить цвет по умолчанию"
+#: ../src/synfigapp/actions/colorset.cpp:55
+msgid "Apply Outline Color"
+msgstr "Применить цвет обводки"
 
-#: src/synfigapp/actions/editmodeset.cpp:49
+#: ../src/synfigapp/actions/colorset.cpp:64
+msgid "Apply Fill Color"
+msgstr "Применить цвет заливки"
+
+#: ../src/synfigapp/actions/editmodeset.cpp:49
 msgid "Set Edit Mode"
 msgstr "Смена режима правки"
 
-#: src/synfigapp/actions/editmodeset.cpp:72
+#: ../src/synfigapp/actions/editmodeset.cpp:72
 msgid "New Edit Mode"
 msgstr "Новый режим правки"
 
-#: src/synfigapp/actions/gradientset.cpp:55
+#: ../src/synfigapp/actions/gradientset.cpp:55
 msgid "Apply Default Gradient"
 msgstr ""
 
-#: src/synfigapp/actions/groupaddlayers.cpp:49
+#: ../src/synfigapp/actions/groupaddlayers.cpp:49
 msgid "Add Layers to Group"
 msgstr "Добавить слои в группу"
 
-#: src/synfigapp/actions/groupaddlayers.cpp:73
+#: ../src/synfigapp/actions/groupaddlayers.cpp:73
 msgid "Layer to be added to group"
-msgstr ""
+msgstr "Добавляемый в группу слой"
 
-#: src/synfigapp/actions/groupaddlayers.cpp:79
+#: ../src/synfigapp/actions/groupaddlayers.cpp:79
 msgid "Name of the Group to add the Layers to"
-msgstr ""
+msgstr "название группы, куда добавить слои"
 
-#: src/synfigapp/actions/groupremove.cpp:49
+#: ../src/synfigapp/actions/groupremove.cpp:49
 msgid "Remove Group"
 msgstr "Удалить группу"
 
-#: src/synfigapp/actions/groupremove.cpp:73
+#: ../src/synfigapp/actions/groupremove.cpp:73
 msgid "Name of the Group to remove"
-msgstr ""
+msgstr "название удаляемой группы"
 
-#: src/synfigapp/actions/groupremovelayers.cpp:50
+#: ../src/synfigapp/actions/groupremovelayers.cpp:50
 msgid "Remove Layers from a Group"
 msgstr "Удалить слои из группы"
 
-#: src/synfigapp/actions/groupremovelayers.cpp:74
+#: ../src/synfigapp/actions/groupremovelayers.cpp:74
 msgid "Layer to be removed from group"
-msgstr ""
+msgstr "Удаляемый из группы слой"
 
-#: src/synfigapp/actions/grouprename.cpp:49
+#: ../src/synfigapp/actions/grouprename.cpp:49
 msgid "Rename Group"
-msgstr ""
+msgstr "Переименовать группу"
 
-#: src/synfigapp/actions/grouprename.cpp:72
+#: ../src/synfigapp/actions/grouprename.cpp:72
 msgid "Old Group"
-msgstr ""
+msgstr "Старая группа"
 
-#: src/synfigapp/actions/grouprename.cpp:73
+#: ../src/synfigapp/actions/grouprename.cpp:73
 msgid "Name of the Group to rename"
-msgstr ""
+msgstr "название переименовываемой группы"
 
-#: src/synfigapp/actions/grouprename.cpp:77
+#: ../src/synfigapp/actions/grouprename.cpp:77
 msgid "New Group"
-msgstr ""
+msgstr "Новая группа"
 
-#: src/synfigapp/actions/grouprename.cpp:78
+#: ../src/synfigapp/actions/grouprename.cpp:78
 msgid "New name for group"
-msgstr ""
+msgstr "Новое название группы"
 
-#: src/synfigapp/actions/grouprename.cpp:123
+#: ../src/synfigapp/actions/grouprename.cpp:123
 #, c-format
 msgid "A group with the name \"%s\" already exists!"
 msgstr ""
 
-#: src/synfigapp/actions/keyframeadd.cpp:49
+#: ../src/synfigapp/actions/keyframeadd.cpp:49
 msgid "Add Keyframe"
-msgstr ""
+msgstr "Добавить ключевой кадр"
 
-#: src/synfigapp/actions/keyframeadd.cpp:74
-#: src/synfigapp/actions/keyframeset.cpp:78
+#: ../src/synfigapp/actions/keyframeadd.cpp:74
+#: ../src/synfigapp/actions/keyframeset.cpp:78
 msgid "New Keyframe"
-msgstr ""
+msgstr "Новый ключевой кадр"
 
-#: src/synfigapp/actions/keyframeadd.cpp:75
-#: src/synfigapp/actions/keyframeset.cpp:79
+#: ../src/synfigapp/actions/keyframeadd.cpp:75
+#: ../src/synfigapp/actions/keyframeset.cpp:79
 msgid "Keyframe to be added"
-msgstr ""
+msgstr "Добавляемый ключевой кадр"
 
-#: src/synfigapp/actions/keyframeadd.cpp:114
-#: src/synfigapp/actions/keyframeduplicate.cpp:138
-#: src/synfigapp/actions/keyframeduplicate.cpp:217
-#: src/synfigapp/actions/keyframeremove.cpp:219
-#: src/synfigapp/actions/keyframeset.cpp:128
+#: ../src/synfigapp/actions/keyframeadd.cpp:114
+#: ../src/synfigapp/actions/keyframeduplicate.cpp:138
+#: ../src/synfigapp/actions/keyframeduplicate.cpp:217
+#: ../src/synfigapp/actions/keyframeremove.cpp:219
+#: ../src/synfigapp/actions/keyframeset.cpp:128
 msgid "A Keyframe already exists at this point in time"
 msgstr ""
 
-#: src/synfigapp/actions/keyframeadd.cpp:117
-#: src/synfigapp/actions/keyframeduplicate.cpp:220
-#: src/synfigapp/actions/keyframeremove.cpp:222
+#: ../src/synfigapp/actions/keyframeadd.cpp:117
+#: ../src/synfigapp/actions/keyframeduplicate.cpp:220
+#: ../src/synfigapp/actions/keyframeremove.cpp:222
 msgid "This keyframe is already in the ValueNode"
 msgstr ""
 
-#: src/synfigapp/actions/keyframeduplicate.cpp:53
+#: ../src/synfigapp/actions/keyframeduplicate.cpp:53
 msgid "Duplicate Keyframe"
-msgstr "Продублировать ключевой кадр"
+msgstr "Создать копию ключевого кадра"
 
-#: src/synfigapp/actions/keyframeduplicate.cpp:80
+#: ../src/synfigapp/actions/keyframeduplicate.cpp:80
 msgid "Keyframe to be duplicated"
 msgstr "Дублируемый ключевой кадр"
 
-#: src/synfigapp/actions/keyframeduplicate.cpp:102
+#: ../src/synfigapp/actions/keyframeduplicate.cpp:102
 msgid " (Duplicate)"
 msgstr ""
 
-#: src/synfigapp/actions/keyframeduplicate.cpp:135
-#: src/synfigapp/actions/keyframeremove.cpp:120
-#: src/synfigapp/actions/keyframeset.cpp:377
-#: src/synfigapp/actions/keyframewaypointset.cpp:129
+#: ../src/synfigapp/actions/keyframeduplicate.cpp:135
+#: ../src/synfigapp/actions/keyframeremove.cpp:120
+#: ../src/synfigapp/actions/keyframeset.cpp:377
+#: ../src/synfigapp/actions/keyframewaypointset.cpp:129
 msgid "Unable to find the given keyframe"
 msgstr ""
 
-#: src/synfigapp/actions/keyframeremove.cpp:53
+#: ../src/synfigapp/actions/keyframeremove.cpp:53
 msgid "Remove Keyframe"
 msgstr "Удалить ключевой кадр"
 
-#: src/synfigapp/actions/keyframeremove.cpp:79
+#: ../src/synfigapp/actions/keyframeremove.cpp:79
 msgid "Keyframe to be removed"
 msgstr "Удаляемый ключевой кадр"
 
-#: src/synfigapp/actions/keyframeset.cpp:53
+#: ../src/synfigapp/actions/keyframeset.cpp:53
 msgid "Set Keyframe"
 msgstr "Указать ключевой кадр"
 
-#: src/synfigapp/actions/keyframeset.cpp:385
-msgid ""
-"Cannot change keyframe time because another keyframe already exists with "
-"that time."
+#: ../src/synfigapp/actions/keyframeset.cpp:385
+msgid "Cannot change keyframe time because another keyframe already exists with that time."
 msgstr ""
 
-#: src/synfigapp/actions/keyframesetdelta.cpp:53
+#: ../src/synfigapp/actions/keyframesetdelta.cpp:53
 msgid "Set Keyframe Delta"
-msgstr ""
+msgstr "Установка дельты ключевого кадра"
 
-#: src/synfigapp/actions/keyframesetdelta.cpp:82
+#: ../src/synfigapp/actions/keyframesetdelta.cpp:82
 msgid "Delta"
-msgstr ""
+msgstr "Дельта"
 
-#: src/synfigapp/actions/keyframewaypointset.cpp:53
+#: ../src/synfigapp/actions/keyframewaypointset.cpp:53
 msgid "Set Waypoints at Keyframe"
-msgstr ""
+msgstr "Установка фиксатора в ключевом кадре"
 
-#: src/synfigapp/actions/keyframewaypointset.cpp:82
-#: src/synfigapp/actions/waypointsetsmart.cpp:95
+#: ../src/synfigapp/actions/keyframewaypointset.cpp:82
+#: ../src/synfigapp/actions/waypointsetsmart.cpp:95
 msgid "Waypoint Model"
-msgstr ""
+msgstr "Модель фиксатора"
 
-#: src/synfigapp/actions/layeractivate.cpp:50
-#: src/synfigapp/actions/layeractivate.cpp:71
-#: src/synfigapp/actions/layeractivate.cpp:75
+#: ../src/synfigapp/actions/layeractivate.cpp:50
+#: ../src/synfigapp/actions/layeractivate.cpp:71
+#: ../src/synfigapp/actions/layeractivate.cpp:75
 msgid "Activate Layer"
 msgstr "Активировать слой"
 
-#: src/synfigapp/actions/layeractivate.cpp:76
+#: ../src/synfigapp/actions/layeractivate.cpp:76
 msgid "Deactivate Layer"
 msgstr "Деактивировать слой"
 
-#: src/synfigapp/actions/layeractivate.cpp:90
+#: ../src/synfigapp/actions/layeractivate.cpp:90
 msgid "New Status"
 msgstr "Новый статус"
 
-#: src/synfigapp/actions/layeractivate.cpp:91
+#: ../src/synfigapp/actions/layeractivate.cpp:91
 msgid "The new status of the layer"
 msgstr "Новый статус слоя"
 
-#: src/synfigapp/actions/layeractivate.cpp:141
-#: src/synfigapp/actions/layeradd.cpp:144
-#: src/synfigapp/actions/layerduplicate.cpp:135
-#: src/synfigapp/actions/layerencapsulate.cpp:191
-#: src/synfigapp/actions/layerlower.cpp:140
-#: src/synfigapp/actions/layermove.cpp:161
-#: src/synfigapp/actions/layermove.cpp:234
-#: src/synfigapp/actions/layerraise.cpp:137
-#: src/synfigapp/actions/layerremove.cpp:134
+#: ../src/synfigapp/actions/layeractivate.cpp:141
+#: ../src/synfigapp/actions/layeradd.cpp:144
+#: ../src/synfigapp/actions/layerduplicate.cpp:135
+#: ../src/synfigapp/actions/layerencapsulate.cpp:191
+#: ../src/synfigapp/actions/layerlower.cpp:140
+#: ../src/synfigapp/actions/layermove.cpp:161
+#: ../src/synfigapp/actions/layermove.cpp:234
+#: ../src/synfigapp/actions/layerraise.cpp:137
+#: ../src/synfigapp/actions/layerremove.cpp:134
 msgid "This layer doesn't exist anymore."
 msgstr "Этот слой больше не существует."
 
-#: src/synfigapp/actions/layeradd.cpp:50 src/synfigapp/actions/layeradd.cpp:71
-#: src/synfigapp/actions/layeradd.cpp:73
+#: ../src/synfigapp/actions/layeradd.cpp:50
+#: ../src/synfigapp/actions/layeradd.cpp:71
+#: ../src/synfigapp/actions/layeradd.cpp:73
 msgid "Add Layer"
 msgstr "Добавить слой"
 
-#: src/synfigapp/actions/layeradd.cpp:83
+#: ../src/synfigapp/actions/layeradd.cpp:83
 msgid "Layer to be added"
 msgstr "Добавляемый слой"
 
-#: src/synfigapp/actions/layerduplicate.cpp:52
-#: src/synfigapp/actions/layerduplicate.cpp:72
+#: ../src/synfigapp/actions/layerduplicate.cpp:52
+#: ../src/synfigapp/actions/layerduplicate.cpp:72
 msgid "Duplicate Layer"
-msgstr "Продублировать слой"
+msgstr "Создать копию слоя"
 
-#: src/synfigapp/actions/layerduplicate.cpp:72
+#: ../src/synfigapp/actions/layerduplicate.cpp:72
 msgid "Duplicate Layers"
-msgstr "Продублировать слои"
+msgstr "Создать копию слоёв"
 
-#: src/synfigapp/actions/layerduplicate.cpp:82
+#: ../src/synfigapp/actions/layerduplicate.cpp:82
 msgid "Layer to be duplicated"
 msgstr "Дублируемый слой"
 
-#: src/synfigapp/actions/layerduplicate.cpp:141
-#: src/synfigapp/actions/layerencapsulate.cpp:200
-#: src/synfigapp/actions/layerremove.cpp:144
+#: ../src/synfigapp/actions/layerduplicate.cpp:141
+#: ../src/synfigapp/actions/layerencapsulate.cpp:200
+#: ../src/synfigapp/actions/layerremove.cpp:144
 msgid "This layer doesn't belong to this canvas anymore"
 msgstr "Этот слой больше не принадлежит холсту"
 
-#: src/synfigapp/actions/layerencapsulate.cpp:72
+#: ../src/synfigapp/actions/layerencapsulate.cpp:72
 msgid "Encapsulate Layer"
-msgstr "Инкапсюлировать слой"
+msgstr "Изолировать слой"
 
-#: src/synfigapp/actions/layerencapsulate.cpp:72
+#: ../src/synfigapp/actions/layerencapsulate.cpp:72
 msgid "Encapsulate Layers"
-msgstr "Инкапсюлировать слои"
+msgstr "Изолировать слои"
 
-#: src/synfigapp/actions/layerencapsulate.cpp:82
+#: ../src/synfigapp/actions/layerencapsulate.cpp:82
 msgid "Layer to be encapsulated"
-msgstr "Инкапсюлируемый слой"
+msgstr "Изолируемый слой"
 
-#: src/synfigapp/actions/layerencapsulate.cpp:141
+#: ../src/synfigapp/actions/layerencapsulate.cpp:141
 msgid "No layers to encapsulate"
-msgstr "Нет инкапсюлируемых слоёв"
+msgstr "Нет изолируемых слоёв"
 
-#: src/synfigapp/actions/layerencapsulate.cpp:194
+#: ../src/synfigapp/actions/layerencapsulate.cpp:194
 msgid "This layer doesn't have a parent canvas"
-msgstr ""
+msgstr "У этого слоя нет родительского холста"
 
-#: src/synfigapp/actions/layerencapsulate.cpp:203
+#: ../src/synfigapp/actions/layerencapsulate.cpp:203
 msgid "get_canvas()!=subcanvas"
 msgstr ""
 
-#: src/synfigapp/actions/layerlower.cpp:51
-#: src/synfigapp/actions/layerlower.cpp:71
+#: ../src/synfigapp/actions/layerlower.cpp:51
+#: ../src/synfigapp/actions/layerlower.cpp:71
 msgid "Lower Layer"
 msgstr "Опустить слой"
 
-#: src/synfigapp/actions/layerlower.cpp:71
+#: ../src/synfigapp/actions/layerlower.cpp:71
 msgid "Lower Layers"
 msgstr "Опустить слои"
 
-#: src/synfigapp/actions/layerlower.cpp:81
+#: ../src/synfigapp/actions/layerlower.cpp:81
 msgid "Layer to be lowered"
 msgstr "Опускаемый слой"
 
-#: src/synfigapp/actions/layermove.cpp:50
-#: src/synfigapp/actions/layermove.cpp:74
-#: src/synfigapp/actions/layermove.cpp:76
+#: ../src/synfigapp/actions/layermove.cpp:50
+#: ../src/synfigapp/actions/layermove.cpp:74
+#: ../src/synfigapp/actions/layermove.cpp:76
 msgid "Move Layer"
 msgstr "Переместить слой"
 
-#: src/synfigapp/actions/layermove.cpp:86
-#: src/synfigapp/actions/layersetdesc.cpp:86
+#: ../src/synfigapp/actions/layermove.cpp:86
+#: ../src/synfigapp/actions/layersetdesc.cpp:86
 msgid "Layer to be moved"
 msgstr "Перемещаемый слой"
 
-#: src/synfigapp/actions/layermove.cpp:90
+#: ../src/synfigapp/actions/layermove.cpp:90
 msgid "New Index"
 msgstr ""
 
-#: src/synfigapp/actions/layermove.cpp:91
+#: ../src/synfigapp/actions/layermove.cpp:91
 msgid "Where the layer is to be moved to"
 msgstr ""
 
-#: src/synfigapp/actions/layermove.cpp:95
+#: ../src/synfigapp/actions/layermove.cpp:95
 msgid "Destination Canvas"
-msgstr ""
+msgstr "Холст назначения"
 
-#: src/synfigapp/actions/layermove.cpp:96
+#: ../src/synfigapp/actions/layermove.cpp:96
 msgid "The canvas the layer is to be moved to"
-msgstr ""
+msgstr "Холст, на который переносится слой"
 
-#: src/synfigapp/actions/layermove.cpp:170
+#: ../src/synfigapp/actions/layermove.cpp:170
 msgid "You cannot directly move layers across compositions"
 msgstr ""
 
-#: src/synfigapp/actions/layerparamconnect.cpp:49
+#: ../src/synfigapp/actions/layerparamconnect.cpp:49
 msgid "Connect Layer Parameter"
 msgstr ""
 
-#: src/synfigapp/actions/layerparamconnect.cpp:76
-#: src/synfigapp/actions/layerparamdisconnect.cpp:79
-#: src/synfigapp/actions/layerparamset.cpp:76
+#: ../src/synfigapp/actions/layerparamconnect.cpp:76
+#: ../src/synfigapp/actions/layerparamdisconnect.cpp:79
+#: ../src/synfigapp/actions/layerparamset.cpp:76
 msgid "Param"
 msgstr ""
 
-#: src/synfigapp/actions/layerparamconnect.cpp:147
+#: ../src/synfigapp/actions/layerparamconnect.cpp:147
 msgid "Layer did not recognize parameter name"
 msgstr ""
 
-#: src/synfigapp/actions/layerparamconnect.cpp:150
+#: ../src/synfigapp/actions/layerparamconnect.cpp:150
 msgid "Bad connection"
 msgstr ""
 
-#: src/synfigapp/actions/layerparamdisconnect.cpp:50
+#: ../src/synfigapp/actions/layerparamdisconnect.cpp:50
 msgid "Disconnect Layer Parameter"
 msgstr ""
 
-#: src/synfigapp/actions/layerparamdisconnect.cpp:135
+#: ../src/synfigapp/actions/layerparamdisconnect.cpp:135
 msgid "Layer Parameter is not connected to anything"
 msgstr ""
 
-#: src/synfigapp/actions/layerparamset.cpp:49
+#: ../src/synfigapp/actions/layerparamset.cpp:49
 msgid "Set Layer Parameter"
-msgstr ""
+msgstr "Смена параметра слоя"
 
-#: src/synfigapp/actions/layerparamset.cpp:132
+#: ../src/synfigapp/actions/layerparamset.cpp:132
 msgid "ValueNode attached to Parameter."
 msgstr ""
 
-#: src/synfigapp/actions/layerparamset.cpp:137
-#: src/synfigapp/actions/layerparamset.cpp:157
+#: ../src/synfigapp/actions/layerparamset.cpp:137
+#: ../src/synfigapp/actions/layerparamset.cpp:157
 msgid "Layer did not accept parameter."
-msgstr ""
+msgstr "Слой не принял параметр."
 
-#: src/synfigapp/actions/layerraise.cpp:51
-#: src/synfigapp/actions/layerraise.cpp:71
+#: ../src/synfigapp/actions/layerraise.cpp:51
+#: ../src/synfigapp/actions/layerraise.cpp:71
 msgid "Raise Layer"
 msgstr "Поднять слой"
 
-#: src/synfigapp/actions/layerraise.cpp:71
+#: ../src/synfigapp/actions/layerraise.cpp:71
 msgid "Raise Layers"
 msgstr "Поднять слои"
 
-#: src/synfigapp/actions/layerraise.cpp:81
+#: ../src/synfigapp/actions/layerraise.cpp:81
 msgid "Layer to be raised"
 msgstr "Поднимаемый слой"
 
-#: src/synfigapp/actions/layerremove.cpp:50
-#: src/synfigapp/actions/layerremove.cpp:70
+#: ../src/synfigapp/actions/layerremove.cpp:50
+#: ../src/synfigapp/actions/layerremove.cpp:70
 msgid "Remove Layer"
 msgstr "Удалить слой"
 
-#: src/synfigapp/actions/layerremove.cpp:70
+#: ../src/synfigapp/actions/layerremove.cpp:70
 msgid "Remove Layers"
 msgstr "Удалить слои"
 
-#: src/synfigapp/actions/layerremove.cpp:80
+#: ../src/synfigapp/actions/layerremove.cpp:80
 msgid "Layer to be deleted"
 msgstr "Удаляемый слой"
 
-#: src/synfigapp/actions/layersetdesc.cpp:50
-#: src/synfigapp/actions/layersetdesc.cpp:73
+#: ../src/synfigapp/actions/layersetdesc.cpp:50
+#: ../src/synfigapp/actions/layersetdesc.cpp:73
 msgid "Set Layer Description"
-msgstr "Указать описание слоя"
+msgstr "Ввести описание слоя"
 
 #. TRANSLATORS: this is the string used in the history dialog when renaming a layer to/from its default name
-#: src/synfigapp/actions/layersetdesc.cpp:75
-#: src/synfigapp/actions/layersetdesc.cpp:76
+#: ../src/synfigapp/actions/layersetdesc.cpp:75
+#: ../src/synfigapp/actions/layersetdesc.cpp:76
 msgid "[default]"
 msgstr "(исходное название)"
 
-#: src/synfigapp/actions/layersetdesc.cpp:90
+#: ../src/synfigapp/actions/layersetdesc.cpp:90
 msgid "New Description"
 msgstr "Новое описание"
 
-#: src/synfigapp/actions/layersetdesc.cpp:91
+#: ../src/synfigapp/actions/layersetdesc.cpp:91
 msgid "Enter a new description for this layer"
 msgstr "Введите новое описание этого слоя"
 
-#: src/synfigapp/actions/timepointscopy.cpp:58
+#: ../src/synfigapp/actions/timepointscopy.cpp:58
 msgid "Copy Time Points"
 msgstr ""
 
-#: src/synfigapp/actions/timepointscopy.cpp:83
-#: src/synfigapp/actions/timepointsdelete.cpp:82
-#: src/synfigapp/actions/timepointsmove.cpp:83
+#: ../src/synfigapp/actions/timepointscopy.cpp:83
+#: ../src/synfigapp/actions/timepointsdelete.cpp:82
+#: ../src/synfigapp/actions/timepointsmove.cpp:83
 msgid "New Selected Layer"
-msgstr ""
+msgstr "Новый выбранный слой"
 
-#: src/synfigapp/actions/timepointscopy.cpp:84
-#: src/synfigapp/actions/timepointsdelete.cpp:83
-#: src/synfigapp/actions/timepointsmove.cpp:84
+#: ../src/synfigapp/actions/timepointscopy.cpp:84
+#: ../src/synfigapp/actions/timepointsdelete.cpp:83
+#: ../src/synfigapp/actions/timepointsmove.cpp:84
 msgid "A layer to add to our selected list"
 msgstr ""
 
-#: src/synfigapp/actions/timepointscopy.cpp:90
-#: src/synfigapp/actions/timepointsdelete.cpp:89
-#: src/synfigapp/actions/timepointsmove.cpp:90
+#: ../src/synfigapp/actions/timepointscopy.cpp:90
+#: ../src/synfigapp/actions/timepointsdelete.cpp:89
+#: ../src/synfigapp/actions/timepointsmove.cpp:90
 msgid "New Selected Canvas"
 msgstr ""
 
-#: src/synfigapp/actions/timepointscopy.cpp:91
-#: src/synfigapp/actions/timepointsdelete.cpp:90
-#: src/synfigapp/actions/timepointsmove.cpp:91
+#: ../src/synfigapp/actions/timepointscopy.cpp:91
+#: ../src/synfigapp/actions/timepointsdelete.cpp:90
+#: ../src/synfigapp/actions/timepointsmove.cpp:91
 msgid "A canvas to add to our selected list"
 msgstr ""
 
-#: src/synfigapp/actions/timepointscopy.cpp:97
-#: src/synfigapp/actions/timepointsdelete.cpp:96
-#: src/synfigapp/actions/timepointsmove.cpp:97
+#: ../src/synfigapp/actions/timepointscopy.cpp:97
+#: ../src/synfigapp/actions/timepointsdelete.cpp:96
+#: ../src/synfigapp/actions/timepointsmove.cpp:97
 msgid "New Selected ValueBase"
 msgstr ""
 
-#: src/synfigapp/actions/timepointscopy.cpp:98
-#: src/synfigapp/actions/timepointsdelete.cpp:97
-#: src/synfigapp/actions/timepointsmove.cpp:98
+#: ../src/synfigapp/actions/timepointscopy.cpp:98
+#: ../src/synfigapp/actions/timepointsdelete.cpp:97
+#: ../src/synfigapp/actions/timepointsmove.cpp:98
 msgid "A valuenode's description to add to our selected list"
 msgstr ""
 
-#: src/synfigapp/actions/timepointscopy.cpp:104
-#: src/synfigapp/actions/timepointsdelete.cpp:103
-#: src/synfigapp/actions/timepointsmove.cpp:104
+#: ../src/synfigapp/actions/timepointscopy.cpp:104
+#: ../src/synfigapp/actions/timepointsdelete.cpp:103
+#: ../src/synfigapp/actions/timepointsmove.cpp:104
 msgid "New Selected Time Point"
 msgstr ""
 
-#: src/synfigapp/actions/timepointscopy.cpp:105
-#: src/synfigapp/actions/timepointsdelete.cpp:104
-#: src/synfigapp/actions/timepointsmove.cpp:105
+#: ../src/synfigapp/actions/timepointscopy.cpp:105
+#: ../src/synfigapp/actions/timepointsdelete.cpp:104
+#: ../src/synfigapp/actions/timepointsmove.cpp:105
 msgid "A time point to add to our selected list"
 msgstr ""
 
-#: src/synfigapp/actions/timepointscopy.cpp:110
-#: src/synfigapp/actions/timepointsmove.cpp:110
+#: ../src/synfigapp/actions/timepointscopy.cpp:110
+#: ../src/synfigapp/actions/timepointsmove.cpp:110
 msgid "Time adjustment"
 msgstr ""
 
-#: src/synfigapp/actions/timepointscopy.cpp:111
-#: src/synfigapp/actions/timepointsmove.cpp:111
+#: ../src/synfigapp/actions/timepointscopy.cpp:111
+#: ../src/synfigapp/actions/timepointsmove.cpp:111
 msgid "The amount of time to adjust all the selected points"
 msgstr ""
 
-#: src/synfigapp/actions/timepointsdelete.cpp:58
+#: ../src/synfigapp/actions/timepointsdelete.cpp:58
 msgid "Delete Time Points"
 msgstr ""
 
-#: src/synfigapp/actions/timepointsmove.cpp:58
+#: ../src/synfigapp/actions/timepointsmove.cpp:58
 msgid "Move Time Points"
 msgstr ""
 
-#: src/synfigapp/actions/valuedescblinelink.cpp:59
+#: ../src/synfigapp/actions/valuedescblinelink.cpp:59
 msgid "Link to BLine"
 msgstr ""
 
-#: src/synfigapp/actions/valuedescblinelink.cpp:82
-#: src/synfigapp/actions/valuedesclink.cpp:75
+#: ../src/synfigapp/actions/valuedescblinelink.cpp:82
+#: ../src/synfigapp/actions/valuedesclink.cpp:75
 msgid "ValueDesc to link"
 msgstr ""
 
-#: src/synfigapp/actions/valuedescblinelink.cpp:86
+#: ../src/synfigapp/actions/valuedescblinelink.cpp:86
 msgid "ValueDesc on BLine to link to"
 msgstr ""
 
-#: src/synfigapp/actions/valuedescblinelink.cpp:93
-#: src/synfigapp/actions/valuenodedynamiclistinsert.cpp:84
-#: src/synfigapp/actions/valuenodedynamiclistinsertsmart.cpp:85
-#: src/synfigapp/actions/valuenodedynamiclistremovesmart.cpp:85
+#: ../src/synfigapp/actions/valuedescblinelink.cpp:93
+#: ../src/synfigapp/actions/valuenodedynamiclistinsert.cpp:84
+#: ../src/synfigapp/actions/valuenodedynamiclistinsertsmart.cpp:85
+#: ../src/synfigapp/actions/valuenodedynamiclistremovesmart.cpp:85
 msgid "Origin"
 msgstr "Исходная точка"
 
-#: src/synfigapp/actions/valuedescconnect.cpp:55
+#: ../src/synfigapp/actions/valuedescconnect.cpp:55
 msgid "Connect"
 msgstr "Соединить"
 
 #. TRANSLATORS: This is used in the 'history' dialog when a connection is made.
-#: src/synfigapp/actions/valuedescconnect.cpp:76
+#: ../src/synfigapp/actions/valuedescconnect.cpp:76
 #, c-format
 msgid "Connect '%s' to '%s'"
 msgstr "Соединение '%s' с '%s'"
 
-#: src/synfigapp/actions/valuedescconnect.cpp:87
+#: ../src/synfigapp/actions/valuedescconnect.cpp:87
 msgid "Destination ValueDesc"
 msgstr ""
 
-#: src/synfigapp/actions/valuedescconnect.cpp:91
-#: src/synfigapp/actions/valuenodereplace.cpp:90
+#: ../src/synfigapp/actions/valuedescconnect.cpp:91
+#: ../src/synfigapp/actions/valuenodereplace.cpp:90
 msgid "Source ValueNode"
 msgstr ""
 
-#: src/synfigapp/actions/valuedescconnect.cpp:96
+#: ../src/synfigapp/actions/valuedescconnect.cpp:96
 msgid "Source ValueNode Name"
 msgstr ""
 
-#: src/synfigapp/actions/valuedescconnect.cpp:257
-#: src/synfigapp/actions/valuedescdisconnect.cpp:235
+#: ../src/synfigapp/actions/valuedescconnect.cpp:257
+#: ../src/synfigapp/actions/valuedescdisconnect.cpp:235
 msgid "ValueDesc is not recognized or supported."
 msgstr ""
 
-#: src/synfigapp/actions/valuedescconvert.cpp:60
+#: ../src/synfigapp/actions/valuedescconvert.cpp:60
 msgid "Convert"
 msgstr "Преобразовать"
 
 #. TRANSLATORS: This is used in the 'history' dialog when a ValueNode is converted.  The first %s is what is converted, the 2nd is the local name of the ValueNode's type.
-#: src/synfigapp/actions/valuedescconvert.cpp:82
+#: ../src/synfigapp/actions/valuedescconvert.cpp:82
 #, c-format
 msgid "Convert '%s' to ValueNode type '%s'"
 msgstr ""
 
-#: src/synfigapp/actions/valuedescconvert.cpp:98
+#: ../src/synfigapp/actions/valuedescconvert.cpp:98
 msgid "The type of ValueNode that you want to be converted to"
 msgstr ""
 
-#: src/synfigapp/actions/valuedescconvert.cpp:166
+#: ../src/synfigapp/actions/valuedescconvert.cpp:166
 msgid "Unable to decipher ValueDesc (Bug?)"
 msgstr ""
 
-#: src/synfigapp/actions/valuedescconvert.cpp:171
+#: ../src/synfigapp/actions/valuedescconvert.cpp:171
 msgid "Unable to create new value node"
 msgstr ""
 
-#: src/synfigapp/actions/valuedescdisconnect.cpp:57
+#: ../src/synfigapp/actions/valuedescdisconnect.cpp:57
 msgid "Disconnect"
 msgstr "Отсоединить"
 
 #. TRANSLATORS: This is used in the History dialog when a ValueNode is disconnected.
-#: src/synfigapp/actions/valuedescdisconnect.cpp:79
+#: ../src/synfigapp/actions/valuedescdisconnect.cpp:79
 #, c-format
 msgid "Disconnect %s"
 msgstr "Отсоединение %s"
 
-#: src/synfigapp/actions/valuedescexport.cpp:56
+#: ../src/synfigapp/actions/valuedescexport.cpp:57
 msgid "Export"
 msgstr "Экспортировать"
 
 #. TRANSLATORS: This is used in the 'history' dialog when a ValueNode is exported.  The first %s is what is exported, the 2nd is the name it is given.
-#: src/synfigapp/actions/valuedescexport.cpp:77
+#: ../src/synfigapp/actions/valuedescexport.cpp:78
 #, c-format
 msgid "Export '%s' as '%s'"
 msgstr "Экспорт '%s' как '%s'"
 
-#: src/synfigapp/actions/valuedescexport.cpp:93
+#: ../src/synfigapp/actions/valuedescexport.cpp:94
 msgid "The name that you want this value to be exported as"
-msgstr ""
+msgstr "как вы хотите назвать это экспортируемое значение"
 
-#: src/synfigapp/actions/valuedescexport.cpp:152
+#: ../src/synfigapp/actions/valuedescexport.cpp:167
 msgid "Can only export Canvas when used as constant parameter"
 msgstr ""
 
-#: src/synfigapp/actions/valuedescexport.cpp:174
+#: ../src/synfigapp/actions/valuedescexport.cpp:208
 msgid "ValueBase is already exported"
 msgstr ""
 
-#: src/synfigapp/actions/valuedescexport.cpp:182
+#: ../src/synfigapp/actions/valuedescexport.cpp:216
 msgid "Unable to export parameter. (Bug?)"
 msgstr ""
 
-#: src/synfigapp/actions/valuedesclink.cpp:52
+#: ../src/synfigapp/actions/valuedesclink.cpp:52
 msgid "Link"
 msgstr ""
 
-#: src/synfigapp/actions/valuedesclink.cpp:112
+#: ../src/synfigapp/actions/valuedesclink.cpp:112
 msgid "Cannot link two different exported values ('"
 msgstr ""
 
-#: src/synfigapp/actions/valuedesclink.cpp:113
+#: ../src/synfigapp/actions/valuedesclink.cpp:113
 msgid "' and '"
 msgstr ""
 
-#: src/synfigapp/actions/valuedesclink.cpp:114
+#: ../src/synfigapp/actions/valuedesclink.cpp:114
 msgid "')"
 msgstr ""
 
-#: src/synfigapp/actions/valuedesclink.cpp:119
+#: ../src/synfigapp/actions/valuedesclink.cpp:119
 msgid "Used exported ValueNode ('"
 msgstr ""
 
-#: src/synfigapp/actions/valuedesclink.cpp:119
+#: ../src/synfigapp/actions/valuedesclink.cpp:119
 msgid "')."
 msgstr ""
 
-#: src/synfigapp/actions/valuedesclink.cpp:126
+#: ../src/synfigapp/actions/valuedesclink.cpp:126
 msgid "Using the only available ValueNode."
 msgstr ""
 
-#: src/synfigapp/actions/valuedesclink.cpp:139
-#: src/synfigapp/actions/valuedesclink.cpp:145
+#: ../src/synfigapp/actions/valuedesclink.cpp:139
+#: ../src/synfigapp/actions/valuedesclink.cpp:145
 msgid "Using the most referenced ValueNode."
 msgstr ""
 
-#: src/synfigapp/actions/valuedesclink.cpp:153
-#: src/synfigapp/actions/valuedesclink.cpp:161
+#: ../src/synfigapp/actions/valuedesclink.cpp:153
+#: ../src/synfigapp/actions/valuedesclink.cpp:161
 msgid "There's a tie for most referenced; using the animated ValueNode."
 msgstr ""
 
-#: src/synfigapp/actions/valuedesclink.cpp:174
-#: src/synfigapp/actions/valuedesclink.cpp:180
-msgid ""
-"There's a tie for most referenced, and both are animated; using the one with "
-"the most waypoints."
+#: ../src/synfigapp/actions/valuedesclink.cpp:174
+#: ../src/synfigapp/actions/valuedesclink.cpp:180
+msgid "There's a tie for most referenced, and both are animated; using the one with the most waypoints."
 msgstr ""
 
-#: src/synfigapp/actions/valuedesclink.cpp:189
-#: src/synfigapp/actions/valuedesclink.cpp:195
+#: ../src/synfigapp/actions/valuedesclink.cpp:189
+#: ../src/synfigapp/actions/valuedesclink.cpp:195
 msgid "Everything is tied; using the least recently modified value."
 msgstr ""
 
-#: src/synfigapp/actions/valuedesclink.cpp:201
+#: ../src/synfigapp/actions/valuedesclink.cpp:201
 msgid "Absolutely everything is tied."
 msgstr ""
 
-#: src/synfigapp/actions/valuedesclink.cpp:209
+#: ../src/synfigapp/actions/valuedesclink.cpp:209
 #, c-format
 msgid "Cannot link two values of different types ('%s' and '%s')"
 msgstr ""
 
-#: src/synfigapp/actions/valuedesclink.cpp:246
+#: ../src/synfigapp/actions/valuedesclink.cpp:246
 msgid "No ValueNodes were available, so one was created."
 msgstr ""
 
-#: src/synfigapp/actions/valuedescset.cpp:59
+#: ../src/synfigapp/actions/valuedescset.cpp:59
 msgid "Set ValueDesc"
 msgstr ""
 
-#: src/synfigapp/actions/valuedescset.cpp:80
+#: ../src/synfigapp/actions/valuedescset.cpp:80
 #, c-format
 msgid "Set %s"
 msgstr ""
 
-#: src/synfigapp/actions/valuedescset.cpp:180
-#: src/synfigapp/actions/valuedescset.cpp:205
-#: src/synfigapp/actions/valuedescset.cpp:273
-#: src/synfigapp/actions/valuedescset.cpp:331
-#: src/synfigapp/actions/valuedescset.cpp:368
-#: src/synfigapp/actions/valuedescset.cpp:393
-#: src/synfigapp/actions/valuedescset.cpp:411
-#: src/synfigapp/actions/valuenodedynamiclistinsertsmart.cpp:184
-msgid "Unable to find action value_desc_set (bug)"
-msgstr ""
+#: ../src/synfigapp/actions/valuedescset.cpp:180
+#: ../src/synfigapp/actions/valuedescset.cpp:205
+#: ../src/synfigapp/actions/valuedescset.cpp:273
+#: ../src/synfigapp/actions/valuedescset.cpp:331
+#: ../src/synfigapp/actions/valuedescset.cpp:368
+#: ../src/synfigapp/actions/valuedescset.cpp:393
+#: ../src/synfigapp/actions/valuedescset.cpp:411
+#: ../src/synfigapp/actions/valuenodedynamiclistinsertsmart.cpp:184
+msgid "Unable to find action ValueDescSet (bug)"
+msgstr "Не удалось найти действие ValueDescSet (ошибка)"
 
-#: src/synfigapp/actions/valuedescset.cpp:262
+#: ../src/synfigapp/actions/valuedescset.cpp:262
 #, c-format
 msgid "Bad type for composite (%s)"
 msgstr ""
 
-#: src/synfigapp/actions/valuedescset.cpp:321
+#: ../src/synfigapp/actions/valuedescset.cpp:321
 #, c-format
 msgid "Bad type for radial composite (%s)"
 msgstr ""
 
-#: src/synfigapp/actions/valuedescset.cpp:497
-#: src/synfigapp/actions/valuedescset.cpp:544
+#: ../src/synfigapp/actions/valuedescset.cpp:497
+#: ../src/synfigapp/actions/valuedescset.cpp:544
 msgid "Direct manipulation of this ValueNode type is not yet supported"
 msgstr ""
 
-#: src/synfigapp/actions/valuedescset.cpp:542
+#: ../src/synfigapp/actions/valuedescset.cpp:542
 msgid "You must be in Animate-Editing-Mode to directly manipulate this value"
-msgstr ""
+msgstr "Для прямого редактирования этого значения необходимо быть в режиме анимации"
 
-#: src/synfigapp/actions/valuedescset.cpp:564
+#: ../src/synfigapp/actions/valuedescset.cpp:564
 msgid "Unsupported ValueDesc type"
 msgstr ""
 
-#: src/synfigapp/actions/valuenodeadd.cpp:49
+#: ../src/synfigapp/actions/valuenodeadd.cpp:49
 msgid "Add ValueNode"
 msgstr ""
 
-#: src/synfigapp/actions/valuenodeadd.cpp:72
+#: ../src/synfigapp/actions/valuenodeadd.cpp:72
 msgid "New ValueNode"
 msgstr ""
 
-#: src/synfigapp/actions/valuenodeadd.cpp:73
+#: ../src/synfigapp/actions/valuenodeadd.cpp:73
 msgid "ValueNode to be added"
 msgstr ""
 
-#: src/synfigapp/actions/valuenodeadd.cpp:122
+#: ../src/synfigapp/actions/valuenodeadd.cpp:122
 msgid "Parameter appears to already be exported"
 msgstr ""
 
-#: src/synfigapp/actions/valuenodeadd.cpp:131
+#: ../src/synfigapp/actions/valuenodeadd.cpp:131
 msgid "Another exported ValueBase with this name already exists"
 msgstr ""
 
-#: src/synfigapp/actions/valuenodeadd.cpp:135
+#: ../src/synfigapp/actions/valuenodeadd.cpp:135
 msgid "Exception caught on Add ValueNode."
 msgstr ""
 
-#: src/synfigapp/actions/valuenodeadd.cpp:154
+#: ../src/synfigapp/actions/valuenodeadd.cpp:154
 msgid "Exception caught on Remove ValueNode."
 msgstr ""
 
-#: src/synfigapp/actions/valuenodeconstset.cpp:49
+#: ../src/synfigapp/actions/valuenodeconstset.cpp:49
 msgid "Set ValueNode_Const"
 msgstr ""
 
-#: src/synfigapp/actions/valuenodeconstset.cpp:73
-#: src/synfigapp/actions/valuenoderename.cpp:82
+#: ../src/synfigapp/actions/valuenodeconstset.cpp:73
+#: ../src/synfigapp/actions/valuenoderename.cpp:82
 msgid "ValueNode_Const"
 msgstr ""
 
-#: src/synfigapp/actions/valuenodedynamiclistinsert.cpp:50
+#: ../src/synfigapp/actions/valuenodedynamiclistinsert.cpp:50
 msgid "Insert Item"
 msgstr ""
 
-#: src/synfigapp/actions/valuenodedynamiclistinsert.cpp:88
+#: ../src/synfigapp/actions/valuenodedynamiclistinsert.cpp:88
 msgid "ValueNode to insert"
 msgstr ""
 
-#: src/synfigapp/actions/valuenodedynamiclistinsertsmart.cpp:51
+#: ../src/synfigapp/actions/valuenodedynamiclistinsertsmart.cpp:51
 msgid "Insert Item (Smart)"
 msgstr ""
 
-#: src/synfigapp/actions/valuenodedynamiclistinsertsmart.cpp:205
-#: src/synfigapp/actions/valuenodedynamiclistinsertsmart.cpp:259
-#: src/synfigapp/actions/valuenodedynamiclistremovesmart.cpp:159
-#: src/synfigapp/actions/valuenodedynamiclistremovesmart.cpp:177
+#: ../src/synfigapp/actions/valuenodedynamiclistinsertsmart.cpp:205
+#: ../src/synfigapp/actions/valuenodedynamiclistinsertsmart.cpp:259
+#: ../src/synfigapp/actions/valuenodedynamiclistremovesmart.cpp:159
+#: ../src/synfigapp/actions/valuenodedynamiclistremovesmart.cpp:177
 msgid "Unable to find action (bug)"
 msgstr ""
 
-#: src/synfigapp/actions/valuenodedynamiclistinsertsmart.cpp:221
-msgid "Unable to find action \"activepoint_set_off\""
+#: ../src/synfigapp/actions/valuenodedynamiclistinsertsmart.cpp:221
+msgid "Unable to find action \"ActivepointSetOff\""
 msgstr ""
 
-#: src/synfigapp/actions/valuenodedynamiclistinsertsmart.cpp:240
-msgid "Unable to find action \"activepoint_set_on\""
+#: ../src/synfigapp/actions/valuenodedynamiclistinsertsmart.cpp:240
+msgid "Unable to find action \"ActivepointSetOn\""
 msgstr ""
 
-#: src/synfigapp/actions/valuenodedynamiclistloop.cpp:50
+#: ../src/synfigapp/actions/valuenodedynamiclistloop.cpp:50
 msgid "Loop"
 msgstr ""
 
-#: src/synfigapp/actions/valuenodedynamiclistremove.cpp:50
+#: ../src/synfigapp/actions/valuenodedynamiclistremove.cpp:50
 msgid "Remove Item"
 msgstr ""
 
-#: src/synfigapp/actions/valuenodedynamiclistremovesmart.cpp:51
+#: ../src/synfigapp/actions/valuenodedynamiclistremovesmart.cpp:51
 msgid "Remove Item (Smart)"
 msgstr ""
 
-#: src/synfigapp/actions/valuenodedynamiclistrotateorder.cpp:50
+#: ../src/synfigapp/actions/valuenodedynamiclistrotateorder.cpp:50
 msgid "Rotate Order"
 msgstr ""
 
-#: src/synfigapp/actions/valuenodedynamiclistunloop.cpp:50
+#: ../src/synfigapp/actions/valuenodedynamiclistunloop.cpp:50
 msgid "Unloop"
 msgstr ""
 
-#: src/synfigapp/actions/valuenodelinkconnect.cpp:49
+#: ../src/synfigapp/actions/valuenodelinkconnect.cpp:49
 msgid "Connect ValueNode Link"
 msgstr ""
 
-#: src/synfigapp/actions/valuenodelinkconnect.cpp:73
-#: src/synfigapp/actions/valuenodelinkdisconnect.cpp:75
+#: ../src/synfigapp/actions/valuenodelinkconnect.cpp:73
+#: ../src/synfigapp/actions/valuenodelinkdisconnect.cpp:75
 msgid "Parent ValueNode"
 msgstr ""
 
-#: src/synfigapp/actions/valuenodelinkconnect.cpp:77
-#: src/synfigapp/actions/valuenodelinkdisconnect.cpp:79
+#: ../src/synfigapp/actions/valuenodelinkconnect.cpp:77
+#: ../src/synfigapp/actions/valuenodelinkdisconnect.cpp:79
 msgid "Index"
 msgstr ""
 
-#: src/synfigapp/actions/valuenodelinkconnect.cpp:81
+#: ../src/synfigapp/actions/valuenodelinkconnect.cpp:81
 msgid "ValueNode to be connected"
 msgstr ""
 
-#: src/synfigapp/actions/valuenodelinkconnect.cpp:132
-#: src/synfigapp/actions/valuenodelinkconnect.cpp:151
-#: src/synfigapp/actions/valuenodelinkdisconnect.cpp:135
-#: src/synfigapp/actions/valuenodelinkdisconnect.cpp:159
+#: ../src/synfigapp/actions/valuenodelinkconnect.cpp:132
+#: ../src/synfigapp/actions/valuenodelinkconnect.cpp:151
+#: ../src/synfigapp/actions/valuenodelinkdisconnect.cpp:135
+#: ../src/synfigapp/actions/valuenodelinkdisconnect.cpp:159
 #, c-format
 msgid "Bad index, too big. LinkCount=%d, Index=%d"
 msgstr ""
 
-#: src/synfigapp/actions/valuenodelinkconnect.cpp:137
-#: src/synfigapp/actions/valuenodelinkdisconnect.cpp:140
+#: ../src/synfigapp/actions/valuenodelinkconnect.cpp:137
+#: ../src/synfigapp/actions/valuenodelinkdisconnect.cpp:140
 msgid "Parent would not accept link"
 msgstr ""
 
-#: src/synfigapp/actions/valuenodelinkconnect.cpp:154
-#: src/synfigapp/actions/valuenodelinkdisconnect.cpp:162
+#: ../src/synfigapp/actions/valuenodelinkconnect.cpp:154
+#: ../src/synfigapp/actions/valuenodelinkdisconnect.cpp:162
 msgid "Parent would not accept old link"
 msgstr ""
 
-#: src/synfigapp/actions/valuenodelinkdisconnect.cpp:50
+#: ../src/synfigapp/actions/valuenodelinkdisconnect.cpp:50
 msgid "Disconnect ValueNode Link"
 msgstr ""
 
-#: src/synfigapp/actions/valuenoderemove.cpp:50
+#: ../src/synfigapp/actions/valuenoderemove.cpp:50
 msgid "Unexport"
 msgstr ""
 
 #. TRANSLATORS: This is used in the 'history' dialog when a ValueNode is unexported.
-#: src/synfigapp/actions/valuenoderemove.cpp:71
+#: ../src/synfigapp/actions/valuenoderemove.cpp:71
 #, c-format
 msgid "Unexport '%s'"
 msgstr ""
 
-#: src/synfigapp/actions/valuenoderename.cpp:50
+#: ../src/synfigapp/actions/valuenoderename.cpp:50
 msgid "Rename ValueNode"
 msgstr ""
 
 #. TRANSLATORS: This is used in the 'history' dialog when a ValueNode is renamed.
-#: src/synfigapp/actions/valuenoderename.cpp:71
+#: ../src/synfigapp/actions/valuenoderename.cpp:71
 #, c-format
 msgid "Rename ValueNode from '%s' to '%s'"
 msgstr ""
 
-#: src/synfigapp/actions/valuenoderename.cpp:87
+#: ../src/synfigapp/actions/valuenoderename.cpp:87
 msgid "The new name of the ValueNode"
 msgstr ""
 
-#: src/synfigapp/actions/valuenoderename.cpp:151
+#: ../src/synfigapp/actions/valuenoderename.cpp:151
 msgid "A ValueNode with this ID already exists in this canvas"
 msgstr ""
 
-#: src/synfigapp/actions/valuenoderename.cpp:169
+#: ../src/synfigapp/actions/valuenoderename.cpp:169
 msgid "A ValueNode with the old ID already exists in this canvas (BUG)"
 msgstr ""
 
-#: src/synfigapp/actions/valuenodereplace.cpp:49
+#: ../src/synfigapp/actions/valuenodereplace.cpp:49
 msgid "Replace ValueNode"
 msgstr ""
 
-#: src/synfigapp/actions/valuenodereplace.cpp:85
+#: ../src/synfigapp/actions/valuenodereplace.cpp:85
 msgid "Destination ValueNode"
 msgstr ""
 
-#: src/synfigapp/actions/valuenodereplace.cpp:86
+#: ../src/synfigapp/actions/valuenodereplace.cpp:86
 msgid "ValueNode to replaced"
 msgstr ""
 
-#: src/synfigapp/actions/valuenodereplace.cpp:91
+#: ../src/synfigapp/actions/valuenodereplace.cpp:91
 msgid "ValueNode that will replace the destination"
 msgstr ""
 
-#: src/synfigapp/actions/valuenodereplace.cpp:137
-#: src/synfigapp/actions/valuenodereplace.cpp:193
+#: ../src/synfigapp/actions/valuenodereplace.cpp:137
+#: ../src/synfigapp/actions/valuenodereplace.cpp:195
 msgid "Attempted to replace valuenode with itself"
 msgstr "Была произведена попытка заменить valuenode на саму себя"
 
-#: src/synfigapp/actions/valuenodereplace.cpp:140
-#: src/synfigapp/actions/valuenodereplace.cpp:196
+#: ../src/synfigapp/actions/valuenodereplace.cpp:140
+#: ../src/synfigapp/actions/valuenodereplace.cpp:198
 msgid "You cannot replace ValueNodes with different types!"
 msgstr ""
 
-#: src/synfigapp/actions/valuenodereplace.cpp:163
-#: src/synfigapp/actions/valuenodereplace.cpp:201
+#: ../src/synfigapp/actions/valuenodereplace.cpp:163
+#: ../src/synfigapp/actions/valuenodereplace.cpp:203
 msgid "Nothing to replace."
 msgstr ""
 
-#: src/synfigapp/actions/valuenodereplace.cpp:170
-#: src/synfigapp/actions/valuenodereplace.cpp:208
+#: ../src/synfigapp/actions/valuenodereplace.cpp:170
+#: ../src/synfigapp/actions/valuenodereplace.cpp:210
 msgid "Action Failure. This is a bug. Please report it."
 msgstr ""
 
-#: src/synfigapp/actions/valuenodereplace.cpp:188
+#: ../src/synfigapp/actions/valuenodereplace.cpp:190
 msgid "This action cannot be undone under these circumstances."
 msgstr ""
 
-#: src/synfigapp/actions/valuenodereplace.cpp:213
-msgid ": (Undo) "
-msgstr ""
-
-#: src/synfigapp/actions/waypointadd.cpp:51
-#: src/synfigapp/actions/waypointsetsmart.cpp:59
+#: ../src/synfigapp/actions/waypointadd.cpp:51
+#: ../src/synfigapp/actions/waypointsetsmart.cpp:59
 msgid "Add Waypoint"
-msgstr ""
+msgstr "Добавить фиксатор"
 
-#: src/synfigapp/actions/waypointadd.cpp:81
-#: src/synfigapp/actions/waypointsetsmart.cpp:89
+#: ../src/synfigapp/actions/waypointadd.cpp:81
+#: ../src/synfigapp/actions/waypointsetsmart.cpp:89
 msgid "New Waypoint"
-msgstr ""
+msgstr "Новый фиксатор"
 
-#: src/synfigapp/actions/waypointadd.cpp:82
-#: src/synfigapp/actions/waypointsetsmart.cpp:90
-#: src/synfigapp/actions/waypointsimpleadd.cpp:79
+#: ../src/synfigapp/actions/waypointadd.cpp:82
+#: ../src/synfigapp/actions/waypointsetsmart.cpp:90
+#: ../src/synfigapp/actions/waypointsimpleadd.cpp:79
 msgid "Waypoint to be added"
-msgstr ""
+msgstr "Добавляемый фиксатор"
 
-#: src/synfigapp/actions/waypointadd.cpp:88
-#: src/synfigapp/actions/waypointsetsmart.cpp:101
+#: ../src/synfigapp/actions/waypointadd.cpp:88
+#: ../src/synfigapp/actions/waypointsetsmart.cpp:101
 msgid "Time where waypoint is to be added"
-msgstr ""
+msgstr "Отметка времени для добавления фиксатора"
 
-#: src/synfigapp/actions/waypointadd.cpp:185
+#: ../src/synfigapp/actions/waypointadd.cpp:185
 #, c-format
 msgid "A Waypoint already exists at this point in time (%s)"
-msgstr ""
+msgstr "В этой точке времени (%s) уже есть фиксатор"
 
-#: src/synfigapp/actions/waypointadd.cpp:188
-#: src/synfigapp/actions/waypointremove.cpp:198
+#: ../src/synfigapp/actions/waypointadd.cpp:188
+#: ../src/synfigapp/actions/waypointremove.cpp:198
 msgid "This waypoint is already in the ValueNode"
-msgstr ""
+msgstr "Этот фиксатор уже есть в ValueNode"
 
-#: src/synfigapp/actions/waypointremove.cpp:49
+#: ../src/synfigapp/actions/waypointremove.cpp:49
 msgid "Remove Waypoint"
-msgstr ""
+msgstr "Удалить фиксатор"
 
-#: src/synfigapp/actions/waypointremove.cpp:74
+#: ../src/synfigapp/actions/waypointremove.cpp:74
 msgid "ValueNode (Animated)"
 msgstr ""
 
-#: src/synfigapp/actions/waypointremove.cpp:79
+#: ../src/synfigapp/actions/waypointremove.cpp:79
 msgid "Waypoint to be Removed"
-msgstr ""
+msgstr "Удаляемый фиксатор"
 
-#: src/synfigapp/actions/waypointremove.cpp:124
+#: ../src/synfigapp/actions/waypointremove.cpp:124
 #, c-format
 msgid "UniqueID mismatch, iter=%d, waypoint=%d"
 msgstr ""
 
-#: src/synfigapp/actions/waypointremove.cpp:127
+#: ../src/synfigapp/actions/waypointremove.cpp:127
 #, c-format
 msgid "Time mismatch iter=%s, waypoint=%s"
 msgstr ""
 
-#: src/synfigapp/actions/waypointremove.cpp:141
+#: ../src/synfigapp/actions/waypointremove.cpp:141
 msgid "Unable to create ValueNode_Reference"
 msgstr ""
 
-#: src/synfigapp/actions/waypointremove.cpp:172
-msgid ""
-"This animated value node should be empty, but for some reason it isn't. This "
-"is a bug. (1)"
+#: ../src/synfigapp/actions/waypointremove.cpp:172
+msgid "This animated value node should be empty, but for some reason it isn't. This is a bug. (1)"
 msgstr ""
 
-#: src/synfigapp/actions/waypointremove.cpp:190
-msgid ""
-"This animated value node should be empty, but for some reason it isn't. This "
-"is a bug. (2)"
+#: ../src/synfigapp/actions/waypointremove.cpp:190
+msgid "This animated value node should be empty, but for some reason it isn't. This is a bug. (2)"
 msgstr ""
 
-#: src/synfigapp/actions/waypointremove.cpp:195
+#: ../src/synfigapp/actions/waypointremove.cpp:195
 msgid "A Waypoint already exists at this point in time"
-msgstr ""
+msgstr "В этой точке времени уже есть фиксатор"
 
-#: src/synfigapp/actions/waypointset.cpp:49
+#: ../src/synfigapp/actions/waypointset.cpp:49
 msgid "Set Waypoint"
-msgstr ""
+msgstr "Установить фиксатор"
 
-#: src/synfigapp/actions/waypointset.cpp:78
+#: ../src/synfigapp/actions/waypointset.cpp:78
 msgid "Waypoint to be changed"
-msgstr ""
+msgstr "Меняемый фиксатор"
 
-#: src/synfigapp/actions/waypointset.cpp:133
-#: src/synfigapp/actions/waypointset.cpp:191
-#: src/synfigapp/actions/waypointset.cpp:235
-#: src/synfigapp/actions/waypointset.cpp:256
+#: ../src/synfigapp/actions/waypointset.cpp:133
+#: ../src/synfigapp/actions/waypointset.cpp:191
+#: ../src/synfigapp/actions/waypointset.cpp:235
+#: ../src/synfigapp/actions/waypointset.cpp:256
 msgid "Unable to find waypoint"
-msgstr ""
+msgstr "Не удалось найти фиксатор"
 
-#: src/synfigapp/actions/waypointsimpleadd.cpp:146
+#: ../src/synfigapp/actions/waypointsimpleadd.cpp:147
 msgid "The waypoint to remove no longer exists"
-msgstr ""
+msgstr "Удаляемый фиксатор уже не существует."
 
-#: src/synfigapp/action_system.cpp:77
+#: ../src/synfigapp/action_system.cpp:80
 msgid "Action is not ready."
-msgstr ""
+msgstr "Действие не готово."
 
-#: src/synfigapp/action_system.cpp:109
+#: ../src/synfigapp/action_system.cpp:112
 msgid "This action cannot be undone! Are you sure you want to continue?"
 msgstr ""
 
-#: src/synfigapp/action_system.cpp:128 src/synfigapp/action_system.cpp:145
-#: src/synfigapp/action_system.cpp:156
+#: ../src/synfigapp/action_system.cpp:131
+#: ../src/synfigapp/action_system.cpp:148
+#: ../src/synfigapp/action_system.cpp:159
 msgid "Failed"
-msgstr ""
+msgstr ". Неуспешно."
 
-#: src/synfigapp/action_system.cpp:189
+#: ../src/synfigapp/action_system.cpp:192
 msgid "Successful"
-msgstr ""
+msgstr ". Успешно."
 
-#: src/synfigapp/action_system.cpp:222 src/synfigapp/action_system.cpp:224
+#: ../src/synfigapp/action_system.cpp:225
+#: ../src/synfigapp/action_system.cpp:227
 msgid " (Undo): "
 msgstr ""
 
-#: src/synfigapp/action_system.cpp:284
+#: ../src/synfigapp/action_system.cpp:287
 msgid "Failed to undo."
-msgstr ""
+msgstr "Не удалось отменить действие."
 
-#: src/synfigapp/action_system.cpp:320 src/synfigapp/action_system.cpp:322
+#: ../src/synfigapp/action_system.cpp:323
+#: ../src/synfigapp/action_system.cpp:325
 msgid " (Redo): "
 msgstr ""
 
-#: src/synfigapp/action_system.cpp:382
+#: ../src/synfigapp/action_system.cpp:385
 msgid "Failed to redo."
-msgstr ""
+msgstr "Не удалось вернуть действие"
 
-#: src/synfigapp/action_system.cpp:698
+#: ../src/synfigapp/action_system.cpp:701
 msgid "State restore failure"
 msgstr ""
 
-#: src/synfigapp/canvasinterface.cpp:160
+#: ../src/synfigapp/canvasinterface.cpp:162
 msgid "Action Not Ready, unable to change mode"
 msgstr ""
 
-#: src/synfigapp/canvasinterface.cpp:166
+#: ../src/synfigapp/canvasinterface.cpp:168
 msgid "Unable to change mode"
 msgstr ""
 
-#: src/synfigapp/canvasinterface.cpp:183
+#: ../src/synfigapp/canvasinterface.cpp:185
 msgid "Add Layer To"
 msgstr ""
 
-#: src/synfigapp/canvasinterface.cpp:288 src/synfigapp/canvasinterface.cpp:349
-#: src/synfigapp/canvasinterface.cpp:382
+#: ../src/synfigapp/canvasinterface.cpp:292
+#: ../src/synfigapp/canvasinterface.cpp:353
+#: ../src/synfigapp/canvasinterface.cpp:386
+#: ../src/synfigapp/canvasinterface.cpp:598
 msgid "Action Not Ready"
 msgstr ""
 
-#: src/synfigapp/canvasinterface.cpp:294 src/synfigapp/canvasinterface.cpp:356
-#: src/synfigapp/canvasinterface.cpp:389 src/synfigapp/canvasinterface.cpp:477
-#: src/synfigapp/canvasinterface.cpp:494 src/synfigapp/canvasinterface.cpp:513
-#: src/synfigapp/canvasinterface.cpp:530 src/synfigapp/canvasinterface.cpp:707
-#: src/synfigapp/canvasinterface.cpp:732 src/synfigapp/canvasinterface.cpp:785
+#: ../src/synfigapp/canvasinterface.cpp:298
+#: ../src/synfigapp/canvasinterface.cpp:360
+#: ../src/synfigapp/canvasinterface.cpp:393
+#: ../src/synfigapp/canvasinterface.cpp:481
+#: ../src/synfigapp/canvasinterface.cpp:498
+#: ../src/synfigapp/canvasinterface.cpp:517
+#: ../src/synfigapp/canvasinterface.cpp:534
+#: ../src/synfigapp/canvasinterface.cpp:602
+#: ../src/synfigapp/canvasinterface.cpp:738
+#: ../src/synfigapp/canvasinterface.cpp:763
+#: ../src/synfigapp/canvasinterface.cpp:816
 msgid "Action Failed."
 msgstr ""
 
-#: src/synfigapp/canvasinterface.cpp:316
+#: ../src/synfigapp/canvasinterface.cpp:320
 msgid "Move Action Not Ready"
 msgstr ""
 
-#: src/synfigapp/canvasinterface.cpp:322
+#: ../src/synfigapp/canvasinterface.cpp:326
 msgid "Move Action Failed."
 msgstr ""
 
-#: src/synfigapp/canvasinterface.cpp:365
+#: ../src/synfigapp/canvasinterface.cpp:369
 msgid "Empty name!"
-msgstr ""
+msgstr "Имя не введено!"
 
-#: src/synfigapp/canvasinterface.cpp:571
+#: ../src/synfigapp/canvasinterface.cpp:575
 msgid "Filename must have an extension!"
 msgstr ""
 
-#: src/synfigapp/canvasinterface.cpp:584
+#: ../src/synfigapp/canvasinterface.cpp:615
 msgid "Unable to open this composition"
 msgstr ""
 
-#: src/synfigapp/canvasinterface.cpp:588
+#: ../src/synfigapp/canvasinterface.cpp:619
 msgid "Unable to create \"Paste Canvas\" layer"
 msgstr ""
 
-#: src/synfigapp/canvasinterface.cpp:604
+#: ../src/synfigapp/canvasinterface.cpp:635
 msgid ""
 "Uncaught exception when attempting\n"
 "to open this composition -- "
 msgstr ""
 
-#: src/synfigapp/canvasinterface.cpp:610
+#: ../src/synfigapp/canvasinterface.cpp:641
 msgid "I don't know how to open images of this type -- "
-msgstr ""
+msgstr "Программа не умеет открывать файлы с расширением "
 
-#: src/synfigapp/canvasinterface.cpp:777
+#: ../src/synfigapp/canvasinterface.cpp:808
 #, c-format
 msgid "Unnamed%08d"
 msgstr ""
 
-#: src/synfigapp/canvasinterface.cpp:808
+#: ../src/synfigapp/canvasinterface.cpp:839
 msgid ""
 "The value you are trying to edit is in a composition\n"
 "which doesn't seem to be open. Open that composition and you\n"
 "should be able to edit this value as normal."
 msgstr ""
 
-#: src/synfigapp/uimanager.cpp:56 src/synfigapp/uimanager.cpp:83
+#: ../src/synfigapp/uimanager.cpp:83
+#: ../src/synfigapp/uimanager.cpp:110
 msgid "(no/yes)"
-msgstr ""
+msgstr "(Нет/Да)"
 
-#: src/synfigapp/uimanager.cpp:58 src/synfigapp/uimanager.cpp:85
+#: ../src/synfigapp/uimanager.cpp:85
+#: ../src/synfigapp/uimanager.cpp:112
 msgid "(yes/no)"
-msgstr ""
+msgstr "(Да/Нет)"
 
-#: src/synfigapp/uimanager.cpp:110
+#: ../src/synfigapp/uimanager.cpp:137
 msgid "(cancel/ok)"
-msgstr ""
+msgstr "(Отменить/ОК)"
 
-#: src/synfigapp/uimanager.cpp:112
+#: ../src/synfigapp/uimanager.cpp:139
 msgid "(ok/cancel)"
-msgstr ""
+msgstr "(ОК/Отменить)"
 
-#: src/synfigapp/uimanager.cpp:142
+#: ../src/synfigapp/uimanager.cpp:169
 msgid "error: "
-msgstr ""
+msgstr "Ошибка:"
 
-#: src/synfigapp/uimanager.cpp:149
+#: ../src/synfigapp/uimanager.cpp:176
 msgid "warning: "
-msgstr ""
+msgstr "Предупреждение:"
 
-#: src/synfigapp/value_desc.cpp:60
+#: ../src/synfigapp/value_desc.cpp:60
 msgid "Layer Parameter"
-msgstr ""
+msgstr "Параметр слоя"
 
-#: src/synfigapp/value_desc.cpp:77
+#: ../src/synfigapp/value_desc.cpp:77
 msgid "Const ValueNode"
 msgstr ""
 
-#: src/synfigapp/value_desc.cpp:89
+#: ../src/synfigapp/value_desc.cpp:89
 msgid "Exported ValueNode"
 msgstr ""
+
+#~ msgid "State"
+#~ msgstr "Инструменты"
+#~ msgid "Flipbook Dialog"
+#~ msgstr "Диалог кинеографа"
+#~ msgid "Foreground Color"
+#~ msgstr "Цвет переднего плана"
+#~ msgid "Background Color"
+#~ msgstr "Цвет фона"
+#~ msgid ""
+#~ "Swap Background and\n"
+#~ "Foreground Colors"
+#~ msgstr ""
+#~ "Поменять местами цвета\n"
+#~ "переднего плана и фона"
+
