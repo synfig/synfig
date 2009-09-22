@@ -5,12 +5,13 @@
 # This file is distributed under the same license as the Synfig Core package.
 # Aurore D <aurore.d@gmail.com>, 2007.
 #
+# Aurore D. <aurore.d@gmail.com>, 2009.
 msgid ""
 msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: http://synfig.org/Bugs\n"
-"POT-Creation-Date: 2008-09-10 14:52+0200\n"
-"PO-Revision-Date: 2008-10-02 13:48+0200\n"
+"POT-Creation-Date: 2009-09-04 20:44+0200\n"
+"PO-Revision-Date: 2009-09-17 22:53+0200\n"
 "Last-Translator:  <aurore.d@gmail.com>\n"
 "Language-Team:  <en@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -150,9 +151,9 @@ msgstr "Orientation du texte"
 #: src/modules/mod_filter/radialblur.cpp:106
 #: src/modules/mod_geometry/checkerboard.cpp:125
 #: src/modules/mod_geometry/circle.cpp:137
-#: src/modules/mod_gradient/curvegradient.cpp:490
-#: src/modules/mod_particle/plant.cpp:390 src/synfig/layer_pastecanvas.cpp:127
-#: src/synfig/layer_shape.cpp:1196 src/synfig/valuenode_composite.cpp:291
+#: src/modules/mod_gradient/curvegradient.cpp:533
+#: src/modules/mod_particle/plant.cpp:390 src/synfig/layer_pastecanvas.cpp:128
+#: src/synfig/layer_shape.cpp:1196 src/synfig/valuenode_composite.cpp:294
 msgid "Origin"
 msgstr "Origine"
 
@@ -166,7 +167,7 @@ msgstr "Police"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:571
 msgid "Filename of the font to use"
-msgstr "Nom de la police  à utiliser"
+msgstr "Nom de la police à utiliser"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:578
 msgid "Kerning"
@@ -192,15 +193,15 @@ msgstr "Inverser"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:644
 msgid "No face loaded, no text will be rendered."
-msgstr "Aucune police de chargée, aucun texte ne sera rendu"
+msgstr "Aucune police de chargée, aucun texte ne sera rendu."
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:670
 msgid "Text too small, no text will be rendered."
-msgstr "Texte trop petit, aucun texte ne sera rendu"
+msgstr "Texte trop petit, aucun texte ne sera rendu."
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:694
 msgid "Unable to set face size."
-msgstr "Impossible de définir la taille de la police"
+msgstr "Impossible de définir la taille de la police."
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:737
 msgid "Invalid multibyte sequence - is the locale set?\n"
@@ -216,7 +217,7 @@ msgstr "Biseauter"
 
 #: src/modules/lyr_std/bevel.cpp:68 src/modules/lyr_std/shade.cpp:67
 msgid "Stylize"
-msgstr "Styliser "
+msgstr "Styliser"
 
 #: src/modules/lyr_std/bevel.cpp:356 src/modules/lyr_std/shade.cpp:387
 #: src/modules/mod_filter/blur.cpp:246
@@ -290,7 +291,7 @@ msgstr "Jeu de région"
 msgid "Set of regions to combine"
 msgstr "Jeu de régions à combiner"
 
-#: src/modules/lyr_std/clamp.cpp:54 src/tool/main.cpp:1079
+#: src/modules/lyr_std/clamp.cpp:54 src/tool/main.cpp:1078
 msgid "Clamp"
 msgstr "Limiter"
 
@@ -334,7 +335,7 @@ msgstr "Nom de fichier"
 msgid "File to import"
 msgstr "Fichier à importer"
 
-#: src/modules/lyr_std/import.cpp:214 src/synfig/layer_pastecanvas.cpp:140
+#: src/modules/lyr_std/import.cpp:214 src/synfig/layer_pastecanvas.cpp:141
 msgid "Time Offset"
 msgstr "Décalage temporel"
 
@@ -347,7 +348,7 @@ msgstr "À l'envers"
 #: src/modules/lyr_std/stretch.cpp:59 src/modules/lyr_std/twirl.cpp:56
 #: src/modules/lyr_std/warp.cpp:56 src/modules/mod_noise/distort.cpp:57
 msgid "Distortions"
-msgstr "Distortions"
+msgstr "Distorsions"
 
 #: src/modules/lyr_std/insideout.cpp:142
 msgid "Defines the where the center will be"
@@ -445,7 +446,7 @@ msgstr "Lisser l'extérieur"
 
 #: src/modules/lyr_std/julia.cpp:356 src/modules/lyr_std/mandelbrot.cpp:276
 msgid "Smooth the coloration outside the set"
-msgstr "Lisser la couleur à l'intérieur de l'ensemble"
+msgstr "Lisser la couleur à l'extérieur de l'ensemble"
 
 #: src/modules/lyr_std/julia.cpp:359 src/modules/lyr_std/mandelbrot.cpp:220
 msgid "Break Set"
@@ -479,7 +480,7 @@ msgstr "Décalage intérieur"
 
 #: src/modules/lyr_std/mandelbrot.cpp:250
 msgid "Loop Inside"
-msgstr "Boucle intérieur"
+msgstr "Boucle intérieure"
 
 #: src/modules/lyr_std/mandelbrot.cpp:256
 #: src/modules/lyr_std/mandelbrot.cpp:260
@@ -515,7 +516,7 @@ msgstr "Transformer"
 
 #: src/modules/lyr_std/rotate.cpp:113 src/modules/lyr_std/translate.cpp:98
 #: src/modules/mod_filter/radialblur.cpp:107
-#: src/synfig/layer_pastecanvas.cpp:128
+#: src/synfig/layer_pastecanvas.cpp:129
 msgid "Point where you want the origin to be"
 msgstr "Point où vous souhaitez que l'origine soit"
 
@@ -523,11 +524,11 @@ msgstr "Point où vous souhaitez que l'origine soit"
 #: src/modules/lyr_std/sphere_distort.cpp:153
 #: src/modules/lyr_std/stretch.cpp:103 src/modules/lyr_std/zoom.cpp:96
 #: src/synfig/layer_composite.cpp:142
-#: src/synfig/valuenode_blinecalctangent.cpp:242
-#: src/synfig/valuenode_blinecalcvertex.cpp:201
-#: src/synfig/valuenode_blinecalcwidth.cpp:207
-#: src/synfig/valuenode_segcalctangent.cpp:161
-#: src/synfig/valuenode_segcalcvertex.cpp:159
+#: src/synfig/valuenode_blinecalctangent.cpp:245
+#: src/synfig/valuenode_blinecalcvertex.cpp:204
+#: src/synfig/valuenode_blinecalcwidth.cpp:210
+#: src/synfig/valuenode_segcalctangent.cpp:164
+#: src/synfig/valuenode_segcalcvertex.cpp:162
 msgid "Amount"
 msgstr "Quantité"
 
@@ -556,8 +557,8 @@ msgstr "Position"
 #: src/modules/lyr_std/twirl.cpp:113 src/modules/mod_geometry/circle.cpp:128
 #: src/modules/mod_gradient/radialgradient.cpp:118
 #: src/modules/mod_gradient/spiralgradient.cpp:117
-#: src/modules/mod_noise/valuenode_random.cpp:244
-#: src/synfig/valuenode_radialcomposite.cpp:197
+#: src/modules/mod_noise/valuenode_random.cpp:250
+#: src/synfig/valuenode_radialcomposite.cpp:200
 msgid "Radius"
 msgstr "Rayon"
 
@@ -602,11 +603,11 @@ msgid "Unable to create SurfaceTarget"
 msgstr "Impossible de créer une Surface Cible"
 
 #: src/modules/lyr_std/supersample.cpp:215
-#: src/modules/mod_gradient/curvegradient.cpp:494
-#: src/synfig/valuenode_composite.cpp:289
-#: src/synfig/valuenode_realstring.cpp:184
-#: src/synfig/valuenode_repeat_gradient.cpp:185
-#: src/synfig/valuenode_stripes.cpp:176 src/tool/main.cpp:978
+#: src/modules/mod_gradient/curvegradient.cpp:537
+#: src/synfig/valuenode_composite.cpp:292
+#: src/synfig/valuenode_realstring.cpp:187
+#: src/synfig/valuenode_repeat_gradient.cpp:188
+#: src/synfig/valuenode_stripes.cpp:179 src/tool/main.cpp:977
 msgid "Width"
 msgstr "Largeur"
 
@@ -614,7 +615,7 @@ msgstr "Largeur"
 msgid "Width of sample area (In pixels)"
 msgstr "Largeur de l'échantillon (en pixels)"
 
-#: src/modules/lyr_std/supersample.cpp:219 src/tool/main.cpp:984
+#: src/modules/lyr_std/supersample.cpp:219 src/tool/main.cpp:983
 msgid "Height"
 msgstr "Hauteur"
 
@@ -632,10 +633,10 @@ msgstr "Utiliser le moteur de rendu paramétrique"
 
 #: src/modules/lyr_std/supersample.cpp:227
 msgid "Be Alpha Safe"
-msgstr ""
+msgstr "Considérer l'Alpha"
 
-#: src/modules/lyr_std/timeloop.cpp:57 src/synfig/valuenode.cpp:161
-#: src/synfig/valuenode_timeloop.cpp:188
+#: src/modules/lyr_std/timeloop.cpp:57 src/synfig/valuenode.cpp:168
+#: src/synfig/valuenode_timeloop.cpp:191
 msgid "Time Loop"
 msgstr "Boucle temporelle"
 
@@ -647,7 +648,7 @@ msgstr "Début du lien"
 msgid "Local Time"
 msgstr "Temps local"
 
-#: src/modules/lyr_std/timeloop.cpp:128 src/synfig/valuenode_step.cpp:214
+#: src/modules/lyr_std/timeloop.cpp:128 src/synfig/valuenode_step.cpp:217
 #: src/synfig/valuenode_timeloop.cpp:126
 msgid "Duration"
 msgstr "Durée"
@@ -680,31 +681,31 @@ msgstr "Rotations"
 
 #: src/modules/lyr_std/warp.cpp:55
 msgid "Warp"
-msgstr "Déformation"
+msgstr "Perspective"
 
 #: src/modules/lyr_std/warp.cpp:371
 msgid "Source TL"
-msgstr "Haut-Gauche source"
+msgstr "Source Haut-Gauche"
 
 #: src/modules/lyr_std/warp.cpp:376
 msgid "Source BR"
-msgstr "Bas-Droite source"
+msgstr "Source Bas-Droite"
 
 #: src/modules/lyr_std/warp.cpp:380
 msgid "Dest TL"
-msgstr "Haut-Gauche dest."
+msgstr "Destination Haut-Gauche"
 
 #: src/modules/lyr_std/warp.cpp:385
 msgid "Dest TR"
-msgstr "Haut-Droite dest."
+msgstr "Destination Haut-Droite"
 
 #: src/modules/lyr_std/warp.cpp:390
 msgid "Dest BR"
-msgstr "Bas-Droite dest."
+msgstr "Destination Bas-Droite"
 
 #: src/modules/lyr_std/warp.cpp:395
 msgid "Dest BL"
-msgstr "Bas-Gauche dest."
+msgstr "Destination Bas-Gauche"
 
 #: src/modules/lyr_std/warp.cpp:404
 msgid "Horizon"
@@ -714,7 +715,7 @@ msgstr "Horizon"
 msgid "XOR Pattern"
 msgstr "Motif XOR"
 
-#: src/modules/lyr_std/zoom.cpp:51 src/synfig/layer_pastecanvas.cpp:135
+#: src/modules/lyr_std/zoom.cpp:51 src/synfig/layer_pastecanvas.cpp:136
 msgid "Zoom"
 msgstr "Zoom"
 
@@ -759,7 +760,7 @@ msgstr "BITMAPINFOHEADER invalide dans %s (biSize=%d, au lieu de 40)"
 
 #: src/modules/mod_bmp/mptr_bmp.cpp:196 src/modules/mod_bmp/mptr_bmp.cpp:197
 msgid "Reading compressed bitmaps is not supported"
-msgstr "La lecture des bitmpas compressés n'est pas disponible"
+msgstr "La lecture des bitmaps compressés n'est pas disponible"
 
 #: src/modules/mod_bmp/mptr_bmp.cpp:203 src/modules/mod_bmp/mptr_bmp.cpp:204
 #, c-format
@@ -831,9 +832,9 @@ msgstr "Constraste"
 msgid "Exposure Adjust"
 msgstr "Ajustement de l'exposition"
 
-#: src/modules/mod_filter/colorcorrect.cpp:219 src/synfig/layer_bitmap.cpp:138
+#: src/modules/mod_filter/colorcorrect.cpp:219 src/synfig/layer_bitmap.cpp:141
 msgid "Gamma Adjustment"
-msgstr "Ajustement du gamma"
+msgstr "Ajustement du Gamma"
 
 #: src/modules/mod_filter/halftone2.cpp:57
 msgid "Halftone 2"
@@ -887,7 +888,7 @@ msgstr "Demi-teinte 3"
 
 #: src/modules/mod_filter/halftone3.cpp:308
 msgid " Type"
-msgstr "Type"
+msgstr " Type"
 
 #: src/modules/mod_filter/halftone3.cpp:317
 msgid "Subtractive Flag"
@@ -895,15 +896,15 @@ msgstr "Soustraire"
 
 #: src/modules/mod_filter/halftone3.cpp:325
 msgid " Color"
-msgstr "Couleur"
+msgstr " Couleur"
 
 #: src/modules/mod_filter/halftone3.cpp:329
 msgid " Mask Origin"
-msgstr "Origine du masque"
+msgstr " Origine du masque"
 
 #: src/modules/mod_filter/halftone3.cpp:333
 msgid " Mask Angle"
-msgstr "Angle du masque"
+msgstr " Angle du masque"
 
 #: src/modules/mod_filter/lumakey.cpp:57
 msgid "Luma Key"
@@ -930,7 +931,7 @@ msgstr "Damier"
 #: src/modules/mod_geometry/outline.cpp:71
 #: src/modules/mod_geometry/rectangle.cpp:59
 #: src/modules/mod_geometry/region.cpp:64 src/modules/mod_geometry/star.cpp:63
-#: src/synfig/layer_polygon.cpp:60 src/synfig/layer_solidcolor.cpp:56
+#: src/synfig/layer_polygon.cpp:61 src/synfig/layer_solidcolor.cpp:56
 msgid "Geometry"
 msgstr "Géométrie"
 
@@ -956,7 +957,7 @@ msgstr "Inverser le cercle"
 
 #: src/modules/mod_geometry/circle.cpp:145
 msgid "Falloff"
-msgstr "Atténuation "
+msgstr "Atténuation"
 
 #: src/modules/mod_geometry/circle.cpp:146
 msgid "Determines the falloff function for the feather"
@@ -964,8 +965,8 @@ msgstr "Détermine la fonction d'atténuation pour l'adoucissement"
 
 #: src/modules/mod_geometry/circle.cpp:148
 #: src/modules/mod_noise/distort.cpp:211 src/modules/mod_noise/noise.cpp:263
-#: src/synfig/layer_bitmap.cpp:132 src/synfig/valuenode.cpp:134
-#: src/synfig/valuenode_linear.cpp:142
+#: src/synfig/layer_bitmap.cpp:135 src/synfig/valuenode.cpp:141
+#: src/synfig/valuenode_linear.cpp:145
 msgid "Linear"
 msgstr "Linéaire"
 
@@ -983,7 +984,7 @@ msgstr "Sigmoïde"
 
 #: src/modules/mod_geometry/circle.cpp:152
 #: src/modules/mod_noise/distort.cpp:212 src/modules/mod_noise/noise.cpp:264
-#: src/synfig/layer_bitmap.cpp:133
+#: src/synfig/layer_bitmap.cpp:136
 msgid "Cosine"
 msgstr "Cosinus"
 
@@ -993,20 +994,20 @@ msgstr "Contour"
 
 #: src/modules/mod_geometry/outline.cpp:178
 msgid "No vertices in outline "
-msgstr "Pas de vertices dans le contour"
+msgstr "Pas de vertex dans le contour"
 
 #: src/modules/mod_geometry/outline.cpp:807
 #: src/modules/mod_geometry/region.cpp:232
-#: src/modules/mod_gradient/curvegradient.cpp:497
+#: src/modules/mod_gradient/curvegradient.cpp:540
 #: src/modules/mod_particle/plant.cpp:383
 msgid "Vertices"
 msgstr "Vertices"
 
 #: src/modules/mod_geometry/outline.cpp:810
-#: src/modules/mod_gradient/curvegradient.cpp:500
+#: src/modules/mod_gradient/curvegradient.cpp:543
 #: src/modules/mod_particle/plant.cpp:384
 msgid "A list of BLine Points"
-msgstr "Une liste de points BLine"
+msgstr "Une liste de points de BLine"
 
 #: src/modules/mod_geometry/outline.cpp:824
 msgid "Outline Width"
@@ -1061,7 +1062,7 @@ msgstr "Point 2"
 
 #: src/modules/mod_geometry/rectangle.cpp:136
 msgid "Expand amount"
-msgstr "Quantité d'extention"
+msgstr "Quantité d'extension"
 
 #: src/modules/mod_geometry/rectangle.cpp:140
 msgid "Invert the rectangle"
@@ -1094,7 +1095,7 @@ msgstr "Le rayon du corps de l'étoile"
 #: src/modules/mod_geometry/star.cpp:188
 #: src/modules/mod_gradient/conicalgradient.cpp:114
 #: src/modules/mod_gradient/spiralgradient.cpp:124
-#: src/synfig/valuenode_cos.cpp:165 src/synfig/valuenode_sine.cpp:165
+#: src/synfig/valuenode_cos.cpp:172 src/synfig/valuenode_sine.cpp:168
 msgid "Angle"
 msgstr "Angle"
 
@@ -1102,9 +1103,9 @@ msgstr "Angle"
 msgid "The orientation of the star"
 msgstr "L'orientation de l'étoile"
 
-#: src/modules/mod_geometry/star.cpp:194 src/synfig/distance.cpp:243
+#: src/modules/mod_geometry/star.cpp:194 src/synfig/distance.cpp:248
 msgid "Points"
-msgstr "Points"
+msgstr "Pointes"
 
 #: src/modules/mod_geometry/star.cpp:195
 msgid "The number of points in the star"
@@ -1112,7 +1113,7 @@ msgstr "Nombres de pointes de l'étoile"
 
 #: src/modules/mod_geometry/star.cpp:199
 msgid "Regular Polygon"
-msgstr "Polygone standard"
+msgstr "Polygone régulier"
 
 #: src/modules/mod_geometry/star.cpp:200
 msgid "Whether to draw a star or a regular polygon"
@@ -1132,7 +1133,7 @@ msgid "Conical Gradient"
 msgstr "Dégradé conique"
 
 #: src/modules/mod_gradient/conicalgradient.cpp:57
-#: src/modules/mod_gradient/curvegradient.cpp:58
+#: src/modules/mod_gradient/curvegradient.cpp:60
 #: src/modules/mod_gradient/lineargradient.cpp:54
 #: src/modules/mod_gradient/radialgradient.cpp:57
 #: src/modules/mod_gradient/spiralgradient.cpp:56
@@ -1141,40 +1142,40 @@ msgid "Gradients"
 msgstr "Dégradés"
 
 #: src/modules/mod_gradient/conicalgradient.cpp:106
-#: src/modules/mod_gradient/curvegradient.cpp:503
+#: src/modules/mod_gradient/curvegradient.cpp:546
 #: src/modules/mod_gradient/lineargradient.cpp:191
 #: src/modules/mod_gradient/radialgradient.cpp:110
 #: src/modules/mod_gradient/spiralgradient.cpp:109
 #: src/modules/mod_noise/noise.cpp:250 src/modules/mod_particle/plant.cpp:394
-#: src/synfig/valuenode_gradientrotate.cpp:146
-#: src/synfig/valuenode_repeat_gradient.cpp:183
+#: src/synfig/valuenode_gradientrotate.cpp:149
+#: src/synfig/valuenode_repeat_gradient.cpp:186
 msgid "Gradient"
 msgstr "Dégradé"
 
-#: src/modules/mod_gradient/curvegradient.cpp:57
+#: src/modules/mod_gradient/curvegradient.cpp:59
 msgid "Curve Gradient"
 msgstr "Dégradé selon une courbe"
 
-#: src/modules/mod_gradient/curvegradient.cpp:505
+#: src/modules/mod_gradient/curvegradient.cpp:548
 #: src/modules/mod_gradient/lineargradient.cpp:194
 #: src/modules/mod_gradient/radialgradient.cpp:125
-#: src/synfig/valuenode_blinecalctangent.cpp:241
-#: src/synfig/valuenode_blinecalcvertex.cpp:200
-#: src/synfig/valuenode_blinecalcwidth.cpp:206
+#: src/synfig/valuenode_blinecalctangent.cpp:244
+#: src/synfig/valuenode_blinecalcvertex.cpp:203
+#: src/synfig/valuenode_blinecalcwidth.cpp:209
 msgid "Loop"
 msgstr "Boucle"
 
-#: src/modules/mod_gradient/curvegradient.cpp:507
+#: src/modules/mod_gradient/curvegradient.cpp:550
 #: src/modules/mod_gradient/lineargradient.cpp:197
 #: src/modules/mod_gradient/radialgradient.cpp:129
 msgid "ZigZag"
 msgstr "Zigzag"
 
-#: src/modules/mod_gradient/curvegradient.cpp:509
+#: src/modules/mod_gradient/curvegradient.cpp:552
 msgid "Perpendicular"
 msgstr "Perpendiculaire"
 
-#: src/modules/mod_gradient/curvegradient.cpp:511
+#: src/modules/mod_gradient/curvegradient.cpp:554
 msgid "Fast"
 msgstr "Rapide"
 
@@ -1204,7 +1205,6 @@ msgstr "Pas de fichier à charger"
 #: src/modules/mod_imagemagick/mptr_imagemagick.cpp:157
 #: src/modules/mod_imagemagick/mptr_imagemagick.cpp:158
 #: src/synfig/listimporter.cpp:182 src/synfig/listimporter.cpp:183
-#: src/tool/main.cpp:1181
 msgid "Unable to open "
 msgstr "Impossible d'ouvrir "
 
@@ -1247,43 +1247,43 @@ msgstr "Fin de fichier prématurée"
 #: src/modules/mod_imagemagick/trgt_imagemagick.cpp:157
 msgid "Unable to open pipe to imagemagick's convert utility"
 msgstr ""
-"Impossible d'établir le tranfert vers l'utilitaire de conversion (convert) "
+"Impossible d'établir le transfert vers l'utilitaire de conversion (convert) "
 "d'imagemagick"
 
 #: src/modules/mod_noise/distort.cpp:56
 msgid "Noise Distort"
-msgstr "Distortion bruitée"
+msgstr "Distorsion bruitée"
 
 #: src/modules/mod_noise/distort.cpp:197
 msgid "Displacement"
 msgstr "Déplacement"
 
 #: src/modules/mod_noise/distort.cpp:204 src/modules/mod_noise/noise.cpp:253
-msgid "Random Seed"
-msgstr "Graine aléatoire"
+msgid "RandomNoise Seed"
+msgstr "Graine du bruit aléatoire"
 
 #: src/modules/mod_noise/distort.cpp:207 src/modules/mod_noise/noise.cpp:259
-#: src/modules/mod_noise/valuenode_random.cpp:247
-#: src/synfig/layer_bitmap.cpp:128
+#: src/modules/mod_noise/valuenode_random.cpp:253
+#: src/synfig/layer_bitmap.cpp:131
 msgid "Interpolation"
 msgstr "Interpolation"
 
 #: src/modules/mod_noise/distort.cpp:208 src/modules/mod_noise/noise.cpp:260
-#: src/synfig/layer_bitmap.cpp:129
+#: src/synfig/layer_bitmap.cpp:132
 msgid "What type of interpolation to use"
 msgstr "Quel type d'interpolation utiliser"
 
 #: src/modules/mod_noise/distort.cpp:210 src/modules/mod_noise/noise.cpp:262
-#: src/synfig/layer_bitmap.cpp:131
+#: src/synfig/layer_bitmap.cpp:134
 msgid "Nearest Neighbor"
-msgstr "Voisinage de plus proche"
+msgstr "Voisinage le plus proche"
 
 #: src/modules/mod_noise/distort.cpp:213 src/modules/mod_noise/noise.cpp:265
 msgid "Spline"
 msgstr "Spline"
 
 #: src/modules/mod_noise/distort.cpp:214 src/modules/mod_noise/noise.cpp:266
-#: src/synfig/layer_bitmap.cpp:134
+#: src/synfig/layer_bitmap.cpp:137
 msgid "Cubic"
 msgstr "Cubique"
 
@@ -1292,7 +1292,7 @@ msgid "Detail"
 msgstr "Détail"
 
 #: src/modules/mod_noise/distort.cpp:220 src/modules/mod_noise/noise.cpp:272
-#: src/modules/mod_noise/valuenode_random.cpp:246
+#: src/modules/mod_noise/valuenode_random.cpp:252
 msgid "Animation Speed"
 msgstr "Vitesse d'animation"
 
@@ -1301,7 +1301,7 @@ msgid "Turbulent"
 msgstr "Turbulent"
 
 #: src/modules/mod_noise/main.cpp:66
-#: src/modules/mod_noise/valuenode_random.cpp:179
+#: src/modules/mod_noise/valuenode_random.cpp:182
 msgid "Random"
 msgstr "Aléatoire"
 
@@ -1317,17 +1317,22 @@ msgstr "Transparence"
 msgid "Super Sampling"
 msgstr "Sur-échantillonage "
 
-#: src/modules/mod_noise/valuenode_random.cpp:243
-#: src/synfig/valuenode_range.cpp:193 src/synfig/valuenode_reciprocal.cpp:124
-#: src/synfig/valuenode_reference.cpp:114 src/synfig/valuenode_scale.cpp:179
-#: src/synfig/valuenode_step.cpp:213 src/synfig/valuenode_timeloop.cpp:123
+#: src/modules/mod_noise/valuenode_random.cpp:249
+#: src/synfig/valuenode_not.cpp:111 src/synfig/valuenode_range.cpp:196
+#: src/synfig/valuenode_reciprocal.cpp:124
+#: src/synfig/valuenode_reference.cpp:114 src/synfig/valuenode_scale.cpp:226
+#: src/synfig/valuenode_step.cpp:216 src/synfig/valuenode_timeloop.cpp:123
 msgid "Link"
 msgstr "Lien"
 
-#: src/modules/mod_noise/valuenode_random.cpp:245
+#: src/modules/mod_noise/valuenode_random.cpp:251
 #: src/modules/mod_particle/plant.cpp:441
 msgid "Seed"
 msgstr "Graine"
+
+#: src/modules/mod_noise/valuenode_random.cpp:254
+msgid "Loop Time"
+msgstr "Temps d'une boucle"
 
 #: src/modules/mod_particle/plant.cpp:68
 msgid "Plant"
@@ -1375,7 +1380,7 @@ msgstr "Taille de tige"
 
 #: src/modules/mod_particle/plant.cpp:421
 msgid "Size of the stem"
-msgstr "Taille de tige"
+msgstr "La taille de la tige"
 
 #: src/modules/mod_particle/plant.cpp:426
 msgid "Size As Alpha"
@@ -1397,8 +1402,8 @@ msgstr "Inverser"
 msgid "If enabled, render the plant in the opposite direction"
 msgstr "Si actif, rend la plante dans la direction opposée "
 
-#: src/modules/mod_particle/plant.cpp:436 src/synfig/valuenode.cpp:165
-#: src/synfig/valuenode_duplicate.cpp:123 src/synfig/valuenode_step.cpp:138
+#: src/modules/mod_particle/plant.cpp:436 src/synfig/valuenode.cpp:172
+#: src/synfig/valuenode_duplicate.cpp:123 src/synfig/valuenode_step.cpp:141
 msgid "Step"
 msgstr "Pas"
 
@@ -1417,7 +1422,7 @@ msgstr "Branches"
 #: src/modules/mod_particle/plant.cpp:447
 msgid "Maximum number of times that each sprout can sprout recursively"
 msgstr ""
-"Nombre maximum de fois qu'une branche peut générer d'autres branches "
+"Nombre maximum de fois qu'une branche peut générer d'autres pousses "
 "récursivement"
 
 #: src/modules/mod_particle/plant.cpp:451
@@ -1435,7 +1440,7 @@ msgstr "Facteur d'aléa"
 #: src/modules/mod_particle/plant.cpp:457
 msgid "Used to scale down all random effects.  Set to zero to disable randomness"
 msgstr ""
-"Utilisé pour amoindrir les effets aléatoires. Placer le à zéro pour "
+"Utilisé pour amoindrir les effets aléatoires. Placez le à zéro pour "
 "désactiver les aléas."
 
 #: src/modules/mod_particle/plant.cpp:461
@@ -1452,34 +1457,34 @@ msgstr "Utiliser la largeur"
 
 #: src/modules/mod_particle/plant.cpp:467
 msgid "Scale the velocity by the bline's width"
-msgstr "Détermine la vitesse à partir de la largeur de la BLine"
+msgstr "Modifie la vitesse à partir de la largeur de la BLine"
 
 #: src/modules/mod_ppm/mptr_ppm.cpp:86
 #, c-format
 msgid "%s was not in PPM format"
 msgstr "%s n'était pas au format PPM"
 
-#: src/synfig/distance.cpp:241
+#: src/synfig/distance.cpp:246
 msgid "Units"
 msgstr "Unités"
 
-#: src/synfig/distance.cpp:242
+#: src/synfig/distance.cpp:247
 msgid "Pixels"
 msgstr "Pixels"
 
-#: src/synfig/distance.cpp:244
+#: src/synfig/distance.cpp:249
 msgid "Inches"
 msgstr "Pouces"
 
-#: src/synfig/distance.cpp:245
+#: src/synfig/distance.cpp:250
 msgid "Meters"
 msgstr "Mètres"
 
-#: src/synfig/distance.cpp:246
+#: src/synfig/distance.cpp:251
 msgid "Millimeters"
 msgstr "Millimètres"
 
-#: src/synfig/distance.cpp:247
+#: src/synfig/distance.cpp:252
 msgid "Centimeters"
 msgstr "Centimètres"
 
@@ -1493,29 +1498,29 @@ msgstr "Importer::open() : Extension non trouvée"
 
 #: src/synfig/importer.cpp:114
 msgid "Importer::open(): Unknown file type -- "
-msgstr "Importer::open() : Type de fichier inconnu"
+msgstr "Importer::open() : Type de fichier inconnu -- "
 
-#: src/synfig/layer.cpp:499 src/synfig/layer_composite.cpp:114
+#: src/synfig/layer.cpp:512 src/synfig/layer_composite.cpp:114
 msgid "Unable to create surface target"
 msgstr "Impossible de créer une surface cible"
 
-#: src/synfig/layer.cpp:537
+#: src/synfig/layer.cpp:550
 msgid "Z Depth"
-msgstr "Pronfondeur Z"
+msgstr "Profondeur Z"
 
-#: src/synfig/layer_bitmap.cpp:118
+#: src/synfig/layer_bitmap.cpp:121
 msgid "Top-Left"
 msgstr "Haut-gauche"
 
-#: src/synfig/layer_bitmap.cpp:119
+#: src/synfig/layer_bitmap.cpp:122
 msgid "Upper left-hand Corner of image"
 msgstr "Le coin en haut à gauche de l'image"
 
-#: src/synfig/layer_bitmap.cpp:123
+#: src/synfig/layer_bitmap.cpp:126
 msgid "Bottom-Right"
 msgstr "Bas-droite"
 
-#: src/synfig/layer_bitmap.cpp:124
+#: src/synfig/layer_bitmap.cpp:127
 msgid "Lower right-hand Corner of image"
 msgstr "Le coin en bas à droite de l'image"
 
@@ -1523,18 +1528,18 @@ msgstr "Le coin en bas à droite de l'image"
 msgid "Blend Method"
 msgstr "Mode de fusion"
 
-#: src/synfig/layer_duplicate.cpp:56 src/synfig/valuenode.cpp:163
-#: src/synfig/valuenode_duplicate.cpp:206
+#: src/synfig/layer_duplicate.cpp:56 src/synfig/valuenode.cpp:170
+#: src/synfig/valuenode_duplicate.cpp:209
 msgid "Duplicate"
 msgstr "Dupliquer"
 
-#: src/synfig/layer_duplicate.cpp:132
+#: src/synfig/layer_duplicate.cpp:148
 msgid "Index"
 msgstr "Index"
 
-#: src/synfig/layer_duplicate.cpp:133
+#: src/synfig/layer_duplicate.cpp:149
 msgid "Copy Index"
-msgstr "Index de copie"
+msgstr "Copier l'index"
 
 #: src/synfig/layer_mime.cpp:86
 msgid "[MIME]"
@@ -1556,39 +1561,47 @@ msgstr "Temps d'exposition"
 msgid "Paste Canvas"
 msgstr "Coller un canevas"
 
-#: src/synfig/layer_pastecanvas.cpp:114
+#: src/synfig/layer_pastecanvas.cpp:115
 msgid "Pasted Canvas"
 msgstr "Canevas collé"
 
-#: src/synfig/layer_pastecanvas.cpp:115
+#: src/synfig/layer_pastecanvas.cpp:116
 msgid "Inline Canvas"
 msgstr "Sous-canevas"
 
-#: src/synfig/layer_pastecanvas.cpp:131
+#: src/synfig/layer_pastecanvas.cpp:132
 msgid "Canvas"
 msgstr "Canevas"
 
-#: src/synfig/layer_pastecanvas.cpp:132
+#: src/synfig/layer_pastecanvas.cpp:133
 msgid "Canvas to paste"
 msgstr "Canevas à coller"
 
-#: src/synfig/layer_pastecanvas.cpp:136
+#: src/synfig/layer_pastecanvas.cpp:137
 msgid "Size of canvas"
 msgstr "Taille du canevas"
 
-#: src/synfig/layer_pastecanvas.cpp:144
+#: src/synfig/layer_pastecanvas.cpp:145
 msgid "Children Lock"
-msgstr "Verrouillage des enfants"
+msgstr "Verrou sous-calques"
 
-#: src/synfig/layer_pastecanvas.cpp:154
+#: src/synfig/layer_pastecanvas.cpp:149
+msgid "Focus Point"
+msgstr "Point focal"
+
+#: src/synfig/layer_pastecanvas.cpp:152
+msgid "Point to remain fixed when zooming"
+msgstr "Point restant fixe lors du zoom"
+
+#: src/synfig/layer_pastecanvas.cpp:163
 msgid "Current Time"
-msgstr "Heure courante"
+msgstr "Temps courant"
 
-#: src/synfig/layer_polygon.cpp:59
+#: src/synfig/layer_polygon.cpp:60
 msgid "Polygon"
 msgstr "Polygone"
 
-#: src/synfig/layer_polygon.cpp:171
+#: src/synfig/layer_polygon.cpp:172
 msgid "Vector List"
 msgstr "Liste de vecteurs"
 
@@ -1640,212 +1653,217 @@ msgstr "Couleur pleine"
 msgid "No images in list"
 msgstr "Pas d'images dans la liste"
 
-#: src/synfig/loadcanvas.cpp:173
+#: src/synfig/loadcanvas.cpp:138
+#, c-format
+msgid "cannot load '%s' recursively"
+msgstr "ne peut charger '%s' récursivement"
+
+#: src/synfig/loadcanvas.cpp:181
 #, c-format
 msgid "Unexpected element <%s>, Expected <%s>"
-msgstr "Élément <%s> indattendu, <%s> attendu"
+msgstr "Élément <%s> inattendu, attendait <%s>"
 
-#: src/synfig/loadcanvas.cpp:179
+#: src/synfig/loadcanvas.cpp:187
 #, c-format
 msgid "Unexpected element <%s>"
-msgstr "Élément <%s> indattendu"
+msgstr "Élément <%s> inattendu"
 
-#: src/synfig/loadcanvas.cpp:190
+#: src/synfig/loadcanvas.cpp:201
 msgid "Too many warnings"
 msgstr "Trop d'avertissements"
 
-#: src/synfig/loadcanvas.cpp:220
+#: src/synfig/loadcanvas.cpp:232
 #, c-format
 msgid "<%s> is missing \"%s\" attribute"
 msgstr "<%s> a un attribut \"%s\" manquant"
 
-#: src/synfig/loadcanvas.cpp:245 src/synfig/loadcanvas.cpp:264
-#: src/synfig/loadcanvas.cpp:283 src/synfig/loadcanvas.cpp:447
-#: src/synfig/loadcanvas.cpp:802
+#: src/synfig/loadcanvas.cpp:257 src/synfig/loadcanvas.cpp:276
+#: src/synfig/loadcanvas.cpp:295 src/synfig/loadcanvas.cpp:459
+#: src/synfig/loadcanvas.cpp:814
 #, c-format
 msgid "<%s> should not contain anything"
 msgstr "<%s> devrait être vide"
 
-#: src/synfig/loadcanvas.cpp:249 src/synfig/loadcanvas.cpp:268
-#: src/synfig/loadcanvas.cpp:287 src/synfig/loadcanvas.cpp:451
-#: src/synfig/loadcanvas.cpp:806
+#: src/synfig/loadcanvas.cpp:261 src/synfig/loadcanvas.cpp:280
+#: src/synfig/loadcanvas.cpp:299 src/synfig/loadcanvas.cpp:463
+#: src/synfig/loadcanvas.cpp:818
 #, c-format
 msgid "<%s> is missing \"value\" attribute"
 msgstr "Il manque un attribut \"value\" à <%s>"
 
-#: src/synfig/loadcanvas.cpp:462
+#: src/synfig/loadcanvas.cpp:474
 #, c-format
 msgid "Bad value \"%s\" in <%s>"
 msgstr "Valeur \"%s\" incorrecte dans <%s>"
 
-#: src/synfig/loadcanvas.cpp:486
+#: src/synfig/loadcanvas.cpp:498
 #, c-format
 msgid "<%s> is missing \"pos\" attribute"
 msgstr "Il manque un attribut \"pos\" dans <%s>"
 
-#: src/synfig/loadcanvas.cpp:893
+#: src/synfig/loadcanvas.cpp:905
 #, c-format
 msgid "Unable to create <animated> with type \"%s\""
 msgstr "Impossible de créer <animated> de type \"%s\""
 
-#: src/synfig/loadcanvas.cpp:910
+#: src/synfig/loadcanvas.cpp:922
 msgid "<waypoint> is missing attribute \"time\""
 msgstr "Il manque un attribut \"time\" à <waypoint>"
 
-#: src/synfig/loadcanvas.cpp:923
+#: src/synfig/loadcanvas.cpp:935
 msgid ""
 "Found \"use\" attribute for <waypoint>, but it wasn't empty. Ignoring "
 "contents..."
 msgstr ""
 "Attribut \"use\" trouvé pour <waypoint>, mais il n'était pas vide. Contenu "
-"ignoré"
+"ignoré ..."
 
-#: src/synfig/loadcanvas.cpp:939 src/synfig/loadcanvas.cpp:951
+#: src/synfig/loadcanvas.cpp:955 src/synfig/loadcanvas.cpp:967
 #, c-format
 msgid "<%s> is missing its data"
 msgstr "Il manque des données dans <%s>"
 
-#: src/synfig/loadcanvas.cpp:968
+#: src/synfig/loadcanvas.cpp:984
 msgid "Bad data for <waypoint>"
 msgstr "Données incorrectes pour <waypoint>"
 
-#: src/synfig/loadcanvas.cpp:983
+#: src/synfig/loadcanvas.cpp:999
 #, c-format
 msgid "Unexpected element <%s> after <waypoint> data, ignoring..."
 msgstr "Élément <%s> inattendu après les données de <waypoint>. Ignoré ..."
 
-#: src/synfig/loadcanvas.cpp:1025 src/synfig/loadcanvas.cpp:1042
+#: src/synfig/loadcanvas.cpp:1041 src/synfig/loadcanvas.cpp:1058
 #, c-format
 msgid "\"%s\" not a valid value for attribute \"%s\" in <%s>"
 msgstr "\"%s\" n'est pas un attribut valide pour \"%s\" dans <%s>"
 
-#: src/synfig/loadcanvas.cpp:1103
+#: src/synfig/loadcanvas.cpp:1119
 #, c-format
 msgid "Missing attribute \"type\" in <%s>"
 msgstr "Il manque un attribut \"type\" dans <%s>"
 
-#: src/synfig/loadcanvas.cpp:1111
+#: src/synfig/loadcanvas.cpp:1127
 #, c-format
 msgid "Bad type in <%s>"
-msgstr "Mauvaises type dans <%s>"
+msgstr "Mauvais type dans <%s>"
 
-#: src/synfig/loadcanvas.cpp:1120
+#: src/synfig/loadcanvas.cpp:1136
 #, c-format
 msgid "Error creating ValueNode <%s> with type '%s'.  Refer to '%s'"
 msgstr ""
 "Erreur lors de la création du nœud de valeur <%s> avec le type \"%s\". Voir "
 "\"%s\"."
 
-#: src/synfig/loadcanvas.cpp:1129
+#: src/synfig/loadcanvas.cpp:1145
 #, c-format
 msgid "<%s> did not accept type '%s'"
 msgstr "<%s> n'accepte pas le type \"%s\""
 
-#: src/synfig/loadcanvas.cpp:1155 src/synfig/loadcanvas.cpp:1223
+#: src/synfig/loadcanvas.cpp:1171 src/synfig/loadcanvas.cpp:1239
 #, c-format
 msgid "'%s' was already defined in <%s>"
 msgstr "\"%s\" est déjà défini dans <%s>"
 
-#: src/synfig/loadcanvas.cpp:1165
+#: src/synfig/loadcanvas.cpp:1181
 #, c-format
 msgid "'%s' attribute in <%s> references unknown ID '%s'"
 msgstr "L'attribut \"%s\" dans <%s> fait référence à un ID inconnu \"%s\""
 
-#: src/synfig/loadcanvas.cpp:1174
+#: src/synfig/loadcanvas.cpp:1190
 #, c-format
 msgid "Unable to set link '\"%s\" to ValueNode \"%s\" (link #%d in \"%s\")"
 msgstr ""
 "Impossible de définir le lien \"%s\" vers le nœud de valeur \"%s\" (lien n°%"
 "d dans \"%s\")"
 
-#: src/synfig/loadcanvas.cpp:1198
+#: src/synfig/loadcanvas.cpp:1214
 #, c-format
 msgid "Unknown Exception thrown when referencing ValueNode \"%s\""
 msgstr ""
 "Une exception inconnue est survenue lors de la référence au nœud de valeur "
 "\"%s\""
 
-#: src/synfig/loadcanvas.cpp:1238
+#: src/synfig/loadcanvas.cpp:1254
 #, c-format
 msgid "element <%s> is missing its contents"
 msgstr "Le contenu de l'élément <%s>manque"
 
-#: src/synfig/loadcanvas.cpp:1247
+#: src/synfig/loadcanvas.cpp:1263
 #, c-format
 msgid "Parse of '%s' failed"
 msgstr "L'analyse de \"%s\" a échoué"
 
-#: src/synfig/loadcanvas.cpp:1254
+#: src/synfig/loadcanvas.cpp:1270
 #, c-format
 msgid "Unable to connect value node ('%s' of type '%s') to link %d (%s)"
 msgstr "Impossible de lier le nœud de valeur (\"%s\" de type \"%s\") au lien %d (%s)"
 
-#: src/synfig/loadcanvas.cpp:1272
+#: src/synfig/loadcanvas.cpp:1288
 #, c-format
 msgid "Unknown Exception thrown when working on element \"%s\""
 msgstr "Une exception inconnue est survenue lors du travail sur l'élément \"%s\""
 
-#: src/synfig/loadcanvas.cpp:1295
+#: src/synfig/loadcanvas.cpp:1329
 #, c-format
 msgid "<%s> is missing link %d (%s)"
 msgstr "<%s> n'a pas de lien %d (%s)"
 
-#: src/synfig/loadcanvas.cpp:1361
+#: src/synfig/loadcanvas.cpp:1395
 msgid "Unable to create <dynamic_list>"
 msgstr "Impossible de créer <dynamic_list>"
 
-#: src/synfig/loadcanvas.cpp:1511
+#: src/synfig/loadcanvas.cpp:1545
 msgid "<entry> is missing its contents or missing \"use\" element"
 msgstr "Le contenu de <entry> est manquant, ou il manque un élément \"use\""
 
-#: src/synfig/loadcanvas.cpp:1556
+#: src/synfig/loadcanvas.cpp:1590
 #, c-format
 msgid "Bad data in <%s>"
 msgstr "Mauvaises données dans <%s>"
 
-#: src/synfig/loadcanvas.cpp:1588
+#: src/synfig/loadcanvas.cpp:1622
 #, c-format
 msgid "Expected a ValueNode.  Refer to '%s'"
-msgstr "Noeud de valeur attendu. Voir %s"
+msgstr "Attendait un nœud de valeur. Voir %s"
 
-#: src/synfig/loadcanvas.cpp:1609
+#: src/synfig/loadcanvas.cpp:1643
 #, c-format
 msgid "Bad ID \"%s\""
 msgstr "Mauvais ID \"%s\""
 
-#: src/synfig/loadcanvas.cpp:1614
+#: src/synfig/loadcanvas.cpp:1648
 #, c-format
 msgid "Duplicate ID \"%s\""
 msgstr "ID dupliqué \"%s\""
 
-#: src/synfig/loadcanvas.cpp:1619
+#: src/synfig/loadcanvas.cpp:1653
 #, c-format
 msgid "Unknown Exception thrown when adding ValueNode \"%s\""
 msgstr "Une exception inconnue est survenue lors de l'ajout du Nœud de valeur \"%s\""
 
-#: src/synfig/loadcanvas.cpp:1654
+#: src/synfig/loadcanvas.cpp:1688
 msgid "Missing \"type\" attribute to \"layer\" element"
 msgstr "Il manque un attribut \"type\" à l'élément \"layer\""
 
-#: src/synfig/loadcanvas.cpp:1673
+#: src/synfig/loadcanvas.cpp:1707
 msgid "Installed layer version is smaller than layer version in file"
 msgstr "La version de calque installée est plus petite que la version du fichier"
 
-#: src/synfig/loadcanvas.cpp:1693
+#: src/synfig/loadcanvas.cpp:1727
 msgid "<name> entry for <layer> is not yet supported. Ignoring..."
 msgstr ""
 "La valeur <name> (nom) n'est pas encore supportée pour <layer> (calque). "
 "Ignorée."
 
-#: src/synfig/loadcanvas.cpp:1696
+#: src/synfig/loadcanvas.cpp:1730
 msgid "<desc> entry for <layer> is not yet supported. Ignoring..."
 msgstr "La valeur <desc> n'est pas encore supportée pour <layer> (calque). Ignorée."
 
-#: src/synfig/loadcanvas.cpp:1704
+#: src/synfig/loadcanvas.cpp:1738
 msgid "Missing \"name\" attribute for <param>."
 msgstr "Attribut \"name\" manquant pour <param>."
 
-#: src/synfig/loadcanvas.cpp:1716
+#: src/synfig/loadcanvas.cpp:1755
 msgid ""
 "Found \"use\" attribute for <param>, but it wasn't empty. Ignoring "
 "contents..."
@@ -1853,85 +1871,94 @@ msgstr ""
 "Attribut \"use\" trouvé pour <param>, mais il n'était pas vide. Contenu "
 "ignoré."
 
-#: src/synfig/loadcanvas.cpp:1721
+#: src/synfig/loadcanvas.cpp:1760
 msgid "Empty use=\"\" value in <param>"
 msgstr "Valeur vide use=\"\" dans <param>"
 
-#: src/synfig/loadcanvas.cpp:1725
-msgid "Layer rejected canvas link"
-msgstr "Le calque a rejeté le lien vers le canevas."
+#: src/synfig/loadcanvas.cpp:1766
+#, c-format
+msgid "Failed to load subcanvas '%s'"
+msgstr "Échec du chargement du sous-canevas \"%s\""
 
-#: src/synfig/loadcanvas.cpp:1743
+#: src/synfig/loadcanvas.cpp:1768
+msgid "Layer rejected canvas link"
+msgstr "Le calque a rejeté le lien vers le canevas"
+
+#: src/synfig/loadcanvas.cpp:1786
 #, c-format
 msgid "Unknown ID (%s) referenced in <param>"
 msgstr "ID (%s) inconnu référencé par <param>"
 
-#: src/synfig/loadcanvas.cpp:1759
+#: src/synfig/loadcanvas.cpp:1802
 msgid "<param> is either missing its contents, or missing a \"use\" attribute."
 msgstr "Il manque soit le contenu, soit un attribut \"use\" dans <param>."
 
-#: src/synfig/loadcanvas.cpp:1771 src/synfig/loadcanvas.cpp:1791
+#: src/synfig/loadcanvas.cpp:1814 src/synfig/loadcanvas.cpp:1834
 msgid "Bad data for <param>"
 msgstr "Mauvaises données pour <param>"
 
-#: src/synfig/loadcanvas.cpp:1779
+#: src/synfig/loadcanvas.cpp:1822
 #, c-format
 msgid "Layer '%s' rejected value for parameter '%s'"
 msgstr "Le calque '%s' a rejeté la valeur du paramètre '%s'"
 
-#: src/synfig/loadcanvas.cpp:1802
+#: src/synfig/loadcanvas.cpp:1845
 #, c-format
 msgid "Unexpected element <%s> after <param> data, ignoring..."
-msgstr "Élément <%s> inattendu après les données de <param>. Ignoré. "
+msgstr "Élément <%s> inattendu après les données de <param>. Ignoré."
 
-#: src/synfig/loadcanvas.cpp:1957
+#: src/synfig/loadcanvas.cpp:1918 src/synfig/loadcanvas.cpp:1926
+msgid "Canvas with width or height less than one is not allowed"
+msgstr "La hauteur et la largeur du canevas doivent être supérieures ou égales à 1."
+
+#: src/synfig/loadcanvas.cpp:2012
 msgid "Inline canvas cannot have a <defs> section"
 msgstr "Un sous-canevas ne peut avoir de section <defs>"
 
-#: src/synfig/loadcanvas.cpp:1965
+#: src/synfig/loadcanvas.cpp:2020
 msgid "Inline canvas cannot have keyframes"
-msgstr "Un sous-canevas ne peut avoir de points clés."
+msgstr "Un sous-canevas ne peut avoir de points clés"
 
-#: src/synfig/loadcanvas.cpp:1977
+#: src/synfig/loadcanvas.cpp:2032
 msgid "Inline canvases cannot have metadata"
-msgstr "Un sous-canevas ne peut avoir de métadonnées"
+msgstr "Les sous-canevas ne peuvent avoir de métadonnées"
 
-#: src/synfig/loadcanvas.cpp:1985
+#: src/synfig/loadcanvas.cpp:2040
 msgid "<meta> must have a name"
 msgstr "<meta> doit avoir un nom"
 
-#: src/synfig/loadcanvas.cpp:1991
+#: src/synfig/loadcanvas.cpp:2046
 msgid "<meta> must have content"
 msgstr "<meta> doit avoir un contenu"
 
-#: src/synfig/loadcanvas.cpp:2003
+#: src/synfig/loadcanvas.cpp:2058
 msgid "blank \"name\" entity"
 msgstr "Entité \"name\" vide"
 
-#: src/synfig/loadcanvas.cpp:2018
+#: src/synfig/loadcanvas.cpp:2073
 msgid "blank \"desc\" entity"
 msgstr "Entité \"desc\" vide"
 
-#: src/synfig/loadcanvas.cpp:2033
+#: src/synfig/loadcanvas.cpp:2088
 msgid "blank \"author\" entity"
 msgstr "Entité \"author\" vide"
 
-#: src/synfig/loadcanvas.cpp:2065
+#: src/synfig/loadcanvas.cpp:2120
 #, c-format
 msgid "Canvas '%s' has undefined %s: %s"
 msgstr "Le canevas \"%s\" a des valeurs %s:%s non définies"
 
-#: src/synfig/loadcanvas.cpp:2067 src/synfig/valuenode.cpp:351
+#: src/synfig/loadcanvas.cpp:2122 src/synfig/valuenode.cpp:380
 msgid "ValueNode"
 msgstr "Nœud de valeur"
 
-#: src/synfig/loadcanvas.cpp:2067
+#: src/synfig/loadcanvas.cpp:2122
 msgid "ValueNodes"
 msgstr "Nœuds de valeur"
 
-#: src/synfig/loadcanvas.cpp:2147
-msgid "<INTERNAL>"
-msgstr "<INTERNAL>"
+#: src/synfig/loadcanvas.cpp:2202 src/synfig/loadcanvas.cpp:2258
+msgid "Can't open file"
+msgstr "Impossible d'ouvrir le fichier"
 
 #: src/synfig/main.cpp:103
 #, c-format
@@ -1958,64 +1985,69 @@ msgstr "Taille de Canevas non correspondante (app: %d, lib: %d)"
 msgid "Size of Layer mismatch (app:%d, lib:%d)"
 msgstr "Taille de Calque non correspondante (app: %d, lib: %d)"
 
-#: src/synfig/main.cpp:213
+#: src/synfig/main.cpp:185
 msgid "Starting Subsystem \"Modules\""
-msgstr "Démarage du sous-système \"Modules\""
+msgstr "Démarrage du sous-système \"Modules\""
 
-#: src/synfig/main.cpp:215
+#: src/synfig/main.cpp:187
 msgid "Unable to initialize subsystem \"Module\""
 msgstr "Impossible d'initialiser le sous-système \"Module\""
 
-#: src/synfig/main.cpp:217
+#: src/synfig/main.cpp:189
 msgid "Starting Subsystem \"Layers\""
-msgstr "Démarage du sous-système \"Layers\""
+msgstr "Démarrage du sous-système \"Layers\""
 
-#: src/synfig/main.cpp:221
+#: src/synfig/main.cpp:193
 msgid "Unable to initialize subsystem \"Layers\""
 msgstr "Impossible d'initialiser le sous-système \"Layers\""
 
-#: src/synfig/main.cpp:224
+#: src/synfig/main.cpp:196
 msgid "Starting Subsystem \"Targets\""
-msgstr "Démarage du sous-système \"Targets\""
+msgstr "Démarrage du sous-système \"Targets\""
 
-#: src/synfig/main.cpp:229
+#: src/synfig/main.cpp:201
 msgid "Unable to initialize subsystem \"Targets\""
 msgstr "Impossible d'initialiser le sous-système \"Targets\""
 
-#: src/synfig/main.cpp:232
+#: src/synfig/main.cpp:204
 msgid "Starting Subsystem \"Importers\""
-msgstr "Démarage du sous-système \"Importers\""
+msgstr "Démarrage du sous-système \"Importers\""
 
-#: src/synfig/main.cpp:238
+#: src/synfig/main.cpp:210
 msgid "Unable to initialize subsystem \"Importers\""
 msgstr "Impossible d'initialiser le sous-système \"Importers\""
 
-#: src/synfig/main.cpp:241
+#: src/synfig/main.cpp:213
 msgid "Starting Subsystem \"ValueNodes\""
-msgstr "Démarage du sous-système \"ValueNodes\""
+msgstr "Démarrage du sous-système \"ValueNodes\""
 
-#: src/synfig/main.cpp:248
+#: src/synfig/main.cpp:220
 msgid "Unable to initialize subsystem \"ValueNodes\""
 msgstr "Impossible d'initialiser le sous-système \"ValueNodes\""
 
-#: src/synfig/main.cpp:307
+#: src/synfig/main.cpp:257 src/synfig/main.cpp:258
 #, c-format
 msgid "Loading modules from %s"
 msgstr "Chargement des modules depuis %s"
 
-#: src/synfig/main.cpp:320 src/tool/main.cpp:243
+#: src/synfig/main.cpp:268
+#, c-format
+msgid "Unable to open module list file '%s'"
+msgstr "Impossible d'ouvrir le fichier de liste de modules \"%s\""
+
+#: src/synfig/main.cpp:282 src/tool/main.cpp:244
 msgid "DONE"
 msgstr "FINI"
 
-#: src/synfig/main.cpp:386 src/tool/main.cpp:123 src/tool/main.cpp:164
+#: src/synfig/main.cpp:348 src/tool/main.cpp:124 src/tool/main.cpp:165
 msgid "error"
 msgstr "erreur"
 
-#: src/synfig/main.cpp:401 src/tool/main.cpp:130 src/tool/main.cpp:171
+#: src/synfig/main.cpp:363 src/tool/main.cpp:131 src/tool/main.cpp:172
 msgid "warning"
 msgstr "avertissement"
 
-#: src/synfig/main.cpp:416
+#: src/synfig/main.cpp:378
 msgid "info"
 msgstr "info"
 
@@ -2023,31 +2055,36 @@ msgstr "info"
 msgid "Errors on lt_dlinit()"
 msgstr "Erreurs lors de lt_dlinit()"
 
-#: src/synfig/module.cpp:122
+#: src/synfig/module.cpp:103
+#, c-format
+msgid "Unable to load module '%s'"
+msgstr "Impossible de charger le module \"%s\""
+
+#: src/synfig/module.cpp:128
 #, c-format
 msgid "Attempting to register \"%s\""
 msgstr "Tentative d'enregistrement de \"%s\""
 
-#: src/synfig/module.cpp:129
+#: src/synfig/module.cpp:135
 #, c-format
 msgid "Unable to find module \"%s\" (%s)"
 msgstr "Impossible de trouver le module \"%s\" (%s)"
 
-#: src/synfig/module.cpp:133
+#: src/synfig/module.cpp:139
 #, c-format
 msgid "Found module \"%s\""
 msgstr "Module \"%s\" trouvé"
 
-#: src/synfig/module.cpp:167
+#: src/synfig/module.cpp:173
 #, c-format
 msgid "Unable to find entrypoint in module \"%s\" (%s)"
 msgstr "Impossible de trouver le point d'entrée du module \"%s\" (%s)"
 
-#: src/synfig/module.cpp:180
+#: src/synfig/module.cpp:186
 msgid "Entrypoint did not return a module."
-msgstr "Le point d'entré n'a pas renvoyé un module."
+msgstr "Le point d'entrée n'a pas renvoyé un module."
 
-#: src/synfig/module.cpp:184
+#: src/synfig/module.cpp:190
 #, c-format
 msgid "Success for \"%s\""
 msgstr "Succès pour \"%s\""
@@ -2173,7 +2210,7 @@ msgstr "Ajouter l'alpha"
 #: src/synfig/render.cpp:423 src/synfig/render.cpp:424
 #: src/synfig/render.cpp:450 src/synfig/render.cpp:451
 msgid "Target panic"
-msgstr ""
+msgstr "Panique de la cible"
 
 #: src/synfig/savecanvas.cpp:254
 #, c-format
@@ -2187,290 +2224,315 @@ msgstr ""
 "Type de nœud de valeur inconnu (%s), impossible d'en créer une "
 "représentation XML"
 
-#: src/synfig/target_scanline.cpp:129 src/synfig/target_tile.cpp:312
+#: src/synfig/target_scanline.cpp:135 src/synfig/target_tile.cpp:319
 msgid "Target initialization failure"
 msgstr "Échec de l'initialisation de la cible"
 
-#: src/synfig/target_scanline.cpp:245 src/synfig/target_scanline.cpp:291
-#: src/synfig/target_scanline.cpp:389 src/synfig/target_scanline.cpp:437
-#: src/synfig/target_tile.cpp:254
+#: src/synfig/target_scanline.cpp:251 src/synfig/target_scanline.cpp:297
+#: src/synfig/target_scanline.cpp:395 src/synfig/target_scanline.cpp:443
+#: src/synfig/target_tile.cpp:261
 msgid "Accelerated Renderer Failure"
 msgstr "Échec du rendu accéléré"
 
-#: src/synfig/target_scanline.cpp:300 src/synfig/target_scanline.cpp:446
+#: src/synfig/target_scanline.cpp:306 src/synfig/target_scanline.cpp:452
 msgid "Unable to put surface on target"
 msgstr "Impossible d'appliquer la surface à la cible"
 
-#: src/synfig/target_scanline.cpp:459 src/synfig/target_tile.cpp:435
+#: src/synfig/target_scanline.cpp:465 src/synfig/target_tile.cpp:442
 msgid "Caught string :"
 msgstr "Chaîne récupérée :"
 
-#: src/synfig/target_scanline.cpp:464 src/synfig/target_tile.cpp:440
+#: src/synfig/target_scanline.cpp:470 src/synfig/target_tile.cpp:447
 msgid "Ran out of memory (Probably a bug)"
 msgstr "À court de mémoire (Certainement un bogue)"
 
-#: src/synfig/target_scanline.cpp:469 src/synfig/target_tile.cpp:445
+#: src/synfig/target_scanline.cpp:475 src/synfig/target_tile.cpp:452
 msgid "Caught unknown error, rethrowing..."
 msgstr "Erreur inconnue récupérée, relancée..."
 
-#: src/synfig/target_tile.cpp:141
+#: src/synfig/target_tile.cpp:148
 msgid "Bad Tile Size"
 msgstr "Mauvaise taille de \"tuile\" d''image"
 
-#: src/synfig/target_tile.cpp:191
+#: src/synfig/target_tile.cpp:198
 msgid "Parametric Renderer Failure"
 msgstr "Échec du moteur de rendu paramétrique"
 
-#: src/synfig/target_tile.cpp:198 src/synfig/target_tile.cpp:262
+#: src/synfig/target_tile.cpp:205 src/synfig/target_tile.cpp:269
 msgid "Bad surface"
 msgstr "Mauvaise surface"
 
-#: src/synfig/target_tile.cpp:208 src/synfig/target_tile.cpp:274
+#: src/synfig/target_tile.cpp:215 src/synfig/target_tile.cpp:281
 msgid "add_tile():Unable to put surface on target"
 msgstr "add_tile(): Impossible d'appliquer la surface à la cible"
 
 #. TRANSLATORS: this is the name of a type -- see http://synfig.org/Types
-#: src/synfig/value.cpp:234 src/synfig/value.cpp:289
+#: src/synfig/value.cpp:268 src/synfig/value.cpp:323
 msgid "bool"
 msgstr "booléen"
 
 #. TRANSLATORS: this is the name of a type -- see http://synfig.org/Types
-#: src/synfig/value.cpp:236 src/synfig/value.cpp:287
+#: src/synfig/value.cpp:270 src/synfig/value.cpp:321
 msgid "integer"
 msgstr "entier"
 
 #. TRANSLATORS: this is the name of a type -- see http://synfig.org/Types
-#: src/synfig/value.cpp:238
+#: src/synfig/value.cpp:272
 msgid "angle"
 msgstr "angle"
 
 #. TRANSLATORS: this is the name of a type -- see http://synfig.org/Types
-#: src/synfig/value.cpp:240 src/synfig/value.cpp:281
+#: src/synfig/value.cpp:274 src/synfig/value.cpp:315
 msgid "time"
 msgstr "temps"
 
 #. TRANSLATORS: this is the name of a type -- see http://synfig.org/Types
-#: src/synfig/value.cpp:242 src/synfig/value.cpp:284
+#: src/synfig/value.cpp:276 src/synfig/value.cpp:318
 msgid "real"
 msgstr "réel"
 
 #. TRANSLATORS: this is the name of a type -- see http://synfig.org/Types
-#: src/synfig/value.cpp:244
+#: src/synfig/value.cpp:278
 msgid "vector"
 msgstr "vecteur"
 
 #. TRANSLATORS: this is the name of a type -- see http://synfig.org/Types
-#: src/synfig/value.cpp:246
+#: src/synfig/value.cpp:280
 msgid "color"
 msgstr "couleur"
 
 #. TRANSLATORS: this is the name of a type -- see http://synfig.org/Types
-#: src/synfig/value.cpp:248
+#: src/synfig/value.cpp:282
 msgid "segment"
 msgstr "segment"
 
 #. TRANSLATORS: this is the name of a type -- see http://synfig.org/Types
-#: src/synfig/value.cpp:250
+#: src/synfig/value.cpp:284
 msgid "bline_point"
 msgstr "point de BLine"
 
 #. TRANSLATORS: this is the name of a type -- see http://synfig.org/Types
-#: src/synfig/value.cpp:252
+#: src/synfig/value.cpp:286
 msgid "list"
 msgstr "liste"
 
 #. TRANSLATORS: this is the name of a type -- see http://synfig.org/Types
-#: src/synfig/value.cpp:254
+#: src/synfig/value.cpp:288
 msgid "canvas"
 msgstr "canevas"
 
 #. TRANSLATORS: this is the name of a type -- see http://synfig.org/Types
-#: src/synfig/value.cpp:256
+#: src/synfig/value.cpp:290
 msgid "string"
 msgstr "chaîne"
 
 #. TRANSLATORS: this is the name of a type -- see http://synfig.org/Types
-#: src/synfig/value.cpp:258
+#: src/synfig/value.cpp:292
 msgid "gradient"
 msgstr "dégradé"
 
 #. TRANSLATORS: this is the name of a type -- see http://synfig.org/Types
-#: src/synfig/value.cpp:260
+#: src/synfig/value.cpp:294
 msgid "nil"
 msgstr "nul"
 
-#: src/synfig/valuenode.cpp:135 src/synfig/valuenode_composite.cpp:431
+#: src/synfig/valuenode.cpp:142 src/synfig/valuenode_composite.cpp:434
 msgid "Composite"
 msgstr "Composé"
 
-#: src/synfig/valuenode.cpp:136 src/synfig/valuenode_radialcomposite.cpp:303
+#: src/synfig/valuenode.cpp:143 src/synfig/valuenode_radialcomposite.cpp:306
 msgid "Radial Composite"
 msgstr "Composé radial"
 
-#: src/synfig/valuenode.cpp:137 src/synfig/valuenode_reference.cpp:156
+#: src/synfig/valuenode.cpp:144 src/synfig/valuenode_reference.cpp:159
 msgid "Reference"
 msgstr "Référence"
 
-#: src/synfig/valuenode.cpp:138 src/synfig/valuenode_blinecalctangent.cpp:244
-#: src/synfig/valuenode_blinecalcwidth.cpp:208
-#: src/synfig/valuenode_exp.cpp:157 src/synfig/valuenode_scale.cpp:217
+#: src/synfig/valuenode.cpp:145 src/synfig/valuenode_blinecalctangent.cpp:247
+#: src/synfig/valuenode_blinecalcwidth.cpp:211
+#: src/synfig/valuenode_exp.cpp:160 src/synfig/valuenode_scale.cpp:264
 msgid "Scale"
 msgstr "Échelle"
 
-#: src/synfig/valuenode.cpp:139 src/synfig/valuenode_segcalctangent.cpp:100
+#: src/synfig/valuenode.cpp:146 src/synfig/valuenode_segcalctangent.cpp:103
 msgid "Segment Tangent"
 msgstr "Tangente du segment"
 
-#: src/synfig/valuenode.cpp:140 src/synfig/valuenode_segcalcvertex.cpp:98
+#: src/synfig/valuenode.cpp:147 src/synfig/valuenode_segcalcvertex.cpp:101
 msgid "Segment Vertex"
 msgstr "Vertex du segment"
 
-#: src/synfig/valuenode.cpp:141 src/synfig/valuenode_stripes.cpp:78
-#: src/synfig/valuenode_stripes.cpp:225
+#: src/synfig/valuenode.cpp:148 src/synfig/valuenode_stripes.cpp:78
+#: src/synfig/valuenode_stripes.cpp:228
 msgid "Stripes"
 msgstr "Rayures"
 
-#: src/synfig/valuenode.cpp:142 src/synfig/valuenode_subtract.cpp:233
+#: src/synfig/valuenode.cpp:149 src/synfig/valuenode_subtract.cpp:236
 msgid "Subtract"
 msgstr "Soustraction"
 
-#: src/synfig/valuenode.cpp:143 src/synfig/valuenode_twotone.cpp:179
+#: src/synfig/valuenode.cpp:150 src/synfig/valuenode_twotone.cpp:182
 msgid "Two-Tone"
 msgstr "Deux-tons"
 
-#: src/synfig/valuenode.cpp:144 src/synfig/valuenode_bline.cpp:850
-#: src/synfig/valuenode_blinecalctangent.cpp:240
-#: src/synfig/valuenode_blinecalcvertex.cpp:199
-#: src/synfig/valuenode_blinecalcwidth.cpp:205
+#: src/synfig/valuenode.cpp:151 src/synfig/valuenode_bline.cpp:831
+#: src/synfig/valuenode_blinecalctangent.cpp:243
+#: src/synfig/valuenode_blinecalcvertex.cpp:202
+#: src/synfig/valuenode_blinecalcwidth.cpp:208
 msgid "BLine"
 msgstr "BLine"
 
-#: src/synfig/valuenode.cpp:145 src/synfig/valuenode_dynamiclist.cpp:713
+#: src/synfig/valuenode.cpp:152 src/synfig/valuenode_dynamiclist.cpp:716
 msgid "Dynamic List"
 msgstr "Liste dynamique"
 
-#: src/synfig/valuenode.cpp:146 src/synfig/valuenode_gradientrotate.cpp:76
-#: src/synfig/valuenode_gradientrotate.cpp:188
+#: src/synfig/valuenode.cpp:153 src/synfig/valuenode_gradientrotate.cpp:76
+#: src/synfig/valuenode_gradientrotate.cpp:191
 msgid "Gradient Rotate"
 msgstr "Rotation de dégradé"
 
-#: src/synfig/valuenode.cpp:147 src/synfig/valuenode_sine.cpp:106
+#: src/synfig/valuenode.cpp:154 src/synfig/valuenode_sine.cpp:109
 msgid "Sine"
 msgstr "Sinus"
 
-#: src/synfig/valuenode.cpp:149 src/synfig/valuenode_timedswap.cpp:264
+#: src/synfig/valuenode.cpp:156 src/synfig/valuenode_timedswap.cpp:267
 msgid "Timed Swap"
 msgstr "Échange temporisé"
 
-#: src/synfig/valuenode.cpp:150 src/synfig/valuenode_repeat_gradient.cpp:81
-#: src/synfig/valuenode_repeat_gradient.cpp:234
+#: src/synfig/valuenode.cpp:157 src/synfig/valuenode_repeat_gradient.cpp:81
+#: src/synfig/valuenode_repeat_gradient.cpp:237
 msgid "Repeat Gradient"
-msgstr "Répéter le dégrader"
+msgstr "Répéter le dégradé"
 
-#: src/synfig/valuenode.cpp:151 src/synfig/valuenode_exp.cpp:102
+#: src/synfig/valuenode.cpp:158 src/synfig/valuenode_exp.cpp:105
 msgid "Exponential"
 msgstr "Exponentiel"
 
-#: src/synfig/valuenode.cpp:152 src/synfig/valuenode_add.cpp:227
+#: src/synfig/valuenode.cpp:159 src/synfig/valuenode_add.cpp:230
 msgid "Add"
 msgstr "Addition"
 
-#: src/synfig/valuenode.cpp:153 src/synfig/valuenode_blinecalctangent.cpp:172
+#: src/synfig/valuenode.cpp:160 src/synfig/valuenode_blinecalctangent.cpp:175
 msgid "BLine Tangent"
 msgstr "Tangente de BLine"
 
-#: src/synfig/valuenode.cpp:154 src/synfig/valuenode_blinecalcvertex.cpp:140
+#: src/synfig/valuenode.cpp:161 src/synfig/valuenode_blinecalcvertex.cpp:143
 msgid "BLine Vertex"
 msgstr "Vertex de BLine"
 
-#: src/synfig/valuenode.cpp:155 src/synfig/valuenode_range.cpp:230
+#: src/synfig/valuenode.cpp:162 src/synfig/valuenode_range.cpp:233
 msgid "Range"
 msgstr "Plage de valeurs"
 
-#: src/synfig/valuenode.cpp:157 src/synfig/valuenode_switch.cpp:170
+#: src/synfig/valuenode.cpp:164 src/synfig/valuenode_switch.cpp:173
 msgid "Switch"
 msgstr "Commutateur"
 
-#: src/synfig/valuenode.cpp:158 src/synfig/valuenode_cos.cpp:106
+#: src/synfig/valuenode.cpp:165 src/synfig/valuenode_cos.cpp:108
 msgid "Cos"
 msgstr "Cos"
 
-#: src/synfig/valuenode.cpp:159
+#: src/synfig/valuenode.cpp:166
 msgid "aTan2"
 msgstr "aTan2"
 
-#: src/synfig/valuenode.cpp:160
+#: src/synfig/valuenode.cpp:167
 msgid "Reverse Tangent"
 msgstr "Inverser la tangente"
 
-#: src/synfig/valuenode.cpp:162 src/synfig/valuenode_reciprocal.cpp:179
+#: src/synfig/valuenode.cpp:169 src/synfig/valuenode_reciprocal.cpp:182
 msgid "Reciprocal"
 msgstr "Réciproque"
 
-#: src/synfig/valuenode.cpp:164 src/synfig/valuenode_integer.cpp:183
+#: src/synfig/valuenode.cpp:171 src/synfig/valuenode_integer.cpp:186
 msgid "From Integer"
 msgstr "Depuis un entier"
 
-#: src/synfig/valuenode.cpp:166 src/synfig/valuenode_blinecalcwidth.cpp:143
+#: src/synfig/valuenode.cpp:173 src/synfig/valuenode_blinecalcwidth.cpp:146
 msgid "BLine Width"
 msgstr "Épaisseur de BLine"
 
-#: src/synfig/valuenode.cpp:168
+#: src/synfig/valuenode.cpp:175
 msgid "Vector Angle"
 msgstr "Angle du vecteur"
 
-#: src/synfig/valuenode.cpp:169
+#: src/synfig/valuenode.cpp:176
 msgid "Vector Length"
 msgstr "Longueur du vecteur"
 
-#: src/synfig/valuenode.cpp:170
+#: src/synfig/valuenode.cpp:177
 msgid "Vector X"
 msgstr "X vecteur"
 
-#: src/synfig/valuenode.cpp:171
+#: src/synfig/valuenode.cpp:178
 msgid "Vector Y"
 msgstr "Y vecteur"
 
-#: src/synfig/valuenode.cpp:172
+#: src/synfig/valuenode.cpp:179
 msgid "Gradient Color"
 msgstr "Couleur de dégradé"
 
-#: src/synfig/valuenode.cpp:173
+#: src/synfig/valuenode.cpp:180
 msgid "Dot Product"
-msgstr ""
+msgstr "Produit scalaire"
 
-#: src/synfig/valuenode.cpp:174 src/synfig/valuenode_timestring.cpp:115
+#: src/synfig/valuenode.cpp:181 src/synfig/valuenode_timestring.cpp:118
 msgid "Time String"
-msgstr ""
+msgstr "Chaîne de temps"
 
-#: src/synfig/valuenode.cpp:175 src/synfig/valuenode_realstring.cpp:121
+#: src/synfig/valuenode.cpp:182 src/synfig/valuenode_realstring.cpp:124
 msgid "Real String"
-msgstr ""
+msgstr "Chaîne de réel"
 
-#: src/synfig/valuenode.cpp:176 src/synfig/valuenode_join.cpp:140
+#: src/synfig/valuenode.cpp:183 src/synfig/valuenode_join.cpp:143
 msgid "Joined List"
-msgstr ""
+msgstr "Liste jointe"
 
-#: src/synfig/valuenode.cpp:177
+#: src/synfig/valuenode.cpp:184
 msgid "Angle String"
-msgstr ""
+msgstr "Chaîne d'angle"
 
-#: src/synfig/valuenode.cpp:178
+#: src/synfig/valuenode.cpp:185
 msgid "Int String"
-msgstr ""
+msgstr "Chaîne d'entier"
 
-#: src/synfig/valuenode.cpp:179
+#: src/synfig/valuenode.cpp:186
 msgid "Logarithm"
 msgstr "Logarithme"
 
-#: src/synfig/valuenode.cpp:246
+#: src/synfig/valuenode.cpp:188
+msgid "Greyed"
+msgstr "Grisé"
+
+#: src/synfig/valuenode.cpp:189 src/synfig/valuenode_pow.cpp:123
+#: src/synfig/valuenode_pow.cpp:197
+msgid "Power"
+msgstr "Puissance"
+
+#: src/synfig/valuenode.cpp:190 src/synfig/valuenode_compare.cpp:190
+msgid "Compare"
+msgstr "Compare"
+
+#: src/synfig/valuenode.cpp:191
+msgid "Not"
+msgstr "Non"
+
+#: src/synfig/valuenode.cpp:192
+msgid "And"
+msgstr "Et"
+
+#: src/synfig/valuenode.cpp:193
+msgid "Or"
+msgstr "Ou"
+
+#: src/synfig/valuenode.cpp:260
 #, c-format
 msgid "Bad type: ValueNode '%s' doesn't accept type '%s'"
 msgstr "Mauvais type : Le nœud de valeur \"%s\" n'accepte pas le type \"%s\""
 
-#: src/synfig/valuenode.cpp:511
+#: src/synfig/valuenode.cpp:540
 msgid "Placeholder"
-msgstr ""
+msgstr "Substitut"
 
 #: src/synfig/valuenode.h:74
 #, c-format
@@ -2478,7 +2540,7 @@ msgid "%s:%d wrong type for %s: need %s but got %s"
 msgstr "%s:%d mauvais type pour %s : besoin de %s et non %s"
 
 #: src/synfig/valuenode_add.cpp:98 src/synfig/valuenode_gradientrotate.cpp:76
-#: src/synfig/valuenode_integer.cpp:78 src/synfig/valuenode_integer.cpp:170
+#: src/synfig/valuenode_integer.cpp:78 src/synfig/valuenode_integer.cpp:173
 #: src/synfig/valuenode_range.cpp:86
 #: src/synfig/valuenode_repeat_gradient.cpp:81
 #: src/synfig/valuenode_scale.cpp:87 src/synfig/valuenode_stripes.cpp:78
@@ -2486,23 +2548,37 @@ msgstr "%s:%d mauvais type pour %s : besoin de %s et non %s"
 msgid ":Bad type "
 msgstr ": Mauvais type"
 
-#: src/synfig/valuenode_add.cpp:123 src/synfig/valuenode_scale.cpp:116
-#: src/synfig/valuenode_subtract.cpp:129
+#: src/synfig/valuenode_add.cpp:126 src/synfig/valuenode_scale.cpp:119
+#: src/synfig/valuenode_subtract.cpp:132
 msgid "One or both of my parameters aren't set!"
 msgstr "Un ou deux de mes paramètres ne sont pas définis"
 
-#: src/synfig/valuenode_add.cpp:188 src/synfig/valuenode_subtract.cpp:194
+#: src/synfig/valuenode_add.cpp:191 src/synfig/valuenode_compare.cpp:126
+#: src/synfig/valuenode_subtract.cpp:197
 msgid "LHS"
 msgstr "LHS"
 
-#: src/synfig/valuenode_add.cpp:189 src/synfig/valuenode_subtract.cpp:195
+#: src/synfig/valuenode_add.cpp:192 src/synfig/valuenode_compare.cpp:127
+#: src/synfig/valuenode_subtract.cpp:198
 msgid "RHS"
 msgstr "RHS"
 
-#: src/synfig/valuenode_add.cpp:190 src/synfig/valuenode_scale.cpp:181
-#: src/synfig/valuenode_subtract.cpp:196
+#: src/synfig/valuenode_add.cpp:193 src/synfig/valuenode_scale.cpp:228
+#: src/synfig/valuenode_subtract.cpp:199
 msgid "Scalar"
 msgstr "Scalaire"
+
+#: src/synfig/valuenode_and.cpp:116 src/synfig/valuenode_or.cpp:116
+msgid "Link1"
+msgstr "Lien1"
+
+#: src/synfig/valuenode_and.cpp:117 src/synfig/valuenode_or.cpp:117
+msgid "Link2"
+msgstr "Lien2"
+
+#: src/synfig/valuenode_and.cpp:161
+msgid "AND"
+msgstr "ET"
 
 #: src/synfig/valuenode_animated.cpp:261 src/synfig/valuenode_animated.cpp:285
 #: src/synfig/valuenode_animated.cpp:561 src/synfig/valuenode_animated.cpp:579
@@ -2519,88 +2595,100 @@ msgstr "%s : Vous ne pouvez pas utiliser un %s dans un nœud de valeur animé."
 msgid "Animated"
 msgstr "Animé"
 
-#: src/synfig/valuenode_bline.cpp:797 src/synfig/valuenode_dynamiclist.cpp:619
+#: src/synfig/valuenode_bline.cpp:807 src/synfig/valuenode_dynamiclist.cpp:622
 msgid "No entries in list"
 msgstr "Pas d'entrées dans la liste"
 
-#: src/synfig/valuenode_bline.cpp:800 src/synfig/valuenode_dynamiclist.cpp:622
+#: src/synfig/valuenode_bline.cpp:810 src/synfig/valuenode_dynamiclist.cpp:625
 msgid "No entries in ret_list"
 msgstr "Pas d'entrées dans la liste ret_list"
 
-#: src/synfig/valuenode_bline.cpp:809
+#: src/synfig/valuenode_bline.cpp:819
 #, c-format
 msgid "Vertex %03d"
 msgstr "Vertex %03d"
 
-#: src/synfig/valuenode_blinecalctangent.cpp:243
-#: src/synfig/valuenode_gradientrotate.cpp:148
-#: src/synfig/valuenode_linear.cpp:215
+#: src/synfig/valuenode_blinecalctangent.cpp:246
+#: src/synfig/valuenode_gradientrotate.cpp:151
+#: src/synfig/valuenode_linear.cpp:218
 msgid "Offset"
 msgstr "Décalage"
 
-#: src/synfig/valuenode_blinecalctangent.cpp:245
+#: src/synfig/valuenode_blinecalctangent.cpp:248
 msgid "Fixed Length"
 msgstr "Longueur fixe"
 
-#: src/synfig/valuenode_composite.cpp:161
-#: src/synfig/valuenode_composite.cpp:181
+#: src/synfig/valuenode_composite.cpp:164
+#: src/synfig/valuenode_composite.cpp:184
 msgid "Bad type for composite"
 msgstr "Erreur de type pour un composé"
 
-#: src/synfig/valuenode_composite.cpp:267
+#: src/synfig/valuenode_composite.cpp:270
 msgid "Red"
 msgstr "Rouge"
 
-#: src/synfig/valuenode_composite.cpp:269
+#: src/synfig/valuenode_composite.cpp:272
 msgid "Green"
 msgstr "Vert"
 
-#: src/synfig/valuenode_composite.cpp:271
+#: src/synfig/valuenode_composite.cpp:274
 msgid "Blue"
 msgstr "Bleu"
 
-#: src/synfig/valuenode_composite.cpp:273
-#: src/synfig/valuenode_radialcomposite.cpp:210
+#: src/synfig/valuenode_composite.cpp:276
+#: src/synfig/valuenode_radialcomposite.cpp:213
 msgid "Alpha"
 msgstr "Alpha"
 
-#: src/synfig/valuenode_composite.cpp:277
+#: src/synfig/valuenode_composite.cpp:280
 msgid "Vertex 1"
 msgstr "Vertex 1"
 
-#: src/synfig/valuenode_composite.cpp:279
-#: src/synfig/valuenode_composite.cpp:295
+#: src/synfig/valuenode_composite.cpp:282
+#: src/synfig/valuenode_composite.cpp:298
 msgid "Tangent 1"
 msgstr "Tangente 1"
 
-#: src/synfig/valuenode_composite.cpp:281
+#: src/synfig/valuenode_composite.cpp:284
 msgid "Vertex 2"
 msgstr "Vertex 2"
 
-#: src/synfig/valuenode_composite.cpp:283
-#: src/synfig/valuenode_composite.cpp:297
+#: src/synfig/valuenode_composite.cpp:286
+#: src/synfig/valuenode_composite.cpp:300
 msgid "Tangent 2"
 msgstr "Tangente 2"
 
-#: src/synfig/valuenode_composite.cpp:287
+#: src/synfig/valuenode_composite.cpp:290
 msgid "Vertex"
 msgstr "Vertex"
 
-#: src/synfig/valuenode_composite.cpp:293
+#: src/synfig/valuenode_composite.cpp:296
 msgid "Split Tangents"
 msgstr "Sépater les tangentes"
 
-#: src/synfig/valuenode_composite.cpp:304
-#: src/synfig/valuenode_radialcomposite.cpp:221
+#: src/synfig/valuenode_composite.cpp:307
+#: src/synfig/valuenode_radialcomposite.cpp:224
 #, c-format
 msgid "C%d"
-msgstr ""
+msgstr "C%d"
 
-#: src/synfig/valuenode_const.cpp:126
+#: src/synfig/valuenode_const.cpp:129
 msgid "Constant"
 msgstr "Constante"
 
-#: src/synfig/valuenode_cos.cpp:167 src/synfig/valuenode_sine.cpp:167
+#: src/synfig/valuenode_compare.cpp:128
+msgid "Greater Than"
+msgstr "Plus grand que"
+
+#: src/synfig/valuenode_compare.cpp:129
+msgid "Equal to"
+msgstr "Égal à"
+
+#: src/synfig/valuenode_compare.cpp:130
+msgid "Less Than"
+msgstr "Moins que"
+
+#: src/synfig/valuenode_cos.cpp:173 src/synfig/valuenode_sine.cpp:170
 msgid "Amplitude"
 msgstr "Amplitude"
 
@@ -2612,16 +2700,16 @@ msgstr "Depuis"
 msgid "To"
 msgstr "Vers"
 
-#: src/synfig/valuenode_dynamiclist.cpp:613
+#: src/synfig/valuenode_dynamiclist.cpp:616
 msgid "List type/item type mismatch, throwing away mismatch"
-msgstr "Incompatibilité entre type et élement de liste, rejet de l'erreur"
+msgstr "Incompatibilité entre type et élément de liste, générant une erreur"
 
-#: src/synfig/valuenode_dynamiclist.cpp:661
+#: src/synfig/valuenode_dynamiclist.cpp:664
 #, c-format
 msgid "Item %03d"
 msgstr "Élément %03d"
 
-#: src/synfig/valuenode_exp.cpp:155
+#: src/synfig/valuenode_exp.cpp:158
 msgid "Exponent"
 msgstr "Exposant"
 
@@ -2629,443 +2717,459 @@ msgstr "Exposant"
 msgid "Integer"
 msgstr "Entier"
 
-#: src/synfig/valuenode_join.cpp:202
+#: src/synfig/valuenode_join.cpp:205
 msgid "Strings"
 msgstr "Chaînes"
 
-#: src/synfig/valuenode_join.cpp:203 src/synfig/valuenode_timedswap.cpp:221
+#: src/synfig/valuenode_join.cpp:206 src/synfig/valuenode_timedswap.cpp:224
 msgid "Before"
 msgstr "Avant"
 
-#: src/synfig/valuenode_join.cpp:204
+#: src/synfig/valuenode_join.cpp:207
 msgid "Separator"
 msgstr "Séparateur"
 
-#: src/synfig/valuenode_join.cpp:205 src/synfig/valuenode_timedswap.cpp:222
+#: src/synfig/valuenode_join.cpp:208 src/synfig/valuenode_timedswap.cpp:225
 msgid "After"
 msgstr "Après"
 
-#: src/synfig/valuenode_linear.cpp:209
+#: src/synfig/valuenode_linear.cpp:212
 msgid "Rate"
 msgstr "Taux"
 
-#: src/synfig/valuenode_linear.cpp:212
+#: src/synfig/valuenode_linear.cpp:215
 msgid "Slope"
 msgstr "Pente"
 
-#: src/synfig/valuenode_radialcomposite.cpp:121
-#: src/synfig/valuenode_radialcomposite.cpp:137
-msgid "Bad type for radialcomposite"
-msgstr "Mauvais type de composé radial"
+#: src/synfig/valuenode_not.cpp:152
+msgid "NOT"
+msgstr "NON"
 
-#: src/synfig/valuenode_radialcomposite.cpp:199
-msgid "Theta"
-msgstr "Theta"
+#: src/synfig/valuenode_or.cpp:161
+msgid "OR"
+msgstr "OU"
 
-#: src/synfig/valuenode_radialcomposite.cpp:204
-msgid "Luma"
-msgstr "Luminance"
+#: src/synfig/valuenode_pow.cpp:122
+msgid "Base"
+msgstr "Base"
 
-#: src/synfig/valuenode_radialcomposite.cpp:206
-msgid "Saturation"
-msgstr "Saturation"
-
-#: src/synfig/valuenode_radialcomposite.cpp:208
-msgid "Hue"
-msgstr "Teinte"
-
-#: src/synfig/valuenode_range.cpp:118
-msgid "Some of my parameters aren't set!"
-msgstr "Certains de mes paramètres ne sont pas définis"
-
-#: src/synfig/valuenode_range.cpp:191
-msgid "Min"
-msgstr "Min"
-
-#: src/synfig/valuenode_range.cpp:192
-msgid "Max"
-msgstr "Max"
-
-#: src/synfig/valuenode_realstring.cpp:183
-msgid "Real"
-msgstr "Réel"
-
-#: src/synfig/valuenode_realstring.cpp:185
-msgid "Precision"
-msgstr "Précision"
-
-#: src/synfig/valuenode_realstring.cpp:186
-msgid "Zero Padded"
-msgstr "Compléter avec des zéros"
-
-#: src/synfig/valuenode_reciprocal.cpp:125
+#: src/synfig/valuenode_pow.cpp:124 src/synfig/valuenode_reciprocal.cpp:125
 msgid "Epsilon"
 msgstr "Epsilon"
 
-#: src/synfig/valuenode_reciprocal.cpp:126
+#: src/synfig/valuenode_pow.cpp:125 src/synfig/valuenode_reciprocal.cpp:126
 msgid "Infinite"
 msgstr "Infini"
 
-#: src/synfig/valuenode_repeat_gradient.cpp:184
+#: src/synfig/valuenode_radialcomposite.cpp:124
+#: src/synfig/valuenode_radialcomposite.cpp:140
+msgid "Bad type for radialcomposite"
+msgstr "Mauvais type de composé radial"
+
+#: src/synfig/valuenode_radialcomposite.cpp:202
+msgid "Theta"
+msgstr "Thêta"
+
+#: src/synfig/valuenode_radialcomposite.cpp:207
+msgid "Luma"
+msgstr "Luminance"
+
+#: src/synfig/valuenode_radialcomposite.cpp:209
+msgid "Saturation"
+msgstr "Saturation"
+
+#: src/synfig/valuenode_radialcomposite.cpp:211
+msgid "Hue"
+msgstr "Teinte"
+
+#: src/synfig/valuenode_range.cpp:121
+msgid "Some of my parameters aren't set!"
+msgstr "Certains de mes paramètres ne sont pas définis"
+
+#: src/synfig/valuenode_range.cpp:194
+msgid "Min"
+msgstr "Min"
+
+#: src/synfig/valuenode_range.cpp:195
+msgid "Max"
+msgstr "Max"
+
+#: src/synfig/valuenode_realstring.cpp:186
+msgid "Real"
+msgstr "Réel"
+
+#: src/synfig/valuenode_realstring.cpp:188
+msgid "Precision"
+msgstr "Précision"
+
+#: src/synfig/valuenode_realstring.cpp:189
+msgid "Zero Padded"
+msgstr "Complété avec des zéros"
+
+#: src/synfig/valuenode_repeat_gradient.cpp:187
 msgid "Count"
 msgstr "Nombre"
 
-#: src/synfig/valuenode_repeat_gradient.cpp:186
+#: src/synfig/valuenode_repeat_gradient.cpp:189
 msgid "Specify Start"
 msgstr "Définir le début"
 
-#: src/synfig/valuenode_repeat_gradient.cpp:187
+#: src/synfig/valuenode_repeat_gradient.cpp:190
 msgid "Specify End"
 msgstr "Définir la fin"
 
-#: src/synfig/valuenode_repeat_gradient.cpp:188
+#: src/synfig/valuenode_repeat_gradient.cpp:191
 msgid "Start Color"
 msgstr "Couleur de début"
 
-#: src/synfig/valuenode_repeat_gradient.cpp:189
+#: src/synfig/valuenode_repeat_gradient.cpp:192
 msgid "End Color"
 msgstr "Couleur de fin"
 
-#: src/synfig/valuenode_segcalctangent.cpp:159
-#: src/synfig/valuenode_segcalcvertex.cpp:157
+#: src/synfig/valuenode_scale.cpp:149 src/synfig/valuenode_scale.cpp:170
+msgid "Attempting to get the inverse of a non invertible Valuenode"
+msgstr "Tentative d'obtenir l'inverse d'un nœud de valeur non inversable"
+
+#: src/synfig/valuenode_segcalctangent.cpp:162
+#: src/synfig/valuenode_segcalcvertex.cpp:160
 msgid "Segment"
 msgstr "Segment"
 
-#: src/synfig/valuenode_step.cpp:215 src/tool/main.cpp:945
+#: src/synfig/valuenode_step.cpp:218 src/tool/main.cpp:944
 msgid "Start Time"
 msgstr "Heure de début"
 
-#: src/synfig/valuenode_step.cpp:216
+#: src/synfig/valuenode_step.cpp:219
 msgid "Intersection"
 msgstr "Intersection"
 
-#: src/synfig/valuenode_stripes.cpp:170
+#: src/synfig/valuenode_stripes.cpp:173
 msgid "Color 1"
 msgstr "Couleur 1"
 
-#: src/synfig/valuenode_stripes.cpp:172
+#: src/synfig/valuenode_stripes.cpp:175
 msgid "Color 2"
 msgstr "Couleur 2"
 
-#: src/synfig/valuenode_stripes.cpp:174
+#: src/synfig/valuenode_stripes.cpp:177
 msgid "Stripe Count"
 msgstr "Nombre de rayures"
 
-#: src/synfig/valuenode_timedswap.cpp:223
+#: src/synfig/valuenode_timedswap.cpp:226
 msgid "Swap Time"
 msgstr "Moment de l'échange"
 
-#: src/synfig/valuenode_timedswap.cpp:224
+#: src/synfig/valuenode_timedswap.cpp:227
 msgid "Swap Duration"
 msgstr "Durée de l'échange"
 
-#: src/synfig/valuenode_timestring.cpp:168
+#: src/synfig/valuenode_timestring.cpp:171
 msgid "Time"
 msgstr "Temps"
 
-#: src/synfig/valuenode_twotone.cpp:136
+#: src/synfig/valuenode_twotone.cpp:139
 msgid "Color1"
 msgstr "Couleur1"
 
-#: src/synfig/valuenode_twotone.cpp:138
+#: src/synfig/valuenode_twotone.cpp:141
 msgid "Color2"
 msgstr "Couleur2"
 
-#: src/tool/main.cpp:216
+#: src/tool/main.cpp:217
 msgid "Line"
 msgstr "Ligne"
 
-#: src/tool/main.cpp:216
+#: src/tool/main.cpp:217
 msgid " of "
 msgstr " de "
 
-#: src/tool/main.cpp:322
+#: src/tool/main.cpp:319
 msgid "syntax: "
 msgstr "syntaxe : "
 
-#: src/tool/main.cpp:325
-msgid "Print out usage and syntax info"
-msgstr "Afficher les informations d'utilisation et de syntaxe"
-
-#: src/tool/main.cpp:328
+#: src/tool/main.cpp:323
 msgid "Specify output target (Default:unknown)"
 msgstr "Définir la cible en sortie (Défaut : inconnue)"
 
-#: src/tool/main.cpp:329
+#: src/tool/main.cpp:324
 msgid "Set the image width (Use zero for file default)"
 msgstr ""
 "Définir la largeur de l'image (Utiliser zéro pour les valeurs par défaut du "
 "fichier)"
 
-#: src/tool/main.cpp:330
+#: src/tool/main.cpp:325
 msgid "Set the image height (Use zero for file default)"
 msgstr ""
 "Définir la hauteur de l'image (Utiliser zéro pour les valeurs par défaut du "
 "fichier)"
 
-#: src/tool/main.cpp:331
+#: src/tool/main.cpp:326
 msgid "Set the diagonal size of image window (Span)"
 msgstr "Définir la diagonale de la fenêtre d'image (Étendue)"
 
-#: src/tool/main.cpp:332
+#: src/tool/main.cpp:327
 msgid "Set antialias amount for parametric renderer."
-msgstr "Définir la valeur d'anticrénelage pour le moteur de rendu paramétrique."
+msgstr "Définir la valeur d'anti-crénelage pour le moteur de rendu paramétrique."
 
-#: src/tool/main.cpp:333
+#: src/tool/main.cpp:328
 #, c-format
 msgid "Specify image quality for accelerated renderer (default=%d)"
 msgstr "Définir la qualité d'image pour accélérer le rendu (défaut = %d )"
 
-#: src/tool/main.cpp:334
+#: src/tool/main.cpp:329
 msgid "Gamma (default=2.2)"
 msgstr "Gamma (défaut = 2.2)"
 
-#: src/tool/main.cpp:335
+#: src/tool/main.cpp:330
 msgid "Verbose Output (add more for more verbosity)"
 msgstr "Sortie verbeuse (en ajouter pour avoir une sortie encore plus détaillée)"
 
-#: src/tool/main.cpp:336
+#: src/tool/main.cpp:331
 msgid "Quiet mode (No progress/time-remaining display)"
-msgstr "Mode silencieux (Pas de barre de progression/de temps restant affiché)"
+msgstr "Mode silencieux (Pas de progression/temps restant affiché)"
 
-#: src/tool/main.cpp:337
+#: src/tool/main.cpp:332
 msgid "Render the canvas with the given id instead of the root."
 msgstr "Rendre le canevas avec l'identifiant donné au lieu de l'id racine."
 
-#: src/tool/main.cpp:338
+#: src/tool/main.cpp:333
 msgid "Specify output filename"
 msgstr "Spécifier le nom de fichier de sortie"
 
-#: src/tool/main.cpp:339
+#: src/tool/main.cpp:334
 msgid "Enable multithreaded renderer using specified # of threads"
 msgstr "Activer le rendu multiprocessus en utilisant le nombre donné de processus"
 
-#: src/tool/main.cpp:340
+#: src/tool/main.cpp:335
 msgid "Print Benchmarks"
 msgstr "Afficher les tests de performance"
 
-#: src/tool/main.cpp:341
+#: src/tool/main.cpp:336
 msgid "Set the frame rate"
 msgstr "Définir le nombre d'images par seconde"
 
-#: src/tool/main.cpp:342
+#: src/tool/main.cpp:337
 msgid "Render a single frame at <seconds>"
 msgstr "Rendre une seule image à un nombre de secondes <seconds>"
 
-#: src/tool/main.cpp:343 src/tool/main.cpp:344
+#: src/tool/main.cpp:338 src/tool/main.cpp:339
 msgid "Set the starting time"
 msgstr "Définir l'heure de début"
 
-#: src/tool/main.cpp:345
+#: src/tool/main.cpp:340
 msgid "Set the ending time"
 msgstr "Définir l'heure de fin"
 
-#: src/tool/main.cpp:346
+#: src/tool/main.cpp:341
 msgid "Set the physical resolution (dots-per-inch)"
 msgstr "Définir la résolution physique (points par pouce)"
 
-#: src/tool/main.cpp:347
+#: src/tool/main.cpp:342
 msgid "Set the physical X resolution (dots-per-inch)"
 msgstr "Définir la résolution physique X (points par pouce)"
 
-#: src/tool/main.cpp:348
+#: src/tool/main.cpp:343
 msgid "Set the physical Y resolution (dots-per-inch)"
 msgstr "Définir la résolution physique Y (points par pouce)"
 
-#: src/tool/main.cpp:350
+#: src/tool/main.cpp:345
 msgid "List the exported canvases in the composition"
 msgstr "Lister les canevas exportés dans la composition"
 
-#: src/tool/main.cpp:351
+#: src/tool/main.cpp:346
 msgid "Print out specified details of the root canvas"
 msgstr "Imprimer les détails spécifiés du canevas racine"
 
-#: src/tool/main.cpp:352
+#: src/tool/main.cpp:347
 msgid "Append layers in <filename> to composition"
 msgstr "Ajouter les calques de <filename> dans la composition"
 
-#: src/tool/main.cpp:354
+#: src/tool/main.cpp:349
 msgid "Print out layer's description, parameter info, etc."
-msgstr "Afficher les descriptions, infos des paramètres, etc. du calque"
+msgstr "Afficher les descriptions, info de paramètre, etc. du calque"
 
-#: src/tool/main.cpp:355
+#: src/tool/main.cpp:350
 msgid "Print out the list of available layers"
 msgstr "Afficher la liste des calques disponibles"
 
-#: src/tool/main.cpp:356
+#: src/tool/main.cpp:351
 msgid "Print out the list of available targets"
 msgstr "Afficher la liste des cibles disponibles"
 
-#: src/tool/main.cpp:357
+#: src/tool/main.cpp:352
 msgid "Print out the list of available importers"
 msgstr "Afficher la liste des importeurs disponibles"
 
-#: src/tool/main.cpp:358
+#: src/tool/main.cpp:353
 msgid "Print out the list of available ValueNodes"
 msgstr "Afficher la liste des nœuds de valeur disponibles"
 
-#: src/tool/main.cpp:359
+#: src/tool/main.cpp:354
 msgid "Print out the list of loaded modules"
 msgstr "Afficher la liste des modules chargés"
 
-#: src/tool/main.cpp:360
+#: src/tool/main.cpp:355
 msgid "Print out version information"
 msgstr "Afficher les informations de version"
 
-#: src/tool/main.cpp:361
+#: src/tool/main.cpp:356
 msgid "Print out misc build information"
-msgstr "Affichier diverses informations de compilation"
+msgstr "Afficher diverses informations de compilation"
 
-#: src/tool/main.cpp:362
+#: src/tool/main.cpp:357
 msgid "Print out license information"
 msgstr "Afficher les informations de licence"
 
-#: src/tool/main.cpp:365
+#: src/tool/main.cpp:360
 msgid "Test GUID generation"
 msgstr "Tester la génération de GUID"
 
-#: src/tool/main.cpp:366
+#: src/tool/main.cpp:361
 msgid "Test signal implementation"
 msgstr "Tester l'implémentation des signaux"
 
-#: src/tool/main.cpp:616
+#: src/tool/main.cpp:365
+msgid "Print out usage and syntax info"
+msgstr "Afficher les informations d'utilisation et de syntaxe"
+
+#: src/tool/main.cpp:615
 #, c-format
 msgid "Antialiasing set to %d, (%d samples per pixel)"
 msgstr "Anti-crénelage à %d (%d échantillons par pixel)"
 
-#: src/tool/main.cpp:624
+#: src/tool/main.cpp:623
 #, c-format
 msgid "Span set to %d units"
 msgstr "Étendue de l'image à %d unités"
 
-#: src/tool/main.cpp:634
+#: src/tool/main.cpp:633
 #, c-format
 msgid "Frame rate set to %d frames per second"
 msgstr "Nombre d'images par secondes défini à %d"
 
-#: src/tool/main.cpp:644
+#: src/tool/main.cpp:643
 #, c-format
 msgid "Physical resolution set to %f dpi"
 msgstr "Résolution physique à %f ppp"
 
-#: src/tool/main.cpp:654
+#: src/tool/main.cpp:653
 #, c-format
 msgid "Physical X resolution set to %f dpi"
 msgstr "Résolution physique X à %f ppp"
 
-#: src/tool/main.cpp:664
+#: src/tool/main.cpp:663
 #, c-format
 msgid "Physical Y resolution set to %f dpi"
 msgstr "Résolution physique Y à %f ppp"
 
-#: src/tool/main.cpp:685
+#: src/tool/main.cpp:684
 msgid "Rendering frame at "
 msgstr "Rendu de l'image à "
 
-#: src/tool/main.cpp:707
+#: src/tool/main.cpp:706
 #, c-format
 msgid "Resolution set to %dx%d"
 msgstr "Résolution à %dx%d"
 
-#: src/tool/main.cpp:724
+#: src/tool/main.cpp:723
 #, c-format
 msgid "Quality set to %d"
 msgstr "Qualité à %d"
 
-#: src/tool/main.cpp:744
+#: src/tool/main.cpp:743
 #, c-format
 msgid "Threads set to %d"
 msgstr "Processus (threads) à %d"
 
-#: src/tool/main.cpp:914
+#: src/tool/main.cpp:913
 msgid "Unrecognised canvas variable: "
 msgstr "Variable de canevas inconnue :"
 
-#: src/tool/main.cpp:915
+#: src/tool/main.cpp:914
 msgid "Recognized variables are:"
 msgstr "Les variables connues sont :"
 
-#: src/tool/main.cpp:951
+#: src/tool/main.cpp:950
 msgid "End Time"
 msgstr "Heure de fin"
 
-#: src/tool/main.cpp:957
+#: src/tool/main.cpp:956
 msgid "Frame Rate"
 msgstr "Images par seconde"
 
-#: src/tool/main.cpp:963
+#: src/tool/main.cpp:962
 msgid "Start Frame"
 msgstr "Image de début"
 
-#: src/tool/main.cpp:969
+#: src/tool/main.cpp:968
 msgid "End Frame"
 msgstr "Image de fin"
 
-#: src/tool/main.cpp:990
+#: src/tool/main.cpp:989
 msgid "Image Aspect Ratio"
 msgstr "Ratio d'aspect d'image"
 
-#: src/tool/main.cpp:999
+#: src/tool/main.cpp:998
 msgid "Pixel Width"
 msgstr "Largeur de pixel"
 
-#: src/tool/main.cpp:1005
+#: src/tool/main.cpp:1004
 msgid "Pixel Height"
 msgstr "Hauteur de pixel"
 
-#: src/tool/main.cpp:1011
+#: src/tool/main.cpp:1010
 msgid "Pixel Aspect Ratio"
 msgstr "Ratio d'aspect des pixels"
 
-#: src/tool/main.cpp:1020
+#: src/tool/main.cpp:1019
 msgid "Top Left"
 msgstr "Haut-Gauche"
 
-#: src/tool/main.cpp:1027
+#: src/tool/main.cpp:1026
 msgid "Bottom Right"
 msgstr "Bas-Droite"
 
-#: src/tool/main.cpp:1034
+#: src/tool/main.cpp:1033
 msgid "Physical Width"
 msgstr "Largeur physique"
 
-#: src/tool/main.cpp:1040
+#: src/tool/main.cpp:1039
 msgid "Physical Height"
 msgstr "Hauteur physique"
 
-#: src/tool/main.cpp:1046
+#: src/tool/main.cpp:1045
 msgid "X Resolution"
 msgstr "Résolution X"
 
-#: src/tool/main.cpp:1052
+#: src/tool/main.cpp:1051
 msgid "Y Resolution"
 msgstr "Résolution Y"
 
-#: src/tool/main.cpp:1058
+#: src/tool/main.cpp:1057
 msgid "Diagonal Image Span"
 msgstr "Étendue de l'image (Diagonale)"
 
-#: src/tool/main.cpp:1067
+#: src/tool/main.cpp:1066
 msgid "Interlaced"
 msgstr "Entrelacé"
 
-#: src/tool/main.cpp:1073
+#: src/tool/main.cpp:1072
 msgid "Antialias"
 msgstr "Anti-crénelage"
 
-#: src/tool/main.cpp:1085
+#: src/tool/main.cpp:1084
 msgid "Flags"
 msgstr "Drapeaux"
 
-#: src/tool/main.cpp:1091
+#: src/tool/main.cpp:1090
 msgid "Focus"
 msgstr "Centre"
 
-#: src/tool/main.cpp:1098
+#: src/tool/main.cpp:1097
 msgid "Background Color"
 msgstr "Couleur de fond"
 
-#: src/tool/main.cpp:1108
+#: src/tool/main.cpp:1107
 msgid "Metadata"
 msgstr "Métadonnée"
 
@@ -3077,76 +3181,84 @@ msgstr "Erreur Fatale : Incompatibilité avec la version de Synfig"
 msgid "verbosity set to "
 msgstr "Verbosité à "
 
-#: src/tool/main.cpp:1182 src/tool/main.cpp:1206 src/tool/main.cpp:1214
-#: src/tool/main.cpp:1315 src/tool/main.cpp:1341
+#: src/tool/main.cpp:1189
+msgid "Unable to load '"
+msgstr "Impossible de charger ' "
+
+#: src/tool/main.cpp:1190 src/tool/main.cpp:1215 src/tool/main.cpp:1223
+#: src/tool/main.cpp:1328 src/tool/main.cpp:1354
 msgid "Throwing out job..."
 msgstr "Rejet du job ..."
 
-#: src/tool/main.cpp:1205
+#: src/tool/main.cpp:1214
 msgid "Unable to find canvas with ID \""
 msgstr "Impossible de trouver le canevas ayant l'ID \""
 
-#: src/tool/main.cpp:1205 src/tool/main.cpp:1213
+#: src/tool/main.cpp:1214 src/tool/main.cpp:1222
 msgid "\" in "
 msgstr "\" dans "
 
-#: src/tool/main.cpp:1213
+#: src/tool/main.cpp:1222
 msgid "Invalid canvas name \""
-msgstr "Nom de canevas invalide  \""
+msgstr "Nom de canevas invalide \""
 
-#: src/tool/main.cpp:1227
+#: src/tool/main.cpp:1236
 msgid "Quality set to "
 msgstr "Qualité à "
 
-#: src/tool/main.cpp:1247
+#: src/tool/main.cpp:1250
+msgid "Unable to append '"
+msgstr "Impossible d'ajouter ' "
+
+#: src/tool/main.cpp:1260
 msgid "Appended contents of "
 msgstr "Ajout des contenus de "
 
-#: src/tool/main.cpp:1251
+#: src/tool/main.cpp:1264
 msgid "Attempting to determine target/outfile..."
 msgstr "Tentative de déterminer le type de cible/fichier de sortie ..."
 
-#: src/tool/main.cpp:1257
+#: src/tool/main.cpp:1270
 msgid "Target name undefined, attempting to figure it out"
 msgstr "Nom de cible non défini, tentative pour le déterminer"
 
-#: src/tool/main.cpp:1286
+#: src/tool/main.cpp:1299
 msgid "Defaulting to PNG target..."
 msgstr "Passage par défaut à la cible PNG ..."
 
-#: src/tool/main.cpp:1305
+#: src/tool/main.cpp:1318
 msgid "Creating the target..."
 msgstr "Création de la cible ..."
 
-#: src/tool/main.cpp:1314
+#: src/tool/main.cpp:1327
 msgid "Unknown target for "
 msgstr "Cible inconnue pour "
 
-#: src/tool/main.cpp:1325
+#: src/tool/main.cpp:1338
 msgid "Setting the canvas on the target..."
 msgstr "Définition du canevas de la cible ..."
 
-#: src/tool/main.cpp:1327
+#: src/tool/main.cpp:1340
 msgid "Setting the quality of the target..."
 msgstr "Définition de la qualité de la cible ..."
 
-#: src/tool/main.cpp:1337
+#: src/tool/main.cpp:1350
 msgid "Unidentified arguments for "
 msgstr "Paramètres inconnus pour "
 
-#: src/tool/main.cpp:1350
+#: src/tool/main.cpp:1363
 msgid "Unidentified arguments:"
 msgstr "Paramètres inconnus :"
 
-#: src/tool/main.cpp:1359
+#: src/tool/main.cpp:1372
 msgid "Nothing to do!"
 msgstr "Rien à faire."
 
-#: src/tool/main.cpp:1402
+#: src/tool/main.cpp:1415
 msgid "Rendering..."
 msgstr "Rendu en cours ..."
 
-#: src/tool/main.cpp:1418
+#: src/tool/main.cpp:1431
 msgid "Done."
 msgstr "Fini."
 
