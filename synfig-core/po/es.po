@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: es\n"
 "Report-Msgid-Bugs-To: http://synfig.org/Bugs\n"
-"POT-Creation-Date: 2009-08-24 16:18+0200\n"
-"PO-Revision-Date: 2009-09-03 16:29+0200\n"
+"POT-Creation-Date: 2009-09-29 16:01+0200\n"
+"PO-Revision-Date: 2009-09-29 16:09+0200\n"
 "Last-Translator: Carlos López González <carloslopezgonzalez@yahoo.es>\n"
 "Language-Team: Español <es@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -18,6 +18,124 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: KBabel 1.11.4\n"
+
+#: src/modules/example/filledrect.cpp:57
+msgid "Filled Rectangle"
+msgstr "Rectángulo Relleno"
+
+#: src/modules/example/filledrect.cpp:58 src/modules/example/metaballs.cpp:57
+#: src/modules/example/simplecircle.cpp:57
+msgid "Example"
+msgstr "Ejemplo"
+
+#: src/modules/example/filledrect.cpp:117
+#: src/modules/example/simplecircle.cpp:104
+#: src/modules/lyr_freetype/lyr_freetype.cpp:513
+#: src/modules/lyr_std/shade.cpp:375
+#: src/modules/mod_geometry/checkerboard.cpp:121
+#: src/modules/mod_geometry/circle.cpp:125
+#: src/modules/mod_geometry/rectangle.cpp:122 src/synfig/layer_shape.cpp:1192
+#: src/synfig/layer_solidcolor.cpp:99
+msgid "Color"
+msgstr "Color"
+
+#: src/modules/example/filledrect.cpp:121
+#: src/modules/mod_geometry/rectangle.cpp:126
+#: src/modules/mod_gradient/lineargradient.cpp:184
+msgid "Point 1"
+msgstr "Punto 1"
+
+#: src/modules/example/filledrect.cpp:126
+#: src/modules/mod_geometry/rectangle.cpp:131
+#: src/modules/mod_gradient/lineargradient.cpp:188
+msgid "Point 2"
+msgstr "Punto 2"
+
+#: src/modules/example/filledrect.cpp:130
+msgid "Feather X"
+msgstr "Desvanecimiento X"
+
+#: src/modules/example/filledrect.cpp:134
+msgid "Feather Y"
+msgstr "Desvanecimiento Y"
+
+#: src/modules/example/filledrect.cpp:138 src/modules/lyr_std/bevel.cpp:67
+msgid "Bevel"
+msgstr "Bisel"
+
+#: src/modules/example/filledrect.cpp:142
+msgid "Keep Bevel Circular"
+msgstr "Mantener bisel circular"
+
+#: src/modules/example/metaballs.cpp:56
+msgid "Metaballs"
+msgstr "Metabolas"
+
+#: src/modules/example/metaballs.cpp:132
+#: src/modules/mod_gradient/conicalgradient.cpp:106
+#: src/modules/mod_gradient/curvegradient.cpp:546
+#: src/modules/mod_gradient/lineargradient.cpp:191
+#: src/modules/mod_gradient/radialgradient.cpp:110
+#: src/modules/mod_gradient/spiralgradient.cpp:109
+#: src/modules/mod_noise/noise.cpp:250 src/modules/mod_particle/plant.cpp:394
+#: src/synfig/valuenode_gradientrotate.cpp:149
+#: src/synfig/valuenode_repeat_gradient.cpp:186
+msgid "Gradient"
+msgstr "Gradiente"
+
+#: src/modules/example/metaballs.cpp:136 src/modules/mod_geometry/star.cpp:194
+#: src/synfig/distance.cpp:248
+msgid "Points"
+msgstr "Puntos"
+
+#: src/modules/example/metaballs.cpp:140
+msgid "Radii"
+msgstr "Radios"
+
+#: src/modules/example/metaballs.cpp:144
+msgid "Weights"
+msgstr "Pesos"
+
+#: src/modules/example/metaballs.cpp:148
+msgid "Gradient Left"
+msgstr "Gradiente Izquierda"
+
+#: src/modules/example/metaballs.cpp:152
+msgid "Gradient Right"
+msgstr "Gradiente Derecha"
+
+#: src/modules/example/metaballs.cpp:156
+msgid "Positive Only"
+msgstr "Sólo Positivo"
+
+#: src/modules/example/simplecircle.cpp:56
+msgid "Simple Circle"
+msgstr "Círculo Simple"
+
+#: src/modules/example/simplecircle.cpp:108
+#: src/modules/lyr_std/stretch.cpp:108 src/modules/lyr_std/twirl.cpp:109
+#: src/modules/lyr_std/zoom.cpp:101
+#: src/modules/mod_gradient/conicalgradient.cpp:110
+#: src/modules/mod_gradient/radialgradient.cpp:114
+#: src/modules/mod_gradient/spiralgradient.cpp:113
+msgid "Center"
+msgstr "Centro"
+
+#: src/modules/example/simplecircle.cpp:112
+#: src/modules/lyr_std/sphere_distort.cpp:147
+#: src/modules/lyr_std/twirl.cpp:113 src/modules/mod_geometry/circle.cpp:128
+#: src/modules/mod_gradient/radialgradient.cpp:118
+#: src/modules/mod_gradient/spiralgradient.cpp:117
+#: src/modules/mod_noise/valuenode_random.cpp:250
+#: src/synfig/valuenode_radialcomposite.cpp:200
+msgid "Radius"
+msgstr "Radio"
+
+#: src/modules/example/simplecircle.cpp:113 src/modules/lyr_std/twirl.cpp:114
+#: src/modules/mod_gradient/radialgradient.cpp:119
+#: src/modules/mod_gradient/spiralgradient.cpp:118
+msgid "This is the radius of the circle"
+msgstr "Este es el radio del círculo"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:63
 #: src/modules/lyr_freetype/lyr_freetype.cpp:507
@@ -47,15 +165,6 @@ msgstr "juego de fuentes vacio"
 #: src/modules/lyr_freetype/lyr_freetype.cpp:508
 msgid "Text to Render"
 msgstr "Texto para Mostrar"
-
-#: src/modules/lyr_freetype/lyr_freetype.cpp:513
-#: src/modules/lyr_std/shade.cpp:375
-#: src/modules/mod_geometry/checkerboard.cpp:121
-#: src/modules/mod_geometry/circle.cpp:125
-#: src/modules/mod_geometry/rectangle.cpp:122 src/synfig/layer_shape.cpp:1192
-#: src/synfig/layer_solidcolor.cpp:99
-msgid "Color"
-msgstr "Color"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:514
 msgid "Color of the text"
@@ -209,10 +318,6 @@ msgstr "Secuencia multibye inválida - se ha establecido el lenguaje local?\n"
 #: src/modules/lyr_freetype/lyr_freetype.cpp:744
 msgid "Can't parse multibyte character.\n"
 msgstr "No puedo traducir carácter multibyte.\n"
-
-#: src/modules/lyr_std/bevel.cpp:67
-msgid "Bevel"
-msgstr "Bisel"
 
 #: src/modules/lyr_std/bevel.cpp:68 src/modules/lyr_std/shade.cpp:67
 msgid "Stylize"
@@ -552,15 +657,6 @@ msgstr "Esferizar"
 msgid "Position"
 msgstr "Posición"
 
-#: src/modules/lyr_std/sphere_distort.cpp:147
-#: src/modules/lyr_std/twirl.cpp:113 src/modules/mod_geometry/circle.cpp:128
-#: src/modules/mod_gradient/radialgradient.cpp:118
-#: src/modules/mod_gradient/spiralgradient.cpp:117
-#: src/modules/mod_noise/valuenode_random.cpp:250
-#: src/synfig/valuenode_radialcomposite.cpp:200
-msgid "Radius"
-msgstr "Radio"
-
 #: src/modules/lyr_std/sphere_distort.cpp:158 src/modules/lyr_std/warp.cpp:400
 msgid "Clip"
 msgstr "Recortar"
@@ -584,14 +680,6 @@ msgstr "Barra Horizontal"
 #: src/modules/lyr_std/stretch.cpp:58
 msgid "Stretch"
 msgstr "Encoger"
-
-#: src/modules/lyr_std/stretch.cpp:108 src/modules/lyr_std/twirl.cpp:109
-#: src/modules/lyr_std/zoom.cpp:101
-#: src/modules/mod_gradient/conicalgradient.cpp:110
-#: src/modules/mod_gradient/radialgradient.cpp:114
-#: src/modules/mod_gradient/spiralgradient.cpp:113
-msgid "Center"
-msgstr "Centro"
 
 #: src/modules/lyr_std/supersample.cpp:55
 msgid "Super Sample"
@@ -667,12 +755,6 @@ msgstr "Trasladar"
 #: src/modules/lyr_std/twirl.cpp:55
 msgid "Twirl"
 msgstr "Torbellino"
-
-#: src/modules/lyr_std/twirl.cpp:114
-#: src/modules/mod_gradient/radialgradient.cpp:119
-#: src/modules/mod_gradient/spiralgradient.cpp:118
-msgid "This is the radius of the circle"
-msgstr "Este es el radio del círculo"
 
 #: src/modules/lyr_std/twirl.cpp:120
 msgid "Rotations"
@@ -1049,16 +1131,6 @@ msgstr "Homogeneo"
 msgid "Rectangle"
 msgstr "Rectángulo"
 
-#: src/modules/mod_geometry/rectangle.cpp:126
-#: src/modules/mod_gradient/lineargradient.cpp:184
-msgid "Point 1"
-msgstr "Punto 1"
-
-#: src/modules/mod_geometry/rectangle.cpp:131
-#: src/modules/mod_gradient/lineargradient.cpp:188
-msgid "Point 2"
-msgstr "Punto 2"
-
 #: src/modules/mod_geometry/rectangle.cpp:136
 msgid "Expand amount"
 msgstr "Cantidad de expansión"
@@ -1102,10 +1174,6 @@ msgstr "Ángulo"
 msgid "The orientation of the star"
 msgstr "La orientación de la estrella"
 
-#: src/modules/mod_geometry/star.cpp:194 src/synfig/distance.cpp:248
-msgid "Points"
-msgstr "Puntos"
-
 #: src/modules/mod_geometry/star.cpp:195
 msgid "The number of points in the star"
 msgstr "El número de puntos de la estrella"
@@ -1139,17 +1207,6 @@ msgstr "Gradiente Cónico"
 #: src/modules/mod_noise/noise.cpp:57
 msgid "Gradients"
 msgstr "Gradientes"
-
-#: src/modules/mod_gradient/conicalgradient.cpp:106
-#: src/modules/mod_gradient/curvegradient.cpp:546
-#: src/modules/mod_gradient/lineargradient.cpp:191
-#: src/modules/mod_gradient/radialgradient.cpp:110
-#: src/modules/mod_gradient/spiralgradient.cpp:109
-#: src/modules/mod_noise/noise.cpp:250 src/modules/mod_particle/plant.cpp:394
-#: src/synfig/valuenode_gradientrotate.cpp:149
-#: src/synfig/valuenode_repeat_gradient.cpp:186
-msgid "Gradient"
-msgstr "Gradiente"
 
 #: src/modules/mod_gradient/curvegradient.cpp:59
 msgid "Curve Gradient"
