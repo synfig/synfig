@@ -225,9 +225,9 @@ Action::KeyframeSetDelta::undo()
 
 //	Time location(keyframe.get_time());
 	Time location(get_canvas()->keyframe_list().find(keyframe)->get_time());
-	Time delta(-delta);
+	Time delta2(-delta);
 
-	get_canvas()->keyframe_list().insert_time(location,delta);
+	get_canvas()->keyframe_list().insert_time(location,delta2);
 
 	std::vector<synfigapp::ValueDesc>::iterator iter;
 	for(iter=value_desc_list.begin();iter!=value_desc_list.end();++iter)
@@ -240,7 +240,7 @@ Action::KeyframeSetDelta::undo()
 		);
 		if(animated)
 		{
-			animated->insert_time(location,delta);
+			animated->insert_time(location,delta2);
 			continue;
 		}
 		ValueNode_DynamicList::Handle dyn_list(
@@ -248,7 +248,7 @@ Action::KeyframeSetDelta::undo()
 		);
 		if(dyn_list)
 		{
-			dyn_list->insert_time(location,delta);
+			dyn_list->insert_time(location,delta2);
 			continue;
 		}
 	}
