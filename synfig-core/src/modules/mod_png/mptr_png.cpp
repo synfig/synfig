@@ -334,7 +334,7 @@ png_mptr::png_mptr(const char *file_name)
 
 	trim = false;
 
-	if (getenv("SYNFIG_DISABLE_CROP_IMPORTED_IMAGES"))
+	//if (getenv("SYNFIG_DISABLE_CROP_IMPORTED_IMAGES"))
 		return;
 
 	switch(color_type)
