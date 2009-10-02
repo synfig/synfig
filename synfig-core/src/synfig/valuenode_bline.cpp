@@ -445,7 +445,8 @@ ValueNode_BLine::create_list_entry(int index, Time time, Real origin)
 	return ret;
 }
 
-static int instance_count;
+// Remove this variable because it is not used.
+//static int instance_count;
 
 ValueBase
 ValueNode_BLine::operator()(Time t)const
