@@ -684,10 +684,10 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 	//keyframe_tree_store_	(KeyframeTreeStore::create(canvas_interface_)),
 	time_adjustment_		(0,0,25,0,0,0),
 	time_window_adjustment_	(0,0,25,0,0,0),
+	statusbar				(manage(new class Gtk::Statusbar())),
 	quality_adjustment_		(8,1,10,1,1,0),
 	future_onion_adjustment_ (0,0,2,1,1,0),
 	past_onion_adjustment_  (0,0,2,1,1,0),
-	statusbar				(manage(new class Gtk::Statusbar())),
 
 	timeslider				(new Widget_Timeslider),
 	widget_kf_list			(new Widget_Keyframe_List),
