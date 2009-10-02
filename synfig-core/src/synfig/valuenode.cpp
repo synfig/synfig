@@ -185,12 +185,12 @@ ValueNode::subsys_init()
 	ADD_VALUENODE(ValueNode_IntString,		  "intstring",		  _("Int String"),		 RELEASE_VERSION_0_61_09); // SVN r2010
 	ADD_VALUENODE(ValueNode_Logarithm,		  "logarithm",		  _("Logarithm"),		 RELEASE_VERSION_0_61_09); // SVN r2034
 
-	ADD_VALUENODE(ValueNode_Greyed,			  "greyed",			  _("Greyed"),			 RELEASE_VERSION_0_61_10); // SVN r2305
-	ADD_VALUENODE(ValueNode_Pow,		      "power",		      _("Power"),		     RELEASE_VERSION_0_61_10); // SVN r2362
-	ADD_VALUENODE(ValueNode_Compare,		  "compare",  	 	  _("Compare"),			 RELEASE_VERSION_0_61_10); // SVN r2364
-	ADD_VALUENODE(ValueNode_Not,		      "not",			  _("Not"),				 RELEASE_VERSION_0_61_10); // SVN r2364
-	ADD_VALUENODE(ValueNode_And,		      "and",			  _("And"),				 RELEASE_VERSION_0_61_10); // SVN r2364
-	ADD_VALUENODE(ValueNode_Or,		          "or",			  _("Or"),					 RELEASE_VERSION_0_61_10); // SVN r2364
+	ADD_VALUENODE(ValueNode_Greyed,			  "greyed",			  _("Greyed"),			 RELEASE_VERSION_0_62_00); // SVN r2305
+	ADD_VALUENODE(ValueNode_Pow,		      "power",		      _("Power"),		     RELEASE_VERSION_0_62_00); // SVN r2362
+	ADD_VALUENODE(ValueNode_Compare,		  "compare",  	 	  _("Compare"),			 RELEASE_VERSION_0_62_00); // SVN r2364
+	ADD_VALUENODE(ValueNode_Not,		      "not",			  _("Not"),				 RELEASE_VERSION_0_62_00); // SVN r2364
+	ADD_VALUENODE(ValueNode_And,		      "and",			  _("And"),				 RELEASE_VERSION_0_62_00); // SVN r2364
+	ADD_VALUENODE(ValueNode_Or,		          "or",			  _("Or"),					 RELEASE_VERSION_0_62_00); // SVN r2364
 
 #undef ADD_VALUENODE
 #undef ADD_VALUENODE2
