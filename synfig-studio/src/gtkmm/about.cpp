@@ -128,18 +128,20 @@ About::About()
 #endif
 
 	std::vector<Glib::ustring> authors;
-	authors.push_back("Original developers:");
+	authors.push_back(_("Original developers:"));
 	authors.push_back("");
 	authors.push_back("Robert B. Quattlebaum Jr (darco)");
 	authors.push_back("Adrian Bentley");
 	authors.push_back("");
-	authors.push_back("Contributors:");
+	authors.push_back(_("Contributors:"));
 	authors.push_back("");
 	authors.push_back("Adrian Winchell (SnapSilverlight)");
 	authors.push_back("Andreas Jochens");
 	authors.push_back("Carlos López González (genete)");
+	authors.push_back("Carlos A. Sosa Navarro");
 	authors.push_back("Chris Moore (dooglus)");
 	authors.push_back("Chris Norman (pixelgeek)");
+	authors.push_back("Cyril Brulebois (KiBi)");
 	authors.push_back("Daniel Fort");
 	authors.push_back("Daniel Hornung (rubikcube)");
 	authors.push_back("David Roden (Bombe)");
@@ -148,11 +150,13 @@ About::About()
 	authors.push_back("Gerald Young (Yoyobuae)");
 	authors.push_back("Gerco Ballintijn");
 	authors.push_back("IL'dar AKHmetgaleev (AkhIL)");
+	authors.push_back("Konstantin Dmitriev (zelgadis)");
 	authors.push_back("Luka Pravica");
 	authors.push_back("Martin Michlmayr (tbm)");
 	authors.push_back("Miguel Gea Milvaques (xerakko)");
 	authors.push_back("Paul Wise (pabs)");
 	authors.push_back("Ralf Corsepius");
+	authors.push_back("Timo Paulssen (timonator)");
 	authors.push_back("Yue Shi Lai");
 	set_authors(authors);
 
@@ -163,6 +167,9 @@ About::About()
 	artists.push_back("Chris Norman (pixelgeek)");
 	artists.push_back("Daniel Hornung (rubikcube)");
 	artists.push_back("Franco Iacomella (Yaco)");
+	artists.push_back("Gerald Young (Yoyobuae)");
+	artists.push_back("David Rylander (rylleman)");
+	artists.push_back("Henrique Lopes Barone");
 
 	set_artists(artists);
 
