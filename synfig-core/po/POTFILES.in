@@ -43,6 +43,8 @@ src/modules/lyr_std/twirl.cpp
 src/modules/lyr_std/twirl.h
 src/modules/lyr_std/warp.cpp
 src/modules/lyr_std/warp.h
+src/modules/lyr_std/curvewarp.cpp
+src/modules/lyr_std/curvewarp.h
 src/modules/lyr_std/xorpattern.cpp
 src/modules/lyr_std/xorpattern.h
 src/modules/lyr_std/zoom.cpp
