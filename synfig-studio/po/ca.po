@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ca\n"
 "Report-Msgid-Bugs-To: http://synfig.org/Bugs\n"
-"POT-Creation-Date: 2008-09-02 21:03+0200\n"
+"POT-Creation-Date: 2009-10-03 13:24-0700\n"
 "PO-Revision-Date: 2008-03-10 01:16+0100\n"
 "Last-Translator: Miguel Gea Milvaques <xerakko@debian.org>\n"
 "Language-Team: catalan <ca@li.org>\n"
@@ -34,12 +34,21 @@ msgstr ""
 "Robert B. Quattlebaum Jr.,\n"
 "Adrian Bentley i els contribuïdors  de Synfig"
 
+#: src/gtkmm/about.cpp:131
+msgid "Original developers:"
+msgstr ""
+
+#: src/gtkmm/about.cpp:136
+#, fuzzy
+msgid "Contributors:"
+msgstr "Continuïtat:"
+
 #. TRANSLATORS: change this to your name, separate multiple names with \n
-#: src/gtkmm/about.cpp:165
+#: src/gtkmm/about.cpp:177
 msgid "translator-credits"
 msgstr "Miguel Gea Milvaques (xerakko)"
 
-#: src/gtkmm/about.cpp:192
+#: src/gtkmm/about.cpp:204
 #, c-format
 msgid ""
 "\n"
@@ -50,484 +59,499 @@ msgstr ""
 "Versió de desenvolupament:\n"
 "%s \n"
 
-#: src/gtkmm/about.cpp:197
+#: src/gtkmm/about.cpp:209
 #, c-format
 msgid "Built on %s\n"
 msgstr "Contruït el %s\n"
 
-#: src/gtkmm/about.cpp:201
+#: src/gtkmm/about.cpp:213
 msgid "Built with:\n"
 msgstr "Construït amb: \n"
 
-#: src/gtkmm/about.cpp:202
+#: src/gtkmm/about.cpp:214
 #, c-format
 msgid "ETL %s\n"
 msgstr "ETL %s\n"
 
-#: src/gtkmm/about.cpp:203
+#: src/gtkmm/about.cpp:215
 #, c-format
 msgid "Synfig API %s\n"
 msgstr "Synfig API %s\n"
 
-#: src/gtkmm/about.cpp:204
+#: src/gtkmm/about.cpp:216
 #, c-format
 msgid "Synfig library %d\n"
 msgstr "Biblioteca Synfig %d\n"
 
-#: src/gtkmm/about.cpp:205
+#: src/gtkmm/about.cpp:217
 #, c-format
 msgid "GTK+ %d.%d.%d\n"
 msgstr "GTK+ %d.%d.%d\n"
 
-#: src/gtkmm/about.cpp:207
+#: src/gtkmm/about.cpp:219
 #, c-format
 msgid "GNU G++ %d.%d.%d\n"
 msgstr "GNU G++ %d.%d.%d\n"
 
-#: src/gtkmm/about.cpp:212
+#: src/gtkmm/about.cpp:224
 msgid "Using:\n"
 msgstr "Usant:\n"
 
-#: src/gtkmm/about.cpp:213
+#: src/gtkmm/about.cpp:225
 #, c-format
 msgid "Synfig %s\n"
 msgstr "Synfig %s\n"
 
-#: src/gtkmm/about.cpp:214
+#: src/gtkmm/about.cpp:226
 #, c-format
 msgid "GTK+ %d.%d.%d"
 msgstr "GTK+ %d.%d.%d"
 
-#: src/gtkmm/app.cpp:616 src/gtkmm/toolbox.cpp:281
+#: src/gtkmm/app.cpp:733 src/gtkmm/toolbox.cpp:282
 msgid "_File"
 msgstr "_Arxiu"
 
-#: src/gtkmm/app.cpp:617 src/gtkmm/canvasview.cpp:3320
+#: src/gtkmm/app.cpp:734 src/gtkmm/canvasview.cpp:3740
 msgid "_Edit"
 msgstr "_Edita"
 
-#: src/gtkmm/app.cpp:618
+#: src/gtkmm/app.cpp:735
 msgid "_View"
 msgstr "_Veure"
 
-#: src/gtkmm/app.cpp:619
+#: src/gtkmm/app.cpp:736
 msgid "_Canvas"
 msgstr "_Llenç"
 
-#: src/gtkmm/app.cpp:620
+#: src/gtkmm/app.cpp:737
 msgid "_Layer"
 msgstr "_Capa"
 
-#: src/gtkmm/app.cpp:621
+#: src/gtkmm/app.cpp:738
 msgid "Show/Hide Ducks"
 msgstr "Mostrar/Ocultar Ànecs"
 
-#: src/gtkmm/app.cpp:622
+#: src/gtkmm/app.cpp:739
 msgid "Preview Quality"
 msgstr "Qualitat de la previsualització"
 
-#: src/gtkmm/app.cpp:623
+#: src/gtkmm/app.cpp:740
 msgid "Low-Res Pixel Size"
 msgstr "Grandària de píxel de baixa resolució"
 
-#: src/gtkmm/app.cpp:624 src/gtkmm/canvasview.cpp:2265
+#: src/gtkmm/app.cpp:741 src/gtkmm/canvasview.cpp:2529
 #: src/synfigapp/actions/layeradd.cpp:82
 msgid "New Layer"
 msgstr "Nova Capa"
 
-#: src/gtkmm/app.cpp:625 src/synfigapp/actions/keyframeduplicate.cpp:79
+#: src/gtkmm/app.cpp:742 src/synfigapp/actions/keyframeduplicate.cpp:79
 #: src/synfigapp/actions/keyframeremove.cpp:78
 #: src/synfigapp/actions/keyframesetdelta.cpp:79
 #: src/synfigapp/actions/keyframewaypointset.cpp:78
 msgid "Keyframe"
 msgstr "Fotograma Clau"
 
-#: src/gtkmm/app.cpp:626 src/gtkmm/iconcontroller.cpp:163
+#: src/gtkmm/app.cpp:743 src/gtkmm/iconcontroller.cpp:166
 #: src/synfigapp/actions/groupaddlayers.cpp:78
 #: src/synfigapp/actions/groupremove.cpp:72
 msgid "Group"
 msgstr "Grup"
 
-#: src/gtkmm/app.cpp:627
-msgid "State"
-msgstr "Estat"
+#: src/gtkmm/app.cpp:744
+#, fuzzy
+msgid "Tool"
+msgstr "Booleà"
 
-#: src/gtkmm/app.cpp:628
+#: src/gtkmm/app.cpp:745
 msgid "Toolbox"
 msgstr "Caixa d'Eines"
 
-#: src/gtkmm/app.cpp:645 src/gtkmm/keyframeactionmanager.cpp:239
+#: src/gtkmm/app.cpp:762 src/gtkmm/keyframeactionmanager.cpp:239
 msgid "Keyframe Properties"
 msgstr "Propietats del fotograma clau"
 
-#: src/gtkmm/app.cpp:656 src/gtkmm/canvasview.cpp:1206
+#: src/gtkmm/app.cpp:773 src/gtkmm/canvasview.cpp:1458
 msgid "Import"
 msgstr "Importa"
 
-#: src/gtkmm/app.cpp:657 src/gtkmm/canvasview.cpp:1209
+#: src/gtkmm/app.cpp:774 src/gtkmm/canvasview.cpp:1461
 msgid "Render"
 msgstr "Mostra"
 
-#: src/gtkmm/app.cpp:658 src/gtkmm/canvasview.cpp:1212
+#: src/gtkmm/app.cpp:775 src/gtkmm/canvasview.cpp:1464
 #: src/gtkmm/dialog_preview.cpp:171
 msgid "Preview"
 msgstr "Previsualiza"
 
-#: src/gtkmm/app.cpp:659
+#: src/gtkmm/app.cpp:776
 msgid "Preview Dialog"
 msgstr "Diàleg de Previsualització"
 
-#: src/gtkmm/app.cpp:660 src/gtkmm/canvasview.cpp:1215
+#: src/gtkmm/app.cpp:777 src/gtkmm/canvasview.cpp:1467
 msgid "Sound File"
 msgstr "Arxiu de So"
 
-#: src/gtkmm/app.cpp:661 src/gtkmm/canvasoptions.cpp:151
-#: src/gtkmm/canvasview.cpp:1218
+#: src/gtkmm/app.cpp:778 src/gtkmm/canvasoptions.cpp:151
+#: src/gtkmm/canvasview.cpp:1470
 msgid "Options"
 msgstr "Opcions"
 
-#: src/gtkmm/app.cpp:662
+#: src/gtkmm/app.cpp:779
 msgid "Close View"
 msgstr "Tanca vista"
 
-#: src/gtkmm/app.cpp:663 src/gtkmm/canvasview.cpp:1224
+#: src/gtkmm/app.cpp:780 src/gtkmm/canvasview.cpp:1476
 msgid "Close Document"
 msgstr "Tanca document"
 
-#: src/gtkmm/app.cpp:672 src/gtkmm/canvasview.cpp:1239
+#: src/gtkmm/app.cpp:789 src/gtkmm/canvasview.cpp:1491
 msgid "Select All Ducks"
 msgstr "Selecciona tots els ànecs"
 
-#: src/gtkmm/app.cpp:673 src/gtkmm/canvasview.cpp:1243
+#: src/gtkmm/app.cpp:790 src/gtkmm/canvasview.cpp:1495
 #, fuzzy
 msgid "Unselect All Ducks"
 msgstr "Selecciona tots els ànecs"
 
-#: src/gtkmm/app.cpp:674 src/gtkmm/canvasview.cpp:1247
+#: src/gtkmm/app.cpp:791 src/gtkmm/canvasview.cpp:1499
 #, fuzzy
 msgid "Select All Layers"
 msgstr "Deselecciona totes les capes"
 
-#: src/gtkmm/app.cpp:675 src/gtkmm/canvasview.cpp:1251
+#: src/gtkmm/app.cpp:792 src/gtkmm/canvasview.cpp:1503
 msgid "Unselect All Layers"
 msgstr "Deselecciona totes les capes"
 
-#: src/gtkmm/app.cpp:676 src/gtkmm/canvasproperties.cpp:197
+#: src/gtkmm/app.cpp:793 src/gtkmm/canvasproperties.cpp:197
 msgid "Properties"
 msgstr "Propietats"
 
-#: src/gtkmm/app.cpp:678 src/gtkmm/canvasview.cpp:1417
+#: src/gtkmm/app.cpp:795 src/gtkmm/canvasview.cpp:1669
 msgid "Show Position Ducks"
 msgstr "Mostra els ànecs de posició"
 
-#: src/gtkmm/app.cpp:679 src/gtkmm/canvasview.cpp:1419
+#: src/gtkmm/app.cpp:796 src/gtkmm/canvasview.cpp:1671
 msgid "Show Vertex Ducks"
 msgstr "Mostrar els ànecs de vèrtex"
 
-#: src/gtkmm/app.cpp:680 src/gtkmm/canvasview.cpp:1418
+#: src/gtkmm/app.cpp:797 src/gtkmm/canvasview.cpp:1670
 msgid "Show Tangent Ducks"
 msgstr "Mostra els ànecs de tangent"
 
-#: src/gtkmm/app.cpp:681 src/gtkmm/canvasview.cpp:1420
+#: src/gtkmm/app.cpp:798 src/gtkmm/canvasview.cpp:1672
 msgid "Show Radius Ducks"
 msgstr "Mostra els ànecs de ràdio"
 
-#: src/gtkmm/app.cpp:682 src/gtkmm/canvasview.cpp:1421
+#: src/gtkmm/app.cpp:799 src/gtkmm/canvasview.cpp:1673
 msgid "Show Width Ducks"
 msgstr "Mostrar els ànecs d'espessor"
 
-#: src/gtkmm/app.cpp:683 src/gtkmm/canvasview.cpp:1422
+#: src/gtkmm/app.cpp:800 src/gtkmm/canvasview.cpp:1674
 msgid "Show Angle Ducks"
 msgstr "Mostra els ànecs d'angle"
 
-#: src/gtkmm/app.cpp:684 src/gtkmm/canvasview.cpp:1270
+#: src/gtkmm/app.cpp:801 src/gtkmm/canvasview.cpp:1522
 msgid "Use Parametric Renderer"
 msgstr "Utilitza el renderitzador paramètric"
 
-#: src/gtkmm/app.cpp:685
+#: src/gtkmm/app.cpp:802
 msgid "Use Quality Level 1"
 msgstr "Utilitza el  nivell de qualitat 1"
 
-#: src/gtkmm/app.cpp:686
+#: src/gtkmm/app.cpp:803
 msgid "Use Quality Level 2"
 msgstr "Utilitza el nivell de qualitat 2"
 
-#: src/gtkmm/app.cpp:687
+#: src/gtkmm/app.cpp:804
 msgid "Use Quality Level 3"
 msgstr "Utilitza el nivell de qualitat 3"
 
-#: src/gtkmm/app.cpp:688
+#: src/gtkmm/app.cpp:805
 msgid "Use Quality Level 4"
 msgstr "Utilitza el nivell de qualitat 4"
 
-#: src/gtkmm/app.cpp:689
+#: src/gtkmm/app.cpp:806
 msgid "Use Quality Level 5"
 msgstr "Utilitza el nivell de qualitat 5"
 
-#: src/gtkmm/app.cpp:690
+#: src/gtkmm/app.cpp:807
 msgid "Use Quality Level 6"
 msgstr "Utilitza el nivell de qualitat 6"
 
-#: src/gtkmm/app.cpp:691
+#: src/gtkmm/app.cpp:808
 msgid "Use Quality Level 7"
 msgstr "Utilitza el nivell de qualitat 7"
 
-#: src/gtkmm/app.cpp:692
+#: src/gtkmm/app.cpp:809
 msgid "Use Quality Level 8"
 msgstr "Utilitza el nivell de qualitat 8"
 
-#: src/gtkmm/app.cpp:693
+#: src/gtkmm/app.cpp:810
 msgid "Use Quality Level 9"
 msgstr "Utilitza el nivell de qualitat 8"
 
-#: src/gtkmm/app.cpp:694
+#: src/gtkmm/app.cpp:811
 msgid "Use Quality Level 10"
 msgstr "Utilitza el nivell de qualitat 10"
 
-#: src/gtkmm/app.cpp:696 src/gtkmm/canvasview.cpp:1304
+#: src/gtkmm/app.cpp:813 src/gtkmm/canvasview.cpp:1556
 #, c-format
 msgid "Set Low-Res pixel size to %d"
 msgstr "Estableix la grandària de pixel de baixa resolució a %d"
 
-#: src/gtkmm/app.cpp:697 src/gtkmm/preview.cpp:358
+#: src/gtkmm/app.cpp:814 src/gtkmm/framedial.cpp:63 src/gtkmm/preview.cpp:358
 msgid "Play"
 msgstr "Reprodueix"
 
-#: src/gtkmm/app.cpp:699 src/gtkmm/canvasview.cpp:994
+#: src/gtkmm/app.cpp:816 src/gtkmm/canvasview.cpp:1092
 #: src/gtkmm/preview.cpp:364
 msgid "Stop"
 msgstr "Para"
 
-#: src/gtkmm/app.cpp:700
+#: src/gtkmm/app.cpp:817
 msgid "Toggle Grid Show"
 msgstr "Commuta mostrar reixa"
 
-#: src/gtkmm/app.cpp:701
+#: src/gtkmm/app.cpp:818
 msgid "Toggle Grid Snap"
 msgstr "Commuta ajusta a la reixa"
 
-#: src/gtkmm/app.cpp:702
+#: src/gtkmm/app.cpp:819
 msgid "Toggle Guide Show"
 msgstr "Commuta Mostra guia"
 
-#: src/gtkmm/app.cpp:703
+#: src/gtkmm/app.cpp:820
 msgid "Toggle Low-Res"
 msgstr "Commuta Baixa resolució"
 
-#: src/gtkmm/app.cpp:704 src/gtkmm/canvasview.cpp:1320
+#: src/gtkmm/app.cpp:821 src/gtkmm/canvasview.cpp:1572
 msgid "Decrease Low-Res Pixel Size"
 msgstr "Disminueix la mida de pixel de baixa resolució"
 
-#: src/gtkmm/app.cpp:705 src/gtkmm/canvasview.cpp:1323
+#: src/gtkmm/app.cpp:822 src/gtkmm/canvasview.cpp:1575
 msgid "Increase Low-Res Pixel Size"
 msgstr "Augmenta la mida del pixel de Baixa Resolució"
 
-#: src/gtkmm/app.cpp:706
+#: src/gtkmm/app.cpp:823
 msgid "Toggle Onion Skin"
 msgstr "Commuta Pell de ceba"
 
-#: src/gtkmm/app.cpp:713 src/gtkmm/canvasview.cpp:1386
+#: src/gtkmm/app.cpp:830 src/gtkmm/canvasview.cpp:1638
 msgid "Jump to Next Keyframe"
 msgstr "Salta al Fotograma clau següent"
 
-#: src/gtkmm/app.cpp:714 src/gtkmm/canvasview.cpp:1389
+#: src/gtkmm/app.cpp:831 src/gtkmm/canvasview.cpp:1641
 msgid "Jump to Prev Keyframe"
 msgstr "Salta al Fotograma clau previ"
 
-#: src/gtkmm/app.cpp:715 src/gtkmm/canvasview.cpp:1370
+#: src/gtkmm/app.cpp:832 src/gtkmm/canvasview.cpp:1622
+#: src/gtkmm/framedial.cpp:65 src/gtkmm/iconcontroller.cpp:195
 msgid "Next Frame"
 msgstr "Fotograma següent"
 
-#: src/gtkmm/app.cpp:716 src/gtkmm/canvasview.cpp:1372
+#: src/gtkmm/app.cpp:833 src/gtkmm/canvasview.cpp:1624
 msgid "Prev Frame"
 msgstr "Fotograma previ"
 
-#: src/gtkmm/app.cpp:717 src/gtkmm/canvasview.cpp:1375
+#: src/gtkmm/app.cpp:834 src/gtkmm/canvasview.cpp:1627
 msgid "Seek Forward"
 msgstr "Avança"
 
-#: src/gtkmm/app.cpp:718 src/gtkmm/canvasview.cpp:1377
+#: src/gtkmm/app.cpp:835 src/gtkmm/canvasview.cpp:1629
 msgid "Seek Backward"
 msgstr "Retrocedeix"
 
-#: src/gtkmm/app.cpp:719 src/gtkmm/canvasview.cpp:1383
+#: src/gtkmm/app.cpp:836 src/gtkmm/canvasview.cpp:1635
+#: src/gtkmm/framedial.cpp:59 src/gtkmm/iconcontroller.cpp:193
 msgid "Seek to Begin"
 msgstr "Retrocedeix al principi"
 
-#: src/gtkmm/app.cpp:720 src/gtkmm/canvasview.cpp:1380
+#: src/gtkmm/app.cpp:837 src/gtkmm/canvasview.cpp:1632
+#: src/gtkmm/framedial.cpp:67 src/gtkmm/iconcontroller.cpp:196
 msgid "Seek to End"
 msgstr "Avança al final"
 
-#: src/gtkmm/app.cpp:722
+#: src/gtkmm/app.cpp:839
 msgid "Add group"
 msgstr "Afegeix un grup"
 
-#: src/gtkmm/app.cpp:724 src/gtkmm/iconcontroller.cpp:158
+#: src/gtkmm/app.cpp:841 src/gtkmm/iconcontroller.cpp:161
 #: src/synfigapp/actions/canvasadd.cpp:73
 msgid "New Canvas"
 msgstr "Nou llenç"
 
-#: src/gtkmm/app.cpp:726 src/gtkmm/layeractionmanager.cpp:104
-#: src/gtkmm/layeractionmanager.cpp:494
+#: src/gtkmm/app.cpp:843 src/gtkmm/layeractionmanager.cpp:105
+#: src/gtkmm/layeractionmanager.cpp:498
 msgid "Increase Amount"
 msgstr "Incrementa la quantitat"
 
-#: src/gtkmm/app.cpp:727 src/gtkmm/layeractionmanager.cpp:116
-#: src/gtkmm/layeractionmanager.cpp:511
+#: src/gtkmm/app.cpp:844 src/gtkmm/layeractionmanager.cpp:117
+#: src/gtkmm/layeractionmanager.cpp:515
 msgid "Decrease Amount"
 msgstr "Disminueix la quantitat"
 
-#: src/gtkmm/app.cpp:1085 src/gtkmm/toolbox.cpp:359
+#: src/gtkmm/app.cpp:1188 src/gtkmm/toolbox.cpp:360
 msgid "Synfig Studio"
 msgstr "Synfig Studio"
 
-#: src/gtkmm/app.cpp:1098
+#: src/gtkmm/app.cpp:1201 src/gtkmm/app.cpp:1206
 msgid "Failed to initialize synfig!"
 msgstr "Ha fallat la inicialització de Synfig!"
 
-#: src/gtkmm/app.cpp:1107
+#: src/gtkmm/app.cpp:1215
 msgid "Init UI Manager..."
 msgstr "Inicia el gestor d'Interfaz d'Usuari ..."
 
-#: src/gtkmm/app.cpp:1111
+#: src/gtkmm/app.cpp:1219
 msgid "Init Dock Manager..."
 msgstr "Inicia el gestor d'acobladors..."
 
-#: src/gtkmm/app.cpp:1114
+#: src/gtkmm/app.cpp:1222
 msgid "Init State Manager..."
 msgstr "Inicia el gestor d'Estats..."
 
-#: src/gtkmm/app.cpp:1117
+#: src/gtkmm/app.cpp:1225
 msgid "Init Toolbox..."
 msgstr "Inicia la caixa d'eines..."
 
-#: src/gtkmm/app.cpp:1120
+#: src/gtkmm/app.cpp:1228
 msgid "Init About Dialog..."
 msgstr "Inicia el diàleg Quant a..."
 
-#: src/gtkmm/app.cpp:1123
+#: src/gtkmm/app.cpp:1231
 msgid "Init Tool Options..."
 msgstr "Inicia l'eina d'opcions..."
 
-#: src/gtkmm/app.cpp:1127
+#: src/gtkmm/app.cpp:1235
 msgid "Init History..."
 msgstr "Inicia Historial..."
 
-#: src/gtkmm/app.cpp:1131
+#: src/gtkmm/app.cpp:1239
 msgid "Init Canvases..."
 msgstr "Inicia Llenços..."
 
-#: src/gtkmm/app.cpp:1135
+#: src/gtkmm/app.cpp:1243
 msgid "Init Keyframes..."
 msgstr "Inicia Fotogrames clau..."
 
-#: src/gtkmm/app.cpp:1139
+#: src/gtkmm/app.cpp:1247
 msgid "Init Layers..."
 msgstr "Inicia Capes..."
 
-#: src/gtkmm/app.cpp:1143
+#: src/gtkmm/app.cpp:1251
 msgid "Init Params..."
 msgstr "Inicia Paràmetres..."
 
-#: src/gtkmm/app.cpp:1147
+#: src/gtkmm/app.cpp:1255
 msgid "Init MetaData..."
 msgstr "Inicia Metadades..."
 
-#: src/gtkmm/app.cpp:1151
+#: src/gtkmm/app.cpp:1259
 msgid "Init Children..."
 msgstr "Inicia Descendents..."
 
-#: src/gtkmm/app.cpp:1155
+#: src/gtkmm/app.cpp:1263
 msgid "Init Info..."
 msgstr "Inicia Informació..."
 
-#: src/gtkmm/app.cpp:1159
+#: src/gtkmm/app.cpp:1267
 msgid "Init Navigator..."
 msgstr "Inicia el Navegador..."
 
-#: src/gtkmm/app.cpp:1163
+#: src/gtkmm/app.cpp:1271
 msgid "Init Timetrack..."
 msgstr "Inicia la Linea de temps..."
 
-#: src/gtkmm/app.cpp:1167
+#: src/gtkmm/app.cpp:1275
 msgid "Init Curve Editor..."
 msgstr "Inicia l'Editor de corbes..."
 
-#: src/gtkmm/app.cpp:1171
+#: src/gtkmm/app.cpp:1279
 msgid "Init Layer Groups..."
 msgstr "Inicia els Grups de Capes..."
 
-#: src/gtkmm/app.cpp:1176
+#: src/gtkmm/app.cpp:1284
 msgid "Init Color Dialog..."
 msgstr "Inicia el Diàleg de Color..."
 
-#: src/gtkmm/app.cpp:1179
+#: src/gtkmm/app.cpp:1287
 msgid "Init Gradient Dialog..."
 msgstr "Inicia el Diàleg de gradient..."
 
-#: src/gtkmm/app.cpp:1182
+#: src/gtkmm/app.cpp:1290
 msgid "Init DeviceTracker..."
 msgstr "Inicia el Seguiment de dispositius..."
 
-#: src/gtkmm/app.cpp:1185
+#: src/gtkmm/app.cpp:1293
 msgid "Init Tools..."
 msgstr "Inicia Eines..."
 
-#: src/gtkmm/app.cpp:1192
+#: src/gtkmm/app.cpp:1300
 msgid "Init ModMirror..."
 msgstr "Inicia Mirall..."
 
-#: src/gtkmm/app.cpp:1214
+#: src/gtkmm/app.cpp:1320
 msgid "Init ModPalette..."
 msgstr "Inicia Taujana..."
 
-#: src/gtkmm/app.cpp:1217
+#: src/gtkmm/app.cpp:1323
 msgid "Init Setup Dialog..."
 msgstr "Inicia el Diàleg d'atributs..."
 
-#: src/gtkmm/app.cpp:1220
+#: src/gtkmm/app.cpp:1326
 msgid "Init Input Dialog..."
 msgstr "Inicia el Diàleg d'entrada..."
 
-#: src/gtkmm/app.cpp:1225
+#: src/gtkmm/app.cpp:1331
 msgid "Init auto recovery..."
 msgstr "Inicia Autorecuperació..."
 
-#: src/gtkmm/app.cpp:1229
+#: src/gtkmm/app.cpp:1335
 msgid "Loading Settings..."
 msgstr "Carregant Atributs..."
 
-#: src/gtkmm/app.cpp:1231
+#: src/gtkmm/app.cpp:1339
 msgid "Checking auto-recover..."
 msgstr "Comprovant l'Autorecuperació..."
 
-#: src/gtkmm/app.cpp:1239
-msgid "Auto Recovery"
+#: src/gtkmm/app.cpp:1348
+#, fuzzy
+msgid "Auto recovery file found"
 msgstr "Autorecuperació"
 
-#: src/gtkmm/app.cpp:1240
+#: src/gtkmm/app.cpp:1349
+#, fuzzy
 msgid ""
 "Synfig Studio seems to have crashed\n"
 "before you could save all your files.\n"
-"Would you like to re-open those files\n"
-"and recover your unsaved changes?"
+"Recover unsaved changes?"
 msgstr ""
 "Synfig Studio sembla haver-se tancat abans \n"
 "que pogués desar tots els fitxers\n"
 "Voleu tornar a obrir aquests fitxers i recuperar\n"
 "els canvis no desats?"
 
-#: src/gtkmm/app.cpp:1249
+#: src/gtkmm/app.cpp:1352
+#, fuzzy
+msgid "Recover"
+msgstr "_Esborra"
+
+#: src/gtkmm/app.cpp:1352
+#, fuzzy
+msgid "Ignore"
+msgstr "Informació"
+
+#: src/gtkmm/app.cpp:1358
 msgid "Unable to fully recover from previous crash"
 msgstr ""
 "No ha estat possible fer una recuperació completa des de l'últim tancament "
 "problemàtic"
 
-#: src/gtkmm/app.cpp:1251
+#: src/gtkmm/app.cpp:1360
 msgid "Unable to recover from previous crash"
 msgstr "Ha estat impossible recuperar des de l'últim tancament problemàtic"
 
-#: src/gtkmm/app.cpp:1254
+#: src/gtkmm/app.cpp:1363
 msgid ""
 "Synfig Studio has attempted to recover\n"
 "from a previous crash. The files that it has\n"
@@ -540,15 +564,15 @@ msgstr ""
 " ENCARA. Sembla una bona idea revisar-los\n"
 "i desar-los ara."
 
-#: src/gtkmm/app.cpp:1270
+#: src/gtkmm/app.cpp:1379
 msgid "Loading files..."
 msgstr "Carregant fitxers..."
 
-#: src/gtkmm/app.cpp:1281
+#: src/gtkmm/app.cpp:1390
 msgid "Done."
 msgstr "Fet."
 
-#: src/gtkmm/app.cpp:1288 src/gtkmm/app.cpp:1292
+#: src/gtkmm/app.cpp:1397 src/gtkmm/app.cpp:1401
 msgid ""
 "Unknown exception caught when constructing App.\n"
 "This software may be unstable."
@@ -556,15 +580,15 @@ msgstr ""
 "S'ha capturat una excepció desconeguda en la construcció de l'aplicatiu.\n"
 "Aquest programa pot ser inestable."
 
-#: src/gtkmm/app.cpp:1699
+#: src/gtkmm/app.cpp:1816
 msgid "Quit Request"
 msgstr "Requeriment de Sortida"
 
-#: src/gtkmm/app.cpp:1702
+#: src/gtkmm/app.cpp:1819
 msgid "Cannot quit!"
 msgstr "No puc Sortir!"
 
-#: src/gtkmm/app.cpp:1702
+#: src/gtkmm/app.cpp:1819
 msgid ""
 "Tasks are currently running.\n"
 "Please cancel the current tasks and try again"
@@ -572,35 +596,35 @@ msgstr ""
 "Hi ha tasques en execució actualment.\n"
 "Per favor canceleu-les i intenteu-ho de nou."
 
-#: src/gtkmm/app.cpp:1770
+#: src/gtkmm/app.cpp:1887
 msgid "Quit Request sent"
 msgstr "Requeriment de Sortida enviat"
 
-#: src/gtkmm/app.cpp:1987
+#: src/gtkmm/app.cpp:2104
 msgid "current"
 msgstr "actual"
 
-#: src/gtkmm/app.cpp:1990
+#: src/gtkmm/app.cpp:2107
 msgid "and older"
 msgstr "i més antic"
 
-#: src/gtkmm/app.cpp:1994
+#: src/gtkmm/app.cpp:2111
 msgid "File Format Version: "
 msgstr "Versió del Format d'Arxiu: "
 
-#: src/gtkmm/app.cpp:2093
+#: src/gtkmm/app.cpp:2210
 msgid "Feature not available"
 msgstr "Característica no disponible"
 
-#: src/gtkmm/app.cpp:2094
+#: src/gtkmm/app.cpp:2211
 msgid "Sorry, this feature has not yet been implemented."
 msgstr "Ho sento, aquesta característica no ha estat encara implementada"
 
-#: src/gtkmm/app.cpp:2179
+#: src/gtkmm/app.cpp:2296
 msgid "Documentation"
 msgstr "Documentació"
 
-#: src/gtkmm/app.cpp:2180
+#: src/gtkmm/app.cpp:2297
 msgid ""
 "Documentation for Synfig Studio is available on the website:\n"
 "\n"
@@ -610,36 +634,44 @@ msgstr ""
 "\n"
 "http://www.synfig.org/Documentation"
 
-#: src/gtkmm/app.cpp:2181 src/gtkmm/toolbox.cpp:298
+#: src/gtkmm/app.cpp:2298 src/gtkmm/toolbox.cpp:299
 msgid "Help"
 msgstr "_Ajuda"
 
-#: src/gtkmm/app.cpp:2191
+#: src/gtkmm/app.cpp:2308
 msgid "No browser was found. Please load this website manually:"
 msgstr ""
 "No s'ha trobat cap navegador. Per favor carregueu aquesta pàgina web "
 "manualment:"
 
-#: src/gtkmm/app.cpp:2193
+#: src/gtkmm/app.cpp:2310
 msgid "No browser found"
 msgstr "No s'ha trobat cap navegador"
 
-#: src/gtkmm/app.cpp:2301
-#, c-format
-msgid "Unable to open file \"%s\""
-msgstr "Ha estat impossible obrir l'arxiu «%s»"
+#: src/gtkmm/app.cpp:2419
+#, fuzzy, c-format
+msgid ""
+"Unable to load \"%s\":\n"
+"\n"
+msgstr "Impossible carregar l'esbós"
 
-#: src/gtkmm/app.cpp:2309
+#: src/gtkmm/app.cpp:2422 src/gtkmm/canvasview.cpp:3876
+#: src/gtkmm/canvasview.cpp:4015
+#, fuzzy
+msgid "Warnings"
+msgstr "avís: "
+
+#: src/gtkmm/app.cpp:2430
 #, c-format
 msgid "Unable to create instance for \"%s\""
 msgstr "Ha estat impossible crear una instància per «%s»"
 
-#: src/gtkmm/app.cpp:2315 src/gtkmm/iconcontroller.cpp:188
-#: src/gtkmm/instance.cpp:561
+#: src/gtkmm/app.cpp:2436 src/gtkmm/iconcontroller.cpp:217
+#: src/gtkmm/instance.cpp:560
 msgid "CVS Update"
 msgstr "Actualització per CVS"
 
-#: src/gtkmm/app.cpp:2315
+#: src/gtkmm/app.cpp:2436
 msgid ""
 "There appears to be a newer version of this file available on the CVS "
 "repository.\n"
@@ -648,22 +680,23 @@ msgstr ""
 "Sembla haver-hi una nova versió d'aquest fitxer en el dipòsit CVS.\n"
 "Voleu actualitzar ara? (probablement sigui una bona idea)"
 
-#: src/gtkmm/app.cpp:2321 src/gtkmm/app.cpp:2326 src/gtkmm/instance.cpp:483
-#: src/gtkmm/instance.cpp:499 src/gtkmm/instance.cpp:511
-#: src/gtkmm/instance.cpp:522 src/gtkmm/instance.cpp:536
-#: src/gtkmm/instance.cpp:547 src/gtkmm/instance.cpp:577
-#: src/gtkmm/instance.cpp:588 src/gtkmm/instance.cpp:604
-#: src/gtkmm/instance.cpp:613 src/gtkmm/layerparamtreestore.cpp:246
+#: src/gtkmm/app.cpp:2442 src/gtkmm/app.cpp:2447 src/gtkmm/app.cpp:2452
+#: src/gtkmm/instance.cpp:482 src/gtkmm/instance.cpp:498
+#: src/gtkmm/instance.cpp:510 src/gtkmm/instance.cpp:521
+#: src/gtkmm/instance.cpp:535 src/gtkmm/instance.cpp:546
+#: src/gtkmm/instance.cpp:576 src/gtkmm/instance.cpp:587
+#: src/gtkmm/instance.cpp:603 src/gtkmm/instance.cpp:612
+#: src/gtkmm/layerparamtreestore.cpp:246
 #: src/gtkmm/widget_canvaschooser.cpp:145
-#: src/gtkmm/widget_canvaschooser.cpp:163
+#: src/gtkmm/widget_canvaschooser.cpp:164
 msgid "Error"
 msgstr "Error"
 
-#: src/gtkmm/app.cpp:2326
+#: src/gtkmm/app.cpp:2452
 msgid "Uncaught error on file open (BUG)"
 msgstr "Error no capturat a l'obrir fitxer (BUG)"
 
-#: src/gtkmm/app.cpp:2378
+#: src/gtkmm/app.cpp:2506
 msgid "Unable to open file"
 msgstr "Ha estat impossible d'obrir el fitxer"
 
@@ -691,31 +724,32 @@ msgstr "Reixa"
 msgid "_Grid size"
 msgstr "_Grandària de la reixa"
 
-#: src/gtkmm/canvasoptions.cpp:104 src/gtkmm/iconcontroller.cpp:142
+#: src/gtkmm/canvasoptions.cpp:104 src/gtkmm/iconcontroller.cpp:145
 #: src/gtkmm/keyframetree.cpp:62 src/gtkmm/renddesc.cpp:96
-#: src/synfigapp/actions/activepointadd.cpp:85
-#: src/synfigapp/actions/activepointsetoff.cpp:92
-#: src/synfigapp/actions/activepointseton.cpp:92
-#: src/synfigapp/actions/activepointsetsmart.cpp:92
+#: src/synfigapp/actions/activepointadd.cpp:86
+#: src/synfigapp/actions/activepointsetoff.cpp:93
+#: src/synfigapp/actions/activepointseton.cpp:93
+#: src/synfigapp/actions/activepointsetsmart.cpp:93
 #: src/synfigapp/actions/blinepointtangentmerge.cpp:91
 #: src/synfigapp/actions/blinepointtangentsplit.cpp:91
-#: src/synfigapp/actions/colorset.cpp:83
+#: src/synfigapp/actions/colorset.cpp:93
 #: src/synfigapp/actions/gradientset.cpp:83
 #: src/synfigapp/actions/keyframeduplicate.cpp:84
 #: src/synfigapp/actions/layerparamdisconnect.cpp:83
+#: src/synfigapp/actions/valuedescblinelink.cpp:89
 #: src/synfigapp/actions/valuedescconvert.cpp:102
-#: src/synfigapp/actions/valuedescdisconnect.cpp:94
+#: src/synfigapp/actions/valuedescdisconnect.cpp:95
 #: src/synfigapp/actions/valuedescset.cpp:100
-#: src/synfigapp/actions/valuenodedynamiclistinsert.cpp:79
+#: src/synfigapp/actions/valuenodedynamiclistinsert.cpp:80
 #: src/synfigapp/actions/valuenodedynamiclistinsertsmart.cpp:81
-#: src/synfigapp/actions/valuenodedynamiclistremovesmart.cpp:80
+#: src/synfigapp/actions/valuenodedynamiclistremovesmart.cpp:81
 #: src/synfigapp/actions/valuenodelinkdisconnect.cpp:83
-#: src/synfigapp/actions/waypointadd.cpp:86
+#: src/synfigapp/actions/waypointadd.cpp:87
 #: src/synfigapp/actions/waypointsetsmart.cpp:100
 msgid "Time"
 msgstr "Temps"
 
-#: src/gtkmm/canvasoptions.cpp:113 src/gtkmm/dialog_setup.cpp:174
+#: src/gtkmm/canvasoptions.cpp:113 src/gtkmm/dialog_setup.cpp:179
 msgid "Units"
 msgstr "Unitats"
 
@@ -773,208 +807,246 @@ msgid "Edit Canvas Properties"
 msgstr "Propietats del llenç"
 
 #: src/gtkmm/canvastreestore.cpp:204 src/gtkmm/canvastreestore.cpp:242
-#: src/gtkmm/childrentreestore.cpp:204 src/gtkmm/iconcontroller.cpp:149
-#: src/synfigapp/action.cpp:468
+#: src/gtkmm/childrentreestore.cpp:204 src/gtkmm/iconcontroller.cpp:152
+#: src/synfigapp/action.cpp:484
 msgid "Canvas"
 msgstr "Llenç"
 
 #: src/gtkmm/canvastreestore.cpp:241 src/gtkmm/childrentreestore.cpp:201
-#: src/gtkmm/instance.cpp:417
+#: src/gtkmm/instance.cpp:416
 msgid "[Unnamed]"
 msgstr "[Sense Nom]"
 
-#: src/gtkmm/canvasview.cpp:241 src/gtkmm/workarea.cpp:2344
-#: src/gtkmm/workarea.cpp:2439
+#: src/gtkmm/canvasview.cpp:244 src/gtkmm/workarea.cpp:2361
+#: src/gtkmm/workarea.cpp:2456
 msgid "Idle"
 msgstr "Inactiu"
 
-#: src/gtkmm/canvasview.cpp:331
+#: src/gtkmm/canvasview.cpp:365
 msgid "ERROR"
 msgstr "ERROR"
 
-#: src/gtkmm/canvasview.cpp:380
+#: src/gtkmm/canvasview.cpp:414
 msgid "Feature not yet implemented"
 msgstr "Característica per implementar"
 
-#: src/gtkmm/canvasview.cpp:926
+#: src/gtkmm/canvasview.cpp:975
 msgid "Moves the time window"
 msgstr "Mou la finestra de temps"
 
-#: src/gtkmm/canvasview.cpp:927
+#: src/gtkmm/canvasview.cpp:976
 msgid "Changes the current time"
 msgstr "Canvia el temps actual"
 
-#: src/gtkmm/canvasview.cpp:936
+#: src/gtkmm/canvasview.cpp:987
 msgid "Animate"
 msgstr "Anima"
 
-#: src/gtkmm/canvasview.cpp:940 src/gtkmm/canvasview.cpp:2533
-#: src/gtkmm/iconcontroller.cpp:182
-msgid "All Keyframes Locked"
-msgstr "Tots els Fotogrames clau bloquejats"
+#: src/gtkmm/canvasview.cpp:1011
+#, fuzzy
+msgid "Current time"
+msgstr "Canvia el temps actual"
 
-#: src/gtkmm/canvasview.cpp:995
+#: src/gtkmm/canvasview.cpp:1093
 msgid "Refresh"
 msgstr "Refresca"
 
-#: src/gtkmm/canvasview.cpp:1221
+#: src/gtkmm/canvasview.cpp:1182
+msgid "Quality (lower is better)"
+msgstr ""
+
+#: src/gtkmm/canvasview.cpp:1194
+msgid "Show grid when enabled"
+msgstr ""
+
+#: src/gtkmm/canvasview.cpp:1207
+msgid "Snap grid when enabled"
+msgstr ""
+
+#: src/gtkmm/canvasview.cpp:1220
+msgid "Shows onion skin when enabled"
+msgstr ""
+
+#: src/gtkmm/canvasview.cpp:1228
+msgid "Past onion skins"
+msgstr ""
+
+#: src/gtkmm/canvasview.cpp:1235
+msgid "Future onion skins"
+msgstr ""
+
+#: src/gtkmm/canvasview.cpp:1246
+#, fuzzy
+msgid "Shows the Render Settings Dialog"
+msgstr "Atributs de renderitzat"
+
+#: src/gtkmm/canvasview.cpp:1258
+msgid "Shows the Preview Settings Dialog"
+msgstr ""
+
+#: src/gtkmm/canvasview.cpp:1473
 msgid "Close Window"
 msgstr "Tanca la Finestra"
 
-#: src/gtkmm/canvasview.cpp:1227
+#: src/gtkmm/canvasview.cpp:1479
 msgid "Quit"
 msgstr "_Sortir"
 
-#: src/gtkmm/canvasview.cpp:1279
+#: src/gtkmm/canvasview.cpp:1531
 msgid " (best)"
 msgstr " (millor)"
 
-#: src/gtkmm/canvasview.cpp:1280
+#: src/gtkmm/canvasview.cpp:1532
 msgid " (fastest)"
 msgstr "(el més ràpid)"
 
-#: src/gtkmm/canvasview.cpp:1282
+#: src/gtkmm/canvasview.cpp:1534
 #, c-format
 msgid "Set Quality to %d"
 msgstr "Establir qualitat a %d"
 
-#: src/gtkmm/canvasview.cpp:1332
-msgid "Flipbook Dialog"
-msgstr "Diàleg de Previsualización"
+#: src/gtkmm/canvasview.cpp:1584 src/gtkmm/dialog_preview.cpp:62
+msgid "Preview Window"
+msgstr "Finestra de previsualització"
 
-#: src/gtkmm/canvasview.cpp:1339 src/gtkmm/iconcontroller.cpp:164
+#: src/gtkmm/canvasview.cpp:1591 src/gtkmm/iconcontroller.cpp:167
 msgid "Show Grid"
 msgstr "Mosta la reixa"
 
-#: src/gtkmm/canvasview.cpp:1343
+#: src/gtkmm/canvasview.cpp:1595
 msgid "Snap to Grid"
 msgstr "Ajusta a la _reixa"
 
-#: src/gtkmm/canvasview.cpp:1347
+#: src/gtkmm/canvasview.cpp:1599
 msgid "Show Guides"
 msgstr "Mosta les guies"
 
-#: src/gtkmm/canvasview.cpp:1351
+#: src/gtkmm/canvasview.cpp:1603
 msgid "Use Low-Res"
 msgstr "Utilitza baixa resolució"
 
-#: src/gtkmm/canvasview.cpp:1355
+#: src/gtkmm/canvasview.cpp:1607
 msgid "Show Onion Skin"
 msgstr "Mostra pell de ceba"
 
-#: src/gtkmm/canvasview.cpp:1398
+#: src/gtkmm/canvasview.cpp:1650
 msgid "Zoom In on Timeline"
 msgstr "Apropa en la línia de temps"
 
-#: src/gtkmm/canvasview.cpp:1401
+#: src/gtkmm/canvasview.cpp:1653
 msgid "Zoom Out on Timeline"
 msgstr "Allunya de la linea de temps"
 
-#: src/gtkmm/canvasview.cpp:1807 src/gtkmm/canvasview.cpp:2268
+#: src/gtkmm/canvasview.cpp:2059 src/gtkmm/canvasview.cpp:2532
 msgid "Select All Children"
 msgstr "Selecciona tots els descendents"
 
-#: src/gtkmm/canvasview.cpp:2081
+#: src/gtkmm/canvasview.cpp:2345
 msgid "-MODIFIED"
 msgstr "-MODIFICAT"
 
-#: src/gtkmm/canvasview.cpp:2083
+#: src/gtkmm/canvasview.cpp:2347
 msgid "-UPDATED"
 msgstr "-ACTUALITZAT"
 
-#: src/gtkmm/canvasview.cpp:2088
+#: src/gtkmm/canvasview.cpp:2352
 msgid " (Root)"
 msgstr " (Arrel)"
 
-#: src/gtkmm/canvasview.cpp:2512
+#: src/gtkmm/canvasview.cpp:2777
 msgid "In Animate Editing Mode"
 msgstr "En mode d'edició d'animació"
 
-#: src/gtkmm/canvasview.cpp:2522
+#: src/gtkmm/canvasview.cpp:2787
 msgid "Not in Animate Editing Mode"
 msgstr "No en mode d'edició d'animació"
 
-#: src/gtkmm/canvasview.cpp:2543 src/gtkmm/iconcontroller.cpp:184
+#: src/gtkmm/canvasview.cpp:2798 src/gtkmm/iconcontroller.cpp:185
+#: src/gtkmm/keyframedial.cpp:59
+msgid "All Keyframes Locked"
+msgstr "Tots els Fotogrames clau bloquejats"
+
+#: src/gtkmm/canvasview.cpp:2808 src/gtkmm/iconcontroller.cpp:187
 msgid "Future Keyframes Locked"
 msgstr "Fotogrames clau futurs bloquejats"
 
-#: src/gtkmm/canvasview.cpp:2553 src/gtkmm/iconcontroller.cpp:183
+#: src/gtkmm/canvasview.cpp:2818 src/gtkmm/iconcontroller.cpp:186
 msgid "Past Keyframes Locked"
 msgstr "Fotogrames clau anteriors bloquejats"
 
-#: src/gtkmm/canvasview.cpp:2563 src/gtkmm/iconcontroller.cpp:185
+#: src/gtkmm/canvasview.cpp:2828 src/gtkmm/iconcontroller.cpp:188
 msgid "No Keyframes Locked"
 msgstr "No hi ha cap fotograma bloquejat"
 
-#: src/gtkmm/canvasview.cpp:3177
+#: src/gtkmm/canvasview.cpp:3587
 msgid "Change Waypoint Group"
 msgstr "Canvia grup d'interpolació"
 
-#: src/gtkmm/canvasview.cpp:3208
+#: src/gtkmm/canvasview.cpp:3618
 msgid "Duplicate Waypoints"
 msgstr "Duplica les Interpolacions"
 
-#: src/gtkmm/canvasview.cpp:3224
+#: src/gtkmm/canvasview.cpp:3634
 msgid "Remove Waypoints"
 msgstr "Esborra les interpolaciones"
 
-#: src/gtkmm/canvasview.cpp:3269 src/gtkmm/canvasview.cpp:3272
-#: src/gtkmm/canvasview.cpp:3275 src/gtkmm/widget_defaults.cpp:290
+#: src/gtkmm/canvasview.cpp:3679 src/gtkmm/canvasview.cpp:3682
+#: src/gtkmm/canvasview.cpp:3685 src/gtkmm/widget_defaults.cpp:292
 msgid "_TCB"
 msgstr "_TCB"
 
-#: src/gtkmm/canvasview.cpp:3279 src/gtkmm/canvasview.cpp:3282
-#: src/gtkmm/canvasview.cpp:3285 src/gtkmm/widget_defaults.cpp:293
+#: src/gtkmm/canvasview.cpp:3689 src/gtkmm/canvasview.cpp:3692
+#: src/gtkmm/canvasview.cpp:3695 src/gtkmm/widget_defaults.cpp:295
 msgid "_Linear"
 msgstr "_Lineal"
 
-#: src/gtkmm/canvasview.cpp:3289
+#: src/gtkmm/canvasview.cpp:3699
 msgid "_Ease In"
 msgstr "_Entrada senzilla"
 
-#: src/gtkmm/canvasview.cpp:3292
+#: src/gtkmm/canvasview.cpp:3702
 msgid "_Ease Out"
 msgstr "_Sortida senzilla"
 
-#: src/gtkmm/canvasview.cpp:3295 src/gtkmm/widget_defaults.cpp:292
+#: src/gtkmm/canvasview.cpp:3705 src/gtkmm/widget_defaults.cpp:294
 msgid "_Ease In/Out"
 msgstr "Entrada/Sortida s_enzilla"
 
-#: src/gtkmm/canvasview.cpp:3299 src/gtkmm/canvasview.cpp:3302
-#: src/gtkmm/canvasview.cpp:3305 src/gtkmm/widget_defaults.cpp:291
+#: src/gtkmm/canvasview.cpp:3709 src/gtkmm/canvasview.cpp:3712
+#: src/gtkmm/canvasview.cpp:3715 src/gtkmm/widget_defaults.cpp:293
 msgid "_Constant"
 msgstr "_Constant"
 
-#: src/gtkmm/canvasview.cpp:3310
+#: src/gtkmm/canvasview.cpp:3730
 msgid "_Jump To"
 msgstr "_Salta a"
 
-#: src/gtkmm/canvasview.cpp:3313
+#: src/gtkmm/canvasview.cpp:3733
 msgid "_Duplicate"
 msgstr "_Duplica"
 
-#: src/gtkmm/canvasview.cpp:3316
+#: src/gtkmm/canvasview.cpp:3736
 msgid "_Remove"
 msgstr "_Esborra"
 
-#: src/gtkmm/canvasview.cpp:3316
+#: src/gtkmm/canvasview.cpp:3736
 #, c-format
 msgid "_Remove %d Waypoints"
 msgstr "_Esborra %d interpolacions"
 
-#: src/gtkmm/canvasview.cpp:3327
+#: src/gtkmm/canvasview.cpp:3747
 msgid "_Both"
 msgstr "_Ambdós"
 
-#: src/gtkmm/canvasview.cpp:3328
+#: src/gtkmm/canvasview.cpp:3748
 msgid "_In"
 msgstr "_Entrada"
 
-#: src/gtkmm/canvasview.cpp:3329
+#: src/gtkmm/canvasview.cpp:3749
 msgid "_Out"
 msgstr "_Sortida"
 
-#: src/gtkmm/canvasview.cpp:3560 src/synfigapp/canvasinterface.cpp:565
+#: src/gtkmm/canvasview.cpp:4011 src/synfigapp/canvasinterface.cpp:569
 msgid "Import Image"
 msgstr "Importa la imatge"
 
@@ -990,7 +1062,7 @@ msgstr "Introdueixi el text del paràgraf ací:"
 msgid "<Inline Canvas>"
 msgstr "<Llenç en Línia>"
 
-#: src/gtkmm/cellrenderer_value.cpp:441 src/gtkmm/iconcontroller.cpp:146
+#: src/gtkmm/cellrenderer_value.cpp:441 src/gtkmm/iconcontroller.cpp:149
 msgid "Segment"
 msgstr "Segment"
 
@@ -998,7 +1070,7 @@ msgstr "Segment"
 msgid "List"
 msgstr "Llista"
 
-#: src/gtkmm/cellrenderer_value.cpp:451 src/gtkmm/iconcontroller.cpp:147
+#: src/gtkmm/cellrenderer_value.cpp:451 src/gtkmm/iconcontroller.cpp:150
 msgid "BLine Point"
 msgstr "Punt de la línia de Beizer"
 
@@ -1022,8 +1094,8 @@ msgstr "Tipus"
 msgid "ValueBase"
 msgstr "Valor base"
 
-#: src/gtkmm/childrentree.cpp:140 src/gtkmm/dock_timetrack.cpp:87
-#: src/gtkmm/iconcontroller.cpp:180 src/gtkmm/layertree.cpp:367
+#: src/gtkmm/childrentree.cpp:140 src/gtkmm/dock_timetrack.cpp:88
+#: src/gtkmm/iconcontroller.cpp:183 src/gtkmm/layertree.cpp:367
 msgid "Time Track"
 msgstr "Pista de Temps"
 
@@ -1035,25 +1107,31 @@ msgstr "Llenços"
 msgid "ValueBase Nodes"
 msgstr "Nodes de valor base"
 
-#: src/gtkmm/dialog_color.cpp:68
+#: src/gtkmm/dialog_color.cpp:59
 msgid "Colors"
 msgstr "Colors"
+
+#: src/gtkmm/dialog_color.cpp:66 src/gtkmm/iconcontroller.cpp:190
+#, fuzzy
+msgid "Set as Outline"
+msgstr "Contorn"
+
+#: src/gtkmm/dialog_color.cpp:68 src/gtkmm/iconcontroller.cpp:191
+msgid "Set as Fill"
+msgstr ""
 
 #: src/gtkmm/dialog_gradient.cpp:65
 msgid "Gradient Editor"
 msgstr "Editor de gradient"
 
 #: src/gtkmm/dialog_gradient.cpp:75
-msgid "Grab"
-msgstr "Agafa"
+#, fuzzy
+msgid "Set as Default"
+msgstr "Estableix Delta del fotograma clau"
 
 #: src/gtkmm/dialog_keyframe.cpp:59
 msgid "Keyframe Dialog"
 msgstr "Diàleg de fotograma clau"
-
-#: src/gtkmm/dialog_preview.cpp:62
-msgid "Preview Window"
-msgstr "Finestra de previsualització"
 
 #: src/gtkmm/dialog_preview.cpp:88
 msgid "Preview Options"
@@ -1107,73 +1185,191 @@ msgstr "Utilitza només un únic fil"
 msgid "Restrict Real-Valued Ducks to Top Right Quadrant"
 msgstr "Restringir Ànecs de valors reals al quadrant superior dret"
 
-#: src/gtkmm/dialog_setup.cpp:110
+#: src/gtkmm/dialog_setup.cpp:84
+msgid "Scale New Imported Images to Fit Canvas"
+msgstr ""
+
+#: src/gtkmm/dialog_setup.cpp:115
 msgid "Gamma"
 msgstr "Gamma"
 
-#: src/gtkmm/dialog_setup.cpp:116 src/gtkmm/widget_coloredit.cpp:353
+#: src/gtkmm/dialog_setup.cpp:121 src/gtkmm/widget_coloredit.cpp:354
 msgid "Red"
 msgstr "Roig"
 
-#: src/gtkmm/dialog_setup.cpp:121 src/gtkmm/widget_coloredit.cpp:355
+#: src/gtkmm/dialog_setup.cpp:126 src/gtkmm/widget_coloredit.cpp:356
 msgid "Green"
 msgstr "Verd"
 
-#: src/gtkmm/dialog_setup.cpp:126 src/gtkmm/widget_coloredit.cpp:357
+#: src/gtkmm/dialog_setup.cpp:131 src/gtkmm/widget_coloredit.cpp:358
 msgid "Blue"
 msgstr "Blau"
 
-#: src/gtkmm/dialog_setup.cpp:130
+#: src/gtkmm/dialog_setup.cpp:135
 msgid "Black Level"
 msgstr "Nivell de negre"
 
-#: src/gtkmm/dialog_setup.cpp:141
+#: src/gtkmm/dialog_setup.cpp:146
 msgid "Misc."
 msgstr "Misc."
 
-#: src/gtkmm/dialog_setup.cpp:147
+#: src/gtkmm/dialog_setup.cpp:152
 msgid "Timestamp"
 msgstr "Marca de temps"
 
-#: src/gtkmm/dialog_setup.cpp:175
+#: src/gtkmm/dialog_setup.cpp:180
 msgid "Pixels"
 msgstr "Píxels"
 
-#: src/gtkmm/dialog_setup.cpp:176
+#: src/gtkmm/dialog_setup.cpp:181
 msgid "Points"
 msgstr "Punts"
 
-#: src/gtkmm/dialog_setup.cpp:177
+#: src/gtkmm/dialog_setup.cpp:182
 msgid "Inches"
 msgstr "Polzades"
 
-#: src/gtkmm/dialog_setup.cpp:178
+#: src/gtkmm/dialog_setup.cpp:183
 msgid "Meters"
 msgstr "Metres"
 
-#: src/gtkmm/dialog_setup.cpp:179
+#: src/gtkmm/dialog_setup.cpp:184
 msgid "Centimeters"
 msgstr "Centímetres"
 
-#: src/gtkmm/dialog_setup.cpp:180
+#: src/gtkmm/dialog_setup.cpp:185
 msgid "Millimeters"
 msgstr "Mil·límetres"
 
-#: src/gtkmm/dialog_setup.cpp:185
+#: src/gtkmm/dialog_setup.cpp:190
 msgid "Unit System"
 msgstr "Sistema d'unitats"
 
-#: src/gtkmm/dialog_setup.cpp:191
+#: src/gtkmm/dialog_setup.cpp:196
 msgid "Recent Files"
 msgstr "Arxius recents"
 
-#: src/gtkmm/dialog_setup.cpp:203
+#: src/gtkmm/dialog_setup.cpp:208
 msgid "Auto Backup Interval (0 to disable)"
 msgstr "Interval de còpia de seguretat Automatica (0 per a deshabilitar)"
 
-#: src/gtkmm/dialog_setup.cpp:210
+#: src/gtkmm/dialog_setup.cpp:218
 msgid "Browser Command"
 msgstr "Ordre per obrir el navegador"
+
+#: src/gtkmm/dialog_setup.cpp:223
+#, fuzzy
+msgid "Document"
+msgstr "Documentació"
+
+#: src/gtkmm/dialog_setup.cpp:226
+msgid "New Document filename prefix"
+msgstr ""
+
+#: src/gtkmm/dialog_setup.cpp:228
+msgid "File name prefix for the new created document"
+msgstr ""
+
+#: src/gtkmm/dialog_setup.cpp:232
+#, fuzzy
+msgid "New Document X size"
+msgstr "Tanca document"
+
+#: src/gtkmm/dialog_setup.cpp:234
+msgid "Width in pixels of the new created document"
+msgstr ""
+
+#: src/gtkmm/dialog_setup.cpp:238
+#, fuzzy
+msgid "New Document Y size"
+msgstr "Tanca document"
+
+#: src/gtkmm/dialog_setup.cpp:240
+msgid "High in pixels of the new created document"
+msgstr ""
+
+#: src/gtkmm/dialog_setup.cpp:244
+#, fuzzy
+msgid "Predefined Resolutions:"
+msgstr "Defineix regió"
+
+#: src/gtkmm/dialog_setup.cpp:249
+msgid "4096x3112 Full Aperture 4K"
+msgstr ""
+
+#: src/gtkmm/dialog_setup.cpp:250
+msgid "2048x1556 Full Aperture Native 2K"
+msgstr ""
+
+#: src/gtkmm/dialog_setup.cpp:251
+msgid "1920x1080 HDTV 1080p/i"
+msgstr ""
+
+#: src/gtkmm/dialog_setup.cpp:252
+msgid "1280x720  HDTV 720p"
+msgstr ""
+
+#: src/gtkmm/dialog_setup.cpp:253
+msgid "720x576   DVD PAL"
+msgstr ""
+
+#: src/gtkmm/dialog_setup.cpp:254
+msgid "720x480   DVD NTSC"
+msgstr ""
+
+#: src/gtkmm/dialog_setup.cpp:255
+msgid "720x540   Web 720x"
+msgstr ""
+
+#: src/gtkmm/dialog_setup.cpp:256
+msgid "720x405   Web 720x HD"
+msgstr ""
+
+#: src/gtkmm/dialog_setup.cpp:257
+msgid "640x480   Web 640x"
+msgstr ""
+
+#: src/gtkmm/dialog_setup.cpp:258
+msgid "640x360   Web 640x HD"
+msgstr ""
+
+#: src/gtkmm/dialog_setup.cpp:259
+msgid "480x360   Web 480x"
+msgstr ""
+
+#: src/gtkmm/dialog_setup.cpp:260
+msgid "480x270   Web 480x HD"
+msgstr ""
+
+#: src/gtkmm/dialog_setup.cpp:261
+msgid "360x270   Web 360x"
+msgstr ""
+
+#: src/gtkmm/dialog_setup.cpp:262
+msgid "360x203   Web 360x HD"
+msgstr ""
+
+#: src/gtkmm/dialog_setup.cpp:267
+msgid "Predefined FPS:"
+msgstr ""
+
+#: src/gtkmm/dialog_setup.cpp:289
+#, fuzzy
+msgid "New Document FPS"
+msgstr "Tanca document"
+
+#: src/gtkmm/dialog_setup.cpp:291
+msgid "Frames per second of the new created document"
+msgstr ""
+
+#: src/gtkmm/dialog_setup.h:51
+#, fuzzy
+msgid "Custom Size"
+msgstr "Grandària de Brotxa"
+
+#: src/gtkmm/dialog_setup.h:54
+msgid "Custom fps"
+msgstr ""
 
 #: src/gtkmm/dialog_soundselect.cpp:60
 msgid "Sound Select"
@@ -1219,11 +1415,11 @@ msgstr "X"
 msgid "Canvas Browser"
 msgstr "Navegado de llenços"
 
-#: src/gtkmm/dock_children.cpp:67 src/gtkmm/iconcontroller.cpp:175
+#: src/gtkmm/dock_children.cpp:67 src/gtkmm/iconcontroller.cpp:178
 msgid "Children"
 msgstr "Descendents"
 
-#: src/gtkmm/dock_curves.cpp:70 src/gtkmm/iconcontroller.cpp:176
+#: src/gtkmm/dock_curves.cpp:70 src/gtkmm/iconcontroller.cpp:179
 msgid "Curves"
 msgstr "Corbes"
 
@@ -1239,7 +1435,7 @@ msgstr "Panell encastable buit"
 msgid "History"
 msgstr "Historial"
 
-#: src/gtkmm/dock_history.cpp:78 src/gtkmm/iconcontroller.cpp:172
+#: src/gtkmm/dock_history.cpp:78 src/gtkmm/iconcontroller.cpp:175
 msgid "Clear Undo Stack"
 msgstr "Buida la pila de desfer"
 
@@ -1247,7 +1443,7 @@ msgstr "Buida la pila de desfer"
 msgid "Clear the undo stack"
 msgstr "Buida la pila de desfer"
 
-#: src/gtkmm/dock_history.cpp:89 src/gtkmm/iconcontroller.cpp:173
+#: src/gtkmm/dock_history.cpp:89 src/gtkmm/iconcontroller.cpp:176
 msgid "Clear Redo Stack"
 msgstr "Buidar la pila de refer"
 
@@ -1263,7 +1459,7 @@ msgstr "Buida les piles de desfer i refer"
 msgid "Clear the undo and redo stacks"
 msgstr "Buida les piles de desfer i de refer"
 
-#: src/gtkmm/dock_history.cpp:111 src/gtkmm/toolbox.cpp:294
+#: src/gtkmm/dock_history.cpp:111 src/gtkmm/toolbox.cpp:295
 msgid "Undo"
 msgstr "Desfer"
 
@@ -1271,7 +1467,7 @@ msgstr "Desfer"
 msgid "Undo the previous action"
 msgstr "Desfés l'acció anterior"
 
-#: src/gtkmm/dock_history.cpp:119 src/gtkmm/toolbox.cpp:295
+#: src/gtkmm/dock_history.cpp:119 src/gtkmm/toolbox.cpp:296
 msgid "Redo"
 msgstr "Refés"
 
@@ -1320,7 +1516,7 @@ msgstr ""
 "No podreu desfer cap canvi que hàgeu fet!\n"
 "Esteu segurs que voleu buidar les piles de desfer i refer?"
 
-#: src/gtkmm/dock_info.cpp:96 src/gtkmm/instance.cpp:552
+#: src/gtkmm/dock_info.cpp:96 src/gtkmm/instance.cpp:551
 msgid "Info"
 msgstr "Informació"
 
@@ -1348,7 +1544,7 @@ msgstr "B: "
 msgid "A: "
 msgstr "A: "
 
-#: src/gtkmm/dock_keyframes.cpp:66 src/gtkmm/iconcontroller.cpp:177
+#: src/gtkmm/dock_keyframes.cpp:66 src/gtkmm/iconcontroller.cpp:180
 msgid "Keyframes"
 msgstr "Fotogrames clau"
 
@@ -1385,7 +1581,7 @@ msgstr "Afegir una nova entrada de metadades"
 msgid "Remove selected MetaData entry"
 msgstr "Esborra l'entrada de metadades seleccionada"
 
-#: src/gtkmm/dock_navigator.cpp:496 src/gtkmm/iconcontroller.cpp:179
+#: src/gtkmm/dock_navigator.cpp:496 src/gtkmm/iconcontroller.cpp:182
 msgid "Navigator"
 msgstr "Navegador"
 
@@ -1393,78 +1589,85 @@ msgstr "Navegador"
 msgid "Params"
 msgstr "Paràmetres"
 
-#: src/gtkmm/dock_timetrack.cpp:83 src/gtkmm/layergrouptree.cpp:75
+#: src/gtkmm/dock_timetrack.cpp:84 src/gtkmm/layergrouptree.cpp:75
 #: src/gtkmm/layertree.cpp:221 src/gtkmm/layertree.cpp:300
-#: src/synfigapp/actions/valuedescexport.cpp:92
+#: src/synfigapp/actions/canvasnameset.cpp:82
+#: src/synfigapp/actions/valuedescexport.cpp:93
 #: src/synfigapp/actions/valuenodeadd.cpp:77
 #: src/synfigapp/actions/valuenoderename.cpp:86
 msgid "Name"
 msgstr "Nom"
 
-#: src/gtkmm/dock_timetrack.cpp:404
+#: src/gtkmm/dock_timetrack.cpp:405
 msgid "Timetrack"
 msgstr "Pista de temps"
+
+#: src/gtkmm/framedial.cpp:61 src/gtkmm/iconcontroller.cpp:194
+#, fuzzy
+msgid "Previous Frame"
+msgstr "Fotograma previ"
 
 #: src/gtkmm/groupactionmanager.cpp:269
 msgid "UnnamedGroup"
 msgstr "Grup sense nom"
 
-#: src/gtkmm/iconcontroller.cpp:139
+#: src/gtkmm/iconcontroller.cpp:142
 msgid "Bool"
 msgstr "Booleà"
 
-#: src/gtkmm/iconcontroller.cpp:140
+#: src/gtkmm/iconcontroller.cpp:143
 msgid "Integer"
 msgstr "Sencer"
 
-#: src/gtkmm/iconcontroller.cpp:141
+#: src/gtkmm/iconcontroller.cpp:144
 msgid "Angle"
 msgstr "Angle"
 
-#: src/gtkmm/iconcontroller.cpp:143
+#: src/gtkmm/iconcontroller.cpp:146
 msgid "Real"
 msgstr "Real"
 
-#: src/gtkmm/iconcontroller.cpp:144
+#: src/gtkmm/iconcontroller.cpp:147
 msgid "Vector"
 msgstr "Vector"
 
-#: src/gtkmm/iconcontroller.cpp:145
+#: src/gtkmm/iconcontroller.cpp:148
 msgid "Color"
 msgstr "Color"
 
-#: src/gtkmm/iconcontroller.cpp:148 src/gtkmm/iconcontroller.cpp:150
-#: src/gtkmm/iconcontroller.cpp:156 src/gtkmm/iconcontroller.cpp:157
+#: src/gtkmm/iconcontroller.cpp:151 src/gtkmm/iconcontroller.cpp:153
+#: src/gtkmm/iconcontroller.cpp:159 src/gtkmm/iconcontroller.cpp:160
 msgid "Rename"
 msgstr "Renombra"
 
-#: src/gtkmm/iconcontroller.cpp:152
+#: src/gtkmm/iconcontroller.cpp:155
 #, fuzzy
 msgid "Reset Colors"
 msgstr "Colors"
 
-#: src/gtkmm/iconcontroller.cpp:153
+#: src/gtkmm/iconcontroller.cpp:156
 msgid "Swap Colors"
 msgstr "Intercanvia els colors"
 
-#: src/gtkmm/iconcontroller.cpp:154
+#: src/gtkmm/iconcontroller.cpp:157
 #: src/synfigapp/actions/layerparamconnect.cpp:80
-#: src/synfigapp/actions/valuenodedynamiclistloop.cpp:72
-#: src/synfigapp/actions/valuenodedynamiclistunloop.cpp:72
+#: src/synfigapp/actions/valuenodedynamiclistloop.cpp:73
+#: src/synfigapp/actions/valuenodedynamiclistunloop.cpp:73
 #: src/synfigapp/actions/valuenoderemove.cpp:80
+#: src/synfigapp/value_desc.cpp:71
 msgid "ValueNode"
 msgstr "Valor del node"
 
-#: src/gtkmm/iconcontroller.cpp:155
+#: src/gtkmm/iconcontroller.cpp:158
 msgid "About"
 msgstr "Quant a"
 
-#: src/gtkmm/iconcontroller.cpp:159 src/gtkmm/toolbox.cpp:293
+#: src/gtkmm/iconcontroller.cpp:162 src/gtkmm/toolbox.cpp:294
 msgid "Save All"
 msgstr "Desa Tot"
 
-#: src/gtkmm/iconcontroller.cpp:160 src/gtkmm/layergrouptreestore.cpp:920
-#: src/gtkmm/layertreestore.cpp:930
+#: src/gtkmm/iconcontroller.cpp:163 src/gtkmm/layergrouptreestore.cpp:920
+#: src/gtkmm/layertreestore.cpp:965
 #: src/synfigapp/actions/groupaddlayers.cpp:72
 #: src/synfigapp/actions/groupremovelayers.cpp:73
 #: src/synfigapp/actions/layeractivate.cpp:86
@@ -1481,135 +1684,223 @@ msgstr "Desa Tot"
 msgid "Layer"
 msgstr "Capa"
 
-#: src/gtkmm/iconcontroller.cpp:161
+#: src/gtkmm/iconcontroller.cpp:164
 msgid "Paste Canvas"
 msgstr "Enganxa llenç"
 
-#: src/gtkmm/iconcontroller.cpp:165
+#: src/gtkmm/iconcontroller.cpp:168
 msgid "Hide Grid"
 msgstr "Oculta la reixa"
 
-#: src/gtkmm/iconcontroller.cpp:166
+#: src/gtkmm/iconcontroller.cpp:169
 msgid "Enable Grid Snap"
 msgstr "Habilita el desplaçament a la reixa"
 
-#: src/gtkmm/iconcontroller.cpp:167
+#: src/gtkmm/iconcontroller.cpp:170
 msgid "Disable Grid Snap"
 msgstr "Deshabilita el desplaçament a la reixa"
 
-#: src/gtkmm/iconcontroller.cpp:168
+#: src/gtkmm/iconcontroller.cpp:171
 msgid "Duplicate"
 msgstr "Duplica"
 
-#: src/gtkmm/iconcontroller.cpp:169
+#: src/gtkmm/iconcontroller.cpp:172
 #: src/synfigapp/actions/layerencapsulate.cpp:52
 msgid "Encapsulate"
 msgstr "Encapsula"
 
-#: src/gtkmm/iconcontroller.cpp:170 src/gtkmm/layeractionmanager.cpp:134
+#: src/gtkmm/iconcontroller.cpp:173 src/gtkmm/layeractionmanager.cpp:135
 msgid "Select All Child Layers"
 msgstr "Selecciona totes les capes descendents"
 
-#: src/gtkmm/iconcontroller.cpp:178
+#: src/gtkmm/iconcontroller.cpp:181
 msgid "MetaData"
 msgstr "Metadades"
 
-#: src/gtkmm/iconcontroller.cpp:187
+#: src/gtkmm/iconcontroller.cpp:198 src/gtkmm/toggleducksdial.cpp:55
+#, fuzzy
+msgid "Toggle position ducks"
+msgstr "Mostra els ànecs de posició"
+
+#: src/gtkmm/iconcontroller.cpp:199 src/gtkmm/toggleducksdial.cpp:56
+#, fuzzy
+msgid "Toggle vertex ducks"
+msgstr "Mostrar els ànecs de vèrtex"
+
+#: src/gtkmm/iconcontroller.cpp:200 src/gtkmm/toggleducksdial.cpp:57
+#, fuzzy
+msgid "Toggle tangent ducks"
+msgstr "Mostra els ànecs de tangent"
+
+#: src/gtkmm/iconcontroller.cpp:201 src/gtkmm/toggleducksdial.cpp:58
+#, fuzzy
+msgid "Toggle radius ducks"
+msgstr "Mostra els ànecs de ràdio"
+
+#: src/gtkmm/iconcontroller.cpp:202 src/gtkmm/toggleducksdial.cpp:59
+#, fuzzy
+msgid "Toggle width ducks"
+msgstr "Mostrar els ànecs d'espessor"
+
+#: src/gtkmm/iconcontroller.cpp:203 src/gtkmm/toggleducksdial.cpp:60
+#, fuzzy
+msgid "Toggle angle ducks"
+msgstr "Mostra els ànecs d'angle"
+
+#: src/gtkmm/iconcontroller.cpp:205
+#, fuzzy
+msgid "Toggle show grid"
+msgstr "Commuta mostrar reixa"
+
+#: src/gtkmm/iconcontroller.cpp:206
+#, fuzzy
+msgid "Toggle snap grid"
+msgstr "Commuta mostrar reixa"
+
+#: src/gtkmm/iconcontroller.cpp:208
+#, fuzzy
+msgid "Toggle onion skin"
+msgstr "Commuta Pell de ceba"
+
+#: src/gtkmm/iconcontroller.cpp:210
+#, fuzzy
+msgid "Increase resolution"
+msgstr "Incrementa la quantitat"
+
+#: src/gtkmm/iconcontroller.cpp:211
+#, fuzzy
+msgid "Decrease resolution"
+msgstr "Disminueix la quantitat"
+
+#: src/gtkmm/iconcontroller.cpp:213
+#, fuzzy
+msgid "Preview Options Dialog"
+msgstr "Opcions de previsualizació"
+
+#: src/gtkmm/iconcontroller.cpp:214
+#, fuzzy
+msgid "Render Options Dialog"
+msgstr "Atributs de renderitzat"
+
+#: src/gtkmm/iconcontroller.cpp:216
 msgid "CVS Add"
 msgstr "Afegeix CVS"
 
-#: src/gtkmm/iconcontroller.cpp:189 src/gtkmm/instance.cpp:492
-#: src/gtkmm/instance.cpp:503
+#: src/gtkmm/iconcontroller.cpp:218 src/gtkmm/instance.cpp:491
+#: src/gtkmm/instance.cpp:502
 msgid "CVS Commit"
 msgstr "Commit CVS"
 
-#: src/gtkmm/iconcontroller.cpp:190 src/gtkmm/instance.cpp:594
+#: src/gtkmm/iconcontroller.cpp:219 src/gtkmm/instance.cpp:593
 msgid "CVS Revert"
 msgstr "Revert CVS"
 
-#: src/gtkmm/iconcontroller.cpp:193
+#: src/gtkmm/iconcontroller.cpp:222
 msgid "Normal Tool"
 msgstr "Eina normal"
 
-#: src/gtkmm/iconcontroller.cpp:194 src/gtkmm/state_polygon.cpp:234
-#: src/gtkmm/state_polygon.cpp:273
+#: src/gtkmm/iconcontroller.cpp:223 src/gtkmm/state_polygon.cpp:338
+#: src/gtkmm/state_polygon.cpp:392
 msgid "Polygon Tool"
 msgstr "Eina polígon"
 
-#: src/gtkmm/iconcontroller.cpp:195 src/gtkmm/state_bline.cpp:377
+#: src/gtkmm/iconcontroller.cpp:224 src/gtkmm/state_bline.cpp:377
 #: src/gtkmm/state_bline.cpp:421
 msgid "BLine Tool"
 msgstr "Eina línia Beizer"
 
-#: src/gtkmm/iconcontroller.cpp:196
+#: src/gtkmm/iconcontroller.cpp:225
 msgid "Eyedrop Tool"
 msgstr "Eina recull color"
 
-#: src/gtkmm/iconcontroller.cpp:197
+#: src/gtkmm/iconcontroller.cpp:226
 msgid "Fill Tool"
 msgstr "Eina de farciment"
 
-#: src/gtkmm/iconcontroller.cpp:198 src/gtkmm/state_draw.cpp:433
+#: src/gtkmm/iconcontroller.cpp:227 src/gtkmm/state_draw.cpp:433
 #: src/gtkmm/state_draw.cpp:519
 msgid "Draw Tool"
 msgstr "Eina de dibuix"
 
-#: src/gtkmm/iconcontroller.cpp:199 src/gtkmm/state_sketch.cpp:325
+#: src/gtkmm/iconcontroller.cpp:228 src/gtkmm/state_sketch.cpp:325
 #: src/gtkmm/state_sketch.cpp:399
 msgid "Sketch Tool"
 msgstr "Eina d'esbós"
 
-#: src/gtkmm/iconcontroller.cpp:200 src/gtkmm/state_circle.cpp:402
-#: src/gtkmm/state_circle.cpp:475
+#: src/gtkmm/iconcontroller.cpp:229 src/gtkmm/state_circle.cpp:432
+#: src/gtkmm/state_circle.cpp:496
 msgid "Circle Tool"
 msgstr "Eina de cercle"
 
-#: src/gtkmm/iconcontroller.cpp:201 src/gtkmm/state_rectangle.cpp:351
-#: src/gtkmm/state_rectangle.cpp:407
+#: src/gtkmm/iconcontroller.cpp:230 src/gtkmm/state_rectangle.cpp:352
+#: src/gtkmm/state_rectangle.cpp:408
 msgid "Rectangle Tool"
 msgstr "Eina de rectángulo"
 
-#: src/gtkmm/iconcontroller.cpp:202 src/gtkmm/state_smoothmove.cpp:176
+#: src/gtkmm/iconcontroller.cpp:231 src/gtkmm/state_smoothmove.cpp:177
 msgid "SmoothMove Tool"
 msgstr "Eina de moviment suau"
 
-#: src/gtkmm/iconcontroller.cpp:203 src/gtkmm/state_scale.cpp:166
-#: src/gtkmm/state_scale.cpp:192
+#: src/gtkmm/iconcontroller.cpp:232 src/gtkmm/state_scale.cpp:167
+#: src/gtkmm/state_scale.cpp:193
 msgid "Scale Tool"
 msgstr "Eina d'escala"
 
-#: src/gtkmm/iconcontroller.cpp:204 src/gtkmm/state_width.cpp:228
-#: src/gtkmm/state_width.cpp:304
+#: src/gtkmm/iconcontroller.cpp:233 src/gtkmm/state_width.cpp:229
+#: src/gtkmm/state_width.cpp:305
 msgid "Width Tool"
 msgstr "Eina d'espessor"
 
-#: src/gtkmm/iconcontroller.cpp:205 src/gtkmm/state_rotate.cpp:180
-#: src/gtkmm/state_rotate.cpp:207
+#: src/gtkmm/iconcontroller.cpp:234 src/gtkmm/state_rotate.cpp:181
+#: src/gtkmm/state_rotate.cpp:208
 msgid "Rotate Tool"
 msgstr "Eina de rotació"
 
-#: src/gtkmm/iconcontroller.cpp:206
+#: src/gtkmm/iconcontroller.cpp:235
 msgid "Zoom Tool"
 msgstr "Eina de Zoom"
 
-#: src/gtkmm/iconcontroller.cpp:207
+#: src/gtkmm/iconcontroller.cpp:236
 msgid "Info Tool"
 msgstr "Eina d'informació"
 
-#: src/gtkmm/iconcontroller.cpp:208 src/gtkmm/mod_mirror/state_mirror.cpp:185
+#: src/gtkmm/iconcontroller.cpp:237 src/gtkmm/mod_mirror/state_mirror.cpp:185
 #: src/gtkmm/mod_mirror/state_mirror.cpp:213
 msgid "Mirror Tool"
 msgstr "Eina de mirall"
 
-#: src/gtkmm/iconcontroller.cpp:210 src/gtkmm/state_gradient.cpp:266
-#: src/gtkmm/state_gradient.cpp:326
+#: src/gtkmm/iconcontroller.cpp:239 src/gtkmm/state_gradient.cpp:267
+#: src/gtkmm/state_gradient.cpp:327
 msgid "Gradient Tool"
 msgstr "Eina de Gradient"
 
-#: src/gtkmm/iconcontroller.cpp:211
+#: src/gtkmm/iconcontroller.cpp:240 src/gtkmm/state_star.cpp:454
+#: src/gtkmm/state_star.cpp:523
 #, fuzzy
 msgid "Star Tool"
 msgstr "Eina d'escala"
+
+#: src/gtkmm/instance.cpp:233 src/gtkmm/instance.cpp:336
+#, fuzzy, c-format
+msgid "Unable to save to '%s'"
+msgstr "Impossible desar l'esbós"
+
+#: src/gtkmm/instance.cpp:234
+msgid "Save - Error"
+msgstr ""
+
+#: src/gtkmm/instance.cpp:264
+msgid ""
+"There is currently a bug when using \"SaveAs\"\n"
+"on a composition that is being referenced by other\n"
+"files that are currently open. Close these\n"
+"other files first before trying to use \"SaveAs\"."
+msgstr ""
+
+#: src/gtkmm/instance.cpp:268 src/gtkmm/instance.cpp:319
+#: src/gtkmm/instance.cpp:337
+msgid "SaveAs - Error"
+msgstr ""
 
 #: src/gtkmm/instance.cpp:282
 msgid "Choose a Filename to Save As"
@@ -1627,15 +1918,32 @@ msgstr ""
 "Heu donat una extensió a l'arxiu desconeguda.\n"
 "Esteu segurs que és això el que vulgueu?"
 
-#: src/gtkmm/instance.cpp:483
+#: src/gtkmm/instance.cpp:318
+#, c-format
+msgid "Unable to check whether '%s' exists."
+msgstr ""
+
+#: src/gtkmm/instance.cpp:324
+#, c-format
+msgid ""
+"A file named '%s' already exists.\n"
+"\n"
+"Do you want to replace it with the file you are saving?"
+msgstr ""
+
+#: src/gtkmm/instance.cpp:327
+msgid "File exists"
+msgstr ""
+
+#: src/gtkmm/instance.cpp:482
 msgid "You must first add this composition to the repository"
 msgstr "Heu d'afegir abans aquesta composició al repositori"
 
-#: src/gtkmm/instance.cpp:492 src/gtkmm/instance.cpp:561
+#: src/gtkmm/instance.cpp:491 src/gtkmm/instance.cpp:560
 msgid "This will save any changes you have made. Are you sure?"
 msgstr "Això desarà qualsevol canvi que hagi fet. Esteu segurs?"
 
-#: src/gtkmm/instance.cpp:499
+#: src/gtkmm/instance.cpp:498
 msgid ""
 "The local copy of the file hasn't been changed since the last update.\n"
 "Nothing to commit!"
@@ -1643,45 +1951,45 @@ msgstr ""
 "La còpia local de l'arxiu no s'ha canviat des de l'última actualització.\n"
 "Res a enviar!"
 
-#: src/gtkmm/instance.cpp:503
+#: src/gtkmm/instance.cpp:502
 msgid "Enter a log message describing the changes you have made"
 msgstr "Introduïu un missatge descrivint els canvis que heu realitzat"
 
-#: src/gtkmm/instance.cpp:511
+#: src/gtkmm/instance.cpp:510
 msgid "An error has occurred when trying to COMMIT"
 msgstr "Ha ocorregut un error intentant al fer el COMMIT"
 
-#: src/gtkmm/instance.cpp:522
+#: src/gtkmm/instance.cpp:521
 msgid "This composition has already been added to the repository"
 msgstr "La composició ja ha estat enviada al repositori"
 
-#: src/gtkmm/instance.cpp:536
+#: src/gtkmm/instance.cpp:535
 msgid "An error has occurred when trying to ADD"
 msgstr "Ha ocorregut un error quan s'intentava fer el ADD"
 
-#: src/gtkmm/instance.cpp:547
+#: src/gtkmm/instance.cpp:546
 msgid ""
 "This file is not under version control, so there is nothing to update from!"
 msgstr ""
 "Aquest arxiu no està actualment sota el  sistema de control de versions, "
 "així que no hi ha res per actualitzar!"
 
-#: src/gtkmm/instance.cpp:552
+#: src/gtkmm/instance.cpp:551
 msgid "This file is up-to-date"
 msgstr "Aquest arxiu ja està actualitzat"
 
-#: src/gtkmm/instance.cpp:577 src/gtkmm/instance.cpp:613
+#: src/gtkmm/instance.cpp:576 src/gtkmm/instance.cpp:612
 msgid "An error has occurred when trying to UPDATE"
 msgstr "Ha ocorregut un error quan es tractava de fer l'UPDATE"
 
-#: src/gtkmm/instance.cpp:588
+#: src/gtkmm/instance.cpp:587
 msgid ""
 "This file is not under version control, so there is nothing to revert to!"
 msgstr ""
 "Aquest arxiu no està actualment sota control de versió, així que hi ha res a "
 "desactualizar!"
 
-#: src/gtkmm/instance.cpp:595
+#: src/gtkmm/instance.cpp:594
 msgid ""
 "This will abandon all changes you have made\n"
 "since the last time you performed a commit\n"
@@ -1693,15 +2001,15 @@ msgstr ""
 "Això no es pot desfer! Està segur que \n"
 "vol fer això?"
 
-#: src/gtkmm/instance.cpp:604
+#: src/gtkmm/instance.cpp:603
 msgid "Unable to remove previous version"
 msgstr "Impossible eliminar la versió anterior"
 
-#: src/gtkmm/instance.cpp:632
+#: src/gtkmm/instance.cpp:631
 msgid "Error: Revert Failed"
 msgstr "Error: Ha fallat la desactualització"
 
-#: src/gtkmm/instance.cpp:632
+#: src/gtkmm/instance.cpp:631
 msgid ""
 "The revert operation has failed. This can be due to it being\n"
 "referenced by another composition that is already open, or\n"
@@ -1715,11 +2023,11 @@ msgstr ""
 "tancar qualsevol composició que pugui fer referència a aquesta\n"
 " i intenteu-ho de nou o torneu a iniciar el Synfig Studio"
 
-#: src/gtkmm/instance.cpp:660
+#: src/gtkmm/instance.cpp:659
 msgid "Revert to saved"
 msgstr "Desactualitza al que hi ha desat"
 
-#: src/gtkmm/instance.cpp:660
+#: src/gtkmm/instance.cpp:659
 msgid ""
 "You will lose any changes you have made since your last save.\n"
 "Are you sure?"
@@ -1728,12 +2036,12 @@ msgstr ""
 "desat.\n"
 "Esteu segurs?"
 
-#: src/gtkmm/instance.cpp:683
+#: src/gtkmm/instance.cpp:682
 #, c-format
 msgid "Would you like to save your changes to %s?"
 msgstr "Voleu desar els canvis a %s?"
 
-#: src/gtkmm/instance.cpp:699
+#: src/gtkmm/instance.cpp:698
 #, c-format
 msgid ""
 "%s has changes not yet on the CVS repository.\n"
@@ -1742,27 +2050,28 @@ msgstr ""
 "%s te canvis que encara no estan al CVS.\n"
 "Voleu fer el commit d'aquests canvis?"
 
-#: src/gtkmm/instance.cpp:1105
+#: src/gtkmm/instance.cpp:1109
 msgid "Edit Waypoint"
 msgstr "Edita la interpolació"
 
-#: src/gtkmm/instance.cpp:1146
+#: src/gtkmm/instance.cpp:1150
 msgid "Set Waypoints"
 msgstr "Estableix els punts d'interpolació"
 
-#: src/gtkmm/instance.cpp:1191
+#: src/gtkmm/instance.cpp:1195
 msgid "Unable to convert to animated waypoint"
 msgstr "No ha esta possible convertir a una interpolación animada"
 
-#: src/gtkmm/instance.cpp:1208
-msgid "Unable to find waypoint_set_smart action"
+#: src/gtkmm/instance.cpp:1212
+#, fuzzy
+msgid "Unable to find WaypointSetSmart action"
 msgstr "No és possible trobar una acció waypoint_set_smart"
 
-#: src/gtkmm/instance.cpp:1221
+#: src/gtkmm/instance.cpp:1225
 msgid "Unable to set a specific waypoint"
 msgstr "No és possible establir el punt d'interpolació donat"
 
-#: src/gtkmm/instance.cpp:1249
+#: src/gtkmm/instance.cpp:1253
 msgid "Edit Waypoints"
 msgstr "Edita les interpolacions"
 
@@ -1774,11 +2083,22 @@ msgstr "Animació Synfig "
 msgid "Add New Keyframe"
 msgstr "Afegeix un nou fotograma clau"
 
+#: src/gtkmm/keyframedial.cpp:57
+#, fuzzy
+msgid "Previous KeyFrame"
+msgstr "Fotograma previ"
+
+#: src/gtkmm/keyframedial.cpp:58
+#, fuzzy
+msgid "Next KeyFrame"
+msgstr "Fotograma següent"
+
 #: src/gtkmm/keyframetree.cpp:77
 msgid "Length"
 msgstr "Longitud"
 
 #: src/gtkmm/keyframetree.cpp:108
+#: src/synfigapp/actions/canvasdescriptionset.cpp:82
 msgid "Description"
 msgstr "Descripció"
 
@@ -1790,17 +2110,17 @@ msgstr "No és possible trobar el fotograma clau en la taula"
 msgid "There are no keyframes n this canvas"
 msgstr "No hi ha fotogrames clau en aquest llenç"
 
-#: src/gtkmm/layeractionmanager.cpp:128
+#: src/gtkmm/layeractionmanager.cpp:129
 msgid "Amount"
 msgstr "Quantitat"
 
-#: src/gtkmm/layeractionmanager.cpp:364
+#: src/gtkmm/layeractionmanager.cpp:365
 msgid "Paste"
 msgstr "Enganxa"
 
-#: src/gtkmm/layeractionmanager.cpp:450
+#: src/gtkmm/layeractionmanager.cpp:454
 #: src/synfigapp/actions/layerduplicate.cpp:178
-#: src/synfigapp/canvasinterface.cpp:202
+#: src/synfigapp/canvasinterface.cpp:204
 #, c-format
 msgid "Index %d"
 msgstr "Índex %d"
@@ -1838,19 +2158,19 @@ msgstr "Z"
 msgid "Value"
 msgstr "Valor"
 
-#: src/gtkmm/layertreestore.cpp:462
+#: src/gtkmm/layertreestore.cpp:464
 msgid "Move Layers"
 msgstr "Mou capes"
 
-#: src/gtkmm/main.cpp:73
+#: src/gtkmm/main.cpp:74
 msgid "synfig studio is already running"
 msgstr "El Synfig Studio ja està en execució"
 
-#: src/gtkmm/main.cpp:74
+#: src/gtkmm/main.cpp:75
 msgid "the existing process will be used"
 msgstr "s'utilitzarà el procés ja existent"
 
-#: src/gtkmm/main.cpp:93
+#: src/gtkmm/main.cpp:94
 msgid "synfig studio -- starting up application..."
 msgstr "Synfig Studio: iniciant l'aplicació..."
 
@@ -1875,8 +2195,9 @@ msgid "Add Color"
 msgstr "Afegeix un color"
 
 #: src/gtkmm/mod_palette/dock_paledit.cpp:129
+#, fuzzy
 msgid ""
-"Add current foreground color\n"
+"Add current outline color\n"
 "to the palette"
 msgstr ""
 "Afegeix el color de de front actual\n"
@@ -2022,81 +2343,103 @@ msgstr "<b>Punt de focus</b>"
 msgid "_Focus Point"
 msgstr "Punt de _focus"
 
-#: src/gtkmm/render.cpp:61 src/gtkmm/render.cpp:177
+#: src/gtkmm/render.cpp:63 src/gtkmm/render.cpp:179
 msgid "Render Settings"
 msgstr "Atributs de renderitzat"
 
-#: src/gtkmm/render.cpp:67
+#: src/gtkmm/render.cpp:69
 msgid "Use _current frame"
 msgstr "Utilitza el fotogra_ma actual"
 
-#: src/gtkmm/render.cpp:77
+#: src/gtkmm/render.cpp:79
 msgid "Auto"
 msgstr "Auto"
 
-#: src/gtkmm/render.cpp:101
+#: src/gtkmm/render.cpp:103
 msgid "Choose..."
 msgstr "Tria..."
 
-#: src/gtkmm/render.cpp:105
+#: src/gtkmm/render.cpp:107
 msgid "Target"
 msgstr "Objectiu"
 
-#: src/gtkmm/render.cpp:107
+#: src/gtkmm/render.cpp:109
 msgid "<b>Target</b>"
 msgstr "<b>Objectiu</b>"
 
-#: src/gtkmm/render.cpp:118
+#: src/gtkmm/render.cpp:120
 msgid "_Filename"
 msgstr "_Nom de l'arxiu"
 
-#: src/gtkmm/render.cpp:125
+#: src/gtkmm/render.cpp:127
 msgid "_Target"
 msgstr "_Objectiu"
 
-#: src/gtkmm/render.cpp:133
+#: src/gtkmm/render.cpp:135
 msgid "Settings"
 msgstr "Atributs"
 
-#: src/gtkmm/render.cpp:135
+#: src/gtkmm/render.cpp:137
 msgid "<b>Settings</b>"
 msgstr "<b>Atributs</b>"
 
-#: src/gtkmm/render.cpp:147
+#: src/gtkmm/render.cpp:149
 msgid "_Quality"
 msgstr "_Qualitat"
 
-#: src/gtkmm/render.cpp:153
+#: src/gtkmm/render.cpp:155
 msgid "_Anti-Aliasing"
 msgstr "_Anti-Aliasing"
 
-#: src/gtkmm/render.cpp:247
+#: src/gtkmm/render.cpp:249
 msgid "You must supply a filename!"
 msgstr "Heu de subministrar un nom d'arxiu!"
 
-#: src/gtkmm/render.cpp:273
+#: src/gtkmm/render.cpp:275
 msgid "Unable to determine proper target from filename."
 msgstr "Impossible determinar l'objectiu adient des del nom d'arxiu."
 
-#: src/gtkmm/render.cpp:280
+#: src/gtkmm/render.cpp:282
 msgid "A filename is required for this target"
 msgstr "Es necessita un nom d'arxiu per a aquest objectiu"
 
-#: src/gtkmm/render.cpp:287
+#: src/gtkmm/render.cpp:289
 msgid "Unable to create target for "
 msgstr "Impossible crear objectiu per a "
 
-#: src/gtkmm/render.cpp:304
+#: src/gtkmm/render.cpp:297
+#, fuzzy
+msgid "Unable to create file for "
+msgstr "Impossible crear objectiu per a "
+
+#: src/gtkmm/render.cpp:314
 msgid "Target initialization failure"
 msgstr "Fallada d'inicialización d'objectiu"
 
-#: src/gtkmm/render.cpp:308
+#: src/gtkmm/render.cpp:318
 msgid "Rendering "
 msgstr "Renderitzant "
 
-#: src/gtkmm/render.cpp:336
+#: src/gtkmm/render.cpp:346
 msgid "File rendered successfully"
 msgstr "Arxiu renderitzat correctament"
+
+#: src/gtkmm/resolutiondial.cpp:56
+msgid "Increase Display Resolution"
+msgstr ""
+
+#: src/gtkmm/resolutiondial.cpp:57
+msgid "Decrease Display Resolution"
+msgstr ""
+
+#: src/gtkmm/resolutiondial.cpp:58
+#, fuzzy
+msgid "Low Res"
+msgstr "Utilitza baixa resolució"
+
+#: src/gtkmm/resolutiondial.cpp:58
+msgid "Use Low Resolution when enabled"
+msgstr ""
 
 #: src/gtkmm/splash.cpp:113
 msgid "ERROR:"
@@ -2106,31 +2449,36 @@ msgstr "ERROR:"
 msgid "WARNING:"
 msgstr "AVÍS:"
 
-#: src/gtkmm/state_bline.cpp:361 src/gtkmm/state_circle.cpp:394
-#: src/gtkmm/state_draw.cpp:413 src/gtkmm/state_rectangle.cpp:341
+#: src/gtkmm/state_bline.cpp:361 src/gtkmm/state_circle.cpp:404
+#: src/gtkmm/state_draw.cpp:413 src/gtkmm/state_polygon.cpp:325
+#: src/gtkmm/state_rectangle.cpp:342 src/gtkmm/state_star.cpp:442
 #, fuzzy
 msgid "Create Region BLine"
 msgstr "Crea regió"
 
-#: src/gtkmm/state_bline.cpp:362 src/gtkmm/state_circle.cpp:395
-#: src/gtkmm/state_draw.cpp:414 src/gtkmm/state_rectangle.cpp:342
+#: src/gtkmm/state_bline.cpp:362 src/gtkmm/state_circle.cpp:405
+#: src/gtkmm/state_draw.cpp:414 src/gtkmm/state_polygon.cpp:326
+#: src/gtkmm/state_rectangle.cpp:343 src/gtkmm/state_star.cpp:443
 #, fuzzy
 msgid "Create Outline BLine"
 msgstr "Crea contorn"
 
-#: src/gtkmm/state_bline.cpp:363 src/gtkmm/state_circle.cpp:396
-#: src/gtkmm/state_rectangle.cpp:343
+#: src/gtkmm/state_bline.cpp:363 src/gtkmm/state_circle.cpp:406
+#: src/gtkmm/state_polygon.cpp:327 src/gtkmm/state_rectangle.cpp:344
+#: src/gtkmm/state_star.cpp:444
 #, fuzzy
 msgid "Create Curve Gradient BLine"
 msgstr "Esborra la línia Beizer actual"
 
-#: src/gtkmm/state_bline.cpp:364 src/gtkmm/state_circle.cpp:397
-#: src/gtkmm/state_rectangle.cpp:344
+#: src/gtkmm/state_bline.cpp:364 src/gtkmm/state_circle.cpp:407
+#: src/gtkmm/state_polygon.cpp:328 src/gtkmm/state_rectangle.cpp:345
+#: src/gtkmm/state_star.cpp:445
 #, fuzzy
 msgid "Create Plant BLine"
 msgstr "Crea contorn"
 
-#: src/gtkmm/state_bline.cpp:365
+#: src/gtkmm/state_bline.cpp:365 src/gtkmm/state_circle.cpp:408
+#: src/gtkmm/state_polygon.cpp:329 src/gtkmm/state_star.cpp:446
 #, fuzzy
 msgid "Link Origins"
 msgstr "Origen"
@@ -2139,7 +2487,7 @@ msgstr "Origen"
 msgid "Auto Export"
 msgstr "Exportació automàtica"
 
-#: src/gtkmm/state_bline.cpp:367 src/gtkmm/state_polygon.cpp:228
+#: src/gtkmm/state_bline.cpp:367 src/gtkmm/state_polygon.cpp:330
 msgid "Make"
 msgstr "Crea"
 
@@ -2148,6 +2496,7 @@ msgid "Clear"
 msgstr "Esborra"
 
 #: src/gtkmm/state_bline.cpp:385 src/gtkmm/state_draw.cpp:450
+#: src/gtkmm/state_polygon.cpp:352
 msgid "Feather"
 msgstr "Esvaïment"
 
@@ -2167,157 +2516,202 @@ msgstr "Nova línia de Beizer"
 msgid "Unable to add value node"
 msgstr "Impossible afegir valor de node"
 
-#: src/gtkmm/state_bline.cpp:626 src/gtkmm/state_circle.cpp:638
-#: src/gtkmm/state_rectangle.cpp:556
+#: src/gtkmm/state_bline.cpp:627 src/gtkmm/state_bline.cpp:690
+#: src/gtkmm/state_bline.cpp:753 src/gtkmm/state_bline.cpp:824
+#: src/gtkmm/state_circle.cpp:630 src/gtkmm/state_circle.cpp:697
+#: src/gtkmm/state_circle.cpp:771 src/gtkmm/state_circle.cpp:845
+#: src/gtkmm/state_circle.cpp:925 src/gtkmm/state_draw.cpp:1041
+#: src/gtkmm/state_draw.cpp:1060 src/gtkmm/state_draw.cpp:1072
+#: src/gtkmm/state_draw.cpp:1106 src/gtkmm/state_draw.cpp:1797
+#: src/gtkmm/state_gradient.cpp:409 src/gtkmm/state_gradient.cpp:422
+#: src/gtkmm/state_gradient.cpp:435 src/gtkmm/state_gradient.cpp:451
+#: src/gtkmm/state_polygon.cpp:536 src/gtkmm/state_polygon.cpp:613
+#: src/gtkmm/state_polygon.cpp:677 src/gtkmm/state_polygon.cpp:741
+#: src/gtkmm/state_polygon.cpp:811 src/gtkmm/state_rectangle.cpp:524
+#: src/gtkmm/state_rectangle.cpp:557 src/gtkmm/state_rectangle.cpp:621
+#: src/gtkmm/state_rectangle.cpp:685 src/gtkmm/state_rectangle.cpp:755
+#: src/gtkmm/state_star.cpp:671 src/gtkmm/state_star.cpp:742
+#: src/gtkmm/state_star.cpp:811 src/gtkmm/state_star.cpp:880
+#: src/gtkmm/state_star.cpp:955 src/gtkmm/state_text.cpp:405
+msgid "Unable to create layer"
+msgstr "Impossible crear la capa"
+
+#: src/gtkmm/state_bline.cpp:630 src/gtkmm/state_circle.cpp:702
+#: src/gtkmm/state_polygon.cpp:618 src/gtkmm/state_rectangle.cpp:562
+#: src/gtkmm/state_star.cpp:747
 msgid " Gradient"
 msgstr "Gradient"
 
-#: src/gtkmm/state_bline.cpp:645 src/gtkmm/state_bline.cpp:668
-#: src/gtkmm/state_circle.cpp:662 src/gtkmm/state_circle.cpp:685
-#: src/gtkmm/state_rectangle.cpp:575 src/gtkmm/state_rectangle.cpp:598
+#: src/gtkmm/state_bline.cpp:649 src/gtkmm/state_bline.cpp:672
+#: src/gtkmm/state_circle.cpp:726 src/gtkmm/state_circle.cpp:749
+#: src/gtkmm/state_polygon.cpp:637 src/gtkmm/state_polygon.cpp:660
+#: src/gtkmm/state_rectangle.cpp:581 src/gtkmm/state_rectangle.cpp:604
+#: src/gtkmm/state_star.cpp:766 src/gtkmm/state_star.cpp:789
 msgid "Unable to create Gradient layer"
 msgstr "Impossible crear una capa Gradient"
 
-#: src/gtkmm/state_bline.cpp:685 src/gtkmm/state_circle.cpp:702
-#: src/gtkmm/state_rectangle.cpp:615
+#: src/gtkmm/state_bline.cpp:693 src/gtkmm/state_circle.cpp:776
+#: src/gtkmm/state_polygon.cpp:682 src/gtkmm/state_rectangle.cpp:626
+#: src/gtkmm/state_star.cpp:816
 msgid " Plant"
 msgstr "Plant"
 
-#: src/gtkmm/state_bline.cpp:704 src/gtkmm/state_bline.cpp:727
-#: src/gtkmm/state_circle.cpp:726 src/gtkmm/state_circle.cpp:749
-#: src/gtkmm/state_rectangle.cpp:634 src/gtkmm/state_rectangle.cpp:657
+#: src/gtkmm/state_bline.cpp:712 src/gtkmm/state_bline.cpp:735
+#: src/gtkmm/state_circle.cpp:800 src/gtkmm/state_circle.cpp:823
+#: src/gtkmm/state_polygon.cpp:701 src/gtkmm/state_polygon.cpp:724
+#: src/gtkmm/state_rectangle.cpp:645 src/gtkmm/state_rectangle.cpp:668
+#: src/gtkmm/state_star.cpp:835 src/gtkmm/state_star.cpp:858
 msgid "Unable to create Plant layer"
 msgstr "Impossible crear una capa planta"
 
-#: src/gtkmm/state_bline.cpp:744 src/gtkmm/state_circle.cpp:766
-#: src/gtkmm/state_draw.cpp:1058 src/gtkmm/state_draw.cpp:1977
-#: src/gtkmm/state_rectangle.cpp:674
+#: src/gtkmm/state_bline.cpp:756 src/gtkmm/state_circle.cpp:850
+#: src/gtkmm/state_draw.cpp:1076 src/gtkmm/state_draw.cpp:1999
+#: src/gtkmm/state_polygon.cpp:746 src/gtkmm/state_rectangle.cpp:690
+#: src/gtkmm/state_star.cpp:885
 msgid " Region"
 msgstr "Regió"
 
-#: src/gtkmm/state_bline.cpp:774 src/gtkmm/state_bline.cpp:797
-#: src/gtkmm/state_circle.cpp:801 src/gtkmm/state_circle.cpp:824
-#: src/gtkmm/state_draw.cpp:1800 src/gtkmm/state_draw.cpp:1993
-#: src/gtkmm/state_rectangle.cpp:704 src/gtkmm/state_rectangle.cpp:727
+#: src/gtkmm/state_bline.cpp:783 src/gtkmm/state_bline.cpp:806
+#: src/gtkmm/state_circle.cpp:882 src/gtkmm/state_circle.cpp:905
+#: src/gtkmm/state_draw.cpp:1823 src/gtkmm/state_draw.cpp:2015
+#: src/gtkmm/state_polygon.cpp:773 src/gtkmm/state_polygon.cpp:796
+#: src/gtkmm/state_rectangle.cpp:717 src/gtkmm/state_rectangle.cpp:740
+#: src/gtkmm/state_star.cpp:912 src/gtkmm/state_star.cpp:935
 msgid "Unable to create Region layer"
 msgstr "Impossible crear una capa de regió"
 
-#: src/gtkmm/state_bline.cpp:814 src/gtkmm/state_circle.cpp:839
-#: src/gtkmm/state_draw.cpp:1053 src/gtkmm/state_rectangle.cpp:742
+#: src/gtkmm/state_bline.cpp:827 src/gtkmm/state_circle.cpp:930
+#: src/gtkmm/state_draw.cpp:1064 src/gtkmm/state_polygon.cpp:816
+#: src/gtkmm/state_rectangle.cpp:760 src/gtkmm/state_star.cpp:960
 msgid " Outline"
 msgstr "Contorn"
 
-#: src/gtkmm/state_bline.cpp:838 src/gtkmm/state_bline.cpp:861
-#: src/gtkmm/state_circle.cpp:869 src/gtkmm/state_circle.cpp:892
-#: src/gtkmm/state_rectangle.cpp:767 src/gtkmm/state_rectangle.cpp:790
+#: src/gtkmm/state_bline.cpp:851 src/gtkmm/state_bline.cpp:874
+#: src/gtkmm/state_circle.cpp:960 src/gtkmm/state_circle.cpp:983
+#: src/gtkmm/state_polygon.cpp:841 src/gtkmm/state_polygon.cpp:864
+#: src/gtkmm/state_rectangle.cpp:785 src/gtkmm/state_rectangle.cpp:808
+#: src/gtkmm/state_star.cpp:985 src/gtkmm/state_star.cpp:1008
 msgid "Unable to create Outline layer"
 msgstr "Impossible crear una capa contorn"
 
-#: src/gtkmm/state_bline.cpp:1250
+#: src/gtkmm/state_bline.cpp:1259
 msgid "Unloop BLine"
 msgstr "Elimina el bucle de la línia de Bezier"
 
-#: src/gtkmm/state_bline.cpp:1254
+#: src/gtkmm/state_bline.cpp:1263
 msgid "Loop BLine"
 msgstr "Fes un bucle de línia de Bezier"
 
-#: src/gtkmm/state_bline.cpp:1259
+#: src/gtkmm/state_bline.cpp:1268
 msgid "Delete Vertex"
 msgstr "Esborra el vèrtex"
 
-#: src/gtkmm/state_bline.cpp:1274
+#: src/gtkmm/state_bline.cpp:1283
 msgid "Insert Vertex"
 msgstr "Inserta Vèrtex"
 
-#: src/gtkmm/state_bline.cpp:1336
+#: src/gtkmm/state_bline.cpp:1345
 msgid ""
 "Unable to find where to insert vertex, internal error, please report this bug"
 msgstr ""
 "Impossible trobar on inserir el vèrtex, error intern, per favor reporteu "
 "aquest error"
 
-#: src/gtkmm/state_bline.cpp:1355
+#: src/gtkmm/state_bline.cpp:1364
 msgid "Unable to remove vertex, internal error, please report this bug"
 msgstr ""
 "Impossible esborrar el vèrtex, error intern, per favor reporteu aquest error"
 
-#: src/gtkmm/state_bline.cpp:1369
+#: src/gtkmm/state_bline.cpp:1378
 #: src/synfigapp/actions/blinepointtangentmerge.cpp:56
 msgid "Merge Tangents"
 msgstr "Barreja les tangents"
 
-#: src/gtkmm/state_bline.cpp:1376
+#: src/gtkmm/state_bline.cpp:1385
 #: src/synfigapp/actions/blinepointtangentsplit.cpp:56
 msgid "Split Tangents"
 msgstr "Divideix les tangents"
 
-#: src/gtkmm/state_circle.cpp:392 src/gtkmm/state_rectangle.cpp:339
+#: src/gtkmm/state_circle.cpp:402 src/gtkmm/state_polygon.cpp:323
+#: src/gtkmm/state_rectangle.cpp:340 src/gtkmm/state_star.cpp:439
 msgid "Invert"
 msgstr "Inverteix"
 
-#: src/gtkmm/state_circle.cpp:393
+#: src/gtkmm/state_circle.cpp:403
 #, fuzzy
 msgid "Create Circle Layer"
 msgstr "Desactiva la capa"
 
-#: src/gtkmm/state_circle.cpp:398 src/gtkmm/state_rectangle.cpp:345
-msgid "Link BLine Origins"
-msgstr ""
+#: src/gtkmm/state_circle.cpp:409 src/gtkmm/state_star.cpp:447
+#, fuzzy
+msgid "BLine Origins at Center"
+msgstr "Origen"
 
-#: src/gtkmm/state_circle.cpp:406
+#: src/gtkmm/state_circle.cpp:415
 msgid "Falloff"
 msgstr "Caiguda"
 
-#: src/gtkmm/state_circle.cpp:407
+#: src/gtkmm/state_circle.cpp:416
 msgid "Determines the falloff function for the feather"
 msgstr "Determina la funció de caiguda de l'esvaïment"
 
-#: src/gtkmm/state_circle.cpp:409 src/gtkmm/state_gradient.cpp:273
-#: src/gtkmm/widget_waypoint.cpp:88 src/gtkmm/widget_waypoint.cpp:95
-#: src/gtkmm/widget_waypointmodel.cpp:74 src/gtkmm/widget_waypointmodel.cpp:81
+#: src/gtkmm/state_circle.cpp:418 src/gtkmm/state_gradient.cpp:274
+#: src/gtkmm/widget_waypoint.cpp:89 src/gtkmm/widget_waypoint.cpp:96
+#: src/gtkmm/widget_waypointmodel.cpp:75 src/gtkmm/widget_waypointmodel.cpp:82
 msgid "Linear"
 msgstr "Lineal"
 
-#: src/gtkmm/state_circle.cpp:410
+#: src/gtkmm/state_circle.cpp:419
 msgid "Squared"
 msgstr "Proporcional"
 
-#: src/gtkmm/state_circle.cpp:411
+#: src/gtkmm/state_circle.cpp:420
 msgid "Square Root"
 msgstr "Arrel quadrada"
 
-#: src/gtkmm/state_circle.cpp:412
+#: src/gtkmm/state_circle.cpp:421
 msgid "Sigmond"
 msgstr "Sigmoidea"
 
-#: src/gtkmm/state_circle.cpp:413
+#: src/gtkmm/state_circle.cpp:422
 msgid "Cosine"
 msgstr "Cossinus"
 
-#: src/gtkmm/state_circle.cpp:417 src/gtkmm/state_gradient.cpp:280
+#: src/gtkmm/state_circle.cpp:426 src/gtkmm/state_gradient.cpp:281
 msgid "Blend Method"
 msgstr "Mètode de barreja"
 
-#: src/gtkmm/state_circle.cpp:418
+#: src/gtkmm/state_circle.cpp:427
 msgid "Defines the blend method to be used for circles"
 msgstr "Defineix el mètode de barreja utilitzat per als cercles"
 
-#: src/gtkmm/state_circle.cpp:424 src/gtkmm/state_rectangle.cpp:359
+#: src/gtkmm/state_circle.cpp:446
+#, fuzzy
+msgid "Falloff:"
+msgstr "Caiguda"
+
+#: src/gtkmm/state_circle.cpp:450 src/gtkmm/state_rectangle.cpp:370
+#: src/gtkmm/state_star.cpp:466
 msgid "Feather:"
 msgstr "Esvaïment:"
 
-#: src/gtkmm/state_circle.cpp:437
+#: src/gtkmm/state_circle.cpp:457
 #, fuzzy
 msgid "BLine Points:"
 msgstr "Punt de la línia de Beizer"
 
-#: src/gtkmm/state_circle.cpp:439
+#: src/gtkmm/state_circle.cpp:460
 msgid "Point Angle Offset:"
 msgstr ""
 
-#: src/gtkmm/state_circle.cpp:526
+#: src/gtkmm/state_circle.cpp:547
 msgid "New Circle"
 msgstr "Nou Cercle"
+
+#: src/gtkmm/state_circle.cpp:675
+#, fuzzy
+msgid "Unable to create Circle layer"
+msgstr "Impossible crear la capa"
 
 #: src/gtkmm/state_draw.cpp:409
 msgid "Pressure Width"
@@ -2351,31 +2745,27 @@ msgstr "Error local"
 msgid "Smooth"
 msgstr "Suavitza"
 
-#: src/gtkmm/state_draw.cpp:778
+#: src/gtkmm/state_draw.cpp:774
 msgid "Sketch BLine"
 msgstr "Equematitza la línia de Beizer"
 
-#: src/gtkmm/state_draw.cpp:1088
-msgid "Unable to create layer"
-msgstr "Impossible crear la capa"
-
-#: src/gtkmm/state_draw.cpp:1272
+#: src/gtkmm/state_draw.cpp:1290
 msgid "Define Region"
 msgstr "Defineix regió"
 
-#: src/gtkmm/state_draw.cpp:1834 src/gtkmm/state_draw.cpp:1885
+#: src/gtkmm/state_draw.cpp:1857 src/gtkmm/state_draw.cpp:1908
 msgid "Extend BLine"
 msgstr "Estén Línia de Béizer"
 
-#: src/gtkmm/state_draw.cpp:1847 src/gtkmm/state_draw.cpp:1898
+#: src/gtkmm/state_draw.cpp:1870 src/gtkmm/state_draw.cpp:1921
 msgid "Unable to set loop for bline"
 msgstr "Impossible fer el bucle per a la línia béizer"
 
-#: src/gtkmm/state_draw.cpp:1871 src/gtkmm/state_draw.cpp:1922
+#: src/gtkmm/state_draw.cpp:1894 src/gtkmm/state_draw.cpp:1945
 msgid "Unable to insert item"
 msgstr "Impossible inserir l'element"
 
-#: src/gtkmm/state_draw.cpp:1955
+#: src/gtkmm/state_draw.cpp:1978
 msgid "Fill Stroke"
 msgstr "Emplena el traç"
 
@@ -2387,72 +2777,86 @@ msgstr "No hi ha cap capa ací"
 msgid "Unable to set layer color"
 msgstr "Impossible establir el color de la capa"
 
-#: src/gtkmm/state_gradient.cpp:270
+#: src/gtkmm/state_gradient.cpp:271
 msgid "Gradient Type"
 msgstr "Tipus de gradient"
 
-#: src/gtkmm/state_gradient.cpp:271
+#: src/gtkmm/state_gradient.cpp:272
 msgid "Determines the type of Gradient used"
 msgstr "Determina el tipus de Gradient utilitzat"
 
-#: src/gtkmm/state_gradient.cpp:274
+#: src/gtkmm/state_gradient.cpp:275
 msgid "Radial"
 msgstr "Radial"
 
-#: src/gtkmm/state_gradient.cpp:275
+#: src/gtkmm/state_gradient.cpp:276
 msgid "Conical"
 msgstr "Cònic"
 
-#: src/gtkmm/state_gradient.cpp:276
+#: src/gtkmm/state_gradient.cpp:277
 msgid "Spiral"
 msgstr "Espiral"
 
-#: src/gtkmm/state_gradient.cpp:281
+#: src/gtkmm/state_gradient.cpp:282
 msgid "The blend method the gradient will use"
 msgstr "El mètode de barreja que el gradient utilitzarà"
 
-#: src/gtkmm/state_gradient.cpp:382
+#: src/gtkmm/state_gradient.cpp:383
 msgid "New Gradient"
 msgstr "Nou Gradient"
 
-#: src/gtkmm/state_polygon.cpp:278
+#: src/gtkmm/state_polygon.cpp:324
+#, fuzzy
+msgid "Create Polygon Layer"
+msgstr "Desactiva la capa"
+
+#: src/gtkmm/state_polygon.cpp:397
 msgid "Make Polygon"
 msgstr "Crea un polígon"
 
-#: src/gtkmm/state_polygon.cpp:288
+#: src/gtkmm/state_polygon.cpp:407
 msgid "Clear current Polygon"
 msgstr "Esborra el polígon actual"
 
-#: src/gtkmm/state_polygon.cpp:370
+#: src/gtkmm/state_polygon.cpp:477
 msgid "New Polygon"
 msgstr "Nou polígon"
 
-#: src/gtkmm/state_rectangle.cpp:340
+#: src/gtkmm/state_polygon.cpp:594 src/gtkmm/state_polygon.cpp:596
+#, fuzzy
+msgid "Unable to create Polygon layer"
+msgstr "Impossible crear una capa planta"
+
+#: src/gtkmm/state_rectangle.cpp:341
 #, fuzzy
 msgid "Create Rectangle Layer"
 msgstr "Desactiva la capa"
 
-#: src/gtkmm/state_rectangle.cpp:355
+#: src/gtkmm/state_rectangle.cpp:346
+msgid "Link BLine Origins"
+msgstr ""
+
+#: src/gtkmm/state_rectangle.cpp:366
 msgid "Expansion:"
 msgstr "Expansió:"
 
-#: src/gtkmm/state_rectangle.cpp:459
+#: src/gtkmm/state_rectangle.cpp:460
 msgid "New Rectangle"
 msgstr "Nou rectangle"
 
-#: src/gtkmm/state_rotate.cpp:175
+#: src/gtkmm/state_rotate.cpp:176
 msgid "Allow Scale"
 msgstr "Permet l'escalat"
 
-#: src/gtkmm/state_rotate.cpp:369
+#: src/gtkmm/state_rotate.cpp:370
 msgid "Move Duck"
 msgstr "Mou ànec"
 
-#: src/gtkmm/state_rotate.cpp:374
+#: src/gtkmm/state_rotate.cpp:375
 msgid "Rotate Ducks"
 msgstr "Rota ànecs"
 
-#: src/gtkmm/state_scale.cpp:163
+#: src/gtkmm/state_scale.cpp:164
 msgid "Lock Aspect Ratio"
 msgstr "Bloquetja la relació d'aspecte"
 
@@ -2498,168 +2902,266 @@ msgstr "Desa l'esbós com a..."
 msgid "Open a Sketch"
 msgstr "Obri un esbós"
 
-#: src/gtkmm/state_smoothmove.cpp:177
+#: src/gtkmm/state_smoothmove.cpp:178
 msgid "Radius"
 msgstr "Ràdio"
 
-#: src/gtkmm/state_smoothmove.cpp:203
+#: src/gtkmm/state_smoothmove.cpp:204
 msgid "Smooth Move"
 msgstr "Moviment suau"
 
-#: src/gtkmm/state_width.cpp:223
+#: src/gtkmm/state_star.cpp:440
+#, fuzzy
+msgid "Regular Polygon"
+msgstr "Nou polígon"
+
+#: src/gtkmm/state_star.cpp:441
+#, fuzzy
+msgid "Create Star Layer"
+msgstr "Desactiva la capa"
+
+#: src/gtkmm/state_star.cpp:469
+#, fuzzy
+msgid "Number of Points:"
+msgstr "Punt de la línia de Beizer"
+
+#: src/gtkmm/state_star.cpp:472
+#, fuzzy
+msgid "Inner Tangent:"
+msgstr "Barreja les tangents"
+
+#: src/gtkmm/state_star.cpp:475
+#, fuzzy
+msgid "Outer Tangent:"
+msgstr "Barreja les tangents"
+
+#: src/gtkmm/state_star.cpp:478
+#, fuzzy
+msgid "Inner Width:"
+msgstr "Amplada de la Imat_ge"
+
+#: src/gtkmm/state_star.cpp:481
+#, fuzzy
+msgid "Outer Width:"
+msgstr "Ample de la pressió"
+
+#: src/gtkmm/state_star.cpp:484
+#, fuzzy
+msgid "Radius Ratio:"
+msgstr "Ràdio:"
+
+#: src/gtkmm/state_star.cpp:487
+#, fuzzy
+msgid "Angle Offset:"
+msgstr "Enllaça els desfases"
+
+#: src/gtkmm/state_star.cpp:574
+#, fuzzy
+msgid "New Star"
+msgstr "Nou estat"
+
+#: src/gtkmm/state_star.cpp:720
+#, fuzzy
+msgid "Unable to create Star layer"
+msgstr "Impossible crear la capa"
+
+#: src/gtkmm/state_text.cpp:275
+#, fuzzy
+msgid "Multiline Editor"
+msgstr "Editor de paleta"
+
+#: src/gtkmm/state_text.cpp:284 src/gtkmm/state_text.cpp:329
+#, fuzzy
+msgid "Text Tool"
+msgstr "Eina d'esbós"
+
+#: src/gtkmm/state_text.cpp:287
+msgid "Size:"
+msgstr ""
+
+#: src/gtkmm/state_text.cpp:289
+#, fuzzy
+msgid "Orientation:"
+msgstr "Documentació"
+
+#: src/gtkmm/state_text.cpp:291
+#, fuzzy
+msgid "Family:"
+msgstr "Fallada"
+
+#: src/gtkmm/state_text.cpp:373
+#, fuzzy
+msgid "New Text"
+msgstr "Nou índex"
+
+#: src/gtkmm/state_text.cpp:398
+#, fuzzy
+msgid "Text Paragraph"
+msgstr "Paràgraf"
+
+#: src/gtkmm/state_text.cpp:398 src/gtkmm/state_text.cpp:400
+#, fuzzy
+msgid "Enter text here:"
+msgstr "Introdueixi el text del paràgraf ací:"
+
+#: src/gtkmm/state_text.cpp:400
+msgid "Text Entry"
+msgstr ""
+
+#: src/gtkmm/state_width.cpp:224
 msgid "Relative Growth"
 msgstr "Creixement relatiu"
 
-#: src/gtkmm/state_width.cpp:231
+#: src/gtkmm/state_width.cpp:232
 msgid "Growth:"
 msgstr "Creixement:"
 
-#: src/gtkmm/state_width.cpp:234
+#: src/gtkmm/state_width.cpp:235
 msgid "Radius:"
 msgstr "Ràdio:"
 
-#: src/gtkmm/state_width.cpp:559
+#: src/gtkmm/state_width.cpp:560
 msgid "Sketch Width"
 msgstr "Espessor de l'Esbós"
 
-#: src/gtkmm/toolbox.cpp:133
+#: src/gtkmm/toolbox.cpp:134
 msgid "Cannot save"
 msgstr "No s'ha pogut desar"
 
-#: src/gtkmm/toolbox.cpp:133 src/gtkmm/toolbox.cpp:145
+#: src/gtkmm/toolbox.cpp:134 src/gtkmm/toolbox.cpp:146
 msgid "Nothing to save"
 msgstr "Res a desar"
 
-#: src/gtkmm/toolbox.cpp:145
+#: src/gtkmm/toolbox.cpp:146
 msgid "Cannot save as"
 msgstr "No es pot desar com a"
 
-#: src/gtkmm/toolbox.cpp:167
+#: src/gtkmm/toolbox.cpp:168
 msgid "Cannot close"
 msgstr "No es pot tancar"
 
-#: src/gtkmm/toolbox.cpp:167
+#: src/gtkmm/toolbox.cpp:168
 msgid "Nothing to close"
 msgstr "Res per a tancar"
 
-#: src/gtkmm/toolbox.cpp:220
+#: src/gtkmm/toolbox.cpp:221
 msgid "Vertical Dock: Canvases, History"
 msgstr "Encastable Vertical: Llenços, Historial"
 
-#: src/gtkmm/toolbox.cpp:221
+#: src/gtkmm/toolbox.cpp:222
 msgid "Horizontal Dock: Layers, Children, Params"
 msgstr "Encastable Horitzontal: Capes, Descendents, Paràmetres"
 
-#: src/gtkmm/toolbox.cpp:223
+#: src/gtkmm/toolbox.cpp:224
 msgid "Reset Windows to Original Layout"
 msgstr "Restableix les finestres a la seva disposició original"
 
-#: src/gtkmm/toolbox.cpp:232
+#: src/gtkmm/toolbox.cpp:233
 msgid "Open Recent"
 msgstr "Obrir recent"
 
-#: src/gtkmm/toolbox.cpp:239
+#: src/gtkmm/toolbox.cpp:240
 msgid "Panels"
 msgstr "Taulers"
 
-#: src/gtkmm/toolbox.cpp:251
+#: src/gtkmm/toolbox.cpp:252
 msgid "Input Devices..."
 msgstr "Dispositius d'entrada..."
 
-#: src/gtkmm/toolbox.cpp:253
+#: src/gtkmm/toolbox.cpp:254
 msgid "Setup..."
 msgstr "Atributs..."
 
 #. TRANSLATORS: Help menu entry
-#: src/gtkmm/toolbox.cpp:268
+#: src/gtkmm/toolbox.cpp:269
 msgid "Synfig Wiki"
 msgstr "Wiki de Synfig"
 
 #. TRANSLATORS: a wiki page
-#: src/gtkmm/toolbox.cpp:268
+#: src/gtkmm/toolbox.cpp:269
 msgid "/Main_Page"
 msgstr "/Main_Page"
 
 #. TRANSLATORS: Help menu entry
-#: src/gtkmm/toolbox.cpp:269
+#: src/gtkmm/toolbox.cpp:270
 msgid "Tutorials"
 msgstr "Tutorials"
 
 #. TRANSLATORS: a wiki page
-#: src/gtkmm/toolbox.cpp:269
+#: src/gtkmm/toolbox.cpp:270
 msgid "/Tutorials"
 msgstr "/Tutorials"
 
 #. TRANSLATORS: Help menu entry
-#: src/gtkmm/toolbox.cpp:270
+#: src/gtkmm/toolbox.cpp:271
 msgid "Frequently Asked Questions"
 msgstr "Preguntes més freqüents"
 
 #. TRANSLATORS: a wiki page
-#: src/gtkmm/toolbox.cpp:270
+#: src/gtkmm/toolbox.cpp:271
 msgid "/FAQ"
 msgstr "/FAQ"
 
 #. TRANSLATORS: Help menu entry
-#: src/gtkmm/toolbox.cpp:271
+#: src/gtkmm/toolbox.cpp:272
 msgid "Get Support"
 msgstr "Obtenir suport"
 
 #. TRANSLATORS: a wiki page
-#: src/gtkmm/toolbox.cpp:271
+#: src/gtkmm/toolbox.cpp:272
 msgid "/Contact"
 msgstr "/Contact"
 
 #. TRANSLATORS: Help menu entry
-#: src/gtkmm/toolbox.cpp:272
+#: src/gtkmm/toolbox.cpp:273
 msgid "Keyboard Shortcuts"
 msgstr "Dreceres de teclat"
 
 #. TRANSLATORS: a wiki page
-#: src/gtkmm/toolbox.cpp:272
+#: src/gtkmm/toolbox.cpp:273
 msgid "/Keyboard_Shortcuts"
 msgstr "/Keyboard_Shortcuts"
 
 #. TRANSLATORS: Help menu entry
-#: src/gtkmm/toolbox.cpp:273
+#: src/gtkmm/toolbox.cpp:274
 msgid "Mouse Shortcuts"
 msgstr "Dreceres de ratolí"
 
 #. TRANSLATORS: a wiki page
-#: src/gtkmm/toolbox.cpp:273
+#: src/gtkmm/toolbox.cpp:274
 msgid "/Mouse_Shortcuts"
 msgstr "/Mouse_Shortcuts"
 
 #. TRANSLATORS: Help menu entry
-#: src/gtkmm/toolbox.cpp:274
+#: src/gtkmm/toolbox.cpp:275
 msgid "All Pages"
 msgstr "Totes les pàgines"
 
-#: src/gtkmm/toolbox.cpp:282
+#: src/gtkmm/toolbox.cpp:283
 msgid "_Help"
 msgstr "_Ajuda"
 
-#: src/gtkmm/toolbox.cpp:289
+#: src/gtkmm/toolbox.cpp:290
 msgid "New..."
 msgstr "Nou..."
 
-#: src/gtkmm/toolbox.cpp:290
+#: src/gtkmm/toolbox.cpp:291
 msgid "Open..."
 msgstr "Obre..."
 
-#: src/gtkmm/toolbox.cpp:291
+#: src/gtkmm/toolbox.cpp:292
 msgid "Save"
 msgstr "Desa"
 
-#: src/gtkmm/toolbox.cpp:292
+#: src/gtkmm/toolbox.cpp:293
 msgid "Save As..."
 msgstr "Desa com a..."
 
-#: src/gtkmm/toolbox.cpp:296
+#: src/gtkmm/toolbox.cpp:297
 msgid "Setup"
 msgstr "Atributs"
 
-#: src/gtkmm/toolbox.cpp:297
+#: src/gtkmm/toolbox.cpp:298
 msgid "About Synfig Studio"
 msgstr "Quant a Synfig Studio"
 
@@ -2679,99 +3181,105 @@ msgstr "Introduïu el nom donat al llenç que desitgeu"
 msgid "No canvas name was specified"
 msgstr "No s'ha especificat nom de llenç"
 
-#: src/gtkmm/widget_canvaschooser.cpp:158
+#: src/gtkmm/widget_canvaschooser.cpp:159
 msgid "Error:Exception Thrown"
 msgstr "Error: S'ha llançat una excepció"
 
-#: src/gtkmm/widget_canvaschooser.cpp:163
+#: src/gtkmm/widget_canvaschooser.cpp:159
+msgid ""
+"Error selecting canvas:\n"
+"\n"
+msgstr ""
+
+#: src/gtkmm/widget_canvaschooser.cpp:164
 msgid "Unknown Exception"
 msgstr "Excepció desconeguda"
 
-#: src/gtkmm/widget_coloredit.cpp:304
+#: src/gtkmm/widget_coloredit.cpp:305
 msgid "RGB"
 msgstr "RGB"
 
-#: src/gtkmm/widget_coloredit.cpp:305
+#: src/gtkmm/widget_coloredit.cpp:306
 msgid "YUV"
 msgstr "YUV"
 
-#: src/gtkmm/widget_coloredit.cpp:360
+#: src/gtkmm/widget_coloredit.cpp:361
 msgid "HTML code"
 msgstr "Codi HTML"
 
-#: src/gtkmm/widget_coloredit.cpp:373
+#: src/gtkmm/widget_coloredit.cpp:374
 msgid "Luma"
 msgstr "Luma"
 
-#: src/gtkmm/widget_coloredit.cpp:374
+#: src/gtkmm/widget_coloredit.cpp:375
 msgid "Hue"
 msgstr "Matís"
 
-#: src/gtkmm/widget_coloredit.cpp:375
+#: src/gtkmm/widget_coloredit.cpp:376
 msgid "Saturation"
 msgstr "Saturació"
 
-#: src/gtkmm/widget_coloredit.cpp:376
+#: src/gtkmm/widget_coloredit.cpp:377
 msgid "U"
 msgstr "U"
 
-#: src/gtkmm/widget_coloredit.cpp:377
+#: src/gtkmm/widget_coloredit.cpp:378
 msgid "V"
 msgstr "V"
 
-#: src/gtkmm/widget_coloredit.cpp:381
+#: src/gtkmm/widget_coloredit.cpp:382
 msgid "Alpha"
 msgstr "Transparència"
 
-#: src/gtkmm/widget_defaults.cpp:213
-msgid "Foreground Color"
-msgstr "Color de front"
+#: src/gtkmm/widget_defaults.cpp:215
+#, fuzzy
+msgid "Outline Color"
+msgstr "Contorn"
 
-#: src/gtkmm/widget_defaults.cpp:221
-msgid "Background Color"
-msgstr "Color de fons"
+#: src/gtkmm/widget_defaults.cpp:223
+#, fuzzy
+msgid "Fill Color"
+msgstr "Eina de farciment"
 
-#: src/gtkmm/widget_defaults.cpp:238
+#: src/gtkmm/widget_defaults.cpp:240
 msgid ""
-"Swap Background and\n"
-"Foreground Colors"
+"Swap Fill and\n"
+"Outline Colors"
 msgstr ""
-"Intercanvia colors \n"
-"de front i fons"
 
-#: src/gtkmm/widget_defaults.cpp:252
+#: src/gtkmm/widget_defaults.cpp:254
 msgid "Reset Colors to Black and White"
 msgstr "Restableix colors a Blanc i Negre"
 
-#: src/gtkmm/widget_defaults.cpp:264
+#: src/gtkmm/widget_defaults.cpp:266
 msgid "Brush Preview"
 msgstr "Previsualiza brotxa"
 
-#: src/gtkmm/widget_defaults.cpp:274
+#: src/gtkmm/widget_defaults.cpp:276
 msgid "Brush Size"
 msgstr "Grandària de Brotxa"
 
-#: src/gtkmm/widget_defaults.cpp:282
+#: src/gtkmm/widget_defaults.cpp:284
 msgid "Default Blend Method"
 msgstr "Mètode de barreja per defecte"
 
-#: src/gtkmm/widget_defaults.cpp:296
+#: src/gtkmm/widget_defaults.cpp:298
 msgid "Default Interpolation"
 msgstr "Interpolació per defecte"
 
-#: src/gtkmm/widget_defaults.cpp:304
+#: src/gtkmm/widget_defaults.cpp:306
 msgid "Default Opacity"
 msgstr "Opacitat per defecte"
 
-#: src/gtkmm/widget_defaults.cpp:311
+#: src/gtkmm/widget_defaults.cpp:313
 msgid "Default Gradient"
 msgstr "Gradient per defecte"
 
-#: src/gtkmm/widget_filename.cpp:60
+#: src/gtkmm/widget_filename.cpp:61
 msgid "Find"
 msgstr "Cerca"
 
-#: src/gtkmm/widget_filename.cpp:114
+#: src/gtkmm/widget_filename.cpp:120
 msgid "Choose File"
 msgstr "Trieu un arxiu"
 
@@ -2783,256 +3291,270 @@ msgstr "Insereix CPunto"
 msgid "Remove CPoint"
 msgstr "Esborra CPunto"
 
-#: src/gtkmm/widget_waypoint.cpp:76
+#: src/gtkmm/widget_keyframe_list.cpp:199
+#, fuzzy
+msgid "Not possible to ALT-drag the first keyframe"
+msgstr "Impossible trobar el fotograma clau donat"
+
+#: src/gtkmm/widget_keyframe_list.cpp:226
+msgid "Delta set not allowed"
+msgstr ""
+
+#: src/gtkmm/widget_keyframe_list.cpp:297
+msgid "Click and drag keyframes"
+msgstr ""
+
+#: src/gtkmm/widget_waypoint.cpp:77
 msgid "(Non-static value)"
 msgstr "(Valor no-estàtic)"
-
-#: src/gtkmm/widget_waypoint.cpp:86 src/gtkmm/widget_waypoint.cpp:93
-#: src/gtkmm/widget_waypointmodel.cpp:72 src/gtkmm/widget_waypointmodel.cpp:79
-#, fuzzy
-msgid "TCB Smooth"
-msgstr "Suavitza"
 
 #: src/gtkmm/widget_waypoint.cpp:87 src/gtkmm/widget_waypoint.cpp:94
 #: src/gtkmm/widget_waypointmodel.cpp:73 src/gtkmm/widget_waypointmodel.cpp:80
 #, fuzzy
+msgid "TCB Smooth"
+msgstr "Suavitza"
+
+#: src/gtkmm/widget_waypoint.cpp:88 src/gtkmm/widget_waypoint.cpp:95
+#: src/gtkmm/widget_waypointmodel.cpp:74 src/gtkmm/widget_waypointmodel.cpp:81
+#, fuzzy
 msgid "Constant"
 msgstr "_Constant"
 
-#: src/gtkmm/widget_waypoint.cpp:89 src/gtkmm/widget_waypointmodel.cpp:75
+#: src/gtkmm/widget_waypoint.cpp:90 src/gtkmm/widget_waypointmodel.cpp:76
 #, fuzzy
 msgid "Ease In"
 msgstr "_Entrada senzilla"
 
-#: src/gtkmm/widget_waypoint.cpp:96 src/gtkmm/widget_waypointmodel.cpp:82
+#: src/gtkmm/widget_waypoint.cpp:97 src/gtkmm/widget_waypointmodel.cpp:83
 #, fuzzy
 msgid "Ease Out"
 msgstr "_Sortida senzilla"
 
-#: src/gtkmm/widget_waypoint.cpp:121
+#: src/gtkmm/widget_waypoint.cpp:122
 #: src/synfigapp/actions/waypointremove.cpp:78
 #: src/synfigapp/actions/waypointset.cpp:77
 #: src/synfigapp/actions/waypointsimpleadd.cpp:78
+#: src/synfigapp/value_desc.cpp:81
 msgid "Waypoint"
 msgstr "Interpolació"
 
-#: src/gtkmm/widget_waypoint.cpp:123
+#: src/gtkmm/widget_waypoint.cpp:124
 msgid "<b>Waypoint</b>"
 msgstr "<b>Interpolació</b>"
 
-#: src/gtkmm/widget_waypoint.cpp:135
+#: src/gtkmm/widget_waypoint.cpp:136
 msgid "_Value"
 msgstr "_Valor"
 
-#: src/gtkmm/widget_waypoint.cpp:142
+#: src/gtkmm/widget_waypoint.cpp:143
 msgid "_Time"
 msgstr "_Temps"
 
-#: src/gtkmm/widget_waypoint.cpp:148
+#: src/gtkmm/widget_waypoint.cpp:149
 msgid "Interpolation"
 msgstr "Interpolació"
 
-#: src/gtkmm/widget_waypoint.cpp:150
+#: src/gtkmm/widget_waypoint.cpp:151
 msgid "<b>Interpolation</b>"
 msgstr "<b>Interpolació</b>"
 
-#: src/gtkmm/widget_waypoint.cpp:162
+#: src/gtkmm/widget_waypoint.cpp:163
 msgid "_In Interpolation"
 msgstr "Interpolació d' _entrada"
 
-#: src/gtkmm/widget_waypoint.cpp:168
+#: src/gtkmm/widget_waypoint.cpp:169
 msgid "_Out Interpolation"
 msgstr "Interpolació de _Sortida"
 
-#: src/gtkmm/widget_waypoint.cpp:174
+#: src/gtkmm/widget_waypoint.cpp:175
 msgid "TCB Parameters"
 msgstr "Paràmetres TBC"
 
-#: src/gtkmm/widget_waypoint.cpp:176
+#: src/gtkmm/widget_waypoint.cpp:177
 msgid "<b>TCB Parameter</b>"
 msgstr "<b>Paràmetres TBC</b>"
 
-#: src/gtkmm/widget_waypoint.cpp:188
+#: src/gtkmm/widget_waypoint.cpp:189
 msgid "T_ension"
 msgstr "T_ensió"
 
-#: src/gtkmm/widget_waypoint.cpp:195
+#: src/gtkmm/widget_waypoint.cpp:196
 msgid "_Continuity"
 msgstr "_Continuïtat"
 
-#: src/gtkmm/widget_waypoint.cpp:202
+#: src/gtkmm/widget_waypoint.cpp:203
 msgid "_Bias"
 msgstr "_Bias"
 
-#: src/gtkmm/widget_waypoint.cpp:209
+#: src/gtkmm/widget_waypoint.cpp:210
 msgid "Te_mporal Tension"
 msgstr "Tensió te_mporal"
 
-#: src/gtkmm/widget_waypointmodel.cpp:64
+#: src/gtkmm/widget_waypointmodel.cpp:65
 msgid "Out:"
 msgstr "Sortida:"
 
-#: src/gtkmm/widget_waypointmodel.cpp:65
+#: src/gtkmm/widget_waypointmodel.cpp:66
 msgid "In:"
 msgstr "Entrada:"
 
-#: src/gtkmm/widget_waypointmodel.cpp:66
+#: src/gtkmm/widget_waypointmodel.cpp:67
 msgid "Tension:"
 msgstr "Tensió:"
 
-#: src/gtkmm/widget_waypointmodel.cpp:67
+#: src/gtkmm/widget_waypointmodel.cpp:68
 msgid "Continuity:"
 msgstr "Continuïtat:"
 
-#: src/gtkmm/widget_waypointmodel.cpp:68
+#: src/gtkmm/widget_waypointmodel.cpp:69
 msgid "Bias:"
 msgstr "Bias:"
 
-#: src/gtkmm/widget_waypointmodel.cpp:69
+#: src/gtkmm/widget_waypointmodel.cpp:70
 msgid "Temporal Tension:"
 msgstr "Tensió temporal:"
 
-#: src/gtkmm/workarea.cpp:1171
+#: src/gtkmm/workarea.cpp:1188
 #, fuzzy
 msgid "Nudge"
 msgstr "Empujoncito"
 
-#: src/gtkmm/workarea.cpp:1631
+#: src/gtkmm/workarea.cpp:1648
 msgid "Move"
 msgstr "Mou"
 
-#: src/gtkmm/workarea.cpp:2322
+#: src/gtkmm/workarea.cpp:2339
 msgid "Rendering..."
 msgstr "Renderitzant..."
 
-#: src/gtkmm/workarea.cpp:2349 src/gtkmm/workarea.cpp:2441
+#: src/gtkmm/workarea.cpp:2366 src/gtkmm/workarea.cpp:2458
 msgid "Render Failed"
 msgstr "Ha fallat el renderitzat"
 
-#: src/gtkmm/workarea.cpp:2423
+#: src/gtkmm/workarea.cpp:2440
 #, c-format
 msgid "Rendering canvas %s..."
 msgstr "Renderitza els llenços %s..."
 
-#: src/gtkmm/zoomdial.h:71
+#: src/gtkmm/zoomdial.cpp:55
 msgid "Zoom In"
 msgstr "Apropa"
 
-#: src/gtkmm/zoomdial.h:72
+#: src/gtkmm/zoomdial.cpp:56
 msgid "Zoom Out"
 msgstr "Allunya"
 
-#: src/gtkmm/zoomdial.h:73
+#: src/gtkmm/zoomdial.cpp:57
 #, fuzzy
 msgid "Zoom to Fit"
 msgstr "Ajusta el zoom"
 
-#: src/gtkmm/zoomdial.h:74
+#: src/gtkmm/zoomdial.cpp:58
 msgid "Zoom to 100%"
 msgstr "Ajusta al 100%"
 
-#: src/synfigapp/action.cpp:469
+#: src/synfigapp/action.cpp:485
 msgid "Selected Canvas"
 msgstr "Llenç seleccionat"
 
-#: src/synfigapp/action.cpp:473 src/synfigapp/action.cpp:474
+#: src/synfigapp/action.cpp:489 src/synfigapp/action.cpp:490
 msgid "Canvas Interface"
 msgstr "Interfície de llenç"
 
-#: src/synfigapp/actions/activepointadd.cpp:49
+#: src/synfigapp/actions/activepointadd.cpp:50
 msgid "Add Activepoint"
 msgstr "Afegeix el punt actiu"
 
-#: src/synfigapp/actions/activepointadd.cpp:75
-#: src/synfigapp/actions/activepointremove.cpp:74
-#: src/synfigapp/actions/activepointset.cpp:73
-#: src/synfigapp/actions/activepointsetoff.cpp:83
-#: src/synfigapp/actions/activepointseton.cpp:83
-#: src/synfigapp/actions/activepointsetsmart.cpp:82
-#: src/synfigapp/actions/colorset.cpp:79
+#: src/synfigapp/actions/activepointadd.cpp:76
+#: src/synfigapp/actions/activepointremove.cpp:75
+#: src/synfigapp/actions/activepointset.cpp:74
+#: src/synfigapp/actions/activepointsetoff.cpp:84
+#: src/synfigapp/actions/activepointseton.cpp:84
+#: src/synfigapp/actions/activepointsetsmart.cpp:83
+#: src/synfigapp/actions/colorset.cpp:88
 #: src/synfigapp/actions/gradientset.cpp:79
 #: src/synfigapp/actions/valuedescconvert.cpp:93
-#: src/synfigapp/actions/valuedescdisconnect.cpp:81
-#: src/synfigapp/actions/valuedescdisconnect.cpp:90
-#: src/synfigapp/actions/valuedescexport.cpp:88
+#: src/synfigapp/actions/valuedescdisconnect.cpp:82
+#: src/synfigapp/actions/valuedescdisconnect.cpp:91
+#: src/synfigapp/actions/valuedescexport.cpp:89
 #: src/synfigapp/actions/valuedescset.cpp:83
 #: src/synfigapp/actions/valuedescset.cpp:92
-#: src/synfigapp/actions/valuenodedynamiclistinsert.cpp:76
+#: src/synfigapp/actions/valuenodedynamiclistinsert.cpp:77
 #: src/synfigapp/actions/valuenodedynamiclistinsertsmart.cpp:78
-#: src/synfigapp/actions/valuenodedynamiclistremove.cpp:74
-#: src/synfigapp/actions/valuenodedynamiclistremovesmart.cpp:77
-#: src/synfigapp/actions/valuenodedynamiclistrotateorder.cpp:74
+#: src/synfigapp/actions/valuenodedynamiclistremove.cpp:75
+#: src/synfigapp/actions/valuenodedynamiclistremovesmart.cpp:78
+#: src/synfigapp/actions/valuenodedynamiclistrotateorder.cpp:75
 msgid "ValueDesc"
 msgstr "Descripció de valor"
 
-#: src/synfigapp/actions/activepointadd.cpp:79
-#: src/synfigapp/actions/activepointsetsmart.cpp:86
+#: src/synfigapp/actions/activepointadd.cpp:80
+#: src/synfigapp/actions/activepointsetsmart.cpp:87
 msgid "New Activepoint"
 msgstr "Nou punt actiu"
 
-#: src/synfigapp/actions/activepointadd.cpp:80
-#: src/synfigapp/actions/activepointsetsmart.cpp:87
+#: src/synfigapp/actions/activepointadd.cpp:81
+#: src/synfigapp/actions/activepointsetsmart.cpp:88
 #: src/synfigapp/actions/activepointsimpleadd.cpp:79
 msgid "Activepoint to be added"
 msgstr "Punt actiu per afegir"
 
-#: src/synfigapp/actions/activepointadd.cpp:86
-#: src/synfigapp/actions/activepointsetsmart.cpp:93
+#: src/synfigapp/actions/activepointadd.cpp:87
+#: src/synfigapp/actions/activepointsetsmart.cpp:94
 msgid "Time where activepoint is to be added"
 msgstr "Temps on s'afegirà el punt actiu"
 
-#: src/synfigapp/actions/activepointadd.cpp:176
-#: src/synfigapp/actions/activepointremove.cpp:162
+#: src/synfigapp/actions/activepointadd.cpp:177
+#: src/synfigapp/actions/activepointremove.cpp:163
 msgid "A Activepoint already exists at this point in time"
 msgstr "Ja existeix actualment un punt actiu en aquest punt en el temps"
 
-#: src/synfigapp/actions/activepointadd.cpp:179
-#: src/synfigapp/actions/activepointremove.cpp:165
+#: src/synfigapp/actions/activepointadd.cpp:180
+#: src/synfigapp/actions/activepointremove.cpp:166
 msgid "This activepoint is already in the ValueNode"
 msgstr "Aquest punt actiu ja està en el Valor de Node"
 
-#: src/synfigapp/actions/activepointremove.cpp:49
+#: src/synfigapp/actions/activepointremove.cpp:50
 msgid "Remove Activepoint"
 msgstr "Esborra Punt Actiu"
 
-#: src/synfigapp/actions/activepointremove.cpp:78
-#: src/synfigapp/actions/activepointset.cpp:77
-#: src/synfigapp/actions/activepointsetoff.cpp:87
-#: src/synfigapp/actions/activepointseton.cpp:87
+#: src/synfigapp/actions/activepointremove.cpp:79
+#: src/synfigapp/actions/activepointset.cpp:78
+#: src/synfigapp/actions/activepointsetoff.cpp:88
+#: src/synfigapp/actions/activepointseton.cpp:88
 #: src/synfigapp/actions/activepointsimpleadd.cpp:78
 msgid "Activepoint"
 msgstr "Punt Actiu"
 
-#: src/synfigapp/actions/activepointremove.cpp:79
-#: src/synfigapp/actions/activepointset.cpp:78
+#: src/synfigapp/actions/activepointremove.cpp:80
+#: src/synfigapp/actions/activepointset.cpp:79
 msgid "Activepoint to be changed"
 msgstr "Punt Actiu a canviar"
 
-#: src/synfigapp/actions/activepointremove.cpp:143
-#: src/synfigapp/actions/activepointset.cpp:151
-#: src/synfigapp/actions/activepointset.cpp:209
-#: src/synfigapp/actions/activepointset.cpp:255
-#: src/synfigapp/actions/activepointset.cpp:276
+#: src/synfigapp/actions/activepointremove.cpp:144
+#: src/synfigapp/actions/activepointset.cpp:152
+#: src/synfigapp/actions/activepointset.cpp:210
+#: src/synfigapp/actions/activepointset.cpp:256
+#: src/synfigapp/actions/activepointset.cpp:277
 msgid "Unable to find activepoint"
 msgstr "Impossible trobar un punt actiu"
 
-#: src/synfigapp/actions/activepointset.cpp:49
+#: src/synfigapp/actions/activepointset.cpp:50
 msgid "Set Activepoint"
 msgstr "Estableix el punt actiu"
 
-#: src/synfigapp/actions/activepointsetoff.cpp:57
+#: src/synfigapp/actions/activepointsetoff.cpp:58
 msgid "Mark Activepoint as \"Off\""
 msgstr "Marca el punt actiu com \"Off\""
 
-#: src/synfigapp/actions/activepointseton.cpp:57
+#: src/synfigapp/actions/activepointseton.cpp:58
 msgid "Mark Activepoint as \"On\""
 msgstr "Marcar el punt actiu com \"On\""
 
-#: src/synfigapp/actions/activepointsetsmart.cpp:56
+#: src/synfigapp/actions/activepointsetsmart.cpp:57
 msgid "Set Activepoint (Smart)"
 msgstr "Estableix el punt actiu (Intel·ligent)"
 
-#: src/synfigapp/actions/activepointsetsmart.cpp:365
+#: src/synfigapp/actions/activepointsetsmart.cpp:366
 #: src/synfigapp/actions/waypointsetsmart.cpp:439
 msgid "Unable to determine how to proceed. This is a bug."
 msgstr "No s'ha pogut determinar com procedir. Açò és un error"
@@ -3043,7 +3565,7 @@ msgid "Simply Add Waypoint"
 msgstr "Simplement afegeix una interpolació"
 
 #: src/synfigapp/actions/activepointsimpleadd.cpp:74
-#: src/synfigapp/actions/waypointadd.cpp:76
+#: src/synfigapp/actions/waypointadd.cpp:77
 #: src/synfigapp/actions/waypointset.cpp:73
 #: src/synfigapp/actions/waypointsetsmart.cpp:85
 #: src/synfigapp/actions/waypointsimpleadd.cpp:74
@@ -3066,7 +3588,8 @@ msgstr "Valor de node del punt de línia Béizer"
 
 #: src/synfigapp/actions/blinepointtangentmerge.cpp:156
 #: src/synfigapp/actions/blinepointtangentsplit.cpp:156
-msgid "Couldn't find action \"value_desc_set\""
+#, fuzzy
+msgid "Couldn't find action \"ValueDescSet\""
 msgstr "No puc trobar l'acció \"value_desc_set\""
 
 #: src/synfigapp/actions/blinepointtangentsplit.cpp:78
@@ -3081,6 +3604,44 @@ msgstr "Afegeix el llenç descendent"
 #: src/synfigapp/actions/canvasadd.cpp:79
 msgid "The name that you want this canvas to be"
 msgstr "El nom que voleu que tingui aquest llenç"
+
+#: src/synfigapp/actions/canvasdescriptionset.cpp:50
+#, fuzzy
+msgid "Set Canvas Description"
+msgstr "Estableix la descripció de la capa"
+
+#. TRANSLATORS: This is used in the 'history' dialog when a Canvas has its description changed.
+#: src/synfigapp/actions/canvasdescriptionset.cpp:71
+#, fuzzy, c-format
+msgid "Change canvas description from '%s' to '%s'"
+msgstr "Renombra el valor de node des de «%s» a «%s»"
+
+#: src/synfigapp/actions/canvasidset.cpp:50
+#, fuzzy
+msgid "Set Canvas Id"
+msgstr "Estableix RendDesc del Llenç"
+
+#. TRANSLATORS: This is used in the 'history' dialog when a Canvas has its id changed.
+#: src/synfigapp/actions/canvasidset.cpp:71
+#, fuzzy, c-format
+msgid "Change canvas id from '%s' to '%s'"
+msgstr "Renombra el valor de node des de «%s» a «%s»"
+
+#: src/synfigapp/actions/canvasidset.cpp:82
+#, fuzzy
+msgid "Id"
+msgstr "Inactiu"
+
+#: src/synfigapp/actions/canvasnameset.cpp:50
+#, fuzzy
+msgid "Set Canvas Name"
+msgstr "Estableix RendDesc del Llenç"
+
+#. TRANSLATORS: This is used in the 'history' dialog when a Canvas has its name changed.
+#: src/synfigapp/actions/canvasnameset.cpp:71
+#, fuzzy, c-format
+msgid "Change canvas name from '%s' to '%s'"
+msgstr "Renombra el valor de node des de «%s» a «%s»"
 
 #: src/synfigapp/actions/canvasremove.cpp:49
 msgid "Remove Canvas"
@@ -3103,7 +3664,13 @@ msgid "RendDesc"
 msgstr "RendDesc"
 
 #: src/synfigapp/actions/colorset.cpp:55
-msgid "Apply Default Color"
+#, fuzzy
+msgid "Apply Outline Color"
+msgstr "Aplica color per defecte"
+
+#: src/synfigapp/actions/colorset.cpp:64
+#, fuzzy
+msgid "Apply Fill Color"
 msgstr "Aplica color per defecte"
 
 #: src/synfigapp/actions/editmodeset.cpp:49
@@ -3536,31 +4103,53 @@ msgstr "Esborra punts de temps"
 msgid "Move Time Points"
 msgstr "Mou punts de temps"
 
-#: src/synfigapp/actions/valuedescconnect.cpp:54
+#: src/synfigapp/actions/valuedescblinelink.cpp:59
+#, fuzzy
+msgid "Link to BLine"
+msgstr "Fes un bucle de línia de Bezier"
+
+#: src/synfigapp/actions/valuedescblinelink.cpp:82
+#: src/synfigapp/actions/valuedesclink.cpp:75
+msgid "ValueDesc to link"
+msgstr "Descripció del Valor a enllaçar"
+
+#: src/synfigapp/actions/valuedescblinelink.cpp:86
+#, fuzzy
+msgid "ValueDesc on BLine to link to"
+msgstr "Descripció del Valor a enllaçar"
+
+#: src/synfigapp/actions/valuedescblinelink.cpp:93
+#: src/synfigapp/actions/valuenodedynamiclistinsert.cpp:84
+#: src/synfigapp/actions/valuenodedynamiclistinsertsmart.cpp:85
+#: src/synfigapp/actions/valuenodedynamiclistremovesmart.cpp:85
+msgid "Origin"
+msgstr "Origen"
+
+#: src/synfigapp/actions/valuedescconnect.cpp:55
 msgid "Connect"
 msgstr "Connecta"
 
 #. TRANSLATORS: This is used in the 'history' dialog when a connection is made.
-#: src/synfigapp/actions/valuedescconnect.cpp:75
+#: src/synfigapp/actions/valuedescconnect.cpp:76
 #, c-format
 msgid "Connect '%s' to '%s'"
 msgstr "Connecta «%s» a «%s»"
 
-#: src/synfigapp/actions/valuedescconnect.cpp:86
+#: src/synfigapp/actions/valuedescconnect.cpp:87
 msgid "Destination ValueDesc"
 msgstr "Descripció del valor de destí"
 
-#: src/synfigapp/actions/valuedescconnect.cpp:90
+#: src/synfigapp/actions/valuedescconnect.cpp:91
 #: src/synfigapp/actions/valuenodereplace.cpp:90
 msgid "Source ValueNode"
 msgstr "Valor de node d'origen"
 
-#: src/synfigapp/actions/valuedescconnect.cpp:95
+#: src/synfigapp/actions/valuedescconnect.cpp:96
 msgid "Source ValueNode Name"
 msgstr "Nom del valor de node d'origen"
 
-#: src/synfigapp/actions/valuedescconnect.cpp:239
-#: src/synfigapp/actions/valuedescdisconnect.cpp:216
+#: src/synfigapp/actions/valuedescconnect.cpp:257
+#: src/synfigapp/actions/valuedescdisconnect.cpp:235
 msgid "ValueDesc is not recognized or supported."
 msgstr "Descripció del valor no reconegut o suportat"
 
@@ -3586,49 +4175,45 @@ msgstr "Impossible desxifrar la descripció del valor (Bug?)"
 msgid "Unable to create new value node"
 msgstr "Impossible crear nou valor de node"
 
-#: src/synfigapp/actions/valuedescdisconnect.cpp:56
+#: src/synfigapp/actions/valuedescdisconnect.cpp:57
 msgid "Disconnect"
 msgstr "Desconnecta"
 
 #. TRANSLATORS: This is used in the History dialog when a ValueNode is disconnected.
-#: src/synfigapp/actions/valuedescdisconnect.cpp:78
+#: src/synfigapp/actions/valuedescdisconnect.cpp:79
 #, c-format
 msgid "Disconnect %s"
 msgstr "Desconnecta %s"
 
-#: src/synfigapp/actions/valuedescexport.cpp:56
+#: src/synfigapp/actions/valuedescexport.cpp:57
 msgid "Export"
 msgstr "Exporta"
 
 #. TRANSLATORS: This is used in the 'history' dialog when a ValueNode is exported.  The first %s is what is exported, the 2nd is the name it is given.
-#: src/synfigapp/actions/valuedescexport.cpp:77
+#: src/synfigapp/actions/valuedescexport.cpp:78
 #, c-format
 msgid "Export '%s' as '%s'"
 msgstr "Exporta «%s» com a «%s»"
 
-#: src/synfigapp/actions/valuedescexport.cpp:93
+#: src/synfigapp/actions/valuedescexport.cpp:94
 msgid "The name that you want this value to be exported as"
 msgstr "El nom amb el qual vuleu que s'exporte aquest valor"
 
-#: src/synfigapp/actions/valuedescexport.cpp:151
+#: src/synfigapp/actions/valuedescexport.cpp:167
 msgid "Can only export Canvas when used as constant parameter"
 msgstr "Només es pot exportar un llenç quan s'utilitze com paràmetre constant"
 
-#: src/synfigapp/actions/valuedescexport.cpp:174
+#: src/synfigapp/actions/valuedescexport.cpp:208
 msgid "ValueBase is already exported"
 msgstr "Valor de base ja exportat"
 
-#: src/synfigapp/actions/valuedescexport.cpp:181
+#: src/synfigapp/actions/valuedescexport.cpp:216
 msgid "Unable to export parameter. (Bug?)"
 msgstr "Impossible exportar paràmetre. (Bug?)"
 
 #: src/synfigapp/actions/valuedesclink.cpp:52
 msgid "Link"
 msgstr "Enllaça"
-
-#: src/synfigapp/actions/valuedesclink.cpp:75
-msgid "ValueDesc to link"
-msgstr "Descripció del Valor a enllaçar"
 
 #: src/synfigapp/actions/valuedesclink.cpp:112
 msgid "Cannot link two different exported values ('"
@@ -3708,7 +4293,8 @@ msgstr "Estableix %s"
 #: src/synfigapp/actions/valuedescset.cpp:393
 #: src/synfigapp/actions/valuedescset.cpp:411
 #: src/synfigapp/actions/valuenodedynamiclistinsertsmart.cpp:184
-msgid "Unable to find action value_desc_set (bug)"
+#, fuzzy
+msgid "Unable to find action ValueDescSet (bug)"
 msgstr "Impossible trobar acció value_set_desc (error)"
 
 #: src/synfigapp/actions/valuedescset.cpp:262
@@ -3773,17 +4359,11 @@ msgstr "Estableix un valor de node _constant"
 msgid "ValueNode_Const"
 msgstr "Valor de node _constant"
 
-#: src/synfigapp/actions/valuenodedynamiclistinsert.cpp:49
+#: src/synfigapp/actions/valuenodedynamiclistinsert.cpp:50
 msgid "Insert Item"
 msgstr "Insereix un element"
 
-#: src/synfigapp/actions/valuenodedynamiclistinsert.cpp:83
-#: src/synfigapp/actions/valuenodedynamiclistinsertsmart.cpp:85
-#: src/synfigapp/actions/valuenodedynamiclistremovesmart.cpp:84
-msgid "Origin"
-msgstr "Origen"
-
-#: src/synfigapp/actions/valuenodedynamiclistinsert.cpp:87
+#: src/synfigapp/actions/valuenodedynamiclistinsert.cpp:88
 msgid "ValueNode to insert"
 msgstr "Valor de node a inserir"
 
@@ -3793,36 +4373,38 @@ msgstr "Insereix un element (intel·ligent)"
 
 #: src/synfigapp/actions/valuenodedynamiclistinsertsmart.cpp:205
 #: src/synfigapp/actions/valuenodedynamiclistinsertsmart.cpp:259
-#: src/synfigapp/actions/valuenodedynamiclistremovesmart.cpp:158
-#: src/synfigapp/actions/valuenodedynamiclistremovesmart.cpp:176
+#: src/synfigapp/actions/valuenodedynamiclistremovesmart.cpp:159
+#: src/synfigapp/actions/valuenodedynamiclistremovesmart.cpp:177
 msgid "Unable to find action (bug)"
 msgstr "Impossible trobar acció (error)"
 
 #: src/synfigapp/actions/valuenodedynamiclistinsertsmart.cpp:221
-msgid "Unable to find action \"activepoint_set_off\""
+#, fuzzy
+msgid "Unable to find action \"ActivepointSetOff\""
 msgstr "Impossible trobar acció \"activi_point_set_off\""
 
 #: src/synfigapp/actions/valuenodedynamiclistinsertsmart.cpp:240
-msgid "Unable to find action \"activepoint_set_on\""
+#, fuzzy
+msgid "Unable to find action \"ActivepointSetOn\""
 msgstr "Impossible trobar acció \"activi_point_set_on\""
 
-#: src/synfigapp/actions/valuenodedynamiclistloop.cpp:49
+#: src/synfigapp/actions/valuenodedynamiclistloop.cpp:50
 msgid "Loop"
 msgstr "Bucle"
 
-#: src/synfigapp/actions/valuenodedynamiclistremove.cpp:49
+#: src/synfigapp/actions/valuenodedynamiclistremove.cpp:50
 msgid "Remove Item"
 msgstr "Esborra Element"
 
-#: src/synfigapp/actions/valuenodedynamiclistremovesmart.cpp:50
+#: src/synfigapp/actions/valuenodedynamiclistremovesmart.cpp:51
 msgid "Remove Item (Smart)"
 msgstr "Esborra element (Intel·ligent)"
 
-#: src/synfigapp/actions/valuenodedynamiclistrotateorder.cpp:49
+#: src/synfigapp/actions/valuenodedynamiclistrotateorder.cpp:50
 msgid "Rotate Order"
 msgstr "Ordre de rotació"
 
-#: src/synfigapp/actions/valuenodedynamiclistunloop.cpp:49
+#: src/synfigapp/actions/valuenodedynamiclistunloop.cpp:50
 msgid "Unloop"
 msgstr "Trenca el bucle"
 
@@ -3915,61 +4497,57 @@ msgid "ValueNode that will replace the destination"
 msgstr "Valor de node que reemplaçarà al destí"
 
 #: src/synfigapp/actions/valuenodereplace.cpp:137
-#: src/synfigapp/actions/valuenodereplace.cpp:193
+#: src/synfigapp/actions/valuenodereplace.cpp:195
 msgid "Attempted to replace valuenode with itself"
 msgstr "Intent de reemplaçar un valor de node amb ell mateix"
 
 #: src/synfigapp/actions/valuenodereplace.cpp:140
-#: src/synfigapp/actions/valuenodereplace.cpp:196
+#: src/synfigapp/actions/valuenodereplace.cpp:198
 msgid "You cannot replace ValueNodes with different types!"
 msgstr "No podeu reemplaçar el valor de node amb tipus diferents!"
 
 #: src/synfigapp/actions/valuenodereplace.cpp:163
-#: src/synfigapp/actions/valuenodereplace.cpp:201
+#: src/synfigapp/actions/valuenodereplace.cpp:203
 msgid "Nothing to replace."
 msgstr "Res a remplazar."
 
 #: src/synfigapp/actions/valuenodereplace.cpp:170
-#: src/synfigapp/actions/valuenodereplace.cpp:208
+#: src/synfigapp/actions/valuenodereplace.cpp:210
 msgid "Action Failure. This is a bug. Please report it."
 msgstr "Acció Fallida. Açò és un error. Per favor informeu del mateix."
 
-#: src/synfigapp/actions/valuenodereplace.cpp:188
+#: src/synfigapp/actions/valuenodereplace.cpp:190
 msgid "This action cannot be undone under these circumstances."
 msgstr "Aquesta acció no es pot desfer sota sota aquestes circumstàncies."
 
-#: src/synfigapp/actions/valuenodereplace.cpp:213
-msgid ": (Undo) "
-msgstr ": (Desfer) "
-
-#: src/synfigapp/actions/waypointadd.cpp:50
+#: src/synfigapp/actions/waypointadd.cpp:51
 #: src/synfigapp/actions/waypointsetsmart.cpp:59
 msgid "Add Waypoint"
 msgstr "Afegeix interpolació"
 
-#: src/synfigapp/actions/waypointadd.cpp:80
+#: src/synfigapp/actions/waypointadd.cpp:81
 #: src/synfigapp/actions/waypointsetsmart.cpp:89
 msgid "New Waypoint"
 msgstr "Nova interpolació"
 
-#: src/synfigapp/actions/waypointadd.cpp:81
+#: src/synfigapp/actions/waypointadd.cpp:82
 #: src/synfigapp/actions/waypointsetsmart.cpp:90
 #: src/synfigapp/actions/waypointsimpleadd.cpp:79
 msgid "Waypoint to be added"
 msgstr "Interpolació a afegir"
 
-#: src/synfigapp/actions/waypointadd.cpp:87
+#: src/synfigapp/actions/waypointadd.cpp:88
 #: src/synfigapp/actions/waypointsetsmart.cpp:101
 msgid "Time where waypoint is to be added"
 msgstr "Temps on es va a afegir la interpolació"
 
-#: src/synfigapp/actions/waypointadd.cpp:184
+#: src/synfigapp/actions/waypointadd.cpp:185
 #, c-format
 msgid "A Waypoint already exists at this point in time (%s)"
 msgstr "Ja existeix una interpolació en aquest punt en el temps (%s)"
 
-#: src/synfigapp/actions/waypointadd.cpp:187
-#: src/synfigapp/actions/waypointremove.cpp:180
+#: src/synfigapp/actions/waypointadd.cpp:188
+#: src/synfigapp/actions/waypointremove.cpp:198
 msgid "This waypoint is already in the ValueNode"
 msgstr "Aquesta interpolació ja està en el valor de node"
 
@@ -3999,7 +4577,7 @@ msgstr "Discrepància de temps iter=%s, waypoint=%s"
 msgid "Unable to create ValueNode_Reference"
 msgstr "Impossible crear la referència al valor de node"
 
-#: src/synfigapp/actions/waypointremove.cpp:162
+#: src/synfigapp/actions/waypointremove.cpp:172
 msgid ""
 "This animated value node should be empty, but for some reason it isn't. This "
 "is a bug. (1)"
@@ -4007,7 +4585,7 @@ msgstr ""
 "Aquest valor de node animat hauria d'estar buit, per alguna raó no ho està. "
 "Això és un error. (1)"
 
-#: src/synfigapp/actions/waypointremove.cpp:172
+#: src/synfigapp/actions/waypointremove.cpp:190
 msgid ""
 "This animated value node should be empty, but for some reason it isn't. This "
 "is a bug. (2)"
@@ -4015,7 +4593,7 @@ msgstr ""
 "Aquest valor de node animat hauria d'estar buit, per alguna raó no ho està. "
 "Això és un error. (2)"
 
-#: src/synfigapp/actions/waypointremove.cpp:177
+#: src/synfigapp/actions/waypointremove.cpp:195
 msgid "A Waypoint already exists at this point in time"
 msgstr "Ja hi ha una Interpolació en aquest punt del temps"
 
@@ -4034,97 +4612,98 @@ msgstr "Interpolació a canviar"
 msgid "Unable to find waypoint"
 msgstr "Impossible trobar Interpolació"
 
-#: src/synfigapp/actions/waypointsimpleadd.cpp:146
+#: src/synfigapp/actions/waypointsimpleadd.cpp:147
 msgid "The waypoint to remove no longer exists"
 msgstr "La interpolació a esborrar ja no existeix"
 
-#: src/synfigapp/action_system.cpp:77
+#: src/synfigapp/action_system.cpp:80
 msgid "Action is not ready."
 msgstr "L'acció no està preparada"
 
-#: src/synfigapp/action_system.cpp:109
+#: src/synfigapp/action_system.cpp:112
 msgid "This action cannot be undone! Are you sure you want to continue?"
 msgstr "Aquesta acció no es pot desfer! Esteu segurs de voler continuar?"
 
-#: src/synfigapp/action_system.cpp:128 src/synfigapp/action_system.cpp:145
-#: src/synfigapp/action_system.cpp:156
+#: src/synfigapp/action_system.cpp:131 src/synfigapp/action_system.cpp:148
+#: src/synfigapp/action_system.cpp:159
 msgid "Failed"
 msgstr "Fallada"
 
-#: src/synfigapp/action_system.cpp:189
+#: src/synfigapp/action_system.cpp:192
 msgid "Successful"
 msgstr "Èxit"
 
-#: src/synfigapp/action_system.cpp:222 src/synfigapp/action_system.cpp:224
+#: src/synfigapp/action_system.cpp:225 src/synfigapp/action_system.cpp:227
 msgid " (Undo): "
 msgstr "(Desfer): "
 
-#: src/synfigapp/action_system.cpp:284
+#: src/synfigapp/action_system.cpp:287
 msgid "Failed to undo."
 msgstr "Fallada al desfer"
 
-#: src/synfigapp/action_system.cpp:320 src/synfigapp/action_system.cpp:322
+#: src/synfigapp/action_system.cpp:323 src/synfigapp/action_system.cpp:325
 msgid " (Redo): "
 msgstr " (Refer): "
 
-#: src/synfigapp/action_system.cpp:382
+#: src/synfigapp/action_system.cpp:385
 msgid "Failed to redo."
 msgstr "Fallada al refer"
 
-#: src/synfigapp/action_system.cpp:698
+#: src/synfigapp/action_system.cpp:701
 msgid "State restore failure"
 msgstr "Fallada al restaurar estat"
 
-#: src/synfigapp/canvasinterface.cpp:160
+#: src/synfigapp/canvasinterface.cpp:162
 msgid "Action Not Ready, unable to change mode"
 msgstr "Acció no preparada, impossible canviar el mode"
 
-#: src/synfigapp/canvasinterface.cpp:166
+#: src/synfigapp/canvasinterface.cpp:168
 msgid "Unable to change mode"
 msgstr "Impossible canviar el mode"
 
-#: src/synfigapp/canvasinterface.cpp:183
+#: src/synfigapp/canvasinterface.cpp:185
 msgid "Add Layer To"
 msgstr "Afegeix capa a"
 
-#: src/synfigapp/canvasinterface.cpp:288 src/synfigapp/canvasinterface.cpp:349
-#: src/synfigapp/canvasinterface.cpp:382
+#: src/synfigapp/canvasinterface.cpp:292 src/synfigapp/canvasinterface.cpp:353
+#: src/synfigapp/canvasinterface.cpp:386 src/synfigapp/canvasinterface.cpp:598
 msgid "Action Not Ready"
 msgstr "Acció no preparada"
 
-#: src/synfigapp/canvasinterface.cpp:294 src/synfigapp/canvasinterface.cpp:356
-#: src/synfigapp/canvasinterface.cpp:389 src/synfigapp/canvasinterface.cpp:477
-#: src/synfigapp/canvasinterface.cpp:494 src/synfigapp/canvasinterface.cpp:513
-#: src/synfigapp/canvasinterface.cpp:530 src/synfigapp/canvasinterface.cpp:695
-#: src/synfigapp/canvasinterface.cpp:720 src/synfigapp/canvasinterface.cpp:773
+#: src/synfigapp/canvasinterface.cpp:298 src/synfigapp/canvasinterface.cpp:360
+#: src/synfigapp/canvasinterface.cpp:393 src/synfigapp/canvasinterface.cpp:481
+#: src/synfigapp/canvasinterface.cpp:498 src/synfigapp/canvasinterface.cpp:517
+#: src/synfigapp/canvasinterface.cpp:534 src/synfigapp/canvasinterface.cpp:602
+#: src/synfigapp/canvasinterface.cpp:738 src/synfigapp/canvasinterface.cpp:763
+#: src/synfigapp/canvasinterface.cpp:816
 msgid "Action Failed."
 msgstr "Ha fallat l'acció."
 
-#: src/synfigapp/canvasinterface.cpp:316
+#: src/synfigapp/canvasinterface.cpp:320
 msgid "Move Action Not Ready"
 msgstr "Acció moure no preparada"
 
-#: src/synfigapp/canvasinterface.cpp:322
+#: src/synfigapp/canvasinterface.cpp:326
 msgid "Move Action Failed."
 msgstr "Ha fallat l'acció Moure"
 
-#: src/synfigapp/canvasinterface.cpp:365
+#: src/synfigapp/canvasinterface.cpp:369
 msgid "Empty name!"
 msgstr "Nom buit!"
 
-#: src/synfigapp/canvasinterface.cpp:571
+#: src/synfigapp/canvasinterface.cpp:575
 msgid "Filename must have an extension!"
 msgstr "L'arxiu ha de tenir una extensió!"
 
-#: src/synfigapp/canvasinterface.cpp:585
+#: src/synfigapp/canvasinterface.cpp:615
 msgid "Unable to open this composition"
 msgstr "Impossible obrir aquesta composició"
 
-#: src/synfigapp/canvasinterface.cpp:589
+#: src/synfigapp/canvasinterface.cpp:619
 msgid "Unable to create \"Paste Canvas\" layer"
 msgstr "Impsible crear la capa «Llenç Enganxat»"
 
-#: src/synfigapp/canvasinterface.cpp:604
+#: src/synfigapp/canvasinterface.cpp:635
 msgid ""
 "Uncaught exception when attempting\n"
 "to open this composition -- "
@@ -4132,16 +4711,16 @@ msgstr ""
 "S'ha produit una excepció no capturada quan s'intentava\n"
 "obrir aquesta composició"
 
-#: src/synfigapp/canvasinterface.cpp:610
+#: src/synfigapp/canvasinterface.cpp:641
 msgid "I don't know how to open images of this type -- "
 msgstr "No es sap com obrir imatges d'aquest tipus -- "
 
-#: src/synfigapp/canvasinterface.cpp:765
+#: src/synfigapp/canvasinterface.cpp:808
 #, c-format
 msgid "Unnamed%08d"
 msgstr "Sense Nom%08d"
 
-#: src/synfigapp/canvasinterface.cpp:796
+#: src/synfigapp/canvasinterface.cpp:839
 msgid ""
 "The value you are trying to edit is in a composition\n"
 "which doesn't seem to be open. Open that composition and you\n"
@@ -4151,27 +4730,27 @@ msgstr ""
 "que sembla que no està oberta. Obriu aquesta composició i podreu\n"
 "editar aquest valor amb normalitat."
 
-#: src/synfigapp/uimanager.cpp:56 src/synfigapp/uimanager.cpp:83
+#: src/synfigapp/uimanager.cpp:83 src/synfigapp/uimanager.cpp:110
 msgid "(no/yes)"
 msgstr "(no/si)"
 
-#: src/synfigapp/uimanager.cpp:58 src/synfigapp/uimanager.cpp:85
+#: src/synfigapp/uimanager.cpp:85 src/synfigapp/uimanager.cpp:112
 msgid "(yes/no)"
 msgstr "(si/no)"
 
-#: src/synfigapp/uimanager.cpp:110
+#: src/synfigapp/uimanager.cpp:137
 msgid "(cancel/ok)"
 msgstr "(cancel·la/ok)"
 
-#: src/synfigapp/uimanager.cpp:112
+#: src/synfigapp/uimanager.cpp:139
 msgid "(ok/cancel)"
 msgstr "(ok/cancel·la)"
 
-#: src/synfigapp/uimanager.cpp:142
+#: src/synfigapp/uimanager.cpp:169
 msgid "error: "
 msgstr "error: "
 
-#: src/synfigapp/uimanager.cpp:149
+#: src/synfigapp/uimanager.cpp:176
 msgid "warning: "
 msgstr "avís: "
 
@@ -4179,13 +4758,45 @@ msgstr "avís: "
 msgid "Layer Parameter"
 msgstr "Paràmetre de la capa"
 
-#: src/synfigapp/value_desc.cpp:71
-msgid "Value Node"
-msgstr "Valor de node"
+#: src/synfigapp/value_desc.cpp:77
+#, fuzzy
+msgid "Const ValueNode"
+msgstr "Valor de node ascendent"
 
-#: src/synfigapp/value_desc.cpp:81
+#: src/synfigapp/value_desc.cpp:89
 msgid "Exported ValueNode"
 msgstr "Valor de node exportat"
+
+#~ msgid "State"
+#~ msgstr "Estat"
+
+#~ msgid "Unable to open file \"%s\""
+#~ msgstr "Ha estat impossible obrir l'arxiu «%s»"
+
+#~ msgid "Flipbook Dialog"
+#~ msgstr "Diàleg de Previsualización"
+
+#~ msgid "Grab"
+#~ msgstr "Agafa"
+
+#~ msgid "Foreground Color"
+#~ msgstr "Color de front"
+
+#~ msgid "Background Color"
+#~ msgstr "Color de fons"
+
+#~ msgid ""
+#~ "Swap Background and\n"
+#~ "Foreground Colors"
+#~ msgstr ""
+#~ "Intercanvia colors \n"
+#~ "de front i fons"
+
+#~ msgid ": (Undo) "
+#~ msgstr ": (Desfer) "
+
+#~ msgid "Value Node"
+#~ msgstr "Valor de node"
 
 #~ msgid "Ok"
 #~ msgstr "OK"
@@ -4195,9 +4806,6 @@ msgstr "Valor de node exportat"
 
 #~ msgid "Fill"
 #~ msgstr "Farciment"
-
-#~ msgid "Outline"
-#~ msgstr "Contorn"
 
 #~ msgid "Plant"
 #~ msgstr "Planta"

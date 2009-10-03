@@ -300,7 +300,7 @@ Action::ValueDescSet::prepare()
 		case ValueBase::TYPE_VECTOR:
 		{
 			Angle old_angle = (*(ValueNode_RadialComposite::Handle::cast_dynamic(
-									 value_desc.get_value_node())->get_link_vfunc(1)))(time).get(Angle());
+									 value_desc.get_value_node())->get_link(1)))(time).get(Angle());
 			Vector vect(value.get(Vector()));
 			components[0]=vect.mag();
 			Angle change = Angle(Angle::tan(vect[1],vect[0])) - old_angle;
@@ -370,7 +370,7 @@ Action::ValueDescSet::prepare()
 			action->set_param("canvas",get_canvas());
 			action->set_param("canvas_interface",get_canvas_interface());
 			action->set_param("time",time);
-			action->set_param("new_value",(*parent_value_node->get_link(4))(time));
+			action->set_param("new_value",(*parent_value_node->get_link("t1"))(time));
 			action->set_param("value_desc",ValueDesc(parent_value_node,5));
 
 			if(!action->is_ready())

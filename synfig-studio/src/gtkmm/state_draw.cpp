@@ -961,10 +961,10 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline
 
 		if(extend_start_join_different)
 			LinkableValueNode::Handle::cast_dynamic(source.value_node)->
-				set_link(0,finish_duck_value_desc.get_value_node());
+				set_link("point",finish_duck_value_desc.get_value_node());
 		else if(extend_start_join_same)
 			LinkableValueNode::Handle::cast_dynamic(source.value_node)->
-				set_link(0,synfigapp::ValueDesc(LinkableValueNode::Handle::cast_dynamic(start_duck_value_node_bline->
+				set_link("point",synfigapp::ValueDesc(LinkableValueNode::Handle::cast_dynamic(start_duck_value_node_bline->
 													list[target_offset+finish_duck_index].value_node),0).get_value_node());
 		return result;
 	}
@@ -989,21 +989,21 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,bool loop_bline
 
 		if(extend_finish_join_different)
 			LinkableValueNode::Handle::cast_dynamic(source.value_node)->
-				set_link(0,start_duck_value_desc.get_value_node());
+				set_link("point",start_duck_value_desc.get_value_node());
 		else if(extend_finish_join_same)
 			LinkableValueNode::Handle::cast_dynamic(source.value_node)->
-				set_link(0,synfigapp::ValueDesc(LinkableValueNode::Handle::cast_dynamic(finish_duck_value_node_bline->
+				set_link("point",synfigapp::ValueDesc(LinkableValueNode::Handle::cast_dynamic(finish_duck_value_node_bline->
 													list[target_offset+start_duck_index].value_node),0).get_value_node());
 		return result;
 	}
 
 	if (join_start_no_extend)
 		LinkableValueNode::Handle::cast_dynamic(value_node->list.front().value_node)->
-		  set_link(0,start_duck_value_desc.get_value_node());
+		  set_link("point",start_duck_value_desc.get_value_node());
 
 	if (join_finish_no_extend)
 		LinkableValueNode::Handle::cast_dynamic(value_node->list.back().value_node)->
-		  set_link(0,finish_duck_value_desc.get_value_node());
+		  set_link("point",finish_duck_value_desc.get_value_node());
 
 	if(get_auto_export_flag())
 		if (!get_canvas_interface()->add_value_node(value_node,get_id()))
@@ -1678,8 +1678,8 @@ StateDraw_Context::new_region(std::list<synfig::BLinePoint> bline, synfig::Real 
 									continue;
 								}
 								// \todo if next isn't split, don't we want to copy its 'Tangent 1' instead?
-								value_node->set_link(5,value_node_next->get_link(5)); // Tangent 2
-								value_node->set_link(3,ValueNode_Const::create(true)); // Split Tangents
+								value_node->set_link("t2",value_node_next->get_link("t2"));
+								value_node->set_link("split",ValueNode_Const::create(true));
 
 								// get_canvas_interface()->auto_export(value_node);
 								printf("exporting\n");

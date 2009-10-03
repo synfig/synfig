@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: http://synfig.org/Bugs\n"
-"POT-Creation-Date: 2009-09-04 20:44+0200\n"
+"POT-Creation-Date: 2009-10-03 13:16-0700\n"
 "PO-Revision-Date: 2009-09-17 22:53+0200\n"
 "Last-Translator:  <aurore.d@gmail.com>\n"
 "Language-Team:  <en@li.org>\n"
@@ -19,6 +19,133 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Generator: KBabel 1.11.4\n"
+
+#: src/modules/example/filledrect.cpp:57
+#, fuzzy
+msgid "Filled Rectangle"
+msgstr "Rectangle"
+
+#: src/modules/example/filledrect.cpp:58 src/modules/example/metaballs.cpp:57
+#: src/modules/example/simplecircle.cpp:57
+msgid "Example"
+msgstr ""
+
+#: src/modules/example/filledrect.cpp:117
+#: src/modules/example/simplecircle.cpp:104
+#: src/modules/lyr_freetype/lyr_freetype.cpp:513
+#: src/modules/lyr_std/shade.cpp:375
+#: src/modules/mod_geometry/checkerboard.cpp:121
+#: src/modules/mod_geometry/circle.cpp:125
+#: src/modules/mod_geometry/rectangle.cpp:122 src/synfig/layer_shape.cpp:1192
+#: src/synfig/layer_solidcolor.cpp:99
+msgid "Color"
+msgstr "Couleur"
+
+#: src/modules/example/filledrect.cpp:121
+#: src/modules/mod_geometry/rectangle.cpp:126
+#: src/modules/mod_gradient/lineargradient.cpp:184
+msgid "Point 1"
+msgstr "Point 1"
+
+#: src/modules/example/filledrect.cpp:126
+#: src/modules/mod_geometry/rectangle.cpp:131
+#: src/modules/mod_gradient/lineargradient.cpp:188
+msgid "Point 2"
+msgstr "Point 2"
+
+#: src/modules/example/filledrect.cpp:130
+#, fuzzy
+msgid "Feather X"
+msgstr "Adoucissement"
+
+#: src/modules/example/filledrect.cpp:134
+#, fuzzy
+msgid "Feather Y"
+msgstr "Adoucissement"
+
+#: src/modules/example/filledrect.cpp:138 src/modules/lyr_std/bevel.cpp:67
+msgid "Bevel"
+msgstr "Biseauter"
+
+#: src/modules/example/filledrect.cpp:142
+msgid "Keep Bevel Circular"
+msgstr ""
+
+#: src/modules/example/metaballs.cpp:56
+msgid "Metaballs"
+msgstr ""
+
+#: src/modules/example/metaballs.cpp:132
+#: src/modules/mod_gradient/conicalgradient.cpp:106
+#: src/modules/mod_gradient/curvegradient.cpp:546
+#: src/modules/mod_gradient/lineargradient.cpp:191
+#: src/modules/mod_gradient/radialgradient.cpp:110
+#: src/modules/mod_gradient/spiralgradient.cpp:109
+#: src/modules/mod_noise/noise.cpp:250 src/modules/mod_particle/plant.cpp:394
+#: src/synfig/valuenode_gradientrotate.cpp:149
+#: src/synfig/valuenode_repeat_gradient.cpp:186
+msgid "Gradient"
+msgstr "Dégradé"
+
+#: src/modules/example/metaballs.cpp:136 src/modules/mod_geometry/star.cpp:194
+#: src/synfig/distance.cpp:248
+msgid "Points"
+msgstr "Pointes"
+
+#: src/modules/example/metaballs.cpp:140
+#, fuzzy
+msgid "Radii"
+msgstr "Rayon"
+
+#: src/modules/example/metaballs.cpp:144
+#, fuzzy
+msgid "Weights"
+msgstr "Graisse"
+
+#: src/modules/example/metaballs.cpp:148
+#, fuzzy
+msgid "Gradient Left"
+msgstr "Dégradé"
+
+#: src/modules/example/metaballs.cpp:152
+#, fuzzy
+msgid "Gradient Right"
+msgstr "Rotation de dégradé"
+
+#: src/modules/example/metaballs.cpp:156
+#, fuzzy
+msgid "Positive Only"
+msgstr "Position"
+
+#: src/modules/example/simplecircle.cpp:56
+#, fuzzy
+msgid "Simple Circle"
+msgstr "Cercle"
+
+#: src/modules/example/simplecircle.cpp:108
+#: src/modules/lyr_std/stretch.cpp:108 src/modules/lyr_std/twirl.cpp:109
+#: src/modules/lyr_std/zoom.cpp:101
+#: src/modules/mod_gradient/conicalgradient.cpp:110
+#: src/modules/mod_gradient/radialgradient.cpp:114
+#: src/modules/mod_gradient/spiralgradient.cpp:113
+msgid "Center"
+msgstr "Centre"
+
+#: src/modules/example/simplecircle.cpp:112
+#: src/modules/lyr_std/sphere_distort.cpp:147
+#: src/modules/lyr_std/twirl.cpp:113 src/modules/mod_geometry/circle.cpp:128
+#: src/modules/mod_gradient/radialgradient.cpp:118
+#: src/modules/mod_gradient/spiralgradient.cpp:117
+#: src/modules/mod_noise/valuenode_random.cpp:250
+#: src/synfig/valuenode_radialcomposite.cpp:200
+msgid "Radius"
+msgstr "Rayon"
+
+#: src/modules/example/simplecircle.cpp:113 src/modules/lyr_std/twirl.cpp:114
+#: src/modules/mod_gradient/radialgradient.cpp:119
+#: src/modules/mod_gradient/spiralgradient.cpp:118
+msgid "This is the radius of the circle"
+msgstr "Le rayon du cercle"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:63
 #: src/modules/lyr_freetype/lyr_freetype.cpp:507
@@ -48,15 +175,6 @@ msgstr "Jeu de polices vide"
 #: src/modules/lyr_freetype/lyr_freetype.cpp:508
 msgid "Text to Render"
 msgstr "Texte à rendre"
-
-#: src/modules/lyr_freetype/lyr_freetype.cpp:513
-#: src/modules/lyr_std/shade.cpp:375
-#: src/modules/mod_geometry/checkerboard.cpp:121
-#: src/modules/mod_geometry/circle.cpp:125
-#: src/modules/mod_geometry/rectangle.cpp:122 src/synfig/layer_shape.cpp:1192
-#: src/synfig/layer_solidcolor.cpp:99
-msgid "Color"
-msgstr "Couleur"
 
 #: src/modules/lyr_freetype/lyr_freetype.cpp:514
 msgid "Color of the text"
@@ -147,6 +265,7 @@ msgstr "Orientation du texte"
 #: src/modules/lyr_freetype/lyr_freetype.cpp:565
 #: src/modules/lyr_std/insideout.cpp:141 src/modules/lyr_std/rotate.cpp:112
 #: src/modules/lyr_std/shade.cpp:378 src/modules/lyr_std/translate.cpp:97
+#: src/modules/lyr_std/curvewarp.cpp:386
 #: src/modules/lyr_std/xorpattern.cpp:122
 #: src/modules/mod_filter/radialblur.cpp:106
 #: src/modules/mod_geometry/checkerboard.cpp:125
@@ -210,10 +329,6 @@ msgstr "Séquence multi-octets invalide - La locale est-elle définie ?\n"
 #: src/modules/lyr_freetype/lyr_freetype.cpp:744
 msgid "Can't parse multibyte character.\n"
 msgstr "Impossible d'analyser la séquence multi-octets.\n"
-
-#: src/modules/lyr_std/bevel.cpp:67
-msgid "Bevel"
-msgstr "Biseauter"
 
 #: src/modules/lyr_std/bevel.cpp:68 src/modules/lyr_std/shade.cpp:67
 msgid "Stylize"
@@ -346,7 +461,8 @@ msgstr "À l'envers"
 #: src/modules/lyr_std/insideout.cpp:56
 #: src/modules/lyr_std/sphere_distort.cpp:73
 #: src/modules/lyr_std/stretch.cpp:59 src/modules/lyr_std/twirl.cpp:56
-#: src/modules/lyr_std/warp.cpp:56 src/modules/mod_noise/distort.cpp:57
+#: src/modules/lyr_std/warp.cpp:56 src/modules/lyr_std/curvewarp.cpp:55
+#: src/modules/mod_noise/distort.cpp:57
 msgid "Distortions"
 msgstr "Distorsions"
 
@@ -553,15 +669,6 @@ msgstr "Rendre sphérique"
 msgid "Position"
 msgstr "Position"
 
-#: src/modules/lyr_std/sphere_distort.cpp:147
-#: src/modules/lyr_std/twirl.cpp:113 src/modules/mod_geometry/circle.cpp:128
-#: src/modules/mod_gradient/radialgradient.cpp:118
-#: src/modules/mod_gradient/spiralgradient.cpp:117
-#: src/modules/mod_noise/valuenode_random.cpp:250
-#: src/synfig/valuenode_radialcomposite.cpp:200
-msgid "Radius"
-msgstr "Rayon"
-
 #: src/modules/lyr_std/sphere_distort.cpp:158 src/modules/lyr_std/warp.cpp:400
 msgid "Clip"
 msgstr "Couper"
@@ -586,14 +693,6 @@ msgstr "Barre horizontale"
 msgid "Stretch"
 msgstr "Étirer"
 
-#: src/modules/lyr_std/stretch.cpp:108 src/modules/lyr_std/twirl.cpp:109
-#: src/modules/lyr_std/zoom.cpp:101
-#: src/modules/mod_gradient/conicalgradient.cpp:110
-#: src/modules/mod_gradient/radialgradient.cpp:114
-#: src/modules/mod_gradient/spiralgradient.cpp:113
-msgid "Center"
-msgstr "Centre"
-
 #: src/modules/lyr_std/supersample.cpp:55
 msgid "Super Sample"
 msgstr "Sur-échantillonner "
@@ -603,6 +702,7 @@ msgid "Unable to create SurfaceTarget"
 msgstr "Impossible de créer une Surface Cible"
 
 #: src/modules/lyr_std/supersample.cpp:215
+#: src/modules/lyr_std/curvewarp.cpp:389
 #: src/modules/mod_gradient/curvegradient.cpp:537
 #: src/synfig/valuenode_composite.cpp:292
 #: src/synfig/valuenode_realstring.cpp:187
@@ -669,12 +769,6 @@ msgstr "Décaler"
 msgid "Twirl"
 msgstr "Tourbillon"
 
-#: src/modules/lyr_std/twirl.cpp:114
-#: src/modules/mod_gradient/radialgradient.cpp:119
-#: src/modules/mod_gradient/spiralgradient.cpp:118
-msgid "This is the radius of the circle"
-msgstr "Le rayon du cercle"
-
 #: src/modules/lyr_std/twirl.cpp:120
 msgid "Rotations"
 msgstr "Rotations"
@@ -710,6 +804,40 @@ msgstr "Destination Bas-Gauche"
 #: src/modules/lyr_std/warp.cpp:404
 msgid "Horizon"
 msgstr "Horizon"
+
+#: src/modules/lyr_std/curvewarp.cpp:54
+msgid "Curve Warp"
+msgstr ""
+
+#: src/modules/lyr_std/curvewarp.cpp:393
+#, fuzzy
+msgid "Start Point"
+msgstr "Point graine"
+
+#: src/modules/lyr_std/curvewarp.cpp:397
+#, fuzzy
+msgid "End Point"
+msgstr "Point graine"
+
+#: src/modules/lyr_std/curvewarp.cpp:400
+#: src/modules/mod_geometry/outline.cpp:807
+#: src/modules/mod_geometry/region.cpp:232
+#: src/modules/mod_gradient/curvegradient.cpp:540
+#: src/modules/mod_particle/plant.cpp:383
+msgid "Vertices"
+msgstr "Vertices"
+
+#: src/modules/lyr_std/curvewarp.cpp:403
+#: src/modules/mod_geometry/outline.cpp:810
+#: src/modules/mod_gradient/curvegradient.cpp:543
+#: src/modules/mod_particle/plant.cpp:384
+msgid "A list of BLine Points"
+msgstr "Une liste de points de BLine"
+
+#: src/modules/lyr_std/curvewarp.cpp:406
+#: src/modules/mod_gradient/curvegradient.cpp:554
+msgid "Fast"
+msgstr "Rapide"
 
 #: src/modules/lyr_std/xorpattern.cpp:54
 msgid "XOR Pattern"
@@ -996,19 +1124,6 @@ msgstr "Contour"
 msgid "No vertices in outline "
 msgstr "Pas de vertex dans le contour"
 
-#: src/modules/mod_geometry/outline.cpp:807
-#: src/modules/mod_geometry/region.cpp:232
-#: src/modules/mod_gradient/curvegradient.cpp:540
-#: src/modules/mod_particle/plant.cpp:383
-msgid "Vertices"
-msgstr "Vertices"
-
-#: src/modules/mod_geometry/outline.cpp:810
-#: src/modules/mod_gradient/curvegradient.cpp:543
-#: src/modules/mod_particle/plant.cpp:384
-msgid "A list of BLine Points"
-msgstr "Une liste de points de BLine"
-
 #: src/modules/mod_geometry/outline.cpp:824
 msgid "Outline Width"
 msgstr "Épaisseur du contour"
@@ -1049,16 +1164,6 @@ msgstr "Homogène"
 #: src/modules/mod_geometry/rectangle.cpp:58
 msgid "Rectangle"
 msgstr "Rectangle"
-
-#: src/modules/mod_geometry/rectangle.cpp:126
-#: src/modules/mod_gradient/lineargradient.cpp:184
-msgid "Point 1"
-msgstr "Point 1"
-
-#: src/modules/mod_geometry/rectangle.cpp:131
-#: src/modules/mod_gradient/lineargradient.cpp:188
-msgid "Point 2"
-msgstr "Point 2"
 
 #: src/modules/mod_geometry/rectangle.cpp:136
 msgid "Expand amount"
@@ -1103,10 +1208,6 @@ msgstr "Angle"
 msgid "The orientation of the star"
 msgstr "L'orientation de l'étoile"
 
-#: src/modules/mod_geometry/star.cpp:194 src/synfig/distance.cpp:248
-msgid "Points"
-msgstr "Pointes"
-
 #: src/modules/mod_geometry/star.cpp:195
 msgid "The number of points in the star"
 msgstr "Nombres de pointes de l'étoile"
@@ -1141,17 +1242,6 @@ msgstr "Dégradé conique"
 msgid "Gradients"
 msgstr "Dégradés"
 
-#: src/modules/mod_gradient/conicalgradient.cpp:106
-#: src/modules/mod_gradient/curvegradient.cpp:546
-#: src/modules/mod_gradient/lineargradient.cpp:191
-#: src/modules/mod_gradient/radialgradient.cpp:110
-#: src/modules/mod_gradient/spiralgradient.cpp:109
-#: src/modules/mod_noise/noise.cpp:250 src/modules/mod_particle/plant.cpp:394
-#: src/synfig/valuenode_gradientrotate.cpp:149
-#: src/synfig/valuenode_repeat_gradient.cpp:186
-msgid "Gradient"
-msgstr "Dégradé"
-
 #: src/modules/mod_gradient/curvegradient.cpp:59
 msgid "Curve Gradient"
 msgstr "Dégradé selon une courbe"
@@ -1174,10 +1264,6 @@ msgstr "Zigzag"
 #: src/modules/mod_gradient/curvegradient.cpp:552
 msgid "Perpendicular"
 msgstr "Perpendiculaire"
-
-#: src/modules/mod_gradient/curvegradient.cpp:554
-msgid "Fast"
-msgstr "Rapide"
 
 #: src/modules/mod_gradient/lineargradient.cpp:53
 msgid "Linear Gradient"
@@ -1364,14 +1450,16 @@ msgstr "Vitesse tangente"
 
 #: src/modules/mod_particle/plant.cpp:411
 msgid "Amount to which shoots tend to grow along the tangent to the BLine"
-msgstr "Quantité de croissance des \"pousses\" le long de la tangente à la BLine"
+msgstr ""
+"Quantité de croissance des \"pousses\" le long de la tangente à la BLine"
 
 #: src/modules/mod_particle/plant.cpp:415
 msgid "Perpendicular Velocity"
 msgstr "Vitesse perpendiculaire"
 
 #: src/modules/mod_particle/plant.cpp:416
-msgid "Amount to which shoots tend to grow perpendicular to the tangent to the BLine"
+msgid ""
+"Amount to which shoots tend to grow perpendicular to the tangent to the BLine"
 msgstr "Quantité de croissance des \"pousses\" perpendiculairement à la BLine"
 
 #: src/modules/mod_particle/plant.cpp:420
@@ -1431,14 +1519,16 @@ msgstr "Pousses"
 
 #: src/modules/mod_particle/plant.cpp:452
 msgid "Number of places that growth occurs on each bline section"
-msgstr "Nombre d'endroits où des pousses apparaissent sur chaque section de BLine"
+msgstr ""
+"Nombre d'endroits où des pousses apparaissent sur chaque section de BLine"
 
 #: src/modules/mod_particle/plant.cpp:456
 msgid "Random Factor"
 msgstr "Facteur d'aléa"
 
 #: src/modules/mod_particle/plant.cpp:457
-msgid "Used to scale down all random effects.  Set to zero to disable randomness"
+msgid ""
+"Used to scale down all random effects.  Set to zero to disable randomness"
 msgstr ""
 "Utilisé pour amoindrir les effets aléatoires. Placez le à zéro pour "
 "désactiver les aléas."
@@ -1796,12 +1886,14 @@ msgstr "L'analyse de \"%s\" a échoué"
 #: src/synfig/loadcanvas.cpp:1270
 #, c-format
 msgid "Unable to connect value node ('%s' of type '%s') to link %d (%s)"
-msgstr "Impossible de lier le nœud de valeur (\"%s\" de type \"%s\") au lien %d (%s)"
+msgstr ""
+"Impossible de lier le nœud de valeur (\"%s\" de type \"%s\") au lien %d (%s)"
 
 #: src/synfig/loadcanvas.cpp:1288
 #, c-format
 msgid "Unknown Exception thrown when working on element \"%s\""
-msgstr "Une exception inconnue est survenue lors du travail sur l'élément \"%s\""
+msgstr ""
+"Une exception inconnue est survenue lors du travail sur l'élément \"%s\""
 
 #: src/synfig/loadcanvas.cpp:1329
 #, c-format
@@ -1839,7 +1931,8 @@ msgstr "ID dupliqué \"%s\""
 #: src/synfig/loadcanvas.cpp:1653
 #, c-format
 msgid "Unknown Exception thrown when adding ValueNode \"%s\""
-msgstr "Une exception inconnue est survenue lors de l'ajout du Nœud de valeur \"%s\""
+msgstr ""
+"Une exception inconnue est survenue lors de l'ajout du Nœud de valeur \"%s\""
 
 #: src/synfig/loadcanvas.cpp:1688
 msgid "Missing \"type\" attribute to \"layer\" element"
@@ -1847,7 +1940,8 @@ msgstr "Il manque un attribut \"type\" à l'élément \"layer\""
 
 #: src/synfig/loadcanvas.cpp:1707
 msgid "Installed layer version is smaller than layer version in file"
-msgstr "La version de calque installée est plus petite que la version du fichier"
+msgstr ""
+"La version de calque installée est plus petite que la version du fichier"
 
 #: src/synfig/loadcanvas.cpp:1727
 msgid "<name> entry for <layer> is not yet supported. Ignoring..."
@@ -1857,7 +1951,8 @@ msgstr ""
 
 #: src/synfig/loadcanvas.cpp:1730
 msgid "<desc> entry for <layer> is not yet supported. Ignoring..."
-msgstr "La valeur <desc> n'est pas encore supportée pour <layer> (calque). Ignorée."
+msgstr ""
+"La valeur <desc> n'est pas encore supportée pour <layer> (calque). Ignorée."
 
 #: src/synfig/loadcanvas.cpp:1738
 msgid "Missing \"name\" attribute for <param>."
@@ -1909,7 +2004,8 @@ msgstr "Élément <%s> inattendu après les données de <param>. Ignoré."
 
 #: src/synfig/loadcanvas.cpp:1918 src/synfig/loadcanvas.cpp:1926
 msgid "Canvas with width or height less than one is not allowed"
-msgstr "La hauteur et la largeur du canevas doivent être supérieures ou égales à 1."
+msgstr ""
+"La hauteur et la largeur du canevas doivent être supérieures ou égales à 1."
 
 #: src/synfig/loadcanvas.cpp:2012
 msgid "Inline canvas cannot have a <defs> section"
@@ -2375,7 +2471,7 @@ msgstr "Soustraction"
 msgid "Two-Tone"
 msgstr "Deux-tons"
 
-#: src/synfig/valuenode.cpp:151 src/synfig/valuenode_bline.cpp:831
+#: src/synfig/valuenode.cpp:151 src/synfig/valuenode_bline.cpp:832
 #: src/synfig/valuenode_blinecalctangent.cpp:243
 #: src/synfig/valuenode_blinecalcvertex.cpp:202
 #: src/synfig/valuenode_blinecalcwidth.cpp:208
@@ -2505,7 +2601,7 @@ msgid "Greyed"
 msgstr "Grisé"
 
 #: src/synfig/valuenode.cpp:189 src/synfig/valuenode_pow.cpp:123
-#: src/synfig/valuenode_pow.cpp:197
+#: src/synfig/valuenode_pow.cpp:200
 msgid "Power"
 msgstr "Puissance"
 
@@ -2595,15 +2691,15 @@ msgstr "%s : Vous ne pouvez pas utiliser un %s dans un nœud de valeur animé."
 msgid "Animated"
 msgstr "Animé"
 
-#: src/synfig/valuenode_bline.cpp:807 src/synfig/valuenode_dynamiclist.cpp:622
+#: src/synfig/valuenode_bline.cpp:808 src/synfig/valuenode_dynamiclist.cpp:622
 msgid "No entries in list"
 msgstr "Pas d'entrées dans la liste"
 
-#: src/synfig/valuenode_bline.cpp:810 src/synfig/valuenode_dynamiclist.cpp:625
+#: src/synfig/valuenode_bline.cpp:811 src/synfig/valuenode_dynamiclist.cpp:625
 msgid "No entries in ret_list"
 msgstr "Pas d'entrées dans la liste ret_list"
 
-#: src/synfig/valuenode_bline.cpp:819
+#: src/synfig/valuenode_bline.cpp:820
 #, c-format
 msgid "Vertex %03d"
 msgstr "Vertex %03d"
@@ -2909,7 +3005,8 @@ msgstr "Définir la diagonale de la fenêtre d'image (Étendue)"
 
 #: src/tool/main.cpp:327
 msgid "Set antialias amount for parametric renderer."
-msgstr "Définir la valeur d'anti-crénelage pour le moteur de rendu paramétrique."
+msgstr ""
+"Définir la valeur d'anti-crénelage pour le moteur de rendu paramétrique."
 
 #: src/tool/main.cpp:328
 #, c-format
@@ -2922,7 +3019,8 @@ msgstr "Gamma (défaut = 2.2)"
 
 #: src/tool/main.cpp:330
 msgid "Verbose Output (add more for more verbosity)"
-msgstr "Sortie verbeuse (en ajouter pour avoir une sortie encore plus détaillée)"
+msgstr ""
+"Sortie verbeuse (en ajouter pour avoir une sortie encore plus détaillée)"
 
 #: src/tool/main.cpp:331
 msgid "Quiet mode (No progress/time-remaining display)"
@@ -2938,7 +3036,8 @@ msgstr "Spécifier le nom de fichier de sortie"
 
 #: src/tool/main.cpp:334
 msgid "Enable multithreaded renderer using specified # of threads"
-msgstr "Activer le rendu multiprocessus en utilisant le nombre donné de processus"
+msgstr ""
+"Activer le rendu multiprocessus en utilisant le nombre donné de processus"
 
 #: src/tool/main.cpp:335
 msgid "Print Benchmarks"
@@ -3261,4 +3360,3 @@ msgstr "Rendu en cours ..."
 #: src/tool/main.cpp:1431
 msgid "Done."
 msgstr "Fini."
-

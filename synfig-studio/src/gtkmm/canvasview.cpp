@@ -2881,7 +2881,7 @@ CanvasView::on_duck_changed(const synfig::Point &value,const synfigapp::ValueDes
 
 	if (ValueNode_BLineCalcVertex::Handle bline_vertex = ValueNode_BLineCalcVertex::Handle::cast_dynamic(value_desc.get_value_node()))
 	{
-		ValueNode_BLine::Handle bline = ValueNode_BLine::Handle::cast_dynamic(bline_vertex->get_link(bline_vertex->get_link_index_from_name("bline")));
+		ValueNode_BLine::Handle bline = ValueNode_BLine::Handle::cast_dynamic(bline_vertex->get_link("bline"));
 		Real radius = 0.0;
 		Real amount = synfig::find_closest_point((*bline)(get_time()), value, radius, bline->get_loop());
 		return canvas_interface()->change_value(synfigapp::ValueDesc(bline_vertex,bline_vertex->get_link_index_from_name("amount")), amount);

@@ -80,12 +80,12 @@ synfig::ValueNode_Composite::ValueNode_Composite(const ValueBase &value):
 		case ValueBase::TYPE_BLINEPOINT:
 		{
 			BLinePoint bline_point(value);
-			set_link(0,ValueNode_Const::create(bline_point.get_vertex()));
-			set_link(1,ValueNode_Const::create(bline_point.get_width()));
-			set_link(2,ValueNode_Const::create(bline_point.get_origin()));
-			set_link(3,ValueNode_Const::create(bline_point.get_split_tangent_flag()));
-			set_link(4,ValueNode_RadialComposite::create(bline_point.get_tangent1()));
-			set_link(5,ValueNode_RadialComposite::create(bline_point.get_tangent2()));
+			set_link("point",ValueNode_Const::create(bline_point.get_vertex()));
+			set_link("width",ValueNode_Const::create(bline_point.get_width()));
+			set_link("origin",ValueNode_Const::create(bline_point.get_origin()));
+			set_link("split",ValueNode_Const::create(bline_point.get_split_tangent_flag()));
+			set_link("t1",ValueNode_RadialComposite::create(bline_point.get_tangent1()));
+			set_link("t2",ValueNode_RadialComposite::create(bline_point.get_tangent2()));
 			break;
 		}
 		default:

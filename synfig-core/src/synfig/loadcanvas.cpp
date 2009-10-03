@@ -1340,8 +1340,8 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 		if (version == "0.1" || version == "0.2" || version == "0.3")
 		{
 			handle<LinkableValueNode> scale_value_node=LinkableValueNode::create("scale",type);
-			scale_value_node->set_link(scale_value_node->get_link_index_from_name("link"), value_node);
-			scale_value_node->set_link(scale_value_node->get_link_index_from_name("scalar"), ValueNode_Const::create(Real(0.5)));
+			scale_value_node->set_link("link", value_node);
+			scale_value_node->set_link("scalar", ValueNode_Const::create(Real(0.5)));
 			value_node = scale_value_node;
 		}
 	}
