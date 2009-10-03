@@ -1,12 +1,23 @@
               ETL releases
 
-More detailed notes are available on the releases page: 
+More detailed notes are available on the releases page:
 
 http://synfig.org/Releases
 
+ 0.04.13 (git master branch) - October 3, 2009 - Bug fixes.
+
+  * Migration to git repository.
+  * Delete generated ETL/etl_profile_.h.in file.
+  * Improve the rendering of curve gradient layers near vertices with 0-length tangents.
+  * Fix a division by zero when calculate the distance to a bezier.
+  * Fix the pthread and kernel32 library check to not check for main.
+  * Don't enable the use of mutexes on platforms other than windows unless pthread is available.
+  * Remove ancient trunk folder from svn repository.
+  * Several compiler warnings fixed.
+
  0.04.12 (SVN 2112) - October 21, 2008 - Bug fixes
- 
-  * Improve the derivative class for hermites. 
+
+  * Improve the derivative class for hermites.
   * Update configure.ac as suggested by autoupdate.
 
  0.04.11 (SVN 1837) - March 3, 2008 - Bug fixes
