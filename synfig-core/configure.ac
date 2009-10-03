@@ -2,7 +2,7 @@
 
 # -- I N I T --------------------------------------------------
 
-AC_INIT([Synfig Core],[0.61.09],[http://synfig.org/Bugs],[synfig])
+AC_INIT([Synfig Core],[0.62.00-RC1],[http://synfig.org/Bugs],[synfig])
 AC_REVISION
 
 AC_CONFIG_AUX_DIR(config)
@@ -20,7 +20,7 @@ AC_SUBST(LIBLTDL)
 API_VERSION=0.0
 
 
-AC_DEFINE(LT_SCOPE,[extern],[LibLTDL is linked staticly])	
+AC_DEFINE(LT_SCOPE,[extern],[LibLTDL is linked staticly])
 
 
 
@@ -131,7 +131,7 @@ AC_ARG_ENABLE(layer-profiling,[
 	use_layerprofiling="no"
 ])
 if test $use_layerprofiling = "yes" ; then {
-	AC_DEFINE(SYNFIG_PROFILE_LAYERS,[1],[enable layer profiling])	
+	AC_DEFINE(SYNFIG_PROFILE_LAYERS,[1],[enable layer profiling])
 } ; fi
 
 
@@ -401,8 +401,8 @@ AM_GNU_GETTEXT([external])
 AM_GNU_GETTEXT_VERSION([0.15])
 localedir="$datadir/locale"
 
-PKG_CHECK_MODULES(ETL, [ETL >= 0.04.12],,[
-	AC_MSG_ERROR([ ** You need to install the ETL (version 0.04.12 or greater).])
+PKG_CHECK_MODULES(ETL, [ETL >= 0.04.13-RC1],,[
+	AC_MSG_ERROR([ ** You need to install the ETL (version 0.04.13-RC1 or greater).])
 ])
 CONFIG_DEPS="$CONFIG_DEPS ETL"
 
@@ -562,8 +562,8 @@ case "$host" in
 		AM_CONDITIONAL(MACOSX_PKG, false)
 	;;
 esac
-		
-		
+
+
 
 # -- H E A D E R S --------------------------------------------
 
@@ -623,7 +623,7 @@ AC_SUBST(CPPFLAGS)
 AC_SUBST(LDFLAGS)
 
 # this line is required for libtool 1.5.26 but must not be present for libtool 2.2.4...
-AC_CONFIG_SUBDIRS(libltdl)
+# AC_CONFIG_SUBDIRS(libltdl)
 
 CONFIG_LIBS="-lsynfig"
 CONFIG_CFLAGS="$CONFIG_CFLAGS"

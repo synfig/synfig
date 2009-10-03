@@ -2,7 +2,7 @@
 
 # -- I N I T --------------------------------------------------
 
-AC_INIT([Synfig Studio],[0.61.09],[http://synfig.org/Bugs],[synfigstudio])
+AC_INIT([Synfig Studio],[0.62.00-RC1],[http://synfig.org/Bugs],[synfigstudio])
 AC_REVISION
 
 AC_CONFIG_AUX_DIR(config)
@@ -135,8 +135,8 @@ PKG_CHECK_MODULES(GTKMM, gtkmm-2.4 gthread-2.0,[
 AC_SUBST(GTKMM_CFLAGS)
 AC_SUBST(GTKMM_LIBS)
 
-PKG_CHECK_MODULES(SYNFIG, [synfig >= 0.61.09] [ETL >= 0.04.12] sigc++-2.0,,[
-	AC_MSG_ERROR([ ** Unable to set up dependent libraries (synfig >= 0.61.09, ETL >= 0.04.12)])
+PKG_CHECK_MODULES(SYNFIG, [synfig >= 0.62.00-RC1] [ETL >= 0.04.13-RC1] sigc++-2.0,,[
+	AC_MSG_ERROR([ ** Unable to set up dependent libraries (synfig >= 0.62.00-RC1, ETL >= 0.04.13-RC1)])
 ])
 AC_SUBST(SYNFIG_CFLAGS)
 AC_SUBST(SYNFIG_LIBS)
@@ -242,7 +242,7 @@ AC_CHECK_HEADERS([sys/types.h sys/wait.h sys/stat.h sys/time.h sys/resource.h sy
 AC_CHECK_FUNCS([fork])
 AC_CHECK_FUNCS([kill])
 AC_CHECK_FUNCS([pipe])
-AC_CHECK_FUNCS([setpriority mkfifo stat]) 
+AC_CHECK_FUNCS([setpriority mkfifo stat])
 
 # -- A R G U M E N T S ----------------------------------------
 

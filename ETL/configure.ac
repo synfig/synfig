@@ -2,7 +2,7 @@
 
 # -- I N I T --------------------------------------------------
 
-AC_INIT([Extended Template Library],[0.04.12],[http://synfig.org/Bugs],[ETL])
+AC_INIT([Extended Template Library],[0.04.13-RC1],[http://synfig.org/Bugs],[ETL])
 AC_REVISION
 
 AC_CONFIG_AUX_DIR(config)
@@ -44,9 +44,9 @@ AC_WIN32_QUIRKS
 # -- H E A D E R S --------------------------------------------
 
 AH_TOP([
-// We want to be autoconf/autoheader friendly, so 
+// We want to be autoconf/autoheader friendly, so
 // if the developer has already included an
-// autoheader-generated configuration script, 
+// autoheader-generated configuration script,
 // we can assume that the user knew what they
 // were doing and let them use their own config.h.
 //#ifndef PACKAGE_TARNAME
