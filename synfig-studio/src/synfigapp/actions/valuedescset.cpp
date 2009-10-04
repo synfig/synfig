@@ -302,7 +302,7 @@ Action::ValueDescSet::prepare()
 		case ValueBase::TYPE_VECTOR:
 		{
 			Angle old_angle = (*(ValueNode_RadialComposite::Handle::cast_dynamic(
-									 value_desc.get_value_node())->get_link(1)))(time).get(Angle());
+									 value_desc.get_value_node())->get_link("theta")))(time).get(Angle());
 			Vector vect(value.get(Vector()));
 			components[0]=vect.mag();
 			Angle change = Angle(Angle::tan(vect[1],vect[0])) - old_angle;
