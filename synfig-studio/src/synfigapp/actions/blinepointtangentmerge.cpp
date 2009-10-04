@@ -157,7 +157,7 @@ Action::BLinePointTangentMerge::prepare()
 
 	action->set_param("canvas",get_canvas());
 	action->set_param("canvas_interface",get_canvas_interface());
-	action->set_param("value_desc",ValueDesc(value_node,3));
+	action->set_param("value_desc",ValueDesc(value_node,value_node->get_link_index_from_name("split")));
 	action->set_param("time",time);
 	action->set_param("new_value",synfig::ValueBase(false));
 

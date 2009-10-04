@@ -1024,7 +1024,8 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 		param_list2=canvas_interface->generate_param_list(
 			synfigapp::ValueDesc(
 				ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node())
-				,0
+				,ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node())
+                                                           ->get_link_index_from_name("point")
 			)
 		);
 		param_list2.add("origin",location);

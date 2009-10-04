@@ -156,7 +156,8 @@ Action::ValueDescSet::prepare()
 	// tangent.
 	if(	value_desc.parent_is_value_node() &&
 		value_desc.get_parent_value_node()->get_type()==ValueBase::TYPE_BLINEPOINT &&
-		(value_desc.get_index()==4 || value_desc.get_index()==5) &&
+		(value_desc.get_name()=="t1" || value_desc.get_name()=="t2") &&
+		//(value_desc.get_index()==4 || value_desc.get_index()==5) &&
 		(*value_desc.get_parent_value_node())(time).get(BLinePoint()).get_split_tangent_flag()==false)
 	{
 		{
@@ -168,7 +169,8 @@ Action::ValueDescSet::prepare()
 			Vector t2((*parent_value_node->get_link("t2"))(time));
 		}
 
-		if (value_desc.get_index()==4) {
+		//if (value_desc.get_index()==4) {
+		if (value_desc.get_name()=="t1") {
 			ValueNode_Composite::Handle parent_value_node;
 			parent_value_node=parent_value_node.cast_dynamic(value_desc.get_parent_value_node());
 
@@ -183,7 +185,7 @@ Action::ValueDescSet::prepare()
 			action->set_param("canvas_interface",get_canvas_interface());
 			action->set_param("time",time);
 			action->set_param("new_value",value);
-			action->set_param("value_desc",ValueDesc(parent_value_node,5));
+			action->set_param("value_desc",ValueDesc(parent_value_node, parent_value_node->get_link_index_from_name("t2")));
 
 			if(!action->is_ready())
 				throw Error(Error::TYPE_NOTREADY);
@@ -371,7 +373,7 @@ Action::ValueDescSet::prepare()
 			action->set_param("canvas_interface",get_canvas_interface());
 			action->set_param("time",time);
 			action->set_param("new_value",(*parent_value_node->get_link("t1"))(time));
-			action->set_param("value_desc",ValueDesc(parent_value_node,5));
+			action->set_param("value_desc",ValueDesc(parent_value_node,parent_value_node->get_link_index_from_name("t2")));
 
 			if(!action->is_ready())
 				throw Error(Error::TYPE_NOTREADY);
@@ -396,7 +398,7 @@ Action::ValueDescSet::prepare()
 				action->set_param("canvas_interface",get_canvas_interface());
 				action->set_param("time",time);
 				action->set_param("new_value",average);
-				action->set_param("value_desc",ValueDesc(parent_value_node,4));
+				action->set_param("value_desc",ValueDesc(parent_value_node,parent_value_node->get_link_index_from_name("t1")));
 
 				if(!action->is_ready())
 					throw Error(Error::TYPE_NOTREADY);
@@ -414,7 +416,7 @@ Action::ValueDescSet::prepare()
 				action->set_param("canvas_interface",get_canvas_interface());
 				action->set_param("time",time);
 				action->set_param("new_value",average);
-				action->set_param("value_desc",ValueDesc(parent_value_node,5));
+				action->set_param("value_desc",ValueDesc(parent_value_node,parent_value_node->get_link_index_from_name("t2")));
 
 				if(!action->is_ready())
 					throw Error(Error::TYPE_NOTREADY);
