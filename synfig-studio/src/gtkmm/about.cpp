@@ -162,15 +162,15 @@ About::About()
 	set_authors(authors);
 
 	std::vector<Glib::ustring> artists;
-	artists.push_back("Robert B. Quattlebaum Jr. (darco)");
 	artists.push_back("Aurore D (rore)");
 	artists.push_back("Carlos López González (genete)");
 	artists.push_back("Chris Norman (pixelgeek)");
 	artists.push_back("Daniel Hornung (rubikcube)");
+	artists.push_back("David Rylander (rylleman)");
 	artists.push_back("Franco Iacomella (Yaco)");
 	artists.push_back("Gerald Young (Yoyobuae)");
-	artists.push_back("David Rylander (rylleman)");
 	artists.push_back("Henrique Lopes Barone");
+	artists.push_back("Robert B. Quattlebaum Jr. (darco)");
 
 	set_artists(artists);
 
