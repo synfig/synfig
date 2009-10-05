@@ -11,23 +11,23 @@ http://synfig.org/Releases
   * Bugs fixed: #1993098, #1730067, #2353248, #2037732, #2412072, #2458112
   * Bugs fixed: #2502818.
   * Improved messages for failed open file commands.
-  * Fix crash when unsetting import layer filename after using PNG or JPEG importers
-  * Improve the rendering of curve gradient layers near vertices with 0-length tangents.
-  * Fix previous bug that produced bad render to the star layer.
-  * Enable use of ffmpeg importer.
+  * Fixed crash when unsetting import layer filename after using PNG or JPEG importers.
+  * Improved the rendering of curve gradient layers near vertices with 0-length tangents.
+  * Fixed previous bug that produced bad render to the star layer.
+  * Enabled use of ffmpeg importer.
   * Set four modules as essential: gradient, geometry, particle, freetype.
-  * Improve message when initialize synfig fails.
+  * Improved message when initialize synfig fails.
   * New environment variables for options.
-  * Add support for alpha in paletted PNG files.
+  * Added support for alpha in paletted PNG files.
   * New option: Scale New imported Images to Fit Canvas.
-  * Better erros messages when open a file that doesn't exists.
-  * Enable Example module: Metaballs, Simple Circle, Filled Rectangle.
-  * New Value Nodes: Greyed, Power, And, Not, Compare,
-  * Add 'Loop' parameter to the Random Value Node.
+  * Better errors when attempting to open a file that doesn't exist.
+  * Enabled Example module: Metaballs, Simple Circle, Filled Rectangle.
+  * New Value Nodes: Greyed, Power, And, Not, Compare.
+  * Added 'Loop' parameter to the Random Value Node.
   * Reverse manipulation for Scale Value Nodes.
-  * Remove ancient trunk folder from svn repository.
+  * Removed ancient trunk folder from svn repository.
   * New Import SVG files module.
-  * Disable crop imported images by default.
+  * Disabled crop imported images by default.
   * Updated translations.
   * First time Russian translation.
   * Several compiler warnings fixed.

@@ -12,36 +12,36 @@ http://synfig.org/Releases
   * Bugs fixed: #2315706, #2321845, #2350636, #1501383, #2378787, #2435346
   * Bugs fixed: #2579838, #2652974, #1677510, #2175043.
   * Build rectangular blines using the rectangle tool.
-  * Update time ruller properly when modified the start or end time.
+  * Updated time ruler properly when modified the start or end time.
   * New layer Curve Warp.
   * Updated options for Polygon, Circle and Star Tools.
   * New option: Scale New imported Images to Fit Canvas.
-  * Fix the rendered position of a polygon under a transform layers.
-  * Fix zoom to fit button result. Now border is visible.
-  * Better errros when open a file that doesn't exists.
+  * Fixed the rendered position of a polygon under a transform layers.
+  * Fixed zoom to fit button result. Now border is visible.
+  * Better errors when opening a file that doesn't exist.
   * Paste canvases now update when the canvas parameter changes.
   * Paste canvas with unset canvas parameter can be exported now.
-  * Holding control in the zoom tool when releasing the mouse button to
-    complete drawing a box will zoom out such that the currently displayed
+  * If holding control in the zoom tool when releasing the mouse button to
+    complete a drawing, a box will zoom out such that the currently displayed
     area is zoomed out to fill the drawn box.
-  * Enable the Focus Point parameter in the Paste canvas layer.
-  * Reorder ducks render stack and prefernces form mouse interaction.
-  * Fix crash with LC_ALL=fr@euro
+  * Enabled the Focus Point parameter in the Paste canvas layer.
+  * Reordered ducks render stack and preferences from mouse interaction.
+  * Fixed crash with LC_ALL=fr@euro
   * Improved Color Dialog.
-  * Input Device configuration can be saved/load now.
+  * Input Device configuration can be saved/loaded now.
   * Fill/Outline instead of Background/Foreground.
   * Additions to the Canvas Window: Update Zoom Dial, Frame Dial, Keyframe Dial
     Toogle Ducks Dial, Resolution Dial, Quality Butons, Show/Snap to Grid,
-    Onion Sking buttons.
-  * Past and future onion skins enabled and selectabled.
-  * Improve UI on crash recovery dialog.
+    Onion Skinning buttons.
+  * Past and future onion skins enabled and selectable.
+  * Improved UI on crash recovery dialog.
   * Added Preferred and Predefined FPS in the Setup Dialog.
   * Keyframes are shown now in the Curves dialog too.
   * Keyframe Set Delta enabled and fixed.
-  * New Keyframe Widget. Allows drag keyframes with mouse.
+  * New Keyframe Widget. Allows dragging of keyframes with mouse.
   * Synfigstudio cph-monitor.
-  * Adapt About Dialog to git repository.
-  * Remove ancient trunk folder from svn repository.
+  * Adapted About Dialog to git repository.
+  * Removed ancient trunk folder from svn repository.
   * New Import SVG files module.
   * Some new icons.
   * Updated translations.
