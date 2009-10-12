@@ -168,14 +168,14 @@ private:        //parser bucle
 		void setTg1(Vertice *p,float p1x,float p1y,float p2x,float p2y);
 		void setSplit(Vertice* p,bool val);
 		int isFirst(Vertice* nodo,float a, float b);
-		Vertice* nuevoVertice(float x,float y);
+		Vertice* newVertice(float x,float y);
 
 		//matrix operations
 		Matrix* newMatrix(float a,float b,float c,float d,float e,float f);
 		Matrix* newMatrix(const String mvector);
 		Matrix* newMatrix(Matrix *a);
 		void transformPoint2D(Matrix *mtx,float *a,float *b);
-		bool matrixVacia(Matrix* mtx);
+		bool matrixIsNull(Matrix* mtx);
 		void composeMatrix(Matrix **mtx,Matrix *mtx1,Matrix *mtx2);
 		void multiplyMatrix(Matrix **mtx1,Matrix *mtx2);
 		float getRadian(float sexa);
