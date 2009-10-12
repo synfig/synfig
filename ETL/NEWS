@@ -5,7 +5,7 @@ More detailed notes are available on the releases page:
 http://synfig.org/Releases (synfig.org locked now but working in the future)
 http://www.synfig.com (new website in progress)
 
- 0.04.13 (git tag: "ETL 0.04.13") - October 10, 2009 - Bug fixes.
+ 0.04.13 (git tag: "ETL-0.04.13") - October 10, 2009 - Bug fixes.
 
   * Migration to git repository.
   * Deleted generated ETL/etl_profile_.h.in file.
