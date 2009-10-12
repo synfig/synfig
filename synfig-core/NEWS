@@ -5,7 +5,7 @@ More detailed notes are available on the releases page:
 http://synfig.org/Releases (synfig.org locked now but working in the future)
 http://www.synfig.com (new website in progress)
 
- 0.62.00 (git tag: "synfig-0.62.00") - October 10, 2009 - Bug fixes, features.
+ 0.62.00 (git tag: "synfig-0.62.00") - October 12, 2009 - Bug fixes, features.
 
   * Migration to git repository.
   * Bugs fixed: #2195749, #1968248, #2250533, #2116947, launchpad.net/ubuntu/#195447
