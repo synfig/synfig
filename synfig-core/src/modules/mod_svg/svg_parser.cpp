@@ -118,12 +118,7 @@ Svg_parser::set_id(String source){
 //UPDATE
 
 void
-Svg_parser::parser_node(const xmlpp::Node* node) {
-	parser_node(node,nodeRoot,"",NULL);
-}
-
-void
-Svg_parser::parser_node(const xmlpp::Node* node,xmlpp::Element* root,String parent_style,Matrix* mtx_parent){
+Svg_parser::parser_node(const xmlpp::Node* node){
   	const xmlpp::ContentNode* nodeContent = dynamic_cast<const xmlpp::ContentNode*>(node);
   	const xmlpp::TextNode* nodeText = dynamic_cast<const xmlpp::TextNode*>(node);
   	const xmlpp::CommentNode* nodeComment = dynamic_cast<const xmlpp::CommentNode*>(node);
@@ -141,7 +136,8 @@ Svg_parser::parser_node(const xmlpp::Node* node,xmlpp::Element* root,String pare
 			parser_defs (node);
 		}else{
 			if(set_canvas==0) parser_canvas (node);
-			parser_graphics(node,root,parent_style,mtx_parent);
+			parser_graphics(node,nodeRoot,"",NULL);
+			if(nodename.compare("g")==0) return;
 		}
   	}
   	if(!nodeContent){
@@ -214,9 +210,13 @@ Svg_parser::parser_canvas (const xmlpp::Node* node){
 //parser preferences
 //Seperate transformations: apply transformations on a per-layer basis, rather than on canvases
 //Resolve BLine transformations: resolve transformations instead of creating transformation layers
-//All Paths: convert all objects to paths
+//All Paths: convert objects to paths
+//          1: when necessary
+//          2: when necessary, including for linking
+//          3: always
 #define SVG_SEP_TRANSFORMS 1
 #define SVG_RESOLVE_BLINE 1
+#define SVG_CONVERT_PATHS 1
 
 void
 Svg_parser::parser_graphics(const xmlpp::Node* node,xmlpp::Element* root,String parent_style,Matrix* mtx_parent){
@@ -240,12 +240,60 @@ Svg_parser::parser_graphics(const xmlpp::Node* node,xmlpp::Element* root,String 
 						mtx=newMatrix(mtx_parent);
 				}
 			}
-
-
 			if(nodename.compare("g")==0){
 				parser_layer (node,root->add_child("layer"),parent_style,mtx);
 				return;
-			}else if(nodename.compare("rect")==0){
+			}
+
+			Glib::ustring obj_style	=nodeElement->get_attribute_value("style");
+			Glib::ustring obj_fill			=nodeElement->get_attribute_value("fill");
+
+			//style
+			String fill			    =loadAttribute("fill",obj_style,parent_style,"none");
+			String stroke			=loadAttribute("stroke",obj_style,parent_style,"none");
+			String stroke_width		=loadAttribute("stroke-width",obj_style,parent_style,"1px");
+			String stroke_linecap	=loadAttribute("stroke-linecap",obj_style,parent_style,"butt");
+			String stroke_linejoin	=loadAttribute("stroke-linejoin",obj_style,parent_style,"miter");
+			String stroke_opacity	=loadAttribute("stroke-opacity",obj_style,parent_style,"1");
+			String fill_opacity		=loadAttribute("fill-opacity",obj_style,parent_style,"1");
+			String opacity			=loadAttribute("opacity",obj_style,parent_style,"1");
+
+
+			//Fill
+			int typeFill=0; //nothing
+
+			if(fill.compare("none")!=0){
+				typeFill=1; //simple
+			}
+			if(typeFill==1 && fill.compare(0,3,"url")==0){
+				typeFill=2;	//gradient
+			}
+			//Stroke
+			int typeStroke=0;//nothing
+
+			if(stroke.compare("none")!=0){
+				typeStroke=1; //simple
+			}
+			if(typeStroke==1 && stroke.compare(0,3,"url")==0){
+				typeStroke=2;	//gradient
+			}
+			
+			xmlpp::Element *root_layer = root;
+			if(typeFill!=0 && typeStroke!=0){
+				root_layer=nodeStartBasicLayer(root->add_child("layer"));
+			}
+			/*if ((SVG_CONVERT_PATHS == 1 && typeFill!=0) || (SVG_CONVERT_PATHS == 2 && typeFill!=0 && typeStroke==0)) {
+				//make simple fills
+				if(nodename.compare("rect")==0){
+					rect_simple(nodeElement,root_layer,fill,fill_opacity,opacity);
+				}
+
+				if(typeFill==2){
+					build_url (root_layer->add_child("layer"),fill,mtx);
+				}
+			}*/
+
+			if(nodename.compare("rect")==0){
 				parser_rect(nodeElement,root,parent_style,mtx);
 			}else if(nodename.compare("polygon")==0){
 				parser_polygon(nodeElement,root,parent_style,mtx);
@@ -255,6 +303,38 @@ Svg_parser::parser_graphics(const xmlpp::Node* node,xmlpp::Element* root,String 
 		}
 	}
 }
+
+void
+Svg_parser::rect_simple(const xmlpp::Element* nodeElement,xmlpp::Element* root,String fill, String fill_opacity, String opacity){
+	Glib::ustring rect_id		=nodeElement->get_attribute_value("id");
+	Glib::ustring rect_x		=nodeElement->get_attribute_value("x");
+	Glib::ustring rect_y		=nodeElement->get_attribute_value("y");
+	Glib::ustring rect_width	=nodeElement->get_attribute_value("width");
+	Glib::ustring rect_height	=nodeElement->get_attribute_value("height");
+
+	xmlpp::Element *child_rect=root->add_child("layer");
+	child_rect->set_attribute("type","rectangle");
+	child_rect->set_attribute("active","true");
+	child_rect->set_attribute("version","0.2");
+	child_rect->set_attribute("desc",rect_id);
+
+	build_real(child_rect->add_child("param"),"z_depth",0.0);
+	build_real(child_rect->add_child("param"),"amount",1.0);
+	build_integer(child_rect->add_child("param"),"blend_method",0);
+	build_color (child_rect->add_child("param"),getRed (fill),getGreen (fill),getBlue(fill),atof(opacity.data())*atof(fill_opacity.data()));
+
+	float auxx=atof(rect_x.c_str());
+	float auxy=atof(rect_y.c_str());
+	coor2vect(&auxx,&auxy);
+	build_vector (child_rect->add_child("param"),"point1",auxx,auxy);
+	auxx= atof(rect_x.c_str()) + atof(rect_width.c_str());
+	auxy= atof(rect_y.c_str()) + atof(rect_height.c_str());
+	coor2vect(&auxx,&auxy);
+	build_vector (child_rect->add_child("param"),"point2",auxx,auxy);
+
+
+}
+
 
 void
 Svg_parser::parser_rect(const xmlpp::Element* nodeElement,xmlpp::Element* root,String parent_style,Matrix* mtx){
@@ -346,7 +426,7 @@ Svg_parser::parser_layer(const xmlpp::Node* node,xmlpp::Element* root,String par
     		xmlpp::Node::NodeList list = node->get_children();
     		for(xmlpp::Node::NodeList::iterator iter = list.begin(); iter != list.end(); ++iter){
 				Glib::ustring name =(*iter)->get_name();
-				parser_node (*iter,child_canvas,layer_style,mtx);
+				parser_graphics (*iter,child_canvas,layer_style,mtx);
     		}
   		}
 	}

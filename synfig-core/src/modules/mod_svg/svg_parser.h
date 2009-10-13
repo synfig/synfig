@@ -120,12 +120,12 @@ public:
 
 private:        //parser bucle
 		void parser_node(const xmlpp::Node* node);
-		void parser_node(const xmlpp::Node* node,xmlpp::Element* root,String parent_style,Matrix* mtx_parent);
 		//parser headers
 		void parser_svg(const xmlpp::Node* node);
 		void parser_canvas(const xmlpp::Node* node);
 		//layers
 		void parser_graphics(const xmlpp::Node* node,xmlpp::Element* root,String parent_style,Matrix* mtx_parent);
+		void rect_simple(const xmlpp::Element* nodeElement,xmlpp::Element* root,String fill, String fill_opacity, String opacity);
 		void parser_layer(const xmlpp::Node* node,xmlpp::Element* root,String parent_style,Matrix* mtx);
 		void parser_path(const xmlpp::Element* nodeElement,xmlpp::Element* root,String parent_style,Matrix* mtx);
 		void parser_polygon(const xmlpp::Element* nodeElement,xmlpp::Element* root,String parent_style,Matrix* mtx);
