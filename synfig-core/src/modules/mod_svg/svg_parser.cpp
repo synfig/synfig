@@ -250,6 +250,7 @@ Svg_parser::parser_graphics(const xmlpp::Node* node,xmlpp::Element* root,String 
 
 			//style
 			String fill			    =loadAttribute("fill",obj_style,parent_style,"none");
+			String fill_rule		=loadAttribute("fill-rule",obj_style,parent_style,"evenodd");
 			String stroke			=loadAttribute("stroke",obj_style,parent_style,"none");
 			String stroke_width		=loadAttribute("stroke-width",obj_style,parent_style,"1px");
 			String stroke_linecap	=loadAttribute("stroke-linecap",obj_style,parent_style,"butt");
@@ -278,28 +279,166 @@ Svg_parser::parser_graphics(const xmlpp::Node* node,xmlpp::Element* root,String 
 				typeStroke=2;	//gradient
 			}
 			
-			xmlpp::Element *root_layer = root;
+			xmlpp::Element* child_fill = root;  //TODO: child_filter
+			xmlpp::Element* child_stroke = root;
 			if(typeFill!=0 && typeStroke!=0){
-				root_layer=nodeStartBasicLayer(root->add_child("layer"));
+				child_fill=child_stroke=nodeStartBasicLayer(root->add_child("layer"));
 			}
-			/*if ((SVG_CONVERT_PATHS == 1 && typeFill!=0) || (SVG_CONVERT_PATHS == 2 && typeFill!=0 && typeStroke==0)) {
+			if(typeFill==2){
+				child_fill=nodeStartBasicLayer(child_fill->add_child("layer"));
+			}
+			if(typeStroke==2){
+				child_stroke=nodeStartBasicLayer(child_stroke->add_child("layer"));
+			}
+			if ((SVG_CONVERT_PATHS == 1 && typeFill!=0) || (SVG_CONVERT_PATHS == 2 && typeFill!=0 && typeStroke==0)) {
 				//make simple fills
 				if(nodename.compare("rect")==0){
-					rect_simple(nodeElement,root_layer,fill,fill_opacity,opacity);
+					rect_simple(nodeElement,child_fill,fill,fill_opacity,opacity);
+					if(typeFill==2){
+						build_url (child_fill->add_child("layer"),fill,mtx);
+					}
+					typeFill=0; //set fill to zero so as not to create a fill layer in the paths section
 				}
-
-				if(typeFill==2){
-					build_url (root_layer->add_child("layer"),fill,mtx);
-				}
-			}*/
-
-			if(nodename.compare("rect")==0){
-				parser_rect(nodeElement,root,parent_style,mtx);
-			}else if(nodename.compare("polygon")==0){
-				parser_polygon(nodeElement,root,parent_style,mtx);
-			}else if(nodename.compare("path")==0){
-				parser_path (nodeElement,root,parent_style,mtx);
 			}
+
+			//=======================================================================
+			std::list<std::list<Vertice*> > k;
+			if (nodename.compare("path")==0 || typeStroke!=0 || SVG_CONVERT_PATHS==3) {
+				//if we are creating a bline
+
+				//First, create the list of vertices
+
+
+				/*if(nodename.compare("rect")==0){
+					parser_rect(nodeElement,root,parent_style,mtx);
+				}else if(nodename.compare("polygon")==0){
+					parser_polygon(nodeElement,root,parent_style,mtx);
+				}else if(nodename.compare("path")==0){
+					parser_path (nodeElement,root,parent_style,mtx);
+				}	*/
+
+				if(nodename.compare("path")==0){
+					k=parser_path_d (nodeElement->get_attribute_value("d"),mtx);
+				} else {return;}
+
+				int n = k.size();
+				String bline_id[n];
+				String offset_id[n];
+				for (int i=0;i<n;i++){
+					bline_id[i]=new_guid();
+					offset_id[i]=new_guid();
+				}
+
+				std::list<std::list<Vertice*> >::iterator aux = k.begin();
+				if(typeFill!=0){//region layer
+					for (int i=0; aux!=k.end(); aux++){
+						xmlpp::Element *child_region=child_fill->add_child("layer");
+						child_region->set_attribute("type","region");
+						child_region->set_attribute("active","true");
+						child_region->set_attribute("version","0.1");
+						child_region->set_attribute("desc",id);
+						build_param (child_region->add_child("param"),"z_depth","real","0.0000000000");
+						build_param (child_region->add_child("param"),"amount","real","1.0000000000");
+						build_param (child_region->add_child("param"),"blend_method","integer","0");
+						build_color (child_region->add_child("param"),getRed(fill),getGreen(fill),getBlue(fill),atof(fill_opacity.data())*atof(opacity.data()));
+						build_vector (child_region->add_child("param"),"offset",0,0,offset_id[i]);
+						build_param (child_region->add_child("param"),"invert","bool","false");
+						build_param (child_region->add_child("param"),"antialias","bool","true");
+						build_param (child_region->add_child("param"),"feather","real","0.0000000000");
+						build_param (child_region->add_child("param"),"blurtype","integer","1");
+						if(fill_rule.compare("evenodd")==0) build_param (child_region->add_child("param"),"winding_style","integer","1");
+						else build_param (child_region->add_child("param"),"winding_style","integer","0");
+
+						build_bline (child_region->add_child("param"),*aux,loop,bline_id[i]);
+
+						if(k.size()==1 && typeFill==2){ //gradient in onto mode (fill)
+							build_url(child_fill->add_child("layer"),fill,mtx);
+						}
+						i++;
+					}
+				}
+
+				if(typeStroke!=0){//outline layer
+					int i=0;
+					for (aux=k.begin(); aux!=k.end(); aux++){
+						xmlpp::Element *child_outline=child_stroke->add_child("layer");
+						child_outline->set_attribute("type","outline");
+						child_outline->set_attribute("active","true");
+						child_outline->set_attribute("version","0.2");
+						child_outline->set_attribute("desc",id);
+						build_param (child_outline->add_child("param"),"z_depth","real","0.0000000000");
+						build_param (child_outline->add_child("param"),"amount","real","1.0000000000");
+						build_param (child_outline->add_child("param"),"blend_method","integer","0");
+						build_color (child_outline->add_child("param"),getRed(stroke),getGreen(stroke),getBlue(stroke),atof(stroke_opacity.data())*atof(opacity.data()));
+						build_vector (child_outline->add_child("param"),"offset",0,0,offset_id[i]);
+						build_param (child_outline->add_child("param"),"invert","bool","false");
+						build_param (child_outline->add_child("param"),"antialias","bool","true");
+						build_param (child_outline->add_child("param"),"feather","real","0.0000000000");
+						build_param (child_outline->add_child("param"),"blurtype","integer","1");
+						//outline in nonzero
+						build_param (child_outline->add_child("param"),"winding_style","integer","0");
+
+						build_bline (child_outline->add_child("param"),*aux,loop,bline_id[i]);
+
+						stroke_width=etl::strprintf("%f",getDimension(stroke_width)/kux);
+						build_param (child_outline->add_child("param"),"width","real",stroke_width);
+						build_param (child_outline->add_child("param"),"expand","real","0.0000000000");
+						if(stroke_linejoin.compare("miter")==0) build_param (child_outline->add_child("param"),"sharp_cusps","bool","true");
+						else build_param (child_outline->add_child("param"),"sharp_cusps","bool","false");
+						if(stroke_linecap.compare("butt")==0){
+							build_param (child_outline->add_child("param"),"round_tip[0]","bool","false");
+							build_param (child_outline->add_child("param"),"round_tip[1]","bool","false");
+						}else{
+							build_param (child_outline->add_child("param"),"round_tip[0]","bool","true");
+							build_param (child_outline->add_child("param"),"round_tip[1]","bool","true");
+						}
+						build_param (child_outline->add_child("param"),"loopyness","real","1.0000000000");
+						build_param (child_outline->add_child("param"),"homogeneous_width","bool","true");
+
+						if(n==1 && typeStroke==2){ //gradient in onto mode (stroke)
+							build_url(child_stroke->add_child("layer"),stroke,mtx);
+						}
+						i++;
+					}
+				}
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+				
+				
+
+			}
+
+			//if(nodename.compare("rect")==0){
+			//	parser_rect(nodeElement,root,parent_style,mtx);
+			//}else if(nodename.compare("polygon")==0){
+			//	parser_polygon(nodeElement,root,parent_style,mtx);
+			//}
 		}
 	}
 }
@@ -409,7 +548,7 @@ Svg_parser::parser_layer(const xmlpp::Node* node,xmlpp::Element* root,String par
 		root->set_attribute("active","true");
 		root->set_attribute("version","0.1");
 		if(!label.empty())	root->set_attribute("desc",label);
-		else		root->set_attribute("desc","unknown layer");
+		else		root->set_attribute("desc","Inline Canvas");
 
 		build_real(root->add_child("param"),"z_depth",0.0);
 		build_real(root->add_child("param"),"amount",1.0);
