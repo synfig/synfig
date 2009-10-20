@@ -2,10 +2,55 @@
 
 More detailed notes are available on the releases page:
 
-http://synfig.org/Releases
+http://synfig.org/Releases (synfig.org locked now but working in the future)
+http://www.synfig.com (new website in progress)
+
+ 0.62.00 (git tag: "synfigstudio-0.62.00") - October 12, 2009 - Bug fixes, major features.
+
+  * Migration to git repository.
+  * Bugs fixed: #2205700, #2112320, #2116947, #1814151, launchpad.net/ubuntu/#195447
+  * Bugs fixed: #2256600, #2119775, #1826376, #1848018, #1901753, #1829182
+  * Bugs fixed: #2315706, #2321845, #2350636, #1501383, #2378787, #2435346
+  * Bugs fixed: #2579838, #2652974, #1677510, #2175043.
+  * Build rectangular blines using the rectangle tool.
+  * Updated time ruler properly when modified the start or end time.
+  * New layer Curve Warp.
+  * Updated options for Polygon, Circle and Star Tools.
+  * New option: Scale New imported Images to Fit Canvas.
+  * Fixed the rendered position of a polygon under a transform layers.
+  * Fixed zoom to fit button result. Now border is visible.
+  * Better errors when opening a file that doesn't exist.
+  * Paste canvases now update when the canvas parameter changes.
+  * Paste canvas with unset canvas parameter can be exported now.
+  * If holding control in the zoom tool when releasing the mouse button to
+    complete a drawing, a box will zoom out such that the currently displayed
+    area is zoomed out to fill the drawn box.
+  * Enabled the Focus Point parameter in the Paste canvas layer.
+  * Reordered ducks render stack and preferences from mouse interaction.
+  * Fixed crash with LC_ALL=fr@euro
+  * Improved Color Dialog.
+  * Input Device configuration can be saved/loaded now.
+  * Fill/Outline instead of Background/Foreground.
+  * Additions to the Canvas Window: Update Zoom Dial, Frame Dial, Keyframe Dial
+    Toogle Ducks Dial, Resolution Dial, Quality Butons, Show/Snap to Grid,
+    Onion Skinning buttons.
+  * Past and future onion skins enabled and selectable.
+  * Improved UI on crash recovery dialog.
+  * Added Preferred and Predefined FPS in the Setup Dialog.
+  * Keyframes are shown now in the Curves dialog too.
+  * Keyframe Set Delta enabled and fixed.
+  * New Keyframe Widget. Allows dragging of keyframes with mouse.
+  * Synfigstudio cph-monitor.
+  * Adapted About Dialog to git repository.
+  * Removed ancient trunk folder from svn repository.
+  * New Import SVG files module. Basic SVG import, see release notes.
+  * Some new icons.
+  * Updated translations.
+  * First time Russian translation.
+  * Several compiler warnings fixed.
 
  0.61.09 (SVN 2114) - October 21, 2008 - Bug fixes, features
- 
+
   * Fix building synfigstudio in the fink distribution
   * Improved plant layer
   * Added new options for Circle and Rectangle tools
@@ -16,7 +61,7 @@ http://synfig.org/Releases
   * Improved main window zoom behaviour and added new zoom icons
   * Several fixes and improvements on timetrack slider and waypoints drawing
   * Depreciate Manual as interpolation type
-  * Added new icons for reset and swap FG and BG colors. Re-arrange them 
+  * Added new icons for reset and swap FG and BG colors. Re-arrange them
     to show properly in all GTK themes
   * Added some improvements in the Render Description
   * Improved GUI for the sound selection dialog
@@ -86,7 +131,7 @@ http://synfig.org/Releases
   * Show the correct initial quality level in the View > Preview Quality menu
 
  0.61.06 (SVN 543) - June 20, 2007 - Bug fixes
- 
+
   * Fix amd64 issues
   * Fix corruption of gamma settings
   * Fix manipulating layers in the layer dialog

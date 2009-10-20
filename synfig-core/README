@@ -11,14 +11,22 @@ This package contains the renderer used to convert synfig .sif files to
 raster images, videos and other formats. Layer types include geometric,
 gradient, filter, distortion, transformation, fractal and others. Output
 targets include JPEG, PNG, GIF, BMP, PPM, DV, OpenEXR, ffmpeg (MPEG1),
-libavcodec (AVI), imagemagick (MIFF), yuv420p, MNG and others. 
+libavcodec (AVI), imagemagick (MIFF), yuv420p, MNG and others.
 
 Links
 
-Web:  http://synfig.org/
-Code: http://synfig.org/Source_code
-Proj: http://sf.net/projects/synfig/
-IRC:  irc://irc.freenode.net/synfig
+Web:  	http://synfig.org/  (*)
+Code: 	http://synfig.org/Source_code
+Proj: 	http://sourceforge.net/projects/synfig/
+Forums:	http://synfig.org/forums 
+IRC:  	irc://irc.freenode.net/synfig
+
+(*) synfig.org website is locked for edition because we are migrating to 
+a new host. During the migration the links are those:
+
+Web:	http://www.synfig.com
+Wiki:	http://www.synfig.com/wiki
+
 
 Please use the IRC channel and the sf.net tracker to get support and
 report bugs, request features and submit patches.
@@ -32,6 +40,8 @@ Copyright 2007-2008 Chris Moore
 Copyright 2008 Carlos López
 Copyright 2008 Gerco Ballintijn
 Copyright 2009 Nikita Kitaev
+Copyright 2009 Konstantin Dmitriev
+Copyright 2009 Carlos A. Sosa Navarro
 
 Licence
 

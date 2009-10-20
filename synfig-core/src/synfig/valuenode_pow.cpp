@@ -170,14 +170,17 @@ ValueNode_Pow::operator()(Time t)const
 	if (abs(power) < epsilon) //x^0 = 1
 		return 1;
 	if (abs(base) < epsilon)
+	{
 		if (power > 0) //0^x=0
 			return Real(0);
 		else
+		{
 			if ( ( ((int) power) % 2 != 0) && (base < 0) ) //(-0)^(-odd)=-inf
 				return -infinite;
 			else
 				return infinite;
-
+		}
+	}
 	if (base <= epsilon && ((int) power) != power) //negative number to fractional power -> undefined
 		power = ((int) power); 	//so round off power to nearest integer
 

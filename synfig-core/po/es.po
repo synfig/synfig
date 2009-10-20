@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: es\n"
 "Report-Msgid-Bugs-To: http://synfig.org/Bugs\n"
-"POT-Creation-Date: 2009-09-29 16:01+0200\n"
-"PO-Revision-Date: 2009-09-29 16:18+0200\n"
+"POT-Creation-Date: 2009-10-02 18:46+0200\n"
+"PO-Revision-Date: 2009-10-02 19:04+0200\n"
 "Last-Translator: Carlos López González <carloslopezgonzalez@yahoo.es>\n"
 "Language-Team: Español <es@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -255,6 +255,7 @@ msgstr "Orientación del texto"
 #: src/modules/lyr_freetype/lyr_freetype.cpp:565
 #: src/modules/lyr_std/insideout.cpp:141 src/modules/lyr_std/rotate.cpp:112
 #: src/modules/lyr_std/shade.cpp:378 src/modules/lyr_std/translate.cpp:97
+#: src/modules/lyr_std/curvewarp.cpp:386
 #: src/modules/lyr_std/xorpattern.cpp:122
 #: src/modules/mod_filter/radialblur.cpp:106
 #: src/modules/mod_geometry/checkerboard.cpp:125
@@ -450,7 +451,8 @@ msgstr "Al revés"
 #: src/modules/lyr_std/insideout.cpp:56
 #: src/modules/lyr_std/sphere_distort.cpp:73
 #: src/modules/lyr_std/stretch.cpp:59 src/modules/lyr_std/twirl.cpp:56
-#: src/modules/lyr_std/warp.cpp:56 src/modules/mod_noise/distort.cpp:57
+#: src/modules/lyr_std/warp.cpp:56 src/modules/lyr_std/curvewarp.cpp:55
+#: src/modules/mod_noise/distort.cpp:57
 msgid "Distortions"
 msgstr "Distorsiones"
 
@@ -690,6 +692,7 @@ msgid "Unable to create SurfaceTarget"
 msgstr "Imposible crear Superficie Objetivo"
 
 #: src/modules/lyr_std/supersample.cpp:215
+#: src/modules/lyr_std/curvewarp.cpp:389
 #: src/modules/mod_gradient/curvegradient.cpp:537
 #: src/synfig/valuenode_composite.cpp:292
 #: src/synfig/valuenode_realstring.cpp:187
@@ -791,6 +794,38 @@ msgstr "Destino BL"
 #: src/modules/lyr_std/warp.cpp:404
 msgid "Horizon"
 msgstr "Horizonte"
+
+#: src/modules/lyr_std/curvewarp.cpp:54
+msgid "Curve Warp"
+msgstr "Combar por Curva"
+
+#: src/modules/lyr_std/curvewarp.cpp:393
+msgid "Start Point"
+msgstr "Punto Inicial"
+
+#: src/modules/lyr_std/curvewarp.cpp:397
+msgid "End Point"
+msgstr "Punto Final"
+
+#: src/modules/lyr_std/curvewarp.cpp:400
+#: src/modules/mod_geometry/outline.cpp:807
+#: src/modules/mod_geometry/region.cpp:232
+#: src/modules/mod_gradient/curvegradient.cpp:540
+#: src/modules/mod_particle/plant.cpp:383
+msgid "Vertices"
+msgstr "Vértices"
+
+#: src/modules/lyr_std/curvewarp.cpp:403
+#: src/modules/mod_geometry/outline.cpp:810
+#: src/modules/mod_gradient/curvegradient.cpp:543
+#: src/modules/mod_particle/plant.cpp:384
+msgid "A list of BLine Points"
+msgstr "Una lista de Puntos de línea Beizer"
+
+#: src/modules/lyr_std/curvewarp.cpp:406
+#: src/modules/mod_gradient/curvegradient.cpp:554
+msgid "Fast"
+msgstr "Rápido"
 
 #: src/modules/lyr_std/xorpattern.cpp:54
 msgid "XOR Pattern"
@@ -1077,19 +1112,6 @@ msgstr "Contorno"
 msgid "No vertices in outline "
 msgstr "No hay vértices en el contorno "
 
-#: src/modules/mod_geometry/outline.cpp:807
-#: src/modules/mod_geometry/region.cpp:232
-#: src/modules/mod_gradient/curvegradient.cpp:540
-#: src/modules/mod_particle/plant.cpp:383
-msgid "Vertices"
-msgstr "Vértices"
-
-#: src/modules/mod_geometry/outline.cpp:810
-#: src/modules/mod_gradient/curvegradient.cpp:543
-#: src/modules/mod_particle/plant.cpp:384
-msgid "A list of BLine Points"
-msgstr "Una lista de Puntos de línea Beizer"
-
 #: src/modules/mod_geometry/outline.cpp:824
 msgid "Outline Width"
 msgstr "Ancho del Contorno"
@@ -1230,10 +1252,6 @@ msgstr "Zig Zag"
 #: src/modules/mod_gradient/curvegradient.cpp:552
 msgid "Perpendicular"
 msgstr "Perpendicular"
-
-#: src/modules/mod_gradient/curvegradient.cpp:554
-msgid "Fast"
-msgstr "Rápido"
 
 #: src/modules/mod_gradient/lineargradient.cpp:53
 msgid "Linear Gradient"
@@ -2431,7 +2449,7 @@ msgstr "Restar"
 msgid "Two-Tone"
 msgstr "Dos Tonos"
 
-#: src/synfig/valuenode.cpp:151 src/synfig/valuenode_bline.cpp:831
+#: src/synfig/valuenode.cpp:151 src/synfig/valuenode_bline.cpp:832
 #: src/synfig/valuenode_blinecalctangent.cpp:243
 #: src/synfig/valuenode_blinecalcvertex.cpp:202
 #: src/synfig/valuenode_blinecalcwidth.cpp:208
@@ -2561,7 +2579,7 @@ msgid "Greyed"
 msgstr "Inalterable"
 
 #: src/synfig/valuenode.cpp:189 src/synfig/valuenode_pow.cpp:123
-#: src/synfig/valuenode_pow.cpp:197
+#: src/synfig/valuenode_pow.cpp:200
 msgid "Power"
 msgstr "Potencia"
 
@@ -2651,15 +2669,15 @@ msgstr "%s: No puede usar %s en un Valor de Nodo animado"
 msgid "Animated"
 msgstr "Animado"
 
-#: src/synfig/valuenode_bline.cpp:807 src/synfig/valuenode_dynamiclist.cpp:622
+#: src/synfig/valuenode_bline.cpp:808 src/synfig/valuenode_dynamiclist.cpp:622
 msgid "No entries in list"
 msgstr "Sin entradas en la lista"
 
-#: src/synfig/valuenode_bline.cpp:810 src/synfig/valuenode_dynamiclist.cpp:625
+#: src/synfig/valuenode_bline.cpp:811 src/synfig/valuenode_dynamiclist.cpp:625
 msgid "No entries in ret_list"
 msgstr "Sin entradas en ret_list"
 
-#: src/synfig/valuenode_bline.cpp:819
+#: src/synfig/valuenode_bline.cpp:820
 #, c-format
 msgid "Vertex %03d"
 msgstr "Vértice %03d"

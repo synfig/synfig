@@ -2,14 +2,43 @@
 
 More detailed notes are available on the releases page:
 
-http://synfig.org/Releases
+http://synfig.org/Releases (synfig.org locked now but working in the future)
+http://www.synfig.com (new website in progress)
+
+ 0.62.00 (git tag: "synfig-0.62.00") - October 12, 2009 - Bug fixes, features.
+
+  * Migration to git repository.
+  * Bugs fixed: #2195749, #1968248, #2250533, #2116947, launchpad.net/ubuntu/#195447
+  * Bugs fixed: #1993098, #1730067, #2353248, #2037732, #2412072, #2458112
+  * Bugs fixed: #2502818.
+  * Improved messages for failed open file commands.
+  * Fixed crash when unsetting import layer filename after using PNG or JPEG importers.
+  * Improved the rendering of curve gradient layers near vertices with 0-length tangents.
+  * Fixed previous bug that produced bad render to the star layer.
+  * Enabled use of ffmpeg importer.
+  * Set four modules as essential: gradient, geometry, particle, freetype.
+  * Improved message when initialize synfig fails.
+  * New environment variables for options.
+  * Added support for alpha in paletted PNG files.
+  * New option: Scale New imported Images to Fit Canvas.
+  * Better errors when attempting to open a file that doesn't exist.
+  * Enabled Example module: Metaballs, Simple Circle, Filled Rectangle.
+  * New Value Nodes: Greyed, Power, And, Not, Compare.
+  * Added 'Loop' parameter to the Random Value Node.
+  * Reverse manipulation for Scale Value Nodes.
+  * Removed ancient trunk folder from svn repository.
+  * New Import SVG files module. Basic SVG import, see release notes.
+  * Disabled crop imported images by default.
+  * Updated translations.
+  * First time Russian translation.
+  * Several compiler warnings fixed.
 
  0.61.09 (SVN 2113) - October 21, 2008 - Bug fixes, features.
- 
+
   * Segment and Blines tangents are calculated more accurately
   * Don't allow feather to be negative in any layer
   * New Logarithm, Int String, Angle String, Joined List, Real String,
-    Time String, Dot Product, Gradient Colour, Vector X, Vector Y, 
+    Time String, Dot Product, Gradient Colour, Vector X, Vector Y,
     Vector Length, Vector Angle convert types
   * Remove TENSION from TCB modes as it is the same as TEMPORAL TENSION
   * Unless OpenEXR half mode is used, don't ask synfigstudio to depend on it

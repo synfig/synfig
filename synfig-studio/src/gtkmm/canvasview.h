@@ -277,9 +277,9 @@ private:
 	bool changing_resolution_;
 	Gtk::Adjustment quality_adjustment_;
 	Gtk::SpinButton *quality_spin;
+	Gtk::Adjustment future_onion_adjustment_;
 	Gtk::Adjustment past_onion_adjustment_;
 	Gtk::SpinButton *past_onion_spin;
-	Gtk::Adjustment future_onion_adjustment_;
 	Gtk::SpinButton *future_onion_spin;
 	bool updating_quality_;
 	Gtk::ToggleButton *show_grid;
