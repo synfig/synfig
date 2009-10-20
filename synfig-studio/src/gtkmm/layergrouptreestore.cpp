@@ -898,7 +898,9 @@ LayerGroupTreeStore::on_layer_status_changed(synfig::Layer::Handle handle,bool /
 		(*iter)[model.layer]=handle;
 	else
 	{
-		synfig::warning("Couldn't find layer to be activated in layer list. Rebuilding index...");
+		// Not need to send a warning when a layer changes its status and
+		// it is not found in any group.
+		//synfig::warning("Couldn't find layer to be activated in layer list. Rebuilding index...");
 		rebuild();
 	}
 }
