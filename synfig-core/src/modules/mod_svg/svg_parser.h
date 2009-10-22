@@ -128,6 +128,7 @@ private:        //parser bucle
 		void rect_simple(const xmlpp::Element* nodeElement,xmlpp::Element* root,String fill, String fill_opacity, String opacity);
 		void parser_layer(const xmlpp::Node* node,xmlpp::Element* root,String parent_style,Matrix* mtx);
 		std::list<std::list<Vertice*> > parser_polygon_path(Glib::ustring polygon_points, Matrix* mtx);
+		void parser_effects(const xmlpp::Element* nodeElement,xmlpp::Element* root,String parent_style,Matrix* mtx);
 		//defs
 		void parser_defs(const xmlpp::Node* node);
 		void parser_linearGradient(const xmlpp::Node* node);
