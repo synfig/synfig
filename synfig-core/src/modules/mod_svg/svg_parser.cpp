@@ -481,7 +481,7 @@ Svg_parser::parser_layer(const xmlpp::Node* node,xmlpp::Element* root,String par
 				parser_graphics (*iter,child_canvas,layer_style,mtx);
     		}
   		}
-		parser_effects(nodeElement,child_canvas,parent_style,mtx);
+		if (! SVG_SEP_TRANSFORMS) parser_effects(nodeElement,child_canvas,parent_style,mtx);
 	}
 }
 
@@ -947,7 +947,40 @@ Svg_parser::parser_path_d(String path_d,Matrix* mtx){
 
 void
 Svg_parser::parser_effects(const xmlpp::Element* nodeElement,xmlpp::Element* root,String parent_style,Matrix* mtx){
-	
+	if (mtx) {
+		xmlpp::Element *child_transform=root->add_child("layer");
+		child_transform->set_attribute("type","warp");
+		child_transform->set_attribute("active","true");
+		child_transform->set_attribute("version","0.1");
+		child_transform->set_attribute("desc","Transform");
+
+		float x,y;
+		x=100;y=100;coor2vect(&x,&y);
+		build_vector (child_transform->add_child("param"),"src_tl",x,y);
+
+		x=200;y=200;coor2vect(&x,&y);
+		build_vector (child_transform->add_child("param"),"src_br",x,y);
+		
+
+		x=100;y=100;
+		transformPoint2D(mtx,&x,&y);coor2vect(&x,&y);
+		build_vector (child_transform->add_child("param"),"dest_tl",x,y);
+
+		x=200;y=100;
+		transformPoint2D(mtx,&x,&y);coor2vect(&x,&y);
+		build_vector (child_transform->add_child("param"),"dest_tr",x,y);
+
+		x=200;y=200;
+		transformPoint2D(mtx,&x,&y);coor2vect(&x,&y);
+		build_vector (child_transform->add_child("param"),"dest_br",x,y);
+
+		x=100;y=200;
+		transformPoint2D(mtx,&x,&y);coor2vect(&x,&y);
+		build_vector (child_transform->add_child("param"),"dest_bl",x,y);
+
+		build_param (child_transform->add_child("param"),"clip","bool","false");
+		build_param (child_transform->add_child("param"),"horizon","real","4.0");
+	}
 }
 
 
