@@ -605,42 +605,68 @@ std::list<std::list<Vertice*> >
 Svg_parser::parser_path_d(String path_d,Matrix* mtx){
 	std::list<std::list<Vertice*> > k;
 	std::list<Vertice*> k1;
-	float ax,ay,tgx,tgy,tgx2,tgy2;//each method
-	float actual_x=0,actual_y=0;//for relative methods;
-	loop=false;
-	unsigned int i;
 	std::vector<String> tokens=get_tokens_path(path_d);
-	for(i=0;i<tokens.size();i++){
-		if(tokens.at(i).compare("M")==0){//absolute move to
+	String command="M"; //the current command
+	float ax,ay,tgx,tgy,tgx2,tgy2;//each method
+	ax=ay=0;
+	float actual_x=0,actual_y=0; //in svg coordinate space
+	float old_x=0,old_y=0; //needed in rare cases
+	loop=false;
+
+	for(unsigned int i=0;i<tokens.size();i++){
+		//if the token is a command, change the current command
+		if(tokens.at(i).compare("M")==0 || tokens.at(i).compare("m")==0 || tokens.at(i).compare("L")==0 || tokens.at(i).compare("l")==0 || tokens.at(i).compare("H")==0 || tokens.at(i).compare("h")==0 || tokens.at(i).compare("V")==0 || tokens.at(i).compare("v")==0 || tokens.at(i).compare("C")==0 || tokens.at(i).compare("c")==0 || tokens.at(i).compare("S")==0 || tokens.at(i).compare("s")==0 || tokens.at(i).compare("Q")==0 || tokens.at(i).compare("q")==0 || tokens.at(i).compare("T")==0 || tokens.at(i).compare("t")==0 || tokens.at(i).compare("A")==0 || tokens.at(i).compare("a")==0 || tokens.at(i).compare("z")==0) {
+			command=tokens.at(i);
+			i++;
+		}
+		
+		old_x=actual_x;
+		old_y=actual_y;
+		//if command is absolute, set actual_x/y to zero
+		if(command.compare("M")==0 || command.compare("L")==0 || command.compare("C")==0 || command.compare("S")==0 || command.compare("Q")==0 || command.compare("T")==0 || command.compare("A")==0 || command.compare("H")==0 || command.compare("V")==0) {
+			actual_x=0;
+			actual_y=0;
+		}
+
+		//now parse the commands
+		if(command.compare("M")==0 || command.compare("m")==0){ //move to
 			if(!k1.empty())
 				k.push_front(k1);
 			k1.clear();
 			//read
-			i++; ax=atof(tokens.at(i).data());
+			actual_x+=atof(tokens.at(i).data());
 			i++; if(tokens.at(i).compare(",")==0) i++;
-			ay=atof(tokens.at(i).data());
-			actual_x=ax;
-			actual_y=ay;
+			actual_y+=atof(tokens.at(i).data());
+
+			ax=actual_x;
+			ay=actual_y;
 			//operate and save
 			if(mtx) transformPoint2D(mtx,&ax,&ay);
 			coor2vect(&ax,&ay);
 			k1.push_back(newVertice (ax,ay)); //first element
 			setSplit(k1.back(),TRUE);
-		}else if(tokens.at(i).compare("C")==0){ //absolute curve
+			//"If a moveto is followed by multiple pairs of coordinates,
+			// the subsequent pairs are treated as implicit lineto commands."
+			if (command.compare("M")==0)
+				command="L";
+			else
+				command="l";
+		}else if(command.compare("C")==0 || command.compare("c")==0){ //curve
 			//tg2
-			i++; tgx2=atof(tokens.at(i).data());
+			tgx2=actual_x+atof(tokens.at(i).data());
 			i++; if(tokens.at(i).compare(",")==0) i++;
-			tgy2=atof(tokens.at(i).data());
+			tgy2=actual_y+atof(tokens.at(i).data());
 			//tg1
-			i++; tgx=atof(tokens.at(i).data());
+			i++; tgx=actual_x+atof(tokens.at(i).data());
 			i++; if(tokens.at(i).compare(",")==0) i++;
-			tgy=atof(tokens.at(i).data());
+			tgy=actual_y+atof(tokens.at(i).data());
 			//point
-			i++; ax=atof(tokens.at(i).data());
+			i++; actual_x+=atof(tokens.at(i).data());
 			i++; if(tokens.at(i).compare(",")==0) i++;
-			ay=atof(tokens.at(i).data());
-			actual_x=ax;
-			actual_y=ay;
+			actual_y+=atof(tokens.at(i).data());
+
+			ax=actual_x;
+			ay=actual_y;
 			//mtx
 			if(mtx){
 				transformPoint2D(mtx,&tgx2,&tgy2);
@@ -660,17 +686,18 @@ Svg_parser::parser_path_d(String path_d,Matrix* mtx){
 				setTg1(k1.back(),k1.back()->x,k1.back()->y,tgx,tgy);
 				setSplit(k1.back(),TRUE);
 			}
-		}else if(tokens.at(i).compare("Q")==0){ //absolute quadractic curve
+		}else if(command.compare("Q")==0 || command.compare("q")==0){ //quadractic curve
 			//tg1 and tg2
-			i++; tgx=ax=atof(tokens.at(i).data());
+			tgx=actual_x+atof(tokens.at(i).data());
 			i++; if(tokens.at(i).compare(",")==0) i++;
-			tgy=ay=atof(tokens.at(i).data());
+			tgy=actual_y+atof(tokens.at(i).data());
 			//point
-			i++; ax=atof(tokens.at(i).data());
+			i++; actual_x+=atof(tokens.at(i).data());
 			i++; if(tokens.at(i).compare(",")==0) i++;
-			ay=atof(tokens.at(i).data());
-			actual_x=ax;
-			actual_y=ay;
+			actual_y+=atof(tokens.at(i).data());
+
+			ax=actual_x;
+			ay=actual_y;
 			//mtx
 			if(mtx){
 				transformPoint2D(mtx,&ax,&ay);
@@ -684,13 +711,14 @@ Svg_parser::parser_path_d(String path_d,Matrix* mtx){
 			setSplit(k1.back(),FALSE);
 			k1.push_back(newVertice (ax,ay));
 			setTg1(k1.back(),k1.back()->x,k1.back()->y,tgx,tgy);
-		}else if(tokens.at(i).compare("L")==0){ //absolute line to
+		}else if(command.compare("L")==0 || command.compare("l")==0){ //line to
 			//point
-			i++; ax=atof(tokens.at(i).data());
+			actual_x+=atof(tokens.at(i).data());
 			i++; if(tokens.at(i).compare(",")==0) i++;
-			ay=atof(tokens.at(i).data());
-			actual_x=ax;
-			actual_y=ay;
+			actual_y+=atof(tokens.at(i).data());
+
+			ax=actual_x;
+			ay=actual_y;
 			//mtx
 			if(mtx) transformPoint2D(mtx,&ax,&ay);
 			//adjust
@@ -703,71 +731,13 @@ Svg_parser::parser_path_d(String path_d,Matrix* mtx){
 				k1.push_back(newVertice(ax,ay));
 				setTg1(k1.back(),k1.back()->x,k1.back()->y,k1.back()->x,k1.back()->y);
 			}
-		}else if(tokens.at(i).compare("l")==0){//relative line to
-			//point read
-			i++; ax=atof(tokens.at(i).data());
-			i++; if(tokens.at(i).compare(",")==0) i++;
-			ay=atof(tokens.at(i).data());
-			//relative
-			ax=actual_x+ax;
-			ay=actual_y+ay;
-			actual_x=ax;
-			actual_y=ay;
-			//mtx
-			if(mtx) transformPoint2D(mtx,&ax,&ay);
-			//adjust
-			coor2vect(&ax,&ay);
-			//save
-			setTg2(k1.back(),k1.back()->x,k1.back()->y,k1.back()->x,k1.back()->y);
-			if(isFirst(k1.front(),ax,ay)){
-				setTg1(k1.front(),k1.front()->x,k1.front()->y,k1.front()->x,k1.front()->y);
-			}else{
-				k1.push_back(newVertice(ax,ay));
-				setTg1(k1.back(),k1.back()->x,k1.back()->y,k1.back()->x,k1.back()->y);
-			}
-		}else if(tokens.at(i).compare("H")==0){//absolute horizontal move
+		}else if(command.compare("H")==0 || command.compare("h")==0){// horizontal move
 			//the same that L but only Horizontal movement
 			//point
-			i++; ax=atof(tokens.at(i).data());
-			ay=actual_y;
-			actual_x=ax;
-			actual_y=ay;
-			//mtx
-			if(mtx) transformPoint2D(mtx,&ax,&ay);
-			//adjust
-			coor2vect(&ax,&ay);
-			//save
-			setTg2(k1.back(),k1.back()->x,k1.back()->y,k1.back()->x,k1.back()->y);
-			if(isFirst(k1.front(),ax,ay)){
-				setTg1(k1.front(),k1.front()->x,k1.front()->y,k1.front()->x,k1.front()->y);
-			}else{
-				k1.push_back(newVertice(ax,ay));
-				setTg1(k1.back(),k1.back()->x,k1.back()->y,k1.back()->x,k1.back()->y);
-			}
-		}else if(tokens.at(i).compare("h")==0){//horizontal relative
-			i++; ax=atof(tokens.at(i).data());
-			ax=actual_x+ax;
-			ay=actual_y;
-			actual_x=ax;
-			actual_y=ay;
-			//mtx
-			if(mtx) transformPoint2D(mtx,&ax,&ay);
-			//adjust
-			coor2vect(&ax,&ay);
-			//save
-			setTg2(k1.back(),k1.back()->x,k1.back()->y,k1.back()->x,k1.back()->y);
-			if(isFirst(k1.front(),ax,ay)){
-				setTg1(k1.front(),k1.front()->x,k1.front()->y,k1.front()->x,k1.front()->y);
-			}else{
-				k1.push_back(newVertice(ax,ay));
-				setTg1(k1.back(),k1.back()->x,k1.back()->y,k1.back()->x,k1.back()->y);
-			}
-		}else if(tokens.at(i).compare("V")==0){//vertical absolute
-			//point
-			i++; ay=atof(tokens.at(i).data());
+			actual_x+=atof(tokens.at(i).data());
+
 			ax=actual_x;
-			actual_x=ax;
-			actual_y=ay;
+			ay=old_y;
 			//mtx
 			if(mtx) transformPoint2D(mtx,&ax,&ay);
 			//adjust
@@ -780,13 +750,12 @@ Svg_parser::parser_path_d(String path_d,Matrix* mtx){
 				k1.push_back(newVertice(ax,ay));
 				setTg1(k1.back(),k1.back()->x,k1.back()->y,k1.back()->x,k1.back()->y);
 			}
-		}else if(tokens.at(i).compare("v")==0){//relative
+		}else if(command.compare("V")==0 || command.compare("v")==0){//vertical
 			//point
-			i++; ay=atof(tokens.at(i).data());
-			ax=actual_x;
-			ay=actual_y+ay;
-			actual_x=ax;
-			actual_y=ay;
+			actual_y+=atof(tokens.at(i).data());
+
+			ax=old_x;
+			ay=actual_y;
 			//mtx
 			if(mtx) transformPoint2D(mtx,&ax,&ay);
 			//adjust
@@ -799,8 +768,11 @@ Svg_parser::parser_path_d(String path_d,Matrix* mtx){
 				k1.push_back(newVertice(ax,ay));
 				setTg1(k1.back(),k1.back()->x,k1.back()->y,k1.back()->x,k1.back()->y);
 			}
-		}else if(tokens.at(i).compare("T")==0){// I don't know what does it
-		}else if(tokens.at(i).compare("A")==0){//elliptic arc
+		}else if(command.compare("T")==0 || command.compare("t")==0){// I don't know what does it
+			actual_x+=atof(tokens.at(i).data());
+			i++; if(tokens.at(i).compare(",")==0) i++;
+			actual_y+=atof(tokens.at(i).data());
+		}else if(command.compare("A")==0 || command.compare("a")==0){//elliptic arc
 
 			//isn't complete support, is only for circles
 
@@ -810,7 +782,7 @@ Svg_parser::parser_path_d(String path_d,Matrix* mtx){
 			float angle;
 			bool sweep,large;
 			//radio
-			i++; radio_x=atof(tokens.at(i).data());
+			radio_x=atof(tokens.at(i).data());
 			i++; if(tokens.at(i).compare(",")==0) i++;
 			radio_y=atof(tokens.at(i).data());
 			//angle
@@ -819,18 +791,19 @@ Svg_parser::parser_path_d(String path_d,Matrix* mtx){
 			i++; large=atoi(tokens.at(i).data());
 			i++; sweep=atoi(tokens.at(i).data());
 			//point
-			i++; ax=atof(tokens.at(i).data());
+			i++; actual_x+=atof(tokens.at(i).data());
 			i++; if(tokens.at(i).compare(",")==0) i++;
-			ay=atof(tokens.at(i).data());
+			actual_y+=atof(tokens.at(i).data());
 			//how to draw?
 			if(!large && !sweep){
 				//points
-				tgx2 = actual_x + radio_x*0.5;
-				tgy2 = actual_y ;
-				tgx  = ax;
-				tgy  = ay + radio_y*0.5;
-				actual_x=ax;
-				actual_y=ay;
+				tgx2 = old_x + radio_x*0.5;
+				tgy2 = old_y ;
+				tgx  = actual_x;
+				tgy  = actual_y + radio_y*0.5;
+
+				ax=actual_x;
+				ay=actual_y;
 				//transformations
 				if(mtx){
 					transformPoint2D(mtx,&tgx2,&tgy2);
@@ -852,12 +825,13 @@ Svg_parser::parser_path_d(String path_d,Matrix* mtx){
 				}
 			}else if(!large &&  sweep){
 				//points
-				tgx2 = actual_x;
-				tgy2 = actual_y + radio_y*0.5;
-				tgx  = ax + radio_x*0.5;
-				tgy  = ay ;
-				actual_x=ax;
-				actual_y=ay;
+				tgx2 = old_x;
+				tgy2 = old_y + radio_y*0.5;
+				tgx  = actual_x + radio_x*0.5;
+				tgy  = actual_y ;
+
+				ax=actual_x;
+				ay=actual_y;
 				//transformations
 				if(mtx){
 					transformPoint2D(mtx,&tgx2,&tgy2);
@@ -880,65 +854,63 @@ Svg_parser::parser_path_d(String path_d,Matrix* mtx){
 			}else if( large && !sweep){//rare
 				//this need more than one vertex
 			}else if( large &&  sweep){//circles in inkscape are made with this kind of arc
-				if(actual_y==ay){//circles
-					//intermediate point
-					int sense=1;
-					if(actual_x>ax) sense =-1;
-					float in_x,in_y,in_tgx1,in_tgy1,in_tgx2,in_tgy2;
-					in_x = (actual_x+ax)/2;
-					in_y = actual_y - sense*radio_y;
-					in_tgx1 = in_x - sense*(radio_x*0.5);
-					in_tgx2 = in_x + sense*(radio_x*0.5);
-					in_tgy1 = in_y;
-					in_tgy2 = in_y;
-					//start/end points
-					tgx2=actual_x;
-					tgy2=ay - sense*(radio_y*0.5);
-					tgx =ax;
-					tgy =ay - sense*(radio_y*0.5);
+				//intermediate point
+				int sense=1;
+				if(old_x>actual_x) sense =-1;
+				float in_x,in_y,in_tgx1,in_tgy1,in_tgx2,in_tgy2;
+				in_x = (old_x+actual_x)/2;
+				in_y = old_y - sense*radio_y;
+				in_tgx1 = in_x - sense*(radio_x*0.5);
+				in_tgx2 = in_x + sense*(radio_x*0.5);
+				in_tgy1 = in_y;
+				in_tgy2 = in_y;
+				//start/end points
+				tgx2=old_x;
+				tgy2=actual_y - sense*(radio_y*0.5);
+				tgx =actual_x;
+				tgy =actual_y - sense*(radio_y*0.5);
 
-					actual_x=ax;
-					actual_y=ay;
-					//transformations
-					if(mtx){
-						transformPoint2D(mtx,&tgx2,&tgy2);
-						transformPoint2D(mtx,&tgx ,&tgy );
-						transformPoint2D(mtx,&ax,&ay);
+				ax=actual_x;
+				ay=actual_y;
+				//transformations
+				if(mtx){
+					transformPoint2D(mtx,&tgx2,&tgy2);
+					transformPoint2D(mtx,&tgx ,&tgy );
+					transformPoint2D(mtx,&ax,&ay);
 
-						transformPoint2D(mtx,&in_tgx2,&in_tgy2);
-						transformPoint2D(mtx,&in_tgx1,&in_tgy1);
-						transformPoint2D(mtx,&in_x,&in_y);
-					}
-					//adjust
-					coor2vect(&tgx2 , &tgy2);
-					coor2vect(&ax   , &ay  );
-					coor2vect(&tgx  , &tgy );
+					transformPoint2D(mtx,&in_tgx2,&in_tgy2);
+					transformPoint2D(mtx,&in_tgx1,&in_tgy1);
+					transformPoint2D(mtx,&in_x,&in_y);
+				}
+				//adjust
+				coor2vect(&tgx2 , &tgy2);
+				coor2vect(&ax   , &ay  );
+				coor2vect(&tgx  , &tgy );
 
-					coor2vect(&in_tgx2 , &in_tgy2);
-					coor2vect(&in_tgx1 , &in_tgy1);
-					coor2vect(&in_x    , &in_y   );
+				coor2vect(&in_tgx2 , &in_tgy2);
+				coor2vect(&in_tgx1 , &in_tgy1);
+				coor2vect(&in_x    , &in_y   );
 
-					//save the last tg2
-					setTg2(k1.back(),k1.back()->x,k1.back()->y,tgx2,tgy2);
-					//save the intermediate point
-					k1.push_back(newVertice (in_x,in_y));
-					setTg1(k1.back(),k1.back()->x,k1.back()->y, in_tgx1 , in_tgy1);
-					setTg2(k1.back(),k1.back()->x,k1.back()->y, in_tgx2 , in_tgy2);
-					setSplit(k1.back(),TRUE); //this could be changed
-					//save the new point
-					if(isFirst(k1.front(),ax,ay)){
-						setTg1(k1.front(),k1.front()->x,k1.front()->y,tgx,tgy);
-					}else{
-						k1.push_back(newVertice (ax,ay));
-						setTg1(k1.back(),k1.back()->x,k1.back()->y,tgx,tgy);
-						setSplit(k1.back(),TRUE);
-					}
+				//save the last tg2
+				setTg2(k1.back(),k1.back()->x,k1.back()->y,tgx2,tgy2);
+				//save the intermediate point
+				k1.push_back(newVertice (in_x,in_y));
+				setTg1(k1.back(),k1.back()->x,k1.back()->y, in_tgx1 , in_tgy1);
+				setTg2(k1.back(),k1.back()->x,k1.back()->y, in_tgx2 , in_tgy2);
+				setSplit(k1.back(),TRUE); //this could be changed
+				//save the new point
+				if(isFirst(k1.front(),ax,ay)){
+					setTg1(k1.front(),k1.front()->x,k1.front()->y,tgx,tgy);
+				}else{
+					k1.push_back(newVertice (ax,ay));
+					setTg1(k1.back(),k1.back()->x,k1.back()->y,tgx,tgy);
+					setSplit(k1.back(),TRUE);
 				}
 			}
-		}else if(tokens.at(i).compare("z")==0){
+		}else if(command.compare("z")==0){
 			loop=true;
 		}else{
-			std::cout<<"don't supported: "<<tokens.at(i)<<std::endl;
+			std::cout<<"unsupported path token: "<<tokens.at(i)<<std::endl;
 		}
 	}
 	if(!k1.empty())
