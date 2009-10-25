@@ -611,6 +611,7 @@ Svg_parser::parser_path_d(String path_d,Matrix* mtx){
 	ax=ay=0;
 	float actual_x=0,actual_y=0; //in svg coordinate space
 	float old_x=0,old_y=0; //needed in rare cases
+	float init_x=0,init_y=0; //for closepath commands
 	loop=false;
 
 	for(unsigned int i=0;i<tokens.size();i++){
@@ -638,6 +639,8 @@ Svg_parser::parser_path_d(String path_d,Matrix* mtx){
 			i++; if(tokens.at(i).compare(",")==0) i++;
 			actual_y+=atof(tokens.at(i).data());
 
+			init_x=actual_x;
+			init_y=actual_y;
 			ax=actual_x;
 			ay=actual_y;
 			//operate and save
@@ -909,6 +912,22 @@ Svg_parser::parser_path_d(String path_d,Matrix* mtx){
 			}
 		}else if(command.compare("z")==0){
 			loop=true;
+			if(!k1.empty())
+				k.push_front(k1);
+			k1.clear();
+			if (i<tokens.size() && tokens.at(i).compare("M")!=0 && tokens.at(i).compare("m")!=0) {
+				//starting a new path, but not with a moveto
+				actual_x=init_x;
+				actual_y=init_y;
+				ax=actual_x;
+				ay=actual_y;
+				//operate and save
+				if(mtx) transformPoint2D(mtx,&ax,&ay);
+				coor2vect(&ax,&ay);
+				k1.push_back(newVertice (ax,ay)); //first element
+				setSplit(k1.back(),TRUE);
+			}
+			i--; //decrement i to balance "i++" at command change
 		}else{
 			std::cout<<"unsupported path token: "<<tokens.at(i)<<std::endl;
 		}
