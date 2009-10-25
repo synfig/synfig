@@ -52,6 +52,7 @@
 #include <synfig/valuenode_linear.h>
 #include <synfig/valuenode_timedswap.h>
 #include <synfig/valuenode_scale.h>
+#include <synfig/valuenode_range.h>
 #include <synfig/valuenode_dynamiclist.h>
 #include <synfig/valuenode_twotone.h>
 #include <synfig/valuenode_stripes.h>
@@ -2949,6 +2950,15 @@ CanvasView::on_duck_changed(const synfig::Point &value,const synfigapp::ValueDes
 			return false;
 	}
 
+	if (ValueNode_Range::Handle range_value_node = ValueNode_Range::Handle::cast_dynamic(value_desc.get_value_node()))
+	{
+		int link_index(range_value_node->get_link_index_from_name("link"));
+		return canvas_interface()->change_value(
+			synfigapp::ValueDesc(range_value_node,link_index),
+				range_value_node->get_inverse(get_time(), value)
+				);
+	}
+
 	switch(value_desc.get_value_type())
 	{
 	case ValueBase::TYPE_REAL:
@@ -2981,6 +2991,14 @@ CanvasView::on_duck_angle_changed(const synfig::Angle &rotation,const synfigapp:
 		else
 			return false;
 
+	}
+	if (ValueNode_Range::Handle range_value_node = ValueNode_Range::Handle::cast_dynamic(value_desc.get_value_node()))
+	{
+		int link_index(range_value_node->get_link_index_from_name("link"));
+		return canvas_interface()->change_value(
+			synfigapp::ValueDesc(range_value_node,link_index),
+				range_value_node->get_inverse(get_time(), rotation)
+				);
 	}
 	// \todo will this really always be the case?
 	assert(value_desc.get_value_type() == ValueBase::TYPE_ANGLE);

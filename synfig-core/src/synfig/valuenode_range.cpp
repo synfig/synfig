@@ -159,6 +159,65 @@ synfig::ValueNode_Range::operator()(Time t)const
 	return ValueBase();
 }
 
+synfig::ValueBase
+synfig::ValueNode_Range::get_inverse(Time t, const synfig::Vector &target_value) const
+{
+	switch (get_type())
+	{
+		case ValueBase::TYPE_INTEGER:
+			{
+			int max_value((*max_)(t).get(int()));
+			int min_value((*min_)(t).get(int()));
+			return std::max(min_value, std::min(max_value, int(target_value.mag())));
+			}
+		case ValueBase::TYPE_REAL:
+			{
+			Real max_value((*max_)(t).get(Real()));
+			Real min_value((*min_)(t).get(Real()));
+			return std::max(min_value, std::min(max_value, target_value.mag()));
+			}
+		case ValueBase::TYPE_ANGLE:
+			{
+			Angle max_value((*max_)(t).get(Angle()));
+			Angle min_value((*min_)(t).get(Angle()));
+			Angle target_angle(Angle::tan(target_value[1],target_value[0]));
+			return target_angle>max_value?max_value:target_angle<min_value?min_value:target_angle;
+			}
+		case ValueBase::TYPE_TIME:
+			{
+			Real max_value((*max_)(t).get(Time()));
+			Real min_value((*min_)(t).get(Time()));
+			return std::max(min_value, std::min(max_value, target_value.mag()));
+			}
+		default:
+			return target_value;
+	}
+	return ValueBase();
+}
+
+synfig::ValueBase
+synfig::ValueNode_Range::get_inverse(Time t, const synfig::Angle &target_value) const
+{
+	Angle minimum = (* min_)(t).get(Angle());
+	Angle maximum = (* max_)(t).get(Angle());
+	Angle link = (*link_)(t).get(Angle());
+		switch (get_type())
+		{
+			default:
+		// Notice that target_value is the rotation between the current
+		// 'link' value and the target angle in the canvas, so we need
+		// to add it to 'link'
+		if(Angle::rad(maximum).get()>=Angle::rad(link+target_value).get() && Angle::rad(link+target_value).get()>=Angle::rad(minimum).get())
+			return link + target_value;
+		else if (Angle::rad(minimum).get()>Angle::rad(target_value).get())
+			return minimum;
+		else
+			return maximum;
+		}
+	return ValueBase();
+}
+
+
 bool
 ValueNode_Range::set_link_vfunc(int i,ValueNode::Handle value)
 {
