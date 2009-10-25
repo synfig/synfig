@@ -127,12 +127,21 @@ synfig::ValueNode_Range::operator()(Time t)const
 		Angle minimum = (* min_)(t).get(Angle());
 		Angle maximum = (* max_)(t).get(Angle());
 		Angle link    = (*link_)(t).get(Angle());
-
+// This code was removed because it didn't work with link < minimum
+// It is sane to completely delete it if the replacement code is fine.
+/* ***********************************************
 		// if link is between min and max, use it
 		if (Angle::deg((link-minimum).mod()).get() < Angle::deg((maximum-minimum).mod()).get())
 			return link;
 		// otherwise use whichever of min and max is closest to link
 		else if (link.dist(minimum).abs() < link.dist(maximum).abs())
+			return minimum;
+		else
+			return maximum;
+*********************************************** */
+		if(Angle::rad(maximum).get()>=Angle::rad(link).get() && Angle::rad(link).get()>=Angle::rad(minimum).get())
+			return link;
+		else if (Angle::rad(minimum).get()>Angle::rad(link).get())
 			return minimum;
 		else
 			return maximum;
