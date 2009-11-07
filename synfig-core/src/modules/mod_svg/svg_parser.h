@@ -90,6 +90,14 @@ typedef struct vertice_t{
 	float radius2,angle2;
 	bool split;
 }Vertice;
+
+typedef struct bline_t{
+	std::list<Vertice*> *points;
+	bool loop;
+	String* bline_id;
+	String* offset_id;
+}BLine;
+
 class Svg_parser
 {
 		//this is inkscape oriented in some cases
@@ -108,7 +116,6 @@ private:
 		int uid;
 		int kux,set_canvas;
 		float ox,oy;
-		bool loop;//aux :D
 		//urls
 		std::list<LinearGradient*> lg;
 		std::list<RadialGradient*> rg;
@@ -131,8 +138,8 @@ private:
 		void parser_layer(const xmlpp::Node* node,xmlpp::Element* root,String parent_style,Matrix* mtx);
 		void parser_rect(const xmlpp::Element* nodeElement,xmlpp::Element* root,String fill, String fill_opacity, String opacity);
 		/* === CONVERT TO PATH PARSERS ==================== */
-		std::list<std::list<Vertice*> > parser_path_polygon(Glib::ustring polygon_points, Matrix* mtx);
-		std::list<std::list<Vertice*> > parser_path_d(String path_d,Matrix* mtx);
+		std::list<BLine *> parser_path_polygon(Glib::ustring polygon_points, Matrix* mtx);
+		std::list<BLine *> parser_path_d(String path_d,Matrix* mtx);
 
 		/* === EFFECTS PARSERS ============================ */
 		void parser_effects(const xmlpp::Element* nodeElement,xmlpp::Element* root,String parent_style,Matrix* mtx);
@@ -144,6 +151,7 @@ private:
 		ColorStop* newColorStop(String color,float opacity,float pos);
 		LinearGradient* newLinearGradient(String name,float x1,float y1, float x2,float y2,std::list<ColorStop*> *stops, Matrix* transform);
 		RadialGradient* newRadialGradient(String name,float cx,float cy,float r,std::list<ColorStop*> *stops, Matrix* transform);
+		BLine* newBLine(std::list<Vertice*> *points,bool loop);
 
 		/* === BUILDS ===================================== */
 		void build_transform(xmlpp::Element* root,Matrix* mtx);

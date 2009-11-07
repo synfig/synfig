@@ -301,7 +301,8 @@ Svg_parser::parser_graphics(const xmlpp::Node* node,xmlpp::Element* root,String 
 
 
 		//=======================================================================
-		std::list<std::list<Vertice*> > k;
+
+		std::list<BLine*> k;
 		//if we are creating a bline
 
 		//First, create the list of vertices
@@ -319,17 +320,11 @@ Svg_parser::parser_graphics(const xmlpp::Node* node,xmlpp::Element* root,String 
 			}
 		}
 		
-		int n = k.size();
-		String bline_id[n];
-		String offset_id[n];
-		for (int i=0;i<n;i++){
-			bline_id[i]=new_guid();
-			offset_id[i]=new_guid();
-		}
+		std::list<BLine *>::iterator aux;		
+		//int n = k.size();
 
-		std::list<std::list<Vertice*> >::iterator aux = k.begin();
 		if(typeFill!=0){//region layer
-			for (int i=0; aux!=k.end(); aux++){
+			for (aux = k.begin(); aux!=k.end(); aux++){
 				xmlpp::Element *child_region=child_fill->add_child("layer");
 				child_region->set_attribute("type","region");
 				child_region->set_attribute("active","true");
@@ -339,7 +334,7 @@ Svg_parser::parser_graphics(const xmlpp::Node* node,xmlpp::Element* root,String 
 				build_param (child_region->add_child("param"),"amount","real","1.0000000000");
 				build_param (child_region->add_child("param"),"blend_method","integer","0");
 				build_color (child_region->add_child("param"),getRed(fill),getGreen(fill),getBlue(fill),atof(fill_opacity.data())*atof(opacity.data()));
-				build_vector (child_region->add_child("param"),"offset",0,0,offset_id[i]);
+				build_vector (child_region->add_child("param"),"offset",0,0, *(*aux)->offset_id );
 				build_param (child_region->add_child("param"),"invert","bool","false");
 				build_param (child_region->add_child("param"),"antialias","bool","true");
 				build_param (child_region->add_child("param"),"feather","real","0.0000000000");
@@ -347,8 +342,7 @@ Svg_parser::parser_graphics(const xmlpp::Node* node,xmlpp::Element* root,String 
 				if(fill_rule.compare("evenodd")==0) build_param (child_region->add_child("param"),"winding_style","integer","1");
 				else build_param (child_region->add_child("param"),"winding_style","integer","0");
 
-				build_bline (child_region->add_child("param"),*aux,loop,bline_id[i]);
-				i++;
+				build_bline (child_region->add_child("param"),*(*aux)->points,(*aux)->loop,*(*aux)->bline_id); 
 			}
 		}
 		if(typeFill==2){ //gradient in onto mode (fill)
@@ -359,7 +353,6 @@ Svg_parser::parser_graphics(const xmlpp::Node* node,xmlpp::Element* root,String 
 		}
 
 		if(typeStroke!=0){//outline layer
-			int i=0;
 			for (aux=k.begin(); aux!=k.end(); aux++){
 				xmlpp::Element *child_outline=child_stroke->add_child("layer");
 				child_outline->set_attribute("type","outline");
@@ -370,7 +363,7 @@ Svg_parser::parser_graphics(const xmlpp::Node* node,xmlpp::Element* root,String 
 				build_param (child_outline->add_child("param"),"amount","real","1.0000000000");
 				build_param (child_outline->add_child("param"),"blend_method","integer","0");
 				build_color (child_outline->add_child("param"),getRed(stroke),getGreen(stroke),getBlue(stroke),atof(stroke_opacity.data())*atof(opacity.data()));
-				build_vector (child_outline->add_child("param"),"offset",0,0,offset_id[i]);
+				build_vector (child_outline->add_child("param"),"offset",0,0,*(*aux)->offset_id);
 				build_param (child_outline->add_child("param"),"invert","bool","false");
 				build_param (child_outline->add_child("param"),"antialias","bool","true");
 				build_param (child_outline->add_child("param"),"feather","real","0.0000000000");
@@ -378,7 +371,7 @@ Svg_parser::parser_graphics(const xmlpp::Node* node,xmlpp::Element* root,String 
 				//outline in nonzero
 				build_param (child_outline->add_child("param"),"winding_style","integer","0");
 
-				build_bline (child_outline->add_child("param"),*aux,loop,bline_id[i]);
+				build_bline (child_outline->add_child("param"),*(*aux)->points,(*aux)->loop,*(*aux)->bline_id);
 
 				stroke_width=etl::strprintf("%f",getDimension(stroke_width)/kux);
 				build_param (child_outline->add_child("param"),"width","real",stroke_width);
@@ -394,9 +387,6 @@ Svg_parser::parser_graphics(const xmlpp::Node* node,xmlpp::Element* root,String 
 				}
 				build_param (child_outline->add_child("param"),"loopyness","real","1.0000000000");
 				build_param (child_outline->add_child("param"),"homogeneous_width","bool","true");
-
-
-				i++;
 			}
 
 			if(typeStroke==2){ //gradient in onto mode (stroke)
@@ -409,7 +399,7 @@ Svg_parser::parser_graphics(const xmlpp::Node* node,xmlpp::Element* root,String 
 				parser_effects(nodeElement,child_layer,parent_style,NULL);
 			else
 				parser_effects(nodeElement,child_layer,parent_style,mtx);
-		
+	
 		}
 	}
 }
@@ -495,12 +485,12 @@ Svg_parser::parser_rect(const xmlpp::Element* nodeElement,xmlpp::Element* root,S
 
 /* === CONVERT TO PATH PARSERS ============================================= */       
 
-std::list<std::list<Vertice*> >
+std::list<BLine *>
 Svg_parser::parser_path_polygon(Glib::ustring polygon_points, Matrix* mtx){
-	std::list<std::list<Vertice*> > k0;
+	std::list<BLine *> k0;
 	if(polygon_points.empty())
 		return k0;
-	std::list<Vertice*> k;
+	std::list<Vertice*> points;
 	std::vector<String> tokens=get_tokens_path (polygon_points);
 	unsigned int i;
 	float ax,ay; ax=ay=0;
@@ -513,16 +503,17 @@ Svg_parser::parser_path_polygon(Glib::ustring polygon_points, Matrix* mtx){
 		//adjust
 		coor2vect(&ax,&ay);
 		//save
-		k.push_back(newVertice(ax,ay));
+		points.push_back(newVertice(ax,ay));
 	}
-	k0.push_front(k);
+	k0.push_front(newBLine(&points, true));
 	return k0;
 }
 
-std::list<std::list<Vertice*> >
+std::list<BLine *>
 Svg_parser::parser_path_d(String path_d,Matrix* mtx){
-	std::list<std::list<Vertice*> > k;
+	std::list<BLine *> k;
 	std::list<Vertice*> k1;
+
 	std::vector<String> tokens=get_tokens_path(path_d);
 	String command="M"; //the current command
 	float ax,ay,tgx,tgy,tgx2,tgy2;//each method
@@ -530,7 +521,6 @@ Svg_parser::parser_path_d(String path_d,Matrix* mtx){
 	float actual_x=0,actual_y=0; //in svg coordinate space
 	float old_x=0,old_y=0; //needed in rare cases
 	float init_x=0,init_y=0; //for closepath commands
-	loop=false;
 
 	for(unsigned int i=0;i<tokens.size();i++){
 		//if the token is a command, change the current command
@@ -549,9 +539,10 @@ Svg_parser::parser_path_d(String path_d,Matrix* mtx){
 
 		//now parse the commands
 		if(command.compare("M")==0 || command.compare("m")==0){ //move to
-			if(!k1.empty())
-				k.push_front(k1);
-			k1.clear();
+			if(!k1.empty()) {
+				k.push_front(newBLine(&k1, false));
+				k1.clear();
+			}
 			//read
 			actual_x+=atof(tokens.at(i).data());
 			i++; if(tokens.at(i).compare(",")==0) i++;
@@ -829,9 +820,7 @@ Svg_parser::parser_path_d(String path_d,Matrix* mtx){
 				}
 			}
 		}else if(command.compare("z")==0){
-			loop=true;
-			if(!k1.empty())
-				k.push_front(k1);
+			k.push_front(newBLine(&k1, true));
 			k1.clear();
 			if (i<tokens.size() && tokens.at(i).compare("M")!=0 && tokens.at(i).compare("m")!=0) {
 				//starting a new path, but not with a moveto
@@ -850,8 +839,9 @@ Svg_parser::parser_path_d(String path_d,Matrix* mtx){
 			std::cout<<"unsupported path token: "<<tokens.at(i)<<std::endl;
 		}
 	}
-	if(!k1.empty())
-		k.push_front(k1); //last element
+	if(!k1.empty()) {
+		k.push_front(newBLine(&k1, false)); //last element
+	}
 	return k;
 }
 
@@ -1258,6 +1248,18 @@ Svg_parser::newRadialGradient(String name,float cx,float cy,float r,std::list<Co
 	data->r=r;
 	data->stops=stops;
 	data->transform=transform;
+	return data;
+}
+
+BLine*
+Svg_parser::newBLine(std::list<Vertice*> *points,bool loop){
+	BLine* data;
+	data=(BLine*)malloc(sizeof(BLine));
+	//sprintf(data->name,"%s",name.data());
+	data->points=new std::list<Vertice*> (*points);
+	data->loop=loop;
+	data->bline_id=new String(new_guid());
+	data->offset_id=new String(new_guid());
 	return data;
 }
 
