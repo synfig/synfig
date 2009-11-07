@@ -289,7 +289,7 @@ Svg_parser::parser_graphics(const xmlpp::Node* node,xmlpp::Element* root,String 
 		if(nodename.compare("rect")==0 && typeFill!=0){
 			rect_simple(nodeElement,child_fill,fill,fill_opacity,opacity);
 			if(typeFill==2){
-				build_url (child_fill->add_child("layer"),fill,NULL);
+				build_url (child_fill,fill,NULL);
 			}
 			parser_effects(nodeElement,child_layer,parent_style,mtx);
 			return;
@@ -349,9 +349,9 @@ Svg_parser::parser_graphics(const xmlpp::Node* node,xmlpp::Element* root,String 
 		}
 		if(typeFill==2){ //gradient in onto mode (fill)
 			if (SVG_RESOLVE_BLINE)
-				build_url(child_fill->add_child("layer"),fill,mtx);
+				build_url(child_fill,fill,mtx);
 			else
-				build_url(child_fill->add_child("layer"),fill,NULL);
+				build_url(child_fill,fill,NULL);
 		}
 
 		if(typeStroke!=0){//outline layer
@@ -397,9 +397,9 @@ Svg_parser::parser_graphics(const xmlpp::Node* node,xmlpp::Element* root,String 
 
 			if(typeStroke==2){ //gradient in onto mode (stroke)
 			if (SVG_RESOLVE_BLINE)
-				build_url(child_stroke->add_child("layer"),fill,mtx);
+				build_url(child_stroke,fill,mtx);
 			else
-				build_url(child_stroke->add_child("layer"),fill,NULL);
+				build_url(child_stroke,fill,NULL);
 			}
 			if (SVG_RESOLVE_BLINE)
 				parser_effects(nodeElement,child_layer,parent_style,NULL);
@@ -939,6 +939,11 @@ Svg_parser::parser_path_d(String path_d,Matrix* mtx){
 
 void
 Svg_parser::parser_effects(const xmlpp::Element* nodeElement,xmlpp::Element* root,String parent_style,Matrix* mtx){
+	parser_transform(root, mtx);
+}
+
+void
+Svg_parser::parser_transform(xmlpp::Element* root,Matrix* mtx){
 	if (mtx) {
 		xmlpp::Element *child_transform=root->add_child("layer");
 		child_transform->set_attribute("type","warp");
@@ -1037,9 +1042,6 @@ Svg_parser::find_colorStop(String name){
 void
 Svg_parser::build_url(xmlpp::Element* root, String name,Matrix *mtx){
 	if(!name.empty()){
-		if(lg.empty()&& rg.empty())
-			root->get_parent()->remove_child(root);
-
 		int start=name.find_first_of("#")+1;
 		int end=name.find_first_of(")");
 		String find= name.substr(start,end-start);
@@ -1064,10 +1066,6 @@ Svg_parser::build_url(xmlpp::Element* root, String name,Matrix *mtx){
 				aux++;
 			}
 		}
-		if(!encounter)
-			root->get_parent()->remove_child(root);
-	}else{
-		root->get_parent()->remove_child(root);
 	}
 }
 void
@@ -1086,65 +1084,133 @@ Svg_parser::build_stop_color(xmlpp::Element* root, std::list<ColorStop*> *stops)
 void
 Svg_parser::build_linearGradient(xmlpp::Element* root,LinearGradient* data,Matrix* mtx){
 	if(data){
-		root->set_attribute("type","linear_gradient");
-		root->set_attribute("active","true");
-		root->set_attribute("desc","Gradient004");
-		build_param (root->add_child("param"),"z_depth","real","0");
-		build_param (root->add_child("param"),"amount","real","1");
+		xmlpp::Element* gradient=root->add_child("layer");
+
+		gradient->set_attribute("type","linear_gradient");
+		gradient->set_attribute("active","true");
+		gradient->set_attribute("desc","Gradient004");
+		build_param (gradient->add_child("param"),"z_depth","real","0");
+		build_param (gradient->add_child("param"),"amount","real","1");
 		//straight onto
-		build_param (root->add_child("param"),"blend_method","integer","21");
+		build_param (gradient->add_child("param"),"blend_method","integer","21");
 		float x1,y1,x2,y2;
 		x1=data->x1;
 		y1=data->y1;
 		x2=data->x2;
 		y2=data->y2;
-		if(mtx){
-			transformPoint2D(mtx,&x1,&y1);
-			transformPoint2D(mtx,&x2,&y2);
+
+
+		if (mtx || data->transform){
+			Matrix *mtx2=NULL;
+			if (mtx && data->transform){
+				composeMatrix(&mtx2,mtx,data->transform);
+			}else if (mtx){
+				mtx2=mtx;
+			}else if (data->transform){
+				mtx2=data->transform;
+			}
+			//matrix transforms the gradient as a whole
+			//it does not preserve angles, so we cant' simply transform both points
+			float x3, y3, k;
+			//set point (x3,y3) on the same gradient line as (x2,y2)
+			//the gradient line is perpendicular to (x1,y1)(x2,y2)
+			x3=x2+(y2-y1);
+			y3=y2-(x2-x1);
+			//transform everything
+			transformPoint2D(mtx2,&x1,&y1);
+			transformPoint2D(mtx2,&x2,&y2);
+			transformPoint2D(mtx2,&x3,&y3);
+
+			if (x2!=x3 && y2!=y3) {//divide by zero check
+
+				//set k as slope between (x2,y2) and (x3,y3)
+				//k is the slope of gradient lines post-transformation
+				k=(y3-y2)/(x3-x2);
+				//set point (x2,y2) on the gradient line passing through (x3,y3)
+				//so that the line (x1,y1)(x2,y2) is perpendicular to (x2,y2)(x3,y3)
+				x2= (x3*k+x1/k+y1-y3)/(k+(1/k));
+				y2= k*(x2-x3)+y3;
+			} else if (x2==x3 && y2!=y3) {
+				y2=y1;
+			} else if (x2!=x3 && y2==y3) {
+				x2=x1;
+			} else {
+				std::cout<<"SVG Import warning: gradient points equal each other"<<std::endl;
+			}
 		}
+
 		coor2vect (&x1,&y1);
 		coor2vect (&x2,&y2);
 
-		build_vector (root->add_child("param"),"p1",x1,y1);
-		build_vector (root->add_child("param"),"p2",x2,y2);
+		build_vector (gradient->add_child("param"),"p1",x1,y1);
+		build_vector (gradient->add_child("param"),"p2",x2,y2);
 		//gradient link
-		xmlpp::Element *child=root->add_child("param");
-		child->set_attribute("name","gradient");
-		build_stop_color (child->add_child("gradient"),data->stops);
-		build_param (root->add_child("param"),"loop","bool","false");
-		build_param (root->add_child("param"),"zigzag","bool","false");
+		xmlpp::Element *child_stops=gradient->add_child("param");
+		child_stops->set_attribute("name","gradient");
+		build_stop_color (child_stops->add_child("gradient"),data->stops);
+		build_param (gradient->add_child("param"),"loop","bool","false");
+		build_param (gradient->add_child("param"),"zigzag","bool","false");
 	}
 }
 void
 Svg_parser::build_radialGradient(xmlpp::Element* root,RadialGradient* data,Matrix* mtx){
-//not completed
 	if(data){
-		root->set_attribute("type","radial_gradient");
-		root->set_attribute("active","true");
-		build_param (root->add_child("param"),"z_depth","real","0");
-		build_param (root->add_child("param"),"amount","real","1");
-		//straight onto
-		build_param (root->add_child("param"),"blend_method","integer","21");
+		xmlpp::Element* gradient;
+
+		if (mtx || data->transform) {
+			xmlpp::Element* layer=root->add_child("layer");
+
+			layer->set_attribute("type","PasteCanvas");
+			layer->set_attribute("active","true");
+			layer->set_attribute("version","0.1");
+			layer->set_attribute("desc","Composite");
+			build_param (layer->add_child("param"),"z_depth","real","0");
+			build_param (layer->add_child("param"),"amount","real","1");
+			build_param (layer->add_child("param"),"blend_method","integer","21"); //straight onto
+			build_vector (layer->add_child("param"),"origin",0,0);
+			xmlpp::Element *child=layer->add_child("param");
+			child->set_attribute("name","canvas");
+			xmlpp::Element* child_layer=child->add_child("canvas");
+
+			gradient=child_layer->add_child("layer");
+			build_param (gradient->add_child("param"),"blend_method","integer","0"); //composite
+			Matrix *mtx2=NULL;
+			if (mtx && data->transform){
+				composeMatrix(&mtx2,mtx,data->transform);
+			}else if (mtx){
+				mtx2=mtx;
+			}else if (data->transform){
+				mtx2=data->transform;
+			}
+			parser_transform(child_layer,mtx2);
+			
+		}else {
+			gradient=root->add_child("layer");
+			build_param (gradient->add_child("param"),"blend_method","integer","21"); //straight onto
+		}		
+
+		gradient->set_attribute("type","radial_gradient");
+		gradient->set_attribute("active","true");
+		build_param (gradient->add_child("param"),"z_depth","real","0");
+		build_param (gradient->add_child("param"),"amount","real","1");
 		//gradient link
-		xmlpp::Element *child=root->add_child("param");
-		child->set_attribute("name","gradient");
-		build_stop_color (child->add_child("gradient"),data->stops);
+		xmlpp::Element *child_stops=gradient->add_child("param");
+		child_stops->set_attribute("name","gradient");
+		build_stop_color (child_stops->add_child("gradient"),data->stops);
+
 		//here the center point and radio
 		float cx=data->cx;
 		float cy=data->cy;
 		float r =data->r;
-		//transform
-		if(mtx){
-			transformPoint2D(mtx,&cx,&cy);
-		}
+
 		//adjust
 		coor2vect (&cx,&cy);
 		r=r/kux;
-		build_vector (root->add_child("param"),"center",cx,cy);
-		build_param (root->add_child("param"),"radius","real",r);
+		build_vector (gradient->add_child("param"),"center",cx,cy);
+		build_param (gradient->add_child("param"),"radius","real",r);
 
-		build_param (root->add_child("param"),"loop","bool","false");
-		build_param (root->add_child("param"),"zigzag","bool","false");
+		build_param (gradient->add_child("param"),"loop","bool","false");
+		build_param (gradient->add_child("param"),"zigzag","bool","false");
 	}
 }
 
@@ -1157,6 +1223,12 @@ Svg_parser::parser_linearGradient(const xmlpp::Node* node){
 		float x2			=atof(nodeElement->get_attribute_value("x2").data());
 		float y2			=atof(nodeElement->get_attribute_value("y2").data());
 		Glib::ustring link	=nodeElement->get_attribute_value("href");
+		Glib::ustring transform	=nodeElement->get_attribute_value("gradientTransform");
+
+		//resolve transformations
+		Matrix* mtx=NULL;
+		if(!transform.empty())
+			mtx=build_transform (transform);
 
 		std::list<ColorStop*> *stops;
 		if(!link.empty()){
@@ -1187,7 +1259,7 @@ Svg_parser::parser_linearGradient(const xmlpp::Node* node){
 			}
 		}
 		if(stops)
-			lg.push_back(newLinearGradient(id,x1,y1,x2,y2,stops));
+			lg.push_back(newLinearGradient(id,x1,y1,x2,y2,stops,mtx));
 	}
 }
 
@@ -1197,15 +1269,27 @@ Svg_parser::parser_radialGradient(const xmlpp::Node* node){
 		Glib::ustring id	=nodeElement->get_attribute_value("id");
 		float cx			=atof(nodeElement->get_attribute_value("cx").data());
 		float cy			=atof(nodeElement->get_attribute_value("cy").data());
+		float fx			=atof(nodeElement->get_attribute_value("fx").data());
+		float fy			=atof(nodeElement->get_attribute_value("fy").data());
 		float r				=atof(nodeElement->get_attribute_value("r").data());
 		Glib::ustring link	=nodeElement->get_attribute_value("href");//basic
+		Glib::ustring transform	=nodeElement->get_attribute_value("gradientTransform");
+
+		if (cx!=fx || cy!=fy)
+			std::cout<<"SVG Parser: ignoring focus attributes for radial gradient";
+
+		//resolve transformations
+		Matrix* mtx=NULL;
+		if(!transform.empty())
+			mtx=build_transform (transform);
+
 		std::list<ColorStop*> *stops=NULL;
 		if(!link.empty()){
 			//inkscape always use link, i dont need parser stops here, but it's posible
 			stops=find_colorStop (link);
 		}
 		if(stops)
-			rg.push_back(newRadialGradient(id,cx,cy,r,stops));
+			rg.push_back(newRadialGradient(id,cx,cy,r,stops,mtx));
 	}
 }
 
@@ -1250,7 +1334,7 @@ Svg_parser::adjustGamma(float r,float g,float b,float a){
 }
 
 LinearGradient*
-Svg_parser::newLinearGradient(String name,float x1,float y1, float x2,float y2,std::list<ColorStop*> *stops){
+Svg_parser::newLinearGradient(String name,float x1,float y1, float x2,float y2,std::list<ColorStop*> *stops, Matrix* transform){
 	LinearGradient* data;
 	data=(LinearGradient*)malloc(sizeof(LinearGradient));
 	sprintf(data->name,"%s",name.data());
@@ -1259,11 +1343,12 @@ Svg_parser::newLinearGradient(String name,float x1,float y1, float x2,float y2,s
 	data->x2=x2;
 	data->y2=y2;
 	data->stops=stops;
+	data->transform=transform;
    	return data;
 }
 
 RadialGradient*
-Svg_parser::newRadialGradient(String name,float cx,float cy,float r,std::list<ColorStop*> *stops){
+Svg_parser::newRadialGradient(String name,float cx,float cy,float r,std::list<ColorStop*> *stops, Matrix* transform){
 	RadialGradient* data;
 	data=(RadialGradient*)malloc(sizeof(RadialGradient));
 	sprintf(data->name,"%s",name.data());
@@ -1271,6 +1356,7 @@ Svg_parser::newRadialGradient(String name,float cx,float cy,float r,std::list<Co
 	data->cy=cy;
 	data->r=r;
 	data->stops=stops;
+	data->transform=transform;
 	return data;
 }
 

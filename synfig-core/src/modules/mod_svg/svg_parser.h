@@ -67,6 +67,7 @@ typedef struct linear_g{
 	char name[40];
 	float x1,x2,y1,y2;
 	std::list<ColorStop*> *stops; //paradas de color
+	Matrix *transform;
 }LinearGradient;
 typedef struct radial_g{
 	char name[40];
@@ -76,6 +77,7 @@ typedef struct radial_g{
 	//if this value is omitted then will be = cx,cy
 	float r; //radio radius
 	std::list<ColorStop*> *stops; //paradas de color
+	Matrix *transform;
 }RadialGradient;
 
 typedef struct url_t{
@@ -129,13 +131,14 @@ private:        //parser bucle
 		void parser_layer(const xmlpp::Node* node,xmlpp::Element* root,String parent_style,Matrix* mtx);
 		std::list<std::list<Vertice*> > parser_polygon_path(Glib::ustring polygon_points, Matrix* mtx);
 		void parser_effects(const xmlpp::Element* nodeElement,xmlpp::Element* root,String parent_style,Matrix* mtx);
+		void parser_transform(xmlpp::Element* root,Matrix* mtx);
 		//defs
 		void parser_defs(const xmlpp::Node* node);
 		void parser_linearGradient(const xmlpp::Node* node);
 		void parser_radialGradient(const xmlpp::Node* node);
 		ColorStop* newColorStop(String color,float opacity,float pos);
-		LinearGradient* newLinearGradient(String name,float x1,float y1, float x2,float y2,std::list<ColorStop*> *stops);
-		RadialGradient* newRadialGradient(String name,float cx,float cy,float r,std::list<ColorStop*> *stops);
+		LinearGradient* newLinearGradient(String name,float x1,float y1, float x2,float y2,std::list<ColorStop*> *stops, Matrix* transform);
+		RadialGradient* newRadialGradient(String name,float cx,float cy,float r,std::list<ColorStop*> *stops, Matrix* transform);
 		//builds urls
 		void AdjustPointUrl();
 		std::list<ColorStop*>* find_colorStop(String name);
