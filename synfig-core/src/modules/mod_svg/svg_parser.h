@@ -10,6 +10,7 @@
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
 **	Copyright (c) 2009 Carlos A. Sosa Navarro
+**	Copyright (c) 2009 Nikita Kitaev
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -66,17 +67,15 @@ typedef struct stop_t{
 typedef struct linear_g{
 	char name[40];
 	float x1,x2,y1,y2;
-	std::list<ColorStop*> *stops; //paradas de color
+	std::list<ColorStop*> *stops;
 	Matrix *transform;
 }LinearGradient;
 typedef struct radial_g{
 	char name[40];
 	float cx,cy;//center point
-	//float fx,fy;
-	//focus, i dont see it in synfig
-	//if this value is omitted then will be = cx,cy
-	float r; //radio radius
-	std::list<ColorStop*> *stops; //paradas de color
+	//float fx,fy; //not supported by Synfig
+	float r; //radius
+	std::list<ColorStop*> *stops;
 	Matrix *transform;
 }RadialGradient;
 
@@ -87,8 +86,8 @@ typedef struct url_t{
 
 typedef struct vertice_t{
    	float x,y;
-	float radio1,angle1;
-	float radio2,angle2;
+	float radius1,angle1;
+	float radius2,angle2;
 	bool split;
 }Vertice;
 class Svg_parser
@@ -120,37 +119,43 @@ public:
 		//String get_id();
 		//void set_id(String source);
 
-private:        //parser bucle
+private:
+		/* === PARSERS ==================================== */
 		void parser_node(const xmlpp::Node* node);
 		//parser headers
 		void parser_svg(const xmlpp::Node* node);
 		void parser_canvas(const xmlpp::Node* node);
-		//layers
 		void parser_graphics(const xmlpp::Node* node,xmlpp::Element* root,String parent_style,Matrix* mtx_parent);
-		void rect_simple(const xmlpp::Element* nodeElement,xmlpp::Element* root,String fill, String fill_opacity, String opacity);
+
+		/* === LAYER PARSERS ============================== */
 		void parser_layer(const xmlpp::Node* node,xmlpp::Element* root,String parent_style,Matrix* mtx);
-		std::list<std::list<Vertice*> > parser_polygon_path(Glib::ustring polygon_points, Matrix* mtx);
+		void parser_rect(const xmlpp::Element* nodeElement,xmlpp::Element* root,String fill, String fill_opacity, String opacity);
+		/* === CONVERT TO PATH PARSERS ==================== */
+		std::list<std::list<Vertice*> > parser_path_polygon(Glib::ustring polygon_points, Matrix* mtx);
+		std::list<std::list<Vertice*> > parser_path_d(String path_d,Matrix* mtx);
+
+		/* === EFFECTS PARSERS ============================ */
 		void parser_effects(const xmlpp::Element* nodeElement,xmlpp::Element* root,String parent_style,Matrix* mtx);
-		void parser_transform(xmlpp::Element* root,Matrix* mtx);
-		//defs
+
+		/* === DEFS PARSERS =============================== */
 		void parser_defs(const xmlpp::Node* node);
 		void parser_linearGradient(const xmlpp::Node* node);
 		void parser_radialGradient(const xmlpp::Node* node);
 		ColorStop* newColorStop(String color,float opacity,float pos);
 		LinearGradient* newLinearGradient(String name,float x1,float y1, float x2,float y2,std::list<ColorStop*> *stops, Matrix* transform);
 		RadialGradient* newRadialGradient(String name,float cx,float cy,float r,std::list<ColorStop*> *stops, Matrix* transform);
-		//builds urls
-		void AdjustPointUrl();
+
+		/* === BUILDS ===================================== */
+		void build_transform(xmlpp::Element* root,Matrix* mtx);
 		std::list<ColorStop*>* find_colorStop(String name);
-		void build_url(xmlpp::Element* root, String name,Matrix *mtx);
+		void build_fill(xmlpp::Element* root, String name,Matrix *mtx);
 		void build_linearGradient(xmlpp::Element* root,LinearGradient* data,Matrix* mtx);
 		void build_radialGradient(xmlpp::Element* root,RadialGradient* data,Matrix* mtx);
 		void build_stop_color(xmlpp::Element* root, std::list<ColorStop*> *stops);
 		void build_stop_color(xmlpp::Element* root, std::list<ColorStop*> *stops,String name);
 		Color adjustGamma(float r,float g,float b,float a);
-		//builds
+
 		void build_gamma(xmlpp::Element* root,float gamma);
-		Matrix* build_transform(const String transform);
 		void build_rotate(xmlpp::Element* root,float dx,float dy,float angle);
 		void build_translate(xmlpp::Element* root,float dx,float dy);
 		void build_points(xmlpp::Element* root,std::list<Vertice*> p);
@@ -166,6 +171,8 @@ private:        //parser bucle
 		void build_color(xmlpp::Element* root,float r,float g,float b,float a);
 		xmlpp::Element* nodeStartBasicLayer(xmlpp::Element* root);
 
+		/* === COORDINATES & TRANSFORMATIONS ============== */
+
 		//points,etc
 		void coor2vect(float *x,float *y);
 		void setTg2(Vertice* p,float p1x,float p1y,float p2x,float p2y);
@@ -175,6 +182,7 @@ private:        //parser bucle
 		Vertice* newVertice(float x,float y);
 
 		//matrix operations
+		Matrix* parser_transform(const String transform);
 		Matrix* newMatrix(float a,float b,float c,float d,float e,float f);
 		Matrix* newMatrix(const String mvector);
 		Matrix* newMatrix(Matrix *a);
@@ -183,19 +191,21 @@ private:        //parser bucle
 		void composeMatrix(Matrix **mtx,Matrix *mtx1,Matrix *mtx2);
 		void multiplyMatrix(Matrix **mtx1,Matrix *mtx2);
 		float getRadian(float sexa);
+
+		/* === EXTRA METHODS ============================== */
+
 		//attributes
 		int extractSubAttribute(const String attribute, String name,String* value);
 		String loadAttribute(String name,const String path_style,const String master_style,const String subattribute,const String defaultVal);
 		String loadAttribute(String name,const String path_style,const String master_style,const String defaultVal);
 		std::vector<String> get_tokens_path(String path);
-		std::list<std::list<Vertice*> > parser_path_d(String path_d,Matrix* mtx);
 		int randomLetter();
 		int getRed(String hex);
 		int getGreen(String hex);
 		int getBlue(String hex);
 		int hextodec(String hex);
 		float getDimension(const String ac);
-		//funciones string
+		//string functions
 		void removeS(String *input);
 		void removeIntoS(String *input);
 		std::vector<String> tokenize(const String& str,const String& delimiters);
