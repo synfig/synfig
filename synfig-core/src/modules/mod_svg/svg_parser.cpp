@@ -305,7 +305,7 @@ Svg_parser::parser_graphics(const xmlpp::Node* node,xmlpp::Element* root,String 
 		std::list<BLine*> k;
 		//if we are creating a bline
 
-		//First, create the list of vertices
+		//First, create the list of Verteces
 		if (SVG_RESOLVE_BLINE) {
 			if(nodename.compare("path")==0){
 				k=parser_path_d (nodeElement->get_attribute_value("d"),mtx);
@@ -490,7 +490,7 @@ Svg_parser::parser_path_polygon(Glib::ustring polygon_points, Matrix* mtx){
 	std::list<BLine *> k0;
 	if(polygon_points.empty())
 		return k0;
-	std::list<Vertice*> points;
+	std::list<Vertex*> points;
 	std::vector<String> tokens=get_tokens_path (polygon_points);
 	unsigned int i;
 	float ax,ay; ax=ay=0;
@@ -503,7 +503,7 @@ Svg_parser::parser_path_polygon(Glib::ustring polygon_points, Matrix* mtx){
 		//adjust
 		coor2vect(&ax,&ay);
 		//save
-		points.push_back(newVertice(ax,ay));
+		points.push_back(newVertex(ax,ay));
 	}
 	k0.push_front(newBLine(&points, true));
 	return k0;
@@ -512,7 +512,7 @@ Svg_parser::parser_path_polygon(Glib::ustring polygon_points, Matrix* mtx){
 std::list<BLine *>
 Svg_parser::parser_path_d(String path_d,Matrix* mtx){
 	std::list<BLine *> k;
-	std::list<Vertice*> k1;
+	std::list<Vertex*> k1;
 
 	std::vector<String> tokens=get_tokens_path(path_d);
 	String command="M"; //the current command
@@ -555,7 +555,7 @@ Svg_parser::parser_path_d(String path_d,Matrix* mtx){
 			//operate and save
 			if(mtx) transformPoint2D(mtx,&ax,&ay);
 			coor2vect(&ax,&ay);
-			k1.push_back(newVertice (ax,ay)); //first element
+			k1.push_back(newVertex (ax,ay)); //first element
 			setSplit(k1.back(),TRUE);
 			//"If a moveto is followed by multiple pairs of coordinates,
 			// the subsequent pairs are treated as implicit lineto commands."
@@ -594,7 +594,7 @@ Svg_parser::parser_path_d(String path_d,Matrix* mtx){
 			if(isFirst(k1.front(),ax,ay)){
 				setTg1(k1.front(),k1.front()->x,k1.front()->y,tgx,tgy);
 			}else{
-				k1.push_back(newVertice (ax,ay));
+				k1.push_back(newVertex (ax,ay));
 				setTg1(k1.back(),k1.back()->x,k1.back()->y,tgx,tgy);
 				setSplit(k1.back(),TRUE);
 			}
@@ -621,7 +621,7 @@ Svg_parser::parser_path_d(String path_d,Matrix* mtx){
 			//save
 			setTg1(k1.back(),k1.back()->x,k1.back()->y,tgx,tgy);
 			setSplit(k1.back(),FALSE);
-			k1.push_back(newVertice (ax,ay));
+			k1.push_back(newVertex (ax,ay));
 			setTg1(k1.back(),k1.back()->x,k1.back()->y,tgx,tgy);
 		}else if(command.compare("L")==0 || command.compare("l")==0){ //line to
 			//point
@@ -640,7 +640,7 @@ Svg_parser::parser_path_d(String path_d,Matrix* mtx){
 			if(isFirst(k1.front(),ax,ay)){
 				setTg1(k1.front(),k1.front()->x,k1.front()->y,k1.front()->x,k1.front()->y);
 			}else{
-				k1.push_back(newVertice(ax,ay));
+				k1.push_back(newVertex(ax,ay));
 				setTg1(k1.back(),k1.back()->x,k1.back()->y,k1.back()->x,k1.back()->y);
 			}
 		}else if(command.compare("H")==0 || command.compare("h")==0){// horizontal move
@@ -659,7 +659,7 @@ Svg_parser::parser_path_d(String path_d,Matrix* mtx){
 			if(isFirst(k1.front(),ax,ay)){
 				setTg1(k1.front(),k1.front()->x,k1.front()->y,k1.front()->x,k1.front()->y);
 			}else{
-				k1.push_back(newVertice(ax,ay));
+				k1.push_back(newVertex(ax,ay));
 				setTg1(k1.back(),k1.back()->x,k1.back()->y,k1.back()->x,k1.back()->y);
 			}
 		}else if(command.compare("V")==0 || command.compare("v")==0){//vertical
@@ -677,7 +677,7 @@ Svg_parser::parser_path_d(String path_d,Matrix* mtx){
 			if(isFirst(k1.front(),ax,ay)){
 				setTg1(k1.front(),k1.front()->x,k1.front()->y,k1.front()->x,k1.front()->y);
 			}else{
-				k1.push_back(newVertice(ax,ay));
+				k1.push_back(newVertex(ax,ay));
 				setTg1(k1.back(),k1.back()->x,k1.back()->y,k1.back()->x,k1.back()->y);
 			}
 		}else if(command.compare("T")==0 || command.compare("t")==0){// I don't know what does it
@@ -731,7 +731,7 @@ Svg_parser::parser_path_d(String path_d,Matrix* mtx){
 				if(isFirst(k1.front(),ax,ay)){
 					setTg1(k1.front(),k1.front()->x,k1.front()->y,tgx,tgy);
 				}else{
-					k1.push_back(newVertice (ax,ay));
+					k1.push_back(newVertex (ax,ay));
 					setTg1(k1.back(),k1.back()->x,k1.back()->y,tgx,tgy);
 					setSplit(k1.back(),TRUE);
 				}
@@ -759,7 +759,7 @@ Svg_parser::parser_path_d(String path_d,Matrix* mtx){
 				if(isFirst(k1.front(),ax,ay)){
 					setTg1(k1.front(),k1.front()->x,k1.front()->y,tgx,tgy);
 				}else{
-					k1.push_back(newVertice (ax,ay));
+					k1.push_back(newVertex (ax,ay));
 					setTg1(k1.back(),k1.back()->x,k1.back()->y,tgx,tgy);
 					setSplit(k1.back(),TRUE);
 				}
@@ -806,7 +806,7 @@ Svg_parser::parser_path_d(String path_d,Matrix* mtx){
 				//save the last tg2
 				setTg2(k1.back(),k1.back()->x,k1.back()->y,tgx2,tgy2);
 				//save the intermediate point
-				k1.push_back(newVertice (in_x,in_y));
+				k1.push_back(newVertex (in_x,in_y));
 				setTg1(k1.back(),k1.back()->x,k1.back()->y, in_tgx1 , in_tgy1);
 				setTg2(k1.back(),k1.back()->x,k1.back()->y, in_tgx2 , in_tgy2);
 				setSplit(k1.back(),TRUE); //this could be changed
@@ -814,7 +814,7 @@ Svg_parser::parser_path_d(String path_d,Matrix* mtx){
 				if(isFirst(k1.front(),ax,ay)){
 					setTg1(k1.front(),k1.front()->x,k1.front()->y,tgx,tgy);
 				}else{
-					k1.push_back(newVertice (ax,ay));
+					k1.push_back(newVertex (ax,ay));
 					setTg1(k1.back(),k1.back()->x,k1.back()->y,tgx,tgy);
 					setSplit(k1.back(),TRUE);
 				}
@@ -831,7 +831,7 @@ Svg_parser::parser_path_d(String path_d,Matrix* mtx){
 				//operate and save
 				if(mtx) transformPoint2D(mtx,&ax,&ay);
 				coor2vect(&ax,&ay);
-				k1.push_back(newVertice (ax,ay)); //first element
+				k1.push_back(newVertex (ax,ay)); //first element
 				setSplit(k1.back(),TRUE);
 			}
 			i--; //decrement i to balance "i++" at command change
@@ -1252,11 +1252,11 @@ Svg_parser::newRadialGradient(String name,float cx,float cy,float r,std::list<Co
 }
 
 BLine*
-Svg_parser::newBLine(std::list<Vertice*> *points,bool loop){
+Svg_parser::newBLine(std::list<Vertex*> *points,bool loop){
 	BLine* data;
 	data=(BLine*)malloc(sizeof(BLine));
 	//sprintf(data->name,"%s",name.data());
-	data->points=new std::list<Vertice*> (*points);
+	data->points=new std::list<Vertex*> (*points);
 	data->loop=loop;
 	data->bline_id=new String(new_guid());
 	data->offset_id=new String(new_guid());
@@ -1288,11 +1288,11 @@ Svg_parser::build_rotate(xmlpp::Element* root,float dx,float dy,float angle){
 	build_real   (root->add_child("param"),"amount",angle);
 }
 void
-Svg_parser::build_points(xmlpp::Element* root,std::list<Vertice*> p){
+Svg_parser::build_points(xmlpp::Element* root,std::list<Vertex*> p){
 	root->set_attribute("name","vector_list");
 	xmlpp::Element *child=root->add_child("dynamic_list");
 	child->set_attribute("type","vector");
-	std::list<Vertice*>::iterator aux = p.begin();
+	std::list<Vertex*>::iterator aux = p.begin();
 	while(aux!=p.end()){
 		xmlpp::Element *child_entry=child->add_child("entry");
 		xmlpp::Element *child_vector=child_entry->add_child("vector");
@@ -1302,7 +1302,7 @@ Svg_parser::build_points(xmlpp::Element* root,std::list<Vertice*> p){
 	}
 }
 void
-Svg_parser::build_vertice(xmlpp::Element* root , Vertice *p){
+Svg_parser::build_Vertex(xmlpp::Element* root , Vertex *p){
 	xmlpp::Element *child_comp=root->add_child("composite");
 	child_comp->set_attribute("type","bline_point");
 	build_vector (child_comp->add_child("param"),"point",p->x,p->y);
@@ -1325,7 +1325,7 @@ Svg_parser::build_vertice(xmlpp::Element* root , Vertice *p){
 
 }
 void
-Svg_parser::build_bline(xmlpp::Element* root,std::list<Vertice*> p,bool loop,String blineguid){
+Svg_parser::build_bline(xmlpp::Element* root,std::list<Vertex*> p,bool loop,String blineguid){
 	root->set_attribute("name","bline");
 	xmlpp::Element *child=root->add_child("bline");
 	child->set_attribute("type","bline_point");
@@ -1334,9 +1334,9 @@ Svg_parser::build_bline(xmlpp::Element* root,std::list<Vertice*> p,bool loop,Str
 	else
 		child->set_attribute("loop","false");
 	if(!blineguid.empty())	child->set_attribute("guid",blineguid);
-	std::list<Vertice*>::iterator aux = p.begin();
+	std::list<Vertex*>::iterator aux = p.begin();
 	while(aux!=p.end()){
-		if(*aux) build_vertice (child->add_child("entry"),*aux);
+		if(*aux) build_Vertex (child->add_child("entry"),*aux);
 		aux++;
 	}
 }
@@ -1456,7 +1456,7 @@ Svg_parser::coor2vect(float *x,float *y){
 }
 
 void
-Svg_parser::setTg1(Vertice *p,float p1x,float p1y,float p2x,float p2y){
+Svg_parser::setTg1(Vertex *p,float p1x,float p1y,float p2x,float p2y){
 	float rd=0,ag=0;
 	float d1x,d1y,d2x,d2y,dx,dy;
 	d1x=p1x*60;
@@ -1494,7 +1494,7 @@ Svg_parser::setTg1(Vertice *p,float p1x,float p1y,float p2x,float p2y){
 	p->angle1=ag;
 }
 void
-Svg_parser::setTg2(Vertice* p,float p1x,float p1y,float p2x,float p2y){
+Svg_parser::setTg2(Vertex* p,float p1x,float p1y,float p2x,float p2y){
 	float rd=0,ag=0;
 	float d1x,d1y,d2x,d2y,dx,dy;
 	d1x=p1x*60;
@@ -1539,22 +1539,22 @@ Svg_parser::setTg2(Vertice* p,float p1x,float p1y,float p2x,float p2y){
 }
 
 void
-Svg_parser::setSplit(Vertice* p,bool val){
+Svg_parser::setSplit(Vertex* p,bool val){
 	if(p!=NULL){
 		p->split=val;
 	}
 }
 int
-Svg_parser::isFirst(Vertice* nodo,float a, float b){
+Svg_parser::isFirst(Vertex* nodo,float a, float b){
 	if(nodo->x==a && nodo->y==b)
 		return 1;
 	return 0;
 }
 
-Vertice*
-Svg_parser::newVertice(float x,float y){
-	Vertice* vert;
-	vert=(Vertice*)malloc(sizeof(Vertice));
+Vertex*
+Svg_parser::newVertex(float x,float y){
+	Vertex* vert;
+	vert=(Vertex*)malloc(sizeof(Vertex));
 	vert->x=x;
 	vert->y=y;
 	vert->radius1=vert->radius2=vert->angle1=vert->angle2=0;
