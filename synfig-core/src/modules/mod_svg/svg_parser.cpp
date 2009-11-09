@@ -1302,7 +1302,7 @@ Svg_parser::build_points(xmlpp::Element* root,std::list<Vertex*> p){
 	}
 }
 void
-Svg_parser::build_Vertex(xmlpp::Element* root , Vertex *p){
+Svg_parser::build_vertex(xmlpp::Element* root , Vertex *p){
 	xmlpp::Element *child_comp=root->add_child("composite");
 	child_comp->set_attribute("type","bline_point");
 	build_vector (child_comp->add_child("param"),"point",p->x,p->y);
@@ -1336,7 +1336,7 @@ Svg_parser::build_bline(xmlpp::Element* root,std::list<Vertex*> p,bool loop,Stri
 	if(!blineguid.empty())	child->set_attribute("guid",blineguid);
 	std::list<Vertex*>::iterator aux = p.begin();
 	while(aux!=p.end()){
-		if(*aux) build_Vertex (child->add_child("entry"),*aux);
+		if(*aux) build_vertex (child->add_child("entry"),*aux);
 		aux++;
 	}
 }

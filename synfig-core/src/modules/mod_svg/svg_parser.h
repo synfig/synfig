@@ -167,8 +167,8 @@ private:
 		void build_rotate(xmlpp::Element* root,float dx,float dy,float angle);
 		void build_translate(xmlpp::Element* root,float dx,float dy);
 		void build_points(xmlpp::Element* root,std::list<Vertex*> p);
-		void build_Vertex(xmlpp::Element* root , Vertex *p);
-		void build_bline(xmlpp::Element* root,std::list<Vertex*> p,bool loop,String blinegui);
+		void build_vertex(xmlpp::Element* root , Vertex *p);
+		void build_bline(xmlpp::Element* root,std::list<Vertex*> p,bool loop,String blineguid);
 		void build_param (xmlpp::Element* root,String name,String type,String value);
 		void build_param (xmlpp::Element* root,String name,String type,float value);
 		void build_param (xmlpp::Element* root,String name,String type,int value);
