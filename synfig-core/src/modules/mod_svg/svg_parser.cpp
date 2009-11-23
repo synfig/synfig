@@ -390,17 +390,17 @@ Svg_parser::parser_graphics(const xmlpp::Node* node,xmlpp::Element* root,String 
 			}
 
 			if(typeStroke==2){ //gradient in onto mode (stroke)
-			if (SVG_RESOLVE_BLINE)
-				build_fill(child_stroke,fill,mtx);
-			else
-				build_fill(child_stroke,fill,NULL);
-			}
-			if (SVG_RESOLVE_BLINE)
-				parser_effects(nodeElement,child_layer,parent_style,NULL);
-			else
-				parser_effects(nodeElement,child_layer,parent_style,mtx);
-	
+				if (SVG_RESOLVE_BLINE)
+					build_fill(child_stroke,fill,mtx);
+				else
+					build_fill(child_stroke,fill,NULL);
+			}	
 		}
+
+		if (SVG_RESOLVE_BLINE)
+			parser_effects(nodeElement,child_layer,parent_style,NULL);
+		else
+			parser_effects(nodeElement,child_layer,parent_style,mtx);
 	}
 }
 
