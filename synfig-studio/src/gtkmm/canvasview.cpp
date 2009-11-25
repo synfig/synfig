@@ -35,6 +35,7 @@
 
 #include <ETL/clock>
 #include <sstream>
+#include <math.h>
 
 #include <gtkmm/paned.h>
 #include <gtkmm/scale.h>
@@ -2884,8 +2885,18 @@ CanvasView::on_duck_changed(const synfig::Point &value,const synfigapp::ValueDes
 	{
 		ValueNode_BLine::Handle bline = ValueNode_BLine::Handle::cast_dynamic(bline_vertex->get_link(bline_vertex->get_link_index_from_name("bline")));
 		Real radius = 0.0;
-		Real amount = synfig::find_closest_point((*bline)(get_time()), value, radius, bline->get_loop());
-		return canvas_interface()->change_value(synfigapp::ValueDesc(bline_vertex,bline_vertex->get_link_index_from_name("amount")), amount);
+		if (((*(bline_vertex->get_link("loop")))(get_time()).get(bool()))){
+			Real amount_old((*(bline_vertex->get_link("amount")))(get_time()).get(Real()));
+			Real amount_new = synfig::find_closest_point((*bline)(get_time()), value, radius, bline->get_loop());
+			Real difference = fmod( fmod(amount_new - amount_old, 1.0) + 1.0 , 1.0);
+							//fmod is called twice to avoid negative values
+			if (difference > 0.5) difference=difference-1.0;
+			return canvas_interface()->change_value(synfigapp::ValueDesc(bline_vertex,bline_vertex->get_link_index_from_name("amount")), amount_old+difference);
+
+		} else {
+			Real amount = synfig::find_closest_point((*bline)(get_time()), value, radius, bline->get_loop());
+			return canvas_interface()->change_value(synfigapp::ValueDesc(bline_vertex,bline_vertex->get_link_index_from_name("amount")), amount);
+		}
 	}
 
 	if (ValueNode_BLineCalcTangent::Handle bline_tangent = ValueNode_BLineCalcTangent::Handle::cast_dynamic(value_desc.get_value_node()))
