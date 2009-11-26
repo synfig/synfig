@@ -43,8 +43,10 @@
 
 /* === M A C R O S ========================================================= */
 
-// uncomment to use a single thread, and hopefully get more stability
-// #define SINGLE_THREADED
+// uncomment define SINGLE_THREADED to use a single thread, and hopefully get more stability (dooglus) - changed to be default if using windows (Nov 2009 pixelgeek)
+#ifdef WIN32
+#define SINGLE_THREADED
+#endif
 #ifdef SINGLE_THREADED
 #  define single_threaded()	App::single_threaded
 #endif
