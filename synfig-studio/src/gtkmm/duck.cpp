@@ -33,8 +33,13 @@
 #include "duck.h"
 #include <ETL/misc>
 
-#include "general.h"
+#include <synfig/valuenode_bline.h>
+#include <synfig/valuenode_blinecalctangent.h>
+#include <synfig/valuenode_blinecalcvertex.h>
+#include <synfig/valuenode_blinecalcwidth.h>
+#include <synfig/valuenode_composite.h>
 
+#include "general.h"
 #endif
 
 /* === U S I N G =========================================================== */
@@ -153,6 +158,12 @@ Duck::set_trans_point(const synfig::Point &x)
 	set_sub_trans_point(transform_stack_.unperform(x));
 }
 
+void
+Duck::set_trans_point(const synfig::Point &x, const synfig::Time &time)
+{
+	set_sub_trans_point(transform_stack_.unperform(x), time);
+}
+
 //! Sets the origin point.
 void
 Duck::set_origin(const synfig::Point &x)
@@ -195,13 +206,105 @@ Duck::get_sub_trans_point()const
 }
 
 void
-Duck::set_sub_trans_point(const synfig::Point &x)
+Duck::set_sub_trans_point(const synfig::Point &x, const synfig::Time &time)
 {
+	set_point((x-get_sub_trans_origin())/get_scalar());
 	if (get_type() == Duck::TYPE_TANGENT ||
 		get_type() == Duck::TYPE_ANGLE)
 	{
 		Angle old_angle = get_point().angle();
-		set_point((x-get_sub_trans_origin())/get_scalar());
+		Angle change = get_point().angle() - old_angle;
+		while (change < Angle::deg(-180)) change += Angle::deg(360);
+		while (change > Angle::deg(180)) change -= Angle::deg(360);
+		int old_halves = round_to_int(Angle::deg(rotations).get()/180);
+		rotations += change;
+		int new_halves = round_to_int(Angle::deg(rotations).get()/180);
+		if (old_halves != new_halves &&
+			(new_halves > 1 || new_halves < -1 ||
+			 old_halves > 1 || old_halves < -1))
+			synfig::info("rotation: %.2f turns", new_halves/2.0);
+	} else if(get_type() == Duck::TYPE_VERTEX || get_type() == Duck::TYPE_POSITION)
+	{
+
+		ValueNode_BLineCalcVertex::Handle bline_vertex;
+		ValueNode_Composite::Handle composite;
+
+		if ((bline_vertex = ValueNode_BLineCalcVertex::Handle::cast_dynamic(get_value_desc().get_value_node())) ||
+			((composite = ValueNode_Composite::Handle::cast_dynamic(get_value_desc().get_value_node())) &&
+			 composite->get_type() == ValueBase::TYPE_BLINEPOINT &&
+			 (bline_vertex = ValueNode_BLineCalcVertex::Handle::cast_dynamic(composite->get_link("point")))))
+		{
+			synfig::Point closest_point = get_point();
+			synfig::Real radius = 0.0;
+			ValueNode_BLine::Handle bline = ValueNode_BLine::Handle::cast_dynamic(bline_vertex->get_link(bline_vertex->get_link_index_from_name("bline")));
+			synfig::find_closest_point(
+				(*bline)(time),
+				get_point(),
+				radius,
+				bline->get_loop(),
+				&closest_point);
+			set_point(closest_point);
+		}
+	}
+}
+
+//! Updates width and tangent ducks that change when the origin moves
+void
+Duck::update(const synfig::Time &time)
+{
+	if((get_type() == Duck::TYPE_TANGENT || get_type() == Duck::TYPE_WIDTH) && origin_duck)
+	{
+		ValueNode_BLineCalcVertex::Handle bline_vertex;
+		ValueNode_Composite::Handle composite;
+		if ((bline_vertex = ValueNode_BLineCalcVertex::Handle::cast_dynamic(origin_duck->get_value_desc().get_value_node())) ||
+			((composite = ValueNode_Composite::Handle::cast_dynamic(origin_duck->get_value_desc().get_value_node())) &&
+			 composite->get_type() == ValueBase::TYPE_BLINEPOINT &&
+			 (bline_vertex = ValueNode_BLineCalcVertex::Handle::cast_dynamic(composite->get_link("point")))))
+		{
+			synfig::Real radius = 0.0;
+			ValueNode_BLine::Handle bline(ValueNode_BLine::Handle::cast_dynamic(bline_vertex->get_link(bline_vertex->get_link_index_from_name("bline"))));
+			Real amount = synfig::find_closest_point((*bline)(time), origin_duck->get_point(), radius, bline->get_loop());
+
+			int vertex_amount_index(bline_vertex->get_link_index_from_name("amount"));
+			ValueNode::Handle vertex_amount_value_node(bline_vertex->get_link(vertex_amount_index));
+
+
+			if (ValueNode_BLineCalcTangent::Handle bline_tangent = ValueNode_BLineCalcTangent::Handle::cast_dynamic(get_value_desc().get_value_node()))
+			{
+				switch (bline_tangent->get_type())
+				{
+				case ValueBase::TYPE_ANGLE:
+				{
+					Angle angle((*bline_tangent)(time, amount).get(Angle()));
+					set_point(Point(Angle::cos(angle).get(), Angle::sin(angle).get()));
+					break;
+				}
+				case ValueBase::TYPE_REAL:
+					set_point(Point((*bline_tangent)(time, amount).get(Real()), 0));
+					break;
+				case ValueBase::TYPE_VECTOR:
+					set_point((*bline_tangent)(time, amount).get(Vector()));
+					break;
+				default:
+					break;
+				}
+			}
+			else if (ValueNode_BLineCalcWidth::Handle bline_width = ValueNode_BLineCalcWidth::Handle::cast_dynamic(get_value_desc().get_value_node()))
+					set_point(Point((*bline_width)(time, amount).get(Real()), 0));
+		}
+
+	}
+}
+
+
+void
+Duck::set_sub_trans_point(const synfig::Point &x)
+{
+	set_point((x-get_sub_trans_origin())/get_scalar());
+	if (get_type() == Duck::TYPE_TANGENT ||
+		get_type() == Duck::TYPE_ANGLE)
+	{
+		Angle old_angle = get_point().angle();
 		Angle change = get_point().angle() - old_angle;
 		while (change < Angle::deg(-180)) change += Angle::deg(360);
 		while (change > Angle::deg(180)) change -= Angle::deg(360);
@@ -213,8 +316,6 @@ Duck::set_sub_trans_point(const synfig::Point &x)
 			 old_halves > 1 || old_halves < -1))
 			synfig::info("rotation: %.2f turns", new_halves/2.0);
 	}
-	else
-		set_point((x-get_sub_trans_origin())/get_scalar());
 }
 
 synfig::Point

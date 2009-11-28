@@ -551,95 +551,21 @@ DuckDrag_Translate::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector
 
 	// drag the vertex and position ducks first
 	for (i=0,iter=selected_ducks.begin(); iter!=selected_ducks.end(); ++iter,i++)
-	{
-		etl::handle<Duck> duck(*iter);
-		if(duck->get_type() == Duck::TYPE_VERTEX || duck->get_type() == Duck::TYPE_POSITION)
-		{
-			duck->set_trans_point(positions[i]+vect);
-
-			ValueNode_BLineCalcVertex::Handle bline_vertex;
-			ValueNode_Composite::Handle composite;
-
-			if ((bline_vertex = ValueNode_BLineCalcVertex::Handle::cast_dynamic(duck->get_value_desc().get_value_node())) ||
-				((composite = ValueNode_Composite::Handle::cast_dynamic(duck->get_value_desc().get_value_node())) &&
-				 composite->get_type() == ValueBase::TYPE_BLINEPOINT &&
-				 (bline_vertex = ValueNode_BLineCalcVertex::Handle::cast_dynamic(composite->get_link("point")))))
-			{
-				synfig::Point closest_point = duck->get_point();
-				synfig::Real radius = 0.0;
-				ValueNode_BLine::Handle bline = ValueNode_BLine::Handle::cast_dynamic(bline_vertex->get_link(bline_vertex->get_link_index_from_name("bline")));
-				synfig::find_closest_point(
-					(*bline)(time),
-					duck->get_point(),
-					radius,
-					bline->get_loop(),
-					&closest_point);
-				duck->set_point(closest_point);
-			}
-		}
-	}
+		if((*iter)->get_type() == Duck::TYPE_VERTEX || (*iter)->get_type() == Duck::TYPE_POSITION)
+			(*iter)->set_trans_point(positions[i]+vect, time);
 
 	// then drag the others
 	for (i=0,iter=selected_ducks.begin(); iter!=selected_ducks.end(); ++iter,i++)
 		if ((*iter)->get_type() != Duck::TYPE_VERTEX && (*iter)->get_type() != Duck::TYPE_POSITION)
-			(*iter)->set_trans_point(positions[i]+vect);
+			(*iter)->set_trans_point(positions[i]+vect, time);
 
 	// then patch up the tangents for the vertices we've moved
 	DuckList duck_list(duckmatic->get_duck_list());
-	for (iter=selected_ducks.begin(); iter!=selected_ducks.end(); ++iter)
+	for (iter=duck_list.begin(); iter!=duck_list.end(); ++iter)
 	{
-		etl::handle<Duck> duck(*iter);
-		if (duck->get_type() == Duck::TYPE_VERTEX || duck->get_type() == Duck::TYPE_POSITION)
+		if ((*iter)->get_type() == Duck::TYPE_TANGENT || (*iter)->get_type() == Duck::TYPE_WIDTH)
 		{
-			ValueNode_BLineCalcVertex::Handle bline_vertex;
-			ValueNode_Composite::Handle composite;
-
-			if ((bline_vertex = ValueNode_BLineCalcVertex::Handle::cast_dynamic(duck->get_value_desc().get_value_node())) ||
-				((composite = ValueNode_Composite::Handle::cast_dynamic(duck->get_value_desc().get_value_node())) &&
-				 composite->get_type() == ValueBase::TYPE_BLINEPOINT &&
-				 (bline_vertex = ValueNode_BLineCalcVertex::Handle::cast_dynamic(composite->get_link("point")))))
-			{
-				synfig::Real radius = 0.0;
-				ValueNode_BLine::Handle bline(ValueNode_BLine::Handle::cast_dynamic(bline_vertex->get_link(bline_vertex->get_link_index_from_name("bline"))));
-				Real amount = synfig::find_closest_point((*bline)(time), duck->get_point(), radius, bline->get_loop());
-
-				int vertex_amount_index(bline_vertex->get_link_index_from_name("amount"));
-				ValueNode::Handle vertex_amount_value_node(bline_vertex->get_link(vertex_amount_index));
-
-				DuckList::iterator iter;
-				for (iter=duck_list.begin(); iter!=duck_list.end(); iter++)
-				{
-					ValueNode::Handle duck_value_node((*iter)->get_value_desc().get_value_node());
-					if (ValueNode_BLineCalcTangent::Handle bline_tangent = ValueNode_BLineCalcTangent::Handle::cast_dynamic(duck_value_node))
-					{
-						if (bline_tangent->get_link(bline_tangent->get_link_index_from_name("amount")) == vertex_amount_value_node)
-						{
-							switch (bline_tangent->get_type())
-							{
-							case ValueBase::TYPE_ANGLE:
-							{
-								Angle angle((*bline_tangent)(time, amount).get(Angle()));
-								(*iter)->set_point(Point(Angle::cos(angle).get(), Angle::sin(angle).get()));
-								break;
-							}
-							case ValueBase::TYPE_REAL:
-								(*iter)->set_point(Point((*bline_tangent)(time, amount).get(Real()), 0));
-								break;
-							case ValueBase::TYPE_VECTOR:
-								(*iter)->set_point((*bline_tangent)(time, amount).get(Vector()));
-								break;
-							default:
-								break;
-							}
-						}
-					}
-					else if (ValueNode_BLineCalcWidth::Handle bline_width = ValueNode_BLineCalcWidth::Handle::cast_dynamic(duck_value_node))
-					{
-						if (bline_width->get_link(bline_width->get_link_index_from_name("amount")) == vertex_amount_value_node)
-							(*iter)->set_point(Point((*bline_width)(time, amount).get(Real()), 0));
-					}
-				}
-			}
+			(*iter)->update(time);
 		}
 	}
 

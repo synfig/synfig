@@ -221,10 +221,14 @@ public:
 	synfig::Point get_trans_point()const;
 
 	void set_trans_point(const synfig::Point &x);
+	void set_trans_point(const synfig::Point &x, const synfig::Time &time);
 
 	synfig::Point get_sub_trans_point()const;
 	void set_sub_trans_point(const synfig::Point &x);
+	void set_sub_trans_point(const synfig::Point &x, const synfig::Time &time);
 	synfig::Point get_sub_trans_origin()const;
+
+	void update(const synfig::Time &time);
 
 	//! Sets the origin point.
 	void set_origin(const synfig::Point &x);
