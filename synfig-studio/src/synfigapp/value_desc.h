@@ -130,6 +130,7 @@ public:
 
 	synfig::ValueNode::Handle get_parent_value_node()const { assert(parent_is_value_node()); return parent_value_node; }
 	int get_index()const { assert(parent_is_linkable_value_node()); return index; }
+	synfig::String get_name()const { assert(parent_is_linkable_value_node()); return (synfig::LinkableValueNode::Handle::cast_reinterpret(parent_value_node))->link_name(index); }
 	synfig::Time get_waypoint_time()const { assert(parent_is_waypoint()); return waypoint_time; }
 
 	const synfig::String& get_value_node_id()const { assert(parent_is_canvas()); return name; }

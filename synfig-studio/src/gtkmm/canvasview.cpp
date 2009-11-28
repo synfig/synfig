@@ -2883,7 +2883,7 @@ CanvasView::on_duck_changed(const synfig::Point &value,const synfigapp::ValueDes
 
 	if (ValueNode_BLineCalcVertex::Handle bline_vertex = ValueNode_BLineCalcVertex::Handle::cast_dynamic(value_desc.get_value_node()))
 	{
-		ValueNode_BLine::Handle bline = ValueNode_BLine::Handle::cast_dynamic(bline_vertex->get_link(bline_vertex->get_link_index_from_name("bline")));
+		ValueNode_BLine::Handle bline = ValueNode_BLine::Handle::cast_dynamic(bline_vertex->get_link("bline"));
 		Real radius = 0.0;
 		if (((*(bline_vertex->get_link("loop")))(get_time()).get(bool()))){
 			Real amount_old((*(bline_vertex->get_link("amount")))(get_time()).get(Real()));

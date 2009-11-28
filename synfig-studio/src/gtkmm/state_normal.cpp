@@ -387,7 +387,8 @@ StateNormal_Context::event_multiple_ducks_clicked_handler(const Smach::event& /*
 			value_desc_list.push_back(
 				synfigapp::ValueDesc(
 					ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node())
-					,0
+					,ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node())
+                                                               ->get_link_index_from_name("point")
 				)
 			);
 		}

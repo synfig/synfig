@@ -47,6 +47,8 @@ private:
 	float	width_;
 	float	origin_;
 	bool	split_tangent_;
+	bool	link_radius_;
+	bool	link_theta_;
 
 public:
 
@@ -54,7 +56,9 @@ public:
 		vertex_(Point(0,0)),
 		width_(0.01),
 		origin_(0.0),
-		split_tangent_(false)
+		split_tangent_(false),
+		link_radius_(true),
+		link_theta_(true)
 	{ tangent_[0] = Point(0,0); tangent_[1] = Point(0,0); }
 
 	const Point& get_vertex()const { return vertex_; }
@@ -62,10 +66,10 @@ public:
 
 
 	const Vector& get_tangent1()const { return tangent_[0]; }
-	const Vector& get_tangent2()const { return split_tangent_?tangent_[1]:tangent_[0]; }
+	const Vector& get_tangent2()const { return tangent_[1]; }
 	void set_tangent(const Vector& x) { tangent_[0]=tangent_[1]=x; }
-	void set_tangent1(const Vector& x) { tangent_[0]=x; }
-	void set_tangent2(const Vector& x) { tangent_[1]=x; }
+	void set_tangent1(const Vector& x) { tangent_[0]=x; normalize(1);}
+	void set_tangent2(const Vector& x) { tangent_[1]=x; normalize(0);}
 
 
 	const float& get_width()const { return width_; }
@@ -79,7 +83,16 @@ public:
 
 
 	const bool& get_split_tangent_flag()const { return split_tangent_; }
-	void set_split_tangent_flag(bool x=true) { split_tangent_=x; }
+	void set_split_tangent_flag(bool x=true) { link_radius_=link_theta_=!x; normalize();}
+
+	const bool& get_link_radius_flag()const { return link_radius_; }
+	void set_link_radius_flag(bool x=true) { link_radius_=x; normalize();}
+
+	const bool& get_link_theta_flag()const { return link_theta_; }
+	void set_link_theta_flag(bool x=true) { link_theta_=x; normalize();}
+
+	//normalize tangents, i.e. make sure their values correspond to the linkage
+	void normalize(int i=0);
 
 	void reverse();
 
