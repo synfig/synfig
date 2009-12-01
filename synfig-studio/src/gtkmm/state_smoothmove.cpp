@@ -262,6 +262,8 @@ DuckDrag_SmoothMove::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vecto
 
 	int i;
 
+	Time time(duckmatic->get_time());
+
 	// process vertex and position ducks first
 	for(i=0,iter=selected_ducks.begin();iter!=selected_ducks.end();++iter,i++)
 	{
@@ -276,7 +278,7 @@ DuckDrag_SmoothMove::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vecto
 			dist=0;
 
 		last_[i]=vect*dist;
-		(*iter)->set_trans_point(p+last_[i]);
+		(*iter)->set_trans_point(p+last_[i], time);
 	}
 
 	// then process non vertex and non position ducks
@@ -293,7 +295,7 @@ DuckDrag_SmoothMove::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vecto
 			dist=0;
 
 		last_[i]=vect*dist;
-		(*iter)->set_trans_point(p+last_[i]);
+		(*iter)->set_trans_point(p+last_[i], time);
 	}
 
 	last_translate_=vect;

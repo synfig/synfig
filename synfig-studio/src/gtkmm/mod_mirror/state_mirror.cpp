@@ -267,6 +267,8 @@ DuckDrag_Mirror::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector)
 	const DuckList selected_ducks(duckmatic->get_selected_ducks());
 	DuckList::const_iterator iter;
 
+	Time time(duckmatic->get_time());
+
 	// do the Vertex and Position ducks first
 	for(i=0,iter=selected_ducks.begin();iter!=selected_ducks.end();++iter,i++)
 		if ((*iter)->get_type() == Duck::TYPE_VERTEX ||
@@ -277,7 +279,7 @@ DuckDrag_Mirror::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector)
 			if		(axis==AXIS_X) p[0] = -(p[0]-center[0]) + center[0];
 			else if	(axis==AXIS_Y) p[1] = -(p[1]-center[1]) + center[1];
 
-			(*iter)->set_trans_point(p);
+			(*iter)->set_trans_point(p, time);
 		}
 
 	// then do the other ducks
@@ -294,7 +296,7 @@ DuckDrag_Mirror::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector)
 			if		(axis==AXIS_X) p[0] = -(p[0]-center[0]) + center[0];
 			else if	(axis==AXIS_Y) p[1] = -(p[1]-center[1]) + center[1];
 
-			(*iter)->set_trans_point(p);
+			(*iter)->set_trans_point(p, time);
 		}
 }
 

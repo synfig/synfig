@@ -731,7 +731,7 @@ DuckDrag_Combo::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector)
 			p[1]=-sine*x[0]+cosine*x[1];
 			if(scale)p*=mag;
 			p+=center;
-			(*iter)->set_trans_point(p);
+			(*iter)->set_trans_point(p, time);
 		}
 		for(i=0,iter=selected_ducks.begin();iter!=selected_ducks.end();++iter,i++)
 		{
@@ -743,7 +743,7 @@ DuckDrag_Combo::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector)
 			p[1]=-sine*x[0]+cosine*x[1];
 			if(scale)p*=mag;
 			p+=center;
-			(*iter)->set_trans_point(p);
+			(*iter)->set_trans_point(p, time);
 		}
 	} else if (scale)
 	{
@@ -779,7 +779,7 @@ DuckDrag_Combo::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector)
 			p[0]*=vect[0];
 			p[1]*=vect[1];
 			p+=center;
-			(*iter)->set_trans_point(p);
+			(*iter)->set_trans_point(p, time);
 		}
 		for(i=0,iter=selected_ducks.begin();iter!=selected_ducks.end();++iter,i++)
 		{
@@ -790,7 +790,7 @@ DuckDrag_Combo::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector)
 			p[0]*=vect[0];
 			p[1]*=vect[1];
 			p+=center;
-			(*iter)->set_trans_point(p);
+			(*iter)->set_trans_point(p, time);
 		}
 	}
 	last_move=vect;
