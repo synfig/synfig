@@ -172,13 +172,12 @@ STATE_HH = \
 	state_normal.h \
 	state_polygon.h \
 	state_rectangle.h \
-	state_rotate.h \
-	state_scale.h \
 	state_sketch.h \
 	state_smoothmove.h \
 	state_star.h \
 	state_stroke.h \
 	state_text.h \
+	state_transform.h \
 	state_width.h \
 	state_zoom.h
 
@@ -192,13 +191,12 @@ STATE_CC = \
 	state_normal.cpp \
 	state_polygon.cpp \
 	state_rectangle.cpp \
-	state_rotate.cpp \
-	state_scale.cpp \
 	state_sketch.cpp \
 	state_smoothmove.cpp \
 	state_star.cpp \
 	state_stroke.cpp \
 	state_text.cpp \
+	state_transform.cpp \
 	state_width.cpp \
 	state_zoom.cpp
 

@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file state_rotate.h
+/*!	\file state_transform.h
 **	\brief Template Header
 **
 **	$Id$
@@ -22,8 +22,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_STUDIO_STATE_ROTATE_H
-#define __SYNFIG_STUDIO_STATE_ROTATE_H
+#ifndef __SYNFIG_STUDIO_STATE_TRANSFORM_H
+#define __SYNFIG_STUDIO_STATE_TRANSFORM_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -38,16 +38,16 @@
 
 namespace studio {
 
-class StateRotate_Context;
+class StateTransform_Context;
 
-class StateRotate : public Smach::state<StateRotate_Context>
+class StateTransform : public Smach::state<StateTransform_Context>
 {
 public:
-	StateRotate();
-	~StateRotate();
-}; // END of class StateRotate
+	StateTransform();
+	~StateTransform();
+}; // END of class StateTransform
 
-extern StateRotate state_rotate;
+extern StateTransform state_transform;
 
 }; // END of namespace studio
 

@@ -220,6 +220,7 @@ IconController::IconController(const synfig::String& /*basepath*/)
 
 	// Tools
 	INIT_STOCK_ICON(normal,"normal_icon."IMAGE_EXT,_("Normal Tool"));
+	INIT_STOCK_ICON(transform,"transform_icon."IMAGE_EXT,_("Transform Tool"));
 	INIT_STOCK_ICON(polygon,"polyline_icon."IMAGE_EXT,_("Polygon Tool"));
 	INIT_STOCK_ICON(bline,"bline_icon."IMAGE_EXT,_("BLine Tool"));
 	INIT_STOCK_ICON(eyedrop,"eyedrop_icon."IMAGE_EXT,_("Eyedrop Tool"));
@@ -229,9 +230,7 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	INIT_STOCK_ICON(circle,"circle_icon."IMAGE_EXT,_("Circle Tool"));
 	INIT_STOCK_ICON(rectangle,"rectangle_icon."IMAGE_EXT,_("Rectangle Tool"));
 	INIT_STOCK_ICON(smooth_move,"smooth_move_icon."IMAGE_EXT,_("SmoothMove Tool"));
-	INIT_STOCK_ICON(scale,"scale_icon."IMAGE_EXT,_("Scale Tool"));
 	INIT_STOCK_ICON(width,"width_icon."IMAGE_EXT,_("Width Tool"));
-	INIT_STOCK_ICON(rotate,"rotate_icon."IMAGE_EXT,_("Rotate Tool"));
 	INIT_STOCK_ICON(zoom,"zoom_icon."IMAGE_EXT,_("Zoom Tool"));
 	INIT_STOCK_ICON(info,"info_icon."IMAGE_EXT,_("Info Tool"));
 	INIT_STOCK_ICON(mirror,"mirror_icon."IMAGE_EXT,_("Mirror Tool"));

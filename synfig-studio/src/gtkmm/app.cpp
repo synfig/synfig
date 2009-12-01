@@ -89,11 +89,10 @@
 #include "state_circle.h"
 #include "state_rectangle.h"
 #include "state_smoothmove.h"
-#include "state_scale.h"
 #include "state_star.h"
 #include "state_text.h"
 #include "state_width.h"
-#include "state_rotate.h"
+#include "state_transform.h"
 #include "state_zoom.h"
 
 #include "devicetracker.h"
@@ -1292,30 +1291,29 @@ App::App(int *argc, char ***argv):
 
 		studio_init_cb.task(_("Init Tools..."));
 
-		/* row 1 */
+		/* editing tools */
 		state_manager->add_state(&state_normal);
+		state_manager->add_state(&state_transform);
 		state_manager->add_state(&state_smooth_move);
-		state_manager->add_state(&state_scale);
-		state_manager->add_state(&state_rotate);
 		studio_init_cb.task(_("Init ModMirror...")); module_list_.push_back(new ModMirror()); module_list_.back()->start();
+		if(!getenv("SYNFIG_DISABLE_WIDTH"  )) state_manager->add_state(&state_width); // Enabled since 0.61.09
 
-		/* row 2 */
+		/* new objects */
+		state_manager->add_state(&state_bline);		
 		state_manager->add_state(&state_circle);
 		state_manager->add_state(&state_rectangle);
 		state_manager->add_state(&state_star);
 		state_manager->add_state(&state_gradient);
 		if(!getenv("SYNFIG_DISABLE_POLYGON")) state_manager->add_state(&state_polygon); // Enabled - for working without ducks
-
-		/* row 3 */
-		state_manager->add_state(&state_bline);
 		state_manager->add_state(&state_text);
+		if(!getenv("SYNFIG_DISABLE_DRAW"   )) state_manager->add_state(&state_draw); // Enabled for now.  Let's see whether they're good enough yet.
+
+		/* other */
+
 		state_manager->add_state(&state_fill);
 		state_manager->add_state(&state_eyedrop);
 		state_manager->add_state(&state_zoom);
-
-		if(!getenv("SYNFIG_DISABLE_DRAW"   )) state_manager->add_state(&state_draw); // Enabled for now.  Let's see whether they're good enough yet.
 		if(!getenv("SYNFIG_DISABLE_SKETCH" )) state_manager->add_state(&state_sketch);
-		if(!getenv("SYNFIG_DISABLE_WIDTH"  )) state_manager->add_state(&state_width); // Enabled since 0.61.09
 
 		studio_init_cb.task(_("Init ModPalette..."));
 		module_list_.push_back(new ModPalette()); module_list_.back()->start();

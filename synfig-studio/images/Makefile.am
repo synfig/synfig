@@ -109,8 +109,7 @@ IMAGES = \
 	keyframe_icon.$(EXT) \
 	reset_colors_icon.$(EXT) \
 	swap_colors_icon.$(EXT) \
-	rotate_icon.$(EXT) \
-	scale_icon.$(EXT) \
+	transform_icon.$(EXT) \
 	smooth_move_icon.$(EXT) \
 	width_icon.$(EXT) \
 	rectangle_icon.$(EXT) \
