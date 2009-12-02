@@ -178,6 +178,7 @@ private:
 		void build_vector (xmlpp::Element* root,String name,float x,float y,String guid);
 		void build_color(xmlpp::Element* root,float r,float g,float b,float a);
 		xmlpp::Element* nodeStartBasicLayer(xmlpp::Element* root);
+		xmlpp::Element* nodeStartBasicLayer(xmlpp::Element* root, String name);
 
 		/* === COORDINATES & TRANSFORMATIONS ============== */
 

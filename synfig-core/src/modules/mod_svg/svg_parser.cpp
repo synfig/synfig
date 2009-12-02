@@ -285,7 +285,7 @@ Svg_parser::parser_graphics(const xmlpp::Node* node,xmlpp::Element* root,String 
 
 		//make simple fills
 		if(nodename.compare("rect")==0 && typeFill!=0){
-			if (mtx) child_layer = nodeStartBasicLayer(root->add_child("layer"));
+			if (mtx) child_layer = nodeStartBasicLayer(root->add_child("layer"), id);
 			child_fill=child_layer;
 			parser_rect(nodeElement,child_fill,fill,fill_opacity,opacity);
 			if(typeFill==2){
@@ -295,7 +295,7 @@ Svg_parser::parser_graphics(const xmlpp::Node* node,xmlpp::Element* root,String 
 			return;
 		}
 		if ((!(SVG_RESOLVE_BLINE) && mtx) || typeFill==2 || typeStroke==2)
-			child_layer = nodeStartBasicLayer(root->add_child("layer"));
+			child_layer = nodeStartBasicLayer(root->add_child("layer"), id);
 		child_fill=child_layer;
 		child_stroke=child_layer;
 
@@ -356,7 +356,7 @@ Svg_parser::parser_graphics(const xmlpp::Node* node,xmlpp::Element* root,String 
 
 		if(typeStroke!=0){//outline layer
 			if(typeStroke==2){
-				child_stroke=nodeStartBasicLayer(child_stroke->add_child("layer"));
+				child_stroke=nodeStartBasicLayer(child_stroke->add_child("layer"),"stroke");
 			}
 			for (aux=k.begin(); aux!=k.end(); aux++){
 				xmlpp::Element *child_outline=child_stroke->add_child("layer");
@@ -984,7 +984,7 @@ Svg_parser::build_linearGradient(xmlpp::Element* root,LinearGradient* data,Matri
 
 		gradient->set_attribute("type","linear_gradient");
 		gradient->set_attribute("active","true");
-		gradient->set_attribute("desc","Gradient004");
+		gradient->set_attribute("desc",data->name);
 		build_param (gradient->add_child("param"),"z_depth","real","0");
 		build_param (gradient->add_child("param"),"amount","real","1");
 		//straight onto
@@ -1043,6 +1043,7 @@ Svg_parser::build_linearGradient(xmlpp::Element* root,LinearGradient* data,Matri
 		//gradient link
 		xmlpp::Element *child_stops=gradient->add_child("param");
 		child_stops->set_attribute("name","gradient");
+		child_stops->set_attribute("guid",GUID::hasher(data->name).get_string());
 		build_stop_color (child_stops->add_child("gradient"),data->stops);
 		build_param (gradient->add_child("param"),"loop","bool","false");
 		build_param (gradient->add_child("param"),"zigzag","bool","false");
@@ -1059,7 +1060,7 @@ Svg_parser::build_radialGradient(xmlpp::Element* root,RadialGradient* data,Matri
 			layer->set_attribute("type","PasteCanvas");
 			layer->set_attribute("active","true");
 			layer->set_attribute("version","0.1");
-			layer->set_attribute("desc","Composite");
+			layer->set_attribute("desc",data->name);
 			build_param (layer->add_child("param"),"z_depth","real","0");
 			build_param (layer->add_child("param"),"amount","real","1");
 			build_param (layer->add_child("param"),"blend_method","integer","21"); //straight onto
@@ -1069,6 +1070,7 @@ Svg_parser::build_radialGradient(xmlpp::Element* root,RadialGradient* data,Matri
 			xmlpp::Element* child_layer=child->add_child("canvas");
 
 			gradient=child_layer->add_child("layer");
+			gradient->set_attribute("desc",data->name);
 			build_param (gradient->add_child("param"),"blend_method","integer","0"); //composite
 			Matrix *mtx2=NULL;
 			if (mtx && data->transform){
@@ -1082,6 +1084,7 @@ Svg_parser::build_radialGradient(xmlpp::Element* root,RadialGradient* data,Matri
 			
 		}else {
 			gradient=root->add_child("layer");
+			gradient->set_attribute("desc",data->name);
 			build_param (gradient->add_child("param"),"blend_method","integer","21"); //straight onto
 		}		
 
@@ -1092,6 +1095,7 @@ Svg_parser::build_radialGradient(xmlpp::Element* root,RadialGradient* data,Matri
 		//gradient link
 		xmlpp::Element *child_stops=gradient->add_child("param");
 		child_stops->set_attribute("name","gradient");
+		child_stops->set_attribute("guid",GUID::hasher(data->name).get_string());
 		build_stop_color (child_stops->add_child("gradient"),data->stops);
 
 		//here the center point and radius
@@ -1432,11 +1436,11 @@ Svg_parser::build_vector (xmlpp::Element* root,String name,float x,float y,Strin
 }
 
 xmlpp::Element*
-Svg_parser::nodeStartBasicLayer(xmlpp::Element* root){
+Svg_parser::nodeStartBasicLayer(xmlpp::Element* root, String name){
 	root->set_attribute("type","PasteCanvas");
 	root->set_attribute("active","true");
 	root->set_attribute("version","0.1");
-	root->set_attribute("desc","Composite");
+	root->set_attribute("desc",name);
 	build_param (root->add_child("param"),"z_depth","real","0");
 	build_param (root->add_child("param"),"amount","real","1");
 	build_param (root->add_child("param"),"blend_method","integer","0");
