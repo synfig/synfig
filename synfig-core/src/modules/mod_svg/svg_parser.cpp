@@ -279,18 +279,14 @@ Svg_parser::parser_graphics(const xmlpp::Node* node,xmlpp::Element* root,String 
 			typeStroke=2;	//gradient
 		}
 		
-		xmlpp::Element* child_layer = nodeStartBasicLayer(root->add_child("layer"));
-		xmlpp::Element* child_fill = child_layer;
-		xmlpp::Element* child_stroke = child_layer;
-		if(typeFill==2){
-			child_fill=nodeStartBasicLayer(child_fill->add_child("layer"));
-		}
-		if(typeStroke==2){
-			child_stroke=nodeStartBasicLayer(child_stroke->add_child("layer"));
-		}
+		xmlpp::Element* child_layer = root;
+		xmlpp::Element* child_fill;
+		xmlpp::Element* child_stroke;
 
 		//make simple fills
 		if(nodename.compare("rect")==0 && typeFill!=0){
+			if (mtx) child_layer = nodeStartBasicLayer(root->add_child("layer"));
+			child_fill=child_layer;
 			parser_rect(nodeElement,child_fill,fill,fill_opacity,opacity);
 			if(typeFill==2){
 				build_fill (child_fill,fill,NULL);
@@ -298,7 +294,10 @@ Svg_parser::parser_graphics(const xmlpp::Node* node,xmlpp::Element* root,String 
 			parser_effects(nodeElement,child_layer,parent_style,mtx);
 			return;
 		}
-
+		if ((!(SVG_RESOLVE_BLINE) && mtx) || typeFill==2 || typeStroke==2)
+			child_layer = nodeStartBasicLayer(root->add_child("layer"));
+		child_fill=child_layer;
+		child_stroke=child_layer;
 
 		//=======================================================================
 
@@ -324,6 +323,9 @@ Svg_parser::parser_graphics(const xmlpp::Node* node,xmlpp::Element* root,String 
 		//int n = k.size();
 
 		if(typeFill!=0){//region layer
+			/*if(typeFill==2){
+				child_fill=nodeStartBasicLayer(child_fill->add_child("layer"));
+			}*/
 			for (aux = k.begin(); aux!=k.end(); aux++){
 				xmlpp::Element *child_region=child_fill->add_child("layer");
 				child_region->set_attribute("type","region");
@@ -353,6 +355,9 @@ Svg_parser::parser_graphics(const xmlpp::Node* node,xmlpp::Element* root,String 
 		}
 
 		if(typeStroke!=0){//outline layer
+			if(typeStroke==2){
+				child_stroke=nodeStartBasicLayer(child_stroke->add_child("layer"));
+			}
 			for (aux=k.begin(); aux!=k.end(); aux++){
 				xmlpp::Element *child_outline=child_stroke->add_child("layer");
 				child_outline->set_attribute("type","outline");
@@ -391,9 +396,9 @@ Svg_parser::parser_graphics(const xmlpp::Node* node,xmlpp::Element* root,String 
 
 			if(typeStroke==2){ //gradient in onto mode (stroke)
 				if (SVG_RESOLVE_BLINE)
-					build_fill(child_stroke,fill,mtx);
+					build_fill(child_stroke,stroke,mtx);
 				else
-					build_fill(child_stroke,fill,NULL);
+					build_fill(child_stroke,stroke,NULL);
 			}	
 		}
 
@@ -848,7 +853,7 @@ Svg_parser::parser_path_d(String path_d,Matrix* mtx){
 /* === EFFECTS PARSERS ===================================================== */
 
 void
-Svg_parser::parser_effects(const xmlpp::Element* nodeElement,xmlpp::Element* root,String parent_style,Matrix* mtx){
+Svg_parser::parser_effects(const xmlpp::Element* /*nodeElement*/,xmlpp::Element* root,String /*parent_style*/,Matrix* mtx){
 	build_transform(root, mtx);
 }
 
