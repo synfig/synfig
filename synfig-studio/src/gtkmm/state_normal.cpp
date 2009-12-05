@@ -675,7 +675,10 @@ DuckDrag_Combo::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector)
 	if(bad_drag)
 		return;
 
-	//std::set<etl::handle<Duck> >::iterator iter;
+	//Override axis lock set in workarea when holding down the shift key
+	if (!move_only && (scale || rotate))
+		duckmatic->set_axis_lock(false);
+
 	synfig::Vector vect;
 	if (move_only || (!scale && !rotate))
 		vect= duckmatic->snap_point_to_grid(vector)-drag_offset+snap;
@@ -715,8 +718,13 @@ DuckDrag_Combo::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector)
 
 	if (rotate)
 	{
-		Angle::tan angle(vect[1],vect[0]);
+		Angle::deg angle(Angle::tan(vect[1],vect[0]));
 		angle=original_angle-angle;
+		if (constrain)
+		{
+			float degrees = angle.get()/15;
+			angle= Angle::deg (degrees>0?std::floor(degrees)*15:std::ceil(degrees)*15);
+		}
 		Real mag(vect.mag()/original_mag);
 		Real sine(Angle::sin(angle).get());
 		Real cosine(Angle::cos(angle).get());
