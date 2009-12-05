@@ -92,7 +92,6 @@
 #include "state_star.h"
 #include "state_text.h"
 #include "state_width.h"
-#include "state_transform.h"
 #include "state_zoom.h"
 
 #include "devicetracker.h"
@@ -1293,7 +1292,6 @@ App::App(int *argc, char ***argv):
 
 		/* editing tools */
 		state_manager->add_state(&state_normal);
-		state_manager->add_state(&state_transform);
 		state_manager->add_state(&state_smooth_move);
 		studio_init_cb.task(_("Init ModMirror...")); module_list_.push_back(new ModMirror()); module_list_.back()->start();
 		if(!getenv("SYNFIG_DISABLE_WIDTH"  )) state_manager->add_state(&state_width); // Enabled since 0.61.09

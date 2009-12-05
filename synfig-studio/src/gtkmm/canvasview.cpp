@@ -82,6 +82,7 @@
 #include "dialog_color.h"
 #include "eventkey.h"
 
+#include "state_null.h"
 #include "state_polygon.h"
 #include "state_bline.h"
 #include "state_normal.h"
@@ -719,7 +720,7 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigap
 	toggling_snap_grid=false;
 	toggling_onion_skin=false;
 
-	smach_.set_default_state(&state_normal);
+	smach_.set_default_state(&state_null);
 
 	disp_audio = new Widget_Sound();
 

@@ -53,7 +53,7 @@ using namespace studio;
 /* === M E T H O D S ======================================================= */
 
 Dialog_ToolOptions::Dialog_ToolOptions():
-	Dockable("tool_options",_("Tool Options"),Gtk::StockID("synfig-normal")),
+	Dockable("tool_options",_("Tool Options"),Gtk::StockID("synfig-null")),
 	empty_label(_("This tool has no options"))
 {
 	//scrolled_.add(sub_vbox_);
@@ -80,7 +80,7 @@ Dialog_ToolOptions::clear()
 	set_widget(empty_label);
 	empty_label.show();
 
-	set_stock_id(Gtk::StockID("synfig-normal"));
+	set_stock_id(Gtk::StockID("synfig-null"));
 }
 
 void

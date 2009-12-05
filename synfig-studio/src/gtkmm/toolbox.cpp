@@ -474,16 +474,7 @@ Toolbox::change_state_(const Smach::state_base *state)
 	{
 		etl::handle<studio::CanvasView> canvas_view(studio::App::get_selected_canvas_view());
 		if(canvas_view)
-		{
-			if(state->get_name()==String("normal"))
-			{
-				canvas_view->get_smach().egress();
-			}
-			else
-			{
 				canvas_view->get_smach().enter(state);
-			}
-		}
 		else
 			refresh();
 	}

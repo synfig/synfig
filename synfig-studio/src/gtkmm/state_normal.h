@@ -22,8 +22,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_STATE_NORMAL_H
-#define __SYNFIG_STATE_NORMAL_H
+#ifndef __SYNFIG_STUDIO_STATE_NORMAL_H
+#define __SYNFIG_STUDIO_STATE_NORMAL_H
 
 /* === H E A D E R S ======================================================= */
 

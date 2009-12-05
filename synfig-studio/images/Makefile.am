@@ -41,6 +41,7 @@ EXTRA_DIST = \
 	mirror_icon.sif \
 	navigator_icon.sif \
 	normal_icon.sif \
+	null_icon.sif \
 	pastecanvas_icon.sif \
 	polygon_icon.sif \
 	real_icon.sif \
@@ -109,7 +110,6 @@ IMAGES = \
 	keyframe_icon.$(EXT) \
 	reset_colors_icon.$(EXT) \
 	swap_colors_icon.$(EXT) \
-	transform_icon.$(EXT) \
 	smooth_move_icon.$(EXT) \
 	width_icon.$(EXT) \
 	rectangle_icon.$(EXT) \
@@ -118,6 +118,7 @@ IMAGES = \
 	sketch_icon.$(EXT) \
 	fill_icon.$(EXT) \
 	normal_icon.$(EXT) \
+	null_icon.$(EXT) \
 	select_all_child_layers_icon.$(EXT) \
 	sif_icon.$(EXT) \
 	synfig_icon.$(EXT) \

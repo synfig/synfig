@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file state_transform.h
-**	\brief Template Header
+/*!	\file state_null.h
+**	\brief Null State Header
 **
 **	$Id$
 **
@@ -22,8 +22,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_STUDIO_STATE_TRANSFORM_H
-#define __SYNFIG_STUDIO_STATE_TRANSFORM_H
+#ifndef __SYNFIG_STATE_NULL_H
+#define __SYNFIG_STATE_NULL_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -38,16 +38,16 @@
 
 namespace studio {
 
-class StateTransform_Context;
+class StateNull_Context;
 
-class StateTransform : public Smach::state<StateTransform_Context>
+class StateNull : public Smach::state<StateNull_Context>
 {
 public:
-	StateTransform();
-	~StateTransform();
-}; // END of class StateTransform
+	StateNull();
+	~StateNull();
+}; // END of class StateNull
 
-extern StateTransform state_transform;
+extern StateNull state_null;
 
 }; // END of namespace studio
 
