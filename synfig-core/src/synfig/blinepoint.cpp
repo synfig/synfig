@@ -49,22 +49,16 @@ using namespace synfig;
 void
 synfig::BLinePoint::reverse()
 {
-	std::swap(tangent_[0],tangent_[1]);
-	tangent_[0]=-tangent_[0];
-	tangent_[1]=-tangent_[1];
+	if(split_tangent_)
+	{
+		std::swap(tangent_[0],tangent_[1]);
+		tangent_[0]=-tangent_[0];
+		tangent_[1]=-tangent_[1];
+	}
+	else
+	{
+		tangent_[0]=-tangent_[0];
+		tangent_[1]=-tangent_[1];
+	}
 }
 
-void
-synfig::BLinePoint::normalize(int i)
-{
-	//i is the number of the tangent to modify
-	//other tangent is (1-i)
-	split_tangent_=(!link_radius_ && !link_theta_);
-	if (link_radius_ && link_theta_)
-		tangent_[i]=tangent_[1-i];
-    else if (link_radius_)
-		tangent_[i]=tangent_[i].norm()*tangent_[1-i].mag();
-    else if (link_theta_)
-		tangent_[i]=tangent_[1-i].norm()*tangent_[i].mag();
-
-}
