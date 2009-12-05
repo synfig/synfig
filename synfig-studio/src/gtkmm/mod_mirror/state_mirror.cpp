@@ -94,42 +94,35 @@ class studio::StateMirror_Context : public sigc::trackable
 
 	synfigapp::Settings& settings;
 
+	sigc::connection keypress_connect;
+	sigc::connection keyrelease_connect;
+
 	etl::handle<DuckDrag_Mirror> duck_dragger_;
 
 	Gtk::Table options_table;
 
-	Gtk::CheckButton checkbutton_axis_x;
-	Gtk::CheckButton checkbutton_axis_y;
+	Gtk::RadioButton::Group radiobutton_group;
+	Gtk::RadioButton radiobutton_axis_x;
+	Gtk::RadioButton radiobutton_axis_y;
 
 public:
 
-	Axis get_axis()const { return checkbutton_axis_x.get_active()?AXIS_X:AXIS_Y; }
+	Axis get_axis()const { return radiobutton_axis_x.get_active()?AXIS_X:AXIS_Y; }
 	void set_axis(Axis a)
 	{
 		if(a==AXIS_X)
-		{
-			checkbutton_axis_x.set_active(true);
-			checkbutton_axis_y.set_active(false);
-		}
+			radiobutton_axis_x.set_active(true);
 		else
-		{
-			checkbutton_axis_y.set_active(true);
-			checkbutton_axis_x.set_active(false);
-		}
+			radiobutton_axis_y.set_active(true);
 
 		duck_dragger_->axis=get_axis();
 	}
 
-	void update_axis_y()
+	void update_axes()
 	{
-		checkbutton_axis_x.set_active(!checkbutton_axis_y.get_active());
 		duck_dragger_->axis=get_axis();
 	}
-	void update_axis_x()
-	{
-		checkbutton_axis_y.set_active(!checkbutton_axis_x.get_active());
-		duck_dragger_->axis=get_axis();
-	}
+
 	Smach::event_result event_refresh_tool_options(const Smach::event& x);
 
 	void refresh_tool_options();
@@ -145,6 +138,8 @@ public:
 
 	void load_settings();
 	void save_settings();
+
+	bool key_event(GdkEventKey *event);
 };	// END of class StateMirror_Context
 
 /* === M E T H O D S ======================================================= */
@@ -178,16 +173,17 @@ StateMirror_Context::StateMirror_Context(CanvasView* canvas_view):
 	canvas_view_(canvas_view),
 	settings(synfigapp::Main::get_selected_input_device()->settings()),
 	duck_dragger_(new DuckDrag_Mirror()),
-	checkbutton_axis_x(_("Horizontal")),
-	checkbutton_axis_y(_("Vertical"))
+	radiobutton_axis_x(radiobutton_group,_("Horizontal")),
+	radiobutton_axis_y(radiobutton_group,_("Vertical"))
 {
 	// Set up the tool options dialog
 	options_table.attach(*manage(new Gtk::Label(_("Mirror Tool"))), 0, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(checkbutton_axis_x, 0, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(checkbutton_axis_y, 0, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(radiobutton_axis_x, 0, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(radiobutton_axis_y, 0, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(*manage(new Gtk::Label(_("(Shift key toggles axis)"))), 0, 2, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
-	checkbutton_axis_x.signal_toggled().connect(sigc::mem_fun(*this,&StateMirror_Context::update_axis_x));
-	checkbutton_axis_y.signal_toggled().connect(sigc::mem_fun(*this,&StateMirror_Context::update_axis_y));
+	radiobutton_axis_x.signal_toggled().connect(sigc::mem_fun(*this,&StateMirror_Context::update_axes));
+	radiobutton_axis_y.signal_toggled().connect(sigc::mem_fun(*this,&StateMirror_Context::update_axes));
 
 	options_table.show_all();
 	refresh_tool_options();
@@ -196,6 +192,9 @@ StateMirror_Context::StateMirror_Context(CanvasView* canvas_view):
 	get_work_area()->set_allow_layer_clicks(true);
 	get_work_area()->set_duck_dragger(duck_dragger_);
 
+	keypress_connect=get_work_area()->signal_key_press_event().connect(sigc::mem_fun(*this,&StateMirror_Context::key_event),false);
+	keyrelease_connect=get_work_area()->signal_key_release_event().connect(sigc::mem_fun(*this,&StateMirror_Context::key_event),false);
+
 //	get_canvas_view()->work_area->set_cursor(Gdk::CROSSHAIR);
 	get_canvas_view()->work_area->reset_cursor();
 
@@ -203,6 +202,15 @@ StateMirror_Context::StateMirror_Context(CanvasView* canvas_view):
 
 	set_axis(AXIS_X);
 	load_settings();
+}
+
+bool
+StateMirror_Context::key_event(GdkEventKey *event)
+{
+	if (event->keyval==GDK_Shift_L || event->keyval==GDK_Shift_R )
+		set_axis(get_axis()==AXIS_X ? AXIS_Y:AXIS_X);
+
+	return false; //Pass on the event to other handlers, just in case
 }
 
 void
@@ -221,12 +229,16 @@ StateMirror_Context::event_refresh_tool_options(const Smach::event& /*x*/)
 	return Smach::RESULT_ACCEPT;
 }
 
+
 StateMirror_Context::~StateMirror_Context()
 {
 	save_settings();
 
 	get_work_area()->clear_duck_dragger();
 	get_canvas_view()->work_area->reset_cursor();
+
+	keypress_connect.disconnect();
+	keyrelease_connect.disconnect();
 
 	App::dialog_tool_options->clear();
 
