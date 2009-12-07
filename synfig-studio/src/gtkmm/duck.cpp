@@ -208,11 +208,11 @@ Duck::get_sub_trans_point()const
 void
 Duck::set_sub_trans_point(const synfig::Point &x, const synfig::Time &time)
 {
-	set_point((x-get_sub_trans_origin())/get_scalar());
 	if (get_type() == Duck::TYPE_TANGENT ||
 		get_type() == Duck::TYPE_ANGLE)
 	{
 		Angle old_angle = get_point().angle();
+		set_point((x-get_sub_trans_origin())/get_scalar());
 		Angle change = get_point().angle() - old_angle;
 		while (change < Angle::deg(-180)) change += Angle::deg(360);
 		while (change > Angle::deg(180)) change -= Angle::deg(360);
@@ -225,6 +225,7 @@ Duck::set_sub_trans_point(const synfig::Point &x, const synfig::Time &time)
 			synfig::info("rotation: %.2f turns", new_halves/2.0);
 	} else if(get_type() == Duck::TYPE_VERTEX || get_type() == Duck::TYPE_POSITION)
 	{
+		set_point((x-get_sub_trans_origin())/get_scalar());
 
 		ValueNode_BLineCalcVertex::Handle bline_vertex;
 		ValueNode_Composite::Handle composite;
@@ -246,6 +247,7 @@ Duck::set_sub_trans_point(const synfig::Point &x, const synfig::Time &time)
 			set_point(closest_point);
 		}
 	}
+	else set_point((x-get_sub_trans_origin())/get_scalar());
 }
 
 //! Updates width and tangent ducks that change when the origin moves
@@ -300,11 +302,11 @@ Duck::update(const synfig::Time &time)
 void
 Duck::set_sub_trans_point(const synfig::Point &x)
 {
-	set_point((x-get_sub_trans_origin())/get_scalar());
 	if (get_type() == Duck::TYPE_TANGENT ||
 		get_type() == Duck::TYPE_ANGLE)
 	{
 		Angle old_angle = get_point().angle();
+		set_point((x-get_sub_trans_origin())/get_scalar());
 		Angle change = get_point().angle() - old_angle;
 		while (change < Angle::deg(-180)) change += Angle::deg(360);
 		while (change > Angle::deg(180)) change -= Angle::deg(360);
@@ -316,6 +318,7 @@ Duck::set_sub_trans_point(const synfig::Point &x)
 			 old_halves > 1 || old_halves < -1))
 			synfig::info("rotation: %.2f turns", new_halves/2.0);
 	}
+	else set_point((x-get_sub_trans_origin())/get_scalar());
 }
 
 synfig::Point
