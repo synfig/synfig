@@ -6,7 +6,7 @@
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
-**  Copyright (c) 2008 Chris Moore
+**	Copyright (c) 2007, 2008 Chris Moore
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -97,7 +97,7 @@ public:
 	etl::handle<CanvasView> canvas_view_;
 	bool scale;
 	bool rotate;
-	bool constrain;  
+	bool constrain;
 	DuckDrag_Combo();
 	void begin_duck_drag(Duckmatic* duckmatic, const synfig::Vector& begin);
 	bool end_duck_drag(Duckmatic* duckmatic);
