@@ -61,4 +61,3 @@ synfig::BLinePoint::reverse()
 		tangent_[1]=-tangent_[1];
 	}
 }
-
