@@ -34,6 +34,8 @@
 #include <gtkmm/dialog.h>
 #include <gtkmm/entry.h>
 
+#include <synfig/valuenode_blinecalcvertex.h>
+#include <synfig/valuenode_composite.h>
 #include <synfig/valuenode_dynamiclist.h>
 #include <synfigapp/action_system.h>
 
@@ -299,6 +301,31 @@ DuckDrag_SmoothMove::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vecto
 		(*iter)->set_trans_point(p+last_[i], time);
 	}
 
+	// then patch up the tangents for the vertices we've moved
+	DuckList duck_list(duckmatic->get_duck_list());
+	for (iter=selected_ducks.begin(); iter!=selected_ducks.end(); ++iter)
+	{
+		etl::handle<Duck> duck(*iter);
+		if (duck->get_type() == Duck::TYPE_VERTEX || duck->get_type() == Duck::TYPE_POSITION)
+		{
+			ValueNode_Composite::Handle composite;
+
+			if ((ValueNode_BLineCalcVertex::Handle::cast_dynamic(duck->get_value_desc().get_value_node())) ||
+				((composite = ValueNode_Composite::Handle::cast_dynamic(duck->get_value_desc().get_value_node())) &&
+				 composite->get_type() == ValueBase::TYPE_BLINEPOINT &&
+				 (ValueNode_BLineCalcVertex::Handle::cast_dynamic(composite->get_link("point")))))
+			{
+				//! \todo update() will call dynamic cast again, see if we can avoid that
+				DuckList::iterator iter;
+				for (iter=duck_list.begin(); iter!=duck_list.end(); iter++)
+					if ((*iter)->get_origin_duck()==duck 
+						&& std::find(selected_ducks.begin(), 
+									 selected_ducks.end(), *iter) == selected_ducks.end() )
+						(*iter)->update(time);
+			}
+		}
+	}
+
 	last_translate_=vect;
 	//snap=Vector(0,0);
 }
@@ -319,9 +346,45 @@ DuckDrag_SmoothMove::end_duck_drag(Duckmatic* duckmatic)
 		for(i=0,iter=selected_ducks.begin();iter!=selected_ducks.end();++iter,i++)
 		{
 			if(last_[i].mag()>0.0001)
-				if(!(*iter)->signal_edited()((*iter)->get_point()))
 				{
-					throw String("Bad Move");
+				if ((*iter)->get_type() == Duck::TYPE_ANGLE)
+					{
+						if(!(*iter)->signal_edited_angle()((*iter)->get_rotations()))
+						{
+							throw String("Bad edit");
+						}
+					}
+					else if (App::restrict_radius_ducks &&
+							 (*iter)->is_radius())
+					{
+						Point point((*iter)->get_point());
+						bool changed = false;
+
+						if (point[0] < 0)
+						{
+							point[0] = 0;
+							changed = true;
+						}
+						if (point[1] < 0)
+						{
+							point[1] = 0;
+							changed = true;
+						}
+
+						if (changed) (*iter)->set_point(point);
+
+						if(!(*iter)->signal_edited()(point))
+						{
+							throw String("Bad edit");
+						}
+					}
+					else
+					{
+						if(!(*iter)->signal_edited()((*iter)->get_point()))
+						{
+							throw String("Bad edit");
+						}
+					}
 				}
 		}
 		//duckmatic->get_selected_ducks()=new_set;

@@ -255,7 +255,7 @@ Duck::set_sub_trans_point(const synfig::Point &x, const synfig::Time &time)
 void
 Duck::update(const synfig::Time &time)
 {
-	if((get_type() == Duck::TYPE_TANGENT || get_type() == Duck::TYPE_WIDTH) && origin_duck)
+	if((get_type() == Duck::TYPE_TANGENT || get_type() == Duck::TYPE_WIDTH || get_type() == Duck::TYPE_ANGLE) && origin_duck)
 	{
 		ValueNode_BLineCalcVertex::Handle bline_vertex;
 		ValueNode_Composite::Handle composite;
@@ -280,6 +280,7 @@ Duck::update(const synfig::Time &time)
 				{
 					Angle angle((*bline_tangent)(time, amount).get(Angle()));
 					set_point(Point(Angle::cos(angle).get(), Angle::sin(angle).get()));
+					rotations=synfig::Angle::deg(0); //hack: rotations are a relative value
 					break;
 				}
 				case ValueBase::TYPE_REAL:

@@ -292,7 +292,7 @@ DuckDrag_Mirror::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector)
 			if		(axis==AXIS_X) p[0] = -(p[0]-center[0]) + center[0];
 			else if	(axis==AXIS_Y) p[1] = -(p[1]-center[1]) + center[1];
 
-			(*iter)->set_trans_point(p, time);
+			(*iter)->set_trans_point(p);
 		}
 
 	// then do the other ducks
@@ -309,7 +309,7 @@ DuckDrag_Mirror::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector)
 			if		(axis==AXIS_X) p[0] = -(p[0]-center[0]) + center[0];
 			else if	(axis==AXIS_Y) p[1] = -(p[1]-center[1]) + center[1];
 
-			(*iter)->set_trans_point(p, time);
+			(*iter)->set_trans_point(p);
 		}
 }
 
