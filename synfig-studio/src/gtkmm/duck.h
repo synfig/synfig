@@ -218,6 +218,7 @@ public:
 	synfig::Point get_point()const { return shared_point?*shared_point:point; }
 
 	synfig::Angle get_rotations()const { return rotations; };
+	void set_rotations(const synfig::Angle &x) { rotations=x; };
 
 	synfig::Point get_trans_point()const;
 
@@ -228,8 +229,6 @@ public:
 	void set_sub_trans_point(const synfig::Point &x);
 	void set_sub_trans_point(const synfig::Point &x, const synfig::Time &time);
 	synfig::Point get_sub_trans_origin()const;
-
-	void update(const synfig::Time &time);
 
 	//! Sets the origin point.
 	void set_origin(const synfig::Point &x);

@@ -324,6 +324,7 @@ public:
 
 	void start_duck_drag(const synfig::Vector& offset);
 	void translate_selected_ducks(const synfig::Vector& vector);
+	void update_ducks();
 	bool end_duck_drag();
 
 	void signal_edited_selected_ducks();

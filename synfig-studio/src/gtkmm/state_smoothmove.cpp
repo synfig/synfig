@@ -302,29 +302,7 @@ DuckDrag_SmoothMove::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vecto
 	}
 
 	// then patch up the tangents for the vertices we've moved
-	DuckList duck_list(duckmatic->get_duck_list());
-	for (iter=selected_ducks.begin(); iter!=selected_ducks.end(); ++iter)
-	{
-		etl::handle<Duck> duck(*iter);
-		if (duck->get_type() == Duck::TYPE_VERTEX || duck->get_type() == Duck::TYPE_POSITION)
-		{
-			ValueNode_Composite::Handle composite;
-
-			if ((ValueNode_BLineCalcVertex::Handle::cast_dynamic(duck->get_value_desc().get_value_node())) ||
-				((composite = ValueNode_Composite::Handle::cast_dynamic(duck->get_value_desc().get_value_node())) &&
-				 composite->get_type() == ValueBase::TYPE_BLINEPOINT &&
-				 (ValueNode_BLineCalcVertex::Handle::cast_dynamic(composite->get_link("point")))))
-			{
-				//! \todo update() will call dynamic cast again, see if we can avoid that
-				DuckList::iterator iter;
-				for (iter=duck_list.begin(); iter!=duck_list.end(); iter++)
-					if ((*iter)->get_origin_duck()==duck 
-						&& std::find(selected_ducks.begin(), 
-									 selected_ducks.end(), *iter) == selected_ducks.end() )
-						(*iter)->update(time);
-			}
-		}
-	}
+	duckmatic->update_ducks();
 
 	last_translate_=vect;
 	//snap=Vector(0,0);
