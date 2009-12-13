@@ -1783,7 +1783,7 @@ App::reset_initial_window_configuration()
 	synfigapp::Main::settings().set_value("pref.distance_system","pt");
 	synfigapp::Main::settings().set_value("pref.use_colorspace_gamma","1");
 #ifdef SINGLE_THREADED
-	synfigapp::Main::settings().set_value("pref.single_threaded","0");
+	synfigapp::Main::settings().set_value("pref.single_threaded","1");
 #endif
 	synfigapp::Main::settings().set_value("pref.restrict_radius_ducks","0");
 	synfigapp::Main::settings().set_value("pref.resize_imported_images","0");
