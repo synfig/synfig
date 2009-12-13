@@ -47,6 +47,7 @@ class Widget_Filename : public Gtk::HBox
 {
 	Gtk::Entry *entry_filename;
 	Gtk::Button *button_choose;
+	Gtk::Label *label_find;
 
 	void on_button_choose_pressed();
 

@@ -58,12 +58,24 @@ using namespace studio;
 Widget_Filename::Widget_Filename()
 {
 	entry_filename=manage(new Gtk::Entry());
-	button_choose=manage(new Gtk::Button(_("Find")));
+	label_find= manage(new Gtk::Label(_("Find")));
+	button_choose=manage(new Gtk::Button());
+	Pango::AttrList attr_list;
+	{
+		Pango::AttrInt pango_size(Pango::Attribute::create_attr_size(Pango::SCALE*7));
+		pango_size.set_start_index(0);
+		pango_size.set_end_index(64);
+		attr_list.change(pango_size);
+	}
+	label_find->set_attributes(attr_list);
+	label_find->set_ellipsize(Pango::ELLIPSIZE_END);
+	button_choose->add(*label_find);
 
 	pack_start(*entry_filename);
 	pack_start(*button_choose);
 	entry_filename->show();
 	button_choose->show();
+	label_find->show();
 
 	button_choose->signal_clicked().connect(sigc::mem_fun(*this, &studio::Widget_Filename::on_button_choose_pressed));
 	//entry_filename->signal_value_changed().connect(sigc::mem_fun(*this, &studio::Widget_Filename::on_value_changed));
