@@ -305,6 +305,9 @@ public:
 
 
 	//! Type that represents a pointer to a ValueNode's constructor
+	/*! As a pointer to the constructor, it represents a "factory" of 
+	**  objects of this class.
+	*/
 	typedef LinkableValueNode* (*Factory)(const ValueBase&);
 
 	typedef bool (*CheckType)(ValueBase::Type);
@@ -317,6 +320,13 @@ public:
 		ReleaseVersion release_version; // which version of synfig introduced this valuenode type
 	};
 
+	//! Book of types of linkable value nodes indexed by type name.
+	/*! While the sifz file is read, each time a new LinkableValueNode entry 
+	**  is found, the factory constructor that the "factory" pointer member 
+	**  of the "BookEntry" struct points to, is called, and a new object of 
+	**  that type is created.
+	**  \sa LinkableValueNode::Factory
+	*/
 	typedef std::map<String,BookEntry> Book;
 
 	static Book& book();
