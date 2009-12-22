@@ -55,9 +55,14 @@ Target::subsys_init()
 	//default_gamma_->set_black_level(0.05); // Default to 5% black level.
 
 	// At least one target must be available.
-	book()["null"]=std::pair<synfig::Target::Factory,String>(Target_Null::create,"null");
+	book()["null"].factory =
+		reinterpret_cast<synfig::Target::Factory>(&Target_Null::create);
+  book()["null"].filename = "null";
 	ext_book()["null"]="null";
-	book()["null-tile"]=std::pair<synfig::Target::Factory,String>(Target_Null_Tile::create,"null-tile");
+
+	book()["null-tile"].factory =
+    reinterpret_cast<synfig::Target::Factory>(&Target_Null_Tile::create);
+  book()["null-tile"].filename = "null-tile";
 	ext_book()["null-tile"]="null-tile";
 
 	return true;
@@ -110,5 +115,5 @@ Target::create(const String &name, const String &filename)
 	if(!book().count(name))
 		return handle<Target>();
 
-	return Target::Handle(book()[name].first(filename.c_str()));
+	return Target::Handle(book()[name].factory(filename.c_str()));
 }

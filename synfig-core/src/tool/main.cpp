@@ -1307,7 +1307,7 @@ int main(int argc, char *argv[])
 			{
 				job_list.front().outfilename = filename_sans_extension(job_list.front().filename) + '.';
 				if(Target::book().count(target_name))
-					job_list.front().outfilename+=Target::book()[target_name].second;
+					job_list.front().outfilename+=Target::book()[target_name].filename;
 				else
 					job_list.front().outfilename+=target_name;
 			}

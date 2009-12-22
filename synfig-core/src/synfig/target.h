@@ -107,12 +107,15 @@ public:
 	**  Receives the output filename (including path).
 	*/
 	typedef Target* (*Factory)(const char *filename);
+	
+	struct BookEntry
+	{
+		Factory factory;
+		String filename; ///< Output filename including path
+	};
 
 	//! Book of types of targets indexed by the name of the Target.
-	/*! Each entry contains the Target constructor pointer and the output 
-	**  filename string (including path).
-	*/
-	typedef std::map<String,std::pair<Factory,String> > Book;
+	typedef std::map<String,BookEntry> Book;
 
 	typedef std::map<String,String> ExtBook;
 
