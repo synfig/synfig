@@ -191,10 +191,6 @@ src/gtkmm/state_polygon.cpp
 src/gtkmm/state_polygon.h
 src/gtkmm/state_rectangle.cpp
 src/gtkmm/state_rectangle.h
-src/gtkmm/state_rotate.cpp
-src/gtkmm/state_rotate.h
-src/gtkmm/state_scale.cpp
-src/gtkmm/state_scale.h
 src/gtkmm/state_sketch.cpp
 src/gtkmm/state_sketch.h
 src/gtkmm/state_smoothmove.cpp
