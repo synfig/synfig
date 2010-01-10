@@ -41,7 +41,6 @@ EXTRA_DIST = \
 	mirror_icon.sif \
 	navigator_icon.sif \
 	normal_icon.sif \
-	null_icon.sif \
 	pastecanvas_icon.sif \
 	polygon_icon.sif \
 	real_icon.sif \
@@ -119,7 +118,6 @@ IMAGES = \
 	sketch_icon.$(EXT) \
 	fill_icon.$(EXT) \
 	normal_icon.$(EXT) \
-	null_icon.$(EXT) \
 	select_all_child_layers_icon.$(EXT) \
 	sif_icon.$(EXT) \
 	synfig_icon.$(EXT) \

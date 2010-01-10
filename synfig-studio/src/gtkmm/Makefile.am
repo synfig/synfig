@@ -170,7 +170,6 @@ STATE_HH = \
 	state_fill.h \
 	state_gradient.h \
 	state_normal.h \
-	state_null.h \
 	state_polygon.h \
 	state_rectangle.h \
 	state_sketch.h \
@@ -189,7 +188,6 @@ STATE_CC = \
 	state_fill.cpp \
 	state_gradient.cpp \
 	state_normal.cpp \
-	state_null.cpp \
 	state_polygon.cpp \
 	state_rectangle.cpp \
 	state_sketch.cpp \
