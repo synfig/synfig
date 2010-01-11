@@ -38,7 +38,7 @@
 #include <synfig/valuenode_bline.h>
 
 #include "state_star.h"
-#include "state_normal.h"			throw &state_normal; //throw Smach::egress_exception();
+#include "state_normal.h"
 #include "canvasview.h"
 #include "workarea.h"
 #include "app.h"
