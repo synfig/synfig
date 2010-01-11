@@ -244,7 +244,7 @@ StateNormal_Context::StateNormal_Context(CanvasView* canvas_view):
 	options_table.show_all();
 	refresh_tool_options();
 	//App::dialog_tool_options->set_widget(options_table);
-	App::dialog_tool_options->present();
+	//App::dialog_tool_options->present();
 
 	get_work_area()->set_allow_layer_clicks(true);
 	get_work_area()->set_duck_dragger(duck_dragger_);

@@ -38,6 +38,7 @@
 #include <synfig/valuenode_bline.h>
 
 #include "state_star.h"
+#include "state_normal.h"			throw &state_normal; //throw Smach::egress_exception();
 #include "canvasview.h"
 #include "workarea.h"
 #include "app.h"
@@ -215,7 +216,7 @@ public:
 	Smach::event_result event_layer_selection_changed_handler(const Smach::event& /*x*/)
 	{
 		if(egress_on_selection_change)
-			throw Smach::egress_exception();
+			throw &state_normal; //throw Smach::egress_exception();
 		return Smach::RESULT_OK;
 	}
 
