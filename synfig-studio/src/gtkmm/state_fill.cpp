@@ -121,7 +121,9 @@ Smach::event_result
 StateFill_Context::event_stop_handler(const Smach::event& /*x*/)
 {
 	synfig::info("STATE FILL: Received Stop Event");
-	throw Smach::egress_exception();
+	//throw Smach::egress_exception();
+	throw &state_normal;
+	return Smach::RESULT_OK;
 //	canvas_view->get_smach().pop_state();
 //	return Smach::RESULT_ACCEPT;
 }

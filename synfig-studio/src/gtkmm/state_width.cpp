@@ -356,7 +356,9 @@ StateWidth_Context::~StateWidth_Context()
 Smach::event_result
 StateWidth_Context::event_stop_handler(const Smach::event& /*x*/)
 {
-	throw Smach::egress_exception();
+	//throw Smach::egress_exception();
+	throw &state_normal;
+	return Smach::RESULT_OK;
 }
 
 Smach::event_result
