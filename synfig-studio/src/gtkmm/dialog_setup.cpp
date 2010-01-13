@@ -201,7 +201,7 @@ Dialog_Setup::Dialog_Setup():
 
 #ifdef SINGLE_THREADED
 	// Misc - single_threaded
-	misc_table->attach(toggle_single_threaded, 0, 2, 9, 10, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
+	misc_table->attach(toggle_single_threaded, 0, 2, 10, 11, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, xpadding, ypadding);
 #endif
 
 	// Misc - auto backup interval
