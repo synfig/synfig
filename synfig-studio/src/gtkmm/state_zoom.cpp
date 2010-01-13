@@ -38,6 +38,7 @@
 
 
 #include "state_zoom.h"
+#include "state_normal.h"
 #include "event_mouse.h"
 #include "canvasview.h"
 #include "workarea.h"

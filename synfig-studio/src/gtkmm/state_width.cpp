@@ -39,6 +39,7 @@
 #include <synfigapp/action_system.h>
 
 #include "state_width.h"
+#include "state_normal.h"
 #include "canvasview.h"
 #include "workarea.h"
 #include "app.h"

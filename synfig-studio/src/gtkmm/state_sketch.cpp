@@ -36,6 +36,7 @@
 #include <synfig/valuenode_dynamiclist.h>
 
 #include "state_sketch.h"
+#include "state_normal.h"
 #include "state_stroke.h"
 #include "canvasview.h"
 #include "workarea.h"

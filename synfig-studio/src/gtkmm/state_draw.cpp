@@ -38,6 +38,7 @@
 
 #include "state_draw.h"
 #include "state_stroke.h"
+#include "state_normal.h"
 #include "canvasview.h"
 #include "workarea.h"
 #include "app.h"

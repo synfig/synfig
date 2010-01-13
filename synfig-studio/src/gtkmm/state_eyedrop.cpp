@@ -30,6 +30,7 @@
 #endif
 
 #include "state_eyedrop.h"
+#include "state_normal.h"
 #include "workarea.h"
 #include <synfig/context.h>
 #include "app.h"
