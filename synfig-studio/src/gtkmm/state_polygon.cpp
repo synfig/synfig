@@ -900,6 +900,7 @@ void
 StatePolygon_Context::refresh_ducks()
 {
 	get_work_area()->clear_ducks();
+	get_work_area()->queue_draw();
 
 	if(polygon_point_list.empty()) return;
 
