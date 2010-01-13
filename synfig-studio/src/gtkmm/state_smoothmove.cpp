@@ -197,8 +197,8 @@ StateSmoothMove_Context::StateSmoothMove_Context(CanvasView* canvas_view):
 
 	App::toolbox->refresh();
 
-//	get_canvas_view()->work_area->set_cursor(Gdk::CROSSHAIR);
-	get_canvas_view()->work_area->reset_cursor();
+	get_canvas_view()->work_area->set_cursor(Gdk::FLEUR);
+	//get_canvas_view()->work_area->reset_cursor();
 
 	load_settings();
 }

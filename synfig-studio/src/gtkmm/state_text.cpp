@@ -317,7 +317,7 @@ StateText_Context::StateText_Context(CanvasView *canvas_view):
 
 	// Connect a signal
 	//get_work_area()->signal_user_click().connect(sigc::mem_fun(*this,&studio::StateText_Context::on_user_click));
-	get_canvas_view()->work_area->set_cursor(Gdk::CROSSHAIR);
+	get_canvas_view()->work_area->set_cursor(Gdk::XTERM);
 
 	App::toolbox->refresh();
 }
