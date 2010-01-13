@@ -386,7 +386,7 @@ StateRectangle_Context::StateRectangle_Context(CanvasView* canvas_view):
 	// Refresh the work area
 	get_work_area()->queue_draw();
 
-	get_canvas_view()->work_area->set_cursor(Gdk::CROSSHAIR);
+	get_canvas_view()->work_area->set_cursor(Gdk::DOTBOX);
 
 	// Hide the tables if they are showing
 	//prev_table_status=get_canvas_view()->tables_are_visible();
