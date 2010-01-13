@@ -37,6 +37,7 @@
 #include <synfigapp/action_system.h>
 
 #include "state_rotate.h"
+#include "state_normal.h"
 #include "canvasview.h"
 #include "workarea.h"
 #include "app.h"
@@ -106,6 +107,7 @@ public:
 class studio::StateRotate_Context : public sigc::trackable
 {
 	etl::handle<CanvasView> canvas_view_;
+	CanvasView::IsWorking is_working;
 
 	synfigapp::Settings& settings;
 
@@ -120,7 +122,7 @@ public:
 	bool get_scale_flag()const { return checkbutton_scale.get_active(); }
 	void set_scale_flag(bool x) { return checkbutton_scale.set_active(x); refresh_scale_flag(); }
 
-
+	Smach::event_result event_stop_handler(const Smach::event& x);
 	Smach::event_result event_refresh_tool_options(const Smach::event& x);
 
 	void refresh_tool_options();
@@ -146,6 +148,7 @@ StateRotate::StateRotate():
 	Smach::state<StateRotate_Context>("rotate")
 {
 	insert(event_def(EVENT_REFRESH_TOOL_OPTIONS,&StateRotate_Context::event_refresh_tool_options));
+	insert(event_def(EVENT_STOP,&StateRotate_Context::event_stop_handler));
 }
 
 StateRotate::~StateRotate()
@@ -171,6 +174,7 @@ StateRotate_Context::save_settings()
 
 StateRotate_Context::StateRotate_Context(CanvasView* canvas_view):
 	canvas_view_(canvas_view),
+	is_working(*canvas_view),
 	settings(synfigapp::Main::get_selected_input_device()->settings()),
 	duck_dragger_(new DuckDrag_Rotate()),
 	checkbutton_scale(_("Allow Scale"))
@@ -214,6 +218,13 @@ StateRotate_Context::event_refresh_tool_options(const Smach::event& /*x*/)
 {
 	refresh_tool_options();
 	return Smach::RESULT_ACCEPT;
+}
+
+Smach::event_result
+StateRotate_Context::event_stop_handler(const Smach::event& /*x*/)
+{
+	throw &state_normal;
+	return Smach::RESULT_OK;
 }
 
 StateRotate_Context::~StateRotate_Context()

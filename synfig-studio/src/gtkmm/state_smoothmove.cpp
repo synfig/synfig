@@ -40,6 +40,7 @@
 #include <synfigapp/action_system.h>
 
 #include "state_smoothmove.h"
+#include "state_normal.h"
 #include "canvasview.h"
 #include "workarea.h"
 #include "app.h"
@@ -98,6 +99,7 @@ public:
 class studio::StateSmoothMove_Context : public sigc::trackable
 {
 	etl::handle<CanvasView> canvas_view_;
+	CanvasView::IsWorking is_working;
 
 	//Duckmatic::Push duckmatic_push;
 
@@ -143,6 +145,7 @@ StateSmoothMove::StateSmoothMove():
 	Smach::state<StateSmoothMove_Context>("smooth_move")
 {
 	insert(event_def(EVENT_REFRESH_TOOL_OPTIONS,&StateSmoothMove_Context::event_refresh_tool_options));
+	insert(event_def(EVENT_STOP,&StateSmoothMove_Context::event_stop_handler));
 }
 
 StateSmoothMove::~StateSmoothMove()
@@ -168,6 +171,7 @@ StateSmoothMove_Context::save_settings()
 
 StateSmoothMove_Context::StateSmoothMove_Context(CanvasView* canvas_view):
 	canvas_view_(canvas_view),
+	is_working(*canvas_view),
 //	duckmatic_push(get_work_area()),
 	settings(synfigapp::Main::get_selected_input_device()->settings()),
 	duck_dragger_(new DuckDrag_SmoothMove()),
@@ -213,6 +217,13 @@ StateSmoothMove_Context::event_refresh_tool_options(const Smach::event& /*x*/)
 {
 	refresh_tool_options();
 	return Smach::RESULT_ACCEPT;
+}
+
+Smach::event_result
+StateSmoothMove_Context::event_stop_handler(const Smach::event& /*x*/)
+{
+	throw &state_normal;
+	return Smach::RESULT_OK;
 }
 
 StateSmoothMove_Context::~StateSmoothMove_Context()

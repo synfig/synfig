@@ -37,6 +37,7 @@
 #include <synfigapp/action_system.h>
 
 #include "state_scale.h"
+#include "state_normal.h"
 #include "canvasview.h"
 #include "workarea.h"
 #include "app.h"
@@ -94,6 +95,7 @@ public:
 class studio::StateScale_Context : public sigc::trackable
 {
 	etl::handle<CanvasView> canvas_view_;
+	CanvasView::IsWorking is_working;
 
 	synfigapp::Settings& settings;
 
@@ -111,6 +113,7 @@ public:
 
 	void refresh_aspect_lock_flag() { if(duck_dragger_)duck_dragger_->lock_aspect=get_aspect_lock_flag(); }
 
+	Smach::event_result event_stop_handler(const Smach::event& x);
 	Smach::event_result event_refresh_tool_options(const Smach::event& x);
 
 	void refresh_tool_options();
@@ -134,6 +137,7 @@ StateScale::StateScale():
 	Smach::state<StateScale_Context>("scale")
 {
 	insert(event_def(EVENT_REFRESH_TOOL_OPTIONS,&StateScale_Context::event_refresh_tool_options));
+	insert(event_def(EVENT_STOP,&StateScale_Context::event_stop_handler));
 }
 
 StateScale::~StateScale()
@@ -159,6 +163,7 @@ StateScale_Context::save_settings()
 
 StateScale_Context::StateScale_Context(CanvasView* canvas_view):
 	canvas_view_(canvas_view),
+	is_working(*canvas_view),
 	settings(synfigapp::Main::get_selected_input_device()->settings()),
 	duck_dragger_(new DuckDrag_Scale()),
 	checkbutton_aspect_lock(_("Lock Aspect Ratio"))
@@ -199,6 +204,13 @@ StateScale_Context::event_refresh_tool_options(const Smach::event& /*x*/)
 {
 	refresh_tool_options();
 	return Smach::RESULT_ACCEPT;
+}
+
+Smach::event_result
+StateScale_Context::event_stop_handler(const Smach::event& /*x*/)
+{
+	throw &state_normal;
+	return Smach::RESULT_OK;
 }
 
 StateScale_Context::~StateScale_Context()
