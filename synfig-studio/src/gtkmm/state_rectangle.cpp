@@ -386,7 +386,7 @@ StateRectangle_Context::StateRectangle_Context(CanvasView* canvas_view):
 	// Refresh the work area
 	get_work_area()->queue_draw();
 
-	get_canvas_view()->work_area->set_cursor(Gdk::DOTBOX);
+	get_work_area()->set_cursor(Gdk::DOTBOX);
 
 	// Hide the tables if they are showing
 	//prev_table_status=get_canvas_view()->tables_are_visible();
@@ -424,7 +424,7 @@ StateRectangle_Context::~StateRectangle_Context()
 	// Restore layer clicking
 	get_work_area()->set_allow_layer_clicks(prev_workarea_layer_status_);
 
-	get_canvas_view()->work_area->reset_cursor();
+	get_work_area()->reset_cursor();
 
 	App::dialog_tool_options->clear();
 

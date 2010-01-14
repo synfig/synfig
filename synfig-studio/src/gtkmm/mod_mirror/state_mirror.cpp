@@ -124,7 +124,7 @@ public:
 	void update_axes()
 	{
 		duck_dragger_->axis=get_axis();
-		get_canvas_view()->work_area->set_cursor(get_axis() == AXIS_X?Gdk::SB_H_DOUBLE_ARROW:Gdk::SB_V_DOUBLE_ARROW);
+		get_work_area()->set_cursor(get_axis() == AXIS_X?Gdk::SB_H_DOUBLE_ARROW:Gdk::SB_V_DOUBLE_ARROW);
 	}
 
 	Smach::event_result event_stop_handler(const Smach::event& x);
@@ -202,8 +202,8 @@ StateMirror_Context::StateMirror_Context(CanvasView* canvas_view):
 	keypress_connect=get_work_area()->signal_key_press_event().connect(sigc::mem_fun(*this,&StateMirror_Context::key_event),false);
 	keyrelease_connect=get_work_area()->signal_key_release_event().connect(sigc::mem_fun(*this,&StateMirror_Context::key_event),false);
 
-	get_canvas_view()->work_area->set_cursor(Gdk::SB_H_DOUBLE_ARROW);
-//	get_canvas_view()->work_area->reset_cursor();
+	get_work_area()->set_cursor(Gdk::SB_H_DOUBLE_ARROW);
+//	get_work_area()->reset_cursor();
 
 	App::toolbox->refresh();
 
@@ -217,7 +217,7 @@ StateMirror_Context::key_event(GdkEventKey *event)
 	if (event->keyval==GDK_Shift_L || event->keyval==GDK_Shift_R )
 	{
 		set_axis(get_axis()==AXIS_X ? AXIS_Y:AXIS_X);
-		get_canvas_view()->work_area->set_cursor(get_axis() == AXIS_X?Gdk::SB_H_DOUBLE_ARROW:Gdk::SB_V_DOUBLE_ARROW);
+		get_work_area()->set_cursor(get_axis() == AXIS_X?Gdk::SB_H_DOUBLE_ARROW:Gdk::SB_V_DOUBLE_ARROW);
 	}
 
 	return false; //Pass on the event to other handlers, just in case
@@ -251,7 +251,7 @@ StateMirror_Context::~StateMirror_Context()
 	save_settings();
 
 	get_work_area()->clear_duck_dragger();
-	get_canvas_view()->work_area->reset_cursor();
+	get_work_area()->reset_cursor();
 
 	keypress_connect.disconnect();
 	keyrelease_connect.disconnect();

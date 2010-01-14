@@ -511,7 +511,7 @@ StateStar_Context::StateStar_Context(CanvasView* canvas_view):
 
 	// Connect a signal
 	//get_work_area()->signal_user_click().connect(sigc::mem_fun(*this,&studio::StateStar_Context::on_user_click));
-	get_canvas_view()->work_area->set_cursor(Gdk::STAR);
+	get_work_area()->set_cursor(Gdk::STAR);
 
 	App::toolbox->refresh();
 }
@@ -538,7 +538,7 @@ StateStar_Context::~StateStar_Context()
 
 	// Restore layer clicking
 	get_work_area()->set_allow_layer_clicks(prev_workarea_layer_status_);
-	get_canvas_view()->work_area->reset_cursor();
+	get_work_area()->reset_cursor();
 
 	App::dialog_tool_options->clear();
 

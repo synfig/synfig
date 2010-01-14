@@ -298,7 +298,7 @@ StateGradient_Context::StateGradient_Context(CanvasView* canvas_view):
 	// Turn off layer clicking
 	get_work_area()->set_allow_layer_clicks(false);
 
-	get_canvas_view()->work_area->set_cursor(Gdk::CROSSHAIR);
+	get_work_area()->set_cursor(Gdk::CROSSHAIR);
 
 	// clear out the ducks
 	get_work_area()->clear_ducks();
@@ -343,7 +343,7 @@ StateGradient_Context::~StateGradient_Context()
 	// Restore layer clicking
 //	get_work_area()->set_allow_layer_clicks(prev_workarea_layer_status_);
 	get_work_area()->set_allow_layer_clicks(true);
-	get_canvas_view()->work_area->reset_cursor();
+	get_work_area()->reset_cursor();
 
 	App::dialog_tool_options->clear();
 

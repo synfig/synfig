@@ -181,8 +181,8 @@ StateScale_Context::StateScale_Context(CanvasView* canvas_view):
 	get_work_area()->set_allow_layer_clicks(true);
 	get_work_area()->set_duck_dragger(duck_dragger_);
 
-	get_canvas_view()->work_area->set_cursor(Gdk::SIZING);
-//	get_canvas_view()->work_area->reset_cursor();
+	get_work_area()->set_cursor(Gdk::SIZING);
+//	get_work_area()->reset_cursor();
 
 	App::toolbox->refresh();
 
@@ -218,7 +218,7 @@ StateScale_Context::~StateScale_Context()
 	save_settings();
 
 	get_work_area()->clear_duck_dragger();
-	get_canvas_view()->work_area->reset_cursor();
+	get_work_area()->reset_cursor();
 
 	App::dialog_tool_options->clear();
 

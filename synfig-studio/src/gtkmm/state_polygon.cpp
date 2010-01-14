@@ -369,7 +369,7 @@ StatePolygon_Context::StatePolygon_Context(CanvasView* canvas_view):
 	// Refresh the work area
 	get_work_area()->queue_draw();
 
-	get_canvas_view()->work_area->set_cursor(Gdk::CROSSHAIR);
+	get_work_area()->set_cursor(Gdk::CROSSHAIR);
 
 	// Hide the tables if they are showing
 	prev_table_status=get_canvas_view()->tables_are_visible();
@@ -431,7 +431,7 @@ StatePolygon_Context::~StatePolygon_Context()
 
 	App::dialog_tool_options->clear();
 
-	get_canvas_view()->work_area->reset_cursor();
+	get_work_area()->reset_cursor();
 
 	// Enable the time bar
 	get_canvas_view()->set_sensitive_timebar(true);

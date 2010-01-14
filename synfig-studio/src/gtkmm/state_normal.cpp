@@ -253,7 +253,7 @@ StateNormal_Context::StateNormal_Context(CanvasView* canvas_view):
 	keyrelease_connect=get_work_area()->signal_key_release_event().connect(sigc::mem_fun(*this,&StateNormal_Context::key_released),false);
 
 	//these will segfault
-//	get_canvas_view()->work_area->set_cursor(Gdk::CROSSHAIR);
+//	get_work_area()->set_cursor(Gdk::CROSSHAIR);
 //	get_work_area()->reset_cursor();
 
 	App::toolbox->refresh();
@@ -324,7 +324,7 @@ StateNormal_Context::~StateNormal_Context()
 	save_settings();
 
 	get_work_area()->clear_duck_dragger();
-	get_canvas_view()->work_area->reset_cursor();
+	get_work_area()->reset_cursor();
 
 	keypress_connect.disconnect();
 	keyrelease_connect.disconnect();

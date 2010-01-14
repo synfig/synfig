@@ -197,8 +197,8 @@ StateSmoothMove_Context::StateSmoothMove_Context(CanvasView* canvas_view):
 
 	App::toolbox->refresh();
 
-	get_canvas_view()->work_area->set_cursor(Gdk::FLEUR);
-	//get_canvas_view()->work_area->reset_cursor();
+	get_work_area()->set_cursor(Gdk::FLEUR);
+	//get_work_area()->reset_cursor();
 
 	load_settings();
 }
@@ -231,7 +231,7 @@ StateSmoothMove_Context::~StateSmoothMove_Context()
 	save_settings();
 
 	get_work_area()->clear_duck_dragger();
-	get_canvas_view()->work_area->reset_cursor();
+	get_work_area()->reset_cursor();
 
 	App::dialog_tool_options->clear();
 
