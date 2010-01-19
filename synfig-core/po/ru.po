@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Synfig Backend\n"
 "Report-Msgid-Bugs-To: http://synfig.org/Bugs\n"
 "POT-Creation-Date: 2009-10-07 01:26+0400\n"
-"PO-Revision-Date: 2009-10-09 21:14+0400\n"
+"PO-Revision-Date: 2010-01-18 20:40+0600\n"
 "Last-Translator: Alexandre Prokoudine <alexandre.prokoudine@gmail.com>\n"
 "Language-Team: Russian <gnome-cyr@lists.gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -64,7 +64,7 @@ msgstr "Оставлять фаску круглой"
 
 #: ../src/modules/example/metaballs.cpp:56
 msgid "Metaballs"
-msgstr "Меташары"
+msgstr "Metaballs"
 
 #: ../src/modules/example/metaballs.cpp:132
 #: ../src/modules/mod_gradient/conicalgradient.cpp:106
@@ -860,7 +860,7 @@ msgstr "Узор Исключающего ИЛИ"
 
 #: ../src/modules/lyr_std/zoom.cpp:51 ../src/synfig/layer_pastecanvas.cpp:136
 msgid "Zoom"
-msgstr "Увеличение"
+msgstr "Масштабирование"
 
 #: ../src/modules/lyr_std/zoom.cpp:97
 msgid "Amount to zoom in"
@@ -1695,7 +1695,7 @@ msgstr "Вставляемый холст"
 
 #: ../src/synfig/layer_pastecanvas.cpp:137
 msgid "Size of canvas"
-msgstr "Размерхолста"
+msgstr "Размер холста"
 
 #: ../src/synfig/layer_pastecanvas.cpp:145
 msgid "Children Lock"
@@ -1747,11 +1747,11 @@ msgstr "Используемый тип растушевки"
 
 #: ../src/synfig/layer_shape.cpp:1219
 msgid "Winding Style"
-msgstr "Стиль изгибов"
+msgstr "Обработка взаимопересечений"
 
 #: ../src/synfig/layer_shape.cpp:1220
 msgid "Winding style to use"
-msgstr "Используемый стиль изгибов"
+msgstr "Применяемая обработка взаимопересечений"
 
 #: ../src/synfig/layer_shape.cpp:1222
 msgid "Non Zero"

@@ -1,9 +1,10 @@
+# 
 msgid ""
 msgstr ""
 "Project-Id-Version: Synfig Studio\n"
 "Report-Msgid-Bugs-To: http://synfig.org/Bugs\n"
 "POT-Creation-Date: 2009-10-07 04:46+0400\n"
-"PO-Revision-Date: 2009-10-09 21:06+0400\n"
+"PO-Revision-Date: 2009-12-24 19:21+0500\n"
 "Last-Translator: Alexandre Prokoudine <alexandre.prokoudine@gmail.com>\n"
 "Language-Team: Russian <gnome-cyr@lists.gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -14,7 +15,7 @@ msgstr ""
 
 #: ../synfigstudio.desktop.in.h:1
 msgid "Create and edit 2D animations and compositions"
-msgstr "Создание двухмерной векторной анимации"
+msgstr "Создание 2D векторной анимации и графики"
 
 #: ../synfigstudio.desktop.in.h:2 ../src/gtkmm/app.cpp:1188
 #: ../src/gtkmm/toolbox.cpp:360
@@ -54,7 +55,7 @@ msgstr "Участники проекта:"
 #. TRANSLATORS: change this to your name, separate multiple names with \n
 #: ../src/gtkmm/about.cpp:177
 msgid "translator-credits"
-msgstr "Александр Прокудин <alexandre.prokoudine@gmail.com>"
+msgstr "Александр Прокудин <alexandre.prokoudine@gmail.com>\nКонстантин Дмитриев <ksee.zelgadis@gmail.com>"
 
 #: ../src/gtkmm/about.cpp:204
 #, c-format
@@ -64,7 +65,7 @@ msgid ""
 "%s\n"
 msgstr ""
 "\n"
-"Нестабильная версия:\n"
+"Сборка:\n"
 "%s\n"
 
 #: ../src/gtkmm/about.cpp:209
@@ -103,7 +104,7 @@ msgstr "GNU G++ %d.%d.%d\n"
 
 #: ../src/gtkmm/about.cpp:224
 msgid "Using:\n"
-msgstr "Использование:\n"
+msgstr "Используется:\n"
 
 #: ../src/gtkmm/about.cpp:225
 #, c-format
@@ -137,7 +138,7 @@ msgstr "Сло_й"
 
 #: ../src/gtkmm/app.cpp:738
 msgid "Show/Hide Ducks"
-msgstr "Показать/скрыть ручки"
+msgstr "Показать/скрыть уТочки"
 
 #: ../src/gtkmm/app.cpp:739
 msgid "Preview Quality"
@@ -183,7 +184,7 @@ msgstr "Импортировать"
 
 #: ../src/gtkmm/app.cpp:774 ../src/gtkmm/canvasview.cpp:1461
 msgid "Render"
-msgstr "Отрисовка"
+msgstr "Визуализация"
 
 #: ../src/gtkmm/app.cpp:775 ../src/gtkmm/canvasview.cpp:1464
 #: ../src/gtkmm/dialog_preview.cpp:171
@@ -213,11 +214,11 @@ msgstr "Закрыть документ"
 
 #: ../src/gtkmm/app.cpp:789 ../src/gtkmm/canvasview.cpp:1491
 msgid "Select All Ducks"
-msgstr "Выбрать все ручки"
+msgstr "Выделить все уТочки"
 
 #: ../src/gtkmm/app.cpp:790 ../src/gtkmm/canvasview.cpp:1495
 msgid "Unselect All Ducks"
-msgstr "Снять выделение с ручек"
+msgstr "Снять выделение со всех уТочек"
 
 #: ../src/gtkmm/app.cpp:791 ../src/gtkmm/canvasview.cpp:1499
 msgid "Select All Layers"
@@ -233,27 +234,27 @@ msgstr "Свойства"
 
 #: ../src/gtkmm/app.cpp:795 ../src/gtkmm/canvasview.cpp:1669
 msgid "Show Position Ducks"
-msgstr "Показывать ручки положения"
+msgstr "Показывать уТочки положения"
 
 #: ../src/gtkmm/app.cpp:796 ../src/gtkmm/canvasview.cpp:1671
 msgid "Show Vertex Ducks"
-msgstr "Показывать ручки вершин"
+msgstr "Показывать уТочки вершин"
 
 #: ../src/gtkmm/app.cpp:797 ../src/gtkmm/canvasview.cpp:1670
 msgid "Show Tangent Ducks"
-msgstr "Показывать ручки касательных"
+msgstr "Показывать уТочки касательных"
 
 #: ../src/gtkmm/app.cpp:798 ../src/gtkmm/canvasview.cpp:1672
 msgid "Show Radius Ducks"
-msgstr "Показывать ручки радиусов"
+msgstr "Показывать уТочки радиусов"
 
 #: ../src/gtkmm/app.cpp:799 ../src/gtkmm/canvasview.cpp:1673
 msgid "Show Width Ducks"
-msgstr "Показывать ручки толщины"
+msgstr "Показывать уТочки толщины"
 
 #: ../src/gtkmm/app.cpp:800 ../src/gtkmm/canvasview.cpp:1674
 msgid "Show Angle Ducks"
-msgstr "Показывать ручки углов"
+msgstr "Показывать уТочки углов"
 
 #: ../src/gtkmm/app.cpp:801 ../src/gtkmm/canvasview.cpp:1522
 msgid "Use Parametric Renderer"
@@ -621,7 +622,7 @@ msgid ""
 "\n"
 "http://www.synfig.org/Documentation"
 msgstr ""
-"Документация по Synfig Studio доступна на сайте:\n"
+"Документация по Synfig Studio доступна по адресу:\n"
 "\n"
 "http://www.synfig.org/Documentation"
 
@@ -926,7 +927,7 @@ msgstr "Отдалить временную шкалу"
 
 #: ../src/gtkmm/canvasview.cpp:2059 ../src/gtkmm/canvasview.cpp:2532
 msgid "Select All Children"
-msgstr "Выделить всех потомков"
+msgstr "Выделить содержимое"
 
 #: ../src/gtkmm/canvasview.cpp:2345
 msgid "-MODIFIED"
@@ -951,7 +952,7 @@ msgstr "Не в режиме анимации"
 #: ../src/gtkmm/canvasview.cpp:2798 ../src/gtkmm/iconcontroller.cpp:185
 #: ../src/gtkmm/keyframedial.cpp:59
 msgid "All Keyframes Locked"
-msgstr "Все ключевые кадры заперты"
+msgstr "Все ключевые кадры заблокированы"
 
 #: ../src/gtkmm/canvasview.cpp:2808 ../src/gtkmm/iconcontroller.cpp:187
 msgid "Future Keyframes Locked"
@@ -963,7 +964,7 @@ msgstr "Прошлые ключевые кадры заперты"
 
 #: ../src/gtkmm/canvasview.cpp:2828 ../src/gtkmm/iconcontroller.cpp:188
 msgid "No Keyframes Locked"
-msgstr "Нет запертых ключевых кадров"
+msgstr "Нет заблокированных ключевых кадров"
 
 #: ../src/gtkmm/canvasview.cpp:3587
 msgid "Change Waypoint Group"
@@ -1145,15 +1146,15 @@ msgstr "_Масштаб:"
 
 #: ../src/gtkmm/dialog_preview.cpp:129 ../src/gtkmm/renddesc.cpp:546
 msgid "_Frames per second"
-msgstr "_Кадров/с:"
+msgstr "_Кадров в секунду:"
 
 #: ../src/gtkmm/dialog_preview.cpp:138 ../src/gtkmm/renddesc.cpp:532
 msgid "Time Settings"
-msgstr "Временные параметры"
+msgstr "Параметры времени"
 
 #: ../src/gtkmm/dialog_preview.cpp:140 ../src/gtkmm/renddesc.cpp:534
 msgid "<b>Time Settings</b>"
-msgstr "<b>Временные параметры</b>"
+msgstr "<b>Параметры времени</b>"
 
 #: ../src/gtkmm/dialog_setup.cpp:73
 msgid "Synfig Studio Setup"
@@ -1165,11 +1166,11 @@ msgstr "Визуально линейный выбор цвета"
 
 #: ../src/gtkmm/dialog_setup.cpp:81
 msgid "Use Only a Single Thread"
-msgstr "Использовать только одну нить"
+msgstr "Использовать только один поток"
 
 #: ../src/gtkmm/dialog_setup.cpp:83
 msgid "Restrict Real-Valued Ducks to Top Right Quadrant"
-msgstr "Ограничить верхним правым квадрантом ручки с реальным значением"
+msgstr "Ограничить верхним правым квадрантом уТочки, задающие числовое значением"
 
 #: ../src/gtkmm/dialog_setup.cpp:84
 msgid "Scale New Imported Images to Fit Canvas"
@@ -1209,7 +1210,7 @@ msgstr "Пиксел"
 
 #: ../src/gtkmm/dialog_setup.cpp:181
 msgid "Points"
-msgstr "Пункт"
+msgstr "Точка"
 
 #: ../src/gtkmm/dialog_setup.cpp:182
 msgid "Inches"
@@ -1337,7 +1338,7 @@ msgstr "Количество кадров в секунду:"
 
 #: ../src/gtkmm/dialog_setup.cpp:289
 msgid "New Document FPS"
-msgstr "По умолчанию"
+msgstr "Частота кадров"
 
 #: ../src/gtkmm/dialog_setup.cpp:291
 msgid "Frames per second of the new created document"
@@ -1345,11 +1346,11 @@ msgstr "Количество кадров в секунду в каждом но
 
 #: ../src/gtkmm/dialog_setup.h:51
 msgid "Custom Size"
-msgstr "Заказной размер"
+msgstr "Другой размер"
 
 #: ../src/gtkmm/dialog_setup.h:54
 msgid "Custom fps"
-msgstr "Заказное количество"
+msgstr "Другоая частота кадров"
 
 #: ../src/gtkmm/dialog_soundselect.cpp:60
 msgid "Sound Select"
@@ -1361,7 +1362,7 @@ msgstr "Параметры звука"
 
 #: ../src/gtkmm/dialog_soundselect.cpp:68
 msgid "<b>Sound Parameters</b>"
-msgstr "<b>Параметры</b>"
+msgstr "<b>Параметры звука</b>"
 
 #: ../src/gtkmm/dialog_soundselect.cpp:76
 msgid "_Sound File"
@@ -1369,7 +1370,7 @@ msgstr "_Звуковой файл"
 
 #: ../src/gtkmm/dialog_soundselect.cpp:79
 msgid "Time _Offset"
-msgstr "_Смещение во времени"
+msgstr "_Смещение времени"
 
 #: ../src/gtkmm/dialog_tooloptions.cpp:56
 #: ../src/gtkmm/dialog_tooloptions.cpp:78
@@ -1458,7 +1459,7 @@ msgstr "Переход"
 
 #: ../src/gtkmm/dock_history.cpp:216 ../src/gtkmm/keyframetree.cpp:96
 msgid "(JMP)"
-msgstr "(ПХД)"
+msgstr "(перейти)"
 
 #: ../src/gtkmm/dock_history.cpp:228
 msgid "Action"
@@ -1473,7 +1474,8 @@ msgstr "Очистить историю"
 msgid ""
 "You will not be able to undo any changes that you have made!\n"
 "Are you sure you want to clear the undo stack?"
-msgstr "Вы не сможете "
+msgstr "Вы не сможете отменить сделанные ранее изменения!\n"
+"Уверены, что хотите очистить историю действий?"
 
 #: ../src/gtkmm/dock_history.cpp:284
 msgid ""
@@ -1682,7 +1684,7 @@ msgstr "Изолировать"
 
 #: ../src/gtkmm/iconcontroller.cpp:173 ../src/gtkmm/layeractionmanager.cpp:135
 msgid "Select All Child Layers"
-msgstr "Выбрать все слои-потомки"
+msgstr "Выбрать все вложенные слои"
 
 #: ../src/gtkmm/iconcontroller.cpp:181
 msgid "MetaData"
@@ -1690,27 +1692,27 @@ msgstr "Метаданные"
 
 #: ../src/gtkmm/iconcontroller.cpp:198 ../src/gtkmm/toggleducksdial.cpp:55
 msgid "Toggle position ducks"
-msgstr "Переключить ручки положения"
+msgstr "Переключить уТочки положения"
 
 #: ../src/gtkmm/iconcontroller.cpp:199 ../src/gtkmm/toggleducksdial.cpp:56
 msgid "Toggle vertex ducks"
-msgstr "Переключить ручки вершин"
+msgstr "Переключить уТочки вершин"
 
 #: ../src/gtkmm/iconcontroller.cpp:200 ../src/gtkmm/toggleducksdial.cpp:57
 msgid "Toggle tangent ducks"
-msgstr "Переключить ручки касательных"
+msgstr "Переключить уТочки касательных"
 
 #: ../src/gtkmm/iconcontroller.cpp:201 ../src/gtkmm/toggleducksdial.cpp:58
 msgid "Toggle radius ducks"
-msgstr "Переключить ручки радиусов"
+msgstr "Переключить уТочки радиусов"
 
 #: ../src/gtkmm/iconcontroller.cpp:202 ../src/gtkmm/toggleducksdial.cpp:59
 msgid "Toggle width ducks"
-msgstr "Переключить ручки ширины"
+msgstr "Переключить уТочки ширины"
 
 #: ../src/gtkmm/iconcontroller.cpp:203 ../src/gtkmm/toggleducksdial.cpp:60
 msgid "Toggle angle ducks"
-msgstr "Переключить ручки углов"
+msgstr "Переключить уТочки углов"
 
 #: ../src/gtkmm/iconcontroller.cpp:205
 msgid "Toggle show grid"
@@ -1738,7 +1740,7 @@ msgstr "Параметры предпросмотра"
 
 #: ../src/gtkmm/iconcontroller.cpp:214
 msgid "Render Options Dialog"
-msgstr "Параметры отрисовки"
+msgstr "Параметры визуализации"
 
 #: ../src/gtkmm/iconcontroller.cpp:216
 msgid "CVS Add"
@@ -1783,12 +1785,12 @@ msgstr "Векторный карандаш"
 #: ../src/gtkmm/iconcontroller.cpp:228 ../src/gtkmm/state_sketch.cpp:325
 #: ../src/gtkmm/state_sketch.cpp:399
 msgid "Sketch Tool"
-msgstr "Растровый карандаш"
+msgstr "Эскиз"
 
 #: ../src/gtkmm/iconcontroller.cpp:229 ../src/gtkmm/state_circle.cpp:432
 #: ../src/gtkmm/state_circle.cpp:496
 msgid "Circle Tool"
-msgstr "Круги и эллипсы"
+msgstr "Окружности"
 
 #: ../src/gtkmm/iconcontroller.cpp:230 ../src/gtkmm/state_rectangle.cpp:352
 #: ../src/gtkmm/state_rectangle.cpp:408
@@ -1797,7 +1799,7 @@ msgstr "Прямоугольник"
 
 #: ../src/gtkmm/iconcontroller.cpp:231 ../src/gtkmm/state_smoothmove.cpp:177
 msgid "SmoothMove Tool"
-msgstr "Перемещение"
+msgstr "Деформация"
 
 #: ../src/gtkmm/iconcontroller.cpp:232 ../src/gtkmm/state_scale.cpp:167
 #: ../src/gtkmm/state_scale.cpp:193
@@ -2050,7 +2052,7 @@ msgstr "На этом холсте нет ключевых кадров"
 
 #: ../src/gtkmm/layeractionmanager.cpp:129
 msgid "Amount"
-msgstr "Число"
+msgstr "Величина"
 
 #: ../src/gtkmm/layeractionmanager.cpp:365
 msgid "Paste"
@@ -2158,7 +2160,7 @@ msgstr "Остановить отрисовку"
 
 #: ../src/gtkmm/preview.cpp:382
 msgid "Re-Preview"
-msgstr "Открыть диалог параметров"
+msgstr "Пересчитать"
 
 #: ../src/gtkmm/preview.cpp:388
 msgid "Erase All"
@@ -2262,11 +2264,11 @@ msgstr "_Время начала:"
 
 #: ../src/gtkmm/renddesc.cpp:574
 msgid "Locks and Links"
-msgstr "Запирание и связи"
+msgstr "Блокировки и связи"
 
 #: ../src/gtkmm/renddesc.cpp:576
 msgid "<b>Locks and Links</b>"
-msgstr "<b>Запирание и связи</b>"
+msgstr "<b>Блокировки и связи</b>"
 
 #: ../src/gtkmm/renddesc.cpp:597
 msgid "Focus Point"
@@ -2282,7 +2284,7 @@ msgstr "_Точка фокусировки"
 
 #: ../src/gtkmm/render.cpp:63 ../src/gtkmm/render.cpp:179
 msgid "Render Settings"
-msgstr "Параметры отрисовки"
+msgstr "Параметры визуализации"
 
 #: ../src/gtkmm/render.cpp:69
 msgid "Use _current frame"
@@ -2354,7 +2356,7 @@ msgstr ""
 
 #: ../src/gtkmm/render.cpp:318
 msgid "Rendering "
-msgstr "Отрисовка"
+msgstr "Визуализация"
 
 #: ../src/gtkmm/render.cpp:346
 msgid "File rendered successfully"
@@ -2366,7 +2368,7 @@ msgstr "Увеличить разрешение для просмотра"
 
 #: ../src/gtkmm/resolutiondial.cpp:57
 msgid "Decrease Display Resolution"
-msgstr "Уменьшить разрешение для просмотра"
+msgstr "Уменьшить разрешение просмотра"
 
 #: ../src/gtkmm/resolutiondial.cpp:58
 msgid "Low Res"
@@ -2396,19 +2398,19 @@ msgstr "Создать кривую области"
 #: ../src/gtkmm/state_draw.cpp:414 ../src/gtkmm/state_polygon.cpp:326
 #: ../src/gtkmm/state_rectangle.cpp:343 ../src/gtkmm/state_star.cpp:443
 msgid "Create Outline BLine"
-msgstr "Создать кривую абриса"
+msgstr "Создать кривую контура"
 
 #: ../src/gtkmm/state_bline.cpp:363 ../src/gtkmm/state_circle.cpp:406
 #: ../src/gtkmm/state_polygon.cpp:327 ../src/gtkmm/state_rectangle.cpp:344
 #: ../src/gtkmm/state_star.cpp:444
 msgid "Create Curve Gradient BLine"
-msgstr "Создать градиентную кривую"
+msgstr "Создать градиент по кривой"
 
 #: ../src/gtkmm/state_bline.cpp:364 ../src/gtkmm/state_circle.cpp:407
 #: ../src/gtkmm/state_polygon.cpp:328 ../src/gtkmm/state_rectangle.cpp:345
 #: ../src/gtkmm/state_star.cpp:445
 msgid "Create Plant BLine"
-msgstr "Создать кривую растения"
+msgstr "Создать кривую с растениями"
 
 #: ../src/gtkmm/state_bline.cpp:365 ../src/gtkmm/state_circle.cpp:408
 #: ../src/gtkmm/state_polygon.cpp:329 ../src/gtkmm/state_star.cpp:446
@@ -2554,7 +2556,7 @@ msgstr ""
 #: ../src/gtkmm/state_bline.cpp:1378
 #: ../src/synfigapp/actions/blinepointtangentmerge.cpp:56
 msgid "Merge Tangents"
-msgstr "Объединить касательные"
+msgstr "Связать касательные"
 
 #: ../src/gtkmm/state_bline.cpp:1385
 #: ../src/synfigapp/actions/blinepointtangentsplit.cpp:56
@@ -2644,7 +2646,7 @@ msgstr ""
 
 #: ../src/gtkmm/state_draw.cpp:410
 msgid "Auto Loop"
-msgstr "Автоцикл"
+msgstr "Замыкать автоматически"
 
 #: ../src/gtkmm/state_draw.cpp:411
 msgid "Auto Extend"
@@ -2704,7 +2706,7 @@ msgstr ""
 
 #: ../src/gtkmm/state_gradient.cpp:271
 msgid "Gradient Type"
-msgstr "Тип градиент"
+msgstr "Тип градиента"
 
 #: ../src/gtkmm/state_gradient.cpp:272
 msgid "Determines the type of Gradient used"
@@ -2809,7 +2811,7 @@ msgstr "Отменить штрих"
 
 #: ../src/gtkmm/state_sketch.cpp:241
 msgid "Show Sketch"
-msgstr "Показывать эскиз"
+msgstr "Отображать эскиз"
 
 #: ../src/gtkmm/state_sketch.cpp:256 ../src/gtkmm/state_sketch.cpp:257
 msgid "Undo Last Stroke"
@@ -2818,7 +2820,7 @@ msgstr "Отменить последний штрих"
 #: ../src/gtkmm/state_sketch.cpp:280 ../src/gtkmm/state_sketch.cpp:281
 #: ../src/gtkmm/state_sketch.cpp:292 ../src/gtkmm/state_sketch.cpp:293
 msgid "Save Sketch As..."
-msgstr "Очистить эскиз как..."
+msgstr "Сохранить эскиз как..."
 
 #: ../src/gtkmm/state_sketch.cpp:304 ../src/gtkmm/state_sketch.cpp:305
 msgid "Open a Sketch"
@@ -3019,7 +3021,7 @@ msgstr "/Contact"
 #. TRANSLATORS: Help menu entry
 #: ../src/gtkmm/toolbox.cpp:273
 msgid "Keyboard Shortcuts"
-msgstr "Клавиатурные комбинации"
+msgstr "Комбинации клавиш"
 
 #. TRANSLATORS: a wiki page
 #: ../src/gtkmm/toolbox.cpp:273
@@ -3047,7 +3049,7 @@ msgstr "_Справка"
 
 #: ../src/gtkmm/toolbox.cpp:290
 msgid "New..."
-msgstr "Создать"
+msgstr "Создать..."
 
 #: ../src/gtkmm/toolbox.cpp:291
 msgid "Open..."
@@ -3071,7 +3073,7 @@ msgstr "О Synfig Studio"
 
 #: ../src/gtkmm/widget_canvaschooser.cpp:115
 msgid "Other..."
-msgstr "Другое..."
+msgstr "Другой..."
 
 #: ../src/gtkmm/widget_canvaschooser.cpp:136
 msgid "Choose Canvas"
@@ -3135,11 +3137,11 @@ msgstr "V"
 
 #: ../src/gtkmm/widget_coloredit.cpp:382
 msgid "Alpha"
-msgstr "Альфа"
+msgstr "Прозрачность"
 
 #: ../src/gtkmm/widget_defaults.cpp:215
 msgid "Outline Color"
-msgstr "Цвет обводки"
+msgstr "Цвет контура"
 
 #: ../src/gtkmm/widget_defaults.cpp:223
 msgid "Fill Color"
@@ -3271,11 +3273,11 @@ msgstr "Интерполяция на в_ыходе"
 
 #: ../src/gtkmm/widget_waypoint.cpp:175
 msgid "TCB Parameters"
-msgstr "Параметры TCB"
+msgstr "TCB-параметры"
 
 #: ../src/gtkmm/widget_waypoint.cpp:177
 msgid "<b>TCB Parameter</b>"
-msgstr "<b>Параметр TCB</b>"
+msgstr "<b>TCB-параметр</b>"
 
 #: ../src/gtkmm/widget_waypoint.cpp:189
 msgid "T_ension"
@@ -3327,16 +3329,16 @@ msgstr ""
 
 #: ../src/gtkmm/workarea.cpp:2339
 msgid "Rendering..."
-msgstr "Отрисовка..."
+msgstr "Визуализация..."
 
 #: ../src/gtkmm/workarea.cpp:2366 ../src/gtkmm/workarea.cpp:2458
 msgid "Render Failed"
-msgstr "Не удалось отрисовать"
+msgstr "Не удалось визуализировать"
 
 #: ../src/gtkmm/workarea.cpp:2440
 #, c-format
 msgid "Rendering canvas %s..."
-msgstr "Отрисовка холста %s..."
+msgstr "Визуализация холста %s..."
 
 #: ../src/gtkmm/zoomdial.cpp:55
 msgid "Zoom In"
@@ -4201,8 +4203,7 @@ msgstr ""
 
 #: ../src/synfigapp/actions/valuedescset.cpp:542
 msgid "You must be in Animate-Editing-Mode to directly manipulate this value"
-msgstr ""
-"Для прямого редактирования этого значения необходимо быть в режиме анимации"
+msgstr "Для прямого редактирования этого значения необходимо быть в режиме анимации"
 
 #: ../src/synfigapp/actions/valuedescset.cpp:564
 msgid "Unsupported ValueDesc type"
@@ -4286,11 +4287,11 @@ msgstr ""
 
 #: ../src/synfigapp/actions/valuenodedynamiclistrotateorder.cpp:50
 msgid "Rotate Order"
-msgstr "Порядок вращения"
+msgstr "Сменить порядок"
 
 #: ../src/synfigapp/actions/valuenodedynamiclistunloop.cpp:50
 msgid "Unloop"
-msgstr "Снять петлю"
+msgstr "Разомкнуть"
 
 #: ../src/synfigapp/actions/valuenodelinkconnect.cpp:49
 msgid "Connect ValueNode Link"
@@ -4508,7 +4509,7 @@ msgstr ""
 #: ../src/synfigapp/action_system.cpp:148
 #: ../src/synfigapp/action_system.cpp:159
 msgid "Failed"
-msgstr ". Неуспешно."
+msgstr "Неуспешно."
 
 #: ../src/synfigapp/action_system.cpp:192
 msgid "Successful"
@@ -4601,7 +4602,7 @@ msgstr ""
 
 #: ../src/synfigapp/canvasinterface.cpp:641
 msgid "I don't know how to open images of this type -- "
-msgstr "Программа не умеет открывать файлы с расширением "
+msgstr "Программа не умеет открывать файлы формата "
 
 #: ../src/synfigapp/canvasinterface.cpp:808
 #, c-format
