@@ -38,6 +38,7 @@
 #include <synfig/valuenode_bline.h>
 
 #include "state_polygon.h"
+#include "state_normal.h"
 #include "canvasview.h"
 #include "workarea.h"
 #include "app.h"
@@ -171,7 +172,7 @@ public:
 	Smach::event_result event_layer_selection_changed_handler(const Smach::event& /*x*/)
 	{
 		if(egress_on_selection_change)
-			throw Smach::egress_exception();
+			throw &state_normal; //throw Smach::egress_exception();
 		return Smach::RESULT_OK;
 	}
 
@@ -368,7 +369,7 @@ StatePolygon_Context::StatePolygon_Context(CanvasView* canvas_view):
 	// Refresh the work area
 	get_work_area()->queue_draw();
 
-	get_canvas_view()->work_area->set_cursor(Gdk::CROSSHAIR);
+	get_work_area()->set_cursor(Gdk::CROSSHAIR);
 
 	// Hide the tables if they are showing
 	prev_table_status=get_canvas_view()->tables_are_visible();
@@ -430,7 +431,7 @@ StatePolygon_Context::~StatePolygon_Context()
 
 	App::dialog_tool_options->clear();
 
-	get_canvas_view()->work_area->reset_cursor();
+	get_work_area()->reset_cursor();
 
 	// Enable the time bar
 	get_canvas_view()->set_sensitive_timebar(true);
@@ -899,6 +900,7 @@ void
 StatePolygon_Context::refresh_ducks()
 {
 	get_work_area()->clear_ducks();
+	get_work_area()->queue_draw();
 
 	if(polygon_point_list.empty()) return;
 

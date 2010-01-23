@@ -36,6 +36,7 @@
 #include <synfig/valuenode_dynamiclist.h>
 
 #include "state_bline.h"
+#include "state_normal.h"
 #include "canvasview.h"
 #include "workarea.h"
 #include "app.h"
@@ -205,7 +206,7 @@ public:
 	Smach::event_result event_layer_selection_changed_handler(const Smach::event& /*x*/)
 	{
 		if(egress_on_selection_change)
-			throw Smach::egress_exception();
+			throw &state_normal; //throw Smach::egress_exception();
 		return Smach::RESULT_OK;
 	}
 
@@ -408,7 +409,7 @@ StateBLine_Context::StateBLine_Context(CanvasView* canvas_view):
 
 	// Connect a signal
 	//get_work_area()->signal_user_click().connect(sigc::mem_fun(*this,&studio::StateBLine_Context::on_user_click));
-	get_canvas_view()->work_area->set_cursor(Gdk::CROSSHAIR);
+	get_work_area()->set_cursor(Gdk::CROSSHAIR);
 
 	App::toolbox->refresh();
 }
@@ -456,7 +457,7 @@ StateBLine_Context::~StateBLine_Context()
 	save_settings();
 	App::dialog_tool_options->clear();
 
-	get_canvas_view()->work_area->reset_cursor();
+	get_work_area()->reset_cursor();
 
 	// Restore layer clicking
 	get_work_area()->set_allow_layer_clicks(prev_workarea_layer_status_);

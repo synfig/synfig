@@ -1,12 +1,11 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file state_null.h
-**	\brief Null State Header
+/*!	\file state_rotate.h
+**	\brief Template Header
 **
 **	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
-**	Copyright (c) 2009 Nikita Kitaev
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -23,8 +22,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_STATE_NULL_H
-#define __SYNFIG_STATE_NULL_H
+#ifndef __SYNFIG_STUDIO_STATE_ROTATE_H
+#define __SYNFIG_STUDIO_STATE_ROTATE_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -39,16 +38,16 @@
 
 namespace studio {
 
-class StateNull_Context;
+class StateRotate_Context;
 
-class StateNull : public Smach::state<StateNull_Context>
+class StateRotate : public Smach::state<StateRotate_Context>
 {
 public:
-	StateNull();
-	~StateNull();
-}; // END of class StateNull
+	StateRotate();
+	~StateRotate();
+}; // END of class StateRotate
 
-extern StateNull state_null;
+extern StateRotate state_rotate;
 
 }; // END of namespace studio
 

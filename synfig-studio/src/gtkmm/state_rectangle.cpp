@@ -38,6 +38,7 @@
 #include <synfig/valuenode_bline.h>
 
 #include "state_rectangle.h"
+#include "state_normal.h"
 #include "canvasview.h"
 #include "workarea.h"
 #include "app.h"
@@ -176,7 +177,7 @@ public:
 	Smach::event_result event_layer_selection_changed_handler(const Smach::event& /*x*/)
 	{
 		if(egress_on_selection_change)
-			throw Smach::egress_exception();
+			throw &state_normal; //throw Smach::egress_exception();
 		return Smach::RESULT_OK;
 	}
 
@@ -385,7 +386,7 @@ StateRectangle_Context::StateRectangle_Context(CanvasView* canvas_view):
 	// Refresh the work area
 	get_work_area()->queue_draw();
 
-	get_canvas_view()->work_area->set_cursor(Gdk::CROSSHAIR);
+	get_work_area()->set_cursor(Gdk::DOTBOX);
 
 	// Hide the tables if they are showing
 	//prev_table_status=get_canvas_view()->tables_are_visible();
@@ -423,7 +424,7 @@ StateRectangle_Context::~StateRectangle_Context()
 	// Restore layer clicking
 	get_work_area()->set_allow_layer_clicks(prev_workarea_layer_status_);
 
-	get_canvas_view()->work_area->reset_cursor();
+	get_work_area()->reset_cursor();
 
 	App::dialog_tool_options->clear();
 
@@ -444,7 +445,9 @@ StateRectangle_Context::~StateRectangle_Context()
 Smach::event_result
 StateRectangle_Context::event_stop_handler(const Smach::event& /*x*/)
 {
-	throw Smach::egress_exception();
+	//throw Smach::egress_exception();
+	throw &state_normal;
+	return Smach::RESULT_OK;
 }
 
 Smach::event_result

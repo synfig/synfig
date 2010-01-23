@@ -38,6 +38,7 @@
 
 #include "state_draw.h"
 #include "state_stroke.h"
+#include "state_normal.h"
 #include "canvasview.h"
 #include "workarea.h"
 #include "app.h"
@@ -487,7 +488,7 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	// Connect a signal
 	//get_work_area()->signal_user_click().connect(sigc::mem_fun(*this,&studio::StateDraw_Context::on_user_click));
 
-	get_canvas_view()->work_area->set_cursor(Gdk::PENCIL);
+	get_work_area()->set_cursor(Gdk::PENCIL);
 
 	App::toolbox->refresh();
 
@@ -544,7 +545,7 @@ StateDraw_Context::~StateDraw_Context()
 
 	get_work_area()->set_type_mask(old_duckmask);
 
-	get_canvas_view()->work_area->reset_cursor();
+	get_work_area()->reset_cursor();
 
 	// Restore layer clicking
 	get_work_area()->set_allow_layer_clicks(prev_workarea_layer_status_);
@@ -567,7 +568,9 @@ StateDraw_Context::~StateDraw_Context()
 Smach::event_result
 StateDraw_Context::event_stop_handler(const Smach::event& /*x*/)
 {
-	throw Smach::egress_exception();
+	//throw Smach::egress_exception();
+	throw &state_normal;
+	return Smach::RESULT_OK;
 }
 
 Smach::event_result

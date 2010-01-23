@@ -38,6 +38,7 @@
 
 
 #include "state_zoom.h"
+#include "state_normal.h"
 #include "event_mouse.h"
 #include "canvasview.h"
 #include "workarea.h"
@@ -136,7 +137,7 @@ StateZoom_Context::StateZoom_Context(CanvasView* canvas_view):
 
 	// Connect a signal
 	//get_work_area()->signal_user_click().connect(sigc::mem_fun(*this,&studio::StateZoom_Context::on_user_click));
-	get_canvas_view()->work_area->set_cursor(Gdk::CROSSHAIR);
+	get_work_area()->set_cursor(Gdk::CROSSHAIR);
 
 	App::toolbox->refresh();
 }
@@ -145,7 +146,7 @@ StateZoom_Context::~StateZoom_Context()
 {
 	// Restore layer clicking
 	get_work_area()->set_allow_layer_clicks(prev_workarea_layer_status_);
-	get_canvas_view()->work_area->reset_cursor();
+	get_work_area()->reset_cursor();
 
 	// Enable the time bar
 	//get_canvas_view()->set_sensitive_timebar(true);
@@ -164,7 +165,9 @@ StateZoom_Context::~StateZoom_Context()
 Smach::event_result
 StateZoom_Context::event_stop_handler(const Smach::event& /*x*/)
 {
-	throw Smach::egress_exception();
+	//throw Smach::egress_exception();
+	throw &state_normal;
+	return Smach::RESULT_OK;
 }
 
 Smach::event_result

@@ -34,6 +34,7 @@
 #include <gtkmm/entry.h>
 
 #include "state_text.h"
+#include "state_normal.h"
 #include "canvasview.h"
 #include "workarea.h"
 #include "app.h"
@@ -132,7 +133,7 @@ public:
 	Smach::event_result event_layer_selection_changed_handler(const Smach::event& /*x*/)
 	{
 		if(egress_on_selection_change)
-			throw Smach::egress_exception();
+			throw &state_normal; //throw Smach::egress_exception();
 		return Smach::RESULT_OK;
 	}
 
@@ -316,7 +317,7 @@ StateText_Context::StateText_Context(CanvasView *canvas_view):
 
 	// Connect a signal
 	//get_work_area()->signal_user_click().connect(sigc::mem_fun(*this,&studio::StateText_Context::on_user_click));
-	get_canvas_view()->work_area->set_cursor(Gdk::CROSSHAIR);
+	get_work_area()->set_cursor(Gdk::XTERM);
 
 	App::toolbox->refresh();
 }
@@ -343,7 +344,7 @@ StateText_Context::~StateText_Context()
 
 	// Restore layer clicking
 	get_work_area()->set_allow_layer_clicks(prev_workarea_layer_status_);
-	get_canvas_view()->work_area->reset_cursor();
+	get_work_area()->reset_cursor();
 
 	App::dialog_tool_options->clear();
 
@@ -357,7 +358,9 @@ StateText_Context::~StateText_Context()
 Smach::event_result
 StateText_Context::event_stop_handler(const Smach::event& /*x*/)
 {
-	throw Smach::egress_exception();
+	//throw Smach::egress_exception();
+	throw &state_normal;
+	return Smach::RESULT_OK;
 }
 
 Smach::event_result

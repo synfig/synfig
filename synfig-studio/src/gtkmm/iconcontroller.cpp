@@ -164,7 +164,6 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	INIT_STOCK_ICON(layer,"layer_icon."IMAGE_EXT,_("Layer"));
 	INIT_STOCK_ICON(layer_pastecanvas,"pastecanvas_icon."IMAGE_EXT,_("Paste Canvas"));
 	INIT_STOCK_ICON(plant,"plant_icon."IMAGE_EXT,"");
-	INIT_STOCK_ICON(rotate,"rotate_icon."IMAGE_EXT,"");
 	INIT_STOCK_ICON(group,"group_icon."IMAGE_EXT,_("Group"));
 	INIT_STOCK_ICON(grid_enable,"grid_enable_icon."IMAGE_EXT,_("Show Grid"));
 	INIT_STOCK_ICON(grid_disable,"grid_disable_icon."IMAGE_EXT,_("Hide Grid"));
@@ -221,7 +220,6 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	INIT_STOCK_ICON_CLONE(cvs_revert,"gtk-revert",_("CVS Revert"));
 
 	// Tools
-	INIT_STOCK_ICON(null,"null_icon."IMAGE_EXT,_("Null Tool"));
 	INIT_STOCK_ICON(normal,"normal_icon."IMAGE_EXT,_("Normal Tool"));
 	INIT_STOCK_ICON(transform,"transform_icon."IMAGE_EXT,_("Transform Tool"));
 	INIT_STOCK_ICON(polygon,"polyline_icon."IMAGE_EXT,_("Polygon Tool"));
@@ -233,7 +231,9 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	INIT_STOCK_ICON(circle,"circle_icon."IMAGE_EXT,_("Circle Tool"));
 	INIT_STOCK_ICON(rectangle,"rectangle_icon."IMAGE_EXT,_("Rectangle Tool"));
 	INIT_STOCK_ICON(smooth_move,"smooth_move_icon."IMAGE_EXT,_("SmoothMove Tool"));
+	INIT_STOCK_ICON(rotate,"rotate_icon."IMAGE_EXT,"Rotate Tool");
 	INIT_STOCK_ICON(width,"width_icon."IMAGE_EXT,_("Width Tool"));
+	INIT_STOCK_ICON(scale,"scale_icon."IMAGE_EXT,"Scale Tool");
 	INIT_STOCK_ICON(zoom,"zoom_icon."IMAGE_EXT,_("Zoom Tool"));
 	INIT_STOCK_ICON(info,"info_icon."IMAGE_EXT,_("Info Tool"));
 	INIT_STOCK_ICON(mirror,"mirror_icon."IMAGE_EXT,_("Mirror Tool"));

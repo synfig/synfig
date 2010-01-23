@@ -36,6 +36,7 @@
 #include <synfig/valuenode_dynamiclist.h>
 
 #include "state_sketch.h"
+#include "state_normal.h"
 #include "state_stroke.h"
 #include "canvasview.h"
 #include "workarea.h"
@@ -336,7 +337,7 @@ StateSketch_Context::StateSketch_Context(CanvasView* canvas_view):
 	// Turn off layer clicking
 	get_work_area()->set_allow_layer_clicks(false);
 
-	get_canvas_view()->work_area->set_cursor(Gdk::PENCIL);
+	get_work_area()->set_cursor(Gdk::PENCIL);
 
 	// Turn off duck clicking
 	get_work_area()->set_allow_duck_clicks(false);
@@ -362,7 +363,7 @@ StateSketch_Context::StateSketch_Context(CanvasView* canvas_view):
 
 StateSketch_Context::~StateSketch_Context()
 {
-	get_canvas_view()->work_area->reset_cursor();
+	get_work_area()->reset_cursor();
 
 	App::dialog_tool_options->clear();
 
@@ -465,7 +466,9 @@ StateSketch_Context::event_yield_tool_options(const Smach::event& /*x*/)
 Smach::event_result
 StateSketch_Context::event_stop_handler(const Smach::event& /*x*/)
 {
-	throw Smach::egress_exception();
+	//throw Smach::egress_exception();
+	throw &state_normal;
+	return Smach::RESULT_OK;
 }
 
 Smach::event_result
