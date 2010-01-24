@@ -738,6 +738,10 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	hruler = manage(new class Gtk::HRuler());
 	vruler->set_metric(Gtk::PIXELS);
 	hruler->set_metric(Gtk::PIXELS);
+	Pango::FontDescription fd(hruler->get_style()->get_font());
+	fd.set_size(Pango::SCALE*8);
+	vruler->modify_font(fd);
+	hruler->modify_font(fd);
 	vruler->show();
 	hruler->show();
 	attach(*vruler, 0, 1, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
@@ -750,6 +754,7 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	// Create the menu button
 	menubutton=manage(new class Gtk::Button());
 	Gtk::Arrow *arrow1 = manage(new class Gtk::Arrow(Gtk::ARROW_RIGHT, Gtk::SHADOW_OUT));
+	arrow1->set_size_request(11,11);
 	menubutton->add(*arrow1);
 	menubutton->show_all();
 	menubutton->signal_pressed().connect(sigc::mem_fun(*this, &WorkArea::popup_menu));
