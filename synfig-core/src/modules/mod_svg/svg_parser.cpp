@@ -1641,9 +1641,9 @@ Svg_parser::newMatrix(float a,float b,float c,float d,float e,float f){
 Matrix*
 Svg_parser::newMatrix(const String mvector){
 	if(!mvector.empty()){
-		Matrix* data=(Matrix*)malloc(sizeof(Matrix));
 		std::vector<String> tokens=tokenize(mvector,",");
 		if(tokens.size()!=6) return newMatrix(1,0,0,1,0,0);
+		Matrix* data=(Matrix*)malloc(sizeof(Matrix));
 		data->a=atof(tokens.at(0).data());
 		data->b=atof(tokens.at(1).data());
 		data->c=atof(tokens.at(2).data());
