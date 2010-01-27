@@ -162,7 +162,9 @@ class Layer : public Node
 
 public:
 
-	//! Type that represents a pointer to a layer's constructor
+	//! Type that represents a pointer to a Layer's constructor.
+	/*! As a pointer to the constructor, it represents a "factory" of layers.
+	*/
 	typedef Layer* (*Factory)();
 
 	struct BookEntry
@@ -188,6 +190,13 @@ public:
 			version(version) { }
 	};
 
+	//! Book of types of layers indexed by layer type name.
+	/*! While the sifz file is read, each time a new layer entry is found,
+	**  the factory constructor that the "factory" pointer member of the 
+	**  "BookEntry" struct points to, is called, and a new layer of that type
+	**  is created.
+	**  \sa Layer::Factory
+	*/
 	typedef std::map<String,BookEntry> Book;
 
 	static void register_in_book(const BookEntry &);

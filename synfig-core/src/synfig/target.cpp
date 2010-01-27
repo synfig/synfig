@@ -54,6 +54,7 @@ Target::subsys_init()
 	default_gamma_=new synfig::Gamma(1.0/2.2);
 	//default_gamma_->set_black_level(0.05); // Default to 5% black level.
 
+	// At least one target must be available.
 	book()["null"]=std::pair<synfig::Target::Factory,String>(Target_Null::create,"null");
 	ext_book()["null"]="null";
 	book()["null-tile"]=std::pair<synfig::Target::Factory,String>(Target_Null_Tile::create,"null-tile");

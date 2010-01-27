@@ -102,9 +102,16 @@ public:
 	*/
 
 public:
+	//! Type that represents a pointer to a Target's constructor.
+	/*! As a pointer to the constructor, it represents a "factory" of targets.
+	**  Receives the output filename (including path).
+	*/
 	typedef Target* (*Factory)(const char *filename);
 
-	//! A type for a map of targets, indexed by the name of the Target
+	//! Book of types of targets indexed by the name of the Target.
+	/*! Each entry contains the Target constructor pointer and the output 
+	**  filename string (including path).
+	*/
 	typedef std::map<String,std::pair<Factory,String> > Book;
 
 	typedef std::map<String,String> ExtBook;
