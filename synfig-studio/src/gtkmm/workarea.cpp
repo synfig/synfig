@@ -85,8 +85,6 @@ using namespace studio;
 
 /* === M A C R O S ========================================================= */
 
-#define RULER_FIX		15
-
 #ifndef stratof
 #define stratof(X) (atof((X).c_str()))
 #define stratoi(X) (atoi((X).c_str()))
@@ -647,7 +645,7 @@ public:
 
 
 WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interface):
-	Gtk::Table(4+RULER_FIX, 3, false),
+	Gtk::Table(3, 3, false), /* 3 columns by 3 rows*/
 	canvas_interface(canvas_interface),
 	canvas(canvas_interface->get_canvas()),
 	scrollx_adjustment(0,-4,4,0.01,0.1),
@@ -730,7 +728,7 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 
 	drawing_frame->show();
 
-	attach(*drawing_frame, 1, 3+RULER_FIX, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	attach(*drawing_frame, 1, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
 	Gtk::IconSize iconsize=Gtk::IconSize::from_name("synfig-small_icon");
 
@@ -740,10 +738,14 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	hruler = manage(new class Gtk::HRuler());
 	vruler->set_metric(Gtk::PIXELS);
 	hruler->set_metric(Gtk::PIXELS);
+	Pango::FontDescription fd(hruler->get_style()->get_font());
+	fd.set_size(Pango::SCALE*8);
+	vruler->modify_font(fd);
+	hruler->modify_font(fd);
 	vruler->show();
 	hruler->show();
 	attach(*vruler, 0, 1, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	attach(*hruler, 1, 3+RULER_FIX, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+	attach(*hruler, 1, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 	hruler->signal_event().connect(sigc::mem_fun(*this, &WorkArea::on_hruler_event));
 	vruler->signal_event().connect(sigc::mem_fun(*this, &WorkArea::on_vruler_event));
 	hruler->add_events(Gdk::BUTTON1_MOTION_MASK | Gdk::BUTTON2_MOTION_MASK |Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK|Gdk::POINTER_MOTION_MASK);
@@ -752,27 +754,32 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	// Create the menu button
 	menubutton=manage(new class Gtk::Button());
 	Gtk::Arrow *arrow1 = manage(new class Gtk::Arrow(Gtk::ARROW_RIGHT, Gtk::SHADOW_OUT));
+	arrow1->set_size_request(10,10);
 	menubutton->add(*arrow1);
 	menubutton->show_all();
 	menubutton->signal_pressed().connect(sigc::mem_fun(*this, &WorkArea::popup_menu));
 	attach(*menubutton, 0, 1, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
 
-
+	Gtk::HBox *hbox = manage(new class Gtk::HBox(false, 0));
 
 	Gtk::VScrollbar *vscrollbar1 = manage(new class Gtk::VScrollbar(*get_scrolly_adjustment()));
 	Gtk::HScrollbar *hscrollbar1 = manage(new class Gtk::HScrollbar(*get_scrollx_adjustment()));
 	vscrollbar1->show();
-	hscrollbar1->show();
-	attach(*vscrollbar1, 3+RULER_FIX, 4+RULER_FIX, 1, 2, Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	attach(*hscrollbar1, 2+RULER_FIX, 3+RULER_FIX, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0);
+	attach(*vscrollbar1, 2, 3, 1, 2, Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
 	ZoomDial *zoomdial=manage(new class ZoomDial(iconsize));
 	zoomdial->signal_zoom_in().connect(sigc::mem_fun(*this, &studio::WorkArea::zoom_in));
 	zoomdial->signal_zoom_out().connect(sigc::mem_fun(*this, &studio::WorkArea::zoom_out));
 	zoomdial->signal_zoom_fit().connect(sigc::mem_fun(*this, &studio::WorkArea::zoom_fit));
 	zoomdial->signal_zoom_norm().connect(sigc::mem_fun(*this, &studio::WorkArea::zoom_norm));
+
+	hbox->pack_end(*hscrollbar1, Gtk::PACK_EXPAND_WIDGET,0);
+	hscrollbar1->show();
+	hbox->pack_start(*zoomdial, Gtk::PACK_SHRINK,0);
 	zoomdial->show();
-	attach(*zoomdial, 0, 2+RULER_FIX, 2, 3, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
+
+	attach(*hbox, 0, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+	hbox->show();
 
 	drawing_area->add_events(Gdk::KEY_PRESS_MASK | Gdk::KEY_RELEASE_MASK);
 	add_events(Gdk::KEY_PRESS_MASK);
