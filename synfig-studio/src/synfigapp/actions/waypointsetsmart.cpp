@@ -310,8 +310,8 @@ Action::WaypointSetSmart::enclose_waypoint(const synfig::Waypoint& waypoint)
 			try
 			{
 				value_node->find(keyframe.get_time());
-				synfig::info(__FILE__":%d: time=%s",__LINE__,keyframe.get_time().get_string().c_str());
-				synfig::info(__FILE__":%d: waypointtime=%s",__LINE__,value_node->find(keyframe.get_time())->get_time().get_string().c_str());
+				//synfig::info(__FILE__":%d: time=%s",__LINE__,keyframe.get_time().get_string().c_str());
+				//synfig::info(__FILE__":%d: waypointtime=%s",__LINE__,value_node->find(keyframe.get_time())->get_time().get_string().c_str());
 
 			}
 			catch(synfig::Exception::NotFound)
