@@ -51,48 +51,15 @@
 #include <synfig/main.h>
 #include <synfig/guid.h>
 #include <autorevision.h>
+#include "definitions.h"
+#include "progress.h"
+#include "renderprogress.h"
+#include "job.h"
 #endif
 
 using namespace std;
 using namespace etl;
 using namespace synfig;
-
-/* === M A C R O S ========================================================= */
-
-#ifdef ENABLE_NLS
-#undef _
-#define _(x) gettext(x)
-#else
-#undef _
-#define _(x) (x)
-#endif
-
-enum exit_code
-{
-	SYNFIGTOOL_OK				= 0,
-	SYNFIGTOOL_FILENOTFOUND		= 1,
-	SYNFIGTOOL_BORED			= 2,
-	SYNFIGTOOL_HELP				= 3,
-	SYNFIGTOOL_UNKNOWNARGUMENT	= 4,
-	SYNFIGTOOL_UNKNOWNERROR		= 5,
-	SYNFIGTOOL_INVALIDTARGET	= 6,
-	SYNFIGTOOL_RENDERFAILURE	= 7,
-	SYNFIGTOOL_BLANK			= 8,
-	SYNFIGTOOL_BADVERSION		= 9,
-	SYNFIGTOOL_MISSINGARGUMENT	=10
-};
-
-#ifndef VERSION
-#define VERSION "unknown"
-#define PACKAGE "synfig-tool"
-#endif
-
-#ifdef DEFAULT_QUALITY
-#undef DEFAULT_QUALITY
-#endif
-
-#define DEFAULT_QUALITY		2
-#define VERBOSE_OUT(x) if(verbosity>=(x))std::cerr
 
 /* === G L O B A L S ======================================================= */
 
@@ -101,181 +68,12 @@ int verbosity=0;
 bool be_quiet=false;
 bool print_benchmarks=false;
 
-/* === M E T H O D S ======================================================= */
-
-class Progress : public synfig::ProgressCallback
-{
-	const char *program;
-
-public:
-
-	Progress(const char *name):program(name) { }
-
-	virtual bool
-	task(const String &task)
-	{
-		VERBOSE_OUT(1)<<program<<": "<<task<<std::endl;
-		return true;
-	}
-
-	virtual bool
-	error(const String &task)
-	{
-		std::cerr<<program<<": "<<_("error")<<": "<<task<<std::endl;
-		return true;
-	}
-
-	virtual bool
-	warning(const String &task)
-	{
-		std::cerr<<program<<": "<<_("warning")<<": "<<task<<std::endl;
-		return true;
-	}
-
-	virtual bool
-	amount_complete(int /*current*/, int /*total*/)
-	{
-		return true;
-	}
-};
-
-class RenderProgress : public synfig::ProgressCallback
-{
-	string taskname;
-
-	etl::clock clk;
-	int clk_scanline; // The scanline at which the clock was reset
-	etl::clock clk2;
-
-	float last_time;
-public:
-
-	RenderProgress():clk_scanline(0), last_time(0) { }
-
-	virtual bool
-	task(const String &thetask)
-	{
-		taskname=thetask;
-		return true;
-	}
-
-	virtual bool
-	error(const String &task)
-	{
-		std::cout<<_("error")<<": "<<task<<std::endl;
-		return true;
-	}
-
-	virtual bool
-	warning(const String &task)
-	{
-		std::cout<<_("warning")<<": "<<task<<std::endl;
-		return true;
-	}
-
-	virtual bool
-	amount_complete(int scanline, int h)
-	{
-		if(be_quiet)return true;
-		if(scanline!=h)
-		{
-			const float time(clk()*(float)(h-scanline)/(float)(scanline-clk_scanline));
-			const float delta(time-last_time);
-
-			int weeks=0,days=0,hours=0,minutes=0,seconds=0;
-
-			last_time=time;
-
-			if(clk2()<0.2)
-				return true;
-			clk2.reset();
-
-			if(scanline)
-				seconds=(int)time+1;
-			else
-			{
-				//cerr<<"reset"<<endl;
-				clk.reset();
-				clk_scanline=scanline;
-			}
-
-			if(seconds<0)
-			{
-				clk.reset();
-				clk_scanline=scanline;
-				seconds=0;
-			}
-			while(seconds>=60)
-				minutes++,seconds-=60;
-			while(minutes>=60)
-				hours++,minutes-=60;
-			while(hours>=24)
-				days++,hours-=24;
-			while(days>=7)
-				weeks++,days-=7;
-
-			cerr<<taskname<<": "<<_("Line")<<" "<<scanline<<_(" of ")<<h<<" -- ";
-			//cerr<<time/(h-clk_scanline)<<" ";
-			/*
-			if(delta>=-time/(h-clk_scanline)  )
-				cerr<<">";
-			*/
-			if(delta>=0 && clk()>4.0 && scanline>clk_scanline+200)
-			{
-				//cerr<<"reset"<<endl;
-				clk.reset();
-				clk_scanline=scanline;
-			}
-
-			if(weeks)
-				cerr<<weeks<<"w ";
-			if(days)
-				cerr<<days<<"d ";
-			if(hours)
-				cerr<<hours<<"h ";
-			if(minutes)
-				cerr<<minutes<<"m ";
-			if(seconds)
-				cerr<<seconds<<"s ";
-
-			cerr<<"           \r";
-		}
-		else
-			cerr<<taskname<<": "<<_("DONE")<<"                        "<<endl;;
-		return true;
-	}
-};
-
-struct Job
-{
-	String filename;
-	String outfilename;
-
-	RendDesc desc;
-
-	Canvas::Handle root;
-	Canvas::Handle canvas;
-	Target::Handle target;
-
-	int quality;
-	bool sifout;
-	bool list_canvases;
-
-	bool canvas_info, canvas_info_all, canvas_info_time_start, canvas_info_time_end, canvas_info_frame_rate,
-		 canvas_info_frame_start, canvas_info_frame_end, canvas_info_w, canvas_info_h, canvas_info_image_aspect,
-		 canvas_info_pw, canvas_info_ph, canvas_info_pixel_aspect, canvas_info_tl, canvas_info_br,
-		 canvas_info_physical_w, canvas_info_physical_h, canvas_info_x_res, canvas_info_y_res, canvas_info_span,
-		 canvas_info_interlaced, canvas_info_antialias, canvas_info_clamp, canvas_info_flags, canvas_info_focus,
-		 canvas_info_bg_color, canvas_info_metadata;
-
-	Job()
-	{
-		canvas_info = canvas_info_all = canvas_info_time_start = canvas_info_time_end = canvas_info_frame_rate = canvas_info_frame_start = canvas_info_frame_end = canvas_info_w = canvas_info_h = canvas_info_image_aspect = canvas_info_pw = canvas_info_ph = canvas_info_pixel_aspect = canvas_info_tl = canvas_info_br = canvas_info_physical_w = canvas_info_physical_h = canvas_info_x_res = canvas_info_y_res = canvas_info_span = canvas_info_interlaced = canvas_info_antialias = canvas_info_clamp = canvas_info_flags = canvas_info_focus = canvas_info_bg_color = canvas_info_metadata = false;
-	};
-};
+/* === T Y P E D E F S ===================================================== */
 
 typedef list<String> arg_list_t;
 typedef list<Job> job_list_t;
+
+/* === M E T H O D S ======================================================= */
 
 void guid_test()
 {
