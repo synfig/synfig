@@ -382,116 +382,100 @@ int extract_arg_cluster(arg_list_t &arg_list,arg_list_t &cluster)
 	return SYNFIGTOOL_OK;
 }
 
+/*! Extract a parameter from the argument list
+ *
+ * \param arg_list Argument list from wich the parameter is extracted.
+ * \param iter Iterator pointing to the argument list parameter to be
+ * extracted.
+ */
+string extract_parameter (arg_list_t& arg_list,
+						  arg_list_t::iterator& iter)
+{
+	string parameter;
+	arg_list.erase(iter);
+	iter++;
+	parameter = *iter;
+	arg_list.erase(iter);
+	return parameter;
+}
+
 int extract_RendDesc(arg_list_t &arg_list,RendDesc &desc)
 {
-	arg_list_t::iterator iter, next;
+	arg_list_t::iterator iter;
 	int w=0,h=0;
 	float span=0;
-	for(next=arg_list.begin(),iter=next++;iter!=arg_list.end();iter=next++)
+	for(iter=arg_list.begin(); iter!=arg_list.end(); iter++)
 	{
 		if(*iter=="-w")
 		{
-			arg_list.erase(iter);
-			iter=next++;
-			w=atoi(iter->c_str());
-			arg_list.erase(iter);
+			w = atoi(extract_parameter(arg_list, iter).c_str());
 		}
 		else if(*iter=="-h")
 		{
-			arg_list.erase(iter);
-			iter=next++;
-			h=atoi(iter->c_str());
-			arg_list.erase(iter);
+			h = atoi(extract_parameter(arg_list, iter).c_str());
 		}
 		else if(*iter=="-a")
 		{
             int a;
-			arg_list.erase(iter);
-			iter=next++;
-			a=atoi(iter->c_str());
+			a = atoi(extract_parameter(arg_list, iter).c_str());
 			desc.set_antialias(a);
 			VERBOSE_OUT(1)<<strprintf(_("Antialiasing set to %d, (%d samples per pixel)"),a,a*a)<<endl;
-			arg_list.erase(iter);
 		}
 		else if(*iter=="-s")
 		{
-			arg_list.erase(iter);
-			iter=next++;
-			span=atof(iter->c_str());
+			span = atoi(extract_parameter(arg_list, iter).c_str());
 			VERBOSE_OUT(1)<<strprintf(_("Span set to %d units"),span)<<endl;
-			arg_list.erase(iter);
 		}
 		else if(*iter=="--fps")
 		{
-			arg_list.erase(iter);
-			iter=next++;
-			float fps=atof(iter->c_str());
+			float fps = atof(extract_parameter(arg_list, iter).c_str());
 			desc.set_frame_rate(fps);
-			arg_list.erase(iter);
 			VERBOSE_OUT(1)<<strprintf(_("Frame rate set to %d frames per second"),fps)<<endl;
 		}
 		else if(*iter=="--dpi")
 		{
-			arg_list.erase(iter);
-			iter=next++;
-			float dpi=atof(iter->c_str());
+			float dpi = atof(extract_parameter(arg_list, iter).c_str());
 			float dots_per_meter=dpi*39.3700787402;
 			desc.set_x_res(dots_per_meter).set_y_res(dots_per_meter);
-			arg_list.erase(iter);
 			VERBOSE_OUT(1)<<strprintf(_("Physical resolution set to %f dpi"),dpi)<<endl;
 		}
 		else if(*iter=="--dpi-x")
 		{
-			arg_list.erase(iter);
-			iter=next++;
-			float dpi=atof(iter->c_str());
+			float dpi = atof(extract_parameter(arg_list, iter).c_str());
 			float dots_per_meter=dpi*39.3700787402;
 			desc.set_x_res(dots_per_meter);
-			arg_list.erase(iter);
 			VERBOSE_OUT(1)<<strprintf(_("Physical X resolution set to %f dpi"),dpi)<<endl;
 		}
 		else if(*iter=="--dpi-y")
 		{
-			arg_list.erase(iter);
-			iter=next++;
-			float dpi=atof(iter->c_str());
+			float dpi = atof(extract_parameter(arg_list, iter).c_str());
 			float dots_per_meter=dpi*39.3700787402;
 			desc.set_y_res(dots_per_meter);
-			arg_list.erase(iter);
 			VERBOSE_OUT(1)<<strprintf(_("Physical Y resolution set to %f dpi"),dpi)<<endl;
 		}
 		else if(*iter=="--start-time" || *iter=="--begin-time")
 		{
-			arg_list.erase(iter);
-			iter=next++;
-			desc.set_time_start(Time(*iter,desc.get_frame_rate()));
-			arg_list.erase(iter);
+			desc.set_time_start(Time(extract_parameter(arg_list, iter),
+								desc.get_frame_rate()));
 		}
 		else if(*iter=="--end-time")
 		{
-			arg_list.erase(iter);
-			iter=next++;
-			desc.set_time_end(Time(*iter,desc.get_frame_rate()));
-			arg_list.erase(iter);
+			desc.set_time_end(Time(extract_parameter(arg_list, iter),
+								   desc.get_frame_rate()));
 		}
 		else if(*iter=="--time")
 		{
-			arg_list.erase(iter);
-			iter=next++;
-			desc.set_time(Time(*iter,desc.get_frame_rate()));
+			desc.set_time(Time(extract_parameter(arg_list, iter),
+							   desc.get_frame_rate()));
 			VERBOSE_OUT(1)<<_("Rendering frame at ")<<desc.get_time_start().get_string(desc.get_frame_rate())<<endl;
-			arg_list.erase(iter);
 		}
 		else if(*iter=="-g")
 		{
 			synfig::warning("Gamma argument is currently ignored");
-			arg_list.erase(iter);
-			iter=next++;
-			//desc.set_gamma(Gamma(atof(iter->c_str())));
-			arg_list.erase(iter);
+			//desc.set_gamma(Gamma(atoi(extract_parameter(arg_list, iter).c_str())));
 		}
 		else if (flag_requires_value(*iter))
-			iter=next++;
+			iter++;
 	}
 	if (w||h)
 	{
@@ -510,19 +494,16 @@ int extract_RendDesc(arg_list_t &arg_list,RendDesc &desc)
 
 int extract_quality(arg_list_t &arg_list,int &quality)
 {
-	arg_list_t::iterator iter, next;
-	for(next=arg_list.begin(),iter=next++;iter!=arg_list.end();iter=next++)
+	arg_list_t::iterator iter;
+	for(iter=arg_list.begin(); iter!=arg_list.end(); iter++)
 	{
 		if(*iter=="-Q")
 		{
-			arg_list.erase(iter);
-			iter=next++;
-			quality=atoi(iter->c_str());
+			quality = atoi(extract_parameter(arg_list, iter).c_str());
 			VERBOSE_OUT(1)<<strprintf(_("Quality set to %d"),quality)<<endl;
-			arg_list.erase(iter);
 		}
 		else if (flag_requires_value(*iter))
-			iter=next++;
+			iter++;
 	}
 
 	return SYNFIGTOOL_OK;
@@ -530,19 +511,16 @@ int extract_quality(arg_list_t &arg_list,int &quality)
 
 int extract_threads(arg_list_t &arg_list,int &threads)
 {
-	arg_list_t::iterator iter, next;
-	for(next=arg_list.begin(),iter=next++;iter!=arg_list.end();iter=next++)
+	arg_list_t::iterator iter;
+	for(iter=arg_list.begin(); iter!=arg_list.end(); iter++)
 	{
 		if(*iter=="-T")
 		{
-			arg_list.erase(iter);
-			iter=next++;
-			threads=atoi(iter->c_str());
+			threads = atoi(extract_parameter(arg_list, iter).c_str());
 			VERBOSE_OUT(1)<<strprintf(_("Threads set to %d"),threads)<<endl;
-			arg_list.erase(iter);
 		}
 		else if (flag_requires_value(*iter))
-			iter=next++;
+			iter++;
 	}
 
 	return SYNFIGTOOL_OK;
@@ -550,20 +528,17 @@ int extract_threads(arg_list_t &arg_list,int &threads)
 
 int extract_target(arg_list_t &arg_list,string &type)
 {
-	arg_list_t::iterator iter, next;
+	arg_list_t::iterator iter;
 	type.clear();
 
-	for(next=arg_list.begin(),iter=next++;iter!=arg_list.end();iter=next++)
+	for(iter=arg_list.begin(); iter!=arg_list.end(); iter++)
 	{
 		if(*iter=="-t")
 		{
-			arg_list.erase(iter);
-			iter=next++;
-			type=*iter;
-			arg_list.erase(iter);
+			type = extract_parameter(arg_list, iter);
 		}
 		else if (flag_requires_value(*iter))
-			iter=next++;
+			iter++;
 	}
 
 	return SYNFIGTOOL_OK;
@@ -571,20 +546,17 @@ int extract_target(arg_list_t &arg_list,string &type)
 
 int extract_append(arg_list_t &arg_list,string &filename)
 {
-	arg_list_t::iterator iter, next;
+	arg_list_t::iterator iter;
 	filename.clear();
 
-	for(next=arg_list.begin(),iter=next++;iter!=arg_list.end();iter=next++)
+	for(iter=arg_list.begin(); iter!=arg_list.end(); iter++)
 	{
 		if(*iter=="--append")
 		{
-			arg_list.erase(iter);
-			iter=next++;
-			filename=*iter;
-			arg_list.erase(iter);
+			filename = extract_parameter(arg_list, iter);
 		}
 		else if (flag_requires_value(*iter))
-			iter=next++;
+			iter++;
 	}
 
 	return SYNFIGTOOL_OK;
@@ -592,22 +564,19 @@ int extract_append(arg_list_t &arg_list,string &filename)
 
 int extract_outfile(arg_list_t &arg_list,string &outfile)
 {
-	arg_list_t::iterator iter, next;
+	arg_list_t::iterator iter;
 	int ret=SYNFIGTOOL_FILENOTFOUND;
 	outfile.clear();
 
-	for(next=arg_list.begin(),iter=next++;iter!=arg_list.end();iter=next++)
+	for(iter=arg_list.begin(); iter!=arg_list.end(); iter++)
 	{
 		if(*iter=="-o")
 		{
-			arg_list.erase(iter);
-			iter=next++;
-			outfile=*iter;
-			arg_list.erase(iter);
+			outfile = extract_parameter(arg_list, iter);
 			ret=SYNFIGTOOL_OK;
 		}
 		else if (flag_requires_value(*iter))
-			iter=next++;
+			iter++;
 	}
 
 	return ret;
@@ -615,20 +584,17 @@ int extract_outfile(arg_list_t &arg_list,string &outfile)
 
 int extract_canvasid(arg_list_t &arg_list,string &canvasid)
 {
-	arg_list_t::iterator iter, next;
+	arg_list_t::iterator iter;
 	//canvasid.clear();
 
-	for(next=arg_list.begin(),iter=next++;iter!=arg_list.end();iter=next++)
+	for(iter=arg_list.begin(); iter!=arg_list.end(); iter++)
 	{
 		if(*iter=="-c")
 		{
-			arg_list.erase(iter);
-			iter=next++;
-			canvasid=*iter;
-			arg_list.erase(iter);
+			canvasid = extract_parameter(arg_list, iter);
 		}
 		else if (flag_requires_value(*iter))
-			iter=next++;
+			iter++;
 	}
 
 	return SYNFIGTOOL_OK;
@@ -636,9 +602,9 @@ int extract_canvasid(arg_list_t &arg_list,string &canvasid)
 
 int extract_list_canvases(arg_list_t &arg_list,bool &list_canvases)
 {
-	arg_list_t::iterator iter, next;
+	arg_list_t::iterator iter;
 
-	for(next=arg_list.begin(),iter=next++;iter!=arg_list.end();iter=next++)
+	for(iter=arg_list.begin(); iter!=arg_list.end(); iter++)
 		if(*iter=="--list-canvases")
 		{
 			list_canvases = true;
@@ -650,16 +616,13 @@ int extract_list_canvases(arg_list_t &arg_list,bool &list_canvases)
 
 void extract_canvas_info(arg_list_t &arg_list, Job &job)
 {
-	arg_list_t::iterator iter, next;
+	arg_list_t::iterator iter;
 
-	for(next=arg_list.begin(),iter=next++;iter!=arg_list.end();iter=next++)
+	for(iter=arg_list.begin(); iter!=arg_list.end(); iter++)
 		if(*iter=="--canvas-info")
 		{
 			job.canvas_info = true;
-			arg_list.erase(iter);
-			iter=next++;
-			String values(*iter), value;
-			arg_list.erase(iter);
+			String values(extract_parameter(arg_list, iter)), value;
 
 			std::string::size_type pos;
 			while (!values.empty())
