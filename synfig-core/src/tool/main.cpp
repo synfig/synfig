@@ -167,9 +167,9 @@ void display_help(bool full)
 
 int process_global_flags(arg_list_t &arg_list)
 {
-	arg_list_t::iterator iter, next;
+	arg_list_t::iterator iter;
 
-	for(next=arg_list.begin(),iter=next++;iter!=arg_list.end();iter=next++)
+	for(iter=arg_list.begin();iter!=arg_list.end();iter++)
 	{
 		if(*iter == "--")
 			return SYNFIGTOOL_OK;
@@ -229,7 +229,7 @@ int process_global_flags(arg_list_t &arg_list)
 		{
 			Progress p(PACKAGE);
 			synfig::Main synfig_main(dirname(progname),&p);
-			iter=next++;
+			iter++;
 			if (iter==arg_list.end())
 			{
 				error("The `%s' flag requires a value.  Use --help for a list of options.", "--layer-info");
@@ -353,9 +353,9 @@ bool flag_requires_value(String flag)
 
 int extract_arg_cluster(arg_list_t &arg_list,arg_list_t &cluster)
 {
-	arg_list_t::iterator iter, next;
+	arg_list_t::iterator iter;
 
-	for(next=arg_list.begin(),iter=next++;iter!=arg_list.end();iter=next++)
+	for(iter=arg_list.begin();iter!=arg_list.end();iter++)
 	{
 		if(*iter->begin() != '-')
 		{
@@ -367,7 +367,7 @@ int extract_arg_cluster(arg_list_t &arg_list,arg_list_t &cluster)
 		{
 			cluster.push_back(*iter);
 			arg_list.erase(iter);
-			iter=next++;
+			iter++;
 			if (iter==arg_list.end())
 			{
 				error("The `%s' flag requires a value.  Use --help for a list of options.", cluster.back().c_str());
