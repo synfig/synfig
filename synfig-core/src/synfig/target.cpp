@@ -6,6 +6,7 @@
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
+**  Copyright (c) 2010 Diego Barrios Romero
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -33,6 +34,7 @@
 #include "canvas.h"
 #include "target_null.h"
 #include "target_null_tile.h"
+#include "targetparam.h"
 
 using namespace synfig;
 using namespace etl;
@@ -57,12 +59,14 @@ Target::subsys_init()
 	// At least one target must be available.
 	book()["null"].factory =
 		reinterpret_cast<synfig::Target::Factory>(&Target_Null::create);
-  book()["null"].filename = "null";
+	book()["null"].filename = "null";
+	book()["null"].target_param = TargetParam();
 	ext_book()["null"]="null";
 
 	book()["null-tile"].factory =
-    reinterpret_cast<synfig::Target::Factory>(&Target_Null_Tile::create);
-  book()["null-tile"].filename = "null-tile";
+		reinterpret_cast<synfig::Target::Factory>(&Target_Null_Tile::create);
+	book()["null-tile"].filename = "null-tile";
+	book()["null-tile"].target_param = TargetParam();
 	ext_book()["null-tile"]="null-tile";
 
 	return true;
@@ -110,10 +114,11 @@ synfig::Target::set_canvas(etl::handle<Canvas> c)
 
 
 Target::Handle
-Target::create(const String &name, const String &filename)
+Target::create(const String &name, const String &filename,
+			   synfig::TargetParam params)
 {
 	if(!book().count(name))
 		return handle<Target>();
 
-	return Target::Handle(book()[name].factory(filename.c_str()));
+	return Target::Handle(book()[name].factory(filename.c_str(), params));
 }

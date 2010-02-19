@@ -49,7 +49,7 @@ private:
  	String filename;
 	FILE *paramfile;
 public:
-	bsd_mpeg1(const char *filename);
+	bsd_mpeg1(const char *filename, const synfig::TargetParam& /* params */);
 
 	virtual bool set_rend_desc(synfig::RendDesc *desc);
 	virtual bool start_frame(synfig::ProgressCallback *cb);

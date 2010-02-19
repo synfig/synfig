@@ -6,6 +6,7 @@
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
+**	Copyright (c) 2010 Diego Barrios Romero
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -31,6 +32,7 @@
 
 #include <synfig/target_scanline.h>
 #include <synfig/string.h>
+#include <synfig/targetparam.h>
 #include <sys/types.h>
 #include <cstdio>
 
@@ -39,6 +41,8 @@
 /* === T Y P E D E F S ===================================================== */
 
 /* === C L A S S E S & S T R U C T S ======================================= */
+
+class TargetParam;
 
 class ffmpeg_trgt : public synfig::Target_Scanline
 {
@@ -51,8 +55,11 @@ private:
 	synfig::String filename;
 	unsigned char *buffer;
 	synfig::Color *color_buffer;
+	std::string video_codec;
+	int bitrate;
 public:
-	ffmpeg_trgt(const char *filename);
+	ffmpeg_trgt(const char *filename,
+				const synfig::TargetParam& params);
 
 	virtual bool set_rend_desc(synfig::RendDesc *desc);
 	virtual bool init();

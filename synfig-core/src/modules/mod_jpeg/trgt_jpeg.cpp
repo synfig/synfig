@@ -58,7 +58,8 @@ SYNFIG_TARGET_SET_CVS_ID(jpeg_trgt,"$Id$");
 
 /* === M E T H O D S ======================================================= */
 
-jpeg_trgt::jpeg_trgt(const char *Filename)
+jpeg_trgt::jpeg_trgt(const char *Filename,
+					 const synfig::TargetParam& /* params */)
 {
 	file=NULL;
 	filename=Filename;

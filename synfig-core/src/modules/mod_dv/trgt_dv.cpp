@@ -80,7 +80,8 @@ SYNFIG_TARGET_SET_CVS_ID(dv_trgt,"$Id$");
 /* === M E T H O D S ======================================================= */
 
 
-dv_trgt::dv_trgt(const char *Filename)
+dv_trgt::dv_trgt(const char *Filename,
+				 const synfig::TargetParam& /* params */)
 {
 	pid=-1;
 	file=NULL;

@@ -35,6 +35,7 @@
 #include <cstdio>
 #include <synfig/surface.h>
 #include <synfig/palette.h>
+#include <synfig/targetparam.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -194,7 +195,7 @@ private:
 	void output_curr_palette();
 
 public:
-	gif(const char *filename);
+	gif(const char *filename, const synfig::TargetParam& /* params */);
 
 	virtual bool set_rend_desc(synfig::RendDesc *desc);
 	virtual bool init();

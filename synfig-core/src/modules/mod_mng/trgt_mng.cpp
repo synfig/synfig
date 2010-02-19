@@ -99,7 +99,9 @@ mng_error_proc(mng_handle mng __attribute__ ((unused)), mng_int32 error __attrib
 	return MNG_TRUE;
 }
 
-mng_trgt::mng_trgt(const char *Filename) : filename(Filename)
+mng_trgt::mng_trgt(const char *Filename,
+				   const synfig::TargetParam& /* params */) :
+	filename(Filename)
 {
 	file=NULL;
 	buffer=NULL;

@@ -7,6 +7,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007 Chris Moore
+**	Copyright (c) 2010 Diego Barrios Romero
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -38,11 +39,15 @@
 //#include "general.h"
 #include "color.h"
 #include "canvas.h"
+#include "targetparam.h"
 
 /* === M A C R O S ========================================================= */
 
 //! \writeme
-#define SYNFIG_TARGET_MODULE_EXT public: static const char name__[], version__[], ext__[],cvs_id__[]; static Target *create(const char *filename);
+#define SYNFIG_TARGET_MODULE_EXT public: static const char name__[],	\
+		version__[], ext__[], cvs_id__[];								\
+	static Target* create (const char *filename,						\
+						   synfig::TargetParam p);
 
 //! Sets the name of the target
 #define SYNFIG_TARGET_SET_NAME(class,x) const char class::name__[]=x
@@ -57,7 +62,10 @@
 #define SYNFIG_TARGET_SET_CVS_ID(class,x) const char class::cvs_id__[]=x
 
 //! \writeme
-#define SYNFIG_TARGET_INIT(class) synfig::Target* class::create(const char *filename) { return new class(filename); }
+#define SYNFIG_TARGET_INIT(class)										\
+	synfig::Target* class::create (const char *filename,				\
+								   synfig::TargetParam p)				\
+	{ return new class(filename, p); }
 
 /* === T Y P E D E F S ===================================================== */
 
@@ -69,6 +77,7 @@ class Surface;
 class RendDesc;
 class Canvas;
 class ProgressCallback;
+class TargetParam;
 
 /*!	\class Target
 **	\brief Render-target
@@ -106,12 +115,13 @@ public:
 	/*! As a pointer to the constructor, it represents a "factory" of targets.
 	**  Receives the output filename (including path).
 	*/
-	typedef Target* (*Factory)(const char *filename);
-	
+	typedef Target* (*Factory)(const char *filename, TargetParam p);
+
 	struct BookEntry
 	{
 		Factory factory;
 		String filename; ///< Output filename including path
+		TargetParam target_param; ///< Target module parameters
 	};
 
 	//! Book of types of targets indexed by the name of the Target.
@@ -186,7 +196,8 @@ public:
 	virtual bool init() { return true; }
 
 	//! Creates a new Target described by \a type, outputting to a file described by \a filename.
-	static Handle create(const String &type, const String &filename);
+	static Handle create(const String &type, const String &filename,
+						 synfig::TargetParam params);
 }; // END of class Target
 
 }; // END of namespace synfig

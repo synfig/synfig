@@ -45,6 +45,7 @@
 #include <synfig/layer.h>
 #include <synfig/canvas.h>
 #include <synfig/target.h>
+#include <synfig/targetparam.h>
 #include <synfig/time.h>
 #include <synfig/string.h>
 #include <synfig/paramdesc.h>
@@ -348,7 +349,7 @@ bool flag_requires_value(String flag)
 			flag=="-Q"			|| flag=="-s"			|| flag=="-t"			|| flag=="-T"			|| flag=="-w"			||
 			flag=="--append"	|| flag=="--begin-time"	|| flag=="--canvas-info"|| flag=="--dpi"		|| flag=="--dpi-x"		||
 			flag=="--dpi-y"		|| flag=="--end-time"	|| flag=="--fps"		|| flag=="--layer-info"	|| flag=="--start-time"	||
-			flag=="--time"		);
+			flag=="--time"		|| flag=="-vc"			|| flag=="-vb");
 }
 
 int extract_arg_cluster(arg_list_t &arg_list,arg_list_t &cluster)
@@ -536,6 +537,31 @@ int extract_target(arg_list_t &arg_list,string &type)
 		if(*iter=="-t")
 		{
 			type = extract_parameter(arg_list, iter);
+		}
+		else if (flag_requires_value(*iter))
+			iter++;
+	}
+
+	return SYNFIGTOOL_OK;
+}
+
+int extract_target_params(arg_list_t& arg_list,
+						  TargetParam& params)
+{
+	arg_list_t::iterator iter;
+
+	for(iter=arg_list.begin(); iter!=arg_list.end(); iter++)
+	{
+		if(*iter=="-vc")
+		{
+			// Target video codec
+			params.video_codec = extract_parameter(arg_list, iter);
+		}
+		else if(*iter=="-vb")
+		{
+			// Target bitrate
+			params.bitrate =
+				atoi(extract_parameter(arg_list, iter).c_str());
 		}
 		else if (flag_requires_value(*iter))
 			iter++;
@@ -1053,6 +1079,12 @@ int main(int argc, char *argv[])
 				}
 			}
 
+			TargetParam target_parameters;
+			// Extract the extra parameters for the targets that
+			// need them.
+			if (target_name == "ffmpeg")
+				extract_target_params(imageargs, target_parameters);
+
 			// If the target type is STILL not yet defined, then
 			// set it to a some sort of default
 			if(target_name.empty())
@@ -1077,7 +1109,10 @@ int main(int argc, char *argv[])
 			VERBOSE_OUT(4)<<"outfile_name="<<job_list.front().outfilename<<endl;
 
 			VERBOSE_OUT(4)<<_("Creating the target...")<<endl;
-			job_list.front().target=synfig::Target::create(target_name,job_list.front().outfilename);
+			job_list.front().target =
+				synfig::Target::create(target_name,
+									   job_list.front().outfilename,
+									   target_parameters);
 
 			if(target_name=="sif")
 				job_list.front().sifout=true;

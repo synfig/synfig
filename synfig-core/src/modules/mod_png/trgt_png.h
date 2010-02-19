@@ -31,6 +31,7 @@
 
 #include <synfig/target_scanline.h>
 #include <synfig/string.h>
+#include <synfig/targetparam.h>
 #include <cstdio>
 #include <png.h>
 
@@ -57,7 +58,7 @@ private:
 	unsigned char *buffer;
 	synfig::Color *color_buffer;
 public:
-	png_trgt(const char *filename);
+	png_trgt(const char *filename, const synfig::TargetParam& /* params */);
 	virtual ~png_trgt();
 
 	virtual bool set_rend_desc(synfig::RendDesc *desc);

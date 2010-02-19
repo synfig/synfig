@@ -32,6 +32,7 @@
 #include <synfig/target_scanline.h>
 #include <synfig/string.h>
 #include <synfig/smartfile.h>
+#include <synfig/targetparam.h>
 #include <cstdio>
 
 /* === M A C R O S ========================================================= */
@@ -52,7 +53,7 @@ private:
 	synfig::Color *color_buffer;
 	unsigned char *buffer;
 public:
-	ppm(const char *filename);
+	ppm(const char *filename, const synfig::TargetParam& /* params */);
 	virtual ~ppm();
 
 	virtual bool set_rend_desc(synfig::RendDesc *desc);

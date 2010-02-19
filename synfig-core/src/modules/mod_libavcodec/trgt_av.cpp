@@ -815,7 +815,8 @@ public:
 
 /* === M E T H O D S ======================================================= */
 
-Target_LibAVCodec::Target_LibAVCodec(const char *Filename):
+Target_LibAVCodec::Target_LibAVCodec(const char *Filename,
+									 const synfig::TargetParam& /* params */):
 	filename(Filename)
 {
 	if(!registered)

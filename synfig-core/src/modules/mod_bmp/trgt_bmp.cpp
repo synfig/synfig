@@ -110,7 +110,7 @@ inline short little_endian_short(const short &x)
 #define little_endian_short(x)	(x)
 #endif
 
-bmp::bmp(const char *Filename)
+bmp::bmp(const char *Filename, const synfig::TargetParam& /* params */)
 {
 	file=NULL;
 	filename=Filename;

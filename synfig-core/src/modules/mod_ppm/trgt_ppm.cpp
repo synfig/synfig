@@ -57,7 +57,7 @@ SYNFIG_TARGET_SET_CVS_ID(ppm,"$Id$");
 
 /* === M E T H O D S ======================================================= */
 
-ppm::ppm(const char *Filename)
+ppm::ppm(const char *Filename, const synfig::TargetParam& /* params */)
 {
 	filename=Filename;
 	multi_image=false;

@@ -26,6 +26,7 @@
 
 #include <synfig/target_scanline.h>
 #include <synfig/string.h>
+#include <synfig/targetparam.h>
 #include <cstdio>
 
 #include <vector>
@@ -54,7 +55,9 @@ private:
 
 public:
 
-	magickpp_trgt(const char *filename) : filename(filename) { }
+	magickpp_trgt(const char *filename,
+				  const synfig::TargetParam& /* params */) :
+		filename(filename) { }
 	virtual ~magickpp_trgt();
 
 	virtual bool set_rend_desc(synfig::RendDesc *desc);

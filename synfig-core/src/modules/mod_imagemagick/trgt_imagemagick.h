@@ -31,6 +31,7 @@
 
 #include <synfig/target_scanline.h>
 #include <synfig/string.h>
+#include <synfig/targetparam.h>
 #include <sys/types.h>
 #include <cstdio>
 
@@ -54,7 +55,8 @@ private:
 	synfig::Color *color_buffer;
 	synfig::PixelFormat pf;
 public:
-	imagemagick_trgt(const char *filename);
+	imagemagick_trgt(const char *filename,
+					 const synfig::TargetParam& /* params */);
 	virtual ~imagemagick_trgt();
 
 	virtual bool set_rend_desc(synfig::RendDesc *desc);
