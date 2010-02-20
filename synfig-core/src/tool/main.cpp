@@ -550,20 +550,20 @@ int extract_target(arg_list_t &arg_list,string &type)
 int extract_target_params(arg_list_t& arg_list,
 						  TargetParam& params)
 {
-	arg_list_t::iterator iter;
+	arg_list_t::iterator iter, next;
 
-	for(iter=arg_list.begin(); iter!=arg_list.end(); iter++)
+	for(next=arg_list.begin(),iter=next++;iter!=arg_list.end();iter=next++)
 	{
 		if(*iter=="-vc")
 		{
 			// Target video codec
-			params.video_codec = extract_parameter(arg_list, iter);
+			params.video_codec = extract_parameter(arg_list, iter, next);
 		}
 		else if(*iter=="-vb")
 		{
 			// Target bitrate
 			params.bitrate =
-				atoi(extract_parameter(arg_list, iter).c_str());
+				atoi(extract_parameter(arg_list, iter, next).c_str());
 		}
 		else if (flag_requires_value(*iter))
 			iter++;
