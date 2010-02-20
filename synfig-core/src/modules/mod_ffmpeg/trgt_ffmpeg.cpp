@@ -163,20 +163,22 @@ ffmpeg_trgt::init()
 
 	if( filename.c_str()[0] == '-' )
 		command = strprintf("ffmpeg -f image2pipe -vcodec ppm -an"
-							" -r %f -i pipe: -loop -hq"
-							" -title \"%s\" -vcodec %s -b %i"
+							" -r %f -i pipe: -loop_input"
+							//" -metadata title=\"%s\" "
+							" -vcodec %s -b %i"
 							" -y -- \"%s\"\n",
 							desc.get_frame_rate(),
-							get_canvas()->get_name().c_str(),
+							//get_canvas()->get_name().c_str(),
 							video_codec.c_str(), bitrate,
 							filename.c_str());
 	else
 		command = strprintf("ffmpeg -f image2pipe -vcodec ppm -an"
-							" -r %f -i pipe: -loop -hq"
-							" -title \"%s\" -vcodec %s -b %i"
+							" -r %f -i pipe: -loop_input"
+							//" -metadata title=\"%s\" "
+							"-vcodec %s -b %i"
 							" -y -- \"%s\"\n",
 							desc.get_frame_rate(),
-							get_canvas()->get_name().c_str(),
+							//get_canvas()->get_name().c_str(),
 							video_codec.c_str(), bitrate,
 							filename.c_str());
 
@@ -213,19 +215,19 @@ ffmpeg_trgt::init()
 			execlp("ffmpeg", "ffmpeg", "-f", "image2pipe", "-vcodec",
 				   "ppm", "-an", "-r",
 				   strprintf("%f", desc.get_frame_rate()).c_str(),
-				   "-i", "pipe:", "-loop", "-hq",
-				   "-title", get_canvas()->get_name().c_str(),
+				   "-i", "pipe:", "-loop_input",
+				   //strprintf("-metadata title=\"%s\"", get_canvas()->get_name().c_str()).c_str(),
 				   "-vcodec", video_codec.c_str(),
-				   "-b", bitrate,
+				   "-b "+bitrate,
 				   "-y", "--", filename.c_str(), (const char *)NULL);
 		else
 			execlp("ffmpeg", "ffmpeg", "-f", "image2pipe", "-vcodec",
 				   "ppm", "-an", "-r",
 				   strprintf("%f", desc.get_frame_rate()).c_str(),
-				   "-i", "pipe:", "-loop", "-hq",
-				   "-title", get_canvas()->get_name().c_str(),
+				   "-i", "pipe:", "-loop_input",
+				   //strprintf("-metadata title=\"%s\"", get_canvas()->get_name().c_str()).c_str(),
 				   "-vcodec", video_codec.c_str(),
-				   "-b", bitrate,
+				   "-b "+bitrate,
 				   "-y", filename.c_str(), (const char *)NULL);
 
 		// We should never reach here unless the exec failed
