@@ -165,7 +165,7 @@ ffmpeg_trgt::init()
 		command = strprintf("ffmpeg -f image2pipe -vcodec ppm -an"
 							" -r %f -i pipe: -loop_input"
 							//" -metadata title=\"%s\" "
-							" -vcodec %s -b %i"
+							" -vcodec %s -b %ik"
 							" -y -- \"%s\"\n",
 							desc.get_frame_rate(),
 							//get_canvas()->get_name().c_str(),
@@ -175,7 +175,7 @@ ffmpeg_trgt::init()
 		command = strprintf("ffmpeg -f image2pipe -vcodec ppm -an"
 							" -r %f -i pipe: -loop_input"
 							//" -metadata title=\"%s\" "
-							"-vcodec %s -b %i"
+							"-vcodec %s -b %ik"
 							" -y -- \"%s\"\n",
 							desc.get_frame_rate(),
 							//get_canvas()->get_name().c_str(),
@@ -218,7 +218,7 @@ ffmpeg_trgt::init()
 				   "-i", "pipe:", "-loop_input",
 				   //strprintf("-metadata title=\"%s\"", get_canvas()->get_name().c_str()).c_str(),
 				   "-vcodec", video_codec.c_str(),
-				   "-b "+bitrate,
+				   "-b", strprintf("%ik", bitrate).c_str(),
 				   "-y", "--", filename.c_str(), (const char *)NULL);
 		else
 			execlp("ffmpeg", "ffmpeg", "-f", "image2pipe", "-vcodec",
@@ -227,7 +227,7 @@ ffmpeg_trgt::init()
 				   "-i", "pipe:", "-loop_input",
 				   //strprintf("-metadata title=\"%s\"", get_canvas()->get_name().c_str()).c_str(),
 				   "-vcodec", video_codec.c_str(),
-				   "-b "+bitrate,
+				   "-b", strprintf("%ik", bitrate).c_str(),
 				   "-y", filename.c_str(), (const char *)NULL);
 
 		// We should never reach here unless the exec failed
