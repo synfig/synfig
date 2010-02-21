@@ -33,6 +33,11 @@ namespace synfig {
 
 struct TargetParam
 {
+	TargetParam () { }
+	TargetParam (const std::string& Video_codec, int Bitrate):
+		video_codec(Video_codec), bitrate(Bitrate)
+	{ }
+
 	std::string video_codec;
 	int bitrate;
 };
