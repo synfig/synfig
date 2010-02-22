@@ -539,6 +539,7 @@ int extract_target(arg_list_t &arg_list,string &type)
 		if(*iter=="-t")
 		{
 			type = extract_parameter(arg_list, iter, next);
+			VERBOSE_OUT(1)<<strprintf(_("Target set to %s"), type.c_str())<<endl;
 		}
 		else if (flag_requires_value(*iter))
 			iter++;
@@ -550,6 +551,10 @@ int extract_target(arg_list_t &arg_list,string &type)
 int extract_target_params(arg_list_t& arg_list,
 						  TargetParam& params)
 {
+	int ret;
+	ret = SYNFIGTOOL_OK;
+	// If -vc parameter is provided, -vb parameter is needed.
+	bool need_bitrate_parameter = false;
 	arg_list_t::iterator iter, next;
 
 	for(next=arg_list.begin(),iter=next++;iter!=arg_list.end();iter=next++)
@@ -558,18 +563,53 @@ int extract_target_params(arg_list_t& arg_list,
 		{
 			// Target video codec
 			params.video_codec = extract_parameter(arg_list, iter, next);
+			const char* allowed_video_codecs[] =
+			{
+				"flv", "gif", "h261", "h263", "h263p", "huffyuv",
+				"libtheora", "libx264", "libxvid", "ljpeg", "mjpeg",
+				"mpeg1video", "mpeg2video", "mpeg4", "msmpeg4",
+				"msmpeg4v1", "msmpegv2", "wmv1", "wmv2", NULL
+			};
+
+			// video_codec string to lowercase
+			transform (params.video_codec.begin(),
+					   params.video_codec.end(),
+					   params.video_codec.begin(),
+					   ::tolower);
+
+			int local_ret;
+			local_ret = SYNFIGTOOL_UNKNOWNARGUMENT;
+
+			// Check if the given video codec is allowed.
+			for (int i = 0; local_ret != SYNFIGTOOL_OK &&
+							allowed_video_codecs[i] != NULL; i++)
+				if (params.video_codec == allowed_video_codecs[i])
+					local_ret = SYNFIGTOOL_OK;
+
+			ret = local_ret;
+
+			if (ret == SYNFIGTOOL_OK)
+			{
+				VERBOSE_OUT(1)<<strprintf(_("Target video codec set to %s"), params.video_codec.c_str())<<endl;
+				need_bitrate_parameter = true;
+			}
 		}
 		else if(*iter=="-vb")
 		{
+			need_bitrate_parameter = false;
 			// Target bitrate
 			params.bitrate =
 				atoi(extract_parameter(arg_list, iter, next).c_str());
+			VERBOSE_OUT(1)<<strprintf(_("Target bitrate set to %dk"),params.bitrate)<<endl;
 		}
 		else if (flag_requires_value(*iter))
 			iter++;
 	}
 
-	return SYNFIGTOOL_OK;
+	if (need_bitrate_parameter)
+		ret = SYNFIGTOOL_MISSINGARGUMENT;
+
+	return ret;
 }
 
 int extract_append(arg_list_t &arg_list,string &filename)
@@ -1086,7 +1126,24 @@ int main(int argc, char *argv[])
 			// Extract the extra parameters for the targets that
 			// need them.
 			if (target_name == "ffmpeg")
-				extract_target_params(imageargs, target_parameters);
+			{
+				int status;
+				status = extract_target_params(imageargs, target_parameters);
+				if (status == SYNFIGTOOL_UNKNOWNARGUMENT)
+				{
+					cerr << strprintf(_("Unknown target video codec: %s."),
+									 target_parameters.video_codec.c_str())
+						 << endl;
+
+					return SYNFIGTOOL_UNKNOWNARGUMENT;
+				}
+				else if (status == SYNFIGTOOL_MISSINGARGUMENT)
+				{
+					cerr << _("Missing argument: \"-vb\".") << endl;
+
+					return SYNFIGTOOL_MISSINGARGUMENT;
+				}
+			}
 
 			// If the target type is STILL not yet defined, then
 			// set it to a some sort of default
