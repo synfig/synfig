@@ -69,6 +69,45 @@ int verbosity=0;
 bool be_quiet=false;
 bool print_benchmarks=false;
 
+//! Allowed video codecs
+/*! \warning This variable is linked to allowed_video_codecs_description,
+ *  if you change this you must change the other acordingly.
+ */
+const char* allowed_video_codecs[] =
+{
+	"flv", "gif", "h261", "h263", "h263p", "huffyuv", "libtheora",
+	"libx264", "libxvid", "ljpeg", "mjpeg",	"mpeg1video", "mpeg2video",
+	"mpeg4", "msmpeg4",	"msmpeg4v1", "msmpeg4v2", "wmv1", "wmv2", NULL
+};
+
+//! Allowed video codecs description.
+/*! \warning This variable is linked to allowed_video_codecs,
+ *  if you change this you must change the other acordingly.
+ */
+const char* allowed_video_codecs_description[] =
+{
+	"Flash Video (FLV) / Sorenson Spark / Sorenson H.263.",
+	"GIF (Graphics Interchange Format).",
+	"H.261.",
+	"H.263 / H.263-1996.",
+	"H.263+ / H.263-1998 / H.263 version 2.",
+	"Huffyuv / HuffYUV.",
+	"libtheora Theora.",
+	"libx264 H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10.",
+	"libxvidcore MPEG-4 part 2.",
+	"Lossless JPEG.",
+	"MJPEG (Motion JPEG).",
+	"raw MPEG-1 video.",
+	"raw MPEG-2 video.",
+	"MPEG-4 part 2.",
+	"MPEG-4 part 2 Microsoft variant version 3.",
+	"MPEG-4 part 2 Microsoft variant version 1.",
+	"MPEG-4 part 2 Microsoft variant version 2.",
+	"Windows Media Video 7.",
+	"Windows Media Video 8.",
+	NULL
+};
+
 /* === T Y P E D E F S ===================================================== */
 
 typedef list<String> arg_list_t;
@@ -148,6 +187,7 @@ void display_help(bool full)
 		display_help_option("--layer-info", "<layer>", _("Print out layer's description, parameter info, etc."));
 		display_help_option("--layers", NULL, _("Print out the list of available layers"));
 		display_help_option("--targets", NULL, _("Print out the list of available targets"));
+		display_help_option("--target-video-codecs", NULL, _("Print out the list of available target video codecs"));
 		display_help_option("--importers", NULL, _("Print out the list of available importers"));
 		display_help_option("--valuenodes", NULL, _("Print out the list of available ValueNodes"));
 		display_help_option("--modules", NULL, _("Print out the list of loaded modules"));
@@ -164,6 +204,15 @@ void display_help(bool full)
 		display_help_option("--help", NULL, _("Print out usage and syntax info"));
 
 	cerr << endl;
+}
+
+void display_target_video_codecs_help ()
+{
+	for (int i = 0; allowed_video_codecs[i] != NULL &&
+					allowed_video_codecs_description[i] != NULL; i++)
+		cout << " " << allowed_video_codecs[i] << ":   \t"
+			 << allowed_video_codecs_description[i]
+			 << endl;
 }
 
 int process_global_flags(arg_list_t &arg_list)
@@ -273,6 +322,13 @@ int process_global_flags(arg_list_t &arg_list)
 			synfig::Target::Book::iterator iter=synfig::Target::book().begin();
 			for(;iter!=synfig::Target::book().end();iter++)
 				cout<<iter->first<<endl;
+			return SYNFIGTOOL_HELP;
+		}
+
+		if(*iter == "--target-video-codecs")
+		{
+			display_target_video_codecs_help();
+
 			return SYNFIGTOOL_HELP;
 		}
 
@@ -563,13 +619,6 @@ int extract_target_params(arg_list_t& arg_list,
 		{
 			// Target video codec
 			params.video_codec = extract_parameter(arg_list, iter, next);
-			const char* allowed_video_codecs[] =
-			{
-				"flv", "gif", "h261", "h263", "h263p", "huffyuv",
-				"libtheora", "libx264", "libxvid", "ljpeg", "mjpeg",
-				"mpeg1video", "mpeg2video", "mpeg4", "msmpeg4",
-				"msmpeg4v1", "msmpegv2", "wmv1", "wmv2", NULL
-			};
 
 			// video_codec string to lowercase
 			transform (params.video_codec.begin(),
@@ -1134,6 +1183,9 @@ int main(int argc, char *argv[])
 					cerr << strprintf(_("Unknown target video codec: %s."),
 									 target_parameters.video_codec.c_str())
 						 << endl;
+					cerr << _("Available target video codecs are:")
+						 << endl;
+					display_target_video_codecs_help();
 
 					return SYNFIGTOOL_UNKNOWNARGUMENT;
 				}
