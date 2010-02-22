@@ -75,7 +75,7 @@ bool print_benchmarks=false;
  */
 const char* allowed_video_codecs[] =
 {
-	"flv", "gif", "h261", "h263", "h263p", "huffyuv", "libtheora",
+	"flv", "gif", "h263", "h263p", "huffyuv", "libtheora",
 	"libx264", "libxvid", "ljpeg", "mjpeg",	"mpeg1video", "mpeg2video",
 	"mpeg4", "msmpeg4",	"msmpeg4v1", "msmpeg4v2", "wmv1", "wmv2", NULL
 };
@@ -88,7 +88,6 @@ const char* allowed_video_codecs_description[] =
 {
 	"Flash Video (FLV) / Sorenson Spark / Sorenson H.263.",
 	"GIF (Graphics Interchange Format).",
-	"H.261.",
 	"H.263 / H.263-1996.",
 	"H.263+ / H.263-1998 / H.263 version 2.",
 	"Huffyuv / HuffYUV.",
