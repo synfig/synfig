@@ -33,7 +33,13 @@ namespace synfig {
 
 struct TargetParam
 {
-	TargetParam () { }
+	//! Default constructor
+	/*! Not valid default values, if they are not modified before
+	 *  passing them to the target module, it would override them with
+	 *  its own valid default settings.
+	 */
+	TargetParam (): video_codec("none"), bitrate(-1) { }
+
 	TargetParam (const std::string& Video_codec, int Bitrate):
 		video_codec(Video_codec), bitrate(Bitrate)
 	{ }
