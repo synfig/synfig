@@ -164,21 +164,21 @@ ffmpeg_trgt::init()
 	if( filename.c_str()[0] == '-' )
 		command = strprintf("ffmpeg -f image2pipe -vcodec ppm -an"
 							" -r %f -i pipe: -loop_input"
-							//" -metadata title=\"%s\" "
+							" -metadata title=\"%s\" "
 							" -vcodec %s -b %ik"
 							" -y -- \"%s\"\n",
 							desc.get_frame_rate(),
-							//get_canvas()->get_name().c_str(),
+							get_canvas()->get_name().c_str(),
 							video_codec.c_str(), bitrate,
 							filename.c_str());
 	else
 		command = strprintf("ffmpeg -f image2pipe -vcodec ppm -an"
 							" -r %f -i pipe: -loop_input"
-							//" -metadata title=\"%s\" "
+							" -metadata title=\"%s\" "
 							"-vcodec %s -b %ik"
 							" -y -- \"%s\"\n",
 							desc.get_frame_rate(),
-							//get_canvas()->get_name().c_str(),
+							get_canvas()->get_name().c_str(),
 							video_codec.c_str(), bitrate,
 							filename.c_str());
 
@@ -216,7 +216,8 @@ ffmpeg_trgt::init()
 				   "ppm", "-an", "-r",
 				   strprintf("%f", desc.get_frame_rate()).c_str(),
 				   "-i", "pipe:", "-loop_input",
-				   //strprintf("-metadata title=\"%s\"", get_canvas()->get_name().c_str()).c_str(),
+				   "-metadata",
+				   strprintf("title=\"%s\"", get_canvas()->get_name().c_str()).c_str(),
 				   "-vcodec", video_codec.c_str(),
 				   "-b", strprintf("%ik", bitrate).c_str(),
 				   "-y", "--", filename.c_str(), (const char *)NULL);
@@ -225,7 +226,8 @@ ffmpeg_trgt::init()
 				   "ppm", "-an", "-r",
 				   strprintf("%f", desc.get_frame_rate()).c_str(),
 				   "-i", "pipe:", "-loop_input",
-				   //strprintf("-metadata title=\"%s\"", get_canvas()->get_name().c_str()).c_str(),
+				   "-metadata",
+				   strprintf("title=\"%s\"", get_canvas()->get_name().c_str()).c_str(),
 				   "-vcodec", video_codec.c_str(),
 				   "-b", strprintf("%ik", bitrate).c_str(),
 				   "-y", filename.c_str(), (const char *)NULL);
