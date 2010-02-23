@@ -90,8 +90,17 @@ ffmpeg_trgt::ffmpeg_trgt(const char *Filename,
 	buffer=NULL;
 	color_buffer=0;
 	set_remove_alpha();
-	video_codec = params.video_codec;
-	bitrate = params.bitrate;
+
+	// Set default video codec and bitrate if they weren't given.
+	if (params.video_codec == "none")
+		video_codec = "mpeg1video";
+	else
+		video_codec = params.video_codec;
+
+	if (params.bitrate == -1)
+		bitrate = 200;
+	else
+		bitrate = params.bitrate;
 }
 
 ffmpeg_trgt::~ffmpeg_trgt()
