@@ -72,6 +72,8 @@ bool print_benchmarks=false;
 //! Allowed video codecs
 /*! \warning This variable is linked to allowed_video_codecs_description,
  *  if you change this you must change the other acordingly.
+ *  \warning These codecs are linked to the filename extensions for
+ *  mod_ffmpeg. If you change this you must change the others acordingly.
  */
 const char* allowed_video_codecs[] =
 {

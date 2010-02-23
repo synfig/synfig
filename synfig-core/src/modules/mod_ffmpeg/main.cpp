@@ -52,12 +52,14 @@ MODULE_INVENTORY_BEGIN(mod_ffmpeg)
 	BEGIN_TARGETS
 		TARGET(ffmpeg_trgt)
 		TARGET_EXT(ffmpeg_trgt,"avi")
+		TARGET_EXT(ffmpeg_trgt,"flv")
+		TARGET_EXT(ffmpeg_trgt,"gif")
+		TARGET_EXT(ffmpeg_trgt,"mkv")
 		TARGET_EXT(ffmpeg_trgt,"mpg")
-		TARGET_EXT(ffmpeg_trgt,"rm")
-		TARGET_EXT(ffmpeg_trgt,"asf")
-		TARGET_EXT(ffmpeg_trgt,"swf")
-		TARGET_EXT(ffmpeg_trgt,"yuv")
+		TARGET_EXT(ffmpeg_trgt,"ogv")
 		TARGET_EXT(ffmpeg_trgt,"rgb")
+		TARGET_EXT(ffmpeg_trgt,"wmv")
+		TARGET_EXT(ffmpeg_trgt,"yuv")
 	END_TARGETS
 	BEGIN_IMPORTERS
 		IMPORTER_EXT(ffmpeg_mptr,"avi")
