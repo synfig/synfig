@@ -221,25 +221,52 @@ ffmpeg_trgt::init()
 		// Close the unneeded pipeout
 		close(p[0]);
 		if( filename.c_str()[0] == '-' )
-			execlp("ffmpeg", "ffmpeg", "-f", "image2pipe", "-vcodec",
-				   "ppm", "-an", "-r",
-				   strprintf("%f", desc.get_frame_rate()).c_str(),
-				   "-i", "pipe:", "-loop_input",
-				   "-metadata",
-				   strprintf("title=\"%s\"", get_canvas()->get_name().c_str()).c_str(),
-				   "-vcodec", video_codec.c_str(),
-				   "-b", strprintf("%ik", bitrate).c_str(),
-				   "-y", "--", filename.c_str(), (const char *)NULL);
+		{
+			// x264 codec needs -vpre hq parameters
+			if (video_codec == "libx264")
+				execlp("ffmpeg", "ffmpeg", "-f", "image2pipe", "-vcodec",
+					   "ppm", "-an", "-r",
+					   strprintf("%f", desc.get_frame_rate()).c_str(),
+					   "-i", "pipe:", "-loop_input", "-metadata",
+						strprintf("title=\"%s\"", get_canvas()->get_name().c_str()).c_str(),
+						"-vcodec", video_codec.c_str(),
+						"-b", strprintf("%ik", bitrate).c_str(),
+						"-vpre", "hq",
+						"-y", "--", filename.c_str(), (const char *)NULL);
+			else
+				execlp("ffmpeg", "ffmpeg", "-f", "image2pipe", "-vcodec",
+					   "ppm", "-an", "-r",
+					   strprintf("%f", desc.get_frame_rate()).c_str(),
+					   "-i", "pipe:", "-loop_input", "-metadata",
+						strprintf("title=\"%s\"", get_canvas()->get_name().c_str()).c_str(),
+						"-vcodec", video_codec.c_str(),
+						"-b", strprintf("%ik", bitrate).c_str(),
+						"-y", "--", filename.c_str(), (const char *)NULL);
+		}
 		else
-			execlp("ffmpeg", "ffmpeg", "-f", "image2pipe", "-vcodec",
-				   "ppm", "-an", "-r",
-				   strprintf("%f", desc.get_frame_rate()).c_str(),
-				   "-i", "pipe:", "-loop_input",
-				   "-metadata",
-				   strprintf("title=\"%s\"", get_canvas()->get_name().c_str()).c_str(),
-				   "-vcodec", video_codec.c_str(),
-				   "-b", strprintf("%ik", bitrate).c_str(),
-				   "-y", filename.c_str(), (const char *)NULL);
+		{
+			if (video_codec == "libx264")
+				execlp("ffmpeg", "ffmpeg", "-f", "image2pipe", "-vcodec",
+					   "ppm", "-an", "-r",
+					   strprintf("%f", desc.get_frame_rate()).c_str(),
+					   "-i", "pipe:", "-loop_input",
+					   "-metadata",
+					   strprintf("title=\"%s\"", get_canvas()->get_name().c_str()).c_str(),
+					   "-vcodec", video_codec.c_str(),
+					   "-b", strprintf("%ik", bitrate).c_str(),
+					   "-vpre", "hq",
+					   "-y", filename.c_str(), (const char *)NULL);
+			else
+				execlp("ffmpeg", "ffmpeg", "-f", "image2pipe", "-vcodec",
+					   "ppm", "-an", "-r",
+					   strprintf("%f", desc.get_frame_rate()).c_str(),
+					   "-i", "pipe:", "-loop_input",
+					   "-metadata",
+					   strprintf("title=\"%s\"", get_canvas()->get_name().c_str()).c_str(),
+					   "-vcodec", video_codec.c_str(),
+					   "-b", strprintf("%ik", bitrate).c_str(),
+					   "-y", filename.c_str(), (const char *)NULL);
+		}
 
 		// We should never reach here unless the exec failed
 		synfig::error(_("Unable to open pipe to ffmpeg"));
