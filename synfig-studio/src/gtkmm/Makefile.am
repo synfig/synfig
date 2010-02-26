@@ -68,6 +68,7 @@ DIALOG_HH = \
 	dialog_preview.h \
 	dialog_setup.h \
 	dialog_soundselect.h \
+	dialog_targetparam.h \
 	dialog_waypoint.h
 
 DIALOG_CC = \
@@ -77,6 +78,7 @@ DIALOG_CC = \
 	dialog_preview.cpp \
 	dialog_setup.cpp \
 	dialog_soundselect.cpp \
+	dialog_targetparam.cpp \
 	dialog_waypoint.cpp
 
 

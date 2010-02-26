@@ -37,6 +37,7 @@
 #include <synfig/target_scanline.h>
 #include <synfig/canvas.h>
 #include "asyncrenderer.h"
+#include "dialog_targetparam.h"
 
 #include "general.h"
 
@@ -66,7 +67,8 @@ RenderSettings::RenderSettings(Gtk::Window& parent, etl::handle<synfigapp::Canva
 	entry_quality(adjustment_quality,1,0),
 	adjustment_antialias(1,1,31),
 	entry_antialias(adjustment_antialias,1,0),
-	toggle_single_frame(_("Use _current frame"), true)
+	toggle_single_frame(_("Use _current frame"), true),
+	tparam("libxvid",200)
 {
 	widget_rend_desc.show();
 	widget_rend_desc.signal_changed().connect(sigc::mem_fun(*this,&studio::RenderSettings::on_rend_desc_changed));
@@ -104,6 +106,10 @@ RenderSettings::RenderSettings(Gtk::Window& parent, etl::handle<synfigapp::Canva
 	choose_button->show();
 	choose_button->signal_clicked().connect(sigc::mem_fun(*this, &studio::RenderSettings::on_choose_pressed));
 
+	Gtk::Button *tparam_button(manage(new class Gtk::Button(Gtk::StockID(_("Parameters...")))));
+	tparam_button->show();
+	tparam_button->signal_clicked().connect(sigc::mem_fun(*this, &studio::RenderSettings::on_targetparam_pressed));
+
 	Gtk::Frame *target_frame=manage(new Gtk::Frame(_("Target")));
 	target_frame->set_shadow_type(Gtk::SHADOW_NONE);
 	((Gtk::Label *) target_frame->get_label_widget())->set_markup(_("<b>Target</b>"));
@@ -128,7 +134,8 @@ RenderSettings::RenderSettings(Gtk::Window& parent, etl::handle<synfigapp::Canva
 	targetLabel->set_alignment(0, 0.5);
 	targetLabel->set_mnemonic_widget(optionmenu_target);
 	target_table->attach(*targetLabel, 0, 1, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-	target_table->attach(optionmenu_target, 1, 3, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+	target_table->attach(optionmenu_target, 1, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+	target_table->attach(*tparam_button, 2, 3, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 
 	toggle_single_frame.signal_toggled().connect(sigc::mem_fun(*this, &studio::RenderSettings::on_single_frame_toggle));
 
@@ -239,6 +246,15 @@ RenderSettings::on_choose_pressed()
 }
 
 void
+RenderSettings::on_targetparam_pressed()
+{
+	Dialog_TargetParam *dialogtp = new Dialog_TargetParam(tparam);
+	if(dialogtp->run()==GTK_RESPONSE_ACCEPT)
+		tparam=dialogtp->get_tparam();
+	delete dialogtp;
+}
+
+void
 RenderSettings::on_render_pressed()
 {
 	String filename=entry_filename.get_text();
@@ -283,7 +299,7 @@ RenderSettings::on_render_pressed()
 		return;
 	}
 
-	Target::Handle target=Target::create(calculated_target_name,filename);
+	Target::Handle target=Target::create(calculated_target_name,filename, tparam);
 	if(!target)
 	{
 		canvas_interface_->get_ui_interface()->error(_("Unable to create target for ")+filename);
