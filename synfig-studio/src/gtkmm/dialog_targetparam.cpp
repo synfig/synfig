@@ -38,7 +38,6 @@
 /* === U S I N G =========================================================== */
 
 using namespace std;
-//using namespace etl;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
@@ -60,21 +59,21 @@ Dialog_TargetParam::Dialog_TargetParam(synfig::TargetParam &tparam)
 	Gtk::Label* label(manage(new Gtk::Label(_("Available Video Codecs:"))));
 	label->set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
 	get_vbox()->pack_start(*label, true, true, 0);
-	//vcodec->signal_changed().connect(sigc::mem_fun(*this, &Dialog_TargetParam::on_video_codec_changed));
-	vcodec->prepend_text("flv");
-	vcodec->prepend_text("h263p");
-	vcodec->prepend_text("huffyuv");
-	vcodec->prepend_text("libtheora");
-	vcodec->prepend_text("libx264");
-	vcodec->prepend_text("libxvid");
-	vcodec->prepend_text("mjpeg");
-	vcodec->prepend_text("mpeg2video");
-	vcodec->prepend_text("mpeg4");
-	vcodec->prepend_text("msmpeg4");
-	vcodec->prepend_text("msmpeg4v1");
-	vcodec->prepend_text("msmpeg4v2");
-	vcodec->prepend_text("wmv1");
-	vcodec->prepend_text("wmv2");
+	vcodec->append_text("flv");
+	vcodec->append_text("h263p");
+	vcodec->append_text("huffyuv");
+	vcodec->append_text("libtheora");
+	vcodec->append_text("libx264");
+	vcodec->append_text("libxvid");
+	vcodec->append_text("mjpeg");
+	vcodec->append_text("mpeg2video");
+	vcodec->append_text("mpeg4");
+	vcodec->append_text("msmpeg4");
+	vcodec->append_text("msmpeg4v1");
+	vcodec->append_text("msmpeg4v2");
+	vcodec->append_text("wmv1");
+	vcodec->append_text("wmv2");
+	vcodec->set_active_text(get_tparam().video_codec);
 	get_vbox()->pack_start(*vcodec, true, true, 0);
 
 	//Bitrate Spin Button
@@ -89,12 +88,26 @@ Dialog_TargetParam::Dialog_TargetParam(synfig::TargetParam &tparam)
 
 	ok_button = manage(new class Gtk::Button(Gtk::StockID("gtk-ok")));
 	ok_button->show();
-	add_action_widget(*ok_button,0);
+	add_action_widget(*ok_button,Gtk::RESPONSE_OK);
 	ok_button->signal_clicked().connect(sigc::mem_fun(*this,&Dialog_TargetParam::on_ok));
+
+	cancel_button = manage(new class Gtk::Button(Gtk::StockID("gtk-cancel")));
+	cancel_button->show();
+	add_action_widget(*cancel_button,Gtk::RESPONSE_CANCEL);
+	cancel_button->signal_clicked().connect(sigc::mem_fun(*this,&Dialog_TargetParam::on_cancel));
+
 }
 
 void
 Dialog_TargetParam::on_ok()
+{
+	tparam_.video_codec=vcodec->get_active_text();
+	tparam_.bitrate=bitrate->get_value();
+	hide();
+}
+
+void
+Dialog_TargetParam::on_cancel()
 {
 	hide();
 }
@@ -102,3 +115,4 @@ Dialog_TargetParam::on_ok()
 Dialog_TargetParam::~Dialog_TargetParam()
 {
 }
+

@@ -249,8 +249,9 @@ void
 RenderSettings::on_targetparam_pressed()
 {
 	Dialog_TargetParam *dialogtp = new Dialog_TargetParam(tparam);
-	if(dialogtp->run()==GTK_RESPONSE_ACCEPT)
+	if(dialogtp->run()==Gtk::RESPONSE_OK)
 		tparam=dialogtp->get_tparam();
+
 	delete dialogtp;
 }
 
