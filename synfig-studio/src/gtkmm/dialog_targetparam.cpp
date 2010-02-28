@@ -43,7 +43,42 @@ using namespace studio;
 /* === M A C R O S ========================================================= */
 
 /* === G L O B A L S ======================================================= */
+//! Allowed video codecs
+/*! \warning This variable is linked to allowed_video_codecs_description,
+ *  if you change this you must change the other acordingly.
+ *  \warning These codecs are linked to the filename extensions for
+ *  mod_ffmpeg. If you change this you must change the others acordingly.
+ */
+const char* allowed_video_codecs[] =
+{
+	"flv", "h263p", "huffyuv", "libtheora", "libx264", "libxvid",
+	"mjpeg", "mpeg1video", "mpeg2video", "mpeg4", "msmpeg4",
+	"msmpeg4v1", "msmpeg4v2", "wmv1", "wmv2", NULL
+};
 
+//! Allowed video codecs description.
+/*! \warning This variable is linked to allowed_video_codecs,
+ *  if you change this you must change the other acordingly.
+ */
+const char* allowed_video_codecs_description[] =
+{
+	"Flash Video (FLV) / Sorenson Spark / Sorenson H.263.",
+	"H.263+ / H.263-1998 / H.263 version 2.",
+	"Huffyuv / HuffYUV.",
+	"libtheora Theora.",
+	"libx264 H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10.",
+	"libxvidcore MPEG-4 part 2.",
+	"MJPEG (Motion JPEG).",
+	"raw MPEG-1 video.",
+	"raw MPEG-2 video.",
+	"MPEG-4 part 2.",
+	"MPEG-4 part 2 Microsoft variant version 3.",
+	"MPEG-4 part 2 Microsoft variant version 1.",
+	"MPEG-4 part 2 Microsoft variant version 2.",
+	"Windows Media Video 7.",
+	"Windows Media Video 8.",
+	NULL
+};
 /* === P R O C E D U R E S ================================================= */
 
 /* === M E T H O D S ======================================================= */
@@ -59,21 +94,14 @@ Dialog_TargetParam::Dialog_TargetParam(synfig::TargetParam &tparam)
 	Gtk::Label* label(manage(new Gtk::Label(_("Available Video Codecs:"))));
 	label->set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
 	get_vbox()->pack_start(*label, true, true, 0);
-	vcodec->append_text("flv");
-	vcodec->append_text("h263p");
-	vcodec->append_text("huffyuv");
-	vcodec->append_text("libtheora");
-	vcodec->append_text("libx264");
-	vcodec->append_text("libxvid");
-	vcodec->append_text("mjpeg");
-	vcodec->append_text("mpeg2video");
-	vcodec->append_text("mpeg4");
-	vcodec->append_text("msmpeg4");
-	vcodec->append_text("msmpeg4v1");
-	vcodec->append_text("msmpeg4v2");
-	vcodec->append_text("wmv1");
-	vcodec->append_text("wmv2");
-	vcodec->set_active_text(get_tparam().video_codec);
+	for (int i = 0; allowed_video_codecs[i] != NULL &&
+					allowed_video_codecs_description[i] != NULL; i++)
+		vcodec->append_text(allowed_video_codecs_description[i]);
+	for (int i = 0; allowed_video_codecs[i] != NULL &&
+					allowed_video_codecs_description[i] != NULL; i++)
+		if(!get_tparam().video_codec.compare(allowed_video_codecs[i]))
+			vcodec->set_active_text(allowed_video_codecs_description[i]);
+
 	get_vbox()->pack_start(*vcodec, true, true, 0);
 
 	//Bitrate Spin Button
@@ -101,7 +129,11 @@ Dialog_TargetParam::Dialog_TargetParam(synfig::TargetParam &tparam)
 void
 Dialog_TargetParam::on_ok()
 {
-	tparam_.video_codec=vcodec->get_active_text();
+	std::string codecnamed = vcodec->get_active_text();
+	for (int i = 0; allowed_video_codecs[i] != NULL &&
+					allowed_video_codecs_description[i] != NULL; i++)
+		if(!codecnamed.compare(allowed_video_codecs_description[i]))
+			tparam_.video_codec=allowed_video_codecs[i];
 	tparam_.bitrate=bitrate->get_value();
 	hide();
 }
