@@ -63,7 +63,7 @@ SYNFIG_TARGET_SET_CVS_ID(yuv,"$Id$");
 
 /* === M E T H O D S ======================================================= */
 
-yuv::yuv(const char *FILENAME):
+yuv::yuv(const char *FILENAME, const synfig::TargetParam& /* params */):
 	filename(FILENAME),
 	file( (filename=="-")?stdout:fopen(filename.c_str(),POPEN_BINARY_WRITE_TYPE) ),
 	dithering(true)

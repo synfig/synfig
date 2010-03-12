@@ -31,6 +31,7 @@
 
 #include <synfig/target_scanline.h>
 #include <synfig/string.h>
+#include <synfig/targetparam.h>
 #include <sys/types.h>
 #include <cstdio>
 
@@ -53,7 +54,7 @@ private:
 	unsigned char *buffer;
 	synfig::Color *color_buffer;
 public:
-	dv_trgt(const char *filename);
+	dv_trgt(const char *filename, const synfig::TargetParam& /* params */);
 	virtual ~dv_trgt();
 
 

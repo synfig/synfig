@@ -45,54 +45,22 @@
 #include <synfig/layer.h>
 #include <synfig/canvas.h>
 #include <synfig/target.h>
+#include <synfig/targetparam.h>
 #include <synfig/time.h>
 #include <synfig/string.h>
 #include <synfig/paramdesc.h>
 #include <synfig/main.h>
 #include <synfig/guid.h>
 #include <autorevision.h>
+#include "definitions.h"
+#include "progress.h"
+#include "renderprogress.h"
+#include "job.h"
 #endif
 
 using namespace std;
 using namespace etl;
 using namespace synfig;
-
-/* === M A C R O S ========================================================= */
-
-#ifdef ENABLE_NLS
-#undef _
-#define _(x) gettext(x)
-#else
-#undef _
-#define _(x) (x)
-#endif
-
-enum exit_code
-{
-	SYNFIGTOOL_OK				= 0,
-	SYNFIGTOOL_FILENOTFOUND		= 1,
-	SYNFIGTOOL_BORED			= 2,
-	SYNFIGTOOL_HELP				= 3,
-	SYNFIGTOOL_UNKNOWNARGUMENT	= 4,
-	SYNFIGTOOL_UNKNOWNERROR		= 5,
-	SYNFIGTOOL_INVALIDTARGET	= 6,
-	SYNFIGTOOL_RENDERFAILURE	= 7,
-	SYNFIGTOOL_BLANK			= 8,
-	SYNFIGTOOL_BADVERSION		= 9,
-	SYNFIGTOOL_MISSINGARGUMENT	=10
-};
-
-#ifndef VERSION
-#define VERSION "unknown"
-#define PACKAGE "synfig-tool"
-#endif
-
-#ifdef DEFAULT_QUALITY
-#undef DEFAULT_QUALITY
-#endif
-
-#define DEFAULT_QUALITY		2
-#define VERBOSE_OUT(x) if(verbosity>=(x))std::cerr
 
 /* === G L O B A L S ======================================================= */
 
@@ -101,181 +69,49 @@ int verbosity=0;
 bool be_quiet=false;
 bool print_benchmarks=false;
 
-/* === M E T H O D S ======================================================= */
-
-class Progress : public synfig::ProgressCallback
+//! Allowed video codecs
+/*! \warning This variable is linked to allowed_video_codecs_description,
+ *  if you change this you must change the other acordingly.
+ *  \warning These codecs are linked to the filename extensions for
+ *  mod_ffmpeg. If you change this you must change the others acordingly.
+ */
+const char* allowed_video_codecs[] =
 {
-	const char *program;
-
-public:
-
-	Progress(const char *name):program(name) { }
-
-	virtual bool
-	task(const String &task)
-	{
-		VERBOSE_OUT(1)<<program<<": "<<task<<std::endl;
-		return true;
-	}
-
-	virtual bool
-	error(const String &task)
-	{
-		std::cerr<<program<<": "<<_("error")<<": "<<task<<std::endl;
-		return true;
-	}
-
-	virtual bool
-	warning(const String &task)
-	{
-		std::cerr<<program<<": "<<_("warning")<<": "<<task<<std::endl;
-		return true;
-	}
-
-	virtual bool
-	amount_complete(int /*current*/, int /*total*/)
-	{
-		return true;
-	}
+	"flv", "h263p", "huffyuv", "libtheora", "libx264", "libxvid",
+	"mjpeg", "mpeg1video", "mpeg2video", "mpeg4", "msmpeg4",
+	"msmpeg4v1", "msmpeg4v2", "wmv1", "wmv2", NULL
 };
 
-class RenderProgress : public synfig::ProgressCallback
+//! Allowed video codecs description.
+/*! \warning This variable is linked to allowed_video_codecs,
+ *  if you change this you must change the other acordingly.
+ */
+const char* allowed_video_codecs_description[] =
 {
-	string taskname;
-
-	etl::clock clk;
-	int clk_scanline; // The scanline at which the clock was reset
-	etl::clock clk2;
-
-	float last_time;
-public:
-
-	RenderProgress():clk_scanline(0), last_time(0) { }
-
-	virtual bool
-	task(const String &thetask)
-	{
-		taskname=thetask;
-		return true;
-	}
-
-	virtual bool
-	error(const String &task)
-	{
-		std::cout<<_("error")<<": "<<task<<std::endl;
-		return true;
-	}
-
-	virtual bool
-	warning(const String &task)
-	{
-		std::cout<<_("warning")<<": "<<task<<std::endl;
-		return true;
-	}
-
-	virtual bool
-	amount_complete(int scanline, int h)
-	{
-		if(be_quiet)return true;
-		if(scanline!=h)
-		{
-			const float time(clk()*(float)(h-scanline)/(float)(scanline-clk_scanline));
-			const float delta(time-last_time);
-
-			int weeks=0,days=0,hours=0,minutes=0,seconds=0;
-
-			last_time=time;
-
-			if(clk2()<0.2)
-				return true;
-			clk2.reset();
-
-			if(scanline)
-				seconds=(int)time+1;
-			else
-			{
-				//cerr<<"reset"<<endl;
-				clk.reset();
-				clk_scanline=scanline;
-			}
-
-			if(seconds<0)
-			{
-				clk.reset();
-				clk_scanline=scanline;
-				seconds=0;
-			}
-			while(seconds>=60)
-				minutes++,seconds-=60;
-			while(minutes>=60)
-				hours++,minutes-=60;
-			while(hours>=24)
-				days++,hours-=24;
-			while(days>=7)
-				weeks++,days-=7;
-
-			cerr<<taskname<<": "<<_("Line")<<" "<<scanline<<_(" of ")<<h<<" -- ";
-			//cerr<<time/(h-clk_scanline)<<" ";
-			/*
-			if(delta>=-time/(h-clk_scanline)  )
-				cerr<<">";
-			*/
-			if(delta>=0 && clk()>4.0 && scanline>clk_scanline+200)
-			{
-				//cerr<<"reset"<<endl;
-				clk.reset();
-				clk_scanline=scanline;
-			}
-
-			if(weeks)
-				cerr<<weeks<<"w ";
-			if(days)
-				cerr<<days<<"d ";
-			if(hours)
-				cerr<<hours<<"h ";
-			if(minutes)
-				cerr<<minutes<<"m ";
-			if(seconds)
-				cerr<<seconds<<"s ";
-
-			cerr<<"           \r";
-		}
-		else
-			cerr<<taskname<<": "<<_("DONE")<<"                        "<<endl;;
-		return true;
-	}
+	"Flash Video (FLV) / Sorenson Spark / Sorenson H.263.",
+	"H.263+ / H.263-1998 / H.263 version 2.",
+	"Huffyuv / HuffYUV.",
+	"libtheora Theora.",
+	"libx264 H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10.",
+	"libxvidcore MPEG-4 part 2.",
+	"MJPEG (Motion JPEG).",
+	"raw MPEG-1 video.",
+	"raw MPEG-2 video.",
+	"MPEG-4 part 2.",
+	"MPEG-4 part 2 Microsoft variant version 3.",
+	"MPEG-4 part 2 Microsoft variant version 1.",
+	"MPEG-4 part 2 Microsoft variant version 2.",
+	"Windows Media Video 7.",
+	"Windows Media Video 8.",
+	NULL
 };
 
-struct Job
-{
-	String filename;
-	String outfilename;
-
-	RendDesc desc;
-
-	Canvas::Handle root;
-	Canvas::Handle canvas;
-	Target::Handle target;
-
-	int quality;
-	bool sifout;
-	bool list_canvases;
-
-	bool canvas_info, canvas_info_all, canvas_info_time_start, canvas_info_time_end, canvas_info_frame_rate,
-		 canvas_info_frame_start, canvas_info_frame_end, canvas_info_w, canvas_info_h, canvas_info_image_aspect,
-		 canvas_info_pw, canvas_info_ph, canvas_info_pixel_aspect, canvas_info_tl, canvas_info_br,
-		 canvas_info_physical_w, canvas_info_physical_h, canvas_info_x_res, canvas_info_y_res, canvas_info_span,
-		 canvas_info_interlaced, canvas_info_antialias, canvas_info_clamp, canvas_info_flags, canvas_info_focus,
-		 canvas_info_bg_color, canvas_info_metadata;
-
-	Job()
-	{
-		canvas_info = canvas_info_all = canvas_info_time_start = canvas_info_time_end = canvas_info_frame_rate = canvas_info_frame_start = canvas_info_frame_end = canvas_info_w = canvas_info_h = canvas_info_image_aspect = canvas_info_pw = canvas_info_ph = canvas_info_pixel_aspect = canvas_info_tl = canvas_info_br = canvas_info_physical_w = canvas_info_physical_h = canvas_info_x_res = canvas_info_y_res = canvas_info_span = canvas_info_interlaced = canvas_info_antialias = canvas_info_clamp = canvas_info_flags = canvas_info_focus = canvas_info_bg_color = canvas_info_metadata = false;
-	};
-};
+/* === T Y P E D E F S ===================================================== */
 
 typedef list<String> arg_list_t;
 typedef list<Job> job_list_t;
+
+/* === M E T H O D S ======================================================= */
 
 void guid_test()
 {
@@ -349,6 +185,7 @@ void display_help(bool full)
 		display_help_option("--layer-info", "<layer>", _("Print out layer's description, parameter info, etc."));
 		display_help_option("--layers", NULL, _("Print out the list of available layers"));
 		display_help_option("--targets", NULL, _("Print out the list of available targets"));
+		display_help_option("--target-video-codecs", NULL, _("Print out the list of available target video codecs"));
 		display_help_option("--importers", NULL, _("Print out the list of available importers"));
 		display_help_option("--valuenodes", NULL, _("Print out the list of available ValueNodes"));
 		display_help_option("--modules", NULL, _("Print out the list of loaded modules"));
@@ -365,6 +202,15 @@ void display_help(bool full)
 		display_help_option("--help", NULL, _("Print out usage and syntax info"));
 
 	cerr << endl;
+}
+
+void display_target_video_codecs_help ()
+{
+	for (int i = 0; allowed_video_codecs[i] != NULL &&
+					allowed_video_codecs_description[i] != NULL; i++)
+		cout << " " << allowed_video_codecs[i] << ":   \t"
+			 << allowed_video_codecs_description[i]
+			 << endl;
 }
 
 int process_global_flags(arg_list_t &arg_list)
@@ -477,6 +323,13 @@ int process_global_flags(arg_list_t &arg_list)
 			return SYNFIGTOOL_HELP;
 		}
 
+		if(*iter == "--target-video-codecs")
+		{
+			display_target_video_codecs_help();
+
+			return SYNFIGTOOL_HELP;
+		}
+
 		if(*iter == "--valuenodes")
 		{
 			Progress p(PACKAGE);
@@ -550,7 +403,7 @@ bool flag_requires_value(String flag)
 			flag=="-Q"			|| flag=="-s"			|| flag=="-t"			|| flag=="-T"			|| flag=="-w"			||
 			flag=="--append"	|| flag=="--begin-time"	|| flag=="--canvas-info"|| flag=="--dpi"		|| flag=="--dpi-x"		||
 			flag=="--dpi-y"		|| flag=="--end-time"	|| flag=="--fps"		|| flag=="--layer-info"	|| flag=="--start-time"	||
-			flag=="--time"		);
+			flag=="--time"		|| flag=="-vc"			|| flag=="-vb");
 }
 
 int extract_arg_cluster(arg_list_t &arg_list,arg_list_t &cluster)
@@ -584,6 +437,25 @@ int extract_arg_cluster(arg_list_t &arg_list,arg_list_t &cluster)
 	return SYNFIGTOOL_OK;
 }
 
+/*! Extract a parameter from the argument list
+ *
+ * \param arg_list Argument list from wich the parameter is extracted.
+ * \param iter Iterator pointing to the argument list parameter to be
+ * extracted.
+ * \param next Iterator pointing to the next argument.
+ */
+string extract_parameter (arg_list_t& arg_list,
+						  arg_list_t::iterator& iter,
+						  arg_list_t::iterator& next)
+{
+	string parameter;
+	arg_list.erase(iter);
+	iter = next++;
+	parameter = *iter;
+	arg_list.erase(iter);
+	return parameter;
+}
+
 int extract_RendDesc(arg_list_t &arg_list,RendDesc &desc)
 {
 	arg_list_t::iterator iter, next;
@@ -593,107 +465,74 @@ int extract_RendDesc(arg_list_t &arg_list,RendDesc &desc)
 	{
 		if(*iter=="-w")
 		{
-			arg_list.erase(iter);
-			iter=next++;
-			w=atoi(iter->c_str());
-			arg_list.erase(iter);
+			w = atoi(extract_parameter(arg_list, iter, next).c_str());
 		}
 		else if(*iter=="-h")
 		{
-			arg_list.erase(iter);
-			iter=next++;
-			h=atoi(iter->c_str());
-			arg_list.erase(iter);
+			h = atoi(extract_parameter(arg_list, iter, next).c_str());
 		}
 		else if(*iter=="-a")
 		{
             int a;
-			arg_list.erase(iter);
-			iter=next++;
-			a=atoi(iter->c_str());
+			a = atoi(extract_parameter(arg_list, iter, next).c_str());
 			desc.set_antialias(a);
 			VERBOSE_OUT(1)<<strprintf(_("Antialiasing set to %d, (%d samples per pixel)"),a,a*a)<<endl;
-			arg_list.erase(iter);
 		}
 		else if(*iter=="-s")
 		{
-			arg_list.erase(iter);
-			iter=next++;
-			span=atof(iter->c_str());
+			span = atoi(extract_parameter(arg_list, iter, next).c_str());
 			VERBOSE_OUT(1)<<strprintf(_("Span set to %d units"),span)<<endl;
-			arg_list.erase(iter);
 		}
 		else if(*iter=="--fps")
 		{
-			arg_list.erase(iter);
-			iter=next++;
-			float fps=atof(iter->c_str());
+			float fps = atof(extract_parameter(arg_list, iter, next).c_str());
 			desc.set_frame_rate(fps);
-			arg_list.erase(iter);
 			VERBOSE_OUT(1)<<strprintf(_("Frame rate set to %d frames per second"),fps)<<endl;
 		}
 		else if(*iter=="--dpi")
 		{
-			arg_list.erase(iter);
-			iter=next++;
-			float dpi=atof(iter->c_str());
+			float dpi = atof(extract_parameter(arg_list, iter, next).c_str());
 			float dots_per_meter=dpi*39.3700787402;
 			desc.set_x_res(dots_per_meter).set_y_res(dots_per_meter);
-			arg_list.erase(iter);
 			VERBOSE_OUT(1)<<strprintf(_("Physical resolution set to %f dpi"),dpi)<<endl;
 		}
 		else if(*iter=="--dpi-x")
 		{
-			arg_list.erase(iter);
-			iter=next++;
-			float dpi=atof(iter->c_str());
+			float dpi = atof(extract_parameter(arg_list, iter, next).c_str());
 			float dots_per_meter=dpi*39.3700787402;
 			desc.set_x_res(dots_per_meter);
-			arg_list.erase(iter);
 			VERBOSE_OUT(1)<<strprintf(_("Physical X resolution set to %f dpi"),dpi)<<endl;
 		}
 		else if(*iter=="--dpi-y")
 		{
-			arg_list.erase(iter);
-			iter=next++;
-			float dpi=atof(iter->c_str());
+			float dpi = atof(extract_parameter(arg_list, iter, next).c_str());
 			float dots_per_meter=dpi*39.3700787402;
 			desc.set_y_res(dots_per_meter);
-			arg_list.erase(iter);
 			VERBOSE_OUT(1)<<strprintf(_("Physical Y resolution set to %f dpi"),dpi)<<endl;
 		}
 		else if(*iter=="--start-time" || *iter=="--begin-time")
 		{
-			arg_list.erase(iter);
-			iter=next++;
-			desc.set_time_start(Time(*iter,desc.get_frame_rate()));
-			arg_list.erase(iter);
+			desc.set_time_start(Time(extract_parameter(arg_list, iter, next),
+								desc.get_frame_rate()));
 		}
 		else if(*iter=="--end-time")
 		{
-			arg_list.erase(iter);
-			iter=next++;
-			desc.set_time_end(Time(*iter,desc.get_frame_rate()));
-			arg_list.erase(iter);
+			desc.set_time_end(Time(extract_parameter(arg_list, iter, next),
+								   desc.get_frame_rate()));
 		}
 		else if(*iter=="--time")
 		{
-			arg_list.erase(iter);
-			iter=next++;
-			desc.set_time(Time(*iter,desc.get_frame_rate()));
+			desc.set_time(Time(extract_parameter(arg_list, iter, next),
+							   desc.get_frame_rate()));
 			VERBOSE_OUT(1)<<_("Rendering frame at ")<<desc.get_time_start().get_string(desc.get_frame_rate())<<endl;
-			arg_list.erase(iter);
 		}
 		else if(*iter=="-g")
 		{
 			synfig::warning("Gamma argument is currently ignored");
-			arg_list.erase(iter);
-			iter=next++;
-			//desc.set_gamma(Gamma(atof(iter->c_str())));
-			arg_list.erase(iter);
+			//desc.set_gamma(Gamma(atoi(extract_parameter(arg_list, iter, next).c_str())));
 		}
 		else if (flag_requires_value(*iter))
-			iter=next++;
+			iter++;
 	}
 	if (w||h)
 	{
@@ -717,14 +556,11 @@ int extract_quality(arg_list_t &arg_list,int &quality)
 	{
 		if(*iter=="-Q")
 		{
-			arg_list.erase(iter);
-			iter=next++;
-			quality=atoi(iter->c_str());
+			quality = atoi(extract_parameter(arg_list, iter, next).c_str());
 			VERBOSE_OUT(1)<<strprintf(_("Quality set to %d"),quality)<<endl;
-			arg_list.erase(iter);
 		}
 		else if (flag_requires_value(*iter))
-			iter=next++;
+			iter++;
 	}
 
 	return SYNFIGTOOL_OK;
@@ -737,14 +573,11 @@ int extract_threads(arg_list_t &arg_list,int &threads)
 	{
 		if(*iter=="-T")
 		{
-			arg_list.erase(iter);
-			iter=next++;
-			threads=atoi(iter->c_str());
+			threads = atoi(extract_parameter(arg_list, iter, next).c_str());
 			VERBOSE_OUT(1)<<strprintf(_("Threads set to %d"),threads)<<endl;
-			arg_list.erase(iter);
 		}
 		else if (flag_requires_value(*iter))
-			iter=next++;
+			iter++;
 	}
 
 	return SYNFIGTOOL_OK;
@@ -759,16 +592,71 @@ int extract_target(arg_list_t &arg_list,string &type)
 	{
 		if(*iter=="-t")
 		{
-			arg_list.erase(iter);
-			iter=next++;
-			type=*iter;
-			arg_list.erase(iter);
+			type = extract_parameter(arg_list, iter, next);
+			VERBOSE_OUT(1)<<strprintf(_("Target set to %s"), type.c_str())<<endl;
 		}
 		else if (flag_requires_value(*iter))
-			iter=next++;
+			iter++;
 	}
 
 	return SYNFIGTOOL_OK;
+}
+
+int extract_target_params(arg_list_t& arg_list,
+						  TargetParam& params)
+{
+	int ret;
+	ret = SYNFIGTOOL_OK;
+	// If -vc parameter is provided, -vb parameter is needed.
+	bool need_bitrate_parameter = false;
+	arg_list_t::iterator iter, next;
+
+	for(next=arg_list.begin(),iter=next++;iter!=arg_list.end();iter=next++)
+	{
+		if(*iter=="-vc")
+		{
+			// Target video codec
+			params.video_codec = extract_parameter(arg_list, iter, next);
+
+			// video_codec string to lowercase
+			transform (params.video_codec.begin(),
+					   params.video_codec.end(),
+					   params.video_codec.begin(),
+					   ::tolower);
+
+			int local_ret;
+			local_ret = SYNFIGTOOL_UNKNOWNARGUMENT;
+
+			// Check if the given video codec is allowed.
+			for (int i = 0; local_ret != SYNFIGTOOL_OK &&
+							allowed_video_codecs[i] != NULL; i++)
+				if (params.video_codec == allowed_video_codecs[i])
+					local_ret = SYNFIGTOOL_OK;
+
+			ret = local_ret;
+
+			if (ret == SYNFIGTOOL_OK)
+			{
+				VERBOSE_OUT(1)<<strprintf(_("Target video codec set to %s"), params.video_codec.c_str())<<endl;
+				need_bitrate_parameter = true;
+			}
+		}
+		else if(*iter=="-vb")
+		{
+			need_bitrate_parameter = false;
+			// Target bitrate
+			params.bitrate =
+				atoi(extract_parameter(arg_list, iter, next).c_str());
+			VERBOSE_OUT(1)<<strprintf(_("Target bitrate set to %dk"),params.bitrate)<<endl;
+		}
+		else if (flag_requires_value(*iter))
+			iter++;
+	}
+
+	if (need_bitrate_parameter)
+		ret = SYNFIGTOOL_MISSINGARGUMENT;
+
+	return ret;
 }
 
 int extract_append(arg_list_t &arg_list,string &filename)
@@ -780,13 +668,10 @@ int extract_append(arg_list_t &arg_list,string &filename)
 	{
 		if(*iter=="--append")
 		{
-			arg_list.erase(iter);
-			iter=next++;
-			filename=*iter;
-			arg_list.erase(iter);
+			filename = extract_parameter(arg_list, iter, next);
 		}
 		else if (flag_requires_value(*iter))
-			iter=next++;
+			iter++;
 	}
 
 	return SYNFIGTOOL_OK;
@@ -802,14 +687,11 @@ int extract_outfile(arg_list_t &arg_list,string &outfile)
 	{
 		if(*iter=="-o")
 		{
-			arg_list.erase(iter);
-			iter=next++;
-			outfile=*iter;
-			arg_list.erase(iter);
+			outfile = extract_parameter(arg_list, iter, next);
 			ret=SYNFIGTOOL_OK;
 		}
 		else if (flag_requires_value(*iter))
-			iter=next++;
+			iter++;
 	}
 
 	return ret;
@@ -824,13 +706,10 @@ int extract_canvasid(arg_list_t &arg_list,string &canvasid)
 	{
 		if(*iter=="-c")
 		{
-			arg_list.erase(iter);
-			iter=next++;
-			canvasid=*iter;
-			arg_list.erase(iter);
+			canvasid = extract_parameter(arg_list, iter, next);
 		}
 		else if (flag_requires_value(*iter))
-			iter=next++;
+			iter++;
 	}
 
 	return SYNFIGTOOL_OK;
@@ -840,7 +719,8 @@ int extract_list_canvases(arg_list_t &arg_list,bool &list_canvases)
 {
 	arg_list_t::iterator iter, next;
 
-	for(next=arg_list.begin(),iter=next++;iter!=arg_list.end();iter=next++)
+	for(next=arg_list.begin(), iter = next++; iter!=arg_list.end();
+		iter = next++)
 		if(*iter=="--list-canvases")
 		{
 			list_canvases = true;
@@ -858,10 +738,7 @@ void extract_canvas_info(arg_list_t &arg_list, Job &job)
 		if(*iter=="--canvas-info")
 		{
 			job.canvas_info = true;
-			arg_list.erase(iter);
-			iter=next++;
-			String values(*iter), value;
-			arg_list.erase(iter);
+			String values(extract_parameter(arg_list, iter, next)), value;
 
 			std::string::size_type pos;
 			while (!values.empty())
@@ -1292,6 +1169,32 @@ int main(int argc, char *argv[])
 				}
 			}
 
+			TargetParam target_parameters;
+			// Extract the extra parameters for the targets that
+			// need them.
+			if (target_name == "ffmpeg")
+			{
+				int status;
+				status = extract_target_params(imageargs, target_parameters);
+				if (status == SYNFIGTOOL_UNKNOWNARGUMENT)
+				{
+					cerr << strprintf(_("Unknown target video codec: %s."),
+									 target_parameters.video_codec.c_str())
+						 << endl;
+					cerr << _("Available target video codecs are:")
+						 << endl;
+					display_target_video_codecs_help();
+
+					return SYNFIGTOOL_UNKNOWNARGUMENT;
+				}
+				else if (status == SYNFIGTOOL_MISSINGARGUMENT)
+				{
+					cerr << _("Missing argument: \"-vb\".") << endl;
+
+					return SYNFIGTOOL_MISSINGARGUMENT;
+				}
+			}
+
 			// If the target type is STILL not yet defined, then
 			// set it to a some sort of default
 			if(target_name.empty())
@@ -1316,7 +1219,10 @@ int main(int argc, char *argv[])
 			VERBOSE_OUT(4)<<"outfile_name="<<job_list.front().outfilename<<endl;
 
 			VERBOSE_OUT(4)<<_("Creating the target...")<<endl;
-			job_list.front().target=synfig::Target::create(target_name,job_list.front().outfilename);
+			job_list.front().target =
+				synfig::Target::create(target_name,
+									   job_list.front().outfilename,
+									   target_parameters);
 
 			if(target_name=="sif")
 				job_list.front().sifout=true;

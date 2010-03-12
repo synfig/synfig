@@ -29,6 +29,7 @@
 
 #include <synfig/target_scanline.h>
 #include <synfig/string.h>
+#include <synfig/targetparam.h>
 #include <cstdio>
 
 /* === M A C R O S ========================================================= */
@@ -51,7 +52,7 @@ private:
 	synfig::PixelFormat pf;
 
 public:
-	bmp(const char *filename);
+	bmp(const char *filename, const synfig::TargetParam& /* params */);
 	virtual ~bmp();
 
 	virtual bool set_rend_desc(synfig::RendDesc *desc);

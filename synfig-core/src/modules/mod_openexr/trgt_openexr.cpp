@@ -63,7 +63,8 @@ exr_trgt::ready()
 	return (bool)exr_file;
 }
 
-exr_trgt::exr_trgt(const char *Filename):
+exr_trgt::exr_trgt(const char *Filename,
+				   const synfig::TargetParam& /* params */):
 	multi_image(false),
 	imagecount(0),
 	filename(Filename),

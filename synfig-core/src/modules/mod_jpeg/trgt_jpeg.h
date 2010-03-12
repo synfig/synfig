@@ -32,6 +32,7 @@
 #define NOMINMAX
 #include <synfig/target_scanline.h>
 #include <synfig/string.h>
+#include <synfig/targetparam.h>
 #include <cstdio>
 _ETL_BEGIN_CDECLS
 #include <jpeglib.h>
@@ -60,7 +61,7 @@ private:
 	unsigned char *buffer;
 	synfig::Color *color_buffer;
 public:
-	jpeg_trgt(const char *filename);
+	jpeg_trgt(const char *filename, const synfig::TargetParam& /* params */);
 	virtual ~jpeg_trgt();
 
 	virtual bool set_rend_desc(synfig::RendDesc *desc);

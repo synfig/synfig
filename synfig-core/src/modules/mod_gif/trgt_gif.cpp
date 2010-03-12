@@ -57,7 +57,7 @@ SYNFIG_TARGET_SET_CVS_ID(gif,"$Id$");
 
 /* === M E T H O D S ======================================================= */
 
-gif::gif(const char *filename_):
+gif::gif(const char *filename_, const synfig::TargetParam& /* params */):
 	filename(filename_),
 	file( (filename=="-")?stdout:fopen(filename_,POPEN_BINARY_WRITE_TYPE) ),
 	imagecount(0),

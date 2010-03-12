@@ -1,11 +1,11 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file trgt_imagemagick.h
-**	\brief Template Header
+/*!	\file dialog_targetparam.h
+**	\brief Targetparam Dialog Header
 **
 **	$Id$
 **
 **	\legal
-**	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
+**	Copyright (c) 2010 Carlos López González
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -17,23 +17,21 @@
 **	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 **	General Public License for more details.
 **	\endlegal
-**
-** === N O T E S ===========================================================
-**
-** ========================================================================= */
+*/
+/* ========================================================================= */
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_TRGT_IMAGEMAGICK_H
-#define __SYNFIG_TRGT_IMAGEMAGICK_H
+#ifndef __SYNFIG_STUDIO_DIALOG_TARGETPARAM_H
+#define __SYNFIG_STUDIO_DIALOG_TARGETPARAM_H
 
 /* === H E A D E R S ======================================================= */
+#include <gtkmm/dialog.h>
+#include <gtkmm/button.h>
+#include <gtkmm/comboboxtext.h>
+#include <gtkmm/spinbutton.h>
 
-#include <synfig/target_scanline.h>
-#include <synfig/string.h>
 #include <synfig/targetparam.h>
-#include <sys/types.h>
-#include <cstdio>
 
 /* === M A C R O S ========================================================= */
 
@@ -41,32 +39,33 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
+namespace studio {
 
-class imagemagick_trgt : public synfig::Target_Scanline
+class Dialog_TargetParam : public Gtk::Dialog
 {
-	SYNFIG_TARGET_MODULE_EXT
-private:
-	pid_t pid;
-	int imagecount;
-	bool multi_image;
-	FILE *file;
-	synfig::String filename;
-	unsigned char *buffer;
-	synfig::Color *color_buffer;
-	synfig::PixelFormat pf;
-public:
-	imagemagick_trgt(const char *filename,
-					 const synfig::TargetParam& /* params */);
-	virtual ~imagemagick_trgt();
+	synfig::TargetParam tparam_;
+	Gtk::Button *ok_button;
+	Gtk::Button *cancel_button;
+	Gtk::SpinButton *bitrate;
+	Gtk::ComboBoxText *vcodec;
 
-	virtual bool set_rend_desc(synfig::RendDesc *desc);
-	virtual bool init();
-	virtual bool start_frame(synfig::ProgressCallback *cb);
-	virtual void end_frame();
-	virtual synfig::Color * start_scanline(int scanline);
-	virtual bool end_scanline();
+	void on_ok();
+	void on_cancel();
+
+public:
+	Dialog_TargetParam(synfig::TargetParam &tparam);
+	~Dialog_TargetParam();
+
+	synfig::TargetParam get_tparam() const { return tparam_; }
+	void set_tparam(const synfig::TargetParam &tp) {tparam_=tp; }
+
 };
+
+}; // END of namespace studio
 
 /* === E N D =============================================================== */
 
 #endif
+
+
+

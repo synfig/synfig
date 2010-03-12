@@ -80,7 +80,8 @@ SYNFIG_TARGET_SET_CVS_ID(imagemagick_trgt,"$Id$");
 
 /* === M E T H O D S ======================================================= */
 
-imagemagick_trgt::imagemagick_trgt(const char *Filename)
+imagemagick_trgt::imagemagick_trgt(const char *Filename,
+								   const synfig::TargetParam& /* params */)
 {
 	pid=-1;
 	file=NULL;

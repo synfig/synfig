@@ -29,6 +29,7 @@
 
 #include <synfig/target_scanline.h>
 #include <synfig/string.h>
+#include <synfig/targetparam.h>
 #include <cstdio>
 #include "synfig/surface.h"
 
@@ -52,7 +53,8 @@ private:
 	synfig::Surface	surface;
 
 public:
-	Target_LibAVCodec(const char *filename);
+	Target_LibAVCodec(const char *filename,
+					  const synfig::TargetParam& /* params */);
 	virtual ~Target_LibAVCodec();
 
 	virtual bool init();

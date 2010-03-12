@@ -39,6 +39,7 @@
 #include <gtkmm/optionmenu.h>
 
 #include <synfig/string.h>
+#include <synfig/targetparam.h>
 
 #include <synfigapp/canvasinterface.h>
 
@@ -80,6 +81,8 @@ class RenderSettings : public Gtk::Dialog
 
 	etl::handle<AsyncRenderer> async_renderer;
 
+	synfig::TargetParam tparam;
+
 public:
 	RenderSettings(Gtk::Window& parent,etl::handle<synfigapp::CanvasInterface> canvas_interface);
 	~RenderSettings();
@@ -92,6 +95,7 @@ private:
 	void on_choose_pressed();
 	void on_render_pressed();
 	void on_cancel_pressed();
+	void on_targetparam_pressed();
 
 	void on_finished();
 }; // END of class RenderSettings

@@ -32,6 +32,7 @@
 #include <synfig/target_scanline.h>
 #include <synfig/string.h>
 #include <synfig/surface.h>
+#include <synfig/targetparam.h>
 #include <cstdio>
 #include <OpenEXR/ImfArray.h>
 #include <OpenEXR/ImfRgbaFile.h>
@@ -59,7 +60,7 @@ private:
 
 	bool ready();
 public:
-	exr_trgt(const char *filename);
+	exr_trgt(const char *filename, const synfig::TargetParam& /* params */);
 	virtual ~exr_trgt();
 
 	virtual bool set_rend_desc(synfig::RendDesc *desc);

@@ -115,11 +115,13 @@
 //! Marks the start of the targets in the module's inventory
 #define BEGIN_TARGETS {
 
-#define TARGET(x)                                                       \
-	synfig::Target::book()[synfig::String(x::name__)].factory =           \
-		reinterpret_cast<synfig::Target::Factory>	(x::create);              \
-  synfig::Target::book()[synfig::String(x::name__)].filename =          \
-    synfig::String(x::ext__);                                           \
+#define TARGET(x)														\
+	synfig::Target::book()[synfig::String(x::name__)].factory =			\
+		reinterpret_cast<synfig::Target::Factory> (x::create);			\
+	synfig::Target::book()[synfig::String(x::name__)].filename =		\
+		synfig::String(x::ext__);										\
+	synfig::Target::book()[synfig::String(x::name__)].target_param =	\
+		synfig::TargetParam();													\
 	synfig::Target::ext_book()[synfig::String(x::ext__)]=x::name__;
 
 #define TARGET_EXT(x,y) synfig::Target::ext_book()[synfig::String(y)]=x::name__;

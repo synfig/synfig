@@ -32,6 +32,7 @@
 #include <synfig/string.h>
 #include <synfig/surface.h>
 #include <synfig/smartfile.h>
+#include <synfig/targetparam.h>
 #include <cstdio>
 
 /* === M A C R O S ========================================================= */
@@ -54,7 +55,7 @@ private:
 
 public:
 
-	yuv(const char *filename);
+	yuv(const char *filename, const synfig::TargetParam& /* params */);
 	virtual ~yuv();
 
 	virtual bool init();

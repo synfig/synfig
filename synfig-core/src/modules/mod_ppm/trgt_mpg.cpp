@@ -64,7 +64,8 @@ bsd_mpeg1::New(const char *filename)
 	return new bsd_mpeg1(filename);
 }
 
-bsd_mpeg1::bsd_mpeg1(const char *Filename)
+bsd_mpeg1::bsd_mpeg1(const char *Filename,
+					 const synfig::TargetParam& /* params */)
 {
 	filename=Filename;
 	passthru=ppm::New((tmp_dir+"temp.ppm").c_str());

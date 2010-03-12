@@ -27,6 +27,7 @@
 
 #include <synfig/target_scanline.h>
 #include <synfig/string.h>
+#include <synfig/targetparam.h>
 #include <cstdio>
 
 // #include <png.h>
@@ -82,7 +83,7 @@ private:
 
 public:
 
-	mng_trgt(const char *filename);
+	mng_trgt(const char *filename, const synfig::TargetParam& /* params */);
 	virtual ~mng_trgt();
 
 	virtual bool set_rend_desc(synfig::RendDesc *desc);

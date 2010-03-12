@@ -79,7 +79,8 @@ png_trgt::png_out_warning(png_struct *png_data,const char *msg)
 
 //Target *png_trgt::New(const char *filename){	return new png_trgt(filename);}
 
-png_trgt::png_trgt(const char *Filename)
+png_trgt::png_trgt(const char *Filename,
+				   const synfig::TargetParam& /* params */)
 {
 	file=NULL;
 	filename=Filename;
