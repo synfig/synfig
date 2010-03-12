@@ -71,11 +71,20 @@ DeviceTracker::DeviceTracker()
 
 		synfigapp::InputDevice::Handle input_device;
 		input_device=synfigapp::Main::add_input_device(device->name,synfigapp::InputDevice::Type(device->source));
-		if(input_device->get_type()==synfigapp::InputDevice::TYPE_MOUSE) {
-			input_device->set_mode(synfigapp::InputDevice::MODE_SCREEN);
-			synfigapp::Main::select_input_device(input_device);
+		//Disable all extended devices by default. This tries to fix several
+		// bugs reported in track and forums
+		if(	input_device->get_type()==synfigapp::InputDevice::TYPE_MOUSE  ||
+			input_device->get_type()==synfigapp::InputDevice::TYPE_PEN    ||
+			input_device->get_type()==synfigapp::InputDevice::TYPE_ERASER ||
+			input_device->get_type()==synfigapp::InputDevice::TYPE_CURSOR  ) {
+			input_device->set_mode(synfigapp::InputDevice::MODE_DISABLED);
+			//synfigapp::Main::select_input_device(input_device);
 		}
 	}
+	// Once all devices are disabled be sure that the core pointer is the
+	// one selected. The user should decide later whether enable and save the
+	// rest of input devices found.
+	synfigapp::Main::select_input_device(gdk_device_get_core_pointer()->name);
 }
 
 DeviceTracker::~DeviceTracker()
