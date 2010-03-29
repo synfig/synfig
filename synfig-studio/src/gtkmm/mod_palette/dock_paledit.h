@@ -87,7 +87,8 @@ private:
 	void set_color(synfig::Color x, int i);
 	void erase_color(int i);
 
-	void select_color(int i);
+	void select_fill_color(int i);
+	void select_outline_color(int i);
 	synfig::Color get_color(int i)const;
 	void edit_color(int i);
 public:

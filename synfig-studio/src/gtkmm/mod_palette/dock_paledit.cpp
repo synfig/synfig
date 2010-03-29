@@ -261,11 +261,17 @@ Dock_PalEdit::refresh()
 		widget_color->set_size_request(12,12);
 		widget_color->signal_activate().connect(
 			sigc::bind(
-				sigc::mem_fun(*this,&studio::Dock_PalEdit::select_color),
+				sigc::mem_fun(*this,&studio::Dock_PalEdit::select_fill_color),
 				i
 			)
 		);
-		widget_color->signal_secondary().connect(
+		widget_color->signal_middle_click().connect(
+			sigc::bind(
+				sigc::mem_fun(*this,&studio::Dock_PalEdit::select_outline_color),
+				i
+			)
+		);
+		widget_color->signal_right_click().connect(
 			sigc::bind(
 				sigc::mem_fun(*this,&studio::Dock_PalEdit::show_menu),
 				i
@@ -294,7 +300,13 @@ Dock_PalEdit::edit_color(int i)
 }
 
 void
-Dock_PalEdit::select_color(int i)
+Dock_PalEdit::select_fill_color(int i)
+{
+	synfigapp::Main::set_fill_color(get_color(i));
+}
+
+void
+Dock_PalEdit::select_outline_color(int i)
 {
 	synfigapp::Main::set_outline_color(get_color(i));
 }
