@@ -62,8 +62,6 @@ ValueNode_Cos::ValueNode_Cos(const ValueBase &value):
 	default:
 		throw Exception::BadType(ValueBase::type_local_name(value.get_type()));
 	}
-
-	DCAST_HACK_ENABLE();
 }
 
 LinkableValueNode*

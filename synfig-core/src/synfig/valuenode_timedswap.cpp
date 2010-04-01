@@ -88,8 +88,6 @@ ValueNode_TimedSwap::ValueNode_TimedSwap(const ValueBase &value):
 
 	set_link("time",ValueNode_Const::create(Time(2)));
 	set_link("length",ValueNode_Const::create(Time(1)));
-
-	DCAST_HACK_ENABLE();
 }
 
 ValueNode_TimedSwap*

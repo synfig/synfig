@@ -64,8 +64,6 @@ synfig::ValueNode_TwoTone::ValueNode_TwoTone(const ValueBase &value):LinkableVal
 	default:
 		throw Exception::BadType(ValueBase::type_local_name(value.get_type()));
 	}
-
-	DCAST_HACK_ENABLE();
 }
 
 LinkableValueNode*

@@ -81,8 +81,6 @@ ValueNode_Step::ValueNode_Step(const ValueBase &value):
 	default:
 		throw Exception::BadType(ValueBase::type_local_name(get_type()));
 	}
-
-	DCAST_HACK_ENABLE();
 }
 
 LinkableValueNode*

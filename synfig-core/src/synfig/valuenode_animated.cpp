@@ -734,7 +734,6 @@ public:
 
 ValueNode_Animated::ValueNode_Animated()
 {
-	DCAST_HACK_ENABLE();
 }
 
 int

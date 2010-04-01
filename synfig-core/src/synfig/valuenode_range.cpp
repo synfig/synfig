@@ -90,8 +90,6 @@ synfig::ValueNode_Range::ValueNode_Range(const ValueBase &value):
 	assert(max_->get_type()==id);
 	assert(link_->get_type()==id);
 	assert(get_type()==id);
-
-	DCAST_HACK_ENABLE();
 }
 
 LinkableValueNode*

@@ -65,8 +65,6 @@ ValueNode_RealString::ValueNode_RealString(const ValueBase &value):
 	default:
 		throw Exception::BadType(ValueBase::type_local_name(value.get_type()));
 	}
-
-	DCAST_HACK_ENABLE();
 }
 
 LinkableValueNode*

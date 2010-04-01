@@ -57,7 +57,6 @@ synfig::ValueNode_GradientRotate::ValueNode_GradientRotate(const Gradient& x):
 {
 	set_link("gradient",ValueNode_Const::create(x));
 	set_link("offset",ValueNode_Const::create(Real(0)));
-	DCAST_HACK_ENABLE();
 }
 
 LinkableValueNode*

@@ -50,7 +50,6 @@ using namespace synfig;
 
 ValueNode_Const::ValueNode_Const()
 {
-	DCAST_HACK_ENABLE();
 }
 
 
@@ -58,7 +57,6 @@ ValueNode_Const::ValueNode_Const(const ValueBase &x):
 	ValueNode	(x.get_type()),
 	value		(x)
 {
-	DCAST_HACK_ENABLE();
 }
 
 

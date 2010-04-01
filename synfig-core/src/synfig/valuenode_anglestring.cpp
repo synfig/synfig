@@ -65,8 +65,6 @@ ValueNode_AngleString::ValueNode_AngleString(const ValueBase &value):
 	default:
 		throw Exception::BadType(ValueBase::type_local_name(value.get_type()));
 	}
-
-	DCAST_HACK_ENABLE();
 }
 
 LinkableValueNode*

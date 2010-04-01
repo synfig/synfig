@@ -61,8 +61,6 @@ ValueNode_VectorY::ValueNode_VectorY(const ValueBase &value):
 	default:
 		throw Exception::BadType(ValueBase::type_local_name(value.get_type()));
 	}
-
-	DCAST_HACK_ENABLE();
 }
 
 LinkableValueNode*

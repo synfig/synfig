@@ -49,18 +49,6 @@
 
 /* === M A C R O S ========================================================= */
 
-// This is a hack for GCC 3.0.4... which has a broken dynamic_cast<>
-// It is deprecated, and will be removed soon.
-#if ( __GNUC__ == 3 ) && ( __GNUC__MINOR__ == 0 )
-# define DCAST_HACK_BASECLASS()	int cast__
-# define DCAST_HACK_ID(x)		static const int my_cast__(void) { return x; }
-# define DCAST_HACK_ENABLE()	cast__=my_cast__()
-#else
-# define DCAST_HACK_BASECLASS()
-# define DCAST_HACK_ID(x)
-# define DCAST_HACK_ENABLE()
-#endif
-
 #define CHECK_TYPE_AND_SET_VALUE(variable, type)						\
 	/* I don't think this ever happens - maybe remove this code? */		\
 	if (get_type() == ValueBase::TYPE_NIL) {							\
@@ -249,10 +237,6 @@ protected:
 	void set_type(ValueBase::Type t) { type=t; }
 
 	virtual void on_changed();
-
-public:
-	DCAST_HACK_BASECLASS();
-	DCAST_HACK_ID(0);
 }; // END of class ValueNode
 
 /*!	\class PlaceholderValueNode

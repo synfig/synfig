@@ -550,7 +550,6 @@ ValueNode_DynamicList::ValueNode_DynamicList(ValueBase::Type container_type):
 	container_type	(container_type),
 	loop_(false)
 {
-	DCAST_HACK_ENABLE();
 }
 
 ValueNode_DynamicList::Handle

@@ -101,8 +101,6 @@ synfig::ValueNode_Subtract::ValueNode_Subtract(const ValueBase &value):
 	assert(ref_a->get_type()==id);
 	assert(ref_b->get_type()==id);
 	assert(get_type()==id);
-
-	DCAST_HACK_ENABLE();
 }
 
 LinkableValueNode*

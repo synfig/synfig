@@ -106,8 +106,6 @@ protected:
 
 	void set_type(ValueBase::Type t);
 	virtual void get_times_vfunc(Node::time_set &set) const;
-public:
-	DCAST_HACK_ID(4);
 };
 
 }; // END of namespace synfig
