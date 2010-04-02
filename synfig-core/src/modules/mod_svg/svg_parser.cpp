@@ -1853,6 +1853,8 @@ Svg_parser::randomLetter(){
 int
 Svg_parser::getRed(String hex){
 	if(hex.at(0)=='#'){
+		//allow for 3-digit hex codes (#rgb = #rrggbb)
+		if (hex.length()<7) return (16+1) * hextodec(hex.substr(1,1));
 		return hextodec(hex.substr(1,2));
 	}else if(hex.compare(0,3,"rgb")==0 || hex.compare(0,3,"RGB")==0){
 		int start=hex.find_first_of("(")+1;
@@ -1865,6 +1867,7 @@ Svg_parser::getRed(String hex){
 int
 Svg_parser::getGreen(String hex){
 	if(hex.at(0)=='#'){
+		if (hex.length()<7) return (16+1) * hextodec(hex.substr(2,1));
 		return hextodec(hex.substr(3,2));
 	}else if(hex.compare(0,3,"rgb")==0 || hex.compare(0,3,"RGB")==0){
 		int start=hex.find_first_of("(")+1;
@@ -1877,6 +1880,7 @@ Svg_parser::getGreen(String hex){
 int
 Svg_parser::getBlue(String hex){
 	if(hex.at(0)=='#'){
+		if (hex.length()<7) return (16+1) * hextodec(hex.substr(3,1));
 		return hextodec(hex.substr(5,2));
 	}else if(hex.compare(0,3,"rgb")==0 || hex.compare(0,3,"RGB")==0){
 		int start=hex.find_first_of("(")+1;
