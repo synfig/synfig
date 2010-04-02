@@ -65,13 +65,13 @@ typedef struct stop_t{
 	 float pos;
 }ColorStop;
 typedef struct linear_g{
-	char name[40];
+	char name[80];
 	float x1,x2,y1,y2;
 	std::list<ColorStop*> *stops;
 	Matrix *transform;
 }LinearGradient;
 typedef struct radial_g{
-	char name[40];
+	char name[80];
 	float cx,cy;//center point
 	//float fx,fy; //not supported by Synfig
 	float r; //radius
