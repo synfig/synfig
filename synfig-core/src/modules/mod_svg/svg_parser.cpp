@@ -1780,7 +1780,7 @@ Svg_parser::get_tokens_path(String path){ //mini path lexico-parser
 					else if(a=='V'){ e=15; i++;}
 					else if(a=='H'){ e=16; i++;}
 					else if(a=='z' || a=='Z'){ e=17; i++;}
-					else if(a=='-' ||a=='.'|| isdigit (a)){ e=18;}
+					else if(a=='-' || a=='.' || a=='e' || a=='E' || isdigit (a)){ e=18;}
 					else if(a==','){ e=19; i++;}
 					else if(a==' '){i++;}
 					break;
@@ -1804,7 +1804,7 @@ Svg_parser::get_tokens_path(String path){ //mini path lexico-parser
 			case 16: tokens.push_back("H"); e=0; break;
 
 			case 17: tokens.push_back("z"); e=0; break;//loop
-			case 18: if(a=='-'||a=='.'|| isdigit (a)){
+			case 18: if(a=='-' || a=='.' || a=='e' || a=='E' || isdigit (a)){
 						buffer.append(path.substr(i,1));i++;
 					}else{
 						e=20;
