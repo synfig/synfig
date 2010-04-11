@@ -66,11 +66,11 @@ Dialog_Keyframe::Dialog_Keyframe(Gtk::Window& parent, etl::handle<synfigapp::Can
 		add_action_widget(*ok_button,2);
 		ok_button->signal_clicked().connect(sigc::mem_fun(*this, &Dialog_Keyframe::on_ok_pressed));
 
-/*		Gtk::Button *apply_button(manage(new class Gtk::Button(Gtk::StockID("gtk-apply"))));
+		Gtk::Button *apply_button(manage(new class Gtk::Button(Gtk::StockID("gtk-apply"))));
 		apply_button->show();
 		add_action_widget(*apply_button,1);
 		apply_button->signal_clicked().connect(sigc::mem_fun(*this, &Dialog_Keyframe::on_apply_pressed));
-*/
+
 		Gtk::Button *delete_button(manage(new class Gtk::Button(Gtk::StockID("gtk-delete"))));
 		delete_button->show();
 		add_action_widget(*delete_button,3);
@@ -86,10 +86,13 @@ Dialog_Keyframe::Dialog_Keyframe(Gtk::Window& parent, etl::handle<synfigapp::Can
 
 	get_vbox()->pack_start(*table);
 
+/*  // \todo Allow setting descriptions for keyframes
+
 	entry_description.set_text(_("Not yet implemented"));
 
-	//table->attach(*manage(new Gtk::Label(_("Description"))), 0, 1, 0, 1, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-	//table->attach(entry_description, 1, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+	table->attach(*manage(new Gtk::Label(_("Description"))), 0, 1, 0, 1, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+	table->attach(entry_description, 1, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+*/
 
 	table->show_all();
 
@@ -118,6 +121,33 @@ Dialog_Keyframe::set_keyframe(const synfig::Keyframe& x)
 void
 Dialog_Keyframe::on_ok_pressed()
 {
+	on_apply_pressed();
+	hide();
+}
+
+
+void
+Dialog_Keyframe::on_delete_pressed()
+{
+	synfigapp::Action::Handle action(synfigapp::Action::create("KeyframeRemove"));
+
+	assert(action);
+
+	action->set_param("canvas",canvas_interface->get_canvas());
+	action->set_param("canvas_interface",canvas_interface);
+	action->set_param("keyframe",keyframe_);
+	action->set_param("model",widget_waypoint_model->get_waypoint_model());
+
+	if(canvas_interface->get_instance()->perform_action(action))
+	{
+		hide();
+	}
+}
+
+
+void
+Dialog_Keyframe::on_apply_pressed()
+{
 	if(widget_waypoint_model->get_waypoint_model().is_trivial())
 		return;
 
@@ -133,16 +163,4 @@ Dialog_Keyframe::on_ok_pressed()
 	if(!canvas_interface->get_instance()->perform_action(action))
 	{
 	}
-}
-
-
-void
-Dialog_Keyframe::on_delete_pressed()
-{
-}
-
-
-void
-Dialog_Keyframe::on_apply_pressed()
-{
 }
