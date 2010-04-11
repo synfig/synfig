@@ -77,16 +77,14 @@ class Dialog_Gradient : public Gtk::Dialog
 
 	sigc::connection value_changed_connection;
 
-	void on_ok_pressed();
-	void on_apply_pressed();
-	void on_grab_pressed();
+	void on_set_default_pressed();
 
 	void on_cpoint_selected(synfig::Gradient::CPoint x);
 	void on_values_adjusted();
 
 	Widget_Gradient* widget_gradient;
 	Widget_ColorEdit* widget_color;
-	Gtk::Button *grab_button;
+	Gtk::Button *set_default_button;
 
 	void on_changed();
 
@@ -98,14 +96,14 @@ public:
 
 	const synfig::Gradient& get_gradient()const { return widget_gradient->get_value(); }
 
-	void grab_button_set_sensitive(bool sensitive) { grab_button->set_sensitive(sensitive); }
+	void set_default_button_set_sensitive(bool sensitive) { set_default_button->set_sensitive(sensitive); }
 
 	void reset();
 
 
 	Dialog_Gradient();
 	~Dialog_Gradient();
-	//! Inerface to external calls to fill in the Gradient Editor Dialog
+	//! Interface to external calls to fill in the Gradient Editor Dialog
 	//! when a Constant ValueNode or a Animated ValueNode is double cliked.
 	void edit(const synfigapp::ValueDesc &x, etl::handle<synfigapp::CanvasInterface> canvas_interface, synfig::Time time=0);
 }; // END of Dialog_Gradient

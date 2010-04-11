@@ -72,17 +72,10 @@ Dialog_Gradient::Dialog_Gradient():
 	set_role("gradient_editor");
 
 	// Setup the buttons
-	grab_button = manage(new class Gtk::Button(Gtk::StockID(_("Set as Default"))));
-	grab_button->show();
-	add_action_widget(*grab_button,2);
-	grab_button->signal_clicked().connect(sigc::mem_fun(*this, &Dialog_Gradient::on_grab_pressed));
-
-	/*
-	Gtk::Button *apply_button(manage(new class Gtk::Button(Gtk::StockID("gtk-apply"))));
-	apply_button->show();
-	add_action_widget(*apply_button,1);
-	apply_button->signal_clicked().connect(sigc::mem_fun(*this, &Dialog_Gradient::on_apply_pressed));
-	*/
+	set_default_button = manage(new class Gtk::Button(Gtk::StockID(_("Set as Default"))));
+	set_default_button->show();
+	add_action_widget(*set_default_button,2);
+	set_default_button->signal_clicked().connect(sigc::mem_fun(*this, &Dialog_Gradient::on_set_default_pressed));
 
 	Gtk::Button *cancel_button(manage(new class Gtk::Button(Gtk::StockID("gtk-close"))));
 	cancel_button->show();
@@ -136,18 +129,9 @@ Dialog_Gradient::reset()
 }
 
 void
-Dialog_Gradient::on_grab_pressed()
+Dialog_Gradient::on_set_default_pressed()
 {
 	synfigapp::Main::set_gradient(get_gradient());
-//	signal_edited_(get_gradient());
-//	reset();
-//	hide();
-}
-
-void
-Dialog_Gradient::on_apply_pressed()
-{
-	signal_edited_(get_gradient());
 }
 
 void

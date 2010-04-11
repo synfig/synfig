@@ -180,7 +180,10 @@ ChildrenTree::ChildrenTree()
 	tree_view.set_enable_search(true);
 	tree_view.set_search_column(model.label);
 
-/*
+/*  // Buttons to raise/lower/duplicate/delete children valuenodes
+	//   Commented out because these functions are not implemented
+    //   and children sort themselves alphabetically
+
 	Gtk::Image *icon;
 	//Gtk::IconSize iconsize(Gtk::IconSize::from_name("synfig-small_icon"));
 	Gtk::IconSize iconsize(Gtk::ICON_SIZE_SMALL_TOOLBAR);

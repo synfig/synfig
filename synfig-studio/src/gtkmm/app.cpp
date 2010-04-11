@@ -74,7 +74,6 @@
 #include "dialog_gradient.h"
 #include "dialog_color.h"
 #include "toolbox.h"
-#include "compview.h"
 #include "onemoment.h"
 
 #include "dockmanager.h"
@@ -1430,13 +1429,7 @@ App::~App()
 
 	toolbox->hide();
 
-//	studio::App::iteration(false);
-
 	delete toolbox;
-
-//	studio::App::iteration(false);
-
-//	studio::App::iteration(false);
 
 	delete dialog_setup;
 
@@ -1449,8 +1442,6 @@ App::~App()
 	delete dock_manager;
 
 	instance_list.clear();
-
-//	studio::App::iteration(false);
 }
 
 String
@@ -1958,7 +1949,7 @@ App::dialog_open_file(const std::string &title, std::string &filename, std::stri
 	}
 	return false;
 
-#else
+#else   // not USE_WIN32_FILE_DIALOGS
 	synfig::String prev_path;
 
 	if(!_preferences.get_value(preference, prev_path))
@@ -1989,52 +1980,7 @@ App::dialog_open_file(const std::string &title, std::string &filename, std::stri
 
     delete dialog;
     return false;
-
-    /*
-
-	GtkWidget *ok;
-	GtkWidget *cancel;
-	int val=0;
-
-	GtkWidget *fileselection;
-	fileselection = gtk_file_selection_new(title.c_str());
-
-
-	if(basename(filename)==filename)
-	{
-		gtk_file_selection_set_filename(GTK_FILE_SELECTION(fileselection),(prev_path+ETL_DIRECTORY_SEPARATOR).c_str());
-	}
-	else
-		gtk_file_selection_set_filename(GTK_FILE_SELECTION(fileselection),dirname(filename).c_str());
-
-	gtk_file_selection_complete(GTK_FILE_SELECTION(fileselection),basename(filename).c_str());
-
-	ok=GTK_FILE_SELECTION(fileselection)->ok_button;
-	cancel=GTK_FILE_SELECTION(fileselection)->cancel_button;
-
-	gtk_signal_connect(GTK_OBJECT(ok),"clicked",GTK_SIGNAL_FUNC(Signal_Open_Ok),&val);
-	gtk_signal_connect(GTK_OBJECT(cancel),"clicked",GTK_SIGNAL_FUNC(Signal_Open_Cancel),&val);
-
-	gtk_widget_show(fileselection);
-
-	while(!val)
-		iteration();
-
-
-	if(val==1)
-	{
-		filename=gtk_file_selection_get_filename(GTK_FILE_SELECTION(fileselection));
-		_preferences.set_value(preference,dirname(filename));
-	}
-	else
-	{
-		gtk_widget_destroy(fileselection);
-		return false;
-	}
-	gtk_widget_destroy(fileselection);
-	return true;
-    */
-#endif
+#endif   // not USE_WIN32_FILE_DIALOGS
 }
 
 bool

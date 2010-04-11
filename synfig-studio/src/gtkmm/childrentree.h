@@ -130,6 +130,7 @@ private:
 
 	void on_dirty_preview();
 
+	//! \todo Implement raise/lower/duplicate/delete functions
 	void on_raise_pressed();
 
 	void on_lower_pressed();

@@ -534,7 +534,7 @@ CellRenderer_ValueBase::start_editing_vfunc(
 				path
 			)
 		);
-		App::dialog_gradient->grab_button_set_sensitive(true);
+		App::dialog_gradient->set_default_button_set_sensitive(true);
 		App::dialog_gradient->present();
 
 		return NULL;
