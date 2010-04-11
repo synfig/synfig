@@ -87,7 +87,7 @@ using namespace studio;
 OneMoment::OneMoment():
 	Gtk::Window(getenv("SYNFIG_DISABLE_POPUP_WINDOWS") ? Gtk::WINDOW_TOPLEVEL : Gtk::WINDOW_POPUP)
 {
-	// Create the Copyright Label
+	// Create the Label
 	Gtk::Label *label = manage(new class Gtk::Label(_("One Moment, Please...")));
 
 	set_title(_("One Moment, Please..."));

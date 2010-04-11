@@ -845,7 +845,8 @@ init_ui_manager()
 	DEFINE_ACTION("amount-dec", _("Decrease Amount"));
 
 #undef DEFINE_ACTION
-
+#undef DEFINE_ACTION_2
+#undef DEFINE_ACTION_SIG
 
 // Set up synfigapp actions
 	/*{
@@ -1135,6 +1136,7 @@ init_ui_manager()
 	ACCEL("End",														"<Actions>/canvasview/seek-end"						);
 
 #undef ACCEL
+#undef ACCEL2
 }
 
 #ifdef _WIN32

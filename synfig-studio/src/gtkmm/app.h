@@ -135,7 +135,7 @@ private:
 	//static etl::handle<synfigapp::UIInterface> ui_interface_;
 	//static int max_recent_files;
 
-/*
+/*      //declated as globals in app.cpp
 	static Dock_Keyframes *dock_keyframes;
 	static Dock_Layers *dock_layers;
 	static Dock_Params *dock_params;
@@ -209,7 +209,7 @@ public:
 	/*
  -- ** -- S I G N A L S -------------------------------------------------------
 	*/
-/*
+/*      //declated as globals in app.cpp
 	static sigc::signal<
 		void,
 		etl::loose_handle<CanvasView>
