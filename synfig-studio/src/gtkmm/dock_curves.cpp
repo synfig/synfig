@@ -99,14 +99,9 @@ _curve_selection_changed(Gtk::TreeView* param_tree_view,Widget_Curves* curves)
 
 	std::list<synfigapp::ValueDesc> value_descs;
 
-	//std::list<Gtk::TreePath> path_list(
-	//param_tree_view->get_selection()->selected_foreach_iter(tmp);
 	iter=param_tree_view->get_selection()->get_selected();
-
 	value_descs.push_back((*iter)[model.value_desc]);
 	curves->set_value_descs(value_descs);
-
-	//curves->set_value_descs(tmp.value_descs);
 }
 
 void

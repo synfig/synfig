@@ -65,20 +65,6 @@ Dock_Params::Dock_Params():
 	Dock_CanvasSpecific("params",_("Params"),Gtk::Stock::INDEX/*Gtk::StockID("synfig-params")*/),
 	action_group(Gtk::ActionGroup::create("action_group_dock_params"))
 {
-/*
-	App::ui_manager()->insert_action_group(action_group_layer_ops);
-
-    Glib::ustring ui_info =
-	"<ui>"
-	"	<toolbar action='toolbar-palette'>"
-	"	<toolitem action='amount-increase' />"
-	"	<toolitem action='amount-decrease' />"
-	"	</toolbar>"
-	"</ui>"
-	;
-
-	App::ui_manager()->add_ui_from_string(ui_info);
-	*/
 }
 
 Dock_Params::~Dock_Params()

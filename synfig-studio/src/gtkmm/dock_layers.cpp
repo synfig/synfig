@@ -72,7 +72,6 @@ using namespace studio;
 
 Dock_Layers::Dock_Layers():
 	Dock_CanvasSpecific("layers",_("Layers"),Gtk::StockID("synfig-layer")),
-//	layer_action_manager(0)
 	layer_action_manager(new LayerActionManager)
 {
 	if(layer_action_manager)layer_action_manager->set_ui_manager(App::ui_manager());

@@ -57,11 +57,6 @@ Dialog_ToolOptions::Dialog_ToolOptions():
 	Dockable("tool_options",_("Tool Options"),Gtk::StockID("synfig-about")),
 	empty_label(_("This tool has no options"))
 {
-	//scrolled_.add(sub_vbox_);
-	//scrolled_.set_policy(Gtk::POLICY_AUTOMATIC,Gtk::POLICY_AUTOMATIC);
-	//scrolled_.show();
-	//get_vbox()->pack_start(scrolled_);
-
 	add(sub_vbox_);
 
 	set_widget(empty_label);

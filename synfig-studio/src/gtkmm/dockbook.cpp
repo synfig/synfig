@@ -127,8 +127,6 @@ DockBook::add(Dockable& dockable, int position)
 
 	dockable.show();
 
-	//set_current_page(get_n_pages()-1);
-
 	signal_changed_();
 }
 

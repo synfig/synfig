@@ -71,19 +71,6 @@ Dock_Children::Dock_Children():
 	//!       Dockable::prev_widget_ is left referencing a
 	//!       ChildrenTree that has already been destroyed.
 	// set_use_scrolled(false);
-/*
-	add(*create_action_tree());
-
-	add_button(
-		Gtk::StockID("synfig-clear_redo"),
-		_("Clear the REDO Stack")
-	)->signal_clicked().connect(
-		sigc::mem_fun(
-			*this,
-			&Dock_Children::clear_redo
-		)
-	);
-*/
 }
 
 Dock_Children::~Dock_Children()

@@ -755,9 +755,9 @@ init_ui_manager()
 		));
 	}
 
-#define DEFINE_ACTION(x,stock) { Glib::RefPtr<Gtk::Action> action( Gtk::Action::create(x, stock) ); /*action->set_sensitive(false);*/ actions_action_group->add(action); }
-#define DEFINE_ACTION2(x,stock,label) { Glib::RefPtr<Gtk::Action> action( Gtk::Action::create(x, stock,label,label) ); /*action->set_sensitive(false);*/ actions_action_group->add(action); }
-#define DEFINE_ACTION_SIG(group,x,stock,sig) { Glib::RefPtr<Gtk::Action> action( Gtk::Action::create(x, stock) ); /*action->set_sensitive(false);*/ group->add(action,sig); }
+#define DEFINE_ACTION(x,stock) { Glib::RefPtr<Gtk::Action> action( Gtk::Action::create(x, stock) ); actions_action_group->add(action); }
+#define DEFINE_ACTION2(x,stock,label) { Glib::RefPtr<Gtk::Action> action( Gtk::Action::create(x, stock,label,label) ); actions_action_group->add(action); }
+#define DEFINE_ACTION_SIG(group,x,stock,sig) { Glib::RefPtr<Gtk::Action> action( Gtk::Action::create(x, stock) ); group->add(action,sig); }
 
 	DEFINE_ACTION2("keyframe-properties", Gtk::StockID("gtk-properties"), _("Keyframe Properties"));
 	DEFINE_ACTION("about", Gtk::StockID("synfig-about"));
@@ -846,39 +846,6 @@ init_ui_manager()
 #undef DEFINE_ACTION
 #undef DEFINE_ACTION_2
 #undef DEFINE_ACTION_SIG
-
-// Set up synfigapp actions
-	/*{
-		synfigapp::Action::Book::iterator iter;
-
-		for(iter=synfigapp::Action::book().begin();iter!=synfigapp::Action::book().end();++iter)
-		{
-			Gtk::StockID stock_id;
-
-			if(!(iter->second.category&synfigapp::Action::CATEGORY_HIDDEN))
-			{
-				//Gtk::Image* image(manage(new Gtk::Image()));
-				if(iter->second.task=="raise")			stock_id=Gtk::Stock::GO_UP;
-				else if(iter->second.task=="lower")		stock_id=Gtk::Stock::GO_DOWN;
-				else if(iter->second.task=="move_top")	stock_id=Gtk::Stock::GOTO_TOP;
-				else if(iter->second.task=="move_bottom")	stock_id=Gtk::Stock::GOTO_BOTTOM;
-				else if(iter->second.task=="remove")	stock_id=Gtk::Stock::DELETE;
-				else if(iter->second.task=="set_on")	stock_id=Gtk::Stock::YES;
-				else if(iter->second.task=="set_off")	stock_id=Gtk::Stock::NO;
-				//else if(iter->second.task=="duplicate")	stock_id=Gtk::Stock::COPY;
-				else if(iter->second.task=="remove")	stock_id=Gtk::Stock::DELETE;
-				else									stock_id=Gtk::StockID("synfig-"+iter->second.task);
-
-				actions_action_group->add(Gtk::Action::create(
-					"action-"+iter->second.name,
-					stock_id,
-					iter->second.local_name,iter->second.local_name
-				));
-			}
-		}
-	}
-*/
-
 
     Glib::ustring ui_info =
 "<ui>"

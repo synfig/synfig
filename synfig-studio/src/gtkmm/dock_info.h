@@ -41,9 +41,6 @@ namespace studio {
 
 class Dock_Info : public Dock_CanvasSpecific
 {
-	//bool			valid;
-	//synfig::Point	pos;
-
 	Gtk::Label  r,g,b,a;
 	Gtk::Label	x,y;
 

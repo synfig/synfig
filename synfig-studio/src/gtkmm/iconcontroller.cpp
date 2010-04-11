@@ -111,14 +111,6 @@ IconController::IconController(const synfig::String& /*basepath*/)
 		synfig::warning("Unable to open "+path_to_icons+"synfig_icon."+IMAGE_EXT);
 	}
 
-/*
-#define INIT_STOCK_ICON(name,iconfile,desc)							\
-	stock_##name=Gtk::StockItem(Gtk::StockID("synfig-" #name),desc);   			\
-	Gtk::Stock::add(stock_##name);								\
-	icon_source.set_filename(path_to_icons+iconfile);							\
-	icon_##name.add_source(icon_source);						\
-	icon_factory->add(stock_##name.get_stock_id(),icon_##name)
-*/
 #define INIT_STOCK_ICON(name,iconfile,desc){							\
 	Gtk::StockItem stockitem(Gtk::StockID("synfig-" #name),desc); \
 	Gtk::Stock::add(stockitem);								\
@@ -241,6 +233,9 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	INIT_STOCK_ICON(gradient,"gradient_icon."IMAGE_EXT,_("Gradient Tool"));
 	INIT_STOCK_ICON(star,"star_icon."IMAGE_EXT,_("Star Tool"));
 
+#undef INIT_STOCK_ICON
+#undef INIT_STOCK_ICON
+
 	icon_factory->add_default();
 
 	Gtk::IconSize::register_new("synfig-small_icon",12,12);
@@ -268,6 +263,11 @@ IconController::get_normal_cursor()
 Gdk::Cursor
 IconController::get_tool_cursor(const Glib::ustring& name,const Glib::RefPtr<Gdk::Window>& window)
 {
+	//this function is never called
+	//it is commented out in WorkArea::refresh_cursor()
+	assert(0);
+	// \todo Do we still need it?
+
 	Glib::RefPtr<Gdk::Pixmap> pixmap;
 	pixmap=Gdk::Pixmap::create(window, 64, 64, 8);
 	pixmap->set_colormap(window->get_colormap());

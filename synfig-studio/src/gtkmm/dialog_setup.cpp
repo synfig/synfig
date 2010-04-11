@@ -113,7 +113,6 @@ Dialog_Setup::Dialog_Setup():
 	// Gamma
 	Gtk::Table *gamma_table=manage(new Gtk::Table(2,2,false));
 	notebook->append_page(*gamma_table,_("Gamma"));
-	//gamma_frame->add(*gamma_table);
 
 	gamma_table->attach(gamma_pattern, 0, 2, 0, 1, Gtk::EXPAND, Gtk::SHRINK|Gtk::FILL, 0, 0);
 

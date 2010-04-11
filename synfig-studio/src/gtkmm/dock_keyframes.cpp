@@ -71,36 +71,7 @@ Dock_Keyframes::Dock_Keyframes():
 	keyframe_action_manager->signal_show_keyframe_properties().connect(
 		sigc::mem_fun(*this,&Dock_Keyframes::show_keyframe_properties)
 	);
-/*	add_button(
-		Gtk::StockID("gtk-add"),
-		_("Inserts a Keyframe at the current time")
-	)->signal_clicked().connect(
-		sigc::mem_fun(
-			*this,
-			&Dock_Keyframes::add_keyframe_pressed
-		)
-	);
 
-	add_button(
-		Gtk::StockID("synfig-duplicate"),
-		_("Duplicates the selected keyframe at the current time")
-	)->signal_clicked().connect(
-		sigc::mem_fun(
-			*this,
-			&Dock_Keyframes::duplicate_keyframe_pressed
-		)
-	);
-
-	add_button(
-		Gtk::StockID("gtk-delete"),
-		_("Deletes the selected Keyframe")
-	)->signal_clicked().connect(
-		sigc::mem_fun(
-			*this,
-			&Dock_Keyframes::delete_keyframe_pressed
-		)
-	);
-*/
     Glib::ustring ui_info =
 	"<ui>"
 	"	<toolbar action='toolbar-keyframe'>"
@@ -127,29 +98,6 @@ Dock_Keyframes::show_keyframe_properties()
 	if(get_canvas_view())
 		get_canvas_view()->show_keyframe_dialog();
 }
-
-/*
-void
-Dock_Keyframes::add_keyframe_pressed()
-{
-	if(get_canvas_view())
-		get_canvas_view()->on_keyframe_add_pressed();
-}
-
-void
-Dock_Keyframes::duplicate_keyframe_pressed()
-{
-	if(get_canvas_view())
-		get_canvas_view()->on_keyframe_duplicate_pressed();
-}
-
-void
-Dock_Keyframes::delete_keyframe_pressed()
-{
-	if(get_canvas_view())
-		get_canvas_view()->on_keyframe_remove_pressed();
-}
-*/
 
 void
 Dock_Keyframes::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)

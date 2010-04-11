@@ -62,7 +62,7 @@ Dock_Canvases::Dock_Canvases():
 
 	add(*create_canvas_tree());
 
-/*
+/*  // \todo Implement canvas management in canvas browser
 	add_button(
 		Gtk::StockID("synfig-canvas_new"),
 		_("Insert a new canvas")
@@ -92,7 +92,7 @@ Dock_Canvases::Dock_Canvases():
 			&Dock_Canvases::menu_rename
 		)
 	);
-	*/
+*/
 }
 
 Dock_Canvases::~Dock_Canvases()

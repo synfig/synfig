@@ -87,17 +87,7 @@ Dockable::Dockable(const synfig::String& name,const synfig::String& local_name,G
 
 	use_scrolled_=true;
 
-	//set_title(local_name);
-	//set_type_hint(Gdk::WINDOW_TYPE_HINT_UTILITY);
-
-
-	title_label_.show();
-
 	attach_dnd_to(title_label_);
-
-	//scrolled_.set_policy(Gtk::POLICY_AUTOMATIC,Gtk::POLICY_AUTOMATIC);
-	//scrolled_.show();
-	//scrolled_.set_shadow_type(Gtk::SHADOW_NONE);
 
 	toolbar_=0;
 	//button_box_.show();
@@ -106,6 +96,7 @@ Dockable::Dockable(const synfig::String& name,const synfig::String& local_name,G
 
 	{
 		title_label_.set_padding(0,0);
+		//title_label_.show();
 		Gtk::EventBox* event_box(manage(new Gtk::EventBox()));
 		event_box->set_border_width(0);
 		event_box->add(title_label_);
@@ -139,7 +130,6 @@ Dockable::Dockable(const synfig::String& name,const synfig::String& local_name,G
 	prev_widget_->show();
 
 	set_size_request(175,120);
-	//scrolled_.set_shadow_type(Gtk::SHADOW_NONE);
 
 }
 
@@ -150,20 +140,6 @@ Dockable::~Dockable()
 		delete scrolled_;
 		scrolled_=0;
 	}
-
-	/*if(App::dock_manager)try{
-		App::dock_manager->unregister_dockable(*this);
-		std::list<Dockable*>::iterator iter;
-		for(iter=App::dock_manager->dockable_list_.begin();iter!=App::dock_manager->dockable_list_.end();++iter)
-			if(*iter==this)
-			{
-				App::dock_manager->dockable_list_.erase(iter);
-				return;
-			}
-	} catch(...) { }
-*/
-	//if(App::dock_manager)
-	//	App::dock_manager->dockable_list_.erase(this);
 }
 
 void
@@ -271,7 +247,6 @@ Dockable::add(Gtk::Widget& x)
 	if(prev_widget_)
 	{
 		remove(*prev_widget_);
-		//prev_widget_=0;
 		clear_previous();
 	}
 
@@ -362,8 +337,10 @@ Dockable::present()
 	{
 		DockDialog* dock_dialog(new DockDialog());
 		dock_dialog->get_dock_book().add(*this);
-		//if(get_name()=="canvases")
-		//	dock_dialog->set_composition_selector(true);
+/*		//hack: always display composition selector on top of canvas browser
+		if(get_name()=="canvases")
+			dock_dialog->set_composition_selector(true);
+*/
 		dock_dialog->present();
 	}
 }

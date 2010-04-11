@@ -43,7 +43,6 @@ namespace studio {
 class Dialog_ToolOptions : public Dockable
 {
 	Gtk::Label empty_label;
-	Gtk::ScrolledWindow scrolled_;
 	Gtk::VBox sub_vbox_;
 
 public:

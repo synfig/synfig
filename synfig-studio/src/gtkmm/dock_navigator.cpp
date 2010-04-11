@@ -159,7 +159,6 @@ void studio::Widget_NavView::on_start_render()
 		//get the pw and ph
 		//float pw = r.get_pw();
 		//float ph = r.get_ph();
-
 		//synfig::warning("Nav: pixel size is %f x %f", pw,ph);
 
 		//this renders that single frame

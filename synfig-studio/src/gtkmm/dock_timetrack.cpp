@@ -171,39 +171,6 @@ public:
 					return true;
 					//return signal_param_user_click()(event->button.button,row,COLUMNID_TIME_TRACK);
 				}
-/*				else
-				{
-					if(event->button.button==3)
-					{
-						LayerList layer_list(get_selected_layers());
-						if(layer_list.size()<=1)
-						{
-							synfigapp::ValueDesc value_desc(row[model.value_desc]);
-							Gtk::Menu* menu(manage(new Gtk::Menu()));
-							menu->signal_hide().connect(sigc::bind(sigc::ptr_fun(&delete_widget), menu));
-							App::get_instance(param_tree_store_->canvas_interface()->get_canvas())->make_param_menu(menu,param_tree_store_->canvas_interface()->get_canvas(),value_desc,0.5f);
-							menu->popup(event->button.button,gtk_get_current_event_time());
-							return true;
-						}
-						Gtk::Menu* menu(manage(new Gtk::Menu()));
-						menu->signal_hide().connect(sigc::bind(sigc::ptr_fun(&delete_widget), menu));
-						std::list<synfigapp::ValueDesc> value_desc_list;
-						ParamDesc param_desc(row[model.param_desc]);
-						for(;!layer_list.empty();layer_list.pop_back())
-							value_desc_list.push_back(synfigapp::ValueDesc(layer_list.back(),param_desc.get_name()));
-						App::get_instance(param_tree_store_->canvas_interface()->get_canvas())->make_param_menu(menu,param_tree_store_->canvas_interface()->get_canvas(),value_desc_list);
-						menu->popup(event->button.button,gtk_get_current_event_time());
-						return true;
-					}
-					else
-					{
-						if(column->get_first_cell_renderer()==cellrenderer_value)
-							return signal_param_user_click()(event->button.button,row,COLUMNID_VALUE);
-						else
-							return signal_param_user_click()(event->button.button,row,COLUMNID_NAME);
-					}
-				}
-				*/
 			}
 			break;
 
@@ -309,7 +276,7 @@ public:
 	void
 	on_waypoint_changed( synfig::Waypoint waypoint , synfig::ValueNode::Handle value_node)
 	{
-		// is this code used?
+		// \todo is this code used?
 		assert(0);
 
 		synfigapp::Action::ParamList param_list;

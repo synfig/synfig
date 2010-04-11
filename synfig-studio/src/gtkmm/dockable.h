@@ -76,7 +76,6 @@ private:
 	Gtk::Label title_label_;
 	//Gtk::HBox button_box_;
 	Gtk::HBox header_box_;
-	//Gtk::VBox vbox_;
 
 	//Gtk::HandleBox handle_box_;
 	Gtk::ScrolledWindow *scrolled_;
@@ -91,7 +90,6 @@ private:
 	bool dnd_success_;
 
 public:
-	//Gtk::VBox* get_vbox() { return &vbox_; }
 
 	void set_toolbar(Gtk::Toolbar& toolbar);
 

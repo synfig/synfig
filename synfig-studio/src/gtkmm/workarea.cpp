@@ -2721,8 +2721,7 @@ studio::WorkArea::set_cursor(Gdk::CursorType x)
 	drawing_area->get_window()->set_cursor(Gdk::Cursor(x));
 }
 
-#include "iconcontroller.h"
-
+//#include "iconcontroller.h"
 void
 studio::WorkArea::refresh_cursor()
 {

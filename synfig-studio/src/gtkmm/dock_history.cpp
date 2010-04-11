@@ -143,27 +143,6 @@ Dock_History::Dock_History():
 
 	set_toolbar(*dynamic_cast<Gtk::Toolbar*>(App::ui_manager()->get_widget("/toolbar-history")));
 	add(*create_action_tree());
-
-	/*
-	add_button(
-		Gtk::StockID("synfig-clear_undo"),
-		_("Clear the UNDO Stack")
-	)->signal_clicked().connect(
-		sigc::mem_fun(
-			*this,
-			&Dock_History::clear_undo
-		)
-	);
-	add_button(
-		Gtk::StockID("synfig-clear_redo"),
-		_("Clear the REDO Stack")
-	)->signal_clicked().connect(
-		sigc::mem_fun(
-			*this,
-			&Dock_History::clear_redo
-		)
-	);
-	*/
 }
 
 Dock_History::~Dock_History()
