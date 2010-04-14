@@ -64,7 +64,7 @@ Layer_MotionBlur::Layer_MotionBlur():
 	Layer_Composite		(1.0,Color::BLEND_STRAIGHT),
 	aperture			(0),
 	subsamples_factor	(1.0),
-	subsampling_type	(SUBSAMPLING_CONSTANT),
+	subsampling_type	(SUBSAMPLING_HYPERBOLIC),
 	subsample_start		(0.0),
 	subsample_end		(1.0)
 {
