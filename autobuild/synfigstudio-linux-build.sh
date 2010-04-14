@@ -791,7 +791,7 @@ mkpackage()
 			ImageMagick-${IMAGEMAGICK}-xdg-open.patch
 		do
 			#[ ! -e $FILE ] && wget -c http://download.tuxfamily.org/morevna/morevnapackage/sources/$FILE
-			rsync -av rsync://download.tuxfamily.org/pub/morevna/morevnapackage/sources/$FILE ./
+			rsync -av rsync://download.tuxfamily.org/pub/synfig/packages/sources/$FILE ./
 		done
 		if [[ $OPENGL == 1 ]]; then
 		for FILE in \
@@ -809,7 +809,7 @@ mkpackage()
 			gtkglextmm-${GTKGLEXTMM}-aclocal.diff
 		do
 			#[ ! -e $FILE ] && wget -c http://download.tuxfamily.org/morevna/morevnapackage/sources/$FILE
-			rsync -av rsync://download.tuxfamily.org/pub/morevna/morevnapackage/sources/$FILE ./
+			rsync -av rsync://download.tuxfamily.org/pub/synfig/packages/sources/$FILE ./
 		done
 		fi
 		popd
