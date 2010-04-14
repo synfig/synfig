@@ -1,7 +1,8 @@
 #!/bin/bash
 
 # Synfig Crash Monitor script
-# Copyright (c) 2009 Konstantin Dmitriev
+# Copyright (c) 2009-2010 Konstantin Dmitriev
+#
 #	This package is free software; you can redistribute it and/or
 #	modify it under the terms of the GNU General Public License as
 #	published by the Free Software Foundation; either version 2 of
@@ -124,7 +125,7 @@ mainloop()
 				STARTED=1
 				RUNTIME=0
 				#get version
-				P=$(ps --no-headers -f -Csynfigstudio |egrep "^`whoami`" | tr -s ' '| cut -d ' ' -f 8)
+ 				P=$(ps --no-headers -Csynfigstudio -o uid,cmd |egrep "^ *`id -u`" | egrep -v "<defunct>" | tr -s ' ' | sed "s|^ *`id -u` *||" | sed "s|/bin/sh *||" | head -n 1)
 				echo 
 				if [ ! -e $P ]; then
 					P=`which $P`
