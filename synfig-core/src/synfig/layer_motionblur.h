@@ -39,8 +39,21 @@ class Layer_MotionBlur : public synfig::Layer_Composite
 {
 	SYNFIG_LAYER_MODULE_EXT
 
+	enum SubsamplingType
+	{
+	    SUBSAMPLING_CONSTANT=0,		//!< weight each subsample equally
+	    SUBSAMPLING_LINEAR=1,		//!< fade in subsamples linearly
+	    SUBSAMPLING_HYPERBOLIC=2,	//!< fade in subsamples by a hyperbolic curve (default style of 0.62 and previous)
+
+	    SUBSAMPLING_END=2				//!< \internal
+	};
+
 private:
 	Time aperture;
+	Real subsamples_factor;
+	SubsamplingType subsampling_type;
+	Real subsample_start;
+	Real subsample_end;
 	mutable Time time_cur;
 
 public:
