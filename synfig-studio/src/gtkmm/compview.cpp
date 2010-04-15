@@ -74,6 +74,7 @@ CompView::CompView():
 	Gtk::Window(Gtk::WINDOW_TOPLEVEL),
 	dialog_settings(this,"compview")
 {
+	assert(0); //CHECK: This class does not appear to be used.
 	init_menu();
 	set_type_hint(Gdk::WINDOW_TYPE_HINT_UTILITY);
 

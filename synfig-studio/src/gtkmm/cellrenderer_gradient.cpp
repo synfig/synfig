@@ -59,6 +59,7 @@ CellRenderer_Gradient::CellRenderer_Gradient():
 	Gtk::CellRendererText	(),
 	property_gradient_(*this,"gradient",synfig::Gradient())
 {
+	assert(0); //CHECK: This class does not appear to be used.
 	//CellRendererText::signal_edited().connect(sigc::mem_fun(*this,&studio::CellRenderer_Gradient::string_edited_));
 }
 

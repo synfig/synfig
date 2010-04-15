@@ -56,6 +56,7 @@ using studio::ValueBaseLink;
 //structors
 ValueBaseLink::ValueBaseLink()
 {
+	assert(0); //CHECK: This class does not appear to be used.
 }
 
 ValueBaseLink::~ValueBaseLink()
