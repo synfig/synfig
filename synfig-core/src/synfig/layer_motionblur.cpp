@@ -61,8 +61,12 @@ SYNFIG_LAYER_SET_CVS_ID(Layer_MotionBlur,"$Id$");
 /* === M E M B E R S ======================================================= */
 
 Layer_MotionBlur::Layer_MotionBlur():
-	Layer_Composite	(1.0,Color::BLEND_STRAIGHT),
-	aperture		(0)
+	Layer_Composite		(1.0,Color::BLEND_STRAIGHT),
+	aperture			(0),
+	subsamples_factor	(1.0),
+	subsampling_type	(SUBSAMPLING_HYPERBOLIC),
+	subsample_start		(0.0),
+	subsample_end		(1.0)
 {
 }
 
@@ -71,13 +75,21 @@ Layer_MotionBlur::set_param(const String &param, const ValueBase &value)
 {
 
 	IMPORT(aperture);
+	IMPORT(subsamples_factor);
+	IMPORT(subsampling_type);
+	IMPORT(subsample_start);
+	IMPORT(subsample_end);
 	return Layer_Composite::set_param(param,value);
 }
 
 ValueBase
 Layer_MotionBlur::get_param(const String &param)const
 {
- 	EXPORT(aperture);
+	EXPORT(aperture);
+	EXPORT(subsamples_factor);
+	EXPORT(subsampling_type);
+	EXPORT(subsample_start);
+	EXPORT(subsample_end);
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
@@ -121,6 +133,30 @@ Layer_MotionBlur::get_param_vocab()const
 	ret.push_back(ParamDesc("aperture")
 		.set_local_name(_("Aperture"))
 		.set_description(_("Shutter Time"))
+	);
+
+	ret.push_back(ParamDesc("subsamples_factor")
+		.set_local_name(_("Subsamples Factor"))
+		.set_description(_("Multiplies The Number Of Subsamples Rendered"))
+	);
+
+	ret.push_back(ParamDesc("subsampling_type")
+		.set_local_name(_("Subsampling Type"))
+		.set_description(_("Curve Type For Weighting Subsamples"))
+		.set_hint("enum")
+		.add_enum_value(SUBSAMPLING_CONSTANT,"constant",_("Constant"))
+		.add_enum_value(SUBSAMPLING_LINEAR,"linear",_("Linear"))
+		.add_enum_value(SUBSAMPLING_HYPERBOLIC,"hyperbolic",_("Hyperbolic"))
+	);
+
+	ret.push_back(ParamDesc("subsample_start")
+		.set_local_name(_("Subsample Start Amount"))
+		.set_description(_("Relative Amount Of The First Subsample, For Linear Weighting"))
+	);
+
+	ret.push_back(ParamDesc("subsample_end")
+		.set_local_name(_("Subsample End Amount"))
+		.set_description(_("Relative Amount Of The Last Subsample, For Linear Weighting"))
 	);
 
 	return ret;
@@ -170,7 +206,17 @@ Layer_MotionBlur::accelerated_render(Context context,Surface *surface,int qualit
 
 		}
 
-		if (samples == 1) return context.accelerated_render(surface,quality,renddesc,cb);
+		samples *= subsamples_factor;
+
+		if (samples <= 1) return context.accelerated_render(surface,quality,renddesc,cb);
+
+		// Only in modes where subsample_start/end matters...
+		if(subsampling_type == SUBSAMPLING_LINEAR)
+		{
+			// We won't render when the scale==0, so we'll use those samples elsewhere
+			if(subsample_start == 0) samples++;
+			if(subsample_end == 0) samples++;
+		}
 
 		Surface tmp;
 		int i;
@@ -179,14 +225,32 @@ Layer_MotionBlur::accelerated_render(Context context,Surface *surface,int qualit
 		surface->set_wh(renddesc.get_w(),renddesc.get_h());
 		surface->clear();
 
+		// Render subsamples from time_cur-aperture to time_cur
 		for(i=0;i<samples;i++)
 		{
+			float pos = i/(samples-1.0);
+			float ipos = 1.0-pos;
+			switch(subsampling_type)
+			{
+				case SUBSAMPLING_LINEAR:
+					scale = ipos*subsample_start + pos*subsample_end;
+					break;
+				case SUBSAMPLING_HYPERBOLIC:
+					scale = 1.0/(samples-i);
+					break;
+				case SUBSAMPLING_CONSTANT:
+				default:
+					scale = 1.0; // Weights don't matter for constant overall subsampling.
+					break;
+			}
+			// Don't bother rendering if scale is zero
+			if(scale==0)
+				continue;
+			divisor += scale;
 			subimagecb=SuperCallback(cb,i*(5000/samples),(i+1)*(5000/samples),5000);
-			context.set_time(time_cur-(aperture*(samples-1-i)/(samples-1)));
+			context.set_time(time_cur-aperture*ipos);
 			if(!context.accelerated_render(&tmp,quality,renddesc,&subimagecb))
 				return false;
-			scale = 1.0/(samples-i);
-			divisor += scale;
 			for(int y=0;y<renddesc.get_h();y++)
 				for(int x=0;x<renddesc.get_w();x++)
 					(*surface)[y][x]+=tmp[y][x].premult_alpha()*scale;

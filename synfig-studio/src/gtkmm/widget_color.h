@@ -52,14 +52,16 @@ class Widget_Color : public Gtk::DrawingArea
 	synfig::Color color;
 
 	sigc::signal<void> signal_activate_;
-	sigc::signal<void> signal_secondary_;
+	sigc::signal<void> signal_middle_click_;
+	sigc::signal<void> signal_right_click_;
 
 protected:
 
 public:
 	sigc::signal<void>& signal_activate() { return signal_activate_; }
 	sigc::signal<void>& signal_clicked() { return signal_activate_; }
-	sigc::signal<void>& signal_secondary() { return signal_secondary_; }
+	sigc::signal<void>& signal_middle_click() { return signal_middle_click_; }
+	sigc::signal<void>& signal_right_click() { return signal_right_click_; }
 
 	void set_value(const synfig::Color &data);
 	const synfig::Color &get_value();

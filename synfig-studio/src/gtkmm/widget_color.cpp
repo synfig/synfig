@@ -168,9 +168,14 @@ Widget_Color::on_event(GdkEvent *event)
 			signal_activate_();
 			return true;
 		}
+		if(event->button.button==2)
+		{
+			signal_middle_click_();
+			return true;
+		}
 		if(event->button.button==3)
 		{
-			signal_secondary_();
+			signal_right_click_();
 			return true;
 		}
 		break;
