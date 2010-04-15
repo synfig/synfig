@@ -211,8 +211,6 @@ Widget_Vector::set_canvas(synfig::Canvas::LooseHandle x)
 		{
 			spinbutton_x->hide();
 			spinbutton_y->hide();
-//			delete spinbutton_x;
-//			delete spinbutton_y;
 		}
 		distance_x->show();
 		distance_y->show();

@@ -471,7 +471,6 @@ LayerGroupTreeStore::row_draggable_vfunc (const TreeModel::Path& /*path*/)const
 //	Gtk::TreeModel::Row row(*get_iter(path));
 
 	return true;
-//	return (bool)true;
 }
 
 bool

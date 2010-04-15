@@ -106,7 +106,7 @@ MetaDataTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& iter, int co
 {
 	if(column>=get_n_columns_vfunc())
 	{
-		g_warning("KeyframeTreeStore::set_value_impl: Bad column (%d)",column);
+		g_warning("MetaDataTreeStore::set_value_impl: Bad column (%d)",column);
 		return;
 	}
 
@@ -126,13 +126,13 @@ MetaDataTreeStore::set_value_impl(const Gtk::TreeModel::iterator& iter, int colu
 {
 	if(column>=get_n_columns_vfunc())
 	{
-		g_warning("KeyframeTreeStore::set_value_impl: Bad column (%d)",column);
+		g_warning("MetaDataTreeStore::set_value_impl: Bad column (%d)",column);
 		return;
 	}
 
 	if(!g_value_type_compatible(G_VALUE_TYPE(value.gobj()),get_column_type_vfunc(column)))
 	{
-		g_warning("KeyframeTreeStore::set_value_impl: Bad value type");
+		g_warning("MetaDataTreeStore::set_value_impl: Bad value type");
 		return;
 	}
 

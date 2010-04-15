@@ -82,15 +82,11 @@ int studio::Instance::instance_count_=0;
 
 Instance::Instance(synfig::Canvas::Handle canvas):
 	synfigapp::Instance		(canvas),
-//	canvas_tree_store_		(Gtk::TreeStore::create(CanvasTreeModel())),
-//	canvas_tree_store_		(Gtk::TreeStore::create()),
+	canvas_tree_store_		(Gtk::TreeStore::create(canvas_tree_model)),
 	history_tree_store_		(HistoryTreeStore::create(this)),
 	undo_status_(false),
 	redo_status_(false)
 {
-	CanvasTreeModel model;
-	canvas_tree_store_=Gtk::TreeStore::create(model);
-
 	id_=instance_count_++;
 
 	// Connect up all the signals
@@ -106,8 +102,6 @@ Instance::Instance(synfig::Canvas::Handle canvas):
 			)
 		)
 	);
-
-	canvas_tree_store_=Gtk::TreeStore::create(canvas_tree_model);
 
 	refresh_canvas_tree();
 }
@@ -262,6 +256,7 @@ studio::Instance::dialog_save_as()
 				Layer::Handle parent_layer(dynamic_cast<Layer*>(node));
 				if(parent_layer && parent_layer->get_canvas()->get_root()!=get_canvas())
 				{
+					//! \todo Fix big involving "Save As" with referenced compositions
 					string msg(strprintf(_("There is currently a bug when using \"SaveAs\"\n"
 						"on a composition that is being referenced by other\n"
 						"files that are currently open. Close these\n"
@@ -426,45 +421,8 @@ Instance::insert_canvas(Gtk::TreeRow row, synfig::Canvas::Handle canvas)
 
 		for(iter=children.begin();iter!=children.end();iter++)
 			insert_canvas(*(canvas_tree_store()->append(row.children())),*iter);
-	}
-
-	/*
-	if(!canvas->value_node_list().empty())
-	{
-		Gtk::TreeRow valuenode_row = *(canvas_tree_store()->append(row.children()));
-
-		valuenode_row[canvas_tree_model.label] = "<defs>";
-		valuenode_row[canvas_tree_model.canvas] = canvas;
-		valuenode_row[canvas_tree_model.is_canvas] = false;
-		valuenode_row[canvas_tree_model.is_value_node] = false;
-
-		synfig::ValueNodeList::iterator iter;
-		synfig::ValueNodeList &value_node_list(canvas->value_node_list());
-
-		for(iter=value_node_list.begin();iter!=value_node_list.end();iter++)
-			insert_value_node(*(canvas_tree_store()->append(valuenode_row.children())),canvas,*iter);
-	}
-	*/
+	}	
 }
-
-/*
-void
-Instance::insert_value_node(Gtk::TreeRow row,Canvas::Handle canvas,etl::handle<synfig::ValueNode> value_node)
-{
-	CanvasTreeModel canvas_tree_model;
-	assert(value_node);
-	assert(canvas);
-
-	row[canvas_tree_model.id] = value_node->get_id();
-	row[canvas_tree_model.name] = value_node->get_id();
-	row[canvas_tree_model.label] = value_node->get_id();
-	row[canvas_tree_model.canvas] = canvas;
-	row[canvas_tree_model.value_node] = value_node;
-	row[canvas_tree_model.is_canvas] = false;
-	row[canvas_tree_model.is_value_node] = true;
-	row[canvas_tree_model.icon] = Gtk::Button().render_icon(valuenode_icon(value_node),Gtk::ICON_SIZE_SMALL_TOOLBAR);
-}
-*/
 
 void
 Instance::refresh_canvas_tree()
@@ -770,32 +728,6 @@ Instance::add_actions_to_menu(Gtk::Menu *menu, const synfigapp::Action::ParamLis
 			Gtk::Image* image(manage(new Gtk::Image()));
 			Gtk::Stock::lookup(get_action_stock_id(*iter),Gtk::ICON_SIZE_MENU,*image);
 
-			/*
-			if(iter->task=="raise")
-				Gtk::Stock::lookup(Gtk::Stock::GO_UP,Gtk::ICON_SIZE_MENU,*image);
-			else if(iter->task=="lower")
-				Gtk::Stock::lookup(Gtk::Stock::GO_DOWN,Gtk::ICON_SIZE_MENU,*image);
-			else if(iter->task=="move_top")
-				Gtk::Stock::lookup(Gtk::Stock::GOTO_TOP,Gtk::ICON_SIZE_MENU,*image);
-			else if(iter->task=="move_bottom")
-				Gtk::Stock::lookup(Gtk::Stock::GOTO_BOTTOM,Gtk::ICON_SIZE_MENU,*image);
-			else if(iter->task=="remove")
-				Gtk::Stock::lookup(Gtk::Stock::DELETE,Gtk::ICON_SIZE_MENU,*image);
-			else if(iter->task=="set_on")
-				Gtk::Stock::lookup(Gtk::Stock::YES,Gtk::ICON_SIZE_MENU,*image);
-			else if(iter->task=="set_off")
-				Gtk::Stock::lookup(Gtk::Stock::NO,Gtk::ICON_SIZE_MENU,*image);
-			else if(iter->task=="duplicate")
-				Gtk::Stock::lookup(Gtk::Stock::COPY,Gtk::ICON_SIZE_MENU,*image);
-			else if(iter->task=="remove")
-				Gtk::Stock::lookup(Gtk::Stock::DELETE,Gtk::ICON_SIZE_MENU,*image);
-			else
-			{
-				Gtk::Stock::lookup(Gtk::StockID("synfig-"+iter->name),Gtk::ICON_SIZE_MENU,*image) ||
-				Gtk::Stock::lookup(Gtk::StockID("gtk-"+iter->task),Gtk::ICON_SIZE_MENU,*image) ||
-				Gtk::Stock::lookup(Gtk::StockID("synfig-"+iter->task),Gtk::ICON_SIZE_MENU,*image);
-			}
-			*/
 			menu->items().push_back(
 				Gtk::Menu_Helpers::ImageMenuElem(
 					iter->local_name,
@@ -849,31 +781,6 @@ Instance::add_actions_to_menu(Gtk::Menu *menu, const synfigapp::Action::ParamLis
 			Gtk::Image* image(manage(new Gtk::Image()));
 			Gtk::Stock::lookup(get_action_stock_id(*iter),Gtk::ICON_SIZE_MENU,*image);
 
-/*			if(iter->task=="raise")
-				Gtk::Stock::lookup(Gtk::Stock::GO_UP,Gtk::ICON_SIZE_MENU,*image);
-			else if(iter->task=="lower")
-				Gtk::Stock::lookup(Gtk::Stock::GO_DOWN,Gtk::ICON_SIZE_MENU,*image);
-			else if(iter->task=="move_top")
-				Gtk::Stock::lookup(Gtk::Stock::GOTO_TOP,Gtk::ICON_SIZE_MENU,*image);
-			else if(iter->task=="move_bottom")
-				Gtk::Stock::lookup(Gtk::Stock::GOTO_BOTTOM,Gtk::ICON_SIZE_MENU,*image);
-			else if(iter->task=="remove")
-				Gtk::Stock::lookup(Gtk::Stock::DELETE,Gtk::ICON_SIZE_MENU,*image);
-			else if(iter->task=="set_on")
-				Gtk::Stock::lookup(Gtk::Stock::YES,Gtk::ICON_SIZE_MENU,*image);
-			else if(iter->task=="set_off")
-				Gtk::Stock::lookup(Gtk::Stock::NO,Gtk::ICON_SIZE_MENU,*image);
-			else if(iter->task=="duplicate")
-				Gtk::Stock::lookup(Gtk::Stock::COPY,Gtk::ICON_SIZE_MENU,*image);
-			else if(iter->task=="remove")
-				Gtk::Stock::lookup(Gtk::Stock::DELETE,Gtk::ICON_SIZE_MENU,*image);
-			else
-			{
-				Gtk::Stock::lookup(Gtk::StockID("synfig-"+iter->name),Gtk::ICON_SIZE_MENU,*image) ||
-				Gtk::Stock::lookup(Gtk::StockID("gtk-"+iter->task),Gtk::ICON_SIZE_MENU,*image) ||
-				Gtk::Stock::lookup(Gtk::StockID("synfig-"+iter->task),Gtk::ICON_SIZE_MENU,*image);
-			}
-*/
 			menu->items().push_back(
 				Gtk::Menu_Helpers::ImageMenuElem(
 					iter->local_name,
@@ -899,31 +806,7 @@ Instance::add_actions_to_menu(Gtk::Menu *menu, const synfigapp::Action::ParamLis
 		{
 			Gtk::Image* image(manage(new Gtk::Image()));
 			Gtk::Stock::lookup(get_action_stock_id(*iter),Gtk::ICON_SIZE_MENU,*image);
-/*			if(iter->task=="raise")
-				Gtk::Stock::lookup(Gtk::Stock::GO_UP,Gtk::ICON_SIZE_MENU,*image);
-			else if(iter->task=="lower")
-				Gtk::Stock::lookup(Gtk::Stock::GO_DOWN,Gtk::ICON_SIZE_MENU,*image);
-			else if(iter->task=="move_top")
-				Gtk::Stock::lookup(Gtk::Stock::GOTO_TOP,Gtk::ICON_SIZE_MENU,*image);
-			else if(iter->task=="move_bottom")
-				Gtk::Stock::lookup(Gtk::Stock::GOTO_BOTTOM,Gtk::ICON_SIZE_MENU,*image);
-			else if(iter->task=="remove")
-				Gtk::Stock::lookup(Gtk::Stock::DELETE,Gtk::ICON_SIZE_MENU,*image);
-			else if(iter->task=="set_on")
-				Gtk::Stock::lookup(Gtk::Stock::YES,Gtk::ICON_SIZE_MENU,*image);
-			else if(iter->task=="set_off")
-				Gtk::Stock::lookup(Gtk::Stock::NO,Gtk::ICON_SIZE_MENU,*image);
-			else if(iter->task=="duplicate")
-				Gtk::Stock::lookup(Gtk::Stock::COPY,Gtk::ICON_SIZE_MENU,*image);
-			else if(iter->task=="remove")
-				Gtk::Stock::lookup(Gtk::Stock::DELETE,Gtk::ICON_SIZE_MENU,*image);
-			else
-			{
-				Gtk::Stock::lookup(Gtk::StockID("synfig-"+iter->name),Gtk::ICON_SIZE_MENU,*image) ||
-				Gtk::Stock::lookup(Gtk::StockID("gtk-"+iter->task),Gtk::ICON_SIZE_MENU,*image) ||
-				Gtk::Stock::lookup(Gtk::StockID("synfig-"+iter->task),Gtk::ICON_SIZE_MENU,*image);
-			}
-*/
+
 			menu->items().push_back(
 				Gtk::Menu_Helpers::ImageMenuElem(
 					iter->local_name,

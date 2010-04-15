@@ -103,7 +103,6 @@ KeyframeTree::KeyframeTree()
 
 		append_column(*column);
 	}
-	// append_column_editable(_("Description"),model.description);
 	{
 		Gtk::TreeView::Column* column = Gtk::manage( new Gtk::TreeView::Column(_("Description")) );
 

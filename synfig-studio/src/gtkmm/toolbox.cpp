@@ -240,16 +240,6 @@ Toolbox::Toolbox():
 	filemenu->items().push_back(Gtk::Menu_Helpers::SeparatorElem());
 	filemenu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Panels"),*dock_dialogs));
 
-	//filemenu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Canvas Browser..."),
-	//	sigc::mem_fun(studio::App::show_comp_view)));
-	//filemenu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Gradient Editor..."),
-	//	sigc::mem_fun(show_dialog_gradient)));
-	//filemenu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Tool Options"),
-	//	sigc::mem_fun(show_dialog_tool_options)));
-	//filemenu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Colors..."),
-	//	sigc::mem_fun(show_dialog_color)));
-	//filemenu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Color Palette..."),
-	//	sigc::mem_fun(show_dialog_palette)));
 	filemenu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Input Devices..."),
 		sigc::ptr_fun(&show_dialog_input)));
 	filemenu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Setup..."),
@@ -349,9 +339,8 @@ Toolbox::Toolbox():
 	table1->set_col_spacings(0);
 	table1->attach(*menubar1,        0,1, 0,1, Gtk::FILL|Gtk::EXPAND, Gtk::SHRINK, 0, 0);
 	table1->attach(*file_buttons,    0,1, 1,2, Gtk::FILL|Gtk::EXPAND,Gtk::EXPAND|Gtk::FILL, 0, 0);
-	//table1->attach(*manage(new Gtk::Label(_("Tools"))), 0, 1, 2, 3, Gtk::FILL|Gtk::EXPAND,Gtk::EXPAND|Gtk::FILL, 0, 0);
-	table1->attach(*handle_tools,    0,1, 3,4, Gtk::FILL|Gtk::EXPAND,Gtk::EXPAND|Gtk::FILL, 0, 0);
-	table1->attach(*handle_defaults, 0,1, 4,5, Gtk::FILL|Gtk::EXPAND,Gtk::EXPAND|Gtk::FILL, 0, 0);
+	table1->attach(*handle_tools,    0,1, 2,3, Gtk::FILL|Gtk::EXPAND,Gtk::EXPAND|Gtk::FILL, 0, 0);
+	table1->attach(*handle_defaults, 0,1, 3,4, Gtk::FILL|Gtk::EXPAND,Gtk::EXPAND|Gtk::FILL, 0, 0);
 	table1->show_all();
 
 
