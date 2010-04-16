@@ -8,4 +8,4 @@ EXTRA_DIST = \
 
 SUBDIRS = \
 	synfigapp \
-	gtkmm
+	gui

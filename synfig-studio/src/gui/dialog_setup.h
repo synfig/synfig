@@ -37,7 +37,7 @@
 #include <gtkmm/drawingarea.h>
 #include <gtkmm/optionmenu.h>
 #include <gtkmm/checkbutton.h>
-#include <gtkmm/widget_time.h>
+#include <gui/widget_time.h>
 #include <gtkmm/tooltips.h>
 #include <gtkmm/comboboxtext.h>
 #include <gtkmm/spinbutton.h>

@@ -275,7 +275,7 @@ synfigstudio.keys
 synfigstudio.xml
 synfigstudio-thumbnailer.schemas
 src/Makefile
-src/gtkmm/Makefile
+src/gui/Makefile
 src/synfigapp/Makefile
 images/Makefile
 win32inst.nsi

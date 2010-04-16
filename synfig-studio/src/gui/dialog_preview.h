@@ -31,10 +31,10 @@
 #include <gtkmm/dialog.h>
 #include <gtkmm/menu.h>
 #include <gtkmm/spinbutton.h>
-#include <gtkmm/dialogsettings.h>
+#include <gui/dialogsettings.h>
 
 #include "preview.h"
-#include <gtkmm/widget_time.h>
+#include <gui/widget_time.h>
 
 /* === M A C R O S ========================================================= */
 
