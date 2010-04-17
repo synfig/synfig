@@ -50,7 +50,7 @@
 #include <synfig/renddesc.h>
 #include <synfig/canvas.h>
 
-#include "zoomdial.h"
+#include "dials/zoomdial.h"
 #include "duckmatic.h"
 #include "instance.h"
 

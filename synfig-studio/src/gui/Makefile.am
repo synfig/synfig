@@ -289,11 +289,11 @@ OTHER_HH = \
 	toolbox.h \
 	valuelink.h \
 	workarea.h \
-	zoomdial.h \
-	framedial.h \
-	keyframedial.h \
-	toggleducksdial.h \
-	resolutiondial.h
+	dials/zoomdial.h \
+	dials/framedial.h \
+	dials/keyframedial.h \
+	dials/toggleducksdial.h \
+	dials/resolutiondial.h
 
 OTHER_CC = \
 	main.cpp \
@@ -323,11 +323,11 @@ OTHER_CC = \
 	toolbox.cpp \
 	valuelink.cpp \
 	workarea.cpp \
-	zoomdial.cpp \
-	framedial.cpp \
-	keyframedial.cpp \
-	toggleducksdial.cpp \
-	resolutiondial.cpp
+	dials/zoomdial.cpp \
+	dials/framedial.cpp \
+	dials/keyframedial.cpp \
+	dials/toggleducksdial.cpp \
+	dials/resolutiondial.cpp
 
 INCLUDES = \
 	-I$(top_srcdir)/src

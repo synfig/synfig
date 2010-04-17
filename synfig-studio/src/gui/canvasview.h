@@ -67,9 +67,9 @@
 
 #include "dialogs/dialog_waypoint.h"
 #include "dialogs/dialog_keyframe.h"
-#include "framedial.h"
-#include "toggleducksdial.h"
-#include "resolutiondial.h"
+#include "dials/framedial.h"
+#include "dials/toggleducksdial.h"
+#include "dials/resolutiondial.h"
 #include "widgets/widget_keyframe_list.h"
 
 #include "duckmatic.h"
