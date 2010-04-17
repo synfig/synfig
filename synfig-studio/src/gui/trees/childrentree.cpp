@@ -31,8 +31,8 @@
 #endif
 
 #include "trees/childrentree.h"
-#include "cellrenderer_value.h"
-#include "cellrenderer_timetrack.h"
+#include "cellrenderer/cellrenderer_value.h"
+#include "cellrenderer/cellrenderer_timetrack.h"
 #include <synfigapp/action.h>
 #include <synfigapp/instance.h>
 #include <gtkmm/scrolledwindow.h>
@@ -236,7 +236,7 @@ ChildrenTree::set_model(Glib::RefPtr<ChildrenTreeStore> children_tree_store)
 {
 	children_tree_store_=children_tree_store;
 	tree_view.set_model(children_tree_store_);
-	cellrenderer_time_track->set_canvas_interface(children_tree_store_->canvas_interface()); // am I smart people?  (cellrenderer_timetrack.h:176)
+	cellrenderer_time_track->set_canvas_interface(children_tree_store_->canvas_interface()); // am I smart people?  (cellrenderer/cellrenderer_timetrack.h:176)
 	children_tree_store_->canvas_interface()->signal_dirty_preview().connect(sigc::mem_fun(*this,&studio::ChildrenTree::on_dirty_preview));
 }
 

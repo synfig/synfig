@@ -37,8 +37,8 @@
 #include <synfig/valuenode_animated.h>
 #include <gtkmm/button.h>
 #include <synfigapp/instance.h>
-#include "cellrenderer_value.h"
-#include "cellrenderer_timetrack.h"
+#include "cellrenderer/cellrenderer_value.h"
+#include "cellrenderer/cellrenderer_timetrack.h"
 #include <ETL/clock>
 
 #include "general.h"

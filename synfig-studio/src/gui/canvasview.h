@@ -55,7 +55,7 @@
 #include "dialogs/canvasproperties.h"
 #include "dialogs/canvasoptions.h"
 #include "render.h"
-#include "cellrenderer_timetrack.h"
+#include "cellrenderer/cellrenderer_timetrack.h"
 #include "app.h"
 
 #include "trees/layertreestore.h"

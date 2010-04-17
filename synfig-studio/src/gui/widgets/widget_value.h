@@ -44,7 +44,7 @@
 //#include <gtkmm/treestore.h>
 #include <gtkmm/box.h>
 #include <gtkmm/spinbutton.h>
-//#include <gtkmm/cellrenderer.h>
+//#include <gtkmm/cellrenderer/cellrenderer.h>
 #include <gtkmm/checkbutton.h>
 
 //#include <gtkmm/colorselection.h>

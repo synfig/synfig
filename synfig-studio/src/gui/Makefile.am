@@ -8,16 +8,16 @@ MAINTAINERCLEANFILES = \
 
 
 CELLRENDERER_HH = \
-	cellrenderer_gradient.h \
-	cellrenderer_time.h \
-	cellrenderer_timetrack.h \
-	cellrenderer_value.h
+	cellrenderer/cellrenderer_gradient.h \
+	cellrenderer/cellrenderer_time.h \
+	cellrenderer/cellrenderer_timetrack.h \
+	cellrenderer/cellrenderer_value.h
 
 CELLRENDERER_CC = \
-	cellrenderer_gradient.cpp \
-	cellrenderer_time.cpp \
-	cellrenderer_timetrack.cpp \
-	cellrenderer_value.cpp
+	cellrenderer/cellrenderer_gradient.cpp \
+	cellrenderer/cellrenderer_time.cpp \
+	cellrenderer/cellrenderer_timetrack.cpp \
+	cellrenderer/cellrenderer_value.cpp
 
 
 WORKAREARENDERER_HH = \
