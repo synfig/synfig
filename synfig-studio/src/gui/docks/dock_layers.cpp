@@ -43,7 +43,7 @@
 #include "trees/layertreestore.h"
 #include "trees/layertree.h"
 #include "canvasview.h"
-#include "layeractionmanager.h"
+#include "actionmanagers/layeractionmanager.h"
 //#include <ETL/ref_count>
 
 #include "general.h"

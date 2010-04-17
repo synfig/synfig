@@ -43,7 +43,7 @@
 
 #include "trees/layergrouptreestore.h"
 #include "trees/layergrouptree.h"
-#include "groupactionmanager.h"
+#include "actionmanagers/groupactionmanager.h"
 
 #include "general.h"
 

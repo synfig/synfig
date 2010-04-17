@@ -41,7 +41,7 @@
 #include "trees/keyframetreestore.h"
 #include "trees/keyframetree.h"
 #include "canvasview.h"
-#include "keyframeactionmanager.h"
+#include "actionmanagers/keyframeactionmanager.h"
 
 #include "general.h"
 

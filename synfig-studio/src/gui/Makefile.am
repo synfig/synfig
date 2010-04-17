@@ -248,14 +248,14 @@ EVENTS_HH = \
 
 
 ACTION_MANAGERS_HH = \
-	groupactionmanager.h \
-	keyframeactionmanager.h \
-	layeractionmanager.h
+	actionmanagers/groupactionmanager.h \
+	actionmanagers/keyframeactionmanager.h \
+	actionmanagers/layeractionmanager.h
 
 ACTION_MANAGERS_CC = \
-	groupactionmanager.cpp \
-	keyframeactionmanager.cpp \
-	layeractionmanager.cpp
+	actionmanagers/groupactionmanager.cpp \
+	actionmanagers/keyframeactionmanager.cpp \
+	actionmanagers/layeractionmanager.cpp
 
 
 OTHER_HH = \
