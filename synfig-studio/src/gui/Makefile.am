@@ -156,46 +156,46 @@ WIDGET_CC = \
 
 
 STATE_HH = \
-	state_bline.h \
-	state_circle.h \
-	state_draw.h \
-	state_eyedrop.h \
-	state_fill.h \
-	state_gradient.h \
-	state_mirror.h \
-	state_normal.h \
-	state_polygon.h \
-	state_rectangle.h \
-	state_rotate.h \
-	state_scale.h \
-	state_sketch.h \
-	state_smoothmove.h \
-	state_star.h \
-	state_stroke.h \
-	state_text.h \
-	state_width.h \
-	state_zoom.h
+	states/state_bline.h \
+	states/state_circle.h \
+	states/state_draw.h \
+	states/state_eyedrop.h \
+	states/state_fill.h \
+	states/state_gradient.h \
+	states/state_mirror.h \
+	states/state_normal.h \
+	states/state_polygon.h \
+	states/state_rectangle.h \
+	states/state_rotate.h \
+	states/state_scale.h \
+	states/state_sketch.h \
+	states/state_smoothmove.h \
+	states/state_star.h \
+	states/state_stroke.h \
+	states/state_text.h \
+	states/state_width.h \
+	states/state_zoom.h
 
 STATE_CC = \
-	state_bline.cpp \
-	state_circle.cpp \
-	state_draw.cpp \
-	state_eyedrop.cpp \
-	state_fill.cpp \
-	state_gradient.cpp \
-	state_mirror.cpp \
-	state_normal.cpp \
-	state_polygon.cpp \
-	state_rectangle.cpp \
-	state_rotate.cpp \
-	state_scale.cpp \
-	state_sketch.cpp \
-	state_smoothmove.cpp \
-	state_star.cpp \
-	state_stroke.cpp \
-	state_text.cpp \
-	state_width.cpp \
-	state_zoom.cpp
+	states/state_bline.cpp \
+	states/state_circle.cpp \
+	states/state_draw.cpp \
+	states/state_eyedrop.cpp \
+	states/state_fill.cpp \
+	states/state_gradient.cpp \
+	states/state_mirror.cpp \
+	states/state_normal.cpp \
+	states/state_polygon.cpp \
+	states/state_rectangle.cpp \
+	states/state_rotate.cpp \
+	states/state_scale.cpp \
+	states/state_sketch.cpp \
+	states/state_smoothmove.cpp \
+	states/state_star.cpp \
+	states/state_stroke.cpp \
+	states/state_text.cpp \
+	states/state_width.cpp \
+	states/state_zoom.cpp
 
 
 TREEVIEW_HH = \

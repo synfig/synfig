@@ -83,10 +83,10 @@
 #include "dialogs/dialog_color.h"
 #include "eventkey.h"
 
-#include "state_polygon.h"
-#include "state_bline.h"
-#include "state_normal.h"
-#include "state_eyedrop.h"
+#include "states/state_polygon.h"
+#include "states/state_bline.h"
+#include "states/state_normal.h"
+#include "states/state_eyedrop.h"
 
 #include "ducktransform_scale.h"
 #include "ducktransform_translate.h"
