@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file mod_palette.cpp
+/*!	\file dock_palbrowse.cpp
 **	\brief Template File
 **
 **	$Id$
@@ -29,14 +29,11 @@
 #	include <config.h>
 #endif
 
-#include "mod_palette.h"
-#include "dock_paledit.h"
 #include "dock_palbrowse.h"
+#include "dock_paledit.h"
+#include "mod_palette.h"
 
-#include "../app.h"
-#include "../dockmanager.h"
-
-#include "../general.h"
+#include "../../general.h"
 
 #endif
 
@@ -55,26 +52,11 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
-bool
-studio::ModPalette::start_vfunc()
+Dock_PalBrowse::Dock_PalBrowse():
+	Dockable("pal_browse",_("Palette Browser")/*,Gtk::StockID("gtk-select-color")*/)
 {
-	dock_pal_edit=new Dock_PalEdit();
-	App::get_dock_manager()->register_dockable(*dock_pal_edit);
-
-	//dock_pal_browse=new Dock_PalBrowse();
-	//App::get_dock_manager()->register_dockable(*dock_pal_browse);
-
-	return true;
 }
 
-bool
-studio::ModPalette::stop_vfunc()
+Dock_PalBrowse::~Dock_PalBrowse()
 {
-	//App::get_dock_manager()->unregister_dockable(*dock_pal_browse);
-	App::get_dock_manager()->unregister_dockable(*dock_pal_edit);
-
-	delete dock_pal_edit;
-	//delete dock_pal_browse;
-
-	return true;
 }

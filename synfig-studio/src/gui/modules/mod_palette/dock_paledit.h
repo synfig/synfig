@@ -39,12 +39,12 @@
 #include <synfig/gamma.h>
 #include <synfig/time.h>
 
-#include "../widget_coloredit.h"
+#include "../../widget_coloredit.h"
 
 #include <synfigapp/value_desc.h>
 #include <synfig/time.h>
 
-#include "../dockable.h"
+#include "../../dockable.h"
 #include <vector>
 #include <gtkmm/actiongroup.h>
 

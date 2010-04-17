@@ -37,21 +37,21 @@
 #include <synfigapp/action_system.h>
 
 #include "state_mirror.h"
-#include "../state_normal.h"
-#include "../canvasview.h"
-#include "../workarea.h"
-#include "../app.h"
+#include "state_normal.h"
+#include "canvasview.h"
+#include "workarea.h"
+#include "app.h"
 
 #include <synfigapp/action.h>
-#include "../event_mouse.h"
-#include "../event_layerclick.h"
-#include "../toolbox.h"
-#include "../dialog_tooloptions.h"
+#include "event_mouse.h"
+#include "event_layerclick.h"
+#include "toolbox.h"
+#include "dialog_tooloptions.h"
 #include <gtkmm/optionmenu.h>
-#include "../duck.h"
+#include "duck.h"
 #include <synfigapp/main.h>
 
-#include "../general.h"
+#include "general.h"
 
 #endif
 

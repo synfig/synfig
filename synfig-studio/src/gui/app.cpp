@@ -80,6 +80,7 @@
 
 #include "state_eyedrop.h"
 #include "state_normal.h"
+#include "state_mirror.h"
 #include "state_draw.h"
 #include "state_fill.h"
 #include "state_bline.h"
@@ -116,14 +117,12 @@
 #include "dock_timetrack.h"
 #include "dock_curves.h"
 
-#include "mod_palette/mod_palette.h"
-#include "mod_mirror/mod_mirror.h"
+#include "modules/module.h"
+#include "modules/mod_palette/mod_palette.h"
 
 #include <sys/stat.h>
 
 #include "ipc.h"
-
-#include "module.h"
 
 #include "statemanager.h"
 
@@ -1266,7 +1265,7 @@ App::App(int *argc, char ***argv):
 		state_manager->add_state(&state_smooth_move);
 		state_manager->add_state(&state_scale);
 		state_manager->add_state(&state_rotate);
-		studio_init_cb.task(_("Init ModMirror...")); module_list_.push_back(new ModMirror()); module_list_.back()->start();
+		state_manager->add_state(&state_mirror);
 		if(!getenv("SYNFIG_DISABLE_WIDTH"  )) state_manager->add_state(&state_width); // Enabled since 0.61.09
 
 		/* new objects */

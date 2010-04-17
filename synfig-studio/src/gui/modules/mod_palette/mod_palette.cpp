@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file mod_mirror.cpp
+/*!	\file mod_palette.cpp
 **	\brief Template File
 **
 **	$Id$
@@ -29,13 +29,14 @@
 #	include <config.h>
 #endif
 
-#include "mod_mirror.h"
-#include "state_mirror.h"
+#include "mod_palette.h"
+#include "dock_paledit.h"
+#include "dock_palbrowse.h"
 
-#include "../app.h"
-#include "../statemanager.h"
+#include "../../app.h"
+#include "../../dockmanager.h"
 
-#include "../general.h"
+#include "../../general.h"
 
 #endif
 
@@ -55,14 +56,25 @@ using namespace studio;
 /* === M E T H O D S ======================================================= */
 
 bool
-studio::ModMirror::start_vfunc()
+studio::ModPalette::start_vfunc()
 {
-	App::get_state_manager()->add_state(&state_mirror);
+	dock_pal_edit=new Dock_PalEdit();
+	App::get_dock_manager()->register_dockable(*dock_pal_edit);
+
+	//dock_pal_browse=new Dock_PalBrowse();
+	//App::get_dock_manager()->register_dockable(*dock_pal_browse);
+
 	return true;
 }
 
 bool
-studio::ModMirror::stop_vfunc()
+studio::ModPalette::stop_vfunc()
 {
+	//App::get_dock_manager()->unregister_dockable(*dock_pal_browse);
+	App::get_dock_manager()->unregister_dockable(*dock_pal_edit);
+
+	delete dock_pal_edit;
+	//delete dock_pal_browse;
+
 	return true;
 }

@@ -42,23 +42,14 @@ WORKAREARENDERER_CC = \
 
 
 PALETTE_HH = \
-	mod_palette/dock_palbrowse.h \
-	mod_palette/dock_paledit.h \
-	mod_palette/mod_palette.h
+	modules/mod_palette/dock_palbrowse.h \
+	modules/mod_palette/dock_paledit.h \
+	modules/mod_palette/mod_palette.h
 
 PALETTE_CC = \
-	mod_palette/dock_palbrowse.cpp \
-	mod_palette/dock_paledit.cpp \
-	mod_palette/mod_palette.cpp
-
-
-MOD_MIRROR_HH = \
-	mod_mirror/mod_mirror.h \
-	mod_mirror/state_mirror.h
-
-MOD_MIRROR_CC = \
-	mod_mirror/mod_mirror.cpp \
-	mod_mirror/state_mirror.cpp
+	modules/mod_palette/dock_palbrowse.cpp \
+	modules/mod_palette/dock_paledit.cpp \
+	modules/mod_palette/mod_palette.cpp
 
 
 DIALOG_HH = \
@@ -171,6 +162,7 @@ STATE_HH = \
 	state_eyedrop.h \
 	state_fill.h \
 	state_gradient.h \
+	state_mirror.h \
 	state_normal.h \
 	state_polygon.h \
 	state_rectangle.h \
@@ -191,6 +183,7 @@ STATE_CC = \
 	state_eyedrop.cpp \
 	state_fill.cpp \
 	state_gradient.cpp \
+	state_mirror.cpp \
 	state_normal.cpp \
 	state_polygon.cpp \
 	state_rectangle.cpp \
@@ -286,7 +279,7 @@ OTHER_HH = \
 	instance.h \
 	ipc.h \
 	keymapsettings.h \
-	module.h \
+	modules/module.h \
 	onemoment.h \
 	preview.h \
 	renddesc.h \
@@ -320,7 +313,7 @@ OTHER_CC = \
 	instance.cpp \
 	ipc.cpp \
 	keymapsettings.cpp \
-	module.cpp \
+	modules/module.cpp \
 	onemoment.cpp \
 	preview.cpp \
 	renddesc.cpp \
@@ -342,8 +335,6 @@ INCLUDES = \
 bin_PROGRAMS = synfigstudio
 
 synfigstudio_SOURCES = \
-	$(MOD_MIRROR_CC) \
-	$(MOD_MIRROR_HH) \
 	$(PALETTE_CC) \
 	$(PALETTE_HH) \
 	$(WORKAREARENDERER_CC) \

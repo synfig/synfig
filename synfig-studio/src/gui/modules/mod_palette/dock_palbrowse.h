@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file mod_mirror.h
+/*!	\file dock_palbrowse.h
 **	\brief Template Header
 **
 **	$Id$
@@ -22,13 +22,13 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_MOD_MIRROR_H
-#define __SYNFIG_MOD_MIRROR_H
+#ifndef __SYNFIG_STUDIO_DOCK_PAL_BROWSE_H
+#define __SYNFIG_STUDIO_DOCK_PAL_BROWSE_H
 
 /* === H E A D E R S ======================================================= */
 
-#include <ETL/handle>
-#include "../module.h"
+#include "../../dockable.h"
+#include <synfig/palette.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -36,21 +36,27 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
+namespace synfigapp {
+class CanvasInterface;
+};
+
 namespace studio {
 
-class State_Mirror;
+/*
 
-class ModMirror : public Module
+The palette browser was intended to be a way to manage and select a single
+palette from a set of palettes that you could save to files. The palette
+editor was for editing individual palettes. Unfortunately the palette
+browser was never implemented.
+
+*/
+
+class Dock_PalBrowse : public Dockable
 {
-	friend class State_Mirror;
-
-protected:
-	virtual bool start_vfunc();
-	virtual bool stop_vfunc();
-
 public:
-	virtual ~ModMirror() { stop(); }
-};
+	Dock_PalBrowse();
+	~Dock_PalBrowse();
+}; // END of Dock_PalBrowse
 
 }; // END of namespace studio
 

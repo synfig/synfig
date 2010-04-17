@@ -87,7 +87,6 @@
 #include "state_bline.h"
 #include "state_normal.h"
 #include "state_eyedrop.h"
-#include "state_draw.h"
 
 #include "ducktransform_scale.h"
 #include "ducktransform_translate.h"

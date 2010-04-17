@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file dock_palbrowse.h
+/*!	\file state_mirror.h
 **	\brief Template Header
 **
 **	$Id$
@@ -22,13 +22,12 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_STUDIO_DOCK_PAL_BROWSE_H
-#define __SYNFIG_STUDIO_DOCK_PAL_BROWSE_H
+#ifndef __SYNFIG_STUDIO_STATE_MIRROR_H
+#define __SYNFIG_STUDIO_STATE_MIRROR_H
 
 /* === H E A D E R S ======================================================= */
 
-#include "../dockable.h"
-#include <synfig/palette.h>
+#include "smach.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -36,27 +35,18 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace synfigapp {
-class CanvasInterface;
-};
-
 namespace studio {
 
-/*
+class StateMirror_Context;
 
-The palette browser was intended to be a way to manage and select a single
-palette from a set of palettes that you could save to files. The palette
-editor was for editing individual palettes. Unfortunately the palette
-browser was never implemented.
-
-*/
-
-class Dock_PalBrowse : public Dockable
+class StateMirror : public Smach::state<StateMirror_Context>
 {
 public:
-	Dock_PalBrowse();
-	~Dock_PalBrowse();
-}; // END of Dock_PalBrowse
+	StateMirror();
+	~StateMirror();
+}; // END of class StateMirror
+
+extern StateMirror state_mirror;
 
 }; // END of namespace studio
 
