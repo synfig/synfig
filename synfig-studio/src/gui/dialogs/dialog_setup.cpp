@@ -31,7 +31,7 @@
 #	include <config.h>
 #endif
 
-#include "dialog_setup.h"
+#include "dialogs/dialog_setup.h"
 #include "app.h"
 #include <gtkmm/scale.h>
 #include <gtkmm/table.h>

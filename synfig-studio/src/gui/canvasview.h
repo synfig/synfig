@@ -52,8 +52,8 @@
 #include <synfig/time.h>
 
 #include "instance.h"
-#include "canvasproperties.h"
-#include "canvasoptions.h"
+#include "dialogs/canvasproperties.h"
+#include "dialogs/canvasoptions.h"
 #include "render.h"
 #include "cellrenderer_timetrack.h"
 #include "app.h"
@@ -65,8 +65,8 @@
 #include "keyframetreestore.h"
 #include "keyframetree.h"
 
-#include "dialog_waypoint.h"
-#include "dialog_keyframe.h"
+#include "dialogs/dialog_waypoint.h"
+#include "dialogs/dialog_keyframe.h"
 #include "framedial.h"
 #include "toggleducksdial.h"
 #include "resolutiondial.h"

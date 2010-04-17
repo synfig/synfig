@@ -53,24 +53,24 @@ PALETTE_CC = \
 
 
 DIALOG_HH = \
-	dialog_color.h \
-	dialog_gradient.h \
-	dialog_keyframe.h \
-	dialog_preview.h \
-	dialog_setup.h \
-	dialog_soundselect.h \
-	dialog_targetparam.h \
-	dialog_waypoint.h
+	dialogs/dialog_color.h \
+	dialogs/dialog_gradient.h \
+	dialogs/dialog_keyframe.h \
+	dialogs/dialog_preview.h \
+	dialogs/dialog_setup.h \
+	dialogs/dialog_soundselect.h \
+	dialogs/dialog_targetparam.h \
+	dialogs/dialog_waypoint.h
 
 DIALOG_CC = \
-	dialog_color.cpp \
-	dialog_gradient.cpp \
-	dialog_keyframe.cpp \
-	dialog_preview.cpp \
-	dialog_setup.cpp \
-	dialog_soundselect.cpp \
-	dialog_targetparam.cpp \
-	dialog_waypoint.cpp
+	dialogs/dialog_color.cpp \
+	dialogs/dialog_gradient.cpp \
+	dialogs/dialog_keyframe.cpp \
+	dialogs/dialog_preview.cpp \
+	dialogs/dialog_setup.cpp \
+	dialogs/dialog_soundselect.cpp \
+	dialogs/dialog_targetparam.cpp \
+	dialogs/dialog_waypoint.cpp
 
 
 DOCK_HH = \
@@ -262,14 +262,14 @@ OTHER_HH = \
 	compview.h \
 	eventkey.h \
 	smach.h \
-	about.h \
+	dialogs/about.h \
 	adjust_window.h \
 	app.h \
 	asyncrenderer.h \
 	audiocontainer.h \
 	autorecover.h \
-	canvasoptions.h \
-	canvasproperties.h \
+	dialogs/canvasoptions.h \
+	dialogs/canvasproperties.h \
 	canvasview.h \
 	devicetracker.h \
 	dialogsettings.h \
@@ -297,14 +297,14 @@ OTHER_HH = \
 
 OTHER_CC = \
 	main.cpp \
-	about.cpp \
+	dialogs/about.cpp \
 	adjust_window.cpp \
 	app.cpp \
 	asyncrenderer.cpp \
 	audiocontainer.cpp \
 	autorecover.cpp \
-	canvasoptions.cpp \
-	canvasproperties.cpp \
+	dialogs/canvasoptions.cpp \
+	dialogs/canvasproperties.cpp \
 	canvasview.cpp \
 	devicetracker.cpp \
 	dialogsettings.cpp \

@@ -29,7 +29,7 @@
 #	include <config.h>
 #endif
 
-#include "dialog_keyframe.h"
+#include "dialogs/dialog_keyframe.h"
 #include <gtkmm/scrolledwindow.h>
 #include <gtkmm/button.h>
 #include "widget_waypointmodel.h"

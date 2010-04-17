@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file dialog_waypoint.h
+/*!	\file dialogs/dialog_waypoint.h
 **	\brief Template Header
 **
 **	$Id$

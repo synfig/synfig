@@ -80,7 +80,7 @@
 #include "cellrenderer_value.h"
 #include "cellrenderer_timetrack.h"
 #include "workarea.h"
-#include "dialog_color.h"
+#include "dialogs/dialog_color.h"
 #include "eventkey.h"
 
 #include "state_polygon.h"
@@ -97,8 +97,8 @@
 
 #include "toolbox.h"
 
-#include "dialog_preview.h"
-#include "dialog_soundselect.h"
+#include "dialogs/dialog_preview.h"
+#include "dialogs/dialog_soundselect.h"
 
 #include "preview.h"
 #include "audiocontainer.h"

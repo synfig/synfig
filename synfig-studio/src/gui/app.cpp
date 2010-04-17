@@ -66,13 +66,13 @@
 #include <synfig/savecanvas.h>
 
 #include "app.h"
-#include "about.h"
+#include "dialogs/about.h"
 #include "splash.h"
 #include "instance.h"
 #include "canvasview.h"
-#include "dialog_setup.h"
-#include "dialog_gradient.h"
-#include "dialog_color.h"
+#include "dialogs/dialog_setup.h"
+#include "dialogs/dialog_gradient.h"
+#include "dialogs/dialog_color.h"
 #include "toolbox.h"
 #include "onemoment.h"
 

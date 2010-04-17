@@ -29,7 +29,7 @@
 #	include <config.h>
 #endif
 
-#include "dialog_targetparam.h"
+#include "dialogs/dialog_targetparam.h"
 
 #include "general.h"
 

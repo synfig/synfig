@@ -29,7 +29,7 @@
 #	include <config.h>
 #endif
 
-#include "dialog_color.h"
+#include "dialogs/dialog_color.h"
 #include "widget_color.h"
 #include <synfig/general.h>
 #include <synfigapp/main.h>

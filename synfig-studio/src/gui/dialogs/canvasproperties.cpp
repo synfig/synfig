@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file canvasproperties.cpp
+/*!	\file dialogs/canvasproperties.cpp
 **	\brief Template File
 **
 **	$Id$
@@ -30,7 +30,7 @@
 #	include <config.h>
 #endif
 
-#include "canvasproperties.h"
+#include "dialogs/canvasproperties.h"
 #include <gtkmm/frame.h>
 #include <gtkmm/table.h>
 #include <gtkmm/label.h>

@@ -51,8 +51,8 @@
 #include "cellrenderer_value.h"
 
 #include "widget_gradient.h"
-#include "dialog_gradient.h"
-#include "dialog_color.h"
+#include "dialogs/dialog_gradient.h"
+#include "dialogs/dialog_color.h"
 #include <gtkmm/textview.h>
 
 #include "general.h"

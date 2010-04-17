@@ -34,7 +34,7 @@
 #include <gtkmm/label.h>
 #include <gtkmm/frame.h>
 #include <gtkmm/alignment.h>
-#include "dialog_waypoint.h"
+#include "dialogs/dialog_waypoint.h"
 #include <gtk/gtk.h>
 #include <gtkmm/spinbutton.h>
 #include <gtkmm/combo.h>

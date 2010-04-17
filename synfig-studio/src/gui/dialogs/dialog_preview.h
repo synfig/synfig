@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file dialog_preview.h
+/*!	\file dialogs/dialog_preview.h
 **	\brief Preview dialog Header
 **
 **	$Id$

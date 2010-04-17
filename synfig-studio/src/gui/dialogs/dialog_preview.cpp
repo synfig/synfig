@@ -29,7 +29,7 @@
 #	include <config.h>
 #endif
 
-#include "dialog_preview.h"
+#include "dialogs/dialog_preview.h"
 #include "preview.h"
 #include <gtkmm/spinbutton.h>
 #include <gtkmm/alignment.h>

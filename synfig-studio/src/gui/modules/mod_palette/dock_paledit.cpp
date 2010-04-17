@@ -43,7 +43,7 @@
 #include <gtkmm/menu.h>
 #include <synfigapp/main.h>
 #include "../../app.h"
-#include "../../dialog_color.h"
+#include "../../dialogs/dialog_color.h"
 
 #include "../../general.h"
 

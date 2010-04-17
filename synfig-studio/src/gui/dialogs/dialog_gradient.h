@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file dialog_gradient.h
+/*!	\file dialogs/dialog_gradient.h
 **	\brief Template Header
 **
 **	$Id$

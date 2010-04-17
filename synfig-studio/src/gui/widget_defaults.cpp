@@ -34,8 +34,8 @@
 #include "widget_defaults.h"
 #include "widget_color.h"
 #include "widget_gradient.h"
-#include "dialog_color.h"
-#include "dialog_gradient.h"
+#include "dialogs/dialog_color.h"
+#include "dialogs/dialog_gradient.h"
 #include "app.h"
 #include <gtkmm/menu.h>
 #include <gtkmm/scale.h>

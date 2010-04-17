@@ -34,7 +34,7 @@
 #include "workarea.h"
 #include <synfig/context.h>
 #include "app.h"
-#include "dialog_color.h"
+#include "dialogs/dialog_color.h"
 #include "event_mouse.h"
 #include "event_layerclick.h"
 #include "toolbox.h"

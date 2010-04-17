@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file dialog_color.h
+/*!	\file dialogs/dialog_color.h
 **	\brief Template Header
 **
 **	$Id$

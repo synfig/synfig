@@ -1,11 +1,11 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file canvasproperties.h
-**	\brief Template Header
+/*!	\file dialogs/dialog_targetparam.h
+**	\brief Targetparam Dialog Header
 **
 **	$Id$
 **
 **	\legal
-**	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
+**	Copyright (c) 2010 Carlos López González
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -22,20 +22,16 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_GTKMM_CANVASPROPERTIES_H
-#define __SYNFIG_GTKMM_CANVASPROPERTIES_H
+#ifndef __SYNFIG_STUDIO_DIALOG_TARGETPARAM_H
+#define __SYNFIG_STUDIO_DIALOG_TARGETPARAM_H
 
 /* === H E A D E R S ======================================================= */
-
-#include <ETL/handle>
-
 #include <gtkmm/dialog.h>
-#include <gtkmm/tooltips.h>
-#include <gtkmm/table.h>
-#include <gtkmm/entry.h>
-#include <gtkmm/tooltips.h>
+#include <gtkmm/button.h>
+#include <gtkmm/comboboxtext.h>
+#include <gtkmm/spinbutton.h>
 
-#include "renddesc.h"
+#include <synfig/targetparam.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -43,45 +39,33 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace Gtk { class TreeView; };
-namespace synfigapp { class CanvasInterface; };
+namespace studio {
 
-namespace studio
+class Dialog_TargetParam : public Gtk::Dialog
 {
-class CanvasProperties  :  public Gtk::Dialog
-{
-	Gtk::Tooltips tooltips;
+	synfig::TargetParam tparam_;
+	Gtk::Button *ok_button;
+	Gtk::Button *cancel_button;
+	Gtk::SpinButton *bitrate;
+	Gtk::ComboBoxText *vcodec;
 
-	etl::handle<synfigapp::CanvasInterface> canvas_interface_;
-	Widget_RendDesc widget_rend_desc;
-	Gtk::Entry entry_id;
-	Gtk::Entry entry_name;
-	Gtk::Entry entry_description;
-
-	bool dirty_rend_desc;
-
-	Gtk::TreeView* meta_data_tree_view;
-	void on_button_meta_data_add();
-	void on_button_meta_data_delete();
+	void on_ok();
+	void on_cancel();
 
 public:
-	CanvasProperties(Gtk::Window& parent,etl::handle<synfigapp::CanvasInterface> canvas_interface);
-	~CanvasProperties();
+	Dialog_TargetParam(synfig::TargetParam &tparam);
+	~Dialog_TargetParam();
 
-	void refresh();
-	void update_title();
-private:
-	void on_rend_desc_changed();
+	synfig::TargetParam get_tparam() const { return tparam_; }
+	void set_tparam(const synfig::TargetParam &tp) {tparam_=tp; }
 
-	Gtk::Widget& create_meta_data_view();
-
-	void on_ok_pressed();
-	void on_apply_pressed();
-	void on_cancel_pressed();
-}; // END of class CanvasProperties
+};
 
 }; // END of namespace studio
 
 /* === E N D =============================================================== */
 
 #endif
+
+
+

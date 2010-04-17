@@ -37,7 +37,7 @@
 #include <synfig/target_scanline.h>
 #include <synfig/canvas.h>
 #include "asyncrenderer.h"
-#include "dialog_targetparam.h"
+#include "dialogs/dialog_targetparam.h"
 
 #include "general.h"
 

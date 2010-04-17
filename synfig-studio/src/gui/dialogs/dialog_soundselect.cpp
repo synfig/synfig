@@ -30,7 +30,7 @@
 #	include <config.h>
 #endif
 
-#include "dialog_soundselect.h"
+#include "dialogs/dialog_soundselect.h"
 #include <gtkmm/alignment.h>
 #include <gtkmm/frame.h>
 #include <gtkmm/label.h>

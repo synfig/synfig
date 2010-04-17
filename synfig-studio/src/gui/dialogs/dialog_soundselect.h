@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file dialog_soundselect.h
+/*!	\file dialogs/dialog_soundselect.h
 **	\brief Sound Select Header
 **
 **	$Id$

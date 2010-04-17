@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file canvasoptions.h
+/*!	\file dialogs/dialog_keyframe.h
 **	\brief Template Header
 **
 **	$Id$
@@ -22,18 +22,18 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_GTKMM_CANVASOPTIONS_H
-#define __SYNFIG_GTKMM_CANVASOPTIONS_H
+#ifndef __SYNFIG_STUDIO_DIALOG_KEYFRAME_H
+#define __SYNFIG_STUDIO_DIALOG_KEYFRAME_H
 
 /* === H E A D E R S ======================================================= */
 
 #include <gtkmm/dialog.h>
+#include <gtkmm/window.h>
 #include <gtkmm/tooltips.h>
 #include <gtkmm/table.h>
 #include <gtkmm/entry.h>
-#include <gtkmm/tooltips.h>
-#include "widget_value.h"
-#include "widget_vector.h"
+
+#include <synfigapp/canvasinterface.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -44,36 +44,33 @@
 namespace studio
 {
 
-class CanvasView;
+class Widget_WaypointModel;
 
-class CanvasOptions  :  public Gtk::Dialog
+class Dialog_Keyframe : public Gtk::Dialog
 {
-	Gtk::Tooltips tooltips;
+	Gtk::Tooltips tooltips_;
+	etl::handle<synfigapp::CanvasInterface> canvas_interface;
 
-	etl::loose_handle<CanvasView> canvas_view_;
+	synfig::Keyframe keyframe_;
 
-	Gtk::CheckButton toggle_grid_snap;
-	Gtk::CheckButton toggle_grid_show;
+	Gtk::Entry entry_description;
 
-	Widget_Vector vector_grid_size;
-
-	Gtk::CheckButton toggle_time_snap;
-
-public:
-	CanvasOptions(etl::loose_handle<CanvasView> canvas_view);
-	~CanvasOptions();
-
-	void refresh();
-	void update_title();
-private:
-
-	void on_grid_snap_toggle();
-	void on_grid_show_toggle();
+	Widget_WaypointModel* widget_waypoint_model;
 
 	void on_ok_pressed();
 	void on_apply_pressed();
-	void on_cancel_pressed();
-}; // END of class CanvasOptions
+	void on_delete_pressed();
+
+public:
+	Dialog_Keyframe(Gtk::Window& parent,etl::handle<synfigapp::CanvasInterface> canvas_interface);
+	~Dialog_Keyframe();
+
+	const synfig::Keyframe& get_keyframe()const;
+	void set_keyframe(const synfig::Keyframe& x);
+
+private:
+
+}; // END of class Dialog_Keyframe
 
 }; // END of namespace studio
 

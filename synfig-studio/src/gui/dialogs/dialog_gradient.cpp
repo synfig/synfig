@@ -29,7 +29,7 @@
 #	include <config.h>
 #endif
 
-#include "dialog_gradient.h"
+#include "dialogs/dialog_gradient.h"
 #include "widget_gradient.h"
 #include <gtkmm/frame.h>
 #include <gtkmm/table.h>
