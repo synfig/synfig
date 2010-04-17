@@ -21,24 +21,24 @@ CELLRENDERER_CC = \
 
 
 WORKAREARENDERER_HH = \
-	renderer_bbox.h \
-	renderer_canvas.h \
-	renderer_dragbox.h \
-	renderer_ducks.h \
-	renderer_grid.h \
-	renderer_guides.h \
-	renderer_timecode.h \
-	workarearenderer.h
+	workarearenderer/renderer_bbox.h \
+	workarearenderer/renderer_canvas.h \
+	workarearenderer/renderer_dragbox.h \
+	workarearenderer/renderer_ducks.h \
+	workarearenderer/renderer_grid.h \
+	workarearenderer/renderer_guides.h \
+	workarearenderer/renderer_timecode.h \
+	workarearenderer/workarearenderer.h
 
 WORKAREARENDERER_CC = \
-	renderer_bbox.cpp \
-	renderer_canvas.cpp \
-	renderer_dragbox.cpp \
-	renderer_ducks.cpp \
-	renderer_grid.cpp \
-	renderer_guides.cpp \
-	renderer_timecode.cpp \
-	workarearenderer.cpp
+	workarearenderer/renderer_bbox.cpp \
+	workarearenderer/renderer_canvas.cpp \
+	workarearenderer/renderer_dragbox.cpp \
+	workarearenderer/renderer_ducks.cpp \
+	workarearenderer/renderer_grid.cpp \
+	workarearenderer/renderer_guides.cpp \
+	workarearenderer/renderer_timecode.cpp \
+	workarearenderer/workarearenderer.cpp
 
 
 PALETTE_HH = \

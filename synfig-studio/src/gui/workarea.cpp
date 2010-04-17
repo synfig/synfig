@@ -58,15 +58,15 @@
 #include "event_layerclick.h"
 #include "widgets/widget_color.h"
 #include <synfig/distance.h>
-#include "workarearenderer.h"
 
-#include "renderer_canvas.h"
-#include "renderer_grid.h"
-#include "renderer_guides.h"
-#include "renderer_timecode.h"
-#include "renderer_ducks.h"
-#include "renderer_dragbox.h"
-#include "renderer_bbox.h"
+#include "workarearenderer/workarearenderer.h"
+#include "workarearenderer/renderer_canvas.h"
+#include "workarearenderer/renderer_grid.h"
+#include "workarearenderer/renderer_guides.h"
+#include "workarearenderer/renderer_timecode.h"
+#include "workarearenderer/renderer_ducks.h"
+#include "workarearenderer/renderer_dragbox.h"
+#include "workarearenderer/renderer_bbox.h"
 #include "asyncrenderer.h"
 #include <gtkmm/frame.h>
 
