@@ -52,7 +52,7 @@
 //#include <sigc++/hide.h>
 #include <synfig/valuenode_composite.h>
 #include <synfig/valuenode_duplicate.h>
-#include "widget_waypointmodel.h"
+#include "widgets/widget_waypointmodel.h"
 #include <gtkmm/actiongroup.h>
 #include "iconcontroller.h"
 #include "workarea.h"

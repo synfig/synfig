@@ -41,11 +41,11 @@
 #include "canvasview.h"
 #include "layerparamtreestore.h"
 #include "workarea.h"
-#include "widget_curves.h"
+#include "widgets/widget_curves.h"
 #include "layerparamtreestore.h"
 #include <gtkmm/table.h>
 #include <gtkmm/scrollbar.h>
-#include "widget_timeslider.h"
+#include "widgets/widget_timeslider.h"
 
 #include "general.h"
 

@@ -37,7 +37,7 @@
 #include "dockbook.h"
 #include "dockmanager.h"
 #include "toolbox.h"
-#include "widget_compselect.h"
+#include "widgets/widget_compselect.h"
 #include <synfig/general.h>
 #include <synfig/uniqueid.h>
 #include <gtkmm/table.h>

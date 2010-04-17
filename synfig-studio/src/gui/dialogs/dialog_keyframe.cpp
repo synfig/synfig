@@ -32,7 +32,7 @@
 #include "dialogs/dialog_keyframe.h"
 #include <gtkmm/scrolledwindow.h>
 #include <gtkmm/button.h>
-#include "widget_waypointmodel.h"
+#include "widgets/widget_waypointmodel.h"
 #include <synfigapp/action.h>
 #include <synfigapp/instance.h>
 

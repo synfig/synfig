@@ -29,7 +29,7 @@
 #include "dock_canvasspecific.h"
 #include "sigc++/signal.h"
 
-#include "widget_distance.h"
+#include "widgets/widget_distance.h"
 
 /* === M A C R O S ========================================================= */
 

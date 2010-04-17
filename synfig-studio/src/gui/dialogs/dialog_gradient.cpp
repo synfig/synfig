@@ -30,7 +30,7 @@
 #endif
 
 #include "dialogs/dialog_gradient.h"
-#include "widget_gradient.h"
+#include "widgets/widget_gradient.h"
 #include <gtkmm/frame.h>
 #include <gtkmm/table.h>
 #include <gtkmm/label.h>
@@ -38,7 +38,7 @@
 #include <synfigapp/canvasinterface.h>
 #include <synfigapp/value_desc.h>
 #include <synfigapp/main.h>
-#include "widget_color.h"
+#include "widgets/widget_color.h"
 #include <gtkmm/spinbutton.h>
 #include "app.h"
 

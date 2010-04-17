@@ -115,44 +115,44 @@ DOCK_CC = \
 
 
 WIDGET_HH = \
-	widget_canvaschooser.h \
-	widget_color.h \
-	widget_coloredit.h \
-	widget_compselect.h \
-	widget_curves.h \
-	widget_defaults.h \
-	widget_distance.h \
-	widget_enum.h \
-	widget_filename.h \
-	widget_gradient.h \
-	widget_sound.h \
-	widget_time.h \
-	widget_timeslider.h \
-	widget_value.h \
-	widget_vector.h \
-	widget_waypoint.h \
-	widget_waypointmodel.h \
-	widget_keyframe_list.h
+	widgets/widget_canvaschooser.h \
+	widgets/widget_color.h \
+	widgets/widget_coloredit.h \
+	widgets/widget_compselect.h \
+	widgets/widget_curves.h \
+	widgets/widget_defaults.h \
+	widgets/widget_distance.h \
+	widgets/widget_enum.h \
+	widgets/widget_filename.h \
+	widgets/widget_gradient.h \
+	widgets/widget_sound.h \
+	widgets/widget_time.h \
+	widgets/widget_timeslider.h \
+	widgets/widget_value.h \
+	widgets/widget_vector.h \
+	widgets/widget_waypoint.h \
+	widgets/widget_waypointmodel.h \
+	widgets/widget_keyframe_list.h
 
 WIDGET_CC = \
-	widget_canvaschooser.cpp \
-	widget_color.cpp \
-	widget_coloredit.cpp \
-	widget_compselect.cpp \
-	widget_curves.cpp \
-	widget_defaults.cpp \
-	widget_distance.cpp \
-	widget_enum.cpp \
-	widget_filename.cpp \
-	widget_gradient.cpp \
-	widget_sound.cpp \
-	widget_time.cpp \
-	widget_timeslider.cpp \
-	widget_value.cpp \
-	widget_vector.cpp \
-	widget_waypoint.cpp \
-	widget_waypointmodel.cpp \
-	widget_keyframe_list.cpp
+	widgets/widget_canvaschooser.cpp \
+	widgets/widget_color.cpp \
+	widgets/widget_coloredit.cpp \
+	widgets/widget_compselect.cpp \
+	widgets/widget_curves.cpp \
+	widgets/widget_defaults.cpp \
+	widgets/widget_distance.cpp \
+	widgets/widget_enum.cpp \
+	widgets/widget_filename.cpp \
+	widgets/widget_gradient.cpp \
+	widgets/widget_sound.cpp \
+	widgets/widget_time.cpp \
+	widgets/widget_timeslider.cpp \
+	widgets/widget_value.cpp \
+	widgets/widget_vector.cpp \
+	widgets/widget_waypoint.cpp \
+	widgets/widget_waypointmodel.cpp \
+	widgets/widget_keyframe_list.cpp
 
 
 STATE_HH = \

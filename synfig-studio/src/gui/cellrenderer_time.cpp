@@ -34,7 +34,7 @@
 #include <gtkmm/button.h>
 #include "cellrenderer_time.h"
 #include "app.h"
-#include "widget_time.h"
+#include "widgets/widget_time.h"
 
 #include "general.h"
 

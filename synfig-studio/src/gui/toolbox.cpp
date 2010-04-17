@@ -77,7 +77,7 @@
 #include "dockmanager.h"
 #include "dockdialog.h"
 
-#include "widget_defaults.h"
+#include "widgets/widget_defaults.h"
 
 #include <synfigapp/main.h>
 

@@ -46,7 +46,7 @@
 #include "dialog_tooloptions.h"
 #include <gtkmm/optionmenu.h>
 #include "duck.h"
-#include "widget_enum.h"
+#include "widgets/widget_enum.h"
 #include <synfigapp/main.h>
 
 #include "general.h"

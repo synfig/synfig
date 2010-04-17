@@ -42,8 +42,8 @@
 #include "canvasview.h"
 #include "layerparamtreestore.h"
 #include "workarea.h"
-#include "widget_timeslider.h"
-#include "widget_keyframe_list.h"
+#include "widgets/widget_timeslider.h"
+#include "widgets/widget_keyframe_list.h"
 #include "layerparamtreestore.h"
 #include "general.h"
 #include <synfig/timepointcollect.h>

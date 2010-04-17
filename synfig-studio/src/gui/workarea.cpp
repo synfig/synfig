@@ -56,7 +56,7 @@
 #include <synfigapp/canvasinterface.h>
 #include "event_mouse.h"
 #include "event_layerclick.h"
-#include "widget_color.h"
+#include "widgets/widget_color.h"
 #include <synfig/distance.h>
 #include "workarearenderer.h"
 

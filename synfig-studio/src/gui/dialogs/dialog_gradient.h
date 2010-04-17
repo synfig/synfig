@@ -39,8 +39,8 @@
 #include <synfig/gamma.h>
 #include <synfig/time.h>
 
-#include "widget_gradient.h"
-#include "widget_coloredit.h"
+#include "widgets/widget_gradient.h"
+#include "widgets/widget_coloredit.h"
 
 #include <synfigapp/value_desc.h>
 #include <synfig/time.h>

@@ -37,7 +37,7 @@
 #include <gtkmm/table.h>
 #include <gtkmm/frame.h>
 #include <gtkmm/notebook.h>
-#include "widget_enum.h"
+#include "widgets/widget_enum.h"
 #include "autorecover.h"
 
 #include <ETL/stringf>

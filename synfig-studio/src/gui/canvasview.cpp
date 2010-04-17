@@ -102,7 +102,7 @@
 
 #include "preview.h"
 #include "audiocontainer.h"
-#include "widget_timeslider.h"
+#include "widgets/widget_timeslider.h"
 #include "keyframedial.h"
 
 #include <synfigapp/main.h>

@@ -99,7 +99,7 @@
 
 #include "devicetracker.h"
 #include "dialog_tooloptions.h"
-#include "widget_enum.h"
+#include "widgets/widget_enum.h"
 
 #include "autorecover.h"
 

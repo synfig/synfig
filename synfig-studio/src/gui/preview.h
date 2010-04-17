@@ -46,7 +46,7 @@
 #include <synfig/renddesc.h>
 #include <synfig/canvas.h>
 
-#include "widget_sound.h"
+#include "widgets/widget_sound.h"
 
 #include <vector>
 

@@ -36,7 +36,7 @@
 #include "duckmatic.h"
 #include <ETL/bezier>
 #include <ETL/misc>
-#include "widget_color.h"
+#include "widgets/widget_color.h"
 #include <synfig/distance.h>
 #include "app.h"
 

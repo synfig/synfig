@@ -30,7 +30,7 @@
 #endif
 
 #include "dialogs/dialog_color.h"
-#include "widget_color.h"
+#include "widgets/widget_color.h"
 #include <synfig/general.h>
 #include <synfigapp/main.h>
 #include <gtkmm/button.h>

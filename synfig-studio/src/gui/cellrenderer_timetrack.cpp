@@ -36,12 +36,12 @@
 #include <gtkmm/spinbutton.h>
 #include <gtkmm/combo.h>
 #include <ETL/stringf>
-#include "widget_value.h"
+#include "widgets/widget_value.h"
 #include "app.h"
 #include <gtkmm/menu.h>
 #include <gtkmm/optionmenu.h>
-#include "widget_time.h"
-#include "widget_timeslider.h"
+#include "widgets/widget_time.h"
+#include "widgets/widget_timeslider.h"
 
 #include <synfigapp/canvasinterface.h>
 #include "instance.h"

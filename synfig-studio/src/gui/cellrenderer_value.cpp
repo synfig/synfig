@@ -39,18 +39,18 @@
 #include <gtk/gtkentry.h> /* see XXX below */
 
 #include "app.h"
-#include "widget_value.h"
-#include "widget_vector.h"
-#include "widget_filename.h"
-#include "widget_enum.h"
-#include "widget_color.h"
-#include "widget_canvaschooser.h"
-#include "widget_time.h"
+#include "widgets/widget_value.h"
+#include "widgets/widget_vector.h"
+#include "widgets/widget_filename.h"
+#include "widgets/widget_enum.h"
+#include "widgets/widget_color.h"
+#include "widgets/widget_canvaschooser.h"
+#include "widgets/widget_time.h"
 
 #include "cellrenderer_gradient.h"
 #include "cellrenderer_value.h"
 
-#include "widget_gradient.h"
+#include "widgets/widget_gradient.h"
 #include "dialogs/dialog_gradient.h"
 #include "dialogs/dialog_color.h"
 #include <gtkmm/textview.h>

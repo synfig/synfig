@@ -32,8 +32,8 @@
 #include <gtkmm/table.h>
 #include <gtkmm/entry.h>
 #include <gtkmm/tooltips.h>
-#include "widget_value.h"
-#include "widget_vector.h"
+#include "widgets/widget_value.h"
+#include "widgets/widget_vector.h"
 
 /* === M A C R O S ========================================================= */
 

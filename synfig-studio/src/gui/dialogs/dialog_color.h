@@ -32,7 +32,7 @@
 #include <gtkmm/tooltips.h>
 #include <sigc++/functors/slot.h>
 
-#include "widget_coloredit.h"
+#include "widgets/widget_coloredit.h"
 #include "dialogsettings.h"
 
 /* === M A C R O S ========================================================= */

@@ -34,7 +34,7 @@
 #include <gui/dialogsettings.h>
 
 #include "preview.h"
-#include <gui/widget_time.h>
+#include <gui/widgets/widget_time.h>
 
 /* === M A C R O S ========================================================= */
 

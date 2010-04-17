@@ -36,8 +36,8 @@
 #include <gtkmm/adjustment.h>
 #include <gtkmm/checkbutton.h>
 #include <gtkmm/notebook.h>
-#include "widget_vector.h"
-#include "widget_time.h"
+#include "widgets/widget_vector.h"
+#include "widgets/widget_time.h"
 
 /* === M A C R O S ========================================================= */
 

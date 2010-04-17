@@ -70,7 +70,7 @@
 #include "framedial.h"
 #include "toggleducksdial.h"
 #include "resolutiondial.h"
-#include "widget_keyframe_list.h"
+#include "widgets/widget_keyframe_list.h"
 
 #include "duckmatic.h"
 #include <gtkmm/scale.h>

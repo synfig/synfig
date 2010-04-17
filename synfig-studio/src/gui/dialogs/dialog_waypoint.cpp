@@ -35,12 +35,12 @@
 #include <gtkmm/spinbutton.h>
 #include <gtkmm/combo.h>
 #include <ETL/stringf>
-#include "widget_value.h"
+#include "widgets/widget_value.h"
 #include "app.h"
 #include <gtkmm/menu.h>
 #include <gtkmm/optionmenu.h>
-#include "widget_time.h"
-#include "widget_waypoint.h"
+#include "widgets/widget_time.h"
+#include "widgets/widget_waypoint.h"
 
 #include "general.h"
 

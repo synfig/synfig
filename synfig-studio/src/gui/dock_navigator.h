@@ -37,7 +37,7 @@
 
 #include "canvasview.h"
 #include "dock_canvasspecific.h"
-#include "widget_distance.h"
+#include "widgets/widget_distance.h"
 
 #include <ETL/smart_ptr>
 

@@ -28,8 +28,8 @@
 
 /* === H E A D E R S ======================================================= */
 #include "dockdialog.h"
-#include "widget_filename.h"
-#include "widget_time.h"
+#include "widgets/widget_filename.h"
+#include "widgets/widget_time.h"
 
 #include <synfigapp/canvasinterface.h>
 
