@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file keyframetreestore.h
+/*!	\file trees/keyframetreestore.h
 **	\brief Template Header
 **
 **	$Id$

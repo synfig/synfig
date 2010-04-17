@@ -34,7 +34,7 @@
 #include <synfigapp/instance.h>
 #include <sigc++/object.h>
 #include <synfigapp/value_desc.h>
-#include "historytreestore.h"
+#include "trees/historytreestore.h"
 #include <synfig/canvas.h>
 
 /* === M A C R O S ========================================================= */

@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file historytreestore.h
+/*!	\file trees/historytreestore.h
 **	\brief Template Header
 **
 **	$Id$

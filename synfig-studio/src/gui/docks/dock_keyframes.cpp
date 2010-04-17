@@ -38,8 +38,8 @@
 #include <sigc++/signal.h>
 #include <sigc++/hide.h>
 #include <sigc++/slot.h>
-#include "keyframetreestore.h"
-#include "keyframetree.h"
+#include "trees/keyframetreestore.h"
+#include "trees/keyframetree.h"
 #include "canvasview.h"
 #include "keyframeactionmanager.h"
 

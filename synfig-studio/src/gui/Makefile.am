@@ -199,37 +199,37 @@ STATE_CC = \
 
 
 TREEVIEW_HH = \
-	childrentree.h \
-	keyframetree.h \
-	layergrouptree.h \
-	layertree.h
+	trees/childrentree.h \
+	trees/keyframetree.h \
+	trees/layergrouptree.h \
+	trees/layertree.h
 
 TREEVIEW_CC = \
-	childrentree.cpp \
-	keyframetree.cpp \
-	layergrouptree.cpp \
-	layertree.cpp
+	trees/childrentree.cpp \
+	trees/keyframetree.cpp \
+	trees/layergrouptree.cpp \
+	trees/layertree.cpp
 
 
 TREESTORE_HH = \
-	canvastreestore.h \
-	childrentreestore.h \
-	historytreestore.h \
-	keyframetreestore.h \
-	layergrouptreestore.h \
-	layerparamtreestore.h \
-	layertreestore.h \
-	metadatatreestore.h
+	trees/canvastreestore.h \
+	trees/childrentreestore.h \
+	trees/historytreestore.h \
+	trees/keyframetreestore.h \
+	trees/layergrouptreestore.h \
+	trees/layerparamtreestore.h \
+	trees/layertreestore.h \
+	trees/metadatatreestore.h
 
 TREESTORE_CC = \
-	canvastreestore.cpp \
-	childrentreestore.cpp \
-	historytreestore.cpp \
-	keyframetreestore.cpp \
-	layergrouptreestore.cpp \
-	layerparamtreestore.cpp \
-	layertreestore.cpp \
-	metadatatreestore.cpp
+	trees/canvastreestore.cpp \
+	trees/childrentreestore.cpp \
+	trees/historytreestore.cpp \
+	trees/keyframetreestore.cpp \
+	trees/layergrouptreestore.cpp \
+	trees/layerparamtreestore.cpp \
+	trees/layertreestore.cpp \
+	trees/metadatatreestore.cpp
 
 
 DUCKTRANSFORM_HH = \

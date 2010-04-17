@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file childrentreestore.h
+/*!	\file layerparamtreestore.h
 **	\brief Template Header
 **
 **	$Id$
@@ -23,17 +23,17 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_STUDIO_CHILDRENTREESTORE_H
-#define __SYNFIG_STUDIO_CHILDRENTREESTORE_H
+#ifndef __SYNFIG_STUDIO_LAYERPARAMTREESTORE_H
+#define __SYNFIG_STUDIO_LAYERPARAMTREESTORE_H
 
 /* === H E A D E R S ======================================================= */
 
 #include <gtkmm/treestore.h>
 #include <synfigapp/canvasinterface.h>
-#include "canvastreestore.h"
+#include "trees/canvastreestore.h"
 #include <synfig/value.h>
 #include <synfig/valuenode.h>
-#include <set>
+#include <synfig/paramdesc.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -43,13 +43,16 @@
 
 namespace studio {
 
-class ChildrenTreeStore : public CanvasTreeStore
+class LayerTree;
+
+class LayerParamTreeStore : public CanvasTreeStore
 {
 	/*
  -- ** -- P U B L I C   T Y P E S ---------------------------------------------
 	*/
 
 public:
+	typedef std::list<synfig::Layer::Handle> LayerList;
 
 	/*
  -- ** -- P U B L I C  D A T A ------------------------------------------------
@@ -57,8 +60,26 @@ public:
 
 public:
 
-	//! TreeModel for the layers
-	const Model model;
+	//! TreeModel for the layer parameters
+	class Model : public CanvasTreeStore::Model
+	{
+	public:
+
+		Gtk::TreeModelColumn<synfig::ParamDesc>	param_desc;
+
+		Gtk::TreeModelColumn<bool>	is_inconsistent;
+		Gtk::TreeModelColumn<bool>	is_toplevel;
+
+		Model()
+		{
+			add(param_desc);
+			add(is_inconsistent);
+			add(is_toplevel);
+		}
+	};
+
+	Model model;
+
 
 	/*
  -- ** -- P R I V A T E   D A T A ---------------------------------------------
@@ -66,12 +87,17 @@ public:
 
 private:
 
-	Gtk::TreeModel::Row value_node_row;
-	Gtk::TreeModel::Row canvas_row;
+	int queued;
 
-	std::set<synfig::ValueNode::Handle> changed_set_;
+	LayerTree* layer_tree;
 
-	std::set<synfig::ValueNode::Handle> replaced_set_;
+	LayerList layer_list;
+
+	sigc::connection queue_connection;
+
+	std::list<sigc::connection> changed_connection_list;
+
+	sigc::signal<void> signal_changed_;
 
 	/*
  -- ** -- P R I V A T E   M E T H O D S ---------------------------------------
@@ -79,10 +105,10 @@ private:
 
 private:
 
-	sigc::connection changed_connection;
-	bool execute_changed_queued()const { return !changed_set_.empty() || !replaced_set_.empty(); }
-	bool execute_changed_value_nodes();
-	void clear_changed_queue() { changed_set_.clear(); replaced_set_.clear(); }
+protected:
+	virtual void  get_value_vfunc (const Gtk::TreeModel::iterator& iter, int column, Glib::ValueBase& value)const;
+	virtual void set_value_impl (const Gtk::TreeModel::iterator& row, int column, const Glib::ValueBase& value);
+	virtual void set_row(Gtk::TreeRow row,synfigapp::ValueDesc value_desc);
 
 	/*
  -- ** -- S I G N A L   T E R M I N A L S -------------------------------------
@@ -90,15 +116,15 @@ private:
 
 private:
 
+	void on_value_node_child_added(synfig::ValueNode::Handle value_node,synfig::ValueNode::Handle child);
+	void on_value_node_child_removed(synfig::ValueNode::Handle value_node,synfig::ValueNode::Handle child);
+
 	void on_value_node_added(synfig::ValueNode::Handle value_node);
 	void on_value_node_deleted(synfig::ValueNode::Handle value_node);
-	void on_value_node_changed(synfig::ValueNode::Handle value_node);
-	void on_value_node_renamed(synfig::ValueNode::Handle value_node);
+	virtual void on_value_node_changed(synfig::ValueNode::Handle value_node);
+	virtual void on_value_node_renamed(synfig::ValueNode::Handle value_node);
 	void on_value_node_replaced(synfig::ValueNode::Handle replaced_value_node,synfig::ValueNode::Handle new_value_node);
-	void on_canvas_added(synfig::Canvas::Handle canvas);
-	void on_canvas_removed(synfig::Canvas::Handle canvas);
-
-	void set_value_impl(const Gtk::TreeModel::iterator& iter, int column, const Glib::ValueBase& value);
+	void on_layer_param_changed(synfig::Layer::Handle handle,synfig::String param_name);
 
 	/*
  -- ** -- P U B L I C   M E T H O D S -----------------------------------------
@@ -106,26 +132,23 @@ private:
 
 public:
 
-	ChildrenTreeStore(etl::loose_handle<synfigapp::CanvasInterface> canvas_interface_);
-	~ChildrenTreeStore();
+	LayerParamTreeStore(etl::loose_handle<synfigapp::CanvasInterface> canvas_interface_,
+		LayerTree* layer_tree);
+	~LayerParamTreeStore();
 
 	void rebuild();
 
 	void refresh();
 
-	void rebuild_value_nodes();
+	void queue_refresh();
 
-	void refresh_value_nodes();
+	void queue_rebuild();
 
-	void rebuild_canvases();
+	void refresh_row(Gtk::TreeModel::Row &row);
 
-	void refresh_canvases();
+	sigc::signal<void>& signal_changed() { return signal_changed_; }
 
-	void refresh_row(Gtk::TreeModel::Row &row, bool do_children=false);
-
-	Gtk::TreeModel::Row get_canvas_row()const { return canvas_row; }
-
-	Gtk::TreeModel::Row get_value_node_row()const { return value_node_row; }
+	void changed() { signal_changed_(); }
 
 	/*
  -- ** -- S T A T I C   P U B L I C   M E T H O D S ---------------------------
@@ -133,8 +156,8 @@ public:
 
 public:
 
-	static Glib::RefPtr<ChildrenTreeStore> create(etl::loose_handle<synfigapp::CanvasInterface> canvas_interface_);
-}; // END of class ChildrenTreeStore
+	static Glib::RefPtr<LayerParamTreeStore> create(etl::loose_handle<synfigapp::CanvasInterface> canvas_interface_, LayerTree*layer_tree);
+}; // END of class LayerParamTreeStore
 
 }; // END of namespace studio
 

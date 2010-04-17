@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file canvastreestore.h
+/*!	\file trees/canvastreestore.h
 **	\brief Template Header
 **
 **	$Id$

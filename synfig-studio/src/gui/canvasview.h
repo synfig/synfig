@@ -58,12 +58,12 @@
 #include "cellrenderer_timetrack.h"
 #include "app.h"
 
-#include "layertreestore.h"
-#include "layertree.h"
-#include "childrentreestore.h"
-#include "childrentree.h"
-#include "keyframetreestore.h"
-#include "keyframetree.h"
+#include "trees/layertreestore.h"
+#include "trees/layertree.h"
+#include "trees/childrentreestore.h"
+#include "trees/childrentree.h"
+#include "trees/keyframetreestore.h"
+#include "trees/keyframetree.h"
 
 #include "dialogs/dialog_waypoint.h"
 #include "dialogs/dialog_keyframe.h"

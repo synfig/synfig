@@ -30,7 +30,7 @@
 #	include <config.h>
 #endif
 
-#include "childrentree.h"
+#include "trees/childrentree.h"
 #include "cellrenderer_value.h"
 #include "cellrenderer_timetrack.h"
 #include <synfigapp/action.h>

@@ -31,7 +31,7 @@
 #endif
 
 #include "keyframeactionmanager.h"
-#include "keyframetree.h"
+#include "trees/keyframetree.h"
 #include <synfigapp/action_param.h>
 #include "instance.h"
 

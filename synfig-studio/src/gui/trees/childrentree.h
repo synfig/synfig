@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file childrentree.h
+/*!	\file trees/childrentree.h
 **	\brief Template Header
 **
 **	$Id$
@@ -39,7 +39,7 @@
 
 #include <synfigapp/canvasinterface.h>
 #include <synfigapp/value_desc.h>
-#include "childrentreestore.h"
+#include "trees/childrentreestore.h"
 #include <synfig/valuenode_animated.h>
 
 #include "widgets/widget_value.h"

@@ -39,7 +39,6 @@
 #include <sigc++/adaptors/hide.h>
 //#include <sigc++/hide.h>
 #include <sigc++/slot.h>
-#include "metadatatreestore.h"
 #include "canvasview.h"
 #include <ETL/clock>
 

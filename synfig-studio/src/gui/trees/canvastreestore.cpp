@@ -30,7 +30,7 @@
 #	include <config.h>
 #endif
 
-#include "canvastreestore.h"
+#include "trees/canvastreestore.h"
 #include <synfig/valuenode.h>
 #include "iconcontroller.h"
 #include <synfig/valuenode_timedswap.h>

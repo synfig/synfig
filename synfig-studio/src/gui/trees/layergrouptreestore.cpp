@@ -30,7 +30,7 @@
 #	include <config.h>
 #endif
 
-#include "layergrouptreestore.h"
+#include "trees/layergrouptreestore.h"
 #include "iconcontroller.h"
 #include <gtkmm/button.h>
 #include <synfig/paramdesc.h>

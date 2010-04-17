@@ -31,7 +31,7 @@
 #endif
 
 #include <synfig/layer.h>
-#include "layergrouptree.h"
+#include "trees/layergrouptree.h"
 #include <gtkmm/treemodelsort.h>
 #include <ETL/misc>
 

@@ -41,8 +41,8 @@
 #include <sigc++/slot.h>
 #include "canvasview.h"
 
-#include "layergrouptreestore.h"
-#include "layergrouptree.h"
+#include "trees/layergrouptreestore.h"
+#include "trees/layergrouptree.h"
 #include "groupactionmanager.h"
 
 #include "general.h"

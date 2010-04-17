@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file layergrouptreestore.h
+/*!	\file trees/layergrouptreestore.h
 **	\brief Template Header
 **
 **	$Id$

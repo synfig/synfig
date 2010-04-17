@@ -42,7 +42,7 @@
 #include <sigc++/hide.h>
 #include <sigc++/slot.h>
 #include <synfigapp/action.h>
-#include "historytreestore.h"
+#include "trees/historytreestore.h"
 
 #include "general.h"
 

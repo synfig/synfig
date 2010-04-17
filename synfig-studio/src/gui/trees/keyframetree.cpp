@@ -30,7 +30,7 @@
 #	include <config.h>
 #endif
 
-#include "keyframetree.h"
+#include "trees/keyframetree.h"
 #include "cellrenderer_time.h"
 #include <gtkmm/treemodelsort.h>
 #include <ETL/misc>

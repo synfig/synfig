@@ -31,7 +31,7 @@
 #endif
 
 #include "groupactionmanager.h"
-#include "layergrouptree.h"
+#include "trees/layergrouptree.h"
 #include <synfigapp/action_param.h>
 #include "instance.h"
 #include <gtkmm/stock.h>

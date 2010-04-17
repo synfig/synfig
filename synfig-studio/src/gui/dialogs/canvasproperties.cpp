@@ -36,7 +36,7 @@
 #include <gtkmm/label.h>
 #include <gtkmm/alignment.h>
 #include <synfigapp/canvasinterface.h>
-#include "metadatatreestore.h"
+#include "trees/metadatatreestore.h"
 #include <gtkmm/treeview.h>
 #include <gtkmm/scrolledwindow.h>
 #include "app.h"

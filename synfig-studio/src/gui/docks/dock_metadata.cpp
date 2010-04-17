@@ -38,7 +38,7 @@
 #include <sigc++/signal.h>
 #include <sigc++/hide.h>
 #include <sigc++/slot.h>
-#include "metadatatreestore.h"
+#include "trees/metadatatreestore.h"
 #include "canvasview.h"
 
 #include "general.h"

@@ -40,8 +40,8 @@
 #include <sigc++/hide.h>
 #include <sigc++/retype_return.h>
 #include <sigc++/slot.h>
-#include "layertreestore.h"
-#include "layertree.h"
+#include "trees/layertreestore.h"
+#include "trees/layertree.h"
 #include "canvasview.h"
 #include "layeractionmanager.h"
 //#include <ETL/ref_count>

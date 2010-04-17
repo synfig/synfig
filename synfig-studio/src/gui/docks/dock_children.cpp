@@ -40,8 +40,8 @@
 #include <sigc++/hide.h>
 #include <sigc++/retype_return.h>
 #include <sigc++/slot.h>
-#include "childrentreestore.h"
-#include "childrentree.h"
+#include "trees/childrentreestore.h"
+#include "trees/childrentree.h"
 #include "canvasview.h"
 
 #include "general.h"

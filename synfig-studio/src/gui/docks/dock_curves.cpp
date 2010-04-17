@@ -39,10 +39,9 @@
 #include <sigc++/hide.h>
 #include <sigc++/slot.h>
 #include "canvasview.h"
-#include "layerparamtreestore.h"
+#include "trees/layerparamtreestore.h"
 #include "workarea.h"
 #include "widgets/widget_curves.h"
-#include "layerparamtreestore.h"
 #include <gtkmm/table.h>
 #include <gtkmm/scrollbar.h>
 #include "widgets/widget_timeslider.h"

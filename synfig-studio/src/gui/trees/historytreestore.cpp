@@ -30,7 +30,7 @@
 #	include <config.h>
 #endif
 
-#include "historytreestore.h"
+#include "trees/historytreestore.h"
 #include <synfig/valuenode.h>
 #include "iconcontroller.h"
 #include <synfig/valuenode_timedswap.h>

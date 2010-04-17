@@ -30,7 +30,7 @@
 #	include <config.h>
 #endif
 
-#include "keyframetreestore.h"
+#include "trees/keyframetreestore.h"
 #include <synfig/valuenode.h>
 #include "iconcontroller.h"
 #include <synfig/valuenode_timedswap.h>

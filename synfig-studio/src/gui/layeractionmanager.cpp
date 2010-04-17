@@ -31,7 +31,7 @@
 #endif
 
 #include "layeractionmanager.h"
-#include "layertree.h"
+#include "trees/layertree.h"
 #include <synfig/context.h>
 #include <synfig/layer_pastecanvas.h>
 #include <synfigapp/action_param.h>

@@ -39,7 +39,7 @@
 #include <sigc++/hide.h>
 #include <sigc++/slot.h>
 #include "canvasview.h"
-#include "layerparamtreestore.h"
+#include "trees/layerparamtreestore.h"
 #include "workarea.h"
 
 #include "general.h"

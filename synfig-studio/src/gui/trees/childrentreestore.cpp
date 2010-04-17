@@ -30,7 +30,7 @@
 #	include <config.h>
 #endif
 
-#include "childrentreestore.h"
+#include "trees/childrentreestore.h"
 #include "iconcontroller.h"
 #include <gtkmm/button.h>
 #include <synfig/paramdesc.h>

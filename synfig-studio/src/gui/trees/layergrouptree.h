@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file keyframetree.h
+/*!	\file trees/layergrouptree.h
 **	\brief Template Header
 **
 **	$Id$
@@ -22,8 +22,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_STUDIO_KEYFRAMETREE_H
-#define __SYNFIG_STUDIO_KEYFRAMETREE_H
+#ifndef __SYNFIG_STUDIO_LAYERGROUPTREE_H
+#define __SYNFIG_STUDIO_LAYERGROUPTREE_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -31,8 +31,7 @@
 #include <gtkmm/treestore.h>
 #include <synfigapp/canvasinterface.h>
 #include <synfigapp/value_desc.h>
-#include "keyframetreestore.h"
-#include <synfig/keyframe.h>
+#include "trees/layergrouptreestore.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -40,11 +39,11 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
+namespace synfig { class Layer; }
+
 namespace studio {
 
-class CellRenderer_Time;
-
-class KeyframeTree : public Gtk::TreeView
+class LayerGroupTree : public Gtk::TreeView
 {
 	/*
  -- ** -- P U B L I C   T Y P E S ---------------------------------------------
@@ -52,14 +51,7 @@ class KeyframeTree : public Gtk::TreeView
 
 public:
 
-	enum ColumnID
-	{
-		COLUMNID_TIME,
-		COLUMNID_DESCRIPTION,
-		COLUMNID_JUMP,
-
-		COLUMNID_END			//!< \internal
-	};
+	typedef std::list<synfig::Layer::Handle> LayerList;
 
 	/*
  -- ** -- P U B L I C  D A T A ------------------------------------------------
@@ -67,7 +59,7 @@ public:
 
 public:
 
-	KeyframeTreeStore::Model model;
+	LayerGroupTreeStore::Model model;
 
 	/*
  -- ** -- P R I V A T E   D A T A ---------------------------------------------
@@ -75,23 +67,17 @@ public:
 
 private:
 
-	Glib::RefPtr<KeyframeTreeStore> keyframe_tree_store_;
-
-	CellRenderer_Time *cell_renderer_time;
-
-	CellRenderer_Time *cell_renderer_time_delta;
+	Glib::RefPtr<LayerGroupTreeStore> layer_group_tree_store_;
 
 	Gtk::CellRendererText *cell_renderer_description;
 
-	sigc::signal<void,synfig::Keyframe> signal_edited_;
-
-	sigc::signal<void,synfig::Keyframe,synfig::Time> signal_edited_time_;
-
-	sigc::signal<void,synfig::Keyframe,synfig::String> signal_edited_description_;
-
-	sigc::signal<void, int, Gtk::TreeRow, ColumnID> signal_user_click_;
-
 	bool editable_;
+
+
+	sigc::signal<void,etl::handle<synfig::Layer> > signal_popup_layer_menu_;
+
+//	sigc::signal<void,LayerList> signal_select_layers_;
+	Gtk::TreeView::Column* label_column;
 
 	/*
  -- ** -- P R I V A T E   M E T H O D S ---------------------------------------
@@ -105,15 +91,7 @@ private:
 
 private:
 
-	void on_edited_time(const Glib::ustring&path_string,synfig::Time time);
-
-	void on_edited_time_delta(const Glib::ustring&path_string,synfig::Time time);
-
-	void on_edited_description(const Glib::ustring&path_string,const Glib::ustring &description);
-
 	bool on_event(GdkEvent *event);
-
-	void on_rend_desc_changed();
 
 	/*
  -- ** -- P U B L I C   M E T H O D S -----------------------------------------
@@ -121,26 +99,26 @@ private:
 
 public:
 
-	KeyframeTree();
-	~KeyframeTree();
+	LayerGroupTree();
+	~LayerGroupTree();
+	void set_cursor(const Gtk::TreeModel::Path& path, bool start_editing=false);
 
-	void set_model(Glib::RefPtr<KeyframeTreeStore> keyframe_tree_store_);
+	Glib::RefPtr<LayerGroupTreeStore> get_model() { return layer_group_tree_store_; }
+
+	sigc::signal<void,etl::handle<synfig::Layer> >& signal_popup_layer_menu() { return signal_popup_layer_menu_; }
+
+//	sigc::signal<void,LayerList>& signal_select_layers() { return signal_select_layers_; }
+
+	void set_model(Glib::RefPtr<LayerGroupTreeStore> layer_group_tree_store_);
 
 	void set_editable(bool x=true);
 
 	bool get_editable()const { return editable_; }
 
-	//! Signal called when a keyframe has been edited in any way
-	sigc::signal<void,synfig::Keyframe>& signal_edited() { return signal_edited_; }
+	std::list<synfig::String> get_selected_groups()const;
 
-	//! Signal called when a time has been edited.
-	sigc::signal<void,synfig::Keyframe,synfig::Time>& signal_edited_time() { return signal_edited_time_; }
-
-	//! Signal called when a description has been edited.
-	sigc::signal<void,synfig::Keyframe,synfig::String>& signal_edited_description() { return signal_edited_description_; }
-
-	sigc::signal<void,int, Gtk::TreeRow, ColumnID>& signal_user_click() { return signal_user_click_; }
-}; // END of KeyframeTree
+	LayerList get_selected_layers()const;
+}; // END of LayerGroupTree
 
 }; // END of namespace studio
 
