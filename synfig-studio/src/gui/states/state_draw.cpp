@@ -55,7 +55,7 @@
 #include <synfigapp/main.h>
 
 #include <ETL/gaussian>
-#include "dialog_tooloptions.h"
+#include "docks/dialog_tooloptions.h"
 
 #include <gtkmm/table.h>
 #include <gtkmm/label.h>

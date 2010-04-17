@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file docks/dock_palbrowse.h
+/*!	\file dialog_tooloptions.h
 **	\brief Template Header
 **
 **	$Id$
@@ -22,13 +22,15 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_STUDIO_DOCK_PAL_BROWSE_H
-#define __SYNFIG_STUDIO_DOCK_PAL_BROWSE_H
+#ifndef __SYNFIG_STUDIO_DIALOG_TOOLOPTIONS_H
+#define __SYNFIG_STUDIO_DIALOG_TOOLOPTIONS_H
 
 /* === H E A D E R S ======================================================= */
 
-#include "../../docks/dockable.h"
-#include <synfig/palette.h>
+#include <gtkmm/dialog.h>
+#include <gtkmm/label.h>
+#include <gtkmm/scrolledwindow.h>
+#include "docks/dockable.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -36,27 +38,22 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace synfigapp {
-class CanvasInterface;
-};
-
 namespace studio {
 
-/*
-
-The palette browser was intended to be a way to manage and select a single
-palette from a set of palettes that you could save to files. The palette
-editor was for editing individual palettes. Unfortunately the palette
-browser was never implemented.
-
-*/
-
-class Dock_PalBrowse : public Dockable
+class Dialog_ToolOptions : public Dockable
 {
+	Gtk::Label empty_label;
+	Gtk::VBox sub_vbox_;
+
 public:
-	Dock_PalBrowse();
-	~Dock_PalBrowse();
-}; // END of Dock_PalBrowse
+
+	void clear();
+	void set_widget(Gtk::Widget&);
+	void set_name(const synfig::String& name);
+
+	Dialog_ToolOptions();
+	~Dialog_ToolOptions();
+}; // END of Dialog_ToolOptions
 
 }; // END of namespace studio
 

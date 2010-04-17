@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file docks/dock_palbrowse.h
+/*!	\file docks/dock_canvases.h
 **	\brief Template Header
 **
 **	$Id$
@@ -22,13 +22,14 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_STUDIO_DOCK_PAL_BROWSE_H
-#define __SYNFIG_STUDIO_DOCK_PAL_BROWSE_H
+#ifndef __SYNFIG_STUDIO_DIALOG_CANVASES_H
+#define __SYNFIG_STUDIO_DIALOG_CANVASES_H
 
 /* === H E A D E R S ======================================================= */
 
-#include "../../docks/dockable.h"
-#include <synfig/palette.h>
+#include "docks/dockable.h"
+#include <gtkmm/treeview.h>
+#include "instance.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -36,27 +37,49 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace synfigapp {
-class CanvasInterface;
-};
-
 namespace studio {
 
-/*
-
-The palette browser was intended to be a way to manage and select a single
-palette from a set of palettes that you could save to files. The palette
-editor was for editing individual palettes. Unfortunately the palette
-browser was never implemented.
-
-*/
-
-class Dock_PalBrowse : public Dockable
+class Dock_Canvases : public Dockable
 {
+	Gtk::TreeView *canvas_tree;
+	//Gtk::Menu	menu;
+	etl::loose_handle<studio::Instance>	selected_instance;
+
+private:
+
+	void set_selected_instance_(etl::handle<studio::Instance> x);
+
+	etl::loose_handle<studio::Instance> get_selected_instance() { return selected_instance; }
+
+	etl::loose_handle<synfig::Canvas> get_selected_canvas();
+
+	etl::loose_handle<studio::CanvasView> get_selected_canvas_view();
+
+	void set_selected_instance(etl::loose_handle<studio::Instance> x);
+
+	void set_selected_instance_signal(etl::handle<studio::Instance> x);
+
+	void new_instance(etl::handle<studio::Instance> x);
+
+	void delete_instance(etl::handle<studio::Instance> x);
+
+	void refresh_instances();
+
+	bool close();
+
+	void on_row_activate(const Gtk::TreeModel::Path &path, Gtk::TreeViewColumn *);
+	//bool on_tree_event(GdkEvent *event);
+
+
+
+	void on_action_toggle(const Glib::ustring& path);
+	Gtk::Widget* create_canvas_tree();
+
 public:
-	Dock_PalBrowse();
-	~Dock_PalBrowse();
-}; // END of Dock_PalBrowse
+
+	Dock_Canvases();
+	~Dock_Canvases();
+}; // END of Dock_Canvases
 
 }; // END of namespace studio
 

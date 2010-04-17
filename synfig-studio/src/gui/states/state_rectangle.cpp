@@ -47,7 +47,7 @@
 #include "event_mouse.h"
 #include "event_layerclick.h"
 #include "toolbox.h"
-#include "dialog_tooloptions.h"
+#include "docks/dialog_tooloptions.h"
 #include <gtkmm/optionmenu.h>
 #include "duck.h"
 #include <synfigapp/main.h>

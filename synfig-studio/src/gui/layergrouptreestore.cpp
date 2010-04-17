@@ -39,8 +39,8 @@
 #include "app.h"
 #include "instance.h"
 #include <synfigapp/action_system.h>
-#include "dockmanager.h"
-#include "dockable.h"
+#include "docks/dockmanager.h"
+#include "docks/dockable.h"
 
 #include <gtk/gtkversion.h>
 #include <ETL/clock>

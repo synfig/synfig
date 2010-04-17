@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file docks/dock_palbrowse.h
+/*!	\file docks/dock_canvasspecific.h
 **	\brief Template Header
 **
 **	$Id$
@@ -22,13 +22,14 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_STUDIO_DOCK_PAL_BROWSE_H
-#define __SYNFIG_STUDIO_DOCK_PAL_BROWSE_H
+#ifndef __SYNFIG_STUDIO_DOCK_CANVASSPECIFIC_H
+#define __SYNFIG_STUDIO_DOCK_CANVASSPECIFIC_H
 
 /* === H E A D E R S ======================================================= */
 
-#include "../../docks/dockable.h"
-#include <synfig/palette.h>
+#include "docks/dockable.h"
+#include <gtkmm/treeview.h>
+#include "instance.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -36,27 +37,34 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace synfigapp {
-class CanvasInterface;
-};
-
 namespace studio {
 
-/*
+class CanvasView;
+class Instance;
 
-The palette browser was intended to be a way to manage and select a single
-palette from a set of palettes that you could save to files. The palette
-editor was for editing individual palettes. Unfortunately the palette
-browser was never implemented.
-
-*/
-
-class Dock_PalBrowse : public Dockable
+class Dock_CanvasSpecific : public Dockable
 {
+	sigc::connection canvas_delete_connection;
+protected:
+	virtual void init_instance_vfunc(etl::loose_handle<Instance> instance);
+
+	virtual void init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view);
+	virtual void changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view);
+
+private:
+	void init_canvas_view(CanvasView* canvas_view);
+	void init_instance(etl::handle<Instance> instance);
+	void delete_instance(etl::handle<Instance> instance);
+	void canvas_view_changed();
+	void changed_canvas_view(etl::loose_handle<CanvasView> canvas_view) { return changed_canvas_view_vfunc(canvas_view); }
 public:
-	Dock_PalBrowse();
-	~Dock_PalBrowse();
-}; // END of Dock_PalBrowse
+
+	etl::loose_handle<studio::CanvasView> get_canvas_view();
+	etl::loose_handle<synfigapp::CanvasInterface> get_canvas_interface();
+
+	Dock_CanvasSpecific(const synfig::String& name,const synfig::String& local_name,Gtk::StockID stock_id_=Gtk::StockID(" "));
+	virtual ~Dock_CanvasSpecific();
+}; // END of Dock_CanvasSpecific
 
 }; // END of namespace studio
 

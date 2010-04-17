@@ -27,7 +27,7 @@
 #define __SYNFIG_DIALOG_SOUNDSELECT_H
 
 /* === H E A D E R S ======================================================= */
-#include "dockdialog.h"
+#include "docks/dockdialog.h"
 #include "widgets/widget_filename.h"
 #include "widgets/widget_time.h"
 

@@ -1,11 +1,12 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file mod_palette.cpp
+/*!	\file dialog_tooloptions.cpp
 **	\brief Template File
 **
 **	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
+**	Copyright (c) 2009 Nikita Kitaev
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -29,14 +30,11 @@
 #	include <config.h>
 #endif
 
-#include "mod_palette.h"
-#include "dock_paledit.h"
-#include "dock_palbrowse.h"
-
-#include "../../app.h"
-#include "../../docks/dockmanager.h"
-
-#include "../../general.h"
+#include <gtkmm/label.h>
+#include <gtkmm/scrolledwindow.h>
+#include <synfig/general.h>
+#include "docks/dialog_tooloptions.h"
+#include "general.h"
 
 #endif
 
@@ -55,26 +53,45 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
-bool
-studio::ModPalette::start_vfunc()
+Dialog_ToolOptions::Dialog_ToolOptions():
+	Dockable("tool_options",_("Tool Options"),Gtk::StockID("synfig-about")),
+	empty_label(_("This tool has no options"))
 {
-	dock_pal_edit=new Dock_PalEdit();
-	App::get_dock_manager()->register_dockable(*dock_pal_edit);
+	add(sub_vbox_);
 
-	//dock_pal_browse=new Dock_PalBrowse();
-	//App::get_dock_manager()->register_dockable(*dock_pal_browse);
-
-	return true;
+	set_widget(empty_label);
+	empty_label.show();
 }
 
-bool
-studio::ModPalette::stop_vfunc()
+Dialog_ToolOptions::~Dialog_ToolOptions()
 {
-	//App::get_dock_manager()->unregister_dockable(*dock_pal_browse);
-	App::get_dock_manager()->unregister_dockable(*dock_pal_edit);
+}
 
-	delete dock_pal_edit;
-	//delete dock_pal_browse;
+void
+Dialog_ToolOptions::clear()
+{
+	Dockable::clear();
+	set_local_name(_("Tool Options"));
+	add(sub_vbox_);
+	set_widget(empty_label);
+	empty_label.show();
 
-	return true;
+	set_stock_id(Gtk::StockID("synfig-about"));
+}
+
+void
+Dialog_ToolOptions::set_widget(Gtk::Widget&x)
+{
+	if(!sub_vbox_.children().empty())
+		sub_vbox_.children().clear();
+
+	sub_vbox_.show();
+	sub_vbox_.pack_start(x,false,false);
+	x.show();
+}
+
+void
+Dialog_ToolOptions::set_name(const synfig::String& name)
+{
+	set_stock_id(Gtk::StockID("synfig-"+name));
 }

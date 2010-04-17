@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file docks/dock_paledit.h
+/*!	\file docks/dock_history.h
 **	\brief Template Header
 **
 **	$Id$
@@ -22,33 +22,16 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_STUDIO_DOCK_PAL_EDIT_H
-#define __SYNFIG_STUDIO_DOCK_PAL_EDIT_H
+#ifndef __SYNFIG_STUDIO_DIALOG_HISTORY_H
+#define __SYNFIG_STUDIO_DIALOG_HISTORY_H
 
 /* === H E A D E R S ======================================================= */
 
-#include <gtk/gtk.h>
-#include <gtkmm/adjustment.h>
-#include <gtkmm/table.h>
-#include <gtkmm/button.h>
-#include <gtkmm/dialog.h>
-#include <gtkmm/drawingarea.h>
-#include <gtkmm/optionmenu.h>
-#include <gtkmm/checkbutton.h>
-
-#include <synfig/gamma.h>
-#include <synfig/time.h>
-
-#include "../../widgets/widget_coloredit.h"
-
-#include <synfigapp/value_desc.h>
-#include <synfig/time.h>
-
-#include "../../docks/dockable.h"
-#include <vector>
+#include "docks/dockable.h"
+#include <gtkmm/treeview.h>
+#include "instance.h"
 #include <gtkmm/actiongroup.h>
-
-#include <synfig/palette.h>
+#include "docks/dock_canvasspecific.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -56,56 +39,49 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace synfigapp {
-class CanvasInterface;
-};
-
 namespace studio {
 
-class Widget_Color;
-class PaletteSettings;
-
-class Dock_PalEdit : public Dockable
+class Dock_History : public Dock_CanvasSpecific
 {
-	friend class PaletteSettings;
-
 	Glib::RefPtr<Gtk::ActionGroup> action_group;
+	Gtk::TreeView *action_tree;
 
-	synfig::Palette palette_;
+	etl::loose_handle<studio::Instance>	selected_instance;
 
-	Gtk::Table table;
+	sigc::connection on_undo_tree_changed_connection;
 
-	void on_add_pressed();
+	void on_undo_tree_changed();
 
-	void show_menu(int i);
-
-	sigc::signal<void> signal_changed_;
+	void set_selected_instance_(etl::handle<studio::Instance> x);
 
 
-private:
-	int add_color(const synfig::Color& x);
-	void set_color(synfig::Color x, int i);
-	void erase_color(int i);
+	void set_selected_instance(etl::loose_handle<studio::Instance> x);
 
-	void select_fill_color(int i);
-	void select_outline_color(int i);
-	synfig::Color get_color(int i)const;
-	void edit_color(int i);
+	void set_selected_instance_signal(etl::handle<studio::Instance> x);
+
+	void delete_instance(etl::handle<studio::Instance> x);
+
+	Gtk::Widget* create_action_tree();
+
 public:
-	void set_palette(const synfig::Palette& x);
-	const synfig::Palette& get_palette()const { return palette_; }
 
-	int size()const;
+	etl::loose_handle<studio::Instance> get_selected_instance() { return selected_instance; }
 
-	void set_default_palette();
+	void clear_undo();
+	void clear_redo();
+	void clear_undo_and_redo();
 
-	void refresh();
+	bool on_action_event(GdkEvent *event);
+	void on_action_toggle(const Glib::ustring& path);
 
-	const sigc::signal<void>& signal_changed() { return signal_changed_; }
+	void update_undo_redo();
 
-	Dock_PalEdit();
-	~Dock_PalEdit();
-}; // END of Dock_PalEdit
+	Dock_History();
+	~Dock_History();
+protected:
+	virtual void init_instance_vfunc(etl::loose_handle<Instance> instance);
+
+}; // END of Dock_History
 
 }; // END of namespace studio
 

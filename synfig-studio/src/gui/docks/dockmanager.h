@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file docks/dock_palbrowse.h
+/*!	\file docks/dockmanager.h
 **	\brief Template Header
 **
 **	$Id$
@@ -22,13 +22,17 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_STUDIO_DOCK_PAL_BROWSE_H
-#define __SYNFIG_STUDIO_DOCK_PAL_BROWSE_H
+#ifndef __SYNFIG_DOCKMANAGER_H
+#define __SYNFIG_DOCKMANAGER_H
 
 /* === H E A D E R S ======================================================= */
 
-#include "../../docks/dockable.h"
-#include <synfig/palette.h>
+#include <vector>
+#include <list>
+#include <synfig/string.h>
+#include <sigc++/signal.h>
+#include <sigc++/object.h>
+#include <ETL/smart_ptr>
 
 /* === M A C R O S ========================================================= */
 
@@ -36,27 +40,40 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace synfigapp {
-class CanvasInterface;
-};
-
 namespace studio {
 
-/*
+class Dockable;
+class DockDialog;
+class DockSettings;
 
-The palette browser was intended to be a way to manage and select a single
-palette from a set of palettes that you could save to files. The palette
-editor was for editing individual palettes. Unfortunately the palette
-browser was never implemented.
-
-*/
-
-class Dock_PalBrowse : public Dockable
+class DockManager : public sigc::trackable
 {
+	friend class Dockable;
+	friend class DockDialog;
+	friend class DockSettings;
+
+	std::list<Dockable*> dockable_list_;
+	std::list<DockDialog*> dock_dialog_list_;
+
+	sigc::signal<void,Dockable*> signal_dockable_registered_;
+
+	etl::smart_ptr<DockSettings> dock_settings;
+
 public:
-	Dock_PalBrowse();
-	~Dock_PalBrowse();
-}; // END of Dock_PalBrowse
+	DockManager();
+	~DockManager();
+
+	DockDialog& find_dock_dialog(int id);
+	const DockDialog& find_dock_dialog(int id)const;
+
+	sigc::signal<void,Dockable*>& signal_dockable_registered() { return signal_dockable_registered_; }
+
+	void register_dockable(Dockable& x);
+	bool unregister_dockable(Dockable& x);
+	Dockable& find_dockable(const synfig::String& x);
+	void present(synfig::String x);
+
+}; // END of class DockManager
 
 }; // END of namespace studio
 

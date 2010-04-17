@@ -74,44 +74,44 @@ DIALOG_CC = \
 
 
 DOCK_HH = \
-	dialog_tooloptions.h \
-	dock_canvases.h \
-	dock_canvasspecific.h \
-	dock_children.h \
-	dock_curves.h \
-	dock_history.h \
-	dock_info.h \
-	dock_keyframes.h \
-	dock_layergroups.h \
-	dock_layers.h \
-	dock_metadata.h \
-	dock_navigator.h \
-	dock_params.h \
-	dock_timetrack.h \
-	dockable.h \
-	dockbook.h \
-	dockdialog.h \
-	dockmanager.h
+	docks/dialog_tooloptions.h \
+	docks/dock_canvases.h \
+	docks/dock_canvasspecific.h \
+	docks/dock_children.h \
+	docks/dock_curves.h \
+	docks/dock_history.h \
+	docks/dock_info.h \
+	docks/dock_keyframes.h \
+	docks/dock_layergroups.h \
+	docks/dock_layers.h \
+	docks/dock_metadata.h \
+	docks/dock_navigator.h \
+	docks/dock_params.h \
+	docks/dock_timetrack.h \
+	docks/dockable.h \
+	docks/dockbook.h \
+	docks/dockdialog.h \
+	docks/dockmanager.h
 
 DOCK_CC = \
-	dialog_tooloptions.cpp \
-	dock_canvases.cpp \
-	dock_canvasspecific.cpp \
-	dock_children.cpp \
-	dock_curves.cpp \
-	dock_history.cpp \
-	dock_info.cpp \
-	dock_keyframes.cpp \
-	dock_layergroups.cpp \
-	dock_layers.cpp \
-	dock_metadata.cpp \
-	dock_navigator.cpp \
-	dock_params.cpp \
-	dock_timetrack.cpp \
-	dockable.cpp \
-	dockbook.cpp \
-	dockdialog.cpp \
-	dockmanager.cpp
+	docks/dialog_tooloptions.cpp \
+	docks/dock_canvases.cpp \
+	docks/dock_canvasspecific.cpp \
+	docks/dock_children.cpp \
+	docks/dock_curves.cpp \
+	docks/dock_history.cpp \
+	docks/dock_info.cpp \
+	docks/dock_keyframes.cpp \
+	docks/dock_layergroups.cpp \
+	docks/dock_layers.cpp \
+	docks/dock_metadata.cpp \
+	docks/dock_navigator.cpp \
+	docks/dock_params.cpp \
+	docks/dock_timetrack.cpp \
+	docks/dockable.cpp \
+	docks/dockbook.cpp \
+	docks/dockdialog.cpp \
+	docks/dockmanager.cpp
 
 
 WIDGET_HH = \

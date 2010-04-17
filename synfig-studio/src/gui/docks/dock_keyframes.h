@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file docks/dock_paledit.h
+/*!	\file docks/dock_keyframes.h
 **	\brief Template Header
 **
 **	$Id$
@@ -22,33 +22,16 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_STUDIO_DOCK_PAL_EDIT_H
-#define __SYNFIG_STUDIO_DOCK_PAL_EDIT_H
+#ifndef __SYNFIG_STUDIO_DOCK_KEYFRAMES_H
+#define __SYNFIG_STUDIO_DOCK_KEYFRAMES_H
 
 /* === H E A D E R S ======================================================= */
 
-#include <gtk/gtk.h>
-#include <gtkmm/adjustment.h>
-#include <gtkmm/table.h>
-#include <gtkmm/button.h>
-#include <gtkmm/dialog.h>
-#include <gtkmm/drawingarea.h>
-#include <gtkmm/optionmenu.h>
-#include <gtkmm/checkbutton.h>
-
-#include <synfig/gamma.h>
-#include <synfig/time.h>
-
-#include "../../widgets/widget_coloredit.h"
-
-#include <synfigapp/value_desc.h>
-#include <synfig/time.h>
-
-#include "../../docks/dockable.h"
-#include <vector>
+#include "docks/dockable.h"
+#include "docks/dock_canvasspecific.h"
+#include <gtkmm/treeview.h>
+#include "instance.h"
 #include <gtkmm/actiongroup.h>
-
-#include <synfig/palette.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -56,56 +39,38 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace synfigapp {
-class CanvasInterface;
-};
-
 namespace studio {
 
-class Widget_Color;
-class PaletteSettings;
+class KeyframeTreeStore;
+class KeyframeTree;
 
-class Dock_PalEdit : public Dockable
+class KeyframeActionManager;
+
+class Dock_Keyframes : public Dock_CanvasSpecific
 {
-	friend class PaletteSettings;
-
 	Glib::RefPtr<Gtk::ActionGroup> action_group;
 
-	synfig::Palette palette_;
+	/*
+	void add_keyframe_pressed();
+	void duplicate_keyframe_pressed();
+	void delete_keyframe_pressed();
+	*/
 
-	Gtk::Table table;
+	void show_keyframe_properties();
 
-	void on_add_pressed();
+	KeyframeActionManager* keyframe_action_manager;
 
-	void show_menu(int i);
+protected:
+	virtual void init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view);
+	virtual void changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view);
 
-	sigc::signal<void> signal_changed_;
 
-
-private:
-	int add_color(const synfig::Color& x);
-	void set_color(synfig::Color x, int i);
-	void erase_color(int i);
-
-	void select_fill_color(int i);
-	void select_outline_color(int i);
-	synfig::Color get_color(int i)const;
-	void edit_color(int i);
 public:
-	void set_palette(const synfig::Palette& x);
-	const synfig::Palette& get_palette()const { return palette_; }
 
-	int size()const;
 
-	void set_default_palette();
-
-	void refresh();
-
-	const sigc::signal<void>& signal_changed() { return signal_changed_; }
-
-	Dock_PalEdit();
-	~Dock_PalEdit();
-}; // END of Dock_PalEdit
+	Dock_Keyframes();
+	~Dock_Keyframes();
+}; // END of Dock_Keyframes
 
 }; // END of namespace studio
 

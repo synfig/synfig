@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file docks/dock_palbrowse.h
+/*!	\file docks/dockbook.h
 **	\brief Template Header
 **
 **	$Id$
@@ -22,13 +22,14 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_STUDIO_DOCK_PAL_BROWSE_H
-#define __SYNFIG_STUDIO_DOCK_PAL_BROWSE_H
+#ifndef __SYNFIG_STUDIO_DOCKBOOK_H
+#define __SYNFIG_STUDIO_DOCKBOOK_H
 
 /* === H E A D E R S ======================================================= */
 
-#include "../../docks/dockable.h"
-#include <synfig/palette.h>
+#include <gtkmm/notebook.h>
+#include <synfig/string.h>
+#include <gtkmm/tooltips.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -36,27 +37,50 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace synfigapp {
-class CanvasInterface;
-};
-
 namespace studio {
 
-/*
+class DockManager;
+class Dockable;
 
-The palette browser was intended to be a way to manage and select a single
-palette from a set of palettes that you could save to files. The palette
-editor was for editing individual palettes. Unfortunately the palette
-browser was never implemented.
-
-*/
-
-class Dock_PalBrowse : public Dockable
+class DockBook : public Gtk::Notebook
 {
+	friend class DockManager;
+	friend class Dockable;
+
+	sigc::signal<void> signal_empty_;
+	sigc::signal<void> signal_changed_;
+
+	Gtk::Tooltips tooltips_;
+
+	bool deleting_;
+
+protected:
 public:
-	Dock_PalBrowse();
-	~Dock_PalBrowse();
-}; // END of Dock_PalBrowse
+	DockBook();
+	~DockBook();
+
+	sigc::signal<void>& signal_empty() { return signal_empty_; }
+	sigc::signal<void>& signal_changed() { return signal_changed_; }
+
+	void add(Dockable& dockable, int position=-1);
+	void remove(Dockable& dockable);
+
+	void present();
+
+	void clear();
+
+	synfig::String get_local_contents()const;
+
+	synfig::String get_contents()const;
+	void set_contents(const synfig::String& x);
+
+	void refresh_tabs_headers();
+
+	void refresh_tab(Dockable*);
+
+	bool tab_button_pressed(GdkEventButton* event, Dockable* dockable);
+	void on_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& context, int, int, const Gtk::SelectionData& selection_data, guint, guint time);
+}; // END of studio::DockBook
 
 }; // END of namespace studio
 

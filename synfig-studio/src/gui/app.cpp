@@ -76,7 +76,7 @@
 #include "toolbox.h"
 #include "onemoment.h"
 
-#include "dockmanager.h"
+#include "docks/dockmanager.h"
 
 #include "states/state_eyedrop.h"
 #include "states/state_normal.h"
@@ -98,24 +98,24 @@
 #include "states/state_zoom.h"
 
 #include "devicetracker.h"
-#include "dialog_tooloptions.h"
+#include "docks/dialog_tooloptions.h"
 #include "widgets/widget_enum.h"
 
 #include "autorecover.h"
 
 #include <synfigapp/settings.h>
-#include "dock_history.h"
-#include "dock_canvases.h"
-#include "dock_keyframes.h"
-#include "dock_layers.h"
-#include "dock_params.h"
-#include "dock_metadata.h"
-#include "dock_children.h"
-#include "dock_info.h"
-#include "dock_navigator.h"
-#include "dock_layergroups.h"
-#include "dock_timetrack.h"
-#include "dock_curves.h"
+#include "docks/dock_history.h"
+#include "docks/dock_canvases.h"
+#include "docks/dock_keyframes.h"
+#include "docks/dock_layers.h"
+#include "docks/dock_params.h"
+#include "docks/dock_metadata.h"
+#include "docks/dock_children.h"
+#include "docks/dock_info.h"
+#include "docks/dock_navigator.h"
+#include "docks/dock_layergroups.h"
+#include "docks/dock_timetrack.h"
+#include "docks/dock_curves.h"
 
 #include "modules/module.h"
 #include "modules/mod_palette/mod_palette.h"

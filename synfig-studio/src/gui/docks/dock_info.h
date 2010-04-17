@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file docks/dock_palbrowse.h
-**	\brief Template Header
+/*!	\file docks/dock_info.h
+**	\brief Info Dock Header
 **
 **	$Id$
 **
@@ -22,13 +22,14 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_STUDIO_DOCK_PAL_BROWSE_H
-#define __SYNFIG_STUDIO_DOCK_PAL_BROWSE_H
+#ifndef __SYNFIG_DOCK_INFO_H
+#define __SYNFIG_DOCK_INFO_H
 
 /* === H E A D E R S ======================================================= */
+#include "docks/dock_canvasspecific.h"
+#include "sigc++/signal.h"
 
-#include "../../docks/dockable.h"
-#include <synfig/palette.h>
+#include "widgets/widget_distance.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -36,27 +37,23 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace synfigapp {
-class CanvasInterface;
-};
-
 namespace studio {
 
-/*
-
-The palette browser was intended to be a way to manage and select a single
-palette from a set of palettes that you could save to files. The palette
-editor was for editing individual palettes. Unfortunately the palette
-browser was never implemented.
-
-*/
-
-class Dock_PalBrowse : public Dockable
+class Dock_Info : public Dock_CanvasSpecific
 {
+	Gtk::Label  r,g,b,a;
+	Gtk::Label	x,y;
+
+	sigc::connection mousecon;
+
+	void on_mouse_move();
+
 public:
-	Dock_PalBrowse();
-	~Dock_PalBrowse();
-}; // END of Dock_PalBrowse
+	Dock_Info();
+	~Dock_Info();
+
+	virtual void changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view);
+};
 
 }; // END of namespace studio
 

@@ -71,11 +71,11 @@
 #include "canvasview.h"
 #include "dialogs/dialog_gradient.h"
 #include "dialogs/dialog_color.h"
-#include "dialog_tooloptions.h"
+#include "docks/dialog_tooloptions.h"
 #include "dialogs/dialog_preview.h"
-#include "dockable.h"
-#include "dockmanager.h"
-#include "dockdialog.h"
+#include "docks/dockable.h"
+#include "docks/dockmanager.h"
+#include "docks/dockdialog.h"
 
 #include "widgets/widget_defaults.h"
 
