@@ -1,4 +1,4 @@
-DOCK_HH = \
+DOCKS_HH = \
 	docks/dialog_tooloptions.h \
 	docks/dock_canvases.h \
 	docks/dock_canvasspecific.h \
@@ -18,7 +18,7 @@ DOCK_HH = \
 	docks/dockdialog.h \
 	docks/dockmanager.h
 
-DOCK_CC = \
+DOCKS_CC = \
 	docks/dialog_tooloptions.cpp \
 	docks/dock_canvases.cpp \
 	docks/dock_canvasspecific.cpp \

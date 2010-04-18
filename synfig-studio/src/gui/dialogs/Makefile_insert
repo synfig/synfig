@@ -1,4 +1,4 @@
-DIALOG_HH = \
+DIALOGS_HH = \
 	dialogs/about.h \
 	dialogs/canvasoptions.h \
 	dialogs/canvasproperties.h \
@@ -11,7 +11,7 @@ DIALOG_HH = \
 	dialogs/dialog_targetparam.h \
 	dialogs/dialog_waypoint.h
 
-DIALOG_CC = \
+DIALOGS_CC = \
 	dialogs/about.cpp \
 	dialogs/canvasoptions.cpp \
 	dialogs/canvasproperties.cpp \

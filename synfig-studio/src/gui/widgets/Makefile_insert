@@ -1,4 +1,4 @@
-WIDGET_HH = \
+WIDGETS_HH = \
 	widgets/widget_canvaschooser.h \
 	widgets/widget_color.h \
 	widgets/widget_coloredit.h \
@@ -18,7 +18,7 @@ WIDGET_HH = \
 	widgets/widget_waypointmodel.h \
 	widgets/widget_keyframe_list.h
 
-WIDGET_CC = \
+WIDGETS_CC = \
 	widgets/widget_canvaschooser.cpp \
 	widgets/widget_color.cpp \
 	widgets/widget_coloredit.cpp \
@@ -39,5 +39,5 @@ WIDGET_CC = \
 	widgets/widget_keyframe_list.cpp
 
 synfigstudio_src += \
-	$(WIDGET_HH) \
-	$(WIDGET_CC)
+	$(WIDGETS_HH) \
+	$(WIDGETS_CC)

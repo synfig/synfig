@@ -13,5 +13,5 @@ DIALS_CC = \
 	dials/resolutiondial.cpp
 
 synfigstudio_src += \
-	$(DIALS_HH)
+	$(DIALS_HH) \
 	$(DIALS_CC)

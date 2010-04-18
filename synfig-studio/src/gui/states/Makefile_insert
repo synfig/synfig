@@ -1,4 +1,4 @@
-STATE_HH = \
+STATES_HH = \
 	states/state_bline.h \
 	states/state_circle.h \
 	states/state_draw.h \
@@ -19,7 +19,7 @@ STATE_HH = \
 	states/state_width.h \
 	states/state_zoom.h
 
-STATE_CC = \
+STATES_CC = \
 	states/state_bline.cpp \
 	states/state_circle.cpp \
 	states/state_draw.cpp \
@@ -41,5 +41,5 @@ STATE_CC = \
 	states/state_zoom.cpp
 
 synfigstudio_src += \
-	$(STATE_HH) \
-	$(STATE_CC)
+	$(STATES_HH) \
+	$(STATES_CC)
