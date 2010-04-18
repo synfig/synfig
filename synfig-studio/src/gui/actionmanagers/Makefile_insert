@@ -1,0 +1,14 @@
+ACTION_MANAGERS_HH = \
+	actionmanagers/groupactionmanager.h \
+	actionmanagers/keyframeactionmanager.h \
+	actionmanagers/layeractionmanager.h
+
+ACTION_MANAGERS_CC = \
+	actionmanagers/groupactionmanager.cpp \
+	actionmanagers/keyframeactionmanager.cpp \
+	actionmanagers/layeractionmanager.cpp
+
+synfigstudio_src += \
+	$(ACTION_MANAGERS_HH) \
+	$(ACTION_MANAGERS_CC)
+

@@ -6,231 +6,20 @@ EXTRA_DIST = \
 MAINTAINERCLEANFILES = \
 	Makefile.in
 
+synfigstudio_src = main.cpp
 
-CELLRENDERER_HH = \
-	cellrenderer/cellrenderer_gradient.h \
-	cellrenderer/cellrenderer_time.h \
-	cellrenderer/cellrenderer_timetrack.h \
-	cellrenderer/cellrenderer_value.h
-
-CELLRENDERER_CC = \
-	cellrenderer/cellrenderer_gradient.cpp \
-	cellrenderer/cellrenderer_time.cpp \
-	cellrenderer/cellrenderer_timetrack.cpp \
-	cellrenderer/cellrenderer_value.cpp
-
-
-WORKAREARENDERER_HH = \
-	workarearenderer/renderer_bbox.h \
-	workarearenderer/renderer_canvas.h \
-	workarearenderer/renderer_dragbox.h \
-	workarearenderer/renderer_ducks.h \
-	workarearenderer/renderer_grid.h \
-	workarearenderer/renderer_guides.h \
-	workarearenderer/renderer_timecode.h \
-	workarearenderer/workarearenderer.h
-
-WORKAREARENDERER_CC = \
-	workarearenderer/renderer_bbox.cpp \
-	workarearenderer/renderer_canvas.cpp \
-	workarearenderer/renderer_dragbox.cpp \
-	workarearenderer/renderer_ducks.cpp \
-	workarearenderer/renderer_grid.cpp \
-	workarearenderer/renderer_guides.cpp \
-	workarearenderer/renderer_timecode.cpp \
-	workarearenderer/workarearenderer.cpp
-
-
-PALETTE_HH = \
-	modules/mod_palette/dock_palbrowse.h \
-	modules/mod_palette/dock_paledit.h \
-	modules/mod_palette/mod_palette.h
-
-PALETTE_CC = \
-	modules/mod_palette/dock_palbrowse.cpp \
-	modules/mod_palette/dock_paledit.cpp \
-	modules/mod_palette/mod_palette.cpp
-
-
-DIALOG_HH = \
-	dialogs/dialog_color.h \
-	dialogs/dialog_gradient.h \
-	dialogs/dialog_keyframe.h \
-	dialogs/dialog_preview.h \
-	dialogs/dialog_setup.h \
-	dialogs/dialog_soundselect.h \
-	dialogs/dialog_targetparam.h \
-	dialogs/dialog_waypoint.h
-
-DIALOG_CC = \
-	dialogs/dialog_color.cpp \
-	dialogs/dialog_gradient.cpp \
-	dialogs/dialog_keyframe.cpp \
-	dialogs/dialog_preview.cpp \
-	dialogs/dialog_setup.cpp \
-	dialogs/dialog_soundselect.cpp \
-	dialogs/dialog_targetparam.cpp \
-	dialogs/dialog_waypoint.cpp
-
-
-DOCK_HH = \
-	docks/dialog_tooloptions.h \
-	docks/dock_canvases.h \
-	docks/dock_canvasspecific.h \
-	docks/dock_children.h \
-	docks/dock_curves.h \
-	docks/dock_history.h \
-	docks/dock_info.h \
-	docks/dock_keyframes.h \
-	docks/dock_layergroups.h \
-	docks/dock_layers.h \
-	docks/dock_metadata.h \
-	docks/dock_navigator.h \
-	docks/dock_params.h \
-	docks/dock_timetrack.h \
-	docks/dockable.h \
-	docks/dockbook.h \
-	docks/dockdialog.h \
-	docks/dockmanager.h
-
-DOCK_CC = \
-	docks/dialog_tooloptions.cpp \
-	docks/dock_canvases.cpp \
-	docks/dock_canvasspecific.cpp \
-	docks/dock_children.cpp \
-	docks/dock_curves.cpp \
-	docks/dock_history.cpp \
-	docks/dock_info.cpp \
-	docks/dock_keyframes.cpp \
-	docks/dock_layergroups.cpp \
-	docks/dock_layers.cpp \
-	docks/dock_metadata.cpp \
-	docks/dock_navigator.cpp \
-	docks/dock_params.cpp \
-	docks/dock_timetrack.cpp \
-	docks/dockable.cpp \
-	docks/dockbook.cpp \
-	docks/dockdialog.cpp \
-	docks/dockmanager.cpp
-
-
-WIDGET_HH = \
-	widgets/widget_canvaschooser.h \
-	widgets/widget_color.h \
-	widgets/widget_coloredit.h \
-	widgets/widget_compselect.h \
-	widgets/widget_curves.h \
-	widgets/widget_defaults.h \
-	widgets/widget_distance.h \
-	widgets/widget_enum.h \
-	widgets/widget_filename.h \
-	widgets/widget_gradient.h \
-	widgets/widget_sound.h \
-	widgets/widget_time.h \
-	widgets/widget_timeslider.h \
-	widgets/widget_value.h \
-	widgets/widget_vector.h \
-	widgets/widget_waypoint.h \
-	widgets/widget_waypointmodel.h \
-	widgets/widget_keyframe_list.h
-
-WIDGET_CC = \
-	widgets/widget_canvaschooser.cpp \
-	widgets/widget_color.cpp \
-	widgets/widget_coloredit.cpp \
-	widgets/widget_compselect.cpp \
-	widgets/widget_curves.cpp \
-	widgets/widget_defaults.cpp \
-	widgets/widget_distance.cpp \
-	widgets/widget_enum.cpp \
-	widgets/widget_filename.cpp \
-	widgets/widget_gradient.cpp \
-	widgets/widget_sound.cpp \
-	widgets/widget_time.cpp \
-	widgets/widget_timeslider.cpp \
-	widgets/widget_value.cpp \
-	widgets/widget_vector.cpp \
-	widgets/widget_waypoint.cpp \
-	widgets/widget_waypointmodel.cpp \
-	widgets/widget_keyframe_list.cpp
-
-
-STATE_HH = \
-	states/state_bline.h \
-	states/state_circle.h \
-	states/state_draw.h \
-	states/state_eyedrop.h \
-	states/state_fill.h \
-	states/state_gradient.h \
-	states/state_mirror.h \
-	states/state_normal.h \
-	states/state_polygon.h \
-	states/state_rectangle.h \
-	states/state_rotate.h \
-	states/state_scale.h \
-	states/state_sketch.h \
-	states/state_smoothmove.h \
-	states/state_star.h \
-	states/state_stroke.h \
-	states/state_text.h \
-	states/state_width.h \
-	states/state_zoom.h
-
-STATE_CC = \
-	states/state_bline.cpp \
-	states/state_circle.cpp \
-	states/state_draw.cpp \
-	states/state_eyedrop.cpp \
-	states/state_fill.cpp \
-	states/state_gradient.cpp \
-	states/state_mirror.cpp \
-	states/state_normal.cpp \
-	states/state_polygon.cpp \
-	states/state_rectangle.cpp \
-	states/state_rotate.cpp \
-	states/state_scale.cpp \
-	states/state_sketch.cpp \
-	states/state_smoothmove.cpp \
-	states/state_star.cpp \
-	states/state_stroke.cpp \
-	states/state_text.cpp \
-	states/state_width.cpp \
-	states/state_zoom.cpp
-
-
-TREEVIEW_HH = \
-	trees/childrentree.h \
-	trees/keyframetree.h \
-	trees/layergrouptree.h \
-	trees/layertree.h
-
-TREEVIEW_CC = \
-	trees/childrentree.cpp \
-	trees/keyframetree.cpp \
-	trees/layergrouptree.cpp \
-	trees/layertree.cpp
-
-
-TREESTORE_HH = \
-	trees/canvastreestore.h \
-	trees/childrentreestore.h \
-	trees/historytreestore.h \
-	trees/keyframetreestore.h \
-	trees/layergrouptreestore.h \
-	trees/layerparamtreestore.h \
-	trees/layertreestore.h \
-	trees/metadatatreestore.h
-
-TREESTORE_CC = \
-	trees/canvastreestore.cpp \
-	trees/childrentreestore.cpp \
-	trees/historytreestore.cpp \
-	trees/keyframetreestore.cpp \
-	trees/layergrouptreestore.cpp \
-	trees/layerparamtreestore.cpp \
-	trees/layertreestore.cpp \
-	trees/metadatatreestore.cpp
-
+#include makefile inserts from subdirectories
+include actionmanagers/Makefile_insert
+include cellrenderer/Makefile_insert
+include dialogs/Makefile_insert
+include dials/Makefile_insert
+include docks/Makefile_insert
+include modules/Makefile_insert
+#makefile inserts for modules are included by modules/Makefile_insert
+include states/Makefile_insert
+include trees/Makefile_insert
+include widgets/Makefile_insert
+include workarearenderer/Makefile_insert
 
 DUCKTRANSFORM_HH = \
 	ducktransform_rotate.h \
@@ -241,35 +30,19 @@ DUCKTRANSFORM_HH = \
 DUCKTRANSFORM_CC = \
 	duck.cpp
 
-
 EVENTS_HH = \
 	event_layerclick.h \
 	event_mouse.h
-
-
-ACTION_MANAGERS_HH = \
-	actionmanagers/groupactionmanager.h \
-	actionmanagers/keyframeactionmanager.h \
-	actionmanagers/layeractionmanager.h
-
-ACTION_MANAGERS_CC = \
-	actionmanagers/groupactionmanager.cpp \
-	actionmanagers/keyframeactionmanager.cpp \
-	actionmanagers/layeractionmanager.cpp
-
 
 OTHER_HH = \
 	compview.h \
 	eventkey.h \
 	smach.h \
-	dialogs/about.h \
 	adjust_window.h \
 	app.h \
 	asyncrenderer.h \
 	audiocontainer.h \
 	autorecover.h \
-	dialogs/canvasoptions.h \
-	dialogs/canvasproperties.h \
 	canvasview.h \
 	devicetracker.h \
 	dialogsettings.h \
@@ -279,7 +52,6 @@ OTHER_HH = \
 	instance.h \
 	ipc.h \
 	keymapsettings.h \
-	modules/module.h \
 	onemoment.h \
 	preview.h \
 	renddesc.h \
@@ -288,23 +60,14 @@ OTHER_HH = \
 	statemanager.h \
 	toolbox.h \
 	valuelink.h \
-	workarea.h \
-	dials/zoomdial.h \
-	dials/framedial.h \
-	dials/keyframedial.h \
-	dials/toggleducksdial.h \
-	dials/resolutiondial.h
+	workarea.h
 
 OTHER_CC = \
-	main.cpp \
-	dialogs/about.cpp \
 	adjust_window.cpp \
 	app.cpp \
 	asyncrenderer.cpp \
 	audiocontainer.cpp \
 	autorecover.cpp \
-	dialogs/canvasoptions.cpp \
-	dialogs/canvasproperties.cpp \
 	canvasview.cpp \
 	devicetracker.cpp \
 	dialogsettings.cpp \
@@ -313,7 +76,6 @@ OTHER_CC = \
 	instance.cpp \
 	ipc.cpp \
 	keymapsettings.cpp \
-	modules/module.cpp \
 	onemoment.cpp \
 	preview.cpp \
 	renddesc.cpp \
@@ -322,12 +84,7 @@ OTHER_CC = \
 	statemanager.cpp \
 	toolbox.cpp \
 	valuelink.cpp \
-	workarea.cpp \
-	dials/zoomdial.cpp \
-	dials/framedial.cpp \
-	dials/keyframedial.cpp \
-	dials/toggleducksdial.cpp \
-	dials/resolutiondial.cpp
+	workarea.cpp
 
 INCLUDES = \
 	-I$(top_srcdir)/src
@@ -335,31 +92,14 @@ INCLUDES = \
 bin_PROGRAMS = synfigstudio
 
 synfigstudio_SOURCES = \
-	$(PALETTE_CC) \
-	$(PALETTE_HH) \
-	$(WORKAREARENDERER_CC) \
-	$(WORKAREARENDERER_HH) \
-	$(ACTION_MANAGERS_HH) \
-	$(ACTION_MANAGERS_CC) \
-	$(DOCK_HH) \
-	$(DOCK_CC) \
-	$(OTHER_HH) \
-	$(OTHER_CC) \
-	$(EVENTS_HH) \
+	$(synfigstudio_src) \
 	$(DUCKTRANSFORM_HH) \
 	$(DUCKTRANSFORM_CC) \
-	$(TREEVIEW_HH) \
-	$(TREEVIEW_CC) \
-	$(TREESTORE_HH) \
-	$(TREESTORE_CC) \
-	$(STATE_CC) \
-	$(STATE_HH) \
-	$(WIDGET_CC) \
-	$(WIDGET_HH) \
-	$(CELLRENDERER_HH) \
-	$(CELLRENDERER_CC) \
-	$(DIALOG_HH) \
-	$(DIALOG_CC)
+	$(EVENTS_HH) \
+	$(OTHER_HH) \
+	$(OTHER_CC)
+
+
 
 synfigstudio_LDADD = \
 	../synfigapp/libsynfigapp.la \
