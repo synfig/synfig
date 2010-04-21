@@ -161,9 +161,19 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	INIT_STOCK_ICON(canvas_pointer,"canvas_pointer_icon."IMAGE_EXT,_("Rename"));
 	INIT_STOCK_ICON(canvas_new,"canvas_icon."IMAGE_EXT,_("New Canvas"));
 	INIT_STOCK_ICON(saveall,"saveall_icon."IMAGE_EXT,_("Save All"));
+
 	INIT_STOCK_ICON(layer,"layer_icon."IMAGE_EXT,_("Layer"));
 	INIT_STOCK_ICON(layer_pastecanvas,"pastecanvas_icon."IMAGE_EXT,_("Paste Canvas"));
+	INIT_STOCK_ICON(layer_duplicate,"layer_duplicate_icon."IMAGE_EXT,_("Duplicate Layer"));
+	INIT_STOCK_ICON(layer_gradient_lineal,"gradient_icon."IMAGE_EXT,_("Lineal Gradient Layer"));
+	INIT_STOCK_ICON(layer_gradient_radial,"layer_gradient_radial_icon."IMAGE_EXT,_("Radial Gradient Layer"));
+	INIT_STOCK_ICON(layer_gradient_spiral,"layer_gradient_spiral_icon."IMAGE_EXT,_("Spiral Gradient Layer"));
+	INIT_STOCK_ICON(layer_gradient_curve,"layer_gradient_curve_icon."IMAGE_EXT,_("Curve Gradient Layer"));
+	INIT_STOCK_ICON(layer_gradient_conical,"layer_gradient_conical_icon."IMAGE_EXT,_("Conical Gradient Layer"));
+	INIT_STOCK_ICON(layer_gradient_noise,"layer_gradient_noise_icon."IMAGE_EXT,_("Noise Gradient Layer"));
+	INIT_STOCK_ICON(layer_checkerboard,"layer_checkerboard_icon."IMAGE_EXT,_("Checker Board Layer"));
 	INIT_STOCK_ICON(plant,"plant_icon."IMAGE_EXT,"");
+
 	INIT_STOCK_ICON(group,"group_icon."IMAGE_EXT,_("Group"));
 	INIT_STOCK_ICON(grid_enable,"grid_enable_icon."IMAGE_EXT,_("Show Grid"));
 	INIT_STOCK_ICON(grid_disable,"grid_disable_icon."IMAGE_EXT,_("Hide Grid"));
@@ -429,8 +439,20 @@ studio::layer_icon(const synfig::String &layer)
 		return Gtk::StockID("synfig-plant");
 	else if(layer=="text")
 		return Gtk::StockID("synfig-text");
-	else if(layer.find("gradient")!=String::npos)
-		return Gtk::StockID("synfig-gradient");
+	else if(layer=="duplicate")
+		return Gtk::StockID("synfig-layer_duplicate");
+	else if(layer=="linear_gradient")
+		return Gtk::StockID("synfig-layer_gradient_lineal");
+	else if(layer=="radial_gradient")
+		return Gtk::StockID("synfig-layer_gradient_radial");
+	else if(layer=="spiral_gradient")
+		return Gtk::StockID("synfig-layer_gradient_spiral");
+	else if(layer=="curve_gradient")
+		return Gtk::StockID("synfig-layer_gradient_curve");
+	else if(layer=="conical_gradient")
+		return Gtk::StockID("synfig-layer_gradient_conical");
+	else if(layer=="noise")
+		return Gtk::StockID("synfig-layer_gradient_noise");
 	else
 		return Gtk::StockID("synfig-layer");
 }
