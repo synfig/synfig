@@ -439,6 +439,8 @@ studio::layer_icon(const synfig::String &layer)
 		return Gtk::StockID("synfig-plant");
 	else if(layer=="text")
 		return Gtk::StockID("synfig-text");
+	else if(layer=="checker_board")
+		return Gtk::StockID("synfig-layer_checkerboard");
 	else if(layer=="duplicate")
 		return Gtk::StockID("synfig-layer_duplicate");
 	else if(layer=="linear_gradient")
