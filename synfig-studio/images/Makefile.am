@@ -88,7 +88,19 @@ EXTRA_DIST = \
 	incr_resolution_icon.sif \
 	decr_resolution_icon.sif \
 	render_options_icon.sif \
-	preview_options_icon.sif
+	preview_options_icon.sif \
+	layer_checkerboard_icon.sif \
+	layer_duplicate_icon.sif \
+	layer_gradient_spiral_icon.sif \
+	layer_gradient_radial_icon.sif \
+	layer_gradient_noise_icon.sif \
+	layer_gradient_curve_icon.sif \
+	layer_gradient_conical_icon.sif \
+	action_set_layer_description_icon.sif \
+	action_add_to_group_icon.sif \
+	action_remove_from_group_icon.sif
+	action_export_icon.sif \
+	action_unexport_icon.sif
 
 IMAGES = \
 	installer_logo.$(EXT) \
@@ -172,7 +184,19 @@ IMAGES = \
 	incr_resolution_icon.$(EXT) \
 	decr_resolution_icon.$(EXT) \
 	render_options_icon.$(EXT) \
-	preview_options_icon.$(EXT)
+	preview_options_icon.$(EXT) \
+	layer_checkerboard_icon.$(EXT) \
+	layer_duplicate_icon.$(EXT) \
+	layer_gradient_spiral_icon.$(EXT) \
+	layer_gradient_radial_icon.$(EXT) \
+	layer_gradient_noise_icon.$(EXT) \
+	layer_gradient_curve_icon.$(EXT) \
+	layer_gradient_conical_icon.$(EXT) \
+	action_set_layer_description_icon.$(EXT) \
+	action_add_to_group_icon.$(EXT) \
+	action_remove_from_group_icon.$(EXT) \
+	action_export_icon.$(EXT) \
+	action_unexport_icon.$(EXT)
 
 
 MAINTAINERCLEANFILES = \
