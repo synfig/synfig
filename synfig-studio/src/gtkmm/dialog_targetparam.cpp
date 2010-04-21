@@ -62,21 +62,21 @@ const char* allowed_video_codecs[] =
  */
 const char* allowed_video_codecs_description[] =
 {
-	"Flash Video (FLV) / Sorenson Spark / Sorenson H.263.",
-	"H.263+ / H.263-1998 / H.263 version 2.",
-	"Huffyuv / HuffYUV.",
-	"libtheora Theora.",
-	"libx264 H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10.",
-	"libxvidcore MPEG-4 part 2.",
-	"MJPEG (Motion JPEG).",
-	"raw MPEG-1 video.",
-	"raw MPEG-2 video.",
-	"MPEG-4 part 2.",
-	"MPEG-4 part 2 Microsoft variant version 3.",
-	"MPEG-4 part 2 Microsoft variant version 1.",
-	"MPEG-4 part 2 Microsoft variant version 2.",
-	"Windows Media Video 7.",
-	"Windows Media Video 8.",
+	_("Flash Video (FLV) / Sorenson Spark / Sorenson H.263."),
+	_("H.263+ / H.263-1998 / H.263 version 2."),
+	_("Huffyuv / HuffYUV."),
+	_("libtheora Theora."),
+	_("libx264 H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10."),
+	_("libxvidcore MPEG-4 part 2."),
+	_("MJPEG (Motion JPEG)."),
+	_("raw MPEG-1 video."),
+	_("raw MPEG-2 video."),
+	_("MPEG-4 part 2."),
+	_("MPEG-4 part 2 Microsoft variant version 3."),
+	_("MPEG-4 part 2 Microsoft variant version 1."),
+	_("MPEG-4 part 2 Microsoft variant version 2."),
+	_("Windows Media Video 7."),
+	_("Windows Media Video 8."),
 	NULL
 };
 /* === P R O C E D U R E S ================================================= */
@@ -87,7 +87,7 @@ const char* allowed_video_codecs_description[] =
 
 Dialog_TargetParam::Dialog_TargetParam(synfig::TargetParam &tparam)
 {
-	set_title("TargetParam Dialog");
+	set_title(_("TargetParam Dialog"));
 	set_tparam(tparam);
 	// Available Video Codecs Combo Box Text.
 	vcodec = Gtk::manage(new Gtk::ComboBoxText());
