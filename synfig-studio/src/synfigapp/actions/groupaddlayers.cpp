@@ -47,7 +47,7 @@ using namespace Action;
 ACTION_INIT(Action::GroupAddLayers);
 ACTION_SET_NAME(Action::GroupAddLayers,"GroupAddLayers");
 ACTION_SET_LOCAL_NAME(Action::GroupAddLayers,N_("Add Layers to Group"));
-ACTION_SET_TASK(Action::GroupAddLayers,"add");
+ACTION_SET_TASK(Action::GroupAddLayers,"add_to_group");
 ACTION_SET_CATEGORY(Action::GroupAddLayers,Action::CATEGORY_LAYER|Action::CATEGORY_GROUP);
 ACTION_SET_PRIORITY(Action::GroupAddLayers,0);
 ACTION_SET_VERSION(Action::GroupAddLayers,"0.0");

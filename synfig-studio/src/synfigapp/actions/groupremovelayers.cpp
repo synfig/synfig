@@ -48,7 +48,7 @@ using namespace Action;
 ACTION_INIT(Action::GroupRemoveLayers);
 ACTION_SET_NAME(Action::GroupRemoveLayers,"GroupRemoveLayers");
 ACTION_SET_LOCAL_NAME(Action::GroupRemoveLayers,N_("Remove Layers from a Group"));
-ACTION_SET_TASK(Action::GroupRemoveLayers,"remove");
+ACTION_SET_TASK(Action::GroupRemoveLayers,"remove_from_group");
 ACTION_SET_CATEGORY(Action::GroupRemoveLayers,Action::CATEGORY_LAYER|Action::CATEGORY_GROUP);
 ACTION_SET_PRIORITY(Action::GroupRemoveLayers,0);
 ACTION_SET_VERSION(Action::GroupRemoveLayers,"0.0");
