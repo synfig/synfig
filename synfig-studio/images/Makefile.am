@@ -96,6 +96,9 @@ EXTRA_DIST = \
 	layer_gradient_noise_icon.sif \
 	layer_gradient_curve_icon.sif \
 	layer_gradient_conical_icon.sif \
+	layer_blur_icon.sif \
+	layer_blur_radial_icon.sif \
+	layer_blur_motion_icon.sif \
 	action_set_layer_description_icon.sif \
 	action_add_to_group_icon.sif \
 	action_remove_from_group_icon.sif
@@ -192,6 +195,9 @@ IMAGES = \
 	layer_gradient_noise_icon.$(EXT) \
 	layer_gradient_curve_icon.$(EXT) \
 	layer_gradient_conical_icon.$(EXT) \
+	layer_blur_icon.$(EXT) \
+	layer_blur_radial_icon.$(EXT) \
+	layer_blur_motion_icon.$(EXT) \
 	action_set_layer_description_icon.$(EXT) \
 	action_add_to_group_icon.$(EXT) \
 	action_remove_from_group_icon.$(EXT) \

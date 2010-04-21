@@ -172,6 +172,10 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	INIT_STOCK_ICON(layer_gradient_conical,"layer_gradient_conical_icon."IMAGE_EXT,_("Conical Gradient Layer"));
 	INIT_STOCK_ICON(layer_gradient_noise,"layer_gradient_noise_icon."IMAGE_EXT,_("Noise Gradient Layer"));
 	INIT_STOCK_ICON(layer_checkerboard,"layer_checkerboard_icon."IMAGE_EXT,_("Checker Board Layer"));
+	INIT_STOCK_ICON(layer_blur,"layer_blur_icon."IMAGE_EXT,_("Blur Layer"));
+	INIT_STOCK_ICON(layer_blur_motion,"layer_blur_motion_icon."IMAGE_EXT,_("Motion Blur Layer"));
+	INIT_STOCK_ICON(layer_blur_radial,"layer_blur_radial_icon."IMAGE_EXT,_("Radial Blur Layer"));
+
 	INIT_STOCK_ICON(plant,"plant_icon."IMAGE_EXT,"");
 
 	INIT_STOCK_ICON(group,"group_icon."IMAGE_EXT,_("Group"));
@@ -460,6 +464,12 @@ studio::layer_icon(const synfig::String &layer)
 		return Gtk::StockID("synfig-layer_gradient_conical");
 	else if(layer=="noise")
 		return Gtk::StockID("synfig-layer_gradient_noise");
+	else if(layer=="blur")
+		return Gtk::StockID("synfig-layer_blur");
+	else if(layer=="radial_blur")
+		return Gtk::StockID("synfig-layer_blur_radial");
+	else if(layer=="MotionBlur") // in the future should be "motion_blur"
+		return Gtk::StockID("synfig-layer_blur_motion");
 	else
 		return Gtk::StockID("synfig-layer");
 }
