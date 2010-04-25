@@ -113,6 +113,11 @@ EXTRA_DIST = \
 	layer_filter_luma_icon.sif \
 	layer_fractal_mandelbrot_icon.sif \
 	layer_fractal_julia_icon.sif \
+	layer_example_metaballs_icon.sif \
+	layer_other_XOR_icon.sif \
+	layer_other_supersample_icon.sif \
+	layer_other_timeloop_icon.sif \
+	layer_transform_translate_icon.sif \
 	action_set_layer_description_icon.sif \
 	action_add_to_group_icon.sif \
 	action_remove_from_group_icon.sif
@@ -228,6 +233,11 @@ IMAGES = \
 	layer_fractal_julia_icon.$(EXT) \
 	layer_stylize_bevel_icon.$(EXT) \
 	layer_stylize_shade_icon.$(EXT) \
+	layer_example_metaballs_icon.$(EXT) \
+	layer_other_XOR_icon.$(EXT) \
+	layer_other_supersample_icon.$(EXT) \
+	layer_other_timeloop_icon.$(EXT) \
+	layer_transform_translate_icon.$(EXT) \
 	action_set_layer_description_icon.$(EXT) \
 	action_add_to_group_icon.$(EXT) \
 	action_remove_from_group_icon.$(EXT) \

@@ -191,6 +191,11 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	INIT_STOCK_ICON(layer_fractal_julia,"layer_fractal_julia_icon."IMAGE_EXT,_("Julia Set Layer"));
 	INIT_STOCK_ICON(layer_stylize_bevel,"layer_stylize_bevel_icon."IMAGE_EXT,_("Bevel Layer"));
 	INIT_STOCK_ICON(layer_stylize_shade,"layer_stylize_shade_icon."IMAGE_EXT,_("Shade Layer"));
+	INIT_STOCK_ICON(layer_example_metaballs,"layer_example_metaballs_icon."IMAGE_EXT,_("Metaballs Layer"));
+	INIT_STOCK_ICON(layer_other_XOR,"layer_other_XOR_icon."IMAGE_EXT,_("XOR Pattern Layer"));
+	INIT_STOCK_ICON(layer_other_supersample,"layer_other_supersample_icon."IMAGE_EXT,_("Super Sample Layer"));
+	INIT_STOCK_ICON(layer_other_timeloop,"layer_other_timeloop_icon."IMAGE_EXT,_("Time Loop Layer"));
+	INIT_STOCK_ICON(layer_transform_translate,"layer_transform_translate_icon."IMAGE_EXT,_("Translate Layer"));
 
 	INIT_STOCK_ICON(plant,"plant_icon."IMAGE_EXT,"");
 
@@ -518,6 +523,20 @@ studio::layer_icon(const synfig::String &layer)
 		return Gtk::StockID("synfig-layer_stylize_bevel");
 	else if(layer=="shade")
 		return Gtk::StockID("synfig-layer_stylize_shade");
+	else if(layer=="metaballs")
+		return Gtk::StockID("synfig-layer_example_metaballs");
+	else if(layer=="simple_circle")
+		return Gtk::StockID("synfig-circle");
+	else if(layer=="filled_rectangle")
+		return Gtk::StockID("synfig-rectangle");
+	else if(layer=="xor_pattern")
+		return Gtk::StockID("synfig-layer_other_XOR");
+	else if(layer=="super_sample")
+		return Gtk::StockID("synfig-layer_other_supersample");
+	else if(layer=="timeloop")
+		return Gtk::StockID("synfig-layer_other_timeloop");
+	else if(layer=="translate")
+		return Gtk::StockID("synfig-layer_transform_translate");
 	else
 		return Gtk::StockID("synfig-layer");
 }
