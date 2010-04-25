@@ -226,6 +226,8 @@ IMAGES = \
 	layer_filter_luma_icon.$(EXT) \
 	layer_fractal_mandelbrot_icon.$(EXT) \
 	layer_fractal_julia_icon.$(EXT) \
+	layer_stylize_bevel_icon.$(EXT) \
+	layer_stylize_shade_icon.$(EXT) \
 	action_set_layer_description_icon.$(EXT) \
 	action_add_to_group_icon.$(EXT) \
 	action_remove_from_group_icon.$(EXT) \

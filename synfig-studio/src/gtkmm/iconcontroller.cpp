@@ -189,6 +189,8 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	INIT_STOCK_ICON(layer_filter_luma,"layer_filter_luma_icon."IMAGE_EXT,_("Luma Layer"));
 	INIT_STOCK_ICON(layer_fractal_mandelbrot,"layer_fractal_mandelbrot_icon."IMAGE_EXT,_("Mandelbrot Set Layer"));
 	INIT_STOCK_ICON(layer_fractal_julia,"layer_fractal_julia_icon."IMAGE_EXT,_("Julia Set Layer"));
+	INIT_STOCK_ICON(layer_stylize_bevel,"layer_stylize_bevel_icon."IMAGE_EXT,_("Bevel Layer"));
+	INIT_STOCK_ICON(layer_stylize_shade,"layer_stylize_shade_icon."IMAGE_EXT,_("Shade Layer"));
 
 	INIT_STOCK_ICON(plant,"plant_icon."IMAGE_EXT,"");
 
@@ -512,6 +514,10 @@ studio::layer_icon(const synfig::String &layer)
 		return Gtk::StockID("synfig-layer_fractal_mandelbrot");
 	else if(layer=="julia")
 		return Gtk::StockID("synfig-layer_fractal_julia");
+	else if(layer=="bevel")
+		return Gtk::StockID("synfig-layer_stylize_bevel");
+	else if(layer=="shade")
+		return Gtk::StockID("synfig-layer_stylize_shade");
 	else
 		return Gtk::StockID("synfig-layer");
 }
