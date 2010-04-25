@@ -1182,7 +1182,7 @@ App::App(int *argc, char ***argv):
 			"different version of libsynfig than what is currently\n"
 			"installed. Synfig Studio will now abort. Try downloading\n"
 			"the latest version from the Synfig website at\n"
-			"http://synfig.org/Download"
+			"http://synfig.org/en/current-release"
 		);
 		throw 40;
 	}
@@ -2292,10 +2292,10 @@ try_open_url(const std::string &url)
 void
 App::dialog_help()
 {
-	if (!try_open_url("http://synfig.org/Documentation"))
+	if (!try_open_url("http://synfig.org/wiki/Category:Manual"))
 	{
 		Gtk::MessageDialog dialog(_("Documentation"), false, Gtk::MESSAGE_INFO, Gtk::BUTTONS_CLOSE, true);
-		dialog.set_secondary_text(_("Documentation for Synfig Studio is available on the website:\n\nhttp://www.synfig.org/Documentation"));
+		dialog.set_secondary_text(_("Documentation for Synfig Studio is available on the website:\n\nhttp://synfig.org/wiki/Category:Manual"));
 		dialog.set_title(_("Help"));
 		dialog.run();
 	}

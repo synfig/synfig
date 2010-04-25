@@ -104,7 +104,7 @@ About::About()
 	set_comments(_("2D vector animation studio"));
 
 	set_url_hook(sigc::mem_fun(*this, &About::on_link_clicked));
-	set_website("http://www.synfig.org/");
+	set_website("http://synfig.org/");
 	set_website_label(_("Visit the Synfig website"));
 
 	set_copyright(_("Copyright 2001-2008\nRobert B. Quattlebaum Jr.,\nAdrian Bentley and Synfig contributors"));
