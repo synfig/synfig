@@ -106,6 +106,11 @@ EXTRA_DIST = \
 	layer_distortion_stretch_icon.sif \
 	layer_distortion_twirl_icon.sif \
 	layer_distortion_warp_icon.sif \
+	layer_filter_clamp_icon.sif \
+	layer_filter_colorcorrect_icon.sif \
+	layer_filter_halftone2_icon.sif \
+	layer_filter_halftone3_icon.sif \
+	layer_filter_luma_icon.sif \
 	action_set_layer_description_icon.sif \
 	action_add_to_group_icon.sif \
 	action_remove_from_group_icon.sif
@@ -212,6 +217,11 @@ IMAGES = \
 	layer_distortion_stretch_icon.$(EXT) \
 	layer_distortion_twirl_icon.$(EXT) \
 	layer_distortion_warp_icon.$(EXT) \
+	layer_filter_clamp_icon.$(EXT) \
+	layer_filter_colorcorrect_icon.$(EXT) \
+	layer_filter_halftone2_icon.$(EXT) \
+	layer_filter_halftone3_icon.$(EXT) \
+	layer_filter_luma_icon.$(EXT) \
 	action_set_layer_description_icon.$(EXT) \
 	action_add_to_group_icon.$(EXT) \
 	action_remove_from_group_icon.$(EXT) \

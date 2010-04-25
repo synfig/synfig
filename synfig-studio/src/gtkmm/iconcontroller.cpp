@@ -182,6 +182,11 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	INIT_STOCK_ICON(layer_distortion_stretch,"layer_distortion_stretch_icon."IMAGE_EXT,_("Stretch Layer"));
 	INIT_STOCK_ICON(layer_distortion_twirl,"layer_distortion_twirl_icon."IMAGE_EXT,_("Twirl Layer"));
 	INIT_STOCK_ICON(layer_distortion_warp,"layer_distortion_warp_icon."IMAGE_EXT,_("Warp Layer"));
+	INIT_STOCK_ICON(layer_filter_clamp,"layer_filter_clamp_icon."IMAGE_EXT,_("Clamp Layer"));
+	INIT_STOCK_ICON(layer_filter_colorcorrect,"layer_filter_colorcorrect_icon."IMAGE_EXT,_("Color Correct Layer"));
+	INIT_STOCK_ICON(layer_filter_halftone2,"layer_filter_halftone2_icon."IMAGE_EXT,_("Half Tone 2 Layer"));
+	INIT_STOCK_ICON(layer_filter_halftone3,"layer_filter_halftone3_icon."IMAGE_EXT,_("Half Tone 3 Layer"));
+	INIT_STOCK_ICON(layer_filter_luma,"layer_filter_luma_icon."IMAGE_EXT,_("Luma Layer"));
 
 	INIT_STOCK_ICON(plant,"plant_icon."IMAGE_EXT,"");
 
@@ -491,6 +496,16 @@ studio::layer_icon(const synfig::String &layer)
 		return Gtk::StockID("synfig-layer_distortion_twirl");
 	else if(layer=="warp")
 		return Gtk::StockID("synfig-layer_distortion_warp");
+	else if(layer=="clamp")
+		return Gtk::StockID("synfig-layer_filter_clamp");
+	else if(layer=="colorcorrect")
+		return Gtk::StockID("synfig-layer_filter_colorcorrect");
+	else if(layer=="halftone2")
+		return Gtk::StockID("synfig-layer_filter_halftone2");
+	else if(layer=="halftone3")
+		return Gtk::StockID("synfig-layer_filter_halftone3");
+	else if(layer=="lumakey")
+		return Gtk::StockID("synfig-layer_filter_luma");
 	else
 		return Gtk::StockID("synfig-layer");
 }
