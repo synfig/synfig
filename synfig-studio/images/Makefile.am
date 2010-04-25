@@ -99,6 +99,13 @@ EXTRA_DIST = \
 	layer_blur_icon.sif \
 	layer_blur_radial_icon.sif \
 	layer_blur_motion_icon.sif \
+	layer_distortion_curvewarp_icon.sif \
+	layer_distortion_insideout_icon.sif \
+	layer_distortion_noise_icon.sif \
+	layer_distortion_spherize_icon.sif \
+	layer_distortion_stretch_icon.sif \
+	layer_distortion_twirl_icon.sif \
+	layer_distortion_warp_icon.sif \
 	action_set_layer_description_icon.sif \
 	action_add_to_group_icon.sif \
 	action_remove_from_group_icon.sif
@@ -198,6 +205,13 @@ IMAGES = \
 	layer_blur_icon.$(EXT) \
 	layer_blur_radial_icon.$(EXT) \
 	layer_blur_motion_icon.$(EXT) \
+	layer_distortion_curvewarp_icon.$(EXT) \
+	layer_distortion_insideout_icon.$(EXT) \
+	layer_distortion_noise_icon.$(EXT) \
+	layer_distortion_spherize_icon.$(EXT) \
+	layer_distortion_stretch_icon.$(EXT) \
+	layer_distortion_twirl_icon.$(EXT) \
+	layer_distortion_warp_icon.$(EXT) \
 	action_set_layer_description_icon.$(EXT) \
 	action_add_to_group_icon.$(EXT) \
 	action_remove_from_group_icon.$(EXT) \

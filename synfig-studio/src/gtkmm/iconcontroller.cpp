@@ -175,6 +175,13 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	INIT_STOCK_ICON(layer_blur,"layer_blur_icon."IMAGE_EXT,_("Blur Layer"));
 	INIT_STOCK_ICON(layer_blur_motion,"layer_blur_motion_icon."IMAGE_EXT,_("Motion Blur Layer"));
 	INIT_STOCK_ICON(layer_blur_radial,"layer_blur_radial_icon."IMAGE_EXT,_("Radial Blur Layer"));
+	INIT_STOCK_ICON(layer_distortion_curvewarp,"layer_distortion_curvewarp_icon."IMAGE_EXT,_("Curve Warp Layer"));
+	INIT_STOCK_ICON(layer_distortion_insideout,"layer_distortion_insideout_icon."IMAGE_EXT,_("Inside Out Layer"));
+	INIT_STOCK_ICON(layer_distortion_noise,"layer_distortion_noise_icon."IMAGE_EXT,_("Noise Distort Layer"));
+	INIT_STOCK_ICON(layer_distortion_spherize,"layer_distortion_spherize_icon."IMAGE_EXT,_("Spherize Layer"));
+	INIT_STOCK_ICON(layer_distortion_stretch,"layer_distortion_stretch_icon."IMAGE_EXT,_("Stretch Layer"));
+	INIT_STOCK_ICON(layer_distortion_twirl,"layer_distortion_twirl_icon."IMAGE_EXT,_("Twirl Layer"));
+	INIT_STOCK_ICON(layer_distortion_warp,"layer_distortion_warp_icon."IMAGE_EXT,_("Warp Layer"));
 
 	INIT_STOCK_ICON(plant,"plant_icon."IMAGE_EXT,"");
 
@@ -470,6 +477,20 @@ studio::layer_icon(const synfig::String &layer)
 		return Gtk::StockID("synfig-layer_blur_radial");
 	else if(layer=="MotionBlur") // in the future should be "motion_blur"
 		return Gtk::StockID("synfig-layer_blur_motion");
+	else if(layer=="curve_warp")
+		return Gtk::StockID("synfig-layer_distortion_curvewarp");
+	else if(layer=="inside_out")
+		return Gtk::StockID("synfig-layer_distortion_insideout");
+	else if(layer=="noise_distort")
+		return Gtk::StockID("synfig-layer_distortion_noise");
+	else if(layer=="spherize")
+		return Gtk::StockID("synfig-layer_distortion_spherize");
+	else if(layer=="stretch")
+		return Gtk::StockID("synfig-layer_distortion_stretch");
+	else if(layer=="twirl")
+		return Gtk::StockID("synfig-layer_distortion_twirl");
+	else if(layer=="warp")
+		return Gtk::StockID("synfig-layer_distortion_warp");
 	else
 		return Gtk::StockID("synfig-layer");
 }
