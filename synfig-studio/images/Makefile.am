@@ -111,6 +111,8 @@ EXTRA_DIST = \
 	layer_filter_halftone2_icon.sif \
 	layer_filter_halftone3_icon.sif \
 	layer_filter_luma_icon.sif \
+	layer_fractal_mandelbrot_icon.sif \
+	layer_fractal_julia_icon.sif \
 	action_set_layer_description_icon.sif \
 	action_add_to_group_icon.sif \
 	action_remove_from_group_icon.sif
@@ -222,6 +224,8 @@ IMAGES = \
 	layer_filter_halftone2_icon.$(EXT) \
 	layer_filter_halftone3_icon.$(EXT) \
 	layer_filter_luma_icon.$(EXT) \
+	layer_fractal_mandelbrot_icon.$(EXT) \
+	layer_fractal_julia_icon.$(EXT) \
 	action_set_layer_description_icon.$(EXT) \
 	action_add_to_group_icon.$(EXT) \
 	action_remove_from_group_icon.$(EXT) \
