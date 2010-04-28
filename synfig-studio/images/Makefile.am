@@ -113,6 +113,8 @@ EXTRA_DIST = \
 	layer_filter_luma_icon.sif \
 	layer_fractal_mandelbrot_icon.sif \
 	layer_fractal_julia_icon.sif \
+	layer_stylize_bevel_icon.sif \
+	layer_stylize_shade_icon.sif \
 	layer_example_metaballs_icon.sif \
 	layer_other_XOR_icon.sif \
 	layer_other_supersample_icon.sif \
