@@ -122,7 +122,7 @@ EXTRA_DIST = \
 	layer_transform_translate_icon.sif \
 	action_set_layer_description_icon.sif \
 	action_add_to_group_icon.sif \
-	action_remove_from_group_icon.sif
+	action_remove_from_group_icon.sif \
 	action_export_icon.sif \
 	action_unexport_icon.sif
 
