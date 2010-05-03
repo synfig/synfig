@@ -334,22 +334,22 @@ Palette::load_from_file(const synfig::String& filename)
 	{
 		PaletteItem item;
 		getline(file,item.name);
-		if(!file.eof())break;
+		if(file.eof())break;
 
 		getline(file,line);
-		if(!file.eof())break;
+		if(file.eof())break;
 		item.color.set_r(atof(line.c_str()));
 
 		getline(file,line);
-		if(!file.eof())break;
+		if(file.eof())break;
 		item.color.set_g(atof(line.c_str()));
 
 		getline(file,line);
-		if(!file.eof())break;
+		if(file.eof())break;
 		item.color.set_b(atof(line.c_str()));
 
 		getline(file,line);
-		if(!file.eof())break;
+		if(file.eof())break;
 		item.color.set_a(atof(line.c_str()));
 
 		ret.push_back(item);

@@ -44,6 +44,7 @@
 #include <synfigapp/main.h>
 #include "../../app.h"
 #include "../../dialogs/dialog_color.h"
+#include <errno.h>
 
 #include "../../general.h"
 
@@ -133,6 +134,40 @@ Dock_PalEdit::Dock_PalEdit():
 			&Dock_PalEdit::on_add_pressed
 		)
 	);
+	action_group->add(Gtk::Action::create(
+		"palette-save",
+		Gtk::StockID("gtk-save"),
+		_("Save palette"),
+		_("Save the current palette")
+	),
+		sigc::mem_fun(
+			*this,
+			&Dock_PalEdit::on_save_pressed
+		)
+	);
+	action_group->add(Gtk::Action::create(
+		"palette-load",
+		Gtk::StockID("gtk-open"),
+		_("Load a palette"),
+		_("Load a saved palette")
+	),
+		sigc::mem_fun(
+			*this,
+			&Dock_PalEdit::on_load_pressed
+		)
+	);
+	action_group->add(Gtk::Action::create(
+		"palette-set-default",
+		Gtk::StockID("gtk-clear"),
+		_("Load default"),
+		_("Load default palette")
+	),
+		sigc::mem_fun(
+			*this,
+			&Dock_PalEdit::set_default_palette
+		)
+	);
+
 
 	App::ui_manager()->insert_action_group(action_group);
 
@@ -140,6 +175,9 @@ Dock_PalEdit::Dock_PalEdit():
 	"<ui>"
 	"	<toolbar action='toolbar-palette'>"
 	"	<toolitem action='palette-add-color' />"
+	"	<toolitem action='palette-save' />"
+	"	<toolitem action='palette-load' />"
+	"	<toolitem action='palette-set-default' />"
 	"	</toolbar>"
 	"</ui>"
 	;
@@ -187,6 +225,85 @@ Dock_PalEdit::on_add_pressed()
 }
 
 void
+Dock_PalEdit::on_save_pressed()
+{
+	synfig::String filename = "";
+	while (App::dialog_save_file(_("Choose a Filename to Save As"),
+								 filename, ANIMATION_DIR_PREFERENCE))
+	{
+		// If the filename still has wildcards, then we should
+		// continue looking for the file we want
+		string base_filename = basename(filename);
+		if (find(base_filename.begin(),base_filename.end(),'*')!=base_filename.end())
+			continue;
+
+		if (filename_extension(filename) == "")
+			filename+=".spal";
+
+		try
+		{
+			String ext(filename_extension(filename));
+			if(ext!=".spal" && !App::dialog_yes_no(_("Unknown extension"),
+				_("You have given the file name an extension\nwhich I do not recognize. Are you sure this is what you want?")))
+				continue;
+		}
+		catch(...)
+		{
+			continue;
+		}
+
+		{
+			struct stat	s;
+			int stat_return = stat(filename.c_str(), &s);
+
+			// if stat() fails with something other than 'file doesn't exist', there's been a real
+			// error of some kind.  let's give up now and ask for a new path.
+			if (stat_return == -1 && errno != ENOENT)
+			{
+				perror(filename.c_str());
+				string msg(strprintf(_("Unable to check whether '%s' exists."), filename.c_str()));
+				App::dialog_error_blocking(_("Save Palette - Error"),msg.c_str());
+				continue;
+			}
+
+			// if the file exists and the user doesn't want to overwrite it, keep prompting for a filename
+			string msg(strprintf(_("A file named '%s' already exists.\n\n"
+									"Do you want to replace it with the file you are saving?"), filename.c_str()));
+			if ((stat_return == 0) &&
+				!App::dialog_yes_no(_("File exists"),msg.c_str()))
+				continue;
+		}
+		palette_.save_to_file(filename);
+		return;
+	}
+}
+
+void
+Dock_PalEdit::on_load_pressed()
+{
+	synfig::String filename = "*.spal";
+	while(App::dialog_open_file(_("Choose a Palette to load"), filename, ANIMATION_DIR_PREFERENCE))
+	{
+		// If the filename still has wildcards, then we should
+		// continue looking for the file we want
+		if(find(filename.begin(),filename.end(),'*')!=filename.end())
+			continue;
+
+		try
+		{
+			palette_=synfig::Palette::load_from_file(filename);
+		}
+		catch (...)
+		{
+			App::get_ui_interface()->error(_("Unable to open file"));
+			continue;
+		}
+		break;
+	}
+	refresh();
+}
+
+void
 Dock_PalEdit::show_menu(int i)
 {
 	Gtk::Menu* menu(manage(new Gtk::Menu()));
@@ -206,11 +323,7 @@ Dock_PalEdit::show_menu(int i)
 		)
 	));
 
-	menu->items().push_back(Gtk::Menu_Helpers::SeparatorElem());
-
-	menu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Load Default Palette"),
-		sigc::mem_fun(*this,&studio::Dock_PalEdit::set_default_palette)
-	));
+	//menu->items().push_back(Gtk::Menu_Helpers::SeparatorElem());
 
 	menu->popup(3,gtk_get_current_event_time());
 }
