@@ -96,7 +96,7 @@ class DuckDrag_Combo : public DuckDrag_Base
 	bool move_only;
 
 public:
-	etl::handle<CanvasView> canvas_view_;
+	CanvasView* canvas_view_;
 	bool scale;
 	bool rotate;
 	bool constrain;
@@ -111,7 +111,7 @@ public:
 
 class studio::StateNormal_Context : public sigc::trackable
 {
-	etl::handle<CanvasView> canvas_view_;
+	CanvasView* canvas_view_;
 
 	synfigapp::Settings& settings;
 
@@ -144,7 +144,7 @@ public:
 
 	~StateNormal_Context();
 
-	const etl::handle<CanvasView>& get_canvas_view()const{return canvas_view_;}
+	CanvasView* get_canvas_view()const{return canvas_view_;}
 	etl::handle<synfigapp::CanvasInterface> get_canvas_interface()const{return canvas_view_->canvas_interface();}
 	synfig::Canvas::Handle get_canvas()const{return canvas_view_->get_canvas();}
 	WorkArea * get_work_area()const{return canvas_view_->get_work_area();}

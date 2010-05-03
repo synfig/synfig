@@ -48,7 +48,7 @@ using namespace Action;
 ACTION_INIT_NO_GET_LOCAL_NAME(Action::ValueNodeRemove);
 ACTION_SET_NAME(Action::ValueNodeRemove,"ValueNodeRemove");
 ACTION_SET_LOCAL_NAME(Action::ValueNodeRemove,N_("Unexport"));
-ACTION_SET_TASK(Action::ValueNodeRemove,"remove");
+ACTION_SET_TASK(Action::ValueNodeRemove,"unexport");
 ACTION_SET_CATEGORY(Action::ValueNodeRemove,Action::CATEGORY_VALUENODE);
 ACTION_SET_PRIORITY(Action::ValueNodeRemove,0);
 ACTION_SET_VERSION(Action::ValueNodeRemove,"0.0");

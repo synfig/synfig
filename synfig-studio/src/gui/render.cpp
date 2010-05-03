@@ -171,7 +171,7 @@ RenderSettings::RenderSettings(Gtk::Window& parent, etl::handle<synfigapp::Canva
 	dialogBox->pack_start(widget_rend_desc);
 
 
-	Gtk::Button *render_button(manage(new class Gtk::Button(Gtk::StockID("Render"))));
+	Gtk::Button *render_button(manage(new class Gtk::Button(Gtk::StockID(_("Render")))));
 	render_button->show();
 	add_action_widget(*render_button,1);
 	render_button->signal_clicked().connect(sigc::mem_fun(*this, &studio::RenderSettings::on_render_pressed));

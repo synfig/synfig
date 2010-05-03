@@ -251,20 +251,21 @@ Toolbox::Toolbox():
 
 #define WIKI(title,page)											\
 	helpmenu->items().push_back(Gtk::Menu_Helpers::MenuElem(title,	\
+		sigc::bind(sigc::ptr_fun(&studio::App::open_url),String("http://synfig.org/wiki")+page)))
+
+#define SITE(title,page)											\
+	helpmenu->items().push_back(Gtk::Menu_Helpers::MenuElem(title,	\
 		sigc::bind(sigc::ptr_fun(&studio::App::open_url),String("http://synfig.org")+page)))
 
 	Gtk::Menu	*helpmenu = manage(new class Gtk::Menu());
 	helpmenu->items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::Stock::HELP, sigc::ptr_fun(studio::App::dialog_help)));
 	helpmenu->items().push_back(Gtk::Menu_Helpers::SeparatorElem());
 
-	/* TRANSLATORS: Help menu entry */ WIKI(_("Synfig Wiki"),				/* TRANSLATORS: a wiki page */ _("/Main_Page")				);
-	/* TRANSLATORS: Help menu entry */ WIKI(_("Tutorials"),					/* TRANSLATORS: a wiki page */ _("/Tutorials")				);
+	/* TRANSLATORS: Help menu entry */ WIKI(_("Tutorials"),					/* TRANSLATORS: a wiki page */ _("/Category:Tutorials")				);
+	/* TRANSLATORS: Help menu entry */ WIKI(_("Reference"),					/* TRANSLATORS: a wiki page */ _("/Category:Reference")				);
 	/* TRANSLATORS: Help menu entry */ WIKI(_("Frequently Asked Questions"),/* TRANSLATORS: a wiki page */ _("/FAQ")					);
-	/* TRANSLATORS: Help menu entry */ WIKI(_("Get Support"),				/* TRANSLATORS: a wiki page */ _("/Contact")			);
-	/* TRANSLATORS: Help menu entry */ WIKI(_("Keyboard Shortcuts"),		/* TRANSLATORS: a wiki page */ _("/Keyboard_Shortcuts")		);
-	/* TRANSLATORS: Help menu entry */ WIKI(_("Mouse Shortcuts"),			/* TRANSLATORS: a wiki page */ _("/Mouse_Shortcuts")		);
-	/* TRANSLATORS: Help menu entry */ WIKI(_("All Pages"), "/Special:Allpages" );
-
+	helpmenu->items().push_back(Gtk::Menu_Helpers::SeparatorElem());
+	/* TRANSLATORS: Help menu entry */ SITE(_("Get Support"),				/* TRANSLATORS: a website page */ _("/en/support")			);
 	helpmenu->items().push_back(Gtk::Menu_Helpers::SeparatorElem());
 	helpmenu->items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::StockID("synfig-about"),
 		sigc::ptr_fun(studio::App::dialog_about)));
