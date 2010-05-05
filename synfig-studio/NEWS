@@ -2,8 +2,28 @@
 
 More detailed notes are available on the releases page:
 
-http://synfig.org/Releases (synfig.org locked now but working in the future)
-http://www.synfig.com (new website in progress)
+http://synfig.org/wiki/Releases
+
+ 0.062.01 (git tag: "synfigstudio-0.62.01") - May 15, 2010 - Bug fixes, features.
+
+  * Enable reverse manipulation to range value nodes. Fix bug in value node range.
+  * Add new functionalities to the Normal tool. It can rotate (CTRL), scale, (ALT)
+  as well as translate. Using SHIFT constraints the three operations.
+  * Update Mirror tool to allow use SHIFT to alternate between horizontal and vertical
+  mirrors.
+  * Enable single threaded renderer for windows version. It increases stability.
+  * Fix file chooser label to fit into button size.
+  * Stop button now works properly.
+  * By default disable extended input devices. Fix a previous introduced bug.
+  * Suit custom mouse cursors for some tools.
+  * Add code to make possible pass parameters to the renderers. Implementation for ffmpeg.
+  * Repack rulers and caret menu to get less space.
+  * New italian translation.
+  * New parameters for Motion Blur layer. Now allows linear and constant interpolation too.
+  * New icons for actions and layers.
+  * Remove old hacks of instances and dock dialogs windows. Looking forward for a bug fix.
+  * Updated Russian translation.
+  * Automatic build script for linux system. Please report success of usage.
 
  0.62.00 (git tag: "synfigstudio-0.62.00") - October 12, 2009 - Bug fixes, major features.
 
