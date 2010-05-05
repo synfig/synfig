@@ -13,20 +13,12 @@ or .sifz format.
 
 Links
 
-Web:  	http://synfig.org/  (*)
-Code: 	http://synfig.org/Source_code
+Web:  	http://synfig.org/
+Code: 	http://synfig.org/Dev:Source_code
 Proj: 	http://sourceforge.net/projects/synfig/
-Forums:	http://synfig.org/forums 
+Forums:	http://synfig.org/forums
 IRC:  	irc://irc.freenode.net/synfig
 
-(*) synfig.org website is locked for edition because we are migrating to 
-a new host. During the migration the links are those:
-
-Web:	http://www.synfig.com
-Wiki:	http://www.synfig.com/wiki
-
-the rest doesn't change. Once the migration finish, the domain name 
-synfig.org will point to the new host.
 
 Please use the IRC channel and the sf.net tracker to get support and
 report bugs, request features and submit patches.
@@ -42,16 +34,18 @@ Copyright 2008-2009 Aurore D.
 Copyright 2008-2009 Gerald Young
 Copyright 2008 David Roden
 Copyright 2008 Daniel Hornung
-Copyright 2008-2009 Carlos López González
+Copyright 2008-2010 Carlos López González
 Copyright 2008-2009 Gerco Ballintijn
-Copyright 2009 Konstantin Dmitriev
+Copyright 2009-2010 Konstantin Dmitriev
 Copyright 2009 Henrique Lopes Barone
 Copyright 2009 Carlos A. Sosa Navarro
 Copyright 2009 Ray Frederikson
+Copyright 2010 Nikita Kitaev
 
 Some of the icons are placed in the Public Domain by Chris Norman
 Some of the icons are placed in the Public Domain by Carlos López González
 Some of the icons are placed in the Public Domain by David Rylander
+Some of the icons are placed in the Public Domain by Bertrand Grégoire
 Some of the artwork is placed in the Public Domain by Franco Iacomella and Carlos López González
 
 Licence
