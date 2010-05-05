@@ -1468,13 +1468,10 @@ App::get_config_file(const synfig::String& file)
 	return Glib::build_filename(get_user_app_directory(),file);
 }
 
-#define SCALE_FACTOR	(1280)
 //! set the \a instance's canvas(es) position and size to be those specified in the first entry of recent_files_window_size
 void
 App::set_recent_file_window_size(etl::handle<Instance> instance)
 {
-	int screen_w(Gdk::screen_width());
-	int screen_h(Gdk::screen_height());
 
 	const std::string &canvas_window_size = *recent_files_window_size.begin();
 
@@ -1520,22 +1517,9 @@ App::set_recent_file_window_size(etl::handle<Instance> instance)
 			current = separator+1;
 			continue;
 		}
-
-		if (x > SCALE_FACTOR) x = SCALE_FACTOR - 150; if (x < 0) x = 0;
-		if (y > SCALE_FACTOR) y = SCALE_FACTOR - 150; if (y < 0) y = 0;
-		x=x*screen_w/SCALE_FACTOR;
-		y=y*screen_h/SCALE_FACTOR;
-		if(getenv("SYNFIG_WINDOW_POSITION_X_OFFSET"))
-			x += atoi(getenv("SYNFIG_WINDOW_POSITION_X_OFFSET"));
-		if(getenv("SYNFIG_WINDOW_POSITION_Y_OFFSET"))
-			y += atoi(getenv("SYNFIG_WINDOW_POSITION_Y_OFFSET"));
-
-		if (w > SCALE_FACTOR) w = 150; if (w < 0) w = 0;
-		if (h > SCALE_FACTOR) h = 150; if (h < 0) h = 0;
-
 		CanvasView::Handle canvasview = instance->find_canvas_view(canvas);
 		canvasview->move(x,y);
-		canvasview->resize(w*screen_w/SCALE_FACTOR,h*screen_h/SCALE_FACTOR);
+		canvasview->resize(w,h);
 		canvasview->present();
 
 		current = separator+1;
@@ -1548,8 +1532,6 @@ App::set_recent_file_window_size(etl::handle<Instance> instance)
 void
 App::add_recent_file(const etl::handle<Instance> instance)
 {
-	int screen_w(Gdk::screen_width());
-	int screen_h(Gdk::screen_height());
 
 	std::string canvas_window_size;
 
@@ -1568,13 +1550,12 @@ App::add_recent_file(const etl::handle<Instance> instance)
 
 		canvas_window_size += strprintf("%s %d %d %d %d\t",
 										canvas->get_relative_id(canvas->get_root()).c_str(),
-										x_pos*SCALE_FACTOR/screen_w,  y_pos*SCALE_FACTOR/screen_h,
-										x_size*SCALE_FACTOR/screen_w, y_size*SCALE_FACTOR/screen_h);
+										x_pos,  y_pos,
+										x_size, y_size);
 	}
 
 	add_recent_file(absolute_path(instance->get_file_name()), canvas_window_size);
 }
-#undef SCALE_FACTOR
 
 void
 App::add_recent_file(const std::string &file_name, const std::string &window_size)
