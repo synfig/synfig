@@ -40,6 +40,8 @@
 # Build package from commit with "synfigstudio-0.62.00" tag
 #    ./synfigstudio-linux-build.sh package synfigstudio-0.62.00
 #
+# Note: Make sure to run "git clean -f -x -d" after you switch branches.
+#
 # = TODO =
 # - debuginfo packages
 
@@ -294,7 +296,7 @@ mkgit()
 
 mkETL()
 {
-if [ -d ${SYNFIG_REPO_DIR}/ETL/trunk ]; then
+if [ -f ${SYNFIG_REPO_DIR}/ETL/trunk/configure.ac ]; then
 	pushd ${SYNFIG_REPO_DIR}/ETL/trunk
 else
 	pushd ${SYNFIG_REPO_DIR}/ETL
@@ -311,7 +313,7 @@ if [[ $MODE != 'quick' ]]; then
 	echo "Going to configure..."
 	rm -f aclocal.m4
 	autoreconf --install --force
-	bash ./configure --prefix=${PREFIX} --includedir=${PREFIX}/include $DEBUG 
+	/bin/sh ./configure --prefix=${PREFIX} --includedir=${PREFIX}/include $DEBUG 
 fi
 
 make -j2
@@ -322,7 +324,7 @@ popd
 
 mksynfig()
 {
-if [ -d ${SYNFIG_REPO_DIR}/synfig-core/trunk ]; then
+if [ -d ${SYNFIG_REPO_DIR}/synfig-core/trunk/configure.ac ]; then
 	pushd ${SYNFIG_REPO_DIR}/synfig-core/trunk
 else
 	pushd ${SYNFIG_REPO_DIR}/synfig-core
@@ -337,7 +339,7 @@ if [[ $MODE != 'quick' ]]; then
 	sed -i 's/^AC_CONFIG_SUBDIRS(libltdl)$/m4_ifdef([_AC_SEEN_TAG(libltdl)], [], [AC_CONFIG_SUBDIRS(libltdl)])/' configure.ac || true
 	sed -i 's/^# AC_CONFIG_SUBDIRS(libltdl)$/m4_ifdef([_AC_SEEN_TAG(libltdl)], [], [AC_CONFIG_SUBDIRS(libltdl)])/' configure.ac || true
 	autoreconf --install --force
-	bash ./configure --prefix=${PREFIX} --includedir=${PREFIX}/include --disable-static --enable-shared --with-magickpp --without-libavcodec $DEBUG  
+	/bin/sh ./configure --prefix=${PREFIX} --includedir=${PREFIX}/include --disable-static --enable-shared --with-magickpp --without-libavcodec $DEBUG  
 fi
 
 #It looks like mod_libavcodec causes segfault on synfig-core when rendering to png.
@@ -359,7 +361,7 @@ popd
 
 mksynfigstudio()
 {
-if [ -d ${SYNFIG_REPO_DIR}/synfig-studio/trunk ]; then
+if [ -d ${SYNFIG_REPO_DIR}/synfig-studio/trunk/configure.ac ]; then
 	pushd ${SYNFIG_REPO_DIR}/synfig-studio/trunk
 else
 	pushd ${SYNFIG_REPO_DIR}/synfig-studio
@@ -369,7 +371,7 @@ fi
 
 if [[ $MODE != 'quick' ]]; then
 	autoreconf --install --force
-	bash ./configure --prefix=${PREFIX} --includedir=${PREFIX}/include --disable-static --enable-shared $DEBUG
+	/bin/sh ./configure --prefix=${PREFIX} --includedir=${PREFIX}/include --disable-static --enable-shared $DEBUG
 fi
 
 make -j2
@@ -612,7 +614,7 @@ initialize()
 			echo 
 			#echo "http_proxy =====" $http_proxy
 			#env
-			sudo apt-get update
+			sudo apt-get update || true
 			sudo apt-get install -y $PKG_LIST
 		fi
 	else
