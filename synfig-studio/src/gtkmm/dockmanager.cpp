@@ -288,7 +288,6 @@ DockManager::find_dock_dialog(int id)
 
 	DockDialog* dock_dialog(new DockDialog());
 	dock_dialog->set_id(id);
-	dock_dialog->show();
 	return *dock_dialog;
 }
 
@@ -301,4 +300,12 @@ DockManager::find_dock_dialog(int id)const
 			return **iter;
 
 	throw std::runtime_error("DockManager::find_dock_dialog(int id)const: not found");
+}
+
+void
+DockManager::show_all_dock_dialogs()
+{
+	std::list<DockDialog*>::iterator iter;
+	for(iter=dock_dialog_list_.begin();iter!=dock_dialog_list_.end();++iter)
+		(*iter)->show();
 }

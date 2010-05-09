@@ -1306,14 +1306,14 @@ App::App(int *argc, char ***argv):
 		state_manager->add_state(&state_star);
 		state_manager->add_state(&state_gradient);
 		if(!getenv("SYNFIG_DISABLE_POLYGON")) state_manager->add_state(&state_polygon); // Enabled - for working without ducks
-		
+
 		/* bline tools */
 		state_manager->add_state(&state_bline);
 		if(!getenv("SYNFIG_DISABLE_DRAW"   )) state_manager->add_state(&state_draw); // Enabled for now.  Let's see whether they're good enough yet.
 		if(!getenv("SYNFIG_DISABLE_WIDTH"  )) state_manager->add_state(&state_width); // Enabled since 0.61.09
 		state_manager->add_state(&state_fill);
 		state_manager->add_state(&state_eyedrop);
-		
+
 		/* other */
 		state_manager->add_state(&state_text);
 		if(!getenv("SYNFIG_DISABLE_SKETCH" )) state_manager->add_state(&state_sketch);
@@ -1392,6 +1392,7 @@ App::App(int *argc, char ***argv):
 		studio_init_cb.task(_("Done."));
 		studio_init_cb.amount_complete(10000,10000);
 
+		dock_manager->show_all_dock_dialogs();
 		toolbox->present();
 	}
 	catch(String x)
