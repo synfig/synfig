@@ -139,6 +139,7 @@ public:
 	bool get_constrain_flag()const { return checkbutton_constrain.get_active(); }
 	void set_constrain_flag(bool x) { checkbutton_constrain.set_active(x); refresh_constrain_flag(); }
 	void refresh_constrain_flag() { if(duck_dragger_)duck_dragger_->constrain=get_constrain_flag(); }
+	void refresh_cursor();
 
 	StateNormal_Context(CanvasView* canvas_view);
 
@@ -188,6 +189,27 @@ StateNormal::StateNormal():
 
 StateNormal::~StateNormal()
 {
+}
+
+void StateNormal_Context::refresh_cursor()
+{
+	if(get_rotate_flag() && !get_scale_flag())
+	{
+		get_work_area()->set_cursor(Gdk::EXCHANGE);
+		return;
+	}
+	if(!get_rotate_flag() && get_scale_flag())
+	{
+		get_work_area()->set_cursor(Gdk::SIZING);
+		return;
+	}
+	if(get_rotate_flag() && get_scale_flag())
+	{
+		get_work_area()->set_cursor(Gdk::CROSSHAIR);
+		return;
+	}
+	get_work_area()->set_cursor(Gdk::ARROW);
+
 }
 
 void
@@ -282,6 +304,7 @@ StateNormal_Context::key_pressed(GdkEventKey *event)
 		default:
 			break;
 	}
+	refresh_cursor();
 	return false; //Pass on the event to other handlers, just in case
 }
 
@@ -305,6 +328,7 @@ StateNormal_Context::key_released(GdkEventKey *event)
 		default:
 			break;
 	}
+	refresh_cursor();
 	return false; //Pass on the event to other handlers
 }
 
