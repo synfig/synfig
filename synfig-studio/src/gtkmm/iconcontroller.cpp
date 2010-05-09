@@ -260,7 +260,7 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	INIT_STOCK_ICON_CLONE(cvs_revert,"gtk-revert",_("CVS Revert"));
 
 	// Tools
-	INIT_STOCK_ICON(normal,"normal_icon."IMAGE_EXT,_("Normal Tool"));
+	INIT_STOCK_ICON(normal,"normal_icon."IMAGE_EXT,_("Transform Tool"));
 	INIT_STOCK_ICON(transform,"transform_icon."IMAGE_EXT,_("Transform Tool"));
 	INIT_STOCK_ICON(polygon,"polyline_icon."IMAGE_EXT,_("Polygon Tool"));
 	INIT_STOCK_ICON(bline,"bline_icon."IMAGE_EXT,_("BLine Tool"));

@@ -1299,23 +1299,25 @@ App::App(int *argc, char ***argv):
 		state_manager->add_state(&state_scale);
 		state_manager->add_state(&state_rotate);
 		studio_init_cb.task(_("Init ModMirror...")); module_list_.push_back(new ModMirror()); module_list_.back()->start();
-		if(!getenv("SYNFIG_DISABLE_WIDTH"  )) state_manager->add_state(&state_width); // Enabled since 0.61.09
 
-		/* new objects */
+		/* geometry */
 		state_manager->add_state(&state_circle);
 		state_manager->add_state(&state_rectangle);
 		state_manager->add_state(&state_star);
 		state_manager->add_state(&state_gradient);
 		if(!getenv("SYNFIG_DISABLE_POLYGON")) state_manager->add_state(&state_polygon); // Enabled - for working without ducks
-		state_manager->add_state(&state_text);
+		
+		/* bline tools */
 		state_manager->add_state(&state_bline);
 		if(!getenv("SYNFIG_DISABLE_DRAW"   )) state_manager->add_state(&state_draw); // Enabled for now.  Let's see whether they're good enough yet.
-
-		/* other */
+		if(!getenv("SYNFIG_DISABLE_WIDTH"  )) state_manager->add_state(&state_width); // Enabled since 0.61.09
 		state_manager->add_state(&state_fill);
 		state_manager->add_state(&state_eyedrop);
-		state_manager->add_state(&state_zoom);
+		
+		/* other */
+		state_manager->add_state(&state_text);
 		if(!getenv("SYNFIG_DISABLE_SKETCH" )) state_manager->add_state(&state_sketch);
+		state_manager->add_state(&state_zoom);
 
 		studio_init_cb.task(_("Init ModPalette..."));
 		module_list_.push_back(new ModPalette()); module_list_.back()->start();

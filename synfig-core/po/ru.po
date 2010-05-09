@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Synfig Backend\n"
 "Report-Msgid-Bugs-To: http://synfig.org/Bugs\n"
 "POT-Creation-Date: 2009-10-07 01:26+0400\n"
-"PO-Revision-Date: 2010-01-18 20:40+0600\n"
+"PO-Revision-Date: 2010-05-09 08:20+0700\n"
 "Last-Translator: Alexandre Prokoudine <alexandre.prokoudine@gmail.com>\n"
 "Language-Team: Russian <gnome-cyr@lists.gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -311,7 +311,7 @@ msgstr "Начертание не загружено, текст не будет
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:670
 msgid "Text too small, no text will be rendered."
-msgstr ""
+msgstr "Текст не будет визуализирован, т.к. размер текста слишком мал."
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:694
 msgid "Unable to set face size."
@@ -391,7 +391,7 @@ msgstr "Светимость"
 
 #: ../src/modules/lyr_std/bevel.cpp:387
 msgid "Solid"
-msgstr ""
+msgstr "Сплошной"
 
 #: ../src/modules/lyr_std/booleancurve.cpp:104
 msgid "Region Set"
@@ -436,7 +436,7 @@ msgstr "Импорт изображения"
 #: ../src/modules/lyr_std/import.cpp:138
 #, c-format
 msgid "Filename seems to already be set to \"%s\" (%s)"
-msgstr ""
+msgstr "Имя файла уже указано - \"%s\" (%s)"
 
 #: ../src/modules/lyr_std/import.cpp:209
 msgid "Filename"
@@ -852,7 +852,7 @@ msgstr "Список узлов кривой Безье"
 #: ../src/modules/lyr_std/curvewarp.cpp:406
 #: ../src/modules/mod_gradient/curvegradient.cpp:554
 msgid "Fast"
-msgstr ""
+msgstr "Быстро"
 
 #: ../src/modules/lyr_std/xorpattern.cpp:54
 msgid "XOR Pattern"
@@ -1144,15 +1144,15 @@ msgstr "Косинус"
 
 #: ../src/modules/mod_geometry/outline.cpp:70
 msgid "Outline"
-msgstr "Абрис"
+msgstr "Контур"
 
 #: ../src/modules/mod_geometry/outline.cpp:178
 msgid "No vertices in outline "
-msgstr "Нет вершин в абрисе"
+msgstr "Нет вершин в контуре"
 
 #: ../src/modules/mod_geometry/outline.cpp:824
 msgid "Outline Width"
-msgstr "Толщина абриса"
+msgstr "Толщина контура"
 
 #: ../src/modules/mod_geometry/outline.cpp:829
 msgid "Expand"
@@ -1253,7 +1253,7 @@ msgstr ""
 
 #: ../src/modules/mod_gif/trgt_gif.cpp:195
 msgid "Description not set!"
-msgstr ""
+msgstr "Описание не установлено!"
 
 #: ../src/modules/mod_gradient/conicalgradient.cpp:56
 msgid "Conical Gradient"
@@ -1289,7 +1289,7 @@ msgstr "Зигзаг"
 
 #: ../src/modules/mod_gradient/curvegradient.cpp:552
 msgid "Perpendicular"
-msgstr ""
+msgstr "Перпендикулярно"
 
 #: ../src/modules/mod_gradient/lineargradient.cpp:53
 msgid "Linear Gradient"
@@ -1419,7 +1419,7 @@ msgstr "Турбулентность"
 #: ../src/modules/mod_noise/main.cpp:66
 #: ../src/modules/mod_noise/valuenode_random.cpp:182
 msgid "Random"
-msgstr ""
+msgstr "Случайно"
 
 #: ../src/modules/mod_noise/noise.cpp:56
 msgid "Noise Gradient"
@@ -1440,7 +1440,7 @@ msgstr ""
 #: ../src/synfig/valuenode_scale.cpp:226 ../src/synfig/valuenode_step.cpp:216
 #: ../src/synfig/valuenode_timeloop.cpp:123
 msgid "Link"
-msgstr ""
+msgstr "Связь"
 
 #: ../src/modules/mod_noise/valuenode_random.cpp:251
 #: ../src/modules/mod_particle/plant.cpp:441
@@ -1518,7 +1518,7 @@ msgstr "Развернуть"
 
 #: ../src/modules/mod_particle/plant.cpp:432
 msgid "If enabled, render the plant in the opposite direction"
-msgstr ""
+msgstr "Если включено, то растение визуализируется в обратном направлении."
 
 #: ../src/modules/mod_particle/plant.cpp:436 ../src/synfig/valuenode.cpp:172
 #: ../src/synfig/valuenode_duplicate.cpp:123
@@ -1528,7 +1528,7 @@ msgstr "Шаг"
 
 #: ../src/modules/mod_particle/plant.cpp:437
 msgid "Measure of the distance between points when rendering"
-msgstr "Единица измерения расстояния между точками при рендеринге"
+msgstr "Единица измерения расстояния между точками при визуализации"
 
 #: ../src/modules/mod_particle/plant.cpp:442
 msgid "Used to seed the pseudo-random number generator"
@@ -1707,7 +1707,7 @@ msgstr "Точка фокусировки"
 
 #: ../src/synfig/layer_pastecanvas.cpp:152
 msgid "Point to remain fixed when zooming"
-msgstr ""
+msgstr "Центр масштабирования"
 
 #: ../src/synfig/layer_pastecanvas.cpp:163
 msgid "Current Time"
@@ -2502,7 +2502,7 @@ msgstr ""
 
 #: ../src/synfig/valuenode.cpp:154 ../src/synfig/valuenode_sine.cpp:109
 msgid "Sine"
-msgstr ""
+msgstr "Синус"
 
 #: ../src/synfig/valuenode.cpp:156 ../src/synfig/valuenode_timedswap.cpp:267
 msgid "Timed Swap"
@@ -2516,11 +2516,11 @@ msgstr ""
 
 #: ../src/synfig/valuenode.cpp:158 ../src/synfig/valuenode_exp.cpp:105
 msgid "Exponential"
-msgstr ""
+msgstr "Экспонента"
 
 #: ../src/synfig/valuenode.cpp:159 ../src/synfig/valuenode_add.cpp:230
 msgid "Add"
-msgstr "Добавить"
+msgstr "Сумма"
 
 #: ../src/synfig/valuenode.cpp:160
 #: ../src/synfig/valuenode_blinecalctangent.cpp:175
@@ -2538,11 +2538,11 @@ msgstr "Диапазон"
 
 #: ../src/synfig/valuenode.cpp:164 ../src/synfig/valuenode_switch.cpp:173
 msgid "Switch"
-msgstr ""
+msgstr "Переключатель"
 
 #: ../src/synfig/valuenode.cpp:165 ../src/synfig/valuenode_cos.cpp:108
 msgid "Cos"
-msgstr ""
+msgstr "Косинус"
 
 #: ../src/synfig/valuenode.cpp:166
 msgid "aTan2"
@@ -2554,7 +2554,7 @@ msgstr ""
 
 #: ../src/synfig/valuenode.cpp:169 ../src/synfig/valuenode_reciprocal.cpp:182
 msgid "Reciprocal"
-msgstr ""
+msgstr "Обратное значени"
 
 #: ../src/synfig/valuenode.cpp:171 ../src/synfig/valuenode_integer.cpp:186
 msgid "From Integer"
@@ -2563,7 +2563,7 @@ msgstr "Текст"
 #: ../src/synfig/valuenode.cpp:173
 #: ../src/synfig/valuenode_blinecalcwidth.cpp:146
 msgid "BLine Width"
-msgstr ""
+msgstr "Толщина кривой"
 
 #: ../src/synfig/valuenode.cpp:175
 msgid "Vector Angle"
@@ -2587,7 +2587,7 @@ msgstr "Цвет градиента"
 
 #: ../src/synfig/valuenode.cpp:180
 msgid "Dot Product"
-msgstr ""
+msgstr "Скалярное произведение"
 
 #: ../src/synfig/valuenode.cpp:181 ../src/synfig/valuenode_timestring.cpp:118
 msgid "Time String"
@@ -2614,14 +2614,13 @@ msgid "Logarithm"
 msgstr "Логарифм"
 
 #: ../src/synfig/valuenode.cpp:188
-#, fuzzy
 msgid "Greyed"
-msgstr "Зеленый"
+msgstr "Заблокированный"
 
 #: ../src/synfig/valuenode.cpp:189 ../src/synfig/valuenode_pow.cpp:123
 #: ../src/synfig/valuenode_pow.cpp:200
 msgid "Power"
-msgstr ""
+msgstr "Степень"
 
 #: ../src/synfig/valuenode.cpp:190 ../src/synfig/valuenode_compare.cpp:190
 msgid "Compare"
@@ -2685,14 +2684,12 @@ msgid "Scalar"
 msgstr ""
 
 #: ../src/synfig/valuenode_and.cpp:116 ../src/synfig/valuenode_or.cpp:116
-#, fuzzy
 msgid "Link1"
-msgstr "Кривая"
+msgstr "Связь 1"
 
 #: ../src/synfig/valuenode_and.cpp:117 ../src/synfig/valuenode_or.cpp:117
-#, fuzzy
 msgid "Link2"
-msgstr "Кривая"
+msgstr "Связь 2"
 
 #: ../src/synfig/valuenode_and.cpp:161
 msgid "AND"
@@ -3381,7 +3378,7 @@ msgstr ""
 
 #: ../src/tool/main.cpp:1415
 msgid "Rendering..."
-msgstr "Рендеринг..."
+msgstr "Визуализация..."
 
 #: ../src/tool/main.cpp:1431
 msgid "Done."

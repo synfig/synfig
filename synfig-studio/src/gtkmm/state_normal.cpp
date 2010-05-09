@@ -231,7 +231,7 @@ StateNormal_Context::StateNormal_Context(CanvasView* canvas_view):
 	duck_dragger_->canvas_view_=get_canvas_view();
 
 	// Set up the tool options dialog
-	options_table.attach(*manage(new Gtk::Label(_("Normal Tool"))),	0, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(*manage(new Gtk::Label(_("Transform Tool"))),	0, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	options_table.attach(checkbutton_rotate,							0, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	options_table.attach(checkbutton_scale,							0, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 	options_table.attach(checkbutton_constrain,							0, 2, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
@@ -313,7 +313,7 @@ StateNormal_Context::refresh_tool_options()
 {
 	App::dialog_tool_options->clear();
 	App::dialog_tool_options->set_widget(options_table);
-	App::dialog_tool_options->set_local_name(_("Normal Tool"));
+	App::dialog_tool_options->set_local_name(_("Transform Tool"));
 	App::dialog_tool_options->set_name("normal");
 }
 

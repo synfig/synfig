@@ -1,10 +1,10 @@
-# 
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: Synfig Studio\n"
 "Report-Msgid-Bugs-To: http://synfig.org/Bugs\n"
 "POT-Creation-Date: 2009-10-07 04:46+0400\n"
-"PO-Revision-Date: 2009-12-24 19:21+0500\n"
+"PO-Revision-Date: 2010-05-09 14:57+0700\n"
 "Last-Translator: Alexandre Prokoudine <alexandre.prokoudine@gmail.com>\n"
 "Language-Team: Russian <gnome-cyr@lists.gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -55,7 +55,9 @@ msgstr "Участники проекта:"
 #. TRANSLATORS: change this to your name, separate multiple names with \n
 #: ../src/gtkmm/about.cpp:177
 msgid "translator-credits"
-msgstr "Александр Прокудин <alexandre.prokoudine@gmail.com>\nКонстантин Дмитриев <ksee.zelgadis@gmail.com>"
+msgstr ""
+"Александр Прокудин <alexandre.prokoudine@gmail.com>\n"
+"Константин Дмитриев <ksee.zelgadis@gmail.com>"
 
 #: ../src/gtkmm/about.cpp:204
 #, c-format
@@ -423,55 +425,55 @@ msgstr "Справочный диалог..."
 
 #: ../src/gtkmm/app.cpp:1231
 msgid "Init Tool Options..."
-msgstr "Параметры инструментов..."
+msgstr "Панель параметров инструментов..."
 
 #: ../src/gtkmm/app.cpp:1235
 msgid "Init History..."
-msgstr "История действий..."
+msgstr "Панель истории действий..."
 
 #: ../src/gtkmm/app.cpp:1239
 msgid "Init Canvases..."
-msgstr "Холсты..."
+msgstr "Панель холстов..."
 
 #: ../src/gtkmm/app.cpp:1243
 msgid "Init Keyframes..."
-msgstr "Ключевые кадры..."
+msgstr "Панель ключевых кадров..."
 
 #: ../src/gtkmm/app.cpp:1247
 msgid "Init Layers..."
-msgstr "Слои..."
+msgstr "Панель слоёв..."
 
 #: ../src/gtkmm/app.cpp:1251
 msgid "Init Params..."
-msgstr "Параметры..."
+msgstr "Панель свойств..."
 
 #: ../src/gtkmm/app.cpp:1255
 msgid "Init MetaData..."
-msgstr "Метаданные..."
+msgstr "Панель метаданных..."
 
 #: ../src/gtkmm/app.cpp:1259
 msgid "Init Children..."
-msgstr "Потомки..."
+msgstr "Панель потомков..."
 
 #: ../src/gtkmm/app.cpp:1263
 msgid "Init Info..."
-msgstr ""
+msgstr "Панель сведений..."
 
 #: ../src/gtkmm/app.cpp:1267
 msgid "Init Navigator..."
-msgstr "Навигатор..."
+msgstr "Панель навигатора..."
 
 #: ../src/gtkmm/app.cpp:1271
 msgid "Init Timetrack..."
-msgstr "Дорожка времени..."
+msgstr "Панель шкалы времени..."
 
 #: ../src/gtkmm/app.cpp:1275
 msgid "Init Curve Editor..."
-msgstr "Редактор кривой..."
+msgstr "Панель редактора кривых..."
 
 #: ../src/gtkmm/app.cpp:1279
 msgid "Init Layer Groups..."
-msgstr "Группы слоев..."
+msgstr "Панель групп..."
 
 #: ../src/gtkmm/app.cpp:1284
 msgid "Init Color Dialog..."
@@ -483,7 +485,7 @@ msgstr "Редактор градиентов..."
 
 #: ../src/gtkmm/app.cpp:1290
 msgid "Init DeviceTracker..."
-msgstr ""
+msgstr "Устройства ввода..."
 
 #: ../src/gtkmm/app.cpp:1293
 msgid "Init Tools..."
@@ -1170,7 +1172,8 @@ msgstr "Использовать только один поток"
 
 #: ../src/gtkmm/dialog_setup.cpp:83
 msgid "Restrict Real-Valued Ducks to Top Right Quadrant"
-msgstr "Ограничить верхним правым квадрантом уТочки, задающие числовое значением"
+msgstr ""
+"Ограничить верхним правым квадрантом уТочки, задающие числовое значением"
 
 #: ../src/gtkmm/dialog_setup.cpp:84
 msgid "Scale New Imported Images to Fit Canvas"
@@ -1474,7 +1477,8 @@ msgstr "Очистить историю"
 msgid ""
 "You will not be able to undo any changes that you have made!\n"
 "Are you sure you want to clear the undo stack?"
-msgstr "Вы не сможете отменить сделанные ранее изменения!\n"
+msgstr ""
+"Вы не сможете отменить сделанные ранее изменения!\n"
 "Уверены, что хотите очистить историю действий?"
 
 #: ../src/gtkmm/dock_history.cpp:284
@@ -1553,7 +1557,7 @@ msgstr "Создать новую запись в метаданных"
 
 #: ../src/gtkmm/dock_metadata.cpp:94
 msgid "Remove selected MetaData entry"
-msgstr ""
+msgstr "Удалить выбранную запись в метаданных"
 
 #: ../src/gtkmm/dock_navigator.cpp:496 ../src/gtkmm/iconcontroller.cpp:182
 msgid "Navigator"
@@ -1893,7 +1897,7 @@ msgstr ""
 
 #: ../src/gtkmm/instance.cpp:327
 msgid "File exists"
-msgstr ""
+msgstr "Файл существует"
 
 #: ../src/gtkmm/instance.cpp:482
 msgid "You must first add this composition to the repository"
@@ -2100,7 +2104,7 @@ msgstr "Значение"
 
 #: ../src/gtkmm/layertreestore.cpp:464
 msgid "Move Layers"
-msgstr ""
+msgstr "Переместить слои"
 
 #: ../src/gtkmm/main.cpp:74
 msgid "synfig studio is already running"
@@ -2518,7 +2522,7 @@ msgstr "Не удалось создать слой области"
 #: ../src/gtkmm/state_draw.cpp:1064 ../src/gtkmm/state_polygon.cpp:816
 #: ../src/gtkmm/state_rectangle.cpp:760 ../src/gtkmm/state_star.cpp:960
 msgid " Outline"
-msgstr "Контур"
+msgstr " Контур"
 
 #: ../src/gtkmm/state_bline.cpp:851 ../src/gtkmm/state_bline.cpp:874
 #: ../src/gtkmm/state_circle.cpp:960 ../src/gtkmm/state_circle.cpp:983
@@ -2530,11 +2534,11 @@ msgstr "Не удалось создать слой контура"
 
 #: ../src/gtkmm/state_bline.cpp:1259
 msgid "Unloop BLine"
-msgstr ""
+msgstr "Разомкнуть контур"
 
 #: ../src/gtkmm/state_bline.cpp:1263
 msgid "Loop BLine"
-msgstr ""
+msgstr "Замкнуть контур"
 
 #: ../src/gtkmm/state_bline.cpp:1268
 msgid "Delete Vertex"
@@ -2832,7 +2836,7 @@ msgstr "Радиус"
 
 #: ../src/gtkmm/state_smoothmove.cpp:204
 msgid "Smooth Move"
-msgstr ""
+msgstr "Деформация"
 
 #: ../src/gtkmm/state_star.cpp:440
 msgid "Regular Polygon"
@@ -3672,14 +3676,14 @@ msgstr "Дублируемый ключевой кадр"
 
 #: ../src/synfigapp/actions/keyframeduplicate.cpp:102
 msgid " (Duplicate)"
-msgstr ""
+msgstr " (Копия)"
 
 #: ../src/synfigapp/actions/keyframeduplicate.cpp:135
 #: ../src/synfigapp/actions/keyframeremove.cpp:120
 #: ../src/synfigapp/actions/keyframeset.cpp:377
 #: ../src/synfigapp/actions/keyframewaypointset.cpp:129
 msgid "Unable to find the given keyframe"
-msgstr ""
+msgstr "Невозможно найти указанный ключевой кадр"
 
 #: ../src/synfigapp/actions/keyframeremove.cpp:53
 msgid "Remove Keyframe"
@@ -3999,7 +4003,7 @@ msgstr ""
 
 #: ../src/synfigapp/actions/valuedescblinelink.cpp:59
 msgid "Link to BLine"
-msgstr ""
+msgstr "Привязать к кривой"
 
 #: ../src/synfigapp/actions/valuedescblinelink.cpp:82
 #: ../src/synfigapp/actions/valuedesclink.cpp:75
@@ -4105,7 +4109,7 @@ msgstr ""
 
 #: ../src/synfigapp/actions/valuedesclink.cpp:52
 msgid "Link"
-msgstr ""
+msgstr "Связь"
 
 #: ../src/synfigapp/actions/valuedesclink.cpp:112
 msgid "Cannot link two different exported values ('"
@@ -4203,7 +4207,8 @@ msgstr ""
 
 #: ../src/synfigapp/actions/valuedescset.cpp:542
 msgid "You must be in Animate-Editing-Mode to directly manipulate this value"
-msgstr "Для прямого редактирования этого значения необходимо быть в режиме анимации"
+msgstr ""
+"Для прямого редактирования этого значения необходимо быть в режиме анимации"
 
 #: ../src/synfigapp/actions/valuedescset.cpp:564
 msgid "Unsupported ValueDesc type"
