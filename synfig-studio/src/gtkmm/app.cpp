@@ -1391,8 +1391,16 @@ App::App(int *argc, char ***argv):
 
 		studio_init_cb.task(_("Done."));
 		studio_init_cb.amount_complete(10000,10000);
-
+        
+		// To avoid problems with some window managers and gtk >= 2.18
+		// we should show dock dialogs after the settings load.
+		// If dock dialogs are shown before the settings are loaded,
+		// the windows manager can act over it.
+		// See discussions here:
+		// * http://synfig.org/forums/viewtopic.php?f=1&t=1131&st=0&sk=t&sd=a&start=30
+		// * http://synfig.org/forums/viewtopic.php?f=15&t=1062
 		dock_manager->show_all_dock_dialogs();
+		
 		toolbox->present();
 	}
 	catch(String x)
