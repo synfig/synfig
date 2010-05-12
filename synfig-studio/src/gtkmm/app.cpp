@@ -1391,7 +1391,7 @@ App::App(int *argc, char ***argv):
 
 		studio_init_cb.task(_("Done."));
 		studio_init_cb.amount_complete(10000,10000);
-        
+
 		// To avoid problems with some window managers and gtk >= 2.18
 		// we should show dock dialogs after the settings load.
 		// If dock dialogs are shown before the settings are loaded,
@@ -1400,7 +1400,7 @@ App::App(int *argc, char ***argv):
 		// * http://synfig.org/forums/viewtopic.php?f=1&t=1131&st=0&sk=t&sd=a&start=30
 		// * http://synfig.org/forums/viewtopic.php?f=15&t=1062
 		dock_manager->show_all_dock_dialogs();
-		
+
 		toolbox->present();
 	}
 	catch(String x)
@@ -1765,16 +1765,86 @@ App::load_settings()
 void
 App::reset_initial_window_configuration()
 {
+	Glib::RefPtr<Gdk::Display> display(Gdk::Display::get_default());
+	Glib::RefPtr<const Gdk::Screen> screen(display->get_default_screen());
+	Gdk::Rectangle rect;
+	// A proper way to obtain the primary monitor is to use the
+	// Gdk::Screen::get_primary_monitor () const member. But as it
+	// was introduced in gtkmm 2.20 I assume that the monitor 0 is the
+	// primary one.
+	screen->get_monitor_geometry(0,rect);
+	synfig::info("x=%d, y=%d, w=%d, h=%d",
+		rect.get_x(),rect.get_y(), rect.get_width(), rect.get_height());
+#define hpanel_width 79
+#define hpanel_height 25
+#define vpanel_width 20
+#define vpanel_height 100
+#define vdock 20
+#define hdock 20
+
+/* percentages referred to width or height of the screen
+ *---------------------------------------------------------------------*
+ *    t   |                                                |
+ *    o   |                                                |
+ *    o   |                                                |vdock%
+ *    l   |                                                |
+ *    b   |                                                |------------
+ *    o   |                                                |
+ *    x   |                                                |vdock%
+ * --------                                                |
+ *                                                         |
+ *                                                         |------------
+ *                                                         |
+ *                                                         |vdock%
+ *                                                         |
+ *                                                         |
+ *-----hdock%----------------------------------------------|------------
+ *             |                                           |
+ *             |                                           |vdock%
+ *             |                                           |
+ *             |                                           |
+ * --------------------------------------------------------------------*
+*/
+// Vertical Panel
+	int v_xpos=rect.get_x() + rect.get_width()*(1-vpanel_width/100);
+	int v_xsize=rect.get_width()*vpanel_width/100;
+	int v_ypos=rect.get_y();
+	int v_ysize=rect.get_height()*vpanel_height/100;
+	std::string v_pos(strprintf("%d %d", v_xpos, v_ypos));
+	std::string v_size(strprintf("%d %d", v_xsize, v_ysize));
+	synfig::info(v_pos);
+	synfig::info(v_size);
+// Horizontal Panel
+	int h_xpos=rect.get_x();
+	int h_xsize=rect.get_width()*hpanel_width/100;
+	int h_ypos=rect.get_y()+ rect.get_height()*(1-hpanel_height/100);;
+	int h_ysize=rect.get_height()*hpanel_height/100;
+	std::string h_pos(strprintf("%d %d", h_xpos, h_ypos));
+	std::string h_size(strprintf("%d %d", h_xsize, h_ysize));
+	int v_dock = rect.get_height()*vdock/100;
+	int h_dock = rect.get_width()*hdock/100;
+//Contents size
+	std::string v_contents(strprintf("%d %d %d", v_dock, v_dock, v_dock));
+	std::string h_contents(strprintf("%d", h_dock));
+// Tool Box position
+	std::string tbox_pos(strprintf("%d %d", rect.get_x(), rect.get_y()));
+
 	synfigapp::Main::settings().set_value("dock.dialog.1.comp_selector","1");
 	synfigapp::Main::settings().set_value("dock.dialog.1.contents","navigator - info pal_edit pal_browse - tool_options history canvases - layers groups");
-	synfigapp::Main::settings().set_value("dock.dialog.1.contents_size","225 167 207");
-	synfigapp::Main::settings().set_value("dock.dialog.1.pos","1057 32");
-	synfigapp::Main::settings().set_value("dock.dialog.1.size","208 1174");
+	synfigapp::Main::settings().set_value("dock.dialog.1.contents_size",v_contents);
+	synfigapp::Main::settings().set_value("dock.dialog.1.pos",v_pos);
+	synfigapp::Main::settings().set_value("dock.dialog.1.size",v_size);
 	synfigapp::Main::settings().set_value("dock.dialog.2.comp_selector","0");
 	synfigapp::Main::settings().set_value("dock.dialog.2.contents","params children keyframes | timetrack curves meta_data");
-	synfigapp::Main::settings().set_value("dock.dialog.2.contents_size","263");
-	synfigapp::Main::settings().set_value("dock.dialog.2.pos","0 973");
-	synfigapp::Main::settings().set_value("dock.dialog.2.size","1045 235");
+	synfigapp::Main::settings().set_value("dock.dialog.2.contents_size",h_contents);
+	synfigapp::Main::settings().set_value("dock.dialog.2.pos",h_pos);
+	synfigapp::Main::settings().set_value("dock.dialog.2.size",h_size);
+	synfigapp::Main::settings().set_value("window.toolbox.pos",tbox_pos);
+}
+
+void
+App::reset_initial_preferences()
+{
 	synfigapp::Main::settings().set_value("pref.distance_system","pt");
 	synfigapp::Main::settings().set_value("pref.use_colorspace_gamma","1");
 #ifdef SINGLE_THREADED
@@ -1788,7 +1858,7 @@ App::reset_initial_window_configuration()
 	synfigapp::Main::settings().set_value("pref.predefined_size",DEFAULT_PREDEFINED_SIZE);
 	synfigapp::Main::settings().set_value("pref.preferred_fps","24.0");
 	synfigapp::Main::settings().set_value("pref.predefined_fps",DEFAULT_PREDEFINED_FPS);
-	synfigapp::Main::settings().set_value("window.toolbox.pos","4 4");
+
 }
 
 bool

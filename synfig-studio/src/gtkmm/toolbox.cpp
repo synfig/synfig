@@ -254,6 +254,8 @@ Toolbox::Toolbox():
 		sigc::ptr_fun(&show_dialog_input)));
 	filemenu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Setup..."),
 		sigc::ptr_fun(&studio::App::show_setup)));
+	filemenu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Reset to default Setup values"),
+		sigc::ptr_fun(&studio::App::reset_initial_preferences)));
 
 	filemenu->items().push_back(Gtk::Menu_Helpers::SeparatorElem());
 	filemenu->items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::StockID(Gtk::Stock::QUIT),
