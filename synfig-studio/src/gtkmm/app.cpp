@@ -1773,8 +1773,6 @@ App::reset_initial_window_configuration()
 	// was introduced in gtkmm 2.20 I assume that the monitor 0 is the
 	// primary one.
 	screen->get_monitor_geometry(0,rect);
-	synfig::info("x=%d, y=%d, w=%d, h=%d",
-		rect.get_x(),rect.get_y(), rect.get_width(), rect.get_height());
 #define hpanel_width 79
 #define hpanel_height 25
 #define vpanel_width 20
@@ -1812,8 +1810,6 @@ App::reset_initial_window_configuration()
 	int v_ysize=rect.get_height()*vpanel_height/100;
 	std::string v_pos(strprintf("%d %d", v_xpos, v_ypos));
 	std::string v_size(strprintf("%d %d", v_xsize, v_ysize));
-	synfig::info(v_pos);
-	synfig::info(v_size);
 // Horizontal Panel
 	int h_xpos=rect.get_x();
 	int h_xsize=rect.get_width()*hpanel_width/100;
