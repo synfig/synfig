@@ -78,6 +78,8 @@ using namespace studio;
 #	define IMAGE_EXT	"png"
 #endif
 
+#define NUMBER_OF_SPLASH_SCREEN 2
+
 /* === G L O B A L S ======================================================= */
 
 /* === P R O C E D U R E S ================================================= */
@@ -178,7 +180,10 @@ Splash::Splash():
 
 	// Create the splash image
 	Gtk::Image* splash_image = manage(new class Gtk::Image());
-	splash_image->set(imagepath+"splash_screen."IMAGE_EXT);
+	srand(time(NULL));
+	const float ran = rand()/float(RAND_MAX);
+	int number =1+int(ran*(NUMBER_OF_SPLASH_SCREEN));
+	splash_image->set(imagepath+"splash_screen"+strprintf("%d",number)+"."IMAGE_EXT);
 	splash_image->set_alignment(0.5,0.5);
 	splash_image->set_padding(0,0);
 
