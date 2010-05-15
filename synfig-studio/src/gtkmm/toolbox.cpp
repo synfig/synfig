@@ -316,17 +316,17 @@ Toolbox::Toolbox():
 	// Create the file button cluster
 	Gtk::Table *file_buttons=manage(new class Gtk::Table());
 
-	file_buttons->attach(*button_new,      0,1, 0,1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
-	file_buttons->attach(*button_open,     1,2, 0,1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
-	file_buttons->attach(*button_save,     2,3, 0,1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
-	file_buttons->attach(*button_saveas,   3,4, 0,1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
-	file_buttons->attach(*button_save_all, 4,5, 0,1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
+	file_buttons->attach(*button_new,      0,1, 0,1, Gtk::EXPAND, Gtk::EXPAND, 0, 0);
+	file_buttons->attach(*button_open,     1,2, 0,1, Gtk::EXPAND, Gtk::EXPAND, 0, 0);
+	file_buttons->attach(*button_save,     2,3, 0,1, Gtk::EXPAND, Gtk::EXPAND, 0, 0);
+	file_buttons->attach(*button_saveas,   3,4, 0,1, Gtk::EXPAND, Gtk::EXPAND, 0, 0);
+	file_buttons->attach(*button_save_all, 4,5, 0,1, Gtk::EXPAND, Gtk::EXPAND, 0, 0);
 
-	file_buttons->attach(*button_undo,     0,1, 1,2, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
-	file_buttons->attach(*button_redo,     1,2, 1,2, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
-	file_buttons->attach(*button_setup,    2,3, 1,2, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
-	file_buttons->attach(*button_about,    3,4, 1,2, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
-	file_buttons->attach(*button_help,     4,5, 1,2, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
+	file_buttons->attach(*button_undo,     0,1, 1,2, Gtk::EXPAND, Gtk::EXPAND, 0, 0);
+	file_buttons->attach(*button_redo,     1,2, 1,2, Gtk::EXPAND, Gtk::EXPAND, 0, 0);
+	file_buttons->attach(*button_setup,    2,3, 1,2, Gtk::EXPAND, Gtk::EXPAND, 0, 0);
+	file_buttons->attach(*button_about,    3,4, 1,2, Gtk::EXPAND, Gtk::EXPAND, 0, 0);
+	file_buttons->attach(*button_help,     4,5, 1,2, Gtk::EXPAND, Gtk::EXPAND, 0, 0);
 
 	file_buttons->show();
 
@@ -515,7 +515,7 @@ Toolbox::add_state(const Smach::state_base *state)
 	int row=state_button_map.size()/5;
 	int col=state_button_map.size()%5;
 
-	tool_table->attach(*button,col,col+1,row,row+1, Gtk::SHRINK, Gtk::SHRINK, 0, 0);
+	tool_table->attach(*button,col,col+1,row,row+1, Gtk::EXPAND, Gtk::EXPAND, 0, 0);
 
 	state_button_map[name]=button;
 
