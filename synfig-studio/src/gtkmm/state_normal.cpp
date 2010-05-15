@@ -193,6 +193,17 @@ StateNormal::~StateNormal()
 
 void StateNormal_Context::refresh_cursor()
 {
+	// Check the current state and return when applicable
+	synfig::String sname;
+	sname=get_canvas_view()->get_smach().get_state_name();
+	if (sname=="smooth_move"||sname=="zoom"||sname=="width" ||
+		sname=="text"||sname=="stroke"||sname=="star"||sname=="sketch"||
+		sname=="scale"||sname=="zoom"||sname=="rotate"||sname=="rectangle"||
+		sname=="polygon"||sname=="gradient"||sname=="fill"||sname=="draw"||
+		sname=="circle")
+			return;
+
+	// Change the cursor based on key flags
 	if(get_rotate_flag() && !get_scale_flag())
 	{
 		get_work_area()->set_cursor(Gdk::EXCHANGE);
@@ -208,6 +219,14 @@ void StateNormal_Context::refresh_cursor()
 		get_work_area()->set_cursor(Gdk::CROSSHAIR);
 		return;
 	}
+	// If we are in BLine state and there is not key pressed return to
+	// the bline cursor.
+	if (sname=="bline")
+	{
+		get_work_area()->set_cursor(Gdk::CROSSHAIR);
+		return;
+	}
+	// Default cursor for Transform tool
 	get_work_area()->set_cursor(Gdk::ARROW);
 
 }
