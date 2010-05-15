@@ -481,7 +481,7 @@ AsyncRenderer::start_()
 #ifdef SINGLE_THREADED
 		if (single_threaded())
 		{
-			synfig::info("%s:%d rendering in the same thread", __FILE__, __LINE__);
+			//synfig::info("%s:%d rendering in the same thread", __FILE__, __LINE__);
 			target->signal_progress().connect(sigc::mem_fun(this,&AsyncRenderer::rendering_progress));
 			render_thread = (Glib::Thread*)1;
 			render_target();
