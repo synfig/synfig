@@ -1818,8 +1818,8 @@ App::reset_initial_window_configuration()
 	std::string h_pos(strprintf("%d %d", h_xpos, h_ypos));
 	std::string h_size(strprintf("%d %d", h_xsize, h_ysize));
 	int v_dock1 = rect.get_height()*vdock*0.8/100.0;
-	int v_dock2 = rect.get_height()*vdock/100.0;
-	int v_dock3 = rect.get_height()*vdock/100.0;
+	int v_dock2 = rect.get_height()*vdock*0.6/100.0;
+	int v_dock3 = rect.get_height()*vdock*1.1/100.0;
 	int h_dock = rect.get_width()*hdock/100.0;
 //Contents size
 	std::string v_contents(strprintf("%d %d %d", v_dock1, v_dock2, v_dock3));
