@@ -137,6 +137,7 @@ About::About()
 	authors.push_back("");
 	authors.push_back("Adrian Winchell (SnapSilverlight)");
 	authors.push_back("Andreas Jochens");
+	authors.puch_back("Brendon Higgins");
 	authors.push_back("Carlos López González (genete)");
 	authors.push_back("Carlos A. Sosa Navarro");
 	authors.push_back("Chris Moore (dooglus)");
@@ -152,6 +153,7 @@ About::About()
 	authors.push_back("IL'dar AKHmetgaleev (AkhIL)");
 	authors.push_back("Konstantin Dmitriev (zelgadis)");
 	authors.push_back("Luka Pravica");
+	authors.push_back("Nikita Kitaev (nikitakit)");
 	authors.push_back("Martin Michlmayr (tbm)");
 	authors.push_back("Miguel Gea Milvaques (xerakko)");
 	authors.push_back("Paul Wise (pabs)");
@@ -163,6 +165,7 @@ About::About()
 
 	std::vector<Glib::ustring> artists;
 	artists.push_back("Aurore D (rore)");
+	artists.push_back("Bertrand Grégoire (berteh)");
 	artists.push_back("Carlos López González (genete)");
 	artists.push_back("Chris Norman (pixelgeek)");
 	artists.push_back("Daniel Hornung (rubikcube)");
@@ -170,7 +173,10 @@ About::About()
 	artists.push_back("Franco Iacomella (Yaco)");
 	artists.push_back("Gerald Young (Yoyobuae)");
 	artists.push_back("Henrique Lopes Barone");
+	artists.push_back("Konstantin Dmitriev (zelgadis)");
+	artists.push_back("Madeleine Crubellier (mad0)");
 	artists.push_back("Robert B. Quattlebaum Jr. (darco)");
+	artists.push_back("Thimotee Guiet (satrip)");
 
 	set_artists(artists);
 
