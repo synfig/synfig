@@ -1826,7 +1826,7 @@ App::reset_initial_window_configuration()
 	std::string h_contents(strprintf("%d", h_dock));
 // Tool Box position
 	std::string tbox_pos(strprintf("%d %d", rect.get_x(), rect.get_y()));
-
+/*
 	synfig::info("tool box pos: %s", tbox_pos.c_str());
 	synfig::info("v_contents sizes: %s", v_contents.c_str());
 	synfig::info("v_pos: %s", v_pos.c_str());
@@ -1834,7 +1834,7 @@ App::reset_initial_window_configuration()
 	synfig::info("h_contents sizes: %s", h_contents.c_str());
 	synfig::info("h_pos: %s", h_pos.c_str());
 	synfig::info("h_sizes: %s", h_size.c_str());
-
+*/
 	synfigapp::Main::settings().set_value("dock.dialog.1.comp_selector","1");
 	synfigapp::Main::settings().set_value("dock.dialog.1.contents","navigator - info pal_edit pal_browse - tool_options history canvases - layers groups");
 	synfigapp::Main::settings().set_value("dock.dialog.1.contents_size",v_contents);
