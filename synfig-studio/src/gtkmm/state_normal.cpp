@@ -121,16 +121,19 @@ class studio::StateNormal_Context : public sigc::trackable
 
 public:
 
+	void refresh_cursor();
+
 	bool get_rotate_flag()const { if(duck_dragger_) return duck_dragger_->rotate; else return false; }
-	void set_rotate_flag(bool x) { if(duck_dragger_ && x!=duck_dragger_->rotate) duck_dragger_->rotate=x; }
+	void set_rotate_flag(bool x) { if(duck_dragger_ && x!=duck_dragger_->rotate) 
+		                               {duck_dragger_->rotate=x; refresh_cursor();} }
 
 	bool get_scale_flag()const { if(duck_dragger_) return duck_dragger_->scale; else return false; }
-	void set_scale_flag(bool x) { if(duck_dragger_ && x!=duck_dragger_->scale) duck_dragger_->scale=x; }
+	void set_scale_flag(bool x) { if(duck_dragger_ && x!=duck_dragger_->scale)
+		                              {duck_dragger_->scale=x; refresh_cursor();} }
 
 	bool get_constrain_flag()const { if(duck_dragger_) return duck_dragger_->constrain; else return false; }
-	void set_constrain_flag(bool x) { if(duck_dragger_ && x!=duck_dragger_->constrain) duck_dragger_->constrain=x; }
-
-	void refresh_cursor();
+	void set_constrain_flag(bool x) { if(duck_dragger_ && x!=duck_dragger_->constrain)
+		                                  {duck_dragger_->constrain=x; refresh_cursor();} }
 
 	StateNormal_Context(CanvasView* canvas_view);
 
@@ -187,11 +190,7 @@ void StateNormal_Context::refresh_cursor()
 	// Check the current state and return when applicable
 	synfig::String sname;
 	sname=get_canvas_view()->get_smach().get_state_name();
-	if (sname=="smooth_move"||sname=="zoom"||sname=="width" ||
-		sname=="text"||sname=="stroke"||sname=="star"||sname=="sketch"||
-		sname=="scale"||sname=="zoom"||sname=="rotate"||sname=="rectangle"||
-		sname=="polygon"||sname=="gradient"||sname=="fill"||sname=="draw"||
-		sname=="circle")
+	if (sname!="normal")
 			return;
 
 	// Change the cursor based on key flags
@@ -210,13 +209,7 @@ void StateNormal_Context::refresh_cursor()
 		get_work_area()->set_cursor(Gdk::CROSSHAIR);
 		return;
 	}
-	// If we are in BLine state and there is not key pressed return to
-	// the bline cursor.
-	if (sname=="bline")
-	{
-		get_work_area()->set_cursor(Gdk::CROSSHAIR);
-		return;
-	}
+
 	// Default cursor for Transform tool
 	get_work_area()->set_cursor(Gdk::ARROW);
 
@@ -308,7 +301,7 @@ StateNormal_Context::~StateNormal_Context()
 DuckDrag_Combo::DuckDrag_Combo():
 	scale(false),
 	rotate(false),
-	constrain(false) // Lock aspect for scale; smooth move for translate
+	constrain(false) // Lock aspect for scale
 {
 }
 
