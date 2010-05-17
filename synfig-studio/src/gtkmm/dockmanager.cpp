@@ -162,7 +162,7 @@ public:
 				int x,y;
 				if(!strscanf(value,"%d %d",&x, &y))
 					return false;
-				synfig::info("dock_manager. move to: %d, %d", x,y);
+				//synfig::info("dock_manager. move to: %d, %d", x,y);
 				dock_dialog.move(x,y);
 				return true;
 			}
@@ -171,7 +171,7 @@ public:
 				int x,y;
 				if(!strscanf(value,"%d %d",&x, &y))
 					return false;
-				synfig::info("dock_manager. size to: %d, %d", x,y);
+				//synfig::info("dock_manager. size to: %d, %d", x,y);
 				dock_dialog.set_default_size(x,y);
 				dock_dialog.resize(x,y);
 				return true;
