@@ -137,7 +137,7 @@ About::About()
 	authors.push_back("");
 	authors.push_back("Adrian Winchell (SnapSilverlight)");
 	authors.push_back("Andreas Jochens");
-	authors.puch_back("Brendon Higgins");
+	authors.push_back("Brendon Higgins");
 	authors.push_back("Carlos López González (genete)");
 	authors.push_back("Carlos A. Sosa Navarro");
 	authors.push_back("Chris Moore (dooglus)");
