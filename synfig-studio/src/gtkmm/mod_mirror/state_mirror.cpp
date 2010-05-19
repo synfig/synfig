@@ -217,7 +217,7 @@ StateMirror_Context::key_event(GdkEventKey *event)
 	if (event->keyval==GDK_Shift_L || event->keyval==GDK_Shift_R )
 	{
 		set_axis(get_axis()==AXIS_X ? AXIS_Y:AXIS_X);
-		get_work_area()->set_cursor(get_axis() == AXIS_X?Gdk::SB_H_DOUBLE_ARROW:Gdk::SB_V_DOUBLE_ARROW);
+		update_axes();
 	}
 
 	return false; //Pass on the event to other handlers, just in case
