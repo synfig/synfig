@@ -124,7 +124,7 @@ public:
 	void refresh_cursor();
 
 	bool get_rotate_flag()const { if(duck_dragger_) return duck_dragger_->rotate; else return false; }
-	void set_rotate_flag(bool x) { if(duck_dragger_ && x!=duck_dragger_->rotate) 
+	void set_rotate_flag(bool x) { if(duck_dragger_ && x!=duck_dragger_->rotate)
 		                               {duck_dragger_->rotate=x; refresh_cursor();} }
 
 	bool get_scale_flag()const { if(duck_dragger_) return duck_dragger_->scale; else return false; }
@@ -441,8 +441,12 @@ DuckDrag_Combo::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector)
 			}
 		else
 		{
-			//vect[0]=vect[1]=vect.mag()*0.707106781;
-			Real amount(vect.mag()/(drag_offset-center).mag());
+			Real amount;
+			if((drag_offset-center).mag() < EPSILON)
+				amount = 1;
+			else
+				amount = vect.mag()/(drag_offset-center).mag();
+
 			vect[0]=vect[1]=amount;
 		}
 
@@ -473,6 +477,7 @@ DuckDrag_Combo::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector)
 			p+=center;
 			(*iter)->set_trans_point(p, time);
 		}
+
 	}
 
 	// then patch up the tangents for the vertices we've moved
