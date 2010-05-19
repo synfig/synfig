@@ -13,7 +13,8 @@ http://synfig.org/wiki/Releases
   * New italian translation.
   * Automatic build script for linux system. Please report success of usage.
   * New parameters for Motion Blur layer. Now allows linear and constant interpolation too.
-  * Updated Russian translation
+  * Updated Russian, French and Spanish translation
+  * New Italian translation
 
 
 

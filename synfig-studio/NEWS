@@ -20,10 +20,12 @@ http://synfig.org/wiki/Releases
   * Repack rulers and caret menu to get less space.
   * New italian translation.
   * New parameters for Motion Blur layer. Now allows linear and constant interpolation too.
-  * New icons for actions and layers.
-  * Remove old hacks of instances and dock dialogs windows. Looking forward for a bug fix.
-  * Updated Russian translation.
+  * New icons for actions and layers. Thanks to several authors.
+  * Fixed feature that reset windows docks to default size and position.
+  * Separate the reset setup values to original values feature in a new menu entry.
+  * Updated Russian, French and Spanish translation.
   * Automatic build script for linux system. Please report success of usage.
+  * Update Help menu entries according to new website.
 
  0.62.00 (git tag: "synfigstudio-0.62.00") - October 12, 2009 - Bug fixes, major features.
 
