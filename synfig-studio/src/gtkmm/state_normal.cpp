@@ -113,8 +113,6 @@ class studio::StateNormal_Context : public sigc::trackable
 {
 	CanvasView* canvas_view_;
 
-	synfigapp::Settings& settings;
-
 	etl::handle<DuckDrag_Combo> duck_dragger_;
 
 	Gtk::Table options_table;
@@ -143,9 +141,6 @@ public:
 	etl::handle<synfigapp::CanvasInterface> get_canvas_interface()const{return canvas_view_->canvas_interface();}
 	synfig::Canvas::Handle get_canvas()const{return canvas_view_->get_canvas();}
 	WorkArea * get_work_area()const{return canvas_view_->get_work_area();}
-
-	void load_settings();
-	void save_settings();
 
 	Smach::event_result event_stop_handler(const Smach::event& x);
 	Smach::event_result event_refresh_handler(const Smach::event& x);
@@ -215,39 +210,8 @@ void StateNormal_Context::refresh_cursor()
 
 }
 
-void
-StateNormal_Context::load_settings()
-{
-	String value;
-
-	if(settings.get_value("normal.rotate",value) && value=="1")
-		set_rotate_flag(true);
-	else
-		set_rotate_flag(false);
-
-	if(settings.get_value("normal.scale",value) && value=="1")
-		set_scale_flag(true);
-	else
-		set_scale_flag(false);
-
-	if(settings.get_value("normal.constrain",value) && value=="1")
-		set_constrain_flag(true);
-	else
-		set_constrain_flag(false);
-
-}
-
-void
-StateNormal_Context::save_settings()
-{
-	settings.set_value("normal.rotate",get_rotate_flag()?"1":"0");
-	settings.set_value("normal.scale",get_scale_flag()?"1":"0");
-	settings.set_value("normal.constrain",get_constrain_flag()?"1":"0");
-}
-
 StateNormal_Context::StateNormal_Context(CanvasView* canvas_view):
 	canvas_view_(canvas_view),
-	settings(synfigapp::Main::get_selected_input_device()->settings()),
 	duck_dragger_(new DuckDrag_Combo())
 {
 	duck_dragger_->canvas_view_=get_canvas_view();
@@ -271,8 +235,6 @@ StateNormal_Context::StateNormal_Context(CanvasView* canvas_view):
 //	get_work_area()->reset_cursor();
 
 	App::toolbox->refresh();
-
-	load_settings();
 }
 
 void
@@ -288,8 +250,6 @@ StateNormal_Context::refresh_tool_options()
 
 StateNormal_Context::~StateNormal_Context()
 {
-	save_settings();
-
 	get_work_area()->clear_duck_dragger();
 	get_work_area()->reset_cursor();
 
