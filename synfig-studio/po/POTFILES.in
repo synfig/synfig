@@ -47,6 +47,8 @@ src/gtkmm/dialog_setup.cpp
 src/gtkmm/dialog_setup.h
 src/gtkmm/dialog_soundselect.cpp
 src/gtkmm/dialog_soundselect.h
+src/gtkmm/dialog_targetparam.cpp
+src/gtkmm/dialog_targetparam.h
 src/gtkmm/dialog_tooloptions.cpp
 src/gtkmm/dialog_tooloptions.h
 src/gtkmm/dialog_waypoint.cpp
