@@ -10,8 +10,8 @@ msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: http://synfig.org/Bugs\n"
 "POT-Creation-Date: 2010-05-19 19:08+0200\n"
-"PO-Revision-Date: 2010-05-17 20:14+0200\n"
-"Last-Translator:  <aurore.d@gmail.com>\n"
+"PO-Revision-Date: 2010-05-21 11:26+0100\n"
+"Last-Translator: berteh <berteh@hotmail.com>\n"
 "Language-Team:  <en@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -48,7 +48,9 @@ msgstr "Contributeurs :"
 #. TRANSLATORS: change this to your name, separate multiple names with \n
 #: src/gtkmm/about.cpp:184
 msgid "translator-credits"
-msgstr "Aurore D. (rore)"
+msgstr ""
+"Aurore D. (rore),\n"
+"Bertrand G. (berteh)"
 
 #: src/gtkmm/about.cpp:211
 #, c-format
@@ -109,11 +111,13 @@ msgstr "Synfig %s\n"
 msgid "GTK+ %d.%d.%d"
 msgstr "GTK+ %d.%d.%d"
 
-#: src/gtkmm/app.cpp:734 src/gtkmm/toolbox.cpp:286
+#: src/gtkmm/app.cpp:734
+#: src/gtkmm/toolbox.cpp:286
 msgid "_File"
 msgstr "_Fichier"
 
-#: src/gtkmm/app.cpp:735 src/gtkmm/canvasview.cpp:3770
+#: src/gtkmm/app.cpp:735
+#: src/gtkmm/canvasview.cpp:3770
 msgid "_Edit"
 msgstr "_Édition"
 
@@ -141,19 +145,22 @@ msgstr "Qualité de l'aperçu"
 msgid "Low-Res Pixel Size"
 msgstr "Taille de pixel en basse résolution"
 
-#: src/gtkmm/app.cpp:742 src/gtkmm/canvasview.cpp:2532
+#: src/gtkmm/app.cpp:742
+#: src/gtkmm/canvasview.cpp:2532
 #: src/synfigapp/actions/layeradd.cpp:82
 msgid "New Layer"
 msgstr "Nouveau calque"
 
-#: src/gtkmm/app.cpp:743 src/synfigapp/actions/keyframeduplicate.cpp:79
+#: src/gtkmm/app.cpp:743
+#: src/synfigapp/actions/keyframeduplicate.cpp:79
 #: src/synfigapp/actions/keyframeremove.cpp:78
 #: src/synfigapp/actions/keyframesetdelta.cpp:79
 #: src/synfigapp/actions/keyframewaypointset.cpp:78
 msgid "Keyframe"
 msgstr "Image Clé"
 
-#: src/gtkmm/app.cpp:744 src/gtkmm/iconcontroller.cpp:202
+#: src/gtkmm/app.cpp:744
+#: src/gtkmm/iconcontroller.cpp:202
 #: src/synfigapp/actions/groupaddlayers.cpp:78
 #: src/synfigapp/actions/groupremove.cpp:72
 msgid "Group"
@@ -167,20 +174,24 @@ msgstr "Outil"
 msgid "Toolbox"
 msgstr "Boîte à outils"
 
-#: src/gtkmm/app.cpp:763 src/gtkmm/keyframeactionmanager.cpp:239
+#: src/gtkmm/app.cpp:763
+#: src/gtkmm/keyframeactionmanager.cpp:239
 msgid "Keyframe Properties"
 msgstr "Propriétés de l'image clé"
 
-#: src/gtkmm/app.cpp:774 src/gtkmm/canvasview.cpp:1461
+#: src/gtkmm/app.cpp:774
+#: src/gtkmm/canvasview.cpp:1461
 msgid "Import"
 msgstr "Importer"
 
-#: src/gtkmm/app.cpp:775 src/gtkmm/canvasview.cpp:1464
+#: src/gtkmm/app.cpp:775
+#: src/gtkmm/canvasview.cpp:1464
 #: src/gtkmm/render.cpp:174
 msgid "Render"
 msgstr "Rendu"
 
-#: src/gtkmm/app.cpp:776 src/gtkmm/canvasview.cpp:1467
+#: src/gtkmm/app.cpp:776
+#: src/gtkmm/canvasview.cpp:1467
 #: src/gtkmm/dialog_preview.cpp:171
 msgid "Preview"
 msgstr "Aperçu"
@@ -189,11 +200,13 @@ msgstr "Aperçu"
 msgid "Preview Dialog"
 msgstr "Dialogue d'aperçu"
 
-#: src/gtkmm/app.cpp:778 src/gtkmm/canvasview.cpp:1470
+#: src/gtkmm/app.cpp:778
+#: src/gtkmm/canvasview.cpp:1470
 msgid "Sound File"
 msgstr "Fichier audio"
 
-#: src/gtkmm/app.cpp:779 src/gtkmm/canvasoptions.cpp:151
+#: src/gtkmm/app.cpp:779
+#: src/gtkmm/canvasoptions.cpp:151
 #: src/gtkmm/canvasview.cpp:1473
 msgid "Options"
 msgstr "Options"
@@ -202,55 +215,68 @@ msgstr "Options"
 msgid "Close View"
 msgstr "Fermer la vue"
 
-#: src/gtkmm/app.cpp:781 src/gtkmm/canvasview.cpp:1479
+#: src/gtkmm/app.cpp:781
+#: src/gtkmm/canvasview.cpp:1479
 msgid "Close Document"
 msgstr "Fermer le document"
 
-#: src/gtkmm/app.cpp:790 src/gtkmm/canvasview.cpp:1494
+#: src/gtkmm/app.cpp:790
+#: src/gtkmm/canvasview.cpp:1494
 msgid "Select All Ducks"
 msgstr "Sélectionner toutes les poignées"
 
-#: src/gtkmm/app.cpp:791 src/gtkmm/canvasview.cpp:1498
+#: src/gtkmm/app.cpp:791
+#: src/gtkmm/canvasview.cpp:1498
 msgid "Unselect All Ducks"
 msgstr "Désélectionner toutes les poignées"
 
-#: src/gtkmm/app.cpp:792 src/gtkmm/canvasview.cpp:1502
+#: src/gtkmm/app.cpp:792
+#: src/gtkmm/canvasview.cpp:1502
 msgid "Select All Layers"
 msgstr "Sélectionner tous les calques"
 
-#: src/gtkmm/app.cpp:793 src/gtkmm/canvasview.cpp:1506
+#: src/gtkmm/app.cpp:793
+#: src/gtkmm/canvasview.cpp:1506
 msgid "Unselect All Layers"
 msgstr "Désélectionner tous les calques"
 
-#: src/gtkmm/app.cpp:794 src/gtkmm/canvasproperties.cpp:197
+#: src/gtkmm/app.cpp:794
+#: src/gtkmm/canvasproperties.cpp:197
 msgid "Properties"
 msgstr "Propriétés"
 
-#: src/gtkmm/app.cpp:796 src/gtkmm/canvasview.cpp:1672
+#: src/gtkmm/app.cpp:796
+#: src/gtkmm/canvasview.cpp:1672
 msgid "Show Position Ducks"
 msgstr "Afficher les poignées de position"
 
-#: src/gtkmm/app.cpp:797 src/gtkmm/canvasview.cpp:1674
+#: src/gtkmm/app.cpp:797
+#: src/gtkmm/canvasview.cpp:1674
 msgid "Show Vertex Ducks"
 msgstr "Afficher les poignées de vertex"
 
-#: src/gtkmm/app.cpp:798 src/gtkmm/canvasview.cpp:1673
+#: src/gtkmm/app.cpp:798
+#: src/gtkmm/canvasview.cpp:1673
 msgid "Show Tangent Ducks"
-msgstr "Afficher les tangentes"
+msgstr "Afficher les poignées de tangentes"
 
-#: src/gtkmm/app.cpp:799 src/gtkmm/canvasview.cpp:1675
+#: src/gtkmm/app.cpp:799
+#: src/gtkmm/canvasview.cpp:1675
 msgid "Show Radius Ducks"
 msgstr "Afficher les poignées de rayon"
 
-#: src/gtkmm/app.cpp:800 src/gtkmm/canvasview.cpp:1676
+#: src/gtkmm/app.cpp:800
+#: src/gtkmm/canvasview.cpp:1676
 msgid "Show Width Ducks"
 msgstr "Afficher les poignées de largeur"
 
-#: src/gtkmm/app.cpp:801 src/gtkmm/canvasview.cpp:1677
+#: src/gtkmm/app.cpp:801
+#: src/gtkmm/canvasview.cpp:1677
 msgid "Show Angle Ducks"
 msgstr "Afficher les poignées d'angle"
 
-#: src/gtkmm/app.cpp:802 src/gtkmm/canvasview.cpp:1525
+#: src/gtkmm/app.cpp:802
+#: src/gtkmm/canvasview.cpp:1525
 msgid "Use Parametric Renderer"
 msgstr "Rendu paramétrique"
 
@@ -294,16 +320,20 @@ msgstr "Qualité niveau 9"
 msgid "Use Quality Level 10"
 msgstr "Qualité niveau 10"
 
-#: src/gtkmm/app.cpp:814 src/gtkmm/canvasview.cpp:1559
+#: src/gtkmm/app.cpp:814
+#: src/gtkmm/canvasview.cpp:1559
 #, c-format
 msgid "Set Low-Res pixel size to %d"
 msgstr "Définir la taille des pixels basse-résolution à %d"
 
-#: src/gtkmm/app.cpp:815 src/gtkmm/framedial.cpp:63 src/gtkmm/preview.cpp:358
+#: src/gtkmm/app.cpp:815
+#: src/gtkmm/framedial.cpp:63
+#: src/gtkmm/preview.cpp:358
 msgid "Play"
 msgstr "Jouer"
 
-#: src/gtkmm/app.cpp:817 src/gtkmm/canvasview.cpp:1095
+#: src/gtkmm/app.cpp:817
+#: src/gtkmm/canvasview.cpp:1095
 #: src/gtkmm/preview.cpp:364
 msgid "Stop"
 msgstr "Arrêter"
@@ -324,11 +354,13 @@ msgstr "Basculer l'affichage des guides"
 msgid "Toggle Low-Res"
 msgstr "Basculer en/hors basse résolution"
 
-#: src/gtkmm/app.cpp:822 src/gtkmm/canvasview.cpp:1575
+#: src/gtkmm/app.cpp:822
+#: src/gtkmm/canvasview.cpp:1575
 msgid "Decrease Low-Res Pixel Size"
 msgstr "Diminuer la taille des pixels basse-résolution"
 
-#: src/gtkmm/app.cpp:823 src/gtkmm/canvasview.cpp:1578
+#: src/gtkmm/app.cpp:823
+#: src/gtkmm/canvasview.cpp:1578
 msgid "Increase Low-Res Pixel Size"
 msgstr "Augmenter la taille des pixels basse-résolution"
 
@@ -336,38 +368,49 @@ msgstr "Augmenter la taille des pixels basse-résolution"
 msgid "Toggle Onion Skin"
 msgstr "Basculer l'onion skin"
 
-#: src/gtkmm/app.cpp:831 src/gtkmm/canvasview.cpp:1641
+#: src/gtkmm/app.cpp:831
+#: src/gtkmm/canvasview.cpp:1641
 msgid "Jump to Next Keyframe"
 msgstr "Aller à l'image clé suivante"
 
-#: src/gtkmm/app.cpp:832 src/gtkmm/canvasview.cpp:1644
+#: src/gtkmm/app.cpp:832
+#: src/gtkmm/canvasview.cpp:1644
 msgid "Jump to Prev Keyframe"
 msgstr "Aller à l'image clé précédente"
 
-#: src/gtkmm/app.cpp:833 src/gtkmm/canvasview.cpp:1625
-#: src/gtkmm/framedial.cpp:65 src/gtkmm/iconcontroller.cpp:231
+#: src/gtkmm/app.cpp:833
+#: src/gtkmm/canvasview.cpp:1625
+#: src/gtkmm/framedial.cpp:65
+#: src/gtkmm/iconcontroller.cpp:231
 msgid "Next Frame"
 msgstr "Image suivante"
 
-#: src/gtkmm/app.cpp:834 src/gtkmm/canvasview.cpp:1627
+#: src/gtkmm/app.cpp:834
+#: src/gtkmm/canvasview.cpp:1627
 msgid "Prev Frame"
 msgstr "Image précédente"
 
-#: src/gtkmm/app.cpp:835 src/gtkmm/canvasview.cpp:1630
+#: src/gtkmm/app.cpp:835
+#: src/gtkmm/canvasview.cpp:1630
 msgid "Seek Forward"
 msgstr "Avancer"
 
-#: src/gtkmm/app.cpp:836 src/gtkmm/canvasview.cpp:1632
+#: src/gtkmm/app.cpp:836
+#: src/gtkmm/canvasview.cpp:1632
 msgid "Seek Backward"
 msgstr "Reculer"
 
-#: src/gtkmm/app.cpp:837 src/gtkmm/canvasview.cpp:1638
-#: src/gtkmm/framedial.cpp:59 src/gtkmm/iconcontroller.cpp:229
+#: src/gtkmm/app.cpp:837
+#: src/gtkmm/canvasview.cpp:1638
+#: src/gtkmm/framedial.cpp:59
+#: src/gtkmm/iconcontroller.cpp:229
 msgid "Seek to Begin"
 msgstr "Aller au début"
 
-#: src/gtkmm/app.cpp:838 src/gtkmm/canvasview.cpp:1635
-#: src/gtkmm/framedial.cpp:67 src/gtkmm/iconcontroller.cpp:232
+#: src/gtkmm/app.cpp:838
+#: src/gtkmm/canvasview.cpp:1635
+#: src/gtkmm/framedial.cpp:67
+#: src/gtkmm/iconcontroller.cpp:232
 msgid "Seek to End"
 msgstr "Aller à la fin"
 
@@ -375,26 +418,31 @@ msgstr "Aller à la fin"
 msgid "Add group"
 msgstr "Ajouter un groupe"
 
-#: src/gtkmm/app.cpp:842 src/gtkmm/iconcontroller.cpp:162
+#: src/gtkmm/app.cpp:842
+#: src/gtkmm/iconcontroller.cpp:162
 #: src/synfigapp/actions/canvasadd.cpp:73
 msgid "New Canvas"
 msgstr "Nouveau canevas"
 
-#: src/gtkmm/app.cpp:844 src/gtkmm/layeractionmanager.cpp:105
+#: src/gtkmm/app.cpp:844
+#: src/gtkmm/layeractionmanager.cpp:105
 #: src/gtkmm/layeractionmanager.cpp:498
 msgid "Increase Amount"
 msgstr "Augmenter la visibilité"
 
-#: src/gtkmm/app.cpp:845 src/gtkmm/layeractionmanager.cpp:117
+#: src/gtkmm/app.cpp:845
+#: src/gtkmm/layeractionmanager.cpp:117
 #: src/gtkmm/layeractionmanager.cpp:515
 msgid "Decrease Amount"
 msgstr "Diminuer la visibilité"
 
-#: src/gtkmm/app.cpp:1189 src/gtkmm/toolbox.cpp:364
+#: src/gtkmm/app.cpp:1189
+#: src/gtkmm/toolbox.cpp:364
 msgid "Synfig Studio"
 msgstr "Synfig Studio"
 
-#: src/gtkmm/app.cpp:1202 src/gtkmm/app.cpp:1207
+#: src/gtkmm/app.cpp:1202
+#: src/gtkmm/app.cpp:1207
 msgid "Failed to initialize synfig!"
 msgstr "Échec de l'initialisation de Synfig"
 
@@ -566,7 +614,8 @@ msgstr "Chargement des fichiers..."
 msgid "Done."
 msgstr "Fini."
 
-#: src/gtkmm/app.cpp:1408 src/gtkmm/app.cpp:1412
+#: src/gtkmm/app.cpp:1408
+#: src/gtkmm/app.cpp:1412
 msgid ""
 "Unknown exception caught when constructing App.\n"
 "This software may be unstable."
@@ -628,7 +677,8 @@ msgstr ""
 "\n"
 "http://synfig.org/wiki/Category:Manual"
 
-#: src/gtkmm/app.cpp:2369 src/gtkmm/toolbox.cpp:303
+#: src/gtkmm/app.cpp:2369
+#: src/gtkmm/toolbox.cpp:303
 msgid "Help"
 msgstr "Aide"
 
@@ -649,7 +699,8 @@ msgstr ""
 "Impossible de charger \"%s\":\n"
 "\n"
 
-#: src/gtkmm/app.cpp:2493 src/gtkmm/canvasview.cpp:3906
+#: src/gtkmm/app.cpp:2493
+#: src/gtkmm/canvasview.cpp:3906
 #: src/gtkmm/canvasview.cpp:4045
 msgid "Warnings"
 msgstr "Avertissements"
@@ -659,28 +710,33 @@ msgstr "Avertissements"
 msgid "Unable to create instance for \"%s\""
 msgstr "Impossible de créer une instance pour \"%s\""
 
-#: src/gtkmm/app.cpp:2507 src/gtkmm/iconcontroller.cpp:258
+#: src/gtkmm/app.cpp:2507
+#: src/gtkmm/iconcontroller.cpp:258
 #: src/gtkmm/instance.cpp:561
 msgid "CVS Update"
 msgstr "Mise à jour CVS (update)"
 
 #: src/gtkmm/app.cpp:2507
 msgid ""
-"There appears to be a newer version of this file available on the CVS "
-"repository.\n"
+"There appears to be a newer version of this file available on the CVS repository.\n"
 "Would you like to update now? (It would probably be a good idea)"
 msgstr ""
-"Il semble qu'une version plus récente de ce fichier soit disponible dans le "
-"dépôt CVS.\n"
-"Voulez-vous mettre à jour maintenant ? (Ce serait probablement une bonne "
-"idée)"
+"Il semble qu'une version plus récente de ce fichier soit disponible dans le dépôt CVS.\n"
+"Voulez-vous mettre à jour maintenant ? (Ce serait probablement une bonne idée)"
 
-#: src/gtkmm/app.cpp:2513 src/gtkmm/app.cpp:2518 src/gtkmm/app.cpp:2523
-#: src/gtkmm/instance.cpp:483 src/gtkmm/instance.cpp:499
-#: src/gtkmm/instance.cpp:511 src/gtkmm/instance.cpp:522
-#: src/gtkmm/instance.cpp:536 src/gtkmm/instance.cpp:547
-#: src/gtkmm/instance.cpp:577 src/gtkmm/instance.cpp:588
-#: src/gtkmm/instance.cpp:604 src/gtkmm/instance.cpp:613
+#: src/gtkmm/app.cpp:2513
+#: src/gtkmm/app.cpp:2518
+#: src/gtkmm/app.cpp:2523
+#: src/gtkmm/instance.cpp:483
+#: src/gtkmm/instance.cpp:499
+#: src/gtkmm/instance.cpp:511
+#: src/gtkmm/instance.cpp:522
+#: src/gtkmm/instance.cpp:536
+#: src/gtkmm/instance.cpp:547
+#: src/gtkmm/instance.cpp:577
+#: src/gtkmm/instance.cpp:588
+#: src/gtkmm/instance.cpp:604
+#: src/gtkmm/instance.cpp:613
 #: src/gtkmm/layerparamtreestore.cpp:246
 #: src/gtkmm/widget_canvaschooser.cpp:145
 #: src/gtkmm/widget_canvaschooser.cpp:164
@@ -719,8 +775,10 @@ msgstr "Grille"
 msgid "_Grid size"
 msgstr "Taille de la _grille"
 
-#: src/gtkmm/canvasoptions.cpp:104 src/gtkmm/iconcontroller.cpp:146
-#: src/gtkmm/keyframetree.cpp:62 src/gtkmm/renddesc.cpp:96
+#: src/gtkmm/canvasoptions.cpp:104
+#: src/gtkmm/iconcontroller.cpp:146
+#: src/gtkmm/keyframetree.cpp:62
+#: src/gtkmm/renddesc.cpp:96
 #: src/synfigapp/actions/activepointadd.cpp:86
 #: src/synfigapp/actions/activepointsetoff.cpp:93
 #: src/synfigapp/actions/activepointseton.cpp:93
@@ -744,7 +802,8 @@ msgstr "Taille de la _grille"
 msgid "Time"
 msgstr "Temps"
 
-#: src/gtkmm/canvasoptions.cpp:113 src/gtkmm/dialog_setup.cpp:179
+#: src/gtkmm/canvasoptions.cpp:113
+#: src/gtkmm/dialog_setup.cpp:179
 msgid "Units"
 msgstr "Unités"
 
@@ -752,7 +811,8 @@ msgstr "Unités"
 msgid "Not yet implemented!"
 msgstr "Pas encore implémenté !"
 
-#: src/gtkmm/canvasoptions.cpp:169 src/gtkmm/dialog_keyframe.cpp:89
+#: src/gtkmm/canvasoptions.cpp:169
+#: src/gtkmm/dialog_keyframe.cpp:89
 msgid "Not yet implemented"
 msgstr "Pas encore implémenté"
 
@@ -780,19 +840,23 @@ msgstr "_Nom"
 msgid "_Description"
 msgstr "_Description"
 
-#: src/gtkmm/canvasproperties.cpp:146 src/gtkmm/dock_metadata.cpp:69
+#: src/gtkmm/canvasproperties.cpp:146
+#: src/gtkmm/dock_metadata.cpp:69
 msgid "Key"
 msgstr "Clé"
 
-#: src/gtkmm/canvasproperties.cpp:147 src/gtkmm/dock_metadata.cpp:70
+#: src/gtkmm/canvasproperties.cpp:147
+#: src/gtkmm/dock_metadata.cpp:70
 msgid "Data"
 msgstr "Données"
 
-#: src/gtkmm/canvasproperties.cpp:182 src/gtkmm/dock_metadata.cpp:134
+#: src/gtkmm/canvasproperties.cpp:182
+#: src/gtkmm/dock_metadata.cpp:134
 msgid "New MetaData Entry"
 msgstr "Nouvelle métadonnée"
 
-#: src/gtkmm/canvasproperties.cpp:182 src/gtkmm/dock_metadata.cpp:134
+#: src/gtkmm/canvasproperties.cpp:182
+#: src/gtkmm/dock_metadata.cpp:134
 msgid "Please enter the name of the key"
 msgstr "Saisissez le nom de la clé "
 
@@ -800,18 +864,22 @@ msgstr "Saisissez le nom de la clé "
 msgid "Edit Canvas Properties"
 msgstr "Modifier les propriétés du canevas"
 
-#: src/gtkmm/canvastreestore.cpp:204 src/gtkmm/canvastreestore.cpp:242
-#: src/gtkmm/childrentreestore.cpp:204 src/gtkmm/iconcontroller.cpp:153
+#: src/gtkmm/canvastreestore.cpp:204
+#: src/gtkmm/canvastreestore.cpp:242
+#: src/gtkmm/childrentreestore.cpp:204
+#: src/gtkmm/iconcontroller.cpp:153
 #: src/synfigapp/action.cpp:484
 msgid "Canvas"
 msgstr "Canevas"
 
-#: src/gtkmm/canvastreestore.cpp:241 src/gtkmm/childrentreestore.cpp:201
+#: src/gtkmm/canvastreestore.cpp:241
+#: src/gtkmm/childrentreestore.cpp:201
 #: src/gtkmm/instance.cpp:417
 msgid "[Unnamed]"
 msgstr "[Sans nom]"
 
-#: src/gtkmm/canvasview.cpp:247 src/gtkmm/workarea.cpp:2368
+#: src/gtkmm/canvasview.cpp:247
+#: src/gtkmm/workarea.cpp:2368
 #: src/gtkmm/workarea.cpp:2463
 msgid "Idle"
 msgstr "En attente"
@@ -897,11 +965,13 @@ msgstr "(rapide)"
 msgid "Set Quality to %d"
 msgstr "Qualité à %d"
 
-#: src/gtkmm/canvasview.cpp:1587 src/gtkmm/dialog_preview.cpp:62
+#: src/gtkmm/canvasview.cpp:1587
+#: src/gtkmm/dialog_preview.cpp:62
 msgid "Preview Window"
 msgstr "Fenêtre d'aperçu"
 
-#: src/gtkmm/canvasview.cpp:1594 src/gtkmm/iconcontroller.cpp:203
+#: src/gtkmm/canvasview.cpp:1594
+#: src/gtkmm/iconcontroller.cpp:203
 msgid "Show Grid"
 msgstr "Afficher la grille"
 
@@ -929,7 +999,8 @@ msgstr "Zoomer sur l'axe de temps"
 msgid "Zoom Out on Timeline"
 msgstr "Dézoomer sur l'axe de temps"
 
-#: src/gtkmm/canvasview.cpp:2062 src/gtkmm/canvasview.cpp:2535
+#: src/gtkmm/canvasview.cpp:2062
+#: src/gtkmm/canvasview.cpp:2535
 msgid "Select All Children"
 msgstr "Sélectionner tous les enfants"
 
@@ -953,20 +1024,24 @@ msgstr "En mode Édition d'animation"
 msgid "Not in Animate Editing Mode"
 msgstr "Hors mode Édition d'animation"
 
-#: src/gtkmm/canvasview.cpp:2801 src/gtkmm/iconcontroller.cpp:221
+#: src/gtkmm/canvasview.cpp:2801
+#: src/gtkmm/iconcontroller.cpp:221
 #: src/gtkmm/keyframedial.cpp:59
 msgid "All Keyframes Locked"
 msgstr "Images clés toutes verrouillées"
 
-#: src/gtkmm/canvasview.cpp:2811 src/gtkmm/iconcontroller.cpp:223
+#: src/gtkmm/canvasview.cpp:2811
+#: src/gtkmm/iconcontroller.cpp:223
 msgid "Future Keyframes Locked"
 msgstr "Images clés suivantes verrouillées"
 
-#: src/gtkmm/canvasview.cpp:2821 src/gtkmm/iconcontroller.cpp:222
+#: src/gtkmm/canvasview.cpp:2821
+#: src/gtkmm/iconcontroller.cpp:222
 msgid "Past Keyframes Locked"
 msgstr "Images clés précédentes verrouillées"
 
-#: src/gtkmm/canvasview.cpp:2831 src/gtkmm/iconcontroller.cpp:224
+#: src/gtkmm/canvasview.cpp:2831
+#: src/gtkmm/iconcontroller.cpp:224
 msgid "No Keyframes Locked"
 msgstr "Aucune image clé verrouillée"
 
@@ -982,13 +1057,17 @@ msgstr "Dupliquer les points de passage"
 msgid "Remove Waypoints"
 msgstr "Supprimer les points de passage"
 
-#: src/gtkmm/canvasview.cpp:3709 src/gtkmm/canvasview.cpp:3712
-#: src/gtkmm/canvasview.cpp:3715 src/gtkmm/widget_defaults.cpp:292
+#: src/gtkmm/canvasview.cpp:3709
+#: src/gtkmm/canvasview.cpp:3712
+#: src/gtkmm/canvasview.cpp:3715
+#: src/gtkmm/widget_defaults.cpp:292
 msgid "_TCB"
 msgstr "_TCB"
 
-#: src/gtkmm/canvasview.cpp:3719 src/gtkmm/canvasview.cpp:3722
-#: src/gtkmm/canvasview.cpp:3725 src/gtkmm/widget_defaults.cpp:295
+#: src/gtkmm/canvasview.cpp:3719
+#: src/gtkmm/canvasview.cpp:3722
+#: src/gtkmm/canvasview.cpp:3725
+#: src/gtkmm/widget_defaults.cpp:295
 msgid "_Linear"
 msgstr "_Linéaire"
 
@@ -1000,12 +1079,15 @@ msgstr "Adoucir en entrée"
 msgid "_Ease Out"
 msgstr "Adoucir en sortie"
 
-#: src/gtkmm/canvasview.cpp:3735 src/gtkmm/widget_defaults.cpp:294
+#: src/gtkmm/canvasview.cpp:3735
+#: src/gtkmm/widget_defaults.cpp:294
 msgid "_Ease In/Out"
 msgstr "Ad_oucir"
 
-#: src/gtkmm/canvasview.cpp:3739 src/gtkmm/canvasview.cpp:3742
-#: src/gtkmm/canvasview.cpp:3745 src/gtkmm/widget_defaults.cpp:293
+#: src/gtkmm/canvasview.cpp:3739
+#: src/gtkmm/canvasview.cpp:3742
+#: src/gtkmm/canvasview.cpp:3745
+#: src/gtkmm/widget_defaults.cpp:293
 msgid "_Constant"
 msgstr "_Constant"
 
@@ -1038,7 +1120,8 @@ msgstr "_Entrée"
 msgid "_Out"
 msgstr "_Sortie"
 
-#: src/gtkmm/canvasview.cpp:4041 src/synfigapp/canvasinterface.cpp:569
+#: src/gtkmm/canvasview.cpp:4041
+#: src/synfigapp/canvasinterface.cpp:569
 msgid "Import Image"
 msgstr "Importer une image"
 
@@ -1054,7 +1137,8 @@ msgstr "Saisissez votre texte :"
 msgid "<Inline Canvas>"
 msgstr "<Sous-canevas>"
 
-#: src/gtkmm/cellrenderer_value.cpp:441 src/gtkmm/iconcontroller.cpp:150
+#: src/gtkmm/cellrenderer_value.cpp:441
+#: src/gtkmm/iconcontroller.cpp:150
 msgid "Segment"
 msgstr "Segment"
 
@@ -1062,7 +1146,8 @@ msgstr "Segment"
 msgid "List"
 msgstr "Liste"
 
-#: src/gtkmm/cellrenderer_value.cpp:451 src/gtkmm/iconcontroller.cpp:151
+#: src/gtkmm/cellrenderer_value.cpp:451
+#: src/gtkmm/iconcontroller.cpp:151
 msgid "BLine Point"
 msgstr "Point de BLine"
 
@@ -1070,24 +1155,29 @@ msgstr "Point de BLine"
 msgid "UNKNOWN"
 msgstr "INCONNU"
 
-#: src/gtkmm/childrentree.cpp:93 src/gtkmm/dock_canvases.cpp:108
+#: src/gtkmm/childrentree.cpp:93
+#: src/gtkmm/dock_canvases.cpp:108
 #: src/synfigapp/actions/canvasadd.cpp:78
 msgid "ID"
 msgstr "Identifiant"
 
-#: src/gtkmm/childrentree.cpp:113 src/gtkmm/layertree.cpp:354
+#: src/gtkmm/childrentree.cpp:113
+#: src/gtkmm/layertree.cpp:354
 #: src/synfigapp/actions/valuedescconvert.cpp:97
 msgid "Type"
 msgstr "Type"
 
-#: src/gtkmm/childrentree.cpp:124 src/synfigapp/actions/layerparamset.cpp:80
+#: src/gtkmm/childrentree.cpp:124
+#: src/synfigapp/actions/layerparamset.cpp:80
 #: src/synfigapp/actions/valuedescset.cpp:96
 #: src/synfigapp/actions/valuenodeconstset.cpp:77
 msgid "ValueBase"
 msgstr "Valeur de base"
 
-#: src/gtkmm/childrentree.cpp:140 src/gtkmm/dock_timetrack.cpp:88
-#: src/gtkmm/iconcontroller.cpp:219 src/gtkmm/layertree.cpp:367
+#: src/gtkmm/childrentree.cpp:140
+#: src/gtkmm/dock_timetrack.cpp:88
+#: src/gtkmm/iconcontroller.cpp:219
+#: src/gtkmm/layertree.cpp:367
 msgid "Time Track"
 msgstr "Axe de temps"
 
@@ -1103,11 +1193,13 @@ msgstr "Nœuds de valeurs de base"
 msgid "Colors"
 msgstr "Couleurs"
 
-#: src/gtkmm/dialog_color.cpp:66 src/gtkmm/iconcontroller.cpp:226
+#: src/gtkmm/dialog_color.cpp:66
+#: src/gtkmm/iconcontroller.cpp:226
 msgid "Set as Outline"
 msgstr "Définir comme contour"
 
-#: src/gtkmm/dialog_color.cpp:68 src/gtkmm/iconcontroller.cpp:227
+#: src/gtkmm/dialog_color.cpp:68
+#: src/gtkmm/iconcontroller.cpp:227
 msgid "Set as Fill"
 msgstr "Définir comme remplissage"
 
@@ -1131,7 +1223,8 @@ msgstr "Options d'aperçu"
 msgid "_Begin Time"
 msgstr "Heure de _début"
 
-#: src/gtkmm/dialog_preview.cpp:92 src/gtkmm/renddesc.cpp:556
+#: src/gtkmm/dialog_preview.cpp:92
+#: src/gtkmm/renddesc.cpp:556
 msgid "_End Time"
 msgstr "Heure de _fin"
 
@@ -1147,15 +1240,18 @@ msgstr "<b>Configuration générale</b>"
 msgid "_Zoom"
 msgstr "_Zoom"
 
-#: src/gtkmm/dialog_preview.cpp:129 src/gtkmm/renddesc.cpp:546
+#: src/gtkmm/dialog_preview.cpp:129
+#: src/gtkmm/renddesc.cpp:546
 msgid "_Frames per second"
 msgstr "Images par seconde"
 
-#: src/gtkmm/dialog_preview.cpp:138 src/gtkmm/renddesc.cpp:532
+#: src/gtkmm/dialog_preview.cpp:138
+#: src/gtkmm/renddesc.cpp:532
 msgid "Time Settings"
 msgstr "Paramètres temporels"
 
-#: src/gtkmm/dialog_preview.cpp:140 src/gtkmm/renddesc.cpp:534
+#: src/gtkmm/dialog_preview.cpp:140
+#: src/gtkmm/renddesc.cpp:534
 msgid "<b>Time Settings</b>"
 msgstr "<b>Paramètres temporels</b>"
 
@@ -1173,8 +1269,7 @@ msgstr "Utiliser un seul processus"
 
 #: src/gtkmm/dialog_setup.cpp:83
 msgid "Restrict Real-Valued Ducks to Top Right Quadrant"
-msgstr ""
-"Restreindre le déplacement des poignées de taille au quart supérieur droit."
+msgstr "Restreindre le déplacement des poignées de taille au quart supérieur droit."
 
 #: src/gtkmm/dialog_setup.cpp:84
 msgid "Scale New Imported Images to Fit Canvas"
@@ -1184,15 +1279,18 @@ msgstr "Mettre les images importés à l'échelle du canevas"
 msgid "Gamma"
 msgstr "Gamma"
 
-#: src/gtkmm/dialog_setup.cpp:121 src/gtkmm/widget_coloredit.cpp:354
+#: src/gtkmm/dialog_setup.cpp:121
+#: src/gtkmm/widget_coloredit.cpp:354
 msgid "Red"
 msgstr "Rouge"
 
-#: src/gtkmm/dialog_setup.cpp:126 src/gtkmm/widget_coloredit.cpp:356
+#: src/gtkmm/dialog_setup.cpp:126
+#: src/gtkmm/widget_coloredit.cpp:356
 msgid "Green"
 msgstr "Vert"
 
-#: src/gtkmm/dialog_setup.cpp:131 src/gtkmm/widget_coloredit.cpp:358
+#: src/gtkmm/dialog_setup.cpp:131
+#: src/gtkmm/widget_coloredit.cpp:358
 msgid "Blue"
 msgstr "Bleu"
 
@@ -1376,7 +1474,8 @@ msgstr "Fichier audio"
 msgid "Time _Offset"
 msgstr "Décalage temporel"
 
-#: src/gtkmm/dialog_tooloptions.cpp:57 src/gtkmm/dialog_tooloptions.cpp:79
+#: src/gtkmm/dialog_tooloptions.cpp:57
+#: src/gtkmm/dialog_tooloptions.cpp:79
 msgid "Tool Options"
 msgstr "Options des outils"
 
@@ -1396,11 +1495,13 @@ msgstr "X"
 msgid "Canvas Browser"
 msgstr "Explorateur de canevas"
 
-#: src/gtkmm/dock_children.cpp:67 src/gtkmm/iconcontroller.cpp:214
+#: src/gtkmm/dock_children.cpp:67
+#: src/gtkmm/iconcontroller.cpp:214
 msgid "Children"
 msgstr "Enfants"
 
-#: src/gtkmm/dock_curves.cpp:70 src/gtkmm/iconcontroller.cpp:215
+#: src/gtkmm/dock_curves.cpp:70
+#: src/gtkmm/iconcontroller.cpp:215
 msgid "Curves"
 msgstr "Courbes"
 
@@ -1412,11 +1513,13 @@ msgstr "Dialogue d'onglets"
 msgid "Empty Dock Panel"
 msgstr "Dialogue d'onglets vide"
 
-#: src/gtkmm/dock_history.cpp:69 src/gtkmm/dock_history.cpp:125
+#: src/gtkmm/dock_history.cpp:69
+#: src/gtkmm/dock_history.cpp:125
 msgid "History"
 msgstr "Historique"
 
-#: src/gtkmm/dock_history.cpp:78 src/gtkmm/iconcontroller.cpp:211
+#: src/gtkmm/dock_history.cpp:78
+#: src/gtkmm/iconcontroller.cpp:211
 msgid "Clear Undo Stack"
 msgstr "Vider l'historique d'annulation"
 
@@ -1424,7 +1527,8 @@ msgstr "Vider l'historique d'annulation"
 msgid "Clear the undo stack"
 msgstr "Vider l'historique d'annulation"
 
-#: src/gtkmm/dock_history.cpp:89 src/gtkmm/iconcontroller.cpp:212
+#: src/gtkmm/dock_history.cpp:89
+#: src/gtkmm/iconcontroller.cpp:212
 msgid "Clear Redo Stack"
 msgstr "Vider l'historique de rétablissement"
 
@@ -1440,7 +1544,8 @@ msgstr "Vider l'historique d'annulation et de rétablissement"
 msgid "Clear the undo and redo stacks"
 msgstr "Vider l'historique d'annulation et de rétablissement"
 
-#: src/gtkmm/dock_history.cpp:111 src/gtkmm/toolbox.cpp:299
+#: src/gtkmm/dock_history.cpp:111
+#: src/gtkmm/toolbox.cpp:299
 msgid "Undo"
 msgstr "Annuler"
 
@@ -1448,7 +1553,8 @@ msgstr "Annuler"
 msgid "Undo the previous action"
 msgstr "Annuler la dernière action"
 
-#: src/gtkmm/dock_history.cpp:119 src/gtkmm/toolbox.cpp:300
+#: src/gtkmm/dock_history.cpp:119
+#: src/gtkmm/toolbox.cpp:300
 msgid "Redo"
 msgstr "Rétablir"
 
@@ -1456,11 +1562,13 @@ msgstr "Rétablir"
 msgid "Redo the previously undone action"
 msgstr "Rétablir la dernière action annulée"
 
-#: src/gtkmm/dock_history.cpp:211 src/gtkmm/keyframetree.cpp:92
+#: src/gtkmm/dock_history.cpp:211
+#: src/gtkmm/keyframetree.cpp:92
 msgid "Jump"
 msgstr "Aller à"
 
-#: src/gtkmm/dock_history.cpp:216 src/gtkmm/keyframetree.cpp:96
+#: src/gtkmm/dock_history.cpp:216
+#: src/gtkmm/keyframetree.cpp:96
 msgid "(JMP)"
 msgstr "(Saut)"
 
@@ -1468,7 +1576,8 @@ msgstr "(Saut)"
 msgid "Action"
 msgstr "Action"
 
-#: src/gtkmm/dock_history.cpp:275 src/gtkmm/dock_history.cpp:283
+#: src/gtkmm/dock_history.cpp:275
+#: src/gtkmm/dock_history.cpp:283
 #: src/gtkmm/dock_history.cpp:291
 msgid "Clear History"
 msgstr "Effacer l'historique"
@@ -1495,10 +1604,10 @@ msgid ""
 "Are you sure you want to clear the undo and redo stacks?"
 msgstr ""
 "Vous ne pourrez plus défaire ou refaire vos changements !\n"
-"Êtes-vous sûr de vouloir effacer l'historique d'annulation et de "
-"rétablissement ?"
+"Êtes-vous sûr de vouloir effacer l'historique d'annulation et de rétablissement ?"
 
-#: src/gtkmm/dock_info.cpp:96 src/gtkmm/instance.cpp:552
+#: src/gtkmm/dock_info.cpp:96
+#: src/gtkmm/instance.cpp:552
 msgid "Info"
 msgstr "Info"
 
@@ -1526,7 +1635,8 @@ msgstr "B :"
 msgid "A: "
 msgstr "A :"
 
-#: src/gtkmm/dock_keyframes.cpp:66 src/gtkmm/iconcontroller.cpp:216
+#: src/gtkmm/dock_keyframes.cpp:66
+#: src/gtkmm/iconcontroller.cpp:216
 msgid "Keyframes"
 msgstr "Images clés"
 
@@ -1538,7 +1648,8 @@ msgstr "Groupes"
 msgid "Group Ops"
 msgstr "Opérations de groupe"
 
-#: src/gtkmm/dock_layergroups.cpp:76 src/gtkmm/groupactionmanager.cpp:175
+#: src/gtkmm/dock_layergroups.cpp:76
+#: src/gtkmm/groupactionmanager.cpp:175
 #: src/gtkmm/groupactionmanager.cpp:176
 msgid "Add a New Group"
 msgstr "Ajouter un nouveau groupe"
@@ -1563,7 +1674,8 @@ msgstr "Ajouter une nouvelle métadonnée"
 msgid "Remove selected MetaData entry"
 msgstr "Supprimer la métadonnée sélectionnée"
 
-#: src/gtkmm/dock_navigator.cpp:496 src/gtkmm/iconcontroller.cpp:218
+#: src/gtkmm/dock_navigator.cpp:496
+#: src/gtkmm/iconcontroller.cpp:218
 msgid "Navigator"
 msgstr "Navigateur"
 
@@ -1571,8 +1683,10 @@ msgstr "Navigateur"
 msgid "Params"
 msgstr "Paramètres"
 
-#: src/gtkmm/dock_timetrack.cpp:84 src/gtkmm/layergrouptree.cpp:75
-#: src/gtkmm/layertree.cpp:221 src/gtkmm/layertree.cpp:300
+#: src/gtkmm/dock_timetrack.cpp:84
+#: src/gtkmm/layergrouptree.cpp:75
+#: src/gtkmm/layertree.cpp:221
+#: src/gtkmm/layertree.cpp:300
 #: src/synfigapp/actions/canvasnameset.cpp:82
 #: src/synfigapp/actions/valuedescexport.cpp:93
 #: src/synfigapp/actions/valuenodeadd.cpp:77
@@ -1584,7 +1698,8 @@ msgstr "Nom"
 msgid "Timetrack"
 msgstr "Axe de temps"
 
-#: src/gtkmm/framedial.cpp:61 src/gtkmm/iconcontroller.cpp:230
+#: src/gtkmm/framedial.cpp:61
+#: src/gtkmm/iconcontroller.cpp:230
 msgid "Previous Frame"
 msgstr "Image précédente"
 
@@ -1616,8 +1731,10 @@ msgstr "Vecteur"
 msgid "Color"
 msgstr "Couleur"
 
-#: src/gtkmm/iconcontroller.cpp:152 src/gtkmm/iconcontroller.cpp:154
-#: src/gtkmm/iconcontroller.cpp:160 src/gtkmm/iconcontroller.cpp:161
+#: src/gtkmm/iconcontroller.cpp:152
+#: src/gtkmm/iconcontroller.cpp:154
+#: src/gtkmm/iconcontroller.cpp:160
+#: src/gtkmm/iconcontroller.cpp:161
 msgid "Rename"
 msgstr "Renommer"
 
@@ -1642,11 +1759,13 @@ msgstr "Nœud de valeur"
 msgid "About"
 msgstr "À propos"
 
-#: src/gtkmm/iconcontroller.cpp:163 src/gtkmm/toolbox.cpp:298
+#: src/gtkmm/iconcontroller.cpp:163
+#: src/gtkmm/toolbox.cpp:298
 msgid "Save All"
 msgstr "Tout enregistrer"
 
-#: src/gtkmm/iconcontroller.cpp:165 src/gtkmm/layergrouptreestore.cpp:922
+#: src/gtkmm/iconcontroller.cpp:165
+#: src/gtkmm/layergrouptreestore.cpp:922
 #: src/gtkmm/layertreestore.cpp:965
 #: src/synfigapp/actions/groupaddlayers.cpp:72
 #: src/synfigapp/actions/groupremovelayers.cpp:73
@@ -1819,7 +1938,8 @@ msgstr "Dupliquer"
 msgid "Encapsulate"
 msgstr "Encapsuler"
 
-#: src/gtkmm/iconcontroller.cpp:209 src/gtkmm/layeractionmanager.cpp:135
+#: src/gtkmm/iconcontroller.cpp:209
+#: src/gtkmm/layeractionmanager.cpp:135
 msgid "Select All Child Layers"
 msgstr "Sélectionner tous les calques enfants"
 
@@ -1835,7 +1955,8 @@ msgstr "Ajouter le calque au groupe"
 msgid "Remove Layer from Group"
 msgstr "Enlever le calque d'un groupe"
 
-#: src/gtkmm/iconcontroller.cpp:235 src/synfigapp/actions/layersetdesc.cpp:50
+#: src/gtkmm/iconcontroller.cpp:235
+#: src/synfigapp/actions/layersetdesc.cpp:50
 #: src/synfigapp/actions/layersetdesc.cpp:73
 msgid "Set Layer Description"
 msgstr "Décrire le calque"
@@ -1848,29 +1969,35 @@ msgstr "Exporter le nœud de valeur"
 msgid "Unexport Value Node"
 msgstr "Désexporter le nœud de valeur"
 
-#: src/gtkmm/iconcontroller.cpp:239 src/gtkmm/toggleducksdial.cpp:55
+#: src/gtkmm/iconcontroller.cpp:239
+#: src/gtkmm/toggleducksdial.cpp:55
 msgid "Toggle position ducks"
-msgstr "Afficher les poignées de position"
+msgstr "Basculer les poignées de position"
 
-#: src/gtkmm/iconcontroller.cpp:240 src/gtkmm/toggleducksdial.cpp:56
+#: src/gtkmm/iconcontroller.cpp:240
+#: src/gtkmm/toggleducksdial.cpp:56
 msgid "Toggle vertex ducks"
-msgstr "Afficher les poignées de vertex"
+msgstr "Basculer les poignées de vertex"
 
-#: src/gtkmm/iconcontroller.cpp:241 src/gtkmm/toggleducksdial.cpp:57
+#: src/gtkmm/iconcontroller.cpp:241
+#: src/gtkmm/toggleducksdial.cpp:57
 msgid "Toggle tangent ducks"
-msgstr "Afficher les tangentes"
+msgstr "Basculer les poignées de tangentes"
 
-#: src/gtkmm/iconcontroller.cpp:242 src/gtkmm/toggleducksdial.cpp:58
+#: src/gtkmm/iconcontroller.cpp:242
+#: src/gtkmm/toggleducksdial.cpp:58
 msgid "Toggle radius ducks"
-msgstr "Afficher les poignées de rayon"
+msgstr "Basculer les poignées de rayon"
 
-#: src/gtkmm/iconcontroller.cpp:243 src/gtkmm/toggleducksdial.cpp:59
+#: src/gtkmm/iconcontroller.cpp:243
+#: src/gtkmm/toggleducksdial.cpp:59
 msgid "Toggle width ducks"
-msgstr "Afficher les poignées de largeur"
+msgstr "Basculer les poignées de largeur"
 
-#: src/gtkmm/iconcontroller.cpp:244 src/gtkmm/toggleducksdial.cpp:60
+#: src/gtkmm/iconcontroller.cpp:244
+#: src/gtkmm/toggleducksdial.cpp:60
 msgid "Toggle angle ducks"
-msgstr "Afficher les poignées d'angle"
+msgstr "Basculer les poignées d'angle"
 
 #: src/gtkmm/iconcontroller.cpp:246
 msgid "Toggle show grid"
@@ -1904,26 +2031,32 @@ msgstr "Dialogue des options de rendu"
 msgid "CVS Add"
 msgstr "Ajout pour CVS (add)"
 
-#: src/gtkmm/iconcontroller.cpp:259 src/gtkmm/instance.cpp:492
+#: src/gtkmm/iconcontroller.cpp:259
+#: src/gtkmm/instance.cpp:492
 #: src/gtkmm/instance.cpp:503
 msgid "CVS Commit"
 msgstr "Archivage CVS (commit)"
 
-#: src/gtkmm/iconcontroller.cpp:260 src/gtkmm/instance.cpp:594
+#: src/gtkmm/iconcontroller.cpp:260
+#: src/gtkmm/instance.cpp:594
 msgid "CVS Revert"
 msgstr "Rétablissement CVS (revert)"
 
-#: src/gtkmm/iconcontroller.cpp:263 src/gtkmm/iconcontroller.cpp:264
-#: src/gtkmm/state_normal.cpp:256 src/gtkmm/state_normal.cpp:283
+#: src/gtkmm/iconcontroller.cpp:263
+#: src/gtkmm/iconcontroller.cpp:264
+#: src/gtkmm/state_normal.cpp:256
+#: src/gtkmm/state_normal.cpp:283
 msgid "Transform Tool"
 msgstr "Outil de transformation"
 
-#: src/gtkmm/iconcontroller.cpp:265 src/gtkmm/state_polygon.cpp:339
+#: src/gtkmm/iconcontroller.cpp:265
+#: src/gtkmm/state_polygon.cpp:339
 #: src/gtkmm/state_polygon.cpp:393
 msgid "Polygon Tool"
 msgstr "Outil polygone"
 
-#: src/gtkmm/iconcontroller.cpp:266 src/gtkmm/state_bline.cpp:378
+#: src/gtkmm/iconcontroller.cpp:266
+#: src/gtkmm/state_bline.cpp:378
 #: src/gtkmm/state_bline.cpp:422
 msgid "BLine Tool"
 msgstr "Outil BLine"
@@ -1936,31 +2069,37 @@ msgstr "Outil pipette"
 msgid "Fill Tool"
 msgstr "Outil remplissage"
 
-#: src/gtkmm/iconcontroller.cpp:269 src/gtkmm/state_draw.cpp:435
+#: src/gtkmm/iconcontroller.cpp:269
+#: src/gtkmm/state_draw.cpp:435
 #: src/gtkmm/state_draw.cpp:521
 msgid "Draw Tool"
 msgstr "Outil calligraphie"
 
-#: src/gtkmm/iconcontroller.cpp:270 src/gtkmm/state_sketch.cpp:326
+#: src/gtkmm/iconcontroller.cpp:270
+#: src/gtkmm/state_sketch.cpp:326
 #: src/gtkmm/state_sketch.cpp:400
 msgid "Sketch Tool"
 msgstr "Outil dessin"
 
-#: src/gtkmm/iconcontroller.cpp:271 src/gtkmm/state_circle.cpp:433
+#: src/gtkmm/iconcontroller.cpp:271
+#: src/gtkmm/state_circle.cpp:433
 #: src/gtkmm/state_circle.cpp:497
 msgid "Circle Tool"
 msgstr "Outil cercle"
 
-#: src/gtkmm/iconcontroller.cpp:272 src/gtkmm/state_rectangle.cpp:353
+#: src/gtkmm/iconcontroller.cpp:272
+#: src/gtkmm/state_rectangle.cpp:353
 #: src/gtkmm/state_rectangle.cpp:409
 msgid "Rectangle Tool"
 msgstr "Outil rectangle"
 
-#: src/gtkmm/iconcontroller.cpp:273 src/gtkmm/state_smoothmove.cpp:184
+#: src/gtkmm/iconcontroller.cpp:273
+#: src/gtkmm/state_smoothmove.cpp:184
 msgid "SmoothMove Tool"
 msgstr "Outil déplacement lissé"
 
-#: src/gtkmm/iconcontroller.cpp:275 src/gtkmm/state_width.cpp:230
+#: src/gtkmm/iconcontroller.cpp:275
+#: src/gtkmm/state_width.cpp:230
 #: src/gtkmm/state_width.cpp:306
 msgid "Width Tool"
 msgstr "Outil épaisseur"
@@ -1973,22 +2112,26 @@ msgstr "Outil zoom"
 msgid "Info Tool"
 msgstr "Outil information"
 
-#: src/gtkmm/iconcontroller.cpp:279 src/gtkmm/mod_mirror/state_mirror.cpp:187
+#: src/gtkmm/iconcontroller.cpp:279
+#: src/gtkmm/mod_mirror/state_mirror.cpp:187
 #: src/gtkmm/mod_mirror/state_mirror.cpp:231
 msgid "Mirror Tool"
 msgstr "Outil miroir"
 
-#: src/gtkmm/iconcontroller.cpp:281 src/gtkmm/state_gradient.cpp:268
+#: src/gtkmm/iconcontroller.cpp:281
+#: src/gtkmm/state_gradient.cpp:268
 #: src/gtkmm/state_gradient.cpp:328
 msgid "Gradient Tool"
 msgstr "Outil dégradé"
 
-#: src/gtkmm/iconcontroller.cpp:282 src/gtkmm/state_star.cpp:455
+#: src/gtkmm/iconcontroller.cpp:282
+#: src/gtkmm/state_star.cpp:455
 #: src/gtkmm/state_star.cpp:524
 msgid "Star Tool"
 msgstr "Outil étoile"
 
-#: src/gtkmm/instance.cpp:234 src/gtkmm/instance.cpp:337
+#: src/gtkmm/instance.cpp:234
+#: src/gtkmm/instance.cpp:337
 #, c-format
 msgid "Unable to save to '%s'"
 msgstr "Impossible d'enregistrer vers '%s'"
@@ -2009,7 +2152,8 @@ msgstr ""
 "par d'autres fichiers actuellement ouverts. Fermez\n"
 "ces fichiers avant de réessayer \"Enregistrer sous\"."
 
-#: src/gtkmm/instance.cpp:269 src/gtkmm/instance.cpp:320
+#: src/gtkmm/instance.cpp:269
+#: src/gtkmm/instance.cpp:320
 #: src/gtkmm/instance.cpp:338
 msgid "SaveAs - Error"
 msgstr "Enregistrer sous - Erreur"
@@ -2055,7 +2199,8 @@ msgstr "Le fichier existe"
 msgid "You must first add this composition to the repository"
 msgstr "Vous devez d'abord ajouter (add) cette composition au dépôt "
 
-#: src/gtkmm/instance.cpp:492 src/gtkmm/instance.cpp:561
+#: src/gtkmm/instance.cpp:492
+#: src/gtkmm/instance.cpp:561
 msgid "This will save any changes you have made. Are you sure?"
 msgstr "Ceci enregistrera toutes vos modifications. Êtes-vous sûr ?"
 
@@ -2084,26 +2229,21 @@ msgid "An error has occurred when trying to ADD"
 msgstr "Une erreur est survenue durant l'opération \"ADD\""
 
 #: src/gtkmm/instance.cpp:547
-msgid ""
-"This file is not under version control, so there is nothing to update from!"
-msgstr ""
-"Ce fichier n'est pas inclus dans la gestion de version (CVS), impossible de "
-"le mettre à jour"
+msgid "This file is not under version control, so there is nothing to update from!"
+msgstr "Ce fichier n'est pas inclus dans la gestion de version (CVS), impossible de le mettre à jour"
 
 #: src/gtkmm/instance.cpp:552
 msgid "This file is up-to-date"
 msgstr "Ce fichier est à jour"
 
-#: src/gtkmm/instance.cpp:577 src/gtkmm/instance.cpp:613
+#: src/gtkmm/instance.cpp:577
+#: src/gtkmm/instance.cpp:613
 msgid "An error has occurred when trying to UPDATE"
 msgstr "Une erreur est survenue durant l'opération \"UPDATE\" (mise à jour)"
 
 #: src/gtkmm/instance.cpp:588
-msgid ""
-"This file is not under version control, so there is nothing to revert to!"
-msgstr ""
-"Ce fichier n'est pas inclus dans la gestion de version (CVS), impossible de "
-"rétablir l'état antérieur."
+msgid "This file is not under version control, so there is nothing to revert to!"
+msgstr "Ce fichier n'est pas inclus dans la gestion de version (CVS), impossible de rétablir l'état antérieur."
 
 #: src/gtkmm/instance.cpp:595
 msgid ""
@@ -2214,7 +2354,8 @@ msgstr "Longueur"
 msgid "Description"
 msgstr "Description"
 
-#: src/gtkmm/keyframetreestore.cpp:795 src/gtkmm/keyframetreestore.cpp:810
+#: src/gtkmm/keyframetreestore.cpp:795
+#: src/gtkmm/keyframetreestore.cpp:810
 msgid "Unable to find Keyframe in table"
 msgstr "Impossible de trouver l'image clé dans la table"
 
@@ -2237,7 +2378,8 @@ msgstr "Coller"
 msgid "Index %d"
 msgstr "Index %d"
 
-#: src/gtkmm/layergrouptree.cpp:64 src/gtkmm/layergrouptree.cpp:69
+#: src/gtkmm/layergrouptree.cpp:64
+#: src/gtkmm/layergrouptree.cpp:69
 #: src/gtkmm/layertree.cpp:193
 msgid " "
 msgstr " "
@@ -2262,7 +2404,8 @@ msgstr "Définir les paramètres de calque"
 msgid "Unable to set all layer parameters."
 msgstr "Impossible de définir tous les paramètres de calque."
 
-#: src/gtkmm/layertree.cpp:206 src/gtkmm/layertree.cpp:249
+#: src/gtkmm/layertree.cpp:206
+#: src/gtkmm/layertree.cpp:249
 msgid "Z"
 msgstr "Z"
 
@@ -2322,7 +2465,8 @@ msgstr ""
 msgid "Load Default Palette"
 msgstr "Charger la palette par défaut"
 
-#: src/gtkmm/onemoment.cpp:91 src/gtkmm/onemoment.cpp:93
+#: src/gtkmm/onemoment.cpp:91
+#: src/gtkmm/onemoment.cpp:93
 msgid "One Moment, Please..."
 msgstr "Un moment, s'il vous plaît"
 
@@ -2458,7 +2602,8 @@ msgstr "<b>Point focal</b>"
 msgid "_Focus Point"
 msgstr "Point _focal"
 
-#: src/gtkmm/render.cpp:64 src/gtkmm/render.cpp:186
+#: src/gtkmm/render.cpp:64
+#: src/gtkmm/render.cpp:186
 msgid "Render Settings"
 msgstr "Paramètres de rendu"
 
@@ -2566,40 +2711,54 @@ msgstr "ERREUR :"
 msgid "WARNING:"
 msgstr "AVERTISSEMENT :"
 
-#: src/gtkmm/state_bline.cpp:362 src/gtkmm/state_circle.cpp:405
-#: src/gtkmm/state_draw.cpp:415 src/gtkmm/state_polygon.cpp:326
-#: src/gtkmm/state_rectangle.cpp:343 src/gtkmm/state_star.cpp:443
+#: src/gtkmm/state_bline.cpp:362
+#: src/gtkmm/state_circle.cpp:405
+#: src/gtkmm/state_draw.cpp:415
+#: src/gtkmm/state_polygon.cpp:326
+#: src/gtkmm/state_rectangle.cpp:343
+#: src/gtkmm/state_star.cpp:443
 msgid "Create Region BLine"
 msgstr "Créer une région (BLine)"
 
-#: src/gtkmm/state_bline.cpp:363 src/gtkmm/state_circle.cpp:406
-#: src/gtkmm/state_draw.cpp:416 src/gtkmm/state_polygon.cpp:327
-#: src/gtkmm/state_rectangle.cpp:344 src/gtkmm/state_star.cpp:444
+#: src/gtkmm/state_bline.cpp:363
+#: src/gtkmm/state_circle.cpp:406
+#: src/gtkmm/state_draw.cpp:416
+#: src/gtkmm/state_polygon.cpp:327
+#: src/gtkmm/state_rectangle.cpp:344
+#: src/gtkmm/state_star.cpp:444
 msgid "Create Outline BLine"
 msgstr "Créer un contour (BLine)"
 
-#: src/gtkmm/state_bline.cpp:364 src/gtkmm/state_circle.cpp:407
-#: src/gtkmm/state_polygon.cpp:328 src/gtkmm/state_rectangle.cpp:345
+#: src/gtkmm/state_bline.cpp:364
+#: src/gtkmm/state_circle.cpp:407
+#: src/gtkmm/state_polygon.cpp:328
+#: src/gtkmm/state_rectangle.cpp:345
 #: src/gtkmm/state_star.cpp:445
 msgid "Create Curve Gradient BLine"
 msgstr "Créer un dégradé suivant la forme"
 
-#: src/gtkmm/state_bline.cpp:365 src/gtkmm/state_circle.cpp:408
-#: src/gtkmm/state_polygon.cpp:329 src/gtkmm/state_rectangle.cpp:346
+#: src/gtkmm/state_bline.cpp:365
+#: src/gtkmm/state_circle.cpp:408
+#: src/gtkmm/state_polygon.cpp:329
+#: src/gtkmm/state_rectangle.cpp:346
 #: src/gtkmm/state_star.cpp:446
 msgid "Create Plant BLine"
 msgstr "Créer une plante (BLine)"
 
-#: src/gtkmm/state_bline.cpp:366 src/gtkmm/state_circle.cpp:409
-#: src/gtkmm/state_polygon.cpp:330 src/gtkmm/state_star.cpp:447
+#: src/gtkmm/state_bline.cpp:366
+#: src/gtkmm/state_circle.cpp:409
+#: src/gtkmm/state_polygon.cpp:330
+#: src/gtkmm/state_star.cpp:447
 msgid "Link Origins"
 msgstr "Lier les origines"
 
-#: src/gtkmm/state_bline.cpp:367 src/gtkmm/state_draw.cpp:417
+#: src/gtkmm/state_bline.cpp:367
+#: src/gtkmm/state_draw.cpp:417
 msgid "Auto Export"
 msgstr "Exporter automatiquement"
 
-#: src/gtkmm/state_bline.cpp:368 src/gtkmm/state_polygon.cpp:331
+#: src/gtkmm/state_bline.cpp:368
+#: src/gtkmm/state_polygon.cpp:331
 msgid "Make"
 msgstr "Créer"
 
@@ -2607,7 +2766,8 @@ msgstr "Créer"
 msgid "Clear"
 msgstr "Effacer"
 
-#: src/gtkmm/state_bline.cpp:386 src/gtkmm/state_draw.cpp:452
+#: src/gtkmm/state_bline.cpp:386
+#: src/gtkmm/state_draw.cpp:452
 #: src/gtkmm/state_polygon.cpp:353
 msgid "Feather"
 msgstr "Adoucissement"
@@ -2628,81 +2788,129 @@ msgstr "Nouvelle BLine"
 msgid "Unable to add value node"
 msgstr "Impossible d'ajouter un nœud de valeur"
 
-#: src/gtkmm/state_bline.cpp:628 src/gtkmm/state_bline.cpp:691
-#: src/gtkmm/state_bline.cpp:754 src/gtkmm/state_bline.cpp:825
-#: src/gtkmm/state_circle.cpp:633 src/gtkmm/state_circle.cpp:700
-#: src/gtkmm/state_circle.cpp:774 src/gtkmm/state_circle.cpp:848
-#: src/gtkmm/state_circle.cpp:928 src/gtkmm/state_draw.cpp:1045
-#: src/gtkmm/state_draw.cpp:1064 src/gtkmm/state_draw.cpp:1076
-#: src/gtkmm/state_draw.cpp:1110 src/gtkmm/state_draw.cpp:1801
-#: src/gtkmm/state_gradient.cpp:412 src/gtkmm/state_gradient.cpp:425
-#: src/gtkmm/state_gradient.cpp:438 src/gtkmm/state_gradient.cpp:454
-#: src/gtkmm/state_polygon.cpp:537 src/gtkmm/state_polygon.cpp:614
-#: src/gtkmm/state_polygon.cpp:678 src/gtkmm/state_polygon.cpp:742
-#: src/gtkmm/state_polygon.cpp:812 src/gtkmm/state_rectangle.cpp:527
-#: src/gtkmm/state_rectangle.cpp:560 src/gtkmm/state_rectangle.cpp:624
-#: src/gtkmm/state_rectangle.cpp:688 src/gtkmm/state_rectangle.cpp:758
-#: src/gtkmm/state_star.cpp:674 src/gtkmm/state_star.cpp:745
-#: src/gtkmm/state_star.cpp:814 src/gtkmm/state_star.cpp:883
-#: src/gtkmm/state_star.cpp:958 src/gtkmm/state_text.cpp:408
+#: src/gtkmm/state_bline.cpp:628
+#: src/gtkmm/state_bline.cpp:691
+#: src/gtkmm/state_bline.cpp:754
+#: src/gtkmm/state_bline.cpp:825
+#: src/gtkmm/state_circle.cpp:633
+#: src/gtkmm/state_circle.cpp:700
+#: src/gtkmm/state_circle.cpp:774
+#: src/gtkmm/state_circle.cpp:848
+#: src/gtkmm/state_circle.cpp:928
+#: src/gtkmm/state_draw.cpp:1045
+#: src/gtkmm/state_draw.cpp:1064
+#: src/gtkmm/state_draw.cpp:1076
+#: src/gtkmm/state_draw.cpp:1110
+#: src/gtkmm/state_draw.cpp:1801
+#: src/gtkmm/state_gradient.cpp:412
+#: src/gtkmm/state_gradient.cpp:425
+#: src/gtkmm/state_gradient.cpp:438
+#: src/gtkmm/state_gradient.cpp:454
+#: src/gtkmm/state_polygon.cpp:537
+#: src/gtkmm/state_polygon.cpp:614
+#: src/gtkmm/state_polygon.cpp:678
+#: src/gtkmm/state_polygon.cpp:742
+#: src/gtkmm/state_polygon.cpp:812
+#: src/gtkmm/state_rectangle.cpp:527
+#: src/gtkmm/state_rectangle.cpp:560
+#: src/gtkmm/state_rectangle.cpp:624
+#: src/gtkmm/state_rectangle.cpp:688
+#: src/gtkmm/state_rectangle.cpp:758
+#: src/gtkmm/state_star.cpp:674
+#: src/gtkmm/state_star.cpp:745
+#: src/gtkmm/state_star.cpp:814
+#: src/gtkmm/state_star.cpp:883
+#: src/gtkmm/state_star.cpp:958
+#: src/gtkmm/state_text.cpp:408
 msgid "Unable to create layer"
 msgstr "Impossible de créer le calque"
 
-#: src/gtkmm/state_bline.cpp:631 src/gtkmm/state_circle.cpp:705
-#: src/gtkmm/state_polygon.cpp:619 src/gtkmm/state_rectangle.cpp:565
+#: src/gtkmm/state_bline.cpp:631
+#: src/gtkmm/state_circle.cpp:705
+#: src/gtkmm/state_polygon.cpp:619
+#: src/gtkmm/state_rectangle.cpp:565
 #: src/gtkmm/state_star.cpp:750
 msgid " Gradient"
 msgstr " Dégradé"
 
-#: src/gtkmm/state_bline.cpp:650 src/gtkmm/state_bline.cpp:673
-#: src/gtkmm/state_circle.cpp:729 src/gtkmm/state_circle.cpp:752
-#: src/gtkmm/state_polygon.cpp:638 src/gtkmm/state_polygon.cpp:661
-#: src/gtkmm/state_rectangle.cpp:584 src/gtkmm/state_rectangle.cpp:607
-#: src/gtkmm/state_star.cpp:769 src/gtkmm/state_star.cpp:792
+#: src/gtkmm/state_bline.cpp:650
+#: src/gtkmm/state_bline.cpp:673
+#: src/gtkmm/state_circle.cpp:729
+#: src/gtkmm/state_circle.cpp:752
+#: src/gtkmm/state_polygon.cpp:638
+#: src/gtkmm/state_polygon.cpp:661
+#: src/gtkmm/state_rectangle.cpp:584
+#: src/gtkmm/state_rectangle.cpp:607
+#: src/gtkmm/state_star.cpp:769
+#: src/gtkmm/state_star.cpp:792
 msgid "Unable to create Gradient layer"
 msgstr "Impossible de créer un calque de dégradé"
 
-#: src/gtkmm/state_bline.cpp:694 src/gtkmm/state_circle.cpp:779
-#: src/gtkmm/state_polygon.cpp:683 src/gtkmm/state_rectangle.cpp:629
+#: src/gtkmm/state_bline.cpp:694
+#: src/gtkmm/state_circle.cpp:779
+#: src/gtkmm/state_polygon.cpp:683
+#: src/gtkmm/state_rectangle.cpp:629
 #: src/gtkmm/state_star.cpp:819
 msgid " Plant"
 msgstr " Plante"
 
-#: src/gtkmm/state_bline.cpp:713 src/gtkmm/state_bline.cpp:736
-#: src/gtkmm/state_circle.cpp:803 src/gtkmm/state_circle.cpp:826
-#: src/gtkmm/state_polygon.cpp:702 src/gtkmm/state_polygon.cpp:725
-#: src/gtkmm/state_rectangle.cpp:648 src/gtkmm/state_rectangle.cpp:671
-#: src/gtkmm/state_star.cpp:838 src/gtkmm/state_star.cpp:861
+#: src/gtkmm/state_bline.cpp:713
+#: src/gtkmm/state_bline.cpp:736
+#: src/gtkmm/state_circle.cpp:803
+#: src/gtkmm/state_circle.cpp:826
+#: src/gtkmm/state_polygon.cpp:702
+#: src/gtkmm/state_polygon.cpp:725
+#: src/gtkmm/state_rectangle.cpp:648
+#: src/gtkmm/state_rectangle.cpp:671
+#: src/gtkmm/state_star.cpp:838
+#: src/gtkmm/state_star.cpp:861
 msgid "Unable to create Plant layer"
 msgstr "Impossible de créer un calque de plante"
 
-#: src/gtkmm/state_bline.cpp:757 src/gtkmm/state_circle.cpp:853
-#: src/gtkmm/state_draw.cpp:1080 src/gtkmm/state_draw.cpp:2003
-#: src/gtkmm/state_polygon.cpp:747 src/gtkmm/state_rectangle.cpp:693
+#: src/gtkmm/state_bline.cpp:757
+#: src/gtkmm/state_circle.cpp:853
+#: src/gtkmm/state_draw.cpp:1080
+#: src/gtkmm/state_draw.cpp:2003
+#: src/gtkmm/state_polygon.cpp:747
+#: src/gtkmm/state_rectangle.cpp:693
 #: src/gtkmm/state_star.cpp:888
 msgid " Region"
 msgstr " Région"
 
-#: src/gtkmm/state_bline.cpp:784 src/gtkmm/state_bline.cpp:807
-#: src/gtkmm/state_circle.cpp:885 src/gtkmm/state_circle.cpp:908
-#: src/gtkmm/state_draw.cpp:1827 src/gtkmm/state_draw.cpp:2019
-#: src/gtkmm/state_polygon.cpp:774 src/gtkmm/state_polygon.cpp:797
-#: src/gtkmm/state_rectangle.cpp:720 src/gtkmm/state_rectangle.cpp:743
-#: src/gtkmm/state_star.cpp:915 src/gtkmm/state_star.cpp:938
+#: src/gtkmm/state_bline.cpp:784
+#: src/gtkmm/state_bline.cpp:807
+#: src/gtkmm/state_circle.cpp:885
+#: src/gtkmm/state_circle.cpp:908
+#: src/gtkmm/state_draw.cpp:1827
+#: src/gtkmm/state_draw.cpp:2019
+#: src/gtkmm/state_polygon.cpp:774
+#: src/gtkmm/state_polygon.cpp:797
+#: src/gtkmm/state_rectangle.cpp:720
+#: src/gtkmm/state_rectangle.cpp:743
+#: src/gtkmm/state_star.cpp:915
+#: src/gtkmm/state_star.cpp:938
 msgid "Unable to create Region layer"
 msgstr "Impossible de créer un calque de région"
 
-#: src/gtkmm/state_bline.cpp:828 src/gtkmm/state_circle.cpp:933
-#: src/gtkmm/state_draw.cpp:1068 src/gtkmm/state_polygon.cpp:817
-#: src/gtkmm/state_rectangle.cpp:763 src/gtkmm/state_star.cpp:963
+#: src/gtkmm/state_bline.cpp:828
+#: src/gtkmm/state_circle.cpp:933
+#: src/gtkmm/state_draw.cpp:1068
+#: src/gtkmm/state_polygon.cpp:817
+#: src/gtkmm/state_rectangle.cpp:763
+#: src/gtkmm/state_star.cpp:963
 msgid " Outline"
 msgstr " Contour"
 
-#: src/gtkmm/state_bline.cpp:852 src/gtkmm/state_bline.cpp:875
-#: src/gtkmm/state_circle.cpp:963 src/gtkmm/state_circle.cpp:986
-#: src/gtkmm/state_polygon.cpp:842 src/gtkmm/state_polygon.cpp:865
-#: src/gtkmm/state_rectangle.cpp:788 src/gtkmm/state_rectangle.cpp:811
-#: src/gtkmm/state_star.cpp:988 src/gtkmm/state_star.cpp:1011
+#: src/gtkmm/state_bline.cpp:852
+#: src/gtkmm/state_bline.cpp:875
+#: src/gtkmm/state_circle.cpp:963
+#: src/gtkmm/state_circle.cpp:986
+#: src/gtkmm/state_polygon.cpp:842
+#: src/gtkmm/state_polygon.cpp:865
+#: src/gtkmm/state_rectangle.cpp:788
+#: src/gtkmm/state_rectangle.cpp:811
+#: src/gtkmm/state_star.cpp:988
+#: src/gtkmm/state_star.cpp:1011
 msgid "Unable to create Outline layer"
 msgstr "Impossible de créer un calque de contour"
 
@@ -2723,17 +2931,12 @@ msgid "Insert Vertex"
 msgstr "Insérer un vertex"
 
 #: src/gtkmm/state_bline.cpp:1346
-msgid ""
-"Unable to find where to insert vertex, internal error, please report this bug"
-msgstr ""
-"Impossible de trouver où insérer le vertex, erreur interne, signalez ce "
-"bogue s'il vous plaît"
+msgid "Unable to find where to insert vertex, internal error, please report this bug"
+msgstr "Impossible de trouver où insérer le vertex, erreur interne, signalez ce bogue s'il vous plaît"
 
 #: src/gtkmm/state_bline.cpp:1365
 msgid "Unable to remove vertex, internal error, please report this bug"
-msgstr ""
-"Impossible de supprimer le vertex, erreur interne, signalez ce bogue s'il "
-"vous plaît"
+msgstr "Impossible de supprimer le vertex, erreur interne, signalez ce bogue s'il vous plaît"
 
 #: src/gtkmm/state_bline.cpp:1379
 #: src/synfigapp/actions/blinepointtangentmerge.cpp:57
@@ -2745,8 +2948,10 @@ msgstr "Fusionner les tangentes"
 msgid "Split Tangents"
 msgstr "Séparer les tangentes"
 
-#: src/gtkmm/state_circle.cpp:403 src/gtkmm/state_polygon.cpp:324
-#: src/gtkmm/state_rectangle.cpp:341 src/gtkmm/state_star.cpp:440
+#: src/gtkmm/state_circle.cpp:403
+#: src/gtkmm/state_polygon.cpp:324
+#: src/gtkmm/state_rectangle.cpp:341
+#: src/gtkmm/state_star.cpp:440
 msgid "Invert"
 msgstr "Inverser"
 
@@ -2754,7 +2959,8 @@ msgstr "Inverser"
 msgid "Create Circle Layer"
 msgstr "Créer un calque Cercle"
 
-#: src/gtkmm/state_circle.cpp:410 src/gtkmm/state_star.cpp:448
+#: src/gtkmm/state_circle.cpp:410
+#: src/gtkmm/state_star.cpp:448
 msgid "BLine Origins at Center"
 msgstr "Lier les origines des BLines au centre"
 
@@ -2766,9 +2972,12 @@ msgstr "Atténuation"
 msgid "Determines the falloff function for the feather"
 msgstr "Détermine la fonction d'atténuation utilisée pour l'adoucissement"
 
-#: src/gtkmm/state_circle.cpp:419 src/gtkmm/state_gradient.cpp:275
-#: src/gtkmm/widget_waypoint.cpp:89 src/gtkmm/widget_waypoint.cpp:96
-#: src/gtkmm/widget_waypointmodel.cpp:75 src/gtkmm/widget_waypointmodel.cpp:82
+#: src/gtkmm/state_circle.cpp:419
+#: src/gtkmm/state_gradient.cpp:275
+#: src/gtkmm/widget_waypoint.cpp:89
+#: src/gtkmm/widget_waypoint.cpp:96
+#: src/gtkmm/widget_waypointmodel.cpp:75
+#: src/gtkmm/widget_waypointmodel.cpp:82
 msgid "Linear"
 msgstr "Linéaire"
 
@@ -2788,7 +2997,8 @@ msgstr "Sigmoïde"
 msgid "Cosine"
 msgstr "Cosinus"
 
-#: src/gtkmm/state_circle.cpp:427 src/gtkmm/state_gradient.cpp:282
+#: src/gtkmm/state_circle.cpp:427
+#: src/gtkmm/state_gradient.cpp:282
 msgid "Blend Method"
 msgstr "Mode de fusion"
 
@@ -2800,7 +3010,8 @@ msgstr "Défini le mode de fusion à utiliser pour les cercles"
 msgid "Falloff:"
 msgstr "Atténuation :"
 
-#: src/gtkmm/state_circle.cpp:451 src/gtkmm/state_rectangle.cpp:371
+#: src/gtkmm/state_circle.cpp:451
+#: src/gtkmm/state_rectangle.cpp:371
 #: src/gtkmm/state_star.cpp:467
 msgid "Feather:"
 msgstr "Adoucissement :"
@@ -2837,7 +3048,8 @@ msgstr "Étendre automatiquement"
 msgid "Auto Link"
 msgstr "Lier automatiquement"
 
-#: src/gtkmm/state_draw.cpp:418 src/gtkmm/state_draw.cpp:526
+#: src/gtkmm/state_draw.cpp:418
+#: src/gtkmm/state_draw.cpp:526
 msgid "Fill Last Stroke"
 msgstr "Remplissage du dernier tracé"
 
@@ -2861,15 +3073,18 @@ msgstr "Dessin de la BLine"
 msgid "Define Region"
 msgstr "Définir la région"
 
-#: src/gtkmm/state_draw.cpp:1861 src/gtkmm/state_draw.cpp:1912
+#: src/gtkmm/state_draw.cpp:1861
+#: src/gtkmm/state_draw.cpp:1912
 msgid "Extend BLine"
 msgstr "Étendre la BLine"
 
-#: src/gtkmm/state_draw.cpp:1874 src/gtkmm/state_draw.cpp:1925
+#: src/gtkmm/state_draw.cpp:1874
+#: src/gtkmm/state_draw.cpp:1925
 msgid "Unable to set loop for bline"
 msgstr "Impossible de fermer la BLine"
 
-#: src/gtkmm/state_draw.cpp:1898 src/gtkmm/state_draw.cpp:1949
+#: src/gtkmm/state_draw.cpp:1898
+#: src/gtkmm/state_draw.cpp:1949
 msgid "Unable to insert item"
 msgstr "Impossible d'insérer un élément"
 
@@ -2915,15 +3130,15 @@ msgstr "Nouveau dégradé"
 
 #: src/gtkmm/state_normal.cpp:257
 msgid "Ctrl to rotate"
-msgstr ""
+msgstr "Ctrl pour tourner"
 
 #: src/gtkmm/state_normal.cpp:258
 msgid "Alt to scale"
-msgstr ""
+msgstr "Alt pour redimensionner"
 
 #: src/gtkmm/state_normal.cpp:259
 msgid "Shift to constrain"
-msgstr ""
+msgstr "Shift pour contraindre"
 
 #: src/gtkmm/state_polygon.cpp:325
 msgid "Create Polygon Layer"
@@ -2941,7 +3156,8 @@ msgstr "Effacer le polygone courant "
 msgid "New Polygon"
 msgstr "Nouveau polygone"
 
-#: src/gtkmm/state_polygon.cpp:595 src/gtkmm/state_polygon.cpp:597
+#: src/gtkmm/state_polygon.cpp:595
+#: src/gtkmm/state_polygon.cpp:597
 msgid "Unable to create Polygon layer"
 msgstr "Impossible de créer un calque polygone"
 
@@ -2961,7 +3177,8 @@ msgstr "Expansion :"
 msgid "New Rectangle"
 msgstr "Nouveau rectangle"
 
-#: src/gtkmm/state_sketch.cpp:159 src/gtkmm/state_sketch.cpp:240
+#: src/gtkmm/state_sketch.cpp:159
+#: src/gtkmm/state_sketch.cpp:240
 msgid "Save Sketch"
 msgstr "Enregistrer le dessin"
 
@@ -2969,7 +3186,8 @@ msgstr "Enregistrer le dessin"
 msgid "Unable to save sketch"
 msgstr "Impossible d'enregistrer le dessin"
 
-#: src/gtkmm/state_sketch.cpp:178 src/gtkmm/state_sketch.cpp:241
+#: src/gtkmm/state_sketch.cpp:178
+#: src/gtkmm/state_sketch.cpp:241
 msgid "Load Sketch"
 msgstr "Charger un dessin"
 
@@ -2977,7 +3195,8 @@ msgstr "Charger un dessin"
 msgid "Unable to load sketch"
 msgstr "Impossible de charger le dessin"
 
-#: src/gtkmm/state_sketch.cpp:238 src/gtkmm/state_sketch.cpp:269
+#: src/gtkmm/state_sketch.cpp:238
+#: src/gtkmm/state_sketch.cpp:269
 #: src/gtkmm/state_sketch.cpp:270
 msgid "Clear Sketch"
 msgstr "Effacer le dessin"
@@ -2990,16 +3209,20 @@ msgstr "Annuler le tracé"
 msgid "Show Sketch"
 msgstr "Afficher le dessin"
 
-#: src/gtkmm/state_sketch.cpp:257 src/gtkmm/state_sketch.cpp:258
+#: src/gtkmm/state_sketch.cpp:257
+#: src/gtkmm/state_sketch.cpp:258
 msgid "Undo Last Stroke"
 msgstr "Annuler le dernier tracé"
 
-#: src/gtkmm/state_sketch.cpp:281 src/gtkmm/state_sketch.cpp:282
-#: src/gtkmm/state_sketch.cpp:293 src/gtkmm/state_sketch.cpp:294
+#: src/gtkmm/state_sketch.cpp:281
+#: src/gtkmm/state_sketch.cpp:282
+#: src/gtkmm/state_sketch.cpp:293
+#: src/gtkmm/state_sketch.cpp:294
 msgid "Save Sketch As..."
 msgstr "Enregistrer le dessin sous..."
 
-#: src/gtkmm/state_sketch.cpp:305 src/gtkmm/state_sketch.cpp:306
+#: src/gtkmm/state_sketch.cpp:305
+#: src/gtkmm/state_sketch.cpp:306
 msgid "Open a Sketch"
 msgstr "Ouvrir un dessin"
 
@@ -3059,7 +3282,8 @@ msgstr "Impossible de créer le calque étoile"
 msgid "Multiline Editor"
 msgstr "Éditeur multilignes"
 
-#: src/gtkmm/state_text.cpp:285 src/gtkmm/state_text.cpp:330
+#: src/gtkmm/state_text.cpp:285
+#: src/gtkmm/state_text.cpp:330
 msgid "Text Tool"
 msgstr "Outil Texte"
 
@@ -3083,7 +3307,8 @@ msgstr "Nouveau texte"
 msgid "Text Paragraph"
 msgstr "Paragraphe de texte"
 
-#: src/gtkmm/state_text.cpp:401 src/gtkmm/state_text.cpp:403
+#: src/gtkmm/state_text.cpp:401
+#: src/gtkmm/state_text.cpp:403
 msgid "Enter text here:"
 msgstr "Saisissez votre texte ici :"
 
@@ -3111,7 +3336,8 @@ msgstr "Largeur du dessin"
 msgid "Cannot save"
 msgstr "Impossible d'enregistrer"
 
-#: src/gtkmm/toolbox.cpp:135 src/gtkmm/toolbox.cpp:147
+#: src/gtkmm/toolbox.cpp:135
+#: src/gtkmm/toolbox.cpp:147
 msgid "Nothing to save"
 msgstr "Rien à enregistrer"
 
@@ -3197,7 +3423,7 @@ msgstr "Support"
 #. TRANSLATORS: a website page
 #: src/gtkmm/toolbox.cpp:280
 msgid "/en/support"
-msgstr ""
+msgstr "/wiki/Main_Page/fr"
 
 #: src/gtkmm/toolbox.cpp:287
 msgid "_Help"
@@ -3371,21 +3597,27 @@ msgstr "Cliquer et déplacer les images clés"
 msgid "(Non-static value)"
 msgstr "(Valeur non-statique)"
 
-#: src/gtkmm/widget_waypoint.cpp:87 src/gtkmm/widget_waypoint.cpp:94
-#: src/gtkmm/widget_waypointmodel.cpp:73 src/gtkmm/widget_waypointmodel.cpp:80
+#: src/gtkmm/widget_waypoint.cpp:87
+#: src/gtkmm/widget_waypoint.cpp:94
+#: src/gtkmm/widget_waypointmodel.cpp:73
+#: src/gtkmm/widget_waypointmodel.cpp:80
 msgid "TCB Smooth"
 msgstr "Lissage TCB"
 
-#: src/gtkmm/widget_waypoint.cpp:88 src/gtkmm/widget_waypoint.cpp:95
-#: src/gtkmm/widget_waypointmodel.cpp:74 src/gtkmm/widget_waypointmodel.cpp:81
+#: src/gtkmm/widget_waypoint.cpp:88
+#: src/gtkmm/widget_waypoint.cpp:95
+#: src/gtkmm/widget_waypointmodel.cpp:74
+#: src/gtkmm/widget_waypointmodel.cpp:81
 msgid "Constant"
 msgstr "Constant"
 
-#: src/gtkmm/widget_waypoint.cpp:90 src/gtkmm/widget_waypointmodel.cpp:76
+#: src/gtkmm/widget_waypoint.cpp:90
+#: src/gtkmm/widget_waypointmodel.cpp:76
 msgid "Ease In"
 msgstr "Adoucir en entrée"
 
-#: src/gtkmm/widget_waypoint.cpp:97 src/gtkmm/widget_waypointmodel.cpp:83
+#: src/gtkmm/widget_waypoint.cpp:97
+#: src/gtkmm/widget_waypointmodel.cpp:83
 msgid "Ease Out"
 msgstr "Adoucir en sortie"
 
@@ -3485,7 +3717,8 @@ msgstr "Déplacer"
 msgid "Rendering..."
 msgstr "Rendu en cours..."
 
-#: src/gtkmm/workarea.cpp:2373 src/gtkmm/workarea.cpp:2465
+#: src/gtkmm/workarea.cpp:2373
+#: src/gtkmm/workarea.cpp:2465
 msgid "Render Failed"
 msgstr "Échec du rendu"
 
@@ -3514,7 +3747,8 @@ msgstr "Zoomer à 100%"
 msgid "Selected Canvas"
 msgstr "Canevas sélectionné"
 
-#: src/synfigapp/action.cpp:489 src/synfigapp/action.cpp:490
+#: src/synfigapp/action.cpp:489
+#: src/synfigapp/action.cpp:490
 msgid "Canvas Interface"
 msgstr "Interface du canevas"
 
@@ -3850,12 +4084,8 @@ msgid "Set Keyframe"
 msgstr "Configurer l'image clé"
 
 #: src/synfigapp/actions/keyframeset.cpp:385
-msgid ""
-"Cannot change keyframe time because another keyframe already exists with "
-"that time."
-msgstr ""
-"Impossible de déplacer l'image clé car une autre image clé existe déjà à cet "
-"endroit"
+msgid "Cannot change keyframe time because another keyframe already exists with that time."
+msgstr "Impossible de déplacer l'image clé car une autre image clé existe déjà à cet endroit"
 
 #: src/synfigapp/actions/keyframesetdelta.cpp:53
 msgid "Set Keyframe Delta"
@@ -3904,7 +4134,8 @@ msgstr "Le nouvel état du calque"
 msgid "This layer doesn't exist anymore."
 msgstr "Ce calque n'existe plus."
 
-#: src/synfigapp/actions/layeradd.cpp:50 src/synfigapp/actions/layeradd.cpp:71
+#: src/synfigapp/actions/layeradd.cpp:50
+#: src/synfigapp/actions/layeradd.cpp:71
 #: src/synfigapp/actions/layeradd.cpp:73
 msgid "Add Layer"
 msgstr "Ajouter un calque"
@@ -3993,9 +4224,7 @@ msgstr "Canevas où déplacer le calque"
 
 #: src/synfigapp/actions/layermove.cpp:170
 msgid "You cannot directly move layers across compositions"
-msgstr ""
-"Vous ne pouvez pas déplacer les calques directement d'une composition à "
-"l'autre"
+msgstr "Vous ne pouvez pas déplacer les calques directement d'une composition à l'autre"
 
 #: src/synfigapp/actions/layerparamconnect.cpp:49
 msgid "Connect Layer Parameter"
@@ -4292,19 +4521,13 @@ msgstr "Nombre de références égales. Utilisation du nœud de valeur animé."
 
 #: src/synfigapp/actions/valuedesclink.cpp:174
 #: src/synfigapp/actions/valuedesclink.cpp:180
-msgid ""
-"There's a tie for most referenced, and both are animated; using the one with "
-"the most waypoints."
-msgstr ""
-"Nombre de références égales, et les deux nœuds sont animés. Utilisation de "
-"celui avec le plus de points de passage."
+msgid "There's a tie for most referenced, and both are animated; using the one with the most waypoints."
+msgstr "Nombre de références égales, et les deux nœuds sont animés. Utilisation de celui avec le plus de points de passage."
 
 #: src/synfigapp/actions/valuedesclink.cpp:189
 #: src/synfigapp/actions/valuedesclink.cpp:195
 msgid "Everything is tied; using the least recently modified value."
-msgstr ""
-"Égalité à tous les niveaux, utilisation de la valeur la plus anciennement "
-"modifiée."
+msgstr "Égalité à tous les niveaux, utilisation de la valeur la plus anciennement modifiée."
 
 #: src/synfigapp/actions/valuedesclink.cpp:201
 msgid "Absolutely everything is tied."
@@ -4352,14 +4575,11 @@ msgstr "Type invalide pour un composé radial (%s)"
 #: src/synfigapp/actions/valuedescset.cpp:499
 #: src/synfigapp/actions/valuedescset.cpp:546
 msgid "Direct manipulation of this ValueNode type is not yet supported"
-msgstr ""
-"La manipulation directe de ce nœud de valeur n'est pas encore supportée"
+msgstr "La manipulation directe de ce nœud de valeur n'est pas encore supportée"
 
 #: src/synfigapp/actions/valuedescset.cpp:544
 msgid "You must be in Animate-Editing-Mode to directly manipulate this value"
-msgstr ""
-"Vous devez être en mode édition d'animation pour manipuler directement cette "
-"valeur"
+msgstr "Vous devez être en mode édition d'animation pour manipuler directement cette valeur"
 
 #: src/synfigapp/actions/valuedescset.cpp:566
 msgid "Unsupported ValueDesc type"
@@ -4519,9 +4739,7 @@ msgstr "Un nœud de valeur avec cet identifiant existe déjà dans le canevas"
 
 #: src/synfigapp/actions/valuenoderename.cpp:169
 msgid "A ValueNode with the old ID already exists in this canvas (BUG)"
-msgstr ""
-"Un nœud de valeur avec l'ancien identifiant existe déjà dans ce canevas "
-"(bogue)"
+msgstr "Un nœud de valeur avec l'ancien identifiant existe déjà dans ce canevas (bogue)"
 
 #: src/synfigapp/actions/valuenodereplace.cpp:49
 msgid "Replace ValueNode"
@@ -4618,24 +4836,15 @@ msgstr "Temps non correspondant, iter=%s, waypoint=%s"
 
 #: src/synfigapp/actions/waypointremove.cpp:141
 msgid "Unable to create ValueNode_Reference"
-msgstr ""
-"Impossible de créer une référence de nœud de valeur (ValueNode_Reference)"
+msgstr "Impossible de créer une référence de nœud de valeur (ValueNode_Reference)"
 
 #: src/synfigapp/actions/waypointremove.cpp:172
-msgid ""
-"This animated value node should be empty, but for some reason it isn't. This "
-"is a bug. (1)"
-msgstr ""
-"Ce nœud de valeur animé devrait être vide, mais il ne l'est pas. C'est un "
-"bogue (1)"
+msgid "This animated value node should be empty, but for some reason it isn't. This is a bug. (1)"
+msgstr "Ce nœud de valeur animé devrait être vide, mais il ne l'est pas. C'est un bogue (1)"
 
 #: src/synfigapp/actions/waypointremove.cpp:190
-msgid ""
-"This animated value node should be empty, but for some reason it isn't. This "
-"is a bug. (2)"
-msgstr ""
-"Ce nœud de valeur animé devrait être vide, mais il ne l'est pas. C'est un "
-"bogue (2)"
+msgid "This animated value node should be empty, but for some reason it isn't. This is a bug. (2)"
+msgstr "Ce nœud de valeur animé devrait être vide, mais il ne l'est pas. C'est un bogue (2)"
 
 #: src/synfigapp/actions/waypointremove.cpp:195
 msgid "A Waypoint already exists at this point in time"
@@ -4666,10 +4875,10 @@ msgstr "L'action n'est pas prête"
 
 #: src/synfigapp/action_system.cpp:112
 msgid "This action cannot be undone! Are you sure you want to continue?"
-msgstr ""
-"Cette action ne peut pas être annulée. Êtes-vous sûr de vouloir continuer ?"
+msgstr "Cette action ne peut pas être annulée. Êtes-vous sûr de vouloir continuer ?"
 
-#: src/synfigapp/action_system.cpp:131 src/synfigapp/action_system.cpp:148
+#: src/synfigapp/action_system.cpp:131
+#: src/synfigapp/action_system.cpp:148
 #: src/synfigapp/action_system.cpp:159
 msgid "Failed"
 msgstr "Échec"
@@ -4678,7 +4887,8 @@ msgstr "Échec"
 msgid "Successful"
 msgstr "Succès"
 
-#: src/synfigapp/action_system.cpp:225 src/synfigapp/action_system.cpp:227
+#: src/synfigapp/action_system.cpp:225
+#: src/synfigapp/action_system.cpp:227
 msgid " (Undo): "
 msgstr "(Annuler) :"
 
@@ -4686,7 +4896,8 @@ msgstr "(Annuler) :"
 msgid "Failed to undo."
 msgstr "Échec de l'annulation."
 
-#: src/synfigapp/action_system.cpp:323 src/synfigapp/action_system.cpp:325
+#: src/synfigapp/action_system.cpp:323
+#: src/synfigapp/action_system.cpp:325
 msgid " (Redo): "
 msgstr "(Rétablir) :"
 
@@ -4710,16 +4921,23 @@ msgstr "Impossible de changer de mode"
 msgid "Add Layer To"
 msgstr "Ajouter un calque à"
 
-#: src/synfigapp/canvasinterface.cpp:292 src/synfigapp/canvasinterface.cpp:353
-#: src/synfigapp/canvasinterface.cpp:386 src/synfigapp/canvasinterface.cpp:598
+#: src/synfigapp/canvasinterface.cpp:292
+#: src/synfigapp/canvasinterface.cpp:353
+#: src/synfigapp/canvasinterface.cpp:386
+#: src/synfigapp/canvasinterface.cpp:598
 msgid "Action Not Ready"
 msgstr "Action non prête"
 
-#: src/synfigapp/canvasinterface.cpp:298 src/synfigapp/canvasinterface.cpp:360
-#: src/synfigapp/canvasinterface.cpp:393 src/synfigapp/canvasinterface.cpp:481
-#: src/synfigapp/canvasinterface.cpp:498 src/synfigapp/canvasinterface.cpp:517
-#: src/synfigapp/canvasinterface.cpp:534 src/synfigapp/canvasinterface.cpp:602
-#: src/synfigapp/canvasinterface.cpp:738 src/synfigapp/canvasinterface.cpp:763
+#: src/synfigapp/canvasinterface.cpp:298
+#: src/synfigapp/canvasinterface.cpp:360
+#: src/synfigapp/canvasinterface.cpp:393
+#: src/synfigapp/canvasinterface.cpp:481
+#: src/synfigapp/canvasinterface.cpp:498
+#: src/synfigapp/canvasinterface.cpp:517
+#: src/synfigapp/canvasinterface.cpp:534
+#: src/synfigapp/canvasinterface.cpp:602
+#: src/synfigapp/canvasinterface.cpp:738
+#: src/synfigapp/canvasinterface.cpp:763
 #: src/synfigapp/canvasinterface.cpp:816
 msgid "Action Failed."
 msgstr "L'action a échoué."
@@ -4775,11 +4993,13 @@ msgstr ""
 "une composition qui semble ne pas être ouverte. Ouvrez cette\n"
 "composition et vous devriez être capable de modifier cette valeur."
 
-#: src/synfigapp/uimanager.cpp:83 src/synfigapp/uimanager.cpp:110
+#: src/synfigapp/uimanager.cpp:83
+#: src/synfigapp/uimanager.cpp:110
 msgid "(no/yes)"
 msgstr "(non/oui)"
 
-#: src/synfigapp/uimanager.cpp:85 src/synfigapp/uimanager.cpp:112
+#: src/synfigapp/uimanager.cpp:85
+#: src/synfigapp/uimanager.cpp:112
 msgid "(yes/no)"
 msgstr "(oui/non)"
 
