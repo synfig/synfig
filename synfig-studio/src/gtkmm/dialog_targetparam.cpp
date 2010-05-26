@@ -115,14 +115,12 @@ Dialog_TargetParam::Dialog_TargetParam(synfig::TargetParam &tparam)
 	vcodec->set_active_text(CUSTOM_VCODEC);
 	customvcodec->set_text("customvc");
 	//Compare the passed vcodec to the available and set it active if found
-	bool foundvcodec=false;
 	for (int i = 0; allowed_video_codecs[i] != NULL &&
 					allowed_video_codecs_description[i] != NULL; i++)
 		if(!get_tparam().video_codec.compare(allowed_video_codecs[i]))
 		{
 			vcodec->set_active_text(allowed_video_codecs_description[i]);
 			customvcodec->set_text(allowed_video_codecs[i]);
-			foundvcodec = true;
 		}
 
 	//Bitrate Spin Button
@@ -150,11 +148,7 @@ Dialog_TargetParam::Dialog_TargetParam(synfig::TargetParam &tparam)
 void
 Dialog_TargetParam::on_ok()
 {
-	std::string codecnamed = vcodec->get_active_text();
-	for (int i = 0; allowed_video_codecs[i] != NULL &&
-					allowed_video_codecs_description[i] != NULL; i++)
-		if(!codecnamed.compare(allowed_video_codecs_description[i]))
-			tparam_.video_codec=allowed_video_codecs[i];
+	tparam_.video_codec=customvcodec->get_text().c_str();
 	tparam_.bitrate=bitrate->get_value();
 	hide();
 }
@@ -169,10 +163,16 @@ void
 Dialog_TargetParam::on_vcodec_change()
 {
 	std::string codecnamed = vcodec->get_active_text();
+	customvcodec->set_sensitive(false);
 	for (int i = 0; allowed_video_codecs[i] != NULL &&
 					allowed_video_codecs_description[i] != NULL; i++)
 		if(!codecnamed.compare(allowed_video_codecs_description[i]))
-			customvcodec->set_text(allowed_video_codecs[i]);
+		{
+			if(!codecnamed.compare(CUSTOM_VCODEC))
+				customvcodec->set_sensitive(true);
+			else
+				customvcodec->set_text(allowed_video_codecs[i]);
+		}
 }
 
 Dialog_TargetParam::~Dialog_TargetParam()
