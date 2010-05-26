@@ -68,7 +68,7 @@ RenderSettings::RenderSettings(Gtk::Window& parent, etl::handle<synfigapp::Canva
 	adjustment_antialias(1,1,31),
 	entry_antialias(adjustment_antialias,1,0),
 	toggle_single_frame(_("Use _current frame"), true),
-	tparam("libxvid",200)
+	tparam("mpeg4",200)
 {
 	widget_rend_desc.show();
 	widget_rend_desc.signal_changed().connect(sigc::mem_fun(*this,&studio::RenderSettings::on_rend_desc_changed));

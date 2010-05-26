@@ -53,7 +53,7 @@ using namespace studio;
  */
 const char* allowed_video_codecs[] =
 {
-	"flv", "h263p", "huffyuv", "libtheora", "libx264", "libxvid",
+	"flv", "h263p", "huffyuv", "libtheora", "libx264",
 	"mjpeg", "mpeg1video", "mpeg2video", "mpeg4", "msmpeg4",
 	"msmpeg4v1", "msmpeg4v2", "wmv1", "wmv2", "customvc", NULL
 };
@@ -69,11 +69,10 @@ const char* allowed_video_codecs_description[] =
 	_("Huffyuv / HuffYUV."),
 	_("libtheora Theora."),
 	_("libx264 H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10."),
-	_("libxvidcore MPEG-4 part 2."),
 	_("MJPEG (Motion JPEG)."),
 	_("raw MPEG-1 video."),
 	_("raw MPEG-2 video."),
-	_("MPEG-4 part 2."),
+	_("MPEG-4 part 2. (XviD/DivX)"),
 	_("MPEG-4 part 2 Microsoft variant version 3."),
 	_("MPEG-4 part 2 Microsoft variant version 1."),
 	_("MPEG-4 part 2 Microsoft variant version 2."),
