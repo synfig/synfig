@@ -248,7 +248,7 @@ RenderSettings::on_choose_pressed()
 void
 RenderSettings::on_targetparam_pressed()
 {
-	Dialog_TargetParam *dialogtp = new Dialog_TargetParam(tparam);
+	Dialog_TargetParam *dialogtp = new Dialog_TargetParam(*this, tparam);
 	if(dialogtp->run()==Gtk::RESPONSE_OK)
 		tparam=dialogtp->get_tparam();
 

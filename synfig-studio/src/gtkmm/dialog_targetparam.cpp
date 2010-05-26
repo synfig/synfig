@@ -87,9 +87,9 @@ const char* allowed_video_codecs_description[] =
 
 /* === E N T R Y P O I N T ================================================= */
 
-Dialog_TargetParam::Dialog_TargetParam(synfig::TargetParam &tparam)
+Dialog_TargetParam::Dialog_TargetParam(Gtk::Window &parent, synfig::TargetParam &tparam):
+	Gtk::Dialog(_("TargetParam Dialog"), parent, false, true)
 {
-	set_title(_("TargetParam Dialog"));
 	set_tparam(tparam);
 	// Custom Video Codec Entry
 	Gtk::Label* custom_label(manage(new Gtk::Label(CUSTOM_VCODEC)));

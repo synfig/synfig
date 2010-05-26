@@ -55,7 +55,7 @@ class Dialog_TargetParam : public Gtk::Dialog
 	void on_vcodec_change();
 
 public:
-	Dialog_TargetParam(synfig::TargetParam &tparam);
+	Dialog_TargetParam(Gtk::Window &parent, synfig::TargetParam &tparam);
 	~Dialog_TargetParam();
 
 	synfig::TargetParam get_tparam() const { return tparam_; }
