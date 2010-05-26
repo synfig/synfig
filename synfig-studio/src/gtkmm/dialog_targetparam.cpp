@@ -42,7 +42,8 @@ using namespace studio;
 
 /* === M A C R O S ========================================================= */
 
-#define CUSTOM_VCODEC _("Custom Video Codec")
+#define CUSTOM_VCODEC_DESCRIPTION _("Custom Video Codec")
+#define CUSTOM_VCODEC _("write your video codec here")
 
 /* === G L O B A L S ======================================================= */
 //! Allowed video codecs
@@ -55,7 +56,7 @@ const char* allowed_video_codecs[] =
 {
 	"flv", "h263p", "huffyuv", "libtheora", "libx264",
 	"mjpeg", "mpeg1video", "mpeg2video", "mpeg4", "msmpeg4",
-	"msmpeg4v1", "msmpeg4v2", "wmv1", "wmv2", "customvc", NULL
+	"msmpeg4v1", "msmpeg4v2", "wmv1", "wmv2", CUSTOM_VCODEC, NULL
 };
 
 //! Allowed video codecs description.
@@ -78,7 +79,7 @@ const char* allowed_video_codecs_description[] =
 	_("MPEG-4 part 2 Microsoft variant version 2."),
 	_("Windows Media Video 7."),
 	_("Windows Media Video 8."),
-	CUSTOM_VCODEC,
+	CUSTOM_VCODEC_DESCRIPTION,
 	NULL
 };
 /* === P R O C E D U R E S ================================================= */
@@ -88,31 +89,32 @@ const char* allowed_video_codecs_description[] =
 /* === E N T R Y P O I N T ================================================= */
 
 Dialog_TargetParam::Dialog_TargetParam(Gtk::Window &parent, synfig::TargetParam &tparam):
-	Gtk::Dialog(_("TargetParam Dialog"), parent, false, true)
+	Gtk::Dialog(_("Target Parameters"), parent, false, true)
 {
 	set_tparam(tparam);
 	// Custom Video Codec Entry
-	Gtk::Label* custom_label(manage(new Gtk::Label(CUSTOM_VCODEC)));
+	Gtk::Label* custom_label(manage(new Gtk::Label(std::string(CUSTOM_VCODEC_DESCRIPTION)+":")));
 	custom_label->set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
-	get_vbox()->pack_start(*custom_label, true, true, 0);
 	customvcodec=Gtk::manage(new Gtk::Entry());
-	get_vbox()->pack_start(*customvcodec, true, true, 0);
 	// Available Video Codecs Combo Box Text.
-	vcodec = Gtk::manage(new Gtk::ComboBoxText());
 	Gtk::Label* label(manage(new Gtk::Label(_("Available Video Codecs:"))));
 	label->set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
-	get_vbox()->pack_start(*label, true, true, 0);
+	vcodec = Gtk::manage(new Gtk::ComboBoxText());
 	// Appends the codec descriptions to the Combo Box
 	for (int i = 0; allowed_video_codecs[i] != NULL &&
 					allowed_video_codecs_description[i] != NULL; i++)
 		vcodec->append_text(allowed_video_codecs_description[i]);
-	//Adds the Combo Box to the vertical box
+	//Adds the Combo Box and the Custom Video Codec entry to the vertical box
+	get_vbox()->pack_start(*label, true, true, 0);
 	get_vbox()->pack_start(*vcodec, true, true, 0);
+	get_vbox()->pack_start(*custom_label, true, true, 0);
+	get_vbox()->pack_start(*customvcodec, true, true, 0);
+
 	// Connect the signal change to the handler
 	vcodec->signal_changed().connect(sigc::mem_fun(*this, &Dialog_TargetParam::on_vcodec_change));
 	// By defaut, set the active text to the Custom Video Codec
-	vcodec->set_active_text(CUSTOM_VCODEC);
-	customvcodec->set_text("customvc");
+	vcodec->set_active_text(CUSTOM_VCODEC_DESCRIPTION);
+	customvcodec->set_text(CUSTOM_VCODEC);
 	//Compare the passed vcodec to the available and set it active if found
 	for (int i = 0; allowed_video_codecs[i] != NULL &&
 					allowed_video_codecs_description[i] != NULL; i++)
@@ -167,7 +169,7 @@ Dialog_TargetParam::on_vcodec_change()
 					allowed_video_codecs_description[i] != NULL; i++)
 		if(!codecnamed.compare(allowed_video_codecs_description[i]))
 		{
-			if(!codecnamed.compare(CUSTOM_VCODEC))
+			if(!codecnamed.compare(CUSTOM_VCODEC_DESCRIPTION))
 				customvcodec->set_sensitive(true);
 			else
 				customvcodec->set_text(allowed_video_codecs[i]);
