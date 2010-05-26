@@ -183,7 +183,7 @@ Splash::Splash():
 	int number = 1;
 	if(ran >0.499999)
 		number = 2;
-	synfig::info("%s", strprintf("%d",number).c_str());
+	//synfig::info("%s", strprintf("%d",number).c_str());
 	splash_image->set(imagepath+"splash_screen"+strprintf("%d",number)+"."IMAGE_EXT);
 	splash_image->set_alignment(0.5,0.5);
 	splash_image->set_padding(0,0);
