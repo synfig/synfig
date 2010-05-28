@@ -74,6 +74,7 @@ class RenderSettings : public Gtk::Dialog
 
 	Gtk::OptionMenu optionmenu_target;
 	Gtk::Menu *menu_target;
+	Gtk::Button *tparam_button;
 
 	synfig::String target_name;
 

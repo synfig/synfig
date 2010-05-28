@@ -106,8 +106,9 @@ RenderSettings::RenderSettings(Gtk::Window& parent, etl::handle<synfigapp::Canva
 	choose_button->show();
 	choose_button->signal_clicked().connect(sigc::mem_fun(*this, &studio::RenderSettings::on_choose_pressed));
 
-	Gtk::Button *tparam_button(manage(new class Gtk::Button(Gtk::StockID(_("Parameters...")))));
+	tparam_button=manage(new class Gtk::Button(Gtk::StockID(_("Parameters..."))));
 	tparam_button->show();
+	tparam_button->set_sensitive(false);
 	tparam_button->signal_clicked().connect(sigc::mem_fun(*this, &studio::RenderSettings::on_targetparam_pressed));
 
 	Gtk::Frame *target_frame=manage(new Gtk::Frame(_("Target")));
@@ -235,6 +236,7 @@ void
 RenderSettings::set_target(synfig::String name)
 {
 	target_name=name;
+	tparam_button->set_sensitive(target_name.compare("ffmpeg")?false:true);
 }
 
 void
