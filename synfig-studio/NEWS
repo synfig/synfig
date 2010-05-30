@@ -18,7 +18,7 @@ http://synfig.org/wiki/Releases
   * Suit custom mouse cursors for some tools.
   * Add code to make possible pass parameters to the renderers. Implementation for ffmpeg.
   * Repack rulers and caret menu to get less space.
-  * New italian translation.
+  * New italian and German translations.
   * New parameters for Motion Blur layer. Now allows linear and constant interpolation too.
   * New icons for actions and layers. Thanks to several authors.
   * Fixed feature that reset windows docks to default size and position.
