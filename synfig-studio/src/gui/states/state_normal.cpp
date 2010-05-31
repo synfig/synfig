@@ -113,32 +113,25 @@ class studio::StateNormal_Context : public sigc::trackable
 {
 	CanvasView* canvas_view_;
 
-	synfigapp::Settings& settings;
-
-	sigc::connection keypress_connect;
-	sigc::connection keyrelease_connect;
-
 	etl::handle<DuckDrag_Combo> duck_dragger_;
 
 	Gtk::Table options_table;
 
-	Gtk::CheckButton checkbutton_rotate;
-	Gtk::CheckButton checkbutton_scale;
-	Gtk::CheckButton checkbutton_constrain;
-
 public:
 
-	bool get_rotate_flag()const { return checkbutton_rotate.get_active(); }
-	void set_rotate_flag(bool x) { checkbutton_rotate.set_active(x); refresh_rotate_flag(); }
-	void refresh_rotate_flag() { if(duck_dragger_)duck_dragger_->rotate=get_rotate_flag(); }
+	void refresh_cursor();
 
-	bool get_scale_flag()const { return checkbutton_scale.get_active(); }
-	void set_scale_flag(bool x) { checkbutton_scale.set_active(x); refresh_scale_flag(); }
-	void refresh_scale_flag() { if(duck_dragger_)duck_dragger_->scale=get_scale_flag(); }
+	bool get_rotate_flag()const { if(duck_dragger_) return duck_dragger_->rotate; else return false; }
+	void set_rotate_flag(bool x) { if(duck_dragger_ && x!=duck_dragger_->rotate)
+		                               {duck_dragger_->rotate=x; refresh_cursor();} }
 
-	bool get_constrain_flag()const { return checkbutton_constrain.get_active(); }
-	void set_constrain_flag(bool x) { checkbutton_constrain.set_active(x); refresh_constrain_flag(); }
-	void refresh_constrain_flag() { if(duck_dragger_)duck_dragger_->constrain=get_constrain_flag(); }
+	bool get_scale_flag()const { if(duck_dragger_) return duck_dragger_->scale; else return false; }
+	void set_scale_flag(bool x) { if(duck_dragger_ && x!=duck_dragger_->scale)
+		                              {duck_dragger_->scale=x; refresh_cursor();} }
+
+	bool get_constrain_flag()const { if(duck_dragger_) return duck_dragger_->constrain; else return false; }
+	void set_constrain_flag(bool x) { if(duck_dragger_ && x!=duck_dragger_->constrain)
+		                                  {duck_dragger_->constrain=x; refresh_cursor();} }
 
 	StateNormal_Context(CanvasView* canvas_view);
 
@@ -149,12 +142,6 @@ public:
 	synfig::Canvas::Handle get_canvas()const{return canvas_view_->get_canvas();}
 	WorkArea * get_work_area()const{return canvas_view_->get_work_area();}
 
-	void load_settings();
-	void save_settings();
-
-	bool key_pressed(GdkEventKey *event);
-	bool key_released(GdkEventKey *event);
-
 	Smach::event_result event_stop_handler(const Smach::event& x);
 	Smach::event_result event_refresh_handler(const Smach::event& x);
 	Smach::event_result event_refresh_ducks_handler(const Smach::event& x);
@@ -162,6 +149,7 @@ public:
 	Smach::event_result event_redo_handler(const Smach::event& x);
 	Smach::event_result event_mouse_button_down_handler(const Smach::event& x);
 	Smach::event_result event_multiple_ducks_clicked_handler(const Smach::event& x);
+	Smach::event_result event_mouse_motion_handler(const Smach::event& x);
 	Smach::event_result event_refresh_tool_options(const Smach::event& x);
 	void refresh_tool_options();
 	Smach::event_result event_layer_click(const Smach::event& x);
@@ -182,6 +170,8 @@ StateNormal::StateNormal():
 	insert(event_def(EVENT_WORKAREA_MOUSE_BUTTON_DOWN,&StateNormal_Context::event_mouse_button_down_handler));
 	insert(event_def(EVENT_WORKAREA_MULTIPLE_DUCKS_CLICKED,&StateNormal_Context::event_multiple_ducks_clicked_handler));
 	insert(event_def(EVENT_REFRESH_TOOL_OPTIONS,&StateNormal_Context::event_refresh_tool_options));
+	insert(event_def(EVENT_WORKAREA_MOUSE_MOTION,		&StateNormal_Context::event_mouse_motion_handler));
+	insert(event_def(EVENT_WORKAREA_MOUSE_BUTTON_DRAG,	&StateNormal_Context::event_mouse_motion_handler));
 	insert(event_def(EVENT_WORKAREA_LAYER_CLICKED,&StateNormal_Context::event_layer_click));
 
 }
@@ -190,56 +180,47 @@ StateNormal::~StateNormal()
 {
 }
 
-void
-StateNormal_Context::load_settings()
+void StateNormal_Context::refresh_cursor()
 {
-	String value;
+	// Check the current state and return when applicable
+	synfig::String sname;
+	sname=get_canvas_view()->get_smach().get_state_name();
+	if (sname!="normal")
+			return;
 
-	if(settings.get_value("normal.rotate",value) && value=="1")
-		set_rotate_flag(true);
-	else
-		set_rotate_flag(false);
+	// Change the cursor based on key flags
+	if(get_rotate_flag() && !get_scale_flag())
+	{
+		get_work_area()->set_cursor(Gdk::EXCHANGE);
+		return;
+	}
+	if(!get_rotate_flag() && get_scale_flag())
+	{
+		get_work_area()->set_cursor(Gdk::SIZING);
+		return;
+	}
+	if(get_rotate_flag() && get_scale_flag())
+	{
+		get_work_area()->set_cursor(Gdk::CROSSHAIR);
+		return;
+	}
 
-	if(settings.get_value("normal.scale",value) && value=="1")
-		set_scale_flag(true);
-	else
-		set_scale_flag(false);
+	// Default cursor for Transform tool
+	get_work_area()->set_cursor(Gdk::ARROW);
 
-	if(settings.get_value("normal.constrain",value) && value=="1")
-		set_constrain_flag(true);
-	else
-		set_constrain_flag(false);
-
-}
-
-void
-StateNormal_Context::save_settings()
-{
-	settings.set_value("normal.rotate",get_rotate_flag()?"1":"0");
-	settings.set_value("normal.scale",get_scale_flag()?"1":"0");
-	settings.set_value("normal.constrain",get_constrain_flag()?"1":"0");
 }
 
 StateNormal_Context::StateNormal_Context(CanvasView* canvas_view):
 	canvas_view_(canvas_view),
-	settings(synfigapp::Main::get_selected_input_device()->settings()),
-	duck_dragger_(new DuckDrag_Combo()),
-	checkbutton_rotate(_("Rotate (Ctrl)")),
-	checkbutton_scale(_("Scale (Alt)")),
-	checkbutton_constrain(_("Constrain (Shift)"))
+	duck_dragger_(new DuckDrag_Combo())
 {
 	duck_dragger_->canvas_view_=get_canvas_view();
 
 	// Set up the tool options dialog
-	options_table.attach(*manage(new Gtk::Label(_("Normal Tool"))),	0, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(checkbutton_rotate,							0, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(checkbutton_scale,							0, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(checkbutton_constrain,							0, 2, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-
-	checkbutton_rotate.signal_toggled().connect(sigc::mem_fun(*this,&StateNormal_Context::refresh_rotate_flag));
-	checkbutton_scale.signal_toggled().connect(sigc::mem_fun(*this,&StateNormal_Context::refresh_scale_flag));
-	checkbutton_constrain.signal_toggled().connect(sigc::mem_fun(*this,&StateNormal_Context::refresh_constrain_flag));
-
+	options_table.attach(*manage(new Gtk::Label(_("Transform Tool"))),	0, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(*manage(new Gtk::Label(_("Ctrl to rotate"), Gtk::ALIGN_LEFT)),	0, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(*manage(new Gtk::Label(_("Alt to scale"), Gtk::ALIGN_LEFT)),	0, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	options_table.attach(*manage(new Gtk::Label(_("Shift to constrain"), Gtk::ALIGN_LEFT)),	0, 2, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
 	options_table.show_all();
 	refresh_tool_options();
@@ -249,63 +230,11 @@ StateNormal_Context::StateNormal_Context(CanvasView* canvas_view):
 	get_work_area()->set_allow_layer_clicks(true);
 	get_work_area()->set_duck_dragger(duck_dragger_);
 
-	keypress_connect=get_work_area()->signal_key_press_event().connect(sigc::mem_fun(*this,&StateNormal_Context::key_pressed),false);
-	keyrelease_connect=get_work_area()->signal_key_release_event().connect(sigc::mem_fun(*this,&StateNormal_Context::key_released),false);
-
 	//these will segfault
 //	get_work_area()->set_cursor(Gdk::CROSSHAIR);
 //	get_work_area()->reset_cursor();
 
 	App::toolbox->refresh();
-
-	load_settings();
-	refresh_scale_flag();
-}
-
-bool
-StateNormal_Context::key_pressed(GdkEventKey *event)
-{
-	switch(event->keyval)
-	{
-		case GDK_Control_L:
-		case GDK_Control_R:
-			set_rotate_flag(true);
-			break;
-		case GDK_Alt_L:
-		case GDK_Alt_R:
-			set_scale_flag(true);
-			break;
-		case GDK_Shift_L:
-		case GDK_Shift_R:
-			set_constrain_flag(true);
-			break;
-		default:
-			break;
-	}
-	return false; //Pass on the event to other handlers, just in case
-}
-
-bool
-StateNormal_Context::key_released(GdkEventKey *event)
-{
-	switch(event->keyval)
-	{
-		case GDK_Control_L:
-		case GDK_Control_R:
-			set_rotate_flag(false);
-			break;
-		case GDK_Alt_L:
-		case GDK_Alt_R:
-			set_scale_flag(false);
-			break;
-		case GDK_Shift_L:
-		case GDK_Shift_R:
-			set_constrain_flag(false);
-			break;
-		default:
-			break;
-	}
-	return false; //Pass on the event to other handlers
 }
 
 void
@@ -313,7 +242,7 @@ StateNormal_Context::refresh_tool_options()
 {
 	App::dialog_tool_options->clear();
 	App::dialog_tool_options->set_widget(options_table);
-	App::dialog_tool_options->set_local_name(_("Normal Tool"));
+	App::dialog_tool_options->set_local_name(_("Transform Tool"));
 	App::dialog_tool_options->set_name("normal");
 }
 
@@ -321,13 +250,8 @@ StateNormal_Context::refresh_tool_options()
 
 StateNormal_Context::~StateNormal_Context()
 {
-	save_settings();
-
 	get_work_area()->clear_duck_dragger();
 	get_work_area()->reset_cursor();
-
-	keypress_connect.disconnect();
-	keyrelease_connect.disconnect();
 
 	App::dialog_tool_options->clear();
 
@@ -337,7 +261,7 @@ StateNormal_Context::~StateNormal_Context()
 DuckDrag_Combo::DuckDrag_Combo():
 	scale(false),
 	rotate(false),
-	constrain(false) // Lock aspect for scale; smooth move for translate
+	constrain(false) // Lock aspect for scale
 {
 }
 
@@ -477,8 +401,12 @@ DuckDrag_Combo::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector)
 			}
 		else
 		{
-			//vect[0]=vect[1]=vect.mag()*0.707106781;
-			Real amount(vect.mag()/(drag_offset-center).mag());
+			Real amount;
+			if((drag_offset-center).mag() < EPSILON)
+				amount = 1;
+			else
+				amount = vect.mag()/(drag_offset-center).mag();
+
 			vect[0]=vect[1]=amount;
 		}
 
@@ -509,6 +437,7 @@ DuckDrag_Combo::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector)
 			p+=center;
 			(*iter)->set_trans_point(p, time);
 		}
+
 	}
 
 	// then patch up the tangents for the vertices we've moved
@@ -599,6 +528,20 @@ StateNormal_Context::event_mouse_button_down_handler(const Smach::event& x)
 	default:
 		return Smach::RESULT_OK;
 	}
+}
+
+Smach::event_result
+StateNormal_Context::event_mouse_motion_handler(const Smach::event& x)
+{
+	// synfig::info("STATE NORMAL: Received mouse button down Event");
+
+	const EventMouse& event(*reinterpret_cast<const EventMouse*>(&x));
+
+	set_rotate_flag(event.modifier&GDK_CONTROL_MASK);
+	set_scale_flag(event.modifier&GDK_MOD1_MASK);
+	set_constrain_flag(event.modifier&GDK_SHIFT_MASK);
+
+	return Smach::RESULT_OK;
 }
 
 Smach::event_result

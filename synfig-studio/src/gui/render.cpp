@@ -68,7 +68,7 @@ RenderSettings::RenderSettings(Gtk::Window& parent, etl::handle<synfigapp::Canva
 	adjustment_antialias(1,1,31),
 	entry_antialias(adjustment_antialias,1,0),
 	toggle_single_frame(_("Use _current frame"), true),
-	tparam("libxvid",200)
+	tparam("mpeg4",200)
 {
 	widget_rend_desc.show();
 	widget_rend_desc.signal_changed().connect(sigc::mem_fun(*this,&studio::RenderSettings::on_rend_desc_changed));
@@ -106,8 +106,9 @@ RenderSettings::RenderSettings(Gtk::Window& parent, etl::handle<synfigapp::Canva
 	choose_button->show();
 	choose_button->signal_clicked().connect(sigc::mem_fun(*this, &studio::RenderSettings::on_choose_pressed));
 
-	Gtk::Button *tparam_button(manage(new class Gtk::Button(Gtk::StockID(_("Parameters...")))));
+	tparam_button=manage(new class Gtk::Button(Gtk::StockID(_("Parameters..."))));
 	tparam_button->show();
+	tparam_button->set_sensitive(false);
 	tparam_button->signal_clicked().connect(sigc::mem_fun(*this, &studio::RenderSettings::on_targetparam_pressed));
 
 	Gtk::Frame *target_frame=manage(new Gtk::Frame(_("Target")));
@@ -235,6 +236,7 @@ void
 RenderSettings::set_target(synfig::String name)
 {
 	target_name=name;
+	tparam_button->set_sensitive(target_name.compare("ffmpeg")?false:true);
 }
 
 void
@@ -248,7 +250,7 @@ RenderSettings::on_choose_pressed()
 void
 RenderSettings::on_targetparam_pressed()
 {
-	Dialog_TargetParam *dialogtp = new Dialog_TargetParam(tparam);
+	Dialog_TargetParam *dialogtp = new Dialog_TargetParam(*this, tparam);
 	if(dialogtp->run()==Gtk::RESPONSE_OK)
 		tparam=dialogtp->get_tparam();
 

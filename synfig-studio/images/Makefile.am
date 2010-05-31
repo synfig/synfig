@@ -6,8 +6,10 @@ EXT = @imageext@
 EXTRA_DIST = \
 	installer_logo.sif \
 	installer_logo_osx.sif \
-	splash_screen.sifz \
-	splash_screen-0.61.09.sif\
+	splash_screen1.sif \
+	splash_screen2.sif \
+	splash_screen-0.62.00.sif \
+	splash_screen-0.61.09.sif \
 	splash_screen-0.61.08.sif \
 	splash_screen-0.61.07.sif \
 	about_icon.sif \
@@ -169,7 +171,8 @@ IMAGES = \
 	string_icon.$(EXT) \
 	eyedrop_icon.$(EXT) \
 	about_icon.$(EXT) \
-	splash_screen.$(EXT) \
+	splash_screen1.$(EXT) \
+	splash_screen2.$(EXT) \
 	canvas_icon.$(EXT) \
 	vector_icon.$(EXT) \
 	real_icon.$(EXT) \

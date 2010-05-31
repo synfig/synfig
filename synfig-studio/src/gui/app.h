@@ -288,6 +288,7 @@ public:
 	static void save_settings();
 	static void load_settings();
 	static void reset_initial_window_configuration();
+	static void reset_initial_preferences();
 
 	static const std::list<std::string>& get_recent_files();
 

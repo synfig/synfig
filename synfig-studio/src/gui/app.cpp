@@ -1266,23 +1266,25 @@ App::App(int *argc, char ***argv):
 		state_manager->add_state(&state_scale);
 		state_manager->add_state(&state_rotate);
 		state_manager->add_state(&state_mirror);
-		if(!getenv("SYNFIG_DISABLE_WIDTH"  )) state_manager->add_state(&state_width); // Enabled since 0.61.09
 
-		/* new objects */
+		/* geometry */
 		state_manager->add_state(&state_circle);
 		state_manager->add_state(&state_rectangle);
 		state_manager->add_state(&state_star);
 		state_manager->add_state(&state_gradient);
 		if(!getenv("SYNFIG_DISABLE_POLYGON")) state_manager->add_state(&state_polygon); // Enabled - for working without ducks
-		state_manager->add_state(&state_text);
+
+		/* bline tools */
 		state_manager->add_state(&state_bline);
 		if(!getenv("SYNFIG_DISABLE_DRAW"   )) state_manager->add_state(&state_draw); // Enabled for now.  Let's see whether they're good enough yet.
-
-		/* other */
+		if(!getenv("SYNFIG_DISABLE_WIDTH"  )) state_manager->add_state(&state_width); // Enabled since 0.61.09
 		state_manager->add_state(&state_fill);
 		state_manager->add_state(&state_eyedrop);
-		state_manager->add_state(&state_zoom);
+
+		/* other */
+		state_manager->add_state(&state_text);
 		if(!getenv("SYNFIG_DISABLE_SKETCH" )) state_manager->add_state(&state_sketch);
+		state_manager->add_state(&state_zoom);
 
 		studio_init_cb.task(_("Init ModPalette..."));
 		module_list_.push_back(new ModPalette()); module_list_.back()->start();
@@ -1357,6 +1359,15 @@ App::App(int *argc, char ***argv):
 		studio_init_cb.task(_("Done."));
 		studio_init_cb.amount_complete(10000,10000);
 
+		// To avoid problems with some window managers and gtk >= 2.18
+		// we should show dock dialogs after the settings load.
+		// If dock dialogs are shown before the settings are loaded,
+		// the windows manager can act over it.
+		// See discussions here:
+		// * http://synfig.org/forums/viewtopic.php?f=1&t=1131&st=0&sk=t&sd=a&start=30
+		// * http://synfig.org/forums/viewtopic.php?f=15&t=1062
+		dock_manager->show_all_dock_dialogs();
+
 		toolbox->present();
 	}
 	catch(String x)
@@ -1427,13 +1438,10 @@ App::get_config_file(const synfig::String& file)
 	return Glib::build_filename(get_user_app_directory(),file);
 }
 
-#define SCALE_FACTOR	(1280)
 //! set the \a instance's canvas(es) position and size to be those specified in the first entry of recent_files_window_size
 void
 App::set_recent_file_window_size(etl::handle<Instance> instance)
 {
-	int screen_w(Gdk::screen_width());
-	int screen_h(Gdk::screen_height());
 
 	const std::string &canvas_window_size = *recent_files_window_size.begin();
 
@@ -1479,22 +1487,9 @@ App::set_recent_file_window_size(etl::handle<Instance> instance)
 			current = separator+1;
 			continue;
 		}
-
-		if (x > SCALE_FACTOR) x = SCALE_FACTOR - 150; if (x < 0) x = 0;
-		if (y > SCALE_FACTOR) y = SCALE_FACTOR - 150; if (y < 0) y = 0;
-		x=x*screen_w/SCALE_FACTOR;
-		y=y*screen_h/SCALE_FACTOR;
-		if(getenv("SYNFIG_WINDOW_POSITION_X_OFFSET"))
-			x += atoi(getenv("SYNFIG_WINDOW_POSITION_X_OFFSET"));
-		if(getenv("SYNFIG_WINDOW_POSITION_Y_OFFSET"))
-			y += atoi(getenv("SYNFIG_WINDOW_POSITION_Y_OFFSET"));
-
-		if (w > SCALE_FACTOR) w = 150; if (w < 0) w = 0;
-		if (h > SCALE_FACTOR) h = 150; if (h < 0) h = 0;
-
 		CanvasView::Handle canvasview = instance->find_canvas_view(canvas);
 		canvasview->move(x,y);
-		canvasview->resize(w*screen_w/SCALE_FACTOR,h*screen_h/SCALE_FACTOR);
+		canvasview->resize(w,h);
 		canvasview->present();
 
 		current = separator+1;
@@ -1507,8 +1502,6 @@ App::set_recent_file_window_size(etl::handle<Instance> instance)
 void
 App::add_recent_file(const etl::handle<Instance> instance)
 {
-	int screen_w(Gdk::screen_width());
-	int screen_h(Gdk::screen_height());
 
 	std::string canvas_window_size;
 
@@ -1527,13 +1520,12 @@ App::add_recent_file(const etl::handle<Instance> instance)
 
 		canvas_window_size += strprintf("%s %d %d %d %d\t",
 										canvas->get_relative_id(canvas->get_root()).c_str(),
-										x_pos*SCALE_FACTOR/screen_w,  y_pos*SCALE_FACTOR/screen_h,
-										x_size*SCALE_FACTOR/screen_w, y_size*SCALE_FACTOR/screen_h);
+										x_pos,  y_pos,
+										x_size, y_size);
 	}
 
 	add_recent_file(absolute_path(instance->get_file_name()), canvas_window_size);
 }
-#undef SCALE_FACTOR
 
 void
 App::add_recent_file(const std::string &file_name, const std::string &window_size)
@@ -1732,16 +1724,94 @@ App::load_settings()
 void
 App::reset_initial_window_configuration()
 {
+	Glib::RefPtr<Gdk::Display> display(Gdk::Display::get_default());
+	Glib::RefPtr<const Gdk::Screen> screen(display->get_default_screen());
+	Gdk::Rectangle rect;
+	// A proper way to obtain the primary monitor is to use the
+	// Gdk::Screen::get_primary_monitor () const member. But as it
+	// was introduced in gtkmm 2.20 I assume that the monitor 0 is the
+	// primary one.
+	screen->get_monitor_geometry(0,rect);
+#define hpanel_width 79.0f
+#define hpanel_height 25.0f
+#define vpanel_width 20.0f
+#define vpanel_height 100.0f
+#define vdock 20.0f
+#define hdock 20.0f
+
+/* percentages referred to width or height of the screen
+ *---------------------------------------------------------------------*
+ *    t   |                                                |
+ *    o   |                                                |
+ *    o   |                                                |vdock%
+ *    l   |                                                |
+ *    b   |                                                |------------
+ *    o   |                                                |
+ *    x   |                                                |vdock%
+ * --------                                                |
+ *                                                         |
+ *                                                         |------------
+ *                                                         |
+ *                                                         |vdock%
+ *                                                         |
+ *                                                         |
+ *-----hdock%----------------------------------------------|------------
+ *             |                                           |
+ *             |                                           |vdock%
+ *             |                                           |
+ *             |                                           |
+ * --------------------------------------------------------------------*
+*/
+// Vertical Panel
+	int v_xpos=rect.get_x() + rect.get_width()*(1.0-vpanel_width/100.0);
+	int v_xsize=rect.get_width()*vpanel_width/100.0;
+	int v_ypos=rect.get_y();
+	int v_ysize=rect.get_height()*vpanel_height/100.0;
+	std::string v_pos(strprintf("%d %d", v_xpos, v_ypos));
+	std::string v_size(strprintf("%d %d", v_xsize, v_ysize));
+// Horizontal Panel
+	int h_xpos=rect.get_x();
+	int h_xsize=rect.get_width()*hpanel_width/100.0;
+	int h_ypos=rect.get_y()+ rect.get_height()*(1.0-hpanel_height/100.0);;
+	int h_ysize=rect.get_height()*hpanel_height/100.0;
+	std::string h_pos(strprintf("%d %d", h_xpos, h_ypos));
+	std::string h_size(strprintf("%d %d", h_xsize, h_ysize));
+	int v_dock1 = rect.get_height()*vdock*0.8/100.0;
+	int v_dock2 = rect.get_height()*vdock*0.6/100.0;
+	int v_dock3 = rect.get_height()*vdock*1.1/100.0;
+	int h_dock = rect.get_width()*hdock/100.0;
+//Contents size
+	std::string v_contents(strprintf("%d %d %d", v_dock1, v_dock2, v_dock3));
+	std::string h_contents(strprintf("%d", h_dock));
+// Tool Box position
+	std::string tbox_pos(strprintf("%d %d", rect.get_x(), rect.get_y()));
+/*
+	synfig::info("tool box pos: %s", tbox_pos.c_str());
+	synfig::info("v_contents sizes: %s", v_contents.c_str());
+	synfig::info("v_pos: %s", v_pos.c_str());
+	synfig::info("v_sizes: %s", v_size.c_str());
+	synfig::info("h_contents sizes: %s", h_contents.c_str());
+	synfig::info("h_pos: %s", h_pos.c_str());
+	synfig::info("h_sizes: %s", h_size.c_str());
+*/
 	synfigapp::Main::settings().set_value("dock.dialog.1.comp_selector","1");
 	synfigapp::Main::settings().set_value("dock.dialog.1.contents","navigator - info pal_edit pal_browse - tool_options history canvases - layers groups");
-	synfigapp::Main::settings().set_value("dock.dialog.1.contents_size","225 167 207");
-	synfigapp::Main::settings().set_value("dock.dialog.1.pos","1057 32");
-	synfigapp::Main::settings().set_value("dock.dialog.1.size","208 1174");
+	synfigapp::Main::settings().set_value("dock.dialog.1.contents_size",v_contents);
+	synfigapp::Main::settings().set_value("dock.dialog.1.size",v_size);
+	synfigapp::Main::settings().set_value("dock.dialog.1.pos",v_pos);
 	synfigapp::Main::settings().set_value("dock.dialog.2.comp_selector","0");
 	synfigapp::Main::settings().set_value("dock.dialog.2.contents","params children keyframes | timetrack curves meta_data");
-	synfigapp::Main::settings().set_value("dock.dialog.2.contents_size","263");
-	synfigapp::Main::settings().set_value("dock.dialog.2.pos","0 973");
-	synfigapp::Main::settings().set_value("dock.dialog.2.size","1045 235");
+	synfigapp::Main::settings().set_value("dock.dialog.2.contents_size",h_contents);
+	synfigapp::Main::settings().set_value("dock.dialog.2.size",h_size);
+	synfigapp::Main::settings().set_value("dock.dialog.2.pos",h_pos);
+	synfigapp::Main::settings().set_value("window.toolbox.pos",tbox_pos);
+
+	dock_manager->show_all_dock_dialogs();
+}
+
+void
+App::reset_initial_preferences()
+{
 	synfigapp::Main::settings().set_value("pref.distance_system","pt");
 	synfigapp::Main::settings().set_value("pref.use_colorspace_gamma","1");
 #ifdef SINGLE_THREADED
@@ -1755,7 +1825,7 @@ App::reset_initial_window_configuration()
 	synfigapp::Main::settings().set_value("pref.predefined_size",DEFAULT_PREDEFINED_SIZE);
 	synfigapp::Main::settings().set_value("pref.preferred_fps","24.0");
 	synfigapp::Main::settings().set_value("pref.predefined_fps",DEFAULT_PREDEFINED_FPS);
-	synfigapp::Main::settings().set_value("window.toolbox.pos","4 4");
+
 }
 
 bool
@@ -2015,7 +2085,8 @@ App::dialog_save_file(const std::string &title, std::string &filename, std::stri
 	{
 		file_type_enum = manage(new Widget_Enum());
 		file_type_enum->set_param_desc(ParamDesc().set_hint("enum")
-									   .add_enum_value(synfig::RELEASE_VERSION_0_62_00, "0.62.00", strprintf("0.62.00 (%s)", _("current")))
+									   .add_enum_value(synfig::RELEASE_VERSION_0_62_01, "0.62.01", strprintf("0.62.01 (%s)", _("current")))
+									   .add_enum_value(synfig::RELEASE_VERSION_0_62_00, "0.62.00", "0.61.00")
 									   .add_enum_value(synfig::RELEASE_VERSION_0_61_09, "0.61.09", "0.61.09")
 									   .add_enum_value(synfig::RELEASE_VERSION_0_61_08, "0.61.08", "0.61.08")
 									   .add_enum_value(synfig::RELEASE_VERSION_0_61_07, "0.61.07", "0.61.07")

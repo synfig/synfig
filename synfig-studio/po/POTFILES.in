@@ -47,6 +47,8 @@ src/gtkmm/dialog_setup.cpp
 src/gtkmm/dialog_setup.h
 src/gtkmm/dialog_soundselect.cpp
 src/gtkmm/dialog_soundselect.h
+src/gtkmm/dialog_targetparam.cpp
+src/gtkmm/dialog_targetparam.h
 src/gtkmm/dialog_tooloptions.cpp
 src/gtkmm/dialog_tooloptions.h
 src/gtkmm/dialog_waypoint.cpp
@@ -191,6 +193,10 @@ src/gtkmm/state_polygon.cpp
 src/gtkmm/state_polygon.h
 src/gtkmm/state_rectangle.cpp
 src/gtkmm/state_rectangle.h
+src/gtkmm/state_rotate.cpp
+src/gtkmm/state_rotate.h
+src/gtkmm/state_scale.cpp
+src/gtkmm/state_scale.h
 src/gtkmm/state_sketch.cpp
 src/gtkmm/state_sketch.h
 src/gtkmm/state_smoothmove.cpp

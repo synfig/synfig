@@ -77,7 +77,7 @@ bool print_benchmarks=false;
  */
 const char* allowed_video_codecs[] =
 {
-	"flv", "h263p", "huffyuv", "libtheora", "libx264", "libxvid",
+	"flv", "h263p", "huffyuv", "libtheora", "libx264",
 	"mjpeg", "mpeg1video", "mpeg2video", "mpeg4", "msmpeg4",
 	"msmpeg4v1", "msmpeg4v2", "wmv1", "wmv2", NULL
 };
@@ -93,11 +93,10 @@ const char* allowed_video_codecs_description[] =
 	"Huffyuv / HuffYUV.",
 	"libtheora Theora.",
 	"libx264 H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10.",
-	"libxvidcore MPEG-4 part 2.",
 	"MJPEG (Motion JPEG).",
 	"raw MPEG-1 video.",
 	"raw MPEG-2 video.",
-	"MPEG-4 part 2.",
+	"MPEG-4 part 2. (XviD/DivX)",
 	"MPEG-4 part 2 Microsoft variant version 3.",
 	"MPEG-4 part 2 Microsoft variant version 1.",
 	"MPEG-4 part 2 Microsoft variant version 2.",

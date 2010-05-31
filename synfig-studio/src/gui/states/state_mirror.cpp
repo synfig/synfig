@@ -95,15 +95,14 @@ class studio::StateMirror_Context : public sigc::trackable
 	etl::handle<CanvasView> canvas_view_;
 	CanvasView::IsWorking is_working;
 
-	synfigapp::Settings& settings;
-
-	sigc::connection keypress_connect;
-	sigc::connection keyrelease_connect;
-
 	etl::handle<DuckDrag_Mirror> duck_dragger_;
 
 	Gtk::Table options_table;
 
+
+	sigc::connection keypress_connect;
+	sigc::connection keyrelease_connect;
+	bool shift_is_pressed;
 	Gtk::RadioButton::Group radiobutton_group;
 	Gtk::RadioButton radiobutton_axis_x;
 	Gtk::RadioButton radiobutton_axis_y;
@@ -127,8 +126,12 @@ public:
 		get_work_area()->set_cursor(get_axis() == AXIS_X?Gdk::SB_H_DOUBLE_ARROW:Gdk::SB_V_DOUBLE_ARROW);
 	}
 
+
+
+
 	Smach::event_result event_stop_handler(const Smach::event& x);
 	Smach::event_result event_refresh_tool_options(const Smach::event& x);
+	Smach::event_result event_mouse_motion_handler(const Smach::event& x);
 
 	void refresh_tool_options();
 
@@ -141,10 +144,10 @@ public:
 	synfig::Canvas::Handle get_canvas()const{return canvas_view_->get_canvas();}
 	WorkArea * get_work_area()const{return canvas_view_->get_work_area();}
 
-	void load_settings();
-	void save_settings();
+	bool key_press_event(GdkEventKey *event);
+	bool key_release_event(GdkEventKey *event);
 
-	bool key_event(GdkEventKey *event);
+
 };	// END of class StateMirror_Context
 
 /* === M E T H O D S ======================================================= */
@@ -154,31 +157,17 @@ StateMirror::StateMirror():
 {
 	insert(event_def(EVENT_REFRESH_TOOL_OPTIONS,&StateMirror_Context::event_refresh_tool_options));
 	insert(event_def(EVENT_STOP,&StateMirror_Context::event_stop_handler));
+	insert(event_def(EVENT_WORKAREA_MOUSE_MOTION,		&StateMirror_Context::event_mouse_motion_handler));
+	insert(event_def(EVENT_WORKAREA_MOUSE_BUTTON_DRAG,	&StateMirror_Context::event_mouse_motion_handler));
 }
 
 StateMirror::~StateMirror()
 {
 }
 
-void
-StateMirror_Context::load_settings()
-{
-	String value;
-
-	settings.get_value("mirror.axis",value);
-	set_axis((Axis)atoi(value.c_str()));
-}
-
-void
-StateMirror_Context::save_settings()
-{
-	settings.set_value("mirror.lock_aspect",strprintf("%d",(int)get_axis()));
-}
-
 StateMirror_Context::StateMirror_Context(CanvasView* canvas_view):
 	canvas_view_(canvas_view),
 	is_working(*canvas_view),
-	settings(synfigapp::Main::get_selected_input_device()->settings()),
 	duck_dragger_(new DuckDrag_Mirror()),
 	radiobutton_axis_x(radiobutton_group,_("Horizontal")),
 	radiobutton_axis_y(radiobutton_group,_("Vertical"))
@@ -191,6 +180,9 @@ StateMirror_Context::StateMirror_Context(CanvasView* canvas_view):
 
 	radiobutton_axis_x.signal_toggled().connect(sigc::mem_fun(*this,&StateMirror_Context::update_axes));
 	radiobutton_axis_y.signal_toggled().connect(sigc::mem_fun(*this,&StateMirror_Context::update_axes));
+	shift_is_pressed=false;
+	keypress_connect=get_work_area()->signal_key_press_event().connect(sigc::mem_fun(*this,&StateMirror_Context::key_press_event),false);
+	keyrelease_connect=get_work_area()->signal_key_release_event().connect(sigc::mem_fun(*this,&StateMirror_Context::key_release_event),false);
 
 	options_table.show_all();
 	refresh_tool_options();
@@ -199,25 +191,37 @@ StateMirror_Context::StateMirror_Context(CanvasView* canvas_view):
 	get_work_area()->set_allow_layer_clicks(true);
 	get_work_area()->set_duck_dragger(duck_dragger_);
 
-	keypress_connect=get_work_area()->signal_key_press_event().connect(sigc::mem_fun(*this,&StateMirror_Context::key_event),false);
-	keyrelease_connect=get_work_area()->signal_key_release_event().connect(sigc::mem_fun(*this,&StateMirror_Context::key_event),false);
-
 	get_work_area()->set_cursor(Gdk::SB_H_DOUBLE_ARROW);
 //	get_work_area()->reset_cursor();
 
 	App::toolbox->refresh();
 
-	set_axis(AXIS_X);
-	load_settings();
+	set_axis(AXIS_Y);
 }
 
 bool
-StateMirror_Context::key_event(GdkEventKey *event)
+StateMirror_Context::key_press_event(GdkEventKey *event)
 {
 	if (event->keyval==GDK_Shift_L || event->keyval==GDK_Shift_R )
 	{
+		if (shift_is_pressed) return false;
+		shift_is_pressed=true;
 		set_axis(get_axis()==AXIS_X ? AXIS_Y:AXIS_X);
-		get_work_area()->set_cursor(get_axis() == AXIS_X?Gdk::SB_H_DOUBLE_ARROW:Gdk::SB_V_DOUBLE_ARROW);
+		update_axes();
+	}
+
+	return false; //Pass on the event to other handlers, just in case
+}
+
+bool
+StateMirror_Context::key_release_event(GdkEventKey *event)
+{
+	if (event->keyval==GDK_Shift_L || event->keyval==GDK_Shift_R )
+	{
+		if (!shift_is_pressed) return false;
+		shift_is_pressed = false;
+		set_axis(get_axis()==AXIS_X ? AXIS_Y:AXIS_X);
+		update_axes();
 	}
 
 	return false; //Pass on the event to other handlers, just in case
@@ -246,10 +250,24 @@ StateMirror_Context::event_stop_handler(const Smach::event& /*x*/)
 	return Smach::RESULT_OK;
 }
 
+Smach::event_result
+StateMirror_Context::event_mouse_motion_handler(const Smach::event& x)
+{
+	// synfig::info("STATE NORMAL: Received mouse button down Event");
+
+	const EventMouse& event(*reinterpret_cast<const EventMouse*>(&x));
+	bool shift_state = event.modifier&GDK_SHIFT_MASK;
+	if (shift_state != shift_is_pressed)
+	{
+		shift_is_pressed = !shift_is_pressed;
+		set_axis(get_axis()==AXIS_X ? AXIS_Y:AXIS_X);
+	}
+
+	return Smach::RESULT_OK;
+}
+
 StateMirror_Context::~StateMirror_Context()
 {
-	save_settings();
-
 	get_work_area()->clear_duck_dragger();
 	get_work_area()->reset_cursor();
 

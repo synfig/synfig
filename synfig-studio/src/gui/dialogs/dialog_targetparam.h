@@ -48,12 +48,14 @@ class Dialog_TargetParam : public Gtk::Dialog
 	Gtk::Button *cancel_button;
 	Gtk::SpinButton *bitrate;
 	Gtk::ComboBoxText *vcodec;
+	Gtk::Entry *customvcodec;
 
 	void on_ok();
 	void on_cancel();
+	void on_vcodec_change();
 
 public:
-	Dialog_TargetParam(synfig::TargetParam &tparam);
+	Dialog_TargetParam(Gtk::Window &parent, synfig::TargetParam &tparam);
 	~Dialog_TargetParam();
 
 	synfig::TargetParam get_tparam() const { return tparam_; }

@@ -1,16 +1,21 @@
+#
+# Александр Прокудин <alexandre.prokoudine@gmail.com>, 2010.
 msgid ""
 msgstr ""
 "Project-Id-Version: Synfig Backend\n"
 "Report-Msgid-Bugs-To: http://synfig.org/Bugs\n"
-"POT-Creation-Date: 2009-10-07 01:26+0400\n"
-"PO-Revision-Date: 2010-01-18 20:40+0600\n"
-"Last-Translator: Alexandre Prokoudine <alexandre.prokoudine@gmail.com>\n"
+"POT-Creation-Date: 2010-05-20 05:18+0400\n"
+"PO-Revision-Date: 2010-05-20 07:43+0400\n"
+"Last-Translator: Александр Прокудин <alexandre.prokoudine@gmail.com>\n"
 "Language-Team: Russian <gnome-cyr@lists.gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: UTF-8\n"
 "X-Poedit-Language: Russian\n"
 "X-Poedit-Country: RUSSIAN FEDERATION\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
+"10<=4 && (n%100<10 || n%100>=20) ? 1 : 2); 10<=4 && (n%100<10 || n%"
+"100>=20) ? 1 : 2);\n"
 
 #: ../src/modules/example/filledrect.cpp:57
 msgid "Filled Rectangle"
@@ -266,7 +271,7 @@ msgstr "Ориентация текста"
 #: ../src/modules/mod_gradient/curvegradient.cpp:533
 #: ../src/modules/mod_particle/plant.cpp:390
 #: ../src/synfig/layer_pastecanvas.cpp:128 ../src/synfig/layer_shape.cpp:1196
-#: ../src/synfig/valuenode_composite.cpp:294
+#: ../src/synfig/valuenode_composite.cpp:295
 msgid "Origin"
 msgstr "Исходная точка"
 
@@ -311,7 +316,7 @@ msgstr "Начертание не загружено, текст не будет
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:670
 msgid "Text too small, no text will be rendered."
-msgstr ""
+msgstr "Текст не будет визуализирован, т.к. размер текста слишком мал."
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:694
 msgid "Unable to set face size."
@@ -391,7 +396,7 @@ msgstr "Светимость"
 
 #: ../src/modules/lyr_std/bevel.cpp:387
 msgid "Solid"
-msgstr ""
+msgstr "Сплошной"
 
 #: ../src/modules/lyr_std/booleancurve.cpp:104
 msgid "Region Set"
@@ -401,7 +406,7 @@ msgstr ""
 msgid "Set of regions to combine"
 msgstr ""
 
-#: ../src/modules/lyr_std/clamp.cpp:54 ../src/tool/main.cpp:1078
+#: ../src/modules/lyr_std/clamp.cpp:54 ../src/tool/main.cpp:955
 msgid "Clamp"
 msgstr "Куча"
 
@@ -415,7 +420,7 @@ msgstr "Фильтры"
 
 #: ../src/modules/lyr_std/clamp.cpp:155
 msgid "Invert Negative"
-msgstr "Инвертировать негатив"
+msgstr "Инвертировать отриц. число"
 
 #: ../src/modules/lyr_std/clamp.cpp:159
 msgid "Clamp Ceiling"
@@ -436,7 +441,7 @@ msgstr "Импорт изображения"
 #: ../src/modules/lyr_std/import.cpp:138
 #, c-format
 msgid "Filename seems to already be set to \"%s\" (%s)"
-msgstr ""
+msgstr "Имя файла уже указано - \"%s\" (%s)"
 
 #: ../src/modules/lyr_std/import.cpp:209
 msgid "Filename"
@@ -503,7 +508,7 @@ msgstr "Итераций"
 
 #: ../src/modules/lyr_std/julia.cpp:314
 msgid "Seed Point"
-msgstr ""
+msgstr "Точка зерна"
 
 #: ../src/modules/lyr_std/julia.cpp:317
 #: ../src/modules/lyr_std/mandelbrot.cpp:216
@@ -529,7 +534,7 @@ msgstr "Заливка изнутри"
 #: ../src/modules/lyr_std/julia.cpp:330
 #: ../src/modules/lyr_std/mandelbrot.cpp:238
 msgid "Invert Inside"
-msgstr ""
+msgstr "Инвертировать внутри"
 
 #: ../src/modules/lyr_std/julia.cpp:333
 msgid "Color Inside"
@@ -549,7 +554,7 @@ msgstr "Тень снаружи"
 #: ../src/modules/lyr_std/julia.cpp:342
 #: ../src/modules/lyr_std/mandelbrot.cpp:263
 msgid "Solid Outside"
-msgstr ""
+msgstr "Сплошная заливка снаружи"
 
 #: ../src/modules/lyr_std/julia.cpp:345
 #: ../src/modules/lyr_std/mandelbrot.cpp:267
@@ -567,7 +572,7 @@ msgstr ""
 #: ../src/modules/lyr_std/julia.cpp:355
 #: ../src/modules/lyr_std/mandelbrot.cpp:275
 msgid "Smooth Outside"
-msgstr ""
+msgstr "Сгладить снаружи"
 
 #: ../src/modules/lyr_std/julia.cpp:356
 #: ../src/modules/lyr_std/mandelbrot.cpp:276
@@ -718,10 +723,10 @@ msgstr ""
 #: ../src/modules/lyr_std/supersample.cpp:215
 #: ../src/modules/lyr_std/curvewarp.cpp:389
 #: ../src/modules/mod_gradient/curvegradient.cpp:537
-#: ../src/synfig/valuenode_composite.cpp:292
+#: ../src/synfig/valuenode_composite.cpp:293
 #: ../src/synfig/valuenode_realstring.cpp:187
 #: ../src/synfig/valuenode_repeat_gradient.cpp:188
-#: ../src/synfig/valuenode_stripes.cpp:179 ../src/tool/main.cpp:977
+#: ../src/synfig/valuenode_stripes.cpp:179 ../src/tool/main.cpp:854
 msgid "Width"
 msgstr "Ширина"
 
@@ -729,7 +734,7 @@ msgstr "Ширина"
 msgid "Width of sample area (In pixels)"
 msgstr ""
 
-#: ../src/modules/lyr_std/supersample.cpp:219 ../src/tool/main.cpp:983
+#: ../src/modules/lyr_std/supersample.cpp:219 ../src/tool/main.cpp:860
 msgid "Height"
 msgstr "Высота"
 
@@ -752,7 +757,7 @@ msgstr ""
 #: ../src/modules/lyr_std/timeloop.cpp:57 ../src/synfig/valuenode.cpp:168
 #: ../src/synfig/valuenode_timeloop.cpp:191
 msgid "Time Loop"
-msgstr "Временная петля"
+msgstr "Петля времени"
 
 #: ../src/modules/lyr_std/timeloop.cpp:120
 #: ../src/synfig/valuenode_timeloop.cpp:124
@@ -852,7 +857,7 @@ msgstr "Список узлов кривой Безье"
 #: ../src/modules/lyr_std/curvewarp.cpp:406
 #: ../src/modules/mod_gradient/curvegradient.cpp:554
 msgid "Fast"
-msgstr ""
+msgstr "Быстро"
 
 #: ../src/modules/lyr_std/xorpattern.cpp:54
 msgid "XOR Pattern"
@@ -933,19 +938,19 @@ msgstr "Не удалось записать заголовок файла в ф
 msgid "Unable to write info header"
 msgstr "Не удалось записать информационный заголовок"
 
-#: ../src/modules/mod_dv/trgt_dv.cpp:166 ../src/modules/mod_dv/trgt_dv.cpp:175
-#: ../src/modules/mod_dv/trgt_dv.cpp:182 ../src/modules/mod_dv/trgt_dv.cpp:192
-#: ../src/modules/mod_dv/trgt_dv.cpp:200 ../src/modules/mod_dv/trgt_dv.cpp:205
-#: ../src/modules/mod_dv/trgt_dv.cpp:209 ../src/modules/mod_dv/trgt_dv.cpp:218
-#: ../src/modules/mod_dv/trgt_dv.cpp:227
+#: ../src/modules/mod_dv/trgt_dv.cpp:167 ../src/modules/mod_dv/trgt_dv.cpp:176
+#: ../src/modules/mod_dv/trgt_dv.cpp:183 ../src/modules/mod_dv/trgt_dv.cpp:193
+#: ../src/modules/mod_dv/trgt_dv.cpp:201 ../src/modules/mod_dv/trgt_dv.cpp:206
+#: ../src/modules/mod_dv/trgt_dv.cpp:210 ../src/modules/mod_dv/trgt_dv.cpp:219
+#: ../src/modules/mod_dv/trgt_dv.cpp:228
 msgid "Unable to open pipe to encodedv"
 msgstr ""
 
-#: ../src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:172
-#: ../src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:179
-#: ../src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:189
-#: ../src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:199
-#: ../src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:217
+#: ../src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:201
+#: ../src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:208
+#: ../src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:218
+#: ../src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:272
+#: ../src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:290
 msgid "Unable to open pipe to ffmpeg"
 msgstr ""
 
@@ -1120,7 +1125,8 @@ msgstr "Определяет функцию спадания для растуш
 #: ../src/modules/mod_geometry/circle.cpp:148
 #: ../src/modules/mod_noise/distort.cpp:211
 #: ../src/modules/mod_noise/noise.cpp:263 ../src/synfig/layer_bitmap.cpp:135
-#: ../src/synfig/valuenode.cpp:141 ../src/synfig/valuenode_linear.cpp:145
+#: ../src/synfig/layer_motionblur.cpp:148 ../src/synfig/valuenode.cpp:141
+#: ../src/synfig/valuenode_linear.cpp:145
 msgid "Linear"
 msgstr "Линейная"
 
@@ -1144,15 +1150,15 @@ msgstr "Косинус"
 
 #: ../src/modules/mod_geometry/outline.cpp:70
 msgid "Outline"
-msgstr "Абрис"
+msgstr "Контур"
 
 #: ../src/modules/mod_geometry/outline.cpp:178
 msgid "No vertices in outline "
-msgstr "Нет вершин в абрисе"
+msgstr "Нет вершин в контуре"
 
 #: ../src/modules/mod_geometry/outline.cpp:824
 msgid "Outline Width"
-msgstr "Толщина абриса"
+msgstr "Толщина контура"
 
 #: ../src/modules/mod_geometry/outline.cpp:829
 msgid "Expand"
@@ -1253,7 +1259,7 @@ msgstr ""
 
 #: ../src/modules/mod_gif/trgt_gif.cpp:195
 msgid "Description not set!"
-msgstr ""
+msgstr "Описание не установлено!"
 
 #: ../src/modules/mod_gradient/conicalgradient.cpp:56
 msgid "Conical Gradient"
@@ -1289,7 +1295,7 @@ msgstr "Зигзаг"
 
 #: ../src/modules/mod_gradient/curvegradient.cpp:552
 msgid "Perpendicular"
-msgstr ""
+msgstr "Перпендикулярно"
 
 #: ../src/modules/mod_gradient/lineargradient.cpp:53
 msgid "Linear Gradient"
@@ -1356,7 +1362,7 @@ msgstr "Преждевременный конец файла (после заг�
 msgid "Premature end of file"
 msgstr "Преждевременный конец файла"
 
-#: ../src/modules/mod_imagemagick/trgt_imagemagick.cpp:157
+#: ../src/modules/mod_imagemagick/trgt_imagemagick.cpp:158
 msgid "Unable to open pipe to imagemagick's convert utility"
 msgstr ""
 
@@ -1419,7 +1425,7 @@ msgstr "Турбулентность"
 #: ../src/modules/mod_noise/main.cpp:66
 #: ../src/modules/mod_noise/valuenode_random.cpp:182
 msgid "Random"
-msgstr ""
+msgstr "Случайно"
 
 #: ../src/modules/mod_noise/noise.cpp:56
 msgid "Noise Gradient"
@@ -1434,13 +1440,13 @@ msgid "Super Sampling"
 msgstr ""
 
 #: ../src/modules/mod_noise/valuenode_random.cpp:249
-#: ../src/synfig/valuenode_not.cpp:111 ../src/synfig/valuenode_range.cpp:196
+#: ../src/synfig/valuenode_not.cpp:111 ../src/synfig/valuenode_range.cpp:264
 #: ../src/synfig/valuenode_reciprocal.cpp:124
 #: ../src/synfig/valuenode_reference.cpp:114
 #: ../src/synfig/valuenode_scale.cpp:226 ../src/synfig/valuenode_step.cpp:216
 #: ../src/synfig/valuenode_timeloop.cpp:123
 msgid "Link"
-msgstr ""
+msgstr "Связь"
 
 #: ../src/modules/mod_noise/valuenode_random.cpp:251
 #: ../src/modules/mod_particle/plant.cpp:441
@@ -1518,7 +1524,7 @@ msgstr "Развернуть"
 
 #: ../src/modules/mod_particle/plant.cpp:432
 msgid "If enabled, render the plant in the opposite direction"
-msgstr ""
+msgstr "Если включено, то растение визуализируется в обратном направлении."
 
 #: ../src/modules/mod_particle/plant.cpp:436 ../src/synfig/valuenode.cpp:172
 #: ../src/synfig/valuenode_duplicate.cpp:123
@@ -1528,7 +1534,7 @@ msgstr "Шаг"
 
 #: ../src/modules/mod_particle/plant.cpp:437
 msgid "Measure of the distance between points when rendering"
-msgstr "Единица измерения расстояния между точками при рендеринге"
+msgstr "Единица измерения расстояния между точками при визуализации"
 
 #: ../src/modules/mod_particle/plant.cpp:442
 msgid "Used to seed the pseudo-random number generator"
@@ -1665,13 +1671,55 @@ msgstr ""
 msgid "Motion Blur"
 msgstr "Размывание движением"
 
-#: ../src/synfig/layer_motionblur.cpp:122
+#: ../src/synfig/layer_motionblur.cpp:134
 msgid "Aperture"
 msgstr "Апертура"
 
-#: ../src/synfig/layer_motionblur.cpp:123
+#: ../src/synfig/layer_motionblur.cpp:135
 msgid "Shutter Time"
 msgstr "Выдержка"
+
+#: ../src/synfig/layer_motionblur.cpp:139
+#, fuzzy
+msgid "Subsamples Factor"
+msgstr "Фактор случайности"
+
+#: ../src/synfig/layer_motionblur.cpp:140
+msgid "Multiplies The Number Of Subsamples Rendered"
+msgstr ""
+
+#: ../src/synfig/layer_motionblur.cpp:144
+msgid "Subsampling Type"
+msgstr ""
+
+#: ../src/synfig/layer_motionblur.cpp:145
+msgid "Curve Type For Weighting Subsamples"
+msgstr ""
+
+#: ../src/synfig/layer_motionblur.cpp:147
+#: ../src/synfig/valuenode_const.cpp:129
+msgid "Constant"
+msgstr "Константа"
+
+#: ../src/synfig/layer_motionblur.cpp:149
+msgid "Hyperbolic"
+msgstr ""
+
+#: ../src/synfig/layer_motionblur.cpp:153
+msgid "Subsample Start Amount"
+msgstr ""
+
+#: ../src/synfig/layer_motionblur.cpp:154
+msgid "Relative Amount Of The First Subsample, For Linear Weighting"
+msgstr ""
+
+#: ../src/synfig/layer_motionblur.cpp:158
+msgid "Subsample End Amount"
+msgstr ""
+
+#: ../src/synfig/layer_motionblur.cpp:159
+msgid "Relative Amount Of The Last Subsample, For Linear Weighting"
+msgstr ""
 
 #: ../src/synfig/layer_pastecanvas.cpp:77
 msgid "Paste Canvas"
@@ -1707,7 +1755,7 @@ msgstr "Точка фокусировки"
 
 #: ../src/synfig/layer_pastecanvas.cpp:152
 msgid "Point to remain fixed when zooming"
-msgstr ""
+msgstr "Центр масштабирования"
 
 #: ../src/synfig/layer_pastecanvas.cpp:163
 msgid "Current Time"
@@ -1769,298 +1817,299 @@ msgstr "Сплошная заливка"
 msgid "No images in list"
 msgstr "Нет изображений в списке"
 
-#: ../src/synfig/loadcanvas.cpp:138
+#: ../src/synfig/loadcanvas.cpp:139
 #, c-format
 msgid "cannot load '%s' recursively"
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:181
+#: ../src/synfig/loadcanvas.cpp:182
 #, c-format
 msgid "Unexpected element <%s>, Expected <%s>"
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:187
+#: ../src/synfig/loadcanvas.cpp:188
 #, c-format
 msgid "Unexpected element <%s>"
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:201
+#: ../src/synfig/loadcanvas.cpp:202
 msgid "Too many warnings"
 msgstr "Слишком много предупреждений"
 
-#: ../src/synfig/loadcanvas.cpp:232
+#: ../src/synfig/loadcanvas.cpp:233
 #, c-format
 msgid "<%s> is missing \"%s\" attribute"
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:257 ../src/synfig/loadcanvas.cpp:276
-#: ../src/synfig/loadcanvas.cpp:295 ../src/synfig/loadcanvas.cpp:459
-#: ../src/synfig/loadcanvas.cpp:814
+#: ../src/synfig/loadcanvas.cpp:258 ../src/synfig/loadcanvas.cpp:277
+#: ../src/synfig/loadcanvas.cpp:296 ../src/synfig/loadcanvas.cpp:460
+#: ../src/synfig/loadcanvas.cpp:815
 #, c-format
 msgid "<%s> should not contain anything"
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:261 ../src/synfig/loadcanvas.cpp:280
-#: ../src/synfig/loadcanvas.cpp:299 ../src/synfig/loadcanvas.cpp:463
-#: ../src/synfig/loadcanvas.cpp:818
+#: ../src/synfig/loadcanvas.cpp:262 ../src/synfig/loadcanvas.cpp:281
+#: ../src/synfig/loadcanvas.cpp:300 ../src/synfig/loadcanvas.cpp:464
+#: ../src/synfig/loadcanvas.cpp:819
 #, c-format
 msgid "<%s> is missing \"value\" attribute"
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:474
+#: ../src/synfig/loadcanvas.cpp:475
 #, c-format
 msgid "Bad value \"%s\" in <%s>"
-msgstr ""
+msgstr "Некорректное значение \"%s\" в <%s>"
 
-#: ../src/synfig/loadcanvas.cpp:498
+#: ../src/synfig/loadcanvas.cpp:499
 #, c-format
 msgid "<%s> is missing \"pos\" attribute"
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:905
+#: ../src/synfig/loadcanvas.cpp:906
 #, c-format
 msgid "Unable to create <animated> with type \"%s\""
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:922
+#: ../src/synfig/loadcanvas.cpp:923
 msgid "<waypoint> is missing attribute \"time\""
-msgstr ""
+msgstr "У <waypoint> отсутствует атрибут \"time\""
 
-#: ../src/synfig/loadcanvas.cpp:935
+#: ../src/synfig/loadcanvas.cpp:936
 msgid ""
 "Found \"use\" attribute for <waypoint>, but it wasn't empty. Ignoring "
 "contents..."
 msgstr ""
+"У <waypoint> найден заполненный атрибут \"use\". Содержимое игнорируется..."
 
-#: ../src/synfig/loadcanvas.cpp:955 ../src/synfig/loadcanvas.cpp:967
+#: ../src/synfig/loadcanvas.cpp:956 ../src/synfig/loadcanvas.cpp:968
 #, c-format
 msgid "<%s> is missing its data"
-msgstr ""
+msgstr "В <%s> отсутствуют данные"
 
-#: ../src/synfig/loadcanvas.cpp:984
+#: ../src/synfig/loadcanvas.cpp:985
 msgid "Bad data for <waypoint>"
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:999
+#: ../src/synfig/loadcanvas.cpp:1000
 #, c-format
 msgid "Unexpected element <%s> after <waypoint> data, ignoring..."
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:1041 ../src/synfig/loadcanvas.cpp:1058
+#: ../src/synfig/loadcanvas.cpp:1042 ../src/synfig/loadcanvas.cpp:1059
 #, c-format
 msgid "\"%s\" not a valid value for attribute \"%s\" in <%s>"
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:1119
+#: ../src/synfig/loadcanvas.cpp:1120
 #, c-format
 msgid "Missing attribute \"type\" in <%s>"
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:1127
+#: ../src/synfig/loadcanvas.cpp:1128
 #, c-format
 msgid "Bad type in <%s>"
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:1136
+#: ../src/synfig/loadcanvas.cpp:1137
 #, c-format
 msgid "Error creating ValueNode <%s> with type '%s'.  Refer to '%s'"
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:1145
+#: ../src/synfig/loadcanvas.cpp:1146
 #, c-format
 msgid "<%s> did not accept type '%s'"
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:1171 ../src/synfig/loadcanvas.cpp:1239
+#: ../src/synfig/loadcanvas.cpp:1172 ../src/synfig/loadcanvas.cpp:1240
 #, c-format
 msgid "'%s' was already defined in <%s>"
-msgstr ""
+msgstr "'%s' уже определено в <%s>"
 
-#: ../src/synfig/loadcanvas.cpp:1181
+#: ../src/synfig/loadcanvas.cpp:1182
 #, c-format
 msgid "'%s' attribute in <%s> references unknown ID '%s'"
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:1190
+#: ../src/synfig/loadcanvas.cpp:1191
 #, c-format
 msgid "Unable to set link '\"%s\" to ValueNode \"%s\" (link #%d in \"%s\")"
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:1214
+#: ../src/synfig/loadcanvas.cpp:1215
 #, c-format
 msgid "Unknown Exception thrown when referencing ValueNode \"%s\""
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:1254
+#: ../src/synfig/loadcanvas.cpp:1255
 #, c-format
 msgid "element <%s> is missing its contents"
 msgstr "у элемента <%s> нет содержимого"
 
-#: ../src/synfig/loadcanvas.cpp:1263
+#: ../src/synfig/loadcanvas.cpp:1264
 #, c-format
 msgid "Parse of '%s' failed"
-msgstr ""
+msgstr "Разбор '%s' завершился неудачей"
 
-#: ../src/synfig/loadcanvas.cpp:1270
+#: ../src/synfig/loadcanvas.cpp:1271
 #, c-format
 msgid "Unable to connect value node ('%s' of type '%s') to link %d (%s)"
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:1288
+#: ../src/synfig/loadcanvas.cpp:1289
 #, c-format
 msgid "Unknown Exception thrown when working on element \"%s\""
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:1329
+#: ../src/synfig/loadcanvas.cpp:1330
 #, c-format
 msgid "<%s> is missing link %d (%s)"
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:1395
+#: ../src/synfig/loadcanvas.cpp:1396
 msgid "Unable to create <dynamic_list>"
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:1545
+#: ../src/synfig/loadcanvas.cpp:1546
 msgid "<entry> is missing its contents or missing \"use\" element"
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:1590
+#: ../src/synfig/loadcanvas.cpp:1591
 #, c-format
 msgid "Bad data in <%s>"
 msgstr "Некорректные данные в <%s>"
 
-#: ../src/synfig/loadcanvas.cpp:1622
+#: ../src/synfig/loadcanvas.cpp:1623
 #, c-format
 msgid "Expected a ValueNode.  Refer to '%s'"
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:1643
+#: ../src/synfig/loadcanvas.cpp:1644
 #, c-format
 msgid "Bad ID \"%s\""
 msgstr "Некорректный ID \"%s\""
 
-#: ../src/synfig/loadcanvas.cpp:1648
+#: ../src/synfig/loadcanvas.cpp:1649
 #, c-format
 msgid "Duplicate ID \"%s\""
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:1653
+#: ../src/synfig/loadcanvas.cpp:1654
 #, c-format
 msgid "Unknown Exception thrown when adding ValueNode \"%s\""
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:1688
+#: ../src/synfig/loadcanvas.cpp:1689
 msgid "Missing \"type\" attribute to \"layer\" element"
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:1707
+#: ../src/synfig/loadcanvas.cpp:1708
 msgid "Installed layer version is smaller than layer version in file"
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:1727
+#: ../src/synfig/loadcanvas.cpp:1728
 msgid "<name> entry for <layer> is not yet supported. Ignoring..."
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:1730
+#: ../src/synfig/loadcanvas.cpp:1731
 msgid "<desc> entry for <layer> is not yet supported. Ignoring..."
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:1738
+#: ../src/synfig/loadcanvas.cpp:1739
 msgid "Missing \"name\" attribute for <param>."
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:1755
+#: ../src/synfig/loadcanvas.cpp:1756
 msgid ""
 "Found \"use\" attribute for <param>, but it wasn't empty. Ignoring "
 "contents..."
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:1760
+#: ../src/synfig/loadcanvas.cpp:1761
 msgid "Empty use=\"\" value in <param>"
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:1766
+#: ../src/synfig/loadcanvas.cpp:1767
 #, c-format
 msgid "Failed to load subcanvas '%s'"
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:1768
+#: ../src/synfig/loadcanvas.cpp:1769
 msgid "Layer rejected canvas link"
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:1786
+#: ../src/synfig/loadcanvas.cpp:1787
 #, c-format
 msgid "Unknown ID (%s) referenced in <param>"
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:1802
+#: ../src/synfig/loadcanvas.cpp:1803
 msgid "<param> is either missing its contents, or missing a \"use\" attribute."
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:1814 ../src/synfig/loadcanvas.cpp:1834
+#: ../src/synfig/loadcanvas.cpp:1815 ../src/synfig/loadcanvas.cpp:1835
 msgid "Bad data for <param>"
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:1822
+#: ../src/synfig/loadcanvas.cpp:1823
 #, c-format
 msgid "Layer '%s' rejected value for parameter '%s'"
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:1845
+#: ../src/synfig/loadcanvas.cpp:1846
 #, c-format
 msgid "Unexpected element <%s> after <param> data, ignoring..."
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:1918 ../src/synfig/loadcanvas.cpp:1926
+#: ../src/synfig/loadcanvas.cpp:1919 ../src/synfig/loadcanvas.cpp:1927
 msgid "Canvas with width or height less than one is not allowed"
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:2012
+#: ../src/synfig/loadcanvas.cpp:2013
 msgid "Inline canvas cannot have a <defs> section"
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:2020
+#: ../src/synfig/loadcanvas.cpp:2021
 msgid "Inline canvas cannot have keyframes"
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:2032
+#: ../src/synfig/loadcanvas.cpp:2033
 msgid "Inline canvases cannot have metadata"
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:2040
+#: ../src/synfig/loadcanvas.cpp:2041
 msgid "<meta> must have a name"
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:2046
+#: ../src/synfig/loadcanvas.cpp:2047
 msgid "<meta> must have content"
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:2058
+#: ../src/synfig/loadcanvas.cpp:2059
 msgid "blank \"name\" entity"
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:2073
+#: ../src/synfig/loadcanvas.cpp:2074
 msgid "blank \"desc\" entity"
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:2088
+#: ../src/synfig/loadcanvas.cpp:2089
 msgid "blank \"author\" entity"
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:2120
+#: ../src/synfig/loadcanvas.cpp:2121
 #, c-format
 msgid "Canvas '%s' has undefined %s: %s"
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:2122 ../src/synfig/valuenode.cpp:380
+#: ../src/synfig/loadcanvas.cpp:2123 ../src/synfig/valuenode.cpp:380
 msgid "ValueNode"
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:2122
+#: ../src/synfig/loadcanvas.cpp:2123
 msgid "ValueNodes"
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:2202 ../src/synfig/loadcanvas.cpp:2258
+#: ../src/synfig/loadcanvas.cpp:2203 ../src/synfig/loadcanvas.cpp:2259
 msgid "Can't open file"
 msgstr "Не удалось открыть файл"
 
@@ -2139,17 +2188,15 @@ msgstr ""
 msgid "Unable to open module list file '%s'"
 msgstr "Не удалось открыть файл списка модулей \"%s\""
 
-#: ../src/synfig/main.cpp:282 ../src/tool/main.cpp:244
+#: ../src/synfig/main.cpp:282
 msgid "DONE"
 msgstr "ГОТОВО"
 
-#: ../src/synfig/main.cpp:348 ../src/tool/main.cpp:124
-#: ../src/tool/main.cpp:165
+#: ../src/synfig/main.cpp:348
 msgid "error"
 msgstr "ошибка"
 
-#: ../src/synfig/main.cpp:363 ../src/tool/main.cpp:131
-#: ../src/tool/main.cpp:172
+#: ../src/synfig/main.cpp:363
 msgid "warning"
 msgstr ""
 
@@ -2440,7 +2487,7 @@ msgstr "градиент"
 msgid "nil"
 msgstr ""
 
-#: ../src/synfig/valuenode.cpp:142 ../src/synfig/valuenode_composite.cpp:434
+#: ../src/synfig/valuenode.cpp:142 ../src/synfig/valuenode_composite.cpp:435
 msgid "Composite"
 msgstr ""
 
@@ -2502,7 +2549,7 @@ msgstr ""
 
 #: ../src/synfig/valuenode.cpp:154 ../src/synfig/valuenode_sine.cpp:109
 msgid "Sine"
-msgstr ""
+msgstr "Синус"
 
 #: ../src/synfig/valuenode.cpp:156 ../src/synfig/valuenode_timedswap.cpp:267
 msgid "Timed Swap"
@@ -2516,11 +2563,11 @@ msgstr ""
 
 #: ../src/synfig/valuenode.cpp:158 ../src/synfig/valuenode_exp.cpp:105
 msgid "Exponential"
-msgstr ""
+msgstr "Экспонента"
 
 #: ../src/synfig/valuenode.cpp:159 ../src/synfig/valuenode_add.cpp:230
 msgid "Add"
-msgstr "Добавить"
+msgstr "Сумма"
 
 #: ../src/synfig/valuenode.cpp:160
 #: ../src/synfig/valuenode_blinecalctangent.cpp:175
@@ -2532,17 +2579,17 @@ msgstr "Касательная кривой"
 msgid "BLine Vertex"
 msgstr "Вершина кривой"
 
-#: ../src/synfig/valuenode.cpp:162 ../src/synfig/valuenode_range.cpp:233
+#: ../src/synfig/valuenode.cpp:162 ../src/synfig/valuenode_range.cpp:301
 msgid "Range"
 msgstr "Диапазон"
 
 #: ../src/synfig/valuenode.cpp:164 ../src/synfig/valuenode_switch.cpp:173
 msgid "Switch"
-msgstr ""
+msgstr "Переключатель"
 
 #: ../src/synfig/valuenode.cpp:165 ../src/synfig/valuenode_cos.cpp:108
 msgid "Cos"
-msgstr ""
+msgstr "Косинус"
 
 #: ../src/synfig/valuenode.cpp:166
 msgid "aTan2"
@@ -2554,7 +2601,7 @@ msgstr ""
 
 #: ../src/synfig/valuenode.cpp:169 ../src/synfig/valuenode_reciprocal.cpp:182
 msgid "Reciprocal"
-msgstr ""
+msgstr "Обратное значени"
 
 #: ../src/synfig/valuenode.cpp:171 ../src/synfig/valuenode_integer.cpp:186
 msgid "From Integer"
@@ -2563,7 +2610,7 @@ msgstr "Текст"
 #: ../src/synfig/valuenode.cpp:173
 #: ../src/synfig/valuenode_blinecalcwidth.cpp:146
 msgid "BLine Width"
-msgstr ""
+msgstr "Толщина кривой"
 
 #: ../src/synfig/valuenode.cpp:175
 msgid "Vector Angle"
@@ -2587,7 +2634,7 @@ msgstr "Цвет градиента"
 
 #: ../src/synfig/valuenode.cpp:180
 msgid "Dot Product"
-msgstr ""
+msgstr "Скалярное произведение"
 
 #: ../src/synfig/valuenode.cpp:181 ../src/synfig/valuenode_timestring.cpp:118
 msgid "Time String"
@@ -2599,7 +2646,7 @@ msgstr ""
 
 #: ../src/synfig/valuenode.cpp:183 ../src/synfig/valuenode_join.cpp:143
 msgid "Joined List"
-msgstr ""
+msgstr "Объединённый список"
 
 #: ../src/synfig/valuenode.cpp:184
 msgid "Angle String"
@@ -2614,14 +2661,13 @@ msgid "Logarithm"
 msgstr "Логарифм"
 
 #: ../src/synfig/valuenode.cpp:188
-#, fuzzy
 msgid "Greyed"
-msgstr "Зеленый"
+msgstr "Заблокированный"
 
 #: ../src/synfig/valuenode.cpp:189 ../src/synfig/valuenode_pow.cpp:123
 #: ../src/synfig/valuenode_pow.cpp:200
 msgid "Power"
-msgstr ""
+msgstr "Степень"
 
 #: ../src/synfig/valuenode.cpp:190 ../src/synfig/valuenode_compare.cpp:190
 msgid "Compare"
@@ -2685,14 +2731,12 @@ msgid "Scalar"
 msgstr ""
 
 #: ../src/synfig/valuenode_and.cpp:116 ../src/synfig/valuenode_or.cpp:116
-#, fuzzy
 msgid "Link1"
-msgstr "Кривая"
+msgstr "Связь 1"
 
 #: ../src/synfig/valuenode_and.cpp:117 ../src/synfig/valuenode_or.cpp:117
-#, fuzzy
 msgid "Link2"
-msgstr "Кривая"
+msgstr "Связь 2"
 
 #: ../src/synfig/valuenode_and.cpp:161
 msgid "AND"
@@ -2741,63 +2785,59 @@ msgstr "Смещение"
 msgid "Fixed Length"
 msgstr "Фиксированная длина"
 
-#: ../src/synfig/valuenode_composite.cpp:164
-#: ../src/synfig/valuenode_composite.cpp:184
+#: ../src/synfig/valuenode_composite.cpp:165
+#: ../src/synfig/valuenode_composite.cpp:185
 msgid "Bad type for composite"
 msgstr ""
 
-#: ../src/synfig/valuenode_composite.cpp:270
+#: ../src/synfig/valuenode_composite.cpp:271
 msgid "Red"
 msgstr "Красный"
 
-#: ../src/synfig/valuenode_composite.cpp:272
+#: ../src/synfig/valuenode_composite.cpp:273
 msgid "Green"
 msgstr "Зеленый"
 
-#: ../src/synfig/valuenode_composite.cpp:274
+#: ../src/synfig/valuenode_composite.cpp:275
 msgid "Blue"
 msgstr "Синий"
 
-#: ../src/synfig/valuenode_composite.cpp:276
+#: ../src/synfig/valuenode_composite.cpp:277
 #: ../src/synfig/valuenode_radialcomposite.cpp:213
 msgid "Alpha"
 msgstr "Альфа"
 
-#: ../src/synfig/valuenode_composite.cpp:280
+#: ../src/synfig/valuenode_composite.cpp:281
 msgid "Vertex 1"
 msgstr "Вершина 1"
 
-#: ../src/synfig/valuenode_composite.cpp:282
-#: ../src/synfig/valuenode_composite.cpp:298
+#: ../src/synfig/valuenode_composite.cpp:283
+#: ../src/synfig/valuenode_composite.cpp:299
 msgid "Tangent 1"
 msgstr "Касательная 1"
 
-#: ../src/synfig/valuenode_composite.cpp:284
+#: ../src/synfig/valuenode_composite.cpp:285
 msgid "Vertex 2"
 msgstr "Вершина 2"
 
-#: ../src/synfig/valuenode_composite.cpp:286
-#: ../src/synfig/valuenode_composite.cpp:300
+#: ../src/synfig/valuenode_composite.cpp:287
+#: ../src/synfig/valuenode_composite.cpp:301
 msgid "Tangent 2"
 msgstr "Касательная 2"
 
-#: ../src/synfig/valuenode_composite.cpp:290
+#: ../src/synfig/valuenode_composite.cpp:291
 msgid "Vertex"
 msgstr "Вершина"
 
-#: ../src/synfig/valuenode_composite.cpp:296
+#: ../src/synfig/valuenode_composite.cpp:297
 msgid "Split Tangents"
 msgstr "Разделить касательные"
 
-#: ../src/synfig/valuenode_composite.cpp:307
+#: ../src/synfig/valuenode_composite.cpp:308
 #: ../src/synfig/valuenode_radialcomposite.cpp:224
 #, c-format
 msgid "C%d"
 msgstr ""
-
-#: ../src/synfig/valuenode_const.cpp:129
-msgid "Constant"
-msgstr "Константа"
 
 #: ../src/synfig/valuenode_compare.cpp:128
 msgid "Greater Than"
@@ -2834,7 +2874,7 @@ msgstr ""
 
 #: ../src/synfig/valuenode_exp.cpp:158
 msgid "Exponent"
-msgstr ""
+msgstr "Экспонента"
 
 #: ../src/synfig/valuenode_integer.cpp:132
 msgid "Integer"
@@ -2913,11 +2953,11 @@ msgstr "Тон"
 msgid "Some of my parameters aren't set!"
 msgstr ""
 
-#: ../src/synfig/valuenode_range.cpp:194
+#: ../src/synfig/valuenode_range.cpp:262
 msgid "Min"
 msgstr "Мин"
 
-#: ../src/synfig/valuenode_range.cpp:195
+#: ../src/synfig/valuenode_range.cpp:263
 msgid "Max"
 msgstr "Макс"
 
@@ -2962,7 +3002,7 @@ msgstr ""
 msgid "Segment"
 msgstr "Сегмент"
 
-#: ../src/synfig/valuenode_step.cpp:218 ../src/tool/main.cpp:944
+#: ../src/synfig/valuenode_step.cpp:218 ../src/tool/main.cpp:821
 msgid "Start Time"
 msgstr "Время начала"
 
@@ -3002,387 +3042,415 @@ msgstr ""
 msgid "Color2"
 msgstr ""
 
-#: ../src/tool/main.cpp:217
-msgid "Line"
-msgstr "Линия"
-
-#: ../src/tool/main.cpp:217
-msgid " of "
-msgstr ""
-
-#: ../src/tool/main.cpp:319
+#: ../src/tool/main.cpp:155
 msgid "syntax: "
 msgstr "Синтаксис:"
 
-#: ../src/tool/main.cpp:323
+#: ../src/tool/main.cpp:159
 msgid "Specify output target (Default:unknown)"
 msgstr "Указать цель вывода (по умолчанию неизвестна)"
 
-#: ../src/tool/main.cpp:324
+#: ../src/tool/main.cpp:160
 msgid "Set the image width (Use zero for file default)"
 msgstr "Задать ширину изображения (используйте 0 для параметров по умолчанию)"
 
-#: ../src/tool/main.cpp:325
+#: ../src/tool/main.cpp:161
 msgid "Set the image height (Use zero for file default)"
 msgstr "Задать высоту изображения (используйте 0 для параметров по умолчанию)"
 
-#: ../src/tool/main.cpp:326
+#: ../src/tool/main.cpp:162
 msgid "Set the diagonal size of image window (Span)"
 msgstr "Задать размер окна изображения по диагонали"
 
-#: ../src/tool/main.cpp:327
+#: ../src/tool/main.cpp:163
 msgid "Set antialias amount for parametric renderer."
 msgstr "Задать силу сглаживания для параметрического отрисовщика"
 
-#: ../src/tool/main.cpp:328
+#: ../src/tool/main.cpp:164
 #, c-format
 msgid "Specify image quality for accelerated renderer (default=%d)"
 msgstr ""
 "Указать качество изображения для ускоренного отрисовщика (по умолчанию = %d)"
 
-#: ../src/tool/main.cpp:329
+#: ../src/tool/main.cpp:165
 msgid "Gamma (default=2.2)"
 msgstr "Гамма (по умолчанию = 2,2)"
 
-#: ../src/tool/main.cpp:330
+#: ../src/tool/main.cpp:166
 msgid "Verbose Output (add more for more verbosity)"
 msgstr "Использовать более подробный вывод"
 
-#: ../src/tool/main.cpp:331
+#: ../src/tool/main.cpp:167
 msgid "Quiet mode (No progress/time-remaining display)"
 msgstr "Использовать менее подробный вывод (без отчёта о прогрессе)"
 
-#: ../src/tool/main.cpp:332
+#: ../src/tool/main.cpp:168
 msgid "Render the canvas with the given id instead of the root."
 msgstr "Отрисовать холст с указанным ID вместо корневого холста"
 
-#: ../src/tool/main.cpp:333
+#: ../src/tool/main.cpp:169
 msgid "Specify output filename"
 msgstr "Указать имя выводимого файла"
 
-#: ../src/tool/main.cpp:334
+#: ../src/tool/main.cpp:170
 msgid "Enable multithreaded renderer using specified # of threads"
 msgstr "Использовать многопоточный отрисовщик с этим количеством потоков"
 
-#: ../src/tool/main.cpp:335
+#: ../src/tool/main.cpp:171
 msgid "Print Benchmarks"
 msgstr "Вывести результаты тестов производительности"
 
-#: ../src/tool/main.cpp:336
+#: ../src/tool/main.cpp:172
 msgid "Set the frame rate"
 msgstr "Задать частоту кадров в секунду"
 
-#: ../src/tool/main.cpp:337
+#: ../src/tool/main.cpp:173
 msgid "Render a single frame at <seconds>"
 msgstr "Отрисовать один кадр за это количество секунд"
 
-#: ../src/tool/main.cpp:338 ../src/tool/main.cpp:339
+#: ../src/tool/main.cpp:174 ../src/tool/main.cpp:175
 msgid "Set the starting time"
 msgstr "Задать время начала"
 
-#: ../src/tool/main.cpp:340
+#: ../src/tool/main.cpp:176
 msgid "Set the ending time"
 msgstr "Задать время конца"
 
-#: ../src/tool/main.cpp:341
+#: ../src/tool/main.cpp:177
 msgid "Set the physical resolution (dots-per-inch)"
 msgstr "Задать физическое разрешение (в точках на дюйм)"
 
-#: ../src/tool/main.cpp:342
+#: ../src/tool/main.cpp:178
 msgid "Set the physical X resolution (dots-per-inch)"
 msgstr "Задать физическое разрешение по X (в точках на дюйм)"
 
-#: ../src/tool/main.cpp:343
+#: ../src/tool/main.cpp:179
 msgid "Set the physical Y resolution (dots-per-inch)"
 msgstr "Задать физическое разрешение по Y (в точках на дюйм)"
 
-#: ../src/tool/main.cpp:345
+#: ../src/tool/main.cpp:181
 msgid "List the exported canvases in the composition"
 msgstr "Перечислить экспортированные холсты в композиции"
 
-#: ../src/tool/main.cpp:346
+#: ../src/tool/main.cpp:182
 msgid "Print out specified details of the root canvas"
 msgstr "Вывести указанные данные о корневом холсте"
 
-#: ../src/tool/main.cpp:347
+#: ../src/tool/main.cpp:183
 msgid "Append layers in <filename> to composition"
 msgstr "Добавить слои из <filename> в композицию"
 
-#: ../src/tool/main.cpp:349
+#: ../src/tool/main.cpp:185
 msgid "Print out layer's description, parameter info, etc."
 msgstr "Вывести описание слоя, данные о параметрах и т.д."
 
-#: ../src/tool/main.cpp:350
+#: ../src/tool/main.cpp:186
 msgid "Print out the list of available layers"
 msgstr "Вывести список доступных слоёв"
 
-#: ../src/tool/main.cpp:351
+#: ../src/tool/main.cpp:187
 msgid "Print out the list of available targets"
 msgstr "Вывести список доступных целей"
 
-#: ../src/tool/main.cpp:352
+#: ../src/tool/main.cpp:188
+#, fuzzy
+msgid "Print out the list of available target video codecs"
+msgstr "Вывести список доступных целей"
+
+#: ../src/tool/main.cpp:189
 msgid "Print out the list of available importers"
 msgstr "Вывести список доступных фильтров импорта"
 
-#: ../src/tool/main.cpp:353
+#: ../src/tool/main.cpp:190
 msgid "Print out the list of available ValueNodes"
 msgstr ""
 
-#: ../src/tool/main.cpp:354
+#: ../src/tool/main.cpp:191
 msgid "Print out the list of loaded modules"
 msgstr "Вывести список загруженных модулей"
 
-#: ../src/tool/main.cpp:355
+#: ../src/tool/main.cpp:192
 msgid "Print out version information"
 msgstr "Вывести информацию о версии"
 
-#: ../src/tool/main.cpp:356
+#: ../src/tool/main.cpp:193
 msgid "Print out misc build information"
 msgstr "Вывести информацию о сборке"
 
-#: ../src/tool/main.cpp:357
+#: ../src/tool/main.cpp:194
 msgid "Print out license information"
 msgstr "Вывести информацию о лицензии"
 
-#: ../src/tool/main.cpp:360
+#: ../src/tool/main.cpp:197
 msgid "Test GUID generation"
 msgstr ""
 
-#: ../src/tool/main.cpp:361
+#: ../src/tool/main.cpp:198
 msgid "Test signal implementation"
 msgstr ""
 
-#: ../src/tool/main.cpp:365
+#: ../src/tool/main.cpp:202
 msgid "Print out usage and syntax info"
 msgstr ""
 
-#: ../src/tool/main.cpp:615
+#: ../src/tool/main.cpp:479
 #, c-format
 msgid "Antialiasing set to %d, (%d samples per pixel)"
 msgstr ""
 
-#: ../src/tool/main.cpp:623
+#: ../src/tool/main.cpp:484
 #, c-format
 msgid "Span set to %d units"
 msgstr ""
 
-#: ../src/tool/main.cpp:633
+#: ../src/tool/main.cpp:490
 #, c-format
 msgid "Frame rate set to %d frames per second"
 msgstr ""
 
-#: ../src/tool/main.cpp:643
+#: ../src/tool/main.cpp:497
 #, c-format
 msgid "Physical resolution set to %f dpi"
 msgstr "Физическое разрешение указано равным %f dpi"
 
-#: ../src/tool/main.cpp:653
+#: ../src/tool/main.cpp:504
 #, c-format
 msgid "Physical X resolution set to %f dpi"
 msgstr "Физическое разрешение по X указано равным %f dpi"
 
-#: ../src/tool/main.cpp:663
+#: ../src/tool/main.cpp:511
 #, c-format
 msgid "Physical Y resolution set to %f dpi"
 msgstr "Физическое разрешение по Y указано равным %f dpi"
 
-#: ../src/tool/main.cpp:684
+#: ../src/tool/main.cpp:527
 msgid "Rendering frame at "
 msgstr ""
 
-#: ../src/tool/main.cpp:706
+#: ../src/tool/main.cpp:545
 #, c-format
 msgid "Resolution set to %dx%d"
 msgstr "Разрешение указано равным %d×%d"
 
-#: ../src/tool/main.cpp:723
+#: ../src/tool/main.cpp:560
 #, c-format
 msgid "Quality set to %d"
 msgstr "Качество указано равным %d"
 
-#: ../src/tool/main.cpp:743
+#: ../src/tool/main.cpp:577
 #, c-format
 msgid "Threads set to %d"
 msgstr "Количество потоков указано равным %d"
 
-#: ../src/tool/main.cpp:913
+#: ../src/tool/main.cpp:596
+#, fuzzy, c-format
+msgid "Target set to %s"
+msgstr "Количество потоков указано равным %d"
+
+#: ../src/tool/main.cpp:640
+#, c-format
+msgid "Target video codec set to %s"
+msgstr ""
+
+#: ../src/tool/main.cpp:650
+#, fuzzy, c-format
+msgid "Target bitrate set to %dk"
+msgstr "Количество потоков указано равным %d"
+
+#: ../src/tool/main.cpp:790
 msgid "Unrecognised canvas variable: "
 msgstr "Не распознана переменная холста:"
 
-#: ../src/tool/main.cpp:914
+#: ../src/tool/main.cpp:791
 msgid "Recognized variables are:"
 msgstr "Распознанные переменные:"
 
-#: ../src/tool/main.cpp:950
+#: ../src/tool/main.cpp:827
 msgid "End Time"
 msgstr "Время завершения"
 
-#: ../src/tool/main.cpp:956
+#: ../src/tool/main.cpp:833
 msgid "Frame Rate"
 msgstr "Частота кадров"
 
-#: ../src/tool/main.cpp:962
+#: ../src/tool/main.cpp:839
 msgid "Start Frame"
 msgstr "Кадра начала"
 
-#: ../src/tool/main.cpp:968
+#: ../src/tool/main.cpp:845
 msgid "End Frame"
 msgstr "Кадр конца"
 
-#: ../src/tool/main.cpp:989
+#: ../src/tool/main.cpp:866
 msgid "Image Aspect Ratio"
 msgstr "Соотношение сторон изображения"
 
-#: ../src/tool/main.cpp:998
+#: ../src/tool/main.cpp:875
 msgid "Pixel Width"
 msgstr "Ширина пиксела"
 
-#: ../src/tool/main.cpp:1004
+#: ../src/tool/main.cpp:881
 msgid "Pixel Height"
 msgstr "Высота пиксела"
 
-#: ../src/tool/main.cpp:1010
+#: ../src/tool/main.cpp:887
 msgid "Pixel Aspect Ratio"
 msgstr "Соотношение сторон пиксела"
 
-#: ../src/tool/main.cpp:1019
+#: ../src/tool/main.cpp:896
 msgid "Top Left"
 msgstr "Верхний левый"
 
-#: ../src/tool/main.cpp:1026
+#: ../src/tool/main.cpp:903
 msgid "Bottom Right"
 msgstr "Нижний правый"
 
-#: ../src/tool/main.cpp:1033
+#: ../src/tool/main.cpp:910
 msgid "Physical Width"
 msgstr "Физическая ширина"
 
-#: ../src/tool/main.cpp:1039
+#: ../src/tool/main.cpp:916
 msgid "Physical Height"
 msgstr "Физическая высота"
 
-#: ../src/tool/main.cpp:1045
+#: ../src/tool/main.cpp:922
 msgid "X Resolution"
 msgstr "Разрешение по X"
 
-#: ../src/tool/main.cpp:1051
+#: ../src/tool/main.cpp:928
 msgid "Y Resolution"
 msgstr "Разрешение по Y"
 
-#: ../src/tool/main.cpp:1057
+#: ../src/tool/main.cpp:934
 msgid "Diagonal Image Span"
 msgstr ""
 
-#: ../src/tool/main.cpp:1066
+#: ../src/tool/main.cpp:943
 msgid "Interlaced"
 msgstr ""
 
-#: ../src/tool/main.cpp:1072
+#: ../src/tool/main.cpp:949
 msgid "Antialias"
 msgstr ""
 
-#: ../src/tool/main.cpp:1084
+#: ../src/tool/main.cpp:961
 msgid "Flags"
 msgstr ""
 
-#: ../src/tool/main.cpp:1090
+#: ../src/tool/main.cpp:967
 msgid "Focus"
 msgstr "Фокус"
 
-#: ../src/tool/main.cpp:1097
+#: ../src/tool/main.cpp:974
 msgid "Background Color"
 msgstr "Цвет фона"
 
-#: ../src/tool/main.cpp:1107
+#: ../src/tool/main.cpp:984
 msgid "Metadata"
 msgstr "Метаданные"
 
-#: ../src/tool/main.cpp:1136
+#: ../src/tool/main.cpp:1013
 msgid "FATAL: Synfig Version Mismatch"
 msgstr "Фатальная ошибка: несовпадение версий Synfig"
 
-#: ../src/tool/main.cpp:1152
+#: ../src/tool/main.cpp:1029
 msgid "verbosity set to "
 msgstr ""
 
-#: ../src/tool/main.cpp:1189
+#: ../src/tool/main.cpp:1066
 msgid "Unable to load '"
 msgstr "Не удалось загрузить '"
 
-#: ../src/tool/main.cpp:1190 ../src/tool/main.cpp:1215
-#: ../src/tool/main.cpp:1223 ../src/tool/main.cpp:1328
-#: ../src/tool/main.cpp:1354
+#: ../src/tool/main.cpp:1067 ../src/tool/main.cpp:1092
+#: ../src/tool/main.cpp:1100 ../src/tool/main.cpp:1234
+#: ../src/tool/main.cpp:1260
 msgid "Throwing out job..."
 msgstr ""
 
-#: ../src/tool/main.cpp:1214
+#: ../src/tool/main.cpp:1091
 msgid "Unable to find canvas with ID \""
 msgstr ""
 
-#: ../src/tool/main.cpp:1214 ../src/tool/main.cpp:1222
+#: ../src/tool/main.cpp:1091 ../src/tool/main.cpp:1099
 msgid "\" in "
 msgstr "\" в "
 
-#: ../src/tool/main.cpp:1222
+#: ../src/tool/main.cpp:1099
 msgid "Invalid canvas name \""
 msgstr ""
 
-#: ../src/tool/main.cpp:1236
+#: ../src/tool/main.cpp:1113
 msgid "Quality set to "
 msgstr "Качество указано равным "
 
-#: ../src/tool/main.cpp:1250
+#: ../src/tool/main.cpp:1127
 msgid "Unable to append '"
 msgstr "Не удалось добавить в конец '"
 
-#: ../src/tool/main.cpp:1260
+#: ../src/tool/main.cpp:1137
 msgid "Appended contents of "
 msgstr "Добавлено в конец содержимое "
 
-#: ../src/tool/main.cpp:1264
+#: ../src/tool/main.cpp:1141
 msgid "Attempting to determine target/outfile..."
 msgstr ""
 
-#: ../src/tool/main.cpp:1270
+#: ../src/tool/main.cpp:1147
 msgid "Target name undefined, attempting to figure it out"
 msgstr ""
 
-#: ../src/tool/main.cpp:1299
+#: ../src/tool/main.cpp:1181
+#, fuzzy, c-format
+msgid "Unknown target video codec: %s."
+msgstr "Неизвестная цель для "
+
+#: ../src/tool/main.cpp:1184
+msgid "Available target video codecs are:"
+msgstr ""
+
+#: ../src/tool/main.cpp:1192
+msgid "Missing argument: \"-vb\"."
+msgstr ""
+
+#: ../src/tool/main.cpp:1202
 msgid "Defaulting to PNG target..."
 msgstr ""
 
-#: ../src/tool/main.cpp:1318
+#: ../src/tool/main.cpp:1221
 msgid "Creating the target..."
 msgstr "Создаётся цель..."
 
-#: ../src/tool/main.cpp:1327
+#: ../src/tool/main.cpp:1233
 msgid "Unknown target for "
 msgstr "Неизвестная цель для "
 
-#: ../src/tool/main.cpp:1338
+#: ../src/tool/main.cpp:1244
 msgid "Setting the canvas on the target..."
 msgstr "Задаётся холст для цели..."
 
-#: ../src/tool/main.cpp:1340
+#: ../src/tool/main.cpp:1246
 msgid "Setting the quality of the target..."
 msgstr "Задаётся качество цели..."
 
-#: ../src/tool/main.cpp:1350
+#: ../src/tool/main.cpp:1256
 msgid "Unidentified arguments for "
 msgstr "Неопознанные аргументы для "
 
-#: ../src/tool/main.cpp:1363
+#: ../src/tool/main.cpp:1269
 msgid "Unidentified arguments:"
 msgstr "Неопознанные аргументы:"
 
-#: ../src/tool/main.cpp:1372
+#: ../src/tool/main.cpp:1278
 msgid "Nothing to do!"
 msgstr ""
 
-#: ../src/tool/main.cpp:1415
+#: ../src/tool/main.cpp:1321
 msgid "Rendering..."
-msgstr "Рендеринг..."
+msgstr "Визуализация..."
 
-#: ../src/tool/main.cpp:1431
+#: ../src/tool/main.cpp:1337
 msgid "Done."
 msgstr "Готово"
+
+#~ msgid "Line"
+#~ msgstr "Линия"

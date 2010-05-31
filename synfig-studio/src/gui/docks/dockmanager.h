@@ -72,6 +72,7 @@ public:
 	bool unregister_dockable(Dockable& x);
 	Dockable& find_dockable(const synfig::String& x);
 	void present(synfig::String x);
+	void show_all_dock_dialogs();
 
 }; // END of class DockManager
 

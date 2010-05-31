@@ -67,11 +67,8 @@ public:
 	{
 		synfigapp::Main::settings().remove_domain("dock");
 	}
-#define SCALE_FACTOR	(1280)
 	virtual bool get_value(const synfig::String& key_, synfig::String& value)const
 	{
-		int screen_w(Gdk::screen_width());
-		int screen_h(Gdk::screen_height());
 
 		if(key_.size()>6 && String(key_.begin(),key_.begin()+6)=="dialog")try
 		{
@@ -89,19 +86,19 @@ public:
 				vector<int>::const_iterator end(dock_dialog.get_dock_book_sizes().end());
 				value.clear();
 				for(;iter!=end;++iter)
-					value+=strprintf("%d ",(*iter)*SCALE_FACTOR/screen_h);
+					value+=strprintf("%d ",*iter);
 				return true;
 			}
 			if(key=="pos")
 			{
 				int x,y; dock_dialog.get_position(x,y);
-				value=strprintf("%d %d",x*SCALE_FACTOR/screen_w,y*SCALE_FACTOR/screen_h);
+				value=strprintf("%d %d",x,y);
 				return true;
 			}
 			if(key=="size")
 			{
 				int x,y; dock_dialog.get_size(x,y);
-				value=strprintf("%d %d",x*SCALE_FACTOR/screen_w,y*SCALE_FACTOR/screen_h);
+				value=strprintf("%d %d",x,y);
 				return true;
 			}
 			if(key=="contents")
@@ -120,8 +117,6 @@ public:
 
 	virtual bool set_value(const synfig::String& key_,const synfig::String& value)
 	{
-		int screen_w(Gdk::screen_width());
-		int screen_h(Gdk::screen_height());
 
 		if(key_.size()>6 && String(key_.begin(),key_.begin()+6)=="dialog")
 		{
@@ -145,13 +140,6 @@ public:
 					int size;
 					if(!strscanf(value_,"%d",&size))
 						break;
-					if (size > SCALE_FACTOR) size = SCALE_FACTOR - 150;
-					if (size < 0) size = 0;
-					size=size*screen_h/SCALE_FACTOR;
-
-					// prevent errors like this, by allowing space for at least the dockable's icon:
-					// ** CRITICAL **: clearlooks_style_draw_box_gap: assertion `height >= -1' failed
-					if (size < height + 9) size = height + 9;
 
 					data.push_back(size);
 
@@ -174,14 +162,7 @@ public:
 				int x,y;
 				if(!strscanf(value,"%d %d",&x, &y))
 					return false;
-				if (x > SCALE_FACTOR) x = SCALE_FACTOR - 150; if (x < 0) x = 0;
-				if (y > SCALE_FACTOR) y = SCALE_FACTOR - 150; if (y < 0) y = 0;
-				x=x*screen_w/SCALE_FACTOR;
-				y=y*screen_h/SCALE_FACTOR;
-				if(getenv("SYNFIG_WINDOW_POSITION_X_OFFSET"))
-					x += atoi(getenv("SYNFIG_WINDOW_POSITION_X_OFFSET"));
-				if(getenv("SYNFIG_WINDOW_POSITION_Y_OFFSET"))
-					y += atoi(getenv("SYNFIG_WINDOW_POSITION_Y_OFFSET"));
+				//synfig::info("dock_manager. move to: %d, %d", x,y);
 				dock_dialog.move(x,y);
 				return true;
 			}
@@ -190,10 +171,7 @@ public:
 				int x,y;
 				if(!strscanf(value,"%d %d",&x, &y))
 					return false;
-				if (x > SCALE_FACTOR) x = 150; if (x < 0) x = 0;
-				if (y > SCALE_FACTOR) y = 150; if (y < 0) y = 0;
-				x=x*screen_w/SCALE_FACTOR;
-				y=y*screen_h/SCALE_FACTOR;
+				//synfig::info("dock_manager. size to: %d, %d", x,y);
 				dock_dialog.set_default_size(x,y);
 				dock_dialog.resize(x,y);
 				return true;
@@ -312,7 +290,6 @@ DockManager::find_dock_dialog(int id)
 
 	DockDialog* dock_dialog(new DockDialog());
 	dock_dialog->set_id(id);
-	dock_dialog->show();
 	return *dock_dialog;
 }
 
@@ -325,4 +302,12 @@ DockManager::find_dock_dialog(int id)const
 			return **iter;
 
 	throw std::runtime_error("DockManager::find_dock_dialog(int id)const: not found");
+}
+
+void
+DockManager::show_all_dock_dialogs()
+{
+	std::list<DockDialog*>::iterator iter;
+	for(iter=dock_dialog_list_.begin();iter!=dock_dialog_list_.end();++iter)
+		(*iter)->present();
 }

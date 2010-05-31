@@ -42,6 +42,9 @@ using namespace studio;
 
 /* === M A C R O S ========================================================= */
 
+#define CUSTOM_VCODEC_DESCRIPTION _("Custom Video Codec")
+#define CUSTOM_VCODEC _("write your video codec here")
+
 /* === G L O B A L S ======================================================= */
 //! Allowed video codecs
 /*! \warning This variable is linked to allowed_video_codecs_description,
@@ -51,9 +54,9 @@ using namespace studio;
  */
 const char* allowed_video_codecs[] =
 {
-	"flv", "h263p", "huffyuv", "libtheora", "libx264", "libxvid",
+	"flv", "h263p", "huffyuv", "libtheora", "libx264",
 	"mjpeg", "mpeg1video", "mpeg2video", "mpeg4", "msmpeg4",
-	"msmpeg4v1", "msmpeg4v2", "wmv1", "wmv2", NULL
+	"msmpeg4v1", "msmpeg4v2", "wmv1", "wmv2", CUSTOM_VCODEC, NULL
 };
 
 //! Allowed video codecs description.
@@ -67,16 +70,16 @@ const char* allowed_video_codecs_description[] =
 	_("Huffyuv / HuffYUV."),
 	_("libtheora Theora."),
 	_("libx264 H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10."),
-	_("libxvidcore MPEG-4 part 2."),
 	_("MJPEG (Motion JPEG)."),
 	_("raw MPEG-1 video."),
 	_("raw MPEG-2 video."),
-	_("MPEG-4 part 2."),
+	_("MPEG-4 part 2. (XviD/DivX)"),
 	_("MPEG-4 part 2 Microsoft variant version 3."),
 	_("MPEG-4 part 2 Microsoft variant version 1."),
 	_("MPEG-4 part 2 Microsoft variant version 2."),
 	_("Windows Media Video 7."),
 	_("Windows Media Video 8."),
+	CUSTOM_VCODEC_DESCRIPTION,
 	NULL
 };
 /* === P R O C E D U R E S ================================================= */
@@ -85,24 +88,41 @@ const char* allowed_video_codecs_description[] =
 
 /* === E N T R Y P O I N T ================================================= */
 
-Dialog_TargetParam::Dialog_TargetParam(synfig::TargetParam &tparam)
+Dialog_TargetParam::Dialog_TargetParam(Gtk::Window &parent, synfig::TargetParam &tparam):
+	Gtk::Dialog(_("Target Parameters"), parent, false, true)
 {
-	set_title(_("TargetParam Dialog"));
 	set_tparam(tparam);
+	// Custom Video Codec Entry
+	Gtk::Label* custom_label(manage(new Gtk::Label(std::string(CUSTOM_VCODEC_DESCRIPTION)+":")));
+	custom_label->set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
+	customvcodec=Gtk::manage(new Gtk::Entry());
 	// Available Video Codecs Combo Box Text.
-	vcodec = Gtk::manage(new Gtk::ComboBoxText());
 	Gtk::Label* label(manage(new Gtk::Label(_("Available Video Codecs:"))));
 	label->set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
-	get_vbox()->pack_start(*label, true, true, 0);
+	vcodec = Gtk::manage(new Gtk::ComboBoxText());
+	// Appends the codec descriptions to the Combo Box
 	for (int i = 0; allowed_video_codecs[i] != NULL &&
 					allowed_video_codecs_description[i] != NULL; i++)
 		vcodec->append_text(allowed_video_codecs_description[i]);
+	//Adds the Combo Box and the Custom Video Codec entry to the vertical box
+	get_vbox()->pack_start(*label, true, true, 0);
+	get_vbox()->pack_start(*vcodec, true, true, 0);
+	get_vbox()->pack_start(*custom_label, true, true, 0);
+	get_vbox()->pack_start(*customvcodec, true, true, 0);
+
+	// Connect the signal change to the handler
+	vcodec->signal_changed().connect(sigc::mem_fun(*this, &Dialog_TargetParam::on_vcodec_change));
+	// By defaut, set the active text to the Custom Video Codec
+	vcodec->set_active_text(CUSTOM_VCODEC_DESCRIPTION);
+	customvcodec->set_text(CUSTOM_VCODEC);
+	//Compare the passed vcodec to the available and set it active if found
 	for (int i = 0; allowed_video_codecs[i] != NULL &&
 					allowed_video_codecs_description[i] != NULL; i++)
 		if(!get_tparam().video_codec.compare(allowed_video_codecs[i]))
+		{
 			vcodec->set_active_text(allowed_video_codecs_description[i]);
-
-	get_vbox()->pack_start(*vcodec, true, true, 0);
+			customvcodec->set_text(allowed_video_codecs[i]);
+		}
 
 	//Bitrate Spin Button
 	Gtk::Adjustment* bradj(manage(new class Gtk::Adjustment(double(tparam.bitrate), 10.0,1000.0)));
@@ -129,11 +149,7 @@ Dialog_TargetParam::Dialog_TargetParam(synfig::TargetParam &tparam)
 void
 Dialog_TargetParam::on_ok()
 {
-	std::string codecnamed = vcodec->get_active_text();
-	for (int i = 0; allowed_video_codecs[i] != NULL &&
-					allowed_video_codecs_description[i] != NULL; i++)
-		if(!codecnamed.compare(allowed_video_codecs_description[i]))
-			tparam_.video_codec=allowed_video_codecs[i];
+	tparam_.video_codec=customvcodec->get_text().c_str();
 	tparam_.bitrate=bitrate->get_value();
 	hide();
 }
@@ -142,6 +158,22 @@ void
 Dialog_TargetParam::on_cancel()
 {
 	hide();
+}
+
+void
+Dialog_TargetParam::on_vcodec_change()
+{
+	std::string codecnamed = vcodec->get_active_text();
+	customvcodec->set_sensitive(false);
+	for (int i = 0; allowed_video_codecs[i] != NULL &&
+					allowed_video_codecs_description[i] != NULL; i++)
+		if(!codecnamed.compare(allowed_video_codecs_description[i]))
+		{
+			if(!codecnamed.compare(CUSTOM_VCODEC_DESCRIPTION))
+				customvcodec->set_sensitive(true);
+			else
+				customvcodec->set_text(allowed_video_codecs[i]);
+		}
 }
 
 Dialog_TargetParam::~Dialog_TargetParam()

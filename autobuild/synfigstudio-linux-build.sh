@@ -40,6 +40,8 @@
 # Build package from commit with "synfigstudio-0.62.00" tag
 #    ./synfigstudio-linux-build.sh package synfigstudio-0.62.00
 #
+# Note: Make sure to run "git clean -f -x -d" after you switch branches.
+#
 # = TODO =
 # - debuginfo packages
 
@@ -48,6 +50,7 @@ PREFIX=$HOME/synfig/
 
 PACKAGES_PATH=$HOME/synfig-packages     	# path where to write packages files
 PACKAGES_BUILDROOT=/tmp/synfig-buildroot	# path of for build infrastructure
+MAKE_THREADS=2					#count of threads for make
 
 # full = clean, configure, make
 # standart = configure, make
@@ -99,7 +102,7 @@ if [ ! -d ${PREFIX}/include/sigc++-2.0 ]; then
 	cd libsigc++-${LIBSIGCPP}
 	#make clean || true
 	./configure --prefix=${PREFIX}/ --includedir=${PREFIX}/include --disable-static --enable-shared 
-	make -j2 
+	make -j$MAKE_THREADS 
 	make install
 	cd ..
 	popd
@@ -114,7 +117,7 @@ if [ ! -d ${PREFIX}/include/glibmm-2.4 ]; then
 	cd glibmm-${GLIBMM}
 	#[[ $DOCLEAN == 1 ]] && make clean || true
 	./configure --prefix=${PREFIX} --includedir=${PREFIX}/include --disable-static --enable-shared --disable-fulldocs 
-	make -j2 
+	make -j$MAKE_THREADS 
 	make install
 	cd ..
 	popd
@@ -129,7 +132,7 @@ if [ ! -d ${PREFIX}/include/libxml++-2.6 ]; then
 	cd libxml++-${LIBXMLPP}
 	#[[ $DOCLEAN == 1 ]] && make clean || true
 	./configure --prefix=${PREFIX} --includedir=${PREFIX}/include --disable-static --enable-shared 
-	make -j2 
+	make -j$MAKE_THREADS 
 	make install
 	cd ..
 	popd
@@ -168,7 +171,7 @@ if [ ! -d ${PREFIX}/include/ImageMagick ]; then
 		--without-openexr
 	sed -i 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' libtool
 	sed -i 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
-	make -j2 
+	make -j$MAKE_THREADS 
 	make install
 	cd ..
 	popd
@@ -182,7 +185,7 @@ mkglew()
 	cd glew
 	#[[ $DOCLEAN == 1 ]] && make clean || true
 	sed -i -e 's/\r//g' config/config.guess
-	make -j2
+	make -j$MAKE_THREADS
 	make install GLEW_DEST=${PREFIX} libdir=/lib bindir=/bin  includedir=/include
 	cd ..
 	popd
@@ -196,7 +199,7 @@ if [ ! -d ${PREFIX}/include/cairomm-1.0 ]; then
 	cd cairomm-${CAIROMM}
 	#[[ $DOCLEAN == 1 ]] && make clean || true
 	./configure --prefix=${PREFIX} --includedir=${PREFIX}/include --disable-static --enable-shared --enable-docs=no
-	make -j2 
+	make -j$MAKE_THREADS 
 	make install
 	cd ..
 fi
@@ -210,7 +213,7 @@ if [ ! -d ${PREFIX}/include/gtkmm-2.4 ]; then
 	cd gtkmm-${GTKMM}
 	#[[ $DOCLEAN == 1 ]] && make clean || true
 	./configure --prefix=${PREFIX} --includedir=${PREFIX}/include --disable-static --enable-shared --disable-examples --disable-demos --disable-docs
-	make -j2
+	make -j$MAKE_THREADS
 	make install
 	cd ..
 	popd
@@ -224,7 +227,7 @@ mkfreeglut()
 	cd freeglut-${FREEGLUT}
 	#[[ $DOCLEAN == 1 ]] && make clean || true
 	./configure --prefix=${PREFIX} --includedir=${PREFIX}/include --disable-static  --disable-warnings --enable-shared 
-	make -j2
+	make -j$MAKE_THREADS
 	make install
 	cd ..
 	popd
@@ -248,7 +251,7 @@ mkftgl()
 	cd unix
 	#[[ $DOCLEAN == 1 ]] && make clean || true
 	./configure --prefix=${PREFIX} --includedir=${PREFIX}/include --disable-static --enable-shared --with-gl-inc=${PREFIX}/include  --with-gl-lib=${PREFIX}/lib  --with-glut-inc=${PREFIX}/include  --with-glut-lib=${PREFIX}/lib  --with-x 
-	make all -j2
+	make all -j$MAKE_THREADS
 	make install
 	cd ..
 	popd
@@ -261,7 +264,7 @@ mkgtkglext()
 	cd gtkglext-${GTKGLEXT}
 	#[[ $DOCLEAN == 1 ]] && make clean || true
 	./configure --prefix=${PREFIX} --includedir=${PREFIX}/include  --disable-gtk-doc --disable-static  --enable-shared 
-	make -j2 
+	make -j$MAKE_THREADS 
 	make install
 	cd ..
 	popd
@@ -274,7 +277,7 @@ mkgtkglextmm()
 	cd gtkglextmm-${GTKGLEXTMM}
 	#[[ $DOCLEAN == 1 ]] && make clean || true
 	./configure --prefix=${PREFIX} --includedir=${PREFIX}/include  --disable-dependency-tracking --disable-static  --enable-shared 
-	make -j2 
+	make -j$MAKE_THREADS 
 	make install
 	popd
 cd ..
@@ -286,7 +289,7 @@ mkgit()
 	[ ! -d git-${GITVERSION} ] && tar -xjf git-${GITVERSION}.tar.bz2
 	cd git-${GITVERSION}
 	./configure
-	make -j2
+	make -j$MAKE_THREADS
 	make install
 	cd ..
 	popd
@@ -294,7 +297,7 @@ mkgit()
 
 mkETL()
 {
-if [ -d ${SYNFIG_REPO_DIR}/ETL/trunk ]; then
+if [ -f ${SYNFIG_REPO_DIR}/ETL/trunk/configure.ac ]; then
 	pushd ${SYNFIG_REPO_DIR}/ETL/trunk
 else
 	pushd ${SYNFIG_REPO_DIR}/ETL
@@ -311,10 +314,10 @@ if [[ $MODE != 'quick' ]]; then
 	echo "Going to configure..."
 	rm -f aclocal.m4
 	autoreconf --install --force
-	bash ./configure --prefix=${PREFIX} --includedir=${PREFIX}/include $DEBUG 
+	/bin/sh ./configure --prefix=${PREFIX} --includedir=${PREFIX}/include $DEBUG 
 fi
 
-make -j2
+make -j$MAKE_THREADS
 make install
 
 popd
@@ -322,7 +325,7 @@ popd
 
 mksynfig()
 {
-if [ -d ${SYNFIG_REPO_DIR}/synfig-core/trunk ]; then
+if [ -d ${SYNFIG_REPO_DIR}/synfig-core/trunk/configure.ac ]; then
 	pushd ${SYNFIG_REPO_DIR}/synfig-core/trunk
 else
 	pushd ${SYNFIG_REPO_DIR}/synfig-core
@@ -337,7 +340,7 @@ if [[ $MODE != 'quick' ]]; then
 	sed -i 's/^AC_CONFIG_SUBDIRS(libltdl)$/m4_ifdef([_AC_SEEN_TAG(libltdl)], [], [AC_CONFIG_SUBDIRS(libltdl)])/' configure.ac || true
 	sed -i 's/^# AC_CONFIG_SUBDIRS(libltdl)$/m4_ifdef([_AC_SEEN_TAG(libltdl)], [], [AC_CONFIG_SUBDIRS(libltdl)])/' configure.ac || true
 	autoreconf --install --force
-	bash ./configure --prefix=${PREFIX} --includedir=${PREFIX}/include --disable-static --enable-shared --with-magickpp --without-libavcodec $DEBUG  
+	/bin/sh ./configure --prefix=${PREFIX} --includedir=${PREFIX}/include --disable-static --enable-shared --with-magickpp --without-libavcodec $DEBUG  
 fi
 
 #It looks like mod_libavcodec causes segfault on synfig-core when rendering to png.
@@ -351,7 +354,7 @@ fi
 #	export LDFLAGS=''
 #fi
 
-make -j2
+make -j$MAKE_THREADS
 make install
 
 popd
@@ -359,7 +362,7 @@ popd
 
 mksynfigstudio()
 {
-if [ -d ${SYNFIG_REPO_DIR}/synfig-studio/trunk ]; then
+if [ -d ${SYNFIG_REPO_DIR}/synfig-studio/trunk/configure.ac ]; then
 	pushd ${SYNFIG_REPO_DIR}/synfig-studio/trunk
 else
 	pushd ${SYNFIG_REPO_DIR}/synfig-studio
@@ -369,10 +372,10 @@ fi
 
 if [[ $MODE != 'quick' ]]; then
 	autoreconf --install --force
-	bash ./configure --prefix=${PREFIX} --includedir=${PREFIX}/include --disable-static --enable-shared $DEBUG
+	/bin/sh ./configure --prefix=${PREFIX} --includedir=${PREFIX}/include --disable-static --enable-shared $DEBUG
 fi
 
-make -j2
+make -j$MAKE_THREADS
 make install
 
 for n in AUTHORS COPYING NEWS README
@@ -612,7 +615,7 @@ initialize()
 			echo 
 			#echo "http_proxy =====" $http_proxy
 			#env
-			sudo apt-get update
+			sudo apt-get update || true
 			sudo apt-get install -y $PKG_LIST
 		fi
 	else
@@ -716,9 +719,9 @@ mkpackage()
 	if [[ `cat /etc/chroot.id` == "Synfig Packages Buildroot" ]]; then
 		echo "We are in chroot now."
 		
-		echo "[user]"  > $HOME/.gitconfig
-		echo "email = packages@synfig.org"  >> $HOME/.gitconfig
-		echo "name = Synfig Packager" >> $HOME/.gitconfig
+		echo "[user]"  > /root/.gitconfig
+		echo "email = packages@synfig.org"  >> /root/.gitconfig
+		echo "name = Synfig Packager" >> /root/.gitconfig
 		
 		
 		
