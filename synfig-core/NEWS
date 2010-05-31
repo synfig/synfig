@@ -4,17 +4,16 @@ More detailed notes are available on the releases page:
 
 http://synfig.org/wiki/Releases
 
- 0.62.01 (git tag: "synfig-0.62.01") - May 15, 2010 - Bug fixes, features.
+ 0.62.01 (git tag: "synfig-0.62.01") - May 31, 2010 - Bug fixes, features.
 
   * Enable reverse manipulation to range value nodes. Fix bug in value node range.
   * Resolve issues with libtool 1.5.26 and 2.2.4.
   * Improve SVG import support. Better support for gradients and some bug fixes.
   * Add code to make possible pass parameters to the renderers. Implementation for ffmpeg.
-  * New italian translation.
+  * New Italian and German translations.
   * Automatic build script for linux system. Please report success of usage.
   * New parameters for Motion Blur layer. Now allows linear and constant interpolation too.
   * Updated Russian, French and Spanish translation
-  * New Italian translation
 
 
 
