@@ -4,7 +4,7 @@ More detailed notes are available on the releases page:
 
 http://synfig.org/wiki/Releases
 
- 0.62.01 (git tag: "synfigstudio-0.62.01") - May 15, 2010 - Bug fixes, features.
+ 0.62.01 (git tag: "synfigstudio-0.62.01") - May 31, 2010 - Bug fixes, features.
 
   * Enable reverse manipulation to range value nodes. Fix bug in value node range.
   * Add new functionalities to the Normal tool. It can rotate (CTRL), scale, (ALT)
