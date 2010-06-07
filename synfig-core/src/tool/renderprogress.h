@@ -120,15 +120,20 @@ public:
 			}
 
 			if(weeks)
-				cerr<<weeks<<"w ";
+				/// TRANSLATORS This "w" stands for weeks
+				cerr<<weeks<<_("w ");
 			if(days)
-				cerr<<days<<"d ";
+				/// TRANSLATORS This "d" stands for days
+				cerr<<days<<_("d ");
 			if(hours)
-				cerr<<hours<<"h ";
+				/// TRANSLATORS This "h" stands for hours
+				cerr<<hours<<_("h ");
 			if(minutes)
-				cerr<<minutes<<"m ";
+				/// TRANSLATORS This "m" stands for minutes
+				cerr<<minutes<<_("m ");
 			if(seconds)
-				cerr<<seconds<<"s ";
+				/// TRANSLATORS This "s" stands for seconds
+				cerr<<seconds<<_("s ");
 
 			cerr<<"           \r";
 		}
