@@ -4,6 +4,13 @@ More detailed notes are available on the releases page:
 
 http://synfig.org/wiki/Releases
 
+
+ 0.62.xx (git tag: "synfigstudio-0.62.xx") - Month day, 2010
+
+  * Code restructure into folders grouping common files for easy coding,
+  and cleaning dead code. Use of Makefile inserts for each folder.
+  * Add load and save palette buttons. File extension is spal
+
  0.62.01 (git tag: "synfigstudio-0.62.01") - May 31, 2010 - Bug fixes, features.
 
   * Enable reverse manipulation to range value nodes. Fix bug in value node range.
