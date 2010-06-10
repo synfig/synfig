@@ -10,9 +10,9 @@ INCLUDES = \
 
 moduledir = @MODULE_DIR@
 
-module_LTLIBRARIES = libexample.la
+module_LTLIBRARIES = libmod_example.la
 
-libexample_la_SOURCES = \
+libmod_example_la_SOURCES = \
 	main.cpp \
 	simplecircle.cpp \
 	simplecircle.h \
@@ -21,14 +21,18 @@ libexample_la_SOURCES = \
 	metaballs.h \
 	metaballs.cpp
 
-libexample_la_LIBADD = \
+libmod_example_la_LIBADD = \
 	../../synfig/libsynfig.la \
 	@SYNFIG_LIBS@
 
-libexample_la_LDFLAGS = \
+libmod_example_la_LDFLAGS = \
 	-module \
 	-no-undefined \
 	-avoid-version
 
-libexample_la_CXXFLAGS = \
+libmod_example_la_CXXFLAGS = \
 	@SYNFIG_CFLAGS@
+
+EXTRA_DIST = \
+	mod_example.nsh \
+	unmod_example.nsh

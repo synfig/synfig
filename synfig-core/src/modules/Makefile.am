@@ -27,19 +27,19 @@ SUBDIRS = \
 	mod_mng \
 	mod_svg \
 	mod_magickpp \
-	example
+	mod_example
 
 EXTRA_DIST = \
 	untemplate.nsh \
 	template.nsh \
-	example/simplecircle.h \
-	example/simplecircle.cpp \
-	example/filledrect.h \
-	example/main.cpp \
-	example/Makefile.am \
-	example/filledrect.cpp \
-	example/metaballs.cpp \
-	example/metaballs.h \
+	mod_example/simplecircle.h \
+	mod_example/simplecircle.cpp \
+	mod_example/filledrect.h \
+	mod_example/main.cpp \
+	mod_example/Makefile.am \
+	mod_example/filledrect.cpp \
+	mod_example/metaballs.cpp \
+	mod_example/metaballs.h \
 	mod_mng/trgt_mng.h \
 	mod_mng/unmod_mng.nsh \
 	mod_mng/main.cpp \

@@ -44,7 +44,7 @@
 
 /* === E N T R Y P O I N T ================================================= */
 
-MODULE_DESC_BEGIN(example)
+MODULE_DESC_BEGIN(libmod_example)
 	MODULE_NAME("Example Module")
 	MODULE_DESCRIPTION("A dummy module that serves as a starting point for writing other modules.")
 	MODULE_AUTHOR("Robert B. Quattlebaum")
@@ -52,7 +52,7 @@ MODULE_DESC_BEGIN(example)
 	MODULE_COPYRIGHT(SYNFIG_COPYRIGHT)
 MODULE_DESC_END
 
-MODULE_INVENTORY_BEGIN(example)
+MODULE_INVENTORY_BEGIN(libmod_example)
 	BEGIN_LAYERS
 		LAYER(SimpleCircle)
 		LAYER(FilledRect)
