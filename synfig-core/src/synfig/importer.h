@@ -52,7 +52,8 @@
 //! Sets the CVS ID of the importer.
 #define SYNFIG_IMPORTER_SET_CVS_ID(class,x) const char class::cvs_id__[]=x
 
-//! Defines de implementation of the create method for the importer.
+//! Defines de implementation of the create method for the importer
+//! \param filename The file name to be imported by the importer.
 #define SYNFIG_IMPORTER_INIT(class) synfig::Importer* class::create(const char *filename) { return new class(filename); }
 
 /* === T Y P E D E F S ===================================================== */
@@ -69,11 +70,11 @@ class ProgressCallback;
 *
 *	It is the base class for all the importers. It defines the has a static Book
 *	pointer class that is a map for the importers factory creators and the strings
-*	of the importers class names. It allows to create the a pointer to a particular
-*	importer just by using the string of the name of the importer.
-*	Also it creates a virtual member get_frame that must be declared in the inherited
-*	classes.
-*
+*	of the extension that the importer can understand. It allows to create the a
+*	pointer to a particular importer just by using the extension of the name of file
+*	to import. Also it creates a virtual member get_frame that must be declared in
+*	the inherited classes.
+*	\see module.h
 **	\
 */
 class Importer : public etl::shared_object

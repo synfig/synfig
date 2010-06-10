@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file importer.cpp
-**	\brief writeme
+**	\brief It is the base class for all the importers.
 **
 **	$Id$
 **
