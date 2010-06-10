@@ -1,7 +1,6 @@
-#include <cstdio>
 /* === S Y N F I G ========================================================= */
 /*!	\file importer.h
-**	\brief writeme
+**	\brief It is the base class for all the importers.
 **
 **	$Id$
 **
@@ -28,34 +27,32 @@
 
 /* === H E A D E R S ======================================================= */
 
+#include <cstdio>
 #include <map>
-//#include <cmath>
 #include <ETL/handle>
 #include "string.h"
-//#include "surface.h"
-//#include "general.h"
-//#include "vector.h"
 #include "time.h"
 #include "gamma.h"
 
 /* === M A C R O S ========================================================= */
 
-//! \writeme
+//! Defines various variables and the create method, common for all importers.
+//! To be used in the private part of the importer class definition.
 #define SYNFIG_IMPORTER_MODULE_EXT public: static const char name__[], version__[], ext__[],cvs_id__[]; static Importer *create(const char *filename);
 
-//! Sets the name of the importer
+//! Sets the name of the importer.
 #define SYNFIG_IMPORTER_SET_NAME(class,x) const char class::name__[]=x
 
-//! \writeme
+//! Sets the primary file extension of the importer.
 #define SYNFIG_IMPORTER_SET_EXT(class,x) const char class::ext__[]=x
 
-//! Sets the version of the importer
+//! Sets the version of the importer.
 #define SYNFIG_IMPORTER_SET_VERSION(class,x) const char class::version__[]=x
 
-//! Sets the CVS ID of the importer
+//! Sets the CVS ID of the importer.
 #define SYNFIG_IMPORTER_SET_CVS_ID(class,x) const char class::cvs_id__[]=x
 
-//! \writeme
+//! Defines de implementation of the create method for the importer.
 #define SYNFIG_IMPORTER_INIT(class) synfig::Importer* class::create(const char *filename) { return new class(filename); }
 
 /* === T Y P E D E F S ===================================================== */
@@ -68,8 +65,16 @@ class Surface;
 class ProgressCallback;
 
 /*!	\class Importer
-**	\brief Used for importing bitmaps of various formats, including animations
-**	\todo Write more detailed description
+**	\brief Used for importing bitmaps of various formats, including animations.
+*
+*	It is the base class for all the importers. It defines the has a static Book
+*	pointer class that is a map for the importers factory creators and the strings
+*	of the importers class names. It allows to create the a pointer to a particular
+*	importer just by using the string of the name of the importer.
+*	Also it creates a virtual member get_frame that must be declared in the inherited
+*	classes.
+*
+**	\
 */
 class Importer : public etl::shared_object
 {
@@ -80,7 +85,11 @@ public:
 
 	static Book& book();
 
+	//! Initializes the Import module by creating a book of importers names
+	//! and its creators and the list of open importers
 	static bool subsys_init();
+	//! Stops the Import module by deleting the book and the list of open
+	//! importers
 	static bool subsys_stop();
 
 	typedef etl::handle<Importer> Handle;
@@ -88,6 +97,8 @@ public:
 	typedef etl::handle<const Importer> ConstHandle;
 
 private:
+	//! Gamm of the imoporter.
+	//! \todo Do not hardcode the gamma to 2.2
 	Gamma gamma_;
 
 protected:
@@ -111,9 +122,12 @@ public:
 	virtual bool get_frame(Surface &surface,Time time, ProgressCallback *callback=NULL)=0;
 	virtual bool get_frame(Surface &surface,Time time,
 						   bool &trimmed __attribute__ ((unused)),
-						   unsigned int &width __attribute__ ((unused)), unsigned int &height __attribute__ ((unused)),
-						   unsigned int &top __attribute__ ((unused)), unsigned int &left __attribute__ ((unused)),
-						   ProgressCallback *callback=NULL) {
+						   unsigned int &width __attribute__ ((unused)),
+						   unsigned int &height __attribute__ ((unused)),
+						   unsigned int &top __attribute__ ((unused)),
+						   unsigned int &left __attribute__ ((unused)),
+						   ProgressCallback *callback=NULL)
+	{
 		return get_frame(surface,time,callback);
 	}
 
