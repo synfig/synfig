@@ -26,8 +26,6 @@
 
 /* === H E A D E R S ======================================================= */
 
-#define SYNFIG_TARGET
-
 #ifdef USING_PCH
 #	include "pch.h"
 #else
