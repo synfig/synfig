@@ -28,11 +28,7 @@
 /* === H E A D E R S ======================================================= */
 
 #include <cmath>
-
-#ifndef SYNFIG_NO_ANGLE
 #include "angle.h"
-#endif
-
 #include "time.h"
 #include "vector.h"
 

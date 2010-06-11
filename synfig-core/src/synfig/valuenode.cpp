@@ -24,10 +24,6 @@
 
 /* === H E A D E R S ======================================================= */
 
-#define SYNFIG_NO_ANGLE
-
-//#define HAS_HASH_MAP 1
-
 #ifdef USING_PCH
 #	include "pch.h"
 #else

@@ -29,18 +29,14 @@
 /* === H E A D E R S ======================================================= */
 
 
-//#include <cmath>
 #include <math.h>
 #include <cassert>
 #include "gamma.h"
 #include <synfig/string.h>
+# include "angle.h"
 
 #ifdef USE_HALF_TYPE
 #include <OpenEXR/half.h>
-#endif
-
-#ifndef SYNFIG_NO_ANGLE
-# include "angle.h"
 #endif
 
 /* === M A C R O S ========================================================= */
@@ -386,7 +382,6 @@ public:
 	static Color YUV(const float& y, const float& u, const float& v, const value_type& a=1)
 		{ return Color().set_yuv(y,u,v).set_a(a); }
 
-#ifndef SYNFIG_NO_ANGLE
 	//! Returns the hue of the chromanance
 	/*!	This is the angle of the U and V components.
 	**	\see set_hue() */
@@ -443,7 +438,6 @@ public:
 	static Color YUV(const float& y, const float& s, const Angle& theta, const value_type& a=1)
 		{ return Color().set_yuv(y,s,theta).set_a(a); }
 
-#endif
 
 	//! Clamps a color so that its values are in range. Ignores attempting to visualize negative colors.
 	Color clamped()const;

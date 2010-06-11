@@ -23,8 +23,6 @@
 
 /* === H E A D E R S ======================================================= */
 
-#define SYNFIG_NO_ANGLE
-
 #ifdef HAVE_CONFIG_H
 # include <config.h>
 #endif

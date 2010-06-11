@@ -28,17 +28,14 @@
 
 /* === H E A D E R S ======================================================= */
 
-//#include "vector.h"
-//#include "time.h"
+#include "angle.h"
 #include "segment.h"
-//#include "color.h"
 #include "string.h"
 #include <list>
 #include <vector>
 #include <ETL/trivial>
 #include <ETL/handle>
 #include "general.h"
-//#include "gradient.h"
 #include "blinepoint.h"
 #include "exception.h"
 
@@ -46,9 +43,6 @@
 #include <OpenEXR/half.h>
 #endif
 
-#ifndef SYNFIG_NO_ANGLE
-#include "angle.h"
-#endif
 
 #include <ETL/ref_count>
 
@@ -349,10 +343,8 @@ public:
 	operator half()const { return get(Real()); }
 #endif
 
-#ifndef SYNFIG_NO_ANGLE
 	operator const Angle&()const { return get(Angle()); }
 	static Type get_type(const Angle&) { return TYPE_ANGLE; }
-#endif
 
 	template <class T>
 	operator std::list<T>()const

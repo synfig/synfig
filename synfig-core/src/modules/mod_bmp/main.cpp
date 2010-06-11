@@ -22,8 +22,6 @@
 
 /* === H E A D E R S ======================================================= */
 
-#define SYNFIG_NO_ANGLE
-
 #ifdef USING_PCH
 #	include "pch.h"
 #else

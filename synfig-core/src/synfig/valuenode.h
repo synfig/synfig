@@ -38,10 +38,7 @@
 #include <map>
 #include <sigc++/signal.h>
 #include "guid.h"
-
-#ifndef SYNFIG_NO_ANGLE
 #include <ETL/angle>
-#endif
 
 #include "node.h"
 
@@ -289,7 +286,7 @@ public:
 
 
 	//! Type that represents a pointer to a ValueNode's constructor
-	/*! As a pointer to the constructor, it represents a "factory" of 
+	/*! As a pointer to the constructor, it represents a "factory" of
 	**  objects of this class.
 	*/
 	typedef LinkableValueNode* (*Factory)(const ValueBase&);
@@ -305,9 +302,9 @@ public:
 	};
 
 	//! Book of types of linkable value nodes indexed by type name.
-	/*! While the sifz file is read, each time a new LinkableValueNode entry 
-	**  is found, the factory constructor that the "factory" pointer member 
-	**  of the "BookEntry" struct points to, is called, and a new object of 
+	/*! While the sifz file is read, each time a new LinkableValueNode entry
+	**  is found, the factory constructor that the "factory" pointer member
+	**  of the "BookEntry" struct points to, is called, and a new object of
 	**  that type is created.
 	**  \sa LinkableValueNode::Factory
 	*/
