@@ -11,7 +11,8 @@ INCLUDES = \
 EXTRA_DIST = \
 	surfacenew.cpp \
 	pch.h \
-	synfig.nsh
+	synfig.nsh \
+	synfig.h
 
 
 LAYERHEADERS = \
@@ -194,7 +195,6 @@ SYNFIGHEADERS = \
 	string.h \
 	string_decl.h \
 	surfacenew.h \
-	synfig.h \
 	types.h \
 	vector.h \
 	version.h \
