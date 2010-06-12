@@ -41,7 +41,8 @@
 
 /* === M A C R O S ========================================================= */
 
-//! \writeme
+//! Defines various variables and the create method, common for all importers.
+//! To be used in the private part of the importer class definition.
 #define SYNFIG_LAYER_MODULE_EXT															\
 	public:																				\
 	static const char name__[], version__[], cvs_id__[], local_name__[], category__[];	\
@@ -67,14 +68,15 @@
 #define SYNFIG_LAYER_SET_CVS_ID(class,x)												\
 	const char class::cvs_id__[]=x
 
-//! \writeme
+//! Defines de implementation of the create method for the importer
 #define SYNFIG_LAYER_INIT(class)														\
 	synfig::Layer* class::create()														\
 	{																					\
 		return new class();																\
 	}
 
-//! \writeme
+//! Imports a parameter 'x' and perform an action based usually based on
+//! some condition 'y'
 #define IMPORT_PLUS(x,y)																\
 	if (param==#x && value.same_type_as(x))												\
 	{																					\
@@ -85,7 +87,7 @@
 		return true;																	\
 	}
 
-//! \writeme
+//! Imports a parameter 'y' if it has the same type than 'x'
 #define IMPORT_AS(x,y)																	\
 	if (param==y && value.same_type_as(x))												\
 	{																					\
@@ -93,27 +95,27 @@
 		return true;																	\
 	}
 
-//! \writeme
+//! Imports a parameter if it is of the same type as param
 #define IMPORT(x)																		\
 	IMPORT_AS(x,#x)
 
-//! \writeme
+//! Exports a parameter 'x' if param is same type as given 'y'
 #define EXPORT_AS(x,y)																	\
 	if (param==y)																		\
 		return ValueBase(x);
 
-//! \writeme
+//! Exports a parameter if it is the same type as value
 #define EXPORT(x)																		\
 	EXPORT_AS(x,#x)
 
-//! \writeme
+//! Exports the name or the local name of the layer
 #define EXPORT_NAME()																	\
 	if (param=="Name" || param=="name" || param=="name__")								\
 		return name__;																	\
 	else if (param=="local_name__")														\
 		return dgettext("synfig",local_name__);
 
-//! \writeme
+//! Exports the version of the layer
 #define EXPORT_VERSION()																\
 	if (param=="Version" || param=="version" || param=="version__")						\
 		return version__;
@@ -192,7 +194,7 @@ public:
 
 	//! Book of types of layers indexed by layer type name.
 	/*! While the sifz file is read, each time a new layer entry is found,
-	**  the factory constructor that the "factory" pointer member of the 
+	**  the factory constructor that the "factory" pointer member of the
 	**  "BookEntry" struct points to, is called, and a new layer of that type
 	**  is created.
 	**  \sa Layer::Factory
@@ -203,10 +205,16 @@ public:
 
 	static Book& book();
 
+	//! Inits the book of layers and inserts in it the basic layers that
+	//! doesn't depend on modules
+	/*! \todo motionblur should be in the mod_filter module
+	*/
 	static bool subsys_init();
 
+	//! Stops the layer system by deleting the book of registered layers
 	static bool subsys_stop();
 
+	//! Map of Value Base parameters indexed by name
 	typedef std::map<String,ValueBase> ParamList;
 
 	typedef etl::handle<Layer> Handle;
@@ -215,6 +223,7 @@ public:
 
 	typedef etl::handle<const Layer> ConstHandle;
 
+	//! Map of parameters that are animated Value Nodes indexed by the param name
 	typedef std::map<String,etl::rhandle<ValueNode> > DynamicParamList;
 
 	//! A list type which describes all the parameters that a layer has.
@@ -235,12 +244,13 @@ private:
 	//! Handle to the canvas to which this layer belongs
 	etl::loose_handle<Canvas> canvas_;
 
+	//! Map of parameter with animated value nodes
 	DynamicParamList dynamic_param_list_;
 
 	//! A description of what this layer does
 	String description_;
 
-	//! \writeme
+	//! The depth parameter of the layer in the layer stack
 	float z_depth_;
 
 	//! \writeme
@@ -249,7 +259,10 @@ private:
 	//! Contains the name of the group that this layer belongs to
 	String group_;
 
-	//! \writeme
+	//! Signal to connect to the signal_deleted canvas's member
+	//! Used to do let a layer with a canvas parent that doesn't exists
+	//! Instead of that it connects to a zero canvas
+	//! \see Layer::set_canvas()
 	sigc::connection parent_death_connect_;
 
 	/*
@@ -327,13 +340,14 @@ public:
 	//! Gets the name of the group that this layer belongs to
 	String get_group()const;
 
-	//! writeme
-	//DynamicParamList &dynamic_param_list() { return dynamic_param_list_; }
-
-	//! \todo writeme
+	//! Retrieves the dynamic param list member
+	//! \see DynamicParamList
 	const DynamicParamList &dynamic_param_list()const { return dynamic_param_list_; }
 
+	//! Connects the parameter to another Value Node
 	bool connect_dynamic_param(const String& param, etl::loose_handle<ValueNode>);
+
+	//! Disconnects the parameter from any Value Node
 	bool disconnect_dynamic_param(const String& param);
 
 	//! Enables the layer for rendering (Making it \em active)
@@ -356,13 +370,13 @@ public:
 	/*! Returns negative on error */
 	int get_depth()const;
 
-	//! \writeme
+	//! Gets the non animated z depth of the layer
 	float get_z_depth()const { return z_depth_; }
 
-	//! \writeme
+	//! Gets the z depth of the layer at a time t
 	float get_z_depth(const synfig::Time& t)const;
 
-	//! \writeme
+	//! Sets the z depth of the layer (non animated)
 	void set_z_depth(float x) { z_depth_=x; }
 
 	//! Sets the Canvas that this Layer is a part of
@@ -371,10 +385,10 @@ public:
 	//! Returns a handle to the Canvas to which this Layer belongs
 	etl::loose_handle<Canvas> get_canvas()const;
 
-	//! \writeme
+	//! Returns the description of the layer
 	const String& get_description()const { return description_; }
 
-	//! \writeme
+	//! Sets the description of the layer
 	void set_description(const String& x);
 
 	//! Returns the layer's description if it's not empty, else its local name
@@ -388,8 +402,12 @@ public:
 	*/
 
 public:
+	//! Returns the rectangle that includes the layer
+	//! \see synfig::Rect
 	virtual Rect get_bounding_rect()const;
 
+	//!Returns the rectangle that includes the context of the layer
+	//!\see synfig::Rect synfig::Context
 	virtual Rect get_full_bounding_rect(Context context)const;
 
 	//! Returns a string containing the name of the Layer
@@ -404,7 +422,8 @@ public:
 	//! Gets the version string for this layer
 	virtual String get_version()const;
 
-	//! \writeme
+	//! Returns a handle to the Transform class of the layer
+	//! \see synfig::Transform
 	virtual etl::handle<Transform> get_transform()const;
 
 	//! Sets the virtual version to use for backwards-compatibility
@@ -443,7 +462,7 @@ public:
 	//! Sets the \a time for the selected Layer and those under it
 	/*!	\param context		Context iterator referring to next Layer.
 	**	\param time			writeme
-	**	\see Handle::set_time()
+	**	\see Context::set_time()
 	*/
 	virtual void set_time(Context context, Time time)const;
 
@@ -451,14 +470,14 @@ public:
 	/*!	\param context		Context iterator referring to next Layer.
 	**	\param time			writeme
 	**	\param point		writeme
-	**	\see Handle::set_time()
+	**	\see Context::set_time()
 	**	\todo \a point should be of the type <tt>const Point \&</tt> */
 	virtual void set_time(Context context, Time time, const Point &point)const;
 
 	//! Gets the color of the Canvas at \a pos
 	/*!	\param context		Context iterator referring to next Layer.
 	**	\param pos		Point which indicates where the Color should come from
-	**	\see Handle::get_color()
+	**	\see Context::get_color()
 	*/
 	virtual Color get_color(Context context, const Point &pos)const;
 
@@ -469,7 +488,7 @@ public:
 	**	\param renddesc		The associated RendDesc.
 	**	\param cb			Pointer to callback object. May be NULL if there is no callback.
 	**	\return \c true on success, \c false on failure
-	**	\see Handle::accelerated_render()
+	**	\see Context::accelerated_render()
 	*/
 	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 
@@ -477,7 +496,9 @@ public:
 	/*!	\param context		Context iterator referring to next Layer.
 	**	\param point		The point to check
 	**	\return 	The handle of the layer under \a point. If there is not
-	**				a layer under \a point, then returns an empty handle. */
+	**				a layer under \a point, then returns an empty handle.
+	**	\see Context::hit_check
+	*/
 	virtual Handle hit_check(Context context, const Point &point)const;
 
 	//! Duplicates the Layer
