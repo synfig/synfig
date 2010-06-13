@@ -1,12 +1,11 @@
 # FIXME: move libsynfig into a separate domain
-src/modules/example/filledrect.cpp
-src/modules/example/filledrect.cpp
-src/modules/example/filledrect.h
-src/modules/example/main.cpp
-src/modules/example/metaballs.cpp
-src/modules/example/metaballs.h
-src/modules/example/simplecircle.cpp
-src/modules/example/simplecircle.h
+src/modules/mod_example/filledrect.cpp
+src/modules/mod_example/filledrect.h
+src/modules/mod_example/main.cpp
+src/modules/mod_example/metaballs.cpp
+src/modules/mod_example/metaballs.h
+src/modules/mod_example/simplecircle.cpp
+src/modules/mod_example/simplecircle.h
 src/modules/lyr_freetype/lyr_freetype.cpp
 src/modules/lyr_freetype/lyr_freetype.h
 src/modules/lyr_freetype/main.cpp
