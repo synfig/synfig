@@ -80,6 +80,8 @@ class ProgressCallback;
 class Importer : public etl::shared_object
 {
 public:
+	//! Type that represents a pointer to a Importer's constructor.
+	//! As a pointer to the constructor, it represents a "factory" of importers.
 	typedef Importer* (*Factory)(const char *filename);
 	typedef std::map<String,Factory> Book;
 	static Book* book_;
@@ -98,7 +100,7 @@ public:
 	typedef etl::handle<const Importer> ConstHandle;
 
 private:
-	//! Gamm of the imoporter.
+	//! Gamma of the importer.
 	//! \todo Do not hardcode the gamma to 2.2
 	Gamma gamma_;
 
