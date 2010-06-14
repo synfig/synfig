@@ -91,6 +91,12 @@
 #define BEGIN_LAYERS {
 
 //! DEPRECATED - use #INCLUDE_LAYER(class)
+// Really? ^^ The INCLUDE_LAYER(class) macro is defined in a cpp file and
+// is undefined a few lines later. In fact the INCLUDE_LAYER is only
+// used in the layer.cpp file and the functionality is the same. Even
+// more, I think that we should use register_in_book call because maybe
+// the Layer class would like to do something else when register the class.
+//! Register a Layer class in the book of layers
 #define LAYER(class)																			\
 	synfig::Layer::register_in_book(															\
 		synfig::Layer::BookEntry(class::create,													\
@@ -100,6 +106,7 @@
 								 class::cvs_id__,												\
 								 class::version__));
 
+//! Register a Layer class in the book of layers with an alias
 #define LAYER_ALIAS(class,alias)																\
 	synfig::Layer::register_in_book(															\
 		synfig::Layer::BookEntry(class::create,													\
@@ -132,8 +139,10 @@
 //! Marks the start of the importers in the module's inventory
 #define BEGIN_IMPORTERS {
 
+//! Register an Importer class in the book of importers by the default extension
 #define IMPORTER(x) synfig::Importer::book()[synfig::String(x::ext__)]=x::create;
 
+//!Register an Importer class in the book of importers by one file extension string
 #define IMPORTER_EXT(x,y) synfig::Importer::book()[synfig::String(y)]=x::create;
 
 //! Marks the end of the importers in the module's inventory
@@ -142,6 +151,7 @@
 //! Marks the start of the valuenodes in the module's inventory
 #define BEGIN_VALUENODES { synfig::LinkableValueNode::Book &book(synfig::LinkableValueNode::book());
 
+//! Registers a valuenode that is defined in the module's inventory
 #define VALUENODE(class,name,local,version)														\
 	book[name].factory=reinterpret_cast<synfig::LinkableValueNode::Factory>(&class::create);	\
 	book[name].check_type=&class::check_type;													\
@@ -176,7 +186,9 @@ public:
 	typedef etl::handle<const Module> ConstHandle;
 
 public:
-	typedef Module*(*constructor_type)(ProgressCallback *);
+	//! Type that represents a pointer to a Module's constructor by name.
+	//! As a pointer to the member, it represents a constructor of importer.
+	typedef Module* (*constructor_type)(ProgressCallback *);
 	typedef std::map<String, Handle > Book;
 private:
 	static Book* book_;
