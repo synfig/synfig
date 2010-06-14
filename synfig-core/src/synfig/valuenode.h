@@ -291,6 +291,10 @@ public:
 	*/
 	typedef LinkableValueNode* (*Factory)(const ValueBase&);
 
+	//! This represents a pointer to a Type check member fucntion
+	/*! As a pointer to the member, it represents a fucntion that checks
+	**  the type of the provided ValueBase
+	*/
 	typedef bool (*CheckType)(ValueBase::Type);
 
 	struct BookEntry
