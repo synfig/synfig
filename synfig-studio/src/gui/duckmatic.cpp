@@ -125,7 +125,7 @@ Duckmatic::clear_ducks()
 		stroke_list_=persistent_stroke_list_;
 }
 
-//! Returns \a true if the given duck is currently selected
+
 bool
 Duckmatic::duck_is_selected(const etl::handle<Duck> &duck)const
 {

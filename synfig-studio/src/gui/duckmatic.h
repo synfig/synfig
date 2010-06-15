@@ -118,7 +118,6 @@ public:
 **	the work area that the user may want to interact with.
 **	This includes ducks, beziers, and strokes
 **
-**	\note At some point I'll probably rename this class to "DuckOMatic".
 */
 class Duckmatic
 {
@@ -322,13 +321,27 @@ public:
 
 	void unselect_duck(const etl::handle<Duck> &duck);
 
+	//! Begin dragging ducks
+	/*! \param offset Canvas coordinates of the mouse when the drag began */
 	void start_duck_drag(const synfig::Vector& offset);
+
+	//! Continue dragging the selected ducks
+	/*! The overall vector of the drag is vector-offset
+	 *  (where offset was given in start_duck_drag)
+	 *  \param vector Canvas coordinates of the mouse at this moment */
 	void translate_selected_ducks(const synfig::Vector& vector);
+
+	//! Update the coordinates of tangents and linked-to-bline ducks
 	void update_ducks();
+
+	//! Ends the duck drag
 	bool end_duck_drag();
 
+	//! Calls all of the ducks' edited signals
+	/*! Updates corresponding valuenodes after a drag */
 	void signal_edited_selected_ducks();
 
+	//! Signals to each selected duck that it has been clicked
 	void signal_user_click_selected_ducks(int button);
 
 
@@ -375,10 +388,10 @@ public:
 
 	bool add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<CanvasView> canvas_view, const synfig::TransformStack& transform_stack_, synfig::ParamDesc *param_desc=0, int multiple=0);
 
-	//! \writeme
+	//! Set the type mask, which determines what types of ducks are shown
 	void set_type_mask(Type x) { type_mask=x; }
 
-	//! \writeme
+	//! Get the type mask, which determines what types of ducks are shown
 	Type get_type_mask()const { return type_mask; }
 
 	void select_all_ducks();
