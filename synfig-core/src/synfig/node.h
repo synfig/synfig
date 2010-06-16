@@ -210,16 +210,22 @@ public:
 	//! Sets the GUID for this value node
 	void set_guid(const GUID& x);
 
+	//! Gets the time when the Node was changed
 	int get_time_last_changed()const;
 
+	//! Adds the parameter \x as the child of the current Node
 	void add_child(Node*x);
 
+	//! Remove the parameter \x as a child of the current Node
 	void remove_child(Node*x);
 
+	//!Returns how many parenst has the current Node
 	int parent_count()const;
 
+	//! Returns the cached times values for all the children
 	const time_set &get_times() const;
 
+	//! Writeme!
 	RWLock& get_rw_lock()const { return rw_lock_; }
 
 protected:
@@ -238,7 +244,7 @@ protected:
 	/*!	Function to be overloaded that fills
 	*/
 	virtual void get_times_vfunc(time_set &set) const = 0;
-};
+}; // End of Node class
 
 synfig::Node* find_node(const synfig::GUID& guid);
 
