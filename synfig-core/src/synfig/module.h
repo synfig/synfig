@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file synfig/module.h
-**	\brief writeme
+**	\brief Base class for all libraries modules
 **
 **	$Id$
 **
@@ -187,7 +187,7 @@ public:
 
 public:
 	//! Type that represents a pointer to a Module's constructor by name.
-	//! As a pointer to the member, it represents a constructor of importer.
+	//! As a pointer to the member, it represents a constructor of the module.
 	typedef Module* (*constructor_type)(ProgressCallback *);
 	typedef std::map<String, Handle > Book;
 private:
@@ -195,14 +195,21 @@ private:
 public:
 	static Book& book();
 
+	//! Inits the book of importers and add the paths to search for the
+	//! ltdl library utilities.
 	static bool subsys_init(const String &prefix);
 	static bool subsys_stop();
+	//! Register not optional modules
 	static void register_default_modules(ProgressCallback *cb=NULL);
 
+	//! Register Module by handle
 	static void Register(Handle mod);
+	//! Register Module by name
 	static bool Register(const String &module_name, ProgressCallback *cb=NULL);
+	//!Register Module by instance pointer
 	static inline void Register(Module *mod) { Register(Handle(mod)); }
 
+	//! Virtual Modules properties wrappers. Must be defined in the modules classes
 	virtual const char * Name() { return " "; }
 	virtual const char * Desc() { return " "; }
 	virtual const char * Author() { return " "; }
