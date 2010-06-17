@@ -82,7 +82,7 @@ public:
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace synfigapp { class ValueDesc; }
+namespace synfigapp { class ValueDesc; class CanvasInterface; }
 namespace synfig { class ParamDesc; }
 
 namespace studio
@@ -157,6 +157,8 @@ typedef std::map<synfig::GUID,etl::smart_ptr<synfig::Point> > DuckDataMap;
 	*/
 
 private:
+
+	etl::loose_handle<synfigapp::CanvasInterface> canvas_interface;
 
 	Type type_mask;
 
@@ -235,7 +237,7 @@ private:
 
 public:
 
-	Duckmatic();
+	Duckmatic(etl::loose_handle<synfigapp::CanvasInterface> canvas_interface);
 	virtual ~Duckmatic();
 
 	sigc::signal<void>& signal_duck_selection_changed() { return signal_duck_selection_changed_; }
@@ -337,13 +339,15 @@ public:
 	//! Ends the duck drag
 	bool end_duck_drag();
 
+	//! Signals to each selected duck that it has been clicked
+	void signal_user_click_selected_ducks(int button);
+
 	//! Calls all of the ducks' edited signals
 	/*! Updates corresponding valuenodes after a drag */
 	void signal_edited_selected_ducks();
 
-	//! Signals to each selected duck that it has been clicked
-	void signal_user_click_selected_ducks(int button);
-
+	bool on_duck_changed(const synfig::Point &value,const synfigapp::ValueDesc& value_desc);
+	bool on_duck_angle_changed(const synfig::Angle &rotation,const synfigapp::ValueDesc& value_desc);
 
 	etl::handle<Duck> find_similar_duck(etl::handle<Duck> duck);
 	etl::handle<Duck> add_similar_duck(etl::handle<Duck> duck);
