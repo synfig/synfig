@@ -1,6 +1,9 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file node.h
-**	\brief Template Header
+**	\brief Base class for Layers and Value Nodes.
+**	It defines the base members for the parent - child relationship,
+**	the times where the node is modified and the handling of
+**	the GUID on deletion and changing.
 **
 **	$Id$
 **
@@ -49,6 +52,11 @@
 
 namespace synfig {
 
+//!\brief TimePoint class: holds the time and the before and after interpolation mode
+/**
+ * It includes a GUID, to make it unique
+ * \see guid.h interpolation.h
+**/
 class TimePoint
 {
 	GUID guid;
@@ -78,6 +86,9 @@ public:
 	void set_before(Interpolation x) { before=x; }
 	void set_after(Interpolation x) { after=x; }
 
+	//! Modify the TimePoint based on the values of \x "merging"
+	//! the interpolations. Used to insert a Time Point in a Time Points Set
+	//! \see TimePointSet::iterator TimePointSet::insert(const TimePoint& x)
 	void absorb(const TimePoint& x);
 }; // END of class TimePoint
 
@@ -164,7 +175,7 @@ private:
 	/*! \note The second parameter is the *OLD* guid! */
 	sigc::signal<void,GUID> signal_guid_changed_;
 
-	//!	Deleted
+	//!	Node deleted
 	sigc::signal<void> signal_deleted_;
 
 	/*
@@ -204,10 +215,10 @@ public:
 
 	void changed();
 
-	//! Gets the GUID for this value node
+	//! Gets the GUID for this Node
 	const GUID& get_guid()const;
 
-	//! Sets the GUID for this value node
+	//! Sets the GUID for this Node
 	void set_guid(const GUID& x);
 
 	//! Gets the time when the Node was changed
@@ -216,7 +227,7 @@ public:
 	//! Adds the parameter \x as the child of the current Node
 	void add_child(Node*x);
 
-	//! Remove the parameter \x as a child of the current Node
+	//! Removes the parameter \x as a child of the current Node
 	void remove_child(Node*x);
 
 	//!Returns how many parenst has the current Node
@@ -237,17 +248,26 @@ protected:
 	*/
 
 protected:
+	//! Used when the node has changed. Makes changed the parent too.
+	//! To be overloaded by the derivative classes. Emits a signal where the
+	//! the GUI can be connected to.
 	virtual void on_changed();
 
+	//! Used when the node's GUID has changed.
+	//! To be overloaded by the derivative classes. Emits a signal where the
+	//! the GUI can be connected to.
 	virtual void on_guid_changed(GUID guid);
 
-	/*!	Function to be overloaded that fills
-	*/
+	//!	Function to be overloaded that fills the Time Point Set with
+	//! all the children Time Points.
 	virtual void get_times_vfunc(time_set &set) const = 0;
 }; // End of Node class
 
+//! Finds a node by its GUID.
+//! \see global_node_map()
 synfig::Node* find_node(const synfig::GUID& guid);
 
+//! Returns a Handle to the Node by its GUID
 template<typename T> etl::handle<T>
 guid_cast(const synfig::GUID& guid)
 {
