@@ -155,19 +155,6 @@ TimePointSet::insert(const TimePoint& x)
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 Node::Node():
 	guid_(0),
 	bchanged(true),
