@@ -140,7 +140,7 @@ public:
 
 private:
 
-	//! \writeme
+	//! \ The GUID of the node
 	GUID guid_;
 
 	//! cached time values for all the children
@@ -149,17 +149,20 @@ private:
 	//! \writeme
 	mutable bool		bchanged;
 
-	//! \writeme
+	//! The last time the node was modified since the program started
+	//! \see __sys_clock
 	mutable int time_last_changed_;
 
 	//! \writeme
+	//! \see mutex.h
 	mutable RWLock rw_lock_;
 
-	//! \writeme
+	//! Variable used to remember that a signal_deleted has been thrown
 	bool deleting_;
 
 public:
 
+	//! A set of pointers to parent nodes
 	//! \todo This should really be private
 	std::set<Node*> 	parent_set;
 
@@ -169,13 +172,14 @@ public:
 
 private:
 
+	//! Node changed signal
 	sigc::signal<void> signal_changed_;
 
-	//!	GUID Changed
+	//!	GUID changed signal
 	/*! \note The second parameter is the *OLD* guid! */
 	sigc::signal<void,GUID> signal_guid_changed_;
 
-	//!	Node deleted
+	//!	Node deleted signal
 	sigc::signal<void> signal_deleted_;
 
 	/*
