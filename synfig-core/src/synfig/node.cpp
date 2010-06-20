@@ -62,21 +62,21 @@ using namespace synfig;
 #define BE_FRUGAL_WITH_GUIDS 1
 
 #ifndef __sys_clock
-#ifndef _WIN32
-# include <time.h>
-# define __sys_clock	::clock
-#else
-# ifdef __GNUG__
-#  include <time.h>
-#  define __sys_clock	::clock
-# else
-typedef int clock_t;
-extern clock_t _clock();
-#  define CLOCKS_PER_SEC 1000
-#  define __sys_clock	_clock
-# endif
-#endif
-#endif
+	#ifndef _WIN32
+		# include <time.h>
+		# define __sys_clock	::clock
+	#else
+		# ifdef __GNUG__
+			#  include <time.h>
+			#  define __sys_clock	::clock
+		# else
+			typedef int clock_t;
+			extern clock_t _clock();
+			#  define CLOCKS_PER_SEC 1000
+			#  define __sys_clock	_clock
+		# endif // __GNUG__
+	#endif // _WIN_32
+#endif // __sys_clock
 
 /* === G L O B A L S ======================================================= */
 
