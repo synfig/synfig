@@ -86,6 +86,7 @@ typedef HASH_MAP_CLASS<synfig::GUID,Node*,GUIDHash> GlobalNodeMap;
 typedef map<synfig::GUID,Node*> GlobalNodeMap;
 #endif
 
+//! A map to store all the GUIDs with a pointer to the Node.
 static GlobalNodeMap* global_node_map_;
 
 static GlobalNodeMap& global_node_map()
@@ -127,15 +128,20 @@ TimePoint::c_str()const
 void
 TimePoint::absorb(const TimePoint& x)
 {
+	//! If the Time Point to absorb is itself then bail out
 	if(get_guid()==x.get_guid())
 		return;
+	//! Creates a new GUID with the old and the new one using XOR operator
 	set_guid(get_guid()^x.get_guid());
-
+	//! If the current before/after interpolation is NIL use the interpolation
+	//! provided by the TimePoint to absorb
 	if(get_after()==INTERPOLATION_NIL)
 		set_after(x.get_after());
 	if(get_before()==INTERPOLATION_NIL)
 		set_before(x.get_before());
-
+	//! If the interpolation of the Time Point to absorb is not the same
+	//! than the interpolation from the Time Point to absorb then
+	//! use UNDEFINED interpolation
 	if(get_after()!=x.get_after() && x.get_after()!=INTERPOLATION_NIL)
 		set_after(INTERPOLATION_UNDEFINED);
 	if(get_before()!=x.get_before() && x.get_before()!=INTERPOLATION_NIL)
@@ -145,12 +151,17 @@ TimePoint::absorb(const TimePoint& x)
 TimePointSet::iterator
 TimePointSet::insert(const TimePoint& x)
 {
+	//! finds a iterator to a Time Point with the same time
+	//! \see inline bool operator==(const TimePoint& lhs,const TimePoint& rhs)
 	iterator iter(find(x));
+	//! If iter is not a the end of the set (we found one Time Point)
 	if(iter!=end())
 	{
+		//! Absorb the time point
 		const_cast<TimePoint&>(*iter).absorb(x);
 		return iter;
 	}
+	//! Else, insert it at the first of the set
 	return std::set<TimePoint>::insert(x).first;
 }
 
