@@ -79,7 +79,7 @@ class LinkableValueNode;
 class Layer;
 
 /*!	\class ValueNode
-**	\todo writeme
+**	\brief Base class for all Value Nodes
 */
 class ValueNode : public synfig::Node
 {
@@ -100,9 +100,9 @@ public:
 
 	typedef etl::rhandle<ValueNode> RHandle;
 
-
+	//!Instantiates the book of ValaueNodes and register all the valid valuenodes on it
 	static bool subsys_init();
-
+	//!Deletes the book of ValueNodes
 	static bool subsys_stop();
 
 	/*
@@ -203,10 +203,10 @@ public:
 	virtual String get_description(bool show_exported_name = true)const;
 
 
-	//! \writeme
+	//! Clones a Value Node
 	virtual ValueNode* clone(const GUID& deriv_guid=GUID())const=0;
 
-	//! \writeme
+	//! Returns \true if the Value Node has an ID (has been exported)
 	bool is_exported()const { return !get_id().empty(); }
 
 	//! Returns the type of the ValueNode
@@ -218,15 +218,20 @@ public:
 	//! Returns a handle to the parent canvas, if it has one.
 	etl::loose_handle<Canvas> get_root_canvas()const { return root_canvas_; }
 
-	//! \writeme
+	//! Sets the parent canvas for the Value Node
 	void set_parent_canvas(etl::loose_handle<Canvas> x);
 
-	//! \writeme
+	//! Sets the root canvas parent for the Value Node
 	void set_root_canvas(etl::loose_handle<Canvas> x);
 
-	//! \writeme
+	//! Returns the relative ID of a Node when accessed form the \x Canvas
 	String get_relative_id(etl::loose_handle<const Canvas> x)const;
 
+	//! Replaces the Value Node with a given one. It look up all its parents
+	//! remove it self from them and adds the given Value Node
+	//! Notice that it is called twice and the second time it uses
+	//! a replaceable handle to the Node
+	//! \see etl::rhandle
 	int replace(etl::handle<ValueNode> x);
 
 protected:
@@ -269,7 +274,12 @@ protected:
 
 
 /*!	\class LinkableValueNode
-**	\todo writeme
+**	\brief Specialized Class of Value Nodes that has links to other
+** Value Nodes
+*
+* 	This Value Node is calculated based on a math calculation or a time
+* 	evaluation of the linked Value Nodes. It is commonly known as
+* 	Converted Value Nodes. The derived clases defines the behavior.
 */
 class LinkableValueNode : public ValueNode
 {
@@ -331,41 +341,52 @@ protected:
 
 public:
 
+	//! Returns the number of linked Value Nodes
 	virtual int link_count()const=0;
 
+	//! Returns the local name of the 'i' linked Value Node
 	virtual String link_local_name(int i)const=0;
 
+	//! Returns the name of the 'i' linked Value Node
 	virtual String link_name(int i)const=0;
 
+	//! Returns the child index Value Node based on the name
 	virtual int get_link_index_from_name(const String &name)const=0;
 
+	//! Clones a Value Node
 	virtual ValueNode* clone(const GUID& deriv_guid=GUID())const;
 
+	//! Sets a new Value Node link by its index
 	bool set_link(int i,ValueNode::Handle x);
+	//! Sets a new Value Node link by its name
 	bool set_link(const String &name,ValueNode::Handle x) {	return set_link(get_link_index_from_name(name),x);	}
 
+	//! Returns a Loose Handle to the Value Node based on the link's index
 	ValueNode::LooseHandle get_link(int i)const;
+	//! Returns a Loose Handle to the Value Node based on the link's name
 	ValueNode::LooseHandle get_link(const String &name)const { return get_link(get_link_index_from_name(name)); }
-
-	String
-	get_description(int index = -1, bool show_exported_name = true)const;
+	//! Return a full description of the linked ValueNode given by the index
+	String get_description(int index = -1, bool show_exported_name = true)const;
 
 protected:
 	//! Sets the type of the ValueNode
 	void set_type(ValueBase::Type t) { ValueNode::set_type(t); }
 
+	//! Virtual member to get the linked Value Node Handle
 	virtual ValueNode::LooseHandle get_link_vfunc(int i)const=0;
 
-	// Wrapper for new operator, used by clone()
+	//! Wrapper for new operator, used by clone()
 	virtual LinkableValueNode* create_new()const=0;
 
+	//! Returns the cached times values for all the children (linked Value Nodes)
 	virtual void get_times_vfunc(Node::time_set &set) const;
 }; // END of class LinkableValueNode
 
 /*!	\class ValueNodeList
 **	\brief A searchable value_node list container
 **	\warning Do not confuse with ValueNode_DynamicList!
-**	\todo writeme
+*
+*  Used by Canvas class to access to the exported value nodes.
 */
 class ValueNodeList : public std::list<ValueNode::RHandle>
 {
