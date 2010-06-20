@@ -198,35 +198,6 @@ bool
 ValueNode::subsys_stop()
 {
 	delete book_;
-/*	if(global_value_node_map.size() || value_node_count)
-	{
-		if(value_node_count)
-			synfig::error("%d ValueNodes haven't been destroyed yet!",value_node_count);
-
-		if(global_value_node_map.size()!=value_node_count)
-			synfig::error("value node count mismatch! map.size()!=value_node_count (%d!=%d)",global_value_node_map.size(),value_node_count);
-
-		GlobalValueNodeMap::iterator iter;
-		for(iter=global_value_node_map.begin();iter!=global_value_node_map.end();++iter)
-		{
-			if(!iter->second->is_exported())
-				synfig::info(_("%s: count:%d name:%s type:%s"),
-					iter->first.get_string().c_str(),
-					iter->second->count(),
-					iter->second->get_name().c_str(),
-					ValueBase::type_local_name(iter->second->get_type()).c_str()
-				);
-			else
-				synfig::info(_("%s: id:%s count:%d name:%s type:%s"),
-					iter->first.get_string().c_str(),
-					iter->second->get_id().c_str(),
-					iter->second->count(),
-					iter->second->get_name().c_str(),
-					ValueBase::type_local_name(iter->second->get_type()).c_str()
-				);
-		}
-	}
-*/
 	return true;
 }
 
