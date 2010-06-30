@@ -197,10 +197,10 @@ public:
 
 	const synfig::TransformStack& get_transform_stack()const { return transform_stack_; }
 
-	//! \writeme
+	//! Sets the type of duck
 	void set_type(Type x) { type_=x; }
 
-	//! \writeme
+	//! Gets the type of duck
 	Type get_type()const { return type_; }
 
 	//! Sets the scalar multiplier for the duck with respect to the origin
@@ -217,7 +217,13 @@ public:
 	//! Returns the location of the duck
 	synfig::Point get_point()const { return shared_point?*shared_point:point; }
 
+	//! Returns the rotations of the duck
+	/*! For angle and tangent ducks, rotations are used instead of the location
+	 *  so that the duck can me rotated more than 180 degrees
+	 */
 	synfig::Angle get_rotations()const { return rotations; };
+	
+	//! Sets the rotations of the duck
 	void set_rotations(const synfig::Angle &x) { rotations=x; };
 
 	synfig::Point get_trans_point()const;
