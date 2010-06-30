@@ -646,6 +646,7 @@ public:
 
 WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interface):
 	Gtk::Table(3, 3, false), /* 3 columns by 3 rows*/
+	Duckmatic(canvas_interface),
 	canvas_interface(canvas_interface),
 	canvas(canvas_interface->get_canvas()),
 	scrollx_adjustment(0,-4,4,0.01,0.1),

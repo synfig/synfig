@@ -186,16 +186,11 @@ LayerTree::create_layer_tree()
 	const LayerTreeStore::Model model;
 
 	{	// --- O N / O F F ----------------------------------------------------
-		//int index;
-		//index=get_layer_tree_view().append_column_editable(_(" "),layer_model.active);
-		//Gtk::TreeView::Column* column = get_layer_tree_view().get_column(index-1);
-
 		Gtk::TreeView::Column* column = Gtk::manage( new Gtk::TreeView::Column(_(" ")) );
 
-		// Set up the icon cell-renderer
+		// Set up the on/off cell-renderer
 		Gtk::CellRendererToggle* cellrenderer = Gtk::manage( new Gtk::CellRendererToggle() );
 		cellrenderer->signal_toggled().connect(sigc::mem_fun(*this, &studio::LayerTree::on_layer_toggle));
-
 		column->pack_start(*cellrenderer,false);
 		column->add_attribute(cellrenderer->property_active(), layer_model.active);
 		get_layer_tree_view().append_column(*column);
@@ -203,24 +198,15 @@ LayerTree::create_layer_tree()
 
 	{	// --- I C O N --------------------------------------------------------
 		int index;
-		index=get_layer_tree_view().append_column(_("Z"),layer_model.icon);
+		// Set up the icon cell-renderer
+		index=get_layer_tree_view().append_column(_("Icon"),layer_model.icon);
 		Gtk::TreeView::Column* column = get_layer_tree_view().get_column(index-1);
 		get_layer_tree_view().set_expander_column(*column);
-
-		column->set_sort_column(layer_model.z_depth);
-		//column->set_reorderable();
-		//column->set_resizable();
-		//column->set_clickable();
-
-		//Gtk::CellRendererPixbuf* icon_cellrenderer = Gtk::manage( new Gtk::CellRendererPixbuf() );
-		//column->pack_start(*icon_cellrenderer,false);
-		//column->add_attribute(icon_cellrenderer->property_pixbuf(), layer_model.icon);
 	}
-	//get_layer_tree_view().append_column(_("Z"),layer_model.z_depth);
 	{	// --- N A M E --------------------------------------------------------
 		Gtk::TreeView::Column* column = Gtk::manage( new Gtk::TreeView::Column(_("Name")) );
 
-		// Set up the icon cell-renderer
+		// Set up the Layer label cell-renderer
 		Gtk::CellRendererText* cellrenderer = Gtk::manage( new Gtk::CellRendererText() );
 		column->pack_start(*cellrenderer,false);
 		column->add_attribute(cellrenderer->property_text(), layer_model.label);
@@ -228,27 +214,18 @@ LayerTree::create_layer_tree()
 		cellrenderer->property_editable()=true;
 
 		column->set_reorderable();
-		// column->set_resizable();
+		column->set_resizable();
 		column->set_clickable(true);
 		column->set_sort_column(layer_model.label);
 
 		get_layer_tree_view().append_column(*column);
-
-		//		int index;
-//		index=get_layer_tree_view().append_column_editable(_("Layer"),layer_model.label);
-		//Gtk::TreeView::Column* column = get_layer_tree_view().get_column(index-1);
-
-		//get_layer_tree_view().set_expander_column(*column);
-
-		//Gtk::CellRendererPixbuf* icon_cellrenderer = Gtk::manage( new Gtk::CellRendererPixbuf() );
-		//column->pack_start(*icon_cellrenderer,false);
-		//column->add_attribute(icon_cellrenderer->property_pixbuf(), layer_model.icon);
 	}
 	{	// --- Z D E P T H ----------------------------------------------------
 		int index;
-		index=get_layer_tree_view().append_column(_("Z"),layer_model.z_depth);
-		column_z_depth=get_layer_tree_view().get_column(index-1);
+		index=get_layer_tree_view().append_column(_("Z Depth"),layer_model.z_depth);
+		// Set up the Z-Depth label cell-renderer
 
+		column_z_depth=get_layer_tree_view().get_column(index-1);
 		column_z_depth->set_reorderable();
 		column_z_depth->set_resizable();
 		column_z_depth->set_clickable();

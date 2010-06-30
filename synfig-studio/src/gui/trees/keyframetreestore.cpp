@@ -798,7 +798,7 @@ KeyframeTreeStore::find_row(const synfig::Keyframe &keyframe)
 
 	synfig::KeyframeList &keyframe_list(canvas_interface()->get_canvas()->keyframe_list());
 	if(keyframe_list.empty())
-		throw std::runtime_error(_("There are no keyframes n this canvas"));
+		throw std::runtime_error(_("There are no keyframes in this canvas"));
 
 	iter->index=0;
 
