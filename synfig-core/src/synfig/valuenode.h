@@ -110,9 +110,15 @@ public:
 	*/
 
 private:
+	//! The type of the Value Node
+	//! \see ValueBase
 	ValueBase::Type type;
+	//! The name of the Value Node. This is the string that is used in the
+	//! sif file to define the value type: i.e. <param name="amount">
 	String name;
+	//! The canvas this Value Node belongs to
 	etl::loose_handle<Canvas> canvas_;
+	//! The root canvas this Value Node belongs to
 	etl::loose_handle<Canvas> root_canvas_;
 
 	/*
@@ -242,7 +248,12 @@ protected:
 }; // END of class ValueNode
 
 /*!	\class PlaceholderValueNode
-**	\todo writeme
+**	Seems to be a Place to hold a Value Node temporarly.
+*
+* 	Doesn't seem to implement any functionality. Seems to be used when the
+* 	value node cannot be created using the Const, Animated or Linkable
+* 	Value Nodes.
+*
 */
 class PlaceholderValueNode : public ValueNode
 {
@@ -326,8 +337,13 @@ public:
 
 	static Book& book();
 
+	//! Creates a Linkable Value Node based on the name and the returned
+	//! value type. Returns a valid Handle if both (name and type) match
 	static Handle create(const String &name, const ValueBase& x);
 
+	//! Each derived Linkable Value Node has to implement this fucntion and
+	//! should return true only if the type matches. \name is the name of
+	//! the linked value node and \x is the returned value type
 	static bool check_type(const String &name, ValueBase::Type x);
 
 public:
@@ -335,8 +351,13 @@ public:
 		ValueNode(type) { }
 
 protected:
+	//! Stores the Value Node \x in the sub parameter i after check if the
+	//! type is the same.
+	//! It has to be defined by the derived class.
 	virtual bool set_link_vfunc(int i,ValueNode::Handle x)=0;
 
+	//! Frees all the subparameters of the Linkable Value Node.
+	//! Used by the derived classed destructors.
 	void unlink_all();
 
 public:
