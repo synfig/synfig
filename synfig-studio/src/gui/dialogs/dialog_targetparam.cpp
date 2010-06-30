@@ -125,7 +125,7 @@ Dialog_TargetParam::Dialog_TargetParam(Gtk::Window &parent, synfig::TargetParam 
 		}
 
 	//Bitrate Spin Button
-	Gtk::Adjustment* bradj(manage(new class Gtk::Adjustment(double(tparam.bitrate), 10.0,1000.0)));
+	Gtk::Adjustment* bradj(manage(new class Gtk::Adjustment(double(tparam.bitrate), 10.0,100000.0)));
 	bitrate = Gtk::manage(new class Gtk::SpinButton(*bradj));
 	Gtk::Label* label2(manage(new Gtk::Label(_("Video Bit Rate:"))));
 	label2->set_alignment(Gtk::ALIGN_LEFT, Gtk::ALIGN_CENTER);
