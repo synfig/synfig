@@ -62,24 +62,7 @@ using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 
-// Fast binary search implementation
-/*
-template<typename I, typename T> inline I
-binary_find(I begin, I end, const T& value)
-{
-	I iter(begin+(end-begin)/2);
-
-	while(end-begin>1 && !(*iter==value))
-	{
-		((*iter<value)?begin:end) = iter;
-
-		iter = begin+(end-begin)/2;
-	}
-	return iter;
-}
-*/
-
-/*
+/*** DEBUG STUFF
 template<typename T> String tangent_info(T a, T b, T v)
 {
 	return "...";
@@ -147,10 +130,6 @@ struct magnitude<Color> : public std::unary_function<float, Color>
 		return abs(a.get_y());
 	}
 };
-
-
-
-
 
 template <class T>
 struct is_angle_type
@@ -770,7 +749,10 @@ ValueNode_Animated::find(const Time& begin,const Time& end,std::vector<Waypoint*
 	return ret;
 }
 
-/*
+/** This code seems to be designed to move selected waypoints to other
+ * place. Probably it was commented out because the conflict when other
+ * waypoints are found in the target time. It was also defined and now commented
+ * in valuenode_dynamiclist.h
 void
 ValueNode_Animated::manipulate_time(const Time& old_begin,const Time& old_end,const Time& new_begin,const Time& new_end)
 {
@@ -838,26 +820,6 @@ ValueNode_Animated::new_waypoint_at_time(const Time& time)const
 			try { prev=find_prev(time); has_prev=true; } catch(...) { }
 			try { next=find_next(time); has_next=true; } catch(...) { }
 
-			/*
-			WaypointList::const_iterator closest;
-
-			if(has_prev&&!has_next)
-				closest=prev;
-			else if(has_next&&!has_prev)
-				closest=next;
-			else if(time-prev->get_time()<next->get_time()-time)
-				closest=prev;
-			else
-				closest=next;
-
-			for(iter=waypoint_list().begin();iter!=waypoint_list().end();++iter)
-			{
-				const Real dist(abs(iter->get_time()-time));
-				if(dist<abs(closest->get_time()-time))
-					closest=iter;
-			}
-			*/
-
 			if(has_prev && !prev->is_static())
 				waypoint.set_value_node(prev->get_value_node());
 			if(has_next && !next->is_static())
@@ -865,11 +827,6 @@ ValueNode_Animated::new_waypoint_at_time(const Time& time)const
 			else
 				waypoint.set_value((*this)(time));
 
-			/*if(has_prev)
-				waypoint.set_after(prev->get_before());
-			if(has_next)
-				waypoint.set_before(next->get_after());
-			*/
 		}
 	}
 	waypoint.set_time(time);
@@ -894,13 +851,6 @@ ValueNode_Animated::WaypointList::const_iterator
 ValueNode_Animated::find(const UniqueID &x)const
 {
 	return const_cast<ValueNode_Animated*>(this)->find(x);
-	/*
-	ValueNode_Animated::WaypointList::const_iterator iter;
-	iter=std::find(waypoint_list().begin(),waypoint_list().end(),x);
-	if(iter!=waypoint_list().end() && iter->get_uid()!=x.get_uid())
-		throw Exception::NotFound(strprintf("ValueNode_Animated::find()const: Can't find UniqueID %d",x.get_uid()));
-	return iter;
-	*/
 }
 
 ValueNode_Animated::WaypointList::iterator
@@ -918,14 +868,6 @@ ValueNode_Animated::WaypointList::const_iterator
 ValueNode_Animated::find(const Time &x)const
 {
 	return const_cast<ValueNode_Animated*>(this)->find(x);
-	/*
-	WaypointList::const_iterator iter(binary_find(waypoint_list().begin(),waypoint_list().end(),x));
-
-	if(iter!=waypoint_list().end() && x.is_equal(iter->get_time()))
-		return iter;
-
-	throw Exception::NotFound(strprintf("ValueNode_Animated::find(): Can't find Waypoint at %s",x.get_string().c_str()));
-	*/
 }
 
 ValueNode_Animated::WaypointList::iterator
@@ -949,20 +891,6 @@ ValueNode_Animated::WaypointList::const_iterator
 ValueNode_Animated::find_next(const Time &x)const
 {
 	return const_cast<ValueNode_Animated*>(this)->find_next(x);
-	/*
-	WaypointList::const_iterator iter(binary_find(waypoint_list().begin(),waypoint_list().end(),x));
-
-	if(iter!=waypoint_list().end())
-	{
-		if(iter->get_time()-Time::epsilon()>x)
-			return iter;
-		++iter;
-		if(iter!=waypoint_list().end() && iter->get_time()-Time::epsilon()>x)
-			return iter;
-	}
-
-	throw Exception::NotFound(strprintf("ValueNode_Animated::find_next(): Can't find Waypoint after %s",x.get_string().c_str()));
-*/
 }
 
 ValueNode_Animated::WaypointList::iterator
@@ -985,18 +913,6 @@ ValueNode_Animated::WaypointList::const_iterator
 ValueNode_Animated::find_prev(const Time &x)const
 {
 	return const_cast<ValueNode_Animated*>(this)->find_prev(x);
-	/*
-	WaypointList::const_iterator iter(binary_find(waypoint_list().begin(),waypoint_list().end(),x));
-
-	if(iter!=waypoint_list().end())
-	{
-		if(iter->get_time()+Time::epsilon()<x)
-			return iter;
-		if(iter!=waypoint_list().begin() && (--iter)->get_time()+Time::epsilon()<x)
-			return iter;
-	}
-	throw Exception::NotFound(strprintf("ValueNode_Animated::find_prev(): Can't find Waypoint after %s",x.get_string().c_str()));
-	*/
 }
 
 void
