@@ -63,6 +63,7 @@ public:
 	typedef	std::pair<WaypointList::const_iterator,bool>	const_findresult;
 
 protected:
+	//! List of Waypoints. \see waypoint.h
 	WaypointList waypoint_list_;
 
 public:
@@ -117,7 +118,9 @@ public:
 
 	virtual ~ValueNode_Animated();
 
+	//! Virtual member to be filled by inherited classes
 	virtual String get_name()const;
+	//! Virtual member to be filled by inherited classes
 	virtual String get_local_name()const;
 
 	//! Creates a Valuenode_Animated by type
@@ -137,7 +140,11 @@ public:
 protected:
 	ValueNode_Animated();
 
+	//! Sets thee type of the Animated Value Node
 	void set_type(ValueBase::Type t);
+	//!	Function to be overloaded that fills the Time Point Set with
+	//! all the children Time Points. Time Point is like Waypoint but
+	//! without value node
 	virtual void get_times_vfunc(Node::time_set &set) const;
 };
 
