@@ -115,7 +115,12 @@ class Context;
 class GUID;
 
 /*!	\class Canvas
-**	\todo writeme
+**	\brief Canvas is a double ended queue of Layers. It is the base class
+* for a Synfig document.
+*
+* As a node it inherits all the parent child relationship and the GUID
+* methods. As a double queue it allows insertion and deletion of Layers
+* and can access to the layers on the queue easily.
 */
 class Canvas : public CanvasBase, public Node
 {
@@ -174,7 +179,8 @@ private:
 	/*!	\see value_node_list(), find_value_node() */
 	ValueNodeList value_node_list_;
 
-	//! \writeme
+	//! Contains a list of Keyframes that are in the Canvas
+	/*! \see keyframe_list()*/
 	KeyframeList keyframe_list_;
 
 	//! A handle to the parent canvas of this canvas.
@@ -194,14 +200,16 @@ private:
 	//! Contains the value of the last call to set_time()
 	Time cur_time_;
 
-	//! \writeme
+	//! Map of external Canvases used in this Canvas
 	mutable std::map<String,Handle> externals_;
 
 	//! This flag is set if this canvas is "inline"
 	bool is_inline_;
 
+	//! True if the Canvas properties has changed
 	mutable bool is_dirty_;
 
+	//! It is set to true when synfig::optimize_layers is called
 	bool op_flag_;
 
 	//! Layer Group database
@@ -252,11 +260,11 @@ private:
 
 	//!	ValueBasenode Changed
 	sigc::signal<void, etl::handle<ValueNode> > signal_value_node_changed_;
-
+	//!	ValueBasenode Renamed
 	sigc::signal<void, etl::handle<ValueNode> > signal_value_node_renamed_;
-
+	//!	Child Value Node Added. Used in Dynamic List Value Nodes
 	sigc::signal<void, etl::handle<ValueNode>, etl::handle<ValueNode> > signal_value_node_child_added_;
-
+	//!	Child Value Node Removed. Used in Dynamic List Value Nodes
 	sigc::signal<void, etl::handle<ValueNode>, etl::handle<ValueNode> > signal_value_node_child_removed_;
 
 	/*
@@ -295,18 +303,18 @@ public:
 	//!	Metadata Changed
 	sigc::signal<void>& signal_meta_data_changed(const String& key) { return signal_map_meta_data_changed_[key]; }
 
-
+	//! Value Node Changed
 	sigc::signal<void, etl::handle<ValueNode> >& signal_value_node_changed() { return signal_value_node_changed_; }
-
+	//! Value Node Renamed
 	sigc::signal<void, etl::handle<ValueNode> >& signal_value_node_renamed() { return signal_value_node_renamed_; }
 
-	//!	Dirty
+	//! Dirty
 	sigc::signal<void>& signal_dirty() { return signal_changed();	}
 
-	//! \writeme
+	//! Child Value Node Added
 	sigc::signal<void, etl::handle<ValueNode>, etl::handle<ValueNode> >& signal_value_node_child_added() { return signal_value_node_child_added_; }
 
-	//! \writeme
+	//! Child Value Node Removed
 	sigc::signal<void, etl::handle<ValueNode>, etl::handle<ValueNode> >& signal_value_node_child_removed() { return signal_value_node_child_removed_; }
 
 	/*
@@ -314,7 +322,7 @@ public:
 	*/
 
 protected:
-
+	//! Canvas constructor by Canvas name
 	Canvas(const String &name);
 
 public:
@@ -339,7 +347,7 @@ public:
 	//! Renames the given group
 	void rename_group(const String&old_name,const String&new_name);
 
-	//! \writeme
+	//! Returns true if the Canvas is in line
 	bool is_inline()const { return is_inline_; }
 
 	//! Returns a handle to the RendDesc for this Canvas
@@ -390,10 +398,10 @@ public:
 	//! Removes a meta data key
 	void erase_meta_data(const String& key);
 
-	//! \writeme
+	//! Gets the relative ID string for an ancestor Canvas
 	String get_relative_id(etl::loose_handle<const Canvas> x)const;
 
-	//! \internal \writeme
+	//! Gets the relative ID string for an ancestor Canvas. Don't call it directly
 	String _get_relative_id(etl::loose_handle<const Canvas> x)const;
 
 	//! Returns \c true if the Canvas is a root Canvas. \c false otherwise
@@ -403,6 +411,7 @@ public:
 	/*! The returned handle will be empty if this is a root canvas */
 	LooseHandle parent()const { return parent_; }
 
+	//! Returns a handle to the root Canvas
 	LooseHandle get_root()const;
 
 	//! Returns a list of all child canvases in this canvas
