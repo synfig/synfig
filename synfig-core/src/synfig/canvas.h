@@ -426,7 +426,7 @@ public:
 	//! Sets the time for all the layers in the canvas
 	void set_time(Time t)const;
 
-	//! \writeme
+	//! Returns the current time of the Canvas
 	Time get_time()const { return cur_time_; }
 
 	//! Returns the number of layers in the canvas
@@ -465,16 +465,19 @@ public:
 	*/
 	ValueNode::ConstHandle find_value_node(const String &id)const;
 
-	//! \writeme
+	//! Adds a Value node by its Id.
+	/*! Throws an error if the Id is not
+	//! correct or the Value node is already exported
+	**/
 	void add_value_node(ValueNode::Handle x, const String &id);
 
 	//! writeme
 	//void rename_value_node(ValueNode::Handle x, const String &id);
 
-	//! \writeme
+	//! Removes a Value Node from the Canvas by its Handle
 	void remove_value_node(ValueNode::Handle x);
 
-	//! \writeme
+	//! Removes a Value Node from the Canvas by its Id
 	void remove_value_node(const String &id) { remove_value_node(find_value_node(id)); }
 
 	//! Finds a child Canvas in the Canvas with the given \a name
@@ -517,12 +520,18 @@ public:
 	//! Adds the given canvas as a child
 	Handle add_child_canvas(Handle child_canvas, const String &id);
 
+	//! Remove Child Canvas by its handle. If Current canvas is a child of a parent
+	//! it ask to the parent to remove the Child canvas.
 	void remove_child_canvas(Handle child_canvas);
 
+	//! Finds a Layer by its position.
+	//! \see get_context()
 	etl::handle<Layer> find_layer(const Point &pos);
 
+	//! Gets the depth of a particular Layer by its handle
 	int get_depth(etl::handle<Layer>)const;
 
+	//! Retireves the first layer of the double queue of Layers
 	Context get_context()const;
 
 	iterator end();
