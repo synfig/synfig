@@ -215,7 +215,7 @@ private:
 	//! Layer Group database
 	std::map<String,std::set<etl::handle<Layer> > > group_db_;
 
-	//! Layer Connection database
+	//! Layer Signal Connection database. Seems to be unused.
 	std::map<etl::loose_handle<Layer>,std::vector<sigc::connection> > connections_;
 
 	/*
@@ -533,36 +533,53 @@ public:
 
 	//! Retireves the first layer of the double queue of Layers
 	Context get_context()const;
-
+	//! Returns the last Canvas layer queue iterator. Notice that it
+	/*! overrides the std::end() member that would return an interator
+	 * just past the last element of the queue.*/
 	iterator end();
-
+	//! Returns the last Canvas layer queue const_iterator. Notice that it
+	/*! overrides the std::end() member that would return an interator
+	 * just past the last element of the queue.*/
 	const_iterator end()const;
-
+	//! Returns the last Canvas layer queue reverse iterator. Notice that it
+	/*! overrides the std::rbegin() member that would return an interator
+	 * just past the last element of the queue.*/
 	reverse_iterator rbegin();
-
+	//! Returns the last Canvas layer queue reverse const iterator. Notice that it
+	/*! overrides the std::rbegin() member that would return an interator
+	 * just past the last element of the queue.*/
 	const_reverse_iterator rbegin()const;
-
+	//! Returns last layer in Canvas layer stack
 	etl::handle<Layer> &back();
-
-	void push_back(etl::handle<Layer> x);
-
-	void push_front(etl::handle<Layer> x);
-
-	void push_back_simple(etl::handle<Layer> x);
-
-	void insert(iterator iter,etl::handle<Layer> x);
-	void erase(iterator iter);
-
+	//! Returns last layer in Canvas layer stack
 	const etl::handle<Layer> &back()const;
-
+	//! Inserts a layer just before the last layer.
+	//! \see end(), insert(iterator iter,etl::handle<Layer> x)
+	void push_back(etl::handle<Layer> x);
+	//! Inserts a layer just at the beggining of the Canvas layer dqueue
+	void push_front(etl::handle<Layer> x);
+	//! Inserts a layer in the last position of the Canvas layer dqueue
+	//! Uses the standard methods and doesn't perform any parentship
+	//! or signal update
+	void push_back_simple(etl::handle<Layer> x);
+	//! Inserts a layer before the given position by \iter and performs
+	//! the proper child parent relationships and signals update
+	void insert(iterator iter,etl::handle<Layer> x);
+	//! Removes a layer from the Canvas layer dqueue and its group and parent
+	//! relatioship. Although it is not already used, it clears the connections
+	//! see connections_
+	void erase(iterator iter);
+	//! Sets to be a inline canvas of a given Canvas \parent. The inline
+	//! Canvas inherits the groups and the render description.
+	//! \see rend_desc()
 	void set_inline(LooseHandle parent);
-
+	//! Returns a Canvas handle with "Untitled" as ID
 	static Handle create();
-
+	//! Creates an inline Canvas for a given Canvas \parent
 	static Handle create_inline(Handle parent);
-
+	//! Clones (copies) the Canvas if it is inline.
 	Handle clone(const GUID& deriv_guid=GUID())const;
-
+	//! Stores the external canvas by its file name and the Canvas handle
 	void register_external_canvas(String file, Handle canvas);
 
 #ifdef _DEBUG
@@ -570,16 +587,30 @@ public:
 #endif	// _DEBUG
 
 private:
+	//! Adds a \layer to a group given by its \group string to the group
+	//! database
 	void add_group_pair(String group, etl::handle<Layer> layer);
+	//! Removes a \layer from a group given by its \group string to the group
+	//! database
 	void remove_group_pair(String group, etl::handle<Layer> layer);
+	//! Seems to be used to add the stored signals connections of the layers.
+	//! \see connections_
 	void add_connection(etl::loose_handle<Layer> layer, sigc::connection connection);
+	//! Seems to be used to disconnect the stored signals connections of the layers.
+	//! \see connections_
 	void disconnect_connections(etl::loose_handle<Layer> layer);
 
 protected:
+	//! Sets the Canvas to dirty and calls Node::on_changed()
 	virtual void on_changed();
+	//! Collects the times (TimePoints) of the Layers of the Canvas and
+	//! stores it in the passed Time Set \set
+	//! \see Node::get_times()
 	virtual void get_times_vfunc(Node::time_set &set) const;
 }; // END of class Canvas
 
+	//! Optimize layers based on its calculated Z depth to perform a quick
+	//! render of the layers to the output.
 void optimize_layers(Time time, Context context, Canvas::Handle op_canvas, bool seen_motion_blur=false);
 
 
