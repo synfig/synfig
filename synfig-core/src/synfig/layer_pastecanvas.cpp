@@ -385,7 +385,7 @@ Layer_PasteCanvas::accelerated_render(Context context,Surface *surface,int quali
 	else if (!context.accelerated_render(surface,quality,renddesc,&stageone))
 		return false;
 
-	if(muck_with_time_ && curr_time!=Time::begin() && canvas->get_time()!=curr_time+time_offset)
+	if(muck_with_time_ && curr_time!=Time::begin() /*&& canvas->get_time()!=curr_time+time_offset*/)
 		canvas->set_time(curr_time+time_offset);
 
 	Color::BlendMethod blend_method(get_blend_method());
