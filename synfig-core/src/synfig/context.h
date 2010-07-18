@@ -68,7 +68,7 @@ public:
 	//! It is the blended color of the context
 	Color get_color(const Point &pos)const;
 
-	//!	With a given \quality and a given render description ir puts the context
+	//!	With a given \quality and a given render description it puts the context
 	//! blend result into the painting \surface */
 	bool accelerated_render(Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb) const;
 
