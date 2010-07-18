@@ -48,13 +48,13 @@ class Layer_NoDeform {};
 class Layer_Composite : public Layer
 {
 private:
-
+	//! The amount of composite
 	float amount_;
-
+	//! The blend method for the composition
 	Color::BlendMethod blend_method_;
 
 protected:
-
+	//! Default constructor. Not used directly.
 	Layer_Composite(
 		float 	amount=1.0,
 		Color::BlendMethod 	blend_method=Color::BLEND_COMPOSITE
@@ -64,32 +64,37 @@ protected:
 		converted_blend_	(false),
 		transparent_color_	(false)
 	{ }
-
+	//! Converted blend is used to check if an old version of canvas
+	//! is used in the composition. Old Straight was used as new Composite
+	//! \todo verify this
 	bool converted_blend_;
+	//! Transparent color is used for old canvas versions.
+	//!Old Straight plus transparent color seems to be the same new than alpha over.
 	bool transparent_color_;
 
 public:
-
+	//! Gets the amount of the layer
 	float get_amount()const { return amount_; }
-
+	//! Sets the amount of the layer and returns this layer
 	Layer_Composite& set_amount(float x) { amount_=x; return *this; }
-
+	//! Gets the blend method of the layer
 	Color::BlendMethod get_blend_method()const { return blend_method_; }
-
+	//! Sets the blend method of the layer and returns this layer
 	Layer_Composite& set_blend_method(Color::BlendMethod x) { blend_method_=x; return *this; }
-
+	//! Returns true is amount is 1 and blend method is straight
 	virtual bool is_solid_color()const { return amount_==1.0f && blend_method_==Color::BLEND_STRAIGHT; }
-
+	//! Returns true if the amount is zero.
 	bool is_disabled()const { return amount_==0.0f; }
-
+	//! Gets the parameter vocabulary. To be overrided by the derived.
 	virtual Vocab get_param_vocab()const;
-
+	//! Sets the value for the given parameter.
 	virtual bool set_param(const String &param, const ValueBase &value);
-
+	//! Gets the value of the given parameter
 	virtual ValueBase get_param(const String &param)const;
-
+	//!Returns the rectangle that includes the context of the layer and
+	//! the intersection of the layer in case it is active and not onto
 	virtual Rect get_full_bounding_rect(Context context)const;
-
+	//! Renders the layer composited on the context and puts it on the target surface.
 	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 }; // END of class Layer_Composite
 

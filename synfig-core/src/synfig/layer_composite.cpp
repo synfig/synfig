@@ -92,18 +92,22 @@ Layer_Composite::accelerated_render(Context context,Surface *surface,int quality
 
 	image.push_back(0);	// Alpha black
 
-	// Render the backdrop
+	// Render the backdrop on the surface layer's surface.
 	if(!context.accelerated_render(&surfacelayer->surface,quality,renddesc,&stageone))
 		return false;
-
+	// Sets up the interpolation of the context (now the surface layer is the first one)
+	// depending on the quality
 	if(quality<=4)surfacelayer->c=3;else
 	if(quality<=5)surfacelayer->c=2;
 	else if(quality<=6)surfacelayer->c=1;
 	else surfacelayer->c=0;
 	surfacelayer->tl=renddesc.get_tl();
 	surfacelayer->br=renddesc.get_br();
+	// Sets the blend method to straight. See below
 	surfacelayer->set_blend_method(Color::BLEND_STRAIGHT);
-
+	// Push this layer on the image. The blending result is only this layer
+	// adn the surface layer. The rest of the context is ignored by the straight
+	// blend method of surface layer
 	image.push_front(const_cast<synfig::Layer_Composite*>(this));
 
 	// Set up a surface target
@@ -136,8 +140,9 @@ Layer_Composite::get_full_bounding_rect(Context context)const
 Layer::Vocab
 Layer_Composite::get_param_vocab()const
 {
+	//! First fills the returning vocabulary with the ancestor class
 	Layer::Vocab ret(Layer::get_param_vocab());
-
+	//! Now inserts the two parameters that this layer knows.
 	ret.push_back(ParamDesc(amount_,"amount")
 		.set_local_name(_("Amount"))
 	);
@@ -200,9 +205,12 @@ Layer_Composite::set_param(const String & param, const ValueBase &value)
 ValueBase
 Layer_Composite::get_param(const String & param)const
 {
+	//! First check if the parameter's string is known.
 	if(param=="amount")
 		return get_amount();
 	if(param=="blend_method")
 		return static_cast<int>(get_blend_method());
+	//! If it is unknown then call the ancestor's get param member
+	//! to see if it can handle that parameter's string.
 	return Layer::get_param(param);
 }
