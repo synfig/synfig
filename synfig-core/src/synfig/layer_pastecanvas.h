@@ -44,32 +44,36 @@
 /* === C L A S S E S & S T R U C T S ======================================= */
 
 namespace synfig {
-
+/*!	\class Layer_PasteCanvas
+**	\brief Class of the Pasted Canvas layer.
+*/
 class Layer_PasteCanvas : public Layer_Composite, public Layer_NoDeform
 {
+	//! Layer module: defines the needed members to belong to a layer's factory.
 	SYNFIG_LAYER_MODULE_EXT
 private:
-
+	//! Parameter Origin of the paste canvas layer
 	Vector origin;
+	//!Parameter Focus of the zoom of the paste canvas layer
 	Vector focus;
-
+	//! The canvas parameter
 	etl::loose_handle<synfig::Canvas> canvas;
-
-	//! Recursion depth counter
+	//! Recursion depth counter. Not a parameter
 	mutable int depth;
-
+	//! Zoom parameter of the paste canvas layer
 	Real zoom;
-
+	//! Time offset parameter of the paste canvas layer
 	Time time_offset;
-
+	//! Current time of the paste canvas layer. \see set_time
 	mutable Time curr_time;
-
+	//! \todo writeme! Not a parameter
 	bool muck_with_time_;
-
+	//! Parameter that avoid hit check to go depth into the children.
 	bool children_lock;
-
+	//! Boundaries of the paste canvas layer. It is the canvas's boundary
+	//! affected by the zoom, origin and focus.
 	mutable Rect bounds;
-
+	//! signal connection for children. Seems to be used only here
 	sigc::connection child_changed_connection;
 
 	// Nasty hack: Remember whether we called an extra ref() when
@@ -104,7 +108,7 @@ private:
 	*/
 
 private:
-
+	//! Signal used when the canvas parameter has changed. \see layertreestore.cpp
 	sigc::signal<void> signal_subcanvas_changed_;
 
 	/*
@@ -112,7 +116,7 @@ private:
 	*/
 
 public:
-
+	//! Wrapper for the subcanvas changed signal
 	sigc::signal<void>& signal_subcanvas_changed() { return signal_subcanvas_changed_; }
 
 public:
