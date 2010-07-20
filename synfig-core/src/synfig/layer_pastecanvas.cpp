@@ -274,13 +274,10 @@ Layer_PasteCanvas::update_renddesc()
 void
 Layer_PasteCanvas::on_canvas_set()
 {
-	//synfig::info("before count()=%d",count());
 	if(get_canvas() && canvas && canvas->is_inline() && canvas->parent()!=get_canvas())
 	{
-		//synfig::info("during count()=%d",count());
 		canvas->set_inline(get_canvas());
 	}
-	//synfig::info("after count()=%d",count());
 }
 
 ValueBase

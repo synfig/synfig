@@ -121,43 +121,61 @@ public:
 
 public:
 
+	//! Recursively update the Render Description for the inner inline only pasted canvases.
+	//! Used for copy and paste Paste Canvas Layers between compositions.
 	void update_renddesc();
 
+	//! Every time the Paste Canvas Layer parent canvas is changed, this
+	//! is called and it sets the parent of the canvas parameter to that canvas
+	//! if it is on line
 	virtual void on_canvas_set();
-
+	//! Sets muck_with_time.
+	//! \todo writeme!
 	void set_muck_with_time(bool x=false) { muck_with_time_=x; }
 
+	//! Gets the canvas parameter. It is called sub_canvas to avoid confusion
+	//! with the get_canvas from the Layer class.
 	etl::handle<synfig::Canvas> get_sub_canvas()const { return canvas; }
+	//! Sets the canvas parameter.
+	//! \see get_sub_canvas()
 	void set_sub_canvas(etl::handle<synfig::Canvas> x);
-
+	//! Gets zoom parameter
 	Real get_zoom()const { return zoom; }
-
+	//! Gets time offset parameter
 	Time get_time_offset()const { return time_offset; }
-
+	//! Get origin parameter
 	Point get_origin()const { return origin; }
-
+	//! Get focus parameter
+	Vector get_focus()const { return focus; }
+	//! Default constructor
 	Layer_PasteCanvas();
+	//! Destructor
 	virtual ~Layer_PasteCanvas();
-
+	//! Returns a string with the localized name of this layer
 	virtual String get_local_name()const;
-
+	//!	Sets the parameter described by \a param to \a value. \see Layer::set_param
 	virtual bool set_param(const String & param, const synfig::ValueBase &value);
-
+	//! Get the value of the specified parameter. \see Layer::get_param
 	virtual ValueBase get_param(const String & param)const;
-
+	//! Gets the blend color of the Layer in the context at \a pos
 	virtual Color get_color(Context context, const Point &pos)const;
-
+	//! Sets the time of the Paste Canvas Layer and those under it
 	virtual void set_time(Context context, Time time)const;
-
+	//! Renders the Canvas to the given Surface in an accelerated manner
+	//! See Layer::accelerated_render
 	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
-
+	//! Gets the parameter vocabulary
 	virtual Vocab get_param_vocab()const;
-
+	//! Returns the rectangle that includes the layer
 	virtual synfig::Rect get_bounding_rect()const;
-
+	//! Checks to see if a part of the Paste Canvas Layer is directly under \a point
 	virtual synfig::Layer::Handle hit_check(synfig::Context context, const synfig::Point &point)const;
 
 protected:
+	//!	Function to be overloaded that fills the Time Point Set with
+	//! all the children Time Points. In this case the children Time Points
+	//! are the canvas parameter children layers Time points and the Paste Canvas
+	//! Layer time points. \todo clarify all this comments.
 	virtual void get_times_vfunc(Node::time_set &set) const;
 
 }; // END of class Layer_PasteCanvas
