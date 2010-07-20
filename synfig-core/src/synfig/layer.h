@@ -459,7 +459,7 @@ public:
 	//! Get a list of all of the parameters and their values
 	virtual ParamList get_param_list()const;
 
-	//! Sets the \a time for the selected Layer and those under it
+	//! Sets the \a time for the Layer and those under it
 	/*!	\param context		Context iterator referring to next Layer.
 	**	\param time			writeme
 	**	\see Context::set_time()
@@ -474,7 +474,7 @@ public:
 	**	\todo \a point should be of the type <tt>const Point \&</tt> */
 	virtual void set_time(Context context, Time time, const Point &point)const;
 
-	//! Gets the color of the Canvas at \a pos
+	//! Gets the blend color of the Layer in the context at \a pos
 	/*!	\param context		Context iterator referring to next Layer.
 	**	\param pos		Point which indicates where the Color should come from
 	**	\see Context::get_color()
