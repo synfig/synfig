@@ -12,7 +12,8 @@ EXTRA_DIST = \
 	surfacenew.cpp \
 	pch.h \
 	synfig.nsh \
-	synfig.h
+	synfig.h \
+	nodebase.h
 
 
 LAYERHEADERS = \
@@ -185,7 +186,6 @@ SYNFIGHEADERS = \
 	general.h \
 	guidset.h \
 	interpolation.h \
-	nodebase.h \
 	protocol.h \
 	quick_rng.h \
 	real.h \
