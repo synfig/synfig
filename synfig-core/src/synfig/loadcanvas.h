@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file loadcanvas.h
-**	\brief writeme
+**	\brief Implementation for the Synfig Canvas Loader (canvas file parser)
 **
 **	$Id$
 **
@@ -52,7 +52,8 @@ namespace xmlpp { class Node; class Element; };
 namespace synfig {
 
 /*!	\class CanvasParser
-**	\todo writeme
+**	\brief Class that handles xmlpp elements from a sif file and converts
+* them into Synfig objects
 */
 class CanvasParser
 {
@@ -61,22 +62,23 @@ class CanvasParser
 	*/
 
 private:
-
+	//! Maximun number of allowed warnings before fatal error is thrown
 	int max_warnings_;
-
+	//! Total number of warning during canvas parsing
     int total_warnings_;
-
+	//! Total number of errors during canvas parsing
     int total_errors_;
-
+	//! True if errors doesn't stop canvas parsing
 	bool allow_errors_;
-
+	//! File name to parse
 	String filename;
-
+	//! Path of the file name to parse
 	String path;
-
+	//! Error text when errors found
 	String errors_text;
+	//! Warning text when warnings found
 	String warnings_text;
-
+	//! Seems not to be used
 	GUID guid_;
 
 	/*
@@ -98,7 +100,7 @@ public:
 
 public:
 
-	//! \todo writeme
+	//! Sets allow errors variable
 	CanvasParser &set_allow_errors(bool x) { allow_errors_=x; return *this; }
 
 	//! Sets the maximum number of warnings before a fatal error is thrown
@@ -113,23 +115,33 @@ public:
 	//! Returns the number of warnings in the last parse
 	int warning_count()const { return total_warnings_; }
 
+	//! Sets the path of the file to parse
 	void set_path(const synfig::String& x) { path=x; }
 
+	//! Gets the path of the file to parse
 	const synfig::String& get_path()const { return path; }
 
+	//! Gets error text string
 	const synfig::String& get_errors_text()const { return errors_text; }
+	//! Gets warning text string
 	const synfig::String& get_warnings_text()const { return warnings_text; }
 
+	//! Register a canvas in the canvas map
+	/*! \param canvas The handle to the canvas to register
+	 *  \param as The absolute path to the file that represents the canvas
+	 * Apart of store the pair canvas and */
 	static void register_canvas_in_map(Canvas::Handle canvas, String as);
 
 #ifdef _DEBUG
 	static void show_canvas_map(String file, int line, String text);
 #endif	// _DEBUG
 
-	//! \todo writeme
+	//! Parse a Cavnas form a file with absolute path.
 	Canvas::Handle parse_from_file_as(const String &filename,const String &as,String &errors);
+	//! Parse a Canvas from a xmlpp root node
 	Canvas::Handle parse_as(xmlpp::Element* node,String &errors);
 
+	//! Set of absolute file names of the canvases currently being parsed
 	static std::set<String> loading_;
 
 private:
