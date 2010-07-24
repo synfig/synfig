@@ -146,56 +146,79 @@ public:
 
 private:
 
-	// Error/Warning handling functions
-
+	//! Error handling function
 	void error(xmlpp::Node *node,const String &text);
+	//! Fatal Error handling function
 	void fatal_error(xmlpp::Node *node,const String &text);
+	//! Warning handling function
 	void warning(xmlpp::Node *node,const String &text);
+	//! Unexpected element error handling function
 	void error_unexpected_element(xmlpp::Node *node,const String &got, const String &expected);
+	//! Unexpected element error handling function
 	void error_unexpected_element(xmlpp::Node *node,const String &got);
 
-	// Parsing Functions
-
+	//! Canvas Parsing Function
 	Canvas::Handle parse_canvas(xmlpp::Element *node,Canvas::Handle parent=0,bool inline_=false, String path=".");
+	//! Canvas definitions Parsing Function (exported value nodes and exported canvases)
 	void parse_canvas_defs(xmlpp::Element *node,Canvas::Handle canvas);
+	//! Layer Parsing Function
 	etl::handle<Layer> parse_layer(xmlpp::Element *node,Canvas::Handle canvas);
+	//! Generic Value Base Parsing Function
 	ValueBase parse_value(xmlpp::Element *node,Canvas::Handle canvas);
+	//! Generic Value Node Parsing Function
 	etl::handle<ValueNode> parse_value_node(xmlpp::Element *node,Canvas::Handle canvas);
 
-	// ValueBase Parsing Functions
-
+	//! Real Value Base Parsing Function
 	Real parse_real(xmlpp::Element *node);
+	//! Time Value Base Parsing Function
 	Time parse_time(xmlpp::Element *node,Canvas::Handle canvas);
+	//! Integer Value Base Parsing Function
 	int parse_integer(xmlpp::Element *node);
+	//! Vector Value Base Parsing Function
 	Vector parse_vector(xmlpp::Element *node);
+	//! Color Value Base Parsing Function
 	Color parse_color(xmlpp::Element *node);
+	//! Angle Value Base Parsing Function
 	Angle parse_angle(xmlpp::Element *node);
+	//! String Value Base Parsing Function
 	String parse_string(xmlpp::Element *node);
+	//! Bool Value Base Parsing Function
 	bool parse_bool(xmlpp::Element *node);
+	//! Segment Value Base Parsing Function
 	Segment parse_segment(xmlpp::Element *node);
+	//! List Value Base Parsing Function
 	ValueBase parse_list(xmlpp::Element *node,Canvas::Handle canvas);
+	//! Gradient Value Base Parsing Function
 	Gradient parse_gradient(xmlpp::Element *node);
+	//! Bline Point Value Base Parsing Function
 	BLinePoint parse_bline_point(xmlpp::Element *node);
 
+	//! Keyframe Parsing Function
 	Keyframe parse_keyframe(xmlpp::Element *node,Canvas::Handle canvas);
 
-	// ValueNode Parsing Functions
-
+	//! ValueNode Animated Parsing Function
 	etl::handle<ValueNode_Animated> parse_animated(xmlpp::Element *node,Canvas::Handle canvas);
-	etl::handle<ValueNode_Subtract> parse_subtract(xmlpp::Element *node,Canvas::Handle canvas);
+	//! Linkable ValueNode Parsing Function
 	etl::handle<LinkableValueNode> parse_linkable_value_node(xmlpp::Element *node,Canvas::Handle canvas);
+	//! Dynamic List Parsnig Function
 	etl::handle<ValueNode_DynamicList> parse_dynamic_list(xmlpp::Element *node,Canvas::Handle canvas);
 
 }; // END of CanvasParser
 
 /* === E X T E R N S ======================================================= */
 
-//!	Loads a canvas from \a filename
+//!	Loads a canvas from current xmlpp Element
 /*!	\return	The Canvas's handle on success, an empty handle on failure */
 extern Canvas::Handle open_canvas(xmlpp::Element* node,String &errors,String &warnings);
+//!	Loads a canvas from \a filename
+/*!	\return	The Canvas's handle on success, an empty handle on failure */
 extern Canvas::Handle open_canvas(const String &filename,String &errors,String &warnings);
+//!	Loads a canvas from \a filename and its absolute path
+/*!	\return	The Canvas's handle on success, an empty handle on failure */
 extern Canvas::Handle open_canvas_as(const String &filename,const String &as,String &errors,String &warnings);
 
+//! Returns the Open Canvases Map.
+//! \see open_canvas_map_
 std::map<synfig::String, etl::loose_handle<Canvas> >& get_open_canvas_map();
 
 }; // END of namespace synfig
