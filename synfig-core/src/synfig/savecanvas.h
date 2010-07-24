@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file savecanvas.h
-**	\brief writeme
+**	\brief Implementation for the Synfig Save Canvas to file
 **
 **	$Id$
 **
@@ -47,6 +47,7 @@ namespace synfig {
 bool save_canvas(const String &filename, Canvas::ConstHandle canvas);
 
 //! Stores a Canvas in a string in XML format
+/*! \return The string with the XML canvas definition */
 String canvas_to_string(Canvas::ConstHandle canvas);
 
 void set_file_version(ReleaseVersion version);
