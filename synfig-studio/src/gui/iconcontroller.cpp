@@ -299,7 +299,7 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	INIT_STOCK_ICON(star,"star_icon."IMAGE_EXT,_("Star Tool"));
 
 #undef INIT_STOCK_ICON
-#undef INIT_STOCK_ICON
+#undef INIT_STOCK_ICON_CLONE
 
 	icon_factory->add_default();
 
