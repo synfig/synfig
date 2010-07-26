@@ -44,7 +44,6 @@
 #include "layer_pastecanvas.h"
 #include "loadcanvas.h"
 #include "valuenode.h"
-#include "valuenode_subtract.h"
 #include "valuenode_animated.h"
 #include "valuenode_composite.h"
 #include "valuenode_const.h"

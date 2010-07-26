@@ -37,15 +37,14 @@
 #include "savecanvas.h"
 #include "general.h"
 #include "valuenode.h"
-#include "valuenode_subtract.h"
 #include "valuenode_animated.h"
-#include "valuenode_composite.h"
+//#include "valuenode_composite.h"
 #include "valuenode_const.h"
-#include "valuenode_linear.h"
+//#include "valuenode_linear.h"
 #include "valuenode_dynamiclist.h"
 #include "valuenode_reference.h"
-#include "valuenode_segcalctangent.h"
-#include "valuenode_segcalcvertex.h"
+//#include "valuenode_segcalctangent.h"
+//#include "valuenode_segcalcvertex.h"
 #include "valuenode_bline.h"
 #include "time.h"
 #include "keyframe.h"
@@ -104,10 +103,9 @@ xmlpp::Element* encode_real(xmlpp::Element* root,Real v)
 	return root;
 }
 
-xmlpp::Element* encode_time(xmlpp::Element* root,Time t, float /*fps*/=0)
+xmlpp::Element* encode_time(xmlpp::Element* root,Time t)
 {
 	root->set_name("time");
- 	//root->set_attribute("value",t.get_string(fps));
  	root->set_attribute("value",t.get_string());
 	return root;
 }
@@ -220,10 +218,7 @@ xmlpp::Element* encode_value(xmlpp::Element* root,const ValueBase &data,Canvas::
 	case ValueBase::TYPE_REAL:
 		return encode_real(root,data.get(Real()));
 	case ValueBase::TYPE_TIME:
-		if(canvas)
-			return encode_time(root,data.get(Time()),canvas->rend_desc().get_frame_rate());
-		else
-			return encode_time(root,data.get(Time()));
+		return encode_time(root,data.get(Time()));
 	case ValueBase::TYPE_INTEGER:
 		return encode_integer(root,data.get(int()));
 	case ValueBase::TYPE_COLOR:
@@ -341,44 +336,6 @@ xmlpp::Element* encode_animated(xmlpp::Element* root,ValueNode_Animated::ConstHa
 			waypoint_node->set_attribute("bias",strprintf("%f",iter->get_bias()));
 
 	}
-
-	return root;
-}
-
-xmlpp::Element* encode_subtract(xmlpp::Element* root,ValueNode_Subtract::ConstHandle value_node,Canvas::ConstHandle canvas=0)
-{
-	assert(value_node);
-	root->set_name("subtract");
-
-	ValueNode::ConstHandle lhs=value_node->get_lhs();
-	ValueNode::ConstHandle rhs=value_node->get_rhs();
-	ValueNode::ConstHandle scalar=value_node->get_scalar();
-
-	assert(lhs);
-	assert(rhs);
-
-	root->set_attribute("type",ValueBase::type_name(value_node->get_type()));
-
-	if(lhs==rhs)
-		warning("LHS is equal to RHS, this <subtract> will always be zero!");
-
-	//if(value_node->get_scalar()!=1)
-	//	root->set_attribute("scalar",strprintf(VECTOR_VALUE_TYPE_FORMAT,value_node->get_scalar()));
-
-	if(!scalar->get_id().empty())
-		root->set_attribute("scalar",scalar->get_relative_id(canvas));
-	else
-		encode_value_node(root->add_child("scalar")->add_child("value_node"),scalar,canvas);
-
-	if(!lhs->get_id().empty())
-		root->set_attribute("lhs",lhs->get_relative_id(canvas));
-	else
-		encode_value_node(root->add_child("lhs")->add_child("value_node"),lhs,canvas);
-
-	if(!rhs->get_id().empty())
-		root->set_attribute("rhs",rhs->get_relative_id(canvas));
-	else
-		encode_value_node(root->add_child("rhs")->add_child("value_node"),rhs,canvas);
 
 	return root;
 }
@@ -511,9 +468,6 @@ xmlpp::Element* encode_value_node(xmlpp::Element* root,ValueNode::ConstHandle va
 
 	if(ValueNode_Animated::ConstHandle::cast_dynamic(value_node))
 		encode_animated(root,ValueNode_Animated::ConstHandle::cast_dynamic(value_node),canvas);
-	else
-	if(ValueNode_Subtract::ConstHandle::cast_dynamic(value_node))
-		encode_subtract(root,ValueNode_Subtract::ConstHandle::cast_dynamic(value_node),canvas);
 	else
 	if(ValueNode_DynamicList::ConstHandle::cast_dynamic(value_node))
 		encode_dynamic_list(root,ValueNode_DynamicList::ConstHandle::cast_dynamic(value_node),canvas);
