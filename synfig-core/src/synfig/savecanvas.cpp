@@ -38,13 +38,9 @@
 #include "general.h"
 #include "valuenode.h"
 #include "valuenode_animated.h"
-//#include "valuenode_composite.h"
 #include "valuenode_const.h"
-//#include "valuenode_linear.h"
 #include "valuenode_dynamiclist.h"
 #include "valuenode_reference.h"
-//#include "valuenode_segcalctangent.h"
-//#include "valuenode_segcalcvertex.h"
 #include "valuenode_bline.h"
 #include "time.h"
 #include "keyframe.h"
@@ -265,10 +261,8 @@ xmlpp::Element* encode_animated(xmlpp::Element* root,ValueNode_Animated::ConstHa
 	for(iter=waypoint_list.begin();iter!=waypoint_list.end();++iter)
 	{
 		xmlpp::Element *waypoint_node=root->add_child("waypoint");
-		//waypoint_node->set_attribute("time",iter->get_time().get_string(canvas->rend_desc().get_frame_rate()));
 		waypoint_node->set_attribute("time",iter->get_time().get_string());
 
-		//waypoint_node->add_child(encode_value(iter->get_value(),canvas));
 		if(iter->get_value_node()->is_exported())
 			waypoint_node->set_attribute("use",iter->get_value_node()->get_relative_id(canvas));
 		else {
@@ -436,9 +430,6 @@ xmlpp::Element* encode_linkable_value_node(xmlpp::Element* root,LinkableValueNod
 
 		ValueBase value((*value_node)(0));
 		encode_value(root,value,canvas);
-
-		// ValueNode_Const::ConstHandle const_value(ValueNode_Const::create((*value_node)(0)));
-		// encode_value_node(root,const_value,canvas);
 
 		return root;
 	}
@@ -651,7 +642,11 @@ xmlpp::Element* encode_canvas(xmlpp::Element* root,Canvas::ConstHandle canvas)
 	}
 
 	// Output the <defs> section
-	//! \todo check where the parentheses should really go - around the && or the ||?
+	//! Check where the parentheses should really go - around the && or the ||?
+	//! If children is not empty (there are exported canvases in the current canvas)
+	//! they must be listed in the defs section regardless the result of check the
+	//! Value Node list (exported value nodes in the canvas) and if the canvas is
+	//! in line or not. Inline canvases cannot have exported canvases inside.
 	if((!canvas->is_inline() && !canvas->value_node_list().empty()) || !canvas->children().empty())
 	{
 		xmlpp::Element *node=root->add_child("defs");
