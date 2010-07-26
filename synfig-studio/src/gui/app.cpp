@@ -1317,10 +1317,9 @@ App::App(int *argc, char ***argv):
 		if(auto_recover->recovery_needed())
 		{
 			splash_screen.hide();
-			if (get_ui_interface()->confirmation("Crash Recovery",
+			if (get_ui_interface()->confirmation(_("Crash Recovery"),
 					_("Auto recovery file found"),
-					_("Synfig Studio seems to have crashed\n"
-					  "before you could save all your files.\n"
+					_("Synfig Studio seems to have crashed before you could save all your files. "
 					  "Recover unsaved changes?"),
 					_("Recover"), _("Ignore"))
 				== synfigapp::UIInterface::RESPONSE_OK)
@@ -1332,11 +1331,10 @@ App::App(int *argc, char ***argv):
 					else
 						get_ui_interface()->error(_("Unable to recover from previous crash"));
 				else
-					get_ui_interface()->error(
-						_("Synfig Studio has attempted to recover\n"
-						  "from a previous crash. The files that it has\n"
-						  "recovered are NOT YET SAVED. It would be a good\n"
-						  "idea to review them and save them now."));
+					dialog_warning_blocking(_("Warning"),
+						_("Synfig Studio has attempted to recover from a previous crash. "
+						"The files that it has recovered are NOT YET SAVED. It would be a "
+						"good idea to review them and save them now."));
 
 				if (number_recovered)
 					opened_any = true;
