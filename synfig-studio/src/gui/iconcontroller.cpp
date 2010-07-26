@@ -154,19 +154,13 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	INIT_STOCK_ICON(canvas_new,"canvas_icon."IMAGE_EXT,_("New Canvas"));
 	INIT_STOCK_ICON(saveall,"saveall_icon."IMAGE_EXT,_("Save All"));
 
+		// Layers
 	INIT_STOCK_ICON(layer,"layer_icon."IMAGE_EXT,_("Layer"));
-	INIT_STOCK_ICON(layer_pastecanvas,"pastecanvas_icon."IMAGE_EXT,_("Paste Canvas"));
-	INIT_STOCK_ICON(layer_duplicate,"layer_duplicate_icon."IMAGE_EXT,_("Duplicate Layer"));
-	INIT_STOCK_ICON(layer_gradient_lineal,"gradient_icon."IMAGE_EXT,_("Lineal Gradient Layer"));
-	INIT_STOCK_ICON(layer_gradient_radial,"layer_gradient_radial_icon."IMAGE_EXT,_("Radial Gradient Layer"));
-	INIT_STOCK_ICON(layer_gradient_spiral,"layer_gradient_spiral_icon."IMAGE_EXT,_("Spiral Gradient Layer"));
-	INIT_STOCK_ICON(layer_gradient_curve,"layer_gradient_curve_icon."IMAGE_EXT,_("Curve Gradient Layer"));
-	INIT_STOCK_ICON(layer_gradient_conical,"layer_gradient_conical_icon."IMAGE_EXT,_("Conical Gradient Layer"));
-	INIT_STOCK_ICON(layer_gradient_noise,"layer_gradient_noise_icon."IMAGE_EXT,_("Noise Gradient Layer"));
-	INIT_STOCK_ICON(layer_checkerboard,"layer_checkerboard_icon."IMAGE_EXT,_("Checker Board Layer"));
-	INIT_STOCK_ICON(layer_blur,"layer_blur_icon."IMAGE_EXT,_("Blur Layer"));
+	// Blur Layers
+	INIT_STOCK_ICON(layer_blur_blur,"layer_blur_blur_icon."IMAGE_EXT,_("Blur Layer"));
 	INIT_STOCK_ICON(layer_blur_motion,"layer_blur_motion_icon."IMAGE_EXT,_("Motion Blur Layer"));
 	INIT_STOCK_ICON(layer_blur_radial,"layer_blur_radial_icon."IMAGE_EXT,_("Radial Blur Layer"));
+	// Distortion Layers
 	INIT_STOCK_ICON(layer_distortion_curvewarp,"layer_distortion_curvewarp_icon."IMAGE_EXT,_("Curve Warp Layer"));
 	INIT_STOCK_ICON(layer_distortion_insideout,"layer_distortion_insideout_icon."IMAGE_EXT,_("Inside Out Layer"));
 	INIT_STOCK_ICON(layer_distortion_noise,"layer_distortion_noise_icon."IMAGE_EXT,_("Noise Distort Layer"));
@@ -174,20 +168,51 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	INIT_STOCK_ICON(layer_distortion_stretch,"layer_distortion_stretch_icon."IMAGE_EXT,_("Stretch Layer"));
 	INIT_STOCK_ICON(layer_distortion_twirl,"layer_distortion_twirl_icon."IMAGE_EXT,_("Twirl Layer"));
 	INIT_STOCK_ICON(layer_distortion_warp,"layer_distortion_warp_icon."IMAGE_EXT,_("Warp Layer"));
+	// Example Layers
+	INIT_STOCK_ICON(layer_example_filledrectangle,"layer_example_filledrectangle_icon."IMAGE_EXT,_("Filled Rectangle Layer"));
+	INIT_STOCK_ICON(layer_example_metaballs,"layer_example_metaballs_icon."IMAGE_EXT,_("Metallballs Layer"));
+	INIT_STOCK_ICON(layer_example_simplecircle,"layer_example_simplecircle_icon."IMAGE_EXT,_("Simple Circle Layer"));
+	// Filter Layers
 	INIT_STOCK_ICON(layer_filter_clamp,"layer_filter_clamp_icon."IMAGE_EXT,_("Clamp Layer"));
 	INIT_STOCK_ICON(layer_filter_colorcorrect,"layer_filter_colorcorrect_icon."IMAGE_EXT,_("Color Correct Layer"));
-	INIT_STOCK_ICON(layer_filter_halftone2,"layer_filter_halftone2_icon."IMAGE_EXT,_("Half Tone 2 Layer"));
-	INIT_STOCK_ICON(layer_filter_halftone3,"layer_filter_halftone3_icon."IMAGE_EXT,_("Half Tone 3 Layer"));
-	INIT_STOCK_ICON(layer_filter_luma,"layer_filter_luma_icon."IMAGE_EXT,_("Luma Layer"));
-	INIT_STOCK_ICON(layer_fractal_mandelbrot,"layer_fractal_mandelbrot_icon."IMAGE_EXT,_("Mandelbrot Set Layer"));
+	INIT_STOCK_ICON(layer_filter_halftone2,"layer_filter_halftone2_icon."IMAGE_EXT,_("Halftone 2 Layer"));
+	INIT_STOCK_ICON(layer_filter_halftone3,"layer_filter_halftone3_icon."IMAGE_EXT,_("Halftone 3 Layer"));
+	INIT_STOCK_ICON(layer_filter_lumakey,"layer_filter_lumakey_icon."IMAGE_EXT,_("Luna Key Layer"));
+	// Fractal Layers
 	INIT_STOCK_ICON(layer_fractal_julia,"layer_fractal_julia_icon."IMAGE_EXT,_("Julia Set Layer"));
+	INIT_STOCK_ICON(layer_fractal_mandelbrot,"layer_fractal_mandelbrot_icon."IMAGE_EXT,_("Mandelbrot Set Layer"));
+	// Geometry Layers
+	INIT_STOCK_ICON(layer_geometry_checkerboard,"layer_geometry_checkerboard_icon."IMAGE_EXT,_("Checker Board Layer"));
+	INIT_STOCK_ICON(layer_geometry_circle,"layer_geometry_circle_icon."IMAGE_EXT,_("Circle Layer"));
+	INIT_STOCK_ICON(layer_geometry_outline,"layer_geometry_outline_icon."IMAGE_EXT,_("Outline Layer"));
+	INIT_STOCK_ICON(layer_geometry_polygon,"layer_geometry_polygon_icon."IMAGE_EXT,_("Polygon Layer"));
+	INIT_STOCK_ICON(layer_geometry_rectangle,"layer_geometry_rectangle_icon."IMAGE_EXT,_("Rectangle Layer"));
+	INIT_STOCK_ICON(layer_geometry_region,"layer_geometry_region_icon."IMAGE_EXT,_("Region Layer"));
+	INIT_STOCK_ICON(layer_geometry_solidcolor,"layer_geometry_solidcolor_icon."IMAGE_EXT,_("Solid Color Layer"));
+	INIT_STOCK_ICON(layer_geometry_star,"layer_geometry_star_icon."IMAGE_EXT,_("Star Layer"));
+	// Gradient Layers
+	INIT_STOCK_ICON(layer_gradient_conical,"layer_gradient_conical_icon."IMAGE_EXT,_("Conical Gradient Layer"));
+	INIT_STOCK_ICON(layer_gradient_curve,"layer_gradient_curve_icon."IMAGE_EXT,_("Curve Gradient Layer"));
+	INIT_STOCK_ICON(layer_gradient_noise,"layer_gradient_noise_icon."IMAGE_EXT,_("Noise Gradient Layer"));
+	INIT_STOCK_ICON(layer_gradient_lineal,"layer_gradient_lineal_icon."IMAGE_EXT,_("Linear Gradient Layer"));
+	INIT_STOCK_ICON(layer_gradient_radial,"layer_gradient_radial_icon."IMAGE_EXT,_("Radial Gradient Layer"));
+	INIT_STOCK_ICON(layer_gradient_spiral,"layer_gradient_spiral_icon."IMAGE_EXT,_("Spiral Gradient Layer"));
+	// Other Layers
+	INIT_STOCK_ICON(layer_other_duplicate,"layer_other_duplicate_icon."IMAGE_EXT,_("Duplicate Layer"));
+	INIT_STOCK_ICON(layer_other_importimage,"layer_other_importimage_icon."IMAGE_EXT,_("Import Image Layer"));
+	INIT_STOCK_ICON(layer_other_pastecanvas,"layer_other_pastecanvas_icon."IMAGE_EXT,_("Paste Canvas Layer"));
+	INIT_STOCK_ICON(layer_other_plant,"layer_other_plant_icon."IMAGE_EXT,_("Plant Layer"));
+	INIT_STOCK_ICON(layer_other_supersample,"layer_other_supersample_icon."IMAGE_EXT,_("Super Sample Layer"));
+	INIT_STOCK_ICON(layer_other_text,"layer_other_text_icon."IMAGE_EXT,_("Text Layer"));
+	INIT_STOCK_ICON(layer_other_timeloop,"layer_other_timeloop_icon."IMAGE_EXT,_("Time Loop Layer"));
+	INIT_STOCK_ICON(layer_other_xorpattern,"layer_other_xorpattern_icon."IMAGE_EXT,_("XOR Pattern Layer"));
+	// Stylize Layers
 	INIT_STOCK_ICON(layer_stylize_bevel,"layer_stylize_bevel_icon."IMAGE_EXT,_("Bevel Layer"));
 	INIT_STOCK_ICON(layer_stylize_shade,"layer_stylize_shade_icon."IMAGE_EXT,_("Shade Layer"));
-	INIT_STOCK_ICON(layer_example_metaballs,"layer_example_metaballs_icon."IMAGE_EXT,_("Metaballs Layer"));
-	INIT_STOCK_ICON(layer_other_XOR,"layer_other_XOR_icon."IMAGE_EXT,_("XOR Pattern Layer"));
-	INIT_STOCK_ICON(layer_other_supersample,"layer_other_supersample_icon."IMAGE_EXT,_("Super Sample Layer"));
-	INIT_STOCK_ICON(layer_other_timeloop,"layer_other_timeloop_icon."IMAGE_EXT,_("Time Loop Layer"));
+	// Transform Layers
+	INIT_STOCK_ICON(layer_transform_rotate,"layer_transform_rotate_icon."IMAGE_EXT,_("Rotate Layer"));
 	INIT_STOCK_ICON(layer_transform_translate,"layer_transform_translate_icon."IMAGE_EXT,_("Translate Layer"));
+	INIT_STOCK_ICON(layer_transform_zoom,"layer_transform_zoom_icon."IMAGE_EXT,_("Zoom Layer"));
 
 	INIT_STOCK_ICON(plant,"plant_icon."IMAGE_EXT,"");
 
@@ -447,50 +472,14 @@ studio::get_action_stock_id(const synfigapp::Action::BookEntry& action)
 Gtk::StockID
 studio::layer_icon(const synfig::String &layer)
 {
-	if(layer=="PasteCanvas" || layer=="pastecanvas" || layer=="paste_canvas")
-		return Gtk::StockID("synfig-layer_pastecanvas");
-	else if(layer=="rotate")
-		return Gtk::StockID("synfig-rotate");
-	else if(layer=="zoom")
-		return Gtk::StockID("synfig-zoom");
-	else if(layer=="region")
-		return Gtk::StockID("synfig-bline");
-	else if(layer=="polygon")
-		return Gtk::StockID("synfig-polygon");
-	else if(layer=="outline")
-		return Gtk::StockID("synfig-width");
-	else if(layer=="circle")
-		return Gtk::StockID("synfig-circle");
-	else if(layer=="rectangle")
-		return Gtk::StockID("synfig-rectangle");
-	else if(layer=="star")
-		return Gtk::StockID("synfig-star");
-	else if(layer=="plant")
-		return Gtk::StockID("synfig-plant");
-	else if(layer=="text")
-		return Gtk::StockID("synfig-text");
-	else if(layer=="checker_board")
-		return Gtk::StockID("synfig-layer_checkerboard");
-	else if(layer=="duplicate")
-		return Gtk::StockID("synfig-layer_duplicate");
-	else if(layer=="linear_gradient")
-		return Gtk::StockID("synfig-layer_gradient_lineal");
-	else if(layer=="radial_gradient")
-		return Gtk::StockID("synfig-layer_gradient_radial");
-	else if(layer=="spiral_gradient")
-		return Gtk::StockID("synfig-layer_gradient_spiral");
-	else if(layer=="curve_gradient")
-		return Gtk::StockID("synfig-layer_gradient_curve");
-	else if(layer=="conical_gradient")
-		return Gtk::StockID("synfig-layer_gradient_conical");
-	else if(layer=="noise")
-		return Gtk::StockID("synfig-layer_gradient_noise");
-	else if(layer=="blur")
-		return Gtk::StockID("synfig-layer_blur");
-	else if(layer=="radial_blur")
-		return Gtk::StockID("synfig-layer_blur_radial");
+	// Blur Layers
+	if(layer=="blur")
+		return Gtk::StockID("synfig-layer_blur_blur");
 	else if(layer=="MotionBlur") // in the future should be "motion_blur"
 		return Gtk::StockID("synfig-layer_blur_motion");
+	else if(layer=="radial_blur")
+		return Gtk::StockID("synfig-layer_blur_radial");
+	// Distortion Layers
 	else if(layer=="curve_warp")
 		return Gtk::StockID("synfig-layer_distortion_curvewarp");
 	else if(layer=="inside_out")
@@ -505,6 +494,14 @@ studio::layer_icon(const synfig::String &layer)
 		return Gtk::StockID("synfig-layer_distortion_twirl");
 	else if(layer=="warp")
 		return Gtk::StockID("synfig-layer_distortion_warp");
+	// Example Layers
+	else if(layer=="filled_rectangle")
+		return Gtk::StockID("synfig-layer_example_filledrectangle");
+	else if(layer=="metaballs")
+		return Gtk::StockID("synfig-layer_example_metaballs");
+	else if(layer=="simple_circle")
+		return Gtk::StockID("synfig-layer_example_simplecircle");
+	// Filter Layers
 	else if(layer=="clamp")
 		return Gtk::StockID("synfig-layer_filter_clamp");
 	else if(layer=="colorcorrect")
@@ -514,29 +511,71 @@ studio::layer_icon(const synfig::String &layer)
 	else if(layer=="halftone3")
 		return Gtk::StockID("synfig-layer_filter_halftone3");
 	else if(layer=="lumakey")
-		return Gtk::StockID("synfig-layer_filter_luma");
+		return Gtk::StockID("synfig-layer_filter_lumakey");
+	// Fractal Layers
 	else if(layer=="mandelbrot")
 		return Gtk::StockID("synfig-layer_fractal_mandelbrot");
 	else if(layer=="julia")
 		return Gtk::StockID("synfig-layer_fractal_julia");
+	// Geometry Layers
+	else if(layer=="checker_board")
+		return Gtk::StockID("synfig-layer_geometry_checkerboard");
+	else if(layer=="circle")
+		return Gtk::StockID("synfig-layer_geometry_circle");
+	else if(layer=="outline")
+		return Gtk::StockID("synfig-layer_geometry_outline");
+	else if(layer=="polygon")
+		return Gtk::StockID("synfig-layer_geometry_polygon");
+	else if(layer=="rectangle")
+		return Gtk::StockID("synfig-layer_geometry_rectangle");
+	else if(layer=="region")
+		return Gtk::StockID("synfig-layer_geometry_region");
+	else if(layer=="solid_color")
+		return Gtk::StockID("synfig-layer_geometry_solidcolor");
+	else if(layer=="star")
+		return Gtk::StockID("synfig-layer_geometry_star");
+	// Gradient Layers
+	else if(layer=="conical_gradient")
+		return Gtk::StockID("synfig-layer_gradient_conical");
+	else if(layer=="curve_gradient")
+		return Gtk::StockID("synfig-layer_gradient_curve");
+	else if(layer=="noise")
+		return Gtk::StockID("synfig-layer_gradient_noise");
+	else if(layer=="linear_gradient")
+		return Gtk::StockID("synfig-layer_gradient_lineal");
+	else if(layer=="radial_gradient")
+		return Gtk::StockID("synfig-layer_gradient_radial");
+	else if(layer=="spiral_gradient")
+		return Gtk::StockID("synfig-layer_gradient_spiral");
+	// Other Layers
+	else if(layer=="duplicate")
+		return Gtk::StockID("synfig-layer_other_duplicate");
+	else if(layer=="importimage")
+		return Gtk::StockID("synfig-layer_other_importimage");
+	else if(layer=="PasteCanvas" || layer=="pastecanvas" || layer=="paste_canvas")
+		return Gtk::StockID("synfig-layer_other_pastecanvas");
+	else if(layer=="plant")
+		return Gtk::StockID("synfig-layer_other_plant");
+	else if(layer=="super_sample")
+		return Gtk::StockID("synfig-layer_other_supersample");
+	else if(layer=="text")
+		return Gtk::StockID("synfig-layer_other_text");
+	else if(layer=="timeloop")
+		return Gtk::StockID("synfig-layer_other_timeloop");
+	else if(layer=="xor_pattern")
+		return Gtk::StockID("synfig-layer_other_xorpattern");
+	// Stylize Layers
 	else if(layer=="bevel")
 		return Gtk::StockID("synfig-layer_stylize_bevel");
 	else if(layer=="shade")
 		return Gtk::StockID("synfig-layer_stylize_shade");
-	else if(layer=="metaballs")
-		return Gtk::StockID("synfig-layer_example_metaballs");
-	else if(layer=="simple_circle")
-		return Gtk::StockID("synfig-circle");
-	else if(layer=="filled_rectangle")
-		return Gtk::StockID("synfig-rectangle");
-	else if(layer=="xor_pattern")
-		return Gtk::StockID("synfig-layer_other_XOR");
-	else if(layer=="super_sample")
-		return Gtk::StockID("synfig-layer_other_supersample");
-	else if(layer=="timeloop")
-		return Gtk::StockID("synfig-layer_other_timeloop");
+	// Transform Layers
+	else if(layer=="rotate")
+		return Gtk::StockID("synfig-layer_transform_rotate");
 	else if(layer=="translate")
 		return Gtk::StockID("synfig-layer_transform_translate");
+	else if(layer=="zoom")
+		return Gtk::StockID("synfig-layer_transform_zoom");
 	else
 		return Gtk::StockID("synfig-layer");
 }
