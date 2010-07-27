@@ -38,7 +38,9 @@
 
 //! Defines various variables and the create method, common for all importers.
 //! To be used in the private part of the importer class definition.
-#define SYNFIG_IMPORTER_MODULE_EXT public: static const char name__[], version__[], ext__[],cvs_id__[]; static Importer *create(const char *filename);
+#define SYNFIG_IMPORTER_MODULE_EXT \
+		public: static const char name__[], version__[], ext__[],cvs_id__[]; \
+		static Importer *create(const char *filename);
 
 //! Sets the name of the importer.
 #define SYNFIG_IMPORTER_SET_NAME(class,x) const char class::name__[]=x
