@@ -50,9 +50,8 @@ Target::subsys_init()
 {
 	book_=new synfig::Target::Book();
 	ext_book_=new synfig::Target::ExtBook();
-
+//! \todo Do not hard core gamma to 2.2
 	default_gamma_=new synfig::Gamma(1.0/2.2);
-	//default_gamma_->set_black_level(0.05); // Default to 5% black level.
 
 	// At least one target must be available.
 	book()["null"].factory =

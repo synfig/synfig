@@ -32,27 +32,25 @@
 #include <sigc++/signal.h>
 #include "string_decl.h"
 #include <utility>
-//#include <list>
 #include <map>
 #include <ETL/handle>
 #include "renddesc.h"
-//#include "general.h"
 #include "color.h"
 #include "canvas.h"
 #include "targetparam.h"
 
 /* === M A C R O S ========================================================= */
 
-//! \writeme
-#define SYNFIG_TARGET_MODULE_EXT public: static const char name__[],	\
-		version__[], ext__[], cvs_id__[];								\
-	static Target* create (const char *filename,						\
-						   synfig::TargetParam p);
+//! Defines various variables and the create method, common for all Targets.
+//! To be used in the private part of the target class definition.
+#define SYNFIG_TARGET_MODULE_EXT \
+		public: static const char name__[], version__[], ext__[], cvs_id__[];\
+		static Target* create (const char *filename, synfig::TargetParam p);
 
 //! Sets the name of the target
 #define SYNFIG_TARGET_SET_NAME(class,x) const char class::name__[]=x
 
-//! \writeme
+//! Sets the primary file extension of the target
 #define SYNFIG_TARGET_SET_EXT(class,x) const char class::ext__[]=x
 
 //! Sets the version of the target
@@ -61,7 +59,9 @@
 //! Sets the CVS ID of the target
 #define SYNFIG_TARGET_SET_CVS_ID(class,x) const char class::cvs_id__[]=x
 
-//! \writeme
+//! Defines de implementation of the create method for the target
+//! \param filename The file name to be created by the target.
+//! |param p The parameters passed to the target (bit rate and vcodec)
 #define SYNFIG_TARGET_INIT(class)										\
 	synfig::Target* class::create (const char *filename,				\
 								   synfig::TargetParam p)				\
@@ -80,8 +80,14 @@ class ProgressCallback;
 class TargetParam;
 
 /*!	\class Target
-**	\brief Render-target
-**	\todo writeme
+**	\brief Used to produce rendered animations of the documents
+**
+*	It is the base class for all the target renderers. It defines the has a static Book
+*	pointer class that is a map for the targets factory creators and the strings
+*	of the extension that the renderer can understand. It allows to create the a
+*	pointer to a particular renderer just by using the extension of the name of file
+*	to import. Also it creates a virtual member render() that must be declared in
+*	the inherited classes.
 */
 class Target : public etl::shared_object
 {
@@ -113,7 +119,7 @@ public:
 public:
 	//! Type that represents a pointer to a Target's constructor.
 	/*! As a pointer to the constructor, it represents a "factory" of targets.
-	**  Receives the output filename (including path).
+	**  Receives the output filename (including path) and the parameters of the target.
 	*/
 	typedef Target* (*Factory)(const char *filename, TargetParam p);
 
@@ -127,6 +133,7 @@ public:
 	//! Book of types of targets indexed by the name of the Target.
 	typedef std::map<String,BookEntry> Book;
 
+	//! Book of types of targets indexed by the file extension
 	typedef std::map<String,String> ExtBook;
 
 	//! Target Book, indexed by the target's name
@@ -138,61 +145,71 @@ public:
 	static Book& book();
 	static ExtBook& ext_book();
 
+	//! Initializes the Target module by creating a book of targets names
+	//! and its creators
 	static bool subsys_init();
+	//! Stops the Target module by deleting the book and the extension book
 	static bool subsys_stop();
 
 	//! Adjusted Render description set by set_rend_desc()
 	RendDesc desc;
 
+	//! Canvas being rendered in this target module
+	//! \see set_canvas()
 	etl::handle<Canvas> canvas;
 
+	//! Render quality used for the render process of the target.
 	int quality_;
+	//! Gamma value used for the render process of the target
 	Gamma gamma_;
 
+	//! Used by non alpha supported targets to decide if the background
+	//! must be filled or not
 	bool remove_alpha;
 
+	//! When set to true, the target doesn't sync to canvas time.
 	bool avoid_time_sync_;
 
 protected:
-
+	//! Default constructor
 	Target();
 
 public:
 	virtual ~Target() { }
-
+	//! Gets the target quality
 	int get_quality()const { return quality_; }
-
+	//! Sets the target quality
 	void set_quality(int q) { quality_=q; }
-
+	//! Sets the target avoid time synchronization
 	void set_avoid_time_sync(bool x=true) { avoid_time_sync_=x; }
-
+	//! Gets the target avoid time synchronization
 	bool get_avoid_time_sync()const { return avoid_time_sync_; }
-
+	//! Gets the target remove alpha
 	bool get_remove_alpha()const { return remove_alpha; }
-
+	//! Sets the target remove alpha
 	void set_remove_alpha(bool x=true) { remove_alpha=x; }
-
+	//! Gets the target gamma
 	Gamma &gamma() { return gamma_; }
-
+	//! Sets the target gamma
 	const Gamma &gamma()const { return gamma_; }
-
+	//! Sets the target canvas. Must be defined by derived targets
 	virtual void set_canvas(etl::handle<Canvas> c);
-
+	//! Gets the target canvas.
 	const etl::handle<Canvas> &get_canvas()const { return canvas; }
-
+	//! Gets the target particular render description
 	RendDesc &rend_desc() { return desc; }
+	//! Gets the target particular render description
 	const RendDesc &rend_desc()const { return desc; }
-
-	//! Renders the canvas to the target
-	virtual bool render(ProgressCallback *cb=NULL)=0;
-
 	//! Sets the RendDesc for the Target to \a desc.
 	/*!	If there are any parts of \a desc that the render target
 	**	is not capable of doing, the render target will adjust
 	**	\a desc to fit its needs.
 	*/
 	virtual bool set_rend_desc(RendDesc *d) { desc=*d; return true; }
-
+	//! Renders the canvas to the target
+	virtual bool render(ProgressCallback *cb=NULL)=0;
+	//! Initialization tasks of the derived target.
+	//! @returns true if the initialization has no errors
 	virtual bool init() { return true; }
 
 	//! Creates a new Target described by \a type, outputting to a file described by \a filename.
@@ -204,5 +221,4 @@ public:
 
 /* === E N D =============================================================== */
 
-#include "canvas.h"
 #endif
