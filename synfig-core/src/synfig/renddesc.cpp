@@ -1,6 +1,7 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file synfig/renddesc.cpp
-**	\brief RendDesc
+**	\brief Class that defines the parameters needed by the Renderer to
+* render a context to a surface.
 **
 **	$Id$
 **
@@ -454,16 +455,6 @@ RendDesc::set_span(const Real &x)
 	return *this;
 }
 
-
-/*
-const Gamma &
-RendDesc::get_gamma()const
-{ return gamma; }
-
-RendDesc &
-RendDesc::set_gamma(const Gamma &x)
-{ gamma=x; return *this;  }
-*/
 
 const Point &
 RendDesc::get_focus()const

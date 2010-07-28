@@ -1,6 +1,7 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file synfig/renddesc.h
-**	\brief Template Header
+**	\brief Class that defines the parameters needed by the Renderer to
+* render a context to a surface.
 **
 **	$Id$
 **
@@ -75,23 +76,34 @@ public:
 	};
 
 private:
+	//! Width and height of the compostion in pixels
 	int w_,h_;
+	//! Horizontal resolution of the composition in pixels per meter
 	Real x_res;
+	//! Vertical resolution of the composition in pixels per meter
 	Real y_res;
+	//! The Top Left and the Bottom Right Points of the composition
 	Point tl_, br_;
+	//! The Focus Point of the compostion. Used when zooming in
 	Point focus;
+	//! Anti-alias value
 	int a;
-	//Gamma gamma;
+	//! The background color used when alpha is not supported or avoided
 	Color background;
+	//! The result of the flags combination.
+	//! \see enum Lock
 	int flags;
+	//! Interlaced flag for targets that suports it
 	bool interlaced;
+	//! Clamp flag to decide if color must be clamped or not
 	bool clamp;
-
+	//! Frame rate of the composition to be rendered
 	float frame_rate;
+	//! Begin time and end time of the Composition to render
 	Time time_begin, time_end;
 
 public:
-
+	//! Anti alias filers types. Seems never implemented
 	enum
 	{
 		ANTIALIAS_UNIFORM,
@@ -120,13 +132,13 @@ public:
 		time_end	(0)
 	{ }
 
-	//! \writeme
+	//! Applies the given Render Description \x to the current one
 	RendDesc &apply(const RendDesc &x);
 
-	//! \writeme
+	//! Gets the background color
 	const Color &get_bg_color()const;
 
-	//! \writeme
+	//! Sets the background color
 	RendDesc &set_bg_color(const Color &bg);
 
 	//! Return the width of the composition in pixels
@@ -135,6 +147,9 @@ public:
 	//! Set the width of the composition in pixels.
 	/*! The other parameters are adjusted according to the
 	**	constraints placed on the flags.
+	* Seems to be incomplete and doesn't use all the possible
+	* flags.
+	* \todo write the needed code to keep the flags usage
 	*/
 	RendDesc &set_w(int x);
 
@@ -144,6 +159,9 @@ public:
 	//! Set the height of the composition in pixels.
 	/*! The other parameters are adjusted according to the
 	**	constraints placed on the flags.
+	* Seems to be incomplete and doesn't use all the possible
+	* flags.
+	* \todo write the needed code to keep the flags usage
 	*/
 	RendDesc &set_h(int y);
 
@@ -251,34 +269,28 @@ public:
 	//! Set the span distance
 	RendDesc& set_span(const Real &x);
 
-	//const Gamma &get_gamma()const;
-
-	//RendDesc &set_gamma(const Gamma &x);
-
+	//! Gets the focus Point
 	const Point &get_focus()const;
-
+	//! Sets the focus Point
 	RendDesc &set_focus(const Point &x);
-
+	//! Gets the top left point of the compostion
 	const Point &get_tl()const;
-
+	//! Sets the top left point of the compostion
 	RendDesc &set_tl(const Point &x);
-
+	//! Gets the bottom right point of the compostion
 	const Point &get_br()const;
-
+	//! Sets the bottom right point of the compostion
 	RendDesc &set_br(const Point &x);
-
+	//! Returns the rectangle of the composition
 	Rect get_rect()const { return Rect(get_tl(),get_br()); }
-
+	//! Sets the view port by the top left and right bottom corners
 	RendDesc &set_viewport(const Point &__tl, const Point &__br);
-
+	//! Sets the view port by the four corners values
 	RendDesc &set_viewport(Vector::value_type a,Vector::value_type b,Vector::value_type c,Vector::value_type d);
-
 	//! Returns the width of one pixel
 	Real get_pw()const;
-
 	//! Returns the height of one pixel
 	Real get_ph()const;
-
 	//! Sets viewport to represent the screen at the given pixel coordinates
 	RendDesc &set_subwindow(int x, int y, int w, int h);
 };	// END of class RendDesc
