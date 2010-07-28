@@ -91,16 +91,9 @@ EXTRA_DIST = \
 	decr_resolution_icon.sif \
 	render_options_icon.sif \
 	preview_options_icon.sif \
-	layer_checkerboard_icon.sif \
-	layer_duplicate_icon.sif \
-	layer_gradient_spiral_icon.sif \
-	layer_gradient_radial_icon.sif \
-	layer_gradient_noise_icon.sif \
-	layer_gradient_curve_icon.sif \
-	layer_gradient_conical_icon.sif \
-	layer_blur_icon.sif \
-	layer_blur_radial_icon.sif \
+	layer_blur_blur_icon.sif \
 	layer_blur_motion_icon.sif \
+	layer_blur_radial_icon.sif \
 	layer_distortion_curvewarp_icon.sif \
 	layer_distortion_insideout_icon.sif \
 	layer_distortion_noise_icon.sif \
@@ -108,20 +101,43 @@ EXTRA_DIST = \
 	layer_distortion_stretch_icon.sif \
 	layer_distortion_twirl_icon.sif \
 	layer_distortion_warp_icon.sif \
+	layer_example_filledrectangle_icon.sif \
+	layer_example_metaballs_icon.sif \
+	layer_example_simplecircle_icon.sif \
 	layer_filter_clamp_icon.sif \
 	layer_filter_colorcorrect_icon.sif \
 	layer_filter_halftone2_icon.sif \
 	layer_filter_halftone3_icon.sif \
-	layer_filter_luma_icon.sif \
-	layer_fractal_mandelbrot_icon.sif \
+	layer_filter_lumakey_icon.sif \
 	layer_fractal_julia_icon.sif \
+	layer_fractal_mandelbrot_icon.sif \
+	layer_geometry_checkerboard_icon.sif \
+	layer_geometry_circle_icon.sif \
+	layer_geometry_outline_icon.sif \
+	layer_geometry_polygon_icon.sif \
+	layer_geometry_rectangle_icon.sif \
+	layer_geometry_region_icon.sif \
+	layer_geometry_solidcolor_icon.sif \
+	layer_geometry_star_icon.sif \
+	layer_gradient_conical_icon.sif \
+	layer_gradient_curve_icon.sif \
+	layer_gradient_lineal_icon.sif \
+	layer_gradient_noise_icon.sif \
+	layer_gradient_radial_icon.sif \
+	layer_gradient_spiral_icon.sif \
+	layer_other_duplicate_icon.sif \
+	layer_other_importimage_icon.sif \
+	layer_other_pastecanvas_icon.sif \
+	layer_other_plant_icon.sif \
+	layer_other_supersample_icon.sif \
+	layer_other_text_icon.sif \
+	layer_other_timeloop_icon.sif \
+	layer_other_xorpattern_icon.sif \
 	layer_stylize_bevel_icon.sif \
 	layer_stylize_shade_icon.sif \
-	layer_example_metaballs_icon.sif \
-	layer_other_XOR_icon.sif \
-	layer_other_supersample_icon.sif \
-	layer_other_timeloop_icon.sif \
+	layer_transform_rotate_icon.sif \
 	layer_transform_translate_icon.sif \
+	layer_transform_zoom_icon.sif \
 	action_set_layer_description_icon.sif \
 	action_add_to_group_icon.sif \
 	action_remove_from_group_icon.sif \
@@ -212,16 +228,9 @@ IMAGES = \
 	decr_resolution_icon.$(EXT) \
 	render_options_icon.$(EXT) \
 	preview_options_icon.$(EXT) \
-	layer_checkerboard_icon.$(EXT) \
-	layer_duplicate_icon.$(EXT) \
-	layer_gradient_spiral_icon.$(EXT) \
-	layer_gradient_radial_icon.$(EXT) \
-	layer_gradient_noise_icon.$(EXT) \
-	layer_gradient_curve_icon.$(EXT) \
-	layer_gradient_conical_icon.$(EXT) \
-	layer_blur_icon.$(EXT) \
-	layer_blur_radial_icon.$(EXT) \
+	layer_blur_blur_icon.$(EXT) \
 	layer_blur_motion_icon.$(EXT) \
+	layer_blur_radial_icon.$(EXT) \
 	layer_distortion_curvewarp_icon.$(EXT) \
 	layer_distortion_insideout_icon.$(EXT) \
 	layer_distortion_noise_icon.$(EXT) \
@@ -229,20 +238,43 @@ IMAGES = \
 	layer_distortion_stretch_icon.$(EXT) \
 	layer_distortion_twirl_icon.$(EXT) \
 	layer_distortion_warp_icon.$(EXT) \
+	layer_example_filledrectangle_icon.$(EXT) \
+	layer_example_metaballs_icon.$(EXT) \
+	layer_example_simplecircle_icon.$(EXT) \
 	layer_filter_clamp_icon.$(EXT) \
 	layer_filter_colorcorrect_icon.$(EXT) \
 	layer_filter_halftone2_icon.$(EXT) \
 	layer_filter_halftone3_icon.$(EXT) \
-	layer_filter_luma_icon.$(EXT) \
-	layer_fractal_mandelbrot_icon.$(EXT) \
+	layer_filter_lumakey_icon.$(EXT) \
 	layer_fractal_julia_icon.$(EXT) \
+	layer_fractal_mandelbrot_icon.$(EXT) \
+	layer_geometry_checkerboard_icon.$(EXT) \
+	layer_geometry_circle_icon.$(EXT) \
+	layer_geometry_outline_icon.$(EXT) \
+	layer_geometry_polygon_icon.$(EXT) \
+	layer_geometry_rectangle_icon.$(EXT) \
+	layer_geometry_region_icon.$(EXT) \
+	layer_geometry_solidcolor_icon.$(EXT) \
+	layer_geometry_star_icon.$(EXT) \
+	layer_gradient_conical_icon.$(EXT) \
+	layer_gradient_curve_icon.$(EXT) \
+	layer_gradient_lineal_icon.$(EXT) \
+	layer_gradient_noise_icon.$(EXT) \
+	layer_gradient_radial_icon.$(EXT) \
+	layer_gradient_spiral_icon.$(EXT) \
+	layer_other_duplicate_icon.$(EXT) \
+	layer_other_importimage_icon.$(EXT) \
+	layer_other_pastecanvas_icon.$(EXT) \
+	layer_other_plant_icon.$(EXT) \
+	layer_other_supersample_icon.$(EXT) \
+	layer_other_text_icon.$(EXT) \
+	layer_other_timeloop_icon.$(EXT) \
+	layer_other_xorpattern_icon.$(EXT) \
 	layer_stylize_bevel_icon.$(EXT) \
 	layer_stylize_shade_icon.$(EXT) \
-	layer_example_metaballs_icon.$(EXT) \
-	layer_other_XOR_icon.$(EXT) \
-	layer_other_supersample_icon.$(EXT) \
-	layer_other_timeloop_icon.$(EXT) \
+	layer_transform_rotate_icon.$(EXT) \
 	layer_transform_translate_icon.$(EXT) \
+	layer_transform_zoom_icon.$(EXT) \
 	action_set_layer_description_icon.$(EXT) \
 	action_add_to_group_icon.$(EXT) \
 	action_remove_from_group_icon.$(EXT) \
