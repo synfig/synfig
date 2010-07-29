@@ -46,11 +46,18 @@ namespace synfig {
 */
 class Target_Tile : public Target
 {
+	//! Number of threads
 	int threads_;
+	//! Tile width in pixels
 	int tile_w_;
+	//! Tile height in pixles
 	int tile_h_;
+	//! The current tile being rendered
 	int curr_tile_;
+	//! The current frame being rendered
 	int curr_frame_;
+	//! Determines if the tiles should be clipped to the redener description
+	//! or not
 	bool clipping_;
 public:
 	typedef etl::handle<Target_Tile> Handle;
@@ -70,12 +77,17 @@ public:
 	**		there are no more tiles to render and that any value
 	**		in \a x or \a y should be disregarded. */
 	virtual int next_tile(int& x, int& y);
-
+	//! Returns the number of peniding frames to render. If it is zero it
+	//! stops rendering frames.
+	/*! \todo Fix the calculation of frames to really render the last frame
+	** When start frame= 1f and end frame = 1f it just render one frame (at 1f)
+	** When start frame= 1f and end frame = 2f it just render one frame (at 1f)
+	** which is a bug.*/
 	virtual int next_frame(Time& time);
 
 	//! Adds the tile at \a x , \a y contained in \a surface
 	virtual bool add_tile(const synfig::Surface &surface, int x, int y)=0;
-
+	//! Returns the total tiles of the imaged rounded to integer number of tiles
 	virtual int total_tiles()const
 	{
 		// Width of the image(in tiles)
@@ -94,25 +106,25 @@ public:
 	//! Marks the end of a frame
 	/*! \see start_frame() */
 	virtual void end_frame()=0;
-
+	//!Sets the number of threads
 	void set_threads(int x) { threads_=x; }
-
+	//!Gets the number of threads
 	int get_threads()const { return threads_; }
-
+	//!Sets the tile widht
 	void set_tile_w(int w) { tile_w_=w; }
-
+	//!Gets the tile widht
 	int get_tile_w()const { return tile_w_; }
-
+	//!Sets the tile height
 	void set_tile_h(int h) { tile_h_=h; }
-
+	//!Gets the tile height
 	int get_tile_h()const { return tile_h_; }
-
+	//! Gets clipping
 	bool get_clipping()const { return clipping_; }
-
+	//! Sets clipping
 	void set_clipping(bool x) { clipping_=x; }
 
 private:
-
+	//! Renders the context to the surface
 	bool render_frame_(Context context,ProgressCallback *cb=0);
 
 }; // END of class Target_Tile
