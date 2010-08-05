@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
-<canvas version="0.1" width="200" height="200" xres="2834.645752" yres="2834.645752" view-box="-3.245196 3.245196 3.245196 -3.245196" antialias="1" fps="24.000" begin-time="0f" end-time="0f" bgcolor="0.500000 0.500000 0.500000 1.000000">
+<canvas version="0.7" width="128" height="128" xres="2834.645752" yres="2834.645752" view-box="-3.245196 3.245196 3.245196 -3.245196" antialias="1" fps="24.000" begin-time="0f" end-time="0f" bgcolor="0.500000 0.500000 0.500000 1.000000">
   <name>Synfig Studio Rectangle Icon</name>
-  <desc>Placed in the Public Domain in 2007 by Chris Norman (pixelgeek)</desc>
+  <desc>Placed in the Public Domain in 2007 by Chris Norman (pixelgeek), in 2010 by Yu Chen (jcome)</desc>
   <meta name="grid_show" content="0"/>
   <meta name="grid_size" content="0.259616 0.259616"/>
   <meta name="grid_snap" content="0"/>
@@ -68,26 +68,26 @@
     </param>
     <param name="dest_tl">
       <vector>
-        <x>-2.3365411758</x>
-        <y>-2.3365411758</y>
+        <x>-2.4988009930</x>
+        <y>-2.0120215416</y>
       </vector>
     </param>
     <param name="dest_tr">
       <vector>
-        <x>2.3365411758</x>
-        <y>-2.3365411758</y>
+        <x>2.4988009930</x>
+        <y>-2.0120215416</y>
       </vector>
     </param>
     <param name="dest_br">
       <vector>
-        <x>3.1153881550</x>
-        <y>-3.1153881550</y>
+        <x>3.2776479721</x>
+        <y>-2.7908685207</y>
       </vector>
     </param>
     <param name="dest_bl">
       <vector>
-        <x>-1.5576940775</x>
-        <y>-3.1153881550</y>
+        <x>-1.7199538946</x>
+        <y>-2.7908685207</y>
       </vector>
     </param>
     <param name="clip">
@@ -117,14 +117,14 @@
     </param>
     <param name="point1">
       <vector>
-        <x>-2.3365411758</x>
-        <y>-2.3365411758</y>
+        <x>-2.4988009930</x>
+        <y>-2.0120215416</y>
       </vector>
     </param>
     <param name="point2">
       <vector>
-        <x>2.3365411758</x>
-        <y>2.3365411758</y>
+        <x>2.4988009930</x>
+        <y>2.1499423981</y>
       </vector>
     </param>
     <param name="expand">
@@ -154,14 +154,14 @@
     </param>
     <param name="point1">
       <vector>
-        <x>-2.0769255161</x>
-        <y>-2.0769255161</y>
+        <x>-2.2391853333</x>
+        <y>-1.7524058819</y>
       </vector>
     </param>
     <param name="point2">
       <vector>
-        <x>2.0769255161</x>
-        <y>2.0769255161</y>
+        <x>2.2391853333</x>
+        <y>1.8903266191</y>
       </vector>
     </param>
     <param name="expand">
@@ -188,7 +188,7 @@
       </vector>
     </param>
     <param name="canvas">
-      <canvas>
+      <canvas width="200" height="200">
         <layer type="rectangle" active="true" version="0.2" desc="White Rectangle">
           <param name="z_depth">
             <real value="0.0000000000"/>
@@ -209,14 +209,14 @@
           </param>
           <param name="point1">
             <vector>
-              <x>-1.8173098564</x>
-              <y>-1.8173098564</y>
+              <x>-1.9795696735</x>
+              <y>-1.4927902222</y>
             </vector>
           </param>
           <param name="point2">
             <vector>
-              <x>1.8173098564</x>
-              <y>1.8173098564</y>
+              <x>1.9795696735</x>
+              <y>1.6307109594</y>
             </vector>
           </param>
           <param name="expand">
@@ -238,14 +238,14 @@
           </param>
           <param name="p1">
             <vector>
-              <x>2.1013975143</x>
-              <y>-2.0880973339</y>
+              <x>3.1478400230</x>
+              <y>-2.7908685207</y>
             </vector>
           </param>
           <param name="p2">
             <vector>
-              <x>-1.7954977751</x>
-              <y>1.7954977751</y>
+              <x>-2.7908685207</x>
+              <y>2.5312528610</y>
             </vector>
           </param>
           <param name="gradient">
@@ -281,6 +281,12 @@
     </param>
     <param name="children_lock">
       <bool value="false"/>
+    </param>
+    <param name="focus">
+      <vector>
+        <x>0.0000000000</x>
+        <y>0.0000000000</y>
+      </vector>
     </param>
   </layer>
 </canvas>
