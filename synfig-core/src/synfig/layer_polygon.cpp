@@ -67,8 +67,8 @@ SYNFIG_LAYER_SET_CVS_ID(Layer_Polygon,"$Id$");
 /* === M E T H O D S ======================================================= */
 
 Layer_Polygon::Layer_Polygon():
-	Layer_Shape		(1.0,Color::BLEND_COMPOSITE),
-	vector_list		(0)
+	Layer_Shape(1.0,Color::BLEND_COMPOSITE),
+	vector_list(0)
 {
 	vector_list.push_back(Point(0,0.5));
 	vector_list.push_back(Point(-0.333333,0));

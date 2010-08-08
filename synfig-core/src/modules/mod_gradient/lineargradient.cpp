@@ -69,6 +69,7 @@ LinearGradient::sync()
 
 
 LinearGradient::LinearGradient():
+	Layer_Composite(1.0,Color::BLEND_COMPOSITE),
 	p1(1,1),
 	p2(-1,-1),
 	gradient(Color::black(), Color::white()),

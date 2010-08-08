@@ -61,7 +61,7 @@ SYNFIG_LAYER_SET_CVS_ID(XORPattern,"$Id$");
 /* === M E T H O D S ======================================================= */
 
 XORPattern::XORPattern():
-	Layer_Composite	(1.0,Color::BLEND_STRAIGHT),
+	Layer_Composite(1.0,Color::BLEND_COMPOSITE),
 	origin(0.125,0.125),
 	size(0.25,0.25)
 {

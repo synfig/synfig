@@ -78,7 +78,7 @@ inline void clamp(synfig::Vector &v)
 }
 
 Blur_Layer::Blur_Layer():
-	Layer_Composite	(1.0,Color::BLEND_STRAIGHT),
+	Layer_Composite(1.0,Color::BLEND_STRAIGHT),
 	size(0.1,0.1),
 	type(Blur::FASTGAUSSIAN)
 {

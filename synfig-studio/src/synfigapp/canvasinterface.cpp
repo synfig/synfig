@@ -227,7 +227,8 @@ CanvasInterface::add_layer_to(synfig::String name, synfig::Canvas::Handle canvas
 	layer->set_param("gradient",synfigapp::Main::get_gradient());
 	if(name!="zoom")
 		layer->set_param("amount",synfigapp::Main::get_opacity());
-	layer->set_param("blend_method",synfigapp::Main::get_blend_method());
+	if(synfigapp::Main::get_blend_method() != Color::BLEND_BY_LAYER)
+		layer->set_param("blend_method",synfigapp::Main::get_blend_method());
 
 	{
 		// Grab the layer's list of parameters
