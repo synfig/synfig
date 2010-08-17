@@ -66,7 +66,7 @@ SYNFIG_LAYER_SET_CVS_ID(FilledRect,"$Id$");
 /* === E N T R Y P O I N T ================================================= */
 
 FilledRect::FilledRect():
-	Layer_Composite(1.0,Color::BLEND_STRAIGHT),
+	Layer_Composite(1.0,Color::BLEND_COMPOSITE),
 	color(Color::black()),
 	point1(0,0),
 	point2(1,1),

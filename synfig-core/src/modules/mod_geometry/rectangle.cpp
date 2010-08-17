@@ -75,7 +75,7 @@ inline int floor_to_int(const double x) { return static_cast<int>(floor(x)); }
 /* === E N T R Y P O I N T ================================================= */
 
 Rectangle::Rectangle():
-	Layer_Composite(1.0,Color::BLEND_STRAIGHT),
+	Layer_Composite(1.0,Color::BLEND_COMPOSITE),
 	color(Color::black()),
 	point1(0,0),
 	point2(1,1),

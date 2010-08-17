@@ -492,7 +492,9 @@ public:
 		BLEND_ALPHA_DARKEN=15,		//!< \deprecated If A is more opaque than B, use B
 		BLEND_ALPHA_OVER=19,		//!< \deprecated multiply alphas and then straight blends using the amount
 
-		BLEND_END=22				//!< \internal
+		BLEND_END=22,				//!< \internal
+		BLEND_BY_LAYER=999			//! Used to let the layer decides what Blend Method use by
+									//! default when the layer is created
 	};
 
 	/* Other */

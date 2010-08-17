@@ -63,6 +63,7 @@ SYNFIG_LAYER_SET_CVS_ID(Noise,"$Id$");
 /* === M E T H O D S ======================================================= */
 
 Noise::Noise():
+	Layer_Composite(1.0,Color::BLEND_COMPOSITE),
 	size(1,1),
 	gradient(Color::black(), Color::white())
 {

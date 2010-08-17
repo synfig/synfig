@@ -279,7 +279,10 @@ Widget_Defaults::Widget_Defaults()
 	widget_blend_method=manage(new Widget_Enum());
 	widget_blend_method->show();
 	widget_blend_method->signal_activate().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::on_blend_method_changed));
-	widget_blend_method->set_param_desc(ParamDesc(Color::BLEND_COMPOSITE,"blend_method"));
+	widget_blend_method->set_param_desc(
+		ParamDesc(Color::BLEND_COMPOSITE,"blend_method")
+		.add_enum_value(Color::BLEND_BY_LAYER,"bylayer", _("By Layer Default"))
+	);
 	attach(*widget_blend_method,0, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 1, 1);
 	tooltips_.set_tip(*widget_blend_method,_("Default Blend Method"));
 

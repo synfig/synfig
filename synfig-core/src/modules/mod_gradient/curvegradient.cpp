@@ -205,6 +205,7 @@ CurveGradient::sync()
 
 
 CurveGradient::CurveGradient():
+	Layer_Composite(1.0,Color::BLEND_COMPOSITE),
 	origin(0,0),
 	width(0.25),
 	gradient(Color::black(), Color::white()),

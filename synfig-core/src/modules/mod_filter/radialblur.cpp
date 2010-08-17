@@ -64,6 +64,7 @@ SYNFIG_LAYER_SET_CVS_ID(RadialBlur,"$Id$");
 /* === E N T R Y P O I N T ================================================= */
 
 RadialBlur::RadialBlur():
+	Layer_Composite(1.0,Color::BLEND_STRAIGHT),
 	origin	(0,0),
 	size	(0.2),
 	fade_out(false)

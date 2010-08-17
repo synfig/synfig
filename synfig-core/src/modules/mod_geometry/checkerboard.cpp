@@ -64,14 +64,11 @@ SYNFIG_LAYER_SET_CVS_ID(CheckerBoard,"$Id$");
 /* === M E T H O D S ======================================================= */
 
 CheckerBoard::CheckerBoard():
-	Layer_Composite	(1.0,Color::BLEND_STRAIGHT),
+	Layer_Composite	(1.0,Color::BLEND_COMPOSITE),
 	color			(Color::black()),
 	origin			(Point(0.125,0.125)),
 	size			(Point(0.25,0.25))
-{
-
-	set_blend_method(Color::BLEND_STRAIGHT);
-}
+{}
 
 inline bool
 CheckerBoard::point_test(const synfig::Point& getpos)const

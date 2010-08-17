@@ -60,7 +60,7 @@ SYNFIG_LAYER_SET_CVS_ID(Circle,"$Id$");
 /* -- F U N C T I O N S ----------------------------------------------------- */
 
 Circle::Circle():
-	Layer_Composite	(1.0,Color::BLEND_STRAIGHT),
+	Layer_Composite	(1.0,Color::BLEND_COMPOSITE),
 	color			(Color::black()),
 	origin			(0,0),
 	radius			(1),

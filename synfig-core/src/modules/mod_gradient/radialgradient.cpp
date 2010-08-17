@@ -65,7 +65,7 @@ SYNFIG_LAYER_SET_CVS_ID(RadialGradient,"$Id$");
 /* === E N T R Y P O I N T ================================================= */
 
 RadialGradient::RadialGradient():
-	Layer_Composite(1.0,Color::BLEND_STRAIGHT),
+	Layer_Composite(1.0,Color::BLEND_COMPOSITE),
 	gradient(Color::black(),Color::white()),
 	center(0,0),
 	radius(0.5),

@@ -64,7 +64,7 @@ SYNFIG_LAYER_SET_CVS_ID(Layer_SolidColor,"$Id$");
 /* === E N T R Y P O I N T ================================================= */
 
 Layer_SolidColor::Layer_SolidColor():
-	Layer_Composite(1.0,Color::BLEND_STRAIGHT),
+	Layer_Composite(1.0,Color::BLEND_COMPOSITE),
 	color(Color::black())
 {
 }
