@@ -133,7 +133,7 @@ Metaballs::get_param_vocab()const
 	);
 
 	ret.push_back(ParamDesc("centers")
-		.set_local_name(_("Points"))
+		.set_local_name(_("Balls"))
 	);
 
 	ret.push_back(ParamDesc("radii")
