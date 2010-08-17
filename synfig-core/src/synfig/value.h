@@ -63,7 +63,7 @@ class BLinePoint;
 class Color;
 
 /*!	\class ValueBase
-**	\todo writeme
+**	\brief Base class for the Values of Synfig
 */
 class ValueBase
 {
@@ -73,30 +73,30 @@ class ValueBase
 
 public:
 
-	//! \writeme
+	//! This enum lists all the types of values
 	enum Type
 	{
 		TYPE_NIL=0,			//!< Represents an empty value
 
-		TYPE_BOOL,
-		TYPE_INTEGER,
-		TYPE_ANGLE,			//!< Angle
+		TYPE_BOOL,			//!< Boolean value (1 or 0)
+		TYPE_INTEGER,		//!< Integer value -1, 0, 1, etc.
+		TYPE_ANGLE,			//!< Angle value (Real number internally)
 
 		// All types after this point are larger than 32 bits
 
-		TYPE_TIME,			//!< Time
-		TYPE_REAL,			//!< Real
+		TYPE_TIME,			//!< Time value
+		TYPE_REAL,			//!< Real value (floating point number)
 
 		// All types after this point are larger than 64 bits
 
-		TYPE_VECTOR,		//!< Vector
-		TYPE_COLOR,			//!< Color
-		TYPE_SEGMENT,		//!< Segment
-		TYPE_BLINEPOINT,	//!< BLinePoint
+		TYPE_VECTOR,		//!< Vector value (Real, Real) Points are Vectors too
+		TYPE_COLOR,			//!< Color (Real, Real, Real, Real)
+		TYPE_SEGMENT,		//!< Segment Point and Vector
+		TYPE_BLINEPOINT,	//!< BLinePoint Origin (Point) 2xTangents (Vector) Width (Real), Origin (Real) Split Tangent (Boolean)
 
 		// All types after this point require construction/destruction
 
-		TYPE_LIST,			//!< List
+		TYPE_LIST,			//!< List of any of above
 		TYPE_CANVAS,		//!< Canvas
 		TYPE_STRING,		//!< String
 		TYPE_GRADIENT,		//!< Color Gradient
@@ -113,10 +113,15 @@ private:
 	*/
 
 protected:
-
+	//! The type of value
 	Type type;
+	//! Pointer to hold the data of the value
 	void *data;
+	//! Counter of Value Nodes that refers to this Value Base
+	//! Value base can only be destructed if the ref_count is not greater than 0
+	//!\see etl::reference_counter
 	etl::reference_counter ref_count;
+	//! For Values with loop option like TYPE_LIST
 	bool loop_;
 
 	/*
@@ -125,19 +130,19 @@ protected:
 
 public:
 
-	//! \writeme
+	//! Default constructor
 	ValueBase();
 
-	//! \writeme
+	//! Template constructor for any type
 	template <typename T>
 	ValueBase(const T &x, bool loop_=false):
 		type(TYPE_NIL),data(0),ref_count(0),loop_(loop_)
 		{ set(x); }
 
-	//! \writeme
+	//! Copy constructor. The data is not copied, just the type.
 	ValueBase(Type x);
 
-	//! \writeme
+	//! Default destructor
 	~ValueBase();
 
 	/*
@@ -146,17 +151,18 @@ public:
 
 public:
 
-	//! \writeme
+	//! Template for the operator assignation operator for non ValueBase classes
+	//! \see set()
 	template <class T> ValueBase& operator=(const T& x)
 		{ set(x); return *this; }
 
-	//! \writeme
+	//!Operator asignation for ValueBase classes. Does a exact copy of \x
 	ValueBase& operator=(const ValueBase& x);
 
-	//! \writeme
+	//! Eqaul than operator. Segment, Gradient and Bline Points cannot be compared.
 	bool operator==(const ValueBase& rhs)const;
 
-	//! \writeme
+	//! Not equal than operator.
 	bool operator!=(const ValueBase& rhs)const { return !operator==(rhs); }
 
 	//!	Constant index operator for when value is of type TYPE_LIST
@@ -169,31 +175,32 @@ public:
 
 public:
 
-	//! \writeme
+	//! Deletes the data only if the ref count is zero
 	void clear();
 
-	//! \writeme
+	//! Gets the loop option.
 	bool get_loop()const { return loop_; }
 
-	//! \writeme
+	//! Sets the loop option.
 	void set_loop(bool x) { loop_=x; }
 
-	//! \writeme
+	//! True if the Value is not valid or is type LIST and is empty
 	bool empty()const;
 
-	//! \writeme
+	//! Gets the contained type in the Value Base
 	Type get_contained_type()const;
 
 	//! Returns true if the contained value is defined and valid.
 	bool is_valid()const;
 
-	//!	Returns a string containing the name of the type
+	//!	Returns a string containing the name of the type. Used for sif files
 	String type_name()const { return type_name(type); }
 
 	//! Returns the type of the contained value
 	const Type & get_type()const { return type; }
 
 	//! Checks the type of the parameter against itself. Returns true if they are of the same type.
+	//! Template for any class
 	template <class T> bool
 	same_type_as(const T &x)const
 	{
@@ -201,7 +208,7 @@ public:
 
 		return same_type_as(type, testtype);
 	}
-
+	//! Checks the type of the parameter against itself. Returns true if they are of the same type.
 	bool same_type_as(const Type testtype)const
 	{
 		return same_type_as(type, testtype);
@@ -219,18 +226,24 @@ public:
 
 
 	// === GET MEMBERS ========================================================
+	//! Template to get the ValueBase class data by casting the type
 	template <typename T>
 	const T &get(const T& x __attribute__ ((unused)))const
 	{
 		assert(is_valid() && same_type_as(x));
 		return *static_cast<const T*>(data);
 	}
+	//! Gets the Real part of the data
 	float get(const float &)const { return get(Real()); }
+	//! Gets the Canvas Handle part of the data based on Canvas Handle type
 	etl::loose_handle<Canvas> get(const etl::handle<Canvas>&)const
 		{ return get(etl::loose_handle<Canvas>()); }
+	//! Gets the Canvas Handle part of the data based on Canvas pointer type
 	etl::loose_handle<Canvas> get(Canvas*)const
 		{ return get(etl::loose_handle<Canvas>()); }
+	//! Gets the data as char pointer based on char pointer
 	const char* get(const char*)const;
+	//! Gets the data as List Type
 	const list_type& get_list()const { return get(list_type()); }
 
 #ifdef _DEBUG
@@ -241,29 +254,42 @@ public:
 
 
 	// === PUT MEMBERS ========================================================
+	//! Put template for any class
 	template <typename T>
 	void put(T* x)const
 	{
 		assert(same_type_as(*x));
 		*x=*static_cast<const T*>(data);
 	}
+	//! Put for float values
 	void put(float* x)const { *x=get(Real()); }
+	//! Put for char values (Not defined??)
 	void put(char** x)const;
 	// ========================================================================
 
 
 
 	// === SET MEMBERS ========================================================
+	//! Set template for any class
 	template <typename T> void set(const T& x) { _set(x); }
+	//! Set for float
 	void set(const float &x) { _set(Real(x)); }
+	//! Set for List Type
 	void set(const list_type &x);
+	//! Set for char string
 	void set(const char* x);
+	//! Set for char string
 	void set(char* x);
+	//! Set for Canvas pointer
 	void set(Canvas*x);
+	//! Set for Canvas handle
 	void set(etl::loose_handle<Canvas> x);
+	//! Set for Canvas handle
 	void set(etl::handle<Canvas> x);
+	//! Set template for standar vector
 	template <class T> void set(const std::vector<T> &x)
 		{ _set(list_type(x.begin(),x.end())); }
+	//! Set template for standar list
 	template <class T> void set(const std::list<T> &x)
 		{ _set(list_type(x.begin(),x.end())); }
 	// ========================================================================
@@ -281,13 +307,16 @@ public:
 	//!	Returns a string containing the translated name of the given Type
 	static String type_local_name(Type id);
 
-	//!	Returns a the corresponding Type of the described type
+	//!	Returns a the corresponding Type of the described type.
+	//! Notice that this is used in the loadcanvas. It should keep all
+	//! all type names used in previous sif files
 	static Type ident_type(const String &str);
 
 
 	// === GET TYPE MEMBERS ===================================================
 	static Type get_type(bool) { return TYPE_BOOL; }
 	static Type get_type(int) { return TYPE_INTEGER; }
+	static Type get_type(const Angle&) { return TYPE_ANGLE; }
 	static Type get_type(const Time&) { return TYPE_TIME; }
 	static Type get_type(const Real&) { return TYPE_REAL; }
 	static Type get_type(const float&) { return TYPE_REAL; }
@@ -315,8 +344,9 @@ public:
 	*/
 
 public:
-
+	//! I wonder why are those casting operators disabled...
 	operator const list_type&()const { return get_list(); }
+	operator const Angle&()const { return get(Angle()); }
 	//operator const Color&()const { return get(Color()); }
 	operator const Real&()const { return get(Real()); }
 	//operator const Time&()const { return get(Time()); }
@@ -343,9 +373,8 @@ public:
 	operator half()const { return get(Real()); }
 #endif
 
-	operator const Angle&()const { return get(Angle()); }
-	static Type get_type(const Angle&) { return TYPE_ANGLE; }
 
+	//! Cast operator template to obtain the standard list from the TYPE LIST
 	template <class T>
 	operator std::list<T>()const
 	{
@@ -353,6 +382,7 @@ public:
 		std::list<T> ret(get_list().begin(),get_list().end());
 		return ret;
 	}
+	//! Cast operator template to obtain the standard vector from the TYPE LIST
 	template <class T>
 	operator std::vector<T>()const
 	{
@@ -363,7 +393,7 @@ public:
 
 
 private:
-
+	//! Internal set template. Takes in consideration the reference counter
 	template <typename T> void
 	_set(const T& x)
 	{
@@ -386,11 +416,12 @@ private:
 		ref_count.reset();
 		data=new T(x);
 	}
+
 }; // END of class ValueBase
 
 
 /*!	\class Value
-**	\todo writeme
+**	\brief Template for all the valid Value Types
 */
 template <class T>
 class Value : public ValueBase
@@ -428,43 +459,6 @@ public:
 	}
 
 }; // END of class Value
-
-/*
-template <>
-class Value< std::list<CT> > : public ValueBase
-{
-public:
-	Value(const T &x):ValueBase(x)
-	{
-	}
-	Value(const ValueBase &x):ValueBase(x)
-	{
-		if(!x.same_type_as(T()))
-			throw Exception::BadType("Value<T>(ValueBase): Type Mismatch");
-	}
-	Value()
-	{
-	}
-
-	T get()const { return ValueBase::get(T()); }
-
-	void put(T* x)const	{ ValueBase::put(x); }
-
-	void set(const T& x) { ValueBase::operator=(x); }
-
-	Value<T>& operator=(const T& x) { set(x); return *this; }
-
-	Value<T>& operator=(const Value<T>& x) { return ValueBase::operator=(x); }
-
-	Value<T>& operator=(const ValueBase& x)
-	{
-		if(!x.same_type_as(T()))
-			throw Exception::BadType("Value<T>(ValueBase): Type Mismatch");
-		return ValueBase::operator=(x);
-	}
-
-}; // END of class Value
-*/
 
 }; // END of namespace synfig
 

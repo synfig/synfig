@@ -264,33 +264,33 @@ ValueBase::type_name(Type id)
 	// don't internationalize these type names - they're using in .sif files
 	switch(id)
 	{
-		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
+		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types */
 	case TYPE_BOOL:			return N_("bool");
-		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
+		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types */
 	case TYPE_INTEGER:		return N_("integer");
-		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
+		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types */
 	case TYPE_ANGLE:		return N_("angle");
-		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
+		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types */
 	case TYPE_TIME:			return N_("time");
-		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
+		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types */
 	case TYPE_REAL:			return N_("real");
-		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
+		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types */
 	case TYPE_VECTOR:		return N_("vector");
-		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
+		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types */
 	case TYPE_COLOR:		return N_("color");
-		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
+		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types */
 	case TYPE_SEGMENT:		return N_("segment");
-		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
+		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types */
 	case TYPE_BLINEPOINT:	return N_("bline_point");
-		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
+		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types */
 	case TYPE_LIST:			return N_("list");
-		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
+		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types */
 	case TYPE_CANVAS:		return N_("canvas");
-		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
+		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types */
 	case TYPE_STRING:		return N_("string");
-		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
+		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types */
 	case TYPE_GRADIENT:		return N_("gradient");
-		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
+		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types */
 	case TYPE_NIL:			return N_("nil");
 	default:
 		break;
