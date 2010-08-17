@@ -159,7 +159,7 @@ Dock_PalEdit::Dock_PalEdit():
 	);
 	action_group->add(Gtk::Action::create(
 		"palette-set-default",
-		Gtk::StockID("gtk-clear"),
+		Gtk::StockID("gtk-refresh"),
 		_("Load default"),
 		_("Load default palette")
 	),
