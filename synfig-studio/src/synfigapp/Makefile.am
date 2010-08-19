@@ -58,6 +58,8 @@ VALUEDESC_ACTION_CC = \
 VALUENODE_ACTION_HH = \
 	actions/valuenodeadd.h \
 	actions/valuenodeconstset.h \
+	actions/valuenodeconstsetstatic.h\
+	actions/valuenodeconstunsetstatic.h\
 	actions/valuenodedynamiclistinsert.h \
 	actions/valuenodedynamiclistinsertsmart.h \
 	actions/valuenodedynamiclistloop.h \
@@ -74,6 +76,8 @@ VALUENODE_ACTION_HH = \
 VALUENODE_ACTION_CC = \
 	actions/valuenodeadd.cpp \
 	actions/valuenodeconstset.cpp \
+	actions/valuenodeconstsetstatic.cpp\
+	actions/valuenodeconstunsetstatic.cpp\
 	actions/valuenodedynamiclistinsert.cpp \
 	actions/valuenodedynamiclistinsertsmart.cpp \
 	actions/valuenodedynamiclistloop.cpp \

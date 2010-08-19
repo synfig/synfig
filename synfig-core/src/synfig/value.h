@@ -123,6 +123,8 @@ protected:
 	etl::reference_counter ref_count;
 	//! For Values with loop option like TYPE_LIST
 	bool loop_;
+	//! For Values of Constant Value Nodes or Layer parameters
+	bool static_;
 
 	/*
  --	** -- C O N S T R U C T O R S -----------------------------------
@@ -135,8 +137,8 @@ public:
 
 	//! Template constructor for any type
 	template <typename T>
-	ValueBase(const T &x, bool loop_=false):
-		type(TYPE_NIL),data(0),ref_count(0),loop_(loop_)
+	ValueBase(const T &x, bool loop_=false, bool static_=false):
+		type(TYPE_NIL),data(0),ref_count(0),loop_(loop_), static_(static_)
 		{ set(x); }
 
 	//! Copy constructor. The data is not copied, just the type.
@@ -183,6 +185,12 @@ public:
 
 	//! Sets the loop option.
 	void set_loop(bool x) { loop_=x; }
+
+	//! Gets the static option.
+	bool get_static()const { return static_; }
+
+	//! Sets the static option.
+	void set_static(bool x) { static_=x; }
 
 	//! True if the Value is not valid or is type LIST and is empty
 	bool empty()const;

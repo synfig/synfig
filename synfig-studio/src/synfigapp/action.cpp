@@ -48,6 +48,8 @@
 #include "actions/layersetdesc.h"
 
 #include "actions/valuenodeconstset.h"
+#include "actions/valuenodeconstsetstatic.h"
+#include "actions/valuenodeconstunsetstatic.h"
 #include "actions/valuenodeadd.h"
 #include "actions/valuenodereplace.h"
 #include "actions/valuenodelinkconnect.h"
@@ -168,6 +170,8 @@ Action::Main::Main()
 	ADD_ACTION(Action::LayerSetDesc);
 
 	ADD_ACTION(Action::ValueNodeConstSet);
+	ADD_ACTION(Action::ValueNodeConstSetStatic);
+	ADD_ACTION(Action::ValueNodeConstUnSetStatic);
 	ADD_ACTION(Action::ValueNodeAdd);
 	ADD_ACTION(Action::ValueNodeReplace);
 	ADD_ACTION(Action::ValueNodeLinkConnect);
