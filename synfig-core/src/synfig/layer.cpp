@@ -295,10 +295,34 @@ Layer::set_param(const String &param, const ValueBase &value)
 	if(param=="z_depth" && value.same_type_as(z_depth_))
 	{
 		z_depth_=value.get(z_depth_);
+		z_depth_static=value.get_static();
 		return true;
 	}
 	return false;
 }
+
+bool
+Layer::set_param_static(const String &param, const bool x)
+{
+	if(param=="z_depth" && z_depth_static!=x)
+	{
+		z_depth_static=x;
+		return true;
+	}
+
+	return false;
+}
+
+
+bool
+Layer::get_param_static(const String &param) const
+{
+	if(param=="z_depth")
+		return z_depth_static;
+
+	return false;
+}
+
 
 etl::handle<Transform>
 Layer::get_transform()const
@@ -449,8 +473,11 @@ ValueBase
 Layer::get_param(const String & param)const
 {
 	if(param=="z_depth")
-		return get_z_depth();
-
+	{
+		synfig::ValueBase ret(get_z_depth());
+		ret.set_static(z_depth_static);
+		return ret;
+	}
 	return ValueBase();
 }
 

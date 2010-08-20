@@ -217,6 +217,7 @@ ValueBase::operator=(const ValueBase& x)
 		ref_count=x.ref_count;
 	}
 	loop_=x.loop_;
+	static_=x.static_;
 	return *this;
 }
 

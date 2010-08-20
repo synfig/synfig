@@ -53,6 +53,13 @@ private:
 	bool invert;
 	int falloff;
 
+	bool color_static;
+	bool origin_static;
+	bool radius_static;
+	bool feather_static;
+	bool invert_static;
+	bool falloff_static;
+
 	//Caching system for circle
 	struct CircleDataCache
 	{
@@ -103,6 +110,9 @@ public:
 	virtual bool set_param(const String &param, const ValueBase &value);
 
 	virtual ValueBase get_param(const String &param)const;
+
+	virtual bool set_param_static(const String &param, const bool x);
+	virtual bool get_param_static(const String &param) const;
 
 	virtual Color get_color(Context context, const Point &pos)const;
 

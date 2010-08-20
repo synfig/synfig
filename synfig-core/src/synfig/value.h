@@ -123,7 +123,7 @@ protected:
 	etl::reference_counter ref_count;
 	//! For Values with loop option like TYPE_LIST
 	bool loop_;
-	//! For Values of Constant Value Nodes or Layer parameters
+	//! For Values of Constant Value Nodes
 	bool static_;
 
 	/*

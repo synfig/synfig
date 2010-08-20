@@ -66,7 +66,13 @@ Circle::Circle():
 	radius			(1),
 	feather			(0),
 	invert			(false),
-	falloff			(FALLOFF_INTERPOLATION_LINEAR)
+	falloff			(FALLOFF_INTERPOLATION_LINEAR),
+	color_static	(false),
+	origin_static	(false),
+	radius_static	(false),
+	feather_static	(false),
+	invert_static	(true),
+	falloff_static	(true)
 {
 	constructcache();
 }
@@ -115,6 +121,61 @@ Circle::get_param(const String &param)const
 
 	return Layer_Composite::get_param(param);
 }
+
+
+bool
+Circle::set_param_static(const String &param, const bool x)
+{
+
+	if(param=="color" && color_static!=x)
+	{
+		color_static=x;
+		return true;
+	}
+	if(param=="radius" && radius_static!=x)
+	{
+		radius_static=x;
+		return true;
+	}
+
+	if(param=="origin" && origin_static!=x)
+	{
+		origin_static=x;
+		return true;
+	}
+	if(param=="feather" && feather_static!=x)
+	{
+		feather_static=x;
+		return true;
+	}
+	if(param=="falloff" && falloff_static!=x)
+	{
+		falloff_static=x;
+		return true;
+	}
+
+	return Layer_Composite::set_param_static(param, x);
+}
+
+
+bool
+Circle::get_param_static(const String &param) const
+{
+
+	if(param=="color")
+		return color_static;
+	if(param=="radius")
+		return radius_static;
+	if(param=="origin")
+		return origin_static;
+	if(param=="feather")
+		return feather_static;
+	if(param=="falloff")
+		return falloff_static;
+
+	return Layer_Composite::get_param_static(param);
+}
+
 
 Layer::Vocab
 Circle::get_param_vocab()const

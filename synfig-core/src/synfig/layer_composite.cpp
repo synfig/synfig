@@ -205,12 +205,52 @@ Layer_Composite::set_param(const String & param, const ValueBase &value)
 ValueBase
 Layer_Composite::get_param(const String & param)const
 {
+
 	//! First check if the parameter's string is known.
 	if(param=="amount")
-		return get_amount();
+	{
+		synfig::ValueBase ret(get_amount());
+		ret.set_static(amount_static);
+		return ret;
+	}
 	if(param=="blend_method")
-		return static_cast<int>(get_blend_method());
+	{
+		synfig::ValueBase ret(static_cast<int>(get_blend_method()));
+		ret.set_static(blend_method_static);
+		return ret;
+	}
 	//! If it is unknown then call the ancestor's get param member
 	//! to see if it can handle that parameter's string.
 	return Layer::get_param(param);
+}
+
+bool
+Layer_Composite::set_param_static(const String &param, const bool x)
+{
+	if(param=="amount" && amount_static!=x)
+	{
+		amount_static=x;
+		return true;
+	}
+	if(param=="blend_method" && blend_method_static!=x)
+	{
+		blend_method_static=x;
+		return true;
+	}
+
+	return Layer::set_param_static(param, x);
+}
+
+
+bool
+Layer_Composite::get_param_static(const String &param) const
+{
+
+	if(param=="amount")
+		return amount_static;
+
+	if(param=="blend_method")
+		return blend_method_static;
+
+	return Layer::get_param_static(param);
 }

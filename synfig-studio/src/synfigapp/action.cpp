@@ -41,6 +41,8 @@
 #include "actions/layeradd.h"
 #include "actions/layeractivate.h"
 #include "actions/layerparamset.h"
+#include "actions/layerparamsetstatic.h"
+#include "actions/layerparamunsetstatic.h"
 #include "actions/layerparamconnect.h"
 #include "actions/layerparamdisconnect.h"
 #include "actions/layerencapsulate.h"
@@ -163,6 +165,8 @@ Action::Main::Main()
 	ADD_ACTION(Action::LayerAdd);
 	ADD_ACTION(Action::LayerActivate);
 	ADD_ACTION(Action::LayerParamSet);
+	ADD_ACTION(Action::LayerParamSetStatic);
+	ADD_ACTION(Action::LayerParamUnSetStatic);
 	ADD_ACTION(Action::LayerParamConnect);
 	ADD_ACTION(Action::LayerParamDisconnect);
 	ADD_ACTION(Action::LayerEncapsulate);

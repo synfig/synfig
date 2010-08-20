@@ -81,6 +81,7 @@
 	if (param==#x && value.same_type_as(x))												\
 	{																					\
 		value.put(&x);																	\
+		set_param_static(#x,value.get_static());										\
 		{																				\
 			y;																			\
 		}																				\
@@ -92,6 +93,7 @@
 	if (param==y && value.same_type_as(x))												\
 	{																					\
 		value.put(&x);																	\
+		set_param_static(#x,value.get_static());										\
 		return true;																	\
 	}
 
@@ -102,7 +104,11 @@
 //! Exports a parameter 'x' if param is same type as given 'y'
 #define EXPORT_AS(x,y)																	\
 	if (param==y)																		\
-		return ValueBase(x);
+	{																					\
+		synfig::ValueBase ret(x);														\
+		ret.set_static(get_param_static(y));											\
+		return ret;																		\
+	}
 
 //! Exports a parameter if it is the same type as value
 #define EXPORT(x)																		\
@@ -252,6 +258,9 @@ private:
 
 	//! The depth parameter of the layer in the layer stack
 	float z_depth_;
+
+	//! True if zdepth is not affected when in animation mode
+	bool z_depth_static;
 
 	//! \writeme
 	mutable Time dirty_time_;
@@ -445,6 +454,9 @@ public:
 	**	\todo \a param should be of the type <tt>const String \&param</tt>
 	*/
 	virtual bool set_param(const String &param, const ValueBase &value);
+
+	virtual bool set_param_static(const String &param, const bool x);
+	virtual bool get_param_static(const String &param) const;
 
 	//!	Sets a list of parameters
 	virtual bool set_param_list(const ParamList &);

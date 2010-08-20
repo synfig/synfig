@@ -17,6 +17,8 @@ LAYER_ACTION_HH = \
 	actions/layerparamconnect.h \
 	actions/layerparamdisconnect.h \
 	actions/layerparamset.h \
+	actions/layerparamsetstatic.h\
+	actions/layerparamunsetstatic.h\
 	actions/layerraise.h \
 	actions/layerremove.h \
 	actions/layersetdesc.h
@@ -31,6 +33,8 @@ LAYER_ACTION_CC = \
 	actions/layerparamconnect.cpp \
 	actions/layerparamdisconnect.cpp \
 	actions/layerparamset.cpp \
+	actions/layerparamsetstatic.cpp\
+	actions/layerparamunsetstatic.cpp\
 	actions/layerraise.cpp \
 	actions/layerremove.cpp \
 	actions/layersetdesc.cpp

@@ -52,6 +52,8 @@ private:
 	float amount_;
 	//! The blend method for the composition
 	Color::BlendMethod blend_method_;
+	bool amount_static;
+	bool blend_method_static;
 
 protected:
 	//! Default constructor. Not used directly.
@@ -62,7 +64,9 @@ protected:
 		amount_				(amount),
 		blend_method_		(blend_method),
 		converted_blend_	(false),
-		transparent_color_	(false)
+		transparent_color_	(false),
+		amount_static		(false),
+		blend_method_static	(true)
 	{ }
 	//! Converted blend is used to check if an old version of canvas
 	//! is used in the composition. Old Straight was used as new Composite
@@ -93,6 +97,8 @@ public:
 	virtual ValueBase get_param(const String &param)const;
 	//!Returns the rectangle that includes the context of the layer and
 	//! the intersection of the layer in case it is active and not onto
+	virtual bool set_param_static(const String &param, const bool x);
+	virtual bool get_param_static(const String &param) const;
 	virtual Rect get_full_bounding_rect(Context context)const;
 	//! Renders the layer composited on the context and puts it on the target surface.
 	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
