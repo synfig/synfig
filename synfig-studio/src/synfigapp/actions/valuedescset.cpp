@@ -446,9 +446,17 @@ Action::ValueDescSet::prepare()
 	}
 */
 
-
+	ValueBase local_value;
+	local_value.set_static(false);
+		if(!value_desc.is_value_node() || ValueNode_Const::Handle::cast_dynamic(value_desc.get_value_node()))
+		{
+			if(value_desc.is_value_node())
+				local_value=ValueNode_Const::Handle::cast_dynamic(value_desc.get_value_node())->get_value();
+			else
+				local_value=value_desc.get_value();
+		}
 	// If we are in animate editing mode
-	if(get_edit_mode()&MODE_ANIMATE)
+	if(get_edit_mode()&MODE_ANIMATE && !local_value.get_static())
 	{
 
 		ValueNode_Animated::Handle& value_node(value_node_animated);
@@ -549,7 +557,8 @@ Action::ValueDescSet::prepare()
 		if(value_desc.parent_is_layer_param() && !value_desc.is_value_node())
 		{
 			Action::Handle layer_param_set(LayerParamSet::create());
-
+			synfig::ValueBase localvalue(value_desc.get_value());
+			value.set_static(local_value.get_static());
 			layer_param_set->set_param("canvas",get_canvas());
 			layer_param_set->set_param("canvas_interface",get_canvas_interface());
 			layer_param_set->set_param("layer",value_desc.get_layer());
