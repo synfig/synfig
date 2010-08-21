@@ -50,17 +50,24 @@ public:
 	Point tl;
 	Point br;
 	int c;
+	bool tl_static;
+	bool br_static;
+	bool c_static;
 	mutable Surface surface;
 	mutable bool trimmed;
 	mutable unsigned int width, height, top, left;
 
 	Real gamma_adjust;
+	bool gamma_adjust_static;
 
 	Layer_Bitmap();
 
 	virtual bool set_param(const String & param, ValueBase value);
 
 	virtual ValueBase get_param(const String & param)const;
+
+	virtual bool set_param_static(const String &param, const bool x);
+	virtual bool get_param_static(const String &param) const;
 
 	virtual Color get_color(Context context, const Point &pos)const;
 
