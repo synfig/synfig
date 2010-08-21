@@ -127,32 +127,11 @@ bool
 Circle::set_param_static(const String &param, const bool x)
 {
 
-	if(param=="color" && color_static!=x)
-	{
-		color_static=x;
-		return true;
-	}
-	if(param=="radius" && radius_static!=x)
-	{
-		radius_static=x;
-		return true;
-	}
-
-	if(param=="origin" && origin_static!=x)
-	{
-		origin_static=x;
-		return true;
-	}
-	if(param=="feather" && feather_static!=x)
-	{
-		feather_static=x;
-		return true;
-	}
-	if(param=="falloff" && falloff_static!=x)
-	{
-		falloff_static=x;
-		return true;
-	}
+	SET_STATIC(color, x)
+	SET_STATIC(radius, x)
+	SET_STATIC(origin, x)
+	SET_STATIC(feather, x)
+	SET_STATIC(falloff, x)
 
 	return Layer_Composite::set_param_static(param, x);
 }
@@ -162,16 +141,11 @@ bool
 Circle::get_param_static(const String &param) const
 {
 
-	if(param=="color")
-		return color_static;
-	if(param=="radius")
-		return radius_static;
-	if(param=="origin")
-		return origin_static;
-	if(param=="feather")
-		return feather_static;
-	if(param=="falloff")
-		return falloff_static;
+	GET_STATIC(color)
+	GET_STATIC(radius)
+	GET_STATIC(origin)
+	GET_STATIC(feather)
+	GET_STATIC(falloff)
 
 	return Layer_Composite::get_param_static(param);
 }
