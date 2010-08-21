@@ -87,7 +87,13 @@ Layer_PasteCanvas::Layer_PasteCanvas():
 	depth(0),
 	zoom(0),
 	time_offset(0),
-	extra_reference(false)
+	extra_reference(false),
+	origin_static(false),
+	focus_static(false),
+	canvas_static(false),
+	zoom_static(false),
+	offset_static(false),
+	children_lock_static(true)
 {
 	children_lock=false;
 	muck_with_time_=true;
@@ -564,4 +570,32 @@ void Layer_PasteCanvas::get_times_vfunc(Node::time_set &set) const
 			);
 
 	Layer::get_times_vfunc(set);
+}
+
+
+bool
+Layer_PasteCanvas::set_param_static(const String &param, const bool x)
+{
+	SET_STATIC(origin, x)
+	SET_STATIC(focus, x)
+	SET_STATIC(canvas, x)
+	SET_STATIC(zoom, x)
+	SET_STATIC(offset, x)
+	SET_STATIC(children_lock, x)
+
+	return Layer_Composite::set_param_static(param, x);
+}
+
+
+bool
+Layer_PasteCanvas::get_param_static(const String &param) const
+{
+	GET_STATIC(origin)
+	GET_STATIC(focus)
+	GET_STATIC(canvas)
+	GET_STATIC(zoom)
+	GET_STATIC(offset)
+	GET_STATIC(children_lock)
+
+	return Layer_Composite::get_param_static(param);
 }

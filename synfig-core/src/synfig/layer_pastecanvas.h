@@ -76,6 +76,13 @@ private:
 	//! signal connection for children. Seems to be used only here
 	sigc::connection child_changed_connection;
 
+	bool origin_static;
+	bool focus_static;
+	bool canvas_static;
+	bool zoom_static;
+	bool offset_static;
+	bool children_lock_static;
+
 	// Nasty hack: Remember whether we called an extra ref() when
 	// setting the canvas, so we know whether to call an extra unref()
 	// when finished with the canvas.
@@ -157,6 +164,8 @@ public:
 	virtual bool set_param(const String & param, const synfig::ValueBase &value);
 	//! Get the value of the specified parameter. \see Layer::get_param
 	virtual ValueBase get_param(const String & param)const;
+	virtual bool set_param_static(const String &param, const bool x);
+	virtual bool get_param_static(const String &param) const;
 	//! Gets the blend color of the Layer in the context at \a pos
 	virtual Color get_color(Context context, const Point &pos)const;
 	//! Sets the time of the Paste Canvas Layer and those under it
