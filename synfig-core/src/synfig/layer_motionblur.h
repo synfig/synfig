@@ -56,10 +56,18 @@ private:
 	Real subsample_end;
 	mutable Time time_cur;
 
+	bool aperture_static;
+	bool subsamples_factor_static;
+	bool subsampling_type_static;
+	bool subsample_start_static;
+	bool subsample_end_static;
+
 public:
 	Layer_MotionBlur();
 	virtual bool set_param(const String & param, const synfig::ValueBase &value);
 	virtual ValueBase get_param(const String & param)const;
+	virtual bool set_param_static(const String &param, const bool x);
+	virtual bool get_param_static(const String &param) const;
 	virtual Color get_color(Context context, const Point &pos)const;
 	virtual void set_time(Context context, Time time)const;
 	virtual void set_time(Context context, Time time, const Point &point)const;
