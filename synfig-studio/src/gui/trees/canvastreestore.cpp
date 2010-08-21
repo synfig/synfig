@@ -208,16 +208,16 @@ CanvasTreeStore::get_value_vfunc(const Gtk::TreeModel::iterator& iter, int colum
 		{
 			stype=ValueBase::type_local_name(value_desc.get_value_type());
 			if(value_desc.get_value_node())
-				{
-					lname=value_desc.get_value_node()->get_name();
-					if (lname=="animated" || lname=="static")
-						stype+=" (" + value_desc.get_value_node()->get_local_name() + ")";
-				}
+			{
+				lname=value_desc.get_value_node()->get_name();
+				if (lname=="animated" || lname=="static")
+					stype+=" (" + value_desc.get_value_node()->get_local_name() + ")";
+			}
 			else if(value_desc.parent_is_layer_param())
-				{
-					if(value_desc.get_value().get_static())
-						stype+=_(" (Static)");
-				}
+			{
+				if(value_desc.get_value().get_static())
+					stype+=_(" (Static)");
+			}
 		}
 		x.set(stype.c_str());
 		g_value_init(value.gobj(),x.value_type());
