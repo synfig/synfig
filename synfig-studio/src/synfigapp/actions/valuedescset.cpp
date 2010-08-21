@@ -535,7 +535,8 @@ Action::ValueDescSet::prepare()
 			if(ValueNode_Const::Handle::cast_dynamic(value_desc.get_value_node()))
 			{
 				Action::Handle action(ValueNodeConstSet::create());
-
+				synfig::ValueNode_Const::Handle localvaluenode(ValueNode_Const::Handle::cast_dynamic(value_desc.get_value_node()));
+				value.set_static(localvaluenode->get_static());
 				action->set_param("canvas",get_canvas());
 				action->set_param("canvas_interface",get_canvas_interface());
 				action->set_param("value_node",value_desc.get_value_node());
