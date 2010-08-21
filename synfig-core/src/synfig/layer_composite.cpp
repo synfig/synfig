@@ -227,16 +227,9 @@ Layer_Composite::get_param(const String & param)const
 bool
 Layer_Composite::set_param_static(const String &param, const bool x)
 {
-	if(param=="amount" && amount_static!=x)
-	{
-		amount_static=x;
-		return true;
-	}
-	if(param=="blend_method" && blend_method_static!=x)
-	{
-		blend_method_static=x;
-		return true;
-	}
+
+	SET_STATIC(amount, x)
+	SET_STATIC(blend_method, x)
 
 	return Layer::set_param_static(param, x);
 }
@@ -246,11 +239,8 @@ bool
 Layer_Composite::get_param_static(const String &param) const
 {
 
-	if(param=="amount")
-		return amount_static;
-
-	if(param=="blend_method")
-		return blend_method_static;
+	GET_STATIC(amount);
+	GET_STATIC(blend_method);
 
 	return Layer::get_param_static(param);
 }

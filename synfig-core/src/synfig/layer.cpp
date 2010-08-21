@@ -295,7 +295,7 @@ Layer::set_param(const String &param, const ValueBase &value)
 	if(param=="z_depth" && value.same_type_as(z_depth_))
 	{
 		z_depth_=value.get(z_depth_);
-		z_depth_static=value.get_static();
+		set_param_static(param, value.get_static());
 		return true;
 	}
 	return false;
@@ -304,11 +304,7 @@ Layer::set_param(const String &param, const ValueBase &value)
 bool
 Layer::set_param_static(const String &param, const bool x)
 {
-	if(param=="z_depth" && z_depth_static!=x)
-	{
-		z_depth_static=x;
-		return true;
-	}
+	SET_STATIC(z_depth,x)
 
 	return false;
 }
@@ -317,8 +313,7 @@ Layer::set_param_static(const String &param, const bool x)
 bool
 Layer::get_param_static(const String &param) const
 {
-	if(param=="z_depth")
-		return z_depth_static;
+	GET_STATIC(z_depth);
 
 	return false;
 }

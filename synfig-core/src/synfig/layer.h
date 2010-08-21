@@ -130,6 +130,19 @@
 //! It prevents these layers showing up in the menu.
 #define CATEGORY_DO_NOT_USE "Do Not Use"
 
+//! x=variable name, y=static bool value
+#define SET_STATIC(x,y)																	\
+	if(param==#x && x ## _static != y)													\
+	{																					\
+		x ## _static = y;																\
+		return true;																	\
+	}
+
+#define GET_STATIC(x)																	\
+	if(param==#x)																		\
+		return x ## _static;															\
+
+
 /* === T Y P E D E F S ===================================================== */
 
 /* === C L A S S E S & S T R U C T S ======================================= */
