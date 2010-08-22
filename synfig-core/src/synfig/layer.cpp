@@ -292,12 +292,14 @@ Layer::on_changed()
 bool
 Layer::set_param(const String &param, const ValueBase &value)
 {
-	if(param=="z_depth" && value.same_type_as(z_depth_))
+/*	if(param=="z_depth" && value.same_type_as(z_depth_))
 	{
 		z_depth_=value.get(z_depth_);
 		set_param_static(param, value.get_static());
 		return true;
 	}
+	*/
+	IMPORT_AS(z_depth_,"z_depth")
 	return false;
 }
 
