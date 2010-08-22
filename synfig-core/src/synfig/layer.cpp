@@ -136,7 +136,8 @@ Layer::subsys_stop()
 Layer::Layer():
 	active_(true),
 	z_depth_(0.0f),
-	dirty_time_(Time::end())
+	dirty_time_(Time::end()),
+	z_depth_static(false)
 {
 	_LayerCounter::counter++;
 }
