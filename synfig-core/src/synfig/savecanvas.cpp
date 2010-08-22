@@ -92,10 +92,12 @@ xmlpp::Element* encode_keyframe(xmlpp::Element* root,const Keyframe &kf, float f
 }
 
 
-xmlpp::Element* encode_real(xmlpp::Element* root,Real v)
+xmlpp::Element* encode_real(xmlpp::Element* root,Real v, bool s=false)
 {
 	root->set_name("real");
  	root->set_attribute("value",strprintf(VECTOR_VALUE_TYPE_FORMAT,v));
+ 	if(s)
+ 		root->set_attribute("static", s?"true":"false");
 	return root;
 }
 
@@ -212,7 +214,7 @@ xmlpp::Element* encode_value(xmlpp::Element* root,const ValueBase &data,Canvas::
 	switch(data.get_type())
 	{
 	case ValueBase::TYPE_REAL:
-		return encode_real(root,data.get(Real()));
+		return encode_real(root,data.get(Real()), data.get_static());
 	case ValueBase::TYPE_TIME:
 		return encode_time(root,data.get(Time()));
 	case ValueBase::TYPE_INTEGER:

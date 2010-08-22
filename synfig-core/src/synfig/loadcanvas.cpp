@@ -824,11 +824,35 @@ CanvasParser::parse_angle(xmlpp::Element *element)
 	return Angle::deg(atof(val.c_str()));
 }
 
+bool
+CanvasParser::parse_static(xmlpp::Element *element)
+{
+	if(!element->get_attribute("static"))
+		return false;
+
+	string val=element->get_attribute("static")->get_value();
+
+	if(val=="true" || val=="1")
+		return true;
+	if(val=="false" || val=="0")
+		return false;
+
+	error(element,strprintf(_("Bad value \"%s\" in <%s>"),val.c_str(),"bool"));
+
+	return false;
+}
+
+
 ValueBase
 CanvasParser::parse_value(xmlpp::Element *element,Canvas::Handle canvas)
 {
 	if(element->get_name()=="real")
-		return parse_real(element);
+	{
+		ValueBase ret;
+		ret.set(parse_real(element));
+		ret.set_static(parse_static(element));
+		return ret;
+	}
 	else
 	if(element->get_name()=="time")
 		return parse_time(element,canvas);
