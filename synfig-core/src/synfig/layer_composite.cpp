@@ -157,11 +157,15 @@ bool
 Layer_Composite::set_param(const String & param, const ValueBase &value)
 {
 	if(param=="amount" && value.same_type_as(amount_))
+	{
 		amount_=value.get(amount_);
+		amount_static=value.get_static();
+	}
 	else
 	if(param=="blend_method" && value.same_type_as(int()))
 	{
 		blend_method_ = static_cast<Color::BlendMethod>(value.get(int()));
+		blend_method_static=value.get_static();
 
 		if (blend_method_ < 0 || blend_method_ >= Color::BLEND_END)
 		{
