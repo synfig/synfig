@@ -184,9 +184,9 @@ Layer_PasteCanvas::set_param(const String & param, const ValueBase &value)
 	if(param=="canvas" && value.same_type_as(Canvas::Handle()))
 	{
 		set_sub_canvas(value.get(Canvas::Handle()));
+		set_param_static(param, value.get_static());
 		return true;
 	}
-
 	//! \todo this introduces bug 1844764 if enabled; it was introduced in r954.
 	// http://synfig.org/images/3/3d/Moving-waypoints.sifz is an
 	// example of an animation that has its waypoints displayed
