@@ -99,9 +99,12 @@ Action::LayerParamSetStatic::is_candidate(const ParamList &x)
 	//!Check that the parameter is not Value Node (Const, Animated or Linkable)
 	if(_layer->dynamic_param_list().count(_param_name))
 		return false;
-
 	//! Retrieves the current parameter
 	parameter = _layer->get_param(_param_name);
+	//! Check that the parameter is not a inline canvas
+	if(parameter.get_type()==ValueBase::TYPE_CANVAS)
+		if(parameter.get(Canvas::Handle())->is_inline())
+			return false;
 	//! Check if it is already static
 	if(parameter.get_static())
 		return false;
