@@ -80,7 +80,7 @@ private:
 	bool focus_static;
 	bool canvas_static;
 	bool zoom_static;
-	bool offset_static;
+	bool time_offset_static;
 	bool children_lock_static;
 
 	// Nasty hack: Remember whether we called an extra ref() when

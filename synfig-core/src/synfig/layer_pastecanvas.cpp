@@ -580,7 +580,7 @@ Layer_PasteCanvas::set_param_static(const String &param, const bool x)
 	SET_STATIC(focus, x)
 	SET_STATIC(canvas, x)
 	SET_STATIC(zoom, x)
-	SET_STATIC(offset, x)
+	SET_STATIC(time_offset, x)
 	SET_STATIC(children_lock, x)
 
 	return Layer_Composite::set_param_static(param, x);
@@ -594,7 +594,7 @@ Layer_PasteCanvas::get_param_static(const String &param) const
 	GET_STATIC(focus)
 	GET_STATIC(canvas)
 	GET_STATIC(zoom)
-	GET_STATIC(offset)
+	GET_STATIC(time_offset)
 	GET_STATIC(children_lock)
 
 	return Layer_Composite::get_param_static(param);
