@@ -92,7 +92,7 @@ Layer_PasteCanvas::Layer_PasteCanvas():
 	focus_static(false),
 	canvas_static(false),
 	zoom_static(false),
-	offset_static(false),
+	time_offset_static(false),
 	children_lock_static(true)
 {
 	children_lock=false;
