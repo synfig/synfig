@@ -91,76 +91,90 @@ xmlpp::Element* encode_keyframe(xmlpp::Element* root,const Keyframe &kf, float f
 	return root;
 }
 
+xmlpp::Element* encode_static(xmlpp::Element* root,bool s)
+{
+	if(s)
+		root->set_attribute("static", s?"true":"false");
+	return root;
+}
 
-xmlpp::Element* encode_real(xmlpp::Element* root,Real v, bool s=false)
+
+xmlpp::Element* encode_real(xmlpp::Element* root,Real v,bool s=false)
 {
 	root->set_name("real");
- 	root->set_attribute("value",strprintf(VECTOR_VALUE_TYPE_FORMAT,v));
- 	if(s)
- 		root->set_attribute("static", s?"true":"false");
+	root->set_attribute("value",strprintf(VECTOR_VALUE_TYPE_FORMAT,v));
+	encode_static(root, s);
 	return root;
 }
 
-xmlpp::Element* encode_time(xmlpp::Element* root,Time t)
+xmlpp::Element* encode_time(xmlpp::Element* root,Time t,bool s=false)
 {
 	root->set_name("time");
- 	root->set_attribute("value",t.get_string());
+	root->set_attribute("value",t.get_string());
+	encode_static(root, s);
 	return root;
 }
 
-xmlpp::Element* encode_integer(xmlpp::Element* root,int i)
+xmlpp::Element* encode_integer(xmlpp::Element* root,int i,bool s=false)
 {
 	root->set_name("integer");
 	root->set_attribute("value",strprintf("%i",i));
+	encode_static(root, s);
 	return root;
 }
 
-xmlpp::Element* encode_bool(xmlpp::Element* root,bool b)
+xmlpp::Element* encode_bool(xmlpp::Element* root, bool b,bool s=false)
 {
 	root->set_name("bool");
 	root->set_attribute("value",b?"true":"false");
+	encode_static(root, s);
 	return root;
 }
 
-xmlpp::Element* encode_string(xmlpp::Element* root,const String &str)
+xmlpp::Element* encode_string(xmlpp::Element* root,const String &str,bool s=false)
 {
 	root->set_name("string");
 	root->set_child_text(str);
+	encode_static(root, s);
 	return root;
 }
 
-xmlpp::Element* encode_vector(xmlpp::Element* root,Vector vect)
+xmlpp::Element* encode_vector(xmlpp::Element* root,Vector vect,bool s=false)
 {
 	root->set_name("vector");
 	root->add_child("x")->set_child_text(strprintf(VECTOR_VALUE_TYPE_FORMAT,(float)vect[0]));
 	root->add_child("y")->set_child_text(strprintf(VECTOR_VALUE_TYPE_FORMAT,(float)vect[1]));
+	encode_static(root, s);
 	return root;
 }
 
-xmlpp::Element* encode_color(xmlpp::Element* root,Color color)
+xmlpp::Element* encode_color(xmlpp::Element* root,Color color,bool s=false)
 {
 	root->set_name("color");
 	root->add_child("r")->set_child_text(strprintf(COLOR_VALUE_TYPE_FORMAT,(float)color.get_r()));
 	root->add_child("g")->set_child_text(strprintf(COLOR_VALUE_TYPE_FORMAT,(float)color.get_g()));
 	root->add_child("b")->set_child_text(strprintf(COLOR_VALUE_TYPE_FORMAT,(float)color.get_b()));
 	root->add_child("a")->set_child_text(strprintf(COLOR_VALUE_TYPE_FORMAT,(float)color.get_a()));
+	encode_static(root, s);
 	return root;
 }
 
-xmlpp::Element* encode_angle(xmlpp::Element* root,Angle theta)
+xmlpp::Element* encode_angle(xmlpp::Element* root,Angle theta,bool s=false)
 {
 	root->set_name("angle");
 	root->set_attribute("value",strprintf("%f",(float)Angle::deg(theta).get()));
+	encode_static(root, s);
 	return root;
 }
 
-xmlpp::Element* encode_segment(xmlpp::Element* root,Segment seg)
+xmlpp::Element* encode_segment(xmlpp::Element* root,Segment seg,bool s=false)
 {
 	root->set_name("segment");
 	encode_vector(root->add_child("p1")->add_child("vector"),seg.p1);
 	encode_vector(root->add_child("t1")->add_child("vector"),seg.t1);
 	encode_vector(root->add_child("p2")->add_child("vector"),seg.p2);
 	encode_vector(root->add_child("t2")->add_child("vector"),seg.t2);
+	encode_static(root, s);
 	return root;
 }
 
@@ -179,10 +193,10 @@ xmlpp::Element* encode_bline_point(xmlpp::Element* root,BLinePoint bline_point)
 	return root;
 }
 
-xmlpp::Element* encode_gradient(xmlpp::Element* root,Gradient x)
+xmlpp::Element* encode_gradient(xmlpp::Element* root,Gradient x,bool s=false)
 {
 	root->set_name("gradient");
-
+	encode_static(root, s);
 	Gradient::const_iterator iter;
 	x.sort();
 	for(iter=x.begin();iter!=x.end();iter++)
@@ -216,25 +230,25 @@ xmlpp::Element* encode_value(xmlpp::Element* root,const ValueBase &data,Canvas::
 	case ValueBase::TYPE_REAL:
 		return encode_real(root,data.get(Real()), data.get_static());
 	case ValueBase::TYPE_TIME:
-		return encode_time(root,data.get(Time()));
+		return encode_time(root,data.get(Time()), data.get_static());
 	case ValueBase::TYPE_INTEGER:
-		return encode_integer(root,data.get(int()));
+		return encode_integer(root,data.get(int()), data.get_static());
 	case ValueBase::TYPE_COLOR:
-		return encode_color(root,data.get(Color()));
+		return encode_color(root,data.get(Color()), data.get_static());
 	case ValueBase::TYPE_VECTOR:
-		return encode_vector(root,data.get(Vector()));
+		return encode_vector(root,data.get(Vector()), data.get_static());
 	case ValueBase::TYPE_ANGLE:
-		return encode_angle(root,data.get(Angle()));
+		return encode_angle(root,data.get(Angle()), data.get_static());
 	case ValueBase::TYPE_BOOL:
-		return encode_bool(root,data.get(bool()));
+		return encode_bool(root,data.get(bool()), data.get_static());
 	case ValueBase::TYPE_STRING:
-		return encode_string(root,data.get(String()));
+		return encode_string(root,data.get(String()), data.get_static());
 	case ValueBase::TYPE_SEGMENT:
-		return encode_segment(root,data.get(Segment()));
+		return encode_segment(root,data.get(Segment()), data.get_static());
 	case ValueBase::TYPE_BLINEPOINT:
 		return encode_bline_point(root,data.get(BLinePoint()));
 	case ValueBase::TYPE_GRADIENT:
-		return encode_gradient(root,data.get(Gradient()));
+		return encode_gradient(root,data.get(Gradient()), data.get_static());
 	case ValueBase::TYPE_LIST:
 		return encode_list(root,data,canvas);
 	case ValueBase::TYPE_CANVAS:

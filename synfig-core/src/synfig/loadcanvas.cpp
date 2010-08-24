@@ -855,38 +855,79 @@ CanvasParser::parse_value(xmlpp::Element *element,Canvas::Handle canvas)
 	}
 	else
 	if(element->get_name()=="time")
-		return parse_time(element,canvas);
+	{
+		ValueBase ret;
+		ret.set(parse_time(element,canvas));
+		ret.set_static(parse_static(element));
+		return ret;
+	}
 	else
 	if(element->get_name()=="integer")
-		return parse_integer(element);
+	{
+		ValueBase ret;
+		ret.set(parse_integer(element));
+		ret.set_static(parse_static(element));
+		return ret;
+	}
 	else
 	if(element->get_name()=="string")
-		return parse_string(element);
+	{
+		ValueBase ret;
+		ret.set(parse_string(element));
+		ret.set_static(parse_static(element));
+		return ret;
+	}
 	else
 	if(element->get_name()=="vector")
-		return parse_vector(element);
+	{
+		ValueBase ret;
+		ret.set(parse_vector(element));
+		ret.set_static(parse_static(element));
+		return ret;
+	}
 	else
 	if(element->get_name()=="color")
-		return parse_color(element);
+	{
+		ValueBase ret;
+		ret.set(parse_color(element));
+		ret.set_static(parse_static(element));
+		return ret;
+	}
 	else
 	if(element->get_name()=="segment")
-		return parse_segment(element);
+	{
+		ValueBase ret;
+		ret.set(parse_segment(element));
+		ret.set_static(parse_static(element));
+		return ret;
+	}
 	else
 	if(element->get_name()=="list")
 		return parse_list(element,canvas);
 	else
 	if(element->get_name()=="gradient")
-		return parse_gradient(element);
+	{
+		ValueBase ret;
+		ret.set(parse_gradient(element));
+		ret.set_static(parse_static(element));
+		return ret;
+	}
 	else
 	if(element->get_name()=="bool")
-		return parse_bool(element);
+	{
+		ValueBase ret;
+		ret.set(parse_bool(element));
+		ret.set_static(parse_static(element));
+		return ret;
+	}
 	else
-	//if(element->get_name()=="canvas")
-	//	return parse_canvas(element,canvas,true);	// inline canvas
-	//else
 	if(element->get_name()=="angle" || element->get_name()=="degrees" || element->get_name()=="radians" || element->get_name()=="rotations")
-		return parse_angle(element);
-	else
+	{
+		ValueBase ret;
+		ret.set(parse_angle(element));
+		ret.set_static(parse_static(element));
+		return ret;
+	}	else
 	if(element->get_name()=="bline_point")
 		return parse_bline_point(element);
 	else
