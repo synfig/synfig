@@ -554,6 +554,8 @@ xmlpp::Element* encode_layer(xmlpp::Element* root,Layer::ConstHandle layer)
 					xmlpp::Element *node=root->add_child("param");
 					node->set_attribute("name",iter->get_name());
 					node->set_attribute("use",child->get_relative_id(layer->get_canvas()));
+					if(value.get_static())
+ 						node->set_attribute("static", value.get_static()?"true":"false");
 					continue;
 				}
 			}

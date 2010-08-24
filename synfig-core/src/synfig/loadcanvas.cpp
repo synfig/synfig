@@ -891,7 +891,12 @@ CanvasParser::parse_value(xmlpp::Element *element,Canvas::Handle canvas)
 		return parse_bline_point(element);
 	else
 	if(element->get_name()=="canvas")
-		return ValueBase(parse_canvas(element,canvas,true));
+	{
+		ValueBase ret;
+		ret.set(parse_canvas(element,canvas,true));
+		ret.set_static(parse_static(element));
+		return ret;
+	}
 	else
 	{
 		error_unexpected_element(element,element->get_name());
