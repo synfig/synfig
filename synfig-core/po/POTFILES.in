@@ -32,6 +32,8 @@ src/modules/lyr_std/sphere_distort.cpp
 src/modules/lyr_std/sphere_distort.h
 src/modules/lyr_std/stretch.cpp
 src/modules/lyr_std/stretch.h
+src/modules/lyr_std/stroboscope.cpp
+src/modules/lyr_std/stroboscope.h
 src/modules/lyr_std/supersample.cpp
 src/modules/lyr_std/supersample.h
 src/modules/lyr_std/timeloop.cpp

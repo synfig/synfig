@@ -51,7 +51,9 @@ liblyr_std_la_SOURCES = \
 	sphere_distort.h \
 	sphere_distort.cpp \
 	curvewarp.cpp \
-	curvewarp.h
+	curvewarp.h \
+	stroboscope.cpp \
+	stroboscope.h
 
 liblyr_std_la_CXXFLAGS = \
 	@SYNFIG_CFLAGS@

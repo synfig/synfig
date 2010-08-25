@@ -67,6 +67,7 @@
 #include "warp.h"
 #include "timeloop.h"
 #include "curvewarp.h"
+#include "stroboscope.h"
 
 #endif
 
@@ -98,6 +99,7 @@ MODULE_INVENTORY_BEGIN(liblyr_std)
 		LAYER(Layer_Shade)
 		LAYER(Layer_Bevel)
 		LAYER(Layer_TimeLoop)
+		LAYER(Layer_Stroboscope)
 		LAYER(Layer_SphereDistort)
 		LAYER(CurveWarp)
 	END_LAYERS
