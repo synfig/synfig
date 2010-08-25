@@ -49,7 +49,7 @@ public:
 	Importer_LibAVCodec(const char *filename);
 	~Importer_LibAVCodec();
 
-	virtual bool get_frame(synfig::Surface &surface,synfig::Time time, synfig::ProgressCallback *callback);
+	virtual bool get_frame(synfig::Surface &surface, const synfig::RendDesc &renddesc, synfig::Time time, synfig::ProgressCallback *callback);
 };
 
 /* === E N D =============================================================== */

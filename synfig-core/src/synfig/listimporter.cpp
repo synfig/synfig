@@ -150,9 +150,11 @@ ListImporter::~ListImporter()
 }
 
 bool
-ListImporter::get_frame(Surface &surface,Time time, ProgressCallback *cb)
+ListImporter::get_frame(Surface &surface, const RendDesc &renddesc, Time time, ProgressCallback *cb)
 {
-	int frame=round_to_int(time*fps);
+	float document_fps=renddesc.get_frame_rate();
+	int document_frame=round_to_int(time*document_fps);
+	int frame=floor_to_int(document_frame*fps/document_fps);
 
 	if(!filename_list.size())
 	{
@@ -184,7 +186,7 @@ ListImporter::get_frame(Surface &surface,Time time, ProgressCallback *cb)
 		return false;
 	}
 
-	if(!importer->get_frame(surface,0,cb))
+	if(!importer->get_frame(surface,renddesc,0,cb))
 	{
 		if(cb)cb->error(_("Unable to get frame from ")+filename_list[frame]);
 		else synfig::error(_("Unable to get frame from ")+filename_list[frame]);

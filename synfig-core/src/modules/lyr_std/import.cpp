@@ -162,7 +162,7 @@ Import::set_param(const String & param, const ValueBase &value)
 		}
 
 		surface.clear();
-		if(!newimporter->get_frame(surface,Time(0),trimmed,width,height,top,left))
+		if(!newimporter->get_frame(surface,get_canvas()->rend_desc(),Time(0),trimmed,width,height,top,left))
 		{
 			synfig::warning(strprintf("Unable to get frame from \"%s\"",filename_with_path.c_str()));
 		}
@@ -222,7 +222,7 @@ Import::set_time(Context context, Time time)const
 {
 	if(get_amount() && importer &&
 	   importer->is_animated())
-		importer->get_frame(surface,time+time_offset,trimmed,width,height,top,left);
+		importer->get_frame(surface,get_canvas()->rend_desc(),time+time_offset,trimmed,width,height,top,left);
 
 	context.set_time(time);
 }
@@ -232,7 +232,7 @@ Import::set_time(Context context, Time time, const Point &pos)const
 {
 	if(get_amount() && importer &&
 	   importer->is_animated())
-		importer->get_frame(surface,time+time_offset,trimmed,width,height,top,left);
+		importer->get_frame(surface,get_canvas()->rend_desc(),time+time_offset,trimmed,width,height,top,left);
 
 	context.set_time(time,pos);
 }

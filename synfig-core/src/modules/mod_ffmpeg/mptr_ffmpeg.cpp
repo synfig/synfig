@@ -258,7 +258,7 @@ ffmpeg_mptr::~ffmpeg_mptr()
 }
 
 bool
-ffmpeg_mptr::get_frame(synfig::Surface &surface,Time time, synfig::ProgressCallback *)
+ffmpeg_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &renddesc, Time time, synfig::ProgressCallback *)
 {
 	int i=(int)(time*fps);
 	if(i!=cur_frame)

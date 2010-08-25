@@ -93,7 +93,7 @@ imagemagick_mptr::~imagemagick_mptr()
 }
 
 bool
-imagemagick_mptr::get_frame(synfig::Surface &surface,Time /*time*/, synfig::ProgressCallback *cb)
+imagemagick_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &renddesc, Time /*time*/, synfig::ProgressCallback *cb)
 {
 //#define HAS_LIBPNG 1
 
@@ -159,7 +159,7 @@ imagemagick_mptr::get_frame(synfig::Surface &surface,Time /*time*/, synfig::Prog
 		return false;
 	}
 
-	if(!importer->get_frame(surface,0,cb))
+	if(!importer->get_frame(surface,renddesc,0,cb))
 	{
 		if(cb)cb->error(_("Unable to get frame from ")+temp_file);
 		else synfig::error(_("Unable to get frame from ")+temp_file);

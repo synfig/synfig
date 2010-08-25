@@ -33,6 +33,7 @@
 #include "string.h"
 #include "time.h"
 #include "gamma.h"
+#include "renddesc.h" 
 
 /* === M A C R O S ========================================================= */
 
@@ -124,8 +125,8 @@ public:
 	**	\return \c true on success, \c false on error
 	**	\see ProgressCallback, Surface
 	*/
-	virtual bool get_frame(Surface &surface,Time time, ProgressCallback *callback=NULL)=0;
-	virtual bool get_frame(Surface &surface,Time time,
+	virtual bool get_frame(Surface &surface, const RendDesc &renddesc, Time time, ProgressCallback *callback=NULL)=0;
+	virtual bool get_frame(Surface &surface, const RendDesc &renddesc,Time time,
 						   bool &trimmed __attribute__ ((unused)),
 						   unsigned int &width __attribute__ ((unused)),
 						   unsigned int &height __attribute__ ((unused)),
@@ -133,7 +134,7 @@ public:
 						   unsigned int &left __attribute__ ((unused)),
 						   ProgressCallback *callback=NULL)
 	{
-		return get_frame(surface,time,callback);
+		return get_frame(surface,renddesc,time,callback);
 	}
 
 	//! Returns \c true if the importer pays attention to the \a time parameter of get_frame()

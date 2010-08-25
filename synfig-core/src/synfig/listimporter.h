@@ -59,7 +59,7 @@ public:
 
 	virtual ~ListImporter();
 
-	virtual bool get_frame(Surface &surface,Time time, ProgressCallback *callback=NULL);
+	virtual bool get_frame(Surface &surface, const RendDesc &renddesc, Time time, ProgressCallback *callback=NULL);
 
 	virtual bool is_animated();
 

@@ -54,7 +54,7 @@ public:
 
 	~imagemagick_mptr();
 
-	virtual bool get_frame(synfig::Surface &surface,synfig::Time time, synfig::ProgressCallback *callback);
+	virtual bool get_frame(synfig::Surface &surface, const synfig::RendDesc &renddesc, synfig::Time time, synfig::ProgressCallback *callback);
 };
 
 /* === E N D =============================================================== */

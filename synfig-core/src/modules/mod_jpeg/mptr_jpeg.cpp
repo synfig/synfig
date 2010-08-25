@@ -249,7 +249,7 @@ jpeg_mptr::~jpeg_mptr()
 }
 
 bool
-jpeg_mptr::get_frame(synfig::Surface &surface,Time, synfig::ProgressCallback */*cb*/)
+jpeg_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &renddesc, Time, synfig::ProgressCallback */*cb*/)
 {
 	surface=surface_buffer;
 	return true;

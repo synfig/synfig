@@ -407,7 +407,7 @@ png_mptr::~png_mptr()
 }
 
 bool
-png_mptr::get_frame(synfig::Surface &surface,Time, synfig::ProgressCallback */*cb*/)
+png_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &renddesc, Time, synfig::ProgressCallback */*cb*/)
 {
 	//assert(0);					// shouldn't be called?
 	surface=surface_buffer;
@@ -415,7 +415,7 @@ png_mptr::get_frame(synfig::Surface &surface,Time, synfig::ProgressCallback */*c
 }
 
 bool
-png_mptr::get_frame(synfig::Surface &surface,Time,
+png_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &renddesc, Time,
 					bool &trimmed, unsigned int &width, unsigned int &height, unsigned int &top, unsigned int &left,
 					synfig::ProgressCallback */*cb*/)
 {
