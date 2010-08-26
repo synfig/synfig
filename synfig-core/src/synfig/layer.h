@@ -273,7 +273,7 @@ private:
 	float z_depth_;
 
 	//! True if zdepth is not affected when in animation mode
-	bool z_depth_static;
+	bool z_depth__static;
 
 	//! \writeme
 	mutable Time dirty_time_;

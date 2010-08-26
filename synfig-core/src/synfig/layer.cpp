@@ -137,7 +137,7 @@ Layer::Layer():
 	active_(true),
 	z_depth_(0.0f),
 	dirty_time_(Time::end()),
-	z_depth_static(false)
+	z_depth__static(false)
 {
 	_LayerCounter::counter++;
 }
@@ -293,13 +293,6 @@ Layer::on_changed()
 bool
 Layer::set_param(const String &param, const ValueBase &value)
 {
-/*	if(param=="z_depth" && value.same_type_as(z_depth_))
-	{
-		z_depth_=value.get(z_depth_);
-		set_param_static(param, value.get_static());
-		return true;
-	}
-	*/
 	IMPORT_AS(z_depth_,"z_depth")
 	return false;
 }
@@ -307,7 +300,7 @@ Layer::set_param(const String &param, const ValueBase &value)
 bool
 Layer::set_param_static(const String &param, const bool x)
 {
-	SET_STATIC(z_depth,x)
+	SET_STATIC(z_depth_,x)
 
 	return false;
 }
@@ -316,7 +309,7 @@ Layer::set_param_static(const String &param, const bool x)
 bool
 Layer::get_param_static(const String &param) const
 {
-	GET_STATIC(z_depth);
+	GET_STATIC(z_depth_);
 
 	return false;
 }
@@ -473,7 +466,7 @@ Layer::get_param(const String & param)const
 	if(param=="z_depth")
 	{
 		synfig::ValueBase ret(get_z_depth());
-		ret.set_static(z_depth_static);
+		ret.set_static(z_depth__static);
 		return ret;
 	}
 	return ValueBase();
