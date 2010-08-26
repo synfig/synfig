@@ -136,10 +136,16 @@ Layer::subsys_stop()
 Layer::Layer():
 	active_(true),
 	z_depth(0.0f),
-	dirty_time_(Time::end()),
-	z_depth_static(false)
+	dirty_time_(Time::end())//,
+	//z_depth_static(false)
 {
 	_LayerCounter::counter++;
+	Vocab vocab=get_param_vocab();
+	Vocab::const_iterator viter;
+	for(viter=vocab.begin();viter!=vocab.end();viter++)
+	{
+		static_params.insert(make_pair(viter->get_name(),false));
+	}
 }
 
 Layer::LooseHandle
@@ -300,7 +306,17 @@ Layer::set_param(const String &param, const ValueBase &value)
 bool
 Layer::set_param_static(const String &param, const bool x)
 {
-	SET_STATIC(z_depth,x)
+	Sparams::iterator iter;
+
+	for(iter=static_params.begin();iter!=static_params.end();iter++)
+	{
+		if(iter->first == param)
+		{
+			iter->second = x;
+			return true;
+		}
+	}
+	//SET_STATIC(z_depth,x)
 
 	return false;
 }
@@ -309,7 +325,17 @@ Layer::set_param_static(const String &param, const bool x)
 bool
 Layer::get_param_static(const String &param) const
 {
-	GET_STATIC(z_depth);
+
+	Sparams::const_iterator iter;
+
+	for(iter=static_params.begin();iter!=static_params.end();iter++)
+	{
+		if(iter->first == param)
+		{
+			return iter->second;
+		}
+	}
+	//GET_STATIC(z_depth);
 
 	return false;
 }
@@ -466,7 +492,7 @@ Layer::get_param(const String & param)const
 	if(param=="z_depth")
 	{
 		synfig::ValueBase ret(get_z_depth());
-		ret.set_static(z_depth_static);
+		ret.set_static(get_param_static(param));
 		return ret;
 	}
 	return ValueBase();

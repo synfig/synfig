@@ -273,7 +273,9 @@ private:
 	float z_depth;
 
 	//! True if zdepth is not affected when in animation mode
-	bool z_depth_static;
+	//bool z_depth_static;
+	typedef std::map<String, bool> Sparams;
+	Sparams static_params;
 
 	//! \writeme
 	mutable Time dirty_time_;
