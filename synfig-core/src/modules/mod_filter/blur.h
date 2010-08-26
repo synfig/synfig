@@ -44,12 +44,18 @@ private:
 	synfig::Point 	size;
 	int				type;
 
+	bool size_static;
+	bool type_static;
+
 public:
 	Blur_Layer();
 
 	virtual bool set_param(const String & param, const synfig::ValueBase &value);
 
 	virtual ValueBase get_param(const String & param)const;
+
+	virtual bool set_param_static(const String &param, const bool x);
+	virtual bool get_param_static(const String &param) const;
 
 	virtual Color get_color(Context context, const Point &pos)const;
 
