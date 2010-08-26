@@ -60,6 +60,12 @@ private:
 	Vector perp_;
 	bool fast;
 
+	bool origin_static;
+	bool perp_width_static;
+	bool start_point_static;
+	bool end_point_static;
+	bool fast_static;
+
 	void sync();
 
 public:
@@ -67,6 +73,8 @@ public:
 
 	virtual bool set_param(const String &param, const ValueBase &value);
 	virtual ValueBase get_param(const String &param)const;
+	virtual bool set_param_static(const String &param, const bool x);
+	virtual bool get_param_static(const String &param) const;
 	virtual Point transform(const Point &point_, Real *dist=NULL, Real *along=0, int quality=10)const;
 	virtual Color get_color(Context context, const Point &pos)const;
 	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
