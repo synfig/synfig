@@ -270,10 +270,10 @@ private:
 	String description_;
 
 	//! The depth parameter of the layer in the layer stack
-	float z_depth_;
+	float z_depth;
 
 	//! True if zdepth is not affected when in animation mode
-	bool z_depth__static;
+	bool z_depth_static;
 
 	//! \writeme
 	mutable Time dirty_time_;
@@ -393,13 +393,13 @@ public:
 	int get_depth()const;
 
 	//! Gets the non animated z depth of the layer
-	float get_z_depth()const { return z_depth_; }
+	float get_z_depth()const { return z_depth; }
 
 	//! Gets the z depth of the layer at a time t
 	float get_z_depth(const synfig::Time& t)const;
 
 	//! Sets the z depth of the layer (non animated)
-	void set_z_depth(float x) { z_depth_=x; }
+	void set_z_depth(float x) { z_depth=x; }
 
 	//! Sets the Canvas that this Layer is a part of
 	void set_canvas(etl::loose_handle<Canvas> canvas);

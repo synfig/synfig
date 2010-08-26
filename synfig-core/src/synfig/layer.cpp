@@ -135,9 +135,9 @@ Layer::subsys_stop()
 
 Layer::Layer():
 	active_(true),
-	z_depth_(0.0f),
+	z_depth(0.0f),
 	dirty_time_(Time::end()),
-	z_depth__static(false)
+	z_depth_static(false)
 {
 	_LayerCounter::counter++;
 }
@@ -293,14 +293,14 @@ Layer::on_changed()
 bool
 Layer::set_param(const String &param, const ValueBase &value)
 {
-	IMPORT_AS(z_depth_,"z_depth")
+	IMPORT(z_depth)
 	return false;
 }
 
 bool
 Layer::set_param_static(const String &param, const bool x)
 {
-	SET_STATIC(z_depth_,x)
+	SET_STATIC(z_depth,x)
 
 	return false;
 }
@@ -309,7 +309,7 @@ Layer::set_param_static(const String &param, const bool x)
 bool
 Layer::get_param_static(const String &param) const
 {
-	GET_STATIC(z_depth_);
+	GET_STATIC(z_depth);
 
 	return false;
 }
@@ -325,7 +325,7 @@ float
 Layer::get_z_depth(const synfig::Time& t)const
 {
 	if(!dynamic_param_list().count("z_depth"))
-		return z_depth_;
+		return z_depth;
 	return (*dynamic_param_list().find("z_depth")->second)(t).get(Real());
 }
 
@@ -466,7 +466,7 @@ Layer::get_param(const String & param)const
 	if(param=="z_depth")
 	{
 		synfig::ValueBase ret(get_z_depth());
-		ret.set_static(z_depth__static);
+		ret.set_static(z_depth_static);
 		return ret;
 	}
 	return ValueBase();
@@ -562,7 +562,7 @@ Layer::get_param_vocab()const
 {
 	Layer::Vocab ret;
 
-	ret.push_back(ParamDesc(z_depth_,"z_depth")
+	ret.push_back(ParamDesc(z_depth,"z_depth")
 		.set_local_name(_("Z Depth"))
 		.set_animation_only(true)
 	);
