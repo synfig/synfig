@@ -45,7 +45,7 @@ class Layer_Stroboscope : public synfig::Layer
 	SYNFIG_LAYER_MODULE_EXT
 
 private:
-	float	ratio;
+	float	frequency;
 
 protected:
 	Layer_Stroboscope();

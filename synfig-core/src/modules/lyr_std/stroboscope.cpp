@@ -67,7 +67,7 @@ SYNFIG_LAYER_SET_CVS_ID(Layer_Stroboscope,"$Id$");
 
 Layer_Stroboscope::Layer_Stroboscope()
 {
-	ratio=2;
+	frequency=2.0;
 }
 
 Layer_Stroboscope::~Layer_Stroboscope()
@@ -77,7 +77,7 @@ Layer_Stroboscope::~Layer_Stroboscope()
 bool
 Layer_Stroboscope::set_param(const String & param, const ValueBase &value)
 {
-	IMPORT(ratio);
+	IMPORT(frequency);
 
 	return Layer::set_param(param,value);
 }
@@ -85,7 +85,7 @@ Layer_Stroboscope::set_param(const String & param, const ValueBase &value)
 ValueBase
 Layer_Stroboscope::get_param(const String & param)const
 {
-	EXPORT(ratio);
+	EXPORT(frequency);
 	EXPORT_NAME();
 	EXPORT_VERSION();
 
@@ -97,8 +97,9 @@ Layer_Stroboscope::get_param_vocab()const
 {
 	Layer::Vocab ret(Layer::get_param_vocab());
 
-	ret.push_back(ParamDesc("ratio")
-		.set_local_name(_("Ratio"))
+	ret.push_back(ParamDesc("frequency")
+		.set_local_name(_("Frequency"))
+		.set_description(_("Frequency of the Strobe in times per second"))
 	);
 
 	return ret;
@@ -107,17 +108,11 @@ Layer_Stroboscope::get_param_vocab()const
 void
 Layer_Stroboscope::set_time(Context context, Time t)const
 {
-	if (ratio != 0)
-	{
-		float fps = 24.0;
-		Canvas::LooseHandle canvas(get_canvas());
-		if(canvas)
-			fps = canvas->rend_desc().get_frame_rate(); //not works :(
-		float frame = floor((t*fps)/ratio)*ratio;
-		t = Time(1)*(frame/fps);
-	}
+	Time ret_time=Time::begin();
+	if(frequency > 0.0)
+		ret_time = Time(1.0)/frequency*floor(t*frequency);
 
-	context.set_time(t);
+	context.set_time(ret_time);
 }
 
 Color
