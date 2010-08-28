@@ -66,13 +66,10 @@ Layer_MotionBlur::Layer_MotionBlur():
 	subsamples_factor	(1.0),
 	subsampling_type	(SUBSAMPLING_HYPERBOLIC),
 	subsample_start		(0.0),
-	subsample_end		(1.0),
-	aperture_static				(false),
-	subsamples_factor_static	(false),
-	subsampling_type_static		(true),
-	subsample_start_static		(false),
-	subsample_end_static		(false)
+	subsample_end		(1.0)
 {
+	Layer::Vocab voc(get_param_vocab());
+	Layer::fill_static(voc);
 }
 
 bool
@@ -274,12 +271,6 @@ Layer_MotionBlur::accelerated_render(Context context,Surface *surface,int qualit
 bool
 Layer_MotionBlur::set_param_static(const String &param, const bool x)
 {
-	SET_STATIC(aperture, x)
-	SET_STATIC(subsamples_factor, x)
-	SET_STATIC(subsampling_type, x)
-	SET_STATIC(subsample_start, x)
-	SET_STATIC(subsample_end, x)
-
 	return Layer_Composite::set_param_static(param, x);
 }
 
@@ -287,12 +278,5 @@ Layer_MotionBlur::set_param_static(const String &param, const bool x)
 bool
 Layer_MotionBlur::get_param_static(const String &param) const
 {
-
-	GET_STATIC(aperture)
-	GET_STATIC(subsamples_factor)
-	GET_STATIC(subsampling_type)
-	GET_STATIC(subsample_start)
-	GET_STATIC(subsample_end)
-
 	return Layer_Composite::get_param_static(param);
 }

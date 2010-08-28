@@ -44,9 +44,6 @@ private:
 	synfig::Point 	size;
 	int				type;
 
-	bool size_static;
-	bool type_static;
-
 public:
 	Blur_Layer();
 

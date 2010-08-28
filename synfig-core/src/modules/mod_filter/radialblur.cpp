@@ -69,6 +69,9 @@ RadialBlur::RadialBlur():
 	size	(0.2),
 	fade_out(false)
 {
+	Layer::Vocab voc(get_param_vocab());
+	Layer::fill_static(voc);
+	set_param_static("blend_method",true);
 }
 
 RadialBlur::~RadialBlur()
@@ -101,22 +104,12 @@ RadialBlur::get_param(const String &param)const
 bool
 RadialBlur::set_param_static(const String &param, const bool x)
 {
-
-	SET_STATIC(origin, x)
-	SET_STATIC(size, x)
-	SET_STATIC(fade_out, x)
-
 	return Layer_Composite::set_param_static(param, x);
 }
 
 bool
 RadialBlur::get_param_static(const String &param)const
 {
-
-	GET_STATIC(origin)
-	GET_STATIC(size)
-	GET_STATIC(fade_out)
-
 	return Layer_Composite::get_param_static(param);
 }
 

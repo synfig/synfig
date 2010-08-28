@@ -60,12 +60,6 @@ private:
 	Vector perp_;
 	bool fast;
 
-	bool origin_static;
-	bool perp_width_static;
-	bool start_point_static;
-	bool end_point_static;
-	bool fast_static;
-
 	void sync();
 
 public:

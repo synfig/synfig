@@ -76,13 +76,6 @@ private:
 	//! signal connection for children. Seems to be used only here
 	sigc::connection child_changed_connection;
 
-	bool origin_static;
-	bool focus_static;
-	bool canvas_static;
-	bool zoom_static;
-	bool time_offset_static;
-	bool children_lock_static;
-
 	// Nasty hack: Remember whether we called an extra ref() when
 	// setting the canvas, so we know whether to call an extra unref()
 	// when finished with the canvas.

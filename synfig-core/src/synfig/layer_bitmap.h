@@ -50,15 +50,11 @@ public:
 	Point tl;
 	Point br;
 	int c;
-	bool tl_static;
-	bool br_static;
-	bool c_static;
 	mutable Surface surface;
 	mutable bool trimmed;
 	mutable unsigned int width, height, top, left;
 
 	Real gamma_adjust;
-	bool gamma_adjust_static;
 
 	Layer_Bitmap();
 

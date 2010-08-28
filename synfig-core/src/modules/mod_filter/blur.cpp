@@ -80,10 +80,11 @@ inline void clamp(synfig::Vector &v)
 Blur_Layer::Blur_Layer():
 	Layer_Composite(1.0,Color::BLEND_STRAIGHT),
 	size(0.1,0.1),
-	type(Blur::FASTGAUSSIAN),
-	size_static(false),
-	type_static(true)
+	type(Blur::FASTGAUSSIAN)
 {
+	Layer::Vocab voc(get_param_vocab());
+	Layer::fill_static(voc);
+	set_param_static("blend_method", true);
 }
 
 bool
@@ -110,20 +111,12 @@ Blur_Layer::get_param(const String &param)const
 bool
 Blur_Layer::set_param_static(const String &param, const bool x)
 {
-
-	SET_STATIC(size, x)
-	SET_STATIC(type, x)
-
 	return Layer_Composite::set_param_static(param, x);
 }
 
 bool
 Blur_Layer::get_param_static(const String &param)const
 {
-
-	GET_STATIC(size)
-	GET_STATIC(type)
-
 	return Layer_Composite::get_param_static(param);
 }
 

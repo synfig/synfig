@@ -53,13 +53,6 @@ private:
 	bool invert;
 	int falloff;
 
-	bool color_static;
-	bool origin_static;
-	bool radius_static;
-	bool feather_static;
-	bool invert_static;
-	bool falloff_static;
-
 	//Caching system for circle
 	struct CircleDataCache
 	{

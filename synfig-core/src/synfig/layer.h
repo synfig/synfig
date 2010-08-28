@@ -129,7 +129,7 @@
 //! This is used as the category for layer book entries which represent aliases of layers.
 //! It prevents these layers showing up in the menu.
 #define CATEGORY_DO_NOT_USE "Do Not Use"
-
+/*
 //! x=variable name, y=static bool value
 #define SET_STATIC(x,y)																	\
 	if(param==#x && x ## _static != y)													\
@@ -141,7 +141,7 @@
 #define GET_STATIC(x)																	\
 	if(param==#x)																		\
 		return x ## _static;															\
-
+*/
 
 /* === T Y P E D E F S ===================================================== */
 

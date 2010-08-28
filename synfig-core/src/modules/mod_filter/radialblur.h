@@ -53,10 +53,6 @@ private:
 	Real size;
 	bool fade_out;
 
-	bool origin_static;
-	bool size_static;
-	bool fade_out_static;
-
 public:
 	RadialBlur();
 	~RadialBlur();

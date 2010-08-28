@@ -56,12 +56,6 @@ private:
 	Real subsample_end;
 	mutable Time time_cur;
 
-	bool aperture_static;
-	bool subsamples_factor_static;
-	bool subsampling_type_static;
-	bool subsample_start_static;
-	bool subsample_end_static;
-
 public:
 	Layer_MotionBlur();
 	virtual bool set_param(const String & param, const synfig::ValueBase &value);

@@ -169,6 +169,8 @@ CurveWarp::CurveWarp():
 	bline[1].set_width(1.0f);
 
 	sync();
+	Layer::Vocab voc(get_param_vocab());
+	Layer::fill_static(voc);
 }
 
 inline Point
@@ -380,27 +382,12 @@ CurveWarp::get_param(const String & param)const
 bool
 CurveWarp::set_param_static(const String &param, const bool x)
 {
-
-	SET_STATIC(origin, x)
-	SET_STATIC(perp_width, x)
-	SET_STATIC(start_point, x)
-	SET_STATIC(end_point, x)
-	SET_STATIC(fast, x)
-
 	return Layer::set_param_static(param, x);
 }
 
 bool
 CurveWarp::get_param_static(const String &param)const
 {
-
-	GET_STATIC(origin)
-	GET_STATIC(perp_width)
-	GET_STATIC(start_point)
-	GET_STATIC(end_point)
-	GET_STATIC(fast)
-
-
 	return Layer::get_param_static(param);
 }
 

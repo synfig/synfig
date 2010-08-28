@@ -67,12 +67,11 @@ synfig::Layer_Bitmap::Layer_Bitmap():
 	c				(1),
 	surface			(128,128),
 	trimmed			(false),
-	gamma_adjust	(1.0),
-	tl_static		(false),
-	br_static		(false),
-	c_static		(true),
-	gamma_adjust_static(false)
+	gamma_adjust	(1.0)
 {
+	Layer::Vocab voc(get_param_vocab());
+	Layer::fill_static(voc);
+	set_param_static("c", true);
 }
 
 bool
@@ -530,12 +529,6 @@ Layer_Bitmap::get_bounding_rect()const
 bool
 Layer_Bitmap::set_param_static(const String &param, const bool x)
 {
-
-	SET_STATIC(tl, x)
-	SET_STATIC(br, x)
-	SET_STATIC(c, x)
-	SET_STATIC(gamma_adjust, x)
-
 	return Layer_Composite::set_param_static(param, x);
 }
 
@@ -543,11 +536,5 @@ Layer_Bitmap::set_param_static(const String &param, const bool x)
 bool
 Layer_Bitmap::get_param_static(const String &param) const
 {
-
-	GET_STATIC(tl)
-	GET_STATIC(br)
-	GET_STATIC(c)
-	GET_STATIC(gamma_adjust)
-
 	return Layer_Composite::get_param_static(param);
 }
