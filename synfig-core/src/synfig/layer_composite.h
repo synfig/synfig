@@ -86,8 +86,6 @@ public:
 	virtual ValueBase get_param(const String &param)const;
 	//!Returns the rectangle that includes the context of the layer and
 	//! the intersection of the layer in case it is active and not onto
-	virtual bool set_param_static(const String &param, const bool x);
-	virtual bool get_param_static(const String &param) const;
 	virtual Rect get_full_bounding_rect(Context context)const;
 	//! Renders the layer composited on the context and puts it on the target surface.
 	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;

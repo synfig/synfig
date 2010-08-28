@@ -236,24 +236,3 @@ Layer_Composite::get_param(const String & param)const
 	//! to see if it can handle that parameter's string.
 	return Layer::get_param(param);
 }
-
-bool
-Layer_Composite::set_param_static(const String &param, const bool x)
-{
-
-	//SET_STATIC(amount, x)
-	//SET_STATIC(blend_method, x)
-
-	return Layer::set_param_static(param, x);
-}
-
-
-bool
-Layer_Composite::get_param_static(const String &param) const
-{
-
-	//GET_STATIC(amount);
-	//GET_STATIC(blend_method);
-
-	return Layer::get_param_static(param);
-}

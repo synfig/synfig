@@ -108,19 +108,6 @@ Blur_Layer::get_param(const String &param)const
 	return Layer_Composite::get_param(param);
 }
 
-bool
-Blur_Layer::set_param_static(const String &param, const bool x)
-{
-	return Layer_Composite::set_param_static(param, x);
-}
-
-bool
-Blur_Layer::get_param_static(const String &param)const
-{
-	return Layer_Composite::get_param_static(param);
-}
-
-
 Color
 Blur_Layer::get_color(Context context, const Point &pos)const
 {

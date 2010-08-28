@@ -266,17 +266,3 @@ Layer_MotionBlur::accelerated_render(Context context,Surface *surface,int qualit
 
 	return true;
 }
-
-
-bool
-Layer_MotionBlur::set_param_static(const String &param, const bool x)
-{
-	return Layer_Composite::set_param_static(param, x);
-}
-
-
-bool
-Layer_MotionBlur::get_param_static(const String &param) const
-{
-	return Layer_Composite::get_param_static(param);
-}

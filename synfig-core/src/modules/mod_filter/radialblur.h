@@ -59,8 +59,6 @@ public:
 
 	virtual bool set_param(const synfig::String & param, const synfig::ValueBase &value);
 	virtual ValueBase get_param(const synfig::String & param)const;
-	virtual bool set_param_static(const String &param, const bool x);
-	virtual bool get_param_static(const String &param) const;
 	virtual Color get_color(Context context, const Point &pos)const;
 	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 	virtual Vocab get_param_vocab()const;

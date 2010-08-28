@@ -524,17 +524,3 @@ Layer_Bitmap::get_bounding_rect()const
 {
 	return Rect(tl,br);
 }
-
-
-bool
-Layer_Bitmap::set_param_static(const String &param, const bool x)
-{
-	return Layer_Composite::set_param_static(param, x);
-}
-
-
-bool
-Layer_Bitmap::get_param_static(const String &param) const
-{
-	return Layer_Composite::get_param_static(param);
-}

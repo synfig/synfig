@@ -101,18 +101,6 @@ RadialBlur::get_param(const String &param)const
 	return Layer_Composite::get_param(param);
 }
 
-bool
-RadialBlur::set_param_static(const String &param, const bool x)
-{
-	return Layer_Composite::set_param_static(param, x);
-}
-
-bool
-RadialBlur::get_param_static(const String &param)const
-{
-	return Layer_Composite::get_param_static(param);
-}
-
 Layer::Vocab
 RadialBlur::get_param_vocab()const
 {

@@ -379,18 +379,6 @@ CurveWarp::get_param(const String & param)const
 	return ValueBase();
 }
 
-bool
-CurveWarp::set_param_static(const String &param, const bool x)
-{
-	return Layer::set_param_static(param, x);
-}
-
-bool
-CurveWarp::get_param_static(const String &param)const
-{
-	return Layer::get_param_static(param);
-}
-
 Layer::Vocab
 CurveWarp::get_param_vocab()const
 {
