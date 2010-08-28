@@ -141,11 +141,7 @@ Layer::Layer():
 {
 	_LayerCounter::counter++;
 	Vocab vocab=get_param_vocab();
-	Vocab::const_iterator viter;
-	for(viter=vocab.begin();viter!=vocab.end();viter++)
-	{
-		static_params.insert(make_pair(viter->get_name(),false));
-	}
+	fill_static(vocab);
 }
 
 Layer::LooseHandle
@@ -306,19 +302,24 @@ Layer::set_param(const String &param, const ValueBase &value)
 bool
 Layer::set_param_static(const String &param, const bool x)
 {
-	Sparams::iterator iter;
-
-	for(iter=static_params.begin();iter!=static_params.end();iter++)
+	Sparams::iterator iter=static_params.find(param);
+	if(iter!=static_params.end())
 	{
-		if(iter->first == param)
-		{
-			iter->second = x;
-			return true;
-		}
+		iter->second=x;
+		return true;
 	}
-	//SET_STATIC(z_depth,x)
-
 	return false;
+}
+
+
+void Layer::fill_static(Vocab vocab)
+{
+	Vocab::const_iterator viter;
+	for(viter=vocab.begin();viter!=vocab.end();viter++)
+	{
+		if(static_params.find(viter->get_name())==static_params.end())
+			static_params.insert(make_pair(viter->get_name(),false));
+	}
 }
 
 
@@ -326,17 +327,9 @@ bool
 Layer::get_param_static(const String &param) const
 {
 
-	Sparams::const_iterator iter;
-
-	for(iter=static_params.begin();iter!=static_params.end();iter++)
-	{
-		if(iter->first == param)
-		{
-			return iter->second;
-		}
-	}
-	//GET_STATIC(z_depth);
-
+	Sparams::const_iterator iter=static_params.find(param);
+	if(iter!=static_params.end())
+		return iter->second;
 	return false;
 }
 

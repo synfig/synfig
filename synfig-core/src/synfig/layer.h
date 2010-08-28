@@ -273,7 +273,6 @@ private:
 	float z_depth;
 
 	//! True if zdepth is not affected when in animation mode
-	//bool z_depth_static;
 	typedef std::map<String, bool> Sparams;
 	Sparams static_params;
 
@@ -472,6 +471,7 @@ public:
 
 	virtual bool set_param_static(const String &param, const bool x);
 	virtual bool get_param_static(const String &param) const;
+	virtual void fill_static(Vocab vocab);
 
 	//!	Sets a list of parameters
 	virtual bool set_param_list(const ParamList &);
