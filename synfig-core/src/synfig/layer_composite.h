@@ -49,25 +49,14 @@ class Layer_Composite : public Layer
 {
 private:
 	//! The amount of composite
-	float amount_;
+	float amount;
 	//! The blend method for the composition
-	Color::BlendMethod blend_method_;
-	bool amount_static;
-	bool blend_method_static;
+	Color::BlendMethod blend_method;
 
 protected:
 	//! Default constructor. Not used directly.
-	Layer_Composite(
-		float 	amount=1.0,
-		Color::BlendMethod 	blend_method=Color::BLEND_COMPOSITE
-	):
-		amount_				(amount),
-		blend_method_		(blend_method),
-		converted_blend_	(false),
-		transparent_color_	(false),
-		amount_static		(false),
-		blend_method_static	(true)
-	{ }
+	Layer_Composite(float amount=1.0, Color::BlendMethod blend_method=Color::BLEND_COMPOSITE);
+
 	//! Converted blend is used to check if an old version of canvas
 	//! is used in the composition. Old Straight was used as new Composite
 	//! \todo verify this
@@ -78,17 +67,17 @@ protected:
 
 public:
 	//! Gets the amount of the layer
-	float get_amount()const { return amount_; }
+	float get_amount()const { return amount; }
 	//! Sets the amount of the layer and returns this layer
-	Layer_Composite& set_amount(float x) { amount_=x; return *this; }
+	Layer_Composite& set_amount(float x) { amount=x; return *this; }
 	//! Gets the blend method of the layer
-	Color::BlendMethod get_blend_method()const { return blend_method_; }
+	Color::BlendMethod get_blend_method()const { return blend_method; }
 	//! Sets the blend method of the layer and returns this layer
-	Layer_Composite& set_blend_method(Color::BlendMethod x) { blend_method_=x; return *this; }
+	Layer_Composite& set_blend_method(Color::BlendMethod x) { blend_method=x; return *this; }
 	//! Returns true is amount is 1 and blend method is straight
-	virtual bool is_solid_color()const { return amount_==1.0f && blend_method_==Color::BLEND_STRAIGHT; }
+	virtual bool is_solid_color()const { return amount==1.0f && blend_method==Color::BLEND_STRAIGHT; }
 	//! Returns true if the amount is zero.
-	bool is_disabled()const { return amount_==0.0f; }
+	bool is_disabled()const { return amount==0.0f; }
 	//! Gets the parameter vocabulary. To be overrided by the derived.
 	virtual Vocab get_param_vocab()const;
 	//! Sets the value for the given parameter.
