@@ -73,6 +73,9 @@ Halftone2::Halftone2():
 	halftone.type=TYPE_SYMMETRIC;
 
 	set_blend_method(Color::BLEND_STRAIGHT);
+
+	Layer::Vocab voc(get_param_vocab());
+	Layer::fill_static(voc);
 }
 
 inline Color
