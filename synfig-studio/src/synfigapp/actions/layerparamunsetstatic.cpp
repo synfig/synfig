@@ -104,7 +104,7 @@ Action::LayerParamUnSetStatic::is_candidate(const ParamList &x)
 	parameter = _layer->get_param(_param_name);
 	//! Check that the parameter is not a inline canvas
 	if(parameter.get_type()==ValueBase::TYPE_CANVAS)
-		if(parameter.get(Canvas::Handle())->is_inline())
+		if(parameter.get(Canvas::Handle())->is_inline() && parameter.get(Canvas::Handle()))
 			return false;
 	//! Check if it is not static
 	if(!parameter.get_static())
