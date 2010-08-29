@@ -68,6 +68,8 @@ Layer_Clamp::Layer_Clamp():
 	ceiling(1.0f),
 	floor(0.0f)
 {
+	Layer::Vocab voc(get_param_vocab());
+	Layer::fill_static(voc);
 }
 
 inline Color

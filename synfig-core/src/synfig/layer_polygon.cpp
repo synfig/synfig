@@ -74,6 +74,8 @@ Layer_Polygon::Layer_Polygon():
 	vector_list.push_back(Point(-0.333333,0));
 	vector_list.push_back(Point(0.333333,0));
 	sync();
+	Layer::Vocab voc(get_param_vocab());
+	Layer::fill_static(voc);
 }
 
 Layer_Polygon::~Layer_Polygon()

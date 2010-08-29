@@ -161,6 +161,9 @@ Outline::Outline()
 	bline=bline_point_list;
 
 	needs_sync=true;
+
+	Layer::Vocab voc(get_param_vocab());
+	Layer::fill_static(voc);
 }
 
 
