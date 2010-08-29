@@ -93,7 +93,7 @@
 	if (param==y && value.same_type_as(x))												\
 	{																					\
 		value.put(&x);																	\
-		set_param_static(#x,value.get_static());										\
+		set_param_static(y,value.get_static());										\
 		return true;																	\
 	}
 
