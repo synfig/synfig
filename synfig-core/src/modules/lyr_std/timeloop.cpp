@@ -71,6 +71,8 @@ Layer_TimeLoop::Layer_TimeLoop()
 	link_time=0;
 	local_time=0;
 	duration=1;
+	Layer::Vocab voc(get_param_vocab());
+	Layer::fill_static(voc);
 }
 
 Layer_TimeLoop::~Layer_TimeLoop()

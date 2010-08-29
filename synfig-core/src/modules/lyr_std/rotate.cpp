@@ -69,6 +69,8 @@ Rotate::Rotate():
 	sin_val	(0),
 	cos_val	(1)
 {
+	Layer::Vocab voc(get_param_vocab());
+	Layer::fill_static(voc);
 }
 
 Rotate::~Rotate()
@@ -85,6 +87,7 @@ Rotate::set_param(const String & param, const ValueBase &value)
 		amount=value.get(amount);
 		sin_val=Angle::sin(amount).get();
 		cos_val=Angle::cos(amount).get();
+		set_param_static(param, value.get_static());
 		return true;
 	}
 

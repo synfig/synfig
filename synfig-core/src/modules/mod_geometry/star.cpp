@@ -78,6 +78,8 @@ Star::Star():
 	regular_polygon(false)
 {
 	sync();
+	Layer::Vocab voc(get_param_vocab());
+	Layer::fill_static(voc);
 }
 
 void
@@ -106,6 +108,7 @@ Star::set_param(const String & param, const ValueBase &value)
 	{
 		value.put(&radius1);
 		sync();
+		set_param_static(param, value.get_static());
 		return true;
 	}
 
@@ -113,6 +116,7 @@ Star::set_param(const String & param, const ValueBase &value)
 	{
 		value.put(&radius2);
 		sync();
+		set_param_static(param, value.get_static());
 		return true;
 	}
 
@@ -121,6 +125,7 @@ Star::set_param(const String & param, const ValueBase &value)
 		value.put(&points);
 		if(points<2)points=2;
 		sync();
+		set_param_static(param, value.get_static());
 		return true;
 	}
 
@@ -128,6 +133,7 @@ Star::set_param(const String & param, const ValueBase &value)
 	{
 		value.put(&angle);
 		sync();
+		set_param_static(param, value.get_static());
 		return true;
 	}
 
@@ -135,6 +141,7 @@ Star::set_param(const String & param, const ValueBase &value)
 	{
 		value.put(&regular_polygon);
 		sync();
+		set_param_static(param, value.get_static());
 		return true;
 	}
 

@@ -82,6 +82,7 @@ synfig::Layer_Bitmap::set_param(const String & param, ValueBase value)
 	IMPORT(c);
 	if(param=="gamma_adjust"&& value.get_type()==ValueBase::TYPE_REAL)
 	{
+		set_param_static(param, value.get_static());
 		gamma_adjust=1.0/value.get(Real());
 		//gamma_adjust.set_gamma(1.0/value.get(Real()));
 		return true;
@@ -97,17 +98,31 @@ synfig::Layer_Bitmap::get_param(const String & param)const
 	EXPORT(br);
 	EXPORT(c);
 	if(param=="gamma_adjust")
-		return 1.0/gamma_adjust;
+	{
+		ValueBase ret(1.0/gamma_adjust);
+		ret.set_static(get_param_static(param));
+		return ret;
+	}
 
 	if(param=="_width")
 	{
-		if (trimmed) return int(width);
-		return surface.get_w();
+		ValueBase ret1(ValueBase::TYPE_INTEGER);
+		ret1=int(width);
+		ValueBase ret2(surface.get_w());
+		ret1.set_static(get_param_static(param));
+		ret2.set_static(get_param_static(param));
+		if (trimmed) return ret1;
+		return ret2;
 	}
 	if(param=="_height")
 	{
-		if (trimmed) return int(height);
-		return surface.get_h();
+		ValueBase ret1(ValueBase::TYPE_INTEGER);
+		ret1=int(height);
+		ValueBase ret2(surface.get_h());
+		ret1.set_static(get_param_static(param));
+		ret2.set_static(get_param_static(param));
+		if (trimmed) return ret1;
+		return ret2;
 	}
 
 	return Layer_Composite::get_param(param);
