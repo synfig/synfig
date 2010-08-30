@@ -85,8 +85,8 @@ Action::ValueNodeConstUnSetStatic::is_candidate(const ParamList &x)
 	ValueNode::Handle value_node;
 	ValueDesc value_desc(x.find("value_desc")->second.get_value_desc());
 
-	if(value_desc.parent_is_value_node())
-		value_node = value_desc.get_parent_value_node();
+	if(value_desc.parent_is_value_node_const() || value_desc.parent_is_linkable_value_node())
+		value_node = value_desc.get_value_node();
 	else
 		value_node = x.find("value_node")->second.get_value_node();
 
@@ -107,7 +107,7 @@ Action::ValueNodeConstUnSetStatic::set_param(const synfig::String& name, const A
 		if(!value_desc.parent_is_value_node())
 			return false;
 
-		value_node=ValueNode_Const::Handle::cast_dynamic(value_desc.get_parent_value_node());
+		value_node=ValueNode_Const::Handle::cast_dynamic(value_desc.get_value_node());
 
 		if(!value_node)
 			return false;
