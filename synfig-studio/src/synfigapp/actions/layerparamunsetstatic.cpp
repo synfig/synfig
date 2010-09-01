@@ -47,7 +47,7 @@ using namespace Action;
 
 ACTION_INIT(Action::LayerParamUnSetStatic);
 ACTION_SET_NAME(Action::LayerParamUnSetStatic,"LayerParamUnSetStatic");
-ACTION_SET_LOCAL_NAME(Action::LayerParamUnSetStatic,N_("UnSet Layer Parameter Static"));
+ACTION_SET_LOCAL_NAME(Action::LayerParamUnSetStatic,N_("UnSet Static"));
 ACTION_SET_TASK(Action::LayerParamUnSetStatic,"unsetstatic");
 ACTION_SET_CATEGORY(Action::LayerParamUnSetStatic,Action::CATEGORY_VALUEDESC);
 ACTION_SET_PRIORITY(Action::LayerParamUnSetStatic,0);
