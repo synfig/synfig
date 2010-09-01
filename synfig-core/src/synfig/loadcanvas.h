@@ -203,6 +203,9 @@ private:
 	//! Dynamic List Parsnig Function
 	etl::handle<ValueNode_DynamicList> parse_dynamic_list(xmlpp::Element *node,Canvas::Handle canvas);
 
+	//! Static option for ValueBase parsing fucntion
+	bool parse_static(xmlpp::Element *node);
+
 }; // END of CanvasParser
 
 /* === E X T E R N S ======================================================= */

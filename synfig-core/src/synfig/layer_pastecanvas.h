@@ -157,6 +157,8 @@ public:
 	virtual bool set_param(const String & param, const synfig::ValueBase &value);
 	//! Get the value of the specified parameter. \see Layer::get_param
 	virtual ValueBase get_param(const String & param)const;
+	virtual bool set_param_static(const String &param, const bool x);
+	virtual bool get_param_static(const String &param) const;
 	//! Gets the blend color of the Layer in the context at \a pos
 	virtual Color get_color(Context context, const Point &pos)const;
 	//! Sets the time of the Paste Canvas Layer and those under it

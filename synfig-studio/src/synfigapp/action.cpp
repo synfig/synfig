@@ -41,6 +41,8 @@
 #include "actions/layeradd.h"
 #include "actions/layeractivate.h"
 #include "actions/layerparamset.h"
+#include "actions/layerparamsetstatic.h"
+#include "actions/layerparamunsetstatic.h"
 #include "actions/layerparamconnect.h"
 #include "actions/layerparamdisconnect.h"
 #include "actions/layerencapsulate.h"
@@ -48,6 +50,8 @@
 #include "actions/layersetdesc.h"
 
 #include "actions/valuenodeconstset.h"
+#include "actions/valuenodeconstsetstatic.h"
+#include "actions/valuenodeconstunsetstatic.h"
 #include "actions/valuenodeadd.h"
 #include "actions/valuenodereplace.h"
 #include "actions/valuenodelinkconnect.h"
@@ -161,6 +165,8 @@ Action::Main::Main()
 	ADD_ACTION(Action::LayerAdd);
 	ADD_ACTION(Action::LayerActivate);
 	ADD_ACTION(Action::LayerParamSet);
+	ADD_ACTION(Action::LayerParamSetStatic);
+	ADD_ACTION(Action::LayerParamUnSetStatic);
 	ADD_ACTION(Action::LayerParamConnect);
 	ADD_ACTION(Action::LayerParamDisconnect);
 	ADD_ACTION(Action::LayerEncapsulate);
@@ -168,6 +174,8 @@ Action::Main::Main()
 	ADD_ACTION(Action::LayerSetDesc);
 
 	ADD_ACTION(Action::ValueNodeConstSet);
+	ADD_ACTION(Action::ValueNodeConstSetStatic);
+	ADD_ACTION(Action::ValueNodeConstUnSetStatic);
 	ADD_ACTION(Action::ValueNodeAdd);
 	ADD_ACTION(Action::ValueNodeReplace);
 	ADD_ACTION(Action::ValueNodeLinkConnect);

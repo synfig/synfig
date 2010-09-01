@@ -111,6 +111,8 @@ Plant::Plant():
 	sync();
 	size_as_alpha=false;
 	reverse=true;
+	Layer::Vocab voc(get_param_vocab());
+	Layer::fill_static(voc);
 }
 
 void
@@ -278,13 +280,14 @@ Plant::set_param(const String & param, const ValueBase &value)
 		bline=value;
 		bline_loop=value.get_loop();
 		needs_sync_=true;
-
+		set_param_static(param, value.get_static());
 		return true;
 	}
 	if(param=="seed" && value.same_type_as(int()))
 	{
 		random.set_seed(value.get(int()));
 		needs_sync_=true;
+		set_param_static(param, value.get_static());
 		return true;
 	}
 	IMPORT(origin);
@@ -348,7 +351,11 @@ ValueBase
 Plant::get_param(const String& param)const
 {
 	if(param=="seed")
-		return random.get_seed();
+	{
+		ValueBase ret(random.get_seed());
+		ret.set_static(get_param_static(param));
+		return ret;
+	}
 	EXPORT(bline);
 	EXPORT(origin);
 	EXPORT(split_angle);

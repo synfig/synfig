@@ -109,6 +109,8 @@ Layer_Freetype::Layer_Freetype()
 	new_font(family,style,weight);
 
 	invert=false;
+	Layer::Vocab voc(get_param_vocab());
+	Layer::fill_static(voc);
 }
 
 Layer_Freetype::~Layer_Freetype()

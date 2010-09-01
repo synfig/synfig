@@ -81,6 +81,7 @@
 	if (param==#x && value.same_type_as(x))												\
 	{																					\
 		value.put(&x);																	\
+		set_param_static(#x,value.get_static());										\
 		{																				\
 			y;																			\
 		}																				\
@@ -92,6 +93,7 @@
 	if (param==y && value.same_type_as(x))												\
 	{																					\
 		value.put(&x);																	\
+		set_param_static(y,value.get_static());										\
 		return true;																	\
 	}
 
@@ -102,7 +104,11 @@
 //! Exports a parameter 'x' if param is same type as given 'y'
 #define EXPORT_AS(x,y)																	\
 	if (param==y)																		\
-		return ValueBase(x);
+	{																					\
+		synfig::ValueBase ret(x);														\
+		ret.set_static(get_param_static(y));											\
+		return ret;																		\
+	}
 
 //! Exports a parameter if it is the same type as value
 #define EXPORT(x)																		\
@@ -123,6 +129,19 @@
 //! This is used as the category for layer book entries which represent aliases of layers.
 //! It prevents these layers showing up in the menu.
 #define CATEGORY_DO_NOT_USE "Do Not Use"
+/*
+//! x=variable name, y=static bool value
+#define SET_STATIC(x,y)																	\
+	if(param==#x && x ## _static != y)													\
+	{																					\
+		x ## _static = y;																\
+		return true;																	\
+	}
+
+#define GET_STATIC(x)																	\
+	if(param==#x)																		\
+		return x ## _static;															\
+*/
 
 /* === T Y P E D E F S ===================================================== */
 
@@ -251,7 +270,11 @@ private:
 	String description_;
 
 	//! The depth parameter of the layer in the layer stack
-	float z_depth_;
+	float z_depth;
+
+	//! True if zdepth is not affected when in animation mode
+	typedef std::map<String, bool> Sparams;
+	Sparams static_params;
 
 	//! \writeme
 	mutable Time dirty_time_;
@@ -371,13 +394,13 @@ public:
 	int get_depth()const;
 
 	//! Gets the non animated z depth of the layer
-	float get_z_depth()const { return z_depth_; }
+	float get_z_depth()const { return z_depth; }
 
 	//! Gets the z depth of the layer at a time t
 	float get_z_depth(const synfig::Time& t)const;
 
 	//! Sets the z depth of the layer (non animated)
-	void set_z_depth(float x) { z_depth_=x; }
+	void set_z_depth(float x) { z_depth=x; }
 
 	//! Sets the Canvas that this Layer is a part of
 	void set_canvas(etl::loose_handle<Canvas> canvas);
@@ -445,6 +468,10 @@ public:
 	**	\todo \a param should be of the type <tt>const String \&param</tt>
 	*/
 	virtual bool set_param(const String &param, const ValueBase &value);
+
+	virtual bool set_param_static(const String &param, const bool x);
+	virtual bool get_param_static(const String &param) const;
+	virtual void fill_static(Vocab vocab);
 
 	//!	Sets a list of parameters
 	virtual bool set_param_list(const ParamList &);

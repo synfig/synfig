@@ -84,6 +84,8 @@ Layer_Shade::Layer_Shade():
 	origin(0.2,-0.2),
 	invert(false)
 {
+	Layer::Vocab voc(get_param_vocab());
+	Layer::fill_static(voc);
 }
 
 bool

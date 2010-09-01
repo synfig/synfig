@@ -57,14 +57,15 @@ using namespace etl;
 
 /* === M E T H O D S ======================================================= */
 
-ValueBase::ValueBase():type(TYPE_NIL),data(0),ref_count(0),loop_(0)
+ValueBase::ValueBase():type(TYPE_NIL),data(0),ref_count(0),loop_(0),static_(0)
 {
 }
 
 ValueBase::ValueBase(Type x):
 	type(x),
 	data(0),
-	loop_(0)
+	loop_(0),
+	static_(0)
 {
 	switch(type)
 	{
@@ -216,6 +217,7 @@ ValueBase::operator=(const ValueBase& x)
 		ref_count=x.ref_count;
 	}
 	loop_=x.loop_;
+	static_=x.static_;
 	return *this;
 }
 

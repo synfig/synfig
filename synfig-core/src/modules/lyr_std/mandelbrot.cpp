@@ -119,6 +119,9 @@ Mandelbrot::Mandelbrot():
 
 	bailout=4;
 	lp=log(log(bailout));
+
+	Layer::Vocab voc(get_param_vocab());
+	Layer::fill_static(voc);
 }
 
 bool
@@ -147,6 +150,7 @@ Mandelbrot::set_param(const String & param, const ValueBase &value)
 	IMPORT(gradient_inside);
 	IMPORT(gradient_outside);
 
+// TODO: Use IMPORT_PLUS
 	if(param=="iterations" && value.same_type_as(iterations))
 	{
 		iterations=value.get(iterations);
@@ -154,6 +158,7 @@ Mandelbrot::set_param(const String & param, const ValueBase &value)
 			iterations=0;
 		if(iterations>500000)
 			iterations=500000;
+		set_param_static(param, value.get_static());
 		return true;
 	}
 	if(param=="bailout" && value.same_type_as(bailout))
@@ -161,6 +166,7 @@ Mandelbrot::set_param(const String & param, const ValueBase &value)
 		bailout=value.get(bailout);
 		bailout*=bailout;
 		lp=log(log(bailout));
+		set_param_static(param, value.get_static());
 		return true;
 	}
 
@@ -195,7 +201,11 @@ Mandelbrot::get_param(const String & param)const
 	EXPORT(gradient_outside);
 
 	if(param=="bailout")
-		return sqrt(bailout);
+	{
+		ValueBase ret(sqrt(bailout));
+		ret.set_static(get_param_static(param));
+		return ret;
+	}
 
 	EXPORT_NAME();
 	EXPORT_VERSION();

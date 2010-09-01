@@ -824,50 +824,120 @@ CanvasParser::parse_angle(xmlpp::Element *element)
 	return Angle::deg(atof(val.c_str()));
 }
 
+bool
+CanvasParser::parse_static(xmlpp::Element *element)
+{
+	if(!element->get_attribute("static"))
+		return false;
+
+	string val=element->get_attribute("static")->get_value();
+
+	if(val=="true" || val=="1")
+		return true;
+	if(val=="false" || val=="0")
+		return false;
+
+	error(element,strprintf(_("Bad value \"%s\" in <%s>"),val.c_str(),"bool"));
+
+	return false;
+}
+
+
 ValueBase
 CanvasParser::parse_value(xmlpp::Element *element,Canvas::Handle canvas)
 {
 	if(element->get_name()=="real")
-		return parse_real(element);
+	{
+		ValueBase ret;
+		ret.set(parse_real(element));
+		ret.set_static(parse_static(element));
+		return ret;
+	}
 	else
 	if(element->get_name()=="time")
-		return parse_time(element,canvas);
+	{
+		ValueBase ret;
+		ret.set(parse_time(element,canvas));
+		ret.set_static(parse_static(element));
+		return ret;
+	}
 	else
 	if(element->get_name()=="integer")
-		return parse_integer(element);
+	{
+		ValueBase ret;
+		ret.set(parse_integer(element));
+		ret.set_static(parse_static(element));
+		return ret;
+	}
 	else
 	if(element->get_name()=="string")
-		return parse_string(element);
+	{
+		ValueBase ret;
+		ret.set(parse_string(element));
+		ret.set_static(parse_static(element));
+		return ret;
+	}
 	else
 	if(element->get_name()=="vector")
-		return parse_vector(element);
+	{
+		ValueBase ret;
+		ret.set(parse_vector(element));
+		ret.set_static(parse_static(element));
+		return ret;
+	}
 	else
 	if(element->get_name()=="color")
-		return parse_color(element);
+	{
+		ValueBase ret;
+		ret.set(parse_color(element));
+		ret.set_static(parse_static(element));
+		return ret;
+	}
 	else
 	if(element->get_name()=="segment")
-		return parse_segment(element);
+	{
+		ValueBase ret;
+		ret.set(parse_segment(element));
+		ret.set_static(parse_static(element));
+		return ret;
+	}
 	else
 	if(element->get_name()=="list")
 		return parse_list(element,canvas);
 	else
 	if(element->get_name()=="gradient")
-		return parse_gradient(element);
+	{
+		ValueBase ret;
+		ret.set(parse_gradient(element));
+		ret.set_static(parse_static(element));
+		return ret;
+	}
 	else
 	if(element->get_name()=="bool")
-		return parse_bool(element);
+	{
+		ValueBase ret;
+		ret.set(parse_bool(element));
+		ret.set_static(parse_static(element));
+		return ret;
+	}
 	else
-	//if(element->get_name()=="canvas")
-	//	return parse_canvas(element,canvas,true);	// inline canvas
-	//else
 	if(element->get_name()=="angle" || element->get_name()=="degrees" || element->get_name()=="radians" || element->get_name()=="rotations")
-		return parse_angle(element);
-	else
+	{
+		ValueBase ret;
+		ret.set(parse_angle(element));
+		ret.set_static(parse_static(element));
+		return ret;
+	}	else
 	if(element->get_name()=="bline_point")
 		return parse_bline_point(element);
 	else
 	if(element->get_name()=="canvas")
-		return ValueBase(parse_canvas(element,canvas,true));
+	{
+		ValueBase ret;
+		ret.set(parse_canvas(element,canvas,true));
+		ret.set_static(parse_static(element));
+		return ret;
+	}
 	else
 	{
 		error_unexpected_element(element,element->get_name());
@@ -1766,6 +1836,8 @@ CanvasParser::parse_layer(xmlpp::Element *element,Canvas::Handle canvas)
 					if(!c) error((*iter),strprintf(_("Failed to load subcanvas '%s'"), str.c_str()));
 					if(!layer->set_param(param_name,c))
 						error((*iter),_("Layer rejected canvas link"));
+					//Parse the static option and sets it to the canvas ValueBase
+					layer->set_param_static(param_name, parse_static(child));
 				}
 				else
 				try

@@ -1,11 +1,12 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file valuenode_const.h
-**	\brief Header file for implementation of the "Constant" valuenode conversion.
+/*!	\file layerparamsetstatic.h
+**	\brief Template File
 **
 **	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
+**	Copyright (c) 2010 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -22,55 +23,55 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_VALUENODE_CONST_H
-#define __SYNFIG_VALUENODE_CONST_H
+#ifndef __SYNFIG_APP_ACTION_LAYERPARAMSETSTATIC_H
+#define __SYNFIG_APP_ACTION_LAYERPARAMSETSTATIC_H
 
 /* === H E A D E R S ======================================================= */
 
-#include "valuenode.h"
+#include <synfig/layer.h>
+#include <synfigapp/action.h>
 
 /* === M A C R O S ========================================================= */
 
+/* === T Y P E D E F S ===================================================== */
+
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace synfig {
+namespace synfigapp {
 
-class ValueNode_Const : public ValueNode
+class Instance;
+
+namespace Action {
+
+class LayerParamSetStatic :
+	public Undoable,
+	public CanvasSpecific
 {
-public:
-	typedef etl::handle<ValueNode_Const> Handle;
-	typedef etl::handle<const ValueNode_Const> ConstHandle;
-
 private:
-	ValueBase value;
 
-	ValueNode_Const();
-	ValueNode_Const(const ValueBase &x);
+	synfig::Layer::Handle layer;
+	synfig::String	param_name;
+	bool old_static_value;
 
-public:
-
-	virtual ValueBase operator()(Time t)const;
-	virtual ~ValueNode_Const();
-
-	const ValueBase &get_value()const;
-	ValueBase &get_value();
-	void set_value(const ValueBase &data);
-
-	bool get_static()const {return get_value().get_static();}
-	void set_static(bool x) { get_value().set_static(x); }
-	virtual String get_name()const;
-	virtual String get_local_name()const;
-
-	virtual ValueNode* clone(const GUID& deriv_guid=GUID())const;
 
 public:
-	static ValueNode_Const* create(const ValueBase &x=ValueBase());
 
-protected:
-	virtual void get_times_vfunc(Node::time_set &set) const;
+	LayerParamSetStatic();
+
+	static ParamVocab get_param_vocab();
+	static bool is_candidate(const ParamList &x);
+
+	virtual bool set_param(const synfig::String& name, const Param &);
+	virtual bool is_ready()const;
+
+	virtual void perform();
+	virtual void undo();
+
+	ACTION_MODULE_EXT
 };
 
-}; // END of namespace synfig
+}; // END of namespace action
+}; // END of namespace studio
 
 /* === E N D =============================================================== */
 

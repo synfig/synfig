@@ -74,6 +74,8 @@ Metaballs::Metaballs():
 	centers.push_back(Point( 0, -1.5));	radii.push_back(2.5);	weights.push_back(1);
 	centers.push_back(Point(-2,  1));	radii.push_back(2.5);	weights.push_back(1);
 	centers.push_back(Point( 2,  1));	radii.push_back(2.5);	weights.push_back(1);
+	Layer::Vocab voc(get_param_vocab());
+	Layer::fill_static(voc);
 }
 
 bool

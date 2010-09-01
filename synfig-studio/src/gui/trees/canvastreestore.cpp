@@ -193,6 +193,7 @@ CanvasTreeStore::get_value_vfunc(const Gtk::TreeModel::iterator& iter, int colum
 	if(column==model.type.index())
 	{
 		synfigapp::ValueDesc value_desc((*iter)[model.value_desc]);
+		String stype, lname;
 
 		Glib::Value<Glib::ustring> x;
 		g_value_init(x.gobj(),x.value_type());
@@ -205,16 +206,20 @@ CanvasTreeStore::get_value_vfunc(const Gtk::TreeModel::iterator& iter, int colum
 		}
 		else
 		{
-			if(!value_desc.is_value_node() || value_desc.get_value_node()->get_name()=="constant")
+			stype=ValueBase::type_local_name(value_desc.get_value_type());
+			if(value_desc.get_value_node())
 			{
-				x.set(ValueBase::type_local_name(value_desc.get_value_type()));
+				lname=value_desc.get_value_node()->get_name();
+				if (lname=="animated" || lname=="static")
+					stype+=" (" + value_desc.get_value_node()->get_local_name() + ")";
 			}
-			else
+			else if(value_desc.parent_is_layer_param())
 			{
-				x.set(value_desc.get_value_node()->get_local_name());
+				if(value_desc.get_value().get_static())
+					stype+=_(" (Static)");
 			}
 		}
-
+		x.set(stype.c_str());
 		g_value_init(value.gobj(),x.value_type());
 		g_value_copy(x.gobj(),value.gobj());
 	}

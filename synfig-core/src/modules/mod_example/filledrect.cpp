@@ -75,6 +75,8 @@ FilledRect::FilledRect():
 	bevel(0),
 	bevCircle(0)
 {
+	Layer::Vocab voc(get_param_vocab());
+	Layer::fill_static(voc);
 }
 
 bool

@@ -68,6 +68,8 @@ Layer_ColorCorrect::Layer_ColorCorrect():
 	contrast(1.0),
 	exposure(0.0)
 {
+	Layer::Vocab voc(get_param_vocab());
+	Layer::fill_static(voc);
 }
 
 inline Color
@@ -172,6 +174,7 @@ Layer_ColorCorrect::set_param(const String & param, const ValueBase &value)
 	if(param=="gamma" && value.get_type()==ValueBase::TYPE_REAL)
 	{
 		gamma.set_gamma(1.0/value.get(Real()));
+		set_param_static(param, value.get_static());
 		return true;
 	}
 	return false;
@@ -186,7 +189,11 @@ Layer_ColorCorrect::get_param(const String &param)const
 	EXPORT(exposure);
 
 	if(param=="gamma")
-		return 1.0/gamma.get_gamma();
+	{
+		ValueBase ret(1.0/gamma.get_gamma());
+		ret.set_static(get_param_static(param));
+		return ret;
+	}
 
 	EXPORT_NAME();
 	EXPORT_VERSION();

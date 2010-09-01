@@ -101,6 +101,9 @@ Halftone3::Halftone3()
 			inverse_matrix[i][j]=(j==i)?1.0f:0.0f;
 
 	sync();
+
+	Layer::Vocab voc(get_param_vocab());
+	Layer::fill_static(voc);
 }
 
 void

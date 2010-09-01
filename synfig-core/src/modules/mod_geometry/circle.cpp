@@ -69,6 +69,8 @@ Circle::Circle():
 	falloff			(FALLOFF_INTERPOLATION_LINEAR)
 {
 	constructcache();
+	Layer::Vocab voc(get_param_vocab());
+	Layer::fill_static(voc);
 }
 
 bool

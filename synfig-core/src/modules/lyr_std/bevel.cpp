@@ -89,6 +89,8 @@ Layer_Bevel::Layer_Bevel():
 	calc_offset();
 	use_luma=false;
 	solid=false;
+	Layer::Vocab voc(get_param_vocab());
+	Layer::fill_static(voc);
 }
 
 void

@@ -169,6 +169,8 @@ CurveWarp::CurveWarp():
 	bline[1].set_width(1.0f);
 
 	sync();
+	Layer::Vocab voc(get_param_vocab());
+	Layer::fill_static(voc);
 }
 
 inline Point

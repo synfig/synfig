@@ -118,13 +118,13 @@ ValueNode_Const::set_value(const ValueBase &data)
 String
 ValueNode_Const::get_name()const
 {
-	return "constant";
+	return get_static()?"static":"constant";
 }
 
 String
 ValueNode_Const::get_local_name()const
 {
-	return _("Constant");
+	return get_static()?_("Static"):_("Constant");
 }
 
 void ValueNode_Const::get_times_vfunc(Node::time_set &/*set*/) const
