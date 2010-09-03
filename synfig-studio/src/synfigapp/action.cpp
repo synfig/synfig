@@ -72,6 +72,7 @@
 #include "actions/valuedescconnect.h"
 #include "actions/valuedescdisconnect.h"
 #include "actions/valuedesclink.h"
+#include "actions/valuedescsmartlink.h"
 #include "actions/valuedescblinelink.h"
 
 #include "actions/waypointadd.h"
@@ -196,6 +197,7 @@ Action::Main::Main()
 	ADD_ACTION(Action::ValueDescConnect);
 	ADD_ACTION(Action::ValueDescDisconnect);
 	ADD_ACTION(Action::ValueDescLink);
+	ADD_ACTION(Action::ValueDescSmartLink);
 	ADD_ACTION(Action::ValueDescBLineLink);
 
 	ADD_ACTION(Action::WaypointAdd);
