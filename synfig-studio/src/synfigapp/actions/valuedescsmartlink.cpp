@@ -273,7 +273,7 @@ Action::ValueDescSmartLink::prepare()
 		throw Error(Error::TYPE_NOTREADY);
 
 	clear();
-/*
+
 	if(value_desc_list.size()!=2)
 		throw Error(Error::TYPE_BUG);
 
@@ -284,11 +284,13 @@ Action::ValueDescSmartLink::prepare()
 
 	if(!link_value_node)
 	{
+		// we should have a value node selected because is candidate
+		// should have checked it before
 		throw Error(Error::TYPE_BUG);
 	}
 
 	//Study the particular case of two tangents of a bline being linked.
-	ValueDesc& toconvert;
+	ValueDesc& toconvert(value_desc_t2);
 		if(t1==link_value_node)
 		{
 			// Convert t2
@@ -303,17 +305,16 @@ Action::ValueDescSmartLink::prepare()
 		}
 		else { synfig::info("error"); }
 
-
 		Action::Handle action(Action::create("ValueDescConvert"));
 		action->set_param("canvas",get_canvas());
 		action->set_param("canvas_interface",get_canvas_interface());
 		action->set_param("time",time);
-		action->set_param("type","scalar");
+		action->set_param("type","scale");
 		action->set_param("value_desc",toconvert);
 		assert(action->is_ready());
 		if(!action->is_ready())
 			throw Error(Error::TYPE_NOTREADY);
 		add_action_front(action);
-*/
+
 	synfig::info("http://synfig.org/Linking#Tier_%d : %s", status_level, status_message.c_str());
 }
