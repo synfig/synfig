@@ -289,32 +289,59 @@ Action::ValueDescSmartLink::prepare()
 		throw Error(Error::TYPE_BUG);
 	}
 
-	//Study the particular case of two tangents of a bline being linked.
+	//See what is the tangent selected to convert.
 	ValueDesc& toconvert(value_desc_t2);
 		if(t1==link_value_node)
-		{
-			// Convert t2
-			synfig::info("converting t2");
-			toconvert=value_desc_t2;
-		}
+			toconvert=value_desc_t2;	// Convert t2
 		else if(t2==link_value_node)
-		{
-			//Convert t1
-			synfig::info("converting t1");
-			toconvert=value_desc_t1;
-		}
-		else { synfig::info("error"); }
+			toconvert=value_desc_t1;	//Convert t1
+		else throw Error(Error::TYPE_BUG);
 
-		Action::Handle action(Action::create("ValueDescConvert"));
-		action->set_param("canvas",get_canvas());
-		action->set_param("canvas_interface",get_canvas_interface());
-		action->set_param("time",time);
-		action->set_param("type","scale");
-		action->set_param("value_desc",toconvert);
-		assert(action->is_ready());
-		if(!action->is_ready())
+		//Let's create a Scale Value Node
+		synfig::ValueNode::Handle scale_value_node=synfig::LinkableValueNode::create("scale",toconvert.get_value(time));
+		scale_value_node->set_parent_canvas(get_canvas());
+		//Let's connect the new Scale Value Node
+		Action::Handle action1(Action::create("ValueDescConnect"));
+		if(!action1)
+			throw Error(Error::TYPE_CRITICAL);
+		action1->set_param("canvas",get_canvas());
+		action1->set_param("canvas_interface",get_canvas_interface());
+		action1->set_param("dest",toconvert);
+		action1->set_param("src",scale_value_node);
+		assert(action1->is_ready());
+		if(!action1->is_ready())
 			throw Error(Error::TYPE_NOTREADY);
-		add_action_front(action);
+		add_action_front(action1);
+
+
+		//Let's Connect the link value node to the scale value node link subparam
+		Action::Handle action2(Action::create("ValueNodeLinkConnect"));
+		if(!action2)
+			throw Error(Error::TYPE_CRITICAL);
+
+		action2->set_param("canvas",get_canvas());
+		action2->set_param("canvas_interface",get_canvas_interface());
+		action2->set_param("parent_value_node",scale_value_node);
+		action2->set_param("index",0);
+		action2->set_param("value_node",link_value_node);
+		assert(action2->is_ready());
+		if(!action2->is_ready())
+			throw Error(Error::TYPE_NOTREADY);
+		add_action_front(action2);
+
+		//Let's Set the scale to -1
+		Action::Handle action3(Action::create("ValueNodeConstSet"));
+		if(!action3)
+			throw Error(Error::TYPE_CRITICAL);
+
+		action3->set_param("canvas",get_canvas());
+		action3->set_param("canvas_interface",get_canvas_interface());
+		action3->set_param("value_node",synfig::LinkableValueNode::Handle::cast_dynamic(scale_value_node)->get_link(1));
+		action3->set_param("new_value",synfig::ValueBase(Real(-1.0)));
+		assert(action3->is_ready());
+		if(!action3->is_ready())
+			throw Error(Error::TYPE_NOTREADY);
+		add_action_front(action3);
 
 	synfig::info("http://synfig.org/Linking#Tier_%d : %s", status_level, status_message.c_str());
 }
