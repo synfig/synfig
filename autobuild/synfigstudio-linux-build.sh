@@ -751,14 +751,14 @@ mkpackage()
 	else
 		[ -d $HOME/synfig-packages ] || mkdir -p $HOME/synfig-packages
 		#DEB_LIST="build-essential,autoconf,automake,libltdl3-dev,libtool,gettext,cvs,libpng12-dev,libjpeg62-dev,libfreetype6-dev,libfontconfig1-dev,libgtk2.0-dev,libxml2-dev,bzip2,rpm,alien,xsltproc"
-		for ARCH in i386 amd64; do
+		for ARCH in amd64 i386; do
 		if [[ $ARCH == 'i386' ]];then
 			SETARCH='linux32'
 		else
 			SETARCH='linux64'
 		fi
 		if ! [ -e $PACKAGES_BUILDROOT.$ARCH/etc/chroot.id ]; then
-			debootstrap --arch=$ARCH --variant=buildd  --include=sudo etch $PACKAGES_BUILDROOT.$ARCH http://ftp.us.debian.org/debian
+			debootstrap --arch=$ARCH --variant=buildd  --include=sudo etch $PACKAGES_BUILDROOT.$ARCH http://archive.debian.org/debian
 		fi
 		#set chroot ID
 		echo "Synfig Packages Buildroot" > $PACKAGES_BUILDROOT.$ARCH/etc/chroot.id
