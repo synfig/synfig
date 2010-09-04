@@ -213,6 +213,24 @@ Action::ValueDescSmartLink::set_param(const synfig::String& name, const Action::
 					status_message = _("There's a tie for most referenced, and both are animated; using the one with the most waypoints.");
 				}
 			}
+			else if(LinkableValueNode::Handle::cast_dynamic(link_value_node) &&
+					LinkableValueNode::Handle::cast_dynamic(value_desc.get_value_node()) &&
+					LinkableValueNode::Handle::cast_dynamic(link_value_node)->get_times().size() !=
+					LinkableValueNode::Handle::cast_dynamic(value_desc.get_value_node())->get_times().size())
+			{
+				if(LinkableValueNode::Handle::cast_dynamic(link_value_node)->get_times().size() <
+				LinkableValueNode::Handle::cast_dynamic(value_desc.get_value_node())->get_times().size())
+				{
+					status_level = 4;
+					status_message = _("There's a tie for most referenced, and both are linkable value node animated; using the one with the most waypoints.");
+					link_value_node=value_desc.get_value_node();
+				}
+				else if (status_level <= 4)
+				{
+					status_level = 4;
+					status_message = _("There's a tie for most referenced, and both are linkable value node animated; using the one with the most waypoints.");
+				}
+			}
 			// Use the one that was least recently changed
 			else if(link_value_node->get_time_last_changed()!=value_desc.get_value_node()->get_time_last_changed())
 			{
