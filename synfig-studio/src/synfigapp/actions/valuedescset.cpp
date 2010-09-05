@@ -37,9 +37,15 @@
 
 #include "valuedescset.h"
 #include <synfigapp/canvasinterface.h>
+#include <synfig/valuenode_bline.h>
+#include <synfig/valuenode_blinecalctangent.h>
+#include <synfig/valuenode_blinecalcvertex.h>
+#include <synfig/valuenode_blinecalcwidth.h>
 #include <synfig/valuenode_composite.h>
 #include <synfig/valuenode_radialcomposite.h>
+#include <synfig/valuenode_range.h>
 #include <synfig/valuenode_reference.h>
+#include <synfig/valuenode_scale.h>
 #include <synfigapp/main.h>
 
 #include <synfigapp/general.h>
@@ -346,6 +352,263 @@ Action::ValueDescSet::prepare()
 
 		return;
 	}
+
+	// Perform reverse manipulations
+
+	// If we are a scale value node, then edit the link
+	// such that it will scale to our target value
+	if (ValueNode_Scale::Handle scale_value_node = ValueNode_Scale::Handle::cast_dynamic(value_desc.get_value_node()))
+	{
+		if(! scale_value_node->is_invertible(time))
+		{
+			synfig::warning(_("Attempt to edit scale ValueNode with a scale factor of zero."));
+			return;
+		}
+
+		ValueBase new_value;
+
+		if (value.get_type() == ValueBase::TYPE_ANGLE)
+			new_value = scale_value_node->get_inverse(time, value.get(Angle()));
+		else if (value.get_type() == ValueBase::TYPE_REAL)
+			throw Error(_("Inverse manipulation of real scale values not implemented in core."));
+		else
+			new_value = scale_value_node->get_inverse(time, value.get(Vector()));
+
+		Action::Handle action(Action::create("ValueDescSet"));
+
+		if(!action)
+			throw Error(_("Unable to find action ValueDescSet (bug)"));
+
+		action->set_param("canvas",get_canvas());
+		action->set_param("canvas_interface",get_canvas_interface());
+		action->set_param("time",time);
+		action->set_param("new_value",new_value);
+		action->set_param("value_desc",ValueDesc(scale_value_node, scale_value_node->get_link_index_from_name("link")));
+
+		if(!action->is_ready())
+			throw Error(Error::TYPE_NOTREADY);
+
+		add_action(action);
+		return;
+	}
+
+    // Range: disallow values outside the range
+	if (ValueNode_Range::Handle range_value_node = ValueNode_Range::Handle::cast_dynamic(value_desc.get_value_node()))
+	{
+		ValueBase new_value;
+
+		if (value.get_type() == ValueBase::TYPE_ANGLE)
+			new_value = range_value_node->get_inverse(time, value.get(Angle()));
+		else if (value.get_type() == ValueBase::TYPE_REAL)
+			throw Error(_("Inverse manipulation of real range values not implemented in core."));
+		else
+			new_value = range_value_node->get_inverse(time, value.get(Vector()));
+
+		Action::Handle action(Action::create("ValueDescSet"));
+
+		if(!action)
+			throw Error(_("Unable to find action ValueDescSet (bug)"));
+
+		action->set_param("canvas",get_canvas());
+		action->set_param("canvas_interface",get_canvas_interface());
+		action->set_param("time",time);
+		action->set_param("new_value",new_value);
+		action->set_param("value_desc",ValueDesc(range_value_node,range_value_node->get_link_index_from_name("link")));
+
+		if(!action->is_ready())
+			throw Error(Error::TYPE_NOTREADY);
+
+		add_action(action);
+		return;
+	}
+
+	// BlineCalcWidth: modify the scale value node
+	// so that the target width is achieved
+	if (ValueNode_BLineCalcWidth::Handle bline_width = ValueNode_BLineCalcWidth::Handle::cast_dynamic(value_desc.get_value_node()))
+	{
+		Real old_width((*bline_width)(time).get(Real()));
+		Real scale((*(bline_width->get_link("scale")))(time).get(Real()));
+
+		ValueBase new_width(value.get(Real()) * scale / old_width);
+
+		Action::Handle action(Action::create("ValueDescSet"));
+
+		if(!action)
+			throw Error(_("Unable to find action ValueDescSet (bug)"));
+
+		action->set_param("canvas",get_canvas());
+		action->set_param("canvas_interface",get_canvas_interface());
+		action->set_param("time",time);
+		action->set_param("new_value",new_width);
+		action->set_param("value_desc",ValueDesc(bline_width, bline_width->get_link_index_from_name("scale")));
+
+		if(!action->is_ready())
+			throw Error(Error::TYPE_NOTREADY);
+
+		add_action(action);
+		return;
+	}
+
+	// BLineCalcVertex: snap the point to the nearest
+	// allowed position.
+	if (ValueNode_BLineCalcVertex::Handle bline_vertex = ValueNode_BLineCalcVertex::Handle::cast_dynamic(value_desc.get_value_node()))
+	{
+		ValueNode_BLine::Handle bline = ValueNode_BLine::Handle::cast_dynamic(bline_vertex->get_link("bline"));
+		Real radius = 0.0;
+		ValueBase new_amount;
+		if (((*(bline_vertex->get_link("loop")))(time).get(bool()))){
+			// The bline is looped. Animation may require an amount parameter
+			// outside the range of 0-1, so make sure that the amount does
+			// not change drastically.
+			Real amount_old((*(bline_vertex->get_link("amount")))(time).get(Real()));
+			Real amount_new = synfig::find_closest_point((*bline)(time), value, radius, bline->get_loop());
+			Real difference = fmod( fmod(amount_new - amount_old, 1.0) + 1.0 , 1.0);
+							//fmod is called twice to avoid negative values
+			if (difference > 0.5) difference=difference-1.0;
+
+			new_amount = amount_old+difference;
+		} else {
+			new_amount = synfig::find_closest_point((*bline)(time), value, radius, bline->get_loop());
+		}
+
+		Action::Handle action(Action::create("ValueDescSet"));
+
+		if(!action)
+			throw Error(_("Unable to find action ValueDescSet (bug)"));
+
+		action->set_param("canvas",get_canvas());
+		action->set_param("canvas_interface",get_canvas_interface());
+		action->set_param("time",time);
+		action->set_param("new_value",new_amount);
+		action->set_param("value_desc",ValueDesc(bline_vertex, bline_vertex->get_link_index_from_name("amount")));
+
+		if(!action->is_ready())
+			throw Error(Error::TYPE_NOTREADY);
+
+		add_action(action);
+		return;
+	}
+
+
+	// BLineCalcTangent: adjust scale and offset
+	// to achieve the desired tangent
+	if (ValueNode_BLineCalcTangent::Handle bline_tangent = ValueNode_BLineCalcTangent::Handle::cast_dynamic(value_desc.get_value_node()))
+	{
+		ValueBase new_scale;
+		ValueDesc scale_value_desc(bline_tangent,bline_tangent->get_link_index_from_name("scale"));
+		ValueDesc offset_value_desc(bline_tangent,bline_tangent->get_link_index_from_name("offset"));
+
+		switch(value_desc.get_value_type())
+		{
+		case ValueBase::TYPE_REAL:
+		{
+			Real old_length = (*bline_tangent)(time).get(Real());
+			Real new_length = value.get(Vector()).mag();
+			Real scale((*(bline_tangent->get_link("scale")))(time).get(Real()));
+			bool fixed_length((*(bline_tangent->get_link("fixed_length")))(time).get(bool()));
+
+			if (fixed_length)
+			{
+				new_scale = new_length;
+				break;
+			}
+			if (old_length == 0)
+				return;
+			new_scale = new_length * scale / old_length;
+		}
+
+		case ValueBase::TYPE_VECTOR:
+		{
+			Vector old_tangent = (*bline_tangent)(time).get(Vector());
+			Angle old_angle = old_tangent.angle();
+			Real old_length = old_tangent.mag();
+			Angle new_angle = value.get(Vector()).angle();
+			Real new_length = value.get(Vector()).mag();
+			Angle old_offset((*(bline_tangent->get_link("offset")))(time).get(Angle()));
+			Real scale((*(bline_tangent->get_link("scale")))(time).get(Real()));
+			bool fixed_length((*(bline_tangent->get_link("fixed_length")))(time).get(bool()));
+			if (fixed_length)
+			{
+				new_scale = new_length;
+				break;
+			}
+			if (old_length != 0)
+			{
+				new_scale = new_length * scale / old_length;
+
+
+				Action::Handle action(Action::create("ValueDescSet"));
+
+				if(!action)
+					throw Error(_("Unable to find action ValueDescSet (bug)"));
+
+				action->set_param("canvas",get_canvas());
+				action->set_param("canvas_interface",get_canvas_interface());
+				action->set_param("time",time);
+				action->set_param("new_value", ValueBase(old_offset + new_angle - old_angle));
+				action->set_param("value_desc",offset_value_desc);
+
+				if(!action->is_ready())
+					throw Error(Error::TYPE_NOTREADY);
+
+				add_action(action);
+			}
+		}
+		break;
+
+		case ValueBase::TYPE_ANGLE:
+		{
+			Angle old_angle = (*bline_tangent)(time).get(Angle());
+			Angle new_angle = value.get(Vector()).angle();
+			Angle old_offset((*(bline_tangent->get_link("offset")))(time).get(Angle()));
+
+
+			Action::Handle action(Action::create("ValueDescSet"));
+
+			if(!action)
+				throw Error(_("Unable to find action ValueDescSet (bug)"));
+
+			action->set_param("canvas",get_canvas());
+			action->set_param("canvas_interface",get_canvas_interface());
+			action->set_param("time",time);
+			action->set_param("new_value", ValueBase(old_offset + new_angle - old_angle));
+			action->set_param("value_desc",offset_value_desc);
+
+			if(!action->is_ready())
+				throw Error(Error::TYPE_NOTREADY);
+
+			add_action(action);
+			return;
+		}
+
+		default:
+			break;
+		}
+
+		if (new_scale)
+		{
+			Action::Handle action(Action::create("ValueDescSet"));
+
+			if(!action)
+				throw Error(_("Unable to find action ValueDescSet (bug)"));
+
+			action->set_param("canvas",get_canvas());
+			action->set_param("canvas_interface",get_canvas_interface());
+			action->set_param("time",time);
+			action->set_param("new_value",new_scale);
+			action->set_param("value_desc",scale_value_desc);
+
+			if(!action->is_ready())
+				throw Error(Error::TYPE_NOTREADY);
+
+			add_action(action);
+		}
+		return;
+	}
+	
+	// end reverse manipulations
+
+
 
 	// If we are merging the tangents of a BLinePoint,
 	// we must also set the second tangent for things
