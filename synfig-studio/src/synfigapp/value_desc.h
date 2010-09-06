@@ -95,7 +95,7 @@ public:
 		layer(layer),
 		name(param_name) { }
 
-	ValueDesc(synfig::LinkableValueNode::Handle parent_value_node,int index, synfig::Real s=1.12):
+	ValueDesc(synfig::LinkableValueNode::Handle parent_value_node,int index, synfig::Real s=1.0):
 		parent_value_node(parent_value_node),
 		index(index),
 		scalar(s) { }
