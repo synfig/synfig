@@ -63,7 +63,8 @@ ACTION_SET_CVS_ID(Action::ValueDescSmartLink,"$Id$");
 
 /* === M E T H O D S ======================================================= */
 
-Action::ValueDescSmartLink::ValueDescSmartLink(): poison(false), status_level(0)
+Action::ValueDescSmartLink::ValueDescSmartLink():
+poison(false), status_level(0), link_scalar(0.0)
 {
 }
 
@@ -86,35 +87,37 @@ Action::ValueDescSmartLink::is_candidate(const ParamList &x)
 	// If action parameters are not Value Desc
 	if(!candidate_check(get_param_vocab(),x))
 		return false;
-	// If the size of the List of Param is not two
 
-	// If both value desc aren't Linkable Value Nodes children
+	Real current_scalar(1.0);
+	bool found_inverse(false);
+
 	ParamList::const_iterator iter;
-	int counter=0;
-	Param params[2];
+	//Search thru all the Param and pick up the value descriptions
 	for(iter=x.begin(); iter!=x.end(); iter++)
 	{
 		if(iter->first == "value_desc")
 		{
-			params[counter]=iter->second;
-			counter++;
+			ValueDesc v_desc(iter->second.get_value_desc());
+			// if the value description parent is linkable value node, continue
+			if(!v_desc.parent_is_linkable_value_node())
+				return false;
+			// if the link describe to any tangent (index 4 or 5), continue
+			if(v_desc.get_index() != 4 && v_desc.get_index() != 5)
+				return false;
+			synfig::Real iter_scalar=v_desc.get_scalar();
+			// Let's compare the sign  of scalar of the value node witht the current one
+			// and remember if a change of sign is seen.
+			if(iter_scalar*current_scalar < 0) // if they have different signs
+			{
+				found_inverse=true;
+				current_scalar=iter_scalar;
+			}
 		}
-		if (counter>2)
-			return false;
 	}
-	Param pfront(params[0]);
-	Param pback(params[1]);
-	if(!pfront.get_value_desc().parent_is_linkable_value_node() ||
-		!pback.get_value_desc().parent_is_linkable_value_node())
+	// If we found two inverse tangents then continue
+	if(!found_inverse)
 		return false;
-	// If both don't have opposite scalars.
-	if(!((pback.get_value_desc().get_scalar()< 0 && pfront.get_value_desc().get_scalar()> 0)
-			||
-			(pback.get_value_desc().get_scalar()> 0 && pfront.get_value_desc().get_scalar()< 0))
-		)
-		return false;
-
-	//We have reached two opposite tangents
+	// We have reached two or more opposite tangents
 	return true;
 }
 
@@ -149,6 +152,7 @@ Action::ValueDescSmartLink::set_param(const synfig::String& name, const Action::
 			}
 
 			link_value_node=value_desc.get_value_node();
+			link_scalar=value_desc.get_scalar();
 			status_message = _("Used exported ValueNode ('") + link_value_node->get_id() + _("').");
 		}
 		else if(value_desc.is_value_node())
@@ -158,6 +162,7 @@ Action::ValueDescSmartLink::set_param(const synfig::String& name, const Action::
 				status_level = 1;
 				status_message = _("Using the only available ValueNode.");
 				link_value_node=value_desc.get_value_node();
+				link_scalar=value_desc.get_scalar();
 			}
 			else if(link_value_node->is_exported())
 			{
@@ -171,6 +176,7 @@ Action::ValueDescSmartLink::set_param(const synfig::String& name, const Action::
 					status_level = 2;
 					status_message = _("Using the most referenced ValueNode.");
 					link_value_node=value_desc.get_value_node();
+					link_scalar=value_desc.get_scalar();
 				}
 				else if (status_level <= 2)
 				{
@@ -185,6 +191,7 @@ Action::ValueDescSmartLink::set_param(const synfig::String& name, const Action::
 				status_level = 3;
 				status_message = _("There's a tie for most referenced; using the animated ValueNode.");
 				link_value_node=value_desc.get_value_node();
+				link_scalar=value_desc.get_scalar();
 			}
 			else if(ValueNode_Const::Handle::cast_dynamic(value_desc.get_value_node()) && !ValueNode_Const::Handle::cast_dynamic(link_value_node))
 			{
@@ -206,6 +213,7 @@ Action::ValueDescSmartLink::set_param(const synfig::String& name, const Action::
 					status_level = 4;
 					status_message = _("There's a tie for most referenced, and both are animated; using the one with the most waypoints.");
 					link_value_node=value_desc.get_value_node();
+					link_scalar=value_desc.get_scalar();
 				}
 				else if (status_level <= 4)
 				{
@@ -213,6 +221,7 @@ Action::ValueDescSmartLink::set_param(const synfig::String& name, const Action::
 					status_message = _("There's a tie for most referenced, and both are animated; using the one with the most waypoints.");
 				}
 			}
+			// If both are Linkable Value Nodes and has waypoint in its children, use the one with more waypoints
 			else if(LinkableValueNode::Handle::cast_dynamic(link_value_node) &&
 					LinkableValueNode::Handle::cast_dynamic(value_desc.get_value_node()) &&
 					LinkableValueNode::Handle::cast_dynamic(link_value_node)->get_times().size() !=
@@ -224,6 +233,7 @@ Action::ValueDescSmartLink::set_param(const synfig::String& name, const Action::
 					status_level = 4;
 					status_message = _("There's a tie for most referenced, and both are linkable value node animated; using the one with the most waypoints.");
 					link_value_node=value_desc.get_value_node();
+					link_scalar=value_desc.get_scalar();
 				}
 				else if (status_level <= 4)
 				{
@@ -239,6 +249,7 @@ Action::ValueDescSmartLink::set_param(const synfig::String& name, const Action::
 					status_level = 5;
 					status_message = _("Everything is tied; using the least recently modified value.");
 					link_value_node=value_desc.get_value_node();
+					link_scalar=value_desc.get_scalar();
 				}
 				else if (status_level <= 5)
 				{
@@ -276,7 +287,7 @@ Action::ValueDescSmartLink::is_ready()const
 {
 	if(poison)
 		return true;
-	if(value_desc_list.size()!=2)
+	if(value_desc_list.size()<=1)
 		return false;
 	return Action::CanvasSpecific::is_ready();
 }
@@ -292,74 +303,86 @@ Action::ValueDescSmartLink::prepare()
 
 	clear();
 
-	if(value_desc_list.size()!=2)
-		throw Error(Error::TYPE_BUG);
-
-	ValueDesc& value_desc_t1(value_desc_list.front());
-	ValueDesc& value_desc_t2(value_desc_list.back());
-	t1 = value_desc_t1.get_value_node();
-	t2 = value_desc_t2.get_value_node();
-
 	if(!link_value_node)
 	{
-		// we should have a value node selected because is candidate
+		// we should have a value node selected because is_candidate()
 		// should have checked it before
 		throw Error(Error::TYPE_BUG);
 	}
 
 	//See what is the tangent selected to convert.
-	ValueDesc& toconvert(value_desc_t2);
-		if(t1==link_value_node)
-			toconvert=value_desc_t2;	// Convert t2
-		else if(t2==link_value_node)
-			toconvert=value_desc_t1;	//Convert t1
-		else throw Error(Error::TYPE_BUG);
+	std::list<ValueDesc>::const_iterator vd_iter;
+	for(vd_iter=value_desc_list.begin(); vd_iter!=value_desc_list.end(); vd_iter++)
+	{
+		// Don't link the selected to itself
+		if(vd_iter->get_value_node() == link_value_node)
+			continue;
+		//Check if the current value node has opposite scalar than the link
+		// value node to convert to scale -1.0 before connect
+		if(vd_iter->get_scalar() * link_scalar < 0)
+		{
+			//Let's create a Scale Value Node
+			synfig::ValueNode::Handle scale_value_node=synfig::LinkableValueNode::create("scale",vd_iter->get_value(time));
+			if(!scale_value_node)
+				throw Error(Error::TYPE_BUG);
+			scale_value_node->set_parent_canvas(get_canvas());
+			//Let's connect the new Scale Value Node to the value node
+			Action::Handle action1(Action::create("ValueDescConnect"));
+			if(!action1)
+				throw Error(Error::TYPE_CRITICAL);
+			action1->set_param("canvas",get_canvas());
+			action1->set_param("canvas_interface",get_canvas_interface());
+			action1->set_param("dest",*vd_iter);
+			action1->set_param("src",scale_value_node);
+			assert(action1->is_ready());
+			if(!action1->is_ready())
+				throw Error(Error::TYPE_NOTREADY);
+			add_action_front(action1);
 
-		//Let's create a Scale Value Node
-		synfig::ValueNode::Handle scale_value_node=synfig::LinkableValueNode::create("scale",toconvert.get_value(time));
-		scale_value_node->set_parent_canvas(get_canvas());
-		//Let's connect the new Scale Value Node
-		Action::Handle action1(Action::create("ValueDescConnect"));
-		if(!action1)
-			throw Error(Error::TYPE_CRITICAL);
-		action1->set_param("canvas",get_canvas());
-		action1->set_param("canvas_interface",get_canvas_interface());
-		action1->set_param("dest",toconvert);
-		action1->set_param("src",scale_value_node);
-		assert(action1->is_ready());
-		if(!action1->is_ready())
-			throw Error(Error::TYPE_NOTREADY);
-		add_action_front(action1);
+			//Let's Connect the link value node to the scale value node link subparam
+			Action::Handle action2(Action::create("ValueNodeLinkConnect"));
+			if(!action2)
+				throw Error(Error::TYPE_CRITICAL);
 
+			action2->set_param("canvas",get_canvas());
+			action2->set_param("canvas_interface",get_canvas_interface());
+			action2->set_param("parent_value_node",scale_value_node);
+			action2->set_param("index",0);
+			action2->set_param("value_node",link_value_node);
+			assert(action2->is_ready());
+			if(!action2->is_ready())
+				throw Error(Error::TYPE_NOTREADY);
+			add_action_front(action2);
 
-		//Let's Connect the link value node to the scale value node link subparam
-		Action::Handle action2(Action::create("ValueNodeLinkConnect"));
-		if(!action2)
-			throw Error(Error::TYPE_CRITICAL);
+			//Let's Set the scale to -1
+			Action::Handle action3(Action::create("ValueNodeConstSet"));
+			if(!action3)
+				throw Error(Error::TYPE_CRITICAL);
 
-		action2->set_param("canvas",get_canvas());
-		action2->set_param("canvas_interface",get_canvas_interface());
-		action2->set_param("parent_value_node",scale_value_node);
-		action2->set_param("index",0);
-		action2->set_param("value_node",link_value_node);
-		assert(action2->is_ready());
-		if(!action2->is_ready())
-			throw Error(Error::TYPE_NOTREADY);
-		add_action_front(action2);
-
-		//Let's Set the scale to -1
-		Action::Handle action3(Action::create("ValueNodeConstSet"));
-		if(!action3)
-			throw Error(Error::TYPE_CRITICAL);
-
-		action3->set_param("canvas",get_canvas());
-		action3->set_param("canvas_interface",get_canvas_interface());
-		action3->set_param("value_node",synfig::LinkableValueNode::Handle::cast_dynamic(scale_value_node)->get_link(1));
-		action3->set_param("new_value",synfig::ValueBase(Real(-1.0)));
-		assert(action3->is_ready());
-		if(!action3->is_ready())
-			throw Error(Error::TYPE_NOTREADY);
-		add_action_front(action3);
-
+			action3->set_param("canvas",get_canvas());
+			action3->set_param("canvas_interface",get_canvas_interface());
+			action3->set_param("value_node",synfig::LinkableValueNode::Handle::cast_dynamic(scale_value_node)->get_link(1));
+			action3->set_param("new_value",synfig::ValueBase(Real(-1.0)));
+			assert(action3->is_ready());
+			if(!action3->is_ready())
+				throw Error(Error::TYPE_NOTREADY);
+			add_action_front(action3);
+		}
+		else
+		{
+			//Let's connect the link value node to the value node
+			Action::Handle action(Action::create("ValueDescConnect"));
+			if(!action)
+				throw Error(Error::TYPE_CRITICAL);
+			action->set_param("canvas",get_canvas());
+			action->set_param("canvas_interface",get_canvas_interface());
+			action->set_param("dest",vd_iter->get_value_node());
+			action->set_param("src",link_value_node);
+			assert(action->is_ready());
+			if(!action->is_ready())
+				throw Error(Error::TYPE_NOTREADY);
+			add_action_front(action);
+		}
+	}
 	synfig::info("http://synfig.org/Linking#Tier_%d : %s", status_level, status_message.c_str());
 }
