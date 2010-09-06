@@ -376,7 +376,7 @@ Action::ValueDescSmartLink::prepare()
 				throw Error(Error::TYPE_CRITICAL);
 			action->set_param("canvas",get_canvas());
 			action->set_param("canvas_interface",get_canvas_interface());
-			action->set_param("dest",vd_iter->get_value_node());
+			action->set_param("dest",*vd_iter);
 			action->set_param("src",link_value_node);
 			assert(action->is_ready());
 			if(!action->is_ready())
