@@ -310,6 +310,20 @@ Action::ValueDescSmartLink::prepare()
 		throw Error(Error::TYPE_BUG);
 	}
 
+	// Check if the selected  link value node is already a scale -1.0 Linkable Value Node
+	bool link_is_scaled(false);
+	if(synfig::ValueNode_Scale::Handle::cast_dynamic(link_value_node))
+		{
+			synfig::ValueNode_Const::Handle scale_vn(
+					synfig::ValueNode_Const::Handle::cast_dynamic(
+							synfig::ValueNode_Scale::Handle::cast_dynamic(link_value_node)->get_link(1)
+							)
+						);
+			if(scale_vn)
+				if((*scale_vn)(synfig::Time(0))==synfig::ValueBase(Real(-1.0)))
+					link_is_scaled=true;
+		}
+
 	//See what is the tangent selected to convert.
 	std::list<ValueDesc>::const_iterator vd_iter;
 	for(vd_iter=value_desc_list.begin(); vd_iter!=value_desc_list.end(); vd_iter++)
@@ -318,8 +332,9 @@ Action::ValueDescSmartLink::prepare()
 		if(vd_iter->get_value_node() == link_value_node)
 			continue;
 		//Check if the current value node has opposite scalar than the link
-		// value node to convert to scale -1.0 before connect
-		if(vd_iter->get_scalar() * link_scalar < 0)
+		// value node to convert to scale -1.0 before connect.
+		// Check also if the link value node is NOT also a scale -1
+		if( (vd_iter->get_scalar()*link_scalar<0) && (link_is_scaled==false) )
 		{
 			//Let's create a Scale Value Node
 			synfig::ValueNode::Handle scale_value_node=synfig::LinkableValueNode::create("scale",vd_iter->get_value(time));
@@ -367,6 +382,24 @@ Action::ValueDescSmartLink::prepare()
 			if(!action3->is_ready())
 				throw Error(Error::TYPE_NOTREADY);
 			add_action_front(action3);
+		}
+		else if((vd_iter->get_scalar()*link_scalar<0) && (link_is_scaled==true) )
+		{
+			synfig::info("adding action4");
+			//Let's connect the link value node -> link to the value node
+			// There is not needed conversion to scale of the value node
+			// because the link value node is already a scale -1
+			Action::Handle action4(Action::create("ValueDescConnect"));
+			if(!action4)
+				throw Error(Error::TYPE_CRITICAL);
+			action4->set_param("canvas",get_canvas());
+			action4->set_param("canvas_interface",get_canvas_interface());
+			action4->set_param("dest",*vd_iter);
+			action4->set_param("src",synfig::ValueNode_Scale::Handle::cast_dynamic(link_value_node)->get_link(0));
+			assert(action4->is_ready());
+			if(!action4->is_ready())
+				throw Error(Error::TYPE_NOTREADY);
+			add_action_front(action4);
 		}
 		else
 		{
