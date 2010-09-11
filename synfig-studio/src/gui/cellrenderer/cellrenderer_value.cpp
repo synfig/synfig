@@ -413,7 +413,7 @@ CellRenderer_ValueBase::render_vfunc(
 				property_text()=(Glib::ustring)data.get(etl::handle<synfig::Canvas>())->get_id();
 		}
 		else
-			property_text()="<No Image Selected>";
+			property_text()=_("<No Image Selected>");
 		break;
 	case ValueBase::TYPE_COLOR:
 		{
