@@ -154,7 +154,7 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	INIT_STOCK_ICON(canvas_new,"canvas_icon."IMAGE_EXT,_("New Canvas"));
 	INIT_STOCK_ICON(saveall,"saveall_icon."IMAGE_EXT,_("Save All"));
 
-		// Layers
+	// Layers
 	INIT_STOCK_ICON(layer,"layer_icon."IMAGE_EXT,_("Layer"));
 	// Blur Layers
 	INIT_STOCK_ICON(layer_blur_blur,"layer_blur_blur_icon."IMAGE_EXT,_("Blur Layer"));
@@ -530,7 +530,7 @@ studio::layer_icon(const synfig::String &layer)
 		return Gtk::StockID("synfig-layer_geometry_rectangle");
 	else if(layer=="region")
 		return Gtk::StockID("synfig-layer_geometry_region");
-	else if(layer=="solid_color")
+	else if(layer=="solid_color" || layer=="SolidColor")
 		return Gtk::StockID("synfig-layer_geometry_solidcolor");
 	else if(layer=="star")
 		return Gtk::StockID("synfig-layer_geometry_star");
@@ -550,7 +550,7 @@ studio::layer_icon(const synfig::String &layer)
 	// Other Layers
 	else if(layer=="duplicate")
 		return Gtk::StockID("synfig-layer_other_duplicate");
-	else if(layer=="importimage")
+	else if(layer=="importimage" || layer=="import")
 		return Gtk::StockID("synfig-layer_other_importimage");
 	else if(layer=="PasteCanvas" || layer=="pastecanvas" || layer=="paste_canvas")
 		return Gtk::StockID("synfig-layer_other_pastecanvas");
