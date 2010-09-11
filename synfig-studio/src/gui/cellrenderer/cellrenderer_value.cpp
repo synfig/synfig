@@ -356,7 +356,7 @@ CellRenderer_ValueBase::render_vfunc(
 		property_text()=(Glib::ustring)data.get(Time()).get_string(get_canvas()->rend_desc().get_frame_rate(),App::get_time_format());
 		break;
 	case ValueBase::TYPE_ANGLE:
-		property_text()=(Glib::ustring)strprintf("%.2f DEG",(Real)Angle::deg(data.get(Angle())).get());
+		property_text()=(Glib::ustring)strprintf("%.2fᵒ",(Real)Angle::deg(data.get(Angle())).get());
 		break;
 	case ValueBase::TYPE_INTEGER:
 		if(((synfig::ParamDesc)property_param_desc_).get_hint()!="enum")
