@@ -210,7 +210,9 @@ CanvasTreeStore::get_value_vfunc(const Gtk::TreeModel::iterator& iter, int colum
 			if(value_desc.get_value_node())
 			{
 				lname=value_desc.get_value_node()->get_name();
-				if (lname=="animated" || lname=="static")
+				if (lname=="animated" || lname=="static" ||
+				synfig::LinkableValueNode::Handle::cast_dynamic(value_desc.get_value_node())
+				)
 					stype+=" (" + value_desc.get_value_node()->get_local_name() + ")";
 			}
 			else if(value_desc.parent_is_layer_param())
