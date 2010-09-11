@@ -52,7 +52,7 @@ ACTION_INIT(Action::ValueDescSmartLink);
 ACTION_SET_NAME(Action::ValueDescSmartLink,"ValueDescSmartLink");
 ACTION_SET_LOCAL_NAME(Action::ValueDescSmartLink,N_("Smart Link"));
 ACTION_SET_TASK(Action::ValueDescSmartLink,"connect");
-ACTION_SET_CATEGORY(Action::ValueDescSmartLink,Action::CATEGORY_VALUEDESC);
+ACTION_SET_CATEGORY(Action::ValueDescSmartLink,Action::CATEGORY_HIDDEN);
 ACTION_SET_PRIORITY(Action::ValueDescSmartLink,0);
 ACTION_SET_VERSION(Action::ValueDescSmartLink,"0.0");
 ACTION_SET_CVS_ID(Action::ValueDescSmartLink,"$Id$");

@@ -53,6 +53,7 @@ private:
 	int status_level;
 	synfig::String status_message;
 	synfig::Time time;
+	synfig::Real link_scalar;
 public:
 
 	ValueDescLink();
