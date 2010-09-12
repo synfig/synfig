@@ -475,17 +475,16 @@ Duckmatic::update_ducks()
 					if ( (*iter)->get_origin_duck()==duck  /*&& !duck_is_selected(*iter)*/ )
 					{
 						synfig::Real radius = 0.0;
-						ValueNode_BLine::Handle bline(ValueNode_BLine::Handle::cast_dynamic(bline_vertex->get_link(bline_vertex->get_link_index_from_name("bline"))));
+						ValueNode_BLine::Handle bline(ValueNode_BLine::Handle::cast_dynamic(bline_vertex->get_link("bline")));
 						Real amount = synfig::find_closest_point((*bline)(time), duck->get_point(), radius, bline->get_loop());
 
-						int vertex_amount_index(bline_vertex->get_link_index_from_name("amount"));
-						ValueNode::Handle vertex_amount_value_node(bline_vertex->get_link(vertex_amount_index));
+						ValueNode::Handle vertex_amount_value_node(bline_vertex->get_link("amount"));
 
 
 						ValueNode::Handle duck_value_node((*iter)->get_value_desc().get_value_node());
 						if (ValueNode_BLineCalcTangent::Handle bline_tangent = ValueNode_BLineCalcTangent::Handle::cast_dynamic(duck_value_node))
 						{
-							if (bline_tangent->get_link(bline_tangent->get_link_index_from_name("amount")) == vertex_amount_value_node)
+							if (bline_tangent->get_link("amount") == vertex_amount_value_node)
 							{
 								switch (bline_tangent->get_type())
 								{
@@ -509,7 +508,7 @@ Duckmatic::update_ducks()
 						}
 						else if (ValueNode_BLineCalcWidth::Handle bline_width = ValueNode_BLineCalcWidth::Handle::cast_dynamic(duck_value_node))
 						{
-							if (bline_width->get_link(bline_width->get_link_index_from_name("amount")) == vertex_amount_value_node)
+							if (bline_width->get_link("amount") == vertex_amount_value_node)
 								(*iter)->set_point(Point((*bline_width)(time, amount).get(Real()), 0));
 						}
 					}
