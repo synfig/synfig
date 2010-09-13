@@ -58,6 +58,15 @@ ACTION_SET_PRIORITY(Action::ValueDescLink,0);
 ACTION_SET_VERSION(Action::ValueDescLink,"0.0");
 ACTION_SET_CVS_ID(Action::ValueDescLink,"$Id$");
 
+ACTION_INIT(Action::ValueDescLinkOpposite);
+ACTION_SET_NAME(Action::ValueDescLinkOpposite,"ValueDescLinkOpposite");
+ACTION_SET_LOCAL_NAME(Action::ValueDescLinkOpposite,N_("Link Opposite"));
+ACTION_SET_TASK(Action::ValueDescLinkOpposite,"connect");
+ACTION_SET_CATEGORY(Action::ValueDescLinkOpposite,Action::CATEGORY_VALUEDESC);
+ACTION_SET_PRIORITY(Action::ValueDescLinkOpposite,0);
+ACTION_SET_VERSION(Action::ValueDescLinkOpposite,"0.0");
+ACTION_SET_CVS_ID(Action::ValueDescLinkOpposite,"$Id$");
+
 /* === G L O B A L S ======================================================= */
 
 /* === P R O C E D U R E S ================================================= */
@@ -65,7 +74,7 @@ ACTION_SET_CVS_ID(Action::ValueDescLink,"$Id$");
 /* === M E T H O D S ======================================================= */
 
 Action::ValueDescLink::ValueDescLink():
-poison(false), status_level(0), link_scalar(0.0)
+poison(false), status_level(0), link_scalar(0.0), link_opposite(false)
 {
 }
 
@@ -306,7 +315,8 @@ Action::ValueDescLink::prepare()
 		}
 
 	std::list<ValueDesc>::iterator iter;
-	Real current_scalar(1.0);
+	// Gets the scalar value of the current value node
+	Real current_scalar(value_desc_list.begin()->get_scalar());
 	bool found_inverse(false);
 	// Check if we are dealing the case of linking differnt types of tangents
 	for(iter=value_desc_list.begin();iter!=value_desc_list.end();++iter)
@@ -327,13 +337,13 @@ Action::ValueDescLink::prepare()
 					current_scalar=iter_scalar;
 				}
 			}
-			else
+			else // link doesn't describe a tangent
 			{
 				found_inverse=false;
 				break;
 			}
 		}
-		else
+		else // parent is not a linkable value node
 		{
 			found_inverse=false;
 			break;
@@ -352,13 +362,18 @@ Action::ValueDescLink::prepare()
 		// Don't link the selected to itself (maybe it is redundant with the previous check)
 		if(value_desc.get_value_node() == link_value_node)
 			continue;
-		// If we found inverse means that all they are tangents and some are differnt scalar (different colors)
-		if(found_inverse)
+		// found_inverse xor link_opposite
+		// If     found_inverse and not link_opposite then scale by -1 first (smart link)
+		// If     found inverse and     link_opposite then do a direct link instead
+		// If not found_inverse and not link_opposite then do a direct link instead
+		// If not found_inverse and     link_opposite then scale by -1 first (smart link)
+		if((found_inverse && !link_opposite) || (!found_inverse && link_opposite))
 		{
 			//Check if the current value node has opposite scalar than the link
 			// value node to convert to scale -1.0 before connect.
 			// Check also if the link value node is NOT also a scale -1
-			if( (value_desc.get_scalar()*link_scalar<0) && (link_is_scaled==false) )
+			// And check also if we are linking opposite
+			if( (value_desc.get_scalar()*link_scalar<0 || link_opposite) && (link_is_scaled==false))
 			{
 				//Let's create a Scale Value Node
 				synfig::ValueNode::Handle scale_value_node=synfig::LinkableValueNode::create("scale",iter->get_value(time));
@@ -407,7 +422,7 @@ Action::ValueDescLink::prepare()
 					throw Error(Error::TYPE_NOTREADY);
 				add_action_front(action3);
 			}
-			else if((iter->get_scalar()*link_scalar<0) && (link_is_scaled==true) )
+			else if((iter->get_scalar()*link_scalar<0 || link_opposite) && (link_is_scaled==true))
 			{
 				//Let's connect the link value node -> link to the value node
 				// There is not needed conversion to scale of the value node
@@ -457,8 +472,69 @@ Action::ValueDescLink::prepare()
 
 			add_action_front(action);
 		}
-
 	}
 
 	synfig::info("http://synfig.org/Linking#Tier_%d : %s", status_level, status_message.c_str());
+}
+
+
+Action::ValueDescLinkOpposite::ValueDescLinkOpposite()
+{
+}
+
+Action::ParamVocab
+Action::ValueDescLinkOpposite::get_param_vocab()
+{
+	return Action::ValueDescLink::get_param_vocab();
+}
+
+bool
+Action::ValueDescLinkOpposite::is_candidate(const ParamList &x)
+{
+	// If action parameters are not Value Desc
+	if(!candidate_check(get_param_vocab(),x))
+		return false;
+
+	int total_tangents=0;
+	ParamList::const_iterator iter;
+	//Search thru all the Param and pick up the value descriptions
+	for(iter=x.begin(); iter!=x.end(); iter++)
+	{
+		if(iter->first == "value_desc")
+		{
+			ValueDesc v_desc(iter->second.get_value_desc());
+			// if the value description parent is linkable value node, continue
+			if(!v_desc.parent_is_linkable_value_node())
+				return false;
+			// if the link describe to any tangent (index 4 or 5), continue
+			if(v_desc.get_index() != 4 && v_desc.get_index() != 5)
+				return false;
+			total_tangents++;
+		}
+	}
+	// If we found two tangents then continue
+	if(total_tangents!=2)
+		return false;
+	// We have reached exactly two tangents
+	return true;
+}
+
+bool
+Action::ValueDescLinkOpposite::set_param(const synfig::String& name, const Action::Param &param)
+{
+	return Action::ValueDescLink::set_param(name,param);
+}
+
+bool
+Action::ValueDescLinkOpposite::is_ready()const
+{
+	return Action::ValueDescLink::is_ready();
+}
+
+void
+Action::ValueDescLinkOpposite::prepare()
+{
+	// prepare to do a opposite link and reuse the code from ValueDescLink
+	link_opposite=true;
+	ValueDescLink::prepare();
 }

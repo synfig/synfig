@@ -7,6 +7,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007 Chris Moore
+**	Copyright (c) 2010 Carlos López
 **
 **	This package is free software; you can redistribute it and/or
 **	modify it under the terms of the GNU General Public License as
@@ -46,17 +47,48 @@ class ValueDescLink :
 	public Super
 {
 private:
-
+	friend class ValueDescLinkOpposite;
+	//! List of Value Descriptions retrieved from the action Parameters list
+	//! to be linked
 	std::list<ValueDesc> value_desc_list;
+	//! Selected value node from the Value Descriptions (maybe none)
+	//! to which the others would link
 	synfig::ValueNode::Handle link_value_node;
+	//! If poison is true then Link is not possible (two exported value nodes found)
 	bool poison;
+	//! Used to monitorize the tie decision when selecting the link value node
 	int status_level;
+	//! Message to inform the status of the tie decision when selecting the link value node
 	synfig::String status_message;
+	//! Time where the value nodes are evaluated
 	synfig::Time time;
+	//! Scalar value of the link value node. It is used for linking tangents.
+	//! In the synfig::ParamDesc list there is a value used to draw the tangents on the
+	//! canvas that is called scalar
 	synfig::Real link_scalar;
+	//! If true then link opposite is being called.
+	bool link_opposite;
 public:
 
 	ValueDescLink();
+
+	static ParamVocab get_param_vocab();
+	static bool is_candidate(const ParamList &x);
+
+	virtual bool set_param(const synfig::String& name, const Param &);
+	virtual bool is_ready()const;
+
+	virtual void prepare();
+
+	ACTION_MODULE_EXT
+};
+
+class ValueDescLinkOpposite :
+	public ValueDescLink
+{
+public:
+
+	ValueDescLinkOpposite();
 
 	static ParamVocab get_param_vocab();
 	static bool is_candidate(const ParamList &x);
