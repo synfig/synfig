@@ -304,7 +304,7 @@ Renderer_Ducks::render_vfunc(
 		if(!(*iter)->get_editable())
 			screen_duck.color=(DUCK_COLOR_NOT_EDITABLE);
 		else if((*iter)->get_tangent())
-			screen_duck.color=((*iter)->get_scalar()<0 ? DUCK_COLOR_TANGENT_1 : DUCK_COLOR_TANGENT_2);
+			screen_duck.color=((*iter)->get_scalar()<0 ? DUCK_COLOR_TANGENT_1 : DUCK_COLOR_TANGENT_1);
 		else if((*iter)->get_type()&Duck::TYPE_VERTEX)
 			screen_duck.color=DUCK_COLOR_VERTEX;
 		else if((*iter)->get_type()&Duck::TYPE_RADIUS)
