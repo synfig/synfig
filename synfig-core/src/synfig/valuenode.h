@@ -46,7 +46,7 @@
 
 /* === M A C R O S ========================================================= */
 
-#define CHECK_TYPE_AND_SET_VALUE(variable, type)						\
+#define VALUENODE_CHECK_TYPE(type) 										\
 	/* I don't think this ever happens - maybe remove this code? */		\
 	if (get_type() == ValueBase::TYPE_NIL) {							\
 		warning("%s:%d get_type() IS nil sometimes!",					\
@@ -62,11 +62,17 @@
 			  ValueBase::type_local_name(type).c_str(),					\
 			  ValueBase::type_local_name(value->get_type()).c_str());	\
 		return false;													\
-	}																	\
+	}
+
+#define VALUENODE_SET_VALUE(variable)									\
 	variable = value;													\
 	signal_child_changed()(i);											\
 	signal_value_changed()();											\
 	return true
+
+#define CHECK_TYPE_AND_SET_VALUE(variable, type)						\
+	VALUENODE_CHECK_TYPE(type)											\
+	VALUENODE_SET_VALUE(variable)
 
 /* === T Y P E D E F S ===================================================== */
 
@@ -104,6 +110,8 @@ public:
 	static bool subsys_init();
 	//!Deletes the book of ValueNodes
 	static bool subsys_stop();
+
+	static void breakpoint();
 
 	/*
  --	** -- D A T A -------------------------------------------------------------
@@ -208,9 +216,10 @@ public:
 	//! Return a full description of the ValueNode and its parentage
 	virtual String get_description(bool show_exported_name = true)const;
 
+	String get_string()const;
 
 	//! Clones a Value Node
-	virtual ValueNode* clone(const GUID& deriv_guid=GUID())const=0;
+	virtual ValueNode* clone(etl::loose_handle<Canvas> canvas, const GUID& deriv_guid=GUID())const=0;
 
 	//! Returns \true if the Value Node has an ID (has been exported)
 	bool is_exported()const { return !get_id().empty(); }
@@ -219,16 +228,19 @@ public:
 	ValueBase::Type get_type()const { return type; }
 
 	//! Returns a handle to the parent canvas, if it has one.
-	etl::loose_handle<Canvas> get_parent_canvas()const { return canvas_; }
+	etl::loose_handle<Canvas> get_parent_canvas()const;
 
 	//! Returns a handle to the parent canvas, if it has one.
-	etl::loose_handle<Canvas> get_root_canvas()const { return root_canvas_; }
+	etl::loose_handle<Canvas> get_root_canvas()const;
+
+	//! Returns a handle to the parent canvas, if it has one.
+	etl::loose_handle<Canvas> get_non_inline_ancestor_canvas()const;
 
 	//! Sets the parent canvas for the Value Node
 	void set_parent_canvas(etl::loose_handle<Canvas> x);
 
 	//! Sets the root canvas parent for the Value Node
-	void set_root_canvas(etl::loose_handle<Canvas> x);
+	virtual void set_root_canvas(etl::loose_handle<Canvas> x);
 
 	//! Returns the relative ID of a Node when accessed form the \x Canvas
 	String get_relative_id(etl::loose_handle<const Canvas> x)const;
@@ -275,7 +287,9 @@ public:
 
 	virtual String get_local_name()const;
 
-	virtual ValueNode* clone(const GUID& deriv_guid=GUID())const;
+	String get_string()const;
+
+	virtual ValueNode* clone(etl::loose_handle<Canvas> canvas, const GUID& deriv_guid=GUID())const;
 
 	static Handle create(ValueBase::Type type=ValueBase::TYPE_NIL);
 
@@ -310,7 +324,7 @@ public:
 	/*! As a pointer to the constructor, it represents a "factory" of
 	**  objects of this class.
 	*/
-	typedef LinkableValueNode* (*Factory)(const ValueBase&);
+	typedef LinkableValueNode* (*Factory)(const ValueBase&, etl::loose_handle<Canvas> canvas);
 
 	//! This represents a pointer to a Type check member fucntion
 	/*! As a pointer to the member, it represents a fucntion that checks
@@ -339,7 +353,7 @@ public:
 
 	//! Creates a Linkable Value Node based on the name and the returned
 	//! value type. Returns a valid Handle if both (name and type) match
-	static Handle create(const String &name, const ValueBase& x);
+	static Handle create(const String &name, const ValueBase& x, etl::loose_handle<Canvas> canvas /* = 0 */);
 
 	//! Each derived Linkable Value Node has to implement this fucntion and
 	//! should return true only if the type matches. \name is the name of
@@ -375,7 +389,7 @@ public:
 	virtual int get_link_index_from_name(const String &name)const=0;
 
 	//! Clones a Value Node
-	virtual ValueNode* clone(const GUID& deriv_guid=GUID())const;
+	virtual ValueNode* clone(etl::loose_handle<Canvas> canvas, const GUID& deriv_guid=GUID())const;
 
 	//! Sets a new Value Node link by its index
 	bool set_link(int i,ValueNode::Handle x);
@@ -419,13 +433,13 @@ public:
 	/*!	\return If found, returns a handle to the ValueNode.
 	**		Otherwise, returns an empty handle.
 	*/
-	ValueNode::Handle find(const String &name);
+	ValueNode::Handle find(const String &name, bool might_fail);
 
 	//! Finds the ValueNode in the list with the given \a name
 	/*!	\return If found, returns a handle to the ValueNode.
 	**		Otherwise, returns an empty handle.
 	*/
-	ValueNode::ConstHandle find(const String &name)const;
+	ValueNode::ConstHandle find(const String &name, bool might_fail)const;
 
 	//! Removes the \a value_node from the list
 	bool erase(ValueNode::Handle value_node);

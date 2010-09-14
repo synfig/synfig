@@ -1,0 +1,18 @@
+#! /bin/sh
+
+# this script will create a new bug report from the template
+
+printf "\n  please 'git fetch' and rebase, then hit return to continue (or control-c to abort) "
+read x
+
+file=$(printf "open/%06d.txt" $(($(find . -name '??????.txt' | cut -d/ -f3 | cut -d. -f1 | sort | tail -1 | sed 's/^0*//')+1)))
+cp template.txt $file
+cat << EOF
+
+  the new bug report is in:
+
+    $file
+
+  please commit it as soon as possible to avoid conflicts
+
+EOF

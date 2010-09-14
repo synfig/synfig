@@ -223,7 +223,7 @@ public:
 	const GUID& get_guid()const;
 
 	//! Sets the GUID for this Node
-	void set_guid(const GUID& x);
+	virtual void set_guid(const GUID& x);
 
 	//! Gets the time when the Node was changed
 	int get_time_last_changed()const;
@@ -243,6 +243,7 @@ public:
 	//! Writeme!
 	RWLock& get_rw_lock()const { return rw_lock_; }
 
+	virtual String get_string()const = 0;
 protected:
 
 	void begin_delete();

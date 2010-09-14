@@ -148,7 +148,7 @@ Action::ValueNodeAdd::perform()
 void
 Action::ValueNodeAdd::undo()
 {
-	try { get_canvas()->remove_value_node(value_node); }
+	try { get_canvas()->remove_value_node(value_node, true); }
 	catch(...)
 	{
 		throw Error(_("Exception caught on Remove ValueNode."));

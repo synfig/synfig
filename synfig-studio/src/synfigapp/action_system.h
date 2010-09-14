@@ -110,7 +110,7 @@ private:
 	Stack undo_action_stack_;
 	Stack redo_action_stack_;
 
-	etl::handle<Action::Base> most_recent_action_;
+	synfig::String most_recent_action_name_;
 
 	std::list<PassiveGrouper*> group_stack_;
 
@@ -165,7 +165,7 @@ public:
 	}
 	*/
 
-	const etl::handle<Action::Base>& get_most_recent_action() { return most_recent_action_; }
+	synfig::String get_most_recent_action_name() { return most_recent_action_name_; }
 
 	bool get_clear_redo_stack_on_new_action()const { return clear_redo_stack_on_new_action_; }
 

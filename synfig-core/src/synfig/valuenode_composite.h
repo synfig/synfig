@@ -31,14 +31,16 @@
 
 /* === M A C R O S ========================================================= */
 
+#define MAX_LINKS 6
+
 /* === C L A S S E S & S T R U C T S ======================================= */
 
 namespace synfig {
 
 class ValueNode_Composite : public LinkableValueNode
 {
-	ValueNode::RHandle components[6];
-	ValueNode_Composite(const ValueBase &value);
+	ValueNode::RHandle components[MAX_LINKS];
+	ValueNode_Composite(const ValueBase &value, etl::loose_handle<Canvas> canvas = 0);
 
 public:
 	typedef etl::handle<ValueNode_Composite> Handle;
@@ -67,7 +69,7 @@ public:
 	using synfig::LinkableValueNode::set_link_vfunc;
 	using synfig::LinkableValueNode::get_link_vfunc;
 	static bool check_type(ValueBase::Type type);
-	static ValueNode_Composite* create(const ValueBase &x);
+	static ValueNode_Composite* create(const ValueBase &x, etl::loose_handle<Canvas> canvas = 0);
 }; // END of class ValueNode_Composite
 
 }; // END of namespace synfig

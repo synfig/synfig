@@ -1,0 +1,23 @@
+Subject: Inserted bones doesn't offer other parent in the bone choose widget than the <None>
+
+new file,
+new skeleton,
+insert item smart,
+select the inserted and try to change its parent,
+only <None> is offered
+
+------------------------------------------------------------------------
+If you deleted the inserted and then add a new one the deleted is offerd to the new inserted.
+It seems like if they belong to a different canvas?
+
+------------------------------------------------------------------------
+dooglus, Tue Dec 16 00:17:15 CET 2008
+
+the parent canvas of the new bone valuenode is 0, so it can't find the correct bone_map.
+
+------------------------------------------------------------------------
+dooglus, Tue Dec 16 11:42:21 CET 2008
+
+In valuenode_staticlist.cpp:
+	ValueNode_StaticList::create_list_entry() needs to do:
+		ret->set_parent_canvas(get_parent_canvas());

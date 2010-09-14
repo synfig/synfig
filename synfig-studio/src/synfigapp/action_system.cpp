@@ -68,8 +68,8 @@ Action::System::~System()
 bool
 Action::System::perform_action(etl::handle<Action::Base> action)
 {
-	//// debug actions
-	// synfig::info("%s:%d perform_action: '%s'", __FILE__, __LINE__, action->get_name().c_str());
+	if (getenv("SYNFIG_DEBUG_ACTIONS"))
+		synfig::info("%s:%d perform_action: '%s'", __FILE__, __LINE__, action->get_name().c_str());
 
 	handle<UIInterface> uim(get_ui_interface());
 
@@ -81,7 +81,7 @@ Action::System::perform_action(etl::handle<Action::Base> action)
 		return false;
 	}
 
-	most_recent_action_=action;
+	most_recent_action_name_=action->get_name();
 
 	static bool inuse=false;
 
@@ -214,7 +214,7 @@ bool
 synfigapp::Action::System::undo_(etl::handle<UIInterface> uim)
 {
 	handle<Action::Undoable> action(undo_action_stack().front());
-	most_recent_action_=action;
+	most_recent_action_name_=action->get_name();
 
 	try { if(action->is_active()) action->undo(); }
 	catch(Action::Error err)
@@ -312,7 +312,7 @@ bool
 Action::System::redo_(etl::handle<UIInterface> uim)
 {
 	handle<Action::Undoable> action(redo_action_stack().front());
-	most_recent_action_=action;
+	most_recent_action_name_=action->get_name();
 
 	try { if(action->is_active()) action->perform(); }
 	catch(Action::Error err)

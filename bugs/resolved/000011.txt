@@ -1,0 +1,33 @@
+Subject: Edit a parent parameter waypoint doesn't seems to work
+
+Create a skeleton, go to animation mode, modify the parent paramter of a bone.
+It creates a waypoint. Expand the bone and right click the waypoint.
+It would open a dialog to edit the parent paramter.
+The drop down list doesn't seems to work.
+
+------------------------------------------------------------------------
+
+When I right-click a waypoint, I see a menu, not a dialog.  The menu
+seems to act as it should.  Did you mean 'menu' where you wrote
+'dialog'?  Or did you mean to say that I should click 'Edit' to get
+the edit dialog?  And what exactly doesn't work?
+
+------------------------------------------------------------------------
+
+(10:54:18) Genete: Create a skeleton, go to animation mode, modify the
+		   parent paramter of a bone.   It creates a waypoint
+		   (the waypoint is created in the parent parameter of
+		   the bone). Expand the bone and right click the
+		   waypoint of the parent parameter of the bone. It
+		   offers a context menu (Jump to, Delete, Edit,
+		   Both, In, Out, etc.). Select Edit context menu
+		   entry. It opens a dialog window to edit the
+		   parent paramter.  The drop down list (in the dialog
+		   window) doesn't seem to work. Try to use the drop
+		   down list to select a different parent bone and it
+		   remains unchanged
+
+------------------------------------------------------------------------
+
+Resolved: it's just a case of putting the currently selected value at
+the top of the menu.

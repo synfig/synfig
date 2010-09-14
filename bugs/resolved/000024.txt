@@ -1,0 +1,9 @@
+Subject: Nudge by arrows doesn't work for bones
+
+Select a bone's duck and it is only nudged by the arrows one time.
+There is one exception: the root bone origin.
+
+------------------------------------------------------------------------
+dooglus, Fri Dec 26 01:35:32 CET 2008
+
+This was introduced by SVN r2320.

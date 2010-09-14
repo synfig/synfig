@@ -127,6 +127,7 @@ ChildrenTree::ChildrenTree()
 		cellrenderer_value=ChildrenTreeStore::add_cell_renderer_value(column);
 		cellrenderer_value->signal_edited().connect(sigc::mem_fun(*this, &studio::ChildrenTree::on_edited_value));
 		cellrenderer_value->property_value()=synfig::ValueBase();
+		column->add_attribute(cellrenderer_value->property_value_desc(), model.value_desc);
 
 		// Finish setting up the column
 		tree_view.append_column(*column);

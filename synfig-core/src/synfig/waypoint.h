@@ -275,8 +275,9 @@ public:
 
 	//! Gets parent Value Node
 	const etl::loose_handle<ValueNode> &get_parent_value_node()const { return parent_; }
+
 	//! Sets parent Value Node
-	void set_parent_value_node(const etl::loose_handle<ValueNode> &x) { parent_=x; }
+	void set_parent_value_node(const etl::loose_handle<ValueNode> &x);
 
 	//! \true if the Value Node is constant, not null and not exported
 	bool is_static()const;
@@ -309,9 +310,10 @@ public:
 	bool operator!=(const UniqueID &rhs)const
 	{ return get_uid()!=rhs.get_uid(); }
 
+
 	//! Clones the Value Node if it is not exported and returns a Waypoint
 	//! with no parent.
-	Waypoint clone(const GUID& deriv_guid=GUID())const;
+	Waypoint clone(etl::loose_handle<Canvas> canvas, const GUID& deriv_guid=GUID())const;
 
 	//! Returns a hack GUID using the UniqueID's value
 	GUID get_guid()const;

@@ -34,7 +34,11 @@
 #include "general.h"
 #include <ETL/stringf>
 #include "canvas.h"
+#include "valuenode_bone.h"
 #include "gradient.h"
+#include "bone.h"
+#include "matrix.h"
+#include "boneweightpair.h"
 
 
 
@@ -50,6 +54,8 @@ using namespace std;
 using namespace etl;
 
 /* === M A C R O S ========================================================= */
+
+#define TRY_FIX_FOR_BUG_27
 
 /* === G L O B A L S ======================================================= */
 
@@ -78,9 +84,13 @@ ValueBase::ValueBase(Type x):
 	case TYPE_COLOR:		data=static_cast<void*>(new Color());				break;
 	case TYPE_SEGMENT:		data=static_cast<void*>(new Segment());				break;
 	case TYPE_BLINEPOINT:	data=static_cast<void*>(new BLinePoint());			break;
+	case TYPE_MATRIX:		data=static_cast<void*>(new Matrix());				break;
+	case TYPE_BONE_WEIGHT_PAIR:	data=static_cast<void*>(new BoneWeightPair());	break;
 	case TYPE_LIST:			data=static_cast<void*>(new list_type());			break;
 	case TYPE_STRING:		data=static_cast<void*>(new String());				break;
 	case TYPE_GRADIENT:		data=static_cast<void*>(new Gradient());			break;
+	case TYPE_BONE:			data=static_cast<void*>(new Bone());				break;
+	case TYPE_VALUENODE_BONE:	data=static_cast<void*>(new etl::handle<ValueNode_Bone>());	break;
 	case TYPE_CANVAS:		data=static_cast<void*>(new etl::handle<Canvas>());	break;
 	default:																	break;
 	}
@@ -105,7 +115,7 @@ ValueBase::get_string() const
 	{
 	case TYPE_NIL:			return "Nil";
 	case TYPE_BOOL:			return strprintf("Bool (%s)", get(bool()) ? "true" : "false");
-	case TYPE_INTEGER:		return strprintf("Integer (%s)", get(int()));
+	case TYPE_INTEGER:		return strprintf("Integer (%d)", get(int()));
 	case TYPE_ANGLE:		return strprintf("Angle (%.2f)", Angle::deg(get(Angle())).get());
 
 		// All types after this point are larger than 32 bits
@@ -118,7 +128,9 @@ ValueBase::get_string() const
 	case TYPE_VECTOR:		return strprintf("Vector (%f, %f)", get(Vector())[0], get(Vector())[1]);
 	case TYPE_COLOR:		return strprintf("Color (%s)", get(Color()).get_string().c_str());
 	case TYPE_SEGMENT:		return strprintf("Segment ((%f, %f) to (%f, %f))", get(Segment()).p1[0], get(Segment()).p1[1], get(Segment()).p2[0], get(Segment()).p2[1]);
-	case TYPE_BLINEPOINT:	return strprintf("BLinePoint (%s)", get(BLinePoint()).get_vertex()[0], get(BLinePoint()).get_vertex()[1]);
+	case TYPE_BLINEPOINT:	return strprintf("BLinePoint (%f, %f)", get(BLinePoint()).get_vertex()[0], get(BLinePoint()).get_vertex()[1]);
+	case TYPE_MATRIX:		return strprintf("Matrix (%s)",get(Matrix().get_string().c_str()));
+	case TYPE_BONE_WEIGHT_PAIR:	return strprintf("Bone Weight Pair (%s)",get(BoneWeightPair()).get_string().c_str());
 
 		// All types after this point require construction/destruction
 
@@ -126,6 +138,8 @@ ValueBase::get_string() const
 	case TYPE_CANVAS:		return strprintf("Canvas (%s)", get(etl::loose_handle<Canvas>())->get_id().c_str());
 	case TYPE_STRING:		return strprintf("String (%s)", get(String()).c_str());
 	case TYPE_GRADIENT:		return strprintf("Gradient (%d cpoints)", get(Gradient()).size());
+	case TYPE_BONE:			return strprintf("Bone (%s)", get(Bone()).get_string().c_str());
+	case TYPE_VALUENODE_BONE:	return strprintf("ValueNodeBone (%s)", get(ValueNode_Bone::Handle())->get_string().c_str());
 	default:				return "Invalid type";
 	}
 }
@@ -135,7 +149,11 @@ void
 ValueBase::set(Canvas* x)
 {
 	clear();
-	if(x && x->is_inline())
+	if(x
+#ifndef TRY_FIX_FOR_BUG_27
+	   && x->is_inline()
+#endif
+		)
 	{
 		_set(etl::handle<Canvas>(x));
 	}
@@ -150,7 +168,11 @@ void
 ValueBase::set(etl::loose_handle<Canvas> x)
 {
 	clear();
-	if(x && x->is_inline())
+	if(x
+#ifndef TRY_FIX_FOR_BUG_27
+	   && x->is_inline()
+#endif
+		)
 		_set(etl::handle<Canvas>(x));
 	else
 		_set(etl::loose_handle<Canvas>(x));
@@ -161,7 +183,11 @@ void
 ValueBase::set(etl::handle<Canvas> x)
 {
 	clear();
-	if(x && x->is_inline())
+	if(x
+#ifndef TRY_FIX_FOR_BUG_27
+	   && x->is_inline()
+#endif
+		)
 		_set(etl::handle<Canvas>(x));
 	else
 		_set(etl::loose_handle<Canvas>(x));
@@ -237,11 +263,17 @@ ValueBase::clear()
 		case TYPE_COLOR:		delete static_cast<Color*>(data);		break;
 		case TYPE_SEGMENT:		delete static_cast<Segment*>(data);		break;
 		case TYPE_BLINEPOINT:	delete static_cast<BLinePoint*>(data);	break;
+		case TYPE_MATRIX:		delete static_cast<Matrix*>(data);		break;
+		case TYPE_BONE_WEIGHT_PAIR:	delete static_cast<BoneWeightPair*>(data);	break;
 		case TYPE_LIST:			delete static_cast<list_type*>(data);	break;
 		case TYPE_CANVAS:
 		{
 			etl::handle<Canvas> canvas(get(etl::loose_handle<Canvas>()));
-			if(canvas && canvas->is_inline())
+			if(canvas
+#ifndef TRY_FIX_FOR_BUG_27
+			   && canvas->is_inline()
+#endif
+				)
 				delete static_cast<etl::handle<Canvas>*>(data);
 			else
 				delete static_cast<etl::loose_handle<Canvas>*>(data);
@@ -249,6 +281,8 @@ ValueBase::clear()
 		}
 		case TYPE_STRING:		delete static_cast<String*>(data);		break;
 		case TYPE_GRADIENT:		delete static_cast<Gradient*>(data);	break;
+		case TYPE_BONE:			delete static_cast<Bone*>(data);		break;
+		case TYPE_VALUENODE_BONE:	delete static_cast<etl::handle<ValueNode_Bone>*>(data);		break;
 		default:
 			break;
 		}
@@ -259,11 +293,10 @@ ValueBase::clear()
 	type=TYPE_NIL;
 }
 
-
 String
 ValueBase::type_name(Type id)
 {
-	// don't internationalize these type names - they're using in .sif files
+	// don't internationalize these type names - they're used in .sif files
 	switch(id)
 	{
 		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types */
@@ -285,6 +318,10 @@ ValueBase::type_name(Type id)
 		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types */
 	case TYPE_BLINEPOINT:	return N_("bline_point");
 		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types */
+	case TYPE_MATRIX:		return N_("matrix");
+		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types */
+	case TYPE_BONE_WEIGHT_PAIR:	return N_("bone_weight_pair");
+		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types */
 	case TYPE_LIST:			return N_("list");
 		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types */
 	case TYPE_CANVAS:		return N_("canvas");
@@ -293,11 +330,13 @@ ValueBase::type_name(Type id)
 		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types */
 	case TYPE_GRADIENT:		return N_("gradient");
 		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types */
+	case TYPE_BONE:			return N_("bone_object");
+	case TYPE_VALUENODE_BONE:	return N_("bone_valuenode");
 	case TYPE_NIL:			return N_("nil");
 	default:
 		break;
 	}
-	synfig::warning("Encountered unknown ValueBase with an Type of %d",id);
+	synfig::warning("Encountered unknown ValueBase with a Type of %d",id);
 //	assert(0);
 	return "UNKNOWN";
 }
@@ -305,7 +344,51 @@ ValueBase::type_name(Type id)
 String
 ValueBase::type_local_name(Type id)
 {
-	return dgettext("synfig",type_name(id).c_str());
+	// don't internationalize these type names - they're using in .sif files
+	switch(id)
+	{
+		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
+	case TYPE_BOOL:			return _("Bool");
+		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
+	case TYPE_INTEGER:		return _("Integer");
+		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
+	case TYPE_ANGLE:		return _("Angle");
+		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
+	case TYPE_TIME:			return _("Time");
+		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
+	case TYPE_REAL:			return _("Real");
+		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
+	case TYPE_VECTOR:		return _("Vector");
+		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
+	case TYPE_COLOR:		return _("Color");
+		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
+	case TYPE_SEGMENT:		return _("Segment");
+		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
+	case TYPE_BLINEPOINT:	return _("Bline Point");
+		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
+	case TYPE_MATRIX:		return _("Matrix");
+		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
+	case TYPE_BONE_WEIGHT_PAIR:	return _("Bone Weight Pair");
+		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
+	case TYPE_LIST:			return _("List");
+		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
+	case TYPE_CANVAS:		return _("Canvas");
+		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
+	case TYPE_STRING:		return _("String");
+		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
+	case TYPE_GRADIENT:		return _("Gradient");
+		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
+	case TYPE_BONE:			return _("Bone Object");
+		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
+	case TYPE_VALUENODE_BONE:	return _("Bone ValueNode");
+		/* TRANSLATORS: this is the name of a type -- see http://synfig.org/Types */
+	case TYPE_NIL:			return _("Nil");
+	default:
+		break;
+	}
+	synfig::warning("Encountered unknown ValueBase with a Type of %d",id);
+//	assert(0);
+	return _("UNKNOWN");
 }
 
 ValueBase::Type
@@ -335,8 +418,12 @@ ValueBase::ident_type(const String &str)
 	else if(str=="list")		return TYPE_LIST;
 	else if(str=="segment")		return TYPE_SEGMENT;
 	else if(str=="gradient")	return TYPE_GRADIENT;
+	else if(str=="bone_object")	return TYPE_BONE;
+	else if(str=="bone_valuenode")	return TYPE_VALUENODE_BONE;
 	else if(str=="bline_point" ||
 			str=="blinepoint")	return TYPE_BLINEPOINT;
+	else if(str=="matrix")		return TYPE_MATRIX;
+	else if(str=="bone_weight_pair")	return TYPE_BONE_WEIGHT_PAIR;
 
 	return TYPE_NIL;
 }
@@ -361,9 +448,13 @@ ValueBase::operator==(const ValueBase& rhs)const
 	case TYPE_STRING:		   return get(String())==rhs.get(String());
 	case TYPE_CANVAS:		   return get(Canvas::LooseHandle())==rhs.get(Canvas::LooseHandle());
 	case TYPE_LIST:			   return get_list()==rhs.get_list();
+	case TYPE_VALUENODE_BONE:  return get(ValueNode_Bone::Handle())==rhs.get(ValueNode_Bone::Handle());
 	case TYPE_SEGMENT:		// return get(Segment())==rhs.get(Segment());
 	case TYPE_GRADIENT:		// return get(Gradient())==rhs.get(Gradient());
+	case TYPE_BONE:			// return get(Bone())==rhs.get(Bone());
 	case TYPE_BLINEPOINT:	// return get(BLinePoint())==rhs.get(BLinePoint());
+	case TYPE_MATRIX:		// return get(Matrix())==rhs.get(Matrix());
+	case TYPE_BONE_WEIGHT_PAIR:	// return get(BoneWeightPair())==rhs.get(BoneWeightPair());
 	case TYPE_NIL:
 	default:				   return false;
 	}

@@ -57,7 +57,7 @@ using namespace synfig;
 
 /* === M E T H O D S ======================================================= */
 
-synfig::ValueNode_Composite::ValueNode_Composite(const ValueBase &value):
+synfig::ValueNode_Composite::ValueNode_Composite(const ValueBase &value, Canvas::LooseHandle canvas):
 	LinkableValueNode(value.get_type())
 {
 	switch(get_type())
@@ -93,6 +93,10 @@ synfig::ValueNode_Composite::ValueNode_Composite(const ValueBase &value):
 			assert(0);
 			throw Exception::BadType(ValueBase::type_local_name(get_type()));
 	}
+
+	if (getenv("SYNFIG_DEBUG_SET_PARENT_CANVAS"))
+		printf("%s:%d set parent canvas for composite %lx to %lx\n", __FILE__, __LINE__, ulong(this), ulong(canvas.get()));
+	set_parent_canvas(canvas);
 }
 
 ValueNode_Composite::~ValueNode_Composite()
@@ -101,9 +105,9 @@ ValueNode_Composite::~ValueNode_Composite()
 }
 
 ValueNode_Composite*
-ValueNode_Composite::create(const ValueBase &value)
+ValueNode_Composite::create(const ValueBase &value, Canvas::LooseHandle canvas)
 {
-	return new ValueNode_Composite(value);
+	return new ValueNode_Composite(value, canvas);
 }
 
 LinkableValueNode*

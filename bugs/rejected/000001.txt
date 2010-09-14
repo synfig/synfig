@@ -1,0 +1,8 @@
+Subject: crash when duplicating a skeleton layer
+
+If I duplicate a skeleton layer, it appears to work, but crashes when I try to edit it.
+
+------------------------------------------------------------------------
+
+I suspect this is a duplicate of bug #2.  If you can reproduce this without deleting a vertex, please note how.
+Rejected: The recipe is not reproducible/complete and it maybe a duplicated of any of the others.

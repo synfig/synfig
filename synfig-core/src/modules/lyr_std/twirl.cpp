@@ -186,6 +186,11 @@ public:
 	{
 		return layer->distort(x,false);
 	}
+
+	synfig::String get_string()const
+	{
+		return "twirl";
+	}
 };
 etl::handle<Transform>
 Twirl::get_transform()const

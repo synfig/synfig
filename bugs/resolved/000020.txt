@@ -1,0 +1,23 @@
+Subject: Inserted BoneWeight pairs in a Bone influence convert type are not available for other bones
+
+-Create a fresh file.
+-Create a skeleton (it provides bone1, bone2, bone3)
+-Create a bline.
+-Convert one of the vertices parameter to Bone Influience (from now BI). It provides a bone4
+inside the first automatically created Bone Weight Pair valuenode (from now BWP).
+-Expand the Bone Weight List (BWL) and right click on the first BWP.
+-Select Insert Item smart. Do it twice. It creates other two BWPs that provide bone5 and bone6.
+-Go to the skeleton and try to find the bone6 or 5 in any of the parent param of any bone. You cannot.
+-Go to bone4 from the 1st created BWP and try to select bone5 or bone6 form the àrent parameter. You cannot.
+-Go to bone5 and select the bone6 form the parent param chooser. You can.
+ You should be able to do it for any bone.
+
+------------------------------------------------------------------------
+dooglus, Wed Dec 17 00:46:11 CET 2008
+
+It looks like bones 5 and 6 have a different parent canvas than 1 through 4.
+
+------------------------------------------------------------------------
+dooglus, Wed Dec 17 01:09:59 CET 2008
+
+It's just another case where the canvas wasn't being set.

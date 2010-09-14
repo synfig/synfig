@@ -16,7 +16,8 @@ WIDGETS_HH = \
 	widgets/widget_vector.h \
 	widgets/widget_waypoint.h \
 	widgets/widget_waypointmodel.h \
-	widgets/widget_keyframe_list.h
+	widgets/widget_keyframe_list.h \
+	widgets/widget_bonechooser.h
 
 WIDGETS_CC = \
 	widgets/widget_canvaschooser.cpp \
@@ -36,7 +37,8 @@ WIDGETS_CC = \
 	widgets/widget_vector.cpp \
 	widgets/widget_waypoint.cpp \
 	widgets/widget_waypointmodel.cpp \
-	widgets/widget_keyframe_list.cpp
+	widgets/widget_keyframe_list.cpp \
+	widgets/widget_bonechooser.cpp
 
 synfigstudio_src += \
 	$(WIDGETS_HH) \

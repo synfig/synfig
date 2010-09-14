@@ -64,7 +64,7 @@ public:
 	typedef etl::handle<const ValueNode_BLine> ConstHandle;
 
 
-	ValueNode_BLine();
+	ValueNode_BLine(etl::loose_handle<Canvas> canvas = 0);
 
 public:
 
@@ -88,7 +88,17 @@ protected:
 public:
 	//using synfig::LinkableValueNode::set_link_vfunc;
 	static bool check_type(ValueBase::Type type);
-	static ValueNode_BLine* create(const ValueBase &x=ValueBase::TYPE_LIST);
+	static ValueNode_BLine* create(const ValueBase &x=ValueBase::TYPE_LIST, etl::loose_handle<Canvas> canvas = 0);
+
+	//! Returns the BlinePoint at time t, with the tangents modified if
+	//! the vertex is boned influenced, otherwise returns the Blinepoint at time t.
+	BLinePoint get_blinepoint(std::vector<ListEntry>::const_iterator current, Time t)const;
+
+#ifdef _DEBUG
+	virtual void ref()const;
+	virtual bool unref()const;
+#endif
+
 }; // END of class ValueNode_BLine
 
 typedef ValueNode_BLine::ListEntry::ActivepointList ActivepointList;

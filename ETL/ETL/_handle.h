@@ -81,7 +81,7 @@ protected:
 #endif
 
 public:
-	void ref()const
+	virtual void ref()const
 	{
 #ifdef ETL_LOCK_REFCOUNTS
 		etl::mutex::lock lock(mtx);
@@ -91,7 +91,7 @@ public:
 	}
 
 	//! Returns \c false if object needs to be deleted
-	bool unref()const
+	virtual bool unref()const
 	{
 		bool ret = true;
 		{
@@ -136,7 +136,6 @@ public:
 	virtual void ref()const=0;
 	virtual bool unref()const=0;
 	virtual int count()const=0;
-	virtual virtual_shared_object *clone()=0;
 }; // END of class virtual_shared_object
 
 // ========================================================================
@@ -256,8 +255,6 @@ public:
 	/*! Uses the default constructor */
 	void spawn() { operator=(handle(new T())); }
 
-	handle<value_type> clone()const { assert(obj); return static_cast<value_type*>(obj->clone()); }
-
 	//! Returns a constant handle to our object
 	handle<const value_type> constant()const { assert(obj); return *this; }
 
@@ -342,10 +339,10 @@ protected:
 	rshared_object():rrefcount(0),front_(0),back_(0) { }
 
 public:
-	void rref()const
+	virtual void rref()const
 		{ rrefcount++; }
 
-	void runref()const
+	virtual void runref()const
 	{
 		assert(rrefcount>0);
 		rrefcount--;
@@ -721,8 +718,6 @@ public:
 	void reset() { detach(); }
 
 	bool empty()const { return obj==0; }
-
-	handle<value_type> clone()const { assert(obj); return obj->clone(); }
 
 	//! Returns a constant handle to our object
 	loose_handle<const value_type> constant()const { return *this; }

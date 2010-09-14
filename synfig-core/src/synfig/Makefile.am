@@ -25,7 +25,8 @@ LAYERHEADERS = \
 	layer_pastecanvas.h \
 	layer_polygon.h \
 	layer_shape.h \
-	layer_solidcolor.h
+	layer_solidcolor.h \
+	layer_skeleton.h
 
 LAYERSOURCES = \
 	layer_bitmap.cpp \
@@ -36,7 +37,8 @@ LAYERSOURCES = \
 	layer_pastecanvas.cpp \
 	layer_polygon.cpp \
 	layer_shape.cpp \
-	layer_solidcolor.cpp
+	layer_solidcolor.cpp \
+	layer_skeleton.cpp
 
 
 TARGETHEADERS = \
@@ -113,7 +115,11 @@ VALUENODEHEADERS = \
 	valuenode_vectorangle.h \
 	valuenode_vectorlength.h \
 	valuenode_vectorx.h \
-	valuenode_vectory.h
+	valuenode_vectory.h \
+	valuenode_boneinfluence.h \
+	valuenode_staticlist.h \
+	valuenode_bone.h \
+	valuenode_boneweightpair.h
 
 VALUENODESOURCES = \
 	valuenode_add.cpp \
@@ -166,8 +172,11 @@ VALUENODESOURCES = \
 	valuenode_vectorangle.cpp \
 	valuenode_vectorlength.cpp \
 	valuenode_vectorx.cpp \
-	valuenode_vectory.cpp
-
+	valuenode_vectory.cpp \
+	valuenode_boneinfluence.cpp \
+	valuenode_staticlist.cpp \
+	valuenode_bone.cpp \
+	valuenode_boneweightpair.cpp
 
 VALUEHEADERS = \
 	blinepoint.h \
@@ -198,8 +207,10 @@ SYNFIGHEADERS = \
 	types.h \
 	vector.h \
 	version.h \
+	boneweightpair.h \
 	activepoint.h \
 	blur.h \
+	bone.h \
 	canvas.h \
 	color.h \
 	context.h \
@@ -231,10 +242,12 @@ SYNFIGHEADERS = \
 	transform.h \
 	uniqueid.h \
 	valuenode.h \
-	waypoint.h
+	waypoint.h \
+	matrix.h
 
 SYNFIGSOURCES = \
 	activepoint.cpp \
+	bone.cpp \
 	blur.cpp \
 	canvas.cpp \
 	color.cpp \
@@ -267,7 +280,8 @@ SYNFIGSOURCES = \
 	transform.cpp \
 	uniqueid.cpp \
 	valuenode.cpp \
-	waypoint.cpp
+	waypoint.cpp \
+	matrix.cpp
 
 
 lib_LTLIBRARIES = libsynfig.la

@@ -686,6 +686,7 @@ src/modules/mod_svg/Makefile
 src/modules/mod_example/Makefile
 src/tool/Makefile
 src/modules/synfig_modules.cfg
+test/Makefile
 examples/walk/Makefile
 examples/Makefile
 win32inst.nsi

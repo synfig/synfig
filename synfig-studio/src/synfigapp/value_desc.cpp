@@ -90,10 +90,98 @@ ValueDesc::get_description(bool show_exported_name)const
 		description = strprintf("%s (%s)", _("Exported ValueNode"),
 								get_value_node()->get_id().c_str());
 	else
-	{
-		error("Unknown ValueDesc type");
-		assert(0);
-	}
+		description = "Unknown ValueDesc type";
 
 	return description;
+}
+
+ValueDesc::ValueDesc(synfig::Layer::Handle layer,const synfig::String& param_name):
+	layer(layer),
+	name(param_name)
+{
+	if (getenv("SYNFIG_DEBUG_VALUE_DESC_CONSTRUCTORS"))
+		printf("%s:%d construct ValueDesc %lx (%s)\n", __FILE__, __LINE__, ulong(this), get_description().c_str());
+}
+
+ValueDesc::ValueDesc(synfig::Layer::LooseHandle layer,const synfig::String& param_name):
+	layer(layer),
+	name(param_name)
+{
+	if (getenv("SYNFIG_DEBUG_VALUE_DESC_CONSTRUCTORS"))
+		printf("%s:%d construct ValueDesc %lx (%s)\n", __FILE__, __LINE__, ulong(this), get_description().c_str());
+}
+
+ValueDesc::ValueDesc(synfig::LinkableValueNode::Handle parent_value_node,int index):
+	parent_value_node(parent_value_node),
+	index(index)
+{
+	if (getenv("SYNFIG_DEBUG_VALUE_DESC_CONSTRUCTORS"))
+		printf("%s:%d construct ValueDesc %lx (%s)\n", __FILE__, __LINE__, ulong(this), get_description().c_str());
+}
+
+// ValueDesc::ValueDesc(synfig::LinkableValueNode::Handle parent_value_node,const synfig::String& param_name):
+// 	parent_value_node(parent_value_node),
+// 	index(parent_value_node->get_link_index_from_name(param_name)) { }
+
+ValueDesc::ValueDesc(synfig::ValueNode_Animated::Handle parent_value_node,synfig::Time waypoint_time):
+	parent_value_node(parent_value_node),
+	index(-2),
+	waypoint_time(waypoint_time)
+{
+	if (getenv("SYNFIG_DEBUG_VALUE_DESC_CONSTRUCTORS"))
+		printf("%s:%d construct ValueDesc %lx (%s)\n", __FILE__, __LINE__, ulong(this), get_description().c_str());
+}
+
+ValueDesc::ValueDesc(synfig::Canvas::Handle canvas,const synfig::String& name):
+	name(name),
+	canvas(canvas)
+{
+	if (getenv("SYNFIG_DEBUG_VALUE_DESC_CONSTRUCTORS"))
+		printf("%s:%d construct ValueDesc %lx (%s)\n", __FILE__, __LINE__, ulong(this), get_description().c_str());
+}
+
+ValueDesc::ValueDesc(synfig::ValueNode_Const::Handle parent_value_node):
+	parent_value_node(parent_value_node),
+	index(-1)
+{
+	if (getenv("SYNFIG_DEBUG_VALUE_DESC_CONSTRUCTORS"))
+		printf("%s:%d construct ValueDesc %lx (%s)\n", __FILE__, __LINE__, ulong(this), get_description().c_str());
+}
+
+ValueDesc::ValueDesc()
+{
+	if (getenv("SYNFIG_DEBUG_VALUE_DESC_CONSTRUCTORS"))
+		printf("%s:%d construct ValueDesc %lx (blank)\n", __FILE__, __LINE__, ulong(this));
+}
+
+// copy constructor
+ValueDesc::ValueDesc(const ValueDesc &old)
+{
+	layer = old.layer;
+	name = old.name;
+	parent_value_node = old.parent_value_node;
+	index = old.index;
+	waypoint_time = old.waypoint_time;
+	canvas = old.canvas;
+	if (getenv("SYNFIG_DEBUG_VALUE_DESC_CONSTRUCTORS"))
+		printf("%s:%d copy constructor for %lx <-- %lx (...)\n", __FILE__, __LINE__, ulong(this), ulong(&old));
+}
+
+// assignment operator
+ValueDesc&
+ValueDesc::operator=(const ValueDesc& that)
+{
+	if (this != &that)
+	{
+		layer = that.layer;
+		name = that.name;
+		parent_value_node = that.parent_value_node;
+		index = that.index;
+		waypoint_time = that.waypoint_time;
+		canvas = that.canvas;
+		if (getenv("SYNFIG_DEBUG_VALUE_DESC_CONSTRUCTORS"))
+			printf("%s:%d assignment operator for %lx <-- %lx (...)\n", __FILE__, __LINE__, ulong(this), ulong(&that));
+	}
+
+    return *this;
 }

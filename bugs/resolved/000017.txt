@@ -1,0 +1,41 @@
+Subject: Vertices converted to Bone Influence saved to file doesn't load
+
+Create a bline, convert the Vertex paramterer to Bone Influence
+Save
+Close ss
+Open ss and load the saved file. It fails.
+
+------------------------------------------------------------------------
+But if you create a skeleton, and link the bones form the Bone Influence
+to exported bones of the skeleton and clear the history (to remove the bones
+form the Bone influence) you can save and load the file properly.
+
+------------------------------------------------------------------------
+dooglus, Tue Dec 16 01:09:13 CET 2008
+
+The bone in the BoneInfluence node doesn't have its canvas set, and so
+it isn't saved in the <bones> section of the canvas when it's saved.
+Most of these bugs seem to be related to the canvas not being set.
+
+------------------------------------------------------------------------
+dooglus, Tue Dec 16 11:58:39 CET 2008
+
+the bone is created here:
+
+(gdb) where
+#0  ValueNode_Bone (this=0x2dd65b0, value=@0x7fff0dca0220) at valuenode_bone.cpp:232
+#1  synfig::ValueNode_Bone::create (x=@0x7fff0dca0220) at valuenode_bone.cpp:296
+#2  ValueNode_BoneWeightPair (this=0x2dd62c0, value=@0x7fff0dca05d0) at valuenode_boneweightpair.cpp:66
+#3  synfig::ValueNode_BoneWeightPair::create (x=@0x7fff0dca05d0) at valuenode_boneweightpair.cpp:98
+#4  ValueNode_BoneInfluence (this=0x2dd5db0, x=@0x7fff0dca06e0) at valuenode_boneinfluence.cpp:69
+#5  synfig::ValueNode_BoneInfluence::create (x=@0x7fff0dca0860) at valuenode_boneinfluence.cpp:85
+#6  synfig::LinkableValueNode::create (name=@0x2dd5140, x=@0x7fff0dca0860) at valuenode.cpp:259
+#7  synfigapp::Action::ValueDescConvert::prepare (this=0x2dd50a0) at actions/valuedescconvert.cpp:168
+#8  synfigapp::Action::Super::perform (this=0x2dd50a0) at action.cpp:396
+#9  synfigapp::Action::System::perform_action (this=0x2bebe00, action={obj = 0x7fff0dca1280}) at action_system.cpp:128
+#10 synfigapp::CanvasInterface::convert (... , canvas = {obj = 0x7fff0dca12e0}}, ...) at canvasinterface.cpp:383
+
+------------------------------------------------------------------------
+dooglus, Tue Dec 16 17:37:36 CET 2008
+
+Fixed in the most recent commit.

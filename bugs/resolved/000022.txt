@@ -1,0 +1,9 @@
+Subject: Select an exported bone in the child list crash
+
+New skeleton layer
+Expand bones list, select first item, right click export.
+Go to child panel, expand Valuenodes list, click on the exported bone, crash.
+
+------------------------------------------------------------------------
+Comment: I was trying to link a bone to the BWP of a bline and I was not able
+to do it.

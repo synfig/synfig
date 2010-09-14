@@ -98,6 +98,9 @@ void Adjust_Window::set_child_adjustment(Gtk::Adjustment *child)
 
 void Adjust_Window::on_changed()
 {
+	if (getenv("SYNFIG_DEBUG_ON_CHANGED"))
+		printf("%s:%d Adjust_Window::on_changed()\n", __FILE__, __LINE__);
+
 	update_child();
 }
 

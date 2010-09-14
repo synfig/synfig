@@ -122,8 +122,6 @@ Action::ValueNodeDynamicListInsert::set_param(const synfig::String& name, const 
 
 		index=value_desc.get_index();
 
-		value_node_bline=ValueNode_BLine::Handle::cast_dynamic(value_desc.get_parent_value_node());
-
 		list_entry=value_node->create_list_entry(index,time,origin);
 		if(item)
 			list_entry.value_node=item;

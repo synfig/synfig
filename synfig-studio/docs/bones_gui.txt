@@ -1,0 +1,291 @@
+ABOUT THE GUI OF BONES IN SYNFIGSTUDIO
+======================================
+This document shows the current GUI of synfigstudio being developed and
+the pending features that needs to be done. The things that already are
+done are marked as (DONE) and the one pending are marked as (PEND).
+
+For more information about how the bones works in synfig-core see the
+corresponding document in synfig-core/trunk/docs/bones_core.txt (PEND)
+
+PRINCIPLES
+----------
+1) The user should not need to edit the parms directly in the skeleton
+   or the blines unless a fine tuning or animation of the setup is
+   needed. (PEND)
+2) The bones are visible when the user select a skeleton layer.(DONE) When
+   the user selects a layer that has a vertex under bone influence then
+   the correspoinding bones are shown too (DONE)
+
+BASIC USAGE -WORKFLOW
+---------------------
+
+1) The user draws its stuff using the usual tools.
+2) The user creates a skeleton in not animation mode. This implies:
+	2.1) Add a bone
+	2.2) Remove a bone
+	2.3) (Re)parent a bone.
+3) The user binds the vertex/blinepoint to the bone(s). This implies:
+	3.1) Select a vertex/blinepoint and assign bone(s) to it.
+	3.2) Modify the weights of each bone over the vertex.
+4) In non animation mode the user "tests" the skeleton: is happy with
+   the current bind of the vertices or do a fine tuning.
+   4.1) Modify the ducks of the bones.
+   4.2) Modify the values of the weights.
+   4.3) (Re)Bind vertices to bones.
+   4.4) (Re)Parent bones.
+5) The user changes to animation mode and animate the skeleton. This
+	implies:
+	5.1) Manipulate ducks
+	5.2) (Re)parent bones.
+	5.3) Modify the Link values of the bone influenced vertex/blinepoint.
+	5.4) Eventually modify the weights. (RE)Bind.
+6) Eventually the user can animate the parent of the bones, the weight
+   influences values, the setup values, etc.
+
+BONES DUCKS
+-----------
+Those are the bones parameters and its corresponding interface in the
+edition window (GUI interface) and in the parameter panel (Param Interface):
+
+Parameter name				Type				GUI Interface			Param Interface
+--------------				----				-------------			---------------
+Name						String				<none>					Edit string input
+Parent						Bone Value Node		<none>(PEND)			Drop down list
+Origin						Vector				position duck (green)	(real,real)
+Angle						Real				angle duck (blue)		real
+Local Length Scale			Real				real duck (cyan)		real
+Local Width Scale			Real				width duck (purple)		real
+Recursive Length Scale		Real				real duck (cyan)		real
+Recursive Width Scale		Real				width duck (purple)		real
+Origin Setup				Vector				position duck (green)	(real,real)
+Angle Setup					Real				angle duck (blue)		real
+Length Setup				Real				real duck (cyan)		real
+Strength Setup				Real				<none> (PEND)			real
+
+SETUP LOCAL and RECURSIVE
+
+To define a bone and manipulate it you only need to draw three ducks:
+origin, angle, and tip. The tip is placed at the end of the bone length.
+Due to there are two sets of ducks (setup and non setup) the user see
+the corresponding ducks by pressing a toggle keyboard combination:
+
+ALT-7: Toggles between setup and non setup ducks. (DONE)
+
+Also to be able to see the local and recursive scales there is also other
+toggle keyboard combination to do that:
+
+ALT-8: Toggles between local and recursive scales ducks. (DONE)
+
+The movement of the Length Scales (Local and Recursive) and Length Setup
+ducks are restricted to be alingend with the current bone angle. (DONE)
+
+Strength: Strength has not visual interface yet, but it should be like a
+blob around the line that connects the Origin(0) and the Tip(0). It can
+be represented by a dashed line like the one I draw in the wiki to explain
+the "distance to a bone": See http://synfig.org/Image:Strength.png. (PEND)
+
+The usage of Strenght will be seen later.
+
+All those ducks are modified by the Normal Tool of synfigstudio by click
+and drag.
+
+PARENT INTERFACE
+----------------
+
+The user can change the parentship using the mouse and without need to
+expand the bone valuenode and select a parent in the drop down list.
+In this way the user should see some visual interface to know
+what's the parent of a bone without expanding the skeleton Bone
+list. That parentship will be represented by an arrow. Usually the
+arrow goes form child to parent. So a parent with lots of children
+has a lot of arrows pointing to it. I think that the arrow should go from
+child origin to parent origin. There is be a way to show/hide those arrows
+to allow the user check the parent-child relationship during the animation
+process. As well as parents are animatable those arrows changes by the
+time too.
+
+ALT-9 toggles parent arrows (PEND)
+
+The arrow can point form parent to children. It is more consistent and
+better visually. There is not need to have lots of arrows tips to be
+overlapping on the parent origin. The arrows tips only goes to the
+child, so as well as a child can only have a parent the arrows tips
+doesn't overlap.
+
+Work flow (PEND):
+
+1) Two bones are not parented and the user want to make one (bone1)
+   the child of other (bone2). Then the user selects the origin of the
+   bone1 and right click the origin of the bone2 and select "Make
+   Parent" from the context menu.
+
+2) Two bones are parent and child (bone2(child)<--bone1(parent))and
+   you want to unparent the child to select other parent (bone3). The
+   user selects the child (bone2) and do the same than case 1. Then
+   synfigstudio should do it in two steps (unparent bone2 from bone1
+   and parent bone2 to bone3). The result should be:
+
+	bone2(child)<--bone3(parent)
+
+3) A bone is child of a parent and want to turn into a root bone. Just
+   select its origin and right click and select "Unparent" from the context
+   menu.
+
+When the user tries to do illegal things (ie. make parent a child bone
+or past child bone or future child bone) then the right click doesn't
+offer the "Make Parent" option and only the "Unparent" one (that is
+always valid)
+
+
+SETUP AND ANIMATED SKELETONS
+----------------------------
+
+By using the ALT-7 keyboard combintation the user sees the setup or the
+non setup skeletons.
+When the user is creating the skeleton and is modifiying it in non
+animation mode then the setuo and the non setup skeletons should be the
+same. In this way the workflow for this creation of the skeleton will be:
+
+1) In non animation mode and with no waypoints, modify the setup skeleton
+should modify also the not setup skeleton. In this case there is not difference
+between one skeleton and the other and the interface will mdify both at
+the same time.
+
+2) Once you're in animation mode you can modify either the setup skeleton
+or the non setup skeleton. From the first modification both skeletons are
+separated and distinguished. Toggle both to see the difference.
+
+
+ADD BONE TOOL (PEND)
+-------------
+It is needed a new Add Bone tool like the Bline tool. That tool would
+add bones to a new skeleton layer or to a existing skeleton layer.
+
+WORKFLOW:
+
+0) (optional) select a skeleton layer
+1) Select the tool
+2) (optional) CTRL-click to a origin of a bone and select it.
+3) Left click where the origin should be.
+4) Drag to where the tip should be.
+5) Release mouse button and the bone is created. The origin of the new
+bone is selected and any other origin bone is unselected.
+
+If there were one origin bone selected then the new create bone becomes
+a child of that bone, if not the new bone is root bone.
+
+There are some options in the options tool panel:
+1) Text entry: Bone name. It would use on the bone base name, like the
+layers of other tools.
+2) "Force create a new skeleton": if checked it always creates a new
+skeleton layer regardless if there is a skeleton layer selected.
+
+If the option force create a new skeleton is off then the new added bones
+are:
+a) Added to a new skeleton layer (if there weren't any skeleton layer selected
+at step 0)
+b) Added to the first skeleton layer of the selected layers
+
+I suggest to use the code from the bline tool and the draw tool as
+templates to create the new bone tool.
+
+
+WEIGHT DUCKS (PEND)
+------------
+There are weights per vertex and per bone. So the weights can be seen
+form the point of vew of the bone or from the point of view of the vertex.
+The most useful way of see the weigths are form the point of vew of the
+vertex (or bilinepoint) that is bone influenced.
+
+So a proposal for the interface is:
+
+The user selects a vertex/blinepoint and the interface shows the weight(s)
+of the bone(s) over that vertex/bilinepoint. It can be a radius duck centered
+on the bone's tip.
+"Select" means select it in the bline list or select the vertex parameter.
+I don't know if it is possible to "select" it with the mouse (draw a red
+square around) like if it is selected in the parameter panel.
+
+---------------------not delete for reference only----------------------
+(10:23:52) Carlos: there is also other thing I didn't mention about
+                   the weights
+(10:25:07) Carlos: if you pick a bline and pick a bone too then with
+                   ALT-9 you can show a real duck over each vertex
+                   (like the width ducks) to allow the user see and
+                   modify individual weights)
+(10:25:41) Carlos: in that state you can only pick a bone each time to
+                   see only the influence of the bone on the bline
+(10:26:28) Carlos: it is like draw the weights around the vertices
+                   like the widths ducks are drawn.
+------------------------------------------------------------------------
+
+
+REMOVING and INSERTING A BONE
+-----------------------------
+Remove:
+When the user selects a bone in the skeleton layer can do right click
+and select remove item smart then the bone is removed from the list and
+that DOESN'T DELETE A VALUENODE, it just removed the valuenode
+form the list and keep it alive meanwhile anyone refereces to that
+valuenode. Even the history can keep a valuenode alive if it is not
+cleaned. So, any other bone that has that bone as parent keeps it as
+parent. It will be alive until any children refereces to it as parent,
+there were no history entry of it and it is not referenced in the child
+panel or any other valuenode. (DONE)
+
+So remove an item smart from a list keeps the valuenode in any place
+where it has been used. For example the parent parameter.
+It is reponsability of the user restore the correct parent of the other
+bones if really he doesn't want that the removed bone belongs to the
+skeleton anymore. (DONE)
+
+The user can remove item smart by right click on the bone's origin duck
+and selecting the "Remove item (smart)". (PEND)
+
+Insert:
+When the user selects a bone in the bone list and right click and selects
+the "Insert item (smart)" option then a new bone is inserted, placed at
+the tip of the origin of the bone where the right click was done and it is
+a child of that bone where the right click was done. The rest of values
+are the default ones. (PEND)
+
+BIND BONES TO A VERTEX/BLINEPOINT
+---------------------------------
+
+Once the skeleton is created and the stuff is drawn it comes the step of
+bind the bones to the vertex/blinepoints.
+
+WORKFLOW:
+
+1) The user selects the drawn stuff
+2) The user selects a skeleton layer too.
+3) The user selects a vertex/blinepoint or a group of them
+4) The user does rigth click on a bone and select "Add to Bone Influence"
+
+Then the GUI should add the current bone where the right click was done
+to the Bone Weight Pair list of the selected vertices/blinepoints.
+If the vertex/blinepoint is not converted to Bone influence then convert it
+to that too first and add the bone after.
+If the bone is already part of the Bone Weight pair list then do nothing.
+The initial weight can be 1.0.
+
+-----------------------DO NOT DELETE YET--------------------------------
+So the user, in set up moment can ask to synfigstudio to assign a
+weight to each bone weight pair based on the distance form the point
+to the bone and the strength of the bone. For instance, if a point is
+at the same "distance" from bone1 and from bone2 but bone1 has higher
+strength than the bone2 then the weight value of the bone weight pair
+for that particular point and for bone1 is higher than the weight of
+the bone weight pair for the bone2. The relationship of the weight and
+the distance and the strength is given by the formulations written in
+this page: http://synfig.org/Talk:Bone_Layer. It can be simplified if
+you want.
+
+The "binding mode" (Fixed, Flexi-Binded, Region-Linear,
+Region-parabolic) should be part of the skeleton layer so it can be a
+parameter from a drop down list. It doesn't make sense this value to
+produce any waypoint because it is just used in setup mode. Its
+modification doesn't modify the current values of the weights of the
+bone weight pairs. Only if the user override the current Vertex Bone
+conversion and start it over then it can have a new usage.
+------------------------------------------------------------------------

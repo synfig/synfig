@@ -46,7 +46,8 @@ SUBDIRS = \
 	build_tools \
 	src \
 	examples \
-	po
+	po \
+	test
 
 
 # Install the pkg-config file:

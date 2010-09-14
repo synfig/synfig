@@ -801,6 +801,9 @@ init_ui_manager()
 	DEFINE_ACTION("mask-radius-ducks", _("Show Radius Ducks"));
 	DEFINE_ACTION("mask-width-ducks", _("Show Width Ducks"));
 	DEFINE_ACTION("mask-angle-ducks", _("Show Angle Ducks"));
+	DEFINE_ACTION("mask-bone-setup-ducks", _("Show Bone Setup Ducks"));
+	DEFINE_ACTION("mask-bone-recursive-ducks", _("Show Recursive Scale Bone Ducks"));
+	DEFINE_ACTION("mask-bone-ducks", _("Next Bone Ducks"));
 	DEFINE_ACTION("quality-00", _("Use Parametric Renderer"));
 	DEFINE_ACTION("quality-01", _("Use Quality Level 1"));
 	DEFINE_ACTION("quality-02", _("Use Quality Level 2"));
@@ -903,6 +906,9 @@ init_ui_manager()
 "			<menuitem action='mask-radius-ducks' />"
 "			<menuitem action='mask-width-ducks' />"
 "			<menuitem action='mask-angle-ducks' />"
+"			<menuitem action='mask-bone-setup-ducks' />"
+"			<menuitem action='mask-bone-recursive-ducks' />"
+"			<menuitem action='mask-bone-ducks' />"
 "		</menu>"
 "		<menu action='menu-preview-quality'>"
 "			<menuitem action='quality-00' />"
@@ -1069,6 +1075,9 @@ init_ui_manager()
 	ACCEL("<Mod1>4",													"<Actions>/canvasview/mask-radius-ducks"				);
 	ACCEL("<Mod1>5",													"<Actions>/canvasview/mask-width-ducks"				);
 	ACCEL("<Mod1>6",													"<Actions>/canvasview/mask-angle-ducks"				);
+	ACCEL("<Mod1>7",													"<Actions>/canvasview/mask-bone-setup-ducks"			);
+	ACCEL("<Mod1>8",													"<Actions>/canvasview/mask-bone-recursive-ducks"		);
+	ACCEL("<Mod1>9",													"<Actions>/canvasview/mask-bone-ducks"				);
 	ACCEL2(Gtk::AccelKey(GDK_Page_Up,Gdk::SHIFT_MASK,					"<Actions>/action_group_layer_action_manager/action-LayerRaise"				));
 	ACCEL2(Gtk::AccelKey(GDK_Page_Down,Gdk::SHIFT_MASK,					"<Actions>/action_group_layer_action_manager/action-LayerLower"				));
 	ACCEL("<Control>1",													"<Actions>/canvasview/quality-01"						);
@@ -1103,6 +1112,7 @@ init_ui_manager()
 	ACCEL("<Control>p",													"<Actions>/canvasview/play"							);
 	ACCEL("Home",														"<Actions>/canvasview/seek-begin"						);
 	ACCEL("End",														"<Actions>/canvasview/seek-end"						);
+
 
 #undef ACCEL
 #undef ACCEL2
@@ -1314,7 +1324,7 @@ App::App(int *argc, char ***argv):
 		studio_init_cb.amount_complete(9900,10000);
 
 		bool opened_any = false;
-		if(auto_recover->recovery_needed())
+		if (!getenv("SYNFIG_DISABLE_AUTO_RECOVERY") && auto_recover->recovery_needed())
 		{
 			splash_screen.hide();
 			if (get_ui_interface()->confirmation(_("Crash Recovery"),
@@ -2470,6 +2480,12 @@ App::new_instance()
 	canvas->set_file_name(file_name);
 
 	handle<Instance> instance = Instance::create(canvas);
+
+	if (getenv("SYNFIG_AUTO_ADD_SKELETON_LAYER"))
+		instance->find_canvas_view(canvas)->add_layer("skeleton");
+
+	if (getenv("SYNFIG_AUTO_ADD_MOTIONBLUR_LAYER"))
+		instance->find_canvas_view(canvas)->add_layer("MotionBlur");
 
 	if (getenv("SYNFIG_ENABLE_NEW_CANVAS_EDIT_PROPERTIES"))
 		instance->find_canvas_view(canvas)->canvas_properties.present();

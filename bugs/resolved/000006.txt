@@ -1,0 +1,21 @@
+Subject: Convert a Bone to Switch gives two unusable (crasher) Bone Objects.
+
+Add skeleton, right click on a bone of the list, convert to Switch
+it provides three parameters:
+
+Link Off: Bone Object
+Link On: Bone Object
+Switch: bool
+
+Link On and Link Off are Bone Objects in the Value column and the Type column.
+A normal (editable) bone is:
+Value = Bone's name string
+Type = Bone
+
+If you attempt to edit the Bone Object (by double clicking on it) you start
+editing a string that fails on:
+
+value.h:240 !'string'.same_type_as('bone_object')
+ss-debug: value.h:242: const T& synfig::ValueBase::get(const T&) const [with T = synfig::Bone]: Afirmación `is_valid() && same_type_as(x)' fallida.
+Cancelado
+

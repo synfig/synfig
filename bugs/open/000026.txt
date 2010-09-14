@@ -1,0 +1,60 @@
+Subject: edit a valuenode-valued waypoint doesn't trigger update of parent
+
+Example: ~chris/Desktop/anim/dynamic-waypoints.sifz
+
+set preview quality to 1 (best) and the time to be 5s
+edit the 'left rate' child node to be 1 instead of 0.
+the workarea doesn't reflect any change.
+move the time slider away from 5s and back to 5s.
+the workarea now reflects the change.
+
+Usually when a node is edited, the on_changed() methods cause all
+ancestors of the node to update themselves, but waypoints don't
+inherit from Node, and so don't have the concept of a parent_set to
+update when changed.
+
+The use of valuenodes as the value of waypoints is unusual in synfig,
+but the addition of bones makes it more common, since re-parenting
+causes the use of valuenode waypoints.
+
+Example: ~chris/Desktop/anim/bones/test2.sifz
+
+Select either of the 'anim' layers, edit the bone ducks, note that
+nothing gets updated.
+
+------------------------------------------------------------------------
+dooglus, Fri Jan  2 14:27:07 CET 2009
+
+a simple recipe:
+
+1. new document, make a circle, export the radius as 'r' ('r' is a ValueNode_Const)
+2. disconnect the radius, switch to animate edit mode, edit the radius, creating a waypoint
+3. in the Children tab, select 'r'
+4. in the Timetrack tab, right-click the waypoint
+5. 'connect' (the waypoint now has a ValueNode_Const value)
+6. switch out of animate edit mode
+7. in the Children tab, edit the value of 'r'
+8. watch the circle's radius fail to change
+9. slide the time slider, and see the radius change
+
+------------------------------------------------------------------------
+dooglus, Fri Jan  2 21:03:37 CET 2009
+
+Here's a patch that fixes the bug for the exact recipe above, but it
+must miss lots of similar cases.  The problem is that there's code
+spread all over that can add and modify waypoints.  We need a single
+function that does it, so we can make sure the parent_set is kept
+correctly up to date:
+
+diff --git a/synfig-studio/trunk/src/synfigapp/actions/waypointconnect.cpp b/synfig-studio/trunk/src/synfigapp/actions/waypointconnect.cpp
+index f86cc1e..9b304a6 100644
+--- a/synfig-studio/trunk/src/synfigapp/actions/waypointconnect.cpp
++++ b/synfig-studio/trunk/src/synfigapp/actions/waypointconnect.cpp
+@@ -134,6 +134,7 @@ Action::WaypointConnect::perform()
+ 
+ 	old_value_node=iter->get_value_node();
+ 	iter->set_value_node(new_value_node);
++	iter->get_parent_value_node()->add_child(new_value_node.get());
+ 
+ 	/*set_dirty(true);
+ 

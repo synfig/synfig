@@ -1132,7 +1132,7 @@ int main(int argc, char *argv[])
 					{
 						Layer::Handle layer(*iter);
 						if(layer->active())
-							job_list.front().canvas->push_front(layer->clone());
+							job_list.front().canvas->push_front(layer->clone(composite));
 					}
 					VERBOSE_OUT(2)<<_("Appended contents of ")<<composite_file<<endl;
 				}

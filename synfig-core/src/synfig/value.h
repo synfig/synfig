@@ -37,6 +37,7 @@
 #include <ETL/handle>
 #include "general.h"
 #include "blinepoint.h"
+#include "bone.h"
 #include "exception.h"
 
 #ifdef USE_HALF_TYPE
@@ -61,6 +62,10 @@ class Segment;
 class Gradient;
 class BLinePoint;
 class Color;
+class Bone;
+class ValueNode_Bone;
+class Matrix;
+class BoneWeightPair;
 
 /*!	\class ValueBase
 **	\brief Base class for the Values of Synfig
@@ -93,6 +98,8 @@ public:
 		TYPE_COLOR,			//!< Color (Real, Real, Real, Real)
 		TYPE_SEGMENT,		//!< Segment Point and Vector
 		TYPE_BLINEPOINT,	//!< BLinePoint Origin (Point) 2xTangents (Vector) Width (Real), Origin (Real) Split Tangent (Boolean)
+		TYPE_MATRIX,		//!< Matrix
+		TYPE_BONE_WEIGHT_PAIR,	//!< pair<Bone,Real>
 
 		// All types after this point require construction/destruction
 
@@ -100,6 +107,8 @@ public:
 		TYPE_CANVAS,		//!< Canvas
 		TYPE_STRING,		//!< String
 		TYPE_GRADIENT,		//!< Color Gradient
+		TYPE_BONE,			//!< Bone
+		TYPE_VALUENODE_BONE,//!< ValueNode_Bone
 
 		TYPE_END			//!< Not a valid type, used for sanity checks
 	};
@@ -238,6 +247,12 @@ public:
 	template <typename T>
 	const T &get(const T& x __attribute__ ((unused)))const
 	{
+#ifdef _DEBUG
+		if (!is_valid())
+			printf("%s:%d !is_valid()\n", __FILE__, __LINE__);
+		else if (!same_type_as(x))
+			printf("%s:%d !'%s'.same_type_as('%s')\n", __FILE__, __LINE__, type_name(type).c_str(), type_name(get_type(x)).c_str());
+#endif
 		assert(is_valid() && same_type_as(x));
 		return *static_cast<const T*>(data);
 	}
@@ -332,8 +347,13 @@ public:
 	static Type get_type(const Color&) { return TYPE_COLOR; }
 	static Type get_type(const Segment&) { return TYPE_SEGMENT; }
 	static Type get_type(const BLinePoint&) { return TYPE_BLINEPOINT; }
+	static Type get_type(const Matrix&) {return TYPE_MATRIX;}
+	static Type get_type(const BoneWeightPair&) {return TYPE_BONE_WEIGHT_PAIR;}
 	static Type get_type(const String&) { return TYPE_STRING; }
 	static Type get_type(const Gradient&) { return TYPE_GRADIENT; }
+	static Type get_type(const Bone&) { return TYPE_BONE; }
+	static Type get_type(const etl::handle<ValueNode_Bone>&) { return TYPE_VALUENODE_BONE; }
+	static Type get_type(const etl::loose_handle<ValueNode_Bone>&) { return TYPE_VALUENODE_BONE; }
 	static Type get_type(Canvas*) { return TYPE_CANVAS; }
 	static Type get_type(const etl::handle<Canvas>&)
 		{ return TYPE_CANVAS; }
@@ -361,10 +381,12 @@ public:
 
 	operator const Vector&()const {  return get(Vector()); }
 	operator const BLinePoint&()const {  return get(BLinePoint()); }
+	operator const Matrix&()const { return get(Matrix()); }
 	//operator const int&()const {  return get(int()); }
 	//operator const String&()const {  return get(String()); }
 	//operator const char *()const {  return get(String()).c_str(); }
 	operator const Segment&()const { return get(Segment()); }
+	operator const Bone&()const { return get(Bone()); }
 
 
 	/*
@@ -422,6 +444,10 @@ private:
 
 		type=newtype;
 		ref_count.reset();
+
+//		if (type == TYPE_BONE && &x == 0)
+//			data = 0;
+//		else
 		data=new T(x);
 	}
 

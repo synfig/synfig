@@ -159,7 +159,7 @@ public:
 	typedef etl::handle<const ValueNode_DynamicList> ConstHandle;
 
 protected:
-	ValueNode_DynamicList(ValueBase::Type container_type=ValueBase::TYPE_NIL);
+	ValueNode_DynamicList(ValueBase::Type container_type=ValueBase::TYPE_NIL, etl::loose_handle<Canvas> canvas = 0);
 
 	ValueBase::Type container_type;
 
@@ -215,7 +215,7 @@ public:
 	void insert_time(const Time& location, const Time& delta);
 	//void manipulate_time(const Time& old_begin,const Time& old_end,const Time& new_begin,const Time& new_end);
 
-	virtual ValueNode* clone(const GUID& deriv_guid=GUID())const;
+	virtual ValueNode* clone(etl::loose_handle<Canvas> canvas, const GUID& deriv_guid=GUID())const;
 
 	virtual ListEntry create_list_entry(int index, Time time=0, Real origin=0.5);
 
@@ -231,7 +231,7 @@ public:
 	**	contains, rather than the type that it will yield
 	**	(which is ValueBase::TYPE_LIST)
 	*/
-	static Handle create(ValueBase::Type id=ValueBase::TYPE_NIL);
+	static Handle create(ValueBase::Type id=ValueBase::TYPE_NIL, etl::loose_handle<Canvas> canvas = 0);
 	using synfig::LinkableValueNode::get_link_vfunc;
 	using synfig::LinkableValueNode::set_link_vfunc;
 	static bool check_type(ValueBase::Type type);

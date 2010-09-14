@@ -1,0 +1,25 @@
+Subject: Loops are possible
+
+Create a skeleton, expand bone1 and export the parent paramter (p)
+Edit the exported parameter and set it to be bone2
+Select the 'p' valuenode from the child list.
+Go to bone2 expand it and right click the parent paramter.
+Select Connect. The loop is possible and synfigstudio hangs.
+
+------------------------------------------------------------------------
+
+this hangs too:
+
+  create a skeleton with 1 bone
+  expand the bone list
+  expand the bone
+  export the parent
+  edit the parent
+
+Q: why am I allowed to edit the parent?
+A: because the children panel doesn't have the value_desc of the node being edited.  now fixed.
+
+------------------------------------------------------------------------
+
+Resolved: fixed in previous commit.
+
