@@ -1614,7 +1614,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				return false;
 			etl::handle<Duck> vertex_duck(last_duck());
 			vertex_duck->set_type(Duck::TYPE_VERTEX);
-			if(!add_to_ducks(synfigapp::ValueDesc(value_node,4),canvas_view,transform_stack))
+			if(!add_to_ducks(synfigapp::ValueDesc(value_node,4,-TANGENT_HANDLE_SCALE),canvas_view,transform_stack))
 				return false;
 			etl::handle<Duck> t1_duck(last_duck());
 
@@ -1627,7 +1627,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 			// If the tangents are split
 			if((*value_node->get_link("split"))(get_time()).get(bool()))
 			{
-				if(!add_to_ducks(synfigapp::ValueDesc(value_node,5),canvas_view,transform_stack))
+				if(!add_to_ducks(synfigapp::ValueDesc(value_node,5,TANGENT_HANDLE_SCALE),canvas_view,transform_stack))
 					return false;
 				t2_duck=last_duck();
 				t2_duck->set_origin(vertex_duck);
@@ -1636,7 +1636,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 			}
 			else
 			{
-				if(!add_to_ducks(synfigapp::ValueDesc(value_node,4),canvas_view,transform_stack))
+				if(!add_to_ducks(synfigapp::ValueDesc(value_node,4,TANGENT_HANDLE_SCALE),canvas_view,transform_stack))
 					return false;
 				t2_duck=last_duck();
 				t2_duck->set_origin(vertex_duck);
@@ -1791,7 +1791,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 					// Add the tangent1 duck
 					if(composite_vertex_value_node)
 					{
-						if(!add_to_ducks(synfigapp::ValueDesc(composite_vertex_value_node,4),canvas_view,transform_stack))
+						if(!add_to_ducks(synfigapp::ValueDesc(composite_vertex_value_node,4,-TANGENT_BEZIER_SCALE),canvas_view,transform_stack))
 							return false;
 						tduck=last_duck();
 					}
@@ -1848,7 +1848,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				if(composite_vertex_value_node)
 				{
 					int i=bline_point.get_split_tangent_flag()?5:4;
-					if(!add_to_ducks(synfigapp::ValueDesc(composite_vertex_value_node,i),canvas_view,transform_stack,0,2))
+					if(!add_to_ducks(synfigapp::ValueDesc(composite_vertex_value_node,i,TANGENT_BEZIER_SCALE),canvas_view,transform_stack,0,2))
 						return false;
 					tduck=last_duck();
 				}
