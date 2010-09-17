@@ -173,7 +173,7 @@ synfig::ValueNode_Scale::get_inverse(Time t, const synfig::Angle &target_value) 
 			switch (get_type())
 			{
 					default:
-					return (*value_node)(t).get(Angle()) + target_value / scalar_value;
+					return target_value / scalar_value;
 			}
 		}
 	return ValueBase();
