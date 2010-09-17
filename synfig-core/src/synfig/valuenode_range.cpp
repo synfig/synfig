@@ -202,11 +202,9 @@ synfig::ValueNode_Range::get_inverse(Time t, const synfig::Angle &target_value) 
 		switch (get_type())
 		{
 			default:
-		// Notice that target_value is the rotation between the current
-		// 'link' value and the target angle in the canvas, so we need
-		// to add it to 'link'
-		if(Angle::rad(maximum).get()>=Angle::rad(link+target_value).get() && Angle::rad(link+target_value).get()>=Angle::rad(minimum).get())
-			return link + target_value;
+
+		if(Angle::rad(maximum).get()>=Angle::rad(target_value).get() && Angle::rad(target_value).get()>=Angle::rad(minimum).get())
+			return target_value;
 		else if (Angle::rad(minimum).get()>Angle::rad(target_value).get())
 			return minimum;
 		else

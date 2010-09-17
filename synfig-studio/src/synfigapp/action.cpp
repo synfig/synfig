@@ -210,6 +210,7 @@ Action::Main::Main()
 	ADD_ACTION(Action::ValueDescConnect);
 	ADD_ACTION(Action::ValueDescDisconnect);
 	ADD_ACTION(Action::ValueDescLink);
+	ADD_ACTION(Action::ValueDescLinkOpposite);
 	ADD_ACTION(Action::ValueDescBLineLink);
 
 	ADD_ACTION(Action::WaypointAdd);

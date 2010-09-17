@@ -59,6 +59,9 @@ class ValueDesc
 	// Info for exported ValueNode
 	synfig::Canvas::Handle canvas;
 
+	// Info for visual editon
+	synfig::Real scalar;
+
 public:
 	bool operator==(const ValueDesc &rhs)const
 	{
@@ -70,7 +73,9 @@ public:
 			return true;
 		if((canvas||rhs.canvas) && canvas!=rhs.canvas)
 			return false;
-		if((parent_value_node||rhs.parent_value_node) && parent_value_node!=rhs.parent_value_node)
+		if((parent_value_node||rhs.parent_value_node) && (parent_value_node!=rhs.parent_value_node))
+			return false;
+		if(scalar!=rhs.scalar)
 			return false;
 		if(index!=rhs.index)
 			return false;
@@ -81,16 +86,38 @@ public:
 		return !operator==(rhs);
 	}
 
-	ValueDesc(synfig::Layer::Handle layer,const synfig::String& param_name);
-	ValueDesc(synfig::Layer::LooseHandle layer,const synfig::String& param_name);
-	ValueDesc(synfig::LinkableValueNode::Handle parent_value_node,int index);
-//	ValueDesc(synfig::LinkableValueNode::Handle parent_value_node,const synfig::String& param_name);
-	ValueDesc(synfig::ValueNode_Animated::Handle parent_value_node,synfig::Time waypoint_time);
-	ValueDesc(synfig::Canvas::Handle canvas,const synfig::String& name);
-	ValueDesc(synfig::ValueNode_Const::Handle parent_value_node);
-	ValueDesc();
-	ValueDesc(const ValueDesc &old); // copy constructor
-	ValueDesc& operator=(const ValueDesc& that); // assignment operator
+	ValueDesc(synfig::Layer::Handle layer,const synfig::String& param_name):
+		layer(layer),
+		name(param_name) { }
+
+	ValueDesc(synfig::Layer::LooseHandle layer,const synfig::String& param_name):
+		layer(layer),
+		name(param_name) { }
+
+	ValueDesc(synfig::LinkableValueNode::Handle parent_value_node,int index, synfig::Real s=1.0):
+		parent_value_node(parent_value_node),
+		index(index),
+		scalar(s) { }
+
+//	ValueDesc(synfig::LinkableValueNode::Handle parent_value_node,const synfig::String& param_name):
+//		parent_value_node(parent_value_node),
+//		index(parent_value_node->get_link_index_from_name(param_name)) { }
+
+	ValueDesc(synfig::ValueNode_Animated::Handle parent_value_node,synfig::Time waypoint_time):
+		parent_value_node(parent_value_node),
+		index(-2),
+		waypoint_time(waypoint_time) { }
+
+	ValueDesc(synfig::Canvas::Handle canvas,const synfig::String& name):
+		name(name),
+		canvas(canvas) { }
+
+	ValueDesc(synfig::ValueNode_Const::Handle parent_value_node):
+		parent_value_node(parent_value_node),
+		index(-1) { }
+
+	ValueDesc() { }
+
 
 	bool is_valid()const { return layer || parent_value_node || canvas; }
 	operator bool()const { return is_valid(); }
@@ -110,6 +137,7 @@ public:
 
 	synfig::ValueNode::Handle get_parent_value_node()const { assert(parent_is_value_node()); return parent_value_node; }
 	int get_index()const { assert(parent_is_linkable_value_node()); return index; }
+	synfig::Real get_scalar()const { assert(parent_is_linkable_value_node()); return scalar; }
 	synfig::String get_name()const { assert(parent_is_linkable_value_node()); return (synfig::LinkableValueNode::Handle::cast_reinterpret(parent_value_node))->link_name(index); }
 	synfig::Time get_waypoint_time()const { assert(parent_is_waypoint()); return waypoint_time; }
 
@@ -173,6 +201,7 @@ public:
 
 	synfig::String
 	get_description(bool show_exported_name = true)const;
+
 }; // END of class ValueDesc
 
 }; // END of namespace synfigapp_instance
