@@ -31,6 +31,7 @@
 #	include <config.h>
 #endif
 
+#include <sys/stat.h>
 #include "dock_paledit.h"
 #include "../../widgets/widget_color.h"
 #include <gtkmm/frame.h>
