@@ -1509,7 +1509,6 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 		break;
 	case ValueBase::TYPE_BLINEPOINT:
 	{
-
 		if(value_desc.is_value_node() &&
 			ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node()))
 		{
@@ -1566,7 +1565,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 			int i,first=-1;
 
 			etl::handle<Bezier> bezier;
-			etl::handle<Duck> first_duck;
+			etl::handle<Duck> first_duck, first_tduck;
 			etl::handle<Duck> duck, tduck;
 
 			for (i = 0; i < value_node->link_count(); i++)
@@ -1593,6 +1592,8 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 
 					if(get_type_mask() & Duck::TYPE_BONE_SETUP)
 						vertex_valuenode = bone_influence_vertex_value_node->get_link("link");
+					else
+						vertex_valuenode = value_node->get_link(i);
 				}
 				else
 					vertex_valuenode = value_node->get_link(i);
@@ -1601,7 +1602,9 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				ValueNode_Composite::Handle composite_vertex_value_node(
 					ValueNode_Composite::Handle::cast_dynamic(vertex_valuenode));
 
-				// add the vertex duck - it's a composite
+				// Now add the ducks:
+
+				// ----Vertex Duck
 				if(composite_vertex_value_node)
 				{
 					if (add_to_ducks(synfigapp::ValueDesc(composite_vertex_value_node,0),canvas_view,transform_stack))
@@ -1610,19 +1613,6 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 						if(i==first)
 							first_duck=duck;
 						duck->set_type(Duck::TYPE_VERTEX);
-
-						duck->signal_user_click(2).clear();
-						duck->signal_user_click(2).connect(
-							sigc::bind(
-								sigc::bind(
-									sigc::bind(
-										sigc::mem_fun(
-											*canvas_view,
-											&studio::CanvasView::popup_param_menu),
-										false),
-									1.0f),
-								synfigapp::ValueDesc(value_node,i)));
-						duck->set_value_desc(synfigapp::ValueDesc(value_node,i));
 
 						if(param_desc)
 						{
@@ -1642,7 +1632,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 					else
 						return false;
 				}
-				// else it's not a composite
+				// if it's not a composite
 				else
 				{
 					duck=new Duck(bline_point.get_vertex());
@@ -1670,14 +1660,34 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 					}
 					duck->set_guid(calc_duck_guid(synfigapp::ValueDesc(value_node,i),transform_stack)^synfig::GUID::hasher(".v"));
 					duck=add_similar_duck(duck);
-//					add_duck(duck);
 				}
 
+				duck->signal_user_click(2).clear();
+				duck->signal_user_click(2).connect(
+					sigc::bind(
+						sigc::bind(
+							sigc::bind(
+								sigc::mem_fun(
+									*canvas_view,
+									&studio::CanvasView::popup_param_menu),
+								false),
+							1.0f),
+						synfigapp::ValueDesc(value_node,i)));
+						duck->set_value_desc(synfigapp::ValueDesc(value_node,i));
+
+				// ----Width duck
+				etl::handle<Duck> width;
+
 				// Add the width duck if it is a parameter with a hint (ie. "width") or if it isn't a parameter
-				if ((param_desc && !param_desc->get_hint().empty()) ||
-					!param_desc)
+				//if (!   ((param_desc && !param_desc->get_hint().empty()) || !param_desc)   )
+				if (param_desc && param_desc->get_hint().empty())
 				{
-					etl::handle<Duck> width;
+					// if it's a parameter without a hint, then don't add the width duck
+					// \todo: determine why these conditions are necessary
+				}
+				else
+				if(composite_vertex_value_node)
+				{
 					if (add_to_ducks(synfigapp::ValueDesc(composite_vertex_value_node,1),canvas_view,transform_stack,REAL_COOKIE))
 					{
 						width=last_duck();
@@ -1702,34 +1712,51 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 					else
 						synfig::error("Unable to add width duck!");
 				}
-
-				// each bezier uses t2 of one point and t1 of the next
-				// the first time through this loop we won't have the t2 duck from the previous vertex
-				// and so we don't make a bezier.  instead we skip on to t2 for this point
-				if(bezier)
+				else
 				{
-					// Add the tangent1 duck
-					if(composite_vertex_value_node)
-					{
+					synfig::error("Cannot add width duck to non-composite blinepoint");
+				}
+
+				// ----Tangent1 Duck
+				if (i==first && !value_node->get_loop())
+				{
+					//do not add the t1 duck if this is the first point in an unlooped bline
+				}
+				else
+				if (composite_vertex_value_node)
+				{
 						if(!add_to_ducks(synfigapp::ValueDesc(composite_vertex_value_node,4,-TANGENT_BEZIER_SCALE),canvas_view,transform_stack))
 							return false;
 						tduck=last_duck();
-					}
-					else
-					{
-						tduck=new Duck(bline_point.get_tangent1());
-						tduck->set_transform_stack(transform_stack);
-						tduck->set_editable(false);
-						tduck->set_name(guid_string(synfigapp::ValueDesc(value_node,i))+".t1");
-//						tduck->set_name(strprintf("%x-tangent1",value_node->get_link(i).get()));
-						tduck->set_guid(calc_duck_guid(synfigapp::ValueDesc(value_node,i),transform_stack)^synfig::GUID::hasher(".t1"));
-						tduck=add_similar_duck(tduck);
-//						add_duck(duck);
-					}
+				}
+				else
+				{
+					tduck=new Duck(bline_point.get_tangent1());
+					tduck->set_transform_stack(transform_stack);
+					tduck->set_editable(false);
+					tduck->set_name(guid_string(synfigapp::ValueDesc(value_node,i))+".t1");
+//					tduck->set_name(strprintf("%x-tangent1",value_node->get_link(i).get()));
+					tduck->set_guid(calc_duck_guid(synfigapp::ValueDesc(value_node,i),transform_stack)^synfig::GUID::hasher(".t1"));
+					tduck=add_similar_duck(tduck);
+//					add_duck(duck);
+				}
 
+				if (tduck) //if we just created a duck
+				{
 					tduck->set_origin(duck);
 					tduck->set_scalar(-TANGENT_BEZIER_SCALE);
 					tduck->set_tangent(true);
+				}
+
+				if (i==first)
+				{
+					first_tduck=tduck; //save the tangent duck for looping purposes
+				}
+				else
+				{
+					// each bezier uses t2 of one point and t1 of the next
+					// we should already have a bezier, so add the t1 of this point to it
+					assert(bezier);
 
 					bezier->p2=duck;
 					bezier->c2=tduck;
@@ -1740,32 +1767,19 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 								*canvas_view,
 								&studio::CanvasView::popup_param_menu_bezier),
 							synfigapp::ValueDesc(value_node,i)));
-
-					duck->signal_user_click(2).clear();
-					duck->signal_user_click(2).connect(
-						sigc::bind(
-							sigc::bind(
-								sigc::bind(
-									sigc::mem_fun(
-										*canvas_view,
-										&studio::CanvasView::popup_param_menu),
-									false),
-								1.0f),
-							synfigapp::ValueDesc(value_node,i)));
-					duck->set_value_desc(synfigapp::ValueDesc(value_node,i));
-
 					add_bezier(bezier);
 					bezier=0;
 				}
 
-				// don't start a new bezier for the last point in the line if we're not looped
-				if(i+1>=value_node->link_count() && !value_node->get_loop())
+				// ----Tangent2 Duck
+				if ((i+1>=value_node->link_count() && !value_node->get_loop()))
+				{
+					//do not add the t2 duck if this is the last point in an unlooped bline
+					//we are done here, so
 					continue;
-
-				bezier=new Bezier();
-
-				// Add the tangent2 duck
-				if(composite_vertex_value_node)
+				}
+				else
+				if (composite_vertex_value_node)
 				{
 					int i=bline_point.get_split_tangent_flag()?5:4;
 					if(!add_to_ducks(synfigapp::ValueDesc(composite_vertex_value_node,i,TANGENT_BEZIER_SCALE),canvas_view,transform_stack,0,2))
@@ -1798,25 +1812,13 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 //						if(!param_desc->get_origin().empty())
 //							duck->set_origin(synfigapp::ValueDesc(value_desc.get_layer(),param_desc->get_origin()).get_value(get_time()).get(synfig::Point()));
 					}
-					duck->signal_user_click(2).clear();
-					duck->signal_user_click(2).connect(
-						sigc::bind(
-							sigc::bind(
-								sigc::bind(
-									sigc::mem_fun(
-										*canvas_view,
-										&studio::CanvasView::popup_param_menu),
-									false),
-								1.0f),
-							synfigapp::ValueDesc(value_node,i)));
-					duck->set_value_desc(synfigapp::ValueDesc(value_node,i));
-
 				}
 
 				tduck->set_origin(duck);
 				tduck->set_scalar(TANGENT_BEZIER_SCALE);
 				tduck->set_tangent(true);
 
+				bezier=new Bezier();
 				bezier->p1=duck;
 				bezier->c1=tduck;
 			}
@@ -1824,40 +1826,8 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 			// Loop if necessary
 			if(bezier && value_node->get_loop())
 			{
-				BLinePoint bline_point((*value_node->get_link(first))(get_time()));
-
-				ValueNode_Composite::Handle composite_vertex_value_node(
-					ValueNode_Composite::Handle::cast_dynamic(
-						value_node->get_link(first)));
-
-				// Add the vertex duck
-				duck=first_duck;
-
-				// Add the tangent1 duck
-				if(composite_vertex_value_node)
-				{
-					if(!add_to_ducks(synfigapp::ValueDesc(composite_vertex_value_node,4),canvas_view,transform_stack))
-						return false;
-					tduck=last_duck();
-				}
-				else
-				{
-					tduck=new Duck(bline_point.get_tangent1());
-					tduck->set_transform_stack(transform_stack);
-					tduck->set_editable(false);
-					tduck->set_name(guid_string(synfigapp::ValueDesc(value_node,first))+".t1");
-					//tduck->set_name(strprintf("%x-tangent1",value_node->get_link(first).get()));
-					tduck=add_similar_duck(tduck);
-					tduck->set_guid(calc_duck_guid(synfigapp::ValueDesc(value_node,first),transform_stack)^synfig::GUID::hasher(".t1"));
-					//add_duck(duck);
-				}
-
-				tduck->set_origin(duck);
-				tduck->set_scalar(-TANGENT_BEZIER_SCALE);
-				tduck->set_tangent(true);
-
-				bezier->p2=duck;
-				bezier->c2=tduck;
+				bezier->p2=first_duck;
+				bezier->c2=first_tduck;
 
 				bezier->signal_user_click(2).connect(
 					sigc::bind(
@@ -1865,19 +1835,6 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 							*canvas_view,
 							&studio::CanvasView::popup_param_menu_bezier),
 						synfigapp::ValueDesc(value_node,first)));
-
-				duck->signal_user_click(2).clear();
-				duck->signal_user_click(2).connect(
-					sigc::bind(
-						sigc::bind(
-							sigc::bind(
-								sigc::mem_fun(
-									*canvas_view,
-									&studio::CanvasView::popup_param_menu),
-								false),
-							1.0f),
-						synfigapp::ValueDesc(value_node,first)));
-				duck->set_value_desc(synfigapp::ValueDesc(value_node,first));
 
 				add_bezier(bezier);
 				bezier=0;
