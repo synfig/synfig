@@ -142,9 +142,9 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	INIT_STOCK_ICON(type_color,"type_color_icon."IMAGE_EXT,_("Color"));
 	INIT_STOCK_ICON(type_segment,"type_segment_icon."IMAGE_EXT,_("Segment"));
 	INIT_STOCK_ICON(type_blinepoint,"type_blinepoint_icon."IMAGE_EXT,_("BLine Point"));
-	INIT_STOCK_ICON(type_list,"type_list_icon."IMAGE_EXT,_("Rename"));
-	INIT_STOCK_ICON(type_string,"type_string_icon."IMAGE_EXT,_("Rename"));
-	INIT_STOCK_ICON(type_canvas,"type_canvas_icon."IMAGE_EXT,_("Rename"));
+	INIT_STOCK_ICON(type_list,"type_list_icon."IMAGE_EXT,_("List"));
+	INIT_STOCK_ICON(type_string,"type_string_icon."IMAGE_EXT,_("String"));
+	INIT_STOCK_ICON(type_canvas,"type_canvas_icon."IMAGE_EXT,_("Canvas"));
 	INIT_STOCK_ICON(type_gradient,"type_gradient_icon."IMAGE_EXT,_("Gradient"))
 
 	INIT_STOCK_ICON(reset_colors,"reset_colors_icon."IMAGE_EXT,_("Reset Colors"));
@@ -152,7 +152,7 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	INIT_STOCK_ICON(value_node,"valuenode_icon."IMAGE_EXT,_("ValueNode"));
 	INIT_STOCK_ICON(about,"about_icon."IMAGE_EXT,_("About"));
 	INIT_STOCK_ICON(rename,"rename_icon."IMAGE_EXT,_("Rename"));
-	INIT_STOCK_ICON(canvas,"canvas_icon."IMAGE_EXT,_("Rename"));
+	INIT_STOCK_ICON(canvas,"canvas_icon."IMAGE_EXT,_("Canvas"));
 	INIT_STOCK_ICON(canvas_new,"canvas_icon."IMAGE_EXT,_("New Canvas"));
 	INIT_STOCK_ICON(saveall,"saveall_icon."IMAGE_EXT,_("Save All"));
 
