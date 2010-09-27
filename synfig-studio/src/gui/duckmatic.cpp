@@ -66,6 +66,7 @@
 #include "ducktransform_rotate.h"
 #include "ducktransform_translate.h"
 #include "ducktransform_scale.h"
+#include "ducktransform_origin.h"
 #include "canvasview.h"
 
 #include "onemoment.h"
@@ -1580,29 +1581,81 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				if (first == -1)
 					first = i;
 
+				// if it's neither a BoneInfluence nor a Composite, the BLinePoint will be used
 				BLinePoint bline_point((*value_node->get_link(i))(get_time()));
 
-				ValueNode::LooseHandle vertex_valuenode;
-				if (ValueNode_BoneInfluence::Handle bone_influence_vertex_value_node =
-						ValueNode_BoneInfluence::Handle::cast_dynamic(value_node->get_link(i)))
+				// set if we are editing a boneinfluence node
+				ValueNode_BoneInfluence::Handle bone_influence_vertex_value_node(
+					ValueNode_BoneInfluence::Handle::cast_dynamic(value_node->get_link(i)));
+
+				// set if we are editing a composite node or a boneinfluence node in setup mode
+				ValueNode_Composite::Handle composite_vertex_value_node (
+					ValueNode_Composite::Handle::cast_dynamic(value_node->get_link(i)) );
+
+				// set if we are editing a boneinfluence node with a composite link in non-setup mode
+				ValueNode_Composite::Handle composite_bone_link_value_node;
+				synfig::TransformStack bone_transform_stack(transform_stack);
+
+				if (bone_influence_vertex_value_node)
 				{
-					add_to_ducks(synfigapp::ValueDesc(bone_influence_vertex_value_node,
-									  bone_influence_vertex_value_node->get_link_index_from_name("bone_weight_list")),
-						     canvas_view,transform_stack);
-
 					if(get_type_mask() & Duck::TYPE_BONE_SETUP)
-						vertex_valuenode = bone_influence_vertex_value_node->get_link("link");
+					{
+						// If in setup mode, add the original ducks prior to the bones transformation
+						composite_vertex_value_node = ValueNode_Composite::Handle::cast_dynamic(
+							bone_influence_vertex_value_node->get_link("link") );
+					}
 					else
-						vertex_valuenode = value_node->get_link(i);
-				}
-				else
-					vertex_valuenode = value_node->get_link(i);
+					{
+						// If not in setup mode, apply bones transformation to the ducks
+						composite_bone_link_value_node = ValueNode_Composite::Handle::cast_dynamic(
+							bone_influence_vertex_value_node->get_link("link") );
 
-				// try casting the vertex to Composite - this tells us whether it is composite or not
-				ValueNode_Composite::Handle composite_vertex_value_node(
-					ValueNode_Composite::Handle::cast_dynamic(vertex_valuenode));
+						if(param_desc)
+						{
+							if(!param_desc->get_origin().empty())
+							{
+								synfigapp::ValueDesc value_desc_origin(value_desc.get_layer(),param_desc->get_origin());
+								add_to_ducks(value_desc_origin,canvas_view, transform_stack);
+								GUID guid(calc_duck_guid(value_desc_origin, transform_stack));
+								bone_transform_stack.push(new Transform_Origin(guid^synfig::GUID::hasher(".o"), last_duck()));
+							}
+						}
+
+						Matrix transform(bone_influence_vertex_value_node->calculate_transform(get_time()));
+						GUID guid(bone_influence_vertex_value_node->get_link("bone_weight_list")->get_guid());
+
+						bone_transform_stack.push(new Transform_Matrix(guid, transform));
+
+						// this environmental variable affects bone functionality in core
+						// \todo remove it, as it is now defunct
+						assert(!getenv("SYNFIG_COMPLEX_TANGENT_BONE_INFLUENCE"));
+					}
+				}
+
 
 				// Now add the ducks:
+
+				// ----Bones ducks
+				if (bone_influence_vertex_value_node)
+				{
+					// The bones ducks should be transformed to match the position of this bline,
+					// and then translated along with the origin of this layer
+					synfig::TransformStack layer_transform_stack(transform_stack);
+					if(param_desc)
+					{
+						if(!param_desc->get_origin().empty())
+						{
+							synfigapp::ValueDesc value_desc_origin(value_desc.get_layer(),param_desc->get_origin());
+							add_to_ducks(value_desc_origin,canvas_view, transform_stack);
+							GUID guid(calc_duck_guid(value_desc_origin, transform_stack));
+							layer_transform_stack.push(new Transform_Origin(guid^synfig::GUID::hasher(".o"), last_duck()));
+						}
+					}
+
+					add_to_ducks(synfigapp::ValueDesc(bone_influence_vertex_value_node,
+									  bone_influence_vertex_value_node->get_link_index_from_name("bone_weight_list")),
+								 canvas_view,layer_transform_stack);
+				}
 
 				// ----Vertex Duck
 				if(composite_vertex_value_node)
@@ -1632,7 +1685,23 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 					else
 						return false;
 				}
-				// if it's not a composite
+				else
+				if (composite_bone_link_value_node)
+				{
+					if (add_to_ducks(synfigapp::ValueDesc(composite_bone_link_value_node,0),canvas_view,bone_transform_stack))
+					{
+						duck=last_duck();
+						if(i==first)
+							first_duck=duck;
+						duck->set_type(Duck::TYPE_VERTEX);
+
+						// Do not add origin duck, as it has already been added
+						// and made a part of the transformation stack
+					}
+					else
+						return false;
+				}
+				// if it's not a composite or BoneInfluence with composite link
 				else
 				{
 					duck=new Duck(bline_point.get_vertex());
@@ -1730,6 +1799,14 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 						tduck=last_duck();
 				}
 				else
+				if (composite_bone_link_value_node)
+				{
+						if(!add_to_ducks(synfigapp::ValueDesc(composite_bone_link_value_node,4,-TANGENT_BEZIER_SCALE),
+										 canvas_view,bone_transform_stack))
+							return false;
+						tduck=last_duck();
+				}
+				else
 				{
 					tduck=new Duck(bline_point.get_tangent1());
 					tduck->set_transform_stack(transform_stack);
@@ -1783,6 +1860,15 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				{
 					int i=bline_point.get_split_tangent_flag()?5:4;
 					if(!add_to_ducks(synfigapp::ValueDesc(composite_vertex_value_node,i,TANGENT_BEZIER_SCALE),canvas_view,transform_stack,0,2))
+						return false;
+					tduck=last_duck();
+				}
+				else
+				if (composite_bone_link_value_node)
+				{
+					int i=bline_point.get_split_tangent_flag()?5:4;
+					if(!add_to_ducks(synfigapp::ValueDesc(composite_bone_link_value_node,i,TANGENT_BEZIER_SCALE),
+									 canvas_view,bone_transform_stack,0,2))
 						return false;
 					tduck=last_duck();
 				}
