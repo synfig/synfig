@@ -132,25 +132,27 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	stock_##name=Gtk::StockItem(Gtk::StockID("synfig-" #name),desc);   			\
 	Gtk::Stock::add(stock_##name);
 
-	INIT_STOCK_ICON(bool,"bool_icon."IMAGE_EXT,_("Bool"));
-	INIT_STOCK_ICON(integer,"integer_icon."IMAGE_EXT,_("Integer"));
-	INIT_STOCK_ICON(angle,"angle_icon."IMAGE_EXT,_("Angle"));
-	INIT_STOCK_ICON(time,"time_icon."IMAGE_EXT,_("Time"));
-	INIT_STOCK_ICON(real,"real_icon."IMAGE_EXT,_("Real"));
-	INIT_STOCK_ICON(vector,"vector_icon."IMAGE_EXT,_("Vector"));
-	INIT_STOCK_ICON(color,"color_icon."IMAGE_EXT,_("Color"));
-	INIT_STOCK_ICON(segment,"segment_icon."IMAGE_EXT,_("Segment"));
-	INIT_STOCK_ICON(blinepoint,"blinepoint_icon."IMAGE_EXT,_("BLine Point"));
-	INIT_STOCK_ICON(list,"list_icon."IMAGE_EXT,_("Rename"));
-	INIT_STOCK_ICON(canvas,"canvas_icon."IMAGE_EXT,_("Canvas"));
-	INIT_STOCK_ICON(string,"string_icon."IMAGE_EXT,_("Rename"));
+	// Types
+	INIT_STOCK_ICON(type_bool,"type_bool_icon."IMAGE_EXT,_("Bool"));
+	INIT_STOCK_ICON(type_integer,"type_integer_icon."IMAGE_EXT,_("Integer"));
+	INIT_STOCK_ICON(type_angle,"type_angle_icon."IMAGE_EXT,_("Angle"));
+	INIT_STOCK_ICON(type_time,"type_time_icon."IMAGE_EXT,_("Time"));
+	INIT_STOCK_ICON(type_real,"type_real_icon."IMAGE_EXT,_("Real"));
+	INIT_STOCK_ICON(type_vector,"type_vector_icon."IMAGE_EXT,_("Vector"));
+	INIT_STOCK_ICON(type_color,"type_color_icon."IMAGE_EXT,_("Color"));
+	INIT_STOCK_ICON(type_segment,"type_segment_icon."IMAGE_EXT,_("Segment"));
+	INIT_STOCK_ICON(type_blinepoint,"type_blinepoint_icon."IMAGE_EXT,_("BLine Point"));
+	INIT_STOCK_ICON(type_list,"type_list_icon."IMAGE_EXT,_("Rename"));
+	INIT_STOCK_ICON(type_string,"type_string_icon."IMAGE_EXT,_("Rename"));
+	INIT_STOCK_ICON(type_canvas,"type_canvas_icon."IMAGE_EXT,_("Rename"));
+	INIT_STOCK_ICON(type_gradient,"type_gradient_icon."IMAGE_EXT,_("Gradient"))
 
 	INIT_STOCK_ICON(reset_colors,"reset_colors_icon."IMAGE_EXT,_("Reset Colors"));
 	INIT_STOCK_ICON(swap_colors,"swap_colors_icon."IMAGE_EXT,_("Swap Colors"));
 	INIT_STOCK_ICON(value_node,"valuenode_icon."IMAGE_EXT,_("ValueNode"));
 	INIT_STOCK_ICON(about,"about_icon."IMAGE_EXT,_("About"));
 	INIT_STOCK_ICON(rename,"rename_icon."IMAGE_EXT,_("Rename"));
-	INIT_STOCK_ICON(canvas_pointer,"canvas_pointer_icon."IMAGE_EXT,_("Rename"));
+	INIT_STOCK_ICON(canvas,"canvas_icon."IMAGE_EXT,_("Rename"));
 	INIT_STOCK_ICON(canvas_new,"canvas_icon."IMAGE_EXT,_("New Canvas"));
 	INIT_STOCK_ICON(saveall,"saveall_icon."IMAGE_EXT,_("Save All"));
 
@@ -374,43 +376,43 @@ studio::value_icon(synfig::ValueBase::Type type)
 		switch(type)
 		{
 		case ValueBase::TYPE_BOOL:
-			return Gtk::StockID("synfig-bool");
+			return Gtk::StockID("synfig-type_bool");
 			break;
 		case ValueBase::TYPE_INTEGER:
-			return Gtk::StockID("synfig-integer");
+			return Gtk::StockID("synfig-type_integer");
 			break;
 		case ValueBase::TYPE_ANGLE:
-			return Gtk::StockID("synfig-angle");
+			return Gtk::StockID("synfig-type_angle");
 			break;
 		case ValueBase::TYPE_TIME:
-			return Gtk::StockID("synfig-time");
+			return Gtk::StockID("synfig-type_time");
 			break;
 		case ValueBase::TYPE_REAL:
-			return Gtk::StockID("synfig-real");
+			return Gtk::StockID("synfig-type_real");
 			break;
 		case ValueBase::TYPE_VECTOR:
-			return Gtk::StockID("synfig-vector");
+			return Gtk::StockID("synfig-type_vector");
 			break;
 		case ValueBase::TYPE_COLOR:
-			return Gtk::StockID("synfig-color");
+			return Gtk::StockID("synfig-type_color");
 			break;
 		case ValueBase::TYPE_SEGMENT:
-			return Gtk::StockID("synfig-segment");
+			return Gtk::StockID("synfig-type_segment");
 			break;
 		case ValueBase::TYPE_BLINEPOINT:
-			return Gtk::StockID("synfig-blinepoint");
+			return Gtk::StockID("synfig-type_blinepoint");
 			break;
 		case ValueBase::TYPE_LIST:
-			return Gtk::StockID("synfig-list");
+			return Gtk::StockID("synfig-type_list");
 			break;
 		case ValueBase::TYPE_CANVAS:
-			return Gtk::StockID("synfig-canvas_pointer");
+			return Gtk::StockID("synfig-type_canvas");
 			break;
 		case ValueBase::TYPE_STRING:
-			return Gtk::StockID("synfig-string");
+			return Gtk::StockID("synfig-type_string");
 			break;
 		case ValueBase::TYPE_GRADIENT:
-			return Gtk::StockID("synfig-gradient");
+			return Gtk::StockID("synfig-type_gradient");
 			break;
 		case ValueBase::TYPE_NIL:
 		default:
