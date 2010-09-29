@@ -279,7 +279,8 @@ Duck::set_sub_trans_point(const synfig::Point &x)
 synfig::Point
 Duck::get_sub_trans_origin()const
 {
-	return origin_duck?origin_duck->get_sub_trans_point():origin;
+	// The origin needs to have the same transform stack as this duck
+	return origin_duck?transform_stack_.unperform(origin_duck->get_trans_point()):origin;
 }
 
 #ifdef _DEBUG

@@ -1752,12 +1752,39 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				if (param_desc && param_desc->get_hint().empty())
 				{
 					// if it's a parameter without a hint, then don't add the width duck
-					// \todo: determine why these conditions are necessary
+					// (This prevents width ducks from being added to region layers, and possibly other cases)
 				}
 				else
 				if(composite_vertex_value_node)
 				{
 					if (add_to_ducks(synfigapp::ValueDesc(composite_vertex_value_node,1),canvas_view,transform_stack,REAL_COOKIE))
+					{
+						width=last_duck();
+						width->set_origin(duck);
+						width->set_type(Duck::TYPE_WIDTH);
+						width->set_name(guid_string(synfigapp::ValueDesc(value_node,i))+".w");
+
+						// if the bline is a layer's parameter, scale the width duck by the layer's "width" parameter
+						if (param_desc)
+						{
+							ValueBase value(synfigapp::ValueDesc(value_desc.get_layer(),param_desc->get_hint()).get_value(get_time()));
+							if(value.same_type_as(synfig::Real()))
+								width->set_scalar(value.get(synfig::Real())*0.5f);
+							// if it doesn't have a "width" parameter, scale by 0.5f instead
+							else
+								width->set_scalar(0.5f);
+						}
+						// otherwise just present the raw unscaled width
+						else
+							width->set_scalar(0.5f);
+					}
+					else
+						synfig::error("Unable to add width duck!");
+				}
+				else
+				if (composite_bone_link_value_node)
+				{
+					if (add_to_ducks(synfigapp::ValueDesc(composite_bone_link_value_node,1),canvas_view,transform_stack,REAL_COOKIE))
 					{
 						width=last_duck();
 						width->set_origin(duck);
