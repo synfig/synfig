@@ -18,7 +18,7 @@ synfig_SOURCES = \
 	definitions.h \
 	progress.h \
 	renderprogress.h \
-	job.h \	
+	job.h \
 	main.cpp
 
 synfig_LDADD = \
