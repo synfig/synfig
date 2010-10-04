@@ -774,7 +774,7 @@ Canvas::clone(const GUID& deriv_guid)const
 {
 	synfig::String name;
 	if(is_inline())
-		name="inline";
+		name=_("in line");
 	else
 	{
 		name=get_id()+"_CLONE";
@@ -839,7 +839,7 @@ Canvas::set_inline(LooseHandle parent)
 
 	}
 
-	id_="inline";
+	id_=_("in line");
 	is_inline_=true;
 	parent_=parent;
 
@@ -862,7 +862,7 @@ Canvas::create_inline(Handle parent)
 	//if(parent->is_inline())
 	//	return create_inline(parent->parent());
 
-	Handle canvas(new Canvas("inline"));
+	Handle canvas(new Canvas(_("in line")));
 	canvas->set_inline(parent);
 	return canvas;
 }

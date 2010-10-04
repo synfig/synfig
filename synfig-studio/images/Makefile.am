@@ -13,17 +13,17 @@ EXTRA_DIST = \
 	splash_screen-0.61.08.sif \
 	splash_screen-0.61.07.sif \
 	about_icon.sif \
-	angle_icon.sif \
+	type_angle_icon.sif \
 	bline_icon.sif \
-	blinepoint_icon.sif \
-	bool_icon.sif \
+	type_blinepoint_icon.sif \
+	type_bool_icon.sif \
 	canvas_icon.sif \
-	canvas_pointer_icon.sif \
+	type_canvas_icon.sif \
 	children_icon.sif \
 	circle_icon.sif \
 	clear_redo_icon.sif \
 	clear_undo_icon.sif \
-	color_icon.sif \
+	type_color_icon.sif \
 	curves_icon.sif \
 	draw_icon.sif \
 	duplicate_icon.sif \
@@ -31,13 +31,14 @@ EXTRA_DIST = \
 	eyedrop_icon.sif \
 	fill_icon.sif \
 	gradient_icon.sif \
+	type_gradient_icon.sif \
 	group_icon.sif \
 	info_icon.sif \
-	integer_icon.sif \
+	type_integer_icon.sif \
 	keyframe_icon.sif \
 	keyframe_lock_icon.sif \
 	layer_icon.sif \
-	list_icon.sif \
+	type_list_icon.sif \
 	logo.sif \
 	meta_data_icon.sif \
 	mirror_icon.sif \
@@ -45,25 +46,25 @@ EXTRA_DIST = \
 	normal_icon.sif \
 	pastecanvas_icon.sif \
 	polygon_icon.sif \
-	real_icon.sif \
+	type_real_icon.sif \
 	rectangle_icon.sif \
 	rotate_icon.sif \
 	saveall_icon.sif \
 	scale_icon.sif \
-	segment_icon.sif \
+	type_segment_icon.sif \
 	select_all_child_layers_icon.sif \
 	sif_icon.sif \
 	sketch_icon.sif \
 	smooth_move_icon.sif \
-	string_icon.sif \
+	type_string_icon.sif \
 	reset_colors_icon.sif \
 	swap_colors_icon.sif \
 	synfig_icon.sif \
 	synfig_icon.svg \
-	time_icon.sif \
+	type_time_icon.sif \
 	time_track_icon.sif \
 	valuenode_icon.sif \
-	vector_icon.sif \
+	type_vector_icon.sif \
 	wallpaper.sif \
 	width_icon.sif \
 	zoom_icon.sif \
@@ -148,7 +149,7 @@ IMAGES = \
 	installer_logo.$(EXT) \
 	installer_logo_osx.$(EXT) \
 	mirror_icon.$(EXT) \
-	time_icon.$(EXT) \
+	type_time_icon.$(EXT) \
 	time_track_icon.$(EXT) \
 	curves_icon.$(EXT) \
 	pastecanvas_icon.$(EXT) \
@@ -177,21 +178,21 @@ IMAGES = \
 	sif_icon.$(EXT) \
 	synfig_icon.$(EXT) \
 	saveall_icon.$(EXT) \
-	bool_icon.$(EXT) \
-	integer_icon.$(EXT) \
-	angle_icon.$(EXT) \
-	segment_icon.$(EXT) \
-	blinepoint_icon.$(EXT) \
-	list_icon.$(EXT) \
-	canvas_pointer_icon.$(EXT) \
-	string_icon.$(EXT) \
+	type_bool_icon.$(EXT) \
+	type_integer_icon.$(EXT) \
+	type_angle_icon.$(EXT) \
+	type_segment_icon.$(EXT) \
+	type_blinepoint_icon.$(EXT) \
+	type_list_icon.$(EXT) \
+	type_canvas_icon.$(EXT) \
+	type_string_icon.$(EXT) \
 	eyedrop_icon.$(EXT) \
 	about_icon.$(EXT) \
 	splash_screen.$(EXT) \
 	canvas_icon.$(EXT) \
-	vector_icon.$(EXT) \
-	real_icon.$(EXT) \
-	color_icon.$(EXT) \
+	type_vector_icon.$(EXT) \
+	type_real_icon.$(EXT) \
+	type_color_icon.$(EXT) \
 	valuenode_icon.$(EXT) \
 	polygon_icon.$(EXT) \
 	bline_icon.$(EXT) \
@@ -199,6 +200,7 @@ IMAGES = \
 	duplicate_icon.$(EXT) \
 	encapsulate_icon.$(EXT) \
 	gradient_icon.$(EXT) \
+	type_gradient_icon.$(EXT) \
 	keyframe_lock_all.$(EXT) \
 	keyframe_lock_past.$(EXT) \
 	keyframe_lock_future.$(EXT) \
