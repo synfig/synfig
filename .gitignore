@@ -178,6 +178,8 @@ Makefile
 
 !synfig-studio/images/*.sif
 
+synfig-studio/images/splash_screen_development.sif
+
 # ------------------------------------------------------------------------
 # These are executables produced by 'make check' in ETL/trunk
 # ------------------------------------------------------------------------
