@@ -309,7 +309,11 @@ png_mptr::png_mptr(const char *file_name)
 				float b=gamma().b_U8_to_F32((unsigned char)png_ptr->palette[row_pointers[y][x]].blue);
 				float a=1.0;
 				if(info_ptr->valid & PNG_INFO_tRNS)
-				    a = (float)(unsigned char)png_ptr->trans[row_pointers[y][x]]*(1.0/255.0);
+#ifdef HAVE_LIBPNG14
+				    a = (float)(unsigned char)png_ptr->trans_alpha[row_pointers[y][x]]*(1.0/255.0);
+#else
+					a = (float)(unsigned char)png_ptr->trans[row_pointers[y][x]]*(1.0/255.0);
+#endif
 				surface_buffer[y][x]=Color(
 					r,
 					g,

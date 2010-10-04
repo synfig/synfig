@@ -434,10 +434,12 @@ dnl PKG_CHECK_MODULES(GLIB, glib-2.0,[GLIB="yes"],[GLIB="no"])
 TARGET_PNG="yes"
 TARGET_MNG="yes"
 
-AC_CHECK_LIB(png, png_write_row,[
-	PNG_LIBS="-lpng"
-	AC_DEFINE(HAVE_LIBPNG,[], [ Define if PNG library is available ] )
+AC_CHECK_LIB(png14, png_write_row,[
+	PNG_LIBS="-lpng14"
+	AC_DEFINE(HAVE_LIBPNG14,[], [ Define if PNG 1.4 library is available ])
+	AC_DEFINE(HAVE_LIBPNG,[], [ Define if PNG library is available ])
 	AC_SUBST(PNG_LIBS)
+	AM_CONDITIONAL(HAVE_LIBPNG14,true)
 	AM_CONDITIONAL(HAVE_LIBPNG,true)
 ],[
 	AC_CHECK_LIB(png12, png_write_row,[
@@ -446,9 +448,16 @@ AC_CHECK_LIB(png, png_write_row,[
 	AC_SUBST(PNG_LIBS)
 	AM_CONDITIONAL(HAVE_LIBPNG,true)
 	],[
-		AC_MSG_RESULT([ *** PNG Output target disabled])
-		TARGET_PNG="no"
-		AM_CONDITIONAL(HAVE_LIBPNG,false)
+		AC_CHECK_LIB(png, png_write_row,[
+		PNG_LIBS="-lpng"
+		AC_DEFINE(HAVE_LIBPNG,[])
+		AC_SUBST(PNG_LIBS)
+		AM_CONDITIONAL(HAVE_LIBPNG,true)
+		],[
+			AC_MSG_RESULT([ *** PNG Output target disabled])
+			TARGET_PNG="no"
+			AM_CONDITIONAL(HAVE_LIBPNG,false)
+		],[-lz -L${exec_prefix}/lib])
 	],[-lz -L${exec_prefix}/lib])
 ],[-lz -L${exec_prefix}/lib])
 
