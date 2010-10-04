@@ -6,8 +6,8 @@ EXT = @imageext@
 EXTRA_DIST = \
 	installer_logo.sif \
 	installer_logo_osx.sif \
-	splash_screen1.sif \
-	splash_screen2.sif \
+	splash_screen-0.62.01.sif \
+	splash_screen-0.62.01-2.sif \
 	splash_screen-0.62.00.sif \
 	splash_screen-0.61.09.sif \
 	splash_screen-0.61.08.sif \
@@ -187,8 +187,7 @@ IMAGES = \
 	string_icon.$(EXT) \
 	eyedrop_icon.$(EXT) \
 	about_icon.$(EXT) \
-	splash_screen1.$(EXT) \
-	splash_screen2.$(EXT) \
+	splash_screen.$(EXT) \
 	canvas_icon.$(EXT) \
 	vector_icon.$(EXT) \
 	real_icon.$(EXT) \
@@ -360,6 +359,8 @@ keyframe_lock_none.$(EXT): $(srcdir)/keyframe_lock_icon.sif
 	echo "  File \"images\\$@\"" >>./images.nsh
 	echo "  Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 
+splash_screen.$(EXT): $(srcdir)/splash_screen-$(PACKAGE_VERSION).sif
+	$(SYNFIG) -q $< -o $@ --time 0
 
 if !WIN32_PKG
 if !MACOSX_PKG
