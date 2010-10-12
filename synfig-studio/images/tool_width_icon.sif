@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
-<canvas version="0.1" width="128" height="128" xres="2834.645691" yres="2834.645691" view-box="-1.000000 1.000000 1.000000 -1.000000" antialias="1" fps="30.000" begin-time="0f" end-time="0f" bgcolor="0.500000 0.500000 0.500000 1.000000">
-  <name>Untitled0</name>
+<canvas version="0.7" width="24" height="24" xres="2834.645691" yres="2834.645691" view-box="-1.000000 1.000000 1.000000 -1.000000" antialias="1" fps="30.000" begin-time="0f" end-time="0f" bgcolor="0.500000 0.500000 0.500000 1.000000">
+  <name>Synfig Studio: Tool: Width Icon</name>
   <layer type="outline" active="true" version="0.2" desc="NewBLine003 Outline">
     <param name="z_depth">
       <real value="0.0000000000"/>
@@ -19,7 +19,7 @@
         <a>1.000000</a>
       </color>
     </param>
-    <param name="offset">
+    <param name="origin">
       <vector>
         <x>0.0000000000</x>
         <y>0.0000000000</y>
@@ -37,105 +37,111 @@
     <param name="blurtype">
       <integer value="1"/>
     </param>
+    <param name="winding_style">
+      <integer value="0"/>
+    </param>
     <param name="bline">
       <bline type="bline_point" loop="false">
         <entry>
           <composite type="bline_point">
-            <c1>
+            <point>
               <vector>
                 <x>-0.8906250000</x>
                 <y>0.7656250000</y>
               </vector>
-            </c1>
-            <c2>
+            </point>
+            <width>
               <real value="0.0000000000"/>
-            </c2>
-            <c3>
+            </width>
+            <origin>
               <real value="0.5000000000"/>
-            </c3>
-            <c4>
+            </origin>
+            <split>
               <bool value="false"/>
-            </c4>
-            <c5>
+            </split>
+            <t1>
               <vector>
                 <x>1.0937500000</x>
                 <y>1.0000000000</y>
               </vector>
-            </c5>
-            <c6>
+            </t1>
+            <t2>
               <vector>
                 <x>1.0937500000</x>
                 <y>1.0000000000</y>
               </vector>
-            </c6>
+            </t2>
           </composite>
         </entry>
         <entry>
           <composite type="bline_point">
-            <c1>
+            <point>
               <vector>
                 <x>-0.0000000000</x>
                 <y>0.0000000000</y>
               </vector>
-            </c1>
-            <c2>
+            </point>
+            <width>
               <real value="9.4062940700"/>
-            </c2>
-            <c3>
+            </width>
+            <origin>
               <real value="0.4728665650"/>
-            </c3>
-            <c4>
+            </origin>
+            <split>
               <bool value="false"/>
-            </c4>
-            <c5>
+            </split>
+            <t1>
               <vector>
                 <x>0.2197851539</x>
                 <y>-0.9105731249</y>
               </vector>
-            </c5>
-            <c6>
+            </t1>
+            <t2>
               <vector>
                 <x>0.2197851539</x>
                 <y>-0.9105731249</y>
               </vector>
-            </c6>
+            </t2>
           </composite>
         </entry>
         <entry>
           <composite type="bline_point">
-            <c1>
+            <point>
               <vector>
                 <x>0.8906250000</x>
                 <y>-0.8125000000</y>
               </vector>
-            </c1>
-            <c2>
+            </point>
+            <width>
               <real value="0.0000000000"/>
-            </c2>
-            <c3>
+            </width>
+            <origin>
               <real value="0.5000000000"/>
-            </c3>
-            <c4>
+            </origin>
+            <split>
               <bool value="false"/>
-            </c4>
-            <c5>
+            </split>
+            <t1>
               <vector>
                 <x>1.6562500000</x>
                 <y>0.7656250000</y>
               </vector>
-            </c5>
-            <c6>
+            </t1>
+            <t2>
               <vector>
                 <x>1.6562500000</x>
                 <y>0.7656250000</y>
               </vector>
-            </c6>
+            </t2>
           </composite>
         </entry>
       </bline>
     </param>
     <param name="width">
       <real value="0.1200000000"/>
+    </param>
+    <param name="expand">
+      <real value="0.0000000000"/>
     </param>
     <param name="sharp_cusps">
       <bool value="true"/>
@@ -148,6 +154,9 @@
     </param>
     <param name="loopyness">
       <real value="1.0000000000"/>
+    </param>
+    <param name="homogeneous_width">
+      <bool value="true"/>
     </param>
   </layer>
 </canvas>

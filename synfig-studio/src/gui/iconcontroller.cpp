@@ -147,6 +147,26 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	INIT_STOCK_ICON(type_canvas,"type_canvas_icon."IMAGE_EXT,_("Canvas"));
 	INIT_STOCK_ICON(type_gradient,"type_gradient_icon."IMAGE_EXT,_("Gradient"))
 
+	// ToolBox Tools
+	INIT_STOCK_ICON(normal,"tool_normal_icon."IMAGE_EXT,_("Transform Tool"));
+        INIT_STOCK_ICON(polygon,"tool_polyline_icon."IMAGE_EXT,_("Polygon Tool"));
+        INIT_STOCK_ICON(bline,"tool_bline_icon."IMAGE_EXT,_("BLine Tool"));
+        INIT_STOCK_ICON(eyedrop,"tool_eyedrop_icon."IMAGE_EXT,_("Eyedrop Tool"));
+        INIT_STOCK_ICON(fill,"tool_fill_icon."IMAGE_EXT,_("Fill Tool"));
+        INIT_STOCK_ICON(draw,"tool_draw_icon."IMAGE_EXT,_("Draw Tool"));
+        INIT_STOCK_ICON(sketch,"tool_sketch_icon."IMAGE_EXT,_("Sketch Tool"));
+        INIT_STOCK_ICON(circle,"tool_circle_icon."IMAGE_EXT,_("Circle Tool"));
+        INIT_STOCK_ICON(rectangle,"tool_rectangle_icon."IMAGE_EXT,_("Rectangle Tool"));
+        INIT_STOCK_ICON(smooth_move,"tool_smooth_move_icon."IMAGE_EXT,_("SmoothMove Tool"));
+        INIT_STOCK_ICON(rotate,"tool_rotate_icon."IMAGE_EXT,"Rotate Tool");
+        INIT_STOCK_ICON(width,"tool_width_icon."IMAGE_EXT,_("Width Tool"));
+        INIT_STOCK_ICON(scale,"tool_scale_icon."IMAGE_EXT,"Scale Tool");
+        INIT_STOCK_ICON(zoom,"tool_zoom_icon."IMAGE_EXT,_("Zoom Tool"));
+        INIT_STOCK_ICON(mirror,"tool_mirror_icon."IMAGE_EXT,_("Mirror Tool"));
+        INIT_STOCK_ICON(text,"tool_text_icon."IMAGE_EXT,"Text Tool");
+        INIT_STOCK_ICON(gradient,"tool_gradient_icon."IMAGE_EXT,_("Gradient Tool"));
+        INIT_STOCK_ICON(star,"tool_star_icon."IMAGE_EXT,_("Star Tool"));
+	//ToolBox Others
 	INIT_STOCK_ICON(reset_colors,"reset_colors_icon."IMAGE_EXT,_("Reset Colors"));
 	INIT_STOCK_ICON(swap_colors,"swap_colors_icon."IMAGE_EXT,_("Swap Colors"));
 	INIT_STOCK_ICON(value_node,"valuenode_icon."IMAGE_EXT,_("ValueNode"));
@@ -218,7 +238,9 @@ IconController::IconController(const synfig::String& /*basepath*/)
 
 	INIT_STOCK_ICON(plant,"plant_icon."IMAGE_EXT,"");
 
+	INIT_STOCK_ICON(info,"info_icon."IMAGE_EXT,_("Info Tool"));
 	INIT_STOCK_ICON(group,"group_icon."IMAGE_EXT,_("Group"));
+
 	INIT_STOCK_ICON(grid_enable,"grid_enable_icon."IMAGE_EXT,_("Show Grid"));
 	INIT_STOCK_ICON(grid_disable,"grid_disable_icon."IMAGE_EXT,_("Hide Grid"));
 	INIT_STOCK_ICON(grid_snap_enable,"grid_snap_enable_icon."IMAGE_EXT,_("Enable Grid Snap"));
@@ -277,28 +299,6 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	INIT_STOCK_ICON_CLONE(cvs_update,"gtk-open",_("CVS Update"));
 	INIT_STOCK_ICON_CLONE(cvs_commit,"gtk-save",_("CVS Commit"));
 	INIT_STOCK_ICON_CLONE(cvs_revert,"gtk-revert",_("CVS Revert"));
-
-	// Tools
-	INIT_STOCK_ICON(normal,"normal_icon."IMAGE_EXT,_("Transform Tool"));
-	INIT_STOCK_ICON(transform,"transform_icon."IMAGE_EXT,_("Transform Tool"));
-	INIT_STOCK_ICON(polygon,"polyline_icon."IMAGE_EXT,_("Polygon Tool"));
-	INIT_STOCK_ICON(bline,"bline_icon."IMAGE_EXT,_("BLine Tool"));
-	INIT_STOCK_ICON(eyedrop,"eyedrop_icon."IMAGE_EXT,_("Eyedrop Tool"));
-	INIT_STOCK_ICON(fill,"fill_icon."IMAGE_EXT,_("Fill Tool"));
-	INIT_STOCK_ICON(draw,"draw_icon."IMAGE_EXT,_("Draw Tool"));
-	INIT_STOCK_ICON(sketch,"sketch_icon."IMAGE_EXT,_("Sketch Tool"));
-	INIT_STOCK_ICON(circle,"circle_icon."IMAGE_EXT,_("Circle Tool"));
-	INIT_STOCK_ICON(rectangle,"rectangle_icon."IMAGE_EXT,_("Rectangle Tool"));
-	INIT_STOCK_ICON(smooth_move,"smooth_move_icon."IMAGE_EXT,_("SmoothMove Tool"));
-	INIT_STOCK_ICON(rotate,"rotate_icon."IMAGE_EXT,"Rotate Tool");
-	INIT_STOCK_ICON(width,"width_icon."IMAGE_EXT,_("Width Tool"));
-	INIT_STOCK_ICON(scale,"scale_icon."IMAGE_EXT,"Scale Tool");
-	INIT_STOCK_ICON(zoom,"zoom_icon."IMAGE_EXT,_("Zoom Tool"));
-	INIT_STOCK_ICON(info,"info_icon."IMAGE_EXT,_("Info Tool"));
-	INIT_STOCK_ICON(mirror,"mirror_icon."IMAGE_EXT,_("Mirror Tool"));
-	INIT_STOCK_ICON(text,"text_icon."IMAGE_EXT,"Text Tool");
-	INIT_STOCK_ICON(gradient,"gradient_icon."IMAGE_EXT,_("Gradient Tool"));
-	INIT_STOCK_ICON(star,"star_icon."IMAGE_EXT,_("Star Tool"));
 
 #undef INIT_STOCK_ICON
 #undef INIT_STOCK_ICON_CLONE
