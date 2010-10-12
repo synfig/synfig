@@ -66,7 +66,7 @@ using namespace studio;
 /* === M E T H O D S ======================================================= */
 
 Dock_History::Dock_History():
-	Dock_CanvasSpecific("history",_("History"),Gtk::StockID("gtk-undo")),
+	Dock_CanvasSpecific("history",_("History"),Gtk::StockID("synfig-history")),
 	action_group(Gtk::ActionGroup::create("action_group_dock_history"))
 {
 	App::signal_instance_deleted().connect(sigc::mem_fun(*this,&studio::Dock_History::delete_instance));

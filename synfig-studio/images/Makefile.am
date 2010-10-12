@@ -13,21 +13,13 @@ EXTRA_DIST = \
 	splash_screen-0.61.08.sif \
 	splash_screen-0.61.07.sif \
 	about_icon.sif \
-	canvas_icon.sif \
-	children_icon.sif \
 	clear_redo_icon.sif \
 	clear_undo_icon.sif \
 	curves_icon.sif \
 	duplicate_icon.sif \
 	encapsulate_icon.sif \
-	group_icon.sif \
-	info_icon.sif \
-	keyframe_icon.sif \
 	keyframe_lock_icon.sif \
-	layer_icon.sif \
 	logo.sif \
-	meta_data_icon.sif \
-	navigator_icon.sif \
 	pastecanvas_icon.sif \
 	saveall_icon.sif \
 	select_all_child_layers_icon.sif \
@@ -36,7 +28,6 @@ EXTRA_DIST = \
 	swap_colors_icon.sif \
 	synfig_icon.sif \
 	synfig_icon.svg \
-	time_track_icon.sif \
 	valuenode_icon.sif \
 	wallpaper.sif \
 	rename_icon.sif \
@@ -65,6 +56,7 @@ EXTRA_DIST = \
 	action_remove_from_group_icon.sif \
 	action_export_icon.sif \
 	action_unexport_icon.sif
+	\
 	layer_blur_blur_icon.sif \
 	layer_blur_motion_icon.sif \
 	layer_blur_radial_icon.sif \
@@ -112,6 +104,7 @@ EXTRA_DIST = \
 	layer_transform_rotate_icon.sif \
 	layer_transform_translate_icon.sif \
 	layer_transform_zoom_icon.sif \
+	\
 	tool_bline_icon.sif \
 	tool_circle_icon.sif \
 	tool_draw_icon.sif \
@@ -130,6 +123,7 @@ EXTRA_DIST = \
 	tool_text_icon.sif \
 	tool_width_icon.sif \
 	tool_zoom_icon.sif \
+	\
 	type_angle_icon.sif \
 	type_blinepoint_icon.sif \
 	type_bool_icon.sif \
@@ -142,23 +136,28 @@ EXTRA_DIST = \
 	type_segment_icon.sif \
 	type_string_icon.sif \
 	type_time_icon.sif \
-	type_vector_icon.sif
-
+	type_vector_icon.sif \
+	\
+	canvas_icon.sif \
+	children_icon.sif \
+	curves_icon.sif \
+	group_icon.sif \
+	history_icon.sif \
+	info_icon.sif \
+	keyframe_icon.sif \
+	layer_icon.sif \
+	meta_data_icon.sif \
+	navigator_icon.sif \
+	palette_icon.sif \
+	params_icon.sif \
+	time_track_icon.sif
 
 IMAGES = \
 	installer_logo.$(EXT) \
 	installer_logo_osx.$(EXT) \
-	time_track_icon.$(EXT) \
-	curves_icon.$(EXT) \
 	pastecanvas_icon.$(EXT) \
-	group_icon.$(EXT) \
 	clear_redo_icon.$(EXT) \
 	clear_undo_icon.$(EXT) \
-	navigator_icon.$(EXT) \
-	info_icon.$(EXT) \
-	meta_data_icon.$(EXT) \
-	children_icon.$(EXT) \
-	keyframe_icon.$(EXT) \
 	reset_colors_icon.$(EXT) \
 	swap_colors_icon.$(EXT) \
 	select_all_child_layers_icon.$(EXT) \
@@ -168,9 +167,7 @@ IMAGES = \
 	about_icon.$(EXT) \
 	splash_screen1.$(EXT) \
 	splash_screen2.$(EXT) \
-	canvas_icon.$(EXT) \
 	valuenode_icon.$(EXT) \
-	layer_icon.$(EXT) \
 	duplicate_icon.$(EXT) \
 	encapsulate_icon.$(EXT) \
 	keyframe_lock_all.$(EXT) \
@@ -203,6 +200,7 @@ IMAGES = \
 	action_remove_from_group_icon.$(EXT) \
 	action_export_icon.$(EXT) \
 	action_unexport_icon.$(EXT) \
+	\
 	layer_blur_blur_icon.$(EXT) \
 	layer_blur_motion_icon.$(EXT) \
 	layer_blur_radial_icon.$(EXT) \
@@ -250,6 +248,7 @@ IMAGES = \
 	layer_transform_rotate_icon.$(EXT) \
 	layer_transform_translate_icon.$(EXT) \
 	layer_transform_zoom_icon.$(EXT) \
+	\
 	tool_bline_icon.$(EXT) \
 	tool_circle_icon.$(EXT) \
 	tool_draw_icon.$(EXT) \
@@ -268,6 +267,7 @@ IMAGES = \
 	tool_text_icon.$(EXT) \
 	tool_width_icon.$(EXT) \
 	tool_zoom_icon.$(EXT) \
+	\
 	type_angle_icon.$(EXT) \
 	type_blinepoint_icon.$(EXT) \
 	type_bool_icon.$(EXT) \
@@ -280,8 +280,21 @@ IMAGES = \
 	type_segment_icon.$(EXT) \
 	type_string_icon.$(EXT) \
 	type_time_icon.$(EXT) \
-	type_vector_icon.$(EXT)
-
+	type_vector_icon.$(EXT) \
+	\
+	canvas_icon.$(EXT) \
+	children_icon.$(EXT) \
+	curves_icon.$(EXT) \
+	group_icon.$(EXT) \
+	history_icon.$(EXT) \
+	info_icon.$(EXT) \
+	keyframe_icon.$(EXT) \
+	layer_icon.$(EXT) \
+	meta_data_icon.$(EXT) \
+	navigator_icon.$(EXT) \
+	palette_icon.$(EXT) \
+	params_icon.$(EXT) \
+	time_track_icon.$(EXT)
 
 MAINTAINERCLEANFILES = \
 	Makefile.in

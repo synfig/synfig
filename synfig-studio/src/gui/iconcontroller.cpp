@@ -258,6 +258,9 @@ IconController::IconController(const synfig::String& /*basepath*/)
 	INIT_STOCK_ICON(meta_data,"meta_data_icon."IMAGE_EXT,_("MetaData"));
 	INIT_STOCK_ICON(navigator,"navigator_icon."IMAGE_EXT,_("Navigator"));
 	INIT_STOCK_ICON(timetrack,"time_track_icon."IMAGE_EXT,_("Time Track"));
+	INIT_STOCK_ICON(history,"history_icon."IMAGE_EXT,_("History"));
+	INIT_STOCK_ICON(palette,"palette_icon."IMAGE_EXT,_("Palette"));
+	INIT_STOCK_ICON(params,"params_icon."IMAGE_EXT,_("Parameters"));
 
 	INIT_STOCK_ICON(keyframe_lock_all,"keyframe_lock_all."IMAGE_EXT,_("All Keyframes Locked"));
 	INIT_STOCK_ICON(keyframe_lock_past,"keyframe_lock_past."IMAGE_EXT,_("Past Keyframes Locked"));
