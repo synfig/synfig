@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<canvas version="0.7" width="24" height="24" xres="2952.755900" yres="2952.755900" view-box="-1.000000 1.000000 1.000000 -1.000000" antialias="1" fps="30.000" begin-time="0f" end-time="0f" bgcolor="0.500000 0.500000 0.500000 1.000000">
+<canvas version="0.7" width="128" height="128" xres="2952.755900" yres="2952.755900" view-box="-1.000000 1.000000 1.000000 -1.000000" antialias="1" fps="30.000" begin-time="0f" end-time="0f" bgcolor="0.500000 0.500000 0.500000 1.000000">
   <name>Synfig Studio UnExport Icon</name>
   <desc>Placed in the Public Domain in 2009 by Bertrand Gr&#xE9;goire (Berteh)</desc>
   <defs>

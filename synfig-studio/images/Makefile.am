@@ -345,7 +345,7 @@ clean-local:
 	$(SYNFIG) -q $< -o $@ --time 0
 
 .sif.$(EXT):
-	$(SYNFIG) -q $< -o $@ --time 0 -w 48 -h 48
+	$(SYNFIG) -q $< -o $@ --time 0
 	echo "  File \"images\\$@\"" >>./images.nsh
 	echo "  Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 
@@ -355,22 +355,22 @@ clean-local:
 	echo "  Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 
 keyframe_lock_all.$(EXT): $(srcdir)/keyframe_lock_icon.sif
-	$(SYNFIG) -q $< -o $@ --time 0 -w 48 -h 48
+	$(SYNFIG) -q $< -o $@ --time 0
 	echo "  File \"images\\$@\"" >>./images.nsh
 	echo "  Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 
 keyframe_lock_past.$(EXT): $(srcdir)/keyframe_lock_icon.sif
-	$(SYNFIG) -q $< -o $@ --time 0 -w 48 -h 48 -c PastOnly
+	$(SYNFIG) -q $< -o $@ --time 0 -c PastOnly
 	echo "  File \"images\\$@\"" >>./images.nsh
 	echo "  Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 
 keyframe_lock_future.$(EXT): $(srcdir)/keyframe_lock_icon.sif
-	$(SYNFIG) -q $< -o $@ --time 0 -w 48 -h 48 -c FutureOnly
+	$(SYNFIG) -q $< -o $@ --time 0 -c FutureOnly
 	echo "  File \"images\\$@\"" >>./images.nsh
 	echo "  Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 
 keyframe_lock_none.$(EXT): $(srcdir)/keyframe_lock_icon.sif
-	$(SYNFIG) -q $< -o $@ --time 0 -w 48 -h 48 -c Disabled
+	$(SYNFIG) -q $< -o $@ --time 0 -c Disabled
 	echo "  File \"images\\$@\"" >>./images.nsh
 	echo "  Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 
