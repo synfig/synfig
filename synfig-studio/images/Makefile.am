@@ -6,8 +6,8 @@ EXT = @imageext@
 EXTRA_DIST = \
 	installer_logo.sif \
 	installer_logo_osx.sif \
-	splash_screen1.sif \
-	splash_screen2.sif \
+	splash_screen-0.62.01.sif \
+	splash_screen-0.62.01-2.sif \
 	splash_screen-0.62.00.sif \
 	splash_screen-0.61.09.sif \
 	splash_screen-0.61.08.sif \
@@ -165,8 +165,7 @@ IMAGES = \
 	synfig_icon.$(EXT) \
 	saveall_icon.$(EXT) \
 	about_icon.$(EXT) \
-	splash_screen1.$(EXT) \
-	splash_screen2.$(EXT) \
+	splash_screen.$(EXT) \
 	valuenode_icon.$(EXT) \
 	duplicate_icon.$(EXT) \
 	encapsulate_icon.$(EXT) \
@@ -374,6 +373,19 @@ keyframe_lock_none.$(EXT): $(srcdir)/keyframe_lock_icon.sif
 	echo "  File \"images\\$@\"" >>./images.nsh
 	echo "  Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 
+if DEVELOPMENT_SNAPSHOT
+splash_screen_development.sif: $(srcdir)/splash_screen_development.sif.in
+	export commit_id=`git log --no-color -1 | head -n 1 | cut -f 2 -d ' ' | cut -c -6` && \
+	export commit_date=`git show --pretty=format:%ci HEAD |  head -c 10` && \
+	export branch=`git branch -a --no-color --contains HEAD | sed -e s/\*\ // | sed -e s/\(no\ branch\)// | tr '\n' ' ' | tr -s ' ' | sed s/^' '//` && \
+	export branch=`echo $$branch | egrep origin/master > /dev/null && echo master || echo $$branch | cut -d ' ' -f 1 | sed -e 's/.*\///'` && \
+	sed "s|%branch%|$$branch|" $< | sed "s|%commit_date%|$$commit_date|" | sed "s|%commit_id%|$$commit_id|" > $@
+splash_screen.$(EXT): $(srcdir)/splash_screen_development.sif
+	$(SYNFIG) -q $< -o $@ --time 0
+else
+splash_screen.$(EXT): $(srcdir)/splash_screen-$(PACKAGE_VERSION).sif
+	$(SYNFIG) -q $< -o $@ --time 0
+endif
 
 if !WIN32_PKG
 if !MACOSX_PKG
