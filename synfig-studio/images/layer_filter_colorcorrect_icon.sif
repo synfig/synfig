@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<canvas version="0.7" width="200" height="200" xres="2834.645752" yres="2834.645752" view-box="-3.245196 3.245196 3.245196 -3.245196" antialias="1" fps="24.000" begin-time="0f" end-time="0f" bgcolor="0.500000 0.500000 0.500000 1.000000">
+<canvas version="0.7" width="24" height="24" xres="2834.645752" yres="2834.645752" view-box="-1.000000 1.000000 1.000000 -1.000000" antialias="1" fps="24.000" begin-time="0f" end-time="0f" bgcolor="0.500000 0.500000 0.500000 1.000000">
   <name>Synfig Studio Filter Color Correct Icon</name>
   <desc>Placed in the Public Domain in 2010 by Bertrand Gr&#xE9;goire (berteh)</desc>
   <meta name="grid_show" content="0"/>
@@ -36,7 +36,7 @@
       </vector>
     </param>
     <param name="canvas">
-      <canvas>
+      <canvas width="200" height="200" view-box="-3.245196 3.245196 3.245196 -3.245196">
         <layer type="PasteCanvas" active="true" version="0.1">
           <param name="z_depth">
             <real value="0.0000000000"/>
@@ -355,7 +355,7 @@
             </color>
           </param>
           <param name="origin">
-            <vector guid="5093F1A4126F2E456138AC467CA7277C">
+            <vector>
               <x>0.5070610046</x>
               <y>-2.0282440186</y>
             </vector>
@@ -592,7 +592,7 @@
       </vector>
     </param>
     <param name="canvas">
-      <canvas>
+      <canvas width="200" height="200" view-box="-3.245196 3.245196 3.245196 -3.245196">
         <layer type="PasteCanvas" active="true" version="0.1">
           <param name="z_depth">
             <real value="0.0000000000"/>
@@ -1130,7 +1130,7 @@
       </vector>
     </param>
     <param name="canvas">
-      <canvas>
+      <canvas width="200" height="200" view-box="-3.245196 3.245196 3.245196 -3.245196">
         <layer type="region" active="true" version="0.1" desc="Circle193Region">
           <param name="z_depth">
             <real value="0.0000000000"/>
@@ -1587,7 +1587,7 @@
       </vector>
     </param>
     <param name="canvas">
-      <canvas>
+      <canvas width="200" height="200" view-box="-3.245196 3.245196 3.245196 -3.245196">
         <layer type="region" active="true" version="0.1" desc="Circle193Region">
           <param name="z_depth">
             <real value="0.0000000000"/>
@@ -2024,6 +2024,17 @@
       <vector>
         <x>-0.0636312962</x>
         <y>-0.6999442577</y>
+      </vector>
+    </param>
+  </layer>
+  <layer type="zoom" active="true" version="0.1">
+    <param name="amount">
+      <real value="-1.2000000000"/>
+    </param>
+    <param name="center">
+      <vector>
+        <x>0.0000000000</x>
+        <y>0.0000000000</y>
       </vector>
     </param>
   </layer>

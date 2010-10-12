@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<canvas version="0.7" width="200" height="200" xres="2834.645752" yres="2834.645752" view-box="-3.245196 3.245196 3.245196 -3.245196" antialias="1" fps="24.000" begin-time="0f" end-time="0f" bgcolor="0.500000 0.500000 0.500000 1.000000">
+<canvas version="0.7" width="24" height="24" xres="2834.645752" yres="2834.645752" view-box="-1.000000 1.000000 1.000000 -1.000000" antialias="1" fps="24.000" begin-time="0f" end-time="0f" bgcolor="0.500000 0.500000 0.500000 1.000000">
   <name>Synfig Studio Duplicate Icon</name>
   <desc>Placed in the Public Domain in 2010 by Carlos L&#xF3;pez (genete)</desc>
   <meta name="grid_show" content="0"/>
@@ -9,6 +9,7 @@
   <meta name="guide_snap" content="0"/>
   <meta name="onion_skin" content="0"/>
   <defs>
+    <real value="5.0000000000" id="to"/>
     <duplicate type="real" to="to" id="Index 1" guid="C0234887057B7BF0F9AC62AC1B69ED1B">
       <from>
         <real value="0.0000000000"/>
@@ -17,7 +18,6 @@
         <real value="1.0000000000"/>
       </step>
     </duplicate>
-    <real value="5.0000000000" id="to"/>
   </defs>
   <layer type="region" active="true" version="0.1" desc="Circle019 Region">
     <param name="z_depth">
@@ -38,7 +38,7 @@
       </color>
     </param>
     <param name="origin">
-      <vector guid="2A7C8C354632DBA6804BE035268101C5">
+      <vector>
         <x>0.0000000000</x>
         <y>-2.5847954750</y>
       </vector>
@@ -59,7 +59,7 @@
       <integer value="0"/>
     </param>
     <param name="bline">
-      <bline type="bline_point" loop="true" guid="D5B5386030F5BD86B37C2D25719F59F5">
+      <bline type="bline_point" loop="true">
         <entry>
           <composite type="bline_point">
             <point>
@@ -236,7 +236,7 @@
       </vector>
     </param>
     <param name="canvas">
-      <canvas>
+      <canvas width="200" height="200" view-box="-3.245196 3.245196 3.245196 -3.245196">
         <layer type="region" active="true" version="0.1" desc="NewBLine020 Region">
           <param name="z_depth">
             <real value="0.0000000000"/>
@@ -584,6 +584,17 @@
       <bool value="false"/>
     </param>
     <param name="focus">
+      <vector>
+        <x>0.0000000000</x>
+        <y>0.0000000000</y>
+      </vector>
+    </param>
+  </layer>
+  <layer type="zoom" active="true" version="0.1">
+    <param name="amount">
+      <real value="-1.1500000000"/>
+    </param>
+    <param name="center">
       <vector>
         <x>0.0000000000</x>
         <y>0.0000000000</y>

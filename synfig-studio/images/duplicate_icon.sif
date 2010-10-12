@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
-<canvas version="0.3" width="128" height="128" xres="2952.755900" yres="2952.755900" view-box="-1.000000 1.000000 1.000000 -1.000000" antialias="1" fps="30.000" begin-time="0f" end-time="0f" bgcolor="0.500000 0.500000 0.500000 1.000000">
+<canvas version="0.7" width="24" height="24" xres="2834.645752" yres="2834.645752" view-box="-1.000000 1.000000 1.000000 -1.000000" antialias="1" fps="30.000" begin-time="0f" end-time="0f" bgcolor="0.500000 0.500000 0.500000 1.000000">
   <name>Untitled1</name>
   <defs>
-    <canvas id="Item" bgcolor="0.500000 0.500000 0.500000 1.000000">
+    <canvas id="Item" width="128" height="128" xres="2952.755900" yres="2952.755900" bgcolor="0.500000 0.500000 0.500000 1.000000">
       <layer type="polygon" active="true" version="0.1">
         <param name="z_depth">
           <real value="0.0000000000"/>
@@ -21,7 +21,7 @@
             <a>1.000000</a>
           </color>
         </param>
-        <param name="offset">
+        <param name="origin">
           <vector>
             <x>0.1000000015</x>
             <y>-0.1000000015</y>
@@ -38,6 +38,9 @@
         </param>
         <param name="blurtype">
           <integer value="1"/>
+        </param>
+        <param name="winding_style">
+          <integer value="0"/>
         </param>
         <param name="vector_list">
           <dynamic_list type="vector">
@@ -106,7 +109,7 @@
             <a>1.000000</a>
           </color>
         </param>
-        <param name="offset">
+        <param name="origin">
           <vector>
             <x>0.0000000000</x>
             <y>0.0000000000</y>
@@ -123,6 +126,9 @@
         </param>
         <param name="blurtype">
           <integer value="1"/>
+        </param>
+        <param name="winding_style">
+          <integer value="0"/>
         </param>
         <param name="vector_list">
           <dynamic_list type="vector">
@@ -171,7 +177,7 @@
             <a>1.000000</a>
           </color>
         </param>
-        <param name="offset">
+        <param name="origin">
           <vector>
             <x>0.0000000000</x>
             <y>0.0000000000</y>
@@ -188,6 +194,9 @@
         </param>
         <param name="blurtype">
           <integer value="1"/>
+        </param>
+        <param name="winding_style">
+          <integer value="0"/>
         </param>
         <param name="vector_list">
           <dynamic_list type="vector">
@@ -241,7 +250,16 @@
       <real value="0.0000000000"/>
     </param>
     <param name="time_offset">
-      <time value="0f"/>
+      <time value="0s"/>
+    </param>
+    <param name="children_lock">
+      <bool value="false" static="true"/>
+    </param>
+    <param name="focus">
+      <vector>
+        <x>0.0000000000</x>
+        <y>0.0000000000</y>
+      </vector>
     </param>
   </layer>
   <layer type="PasteCanvas" active="true" version="0.1">
@@ -265,7 +283,16 @@
       <real value="0.0000000000"/>
     </param>
     <param name="time_offset">
-      <time value="0f"/>
+      <time value="0s"/>
+    </param>
+    <param name="children_lock">
+      <bool value="false" static="true"/>
+    </param>
+    <param name="focus">
+      <vector>
+        <x>0.0000000000</x>
+        <y>0.0000000000</y>
+      </vector>
     </param>
   </layer>
   <layer type="polygon" active="true" version="0.1">
@@ -286,7 +313,7 @@
         <a>1.000000</a>
       </color>
     </param>
-    <param name="offset">
+    <param name="origin">
       <vector>
         <x>0.0000000000</x>
         <y>0.0000000000</y>
@@ -303,6 +330,9 @@
     </param>
     <param name="blurtype">
       <integer value="1"/>
+    </param>
+    <param name="winding_style">
+      <integer value="0"/>
     </param>
     <param name="vector_list">
       <dynamic_list type="vector">

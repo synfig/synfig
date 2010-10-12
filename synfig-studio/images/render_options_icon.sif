@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<canvas version="0.7" width="160" height="160" xres="2834.645752" yres="2834.645752" view-box="-3.245189 3.245189 3.245189 -3.245189" antialias="1" fps="24.000" begin-time="0f" end-time="0f" bgcolor="0.500000 0.500000 0.500000 1.000000">
+<canvas version="0.7" width="24" height="24" xres="2834.645752" yres="2834.645752" view-box="-1.000000 1.000000 1.000000 -1.000000" antialias="1" fps="24.000" begin-time="0f" end-time="0f" bgcolor="0.500000 0.500000 0.500000 1.000000">
   <name>Render Options Dialog Icon</name>
   <desc>Copyright 2009 Henrique Lopes Barone. Released under GNU Public License published by the Free Software Foundation version 2.0 of the License or any later version.</desc>
   <meta name="grid_show" content="0"/>
@@ -25,7 +25,7 @@
       </vector>
     </param>
     <param name="canvas">
-      <canvas width="128" height="128">
+      <canvas width="128" height="128" view-box="-3.245189 3.245189 3.245189 -3.245189">
         <layer type="circle" active="true" version="0.1" desc="Black Circle">
           <param name="z_depth">
             <real value="0.0000000000"/>
@@ -250,7 +250,7 @@
       </vector>
     </param>
     <param name="canvas">
-      <canvas width="128" height="128">
+      <canvas width="128" height="128" view-box="-3.245189 3.245189 3.245189 -3.245189">
         <layer type="circle" active="true" version="0.1" desc="red circle">
           <param name="z_depth">
             <real value="0.0000000000"/>
@@ -353,7 +353,7 @@
   </layer>
   <layer type="zoom" active="true" version="0.1">
     <param name="amount">
-      <real value="0.0750000000"/>
+      <real value="-1.1200000000"/>
     </param>
     <param name="center">
       <vector>

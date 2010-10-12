@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<canvas version="0.7" width="200" height="200" xres="2834.645752" yres="2834.645752" view-box="-3.245196 3.245196 3.245196 -3.245196" antialias="1" fps="24.000" begin-time="0f" end-time="0f" bgcolor="0.500000 0.500000 0.500000 1.000000">
+<canvas version="0.7" width="24" height="24" xres="2834.645752" yres="2834.645752" view-box="-1.000000 1.000000 1.000000 -1.000000" antialias="1" fps="24.000" begin-time="0f" end-time="0f" bgcolor="0.500000 0.500000 0.500000 1.000000">
   <name>Synfig Studio Fractal Mandelbrot Icon</name>
   <desc>Placed in the Public Domain in 2010 by Bertrand Gr&#xE9;goire (berteh)</desc>
   <meta name="grid_show" content="0"/>
@@ -36,7 +36,7 @@
       </vector>
     </param>
     <param name="canvas">
-      <canvas>
+      <canvas width="200" height="200" view-box="-3.245196 3.245196 3.245196 -3.245196">
         <layer type="region" active="true" version="0.1" desc="Circle019 Region">
           <param name="z_depth">
             <real value="0.0000000000"/>
@@ -82,8 +82,8 @@
                 <composite type="bline_point">
                   <point>
                     <vector>
-                      <x>1.7945270538</x>
-                      <y>-0.0484752767</y>
+                      <x>1.3183615208</x>
+                      <y>-0.0441033132</y>
                     </vector>
                   </point>
                   <width>
@@ -98,7 +98,7 @@
                   <t1>
                     <radial_composite type="vector">
                       <radius>
-                        <real value="0.8542030127"/>
+                        <real value="0.6866406191"/>
                       </radius>
                       <theta>
                         <angle value="90.000000"/>
@@ -108,7 +108,7 @@
                   <t2>
                     <radial_composite type="vector">
                       <radius>
-                        <real value="0.8542030127"/>
+                        <real value="0.6866406191"/>
                       </radius>
                       <theta>
                         <angle value="90.000000"/>
@@ -121,8 +121,8 @@
                 <composite type="bline_point">
                   <point>
                     <vector>
-                      <x>-0.2045137584</x>
-                      <y>0.4893692732</y>
+                      <x>-0.2885429561</x>
+                      <y>0.3882364333</y>
                     </vector>
                   </point>
                   <width>
@@ -137,7 +137,7 @@
                   <t1>
                     <radial_composite type="vector">
                       <radius>
-                        <real value="4.7435666483"/>
+                        <real value="3.8130578933"/>
                       </radius>
                       <theta>
                         <angle value="-179.999985"/>
@@ -147,7 +147,7 @@
                   <t2>
                     <radial_composite type="vector">
                       <radius>
-                        <real value="4.7435666483"/>
+                        <real value="3.8130578933"/>
                       </radius>
                       <theta>
                         <angle value="-179.999985"/>
@@ -160,8 +160,8 @@
                 <composite type="bline_point">
                   <point>
                     <vector>
-                      <x>-3.0602860451</x>
-                      <y>-0.0225137081</y>
+                      <x>-2.5841205120</x>
+                      <y>-0.0232344251</y>
                     </vector>
                   </point>
                   <width>
@@ -176,7 +176,7 @@
                   <t1>
                     <radial_composite type="vector">
                       <radius>
-                        <real value="0.8542030127"/>
+                        <real value="0.6866406191"/>
                       </radius>
                       <theta>
                         <angle value="-89.999992"/>
@@ -186,7 +186,7 @@
                   <t2>
                     <radial_composite type="vector">
                       <radius>
-                        <real value="0.8542030127"/>
+                        <real value="0.6866406191"/>
                       </radius>
                       <theta>
                         <angle value="-89.999992"/>
@@ -199,8 +199,8 @@
                 <composite type="bline_point">
                   <point>
                     <vector>
-                      <x>-0.2045136392</x>
-                      <y>-0.5417450666</y>
+                      <x>-0.2885428667</x>
+                      <y>-0.4406121969</y>
                     </vector>
                   </point>
                   <width>
@@ -215,7 +215,7 @@
                   <t1>
                     <radial_composite type="vector">
                       <radius>
-                        <real value="4.7435666483"/>
+                        <real value="3.8130578933"/>
                       </radius>
                       <theta>
                         <angle value="0.000001"/>
@@ -225,7 +225,7 @@
                   <t2>
                     <radial_composite type="vector">
                       <radius>
-                        <real value="4.7435666483"/>
+                        <real value="3.8130578933"/>
                       </radius>
                       <theta>
                         <angle value="0.000001"/>
@@ -272,7 +272,7 @@
       </vector>
     </param>
     <param name="canvas">
-      <canvas>
+      <canvas width="200" height="200" view-box="-3.245196 3.245196 3.245196 -3.245196">
         <layer type="mandelbrot" active="true" version="0.2">
           <param name="iterations">
             <integer value="32"/>
@@ -430,6 +430,17 @@
     <param name="focus">
       <vector>
         <x>0.3587653935</x>
+        <y>0.0000000000</y>
+      </vector>
+    </param>
+  </layer>
+  <layer type="zoom" active="true" version="0.1">
+    <param name="amount">
+      <real value="-1.0000000000"/>
+    </param>
+    <param name="center">
+      <vector>
+        <x>0.0000000000</x>
         <y>0.0000000000</y>
       </vector>
     </param>

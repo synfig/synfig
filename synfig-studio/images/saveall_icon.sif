@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<canvas version="0.1" width="128" height="128" xres="2952.755900" yres="2952.755900" view-box="-2.000000 2.000000 2.000000 -2.000000" antialias="1" fps="30.000" begin-time="0f" end-time="0f" bgcolor="0.500000 0.500000 0.500000 1.000000">
+<canvas version="0.7" width="24" height="24" xres="2834.645752" yres="2834.645752" view-box="-1.000000 1.000000 1.000000 -1.000000" antialias="1" fps="30.000" begin-time="0f" end-time="0f" bgcolor="0.500000 0.500000 0.500000 1.000000">
   <name>Untitled0</name>
   <layer type="text" active="true" version="0.2">
     <param name="z_depth">
@@ -50,7 +50,7 @@ ALL</string>
         <y>0.5000000000</y>
       </vector>
     </param>
-    <param name="pos">
+    <param name="origin">
       <vector>
         <x>0.0000000000</x>
         <y>0.0000000000</y>
@@ -61,6 +61,20 @@ ALL</string>
     </param>
     <param name="grid_fit">
       <bool value="false"/>
+    </param>
+    <param name="invert">
+      <bool value="false"/>
+    </param>
+  </layer>
+  <layer type="zoom" active="true" version="0.1">
+    <param name="amount">
+      <real value="-0.6000000000"/>
+    </param>
+    <param name="center">
+      <vector>
+        <x>0.0000000000</x>
+        <y>0.0000000000</y>
+      </vector>
     </param>
   </layer>
 </canvas>

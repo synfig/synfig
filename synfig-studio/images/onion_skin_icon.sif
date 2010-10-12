@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<canvas version="0.7" width="200" height="200" xres="2834.645752" yres="2834.645752" view-box="-3.245189 3.245189 3.245189 -3.245189" antialias="1" fps="15.000" begin-time="0f" end-time="5s" bgcolor="0.500000 0.500000 0.500000 1.000000">
+<canvas version="0.7" width="24" height="24" xres="2834.645752" yres="2834.645752" view-box="-1.000000 1.000000 1.000000 -1.000000" antialias="1" fps="15.000" begin-time="0f" end-time="0f" bgcolor="0.500000 0.500000 0.500000 1.000000">
   <name>Onion Skin Icon</name>
   <desc>opyright 2009 Carlos L&#xF3;pez. Released under GNU Public License published by the Free Software Foundation version 2.0 of the License or any later version.</desc>
   <layer type="region" active="false" version="0.1" desc="NewBLine592Region">
@@ -791,7 +791,7 @@
       </vector>
     </param>
     <param name="canvas">
-      <canvas>
+      <canvas width="200" height="200" view-box="-3.245189 3.245189 3.245189 -3.245189" end-time="5s">
         <layer type="region" active="true" version="0.1" desc="NewBLine584Region">
           <param name="z_depth">
             <real value="0.0000000000"/>
@@ -3892,6 +3892,17 @@
     </param>
     <param name="homogeneous_width">
       <bool value="true"/>
+    </param>
+  </layer>
+  <layer type="zoom" active="true" version="0.1">
+    <param name="amount">
+      <real value="-1.3000000000"/>
+    </param>
+    <param name="center">
+      <vector>
+        <x>0.0000000000</x>
+        <y>0.0000000000</y>
+      </vector>
     </param>
   </layer>
 </canvas>
