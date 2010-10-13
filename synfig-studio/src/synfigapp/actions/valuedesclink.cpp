@@ -316,7 +316,9 @@ Action::ValueDescLink::prepare()
 
 	std::list<ValueDesc>::iterator iter;
 	// Gets the scalar value of the current value node
-	Real current_scalar(value_desc_list.begin()->get_scalar());
+	Real current_scalar(0);
+	if(value_desc_list.begin()->parent_is_linkable_value_node())
+		current_scalar=value_desc_list.begin()->get_scalar();
 	bool found_inverse(false);
 	// Check if we are dealing the case of linking differnt types of tangents
 	for(iter=value_desc_list.begin();iter!=value_desc_list.end();++iter)
