@@ -665,6 +665,14 @@ initialize()
 			fi
 			BREED=${BREED%_master}
 		fi
+		if [[ ${VERSION##*-RC} != ${VERSION} ]]; then
+			if [[ $BREED == 'master' ]]; then
+				BREED=rc${VERSION##*-RC}
+			else
+				BREED=rc${VERSION##*-RC}.$BREED
+			fi
+			VERSION=${VERSION%%-*}
+		fi
 		[[ $DEBUG == 1 ]] && BREED=${BREED}_debug
 		REVISION=`git show --pretty=medium $SELECTEDREVISION | head -n 3 |tail -n 1 | sed 's/Date: *//' | sed 's/ +.*//'`
 		REVISION=`date --date="${REVISION}" +%Y%m%d`
