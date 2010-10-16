@@ -56,7 +56,7 @@ EXTRA_DIST = \
 	action_add_to_group_icon.sif \
 	action_remove_from_group_icon.sif \
 	action_export_icon.sif \
-	action_unexport_icon.sif
+	action_unexport_icon.sif \
 	\
 	layer_blur_blur_icon.sif \
 	layer_blur_motion_icon.sif \
