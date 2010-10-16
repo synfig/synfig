@@ -12,6 +12,7 @@ EXTRA_DIST = \
 	splash_screen-0.61.09.sif \
 	splash_screen-0.61.08.sif \
 	splash_screen-0.61.07.sif \
+	splash_screen_development.sif.in \
 	about_icon.sif \
 	clear_redo_icon.sif \
 	clear_undo_icon.sif \
