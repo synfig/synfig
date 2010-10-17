@@ -47,7 +47,7 @@ using namespace Action;
 
 ACTION_INIT(Action::ValueNodeConstUnSetStatic);
 ACTION_SET_NAME(Action::ValueNodeConstUnSetStatic,"ValueNodeConstUnSetStatic");
-ACTION_SET_LOCAL_NAME(Action::ValueNodeConstUnSetStatic,N_("UnSet Static"));
+ACTION_SET_LOCAL_NAME(Action::ValueNodeConstUnSetStatic,N_("Allow Animation"));
 ACTION_SET_TASK(Action::ValueNodeConstUnSetStatic,"unsetstatic");
 ACTION_SET_CATEGORY(Action::ValueNodeConstUnSetStatic,Action::CATEGORY_VALUEDESC|Action::CATEGORY_VALUENODE);
 ACTION_SET_PRIORITY(Action::ValueNodeConstUnSetStatic,0);
