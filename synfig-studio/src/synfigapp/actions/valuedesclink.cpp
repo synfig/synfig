@@ -128,7 +128,7 @@ Action::ValueDescLink::set_param(const synfig::String& name, const Action::Param
 			}
 
 			link_value_node=value_desc.get_value_node();
-			link_scalar=value_desc.get_scalar();
+			link_scalar=value_desc.parent_is_linkable_value_node()?value_desc.get_scalar():1.0;
 			status_message = _("Used exported ValueNode ('") + link_value_node->get_id() + _("').");
 		}
 		else if(value_desc.is_value_node())
@@ -138,7 +138,7 @@ Action::ValueDescLink::set_param(const synfig::String& name, const Action::Param
 				status_level = 1;
 				status_message = _("Using the only available ValueNode.");
 				link_value_node=value_desc.get_value_node();
-				link_scalar=value_desc.get_scalar();
+				link_scalar=value_desc.parent_is_linkable_value_node()?value_desc.get_scalar():1.0;
 			}
 			else if(link_value_node->is_exported())
 			{
@@ -152,7 +152,7 @@ Action::ValueDescLink::set_param(const synfig::String& name, const Action::Param
 					status_level = 2;
 					status_message = _("Using the most referenced ValueNode.");
 					link_value_node=value_desc.get_value_node();
-					link_scalar=value_desc.get_scalar();
+					link_scalar=value_desc.parent_is_linkable_value_node()?value_desc.get_scalar():1.0;
 				}
 				else if (status_level <= 2)
 				{
@@ -167,7 +167,7 @@ Action::ValueDescLink::set_param(const synfig::String& name, const Action::Param
 				status_level = 3;
 				status_message = _("There's a tie for most referenced; using the animated ValueNode.");
 				link_value_node=value_desc.get_value_node();
-				link_scalar=value_desc.get_scalar();
+				link_scalar=value_desc.parent_is_linkable_value_node()?value_desc.get_scalar():1.0;
 			}
 			else if(ValueNode_Const::Handle::cast_dynamic(value_desc.get_value_node()) && !ValueNode_Const::Handle::cast_dynamic(link_value_node))
 			{
@@ -189,7 +189,7 @@ Action::ValueDescLink::set_param(const synfig::String& name, const Action::Param
 					status_level = 4;
 					status_message = _("There's a tie for most referenced, and both are animated; using the one with the most waypoints.");
 					link_value_node=value_desc.get_value_node();
-					link_scalar=value_desc.get_scalar();
+					link_scalar=value_desc.parent_is_linkable_value_node()?value_desc.get_scalar():1.0;
 				}
 				else if (status_level <= 4)
 				{
@@ -209,7 +209,7 @@ Action::ValueDescLink::set_param(const synfig::String& name, const Action::Param
 					status_level = 4;
 					status_message = _("There's a tie for most referenced, and both are linkable value node animated; using the one with the most waypoints.");
 					link_value_node=value_desc.get_value_node();
-					link_scalar=value_desc.get_scalar();
+					link_scalar=value_desc.parent_is_linkable_value_node()?value_desc.get_scalar():1.0;
 				}
 				else if (status_level <= 4)
 				{
@@ -225,7 +225,7 @@ Action::ValueDescLink::set_param(const synfig::String& name, const Action::Param
 					status_level = 5;
 					status_message = _("Everything is tied; using the least recently modified value.");
 					link_value_node=value_desc.get_value_node();
-					link_scalar=value_desc.get_scalar();
+					link_scalar=value_desc.parent_is_linkable_value_node()?value_desc.get_scalar():1.0;
 				}
 				else if (status_level <= 5)
 				{
