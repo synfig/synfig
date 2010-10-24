@@ -338,6 +338,10 @@ src/synfigapp/actions/layerparamdisconnect.cpp
 src/synfigapp/actions/layerparamdisconnect.h
 src/synfigapp/actions/layerparamset.cpp
 src/synfigapp/actions/layerparamset.h
+src/synfigapp/actions/layerparamsetstatic.cpp
+src/synfigapp/actions/layerparamsetstatic.h
+src/synfigapp/actions/layerparamunsetstatic.cpp
+src/synfigapp/actions/layerparamunsetstatic.h
 src/synfigapp/actions/layerraise.cpp
 src/synfigapp/actions/layerraise.h
 src/synfigapp/actions/layerremove.cpp
@@ -368,6 +372,10 @@ src/synfigapp/actions/valuenodeadd.cpp
 src/synfigapp/actions/valuenodeadd.h
 src/synfigapp/actions/valuenodeconstset.cpp
 src/synfigapp/actions/valuenodeconstset.h
+src/synfigapp/actions/valuenodeconstsetstatic.cpp
+src/synfigapp/actions/valuenodeconstsetstatic.h
+src/synfigapp/actions/valuenodeconstunsetstatic.cpp
+src/synfigapp/actions/valuenodeconstunsetstatic.h
 src/synfigapp/actions/valuenodedynamiclistinsert.cpp
 src/synfigapp/actions/valuenodedynamiclistinsert.h
 src/synfigapp/actions/valuenodedynamiclistinsertsmart.cpp

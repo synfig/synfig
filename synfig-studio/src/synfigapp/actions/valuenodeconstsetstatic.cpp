@@ -47,7 +47,7 @@ using namespace Action;
 
 ACTION_INIT(Action::ValueNodeConstSetStatic);
 ACTION_SET_NAME(Action::ValueNodeConstSetStatic,"ValueNodeConstSetStatic");
-ACTION_SET_LOCAL_NAME(Action::ValueNodeConstSetStatic,N_("Set Static"));
+ACTION_SET_LOCAL_NAME(Action::ValueNodeConstSetStatic,N_("Forbid Animation"));
 ACTION_SET_TASK(Action::ValueNodeConstSetStatic,"setstatic");
 ACTION_SET_CATEGORY(Action::ValueNodeConstSetStatic,Action::CATEGORY_VALUEDESC|Action::CATEGORY_VALUENODE);
 ACTION_SET_PRIORITY(Action::ValueNodeConstSetStatic,0);
