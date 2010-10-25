@@ -114,9 +114,16 @@ Time::Time(const String &str_, float fps):
 			// and the amount isn't zero. There is no need
 			// to warn about units if the value is zero
 			// it is the only case where units are irrelevant.
-			if(amount!=0)
-				synfig::warning("Time(): No unit provided in time code, assuming SECONDS (\"%s\")",str.c_str());
-			value_+=amount;
+			if(amount!=0 && fps)
+			{
+				synfig::warning(_("Time(): No unit provided in time code, assuming FRAMES (\"%s\")"),str.c_str());
+				value_+=amount/fps;
+			}
+			else
+			{
+				synfig::warning(_("Time(): No unit provided in time code and frame rate is unknown! Assuming SECONDS"));
+				value_+=amount;
+			}
 			return;
 		}
 		switch(str[pos])
