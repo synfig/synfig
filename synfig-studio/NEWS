@@ -5,11 +5,27 @@ More detailed notes are available on the releases page:
 http://synfig.org/wiki/Releases
 
 
- 0.62.xx (git tag: "synfigstudio-0.62.xx") - Month day, 2010
+ 0.62.02 (git tag: "synfigstudio-0.62.02") - Month day, 2010
 
   * Code restructure into folders grouping common files for easy coding,
-  and cleaning dead code. Use of Makefile inserts for each folder.
+    and cleaning dead code. Use of Makefile inserts for each folder.
   * Add load and save palette buttons. File extension is spal
+  * Don't limit bitrate to 1000 in target parameters.
+  * Britain English translation. Robert Readman.
+  * Full rework of the Synfig Studio icons. Yu Chen
+  * More translatable strings.
+  * Simplified Chinese translation. Yu Chen
+  * New "By Layer Default" blend method. Now some layers define its own
+    blend method instead of Composite or the selected by user.
+    For example Shade->Behind
+  * Added "Static" option for individual parameters.
+    If "Static" is on, then in animation mode it is no created any waypoint
+    when modified. Only valid for layer parameters and constant value nodes.
+  * Smart linking bline tangents implementation. Now all tangents are yellow ducks.
+  * Move reverse manipulation code to Value Desc.
+    This allows recursive reverse manipulation for valuenodes which has
+    inverse manipulation implemented.
+  * Splash Screen for development snapshots. Konstantin Dmitriev
 
  0.62.01 (git tag: "synfigstudio-0.62.01") - May 31, 2010 - Bug fixes, features.
 
