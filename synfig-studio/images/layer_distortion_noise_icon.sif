@@ -395,9 +395,9 @@
           </param>
           <param name="color">
             <color>
-              <r>0.302085</r>
-              <g>0.302085</g>
-              <b>0.302086</b>
+              <r>0.170138</r>
+              <g>0.353741</g>
+              <b>0.632043</b>
               <a>1.000000</a>
             </color>
           </param>
@@ -535,9 +535,9 @@
                 </param>
                 <param name="color">
                   <color>
-                    <r>0.000000</r>
-                    <g>0.000000</g>
-                    <b>0.000000</b>
+                    <r>0.010398</r>
+                    <g>0.065754</g>
+                    <b>0.246800</b>
                     <a>1.000000</a>
                   </color>
                 </param>
@@ -664,26 +664,6 @@
                 </param>
                 <param name="homogeneous_width">
                   <bool value="true"/>
-                </param>
-              </layer>
-              <layer type="blur" active="false" version="0.2">
-                <param name="z_depth">
-                  <real value="0.0000000000"/>
-                </param>
-                <param name="amount">
-                  <real value="2.0000000000"/>
-                </param>
-                <param name="blend_method">
-                  <integer value="0"/>
-                </param>
-                <param name="size">
-                  <vector>
-                    <x>0.4867794216</x>
-                    <y>0.4867794216</y>
-                  </vector>
-                </param>
-                <param name="type">
-                  <integer value="1"/>
                 </param>
               </layer>
             </canvas>

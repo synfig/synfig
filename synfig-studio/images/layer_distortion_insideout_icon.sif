@@ -231,9 +231,9 @@
     </param>
     <param name="color">
       <color>
-        <r>1.000000</r>
-        <g>1.000000</g>
-        <b>1.000000</b>
+        <r>0.170138</r>
+        <g>0.353741</g>
+        <b>0.632043</b>
         <a>1.000000</a>
       </color>
     </param>
@@ -353,9 +353,9 @@
     </param>
     <param name="color">
       <color>
-        <r>0.000000</r>
-        <g>0.000000</g>
-        <b>0.000000</b>
+        <r>0.010398</r>
+        <g>0.065754</g>
+        <b>0.246800</b>
         <a>1.000000</a>
       </color>
     </param>
@@ -533,9 +533,9 @@
           </param>
           <param name="color">
             <color>
-              <r>0.000000</r>
-              <g>0.000000</g>
-              <b>0.000000</b>
+              <r>0.030257</r>
+              <g>0.130352</g>
+              <b>0.378676</b>
               <a>1.000000</a>
             </color>
           </param>
@@ -675,30 +675,12 @@
             <integer value="0"/>
           </param>
           <param name="color">
-            <gradientcolor type="color">
-              <gradient>
-                <gradient>
-                  <color pos="0.159763">
-                    <r>1.000000</r>
-                    <g>1.000000</g>
-                    <b>1.000000</b>
-                    <a>1.000000</a>
-                  </color>
-                  <color pos="1.000000">
-                    <r>0.302085</r>
-                    <g>0.302085</g>
-                    <b>0.302086</b>
-                    <a>1.000000</a>
-                  </color>
-                </gradient>
-              </gradient>
-              <index>
-                <real value="1.0000000000"/>
-              </index>
-              <loop>
-                <bool value="false"/>
-              </loop>
-            </gradientcolor>
+            <color>
+              <r>0.170138</r>
+              <g>0.353741</g>
+              <b>0.632043</b>
+              <a>1.000000</a>
+            </color>
           </param>
           <param name="origin">
             <vector>
