@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<canvas version="0.7" width="24" height="24" xres="2834.645752" yres="2834.645752" view-box="-1.000000 1.000000 1.000000 -1.000000" antialias="1" fps="30.000" begin-time="0f" end-time="0f" bgcolor="0.500000 0.500000 0.500000 1.000000">
+<canvas version="0.7" width="128" height="128" xres="2834.645752" yres="2834.645752" view-box="1.000000 -1.000000 -1.000000 1.000000" antialias="1" fps="30.000" begin-time="0f" end-time="0f" bgcolor="0.500000 0.500000 0.500000 1.000000">
   <name>Synfig Studio: Layer: Circle Icon</name>
   <desc>Placed in the Public Domain in 2010 by Yu Chen (jcome)</desc>
   <meta name="grid_show" content="0"/>
@@ -15,7 +15,7 @@
       <b>0.000000</b>
       <a>1.000000</a>
     </color>
-    <canvas id="Layer" width="128" height="128" xres="2952.755900" yres="2952.755900" bgcolor="0.500000 0.500000 0.500000 1.000000">
+    <canvas id="Layer" xres="2952.755900" yres="2952.755900" view-box="-1.000000 1.000000 1.000000 -1.000000" bgcolor="0.500000 0.500000 0.500000 1.000000">
       <layer type="polygon" active="true" version="0.1">
         <param name="z_depth">
           <real value="0.0000000000"/>
@@ -259,7 +259,7 @@
       </vector>
     </param>
     <param name="canvas">
-      <canvas xres="2952.755900" yres="2952.755900">
+      <canvas width="24" height="24" xres="2952.755900" yres="2952.755900" view-box="-1.000000 1.000000 1.000000 -1.000000">
         <layer type="SolidColor" active="false" version="0.1">
           <param name="z_depth">
             <real value="0.0000000000"/>
@@ -473,7 +473,7 @@
       </vector>
     </param>
     <param name="canvas">
-      <canvas>
+      <canvas width="24" height="24" view-box="-1.000000 1.000000 1.000000 -1.000000">
         <layer type="circle" active="true" version="0.1" desc="Circle056">
           <param name="z_depth">
             <real value="0.0000000000"/>
