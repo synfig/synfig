@@ -2,7 +2,7 @@
 
 # -- I N I T --------------------------------------------------
 
-AC_INIT([Synfig Core],[0.62.02-RC1],[http://sourceforge.net/tracker/?group_id=144022&atid=757416],[synfig])
+AC_INIT([Synfig Core],[0.62.02-RC2],[http://sourceforge.net/tracker/?group_id=144022&atid=757416],[synfig])
 AC_REVISION
 
 AC_CONFIG_AUX_DIR(config)
