@@ -123,7 +123,7 @@ bmp_mptr::~bmp_mptr()
 }
 
 bool
-bmp_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &renddesc, Time /*time*/, synfig::ProgressCallback *cb)
+bmp_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &/*renddesc*/, Time /*time*/, synfig::ProgressCallback *cb)
 {
 	FILE *file=fopen(filename.c_str(),"rb");
 	if(!file)

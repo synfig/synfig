@@ -70,7 +70,7 @@ ppm_mptr::~ppm_mptr()
 }
 
 bool
-ppm_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &renddesc, Time, synfig::ProgressCallback *cb)
+ppm_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &/*renddesc*/, Time, synfig::ProgressCallback *cb)
 {
 	SmartFILE file(fopen(filename.c_str(),"rb"));
 	if(!file)
