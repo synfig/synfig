@@ -177,7 +177,7 @@ About::About()
 	artists.push_back("Madeleine Crubellier (mad0)");
 	artists.push_back("Robert B. Quattlebaum Jr. (darco)");
 	artists.push_back("Thimotee Guiet (satrip)");
-
+	artists.push_back("Yu Chen (jcome)");
 	set_artists(artists);
 
 	// TRANSLATORS: change this to your name, separate multiple names with \n
