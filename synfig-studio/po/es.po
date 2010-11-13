@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: es\n"
 "Report-Msgid-Bugs-To: http://synfig.org/Bugs\n"
 "POT-Creation-Date: 2010-10-20 17:36+0200\n"
-"PO-Revision-Date: 2010-10-20 18:27+0100\n"
+"PO-Revision-Date: 2010-11-13 11:46+0100\n"
 "Last-Translator: Carlos López González <genetita@gmail.com>\n"
 "Language-Team: Español <es@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -1874,7 +1874,7 @@ msgstr "Lienzo"
 
 #: src/gui/trees/canvastreestore.cpp:221
 msgid " (Static)"
-msgstr "(Stático)"
+msgstr "(Estático)"
 
 #: src/gui/trees/canvastreestore.cpp:248
 #: src/gui/trees/childrentreestore.cpp:201

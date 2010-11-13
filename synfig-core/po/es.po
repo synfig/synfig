@@ -8,9 +8,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: es\n"
-"Report-Msgid-Bugs-To: http://synfig.org/Bugs\n"
-"POT-Creation-Date: 2010-10-17 10:26+0200\n"
-"PO-Revision-Date: 2010-10-20 17:29+0100\n"
+"Report-Msgid-Bugs-To: http://sourceforge.net/tracker/?group_id=144022&atid=757416\n"
+"POT-Creation-Date: 2010-11-10 20:26+0100\n"
+"PO-Revision-Date: 2010-11-13 11:45+0100\n"
 "Last-Translator: Carlos López González <genetita@gmail.com>\n"
 "Language-Team: Español <es@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -2503,6 +2503,15 @@ msgstr "Mala superficie"
 #: src/synfig/target_tile.cpp:281
 msgid "add_tile():Unable to put surface on target"
 msgstr "add_tile():Imposible poner la superficie en el objetivo"
+
+#: src/synfig/time.cpp:119
+#, c-format
+msgid "Time(): No unit provided in time code, assuming FRAMES (\"%s\")"
+msgstr "Time(): Unidad de tiempo no proporcionada, asumiendo FOTOGRAMAS (\"%s\")"
+
+#: src/synfig/time.cpp:124
+msgid "Time(): No unit provided in time code and frame rate is unknown! Assuming SECONDS"
+msgstr "Time(): ¡Unidad de tiempo no proporcionada y el ratio de fotogramas es desconocido! Asumiendo SEGUNDOS"
 
 #. TRANSLATORS: this is the name of a type -- see http://synfig.org/wiki/Dev:Types
 #: src/synfig/value.cpp:270
