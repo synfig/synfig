@@ -280,7 +280,7 @@ InputDevice::InputDevice(const synfig::String id_, Type type_):
 	fill_color_(Color::white()),
 	bline_width_(Distance(1,Distance::SYSTEM_POINTS)),
 	opacity_(1.0f),
-	blend_method_(Color::BLEND_COMPOSITE),
+	blend_method_(Color::BLEND_BY_LAYER),
 	mode_(MODE_DISABLED)
 {
 	device_settings=new DeviceSettings(this);

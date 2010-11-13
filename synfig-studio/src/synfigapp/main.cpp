@@ -119,7 +119,7 @@ synfigapp::Main::Main(const synfig::String &basepath, synfig::ProgressCallback *
 	set_gradient_default_colors();
 	set_bline_width(Distance(1,Distance::SYSTEM_POINTS));
 	set_opacity(1.0);
-	set_blend_method(Color::BLEND_COMPOSITE);
+	set_blend_method(Color::BLEND_BY_LAYER);
 }
 
 synfigapp::Main::~Main()
