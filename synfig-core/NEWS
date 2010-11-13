@@ -2,9 +2,9 @@
 
 More detailed notes are available on the releases page:
 
-http://synfig.org/wiki/Releases
+http://synfig.org/en/news/releases
 
- 0.62.02 (git tag: "synfig-0.62.02") - Month day, 2010
+ 0.62.02 (git tag: "synfig-0.62.02") - November 13, 2010- Bug fixes, features
 
   * Fix load and save palette feature.
   * Code documentation. Not full yet.
